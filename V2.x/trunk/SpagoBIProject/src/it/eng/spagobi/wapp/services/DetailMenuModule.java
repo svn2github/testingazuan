@@ -184,12 +184,6 @@ public class DetailMenuModule extends AbstractModule {
 		response.setAttribute(MENU, menu);
 		response.setAttribute(AdmintoolsConstants.MODALITY, mod);
 
-//		if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-//		String pathParent = (String)request.getAttribute(AdmintoolsConstants.PATH_PARENT);
-//		response.setAttribute(AdmintoolsConstants.PATH_PARENT, pathParent);
-//		}
-
-
 		// if there are some validation errors into the errorHandler does not write into DB
 		Collection errors = errorHandler.getErrors();
 		if (errors != null && errors.size() > 0) {
@@ -216,14 +210,6 @@ public class DetailMenuModule extends AbstractModule {
 			DAOFactory.getMenuDAO().insertMenu(menu);
 		} else if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_MOD)) {
 			DAOFactory.getMenuDAO().modifyMenu(menu);
-			//at this point erase inconsistent child roles that have been deleted from parents
-			//prova debug
-			//Set set1 = new HashSet();
-			//loadRolesToErase(lowFunct,set1);
-			Set set = new HashSet();
-			//TODO delete roles in childred 
-			/*loadRolesToErase(menu,set);
-				DAOFactory.getLowFunctionalityDAO().deleteInconsistentRoles(set);*/
 		}
 
 
@@ -380,6 +366,12 @@ public class DetailMenuModule extends AbstractModule {
 			menu.setStaticPage(null);
 			menu.setFunctionality(null);
 			menu.setInitialPath(null);
+			String hideToolbarB=(String)request.getAttribute("hideToolbar");
+			String hideSlidersB=(String)request.getAttribute("hideSliders");
+			if(hideToolbarB!=null)menu.setHideToolbar(Boolean.valueOf(hideToolbarB).booleanValue());
+			else menu.setHideToolbar(false);
+			if(hideSlidersB!=null)menu.setHideSliders(Boolean.valueOf(hideSlidersB).booleanValue());
+			else menu.setHideSliders(false);
 		} else if ("nodeStaticPage".equals(nodeContent)) {
 			// menu node with static page
 			menu.setObjId(null);
@@ -389,6 +381,8 @@ public class DetailMenuModule extends AbstractModule {
 			menu.setSnapshotHistory(null);
 			menu.setFunctionality(null);
 			menu.setInitialPath(null);
+			menu.setHideToolbar(false);
+			menu.setHideSliders(false);
 			String staticPage = (String) request.getAttribute("staticpage");
 			menu.setStaticPage(staticPage);
 		} else if ("nodeFunctionality".equals(nodeContent)) {
@@ -399,6 +393,8 @@ public class DetailMenuModule extends AbstractModule {
 			menu.setSnapshotName(null);
 			menu.setSnapshotHistory(null);
 			menu.setStaticPage(null);
+			menu.setHideToolbar(false);
+			menu.setHideSliders(false);
 			String functionality = (String) request.getAttribute("functionality");
 			menu.setFunctionality(functionality);
 			if (functionality.equals("DocumentUserManagement")) {
@@ -417,45 +413,14 @@ public class DetailMenuModule extends AbstractModule {
 			menu.setStaticPage(null);
 			menu.setFunctionality(null);
 			menu.setInitialPath(null);
+			menu.setHideToolbar(false);
+			menu.setHideSliders(false);
 		}
 		
-		String homepageB=(String)request.getAttribute("homepage");
 		String viewIconsB=(String)request.getAttribute("viewicons");
-		String hideToolbarB=(String)request.getAttribute("hideToolbar");
-		String hideSlidersB=(String)request.getAttribute("hideSliders");
 		if(viewIconsB!=null)menu.setViewIcons(Boolean.valueOf(viewIconsB).booleanValue());
 		else menu.setViewIcons(false);
-		if(hideToolbarB!=null)menu.setHideToolbar(Boolean.valueOf(hideToolbarB).booleanValue());
-		else menu.setHideToolbar(false);
-		if(hideSlidersB!=null)menu.setHideSliders(Boolean.valueOf(hideSlidersB).booleanValue());
-		else menu.setHideSliders(false);
 		return menu;
-	}
-
-	/**
-	 * Controls if a particular role belongs to the parent functionality. It is
-	 * called inside functionalities Jsp in ordet to identify those roles that a child
-	 * functionality is able to select.
-	 * 
-	 * @param rule    The role id string identifying the role
-	 * @param parentLowFunct the parent low functionality object
-	 * @param roleType The role's type
-	 * 
-	 * @return True if the role belongs to the parent funct, else false
-	 */
-	public boolean isParentRule(String rule, Menu parentMenu){
-		boolean isParent = false;
-
-		Role[] rolesObj = parentMenu.getRoles();
-		String[] rules = new String[rolesObj.length];
-		for(int i=0; i<rolesObj.length; i++) {
-			rules[i] = rolesObj[i].getId().toString();
-			if (rule.equals(rules[i])){
-				isParent = true;
-			}
-		}
-
-		return isParent;
 	}
 
 	/**

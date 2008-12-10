@@ -172,7 +172,7 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			hibMenu.setInitialPath(aMenu.getInitialPath());
 			
 			//Modify Roles Associated
-			// delete all roles functionality
+			// delete all roles previously associated
 			Set oldRoles = hibMenu.getSbiMenuRoles();
 			Iterator iterOldRoles = oldRoles.iterator();
 			while (iterOldRoles.hasNext()) {
@@ -184,7 +184,10 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 			menuRoleToSave.addAll(saveRolesMenu(tmpSession, hibMenu,
 					aMenu));
 			// set new roles into sbiFunctions
-			hibMenu.setSbiMenuRoles(menuRoleToSave);	
+			hibMenu.setSbiMenuRoles(menuRoleToSave);
+			
+			// delete incongruous roles associations
+			deleteIncongruousRoles(tmpSession, hibMenu);
 
 			hibMenu.setViewIcons(new Boolean(aMenu.isViewIcons()));
 			hibMenu.setHideToolbar(new Boolean(aMenu.getHideToolbar()));
@@ -208,6 +211,36 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		}
 
 	}
+
+	private void deleteIncongruousRoles(Session aSession, SbiMenu hibMenu) {
+		// delete incongruous roles children of the current menu node
+		Integer menuId = hibMenu.getMenuId();
+		String getIncongruousRolesHqlQuery = "select mr FROM SbiMenuRole mr, SbiMenu m where mr.id.menuId = m.menuId and m.parentId = :MENU_ID " +
+				" and mr.id.extRoleId not in (select id.extRoleId from SbiMenuRole where id.menuId = :MENU_ID)";
+		Query getIncongruousRolesQuery = aSession.createQuery(getIncongruousRolesHqlQuery);
+		getIncongruousRolesQuery.setParameter("MENU_ID", menuId);
+		List incongruousRoles = getIncongruousRolesQuery.list();
+		if (incongruousRoles != null && !incongruousRoles.isEmpty()) {
+			Iterator it = incongruousRoles.iterator();
+			while (it.hasNext()) {
+				SbiMenuRole role = (SbiMenuRole) it.next();
+				aSession.delete(role);
+			}
+		}
+		// recursion on children
+		String getChildrenMenuNodesHqlQuery = " from SbiMenu s where s.id.parentId = ?";
+		Query getChildrenMenuNodesQuery = aSession.createQuery(getChildrenMenuNodesHqlQuery);
+		getChildrenMenuNodesQuery.setInteger(0, menuId.intValue());
+		List childrenMenuNodes = getChildrenMenuNodesQuery.list();
+		if (childrenMenuNodes != null && !childrenMenuNodes.isEmpty()) {
+			Iterator it = childrenMenuNodes.iterator();
+			while (it.hasNext()) {
+				SbiMenu menu = (SbiMenu) it.next();
+				deleteIncongruousRoles(aSession, menu);
+			}
+		}
+	}
+
 
 	/**
 	 * Insert menu.
@@ -618,12 +651,6 @@ public class MenuDAOImpl extends AbstractHibernateDAO implements IMenuDAO{
 		Criterion domainCdCriterrion = null;
 		Criteria criteria = null;	
 		criteria = aSession.createCriteria(SbiMenuRole.class);
-		//domainCdCriterrion = Expression.eq("valueCd", state);
-		//criteria.add(domainCdCriterrion);
-		//SbiDomains devStateDomain = (SbiDomains)criteria.uniqueResult();
-		//if (devStateDomain == null){
-		//	throw new EMFUserError(EMFErrorSeverity.ERROR, 1039);
-		//}
 		Role[] roles = null;
 		roles = aMenu.getRoles();
 

@@ -29,7 +29,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                  it.eng.spago.navigation.LightNavigationManager" %>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.HashMap"%>
-<%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
 <%@page import="it.eng.spagobi.wapp.bo.Menu"%>
 <%@page import="it.eng.spagobi.wapp.services.TreeMenuModule"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
@@ -42,6 +41,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality"%>
 <%@page import="it.eng.spago.util.JavaScript"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
 
 <% 
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailMenuModule"); 
@@ -74,10 +74,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
     
-    List roles = DAOFactory.getRoleDAO().loadAllRoles();
-    String[][] sysRoles = new String[roles.size()][3];
-    for(int i=0; i<roles.size(); i++) {
-    	Role role = (Role)roles.get(i);
+    List allRoles = DAOFactory.getRoleDAO().loadAllRoles();
+    String[][] sysRoles = new String[allRoles.size()][3];
+    for(int i=0; i<allRoles.size(); i++) {
+    	Role role = (Role)allRoles.get(i);
     	sysRoles[i][0] = role.getId().toString();
     	sysRoles[i][1] = role.getName();
     	sysRoles[i][2] = role.getDescription();
@@ -160,37 +160,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      	   size="50" name="viewicons" id="" 
 	      	   value="true" <%if(menu.isViewIcons()){%> checked="checked" <%}%>/>
 		</div>
-		<div class='div_detail_label'>
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.menu.hideToolbar" />
-		</span>
-		</div>
-		<div class='div_detail_form'> 
-		<input class='portlet-form-input-field' type="checkbox" onclick="hideSliderOption(this.checked);"
-	      	   size="50" name="hideToolbar" id="" 
-	      	   value="true" <%if(menu.getHideToolbar()){%> checked="checked" <%}%>/>
-		</div>	
-		<div class='div_detail_label'>
-		<span class='<%= menu.getHideToolbar() ? "portlet-form-field-label-disabled" : "portlet-form-field-label" %>'
-					id='hideSlidersSpan' name='hideSlidersSpan' >
-			<spagobi:message key = "SBISet.menu.hideSliders" />
-		</span>
-		</div>
-		<div class='div_detail_form'> 
-		<input class='portlet-form-input-field' type="checkbox" 
-	      	   size="50" name="hideSliders" id="hideSlidersCheck" 
-	      	   value="true" <%if(menu.getHideSliders()){%> checked="checked" <%}%> <%= menu.getHideToolbar() ? "disabled" : "" %> />
-		</div>
-		<script>
-		function hideSliderOption(checked) {
-			document.getElementById('hideSlidersCheck').disabled = checked;
-			if (checked) {
-				document.getElementById('hideSlidersSpan').className = 'portlet-form-field-label-disabled';
-			} else {
-				document.getElementById('hideSlidersSpan').className = 'portlet-form-field-label';
-			}
-		}
-		</script>
 		
 		<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
@@ -546,6 +515,43 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<%-- End Snaphost history --%>
 		</div>
 		
+		<%-- Hide toolbar option --%>
+		<div class='div_detail_label'>
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBISet.menu.hideToolbar" />
+			</span>
+		</div>
+		<div class='div_detail_form'> 
+			<input class='portlet-form-input-field' type="checkbox" onclick="hideSliderOption(this.checked);"
+	      	   size="50" name="hideToolbar" id="" 
+	      	   value="true" <%if(menu.getHideToolbar()){%> checked="checked" <%}%>/>
+		</div>	
+		<%-- End hide toolbar option --%>
+		
+		<%-- Hide sliders option --%>
+		<div class='div_detail_label'>
+			<span class='<%= menu.getHideToolbar() ? "portlet-form-field-label-disabled" : "portlet-form-field-label" %>'
+					id='hideSlidersSpan' name='hideSlidersSpan' >
+				<spagobi:message key = "SBISet.menu.hideSliders" />
+			</span>
+		</div>
+		<div class='div_detail_form'> 
+			<input class='portlet-form-input-field' type="checkbox" 
+	      	   size="50" name="hideSliders" id="hideSlidersCheck" 
+	      	   value="true" <%if(menu.getHideSliders()){%> checked="checked" <%}%> <%= menu.getHideToolbar() ? "disabled" : "" %> />
+		</div>
+		<script>
+		function hideSliderOption(checked) {
+			document.getElementById('hideSlidersCheck').disabled = checked;
+			if (checked) {
+				document.getElementById('hideSlidersSpan').className = 'portlet-form-field-label-disabled';
+			} else {
+				document.getElementById('hideSlidersSpan').className = 'portlet-form-field-label';
+			}
+		}
+		</script>
+		<%-- End hide sliders option --%>
+		
 	</div>
 	
 	
@@ -746,121 +752,91 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <% 
 	// Get the roloes
-		Integer id = menu.getMenuId();
-		Role[] rolesObj = menu.getRoles();
-		
-		int iLength=rolesObj.length;
-		String[] rules = new String[iLength];
-		for(int i=0; i<rolesObj.length; i++) {
-			rules[i] = rolesObj[i].getId().toString();
-		}
+	Integer id = menu.getMenuId();
+	Role[] menuRolesObj = menu.getRoles();
+	int iLength = menuRolesObj.length;
+	String[] menuRoles = new String[iLength];
+	for(int i=0; i<menuRolesObj.length; i++) {
+		menuRoles[i] = menuRolesObj[i].getId().toString();
+	}
 
 %>	
 	
-<div class="div_functions_role_associations">
-	 		<table>
-	 				<tr>
-	 					<td class='portlet-section-header' align="left">
-							<spagobi:message key = "SBISet.detailMenu.tabCol1" />
-						</td>
-	 					<td class='portlet-section-header' align="center" width="90px">
-							<spagobi:message key = "SBISet.detailMenu.tabCol2" />
-						</td>				
-	 				</tr>
-	 			     <% 
-	 			    	boolean alternate = false;	
-	 			     	String rowClass = null;
-	 			     	MenuDAOImpl menuDao=(MenuDAOImpl)DAOFactory.getMenuDAO();
-	 			     	List children = null;
-	 			     	if (menu.getMenuId() != null) {
-	 			     		// new node
-	 			     		children=menuDao.getChildrenMenu(menu.getMenuId());
-	 			     	} else {
-	 			     		// existing node
-	 			     		children = new ArrayList();
-	 			     	}
-	 			     	for(int i=0; i<sysRoles.length; i++) {   // for all the possible roles
-	 			            String ruleId = sysRoles[i][0];
-	 			            String ruleName = sysRoles[i][1];
-	 			            String ruleDescription = sysRoles[i][2];
-	 			            DetailMenuModule detMenu = new DetailMenuModule();
-	 			            boolean isParent=false;    // current role is a parent one
-	 			            boolean is=false;			
-		            		
-	 			            for(int j=0; j<rules.length; j++) {   // set if role in iteration is one of menu's
-	 			               if(rules[j].equals(ruleId)) { is = true; }
-	 			               		}
-					// If there is a parent judge if role in iteration is a parent one
-			               	//if(!modality.equals(AdmintoolsConstants.DETAIL_INS)){
-			               		if(parentMenu!=null){
- 			               		if(detMenu.isParentRule(ruleId,parentMenu)){isParent = true;}
-			               		}
-			               		//}
-	 			            
-	 			            
-
-	 			            rowClass = (alternate) ? "portlet-section-alternate" : "portlet-section-body";
-	 			            alternate = !alternate;
-	 			            %>
-	 			            
-					 <tr onMouseOver="this.bgColor='#F5F6BE'" onMouseOut="this.bgColor='#FFFFFF'">
-					 	<td nowrap class='portlet-font'><%= ruleName + " (" + ruleDescription + ")" %></td>
-					 	
-					 	<td align="center">
-					 	    <input type="checkbox" name="ROLES" id="ROLES" value="<%=ruleId%>" 
-					 	    	<% // in insert case check is it is current, disable elsewhere
-					 	    	
-					 	    	// need this to put role that must be passed with hidden input, in the case that is in detail, has chidren and the role is checked
-					 	    	String roleToPass=null;
-					 	    	
-					 	    boolean alDisabled=false;
-					 	    	if(modality.equals(AdmintoolsConstants.DETAIL_INS)){
-					 	    		if(is==true)	out.print(" checked='checked' ");
-					 	    		else out.print(" disabled='disabled' ");				
-					 	    	} // in detail case 
-					 	    	else if(modality.equals(AdmintoolsConstants.DETAIL_MOD)){ //Case modify
-					 	    			if(is==true){	out.print(" checked='checked' ");
-					 	    			// if I am in detail case and the nmenu has children and a role is checked I must pass the role
-					 	    				if(!children.isEmpty()) {
-					 	    					roleToPass=new String(ruleId);
-					 	    				}
-					 	    			} 
-					 	    			else {
-					 	    				if (isParent==false && parentMenu!=null/*&& parentMenu.getParentId() != null*/) 
-					 	    						{out.print(" disabled='disabled' "); alDisabled=true; }
-					 	    				}
-					 	    	//if is in detail and has children cannot change roles
-								// Aniway still I have to put the roles
-					 	    	if(!alDisabled){
-					 	    		
-					 	    		if(!children.isEmpty()) {
-					 	    			out.print(" disabled='disabled' ");					 	    					
-					 	    				}
-					 	    			}
-					 	    		}
-					 	    	%> 
-					 	    />
-					 	    
-					 	    <%// if the role has to be passed as hidden input
-					 	    if(roleToPass!=null){%>
-					 	    <input type="hidden" name="ROLES" id="ROLES" value="<%=ruleId%>"/>
-					 	    <%}%>
-					 	</td>
-					
-					 </tr>	
-                     <% } %>
-                     <tr class='<%=rowClass%>'>
-                        <td align="center">&nbsp;</td>       
-                        <td align="center">
-                        	<a onclick = "selectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
-                        		<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
-                        	</a>
-					    	<a onclick = "deselectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
-					    		<img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>' />
-					    	</a>
-					    </td>
-                     </tr>
-	 		</table>
+	<div class="div_functions_role_associations">
+ 		<table>
+ 				<tr>
+ 					<td class='portlet-section-header' align="left">
+						<spagobi:message key = "SBISet.detailMenu.tabCol1" />
+					</td>
+ 					<td class='portlet-section-header' align="center" width="90px">
+						<spagobi:message key = "SBISet.detailMenu.tabCol2" />
+					</td>				
+ 				</tr>
+ 			     <% 
+ 			     	MenuDAOImpl menuDao = (MenuDAOImpl) DAOFactory.getMenuDAO();
+ 			     	for(int i=0; i < sysRoles.length; i++) {   // for all the possible roles
+ 			            String roleId = sysRoles[i][0];
+ 			            String roleName = sysRoles[i][1];
+ 			            String roleDescription = sysRoles[i][2];
+ 			            boolean isAssociatedToCurrentMenu = false;		
+						boolean isAssociatedToParentMenu = false;
+						
+ 			            for (int j=0; j<menuRoles.length; j++) {   // set if role in iteration is one of menu's
+ 			               if(menuRoles[j].equals(roleId)) { isAssociatedToCurrentMenu = true; break; }
+ 			            }
+	               		if (parentMenu != null) {
+	               			// check if the parent menu node is associated to the current role
+	               			Role[] parentRoles = parentMenu.getRoles();
+	               			for (int c = 0; c < parentRoles.length; c++) {
+	               				Role aParentRole = parentRoles[c];
+	               				if (aParentRole.getId().toString().equals(roleId)) {
+	               					isAssociatedToParentMenu = true;
+	               					break;
+	               				}
+	               			}
+		               	} else {
+		               		// the current menu node has no parent node
+		               		isAssociatedToParentMenu = true;
+		               	}
+ 			            %>
+ 			            
+				 <tr onMouseOver="this.bgColor='#F5F6BE'" onMouseOut="this.bgColor='#FFFFFF'">
+				 	<td nowrap class='portlet-font'><%= roleName + " (" + roleDescription + ")" %></td>
+				 	
+				 	<td align="center">
+				 	    <input type="checkbox" name="ROLES" id="ROLES" value="<%=roleId%>" 
+				 	    	<%
+				 	    	if (modality.equals(AdmintoolsConstants.DETAIL_INS)){
+				 	    		// when inserting a new node in the menu, by default it is associated to all parent node's roles
+				 	    		if (isAssociatedToCurrentMenu)	out.print(" checked='checked' ");
+				 	    		else out.print(" disabled='disabled' ");				
+				 	    	} else if(modality.equals(AdmintoolsConstants.DETAIL_MOD)) {
+				 	    		if (isAssociatedToCurrentMenu) {
+				 	    			out.print(" checked='checked' ");
+				 	    		} else {
+									if (!isAssociatedToParentMenu) {
+										out.print(" disabled='disabled' "); 
+									}
+				 	    		}
+				 	    	}
+				 	    	%> 
+				 	    />
+				 	</td>
+				
+				 </tr>	
+                    <% } %>
+                    <tr>
+                       <td align="center">&nbsp;</td>       
+                       <td align="center">
+                       	<a onclick = "selectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
+                       		<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+                       	</a>
+				    	<a onclick = "deselectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
+				    		<img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>' />
+				    	</a>
+				    </td>
+                    </tr>
+ 		</table>
 </div>
 
 		

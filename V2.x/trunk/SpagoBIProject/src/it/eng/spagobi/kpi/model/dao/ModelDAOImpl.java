@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
@@ -72,7 +73,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			tx = aSession.beginTransaction();
 			SbiKpiModel hibSbiKpiModel = (SbiKpiModel) aSession.load(
 					SbiKpiModel.class, id);
-			toReturn = toModelWithChildren(hibSbiKpiModel, null);
+			toReturn = toModelWithChildren(aSession, hibSbiKpiModel, null);
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Model with id "
 					+ ((id == null) ? "" : id.toString()), he);
@@ -221,7 +222,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 	 *            the SbiKpiModel to transform to a Model.
 	 * @return the Model create from the SbiKpiModel.
 	 */
-	private Model toModelWithChildren(SbiKpiModel value, Integer rootId) {
+	private Model toModelWithChildren(Session session, SbiKpiModel value, Integer rootId) {
 		logger.debug("IN");
 		Model toReturn = new Model();
 		String name = value.getKpiModelNm();
@@ -233,10 +234,17 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		String typeDescription = value.getSbiDomains().getValueDs();
 		List childrenNodes = new ArrayList();
 
-		Set children = value.getSbiKpiModels();
+//		Set children = value.getSbiKpiModels();
+		
+		Criteria critt = session.createCriteria(SbiKpiModel.class);
+		critt.add(Expression.eq("sbiKpiModel", value));
+		critt.addOrder(Order.asc("kpiModelNm"));
+		
+		List children = critt.list();
+		
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 			SbiKpiModel sbiKpichild = (SbiKpiModel) iterator.next();
-			Model child = toModelWithChildren(sbiKpichild, id);
+			Model child = toModelWithChildren(session, sbiKpichild, id);
 			childrenNodes.add(child);
 		}
 

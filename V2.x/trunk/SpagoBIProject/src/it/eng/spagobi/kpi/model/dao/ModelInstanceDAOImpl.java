@@ -28,6 +28,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
 
 public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		IModelInstanceDAO {
@@ -362,7 +363,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			tx = aSession.beginTransaction();
 			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) aSession
 					.load(SbiKpiModelInst.class, id);
-			toReturn = toModelInstanceWithChildren(hibSbiKpiModelInst, null);
+			toReturn = toModelInstanceWithChildren(aSession,hibSbiKpiModelInst, null);
 		} catch (HibernateException he) {
 			logger.error("Error while loading the ModelInstance with id "
 					+ ((id == null) ? "" : id.toString()), he);
@@ -384,7 +385,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 	}
 
-	private ModelInstance toModelInstanceWithChildren(SbiKpiModelInst value,
+	private ModelInstance toModelInstanceWithChildren(Session session, SbiKpiModelInst value,
 			Integer parentId) {
 		logger.debug("IN");
 		ModelInstance toReturn = new ModelInstance();
@@ -394,10 +395,16 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 		List childrenNodes = new ArrayList();
 
-		Set children = value.getSbiKpiModelInsts();
+//		Set children = value.getSbiKpiModelInsts();
+		
+		Criteria critt = session.createCriteria(SbiKpiModelInst.class);
+		critt.add(Expression.eq("sbiKpiModelInst", value));
+		critt.addOrder(Order.asc("name"));
+		List children = critt.list();
+		
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 			SbiKpiModelInst sbiKpichild = (SbiKpiModelInst) iterator.next();
-			ModelInstance child = toModelInstanceWithChildren(sbiKpichild, id);
+			ModelInstance child = toModelInstanceWithChildren(session,sbiKpichild, id);
 			childrenNodes.add(child);
 		}
 

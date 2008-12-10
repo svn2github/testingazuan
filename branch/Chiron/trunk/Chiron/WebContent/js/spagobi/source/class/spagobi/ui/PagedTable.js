@@ -37,7 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 qx.Class.define("spagobi.ui.PagedTable", {
   
 	//extend : qx.legacy.ui.layout.VerticalBoxLayout, //qx.legacy.ui.layout.GridLayout,//change
-	extend : qx.ui.container.Composite,
+	extend : qx.ui.core.Widget,//qx.ui.container.Composite,
 	
 	/**
 	 * Constructor to create the entity with filter bar, list and navigation bar
@@ -55,7 +55,9 @@ qx.Class.define("spagobi.ui.PagedTable", {
 	construct : function(controller, data)  {
     	   	
     	this.base(arguments);
-    	this.setLayout(new qx.ui.layout.VBox);
+    	var layout = new qx.ui.layout.VBox();
+	  	this._setLayout(layout);
+    //	this.setLayout(new qx.ui.layout.VBox);
     	  	
     	//this.setWidth("100%");// try also "auto"
 		//this.setHeight("100%");
@@ -76,10 +78,18 @@ qx.Class.define("spagobi.ui.PagedTable", {
     	//atom1.add( this._filterBar );
     	//atom1.setHorizontalAlign("center");//change 
     	//this.add( atom1 );
-    	this.add(this._filterBar);	
-    	
-    	this.add(this._table);
-    	this.add(this._navigationBar);
+    	this._add(this._filterBar);
+    	/*
+    	var scroll = new qx.ui.container.Scroll().set({
+ //   width: 300,
+    height: 150
+  });
+    	;
+	    scroll.add(this._table);//,{flex:1});
+      	this._add(scroll,{flex:1});
+      	*/
+ 	  	this._add(this._table,{flex:1});//
+    	this._add(this._navigationBar);
 			    	/*    	
 			    	var atom0 = new qx.legacy.ui.basic.Atom();
 			    	atom0.setWidth('100%'); 

@@ -1,12 +1,14 @@
 qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 
-  extend : qx.ui.container.Composite,//qx.legacy.ui.layout.VerticalBoxLayout,
+  extend : qx.ui.core.Widget,//qx.ui.container.Composite,//qx.legacy.ui.layout.VerticalBoxLayout,
   
   construct : function()  
   {
   	
 	  this.base(arguments);  
-	  this.setLayout(new qx.ui.layout.VBox);  	
+	  var layout = new qx.ui.layout.VBox();
+	  this._setLayout(layout);
+//    this.setLayout(new qx.ui.layout.VBox);  	
 //	  this.setWidth("100%");
 //	  this.setHeight("100%");
 	  
@@ -22,7 +24,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 								        		mandatory: true	
 								        	});
      this.setUserData('label',this._textfield1);
-        	
+      	
 	 this._textfield2 = this.createTextField({
 								        		type: 'text',
 								        		dataIndex: 'name',
@@ -45,6 +47,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 	  
 	  this._table = this.CreateTableWithCheckbox();
 	  this.setUserData('table',this._table);
+	  
   },
   
   members : 
@@ -100,7 +103,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 		  formBarArray[5].setUserData('clearAll',clearAllButton);
 		  
 		  this.setUserData('toolBar', formBarArray);
-		  this.add(formBar);
+		  this._add(formBar);
 		//  this.setUserData('toolBar', tb);
 		  // Button event listeners in parent class - FunctionalClassDummy.js
      },
@@ -109,7 +112,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
   		
   		  var textfield = spagobi.commons.WidgetUtils.createInputTextField(config);
   		  //textfield.setTop(20);
-  		  this.add(textfield);
+  		  this._add(textfield);
   		  
   		  return textfield;
    	 },
@@ -117,7 +120,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
    	 	  createDummyLabel: function(){
    	 	  	var space = spagobi.commons.WidgetUtils.createLabel(" ");
   		  //textfield.setTop(20);
-  		  this.add(space);
+  		  this._add(space);
    	 	  	
    	 },
    	 	  
@@ -137,8 +140,8 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
 	      */
 	      
 	    //  newTable.setWidth('100%');
-    	  newTable.setHeight(343);
-    	  this.add(newTable);
+    	//  newTable.setHeight(343);
+    	  this._add(newTable,{flex:1});
     	  
     	  //alert(newTable.getDataRowRenderer());    	  
     	  return newTable;

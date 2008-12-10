@@ -56,7 +56,9 @@ qx.Class.define("spagobi.ui.Tree", {
 		     this.base(arguments);
 		     this._root = new qx.ui.tree.TreeFolder(config.root);
 		     this._root.setOpen(true);
+		//     this.setHideRoot(true);
 		     this.setRoot(this._root);
+		     this.setWidth(200);
 		    // this.setUserData(config.root, this._root);//this.setUserData() // check for 'node'!!
 			//  alert(this.getUserData(config.root)); 
 		     var dummyatom = new qx.ui.basic.Atom();

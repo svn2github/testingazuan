@@ -84,8 +84,9 @@ qx.Class.define("spagobi.ui.Table",
       }
     });
 
-   this.set({
-          height: 150
+  this.set({
+     // 	flex: 1
+          height: 50 
       });
    
 
@@ -93,7 +94,7 @@ qx.Class.define("spagobi.ui.Table",
     // Configure columns
     var columnModel = this.getTableColumnModel();
     var resizeBehavior = columnModel.getBehavior();
-    resizeBehavior
+    
 	
 	
    if (data.ID != undefined){

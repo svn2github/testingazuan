@@ -153,6 +153,7 @@ public class DocumentCompositionUtils {
 				    value = lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont));
 		    	}
 			    if (value.equals("%")) value = "%25";
+			    else if (value.equals(";%")) value = ";%25";
 			    if (value != null && !value.equals(""))
 			    	paramUrl += "&" + key + "=" + value;
 			    cont++;

@@ -163,6 +163,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			 <%=scriptDiv%>
 			 <%=scriptViewAll%>
 			 <%=scriptHideAll%>
+			 <script>
+			 function showLegendTooltip(thresholds){
+			 		 alert(thresholds[i].id);
+					 element =  document.getElementById(thresholds[i].id);
+					 element.innerHtml = '<table><tr><td>Color</td><td>Min</td><td>Max</td><td>Label</td></tr>';
+			 	for (i in thresholds)
+					{	
+					   element.innerHtml += '<tr></td style="background-color:'+thresholds[i].color+'"><td><td>'+thresholds[i].min ;
+					   element.innerHtml += '</td><td>'+thresholds[i].max+'</td><td>'+ thresholds[i].label+'</td></tr>';					   
+					}
+					alert(element.innerHtml);
+					element.style.visible = true;
+			 }
+			 </script>
 		<%}%>		
 	<%@ include file="/jsp/commons/footer.jsp"%>		
 

@@ -11,6 +11,7 @@ public class KpiLine {
 	String modelNodeName = null;
 	Boolean alarm = false ; //if the kpi is under alarm control
 	KpiValue value = null;
+	String thresholdsJsArray = "";
 	Color semaphorColor = null;
 	ChartImpl chartBullet = null;	
 	List children = null;//List ok kpiLineChildren
@@ -21,10 +22,11 @@ public class KpiLine {
 		this.children = new ArrayList();
 		this.documents = new ArrayList();
 	}
-	public KpiLine(String modelNodeName, Boolean alarm, KpiValue value,
+	public KpiLine(String modelNodeName,String arrayJs, Boolean alarm, KpiValue value,
 			Color semaphorColor, ChartImpl chartBullet, List children,
 			List documents) {
 		super();
+		this.thresholdsJsArray = arrayJs;
 		this.modelNodeName = modelNodeName;
 		this.alarm = alarm;
 		this.value = value;
@@ -75,5 +77,11 @@ public class KpiLine {
 	}
 	public void setDocuments(List documents) {
 		this.documents = documents;
+	}
+	public String getThresholdsJsArray() {
+		return thresholdsJsArray;
+	}
+	public void setThresholdsJsArray(String thresholdsJsArray) {
+		this.thresholdsJsArray = thresholdsJsArray;
 	}	
 }

@@ -383,9 +383,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 			sbi.configureChart(pars);
 			logger.debug("Config parameters setted into the chart");
-			sbi.setThresholds(thresholds);
+			String thresholdsJsArray = sbi.setThresholds(thresholds);
+			if(thresholdsJsArray!=null){
+				line.setThresholdsJsArray(thresholdsJsArray);
+			}			
 			logger.debug("Thresholds setted for the chart");
-			line.setChartBullet(sbi);			
+			line.setChartBullet(sbi);	
+			
 		}
 		if(display_semaphore){
 			Color semaphorColor = null;

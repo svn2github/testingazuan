@@ -126,7 +126,7 @@ public class SimpleBar extends BarCharts{
 
 		// get a reference to the plot for further customisation...
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
-		plot.setBackgroundPaint(Color.lightGray);
+		plot.setBackgroundPaint(Color.white);
 		plot.setDomainGridlinePaint(Color.white);
 		plot.setDomainGridlinesVisible(true);
 		plot.setRangeGridlinePaint(Color.white);

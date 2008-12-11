@@ -42,10 +42,8 @@ public class BulletGraph  extends ChartImpl{
 		logger.debug("OUT");
 	}
 	
-	public void setThresholds(List thresholds) {
-		logger.debug("IN");
-		super.setThresholds(thresholds);
-		logger.debug("OUT");
+	public String setThresholds(List thresholds) {
+		return super.setThresholds(thresholds);
 	}
 	
 	

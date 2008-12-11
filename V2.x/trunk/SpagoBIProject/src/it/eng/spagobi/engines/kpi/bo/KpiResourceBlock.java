@@ -10,6 +10,7 @@ import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -81,6 +82,12 @@ public class KpiResourceBlock {
 		String modelName = line.getModelNodeName();
 		Boolean alarm = line.getAlarm();
 		KpiValue kpiVal = line.getValue();
+		String thresholdJsArray = line.getThresholdsJsArray();
+		if(thresholdJsArray==null){
+			thresholdJsArray ="";
+		}
+		List thresholds = kpiVal.getThresholds();
+		
 		String value = kpiVal.getValue();
 		Double val = new Double(value);
 		float lo =  val.floatValue();
@@ -134,7 +141,7 @@ public class KpiResourceBlock {
 			}
 			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 			"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&userid=<%=userId%>&path="+path+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
-			_htmlStream.append("		<td width='26%' style=\"align:left;vertical-align:middle;\"><div><img style=\"align:left;vertical-align:middle;\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
+			_htmlStream.append("		<td width='26%' style=\"align:left;vertical-align:middle;\"><div><img style=\"align:left;vertical-align:middle;\" onmouseover=\"showLegendTooltip("+thresholdJsArray+")\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
 			
 		}else{
 			_htmlStream.append("		<td width='26%' style=\"align:left;vertical-align:middle;\"><div>&nbsp; &nbsp;</div></td>\n");

@@ -74,10 +74,8 @@ public class SimpleDial extends ChartImpl {
 		logger.debug("OUT");
 	}
 	
-	public void setThresholds(List thresholds) {
-		logger.info("IN");
-		super.setThresholds(thresholds);
-		logger.debug("OUT");
+	public String setThresholds(List thresholds) {
+		return super.setThresholds(thresholds);
 	}
 	
 	/**

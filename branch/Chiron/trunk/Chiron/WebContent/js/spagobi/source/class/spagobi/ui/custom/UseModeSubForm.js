@@ -87,7 +87,7 @@ qx.Class.define("spagobi.ui.custom.UseModeSubForm", {
                dataIndex: 'mychecklist',
                checked: false,
                text: 'Roles',
-               columns: 5,
+               columns: 6,
                items: ["aaaa","bbbb","cccc","dddd","eeee","ffff","gggg","hhhh","iiii","jjjj"]
            }, {
                type: 'check',

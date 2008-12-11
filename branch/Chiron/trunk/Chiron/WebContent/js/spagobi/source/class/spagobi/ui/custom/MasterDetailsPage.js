@@ -124,13 +124,13 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		form = new spagobi.ui.custom.DocumentConfigurationForm(); 
 	} else if(type == 'link1') {									
 		this.records = spagobi.app.data.DataService.loadlink1Records();
-		form = new spagobi.ui.custom.Link1DummyForm(); 
+		//form = new spagobi.ui.custom.Link1DummyForm(); 
 	} else if(type == 'link2') {									
 		this.records = spagobi.app.data.DataService.loadlink2Records();
-		form = new spagobi.ui.custom.Link2DummyForm(); 
+		//form = new spagobi.ui.custom.Link2DummyForm(); 
 	} else if(type == 'link3') {									
 		this.records = spagobi.app.data.DataService.loadlink3Records();
-		form = new spagobi.ui.custom.Link3DummyForm(); 
+		//form = new spagobi.ui.custom.Link3DummyForm(); 
 	} else if(type === 'distributionList') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
@@ -154,19 +154,10 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type == 'roles') {									
 		this.records = spagobi.app.data.DataService.loadRolesRecords();
-		form = new spagobi.ui.custom.RolesDummyForm(); 
+		//form = new spagobi.ui.custom.RolesDummyForm(); 
 	} 
 	
-	//For Roles, lin1, link2 and link3, do as :
-	//this._container1.show();
-    //this._container2.exclude();
-	/*
-	 if(type == 'roles' || type == 'link1' || type == 'link2' || type == 'link3'){
-	 	//containerTop.setLayout(new qx.ui.layout.Grow);
-	 	containerTop.show();
-	 	containerBottom.exclude();
-	 }
-	 */
+	
 	
 		this.listPage = new spagobi.ui.PagedTable(this,this.records); 
 	   	
@@ -178,6 +169,8 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	   	var Vbox = new qx.ui.layout.VBox();
 	   	containerBottom._setLayout(Vbox);
 	   	
+	   	if(type != 'roles' && type != 'link1' &&type != 'link2' &&type != 'link3'){ //
+	   		
 	   	//var button = new qx.ui.form.Button("Toggle Splitpane Orientation");
 	   	var formBar = new qx.ui.container.Composite(new qx.ui.layout.HBox);
 	   	//var formBarManager = new qx.ui.form.RadioGroup(null);
@@ -216,8 +209,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	    var scroll = new qx.ui.container.Scroll();
 	     scroll.add(containerBottom);
 	    this.add(scroll,1);
-//		this.add(pane,{edge: "west",width: "100%"});
-		
+	   	}
+		//this.add(pane,{edge: "west",width: "100%"});
+	   	
 		/* Don't Delete 
 	    //testing for parameter form's getData() function
 	    if(type ==='parameters'){

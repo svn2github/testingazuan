@@ -209,10 +209,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 	    //	alert("2");
        		//	var selectionManager = this._tree.getManager();
        			var item = this._tree.getSelectedItem();
-       		//	alert(item.data.label);
-       		//	alert("Save Button getting enabled now");
        			this._saveButton.setEnabled(true);
-       		//	alert("Delete Button getting enabled now");
        			this._deleteButton.setEnabled(true);
        			
        			if(item instanceof qx.ui.tree.TreeFile){
@@ -235,31 +232,21 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
      				//} 
        			}	// end of file nodes
        			else{											// If not Files (i.e. if Folders)
-       			//		alert("Create Button getting enabled now");
-       						this._createButton.setEnabled(true);
-       			//			alert("Save Button getting enabled now");
-	        			this._saveButton.setEnabled(true);
-	        	//		alert("Delete Button getting enabled now");
-  						this._deleteButton.setEnabled(true);
-  					//	alert(this._tree.getPreviousSiblingOf(item));
-       					if(this._tree.getPreviousSiblingOf(item) == null){		// first child cannot be moved up
+       					
+       					this._createButton.setEnabled(true);
+       					if(this._tree.getPreviousSibling(item) == null){		// first child cannot be moved up
        						
-       			//				alert("Move Up Button getting enabled now");
-       							this._moveUpButton.setEnabled(false);
+       						this._moveUpButton.setEnabled(false);
        					}
        					else{
-       				//		alert("Move Down Button getting enabled now");
        						this._moveUpButton.setEnabled(true);
        					}
        			
-       					if(this._tree.getNextSiblingOf(item) == null){	// last child cannot be moved down
-       							alert(this._tree.getNextSiblingOf(item));
-       					//		alert("Move Up Button getting enabled now");
-       							this._moveDownButton.setEnabled(false);   
+       					//alert(this._tree.getNextSiblingOf(item).getLabel());
+       					if(this._tree.getNextSibling(item) == null){	// last child cannot be moved down
+       						this._moveDownButton.setEnabled(false);   
        					}
        					else{
-       					//	alert("Move Down Button getting enabled now");
-       					alert(this._tree.getNextSiblingOf(item));
        						this._moveDownButton.setEnabled(true); 
        					}	
    				}	// end of folder nodes

@@ -411,7 +411,7 @@ qx.Class.define("spagobi.ui.Tree", {
                  	var treeNode;
                  	
                  	if(config.checkBox != undefined){	// to check if its a standard node with just icon and name
-                 										// ... or specia node with a icon, checkbox and name 
+                 										// ... or special node with a icon, checkbox and name 
                  	//	alert("1");
                  		treeRowStructure = new qx.ui.tree.TreeFolder();                 
                  		treeRowStructure.addIndent();
@@ -452,7 +452,7 @@ qx.Class.define("spagobi.ui.Tree", {
                   	}                                                  
                   	
                   	
-                  	if(config.parent == this){ 
+                  	if(config.parent == this){
                   	//	alert("9");
                   		this._root.add(treeNode);
                   		                 		
@@ -577,32 +577,25 @@ qx.Class.define("spagobi.ui.Tree", {
                   */
                  moveUpNode: function(){
                  	
-            //     	var selectionManager = this.getManager();
-	               	var item = this.getSelectedItem();
-	               	var previousItem = this.getPreviousSiblingOf(item);
-	               	var parentItem = item.getParentChildrenContainer();
-	               	
-	               	//parentItem.remove(item);
-	               	parentItem.addBefore(item,previousItem);
-	               	
-	               	//item.setSelected(true);// what is the alternative for setSelected
-	              // 	this.selectItem(item);// Not Sure what i am doing!!
-	              item.setVisibility("visible");
+		              var item = this.getSelectedItem();
+		              var previousItem = this.getPreviousSibling(item);
+		              var parentItem = item.getParent();
+		              parentItem.remove(item);
+		              parentItem.addBefore(item,previousItem);
+		              item.setVisibility("visible");
                  },
                  
                  /**
                   * 
                   */
                  moveDownNode: function(){
-             //    	var selectionManager = this.getManager();
+             
 	               	var item = this.getSelectedItem();
-	               	var nextItem = this.getNextSiblingOf(item);
-	               	var parentItem = item.getParentChildrenContainer();
-	               	
-	               	//parentItem.remove(item);
-	               	parentItem.addAfter(item,nextItem);
-	               	
-	               	item.setVisibility("visible");//item.setSelected(true);
+		            var nextItem = this.getNextSibling(item);
+		            var parentItem = item.getParent();
+		            parentItem.remove(item);
+		            parentItem.addAfter(item,nextItem);
+		            item.setVisibility("visible");
                  },
                  
                  /*
@@ -625,6 +618,54 @@ qx.Class.define("spagobi.ui.Tree", {
                  	
                  	info.tree = this;
                  	return info;
+                 },
+                 
+                 getPreviousSibling: function(treeItem){
+                 	var parent = treeItem.getParent();
+				      if (!parent) {
+				        return null;
+				      }
+					/*	
+				      if (this.getHideRoot())
+				      {
+				        if (parent == this.getRoot())
+				        {
+				          if (parent.getChildren()[0] == treeItem) {
+				            return null;
+				          }
+				        }
+				      }
+				      else
+				      {
+				        if (treeItem == this.getRoot()) {
+				          return null;
+				        }
+				      }
+					*/
+				      var parentChildren = parent.getChildren();
+				      var index = parentChildren.indexOf(treeItem);
+				      if (index > 0){
+				        return parentChildren[index-1];
+				      }
+				      else{
+				        return null;
+				      }
+                 },
+                 
+                 getNextSibling: function(treeItem){
+                 	var parent = treeItem.getParent();
+			        if (!parent) {
+			          return null;
+			        }
+			
+			        var parentChildren = parent.getChildren();
+			        var index = parentChildren.indexOf(treeItem);
+			        if (index > -1 && index < parentChildren.length-1) {
+			          return parentChildren[index+1];
+			        }
+			        else{
+			        	return null;
+			        }
                  }
           }
 });

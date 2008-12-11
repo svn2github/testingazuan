@@ -5,6 +5,7 @@
  <ACTION name="GET_PNG" class="it.eng.spagobi.engines.chart.service.GetPngAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+ 
   <!-- <ACTION name="CREATE_CHART" class="it.eng.spagobi.engines.chart.service.CreateChart" scope="REQUEST">
  	<CONFIG/>
  </ACTION>-->

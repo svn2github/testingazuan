@@ -34,6 +34,8 @@ package it.eng.spagobi.engines.chart.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 
 import java.io.File;
@@ -56,14 +58,20 @@ public class GetPngAction extends AbstractHttpAction {
 	throws Exception {
 		logger.debug("IN");
 		freezeHttpResponse();
+		if(!(this.getErrorHandler().isOKBySeverity(EMFErrorSeverity.ERROR))){
+			logger.error("There are errors into the error handler!!!");
+			return;
+		}
 
 		HttpServletResponse response = getHttpResponse();
 		ServletOutputStream out = response.getOutputStream();
 		response.setContentType("image/gif");
 
 		HttpServletRequest req = getHttpRequest();
-		String path = (String)serviceRequest.getAttribute("path");
+		String filePath = (String)serviceRequest.getAttribute("path");
 
+		String dir=System.getProperty("java.io.tmpdir");
+		String path=dir+"/"+filePath+".png";
 
 		FileInputStream fis=new FileInputStream(path);
 

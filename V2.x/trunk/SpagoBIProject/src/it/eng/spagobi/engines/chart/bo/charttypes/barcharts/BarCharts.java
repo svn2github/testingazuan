@@ -72,6 +72,17 @@ public class BarCharts extends ChartImpl {
 	StyleLabel styleXaxesLabels;
 	StyleLabel styleYaxesLabels;
 	StyleLabel styleValueLabels;
+	
+	// three booleans that read from template if has to be filter series, cats groups and categories with slider
+	boolean filterCatGroups=true;
+	boolean filterSeries=true;
+	boolean filterCategories=true;
+
+	
+	
+	HashMap catGroups=null; // only if filterCatGroups is set to true, trace cat_name /cat_group_name
+	Vector currentCatGroups=null;
+	Vector catGroupNames=null;
 
 
 
@@ -98,10 +109,17 @@ public class BarCharts extends ChartImpl {
 		// run all categories (one for each row)
 		categoriesNumber=0;
 		seriesNames=new Vector();
+		catGroupNames=new Vector();
 		//categories.put(new Integer(0), "All Categories");
 
+		if(filterCatGroups==true){
+			catGroups=new HashMap();
+		}
+		
+		
 		boolean first=true;
 
+		// run all dataset rows
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
@@ -117,28 +135,47 @@ public class BarCharts extends ChartImpl {
 			HashMap series=new HashMap();
 
 			String catValue="";
+			String cat_group_name="";
 
 			String name="";
 			String value="";
+			
 
-			//run all the attributes, to define series!
+
+			
+			//run all the attributes in a row, to define series pertaining to a category!
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
 				name=new String(object.getKey());
 				value=new String((String)object.getValue());
+				
+				// the one targeted x is the category name
 				if(name.equalsIgnoreCase("x"))
 				{
 					catValue=value;
 					categoriesNumber=categoriesNumber+1;
 					categories.put(new Integer(categoriesNumber),value);
-
-
+				}
+				else if(name.equalsIgnoreCase("cat_group")){
+					cat_group_name=value;
 				}
 				else {
+					// map containing the series
 					series.put(name, value);
 				}
+				
+
 			}
+			// if a category group was found add it
+			if(!cat_group_name.equalsIgnoreCase("") && !catValue.equalsIgnoreCase("") && catGroups!=null)
+			{	
+				catGroups.put(catValue, cat_group_name);
+				if(!(catGroupNames.contains(cat_group_name))){
+				catGroupNames.add(cat_group_name);}
+			}
+			
+			// add series to dataset only if not hidden
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
 
@@ -152,6 +189,7 @@ public class BarCharts extends ChartImpl {
 			}
 
 		}
+		
 		logger.debug("OUT");
 		DatasetMap datasets=new DatasetMap();
 		datasets.addDataset("1",dataset);
@@ -252,7 +290,39 @@ public class BarCharts extends ChartImpl {
 		{
 			numberCatVisualization=new Integer(1);
 		}
+		
+		if(confParameters.get("filter_cat_groups")!=null){		
+			String filterCatGroupsS=(String)confParameters.get("filter_cat_groups");
+			if(filterCatGroupsS.equalsIgnoreCase("false"))filterCatGroups=false;
+			else filterCatGroups=true;
+		}
+		else
+		{
+			filterCatGroups=true;
+			}
+		
+		if(confParameters.get("filter_series")!=null){		
+			String filterSeriesS=(String)confParameters.get("filter_series");
+			if(filterSeriesS.equalsIgnoreCase("false"))filterSeries=false;
+			else filterSeries=true;
+		}
+		else
+		{
+			filterSeries=true;
+			}
+		
+		if(confParameters.get("filter_categories")!=null){		
+			String filterCategoriesS=(String)confParameters.get("filter_categories");
+			if(filterCategoriesS.equalsIgnoreCase("false"))filterCategories=false;
+			else filterCategories=true;
+		}
+		else
+		{
+			filterCategories=true;
+			}
 
+		
+		
 		//reading series colors if present
 		SourceBean colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
 		if(colors!=null){
@@ -506,6 +576,35 @@ public class BarCharts extends ChartImpl {
 	}
 
 
+	public Dataset filterDatasetCatGroups(Dataset dataset, Vector groups) {
+		logger.debug("IN");
+		DefaultCategoryDataset catDataset=(DefaultCategoryDataset)dataset;
+
+		//keeps track of wich series has to be shown
+		currentCatGroups=groups;
+		String catGroup="";
+		//List rowKeys=new Vector();
+
+		//List rowKeys=new Vector(catDataset.getRowKeys());
+		List colKeys=new Vector(catDataset.getColumnKeys());
+		
+		for (Iterator iterator = colKeys.iterator(); iterator.hasNext();) {
+			String col = (String) iterator.next();
+			// iterate on cols, get their group and see if it has to be kept
+			catGroup=(String)catGroups.get(col);
+			if(!(groups.contains(catGroup))){ 
+				catDataset.removeColumn(col);	
+				catGroupNames.remove(col);
+			}			
+		}
+
+		logger.debug("OUT");
+		return catDataset;
+
+	}
+
+	
+	
 
 
 	/**
@@ -647,6 +746,66 @@ public class BarCharts extends ChartImpl {
 
 	public void setSeriesNames(Vector seriesNames) {
 		this.seriesNames = seriesNames;
+	}
+
+
+	public boolean isFilterCatGroups() {
+		return filterCatGroups;
+	}
+
+
+	public void setFilterCatGroups(boolean filterCatGroups) {
+		this.filterCatGroups = filterCatGroups;
+	}
+
+
+	public HashMap getCatGroups() {
+		return catGroups;
+	}
+
+
+	public void setCatGroups(HashMap catGroups) {
+		this.catGroups = catGroups;
+	}
+
+
+	public Vector getCurrentCatGroups() {
+		return currentCatGroups;
+	}
+
+
+	public void setCurrentCatGroups(Vector currentCatGroups) {
+		this.currentCatGroups = currentCatGroups;
+	}
+
+
+	public Vector getCatGroupNames() {
+		return catGroupNames;
+	}
+
+
+	public void setCatGroupNames(Vector catGroupNames) {
+		this.catGroupNames = catGroupNames;
+	}
+
+
+	public boolean isFilterSeries() {
+		return filterSeries;
+	}
+
+
+	public void setFilterSeries(boolean filterSeries) {
+		this.filterSeries = filterSeries;
+	}
+
+
+	public boolean isFilterCategories() {
+		return filterCategories;
+	}
+
+
+	public void setFilterCategories(boolean filterCategories) {
+		this.filterCategories = filterCategories;
 	}
 
 

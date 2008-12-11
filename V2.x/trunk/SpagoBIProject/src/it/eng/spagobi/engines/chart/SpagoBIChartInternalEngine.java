@@ -281,9 +281,10 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			// create the chart
 
 
-			//in the re-drawing case in document-composition check if serie or categories have been set
+			//in the re-drawing case in document-composition check if serie or categories or cat_group have been set
 			String serie=null;
 			String category=null;
+			String catGroup=null;
 			if(serviceRequest.getAttribute("serie")!=null)
 			{
 				List series=(List)serviceRequest.getAttributeAsList("serie");
@@ -292,11 +293,25 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 					response.setAttribute("serie",serie);
 				}
 			}
+			
+			if(serviceRequest.getAttribute("cat_group")!=null)
+			{
+				List catGroups=(List)serviceRequest.getAttributeAsList("cat_group");
+				for(Iterator it=catGroups.iterator();it.hasNext();){
+					catGroup=(String)it.next();
+					response.setAttribute("cat_group",catGroup);
+				}
+			}
+			
 			if(serviceRequest.getAttribute("category")!=null)
 			{category=(String)serviceRequest.getAttribute("category");
 			response.setAttribute("category",category);
 			}
 
+			
+			
+			
+			
 			try{
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");

@@ -89,6 +89,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	//String valueSlider="1";
 	String refreshUrl = "";
 	
+	boolean filterCatGroup=false;
+	boolean filterSeries=false;
+	boolean filterCategories=false;
+	
+	Vector seriesNames=null;
+	Vector catGroupsNames=null;
+	
 	//HashMap categories=null;
 	//Vector selectedSeries=null;  // series currently selected
 	//List series=null;  // the series in the complete dataset
@@ -163,6 +170,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		if(sbi.getSubtype().equalsIgnoreCase("simplebar") || sbi.getSubtype().equalsIgnoreCase("linkableBar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar")){
 // returns a new datasets map filtered
 			copyDatasets=datasetMap.filteringSimpleBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
+			filterCatGroup=((BarCharts)sbi).isFilterCatGroups();
 		}
 		else if(sbi.getSubtype().equalsIgnoreCase("overlaid_barline") || sbi.getSubtype().equalsIgnoreCase("overlaid_stackedbarline")){
 			copyDatasets=datasetMap.filteringMultiDatasetBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
@@ -250,7 +258,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
 		//Saving image on a temporary file
+		
+		
 		String dir=System.getProperty("java.io.tmpdir");
+		String path_param=executionId;
 		String path=dir+"/"+executionId+".png";
 		java.io.File file1 = new java.io.File(path);
 		ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
@@ -279,7 +290,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		   	
 			//String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
 			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
-					"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE";
+					"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path_param+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE";
 			
 			//add the serie parameter
 		if(datasetMap.getSelectedSeries().contains("allseries")){
@@ -291,7 +302,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String serieS=(String)iterator.next();
 				refreshUrlCategory=refreshUrlCategory+"&serie="+serieS;
 				}	
+		} 
+			
+		if(datasetMap.getSelectedCatGroups().contains("allgroups")){
+			refreshUrlCategory=refreshUrl+"&cat_group=allgroups";
+				}
+		else{
+			refreshUrlCategory=refreshUrl;
+			for(Iterator iterator = datasetMap.getSelectedCatGroups().iterator(); iterator.hasNext();){
+				String groupS=(String)iterator.next();
+				refreshUrlCategory=refreshUrlCategory+"&cat_group="+groupS;
+				}	
 		}  	
+			
+			
 	%>
 	
 	
@@ -299,9 +323,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	
 	<%
-    boolean limitSeries=false;
+
 	if(sbi.isFilter() && (sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART"))){
-		limitSeries=true;
+		if(((BarCharts)sbi).isFilterSeries()==true)filterSeries=true;
 	}
 	
 	boolean showSlider = false;
@@ -402,8 +426,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
     </td>
   </tr>
-  <tr>
-   <td>   
+ 
     
         
 
@@ -412,9 +435,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// form to limit the series if it is a barchart
 		
-		if(limitSeries){
+	if(filterSeries || filterCatGroup){
 			//sets the URL
-			limitSeries=true;
 			if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
 			{
 				refreshUrlPars.put("OBJECT_ID",documentid);
@@ -424,6 +446,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				refreshUrlSerie=refreshUrl;
 			}
 			%>
+<!--  <tr>
+   <td>  
 		<table  align="left">
 		<div align="center">
 		<tr>
@@ -437,81 +461,168 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		</table>
 
-	</td>
-  </tr>
-  <tr>
+		</td>
+	  </tr>-->
+ 	 <tr>
   	<td>
-<!--<div>-->
-	   <table id="limitseries" align="left">
+
+
+	   <table id="filterSeriesOrCatGroups" align="left">
+	   
+	   <!-- SELECT FORM TITLES -->
 	   <tr>
 		<td> 
 		<div align="center">
 			<div class='div_detail_form'>
 				<span class='portlet-form-field-label'>
-				Select from <%=datasetMap.getSerTitle()%>
+				Select among 
+				<%if(filterSeries==true){
+				String tlabel=((datasetMap.getSerTitle()!=null && !datasetMap.getSerTitle().equalsIgnoreCase("")) ? datasetMap.getSerTitle() : "series");
+				%>
+				<%=tlabel%>
+				<%}%>
+				<%if(filterSeries==true && filterCatGroup==true){%> and among <%}%>
+				<%if(filterCatGroup==true){%>categories groups<%}%>
 				</span>
 			</div>
 		 </div> 	
 		</td>
 		</tr>
-		<tr>
-		<td> 
+	<!-- CLOSE SELECT FORM TITLES -->
+
 		
-		<form name="serie" action="<%=refreshUrl%>" method="POST" >
+		<!-- START FORM  -->
+	<form id='serieform' name="serie" action="<%=refreshUrl%>" method="POST" >
 		
 		<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE"/>	
 		<% 	
 		refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
 		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
 		{
-		String name = (String) iterator.next();
-		String value=(refreshUrlPars.get(name)).toString();
+				String name = (String) iterator.next();
+				String value=(refreshUrlPars.get(name)).toString();
 		%>		
-		<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
-		
-		<%}%>
+					<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
+			<%}%>
+	 
+	 <!--  ROW FOR SELECT THE SERIES-->
+	 <%if(filterSeries==true){ %>
+	 <tr>
+		<td> 
 		<div align="center" class='div_detail_form'>
-		<%if(datasetMap.getSelectedSeries().contains("allseries")){ %>
-				<input id="serie" name="serie" value="allseries" 
-				type="checkbox" checked='checked' />
-				<span>View all</span>
+		<%				
+		String tlab=((datasetMap.getSerTitle()!=null && !datasetMap.getSerTitle().equalsIgnoreCase("")) ? datasetMap.getSerTitle() : "series");
+ 		%>
+ 		
+  		
+ 		
+
 		
-		
-		<%} else {%>	
-				<input id="serie" name="serie" value="allseries" 
-				type="checkbox" />
-				<span>View all</span>
-	
-		<%} %>
 		
 		<%     	
 		// for each possible serie 
+		seriesNames=new Vector();
 		if(datasetMap.getSeries()!=null){	
 		for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
 		String ser = (String) iterator.next(); 
-		if(datasetMap.getSelectedSeries().contains(ser)){
+		// insert the serie names for evidencing the series
+		seriesNames.add(ser);
+		if(datasetMap.getSelectedSeries().contains(ser) || datasetMap.getSelectedSeries().contains("allseries")){
 		%>
 	
-				<input id="serie" name="serie" value="<%=ser%>" 
+				<input id="serie_<%=ser%>" name="serie" value="<%=ser%>" 
 				type="checkbox" checked='checked' />
 				<span><%=ser%></span>
 		
 		<%}else{ %>
-		
-	
-				<input id="serie" name="serie" value="<%=ser%>" 
+			
+				<input id="serie_<%=ser%>" name="serie" value="<%=ser%>" 
 				type="checkbox" />
 				<span><%=ser%></span>
 		<%} 
-		 }
-		}%>
+		 }%>
+				  <!-- PROVA -->
+			  	   		<a onclick = "enableSerie()" title='<spagobi:message 
+			  	   		key = "SBIDev.paramUse.checkAllFreeRoles" />' 
+			  	   		alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
+							<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+						</a>
 		
-		<input type="submit" value="Select"/>
+		<%
+		}%>
 		</div>
+		</td>
+	</tr>
+	<%}%>
+	 <!--  ROW FOR SELECT THE SERIES-->
+
+	<!--  ROW FOR SELECT THE CATS GROUPS-->
+	<%if(filterCatGroup==true){ 
+		catGroupsNames=new Vector();// filter cat group%>	
+		<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE"/>	
+		
+		<% 	
+		//refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
+		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
+		{
+		String name = (String) iterator.next();
+		String value=(refreshUrlPars.get(name)).toString();
+		%>		
+		<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
+		<%}%>
+
+		<tr>
+		<td>
+		<div align="center" class='div_detail_form'>
+	
+		<%     	
+		// for each possible category group
+		if(((BarCharts)sbi).getCatGroupNames()!=null){	
+		for (Iterator iterator = ((BarCharts)sbi).getCatGroupNames().iterator(); iterator.hasNext();) {
+		String group = (String) iterator.next(); 
+		catGroupsNames.add(group);
+		if(datasetMap.getSelectedCatGroups().contains(group) || datasetMap.getSelectedCatGroups().contains("allgroups")){
+		%>
+				<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" 
+				type="checkbox" checked='checked' />
+				<span><%=group%></span>
+		
+		<%}else{ %>
+				<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" 
+				type="checkbox" />
+				<span><%=group%></span>
+		<%} 
+		 }%>
+			<a onclick = "enableGroups()" title='<spagobi:message 
+			key = "Select all groups" />' 
+			alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
+				<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+			</a>
+		
+		
+		
+	<%	}%>
+		</div>
+		</td>
+		</tr>
+		<%} //close filter cat group case%>
+		<!--  CLOSE ROW FOR SELECT THE CATS GROUPS-->
+		<tr>
+		<td>
+			<div align="center" class='div_detail_form'>
+			<input type="submit" value="Select"/>
+			</div>
+		</td>
+		</tr>
+
+
 		</form>
+	<!--CLOSE FORM  -->
+		
+	
+		
 		</div>
-		<!-- </div>
-		</div>-->
+
 		</td>
 		</tr>
 		</table>
@@ -603,6 +714,45 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		return finalUrl;
 	
 }
+
+
+var checkableSeries = new Array(); 
+<% int i=0;
+	for (Iterator iterator = seriesNames.iterator(); iterator.hasNext();) {
+		String ser = (String) iterator.next();
+	  	%>
+		checkableSeries[<%=i%>]='<%=ser%>';
+	  	<%
+	  	i++;
+	  }
+%>
+
+	function enableSerie() {	
+		for (x=0;x<checkableSeries.length;x=x+1)  {
+		ser = checkableSeries[x];
+		but=document.getElementById('serie_'+ser);	
+		but.checked = true;
+	}
+}	
+	
+	var checkableGroups = new Array(); 
+<% int l=0;
+	for (Iterator iterator = catGroupsNames.iterator(); iterator.hasNext();) {
+		String cat = (String) iterator.next();
+	  	%>
+		checkableGroups[<%=l%>]='<%=cat%>';
+	  	<%
+	  	l++;
+	  }
+%>
+
+	function enableGroups() {	
+		for (x=0;x<checkableGroups.length;x=x+1)  {
+		cat = checkableGroups[x];
+		but=document.getElementById('cat_group_'+cat);	
+		but.checked = true;
+	}
+}	
 		
 
 	

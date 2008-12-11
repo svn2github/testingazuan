@@ -34,6 +34,7 @@ public class DatasetMap {
 	String valueSlider="1";
 	String categoryCurrentName;
 	Vector selectedSeries;
+	Vector selectedCatGroups;
 	boolean makeSlider=false;
 
 	public DatasetMap() {
@@ -60,11 +61,11 @@ public class DatasetMap {
 		series=new TreeSet(((DefaultCategoryDataset)dataset).getRowKeys());
 
 		//fill the serieNumber MAP by mapping each serie name to its position in the dataset, needed to recover right colors when redrawing
-	/*	for(int i=0;i<series.size();i++){
+		/*	for(int i=0;i<series.size();i++){
 			String s=(String)series.get(i);
 			sbi.putSeriesNumber(s,(i+1));
 		}*/
-		
+
 		categories=(HashMap)((BarCharts)sbi).getCategories();
 		catsnum=new Integer(sbi.getCategoriesNumber());
 		numberCatVisualization=sbi.getNumberCatVisualization();
@@ -93,33 +94,66 @@ public class DatasetMap {
 			categoryCurrentName="All";
 		}
 
-		// Check if particular series has been chosen
-		selectedSeries=new Vector();
-		if(request.getParameter("serie")!=null){
-			String[] cio=request.getParameterValues("serie");
-			//Convert array in vector
-			for(int i=0;i<cio.length;i++){
-				selectedSeries.add(cio[i]);
+
+
+		// CHECK IF THERE IS TO FILTER CAT_GROUPS
+		if(sbi.isFilterCatGroups()==true){
+			selectedCatGroups=new Vector();
+			if(request.getParameter("cat_group")!=null){
+				// Check if particular cat_groups has been chosen
+
+				String[] cio=request.getParameterValues("cat_group");
+				//Convert array in vector
+				for(int i=0;i<cio.length;i++){
+					selectedCatGroups.add(cio[i]);
+				}
+			}
+			else{
+				selectedCatGroups.add("allgroups");
+			}
+
+			// if selectedSerie contains allseries 
+			if(selectedCatGroups.contains("allgroups")){
+				((BarCharts)sbi).setCurrentCatGroups(null);
+			}
+			else{	
+				copyDataset=sbi.filterDatasetCatGroups(copyDataset,selectedCatGroups);	
+
 			}
 		}
-		else{
-			//if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
-			//if(!sbiMode.equalsIgnoreCase("WEB") || docComposition)
-			
+
+
+		// CHECK IF THERE IS TO FILTER SERIES
+		if(sbi.isFilterSeries()==true){
+			// Check if particular series has been chosen
+			selectedSeries=new Vector();
+			if(request.getParameter("serie")!=null){
+				String[] cio=request.getParameterValues("serie");
+				//Convert array in vector
+				for(int i=0;i<cio.length;i++){
+					selectedSeries.add(cio[i]);
+				}
+			}
+			else{
+				//if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
+				//if(!sbiMode.equalsIgnoreCase("WEB") || docComposition)
+
 				selectedSeries.add("allseries");
-		}
+			}
 
 
-		// if selectedSerie contains allseries 
-		if(selectedSeries.contains("allseries")){
-			((BarCharts)sbi).setCurrentSeries(null);
-		}
-		else{	
-			copyDataset=sbi.filterDatasetSeries(copyDataset,selectedSeries);	
+			// if selectedSerie contains allseries 
+			if(selectedSeries.contains("allseries")){
+				((BarCharts)sbi).setCurrentSeries(null);
+			}
+			else{	
+				copyDataset=sbi.filterDatasetSeries(copyDataset,selectedSeries);	
 
+			}
 		}
+
 		// consider if drawing the slider
-		if((catsnum.intValue())>numberCatVisualization.intValue()){
+		if(sbi.isFilterCategories()==true && (catsnum.intValue())>numberCatVisualization.intValue()){
 			makeSlider=true;	    	
 		}
 
@@ -127,8 +161,8 @@ public class DatasetMap {
 
 		DatasetMap newDatasetMap=this.copyDatasetMap(copyDataset);
 
-		
-		
+
+
 		return newDatasetMap;
 
 	}
@@ -151,7 +185,7 @@ public class DatasetMap {
 		copy.setCategoryCurrentName(this.getCategoryCurrentName());		
 		copy.setSelectedSeries(this.getSelectedSeries());
 		copy.setMakeSlider(this.isMakeSlider());
-
+		copy.selectedCatGroups=this.getSelectedCatGroups();
 		copy.addDataset("1", dataset);
 
 		return copy;
@@ -229,7 +263,7 @@ public class DatasetMap {
 			}
 			else{
 				//if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
-					selectedSeries.add("allseries");
+				selectedSeries.add("allseries");
 			}
 
 
@@ -283,7 +317,7 @@ public class DatasetMap {
 		}
 		else{
 			//if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
-				selectedSeries.add("allseries");
+			selectedSeries.add("allseries");
 		}
 
 		int numSeries=dataset.getSeriesCount();
@@ -335,17 +369,17 @@ public class DatasetMap {
 		series=new TreeSet(((DefaultCategoryDataset)dataset).getRowKeys());
 
 		//fill the serieNumber MAP by mapping each serie name to its position in the dataset, needed to recover right colors when redrawing
-	/*	for(int i=0;i<series.size();i++){
+		/*	for(int i=0;i<series.size();i++){
 			String s=(String)series.get(i);
 			sbi.putSeriesNumber(s,(i+1));
 		}*/
-		
+
 		categories=(HashMap)((BarCharts)sbi).getCategories();
 		catsnum=new Integer(sbi.getRealCatNumber());
 		numberCatVisualization=sbi.getNumberCatVisualization();
-		
+
 		subCategories=(HashMap)((StackedBarGroup)sbi).getSubCategories();
-		
+
 
 		catTitle=sbi.getCategoryLabel();
 		subcatTitle = sbi.getSubCategoryLabel();
@@ -397,7 +431,7 @@ public class DatasetMap {
 
 		}
 		// consider if drawing the slider
-		if((catsnum.intValue())>numberCatVisualization.intValue()){
+		if(sbi.isFilterCategories()==true && (catsnum.intValue())>numberCatVisualization.intValue()){
 			makeSlider=true;	    	
 		}
 
@@ -405,8 +439,8 @@ public class DatasetMap {
 
 		DatasetMap newDatasetMap=this.copyDatasetMap(copyDataset);
 
-		
-		
+
+
 		return newDatasetMap;
 
 	}
@@ -515,6 +549,14 @@ public class DatasetMap {
 
 	public void setMakeSlider(boolean makeSlider) {
 		this.makeSlider = makeSlider;
+	}
+
+	public Vector getSelectedCatGroups() {
+		return selectedCatGroups;
+	}
+
+	public void setSelectedCatGroups(Vector selectedCatGroups) {
+		this.selectedCatGroups = selectedCatGroups;
 	}
 
 

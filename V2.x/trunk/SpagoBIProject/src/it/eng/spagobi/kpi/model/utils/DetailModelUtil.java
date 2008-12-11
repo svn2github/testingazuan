@@ -40,10 +40,12 @@ public class DetailModelUtil {
 		for (int i = 0; i<modelAttributeNameList.length; i++) {
 			ModelAttribute mAttr = new ModelAttribute();
 			String modelAttrId = modelAttributeNameList[i].trim();
-			String value = (String) serviceRequest.getAttribute("M_ATTR" + modelAttrId);
-			mAttr.setValue(value);
-			mAttr.setId(Integer.parseInt(modelAttrId));
-			modelAttributes.add(mAttr);
+			if(!modelAttrId.isEmpty()){
+				String value = (String) serviceRequest.getAttribute("M_ATTR" + modelAttrId);
+				mAttr.setValue(value);
+				mAttr.setId(Integer.parseInt(modelAttrId));
+				modelAttributes.add(mAttr);
+			}
 		}
 		return modelAttributes;
 	}

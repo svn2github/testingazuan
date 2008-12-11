@@ -4,6 +4,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.detail.impl.DefaultDetailModule;
 import it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.kpi.model.utils.DetailModelInstanceUtil;
 import it.eng.spagobi.kpi.model.utils.DetailModelUtil;
 
 public class DetailModelModule extends DefaultDetailModule{
@@ -23,6 +24,11 @@ public class DetailModelModule extends DefaultDetailModule{
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)){
 			String idModel = (String) request.getAttribute("ID");
 			DetailModelUtil.updateModelFromRequest(request, Integer.parseInt(idModel));
+			
+			response.setAttribute("ID", Integer.parseInt(idModel));
+			response.setAttribute("MESSAGE", SpagoBIConstants.DETAIL_SELECT);
+			DetailModelUtil.selectModel(Integer.parseInt(idModel), response);
+			
 		}
 		// DETAIL_INSERT
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)){

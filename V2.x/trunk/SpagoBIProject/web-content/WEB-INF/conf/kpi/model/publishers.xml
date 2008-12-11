@@ -20,14 +20,14 @@
 									<PARAMETER name="module" scope="SERVICE_REQUEST"
 										value="ListModelModule" />
 								</CONDITIONS>
-							</CHECK>
+							</CHECK><!--
 							<CHECK target="ListModelPublisher">
 								<CONDITIONS>
 									<PARAMETER name="message" scope="SERVICE_REQUEST"
 										value="DETAIL_UPDATE" />
 								</CONDITIONS>
 							</CHECK>
-							<CHECK target="DetailModelPublisher">
+							--><CHECK target="DetailModelPublisher">
 								<CONDITIONS>
 									<PARAMETER name="module" scope="SERVICE_REQUEST"
 										value="DetailModelModule" />
@@ -75,14 +75,14 @@
 									<PARAMETER name="module" scope="SERVICE_REQUEST"
 										value="ListModelTreeModule" />
 								</CONDITIONS>
-							</CHECK>
+							</CHECK><!--
 							<CHECK target="ListModelTreePublisher">
 								<CONDITIONS>
 									<PARAMETER name="message" scope="SERVICE_REQUEST"
 										value="DETAIL_UPDATE" />
 								</CONDITIONS>
 							</CHECK>
-							<CHECK target="DetailModelTreePublisher">
+							--><CHECK target="DetailModelTreePublisher">
 								<CONDITIONS>
 									<PARAMETER name="module" scope="SERVICE_REQUEST"
 										value="DetailModelTreeModule" />
@@ -134,16 +134,6 @@
 										value="ListModelInstanceModule" />
 								</CONDITIONS>
 							</CHECK>
-							
-							<!--
-							<CHECK target="ListModelInstancePublisher">
-								<CONDITIONS>
-									<PARAMETER name="message" scope="SERVICE_REQUEST"
-										value="DETAIL_UPDATE" />
-								</CONDITIONS>
-							</CHECK>
-							-->
-							
 							<CHECK target="DetailModelInstancePublisher">
 								<CONDITIONS>
 									<PARAMETER name="module" scope="SERVICE_REQUEST"

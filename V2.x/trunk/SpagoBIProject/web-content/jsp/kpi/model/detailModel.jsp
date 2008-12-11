@@ -47,6 +47,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
 		messageSave = DelegatedDetailService.DETAIL_UPDATE;
 	}
+	// DETAIL_UPDATE
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+		.getAttribute("DetailModelModule");
+		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+	
 	//DETAIL_NEW
 	if (messageIn != null
 			&& messageIn
@@ -90,8 +100,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("PAGE", "ModelPage");
-	backUrlPars
-			.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	if(messageSave.equals(DelegatedDetailService.DETAIL_UPDATE)){
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	}
+	else{
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	}
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 	String messageBundle = "component_kpi_messages";

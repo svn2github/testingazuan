@@ -9,7 +9,6 @@ import it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.model.bo.Model;
-import it.eng.spagobi.kpi.model.bo.ModelAttribute;
 import it.eng.spagobi.kpi.model.utils.DetailModelUtil;
 
 public class DetailModelTreeModule extends DefaultDetailModule{
@@ -29,6 +28,10 @@ public class DetailModelTreeModule extends DefaultDetailModule{
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)){
 			String idModel = (String) request.getAttribute("MODEL_ID");
 			DetailModelUtil.updateModelFromRequest(request, Integer.parseInt(idModel));
+			
+			response.setAttribute("ID", Integer.parseInt(idModel));
+			response.setAttribute("MESSAGE", SpagoBIConstants.DETAIL_SELECT);
+			DetailModelUtil.selectModel(Integer.parseInt(idModel), response);
 		}
 		// DETAIL_INSERT
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)){

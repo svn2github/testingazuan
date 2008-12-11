@@ -56,6 +56,11 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.block.BlockContainer;
+import org.jfree.chart.block.BorderArrangement;
+import org.jfree.chart.block.LabelBlock;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.Dataset;
 import org.jfree.ui.HorizontalAlignment;
@@ -84,6 +89,7 @@ public class ChartImpl implements IChart {
 	protected String subtype="";
 	protected Color color;
 	protected boolean legend=true;
+	protected String legendPosition="bottom";
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
 	protected Map parametersObject;
 	protected boolean filter=true;
@@ -282,6 +288,13 @@ public class ChartImpl implements IChart {
 					legend=false;
 			}
 
+			legendPosition="bottom";
+			if(dataParameters.get("legend_position")!=null && !(((String)dataParameters.get("legend_position")).equalsIgnoreCase("") )){	
+				String leg=(String)dataParameters.get("legend_position");
+				if(leg.equalsIgnoreCase("bottom") || leg.equalsIgnoreCase("left") || leg.equalsIgnoreCase("right") || leg.equalsIgnoreCase("up"))
+					legendPosition=leg;
+			}
+			
 			filter=true;
 			if(dataParameters.get("view_filter")!=null && !(((String)dataParameters.get("view_filter")).equalsIgnoreCase("") )){	
 				String fil=(String)dataParameters.get("view_filter");
@@ -793,6 +806,42 @@ public class ChartImpl implements IChart {
 
 	public void setSeriesLabels(HashMap seriesLabels) {
 		this.seriesLabelsMap = seriesLabels;
+	}
+
+	public String getLegendPosition() {
+		return legendPosition;
+	}
+
+	public void setLegendPosition(String legendPosition) {
+		this.legendPosition = legendPosition;
+	}
+	
+	
+	public void drawLegend(JFreeChart chart){
+		BlockContainer wrapper = new BlockContainer(new BorderArrangement());
+		wrapper.setFrame(new BlockBorder(1.0, 1.0, 1.0, 1.0));
+
+		/*LabelBlock titleBlock = new LabelBlock("Legend Items:",
+				new Font("SansSerif", Font.BOLD, 12));
+		titleBlock.setPadding(5, 5, 5, 5);
+		wrapper.add(titleBlock, RectangleEdge.TOP);*/
+
+		LegendTitle legend = new LegendTitle(chart.getPlot());
+		BlockContainer items = legend.getItemContainer();
+		items.setPadding(2, 10, 5, 2);
+		wrapper.add(items);
+		legend.setWrapper(wrapper);
+
+		if(legendPosition.equalsIgnoreCase("bottom")) legend.setPosition(RectangleEdge.BOTTOM);
+		else if(legendPosition.equalsIgnoreCase("left")) legend.setPosition(RectangleEdge.LEFT);
+		else if(legendPosition.equalsIgnoreCase("right")) legend.setPosition(RectangleEdge.RIGHT);
+		else if(legendPosition.equalsIgnoreCase("top")) legend.setPosition(RectangleEdge.TOP);
+		else legend.setPosition(RectangleEdge.BOTTOM);
+		
+		legend.setHorizontalAlignment(HorizontalAlignment.CENTER);
+		chart.addSubtitle(legend);
+		
+		
 	}
 
 }

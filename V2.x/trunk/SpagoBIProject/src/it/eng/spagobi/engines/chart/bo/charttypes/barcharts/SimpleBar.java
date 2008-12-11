@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 
 
 
@@ -40,15 +40,22 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.block.BlockContainer;
+import org.jfree.chart.block.BorderArrangement;
+import org.jfree.chart.block.LabelBlock;
 import org.jfree.chart.labels.CategorySeriesLabelGenerator;
 import org.jfree.chart.labels.StandardCategorySeriesLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.AbstractCategoryItemRenderer;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.Dataset;
+import org.jfree.ui.HorizontalAlignment;
+import org.jfree.ui.RectangleEdge;
 
 /**   @author Giulio Gavardi
  *     giulio.gavardi@eng.it
@@ -87,8 +94,8 @@ public class SimpleBar extends BarCharts{
 		logger.debug("OUT");
 	}
 
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
@@ -109,7 +116,7 @@ public class SimpleBar extends BarCharts{
 				valueLabel,                  // range axis label
 				dataset,                  // data
 				plotOrientation, // orientation
-				legend,                     // include legend
+				false,                     // include legend
 				true,                     // tooltips?
 				false                     // URLs?
 		);
@@ -131,7 +138,7 @@ public class SimpleBar extends BarCharts{
 		plot.setDomainGridlinesVisible(true);
 		plot.setRangeGridlinePaint(Color.white);
 
-					
+
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -143,38 +150,69 @@ public class SimpleBar extends BarCharts{
 		// disable bar outlines...
 		BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
-		
+
 		// add
 		CategorySeriesLabelGenerator generator = new StandardCategorySeriesLabelGenerator("{0}");
 		renderer.setLegendItemLabelGenerator(generator);
+
 		renderer.setBaseItemLabelsVisible(true);
 		renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 		renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
-		
-		
-        int seriesN=dataset.getRowCount();
-        if(colorMap!=null){
-         for (int i = 0; i < seriesN; i++) {
- 			String serieName=(String)dataset.getRowKey(i);
- 			Color color=(Color)colorMap.get(serieName);
- 			if(color!=null){
- 				renderer.setSeriesPaint(i, color);
- 				renderer.setSeriesItemLabelFont(i, new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
- 				renderer.setSeriesItemLabelPaint(i, defaultLabelsStyle.getColor());
- 			}	
-         }
-        }
-		
-		
+
+
+		// PROVA LEGENDA		
+		if(legend==true){
+			
+			drawLegend(chart);
+			
+			/*BlockContainer wrapper = new BlockContainer(new BorderArrangement());
+			wrapper.setFrame(new BlockBorder(1.0, 1.0, 1.0, 1.0));
+
+			LabelBlock titleBlock = new LabelBlock("Legend Items:",
+					new Font("SansSerif", Font.BOLD, 12));
+			title.setPadding(5, 5, 5, 5);
+			wrapper.add(titleBlock, RectangleEdge.TOP);
+
+			LegendTitle legend = new LegendTitle(chart.getPlot());
+			BlockContainer items = legend.getItemContainer();
+			items.setPadding(2, 10, 5, 2);
+			wrapper.add(items);
+			legend.setWrapper(wrapper);
+
+			if(legendPosition.equalsIgnoreCase("bottom")) legend.setPosition(RectangleEdge.BOTTOM);
+			else if(legendPosition.equalsIgnoreCase("left")) legend.setPosition(RectangleEdge.LEFT);
+			else if(legendPosition.equalsIgnoreCase("right")) legend.setPosition(RectangleEdge.RIGHT);
+			else if(legendPosition.equalsIgnoreCase("top")) legend.setPosition(RectangleEdge.TOP);
+			else legend.setPosition(RectangleEdge.BOTTOM);
+			
+			legend.setHorizontalAlignment(HorizontalAlignment.LEFT);
+			chart.addSubtitle(legend);*/
+		}
+
+
+		int seriesN=dataset.getRowCount();
+		if(colorMap!=null){
+			for (int i = 0; i < seriesN; i++) {
+				String serieName=(String)dataset.getRowKey(i);
+				Color color=(Color)colorMap.get(serieName);
+				if(color!=null){
+					renderer.setSeriesPaint(i, color);
+					renderer.setSeriesItemLabelFont(i, new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
+					renderer.setSeriesItemLabelPaint(i, defaultLabelsStyle.getColor());
+				}	
+			}
+		}
+
+
 
 		CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(
 				CategoryLabelPositions.createUpRotationLabelPositions(
 						Math.PI / 6.0));
 		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
-        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+		domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 		logger.debug("OUT");
 		return chart;
 

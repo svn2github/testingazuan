@@ -97,8 +97,9 @@ public class DatasetMap {
 
 
 		// CHECK IF THERE IS TO FILTER CAT_GROUPS
+		selectedCatGroups=new Vector();
 		if(sbi.isFilterCatGroups()==true){
-			selectedCatGroups=new Vector();
+			
 			if(request.getParameter("cat_group")!=null){
 				// Check if particular cat_groups has been chosen
 
@@ -121,12 +122,14 @@ public class DatasetMap {
 
 			}
 		}
+		else selectedCatGroups.add("allgroups");
 
 
 		// CHECK IF THERE IS TO FILTER SERIES
+		selectedSeries=new Vector();
 		if(sbi.isFilterSeries()==true){
 			// Check if particular series has been chosen
-			selectedSeries=new Vector();
+			
 			if(request.getParameter("serie")!=null){
 				String[] cio=request.getParameterValues("serie");
 				//Convert array in vector
@@ -151,6 +154,7 @@ public class DatasetMap {
 
 			}
 		}
+		else selectedSeries.add("allseries");
 
 		// consider if drawing the slider
 		if(sbi.isFilterCategories()==true && (catsnum.intValue())>numberCatVisualization.intValue()){

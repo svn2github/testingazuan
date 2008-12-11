@@ -304,8 +304,19 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			}
 			
 			if(serviceRequest.getAttribute("category")!=null)
-			{category=(String)serviceRequest.getAttribute("category");
-			response.setAttribute("category",category);
+			{
+				Object catO=serviceRequest.getAttribute("category");
+				category="";
+				try{
+				category=(String)catO;
+				}
+				catch (Exception e) {
+					Integer catI=(Integer)catO;
+					category=catI.toString();
+				}
+				
+				
+				response.setAttribute("category",category);
 			}
 
 			

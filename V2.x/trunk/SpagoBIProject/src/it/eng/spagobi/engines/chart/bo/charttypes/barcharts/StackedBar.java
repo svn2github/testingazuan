@@ -113,6 +113,11 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		// run all categories (one for each row)
 		categoriesNumber=0;
 		seriesNames=new Vector();
+		catGroupNames=new Vector();
+		if(filterCatGroups==true){
+			catGroups=new HashMap();
+		}
+		
 		//categories.put(new Integer(0), "All Categories");
 		boolean first=true;
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
@@ -122,6 +127,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			HashMap series=new HashMap();
 			HashMap additionalValues=new HashMap();
 			String catValue="";
+			String cat_group_name="";
 
 			String nameP="";
 			String value="";
@@ -148,7 +154,9 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					categoriesNumber=categoriesNumber+1;
 					categories.put(new Integer(categoriesNumber),value);
 
-
+				}
+				else if(nameP.equalsIgnoreCase("cat_group")){
+					cat_group_name=value;
 				}
 				else {
 					nameP = nameP.toUpperCase();
@@ -166,6 +174,15 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
 				}
 			}
+			
+			// if a category group was found add it
+			if(!cat_group_name.equalsIgnoreCase("") && !catValue.equalsIgnoreCase("") && catGroups!=null)
+			{	
+				catGroups.put(catValue, cat_group_name);
+				if(!(catGroupNames.contains(cat_group_name))){
+				catGroupNames.add(cat_group_name);}
+			}
+			
 
 			// if it is cumulative automatically get the vamount value
 			if(cumulative){
@@ -355,7 +372,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				valueLabel,                     // range axis label
 				dataset,                     // data
 				PlotOrientation.VERTICAL,    // the plot orientation
-				legend,                        // legend
+				false,                        // legend
 				true,                        // tooltips
 				false                        // urls
 		);
@@ -504,6 +521,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
         domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
         domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 
+		if(legend==true){
+			
+			drawLegend(chart);}
+        
 		logger.debug("OUT");
 		return chart;
 

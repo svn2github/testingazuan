@@ -434,7 +434,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// form to limit the series if it is a barchart
-		
+	
+			seriesNames=new Vector();
+catGroupsNames=new Vector();
 	if(filterSeries || filterCatGroup){
 			//sets the URL
 			if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
@@ -469,34 +471,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	   <table id="filterSeriesOrCatGroups" align="left">
 	   
-	   <!-- SELECT FORM TITLES -->
-	   <tr>
-		<td> 
-		<div align="center">
-			<div class='div_detail_form'>
-				<span class='portlet-form-field-label'>
-				Select among 
-				<%if(filterSeries==true){
-				String tlabel=((datasetMap.getSerTitle()!=null && !datasetMap.getSerTitle().equalsIgnoreCase("")) ? datasetMap.getSerTitle() : "series");
-				%>
-				<%=tlabel%>
-				<%}%>
-				<%if(filterSeries==true && filterCatGroup==true){%> and among <%}%>
-				<%if(filterCatGroup==true){%>categories groups<%}%>
-				</span>
-			</div>
-		 </div> 	
-		</td>
-		</tr>
-	<!-- CLOSE SELECT FORM TITLES -->
 
-		
 		<!-- START FORM  -->
 	<form id='serieform' name="serie" action="<%=refreshUrl%>" method="POST" >
 		
 		<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE"/>	
 		<% 	
-		refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
+		//refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
 		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
 		{
 				String name = (String) iterator.next();
@@ -506,7 +487,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<%}%>
 	 
 	 <!--  ROW FOR SELECT THE SERIES-->
-	 <%if(filterSeries==true){ %>
+	 <%
+	 
+	 if(filterSeries==true){ %>
 	 <tr>
 		<td> 
 		<div align="center" class='div_detail_form'>
@@ -521,7 +504,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		<%     	
 		// for each possible serie 
-		seriesNames=new Vector();
+
 		if(datasetMap.getSeries()!=null){	
 		for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
 		String ser = (String) iterator.next(); 
@@ -542,15 +525,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%} 
 		 }%>
 				  <!-- PROVA -->
-			  	   		<a onclick = "enableSerie()" title='<spagobi:message 
-			  	   		key = "SBIDev.paramUse.checkAllFreeRoles" />' 
+			  	   		<a onclick = "enableSerie()" title="check all series" 
 			  	   		alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
 							<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+						</a>
+						<a onclick = "disableSerie()" 
+						title="uncheck all series" 
+						alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
+							<img src='<%= urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
 						</a>
 		
 		<%
 		}%>
-		</div>
+		<%if(filterCatGroup==false){ %>
+			
+			<input type="submit" value="Select"/>
+		
+		<%} %>
+			</div>
 		</td>
 	</tr>
 	<%}%>
@@ -558,7 +550,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<!--  ROW FOR SELECT THE CATS GROUPS-->
 	<%if(filterCatGroup==true){ 
-		catGroupsNames=new Vector();// filter cat group%>	
+	// filter cat group%>	
 		<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE"/>	
 		
 		<% 	
@@ -593,27 +585,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<span><%=group%></span>
 		<%} 
 		 }%>
-			<a onclick = "enableGroups()" title='<spagobi:message 
-			key = "Select all groups" />' 
+			<a onclick = "enableGroups()" title="check all groups"
 			alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
 				<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
 			</a>
-		
+			<a onclick = "disableGroups()" 
+			title="uncheck all groups" 
+			alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
+			<img src='<%= urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
+			</a>		
 		
 		
 	<%	}%>
-		</div>
+
+			<input type="submit" value="Select"/>
+			</div>
 		</td>
 		</tr>
 		<%} //close filter cat group case%>
 		<!--  CLOSE ROW FOR SELECT THE CATS GROUPS-->
-		<tr>
+		<!-- <tr>
 		<td>
 			<div align="center" class='div_detail_form'>
 			<input type="submit" value="Select"/>
 			</div>
 		</td>
-		</tr>
+		</tr> -->
 
 
 		</form>
@@ -733,7 +730,16 @@ var checkableSeries = new Array();
 		but=document.getElementById('serie_'+ser);	
 		but.checked = true;
 	}
-}	
+}
+
+	function disableSerie() {	
+		for (x=0;x<checkableSeries.length;x=x+1)  {
+		ser = checkableSeries[x];
+		but=document.getElementById('serie_'+ser);	
+		but.checked = false;
+	}
+}
+	
 	
 	var checkableGroups = new Array(); 
 <% int l=0;
@@ -754,7 +760,13 @@ var checkableSeries = new Array();
 	}
 }	
 		
-
+	function disableGroups() {	
+		for (x=0;x<checkableGroups.length;x=x+1)  {
+		cat = checkableGroups[x];
+		but=document.getElementById('cat_group_'+cat);	
+		but.checked = false;
+	}
+}
 	
 	
 	Ext.onReady(function() {

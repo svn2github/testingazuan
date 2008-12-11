@@ -86,7 +86,7 @@ qx.Class.define("spagobi.ui.Table",
 
   this.set({
      // 	flex: 1
-          height: 150 
+     //     height: 150 
       });
    
 

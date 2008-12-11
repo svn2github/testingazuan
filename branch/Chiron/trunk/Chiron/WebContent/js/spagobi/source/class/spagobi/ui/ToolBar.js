@@ -29,6 +29,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * Class to create the main toolbar on top of the page
  */ 
 
+/*
+#asset(qx/icon/Oxygen/16/actions/help-about.png)
+*/
+
 qx.Class.define("spagobi.ui.ToolBar", {
 	//extend : qx.legacy.ui.toolbar.ToolBar,//change
 	extend : qx.ui.toolbar.ToolBar,
@@ -139,7 +143,7 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	  		handler: this.showAbout,
 	  		context: this,
 	  		"label": 'Help',
-	  		icon: qx.util.AliasManager.getInstance().resolve("spagobi/test/help-about.png"), //icon/16
+	  		icon: "qx/icon/Oxygen/16/actions/help-about.png",
 	  		tooltip: 'Help'
 	  	});
 	  	

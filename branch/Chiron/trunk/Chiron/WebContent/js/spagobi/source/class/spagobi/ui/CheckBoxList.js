@@ -117,15 +117,16 @@ qx.Class.define("spagobi.ui.CheckBoxList", {
 	   		
 	//	    
 	// this.auto();
-	    	this.set({ left: config.left});
+	    	this.set({ left: config.left });
 	    	
 	 //   	this.setColumnCount(config.columns);	
 	//		this.setRowCount(Math.ceil(config.items.length/config.columns));
 			
 			//alert('hi');		// why is it coming 2 times ??
 			
-			var rows = config.columns;//this.getRowCount();
-			var cols = Math.ceil(config.items.length/config.columns);    
+			
+			var cols = config.columns; //this.getRowCount();*/
+			var rows = Math.ceil(config.items.length/config.columns);	
 		//	alert(rows);
 		//	alert(cols);    
 			//this.getColumnCount();
@@ -138,21 +139,21 @@ qx.Class.define("spagobi.ui.CheckBoxList", {
 					this.dummyGrid.setColumnWidth(j, 50);	
 					
 					this.label_text[index] = new qx.ui.basic.Label(config.items[k]);
-		//			this.label_text[index]..setAlignY("middle");//setTextAlign("center");
 		    		this.check_box[index]  = new qx.ui.form.CheckBox();
+	   				
+	   				this.atom[index] = new qx.ui.container.Composite(new qx.ui.layout.HBox);
 	   				var hBox = new qx.ui.layout.HBox();
 	   				hBox.setSpacing(2);
 	   				this.atom[index] = new qx.ui.container.Composite();//.set({spacing:2});//new qx.ui.container.Composite(new qx.ui.layout.HBox);
 	   				this.atom[index].setLayout(hBox);
 	   				
 	   				this.atom[index].add(this.check_box[index]);
-	   				this.atom[index].add(this.label_text[index].set( {alignY:"middle",alignX:"left"}));
-	   			//	this.atom[index].setAlignY("middle");
+	   				this.atom[index].add(this.label_text[index]);
 	   				
 	   				this.atom[index].setUserData('label', this.label_text[index]);
 	    			this.atom[index].setUserData('field', this.check_box[index]);
 	    			
-	   				this.add(this.atom[index],{row:j,column:i});//, j, i);
+	   				this.add(this.atom[index],{row:i,column:j});//, j, i);
 	   				//this.setUserData('element'+index, this.atom[index]);
 	   			//	alert("holidays");
 	   				index++;

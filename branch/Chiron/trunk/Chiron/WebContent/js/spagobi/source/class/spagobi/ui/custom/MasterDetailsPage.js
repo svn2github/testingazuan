@@ -40,7 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 {
   //extend : qx.legacy.ui.splitpane.VerticalSplitPane,
-  extend : qx.ui.container.Composite,
+  extend : qx.ui.splitpane.Pane,
   
 
   /**
@@ -61,17 +61,17 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
   construct : function(type)
   {
 	//this.base(arguments, "1*", "2*");//extend :	qx.ui.splitpane.Pane,
-	this.base(arguments);
-	this.setLayout(new qx.ui.layout.Dock);
+	this.base(arguments,"vertical");
+//	this.setLayout(new qx.ui.layout.Dock);
 	
 	
-	var pane = new qx.ui.splitpane.Pane("vertical");
+//	var pane = new qx.ui.splitpane.Pane("vertical");
 	
 //	var containerTop = new qx.ui.container.Composite(new qx.ui.layout.VBox);//.set({
     //    height: 150
    //   });
 
-    var containerBottom = new qx.ui.container.Composite(new qx.ui.layout.VBox);
+ //   var containerBottom = new qx.ui.container.Composite(new qx.ui.layout.VBox);
 	
 	
 	/*
@@ -172,7 +172,11 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	   	
 	   	//this.addTop( this.listPage );//change
 //	   	containerTop.add(this.listPage);
-	   	pane.add(this.listPage,0);
+	   	this.add(this.listPage,0);
+	   	
+	   	containerBottom = new qx.ui.core.Widget();
+	   	var Vbox = new qx.ui.layout.VBox();
+	   	containerBottom._setLayout(Vbox);
 	   	
 	   	//var button = new qx.ui.form.Button("Toggle Splitpane Orientation");
 	   	var formBar = new qx.ui.container.Composite(new qx.ui.layout.HBox);
@@ -200,7 +204,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	    }
 	    
 	    
-	   	containerBottom.add(formBar);
+	   	containerBottom._add(formBar);
 		
 	   	
 	   	//this.listPage.setOverflow("auto");//change ..find
@@ -208,11 +212,11 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 			    //this.listPage.setHeight('100%');  	
 	    this._form = form;
 	    
-	    containerBottom.add(this._form);
+	    containerBottom._add(this._form);
 	    var scroll = new qx.ui.container.Scroll();
 	     scroll.add(containerBottom);
-	    pane.add(scroll,1);
-		this.add(pane,{edge: "west",width: "100%"});
+	    this.add(scroll,1);
+//		this.add(pane,{edge: "west",width: "100%"});
 		
 		/* Don't Delete 
 	    //testing for parameter form's getData() function

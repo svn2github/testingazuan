@@ -87,7 +87,11 @@ qx.Class.define("spagobi.ui.PagedTable", {
     	;
 	    scroll.add(this._table);//,{flex:1});
       	this._add(scroll,{flex:1});
-      	*/
+      	
+      	 var scroll = new qx.ui.container.Scroll();
+	     scroll.add(this._table,{flex:1});
+	     this._add(scroll);
+	      */
  	  	this._add(this._table,{flex:1});//
     	this._add(this._navigationBar);
 			    	/*    	

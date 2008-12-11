@@ -1,15 +1,15 @@
 qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 {
-  extend : qx.ui.container.Composite,//qx.ui.splitpane.Pane,//qx.legacy.ui.splitpane.HorizontalSplitPane,
+  extend : qx.ui.splitpane.Pane,//qx.legacy.ui.splitpane.HorizontalSplitPane,
   
   construct : function(type)
   {
    // this.base(arguments, "1*", "2*");
     this.base(arguments);//,"1*","4*");//, "2*"); //  180
-    this.setLayout(new qx.ui.layout.Dock);
+ //   this.setLayout(new qx.ui.layout.Dock);
      //this.setShowKnob(false);
-    this.horSplit = new qx.ui.splitpane.Pane();
-    this.add(this.horSplit,{width:'100%',height:'100%'});
+ //   this.horSplit = new qx.ui.splitpane.Pane();
+ //   this.add(this.horSplit,{width:'100%',height:'100%'});
     
  	if(type === 'funcManagement') {
  //  	var leftPart = new qx.ui.container.Composite(new qx.ui.layout.Dock);
@@ -34,7 +34,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
  // 	vContainer.add(headerLabel);
    
   	var tree = new spagobi.ui.Tree({root: "Functionalities"});
-	tree.setWidth(250);	
+//	tree.setWidth(250);	
   	
   	var node1 = tree.addNode({
 		  							name  : "Report",
@@ -135,7 +135,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   //		vContainer.add(tree);//,{height:330}
  // 		leftPart.add(vContainer,{ height:'100%'});//width:'30%',
-  		this.horSplit.add(tree,0);
+  		this.add(tree,0);
   	//	var headerLabel1 = new spagobi.ui.custom.FunctionalityTreeSubClass();
    
         
@@ -146,7 +146,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		
   		var rightPart = new spagobi.ui.custom.FunctionalityTreeSubClass();
   		
-  		this.horSplit.add(rightPart,1);
+  		this.add(rightPart,1);
   		
 //  		this.add(this.horSplit,{width:'100%',height:'100%'});
   
@@ -184,7 +184,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   
   members :
   {
-	 horSplit : undefined,
+//	 horSplit : undefined,
   	_tree : undefined,
   	_right: undefined,
   	

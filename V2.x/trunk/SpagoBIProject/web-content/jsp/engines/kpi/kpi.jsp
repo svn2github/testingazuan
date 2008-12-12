@@ -86,6 +86,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div class="kpi_title_section"><%=title%></div>
 			<%}if (subTitle!=null){%>
 		<div class="kpi_subtitle_section"><%=subTitle%></div>
+		
 		<%}
 		Boolean display_bullet_chart = (Boolean)sbModuleResponse.getAttribute("display_bullet_chart");	
 		Boolean display_alarm = (Boolean)sbModuleResponse.getAttribute("display_alarm");
@@ -164,17 +165,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			 <%=scriptViewAll%>
 			 <%=scriptHideAll%>
 			 <script>
-			 function showLegendTooltip(thresholds){
-			 		 alert(thresholds[i].id);
-					 element =  document.getElementById(thresholds[i].id);
-					 element.innerHtml = '<table><tr><td>Color</td><td>Min</td><td>Max</td><td>Label</td></tr>';
-			 	for (i in thresholds)
+			 function showLegendTooltip(thresholds,id){
+					 element =  document.getElementById(id);
+					 element.innerHTML = '<table>';
+			 	for (i = 0;i<thresholds.length;i++)
 					{	
-					   element.innerHtml += '<tr></td style="background-color:'+thresholds[i].color+'"><td><td>'+thresholds[i].min ;
-					   element.innerHtml += '</td><td>'+thresholds[i].max+'</td><td>'+ thresholds[i].label+'</td></tr>';					   
+					   element.innerHTML =element.innerHTML+ '<tr style="font-family:Arial;font-size:10px;"><td style="width:20px;height:12px;"><div style="width:10px;height:10px;background-color:'+thresholds[i].color+'"/></td><td><div style="width:150px;height:7px;">&nbsp;'+thresholds[i].min + ' - '+thresholds[i].max+': '+ thresholds[i].label+'</td></tr>';
 					}
-					alert(element.innerHtml);
-					element.style.visible = true;
+					element.innerHTML =element.innerHTML+ '</table>';
+					element.style.display = 'inline' ;
+					
+			 }
+			 
+			 function hideLegendTooltip(id){
+					 element =  document.getElementById(id);
+					 element.innerHTML = '';
+					element.style.display = 'none' ;
+					
 			 }
 			 </script>
 		<%}%>		

@@ -218,7 +218,7 @@ public class ChartImpl {
 						interval.setMin(lower);
 					}
 					String color = Integer.toHexString( interval.getColor().getRGB() & 0x00ffffff ) ;
-					thresholdsJsArray += "min:"+interval.getMin()+",max:"+interval.getMax()+",label:"+interval.getLabel()+",color:"+color;
+					thresholdsJsArray += "min:"+interval.getMin()+",max:"+interval.getMax()+",label:'"+interval.getLabel()+"',color:'#"+color+"'";
 					intervals.add(interval);
 				}else if (type.equals("MINIMUM")){
 					
@@ -277,7 +277,7 @@ public class ChartImpl {
 						interval1.setMax(max);
 						interval1.setMin(lower);	
 					String color1 = Integer.toHexString( interval1.getColor().getRGB() & 0x00ffffff ) ;
-					thresholdsJsArray += "min:"+interval1.getMin()+",max:"+interval1.getMax()+",label:"+interval1.getLabel()+",color:"+color1+"],";	
+					thresholdsJsArray += "min:"+interval1.getMin()+",max:"+interval1.getMax()+",label:'"+interval1.getLabel()+"',color:'#"+color1+"'],";	
 					intervals.add(interval1);
 					KpiInterval interval2 = new KpiInterval();
 					if(c!=null)	{
@@ -293,7 +293,7 @@ public class ChartImpl {
 						interval2.setMax(upper);
 						interval2.setMin(max);	
 					String color2 = Integer.toHexString( interval2.getColor().getRGB() & 0x00ffffff ) ;
-					thresholdsJsArray += "min:"+interval2.getMin()+",max:"+interval2.getMax()+",label:"+interval2.getLabel()+",color:"+color2;		
+					thresholdsJsArray += "min:"+interval2.getMin()+",max:"+interval2.getMax()+",label:'"+interval2.getLabel()+"',color:'#"+color2+"'";		
 					intervals.add(interval2);				
 				}				
 				logger.debug("New interval added to the Vector");

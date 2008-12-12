@@ -77,6 +77,11 @@ public class KpiResourceBlock {
 		
 		HttpServletRequest httpRequest = httpReq;
 		IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder();
+		String requestIdentity = null;
+		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		UUID uuid = uuidGen.generateTimeBasedUUID();
+		requestIdentity = uuid.toString();
+		requestIdentity = requestIdentity.replaceAll("-", "");
 		String alarmImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/alarm.jpg");
 		String docImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/linkedDoc.gif");
 		String modelName = line.getModelNodeName();
@@ -115,6 +120,7 @@ public class KpiResourceBlock {
 		
 		_htmlStream.append("		<td width='"+(53-(recursionLev))+"%' title='Model Instance Node' style='height=30px;align:left;vertical-align:middle;'><div>"+modelName+"</div></td>\n");
 		
+		_htmlStream.append("		<td  width='5%' style=\"align:right;vertical-align:middle;\"><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
 		_htmlStream.append("		<td  width='9%' title='Value' style=\"align:left;vertical-align:middle;\"><div>"+lo+"</div></td>\n");
 		if (display_weight && weight!=null){
 			_htmlStream.append("		<td width='5%' title='Weight' style=\"align:left;vertical-align:middle;\"><div>["+weight.toString()+"]</div></td>\n");
@@ -124,11 +130,6 @@ public class KpiResourceBlock {
 		
 		if (display_bullet_chart && sbi!=null){
 			
-			String requestIdentity = null;
-			UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-			UUID uuid = uuidGen.generateTimeBasedUUID();
-			requestIdentity = uuid.toString();
-			requestIdentity = requestIdentity.replaceAll("-", "");
 			JFreeChart chart = sbi.createChart();
 			ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
 			String dir=System.getProperty("java.io.tmpdir");
@@ -141,7 +142,7 @@ public class KpiResourceBlock {
 			}
 			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 			"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&userid=<%=userId%>&path="+path+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
-			_htmlStream.append("		<td width='26%' style=\"align:left;vertical-align:middle;\"><div><img style=\"align:left;vertical-align:middle;\" onmouseover=\"showLegendTooltip("+thresholdJsArray+")\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
+			_htmlStream.append("		<td width='26%' style=\"align:left;vertical-align:middle;\"><div><img style=\"align:left;vertical-align:middle;\" onmouseover=\"showLegendTooltip("+thresholdJsArray+",'"+requestIdentity+"');\" onmouseout=\"hideLegendTooltip('"+requestIdentity+"');\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
 			
 		}else{
 			_htmlStream.append("		<td width='26%' style=\"align:left;vertical-align:middle;\"><div>&nbsp; &nbsp;</div></td>\n");

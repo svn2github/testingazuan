@@ -248,7 +248,7 @@ qx.Class.define("spagobi.ui.FormList", {
 			this._tabView.addListener("changeSelected",this._choosePage,this);
     		//this._tabView.setSelected(this._tabPage);//HERE ..commented
     		this._tabView.setSelected(subFormPage); //event listener for tab called
-    		alert("event listener for " + (this._tabcount-1) + " done");
+    		//alert("event listener for " + (this._tabcount-1) + " done");
     		if(this._tabcount>1){
     			this._check = true;
     		}
@@ -287,7 +287,7 @@ qx.Class.define("spagobi.ui.FormList", {
 	  	},
 		
 		_choosePage: function(e){
-			alert(e.getTarget().getSelected().getLabel() +", " + this._check);
+			//alert(e.getTarget().getSelected().getLabel() +", " + this._check);
 			//alert("inside event listener" + this._check);
 			if(this._check){	//Event Lister gets called for the deleted dummy tab
 				
@@ -340,7 +340,7 @@ qx.Class.define("spagobi.ui.FormList", {
 		 *     adds a new subform in the tab list and creates the new dummy tab after it.
 		 */
 		_dummytab: function(){
-			alert("2");
+			//alert("2");
 			
 			//if(e.getTarget().isChecked() == true){//change..find equivalent
 				this.deleteDataAt(this._instances.length-1);//commenting this works
@@ -468,7 +468,7 @@ qx.Class.define("spagobi.ui.FormList", {
 		 * @param index The index number of the subform to be deleted
 		 */
 		deleteDataAt: function(index) {
-			alert("3");
+			//alert("3");
 			
 			//var pagesArray = this._tabView.getPane().getChildren();//change
 			var pagesArray = this._tabView.getChildren();
@@ -496,7 +496,7 @@ qx.Class.define("spagobi.ui.FormList", {
 					this._instances[i] = this._instances[i+1];
 				}
 			this._instances.length--;
-			alert(this._check);
+			//alert(this._check);
 			
 				
             /*
@@ -555,7 +555,7 @@ qx.Class.define("spagobi.ui.FormList", {
 				for(i=0; i<grid.length; i++){
 							
 					if(grid[i].getUserData('field').getChecked() == true){	//current form's checked labels are stored in global array
-						this.printglobalArrayData('before');
+						//this.printglobalArrayData('before');
 						if(this._checkObject._checkedFields.length == 0){	//if global array is empty
 							this._checkObject._checkedFields[this._checkObject._checkedFields.length] = grid[i].getUserData('label').getContent();
 							this._checkObject._subFormid[this._checkObject._subFormid.length] = oldFormIndex;
@@ -579,7 +579,7 @@ qx.Class.define("spagobi.ui.FormList", {
 						}
 					}
 				}//added here	
-					this.printglobalArrayData("after");
+					//this.printglobalArrayData("after");
 					//if checkbox unchecked in form, make it enable in rest subforms
 					for(j=0; j<this._checkObject._checkedFields.length; j++){
 						if(this._checkObject._subFormid[j] == oldFormIndex){

@@ -359,6 +359,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 </select>
 </div>
+<%if (kpiId != null) {%>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -489,7 +490,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	class='portlet-form-input-field' type="text" name="weight"
 	size="10" value="<%=weight%>" maxlength="200" ></div>
 
-
+<% } %>
 </div>
 <%
  	}

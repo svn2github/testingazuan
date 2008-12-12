@@ -306,6 +306,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	key="sbi.kpi.label.kpi.name" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'>
 <select class='portlet-form-field' name="KPI_ID">
+<%
+ 
+	if(kpiId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
 
 	<%
 	List kpiList = DAOFactory.getKpiDAO().loadKpiList();
@@ -330,13 +342,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </select>
 </div>
 
+<%if (kpiId != null) {%>
+
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.thresholdName" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'>
 <select class='portlet-form-field' name="THRESHOLD_ID">
 
-	<%
+<%
+	if(thresholdId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+	<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
+
+<%
 	List thresholdList = DAOFactory.getThresholdDAO().loadThresholdList();
 	for (java.util.Iterator iterator = thresholdList.iterator(); iterator
 			.hasNext();) {
@@ -367,6 +393,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div class='div_detail_form'>	
 <select  class='portlet-form-field' name="CHART_TYPE_ID">
+
+<%
+	if(chartTypeId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
+
 	<%
 		List ChartType = DAOFactory.getDomainDAO()
 					.loadListDomainsByType("KPI_CHART");
@@ -394,6 +433,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	key="sbi.kpi.label.periodicity" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'>
 	<select class='portlet-form-field' name="ID_KPI_PERIODICITY">
+	<%
+	if(periodicityId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
+	
 	<%
 		List periodicityList = DAOFactory.getPeriodicityDAO().loadPeriodicityList();
 		for (Iterator iterator = periodicityList.iterator(); iterator.hasNext();) {
@@ -424,8 +475,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	class='portlet-form-input-field' type="text" name="weight"
 	size="10" value="<%=weight%>" maxlength="200" ></div>
 
-
-
+<%} %>
 </div>
 
 <%

@@ -43,26 +43,26 @@ public class DetailModelInstanceUtil {
 		String idKpiPeriodicityS = (String) serviceRequest
 				.getAttribute("ID_KPI_PERIODICITY");
 		
-		if(kpiIdS.equalsIgnoreCase("-1")){
+		if(kpiIdS == null || kpiIdS.equalsIgnoreCase("-1")){
 			kpiId = null;
 		}
 		else{
 			kpiId = Integer.parseInt(kpiIdS);
 		}
 		
-		if(thresholdIdS.equalsIgnoreCase("-1")){
+		if(thresholdIdS == null || thresholdIdS.equalsIgnoreCase("-1")){
 			thresholdId = null;
 		}
 		else{
 			thresholdId = Integer.parseInt(thresholdIdS);
 		}
-		if(chartTypeIdS.equalsIgnoreCase("-1")){
+		if(chartTypeIdS == null || chartTypeIdS.equalsIgnoreCase("-1")){
 			chartTypeId = null;
 		}
 		else{
 			chartTypeId = Integer.parseInt(chartTypeIdS);
 		}
-		if(idKpiPeriodicityS.equalsIgnoreCase("-1")){
+		if(idKpiPeriodicityS == null || idKpiPeriodicityS.equalsIgnoreCase("-1")){
 			idKpiPeriodicity = null;
 		}
 		else{
@@ -70,14 +70,21 @@ public class DetailModelInstanceUtil {
 		}
 		
 		String weight = (String) serviceRequest.getAttribute("weight");
-
-		KpiInstance kpiInstance = new KpiInstance();
+		
+		if (weight == null){
+			weight = "1";
+		}
+		KpiInstance kpiInstance = null;
+		if (kpiId != null){
+		kpiInstance = new KpiInstance();
 		kpiInstance.setKpi(kpiId);
 		kpiInstance.setThresholdId(thresholdId);
 		kpiInstance.setChartTypeId(chartTypeId);
 		kpiInstance.setPeriodicityId(idKpiPeriodicity);
 		kpiInstance.setWeight(new Double(weight));
+		}
 		modelInstance.setKpiInstance(kpiInstance);
+		
 		DAOFactory.getModelInstanceDAO().modifyModelInstance(modelInstance);
 	}
 

@@ -9,9 +9,11 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpi;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttr;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
 import it.eng.spagobi.kpi.model.dao.ModelDAOImpl;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
@@ -91,17 +93,17 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			KpiInstance aKpiInstance = new KpiInstance();
 			aKpiInstance.setKpiInstanceId(sbiKpiInstance.getIdKpiInstance());
 			aKpiInstance.setKpi(sbiKpiInstance.getSbiKpi().getKpiId());
-			if(sbiKpiInstance.getSbiThreshold()!= null){
+			if (sbiKpiInstance.getSbiThreshold() != null) {
 				aKpiInstance.setThresholdId(sbiKpiInstance.getSbiThreshold()
 						.getThresholdId());
 			}
-			if(sbiKpiInstance.getSbiDomains()!= null){
+			if (sbiKpiInstance.getSbiDomains() != null) {
 				aKpiInstance.setChartTypeId(sbiKpiInstance.getSbiDomains()
 						.getValueId());
 			}
-			if(sbiKpiInstance.getSbiKpiPeriodicity()!= null){
-				aKpiInstance.setPeriodicityId(sbiKpiInstance.getSbiKpiPeriodicity()
-						.getIdKpiPeriodicity());
+			if (sbiKpiInstance.getSbiKpiPeriodicity() != null) {
+				aKpiInstance.setPeriodicityId(sbiKpiInstance
+						.getSbiKpiPeriodicity().getIdKpiPeriodicity());
 			}
 			aKpiInstance.setWeight(sbiKpiInstance.getWeight());
 			aKpiInstance.setD(sbiKpiInstance.getBeginDt());
@@ -167,90 +169,100 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 					SbiKpiModelInst.class, kpiModelInstanceId);
 			sbiKpiModelInst.setDescription(kpiModelInstanceDesc);
 			sbiKpiModelInst.setName(kpiModelInstanceNm);
-			
-			SbiKpiInstance sbiKpiInstance = sbiKpiModelInst.getSbiKpiInstance();
+
+			SbiKpiInstance oldSbiKpiInstance = sbiKpiModelInst
+					.getSbiKpiInstance();
 			boolean newKpiInstanceHistory = true;
-			
+			boolean deleteOldHistory = false;
 
-			//TODO creazione di KPIINstance solo se KpiID != null
-			if(sbiKpiInstance == null ){
-				sbiKpiInstance = new SbiKpiInstance();
-				Calendar now = Calendar.getInstance();
-				sbiKpiInstance.setBeginDt(now.getTime());
+			// new kpiInstance is null
+			if (value.getKpiInstance() == null) {
 				newKpiInstanceHistory = false;
+				deleteOldHistory = true;
 			}
-			
-			if(sbiKpiInstance.getSbiKpi() == null) {
-				//TODO eliminazione KpiInstanceHistory se KPIID cambia
+
+			// old kpiInstance is null and new kpiInstance has a value
+			if (oldSbiKpiInstance == null && value.getKpiInstance() != null) {
 				newKpiInstanceHistory = false;
 			}
 
-			if (newKpiInstanceHistory && 
-					!( 
-					(
-					  areBothNull(sbiKpiInstance.getSbiKpi(),value.getKpiInstance().getKpi())
-					|| 
-					  (sbiKpiInstance.getSbiKpi()!= null && areNullOrEquals(sbiKpiInstance.getSbiKpi().getKpiId(), value.getKpiInstance().getKpi()))
-					)
-					&&
-					(
-					  areBothNull(sbiKpiInstance.getSbiThreshold(),value.getKpiInstance().getThresholdId())
-					||
-					 (sbiKpiInstance.getSbiThreshold()!=null && areNullOrEquals(sbiKpiInstance.getSbiThreshold().getThresholdId(), value.getKpiInstance().getThresholdId()))
-					)
-					&&
-					(
-					  areBothNull(sbiKpiInstance.getSbiDomains(),value.getKpiInstance().getChartTypeId())
-					||  
-					  (sbiKpiInstance.getSbiDomains()!=null && areNullOrEquals(sbiKpiInstance.getSbiDomains().getValueId(), value.getKpiInstance().getChartTypeId()))
-					)
-					&&
-					(
-					  areBothNull(sbiKpiInstance.getSbiKpiPeriodicity(),value.getKpiInstance().getPeriodicityId())
-					||
-					  (sbiKpiInstance.getSbiKpiPeriodicity()!=null && areNullOrEquals(sbiKpiInstance.getSbiKpiPeriodicity().getIdKpiPeriodicity(), value.getKpiInstance().getPeriodicityId()))
-					)
-					&& areNullOrEquals(sbiKpiInstance.getWeight(),value.getKpiInstance().getWeight()))){
-				
+			// old kpiId is different from new kpiId
+			if (newKpiInstanceHistory
+					&& !(areBothNull(oldSbiKpiInstance.getSbiKpi(), value
+							.getKpiInstance().getKpi()) || (oldSbiKpiInstance
+							.getSbiKpi() != null && areNullOrEquals(
+							oldSbiKpiInstance.getSbiKpi().getKpiId(), value
+									.getKpiInstance().getKpi())))) {
+				newKpiInstanceHistory = false;
+				deleteOldHistory = true;
+				// create new sbiKpiInstance
+			}
+
+			// check if same value is changed
+			if (newKpiInstanceHistory
+					&& !((areBothNull(oldSbiKpiInstance.getSbiThreshold(),
+							value.getKpiInstance().getThresholdId()) || (oldSbiKpiInstance
+							.getSbiThreshold() != null && areNullOrEquals(
+							oldSbiKpiInstance.getSbiThreshold()
+									.getThresholdId(), value.getKpiInstance()
+									.getThresholdId())))
+							&& (areBothNull(oldSbiKpiInstance.getSbiDomains(),
+									value.getKpiInstance().getChartTypeId()) || (oldSbiKpiInstance
+									.getSbiDomains() != null && areNullOrEquals(
+									oldSbiKpiInstance.getSbiDomains()
+											.getValueId(), value
+											.getKpiInstance().getChartTypeId())))
+							&& (areBothNull(oldSbiKpiInstance
+									.getSbiKpiPeriodicity(), value
+									.getKpiInstance().getPeriodicityId()) || (oldSbiKpiInstance
+									.getSbiKpiPeriodicity() != null && areNullOrEquals(
+									oldSbiKpiInstance.getSbiKpiPeriodicity()
+											.getIdKpiPeriodicity(), value
+											.getKpiInstance()
+											.getPeriodicityId()))) && areNullOrEquals(
+							oldSbiKpiInstance.getWeight(), value
+									.getKpiInstance().getWeight()))) {
+				// create new History
 				Calendar now = Calendar.getInstance();
 				SbiKpiInstanceHistory sbiKpiInstanceHistory = new SbiKpiInstanceHistory();
-				sbiKpiInstanceHistory.setSbiKpiInstance(sbiKpiInstance);
-				sbiKpiInstanceHistory.setSbiThreshold(sbiKpiInstance.getSbiThreshold());
-				sbiKpiInstanceHistory.setSbiDomains(sbiKpiInstance.getSbiDomains());
-				sbiKpiInstanceHistory.setWeight(sbiKpiInstance.getWeight());
-				sbiKpiInstanceHistory.setBeginDt(sbiKpiInstance.getBeginDt());
+				sbiKpiInstanceHistory.setSbiKpiInstance(oldSbiKpiInstance);
+				sbiKpiInstanceHistory.setSbiThreshold(oldSbiKpiInstance
+						.getSbiThreshold());
+				sbiKpiInstanceHistory.setSbiDomains(oldSbiKpiInstance
+						.getSbiDomains());
+				sbiKpiInstanceHistory.setWeight(oldSbiKpiInstance.getWeight());
+				sbiKpiInstanceHistory
+						.setBeginDt(oldSbiKpiInstance.getBeginDt());
 				sbiKpiInstanceHistory.setEndDt(now.getTime());
 				aSession.save(sbiKpiInstanceHistory);
 			}
-			
-			if (value.getKpiInstance().getKpi()!= null)
-				sbiKpiInstance.setSbiKpi((SbiKpi) aSession.load(SbiKpi.class, value.getKpiInstance().getKpi()));
-			// else elimnia tutto..
-			if (value.getKpiInstance().getThresholdId()!= null)
-			sbiKpiInstance.setSbiThreshold((SbiThreshold)aSession.load(
-					SbiThreshold.class, value.getKpiInstance().getThresholdId()));
-			else{
-				sbiKpiInstance.setSbiThreshold(null);
+
+			SbiKpiInstance kpiInstanceToCreate = null;
+
+			if (value.getKpiInstance() != null) {
+				if (newKpiInstanceHistory) {
+					kpiInstanceToCreate = setSbiKpiInstanceFromModelInstance(
+							aSession, value, oldSbiKpiInstance);
+				} else {
+					// create new kpiInstance
+					kpiInstanceToCreate = new SbiKpiInstance();
+					Calendar now = Calendar.getInstance();
+					kpiInstanceToCreate.setBeginDt(now.getTime());
+					kpiInstanceToCreate = setSbiKpiInstanceFromModelInstance(
+							aSession, value, kpiInstanceToCreate);
+				}
+				aSession.saveOrUpdate(kpiInstanceToCreate);
+				sbiKpiModelInst.setSbiKpiInstance(kpiInstanceToCreate);
+			} else {
+				sbiKpiModelInst.setSbiKpiInstance(null);
 			}
-			if(value.getKpiInstance().getChartTypeId()!= null)
-			sbiKpiInstance.setSbiDomains((SbiDomains)aSession.load(
-					SbiDomains.class, value.getKpiInstance().getChartTypeId()));
-			else{
-				sbiKpiInstance.setSbiDomains(null);	
-			}
-			if (value.getKpiInstance().getPeriodicityId()!= null)
-			sbiKpiInstance.setSbiKpiPeriodicity((SbiKpiPeriodicity)aSession.load(
-					SbiKpiPeriodicity.class, value.getKpiInstance().getPeriodicityId()));
-			else{
-				sbiKpiInstance.setSbiKpiPeriodicity(null);
-			}
-			
-			sbiKpiInstance.setWeight(value.getKpiInstance().getWeight());
-			
-			aSession.saveOrUpdate(sbiKpiInstance);
-			sbiKpiModelInst.setSbiKpiInstance(sbiKpiInstance);
-			
 			aSession.update(sbiKpiModelInst);
+
+			if (deleteOldHistory) {
+				deleteKpiInstance(aSession, oldSbiKpiInstance
+						.getIdKpiInstance());
+			}
+
 			tx.commit();
 
 		} catch (HibernateException he) {
@@ -269,23 +281,60 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		}
 		logger.debug("OUT");
 	}
-	
 
-	private boolean areBothNull(Object a, Object b){
+	private SbiKpiInstance setSbiKpiInstanceFromModelInstance(Session aSession,
+			ModelInstance value, SbiKpiInstance sbiKpiInstance) {
+		if (value.getKpiInstance().getKpi() != null){
+			sbiKpiInstance.setSbiKpi((SbiKpi) aSession.load(SbiKpi.class, value
+					.getKpiInstance().getKpi()));
+		}
+		else{
+			sbiKpiInstance.setSbiKpi(null);
+		}
+		if (value.getKpiInstance().getThresholdId() != null){
+			sbiKpiInstance.setSbiThreshold((SbiThreshold) aSession
+					.load(SbiThreshold.class, value.getKpiInstance()
+							.getThresholdId()));
+		}
+		else {
+			sbiKpiInstance.setSbiThreshold(null);
+		}
+
+		if (value.getKpiInstance().getChartTypeId() != null) {
+			sbiKpiInstance.setSbiDomains((SbiDomains) aSession.load(
+					SbiDomains.class, value.getKpiInstance().getChartTypeId()));
+		}
+		else {
+			sbiKpiInstance.setSbiDomains(null);
+		}
+		if (value.getKpiInstance().getPeriodicityId() != null) {
+			sbiKpiInstance.setSbiKpiPeriodicity((SbiKpiPeriodicity) aSession
+					.load(SbiKpiPeriodicity.class, value.getKpiInstance()
+							.getPeriodicityId()));
+		}
+		else {
+			sbiKpiInstance.setSbiKpiPeriodicity(null);
+		}
+
+		sbiKpiInstance.setWeight(value.getKpiInstance().getWeight());
+		return sbiKpiInstance;
+	}
+
+	private boolean areBothNull(Object a, Object b) {
 		boolean toReturn = false;
-		if(a == null && b == null)
+		if (a == null && b == null)
 			toReturn = true;
 		return toReturn;
 	}
-	
-	private boolean areNullOrEquals(Object a, Object b){
+
+	private boolean areNullOrEquals(Object a, Object b) {
 		boolean toReturn = false;
-		if(a == null && b == null)
+		if (a == null && b == null)
 			toReturn = true;
 		else
 			toReturn = false;
-		
-		if(!toReturn && a != null && b !=null && a.equals(b))
+
+		if (!toReturn && a != null && b != null && a.equals(b))
 			toReturn = true;
 		return toReturn;
 	}
@@ -363,7 +412,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			tx = aSession.beginTransaction();
 			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) aSession
 					.load(SbiKpiModelInst.class, id);
-			toReturn = toModelInstanceWithChildren(aSession,hibSbiKpiModelInst, null);
+			toReturn = toModelInstanceWithChildren(aSession,
+					hibSbiKpiModelInst, null);
 		} catch (HibernateException he) {
 			logger.error("Error while loading the ModelInstance with id "
 					+ ((id == null) ? "" : id.toString()), he);
@@ -385,8 +435,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 	}
 
-	private ModelInstance toModelInstanceWithChildren(Session session, SbiKpiModelInst value,
-			Integer parentId) {
+	private ModelInstance toModelInstanceWithChildren(Session session,
+			SbiKpiModelInst value, Integer parentId) {
 		logger.debug("IN");
 		ModelInstance toReturn = new ModelInstance();
 		String name = value.getName();
@@ -395,16 +445,17 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 		List childrenNodes = new ArrayList();
 
-//		Set children = value.getSbiKpiModelInsts();
-		
+		// Set children = value.getSbiKpiModelInsts();
+
 		Criteria critt = session.createCriteria(SbiKpiModelInst.class);
 		critt.add(Expression.eq("sbiKpiModelInst", value));
 		critt.addOrder(Order.asc("name"));
 		List children = critt.list();
-		
+
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 			SbiKpiModelInst sbiKpichild = (SbiKpiModelInst) iterator.next();
-			ModelInstance child = toModelInstanceWithChildren(session,sbiKpichild, id);
+			ModelInstance child = toModelInstanceWithChildren(session,
+					sbiKpichild, id);
 			childrenNodes.add(child);
 		}
 
@@ -474,6 +525,78 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		}
 		logger.debug("OUT");
 		return toReturn;
+
+	}
+
+	private void deleteKpiInstance(Session aSession, Integer kpiInstId)
+			throws EMFUserError {
+		SbiKpiInstance sbiKpiInst = (SbiKpiInstance) aSession.load(
+				SbiKpiInstance.class, kpiInstId);
+
+		// deleteKpiHistory(Integer sbiKpiInstance)
+		Criteria critt = aSession.createCriteria(SbiKpiInstanceHistory.class);
+		critt.add(Expression.eq("sbiKpiInstance", sbiKpiInst));
+		List sbiKpiInstanceHistory = critt.list();
+
+		for (Iterator iterator = sbiKpiInstanceHistory.iterator(); iterator
+				.hasNext();) {
+			SbiKpiInstanceHistory sbiKpiH = (SbiKpiInstanceHistory) iterator
+					.next();
+
+			aSession.delete(sbiKpiH);
+		}
+
+		deleteKpiValue(aSession, kpiInstId);
+
+		aSession.delete(sbiKpiInst);
+	}
+
+	private void deleteKpiValue(Session aSession, Integer kpiInstId) {
+		SbiKpiInstance sbiKpiInst = (SbiKpiInstance) aSession.load(
+				SbiKpiInstance.class, kpiInstId);
+		Criteria critt = aSession.createCriteria(SbiKpiValue.class);
+		critt.add(Expression.eq("sbiKpiInstance", sbiKpiInst));
+		List sbiKpiValueList = critt.list();
+
+		for (Iterator iterator = sbiKpiValueList.iterator(); iterator.hasNext();) {
+			SbiKpiValue sbiKpiValue = (SbiKpiValue) iterator.next();
+
+			aSession.delete(sbiKpiValue);
+
+		}
+	}
+	
+	public void deleteKpiValue(Integer kpiInstId) throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpiInstance sbiKpiInst = (SbiKpiInstance) aSession.load(
+				SbiKpiInstance.class, kpiInstId);
+			Criteria critt = aSession.createCriteria(SbiKpiValue.class);
+			critt.add(Expression.eq("sbiKpiInstance", sbiKpiInst));
+			List sbiKpiValueList = critt.list();
+
+			for (Iterator iterator = sbiKpiValueList.iterator(); iterator.hasNext();) {
+				SbiKpiValue sbiKpiValue = (SbiKpiValue) iterator.next();
+
+				aSession.delete(sbiKpiValue);
+			}
+		} catch (HibernateException he) {
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
 
 	}
 

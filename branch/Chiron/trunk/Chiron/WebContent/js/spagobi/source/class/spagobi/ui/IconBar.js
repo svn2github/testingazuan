@@ -253,7 +253,7 @@ qx.Class.define("spagobi.ui.IconBar", {
 	 
 	 	
 	 	_onkeypress: function(e) {
-	 		
+	 	/*	
 			switch(e.getKeyIdentifier()) {
             case "Up":
               var vPrevious = true;
@@ -264,18 +264,18 @@ qx.Class.define("spagobi.ui.IconBar", {
             default:
               return;
           	}
-			/*change-old
+		//	change-old
 		    var vChild =
 		        (vPrevious
 		         ? (e.getTarget().isFirstChild()
 		            ? e.getTarget().getParent().getLastChild()
-		            : e.getTarget().getPreviousSibling())
+		            : e.getTarget().getPreviousSiblingOf())
 		         : (e.getTarget().isLastChild()
 		            ? e.getTarget().getParent().getFirstChild()
-		            : e.getTarget().getNextSibling()));
-			*/
+		            : e.getTarget().getNextSiblingOf()));
 			
-			/*change-new ..not tested
+			
+		//	change-new ..not tested
 			 var vChild =
 		        (vPrevious
 		         ? (e.getTarget()== e.getTarget()._getChildren()[0]
@@ -290,9 +290,9 @@ qx.Class.define("spagobi.ui.IconBar", {
 		    vChild.setFocused(true);
 			vChild.setBackgroundColor(this._focusedBackgroudColor);
 			e.getTarget().setBackgroundColor(null);
-			*/ 
+			 */
 	 	}
-	 	
+	 	// 8K24-4225-1105-EKK5-5000-0021-MK13
 	}
 	
 });

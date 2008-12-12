@@ -508,13 +508,13 @@ qx.Class.define("spagobi.ui.FormList", {
 		
 		//Function to display the list of tabs added in tabview array
 		childrenList: function(s){
-			alert(s);
+		//	alert(s);
 			var list = "";
 			var children = this._tabView.getChildren();
 			for(i in children){
 				list = list + children[i].getLabel();
 			}
-			alert(list);
+		//	alert(list);
 		},
 		/**
 		 * Function to set the data of the formlist.
@@ -537,7 +537,7 @@ qx.Class.define("spagobi.ui.FormList", {
 			for(a in this._checkObject._checkedFields){
 					str = str + this._checkObject._subFormid[a] + " : "+ this._checkObject._checkedFields[a]+"\n";
 			}
-			alert(str);	  
+		//	alert(str);	  
 		},
 		
 		

@@ -34,6 +34,7 @@ public class DetailModelInstanceUtil {
 		Integer thresholdId = null;
 		Integer chartTypeId = null;
 		Integer idKpiPeriodicity = null;
+		boolean restoreDefaultFlag = false;
 		
 		String kpiIdS = (String) serviceRequest.getAttribute("KPI_ID");
 		String thresholdIdS = (String) serviceRequest
@@ -42,6 +43,11 @@ public class DetailModelInstanceUtil {
 				.getAttribute("CHART_TYPE_ID");
 		String idKpiPeriodicityS = (String) serviceRequest
 				.getAttribute("ID_KPI_PERIODICITY");
+		String restoreDefault = (String)serviceRequest.getAttribute("RESTORE_DEFAULT");
+		if(restoreDefault != null){
+			restoreDefaultFlag = true;
+		}
+		
 		
 		if(kpiIdS == null || kpiIdS.equalsIgnoreCase("-1")){
 			kpiId = null;
@@ -71,17 +77,24 @@ public class DetailModelInstanceUtil {
 		
 		String weight = (String) serviceRequest.getAttribute("weight");
 		
-		if (weight == null){
-			weight = "1";
-		}
+		
 		KpiInstance kpiInstance = null;
 		if (kpiId != null){
-		kpiInstance = new KpiInstance();
-		kpiInstance.setKpi(kpiId);
-		kpiInstance.setThresholdId(thresholdId);
-		kpiInstance.setChartTypeId(chartTypeId);
-		kpiInstance.setPeriodicityId(idKpiPeriodicity);
-		kpiInstance.setWeight(new Double(weight));
+			kpiInstance = new KpiInstance();
+			kpiInstance.setKpi(kpiId);
+			kpiInstance.setChartTypeId(chartTypeId);
+			kpiInstance.setPeriodicityId(idKpiPeriodicity);
+			if(restoreDefaultFlag){
+				DAOFactory.getKpiDAO().setKpiInstanceFromKPI(kpiInstance, kpiId);
+			}else{
+				kpiInstance.setThresholdId(thresholdId);
+				if (weight != null){
+					kpiInstance.setWeight(new Double(weight));
+				}
+				else{
+					kpiInstance.setWeight(null);
+				}
+			}
 		}
 		modelInstance.setKpiInstance(kpiInstance);
 		

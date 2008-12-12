@@ -336,7 +336,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</option>
 <%	} %>
 
-
 	<%
 	List kpiList = DAOFactory.getKpiDAO().loadKpiList();
 	for (java.util.Iterator iterator = kpiList.iterator(); iterator
@@ -359,6 +358,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 </select>
 </div>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.restoreKpiValue" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+<input type="checkbox" name="RESTORE_DEFAULT" >
+</div>
+
 <%if (kpiId != null) {%>
 
 <div class='div_detail_label'><span
@@ -366,19 +373,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	key="sbi.kpi.label.thresholdName" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'>
 <select class='portlet-form-field' name="THRESHOLD_ID">
+
 <%
 	if(thresholdId == null) { %>
 		<option value="-1"
 			label="" selected>
 		</option>
-<%	}
+	<%	}
 	else {  %>
 		<option value="-1"
 			label="" selected>
 		</option>
 <%	} %>
 
-	<%
+<%
 	List thresholdList = DAOFactory.getThresholdDAO().loadThresholdList();
 	for (java.util.Iterator iterator = thresholdList.iterator(); iterator
 			.hasNext();) {
@@ -402,6 +410,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 </div>
 
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.weight" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="weight"
+	size="10" value="<%=weight%>" maxlength="200" ></div>
+
+<hr>
+
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -409,7 +426,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div class='div_detail_form'>	
 <select  class='portlet-form-field' name="CHART_TYPE_ID">
-	<%
+
+<%
 	if(chartTypeId == null) { %>
 		<option value="-1"
 			label="" selected>
@@ -420,7 +438,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			label="" selected>
 		</option>
 <%	} %>
-	
+
 	<%
 		List ChartType = DAOFactory.getDomainDAO()
 					.loadListDomainsByType("KPI_CHART");
@@ -481,17 +499,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </select>
 </div>
 
-
-
-<div class='div_detail_label'><span
-	class='portlet-form-field-label'> <spagobi:message
-	key="sbi.kpi.label.weight" bundle="<%=messageBundle%>" /> </span></div>
-<div class='div_detail_form'><input
-	class='portlet-form-input-field' type="text" name="weight"
-	size="10" value="<%=weight%>" maxlength="200" ></div>
-
-<% } %>
+<%} %>
 </div>
+
 <%
  	}
  %>

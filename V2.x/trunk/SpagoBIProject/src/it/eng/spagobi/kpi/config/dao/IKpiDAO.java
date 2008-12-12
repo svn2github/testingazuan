@@ -140,5 +140,7 @@ public interface IKpiDAO {
 	public void modifyResource(Resource resource) throws EMFUserError;
 
 	public Integer insertResource(Resource toCreate) throws EMFUserError;
+	
+	public void setKpiInstanceFromKPI(KpiInstance kpiInstance, Integer kpiId) throws EMFUserError;
 
 }

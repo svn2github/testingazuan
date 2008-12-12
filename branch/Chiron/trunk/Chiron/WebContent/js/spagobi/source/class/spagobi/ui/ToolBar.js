@@ -143,7 +143,7 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	  		handler: this.showAbout,
 	  		context: this,
 	  		"label": 'Help',
-	  		icon: "qx/icon/Oxygen/16/actions/help-about.png",
+	  		icon: qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/help-about.png"),
 	  		tooltip: 'Help'
 	  	});
 	  	

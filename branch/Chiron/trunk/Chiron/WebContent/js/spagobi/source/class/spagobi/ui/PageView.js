@@ -172,6 +172,10 @@ qx.Class.define("spagobi.ui.PageView", {
     			{
     				this._pages[pageName] = new spagobi.ui.custom.FunctionalClassDummy(pageName);
     			}
+    			else if (pageName== "func")
+    			{
+    				this._pages[pageName] = new spagobi.ui.custom.FunctionalTree(pageName);
+    			}
     			else
     			{	
     				this._pages[pageName] = new spagobi.ui.custom.MasterDetailsPage(pageName);

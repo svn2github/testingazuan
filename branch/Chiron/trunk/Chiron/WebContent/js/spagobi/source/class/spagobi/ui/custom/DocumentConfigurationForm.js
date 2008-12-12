@@ -164,7 +164,7 @@ qx.Class.define("spagobi.ui.custom.DocumentConfigurationForm", {
 	
 	members: {
 		
-		//	need Andrea's Help!!
+		
 		_funcofrelatedcombo: function (){
 			var array1 = [];
         	var dummycombo = this.getInputField('engine').getUserData('field');
@@ -189,70 +189,70 @@ qx.Class.define("spagobi.ui.custom.DocumentConfigurationForm", {
         			for (var i=0; i<dummyarray.length; i++) {
         				this.getInputField('engine').items[i] = dummyarray[i];
         			}*/
-        			this.getInputField('engine').setDisplay(true);
-        			this.getInputField('datasource').setDisplay(true);
-        			this.getInputField('state').setDisplay(true);
-        			this.getInputField('refreshseconds').setDisplay(true);
-        			this.getInputField('cryptable').setDisplay(true);
-        			this.getInputField('visibility').setDisplay(true);
-        			this.getInputField('template').setDisplay(true);
-					this.getInputField('useDataSet').setDisplay(false);
-					this.getInputField('templatebuild').setDisplay(false);
+        			this.getInputField('engine').setVisibility("visible");
+        			this.getInputField('datasource').setVisibility("visible");
+        			this.getInputField('state').setVisibility("visible");
+        			this.getInputField('refreshseconds').setVisibility("visible");
+        			this.getInputField('cryptable').setVisibility("visible");
+        			this.getInputField('visibility').setVisibility("visible");
+        			this.getInputField('template').setVisibility("visible");
+					this.getInputField('useDataSet').setVisibility("excluded");
+					this.getInputField('templatebuild').setVisibility("excluded");
 					
 				}  else if (e.getValue()=="On-line Analytical Processing") {
-					this.getInputField('engine').setDisplay(true);
-        			this.getInputField('datasource').setDisplay(true);
-        			this.getInputField('state').setDisplay(true);
-        			this.getInputField('refreshseconds').setDisplay(true);
-        			this.getInputField('cryptable').setDisplay(true);
-        			this.getInputField('visibility').setDisplay(true);
-        			this.getInputField('template').setDisplay(true);
-        			this.getInputField('templatebuild').setDisplay(true);
-					this.getInputField('useDataSet').setDisplay(false); 
+					this.getInputField('engine').setVisibility("visible");
+        			this.getInputField('datasource').setVisibility("visible");
+        			this.getInputField('state').setVisibility("visible");
+        			this.getInputField('refreshseconds').setVisibility("visible");
+        			this.getInputField('cryptable').setVisibility("visible");
+        			this.getInputField('visibility').setVisibility("visible");
+        			this.getInputField('template').setVisibility("visible");
+        			this.getInputField('templatebuild').setVisibility("visible");
+					this.getInputField('useDataSet').setVisibility("excluded"); 
 					
 				}  else if (e.getValue()=="Data Mining Model" || e.getValue()=="Office Document") {
-					this.getInputField('engine').setDisplay(true);
-					this.getInputField('state').setDisplay(true);
-        			this.getInputField('refreshseconds').setDisplay(true);
-        			this.getInputField('cryptable').setDisplay(true);
-        			this.getInputField('visibility').setDisplay(true);
-        			this.getInputField('template').setDisplay(true);
-					this.getInputField('datasource').setDisplay(false);
-					this.getInputField('useDataSet').setDisplay(false);
-					this.getInputField('templatebuild').setDisplay(false);
+					this.getInputField('engine').setVisibility("visible");
+					this.getInputField('state').setVisibility("visible");
+        			this.getInputField('refreshseconds').setVisibility("visible");
+        			this.getInputField('cryptable').setVisibility("visible");
+        			this.getInputField('visibility').setVisibility("visible");
+        			this.getInputField('template').setVisibility("visible");
+					this.getInputField('datasource').setVisibility("excluded");
+					this.getInputField('useDataSet').setVisibility("excluded");
+					this.getInputField('templatebuild').setVisibility("excluded");
 					
 			   	} else if (e.getValue()=="Dashboard") {
-			   		this.getInputField('engine').setDisplay(true);
-					this.getInputField('state').setDisplay(true);
-        			this.getInputField('refreshseconds').setDisplay(true);
-        			this.getInputField('cryptable').setDisplay(true);
-        			this.getInputField('visibility').setDisplay(true);
-        			this.getInputField('template').setDisplay(true);
-					this.getInputField('useDataSet').setDisplay(true);
-					this.getInputField('datasource').setDisplay(false);
-					this.getInputField('templatebuild').setDisplay(false);
+			   		this.getInputField('engine').setVisibility("visible");
+					this.getInputField('state').setVisibility("visible");
+        			this.getInputField('refreshseconds').setVisibility("visible");
+        			this.getInputField('cryptable').setVisibility("visible");
+        			this.getInputField('visibility').setVisibility("visible");
+        			this.getInputField('template').setVisibility("visible");
+					this.getInputField('useDataSet').setVisibility("visible");
+					this.getInputField('datasource').setVisibility("excluded");
+					this.getInputField('templatebuild').setVisibility("excluded");
 					
 				} else if (e.getValue()=="Datamart Model" || e.getValue()=="Map" || e.getValue()=="ETL Process" || e.getValue()=="Document Composite") {
-					this.getInputField('engine').setDisplay(true);
-				    this.getInputField('state').setDisplay(true);
-        			this.getInputField('refreshseconds').setDisplay(true);
-        			this.getInputField('cryptable').setDisplay(true);
-        			this.getInputField('visibility').setDisplay(true);
-        			this.getInputField('template').setDisplay(true);
-        			this.getInputField('datasource').setDisplay(true);
-					this.getInputField('useDataSet').setDisplay(false);
-					this.getInputField('templatebuild').setDisplay(false);
+					this.getInputField('engine').setVisibility("visible");
+				    this.getInputField('state').setVisibility("visible");
+        			this.getInputField('refreshseconds').setVisibility("visible");
+        			this.getInputField('cryptable').setVisibility("visible");
+        			this.getInputField('visibility').setVisibility("visible");
+        			this.getInputField('template').setVisibility("visible");
+        			this.getInputField('datasource').setVisibility("visible");
+					this.getInputField('useDataSet').setVisibility("excluded");
+					this.getInputField('templatebuild').setVisibility("excluded");
 					
 				} else if (e.getValue()=="Dossier") {
-					this.getInputField('engine').setDisplay(true);
-					this.getInputField('state').setDisplay(true);
-        			this.getInputField('refreshseconds').setDisplay(true);
-        			this.getInputField('cryptable').setDisplay(true);
-        			this.getInputField('visibility').setDisplay(true);
-        			this.getInputField('template').setDisplay(true);
-        			this.getInputField('datasource').setDisplay(true);
-					this.getInputField('templatebuild').setDisplay(true);
-					this.getInputField('datasource').setDisplay(false);
+					this.getInputField('engine').setVisibility("visible");
+					this.getInputField('state').setVisibility("visible");
+        			this.getInputField('refreshseconds').setVisibility("visible");
+        			this.getInputField('cryptable').setVisibility("visible");
+        			this.getInputField('visibility').setVisibility("visible");
+        			this.getInputField('template').setVisibility("visible");
+        			this.getInputField('datasource').setVisibility("visible");
+					this.getInputField('templatebuild').setVisibility("visible");
+					this.getInputField('datasource').setVisibility("excluded");
 					
 				} 
         	}

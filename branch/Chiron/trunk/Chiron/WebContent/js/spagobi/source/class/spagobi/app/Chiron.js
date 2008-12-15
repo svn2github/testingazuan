@@ -73,7 +73,7 @@ qx.Class.define("spagobi.app.Chiron",
   	_container: undefined,//change..added
   	containerToolBar: undefined,//chnage.. added
   	mainPane: {},
-  	
+  	//_defaultToolbarButton: undefined,
   	
     main : function()
     {
@@ -113,16 +113,18 @@ qx.Class.define("spagobi.app.Chiron",
          
          	inlineWidget.add( applicationLayout );
       	} else {
-      		         	
-         	//applicationLayout.addToDocument();//change
-         	this.getRoot().add(applicationLayout, {edge:0});//, {edge:0} //, width: "100%"
-         	
-         	//var d = qx.legacy.ui.core.ClientDocument.getInstance();//change
-         	//var d = this.getRoot();//change ..no need        
+      		this.getRoot().add(applicationLayout, {edge:0});//, {edge:0} //, width: "100%"
+      		/*
+         	var str = "Hello World";
+			var myLabel = new qx.ui.basic.Label();
+			myLabel.set({content: this.tr(str)});
+			alert(myLabel.getContent());
+			*/    
       	}
-      	  
+      	
+      	//this._defaultToolbarButton = 'resources';
       	this._selectToolbar('resources');
-     	
+     	//this._selectToolbar(this._defaultToolbarButton);
     },
     
     /**
@@ -154,7 +156,7 @@ qx.Class.define("spagobi.app.Chiron",
 		  		command: 'Control+Q',
 		  		handler: function() {this._selectToolbar('resources');},
 		  		context: this,
-		  		"label": 'Resources',
+		  		"label": this.tr('Resources'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.',
 		  		defaultbutton: true
@@ -162,56 +164,56 @@ qx.Class.define("spagobi.app.Chiron",
 		  		command: 'Control+W',
 		  		handler: function() {this._selectToolbar('catalogues');},
 		  		context: this,
-		  		"label": 'Catalogues',
+		  		"label": this.tr('Catalogues'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+E',
 		  		handler: function() {this._selectToolbar('behaviouralModel');},
 		  		context: this,
-		  		"label": 'Behavioural Model',
+		  		"label": this.tr('Behavioural Model'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+R',
 		  		handler: function() {this._selectToolbar('analyticalModel');},
 		  		context: this,
-		  		"label": 'Analytical Model',
+		  		"label": this.tr('Analytical Model'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+T',
 		  		handler: function() {this._selectToolbar('adminDistributionList');},
 		  		context: this,
-		  		"label": 'Admin Distribution List',
+		  		"label": this.tr('Admin Distribution List'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+Y',
 		  		handler: function() {this._selectToolbar('functionality');},
 		  		context: this,
-		  		"label": 'Functionality',
+		  		"label": this.tr('Functionality'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+U',
 		  		handler: function() {this._selectToolbar('events');},
 		  		context: this,
-		  		"label": 'Events',
+		  		"label": this.tr('Events'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+I',
 		  		handler: function() {this._selectToolbar('tools');},
 		  		context: this,
-		  		"label": 'Tools',
+		  		"label": this.tr('Tools'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}, {
 		  		command: 'Control+O',
 		  		handler: function() {this._selectToolbar('hotLinks');},
 		  		context: this,
-		  		"label": 'Hot Links',
+		  		"label": this.tr('Hot Links'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
 	  		}

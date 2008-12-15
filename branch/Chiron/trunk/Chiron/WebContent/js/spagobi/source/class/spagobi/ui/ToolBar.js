@@ -95,6 +95,7 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	    {
 	      en : this.tr("English"),
 	      de : this.tr("German"),
+	      fr : this.tr("French"),
 	      tr : this.tr("Turkish"),
 	      it : this.tr("Italian"),
 	      es : this.tr("Spanish"),
@@ -142,8 +143,8 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	  		command: 'F1',
 	  		handler: this.showAbout,
 	  		context: this,
-	  		"label": 'Help',
-	  		icon: qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/help-about.png"),
+	  		"label": this.tr('Help'),
+	  		icon: "qx/icon/Oxygen/16/actions/help-about.png",
 	  		tooltip: 'Help'
 	  	});
 	  	

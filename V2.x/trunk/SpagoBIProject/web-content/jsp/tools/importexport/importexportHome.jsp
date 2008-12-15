@@ -39,7 +39,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
 
 <%  
-	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TreeObjectsModule"); 
 	String exportFilePath = (String)aServiceRequest.getAttribute(ImportExportConstants.EXPORT_FILE_PATH);
 	ImportResultInfo iri = (ImportResultInfo)aServiceRequest.getAttribute(ImportExportConstants.IMPORT_RESULT_INFO);
 
@@ -50,20 +49,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
    
 	Map formExportUrlPars = new HashMap();
-	formExportUrlPars.put("PAGE", "ImportExportPage");
-	formExportUrlPars.put("MESSAGEDET", "Export");
 	String formExportUrl = urlBuilder.getUrl(request, formExportUrlPars);
    
 	Map formImportUrlPars = new HashMap();
-	//if (ChannelUtilities.isPortletRunning()) {
-	//	formImportUrlPars.put("PAGE", "ImportExportPage");
-	//}
 	String formImportUrl = urlBuilder.getUrl(request, formImportUrlPars);
   
 	String downloadUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userId);
 	downloadUrl += "&ACTION_NAME=DOWNLOAD_FILE_ACTION";
 	if((exportFilePath!=null) && !exportFilePath.trim().equalsIgnoreCase("") ) {
-		downloadUrl += "&OPERATION=download&PATH="+  exportFilePath;
+		downloadUrl += "&OPERATION=downloadExportFile&FILE_NAME="+  exportFilePath;
 	}
    
 %>
@@ -114,18 +108,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<spagobi:error/>
 
  
-  <form method='POST' action='<%=formExportUrl%>' id='exportForm' name='exportForm'> 
+  <form method='POST' action='<%=formExportUrl%>' id='exportForm' name='exportForm'>
+  	<input type="hidden" name="PAGE" value="ImportExportPage" />
+  	<input type="hidden" name="MESSAGEDET" value="Export" />
 	<div style="float:left;width:50%;" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">	
 				<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>
 		</div>
 		<div style="float:left;width:10%;">
 		  <center>
-			 <a href="javascript:submitExportForm()">
+			<a href="javascript:submitExportForm();">
 					<img src= '<%=urlBuilder.getResourceLink(request, "/img/tools/importexport/importexport32.gif") %>'
 						title='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' 
 						alt='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' />
-				</a>
+			</a>
 		  </center>
 		</div>
 		<div id="divProgress"  
@@ -163,9 +159,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</form>
 
     <form method='POST' action='<%=formImportUrl%>' id='importForm' name='importForm' enctype="multipart/form-data">
-	<%-- if(ChannelUtilities.isWebRunning()) { --%>
-		<input type="hidden" name="PAGE" value="ImportExportPage" />
-	<%-- } --%>
+	<input type="hidden" name="PAGE" value="ImportExportPage" />
  	<div style="float:left;width:45%" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:78%;">
 				<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>

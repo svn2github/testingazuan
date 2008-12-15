@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.service;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
@@ -30,14 +31,13 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-public class GetSnapshotContentAction extends BaseProfileAction {
+public class GetSnapshotContentAction extends AbstractHttpAction {
 
 	static Logger logger = Logger.getLogger(GetSnapshotContentAction.class);
 	
@@ -46,7 +46,6 @@ public class GetSnapshotContentAction extends BaseProfileAction {
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		logger.debug("IN");
-		super.service(request, response);
 		freezeHttpResponse();
 		HttpServletResponse httpResp = getHttpResponse();
 		String objectIdStr = (String)request.getAttribute(ObjectsTreeConstants.OBJECT_ID);

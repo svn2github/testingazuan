@@ -47,9 +47,7 @@ import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.engines.config.bo.Engine;
-import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
@@ -140,11 +138,9 @@ public class ExportManager implements IExportManager {
      * 
      * @param objIds the obj ids
      * 
-     * @return the string
-     * 
      * @throws EMFUserError the EMF user error
      */
-    public String exportObjects(List objIds) throws EMFUserError {
+    public void exportObjects(List objIds) throws EMFUserError {
 	logger.debug("IN");
 	try {
 	    exportPropertiesFile();
@@ -155,9 +151,8 @@ public class ExportManager implements IExportManager {
 		exportSingleObj(idobj);
 	    }
 	    closeSession();
-	    String archivePath = createExportArchive();
+	    createExportArchive();
 	    deleteTmpFolder();
-	    return archivePath;
 	} catch (EMFUserError emfue) {
 	    throw emfue;
 	} catch (Exception e) {
@@ -182,10 +177,9 @@ public class ExportManager implements IExportManager {
     /**
      * Creates the compress export file
      * 
-     * @return The path of the exported compress file
      * @throws EMFUserError
      */
-    private String createExportArchive() throws EMFUserError {
+    private void createExportArchive() throws EMFUserError {
 	logger.debug("IN");
 	FileOutputStream fos = null;
 	ZipOutputStream out = null;
@@ -215,8 +209,6 @@ public class ExportManager implements IExportManager {
 	    }
 	    logger.debug("OUT");
 	}
-
-	return archivePath;
     }
 
     /**

@@ -26,6 +26,7 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.security.IEngUserProfile;
@@ -34,7 +35,6 @@ import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.common.SsoServiceInterface;
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-public class ExecuteAndSendAction extends BaseProfileAction {
+public class ExecuteAndSendAction extends AbstractHttpAction {
 
     private static transient Logger logger = Logger.getLogger(ExecuteAndSendAction.class);
 
@@ -76,10 +76,6 @@ public class ExecuteAndSendAction extends BaseProfileAction {
      * @see it.eng.spagobi.commons.services.BaseProfileAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
      */
     public void service(SourceBean request, SourceBean responseSb) throws Exception {
-    	
-    	//Check of the userId in order to keep performing the request
-		super.service(request, responseSb);
-		
 	logger.debug("IN");
 
 	freezeHttpResponse();

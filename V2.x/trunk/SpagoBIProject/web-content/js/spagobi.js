@@ -309,3 +309,24 @@ function setCookie(cookieName, cookieValue, expires, path, domain, secure) {
 		+ (domain ? '; domain=' + domain : '')
 		+ (secure ? '; secure' : '');
 };
+
+if (!Array.prototype.contains){
+	Array.prototype.contains = function(obj){
+		var len = this.length;
+		for (var i = 0; i < len; i++){
+			if(this[i]===obj){return true;}
+		}
+    	return false;
+	};
+}
+
+if (!Array.prototype.removeFirst){
+	Array.prototype.removeFirst = function(obj) {
+		for (i = 0; i < this.length; i++) {
+			if(this[i] == obj) {
+				this.splice(i, 1);
+				return;
+			}
+		}
+	};
+}

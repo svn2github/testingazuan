@@ -35,16 +35,24 @@
              <param-value>https://localhost:8443/SpagoBI/proxyReceptor</param-value> 
        </init-param>           
  </filter>    
+ -->   
     
+  	<!-- This filter tries to create the user profile object before AdapterHTTP servlet execution -->
+ 	<filter>
+		<filter-name>ProfileFilter</filter-name>
+		<filter-class>it.eng.spagobi.commons.filters.ProfileFilter</filter-class>
+	</filter>
   	
-  	
+ <!--  	
    <filter-mapping>
     <filter-name>CAS_Filter</filter-name>
     <url-pattern>/servlet/*</url-pattern>
   </filter-mapping>  
-
  -->
-
+	<filter-mapping>
+		<filter-name>ProfileFilter</filter-name>
+		<url-pattern>/servlet/*</url-pattern>
+	</filter-mapping>
  
     <!-- START LISTENERS -->
     <listener>
@@ -161,7 +169,7 @@
         <welcome-file>index.htm</welcome-file>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-		<!-- 
+
 	  <error-page>
 	  	<exception-type>java.lang.Throwable</exception-type>
 	  	<location>/html/error.html</location>
@@ -175,7 +183,7 @@
 	  <error-page>
 	  	<error-code>500</error-code>
 	  	<location>/html/error.html</location>
-	  </error-page> -->
+	  </error-page>
   
   <!--
 	<resource-ref>

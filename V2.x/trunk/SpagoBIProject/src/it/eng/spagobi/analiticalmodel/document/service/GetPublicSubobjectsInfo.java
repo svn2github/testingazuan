@@ -22,11 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.service;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.util.JavaScript;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.container.SpagoBIRequestContainer;
 
 import java.util.Iterator;
@@ -45,13 +45,12 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class GetPublicSubobjectsInfo extends BaseProfileAction {
+public class GetPublicSubobjectsInfo extends AbstractHttpAction {
 
 	static Logger logger = Logger.getLogger(GetPublicSubobjectsInfo.class);
 	
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		logger.debug("IN");
-		super.service(serviceRequest, serviceResponse);
 		freezeHttpResponse();
 		HttpServletResponse httResponse = getHttpResponse();
 		StringBuffer output = new StringBuffer();

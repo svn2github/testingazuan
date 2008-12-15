@@ -22,7 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.importexport.services;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.commons.services.BaseProfileAction;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 
 import java.io.File;
@@ -34,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-public class DownloadFileAction extends BaseProfileAction {
+public class DownloadFileAction extends AbstractHttpAction {
 
     static private Logger logger = Logger.getLogger(DownloadFileAction.class);
 
@@ -48,7 +49,7 @@ public class DownloadFileAction extends BaseProfileAction {
 	    HttpServletRequest httpRequest = getHttpRequest();
 	    HttpServletResponse httpResponse = getHttpResponse();
 	    String operation = (String) request.getAttribute("OPERATION");
-	    if ((operation != null) && (operation.equalsIgnoreCase("download"))) {
+	    if ((operation != null) && (operation.equalsIgnoreCase("downloadExportFile"))) {
 		manageDownload(httpRequest, httpResponse, true);
 		return;
 	    } else if ((operation != null) && (operation.equalsIgnoreCase("downloadLog"))) {
@@ -77,14 +78,22 @@ public class DownloadFileAction extends BaseProfileAction {
     private void manageDownload(HttpServletRequest request, HttpServletResponse response, boolean deleteFile) {
 	logger.debug("IN");
 	try {
-	    String exportFilePath = (String) request.getParameter("PATH");
-	    File exportedFile = new File(exportFilePath);
-	    String exportFileName = exportedFile.getName();
-	    response.setHeader("Content-Disposition", "attachment; filename=\"" + exportFileName + "\";");
+	    String exportFileName = (String) request.getParameter("FILE_NAME");
+	    String exportFileFolder = "";
+	    ConfigSingleton conf = ConfigSingleton.getInstance();
+	    SourceBean exporterSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.EXPORTER");
+	    String pathExportFolder = (String) exporterSB.getAttribute("exportFolder");
+	    pathExportFolder = GeneralUtilities.checkForSystemProperty(pathExportFolder);
+	    if (!pathExportFolder.startsWith("/") && pathExportFolder.charAt(1) != ':') {
+	    	String root = ConfigSingleton.getRootPath();
+	    	pathExportFolder = root + "/" + pathExportFolder;
+	    }
+	    File exportedFile = new File(exportFileFolder + "/" + exportFileName + ".zip");
+	    response.setHeader("Content-Disposition", "attachment; filename=\"" + exportFileName + ".zip\";");
 	    byte[] exportContent = "".getBytes();
 	    FileInputStream fis = null;
 	    try {
-		fis = new FileInputStream(exportFilePath);
+		fis = new FileInputStream(exportedFile);
 		exportContent = GeneralUtilities.getByteArrayFromInputStream(fis);
 	    } catch (IOException ioe) {
 		logger.error("Cannot get bytes of the exported file", ioe);

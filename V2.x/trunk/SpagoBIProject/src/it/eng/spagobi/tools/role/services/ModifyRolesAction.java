@@ -22,11 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.role.services;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
-import it.eng.spagobi.commons.services.BaseProfileAction;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class ModifyRolesAction extends BaseProfileAction {
+public class ModifyRolesAction extends AbstractHttpAction {
 	
 	private static final long serialVersionUID = 1L;
 	static private Logger logger = Logger.getLogger(ModifyRolesAction.class);
@@ -55,10 +55,6 @@ public class ModifyRolesAction extends BaseProfileAction {
 	 * @throws Exception the exception
 	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
-		
-		//Check of the userId in order to keep performing the request
-		super.service(serviceRequest, serviceResponse);
-		
 		logger.debug("IN");
 		String message = null;
 		freezeHttpResponse();

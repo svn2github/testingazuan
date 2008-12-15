@@ -133,7 +133,7 @@ executionParameters.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoB
 executionParameters.put(SpagoBIConstants.SBI_BACK_END_HOST, GeneralUtilities.getSpagoBiHostBackEnd());
 executionParameters.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
 executionParameters.put("SBI_EXECUTION_ID", instance.getExecutionId());
-executionParameters.put("SBI_EXECUTION_ROLE", instance.getExecutionRole());
+executionParameters.put(SpagoBIConstants.EXECUTION_ROLE, instance.getExecutionRole());
 // Auditing
 AuditManager auditManager = AuditManager.getInstance();
 String modality = instance.getExecutionModality();
@@ -405,7 +405,7 @@ if (toolbarIsVisible) {
 					cls:'x-panel-body',
 					children:[{
 						tag:'iframe',
-	      					src: "<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&ACTION_NAME=SHOW_SEND_TO_FORM&objlabel=" + obj.getLabel()+"&"+ urlMasterPar%>",
+	      					src: "<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&ACTION_NAME=SHOW_SEND_TO_FORM&objlabel=" + obj.getLabel()+"&"+ urlMasterPar%>",
 	      					frameBorder:0,
 	      					width:'100%',
 	      					height:'100%',
@@ -514,9 +514,9 @@ if (toolbarIsVisible) {
 		changeDivDisplay('divIframe<%= uuid %>','hidden');
 		<% } %>
 		Ext.MessageBox.wait('Please wait...', 'Processing');
-		var url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
-		url += "&ACTION_NAME=SAVE_REMEMBER_ME&name=" + nameRM + "&description=" + descRM;
-		url += "&<%=SpagoBIConstants.OBJECT_ID%>=<%=obj.getId()%>";
+		var url="<%=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl()%>?<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE";
+		url += "&NEW_SESSION=TRUE&userid=<%= userUniqueIdentifier %>&ACTION_NAME=SAVE_REMEMBER_ME&name=" + nameRM + "&description=" + descRM;
+		url += "&<%=SpagoBIConstants.OBJECT_ID%>=<%=obj.getId()%>&<%=SpagoBIConstants.EXECUTION_ROLE%>=<%=instance.getExecutionRole()%>";
 		<%
 		String documentParametersStr = "";
 		List parametersList = obj.getBiObjectParameters();
@@ -601,7 +601,7 @@ if (toolbarIsVisible) {
 	<script>
 	function saveIntoPersonalFolder<%= uuid %>() {
 		Ext.MessageBox.wait('Please wait...', 'Processing');
-		var url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>";
+		var url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)%>";
 		url+="&ACTION_NAME=SAVE_PERSONAL_FOLDER"+"&documentId=<%=obj.getId().toString()%>";
 		//var pars ="&ACTION_NAME=SAVE_PERSONAL_FOLDER";
 		//pars += "&documentId=<%=obj.getId().toString()%>";
@@ -673,7 +673,7 @@ if (toolbarIsVisible) {
 						tag:'iframe',
 							name: 'dynamicIframeNotes', 
                     		id  : 'dynamicIframeNotes', 
-	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&ACTION_NAME=INSERT_NOTES_ACTION&execIdentifier="+execIdentifier+"&MESSAGEDET=OPEN_NOTES_EDITOR&OBJECT_ID=" + obj.getId().toString() %>',
+	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&ACTION_NAME=INSERT_NOTES_ACTION&execIdentifier="+execIdentifier+"&MESSAGEDET=OPEN_NOTES_EDITOR&OBJECT_ID=" + obj.getId().toString() %>',
 	      					frameBorder:0,
 	      					width:'100%',
 	      					height:'100%',
@@ -724,7 +724,7 @@ if (toolbarIsVisible) {
 					cls:'x-panel-body',
 					children:[{
 						tag:'iframe',
-	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&PAGE=" + MetadataBIObjectModule.MODULE_PAGE + "&MESSAGEDET=" + ObjectsTreeConstants.METADATA_SELECT + "&OBJECT_ID=" + obj.getId().toString() %>',
+	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&PAGE=" + MetadataBIObjectModule.MODULE_PAGE + "&MESSAGEDET=" + ObjectsTreeConstants.METADATA_SELECT + "&OBJECT_ID=" + obj.getId().toString() %>',
 	      					frameBorder:0,
 	      					width:'100%',
 	      					height:'100%',
@@ -770,7 +770,7 @@ if (toolbarIsVisible) {
 						tag:'iframe',
 						    name: 'dynamicIframe1', 
                     		id  : 'dynamicIframe1', 
-	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&ACTION_NAME=RATING_ACTION&MESSAGEDET=GOTO_DOCUMENT_RATE&OBJECT_ID=" + obj.getId().toString() %>',
+	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&ACTION_NAME=RATING_ACTION&MESSAGEDET=GOTO_DOCUMENT_RATE&OBJECT_ID=" + obj.getId().toString() %>',
 	      					frameBorder:0,
 	      					width:'100%',
 	      					height:'100%',

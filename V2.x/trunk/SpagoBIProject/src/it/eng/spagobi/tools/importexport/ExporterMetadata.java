@@ -81,11 +81,15 @@ import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
+import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
+import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WSDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
+import it.eng.spagobi.tools.dataset.metadata.SbiScriptDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
@@ -227,7 +231,14 @@ public class ExporterMetadata {
 				((SbiWSDataSet) hibDataset).setExecutorClass(((WSDataSet) dataset).getExecutorClass());
 				((SbiWSDataSet) hibDataset).setOperation(((WSDataSet) dataset).getOperation());
 			}
-			
+			if (dataset instanceof JClassDataSet) {
+				hibDataset = new SbiJClassDataSet();
+				((SbiJClassDataSet) hibDataset).setJavaClassName(((JClassDataSet) dataset).getJavaClassName());
+			}
+			if (dataset instanceof ScriptDataSet) {
+				hibDataset = new SbiScriptDataSet();
+				((SbiScriptDataSet) hibDataset).setScript(((ScriptDataSet) dataset).getScript());
+			}
 			hibDataset.setDsId(dataset.getDsId());
 			hibDataset.setLabel(dataset.getLabel());
 			hibDataset.setName(dataset.getName());

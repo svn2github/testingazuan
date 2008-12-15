@@ -31,6 +31,7 @@ public class SpagoBIConstants {
 	public static final String URL = "URL";
 	public static final String OBJECT = "OBJECT";
 	public static final String OBJECT_ID = "OBJECT_ID";
+	public static final String EXECUTION_ROLE = "SBI_EXECUTION_ROLE";
 	
 	public static final String EXECUTION_MODALITY = "EXECUTION_MODALITY";
 	public static final String TEST_MODALITY = "TEST_MODALITY";

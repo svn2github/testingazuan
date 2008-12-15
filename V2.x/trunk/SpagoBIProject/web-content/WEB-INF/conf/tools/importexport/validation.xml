@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <VALIDATIONS>
+
 	<SERVICE name="ImportExportPage" type="PAGE">
 		<VALIDATION blocking="true" validators="">
 			<CONDITIONS>
@@ -9,8 +10,23 @@
 				<FIELD name="exportFileName" label="#SBISet.importexport.nameExp">
 					<VALIDATOR validatorName="MANDATORY"/>
 					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="30"/>
 				</FIELD>			
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
+	
+	<SERVICE name="DOWNLOAD_FILE_ACTION" type="ACTION">
+		<VALIDATION blocking="true" validators="">
+			<CONDITIONS/>
+			<FIELDS>
+				<FIELD name="FILE_NAME">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="30"/>
+				</FIELD>			
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+	
 </VALIDATIONS>

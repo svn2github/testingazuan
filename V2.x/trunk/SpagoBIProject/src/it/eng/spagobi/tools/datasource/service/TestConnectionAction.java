@@ -24,7 +24,6 @@ package it.eng.spagobi.tools.datasource.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spagobi.commons.services.BaseProfileAction;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -43,7 +42,7 @@ import org.apache.log4j.Logger;
  * @author Chiarelli (chiara.chiarelli@eng.it)
  *
  */
-public class TestConnectionAction extends BaseProfileAction {
+public class TestConnectionAction extends AbstractHttpAction {
 
 	static private Logger logger = Logger.getLogger(TestConnectionAction.class);
 	
@@ -52,9 +51,6 @@ public class TestConnectionAction extends BaseProfileAction {
 	 */
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse)
 			throws Exception {
-		
-		//Check of the userId in order to keep performing the request
-		super.service(serviceRequest, serviceResponse);
 		
 		logger.debug("IN");
 		String message = null;

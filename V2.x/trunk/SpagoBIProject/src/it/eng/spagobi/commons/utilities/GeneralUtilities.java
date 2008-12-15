@@ -69,6 +69,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
@@ -1181,6 +1182,30 @@ public class GeneralUtilities {
 	    }
 	    return profile;
     }
+
+    /**
+     * Finds the user identifier from http request or from SSO system (by the http request in input).
+     * If SSO is enabled, the identifier specified on http request must be equal to the user identifier detected by the SSO system.
+     * In case the http request does not contain the user identifier and SSO in disabled, null is returned.
+     * 
+     * @param httpRequest The http request
+     * 
+     * @return the current user unique identified
+     * 
+     * @throws Exception in case the SSO is enabled and the user identifier specified on http request is different from the SSO detected one.
+     */
+    public static String findUserId(HttpServletRequest httpRequest) throws Exception {
+    	logger.debug("IN");
+    	String userId = null;
+    	try {
+    		// Get userid from request
+    		String requestUserId = httpRequest.getParameter("userid");
+    		userId = findUserId(requestUserId, httpRequest.getSession());
+    	} finally {
+    		logger.debug("OUT: userId = [" + userId + "]");
+    	}
+    	return userId;
+    }
     
     /**
      * Finds the user identifier from service request or from SSO system (by the http request in input).
@@ -1202,6 +1227,17 @@ public class GeneralUtilities {
     		// Get userid from request
 	    	Object requestUserIdObj = serviceRequest.getAttribute("userid");
 	    	if (requestUserIdObj != null) requestUserId = requestUserIdObj.toString();
+	    	userId = findUserId(requestUserId, httpRequest.getSession());
+    	} finally {
+    		logger.debug("OUT: userId = [" + userId + "]");
+    	}
+    	return userId;
+    }
+
+    private static String findUserId(String requestUserId, HttpSession httpSession) throws Exception {
+    	logger.debug("IN");
+    	String userId = null;
+    	try {
 	    	String sessionUserId = null;
 	    	// Check if SSO is active
 	    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
@@ -1210,7 +1246,7 @@ public class GeneralUtilities {
 	    	// If SSO is active gets userid in session
 	    	if (active != null && active.equals("true")) {
 	    	    SsoServiceInterface ssoProxy = SsoServiceFactory.createProxyService();
-	    	    sessionUserId = ssoProxy.readUserIdentifier(httpRequest.getSession());
+	    	    sessionUserId = ssoProxy.readUserIdentifier(httpSession);
 	    	    if (sessionUserId != null) {
 	    	    	logger.debug("requestUserId: " + requestUserId );
 	    	    	logger.debug("sessionUserId: " + sessionUserId );
@@ -1236,7 +1272,7 @@ public class GeneralUtilities {
     	}
     	return userId;
     }
-
+    
 	/**
 	 * Checks if the String in input contains a reference to System property with the syntax
 	 * ${property_name}, and, in case, substitutes the reference with the actual value.

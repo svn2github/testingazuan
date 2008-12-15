@@ -473,7 +473,7 @@ public class ListTag extends TagSupport
 					// creates a checklist
 					if (isChecklist){
 						
-						// gets the value of the urrent row and puts it as id of the input type checkbox
+						// gets the value of the current row and puts it as id of the input type checkbox
 						SourceBean rowVal = (SourceBean) captionSB.getAttribute("ROWVALUE");
 						String rowValue = readOnClickFunction(rowVal, row);
 						
@@ -493,10 +493,10 @@ public class ListTag extends TagSupport
 						
 						if (clickedFunction != null) {
 							_htmlStream.append("	<script type='text/javascript'>\n");
-							_htmlStream.append("	function check" + rowValue + "() {\n");
+							//_htmlStream.append("	function check" + rowValue + "() {\n");
 							_htmlStream.append(         clickedFunction + "\n");
-							_htmlStream.append("	}\n");
-							_htmlStream.append("	check" + rowValue + "() ;\n");
+							//_htmlStream.append("	}\n");
+							//_htmlStream.append("	check" + rowValue + "() ;\n");
 							_htmlStream.append("	</script>\n");
 						}
 					

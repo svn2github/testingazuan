@@ -22,11 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.execution.service;
 
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
@@ -38,7 +38,6 @@ import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 
 import java.io.IOException;
@@ -54,7 +53,7 @@ import org.apache.log4j.Logger;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
-public class InsertNotesAction extends BaseProfileAction{
+public class InsertNotesAction extends AbstractHttpAction {
 	
 	private static transient Logger logger = Logger.getLogger(InsertNotesAction.class);
 	private Map execIdMap = new HashMap(); 
@@ -63,10 +62,6 @@ public class InsertNotesAction extends BaseProfileAction{
  	 * @see it.eng.spagobi.commons.services.BaseProfileAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
  	 */
  	public void service(SourceBean request, SourceBean response) throws Exception {
-	    	
-	    	//Check of the userId in order to keep performing the request
-			super.service(request, response);
-			
 			logger.debug("IN");
 			String message = (String) request.getAttribute("MESSAGEDET");
 			

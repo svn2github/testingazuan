@@ -23,11 +23,7 @@ package it.eng.spagobi.tools.importexport.services;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.validation.EMFValidationError;
-import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.WebUrlBuilder;
@@ -48,10 +44,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
 
-public class ManageImpExpAssAction extends BaseProfileAction {
+public class ManageImpExpAssAction extends AbstractHttpAction {
 
     private HttpServletRequest httpRequest = null;
     private HttpServletResponse httpResponse = null;
@@ -65,10 +59,6 @@ public class ManageImpExpAssAction extends BaseProfileAction {
      * @see it.eng.spagobi.commons.services.BaseProfileAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
      */
     public void service(SourceBean request, SourceBean response) throws Exception {
-    	
-    	//Check of the userId in order to keep performing the request
-		super.service(request, response);
-		
 	logger.debug("IN");
 	try {
 	    freezeHttpResponse();

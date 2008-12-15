@@ -37,14 +37,14 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.commons.utilities.ParameterValuesDecoder;
 import it.eng.spagobi.commons.validation.SpagoBIValidationImpl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -232,6 +232,7 @@ public class ExecutionInstance {
 	public void setParameterValues(String userProvidedParametersStr, boolean transientMode) {
 		logger.debug("IN");
 		if (userProvidedParametersStr != null) {
+			ParameterValuesDecoder decoder = new ParameterValuesDecoder();
 			List biparameters = object.getBiObjectParameters();
 			if (biparameters == null) {
 				logger.error("BIParameters list cannot be null!!!");
@@ -269,11 +270,12 @@ public class ExecutionInstance {
 				if (parValue != null && parValue.equalsIgnoreCase("NULL")) {
 					biparameter.setParameterValues(null);
 				} else {
-					List parameterValues = new ArrayList();
-					String[] values = parValue.split(";");
-					for (int m = 0; m < values.length; m++) {
-						parameterValues.add(values[m]);
-					}
+					List parameterValues = decoder.decode(parValue);
+//					List parameterValues = new ArrayList();
+//					String[] values = parValue.split(";");
+//					for (int m = 0; m < values.length; m++) {
+//						parameterValues.add(values[m]);
+//					}
 					biparameter.setParameterValues(parameterValues);
 				}
 				biparameter.setTransientParmeters(transientMode);
@@ -568,7 +570,7 @@ public class ExecutionInstance {
 				} else {
 					parameterValuesDescription += lovResultHandler.getValueDescription(value, 
 							lovProvDet.getValueColumnName(), lovProvDet.getDescriptionColumnName());
-					if (i < values.size() - 1) parameterValuesDescription += "; ";
+					if (i < values.size() - 1) parameterValuesDescription += ";";
 				}
 			}
 		}

@@ -23,6 +23,7 @@ package it.eng.spagobi.tools.distributionlist.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
@@ -33,7 +34,6 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
-import it.eng.spagobi.commons.services.BaseProfileModule;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
 * @author Chiarelli Chiara (chiara.chiarelli@eng.it)
 */
 
-public class DetailDistributionListUserModule extends BaseProfileModule {
+public class DetailDistributionListUserModule extends AbstractHttpModule {
 	
 	static private Logger logger = Logger.getLogger(DetailDistributionListUserModule.class);
 	public final static String NAME_ATTR_LIST_DIALECTS = "dialects";
@@ -70,7 +70,6 @@ public class DetailDistributionListUserModule extends BaseProfileModule {
 	 * @throws Exception the exception
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		super.service(request, response);
 		String message = (String) request.getAttribute("MESSAGEDET");
 		logger.debug("begin of detail Distribution List service with message =" +message);
 		EMFErrorHandler errorHandler = getErrorHandler();

@@ -25,6 +25,7 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
@@ -50,7 +51,6 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.BaseProfileModule;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.container.ContextManager;
 import it.eng.spagobi.container.SpagoBISessionContainer;
@@ -89,7 +89,7 @@ import org.safehaus.uuid.UUIDGenerator;
  * @author Bernabei
  * @author Mark Penningroth (Cincom Systems, Inc.)
  */
-public class ExecuteBIObjectModule extends BaseProfileModule {
+public class ExecuteBIObjectModule extends AbstractHttpModule {
 
 	static private Logger logger = Logger.getLogger(ExecuteBIObjectModule.class);
 
@@ -120,9 +120,6 @@ public class ExecuteBIObjectModule extends BaseProfileModule {
 	public void service(SourceBean request, SourceBean response)
 			throws Exception {
 		logger.debug("IN");
-		
-		// Check of the userId in order to keep performing the request
-		super.service(request, response);
 		
 		String messageExec = (String) request
 				.getAttribute(SpagoBIConstants.MESSAGEDET);

@@ -24,6 +24,7 @@ package it.eng.spagobi.analiticalmodel.document.service;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
@@ -33,7 +34,6 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.BaseProfileModule;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 /**
 * @author Chiara Chiarelli
 */
-public class MetadataBIObjectModule extends BaseProfileModule{
+public class MetadataBIObjectModule extends AbstractHttpModule {
 	
 	static private Logger logger = Logger.getLogger(MetadataBIObjectModule.class);
 	EMFErrorHandler errorHandler = null;
@@ -65,9 +65,6 @@ public class MetadataBIObjectModule extends BaseProfileModule{
 	 */
 	public void service(SourceBean request, SourceBean response)
 	throws Exception {
-		
-		//Check of the userId in order to keep performing the request
-		super.service(request, response);
 		
 		String message = (String) request.getAttribute("MESSAGEDET");
 		logger.debug("begin of metadata service with message =" +message);

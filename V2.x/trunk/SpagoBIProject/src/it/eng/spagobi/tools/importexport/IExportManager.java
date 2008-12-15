@@ -45,11 +45,9 @@ public interface IExportManager {
 	 * 
 	 * @param objPaths List of path of the objects to export
 	 * 
-	 * @return the string
-	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public String exportObjects(List objPaths) throws EMFUserError;
+	public void exportObjects(List objPaths) throws EMFUserError;
 	
 	/**
 	 * Clean the export environment (close sessions and delete temporary files).

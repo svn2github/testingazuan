@@ -23,13 +23,15 @@ package it.eng.spagobi.hotlink.service;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
+import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.BaseProfileAction;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 
 import java.util.Iterator;
@@ -44,7 +46,7 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class SaveRememberMeAction extends BaseProfileAction {
+public class SaveRememberMeAction extends AbstractHttpAction {
 
 	private static final long serialVersionUID = 1L;
 	static private Logger logger = Logger.getLogger(SaveRememberMeAction.class);
@@ -55,14 +57,14 @@ public class SaveRememberMeAction extends BaseProfileAction {
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse)
 			throws Exception {
 		
-		//Check of the userId in order to keep performing the request
-		super.service(serviceRequest, serviceResponse);
-		
 		logger.debug("IN");
 		String message = null;
 		freezeHttpResponse();
 		HttpServletResponse httResponse = getHttpResponse();
 		try {
+			if (!this.getErrorHandler().isOKBySeverity(EMFErrorSeverity.ERROR)) {
+				throw new Exception("Error handler contains errors, cannot save remember me!!");
+			}
 			SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
 			UserProfile profile = (UserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			String userId = profile.getUserId().toString();
@@ -77,6 +79,12 @@ public class SaveRememberMeAction extends BaseProfileAction {
 			if (correctRoles == null || correctRoles.size() == 0) {
 				logger.error("No correct roles for execution for user [" + userId + "] and document with id = " + docId + "!!!!");
 				throw new Exception("No correct roles for execution for user [" + userId + "] and document with id = " + docId + "!!!!");
+			}
+			
+			String executionRole = (String) serviceRequest.getAttribute(SpagoBIConstants.EXECUTION_ROLE);
+			if (!correctRoles.contains(executionRole)) {
+				logger.error("Role [" + executionRole + "] is not a valid role for execution!!");
+				throw new Exception("Specified role is not a valid role for execution!!");
 			}
 			
 			// check if user is able to save RememberMe
@@ -107,7 +115,21 @@ public class SaveRememberMeAction extends BaseProfileAction {
 					throw new Exception("Current user [" + userId + "] CANNOT execute subobject with id = " + subobjectId + " of document with id = " + docId + "!!!!");
 				}
 			}
-			String parameters = (String) serviceRequest.getAttribute("parameters");
+			
+			String parameters = null;
+			if (subobjectId == null) {
+				// if the remember me is pointing a subobject, parameters are not considered;
+				// if the remember me is pointing a main document, parameters are considered instead.
+				parameters = (String) serviceRequest.getAttribute("parameters");
+				ExecutionInstance instance = new ExecutionInstance(profile, "", "", docId, executionRole, "", true, true);
+				instance.setParameterValues(parameters, true);
+				List errors = instance.getParametersErrors();
+				if (errors != null && errors.size() > 0) {
+					logger.error("Current user [" + userId + "] CANNOT execute document with id = " + docId + " with parameters = [" + parameters + "]!!!!");
+					throw new Exception("Current user [" + userId + "] CANNOT execute document with id = " + docId + " with specified parameters!!!!");
+				}
+			}
+			
 			boolean inserted = DAOFactory.getRememberMeDAO().saveRememberMe(name, description, docId, subobjectId, userId, parameters);
 			if (inserted) {
 				message = "sbi.rememberme.saveOk";

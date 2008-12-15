@@ -32,6 +32,7 @@ import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
+import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.paginator.basic.ListIFace;
@@ -55,7 +56,6 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.BaseProfileListModule;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
@@ -71,8 +71,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import sun.nio.cs.ext.ISCII91;
-
 /**
  * 
  * @author Angelo Bernabei - angelo.bernabei@eng.it
@@ -82,7 +80,7 @@ import sun.nio.cs.ext.ISCII91;
  * 
  */
 
-public class SelectParametersLookupModule extends BaseProfileListModule {
+public class SelectParametersLookupModule extends AbstractBasicListModule {
 
 	private static final long serialVersionUID = 1L;
 
@@ -551,30 +549,26 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 		moduleConfigStr.append("			<ONCLICK>");
 		moduleConfigStr.append("				<![CDATA[");
 		// sets value and its description on parameters form (that is on parent window)
-		moduleConfigStr.append("				var a = parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value;");
-		moduleConfigStr.append("				var b = ';<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
-		moduleConfigStr.append("				var pos = a.indexOf(b);");
+		moduleConfigStr.append("				var valuesArrayStr = parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value;");
+		moduleConfigStr.append("				var selectedValue = '<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
+		moduleConfigStr.append("				var valuesArray = valuesArrayStr.split(';');");
+		moduleConfigStr.append("				if (valuesArray == null || (valuesArray.length == 1 && valuesArray[0] == '')) valuesArray = new Array();");
 		
-		moduleConfigStr.append("				var aDesc = parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value ;");
-		moduleConfigStr.append("				var bDesc = ';<PARAMETER name='" + descriptionColName + "' scope='LOCAL'/>';");
-		moduleConfigStr.append("				var posDesc = aDesc.indexOf(bDesc);");
+		moduleConfigStr.append("				var descriptionsArrayStr = parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value;");
+		moduleConfigStr.append("				var selectedDescription = '<PARAMETER name='" + descriptionColName + "' scope='LOCAL'/>';");
+		moduleConfigStr.append("				var descriptionsArray = descriptionsArrayStr.split(';');");
+		moduleConfigStr.append("				if (descriptionsArray == null || (descriptionsArray.length == 1 && descriptionsArray[0] == '')) descriptionsArray = new Array();");
 		
-		moduleConfigStr.append("				if (pos>=0){");
-		moduleConfigStr.append("				 		   var bLength = b.length ;");
-		moduleConfigStr.append("				 		   var endPos = pos + bLength ; ");
-		moduleConfigStr.append("				 		   var aLength = a.length ;");
-		moduleConfigStr.append("				 		   a = a.substring(0,pos)+a.substring(endPos,aLength);");
-		moduleConfigStr.append("				 		   var bLengthDesc = bDesc.length ;");
-		moduleConfigStr.append("				 		   var endPosDesc = posDesc + bLengthDesc ; ");
-		moduleConfigStr.append("				 		   var aLengthDesc = aDesc.length ;");
-		moduleConfigStr.append("				 		   aDesc = aDesc.substring(0,posDesc)+aDesc.substring(endPosDesc,aLengthDesc);");
-		moduleConfigStr.append("				           }else{");
-		moduleConfigStr.append("				            a = a+b;");
-		moduleConfigStr.append("				            aDesc = aDesc+bDesc;");
-		moduleConfigStr.append("				           }");
-
-		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value = a ;");
-		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value = aDesc ;");
+		moduleConfigStr.append("				if (valuesArray.contains(selectedValue)) {");
+		moduleConfigStr.append("					valuesArray.removeFirst(selectedValue);");
+		moduleConfigStr.append("					descriptionsArray.removeFirst(selectedDescription);");
+		moduleConfigStr.append("				} else {");
+		moduleConfigStr.append("					valuesArray.push(selectedValue);");
+		moduleConfigStr.append("					descriptionsArray.push(selectedDescription);");
+		moduleConfigStr.append("				}");
+		
+		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>').value = valuesArray.join(';');");
+		moduleConfigStr.append("				parent.document.getElementById('<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>Desc').value = descriptionsArray.join(';');");
 		// is there any biparameter that depends on current biparameter? if it is the case, automatic form submit is performed (with correlation flag set)
 		// get current biparameter id
 		String objParIdStr = (String) request.getAttribute("objParId");
@@ -602,11 +596,11 @@ public class SelectParametersLookupModule extends BaseProfileListModule {
 		// function that checks if the current row is already checked or not
 		moduleConfigStr.append("				var parName = '<PARAMETER name='" + RETURN_PARAM + "' scope='SERVICE_REQUEST'/>';");
 		moduleConfigStr.append("				var rowValue = '<PARAMETER name='" + valColName + "' scope='LOCAL'/>';");
-		moduleConfigStr.append("				var alreadySelected = parent.document.getElementById(parName).value;");
-		moduleConfigStr.append("				var pos = alreadySelected.indexOf(rowValue);");
-		moduleConfigStr.append("				if (pos>=0){");
+		moduleConfigStr.append("				var alreadySelectedStr = parent.document.getElementById(parName).value;");
+		moduleConfigStr.append("				var alreadySelectedValuesArray = alreadySelectedStr.split(';');");
+		moduleConfigStr.append("				if (alreadySelectedValuesArray != null && alreadySelectedValuesArray.contains(rowValue)){");
 		moduleConfigStr.append("				    document.getElementById('<PARAMETER name='" + valColName + "' scope='LOCAL'/>').checked = 'true' ;");
-		moduleConfigStr.append("				           }");
+		moduleConfigStr.append("				}");
 		moduleConfigStr.append("				]]>");
 		moduleConfigStr.append("			</CLICKED>");
 		

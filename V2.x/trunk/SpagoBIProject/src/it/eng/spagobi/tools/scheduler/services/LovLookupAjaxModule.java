@@ -53,20 +53,17 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.AbstractBaseProfileListModule;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -76,7 +73,7 @@ import org.apache.log4j.Logger;
  * Tests the query and produces the list as output. 
  */
 
-public class LovLookupAjaxModule extends AbstractBaseProfileListModule {
+public class LovLookupAjaxModule extends AbstractBasicListModule {
 	
     static private Logger logger = Logger.getLogger(LovLookupAjaxModule.class);
 	

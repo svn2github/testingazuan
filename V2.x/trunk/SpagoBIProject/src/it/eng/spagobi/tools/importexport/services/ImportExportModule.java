@@ -174,9 +174,8 @@ public class ImportExportModule extends AbstractModule {
 	    Class expClass = Class.forName(expClassName);
 	    expManager = (IExportManager) expClass.newInstance();
 	    expManager.prepareExport(pathExportFolder, exportFileName, expSubObj, exportSnaps);
-	    String exportedFilePath = "";
-	    exportedFilePath = expManager.exportObjects(ids);
-	    response.setAttribute(ImportExportConstants.EXPORT_FILE_PATH, exportedFilePath);
+	    expManager.exportObjects(ids);
+	    response.setAttribute(ImportExportConstants.EXPORT_FILE_PATH, exportFileName);
 	} catch (EMFUserError emfue) {
 	    expManager.cleanExportEnvironment();
 	    throw emfue;

@@ -24,13 +24,13 @@ package it.eng.spagobi.analiticalmodel.execution.service;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.BIObjectDAOHibImpl;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.LowFunctionalityDAOHibImpl;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.services.BaseProfileAction;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 
-public class SaveToPersonalFolderAction extends BaseProfileAction{
+public class SaveToPersonalFolderAction extends AbstractHttpAction {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -49,10 +49,6 @@ public class SaveToPersonalFolderAction extends BaseProfileAction{
 	 * @see it.eng.spagobi.commons.services.BaseProfileAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
 	public void service(SourceBean request, SourceBean responseSb) throws Exception {
-		
-		//Check of the userId in order to keep performing the request
-		super.service(request, responseSb);
-
 		logger.debug("IN");
 
 		final String OK = "sbi.execution.stpf.ok";

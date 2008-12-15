@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<DOMAINS>
+	<DOMAIN domainCd="INPUT_TYPE" domainNm="Input mode and values" valueCd="QUERY" valueNm="Query statement" valueDs="Query statement to load list of values to choose in" />
+</DOMAINS>

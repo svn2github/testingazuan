@@ -43,5 +43,16 @@ public interface IModelResourceDAO {
 	 */
 	void addModelResource(Integer modelId, Integer resourceId)
 			throws EMFUserError;
+	
+	/**
+	 * Remove all association between a model and same resources.
+	 * 
+	 * @param modelId
+	 *            the id of modelInstance.
+	 * 
+	 *@throws EMFUserError
+	 */
+	void removeAllModelResource(Integer modelId)
+	throws EMFUserError;
 
 }

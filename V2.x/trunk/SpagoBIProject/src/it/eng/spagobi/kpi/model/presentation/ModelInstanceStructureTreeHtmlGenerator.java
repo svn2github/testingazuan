@@ -176,11 +176,12 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 		String name = aModel.getName();
 		Integer id = aModel.getId();
 		Integer parentId = aModel.getParentId();
+		boolean kpi = (aModel.getKpiInstance()!= null && aModel.getKpiInstance().getKpi()!= null);
 		if (parentId == null)
 			parentId = -1;
 		// parent
 		addItemForJSTree(htmlStream, aModel, id, parentId, name, true, false,
-				false, httpRequest);
+				kpi, httpRequest);
 		List modelChildren = aModel.getChildrenNodes();
 		// children
 		for (Iterator iterator = modelChildren.iterator(); iterator.hasNext();) {

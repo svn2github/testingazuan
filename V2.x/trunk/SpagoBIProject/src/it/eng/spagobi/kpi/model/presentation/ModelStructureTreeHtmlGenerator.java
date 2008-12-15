@@ -174,11 +174,12 @@ public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
 		String name = aModel.getName();
 		Integer id = aModel.getId();
 		Integer parentId = aModel.getParentId();
+		boolean kpi = (aModel.getKpiId()!= null);
 		if (parentId == null)
 			parentId = -1;
 		// parent
 		addItemForJSTree(htmlStream, aModel, id, parentId, name, true, false,
-				false, httpRequest);
+				kpi, httpRequest);
 		List modelChildren = aModel.getChildrenNodes();
 		// children
 		for (Iterator iterator = modelChildren.iterator(); iterator.hasNext();) {

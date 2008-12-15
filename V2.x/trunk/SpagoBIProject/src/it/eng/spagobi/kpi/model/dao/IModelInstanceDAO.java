@@ -26,4 +26,12 @@ public interface IModelInstanceDAO {
 
 	public List getCandidateModelChildren(Integer parentId) throws EMFUserError;
 
+	/**
+	 * Delete a Model Instance. 
+	 * @param modelId id of the model instance to delete.
+	 * @return Return true if the model is deleted.
+	 * @throws EMFUserError If an Exception occurred.
+	 */
+	public boolean deleteModelInstance(Integer modelId)throws EMFUserError;
+
 }

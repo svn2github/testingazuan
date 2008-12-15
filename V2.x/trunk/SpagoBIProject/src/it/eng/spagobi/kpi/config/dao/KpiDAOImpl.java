@@ -18,12 +18,8 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiRole;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
-import it.eng.spagobi.kpi.model.bo.ModelAttribute;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
-import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
-import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttr;
-import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttrVal;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.model.metadata.SbiResources;
@@ -43,6 +39,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -1188,13 +1185,14 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			SbiKpi sbiKpi = (SbiKpi)aSession.load(SbiKpi.class, kpiId);
-			
+			SbiKpi sbiKpi = (SbiKpi) aSession.load(SbiKpi.class, kpiId);
+
 			kpiInstance.setKpi(sbiKpi.getKpiId());
-			if (sbiKpi.getSbiThreshold()!= null){
-				kpiInstance.setThresholdId(sbiKpi.getSbiThreshold().getThresholdId());
+			if (sbiKpi.getSbiThreshold() != null) {
+				kpiInstance.setThresholdId(sbiKpi.getSbiThreshold()
+						.getThresholdId());
 			}
-			
+
 			kpiInstance.setWeight(sbiKpi.getWeight());
 
 		} catch (HibernateException he) {
@@ -1211,6 +1209,38 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 					aSession.close();
 				logger.debug("OUT");
 			}
+		}
+	}
+
+	public void deleteResource(Integer resouceId) throws EMFUserError  {
+		Session aSession = getSession();
+		Transaction tx = null;
+		try {
+			tx = aSession.beginTransaction();
+			SbiResources sbiResource = (SbiResources) aSession.load(
+					SbiResources.class, resouceId);
+			aSession.delete(sbiResource);
+
+			tx.commit();
+			
+
+		}catch (ConstraintViolationException cve){
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.error("Impossible to delete a Resource",cve);
+			throw new EMFUserError(EMFErrorSeverity.WARNING, 10014);
+			
+		} 		
+		catch (HibernateException e) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.error("Error while delete a Resource ", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			aSession.close();
 		}
 	}
 

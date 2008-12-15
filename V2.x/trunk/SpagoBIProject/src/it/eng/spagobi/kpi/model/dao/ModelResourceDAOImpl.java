@@ -108,4 +108,36 @@ public class ModelResourceDAOImpl extends AbstractHibernateDAO implements
 		return crit.list();	
 	}
 	
+	private List getModelResource(Session aSession, Integer modelId) {
+		SbiKpiModelInst aModelInst = (SbiKpiModelInst) aSession.load(
+				SbiKpiModelInst.class, modelId);
+		Criteria crit = aSession.createCriteria(SbiKpiModelResources.class);
+		crit.add(Expression.eq("sbiKpiModelInst", aModelInst));
+		return crit.list();	
+	}
+
+	public void removeAllModelResource(Integer modelId) throws EMFUserError {
+		Session aSession = getSession();
+		Transaction tx = null;
+		try {
+			tx = aSession.beginTransaction();
+			List modelResourceList = getModelResource(aSession, modelId);
+			for (Iterator iterator = modelResourceList.iterator(); iterator
+					.hasNext();) {
+				SbiKpiModelResources modelResource = (SbiKpiModelResources) iterator.next();
+				aSession.delete(modelResource);
+			}
+			tx.commit();
+
+		} catch (HibernateException e) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			aSession.close();
+		}
+	}
+	
 }

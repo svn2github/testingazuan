@@ -62,11 +62,11 @@ public interface IModelDAO {
 	 */
 	public boolean deleteModel(Integer modelId) throws EMFUserError;
 
-	/**
-	 * Check if a Model or its children are associated with KPI.
-	 * @param modelId the id of the to check.
-	 * @return true if the Model or its children are associated with KPI.
-	 * @throws EMFUserError
-	 */
-	public boolean hasKpi(Integer modelId)throws EMFUserError;
+//	/**
+//	 * Check if a Model or its children are associated with KPI.
+//	 * @param modelId the id of the to check.
+//	 * @return true if the Model or its children are associated with KPI.
+//	 * @throws EMFUserError
+//	 */
+//	public boolean hasKpi(Integer modelId)throws EMFUserError;
 }

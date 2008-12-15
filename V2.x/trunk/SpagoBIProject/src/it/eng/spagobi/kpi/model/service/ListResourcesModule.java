@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.kpi.model.service;
 
 import java.util.List;
@@ -35,8 +35,9 @@ import it.eng.spagobi.kpi.model.bo.Resource;
 import org.apache.log4j.Logger;
 
 public class ListResourcesModule extends AbstractConfigurableListModule {
-	
-    private static transient Logger logger = Logger.getLogger(ListModelModule.class);
+
+	private static transient Logger logger = Logger
+			.getLogger(ListModelModule.class);
 
 	protected List getObjectList(SourceBean request) {
 		List result = null;
@@ -48,7 +49,8 @@ public class ListResourcesModule extends AbstractConfigurableListModule {
 		return result;
 	}
 
-	protected void setRowAttribute(SourceBean rowSB, Object obj) throws SourceBeanException {
+	protected void setRowAttribute(SourceBean rowSB, Object obj)
+			throws SourceBeanException {
 		Resource aResource = (Resource) obj;
 		rowSB.setAttribute("name", aResource.getName());
 		rowSB.setAttribute("id", aResource.getId());
@@ -57,33 +59,23 @@ public class ListResourcesModule extends AbstractConfigurableListModule {
 	@Override
 	public boolean delete(SourceBean request, SourceBean response) {
 		boolean toReturn = false;
-		//TODO creazione metodo di cancellazione
-//		String modelId = (String)request.getAttribute("ID");
-//		if(canDelete(Integer.parseInt(modelId))) {
-//			try {
-//				toReturn = DAOFactory.getModelDAO().deleteModel(Integer.parseInt(modelId));
-//			} catch (NumberFormatException e) {
-//				toReturn = false;
-//			} catch (EMFUserError e) {
-//				toReturn = false;
-//			}	
-//		}
-		if(!toReturn){
+		String resourceId = (String) request.getAttribute("ID");
+
+		try {
+			 DAOFactory.getKpiDAO().deleteResource(
+					Integer.parseInt(resourceId));
+			 toReturn = true;
+		} catch (NumberFormatException e) {
 			EMFErrorHandler engErrorHandler = getErrorHandler();
-			engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING, "10012","component_kpi_messages"));
+			engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
+					"10012", "component_kpi_messages"));
+
+		} catch (EMFUserError e) {
+			EMFErrorHandler engErrorHandler = getErrorHandler();
+			engErrorHandler.addError(e);
 		}
-			
-		return toReturn; 
-	}
-	
-	private boolean canDelete(Integer modelId){
-		boolean toReturn = false;
-		//TODO creazione metodo verifica possibilità cancellazione
-//		try {
-//			toReturn = (!(DAOFactory.getModelDAO().hasKpi(modelId)));
-//		} catch (EMFUserError e) {
-//		}
+
 		return toReturn;
-		
 	}
+
 }

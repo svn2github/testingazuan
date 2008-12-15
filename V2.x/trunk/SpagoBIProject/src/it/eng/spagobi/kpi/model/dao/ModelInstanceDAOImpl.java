@@ -3,6 +3,7 @@ package it.eng.spagobi.kpi.model.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpi;
@@ -31,6 +32,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
+import org.hibernate.exception.ConstraintViolationException;
 
 public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		IModelInstanceDAO {
@@ -284,35 +286,31 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 	private SbiKpiInstance setSbiKpiInstanceFromModelInstance(Session aSession,
 			ModelInstance value, SbiKpiInstance sbiKpiInstance) {
-		if (value.getKpiInstance().getKpi() != null){
+		if (value.getKpiInstance().getKpi() != null) {
 			sbiKpiInstance.setSbiKpi((SbiKpi) aSession.load(SbiKpi.class, value
 					.getKpiInstance().getKpi()));
-		}
-		else{
+		} else {
 			sbiKpiInstance.setSbiKpi(null);
 		}
-		if (value.getKpiInstance().getThresholdId() != null){
+		if (value.getKpiInstance().getThresholdId() != null) {
 			sbiKpiInstance.setSbiThreshold((SbiThreshold) aSession
 					.load(SbiThreshold.class, value.getKpiInstance()
 							.getThresholdId()));
-		}
-		else {
+		} else {
 			sbiKpiInstance.setSbiThreshold(null);
 		}
 
 		if (value.getKpiInstance().getChartTypeId() != null) {
 			sbiKpiInstance.setSbiDomains((SbiDomains) aSession.load(
 					SbiDomains.class, value.getKpiInstance().getChartTypeId()));
-		}
-		else {
+		} else {
 			sbiKpiInstance.setSbiDomains(null);
 		}
 		if (value.getKpiInstance().getPeriodicityId() != null) {
 			sbiKpiInstance.setSbiKpiPeriodicity((SbiKpiPeriodicity) aSession
 					.load(SbiKpiPeriodicity.class, value.getKpiInstance()
 							.getPeriodicityId()));
-		}
-		else {
+		} else {
 			sbiKpiInstance.setSbiKpiPeriodicity(null);
 		}
 
@@ -442,6 +440,33 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		String name = value.getName();
 		String description = value.getDescription();
 		Integer id = value.getKpiModelInst();
+		SbiKpiModel sbiKpiModel = value.getSbiKpiModel();
+		Model aModel = ModelDAOImpl
+				.toModelWithoutChildren(sbiKpiModel, session);
+		SbiKpiInstance sbiKpiInstance = value.getSbiKpiInstance();
+
+		if (sbiKpiInstance != null) {
+			// toKpiInstance
+			KpiInstance aKpiInstance = new KpiInstance();
+			aKpiInstance.setKpiInstanceId(sbiKpiInstance.getIdKpiInstance());
+			aKpiInstance.setKpi(sbiKpiInstance.getSbiKpi().getKpiId());
+			if (sbiKpiInstance.getSbiThreshold() != null) {
+				aKpiInstance.setThresholdId(sbiKpiInstance.getSbiThreshold()
+						.getThresholdId());
+			}
+			if (sbiKpiInstance.getSbiDomains() != null) {
+				aKpiInstance.setChartTypeId(sbiKpiInstance.getSbiDomains()
+						.getValueId());
+			}
+			if (sbiKpiInstance.getSbiKpiPeriodicity() != null) {
+				aKpiInstance.setPeriodicityId(sbiKpiInstance
+						.getSbiKpiPeriodicity().getIdKpiPeriodicity());
+			}
+			aKpiInstance.setWeight(sbiKpiInstance.getWeight());
+			aKpiInstance.setD(sbiKpiInstance.getBeginDt());
+			//
+			toReturn.setKpiInstance(aKpiInstance);
+		}
 
 		List childrenNodes = new ArrayList();
 
@@ -565,7 +590,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 		}
 	}
-	
+
 	public void deleteKpiValue(Integer kpiInstId) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
@@ -574,12 +599,13 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiKpiInstance sbiKpiInst = (SbiKpiInstance) aSession.load(
-				SbiKpiInstance.class, kpiInstId);
+					SbiKpiInstance.class, kpiInstId);
 			Criteria critt = aSession.createCriteria(SbiKpiValue.class);
 			critt.add(Expression.eq("sbiKpiInstance", sbiKpiInst));
 			List sbiKpiValueList = critt.list();
 
-			for (Iterator iterator = sbiKpiValueList.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = sbiKpiValueList.iterator(); iterator
+					.hasNext();) {
 				SbiKpiValue sbiKpiValue = (SbiKpiValue) iterator.next();
 
 				aSession.delete(sbiKpiValue);
@@ -600,4 +626,55 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 	}
 
+	public boolean deleteModelInstance(Integer modelId) throws EMFUserError {
+		Session aSession = getSession();
+		Transaction tx = null;
+		try {
+			tx = aSession.beginTransaction();
+			SbiKpiModelInst aModelInst = (SbiKpiModelInst) aSession.load(
+					SbiKpiModelInst.class, modelId);
+			recursiveStepDelete(aSession, aModelInst);
+			deleteModelInstKpiInstResourceValue(aSession, aModelInst);
+
+			tx.commit();
+
+		} catch (ConstraintViolationException cve) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.error("Impossible to delete a Model Instance", cve);
+			throw new EMFUserError(EMFErrorSeverity.WARNING, 10015);
+		} catch (HibernateException e) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.error("Error while delete a Model ", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+		} finally {
+			aSession.close();
+		}
+		return true;
+	}
+
+	private void recursiveStepDelete(Session aSession,
+			SbiKpiModelInst aModelInst) throws EMFUserError {
+		Set children = aModelInst.getSbiKpiModelInsts();
+		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+			SbiKpiModelInst modelInstChild = (SbiKpiModelInst) iterator.next();
+			recursiveStepDelete(aSession, modelInstChild);
+			// delete Model Instance, Kpi Inst, History, Resource and Value
+			deleteModelInstKpiInstResourceValue(aSession, modelInstChild);
+		}
+	}
+
+	private void deleteModelInstKpiInstResourceValue(Session aSession, SbiKpiModelInst aModelInst) throws EMFUserError {
+		// Delete associations between the model and resources
+		DAOFactory.getModelResources().removeAllModelResource(aModelInst.getKpiModelInst());
+		// delete the model Inst
+		aSession.delete(aModelInst);
+		// Delete Kpi Instance Kpi Instance History Value
+		if (aModelInst.getSbiKpiInstance()!= null) {
+			deleteKpiInstance(aSession, aModelInst.getSbiKpiInstance().getIdKpiInstance());
+		}		
+	}
 }

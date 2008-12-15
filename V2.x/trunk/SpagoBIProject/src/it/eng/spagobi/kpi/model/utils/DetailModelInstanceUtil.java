@@ -123,6 +123,14 @@ public class DetailModelInstanceUtil {
 		Model model = new Model();
 		model.setId(Integer.parseInt(modelId));
 		toCreate.setModel(model);
+		
+		// set name and description of model definition
+		if(toCreate.getName()== null || toCreate.getName().trim().equals("")){
+			Model modelDefinition = DAOFactory.getModelDAO().loadModelWithoutChildrenById(Integer.parseInt(modelId));
+			toCreate.setName(modelDefinition.getName());
+		}
+		
+		
 		// // insert the new model
 		Integer modelInstanceId = DAOFactory.getModelInstanceDAO()
 				.insertModelInstance(toCreate);

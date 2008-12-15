@@ -55,25 +55,22 @@ public class ListModelTreeModule extends AbstractModule {
 
 	private boolean delete(SourceBean request, SourceBean response) throws Exception {
 		boolean toReturn = false;
-		
-		String modelId = (String)request.getAttribute("MODEL_ID");
-		if(canDelete(Integer.parseInt(modelId))) {
-			toReturn = DAOFactory.getModelDAO().deleteModel(Integer.parseInt(modelId));
-		}
-		else{
+		String modelId = (String) request.getAttribute("MODEL_ID");
+		try {
+			toReturn = DAOFactory.getModelDAO().deleteModel(
+					Integer.parseInt(modelId));
+			toReturn = true;
+		} catch (NumberFormatException e) {
 			EMFErrorHandler engErrorHandler = getErrorHandler();
-			engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING, "10012","component_kpi_messages"));
+			engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
+					"10012", "component_kpi_messages"));
+		} catch (EMFUserError e) {
+			EMFErrorHandler engErrorHandler = getErrorHandler();
+			engErrorHandler.addError(e);
 		}
+
 		return toReturn; 
 	}
 	
-	private boolean canDelete(Integer modelId){
-		boolean toReturn = false;
-		try {
-			toReturn = (!(DAOFactory.getModelDAO().hasKpi(modelId)));
-		} catch (EMFUserError e) {
-		}
-		return toReturn;
-	}
 
 }

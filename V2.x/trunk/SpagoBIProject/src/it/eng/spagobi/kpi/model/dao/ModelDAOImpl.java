@@ -14,6 +14,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
+import org.hibernate.exception.ConstraintViolationException;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
@@ -229,6 +230,11 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		String description = value.getKpiModelDesc();
 		String code = value.getKpiModelCd();
 		Integer id = value.getKpiModelId();
+		SbiKpi sbiKpi = value.getSbiKpi();
+		Integer kpiId = null;
+		if(sbiKpi != null){
+			kpiId = sbiKpi.getKpiId();
+		}
 
 		String typeName = value.getSbiDomains().getValueNm();
 		String typeDescription = value.getSbiDomains().getValueDs();
@@ -256,6 +262,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setTypeDescription(typeDescription);
 		toReturn.setChildrenNodes(childrenNodes);
 		toReturn.setParentId(rootId);
+		toReturn.setKpiId(kpiId);
 
 		logger.debug("OUT");
 		return toReturn;
@@ -407,13 +414,21 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		
 			tx.commit();
 
-		} catch (HibernateException e) {
+		}catch (ConstraintViolationException cve){
 			if (tx != null && tx.isActive()) {
 				tx.rollback();
 			}
+			logger.error("Impossible to delete a Model",cve);
+			throw new EMFUserError(EMFErrorSeverity.WARNING, 10015);
+			
+		} 		
+		catch (HibernateException e) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.error("Error while delete a Model ", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
-
-		} finally {
+		}finally {
 			aSession.close();
 		}
 		return true;
@@ -439,42 +454,42 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		aSession.delete(aModel);
 	}
 
-	public boolean hasKpi(Integer modelId) throws EMFUserError {
-		Session aSession = getSession();
-		Transaction tx = null;
-		boolean toReturn = false;
-		try {
-			tx = aSession.beginTransaction();
-			SbiKpiModel aModel = (SbiKpiModel) aSession.load(SbiKpiModel.class,
-					modelId);
-			toReturn = recursiveHasKpi(aModel);
-		
-			tx.commit();
-
-		} catch (HibernateException e) {
-			if (tx != null && tx.isActive()) {
-				tx.rollback();
-			}
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
-
-		} finally {
-			aSession.close();
-		}
-		return toReturn;
-	}
-
-	private boolean recursiveHasKpi(SbiKpiModel model) {
-		SbiKpi sbiKpi = model.getSbiKpi();
-		boolean toReturn =(sbiKpi != null);
-		Set Children = model.getSbiKpiModels();
-		for (Iterator iterator = Children.iterator(); iterator.hasNext();) {
-			SbiKpiModel child = (SbiKpiModel) iterator.next();
-			toReturn = toReturn || recursiveHasKpi(child);
-			if(toReturn == true)
-				break;
-		}
-		return toReturn;
-	}
+//	public boolean hasKpi(Integer modelId) throws EMFUserError {
+//		Session aSession = getSession();
+//		Transaction tx = null;
+//		boolean toReturn = false;
+//		try {
+//			tx = aSession.beginTransaction();
+//			SbiKpiModel aModel = (SbiKpiModel) aSession.load(SbiKpiModel.class,
+//					modelId);
+//			toReturn = recursiveHasKpi(aModel);
+//		
+//			tx.commit();
+//
+//		} catch (HibernateException e) {
+//			if (tx != null && tx.isActive()) {
+//				tx.rollback();
+//			}
+//			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+//
+//		} finally {
+//			aSession.close();
+//		}
+//		return toReturn;
+//	}
+//
+//	private boolean recursiveHasKpi(SbiKpiModel model) {
+//		SbiKpi sbiKpi = model.getSbiKpi();
+//		boolean toReturn =(sbiKpi != null);
+//		Set Children = model.getSbiKpiModels();
+//		for (Iterator iterator = Children.iterator(); iterator.hasNext();) {
+//			SbiKpiModel child = (SbiKpiModel) iterator.next();
+//			toReturn = toReturn || recursiveHasKpi(child);
+//			if(toReturn == true)
+//				break;
+//		}
+//		return toReturn;
+//	}
 		
 
 }

@@ -21,12 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.importexport;
 
-import it.eng.spago.dbaccess.sql.DataConnection;
-import it.eng.spago.dbaccess.sql.mappers.SQLMapper;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.tools.importexport.ImportExportConstants;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
+
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -179,6 +179,44 @@ public class ExportUtilities {
         return sqlconn;
 	}
 	
+	public static String getExportTempFolderPath() {
+		logger.debug("IN");
+		String toReturn = null;
+		try {
+		    ConfigSingleton conf = ConfigSingleton.getInstance();
+		    SourceBean importerSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.EXPORTER");
+		    toReturn = (String) importerSB.getAttribute("exportFolder");
+		    toReturn = GeneralUtilities.checkForSystemProperty(toReturn);
+		    if (!toReturn.startsWith("/") && toReturn.charAt(1) != ':') {
+		    	String root = ConfigSingleton.getRootPath();
+		    	toReturn = root + "/" + toReturn;
+		    }
+		} catch (Exception e) {
+			logger.error("Error while retrieving export temporary folder path", e);
+		} finally {
+			logger.debug("OUT: export temporary folder path = " + toReturn);
+		}
+		return toReturn;
+	}
+	
+	
+	public static IExportManager getExportManagerInstance() throws Exception {
+		logger.debug("IN");
+		IExportManager toReturn = null;
+		try {
+		    ConfigSingleton conf = ConfigSingleton.getInstance();
+		    SourceBean exporterSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.EXPORTER");
+		    String expClassName = (String) exporterSB.getAttribute("class");
+		    Class expClass = Class.forName(expClassName);
+		    toReturn = (IExportManager) expClass.newInstance();
+		} catch (Exception e) {
+			logger.error("Error while instantiating export manager", e);
+			throw e;
+		} finally {
+			logger.debug("OUT");
+		}
+		return toReturn;
+	}
 	
 	/**
 	 * Creates a Spago DataConnection object starting from a connection to the export database

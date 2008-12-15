@@ -45,6 +45,7 @@ import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
@@ -1253,4 +1254,44 @@ public class ImportUtilities {
 		logger.debug("OUT: max size = " + toReturn);
 		return toReturn;
 	}
+	
+	public static String getImportTempFolderPath() {
+		logger.debug("IN");
+		String toReturn = null;
+		try {
+		    ConfigSingleton conf = ConfigSingleton.getInstance();
+		    SourceBean importerSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.IMPORTER");
+		    toReturn = (String) importerSB.getAttribute("tmpFolder");
+		    toReturn = GeneralUtilities.checkForSystemProperty(toReturn);
+		    if (!toReturn.startsWith("/") && toReturn.charAt(1) != ':') {
+		    	String root = ConfigSingleton.getRootPath();
+		    	toReturn = root + "/" + toReturn;
+		    }
+		} catch (Exception e) {
+			logger.error("Error while retrieving export temporary folder path", e);
+		} finally {
+			logger.debug("OUT: export temporary folder path = " + toReturn);
+		}
+		return toReturn;
+	}
+	
+	public static IImportManager getImportManagerInstance() throws Exception {
+		logger.debug("IN");
+		IImportManager toReturn = null;
+		try {
+		    ConfigSingleton conf = ConfigSingleton.getInstance();
+		    SourceBean importerSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.IMPORTER");
+		    // instance the importer class
+		    String impClassName = (String) importerSB.getAttribute("class");
+		    Class impClass = Class.forName(impClassName);
+		    toReturn = (IImportManager) impClass.newInstance();
+		} catch (Exception e) {
+			logger.error("Error while instantiating import manager", e);
+			throw e;
+		} finally {
+			logger.debug("OUT");
+		}
+		return toReturn;
+	}
+	
 }

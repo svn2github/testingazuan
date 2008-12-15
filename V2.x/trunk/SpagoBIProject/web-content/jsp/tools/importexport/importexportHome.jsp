@@ -83,6 +83,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <script>
 	function submitExportForm() {
+		cleanBIObjectsIdsInput();
+		if (document.getElementById('<%= ImportExportConstants.OBJECT_ID %>').value == '') {
+			alert('No documents selected!!');
+			return;
+		}
 		var divprog = document.getElementById('divProgress');
 		divprog.style.display='inline';
 		document.getElementById('exportForm').submit();
@@ -95,6 +100,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		var divdown = document.getElementById('divDownload');
 		divdown.style.display='none';
 		downform.submit();
+	}
+	
+	function cleanBIObjectsIdsInput() {
+		biobjectsIdArray = new Array();
+		var checks = document.getElementsByName('<%= ImportExportConstants.OBJECT_ID_PATHFUNCT %>');
+		for(var i=0; i< checks.length; i++){
+			check = checks[i];
+			if (check.checked) {
+				value = check.value;
+				chuncks = value.split('_');
+				biobjectsIdArray.push(chuncks[0]);
+				check.click();
+			}
+		}
+		document.getElementById('<%= ImportExportConstants.OBJECT_ID %>').value=biobjectsIdArray.join(';');
 	}
 	
 </script>
@@ -111,6 +131,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   <form method='POST' action='<%=formExportUrl%>' id='exportForm' name='exportForm'>
   	<input type="hidden" name="PAGE" value="ImportExportPage" />
   	<input type="hidden" name="MESSAGEDET" value="Export" />
+  	<input type="hidden" name="<%= ImportExportConstants.OBJECT_ID %>" id="<%= ImportExportConstants.OBJECT_ID %>" value="" />
+  	
 	<div style="float:left;width:50%;" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:88%;">	
 				<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>
@@ -250,11 +272,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>	
 		<div id="divImportResult" style="clear:left;color:#074B88;">	 		 
 			<%
-				String pathLogFile = iri.getPathLogFile();
-				if( (pathLogFile!=null) && !pathLogFile.equals("") ) {	
+				String logFileName = iri.getLogFileName();
+				if( (logFileName!=null) && !logFileName.equals("") ) {	
 					 String downloadLogUrl = ChannelUtilities.getSpagoBIContextName(request);
 					 downloadLogUrl += "/servlet/AdapterHTTP?ACTION_NAME=DOWNLOAD_FILE_ACTION";
-					 downloadLogUrl += "&OPERATION=downloadLog&PATH=" + pathLogFile;	
+					 downloadLogUrl += "&OPERATION=downloadLogFile&FILE_NAME=" + logFileName + "&FOLDER_NAME=" + iri.getFolderName();
 			%>
 			<spagobi:message key = "SBISet.importexport.opComplete" bundle="component_impexp_messages"/>
 			<ul>
@@ -264,11 +286,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</a>
 				</li>
 			<% 	}
-				String pathAssFile = iri.getPathAssociationsFile();
-				if( (pathAssFile!=null) && !pathAssFile.equals("") ) {	
+				String assFileName = iri.getAssociationsFileName();
+				if( (assFileName!=null) && !assFileName.equals("") ) {	
 					 String downloadAssUrl = ChannelUtilities.getSpagoBIContextName(request);
 					 downloadAssUrl += "/servlet/AdapterHTTP?ACTION_NAME=DOWNLOAD_FILE_ACTION";
-					 downloadAssUrl += "&OPERATION=downloadLog&PATH=" + pathAssFile;
+					 downloadAssUrl += "&OPERATION=downloadAssociationFile&FILE_NAME=" + assFileName + "&FOLDER_NAME=" + iri.getFolderName();	
 		    %>
 				<li>
 					<a style='text-decoration:none;color:#CC0000;' href='<%=downloadAssUrl%>'>
@@ -281,8 +303,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</a>
 				</li>
 			</ul>
-			<%	
-				}
+			<% } %>
+			<%--	
 				Map manualTasks = iri.getManualTasks();
 				if(!manualTasks.isEmpty()) {
 			%>
@@ -313,7 +335,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</ul>
 			<%
 				}
-			%>
+			--%>
 		</div>
 		<%
 		}
@@ -456,11 +478,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				pars = "&ACTION_NAME=MANAGE_IMPEXP_ASS_ACTION&MESSAGE=SAVE_ASSOCIATION_FILE&OVERWRITE=TRUE";
 				pars += "&language=<%=locale.getLanguage()%>&country=<%=locale.getCountry()%>";
 				<%
-					if( (iri!=null) && (iri.getPathAssociationsFile()!=null) && !iri.getPathAssociationsFile().equals("") ) {	
-						String pathassfile = iri.getPathAssociationsFile();
-						pathassfile = pathassfile.replaceAll("\\\\", "/");
+					if( (iri!=null) && (iri.getAssociationsFileName()!=null) && !iri.getAssociationsFileName().equals("") ) {	
+						String associationFileName = iri.getAssociationsFileName();
 				%>
-				pars += "&PATH=<%=pathassfile%>";
+				pars += "&FILE_NAME=<%=associationFileName%>&FOLDER_NAME=<%=iri.getFolderName()%>";
 				<%
 					}
 				%>

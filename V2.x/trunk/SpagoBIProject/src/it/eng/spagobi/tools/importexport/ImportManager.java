@@ -35,7 +35,6 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreports;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreportsId;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRole;
-import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRoleId;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiObjParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiObjParuseId;
@@ -44,7 +43,6 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseCk;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseCkId;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseDet;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseDetId;
 import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.bo.Role;
@@ -134,7 +132,7 @@ public class ImportManager implements IImportManager, Serializable {
 	// write content uploaded into a tmp archive
 	String pathArchiveFile = pathImpTmpFold + "/" + archiveName;
 	File archive = new File(pathArchiveFile);
-	exportedFileName = archiveName;
+	exportedFileName = archiveName.substring(0, archiveName.indexOf(".zip"));
 	FileOutputStream fos = null;
 	try {
 		fos = new FileOutputStream(archive);
@@ -400,7 +398,8 @@ public class ImportManager implements IImportManager, Serializable {
 	ImportResultInfo iri = new ImportResultInfo();
 	// create the folder which contains the import result files
 	Date now = new Date();
-	String pathFolderImportOutcome = pathImportTmpFolder + "/import_" + now.getTime();
+	String folderImportOutcomeName = "import" + now.getTime();
+	String pathFolderImportOutcome = pathImportTmpFolder + "/" + folderImportOutcomeName;
 	File fileFolderImportOutcome = new File(pathFolderImportOutcome);
 	fileFolderImportOutcome.mkdirs();
 	// fill the result bean with eventual manual task info
@@ -460,7 +459,7 @@ public class ImportManager implements IImportManager, Serializable {
 	    logger.error("Error while writing log file ", e);
 	}
 	// generate the association file
-	File assFile = new File(pathFolderImportOutcome + "/" + "associations.xml");
+	File assFile = new File(pathFolderImportOutcome + "/" + exportedFileName + ".xml");
 	if (assFile.exists())
 	    assFile.delete();
 	try {
@@ -471,11 +470,11 @@ public class ImportManager implements IImportManager, Serializable {
 	} catch (Exception e) {
 	    logger.error("Error while writing the associations file ", e);
 	}
-
+	iri.setFolderName(folderImportOutcomeName);
 	// set into the result bean the log file path
-	iri.setPathLogFile(logFile.getPath());
+	iri.setLogFileName(exportedFileName);
 	// set into the result bean the associations file path
-	iri.setPathAssociationsFile(assFile.getPath());
+	iri.setAssociationsFileName(exportedFileName);
 	// return the result info bean
 	logger.debug("OUT");
 	return iri;

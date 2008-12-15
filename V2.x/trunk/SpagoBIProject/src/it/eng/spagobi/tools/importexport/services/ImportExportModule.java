@@ -26,7 +26,6 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -41,6 +40,7 @@ import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
+import it.eng.spagobi.tools.importexport.ExportUtilities;
 import it.eng.spagobi.tools.importexport.IExportManager;
 import it.eng.spagobi.tools.importexport.IImportManager;
 import it.eng.spagobi.tools.importexport.ImportExportConstants;
@@ -53,7 +53,7 @@ import it.eng.spagobi.tools.importexport.bo.AssociationFile;
 import it.eng.spagobi.tools.importexport.dao.AssociationFileDAO;
 import it.eng.spagobi.tools.importexport.dao.IAssociationFileDAO;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -160,19 +160,12 @@ public class ImportExportModule extends AbstractModule {
 	    if (exportSnapshots != null) {
 		exportSnaps = true;
 	    }
-	    ConfigSingleton conf = ConfigSingleton.getInstance();
-	    SourceBean exporterSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.EXPORTER");
-	    String pathExportFolder = (String) exporterSB.getAttribute("exportFolder");
-	    pathExportFolder = GeneralUtilities.checkForSystemProperty(pathExportFolder);
-	    if (!pathExportFolder.startsWith("/") && pathExportFolder.charAt(1) != ':') {
-	    	String root = ConfigSingleton.getRootPath();
-	    	pathExportFolder = root + "/" + pathExportFolder;
-	    }
-	    List id_paths = request.getAttributeAsList(ImportExportConstants.OBJECT_ID_PATHFUNCT);
-	    List ids = extractObjId(id_paths);
-	    String expClassName = (String) exporterSB.getAttribute("class");
-	    Class expClass = Class.forName(expClassName);
-	    expManager = (IExportManager) expClass.newInstance();
+	    
+	    String pathExportFolder = ExportUtilities.getExportTempFolderPath();
+	    String idListStr = (String) request.getAttribute(ImportExportConstants.OBJECT_ID);
+	    String[] idListArray = idListStr.split(";");
+	    List ids = Arrays.asList(idListArray);
+	    expManager = ExportUtilities.getExportManagerInstance();
 	    expManager.prepareExport(pathExportFolder, exportFileName, expSubObj, exportSnaps);
 	    expManager.exportObjects(ids);
 	    response.setAttribute(ImportExportConstants.EXPORT_FILE_PATH, exportFileName);
@@ -188,6 +181,7 @@ public class ImportExportModule extends AbstractModule {
 	}
     }
 
+    /*
     private List extractObjId(List requests) {
 	logger.debug("IN");
 	List toReturn = new ArrayList();
@@ -200,6 +194,7 @@ public class ImportExportModule extends AbstractModule {
 	logger.debug("OUT");
 	return toReturn;
     }
+    */
 
     /**
      * Manages the request of the user to import contents of an exported archive
@@ -254,9 +249,6 @@ public class ImportExportModule extends AbstractModule {
 		
 		// checks if the association file is bigger than 1 MB, that is more than enough!!
 		if (associationsFileItem != null) {
-			if (associationsFileItem.getSize() == 0) {
-				throw new EMFValidationError(EMFErrorSeverity.ERROR, "associationsFile", "201");
-			}
 			if (associationsFileItem.getSize() > 1048576) {
 				throw new EMFValidationError(EMFErrorSeverity.ERROR, "associationsFile", "202");
 			}
@@ -308,23 +300,13 @@ public class ImportExportModule extends AbstractModule {
 		byte[] archiveBytes = archive.get();
 	
 	    // get path of the import tmp directory
-	    ConfigSingleton conf = ConfigSingleton.getInstance();
-	    SourceBean importerSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.IMPORTER");
-	    String pathImpTmpFolder = (String) importerSB.getAttribute("tmpFolder");
-	    pathImpTmpFolder = GeneralUtilities.checkForSystemProperty(pathImpTmpFolder);
-	    if (!pathImpTmpFolder.startsWith("/") && pathImpTmpFolder.charAt(1) != ':') {
-	    	String root = ConfigSingleton.getRootPath();
-	    	pathImpTmpFolder = root + "/" + pathImpTmpFolder;
-	    }
+	    String pathImpTmpFolder = ImportUtilities.getImportTempFolderPath();
 	   
 	    // apply transformation
 	    TransformManager transManager = new TransformManager();
 	    archiveBytes = transManager.applyTransformations(archiveBytes, archiveName, pathImpTmpFolder);
 
-	    // instance the importer class
-	    String impClassName = (String) importerSB.getAttribute("class");
-	    Class impClass = Class.forName(impClassName);
-	    impManager = (IImportManager) impClass.newInstance();
+	    impManager = ImportUtilities.getImportManagerInstance();
 	    // prepare import environment
 	    impManager.init(pathImpTmpFolder, archiveName, archiveBytes);
 	    impManager.openSession();
@@ -383,6 +365,11 @@ public class ImportExportModule extends AbstractModule {
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 	} catch (SourceBeanException sbe) {
 		logger.error("Error: " + sbe);
+	    if (impManager != null)
+			impManager.stopImport();
+		throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
+	} catch (Exception e) {
+		logger.error(e);
 	    if (impManager != null)
 			impManager.stopImport();
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");

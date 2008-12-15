@@ -26,8 +26,9 @@ import java.util.Map;
 
 public class ImportResultInfo {
 
-	String pathLogFile = "";
-	String pathAssociationsFile = "";
+	String folderName = "";
+	String logFileName = "";
+	String associationsFileName = "";
 	Map manualTasks = new HashMap();
 	
 	/**
@@ -49,39 +50,47 @@ public class ImportResultInfo {
 	}
 	
 	/**
-	 * Gets the path log file.
+	 * Gets the Name of log file.
 	 * 
-	 * @return the path log file
+	 * @return the Name log file
 	 */
-	public String getPathLogFile() {
-		return pathLogFile;
+	public String getLogFileName() {
+		return logFileName;
 	}
 	
 	/**
-	 * Sets the path log file.
+	 * Sets the Name of log file.
 	 * 
-	 * @param pathLogFile the new path log file
+	 * @param logFileName the Name of log file.
 	 */
-	public void setPathLogFile(String pathLogFile) {
-		this.pathLogFile = pathLogFile;
+	public void setLogFileName(String logFileName) {
+		this.logFileName = logFileName;
 	}
 	
 	/**
-	 * Gets the path associations file.
+	 * Gets the Name of associations file.
 	 * 
-	 * @return the path associations file
+	 * @return the Name of associations file
 	 */
-	public String getPathAssociationsFile() {
-		return pathAssociationsFile;
+	public String getAssociationsFileName() {
+		return associationsFileName;
 	}
 	
 	/**
-	 * Sets the path associations file.
+	 * Sets the Name of associations file.
 	 * 
-	 * @param pathAssFile the new path associations file
+	 * @param associationsFileName the Name of associations file.
 	 */
-	public void setPathAssociationsFile(String pathAssFile) {
-		this.pathAssociationsFile = pathAssFile;
+	public void setAssociationsFileName(String associationsFileName) {
+		this.associationsFileName = associationsFileName;
+	}
+
+	public String getFolderName() {
+		return folderName;
+	}
+
+	public void setFolderName(String folderName) {
+		this.folderName = folderName;
 	}
 	
 }

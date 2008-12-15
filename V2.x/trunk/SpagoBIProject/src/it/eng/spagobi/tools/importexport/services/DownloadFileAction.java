@@ -22,9 +22,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.importexport.services;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.tools.importexport.ExportUtilities;
+import it.eng.spagobi.tools.importexport.ImportUtilities;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,46 +51,88 @@ public class DownloadFileAction extends AbstractHttpAction {
 	    HttpServletResponse httpResponse = getHttpResponse();
 	    String operation = (String) request.getAttribute("OPERATION");
 	    if ((operation != null) && (operation.equalsIgnoreCase("downloadExportFile"))) {
-		manageDownload(httpRequest, httpResponse, true);
-		return;
-	    } else if ((operation != null) && (operation.equalsIgnoreCase("downloadLog"))) {
-		manageDownload(httpRequest, httpResponse, false);
-		return;
-	    } else if ((operation != null) && (operation.equalsIgnoreCase("downloadManualTask"))) {
-		manageDownload(httpRequest, httpResponse, false);
-		return;
+	    	manageDownloadExportFile(httpRequest, httpResponse);
+	    	return;
+	    } else if ((operation != null) && (operation.equalsIgnoreCase("downloadLogFile"))) {
+	    	manageDownloadLogFile(httpRequest, httpResponse);
+	    	return;
+	    } else if ((operation != null) && (operation.equalsIgnoreCase("downloadAssociationFile"))) {
+	    	manageDownloadAssociationFile(httpRequest, httpResponse);
+	    	return;
 	    }
+//	    else if ((operation != null) && (operation.equalsIgnoreCase("downloadManualTask"))) {
+//	    	manageDownload(httpRequest, httpResponse, false);
+//	    	return;
+//	    }
 	} finally {
 	    logger.debug("OUT");
 	}
     }
 
     /**
+     * Handle a download request of an importation log file. Reads the file, sends it as
+     * an http response attachment.
+     */
+    private void manageDownloadLogFile(HttpServletRequest request, HttpServletResponse response) {
+    	logger.debug("IN");
+    	try {
+    		String exportFileName = (String) request.getParameter("FILE_NAME");
+    		String folderName = (String) request.getParameter("FOLDER_NAME");
+    		String importBasePath = ImportUtilities.getImportTempFolderPath();
+    		String folderPath = importBasePath + "/" + folderName;
+    		String fileExtension = "log";
+    		manageDownload(exportFileName, fileExtension, folderPath, response, false);
+    	} catch (Exception e) {
+    	    logger.error("Error while downloading importation log file", e);
+    	} finally {
+    	    logger.debug("OUT");
+    	}
+    }
+    
+    /**
+     * Handle a download request of an importation association file. Reads the file, sends it as
+     * an http response attachment.
+     */
+    private void manageDownloadAssociationFile(HttpServletRequest request, HttpServletResponse response) {
+    	logger.debug("IN");
+    	try {
+    		String exportFileName = (String) request.getParameter("FILE_NAME");
+    		String folderName = (String) request.getParameter("FOLDER_NAME");
+    		String importBasePath = ImportUtilities.getImportTempFolderPath();
+    		String folderPath = importBasePath + "/" + folderName;
+    		String fileExtension = "xml";
+    		manageDownload(exportFileName, fileExtension, folderPath, response, false);
+    	} catch (Exception e) {
+    	    logger.error("Error while downloading importation association file", e);
+    	} finally {
+    	    logger.debug("OUT");
+    	}
+    }
+    
+    /**
      * Handle a download request of an eported file. Reads the file, sends it as
      * an http response attachment and in the end deletes the file.
-     * 
-     * @param request
-     *                the http request
-     * @param response
-     *                the http response
-     * @param deleteFile
-     *                if true delete the downloadedFile
      */
-    private void manageDownload(HttpServletRequest request, HttpServletResponse response, boolean deleteFile) {
+    private void manageDownloadExportFile(HttpServletRequest request, HttpServletResponse response) {
+    	logger.debug("IN");
+    	try {
+    		String exportFileName = (String) request.getParameter("FILE_NAME");
+    		String folderPath = ExportUtilities.getExportTempFolderPath();
+    		String fileExtension = "zip";
+    		manageDownload(exportFileName, fileExtension, folderPath, response, true);
+    	} catch (Exception e) {
+    	    logger.error("Error while downloading export file", e);
+    	} finally {
+    	    logger.debug("OUT");
+    	}
+    }
+    
+
+    private void manageDownload(String fileName, String fileExtension, String folderPath, HttpServletResponse response, boolean deleteFile) {
 	logger.debug("IN");
 	try {
-	    String exportFileName = (String) request.getParameter("FILE_NAME");
-	    String exportFileFolder = "";
-	    ConfigSingleton conf = ConfigSingleton.getInstance();
-	    SourceBean exporterSB = (SourceBean) conf.getAttribute("IMPORTEXPORT.EXPORTER");
-	    String pathExportFolder = (String) exporterSB.getAttribute("exportFolder");
-	    pathExportFolder = GeneralUtilities.checkForSystemProperty(pathExportFolder);
-	    if (!pathExportFolder.startsWith("/") && pathExportFolder.charAt(1) != ':') {
-	    	String root = ConfigSingleton.getRootPath();
-	    	pathExportFolder = root + "/" + pathExportFolder;
-	    }
-	    File exportedFile = new File(exportFileFolder + "/" + exportFileName + ".zip");
-	    response.setHeader("Content-Disposition", "attachment; filename=\"" + exportFileName + ".zip\";");
+	    File exportedFile = new File(folderPath + "/" + fileName + "." + fileExtension);
+	    response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "." + fileExtension + "\";");
 	    byte[] exportContent = "".getBytes();
 	    FileInputStream fis = null;
 	    try {
@@ -109,7 +152,7 @@ public class DownloadFileAction extends AbstractHttpAction {
 	} catch (IOException ioe) {
 	    logger.error("Cannot flush response", ioe);
 	} finally {
-	    logger.debug("IN");
+	    logger.debug("OUT");
 	}
     }
 

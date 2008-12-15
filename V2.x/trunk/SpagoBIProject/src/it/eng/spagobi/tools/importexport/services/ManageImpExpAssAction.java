@@ -27,10 +27,12 @@ import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.WebUrlBuilder;
+import it.eng.spagobi.tools.importexport.ImportUtilities;
 import it.eng.spagobi.tools.importexport.bo.AssociationFile;
 import it.eng.spagobi.tools.importexport.dao.AssociationFileDAO;
 import it.eng.spagobi.tools.importexport.dao.IAssociationFileDAO;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.Date;
@@ -140,7 +142,6 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 		if (description == null) description = "";
 //		UploadedFile uplFile = (UploadedFile)sbrequest.getAttribute("UPLOADED_FILE");
 		FileItem uplFile = (FileItem)sbrequest.getAttribute("UPLOADED_FILE");
-		String fileName = GeneralUtilities.getRelativeFileNames(uplFile.getName());
 		byte[] content = null;
 		if (uplFile == null || uplFile.getName().trim().equals("")) {
 			String msg = msgBuild.getMessage("Sbi.saving.associationFileNotSpecified", "component_impexp_messages", locale);
@@ -447,7 +448,8 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 	logger.debug("IN");
 	String htmlResp = "";
 	try {
-		String pathFileAss = httpRequest.getParameter("PATH");
+		String associationFileName = httpRequest.getParameter("FILE_NAME");
+		String folderName = httpRequest.getParameter("FOLDER_NAME");
 		String name = httpRequest.getParameter("NAME");
 		String description = httpRequest.getParameter("DESCRIPTION");
 		String overwriteStr = httpRequest.getParameter("OVERWRITE");
@@ -457,7 +459,9 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 		assFile.setName(name);
 		assFile.setDateCreation(new Date().getTime());
 		assFile.setId(name);
-		FileInputStream fis = new FileInputStream(pathFileAss);
+	    String pathExportFolder = ImportUtilities.getImportTempFolderPath();
+	    File file = new File(pathExportFolder + "/" + folderName + "/" + associationFileName + ".xml");
+		FileInputStream fis = new FileInputStream(file);
 		byte[] fileAssContent = GeneralUtilities.getByteArrayFromInputStream(fis);
 		fis.close();
 		IAssociationFileDAO assfiledao = new AssociationFileDAO();

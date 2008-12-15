@@ -531,7 +531,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
       </init-param>
       <init-param>
         <name>serviceName</name>
-        <value>KPIConfigurationAction</value>
+        <value>LOGIN_ACTION_KPI_CONFIGURATION</value>
       </init-param>
       <init-param>
         <name>light_navigation</name>

@@ -4,7 +4,7 @@
   "include" :
   [
     {
-      "path" : "../qooxdoo-0.8/tool/data/config/application.json",
+      "path" : "../../js/qooxdoo-0.8/tool/data/config/application.json",
       "as"   : "appconf"
     }
   ],
@@ -12,10 +12,10 @@
   "let" :
   {
     "APPLICATION"  : "spagobi",
-    "QOOXDOO_PATH" : "../qooxdoo-0.8/framework",
-    "QOOXDOO_URI"  : "./franco",
+    "QOOXDOO_PATH" : "../../js/qooxdoo-0.8/framework",
+    "QOOXDOO_URI"  : "../${QOOXDOO_PATH}",
     "QXTHEME"      : "qx.theme.Modern",
-    "LOCALES"      : [ "en" ],
+    "LOCALES"      : [ "en", "de", "fr", "it" ],
     "ROOT"         : "."
   },
 
@@ -108,7 +108,11 @@
     "translate" :
     {
       "extend" : ["appconf::translate"]
-    }
-
+    },
+    
+    "translation" :
+    {
+      "extend" : ["common", "appconf::translation"]
+	}
   }
 }

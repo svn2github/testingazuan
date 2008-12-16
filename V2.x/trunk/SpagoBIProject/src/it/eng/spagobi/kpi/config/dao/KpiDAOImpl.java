@@ -342,7 +342,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			SbiKpiValue hibKpiValue = new SbiKpiValue();
 			Date beginDt = value.getBeginDate();
 			Date endDt = value.getEndDate();
-			String kpiValue = value.getValue().toString();
+			String kpiValue = value.getValue();
 			Integer kpiInstanceId = value.getKpiInstanceId();
 			SbiKpiInstance sbiKpiInstance = (SbiKpiInstance) aSession.load(
 					SbiKpiInstance.class, kpiInstanceId);
@@ -898,7 +898,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String description = kpi.getDescription();
 		String documentLabel = kpi.getDocumentLabel();
 		Boolean isParent = false;
-		if (kpi.getFlgIsFather().equals(new Character('T'))) {
+		if (kpi.getFlgIsFather()!=null &&  kpi.getFlgIsFather().equals(new Character('T'))) {
 			isParent = true;
 		}
 		Integer kpiId = kpi.getKpiId();
@@ -924,6 +924,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			Threshold t = toThreshold(trs);
 			thresholds.add(t);
 		}
+
 
 		Double standardWeight = kpi.getWeight();
 		Set kInstances = kpi.getSbiKpiInstances();

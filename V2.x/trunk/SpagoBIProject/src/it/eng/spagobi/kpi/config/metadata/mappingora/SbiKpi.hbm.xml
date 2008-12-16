@@ -11,7 +11,7 @@
         <many-to-one name="sbiKpi" class="it.eng.spagobi.kpi.config.metadata.SbiKpi" >
             <column name="id_kpi_parent" />
         </many-to-one>
-        <many-to-one name="sbiDataSet" class=" it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" >
+        <many-to-one name="sbiDataSet" class="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" >
             <column name="DS_ID" />
         </many-to-one>
         <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" >

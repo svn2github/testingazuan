@@ -151,7 +151,7 @@ public class SbiKpi  implements java.io.Serializable {
         this.description = description;
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return this.weight;
     }
     

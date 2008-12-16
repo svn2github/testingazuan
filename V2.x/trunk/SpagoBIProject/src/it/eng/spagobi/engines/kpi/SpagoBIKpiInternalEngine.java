@@ -117,7 +117,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	 */
 
 	public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError{
-		
+		logger.debug("IN");
 		ResponseContainer responseContainer=ResponseContainer.getResponseContainer();
 		EMFErrorHandler errorHandler=responseContainer.getErrorHandler();
 
@@ -132,11 +132,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 
 		String documentId=obj.getId().toString();
-
+		logger.debug("Loaded documentId:"+documentId);
 		SessionContainer session = requestContainer.getSessionContainer();
 		IEngUserProfile userProfile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String userId=(String)((UserProfile)userProfile).getUserId();
-
+		
 		logger.debug("got parameters userId="+userId+" and documentId="+documentId.toString());
 
 		//		**************get the template*****************
@@ -243,6 +243,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			//		**************take informations on the modelInstance and its KpiValues*****************
 
 			String modelNodeInstance = (String)content.getAttribute("model_node_instance");
+			logger.debug("modelNodeInstance : "+modelNodeInstance);
 			Integer modelNodeInstanceID = new Integer(modelNodeInstance);
 			if (modelNodeInstanceID == null){
 				logger.error("The modelNodeInstanceId specified in the template is null");
@@ -255,6 +256,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			
 			//gets the ModelInstanceNode
 			ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID, dateOfKPI);
+			logger.debug("ModelInstanceNode, NAME="+mI.getName());	
 			logger.debug("Loaded the modelInstanceNode with id "+ modelNodeInstanceID.toString());
 			//I set the list of resources of that specific ModelInstance
 			if(this.resources == null || this.resources.isEmpty()){
@@ -314,7 +316,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 		catch (Exception e) {
 			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
-			logger.error("Generic Error");
+			logger.error("Generic Error",e);
 			errorHandler.addError(userError);
 		}
 	}
@@ -495,14 +497,17 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		DataSetImpl dsi = new DataSetImpl(ds,profile);
 		dsi.loadData(temp);
 		IDataStore ids = dsi.getDataStore();
-
-		//Transform result into KPIValue (I suppose that the result has a unique value)
-		IRecord record = ids.getAt(0);			
-		List fields = record.getFields();
-		IField f = (IField) fields.get(0);
-		SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
-		String fieldValue = fieldObject.getValue().toString();
-		kVal.setValue(fieldValue);
+		if (!ids.isEmpty()){
+        		//Transform result into KPIValue (I suppose that the result has a unique value)
+        		IRecord record = ids.getAt(0);			
+        		List fields = record.getFields();
+        		IField f = (IField) fields.get(0);
+        		SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
+        		String fieldValue = fieldObject.getValue().toString();
+        		kVal.setValue(fieldValue);
+		}else {
+		    logger.warn("The Data Set doesn't return any value!!!!!");
+		}
 		if(chartType!=null)	kVal.setChartType(chartType);
 		logger.debug("OUT");
 		return kVal;

@@ -23,8 +23,10 @@ package it.eng.spagobi.commons.initializers.metadata;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.init.InitializerIFace;
+import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.engines.config.metadata.SbiEngines;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,6 +67,27 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			} else {
 				logger.debug("Domains table is already populated");
 			}
+			
+			hql = "from SbiEngines";
+			hqlQuery = aSession.createQuery(hql);
+			List engines = hqlQuery.list();
+			if (engines.isEmpty()) {
+				logger.info("Engines table is empty. Starting populating predefined engines...");
+				writeEngines(aSession);
+			} else {
+				logger.debug("Engines table is already populated");
+			}
+			
+			hql = "from SbiChecks";
+			hqlQuery = aSession.createQuery(hql);
+			List checks = hqlQuery.list();
+			if (checks.isEmpty()) {
+				logger.info("Checks table is empty. Starting populating predefined checks...");
+				writeChecks(aSession);
+			} else {
+				logger.debug("Checks table is already populated");
+			}
+			
 		} catch (Exception e) {
 			logger.error("Error while initializing metadata", e);
 			if (tx != null)
@@ -106,6 +129,9 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 	private void writeDomains(Session aSession) throws Exception {
 		logger.debug("IN");
 		SourceBean domainsSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/domains.xml");
+		if (domainsSB == null) {
+			throw new Exception("Domains configuration file not found!!!");
+		}
 		List domainsList = domainsSB.getAttributeAsList("DOMAIN");
 		if (domainsList == null || domainsList.isEmpty()) {
 			throw new Exception("No predefined domains found!!!");
@@ -120,6 +146,89 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			aDomain.setValueNm((String) aDomainSB.getAttribute("valueNm"));
 			aDomain.setValueDs((String) aDomainSB.getAttribute("valueDs"));
 			aSession.save(aDomain);
+		}
+		logger.debug("OUT");
+	}
+	
+	private void writeEngines(Session aSession) throws Exception {
+		logger.debug("IN");
+		SourceBean enginesSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/engines.xml");
+		if (enginesSB == null) {
+			logger.info("Configuration file for predefined engines not found");
+			return;
+		}
+		List enginesList = enginesSB.getAttributeAsList("ENGINE");
+		if (enginesList == null || enginesList.isEmpty()) {
+			logger.info("No predefined engines avilable from configuration file");
+			return;
+		}
+		Iterator it = enginesList.iterator();
+		while (it.hasNext()) {
+			SourceBean anEngineSB = (SourceBean) it.next();
+			SbiEngines anEngine = new SbiEngines();
+			anEngine.setName((String) anEngineSB.getAttribute("name"));
+			anEngine.setDescr((String) anEngineSB.getAttribute("descr"));
+			anEngine.setMainUrl((String) anEngineSB.getAttribute("mainUrl"));
+			anEngine.setDriverNm((String) anEngineSB.getAttribute("driverNm"));
+			anEngine.setLabel((String) anEngineSB.getAttribute("label"));
+			
+			String engineTypeCd = (String) anEngineSB.getAttribute("engineTypeCd");
+			String hql = "from SbiDomains where valueCd = ? and domainCd='ENGINE_TYPE'";
+			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setParameter(1, engineTypeCd);
+			SbiDomains domainEngineType = (SbiDomains) hqlQuery.uniqueResult();
+			anEngine.setEngineType(domainEngineType);
+			anEngine.setClassNm((String) anEngineSB.getAttribute("classNm"));
+			
+			String biobjTypeCd = (String) anEngineSB.getAttribute("biobjTypeCd");
+			hql = "from SbiDomains where valueCd = ? and domainCd='BIOBJ_TYPE'";
+			hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setParameter(1, biobjTypeCd);
+			SbiDomains domainBiobjectType = (SbiDomains) hqlQuery.uniqueResult();
+			anEngine.setBiobjType(domainBiobjectType);
+			
+			anEngine.setUseDataSet(new Boolean((String) anEngineSB.getAttribute("useDataSet")));
+			anEngine.setUseDataSource(new Boolean((String) anEngineSB.getAttribute("useDataSource")));
+			anEngine.setEncrypt(new Short((String) anEngineSB.getAttribute("encrypt")));
+			anEngine.setObjUplDir((String) anEngineSB.getAttribute("objUplDir"));
+			anEngine.setObjUseDir((String) anEngineSB.getAttribute("objUseDir"));
+			anEngine.setSecnUrl((String) anEngineSB.getAttribute("secnUrl"));
+			
+			aSession.save(anEngine);
+		}
+		logger.debug("OUT");
+	}
+	
+	private void writeChecks(Session aSession) throws Exception {
+		logger.debug("IN");
+		SourceBean checksSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/checks.xml");
+		if (checksSB == null) {
+			logger.info("Configuration file for predefined checks not found");
+			return;
+		}
+		List checksList = checksSB.getAttributeAsList("CHECK");
+		if (checksList == null || checksList.isEmpty()) {
+			logger.info("No predefined checks avilable from configuration file");
+			return;
+		}
+		Iterator it = checksList.iterator();
+		while (it.hasNext()) {
+			SourceBean aChecksSB = (SourceBean) it.next();
+			SbiChecks aCheck = new SbiChecks();
+			aCheck.setLabel((String) aChecksSB.getAttribute("label"));
+			aCheck.setName((String) aChecksSB.getAttribute("name"));
+			aCheck.setDescr((String) aChecksSB.getAttribute("descr"));
+			
+			String valueTypeCd = (String) aChecksSB.getAttribute("valueTypeCd");
+			String hql = "from SbiDomains where valueCd = ? and domainCd='PRED_CHECK'";
+			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setParameter(1, valueTypeCd);
+			SbiDomains domainValueTypeCd = (SbiDomains) hqlQuery.uniqueResult();
+			aCheck.setCheckType(domainValueTypeCd);
+			aCheck.setValue1((String) aChecksSB.getAttribute("value1"));
+			aCheck.setValue2((String) aChecksSB.getAttribute("value2"));
+			
+			aSession.save(aCheck);
 		}
 		logger.debug("OUT");
 	}

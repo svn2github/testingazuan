@@ -24,14 +24,18 @@ package it.eng.spagobi.commons.initializers.metadata;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.init.InitializerIFace;
 import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
+import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.commons.metadata.SbiUserFunctionality;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -58,6 +62,7 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 		Transaction tx = null;
 		try {
 			aSession = this.getSession();
+			tx = aSession.beginTransaction();
 			String hql = "from SbiDomains";
 			Query hqlQuery = aSession.createQuery(hql);
 			List domains = hqlQuery.list();
@@ -87,6 +92,28 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			} else {
 				logger.debug("Checks table is already populated");
 			}
+			
+			hql = "from SbiLov";
+			hqlQuery = aSession.createQuery(hql);
+			List lovs = hqlQuery.list();
+			if (lovs.isEmpty()) {
+				logger.info("Lovs table is empty. Starting populating predefined lovs...");
+				writeLovs(aSession);
+			} else {
+				logger.debug("Lovs table is already populated");
+			}
+			
+			hql = "from SbiUserFunctionality";
+			hqlQuery = aSession.createQuery(hql);
+			List userFunctionalities = hqlQuery.list();
+			if (userFunctionalities.isEmpty()) {
+				logger.info("User functionality table is empty. Starting populating predefined User functionalities...");
+				writeUserFunctionalities(aSession);
+			} else {
+				logger.debug("User functionality table is already populated");
+			}
+			
+			tx.commit();
 			
 		} catch (Exception e) {
 			logger.error("Error while initializing metadata", e);
@@ -128,7 +155,7 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 	
 	private void writeDomains(Session aSession) throws Exception {
 		logger.debug("IN");
-		SourceBean domainsSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/domains.xml");
+		SourceBean domainsSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/config/domains.xml");
 		if (domainsSB == null) {
 			throw new Exception("Domains configuration file not found!!!");
 		}
@@ -152,14 +179,14 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 	
 	private void writeEngines(Session aSession) throws Exception {
 		logger.debug("IN");
-		SourceBean enginesSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/engines.xml");
+		SourceBean enginesSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/config/engines.xml");
 		if (enginesSB == null) {
 			logger.info("Configuration file for predefined engines not found");
 			return;
 		}
 		List enginesList = enginesSB.getAttributeAsList("ENGINE");
 		if (enginesList == null || enginesList.isEmpty()) {
-			logger.info("No predefined engines avilable from configuration file");
+			logger.info("No predefined engines available from configuration file");
 			return;
 		}
 		Iterator it = enginesList.iterator();
@@ -171,22 +198,7 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			anEngine.setMainUrl((String) anEngineSB.getAttribute("mainUrl"));
 			anEngine.setDriverNm((String) anEngineSB.getAttribute("driverNm"));
 			anEngine.setLabel((String) anEngineSB.getAttribute("label"));
-			
-			String engineTypeCd = (String) anEngineSB.getAttribute("engineTypeCd");
-			String hql = "from SbiDomains where valueCd = ? and domainCd='ENGINE_TYPE'";
-			Query hqlQuery = aSession.createQuery(hql);
-			hqlQuery.setParameter(1, engineTypeCd);
-			SbiDomains domainEngineType = (SbiDomains) hqlQuery.uniqueResult();
-			anEngine.setEngineType(domainEngineType);
 			anEngine.setClassNm((String) anEngineSB.getAttribute("classNm"));
-			
-			String biobjTypeCd = (String) anEngineSB.getAttribute("biobjTypeCd");
-			hql = "from SbiDomains where valueCd = ? and domainCd='BIOBJ_TYPE'";
-			hqlQuery = aSession.createQuery(hql);
-			hqlQuery.setParameter(1, biobjTypeCd);
-			SbiDomains domainBiobjectType = (SbiDomains) hqlQuery.uniqueResult();
-			anEngine.setBiobjType(domainBiobjectType);
-			
 			anEngine.setUseDataSet(new Boolean((String) anEngineSB.getAttribute("useDataSet")));
 			anEngine.setUseDataSource(new Boolean((String) anEngineSB.getAttribute("useDataSource")));
 			anEngine.setEncrypt(new Short((String) anEngineSB.getAttribute("encrypt")));
@@ -194,6 +206,14 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			anEngine.setObjUseDir((String) anEngineSB.getAttribute("objUseDir"));
 			anEngine.setSecnUrl((String) anEngineSB.getAttribute("secnUrl"));
 			
+			String engineTypeCd = (String) anEngineSB.getAttribute("engineTypeCd");
+			SbiDomains domainEngineType = findDomain(aSession, engineTypeCd, "ENGINE_TYPE");
+			anEngine.setEngineType(domainEngineType);
+			
+			String biobjTypeCd = (String) anEngineSB.getAttribute("biobjTypeCd");
+			SbiDomains domainBiobjectType = findDomain(aSession, biobjTypeCd, "BIOBJ_TYPE");
+			anEngine.setBiobjType(domainBiobjectType);
+
 			aSession.save(anEngine);
 		}
 		logger.debug("OUT");
@@ -201,14 +221,14 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 	
 	private void writeChecks(Session aSession) throws Exception {
 		logger.debug("IN");
-		SourceBean checksSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/checks.xml");
+		SourceBean checksSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/config/checks.xml");
 		if (checksSB == null) {
 			logger.info("Configuration file for predefined checks not found");
 			return;
 		}
 		List checksList = checksSB.getAttributeAsList("CHECK");
 		if (checksList == null || checksList.isEmpty()) {
-			logger.info("No predefined checks avilable from configuration file");
+			logger.info("No predefined checks available from configuration file");
 			return;
 		}
 		Iterator it = checksList.iterator();
@@ -220,11 +240,10 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			aCheck.setDescr((String) aChecksSB.getAttribute("descr"));
 			
 			String valueTypeCd = (String) aChecksSB.getAttribute("valueTypeCd");
-			String hql = "from SbiDomains where valueCd = ? and domainCd='PRED_CHECK'";
-			Query hqlQuery = aSession.createQuery(hql);
-			hqlQuery.setParameter(1, valueTypeCd);
-			SbiDomains domainValueTypeCd = (SbiDomains) hqlQuery.uniqueResult();
-			aCheck.setCheckType(domainValueTypeCd);
+			SbiDomains domainValueType = findDomain(aSession, valueTypeCd, "PRED_CHECK");
+			aCheck.setCheckType(domainValueType);
+			aCheck.setValueTypeCd(valueTypeCd);
+			
 			aCheck.setValue1((String) aChecksSB.getAttribute("value1"));
 			aCheck.setValue2((String) aChecksSB.getAttribute("value2"));
 			
@@ -233,4 +252,97 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 		logger.debug("OUT");
 	}
 	
+	private void writeLovs(Session aSession) throws Exception {
+		logger.debug("IN");
+		SourceBean lovsSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/config/lovs.xml");
+		if (lovsSB == null) {
+			logger.info("Configuration file for predefined lovs not found");
+			return;
+		}
+		List lovsList = lovsSB.getAttributeAsList("LOV");
+		if (lovsList == null || lovsList.isEmpty()) {
+			logger.info("No predefined lovs available from configuration file");
+			return;
+		}
+		Iterator it = lovsList.iterator();
+		while (it.hasNext()) {
+			SourceBean aLovsSB = (SourceBean) it.next();
+			SbiLov aLov = new SbiLov();
+			aLov.setLabel((String) aLovsSB.getAttribute("label"));
+			aLov.setName((String) aLovsSB.getAttribute("name"));
+			aLov.setDescr((String) aLovsSB.getAttribute("descr"));
+			aLov.setDefaultVal((String) aLovsSB.getAttribute("defaultVal"));
+			aLov.setProfileAttr((String) aLovsSB.getAttribute("profileAttr"));
+			
+			SourceBean lovProviderSB = (SourceBean) aLovsSB.getAttribute("LOV_PROVIDER");
+			aLov.setLovProvider(lovProviderSB.getCharacters());
+			
+			String inputTypeCd = (String) aLovsSB.getAttribute("inputTypeCd");
+			SbiDomains domainInputType = findDomain(aSession, inputTypeCd, "INPUT_TYPE");
+			aLov.setInputType(domainInputType);
+			aLov.setInputTypeCd(inputTypeCd);
+			
+			aSession.save(aLov);
+		}
+		logger.debug("OUT");
+	}
+	
+	private void writeUserFunctionalities(Session aSession) throws Exception {
+		logger.debug("IN");
+		SourceBean userFunctionalitiesSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/config/userFunctionalities.xml");
+		SourceBean roleTypeUserFunctionalitiesSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/config/roleTypeUserFunctionalities.xml");
+		if (userFunctionalitiesSB == null) {
+			throw new Exception("User functionalities configuration file not found!!!");
+		}
+		if (roleTypeUserFunctionalitiesSB == null) {
+			throw new Exception("Role type user functionalities configuration file not found!!!");
+		}
+		List userFunctionalitiesList = userFunctionalitiesSB.getAttributeAsList("USER_FUNCTIONALITY");
+		if (userFunctionalitiesList == null || userFunctionalitiesList.isEmpty()) {
+			throw new Exception("No predefined user functionalities found!!!");
+		}
+		Iterator it = userFunctionalitiesList.iterator();
+		while (it.hasNext()) {
+			SourceBean aUSerFunctionalitySB = (SourceBean) it.next();
+			SbiUserFunctionality aUserFunctionality = new SbiUserFunctionality();
+			String userFunctionality = (String) aUSerFunctionalitySB.getAttribute("name");
+			aUserFunctionality.setName(userFunctionality);
+			aUserFunctionality.setDescription((String) aUSerFunctionalitySB.getAttribute("description"));
+			Object roleTypesObject = roleTypeUserFunctionalitiesSB.getFilteredSourceBeanAttribute("ROLE_TYPE_USER_FUNCTIONALITY", "userFunctionality", userFunctionality);
+			if (roleTypesObject == null) {
+				throw new Exception("No role type found for user functionality [" + userFunctionality + "]!!!");
+			}
+			Set roleTypes = new HashSet();
+			if (roleTypesObject instanceof SourceBean) {
+				SourceBean roleTypeSB = (SourceBean) roleTypesObject;
+				String roleTypeCd = (String) roleTypeSB.getAttribute("roleType");
+				SbiDomains domainRoleType = findDomain(aSession, roleTypeCd, "ROLE_TYPE");
+				roleTypes.add(domainRoleType);
+			} else if (roleTypesObject instanceof List) {
+				List roleTypesSB = (List) roleTypesObject;
+				Iterator roleTypesIt = roleTypesSB.iterator();
+				while (roleTypesIt.hasNext()) {
+					SourceBean roleTypeSB = (SourceBean) roleTypesIt.next();
+					String roleTypeCd = (String) roleTypeSB.getAttribute("roleType");
+					SbiDomains domainRoleType = findDomain(aSession, roleTypeCd, "ROLE_TYPE");
+					roleTypes.add(domainRoleType);
+				}
+			}
+			aUserFunctionality.setRoleType(roleTypes);
+			aSession.save(aUserFunctionality);
+		}
+		logger.debug("OUT");
+	}
+	
+	
+	private SbiDomains findDomain(Session aSession, String valueCode, String domainCode) {
+		logger.debug("IN");
+		String hql = "from SbiDomains where valueCd = ? and domainCd = ?";
+		Query hqlQuery = aSession.createQuery(hql);
+		hqlQuery.setParameter(0, valueCode);
+		hqlQuery.setParameter(1, domainCode);
+		SbiDomains domain = (SbiDomains) hqlQuery.uniqueResult();
+		logger.debug("OUT");
+		return domain;
+	}
 }

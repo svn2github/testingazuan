@@ -75,4 +75,6 @@
 <DOMAIN valueCd="BulletGraph" valueNm="BulletGraph" domainCd="KPI_CHART" domainNm="Kpi Chart type" valueDs=""/>
 <DOMAIN valueCd="MAIL" valueNm="Mail" domainCd="ALARM_MODALITY" domainNm="Alarm Modality" valueDs=""/>
 <DOMAIN valueCd="SMS" valueNm="SMS" domainCd="ALARM_MODALITY" domainNm="Alarm Modality" valueDs=""/>
+<DOMAIN valueCd="GENERIC_ROOT" valueNm="Generic root" domainCd="MODEL_ROOT" domainNm="Model root type" valueDs=""/>
+<DOMAIN valueCd="GENERIC_NODE" valueNm="Generic Node" domainCd="MODEL_NODE" domainNm="Model node type" valueDs=""/>
 </DOMAINS>

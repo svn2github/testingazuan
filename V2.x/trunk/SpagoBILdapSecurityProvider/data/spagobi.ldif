@@ -16,7 +16,7 @@ objectClass: person
 objectClass: top
 cn: biadmin
 description: descrizione
-ou: ou=sbi_admin,ou=Group,dc=spagobi,dc=com
+ou: ou=/spagobi/admin,ou=Group,dc=spagobi,dc=com
 sn: biadmin
 telephoneNumber: 051/6563707
 title: Dot.
@@ -28,7 +28,7 @@ objectClass: person
 objectClass: top
 cn: bidev
 description: bidev
-ou: ou=sbi_dev,ou=Group,dc=spagobi,dc=com
+ou: ou=/spagobi/dev,ou=Group,dc=spagobi,dc=com
 sn: bidev
 userPassword:: e1NIQX1uRWJHazcyREZLWWIzcTB2UXNncXgxeitXdkU9
 
@@ -38,7 +38,7 @@ objectClass: person
 objectClass: top
 cn: biuser
 description: biuser
-ou: ou=sbi_user,ou=Group,dc=spagobi,dc=com
+ou: ou=/spagobi/user,ou=Group,dc=spagobi,dc=com
 sn: biuser
 userPassword:: e1NIQX1GMVBGQXVQQjZNUXBNeS9wRHBGZ0pTQUcvZlk9
 
@@ -48,7 +48,7 @@ objectClass: person
 objectClass: top
 cn: bitest
 description: bitest
-ou: ou=sbi_test,ou=Group,dc=spagobi,dc=com
+ou: ou=/spagobi/test,ou=Group,dc=spagobi,dc=com
 sn: bitest
 
 dn: ou=Group,dc=spagobi,dc=com
@@ -56,27 +56,27 @@ objectClass: top
 objectClass: organizationalUnit
 ou: Group
 
-dn: ou=sbi_admin,ou=Group,dc=spagobi,dc=com
+dn: ou=/spagobi/admin,ou=Group,dc=spagobi,dc=com
 objectClass: organizationalUnit
 objectClass: top
-description: sbi_admin
-ou: sbi_admin
+description: biadmin
+ou: /spagobi/admin
 
-dn: ou=sbi_dev,ou=Group,dc=spagobi,dc=com
+dn: ou=/spagobi/dev,ou=Group,dc=spagobi,dc=com
 objectClass: organizationalUnit
 objectClass: top
-description: sbi_admin
-ou: sbi_dev
+description: bidev
+ou: /spagobi/dev
 
-dn: ou=sbi_test,ou=Group,dc=spagobi,dc=com
+dn: ou=/spagobi/test,ou=Group,dc=spagobi,dc=com
 objectClass: organizationalUnit
 objectClass: top
-description: sbi_admin
-ou: sbi_test
+description: bitest
+ou: /spagobi/test
 
-dn: ou=sbi_user,ou=Group,dc=spagobi,dc=com
+dn: ou=/spagobi/user,ou=Group,dc=spagobi,dc=com
 objectClass: organizationalUnit
 objectClass: top
-description: sbi_admin
-ou: sbi_user
+description: biuser
+ou: /spagobi/user
 

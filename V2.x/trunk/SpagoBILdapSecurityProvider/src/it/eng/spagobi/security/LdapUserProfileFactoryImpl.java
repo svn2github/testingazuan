@@ -88,27 +88,7 @@ public class LdapUserProfileFactoryImpl implements ISecurityServiceSupplier {
 	return false;
     }
 
-    public List getUserRoles(String user, SourceBean config) {
-	List roles = new ArrayList();
-	LDAPConnector conn = LdapConnectorFactory.createLDAPConnector();
-	List ldapRoles = null;
-	try {
-	    ldapRoles = conn.getUserGroup(user);
 
-	} catch (UnsupportedEncodingException e) {
-	    e.printStackTrace();
-	} catch (LDAPException e) {
-	    e.printStackTrace();
-	}
-	Iterator iter_sb_roles = ldapRoles.iterator();
-	while (iter_sb_roles.hasNext()) {
-	    String roleStr = (String) iter_sb_roles.next();
-	    Role role = new Role(roleStr, roleStr);
-	    roles.add(role);
-	}
-
-	return roles;
-    }
 
     /**
      * Return an IEngUserProfile implementation starting from the Principal of
@@ -120,8 +100,9 @@ public class LdapUserProfileFactoryImpl implements ISecurityServiceSupplier {
      * @return The User Profile Interface implementation object
      */
     public SpagoBIUserProfile createUserProfile(String userId) {
-	logger.debug("IN");
+	logger.debug("IN.userId="+userId);
 	SpagoBIUserProfile profile = new SpagoBIUserProfile();
+	profile.setUniqueIdentifier(userId);
 	profile.setUserId(userId);
 
 	LDAPConnector conn = LdapConnectorFactory.createLDAPConnector();
@@ -135,17 +116,22 @@ public class LdapUserProfileFactoryImpl implements ISecurityServiceSupplier {
 	} catch (LDAPException e) {
 	    logger.error("LDAPException", e);
 	}
-
-	List roles = new ArrayList();
 	Iterator iterRoles = ldapRoles.iterator();
+	List roles = new ArrayList();
+	
 	while (iterRoles.hasNext()) {
 	    String roleName = (String) iterRoles.next();
-	    Role role = new Role(roleName, roleName);
-	    roles.add(role);
+	    logger.debug("RoleName from LDAP:"+roleName);
+	    if (roleName!=null && !roleName.equals("Group")){
+		Role role = new Role(roleName, roleName);
+		roles.add(role);
+	    }
+	    
 	}
+
 	String[] roleStr = new String[roles.size()];
 	for (int i = 0; i < roles.size(); i++) {
-	    roleStr[i] = (String) roles.get(i);
+	    roleStr[i] = (String) ((Role)roles.get(i)).getName();
 	}
 	profile.setRoles(roleStr);
 	profile.setAttributes(createMapAttributes(attributes));

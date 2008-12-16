@@ -40,7 +40,7 @@ public class DetailModelUtil {
 		for (int i = 0; i<modelAttributeNameList.length; i++) {
 			ModelAttribute mAttr = new ModelAttribute();
 			String modelAttrId = modelAttributeNameList[i].trim();
-			if(!modelAttrId.isEmpty()){
+			if(modelAttrId != null && ! modelAttrId.trim().equals("")){
 				String value = (String) serviceRequest.getAttribute("M_ATTR" + modelAttrId);
 				mAttr.setValue(value);
 				mAttr.setId(Integer.parseInt(modelAttrId));

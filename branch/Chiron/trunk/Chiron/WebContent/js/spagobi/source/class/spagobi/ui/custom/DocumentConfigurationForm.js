@@ -153,11 +153,11 @@ qx.Class.define("spagobi.ui.custom.DocumentConfigurationForm", {
         		mandatory: false			
         	}
         	//change ... uncomment later
-        	/*, {
+        	, {
         		type: 'formList',
         		dataIndex: 'features',
         		formList: spagobi.ui.custom.ConfigurationSubform 
-        	}*/
+        	}
         ]);
 		
 	},

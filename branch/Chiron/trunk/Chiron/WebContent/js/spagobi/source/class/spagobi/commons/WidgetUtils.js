@@ -103,7 +103,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
           	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
          
           	//var combo_box = new qx.legacy.ui.form.ComboBox();//change
-          	var combo_box = new qx.ui.form.ComboBox();
+          	var combo_box = new qx.ui.form.SelectBox();
+   //       	combo_box.setSelectable(false);
           	//combo_box.set({ top: config.top, left: config.left });//change
           	
           	for(var i=0; i< config.items.length; i++) {

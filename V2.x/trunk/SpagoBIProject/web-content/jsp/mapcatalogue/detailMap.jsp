@@ -60,7 +60,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String lookupFeraturesUrl = urlBuilder.getUrl(request, lookupFeatureUrlPars);	
 		
 		//MapCatalogueAccessUtils mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
-		String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/servlet/AdapterHTTP?PAGE=DetailMapPage&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
+		//String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/servlet/AdapterHTTP?PAGE=DetailMapPage&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE&userid="+userUniqueIdentifier;
+		String downloadUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier) +"&PAGE=DetailMapPage&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
+		
 		String filePath = (map.getUrl()).replace('\\', '/');		
    	    downloadUrl += "&MESSAGEDET=DOWNLOAD_MAP&path="+  filePath;
     	//renderResponse.encodeURL("/" + downloadUrl).toString();

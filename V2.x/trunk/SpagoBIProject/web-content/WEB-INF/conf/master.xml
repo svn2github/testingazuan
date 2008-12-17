@@ -219,6 +219,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/business_map.xml" />
 	-->
 
     <!-- kpi --> 

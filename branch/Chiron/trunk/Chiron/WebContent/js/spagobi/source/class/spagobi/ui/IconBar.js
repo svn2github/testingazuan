@@ -155,8 +155,9 @@ qx.Class.define("spagobi.ui.IconBar", {
     		atom.addListener("mouseout", this._onmouseout, this);
     		atom.addListener("mousedown", callback, context);
     		atom.addListener("mousedown",this._onmousedown, this);
-    		atom.addListener("keydown",  this._onkeydown, this);
-    		atom.addListener("keypress", this._onkeypress, this);
+    		//atom.addListener("keydown",  this._onkeydown, this);
+    		atom.addListener("keypress", callback, context);//not working
+			atom.addListener("keypress", this._onkeypress, this);
 			
 			//this.add(atom);//change
 			this.add(atom);
@@ -253,7 +254,8 @@ qx.Class.define("spagobi.ui.IconBar", {
 	 
 	 	
 	 	_onkeypress: function(e) {
-	 	/*	
+	 		
+	 		//alert(e.getTarget().getLayoutParent());
 			switch(e.getKeyIdentifier()) {
             case "Up":
               var vPrevious = true;
@@ -264,35 +266,59 @@ qx.Class.define("spagobi.ui.IconBar", {
             default:
               return;
           	}
-		//	change-old
+			/*change-old
 		    var vChild =
 		        (vPrevious
 		         ? (e.getTarget().isFirstChild()
 		            ? e.getTarget().getParent().getLastChild()
-		            : e.getTarget().getPreviousSiblingOf())
+		            : e.getTarget().getPreviousSibling())
 		         : (e.getTarget().isLastChild()
 		            ? e.getTarget().getParent().getFirstChild()
-		            : e.getTarget().getNextSiblingOf()));
-			
-			
-		//	change-new ..not tested
-			 var vChild =
+		            : e.getTarget().getNextSibling()));
+			*/
+			//change-new ..not tested
+			var atom = e.getTarget();
+			var container = atom.getLayoutParent();
+			var vChild;
+			//alert(container.getChildren());
+			/*
+			var vChild =
 		        (vPrevious
-		         ? (e.getTarget()== e.getTarget()._getChildren()[0]
-		            ? e.getTarget().getLayoutParent()._getChildren()[e.getTarget().getLayoutParent()._getChildren().length - 1]
-		            : e.getTarget().getLayoutParent()._getChildren()[e.getTarget().getLayoutParent()._getChildren().indexOf(e.getTarget())-1])
-		         : (e.getTarget() == e.getTarget()._getChildren()[e.getTarget()._getChildren().length - 1]
-		            ? e.getTarget().getLayoutParent()._getChildren()[0]
-		            : e.getTarget().getLayoutParent()._getChildren()[e.getTarget().getLayoutParent()._getChildren().indexOf(e.getTarget())+1]));
-		
-			 
+		         ? (atom == container.getChildren()[0]
+		            ? container.getChildren()[container.getChildren().length - 1]
+		            : container.getChildren()[container.getChildren().indexOf(atom)-1])
+		         : (atom == container.getChildren()[container.getChildren().length - 1]
+		            ? container.getChildren()[0]
+		            : container.getChildren()[container.getChildren().indexOf(atom)+1]));
+			*/
+			if(vPrevious){
+				if(atom == container.getChildren()[0]){
+					vChild = container.getChildren()[container.getChildren().length - 1];
+					
+				}
+				else{
+					vChild = container.getChildren()[container.getChildren().indexOf(atom)-1];
+					
+				}
+			}
+			else{
+				if(atom == container.getChildren()[container.getChildren().length - 1]){
+					vChild = container.getChildren()[0];
+					
+				}
+				else{
+					vChild = container.getChildren()[container.getChildren().indexOf(atom)+1];
+					
+				}
+			}
 		    // focus next/previous button
-		    vChild.setFocused(true);
-			vChild.setBackgroundColor(this._focusedBackgroudColor);
-			e.getTarget().setBackgroundColor(null);
-			 */
+		    //vChild.setFocused(true);
+		    //vChild.setBackgroundColor(this._focusedBackgroudColor);
+			this.select(vChild);
+			atom.setBackgroundColor(null);
+			 
 	 	}
-	 	// 8K24-4225-1105-EKK5-5000-0021-MK13
+	 	
 	}
 	
 });

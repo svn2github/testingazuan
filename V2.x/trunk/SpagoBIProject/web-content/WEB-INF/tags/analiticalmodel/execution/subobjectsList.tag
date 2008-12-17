@@ -104,7 +104,6 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 	        	visib = "Public";
 	        } 
 	        //if (owner.equals(profile.getUserUniqueIdentifier().toString())) {
-	        	System.out.println("*** UserID tag subobjects: " + ((UserProfile)profile).getUserId().toString());
 	        if (owner.equals(((UserProfile)profile).getUserId().toString())) {
 	        	delete = "delete";
 	        }

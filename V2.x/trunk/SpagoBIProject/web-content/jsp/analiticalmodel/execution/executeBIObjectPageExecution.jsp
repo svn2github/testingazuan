@@ -23,16 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
 
 <%
-//print for document composition problem
-/*System.out.println(" ----- ");
-System.out.println("*** SPAGO Request: " + aServiceRequest.toXML());
-System.out.println(" ----- ");
-System.out.println("*** executeBIObjectPageExecution.print() - STARTS " );
-contextManager.print();
-System.out.println("*** executeBIObjectPageExecution.print() - ENDED " );
-*/
-// end test
-
 ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 String modalityO = instanceO.getExecutionModality();
 if (modalityO != null && modalityO.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)) {
@@ -56,7 +46,7 @@ if (modalityO != null && modalityO.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_CO
 	%>
 	
 	<%-- div with "wait while loading" message: it will disappear when iframe below will be loaded --%>
-	<div id="divLoadingMessage<%= uuid %>" style="display:inline;">
+	<div id="divLoadingMessage<%= uuid %>" style="display:inline;text-align:left;">
 		<img src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/loading.gif")%>' />
 		<spagobi:message key='sbi.execution.pleaseWait'/>
 	</div>
@@ -233,7 +223,7 @@ if (heightArea == null || heightArea.trim().equals("")) {
 %>
 
 <%-- div with "wait while loading" message: it will disappear when window is loaded thanks to SbiJsInitializer.hideLoadingMessage property --%>
-<div id="divLoadingMessage<%= uuid %>" style="display:inline;">
+<div id="divLoadingMessage<%= uuid %>" style="display:inline;text-align:left;">
 	<img src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/loading.gif")%>' />
 	<spagobi:message key='sbi.execution.pleaseWait'/>
 </div>

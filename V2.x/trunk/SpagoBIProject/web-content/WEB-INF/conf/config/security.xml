@@ -54,5 +54,7 @@
 <PAGE_MODULE pagename="BIObjectsPage" modulename="BIObjectsModule" />
 <PAGE_MODULE pagename="BIObjectsPage" modulename="TreeObjectsModule" />
 <PAGE_MODULE pagename="BIObjectsPage" modulename="ListBIObjectsModule" />
+<PAGE_MODULE pagename="HOT_LINK_PAGE" modulename="PortletLoginModule"/>
+<PAGE_MODULE pagename="HOT_LINK_PAGE" modulename="HotLinkModule"/>
 </PAGE_MODULES_EXCLUDED_FROM_GLOBAL>
 </SECURITY>

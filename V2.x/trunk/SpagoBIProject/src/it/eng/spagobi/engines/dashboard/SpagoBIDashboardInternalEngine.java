@@ -132,7 +132,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 	    SessionContainer session = requestContainer.getSessionContainer();
 	    IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
 		    IEngUserProfile.ENG_USER_PROFILE);
-	    dataParameters.put("userId", ((UserProfile)profile).getUserId());
+	    dataParameters.put("userid", ((UserProfile)profile).getUserUniqueIdentifier());
 
 	    // get all the parameters for dash configuration
 	    Map confParameters = new HashMap();

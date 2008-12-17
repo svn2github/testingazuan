@@ -24,19 +24,12 @@ package it.eng.spagobi.tools.dataset.service;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.monitoring.dao.AuditManager;
-import it.eng.spagobi.services.common.SsoServiceFactory;
-import it.eng.spagobi.services.common.SsoServiceInterface;
-import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
-import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
-import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
 import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
@@ -78,37 +71,15 @@ public class GetDatasetResultAction extends AbstractHttpAction {
 		    null);
 	}
 	IEngUserProfile profile = null;
-	String userId = null;
 	try {
 	    RequestContainer reqCont = RequestContainer.getRequestContainer();
 	    SessionContainer sessCont = reqCont.getSessionContainer();
 	    SessionContainer permSess = sessCont.getPermanentContainer();
 	    profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	    if (profile == null) {
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
-		String active = (String) validateSB.getCharacters();
-		if (active != null && active.equals("true")) {
-		    SsoServiceInterface proxy = SsoServiceFactory.createProxyService();
-		    userId = proxy.readUserIdentifier(request.getSession());
-		    logger.debug("got userId from IProxyService=" + userId);
-		} else {
-		    userId = request.getParameter("userId");
-		    logger.debug("got userId from Request=" + userId);
-		}
-
-		ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-		try {
-		    SpagoBIUserProfile user = supplier.createUserProfile(userId);
-		    profile = new UserProfile(user);
-		} catch (Exception e) {
-		    logger.error("Exception while creating user profile", e);
+		    logger.error("User profile not found");
 		    throw new SecurityException();
-		}
-
 	    }
-	    //userId = (String) profile.getUserUniqueIdentifier();
-	    userId = (String) ((UserProfile)profile).getUserId();
 
 	    String documentId = request.getParameter("documentId");
 	    logger.debug("got parameter documentId=" + documentId);

@@ -12,9 +12,6 @@
 	
 	<target name="buildSource" depends="replaceSource"></target>
 	
-		
-	
-	
 	<target name="replaceSource" depends="createSourceScriptFiles">
 		
 		<replace file="${js.spagobi.source.dir}/script/chiron.web.js">
@@ -30,9 +27,6 @@
 			<replacefilter 
 				token='qxlibraries["spagobi"]={"resourceUri":"../source/resource"};' 
 				value='qxlibraries["spagobi"]={"resourceUri":".."};'/>
-			
-			
-			
 		
 		</replace>
 		
@@ -57,9 +51,98 @@
 	</target>
 
 
+	<!-- generate the build version    -->
 
-
+	<target name="buildBuild" depends="replaceBuild">
+	</target>
 	
+	<target name="replaceBuild" depends="createBuildScriptFiles">
+							 			
+				<replace file="${js.spagobi.build.dir}/script/chiron.web.js">
+					
+					<replacefilter 
+							token='qxlibraries["spagobi"]={"resourceUri":"./resource"};' 
+							value='qxlibraries["spagobi"]={"resourceUri":".."};'/>
+					
+					<replacefilter 
+						    token="./resource" 
+						    value="../js/spagobi/build/resource"/>
+					
+					<replacefilter 
+							token="script/spagobi-0.js" 
+							value="../js/spagobi/build/script/spagobi-0.js"/>
+					
+						  
+				</replace>	
+			
+				<replace file="${js.spagobi.build.dir}/script/chiron.portlet.js">
+							
+							<replacefilter 
+									token='qxlibraries["spagobi"]={"resourceUri":"./resource"};' 
+									value='qxlibraries["spagobi"]={"resourceUri":".."};'/>
+										
+							<replacefilter 
+								    token="./resource" 
+								    value="/Chiron/js/spagobi/build/resource"/>
+															  
+				</replace>	
+	</target>
 	
+	<target name="createBuildScriptFiles"   depends="makeBuildNew" >
+					<copy file="${js.spagobi.build.dir}/script/spagobi.js" 
+						  tofile="${js.spagobi.build.dir}/script/chiron.web.js"/>
+			
+					<copy file="${js.spagobi.build.dir}/script/spagobi.js" 
+								  tofile="${js.spagobi.build.dir}/script/chiron.portlet.js"/>
+					
+	</target>
+	
+	<target name="makeBuildNew" >
+			<exec executable="python" failonerror="true" dir="${basedir}/WebContent/js/spagobi">
+			    <arg value="./generate.py"/>
+			    <arg value="build"/>
+			</exec>
+		</target>
+	
+	<!-- Not Working -->
+	<target name="makeBuild" >
+			 <exec executable="cmd" dir="${basedir}/WebContent/js/spagobi" >
+				<arg value="/c"/>
+				<arg value="generate.py build"/>
+			 </exec> 
+	</target>
+	
+	<!-- Not Working -->
+	<target name="makeBuildCmd" >
+				  <exec executable="cmd" dir="${basedir}" >
+				    <env key="Path" path="C:/Python26"/>
+				  	<arg value="/c"/>
+				    <arg value="generateBuild.bat"/>
+				  </exec>
+	</target>
+	
+	<!-- generate the API version    -->
+	
+	<target name="replaceApi" >
+		<replace file="${js.spagobi.api.dir}/script/apiviewer.js">
+								  
+		</replace>	
+	</target>	
+	
+	<!-- Not Working-->
+	<target name="makeApi" >
+				 <exec executable="cmd" dir="${basedir}/WebContent/js/spagobi" >
+					<arg value="/c"/>
+					<arg value="generate.py api"/>
+				 </exec> 
+	</target>
+	
+	<!-- Working-->
+	<target name="makeApiNew" >
+		<exec executable="python" failonerror="true" dir="${basedir}/WebContent/js/spagobi">
+		    <arg value="./generate.py"/>
+		    <arg value="api"/>
+		</exec>
+	</target>
 </project>
 	

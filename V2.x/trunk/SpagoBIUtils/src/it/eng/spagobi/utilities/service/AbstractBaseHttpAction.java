@@ -194,11 +194,16 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 	}
 	
 	public List getAttributeAsCsvStringList(String attrName, String separator) {
-		List attrValue = null;
+		List attrValue = new ArrayList();
 		
 		if( !requestContainsAttribute(attrName) ) return null;
 		try {
-			attrValue = Arrays.asList( getAttributeAsString(attrName).split(separator) );
+			String[] chunks = getAttributeAsString(attrName).split(separator);
+			for(int i = 0; i < chunks.length; i++) {
+				logger.info("Chunks " + i + ":" +  chunks[i]);
+				attrValue.add(chunks[i].trim());
+			}
+			
 		} catch (Exception e) {
 			logger.warn("Impossible to convert request parameter " + attrName 
 					+ " whose value is " + getAttributeAsString(attrName)
@@ -298,6 +303,7 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		getHttpResponse().setStatus(statusCode);
 		
 		getHttpResponse().getWriter().print(content);
+		getHttpResponse().getWriter().flush();
 	}
 	
 	public void writeBackToClient(File file, IStreamEncoder encoder, 

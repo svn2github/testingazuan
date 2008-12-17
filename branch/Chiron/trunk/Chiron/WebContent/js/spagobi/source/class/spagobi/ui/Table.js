@@ -127,9 +127,9 @@ qx.Class.define("spagobi.ui.Table",
     this._tableModel.setDataAsMapArray(data.rows, true);
     
     // Add selection listener
-    if(this._controller.getForm() != undefined){
+    //if(this._controller.getForm() != undefined){
     	this.getSelectionModel().addListener("changeSelection", this._onChangeSelection, this);
-    }
+    //}
   },
 
   /**

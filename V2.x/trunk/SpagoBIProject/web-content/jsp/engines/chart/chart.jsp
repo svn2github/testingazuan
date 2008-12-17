@@ -303,17 +303,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				refreshUrlCategory=refreshUrlCategory+"&serie="+serieS;
 				}	
 		} 
-			
-		if(datasetMap.getSelectedCatGroups().contains("allgroups")){
-			refreshUrlCategory=refreshUrl+"&cat_group=allgroups";
-				}
-		else{
-			refreshUrlCategory=refreshUrl;
-			for(Iterator iterator = datasetMap.getSelectedCatGroups().iterator(); iterator.hasNext();){
-				String groupS=(String)iterator.next();
-				refreshUrlCategory=refreshUrlCategory+"&cat_group="+groupS;
+		Vector tmpVec = datasetMap.getSelectedCatGroups();
+		//if(datasetMap.getSelectedCatGroups().contains("allgroups")){
+		if(tmpVec != null){
+			if (tmpVec.contains("allgroups")){
+		
+				refreshUrlCategory=refreshUrl+"&cat_group=allgroups";
+			}
+			else{
+				refreshUrlCategory=refreshUrl;
+				for(Iterator iterator = tmpVec.iterator(); iterator.hasNext();){
+					String groupS=(String)iterator.next();
+					refreshUrlCategory=refreshUrlCategory+"&cat_group="+groupS;
 				}	
-		}  	
+			}  	
+		}
+		
 			
 			
 	%>

@@ -56,5 +56,6 @@
 <PAGE_MODULE pagename="BIObjectsPage" modulename="ListBIObjectsModule" />
 <PAGE_MODULE pagename="HOT_LINK_PAGE" modulename="PortletLoginModule"/>
 <PAGE_MODULE pagename="HOT_LINK_PAGE" modulename="HotLinkModule"/>
+<PAGE_MODULE pagename="ExoProfileAttributeManagerPage" modulename="ProfileAttributeManagement"/>
 </PAGE_MODULES_EXCLUDED_FROM_GLOBAL>
 </SECURITY>

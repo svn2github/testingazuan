@@ -20,6 +20,7 @@ import it.eng.spagobi.kpi.config.metadata.SbiKpiRole;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.model.metadata.SbiResources;
@@ -28,6 +29,7 @@ import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
+import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -811,7 +813,10 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Double target = kpiInst.getTarget();
 		// List values = getKpiValue(kpiInst, requestedDate);
 		SbiKpiPeriodicity periodicity = kpiInst.getSbiKpiPeriodicity();
-		Integer idPeriodicity = periodicity.getIdKpiPeriodicity();
+		Integer idPeriodicity = null;
+		if (periodicity != null) {
+			idPeriodicity = periodicity.getIdKpiPeriodicity();
+		}
 
 		toReturn.setWeight(weight);
 		toReturn.setTarget(target);
@@ -894,18 +899,21 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 		logger.debug("IN");
 		Kpi toReturn = new Kpi();
-
+		String code = kpi.getCode();
 		String description = kpi.getDescription();
 		String documentLabel = kpi.getDocumentLabel();
 		Boolean isParent = false;
-		if (kpi.getFlgIsFather()!=null &&  kpi.getFlgIsFather().equals(new Character('T'))) {
+		if (kpi.getFlgIsFather() != null
+				&& kpi.getFlgIsFather().equals(new Character('T'))) {
 			isParent = true;
 		}
 		Integer kpiId = kpi.getKpiId();
 		String kpiName = kpi.getName();
 		SbiDataSetConfig dsC = kpi.getSbiDataSet();
-		DataSetConfig ds = DAOFactory.getDataSetDAO().loadDataSetByID(
-				dsC.getDsId());
+		DataSetConfig ds = null;
+		if (dsC != null) {
+			ds = DAOFactory.getDataSetDAO().loadDataSetByID(dsC.getDsId());
+		}
 		Set kpiRoles = kpi.getSbiKpiRoles();
 		List roles = new ArrayList();
 		Iterator i = kpiRoles.iterator();
@@ -916,26 +924,27 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		}
 
 		SbiThreshold thresh = kpi.getSbiThreshold();
-		Set threshValues = thresh.getSbiThresholdValues();
 		List thresholds = new ArrayList();
-		Iterator iTre = threshValues.iterator();
-		while (iTre.hasNext()) {
-			SbiThresholdValue trs = (SbiThresholdValue) iTre.next();
-			Threshold t = toThreshold(trs);
-			thresholds.add(t);
+		if (thresh != null) {
+			Set threshValues = thresh.getSbiThresholdValues();
+			Iterator iTre = threshValues.iterator();
+			while (iTre.hasNext()) {
+				SbiThresholdValue trs = (SbiThresholdValue) iTre.next();
+				Threshold t = toThreshold(trs);
+				thresholds.add(t);
+			}
 		}
-
-
 		Double standardWeight = kpi.getWeight();
 		Set kInstances = kpi.getSbiKpiInstances();
 		List KpiInstances = new ArrayList();
-		Iterator iKI = kInstances.iterator();
-		while (iKI.hasNext()) {
-			SbiKpiInstance kpiI = (SbiKpiInstance) iKI.next();
-			KpiInstance kI = toKpiInstance(kpiI, kpiI.getBeginDt());
-			KpiInstances.add(kI);
+		if (kInstances != null) {
+			Iterator iKI = kInstances.iterator();
+			while (iKI.hasNext()) {
+				SbiKpiInstance kpiI = (SbiKpiInstance) iKI.next();
+				KpiInstance kI = toKpiInstance(kpiI, kpiI.getBeginDt());
+				KpiInstances.add(kI);
+			}
 		}
-
 		// Gets the father
 		SbiKpi dad = kpi.getSbiKpi();
 		Boolean isRoot = false;
@@ -949,11 +958,13 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		// Gets the children
 		Set children = kpi.getSbiKpis();
 		List kpiChildren = new ArrayList();
-		Iterator iKC = children.iterator();
-		while (iKC.hasNext()) {
-			SbiKpi kCh = (SbiKpi) iKC.next();
-			Integer kI = kCh.getKpiId();
-			kpiChildren.add(kI);
+		if (children != null) {
+			Iterator iKC = children.iterator();
+			while (iKC.hasNext()) {
+				SbiKpi kCh = (SbiKpi) iKC.next();
+				Integer kI = kCh.getKpiId();
+				kpiChildren.add(kI);
+			}
 		}
 
 		// String metric = kpi.getMetric();
@@ -972,6 +983,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		toReturn.setRoles(roles);
 		toReturn.setStandardWeight(standardWeight);
 		toReturn.setThresholds(thresholds);
+		toReturn.setCode(code);
 		// toReturn.setMetric(metric);
 		// toReturn.setScaleCode(scaleCode);
 		// toReturn.setScaleName(scaleName);
@@ -1213,7 +1225,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		}
 	}
 
-	public void deleteResource(Integer resouceId) throws EMFUserError  {
+	public void deleteResource(Integer resouceId) throws EMFUserError {
 		Session aSession = getSession();
 		Transaction tx = null;
 		try {
@@ -1223,17 +1235,15 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			aSession.delete(sbiResource);
 
 			tx.commit();
-			
 
-		}catch (ConstraintViolationException cve){
+		} catch (ConstraintViolationException cve) {
 			if (tx != null && tx.isActive()) {
 				tx.rollback();
 			}
-			logger.error("Impossible to delete a Resource",cve);
+			logger.error("Impossible to delete a Resource", cve);
 			throw new EMFUserError(EMFErrorSeverity.WARNING, 10014);
-			
-		} 		
-		catch (HibernateException e) {
+
+		} catch (HibernateException e) {
 			if (tx != null && tx.isActive()) {
 				tx.rollback();
 			}
@@ -1243,6 +1253,141 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		} finally {
 			aSession.close();
 		}
+	}
+
+	public void modifyKpi(Kpi kpi) throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			String name = kpi.getKpiName();
+			String description = kpi.getDescription();
+			String code = kpi.getCode();
+			String metric = kpi.getMetric();
+			Double weight = kpi.getStandardWeight();
+			String documentLabel = kpi.getDocumentLabel();
+			SbiDataSetConfig ds = null;
+			if (kpi.getKpiDs() != null) {
+				Integer ds_id = kpi.getKpiDs().getDsId();
+				ds = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class,
+						ds_id);
+			}
+
+			SbiKpi sbiKpi = (SbiKpi) aSession
+					.load(SbiKpi.class, kpi.getKpiId());
+
+			sbiKpi.setName(name);
+			sbiKpi.setDescription(description);
+			sbiKpi.setCode(code);
+			sbiKpi.setMetric(metric);
+			sbiKpi.setWeight(weight);
+			sbiKpi.setDocumentLabel(documentLabel);
+			sbiKpi.setSbiDataSet(ds);
+
+			aSession.saveOrUpdate(sbiKpi);
+
+			tx.commit();
+
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+		logger.debug("OUT");
+	}
+
+	public Integer insertKpi(Kpi kpi) throws EMFUserError {
+		logger.debug("IN");
+		Integer idToReturn;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			String name = kpi.getKpiName();
+			String description = kpi.getDescription();
+			String code = kpi.getCode();
+			String metric = kpi.getMetric();
+			Double weight = kpi.getStandardWeight();
+			String documentLabel = kpi.getDocumentLabel();
+			SbiDataSetConfig ds = null;
+			if (kpi.getKpiDs() != null) {
+				Integer ds_id = kpi.getKpiDs().getDsId();
+				ds = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class,
+						ds_id);
+			}
+
+			SbiKpi sbiKpi = new SbiKpi();
+
+			sbiKpi.setName(name);
+			sbiKpi.setDescription(description);
+			sbiKpi.setCode(code);
+			sbiKpi.setMetric(metric);
+			sbiKpi.setWeight(weight);
+			sbiKpi.setDocumentLabel(documentLabel);
+			sbiKpi.setSbiDataSet(ds);
+			
+			idToReturn = (Integer) aSession.save(sbiKpi);
+
+			tx.commit();
+
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return idToReturn;
+	}
+
+	public boolean deleteKpi(Integer kpiId) throws EMFUserError {
+		Session aSession = getSession();
+		Transaction tx = null;
+		try {
+			tx = aSession.beginTransaction();
+			SbiKpi akpi = (SbiKpi) aSession.load(SbiKpi.class,
+					kpiId);			
+			aSession.delete(akpi);
+			tx.commit();
+
+		}catch (ConstraintViolationException cve){
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.error("Impossible to delete a Kpi",cve);
+			throw new EMFUserError(EMFErrorSeverity.WARNING, 10015);
+			
+		} 		
+		catch (HibernateException e) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.error("Error while delete a Kpi ", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+		}finally {
+			aSession.close();
+		}
+		return true;
 	}
 
 }

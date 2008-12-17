@@ -145,4 +145,10 @@ public interface IKpiDAO {
 
 	public void deleteResource(Integer resourceId) throws EMFUserError;
 
+	public void modifyKpi(Kpi kpi) throws EMFUserError;
+
+	public Integer insertKpi(Kpi toCreate)throws EMFUserError;
+
+	public boolean deleteKpi(Integer kpiId) throws EMFUserError;
+
 }

@@ -84,26 +84,23 @@ qx.Class.define("spagobi.ui.Table",
       }
     });
 
-  this.set({
-     // 	flex: 1
-     //     height: 150 
+	/*
+   this.set({
+          height: 150
       });
-   
+   */
 
 	
     // Configure columns
     var columnModel = this.getTableColumnModel();
     var resizeBehavior = columnModel.getBehavior();
-    
 	
 	
    if (data.ID != undefined){
     	if (data.ID == "ROLES"){
 		
-			//var propertyCellRendererFactory = new qx.legacy.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc);//change
 			var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.propertyCellRendererFactoryFunc);
 	 	
-   		 	//var propertyCellEditorFactory = new qx.legacy.ui.table.celleditor.Dynamic(this.propertyCellEditorFactoryFunc);//change
    		 	var propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this.propertyCellEditorFactoryFunc);
 
 			for(i=0; i<data.columns.length; i++){
@@ -130,8 +127,9 @@ qx.Class.define("spagobi.ui.Table",
     this._tableModel.setDataAsMapArray(data.rows, true);
     
     // Add selection listener
-    this.getSelectionModel().addListener("changeSelection", this._onChangeSelection, this);
-    
+    if(this._controller.getForm() != undefined){
+    	this.getSelectionModel().addListener("changeSelection", this._onChangeSelection, this);
+    }
   },
 
   /**

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <STATEMENTS>
-
+<!-- 
   <STATEMENT name="LIST_KPI"
     query="SELECT KPI_ID as id, name, description FROM sbi_kpi" />
-    
+     -->
   <STATEMENT name="DELETE_KPI" query="DELETE FROM sbi_kpi WHERE kpi_id=?" />
 
   <STATEMENT name="DETAIL_KPI"

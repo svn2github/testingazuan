@@ -37,19 +37,22 @@
         </INSERT_BUTTON>
         <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="sbi.kpi.button.back.title"
           onlyPortletRunning="true">
-          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="KPIConfigurationAction" />
+          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="LOGIN_ACTION_KPI_CONFIGURATION" />
           <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE"
             value="true" />
         </BACK_BUTTON>
       </BUTTONS>
     </CONFIG>
   </MODULE>
-  <MODULE name="DetailKpiModule" class="it.eng.spago.dispatching.module.detail.impl.DefaultDetailModule">
+  
+  <MODULE name="DetailKpiModule" class="it.eng.spagobi.kpi.config.service.DetailKpiModule">
     <CONFIG pool="spagobi" title="sbi.kpi.config.detail.title">
+    <!--
       <QUERIES>
         <SELECT_QUERY statement="DETAIL_KPI">
           <PARAMETER type="RELATIVE" value="ID" scope="SERVICE_REQUEST" />
         </SELECT_QUERY>
+      
         <UPDATE_QUERY statement="UPDATE_KPI">
           <PARAMETER type="RELATIVE" value="NAME" scope="SERVICE_REQUEST" />
           <PARAMETER type="RELATIVE" value="DESCRIPTION" scope="SERVICE_REQUEST" />
@@ -78,7 +81,12 @@
         <FIELD name="CODE" label="CODE" widget="" size="60" />
         <FIELD name="METRIC" label="METRIC" widget="" size="60" />
       </FIELDS>
+
+      <COLUMNS />
+	  <CAPTIONS />
       <BUTTONS />
+    -->
     </CONFIG>
   </MODULE>
+  
 </MODULES>

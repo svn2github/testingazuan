@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<VALIDATIONS>
+<VALIDATIONS><!--
   <SERVICE name="KpiPage" type="PAGE">
     <VALIDATION blocking="true" validators="">
       <CONDITIONS>
@@ -17,4 +17,4 @@
     </VALIDATION>
   </SERVICE>
   <DINAMIC_VALIDATIONS />
-</VALIDATIONS>
+--></VALIDATIONS>

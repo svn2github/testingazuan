@@ -21,33 +21,68 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.kpi.config.service;
 
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.module.list.basic.impl.DefaultBasicListModule;
-import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.kpi.config.bo.Kpi;
+import it.eng.spagobi.kpi.utils.AbstractConfigurableListModule;
 /**
  * Loads the engines list
  * 
  * @author sulis
  */
 
-public class ListKpiModule extends DefaultBasicListModule {
+public class ListKpiModule extends AbstractConfigurableListModule {
 	
-	public static final String MODULE_PAGE = "ListKpiPage";
+	private static transient Logger logger = Logger
+	.getLogger(ListKpiModule.class);
 
-	/**
-	 * Gets the list.
-	 * 
-	 * @param request The request SourceBean
-	 * @param response The response SourceBean
-	 * 
-	 * @return ListIFace
-	 * 
-	 * @throws Exception the exception
-	 */
-	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-		return DelegatedHibernateConnectionListService.getList(this, request, response);
+
+	@Override
+	protected List getObjectList(SourceBean request) {
+		List result = null;
+		try {
+			result = DAOFactory.getKpiDAO().loadKpiList();
+		} catch (EMFUserError e) {
+			logger.error(e);
+		}
+		return result;
 	}
 
+	@Override
+	protected void setRowAttribute(SourceBean rowSB, Object obj)
+			throws SourceBeanException {
+		Kpi aKpi = (Kpi) obj;
+		rowSB.setAttribute("NAME", aKpi.getKpiName());
+		rowSB.setAttribute("DESCRIPTION", aKpi.getDescription());
+		rowSB.setAttribute("ID", aKpi.getKpiId());
+	}
+	
+	@Override
+	public boolean delete(SourceBean request, SourceBean response) {
+		boolean toReturn = false;
+//		String kpiId = (String) request.getAttribute("ID");
+//		try {
+//			toReturn = DAOFactory.getKpiDAO().deleteKpi(Integer.parseInt(kpiId));
+//			toReturn = true;
+//		} catch (NumberFormatException e) {
+//			EMFErrorHandler engErrorHandler = getErrorHandler();
+//			engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
+//					"10012", "component_kpi_messages"));
+//		} catch (EMFUserError e) {
+//			EMFErrorHandler engErrorHandler = getErrorHandler();
+//			engErrorHandler.addError(e);
+//		}
+
+		return toReturn;
+	}
+	
 } 
 

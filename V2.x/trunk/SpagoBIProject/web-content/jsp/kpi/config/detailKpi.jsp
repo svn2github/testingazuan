@@ -22,6 +22,7 @@
 
 <%@ page import="java.util.Map,java.util.HashMap"%>
 <%@page	import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
+<%@ page import="it.eng.spagobi.kpi.config.bo.Kpi"%>
 <%
 	String title = "";
 	String id = "";
@@ -40,71 +41,145 @@
 			.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
 					"DetailKpiModule");
 	
-	SourceBean kpi = (SourceBean) aServiceResponse.getAttribute("DetailKpiModule");
+	
+	//SourceBean kpi = (SourceBean) aServiceResponse.getAttribute("DetailKpiModule");
 
-	String message = DelegatedDetailService.DETAIL_INSERT;
+	//String message = DelegatedDetailService.DETAIL_INSERT;
 
 	if (moduleBean.getAttribute("CONFIG.TITLE") != null)
 		title = (String) moduleBean.getAttribute("CONFIG.TITLE");
 	
-	if (kpi != null){
-		if (kpi.getAttribute("ROW.ID") != null)
-			id = String.valueOf(kpi.getAttribute("ROW.ID"));
-		if (kpi.getAttribute("ROW.NAME") != null)
-			name = (String) kpi.getAttribute("ROW.NAME");
-		if (kpi.getAttribute("ROW.DOCUMENT_LABEL") != null)
-			documentLabel = (String) kpi.getAttribute("ROW.DOCUMENT_LABEL");
-		if (kpi.getAttribute("ROW.CODE") != null)
-			code = (String) kpi.getAttribute("ROW.CODE");
-		if (kpi.getAttribute("ROW.METRIC") != null)
-			metric = (String) kpi.getAttribute("ROW.METRIC");
-		if (kpi.getAttribute("ROW.DESCRIPTION") != null)
-			description = (String) kpi.getAttribute("ROW.DESCRIPTION");
-		if (kpi.getAttribute("ROW.WEIGHT") != null)
-			weight = String.valueOf(kpi.getAttribute("ROW.WEIGHT"));
-		if (kpi.getAttribute("ROW.DS_ID") != null)
-			ds_id = (Integer)kpi.getAttribute("ROW.DS_ID");
+	String messageIn = (String) aServiceRequest.getAttribute("MESSAGE");
+	String messageSave = "";
 	
-		if (kpi.getAttribute(DelegatedDetailService.SERVICE_MODE) != null
-			&& ((String) kpi
-					.getAttribute(DelegatedDetailService.SERVICE_MODE))
-					.equalsIgnoreCase(DelegatedDetailService.SERVICE_MODE_UPDATE)) {
-			message = DelegatedDetailService.DETAIL_UPDATE;
+	// DETAIL_SELECT
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+	// DETAIL_UPDATE
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+		.getAttribute("DetailKpiModule");
+		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+	
+	//DETAIL_NEW
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
+		messageSave = DelegatedDetailService.DETAIL_INSERT;
+	}
+	//DETAIL_INSERT
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+				.getAttribute("DetailKpiModule");
+		Kpi kpi = (Kpi) moduleResponse.getAttribute("KPI");
+		id = kpi.getKpiId().toString();
+		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+				.getAttribute("DetailKpiModule");
+		Kpi kpi = (Kpi) moduleResponse.getAttribute("KPI");
+		if (kpi != null) {
+			if(kpi.getKpiId()!=null)
+				id = kpi.getKpiId().toString();
+			if(kpi.getKpiName()!= null)
+				name = kpi.getKpiName();
+			if(documentLabel!= null)
+				documentLabel = kpi.getDocumentLabel();
+			if(code!=null)
+				code = kpi.getCode();
+			if(metric != null)
+				metric = kpi.getMetric();
+			if(description != null)
+				description = kpi.getDescription();
+			if (kpi.getStandardWeight() != null)
+				weight = kpi.getStandardWeight().toString();
+			if(kpi.getKpiDs()!=null)
+				ds_id = kpi.getKpiDs().getDsId();
+			else
+				ds_id = null;
 		}
 	}
 	
-	if (kpi == null){
-		if (aServiceRequest.getAttribute("ID") != null)
-			id = String.valueOf(aServiceRequest.getAttribute("ID"));
-		if (aServiceRequest.getAttribute("NAME") != null)
-			name = (String) aServiceRequest.getAttribute("NAME");
-		if (aServiceRequest.getAttribute("DOCUMENT_LABEL") != null)
-			documentLabel = (String) aServiceRequest.getAttribute("DOCUMENT_LABEL");
-		if (aServiceRequest.getAttribute("CODE") != null)
-			code = (String) aServiceRequest.getAttribute("CODE");
-		if (aServiceRequest.getAttribute("METRIC") != null)
-			metric = (String) aServiceRequest.getAttribute("METRIC");
-		if (aServiceRequest.getAttribute("DESCRIPTION") != null)
-			description = (String) aServiceRequest.getAttribute("DESCRIPTION");
-		if (aServiceRequest.getAttribute("WEIGHT") != null)
-			weight = String.valueOf(aServiceRequest.getAttribute("WEIGHT"));
-		if (aServiceRequest.getAttribute("DS_ID") != null)
-			ds_id = Integer.valueOf((String)aServiceRequest.getAttribute("DS_ID"));
-	}
+	//if (kpi != null){
+	//	if (kpi.getAttribute("ROW.ID") != null)
+	//		id = String.valueOf(kpi.getAttribute("ROW.ID"));
+	//	if (kpi.getAttribute("ROW.NAME") != null)
+	//		name = (String) kpi.getAttribute("ROW.NAME");
+	//	if (kpi.getAttribute("ROW.DOCUMENT_LABEL") != null)
+	//		documentLabel = (String) kpi.getAttribute("ROW.DOCUMENT_LABEL");
+	//	if (kpi.getAttribute("ROW.CODE") != null)
+	//		code = (String) kpi.getAttribute("ROW.CODE");
+	//	if (kpi.getAttribute("ROW.METRIC") != null)
+	//		metric = (String) kpi.getAttribute("ROW.METRIC");
+	//	if (kpi.getAttribute("ROW.DESCRIPTION") != null)
+	//		description = (String) kpi.getAttribute("ROW.DESCRIPTION");
+	//	if (kpi.getAttribute("ROW.WEIGHT") != null)
+	//		weight = String.valueOf(kpi.getAttribute("ROW.WEIGHT"));
+	//	if (kpi.getAttribute("ROW.DS_ID") != null)
+	//		ds_id = (Integer)kpi.getAttribute("ROW.DS_ID");
+	
+	//	if (kpi.getAttribute(DelegatedDetailService.SERVICE_MODE) != null
+	//		&& ((String) kpi
+	//				.getAttribute(DelegatedDetailService.SERVICE_MODE))
+	//				.equalsIgnoreCase(DelegatedDetailService.SERVICE_MODE_UPDATE)) {
+	//		message = DelegatedDetailService.DETAIL_UPDATE;
+	//	}
+	//}
+	
+	//if (kpi == null){
+	//	if (aServiceRequest.getAttribute("ID") != null)
+	//		id = String.valueOf(aServiceRequest.getAttribute("ID"));
+	//	if (aServiceRequest.getAttribute("NAME") != null)
+	//		name = (String) aServiceRequest.getAttribute("NAME");
+	//	if (aServiceRequest.getAttribute("DOCUMENT_LABEL") != null)
+	//		documentLabel = (String) aServiceRequest.getAttribute("DOCUMENT_LABEL");
+	//	if (aServiceRequest.getAttribute("CODE") != null)
+	//		code = (String) aServiceRequest.getAttribute("CODE");
+	//	if (aServiceRequest.getAttribute("METRIC") != null)
+	//		metric = (String) aServiceRequest.getAttribute("METRIC");
+	//	if (aServiceRequest.getAttribute("DESCRIPTION") != null)
+	//		description = (String) aServiceRequest.getAttribute("DESCRIPTION");
+	//	if (aServiceRequest.getAttribute("WEIGHT") != null)
+	//		weight = String.valueOf(aServiceRequest.getAttribute("WEIGHT"));
+	//	if (aServiceRequest.getAttribute("DS_ID") != null)
+	//		ds_id = Integer.valueOf((String)aServiceRequest.getAttribute("DS_ID"));
+	//}
 	
 	Map formUrlPars = new HashMap();
 	if(ChannelUtilities.isPortletRunning()) {
 		formUrlPars.put("PAGE", "KpiPage");
 		formUrlPars.put("MODULE", "DetailKpiModule");
-		formUrlPars.put("MESSAGE", message);
+		formUrlPars.put("MESSAGE", messageSave);
 		formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	}
 	
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);
 
+	
+	
+	
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("PAGE", "KpiPage");
-	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	if(messageSave.equals(DelegatedDetailService.DETAIL_UPDATE)){
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	}
+	else{
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	}
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
 

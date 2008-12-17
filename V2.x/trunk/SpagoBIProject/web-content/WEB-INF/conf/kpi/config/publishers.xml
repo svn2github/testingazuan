@@ -16,11 +16,13 @@
                   <PARAMETER name="module" scope="SERVICE_REQUEST" value="ListKpiModule" />
                 </CONDITIONS>
               </CHECK>
+                <!--
               <CHECK target="ListKpiPublisher">
                 <CONDITIONS>
                   <PARAMETER name="message" scope="SERVICE_REQUEST" value="DETAIL_UPDATE" />
                 </CONDITIONS>
               </CHECK>
+				-->
               <CHECK target="DetailKpiPublisher">
                 <CONDITIONS>
                   <PARAMETER name="module" scope="SERVICE_REQUEST" value="DetailKpiModule" />

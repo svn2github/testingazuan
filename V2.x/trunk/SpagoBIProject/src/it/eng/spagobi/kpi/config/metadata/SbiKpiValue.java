@@ -14,7 +14,7 @@ public class SbiKpiValue  implements java.io.Serializable {
 
 
     // Fields    
-
+	
      private Integer idKpiInstanceValue;
      private SbiKpiInstance sbiKpiInstance;
      private SbiResources sbiResources;

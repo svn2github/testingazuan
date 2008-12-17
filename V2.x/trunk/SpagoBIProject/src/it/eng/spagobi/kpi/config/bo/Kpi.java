@@ -23,6 +23,7 @@ public class Kpi {
 	String description = null;	
 	String scaleCode = null;
 	String scaleName = null;
+	String code = null;
 	
 	
 	
@@ -140,6 +141,18 @@ public class Kpi {
 
 	public void setStandardWeight(Double standardWeight) {
 		this.standardWeight = standardWeight;
+	}
+
+
+
+	public String getCode() {
+		return code;
+	}
+
+
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 

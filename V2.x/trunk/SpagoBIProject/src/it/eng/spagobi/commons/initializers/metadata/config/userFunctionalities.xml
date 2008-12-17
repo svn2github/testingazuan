@@ -37,4 +37,5 @@
 <USER_FUNCTIONALITY name="ModifyRefresh" description="ModifyRefresh"/>
 <USER_FUNCTIONALITY name="MenuManagement" description="MenuManagement"/>
 <USER_FUNCTIONALITY name="HotLinkManagement" description="HotLinkManagement"/>
+<USER_FUNCTIONALITY name="KpiManagement" description="KpiManagement"/>
 </USER_FUNCTIONALITIES>

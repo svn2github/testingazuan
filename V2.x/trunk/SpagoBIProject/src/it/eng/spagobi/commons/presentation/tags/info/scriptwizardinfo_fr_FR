@@ -1,6 +1,6 @@
 <div style='width:600px;font-size:10px;font-family:verdana;' >
 <br/>
-Le script doit être écrit dans le langage Groovy.
+Le script doit &ecirc;tre &eacute;crit dans le langage Groovy.
 Le script doit retourner une cha&icirc;ne de caract&egrave;res xml qui contient une liste de valeurs.
 La cha&icirc;ne de caract&egrave;res xml doit être format&eacute;e comme la structure xml ci-dessous.
 Dans le script il est possible d'utiliser les attributs de profil comme expliqué ci-dessous.

@@ -1,14 +1,14 @@
 <div style='width:650px;font-size:10px;font-family:verdana;' >
 <br/>
-To insert a single value profile attribute into a dataset query use <b>${name_profile_attribute}</b>. 
+Pour ins&eacute;s&eacute;rer une valeur simple parmi les attributs du profil utilisateur dans une requête de jeu de données, utilisez <b>${nom_attribut}</b>. 
 <br/>
 <br/>
-To insert a multi value profile attribute into a dataset query use 
-<b>${name_profile_attribute(prefix;splitter;suffix)}</b>. 
+Pour ins&eacute;s&eacute;rer une valeur multiple issue du profile utilisateur dans une requête de jeu de données, utilisez 
+<b>${nom_attribut(prefix;splitter;suffix)}</b>. 
 <br/>
-The profile attribute will be replaced by prefix+(list of values separated by the splitter)+suffix 
+L' attribut du profil utilisateur sera remplacer par le pr&eacute;fix+(liste de valeur s&eacute;par&eacute;e par le s&eacute;parateur)+suffix 
 <br/>
-<b>Example:</b> ${name_profile_attribute( in (';',';') )}
+<b>Exemple:</b> ${nom_attribut( in (';',';') )}
 <br/>
-To insert a parameter use use $P{name_parameter}, add a parameter in the detail form by choosing name_parameter as name and a type 
+Pour ins&eacute;rer un param&egrave;tre, utilisez $P{nom_param&egrave;tre}, ajoutez un param&egrave;tre dans le formulaire de d&eacute;tail en choisissant nom_param&egrave;tre comme nom et un type 
 </div>

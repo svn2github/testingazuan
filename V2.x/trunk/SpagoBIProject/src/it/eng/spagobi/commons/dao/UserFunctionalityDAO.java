@@ -69,7 +69,7 @@ public class UserFunctionalityDAO extends AbstractHibernateDAO implements IUserF
 		    String roleTypeCode = spaobiRole.getRoleType().getValueCd();
 		    if (!roleTypes.contains(roleTypeCode)) roleTypes.add(roleTypeCode);
 		}
-		logger.debug("strRoles="+roleTypes);
+		logger.debug("Role type="+roleTypes);
 		if (roleTypes.size()==0) logger.warn("No role types found for the user...!!!!!");
 		
 		//String hql = "from SbiRolesUserFunctionality suf where suf.userFunctionality.domainCd = 'USER_FUNCTIONALITY'" + 

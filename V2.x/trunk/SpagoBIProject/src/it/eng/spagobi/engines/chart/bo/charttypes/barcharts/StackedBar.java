@@ -461,6 +461,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				Color color=(Color)colorMap.get(serieName);
 				if(color!=null){
 					renderer.setSeriesPaint(i, color);
+					renderer.setSeriesItemLabelFont(i, new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 				}	
 			}
 		}
@@ -487,7 +488,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 			double orient=(-Math.PI / 2.0);
 			logger.debug("add labels style");
-			if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
+			if(styleValueLabels.getOrientation()!= null && styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
 				orient=0.0;
 			}
 			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
@@ -515,7 +516,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		CategoryAxis domainAxis = plot.getDomainAxis();
 		domainAxis.setCategoryLabelPositions(
 				CategoryLabelPositions.createUpRotationLabelPositions(
-						Math.PI / 6.0));
+						Math.PI / 4.0));
 		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
         domainAxis.setLabelPaint(styleYaxesLabels.getColor());
         domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));

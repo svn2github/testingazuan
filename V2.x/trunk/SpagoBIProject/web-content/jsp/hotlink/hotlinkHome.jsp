@@ -97,8 +97,6 @@ Ext.onReady(function(){
 			params.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 			params.put(ObjectsTreeConstants.OBJECT_ID, rm.getObjId().toString());
 			String parameters = rm.getParameters() != null ? rm.getParameters() : "";
-			parameters = parameters.replaceAll("&", "%26");
-			parameters = parameters.replaceAll("=", "%3D");
 			params.put(ObjectsTreeConstants.PARAMETERS, parameters);
 			params.put(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
 			String subObjName = rm.getSubObjName();

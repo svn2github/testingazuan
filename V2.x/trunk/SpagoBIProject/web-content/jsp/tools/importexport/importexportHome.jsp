@@ -111,7 +111,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				value = check.value;
 				chuncks = value.split('_');
 				biobjectsIdArray.push(chuncks[0]);
-				check.click();
 			}
 		}
 		document.getElementById('<%= ImportExportConstants.OBJECT_ID %>').value=biobjectsIdArray.join(';');
@@ -128,52 +127,57 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<spagobi:error/>
 
  
-  <form method='POST' action='<%=formExportUrl%>' id='exportForm' name='exportForm'>
-  	<input type="hidden" name="PAGE" value="ImportExportPage" />
-  	<input type="hidden" name="MESSAGEDET" value="Export" />
-  	<input type="hidden" name="<%= ImportExportConstants.OBJECT_ID %>" id="<%= ImportExportConstants.OBJECT_ID %>" value="" />
+
   	
 	<div style="float:left;width:50%;" class="div_detail_area_forms">
-		<div class='portlet-section-header' style="float:left;width:88%;">	
-				<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>
-		</div>
-		<div style="float:left;width:10%;">
-		  <center>
-			<a href="javascript:submitExportForm();">
-					<img src= '<%=urlBuilder.getResourceLink(request, "/img/tools/importexport/importexport32.gif") %>'
-						title='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' 
-						alt='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' />
-			</a>
-		  </center>
-		</div>
-		<div id="divProgress"  
-			 style="clear:left;margin-left:15px;padding-top:15px;display:none;color:#074B88;">
-			<spagobi:message key = "SBISet.importexport.opProg" bundle="component_impexp_messages"/>
-		</div>
-		<div id="divDownload" 
-			 style="clear:left;margin-left:15px;padding-top:15px;display:none;color:#074B88;">	 
-			<spagobi:message key = "SBISet.importexport.opComplete"  bundle="component_impexp_messages"/>
-			<a style='text-decoration:none;color:#CC0000;' href="javascript:submitDownloadForm()">
-				<spagobi:message key = "Sbi.download" bundle="component_impexp_messages"/>
-			</a>
-		</div>
-		<div style="clear:left;margin-left:15px;padding-top:10px;">
-			<spagobi:message key = "SBISet.importexport.nameExp" bundle="component_impexp_messages"/>
-			: 
-			<input type="text" name="exportFileName" size="30" />
-            <br/>
-            <input type="checkbox" name="exportSubObj" />
-			<spagobi:message key = "SBISet.importexport.expSubView" bundle="component_impexp_messages"/>
-			<br/>
-			<input type="checkbox" name="exportSnapshots" />	
-			<spagobi:message key = "SBISet.importexport.expSnapshots" bundle="component_impexp_messages"/>
-		</div>
+		<form method='POST' action='<%=formExportUrl%>' id='exportForm' name='exportForm'>
+	  		<input type="hidden" name="PAGE" value="ImportExportPage" />
+	  		<input type="hidden" name="MESSAGEDET" value="Export" />
+	  		<input type="hidden" name="<%= ImportExportConstants.OBJECT_ID %>" id="<%= ImportExportConstants.OBJECT_ID %>" value="" />
+	
+			<div class='portlet-section-header' style="float:left;width:88%;">	
+					<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>
+			</div>
+			<div style="float:left;width:10%;">
+			  <center>
+				<a href="javascript:submitExportForm();">
+						<img src= '<%=urlBuilder.getResourceLink(request, "/img/tools/importexport/importexport32.gif") %>'
+							title='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' 
+							alt='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' />
+				</a>
+			  </center>
+			</div>
+			<div id="divProgress"  
+				 style="clear:left;margin-left:15px;padding-top:15px;display:none;color:#074B88;">
+				<spagobi:message key = "SBISet.importexport.opProg" bundle="component_impexp_messages"/>
+			</div>
+			<div id="divDownload" 
+				 style="clear:left;margin-left:15px;padding-top:15px;display:none;color:#074B88;">	 
+				<spagobi:message key = "SBISet.importexport.opComplete"  bundle="component_impexp_messages"/>
+				<a style='text-decoration:none;color:#CC0000;' href="javascript:submitDownloadForm()">
+					<spagobi:message key = "Sbi.download" bundle="component_impexp_messages"/>
+				</a>
+			</div>
+			<div style="clear:left;margin-left:15px;padding-top:10px;">
+				<spagobi:message key = "SBISet.importexport.nameExp" bundle="component_impexp_messages"/>
+				: 
+				<input type="text" name="exportFileName" size="30" />
+	            <br/>
+	            <input type="checkbox" name="exportSubObj" />
+				<spagobi:message key = "SBISet.importexport.expSubView" bundle="component_impexp_messages"/>
+				<br/>
+				<input type="checkbox" name="exportSnapshots" />	
+				<spagobi:message key = "SBISet.importexport.expSnapshots" bundle="component_impexp_messages"/>
+			</div>
+		
+		</form>
+		
 		<div style="clear:left;margin-bottom:10px;">
 			<spagobi:treeObjects moduleName="TreeObjectsModule"  
 				htmlGeneratorClass="it.eng.spagobi.tools.importexport.publishers.AdminExportTreeHtmlGenerator" />
 		</div>
 	</div>
-	</form>
+	
 
 
 

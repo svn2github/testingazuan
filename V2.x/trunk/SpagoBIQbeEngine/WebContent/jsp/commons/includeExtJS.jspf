@@ -2,7 +2,7 @@
 <qbe:url type="resource" var="ExtBase" ref="../js/ext/adapter/ext/ext-base.js"/>
 <script type="text/javascript" src='${ExtBase}'/></script>
 	
-<qbe:url type="resource" var="ExtDebug" ref="../js/ext/ext-all-debug.js"/>
+<qbe:url type="resource" var="ExtDebug" ref="../js/ext/ext-all.js"/>
 <script type="text/javascript" src='${ExtDebug}'/></script>
     
 <!-- Include Ext stylesheets here: -->

@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.container;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -37,7 +38,7 @@ import java.util.Set;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class Context {
+public class Context implements Serializable{
 	
 	private Calendar _lastUsageDate;
 	private Map _container;

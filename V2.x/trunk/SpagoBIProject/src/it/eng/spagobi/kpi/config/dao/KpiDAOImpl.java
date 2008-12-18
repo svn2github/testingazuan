@@ -483,114 +483,119 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 		Integer kpiInstID = value.getKpiInstanceId();
 		String val = value.getValue();
-		Double kpiVal = new Double(val);
-		KpiInstance kInst = null;
-		Session aSession = null;
-		Transaction tx = null;
-
-		try {
-			aSession = getSession();
-			tx = aSession.beginTransaction();
-			SbiKpiInstance hibSbiKpiInstance = (SbiKpiInstance) aSession.load(
-					SbiKpiInstance.class, kpiInstID);
-			Set alarms = hibSbiKpiInstance.getSbiAlarms();
-			if (!alarms.isEmpty()) {
-
-				Iterator itAl = alarms.iterator();
-				while (itAl.hasNext()) {
-					boolean isAlarming = false;
-					SbiAlarm alarm = (SbiAlarm) itAl.next();
-					String a = "";
-					SbiThresholdValue threshold = alarm.getSbiThresholdValue();
-					String type = threshold.getSbiThreshold().getSbiDomains()
-							.getValueCd();
-					double min;
-					double max;
-					String thresholdValue = "";
-
-					if (type.equals("RANGE")) {
-
-						min = threshold.getMinValue();
-						max = threshold.getMaxValue();
-
-						// if the value is in the interval, then there should be
-						// an alarm
-						if (kpiVal.doubleValue() >= min
-								&& kpiVal.doubleValue() <= max) {
-							isAlarming = true;
-							thresholdValue = "Min:" + min + "-Max:" + max;
-							logger.debug("The value " + kpiVal.doubleValue()
-									+ " is in the RANGE " + thresholdValue
-									+ " and so an Alarm will be scheduled");
+		Double kpiVal = null;
+		if(val!=null){
+			kpiVal =new Double(val);
+		}
+		if (kpiVal!=null){
+			KpiInstance kInst = null;
+			Session aSession = null;
+			Transaction tx = null;
+	
+			try {
+				aSession = getSession();
+				tx = aSession.beginTransaction();
+				SbiKpiInstance hibSbiKpiInstance = (SbiKpiInstance) aSession.load(
+						SbiKpiInstance.class, kpiInstID);
+				Set alarms = hibSbiKpiInstance.getSbiAlarms();
+				if (!alarms.isEmpty()) {
+	
+					Iterator itAl = alarms.iterator();
+					while (itAl.hasNext()) {
+						boolean isAlarming = false;
+						SbiAlarm alarm = (SbiAlarm) itAl.next();
+						String a = "";
+						SbiThresholdValue threshold = alarm.getSbiThresholdValue();
+						String type = threshold.getSbiThreshold().getSbiDomains()
+								.getValueCd();
+						double min;
+						double max;
+						String thresholdValue = "";
+	
+						if (type.equals("RANGE")) {
+	
+							min = threshold.getMinValue();
+							max = threshold.getMaxValue();
+	
+							// if the value is in the interval, then there should be
+							// an alarm
+							if (kpiVal.doubleValue() >= min
+									&& kpiVal.doubleValue() <= max) {
+								isAlarming = true;
+								thresholdValue = "Min:" + min + "-Max:" + max;
+								logger.debug("The value " + kpiVal.doubleValue()
+										+ " is in the RANGE " + thresholdValue
+										+ " and so an Alarm will be scheduled");
+							}
+	
+						} else if (type.equals("MINIMUM")) {
+	
+							min = threshold.getMinValue();
+							// if the value is smaller than the min value
+							if (kpiVal.doubleValue() <= min) {
+								isAlarming = true;
+								thresholdValue = "Min:" + min;
+								logger.debug("The value " + kpiVal.doubleValue()
+										+ " is lower than " + thresholdValue
+										+ " and so an Alarm will be scheduled");
+							}
+	
+						} else if (type.equals("MAXIMUM")) {
+	
+							max = threshold.getMaxValue();
+							// if the value is higher than the max value
+							if (kpiVal.doubleValue() >= max) {
+								isAlarming = true;
+								thresholdValue = "Max:" + max;
+								logger.debug("The value " + kpiVal.doubleValue()
+										+ " is higher than " + thresholdValue
+										+ " and so an Alarm will be scheduled");
+							}
 						}
-
-					} else if (type.equals("MINIMUM")) {
-
-						min = threshold.getMinValue();
-						// if the value is smaller than the min value
-						if (kpiVal.doubleValue() <= min) {
-							isAlarming = true;
-							thresholdValue = "Min:" + min;
-							logger.debug("The value " + kpiVal.doubleValue()
-									+ " is lower than " + thresholdValue
-									+ " and so an Alarm will be scheduled");
+	
+						if (isAlarming) {
+							SbiAlarmEvent alarmEv = new SbiAlarmEvent();
+							Integer alarmID = alarm.getId();
+							String kpiName = hibSbiKpiInstance.getSbiKpi()
+									.getName();
+							String resources = null;
+							if (value.getR() != null) {
+								resources = value.getR().getName();
+							}
+	
+							alarmEv.setKpiName(kpiName);
+							alarmEv.setKpiValue(val);
+							alarmEv.setActive(true);
+							alarmEv.setEventTs(new Date());
+							alarmEv.setResources(resources);
+							alarmEv.setSbiAlarms(alarm);
+							alarmEv.setThresholdValue(thresholdValue);
+	
+							DAOFactory.getAlarmEventDAO().insert(alarmEv);
+							logger
+									.debug("A new alarm has been inserted in the Alarm Event Table");
 						}
-
-					} else if (type.equals("MAXIMUM")) {
-
-						max = threshold.getMaxValue();
-						// if the value is higher than the max value
-						if (kpiVal.doubleValue() >= max) {
-							isAlarming = true;
-							thresholdValue = "Max:" + max;
-							logger.debug("The value " + kpiVal.doubleValue()
-									+ " is higher than " + thresholdValue
-									+ " and so an Alarm will be scheduled");
-						}
+	
 					}
-
-					if (isAlarming) {
-						SbiAlarmEvent alarmEv = new SbiAlarmEvent();
-						Integer alarmID = alarm.getId();
-						String kpiName = hibSbiKpiInstance.getSbiKpi()
-								.getName();
-						String resources = null;
-						if (value.getR() != null) {
-							resources = value.getR().getName();
-						}
-
-						alarmEv.setKpiName(kpiName);
-						alarmEv.setKpiValue(val);
-						alarmEv.setActive(true);
-						alarmEv.setEventTs(new Date());
-						alarmEv.setResources(resources);
-						alarmEv.setSbiAlarms(alarm);
-						alarmEv.setThresholdValue(thresholdValue);
-
-						DAOFactory.getAlarmEventDAO().insert(alarmEv);
-						logger
-								.debug("A new alarm has been inserted in the Alarm Event Table");
-					}
-
 				}
-			}
-
-		} catch (HibernateException he) {
-			logger
-					.error(
-							"Error while verifying if the KpiValue is alarming for its thresholds ",
-							he);
-
-			if (tx != null)
-				tx.rollback();
-
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 10105);
-
-		} finally {
-			if (aSession != null) {
-				if (aSession.isOpen())
-					aSession.close();
-				logger.debug("OUT");
+	
+			} catch (HibernateException he) {
+				logger
+						.error(
+								"Error while verifying if the KpiValue is alarming for its thresholds ",
+								he);
+	
+				if (tx != null)
+					tx.rollback();
+	
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 10105);
+	
+			} finally {
+				if (aSession != null) {
+					if (aSession.isOpen())
+						aSession.close();
+					logger.debug("OUT");
+				}
 			}
 		}
 		logger.debug("OUT");
@@ -752,8 +757,10 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String descr = hibSbiKpiModelInst.getDescription();
 		String name = hibSbiKpiModelInst.getName();
 		SbiKpiInstance kpiInst = hibSbiKpiModelInst.getSbiKpiInstance();
-		KpiInstance kpiInstanceAssociated = toKpiInstance(kpiInst,
-				requestedDate);
+		KpiInstance kpiInstanceAssociated = null;
+		if(kpiInst!=null){
+			kpiInstanceAssociated = toKpiInstance(kpiInst,	requestedDate);
+		}
 		Set resources = hibSbiKpiModelInst.getSbiKpiModelResourceses();
 		List res = new ArrayList();
 		if (!resources.isEmpty()) {

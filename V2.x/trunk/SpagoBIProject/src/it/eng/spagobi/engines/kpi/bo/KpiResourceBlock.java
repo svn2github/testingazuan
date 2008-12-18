@@ -91,12 +91,19 @@ public class KpiResourceBlock {
 		if(thresholdJsArray==null){
 			thresholdJsArray ="";
 		}
-		List thresholds = kpiVal.getThresholds();
-		
-		String value = kpiVal.getValue();
-		Double val = new Double(value);
-		float lo =  val.floatValue();
-		Double weight = kpiVal.getWeight();
+		List thresholds = null;		
+		String value = null;
+		Float lo =null;
+		Double weight = null;
+		if (kpiVal!=null){
+			thresholds = kpiVal.getThresholds();
+			value = kpiVal.getValue();
+			if(value!=null){
+				Double val = new Double(value);
+				lo = new Float( val.floatValue());
+				weight = kpiVal.getWeight();
+			}	
+		}
 		Color semaphorColor = line.getSemaphorColor();
 		
 		BulletGraph sbi = (BulletGraph)line.getChartBullet();		
@@ -121,7 +128,11 @@ public class KpiResourceBlock {
 		_htmlStream.append("		<td width='"+(53-(recursionLev))+"%' title='Model Instance Node' style='height=30px;align:left;vertical-align:middle;'><div>"+modelName+"</div></td>\n");
 		
 		_htmlStream.append("		<td  width='5%' style=\"align:right;vertical-align:middle;\"><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
-		_htmlStream.append("		<td  width='9%' title='Value' style=\"align:left;vertical-align:middle;\"><div>"+lo+"</div></td>\n");
+		if (lo!= null){
+			_htmlStream.append("		<td  width='9%' title='Value' style=\"align:left;vertical-align:middle;\"><div>"+lo.toString()+"</div></td>\n");
+		}else{
+			_htmlStream.append("		<td  width='9%' title='Value' style=\"align:left;vertical-align:middle;\"><div>&nbsp; &nbsp;</div></td>\n");
+		}
 		if (display_weight && weight!=null){
 			_htmlStream.append("		<td width='5%' title='Weight' style=\"align:left;vertical-align:middle;\"><div>["+weight.toString()+"]</div></td>\n");
 		}else{
@@ -176,7 +187,7 @@ public class KpiResourceBlock {
 		
 	   _htmlStream.append("	</tr>\n");
 	   _htmlStream.append("</table>\n");
-	   if (!children.isEmpty()){
+	   if (children!=null && !children.isEmpty()){
 		   recursionLev ++;
 		   Iterator childIt = children.iterator();
 		   while (childIt.hasNext()){

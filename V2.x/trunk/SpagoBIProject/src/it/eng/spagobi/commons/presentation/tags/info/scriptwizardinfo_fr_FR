@@ -2,8 +2,8 @@
 <br/>
 Le script doit &ecirc;tre &eacute;crit dans le langage Groovy.
 Le script doit retourner une cha&icirc;ne de caract&egrave;res xml qui contient une liste de valeurs.
-La cha&icirc;ne de caract&egrave;res xml doit être format&eacute;e comme la structure xml ci-dessous.
-Dans le script il est possible d'utiliser les attributs de profil comme expliqué ci-dessous.
+La cha&icirc;ne de caract&egrave;res xml doit &ecirc;tre format&eacute;e comme la structure xml ci-dessous.
+Dans le script il est possible d'utiliser les attributs de profil comme expliqu&eacute; ci-dessous.
 <br/><br/>
 Pour utiliser la valeur d'un attribut simple de profil utilisateur &eacute;crivez &agrave; l'int&eacute;rieur du script cet appel de
 fonction <b>getSingleValueProfileAttribute(nom de l'attribut du profil)</b>. 
@@ -17,7 +17,7 @@ Exemple: instructions du script...  getMultiValueProfileAttribute(branches, 'in 
 <br/>
 Cette fonction retournera une cha&icirc;ne de caract&egrave;res comme ceci : prefix+(liste de values s&eacute;par&eacute;e par un s&eacute;parateur)+suffix
 <br/><br/>
-Il y a aussi une fonction qui permet de retourner une valeur fixe par défaut sans &eacute;crire aucune instruction groovy.
+Il y a aussi une fonction qui permet de retourner une valeur fixe par d&eacute;faut sans &eacute;crire aucune instruction groovy.
 Dans ce cas le script doit contenir seulement l'appel de la fonction <b>returnValue('valeur &agrave; retourner')</b>. 
 <br/><br/><br/>
 <b>Structure Xml retoun&eacute;e</b>
@@ -26,7 +26,7 @@ Dans ce cas le script doit contenir seulement l'appel de la fonction <b>returnVa
 &nbsp;&nbsp;&lt;ROW  nameAttribute1="valueAttribute1" nameAttribute2="valueAttribute2" ... /&gt;<br/>
 &nbsp;&nbsp;&lt;ROW  nameAttribute1="valueAttribute1" nameAttribute2="valueAttribute2" ... /&gt;<br/>
 &nbsp;&nbsp;...<br/>
-&nbsp;&nbsp;Toutes les lignes doivent avoir les mêmes attributs !<br/>
+&nbsp;&nbsp;Toutes les lignes doivent avoir les m&ecirc;mes attributs !<br/>
 &nbsp;&nbsp;...<br/>
 &lt;/ROWS&gt;<br/>
 </div>

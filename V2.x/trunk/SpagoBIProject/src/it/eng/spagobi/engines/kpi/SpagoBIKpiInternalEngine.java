@@ -329,78 +329,80 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		line.setModelNodeName(modelNodeName);		
 				
 		KpiInstance kpiI = modI.getKpiInstanceAssociated();
-		KpiValue value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
-		if(value == null && isActualDateRequired){
-			DataSetConfig ds = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
-			value = getNewKpiValue(ds,kpiI, r);	
-			//Insert new Value into the DB
-			DAOFactory.getKpiDAO().insertKpiValue(value);	
-			//Checks if the value is alarming (out of a certain range)
-			//If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
-			DAOFactory.getKpiDAO().isAlarmingValue(value);
-			line.setValue(value);
-		}else if (value!= null){
-			line.setValue(value);
-		}else{
-			return line;
-		}
-		Integer kpiId = kpiI.getKpi();
-		Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiId);
-		
-		if(k!=null){
-			String docLabel = k.getDocumentLabel();
-			if (docLabel!=null && !docLabel.equals("")){
-				List documents = new ArrayList();
-				documents.add(docLabel);
-				line.setDocuments(documents);
-			}		
-		}
-		if(display_alarm){
-			Boolean alarm =  DAOFactory.getKpiDAO().isKpiInstUnderAlramControl(kpiI.getKpiInstanceId());
-			line.setAlarm(alarm);
-		}
-		
-		if(display_bullet_chart){
-
-			List thresholds = value.getThresholds();
-			/*String chartType = value.getChartType();
-			logger.debug("Got chartType: "+(chartType!=null?chartType:""));
-			if(chartType==null){
-				logger.debug("Chart Type is null");
-			}*/
-			String chartType = "BulletGraph";			
-			Double val = new Double(value.getValue());
-			Double target = value.getTarget();
-			HashMap pars = (HashMap) confMap.clone();
-			ChartImpl sbi = null;				
-			sbi=ChartImpl.createChart(chartType);
-			logger.debug("Chart created");
-			sbi.setProfile(profile);
-			logger.debug("Profile setted");
-			sbi.setValueDataSet(val);
-			logger.debug("Value to represent setted: "+(val!=null ? val.toString():""));
-			if(target!=null){
-				sbi.setTarget(target);
-				logger.debug("Target setted: "+(target!=null ? target.toString():""));
+		if (kpiI!=null){
+			KpiValue value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
+			if(value == null && isActualDateRequired){
+				DataSetConfig ds = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
+				value = getNewKpiValue(ds,kpiI, r);	
+				//Insert new Value into the DB
+				DAOFactory.getKpiDAO().insertKpiValue(value);	
+				//Checks if the value is alarming (out of a certain range)
+				//If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
+				DAOFactory.getKpiDAO().isAlarmingValue(value);
+				line.setValue(value);
+			}else if (value!= null){
+				line.setValue(value);
+			}else{
+				return line;
 			}
-			sbi.configureChart(pars);
-			logger.debug("Config parameters setted into the chart");
-			String thresholdsJsArray = sbi.setThresholds(thresholds);
-			if(thresholdsJsArray!=null){
-				line.setThresholdsJsArray(thresholdsJsArray);
-			}			
-			logger.debug("Thresholds setted for the chart");
-			line.setChartBullet(sbi);	
+			Integer kpiId = kpiI.getKpi();
+			Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiId);
 			
+			if(k!=null){
+				String docLabel = k.getDocumentLabel();
+				if (docLabel!=null && !docLabel.equals("")){
+					List documents = new ArrayList();
+					documents.add(docLabel);
+					line.setDocuments(documents);
+				}		
+			}
+			if(display_alarm && value.getValue()!=null){
+				Boolean alarm =  DAOFactory.getKpiDAO().isKpiInstUnderAlramControl(kpiI.getKpiInstanceId());
+				line.setAlarm(alarm);
+			}
+			
+			if(display_bullet_chart && value.getValue()!=null){
+	
+				List thresholds = value.getThresholds();
+				/*String chartType = value.getChartType();
+				logger.debug("Got chartType: "+(chartType!=null?chartType:""));
+				if(chartType==null){
+					logger.debug("Chart Type is null");
+				}*/
+				String chartType = "BulletGraph";			
+				Double val = new Double(value.getValue());
+				Double target = value.getTarget();
+				HashMap pars = (HashMap) confMap.clone();
+				ChartImpl sbi = null;				
+				sbi=ChartImpl.createChart(chartType);
+				logger.debug("Chart created");
+				sbi.setProfile(profile);
+				logger.debug("Profile setted");
+				sbi.setValueDataSet(val);
+				logger.debug("Value to represent setted: "+(val!=null ? val.toString():""));
+				if(target!=null){
+					sbi.setTarget(target);
+					logger.debug("Target setted: "+(target!=null ? target.toString():""));
+				}
+				sbi.configureChart(pars);
+				logger.debug("Config parameters setted into the chart");
+				String thresholdsJsArray = sbi.setThresholds(thresholds);
+				if(thresholdsJsArray!=null){
+					line.setThresholdsJsArray(thresholdsJsArray);
+				}			
+				logger.debug("Thresholds setted for the chart");
+				line.setChartBullet(sbi);	
+				
+			}
+			if(display_semaphore && value.getValue()!=null){
+				Color semaphorColor = null;
+				List thresholds = value.getThresholds();
+				Double val = new Double(value.getValue());
+				semaphorColor = getSemaphorColor(thresholds,val);
+	
+				line.setSemaphorColor(semaphorColor);
+			}	
 		}
-		if(display_semaphore){
-			Color semaphorColor = null;
-			List thresholds = value.getThresholds();
-			Double val = new Double(value.getValue());
-			semaphorColor = getSemaphorColor(thresholds,val);
-
-			line.setSemaphorColor(semaphorColor);
-		}	
 		
 		List children = new ArrayList();
 		List childrenIds = modI.getChildrenIds();
@@ -497,14 +499,20 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		DataSetImpl dsi = new DataSetImpl(ds,profile);
 		dsi.loadData(temp);
 		IDataStore ids = dsi.getDataStore();
-		if (!ids.isEmpty()){
+		if (ids!=null && !ids.isEmpty()){
         		//Transform result into KPIValue (I suppose that the result has a unique value)
         		IRecord record = ids.getAt(0);			
         		List fields = record.getFields();
-        		IField f = (IField) fields.get(0);
-        		SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
-        		String fieldValue = fieldObject.getValue().toString();
-        		kVal.setValue(fieldValue);
+        		if(fields!=null && !fields.isEmpty()){
+        			IField f = (IField) fields.get(0);
+        			if(f!=null){
+	            		SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
+	            		if(fieldObject!=null && fieldObject.getValue()!=null){
+		            		String fieldValue = fieldObject.getValue().toString();
+		            		kVal.setValue(fieldValue);
+	            		}
+        			}
+        		}       		
 		}else {
 		    logger.warn("The Data Set doesn't return any value!!!!!");
 		}

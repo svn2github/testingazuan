@@ -460,9 +460,8 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		}
 		if (label != null) {
 			logger.debug("Loading biobject with label = [" + label + "] ...");
-			try {
-				obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
-			} catch (EMFUserError error) {
+			obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
+			if (obj == null) {
 				logger.error("Object with label = [" + label + "] not found!!");
 				Vector v = new Vector();
 				v.add(label);

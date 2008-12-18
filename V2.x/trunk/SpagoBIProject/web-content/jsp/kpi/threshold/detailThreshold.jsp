@@ -24,6 +24,7 @@
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page	import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
+<%@page import="it.eng.spagobi.kpi.threshold.bo.Threshold"%>
 <%
 	String title = "";
 	String id = "";
@@ -38,55 +39,88 @@
 			.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
 					"DetailThresholdModule");
 	
-	SourceBean threshold = (SourceBean) aServiceResponse.getAttribute("DetailThresholdModule");
+	// SourceBean threshold = (SourceBean) aServiceResponse.getAttribute("DetailThresholdModule");
 
-	String message = DelegatedDetailService.DETAIL_INSERT;
+	// String message = DelegatedDetailService.DETAIL_INSERT;
 
 	if (moduleBean.getAttribute("CONFIG.TITLE") != null)
 		title = (String) moduleBean.getAttribute("CONFIG.TITLE");
 	
-	if (threshold != null){
-		if (threshold.getAttribute("ROW.ID") != null)
-			id = String.valueOf(threshold.getAttribute("ROW.ID"));
-		if (threshold.getAttribute("ROW.NAME") != null)
-			name = (String) threshold.getAttribute("ROW.NAME");
-		if (threshold.getAttribute("ROW.DESCRIPTION") != null)
-			description = (String) threshold.getAttribute("ROW.DESCRIPTION");
-		if (threshold.getAttribute("ROW.THRESHOLD_TYPE_ID") != null)
-			threshold_type_id = (Integer)threshold.getAttribute("ROW.THRESHOLD_TYPE_ID");
-		
-		if (threshold.getAttribute(DelegatedDetailService.SERVICE_MODE) != null
-			&& ((String) threshold
-					.getAttribute(DelegatedDetailService.SERVICE_MODE))
-					.equalsIgnoreCase(DelegatedDetailService.SERVICE_MODE_UPDATE)) {
-			message = DelegatedDetailService.DETAIL_UPDATE;
-		}
+	String messageIn = (String) aServiceRequest.getAttribute("MESSAGE");
+	String messageSave = "";
+	
+	// DETAIL_SELECT
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+	// DETAIL_UPDATE
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+		.getAttribute("DetailThresholdModule");
+		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
 	}
 	
-	if (threshold == null){
-		if (aServiceRequest.getAttribute("ID") != null)
-			id = String.valueOf(aServiceRequest.getAttribute("ID"));
-		if (aServiceRequest.getAttribute("NAME") != null)
-			name = (String) aServiceRequest.getAttribute("NAME");
-		if (aServiceRequest.getAttribute("DESCRIPTION") != null)
-			description = (String) aServiceRequest.getAttribute("DESCRIPTION");
-		if (threshold.getAttribute("THRESHOLD_TYPE_ID") != null)
-			threshold_type_id = (Integer)threshold.getAttribute("THRESHOLD_TYPE_ID");
+	//DETAIL_NEW
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
+		messageSave = DelegatedDetailService.DETAIL_INSERT;
+	}
+	//DETAIL_INSERT
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+				.getAttribute("DetailThresholdModule");
+		Threshold threshold = (Threshold) moduleResponse.getAttribute("THRESHOLD");
+		id = threshold.getId().toString();
+		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+				.getAttribute("DetailThresholdModule");
+		Threshold threshold = (Threshold) moduleResponse.getAttribute("THRESHOLD");
+		if (threshold != null) {
+			if(threshold.getId()!=null)
+				id = threshold.getId().toString();
+			if(threshold.getThresholdName() != null)
+				name = threshold.getThresholdName();
+			if(threshold.getThresholdDescription() != null)
+				description = threshold.getThresholdDescription();
+			if(threshold.getThresholdTypeId()!= null)
+				threshold_type_id = threshold.getThresholdTypeId();
+			else
+				threshold_type_id = null;
+		}
 	}
 	
 	Map formUrlPars = new HashMap();
 	if(ChannelUtilities.isPortletRunning()) {
 		formUrlPars.put("PAGE", "ThresholdPage");
 		formUrlPars.put("MODULE", "DetailThresholdModule");
-		formUrlPars.put("MESSAGE", message);
+		formUrlPars.put("MESSAGE", messageSave);
 		formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	}
 	
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);
-
+	
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("PAGE", "ThresholdPage");
-	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	if(messageSave.equals(DelegatedDetailService.DETAIL_UPDATE)){
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	}
+	else{
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	}
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
 

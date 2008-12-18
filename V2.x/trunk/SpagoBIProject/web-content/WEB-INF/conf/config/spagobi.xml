@@ -16,7 +16,9 @@
 			- 'ALL_TOP': all the menu voices are on the top of page
 			- 'ALL_LEFT': all the menu voices are on the left of the page
 			- 'TOP_LEFT': the first level is on the top, while others levels are on the left of the page
-			AT THE TIME BEING, ONLY ALL_TOP WORKS PROPERLY
+		Property 'viewExtra' defines the visibility of extra contents for final users:
+			- 'YES': view the right menu with extra-contents like hotlink, distribution list, ...
+			' 'NO': non view right menu  
 	 -->
 	<!--  <MENU mode="ALL_TOP" viewExtra="YES"/> -->
 	 
@@ -60,7 +62,7 @@
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoSecurityProviderImpl">
 			<CONFIG>
-				<NAME_PORTAL_APPLICATION>@portal.context@</NAME_PORTAL_APPLICATION>
+				<NAME_PORTAL_APPLICATION>sbiportal</NAME_PORTAL_APPLICATION>
 			</CONFIG>
 		</PORTAL-SECURITY-CLASS>
 		<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoUserProfileImpl">
@@ -108,13 +110,13 @@
   	 <TIMESTAMP-FORMAT format="dd/MM/yyyy hh:mm:ss"/>
      
      <LOOKUP numberRows = "20" />
-     
-     
- <SPAGOBI_CONTEXT>@spagobi.context@</SPAGOBI_CONTEXT>
     
-     <SPAGOBI_HOST>@spagobi.host@</SPAGOBI_HOST>
+
+     <SPAGOBI_CONTEXT>/SpagoBI</SPAGOBI_CONTEXT>
+    
+     <SPAGOBI_HOST>http://localhost:58080</SPAGOBI_HOST>
  	
- 	   <BACKEND_SPAGOBI_HOST>@spagobi.backend.host@</BACKEND_SPAGOBI_HOST>
+ 	   <BACKEND_SPAGOBI_HOST>http://localhost:58080</BACKEND_SPAGOBI_HOST>
  	  
 
  	 
@@ -209,8 +211,5 @@
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->
-
-
-    
-	
+     
 </SPAGOBI>

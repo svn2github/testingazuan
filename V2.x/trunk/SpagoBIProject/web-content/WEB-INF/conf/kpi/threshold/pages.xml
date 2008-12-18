@@ -2,7 +2,7 @@
 <PAGES>
   <PAGE name="ThresholdPage" class="it.eng.spago.dispatching.module.ConfigurablePage"
     scope="REQUEST">
-    <GRAPH id="kpi-1">
+    <GRAPH id="kpi-2">
       <MODULES>
         <MODULE id="1" name="ListThresholdsModule" />
         <MODULE id="2" name="DetailThresholdModule" />

@@ -12,8 +12,14 @@ import org.hibernate.Transaction;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.kpi.config.metadata.SbiKpi;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
+import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
+import it.eng.spagobi.wapp.metadata.SbiMenuRole;
+import it.eng.spagobi.wapp.metadata.SbiMenuRoleId;
 
 public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThresholdDAO {
 
@@ -30,7 +36,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThreshold
 			SbiThreshold hibThreshold = (SbiThreshold)aSession.load(SbiThreshold.class,id);
 			toReturn = new Threshold();
 			toReturn.setThresholdName(hibThreshold.getName());
-			toReturn.setThresholdName(hibThreshold.getDescription());
+			toReturn.setThresholdDescription(hibThreshold.getDescription());
 			toReturn.setId(hibThreshold.getThresholdId());
 			toReturn.setThresholdTypeId(hibThreshold.getSbiDomains().getValueId());
 			
@@ -70,7 +76,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThreshold
 						.next();
 				Threshold threshold = new Threshold();
 				threshold.setThresholdName(hibThreshold.getName());
-				threshold.setThresholdName(hibThreshold.getDescription());
+				threshold.setThresholdDescription(hibThreshold.getDescription());
 				threshold.setId(hibThreshold.getThresholdId());
 				threshold.setThresholdTypeId(hibThreshold.getSbiDomains().getValueId());
 				toReturn.add(threshold);
@@ -94,4 +100,95 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThreshold
 		return toReturn;
 	}
 
+	public void modifyThreshold(Threshold threshold) throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+
+			String name = threshold.getThresholdName();
+			String description = threshold.getThresholdDescription();
+			Integer thresholdTypeId = threshold.getThresholdTypeId();
+			
+			SbiThreshold sbiThreshold = (SbiThreshold) aSession
+					.load(SbiThreshold.class, threshold.getId());
+
+			SbiDomains thresholdType = null;
+			if (thresholdTypeId != null ){
+				thresholdType = (SbiDomains) aSession
+				.load(SbiDomains.class, thresholdTypeId);	
+			}
+			
+			sbiThreshold.setName(name);
+			sbiThreshold.setDescription(description);
+			sbiThreshold.setSbiDomains(thresholdType);
+			
+			aSession.saveOrUpdate(sbiThreshold);
+
+			tx.commit();
+
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+		logger.debug("OUT");
+	}
+
+	public Integer insertThreshold(Threshold threshold) throws EMFUserError {
+		logger.debug("IN");
+		Integer idToReturn;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			String name = threshold.getThresholdName();
+			String description = threshold.getThresholdDescription();
+			Integer thresholdTypeId = threshold.getThresholdTypeId();
+			
+			SbiThreshold sbiThreshold = new SbiThreshold();
+
+			SbiDomains thresholdType = null;
+			if (thresholdTypeId != null ){
+				thresholdType = (SbiDomains) aSession
+				.load(SbiDomains.class, thresholdTypeId);	
+			}
+			
+			sbiThreshold.setName(name);
+			sbiThreshold.setDescription(description);
+			sbiThreshold.setSbiDomains(thresholdType);
+			
+			idToReturn = (Integer) aSession.save(sbiThreshold);
+
+			tx.commit();
+
+		} catch (HibernateException he) {
+			logException(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return idToReturn;
+	}
+	
 }

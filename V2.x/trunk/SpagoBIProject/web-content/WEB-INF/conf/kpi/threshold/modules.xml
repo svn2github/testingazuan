@@ -44,15 +44,17 @@
         </INSERT_BUTTON>
         <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="sbi.kpi.button.back.title"
           onlyPortletRunning="true">
-          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="KPIConfigurationAction" />
+          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="LOGIN_ACTION_KPI_CONFIGURATION" />
           <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE"
             value="true" />
         </BACK_BUTTON>
       </BUTTONS>
     </CONFIG>
   </MODULE>
-  <MODULE name="DetailThresholdModule" class="it.eng.spago.dispatching.module.detail.impl.DefaultDetailModule">
+  
+  <MODULE name="DetailThresholdModule" class="it.eng.spagobi.kpi.threshold.service.DetailThresholdsModule">
     <CONFIG pool="spagobi" title="sbi.kpi.list.thresholds.title">
+    <!--
       <QUERIES>
         <SELECT_QUERY statement="DETAIL_THRESHOLD">
           <PARAMETER type="RELATIVE" value="ID" scope="SERVICE_REQUEST" />
@@ -74,8 +76,10 @@
         <FIELD name="NAME" label="NAME" widget="" size="60" />
       </FIELDS>
       <BUTTONS />
+    -->
     </CONFIG>
   </MODULE>
+  
   <MODULE name="ListThresholdValuesModule"
     class="it.eng.spagobi.kpi.threshold.service.ListThresholdValuesModule">
     <CONFIG pool="spagobi" rows="10" title="sbi.kpi.list.thresoldValues.title">

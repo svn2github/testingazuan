@@ -114,50 +114,6 @@
 		}
 	}
 	
-	//if (kpi != null){
-	//	if (kpi.getAttribute("ROW.ID") != null)
-	//		id = String.valueOf(kpi.getAttribute("ROW.ID"));
-	//	if (kpi.getAttribute("ROW.NAME") != null)
-	//		name = (String) kpi.getAttribute("ROW.NAME");
-	//	if (kpi.getAttribute("ROW.DOCUMENT_LABEL") != null)
-	//		documentLabel = (String) kpi.getAttribute("ROW.DOCUMENT_LABEL");
-	//	if (kpi.getAttribute("ROW.CODE") != null)
-	//		code = (String) kpi.getAttribute("ROW.CODE");
-	//	if (kpi.getAttribute("ROW.METRIC") != null)
-	//		metric = (String) kpi.getAttribute("ROW.METRIC");
-	//	if (kpi.getAttribute("ROW.DESCRIPTION") != null)
-	//		description = (String) kpi.getAttribute("ROW.DESCRIPTION");
-	//	if (kpi.getAttribute("ROW.WEIGHT") != null)
-	//		weight = String.valueOf(kpi.getAttribute("ROW.WEIGHT"));
-	//	if (kpi.getAttribute("ROW.DS_ID") != null)
-	//		ds_id = (Integer)kpi.getAttribute("ROW.DS_ID");
-	
-	//	if (kpi.getAttribute(DelegatedDetailService.SERVICE_MODE) != null
-	//		&& ((String) kpi
-	//				.getAttribute(DelegatedDetailService.SERVICE_MODE))
-	//				.equalsIgnoreCase(DelegatedDetailService.SERVICE_MODE_UPDATE)) {
-	//		message = DelegatedDetailService.DETAIL_UPDATE;
-	//	}
-	//}
-	
-	//if (kpi == null){
-	//	if (aServiceRequest.getAttribute("ID") != null)
-	//		id = String.valueOf(aServiceRequest.getAttribute("ID"));
-	//	if (aServiceRequest.getAttribute("NAME") != null)
-	//		name = (String) aServiceRequest.getAttribute("NAME");
-	//	if (aServiceRequest.getAttribute("DOCUMENT_LABEL") != null)
-	//		documentLabel = (String) aServiceRequest.getAttribute("DOCUMENT_LABEL");
-	//	if (aServiceRequest.getAttribute("CODE") != null)
-	//		code = (String) aServiceRequest.getAttribute("CODE");
-	//	if (aServiceRequest.getAttribute("METRIC") != null)
-	//		metric = (String) aServiceRequest.getAttribute("METRIC");
-	//	if (aServiceRequest.getAttribute("DESCRIPTION") != null)
-	//		description = (String) aServiceRequest.getAttribute("DESCRIPTION");
-	//	if (aServiceRequest.getAttribute("WEIGHT") != null)
-	//		weight = String.valueOf(aServiceRequest.getAttribute("WEIGHT"));
-	//	if (aServiceRequest.getAttribute("DS_ID") != null)
-	//		ds_id = Integer.valueOf((String)aServiceRequest.getAttribute("DS_ID"));
-	//}
 	
 	Map formUrlPars = new HashMap();
 	if(ChannelUtilities.isPortletRunning()) {

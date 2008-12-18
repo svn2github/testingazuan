@@ -41,7 +41,7 @@ public class DetailKpiUtil {
 
 		Integer ds_id = null;
 		DataSetConfig ds = null;
-		if (sDs_id != null && sDs_id.trim().equals("")) {
+		if (sDs_id != null && !sDs_id.trim().equals("")) {
 			ds_id = Integer.parseInt(sDs_id);
 			ds = new DataSetConfig();
 			ds.setDsId(ds_id);
@@ -63,7 +63,6 @@ public class DetailKpiUtil {
 	public static void newKpi(SourceBean serviceRequest, SourceBean serviceResponse) throws EMFUserError, SourceBeanException {
 		Kpi toCreate = getKpiFromRequest(serviceRequest);
 		
-		// insert the new model
 		Integer kpiId = DAOFactory.getKpiDAO().insertKpi(toCreate);
 
 		serviceResponse.setAttribute("ID", kpiId);

@@ -21,33 +21,53 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.kpi.threshold.service;
 
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.module.list.basic.impl.DefaultBasicListModule;
-import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.utils.AbstractConfigurableListModule;
 /**
  * Loads the engines list
  * 
  * @author sulis
  */
 
-public class ListThresholdsModule extends DefaultBasicListModule {
+public class ListThresholdsModule extends AbstractConfigurableListModule {
 	
-	public static final String MODULE_PAGE = "ListThresholdsModule";
+	private static transient Logger logger = Logger
+	.getLogger(ListThresholdsModule.class);
 
-	/**
-	 * Gets the list.
-	 * 
-	 * @param request The request SourceBean
-	 * @param response The response SourceBean
-	 * 
-	 * @return ListIFace
-	 * 
-	 * @throws Exception the exception
-	 */
-	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-		return DelegatedHibernateConnectionListService.getList(this, request, response);
+
+	@Override
+	protected List getObjectList(SourceBean request) {
+		List result = null;
+		try {
+			result = DAOFactory.getThresholdDAO().loadThresholdList();
+		} catch (EMFUserError e) {
+			logger.error(e);
+		}
+		return result;
 	}
 
+	@Override
+	protected void setRowAttribute(SourceBean rowSB, Object obj)
+			throws SourceBeanException {
+		Threshold aThreshold = (Threshold) obj;
+		rowSB.setAttribute("ID", aThreshold.getId());
+		rowSB.setAttribute("NAME", aThreshold.getThresholdName());
+		rowSB.setAttribute("DESCRIPTION", aThreshold.getThresholdDescription());
+	}
+	
+	@Override
+	public boolean delete(SourceBean request, SourceBean response) {
+		boolean toReturn = false;
+
+		return toReturn;
+	}
 } 
 

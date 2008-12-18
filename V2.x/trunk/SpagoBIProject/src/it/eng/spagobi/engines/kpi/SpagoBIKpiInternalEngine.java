@@ -322,7 +322,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	}
 	
 	public KpiLine getBlock(Integer miId, Date dateOfKPI, Resource r) throws EMFUserError, EMFInternalError{
-		
+	    logger.debug("IN");
 		KpiLine line = new KpiLine();
 		ModelInstanceNode modI = DAOFactory.getKpiDAO().loadModelInstanceById(miId, dateOfKPI);
 		String modelNodeName = modI.getName();
@@ -415,7 +415,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 		}		
 		line.setChildren(children);
-		
+		logger.debug("OUT");
 		return line;		
 	}
 	

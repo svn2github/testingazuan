@@ -97,8 +97,22 @@
    	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
         		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListLovsPage" />
-        		 <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.LIGHT_NAVIGATOR_BACK_TO" />
-        		<!--  <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" /> -->
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="1" />
+        		<!-- <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="RELATIVE" scope="SERVICE_RESPONSE" value="DetailModalitiesValueModule.LIGHT_NAVIGATOR_BACK_TO" /> -->
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
+  	<PUBLISHER name="deleteModalitiesValueLoop">
+    	<RENDERING channel="PORTLET" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListLovsPage" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="0" />
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="LOOP">
+      		<RESOURCES>
+        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ListLovsPage" />
+        		<PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" type="ABSOLUTE" scope="" value="0" />
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

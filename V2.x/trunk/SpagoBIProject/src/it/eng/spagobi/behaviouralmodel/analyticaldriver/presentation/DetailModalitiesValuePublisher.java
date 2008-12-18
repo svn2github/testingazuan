@@ -165,6 +165,14 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
         if(testExecuted != null) {
 	    		afterTest = true;
         }
+        
+		// check if the execution flow is after a delete request		
+        boolean afterDelete = false;
+        Object afterDeleteObj = getAttributeFromModuleResponse(detailMR, "afterDeleteLoop");
+        if(afterDeleteObj != null) {
+        	afterDelete = true;
+        }
+        
         // check if the request want to do the test but he must fill profile attributes
         boolean fillProfAttr = false;
         Object profAttToFillList = getAttributeFromModuleResponse(detailMR, SpagoBIConstants.PROFILE_ATTRIBUTES_TO_FILL);
@@ -181,14 +189,12 @@ public class DetailModalitiesValuePublisher implements PublisherDispatcherIFace 
 				}
 			}
 		}
-		
-		
-		
-
         
         // switch to correct publisher
 		if (isLoop()) {
 			return new String("detailModalitiesValueLoop");
+		}else if (afterDelete) {
+			return new String("deleteModalitiesValueLoop");
 		} else if (afterTest) {
 			return new String("detailLovTestResult");
 		} else if(fillProfAttr) {

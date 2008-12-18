@@ -678,8 +678,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			session.delAttribute(SpagoBIConstants.LOV_MODIFIED);
 			session.delAttribute(SpagoBIConstants.MODALITY_VALUE_OBJECT);
 		}
-		response.setAttribute("loopback", "true");
-		//response.setAttribute(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+		response.setAttribute("afterDeleteLoop", "true");
 	}
 	
 	

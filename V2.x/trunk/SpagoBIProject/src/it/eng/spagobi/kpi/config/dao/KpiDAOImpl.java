@@ -457,6 +457,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			List l = query.list();
 			if (!l.isEmpty()) {
+			        logger.debug("Found one ALLARM!!!");
 				toReturn = true;
 			}
 
@@ -464,17 +465,16 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			if (tx != null)
 				tx.rollback();
-
+			logger.error("HibernateException",he);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
 
 		} finally {
 			if (aSession != null) {
 				if (aSession.isOpen())
 					aSession.close();
-				logger.debug("OUT");
 			}
+			logger.debug("OUT");
 		}
-		logger.debug("OUT");
 		return toReturn;
 	}
 
@@ -577,6 +577,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 						}
 	
 					}
+
 				}
 	
 			} catch (HibernateException he) {
@@ -757,10 +758,12 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String descr = hibSbiKpiModelInst.getDescription();
 		String name = hibSbiKpiModelInst.getName();
 		SbiKpiInstance kpiInst = hibSbiKpiModelInst.getSbiKpiInstance();
+
 		KpiInstance kpiInstanceAssociated = null;
 		if(kpiInst!=null){
 			kpiInstanceAssociated = toKpiInstance(kpiInst,	requestedDate);
 		}
+
 		Set resources = hibSbiKpiModelInst.getSbiKpiModelResourceses();
 		List res = new ArrayList();
 		if (!resources.isEmpty()) {

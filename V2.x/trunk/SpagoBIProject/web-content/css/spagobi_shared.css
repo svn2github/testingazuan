@@ -541,27 +541,28 @@ IMG {
 	font-weight: bold;
 	vertical-align: middle;
 	text-align: left;
-	height: 16pt;
+	height: 18px;
 }
 
 .kpi_line_section_even    {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
-	font-size: 12pt;
+	font-size: 11pt;
 	font-weight: normal;
 	color: black;
 	background-color: #FFFFFF;
 	vertical-align: middle;
-	height: 22pt;
+	height: 20px;
+	border-bottom: 1px solid #660000;
 }
 
 .kpi_line_section_odd    {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
-	font-size: 12pt;
+	font-size: 11pt;
 	font-weight: normal;
 	color: black;
 	background-color: #FFFFFF;
 	vertical-align: middle;
-	height: 22pt;
+	height: 20px;
 	border-bottom: 1px solid #bbb;
 }
 
@@ -572,6 +573,29 @@ IMG {
 	color: black;
 	font-weight: bold;
 	text-align: center;
+}
+
+.kpi_td_left    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 11pt;
+	text-align: left;
+	vertical-align: middle;
+	height: 20px;
+}
+
+.kpi_td_right    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 11pt;
+	text-align: right;
+	vertical-align: middle;
+	height: 20px;
+}
+
+.kpi_div    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 11pt;
+	vertical-align: middle;
+	height: 20px;
 }
 
 .kpi_subtitle_section    {

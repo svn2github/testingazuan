@@ -18,36 +18,107 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.kpi.threshold.service;
 
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.module.list.basic.impl.DefaultBasicListModule;
-import it.eng.spago.paginator.basic.ListIFace;
-import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
+import it.eng.spagobi.kpi.utils.AbstractConfigurableListModule;
+
 /**
  * Loads the engines list
  * 
  * @author sulis
  */
 
-public class ListThresholdValuesModule extends DefaultBasicListModule {
-	
-	public static final String MODULE_PAGE = "ListThresholdValuesModule";
+public class ListThresholdValuesModule extends AbstractConfigurableListModule {
 
-	/**
-	 * Gets the list.
-	 * 
-	 * @param request The request SourceBean
-	 * @param response The response SourceBean
-	 * 
-	 * @return ListIFace
-	 * 
-	 * @throws Exception the exception
-	 */
-	public ListIFace getList(SourceBean request, SourceBean response) throws Exception {
-		return DelegatedHibernateConnectionListService.getList(this, request, response);
+	private static transient Logger logger = Logger
+			.getLogger(ListThresholdValuesModule.class);
+
+	@Override
+	public void service(SourceBean request, SourceBean response)
+			throws Exception {
+
+		super.service(request, response);
+
+		String thresholdId = (String) request.getAttribute("IDT");
+
+		HashMap parametersMap = (HashMap) response
+				.getAttribute("PARAMETERS_MAP");
+		if (parametersMap == null) {
+			parametersMap = new HashMap();
+			parametersMap.put("IDT", thresholdId);
+			response.setAttribute("PARAMETERS_MAP", parametersMap);
+		} else {
+			parametersMap.put("ID", thresholdId);
+			response.updAttribute("PARAMETERS_MAP", parametersMap);
+		}
 	}
 
-} 
+	@Override
+	protected List getObjectList(SourceBean request) {
+		List result = null;
+		try {
+			String thresholdId = (String) request.getAttribute("IDT");
+			if (thresholdId != null && !thresholdId.trim().equals(""))
+				result = DAOFactory.getThresholdValueDAO().loadThresholdValueList(
+						Integer.parseInt(thresholdId));
+		} catch (EMFUserError e) {
+			logger.error(e);
+		}
+		return result;
+	}
 
+	@Override
+	protected void setRowAttribute(SourceBean rowSB, Object obj)
+			throws SourceBeanException {
+		ThresholdValue aThresholdValue = (ThresholdValue) obj;
+		rowSB.setAttribute("ID", aThresholdValue.getId());
+		rowSB.setAttribute("POSITION", aThresholdValue.getPosition());
+		rowSB.setAttribute("LABEL", aThresholdValue.getLabel());
+		if(aThresholdValue.getMinValue()!= null) {
+			rowSB.setAttribute("MIN_VALUE", aThresholdValue.getMinValue());
+		}
+		else {
+			rowSB.setAttribute("MIN_VALUE", "");
+		}
+		if(aThresholdValue.getMaxValue()!= null) {
+			rowSB.setAttribute("MAX_VALUE", aThresholdValue.getMaxValue());
+		}
+		else {
+			rowSB.setAttribute("MAX_VALUE", "");
+		}
+	}
+	
+	@Override
+	public boolean delete(SourceBean request, SourceBean response) {
+		boolean toReturn = false;
+		String thresholdValueId = (String) request.getAttribute("ID");
+		try {
+			toReturn = DAOFactory.getThresholdValueDAO().deleteThresholdValue(Integer.parseInt(thresholdValueId));
+			toReturn = true;
+		} catch (NumberFormatException e) {
+			EMFErrorHandler engErrorHandler = getErrorHandler();
+			engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
+					"10012", "component_kpi_messages"));
+		} catch (EMFUserError e) {
+			EMFErrorHandler engErrorHandler = getErrorHandler();
+			engErrorHandler.addError(e);
+		}
+
+		return toReturn;
+	}
+
+}

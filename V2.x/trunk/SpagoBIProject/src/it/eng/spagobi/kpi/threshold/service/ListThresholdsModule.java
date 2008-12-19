@@ -27,6 +27,8 @@ import org.apache.log4j.Logger;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
@@ -66,6 +68,18 @@ public class ListThresholdsModule extends AbstractConfigurableListModule {
 	@Override
 	public boolean delete(SourceBean request, SourceBean response) {
 		boolean toReturn = false;
+		String thresholdId = (String) request.getAttribute("ID");
+		try {
+			toReturn = DAOFactory.getThresholdDAO().deleteThreshold(Integer.parseInt(thresholdId));
+			toReturn = true;
+		} catch (NumberFormatException e) {
+			EMFErrorHandler engErrorHandler = getErrorHandler();
+			engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
+					"10012", "component_kpi_messages"));
+		} catch (EMFUserError e) {
+			EMFErrorHandler engErrorHandler = getErrorHandler();
+			engErrorHandler.addError(e);
+		}
 
 		return toReturn;
 	}

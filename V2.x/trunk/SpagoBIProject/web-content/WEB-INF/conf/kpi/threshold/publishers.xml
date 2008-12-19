@@ -65,11 +65,13 @@
                   <PARAMETER name="module" scope="SERVICE_REQUEST" value="ListThresholdValuesModule" />
                 </CONDITIONS>
               </CHECK>
+              <!--
               <CHECK target="ListThresholdValuesPublisher">
                 <CONDITIONS>
                   <PARAMETER name="message" scope="SERVICE_REQUEST" value="DETAIL_UPDATE" />
                 </CONDITIONS>
               </CHECK>
+              -->
               <CHECK target="DetailThresholdValuePublisher">
                 <CONDITIONS>
                   <PARAMETER name="module" scope="SERVICE_REQUEST" value="DetailThresholdValueModule" />

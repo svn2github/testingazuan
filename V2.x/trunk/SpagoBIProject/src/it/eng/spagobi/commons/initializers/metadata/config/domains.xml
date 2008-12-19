@@ -60,7 +60,7 @@
 <DOMAIN valueCd="INGRES" valueNm="Ingres " domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="org.hibernate.dialect.IngresDialect"/>
 <DOMAIN valueCd="RANGE" valueNm="Range Values" domainCd="THRESHOLD_TYPE" domainNm="Threshold Type" valueDs=""/>
 <DOMAIN valueCd="MINIMUM" valueNm="Minimum Value" domainCd="THRESHOLD_TYPE" domainNm="Threshold Type" valueDs=""/>
-<DOMAIN valueCd="MAXIMUN" valueNm="Maximum Value" domainCd="THRESHOLD_TYPE" domainNm="Threshold Type" valueDs=""/>
+<DOMAIN valueCd="MAXIMUM" valueNm="Maximum Value" domainCd="THRESHOLD_TYPE" domainNm="Threshold Type" valueDs=""/>
 <DOMAIN valueCd="URGENT" valueNm="Urgent" domainCd="SEVERITY" domainNm="Severity Level" valueDs=""/>
 <DOMAIN valueCd="HIGH" valueNm="High" domainCd="SEVERITY" domainNm="Severity Level" valueDs=""/>
 <DOMAIN valueCd="MEDIUM" valueNm="Medium" domainCd="SEVERITY" domainNm="Severity Level" valueDs=""/>

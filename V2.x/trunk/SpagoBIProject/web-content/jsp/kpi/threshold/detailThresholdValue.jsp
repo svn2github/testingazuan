@@ -24,6 +24,8 @@
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page	import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
+<%@page import="it.eng.spagobi.kpi.threshold.bo.ThresholdValue"%>
+
 <%
 	String title = "";
 	String id = "";
@@ -32,6 +34,7 @@
 	String label = "";
 	String colour = "";
 	String position = "";
+	String type = "";
 	
 	String threshold_id = "";
 	Integer severity_id = null;
@@ -40,78 +43,109 @@
     String moduleName = "DetailThresholdValueModule";
 
     ConfigSingleton configure = ConfigSingleton.getInstance();
-	SourceBean moduleBean = (SourceBean) configure
+
+    SourceBean moduleBean = (SourceBean) configure
 			.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
 					moduleName);
 	
-	SourceBean threshold = (SourceBean) aServiceResponse.getAttribute(moduleName);
+	//SourceBean threshold = (SourceBean) aServiceResponse.getAttribute(moduleName);
 
-	String message = DelegatedDetailService.DETAIL_INSERT;
+	//	String message = DelegatedDetailService.DETAIL_INSERT;
 
 	if (moduleBean.getAttribute("CONFIG.TITLE") != null)
 		title = (String) moduleBean.getAttribute("CONFIG.TITLE");
 	
-	if (aServiceRequest.getAttribute("THRESHOLD_ID") != null)
-		threshold_id = (String)aServiceRequest.getAttribute("THRESHOLD_ID");
+	if (aServiceRequest.getAttribute("IDT") != null)
+		threshold_id = (String)aServiceRequest.getAttribute("IDT");
 	
-	if (threshold != null){
-		if (threshold.getAttribute("ROW.ID") != null)
-			id = String.valueOf(threshold.getAttribute("ROW.ID"));
-		if (threshold.getAttribute("ROW.MIN_VALUE") != null)
-			minValue = String.valueOf(threshold.getAttribute("ROW.MIN_VALUE"));
-		if (threshold.getAttribute("ROW.MAX_VALUE") != null)
-			maxValue = String.valueOf(threshold.getAttribute("ROW.MAX_VALUE"));
-		if (threshold.getAttribute("ROW.LABEL") != null)
-			label = (String) threshold.getAttribute("ROW.LABEL");
-		if (threshold.getAttribute("ROW.COLOUR") != null)
-			colour = (String) threshold.getAttribute("ROW.COLOUR");
-		if (threshold.getAttribute("ROW.POSITION") != null)
-			position = String.valueOf(threshold.getAttribute("ROW.POSITION"));
-		
-		if (threshold.getAttribute("ROW.SEVERITY_ID") != null)
-			severity_id = (Integer)threshold.getAttribute("ROW.SEVERITY_ID");
-		
-		if (threshold.getAttribute(DelegatedDetailService.SERVICE_MODE) != null
-			&& ((String) threshold
-					.getAttribute(DelegatedDetailService.SERVICE_MODE))
-					.equalsIgnoreCase(DelegatedDetailService.SERVICE_MODE_UPDATE)) {
-			message = DelegatedDetailService.DETAIL_UPDATE;
+	
+	String messageIn = (String) aServiceRequest.getAttribute("MESSAGE");
+	String messageSave = "";
+	
+	// DETAIL_SELECT
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+	// DETAIL_UPDATE
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+		.getAttribute("DetailThresholdValueModule");
+		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+	
+	//DETAIL_NEW
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
+		messageSave = DelegatedDetailService.DETAIL_INSERT;
+		severity_id = DAOFactory.getThresholdDAO().loadThresholdById(Integer.parseInt(threshold_id)).getThresholdTypeId();
+		type = DAOFactory.getDomainDAO().loadDomainById(severity_id).getValueCd();
+	}
+	//DETAIL_INSERT
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+				.getAttribute("DetailThresholdValueModule");
+		ThresholdValue thresholdValue = (ThresholdValue) moduleResponse.getAttribute("THRESHOLDVALUE");
+		id = thresholdValue.getId().toString();
+		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+
+	if (messageIn != null
+			&& messageIn
+					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+		SourceBean moduleResponse = (SourceBean) aServiceResponse
+				.getAttribute("DetailThresholdValueModule");
+		ThresholdValue thresholdValue = (ThresholdValue) moduleResponse.getAttribute("THRESHOLDVALUE");
+		if (thresholdValue != null) {
+			if(thresholdValue.getId()!=null)
+				id = thresholdValue.getId().toString();
+			if(thresholdValue.getMinValue()!=null)
+				minValue = thresholdValue.getMinValue().toString();
+			if(thresholdValue.getMaxValue()!=null)
+				maxValue = thresholdValue.getMaxValue().toString();
+			if(thresholdValue.getLabel()!=null)
+				label = thresholdValue.getLabel();
+			if(thresholdValue.getColourString()!=null)
+				colour = thresholdValue.getColourString();
+			if(thresholdValue.getPosition()!=null)
+				position = thresholdValue.getPosition().toString();
+			if (thresholdValue.getThresholdId() != null)
+				threshold_id = thresholdValue.getThresholdId().toString();
+			if (thresholdValue.getSeverityId() != null)
+				severity_id = thresholdValue.getSeverityId();
+			type = thresholdValue.getType();
 		}
 	}
-	
-	if (threshold == null){
-		if (aServiceRequest.getAttribute("ID") != null)
-			id = String.valueOf(aServiceRequest.getAttribute("ID"));
-		if (aServiceRequest.getAttribute("MIN_VALUE") != null)
-			minValue = String.valueOf(aServiceRequest.getAttribute("MIN_VALUE"));
-		if (aServiceRequest.getAttribute("MAX_VALUE") != null)
-			maxValue = String.valueOf(aServiceRequest.getAttribute("MAX_VALUE"));
-		if (aServiceRequest.getAttribute("LABEL") != null)
-			label = (String) aServiceRequest.getAttribute("LABEL");
-		if (aServiceRequest.getAttribute("COLOUR") != null)
-			colour = (String) aServiceRequest.getAttribute("COLOUR");
-		if (aServiceRequest.getAttribute("POSITION") != null)
-			position = String.valueOf(aServiceRequest.getAttribute("POSITION"));
-		
-		if (aServiceRequest.getAttribute("SEVERITY_ID") != null)
-			severity_id = (Integer)aServiceRequest.getAttribute("SEVERITY_ID");
-		
-	}
+
 	
 	Map formUrlPars = new HashMap();
 	if(ChannelUtilities.isPortletRunning()) {
 		formUrlPars.put("PAGE", "ThresholdValuePage");
 		formUrlPars.put("MODULE", "DetailThresholdValueModule");
-		formUrlPars.put("MESSAGE", message);
+		formUrlPars.put("MESSAGE", messageSave);
 		formUrlPars.put("IDT", threshold_id);
 		formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	}
 	
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);
-
+	
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("PAGE", "ThresholdValuePage");
-	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	backUrlPars.put("IDT", threshold_id);
+	if(messageSave.equals(DelegatedDetailService.DETAIL_UPDATE)){
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	}
+	else{
+		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	}
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
 
@@ -163,7 +197,8 @@ String urlColorPicker=urlBuilder.getResourceLink(request,"/js/kpi/colorPicker.js
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="label" size="50"
 	value="<%=label%>" maxlength="20"></div>
-
+<% if(type!=null && (type.trim().equals("RANGE") || type.trim().equals("MINIMUM"))) { %>
+		 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.minValue" bundle="<%=messageBunle%>"/> </span></div>
@@ -171,6 +206,9 @@ String urlColorPicker=urlBuilder.getResourceLink(request,"/js/kpi/colorPicker.js
 <input
   class='portlet-form-input-field' type="text" name="min_Value" size="50"
   value="<%=minValue%>" maxlength="200"></div>
+ <% } %>
+
+<% if(type!=null && (type.trim().equals("RANGE") || type.trim().equals("MAXIMUM"))) { %>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -179,6 +217,7 @@ String urlColorPicker=urlBuilder.getResourceLink(request,"/js/kpi/colorPicker.js
 <input
   class='portlet-form-input-field' type="text" name="max_Value" size="50"
   value="<%=maxValue%>" maxlength="200"></div>
+<% } %>
 
 <script language="JavaScript">
 var cp = new ColorPicker('window'); // Popup window
@@ -189,7 +228,7 @@ var cp = new ColorPicker('window'); // Popup window
 <div class='div_detail_form'>
 <input style="background-color:<%=colour%>"
   class='portlet-form-input-field' type="text" name="colour" id="colour" size="50"
-  value="<%=colour%>" maxlength="20" >
+  value="<%=colour%>" maxlength="20" readonly="readonly">
 <a fref="#" onClick="javascript:cp.select(document.forms[0].colour,'pick');return false;" name="pick" id="pick">Select</a>
 <script language="JavaScript">
 cp.writeDiv()

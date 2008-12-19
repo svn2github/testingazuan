@@ -54,29 +54,6 @@
   
   <MODULE name="DetailThresholdModule" class="it.eng.spagobi.kpi.threshold.service.DetailThresholdsModule">
     <CONFIG pool="spagobi" title="sbi.kpi.list.thresholds.title">
-    <!--
-      <QUERIES>
-        <SELECT_QUERY statement="DETAIL_THRESHOLD">
-          <PARAMETER type="RELATIVE" value="ID" scope="SERVICE_REQUEST" />
-        </SELECT_QUERY>
-        <UPDATE_QUERY statement="UPDATE_THRESHOLD">
-          <PARAMETER type="RELATIVE" value="NAME" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="DESCRIPTION" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="THRESHOLD_TYPE_ID" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="ID" scope="SERVICE_REQUEST" />
-        </UPDATE_QUERY>
-        <INSERT_QUERY statement="INSERT_THRESHOLD">
-          <PARAMETER type="RELATIVE" value="NAME" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="DESCRIPTION" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="THRESHOLD_TYPE_ID" scope="SERVICE_REQUEST" />
-        </INSERT_QUERY>
-      </QUERIES>
-      <FIELDS>
-        <FIELD name="ID" label="ID" widget="" size="60" />
-        <FIELD name="NAME" label="NAME" widget="" size="60" />
-      </FIELDS>
-      <BUTTONS />
-    -->
     </CONFIG>
   </MODULE>
   
@@ -105,7 +82,7 @@
           <PARAMETER name="MODULE" scope="" type="ABSOLUTE" value="DetailThresholdValueModule" />
           <PARAMETER name="MESSAGE" scope="" type="ABSOLUTE" value="DETAIL_SELECT" />
           <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
-          <PARAMETER name="THRESHOLD_ID" scope="SERVICE_REQUEST" type="RELATIVE" value="IDT" />
+          <PARAMETER name="IDT" scope="SERVICE_REQUEST" type="RELATIVE" value="IDT" />
         </SELECT_CAPTION>
         <DELETE_CAPTION confirm="TRUE" image="/img/erase.gif" label="sbi.kpi.caption.delete">
           <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ThresholdValuePage" />
@@ -117,10 +94,10 @@
       </CAPTIONS>
       <BUTTONS>
         <INSERT_BUTTON confirm="TRUE" image="/img/new.png" label="sbi.kpi.button.insert.title">
-          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ThresholdValuePage" />
+         <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ThresholdValuePage" />
           <PARAMETER name="MODULE" scope="" type="ABSOLUTE" value="DetailThresholdValueModule" />
           <PARAMETER name="MESSAGE" scope="" type="ABSOLUTE" value="DETAIL_NEW" />
-          <PARAMETER name="THRESHOLD_ID" scope="SERVICE_REQUEST" type="RELATIVE" value="IDT" />
+          <PARAMETER name="IDT" scope="SERVICE_REQUEST" type="RELATIVE" value="IDT" />
         </INSERT_BUTTON>
         <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="sbi.kpi.button.back.title"
           onlyPortletRunning="true">
@@ -130,40 +107,9 @@
       </BUTTONS>
     </CONFIG>
   </MODULE>
-  <MODULE name="DetailThresholdValueModule" class="it.eng.spago.dispatching.module.detail.impl.DefaultDetailModule">
+  
+  <MODULE name="DetailThresholdValueModule" class="it.eng.spagobi.kpi.threshold.service.DetailThresholdValuesModule">
     <CONFIG pool="spagobi" title="sbi.kpi.list.thresoldValues.title">
-      <QUERIES>
-        <SELECT_QUERY statement="DETAIL_THRESHOLD_VALUE">
-          <PARAMETER type="RELATIVE" value="ID" scope="SERVICE_REQUEST" />
-        </SELECT_QUERY>
-        <UPDATE_QUERY statement="UPDATE_THRESHOLD_VALUE">
-          <PARAMETER type="RELATIVE" value="POSITION" parType="INTEGER" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="LABEL" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="MIN_VALUE" parType="DOUBLE" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="MAX_VALUE" parType="DOUBLE" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="COLOUR" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="SEVERITY_ID" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="ID" scope="SERVICE_REQUEST" parType="INTEGER" />
-        </UPDATE_QUERY>
-        <INSERT_QUERY statement="INSERT_THRESHOLD_VALUE">
-          <PARAMETER type="RELATIVE" value="THRESHOLD_ID" parType="INTEGER" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="POSITION" parType="INTEGER" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="LABEL" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="MIN_VALUE" parType="DOUBLE" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="MAX_VALUE" parType="DOUBLE" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="COLOUR" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="SEVERITY_ID" scope="SERVICE_REQUEST" />
-        </INSERT_QUERY>
-      </QUERIES>
-      <FIELDS>
-        <FIELD name="ID" label="ID" widget="" size="60" />
-        <FIELD name="IDV" label="IDV" widget="" size="60" />
-        <FIELD name="MIN_VALUE" label="MIN_VALUE" widget="" size="60" />
-        <FIELD name="MAX_VALUE" label="MAX_VALUE" widget="" size="60" />
-        <FIELD name="LABEL" label="LABEL" widget="" size="60" />
-        <FIELD name="COLOUR" label="COLOUR" widget="" size="60" />
-      </FIELDS>
-      <BUTTONS />
-    </CONFIG>
+	</CONFIG>
   </MODULE>
 </MODULES>

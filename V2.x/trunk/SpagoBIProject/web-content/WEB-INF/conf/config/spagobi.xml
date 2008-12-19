@@ -206,6 +206,7 @@
 		<DAO name="PeriodicityDAO" implementation="it.eng.spagobi.kpi.config.dao.PeriodicityDAOImpl"/>
 		<DAO name="ThresholdDAO" implementation="it.eng.spagobi.kpi.threshold.dao.ThresholdDAOImpl"/>
 		<DAO name="ModelResourceDAO" implementation="it.eng.spagobi.kpi.model.dao.ModelResourceDAOImpl" />
+		<DAO name="ThresholdValueDAO" implementation="it.eng.spagobi.kpi.threshold.dao.ThresholdValueDAOImpl" />
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

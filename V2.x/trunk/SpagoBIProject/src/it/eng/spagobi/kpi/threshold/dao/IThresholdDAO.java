@@ -27,4 +27,6 @@ public interface IThresholdDAO {
 
 	public Integer insertThreshold(Threshold toCreate)throws EMFUserError ;
 
+	public boolean deleteThreshold(Integer thresholdId)throws EMFUserError;
+
 }

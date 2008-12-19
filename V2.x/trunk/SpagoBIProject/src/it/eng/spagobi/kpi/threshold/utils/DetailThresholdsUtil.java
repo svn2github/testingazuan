@@ -21,7 +21,6 @@ public class DetailThresholdsUtil {
 		Threshold threshold = getThresholdFromRequest(serviceRequest);
 		threshold.setId(id);
 		DAOFactory.getThresholdDAO().modifyThreshold(threshold);
-		
 	}
 
 	private static Threshold getThresholdFromRequest(SourceBean serviceRequest) {

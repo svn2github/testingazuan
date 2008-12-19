@@ -61,6 +61,7 @@ import it.eng.spagobi.kpi.model.dao.IModelDAO;
 import it.eng.spagobi.kpi.model.dao.IModelInstanceDAO;
 import it.eng.spagobi.kpi.model.dao.IModelResourceDAO;
 import it.eng.spagobi.kpi.threshold.dao.IThresholdDAO;
+import it.eng.spagobi.kpi.threshold.dao.IThresholdValueDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
@@ -559,5 +560,16 @@ public class DAOFactory {
 	 */
 	public static IModelResourceDAO getModelResources() throws EMFUserError{
 		return (IModelResourceDAO)createDAOInstance("ModelResourceDAO");
+	}
+
+	/**
+	 * Gets the ThresholdValue dao.
+	 * 
+	 * @return the ThresholdValue dao.
+	 * 
+	 * @throws EMFUserError the EMF user error.
+	 */
+	public static IThresholdValueDAO getThresholdValueDAO() throws EMFUserError{
+		return (IThresholdValueDAO)createDAOInstance("ThresholdValueDAO");
 	}
 }

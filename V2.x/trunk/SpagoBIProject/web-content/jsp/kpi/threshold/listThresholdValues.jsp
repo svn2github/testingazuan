@@ -21,17 +21,6 @@
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
-<%
-String idt="";
-if(aServiceRequest.getAttribute("IDT")!=null) {
-  idt=(String)aServiceRequest.getAttribute("IDT");
-}
-HashMap parameters_map = new HashMap();
-parameters_map.put("idt", idt);
-aServiceResponse.setAttribute("ListThresholdValuesModule.PARAMETERS_MAP", parameters_map);
-%>
-
 <spagobi:list moduleName="ListThresholdValuesModule" bundle="component_kpi_messages"/>
 
 <%@ include file="/jsp/commons/footer.jsp"%>
-

@@ -8,12 +8,14 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.exception.ConstraintViolationException;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.kpi.config.metadata.SbiKpi;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
@@ -189,6 +191,35 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThreshold
 		}
 		logger.debug("OUT");
 		return idToReturn;
+	}
+
+	public boolean deleteThreshold(Integer thresholdId) throws EMFUserError {
+		Session aSession = getSession();
+		Transaction tx = null;
+		try {
+			tx = aSession.beginTransaction();
+			SbiThreshold aThreshold = (SbiThreshold) aSession.load(
+					SbiThreshold.class, thresholdId);
+			aSession.delete(aThreshold);
+
+			tx.commit();
+
+		} catch (ConstraintViolationException cve) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.error("Impossible to delete a Threshold", cve);
+			throw new EMFUserError(EMFErrorSeverity.WARNING, 10016);
+		} catch (HibernateException e) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.error("Error while delete a Threshold ", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+		} finally {
+			aSession.close();
+		}
+		return true;
 	}
 	
 }

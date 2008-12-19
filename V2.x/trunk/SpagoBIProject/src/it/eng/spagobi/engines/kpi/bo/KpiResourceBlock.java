@@ -109,7 +109,7 @@ public class KpiResourceBlock {
 		BulletGraph sbi = (BulletGraph)line.getChartBullet();		
 		List children = line.getChildren();
 		
-		_htmlStream.append("<div><table   style='width:100%;margin-left:"+20*recursionLev+"px;align:left;vertical-align:middle;'  >\n");
+		_htmlStream.append("<div><table   style='width:"+(100-(2*recursionLev))+"%;margin-left:"+20*recursionLev+"px;align:left;vertical-align:middle;'  >\n");
 		if(recursionLev==0){
 			_htmlStream.append("	<tr style='background-color:#DDDDDD;' class='kpi_line_section_odd'>\n");
 		}
@@ -127,7 +127,7 @@ public class KpiResourceBlock {
 		
 		_htmlStream.append("		<td class='kpi_td_left' style='vertical-align:middle;' width='53%' title='Model Instance Node' ><div style='vertical-align:middle;' class='kpi_div'>"+modelName+"</div></td>\n");
 		
-		_htmlStream.append("		<td  width='"+(5-recursionLev)+"%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
+		_htmlStream.append("		<td  width='5%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
 		if (lo!= null){
 			_htmlStream.append("		<td  width='9%' title='Value' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"</div></td>\n");
 		}else{

@@ -60,9 +60,9 @@ public class KpiResourceBlock {
 		StringBuffer _htmlStream = new StringBuffer();				
 		if (r!=null){
 			_htmlStream.append("<div id ='"+r.getName()+"' >\n");				
-			_htmlStream.append("<div><table align=\"left\">\n");
-			_htmlStream.append(" <tr class='kpi_resource_section'><td><div>Resource: "+r.getName()+"</div></td></tr>\n");
-			_htmlStream.append("</table></div><br><br>\n");
+			_htmlStream.append("<table style='width:100%;margin-left:0px;align:left;vertical-align:middle;' float=\"left\">\n");
+			_htmlStream.append(" <tr class='kpi_resource_section'><td>RESOURCE: "+r.getName()+"</td><td></td><td></td><td></td><td></td></tr>\n");
+			_htmlStream.append("</table>\n");
 		}
 		
 		addItemForTree(userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
@@ -109,7 +109,7 @@ public class KpiResourceBlock {
 		BulletGraph sbi = (BulletGraph)line.getChartBullet();		
 		List children = line.getChildren();
 		
-		_htmlStream.append("<div><table   style='width:"+(100-(recursionLev*2))+"%;margin-left:"+20*recursionLev+"px;align:left;vertical-align:middle;'  >\n");
+		_htmlStream.append("<div><table   style='width:100%;margin-left:"+20*recursionLev+"px;align:left;vertical-align:middle;'  >\n");
 		if(recursionLev==0){
 			_htmlStream.append("	<tr style='background-color:#DDDDDD;' class='kpi_line_section_odd'>\n");
 		}
@@ -120,14 +120,14 @@ public class KpiResourceBlock {
 		}
 		if (display_semaphore && semaphorColor!= null){
 			String semaphorHex = Integer.toHexString( semaphorColor.getRGB() & 0x00ffffff ) ;		
-			_htmlStream.append("		<td width='2%' class='kpi_td_left' style='vertical-align:middle;' ><div class='kpi_div' style=\"width:9px;vertical-align:middle;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div></td>\n");
+			_htmlStream.append("		<td width='2%' class='kpi_td_left' style='vertical-align:middle;' ><div class='kpi_div' style=\"width:9px;vertical-align:middle;float:center;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='2%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
 		
-		_htmlStream.append("		<td class='kpi_td_left' style='vertical-align:middle;' width='"+(53-(recursionLev))+"%' title='Model Instance Node' ><div style='vertical-align:middle;' class='kpi_div'>"+modelName+"</div></td>\n");
+		_htmlStream.append("		<td class='kpi_td_left' style='vertical-align:middle;' width='53%' title='Model Instance Node' ><div style='vertical-align:middle;' class='kpi_div'>"+modelName+"</div></td>\n");
 		
-		_htmlStream.append("		<td  width='5%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
+		_htmlStream.append("		<td  width='"+(5-recursionLev)+"%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
 		if (lo!= null){
 			_htmlStream.append("		<td  width='9%' title='Value' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"</div></td>\n");
 		}else{

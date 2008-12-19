@@ -62,7 +62,7 @@ public class KpiResourceBlock {
 			_htmlStream.append("<div id ='"+r.getName()+"' >\n");				
 			_htmlStream.append("<table align=\"left\">\n");
 			_htmlStream.append(" <tr class='kpi_resource_section'><td><div>Resource: "+r.getName()+"</div></td></tr>\n");
-			_htmlStream.append("</table>\n");
+			_htmlStream.append("</table><br><br>\n");
 		}
 		
 		addItemForTree(userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
@@ -186,7 +186,7 @@ public class KpiResourceBlock {
 		}
 		
 	   _htmlStream.append("	</tr>\n");
-	   _htmlStream.append("</table>\n");
+	   _htmlStream.append("</table><br><br><br>\n");
 	   if (children!=null && !children.isEmpty()){
 		   recursionLev ++;
 		   Iterator childIt = children.iterator();

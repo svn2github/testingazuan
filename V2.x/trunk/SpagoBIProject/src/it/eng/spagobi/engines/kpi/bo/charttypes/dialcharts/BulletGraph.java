@@ -112,7 +112,7 @@ public class BulletGraph  extends ChartImpl{
 
         // customize renderer 
         BarRenderer renderer = (BarRenderer) plot.getRenderer(); 
-        renderer.setMaximumBarWidth(0.33); 
+        renderer.setMaximumBarWidth(0.18); 
         renderer.setSeriesPaint(0, Color.BLACK); 
         
         return chart;

@@ -1,18 +1,66 @@
 <?xml version="1.0"?>
 
-<project name="Chiron" default="buildSource">
+<project name="Chiron" default="createSourceVersion">
 
 	<description>
 		Chiron build file
 	</description>
 	
-	<!-- Load all the default properties, and any the user wants    -->
-	<!-- to contribute (without having to type -D or edit this file -->
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!--   IMPORT PROPERTY FILE DEFINITIONS		                                        -->
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+	<!-- Load all the default properties, and any the user wants    					-->
+	<!-- to contribute (without having to type -D or edit this file 					-->
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<property file="${basedir}/build.properties" />
 	
-	<target name="buildSource" depends="replaceSource"></target>
+	<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<!--   CLEAN ENVIRONMENT					                                      -->
+	<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--> 
+	<target name="clean" depends="cleanSourceVersion, cleanBuildVersion, cleanApi"></target>
 	
-	<target name="replaceSource" depends="createSourceScriptFiles">
+	<target name="cleanSourceVersion" >
+	    <delete dir="${js.spagobi.source.dir}/script"/>
+	</target>	
+	
+	<target name="cleanBuildVersion" >
+		<delete dir="${js.spagobi.build.dir}/script"/>    
+	</target>	 
+	
+	<target name="cleanApi" >
+		<delete dir="${js.spagobi.api.dir}/script"/>    
+	</target>	
+	
+	<target name="cleanStandaloneVersion" >
+		<delete dir="${dist.dir}"/>    
+	</target>
+	
+	<target name="cleanCache" >
+	    <delete dir="${basedir}/WebContent/js/qooxdoo-0.8/application/chiron/cache"/>
+		 <delete dir="${basedir}/WebContent/js/spagobi/cache"/>
+	</target>	
+	
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!--  CREATE ALL							                                        -->
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+	<!-- Create source, build version and the api as well								--> 
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<target name="createAll" 
+		    depends="createSourceVersion, createBuildVersion, createApi"
+			description="One task to bring them all :-)">
+	</target>
+	
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!--  CREATE SOURCE VERSION					                                        -->
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+	<!-- Create the source version of chiron application. 								-->
+	<!-- The source version is not optimized ad is usefull only for debug.				--> 
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<target name="createSourceVersion" 
+		    depends="cleanSourceVersion, configureWebSourceScriptFile, configureStandaloneSourceScriptFile, configurePortletSourceScriptFile">
+	</target>
+	
+	<target name="configureWebSourceScriptFile" depends="createSourceScriptFiles">
 		
 		<replace file="${js.spagobi.source.dir}/script/chiron.web.js">
 	
@@ -32,96 +80,195 @@
 		
 	</target>
 	
-	
-		
-	<target name="createSourceScriptFiles" depends="makeSource">
-			<copy file="${js.spagobi.source.dir}/script/spagobi.js" 
-				  tofile="${js.spagobi.source.dir}/script/chiron.web.js"/>
+	<target name="configureStandaloneSourceScriptFile" depends="createSourceScriptFiles">
+		<replace file="${js.spagobi.source.dir}/script/chiron.standalone.js">
+			<replacefilter 
+				token='qxlibraries["spagobi"]={"resourceUri":"../source/resource"};'
+				value='qxlibraries["spagobi"]={"resourceUri":"."};'/>	
 			
-			<copy file="${js.spagobi.source.dir}/script/spagobi.js" 
-						  tofile="${js.spagobi.source.dir}/script/chiron.portlet.js"/>
+			<replacefilter 
+						    token="../../qooxdoo-0.8" 
+						    value="./js/qooxdoo-0.8"/>	
 			
+			<replacefilter 
+						    token="./class/spagobi" 
+						    value="./js/spagobi/source/class/spagobi"/>
+		</replace>
 	</target>
 	
-	<target name="makeSource" >
-		 <exec executable="cmd" dir="${basedir}/WebContent/js/spagobi" >
-			<arg value="/c"/>
-			<arg value="generate.py source"/>
+	
+	<target name="configurePortletSourceScriptFile" depends="createSourceScriptFiles">
+	</target>
+		
+	
+	<target name="createSourceScriptFiles" depends="createSourceTemplateScriptFile">
+		<copy file="${js.spagobi.source.dir}/script/spagobi.js" 
+			  tofile="${js.spagobi.source.dir}/script/chiron.web.js"/>
+		
+		<copy file="${js.spagobi.source.dir}/script/spagobi.js" 
+					  tofile="${js.spagobi.source.dir}/script/chiron.standalone.js"/>
+			
+		<copy file="${js.spagobi.source.dir}/script/spagobi.js" 
+			  tofile="${js.spagobi.source.dir}/script/chiron.portlet.js"/>
+	</target>
+	
+	<target name="createSourceTemplateScriptFile" >
+		 <exec executable="python" failonerror="true" dir="${basedir}/WebContent/js/spagobi" >
+		 	<arg value="./generate.py"/>
+		 	<arg value="source"/>
 		 </exec> 
 	</target>
 
-
-	<!-- generate the build version    -->
-
-	<target name="buildBuild" depends="replaceBuild">
+	
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!--  CREATE BUILD VERSION					                                        -->
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+	<!-- Create the build version of chiron application. 								-->
+	<!-- The build version is optimized and ready for production usage.					-->
+	<!-- By the way due to js files compression is not usefull during development and   -->
+	<!-- debug process (i.e. error message are meaningless)								-->
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	
+	<target name="createBuildVersion" 
+		depends="cleanBuildVersion, configureWebBuildScriptFile, configureStandaloneBuildScriptFile, configurePortletBuildScriptFile">
 	</target>
 	
-	<target name="replaceBuild" depends="createBuildScriptFiles">
-							 			
-				<replace file="${js.spagobi.build.dir}/script/chiron.web.js">
+	<target name="configureWebBuildScriptFile" depends="createBuildScriptFiles">
+								 			
+		<replace file="${js.spagobi.build.dir}/script/chiron.web.js">
+						
+			<replacefilter 
+					token='qxlibraries["spagobi"]={"resourceUri":"./resource"};' 
+					value='qxlibraries["spagobi"]={"resourceUri":".."};'/>
+						
+			<replacefilter 
+					    token="./resource" 
+					    value="../js/spagobi/build/resource"/>
+						
+			<replacefilter 
+						token="script/spagobi-0.js" 
+						value="../js/spagobi/build/script/spagobi-0.js"/>
+						
+							  
+		</replace>				
 					
-					<replacefilter 
+	</target>
+	
+	<target name="configureStandaloneBuildScriptFile" depends="createBuildScriptFiles">
+		<replace file="${js.spagobi.build.dir}/script/chiron.standalone.js">
+			<replacefilter 
+							token='qxlibraries["qx"]={"resourceUri":"./resource"};' 
+							value='qxlibraries["qx"]={"resourceUri":"./js/qooxdoo-0.8/framework/source/resource"};'/>
+			<replacefilter 
 							token='qxlibraries["spagobi"]={"resourceUri":"./resource"};' 
-							value='qxlibraries["spagobi"]={"resourceUri":".."};'/>
-					
-					<replacefilter 
-						    token="./resource" 
-						    value="../js/spagobi/build/resource"/>
-					
-					<replacefilter 
-							token="script/spagobi-0.js" 
-							value="../js/spagobi/build/script/spagobi-0.js"/>
-					
-						  
-				</replace>	
+							value='qxlibraries["spagobi"]={"resourceUri":"."};'/>
 			
-				<replace file="${js.spagobi.build.dir}/script/chiron.portlet.js">
-							
-							<replacefilter 
-									token='qxlibraries["spagobi"]={"resourceUri":"./resource"};' 
-									value='qxlibraries["spagobi"]={"resourceUri":".."};'/>
-										
-							<replacefilter 
-								    token="./resource" 
-								    value="/Chiron/js/spagobi/build/resource"/>
-															  
-				</replace>	
+			<replacefilter 
+										token='uris : [["script/spagobi-0.js"]],' 
+										value='uris : [["./js/spagobi/build/script/spagobi-0.js"]],'/>
+			
+			
+		</replace>
 	</target>
 	
-	<target name="createBuildScriptFiles"   depends="makeBuildNew" >
-					<copy file="${js.spagobi.build.dir}/script/spagobi.js" 
-						  tofile="${js.spagobi.build.dir}/script/chiron.web.js"/>
-			
-					<copy file="${js.spagobi.build.dir}/script/spagobi.js" 
-								  tofile="${js.spagobi.build.dir}/script/chiron.portlet.js"/>
-					
+	
+	
+	<target name="configurePortletBuildScriptFile" depends="createBuildScriptFiles">
 	</target>
 	
-	<target name="makeBuildNew" >
+	
+	<target name="createBuildScriptFiles"   depends="createBuildTemplateScriptFile" >
+		
+			<copy file="${js.spagobi.build.dir}/script/spagobi.js" 
+				  tofile="${js.spagobi.build.dir}/script/chiron.web.js"/>
+			
+			<copy file="${js.spagobi.build.dir}/script/spagobi.js" 
+				  tofile="${js.spagobi.build.dir}/script/chiron.standalone.js"/>
+				
+			<copy file="${js.spagobi.build.dir}/script/spagobi.js" 
+				  tofile="${js.spagobi.build.dir}/script/chiron.portlet.js"/>
+						
+	 </target>
+		
+	<target name="createBuildTemplateScriptFile" >
+			
 			<exec executable="python" failonerror="true" dir="${basedir}/WebContent/js/spagobi">
-			    <arg value="./generate.py"/>
-			    <arg value="build"/>
+					<arg value="./generate.py"/>
+				    <arg value="build"/>
 			</exec>
-		</target>
-	
-	<!-- Not Working -->
-	<target name="makeBuild" >
-			 <exec executable="cmd" dir="${basedir}/WebContent/js/spagobi" >
-				<arg value="/c"/>
-				<arg value="generate.py build"/>
-			 </exec> 
+		
 	</target>
 	
-	<!-- Not Working -->
-	<target name="makeBuildCmd" >
-				  <exec executable="cmd" dir="${basedir}" >
-				    <env key="Path" path="C:/Python26"/>
-				  	<arg value="/c"/>
-				    <arg value="generateBuild.bat"/>
-				  </exec>
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!--  CREATE STANDALONE VERSION					                                    -->
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+	<!-- Create a standalone version of chiron. Used only for sharing result achived    -->
+	<!-- so far with external persons (i.e. interface reviewer or parteners)			--> 
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	
+	<target name="createStandaloneVersion" 
+			depends="cleanStandaloneVersion, init, createAll, cleanCache">
+		
+		<copy todir="${dist.dir}/css">
+		    <fileset dir="${basedir}/WebContent/css" />
+		</copy>
+		
+		<copy todir="${dist.dir}/img">
+			<fileset dir="${basedir}/WebContent/img" />
+		</copy>
+		
+		<copy todir="${dist.dir}/js/qooxdoo-0.8/application/chiron">
+			<fileset dir="${basedir}/WebContent/js/qooxdoo-0.8/application/chiron" />
+		</copy>
+		<copy todir="${dist.dir}/js/qooxdoo-0.8/component">
+			<fileset dir="${basedir}/WebContent/js/qooxdoo-0.8/component" />
+		</copy>
+		<copy todir="${dist.dir}/js/qooxdoo-0.8/framework">
+			<fileset dir="${basedir}/WebContent/js/qooxdoo-0.8/framework" />
+		</copy>
+		<copy todir="${dist.dir}/js/qooxdoo-0.8/tool">
+			<fileset dir="${basedir}/WebContent/js/qooxdoo-0.8/tool" />
+		</copy>
+		<copy file="${basedir}/WebContent/js/qooxdoo-0.8/index.html" todir="${dist.dir}/js/qooxdoo-0.8/"/>
+		<copy file="${basedir}/WebContent/js/qooxdoo-0.8/license.txt" todir="${dist.dir}/js/qooxdoo-0.8/"/>
+		<copy file="${basedir}/WebContent/js/qooxdoo-0.8/readme.txt" todir="${dist.dir}/js/qooxdoo-0.8/"/>
+		
+		<copy todir="${dist.dir}/js/spagobi">
+			<fileset dir="${basedir}/WebContent/js/spagobi" />
+		</copy>
+		
+		<copy file="${basedir}/WebContent/index.html" todir="${dist.dir}"/>
+		<copy file="${basedir}/WebContent/source.html" todir="${dist.dir}"/>
+		<copy file="${basedir}/WebContent/build.html" todir="${dist.dir}"/>
 	</target>
 	
-	<!-- generate the API version    -->
+	<target name="init">
+	    <!-- Create the time stamp -->
+	    <tstamp/>
+	    <!-- Create the build directory structure used by compile -->
+		 <mkdir dir="${dist.dir}"/>
+		 <mkdir dir="${dist.dir}/css"/>
+		 <mkdir dir="${dist.dir}/img"/>
+		 <mkdir dir="${dist.dir}/js"/>
+		 <mkdir dir="${dist.dir}/js/qooxdoo-0.8"/>
+		 <mkdir dir="${dist.dir}/js/qooxdoo-0.8/application"/>
+		 <mkdir dir="${dist.dir}/js/qooxdoo-0.8/application/chiron"/>
+	     <mkdir dir="${dist.dir}/js/qooxdoo-0.8/component"/>
+		 <mkdir dir="${dist.dir}/js/qooxdoo-0.8/framework"/>
+		 <mkdir dir="${dist.dir}/js/qooxdoo-0.8/tool"/>
+		 
+		 <mkdir dir="${dist.dir}/js/spagobi"/>
+		 <mkdir dir="${dist.dir}/js/spagobi/api"/>
+		 <mkdir dir="${dist.dir}/js/spagobi/build"/>
+		 <mkdir dir="${dist.dir}/js/spagobi/source"/>
+		
+	 </target>
+	
+	
+	
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<!--  CREATE API								                                    -->
+	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
 	
 	<target name="replaceApi" >
 		<replace file="${js.spagobi.api.dir}/script/apiviewer.js">
@@ -129,16 +276,8 @@
 		</replace>	
 	</target>	
 	
-	<!-- Not Working-->
-	<target name="makeApi" >
-				 <exec executable="cmd" dir="${basedir}/WebContent/js/spagobi" >
-					<arg value="/c"/>
-					<arg value="generate.py api"/>
-				 </exec> 
-	</target>
-	
 	<!-- Working-->
-	<target name="makeApiNew" >
+	<target name="createApi" >
 		<exec executable="python" failonerror="true" dir="${basedir}/WebContent/js/spagobi">
 		    <arg value="./generate.py"/>
 		    <arg value="api"/>

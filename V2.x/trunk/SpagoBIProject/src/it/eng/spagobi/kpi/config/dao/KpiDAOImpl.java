@@ -1091,6 +1091,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
 				SbiKpi hibKpi = (SbiKpi) iterator.next();
 				Kpi kpi = new Kpi();
+				kpi.setCode(hibKpi.getCode());
 				kpi.setDescription(hibKpi.getDescription());
 				kpi.setKpiName(hibKpi.getName());
 				kpi.setKpiId(hibKpi.getKpiId());

@@ -12,6 +12,7 @@
         </DELETE_QUERY>
       </QUERIES>
       <COLUMNS>
+        <COLUMN label="sbi.kpi.label.code" name="CODE" />
         <COLUMN label="sbi.kpi.label.name" name="NAME" />
         <COLUMN label="sbi.kpi.label.description" name="DESCRIPTION" />
       </COLUMNS>
@@ -47,45 +48,6 @@
   
   <MODULE name="DetailKpiModule" class="it.eng.spagobi.kpi.config.service.DetailKpiModule">
     <CONFIG pool="spagobi" title="sbi.kpi.config.detail.title">
-    <!--
-      <QUERIES>
-        <SELECT_QUERY statement="DETAIL_KPI">
-          <PARAMETER type="RELATIVE" value="ID" scope="SERVICE_REQUEST" />
-        </SELECT_QUERY>
-      
-        <UPDATE_QUERY statement="UPDATE_KPI">
-          <PARAMETER type="RELATIVE" value="NAME" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="DESCRIPTION" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="DOCUMENT_LABEL" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="DS_ID" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="CODE" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="METRIC" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="WEIGHT" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="ID" scope="SERVICE_REQUEST" />
-        </UPDATE_QUERY>
-        <INSERT_QUERY statement="INSERT_KPI">
-          <PARAMETER type="RELATIVE" value="NAME" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="DESCRIPTION" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="DOCUMENT_LABEL" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="DS_ID" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="CODE" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="METRIC" scope="SERVICE_REQUEST" />
-          <PARAMETER type="RELATIVE" value="WEIGHT" scope="SERVICE_REQUEST" />
-        </INSERT_QUERY>
-      </QUERIES>
-      <FIELDS>
-        <FIELD name="ID" label="ID" widget="" size="60" />
-        <FIELD name="DESCRIPTION" label="DESCRIPTION" widget="" size="60" />
-        <FIELD name="NAME" label="NAME" widget="" size="60" />
-        <FIELD name="DOCUMENT_LABEL" label="DOCUMENT LABEL" widget="" size="60" />
-        <FIELD name="CODE" label="CODE" widget="" size="60" />
-        <FIELD name="METRIC" label="METRIC" widget="" size="60" />
-      </FIELDS>
-
-      <COLUMNS />
-	  <CAPTIONS />
-      <BUTTONS />
-    -->
     </CONFIG>
   </MODULE>
   

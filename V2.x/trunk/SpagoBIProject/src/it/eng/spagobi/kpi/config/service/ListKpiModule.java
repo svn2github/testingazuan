@@ -60,8 +60,18 @@ public class ListKpiModule extends AbstractConfigurableListModule {
 	protected void setRowAttribute(SourceBean rowSB, Object obj)
 			throws SourceBeanException {
 		Kpi aKpi = (Kpi) obj;
-		rowSB.setAttribute("NAME", aKpi.getKpiName());
-		rowSB.setAttribute("DESCRIPTION", aKpi.getDescription());
+		String code = "";
+		String name = "";
+		String description = ""; 
+		if (aKpi.getCode()!= null)
+			code = aKpi.getCode();
+		if (aKpi.getKpiName()!= null)
+			name = aKpi.getKpiName();
+		if (aKpi.getDescription()!= null)
+			description = aKpi.getDescription();
+		rowSB.setAttribute("CODE", code);
+		rowSB.setAttribute("NAME", name);
+		rowSB.setAttribute("DESCRIPTION", description);
 		rowSB.setAttribute("ID", aKpi.getKpiId());
 	}
 	

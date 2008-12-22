@@ -20,6 +20,7 @@ public class SbiThreshold  implements java.io.Serializable {
      private SbiDomains sbiDomains;
      private String name;
      private String description;
+     private String code;
      private Set sbiKpis = new HashSet(0);
      private Set sbiKpiInstanceHistories = new HashSet(0);
      private Set sbiKpiInstances = new HashSet(0);
@@ -39,11 +40,12 @@ public class SbiThreshold  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiThreshold(Integer thresholdId, SbiDomains sbiDomains, String name, String description, Set sbiKpis, Set sbiKpiInstanceHistories, Set sbiKpiInstances, Set sbiThresholdValues) {
+    public SbiThreshold(Integer thresholdId, SbiDomains sbiDomains, String name, String description, String code, Set sbiKpis, Set sbiKpiInstanceHistories, Set sbiKpiInstances, Set sbiThresholdValues) {
         this.thresholdId = thresholdId;
         this.sbiDomains = sbiDomains;
         this.name = name;
         this.description = description;
+        this.code = code;
         this.sbiKpis = sbiKpis;
         this.sbiKpiInstanceHistories = sbiKpiInstanceHistories;
         this.sbiKpiInstances = sbiKpiInstances;
@@ -86,6 +88,13 @@ public class SbiThreshold  implements java.io.Serializable {
         this.description = description;
     }
 
+    public String getCode() {
+    	return this.code;
+    }
+    
+    public void setCode(String code) {
+    	this.code = code;
+    }
     public Set getSbiKpis() {
         return this.sbiKpis;
     }
@@ -118,12 +127,4 @@ public class SbiThreshold  implements java.io.Serializable {
         this.sbiThresholdValues = sbiThresholdValues;
     }
    
-
-
-
-
-
-
-
-
 }

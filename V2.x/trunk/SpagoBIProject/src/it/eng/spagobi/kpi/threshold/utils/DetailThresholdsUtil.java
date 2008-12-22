@@ -5,7 +5,6 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 
 public class DetailThresholdsUtil {
@@ -27,6 +26,7 @@ public class DetailThresholdsUtil {
 		
 		String name = (String) serviceRequest.getAttribute("name");
 		String description = (String) serviceRequest.getAttribute("description");
+		String code = (String) serviceRequest.getAttribute("code");
 		String sThresholdTypeId = (String) serviceRequest.getAttribute("threshold_type_id");
 		
 		Integer thresholdTypeId = null;
@@ -39,6 +39,7 @@ public class DetailThresholdsUtil {
 
 		toReturn.setThresholdName(name);
 		toReturn.setThresholdDescription(description);
+		toReturn.setThresholdCode(code);
 		toReturn.setThresholdTypeId(thresholdTypeId);
 
 		return toReturn;

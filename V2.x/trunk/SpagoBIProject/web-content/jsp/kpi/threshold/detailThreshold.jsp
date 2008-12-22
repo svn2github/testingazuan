@@ -29,6 +29,7 @@
 	String title = "";
 	String id = "";
 	String name = "";
+	String code = "";
 	String description = "";
 	Integer threshold_type_id = null;
 	
@@ -94,6 +95,8 @@
 				id = threshold.getId().toString();
 			if(threshold.getThresholdName() != null)
 				name = threshold.getThresholdName();
+			if(threshold.getThresholdCode() != null)
+				code = threshold.getThresholdCode();
 			if(threshold.getThresholdDescription() != null)
 				description = threshold.getThresholdDescription();
 			if(threshold.getThresholdTypeId()!= null)
@@ -158,22 +161,30 @@
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="name" size="50"
 	value="<%=name%>" maxlength="200"> &nbsp;*</div>
-
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.code" bundle="<%=messageBunle%>"/> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="code" size="50"
+	value="<%=code%>" maxlength="200"></div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBunle%>"/> </span></div>
-<div class='div_detail_form'>
-<input
-  class='portlet-form-input-field' type="text" name="description" size="50"
-  value="<%=description%>" maxlength="200"></div>
+<div class='div_detail_form' style="height: 160px;">
+<textarea
+  class='portlet-form-input-field'  cols="50" rows="10" name="description"><%=description%></textarea></div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.thresholdType" bundle="<%=messageBunle%>"/> </span></div>
+<% 
+String readonly = "";
+if(messageSave.trim().equals(DelegatedDetailService.DETAIL_UPDATE)) {
+	readonly = "disabled";
+}%>
 <div class='div_detail_form'>
-
-<select class='portlet-form-field' name="threshold_type_id" >
+<select class='portlet-form-field' name="threshold_type_id" <%= readonly %>>
 <%
 	List thresholdTypes = DAOFactory.getDomainDAO().loadListDomainsByType("THRESHOLD_TYPE");
 	Iterator itt = thresholdTypes.iterator();
@@ -181,7 +192,7 @@
 		Domain domain = (Domain)itt.next();
 		String selected = "";
 		if (threshold_type_id != null && threshold_type_id.intValue() == domain.getValueId().intValue()){
-			selected = "selected='selected'";		
+			selected = "selected='selected'";
 		}
 		%>    			 		
 		<option value="<%= domain.getValueId() %>" label="<%= domain.getValueName() %>" <%= selected %>>
@@ -190,10 +201,14 @@
 		<%
 	}
 %>
-</select>
+</select >
 
 </div>
+<% 
+if(messageSave.trim().equals(DelegatedDetailService.DETAIL_UPDATE)) { %>
 
+<input type="hidden" name="threshold_type_id" value="<%=threshold_type_id %>">
+<%} %>
 </form>
 
 <spagobi:error/>

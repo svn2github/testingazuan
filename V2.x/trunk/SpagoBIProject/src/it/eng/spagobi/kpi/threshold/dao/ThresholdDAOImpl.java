@@ -39,6 +39,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThreshold
 			toReturn = new Threshold();
 			toReturn.setThresholdName(hibThreshold.getName());
 			toReturn.setThresholdDescription(hibThreshold.getDescription());
+			toReturn.setThresholdCode(hibThreshold.getCode());
 			toReturn.setId(hibThreshold.getThresholdId());
 			toReturn.setThresholdTypeId(hibThreshold.getSbiDomains().getValueId());
 			
@@ -78,6 +79,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThreshold
 						.next();
 				Threshold threshold = new Threshold();
 				threshold.setThresholdName(hibThreshold.getName());
+				threshold.setThresholdCode(hibThreshold.getCode());
 				threshold.setThresholdDescription(hibThreshold.getDescription());
 				threshold.setId(hibThreshold.getThresholdId());
 				threshold.setThresholdTypeId(hibThreshold.getSbiDomains().getValueId());
@@ -112,6 +114,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThreshold
 
 			String name = threshold.getThresholdName();
 			String description = threshold.getThresholdDescription();
+			String code = threshold.getThresholdCode();
 			Integer thresholdTypeId = threshold.getThresholdTypeId();
 			
 			SbiThreshold sbiThreshold = (SbiThreshold) aSession
@@ -125,6 +128,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThreshold
 			
 			sbiThreshold.setName(name);
 			sbiThreshold.setDescription(description);
+			sbiThreshold.setCode(code);
 			sbiThreshold.setSbiDomains(thresholdType);
 			
 			aSession.saveOrUpdate(sbiThreshold);
@@ -159,6 +163,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThreshold
 			
 			String name = threshold.getThresholdName();
 			String description = threshold.getThresholdDescription();
+			String code = threshold.getThresholdCode();
 			Integer thresholdTypeId = threshold.getThresholdTypeId();
 			
 			SbiThreshold sbiThreshold = new SbiThreshold();
@@ -171,6 +176,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements IThreshold
 			
 			sbiThreshold.setName(name);
 			sbiThreshold.setDescription(description);
+			sbiThreshold.setCode(code);
 			sbiThreshold.setSbiDomains(thresholdType);
 			
 			idToReturn = (Integer) aSession.save(sbiThreshold);

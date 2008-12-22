@@ -210,7 +210,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/config/renderers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/mail.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/business_map.xml" />
-	<!--   	--> 
+	<!-- -->      	
 	<CONFIGURATOR path="/WEB-INF/conf/config/security.xml" />	
 
 	<!-- profile manager -->
@@ -234,8 +234,7 @@
     <CONFIGURATOR path="/WEB-INF/conf/kpi/config/modules.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/config/pages.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/config/presentation.xml" />
-    <CONFIGURATOR path="/WEB-INF/conf/kpi/config/publishers.xml" />
-    <CONFIGURATOR path="/WEB-INF/conf/kpi/config/statements.xml" />  	
+    <CONFIGURATOR path="/WEB-INF/conf/kpi/config/publishers.xml" />	
     <CONFIGURATOR path="/WEB-INF/conf/kpi/config/validation.xml" />
      <CONFIGURATOR path="/WEB-INF/conf/kpi/config/business_map.xml" />
     
@@ -243,8 +242,7 @@
     <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/modules.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/pages.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/presentation.xml" />
-    <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/publishers.xml" />
-    <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/statements.xml" />   
+    <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/publishers.xml" />   
     <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/validation.xml" />
      <CONFIGURATOR path="/WEB-INF/conf/kpi/threshold/business_map.xml" />
     

@@ -19,6 +19,9 @@
         <property name="description" type="string">
             <column name="description" />
         </property>
+        <property name="code" type="string">
+            <column name="code" />
+        </property>
         <set name="sbiKpis" inverse="true">
             <key>
                 <column name="THRESHOLD_ID" />

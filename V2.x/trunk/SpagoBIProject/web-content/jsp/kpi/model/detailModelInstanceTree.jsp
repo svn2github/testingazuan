@@ -191,6 +191,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	name='ModelForm'>
 	<input type="hidden" name="MODEL_ID" value="<%=modelId%>">
 	<input type="hidden" name="ID" value="<%=parentId%>">
+	
+<fieldset style="width:500px;">
+<legend>
+	<spagobi:message key="sbi.kpi.modelInstanceDefinition.label" bundle="<%=messageBundle%>" />
+</legend>	
 <div class="div_detail_area_forms">
 
 <div class='div_detail_label'><span
@@ -207,13 +212,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	class='portlet-form-input-field' type="text" name="modelInstanceDescription"
 	size="50" value="<%=modelInstanceDescription%>" maxlength="200"></div>
 </div>
-
+</fieldset>
 <%
  	if (messageIn != null
  			&& messageIn
  					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
  %>
- 
+<fieldset style="width:500px;"> 
+<legend><spagobi:message
+	key="sbi.kpi.modelDefinition.label" bundle="<%=messageBundle%>" /></legend>
 <div class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -235,7 +242,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
 </select>
 </div>
-
+</fieldset>
 <%
 	}
 %>
@@ -246,7 +253,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  			&& messageIn
  					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
  %>
- 
+<fieldset style="width:500px;">
+	<legend><spagobi:message
+	key="sbi.kpi.modelDefinition.label" bundle="<%=messageBundle%>" /></legend> 
 <div class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -254,36 +263,39 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelName" size="50"
-	value="<%=modelName%>" maxlength="200" readonly></div>
+	value="<%=modelName%>" maxlength="200" readonly disabled="disabled"></div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelDescription"
-	size="50" value="<%=modelDescription%>" maxlength="200" readonly></div>
+	size="50" value="<%=modelDescription%>" maxlength="200" readonly disabled="disabled"></div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.code" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelCode" size="50"
-	value="<%=modelCode%>" maxlength="200" readonly></div>
+	value="<%=modelCode%>" maxlength="200" readonly disabled="disabled"></div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.model.typeName" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'>
 
 <input class='portlet-form-input-field' type="text" name="typeName"
-	size="50" value="<%=typeName%>" maxlength="200" readonly></div>
+	size="50" value="<%=typeName%>" maxlength="200" readonly disabled="disabled"></div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.model.typeDescription" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="typeDescription"
-	size="50" value="<%=typeDescription%>" maxlength="200" readonly></div>
+	size="50" value="<%=typeDescription%>" maxlength="200" readonly disabled="disabled"></div>
 </div>
-<spagobi:message key="sbi.kpi.model.attributes"
-	bundle="<%=messageBundle%>" />
+</fieldset>
+
+<fieldset style="width:500px;">
+<legend><spagobi:message key="sbi.kpi.model.attributes"
+	bundle="<%=messageBundle%>" /></legend>
 
 <div class="div_detail_area_forms">
 <%
@@ -306,15 +318,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text"
 	name='<%="M_ATTR" + attributeId.toString()%>' size="50"
-	value="<%=attributeValue%>" maxlength="200" readonly></div>
+	value="<%=attributeValue%>" maxlength="200" readonly disabled="disabled"></div>
 <%
 	}
 %>
 </div>
-
-
+</fieldset>
+<fieldset style="width:500px;">
+<legend>
 <spagobi:message key="sbi.kpi.label.kpiInstance"
 	bundle="<%=messageBundle%>" />
+</legend>
 
 <div class="div_detail_area_forms">
 
@@ -501,7 +515,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%} %>
 </div>
-
+</fieldset>
 <%
  	}
  %>

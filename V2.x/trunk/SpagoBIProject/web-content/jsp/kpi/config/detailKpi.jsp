@@ -183,10 +183,8 @@
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBunle%>"/> </span></div>
-<div class='div_detail_form'>
-<input
-  class='portlet-form-input-field' type="text" name="description" size="50"
-  value="<%=description%>" maxlength="200"></div>
+<div class='div_detail_form' style='height: 150px;'>
+<textarea name="description" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=description%></textarea></div>
 
 
 <div class='div_detail_label'><span
@@ -209,9 +207,9 @@
 <div class='div_detail_label'><span
   class='portlet-form-field-label'> <spagobi:message
   key="sbi.kpi.label.weight" bundle="<%=messageBunle%>"/> </span></div>
-<div class='div_detail_form'><input
+<div class='div_detail_form' style="height:40px;"><input
   class='portlet-form-input-field' type="text" name="weight" size="50"
-  value="<%=weight%>" maxlength="200"></div>
+  value="<%=weight%>" maxlength="200" ></div>
 
 
 <div class='div_detail_label'><span
@@ -242,7 +240,7 @@
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.dataSet" bundle="<%=messageBunle%>"/> </span></div>
-<div class='div_detail_form'>
+<div class='div_detail_form' style="height:40px;">
 <select class='portlet-form-field' name="ds_id" >
 
 <%

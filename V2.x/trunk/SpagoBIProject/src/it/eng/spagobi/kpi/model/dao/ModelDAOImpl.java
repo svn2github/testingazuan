@@ -244,7 +244,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		
 		Criteria critt = session.createCriteria(SbiKpiModel.class);
 		critt.add(Expression.eq("sbiKpiModel", value));
-		critt.addOrder(Order.asc("kpiModelNm"));
+		critt.addOrder(Order.asc("kpiModelCd"));
 		
 		List children = critt.list();
 		

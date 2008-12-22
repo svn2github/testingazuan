@@ -489,6 +489,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		toReturn.setDescription(description);
 		toReturn.setChildrenNodes(childrenNodes);
 		toReturn.setParentId(parentId);
+		toReturn.setModel(aModel);
 
 		logger.debug("OUT");
 		return toReturn;

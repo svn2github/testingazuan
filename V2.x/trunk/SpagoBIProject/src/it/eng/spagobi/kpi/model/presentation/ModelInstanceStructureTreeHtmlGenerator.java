@@ -9,8 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
@@ -174,13 +176,24 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 	private void recursiveStepAddItems(StringBuffer htmlStream,
 			ModelInstance aModel, HttpServletRequest httpRequest) {
 		String name = aModel.getName();
+		String code = "";
+		if (aModel.getModel() != null)			
+			 code = aModel.getModel().getCode();
 		Integer id = aModel.getId();
 		Integer parentId = aModel.getParentId();
-		boolean kpi = (aModel.getKpiInstance()!= null && aModel.getKpiInstance().getKpi()!= null);
+		String kpi = null;
+		if (aModel.getKpiInstance()!= null && aModel.getKpiInstance().getKpi()!= null)
+		{
+			try {
+				kpi = DAOFactory.getKpiDAO().loadKpiById(aModel.getKpiInstance().getKpi()).getCode();
+			} catch (EMFUserError e) {
+			}
+		}
+			
 		if (parentId == null)
 			parentId = -1;
 		// parent
-		addItemForJSTree(htmlStream, aModel, id, parentId, name, true, false,
+		addItemForJSTree(htmlStream, aModel, id, parentId, code, name, true, false,
 				kpi, httpRequest);
 		List modelChildren = aModel.getChildrenNodes();
 		// children
@@ -191,10 +204,13 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 	}
 
 	protected void addItemForJSTree(StringBuffer htmlStream,
-			ModelInstance item, int id, int parentId, String name,
-			boolean isInitialPath, boolean isFinalPath, boolean kpi,
+			ModelInstance item, int id, int parentId, String code, String name,
+			boolean isInitialPath, boolean isFinalPath, String kpi,
 			HttpServletRequest httpRequest) {
-		String skpi = (kpi) ? "&nbsp;<span class=\\'kpi\\'>[kpi]</span>" : "";
+		String skpi = "";
+		if (kpi!=null){
+			skpi = "&nbsp;-&nbsp;<span class=\\'kpi\\'>[" + kpi + "]</span>";
+		}
 		String delete = "";
 		String add = "";
 
@@ -211,7 +227,7 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 			delete = createDeleteObjectLink(item, httpRequest);
 		}
 
-		htmlStream.append("	treeCMS.add(" + id + ", " + parentId + ",'" + name
+		htmlStream.append("	treeCMS.add(" + id + ", " + parentId + ",'" + code + "&nbsp;-&nbsp;"+ name
 				+ skpi + "', 'javascript:linkEmpty()','" + title
 				+ "', '', '', '', '', 'menu(event, \\'" + add + "\\', \\'"
 				+ createDetailObjectLink(item, httpRequest) + "\\', \\'"

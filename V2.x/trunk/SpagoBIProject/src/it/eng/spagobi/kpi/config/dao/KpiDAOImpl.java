@@ -457,7 +457,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			List l = query.list();
 			if (!l.isEmpty()) {
-			        logger.debug("Found one ALLARM!!!");
+			        logger.debug("Found one ALARM!!!");
 				toReturn = true;
 			}
 
@@ -466,7 +466,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (tx != null)
 				tx.rollback();
 			logger.error("HibernateException",he);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10109);
 
 		} finally {
 			if (aSession != null) {
@@ -669,7 +669,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10108);
 
 		} finally {
 			if (aSession != null) {

@@ -275,6 +275,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				Iterator resourcesIt = this.resources.iterator();
 				while(resourcesIt.hasNext()){
 					Resource r = (Resource) resourcesIt.next();
+					logger.debug("Resource: "+r.getName());	
 					KpiResourceBlock block = new KpiResourceBlock();
 					block.setR(r);
 					KpiLine line = getBlock(modelNodeInstanceID, dateOfKPI, r);
@@ -325,20 +326,30 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    logger.debug("IN");
 		KpiLine line = new KpiLine();
 		ModelInstanceNode modI = DAOFactory.getKpiDAO().loadModelInstanceById(miId, dateOfKPI);
+		if(modI!=null){
+			logger.debug("Loaded Model Instance Node with id: "+modI.getModelInstanceNodeId());
+		}	
 		String modelNodeName = modI.getName();
 		line.setModelNodeName(modelNodeName);		
 				
 		KpiInstance kpiI = modI.getKpiInstanceAssociated();
 		if (kpiI!=null){
+			logger.debug("Got KpiInstance with ID: "+kpiI.getKpiInstanceId().toString());
 			KpiValue value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
+			logger.debug("Old KpiValue retrieved");
 			if(value == null && isActualDateRequired){
+				logger.debug("Old value not still valid");
 				DataSetConfig ds = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
+				logger.debug("Retrieved the Dataset to be calculated: "+ds.getDsId());
 				value = getNewKpiValue(ds,kpiI, r);	
+				logger.debug("New value calculated");
 				//Insert new Value into the DB
 				DAOFactory.getKpiDAO().insertKpiValue(value);	
+				logger.debug("New value inserted in the DB");
 				//Checks if the value is alarming (out of a certain range)
 				//If the value is alarming a new line will be inserted in the sbi_alarm_event table and scheduled to be sent
 				DAOFactory.getKpiDAO().isAlarmingValue(value);
+				logger.debug("Alarms sent if the value is over the thresholds");
 				line.setValue(value);
 			}else if (value!= null){
 				line.setValue(value);
@@ -347,17 +358,20 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 			Integer kpiId = kpiI.getKpi();
 			Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiId);
+			logger.debug("Retrieved the kpi with id: "+kpiId.toString());
 			
 			if(k!=null){
 				String docLabel = k.getDocumentLabel();
 				if (docLabel!=null && !docLabel.equals("")){
 					List documents = new ArrayList();
+					logger.debug("Retrieved documents associated to the KPI");
 					documents.add(docLabel);
 					line.setDocuments(documents);
 				}		
 			}
 			if(display_alarm && value.getValue()!=null){
 				Boolean alarm =  DAOFactory.getKpiDAO().isKpiInstUnderAlramControl(kpiI.getKpiInstanceId());
+				logger.debug("KPI is under alarm control: "+alarm.toString());
 				line.setAlarm(alarm);
 			}
 			

@@ -120,7 +120,7 @@ public class KpiResourceBlock {
 		}
 		if (display_semaphore && semaphorColor!= null){
 			String semaphorHex = Integer.toHexString( semaphorColor.getRGB() & 0x00ffffff ) ;		
-			_htmlStream.append("		<td width='2%' class='kpi_td_left' style='vertical-align:middle;' ><div class='kpi_div' style=\"width:9px;vertical-align:middle;float:center;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div></td>\n");
+			_htmlStream.append("		<td width='2%' style='vertical-align:middle;height:9px;' ><div style=\"width:9px;vertical-align:middle;float:center;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='2%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}

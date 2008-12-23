@@ -60,8 +60,8 @@ public class KpiResourceBlock {
 		StringBuffer _htmlStream = new StringBuffer();				
 		if (r!=null){
 			_htmlStream.append("<div id ='"+r.getName()+"' >\n");				
-			_htmlStream.append("<table style='width:100%;margin-left:0px;align:left;vertical-align:middle;' float=\"left\">\n");
-			_htmlStream.append(" <tr class='kpi_resource_section'><td>RESOURCE: "+r.getName()+"</td><td></td><td></td><td></td><td></td></tr>\n");
+			_htmlStream.append("<table style='width:100%;align:left;vertical-align:middle;clear:left;'>\n");
+			_htmlStream.append(" <tr class='kpi_resource_section' ><td>RESOURCE: "+r.getName()+"</td></tr>\n");
 			_htmlStream.append("</table>\n");
 		}
 		

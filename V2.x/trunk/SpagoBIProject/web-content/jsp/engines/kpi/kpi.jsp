@@ -114,7 +114,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			if(resources!=null && !resources.isEmpty()){
 				Iterator resIt = resources.iterator();
 				scriptDiv += "<script>";
-				resDiv += "<div class='slider_header'><ul>";
+				resDiv += "<div class='slider_header' ><ul>";
 				resDiv += "<li class='arrow' id='ss'>";
 				resDiv += "<a  href='javascript:viewAll();' style='margin: 0px 0px 5px 10px;' id='ViewAll_click' name='ViewAll_click' > ";
 				resDiv += " View All";
@@ -158,7 +158,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 				%>
 			 <%=resDiv%>
-			<br>
+			<p>
 			<br>
 			   <%=_htmlStream%> 
 			<br>

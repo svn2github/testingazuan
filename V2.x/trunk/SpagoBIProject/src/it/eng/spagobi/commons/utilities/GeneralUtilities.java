@@ -357,30 +357,7 @@ public class GeneralUtilities {
 	logger.debug("OUT:" + path);
 	return path;
     }  
-    /**
-     * This URL is used for the back end call.
-     * @return A String with SpagoBI's adderss
-     */
-    public static String getSpagoBiHostBackEnd() {
-	logger.debug("IN");
-	String path = "";
-	try {
-	    logger.debug("Trying to recover SpagoBiHostBackEnd from ConfigSingleton");
-	    ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
-	    SourceBean sbTmp = (SourceBean) spagoConfig.getAttribute("SPAGOBI.BACKEND_SPAGOBI_HOST");
-	    if (sbTmp!=null){
-		path = sbTmp.getCharacters();
-	    }else {
-		logger.debug("BACKEND_SPAGOBI_HOST not set, using the default value ");
-		path = "http://localhost:8080";
-	    }
-	    logger.debug("BACKEND_SPAGOBI_HOST: " + path);
-	} catch (Exception e) {
-	    logger.error("Error while recovering getSpagoBiHostBackEnd", e);
-	}
-	logger.debug("OUT:" + path);
-	return path;
-    }      
+     
     
     /**
      * Returns the complete HTTP URL and puts it into a

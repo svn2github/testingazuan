@@ -216,6 +216,7 @@ public class ExecutionProxy {
 	    }
 	    
 	    // set spagobi  url
+	    /*
 	    if (!mapPars.containsKey(SpagoBIConstants.SBI_BACK_END_HOST)) {
 		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
 		String sbiconturl = GeneralUtilities.getSpagoBiHostBackEnd();
@@ -223,6 +224,7 @@ public class ExecutionProxy {
 		    mapPars.put(SpagoBIConstants.SBI_BACK_END_HOST, sbiconturl);
 		}
 	    }
+	    */
 	 // set spagobi  url for backend invocation
 	    if (!mapPars.containsKey(SpagoBIConstants.SBI_HOST)) {
 		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();

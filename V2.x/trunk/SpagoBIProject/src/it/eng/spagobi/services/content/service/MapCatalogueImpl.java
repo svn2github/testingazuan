@@ -262,8 +262,7 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 	    GeoMap tmpMap = mapDAO.loadMapByName(mapName);
 	    if (tmpMap == null)
 		return null;
-	    toReturn = ((tmpMap.getUrl()== null)?"":tmpMap.getUrl()).replace('\\', '/');;
-	    toReturn = GeneralUtilities.getSpagoBiHostBackEnd()+ GeneralUtilities.getSpagoBiContext()+ toReturn;
+	    toReturn = ((tmpMap.getUrl()== null)?"":tmpMap.getUrl()).replace('\\', '/');
 	    logger.debug("MapUrl:"+toReturn);
 	    return toReturn;
 	} catch (Exception e) {

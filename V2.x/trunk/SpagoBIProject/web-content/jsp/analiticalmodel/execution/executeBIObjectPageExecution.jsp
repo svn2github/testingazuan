@@ -31,7 +31,7 @@ if (modalityO != null && modalityO.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_CO
 	Map executionParameters = new HashMap();
 	if (documentParametersMap != null) executionParameters.putAll(documentParametersMap);
 	executionParameters.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
-	executionParameters.put(SpagoBIConstants.SBI_BACK_END_HOST, GeneralUtilities.getSpagoBiHostBackEnd());
+	//executionParameters.put(SpagoBIConstants.SBI_BACK_END_HOST, GeneralUtilities.getSpagoBiHostBackEnd());
 	executionParameters.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
 	executionParameters.put("SBI_EXECUTION_ID", instanceO.getExecutionId());
 	executionParameters.put("EXECUTION_CONTEXT", "DOCUMENT_COMPOSITION");

@@ -130,7 +130,7 @@ String title = obj.getName();
 Map executionParameters = new HashMap();
 if (documentParametersMap != null) executionParameters.putAll(documentParametersMap);
 executionParameters.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
-executionParameters.put(SpagoBIConstants.SBI_BACK_END_HOST, GeneralUtilities.getSpagoBiHostBackEnd());
+//executionParameters.put(SpagoBIConstants.SBI_BACK_END_HOST, GeneralUtilities.getSpagoBiHostBackEnd());
 executionParameters.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
 executionParameters.put("SBI_EXECUTION_ID", instance.getExecutionId());
 executionParameters.put(SpagoBIConstants.EXECUTION_ROLE, instance.getExecutionRole());

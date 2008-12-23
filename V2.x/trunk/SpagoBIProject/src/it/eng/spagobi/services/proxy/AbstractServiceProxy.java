@@ -97,54 +97,35 @@ public abstract class AbstractServiceProxy {
 	String className = this.getClass().getSimpleName();
 	logger.debug("Read className=" + className);
 	SourceBean engineConfig = EnginConf.getInstance().getConfig();
-	String spagoContext = (String) session.getAttribute(SpagoBIConstants.SBI_CONTEXT);
-	String spagoUrlBackEnd = (String) session.getAttribute(SpagoBIConstants.SBI_BACK_END_HOST);
-	String backEndUrl=spagoUrlBackEnd+spagoContext;
-	logger.debug("Read spagoUrlBackEnd=" + backEndUrl);
-	if (backEndUrl == null)
-	    logger.warn("BACK END SPAGO CONTEXT IS NULL!!!!");
+
 	if (engineConfig != null) {
 	    // sono sui motori...
+	    String spagoContext = (String) session.getAttribute(SpagoBIConstants.SBI_CONTEXT);
 	    if (EnginConf.getInstance().isSsoActive()) ssoIsActive = true;
 	    logger.debug("Read activeSso=" + ssoIsActive);
 
 	    SourceBean sourceBeanConf = (SourceBean) engineConfig.getAttribute("SPAGOBI_SERVER_URL");
 	    String spagoBiServerURL= (String) sourceBeanConf.getCharacters();
 	    logger.debug("Read spagoBiServerURL=" + spagoBiServerURL);
-	    if (spagoBiServerURL!=null && spagoBiServerURL.length()>0){
-		    // N.B. if engine-config.xml contains tag SPAGOBI_SERVER_URL
-		    // the proxy use this value for invoke WebService
-		backEndUrl=spagoBiServerURL;
+	    if (spagoBiServerURL==null){
+		spagoBiServerURL="http://localhost:8080/SpagoBI";
 	    }
 	    sourceBeanConf = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
 	    filterReceipt = (String) sourceBeanConf.getCharacters();
 	    logger.debug("Read filterReceipt=" + filterReceipt);
-	    filterReceipt = backEndUrl + filterReceipt;    
+	    filterReceipt = spagoBiServerURL + filterReceipt;    
 	    sourceBeanConf = (SourceBean) engineConfig.getAttribute(className + "_URL");
 	    String serviceUrlStr = (String) sourceBeanConf.getCharacters();
 	    logger.debug("Read sericeUrl=" + serviceUrlStr);
 	    try {
-		serviceUrl = new URL(backEndUrl + serviceUrlStr);
+		serviceUrl = new URL(spagoBiServerURL + serviceUrlStr);
 	    } catch (MalformedURLException e) {
-		logger.error("MalformedURLException:" + backEndUrl + serviceUrlStr, e);
+		logger.error("MalformedURLException:" + spagoBiServerURL + serviceUrlStr, e);
 	    }
 	    pass=EnginConf.getInstance().getPass();
 	    if (pass==null) logger.warn("PassTicked don't set");
 	} else {
-	    ConfigSingleton serverConfig = ConfigSingleton.getInstance();
-	    String spagoBackEndUrl = it.eng.spagobi.commons.utilities.GeneralUtilities.getSpagoBiHostBackEnd()+it.eng.spagobi.commons.utilities.GeneralUtilities.getSpagoBiContext();
-	    // sono all'interno del contesto SpagoBI
-	    SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
-	    String active = (String) validateSB.getCharacters();
-	    if (active != null && active.equals("true"))
-		ssoIsActive = true;
-	    logger.debug("Read activeSso=" + ssoIsActive);
-	    validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.FILTER_RECEIPT");
-	    filterReceipt = spagoBackEndUrl + (String) validateSB.getCharacters();
-	    logger.debug("Read filterReceipt=" + filterReceipt);
-	    validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.PASS");
-	    pass=(String) validateSB.getCharacters();
-	    if (pass==null) logger.warn("PassTicked don't set");
+              logger.warn("this proxy is used in core project.");
 	}
     }
 

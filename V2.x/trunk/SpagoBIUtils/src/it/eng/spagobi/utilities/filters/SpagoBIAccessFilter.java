@@ -32,7 +32,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.filters;
 
-import it.eng.spago.base.SourceBean;
+
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -114,18 +114,12 @@ public class SpagoBIAccessFilter implements Filter {
 	    	userIdentifier=checkUserWithSSO(userIdentifier, session);
 
 	    String spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
-	    String spagoBackEndUrl = request.getParameter(SpagoBIConstants.SBI_BACK_END_HOST);
 	    String spagoUrl = request.getParameter(SpagoBIConstants.SBI_HOST);
 	    if (spagobiContext != null) {
 		logger.debug("spagobiContext:" + spagobiContext);
 		session.setAttribute(SpagoBIConstants.SBI_CONTEXT, spagobiContext);
 	    } else
 		logger.warn("spagobiContext is null!!!!!!");
-	    if (spagoBackEndUrl != null) {
-		logger.debug("spagoBackEndUrl:" + spagoBackEndUrl);
-		session.setAttribute(SpagoBIConstants.SBI_BACK_END_HOST, spagoBackEndUrl);
-	    } else
-		logger.warn("spagoBackEndUrl is null!!!!!!");
 	    if (spagoUrl != null) {
 		logger.debug("spagoUrl:" + spagoUrl);
 		session.setAttribute(SpagoBIConstants.SBI_HOST, spagoUrl);

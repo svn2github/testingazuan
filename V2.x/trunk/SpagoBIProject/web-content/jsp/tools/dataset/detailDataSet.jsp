@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDataSetModule"); 
 		DataSetConfig ds = (DataSetConfig)moduleResponse.getAttribute(DetailDataSetModule.DATASET);
+		List listTransformerType = (List) moduleResponse.getAttribute(DetailDataSetModule.LIST_TRANSFORMER);
 		String message=(String)aServiceRequest.getAttribute("MESSAGEDET");
 		String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
@@ -63,7 +64,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript" src="<%=linkProtoEff%>"></script>
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
 <link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
-
 
 
 <form method='POST' action='<%=formUrl%>' id='dsForm' name='dsForm' >
@@ -137,6 +137,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String hideScript="style=\"display: none;\"";
 				String hideJClass="style=\"display: none;\"";
 				
+		
 				String type="";
 				
    	       if(ds instanceof FileDataSet){
@@ -343,13 +344,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<BR>
 	   
 	   </div>
-
 	   
 	   	<div class='div_detail_label' id="DATASOURCELABEL">
-		<span class='portlet-form-field-label'>
-			<spagobi:message key = "SBISet.eng.dataSource" />
-		</span>
-	</div>	
+			<span class='portlet-form-field-label'>
+				<spagobi:message key = "SBISet.eng.dataSource" />
+			</span>
+		</div>	
 	<div class='div_detail_form'>
 		<select class='portlet-form-field' name="DATASOURCE" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="DATASOURCE" <%=disableQuery%> >			
 			<option></option>
@@ -466,7 +466,70 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   size="100" value="<%=javaClassName%>" maxlength="50" <%=disableJClass%> />
 	   </div>
 	   </div>
-	
+	   
+	   <!-- transformation type combo -->
+	 
+	   <div class='div_detail_label'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBISet.ListDataSet.transformer" />
+				</span>
+		</div>
+	   <div class='div_detail_form'>
+      		<select class='portlet-form-input-field' style='width:250px;' name="TRANSFORMERNAME" id="TRANSFORMERNAME" onchange="javascript:EnableTransformerDiv(this.value)">
+				<option value="">&nbsp;</option>
+				
+			<% String hideTrasnformer="style=\"display: none;\""; 
+			if (listTransformerType != null){
+				Iterator iterTransformer= listTransformerType.iterator();
+			   
+      			while(iterTransformer.hasNext()) {
+      				Domain transformer = (Domain)iterTransformer.next();
+      				Integer objTransformer = ds.getTransformerId();
+      				Integer currTransformer = transformer.getValueId();
+                    boolean isTransformer = false;
+      		    	if(objTransformer != null && objTransformer.intValue() == currTransformer.intValue()){
+      		    		isTransformer = true;   
+      		    	}
+      		%>
+      			<option value="<%=transformer.getValueCd()%>"  <%if(isTransformer) out.print(" selected='selected' ");  %>><%=transformer.getValueName()%></option>
+      		<% 	
+      			}
+			}
+      		%>
+      		</select>
+		</div> 
+		<div class='div_detail_form' id='transformer_pivot' <%=hideTrasnformer%>>
+			<%  
+				   String pivotColumnName = ds.getPivotColumnName();
+				   if((pivotColumnName==null) || (pivotColumnName.equalsIgnoreCase(""))  ) {
+					   pivotColumnName = "";
+				   }	
+				   String pivotRowName  = ds.getPivotRowName();
+				   if((pivotRowName==null) || (pivotRowName.equalsIgnoreCase(""))  ) {
+					   pivotRowName = "";
+				   }	
+				   String pivotColumnValue  = ds.getPivotColumnValue();
+				   if((pivotColumnValue==null) || (pivotColumnValue.equalsIgnoreCase(""))  ) {
+					   pivotColumnValue = "";
+				   }	
+			%>
+				<span class='portlet-form-field-label'>	
+					<spagobi:message key = "SBISet.ListDataSet.pivotColumn" />
+				</span>
+				<input class='portlet-form-input-field' type="text" name="PIVOTCOLUMNNAME" 
+					   size="25" value="<%= pivotColumnName %>" maxlength="50" />
+			    <span class='portlet-form-field-label'>	
+					<spagobi:message key = "SBISet.ListDataSet.pivotRow" />
+				</span>
+				<input class='portlet-form-input-field' type="text" name="PIVOTROWNAME" 
+					   size="25" value="<%= pivotRowName %>" maxlength="50" />
+			   <span class='portlet-form-field-label'>	
+					<spagobi:message key = "SBISet.ListDataSet.pivotValue" />
+				</span>
+				<input class='portlet-form-input-field' type="text" name="PIVOTCOLUMNVALUE" 
+					   size="25" value="<%= pivotColumnValue %>" maxlength="50" />
+					   
+		</div>
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
 	
 			<!-- START DIV FIX LIST WIZARD --> 
@@ -488,21 +551,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 
 	 
 	 
-	 
-
-	 
-	 
-	 
-	 
-	 
-	 
-	 	
 	
-
-	 
-	 
-	
-	<script><!--
+	<script>
+		function EnableTransformerDiv(type){
+			if (type == "")
+				document.all['transformer_pivot'].style.display = 'none';
+			else if (type == "PIVOT_TRANSFOMER")
+				document.all['transformer_pivot'].style.display = 'inline';
+		}
+	<!--
 	
 	<%
 		String datasetModified = (String)aSessionContainer.getAttribute(SpagoBIConstants.DATASET_MODIFIED);

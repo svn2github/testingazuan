@@ -108,19 +108,23 @@ public class KpiResourceBlock {
 		
 		BulletGraph sbi = (BulletGraph)line.getChartBullet();		
 		List children = line.getChildren();
+		if(evenLine){
+			_htmlStream.append("<div><table   style='width:"+(100-(2*recursionLev))+"%;margin-left:"+20*recursionLev+"px;align:left;vertical-align:middle;border-bottom: 1px solid #660000 !important;'  >\n");
+		}else{
+			_htmlStream.append("<div><table   style='width:"+(100-(2*recursionLev))+"%;margin-left:"+20*recursionLev+"px;align:left;vertical-align:middle;border-bottom: 1px solid #DDDDDD !important;'  >\n");
+		}
 		
-		_htmlStream.append("<div><table   style='width:"+(100-(2*recursionLev))+"%;margin-left:"+20*recursionLev+"px;align:left;vertical-align:middle;'  >\n");
 		if(recursionLev==0){
 			_htmlStream.append("	<tr style='background-color:#DDDDDD;' class='kpi_line_section_odd'>\n");
 		}
 		else if(evenLine){
-			 _htmlStream.append("	<tr class='kpi_line_section_even'>\n");
+			 _htmlStream.append("	<tr class='kpi_line_section_even' style='border-bottom: 1px solid #660000 !important;height:9px;'>\n");
 		}else{
 			_htmlStream.append("	<tr class='kpi_line_section_odd'>\n");
 		}
 		if (display_semaphore && semaphorColor!= null){
 			String semaphorHex = Integer.toHexString( semaphorColor.getRGB() & 0x00ffffff ) ;		
-			_htmlStream.append("		<td width='2%' style='vertical-align:middle;height:9px;' ><div style=\"width:9px;vertical-align:middle;float:center;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div></td>\n");
+			_htmlStream.append("		<td width='2%' style='padding-top:8px;padding-bottom:8px;' ><div style=\"width:9px;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='2%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}

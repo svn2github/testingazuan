@@ -552,6 +552,7 @@ IMG {
 	background-color: #FFFFFF;
 	vertical-align: middle;
 	height: 25px;
+	border-color:#660000;
 	border-bottom: 1px solid #660000;
 }
 
@@ -563,7 +564,8 @@ IMG {
 	background-color: #FFFFFF;
 	vertical-align: middle;
 	height: 25px;
-	border-bottom: 1px solid #bbb;
+	border-color:#DDDDDD;
+	border-bottom: 1px solid #DDDDDD;
 }
 
 .kpi_title_section    {

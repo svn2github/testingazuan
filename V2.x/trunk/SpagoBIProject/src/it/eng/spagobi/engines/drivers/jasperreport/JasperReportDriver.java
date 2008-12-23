@@ -4,14 +4,14 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, this list of 
+ * Redistributions of source code must retain the above copyright notice, this list of 
       conditions and the following disclaimer.
       
-    * Redistributions in binary form must reproduce the above copyright notice, this list of 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of 
       conditions and the following disclaimer in the documentation and/or other materials 
       provided with the distribution.
       
-    * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
+ * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
       be used to endorse or promote products derived from this software without specific
       prior written permission.
 
@@ -28,12 +28,10 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
-**/
+ **/
 
 package it.eng.spagobi.engines.drivers.jasperreport;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFInternalError;
@@ -46,15 +44,13 @@ import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.bo.Subreport;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IBinContentDAO;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
+import it.eng.spagobi.engines.drivers.AbstractDriver;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
-import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -65,21 +61,24 @@ import org.apache.log4j.Logger;
 /**
  * Driver Implementation (IEngineDriver Interface) for Jasper Report Engine.
  */
-public class JasperReportDriver implements IEngineDriver {
+public class JasperReportDriver extends AbstractDriver implements IEngineDriver {
 
-    static private Logger logger = Logger.getLogger(JasperReportDriver.class);
-    
+    static Logger logger = Logger.getLogger(JasperReportDriver.class);
+
     /**
      * Returns a map of parameters which will be send in the request to the
      * engine application.
      * 
-     * @param profile   Profile of the user
-     * @param roleName  the name of the execution role
-     * @param biobject the biobject
+     * @param profile
+     *                Profile of the user
+     * @param roleName
+     *                the name of the execution role
+     * @param biobject
+     *                the biobject
      * 
      * @return Map The map of the execution call parameters
      */
-    public Map getParameterMap(Object biobject, IEngUserProfile profile,String roleName) {
+    public Map getParameterMap(Object biobject, IEngUserProfile profile, String roleName) {
 	logger.debug("IN");
 	Map map = new Hashtable();
 	try {
@@ -88,7 +87,7 @@ public class JasperReportDriver implements IEngineDriver {
 	} catch (ClassCastException cce) {
 	    logger.error("The parameter is not a BIObject type", cce);
 	}
-	map = applySecurity(map,profile);
+	map = applySecurity(map, profile);
 	logger.debug("OUT");
 	return map;
     }
@@ -97,34 +96,20 @@ public class JasperReportDriver implements IEngineDriver {
      * Returns a map of parameters which will be send in the request to the
      * engine application.
      * 
-     * @param subObject SubObject to execute
-     * @param profile   Profile of the user
-     * @param roleName  the name of the execution role
-     * @param object the object
+     * @param subObject
+     *                SubObject to execute
+     * @param profile
+     *                Profile of the user
+     * @param roleName
+     *                the name of the execution role
+     * @param object
+     *                the object
      * 
      * @return Map The map of the execution call parameters
      */
-    public Map getParameterMap(Object object, Object subObject,
-	    IEngUserProfile profile, String roleName) {
+    public Map getParameterMap(Object object, Object subObject, IEngUserProfile profile, String roleName) {
 	return getParameterMap(object, profile, roleName);
     }
-
-    /**
-     * Applys changes for security reason if necessary
-     * 
-     * @param pars  The map of parameters
-     * @return      The map of parameters to send to the engine
-     */
-    protected Map applySecurity(Map pars, IEngUserProfile profile) {
-	logger.debug("IN");
-	//pars.put("userId", ((UserProfile)profile).getUserId());
-	//logger.debug("Add parameter: userId/"+((UserProfile)profile).getUserId());
-	pars.put("userId",((UserProfile)profile).getUserUniqueIdentifier());
-	logger.debug("Add parameter: userUniqueIdentifier/" + ((UserProfile)profile).getUserUniqueIdentifier());
-	logger.debug("OUT");
-	return pars;
-    }
-    
 
     /**
      * Starting from a BIObject extracts from it the map of the paramaeters for
@@ -138,27 +123,28 @@ public class JasperReportDriver implements IEngineDriver {
 	logger.debug("IN");
 	Map pars = new Hashtable();
 
-	String documentId=biobj.getId().toString();
+	String documentId = biobj.getId().toString();
 	pars.put("document", documentId);
-	logger.debug("Add document parameter:"+documentId);
+	logger.debug("Add document parameter:" + documentId);
 	pars.put("documentLabel", biobj.getLabel());
-	logger.debug("Add document parameter:"+biobj.getLabel());
-	
+	logger.debug("Add document parameter:" + biobj.getLabel());
+
 	// adding date format parameter
-    ConfigSingleton config = ConfigSingleton.getInstance();
-    SourceBean formatSB = (SourceBean) config.getAttribute("DATA-ACCESS.DATE-FORMAT");
-    String format = (formatSB==null)?"DD-MM-YYYY":(String) formatSB.getAttribute("format");
-    pars.put("dateformat", format);
-	
+	ConfigSingleton config = ConfigSingleton.getInstance();
+	SourceBean formatSB = (SourceBean) config.getAttribute("DATA-ACCESS.DATE-FORMAT");
+	String format = (formatSB == null) ? "DD-MM-YYYY" : (String) formatSB.getAttribute("format");
+	pars.put("dateformat", format);
+
 	pars = addBISubreports(biobj, pars);
 	pars = addBIParameters(biobj, pars);
-  
+
 	logger.debug("OUT");
 	return pars;
     }
 
     /**
-     * Add  subreport informations
+     * Add subreport informations
+     * 
      * @param biobj
      * @param pars
      * @return
@@ -170,22 +156,20 @@ public class JasperReportDriver implements IEngineDriver {
 	    ISubreportDAO subrptdao = DAOFactory.getSubreportDAO();
 	    IBIObjectDAO biobjectdao = DAOFactory.getBIObjectDAO();
 
-	    List subreportList = subrptdao
-		    .loadSubreportsByMasterRptId(masterReportId);
+	    List subreportList = subrptdao.loadSubreportsByMasterRptId(masterReportId);
 	    for (int i = 0; i < subreportList.size(); i++) {
 		Subreport subreport = (Subreport) subreportList.get(i);
 		BIObject subrptbiobj = biobjectdao.loadBIObjectForDetail(subreport.getSub_rpt_id());
-        
+
 		IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
-		ObjTemplate objtemp =  tempdao.getBIObjectActiveTemplate(subrptbiobj.getId());
-		
+		ObjTemplate objtemp = tempdao.getBIObjectActiveTemplate(subrptbiobj.getId());
+
 		String flgTemplateStandard = "true";
 		if (objtemp.getName().indexOf(".zip") > -1) {
 		    flgTemplateStandard = "false";
 		}
-                logger.debug(" flgTemplateStandard: "+ flgTemplateStandard);
-		pars.put("subrpt." + (i + 1) + ".flgTempStd",
-			flgTemplateStandard);
+		logger.debug(" flgTemplateStandard: " + flgTemplateStandard);
+		pars.put("subrpt." + (i + 1) + ".flgTempStd", flgTemplateStandard);
 
 		Integer id = subrptbiobj.getId();
 		logger.debug(" ID: " + id);
@@ -194,9 +178,9 @@ public class JasperReportDriver implements IEngineDriver {
 	    pars.put("srptnum", "" + subreportList.size());
 
 	} catch (EMFUserError e) {
-	    logger.error("Error while reading subreports:",e);
+	    logger.error("Error while reading subreports:", e);
 	} catch (EMFInternalError ex) {
-		logger.error("Error while reading subreports:",ex);
+	    logger.error("Error while reading subreports:", ex);
 	}
 
 	return pars;
@@ -204,14 +188,17 @@ public class JasperReportDriver implements IEngineDriver {
 
     /**
      * Add into the parameters map the BIObject's BIParameter names and values
-     * @param biobj  BIOBject to execute
-     * @param pars   Map of the parameters for the execution call
+     * 
+     * @param biobj
+     *                BIOBject to execute
+     * @param pars
+     *                Map of the parameters for the execution call
      * @return Map The map of the execution call parameters
      */
     private Map addBIParameters(BIObject biobj, Map pars) {
 	logger.debug("IN");
 	if (biobj == null) {
-	    logger.warn("BIObject is null");	    
+	    logger.warn("BIObject is null");
 	    return pars;
 	}
 
@@ -222,11 +209,13 @@ public class JasperReportDriver implements IEngineDriver {
 		try {
 		    biobjPar = (BIObjectParameter) it.next();
 		    String value = parValuesEncoder.encode(biobjPar);
-		    if (value!=null) pars.put(biobjPar.getParameterUrlName(), value);
-		    else logger.warn("value encoded IS null");
-		    logger.debug("Add parameter:"+biobjPar.getParameterUrlName()+"/"+value);
+		    if (value != null)
+			pars.put(biobjPar.getParameterUrlName(), value);
+		    else
+			logger.warn("value encoded IS null");
+		    logger.debug("Add parameter:" + biobjPar.getParameterUrlName() + "/" + value);
 		} catch (Exception e) {
-		    logger.error("Error while processing a BIParameter",e);
+		    logger.error("Error while processing a BIParameter", e);
 		}
 	    }
 	}
@@ -234,16 +223,18 @@ public class JasperReportDriver implements IEngineDriver {
 	return pars;
     }
 
-
     /**
      * Function not implemented. This method should not be called
      * 
-     * @param biobject The BIOBject to edit
-     * @param profile the profile
+     * @param biobject
+     *                The BIOBject to edit
+     * @param profile
+     *                the profile
      * 
      * @return the edits the document template build url
      * 
-     * @throws InvalidOperationRequest the invalid operation request
+     * @throws InvalidOperationRequest
+     *                 the invalid operation request
      */
     public EngineURL getEditDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile)
 	    throws InvalidOperationRequest {
@@ -254,12 +245,15 @@ public class JasperReportDriver implements IEngineDriver {
     /**
      * Function not implemented. Thid method should not be called
      * 
-     * @param biobject  The BIOBject to edit
-     * @param profile the profile
+     * @param biobject
+     *                The BIOBject to edit
+     * @param profile
+     *                the profile
      * 
      * @return the new document template build url
      * 
-     * @throws InvalidOperationRequest the invalid operation request
+     * @throws InvalidOperationRequest
+     *                 the invalid operation request
      */
     public EngineURL getNewDocumentTemplateBuildUrl(Object biobject, IEngUserProfile profile)
 	    throws InvalidOperationRequest {

@@ -36,6 +36,7 @@ import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+import it.eng.spagobi.engines.drivers.AbstractDriver;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
@@ -54,7 +55,7 @@ import sun.misc.BASE64Encoder;
 /**
  * Driver Implementation (IEngineDriver Interface) for Qbe External Engine. 
  */
-public class QbeDriver implements IEngineDriver {
+public class QbeDriver extends AbstractDriver implements IEngineDriver {
 	
 	static private Logger logger = Logger.getLogger(QbeDriver.class);
 	 
@@ -250,20 +251,6 @@ public class QbeDriver implements IEngineDriver {
 
     
         
-    /**
-	 * Applys changes for security reason if necessary
-	 * @param pars The map of parameters
-	 * @return the map of parameters to send to the engine 
-	 */
-	protected Map applySecurity(Map pars, IEngUserProfile profile) {
-		logger.debug("IN");
-		pars.put("userId", ((UserProfile)profile).getUserId());
-		//logger.debug("Add parameter: userId/"+ ((UserProfile)profile).getUserId());
-		logger.debug("Add parameter: userId/"+ ((UserProfile)profile).getUserUniqueIdentifier());
-		logger.debug("OUT");
-		return pars;
-	}
-
 	protected Map applyService(Map pars) {
 		logger.debug("IN");
 		pars.put("ACTION_NAME", "SPAGO_BI_START_ACTION");

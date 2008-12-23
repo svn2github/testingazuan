@@ -45,6 +45,7 @@ import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.engines.drivers.AbstractDriver;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
@@ -63,7 +64,7 @@ import org.apache.log4j.Logger;
 /**
  * Driver Implementation (IEngineDriver Interface) for JPivot Engine.
  */
-public class JPivotDriver implements IEngineDriver {
+public class JPivotDriver extends AbstractDriver implements IEngineDriver {
 
     static private Logger logger = Logger.getLogger(JPivotDriver.class);
 
@@ -497,20 +498,7 @@ public class JPivotDriver implements IEngineDriver {
 	return pars;
     }
 
-    /**
-     * Applys changes for security reason if necessary
-     * 
-     * @param pars
-     *                The map of parameters
-     * @return the map of parameters to send to the engine
-     */
-    protected Map applySecurity(Map pars, IEngUserProfile profile) {
-	logger.debug("IN");
-	pars.put("userId",((UserProfile)profile).getUserUniqueIdentifier());
-	logger.debug("Add parameter: userUniqueIdentifier/" + ((UserProfile)profile).getUserUniqueIdentifier());
-	logger.debug("OUT");
-	return pars;
-    }
+
 
     /**
      * Returns the url to be invoked for editing template document.

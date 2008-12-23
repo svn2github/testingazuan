@@ -38,6 +38,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
+import it.eng.spagobi.engines.drivers.AbstractDriver;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
@@ -54,7 +55,7 @@ import org.apache.log4j.Logger;
 /**
  * Driver Implementation (IEngineDriver Interface) for Jasper Report Engine. 
  */
-public class WekaDriver implements IEngineDriver {
+public class WekaDriver extends AbstractDriver implements IEngineDriver {
 
 	
     static private Logger logger = Logger.getLogger(WekaDriver.class);
@@ -133,20 +134,7 @@ public class WekaDriver implements IEngineDriver {
  
 	
 	
-    /**
-     * Applys changes for security reason if necessary
-     * 
-     * @param pars  The map of parameters
-     * @return      The map of parameters to send to the engine
-     */
-    protected Map applySecurity(Map pars, IEngUserProfile profile) {
-	logger.debug("IN");
-	pars.put("userId", ((UserProfile)profile).getUserId());
-	//logger.debug("Add parameter: userId/"+((UserProfile)profile).getUserId());
-	logger.debug("Add parameter: userId/"+((UserProfile)profile).getUserUniqueIdentifier());
-	logger.debug("OUT");
-	return pars;
-    }
+
 	
     /**
      * Returns the BIObject parameters map

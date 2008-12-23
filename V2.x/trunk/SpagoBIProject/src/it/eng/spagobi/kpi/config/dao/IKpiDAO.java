@@ -136,6 +136,8 @@ public interface IKpiDAO {
 	 * @throws EMFUserError if an Exception occurs
 	 */
 	public List loadKpiList() throws EMFUserError;
+	
+	public List loadKpiList(String fieldOrder, String typeOrder) throws EMFUserError;
 
 	public void modifyResource(Resource resource) throws EMFUserError;
 

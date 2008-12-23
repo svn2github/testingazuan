@@ -52,7 +52,7 @@
 	
 	<MODULE name="DetailModelModule"
 		class="it.eng.spagobi.kpi.model.service.DetailModelModule">
-		<CONFIG pool="spagobi" title="sbi.kpi.detail.model.tree.title">
+		<CONFIG pool="spagobi" title="sbi.kpi.detail.model.title">
 		</CONFIG>
 	</MODULE>
 
@@ -67,7 +67,7 @@
 
 	<MODULE name="DetailModelTreeModule"
 		class="it.eng.spagobi.kpi.model.service.DetailModelTreeModule">
-		<CONFIG pool="spagobi" rows="10000" title="sbi.kpi.list.model.tree.title">
+		<CONFIG pool="spagobi" rows="10000" title="sbi.kpi.detail.model.tree.title">
 			<COLUMNS />
 			<CAPTIONS />
 			<BUTTONS />
@@ -134,7 +134,7 @@
 	
 	<MODULE name="DetailModelInstanceModule"
 		class="it.eng.spagobi.kpi.model.service.DetailModelInstanceModule">
-		<CONFIG pool="spagobi" title="sbi.kpi.detail.model.tree.title">
+		<CONFIG pool="spagobi" title="sbi.kpi.detail.model.instance.title">
 		</CONFIG>
 	</MODULE>
 
@@ -149,7 +149,7 @@
 
 	<MODULE name="DetailModelInstanceTreeModule"
 		class="it.eng.spagobi.kpi.model.service.DetailModelInstanceTreeModule">
-		<CONFIG pool="spagobi" rows="10000" title="sbi.kpi.list.model.tree.title">
+		<CONFIG pool="spagobi" rows="10000" title="sbi.kpi.detail.model.instance.tree.title">
 			<COLUMNS />
 			<CAPTIONS />
 			<BUTTONS />

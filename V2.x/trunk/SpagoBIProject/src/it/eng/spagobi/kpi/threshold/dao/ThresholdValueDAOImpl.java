@@ -5,6 +5,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 
+import it.eng.spagobi.kpi.config.metadata.SbiKpi;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
@@ -20,6 +21,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
 import org.hibernate.exception.ConstraintViolationException;
 
 public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
@@ -27,8 +29,28 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 
 	static private Logger logger = Logger
 			.getLogger(ThresholdValueDAOImpl.class);
+	static private String THRESHOLD_VALUE_POSITION = "position";
+	static private String THRESHOLD_VALUE_LABEL = "label";
+	static private String THRESHOLD_VALUE_MIN_VALUE = "minValue";
+	static private String THRESHOLD_VALUE_MAX_VALUE = "maxValue";
+	
+	private String getThresholdValueProperty(String property){
+		String toReturn = null;
+		if(property != null && property.toUpperCase().equals("POSITION"))
+			toReturn = THRESHOLD_VALUE_POSITION;
+		if(property != null && property.toUpperCase().equals("LABEL"))
+			toReturn = THRESHOLD_VALUE_LABEL;
+		if(property != null && property.toUpperCase().equals("MIN VALUE"))
+			toReturn = THRESHOLD_VALUE_MIN_VALUE;
+		if(property != null && property.toUpperCase().equals("MAX VALUE"))
+			toReturn = THRESHOLD_VALUE_MAX_VALUE;
+		
+		return toReturn;
+	}
+	
 
-	public List loadThresholdValueList(Integer thresholdId) throws EMFUserError {
+	public List loadThresholdValueList(Integer thresholdId, String fieldOrder,
+			String typeOrder) throws EMFUserError {
 		logger.debug("IN");
 		List toReturn = null;
 		Session aSession = null;
@@ -43,8 +65,14 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 					SbiThreshold.class, thresholdId);
 
 			Criteria crit = aSession.createCriteria(SbiThresholdValue.class);
-
 			crit.add(Expression.eq("sbiThreshold", sbiThreshold));
+			
+			if (fieldOrder != null && typeOrder != null) {
+				if (typeOrder.toUpperCase().trim().equals("ASC"))
+					crit.addOrder(Order.asc(getThresholdValueProperty(fieldOrder)));
+				if (typeOrder.toUpperCase().trim().equals("DESC"))
+					crit.addOrder(Order.asc(getThresholdValueProperty(fieldOrder)));
+			}
 			toTransform = crit.list();
 
 			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
@@ -57,7 +85,7 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 				thresholdValue.setPosition(hibThresholdValue.getPosition());
 				thresholdValue.setMaxValue(hibThresholdValue.getMaxValue());
 				thresholdValue.setMinValue(hibThresholdValue.getMinValue());
-				
+
 				thresholdValue.setThresholdId(hibThresholdValue
 						.getSbiThreshold().getThresholdId());
 				toReturn.add(thresholdValue);
@@ -103,7 +131,8 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 					.getValueId());
 			toReturn.setThresholdId(hibThresholdValue.getSbiThreshold()
 					.getThresholdId());
-			toReturn.setType(hibThresholdValue.getSbiThreshold().getSbiDomains().getValueCd());
+			toReturn.setType(hibThresholdValue.getSbiThreshold()
+					.getSbiDomains().getValueCd());
 
 			tx.commit();
 		} catch (HibernateException he) {
@@ -195,7 +224,7 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			
+
 			Integer position = toCreate.getPosition();
 			String label = toCreate.getLabel();
 			Double minValue = toCreate.getMinValue();
@@ -205,7 +234,7 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 			Integer severityId = toCreate.getSeverityId();
 
 			SbiThresholdValue sbiThresholdValue = new SbiThresholdValue();
-			
+
 			SbiDomains severity = null;
 			if (severityId != null) {
 				severity = (SbiDomains) aSession.load(SbiDomains.class,
@@ -217,7 +246,7 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 				threshold = (SbiThreshold) aSession.load(SbiThreshold.class,
 						thresholdId);
 			}
-			
+
 			sbiThresholdValue.setPosition(position);
 			sbiThresholdValue.setLabel(label);
 			sbiThresholdValue.setMinValue(minValue);
@@ -252,8 +281,8 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 		Transaction tx = null;
 		try {
 			tx = aSession.beginTransaction();
-			SbiThresholdValue aThresholdValue = (SbiThresholdValue) aSession.load(
-					SbiThresholdValue.class, thresholdValueId);
+			SbiThresholdValue aThresholdValue = (SbiThresholdValue) aSession
+					.load(SbiThresholdValue.class, thresholdValueId);
 			aSession.delete(aThresholdValue);
 			tx.commit();
 

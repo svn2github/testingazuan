@@ -27,6 +27,7 @@ import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -470,11 +471,11 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 		List childrenNodes = new ArrayList();
 
-		// Set children = value.getSbiKpiModelInsts();
 
 		Criteria critt = session.createCriteria(SbiKpiModelInst.class);
 		critt.add(Expression.eq("sbiKpiModelInst", value));
-		critt.addOrder(Order.asc("name"));
+		critt.createCriteria("sbiKpiModel").addOrder(Order.asc("kpiModelCd"));
+		
 		List children = critt.list();
 
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {

@@ -39,7 +39,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String resourceTypeDescription = "";
 	Integer resourceTypeId = null;
 
-	String title = "TITLE";
+	String title = "";
+	
+    ConfigSingleton configure = ConfigSingleton.getInstance();
+	SourceBean moduleBean = (SourceBean) configure
+			.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
+					"DetailResourcesModule");
+	
+	if (moduleBean.getAttribute("CONFIG.TITLE") != null)
+		title = (String) moduleBean.getAttribute("CONFIG.TITLE");
+	
 	String messageSave = "";
 
 	// DETAIL_SELECT
@@ -117,7 +126,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'
 			style='vertical-align: middle; padding-left: 5px;'><spagobi:message
-			key="<%=title%>" /></td>
+			key="<%=title%>" bundle="<%=messageBundle%>" /></td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'><a
 			href="javascript:document.getElementById('ResourceForm').submit()">
@@ -152,9 +161,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
-<div class='div_detail_form'><input
-	class='portlet-form-input-field' type="text" name="resourceDescription"
-	size="50" value="<%=resourceDescription%>" maxlength="200"></div>
+<div class='div_detail_form' style='height: 150px;'>
+	<textarea name="resourceDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=resourceDescription%></textarea>
+</div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.tableName" bundle="<%=messageBundle%>" /> </span></div>

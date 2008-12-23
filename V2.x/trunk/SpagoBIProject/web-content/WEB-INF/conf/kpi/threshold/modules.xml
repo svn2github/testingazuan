@@ -53,7 +53,7 @@
   </MODULE>
   
   <MODULE name="DetailThresholdModule" class="it.eng.spagobi.kpi.threshold.service.DetailThresholdsModule">
-    <CONFIG pool="spagobi" title="sbi.kpi.list.thresholds.title">
+    <CONFIG pool="spagobi" title="sbi.kpi.detail.thresholds.title">
     </CONFIG>
   </MODULE>
   
@@ -109,7 +109,7 @@
   </MODULE>
   
   <MODULE name="DetailThresholdValueModule" class="it.eng.spagobi.kpi.threshold.service.DetailThresholdValuesModule">
-    <CONFIG pool="spagobi" title="sbi.kpi.list.thresoldValues.title">
+    <CONFIG pool="spagobi" title="sbi.kpi.detail.thresoldValues.title">
 	</CONFIG>
   </MODULE>
 </MODULES>

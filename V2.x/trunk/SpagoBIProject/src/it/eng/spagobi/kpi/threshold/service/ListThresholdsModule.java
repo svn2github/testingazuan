@@ -47,9 +47,11 @@ public class ListThresholdsModule extends AbstractConfigurableListModule {
 
 	@Override
 	protected List getObjectList(SourceBean request) {
+		String fieldOrder = (String)request.getAttribute("FIELD_ORDER");
+		String typeOrder = (String)request.getAttribute("TYPE_ORDER");
 		List result = null;
 		try {
-			result = DAOFactory.getThresholdDAO().loadThresholdList();
+			result = DAOFactory.getThresholdDAO().loadThresholdList(fieldOrder, typeOrder);
 		} catch (EMFUserError e) {
 			logger.error(e);
 		}

@@ -39,10 +39,6 @@
 	SourceBean moduleBean = (SourceBean) configure
 			.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
 					"DetailThresholdModule");
-	
-	// SourceBean threshold = (SourceBean) aServiceResponse.getAttribute("DetailThresholdModule");
-
-	// String message = DelegatedDetailService.DETAIL_INSERT;
 
 	if (moduleBean.getAttribute("CONFIG.TITLE") != null)
 		title = (String) moduleBean.getAttribute("CONFIG.TITLE");
@@ -171,9 +167,9 @@
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBunle%>"/> </span></div>
-<div class='div_detail_form' style="height: 160px;">
+<div class='div_detail_form' style="height: 150px;">
 <textarea
-  class='portlet-form-input-field'  cols="50" rows="10" name="description"><%=description%></textarea></div>
+  class='portlet-text-area-field'  cols="40" style='height: 110px;' name="description"><%=description%></textarea></div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message

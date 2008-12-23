@@ -23,6 +23,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.List"%>
 
 <%
+
+String title = "";
+
+ConfigSingleton configure = ConfigSingleton.getInstance();
+SourceBean moduleBean = (SourceBean) configure
+		.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
+				"ListModelInstanceTreeModule");
+
+if (moduleBean.getAttribute("CONFIG.TITLE") != null)
+	title = (String) moduleBean.getAttribute("CONFIG.TITLE");
+
   Map backUrlPars = new HashMap();
   backUrlPars.put("PAGE", "ModelInstancePage");
   String backUrl = urlBuilder.getUrl(request, backUrlPars);
@@ -32,7 +43,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   <tr class='header-row-portlet-section'>
     <td class='header-title-column-portlet-section'
       style='vertical-align: middle; padding-left: 5px;'>
-      <spagobi:message key="sbi.kpi.list.model.tree.title" bundle="<%=messageBundle%>"/></td>
+      <spagobi:message key='<%=title%>' bundle='<%=messageBundle%>' />
+      </td>
     <td class='header-empty-column-portlet-section'>&nbsp;</td>
     <td class='header-button-column-portlet-section'><a
       href='<%=backUrl%>'> <img

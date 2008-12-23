@@ -41,11 +41,6 @@
 			.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
 					"DetailKpiModule");
 	
-	
-	//SourceBean kpi = (SourceBean) aServiceResponse.getAttribute("DetailKpiModule");
-
-	//String message = DelegatedDetailService.DETAIL_INSERT;
-
 	if (moduleBean.getAttribute("CONFIG.TITLE") != null)
 		title = (String) moduleBean.getAttribute("CONFIG.TITLE");
 	

@@ -47,9 +47,11 @@ public class ListKpiModule extends AbstractConfigurableListModule {
 
 	@Override
 	protected List getObjectList(SourceBean request) {
+		String fieldOrder = (String)request.getAttribute("FIELD_ORDER");
+		String typeOrder = (String)request.getAttribute("TYPE_ORDER");
 		List result = null;
 		try {
-			result = DAOFactory.getKpiDAO().loadKpiList();
+			result = DAOFactory.getKpiDAO().loadKpiList(fieldOrder, typeOrder);
 		} catch (EMFUserError e) {
 			logger.error(e);
 		}

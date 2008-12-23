@@ -44,6 +44,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
 
 public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
@@ -457,7 +458,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			List l = query.list();
 			if (!l.isEmpty()) {
-			        logger.debug("Found one ALARM!!!");
+				logger.debug("Found one ALARM!!!");
 				toReturn = true;
 			}
 
@@ -465,7 +466,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			if (tx != null)
 				tx.rollback();
-			logger.error("HibernateException",he);
+			logger.error("HibernateException", he);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 10109);
 
 		} finally {
@@ -484,75 +485,80 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer kpiInstID = value.getKpiInstanceId();
 		String val = value.getValue();
 		Double kpiVal = null;
-		if(val!=null){
-			kpiVal =new Double(val);
+		if (val != null) {
+			kpiVal = new Double(val);
 		}
-		if (kpiVal!=null){
+		if (kpiVal != null) {
 			KpiInstance kInst = null;
 			Session aSession = null;
 			Transaction tx = null;
-	
+
 			try {
 				aSession = getSession();
 				tx = aSession.beginTransaction();
-				SbiKpiInstance hibSbiKpiInstance = (SbiKpiInstance) aSession.load(
-						SbiKpiInstance.class, kpiInstID);
+				SbiKpiInstance hibSbiKpiInstance = (SbiKpiInstance) aSession
+						.load(SbiKpiInstance.class, kpiInstID);
 				Set alarms = hibSbiKpiInstance.getSbiAlarms();
 				if (!alarms.isEmpty()) {
-	
+
 					Iterator itAl = alarms.iterator();
 					while (itAl.hasNext()) {
 						boolean isAlarming = false;
 						SbiAlarm alarm = (SbiAlarm) itAl.next();
 						String a = "";
-						SbiThresholdValue threshold = alarm.getSbiThresholdValue();
-						String type = threshold.getSbiThreshold().getSbiDomains()
-								.getValueCd();
+						SbiThresholdValue threshold = alarm
+								.getSbiThresholdValue();
+						String type = threshold.getSbiThreshold()
+								.getSbiDomains().getValueCd();
 						double min;
 						double max;
 						String thresholdValue = "";
-	
+
 						if (type.equals("RANGE")) {
-	
+
 							min = threshold.getMinValue();
 							max = threshold.getMaxValue();
-	
-							// if the value is in the interval, then there should be
+
+							// if the value is in the interval, then there
+							// should be
 							// an alarm
 							if (kpiVal.doubleValue() >= min
 									&& kpiVal.doubleValue() <= max) {
 								isAlarming = true;
 								thresholdValue = "Min:" + min + "-Max:" + max;
-								logger.debug("The value " + kpiVal.doubleValue()
+								logger.debug("The value "
+										+ kpiVal.doubleValue()
 										+ " is in the RANGE " + thresholdValue
 										+ " and so an Alarm will be scheduled");
 							}
-	
+
 						} else if (type.equals("MINIMUM")) {
-	
+
 							min = threshold.getMinValue();
 							// if the value is smaller than the min value
 							if (kpiVal.doubleValue() <= min) {
 								isAlarming = true;
 								thresholdValue = "Min:" + min;
-								logger.debug("The value " + kpiVal.doubleValue()
+								logger.debug("The value "
+										+ kpiVal.doubleValue()
 										+ " is lower than " + thresholdValue
 										+ " and so an Alarm will be scheduled");
 							}
-	
+
 						} else if (type.equals("MAXIMUM")) {
-	
+
 							max = threshold.getMaxValue();
 							// if the value is higher than the max value
 							if (kpiVal.doubleValue() >= max) {
 								isAlarming = true;
 								thresholdValue = "Max:" + max;
-								logger.debug("The value " + kpiVal.doubleValue()
+								logger.debug("The value "
+										+ kpiVal.doubleValue()
 										+ " is higher than " + thresholdValue
 										+ " and so an Alarm will be scheduled");
 							}
 						}
-	
+
 						if (isAlarming) {
 							SbiAlarmEvent alarmEv = new SbiAlarmEvent();
 							Integer alarmID = alarm.getId();
@@ -562,7 +568,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 							if (value.getR() != null) {
 								resources = value.getR().getName();
 							}
-	
+
 							alarmEv.setKpiName(kpiName);
 							alarmEv.setKpiValue(val);
 							alarmEv.setActive(true);
@@ -570,27 +576,27 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 							alarmEv.setResources(resources);
 							alarmEv.setSbiAlarms(alarm);
 							alarmEv.setThresholdValue(thresholdValue);
-	
+
 							DAOFactory.getAlarmEventDAO().insert(alarmEv);
 							logger
 									.debug("A new alarm has been inserted in the Alarm Event Table");
 						}
-	
+
 					}
 
 				}
-	
+
 			} catch (HibernateException he) {
 				logger
 						.error(
 								"Error while verifying if the KpiValue is alarming for its thresholds ",
 								he);
-	
+
 				if (tx != null)
 					tx.rollback();
-	
+
 				throw new EMFUserError(EMFErrorSeverity.ERROR, 10105);
-	
+
 			} finally {
 				if (aSession != null) {
 					if (aSession.isOpen())
@@ -760,8 +766,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		SbiKpiInstance kpiInst = hibSbiKpiModelInst.getSbiKpiInstance();
 
 		KpiInstance kpiInstanceAssociated = null;
-		if(kpiInst!=null){
-			kpiInstanceAssociated = toKpiInstance(kpiInst,	requestedDate);
+		if (kpiInst != null) {
+			kpiInstanceAssociated = toKpiInstance(kpiInst, requestedDate);
 		}
 
 		Set resources = hibSbiKpiModelInst.getSbiKpiModelResourceses();
@@ -1077,7 +1083,19 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return chartType;
 	}
 
-	public List loadKpiList() throws EMFUserError {
+	private String getKpiProperty(String property){
+		String toReturn = null;
+		if(property != null && property.toUpperCase().equals("CODE"))
+			toReturn = "code";
+		if(property != null && property.toUpperCase().equals("NAME"))
+			toReturn = "name";
+		if(property != null && property.toUpperCase().equals("DESCRIPTION"))
+			toReturn = "description";
+		return toReturn;
+	}
+	
+	public List loadKpiList(String fieldOrder, String typeOrder)
+			throws EMFUserError {
 		logger.debug("IN");
 		List toReturn = null;
 		Session aSession = null;
@@ -1088,7 +1106,17 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			tx = aSession.beginTransaction();
 			toReturn = new ArrayList();
 			List toTransform = null;
-			toTransform = aSession.createQuery("from SbiKpi").list();
+			if (fieldOrder != null && typeOrder != null) {
+				Criteria crit = aSession
+				.createCriteria(SbiKpi.class);
+				if (typeOrder.toUpperCase().trim().equals("ASC"))
+					crit.addOrder(Order.asc(getKpiProperty(fieldOrder)));
+				if (typeOrder.toUpperCase().trim().equals("DESC"))
+					crit.addOrder(Order.desc(getKpiProperty(fieldOrder)));
+				toTransform = crit.list();
+			} else {
+				toTransform = aSession.createQuery("from SbiKpi").list();
+			}
 
 			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
 				SbiKpi hibKpi = (SbiKpi) iterator.next();
@@ -1117,6 +1145,10 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		}
 		logger.debug("OUT");
 		return toReturn;
+	}
+
+	public List loadKpiList() throws EMFUserError {
+		return loadKpiList(null, null);
 	}
 
 	public void modifyResource(Resource resource) throws EMFUserError {
@@ -1327,7 +1359,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			
+
 			String name = kpi.getKpiName();
 			String description = kpi.getDescription();
 			String code = kpi.getCode();
@@ -1350,7 +1382,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			sbiKpi.setWeight(weight);
 			sbiKpi.setDocumentLabel(documentLabel);
 			sbiKpi.setSbiDataSet(ds);
-			
+
 			idToReturn = (Integer) aSession.save(sbiKpi);
 
 			tx.commit();
@@ -1376,26 +1408,24 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Transaction tx = null;
 		try {
 			tx = aSession.beginTransaction();
-			SbiKpi akpi = (SbiKpi) aSession.load(SbiKpi.class,
-					kpiId);			
+			SbiKpi akpi = (SbiKpi) aSession.load(SbiKpi.class, kpiId);
 			aSession.delete(akpi);
 			tx.commit();
 
-		}catch (ConstraintViolationException cve){
+		} catch (ConstraintViolationException cve) {
 			if (tx != null && tx.isActive()) {
 				tx.rollback();
 			}
-			logger.error("Impossible to delete a Kpi",cve);
+			logger.error("Impossible to delete a Kpi", cve);
 			throw new EMFUserError(EMFErrorSeverity.WARNING, 10015);
-			
-		} 		
-		catch (HibernateException e) {
+
+		} catch (HibernateException e) {
 			if (tx != null && tx.isActive()) {
 				tx.rollback();
 			}
 			logger.error("Error while delete a Kpi ", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
-		}finally {
+		} finally {
 			aSession.close();
 		}
 		return true;

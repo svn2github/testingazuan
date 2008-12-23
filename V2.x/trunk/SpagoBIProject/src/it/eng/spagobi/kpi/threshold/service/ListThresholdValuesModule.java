@@ -50,9 +50,9 @@ public class ListThresholdValuesModule extends AbstractConfigurableListModule {
 	@Override
 	public void service(SourceBean request, SourceBean response)
 			throws Exception {
-
+		
 		super.service(request, response);
-
+		
 		String thresholdId = (String) request.getAttribute("IDT");
 
 		HashMap parametersMap = (HashMap) response
@@ -62,19 +62,22 @@ public class ListThresholdValuesModule extends AbstractConfigurableListModule {
 			parametersMap.put("IDT", thresholdId);
 			response.setAttribute("PARAMETERS_MAP", parametersMap);
 		} else {
-			parametersMap.put("ID", thresholdId);
+			parametersMap.put("IDT", thresholdId);
 			response.updAttribute("PARAMETERS_MAP", parametersMap);
 		}
 	}
 
 	@Override
 	protected List getObjectList(SourceBean request) {
+		String fieldOrder = (String) request.getAttribute("FIELD_ORDER");
+		String typeOrder = (String) request.getAttribute("TYPE_ORDER");
 		List result = null;
 		try {
 			String thresholdId = (String) request.getAttribute("IDT");
 			if (thresholdId != null && !thresholdId.trim().equals(""))
-				result = DAOFactory.getThresholdValueDAO().loadThresholdValueList(
-						Integer.parseInt(thresholdId));
+				result = DAOFactory.getThresholdValueDAO()
+						.loadThresholdValueList(Integer.parseInt(thresholdId),
+								fieldOrder, typeOrder);
 		} catch (EMFUserError e) {
 			logger.error(e);
 		}
@@ -88,26 +91,25 @@ public class ListThresholdValuesModule extends AbstractConfigurableListModule {
 		rowSB.setAttribute("ID", aThresholdValue.getId());
 		rowSB.setAttribute("POSITION", aThresholdValue.getPosition());
 		rowSB.setAttribute("LABEL", aThresholdValue.getLabel());
-		if(aThresholdValue.getMinValue()!= null) {
+		if (aThresholdValue.getMinValue() != null) {
 			rowSB.setAttribute("MIN_VALUE", aThresholdValue.getMinValue());
-		}
-		else {
+		} else {
 			rowSB.setAttribute("MIN_VALUE", "");
 		}
-		if(aThresholdValue.getMaxValue()!= null) {
+		if (aThresholdValue.getMaxValue() != null) {
 			rowSB.setAttribute("MAX_VALUE", aThresholdValue.getMaxValue());
-		}
-		else {
+		} else {
 			rowSB.setAttribute("MAX_VALUE", "");
 		}
 	}
-	
+
 	@Override
 	public boolean delete(SourceBean request, SourceBean response) {
 		boolean toReturn = false;
 		String thresholdValueId = (String) request.getAttribute("ID");
 		try {
-			toReturn = DAOFactory.getThresholdValueDAO().deleteThresholdValue(Integer.parseInt(thresholdValueId));
+			toReturn = DAOFactory.getThresholdValueDAO().deleteThresholdValue(
+					Integer.parseInt(thresholdValueId));
 			toReturn = true;
 		} catch (NumberFormatException e) {
 			EMFErrorHandler engErrorHandler = getErrorHandler();

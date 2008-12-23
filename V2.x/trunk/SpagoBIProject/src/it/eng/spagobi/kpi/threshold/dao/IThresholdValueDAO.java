@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IThresholdValueDAO {
 
-	List loadThresholdValueList(Integer thresholdId) throws EMFUserError;
+	List loadThresholdValueList(Integer thresholdId,String fieldOrder, String typeOrder) throws EMFUserError;
 
 	ThresholdValue loadThresholdValueById(Integer id) throws EMFUserError;
 

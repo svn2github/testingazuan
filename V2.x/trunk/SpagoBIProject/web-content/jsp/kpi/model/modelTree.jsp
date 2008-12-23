@@ -23,6 +23,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.List"%>
 
 <%
+String title = "";
+
+ConfigSingleton configure = ConfigSingleton.getInstance();
+SourceBean moduleBean = (SourceBean) configure
+		.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
+				"ListModelTreeModule");
+
+if (moduleBean.getAttribute("CONFIG.TITLE") != null)
+	title = (String) moduleBean.getAttribute("CONFIG.TITLE");
+
   Map backUrlPars = new HashMap();
   backUrlPars.put("PAGE", "ModelPage");
   String backUrl = urlBuilder.getUrl(request, backUrlPars);

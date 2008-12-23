@@ -67,9 +67,9 @@
         <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappingora/SbiDataSetConfig.hbm.xml" />
         
          <!-- KPI Engine -->
-        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingmysql/SbiKpi.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingmysql/SbiKpiInstance.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingmysql/SbiKpiInstanceHistory.hbm.xml" />
+         <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingora/SbiKpi.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingora/SbiKpiInstance.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingora/SbiKpiInstanceHistory.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingora/SbiKpiModel.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingora/SbiKpiModelAttr.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingora/SbiKpiModelAttrVal.hbm.xml" />
@@ -81,15 +81,15 @@
         <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingora/SbiMeasureUnit.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingora/SbiResources.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/threshold/metadata/mappingora/SbiThreshold.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/threshold/metadata/mappingora/SbiThresholdValue.hbm.xml" /> 
+        <mapping resource="it/eng/spagobi/kpi/threshold/metadata/mappingora/SbiThresholdValue.hbm.xml" />
         
-         <!-- Menu -->
+          <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingora/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingora/SbiMenuRole.hbm.xml" />
         
-         <!-- Kpi.alarm -->
+        <!-- Kpi.alarm -->
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingora/SbiAlarm.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingora/SbiAlarmEvent.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingora/SbiAlarmContact.hbm.xml" /> 
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingora/SbiAlarmContact.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

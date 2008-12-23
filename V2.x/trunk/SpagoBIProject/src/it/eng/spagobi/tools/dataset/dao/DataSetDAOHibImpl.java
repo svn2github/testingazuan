@@ -24,8 +24,6 @@ package it.eng.spagobi.tools.dataset.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
@@ -45,7 +43,6 @@ import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.FileHandler;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -251,6 +248,10 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			}
 			
 			hibDataSet.setLabel(aDataSet.getLabel());
+			hibDataSet.setTransformerId(aDataSet.getTransformerId());
+			hibDataSet.setPivotColumnName(aDataSet.getPivotColumnName());
+			hibDataSet.setPivotRowName(aDataSet.getPivotRowName());
+			hibDataSet.setPivotColumnValue(aDataSet.getPivotColumnValue());
 			hibDataSet.setName(aDataSet.getName());			
 			hibDataSet.setDescription(aDataSet.getDescription());
 			hibDataSet.setParameters(aDataSet.getParameters());
@@ -339,6 +340,10 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 
 
 			hibDataSet.setLabel(aDataSet.getLabel());
+			hibDataSet.setTransformerId(aDataSet.getTransformerId());
+			hibDataSet.setPivotColumnName(aDataSet.getPivotColumnName());
+			hibDataSet.setPivotRowName(aDataSet.getPivotRowName());
+			hibDataSet.setPivotColumnValue(aDataSet.getPivotColumnValue());
 			hibDataSet.setDescription(aDataSet.getDescription());
 			hibDataSet.setName(aDataSet.getName());
 			hibDataSet.setParameters(aDataSet.getParameters());
@@ -445,6 +450,10 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		ds.setDsId(hibDataSet.getDsId());
 		ds.setName(hibDataSet.getName());
 		ds.setLabel(hibDataSet.getLabel());
+		ds.setTransformerId(hibDataSet.getTransformerId());
+		ds.setPivotColumnName(hibDataSet.getPivotColumnName());
+		ds.setPivotRowName(hibDataSet.getPivotRowName());
+		ds.setPivotColumnValue(hibDataSet.getPivotColumnValue());
 		ds.setDescription(hibDataSet.getDescription());		
 		ds.setParameters(hibDataSet.getParameters());		
 		

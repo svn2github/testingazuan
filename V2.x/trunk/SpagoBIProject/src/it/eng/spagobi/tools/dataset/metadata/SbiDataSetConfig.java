@@ -27,10 +27,14 @@ package it.eng.spagobi.tools.dataset.metadata;
  */
 public class SbiDataSetConfig {
 	private int dsId;	
+	private Integer transformerId = null;
 	private String name=null;
     	private String description=null;
     	private String label=null;
     	private String parameters=null;
+    	private String pivotColumnName=null;
+    	private String pivotRowName=null;
+    	private String pivotColumnValue=null;
     	
 	/**
 	 * Gets the parameters.
@@ -120,6 +124,58 @@ public class SbiDataSetConfig {
 	 */
 	public void setDsId(int dsId) {
 		this.dsId = dsId;
+	}
+	
+	/**
+	 * Gets the pivot column name.
+	 * 
+	 * @return the pivot column name
+	 */
+	public String getPivotColumnName() {
+		return pivotColumnName;
+	}
+	
+	/**
+	 * Sets the pivot column name
+	 * 
+	 * @param pivotColumnName the new pivot column name
+	 */
+	public void setPivotColumnName(String pivotColumnName) {
+		this.pivotColumnName = pivotColumnName;
+	}
+
+	/**
+	 * Gets the pivot column value.
+	 * 
+	 * @return the pivot column value
+	 */
+	public String getPivotColumnValue() {
+		return pivotColumnValue;
+	}
+
+	/**
+	 * Sets the pivot column value
+	 * 
+	 * @param pivotColumnValue the new pivot column value
+	 */
+	public void setPivotColumnValue(String pivotColumnValue) {
+		this.pivotColumnValue = pivotColumnValue;
+	}
+
+	public String getPivotRowName() {
+		return pivotRowName;
+	}
+
+	public void setPivotRowName(String pivotRowName) {
+		this.pivotRowName = pivotRowName;
+	}
+
+	public Integer getTransformerId() {
+		return transformerId;
+	}
+
+	public void setTransformerId(Integer transformerId) {
+		this.transformerId = transformerId;
 	}
     	
 }

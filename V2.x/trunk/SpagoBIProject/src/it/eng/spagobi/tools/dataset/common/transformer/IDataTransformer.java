@@ -13,4 +13,6 @@ public interface IDataTransformer {
 
 	
     List transformData(List records);
+    
+    List transformData(List records, String pivotColumn,  String pivotRow, String pivotValue);
 }

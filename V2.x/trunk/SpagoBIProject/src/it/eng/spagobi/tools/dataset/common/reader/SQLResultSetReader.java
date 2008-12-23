@@ -3,18 +3,6 @@
  */
 package it.eng.spagobi.tools.dataset.common.reader;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.axis.handlers.ErrorHandler;
-import org.apache.log4j.Logger;
-
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
@@ -23,7 +11,6 @@ import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
-import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
@@ -40,8 +27,18 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
-import it.eng.spagobi.tools.dataset.service.DetailDataSetModule;
+import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
+import it.eng.spagobi.tools.dataset.common.transformer.PivotingTransformer;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Angelo Bernabei
@@ -137,6 +134,11 @@ public class SQLResultSetReader implements IDataReader {
 					}
 				}
 			
+			// pivoting of results if its configurated(capire dove farlo per generalizzare indipendentemente dal tipo di dataset)
+			if (ds.getPivotColumnName() != null && !ds.getPivotColumnName().equals("")){
+				ids.applyTranformer((IDataTransformer)new PivotingTransformer(), ds.getPivotColumnName(), 
+										ds.getPivotRowName(), ds.getPivotColumnValue());
+			}
 			logger.debug("OUT");
 	return ids;
     }

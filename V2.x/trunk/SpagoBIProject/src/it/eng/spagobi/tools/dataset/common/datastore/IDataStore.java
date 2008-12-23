@@ -26,7 +26,8 @@ public interface IDataStore {
     public void appendRow(IRecord r);
 	public void insertRow(int position,IRecord r);
     
-    void applyTranformer(IDataTransformer transformer);
+	void applyTranformer(IDataTransformer transformer);
+    void applyTranformer(IDataTransformer transformer, String pivotColumn,String pivotRow, String pivotValue);
     IDataStoreMetaData getMetaData();
     
     String toXml();

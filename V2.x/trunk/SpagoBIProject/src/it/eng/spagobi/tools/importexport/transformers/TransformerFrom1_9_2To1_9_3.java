@@ -40,6 +40,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -92,9 +93,11 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		FileOutputStream fos = null;
 		try {
 			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
-			Statement stmt = conn.createStatement();
+			//Statement stmt = conn.createStatement();
+			PreparedStatement stmt =null;
 			String selectAllOlapDocs =  "SELECT PATH FROM SBI_OBJECTS WHERE BIOBJ_TYPE_CD = 'OLAP'";
-			ResultSet rs = stmt.executeQuery(selectAllOlapDocs);
+			stmt = conn.prepareStatement(selectAllOlapDocs);
+			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){
 				// for each old olap subobjects, if present, arrange class name
 				String pathBiObj = rs.getString("PATH");
@@ -154,11 +157,12 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		Connection conn = null;
 		try {
 			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
-			Statement stmt = conn.createStatement();
-			
+			//Statement stmt = conn.createStatement();
+			PreparedStatement stmt = null;
 			// manages lovs' definition
 			String selectAllLovs =  "SELECT LABEL, INPUT_TYPE_CD, LOV_PROVIDER FROM SBI_LOV";
-			ResultSet rs = stmt.executeQuery(selectAllLovs);
+			stmt = conn.prepareStatement(selectAllLovs);
+			ResultSet rs = stmt.executeQuery();
 			while (rs.next()){
 				// for each old lov, resolves retrocompatibility problems
 				String label = rs.getString("LABEL");
@@ -167,9 +171,14 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 				String newLovProvider = resolveLovsRetrocompatibilityProblems(label, inputTypeCd, oldLovProvider);
 				if (newLovProvider != null) {
 					newLovProvider = newLovProvider.replaceAll("'", "''");
-					String updateLov = "UPDATE SBI_LOV SET LOV_PROVIDER = '" + newLovProvider + "' " +
-							"WHERE LABEL = '" + label + "'";
-					stmt.executeUpdate(updateLov);
+					//String updateLov = "UPDATE SBI_LOV SET LOV_PROVIDER = '" + newLovProvider + "' " +
+					//		"WHERE LABEL = '" + label + "'";
+					String updateLov = "UPDATE SBI_LOV SET LOV_PROVIDER = ? " +
+					"WHERE LABEL = ?";
+					stmt = conn.prepareStatement(updateLov);
+					stmt.setString(0, newLovProvider);
+					stmt.setString(1, label);
+					stmt.executeUpdate();
 					conn.commit();
 				}
 
@@ -177,26 +186,35 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 			
 			// manages sbi_obj_paruse table (parameters dependencies)
 			String sql =  "ALTER TABLE SBI_OBJ_PARUSE ADD COLUMN PROG INTEGER";
-			stmt.execute(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.execute();
 			sql =  "UPDATE SBI_OBJ_PARUSE SET PROG=1";
-			stmt.executeUpdate(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.executeUpdate();
 			sql =  "ALTER TABLE SBI_OBJ_PARUSE ADD COLUMN PRE_CONDITION VARCHAR";
-			stmt.execute(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.execute();
 			sql =  "UPDATE SBI_OBJ_PARUSE SET PRE_CONDITION=''";
-			stmt.executeUpdate(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.executeUpdate();
 			sql =  "ALTER TABLE SBI_OBJ_PARUSE ADD COLUMN POST_CONDITION VARCHAR";
-			stmt.execute(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.execute();
 			sql =  "UPDATE SBI_OBJ_PARUSE SET POST_CONDITION=''";
-			stmt.executeUpdate(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.executeUpdate();
 			sql =  "ALTER TABLE SBI_OBJ_PARUSE ADD COLUMN LOGIC_OPERATOR VARCHAR";
-			stmt.execute(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.execute();
 			sql =  "UPDATE SBI_OBJ_PARUSE SET LOGIC_OPERATOR=''";
-			stmt.executeUpdate(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.executeUpdate();
 			conn.commit();
 			
 			// insert new document type ETL
 			sql = "SELECT MAX(VALUE_ID) AS MAXID FROM SBI_DOMAINS";
-			ResultSet domainRs = stmt.executeQuery(sql);
+			stmt = conn.prepareStatement(sql);
+			ResultSet domainRs = stmt.executeQuery();
 			int maxid = 1000;
 			if (domainRs.next())
 				maxid = domainRs.getInt("MAXID");
@@ -204,46 +222,65 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 			sql =  "INSERT INTO SBI_DOMAINS " +
 					"(VALUE_ID, VALUE_CD, VALUE_NM, DOMAIN_CD, DOMAIN_NM, VALUE_DS) VALUES" +
 					"(" + idEtlDocumentTypeDom + ", 'ETL','ETL process','BIOBJ_TYPE','BI Object types','ETL process')";
-			stmt.execute(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.execute();
 			conn.commit();
 			
 			// manages sbi_functions table
 			sql =  "ALTER TABLE SBI_FUNCTIONS ADD COLUMN PROG INTEGER";
-			stmt.execute(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.execute();
 			sql =  "SELECT FUNCT_ID, CODE, PATH FROM SBI_FUNCTIONS";
-			ResultSet foldersRs = stmt.executeQuery(sql);
+			stmt = conn.prepareStatement(sql);
+			ResultSet foldersRs = stmt.executeQuery();
 			while (foldersRs.next()) {
 				String updateProgQuery = null;
 				int folderId = foldersRs.getInt("FUNCT_ID");
 				//String code = foldersRs.getString("CODE");
 				String path = foldersRs.getString("PATH");
 				String parentPath = path.substring(0, path.lastIndexOf("/"));
+				//String findCurrentMaxProg = "SELECT MAX(PROG) AS MAX_PROG FROM SBI_FUNCTIONS " +
+				//	"WHERE PROG IS NOT NULL AND PATH LIKE '" + parentPath + "/%' AND PATH NOT LIKE '" + parentPath + "/%/%'";
 				String findCurrentMaxProg = "SELECT MAX(PROG) AS MAX_PROG FROM SBI_FUNCTIONS " +
-					"WHERE PROG IS NOT NULL AND PATH LIKE '" + parentPath + "/%' AND PATH NOT LIKE '" + parentPath + "/%/%'";
-				
-				ResultSet progRs = stmt.executeQuery(findCurrentMaxProg);
+				"WHERE PROG IS NOT NULL AND PATH LIKE ? AND PATH NOT LIKE ?";
+				stmt = conn.prepareStatement(findCurrentMaxProg);
+				stmt.setString(0, parentPath + "/%");
+				stmt.setString(1, parentPath + "/%/%");
+				ResultSet progRs = stmt.executeQuery();
 				if (progRs.next()) {
 					int currentMaxProg = progRs.getInt("MAX_PROG");
 					Integer newProg = new Integer(currentMaxProg + 1);
-					updateProgQuery = "UPDATE SBI_FUNCTIONS SET PROG = " + newProg.toString() + " WHERE FUNCT_ID = " + folderId;
+					//updateProgQuery = "UPDATE SBI_FUNCTIONS SET PROG = " + newProg.toString() + " WHERE FUNCT_ID = " + folderId;
+					updateProgQuery = "UPDATE SBI_FUNCTIONS SET PROG = ? WHERE FUNCT_ID = ?" ;
+					stmt = conn.prepareStatement(updateProgQuery);
+					stmt.setInt(0, newProg.intValue());
+					stmt.setInt(1, folderId);
 				} else {
-					updateProgQuery = "UPDATE SBI_FUNCTIONS SET PROG = 1 WHERE FUNCT_ID = " + folderId;
+					//updateProgQuery = "UPDATE SBI_FUNCTIONS SET PROG = 1 WHERE FUNCT_ID = " + folderId;
+					updateProgQuery = "UPDATE SBI_FUNCTIONS SET PROG = 1 WHERE FUNCT_ID = ?" ;
+					stmt = conn.prepareStatement(updateProgQuery);
+					stmt.setInt(0, folderId);
 				}
-				stmt.execute(updateProgQuery);
+				stmt.execute();
 				conn.commit();
 			}
 			
 			// manages new SpagoBIJPivotEngine Url
 			sql = "SELECT ENGINE_ID, MAIN_URL FROM SBI_ENGINES " +
 					"WHERE DRIVER_NM LIKE '%it.eng.spagobi.engines.drivers.jpivot.JPivotDriver%'";
-			ResultSet jpivotEnginesRS = stmt.executeQuery(sql);
+			stmt = conn.prepareStatement(sql);
+			ResultSet jpivotEnginesRS = stmt.executeQuery();
 			while (jpivotEnginesRS.next()) {
 				int engineId = jpivotEnginesRS.getInt("ENGINE_ID");
 				String url = jpivotEnginesRS.getString("MAIN_URL");
 				if (url != null && url.trim().endsWith("jpivotOlap.jsp")) {
 					url = url.substring(0, url.lastIndexOf("jpivotOlap.jsp")) + "JPivotServlet";
-					String updateEngineQuery = "UPDATE SBI_ENGINES SET MAIN_URL = '" + url + "' WHERE ENGINE_ID = " + engineId;
-					stmt.execute(updateEngineQuery);
+					//String updateEngineQuery = "UPDATE SBI_ENGINES SET MAIN_URL = '" + url + "' WHERE ENGINE_ID = " + engineId;
+					String updateEngineQuery = "UPDATE SBI_ENGINES SET MAIN_URL = ? WHERE ENGINE_ID = ?" ;
+					stmt = conn.prepareStatement(updateEngineQuery);
+					stmt.setString(0,url);
+					stmt.setInt(1, engineId);
+					stmt.execute();
 				}
 			}
 			
@@ -268,15 +305,20 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		Connection conn = null;
 		try {
 			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
-			Statement stmt = conn.createStatement();
+			//Statement stmt = conn.createStatement();
+			PreparedStatement stmt = null;
 			String sql = "SELECT ENGINE_ID FROM SBI_ENGINES " +
 				"WHERE DRIVER_NM LIKE '%it.eng.spagobi.engines.drivers.birt.BirtReportDriver%'";
-			ResultSet birtEnginesRS = stmt.executeQuery(sql);
+			stmt = conn.prepareStatement(sql);
+			ResultSet birtEnginesRS = stmt.executeQuery();
 			String errBirtDocsFound = "";
 			while (birtEnginesRS.next()) {
 				int engineId = birtEnginesRS.getInt("ENGINE_ID");
-				sql = "SELECT LABEL, NAME, DESCR, PATH FROM SBI_OBJECTS WHERE ENGINE_ID = " + engineId;
-				ResultSet docsRS = stmt.executeQuery(sql);
+				//sql = "SELECT LABEL, NAME, DESCR, PATH FROM SBI_OBJECTS WHERE ENGINE_ID = " + engineId;
+				sql = "SELECT LABEL, NAME, DESCR, PATH FROM SBI_OBJECTS WHERE ENGINE_ID = ?" ;
+				stmt = conn.prepareStatement(sql);
+				stmt.setInt(0, engineId);
+				ResultSet docsRS = stmt.executeQuery();
 				while (docsRS.next()) {
 					// get the input stream of the template file
 					String pathBiObj = docsRS.getString("PATH");
@@ -501,8 +543,10 @@ public class TransformerFrom1_9_2To1_9_3 implements ITransformer {
 		try {
 			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
 			String sql = "SELECT PATH, UUID, BIOBJ_TYPE_CD FROM SBI_OBJECTS";
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
+			//Statement stmt = conn.createStatement();
+			PreparedStatement stmt = null;
+			stmt = conn.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery();
 			conn.commit();
 			conn.close();
 			while(rs.next()){

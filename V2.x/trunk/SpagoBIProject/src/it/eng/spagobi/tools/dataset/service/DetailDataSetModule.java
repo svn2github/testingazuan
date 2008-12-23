@@ -34,9 +34,11 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
+import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.security.ISecurityInfoProvider;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
@@ -79,6 +81,8 @@ public class DetailDataSetModule extends AbstractModule {
 	public static final String TEST_AFTER_PARAMETERS_FILLED="testafterparametersfilling";
 	public static final String PARAMETERS_FILLED="parametersfilled";
 	public static final String TEST_EXECUTED="testExecuted";
+	public final static String LIST_TRANSFORMER = "transformers";
+	
 	
 
 	
@@ -163,6 +167,10 @@ public class DetailDataSetModule extends AbstractModule {
 
 			//response.setAttribute("modality", modalita);
 			//response.setAttribute("dataset", ds);
+			IDomainDAO domaindao = DAOFactory.getDomainDAO();
+			List transformers = domaindao.loadListDomainsByType("TRANSFORMER_TYPE");
+			response.setAttribute(LIST_TRANSFORMER, transformers);
+
 			session.setAttribute(DetailDataSetModule.DATASET_MODIFIED, "false");
 			session.setAttribute(DetailDataSetModule.DATASET, ds);
 
@@ -570,7 +578,12 @@ public class DetailDataSetModule extends AbstractModule {
 		String idStr = (String)serviceRequest.getAttribute("ID");
 		String name = (String)serviceRequest.getAttribute("NAME");
 		String label = (String)serviceRequest.getAttribute("LABEL");
-
+		String transformerName = (String)serviceRequest.getAttribute("TRANSFORMERNAME");
+		Domain domainTransformer =DAOFactory.getDomainDAO().loadDomainByCodeAndValue("TRANSFORMER_TYPE", transformerName);
+		Integer transformerId = domainTransformer.getValueId();
+		String pivotName = (String)serviceRequest.getAttribute("PIVOTCOLUMNNAME");
+		String pivotRow = (String)serviceRequest.getAttribute("PIVOTROWNAME");
+		String pivotValue = (String)serviceRequest.getAttribute("PIVOTCOLUMNVALUE");
 		String description = (String)serviceRequest.getAttribute("DESCR");	
 
 		Integer id = new Integer(idStr);
@@ -581,6 +594,10 @@ public class DetailDataSetModule extends AbstractModule {
 		ds.setDsId(id.intValue());
 		ds.setName(name);
 		ds.setLabel(label);
+		ds.setTransformerId(transformerId);
+		ds.setPivotColumnName(pivotName);
+		ds.setPivotRowName(pivotRow);
+		ds.setPivotColumnValue(pivotValue);
 		ds.setDescription(description);
 
 		return ds;

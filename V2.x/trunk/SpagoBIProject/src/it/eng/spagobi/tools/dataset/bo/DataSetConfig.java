@@ -36,9 +36,13 @@ public class DataSetConfig {
 
     private static transient Logger logger = Logger.getLogger(DataSetConfig.class);
     private int dsId;
+    private Integer transformerId = null;
     private String name = null;
     private String description = null;
     private String label = null;
+    private String pivotColumnName = null;
+    private String pivotRowName = null;
+    private String pivotColumnValue = null;
     private String parameters = null;
 
     public DataSetConfig() {
@@ -51,53 +55,67 @@ public class DataSetConfig {
 	if (ds != null) {
 	    String type = ds.getType();
 	    if (type.equals("SbiScriptDataSet")) {
-		ScriptDataSet dsc = new ScriptDataSet();
-		dsc.setDescription(ds.getDescription());
-		dsc.setLabel(ds.getLabel());
-		dsc.setName(ds.getName());
-		dsc.setParameters(ds.getParameters());
-		dsc.setScript(ds.getScript());
-
+			ScriptDataSet dsc = new ScriptDataSet();
+			dsc.setDescription(ds.getDescription());
+			dsc.setLabel(ds.getLabel());
+			dsc.setName(ds.getName());
+			dsc.setParameters(ds.getParameters());
+			dsc.setScript(ds.getScript());
+			dsc.setTransformerId(ds.getTransformerId());
+			dsc.setPivotColumnName(ds.getPivotColumnName());
+			dsc.setPivotRowName(ds.getPivotRowName());
+			dsc.setPivotColumnValue(ds.getPivotColumnValue());
+			
+			return dsc;
 	    } else if (type.equals("SbiQueryDataSet")) {
-
-		QueryDataSet dsc = new QueryDataSet();
-		dsc.setDescription(ds.getDescription());
-		dsc.setLabel(ds.getLabel());
-		dsc.setName(ds.getName());
-		dsc.setParameters(ds.getParameters());
-		dsc.setQuery(ds.getQuery());
-		return dsc;
-
+			QueryDataSet dsc = new QueryDataSet();
+			dsc.setDescription(ds.getDescription());
+			dsc.setLabel(ds.getLabel());
+			dsc.setName(ds.getName());
+			dsc.setParameters(ds.getParameters());
+			dsc.setQuery(ds.getQuery());
+			dsc.setTransformerId(ds.getTransformerId());
+			dsc.setPivotColumnName(ds.getPivotColumnName());
+			dsc.setPivotRowName(ds.getPivotRowName());
+			dsc.setPivotColumnValue(ds.getPivotColumnValue());
+			return dsc;
 	    } else if (type.equals("SbiJClassDataSet")) {
-
-		JClassDataSet dsc = new JClassDataSet();
-		dsc.setDescription(ds.getDescription());
-		dsc.setLabel(ds.getLabel());
-		dsc.setName(ds.getName());
-		dsc.setParameters(ds.getParameters());
-		ds.setJavaClassName(ds.getJavaClassName());
-		return dsc;
-
+			JClassDataSet dsc = new JClassDataSet();
+			dsc.setDescription(ds.getDescription());
+			dsc.setLabel(ds.getLabel());
+			dsc.setName(ds.getName());
+			dsc.setParameters(ds.getParameters());
+			ds.setJavaClassName(ds.getJavaClassName());
+			dsc.setTransformerId(ds.getTransformerId());
+			dsc.setPivotColumnName(ds.getPivotColumnName());
+			dsc.setPivotRowName(ds.getPivotRowName());
+			dsc.setPivotColumnValue(ds.getPivotColumnValue());
+			return dsc;
 	    } else if (type.equals("SbiWSDataSet")) {
-
-		WSDataSet dsc = new WSDataSet();
-		dsc.setDescription(ds.getDescription());
-		dsc.setLabel(ds.getLabel());
-		dsc.setName(ds.getName());
-		dsc.setParameters(ds.getParameters());
-		dsc.setOperation(ds.getOperation());
-		dsc.setExecutorClass(ds.getExecutorClass());
-		return dsc;
-
+			WSDataSet dsc = new WSDataSet();
+			dsc.setDescription(ds.getDescription());
+			dsc.setLabel(ds.getLabel());
+			dsc.setName(ds.getName());
+			dsc.setParameters(ds.getParameters());
+			dsc.setOperation(ds.getOperation());
+			dsc.setExecutorClass(ds.getExecutorClass());
+			dsc.setTransformerId(ds.getTransformerId());
+			dsc.setPivotColumnName(ds.getPivotColumnName());
+			dsc.setPivotRowName(ds.getPivotRowName());
+			dsc.setPivotColumnValue(ds.getPivotColumnValue());
+			return dsc;
 	    } else if (type.equals("SbiFileDataSet")) {
-
-		FileDataSet dsc = new FileDataSet();
-		dsc.setDescription(ds.getDescription());
-		dsc.setLabel(ds.getLabel());
-		dsc.setName(ds.getName());
-		dsc.setParameters(ds.getParameters());
-		dsc.setFileName(ds.getFileName());
-		return dsc;
+			FileDataSet dsc = new FileDataSet();
+			dsc.setDescription(ds.getDescription());
+			dsc.setLabel(ds.getLabel());
+			dsc.setName(ds.getName());
+			dsc.setParameters(ds.getParameters());
+			dsc.setFileName(ds.getFileName());
+			dsc.setTransformerId(ds.getTransformerId());
+			dsc.setPivotColumnName(ds.getPivotColumnName());
+			dsc.setPivotRowName(ds.getPivotRowName());
+			dsc.setPivotColumnValue(ds.getPivotColumnValue());
+			return dsc;
 	    }
 	}
 	return null;
@@ -216,5 +234,56 @@ public class DataSetConfig {
     public String getDataSetResult(IEngUserProfile profile) throws Exception {
 	return null;
     }
+
+    /**
+     * Gets the pivot column name.
+     * 
+     * @return the pivot column name
+     */
+	public String getPivotColumnName() {
+		return pivotColumnName;
+	}
+    /**
+     * Sets the pivot column name.
+     * 
+     * @param pivotColumnName the new pivot column name
+     */
+	public void setPivotColumnName(String pivotColumnName) {
+		this.pivotColumnName = pivotColumnName;
+	}
+
+	/**
+     * Gets the pivot column value.
+     * 
+     * @return the pivot column value
+     */
+	public String getPivotColumnValue() {
+		return pivotColumnValue;
+	}
+
+	/**
+     * Sets the pivot column value.
+     * 
+     * @param pivotColumnValue the new pivot column value
+     */
+	public void setPivotColumnValue(String pivotColumnValue) {
+		this.pivotColumnValue = pivotColumnValue;
+	}
+
+	public String getPivotRowName() {
+		return pivotRowName;
+	}
+
+	public void setPivotRowName(String pivotRowName) {
+		this.pivotRowName = pivotRowName;
+	}
+
+	public Integer getTransformerId() {
+		return transformerId;
+	}
+
+	public void setTransformerId(Integer transformerId) {
+		this.transformerId = transformerId;
+	}
 
 }

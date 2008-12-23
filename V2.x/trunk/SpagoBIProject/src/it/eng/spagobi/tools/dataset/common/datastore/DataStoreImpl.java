@@ -38,6 +38,12 @@ public class DataStoreImpl implements IDataStore {
 
 	public void applyTranformer(IDataTransformer transformer) {
 		records = transformer.transformData(records);
+    } 
+	
+	public void applyTranformer(IDataTransformer transformer, String pivotColumn,  String pivotRow, String pivotValue) {
+		List recordsPivot = transformer.transformData(records, pivotColumn, pivotRow, pivotValue); 
+		if (recordsPivot != null) records = recordsPivot;   
+//		records = transformer.transformData(records, pivotColumn, pivotValue);
     }
 
 	public void appendRow(IRecord r){

@@ -479,6 +479,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<option value="">&nbsp;</option>
 				
 			<% String hideTrasnformer="style=\"display: none;\""; 
+			if (ds.getTransformerId()!=null) hideTrasnformer="style=\"display: inline;\"";
 			if (listTransformerType != null){
 				Iterator iterTransformer= listTransformerType.iterator();
 			   

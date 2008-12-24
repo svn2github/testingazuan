@@ -62,7 +62,7 @@ public class PivotingTransformer implements IDataTransformer {
 				//checks if the field is a row, a column or a value specified into configuration and manages them
 				if (fieldName.equalsIgnoreCase(pivotRow)){
 					if (rowValue.equals("")) rowValue = fieldValue;
-					if (rowValue != fieldValue){
+					if (!(rowValue.trim()).equalsIgnoreCase(fieldValue.trim())){
 						rowValue = fieldValue;
 						newRecords.add(newRecord);
 						newRecord = (IRecord)new Record();

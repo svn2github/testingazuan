@@ -202,6 +202,9 @@ public class FileReader implements IDataReader {
 		if (ds.getPivotColumnName() != null && !ds.getPivotRowName().equals("") && !ds.getPivotColumnName().equals("")){
 			ids.applyTranformer((IDataTransformer)new PivotingTransformer(), ds.getPivotColumnName(), 
 									ds.getPivotRowName(), ds.getPivotColumnValue());
+			logger.info("Pivot is applicated on the result dataset with next configuration: " +
+				    " PivotColumnName: " + ds.getPivotColumnName() + " PivotRowName: " + ds.getPivotRowName() + 
+				    " PivotCoumnValue: " + ds.getPivotColumnValue());
 		}
 		else
 			logger.info("Pivot is not applicated on the result dataset because therisn't a complete configuration.\n" +

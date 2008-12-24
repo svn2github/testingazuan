@@ -134,11 +134,15 @@ public class SQLResultSetReader implements IDataReader {
 					}
 				}
 			
-			// pivoting of results if its configurated(capire dove farlo per generalizzare indipendentemente dal tipo di dataset)
-			if (ds.getPivotColumnName() != null && !ds.getPivotColumnName().equals("")){
-				ids.applyTranformer((IDataTransformer)new PivotingTransformer(), ds.getPivotColumnName(), 
-										ds.getPivotRowName(), ds.getPivotColumnValue());
-			}
+				// pivoting of results if its configurated
+				if (ds.getPivotColumnName() != null && !ds.getPivotRowName().equals("") && !ds.getPivotColumnName().equals("")){
+					ids.applyTranformer((IDataTransformer)new PivotingTransformer(), ds.getPivotColumnName(), 
+											ds.getPivotRowName(), ds.getPivotColumnValue());
+				}
+				else
+					logger.info("Pivot is not applicated on the result dataset because therisn't a complete configuration.\n" +
+							    " PivotColumnName: " + ds.getPivotColumnName() + " PivotRowName: " + ds.getPivotRowName() + 
+							    " PivotCoumnValue: " + ds.getPivotColumnValue());
 			logger.debug("OUT");
 	return ids;
     }

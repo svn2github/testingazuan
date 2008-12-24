@@ -21,7 +21,7 @@
         <property name="parameters" type="string">
             <column name="PARAMS" />
         </property>   
-        <many-to-one name="transformerId" class="it.eng.spagobi.commons.metadata.SbiDomains">
+        <many-to-one name="transformer" class="it.eng.spagobi.commons.metadata.SbiDomains">
             <column name="TRANSFORMER_ID" not-null="false"/>
         </many-to-one>
          <property name="pivotColumnName" type="string">

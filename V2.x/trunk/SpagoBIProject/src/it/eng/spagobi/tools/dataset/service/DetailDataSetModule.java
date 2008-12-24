@@ -167,9 +167,6 @@ public class DetailDataSetModule extends AbstractModule {
 
 			//response.setAttribute("modality", modalita);
 			//response.setAttribute("dataset", ds);
-			IDomainDAO domaindao = DAOFactory.getDomainDAO();
-			List transformers = domaindao.loadListDomainsByType("TRANSFORMER_TYPE");
-			response.setAttribute(LIST_TRANSFORMER, transformers);
 
 			session.setAttribute(DetailDataSetModule.DATASET_MODIFIED, "false");
 			session.setAttribute(DetailDataSetModule.DATASET, ds);
@@ -358,18 +355,22 @@ public class DetailDataSetModule extends AbstractModule {
 		if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
 				((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVE)) {	
 			serviceResponse.setAttribute(SpagoBIConstants.MODALITY, mod);
-			serviceResponse.setAttribute(DetailDataSetModule.DATASET, dsNew);				
+			serviceResponse.setAttribute(DetailDataSetModule.DATASET, dsNew);
+			List transformers = DAOFactory.getDomainDAO().loadListDomainsByType("TRANSFORMER_TYPE");
+			serviceResponse.setAttribute(LIST_TRANSFORMER, transformers);
 			return;
 		}
 		else if (serviceRequest.getAttribute("SUBMESSAGEDET") != null && 
 				((String)serviceRequest.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK)){
 			serviceResponse.setAttribute("loopback", "true");
+			List transformers = DAOFactory.getDomainDAO().loadListDomainsByType("TRANSFORMER_TYPE");
+			serviceResponse.setAttribute(LIST_TRANSFORMER, transformers);
 			return;
 		} 
+		
 		serviceResponse.setAttribute("loopback", "true");
 		session.delAttribute(DetailDataSetModule.DATASET_MODIFIED);
-
-
+		
 	}
 
 
@@ -580,12 +581,18 @@ public class DetailDataSetModule extends AbstractModule {
 		String label = (String)serviceRequest.getAttribute("LABEL");
 		String transformerName = (String)serviceRequest.getAttribute("TRANSFORMERNAME");
 		Domain domainTransformer =DAOFactory.getDomainDAO().loadDomainByCodeAndValue("TRANSFORMER_TYPE", transformerName);
-		Integer transformerId = domainTransformer.getValueId();
-		String pivotName = (String)serviceRequest.getAttribute("PIVOTCOLUMNNAME");
-		String pivotRow = (String)serviceRequest.getAttribute("PIVOTROWNAME");
-		String pivotValue = (String)serviceRequest.getAttribute("PIVOTCOLUMNVALUE");
+		Integer transformerId = null;
+		String pivotName = null;
+		String pivotRow = null;
+		String pivotValue = null;
+		if (domainTransformer!= null){
+			transformerId = domainTransformer.getValueId();
+			pivotName = (String)serviceRequest.getAttribute("PIVOTCOLUMNNAME");;
+			pivotRow = (String)serviceRequest.getAttribute("PIVOTROWNAME");;
+			pivotValue = (String)serviceRequest.getAttribute("PIVOTCOLUMNVALUE");;
+		}
+		
 		String description = (String)serviceRequest.getAttribute("DESCR");	
-
 		Integer id = new Integer(idStr);
 		if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
 			ds.setDsId(id.intValue());
@@ -768,6 +775,7 @@ public class DetailDataSetModule extends AbstractModule {
 		response.setAttribute(SpagoBIConstants.MODALITY, mod);	
 		loadValuesDomain(response);
 		loadAllProfileAttributes(response);
+		
 	}
 
 	private void loadAllProfileAttributes(SourceBean response) throws SourceBeanException {
@@ -802,6 +810,9 @@ public class DetailDataSetModule extends AbstractModule {
 		try {
 			List list = DAOFactory.getDomainDAO().loadListDomainsByType("INPUT_TYPE");
 			response.setAttribute (SpagoBIConstants.LIST_INPUT_TYPE, list);
+			
+			List transformers = DAOFactory.getDomainDAO().loadListDomainsByType("TRANSFORMER_TYPE");
+			response.setAttribute(LIST_TRANSFORMER, transformers);
 		} catch (Exception ex) {
 			logger.error("Cannot prepare page for the insertion", ex  );
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 1021);

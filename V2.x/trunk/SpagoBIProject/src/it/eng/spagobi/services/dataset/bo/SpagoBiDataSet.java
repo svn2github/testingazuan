@@ -52,7 +52,7 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            it.eng.spagobi.services.datasource.bo.SpagoBiDataSource dataSource,
            java.lang.String description,
            int dsId,
-           Integer transformationId,
+           Integer transformerId,
            java.lang.String executorClass,
            java.lang.String fileName,
            java.lang.String javaClassName,
@@ -569,8 +569,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("transformationId");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "transformationId"));
+        elemField.setFieldName("transformerId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "transformerId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);

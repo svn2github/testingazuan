@@ -22,6 +22,18 @@
         <property name="parameters" type="string">
             <column name="PARAMS" />
         </property>   
+         <many-to-one name="transformer" class="it.eng.spagobi.commons.metadata.SbiDomains">
+            <column name="TRANSFORMER_ID" not-null="false"/>
+        </many-to-one>
+         <property name="pivotColumnName" type="string">
+            <column name="PIVOT_COLUMN" />
+        </property>
+        <property name="pivotRowName" type="string">
+            <column name="PIVOT_ROW" />
+        </property>
+        <property name="pivotColumnValue" type="string">
+            <column name="PIVOT_VALUE" />
+        </property>
 		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet" discriminator-value="SbiFileDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
 	        <property name="fileName" type="string">
 	            <column name="FILE_NAME" />

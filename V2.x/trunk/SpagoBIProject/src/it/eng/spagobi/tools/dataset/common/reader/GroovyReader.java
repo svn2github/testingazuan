@@ -22,6 +22,8 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
+import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
+import it.eng.spagobi.tools.dataset.common.transformer.PivotingTransformer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,6 +103,15 @@ public class GroovyReader implements IDataReader {
 			logger.error("Exception",e);
 			e.printStackTrace();
 		}
+		// pivoting of results if its configurated
+		if (ds.getPivotColumnName() != null && !ds.getPivotRowName().equals("") && !ds.getPivotColumnName().equals("")){
+			ids.applyTranformer((IDataTransformer)new PivotingTransformer(), ds.getPivotColumnName(), 
+									ds.getPivotRowName(), ds.getPivotColumnValue());
+		}
+		else
+			logger.info("Pivot is not applicated on the result dataset because therisn't a complete configuration.\n" +
+					    " PivotColumnName: " + ds.getPivotColumnName() + " PivotRowName: " + ds.getPivotRowName() + 
+					    " PivotCoumnValue: " + ds.getPivotColumnValue());
 		logger.debug("OUT");
 	return ids;
     }

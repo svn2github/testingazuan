@@ -23,11 +23,10 @@ package it.eng.spagobi.tools.dataset.bo;
 
 import org.apache.log4j.Logger;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
+
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
-import it.eng.spagobi.tools.dataset.common.reader.GroovyReader;
+
 
 /**
  * @author Angelo Bernabei angelo.bernabei@eng.it

@@ -24,6 +24,7 @@ package it.eng.spagobi.tools.dataset.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
@@ -246,9 +247,21 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 					((SbiJClassDataSet)hibDataSet).setJavaClassName(((JClassDataSet)aDataSet).getJavaClassName());
 				}
 			}
-			
+			SbiDomains transformer = null;
+			if (aDataSet.getTransformerId() != null){ 
+				Criterion aCriterion = Expression.eq("valueId",	aDataSet.getTransformerId());
+				Criteria criteria = aSession.createCriteria(SbiDomains.class);
+				criteria.add(aCriterion);
+	
+				transformer = (SbiDomains) criteria.uniqueResult();
+	
+				if (transformer == null){
+					logger.error("The Domain with value_id= "+aDataSet.getTransformerId()+" does not exist.");
+					throw new EMFUserError(EMFErrorSeverity.ERROR, 1035);
+				}
+			}
 			hibDataSet.setLabel(aDataSet.getLabel());
-			hibDataSet.setTransformerId(aDataSet.getTransformerId());
+			hibDataSet.setTransformer(transformer);
 			hibDataSet.setPivotColumnName(aDataSet.getPivotColumnName());
 			hibDataSet.setPivotRowName(aDataSet.getPivotRowName());
 			hibDataSet.setPivotColumnValue(aDataSet.getPivotColumnValue());
@@ -338,9 +351,22 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				}
 			}
 
+			SbiDomains transformer = null;
+			if (aDataSet.getTransformerId() != null){ 
+				Criterion aCriterion = Expression.eq("valueId",	aDataSet.getTransformerId());
+				Criteria criteria = aSession.createCriteria(SbiDomains.class);
+				criteria.add(aCriterion);
+	
+				transformer = (SbiDomains) criteria.uniqueResult();
+	
+				if (transformer == null){
+					logger.error("The Domain with value_id= "+aDataSet.getTransformerId()+" does not exist.");
+					throw new EMFUserError(EMFErrorSeverity.ERROR, 1035);
+				}
+			}
 
 			hibDataSet.setLabel(aDataSet.getLabel());
-			hibDataSet.setTransformerId(aDataSet.getTransformerId());
+			hibDataSet.setTransformer(transformer);
 			hibDataSet.setPivotColumnName(aDataSet.getPivotColumnName());
 			hibDataSet.setPivotRowName(aDataSet.getPivotRowName());
 			hibDataSet.setPivotColumnValue(aDataSet.getPivotColumnValue());
@@ -450,7 +476,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		ds.setDsId(hibDataSet.getDsId());
 		ds.setName(hibDataSet.getName());
 		ds.setLabel(hibDataSet.getLabel());
-		ds.setTransformerId(hibDataSet.getTransformerId());
+		ds.setTransformerId((hibDataSet.getTransformer()==null)?null:hibDataSet.getTransformer().getValueId());
 		ds.setPivotColumnName(hibDataSet.getPivotColumnName());
 		ds.setPivotRowName(hibDataSet.getPivotRowName());
 		ds.setPivotColumnValue(hibDataSet.getPivotColumnValue());

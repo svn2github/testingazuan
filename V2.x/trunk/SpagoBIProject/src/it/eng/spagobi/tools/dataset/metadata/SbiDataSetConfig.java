@@ -21,20 +21,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.dataset.metadata;
 
+import it.eng.spagobi.commons.metadata.SbiDomains;
+
 /**
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
 public class SbiDataSetConfig {
 	private int dsId;	
-	private Integer transformerId = null;
+	private SbiDomains transformer = null;
 	private String name=null;
-    	private String description=null;
-    	private String label=null;
-    	private String parameters=null;
-    	private String pivotColumnName=null;
-    	private String pivotRowName=null;
-    	private String pivotColumnValue=null;
+	private String description=null;
+	private String label=null;
+	private String parameters=null;
+	private String pivotColumnName=null;
+	private String pivotRowName=null;
+	private String pivotColumnValue=null;
     	
 	/**
 	 * Gets the parameters.
@@ -170,12 +172,22 @@ public class SbiDataSetConfig {
 		this.pivotRowName = pivotRowName;
 	}
 
-	public Integer getTransformerId() {
-		return transformerId;
-	}
-
-	public void setTransformerId(Integer transformerId) {
-		this.transformerId = transformerId;
-	}
+	/**
+	 * Gets the transformer.
+	 * 
+	 * @return the transformer
+	 */
+	public SbiDomains getTransformer() {
+        return this.transformer;
+    }
+    
+    /**
+     * Sets the transformer.
+     * 
+     * @param transformer the new transformer
+     */
+    public void setTransformer(SbiDomains transformer) {
+        this.transformer = transformer;
+    }
     	
 }

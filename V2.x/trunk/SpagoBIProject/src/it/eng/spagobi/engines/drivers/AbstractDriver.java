@@ -39,7 +39,8 @@ public class AbstractDriver {
         ConfigSingleton config = ConfigSingleton.getInstance();
         SourceBean configSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
 	String active = (String) configSB.getCharacters();
-	if (active != null && active.equals("true")){
+	String userId=(String)profile.getUserUniqueIdentifier();
+	if (active != null && active.equals("true") && !((UserProfile)profile).isSchedulerUser(userId)){
 	    logger.debug("I don't put the UserId information in the URL");
 	}else {
 	    pars.put("userId", ((UserProfile) profile).getUserUniqueIdentifier()); 

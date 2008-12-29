@@ -103,6 +103,9 @@ public class CasSsoService implements SsoServiceInterface {
      */
     public void validateTicket(String ticket, String userId,String validateUrl,String validateService)throws SecurityException {
 	logger.debug("IN");
+	logger.debug("userId:"+userId);
+	logger.debug("validateUrl:"+validateUrl);
+	logger.debug("validateService:"+validateService);
 	try {
 	    ProxyTicketValidator pv = null;
 	    pv = new ProxyTicketValidator();

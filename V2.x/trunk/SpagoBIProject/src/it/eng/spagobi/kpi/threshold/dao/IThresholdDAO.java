@@ -24,6 +24,8 @@ public interface IThresholdDAO {
 	 * @throws EMFUserError If an Exception occurred.
 	 */
 	public List loadThresholdList(String fieldOrder, String typeOrder) throws EMFUserError ;
+	
+	public List loadThresholdList() throws EMFUserError ;
 
 	public void modifyThreshold(Threshold threshold) throws EMFUserError ;
 

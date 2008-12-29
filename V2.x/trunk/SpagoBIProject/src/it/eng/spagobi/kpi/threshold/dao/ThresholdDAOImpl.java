@@ -258,4 +258,8 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 		return true;
 	}
 
+	public List loadThresholdList() throws EMFUserError {
+		return loadThresholdList(null, null);
+	}
+
 }

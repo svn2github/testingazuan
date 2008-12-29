@@ -7,11 +7,7 @@
           <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
           <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
         </SELECT_QUERY>
-        <!--
-        <DELETE_QUERY >
-          <PARAMETER scope="SERVICE_REQUEST" type="RELATIVE" value="ID" />
-        </DELETE_QUERY>
-      -->
+
       </QUERIES>
       <COLUMNS>
         <COLUMN label="sbi.kpi.label.name" name="NAME" />
@@ -43,6 +39,7 @@
           <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ThresholdPage" />
           <PARAMETER name="MODULE" scope="" type="ABSOLUTE" value="DetailThresholdModule" />
           <PARAMETER name="MESSAGE" scope="" type="ABSOLUTE" value="DETAIL_NEW" />
+          <PARAMETER name="LIGHT_NAVIGATOR_RESET" scope="" type="ABSOLUTE" value="true" />
         </INSERT_BUTTON>
         <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="sbi.kpi.button.back.title"
           onlyPortletRunning="true">

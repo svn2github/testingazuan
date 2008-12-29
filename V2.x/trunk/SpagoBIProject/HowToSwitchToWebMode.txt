@@ -25,7 +25,7 @@ To switch into Web mode you have to:
    'SpagoBI_ldap_security.doc'. 
 
 
-3) Uncomment the initializers inside the file 'WEB-INF/conf/initializer.xml'
+3) Uncomment the initializers inside the file 'WEB-INF/conf/config/initializer.xml'
 
 <!-- Start Initializer to enable when running in web mode  -->
 <INITIALIZER class="it.eng.spagobi.security.init.SecurityInitializer" config="" />

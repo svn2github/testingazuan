@@ -40,9 +40,9 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 			toReturn = THRESHOLD_VALUE_POSITION;
 		if(property != null && property.toUpperCase().equals("LABEL"))
 			toReturn = THRESHOLD_VALUE_LABEL;
-		if(property != null && property.toUpperCase().equals("MIN VALUE"))
+		if(property != null && property.toUpperCase().equals("MIN_VALUE"))
 			toReturn = THRESHOLD_VALUE_MIN_VALUE;
-		if(property != null && property.toUpperCase().equals("MAX VALUE"))
+		if(property != null && property.toUpperCase().equals("MAX_VALUE"))
 			toReturn = THRESHOLD_VALUE_MAX_VALUE;
 		
 		return toReturn;
@@ -71,7 +71,7 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 				if (typeOrder.toUpperCase().trim().equals("ASC"))
 					crit.addOrder(Order.asc(getThresholdValueProperty(fieldOrder)));
 				if (typeOrder.toUpperCase().trim().equals("DESC"))
-					crit.addOrder(Order.asc(getThresholdValueProperty(fieldOrder)));
+					crit.addOrder(Order.desc(getThresholdValueProperty(fieldOrder)));
 			}
 			toTransform = crit.list();
 

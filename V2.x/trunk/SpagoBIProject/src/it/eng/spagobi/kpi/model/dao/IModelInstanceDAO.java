@@ -34,4 +34,6 @@ public interface IModelInstanceDAO {
 	 */
 	public boolean deleteModelInstance(Integer modelId)throws EMFUserError;
 
+	public List loadModelsInstanceRoot(String fieldOrder, String typeOrder)throws EMFUserError;
+
 }

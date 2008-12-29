@@ -57,8 +57,10 @@ public class ListModelResourcesModule extends AbstractConfigurableListModule {
 	@Override
 	protected List getObjectList(SourceBean request) {
 		List toReturn = null;
+		String fieldOrder = (String)request.getAttribute("FIELD_ORDER");
+		String typeOrder = (String)request.getAttribute("TYPE_ORDER");
 		try {
-			toReturn = DAOFactory.getKpiDAO().loadResourcesList();
+			toReturn = DAOFactory.getKpiDAO().loadResourcesList(fieldOrder, typeOrder);
 		} catch (EMFUserError e) {
 			logger.error(e);
 		}

@@ -4,6 +4,12 @@
 	<!-- MODEL -->
 	<MODULE name="ListModelModule" class="it.eng.spagobi.kpi.model.service.ListModelModule">
 		<CONFIG pool="spagobi" rows="10" title="sbi.kpi.list.model.title">
+		<QUERIES>
+        <SELECT_QUERY>
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+        </SELECT_QUERY>
+        </QUERIES>
 			<COLUMNS>
 				<COLUMN label="sbi.kpi.label.name" name="NAME" />
 			</COLUMNS>
@@ -80,6 +86,12 @@
 	
 		<MODULE name="ListModelInstanceModule" class="it.eng.spagobi.kpi.model.service.ListModelInstanceModule">
 		<CONFIG pool="spagobi" rows="10" title="sbi.kpi.list.model.instance.title">
+		<QUERIES>
+        <SELECT_QUERY>
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+        </SELECT_QUERY>
+        </QUERIES>
 			<COLUMNS>
 				<COLUMN label="sbi.kpi.label.name" name="NAME" />
 			</COLUMNS>
@@ -162,6 +174,12 @@
 	
 	<MODULE name="ListResourcesModule" class="it.eng.spagobi.kpi.model.service.ListResourcesModule">
 		<CONFIG pool="spagobi" rows="10" title="sbi.kpi.list.resources.title">
+		<QUERIES>
+        <SELECT_QUERY>
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+        </SELECT_QUERY>
+        </QUERIES>
 			<COLUMNS>
 				<COLUMN label="sbi.kpi.label.name" name="NAME" />
 			</COLUMNS>
@@ -212,6 +230,13 @@
 	
 	<MODULE name="ListModelResourcesModule" class="it.eng.spagobi.kpi.model.service.ListModelResourcesModule">
 		<CONFIG pool="spagobi" rows="10" title="sbi.kpi.list.modelResources.title">
+		<QUERIES>
+        <SELECT_QUERY>
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
+          <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+          <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
+        </SELECT_QUERY>
+        </QUERIES>
 			<COLUMNS>
 				<COLUMN label="sbi.kpi.label.name" name="NAME" />
 				<COLUMN label="sbi.kpi.label.selected" name="SELECTED" />

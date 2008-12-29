@@ -679,4 +679,57 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			deleteKpiInstance(aSession, aModelInst.getSbiKpiInstance().getIdKpiInstance());
 		}		
 	}
+
+	public List loadModelsInstanceRoot(String fieldOrder, String typeOrder)
+			throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		List toReturn = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criteria crit = aSession.createCriteria(SbiKpiModelInst.class);
+			crit.add(Expression.isNull("sbiKpiModelInst"));
+			
+			if (fieldOrder != null && typeOrder != null) {
+				if (typeOrder.toUpperCase().trim().equals("ASC"))
+					crit.addOrder(Order.asc(getModelInstanceProperty(fieldOrder)));
+				if (typeOrder.toUpperCase().trim().equals("DESC"))
+					crit.addOrder(Order.desc(getModelInstanceProperty(fieldOrder)));
+			}
+			
+			List sbiKpiModelInstanceList = crit.list();
+			for (Iterator iterator = sbiKpiModelInstanceList.iterator(); iterator
+					.hasNext();) {
+				SbiKpiModelInst sbiKpiModelInst = (SbiKpiModelInst) iterator
+						.next();
+				ModelInstance aModelInst = toModelInstanceWithoutChildren(
+						sbiKpiModelInst, aSession);
+				toReturn.add(aModelInst);
+			}
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+
+	private String getModelInstanceProperty(String property) {
+		String toReturn = null;
+		if(property != null && property.equals("NAME"))
+				toReturn = "name";
+		return toReturn;
+	}
 }

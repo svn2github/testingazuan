@@ -40,6 +40,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.sql.JoinFragment;
+import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -151,40 +153,40 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 	}
 
 	public List loadResourcesList() throws EMFUserError {
-		logger.debug("IN");
-		List toReturn = null;
-		Session aSession = null;
-		Transaction tx = null;
-
-		try {
-			aSession = getSession();
-			tx = aSession.beginTransaction();
-			toReturn = new ArrayList();
-			List toTransform = null;
-			toTransform = aSession.createQuery("from SbiResources").list();
-
-			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
-				SbiResources hibResource = (SbiResources) iterator.next();
-				Resource resource = toResource(hibResource);
-				toReturn.add(resource);
-			}
-
-		} catch (HibernateException he) {
-			logger.error("Error while loading the list of Resources", he);
-
-			if (tx != null)
-				tx.rollback();
-
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
-
-		} finally {
-			if (aSession != null) {
-				if (aSession.isOpen())
-					aSession.close();
-				logger.debug("OUT");
-			}
-		}
-		return toReturn;
+//		logger.debug("IN");
+//		List toReturn = null;
+//		Session aSession = null;
+//		Transaction tx = null;
+//
+//		try {
+//			aSession = getSession();
+//			tx = aSession.beginTransaction();
+//			toReturn = new ArrayList();
+//			List toTransform = null;
+//			toTransform = aSession.createQuery("from SbiResources").list();
+//
+//			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
+//				SbiResources hibResource = (SbiResources) iterator.next();
+//				Resource resource = toResource(hibResource);
+//				toReturn.add(resource);
+//			}
+//
+//		} catch (HibernateException he) {
+//			logger.error("Error while loading the list of Resources", he);
+//
+//			if (tx != null)
+//				tx.rollback();
+//
+//			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+//
+//		} finally {
+//			if (aSession != null) {
+//				if (aSession.isOpen())
+//					aSession.close();
+//				logger.debug("OUT");
+//			}
+//		}
+		return loadResourcesList(null, null);
 	}
 
 	public Resource loadResourceById(Integer id) throws EMFUserError {
@@ -1429,6 +1431,65 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			aSession.close();
 		}
 		return true;
+	}
+
+	public List loadResourcesList(String fieldOrder, String typeOrder)
+			throws EMFUserError {
+		logger.debug("IN");
+		List toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			toReturn = new ArrayList();
+			List toTransform = null;
+
+			
+			if (fieldOrder != null && typeOrder != null) {
+				Criteria crit = aSession
+				.createCriteria(SbiResources.class);
+				if (typeOrder.toUpperCase().trim().equals("ASC"))
+					crit.addOrder(Order.asc(getResourcesProperty(fieldOrder)));
+				if (typeOrder.toUpperCase().trim().equals("DESC"))
+					crit.addOrder(Order.desc(getResourcesProperty(fieldOrder)));
+				toTransform = crit.list();
+			} else {
+				toTransform = aSession.createQuery("from SbiResources").list();
+			}
+
+			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
+				SbiResources hibResource = (SbiResources) iterator.next();
+				Resource resource = toResource(hibResource);
+				toReturn.add(resource);
+			}
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the list of Resources", he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		return toReturn;
+	}
+
+	private String getResourcesProperty(String property) {
+		String toReturn = null;
+		if (property != null && property.equals("NAME"))
+			toReturn = "resourceName";
+		if (property != null && property.equals("SELECTED"))
+			toReturn = "resourceName";
+		return toReturn;
 	}
 
 }

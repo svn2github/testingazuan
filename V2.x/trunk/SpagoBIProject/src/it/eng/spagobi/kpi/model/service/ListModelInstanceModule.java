@@ -20,8 +20,10 @@ public class ListModelInstanceModule extends AbstractConfigurableListModule {
 	@Override
 	protected List getObjectList(SourceBean request) {
 		List result = null;
+		String fieldOrder = (String) request.getAttribute("FIELD_ORDER");
+		String typeOrder = (String) request.getAttribute("TYPE_ORDER");
 		try {
-			result = DAOFactory.getModelInstanceDAO().loadModelsInstanceRoot();
+			result = DAOFactory.getModelInstanceDAO().loadModelsInstanceRoot(fieldOrder, typeOrder);
 		} catch (EMFUserError e) {
 			logger.error(e);
 		}

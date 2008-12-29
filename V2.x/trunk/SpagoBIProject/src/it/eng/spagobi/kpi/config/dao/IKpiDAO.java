@@ -153,4 +153,7 @@ public interface IKpiDAO {
 
 	public boolean deleteKpi(Integer kpiId) throws EMFUserError;
 
+	public List loadResourcesList(String fieldOrder, String typeOrder)throws EMFUserError;
+	
+
 }

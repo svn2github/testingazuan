@@ -51,6 +51,7 @@ public class ListKpiModule extends AbstractConfigurableListModule {
 		String typeOrder = (String)request.getAttribute("TYPE_ORDER");
 		List result = null;
 		try {
+//			result = DAOFactory.getKpiDAO().loadKpiList();
 			result = DAOFactory.getKpiDAO().loadKpiList(fieldOrder, typeOrder);
 		} catch (EMFUserError e) {
 			logger.error(e);

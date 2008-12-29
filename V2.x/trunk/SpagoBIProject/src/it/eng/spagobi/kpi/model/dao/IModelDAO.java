@@ -62,6 +62,8 @@ public interface IModelDAO {
 	 */
 	public boolean deleteModel(Integer modelId) throws EMFUserError;
 
+	public List loadModelsRoot(String fieldOrder, String typeOrder)throws EMFUserError;
+
 //	/**
 //	 * Check if a Model or its children are associated with KPI.
 //	 * @param modelId the id of the to check.

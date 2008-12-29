@@ -77,4 +77,5 @@
 <DOMAIN valueCd="SMS" valueNm="SMS" domainCd="ALARM_MODALITY" domainNm="Alarm Modality" valueDs=""/>
 <DOMAIN valueCd="GENERIC_ROOT" valueNm="Generic root" domainCd="MODEL_ROOT" domainNm="Model root type" valueDs=""/>
 <DOMAIN valueCd="GENERIC_NODE" valueNm="Generic Node" domainCd="MODEL_NODE" domainNm="Model node type" valueDs=""/>
+<DOMAIN valueCd="PIVOT_TRANSFOMER" valueNm="Pivot Transformer" domainCd="TRANSFORMER_TYPE" domainNm="Transformer types" valueDs="Pivot Transformer Type"/>
 </DOMAINS>

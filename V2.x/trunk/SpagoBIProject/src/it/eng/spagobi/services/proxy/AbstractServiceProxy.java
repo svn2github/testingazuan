@@ -116,7 +116,7 @@ public abstract class AbstractServiceProxy {
 	    filterReceipt = spagoBiServerURL + filterReceipt;    
 	    sourceBeanConf = (SourceBean) engineConfig.getAttribute(className + "_URL");
 	    String serviceUrlStr = (String) sourceBeanConf.getCharacters();
-	    logger.debug("Read sericeUrl=" + serviceUrlStr);
+	    logger.debug("Read serviceUrl=" + serviceUrlStr);
 	    try {
 		serviceUrl = new URL(spagoBiServerURL + serviceUrlStr);
 	    } catch (MalformedURLException e) {

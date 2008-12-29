@@ -4,14 +4,14 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, this list of 
+ * Redistributions of source code must retain the above copyright notice, this list of 
       conditions and the following disclaimer.
       
-    * Redistributions in binary form must reproduce the above copyright notice, this list of 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of 
       conditions and the following disclaimer in the documentation and/or other materials 
       provided with the distribution.
       
-    * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
+ * Neither the name of the Engineering Ingegneria Informatica s.p.a. nor the names of its contributors may
       be used to endorse or promote products derived from this software without specific
       prior written permission.
 
@@ -29,9 +29,8 @@ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
-**/
+ **/
 package it.eng.spagobi.utilities.filters;
-
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -62,15 +61,20 @@ public class SpagoBIAccessFilter implements Filter {
 
     private static transient Logger logger = Logger.getLogger(SpagoBIAccessFilter.class);
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.servlet.Filter#destroy()
      */
     public void destroy() {
 	// do nothing
     }
 
-    /* (non-Javadoc)
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+     *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 	    ServletException {
@@ -85,34 +89,37 @@ public class SpagoBIAccessFilter implements Filter {
 	    HttpSession session = httpRequest.getSession();
 	    String requestUrl = httpRequest.getRequestURL().toString();
 	    logger.info("requestUrl:" + requestUrl);
-	    
+
 	    String userIdentifier = (String) request.getParameter("userId");
 	    String document = (String) request.getParameter("document");
 	    logger.info("Filter userIdentifier from request:" + userIdentifier);
 	    logger.info("Filter document  from request:" + document);
 	    session.setAttribute("document", document);
 	    session.setAttribute("isBackend", "false");
-	    boolean isBackend=false;
-	    
-	    if (requestUrl.endsWith("BackEnd")){
-		
-		String passTicket=(String) request.getParameter(SpagoBIConstants.PASS_TICKET);
-		if (passTicket!=null && passTicket.equalsIgnoreCase(EnginConf.getInstance().getPass())){
-			// if a request is coming from SpagoBI context
-			isBackend=true;
-			session.setAttribute("isBackend", "true");
-			logger.info("IS a backEnd Request ...");		    
-		}else {
-		    	logger.warn("PassTicked is NULL in BackEnd call");
-		    	throw new ServletException();
+	    boolean isBackend = false;
+
+	    if (requestUrl.endsWith("BackEnd")) {
+
+		String passTicket = (String) request.getParameter(SpagoBIConstants.PASS_TICKET);
+		if (passTicket != null && passTicket.equalsIgnoreCase(EnginConf.getInstance().getPass())) {
+		    // if a request is coming from SpagoBI context
+		    isBackend = true;
+		    session.setAttribute("isBackend", "true");
+		    logger.info("IS a backEnd Request ...");
+		} else {
+		    logger.warn("PassTicked is NULL in BackEnd call");
+		    throw new ServletException();
 		}
 	    }
-	    
-
 
 	    if (userIdentifier != null && !isBackend)
-	    	userIdentifier=checkUserWithSSO(userIdentifier, session);
+		userIdentifier = checkUserWithSSO(userIdentifier, session);
 
+	    // If SSO is ACTIVE get the userId from session
+	    if (EnginConf.getInstance().isSsoActive() && !isBackend) {
+		userIdentifier = getUserWithSSO(session);
+		logger.info("UserIdentifier from Session (SSO is Active):" + userIdentifier);
+	    }
 	    String spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
 	    String spagoUrl = request.getParameter(SpagoBIConstants.SBI_HOST);
 	    if (spagobiContext != null) {
@@ -124,7 +131,7 @@ public class SpagoBIAccessFilter implements Filter {
 		logger.debug("spagoUrl:" + spagoUrl);
 		session.setAttribute(SpagoBIConstants.SBI_HOST, spagoUrl);
 	    } else
-		logger.warn("spagoUrl is null!!!!!!");	    
+		logger.warn("spagoUrl is null!!!!!!");
 
 	    IEngUserProfile profile = null;
 	    if (userIdentifier != null && !userIdentifier.equals("scheduler")) {
@@ -158,42 +165,47 @@ public class SpagoBIAccessFilter implements Filter {
 	    }
 	}
 	chain.doFilter(request, response);
-/*	
-This code doesn't show the original error
-	try {
-		chain.doFilter(request, response);
-	} catch (Exception e){
-		logger.error("--------------------------------------------------------------------------------");
-		logger.error("SpagoBIAccessFilter" + ":doFilter ServletException !!");
-		logger.error(" msg: [" + e.getMessage() + "]");
-		Throwable t = e.getCause();
-		logger.error("-----------------------------");
-		logger.error("ROOT CAUSE:");
-		logger.error("-----------------------------");
-		logger.error(" msg: [" +t.getMessage() + "]");
-		logger.error(" stacktrace:");
-		t.printStackTrace();
-	}
-	
-*/	
+	/*
+	 * This code doesn't show the original error try {
+	 * chain.doFilter(request, response); } catch (Exception e){
+	 * logger.error("--------------------------------------------------------------------------------");
+	 * logger.error("SpagoBIAccessFilter" + ":doFilter ServletException
+	 * !!"); logger.error(" msg: [" + e.getMessage() + "]"); Throwable t =
+	 * e.getCause(); logger.error("-----------------------------");
+	 * logger.error("ROOT CAUSE:");
+	 * logger.error("-----------------------------"); logger.error(" msg: ["
+	 * +t.getMessage() + "]"); logger.error(" stacktrace:");
+	 * t.printStackTrace(); }
+	 * 
+	 */
 	logger.debug("OUT");
     }
 
+    private String getUserWithSSO(HttpSession session) throws ServletException {
+	logger.debug("IN");
+	SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
+	String ssoUserIdentifier = userProxy.readUserIdentifier(session);
+	logger.debug("OUT. got ssoUserId from IProxyService=" + ssoUserIdentifier);
+	return ssoUserIdentifier;
+    }
+
     private String checkUserWithSSO(String userId, HttpSession session) throws ServletException {
-    
+	logger.debug("IN");
 	if (EnginConf.getInstance().isSsoActive()) {
 	    SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
 	    String ssoUserIdentifier = userProxy.readUserIdentifier(session);
 	    logger.debug("got ssoUserId from IProxyService=" + ssoUserIdentifier);
-	    logger.debug("got userId from IProxyService=" + userId);
+	    logger.debug("OU: got userId from IProxyService=" + userId);
 	    return ssoUserIdentifier;
 	} else {
-	    logger.debug("SSO is inactive...");
+	    logger.debug("OUT. SSO is inactive...");
 	    return userId;
 	}
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
     public void init(FilterConfig config) throws ServletException {

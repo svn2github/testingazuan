@@ -261,7 +261,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			}
 			aSession.update(sbiKpiModelInst);
 
-			if (deleteOldHistory) {
+			if (deleteOldHistory && oldSbiKpiInstance != null) {
 				deleteKpiInstance(aSession, oldSbiKpiInstance
 						.getIdKpiInstance());
 			}

@@ -7,6 +7,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.model.bo.Model;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 
 public class DetailKpiUtil {
@@ -68,6 +69,15 @@ public class DetailKpiUtil {
 		serviceResponse.setAttribute("ID", kpiId);
 		serviceResponse.setAttribute("MESSAGE",SpagoBIConstants.DETAIL_SELECT);
 		selectKpi(kpiId, serviceResponse);
+	}
+
+	public static void restoreKpiValue(Integer id, SourceBean serviceRequest,
+			SourceBean serviceResponse) throws Exception {
+		Kpi toReturn = getKpiFromRequest(serviceRequest);
+		if (id != null) {
+			toReturn.setKpiId(id);
+		}
+		serviceResponse.setAttribute("KPI", toReturn);
 	}
 
 }

@@ -79,9 +79,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		SourceBean moduleResponse = (SourceBean) aServiceResponse
 				.getAttribute("DetailModelModule");
 		Model model = (Model) moduleResponse.getAttribute("MODEL");
-		id = model.getId().toString();
-		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
-		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		if(model.getId() != null){
+			id = model.getId().toString();
+			messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+			messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		} else {
+			messageIn = DelegatedDetailService.DETAIL_SELECT;
+			messageSave = DelegatedDetailService.DETAIL_INSERT;
+		}
 	}
 
 	if (messageIn != null

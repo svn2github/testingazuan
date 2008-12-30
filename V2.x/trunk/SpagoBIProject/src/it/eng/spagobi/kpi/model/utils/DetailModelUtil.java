@@ -1,8 +1,10 @@
 package it.eng.spagobi.kpi.model.utils;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelAttribute;
 
@@ -83,6 +85,24 @@ public class DetailModelUtil {
 		serviceResponse.setAttribute("ID", modelId);
 		serviceResponse.setAttribute("MESSAGE",SpagoBIConstants.DETAIL_SELECT);
 		selectModel(modelId, serviceResponse);
+	}
+
+	public static void restoreModelValue(Integer id, SourceBean serviceRequest,
+			SourceBean serviceResponse) throws Exception {
+		Model toReturn = getModelFromRequest(serviceRequest);
+		String modelAttributeName = (String)serviceRequest.getAttribute("MODELATTRIBUTESNAME");
+		List modelAttributes = updateModelAttribute(serviceRequest, modelAttributeName);
+		
+		if (id != null) {
+			toReturn.setId(id);
+		}
+		
+		if (modelAttributes != null) {
+			toReturn.setModelAttributes(modelAttributes);
+		}
+		
+		serviceResponse.setAttribute("MODEL", toReturn);
+		
 	}
 
 }

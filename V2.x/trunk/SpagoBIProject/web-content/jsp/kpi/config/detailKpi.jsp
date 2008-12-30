@@ -76,9 +76,14 @@
 		SourceBean moduleResponse = (SourceBean) aServiceResponse
 				.getAttribute("DetailKpiModule");
 		Kpi kpi = (Kpi) moduleResponse.getAttribute("KPI");
-		id = kpi.getKpiId().toString();
-		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
-		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		if(kpi.getKpiId() != null) {
+			id = kpi.getKpiId().toString();
+			messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+			messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		} else {
+			messageIn = DelegatedDetailService.DETAIL_SELECT;
+			messageSave = DelegatedDetailService.DETAIL_INSERT;
+		}
 	}
 
 	if (messageIn != null

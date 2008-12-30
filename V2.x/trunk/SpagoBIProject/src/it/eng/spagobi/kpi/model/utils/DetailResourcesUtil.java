@@ -20,6 +20,15 @@ public class DetailResourcesUtil {
 
 	}
 
+
+	public static void restoreResource(Integer id, SourceBean serviceRequest,SourceBean serviceResponse)throws Exception {
+		Resource toReturn = getResourceFromRequest(serviceRequest);
+		if (id != null){
+			toReturn.setId(id);
+		}
+		serviceResponse.setAttribute("Resource", toReturn);
+	}
+	
 	private static Resource getResourceFromRequest(SourceBean serviceRequest) {
 		Resource toReturn = new Resource();
 		String tableName = (String) serviceRequest.getAttribute("tableName");

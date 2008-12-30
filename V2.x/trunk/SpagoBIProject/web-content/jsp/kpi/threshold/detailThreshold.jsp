@@ -75,9 +75,14 @@
 		SourceBean moduleResponse = (SourceBean) aServiceResponse
 				.getAttribute("DetailThresholdModule");
 		Threshold threshold = (Threshold) moduleResponse.getAttribute("THRESHOLD");
-		id = threshold.getId().toString();
-		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
-		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		if(threshold.getId() != null) {
+			id = threshold.getId().toString();
+			messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+			messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		} else {
+			messageIn = DelegatedDetailService.DETAIL_SELECT;
+			messageSave = DelegatedDetailService.DETAIL_INSERT;
+		}
 	}
 
 	if (messageIn != null

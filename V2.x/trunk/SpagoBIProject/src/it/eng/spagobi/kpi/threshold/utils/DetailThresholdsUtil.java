@@ -55,4 +55,13 @@ public class DetailThresholdsUtil {
 		selectThreshold(thresholdId, serviceResponse);
 	}
 
+	public static void restoreThreshold(Integer id, SourceBean serviceRequest,
+			SourceBean serviceResponse) throws Exception {
+		Threshold toReturn = getThresholdFromRequest(serviceRequest);
+		if(id != null) {
+			toReturn.setId(id);
+		}
+		serviceResponse.setAttribute("THRESHOLD", toReturn);
+	}
+
 }

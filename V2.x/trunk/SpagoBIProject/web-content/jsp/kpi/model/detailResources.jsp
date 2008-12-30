@@ -80,9 +80,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		SourceBean moduleResponse = (SourceBean) aServiceResponse
 				.getAttribute("DetailResourcesModule");
 		Resource resource = (Resource) moduleResponse.getAttribute("RESOURCE");
-		id = resource.getId().toString();
-		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
-		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		
+		if(resource.getId()!= null){
+			id = resource.getId().toString();
+			messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+			messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		} else { // if it has a validation error
+			messageIn = DelegatedDetailService.DETAIL_SELECT;
+			messageSave = DelegatedDetailService.DETAIL_INSERT;
+		}
+		
 	}
 
 	if (messageIn != null

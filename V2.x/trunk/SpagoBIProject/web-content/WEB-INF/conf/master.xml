@@ -35,7 +35,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/presentation.xml" /> 
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/publishers.xml" /> 
-  <CONFIGURATOR path="/WEB-INF/conf/engines/config/business_map.xml" />  
+    <CONFIGURATOR path="/WEB-INF/conf/engines/config/business_map.xml" />  
       
   
 <!-- engines.dossier -->
@@ -252,5 +252,6 @@
 	<CONFIGURATOR path="/WEB-INF/conf/kpi/model/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/kpi/model/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/kpi/model/business_map.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/kpi/model/validation.xml" />
     
 </MASTER>

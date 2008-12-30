@@ -104,17 +104,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Map formUrlPars = new HashMap();
 	formUrlPars.put("PAGE", "ResourcesPage");
 	formUrlPars.put("MODULE", "DetailResourcesModule");
+	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	formUrlPars.put("MESSAGE", messageSave);
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);
 
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("PAGE", "ResourcesPage");
-	if(messageSave.equals(DelegatedDetailService.DETAIL_UPDATE)){
-		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	}
-	else{
-		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-	}
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 	String messageBundle = "component_kpi_messages";

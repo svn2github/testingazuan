@@ -8,6 +8,7 @@
         <SELECT_QUERY>
           <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
           <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+          <PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" scope="" type="ABSOLUTE" value="true" />
         </SELECT_QUERY>
         </QUERIES>
 			<COLUMNS>
@@ -90,6 +91,7 @@
         <SELECT_QUERY>
           <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
           <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+          <PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" scope="" type="ABSOLUTE" value="true" />
         </SELECT_QUERY>
         </QUERIES>
 			<COLUMNS>
@@ -178,6 +180,7 @@
         <SELECT_QUERY>
           <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
           <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
+          <PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" scope="" type="ABSOLUTE" value="true" />
         </SELECT_QUERY>
         </QUERIES>
 			<COLUMNS>
@@ -235,6 +238,7 @@
           <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
           <ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="TYPE_ORDER" />
           <PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
+          <PARAMETER name="LIGHT_NAVIGATOR_REPLACE_LAST" scope="" type="ABSOLUTE" value="true" />
         </SELECT_QUERY>
         </QUERIES>
 			<COLUMNS>

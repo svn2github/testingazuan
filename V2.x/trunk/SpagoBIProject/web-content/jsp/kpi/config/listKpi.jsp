@@ -22,5 +22,6 @@
 
 <spagobi:list moduleName="ListKpiModule" bundle="component_kpi_messages"/>
 
+<spagobi:error/>
 <%@ include file="/jsp/commons/footer.jsp"%>
 

@@ -140,12 +140,8 @@
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("PAGE", "ThresholdValuePage");
 	backUrlPars.put("IDT", threshold_id);
-	if(messageSave.equals(DelegatedDetailService.DETAIL_UPDATE)){
-		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	}
-	else{
-		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
-	}
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 %>
 

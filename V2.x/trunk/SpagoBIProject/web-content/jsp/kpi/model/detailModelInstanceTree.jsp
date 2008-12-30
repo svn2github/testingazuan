@@ -140,12 +140,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	formUrlPars.put("PAGE", "ModelInstanceTreePage");
 	formUrlPars.put("MODULE", "DetailModelInstanceTreeModule");
 	formUrlPars.put("MESSAGE", messageSave);
+	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);
 
 	Map backUrlPars = new HashMap();
 	backUrlPars.put("PAGE", "ModelInstanceTreePage");
 	if(messageSave.equals(DelegatedDetailService.DETAIL_UPDATE)){
-		backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		backUrlPars.put("ID", parentId);
 	}
 	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");

@@ -27,7 +27,9 @@ import it.eng.spagobi.engines.geo.GeoEngineInstance;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.presentation.DynamicPublisher;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
-import it.eng.spagobi.engines.geo.datasource.DataSource;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
@@ -110,6 +112,8 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			if( outputType != null ) {
 				env.put(Constants.ENV_OUTPUT_TYPE, outputType);
 			}
+			
+			
 			
 			
 			geoEngineInstance = GeoEngine.createInstance(getTemplate(), env);
@@ -199,8 +203,16 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		
 		env = super.getEnv();
 		
-		DataSource dataSource = new DataSource( getDataSource() );
+		IDataSource dataSource = getDataSource();
+		IDataSet dataset = getDataSet();
+		if( dataset != null ) {
+			dataset.setUserProfile( getUserProfile() );
+			dataset.setParamsMap( env );
+		}
+		
 		env.put(EngineConstants.ENV_DATASOURCE, dataSource);
+		env.put(EngineConstants.ENV_DATASET, dataset);
+		
 		logger.debug("DataSource: " + dataSource.toString());
 		
 		env.put(Constants.ENV_CONTEXT_URL, getContextUrl());

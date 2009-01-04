@@ -38,7 +38,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 			        src="AdapterHTTP?ACTION_NAME=DRAW_MAP_ACTION"
 			        width="100%"
 			        height="100%"
-			        frameborder="3"
+			        frameborder="0"
 			        style="background-color:white;">
 			</iframe>
 

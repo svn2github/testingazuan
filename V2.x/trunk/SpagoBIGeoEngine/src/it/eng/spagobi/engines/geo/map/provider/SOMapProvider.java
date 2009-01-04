@@ -20,6 +20,7 @@
  **/
 package it.eng.spagobi.engines.geo.map.provider;
 
+import it.eng.spagobi.engines.geo.GeoEngineConfig;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.map.provider.configurator.SOMapProviderConfigurator;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
@@ -76,12 +77,14 @@ public class SOMapProvider extends AbstractMapProvider {
 			
 		try {
 			mapUrl = mapCatalogueServiceProxy.getMapUrl(mapName);
+			mapUrl = GeoEngineConfig.getInstance().getSpagoBIServerUrl() +  mapUrl;
 		} catch (Exception e) {
 			logger.error("An error occurred while invoking mapCatalogueService method: getMapUrl()");
 			throw new GeoEngineException("Impossible to load map from url: " + mapUrl, e);
 		}
 		
 		try {
+			logger.info("Reading map from: [" + mapUrl + "]");
 			svgDocument = SVGMapLoader.loadMapAsDocument(mapUrl);
 		} catch (IOException e) {
 			logger.error("Impossible to load map from url: " + mapUrl);

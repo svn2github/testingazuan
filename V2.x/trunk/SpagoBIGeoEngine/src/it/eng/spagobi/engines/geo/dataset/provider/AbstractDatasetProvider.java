@@ -125,7 +125,7 @@ public class AbstractDatasetProvider extends AbstractGeoEngineComponent implemen
 	 * 
 	 * @return the meta data
 	 */
-	protected DataSetMetaData getMetaData() {
+	public DataSetMetaData getMetaData() {
 		return metaData;
 	}
 

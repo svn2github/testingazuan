@@ -21,6 +21,9 @@
 package it.eng.spagobi.engines.geo.dataset.provider;
 
 import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -189,6 +192,21 @@ public class Link {
 			}    	
 			return actualValue;
 		}
+		
+		public String getXActualValue(IRecord record, Map env) throws SQLException {
+			String actualValue = null;
+			if( isRelative() ) {
+				if( isRealtiveToDataset() ) {
+					IField field = record.getFieldAt( record.getDataStore().getMetaData().getFieldIndex( getValue() ) );
+					actualValue = "" + field.getValue();
+				} else if ( isRealtiveToEnvironment()) {
+					actualValue = "" + env.get( getValue() );
+				}
+			} else {
+				actualValue = getValue();
+			}    	
+			return actualValue;
+		}
 	}
 
 	/**
@@ -217,6 +235,46 @@ public class Link {
     				targetDocLabel = param.getActualValue(resultSet, env);	
     			} else {
     				parametersStr += param.getName() + "=" + param.getActualValue(resultSet, env) + "&"; 
+    			}
+    		}
+    		if (parametersStr.endsWith("&")) {
+    			parametersStr = parametersStr.substring(0, parametersStr.length()-1);
+    		}
+    		
+    		link = "javascript:parent.execCrossNavigation('" + execIframeId + "', '" + targetDocLabel + "' , '" + parametersStr + "');";
+    		
+    	} catch (Exception e) {
+    		link = "javascript:void(0)";
+    	}
+    	return link;
+	}
+	
+	/**
+	 * To string.
+	 * 
+	 * @param record the result set
+	 * 
+	 * @return the string
+	 */
+	public String toXString(IRecord record, Map env) {
+		
+		String link = null;
+		String execIframeId = null;
+		String targetDocLabel = "";
+		String parametersStr = "";
+		
+		
+		execIframeId = (String) env.get(Constants.ENV_EXEC_IFRAME_ID);
+		
+    	try{
+    		Iterator it = parameters.keySet().iterator();
+    		while(it.hasNext()) {
+    			String key = (String)it.next();
+    			Parameter param = (Parameter)parameters.get(key);
+    			if (param.getName().equalsIgnoreCase("DOCUMENT_LABEL")) {        			
+    				targetDocLabel = param.getXActualValue(record, env);	
+    			} else {
+    				parametersStr += param.getName() + "=" + param.getXActualValue(record, env) + "&"; 
     			}
     		}
     		if (parametersStr.endsWith("&")) {

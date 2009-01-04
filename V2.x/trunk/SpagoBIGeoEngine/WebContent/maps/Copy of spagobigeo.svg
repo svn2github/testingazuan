@@ -50,7 +50,7 @@ bug fixed in layer's checkboxes generation
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
-<svg width="100%" height="100%" onload="init(evt);" 
+<svg width="100%" height="100%" viewBox="0 0 1100 768" onload="init(evt);" 
 xmlns:batik="http://xml.apache.org/batik/ext" 
 xmlns:attrib="http://www.carto.net/attrib" 
 xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -62,9 +62,9 @@ xmlns:dc="http://purl.org/dc/elements/1.1/"
 xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
 xmlns:cc="http://web.resource.org/cc/" sodipodi:version="0.32"
 zoomAndPan="disable"
-preserveAspectRatio="xMidYMid meet">
+preserveAspectRatio="xMidYMin meet">
 
-		
+		<rect x="-3000" y="-500" width="10000" height="3000" stroke="none" fill="#e6e6e6"/>
 		
 		<g id="imported_scripts">
 		
@@ -123,7 +123,7 @@ preserveAspectRatio="xMidYMid meet">
 			var statusbarHeight = 13;
 			
 			// window instances creation
-			myMapApp.Windows["navWindow"] = new Window("navWindow","Windows",210,200,10,10,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Navigation","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
+			myMapApp.Windows["navWindow"] = new Window("navWindow","Windows",210,200,10,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Navigation","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["navWindow"].appendContent("referenceMap",true);
 			myMapApp.Windows["navWindow"].appendContent("zoomIn",true);
 			myMapApp.Windows["navWindow"].appendContent("mapZoomSlider",true);
@@ -134,30 +134,29 @@ preserveAspectRatio="xMidYMid meet">
 			myMapApp.Windows["navWindow"].appendContent("infoButton",true);
 			myMapApp.Windows["navWindow"].appendContent("backwardExtent",true);
 			myMapApp.Windows["navWindow"].appendContent("forwardExtent",true);
-			//myMapApp.Windows["navWindow"].minimize(true);
+			myMapApp.Windows["navWindow"].minimize(true);
 			
-			myMapApp.Windows["basiclayer"] = new Window("basiclayer","Windows",210,200,436,10,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Map Layers","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
+			myMapApp.Windows["basiclayer"] = new Window("basiclayer","Windows",210,200,436,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Map Layers","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["basiclayer"].appendContent("checkBoxes",true);
 			myMapApp.Windows["basiclayer"].appendContent("linkRadioGroup",true);			
-			//myMapApp.Windows["basiclayer"].minimize(true);
+			myMapApp.Windows["basiclayer"].minimize(true);
 			
 			
-			myMapApp.Windows["thematic"] = new Window("thematic","Windows",210,200,223,10,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Thematic Topics","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
+			myMapApp.Windows["thematic"] = new Window("thematic","Windows",210,200,223,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Thematic Topics","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["thematic"].appendContent("radioButtons",true);
 			myMapApp.Windows["thematic"].minimize(true);
 			
-			myMapApp.Windows["detail"] = new Window("detail","Windows",210,200,649,10,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Detail","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
+			myMapApp.Windows["detail"] = new Window("detail","Windows",210,200,649,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Detail","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["detail"].appendContent("detailTabGroup",true);
-			//myMapApp.Windows["detail"].minimize(true);
+			myMapApp.Windows["detail"].minimize(true);
 			
-			myMapApp.Windows["legend"] = new Window("legend","Windows",210,200,862,10,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Legend","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
+			myMapApp.Windows["legend"] = new Window("legend","Windows",210,200,862,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Legend","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["legend"].appendContent("coulourboxes",true);
-			//myMapApp.Windows["legend"].minimize(true);
+			myMapApp.Windows["legend"].minimize(true);
 			
 		}
 		
-		function closeAllWindows() {	
-			alert('boom');		
+		function closeAllWindows() {			
 			myMapApp.Windows["navWindow"].close(true);					
 			myMapApp.Windows["basiclayer"].close(true);		
 			myMapApp.Windows["thematic"].close(true);			
@@ -1141,7 +1140,7 @@ preserveAspectRatio="xMidYMid meet">
 		if (evtType == "minimized") {
 			windowPositions[id] = {"x":myMapApp.Windows[id].transX,"y":myMapApp.Windows[id].transY};
 			myMapApp.Windows[id].moveable = false;
-			y = 10;
+			y = 720;
 			if (id == "navWindow") {
 				x = 10;
 			}
@@ -1258,10 +1257,17 @@ preserveAspectRatio="xMidYMid meet">
 		<title>SpagoBI Geo Engine</title>
 		
 		
+		<!-- sfondo del pannello che contiene la mappa 
+		<rect x="0" y="0" width="1100" height="722" stroke="none" fill="#e6e6e6"/>
+		-->
 		
+		<rect x="0" y="0" width="1100" height="722" stroke="none" fill="#e6e6e6"/>
+		
+		<!-- sfondo della mappa -->
+		<rect x="4" y="4" width="1092" height="690" fill="white"/>
 		
 		<!-- Main Map Frame -->
-		<svg id="mainMap" x="0" y="0" width="99%" height="99%" viewBox="0 0 0 0" 
+		<svg id="mainMap" x="4" y="4" width="1092" height="690" viewBox="0 0 0 0" 
 			xmlns:attrib="http://www.carto.net/attrib" xmlns:xlink="http://www.w3.org/1999/xlink" 
 			xmlns="http://www.w3.org/2000/svg" 
 			preserveAspectRatio="xMidYMid meet" zoomAndPan="magnify">
@@ -1293,12 +1299,11 @@ preserveAspectRatio="xMidYMid meet">
 				
 				</g>
 				</g>
-				
-				
-				
 		</svg>
 
-	
+	<!-- cornice della mappa -->
+	<rect x="4" y="4" width="1092" height="690" fill="none" stroke="dimgray"/>
+		
 	<g id="statusColorMap" display="none">
 		<rect x="500" y="200" width="160" height="50" fill="#fffce6" fill-opacity="0.8"/>
 		<text x="515" y="220" fill="steelblue" font-family="Arial,Helvetica" font-size="14px" startOffset="0">loading Data ...</text>
@@ -1356,7 +1361,7 @@ preserveAspectRatio="xMidYMid meet">
 	    <g id="Windows">
 			
 				<!-- Navigation Window -->
-				<g id="navWindow" transform="translate(10,10)">
+				<g id="navWindow" transform="translate(10,537)">
 					
 					<rect width="210" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
 					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
@@ -1527,12 +1532,16 @@ preserveAspectRatio="xMidYMid meet">
 	
 		 
 		
+		<!-- tab content -->
+    
 	
+		<!-- show data -->
+	
+		
 	
 		<svg id="logo" x="1040" y="-1" width="500" height="200" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" zoomAndPan="magnify">
 			<g transform="scale(0.3)">
 			
 			</g>
 		</svg>
-	
 	</svg>

@@ -32,6 +32,11 @@ import it.eng.spagobi.engines.geo.map.utils.SVGMapHandler;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapMerger;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapSaver;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -278,7 +283,15 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 */
 	private void decorateMap(SVGDocument masterMap, SVGDocument targetMap, DataSet datamart) {
 		
-		String[] kpiNames = datamart.getKpiNames();
+		IDataStore dataStore = datamart.getDataStore();
+		IDataStoreMetaData dataStoreMeta = dataStore.getMetaData();
+		List measureFieldsMeta = dataStoreMeta.findFieldMeta("ROLE", "MEASURE");
+		String[] kpiNames = new String[measureFieldsMeta.size()];
+		for(int i = 0; i < kpiNames.length; i++) {
+			IFieldMetaData filedMeta = (IFieldMetaData)measureFieldsMeta.get(i);
+			kpiNames[i] = filedMeta.getName();
+		}
+		
 		int selectedKpiIndex = datamart.getSelectedKpi();
 		String selectedKpiName = kpiNames[selectedKpiIndex];
 		Measure measure  = getMeasure( selectedKpiName );
@@ -296,7 +309,11 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		Double[] kpi_ordered_values = null;
 		
 		
-		Set orderedKpiValuesSet = datamart.getOrderedKpiValuesSet( selectedKpiName );
+		
+		
+		dataStore.sortRecords( dataStoreMeta.getFieldIndex(selectedKpiName) );
+		List orderedKpiValuesSet = dataStore.getFieldValues( dataStoreMeta.getFieldIndex(selectedKpiName) );
+		//Set orderedKpiValuesSet = datamart.getOrderedKpiValuesSet( selectedKpiName );
 		kpi_ordered_values = (Double[])orderedKpiValuesSet.toArray(new Double[0]);
     	
 		
@@ -446,13 +463,18 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    		
 	    		String childId = child.getId();
 	        	String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");
-	        	Map attributes = (Map)datamart.getAttributeseById(column_id);
+	        	IRecord record = dataStore.getRecordAt( dataStoreMeta.getFieldIndex(column_id) );
+	        	
+	        	
+	        	//Map attributes = (Map)datamart.getAttributeseById(column_id);
 	        	
 	    		
 	        	String targetColor = null;
 	        	Double kpyValue = null;
-	        	if(attributes != null) {
-	    			String kpyValueAttr = (String)attributes.get( selectedKpiName );	
+	        	if(record != null) {
+	        		IField field = record.getFieldAt( dataStoreMeta.getFieldIndex(selectedKpiName) );	
+	        		String kpyValueAttr = (String)field.getValue();
+	    			//String kpyValueAttr = (String)attributes.get( selectedKpiName );	
 	    			if(kpyValueAttr == null) {
 	    				targetColor = null_values_color;
 	    			} else {
@@ -483,24 +505,39 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    }
 	    
 	    // add label
-	    Map values = datamart.getValues();
-	    Iterator it = values.keySet().iterator();
+	    //Map values = datamart.getValues();
+	    //Iterator it = values.keySet().iterator();
+	    Iterator it = dataStore.iterator();
 	    while(it.hasNext()) {
-	    	String id = (String)it.next();
-	    	Map kpiValueMap = (Map)values.get(id);
+	    	IRecord record = (IRecord)it.next();
+	    	IField field = null;
+	    	
+	    	field = record.getFieldAt( dataStoreMeta.getIdFieldIndex() );
+	    	String id = (String)field.getValue();
+	    	//String id = (String)it.next();
+	    	
+	    	
+	    	
+	    	//Map kpiValueMap = (Map)values.get(id);
+	    	
 	    	String centroideId = "centroidi_" + datamart.getTargetFeatureName() + "_"  + id;
 	    	Element centroide = targetMap.getElementById( centroideId );
 			if( centroide != null ) {
-				Iterator kpiValueIterator = kpiValueMap.keySet().iterator();
+				List fields = record.getFields();
 				int line = 0;
 				Element labelGroup = null;
-				if(kpiValueIterator.hasNext()) labelGroup = masterMap.createElement("g");
+				if(fields.size()>0) labelGroup = masterMap.createElement("g");
 				boolean isFirst = true;
-				while(kpiValueIterator.hasNext()) {
-					String tmpKpiName = (String)kpiValueIterator.next();
-					Measure kpi  = getMeasure( tmpKpiName );
-					Object o = kpiValueMap.get(tmpKpiName);
-					String kpiValue = (String)kpiValueMap.get(tmpKpiName);
+				for(int i = 0; i < fields.size(); i++) {
+					if(i == dataStoreMeta.getIdFieldIndex()) continue;
+					
+					field = (IField)fields.get(i);
+					String fieldName = dataStoreMeta.getFieldName(i);
+					//String tmpKpiName = (String)kpiValueIterator.next();
+					
+					
+					Measure kpi  = getMeasure( fieldName );
+					String kpiValue = "" + field.getValue();
 					labelGroup.setAttribute("transform", "translate(" + centroide.getAttribute("cx") + "," + centroide.getAttribute("cy")+ ") scale(40)");
 					labelGroup.setAttribute("display", "inherit");
 					
@@ -749,6 +786,8 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 */
 	private void addData(SVGDocument map, DataSet datamart) {
 		
+		IDataStore dataStore = datamart.getDataStore();
+		
 		Element targetLayer = map.getElementById(datamart.getTargetFeatureName());
 		
 		NodeList nodeList = targetLayer.getChildNodes();
@@ -758,11 +797,30 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    		SVGElement child = (SVGElement)childNode;
 	    		String childId = child.getId();
 	    		String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");
+	    		
+	    		
+	    		IRecord record = dataStore.getRecordByID( column_id );
+	    		if(record == null) {
+	    			logger.warn("No data available for feature [" + column_id +"]");
+	    			continue;
+	    		}
+	    		List fields = record.getFields();
+	    		for(int j = 0; j < fields.size(); j++) {
+	    			if(j == dataStore.getMetaData().getIdFieldIndex() ) {
+	    				continue;
+	    			}
+	    			IField field = (IField)fields.get(j);
+	    			child.setAttribute("attrib:" + dataStore.getMetaData().getFieldName(j), "" + field.getValue());
+	    		}
+	    		child.setAttribute("attrib:nome", child.getAttribute("id"));
+	    		
+	    		/*
 	    		Map attributes = (Map)datamart.getAttributeseById(column_id);
 	    		if(attributes != null) {
 	    			SVGMapHandler.addAttributes(child, attributes);
 	    			child.setAttribute("attrib:nome", child.getAttribute("id"));	    			
 	    		}
+	    		*/
 	    	} 
 	    }
 	}
@@ -776,6 +834,11 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 */
 	private void addLink(SVGDocument map, DataSet datamart) {	
 		
+		IDataStore dataStore = datamart.getDataStore();
+		IDataStoreMetaData dataStoreMeta = dataStore.getMetaData();
+		List list = dataStoreMeta.findFieldMeta("ROLE", "CROSSNAVLINK");
+		IFieldMetaData filedMeta = (IFieldMetaData)list.get(0);
+		
 		Element targetLayer = map.getElementById(datamart.getTargetFeatureName());		
 		NodeList nodeList = targetLayer.getChildNodes();
 		Map mapLink = null;
@@ -787,8 +850,16 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		    		SVGElement childOrig =(SVGElement)childNode;	    		
 		    		String childId = childOrig.getId();
 		    		String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");	    		
-		    		Map mapLinks = datamart.getLinks();
-		    		String link = (String)mapLinks.get(column_id);
+		    		
+		    		IRecord record = dataStore.getRecordByID( column_id );
+		    		if(record == null) {
+		    			logger.warn("No data available for feature [" + column_id + "]");
+		    			continue;
+		    		}
+		    		
+		    		IField filed = record.getFieldAt( dataStoreMeta.getFieldIndex( filedMeta.getName()) );
+		    		
+		    		String link = "" + filed.getValue();
 		    		 
 		    		if (link != null) {
 		    			mapLink = new HashMap();
@@ -979,7 +1050,16 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	public String getMeasuresConfigurationScript(DataSet datamart) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("\n\n// MEASURES\n");
-	    String[] kpiNames = datamart.getKpiNames();
+		
+		IDataStore dataStore = datamart.getDataStore();
+		IDataStoreMetaData dataStoreMeta = dataStore.getMetaData();
+		
+		List measureFieldsMeta = dataStoreMeta.findFieldMeta("ROLE", "MEASURE");
+		String[] kpiNames = new String[measureFieldsMeta.size()];
+		for(int i = 0; i < kpiNames.length; i++) {
+			IFieldMetaData filedMeta = (IFieldMetaData)measureFieldsMeta.get(i);
+			kpiNames[i] = filedMeta.getName();
+		}
 	    
 	    // ...kpi_names
 	    buffer.append("var kpi_names = [");	    
@@ -1008,12 +1088,15 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    
 	    buffer.append("var kpi_ordered_values = new Array();\n");	
 	    for(int i = 0; i < kpiNames.length; i++) {
-	    	Set orderedKpiValuesSet = datamart.getOrderedKpiValuesSet(kpiNames[i]);
+	    	
+			
+			dataStore.sortRecords( dataStoreMeta.getFieldIndex(kpiNames[i]) );
+			List orderedKpiValuesSet = dataStore.getFieldValues( dataStoreMeta.getFieldIndex(kpiNames[i]) );
 	    	Iterator it = orderedKpiValuesSet.iterator();
 	    	buffer.append("kpi_ordered_values['" + kpiNames[i] + "'] = [");
 	    	String separtor = "";
 	    	while(it.hasNext()) {
-	    		Double value = (Double)it.next();
+	    		Object value = it.next();
 	    		buffer.append( separtor +  value.toString() );
 	    		separtor = ",";    		
 	    	}
@@ -1303,4 +1386,5 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	public void setLabelProducers(Map labelProducers) {
 		this.labelProducers = labelProducers;
 	}
-}
+
+ }

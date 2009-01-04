@@ -24,8 +24,9 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.datasource.DataSource;
 import it.eng.spagobi.engines.geo.map.provider.SOMapProvider;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import org.apache.log4j.Logger;
@@ -79,8 +80,8 @@ public class SOMapProviderConfigurator {
 	 * 
 	 * @throws GeoEngineException the geo engine exception
 	 */
-	public static DataSource getDataSource(SourceBean confSB) throws GeoEngineException {
-		DataSource dataSource = null;
+	public static IDataSource getDataSource(SourceBean confSB) throws GeoEngineException {
+		IDataSource dataSource = null;
 		
 		SourceBean datasourceSB = (SourceBean)confSB.getAttribute(Constants.DATASOURCE_TAG);
 		if(datasourceSB == null) {
@@ -89,17 +90,26 @@ public class SOMapProviderConfigurator {
 			return null;
 		}
 		
-		dataSource = new DataSource(datasourceSB);
+		dataSource = new DataSource();
 		
-		logger.debug("Datasource jndi name: " + dataSource.getJndiName());
+		String type = (String)datasourceSB.getAttribute(Constants.DATASET_TYPE_ATTRIBUTE);				
+		if("connection".equalsIgnoreCase(type)) {
+			dataSource.setJndi( (String)datasourceSB.getAttribute(Constants.DATASET_NAME_ATTRIBUTE) );
+			dataSource.setDriver( (String)datasourceSB.getAttribute(Constants.DATASET_DRIVER_ATTRIBUTER) );
+			dataSource.setPwd( (String)datasourceSB.getAttribute(Constants.DATASET_PWD_ATTRIBUTE) );
+			dataSource.setUser( (String)datasourceSB.getAttribute(Constants.DATASET_USER_ATTRIBUTE) );
+			dataSource.setUrlConnection( (String)datasourceSB.getAttribute(Constants.DATASET_URL_ATTRIBUTE) );
+		}
+		
+		logger.debug("Datasource jndi name: " + dataSource.getJndi());
 		logger.debug("Datasource driver: " + dataSource.getDriver());
-		logger.debug("Datasource password: " + dataSource.getPassword());		
+		logger.debug("Datasource password: " + dataSource.getPwd());		
 		logger.debug("Datasource user: " + dataSource.getUser());
-		logger.debug("Datasource url: " + dataSource.getUrl());
+		logger.debug("Datasource url: " + dataSource.getUrlConnection());
 		
-		if(dataSource.getJndiName() != null) {
-			logger.info("Datasource is of type jndi connection. Referenced jndi resource is " + dataSource.getJndiName());
-		} else if (dataSource.getDriver() == null || dataSource.getUrl() == null){
+		if(dataSource.getJndi() != null) {
+			logger.info("Datasource is of type jndi connection. Referenced jndi resource is " + dataSource.getJndi());
+		} else if (dataSource.getDriver() == null || dataSource.getUrlConnection() == null){
 			logger.error("Missing driver name or url in datasource configuration settings");
 			throw new GeoEngineException("Missing driver name or url in datasource configuration settings");
 		}

@@ -18,14 +18,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.geo.dataset.provider.configurator;
+package it.eng.spagobi.engines.geo.datamart.provider;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.dataset.provider.SQLDatasetProvider;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import org.apache.log4j.Logger;
@@ -36,7 +38,7 @@ import org.apache.log4j.Logger;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class SQLDatasetProviderConfigurator {
+public class DataMartProviderConfigurator {
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(SQLDatasetProvider.class);
@@ -45,12 +47,12 @@ public class SQLDatasetProviderConfigurator {
 	/**
 	 * Configure.
 	 * 
-	 * @param sqlDatasetProvider the sql dataset provider
+	 * @param datamartProvider the sql dataset provider
 	 * @param conf the conf
 	 * 
 	 * @throws GeoEngineException the geo engine exception
 	 */
-	public static void configure(SQLDatasetProvider sqlDatasetProvider, Object conf) throws GeoEngineException {
+	public static void configure(DataMartProvider datamartProvider, Object conf) throws GeoEngineException {
 		SourceBean confSB = null;
 		
 		if(conf instanceof String) {
@@ -65,8 +67,15 @@ public class SQLDatasetProviderConfigurator {
 		}
 		
 		if(confSB != null) {
-			DataSource dataSource = null;
+			IDataSource dataSource = null;
 			String query = null;
+			IDataSet dataSet = null;
+			
+			dataSet = (IDataSet)datamartProvider.getEnv().get(EngineConstants.ENV_DATASET);
+			if(dataSet != null) {
+				datamartProvider.setDs(dataSet);
+				return;
+			}
 			
 			SourceBean dataSetSB = (SourceBean)confSB.getAttribute(Constants.DATASET_TAG);
 			if(dataSetSB == null) {
@@ -76,12 +85,12 @@ public class SQLDatasetProviderConfigurator {
 				dataSource = getDataSource( dataSetSB );
 				query = getQuery( dataSetSB );	
 				
-				if(sqlDatasetProvider.getEnv().get(EngineConstants.ENV_DATASOURCE) != null) {
-					dataSource = (DataSource)sqlDatasetProvider.getEnv().get(EngineConstants.ENV_DATASOURCE);
+				if(datamartProvider.getEnv().get(EngineConstants.ENV_DATASOURCE) != null) {
+					dataSource = (DataSource)datamartProvider.getEnv().get(EngineConstants.ENV_DATASOURCE);
 				}
 				
-				sqlDatasetProvider.setDataSource(dataSource);
-				sqlDatasetProvider.setQuery(query);				
+				datamartProvider.setDataSource(dataSource);
+				datamartProvider.setQuery(query);				
 			}
 			
 					

@@ -21,7 +21,10 @@
 package it.eng.spagobi.engines.geo.map.renderer;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.datasource.DataSource;
+import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -40,7 +43,7 @@ import java.util.Set;
 public class QueryLabelProducer implements LabelProducer {
 	
 	/** The data source. */
-	private DataSource dataSource;
+	private IDataSource dataSource;
 	
 	/** The query. */
 	private String query;
@@ -56,7 +59,17 @@ public class QueryLabelProducer implements LabelProducer {
 	 */
 	public void init(SourceBean conf) {
 		SourceBean dataSourceSB = (SourceBean)conf.getAttribute("DATASOURCE");
-		dataSource = new DataSource(dataSourceSB);
+		dataSource = new DataSource();
+		
+		String type = (String)dataSourceSB.getAttribute(Constants.DATASET_TYPE_ATTRIBUTE);				
+		if("connection".equalsIgnoreCase(type)) {
+			dataSource.setJndi( (String)dataSourceSB.getAttribute(Constants.DATASET_NAME_ATTRIBUTE) );
+			dataSource.setDriver( (String)dataSourceSB.getAttribute(Constants.DATASET_DRIVER_ATTRIBUTER) );
+			dataSource.setPwd( (String)dataSourceSB.getAttribute(Constants.DATASET_PWD_ATTRIBUTE) );
+			dataSource.setUser( (String)dataSourceSB.getAttribute(Constants.DATASET_USER_ATTRIBUTE) );
+			dataSource.setUrlConnection( (String)dataSourceSB.getAttribute(Constants.DATASET_URL_ATTRIBUTE) );
+		}
+				
 		
 		SourceBean querySB = (SourceBean)conf.getAttribute("QUERY");
 		query = querySB.getCharacters();

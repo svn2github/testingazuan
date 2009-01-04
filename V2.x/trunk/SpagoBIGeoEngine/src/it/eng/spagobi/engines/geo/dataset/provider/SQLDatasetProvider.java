@@ -26,7 +26,9 @@ import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.dataset.DataSet;
 import it.eng.spagobi.engines.geo.dataset.provider.configurator.SQLDatasetProviderConfigurator;
-import it.eng.spagobi.engines.geo.datasource.DataSource;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -53,7 +55,7 @@ import org.apache.log4j.Logger;
 public class SQLDatasetProvider extends AbstractDatasetProvider {
 	 	
 	/** The data source. */
-	private DataSource dataSource;	
+	private IDataSource dataSource;	
 	
 	/** The query. */
 	private String query;
@@ -92,6 +94,14 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
         
     	SQLCommand cmdSelect = null;
         DataResult dr = null;
+        
+        if(getEnv().get(EngineConstants.ENV_DATASET) != null) {
+        	JDBCDataSet jdbcDataSet = (JDBCDataSet) getEnv().get(EngineConstants.ENV_DATASET);
+        	this.query = (String)jdbcDataSet.getQuery();
+        	this.dataSource = jdbcDataSet.getDataSource();
+        }
+        
+        
         String aggregateQuery = getAggreagteQuery();
         
         Connection connection = null;
@@ -147,7 +157,7 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
                 links.put(id, link);
             	
             }
-            dataSet.setValues(values);
+            //dataSet.setValues(values);
             dataSet.setLinks(links);
             dataSet.setKpiNames(measureColumnNames);
             dataSet.setSelectedKpi(0);
@@ -176,7 +186,7 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
 			String description = "Impossible to get connection instance from JNDI server: " + getDataSource()!=null?getDataSource().toString():"NULL" ;
 			description += "<br>The root cause of the error is: " + rootCause;
 			List hints = new ArrayList();
-			hints.add("Check if the jndi name is correct: " + getDataSource()!=null?getDataSource().getJndiName():"NULL");
+			hints.add("Check if the jndi name is correct: " + getDataSource()!=null?getDataSource().getJndi():"NULL");
 			hints.add("Check if the jndi resorce is properly bound in this context");
 			hints.add("Check if JNDI server had encountered an error during resource " +
 					"instantiation, maybe due to a wrong connection definition inside server configuration");
@@ -493,7 +503,7 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
 		 * 
 		 * @return the data source
 		 */
-		protected DataSource getDataSource() {
+		protected IDataSource getDataSource() {
 			return dataSource;
 		}
 
@@ -503,7 +513,7 @@ public class SQLDatasetProvider extends AbstractDatasetProvider {
 		 * 
 		 * @param dataSource the new data source
 		 */
-		public void setDataSource(DataSource dataSource) {
+		public void setDataSource(IDataSource dataSource) {
 			this.dataSource = dataSource;
 		}
 

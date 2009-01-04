@@ -114,7 +114,13 @@ Sbi.geo.app = function() {
 							, failure: Sbi.commons.ExceptionHandler.handleFailure
 							, params: this.saveAnalysisWin.getAnalysisMeta
 							, scope: this.saveAnalysisWin
-						});  
+						}); 
+						sequence.add({
+		                	url: Sbi.geo.app.serviceRegistry.getServiceUrl('SET_ANALYSIS_STATE_ACTION')
+							, failure: Sbi.commons.ExceptionHandler.handleFailure
+							, params: drillPanel.getAnalysisState
+							, scope: drillPanel
+						}); 
 						 
                       }
                       this.saveAnalysisWin.show();
@@ -128,6 +134,7 @@ Sbi.geo.app = function() {
                     		, success: function() {
                     			
                     			var iframeEl = Ext.get('iframe_1');
+                    			//iframeEl.applyStyles({'background-color': 'white'});
                     			iframeEl.dom.src = Sbi.geo.app.serviceRegistry.getServiceUrl('DRAW_MAP_ACTION');
                     		}
 							, failure: Sbi.commons.ExceptionHandler					
@@ -156,6 +163,7 @@ Sbi.geo.app = function() {
           	      			width:'100%',
           	      			height:'100%',
           	      			id: 'iframe_1',
+          	      			style: 'background-color:white;',
           	      			name: 'iframe_1'
         	 				   }]
       	 				}

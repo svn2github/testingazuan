@@ -18,14 +18,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.geo.dataset.provider;
+package it.eng.spagobi.engines.geo.datamart.provider;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.AbstractGeoEngineComponent;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.datamart.provider.configurator.AbstractDataMartProviderConfigurator;
 import it.eng.spagobi.engines.geo.dataset.DataSet;
 import it.eng.spagobi.engines.geo.dataset.DataSetMetaData;
-import it.eng.spagobi.engines.geo.dataset.provider.configurator.AbstractDatasetProviderConfigurator;
+import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
+import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy.Level;
 
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +38,7 @@ import java.util.Set;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class AbstractDatasetProvider extends AbstractGeoEngineComponent implements IDatasetProvider {
+public class AbstractDataMartProvider extends AbstractGeoEngineComponent implements IDataMartProvider {
 
 	/** The meta data. */
 	private DataSetMetaData metaData;	
@@ -53,7 +55,7 @@ public class AbstractDatasetProvider extends AbstractGeoEngineComponent implemen
     /**
      * Instantiates a new abstract dataset provider.
      */
-    public AbstractDatasetProvider() {
+    public AbstractDataMartProvider() {
         super();
     }   
     
@@ -62,7 +64,7 @@ public class AbstractDatasetProvider extends AbstractGeoEngineComponent implemen
      */
     public void init(Object conf) throws GeoEngineException {
 		super.init(conf);
-		AbstractDatasetProviderConfigurator.configure( this, getConf() );
+		AbstractDataMartProviderConfigurator.configure( this, getConf() );
 	}
   
     /* (non-Javadoc)

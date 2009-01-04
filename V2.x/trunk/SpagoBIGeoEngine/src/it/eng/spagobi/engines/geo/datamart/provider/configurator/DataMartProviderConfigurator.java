@@ -18,13 +18,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.geo.datamart.provider;
+package it.eng.spagobi.engines.geo.datamart.provider.configurator;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.dataset.provider.SQLDatasetProvider;
+import it.eng.spagobi.engines.geo.datamart.provider.DataMartProvider;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
 public class DataMartProviderConfigurator {
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(SQLDatasetProvider.class);
+    public static transient Logger logger = Logger.getLogger(DataMartProviderConfigurator.class);
 	
 	
 	/**

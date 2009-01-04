@@ -73,10 +73,10 @@ public class GetHierarchiesAction extends AbstractGeoEngineAction {
 			
 			JSONObject responseJSON = new JSONObject();
 			
-			String[] hierachieNames = (String[])getGeoEngineInstance().getDatasetProvider().getHierarchyNames().toArray(new String[0]);
+			String[] hierachieNames = (String[])getGeoEngineInstance().getDataMartProvider().getHierarchyNames().toArray(new String[0]);
 			JSONArray hierarchiesJSON = new JSONArray();
 			for(int j = 0; j < hierachieNames.length; j++) {
-				Hierarchy hierarchy = getGeoEngineInstance().getDatasetProvider().getHierarchy(hierachieNames[j]);
+				Hierarchy hierarchy = getGeoEngineInstance().getDataMartProvider().getHierarchy(hierachieNames[j]);
 				JSONObject hierarchyJSON = new JSONObject();
 				hierarchyJSON.put("id", hierarchy.getName());
 				hierarchyJSON.put("name", hierarchy.getName());

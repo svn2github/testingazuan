@@ -22,7 +22,7 @@ package it.eng.spagobi.engines.geo.map.renderer;
 
 import it.eng.spagobi.engines.geo.IGeoEngineComponent;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
+import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 
 import java.io.File;
@@ -47,7 +47,7 @@ public interface IMapRenderer  extends IGeoEngineComponent {
 	 * @throws GeoEngineException the geo engine exception
 	 */
 	public File renderMap(IMapProvider mapProvider, 
-			  IDatasetProvider datamartProvider,
+			IDataMartProvider datamartProvider,
 			  String outputFormat) throws GeoEngineException;
 			  
 	
@@ -61,7 +61,7 @@ public interface IMapRenderer  extends IGeoEngineComponent {
 	 * 
 	 * @throws GeoEngineException the geo engine exception
 	 */
-	File renderMap(IMapProvider mapProvider, IDatasetProvider datamartProvider) throws GeoEngineException;
+	File renderMap(IMapProvider mapProvider, IDataMartProvider datamartProvider) throws GeoEngineException;
 	
 	/**
 	 * Gets the layer names.

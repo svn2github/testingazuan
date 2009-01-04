@@ -24,11 +24,10 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.dataset.DataSet;
-import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 import it.eng.spagobi.engines.geo.map.renderer.configurator.InteractiveMapRendererConfigurator;
-import it.eng.spagobi.engines.geo.map.utils.SVGMapHandler;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapMerger;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapSaver;
@@ -52,7 +51,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
@@ -107,7 +105,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * @see it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer#renderMap(it.eng.spagobi.engines.geo.map.provider.IMapProvider, it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider)
 	 */
 	public File renderMap(IMapProvider mapProvider, 
-			  IDatasetProvider datamartProvider) throws GeoEngineException {
+			IDataMartProvider datamartProvider) throws GeoEngineException {
 		return renderMap(mapProvider, datamartProvider, Constants.DSVG);
 	}
 	
@@ -115,7 +113,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * @see it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer#renderMap(it.eng.spagobi.engines.geo.map.provider.IMapProvider, it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider, java.lang.String)
 	 */
 	public File renderMap(IMapProvider mapProvider, 
-						  IDatasetProvider datamartProvider,
+			IDataMartProvider datamartProvider,
 						  String outputFormat) throws GeoEngineException {
 		
 		if(outputFormat.equalsIgnoreCase(Constants.SVG)) {
@@ -144,7 +142,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * @throws GeoEngineException the geo engine exception
 	 */
 	private File renderDSVGMap(IMapProvider mapProvider, 
-	  						   IDatasetProvider datamartProvider, boolean includeScript) throws GeoEngineException {
+			IDataMartProvider datamartProvider, boolean includeScript) throws GeoEngineException {
 		SVGDocument targetMap;
 		SVGDocument masterMap = null;
 		DataSet dataSet;
@@ -223,7 +221,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * @throws GeoEngineException the geo engine exception
 	 */
 	private File renderSVGMap(IMapProvider mapProvider, 
-			   IDatasetProvider datamartProvider) throws GeoEngineException {
+			IDataMartProvider datamartProvider) throws GeoEngineException {
 		
 		SVGDocument targetMap;
 		SVGDocument masterMap;

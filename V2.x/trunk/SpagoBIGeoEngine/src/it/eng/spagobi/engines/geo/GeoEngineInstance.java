@@ -23,8 +23,8 @@ package it.eng.spagobi.engines.geo;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
+import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
-import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 import it.eng.spagobi.engines.geo.map.renderer.IMapRenderer;
 import it.eng.spagobi.engines.geo.map.renderer.Layer;
@@ -51,7 +51,7 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 	IMapProvider mapProvider;
 	
 	/** The dataset provider. */
-	IDatasetProvider datasetProvider;
+	IDataMartProvider dataMartProvider;
 	
 	/** The map renderer. */
 	IMapRenderer mapRenderer;
@@ -67,16 +67,16 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 	 * @param datasetProvider the dataset provider
 	 * @param mapRenderer the map renderer
 	 */
-	protected GeoEngineInstance(IMapProvider mapProvider, IDatasetProvider datasetProvider, IMapRenderer mapRenderer) {
+	protected GeoEngineInstance(IMapProvider mapProvider, IDataMartProvider datasetProvider, IMapRenderer mapRenderer) {
 		super();
 		
 		logger.debug("IN");
 		
 		setMapProvider( mapProvider );
-		setDatasetProvider( datasetProvider );
+		setDataMartProvider( datasetProvider );
 		setMapRenderer( mapRenderer );
 		logger.info("MapProvider class: " + getMapProvider().getClass().getName());
-		logger.info("DatasetProvider class: " + getDatasetProvider().getClass().getName());
+		logger.info("DatasetProvider class: " + getDataMartProvider().getClass().getName());
 		logger.info("MapRenderer class: " + getMapRenderer().getClass().getName());
 		
 		logger.debug("OUT");
@@ -96,11 +96,11 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 		logger.debug("IN");
 			
 		setMapProvider( GeoEngineComponentFactory.buildMapProvider( template, env ) );
-		setDatasetProvider( GeoEngineComponentFactory.buildDatasetProvider(template, env) );
+		setDataMartProvider( GeoEngineComponentFactory.buildDataMartProvider(template, env) );
 		setMapRenderer( GeoEngineComponentFactory.buildMapRenderer(template, env) );
 				
 		logger.info("MapProvider class: " + getMapProvider().getClass().getName());
-		logger.info("DatasetProvider class: " + getDatasetProvider().getClass().getName());
+		logger.info("DatasetProvider class: " + getDataMartProvider().getClass().getName());
 		logger.info("MapRenderer class: " + getMapRenderer().getClass().getName());
 		
 		validate();
@@ -114,25 +114,25 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 	 * @throws GeoEngineException the geo engine exception
 	 */
 	public void validate() throws GeoEngineException {
-		String selectedHierarchyName = getDatasetProvider().getSelectedHierarchyName();
+		String selectedHierarchyName = getDataMartProvider().getSelectedHierarchyName();
 		if(selectedHierarchyName == null) {
 			logger.error("Select hierarchy name is not defined");
 			String description = "Select hierarchy name is not defined";
 			throw new GeoEngineException("Configuration error", description);
 		}
 		
-		Hierarchy selectedHierarchy = getDatasetProvider().getHierarchy(selectedHierarchyName);
+		Hierarchy selectedHierarchy = getDataMartProvider().getHierarchy(selectedHierarchyName);
 		if(selectedHierarchy == null) {
 			logger.error("Selected hierarchy [" + selectedHierarchyName + "] does not exist");
 			String description = "Selected hierarchy [" + selectedHierarchyName + "] does not exist";
 			List hints = new ArrayList();
 			hints.add("Check if hierarchy name is correct");
 			hints.add("Check if a hierarchy named " + selectedHierarchyName +"  has been defined. Defined hierarachy are: " 
-					+ Arrays.toString( getDatasetProvider().getHierarchyNames().toArray()) );
+					+ Arrays.toString( getDataMartProvider().getHierarchyNames().toArray()) );
 			throw new GeoEngineException("Configuration error", description, hints);
 		}
 		
-		String selectedLevelName = getDatasetProvider().getSelectedLevelName();
+		String selectedLevelName = getDataMartProvider().getSelectedLevelName();
 		if(selectedLevelName == null) {
 			logger.error("Select level name is not defined");
 			String description = "Select level name is not defined";
@@ -160,8 +160,8 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 		
 		analysisState = new GeoEngineAnalysisState();
 		analysisState.setSelectedMapName( getMapProvider().getSelectedMapName() );
-		analysisState.setSelectedHierarchyName( getDatasetProvider().getSelectedHierarchyName() );
-		analysisState.setSelectedLevelName( getDatasetProvider().getSelectedLevelName() );
+		analysisState.setSelectedHierarchyName( getDataMartProvider().getSelectedHierarchyName() );
+		analysisState.setSelectedLevelName( getDataMartProvider().getSelectedLevelName() );
 		String selectedLayers = null;
 		String[] layerNames = getMapRenderer().getLayerNames();
 		if(layerNames.length > 0) selectedLayers = layerNames[0];
@@ -194,15 +194,15 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 		selectedLayerNames = geoAnalysisState.getSelectedLayers();
 		
 		if(selectedHiearchyName != null) {
-			logger.debug("Previous selected hierarchy: " + getDatasetProvider().getSelectedHierarchyName());
-			getDatasetProvider().setSelectedHierarchyName(selectedHiearchyName);
-			logger.debug("New selected hierarchy: " + getDatasetProvider().getSelectedHierarchyName());
+			logger.debug("Previous selected hierarchy: " + getDataMartProvider().getSelectedHierarchyName());
+			getDataMartProvider().setSelectedHierarchyName(selectedHiearchyName);
+			logger.debug("New selected hierarchy: " + getDataMartProvider().getSelectedHierarchyName());
 		}
 		
 		if(selectedLevelName != null) {
-			logger.debug("Previous selected level: " + getDatasetProvider().getSelectedLevelName());
-			getDatasetProvider().setSelectedLevelName(selectedLevelName);
-			logger.debug("New selected level: " + getDatasetProvider().getSelectedLevelName());			
+			logger.debug("Previous selected level: " + getDataMartProvider().getSelectedLevelName());
+			getDataMartProvider().setSelectedLevelName(selectedLevelName);
+			logger.debug("New selected level: " + getDataMartProvider().getSelectedLevelName());			
 		}
 		
 		if(selectedMapName != null) {
@@ -246,7 +246,7 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 	 * @throws GeoEngineException the geo engine exception
 	 */
 	public File renderMap(String format) throws GeoEngineException {
-		return getMapRenderer().renderMap( getMapProvider(), getDatasetProvider(), format);
+		return getMapRenderer().renderMap( getMapProvider(), getDataMartProvider(), format);
 	}
 	
 	/**
@@ -268,24 +268,6 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 	}
 
 	/**
-	 * Gets the dataset provider.
-	 * 
-	 * @return the dataset provider
-	 */
-	public IDatasetProvider getDatasetProvider() {
-		return datasetProvider;
-	}
-
-	/**
-	 * Sets the dataset provider.
-	 * 
-	 * @param datasetProvider the new dataset provider
-	 */
-	protected void setDatasetProvider(IDatasetProvider datasetProvider) {
-		this.datasetProvider = datasetProvider;
-	}
-
-	/**
 	 * Gets the map renderer.
 	 * 
 	 * @return the map renderer
@@ -301,5 +283,13 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 	 */
 	protected void setMapRenderer(IMapRenderer mapRenderer) {
 		this.mapRenderer = mapRenderer;
+	}
+
+	public IDataMartProvider getDataMartProvider() {
+		return dataMartProvider;
+	}
+
+	public void setDataMartProvider(IDataMartProvider dataMartProvider) {
+		this.dataMartProvider = dataMartProvider;
 	}
 }

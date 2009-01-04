@@ -18,17 +18,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.geo.dataset.provider.configurator;
+package it.eng.spagobi.engines.geo.datamart.provider.configurator;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.datamart.provider.AbstractDataMartProvider;
 import it.eng.spagobi.engines.geo.dataset.DataSetMetaData;
-import it.eng.spagobi.engines.geo.dataset.provider.AbstractDatasetProvider;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.engines.geo.dataset.provider.Link;
-import it.eng.spagobi.engines.geo.dataset.provider.SQLDatasetProvider;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,10 +41,10 @@ import org.apache.log4j.Logger;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class AbstractDatasetProviderConfigurator {
+public class AbstractDataMartProviderConfigurator {
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(SQLDatasetProvider.class);
+    public static transient Logger logger = Logger.getLogger(AbstractDataMartProviderConfigurator.class);
 	
 	
 	/**
@@ -56,7 +55,7 @@ public class AbstractDatasetProviderConfigurator {
 	 * 
 	 * @throws GeoEngineException the geo engine exception
 	 */
-	public static void configure(AbstractDatasetProvider abstractDatasetProvider, Object conf) throws GeoEngineException {
+	public static void configure(AbstractDataMartProvider abstractDatasetProvider, Object conf) throws GeoEngineException {
 		SourceBean confSB = null;
 		
 		if(conf instanceof String) {

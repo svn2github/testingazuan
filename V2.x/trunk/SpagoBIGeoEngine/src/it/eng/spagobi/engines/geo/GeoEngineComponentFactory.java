@@ -22,7 +22,7 @@ package it.eng.spagobi.engines.geo;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
+import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 import it.eng.spagobi.engines.geo.map.renderer.IMapRenderer;
 
@@ -173,8 +173,8 @@ public class GeoEngineComponentFactory {
 	 * 
 	 * @throws GeoEngineException the geo engine exception
 	 */
-	public static IDatasetProvider buildDatasetProvider(SourceBean template, Map env) throws GeoEngineException {
-		IDatasetProvider datasetProvider = null;
+	public static IDataMartProvider buildDataMartProvider(SourceBean template, Map env) throws GeoEngineException {
+		IDataMartProvider dataMartProvider = null;
 		SourceBean confSB = null;
 		String className = null;
 		
@@ -195,9 +195,9 @@ public class GeoEngineComponentFactory {
 		logger.debug("Dataset provider class: " + className);
 		logger.debug("Dataset provider configuration: " + confSB);
 		
-		datasetProvider = (IDatasetProvider)build(className, confSB, env);;
+		dataMartProvider = (IDataMartProvider)build(className, confSB, env);;
 		logger.debug("OUT");
 		
-		return datasetProvider;
+		return dataMartProvider;
 	}
 }

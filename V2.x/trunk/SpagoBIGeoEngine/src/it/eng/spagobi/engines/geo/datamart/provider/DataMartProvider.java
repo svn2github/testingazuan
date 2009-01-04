@@ -24,8 +24,8 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.datamart.provider.configurator.DataMartProviderConfigurator;
 import it.eng.spagobi.engines.geo.dataset.DataSet;
-import it.eng.spagobi.engines.geo.dataset.provider.AbstractDatasetProvider;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
@@ -58,7 +58,7 @@ import org.apache.log4j.Logger;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class DataMartProvider extends AbstractDatasetProvider {
+public class DataMartProvider extends AbstractDataMartProvider {
 	 	
 	/** The data source. */
 	private IDataSource dataSource;	

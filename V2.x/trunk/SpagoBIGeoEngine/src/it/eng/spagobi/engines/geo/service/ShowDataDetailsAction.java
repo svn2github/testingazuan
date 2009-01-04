@@ -66,7 +66,7 @@ public class ShowDataDetailsAction extends AbstractGeoEngineAction {
 			
 			featureValue = getAttributeAsString(SELECTED_FEATURE_ID);
 			logger.debug("Selected feature: " + featureValue);
-			resultSB = getGeoEngineInstance().getDatasetProvider().getDataDetails(featureValue);
+			resultSB = getGeoEngineInstance().getDataMartProvider().getDataDetails(featureValue);
 			logger.debug("ResultSet: \n" + resultSB);
 					
 			setAttributeInSession(RESULT_SET, resultSB);

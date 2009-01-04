@@ -22,7 +22,7 @@ package it.eng.spagobi.engines.geo.map.renderer;
 
 import it.eng.spagobi.engines.geo.AbstractGeoEngineComponent;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider;
+import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 import it.eng.spagobi.engines.geo.map.renderer.configurator.AbstractMapRendererConfigurator;
 
@@ -70,14 +70,14 @@ public class AbstractMapRenderer extends AbstractGeoEngineComponent  implements 
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.geo.map.renderer.IMapRenderer#renderMap(it.eng.spagobi.engines.geo.map.provider.IMapProvider, it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider, java.lang.String)
 	 */
-	public File renderMap(IMapProvider mapProvider, IDatasetProvider datamartProvider, String outputType) throws GeoEngineException {
+	public File renderMap(IMapProvider mapProvider, IDataMartProvider datamartProvider, String outputType) throws GeoEngineException {
 		return null;
 	}
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.geo.map.renderer.IMapRenderer#renderMap(it.eng.spagobi.engines.geo.map.provider.IMapProvider, it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider)
 	 */
-	public File renderMap(IMapProvider mapProvider, IDatasetProvider datamartProvider) throws GeoEngineException {
+	public File renderMap(IMapProvider mapProvider, IDataMartProvider datamartProvider) throws GeoEngineException {
 		return null;
 	}
 	

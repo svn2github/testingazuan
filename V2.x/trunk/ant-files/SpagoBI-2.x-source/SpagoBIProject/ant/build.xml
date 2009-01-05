@@ -36,16 +36,11 @@
   </target>
 
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <!--   SCARICO DEI SORGENTI AGGIORNATI DA CVS							                        -->
+  <!--   SCARICO DEI SORGENTI AGGIORNATI DA SVN							                        -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <target name="svn.checkout" depends="init"
       description="Sincronizza l'applicazione con il repository">
-    <!--
-    <svn>
-      <checkout url="${svn.base.location}/${project.name}" destPath="../" />
-    </svn>
-    -->
-    <exec dir="../" executable="svn" >
+    <exec dir="${project.dir}" executable="svn" >
       <arg line="checkout ${svn.base.location}/${project.name} ."/>
     </exec>	 
   </target>
@@ -230,7 +225,6 @@
   <target name="makeDist" >    
     <antcall target="create.war" />
     <antcall target="javadoc" />
-    <copy file="../${license.path}" todir="${dist}/${webapp_name}"/>
     <antcall target="create.service.client.jar" />
   </target>
   

@@ -45,12 +45,7 @@
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <target name="svn.checkout" depends="init"
       description="Sincronizza l'applicazione con il repository">
-    <!--
-    <svn>
-      <checkout url="${svn.base.location}/${project.name}" destPath="../" />
-    </svn>
-    -->
-    <exec dir="../" executable="svn" >
+     <exec dir="${project.dir}" executable="svn" >
       <arg line="checkout ${svn.base.location}/${project.name} ."/>
     </exec>	 
   </target>
@@ -65,7 +60,7 @@
       <fileset dir="${web.dir}/WEB-INF/lib" includes="**/sbi.utils*.jar"/>
     </delete>
     <!-- copies the newly created jar file -->
-    <copy file="${dist}/SpagoBIUtils/sbi.utils-${project.version}.jar" 
+    <copy file="${sbiutils.dir}/dist/SpagoBIUtils/sbi.utils-${project.version}.jar" 
         todir="${web.dir}/WEB-INF/lib" overwrite="true" />
   </target>
 
@@ -79,7 +74,7 @@
       <fileset dir="${web.dir}/WEB-INF/lib" includes="**/spagobi.service.client*.jar,**/spagobi-service-client*.jar"/>
     </delete>
     <!-- copies the newly created jar file -->
-    <copy file="${dist}/SpagoBI/spagobi.service.client-${project.version}.jar" 
+    <copy file="${spagobi.service.client.dir}/dist/SpagoBI/spagobi.service.client-${project.version}.jar" 
         todir="${web.dir}/WEB-INF/lib" overwrite="true" />
   </target>
 
@@ -134,7 +129,6 @@
   <target name="makeDist" >    
     <antcall target="create.war" />
     <antcall target="javadoc" />
-    <copy file="../${license.path}" todir="${dist}/${webapp_name}"/>
   </target>
 
 </project>

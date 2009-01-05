@@ -21,7 +21,7 @@
           		<include name="**/*.jar"/>
     		</fileset>
     		<!-- LIBRERIA SBI.UTILS DI SPAGOBI necessaria per la compilazione -->
-    		<fileset dir="${dist}/SpagoBIUtils">
+    		<fileset dir="${sbiutils.dir}/dist/SpagoBIUtils">
           		<include name="**/*.jar"/>
     		</fileset>
  	</path>
@@ -46,15 +46,11 @@
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <target name="svn.checkout" depends="init"
       description="Sincronizza l'applicazione con il repository">
-    <!--
-    <svn>
-      <checkout url="${svn.base.location}/${project.name}" destPath="../" />
-    </svn>
-    -->
-    <exec dir="../" executable="svn" >
+    <exec dir="${project.dir}" executable="svn" >
       <arg line="checkout ${svn.base.location}/${project.name} ."/>
-    </exec> 
+    </exec>	 
   </target>
+
 
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!--   COMPILAZIONE							                                                  -->
@@ -100,7 +96,6 @@
   <target name="makeDist" >    
     <antcall target="create.jar" />
     <antcall target="javadoc" />
-    <copy file="../${license.path}" todir="${dist}/${project.name}"/>
   </target>
 
 </project>

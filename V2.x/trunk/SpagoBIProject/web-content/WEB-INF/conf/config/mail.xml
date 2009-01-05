@@ -12,6 +12,12 @@
 		         smtphost="mail.eng.it" 
 		         from="spagobi@eng.it" 
 		         user="" 
-		         password=""/>         
+		         password=""/>  
+		         
+		<PROFILE name="kpi_alarm" 
+		         smtphost="mail.eng.it" 
+		         from="spagobi@eng.it" 
+		         user="****" 
+		         password="****"/>   
 	</PROFILES>
 </MAIL>

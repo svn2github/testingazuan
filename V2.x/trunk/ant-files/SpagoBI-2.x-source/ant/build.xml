@@ -30,7 +30,7 @@
   <target name="create.SpagoBI.war" >
     <ant dir="../SpagoBIProject/ant" />
   </target>
-  <target name="deploy.SpagoBI.war" depends="create.SpagoBI.war,create.exo.security.jar">
+  <target name="deploy.SpagoBI.war" depends="create.SpagoBI.war,create.exo.security.jar,create.xlm.security.jar">
     <delete dir="${tomcat.home}/webapps/SpagoBI" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBI" />
     <unzip src="../../../SpagoBIProject/dist/SpagoBI/SpagoBI.war" dest="${tomcat.home}/webapps/SpagoBI" />
@@ -53,6 +53,8 @@
     <!-- copies the newly created jar file -->
     <copy file="../../../SpagoBIExoSecurityProvider/dist/SpagoBIExoSecurityProvider/sbi.security.exo-${project.version}.jar" 
         todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" overwrite="true" />
+    <copy file="../../../SpagoBIXmlSecurityProvider/dist/SpagoBIXmlSecurityProvider/sbi.security.xml-${project.version}.jar" 
+        todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" overwrite="true" />
   </target>
   
   <target name="create.sbi.utils.jar" >
@@ -61,6 +63,9 @@
   
   <target name="create.exo.security.jar" >
     <ant dir="../SpagoBIExoSecurityProvider/ant" />
+  </target>
+  <target name="create.xlm.security.jar" >
+    <ant dir="../SpagoBIXMLSecurityProvider/ant" />
   </target>
   
   <target name="create.SpagoBIBirtReportEngine.war" >
@@ -159,6 +164,7 @@
     <antcall target="create.SpagoBI.war" />
     <antcall target="create.sbi.utils.jar" />
     <antcall target="create.exo.security.jar" />
+    <antcall target="create.xlm.security.jar" />
     <antcall target="create.SpagoBIBirtReportEngine.war" />
     <antcall target="create.SpagoBIGeoEngine.war" />
     <antcall target="create.SpagoBIJasperReportEngine.war" />

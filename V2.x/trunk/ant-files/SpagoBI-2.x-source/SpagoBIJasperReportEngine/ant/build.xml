@@ -92,7 +92,8 @@
         <exclude name="**/*.svn"/>
       </fileset>
     </copy>
-    <copy todir="${build}/${webapp_name}/WEB-INF/classes">
+    <filter filtersfile="env.properties"/>
+    <copy todir="${build}/${webapp_name}/WEB-INF/classes" filtering="true">
       <fileset dir="${src}">
         <exclude name="**/*.java"/>
         <exclude name="**/*.svn"/>

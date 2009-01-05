@@ -172,7 +172,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		
 		
 		setMainMapDimension(masterMap, targetMap);
-		setMainMapBkgRectDimension(masterMap, targetMap);	   	   
+		//setMainMapBkgRectDimension(masterMap, targetMap);	   	   
 	    
 	    Element scriptInit = masterMap.getElementById("init");	    
 	    Node scriptText = scriptInit.getFirstChild();
@@ -245,7 +245,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		SVGMapMerger.margeMap(targetMap, masterMap, null, "targetMap");
 		
 		setMainMapDimension(masterMap, targetMap);
-		setMainMapBkgRectDimension(masterMap, targetMap);	 
+		//setMainMapBkgRectDimension(masterMap, targetMap);	 
 		
 		File tmpMap;
 		try {
@@ -940,6 +940,14 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    includeScript(buffer, "barchart.js");
 	    includeScript(buffer, "colourPicker.js");
 	    
+	    includeScript(buffer, "custom/Utils.js");
+	    includeScript(buffer, "custom/NavigationWindow.js");
+	    includeScript(buffer, "custom/LayersWindow.js");
+	    includeScript(buffer, "custom/ThematicWindow.js");
+	    includeScript(buffer, "custom/DetailsWindow.js");
+	    includeScript(buffer, "custom/LegendWindow.js");
+	    includeScript(buffer, "custom/ColourPickerWindow.js");
+	    
 	    scriptText.setNodeValue(buffer.toString());
 	}
 	
@@ -961,6 +969,15 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    importScipt(doc, "tabgroup.js");
 	    importScipt(doc, "barchart.js");
 	    importScipt(doc, "colourPicker.js");
+	    
+	    importScipt(doc, "custom/Utils.js");
+	    importScipt(doc, "custom/NavigationWindow.js");
+	    importScipt(doc, "custom/LayersWindow.js");
+	    importScipt(doc, "custom/ThematicWindow.js");
+	    importScipt(doc, "custom/DetailsWindow.js");
+	    importScipt(doc, "custom/LegendWindow.js");
+	    importScipt(doc, "custom/ColourPickerWindow.js");
+	    
 	}
 	
 	/**

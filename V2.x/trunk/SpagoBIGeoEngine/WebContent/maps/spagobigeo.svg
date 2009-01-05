@@ -1,5 +1,4 @@
-<?xml version="1.0" standalone="no"?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 SpagoBI - The Business Intelligence Free Platform
 
@@ -43,43 +42,25 @@ changed the name of ub variable to ub_values in order to avoid naming conflict w
 changed the name of lb variable to lb_values in order to avoid naming conflict with slider.js
 bug fixed in layer's checkboxes generation
 
--->
+--><svg contentScriptType="text/ecmascript" zoomAndPan="disable" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" onload="init(evt);" xmlns:attrib="http://www.carto.net/attrib" contentStyleType="text/css" version="1.0" width="100%" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:batik="http://xml.apache.org/batik/ext" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:cc="http://web.resource.org/cc/" sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 768" height="100%" xmlns="http://www.w3.org/2000/svg">
 
-
-
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
-  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-
-<svg width="100%" height="100%" onload="init(evt);" 
-xmlns:batik="http://xml.apache.org/batik/ext" 
-xmlns:attrib="http://www.carto.net/attrib" 
-xmlns:xlink="http://www.w3.org/1999/xlink" 
-xmlns="http://www.w3.org/2000/svg"
-xmlns:svg="http://www.w3.org/2000/svg" contentStyleType="text/css"    
-xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-xmlns:dc="http://purl.org/dc/elements/1.1/"
-xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-xmlns:cc="http://web.resource.org/cc/" sodipodi:version="0.32"
-zoomAndPan="disable"
-preserveAspectRatio="xMidYMid meet">
-
-		
-		
 		<g id="imported_scripts">
 		
-		</g>
+	
+
+</g>
 		
-		<script id="included_scripts" type="text/ecmascript"><![CDATA[
+		<script type="text/ecmascript" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:actuate="onLoad" id="included_scripts" xlink:show="other"><![CDATA[
 				
 		]]></script>
 		
-		<script id="init" type="text/ecmascript"><![CDATA[
-				
-		]]></script>
+		<script type="text/ecmascript" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:actuate="onLoad" id="init" xlink:show="other"><![CDATA[
+
+
+]]></script>
 		
 		
-		<script type="text/ecmascript"><![CDATA[
+<script xlink:type="simple" xlink:actuate="onLoad" xlink:show="other" type="text/ecmascript" xmlns:xlink="http://www.w3.org/1999/xlink"><![CDATA[
 		
 		
 	   
@@ -89,17 +70,13 @@ preserveAspectRatio="xMidYMid meet">
 		//global variables for mapApp and map object
 		var myMapApp = new mapApp();
 		var myMainMap;
-		var radioGroup;
-		var linkRadioGroup;
 		var checkBoxes = new Array();
 		
 		var attribNS="http://www.carto.net/attrib";
 		var xlinkNS = "http://www.w3.org/1999/xlink";
 		var suspendProcess;
 		var windowPositions = new Array();
-			
-		//var detailTabGroup;	
-		
+	
 		var isShowTableModalityActive = true;
 			
 		function init() {
@@ -108,8 +85,16 @@ preserveAspectRatio="xMidYMid meet">
 			
 		
 		function initWindows() {
+		
 			//create windows
 			myMapApp.Windows = new Array();
+			
+			myMapApp.Windows["navWindow"] = new NavigationWindow(true);
+			myMapApp.Windows["basiclayer"] = new LayersWindow(true);
+			myMapApp.Windows["thematic"] = new ThematicWindow(true);
+			myMapApp.Windows["detail"] = new DetailsWindow(true);
+			myMapApp.Windows["legend"] = new LegendWindow(true);
+			myMapApp.Windows["colourpicker"] = new ColourPickerWindow(false);
 			
 			//first a few styles
 			var winPlaceholderStyles = {"fill":"none","stroke":"dimgray","stroke-width":1.5};
@@ -122,11 +107,14 @@ preserveAspectRatio="xMidYMid meet">
 			var titlebarHeight = 17;
 			var statusbarHeight = 13;
 			
+			//create checkboxes array
+			myMapApp.checkBoxes = new Array();
+			
 			// window instances creation
-			myMapApp.Windows["navWindow"] = new Window("navWindow","Windows",210,200,10,10,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Navigation","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
+			/*
+			myMapApp.Windows["navWindow"] = new Window("navWindow","Windows",210,200,10,491,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Navigation","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
 			myMapApp.Windows["navWindow"].appendContent("referenceMap",true);
 			myMapApp.Windows["navWindow"].appendContent("zoomIn",true);
-			myMapApp.Windows["navWindow"].appendContent("mapZoomSlider",true);
 			myMapApp.Windows["navWindow"].appendContent("zoomOut",true);
 			myMapApp.Windows["navWindow"].appendContent("zoomFull",true);
 			myMapApp.Windows["navWindow"].appendContent("zoomManual",true);
@@ -134,143 +122,21 @@ preserveAspectRatio="xMidYMid meet">
 			myMapApp.Windows["navWindow"].appendContent("infoButton",true);
 			myMapApp.Windows["navWindow"].appendContent("backwardExtent",true);
 			myMapApp.Windows["navWindow"].appendContent("forwardExtent",true);
-			//myMapApp.Windows["navWindow"].minimize(true);
-			
-			myMapApp.Windows["basiclayer"] = new Window("basiclayer","Windows",210,200,436,10,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Map Layers","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
-			myMapApp.Windows["basiclayer"].appendContent("checkBoxes",true);
-			myMapApp.Windows["basiclayer"].appendContent("linkRadioGroup",true);			
-			//myMapApp.Windows["basiclayer"].minimize(true);
-			
-			
-			myMapApp.Windows["thematic"] = new Window("thematic","Windows",210,200,223,10,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Thematic Topics","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
-			myMapApp.Windows["thematic"].appendContent("radioButtons",true);
-			myMapApp.Windows["thematic"].minimize(true);
-			
-			myMapApp.Windows["detail"] = new Window("detail","Windows",210,200,649,10,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Detail","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
-			myMapApp.Windows["detail"].appendContent("detailTabGroup",true);
-			//myMapApp.Windows["detail"].minimize(true);
-			
-			myMapApp.Windows["legend"] = new Window("legend","Windows",210,200,862,10,true,8,8,1092,690,true,winPlaceholderStyles,windowStyles,3,true,false,"Legend","",false,true,true,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,windowHandling);
-			myMapApp.Windows["legend"].appendContent("coulourboxes",true);
-			//myMapApp.Windows["legend"].minimize(true);
-			
+			myMapApp.Windows["navWindow"].appendContent("mapZoomSlider",true);
+			myMapApp.Windows["navWindow"].minimize(true);		
+      */	
 		}
 		
-		function closeAllWindows() {	
-			alert('boom');		
+		function closeAllWindows() {			
 			myMapApp.Windows["navWindow"].close(true);					
 			myMapApp.Windows["basiclayer"].close(true);		
 			myMapApp.Windows["thematic"].close(true);			
 			myMapApp.Windows["detail"].close(true);		
 			myMapApp.Windows["legend"].close(true);
 		}
-		
-		function initTabGroups() {
-			
-			//create tabGroups
-			myMapApp.TabGroups = new Array();
-			
-			//first a few styles
-			var tabStyles = {"fill":"rgb(180,180,180)","stroke":"dimgray","stroke-width":1,"cursor":"pointer"};
-		    var tabwindowStyles = {"fill":"white","stroke":"dimgray","stroke-width":1};
-		    var tabtextStyles = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal"};
-		    var tabtextStylesCenter = {"font-family":"Arial,Helvetica","font-size":15,"fill":"dimgray","font-weight":"normal","text-anchor":"middle"};
-		                
-		    //setting tabTitles
-		    var tabTitles = new Array("Values","Chart");
-		     
-		    // tabGroup instances creation
-		    myMapApp.TabGroups["detailTabGroup"] = new tabgroup("detailTabGroup","detailTabGroup",5,21,200,175,20,"round","round",5,0,tabStyles,"lightgray",tabwindowStyles,tabtextStyles,tabTitles,0,false,undefined);
-		      		              
-		    //add new content
-		    myMapApp.TabGroups["detailTabGroup"].addContent("detailTabGroup__0_content",0,true);
-		    myMapApp.TabGroups["detailTabGroup"].addContent("detailTabGroup__1_content",1,true);
-		}
-		
-		function buttonClick(groupId,evt,buttonText) {
-			if(buttonText == "Applay") {
-				var colPicker = document.getElementById("colourPickerPanel_1");
-				var values = myMapApp.colourPickers["colourPicker_1"].getValues();
-				var colour = getRGB16(values);
-				myMapApp.colArray[groupIndex-1] = colour;
-				var rect = document.getElementById("rect" + groupIndex);
-				rect.setAttribute("fill", colour);
-				colourMap();            		
-			} else if(buttonText == "Ok") {
-				var colPicker = document.getElementById("colourPickerPanel_1");
-				var values = myMapApp.colourPickers["colourPicker_1"].getValues();
-				var colour = getRGB16(values);
-				myMapApp.colArray[groupIndex-1] = colour;
-				var rect = document.getElementById("rect" + groupIndex);
-				rect.setAttribute("fill", colour);
-				colPicker.setAttribute("display", "none");
-				colourMap();           		
-			} else if(buttonText == "Cancel") {
-				var colPicker = document.getElementById("colourPickerPanel_1");
-				var values = myMapApp.colourPickers["colourPicker_1"].getValues();
-				var colour = getRGB16(values);
-				myMapApp.colArray[groupIndex-1] = groupColourBkp;
-				var rect = document.getElementById("rect" + groupIndex);
-				rect.setAttribute("fill", groupColourBkp);
-				colPicker.setAttribute("display", "none");
-				colourMap(); 
-			}
-		}
-		
-		function getRGB16(values) {
-			var red = values.fill.red.toString(16);
-			if(red.length == 1) red = "0" + red;
-			var green = values.fill.green.toString(16);
-			if(green.length == 1) green = "0" + green;
-			var blue = values.fill.blue.toString(16);
-			if(blue.length == 1) blue = "0" + blue;
-			var colour = "#" + red + green + blue;
-			return colour;
-		}
-		
-		var groupIndex = 0;
-		var groupColourBkp = 0;
-		
-		function openColourPiker(evt) {
-		   var el = evt.target;
-           var id = el.getAttribute("id");
-           var fill = el.getAttribute("fill");
-           
-           groupIndex = parseInt(id.substring(4));
-           groupColourBkp = myMapApp.colArray[groupIndex-1];
-           
-           var rgb16 = new Array();
-           var rgb10 = new Array();
-           
-           rgb16["red"] = fill.substring(1,3);
-           rgb16["green"] = fill.substring(3,5);
-           rgb16["blue"] = fill.substring(5);
-           
-           rgb10["red"] = parseInt(rgb16["red"],16);
-           rgb10["green"] = parseInt(rgb16["green"],16);
-           rgb10["blue"] = parseInt(rgb16["blue"],16);
-           
-           
-           
-           /*
-           myMapApp.colourPickers["colourPicker_1"].rgbArr["fill"]["red"] = rgb10["red"];
-           myMapApp.colourPickers["colourPicker_1"].rgbArr["fill"]["green"] = rgb10["green"];
-           myMapApp.colourPickers["colourPicker_1"].rgbArr["fill"]["blue"] = rgb10["blue"];
-           myMapApp.colourPickers["colourPicker_1"].rebuild();
-           */
-           
-           var colPicker = document.getElementById("colourPickerPanel_1");
-           colPicker.setAttribute("display", "inherit");
-           
-           myMapApp.colourPickers["colourPicker_1"].setRGBAColour("fill",rgb10["red"],rgb10["green"], rgb10["blue"],1, true);
-           /*
-           
-           myMapApp.colourPickers["colourPicker_1"].fillStartColors = [255,0,0,1];
-           myMapApp.colourPickers["colourPicker_1"].rebuild();
-           */
-           //myMapApp.colourPickers["colourPicker_1"].setRGBAColour("fill",10,120, 0,1, myMapApp.colourPickers["colourPicker_1"].fireFunction);           
-		}
-		
+
+	
+		/*
 		function initButtons() {
 			// create buttons
 			myMapApp.buttons = new Array();
@@ -295,174 +161,16 @@ preserveAspectRatio="xMidYMid meet">
 			myMapApp.buttons["backwardExtent"] = new button("backwardExtent",zoomImageButtons,"rect",undefined,"symbArrowLeft",157,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			myMapApp.buttons["forwardExtent"] = new button("forwardExtent",zoomImageButtons,"rect",undefined,"symbArrowRight",182,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			
-			
-			myMapApp.buttons["okbutton"] = new button("colourPickerApplay",buttonClick,"rect","Applay", undefined, 380, 425, 40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
-			myMapApp.buttons["okbutton"] = new button("colourPickerOk",buttonClick,"rect","Ok", undefined, 430, 425, 40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
-			myMapApp.buttons["okbutton"] = new button("colourPickerCancel",buttonClick,"rect","Cancel", undefined, 480,425,40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
-			
-		
-		
 			//see if we need to disable buttons
 			myMainMap.checkButtons();
 		}
+		*/
 		
-		function intCheckBoxes() {
 		
-			//create checkboxes array
-			myMapApp.checkBoxes = new Array();
-			
-			//first a few styles
-			var labeltextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":14};
-						
-			//create  checkboxe instances
-			
-			// layers checkboxes
-			var offset;
-			for(i = 0; i < layer_names.length; i++) {
-				offset = 45 + (30*i);
-				var mapLayer = document.getElementById(layer_names[i]);
-				//alert(layer_names[i] + " element -> " + mapLayer);
-				var displayStatus = mapLayer.getAttributeNS(null,"display");
-				var checked = true;
-				if(displayStatus == "none") checked = false;
-				//alert(layer_names[i] + " checked -> " + checked + " - " + displayStatus);
-				myMapApp.checkBoxes[layer_names[i]] = new checkBox("cb_" + layer_names[i],"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",checked,layer_descriptions[i],labeltextStyles,12,undefined,toggleMapLayer);
-			}
-
-			
-			// Navigation radio buttons
-			linkRadioGroup= new radioButtonGroup("linkRadioGroup", setLinkAction);
-			myMapApp.checkBoxes['cross_nav'] = new checkBox("cross_nav","linkRadioGroup",30,offset+40,"radioBorder","radioPoint",false, "Cross Nav.",labeltextStyles,12,linkRadioGroup,undefined);
-			myMapApp.checkBoxes['drill_nav'] = new checkBox("drill_nav","linkRadioGroup",30,offset+60,"radioBorder","radioPoint",false, "Drill Nav.",labeltextStyles,12,linkRadioGroup,undefined);
 		
-			// Thematic radio buttons
-			radioGroup= new radioButtonGroup("radioButtons",setKpi);
-			//the following two checkboxes are added to the radio button group stored in the object instance 'radioGroupQuality'
-			for(i = 0; i < kpi_names.length; i++) {
-				offset = 50 + (30*i);
-				myMapApp.checkBoxes[kpi_names[i]] = new checkBox(kpi_names[i],"radioButtons",30,offset,"radioBorder","radioPoint",false,kpi_descriptions[i],labeltextStyles,12,radioGroup,undefined);
-			}
-			
-			//load function specific to the current map project
-			radioGroup.selectById(kpi_names[selected_kpi_index],true);
-			//linkRadioGroup.selectById("drill_nav");
-			//linkRadioGroup.selectById("cross_nav");
-			if (defaultDrillNav == true){
-				//setLinkAction("linkRadioGroup", "drill_nav", "Drill Nav.");
-				linkRadioGroup.selectById("drill_nav");
-				//alert("drill_nav");
-			}
-			else{
-				//setLinkAction("linkRadioGroup", "cross_nav", "Cross Nav.");
-				linkRadioGroup.selectById("cross_nav");
-				//alert("cross_nav");
-			}
-			
-			
-		}
-		
-		function initDetailInfopanels() {
-			// create detail infopanels
-			myMapApp.infoPanel = new Array();
-			var dynamText = document.getElementById("dynamText");
-			for(i = 0; i < kpi_names.length; i++) {
-				var offset = 50 + (i*25);
-				var panel = document.createElementNS(svgNS,"text");
-				panel.setAttribute("id","infopanel" + (i+1));
-				panel.setAttribute("x", "20");
-				panel.setAttribute("y", "" + offset);
-				panel.setAttribute("fill", "dimgray");
-				panel.setAttribute("font-family", "Arial,Helvetica");
-				panel.setAttribute("font-size", "14px");
-				panel.setAttribute("startOffset", "0");
-				
-				var text_node = document.createTextNode(kpi_descriptions[i]);
-				panel.appendChild(text_node);
-				
-				dynamText.appendChild(panel);
-				
-				myMapApp.infoPanel[i] = panel;
-			}
-		}
-		
-		function initLegendEntries() {
-			// create legendpanels & legendrect
-			myMapApp.legPanel = new Array();	
-			myMapApp.legRect = new Array();
-			var coulourBoxes = document.getElementById("coulourboxes");			
-			for(i = 0; i < 5; i++) {
-				// ...legendpanel
-				var offset = 50 + (i*25);
-				var panel = document.createElementNS(svgNS,"text");
-				panel.setAttribute("id","legpanel" + (i+1));
-				panel.setAttribute("x", "70");
-				panel.setAttribute("y", "" + offset);
-				panel.setAttribute("fill", "dimgray");
-				panel.setAttribute("font-family", "Arial,Helvetica");
-				panel.setAttribute("font-size", "14px");
-				panel.setAttribute("startOffset", "0");
-				
-				var text_node = document.createTextNode("legpanel-" + (i+1));
-				panel.appendChild(text_node);
-				
-				coulourBoxes.appendChild(panel);
-				
-				myMapApp.legPanel[i] = panel;
-				
-				// ...legendrect
-				var offset = 35 + (i*25);
-				var rect = document.createElementNS(svgNS,"rect");
-				rect.setAttribute("id","rect" + (i+1));
-				rect.setAttribute("stroke","dimgray");
-				rect.setAttribute("x","30");
-				rect.setAttribute("y",offset);
-				rect.setAttribute("width","30");
-				rect.setAttribute("height","50");
-				rect.setAttribute("fill","#500000");
-				rect.setAttribute("onclick","openColourPiker(evt)");
-				
-				coulourBoxes.appendChild(rect);
-				
-				myMapApp.legRect[i] = rect;
-			}	
-		}
-		
-		function initColourPikers() {
-			// Create colour pickers
-			myMapApp.colourPickers = new Array();
-			
-			// Colour picker styles
-			var cpBgStyles = {"fill":"gainsboro"};
-			var cpBgStyles = {"fill":"white","stroke":"dimgray","stroke-width":1};
-			var cpTextStyles = {"font-family":"Arial,Helvetica","font-size":12,"fill":"dimgray"};
-			
-			myMapApp.colourPickers["colourPicker_1"]  = 
-				new colourPicker("colourPicker_1", //the id of the colour picker
-								 "colourPickerBox_1", //the id or node reference of the parent group where the button can be appended
-								 300,300, //upper left corner of colour picker
-								 300,120, //width & height of colour picker
-								 cpBgStyles,
-								 cpTextStyles,
-								 "sliderSymbol", //id referencing the slider symbol to be used for the sliders
-								 true, // satSliderVisible
-								 true, // valSliderVisible
-								 false, // alphaSliderVisible
-								 true, // colValTextVisible
-								 true, // fillVisible
-								 false, // strokeVisible
-								 0, 360, // start & end hue in degree (0 to 360)
-								 7, //nr of stop vals in between, in addition to start and end
-								 "255,0,0,1", // fillStartColor: string, rgba.format, f.e. 255,0,0,1
-								 "0,0,0,0.7", // strokeStartColorstring, rgba.format, f.e. 255,0,0,1
-								 undefined);
-		}
-		
-		function initSliders() {
-			//create zoom slider	
-			//function slider(id,parentNode,x1,y1,value1,x2,y2,value2,startVal,sliderStyles,invisSliderWidth,sliderSymb,functionToCall,mouseMoveBool) {
-			//function slider(x1,y1,value1,x2,y2,value2,startVal,sliderGroupId,sliderColor,visSliderWidth,invisSliderWidth,sliderSymb,functionToCall,mouseMoveBool) {
 	
-			//myMapApp.zoomSlider = new slider(180,153,myMainMap.minWidth,20,153,myMainMap.maxWidth,myMainMap.maxWidth, "mapZoomSlider","dimgray",2,10,"sliderSymbol",myMapApp.refMapDragger,true);
+		/*
+		function initSliders() {
 			
 			var sliderStyles = {"stroke":"dimgray","stroke-width":"2","fill":"dimgray"};
 					
@@ -480,12 +188,17 @@ preserveAspectRatio="xMidYMid meet">
 											 myMapApp.refMapDragger,			
 										     true);
 		}
+		
+		*/
 			
-		function initApplication(evt) {			
+		function initApplication(evt) {	
+      		
 			if (document.documentElement.suspendRedraw) {
 				suspendProcess = document.documentElement.suspendRedraw(30000);
 			}
+		  
 		
+		  
 			
 			setTresholds();
 			setColourRange();
@@ -495,13 +208,17 @@ preserveAspectRatio="xMidYMid meet">
 			if(activeWindow == false) {
 				closeAllWindows();
 			}
-			initTabGroups();
-			initButtons();
-			initSliders();		      			
-			intCheckBoxes();
-			initDetailInfopanels();
-			initLegendEntries();			
-			initColourPikers();
+			//initButtons();
+			//initSliders();		      			
+			
+      
+			myMapApp.Windows["basiclayer"].createCheckBoxes();
+			myMapApp.Windows["thematic"].addThemes();
+			myMapApp.Windows["detail"].initTabGroups();
+			myMapApp.Windows["detail"].initDetailInfopanels();   
+			myMapApp.Windows["legend"].initLegendEntries();
+      
+		
 			
 			myMapApp.loadStatus = document.getElementById("statusColorMap");
 			myMapApp.loadStatus = document.getElementById("statusColorMap");
@@ -885,7 +602,7 @@ preserveAspectRatio="xMidYMid meet">
 				rect.setAttribute("width","30");
 				rect.setAttribute("height","20");
 				rect.setAttribute("fill",myMapApp.colArray[i]);
-				rect.setAttribute("onclick", "openColourPiker(evt)");
+				rect.setAttribute("onclick", "myMapApp.Windows['colourpicker'].openColourPiker(evt)");
 				rect.setAttribute("cursor", "pointer");
 				
 				coulourBoxes.appendChild(rect);
@@ -905,22 +622,6 @@ preserveAspectRatio="xMidYMid meet">
 			
 		function mouseClickHandler(evt) {
 			var targetElemet = evt.target;
-			
-			alert(evt.type);
-			
-			/*
-			if(isShowTableModalityActive) {
-				var parameters = new Array();
-         		parameters[0] = targetElemet.getAttribute("id");
-         		top.executeFunctionInChildFrame(0, "showTable", parameters);
-				
-				
-				//alert("bella di padella: " + targetElemet.getAttribute("id"));
-				//parent.showTable(targetElemet.getAttribute("id"));				
-			} else {
-				alert("Sorry, drill modality is not fully sopported yet");
-			}
-			*/
 		}	
 		
 		function setLinkAction(cbId,radioId,label) {
@@ -1088,7 +789,6 @@ preserveAspectRatio="xMidYMid meet">
 					
 					
 					if(targetNode.getAttributeNS(attribNS,myMapApp.curKpi) == "") {
-						//alert("FOUND " + targetNode.getAttribute("id"));
 						targetColor = null_values_color[myMapApp.curKpi];
 					} else if(kpiAttrib < lb_values[myMapApp.curKpi]) {
 						targetColor = lb_color[myMapApp.curKpi];
@@ -1105,7 +805,7 @@ preserveAspectRatio="xMidYMid meet">
 						}
 					}
 					
-
+          alert(targetNode +  " : " + targetNode.id + " : " + targetColor);
 					
 					targetNode.setAttributeNS(null,"fill",targetColor);
 					
@@ -1141,7 +841,7 @@ preserveAspectRatio="xMidYMid meet">
 		if (evtType == "minimized") {
 			windowPositions[id] = {"x":myMapApp.Windows[id].transX,"y":myMapApp.Windows[id].transY};
 			myMapApp.Windows[id].moveable = false;
-			y = 10;
+			y = 720;
 			if (id == "navWindow") {
 				x = 10;
 			}
@@ -1169,104 +869,111 @@ preserveAspectRatio="xMidYMid meet">
 ]]></script>
 		
 		<defs>
+		
+		
+		
+		
 			<!-- Symbols for checkboxes -->
-			<symbol id="checkBoxRect" overflow="visible" preserveAspectRatio="xMinYMin meet">
-				<rect x="-6" y="-6" width="12" height="12" fill="white" stroke="dimgray" stroke-width="1.5"/>
+			<symbol overflow="visible" preserveAspectRatio="xMinYMin meet" id="checkBoxRect">
+				<rect x="-6" y="-6" fill="white" width="12" height="12" stroke="dimgray" stroke-width="1.5"/>
 			</symbol>
 			
-			<symbol id="checkBoxCross" overflow="visible" fill="none" stroke="dimgray" stroke-width="1" pointer-events="none" preserveAspectRatio="xMidYMid meet">
-				<line x1="-5" y1="-5" x2="5" y2="5"/>
-				<line x1="-5" y1="5" x2="5" y2="-5"/>
+			<symbol fill="none" id="checkBoxCross" preserveAspectRatio="xMidYMid meet" stroke="dimgray" overflow="visible" stroke-width="1" pointer-events="none">
+				<line y2="5" x1="-5" x2="5" y1="-5"/>
+				<line y2="-5" x1="-5" x2="5" y1="5"/>
 			</symbol>
 			<!-- symbols for radio buttons -->
-			<symbol id="radioBorder" overflow="visible" preserveAspectRatio="xMidYMid meet">
-				<circle fill="white" stroke="dimgray" stroke-width="1.5" cursor="pointer" r="5" cx="0" cy="0"/>
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="radioBorder">
+				<circle cursor="pointer" fill="white" r="5" cx="0" cy="0" stroke="dimgray" stroke-width="1.5"/>
 			</symbol>
-			<symbol id="radioPoint" overflow="visible" preserveAspectRatio="xMidYMid meet">
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="radioPoint">
 				<circle fill="dimgray" r="3" pointer-events="none" cx="0" cy="0"/>
 			</symbol>
 			<!-- Symbols for Zoom Magnifyer glasses -->
-			<symbol id="magnifyerFull" overflow="visible" preserveAspectRatio="xMidYMid meet">
-				<text y="7.5" font-family="Arial,Helvetica" fill="dimgray" font-size="18px" font-weight="bold" text-anchor="middle" pointer-events="none" startOffset="0">F</text>
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="magnifyerFull">
+				<text font-size="18px" y="7.5" startOffset="0" fill="dimgray" text-anchor="middle" font-family="Arial,Helvetica" font-weight="bold" pointer-events="none">F</text>
 			</symbol>
 			
-			<symbol id="infoBut" overflow="visible" preserveAspectRatio="xMidYMid meet">
-				<circle fill="none" stroke="dimgray" stroke-width="1.5" r="7.5" cx="0" cy="0"/>
-				<text y="5" font-family="Arial,Helvetica" font-size="13px" font-weight="bold" fill="dimgray" text-anchor="middle" pointer-events="none" startOffset="0">i</text>
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="infoBut">
+				<circle fill="none" r="7.5" cx="0" cy="0" stroke="dimgray" stroke-width="1.5"/>
+				<text font-size="13px" y="5" startOffset="0" fill="dimgray" text-anchor="middle" font-family="Arial,Helvetica" font-weight="bold" pointer-events="none">i</text>
 			</symbol>
-			<symbol id="magnifyerManual" overflow="visible" fill="none" stroke="dimgray" stroke-width="1.5" preserveAspectRatio="xMidYMid meet">
-				<rect x="-6" y="-6" width="12" height="12" stroke-dasharray="1.5,1.5"/>
-				<line x1="-3" y1="0" x2="3" y2="0"/>
-				<line x1="0" y1="-3" x2="0" y2="3"/>
+			<symbol fill="none" id="magnifyerManual" preserveAspectRatio="xMidYMid meet" stroke="dimgray" overflow="visible" stroke-width="1.5">
+				<rect x="-6" width="12" y="-6" height="12" stroke-dasharray="1.5,1.5"/>
+				<line y2="0" x1="-3" x2="3" y1="0"/>
+				<line y2="3" x1="0" x2="0" y1="-3"/>
 				
 			</symbol>
-			<symbol id="magnifyerZoomIn" overflow="visible" fill="none" stroke="dimgray" stroke-width="2" preserveAspectRatio="xMidYMid meet">
-				<line x1="-4" y1="0" x2="4" y2="0"/>
-				<line x1="0" y1="-4" x2="0" y2="4"/>
+			<symbol fill="none" id="magnifyerZoomIn" preserveAspectRatio="xMidYMid meet" stroke="dimgray" overflow="visible" stroke-width="2">
+				<line y2="0" x1="-4" x2="4" y1="0"/>
+				<line y2="4" x1="0" x2="0" y1="-4"/>
 			</symbol>
-			<symbol id="magnifyerZoomOut" overflow="visible" preserveAspectRatio="xMidYMid meet">
-				<line x1="-4" y1="0" x2="4" y2="0" fill="none" stroke="dimgray" stroke-width="2"/>
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="magnifyerZoomOut">
+				<line fill="none" x1="-4" x2="4" y1="0" y2="0" stroke="dimgray" stroke-width="2"/>
 			</symbol>
 			<!-- hand symbol for panning -->
 			
-			<symbol id="symbPan" overflow="visible" preserveAspectRatio="xMidYMid meet">
-				<path transform="scale(1.2)" fill="none" stroke="dimgray" stroke-width="1" d="M-2 6 C -2.2 2.5 -8.0 -0 -5.7 -1.9 C -4.3 -2.5 -3.3 -0.5 -2.5 0.7 C -3.2 -2.1 -5.5 -5.2 -3.6 -5.8 C -2.1 -6.3 -1.6 -3.6 -1.1 -1.9 C -0.9 -4.2 -1.6 -6.4 -0.2 -6.6 C 1.4 -6.8 0.9 -3 1.1 -1.9 C 1.5 -3.5 1.2 -6.1 2.5 -6.1 C 3.9 -6.1 3.5 -3.2 3.6 -1.6 C 4 -2.9 4.1 -4.3 5.3 -4.4 C 7.3 -3.5 4 2.2 3 6z"/>
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="symbPan">
+				<path fill="none" stroke-width="1" d="M-2 6 C -2.2 2.5 -8.0 -0 -5.7 -1.9 C -4.3 -2.5 -3.3 -0.5 -2.5 0.7 C -3.2 -2.1 -5.5 -5.2 -3.6 -5.8 C -2.1 -6.3 -1.6 -3.6 -1.1 -1.9 C -0.9 -4.2 -1.6 -6.4 -0.2 -6.6 C 1.4 -6.8 0.9 -3 1.1 -1.9 C 1.5 -3.5 1.2 -6.1 2.5 -6.1 C 3.9 -6.1 3.5 -3.2 3.6 -1.6 C 4 -2.9 4.1 -4.3 5.3 -4.4 C 7.3 -3.5 4 2.2 3 6z" transform="scale(1.2)" stroke="dimgray"/>
 			</symbol>
 			<!-- Symbol for Arrows -->
-			<symbol id="symbArrow" overflow="visible" preserveAspectRatio="xMidYMid meet">
-				<polyline fill="none" stroke="dimgray" stroke-width="1" points="-3,-6 3,-6 3,1 5,1 0,7 -5,1 -3,1 -3,-5"/>
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="symbArrow">
+				<polyline fill="none" stroke-width="1" points="-3,-6 3,-6 3,1 5,1 0,7 -5,1 -3,1 -3,-5" stroke="dimgray"/>
 			</symbol>
-			<symbol id="symbArrowLeft" overflow="visible" preserveAspectRatio="xMidYMid meet">
-				<use xlink:href="#symbArrow" transform="rotate(90)"/>
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="symbArrowLeft">
+				<use transform="rotate(90)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#symbArrow" xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed"/>
 				
 			</symbol>
-			<symbol id="symbArrowRight" overflow="visible" preserveAspectRatio="xMidYMid meet">
-				<use xlink:href="#symbArrow" transform="rotate(-90)"/>
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="symbArrowRight">
+				<use transform="rotate(-90)" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#symbArrow" xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed"/>
 			</symbol>
 			<!-- Symbol for Recentering Map -->
-			<symbol id="symbRecenter" overflow="visible" preserveAspectRatio="xMidYMid meet">
-				<circle fill="dimgray" cx="0" cy="0" r="1" pointer-events="none"/>
-				<g fill="none" stroke="dimgray" stroke-width="1.5" pointer-events="none">
-					<line x1="-7" y1="-7" x2="-3" y2="-3"/>
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="symbRecenter">
+				<circle fill="dimgray" r="1" pointer-events="none" cx="0" cy="0"/>
+				<g fill="none" stroke-width="1.5" pointer-events="none" stroke="dimgray">
+					<line y2="-3" x1="-7" x2="-3" y1="-7"/>
 					
-					<line x1="7" y1="7" x2="3" y2="3"/>
-					<line x1="-7" y1="7" x2="-3" y2="3"/>
-					<line x1="7" y1="-7" x2="3" y2="-3"/>
+					<line y2="3" x1="7" x2="3" y1="7"/>
+					<line y2="3" x1="-7" x2="-3" y1="7"/>
+					<line y2="-3" x1="7" x2="3" y1="-7"/>
 				</g>
 			</symbol>
 			<!-- Symbol for Slider -->
-			<symbol id="sliderSymbol" overflow="visible" pointer-events="none" preserveAspectRatio="xMidYMid meet">
-				<line x1="0" y1="-5" x2="0" y2="5" fill="none" stroke="dimgray" stroke-width="5"/>
+			<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="sliderSymbol" pointer-events="none">
+				<line fill="none" x1="0" x2="0" y1="-5" y2="5" stroke="dimgray" stroke-width="5"/>
 			</symbol>
 			
 			<!-- Symbol for Dragging if zoomed in far -->
-			<symbol id="myDragCrossSymbol" overflow="visible" stroke-width="2000" fill="none" stroke="darkblue" pointer-events="none" preserveAspectRatio="xMidYMid meet">
-				<line x1="-7000" y1="0" x2="-2500" y2="0"/>
-				<line x1="7000" y1="0" x2="2500" y2="0"/>
-				<line x1="0" y1="-3300" x2="0" y2="-7800"/>
-				<line x1="0" y1="3300" x2="0" y2="7800"/>
+			<symbol fill="none" id="myDragCrossSymbol" preserveAspectRatio="xMidYMid meet" stroke="darkblue" stroke-width="2000" overflow="visible" pointer-events="none">
+				<line y2="0" x1="-7000" x2="-2500" y1="0"/>
+				<line y2="0" x1="7000" x2="2500" y1="0"/>
+				<line y2="-7800" x1="0" x2="0" y1="-3300"/>
+				<line y2="7800" x1="0" x2="0" y1="3300"/>
 			</symbol>
 			<!-- Marker for Extent-Arrows -->
-			<marker id="myStartArrow" overflow="visible" orient="auto" preserveAspectRatio="xMidYMid meet">
+			<marker overflow="visible" preserveAspectRatio="xMidYMid meet" id="myStartArrow" orient="auto">
 				
 				<polyline fill="dimgray" points="-0.5,0 8,-2 8,2"/>
 			</marker>
-			<marker id="myEndArrow" overflow="visible" orient="auto" preserveAspectRatio="xMidYMid meet">
+			<marker overflow="visible" preserveAspectRatio="xMidYMid meet" id="myEndArrow" orient="auto">
 				<polyline fill="dimgray" points="0.5,0 -8,-2 -8,2"/>
 			</marker>
-		<symbol id="maximizeButton" overflow="visible" preserveAspectRatio="xMidYMid meet"><rect x="-5.5" y="-5.5" width="11" height="11" fill="steelblue" stroke="white" stroke-width="2" pointer-events="fill"/></symbol><symbol id="minimizeButton" overflow="visible" preserveAspectRatio="xMidYMid meet"><rect x="-5.5" y="-5.5" width="11" height="11" fill="steelblue" pointer-events="fill"/><line x1="5.5" x2="-5.5" y1="5.5" y2="5.5" stroke="white" stroke-width="2"/></symbol></defs>
-		<title>SpagoBI Geo Engine</title>
+		<symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="maximizeButton">
+    
+    
+    <rect x="-5.5" y="-5.5" fill="steelblue" width="11" height="11" stroke="white" stroke-width="2" pointer-events="fill"/>
+    </symbol><symbol overflow="visible" preserveAspectRatio="xMidYMid meet" id="minimizeButton">
+    <rect x="-5.5" y="-5.5" fill="steelblue" width="11" height="11" pointer-events="fill"/>
+    <line x1="5.5" x2="-5.5" y1="5.5" y2="5.5" stroke="white" stroke-width="2"/></symbol>
+    </defs>
 		
+    <title>SpagoBI Geo Engine</title>
 		
-		
-		
+	
 		<!-- Main Map Frame -->
-		<svg id="mainMap" x="0" y="0" width="99%" height="99%" viewBox="0 0 0 0" 
-			xmlns:attrib="http://www.carto.net/attrib" xmlns:xlink="http://www.w3.org/1999/xlink" 
-			xmlns="http://www.w3.org/2000/svg" 
-			preserveAspectRatio="xMidYMid meet" zoomAndPan="magnify">
+		<svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:attrib="http://www.carto.net/attrib" contentStyleType="text/css" id="mainMap" version="1.0" width="1100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 958.69 592.78998" height="768" xmlns="http://www.w3.org/2000/svg" x="0" y="0">
 			
-			<style type="text/css">
+			<style type="text/css" xml:space="preserve">
 				<![CDATA[
 				circle {stroke-width:2}
 				]]>
@@ -1276,11 +983,8 @@ preserveAspectRatio="xMidYMid meet">
 				
 				<g id="mainMapGroup">
 		
-				<rect id="mapBackgroundRect" x="0" y="0" width="0" height="0" fill="none" stroke="none" pointer-events="fill"/>
 			
-				
-				
-				<g id="eventCatcher" stroke-linecap="round" onmouseover="showData(evt)" onmouseout="showData(evt)" fill="white" stroke-linejoin="round"  stroke-width="2000">
+				<g id="eventCatcher" stroke-linecap="round" onmouseover="showData(evt)" fill="white" stroke-linejoin="round" onmouseout="showData(evt)"  stroke-width="2000">
 				
 				<g id="targetMap">
 				
@@ -1288,251 +992,58 @@ preserveAspectRatio="xMidYMid meet">
 				
 				</g>
 				
-				<g id="grafici" fill="white" stroke="black" stroke-width="0.2" stroke-linecap="square " stroke-linejoin="miter">	</g>
-				<g id="valori" fill="white" stroke="black" stroke-width="0.2" stroke-linecap="square " stroke-linejoin="miter">	</g>
+				
+
+
+
+    
+				
+				<g stroke-linecap="square " fill="white" stroke-linejoin="miter" id="grafici" stroke="black" stroke-width="0.2">	</g>
+				<g stroke-linecap="square " fill="white" stroke-linejoin="miter" id="valori" stroke="black" stroke-width="0.2">	</g>
 				
 				</g>
 				</g>
-				
-				
-				
 		</svg>
 
 	
 	<g id="statusColorMap" display="none">
-		<rect x="500" y="200" width="160" height="50" fill="#fffce6" fill-opacity="0.8"/>
-		<text x="515" y="220" fill="steelblue" font-family="Arial,Helvetica" font-size="14px" startOffset="0">loading Data ...</text>
-		<text x="560" y="240" fill="steelblue" font-family="Arial,Helvetica" font-size="14px" startOffset="0">...coloring Map</text>
+		<rect x="500" y="200" fill-opacity="0.8" fill="#fffce6" width="160" height="50"/>
+		<text x="515" font-size="14px" y="220" startOffset="0" fill="steelblue" font-family="Arial,Helvetica">loading Data ...</text>
+		<text x="560" font-size="14px" y="240" startOffset="0" fill="steelblue" font-family="Arial,Helvetica">...coloring Map</text>
 	</g>
 	
-	    <!-- this group holds navigation, title and if you like, legend information -->
-	    <g>
-	        
-	        <!-- map impressum and status Bar -->
-	        <g text-rendering="optimizeLegibility" font-family="Arial,Helvetica" fill="dimgray" font-size="12px">
-	            <!-- text with this id is required to show help texts -->
-	            <text id="statusText" x="-745" y="-100" startOffset="0">Statusbar: Mode: Infomode</text>
-	        <!--    
-	        	<text x="10" y="713" startOffset="0">Map Authors: Engineering Ingegneria Informatica S.p.A.</text>
-	        	<text x="1090" y="713" text-anchor="end" startOffset="0">Source: SIT Comune di Genova</text>
-	        -->
-	        </g>
-	    </g>
-	    <!-- small reference map, shares the same coordinate system than the main map -->
-	    <!-- it is very recommended that the width and height of the nested svg element has the same ratio as the viewBox width and height -->
-		
-	    <!-- this group holds the zoom slider and buttons -->
-	    <g>
-	        <!-- empty group where zoomSlider is later appended -->
-	        
-	        <!-- button for zoom-in, above slider -->
-	        
-	        <!-- button for zoom-out, below slider -->
-	        
-	        <!-- info button -->
-	        
-	        <!-- button for full view (f) -->
-	        
-	        <!-- button for manual zoom (rectangle) -->
-	        
-	        <!-- button for manual pan -->
-	        
-	        <!-- button for redefining map center -->
-	        <g id="recenterMap" display="none"><rect x="131" y="164" width="20" height="20" points="132,185 132,165 152,165" fill="rgb(235,235,235)"/>
-					<rect x="133" y="166" width="20" height="20" points="132,185 132,165 152,165" fill="dimgray"/>
-					<rect x="132" y="165" width="20" height="20" fill="white" cursor="pointer"/>
-					<use x="142" y="175" xlink:href="#symbRecenter" pointer-events="none"/>
-					<rect x="131" y="164" width="22" height="22" fill="white" fill-opacity="0.5" stroke="none" display="inherit" cursor="default"/></g>
-	        <!-- button for backwarding map extent (extent history) -->
-	        
-	        <!-- button for forwarding map extent (extent history) -->
-	        
-	        <!-- button for demonstrating highlight feature of the map -->
-	        <g id="highlightMap" cursor="pointer"/>		
-	    </g>
-	 lo
-	    
+	
+	
 	    <!-- WINDOWS CONTENT -->
 	    <g id="Windows">
-			
-				<!-- Navigation Window -->
-				<g id="navWindow" transform="translate(10,10)">
-					
-					<rect width="210" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
-					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
-					
-					<g id="windowMainGroupnavWindow">
-					<g/>
-					
-					
-						<svg id="referenceMap" x="10" y="8" viewBox="-2471570.4 -1631093.7 4844781 3030131.8" width="190" height="150" 
-								 xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" 
-								 preserveAspectRatio="xMidYMid meet" zoomAndPan="magnify" cursor="crosshair" display="inherit">
+	    
+        <g id="navWindow" transform="translate(10,537)">
+	       <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" display="inherit" contentStyleType="text/css" id="referenceMap" version="1.0" width="190" preserveAspectRatio="xMidYMid meet" cursor="crosshair" viewBox="-2471570.4 -1631093.7 4844781 3030131.8" height="150" xmlns="http://www.w3.org/2000/svg" x="10" y="8">
+							
+								<use stroke-linecap="round" fill="white" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mainMapGroup" stroke-linejoin="round" xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" stroke-width="2419.9" pointer-events="none"/>
+							
+								<use x="-2471570.4" y="-1631093.7" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#myDragCrossSymbol" xlink:type="simple" visibility="hidden" xlink:actuate="onLoad" xlink:show="embed"/>
+								
 								 
-								 <rect x="-2471570.4" y="-1631093.7" width="4844781" height="3030131.8" fill="none" stroke="none" pointer-events="fill"/>
-								 <rect fill="none" pointer-events="fill" x="-2471570.4" y="-1631093.7" width="4844781" height="3030131.8"/>
-								
-								<!-- here you can place any graphical elements for your reference/overview map -->
-								<use xlink:href="#mainMapGroup" fill="white" stroke-width="2419.9" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-								<rect x="-2471570.4" y="-1631093.7" width="4844781" height="3030131.8" fill="dimgray" fill-opacity="0.3" pointer-events="none"/>
-								<use x="-2471570.4" y="-1631093.7" visibility="hidden" xlink:href="#myDragCrossSymbol"/>
-								
-								<g visibility="hidden" stroke="crimson" stroke-width="55689.5" pointer-events="none">
-									<line x1="-2471570" x2="2373210" y1="-116028" y2="-116028"/>
-									<line x1="-49179.9" x2="-49179.9" y1="-1631090" y2="1399040"/>
-								</g>
-						</svg>
 						
-						<g id="zoomIn" cursor="pointer" display="inherit">
-						</g>
-						
-						<g id="mapZoomSlider" display="inherit">
-						</g>
-						
-						<g id="zoomOut" cursor="pointer" display="inherit">
-						</g>
-						
-						<g id="zoomFull" cursor="pointer" display="inherit">
-						</g>
-						
-						<g id="zoomManual" cursor="pointer" display="inherit">
-						</g>
-						
-						<g id="panManual" cursor="pointer" display="inherit">
-						</g>
-						
-						<g id="infoButton" cursor="pointer" display="inherit">
-						</g>
-						
-						
-						<g id="backwardExtent" cursor="pointer" display="inherit" />
-						
-						<g id="forwardExtent" cursor="pointer" display="inherit">
-						</g>
-						
-					</g>
+					</svg>
 				</g>
+			
+				
+      </g>
+      
 					
-				<!-- Layers Window -->
-				<g id="basiclayer" transform="translate(436,720)">
-					<rect width="210" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
-					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
-					
-						<g id="windowMainGroupbasiclayer" display="none">
-						<g/>
-						
-						<g id="checkBoxes" display="inherit">
-							
-						</g>
-						
-						<g id="linkRadioGroup" display="inherit">
-						<rect width="210" height="17" fill="steelblue" stroke="dimgray" stroke-width="1" id="titleBarthematic" cursor="pointer"/>
-						
-						</g>					
-					</g>
-							
-				</g>
-				
-				<!-- Thematics Window -->
-				<g id="thematic" transform="translate(223,537)"><rect width="210" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
-					<rect width="210" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
-					
-					<g id="windowMainGroupthematic" display="inherit">					
-						
-						<g id="radioButtons" display="inherit">
-							
-						</g>					
-					</g>
-				</g>
-				
-				
-				
-				
-				<!-- Detail Window -->
-				<g id="detail" transform="translate(649,720)">
-					<rect width="441" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
-					<rect width="441" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
-						
-					<g id="windowMainGroupdetail" display="inherit">
-						
-						<!--
-						<rect width="441" height="200" fill="#fffce6" stroke="dimgray" stroke-width="1"/>
-						<g/>
-						-->
-						
-						<g id="detailTabGroup" display="none">
-							<g> 
-									<g>            
-											<g id="detailTabGroup__0_content">
-													<g id="dynamText" class="allText normalText">
-														<!--
-														<text id="infopanel1" x="20" y="50" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">Iscritti </text>
-														<text id="infopanel2" x="20" y="75" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">Asili </text>
-														<text id="infopanel3" x="20" y="100" fill="dimgray" font-family="Arial,Helvetica" font-size="14px" startOffset="0">Docenti </text>
-													-->
-													</g>
-											</g>
-									</g>									
-											 
-									<g>                
-											<g id="detailTabGroup__1_content">
-											
-											<!--
-											<g id="chart" transform="translate(50 35)" font-size="8" shape-rendering="geometricPrecision" display="none">
-													<rect id="chartBox" x="0" y="0" width="100" height="100" fill="none" stroke="gray" stroke-width=".2"/>
-											</g>
-											-->
-											</g>
-									</g>
-							</g>
-						</g>
-						
-					
-						
-					</g>
-				</g>
-				
-				
-				<g id="colourPickerPanel_1" display="none">
-					<g id="colourPickerBox_1" />
-					
-					<g id="colourPickerButtons">
-						<rect x="300" y="420" width="300" height="35" fill="white" stroke="dimgray" stroke-width="1"/>
-						<g id="colourPickerApplay" />
-						<g id="colourPickerOk" />
-						<g id="colourPickerCancel" />
-					</g>
-				</g>
-						
-				<!-- Legend Window -->
-				<g id="legend" transform="translate(649,720)">
-					<rect width="441" height="200" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
-					<rect width="441" height="17" fill="none" stroke="dimgray" stroke-width="1.5" display="none"/>
-						
-					<g id="windowMainGrouplegend" display="none">
-						
-						
-							
-						<g id="coulourboxes" display="inherit">
-							
-						
-						</g>
-					</g>
-				
-					
-				</g>
-		
-		</g>
+			
+			
 	
 	
-		 
+
+	
 		
 	
-	
-		<svg id="logo" x="1040" y="-1" width="500" height="200" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" zoomAndPan="magnify">
+		<svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" id="logo" version="1.0" width="500" preserveAspectRatio="xMidYMid meet" height="200" xmlns="http://www.w3.org/2000/svg" x="1040" y="-1">
 			<g transform="scale(0.3)">
 			
 			</g>
 		</svg>
-	
 	</svg>

@@ -67,7 +67,9 @@ somewhere in the source-code-comment or the "about" of your project and give cre
 */
 
 function Window(id,parentNode,width,height,transX,transY,moveable,constrXmin,constrYmin,constrXmax,constrYmax,showContent,placeholderStyles,windowStyles,margin,titleBarVisible,statusBarVisible,titleText,statusText,closeButton,minimizeButton,maximizeButton,titlebarStyles,titlebarHeight,statusbarStyles,statusbarHeight,titletextStyles,statustextStyles,buttonStyles,functionToCall) {
-	var nrArguments = 30;
+	if (arguments.length == 0) return;
+	
+  var nrArguments = 30;
 	var createWindow= true;
 	if (arguments.length == nrArguments) {
 		this.id = id;

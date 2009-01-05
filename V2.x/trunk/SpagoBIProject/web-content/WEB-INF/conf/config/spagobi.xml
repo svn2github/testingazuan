@@ -122,7 +122,7 @@
 
      <SPAGOBI_CONTEXT>@spagobi.context@</SPAGOBI_CONTEXT>
     
-     <SPAGOBI_HOST>[spagobi.host[</SPAGOBI_HOST>
+     <SPAGOBI_HOST>@spagobi.host@</SPAGOBI_HOST>
  	 
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	

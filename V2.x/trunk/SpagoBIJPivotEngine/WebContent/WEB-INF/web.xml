@@ -314,6 +314,11 @@
 	  	<exception-type>java.lang.Throwable</exception-type>
 	  	<location>/html/error.html</location>
 	  </error-page>
+	  
+	  <error-page>
+	  	<exception-type>javax.servlet.ServletException</exception-type>
+	  	<location>/html/error.html</location>
+	  </error-page>
 		 
 	  <error-page>
 	  	<error-code>404</error-code>

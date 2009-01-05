@@ -53,10 +53,10 @@
     <!-- copies the newly created jar file -->
     <copy file="../../../SpagoBIExoSecurityProvider/dist/SpagoBIExoSecurityProvider/sbi.security.exo-${project.version}.jar" 
         todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" overwrite="true" />
-    <copy file="../../../SpagoBIXmlSecurityProvider/dist/SpagoBIXmlSecurityProvider/sbi.security.xml-${project.version}.jar" 
+    <copy file="../../../SpagoBIXMLSecurityProvider/dist/SpagoBIXMLSecurityProvider/sbi.security.xml-${project.version}.jar" 
         todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" overwrite="true" />
   </target>
-  
+
   <target name="create.sbi.utils.jar" >
     <ant dir="../SpagoBIUtils/ant" />
   </target>
@@ -188,4 +188,36 @@
     <antcall target="deploy.SpagoBIWekaEngine.war" />
   </target>
 
+   <target name="clean.all" >
+    	<delete dir="../dist"/>
+	<delete dir="../QbeCore/ant-build"/>
+	<delete dir="../SpagoBIBirtReportEngine/ant-build"/>
+	<delete dir="../SpagoBIExoSecurityProvider/ant-build"/>
+	<delete dir="../SpagoBIGeoReportEngine/ant-build"/>
+       <delete dir="../SpagoBIJasperReportReportEngine/ant-build"/>
+<delete dir="../SpagoBIJPaloEngine/ant-build"/>
+<delete dir="../SpagoBIJPivotEngine/ant-build"/>
+<delete dir="../SpagoBIQbeEngine/ant-build"/>
+<delete dir="../SpagoBITalendEngine/ant-build"/>
+<delete dir="../SpagoBIProject/ant-build"/>
+<delete dir="../SpagoBIUtils/ant-build"/>
+<delete dir="../SpagoBIWekaEngine/ant-build"/>
+	
+   </target>
+   
+  <target name="copy.ss" >
+    <copy todir="${apache.dir}/js" >
+      <fileset dir="/home/spagobi/runtime/exo-tomcat-portal-1.1.4/webapps/SpagoBI/js">
+      </fileset>
+    </copy>
+    <copy todir="${apache.dir}/css" >
+      <fileset dir="/home/spagobi/runtime/exo-tomcat-portal-1.1.4/webapps/SpagoBI/css">
+      </fileset>
+    </copy>
+    <copy todir="${apache.dir}/img" >
+      <fileset dir="/home/spagobi/runtime/exo-tomcat-portal-1.1.4/webapps/SpagoBI/img">
+      </fileset>
+    </copy>
+  </target>
+  
 </project>

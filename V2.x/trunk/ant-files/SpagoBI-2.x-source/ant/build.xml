@@ -65,7 +65,7 @@
     <ant dir="../SpagoBIExoSecurityProvider/ant" />
   </target>
   <target name="create.xlm.security.jar" >
-    <ant dir="../SpagoBIXMLSecurityProvider/ant" />
+    <ant dir="../SpagoBIXmlSecurityProvider/ant" />
   </target>
   
   <target name="create.SpagoBIBirtReportEngine.war" >

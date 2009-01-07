@@ -30,9 +30,9 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
 import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -98,7 +98,7 @@ public class GetDatasetResultAction extends AbstractHttpAction {
 
 			  try{
 			// if dataset needs parameter I must recover them from request
-			 DataSetConfig dataSet=DAOFactory.getDataSetDAO().loadDataSetByID(Integer.valueOf(dataName)); 
+			 IDataSet dataSet=DAOFactory.getDataSetDAO().loadDataSetByID(Integer.valueOf(dataName)); 
 			 if(dataSet!=null){	
 			 	Object parametersO=dataSet.getParameters();
 			 	if(parametersO!=null){

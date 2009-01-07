@@ -24,20 +24,21 @@ package it.eng.spagobi.tools.dataset.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.commons.metadata.SbiDomains;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
-import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
-import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
-import it.eng.spagobi.tools.dataset.bo.WSDataSet;
+import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiScriptDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.dao.DataSourceDAOHibImpl;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
@@ -54,7 +55,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
 
-public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetDAO{
+public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetDAO  {
 	static private Logger logger = Logger.getLogger(DataSetDAOHibImpl.class);
 	
 	/**
@@ -68,9 +69,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#loadDataSetByID(java.lang.Integer)
 	 */
-	public DataSetConfig loadDataSetByID(Integer dsID) throws EMFUserError {
+	public IDataSet loadDataSetByID(Integer dsID) throws EMFUserError {
 		logger.debug("IN");
-		DataSetConfig toReturn = null;
+		IDataSet toReturn = null;
 		Session aSession = null;
 		Transaction tx = null;
 
@@ -110,9 +111,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#loadDataSetByLabel(string)
 	 */	
-	public DataSetConfig loadDataSetByLabel(String label) throws EMFUserError {
+	public IDataSet loadDataSetByLabel(String label) throws EMFUserError {
 		logger.debug("IN");
-		DataSetConfig biDS = null;
+		IDataSet biDS = null;
 		Session tmpSession = null;
 		Transaction tx = null;
 		try {
@@ -191,9 +192,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 * 
-	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#modifyDataSet(it.eng.spagobi.tools.dataset.bo.DataSetConfig)
+	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#modifyDataSet(it.eng.spagobi.tools.dataset.bo.AbstractDataSet)
 	 */
-	public void modifyDataSet(DataSetConfig aDataSet) throws EMFUserError {
+	public void modifyDataSet(IDataSet aDataSet) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -203,7 +204,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 
 
 			SbiDataSetConfig hibDataSet = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class,
-					new Integer(aDataSet.getDsId()));			
+					new Integer(aDataSet.getId()));			
 			
 			if(aDataSet instanceof FileDataSet){
 				//hibDataSet=new SbiFileDataSet();
@@ -212,25 +213,25 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				}
 			}
 
-			else if(aDataSet instanceof QueryDataSet){
+			else if(aDataSet instanceof JDBCDataSet){
 				//hibDataSet=new SbiQueryDataSet();
-				if(((QueryDataSet)aDataSet).getQuery()!=null){
-					((SbiQueryDataSet)hibDataSet).setQuery(((QueryDataSet)aDataSet).getQuery());
+				if(((JDBCDataSet)aDataSet).getQuery()!=null){
+					((SbiQueryDataSet)hibDataSet).setQuery(((JDBCDataSet)aDataSet).getQuery().toString());
 				}
-				if(((QueryDataSet)aDataSet).getDataSource()!=null){
+				if(((JDBCDataSet)aDataSet).getDataSource()!=null){
 					SbiDataSource hibDataSource = null;
-					hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, new Integer(((QueryDataSet)aDataSet).getDataSource().getDsId()));
+					hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, new Integer(((JDBCDataSet)aDataSet).getDataSource().getDsId()));
 					((SbiQueryDataSet)hibDataSet).setDataSource(hibDataSource);	
 				}				
 			}
 
-			else if(aDataSet instanceof WSDataSet){
+			else if(aDataSet instanceof WebServiceDataSet){
 				//hibDataSet=new SbiWSDataSet();
-				if(((WSDataSet)aDataSet).getAdress()!=null){
-					((SbiWSDataSet)hibDataSet).setAdress(((WSDataSet)aDataSet).getAdress());
+				if(((WebServiceDataSet)aDataSet).getAddress()!=null){
+					((SbiWSDataSet)hibDataSet).setAdress(((WebServiceDataSet)aDataSet).getAddress());
 				}
-				if(((WSDataSet)aDataSet).getExecutorClass()!=null){
-					((SbiWSDataSet)hibDataSet).setExecutorClass(((WSDataSet)aDataSet).getExecutorClass());
+				if(((WebServiceDataSet)aDataSet).getExecutorClass()!=null){
+					((SbiWSDataSet)hibDataSet).setExecutorClass(((WebServiceDataSet)aDataSet).getExecutorClass());
 				}	
 			}
 			
@@ -241,10 +242,10 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				}
 			}
 			
-			else if(aDataSet instanceof JClassDataSet){
+			else if(aDataSet instanceof JavaClassDataSet){
 
-				if(((JClassDataSet)aDataSet).getJavaClassName()!=null){
-					((SbiJClassDataSet)hibDataSet).setJavaClassName(((JClassDataSet)aDataSet).getJavaClassName());
+				if(((JavaClassDataSet)aDataSet).getClassName()!=null){
+					((SbiJClassDataSet)hibDataSet).setJavaClassName(((JavaClassDataSet)aDataSet).getClassName());
 				}
 			}
 			SbiDomains transformer = null;
@@ -273,7 +274,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error("Error while modifing the data Set with id " + ((aDataSet == null)?"":String.valueOf(aDataSet.getDsId())), he);
+			logger.error("Error while modifing the data Set with id " + ((aDataSet == null)?"":String.valueOf(aDataSet.getId())), he);
 
 			if (tx != null)
 				tx.rollback();
@@ -296,9 +297,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 * 
-	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#insertDataSet(it.eng.spagobi.tools.dataset.bo.DataSetConfig)
+	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#insertDataSet(it.eng.spagobi.tools.dataset.bo.AbstractDataSet)
 	 */
-	public void insertDataSet(DataSetConfig aDataSet) throws EMFUserError {
+	public void insertDataSet(IDataSet aDataSet) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -315,32 +316,32 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				}
 			}
 
-			else if(aDataSet instanceof QueryDataSet){
+			else if(aDataSet instanceof JDBCDataSet){
 				hibDataSet=new SbiQueryDataSet();
-				if(((QueryDataSet)aDataSet).getQuery()!=null){
-					((SbiQueryDataSet)hibDataSet).setQuery(((QueryDataSet)aDataSet).getQuery());
+				if(((JDBCDataSet)aDataSet).getQuery()!=null){
+					((SbiQueryDataSet)hibDataSet).setQuery(((JDBCDataSet)aDataSet).getQuery().toString());
 				}
-				if(((QueryDataSet)aDataSet).getDataSource()!=null){
+				if(((JDBCDataSet)aDataSet).getDataSource()!=null){
 					SbiDataSource hibDataSource = null;
-					hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, new Integer(((QueryDataSet)aDataSet).getDataSource().getDsId()));
+					hibDataSource = (SbiDataSource) aSession.load(SbiDataSource.class, new Integer(((JDBCDataSet)aDataSet).getDataSource().getDsId()));
 					((SbiQueryDataSet)hibDataSet).setDataSource(hibDataSource);	
 				}				
 			}
 
-			else if(aDataSet instanceof WSDataSet){
+			else if(aDataSet instanceof WebServiceDataSet){
 				hibDataSet=new SbiWSDataSet();
-				if(((WSDataSet)aDataSet).getAdress()!=null){
-					((SbiWSDataSet)hibDataSet).setAdress(((WSDataSet)aDataSet).getAdress());
+				if(((WebServiceDataSet)aDataSet).getAddress()!=null){
+					((SbiWSDataSet)hibDataSet).setAdress(((WebServiceDataSet)aDataSet).getAddress());
 				}
-				if(((WSDataSet)aDataSet).getExecutorClass()!=null){
-					((SbiWSDataSet)hibDataSet).setExecutorClass(((WSDataSet)aDataSet).getExecutorClass());
+				if(((WebServiceDataSet)aDataSet).getExecutorClass()!=null){
+					((SbiWSDataSet)hibDataSet).setExecutorClass(((WebServiceDataSet)aDataSet).getExecutorClass());
 				}	
 			}
 			
-			else if(aDataSet instanceof JClassDataSet){
+			else if(aDataSet instanceof JavaClassDataSet){
 				hibDataSet=new SbiJClassDataSet();
-				if(((JClassDataSet)aDataSet).getJavaClassName()!=null){
-					((SbiJClassDataSet)hibDataSet).setJavaClassName(((JClassDataSet)aDataSet).getJavaClassName());
+				if(((JavaClassDataSet)aDataSet).getClassName()!=null){
+					((SbiJClassDataSet)hibDataSet).setJavaClassName(((JavaClassDataSet)aDataSet).getClassName());
 				}
 			}
 			
@@ -377,7 +378,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			aSession.save(hibDataSet);
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error("Error while inserting the data Set with id " + ((aDataSet == null)?"":String.valueOf(aDataSet.getDsId())), he);
+			logger.error("Error while inserting the data Set with id " + ((aDataSet == null)?"":String.valueOf(aDataSet.getId())), he);
 
 			if (tx != null)
 				tx.rollback();
@@ -399,9 +400,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 * 
-	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#eraseDataSet(it.eng.spagobi.tools.dataset.bo.DataSetConfig)
+	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#eraseDataSet(it.eng.spagobi.tools.dataset.bo.AbstractDataSet)
 	 */
-	public void eraseDataSet(DataSetConfig aDataSet) throws EMFUserError {
+	public void eraseDataSet(IDataSet aDataSet) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -409,12 +410,12 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiDataSetConfig hibDataSet = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class,
-					new Integer(aDataSet.getDsId()));
+					new Integer(aDataSet.getId()));
 
 			aSession.delete(hibDataSet);
 			tx.commit();
 		} catch (HibernateException he) {
-			logger.error("Error while erasing the data Set with id " + ((aDataSet == null)?"":String.valueOf(aDataSet.getDsId())), he);
+			logger.error("Error while erasing the data Set with id " + ((aDataSet == null)?"":String.valueOf(aDataSet.getId())), he);
 
 			if (tx != null)
 				tx.rollback();
@@ -438,29 +439,29 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * 
 	 * @return The corrispondent <code>DataSet</code> object
 	 */
-	public DataSetConfig toDataSet(SbiDataSetConfig hibDataSet){
-		DataSetConfig ds = null;
+	public IDataSet toDataSet(SbiDataSetConfig hibDataSet){
+		IDataSet ds = null;
 		if(hibDataSet instanceof SbiFileDataSet){
 			ds = new FileDataSet();
 			((FileDataSet)ds).setFileName(((SbiFileDataSet)hibDataSet).getFileName());
 		}
 		
 		if(hibDataSet instanceof SbiQueryDataSet){
-			ds=new QueryDataSet();
-			((QueryDataSet)ds).setQuery(((SbiQueryDataSet)hibDataSet).getQuery());
+			ds=new JDBCDataSet();
+			((JDBCDataSet)ds).setQuery(((SbiQueryDataSet)hibDataSet).getQuery());
 			
 			SbiDataSource sbids=((SbiQueryDataSet)hibDataSet).getDataSource();
 			if(sbids!=null){
 			DataSourceDAOHibImpl dataSourceDao=new DataSourceDAOHibImpl();
-			DataSource dataSource=dataSourceDao.toDataSource(sbids);
-			((QueryDataSet)ds).setDataSource(dataSource);
+			IDataSource dataSource=dataSourceDao.toDataSource(sbids);
+			((JDBCDataSet)ds).setDataSource(dataSource);
 			}
 		}
 
 		if(hibDataSet instanceof SbiWSDataSet){
-			ds=new WSDataSet();
-			((WSDataSet)ds).setAdress(((SbiWSDataSet)hibDataSet).getAdress());
-			((WSDataSet)ds).setExecutorClass(((SbiWSDataSet)hibDataSet).getExecutorClass());
+			ds=new WebServiceDataSet();
+			((WebServiceDataSet)ds).setAddress(((SbiWSDataSet)hibDataSet).getAdress());
+			((WebServiceDataSet)ds).setExecutorClass(((SbiWSDataSet)hibDataSet).getExecutorClass());
 		}
 		
 		if(hibDataSet instanceof SbiScriptDataSet){
@@ -469,11 +470,11 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		}
 		
 		if(hibDataSet instanceof SbiJClassDataSet){
-			ds=new JClassDataSet();
-			((JClassDataSet)ds).setJavaClassName(((SbiJClassDataSet)hibDataSet).getJavaClassName());
+			ds=new JavaClassDataSet();
+			((JavaClassDataSet)ds).setClassName(((SbiJClassDataSet)hibDataSet).getJavaClassName());
 		}
 
-		ds.setDsId(hibDataSet.getDsId());
+		ds.setId(hibDataSet.getDsId());
 		ds.setName(hibDataSet.getName());
 		ds.setLabel(hibDataSet.getLabel());
 		ds.setTransformerId((hibDataSet.getTransformer()==null)?null:hibDataSet.getTransformer().getValueId());
@@ -536,49 +537,6 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		return bool;
 
 	}
-
-	/**
-	 * @see it.eng.spagobi.tools.dataset.dao.IDataSetDAO#hasEngineAssociated(java.lang.String)
-	 */
-	/*	public boolean hasBIEngineAssociated (String dsId) throws EMFUserError{
-		logger.debug("IN");
-		boolean bool = false; 
-
-
-		Session aSession = null;
-		Transaction tx = null;
-		try {
-			aSession = getSession();
-			tx = aSession.beginTransaction();
-			Integer dsIdInt = Integer.valueOf(dsId);
-
-			String hql = " from SbiEngines s where s.dataSet.dsId = "+ dsIdInt;
-			Query aQuery = aSession.createQuery(hql);
-
-			List biObjectsAssocitedWithEngine = aQuery.list();
-			if (biObjectsAssocitedWithEngine.size() > 0)
-				bool = true;
-			else
-				bool = false;
-			tx.commit();
-		} catch (HibernateException he) {
-			logger.error("Error while getting the engines associated with the data set with id " + dsId, he);
-
-			if (tx != null)
-				tx.rollback();
-
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-
-		} finally {
-			if (aSession!=null){
-				if (aSession.isOpen()) aSession.close();
-			}
-		}
-		logger.debug("OUT");
-		return bool;
-
-	}*/
-
 }
 
 

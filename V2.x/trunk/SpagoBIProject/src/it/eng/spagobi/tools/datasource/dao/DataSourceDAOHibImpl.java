@@ -35,6 +35,7 @@ import it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.ArrayList;
@@ -114,9 +115,9 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#loadDataSourceByLabel(string)
 	 */	
-	public DataSource loadDataSourceByLabel(String label) throws EMFUserError {
+	public IDataSource loadDataSourceByLabel(String label) throws EMFUserError {
 		logger.debug("IN");
-		DataSource biDS = null;
+		IDataSource biDS = null;
 		Session tmpSession = null;
 		Transaction tx = null;
 		try {
@@ -197,7 +198,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#modifyDataSource(it.eng.spagobi.tools.datasource.bo.DataSource)
 	 */
-	public void modifyDataSource(DataSource aDataSource) throws EMFUserError {
+	public void modifyDataSource(IDataSource aDataSource) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -284,7 +285,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#insertDataSource(it.eng.spagobi.tools.datasource.bo.DataSource)
 	 */
-	public void insertDataSource(DataSource aDataSource) throws EMFUserError {
+	public void insertDataSource(IDataSource aDataSource) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
@@ -339,7 +340,7 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 	 * 
 	 * @see it.eng.spagobi.tools.datasource.dao.IDataSourceDAO#eraseDataSource(it.eng.spagobi.tools.datasource.bo.DataSource)
 	 */
-	public void eraseDataSource(DataSource aDataSource) throws EMFUserError {
+	public void eraseDataSource(IDataSource aDataSource) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -19,24 +19,14 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.tools.dataset.wsconnectors;
+package it.eng.spagobi.tools.dataset.common.transformer;
 
-import it.eng.spagobi.services.proxy.DataSetServiceProxy;
-
-import java.util.HashMap;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 /**
- * @author Angelo Bernabei
- *         angelo.bernabei@eng.it
+ * @author Andrea Gioia (andrea.gioia@eng.it)
+ *
  */
-public class WsConnector implements IWsConnector {
-
-
-    /* (non-Javadoc)
-     * @see it.eng.spagobi.tools.dataset.wsconnectors.IWsConnector#readDataSet(java.lang.String, java.util.HashMap, java.lang.String)
-     */
-    public String readDataSet(String adress, HashMap params, String operation) {
-return null;
-    }
-
+public interface IRecordTransformer {
+	IRecord transform(IRecord record);
 }

@@ -61,6 +61,7 @@ import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 import it.eng.spagobi.tools.importexport.bo.AssociationFile;
@@ -2199,13 +2200,13 @@ public class ImportManager implements IImportManager, Serializable {
 			List currentDataSources = datasourceDAO.loadAllDataSources();
 			Iterator exportedDataSourcesIt = exportedDataSources.iterator();
 			while (exportedDataSourcesIt.hasNext()) {
-				DataSource exportedDataSource = (DataSource) exportedDataSourcesIt.next();
+				IDataSource exportedDataSource = (IDataSource) exportedDataSourcesIt.next();
 				String associatedDataSourceLabel = this.getUserAssociation().getAssociatedDataSource(exportedDataSource.getLabel());
 				if (associatedDataSourceLabel == null || associatedDataSourceLabel.trim().equals("")) return true;
 				Iterator currentDataSourcesIt = currentDataSources.iterator();
 				boolean associatedDataSourceLabelExists = false;
 				while (currentDataSourcesIt.hasNext()) {
-					DataSource currentDataSource = (DataSource) currentDataSourcesIt.next();
+					IDataSource currentDataSource = (IDataSource) currentDataSourcesIt.next();
 					if (currentDataSource.getLabel().equals(associatedDataSourceLabel)) {
 						associatedDataSourceLabelExists = true;
 						metaAss.insertCoupleDataSources(new Integer(exportedDataSource.getDsId()), new Integer(currentDataSource.getDsId()));

@@ -79,19 +79,19 @@ import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
-import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
-import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
-import it.eng.spagobi.tools.dataset.bo.WSDataSet;
+import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiQueryDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiScriptDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.io.File;
@@ -154,7 +154,7 @@ public class ExporterMetadata {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public void insertDataSource(DataSource ds, Session session) throws EMFUserError {
+	public void insertDataSource(IDataSource ds, Session session) throws EMFUserError {
 	    logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
@@ -195,17 +195,17 @@ public class ExporterMetadata {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public void insertDataSet(DataSetConfig dataset, Session session) throws EMFUserError {
+	public void insertDataSet(IDataSet dataset, Session session) throws EMFUserError {
 	    logger.debug("IN");
 		try {
 			// if it is a query data set, insert datasource first, before opening a new transaction
-			if (dataset instanceof QueryDataSet) {
-				DataSource ds = ((QueryDataSet) dataset).getDataSource();
+			if (dataset instanceof JDBCDataSet) {
+				IDataSource ds = ((JDBCDataSet) dataset).getDataSource();
 				if (ds != null) insertDataSource(ds, session);
 			}
 			
 			Transaction tx = session.beginTransaction();
-			Query hibQuery = session.createQuery(" from SbiDataSetConfig where dsId = " + dataset.getDsId());
+			Query hibQuery = session.createQuery(" from SbiDataSetConfig where dsId = " + dataset.getId());
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
 				return;
@@ -215,31 +215,31 @@ public class ExporterMetadata {
 				hibDataset = new SbiFileDataSet();
 				((SbiFileDataSet) hibDataset).setFileName(((FileDataSet) dataset).getFileName()); 
 			}
-			if (dataset instanceof QueryDataSet) {
+			if (dataset instanceof JDBCDataSet) {
 				hibDataset = new SbiQueryDataSet();
-				((SbiQueryDataSet) hibDataset).setQuery(((QueryDataSet) dataset).getQuery());
+				((SbiQueryDataSet) hibDataset).setQuery(((JDBCDataSet) dataset).getQuery().toString());
 				// insert the association between the dataset and the datasource
-				DataSource ds = ((QueryDataSet) dataset).getDataSource();
+				IDataSource ds = ((JDBCDataSet) dataset).getDataSource();
 				if (ds != null) {
 					SbiDataSource dsHib = (SbiDataSource) session.load(SbiDataSource.class, new Integer(ds.getDsId()));
 					((SbiQueryDataSet) hibDataset).setDataSource(dsHib);
 				}
 			}
-			if (dataset instanceof WSDataSet) {
+			if (dataset instanceof WebServiceDataSet) {
 				hibDataset = new SbiWSDataSet();
-				((SbiWSDataSet) hibDataset).setAdress(((WSDataSet) dataset).getAdress());
-				((SbiWSDataSet) hibDataset).setExecutorClass(((WSDataSet) dataset).getExecutorClass());
-				((SbiWSDataSet) hibDataset).setOperation(((WSDataSet) dataset).getOperation());
+				((SbiWSDataSet) hibDataset).setAdress(((WebServiceDataSet) dataset).getAddress());
+				((SbiWSDataSet) hibDataset).setExecutorClass(((WebServiceDataSet) dataset).getExecutorClass());
+				((SbiWSDataSet) hibDataset).setOperation(((WebServiceDataSet) dataset).getOperation());
 			}
-			if (dataset instanceof JClassDataSet) {
+			if (dataset instanceof JavaClassDataSet) {
 				hibDataset = new SbiJClassDataSet();
-				((SbiJClassDataSet) hibDataset).setJavaClassName(((JClassDataSet) dataset).getJavaClassName());
+				((SbiJClassDataSet) hibDataset).setJavaClassName(((JavaClassDataSet) dataset).getClassName());
 			}
 			if (dataset instanceof ScriptDataSet) {
 				hibDataset = new SbiScriptDataSet();
 				((SbiScriptDataSet) hibDataset).setScript(((ScriptDataSet) dataset).getScript());
 			}
-			hibDataset.setDsId(dataset.getDsId());
+			hibDataset.setDsId(dataset.getId());
 			hibDataset.setLabel(dataset.getLabel());
 			hibDataset.setName(dataset.getName());
 			hibDataset.setDescription(dataset.getDescription());

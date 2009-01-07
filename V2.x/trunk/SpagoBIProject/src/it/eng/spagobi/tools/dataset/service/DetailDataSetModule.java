@@ -38,17 +38,18 @@ import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.security.ISecurityInfoProvider;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetFactory;
 import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
 import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
-import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
-import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
+import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
-import it.eng.spagobi.tools.dataset.bo.WSDataSet;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -103,6 +104,7 @@ public class DetailDataSetModule extends AbstractModule {
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String message = (String) request.getAttribute("MESSAGEDET");
+		
 		logger.debug("begin of detail Data Set service with message =" +message);
 		errorHandler = getErrorHandler();
 		RequestContainer requestContainer = this.getRequestContainer();
@@ -145,18 +147,18 @@ public class DetailDataSetModule extends AbstractModule {
 	}
 
 	/**
-	 * Gets the detail of a data set choosed by the user from the 
+	 * Gets the detail of a data set chosen by the user from the 
 	 * data Sets list. It reaches the key from the request and asks to the DB all detail
 	 * data Set information, by calling the method <code>loadDataSetByID</code>.
 	 *   
-	 * @param key The choosed data Set id key
+	 * @param key The chosen data Set id key
 	 * @param response The response Source Bean
 	 * @throws EMFUserError If an exception occurs
 	 */   
 	private void getDataSet(SourceBean request, SourceBean response) throws EMFUserError {		
 		try {		 									
-			DataSetConfig ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer((String)request.getAttribute("ID")));		
-			prepareDetailDatasetPage(ds, AdmintoolsConstants.DETAIL_MOD, response);
+			IDataSet ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer((String)request.getAttribute("ID")));		
+			prepareDetailDatasetPage(ds.toSpagoBiDataSet(), AdmintoolsConstants.DETAIL_MOD, response);
 
 			if (request.getAttribute("SUBMESSAGEDET") != null &&
 					((String)request.getAttribute("SUBMESSAGEDET")).equalsIgnoreCase(MOD_SAVEBACK))
@@ -169,7 +171,7 @@ public class DetailDataSetModule extends AbstractModule {
 			//response.setAttribute("dataset", ds);
 
 			session.setAttribute(DetailDataSetModule.DATASET_MODIFIED, "false");
-			session.setAttribute(DetailDataSetModule.DATASET, ds);
+			session.setAttribute(DetailDataSetModule.DATASET, ds.toSpagoBiDataSet());
 
 
 		} catch (Exception ex) {
@@ -213,7 +215,7 @@ public class DetailDataSetModule extends AbstractModule {
 		String parametersXMLModified = (String) serviceRequest.getAttribute(DetailDataSetModule.DATASET_MODIFIED);
 		if(parametersXMLModified != null && !parametersXMLModified.trim().equals("")) 
 			session.setAttribute(DetailDataSetModule.DATASET_MODIFIED, parametersXMLModified);
-		DataSetConfig	dsNew  = (DataSetConfig) session.getAttribute(DetailDataSetModule.DATASET);
+		SpagoBiDataSet	dsNew  = (SpagoBiDataSet) session.getAttribute(DetailDataSetModule.DATASET);
 //		check if we are coming from the test
 		String returnFromTestMsg = (String) serviceRequest.getAttribute(DetailDataSetModule.RETURN_FROM_TEST_MSG);
 		boolean testCase=false;
@@ -258,11 +260,11 @@ public class DetailDataSetModule extends AbstractModule {
 				}
 				
 				try {
-				if(dsNew instanceof FileDataSet)type="0";			// what type is dataset?
-				else if(dsNew instanceof QueryDataSet)type="1";
-				else if(dsNew instanceof WSDataSet)type="2";
-				else if(dsNew instanceof ScriptDataSet)type="3";
-				else if(dsNew instanceof JClassDataSet)type="4";
+				if(FileDataSet.DS_TYPE.equalsIgnoreCase(dsNew.getType())) type="0";			// what type is dataset?
+				else if(JDBCDataSet.DS_TYPE.equalsIgnoreCase(dsNew.getType()))type="1";
+				else if(WebServiceDataSet.DS_TYPE.equalsIgnoreCase(dsNew.getType()))type="2";
+				else if(ScriptDataSet.DS_TYPE.equalsIgnoreCase(dsNew.getType()))type="3";
+				else if(JavaClassDataSet.DS_TYPE.equalsIgnoreCase(dsNew.getType()))type="4";
 
 				// check if it has to change parameters		(now only in Query Case) 
 				if(type.equals("1")){
@@ -338,17 +340,18 @@ public class DetailDataSetModule extends AbstractModule {
 				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 9202, new Vector(), params );
 				getErrorHandler().addError(error);
 				return;
-			}	 		
-			DAOFactory.getDataSetDAO().insertDataSet(dsNew);   //Insert DataSet
-			DataSetConfig tmpDS = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel());
-			int t=tmpDS.getDsId();
+			}	
+			
+			DAOFactory.getDataSetDAO().insertDataSet( DataSetFactory.getDataSet(dsNew) );   //Insert DataSet
+			IDataSet tmpDS = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel());
+			int t=tmpDS.getId();
 			dsNew.setDsId(t);
 			mod = SpagoBIConstants.DETAIL_MOD;
 			//session.setAttribute("dataset", dsNew);
 		} else {				
 			//update ds
 			if(!testCase)
-				DAOFactory.getDataSetDAO().modifyDataSet(dsNew);			
+				DAOFactory.getDataSetDAO().modifyDataSet(DataSetFactory.getDataSet(dsNew));			
 			//session.setAttribute("dataset", dsNew);
 		}  
 
@@ -385,7 +388,7 @@ public class DetailDataSetModule extends AbstractModule {
 	 * 
 	 * @throws SourceBeanException the source bean exception
 	 */
-	public List getParametersToFill(DataSetConfig ds) throws SourceBeanException{
+	public List getParametersToFill(SpagoBiDataSet ds) throws SourceBeanException{
 		String parametersXML=ds.getParameters();
 		if(parametersXML!=null && !((parametersXML.trim()).equals(""))){
 			DataSetParametersList dsParam=new DataSetParametersList(parametersXML);
@@ -411,10 +414,7 @@ public class DetailDataSetModule extends AbstractModule {
 
 		try {
 			String id = (String) request.getAttribute("ID");
-//			if the ds is associated with any BIEngine or BIObjects, creates an error
 			boolean bObjects =  DAOFactory.getDataSetDAO().hasBIObjAssociated(id);
-			//boolean bEngines =  DAOFactory.getDataSetDAO().hasBIEngineAssociated(id);
-			//if (bObjects || bEngines){
 			if(bObjects){	
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
@@ -424,7 +424,7 @@ public class DetailDataSetModule extends AbstractModule {
 			}
 
 			//delete the ds
-			DataSetConfig ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer(id));
+			IDataSet ds = DAOFactory.getDataSetDAO().loadDataSetByID(new Integer(id));
 			DAOFactory.getDataSetDAO().eraseDataSet(ds);
 		}
 		catch (EMFUserError e){
@@ -456,9 +456,9 @@ public class DetailDataSetModule extends AbstractModule {
 
 		try {
 
-			DataSetConfig ds = null;
+			SpagoBiDataSet ds = null;
 			//response.setAttribute("modality", modalita);
-			ds = new DataSetConfig();
+			ds = new SpagoBiDataSet();
 			ds.setDsId(-1);
 			ds.setDescription("");
 			ds.setLabel("");
@@ -476,37 +476,38 @@ public class DetailDataSetModule extends AbstractModule {
 	}
 
 
-	private DataSetConfig recoverDataSetDetails (SourceBean serviceRequest, String mod, DataSetConfig dsOld) throws EMFUserError, SourceBeanException, IOException  {
-		DataSetConfig ds  =null;
+	private SpagoBiDataSet recoverDataSetDetails (SourceBean serviceRequest, String mod, SpagoBiDataSet dsOld) throws EMFUserError, SourceBeanException, IOException  {
+		SpagoBiDataSet ds  =null;
 		String typeds= (String)serviceRequest.getAttribute("typeDataSet");
 
 		
 			if(typeds.equalsIgnoreCase("0")){
-				if(dsOld instanceof FileDataSet){
-					ds=dsOld;
+				if(FileDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
+					ds = dsOld;
 				}
 				else{
-					ds=new FileDataSet();
+					ds = new SpagoBiDataSet();
+					ds.setType( FileDataSet.DS_TYPE );
 				}
 				if(serviceRequest.getAttribute("FILENAME")!=null){
 					String fileName=(String)serviceRequest.getAttribute("FILENAME");
-					((FileDataSet)ds).setFileName(fileName);
+					ds.setFileName(fileName);
 				}
 			}
 			else 
 				if(typeds.equalsIgnoreCase("1")){
-					if(dsOld instanceof QueryDataSet){
-						ds=dsOld;
+					if(JDBCDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
+						ds = dsOld;
 					}
 					else{
-						ds=new QueryDataSet();
-
+						ds = new SpagoBiDataSet();
+						ds.setType( JDBCDataSet.DS_TYPE );
 					}
 					if(serviceRequest.getAttribute("QUERY")!=null){
 						String query=(String)serviceRequest.getAttribute("QUERY");
 						String toVerify = query.toUpperCase();
 						if (toVerify.startsWith("SELECT")){
-							((QueryDataSet)ds).setQuery(query);
+							ds.setQuery(query);
 						}
 						else {
 							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "QUERY", "9215");
@@ -516,8 +517,8 @@ public class DetailDataSetModule extends AbstractModule {
 					if(serviceRequest.getAttribute("DATASOURCE")!=null){
 						String dataSourceID=(String)serviceRequest.getAttribute("DATASOURCE");
 						if(!dataSourceID.equalsIgnoreCase("") && !(dataSourceID == null)){
-						DataSource dataSource=DAOFactory.getDataSourceDAO().loadDataSourceByID(Integer.valueOf(dataSourceID));
-						((QueryDataSet)ds).setDataSource(dataSource);
+						IDataSource dataSource=DAOFactory.getDataSourceDAO().loadDataSourceByID(Integer.valueOf(dataSourceID));
+						ds.setDataSource(dataSource.toSpagoBiDataSource());
 						}else{
 							
 						}
@@ -525,34 +526,36 @@ public class DetailDataSetModule extends AbstractModule {
 				}
 				else 
 					if(typeds.equalsIgnoreCase("2")){
-						if(dsOld instanceof WSDataSet){
-							ds=dsOld;
+						if(WebServiceDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
+							ds = dsOld;
 						}
 						else{
-							ds=new WSDataSet();						
+							ds = new SpagoBiDataSet();
+							ds.setType( WebServiceDataSet.DS_TYPE );					
 						}
 						if(serviceRequest.getAttribute("ADDRESS")!=null){
 							String address=(String)serviceRequest.getAttribute("ADDRESS");
-							((WSDataSet)ds).setAdress(address);
+							ds.setAdress(address);
 						}
 						if(serviceRequest.getAttribute("EXECUTORCLASS")!=null){
 							String executorClass=(String)serviceRequest.getAttribute("EXECUTORCLASS");
-							((WSDataSet)ds).setExecutorClass(executorClass);
+							ds.setExecutorClass(executorClass);
 
 						}
 					}else
 						if(typeds.equalsIgnoreCase("3")){
-							if(dsOld instanceof ScriptDataSet){
-								ds=dsOld;
+							if(ScriptDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
+								ds = dsOld;
 							}
 							else{
-								ds=new ScriptDataSet();
+								ds = new SpagoBiDataSet();
+								ds.setType( ScriptDataSet.DS_TYPE );
 							}
 							if(serviceRequest.getAttribute("SCRIPT")!=null){
 								String script=(String)serviceRequest.getAttribute("SCRIPT");
 								String toVerify = script.toUpperCase();
 								if( !toVerify.contains("<A") &&  !toVerify.contains("<LINK") &&  !toVerify.contains("<IMG") &&  !toVerify.contains("<SCRIPT")){
-									((ScriptDataSet)ds).setScript(script);
+									ds.setScript(script);
 								}else{
 									EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "SCRIPT", "9216");
 									getErrorHandler().addError(error);
@@ -561,15 +564,16 @@ public class DetailDataSetModule extends AbstractModule {
 						}
 						else
 							if(typeds.equalsIgnoreCase("4")){
-								if(dsOld instanceof JClassDataSet){
-									ds=dsOld;
+								if(JavaClassDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
+									ds = dsOld;
 								}
 								else{
-									ds=new JClassDataSet();
+									ds = new SpagoBiDataSet();
+									ds.setType( JavaClassDataSet.DS_TYPE );
 								}
 								if(serviceRequest.getAttribute("JCLASSNAME")!=null){
 									String javaClassName=(String)serviceRequest.getAttribute("JCLASSNAME");
-									((JClassDataSet)ds).setJavaClassName(javaClassName);
+									ds.setJavaClassName(javaClassName);
 								}
 							}
 
@@ -618,7 +622,7 @@ public class DetailDataSetModule extends AbstractModule {
 
 
 
-	private boolean doDatasetParameterItemTask(DataSetConfig dataset, DataSetParametersList datasetlistDet, SourceBean request) throws Exception {
+	private boolean doDatasetParameterItemTask(SpagoBiDataSet dataset, DataSetParametersList datasetlistDet, SourceBean request) throws Exception {
 		boolean changeItems = false;
 		// checks if it is requested to delete a Fix Lov item
 		Object indexOfDatasetParameterItemToDeleteObj = request.getAttribute("indexOfDatasetParameterItemToDelete");
@@ -744,7 +748,7 @@ public class DetailDataSetModule extends AbstractModule {
 	 * @param modVal	The ModalitiesValue to modify with the new entry
 	 * @throws SourceBeanException	If a SourceBean Exception occurred
 	 */
-	private DataSetParametersList addDatasetParameterItem (SourceBean request, DataSetConfig dataset) throws SourceBeanException {
+	private DataSetParametersList addDatasetParameterItem (SourceBean request, SpagoBiDataSet dataset) throws SourceBeanException {
 		String dsPars = dataset.getParameters();
 		DataSetParametersList dsDetList = null;
 		if ((dsPars==null) || (dsPars.trim().equals(""))) {
@@ -770,8 +774,8 @@ public class DetailDataSetModule extends AbstractModule {
 	 * @throws EMFInternalError 
 	 */
 
-	private void prepareDetailDatasetPage (DataSetConfig dataset, String mod, SourceBean response) throws SourceBeanException, EMFUserError, EMFInternalError {
-		response.setAttribute(DetailDataSetModule.DATASET, dataset);
+	private void prepareDetailDatasetPage (SpagoBiDataSet datasetConfig, String mod, SourceBean response) throws SourceBeanException, EMFUserError, EMFInternalError {
+		response.setAttribute(DetailDataSetModule.DATASET, datasetConfig);
 		response.setAttribute(SpagoBIConstants.MODALITY, mod);	
 		loadValuesDomain(response);
 		loadAllProfileAttributes(response);
@@ -821,8 +825,8 @@ public class DetailDataSetModule extends AbstractModule {
 
 	private void testDatasetAfterParameterFilling(SourceBean request, 	SourceBean response) throws EMFUserError, SourceBeanException  {
 		try {
-			DataSetConfig ds = null;
-			ds = (DataSetConfig) session.getAttribute(DetailDataSetModule.DATASET);
+			SpagoBiDataSet ds = null;
+			ds = (SpagoBiDataSet) session.getAttribute(DetailDataSetModule.DATASET);
 			List parametersFill = getParametersToFill(ds);
 			if(parametersFill.size()!=0) {
 				Map attributes = new HashMap();

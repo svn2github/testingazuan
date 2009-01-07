@@ -34,6 +34,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -183,7 +184,7 @@ public class DetailDataSourceModule extends AbstractModule {
 				 
 				DAOFactory.getDataSourceDAO().insertDataSource(dsNew);
 				
-				DataSource tmpDS = DAOFactory.getDataSourceDAO().loadDataSourceByLabel(dsNew.getLabel());
+				IDataSource tmpDS = DAOFactory.getDataSourceDAO().loadDataSourceByLabel(dsNew.getLabel());
 				dsNew.setDsId(tmpDS.getDsId());
 				mod = SpagoBIConstants.DETAIL_MOD; 
 			} else {				
@@ -245,7 +246,7 @@ public class DetailDataSourceModule extends AbstractModule {
 			}
 			
 			//delete the ds
-			DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(new Integer(id));
+			IDataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(new Integer(id));
 			DAOFactory.getDataSourceDAO().eraseDataSource(ds);
 		}
 		catch (EMFUserError e){

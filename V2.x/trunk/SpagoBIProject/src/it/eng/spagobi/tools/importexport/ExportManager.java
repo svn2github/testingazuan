@@ -48,9 +48,9 @@ import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.dao.IDataSourceDAO;
 
 import java.io.File;
@@ -335,20 +335,20 @@ public class ExportManager implements IExportManager {
 	    
 	    Integer objataSourceId = biobj.getDataSourceId();
 	    if (objataSourceId != null) {
-	    	DataSource ds = dataSourceDao.loadDataSourceByID(objataSourceId);
+	    	IDataSource ds = dataSourceDao.loadDataSourceByID(objataSourceId);
 	    	exporter.insertDataSource(ds, session);
 	    }
 
 	    Integer objDataSetId = biobj.getDataSetId();
 	    if (objDataSetId != null) {
-	    	DataSetConfig dataset = dataSetDao.loadDataSetByID(objDataSetId);
+	    	IDataSet dataset = dataSetDao.loadDataSetByID(objDataSetId);
 	    	exporter.insertDataSet(dataset, session);
 	    }
 	    
 	    Engine engine = biobj.getEngine();
 	    if (engine.getUseDataSource() && engine.getDataSourceId() != null) {
 		    Integer engineDataSourceId = engine.getDataSourceId();
-		    DataSource ds = dataSourceDao.loadDataSourceByID(engineDataSourceId);
+		    IDataSource ds = dataSourceDao.loadDataSourceByID(engineDataSourceId);
 		    exporter.insertDataSource(ds, session);
 	    }
 	    
@@ -373,7 +373,7 @@ public class ExportManager implements IExportManager {
 					if (datasetnameSB != null) {
 						String datasetLabel = (String) datasetnameSB.getAttribute("value");
 					    IDataSetDAO datasetDao = DAOFactory.getDataSetDAO();
-					    DataSetConfig dataset = datasetDao.loadDataSetByLabel(datasetLabel);
+					    IDataSet dataset = datasetDao.loadDataSetByLabel(datasetLabel);
 					    if (dataset == null) {
 					    	logger.warn("Error while exporting dashboard with id " + idObj + " and label " + biobj.getLabel() + " : " +
 								"the template refers to a dataset with label " + datasetLabel + " that does not exist!");
@@ -526,9 +526,9 @@ public class ExportManager implements IExportManager {
 				IDataSourceDAO dsDAO = DAOFactory.getDataSourceDAO();
 				List allDS = dsDAO.loadAllDataSources();
 				Iterator allDSIt = allDS.iterator();
-				DataSource dsFound = null;
+				IDataSource dsFound = null;
 				while (allDSIt.hasNext()) {
-					DataSource ds = (DataSource) allDSIt.next();
+					IDataSource ds = (IDataSource) allDSIt.next();
 					if (ds.getLabel().equals(datasourceName)) {
 						dsFound = ds;
 						break;

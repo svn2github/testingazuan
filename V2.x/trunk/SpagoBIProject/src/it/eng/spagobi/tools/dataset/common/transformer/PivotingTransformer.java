@@ -4,9 +4,12 @@
 package it.eng.spagobi.tools.dataset.common.transformer;
 
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spagobi.tools.dataset.common.datastore.DataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
+import it.eng.spagobi.tools.dataset.common.datastore.FieldMetadata;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 
@@ -24,7 +27,8 @@ public class PivotingTransformer implements IDataTransformer {
 	private static transient Logger logger = Logger.getLogger(PivotingTransformer.class);
     
 	/**
-	 * Gets the result of dataset and execute a pivot operation for split data on row, column and value specified
+	 * Gets the result of dataset and execute a pivot operation for split data on row, 
+	 * column and value specified
 	 * into dataset interface.
      * The dataset has a structure like: ROW | SER | VAL | other info
 	 */
@@ -36,51 +40,46 @@ public class PivotingTransformer implements IDataTransformer {
 	    String newFName = null;
 	    String newFValue = null;
 	    
-	    Iterator i = records.iterator();
+	    Iterator it = records.iterator();
 	    boolean sameRow = true;
 	    String rowValue = "";
-	    newRecord = (IRecord)new Record();
+	    newRecord = new Record();
 
-    	while (i.hasNext()){
-			IRecord r =(IRecord) i.next();		
-			List fields = r.getFields();
-			Iterator it = fields.iterator();
-			while(it.hasNext()){		
-				//gets every fields of the record 
-				IField f = (IField)it.next();
-				IFieldMeta fMeta = (IFieldMeta)f.getMetadata();
+    	while (it.hasNext()){
+			IRecord record =(IRecord) it.next();	
+			DataStoreMetaData dataStoreMeta = (DataStoreMetaData)record.getDataStore().getMetaData();
+			List fields = record.getFields();
+			for(int j = 0; j < fields.size(); j++) {		
+				IField field = (IField)fields.get(j);
+				String fieldName = dataStoreMeta.getFieldName(j);
+				String fieldValue = "" + field.getValue();
 				
-				String fieldName = fMeta.getName();
-				String fieldValue ="";
-				String objType = f.getValue().getClass().getName();
-				if(objType.equals("java.lang.String")){
-					fieldValue = (String) f.getValue();
-				}else{
-					SourceBeanAttribute fieldObject =(SourceBeanAttribute) f.getValue();
-					fieldValue = fieldObject.getValue().toString();
-				}
 				//checks if the field is a row, a column or a value specified into configuration and manages them
 				if (fieldName.equalsIgnoreCase(pivotRow)){
 					if (rowValue.equals("")) rowValue = fieldValue;
 					if (!(rowValue.trim()).equalsIgnoreCase(fieldValue.trim())){
 						rowValue = fieldValue;
 						newRecords.add(newRecord);
-						newRecord = (IRecord)new Record();
+						newRecord = new Record();
 					}
-					if (newRecord.getFieldByName(fieldName) == null)
-						newRecord.appendField(f);
+					if (newRecord.getFieldAt(dataStoreMeta.getFieldIndex(fieldName) ) == null)
+						newRecord.appendField(field);
 				}
 				else if (fieldName.equalsIgnoreCase(pivotColumn)){
 					newFName = fieldValue;
-					IField fv = r.getFieldByName(pivotValue);
+					IField fv = record.getFieldAt(dataStoreMeta.getFieldIndex(pivotValue));
 					if (fv == null){
 						logger.error("Pivot value column '"+ pivotValue +"' not found into dataset. Pivot not applicated!");
 						return null;
 					}
 					SourceBeanAttribute newFObject =(SourceBeanAttribute) fv.getValue();
 					newFValue = newFObject.getValue().toString();
-					fMeta.setName(newFName);
-					IField newf = (IField)new Field(fMeta,newFValue);
+					
+					FieldMetadata fieldMeta = new FieldMetadata();
+					fieldMeta.setName(newFName);
+					fieldMeta.setType(newFValue.getClass());
+					dataStoreMeta.addFiedMeta(fieldMeta);
+					IField newf = new Field(newFValue);
 					newRecord.appendField(newf);
 				}
 				else if (fieldName.equalsIgnoreCase(pivotValue)){
@@ -88,8 +87,8 @@ public class PivotingTransformer implements IDataTransformer {
 				}
 				else {
 					//if the field isn't into record comes added
-					if (newRecord.getFieldByName(fieldName) == null)
-						newRecord.appendField(f);
+					if (newRecord.getFieldAt(dataStoreMeta.getFieldIndex(fieldName)) == null)
+						newRecord.appendField(field);
 				}
 			}	    	
 		}

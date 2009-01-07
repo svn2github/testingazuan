@@ -29,6 +29,7 @@ package it.eng.spagobi.tools.datasource.dao;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public interface IDataSourceDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public DataSource loadDataSourceByLabel(String label) throws EMFUserError;
+	public IDataSource loadDataSourceByLabel(String label) throws EMFUserError;
 	
 	/**
 	 * Loads all detail information for all data sources. For each of them, detail
@@ -83,7 +84,7 @@ public interface IDataSourceDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
-	public void modifyDataSource(DataSource aDataSource) throws EMFUserError;
+	public void modifyDataSource(IDataSource aDataSource) throws EMFUserError;
 	
 	/**
 	 * Implements the query to insert a data source. All information needed is stored
@@ -93,7 +94,7 @@ public interface IDataSourceDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public void insertDataSource(DataSource aDataSource) throws EMFUserError;
+	public void insertDataSource(IDataSource aDataSource) throws EMFUserError;
 	
 	/**
 	 * Implements the query to erase a data source. All information needed is stored
@@ -103,7 +104,7 @@ public interface IDataSourceDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public void eraseDataSource(DataSource aDataSource) throws EMFUserError;
+	public void eraseDataSource(IDataSource aDataSource) throws EMFUserError;
 
 	/**
 	 * Tells if a data source is associated to any

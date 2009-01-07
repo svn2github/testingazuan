@@ -31,6 +31,7 @@ package it.eng.spagobi.tools.dataset.dao;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public interface IDataSetDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public DataSetConfig loadDataSetByID(Integer dsID) throws EMFUserError;
+	public IDataSet loadDataSetByID(Integer dsID) throws EMFUserError;
 	
 	/**
 	 * Loads all detail information for data Set whose label is equal to <code>label</code>.
@@ -62,7 +63,7 @@ public interface IDataSetDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public DataSetConfig loadDataSetByLabel(String label) throws EMFUserError;
+	public IDataSet loadDataSetByLabel(String label) throws EMFUserError;
 	
 	/**
 	 * Loads all detail information for all data Sets. For each of them, detail
@@ -85,7 +86,7 @@ public interface IDataSetDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	
-	public void modifyDataSet(DataSetConfig aDataSet) throws EMFUserError;
+	public void modifyDataSet(IDataSet aDataSet) throws EMFUserError;
 	
 	/**
 	 * Implements the query to insert a data Set. All information needed is stored
@@ -95,7 +96,7 @@ public interface IDataSetDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public void insertDataSet(DataSetConfig aDataSet) throws EMFUserError;
+	public void insertDataSet(IDataSet aDataSet) throws EMFUserError;
 	
 	/**
 	 * Implements the query to erase a data Set. All information needed is stored
@@ -105,7 +106,7 @@ public interface IDataSetDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public void eraseDataSet(DataSetConfig aDataSet) throws EMFUserError;
+	public void eraseDataSet(IDataSet aDataSet) throws EMFUserError;
 
 	/**
 	 * Tells if a data Set is associated to any

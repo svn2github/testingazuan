@@ -21,11 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.datasource.bo;
 
-import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Set;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 
 
@@ -34,7 +40,7 @@ import java.util.Set;
  *
  */
 
-public class DataSource implements Serializable {
+public class DataSource implements Serializable, IDataSource {
 	
 
 	private int dsId;
@@ -49,8 +55,12 @@ public class DataSource implements Serializable {
 	private Set engines = null;
 	private Set objects = null;
 	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#toSpagoBiDataSource()
+	 */
 	public SpagoBiDataSource toSpagoBiDataSource(){
 		SpagoBiDataSource sbd = new SpagoBiDataSource();
+		sbd.setId(dsId);
 		sbd.setDriver(driver);
 		sbd.setHibDialectClass("");
 		sbd.setHibDialectName("");
@@ -61,199 +71,228 @@ public class DataSource implements Serializable {
 		sbd.setUser(user);
 		return sbd;
 	}
+	
 	/**
-	 * Gets the ds id.
+	 * Check is jndi.
 	 * 
-	 * @return the ds id
+	 * @return true, if successful
+	 */
+	public boolean checkIsJndi() {
+    	return getJndi() != null 
+    			&& getJndi().equals("") == false;
+    }
+	
+    /**
+     * Gets the connection.
+     * 
+     * @return the connection
+     * 
+     * @throws NamingException the naming exception
+     * @throws SQLException the SQL exception
+     * @throws ClassNotFoundException the class not found exception
+     */
+    public Connection getConnection() throws NamingException, SQLException, ClassNotFoundException {
+    	Connection connection = null;
+    	 
+    	if( checkIsJndi() ) {
+    		connection = getJndiConnection();
+    	} else {    		
+    		connection = getDirectConnection();
+    	}
+    	
+    	return connection;
+    }
+    
+    
+    /**
+     * Get the connection from JNDI.
+     * 
+     * @return Connection to database
+     * 
+     * @throws NamingException the naming exception
+     * @throws SQLException the SQL exception
+     */
+    private Connection getJndiConnection() throws NamingException, SQLException {
+		Connection connection = null;
+		
+		Context ctx;
+		ctx = new InitialContext();
+		javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup( getJndi() );
+		connection = ds.getConnection();
+		
+		return connection;
+    }
+
+    /**
+     * Get the connection using jdbc.
+     * 
+     * @return Connection to database
+     * 
+     * @throws ClassNotFoundException the class not found exception
+     * @throws SQLException the SQL exception
+     */
+    private Connection getDirectConnection() throws ClassNotFoundException, SQLException {
+		Connection connection = null;
+		
+		Class.forName( getDriver() );
+		connection = DriverManager.getConnection(getUrlConnection(), getUser(), getPwd());
+		
+		return connection;
+    }
+	
+	
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getDsId()
 	 */
 	public int getDsId() {
 		return dsId;
 	}
 	
-	/**
-	 * Sets the ds id.
-	 * 
-	 * @param dsId the new ds id
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setDsId(int)
 	 */
 	public void setDsId(int dsId) {
 		this.dsId = dsId;
 	}
 	
-	/**
-	 * Gets the descr.
-	 * 
-	 * @return the descr
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getDescr()
 	 */
 	public String getDescr() {
 		return descr;
 	}
 	
-	/**
-	 * Sets the descr.
-	 * 
-	 * @param descr the new descr
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setDescr(java.lang.String)
 	 */
 	public void setDescr(String descr) {
 		this.descr = descr;
 	}
 	
-	/**
-	 * Gets the label.
-	 * 
-	 * @return the label
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getLabel()
 	 */
 	public String getLabel() {
 		return label;
 	}
 	
-	/**
-	 * Sets the label.
-	 * 
-	 * @param label the new label
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setLabel(java.lang.String)
 	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 	
-	/**
-	 * Gets the jndi.
-	 * 
-	 * @return the jndi
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getJndi()
 	 */
 	public String getJndi() {
 		return jndi;
 	}
 	
-	/**
-	 * Sets the jndi.
-	 * 
-	 * @param jndi the new jndi
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setJndi(java.lang.String)
 	 */
 	public void setJndi(String jndi) {
 		this.jndi = jndi;
 	}
 	
-	/**
-	 * Gets the url connection.
-	 * 
-	 * @return the url connection
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getUrlConnection()
 	 */
 	public String getUrlConnection() {
 		return urlConnection;
 	}
 	
-	/**
-	 * Sets the url connection.
-	 * 
-	 * @param url_connection the new url connection
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setUrlConnection(java.lang.String)
 	 */
 	public void setUrlConnection(String url_connection) {
 		this.urlConnection = url_connection;
 	}
 	
-	/**
-	 * Gets the user.
-	 * 
-	 * @return the user
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getUser()
 	 */
 	public String getUser() {
 		return user;
 	}
 	
-	/**
-	 * Sets the user.
-	 * 
-	 * @param user the new user
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setUser(java.lang.String)
 	 */
 	public void setUser(String user) {
 		this.user = user;
 	}
 	
-	/**
-	 * Gets the pwd.
-	 * 
-	 * @return the pwd
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getPwd()
 	 */
 	public String getPwd() {
 		return pwd;
 	}
 	
-	/**
-	 * Sets the pwd.
-	 * 
-	 * @param pwd the new pwd
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setPwd(java.lang.String)
 	 */
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
 	}
 	
-	/**
-	 * Gets the driver.
-	 * 
-	 * @return the driver
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getDriver()
 	 */
 	public String getDriver() {
 		return driver;
 	}
 	
-	/**
-	 * Sets the driver.
-	 * 
-	 * @param driver the new driver
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setDriver(java.lang.String)
 	 */
 	public void setDriver(String driver) {
 		this.driver = driver;
 	}
 	
-	/**
-	 * Gets the dialect id.
-	 * 
-	 * @return the dialect id
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getDialectId()
 	 */
 	public Integer getDialectId() {
 		return dialectId;
 	}
 	
-	/**
-	 * Sets the dialect id.
-	 * 
-	 * @param dialectId the new dialect id
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setDialectId(java.lang.Integer)
 	 */
 	public void setDialectId(Integer dialectId) {
 		this.dialectId = dialectId;
 	}
 	
-	/**
-	 * Gets the engines.
-	 * 
-	 * @return the engines
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getEngines()
 	 */
 	public Set getEngines() {
 		return engines;
 	}
 
-	/**
-	 * Sets the engines.
-	 * 
-	 * @param engines the new engines
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setEngines(java.util.Set)
 	 */
 	public void setEngines(Set engines) {
 		this.engines = engines;
 	}
 	
-	/**
-	 * Gets the objects.
-	 * 
-	 * @return the objects
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getObjects()
 	 */
 	public Set getObjects() {
 		return objects;
 	}
 
-	/**
-	 * Sets the objects.
-	 * 
-	 * @param objects the new objects
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#setObjects(java.util.Set)
 	 */
 	public void setObjects(Set objects) {
 		this.objects = objects;

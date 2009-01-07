@@ -53,19 +53,20 @@ import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
+import it.eng.spagobi.tools.dataset.bo.ConfigurableDataSet;
+import it.eng.spagobi.tools.dataset.bo.DataSetFactory;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.bo.IJavaClassDataSet;
-import it.eng.spagobi.tools.dataset.bo.JClassDataSet;
-import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
+import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
-import it.eng.spagobi.tools.dataset.bo.WSDataSet;
-import it.eng.spagobi.tools.dataset.common.DataSetImpl;
-import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
-import it.eng.spagobi.tools.dataset.common.IDataSet;
+import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 
@@ -152,12 +153,12 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		SessionContainer session = requestContainer.getSessionContainer();
 
 
-		DataSetConfig dataSet=(DataSetConfig)session.getAttribute(DetailDataSetModule.DATASET);
-
+		SpagoBiDataSet dataSetConfig =(SpagoBiDataSet)session.getAttribute(DetailDataSetModule.DATASET);
+		IDataSet dataSet = DataSetFactory.getDataSet( dataSetConfig );
+		
+		
 		String typeDataset=getDataSetType(dataSet);
-		//String typeDataset=(String)request.getAttribute("typeDataset");
-		//DataSet dataSet=(DataSet)request.getAttribute("dataset");
-				
+			
 		IEngUserProfile profile = null;
 		profile = (IEngUserProfile)session.getAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST);
 		if(profile==null) {
@@ -172,13 +173,14 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		SourceBean rowsSourceBean = null;
 		List colNames = new ArrayList();
 		
-		DataSetProxyImpl dsProxy=new DataSetProxyImpl(profile); 
-		IDataSet dsi=dsProxy.getDataSet(dataSet);
-		//DataSetImpl dsi = new DataSetImpl(dataSet,profile);
+		
 		Object par=(Object)session.getAttribute(DetailDataSetModule.PARAMETERS_FILLED);
 		HashMap parametersFilled=(HashMap)par;
-		dsi.loadData(parametersFilled);
-		IDataStore ids = dsi.getDataStore();
+		
+		dataSet.setUserProfile(profile);
+		dataSet.setParamsMap(parametersFilled);		
+		dataSet.loadData();
+		IDataStore ids = dataSet.getDataStore();
 		String resultXml = ids.toXml();
 		
 		rowsSourceBean=SourceBean.fromXMLString(resultXml);
@@ -253,17 +255,17 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 
 
 
-	private String getDataSetType(DataSetConfig a){
+	private String getDataSetType(it.eng.spagobi.tools.dataset.bo.IDataSet a){
 		String type="";
 		if(a instanceof FileDataSet)type="0";
 		else 		
-			if(a instanceof QueryDataSet)type="1";
+			if(a instanceof JDBCDataSet)type="1";
 			else 		
-				if(a instanceof WSDataSet)type="2";
+				if(a instanceof WebServiceDataSet)type="2";
 				else 		
 					if(a instanceof ScriptDataSet)type="3";
 					else 		
-						if(a instanceof JClassDataSet)type="4";
+						if(a instanceof JavaClassDataSet)type="4";
 		return type;
 
 	}

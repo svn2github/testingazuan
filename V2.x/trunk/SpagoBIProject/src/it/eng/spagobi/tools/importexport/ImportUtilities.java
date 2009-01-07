@@ -284,7 +284,7 @@ public class ImportUtilities {
 	/**
 	 * Make new data set.
 	 * 
-	 * @param ds the ds
+	 * @param dataProxy the ds
 	 * 
 	 * @return the sbi data set
 	 */

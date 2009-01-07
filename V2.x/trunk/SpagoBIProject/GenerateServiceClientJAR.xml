@@ -18,8 +18,21 @@
 	  </target>
  
 	<target name="create.jar" depends="init" >
-	
+
+
 		<jar destfile="./dist/spagobi-service-client.jar">
+			
+			<fileset dir="./web-content/WEB-INF/classes"
+				includes="/it/eng/spagobi/tools/dataset/bo/*,
+				it/eng/spagobi/tools/dataset/common/**/*">
+	
+			</fileset>
+			
+			<fileset dir="./web-content/WEB-INF/classes"
+							includes="/it/eng/spagobi/tools/datasource/bo/*">
+				
+			</fileset>
+			
 		    <fileset dir="./web-content/WEB-INF/classes"
 		             includes="it/eng/spagobi/services/audit/stub/AuditService.class,
                    it/eng/spagobi/services/audit/stub/AuditServiceService.class,
@@ -61,46 +74,14 @@
 			       it/eng/spagobi/services/security/stub/SecurityServiceSoapBindingStub.class,
 				   it/eng/spagobi/services/security/stub/SecurityServiceSoapBindingSkeleton.class,
 		    	
-		    	   it/eng/spagobi/services/dataset/stub/DataSetWsInterface.class,               
-	               it/eng/spagobi/services/dataset/stub/DataSetWsInterfaceServiceLocator.class,
-				   it/eng/spagobi/services/dataset/stub/DataSetWsInterfaceService.class,
+		    	   it/eng/spagobi/services/dataset/bo/SpagoBiDataSet.class,
+		    	   it/eng/spagobi/services/dataset/stub/DataSetService.class,               
+	               it/eng/spagobi/services/dataset/stub/DataSetServiceServiceLocator.class,
+				   it/eng/spagobi/services/dataset/stub/DataSetServiceService.class,
 			       it/eng/spagobi/services/dataset/stub/DataSetServiceSoapBindingImpl.class,
 		    	   it/eng/spagobi/services/dataset/stub/DataSetServiceSoapBindingStub.class,
 				   it/eng/spagobi/services/dataset/stub/DataSetServiceSoapBindingSkeleton.class,
-		    	   it/eng/spagobi/services/dataset/bo/SpagoBiDataSet.class,
-		    	it/eng/spagobi/tools/dataset/bo/DataSetConfig.class,
-		    	it/eng/spagobi/tools/dataset/bo/DataSetParameterItem.class,
-		    	it/eng/spagobi/tools/dataset/bo/DataSetParametersList.class,
-		    	it/eng/spagobi/tools/dataset/bo/FileDataSet.class,
-		    	it/eng/spagobi/tools/dataset/bo/IJavaClassDataSet.class,
-		    	it/eng/spagobi/tools/dataset/bo/JClassDataSet.class,
-		    	it/eng/spagobi/tools/dataset/bo/QueryDataSet.class,
-		    	it/eng/spagobi/tools/dataset/bo/ScriptDataSet.class,
-		    	it/eng/spagobi/tools/dataset/bo/WSDataSet.class,
-		    	it/eng/spagobi/tools/dataset/common/datastore/DataStoreImpl.class,
-		    	it/eng/spagobi/tools/dataset/common/datastore/Field.class,
-		    	it/eng/spagobi/tools/dataset/common/datastore/FieldMetadata.class,
-		    	it/eng/spagobi/tools/dataset/common/datastore/IDataStore.class,
-		    	it/eng/spagobi/tools/dataset/common/datastore/IDataStoreMetadata.class,
-		    	it/eng/spagobi/tools/dataset/common/datastore/IField.class,
-		    	it/eng/spagobi/tools/dataset/common/datastore/IFieldMeta.class,
-		    	it/eng/spagobi/tools/dataset/common/datastore/IRecord.class,
-		    	it/eng/spagobi/tools/dataset/common/datastore/Record.class,
-		    	it/eng/spagobi/tools/dataset/common/reader/ClassReader.class,
-		    	it/eng/spagobi/tools/dataset/common/reader/FileReader.class,
-		    	it/eng/spagobi/tools/dataset/common/reader/GroovyReader.class,
-		    	it/eng/spagobi/tools/dataset/common/reader/IDataReader.class,
-		    	it/eng/spagobi/tools/dataset/common/reader/SQLResultSetReader.class,
-		    	it/eng/spagobi/tools/dataset/common/reader/WebServiceReader.class,
-		    	it/eng/spagobi/tools/dataset/common/transformer/IDataTransformer.class,
-		    	it/eng/spagobi/tools/dataset/common/transformer/PivotingTransformer.class,
-		    	it/eng/spagobi/tools/dataset/common/DataSetImpl.class,
-		    	it/eng/spagobi/tools/dataset/common/DataSetProxyFactory.class,
-		    	it/eng/spagobi/tools/dataset/common/DataSetProxyImpl.class,
-		    	it/eng/spagobi/tools/dataset/common/IDataSet.class,
-		    	it/eng/spagobi/tools/dataset/common/IDataSetProxy.class,
-		    	it/eng/spagobi/tools/dataset/common/IDataSetProxyFactory.class,
-		    	
+			    	
 			    	it/eng/spagobi/services/proxy/AbstractServiceProxy.class,
 			    	it/eng/spagobi/services/proxy/ContentServiceProxy.class,
 			    	it/eng/spagobi/services/proxy/DataSourceServiceProxy.class,
@@ -108,7 +89,7 @@
 			    	it/eng/spagobi/services/proxy/SchedulerServiceProxy.class,
 			    	it/eng/spagobi/services/proxy/SecurityServiceProxy.class,
 				    it/eng/spagobi/services/proxy/AuditServiceProxy.class,
-		    	    it/eng/spagobi/services/proxy/DataSetWsServiceProxy.class,
+		    	    it/eng/spagobi/services/proxy/DataSetServiceProxy.class,
 		    	    it/eng/spagobi/services/proxy/DocumentExecuteServiceProxy.class,
 		    		it/eng/spagobi/services/execute/stub/DocumentExecuteServiceServiceLocator.class,
 					it/eng/spagobi/services/execute/stub/DocumentExecuteServiceService.class,
@@ -122,6 +103,8 @@
 		    	    it/eng/spagobi/services/common/SsoServiceFactory.class,
 		    	    it/eng/spagobi/services/cas/CasSsoService.class,
 				    it/eng/spagobi/commons/bo/UserProfile.class,
+		    	
+		    		it/eng/spagobi/commons/utilities/StringUtilities.class,
 		    	
 		    		it/eng/spagobi/container/AbstractContainer.class,
 		    		it/eng/spagobi/container/Context.class,

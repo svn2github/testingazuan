@@ -71,6 +71,8 @@ public class JDBCDataSet extends ConfigurableDataSet {
      */
     public JDBCDataSet() {
 		super();
+		setDataProxy( new JDBCDataProxy() );
+		setDataReader( new JDBCDataReader() );
 		addBehaviour( new QuerableBehaviour(this) );
 	}
     

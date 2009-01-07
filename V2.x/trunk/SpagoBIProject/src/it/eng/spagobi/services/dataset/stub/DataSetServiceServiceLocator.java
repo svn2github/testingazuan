@@ -1,5 +1,5 @@
 /**
- * DataSetWsInterfaceServiceLocator.java
+ * DataSetServiceServiceLocator.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
@@ -7,17 +7,17 @@
 
 package it.eng.spagobi.services.dataset.stub;
 
-public class DataSetWsInterfaceServiceLocator extends org.apache.axis.client.Service implements it.eng.spagobi.services.dataset.stub.DataSetWsInterfaceService {
+public class DataSetServiceServiceLocator extends org.apache.axis.client.Service implements it.eng.spagobi.services.dataset.stub.DataSetServiceService {
 
-    public DataSetWsInterfaceServiceLocator() {
+    public DataSetServiceServiceLocator() {
     }
 
 
-    public DataSetWsInterfaceServiceLocator(org.apache.axis.EngineConfiguration config) {
+    public DataSetServiceServiceLocator(org.apache.axis.EngineConfiguration config) {
         super(config);
     }
 
-    public DataSetWsInterfaceServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName) throws javax.xml.rpc.ServiceException {
+    public DataSetServiceServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName) throws javax.xml.rpc.ServiceException {
         super(wsdlLoc, sName);
     }
 
@@ -39,7 +39,7 @@ public class DataSetWsInterfaceServiceLocator extends org.apache.axis.client.Ser
         DataSetServiceWSDDServiceName = name;
     }
 
-    public it.eng.spagobi.services.dataset.stub.DataSetWsInterface getDataSetService() throws javax.xml.rpc.ServiceException {
+    public it.eng.spagobi.services.dataset.stub.DataSetService getDataSetService() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(DataSetService_address);
@@ -50,7 +50,7 @@ public class DataSetWsInterfaceServiceLocator extends org.apache.axis.client.Ser
         return getDataSetService(endpoint);
     }
 
-    public it.eng.spagobi.services.dataset.stub.DataSetWsInterface getDataSetService(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public it.eng.spagobi.services.dataset.stub.DataSetService getDataSetService(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
             it.eng.spagobi.services.dataset.stub.DataSetServiceSoapBindingStub _stub = new it.eng.spagobi.services.dataset.stub.DataSetServiceSoapBindingStub(portAddress, this);
             _stub.setPortName(getDataSetServiceWSDDServiceName());
@@ -72,7 +72,7 @@ public class DataSetWsInterfaceServiceLocator extends org.apache.axis.client.Ser
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (it.eng.spagobi.services.dataset.stub.DataSetWsInterface.class.isAssignableFrom(serviceEndpointInterface)) {
+            if (it.eng.spagobi.services.dataset.stub.DataSetService.class.isAssignableFrom(serviceEndpointInterface)) {
                 it.eng.spagobi.services.dataset.stub.DataSetServiceSoapBindingStub _stub = new it.eng.spagobi.services.dataset.stub.DataSetServiceSoapBindingStub(new java.net.URL(DataSetService_address), this);
                 _stub.setPortName(getDataSetServiceWSDDServiceName());
                 return _stub;
@@ -105,7 +105,7 @@ public class DataSetWsInterfaceServiceLocator extends org.apache.axis.client.Ser
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("urn:spagobidataset", "DataSetWsInterfaceService");
+        return new javax.xml.namespace.QName("urn:spagobidataset", "DataSetServiceService");
     }
 
     private java.util.HashSet ports = null;

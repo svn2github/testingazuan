@@ -24,6 +24,13 @@ package it.eng.spagobi.tools.dataset.bo;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.tools.dataset.common.dataproxy.FileDataProxy;
+import it.eng.spagobi.tools.dataset.common.dataproxy.IDataProxy;
+import it.eng.spagobi.tools.dataset.common.dataproxy.JDBCDataProxy;
+import it.eng.spagobi.tools.dataset.common.dataproxy.JavaClassDataProxy;
+import it.eng.spagobi.tools.dataset.common.datareader.CsvDataReader;
+import it.eng.spagobi.tools.dataset.common.datareader.JDBCDataReader;
+import it.eng.spagobi.tools.dataset.common.datareader.XmlDataReader;
 
 import java.io.FileInputStream;
 
@@ -31,108 +38,112 @@ import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 
 /**
- * @author Angelo Bernabei
+ * @authors
+ *  Angelo Bernabei
  *         angelo.bernabei@eng.it
  *  Giulio Gavardi
  *         giulio.gavardi@eng.it
- 
-*         
+ *  Andrea Gioia
+ *         andrea.gioia@eng.it
+ *         
  */
-public class FileDataSet extends DataSetConfig {
+public class FileDataSet extends ConfigurableDataSet {
     
-	private String fileName=null;
-	private static transient Logger logger=Logger.getLogger(FileDataSet.class);
+	public static String DS_TYPE = "SbiFileDataSet";
+	
+	private static transient Logger logger = Logger.getLogger(FileDataSet.class);
     
     /**
-     * Instantiates a new file data set.
+     * Instantiates a new empty file data set.
      */
     public FileDataSet(){
     	super();
-    	this.fileName="";
     }
     
+    public FileDataSet( SpagoBiDataSet dataSetConfig ){
+    	super(dataSetConfig);
+    	
+    	logger.debug("IN");
+    	
+    	if(dataSetConfig.getFileName() == null || dataSetConfig.getFileName().length() == 0) {
+			throw new  IllegalArgumentException("fileName member of SpagoBiDataSet object parameter cannot be null or empty" +
+					"while creating a FileDataSet. If you whant to create an empty FileDataSet use the proper constructor.");
+		}    	
+    	logger.info("File name: " + dataSetConfig.getFileName());
+    	
+    	setFileName(  dataSetConfig.getFileName() );
+    	
+    	logger.debug("OUT");    	
+    }
+     
 	
-	
-	public SpagoBiDataSet toSpagoBiDataSet() {
-		SpagoBiDataSet sbd = new SpagoBiDataSet();
-		sbd.setLabel(getLabel());
-		sbd.setName(getName());
-		sbd.setParameters(getParameters());
-		sbd.setDescription(getDescription());
-		sbd.setType("SbiFileDataSet");
-		sbd.setFileName(fileName);
+	public SpagoBiDataSet toSpagoBiDataSet( ) {
+		SpagoBiDataSet sbd;
+		FileDataProxy dataProxy;
+		
+		sbd = super.toSpagoBiDataSet();
+		
+		sbd.setType( DS_TYPE );
+				
+		dataProxy = (FileDataProxy)getDataProxy();
+		sbd.setFileName( dataProxy.getFileName() );
+		
 		return sbd;
 	}
-    
-    /**
-     * Instantiates a new file data set.
-     * 
-     * @param a the a
-     */
-    public FileDataSet(DataSetConfig a) {
-    	setDsId(a.getDsId());
-    	setLabel(a.getLabel());
-    	setName(a.getName());
-    	setDescription(a.getDescription());
-    	this.fileName = "";
-	}
-    
-    public FileDataSet(DataSetConfig a, String fileName) {
-    	setDsId(a.getDsId());
-    	setLabel(a.getLabel());
-    	setName(a.getName());
-    	setDescription(a.getDescription());
-    	this.fileName = fileName;
-	}
-
-
+	
 	/**
-	 * Gets the file name.
+	 * try to guess the proper dataReader to use depending on the file extension
 	 * 
-	 * @return the file name
+	 * @param fileName the target filename
 	 */
-	public String getFileName() {
-        return fileName;
-    }
-
-    /**
-     * Sets the file name.
-     * 
-     * @param fileName the new file name
-     */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.tools.dataset.bo.DataSet#getDataSetResult(it.eng.spago.security.IEngUserProfile)
-	 */
-	public String getDataSetResult(IEngUserProfile profile) throws Exception {
-		String pathFile=getFileName();
-		String result="";
-		FileInputStream fis=new FileInputStream(pathFile);
-
-		InputSource inputSource=new InputSource(fis);
-		SourceBean rowsSourceBean=null;
-		try {
-			rowsSourceBean=SourceBean.fromXMLStream(inputSource);
-			result=rowsSourceBean.toXML();
+	public void setDataReader(String fileName) {
+		String fileExtension;
+		
+		fileExtension = fileName.lastIndexOf('.') > 0 ? fileName.substring(fileName.lastIndexOf('.') + 1): null;
+		logger.debug("File extension: [" + fileExtension +"]");
+		
+		if("csv".equalsIgnoreCase( fileExtension )) {
+			logger.info("File format: [CSV]");
+			setDataReader( new CsvDataReader() );
+		} else if ("xml".equalsIgnoreCase( fileExtension ) || "txt".equalsIgnoreCase( fileExtension )) {
+			logger.info("File format: [XML]");
+			setDataReader( new XmlDataReader() );
+		} else {
+			throw new  IllegalArgumentException("[" + fileExtension+ "] is not a supported file extension");
 		}
-
-		catch (Exception e) {
-				logger.error("Error in retreaving data");
-		}
-		finally{
-			if(fis!=null)fis.close();
-		}
-		return result;	
-		
-		
-		
-		
 	}
-
-    
-
-
+	
+	public FileDataProxy getDataProxy() {
+		IDataProxy dataProxy;
+		
+		dataProxy = super.getDataProxy();
+		
+		if(dataProxy == null) {
+			setDataProxy( new FileDataProxy() );
+			dataProxy = getDataProxy();
+		}
+		
+		if(!(dataProxy instanceof  FileDataProxy)) throw new RuntimeException("DataProxy cannot be of type [" + 
+				dataProxy.getClass().getName() + "] in FileDataSet");
+		
+		return (FileDataProxy)dataProxy;
+	}
+	
+	public String getFileName() {		
+		return getDataProxy().getFileName();		
+	}
+	
+	public void setFileName(String fileName) {
+		setFileName(fileName, true);
+	}
+	public void setFileName(String fileName, boolean updateFileFormat) {
+		if(fileName == null || fileName.length() == 0) {
+			throw new  IllegalArgumentException("fileName argument cannot be null or an empty string");
+		}
+		getDataProxy().setFileName(fileName);
+		
+		if( updateFileFormat ) {
+			setDataReader(fileName);
+		}
+	}
 }

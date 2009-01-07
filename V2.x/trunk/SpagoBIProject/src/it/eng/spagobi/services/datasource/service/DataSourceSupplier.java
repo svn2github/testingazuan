@@ -27,7 +27,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -72,7 +72,7 @@ public class DataSourceSupplier {
     		logger.error("Data source is not configured neither for document nor for its engine.");
     		return null;
     	}
-	    DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsId);
+	    IDataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsId);
 	    if (ds == null) {
 		logger.error("The data source with id " + obj.getDataSourceId() + " is not found on the database.");
 		return null;
@@ -123,7 +123,7 @@ public class DataSourceSupplier {
 
 	// gets data source data from database
 	try {
-	    DataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByLabel(dsLabel);
+	    IDataSource ds = DAOFactory.getDataSourceDAO().loadDataSourceByLabel(dsLabel);
 	    if (ds == null) {
 		logger.warn("The data source with label " + dsLabel + " is not found on the database.");
 		return null;
@@ -167,7 +167,7 @@ public class DataSourceSupplier {
 
 	    Iterator dsIt = lstDs.iterator();
 	    while (dsIt.hasNext()) {
-		DataSource ds = (DataSource) dsIt.next();
+		IDataSource ds = (IDataSource) dsIt.next();
 		SpagoBiDataSource sbds = new SpagoBiDataSource();
 		sbds.setJndiName(ds.getJndi());
 		sbds.setUrl(ds.getUrlConnection());

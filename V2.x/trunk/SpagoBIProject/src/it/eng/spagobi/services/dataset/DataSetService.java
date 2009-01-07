@@ -19,29 +19,27 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.services.dataset.service;
+package it.eng.spagobi.services.dataset;
 
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
-import it.eng.spagobi.tools.dataset.common.DataSetImpl;
-import it.eng.spagobi.tools.dataset.common.IDataSet;
+import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 
-
-
-
+import java.util.HashMap;
 
 /**
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
-public class DataSetWsImpl {
+public interface DataSetService {
 
-
-    SpagoBiDataSet getDataSet(String token,String user,String datasetId){
-	return null;
-    }
+    /**
+     * 
+     * @param token  String
+     * @param user String
+     * @param datasetId String
+     * @return SpagoBiDataSet
+     */
+    SpagoBiDataSet getDataSet(String token,String user,String datasetId);
     /**
      * 
      * @param token  String
@@ -49,27 +47,12 @@ public class DataSetWsImpl {
      * @param label String
      * @return SpagoBiDataSet
      */
-    SpagoBiDataSet getDataSetByLabel(String token,String user,String label){
-    	DataSetConfig ds=null;
-
-    	try {
-    		ds= DAOFactory.getDataSetDAO().loadDataSetByLabel(label);
-
-		} catch (EMFUserError e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ds.toSpagoBiDataSet();
-
-    }
+    SpagoBiDataSet getDataSetByLabel(String token,String user,String label);    
     /**
      * 
      * @param token String
      * @param user String
      * @return SpagoBiDataSet[]
      */
-    SpagoBiDataSet[] getAllDataSet(String token,String user){
-	return null;
-    }
-
+    SpagoBiDataSet[] getAllDataSet(String token,String user);
 }

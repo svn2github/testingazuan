@@ -32,6 +32,8 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public class SpagoBiDataSource  implements java.io.Serializable {
+	private int id;
+	
     private java.lang.String driver;
 
     private java.lang.String jndiName;
@@ -501,5 +503,13 @@ public class SpagoBiDataSource  implements java.io.Serializable {
           new  org.apache.axis.encoding.ser.BeanDeserializer(
             _javaType, _xmlType, typeDesc);
     }
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 }

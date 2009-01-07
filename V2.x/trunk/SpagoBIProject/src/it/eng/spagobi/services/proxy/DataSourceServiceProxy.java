@@ -22,9 +22,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.proxy;
 
 
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.datasource.stub.DataSourceServiceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.DataSourceFactory;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import javax.servlet.http.HttpSession;
 import javax.xml.rpc.ServiceException;
@@ -84,20 +89,24 @@ public final class DataSourceServiceProxy extends AbstractServiceProxy{
      * 
      * @return SpagoBiDataSource object
      */
-    public SpagoBiDataSource getDataSource(String documentId) {
-	logger.debug("IN.documentId="+documentId);
-	if (documentId==null || documentId.length()==0){
-	    logger.error("documentId is NULL");
-	    return null;
-	}	
-	try {
-	    return lookUp().getDataSource(readTicket(), userId,documentId);
-	} catch (Exception e) {
-	    logger.error("Error during Service LookUp",e);
-	}finally{
-	    logger.debug("OUT");
-	}
-	return null;
+    public IDataSource getDataSource(String documentId) {
+    	IDataSource dataSource = null;
+    	SpagoBiDataSource dataSourceConfig = null;
+		
+    	logger.debug("IN.documentId="+documentId);
+		if (documentId==null || documentId.length()==0){
+		    logger.error("documentId is NULL");
+		    return null;
+		}	
+		try {
+			dataSourceConfig = lookUp().getDataSource(readTicket(), userId,documentId);
+			dataSource = DataSourceFactory.getDataSource( dataSourceConfig );
+		} catch (Exception e) {
+		    logger.error("Error during Service LookUp",e);
+		}finally{
+		    logger.debug("OUT");
+		}
+		return dataSource;
     }
     
     /**

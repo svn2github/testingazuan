@@ -5,30 +5,47 @@ package it.eng.spagobi.tools.dataset.common.datastore;
 
 import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
- * @author Angelo Bernabei
- *         angelo.bernabei@eng.it
+ * @authors Angelo Bernabei (angelo.bernabei@eng.it)       
+ *          Andrea Gioia (andrea.gioia@eng.it)
  */
 public interface IDataStore {
 
-    /*
-     * oggetto che contiene le informazioni lette con il DataReader
-     * 
-     */
-    IRecord getRecordByID(Object id);
-    IRecord getAt(int i);
-    Iterator iterator();
+	IDataStoreMetaData getMetaData();
+	
+	Iterator iterator();    
+	boolean isEmpty();
+	
+    IRecord getRecordAt(int i);
+    IRecord getRecordByID(Object value);
     
-    public boolean isEmpty();
+    List findRecords(int fieldIndex, Object fieldValue) ;
+    List findRecords(final List fieldIndexes, final List fieldValues) ;
+    List findRecords(IRecordMatcher matcher);
     
-    public void appendRow(IRecord r);
-	public void insertRow(int position,IRecord r);
+    List getFieldValues(int fieldIndex);    
+    Set getFieldDistinctValues(int fieldIndex);
+    
+    void sortRecords(int fieldIndex);    
+    void sortRecords(int fieldIndex, Comparator filedComparator);    
+    void sortRecords(Comparator recordComparator);
+    
+    
+   
+    
+    void appendRecord(IRecord r);
+    void prependRecord(IRecord record);
+	void insertRecord(int recordIndex, IRecord record);
     
 	void applyTranformer(IDataTransformer transformer);
     void applyTranformer(IDataTransformer transformer, String pivotColumn,String pivotRow, String pivotValue);
-    IDataStoreMetaData getMetaData();
+    
     
     String toXml();
 }

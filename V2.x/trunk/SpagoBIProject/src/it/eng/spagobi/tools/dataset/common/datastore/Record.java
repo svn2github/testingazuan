@@ -14,50 +14,35 @@ import java.util.List;
  */
 public class Record implements IRecord {
 
+	IDataStore dataStore;
 	List fields = new ArrayList();
 
-    public Record(List fields) {
-		super();
-		this.fields = fields;
-	}
-    
-    public Record() {
+	public Record() {
 		super();
 		this.fields = new ArrayList();
 	}
+	  
+    public Record(IDataStore dataStore) {
+		super();
+		this.fields = new ArrayList();
+		this.setDataStore(dataStore);
+	}
 
 
-	public IField getFieldById(int position) {
-    	
-		IField field = (IField)fields.get(position);  	
-    	return field;
+	public IField getFieldAt(int position) {
+		return (IField)fields.get(position);  	
     }
 	
-	public void appendField(IField f) {
-    	
-		fields.add(f);	
+	public void appendField(IField field) {    	
+		fields.add(field);	
     }
 	
-	public void insertField(int position, IField f) {
-    	
-		fields.add(position, f);	
+	public void insertField(int fieldIndex, IField field) {    	
+		fields.add(fieldIndex, field);	
     }
 
 
-    public IField getFieldByName(String name) {
-    	
-    	IField toReturn = null;
-    	Iterator itF=  fields.iterator();
-    	while (itF.hasNext()){
-    		IField f =(IField)itF.next();
-    		String fName = f.getMetadata().getName();
-    		if (fName.equals(name)){
-    			toReturn = f;
-    			break;
-    		}
-    	}
-      return toReturn;
-    }
+   
 
 
 	public List getFields() {
@@ -67,6 +52,20 @@ public class Record implements IRecord {
 
 	public void setFields(List fields) {
 		this.fields = fields;
+	}
+
+
+	public IDataStore getDataStore() {
+		return dataStore;
+	}
+
+
+	public void setDataStore(IDataStore dataStore) {
+		this.dataStore = dataStore;
+	}
+	
+	public String toString() {
+		return "" + getFields().toString();
 	}
 
 }

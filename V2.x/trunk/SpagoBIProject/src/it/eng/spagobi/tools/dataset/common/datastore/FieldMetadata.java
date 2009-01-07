@@ -1,24 +1,25 @@
 package it.eng.spagobi.tools.dataset.common.datastore;
 
-public class FieldMetadata implements IFieldMeta {
+import java.util.HashMap;
+import java.util.Map;
+
+public class FieldMetadata implements IFieldMetaData {
 
 
-	String name = "";
-	String type = "";
-	String property= "";
+	String name;
+	Class type;
+	Map properties;
 	
 	public FieldMetadata() {
 		super();
-		this.name = "";
-		this.type = "";
-		this.property= "";
+		this.properties= new HashMap();
 	}
 
-	public FieldMetadata(String name, String type, String property) {
+	public FieldMetadata(String name, Class type) {
 		super();
-		this.name = name;
-		this.type = type;
-		this.property = property;
+		setName(name);
+		setType(type);
+		this.properties= new HashMap();
 	}
 
 	public String getName() {
@@ -29,20 +30,24 @@ public class FieldMetadata implements IFieldMeta {
 		this.name = name;
 	}
 
-	public String getType() {
+	public Class getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Class type) {
 		this.type = type;
 	}
 
-	public String getProperty() {
-		return property;
+	public Object getProperty(String propertyName) {
+		return properties.get(propertyName);
 	}
 
-	public void setProperty(String property) {
-		this.property = property;
+	public void setProperty(String propertyName, Object propertyValue) {
+		properties.put(propertyName, propertyValue);
+	}
+	
+	public String toString() {
+		return name + " (" + type.getName()+ ")";
 	}
 
 }

@@ -3,21 +3,20 @@
  */
 package it.eng.spagobi.tools.dataset.common.datastore;
 
+import it.eng.spago.base.SourceBeanAttribute;
+
 
 /**
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
 public class Field implements IField {
-
-	IFieldMeta metadata = null;
 	Object value = null;
 
 
 
-    public Field(IFieldMeta metadata, Object value) {
+    public Field(Object value) {
 		super();
-		this.metadata = metadata;
 		this.value = value;
 	}
     
@@ -31,23 +30,16 @@ public class Field implements IField {
 
 
 	public Object getValue() {
-
-    	return this.value;
+    	return value;
     }
 
 
 	public void setValue(Object value) {
 		this.value = value;
 	}
-
-
-	public IFieldMeta getMetadata() {
-		return metadata;
-	}
-
-
-	public void setMetadata(IFieldMeta metadata) {
-		this.metadata = metadata;
+	
+	public String toString() {
+		return "" + getValue();
 	}
 
 }

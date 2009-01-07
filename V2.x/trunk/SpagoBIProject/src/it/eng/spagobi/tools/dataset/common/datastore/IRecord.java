@@ -11,11 +11,14 @@ import java.util.List;
  */
 public interface IRecord {
 
-    IField getFieldByName(String name);
-    IField getFieldById(int position);
-    public void appendField(IField f) ;
-    public void insertField(int position, IField f) ;
+    IField getFieldAt(int fieldIndex);
+    
+    public void appendField(IField field) ;
+    public void insertField(int fieldIndex, IField field) ;
+    
     public List getFields();
 	public void setFields(List fields);
+	
+	public IDataStore getDataStore();
     
 }

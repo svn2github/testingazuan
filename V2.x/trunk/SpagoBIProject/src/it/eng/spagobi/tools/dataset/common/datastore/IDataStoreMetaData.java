@@ -26,11 +26,57 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author Angelo Bernabei
- *         angelo.bernabei@eng.it
+ * @authors Angelo Bernabei (angelo.bernabei@eng.it)       
+ *          Andrea Gioia (andrea.gioia@eng.it)
  */
 public interface IDataStoreMetaData {
-    
-   
-    
+	
+	/**
+	 * @return Returns the index of identfier field if any. -1 otherwaise. 
+	 */
+	int getIdFieldIndex();
+	
+	void setIdField(int fieldIndex);
+	
+	/**
+	 * @return Returns the number of fields in this DataStore object. 
+	 */
+	int getFieldCount();
+	
+	/**
+	 * Get the designated field's index. 
+	 * 
+	 * @param columnIndex the first column is 0, the second is 1, ... 
+	 * 
+	 * @return column index 
+	 */
+	int getFieldIndex(String fieldName);
+	
+	/**
+	 * Get the designated column's name. 
+	 * 
+	 * @param columnIndex the first column is 0, the second is 1, ... 
+	 * 
+	 * @return column name 
+	 */
+	String getFieldName(int fieldIndex);
+	
+	/**
+	 * Retrieves the designated column's Class type
+	 * 
+	 * @param columnIndex
+	 * 
+	 * @return Java class
+	 */
+	Class getFieldType(int fieldIndex);
+	
+	void addFiedMeta(IFieldMetaData fieldMetaData);
+	
+	IFieldMetaData getFieldMeta(int fieldIndex);
+	
+	List findFieldMeta(String propertyName, Object propertyValue);
+	
+	
+	Object getProperty(String propertyName);  
+	void setProperty(String propertyName, Object proprtyValue); 
 }

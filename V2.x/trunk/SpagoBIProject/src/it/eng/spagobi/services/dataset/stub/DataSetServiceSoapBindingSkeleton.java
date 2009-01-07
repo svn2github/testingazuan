@@ -7,8 +7,8 @@
 
 package it.eng.spagobi.services.dataset.stub;
 
-public class DataSetServiceSoapBindingSkeleton implements it.eng.spagobi.services.dataset.stub.DataSetWsInterface, org.apache.axis.wsdl.Skeleton {
-    private it.eng.spagobi.services.dataset.stub.DataSetWsInterface impl;
+public class DataSetServiceSoapBindingSkeleton implements it.eng.spagobi.services.dataset.stub.DataSetService, org.apache.axis.wsdl.Skeleton {
+    private it.eng.spagobi.services.dataset.stub.DataSetService impl;
     private static java.util.Map _myOperations = new java.util.Hashtable();
     private static java.util.Collection _myOperationsList = new java.util.ArrayList();
 
@@ -77,7 +77,7 @@ public class DataSetServiceSoapBindingSkeleton implements it.eng.spagobi.service
         this.impl = new it.eng.spagobi.services.dataset.stub.DataSetServiceSoapBindingImpl();
     }
 
-    public DataSetServiceSoapBindingSkeleton(it.eng.spagobi.services.dataset.stub.DataSetWsInterface impl) {
+    public DataSetServiceSoapBindingSkeleton(it.eng.spagobi.services.dataset.stub.DataSetService impl) {
         this.impl = impl;
     }
     public it.eng.spagobi.services.dataset.bo.SpagoBiDataSet getDataSet(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException

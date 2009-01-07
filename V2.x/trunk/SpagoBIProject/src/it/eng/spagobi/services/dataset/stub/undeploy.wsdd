@@ -9,7 +9,7 @@
 <undeployment
     xmlns="http://xml.apache.org/axis/wsdd/">
 
-  <!-- Services from DataSetWsInterfaceService WSDL service -->
+  <!-- Services from DataSetServiceService WSDL service -->
 
   <service name="DataSetService"/>
 </undeployment>

@@ -7,17 +7,22 @@
 
 package it.eng.spagobi.services.dataset.stub;
 
-public class DataSetServiceSoapBindingImpl implements it.eng.spagobi.services.dataset.stub.DataSetWsInterface{
+import it.eng.spagobi.services.dataset.service.DataSetServiceImpl;
+
+public class DataSetServiceSoapBindingImpl implements it.eng.spagobi.services.dataset.stub.DataSetService{
     public it.eng.spagobi.services.dataset.bo.SpagoBiDataSet getDataSet(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
-        return null;
+    	DataSetServiceImpl service = new DataSetServiceImpl();
+    	return service.getDataSet(in0, in1,in2);
     }
 
     public it.eng.spagobi.services.dataset.bo.SpagoBiDataSet getDataSetByLabel(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
-        return null;
+    	DataSetServiceImpl service = new DataSetServiceImpl();
+    	return service.getDataSetByLabel(in0, in1,in2);
     }
 
     public it.eng.spagobi.services.dataset.bo.SpagoBiDataSet[] getAllDataSet(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException {
-        return null;
+    	DataSetServiceImpl service = new DataSetServiceImpl();
+    	return service.getAllDataSet(in0, in1);
     }
 
 }

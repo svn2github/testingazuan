@@ -7,7 +7,7 @@
 
 package it.eng.spagobi.services.dataset.stub;
 
-public class DataSetServiceSoapBindingStub extends org.apache.axis.client.Stub implements it.eng.spagobi.services.dataset.stub.DataSetWsInterface {
+public class DataSetServiceSoapBindingStub extends org.apache.axis.client.Stub implements it.eng.spagobi.services.dataset.stub.DataSetService {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();

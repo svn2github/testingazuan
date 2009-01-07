@@ -7,8 +7,8 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.model.bo.Model;
-import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
+import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 public class DetailKpiUtil {
 
@@ -41,11 +41,14 @@ public class DetailKpiUtil {
 			weight = new Double(sWeight);
 
 		Integer ds_id = null;
-		DataSetConfig ds = null;
+		IDataSet ds = null;
 		if (sDs_id != null && !sDs_id.trim().equals("")) {
 			ds_id = Integer.parseInt(sDs_id);
-			ds = new DataSetConfig();
-			ds.setDsId(ds_id);
+			try {
+				ds = DAOFactory.getDataSetDAO().loadDataSetByID(ds_id);
+			} catch (EMFUserError e) {
+				e.printStackTrace();
+			}
 		}
 
 		Kpi toReturn = new Kpi();

@@ -32,14 +32,14 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
+import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
+import it.eng.spagobi.tools.dataset.bo.ConfigurableDataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
 import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
-import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
-import it.eng.spagobi.tools.dataset.bo.WSDataSet;
-import it.eng.spagobi.tools.dataset.common.DataSetImpl;
-import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
+import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.dataset.service.DetailDataSetModule;
@@ -55,8 +55,9 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 /** Internal Engine
- *  * @author Giulio Gavardi
- *     giulio.gavardi@eng.it
+ *  @authors 
+ *  Giulio Gavardi (giulio.gavardi@eng.it)
+ *  Andrea Gioia (andrea.gioia@eng.it)
  */
 
 public class DataSetAccessFunctions {
@@ -88,7 +89,7 @@ public class DataSetAccessFunctions {
 	public static String getDataSetResultFromId(IEngUserProfile profile,String dsId, Map parameters) throws Exception {
 		
 		IDataSetDAO dsDAO = DAOFactory.getDataSetDAO();
-		DataSetConfig ds = dsDAO.loadDataSetByID(Integer.valueOf(dsId));
+		IDataSet ds = dsDAO.loadDataSetByID(Integer.valueOf(dsId));
 	
 		String result=DataSetAccessFunctions.getDataSetResult(profile, ds, parameters);
 		return result;
@@ -110,7 +111,7 @@ public class DataSetAccessFunctions {
 	public static String getDataSetResultFromLabel(IEngUserProfile profile,String label, Map parameters) throws Exception {
 		
 		IDataSetDAO dsDAO = DAOFactory.getDataSetDAO();
-		DataSetConfig ds = dsDAO.loadDataSetByLabel(label);
+		IDataSet ds = dsDAO.loadDataSetByLabel(label);
 	
 		String result=DataSetAccessFunctions.getDataSetResult(profile, ds, parameters);
 		return result;
@@ -130,7 +131,7 @@ public class DataSetAccessFunctions {
 	 * 
 	 * @throws Exception the exception
 	 */
-	public static String getDataSetResult(IEngUserProfile profile,DataSetConfig ds, Map parameters) throws Exception {
+	public static String getDataSetResult(IEngUserProfile profile,IDataSet ds, Map parameters) throws Exception {
 		logger.debug("IN");
 		
 		if (profile == null) {
@@ -140,42 +141,21 @@ public class DataSetAccessFunctions {
 		SourceBean rowsSourceBean = null;
 		List colNames = new ArrayList();
 		
-		DataSetProxyImpl dspi=new DataSetProxyImpl(profile); 
-		DataSetImpl dsi = new DataSetImpl(ds,profile);
+		ds.setParamsMap(parameters);
+		ds.setUserProfile(profile);
+		ds.loadData();
+		IDataStore ids = ds.getDataStore();
+		
+		/*
+		ConfigurableDataSet dsi = new ConfigurableDataSet(ds,profile);
 		HashMap parametersFilled=(HashMap)parameters;
 		dsi.loadData(parametersFilled);
+		
+		
 		IDataStore ids = dsi.getDataStore();
+		*/
 		String resultXml = ids.toXml();
 		
-		
-		
-/*
-		String dataPars = ds.getParameters();
-
-		if(dataPars!=null && dataPars!=""){
-			String type="";
-
-			if(ds instanceof QueryDataSet){
-				type="1";
-				// resolve parameters presence
-				HashMap usedPars=resolveParameters(type,dataPars, parameters);
-				String query=((QueryDataSet)ds).getQuery();
-				query=GeneralUtilities.substituteParametersInString(query, usedPars);
-				((QueryDataSet)ds).setQuery(query);
-				
-			}
-			else
-				if(ds instanceof WSDataSet){
-					type="2";
-				}
-				else
-					if(ds instanceof FileDataSet){
-						type="0";	
-					}
-
-
-		}
-		String toReturn = ds.getDataSetResult(profile);*/
 		logger.debug("OUT" + resultXml);
 		return resultXml;
 	}

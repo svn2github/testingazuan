@@ -430,7 +430,7 @@ public class GeneralUtilities {
      * 
      * @param statement
      *                The string to be modified (tipically a query)
-     * @param profile
+     * @param userProfile
      *                The IEngUserProfile object
      * @param profileAttributeStartIndex
      *                The start index for query parsing (useful for recursive

@@ -26,7 +26,8 @@ import it.eng.spagobi.kpi.model.metadata.SbiResources;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
+import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 
 import java.awt.Color;
@@ -610,9 +611,9 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("OUT");
 	}
 
-	public DataSetConfig getDsFromKpiId(Integer kpiId) throws EMFUserError {
+	public IDataSet getDsFromKpiId(Integer kpiId) throws EMFUserError {
 		logger.debug("IN");
-		DataSetConfig toReturn = null;
+		IDataSet toReturn = null;
 		Session aSession = null;
 		Transaction tx = null;
 
@@ -928,7 +929,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer kpiId = kpi.getKpiId();
 		String kpiName = kpi.getName();
 		SbiDataSetConfig dsC = kpi.getSbiDataSet();
-		DataSetConfig ds = null;
+		IDataSet ds = null;
 		if (dsC != null) {
 			ds = DAOFactory.getDataSetDAO().loadDataSetByID(dsC.getDsId());
 		}
@@ -1316,7 +1317,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			String documentLabel = kpi.getDocumentLabel();
 			SbiDataSetConfig ds = null;
 			if (kpi.getKpiDs() != null) {
-				Integer ds_id = kpi.getKpiDs().getDsId();
+				Integer ds_id = kpi.getKpiDs().getId();
 				ds = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class,
 						ds_id);
 			}
@@ -1370,7 +1371,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			String documentLabel = kpi.getDocumentLabel();
 			SbiDataSetConfig ds = null;
 			if (kpi.getKpiDs() != null) {
-				Integer ds_id = kpi.getKpiDs().getDsId();
+				Integer ds_id = kpi.getKpiDs().getId();
 				ds = (SbiDataSetConfig) aSession.load(SbiDataSetConfig.class,
 						ds_id);
 			}

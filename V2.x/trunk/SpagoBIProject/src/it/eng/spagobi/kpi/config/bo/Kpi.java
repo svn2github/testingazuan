@@ -1,6 +1,6 @@
 package it.eng.spagobi.kpi.config.bo;
 
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,7 +10,7 @@ public class Kpi {
 	
 	Integer kpiId = null;
 	String kpiName = null;
-	DataSetConfig kpiDs = null;// Related DataSet
+	IDataSet kpiDs = null;// Related DataSet
 	String documentLabel = null; //document related to this KPI
 	Boolean isRoot = null;
 	Integer fatherId = null;
@@ -62,13 +62,13 @@ public class Kpi {
 
 
 
-	public DataSetConfig getKpiDs() {
+	public IDataSet getKpiDs() {
 		return kpiDs;
 	}
 
 
 
-	public void setKpiDs(DataSetConfig kpiDs) {
+	public void setKpiDs(IDataSet kpiDs) {
 		this.kpiDs = kpiDs;
 	}
 

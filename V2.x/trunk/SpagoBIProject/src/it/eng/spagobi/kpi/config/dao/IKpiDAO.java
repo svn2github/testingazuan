@@ -6,7 +6,8 @@ import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
+import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 import java.util.Date;
 import java.util.List;
@@ -89,7 +90,7 @@ public interface IKpiDAO {
 	 * @return DataSetConfig used to calculate the KPI with ID kpiId 
 	 * @throws EMFUserError if an Exception occurs
 	 */
-	public DataSetConfig getDsFromKpiId(Integer kpiId) throws EMFUserError;
+	public IDataSet getDsFromKpiId(Integer kpiId) throws EMFUserError;
 	
 	/**
 	 * KpiValue valid for the the KpiInstance selected, for the resource selected, in the date selected 

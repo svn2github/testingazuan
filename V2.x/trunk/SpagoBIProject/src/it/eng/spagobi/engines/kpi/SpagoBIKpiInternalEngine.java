@@ -52,8 +52,8 @@ import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
-import it.eng.spagobi.tools.dataset.common.DataSetImpl;
-import it.eng.spagobi.tools.dataset.common.DataSetProxyImpl;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
@@ -356,9 +356,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    logger.debug("Old KpiValue retrieved");
 	    if (value == null && isActualDateRequired) {
 		logger.debug("Old value not still valid");
-		DataSetConfig ds = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
-		logger.debug("Retrieved the Dataset to be calculated: " + ds.getDsId());
-		value = getNewKpiValue(ds, kpiI, r);
+		IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
+		
+		
+		logger.debug("Retrieved the Dataset to be calculated: " + dataSet.getId());
+		value = getNewKpiValue(dataSet, kpiI, r);
 		logger.debug("New value calculated");
 		// Insert new Value into the DB
 		DAOFactory.getKpiDAO().insertKpiValue(value);
@@ -498,7 +500,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	return toReturn;
     }
 
-    public KpiValue getNewKpiValue(DataSetConfig ds, KpiInstance k, Resource r) throws EMFUserError, EMFInternalError {
+    public KpiValue getNewKpiValue(IDataSet dataSet, KpiInstance k, Resource r) throws EMFUserError, EMFInternalError {
 
 	logger.debug("IN");
 	KpiValue kVal = new KpiValue();
@@ -530,14 +532,18 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 	// If not, the dataset will be calculated without the parameter Resource
 	// and the DataSet won't expect a parameter of type resource
-	DataSetProxyImpl dspi = new DataSetProxyImpl(profile);
-	DataSetImpl dsi = new DataSetImpl(ds, profile);
-	dsi.loadData(temp);
-	IDataStore ids = dsi.getDataStore();
-	if (ids != null && !ids.isEmpty()) {
+	
+	if(dataSet.hasBehaviour( QuerableBehaviour.class.getName()) ) {
+		dataSet.setParamsMap(temp);
+		dataSet.setUserProfile(profile);
+	}
+
+	dataSet.loadData();
+	IDataStore dataStore = dataSet.getDataStore();
+	if (dataStore != null && !dataStore.isEmpty()) {
 	    // Transform result into KPIValue (I suppose that the result has a
 	    // unique value)
-	    IRecord record = ids.getAt(0);
+	    IRecord record = dataStore.getRecordAt(0);
 	    List fields = record.getFields();
 	    if (fields != null && !fields.isEmpty()) {
 		IField f = (IField) fields.get(0);

@@ -34,7 +34,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -177,7 +177,7 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		output.append("		<div class='div_detail_form'>\n");
 		output.append("			<select onchange='setLovProviderModified(true);' style='width:180px;' class='portlet-form-input-field' name='datasource' id='datasource' >\n");
 		while (itDs.hasNext()) {
-			DataSource ds = (DataSource)itDs.next();
+			IDataSource ds = (IDataSource)itDs.next();
 			String dataSource = String.valueOf(ds.getLabel());
 			String dataSourceDescription = ds.getDescr();
 			

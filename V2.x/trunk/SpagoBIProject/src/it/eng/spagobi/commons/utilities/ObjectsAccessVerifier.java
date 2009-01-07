@@ -200,7 +200,7 @@ public class ObjectsAccessVerifier {
     /**
      * Metodo che verifica il numero di istanze visibili del documento
      * @param state
-     * @param profile
+     * @param userProfile
      * @return
      */
     public static int getVisibleInstances(String initialPath, List folders) {

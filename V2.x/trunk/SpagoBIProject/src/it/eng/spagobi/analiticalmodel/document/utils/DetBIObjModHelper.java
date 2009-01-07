@@ -51,8 +51,8 @@ import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -160,14 +160,14 @@ public class DetBIObjModHelper {
 		}
 		
 		String dsIdStr = (String) request.getAttribute("datasource");
-		DataSource ds = null;
+		IDataSource ds = null;
 		if (dsIdStr != null && !dsIdStr.equals("")) {
 			Integer dsIdInt = new Integer(dsIdStr);
 			ds = DAOFactory.getDataSourceDAO().loadDataSourceByID(dsIdInt);
 		}
 		
 		String datasetIdStr = (String) request.getAttribute("dataset");
-		DataSetConfig dataset  = null;
+		IDataSet dataset  = null;
 		if (datasetIdStr != null && !datasetIdStr.equals("")) {
 			Integer datasetIdInt = new Integer(datasetIdStr);
 			dataset = DAOFactory.getDataSetDAO().loadDataSetByID(datasetIdInt);
@@ -237,7 +237,7 @@ public class DetBIObjModHelper {
 		obj.setProfiledVisibility(profiledVisibilityStr);
 		obj.setEngine(engine);
 		obj.setDataSourceId(ds == null ? null : new Integer(ds.getDsId()));
-		obj.setDataSetId(dataset == null ? null : new Integer(dataset.getDsId()));
+		obj.setDataSetId(dataset == null ? null : new Integer(dataset.getId()));
 		obj.setId(id);
 		obj.setName(name);
 		obj.setLabel(label);

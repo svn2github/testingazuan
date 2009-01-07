@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.jgroups.demos.Chat;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -15,8 +16,9 @@ import it.eng.spagobi.kpi.model.bo.ModelInstance;
 
 public class DetailModelInstanceUtil {
 
-	static private Logger logger = Logger.getLogger(DetailModelInstanceUtil.class);
-	
+	static private Logger logger = Logger
+			.getLogger(DetailModelInstanceUtil.class);
+
 	public static void selectModelInstance(Integer id,
 			SourceBean serviceResponse) throws Exception {
 		ModelInstance toReturn = DAOFactory.getModelInstanceDAO()
@@ -26,16 +28,23 @@ public class DetailModelInstanceUtil {
 	}
 
 	public static void updateModelInstanceFromRequest(
-			SourceBean serviceRequest, SourceBean serviceResponse, Integer id) throws Exception {
+			SourceBean serviceRequest, SourceBean serviceResponse, Integer id)
+			throws Exception {
 		ModelInstance modelInstance = getModelInstanceFromRequest(serviceRequest);
 		modelInstance.setId(id);
-		
+		KpiInstance kpiInstance = getKpiInstanceFromRequest(serviceRequest);
+		modelInstance.setKpiInstance(kpiInstance);
+		DAOFactory.getModelInstanceDAO().modifyModelInstance(modelInstance);
+	}
+
+	private static KpiInstance getKpiInstanceFromRequest(
+			SourceBean serviceRequest) throws Exception {
 		Integer kpiId = null;
 		Integer thresholdId = null;
 		Integer chartTypeId = null;
 		Integer idKpiPeriodicity = null;
 		boolean restoreDefaultFlag = false;
-		
+
 		String kpiIdS = (String) serviceRequest.getAttribute("KPI_ID");
 		String thresholdIdS = (String) serviceRequest
 				.getAttribute("THRESHOLD_ID");
@@ -43,62 +52,57 @@ public class DetailModelInstanceUtil {
 				.getAttribute("CHART_TYPE_ID");
 		String idKpiPeriodicityS = (String) serviceRequest
 				.getAttribute("ID_KPI_PERIODICITY");
-		String restoreDefault = (String)serviceRequest.getAttribute("RESTORE_DEFAULT");
-		if(restoreDefault != null){
+		String restoreDefault = (String) serviceRequest
+				.getAttribute("RESTORE_DEFAULT");
+		if (restoreDefault != null) {
 			restoreDefaultFlag = true;
 		}
-		
-		
-		if(kpiIdS == null || kpiIdS.equalsIgnoreCase("-1")){
+
+		if (kpiIdS == null || kpiIdS.equalsIgnoreCase("-1")) {
 			kpiId = null;
-		}
-		else{
+		} else {
 			kpiId = Integer.parseInt(kpiIdS);
 		}
-		
-		if(thresholdIdS == null || thresholdIdS.equalsIgnoreCase("-1")){
+
+		if (thresholdIdS == null || thresholdIdS.equalsIgnoreCase("-1")) {
 			thresholdId = null;
-		}
-		else{
+		} else {
 			thresholdId = Integer.parseInt(thresholdIdS);
 		}
-		if(chartTypeIdS == null || chartTypeIdS.equalsIgnoreCase("-1")){
+		if (chartTypeIdS == null || chartTypeIdS.equalsIgnoreCase("-1")) {
 			chartTypeId = null;
-		}
-		else{
+		} else {
 			chartTypeId = Integer.parseInt(chartTypeIdS);
 		}
-		if(idKpiPeriodicityS == null || idKpiPeriodicityS.equalsIgnoreCase("-1")){
+		if (idKpiPeriodicityS == null
+				|| idKpiPeriodicityS.equalsIgnoreCase("-1")) {
 			idKpiPeriodicity = null;
-		}
-		else{
+		} else {
 			idKpiPeriodicity = Integer.parseInt(idKpiPeriodicityS);
 		}
-		
+
 		String weight = (String) serviceRequest.getAttribute("weight");
-		
-		
+
 		KpiInstance kpiInstance = null;
-		if (kpiId != null){
+		if (kpiId != null) {
 			kpiInstance = new KpiInstance();
 			kpiInstance.setKpi(kpiId);
 			kpiInstance.setChartTypeId(chartTypeId);
 			kpiInstance.setPeriodicityId(idKpiPeriodicity);
-			if(restoreDefaultFlag){
-				DAOFactory.getKpiDAO().setKpiInstanceFromKPI(kpiInstance, kpiId);
-			}else{
+			if (restoreDefaultFlag) {
+				DAOFactory.getKpiDAO()
+						.setKpiInstanceFromKPI(kpiInstance, kpiId);
+			} else {
 				kpiInstance.setThresholdId(thresholdId);
-				if (weight != null){
+				if (weight != null) {
 					kpiInstance.setWeight(new Double(weight));
-				}
-				else{
+				} else {
 					kpiInstance.setWeight(null);
 				}
 			}
 		}
-		modelInstance.setKpiInstance(kpiInstance);
-		
-		DAOFactory.getModelInstanceDAO().modifyModelInstance(modelInstance);
+
+		return kpiInstance;
 	}
 
 	private static ModelInstance getModelInstanceFromRequest(
@@ -123,15 +127,15 @@ public class DetailModelInstanceUtil {
 		Model model = new Model();
 		model.setId(Integer.parseInt(modelId));
 		toCreate.setModel(model);
-		
+
 		// set name and description of model definition
-		if(toCreate.getName()== null || toCreate.getName().trim().equals("")){
-			Model modelDefinition = DAOFactory.getModelDAO().loadModelWithoutChildrenById(Integer.parseInt(modelId));
+		if (toCreate.getName() == null || toCreate.getName().trim().equals("")) {
+			Model modelDefinition = DAOFactory.getModelDAO()
+					.loadModelWithoutChildrenById(Integer.parseInt(modelId));
 			toCreate.setName(modelDefinition.getName());
 		}
-		
-		
-		// // insert the new model
+
+		// insert the new model
 		Integer modelInstanceId = DAOFactory.getModelInstanceDAO()
 				.insertModelInstance(toCreate);
 		serviceResponse.setAttribute("ID", modelInstanceId);
@@ -149,6 +153,23 @@ public class DetailModelInstanceUtil {
 
 		}
 		return candidateModelChildren;
+	}
+
+	public static void restoreModelInstanceValue(Integer id,
+			SourceBean serviceRequest, SourceBean serviceResponse)
+			throws Exception {
+		ModelInstance toReturn = getModelInstanceFromRequest(serviceRequest);
+		KpiInstance kpiInstance = getKpiInstanceFromRequest(serviceRequest);
+
+		if (id != null) {
+			toReturn.setId(id);
+		}
+		
+		if (kpiInstance != null) {
+			toReturn.setKpiInstance(kpiInstance);
+		}
+		
+		serviceResponse.setAttribute("MODELINSTANCE", toReturn);
 	}
 
 }

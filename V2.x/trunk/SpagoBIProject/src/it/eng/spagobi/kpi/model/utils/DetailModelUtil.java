@@ -35,18 +35,21 @@ public class DetailModelUtil {
 	 */
 	static public List updateModelAttribute(SourceBean serviceRequest, String modelAttributeName){
 		// SBI_KPI_MODEL_ATTR IDS
-		modelAttributeName  = modelAttributeName.replace('[',' ');
-		modelAttributeName = modelAttributeName.replace(']',' ');
-		String[] modelAttributeNameList = modelAttributeName.split(",");
 		List modelAttributes = new ArrayList(); 
-		for (int i = 0; i<modelAttributeNameList.length; i++) {
-			ModelAttribute mAttr = new ModelAttribute();
-			String modelAttrId = modelAttributeNameList[i].trim();
-			if(modelAttrId != null && ! modelAttrId.trim().equals("")){
-				String value = (String) serviceRequest.getAttribute("M_ATTR" + modelAttrId);
-				mAttr.setValue(value);
-				mAttr.setId(Integer.parseInt(modelAttrId));
-				modelAttributes.add(mAttr);
+		if (modelAttributeName != null){
+			modelAttributeName  = modelAttributeName.replace('[',' ');
+			modelAttributeName = modelAttributeName.replace(']',' ');
+			String[] modelAttributeNameList = modelAttributeName.split(",");
+		
+			for (int i = 0; i<modelAttributeNameList.length; i++) {
+				ModelAttribute mAttr = new ModelAttribute();
+				String modelAttrId = modelAttributeNameList[i].trim();
+				if(modelAttrId != null && ! modelAttrId.trim().equals("")){
+					String value = (String) serviceRequest.getAttribute("M_ATTR" + modelAttrId);
+					mAttr.setValue(value);
+					mAttr.setId(Integer.parseInt(modelAttrId));
+					modelAttributes.add(mAttr);
+				}
 			}
 		}
 		return modelAttributes;

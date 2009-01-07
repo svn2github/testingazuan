@@ -10,56 +10,57 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.kpi.config.utils.DetailKpiUtil;
-import it.eng.spagobi.kpi.model.utils.DetailModelInstanceUtil;
 import it.eng.spagobi.kpi.model.utils.DetailModelUtil;
 
-public class DetailModelModule extends DefaultDetailModule{
-	
+public class DetailModelModule extends DefaultDetailModule {
+
 	private static final String VALIDATION_PAGE = "ModelDetailPage";
-	
-	public void service(SourceBean request, SourceBean response) throws Exception {
-		boolean validationError = false; 
+
+	public void service(SourceBean request, SourceBean response)
+			throws Exception {
+		boolean validationError = false;
 		String message = (String) request.getAttribute("MESSAGE");
-		if (message == null) {	
+		if (message == null) {
 			message = SpagoBIConstants.DETAIL_SELECT;
 		}
 		// VALIDATION
 		validationError = hasValidationError(message);
 		// DETAIL_SELECT
-		if (message.equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)){
-			String parentId = (String)request.getAttribute("ID");
+		if (message.equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)) {
+			String parentId = (String) request.getAttribute("ID");
 			DetailModelUtil.selectModel(Integer.parseInt(parentId), response);
 		}
 		// DETAIL_UPDATE
-		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)){
+		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)) {
 			String idModel = (String) request.getAttribute("ID");
 			response.setAttribute("ID", Integer.parseInt(idModel));
 			response.setAttribute("MESSAGE", SpagoBIConstants.DETAIL_SELECT);
 			if (!validationError) {
-				DetailModelUtil.updateModelFromRequest(request, Integer.parseInt(idModel));
-				DetailModelUtil.selectModel(Integer.parseInt(idModel), response);
+				DetailModelUtil.updateModelFromRequest(request, Integer
+						.parseInt(idModel));
+				DetailModelUtil
+						.selectModel(Integer.parseInt(idModel), response);
 			} else {
-				DetailModelUtil.restoreModelValue(Integer.parseInt(idModel), request, response);
-			} 
-			
+				DetailModelUtil.restoreModelValue(Integer.parseInt(idModel),
+						request, response);
+			}
+
 		}
 		// DETAIL_INSERT
-		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)){
-//			if (!validationError) {
-				DetailModelUtil.newModel(request,response, null);
-//			} else {
-//				DetailModelUtil.restoreModelValue(null, request, response);
-//			}
+		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
+			if (!validationError) {
+				DetailModelUtil.newModel(request, response, null);
+			} else {
+				DetailModelUtil.restoreModelValue(null, request, response);
+			}
 		}
 	}
 
 	private boolean hasValidationError(String message) {
 		boolean toReturn = false;
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)
-//				|| message
-//						.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)
-				) {
+				|| message
+						.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
 			ValidationCoordinator.validate("PAGE", VALIDATION_PAGE, this);
 
 			EMFErrorHandler errorHandler = getErrorHandler();
@@ -80,5 +81,5 @@ public class DetailModelModule extends DefaultDetailModule{
 		}
 		return toReturn;
 	}
-	
+
 }

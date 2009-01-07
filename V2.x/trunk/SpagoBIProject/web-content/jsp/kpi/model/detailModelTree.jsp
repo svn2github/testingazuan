@@ -84,9 +84,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		SourceBean moduleResponse = (SourceBean) aServiceResponse
 		.getAttribute("DetailModelTreeModule");
 		Model model = (Model) moduleResponse.getAttribute("MODEL");
-		modelId = model.getId().toString();
-		messageIn = DelegatedDetailService.DETAIL_SELECT;
-		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		if(model.getId() != null){
+			modelId = model.getId().toString();
+			messageIn = DelegatedDetailService.DETAIL_SELECT;
+			messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		} else {
+			messageIn = DelegatedDetailService.DETAIL_SELECT;
+			messageSave = DelegatedDetailService.DETAIL_INSERT;
+		}
 	}
 
 	if (messageIn != null
@@ -105,6 +110,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			attributeList = model.getModelAttributes();
 			kpiId = model.getKpiId();
 		}
+		// if messageSave is INSERT set the message insert to NEW		
+		if(messageSave.equals(DelegatedDetailService.DETAIL_INSERT))
+			messageIn = DelegatedDetailService.DETAIL_NEW;
+		// 
 	}
 
 	Map formUrlPars = new HashMap();

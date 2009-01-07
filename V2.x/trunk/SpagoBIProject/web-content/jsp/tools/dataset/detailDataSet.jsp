@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 				         java.util.Map,java.util.HashMap,java.util.List,
 	 				         java.util.Iterator,
 	 				         it.eng.spagobi.commons.bo.Domain,
+	 				         it.eng.spagobi.services.dataset.bo.SpagoBiDataSet,
 	 				         it.eng.spagobi.tools.dataset.bo.*,
 	 				         it.eng.spagobi.tools.dataset.service.DetailDataSetModule" %>
 	 				         <script type="text/javascript" src="<%=linkProto%>"></script>
@@ -33,7 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDataSetModule"); 
-		DataSetConfig ds = (DataSetConfig)moduleResponse.getAttribute(DetailDataSetModule.DATASET);
+		SpagoBiDataSet ds = (SpagoBiDataSet)moduleResponse.getAttribute(DetailDataSetModule.DATASET);
 		List listTransformerType = (List) moduleResponse.getAttribute(DetailDataSetModule.LIST_TRANSFORMER);
 		String message=(String)aServiceRequest.getAttribute("MESSAGEDET");
 		String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
@@ -140,29 +141,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 				String type="";
 				
-   	       if(ds instanceof FileDataSet){
+   	       if(FileDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){
 					type="file";
 					disableFile="";
 					hideFile="";
    	       		}
-				else if(ds instanceof QueryDataSet){
+				else if(JDBCDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){
 					type="query";
 					disableQuery="";
 					hideQuery="";
 				} 
-				else if(ds instanceof WSDataSet){
+				else if(WebServiceDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){
 					type="ws";
 					disableWs="";
 					hideWs="";
 				
 				} 
-				else if(ds instanceof ScriptDataSet){
+				else if(ScriptDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){
 					type="script";
 					disableScript="";
 					hideScript="";
 				
 				} 
-				else if(ds instanceof JClassDataSet){
+				else if(JavaClassDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){
 					type="javaclass";
 					disableJClass="";
 					hideJClass="";
@@ -311,8 +312,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    <div class='div_detail_form'>
 		<%
 			   String fileName =""; 
-		       if(ds instanceof FileDataSet){	
-			   	fileName = ((FileDataSet)ds).getFileName();
+		       if(FileDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){	
+			   	fileName = ds.getFileName();
 		       }
 			   if((fileName==null) || (fileName.equalsIgnoreCase("null"))  ) {
 				   fileName = "";
@@ -332,8 +333,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    <div style="height:150px;">
 		<%
 			   String query =""; 
-				if(ds instanceof QueryDataSet){		
-					query=((QueryDataSet)ds).getQuery();
+				if(JDBCDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){		
+					query=ds.getQuery();
 					}
 			   if((query==null) || (query.equalsIgnoreCase("null"))  ) {
 				   query = "";
@@ -359,8 +360,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			java.util.Iterator dataSourceIt = dataSources.iterator();
 	
 			String actualDsId="-1"; 
-			if(ds instanceof QueryDataSet){
-				actualDsId=(((QueryDataSet)ds).getDataSource()==null)?"":(new Integer((((QueryDataSet)ds).getDataSource()).getDsId())).toString();
+			if(JDBCDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){
+				int id = DAOFactory.getDataSourceDAO().loadDataSourceByLabel(ds.getDataSource().getLabel()).getDsId();
+				
+				actualDsId=(ds.getDataSource()==null)?"":"" + id;
 			}
 			
 			while (dataSourceIt.hasNext()) {
@@ -393,8 +396,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    <div class='div_detail_form'>
 		<%
 			   String address =""; 
-		       if(ds instanceof WSDataSet){	
-		    	   address = ((WSDataSet)ds).getAdress();
+		       if(WebServiceDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){	
+		    	   address = ds.getAdress();
 		       }
 			   if((address==null) || (address.equalsIgnoreCase("null"))  ) {
 				   address = "";
@@ -412,8 +415,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    <div class='div_detail_form'>
 		<%
 			   String executorClass =""; 
-		       if(ds instanceof WSDataSet){	
-		    	   executorClass = ((WSDataSet)ds).getExecutorClass();
+		       if(WebServiceDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){	
+		    	   executorClass = ds.getExecutorClass();
 		       }
 			   if((executorClass==null) || (executorClass.equalsIgnoreCase("null"))  ) {
 				   executorClass = "";
@@ -434,8 +437,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    <div class='div_detail_form' style="height:150px;">
 		<%
 			   String script = "" ; 
-		       if(ds instanceof ScriptDataSet){	
-		    	   script = ((ScriptDataSet)ds).getScript();
+		       if(ScriptDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){	
+		    	   script = ds.getScript();
 		       }
 			   if((script==null) || (script.equalsIgnoreCase("null"))  ) {
 				   script = "";
@@ -455,8 +458,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    <div class='div_detail_form'>
 		<%
 			   String javaClassName =""; 
-		       if(ds instanceof JClassDataSet){	
-		    	   javaClassName = ((JClassDataSet)ds).getJavaClassName();
+		       if(JavaClassDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){	
+		    	   javaClassName = ds.getJavaClassName();
 		       }
 			   if((javaClassName==null) || (javaClassName.equalsIgnoreCase("null"))  ) {
 				   javaClassName = "";

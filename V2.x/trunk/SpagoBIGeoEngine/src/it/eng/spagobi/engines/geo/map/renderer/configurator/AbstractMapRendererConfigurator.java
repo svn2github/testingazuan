@@ -24,10 +24,13 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer;
+import it.eng.spagobi.engines.geo.map.renderer.GuiSettings;
 import it.eng.spagobi.engines.geo.map.renderer.Layer;
 import it.eng.spagobi.engines.geo.map.renderer.Measure;
+import it.eng.spagobi.utilities.strings.StringUtils;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -73,10 +76,12 @@ public class AbstractMapRendererConfigurator {
 			Map measures = getMeasures(measuresConfigurationSB);
 			SourceBean layersConfigurationSB = (SourceBean)confSB.getAttribute("LAYERS");
 			Map layers = getLayers(layersConfigurationSB);
+			SourceBean guiSettingsConfigurationSB = (SourceBean)confSB.getAttribute("GUI_SETTINGS");
+			GuiSettings guiSettings = getGuiSettings(guiSettingsConfigurationSB); 
 			
 			abstractMapRenderer.setMeasures( measures );
 			abstractMapRenderer.setLayers( layers );
-			
+			abstractMapRenderer.setGuiSettings( guiSettings );
 		}
 	}
 	
@@ -201,6 +206,139 @@ public class AbstractMapRendererConfigurator {
 		}
 		
 		return layers;
+	}
+	
+	private static GuiSettings getGuiSettings(SourceBean guiSettingsConfigurationSB) {
+		GuiSettings guiSettings = null;
+		SourceBean windowSettingsSB;
+		SourceBean settingsSB;
+		List params;
+		
+
+		guiSettings = new GuiSettings();
+		
+		if(guiSettingsConfigurationSB == null) return guiSettings;
+		
+		
+		windowSettingsSB = (SourceBean)guiSettingsConfigurationSB.getAttribute("WINDOWS");
+		
+		if(windowSettingsSB != null) {
+			settingsSB = (SourceBean)windowSettingsSB.getAttribute("DFAULTS");
+			if(settingsSB != null) {
+				params = settingsSB.getAttributeAsList("PARAM");
+				if(params != null) {
+					addSettings(guiSettings.getWindowDefaultSettings(), params);
+				}
+			}
+			
+			settingsSB = (SourceBean)windowSettingsSB
+				.getFilteredSourceBeanAttribute("WINDOW", "name", "navigation");				
+			if(settingsSB != null) {
+				guiSettings.getNavigationWindowSettings().put("name", "navigation");
+				params = settingsSB.getAttributeAsList("PARAM");
+				if(params != null) {
+					addSettings(guiSettings.getNavigationWindowSettings(), params);
+				}
+			}
+			
+			settingsSB = (SourceBean)windowSettingsSB
+				.getFilteredSourceBeanAttribute("WINDOW", "name", "measures");				
+			if(settingsSB != null) {
+				guiSettings.getMeasureWindowSettings().put("name", "measures");
+				params = settingsSB.getAttributeAsList("PARAM");
+				if(params != null) {
+					addSettings(guiSettings.getMeasureWindowSettings(), params);
+				}
+			}
+			
+			settingsSB = (SourceBean)windowSettingsSB
+				.getFilteredSourceBeanAttribute("WINDOW", "name", "layers");				
+			if(settingsSB != null) {
+				guiSettings.getLayersWindowSettings().put("name", "layers");
+				params = settingsSB.getAttributeAsList("PARAM");
+				if(params != null) {
+					addSettings(guiSettings.getLayersWindowSettings(), params);
+				}
+			}	
+			
+			settingsSB = (SourceBean)windowSettingsSB
+				.getFilteredSourceBeanAttribute("WINDOW", "name", "detail");				
+			if(settingsSB != null) {
+				guiSettings.getDetailWindowSettings().put("name", "detail");
+				params = settingsSB.getAttributeAsList("PARAM");
+				if(params != null) {
+					addSettings(guiSettings.getDetailWindowSettings(), params);
+				}
+			}	
+			
+			settingsSB = (SourceBean)windowSettingsSB
+				.getFilteredSourceBeanAttribute("WINDOW", "name", "legend");				
+			if(settingsSB != null) {
+				guiSettings.getLegendWindowSettings().put("name", "legend");
+				params = settingsSB.getAttributeAsList("PARAM");
+				if(params != null) {
+					addSettings(guiSettings.getLegendWindowSettings(), params);
+				}
+			}	
+			
+			settingsSB = (SourceBean)windowSettingsSB
+				.getFilteredSourceBeanAttribute("WINDOW", "name", "colourpicker");				
+			if(settingsSB != null) {
+				params = settingsSB.getAttributeAsList("PARAM");
+				guiSettings.getColourpickerWindowSettings().put("name", "colourpicker");
+				if(params != null) {
+					addSettings(guiSettings.getColourpickerWindowSettings(), params);
+				}
+			}	
+		}
+				
+		return guiSettings;
+	}
+
+	private static void addSettings(Map settingsMap, List params) {
+		
+		Iterator it = params.iterator();
+		while(it.hasNext()) {
+			SourceBean param = (SourceBean)it.next();
+			String paramName = (String)param.getAttribute("name");
+			String paramValue = param.getCharacters().trim();
+			if(!StringUtils.isEmpty(paramName) && !StringUtils.isEmpty(paramValue)) {
+				settingsMap.put(paramName, downCastValue(paramValue));				
+			}
+		}
+		
+	}
+
+	private static Object downCastValue(String paramValue) {
+		Object value = null;
+		
+		if(paramValue.equalsIgnoreCase("true") || paramValue.equalsIgnoreCase("false")) {
+			value = new Boolean(paramValue);
+		} else {
+			try {
+				value = new Double(paramValue);
+			} catch(Exception e) {
+				value = paramValue;
+			}
+		}
+		
+		/*
+		if(paramValue.startsWith("'") && paramValue.endsWith("'")) {
+			value = paramValue;
+		} else if(paramValue.startsWith("\"") && paramValue.endsWith("\"")) {
+			value = paramValue;
+		} else if(paramValue.startsWith("{") && paramValue.endsWith("}")) {
+			value = paramValue;
+		} else if(paramValue.startsWith("[") && paramValue.endsWith("]")) {
+			value = paramValue;
+		} else if(paramValue.startsWith("function") && paramValue.endsWith("}")) {
+			value = paramValue;
+		} else {
+			
+		}
+		*/
+		
+		return value;
 	}
 	
 }

@@ -130,15 +130,9 @@ public class DataMartProvider extends AbstractDataMartProvider {
 	        	
 	        	String[] measureColumnNames = (String[])getMetaData().getMeasureColumnNames().toArray(new String[0]);        
 	            
-	            HashMap orderedKpiValuesMap = new HashMap();                 
-	            for(int i = 0; i < measureColumnNames.length; i++) {
-	            	orderedKpiValuesMap.put(measureColumnNames[i], new TreeSet());
-	            }           
+	                   
 	            
-	            Map values = new HashMap();
-	            Map attributes = null;
-	            Map links = new HashMap();
-	            
+	         
 	            
 	            Iterator it = dataStore.iterator();
 	            while(it.hasNext()) {
@@ -153,7 +147,6 @@ public class DataMartProvider extends AbstractDataMartProvider {
 	            	}
 	            	dataStoreMeta.getFieldMeta( dataStoreMeta.getFieldIndex(columnid) ).setProperty("ROLE", "GEOID");
 	            	
-	            	attributes = new HashMap();
 	            	for(int i = 0; i < measureColumnNames.length; i++) {
 	            		field = record.getFieldAt( dataStoreMeta.getFieldIndex(measureColumnNames[i]) );
 	                	String value = "" + field.getValue();
@@ -161,13 +154,13 @@ public class DataMartProvider extends AbstractDataMartProvider {
 	                		continue;
 	                	}
 	                	dataStoreMeta.getFieldMeta( dataStoreMeta.getFieldIndex(measureColumnNames[i]) ).setProperty("ROLE", "MEASURE");
-	                	attributes.put(measureColumnNames[i], value);
+	                	//attributes.put(measureColumnNames[i], value);
 	                	
-	                	((Set)orderedKpiValuesMap.get(measureColumnNames[i])).add(new Double(value));
+	                	//((Set)orderedKpiValuesMap.get(measureColumnNames[i])).add(new Double(value));
 	                	
 	            	}
 	            	
-	            	values.put(id, attributes);           	
+	            	//values.put(id, attributes);           	
 	            	
 	                //String link = getSelectedLevel().getLink().toXString(record, this.getEnv());
 	                //links.put(id, link);

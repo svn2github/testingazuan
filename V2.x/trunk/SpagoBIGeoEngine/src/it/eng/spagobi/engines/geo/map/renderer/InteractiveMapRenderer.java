@@ -1317,15 +1317,25 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		JSONObject guiSettings;
 		String pVal = null;
 		
-		guiSettings = new JSONObject();
-		
 		pVal =(String)getEnv().get(Constants.ENV_IS_WINDOWS_ACTIVE);
 		boolean activeWindow = pVal==null || pVal.equalsIgnoreCase("TRUE");
-		guiSettings.put("activeWindow", activeWindow);
+		if(!activeWindow) {
+			getGuiSettings().getColourpickerWindowSettings().put("visible", Boolean.FALSE);
+			getGuiSettings().getDetailWindowSettings().put("visible", Boolean.FALSE);
+			getGuiSettings().getLayersWindowSettings().put("visible", Boolean.FALSE);
+			getGuiSettings().getLegendWindowSettings().put("visible", Boolean.FALSE);
+			getGuiSettings().getMeasureWindowSettings().put("visible", Boolean.FALSE);
+			getGuiSettings().navigationWindowSettings.put("visible", Boolean.FALSE);
+		}
+		
+		
+		guiSettings = getGuiSettings().toJSON();
 		
 		pVal =(String)getEnv().get(Constants.ENV_IS_DAFAULT_DRILL_NAV);
 		boolean defaultDrillNav = pVal==null||pVal.equalsIgnoreCase("TRUE");
 		guiSettings.put("defaultDrillNav", defaultDrillNav);
+		
+		
 		
 		return	guiSettings;
 	}

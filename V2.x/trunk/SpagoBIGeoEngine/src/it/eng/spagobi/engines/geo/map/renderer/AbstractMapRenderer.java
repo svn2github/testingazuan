@@ -47,6 +47,8 @@ public class AbstractMapRenderer extends AbstractGeoEngineComponent  implements 
 	/** The layers. */
 	private Map layers;
 	
+	private GuiSettings guiSettings;
+	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(AbstractMapRenderer.class);
 	
@@ -180,5 +182,14 @@ public class AbstractMapRenderer extends AbstractGeoEngineComponent  implements 
 	public void clearLayers() {
 		layers.clear();
 	}
+
+	public GuiSettings getGuiSettings() {
+		return guiSettings;
+	}
+
+	public void setGuiSettings(GuiSettings guiSettings) {
+		this.guiSettings = guiSettings;
+	}
+
 
 }

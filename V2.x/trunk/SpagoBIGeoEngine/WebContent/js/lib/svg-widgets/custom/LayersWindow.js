@@ -263,15 +263,18 @@ LayersWindow.prototype.createCheckBoxes =  function() {
 						
 			//create  checkboxe instances
 			
+			var layers = sbi.geo.conf.layers;
+			
 			// layers checkboxes
 			var offset;
-			for(i = 0; i < layer_names.length; i++) {
+			for(i = 0; i < layers.length; i++) {
 				offset = 45 + (30*i);
-				var mapLayer = document.getElementById(layer_names[i]);
+				var layer = layers[i];
+				var mapLayer = document.getElementById(layer.name);
 				var displayStatus = mapLayer.getAttributeNS(null,"display");
 				var checked = true;
 				if(displayStatus == "none") checked = false;
-				myMapApp.checkBoxes[layer_names[i]] = new checkBox("cb_" + layer_names[i],"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",checked,layer_descriptions[i],labeltextStyles,12,undefined,toggleMapLayer);
+				myMapApp.checkBoxes[ layer.name ] = new checkBox("cb_" + layer.name,"checkBoxes",30,offset,"checkBoxRect","checkBoxCross",checked,layer.description,labeltextStyles,12,undefined,toggleMapLayer);
 			}
 
 			
@@ -279,19 +282,8 @@ LayersWindow.prototype.createCheckBoxes =  function() {
 			var linkRadioGroup= new radioButtonGroup("linkRadioGroup", setLinkAction);
 			myMapApp.checkBoxes['cross_nav'] = new checkBox("cross_nav","linkRadioGroup",30,offset+40,"radioBorder","radioPoint",false, "Cross Nav.",labeltextStyles,12,linkRadioGroup,undefined);
 			myMapApp.checkBoxes['drill_nav'] = new checkBox("drill_nav","linkRadioGroup",30,offset+60,"radioBorder","radioPoint",false, "Drill Nav.",labeltextStyles,12,linkRadioGroup,undefined);
-		/*
-			// Thematic radio buttons
-			radioGroup= new radioButtonGroup("radioButtons",setKpi);
-			for(i = 0; i < kpi_names.length; i++) {
-				offset = 50 + (30*i);
-				myMapApp.checkBoxes[kpi_names[i]] = new checkBox(kpi_names[i],"radioButtons",30,offset,"radioBorder","radioPoint",false,kpi_descriptions[i],labeltextStyles,12,radioGroup,undefined);
-			}
-			
-			//load function specific to the current map project
-			radioGroup.selectById(kpi_names[selected_kpi_index],true);
-			*/
-			
-			if (defaultDrillNav == true){
+	
+			if (sbi.geo.conf.gui_settings.defaultDrillNav == true){
 				//setLinkAction("linkRadioGroup", "drill_nav", "Drill Nav.");
 				linkRadioGroup.selectById("drill_nav");
 				//alert("drill_nav");

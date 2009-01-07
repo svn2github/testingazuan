@@ -25,7 +25,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.configurator.DataMartProviderConfigurator;
-import it.eng.spagobi.engines.geo.dataset.DataSet;
+import it.eng.spagobi.engines.geo.dataset.DataMart;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
@@ -83,9 +83,9 @@ public class DataMartProvider extends AbstractDataMartProvider {
 	}
     
     
-    public DataSet getDataSet() throws GeoEngineException {
+    public DataMart getDataMart() throws GeoEngineException {
     	
-    	DataSet dataMart = null;
+    	DataMart dataMart = null;
     	IDataSet dataSet;
     	
     	dataSet = (IDataSet)getEnv().get(EngineConstants.ENV_DATASET);
@@ -118,7 +118,7 @@ public class DataMartProvider extends AbstractDataMartProvider {
 			dataStoreMeta.setIdField( dataStoreMeta.getFieldIndex( getSelectedLevel().getColumnId() ));
 			
 			System.out.println(dataStore.toXml());
-			dataMart = new DataSet();
+			dataMart = new DataMart();
 			dataMart.setDataStore(dataStore);
 			try {
 

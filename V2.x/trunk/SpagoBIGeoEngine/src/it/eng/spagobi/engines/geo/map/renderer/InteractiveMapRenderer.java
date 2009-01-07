@@ -25,7 +25,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.engines.geo.Constants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
-import it.eng.spagobi.engines.geo.dataset.DataSet;
+import it.eng.spagobi.engines.geo.dataset.DataMart;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 import it.eng.spagobi.engines.geo.map.renderer.configurator.InteractiveMapRendererConfigurator;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
@@ -55,13 +55,15 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class InteractiveMapRenderer.
  * 
@@ -93,27 +95,20 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		labelProducers.put("footer-right", new DefaultLabelProducer() );
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer#init(java.lang.Object)
-	 */
+	
 	public void init(Object conf) throws GeoEngineException {
 		super.init(conf);
 		InteractiveMapRendererConfigurator.configure( this, getConf() );
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer#renderMap(it.eng.spagobi.engines.geo.map.provider.IMapProvider, it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider)
-	 */
+	
 	public File renderMap(IMapProvider mapProvider, 
 			IDataMartProvider datamartProvider) throws GeoEngineException {
 		return renderMap(mapProvider, datamartProvider, Constants.DSVG);
 	}
-	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer#renderMap(it.eng.spagobi.engines.geo.map.provider.IMapProvider, it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider, java.lang.String)
-	 */
+
 	public File renderMap(IMapProvider mapProvider, 
-			IDataMartProvider datamartProvider,
+						  IDataMartProvider datamartProvider,
 						  String outputFormat) throws GeoEngineException {
 		
 		if(outputFormat.equalsIgnoreCase(Constants.SVG)) {
@@ -142,12 +137,14 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * @throws GeoEngineException the geo engine exception
 	 */
 	private File renderDSVGMap(IMapProvider mapProvider, 
-			IDataMartProvider datamartProvider, boolean includeScript) throws GeoEngineException {
+							   IDataMartProvider datamartProvider, 
+							   boolean includeScript) throws GeoEngineException {
+		
 		SVGDocument targetMap;
 		SVGDocument masterMap = null;
-		DataSet dataSet;
+		DataMart dataMart;
 		
-		dataSet = (DataSet)datamartProvider.getDataSet();
+		dataMart = (DataMart)datamartProvider.getDataMart();
 		
 		try {
 			masterMap = SVGMapLoader.loadMapAsDocument(getMasterMapFile(true));
@@ -158,8 +155,8 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		}		
 		targetMap = mapProvider.getSVGMapDOMDocument();				
 				
-		addData(targetMap, dataSet);
-		addLink(targetMap, dataSet);
+		addData(targetMap, dataMart);
+		addLink(targetMap, dataMart);
 		
 		SVGMapMerger.margeMap(targetMap, masterMap, null, "targetMap");
 		
@@ -170,20 +167,49 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		}
 		
 		
-		
 		setMainMapDimension(masterMap, targetMap);
-		//setMainMapBkgRectDimension(masterMap, targetMap);	   	   
-	    
+		
 	    Element scriptInit = masterMap.getElementById("init");	    
 	    Node scriptText = scriptInit.getFirstChild();
-	    StringBuffer buffer = new StringBuffer();
-	    buffer.append(getMeasuresConfigurationScript(dataSet));
-	    String targetLayer = datamartProvider.getSelectedLevel().getFeatureName();
 	   
+	    JSONObject conf = new JSONObject();	    
 	    
-	    buffer.append( getLayersConfigurationScript(targetMap, targetLayer) );    
-	    buffer.append( getGUIConfigurationScript() );
-	    scriptText.setNodeValue(buffer.toString());
+	    JSONArray measures;
+		try {
+			measures = getMeasuresConfigurationScript(dataMart);
+			
+		    conf.put("selected_measure_index", dataMart.getSelectedKpi());
+		    conf.put("measures", measures);
+		    
+		    JSONArray layers =  getLayersConfigurationScript(targetMap); 
+		    String targetLayer = datamartProvider.getSelectedLevel().getFeatureName();
+		    int targetLayerIndex = -1;
+		    for(int i = 0; i < layers.length(); i++) {
+		    	JSONObject layer = (JSONObject)layers.get(i);
+		    	
+		    	if(targetLayer.equals( layer.get("name"))) {
+		    		targetLayerIndex = i;
+		    		break;
+		    	}
+		    }
+		    conf.put("target_layer_index", targetLayerIndex);
+		    conf.put("layers", layers);
+		    conf.put("includeChartLayer", false);
+		    conf.put("includeValuesLayer", false);
+		    	    
+		      
+		    
+		    JSONObject guiSettings =  getGUIConfigurationScript();
+		    conf.put("gui_settings", guiSettings);
+		} catch (JSONException e1) {
+			logger.error("Impossible to create sbi.geo.conf", e1);
+			String description = "Impossible to create sbi.geo.conf";
+			throw new GeoEngineException("Impossible to create sbi.geo.conf", description, e1);
+		}
+	    
+	    scriptText.setNodeValue( "sbi = {};\n sbi.geo = {};\n sbi.geo.conf = " + conf.toString() );
+	    
+		System.out.println( "sbi = {};\n sbi.geo = {};\n sbi.geo.conf = " + conf.toString() );
 		
 		File tmpMap;
 		try {
@@ -226,9 +252,9 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		SVGDocument targetMap;
 		SVGDocument masterMap;
 		
-		DataSet datamart;
+		DataMart datamart;
 		
-		datamart = (DataSet)datamartProvider.getDataSet();
+		datamart = (DataMart)datamartProvider.getDataMart();
 		
 	
 		targetMap = mapProvider.getSVGMapDOMDocument();		
@@ -279,7 +305,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * @param targetMap the target map
 	 * @param datamart the datamart
 	 */
-	private void decorateMap(SVGDocument masterMap, SVGDocument targetMap, DataSet datamart) {
+	private void decorateMap(SVGDocument masterMap, SVGDocument targetMap, DataMart datamart) {
 		
 		IDataStore dataStore = datamart.getDataStore();
 		IDataStoreMetaData dataStoreMeta = dataStore.getMetaData();
@@ -782,7 +808,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * @param map the map
 	 * @param datamart the datamart
 	 */
-	private void addData(SVGDocument map, DataSet datamart) {
+	private void addData(SVGDocument map, DataMart datamart) {
 		
 		IDataStore dataStore = datamart.getDataStore();
 		
@@ -830,7 +856,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * @param map the map
 	 * @param datamart the datamart
 	 */
-	private void addLink(SVGDocument map, DataSet datamart) {	
+	private void addLink(SVGDocument map, DataMart datamart) {	
 		
 		IDataStore dataStore = datamart.getDataStore();
 		IDataStoreMetaData dataStoreMeta = dataStore.getMetaData();
@@ -1061,170 +1087,119 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * @param datamart the datamart
 	 * 
 	 * @return the measures configuration script
+	 * @throws JSONException 
 	 */
-	public String getMeasuresConfigurationScript(DataSet datamart) {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("\n\n// MEASURES\n");
+	public JSONArray getMeasuresConfigurationScript(DataMart datamart) throws JSONException {
 		
-		IDataStore dataStore = datamart.getDataStore();
-		IDataStoreMetaData dataStoreMeta = dataStore.getMetaData();
+		JSONArray measures;
 		
-		List measureFieldsMeta = dataStoreMeta.findFieldMeta("ROLE", "MEASURE");
-		String[] kpiNames = new String[measureFieldsMeta.size()];
-		for(int i = 0; i < kpiNames.length; i++) {
+		IDataStore dataStore;
+		IDataStoreMetaData dataStoreMeta;
+		List measureFieldsMeta;
+		String[] measureNames;
+		
+		measures = new JSONArray();
+		
+		dataStore = datamart.getDataStore();
+		dataStoreMeta = dataStore.getMetaData();
+		
+		measureFieldsMeta = dataStoreMeta.findFieldMeta("ROLE", "MEASURE");
+		measureNames = new String[ measureFieldsMeta.size() ];
+		for(int i = 0; i < measureNames.length; i++) {
 			IFieldMetaData filedMeta = (IFieldMetaData)measureFieldsMeta.get(i);
-			kpiNames[i] = filedMeta.getName();
+			measureNames[i] = filedMeta.getName();
 		}
 	    
-	    // ...kpi_names
-	    buffer.append("var kpi_names = [");	    
-	    for(int i = 0; i < kpiNames.length; i++) {
-	    	String separtor = i>0? ",": "";
-	    	buffer.append(separtor + "\"" + kpiNames[i] + "\"");
-	    }
-	    buffer.append("];\n");
-	    
-	    //	  ...kpi_descriptions
-	    buffer.append("kpi_descriptions = [");	    
-	    for(int i = 0; i < kpiNames.length; i++) {
-	    	String separtor = i>0? ",": "";
-	    	buffer.append(separtor + "\"" + getMeasure(kpiNames[i]).getDescription() + "\"");
-	    }
-	    buffer.append("];\n");
-	    
-	    //	  ...kpi_descriptions
-	    buffer.append("kpi_colours = [");	    
-	    for(int i = 0; i < kpiNames.length; i++) {
-	    	String separtor = i>0? ",": "";
-	    	String colour = "'" + getMeasure(kpiNames[i]).getColour() + "'";
-	    	buffer.append(separtor + colour);
-	    }
-	    buffer.append("];\n");
-	    
-	    buffer.append("var kpi_ordered_values = new Array();\n");	
-	    for(int i = 0; i < kpiNames.length; i++) {
+	       
+	    for(int i = 0; i < measureNames.length; i++) {
+	    	JSONObject measure = new JSONObject();
+	    	measure.put("name", measureNames[i]);
+	    	measure.put("description", getMeasure(measureNames[i]).getDescription());
+	    	measure.put("colour", getMeasure(measureNames[i]).getColour());
 	    	
-			
-			dataStore.sortRecords( dataStoreMeta.getFieldIndex(kpiNames[i]) );
-			List orderedKpiValuesSet = dataStore.getFieldValues( dataStoreMeta.getFieldIndex(kpiNames[i]) );
+	    	JSONArray orderedValues = new JSONArray();
+	    	dataStore.sortRecords( dataStoreMeta.getFieldIndex(measureNames[i]) );
+			List orderedKpiValuesSet = dataStore.getFieldValues( dataStoreMeta.getFieldIndex(measureNames[i]) );
 	    	Iterator it = orderedKpiValuesSet.iterator();
-	    	buffer.append("kpi_ordered_values['" + kpiNames[i] + "'] = [");
-	    	String separtor = "";
 	    	while(it.hasNext()) {
-	    		Object value = it.next();
-	    		buffer.append( separtor +  value.toString() );
-	    		separtor = ",";    		
+	    		orderedValues.put( it.next() );	   		
 	    	}
-	    	 buffer.append("];\n");
-	    }
-	    
-	    buffer.append("var num_group = new Array();\n");
-	    buffer.append("var lb_values = new Array();\n");
-	    buffer.append("var ub_values = new Array();\n");
-	    buffer.append("var lb_color = new Array();\n");
-	    buffer.append("var ub_color = new Array();\n");
-	    buffer.append("var null_values_color = new Array();\n");
-	    buffer.append("var trasholdCalculationType = new Array();\n");
-	    buffer.append("var trasholdCalculationPercParams = new Array();\n");
-	    buffer.append("var trasholdCalculationUniformParams = new Array();\n");
-	    buffer.append("var colorRangeCalculationType = new Array();\n");
-	    buffer.append("var colorRangeCalculationGradParams = new Array();\n");
-	    
-	    for(int i = 0; i < kpiNames.length; i++) {
-	    	Measure measure  = getMeasure(kpiNames[i]);
-	    	buffer.append("\n ");
-	    	buffer.append("\n// " + kpiNames[i] + "\n");
+	    	measure.put("ordered_values", orderedValues);
 	    	
-	    	if( measure.getTresholdLb() == null 
-	    			|| measure.getTresholdLb().trim().equalsIgnoreCase("")
-	    			|| measure.getTresholdLb().equalsIgnoreCase("none") ) {
-	    		buffer.append("lb_values['"+ kpiNames[i] +"'] = null;\n");
+	    	if( getMeasure(measureNames[i]).getTresholdLb() == null 
+	    			|| getMeasure(measureNames[i]).getTresholdLb().trim().equalsIgnoreCase("")
+	    			|| getMeasure(measureNames[i]).getTresholdLb().equalsIgnoreCase("none") ) {
+	    		measure.put("lower_bound", "none");
 	    	} else {
-	    		buffer.append("lb_values['"+ kpiNames[i] +"'] = " + measure.getTresholdLb() + ";\n");
+	    		measure.put("lower_bound", getMeasure(measureNames[i]).getTresholdLb());
 	    	}
 	    	
-	    	if( measure.getTresholdUb() == null 
-	    			|| measure.getTresholdUb().trim().equalsIgnoreCase("")
-	    			|| measure.getTresholdUb().equalsIgnoreCase("none") ) {
-	    		buffer.append("ub_values['"+ kpiNames[i] +"'] = null;\n");
+	    	if( getMeasure(measureNames[i]).getTresholdUb() == null 
+	    			|| getMeasure(measureNames[i]).getTresholdUb().trim().equalsIgnoreCase("")
+	    			|| getMeasure(measureNames[i]).getTresholdUb().equalsIgnoreCase("none") ) {
+	    		measure.put("upper_bound", "none");
 	    	} else {
-	    		buffer.append("ub_values['"+ kpiNames[i] +"'] = " + measure.getTresholdUb() + ";\n");
+	    		measure.put("upper_bound", getMeasure(measureNames[i]).getTresholdUb());
 	    	}
 	    	
+	    	measure.put("lower_bound_colour", getMeasure(measureNames[i]).getColurOutboundCol());
+	    	measure.put("upper_bound_colour", getMeasure(measureNames[i]).getColurOutboundCol());
+	    	measure.put("no_value_color", getMeasure(measureNames[i]).getColurNullCol());
 	    	
-	    	buffer.append("lb_color['"+ kpiNames[i] +"'] = '" + measure.getColurOutboundCol() + "';\n");
-	    	buffer.append("ub_color['"+ kpiNames[i] +"'] = '" + measure.getColurOutboundCol() + "';\n");
-	    	buffer.append("null_values_color['"+ kpiNames[i] +"'] = '" + measure.getColurNullCol() + "';\n");
-	    	buffer.append("trasholdCalculationType['"+ kpiNames[i] +"'] = '" + measure.getTresholdCalculatorType() + "';\n");
+	    	JSONObject thresholdCalculatorConf = new JSONObject();
+	    	thresholdCalculatorConf.put("type", getMeasure(measureNames[i]).getTresholdCalculatorType());
+	    	JSONObject thresholdCalculatorParams = new JSONObject();
+	    	if(getMeasure(measureNames[i]).getTresholdCalculatorType().equalsIgnoreCase("static") 
+	    			|| getMeasure(measureNames[i]).getTresholdCalculatorType().equalsIgnoreCase("perc")) {
+		    	
+	    		String[] values = getTresholdsArray(getMeasure(measureNames[i]).getColumnId());
+	    		JSONArray ranges = new JSONArray();
 	    	
-	    	if(measure.getTresholdCalculatorType().equalsIgnoreCase("static") || measure.getTresholdCalculatorType().equalsIgnoreCase("perc")) {
-		    	String[] values = getTresholdsArray(measure.getColumnId());
-		    	if(values != null && values.length > 0) {
-			    	buffer.append("trasholdCalculationPercParams['"+ kpiNames[i] +"'] = [");
-			    	
-			    	buffer.append(values[0]);
-			    	for(int j = 1; j < values.length; j++) {
-			    		buffer.append("," + values[j]);
-			    	}	    	
-			    	buffer.append("];\n");
-		    	}
+		    	for(int j = 0; j < values.length; j++) {
+		    		ranges.put( values[i] );
+		    	}	    	
+		    	thresholdCalculatorParams.put("ranges", ranges);
 	    	} else {
-	    		buffer.append("trasholdCalculationPercParams['"+ kpiNames[i] +"'] = " + "null" + ";\n");
+	    		String value = getMeasure(measureNames[i]).getTresholdCalculatorParameters().getProperty("GROUPS_NUMBER");
+	    		thresholdCalculatorParams.put("num_group", Integer.parseInt(value));
 	    	}
 	    	
-	    	String value = measure.getTresholdCalculatorParameters().getProperty("GROUPS_NUMBER");
-	    	if(value != null) {
-	    		buffer.append("trasholdCalculationUniformParams['"+ kpiNames[i] +"'] = " + value + ";\n");
-	    		buffer.append("num_group['"+ kpiNames[i] +"'] = " + value + ";\n");
-	    	}
+	    	thresholdCalculatorConf.put("params", thresholdCalculatorParams);
+	    	measure.put("threshold_calculator_conf", thresholdCalculatorConf);
 	    	
-	    	buffer.append("colorRangeCalculationType['"+ kpiNames[i] +"'] = '" + measure.getColurCalculatorType() + "';\n");
 	    	
-	    	value = measure.getColurCalculatorParameters().getProperty("BASE_COLOR");
-	    	if(value != null) {
-	    		buffer.append("colorRangeCalculationGradParams['"+ kpiNames[i] +"'] = '" + value + "';\n");
-	    	}
-	    }
-	    
-	    buffer.append("\n ");
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    buffer.append("\nvar selected_kpi_index = " + datamart.getSelectedKpi() + ";\n");
-		
-	    
-	    for(int i = 0; i < kpiNames.length; i++) {
-	    	buffer.append("var col_" + kpiNames[i] + " = new Array(");
-	    	String[] coloursArray = getColoursArray(kpiNames[i]);
-	    	for(int j = 0; j < coloursArray.length; j++) {
-	    		String separtor = j>0? ",": "";
-		    	buffer.append(separtor + "\"" + coloursArray[j] + "\"");
-	    	}
-	    	buffer.append(");\n");
-	    }
-	    
-	    
-	    for(int i = 0; i < kpiNames.length; i++) {
-	    	Measure measure  = getMeasure(kpiNames[i]);
-	    	if(measure.getTresholdCalculatorType().equalsIgnoreCase("static")) {
-		    	buffer.append("thresh_" + kpiNames[i] + " = new Array(");
-		    	String[] trasholdsArray = getTresholdsArray(kpiNames[i]);
-		    	for(int j = 0; j < trasholdsArray.length; j++) {
-		    		String separtor = j>0? ",": "";
-			    	buffer.append(separtor + trasholdsArray[j]);
-			    }
-		    	 buffer.append(");\n");
+	    	
+	    	JSONObject colourCalculatorConf = new JSONObject();
+	    	colourCalculatorConf.put("type", getMeasure(measureNames[i]).getColurCalculatorType());
+	    	JSONObject colourCalculatorParams = new JSONObject();
+	    	if(getMeasure(measureNames[i]).getColurCalculatorType().equalsIgnoreCase("gradient") 
+	    			|| getMeasure(measureNames[i]).getColurCalculatorType().equalsIgnoreCase("grad")) {
+		    	
+	    		String colour = getMeasure(measureNames[i]).getColurCalculatorParameters().getProperty("BASE_COLOR");
+	    		colourCalculatorParams.put("colour", colour);
 	    	} else {
-	    		buffer.append("thresh_" + kpiNames[i] + " = new Array();\n");
+	    		String[] values = getColoursArray(getMeasure(measureNames[i]).getColumnId());
+	    		JSONArray ranges = new JSONArray();
+	    	
+		    	for(int j = 0; j < values.length; j++) {
+		    		ranges.put( values[i] );
+		    	}	    	
+		    	colourCalculatorParams.put("ranges", ranges);
 	    	}
-	    }
-	    
-	    return buffer.toString();
+	    	
+	    	colourCalculatorConf.put("params", colourCalculatorParams);
+	    	measure.put("colourrange_calculator_conf", colourCalculatorConf);
+	    	
+	    	
+	    	
+	    	measures.put( measure );
+	    }    
+	   
+	    return measures;
 	}
+	
+	
+	
 	
 	/**
 	 * Gets the layers configuration script.
@@ -1233,58 +1208,39 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * @param targetLayer the target layer
 	 * 
 	 * @return the layers configuration script
+	 * @throws JSONException 
 	 */
-	public String getLayersConfigurationScript(SVGDocument doc, String targetLayer) {
-		StringBuffer buffer = new StringBuffer();
+	public JSONArray getLayersConfigurationScript(SVGDocument doc) throws JSONException {
+		JSONArray layers;
 		
-		buffer.append("// LAYERS\n");
-	    String[] layerNames = getLayerNames();
-	   
-	    int targetLayerIndex = 0;
+		String[] layerNames;
+		int targetLayerIndex = 0;
 	    boolean includeChartLayer = false;
 	    boolean includeValuesLayer = false;
-	    buffer.append("var layer_names = [");	
-	    String separtor = "";
+		
+		layers = new JSONArray();
+		
+		
+		layerNames = getLayerNames();
 	    for(int i = 0; i < layerNames.length; i++) {	
-	    	if(targetLayer.equalsIgnoreCase(layerNames[i])) targetLayerIndex = i;
-	    	if(doc.getElementById(layerNames[i]) != null) { 
-	    		buffer.append(separtor + "\"" + layerNames[i] + "\"");
-	    		separtor = ",";
-	    	} else if (layerNames[i].equalsIgnoreCase("grafici")){
-	    		buffer.append(separtor + "\"" + layerNames[i] + "\"");
-	    		separtor = ",";
-	    		includeChartLayer = true;
-	    	} else if(layerNames[i].equalsIgnoreCase("valori")) {
-	    		buffer.append(separtor + "\"" + layerNames[i] + "\"");
-	    		separtor = ",";
-	    		includeValuesLayer = true;
+	    	if(doc.getElementById(layerNames[i]) != null
+	    			|| layerNames[i].equalsIgnoreCase("grafici")
+	    			|| layerNames[i].equalsIgnoreCase("valori")) {
+	    		JSONObject layer = new JSONObject();
+	    		layer.put("name", layerNames[i]);
+	    		if(layerNames[i].equalsIgnoreCase("grafici")) {
+	    			layer.put("description","Grafici");
+	    		} else if(layerNames[i].equalsIgnoreCase("valori")) {
+	    			layer.put("description","Valori");
+	    		} else {
+	    			layer.put("description", getLayer(layerNames[i]).getDescription());
+	    		}
+	    		
+	    		layers.put( layer );
 	    	}
-	    }
-	    buffer.append("];\n");
-	    
-	    buffer.append("var layer_descriptions = [");
-	    separtor = "";
-	    for(int i = 0; i < layerNames.length; i++) {
-	    	if(doc.getElementById(layerNames[i]) != null) { 
-	    		buffer.append(separtor + "\"" + getLayer(layerNames[i]).getDescription() + "\"");
-	    		separtor = ",";
-	    	} else if (layerNames[i].equalsIgnoreCase("grafici")){
-	    		buffer.append(separtor + "\"Grafici\"");
-	    		separtor = ",";
-	    	} else if (layerNames[i].equalsIgnoreCase("valori")){
-	    		buffer.append(separtor + "\"Valori\"");
-	    		separtor = ",";
-	    	}
-	    	
 	    }	    
-	    buffer.append("];\n");
-	    
-	    buffer.append("var includeChartLayer = " + includeChartLayer + ";\n");
-	    buffer.append("var includeValuesLayer = " + includeValuesLayer + ";\n");
-	    
-	    buffer.append("var target_layer_index = " + targetLayerIndex +";\n");
-	    
-	    return buffer.toString();
+	  
+	    return layers;
 	}
 	
 	
@@ -1355,22 +1311,23 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 * Gets the gUI configuration script.
 	 * 
 	 * @return the gUI configuration script
+	 * @throws JSONException 
 	 */
-	public String getGUIConfigurationScript() {
-		StringBuffer buffer = new StringBuffer();
-		
-		buffer.append("// GUI SETTINGS\n");
+	public JSONObject getGUIConfigurationScript() throws JSONException {
+		JSONObject guiSettings;
 		String pVal = null;
 		
+		guiSettings = new JSONObject();
+		
 		pVal =(String)getEnv().get(Constants.ENV_IS_WINDOWS_ACTIVE);
-		boolean activeWindow = pVal==null||pVal.equalsIgnoreCase("TRUE");
-		buffer.append("var activeWindow=" + (activeWindow?"true":"false")+ ";\n");
+		boolean activeWindow = pVal==null || pVal.equalsIgnoreCase("TRUE");
+		guiSettings.put("activeWindow", activeWindow);
 		
 		pVal =(String)getEnv().get(Constants.ENV_IS_DAFAULT_DRILL_NAV);
 		boolean defaultDrillNav = pVal==null||pVal.equalsIgnoreCase("TRUE");
-		buffer.append("var defaultDrillNav=" + (defaultDrillNav?"true":"false")+ ";\n");		
+		guiSettings.put("defaultDrillNav", defaultDrillNav);
 		
-		return buffer.toString();		
+		return	guiSettings;
 	}
 	
 	/**

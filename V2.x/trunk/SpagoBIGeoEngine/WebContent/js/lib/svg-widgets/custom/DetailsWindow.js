@@ -303,7 +303,7 @@ DetailsWindow.prototype.initDetailInfopanels =  function () {
 			myMapApp.infoPanel = new Array();
 			
       var dynamText = document.getElementById("dynamText");
-			for(i = 0; i < kpi_names.length; i++) {
+			for(i = 0; i < sbi.geo.conf.measures.length; i++) {
 				var offset = 50 + (i*25);
 				var panel = document.createElementNS(svgNS,"text");
 				panel.setAttribute("id","infopanel" + (i+1));
@@ -314,7 +314,7 @@ DetailsWindow.prototype.initDetailInfopanels =  function () {
 				panel.setAttribute("font-size", "14px");
 				panel.setAttribute("startOffset", "0");
 				
-				var text_node = document.createTextNode(kpi_descriptions[i]);
+				var text_node = document.createTextNode(sbi.geo.conf.measures[i].description);
 				panel.appendChild(text_node);
 				
 				dynamText.appendChild(panel);

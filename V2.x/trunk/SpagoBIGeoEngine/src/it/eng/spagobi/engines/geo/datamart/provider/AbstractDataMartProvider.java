@@ -24,7 +24,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.AbstractGeoEngineComponent;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.configurator.AbstractDataMartProviderConfigurator;
-import it.eng.spagobi.engines.geo.dataset.DataSet;
+import it.eng.spagobi.engines.geo.dataset.DataMart;
 import it.eng.spagobi.engines.geo.dataset.DataSetMetaData;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy.Level;
@@ -70,7 +70,7 @@ public class AbstractDataMartProvider extends AbstractGeoEngineComponent impleme
     /* (non-Javadoc)
      * @see it.eng.spagobi.engines.geo.dataset.provider.IDatasetProvider#getDataSet()
      */
-    public DataSet getDataSet() throws GeoEngineException {
+    public DataMart getDataMart() throws GeoEngineException {
         return null;
     }
 

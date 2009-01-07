@@ -23,7 +23,7 @@ package it.eng.spagobi.engines.geo.datamart.provider;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.IGeoEngineComponent;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.dataset.DataSet;
+import it.eng.spagobi.engines.geo.dataset.DataMart;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 
 import java.util.Set;
@@ -42,7 +42,7 @@ public interface IDataMartProvider extends IGeoEngineComponent {
      * 
      * @throws GeoEngineException the geo engine exception
      */
-    DataSet getDataSet() throws GeoEngineException;    
+    DataMart getDataMart() throws GeoEngineException;    
     
     /**
      * Gets the data details.

@@ -54,8 +54,6 @@ somewhere in the source-code-comment or the "about" of your project and give cre
 
 //constructor: holds data on map and initializes various references
 function map(mapName,maxWidth,minWidth,zoomFact,nrDecimals,epsg,units,unitsFactor,showCoords,coordXId,coordYId,dynamicLayers,digiLayers,activeDigiLayer,zoomRectAttribs,highlightAttribs,dragRectAttribs,refmapName,dragSymbol,symbolThreshold) {
-	alert(refmapName);
-  alert(document.getElementById(refmapName));
   this.mapName = mapName; //id of svg element containing the map geometry
 	this.mapSVG = document.getElementById(this.mapName); //reference to nested SVG element holding the map-graphics
 	this.refmapSVG = document.getElementById(refmapName); //holds a reference to the reference map

@@ -33,7 +33,7 @@ import java.util.Set;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class DataSet {
+public class DataMart {
     
 	IDataStore dataStore;
 	
@@ -94,7 +94,7 @@ public class DataSet {
 	/**
 	 * Constructor.
 	 */
-    public DataSet() {
+    public DataMart() {
         super();
     }
 

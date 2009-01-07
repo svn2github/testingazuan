@@ -266,15 +266,15 @@ ThematicWindow.prototype.addThemes = function() {
 			// Thematic radio buttons
 			var radioGroup = new radioButtonGroup("radioButtons", setKpi);
 			
-    	for(i = 0; i < kpi_names.length; i++) {
+    	for(i = 0; i < sbi.geo.conf.measures.length; i++) {
 				offset = 50 + (30*i);
-				myMapApp.checkBoxes[kpi_names[i]] 
+				myMapApp.checkBoxes[sbi.geo.conf.measures[i].name] 
           = new checkBox(
-              kpi_names[i],"radioButtons",30,offset, "radioBorder", "radioPoint",false,kpi_descriptions[i],labeltextStyles,12,radioGroup,undefined);
+              sbi.geo.conf.measures[i].name,"radioButtons",30,offset, "radioBorder", "radioPoint",false,sbi.geo.conf.measures[i].description,labeltextStyles,12,radioGroup,undefined);
 			}
 			
 			//load function specific to the current map project
-			radioGroup.selectById(kpi_names[selected_kpi_index],true);
+			radioGroup.selectById(sbi.geo.conf.measures[sbi.geo.conf.selected_measure_index].name,true);
 			
 	
 }

@@ -40,7 +40,11 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
@@ -69,7 +73,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	private String userUniqueIdentifier;
 	private String auditId;
 	private String documentId;
-	private SpagoBiDataSource dataSource;
+	private IDataSource dataSource;
+	private IDataSet dataSet;
 	private Locale locale;	
 	private EngineAnalysisMetadata analysisMetadata;
 	private byte[] analysisStateRowData;
@@ -79,6 +84,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	private ContentServiceProxy contentProxy;
 	private AuditServiceProxy auditProxy;
 	private DataSourceServiceProxy datasourceProxy;
+	private DataSetServiceProxy datasetProxy;
 	
 	
 	private static final BASE64Decoder DECODER = new BASE64Decoder();
@@ -118,14 +124,15 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 		setResponse(response);				
 	}
 	
-	
+	public UserProfile getUserProfile() {
+		return (UserProfile) getAttributeFromHttpSession( USER_ID ); 
+	}
 
     public String getUserId() {
     	UserProfile profile = null;
     	
-    	if(userId == null) {
-    		profile =(UserProfile) getAttributeFromHttpSession( USER_ID );    	
-        	userId = (String)profile.getUserId();
+    	if(userId == null) {  	
+        	userId = (String)getUserProfile().getUserId();
     	}
     	
     	return userId;
@@ -134,9 +141,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     public String getUserIdentifier() {
     	IEngUserProfile profile = null;
     	
-    	if(userUniqueIdentifier == null) {
-    		profile =(IEngUserProfile) getAttributeFromHttpSession( USER_ID );    	
-    		userUniqueIdentifier = (String)profile.getUserUniqueIdentifier();
+    	if(userUniqueIdentifier == null) {	
+    		userUniqueIdentifier = (String)getUserProfile().getUserUniqueIdentifier();
     	}
     	
     	return userUniqueIdentifier;
@@ -225,13 +231,22 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
      * 
      * @return the data source
      */
-    public SpagoBiDataSource getDataSource() {
+    public IDataSource getDataSource() {
     	if(dataSource == null) {
     		dataSource = getDataSourceServiceProxy().getDataSource( getDocumentId() );
     	}
 		
 		return dataSource;
     }
+    
+    public IDataSet getDataSet() {
+    	if(dataSet == null) {
+    		dataSet = getDataSetServiceProxy().getDataSet( getDocumentId() );
+    	}
+		
+		return dataSet;    	
+    }
+    
     
     /**
      * Gets the locale.
@@ -366,6 +381,14 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	   }	   
 	    
 	   return datasourceProxy;
+   }
+   
+   public DataSetServiceProxy getDataSetServiceProxy() {
+	   if(datasetProxy == null) {
+		   datasetProxy =  datasetProxy = new DataSetServiceProxy(getUserIdentifier() , getHttpSession());
+	   }	   
+	    
+	   return datasetProxy;
    }
    
    

@@ -41,6 +41,7 @@ import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
 
 import org.apache.log4j.Logger;
@@ -114,12 +115,12 @@ public class AbstractEngineStartServlet extends AbstractBaseServlet {
 	 * @return the data source
 	 */
 	public SpagoBiDataSource getDataSource() {
-		SpagoBiDataSource dataSource = null;
+		IDataSource dataSource = null;
 		
 		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy( getUserId() , getSession() );
 		dataSource = proxyDS.getDataSource( getDocumentId() );
 		
-		return dataSource;	
+		return dataSource.toSpagoBiDataSource();	
 	}
 	
 	/**

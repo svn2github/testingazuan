@@ -55,6 +55,7 @@ INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SEL
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'DIALECT_HIB', 'Predefined hibernate dialect', 'POSTGRESQL','PostgreSQL ', 'org.hibernate.dialect.PostgreSQLDialect'
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'DIALECT_HIB', 'Predefined hibernate dialect', 'INGRES','Ingres ', 'org.hibernate.dialect.IngresDialect'
 INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'DOCUMENT_COMPOSITE','Document Composite','BIOBJ_TYPE','BI Object types','Document Composite objects type'
+INSERT INTO SBI_DOMAINS (DOMAIN_CD, DOMAIN_NM, VALUE_CD, VALUE_NM, VALUE_DS) SELECT 'TRANSFORMER_TYPE', 'Transformer types', 'PIVOT_TRANSFOMER','Pivot Transformer', 'Pivot Transformer Type'
 
 --INSERT INTO SBI_ENGINES (ENCRYPT, NAME, DESCR, MAIN_URL, SECN_URL, OBJ_UPL_DIR, OBJ_USE_DIR, DRIVER_NM, LABEL, ENGINE_TYPE, CLASS_NM, BIOBJ_TYPE) VALUES (0, 'Dashboard Internal Engine', 'Dashboard Internal Engine', '', '', '', '', '', 'DashboardInternalEng', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='ENGINE_TYPE' and VALUE_CD='INT') go 'it.eng.spa bi.engines.dashboard.Spa BIDashboardInternalEngine', (select VALUE_ID from SBI_DOMAINS where DOMAIN_CD='BIOBJ_TYPE' and VALUE_CD='DASH') go) 
 INSERT SBI_ENGINES

@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.dataset.common.transformer;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 	String valueFieldName; // pivotValue
 	String groupFieldName; // pivotRow
 	
-	private static transient Logger logger = Logger.getLogger(PivotingTransformer.class);
+	private static transient Logger logger = Logger.getLogger(PivotDataSetTransformer.class);
     
 
 	public PivotDataSetTransformer(String pivotFieldName, String valueFieldName, String groupFieldName) {
@@ -54,13 +55,21 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 		this.setValueFieldName(valueFieldName);
 		this.setGroupFieldName(groupFieldName);
 	}
-	
-	void transformDataSetMetaData(IDataStore dataStore) {
+
+	void transformDataSetMetaData(IDataStore dataStore) {		
+		
+	}
+
+	void transformDataSetRecords(IDataStore dataStore) {
 		IDataStoreMetaData dataStoreMeta;
 		int pivotFieldIndex;
 		int valueFieldIndex;
 		int groupFieldIndex;
 		
+		List newRecords = new ArrayList();
+	    IRecord newRecord = null;
+		String rowValue = "";
+			
 		dataStoreMeta = dataStore.getMetaData();
 		pivotFieldIndex = dataStoreMeta.getFieldIndex( getPivotFieldName() );
 		valueFieldIndex = dataStoreMeta.getFieldIndex( getValueFieldName() );
@@ -73,22 +82,55 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 			List fields = record.getFields();
 			for(int j = 0; j < fields.size(); j++) {		
 				IField field = (IField)fields.get(j);
+				String fieldName = dataStoreMeta.getFieldName(j);
+				String fieldValue = "" + field.getValue();
 				
 				if(j == pivotFieldIndex) {
+					//pivot column
+					String newFName = null;
+				    String newFValue = null;
+					newFName = fieldValue;
+					IField fv = record.getFieldAt(dataStoreMeta.getFieldIndex(getPivotFieldName()));
+					if (fv == null){
+						logger.error("Pivot value column '"+ getPivotFieldName() +"' not found into dataset. Pivot not applicated!");
+						return;
+					}
+					SourceBeanAttribute newFObject =(SourceBeanAttribute) fv.getValue();
+					newFValue = newFObject.getValue().toString();
+					
+					FieldMetadata fieldMeta = new FieldMetadata();
+					fieldMeta.setName(newFName);
+					fieldMeta.setType(newFValue.getClass());
+					dataStoreMeta.addFiedMeta(fieldMeta);
+					IField newf = new Field(newFValue);
+					newRecord.appendField(newf);
 					
 				} else if (j == valueFieldIndex) {
+					//pivotValue
+					//skip field
 					
 				} else if (j == groupFieldIndex) {
+					//pivotRow
+					if (rowValue.equals("")) rowValue = fieldValue;
+					if (!(rowValue.trim()).equalsIgnoreCase(fieldValue.trim())){
+						rowValue = fieldValue;
+						newRecords.add(newRecord);
+						newRecord = new Record();
+					}
+					if (newRecord.getFieldAt(dataStoreMeta.getFieldIndex(fieldName) ) == null)
+						newRecord.appendField(field);
 					
 				} else {
 					
+					//if the field isn't into record comes added
+					if (newRecord.getFieldAt(dataStoreMeta.getFieldIndex(fieldName)) == null)
+						newRecord.appendField(field);
 				}				
-			}		
-		}
+			}	//for	
+		} //while
+    	//Adds the last record
+		//if (newRecord != null) newRecords.add(newRecord);
 		
-	}
-
-	void transformDataSetRecords(IDataStore dataStore) {
 		
 	}
 

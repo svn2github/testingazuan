@@ -71,7 +71,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<% if(ChannelUtilities.isWebRunning()) { %>
 		<input type='hidden' name='PAGE' value='DetailDataSetPage' />
-		<input type='hidden' ='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
+		<input type='hidden' name='<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>' value='true' />
 	<% } %>
 
 	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
@@ -109,7 +109,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
       				   title='<spagobi:message key = "SBISet.ListDataSet.saveBackButton" />'  
                        alt='<spagobi:message key = "SBISet.ListDataSet.saveBackButton" />' 
-			   />
+			   /> 
+
 			</td>
 			<td class='header-button-column-portlet-section'>
 				<a href='javascript:goBack("<%=msgWarningSave%>", "<%=backUrl%>")'> 

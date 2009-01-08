@@ -65,19 +65,40 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 		int pivotFieldIndex;
 		int valueFieldIndex;
 		int groupFieldIndex;
+		List pivotedFieldNames = new ArrayList();;
 		
 		List newRecords = new ArrayList();
 	    IRecord newRecord = null;
 		String rowValue = "";
+		
 			
 		dataStoreMeta = dataStore.getMetaData();
 		pivotFieldIndex = dataStoreMeta.getFieldIndex( getPivotFieldName() );
 		valueFieldIndex = dataStoreMeta.getFieldIndex( getValueFieldName() );
 		groupFieldIndex = dataStoreMeta.getFieldIndex( getGroupFieldName() );
-			
-		Iterator it = dataStore.iterator();
+		
+		Iterator it = dataStore.getFieldDistinctValues( pivotFieldIndex ).iterator();
+		while(it.hasNext()) pivotedFieldNames.add( it.next() );
+					
+		
+		it = dataStore.iterator();
 		while(it.hasNext()) {
 			IRecord record = (IRecord)it.next();
+			
+			IField pivotField = record.getFieldAt(pivotFieldIndex);
+			IField valueField = record.getFieldAt(valueFieldIndex);
+			IField groupField = record.getFieldAt(groupFieldIndex);
+			
+			for(int i  = 0; i < pivotedFieldNames.size(); i++) {
+				if( pivotField.getValue().equals( pivotedFieldNames.get(i)) ) {
+					newRecord.appendField( new Field( valueField.getValue() ) );
+				} else {
+					newRecord.appendField( new Field(new Double(0)) );
+				}						
+			}	
+			
+			
+			
 			
 			List fields = record.getFields();
 			for(int j = 0; j < fields.size(); j++) {		
@@ -87,24 +108,8 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 				
 				if(j == pivotFieldIndex) {
 					//pivot column
-					String newFName = null;
-				    String newFValue = null;
-					newFName = fieldValue;
-					IField fv = record.getFieldAt(dataStoreMeta.getFieldIndex(getPivotFieldName()));
-					if (fv == null){
-						logger.error("Pivot value column '"+ getPivotFieldName() +"' not found into dataset. Pivot not applicated!");
-						return;
-					}
-					SourceBeanAttribute newFObject =(SourceBeanAttribute) fv.getValue();
-					newFValue = newFObject.getValue().toString();
 					
-					FieldMetadata fieldMeta = new FieldMetadata();
-					fieldMeta.setName(newFName);
-					fieldMeta.setType(newFValue.getClass());
-					dataStoreMeta.addFiedMeta(fieldMeta);
-					IField newf = new Field(newFValue);
-					newRecord.appendField(newf);
-					
+									
 				} else if (j == valueFieldIndex) {
 					//pivotValue
 					//skip field

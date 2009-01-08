@@ -44,8 +44,6 @@ public interface IDataStore {
 	void insertRecord(int recordIndex, IRecord record);
     
 	void applyTranformer(IDataTransformer transformer);
-    void applyTranformer(IDataTransformer transformer, String pivotColumn,String pivotRow, String pivotValue);
-    
     
     String toXml();
 }

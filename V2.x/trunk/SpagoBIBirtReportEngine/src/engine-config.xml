@@ -16,7 +16,7 @@
 	<AuditServiceProxy_URL>/services/AuditService</AuditServiceProxy_URL>
 	<DataSourceServiceProxy_URL>/services/DataSourceService</DataSourceServiceProxy_URL>
 	<DocumentExecuteServiceProxy_URL>/services/DocumentExecuteService</DocumentExecuteServiceProxy_URL>
-	<DataSetWsServiceProxy_URL>/services/DataSetService</DataSetWsServiceProxy_URL>	
+	<DataSetServiceProxy_URL>/services/DataSetService</DataSetServiceProxy_URL>	
 		
 
 </ENGINE-CONFIGURATION>

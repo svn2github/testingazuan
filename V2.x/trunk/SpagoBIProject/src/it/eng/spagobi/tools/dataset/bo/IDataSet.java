@@ -8,6 +8,8 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.behaviour.IDataSetBehaviour;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
+import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
 
 public interface IDataSet {
 
@@ -55,6 +57,16 @@ public interface IDataSet {
 	boolean hasBehaviour(String behaviourId);
 	Object getBehaviour(String behaviourId);
 	void addBehaviour(IDataSetBehaviour behaviour);
+	
+
+	public boolean hasDataStoreTransformer() ;
+	
+	public void removeDataStoreTransformer() ;
+
+	public void setDataStoreTransformer(IDataStoreTransformer transformer);
+	
+	public IDataStoreTransformer getDataStoreTransformer();
+    
 	
 	public IEngUserProfile getUserProfile();
 

@@ -60,6 +60,10 @@ public class ConfigurableDataSet extends  AbstractDataSet {
     	}
     	
     	dataStore = dataReader.read( results );
+    	
+    	if(hasDataStoreTransformer()) {
+    		getDataStoreTransformer().transform(dataStore);
+    	}
     }
     
     public void setFetchSize(int l) {

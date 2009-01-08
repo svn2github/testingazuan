@@ -29,6 +29,9 @@ import org.apache.log4j.Logger;
 
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.behaviour.IDataSetBehaviour;
+import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
+import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
+import it.eng.spagobi.tools.dataset.common.transformer.PivotDataSetTransformer;
 
 
 /**
@@ -48,6 +51,8 @@ public abstract class AbstractDataSet implements IDataSet {
     private String pivotColumnName;
     private String pivotRowName;
     private String pivotColumnValue;
+    
+    IDataStoreTransformer dataSetTransformer;
     
     private static transient Logger logger = Logger.getLogger(AbstractDataSet.class);
 
@@ -69,6 +74,14 @@ public abstract class AbstractDataSet implements IDataSet {
 		setPivotColumnName(dataSetConfig.getPivotColumnName());
 		setPivotRowName(dataSetConfig.getPivotRowName());
 		setPivotColumnValue(dataSetConfig.getPivotColumnValue());
+		
+		if(this.getPivotColumnName() != null 
+				&& this.getPivotColumnValue() != null
+				&& this.getPivotRowName() != null){
+			setDataStoreTransformer(
+					new PivotDataSetTransformer(getPivotColumnName(), getPivotColumnValue(), getPivotRowName()));
+		}
+		
 		behaviours = new HashMap();
     }
     
@@ -181,5 +194,21 @@ public abstract class AbstractDataSet implements IDataSet {
 	
 	public void addBehaviour(IDataSetBehaviour behaviour) {
 		behaviours.put(behaviour.getId(), behaviour);
+	}
+
+	public boolean hasDataStoreTransformer() {
+		return getDataStoreTransformer() != null;
+	}
+	
+	public void removeDataStoreTransformer() {
+		setDataStoreTransformer(null);
+	}
+
+	public void setDataStoreTransformer(IDataStoreTransformer transformer) {
+		this.dataSetTransformer = dataSetTransformer;
+	}
+	
+	public IDataStoreTransformer getDataStoreTransformer() {
+		return this.dataSetTransformer;
 	}
 }

@@ -150,7 +150,9 @@ public class DataStore implements IDataStore {
     	while( it.hasNext() ) {
     		IRecord record = (IRecord)it.next();
     		IField field = record.getFieldAt(fieldIndex);
-    		results.add(field.getValue());
+    		if(field.getValue() != null) {
+    			results.add(field.getValue());
+    		}
     	}
     	
     	return results;
@@ -167,7 +169,9 @@ public class DataStore implements IDataStore {
     	while( it.hasNext() ) {
     		IRecord record = (IRecord)it.next();
     		IField field = record.getFieldAt(fieldIndex);
-    		results.add(field.getValue());
+    		if(field.getValue() != null) {
+    			results.add(field.getValue());
+    		}
     	}
     	
     	return results;
@@ -192,6 +196,11 @@ public class DataStore implements IDataStore {
     			IField field2 = record2.getFieldAt(fIndex);
     			Comparable value1 = (Comparable)field1.getValue();
     			Comparable value2 = (Comparable)field2.getValue();
+    			
+    			if(value1 == null && value2 == null) return 0;
+    			else if(value1 == null) return -1;
+    			else if(value2 == null) return 1;
+    			
     			return value1.compareTo(value2);
     		}    		 
     	});

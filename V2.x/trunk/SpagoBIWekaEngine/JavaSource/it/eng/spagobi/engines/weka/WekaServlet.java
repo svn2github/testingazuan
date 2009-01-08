@@ -12,6 +12,7 @@ import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.services.proxy.EventServiceProxy;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
@@ -340,17 +341,14 @@ public class WekaServlet extends HttpServlet {
     private Connection getConnection(HttpSession session,String userId,String documentId) {
 	logger.debug("IN.documentId:"+documentId);
 	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
-	SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
-	if (ds==null) return null;
-	// get connection
-	String jndi = ds.getJndiName();
-	if (jndi != null && !jndi.equals("")) {
-	    logger.debug("OUT");
-	    return getConnectionFromJndiDS(ds);
-	} else {
-	    logger.debug("OUT");
-	    return getDirectConnection(ds);
-	}
+	IDataSource ds = proxyDS.getDataSource(documentId);
+	Connection conn = null;
+	try {
+		conn =  ds.toSpagoBiDataSource().readConnection();
+	} catch (Exception e) {
+		logger.error("Impossible to retrive connection", e);
+	} 
+	return conn;
     }
 	
     /**

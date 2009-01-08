@@ -239,7 +239,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 		
 	function displayList(html) {
-		winLRL = new Window('winLRLId', {className: "alphacube", title: "", width:650, height:400, destroyOnClose: true});
+		winLRL = new Window('winLRLId', {className: "alphacube", title: "", width:650, height:380, destroyOnClose: true});
       	winLRL.setDestroyOnClose();
       	winLRL.setHTMLContent(html);
       	winLRL.showCenter(true);
@@ -274,21 +274,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	observerLRLclose = { 
 		onClose: function(eventName, win) {
 			if (win == winLRL) {
-			    valstring = '';
+				valuesArray = new Array();
 			    parfield = document.getElementById(parfieldName);
 			    checks = document.getElementsByName('rowcheck');
 			    for(i=0; i<checks.length; i++) {
 			    	check = checks[i];
 			    	if(check.checked) {
 			    		val = check.value;
-			    		valstring = valstring + val + ';';
+			    		if (!valuesArray.contains(val)) {
+			    			valuesArray.push(val);
+			    		}
 			    	}
 			    }
-			    if(valstring.length > 0) {
-			    	valstring = valstring.substring(0, (valstring.length -1) );
+			    if(valuesArray.length > 0) {
+			    	parfield.value = valuesArray.join(';');
 			    }
-			    if(valstring.length > 0) {
-			    	parfield.value = valstring;
+			    if(valuesArray.length > 1) {
+			    	document.getElementById(parfieldName + '_Iterative').style.display = 'inline';
+			    } else {
+			    	document.getElementById(parfieldName + '_Iterative').style.display = 'none';
+			    	document.getElementById(parfieldName + '_Iterative').selectedIndex = 0;
 			    }
 			}
 		}
@@ -629,7 +634,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						  	<input class='portlet-form-input-field' 
 						  	       id="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>"
 						  	       name="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>" 
-						  	       type="text" value="<%=concatenatedValue%>" />
+						  	       type="text" value="<%=concatenatedValue%>" size="50"/>
 						  	&nbsp;&nbsp;&nbsp;
 						  	<%
 						  		List roles = biobjdao.getCorrectRolesForExecution(biobj.getId(), userProfile);
@@ -640,6 +645,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       				 				src='<%= urlBuilder.getResourceLink(request, "/img/detail.gif")%>' 
       				 				alt='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' />
 						  	</a>
+						  	&nbsp;&nbsp;&nbsp;
+						  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_Iterative"%>'
+										id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_Iterative"%>' 
+										style="display:<%= values != null && values.size() > 1 ? "inline" : "none"%>">
+								<option value='false'>Non iterare per ogni valore del parametro</option>
+								<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
+									Itera per ogni valore del parametro
+								</option>
+							</select>		
 						  	&nbsp;&nbsp;&nbsp;
 							  	<%
 							  		if(roles.size()==1) {

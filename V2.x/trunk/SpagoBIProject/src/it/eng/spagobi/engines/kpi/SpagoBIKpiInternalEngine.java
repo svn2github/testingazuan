@@ -107,7 +107,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     protected List resources;// List of resources linked to the
 				// ModelInstanceNode
 
-    protected boolean isActualDateRequired = true;
+    protected boolean isActualDateRequired = true;//true if the kpiValues are requested for today's date
+    
+    protected Date dateOfKPI = new Date();//date when the kpiValues are requested
 
     /**
      * Executes the document and populates the response.
@@ -136,7 +138,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	}
 
 	if (!obj.getBiObjectTypeCode().equalsIgnoreCase("KPI")) {
-	    logger.error("The input object is not a dashboard.");
+	    logger.error("The input object is not a KPI.");
 	    throw new EMFUserError(EMFErrorSeverity.ERROR, "1001", messageBundle);
 	}
 
@@ -147,10 +149,10 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		IEngUserProfile.ENG_USER_PROFILE);
 	String userId = (String) ((UserProfile) userProfile).getUserId();
 
-	logger.debug("got parameters userId=" + userId + " and documentId=" + documentId.toString());
+	logger.debug("Got parameters userId=" + userId + " and documentId=" + documentId.toString());
 
 	// **************get the template*****************
-	logger.debug("getting template");
+	logger.debug("Getting template.");
 
 	try {
 	    SourceBean content = null;
@@ -159,12 +161,12 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(
 			Integer.valueOf(documentId));
 		if (template == null) {
-		    logger.warn("Active Template null");
-		    throw new Exception("Active Template null");
+		    logger.warn("Active Template null.");
+		    throw new Exception("Active Template null.");
 		}
 		contentBytes = template.getContent();
 		if (contentBytes == null) {
-		    logger.warn("Content of the Active template null");
+		    logger.warn("Content of the Active template null.");
 		    throw new Exception("Content of the Active template null");
 		}
 
@@ -181,13 +183,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    }
 
 	    // Date for which we want to see the KpiValues
-	    Date dateOfKPI = new Date();
-	    this.parametersObject = readParameters(obj.getBiObjectParameters(), dateOfKPI);
-	    logger.debug("Got the date for which the KpiValues have to be calculated. Date:" + dateOfKPI);
+	    this.dateOfKPI = new Date();
+	    this.parametersObject = readParameters(obj.getBiObjectParameters());
+	    logger.debug("Got the date for which the KpiValues have to be calculated. Date:" + this.dateOfKPI);
 
 	    // **************take informations on the modelInstance and its KpiValues*****************
 	    String modelNodeInstance = (String) content.getAttribute("model_node_instance");
-	    logger.debug("modelNodeInstance : " + modelNodeInstance);
+	    logger.debug("ModelNodeInstance : " + modelNodeInstance);
 	    Integer modelNodeInstanceID = new Integer(modelNodeInstance);
 	    if (modelNodeInstanceID == null) {
 		logger.error("The modelNodeInstanceId specified in the template is null");
@@ -201,20 +203,22 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						// sent to the jsp
 
 	    // gets the ModelInstanceNode
-	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID, dateOfKPI);
+	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID, this.dateOfKPI);
 	    logger.debug("ModelInstanceNode, NAME=" + mI.getName());
 	    logger.debug("Loaded the modelInstanceNode with id " + modelNodeInstanceID.toString());
 	    // I set the list of resources of that specific ModelInstance
 	    if (this.resources == null || this.resources.isEmpty()) {
-		this.resources = mI.getResources();
+	    	this.resources = mI.getResources();
 	    }
 	    logger.debug("Setted the List of Resources related to the specified Model Instance");
 
 	    if (this.resources == null || this.resources.isEmpty()) {
 		logger.debug("There are no resources assigned to the Model Instance");
 		KpiResourceBlock block = new KpiResourceBlock();
-		KpiLine line = getBlock(modelNodeInstanceID, dateOfKPI, null);
+		block.setD(this.dateOfKPI);
+		KpiLine line = getBlock(modelNodeInstanceID, null);
 		block.setRoot(line);
+		logger.debug("Setted the tree Root.");
 		kpiRBlocks.add(block);
 	    } else {
 		Iterator resourcesIt = this.resources.iterator();
@@ -223,14 +227,15 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		    logger.debug("Resource: " + r.getName());
 		    KpiResourceBlock block = new KpiResourceBlock();
 		    block.setR(r);
-		    KpiLine line = getBlock(modelNodeInstanceID, dateOfKPI, r);
+		    block.setD(dateOfKPI);
+		    KpiLine line = getBlock(modelNodeInstanceID, r);
 		    block.setRoot(line);
 		    kpiRBlocks.add(block);
 		}
 	    }
 
 	    try {
-		logger.debug("successfull kpis creation");
+		logger.debug("Successfull kpis creation");
 
 		response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "KPI");
@@ -264,7 +269,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	}
     }
 
-    private HashMap readParameters(List parametersList, Date dateOfKPI) throws EMFUserError {
+    private HashMap readParameters(List parametersList) throws EMFUserError {
 	logger.debug("IN");
 	if (parametersList == null) {
 	    logger.warn("parametersList si NULL!!!");
@@ -280,66 +285,74 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    if (values != null) {
 		if (values.size() == 1) {
 		    if (url.equals("ParKpiResources")) {
-			this.resources = new ArrayList();
-			String value = (String) values.get(0);
-			Integer res = new Integer(value);
-			Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
-			this.resources.add(toAdd);
-		    }
-		} else {
-		    String value = (String) values.get(0);
-		    parametersMap.put(url, value);
-		    if (url.equals("ParKpiDate")) {
-			SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
-				"SPAGOBI.DATE-FORMAT"));
-			String format = (String) formatSB.getAttribute("format");
-			SimpleDateFormat f = new SimpleDateFormat();
-			f.applyPattern(format);
-			try {
-			    dateOfKPI = f.parse(value);
-			} catch (ParseException e) {
-			    logger.error("ParseException.value=" + value, e);
+				this.resources = new ArrayList();
+				String value = (String) values.get(0);
+				Integer res = new Integer(value);
+				Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
+				this.resources.add(toAdd);
+		    
+		    }else {
+			    String value = (String) values.get(0);
+			    parametersMap.put(url, value);
+			    if (url.equals("ParKpiDate")) {
+					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
+						"SPAGOBI.DATE-FORMAT"));
+					String format = (String) formatSB.getAttribute("format");
+					SimpleDateFormat f = new SimpleDateFormat();
+					f.applyPattern(format);
+					String temp = f.format(this.dateOfKPI);
+				
+					try {
+					    this.dateOfKPI = f.parse(value);
+					} catch (ParseException e) {
+					    logger.error("ParseException.value=" + value, e);
+					}
+					if(!temp.equals(value)){
+						isActualDateRequired = false;
+					    }
+			    }
+		     }   
+		   }else if (values != null && values.size() >= 1) {
+			if (url.equals("ParKpiResources")) {
+			    this.resources = new ArrayList();
+			    for (int k = 0; k < values.size(); k++) {
+				String value = (String) values.get(k);
+				Integer res = new Integer(value);
+				Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
+				this.resources.add(toAdd);
+			    }
+			} else {
+			    String value = "'" + (String) values.get(0) + "'";
+			    for (int k = 1; k < values.size(); k++) {
+			    	value = value + ",'" + (String) values.get(k) + "'";
+			    }
+			    parametersMap.put(url, value);
+			    if (url.equals("ParKpiDate")) {
+					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
+						"SPAGOBI.DATE-FORMAT"));
+					String format = (String) formatSB.getAttribute("format");
+					SimpleDateFormat f = new SimpleDateFormat();
+					f.applyPattern(format);
+					String temp = f.format(this.dateOfKPI);
+					try {
+					    this.dateOfKPI = f.parse(value);
+					} catch (ParseException e) {
+					    logger.error("ParseException.value=" + value, e);
+					}
+					if(!temp.equals(value)){
+						isActualDateRequired = false;
+					    }
+			    }
 			}
-			isActualDateRequired = false;
-		    }
-		}
-	    } else if (values != null && values.size() >= 1) {
-		if (url.equals("ParKpiResources")) {
-		    this.resources = new ArrayList();
-		    for (int k = 0; k < values.size(); k++) {
-			String value = (String) values.get(k);
-			Integer res = new Integer(value);
-			Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
-			this.resources.add(toAdd);
-		    }
-		} else {
-		    String value = "'" + (String) values.get(0) + "'";
-		    for (int k = 1; k < values.size(); k++) {
-			value = value + ",'" + (String) values.get(k) + "'";
-		    }
-		    parametersMap.put(url, value);
-		    if (url.equals("ParKpiDate")) {
-			SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
-				"SPAGOBI.DATE-FORMAT"));
-			String format = (String) formatSB.getAttribute("format");
-			SimpleDateFormat f = new SimpleDateFormat();
-			f.applyPattern(format);
-			try {
-			    dateOfKPI = f.parse(value);
-			} catch (ParseException e) {
-			    logger.error("ParseException.value=" + value, e);
-			}
-			isActualDateRequired = false;
-		    }
-		}
 	    }
 	}
-	logger.debug("OUT. Date:" + dateOfKPI);
+	}
+	logger.debug("OUT. Date:" + this.dateOfKPI);
 	return parametersMap;
 
     }
 
-    public KpiLine getBlock(Integer miId, Date dateOfKPI, Resource r) throws EMFUserError, EMFInternalError {
+    public KpiLine getBlock(Integer miId, Resource r) throws EMFUserError, EMFInternalError {
 	logger.debug("IN");
 	KpiLine line = new KpiLine();
 	ModelInstanceNode modI = DAOFactory.getKpiDAO().loadModelInstanceById(miId, dateOfKPI);
@@ -355,26 +368,25 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    KpiValue value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
 	    logger.debug("Old KpiValue retrieved");
 	    if (value == null && isActualDateRequired) {
-		logger.debug("Old value not still valid");
-		IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
+			logger.debug("Old value not valid anymore");
+			IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
 		
-		
-		logger.debug("Retrieved the Dataset to be calculated: " + dataSet.getId());
-		value = getNewKpiValue(dataSet, kpiI, r);
-		logger.debug("New value calculated");
-		// Insert new Value into the DB
-		DAOFactory.getKpiDAO().insertKpiValue(value);
-		logger.debug("New value inserted in the DB");
-		// Checks if the value is alarming (out of a certain range)
-		// If the value is alarming a new line will be inserted in the
-		// sbi_alarm_event table and scheduled to be sent
-		DAOFactory.getKpiDAO().isAlarmingValue(value);
-		logger.debug("Alarms sent if the value is over the thresholds");
-		line.setValue(value);
+			logger.debug("Retrieved the Dataset to be calculated: " + dataSet.getId());
+			value = getNewKpiValue(dataSet, kpiI, r);
+			logger.debug("New value calculated");
+			// Insert new Value into the DB
+			DAOFactory.getKpiDAO().insertKpiValue(value);
+			logger.debug("New value inserted in the DB");
+			// Checks if the value is alarming (out of a certain range)
+			// If the value is alarming a new line will be inserted in the
+			// sbi_alarm_event table and scheduled to be sent
+			DAOFactory.getKpiDAO().isAlarmingValue(value);
+			logger.debug("Alarms sent if the value is over the thresholds");
+			line.setValue(value);
 	    } else if (value != null) {
-		line.setValue(value);
+	    	line.setValue(value);
 	    } else {
-		return line;
+	    	return line;
 	    }
 	    Integer kpiId = kpiI.getKpi();
 	    Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiId);
@@ -411,9 +423,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		sbi = ChartImpl.createChart(chartType);
 		logger.debug("Chart created");
 		sbi.setProfile(profile);
-		logger.debug("Profile setted");
+		logger.debug("Profile setted for the chart");
 		sbi.setValueDataSet(val);
-		logger.debug("Value to represent setted: " + (val != null ? val.toString() : ""));
+		logger.debug("Value to be represented, setted: " + (val != null ? val.toString() : ""));
 		if (target != null) {
 		    sbi.setTarget(target);
 		    logger.debug("Target setted: " + (target != null ? target.toString() : ""));
@@ -444,7 +456,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    Iterator childrenIt = childrenIds.iterator();
 	    while (childrenIt.hasNext()) {
 		Integer id = (Integer) childrenIt.next();
-		KpiLine childrenLine = getBlock(id, dateOfKPI, r);
+		KpiLine childrenLine = getBlock(id, r);
 		children.add(childrenLine);
 	    }
 	}
@@ -474,11 +486,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		Double max = t.getMaxValue();
 
 		if (type.equals("RANGE")) {
+			logger.debug("Threshold type RANGE");
 		    if (value.doubleValue() >= min.doubleValue() && value.doubleValue() <= max.doubleValue()) {
 			String label = t.getLabel();
 			toReturn = t.getColor();
 		    }
 		} else if (type.equals("MINIMUM")) {
+			logger.debug("Threshold type MINIMUM");
 		    if (value.doubleValue() < min.doubleValue()) {
 			String label = t.getLabel();
 			toReturn = t.getColor();
@@ -486,6 +500,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			toReturn = Color.WHITE;
 		    }
 		} else if (type.equals("MAXIMUM")) {
+			logger.debug("Threshold type MAXIMUM");
 		    if (value.doubleValue() > max.doubleValue()) {
 			String label = t.getLabel();
 			toReturn = t.getColor();
@@ -503,9 +518,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     public KpiValue getNewKpiValue(IDataSet dataSet, KpiInstance k, Resource r) throws EMFUserError, EMFInternalError {
 
 	logger.debug("IN");
+	logger.debug("START calculating the new KpiValue:");
 	KpiValue kVal = new KpiValue();
 	Date begD = new Date();
 	kVal.setBeginDate(begD);
+	logger.debug("Setted the KpiValue begin Date:"+begD);
 	KpiInstance sbik = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
 	Integer seconds = DAOFactory.getKpiDAO().getPeriodicitySeconds(sbik.getPeriodicity());
 	// Transforms seconds into milliseconds
@@ -514,10 +531,14 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	long endTime = begDtTime + milliSeconds;
 	Date endDate = new Date(endTime);
 	kVal.setEndDate(endDate);
+	logger.debug("Setted the KpiValue end Date:"+endDate);
 	kVal.setKpiInstanceId(k.getKpiInstanceId());
+	logger.debug("Setted the KpiValue Instance ID:"+k.getKpiInstanceId());
 	kVal.setWeight(k.getWeight());
+	logger.debug("Setted the KpiValue weight:"+k.getWeight());
 	List thresholds = DAOFactory.getKpiDAO().getThresholds(sbik);
 	kVal.setThresholds(thresholds);
+	logger.debug("Setted the KpiValue thresholds");
 	String chartType = DAOFactory.getKpiDAO().getChartType(sbik.getKpiInstanceId());
 
 	// If it has to be calculated for a Resource. The resource will be set
@@ -527,19 +548,20 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    String colName = r.getColumn_name();
 	    String value = r.getName();
 	    kVal.setR(r);
+	    logger.debug("Setted the Resource:"+r.getName());
 	    temp.put(colName, value);
 	}
 
 	// If not, the dataset will be calculated without the parameter Resource
 	// and the DataSet won't expect a parameter of type resource
-	
 	if(dataSet.hasBehaviour( QuerableBehaviour.class.getName()) ) {
 		dataSet.setParamsMap(temp);
 		dataSet.setUserProfile(profile);
 	}
-
+	
 	dataSet.loadData();
 	IDataStore dataStore = dataSet.getDataStore();
+	logger.debug("Gotten the datastore");
 	if (dataStore != null && !dataStore.isEmpty()) {
 	    // Transform result into KPIValue (I suppose that the result has a
 	    // unique value)
@@ -552,6 +574,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		    if (fieldObject != null && fieldObject.getValue() != null) {
 			String fieldValue = fieldObject.getValue().toString();
 			kVal.setValue(fieldValue);
+			logger.debug("Setted the kpiValue value:"+fieldValue);
 		    }
 		}
 	    }

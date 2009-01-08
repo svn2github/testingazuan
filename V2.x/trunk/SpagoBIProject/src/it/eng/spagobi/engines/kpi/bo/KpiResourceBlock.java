@@ -1,6 +1,7 @@
 package it.eng.spagobi.engines.kpi.bo;
 
-import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -10,16 +11,18 @@ import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.Resource;
-import it.eng.spagobi.kpi.threshold.bo.Threshold;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -29,17 +32,21 @@ import org.safehaus.uuid.UUIDGenerator;
 
 public class KpiResourceBlock {
 	
+	private static transient Logger logger = Logger.getLogger(KpiResourceBlock.class);
 	Resource r = null;
 	KpiLine root = null;
+	Date d = null;
 	
-	public KpiResourceBlock(Resource r, KpiLine root) {
+	public KpiResourceBlock(Resource r, KpiLine root, Date d) {
 		super();
 		this.r = r;
 		this.root = root;
+		this.d = d;
 	}
 	
 	public KpiResourceBlock() {
 		super();
+		this.d = new Date();
 	}
 
 	public Resource getR() {
@@ -54,9 +61,17 @@ public class KpiResourceBlock {
 	public void setRoot(KpiLine root) {
 		this.root = root;
 	}
+
+	public Date getD() {
+		return d;
+	}
+
+	public void setD(Date d) {
+		this.d = d;
+	}
 	
 	public StringBuffer makeTree(String userId,HttpServletRequest httpReq, Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight ){
-		
+		logger.debug("IN");
 		StringBuffer _htmlStream = new StringBuffer();				
 		if (r!=null){
 			_htmlStream.append("<div id ='"+r.getName()+"' >\n");				
@@ -70,11 +85,13 @@ public class KpiResourceBlock {
 			_htmlStream.append("</div><br>\n");
 		}
 		 _htmlStream.append("\n");
+		logger.debug("OUT");
 		return _htmlStream;
 	}
 	
 	private StringBuffer addItemForTree(String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight) {
 		
+		logger.debug("IN");
 		HttpServletRequest httpRequest = httpReq;
 		IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		String requestIdentity = null;
@@ -132,7 +149,9 @@ public class KpiResourceBlock {
 		_htmlStream.append("		<td class='kpi_td_left' style='vertical-align:middle;' width='53%' title='Model Instance Node' ><div style='vertical-align:middle;' class='kpi_div'>"+modelName+"</div></td>\n");
 		
 		_htmlStream.append("		<td  width='5%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
-		if (lo!= null){
+		if (lo!= null && kpiVal.getScaleCode()!=null){
+			_htmlStream.append("		<td  width='9%' title='Value' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"("+kpiVal.getScaleCode()+")</div></td>\n");
+		}else if(lo!= null){
 			_htmlStream.append("		<td  width='9%' title='Value' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"</div></td>\n");
 		}else{
 			_htmlStream.append("		<td  width='9%' title='Value' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
@@ -174,6 +193,19 @@ public class KpiResourceBlock {
 				execUrlParMap.put(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
 				execUrlParMap.put(ObjectsTreeConstants.OBJECT_LABEL, docLabel);
 				execUrlParMap.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
+				if (r!=null){
+					execUrlParMap.put(r.getColumn_name(), r.getName());
+				}
+				if (d!=null){
+					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
+					"SPAGOBI.DATE-FORMAT"));
+					String format = (String) formatSB.getAttribute("format");
+					SimpleDateFormat f = new SimpleDateFormat();
+					f.applyPattern(format);	
+				    String dat = f.format(d);
+				    execUrlParMap.put("ParKpiDate", dat);						
+				}
+				
 				String docHref = urlBuilder.getUrl(httpRequest, execUrlParMap);
 				_htmlStream.append("<a style='vertical-align:middle;' title='Document linked to the kpi' href=\""+docHref+"\"> <img style='vertical-align:middle;' src=\""+docImgSrc+"\" alt=\"Attached Document\" /></a>\n");				
 			}
@@ -205,7 +237,7 @@ public class KpiResourceBlock {
 		   }
 	   } 
 	   
-	   
+	   logger.debug("OUT");
 		return _htmlStream;
 	}
 	

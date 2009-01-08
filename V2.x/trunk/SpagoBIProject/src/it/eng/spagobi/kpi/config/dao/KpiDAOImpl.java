@@ -26,6 +26,7 @@ import it.eng.spagobi.kpi.model.metadata.SbiResources;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
+import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
@@ -703,6 +704,12 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		SbiKpiInstance kpiInst = value.getSbiKpiInstance();
 		Double weight = kpiInst.getWeight();
 		Double target = kpiInst.getTarget();
+		String scaleCode = null;
+		String scaleName = null;
+		if(kpiInst.getSbiMeasureUnit()!=null){
+			scaleCode = kpiInst.getSbiMeasureUnit().getScaleCd();
+			scaleName =kpiInst.getSbiMeasureUnit().getScaleNm();
+		}	
 		SbiResources res = value.getSbiResources();
 		Resource r = null;
 		if (res != null)
@@ -750,8 +757,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		toReturn.setKpiInstanceId(kpiInstanceID);
 		toReturn.setWeight(weight);
 		toReturn.setR(r);
-		// toReturn.setScaleCode(scaleCode);
-		// toReturn.setScaleName(scaleName);
+		toReturn.setScaleCode(scaleCode);
+		toReturn.setScaleName(scaleName);
 		toReturn.setThresholds(thresholds);
 		logger.debug("OUT");
 		return toReturn;

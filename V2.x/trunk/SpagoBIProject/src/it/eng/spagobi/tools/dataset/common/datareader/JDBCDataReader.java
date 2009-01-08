@@ -14,6 +14,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.Field;
 import it.eng.spagobi.tools.dataset.common.datastore.FieldMetadata;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 
@@ -62,24 +63,26 @@ public class JDBCDataReader implements IDataReader {
 		resultSB = scrollableDataResult.getSourceBean();
 		if( resultSB != null) {
 			
-			List rows = resultSB.getAttributeAsList("ROW");
-			if(rows.size() >= 1) {
 				
-				Iterator rowIterator = rows.iterator(); 
-				while(rowIterator.hasNext()) {										
-					SourceBean rowSB = (SourceBean) rowIterator.next();
-					IRecord record = new Record(dataStore);
-					
-					List columns = rowSB.getContainedAttributes();
-					for(int i = 0; i < columns.size(); i++)	 {
-						SourceBeanAttribute columnSB = (SourceBeanAttribute) columns.get(i);						
-						IField field = new Field( columnSB.getValue() );
-						dataStoreMeta.getFieldMeta(i).setType( columnSB.getValue().getClass() );
-						record.appendField( field );
+			List rows = resultSB.getAttributeAsList("ROW");
+			Iterator rowIterator = rows.iterator(); 
+			while(rowIterator.hasNext()) {										
+				SourceBean rowSB = (SourceBean) rowIterator.next();
+				IRecord record = new Record(dataStore);
+				
+				for(int i = 0; i < dataStoreMeta.getFieldCount(); i++) {
+					IFieldMetaData fieldMetaData = dataStoreMeta.getFieldMeta(i);
+					Object value = rowSB.getAttribute( dataStoreMeta.getFieldName(i) );
+					//SourceBeanAttribute columnSB = (SourceBeanAttribute) columns.get(i);						
+					IField field = new Field( value );
+					if(value != null) {
+						dataStoreMeta.getFieldMeta(i).setType( value.getClass() );
 					}
-					dataStore.appendRecord(record);
+					record.appendField( field );
 				}
+				dataStore.appendRecord(record);
 			}
+			
 		}
 		
 		return dataStore;

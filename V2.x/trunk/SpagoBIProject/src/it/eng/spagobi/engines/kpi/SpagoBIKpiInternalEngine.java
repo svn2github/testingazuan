@@ -100,6 +100,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						// displayed
     protected boolean display_alarm = false;// true if the alarm state will be
 					    // displayed
+    protected boolean register_values = true;//true if the new values calculated will have to be inserted into the db
 
     protected HashMap confMap;// HashMap with all the config parameters
 
@@ -373,9 +374,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			logger.debug("Retrieved the Dataset to be calculated: " + dataSet.getId());
 			value = getNewKpiValue(dataSet, kpiI, r);
 			logger.debug("New value calculated");
-			// Insert new Value into the DB
-			DAOFactory.getKpiDAO().insertKpiValue(value);
-			logger.debug("New value inserted in the DB");
+			if(register_values){
+				// Insert new Value into the DB
+				DAOFactory.getKpiDAO().insertKpiValue(value);
+				logger.debug("New value inserted in the DB");
+			}			
 			// Checks if the value is alarming (out of a certain range)
 			// If the value is alarming a new line will be inserted in the
 			// sbi_alarm_event table and scheduled to be sent
@@ -569,9 +572,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    if (fields != null && !fields.isEmpty()) {
 		IField f = (IField) fields.get(0);
 		if (f != null) {
-		    SourceBeanAttribute fieldObject = (SourceBeanAttribute) f.getValue();
-		    if (fieldObject != null && fieldObject.getValue() != null) {
-			String fieldValue = fieldObject.getValue().toString();
+		    if (f.getValue() != null) {
+			String fieldValue = f.getValue().toString();
 			kVal.setValue(fieldValue);
 			logger.debug("Setted the kpiValue value:"+fieldValue);
 		    }
@@ -728,6 +730,15 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		    display_alarm = false;
 	    }
 	    this.confMap.put("display_alarm", display_alarm);
+	    
+	    register_values = true;
+	    if (dataParameters.get("register_values") != null
+		    && !(((String) dataParameters.get("register_values")).equalsIgnoreCase(""))) {
+		String fil = (String) dataParameters.get("register_values");
+		if (fil.equalsIgnoreCase("false"))
+			register_values = false;
+	    }
+	    this.confMap.put("register_values", register_values);
 
 	} catch (Exception e) {
 	    logger.error("error in reading data source parameters");

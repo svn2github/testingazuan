@@ -117,20 +117,25 @@ public final class DataSourceServiceProxy extends AbstractServiceProxy{
      * 
      * @return SpagoBiDataSource object
      */
-    public SpagoBiDataSource getDataSourceByLabel(String label) {
-	logger.debug("IN.label="+label);
-	if (label==null || label.length()==0){
-	    logger.error("label is NULL");
-	    return null;
-	}	
-	try {
-	    return lookUp().getDataSourceByLabel(readTicket(), userId,label);
-	} catch (Exception e) {
-	    logger.error("Error during Service LookUp",e);
-	}finally{
-	    logger.debug("OUT");
-	}
-	return null;
+    public IDataSource getDataSourceByLabel(String label) {
+    	IDataSource dataSource = null;
+    	SpagoBiDataSource dataSourceConfig = null;
+		
+    	
+    	logger.debug("IN.label="+label);
+		if (label==null || label.length()==0){
+		    logger.error("label is NULL");
+		    return null;
+		}	
+		try {
+			dataSourceConfig = lookUp().getDataSourceByLabel(readTicket(), userId,label);
+		    dataSource = DataSourceFactory.getDataSource( dataSourceConfig );
+		} catch (Exception e) {
+		    logger.error("Error during Service LookUp",e);
+		}finally{
+		    logger.debug("OUT");
+		}
+		return dataSource;
     }    
 
 }

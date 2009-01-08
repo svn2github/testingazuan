@@ -14,6 +14,7 @@ import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
@@ -271,7 +272,7 @@ public class BirtReportServlet extends HttpServlet {
 		    + "engine-config.xml file.");
 	}
 	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId, session);
-	SpagoBiDataSource ds =null;
+	IDataSource ds = null;
 	if (requestConnectionName!=null){
 	    ds =proxyDS.getDataSourceByLabel(requestConnectionName);
 	}else{
@@ -282,7 +283,7 @@ public class BirtReportServlet extends HttpServlet {
 	    return null;
 	}	
 	logger.debug("OUT");
-	return ds;
+	return ds.toSpagoBiDataSource();
     }
 
     protected void runReport(HttpServletRequest request, HttpServletResponse response) throws Exception {

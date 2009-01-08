@@ -39,7 +39,6 @@ import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
@@ -48,6 +47,7 @@ import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
+import it.eng.spagobi.tools.scheduler.utils.BIObjectParametersIterator;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
 import java.io.ByteArrayInputStream;
@@ -110,87 +110,92 @@ public class ExecuteBIDocumentJob implements Job {
 				// fill parameters 
 				execCtrl.refreshParameters(biobj, docParQueryString);
 				
-			
-				//check parameters value: if a parameter hasn't value but isn't mandatory the process 
-				//must go on and so hasValidValue is set to true
-				List tmpBIObjectParameters = biobj.getBiObjectParameters();
-				Iterator it = tmpBIObjectParameters.iterator();
-				BIObjectParameter aBIObjectParameter = null;
-				while (it.hasNext()){
-					aBIObjectParameter = (BIObjectParameter)it.next();
-					List checks = aBIObjectParameter.getParameter().getChecks();
-					if (checks != null && !checks.isEmpty()) {
-						Iterator checksIt = checks.iterator();
-						while (checksIt.hasNext()) {
-							Check check = (Check) checksIt.next();
-							if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")&& 
-									(aBIObjectParameter.getParameterValues() == null  || 
-											 aBIObjectParameter.getParameterValues().size() == 0)){		
+				BIObjectParametersIterator objectParametersIterator = new BIObjectParametersIterator(biobj.getBiObjectParameters());
+				while (objectParametersIterator.hasNext()) {
+					List parameters = (List) objectParametersIterator.next();
+					biobj.setBiObjectParameters(parameters);
+				
+					//check parameters value: if a parameter hasn't value but isn't mandatory the process 
+					//must go on and so hasValidValue is set to true
+					List tmpBIObjectParameters = biobj.getBiObjectParameters();
+					Iterator it = tmpBIObjectParameters.iterator();
+					BIObjectParameter aBIObjectParameter = null;
+					while (it.hasNext()){
+						aBIObjectParameter = (BIObjectParameter)it.next();
+						List checks = aBIObjectParameter.getParameter().getChecks();
+						if (checks != null && !checks.isEmpty()) {
+							Iterator checksIt = checks.iterator();
+							while (checksIt.hasNext()) {
+								Check check = (Check) checksIt.next();
+								if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")&& 
+										(aBIObjectParameter.getParameterValues() == null  || 
+												 aBIObjectParameter.getParameterValues().size() == 0)){		
+									aBIObjectParameter.setParameterValues(new ArrayList());
+									aBIObjectParameter.setHasValidValues(true);
+								}
+							}
+						}
+						else {
+							if (aBIObjectParameter.getParameterValues() == null  || aBIObjectParameter.getParameterValues().size() == 0){	
 								aBIObjectParameter.setParameterValues(new ArrayList());
 								aBIObjectParameter.setHasValidValues(true);
 							}
 						}
 					}
-					else {
-						if (aBIObjectParameter.getParameterValues() == null  || aBIObjectParameter.getParameterValues().size() == 0){	
-							aBIObjectParameter.setParameterValues(new ArrayList());
-							aBIObjectParameter.setHasValidValues(true);
+					// exec the document only if all its parameter are filled
+					if(execCtrl.directExecution()) {
+						
+						ExecutionProxy proxy = new ExecutionProxy();
+						proxy.setBiObject(biobj);
+						IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+						//String startExecMsgIniPart = msgBuilder.getMessage("scheduler.startexecsched", "component_scheduler_messages");
+						//String startExecMsg = startExecMsgIniPart + " " + biobj.getName();
+						String startExecMsg = "${scheduler.startexecsched} " + biobj.getName();
+						//String endExecMsgIniPart = msgBuilder.getMessage("scheduler.endexecsched", "component_scheduler_messages");
+						//String endExecMsg = endExecMsgIniPart + " " + biobj.getName();
+						String endExecMsg = "${scheduler.endexecsched} " + biobj.getName();
+						
+						EventsManager eventManager = EventsManager.getInstance();
+						List roles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(biobj.getId());
+						Integer idEvent = eventManager.registerEvent("Scheduler", startExecMsg, "", roles);
+						
+						byte[] response = proxy.exec(profile, "SCHEDULATION", null);
+						String retCT = proxy.getReturnedContentType();
+						String fileextension = proxy.getFileExtensionFromContType(retCT);
+						
+						eventManager.registerEvent("Scheduler", endExecMsg, "", roles);
+						
+						if(sInfo.isSaveAsSnapshot()) {
+							saveAsSnap(sInfo, biobj, response);
 						}
-					}
-				}
-				// exec the document only if all its parameter are filled
-				if(execCtrl.directExecution()) {
-					
-					ExecutionProxy proxy = new ExecutionProxy();
-					proxy.setBiObject(biobj);
-					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-					//String startExecMsgIniPart = msgBuilder.getMessage("scheduler.startexecsched", "component_scheduler_messages");
-					//String startExecMsg = startExecMsgIniPart + " " + biobj.getName();
-					String startExecMsg = "${scheduler.startexecsched} " + biobj.getName();
-					//String endExecMsgIniPart = msgBuilder.getMessage("scheduler.endexecsched", "component_scheduler_messages");
-					//String endExecMsg = endExecMsgIniPart + " " + biobj.getName();
-					String endExecMsg = "${scheduler.endexecsched} " + biobj.getName();
-					
-					EventsManager eventManager = EventsManager.getInstance();
-					List roles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(biobj.getId());
-					Integer idEvent = eventManager.registerEvent("Scheduler", startExecMsg, "", roles);
-					
-					byte[] response = proxy.exec(profile, "SCHEDULATION", null);
-					String retCT = proxy.getReturnedContentType();
-					String fileextension = proxy.getFileExtensionFromContType(retCT);
-					
-					eventManager.registerEvent("Scheduler", endExecMsg, "", roles);
-					
-					if(sInfo.isSaveAsSnapshot()) {
-						saveAsSnap(sInfo, biobj, response);
-					}
-					
-					if(sInfo.isSaveAsDocument()) {
-						saveAsDocument(sInfo, biobj,jex, response, fileextension);
-					}
-
-					if(sInfo.isSendMail()) {
-						sendMail(sInfo, biobj, response, retCT, fileextension);
-					}
-					if(sInfo.isSendToDl()) {
-						SendToDl(sInfo, biobj, response, retCT, fileextension);
-						if(jex.getNextFireTime()== null){
-							String triggername = jex.getTrigger().getName();
-							List dlIds = sInfo.getDlIds();
-							 it = dlIds.iterator();
-							while(it.hasNext()){
-								Integer dlId = (Integer)it.next();
-								DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(dlId);
-								DAOFactory.getDistributionListDAO().eraseDistributionListObjects(dl, (biobj.getId()).intValue(), triggername);
+						
+						if(sInfo.isSaveAsDocument()) {
+							saveAsDocument(sInfo, biobj,jex, response, fileextension);
+						}
+	
+						if(sInfo.isSendMail()) {
+							sendMail(sInfo, biobj, response, retCT, fileextension);
+						}
+						if(sInfo.isSendToDl()) {
+							SendToDl(sInfo, biobj, response, retCT, fileextension);
+							if(jex.getNextFireTime()== null){
+								String triggername = jex.getTrigger().getName();
+								List dlIds = sInfo.getDlIds();
+								 it = dlIds.iterator();
+								while(it.hasNext()){
+									Integer dlId = (Integer)it.next();
+									DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(dlId);
+									DAOFactory.getDistributionListDAO().eraseDistributionListObjects(dl, (biobj.getId()).intValue(), triggername);
+								}
 							}
 						}
+		
+					} else {
+					    logger.warn("The document with label "+docLabel+" cannot be executed directly, " +
+					            "maybe some prameters are not filled ");
+						throw new Exception("The document with label "+docLabel+" cannot be executed directly, " +
+								            "maybe some prameters are not filled ");
 					}
-	
-				} else {
-				    logger.warn("The document with label "+docLabel+" cannot be executed directly, " +
-				            "maybe some prameters are not filled ");
-					throw new Exception("The document with label "+docLabel+" cannot be executed directly, " +
-							            "maybe some prameters are not filled ");
 				}
 			}
 			

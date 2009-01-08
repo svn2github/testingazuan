@@ -209,7 +209,15 @@ public class SchedulerUtilities {
 						while(iterbiobjpar.hasNext()) {
 							BIObjectParameter biobjpar = (BIObjectParameter)iterbiobjpar.next();
 							if(biobjpar.getParameterUrlName().equals(parDef[0])){
-								String[] valuesArr = parDef[1].split(";");
+								String parameterValues = parDef[1];
+								if (parameterValues.startsWith("ITERATE:{")) {
+									// in this case the parameter is iterative and the values are something like that:
+									// ITERATE:{value1;value2;...}
+									biobjpar.setIterative(true);
+									// deletes "ITERATE:{" at the beginning and "}" at the end
+									parameterValues = parameterValues.substring("ITERATE:{".length(), parameterValues.length() - 1);
+								}
+								String[] valuesArr = parameterValues.split(";");
 								List values = Arrays.asList(valuesArr);
 								biobjpar.setParameterValues(values);
 							}

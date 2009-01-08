@@ -43,6 +43,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -175,8 +176,14 @@ public class ExecutionController {
 				if (parValue != null && parValue.equalsIgnoreCase("NULL")) {
 					biparameter.setParameterValues(null);
 				} else {
-					List parameterValues = new ArrayList();
-					parameterValues.add(parValue);
+					if (parValue.startsWith("ITERATE:{")) {
+						biparameter.setIterative(true);
+						parValue = parValue.substring("ITERATE:{".length(), parValue.length() - 1);
+					} else {
+						biparameter.setIterative(false);
+					}
+					String[] values = parValue.split(";");
+					List parameterValues = Arrays.asList(values);
 					biparameter.setParameterValues(parameterValues);
 				}
 				biparameter.setTransientParmeters(true);

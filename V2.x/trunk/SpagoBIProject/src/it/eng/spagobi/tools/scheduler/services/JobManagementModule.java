@@ -335,16 +335,27 @@ public class JobManagementModule extends AbstractModule {
 					BIObjectParameter biobjpar = (BIObjectParameter)iterPars.next();
 					String concatenatedValue = "";
 					List values = biobjpar.getParameterValues();
-					if(values!=null) {
+					if(values != null && !values.isEmpty()) {
+						// if parameter is iterative, add "ITERATE:{" at the beginning 
+						if (biobjpar.isIterative()) {
+							concatenatedValue = "ITERATE:{";
+						}
 						Iterator itervalues = values.iterator();
 						while(itervalues.hasNext()) {
 							String value = (String)itervalues.next();
-							concatenatedValue += value + ",";
+							concatenatedValue += value + ";";
 						}
 						if(concatenatedValue.length()>0) {
 							concatenatedValue = concatenatedValue.substring(0, concatenatedValue.length() - 1);
+						}
+						// if parameter is iterative, add "}" at the end 
+						if (biobjpar.isIterative()) {
+							concatenatedValue += "}";
+						}
+						if(concatenatedValue.length()>0) {
 							queryString += biobjpar.getParameterUrlName() + "=" + concatenatedValue + "%26";
 						}
+
 					}
 				}
 				if(queryString.length()>0) {
@@ -431,8 +442,6 @@ public class JobManagementModule extends AbstractModule {
 		while(iterbiobjs.hasNext()) {
 			index ++;
 			BIObject biobj = (BIObject)iterbiobjs.next();
-			BIObject newBiObj = new BIObject();
-			newBiObj = biobj;
 			List biobjpars = biobj.getBiObjectParameters();
 			List newBiobjpars = new ArrayList();
 			// iter over parameters
@@ -441,6 +450,9 @@ public class JobManagementModule extends AbstractModule {
 				BIObjectParameter biobjpar = (BIObjectParameter)iterbiobjpars.next();
 				String nameParInRequest = "par_" + biobj.getId() +"_" + index + "_" + biobjpar.getParameterUrlName();
 				String valueParConcat = (String)request.getAttribute(nameParInRequest);
+				String isIterativeStr = (String) request.getAttribute(nameParInRequest + "_Iterative");
+				boolean isIterative = isIterativeStr != null && isIterativeStr.equalsIgnoreCase("true");
+				biobjpar.setIterative(isIterative);
 				if(valueParConcat!=null){
 					if(valueParConcat.trim().equals("")) {
 						biobjpar.setParameterValues(new ArrayList());
@@ -453,9 +465,9 @@ public class JobManagementModule extends AbstractModule {
 					newBiobjpars.add(biobjpar);
 				}				
 			}
-			newBiObj.setBiObjectParameters(null);
-			newBiObj.setBiObjectParameters(newBiobjpars);
-			newBiObjects.add(newBiObj);
+			biobj.setBiObjectParameters(null);
+			biobj.setBiObjectParameters(newBiobjpars);
+			newBiObjects.add(biobj);
 		}
 		jobInfo.setBiobjects(newBiObjects);
 	}

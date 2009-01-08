@@ -225,14 +225,14 @@ public class ExecutionProxy {
 		}
 	    }
 	    */
-	 // set spagobi  url for backend invocation
-	    if (!mapPars.containsKey(SpagoBIConstants.SBI_HOST)) {
-		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
-		String sbiconturl = GeneralUtilities.getSpagoBiHost();
-		if (sbiconturl != null) {
-		    mapPars.put(SpagoBIConstants.SBI_HOST, sbiconturl);
-		}
-	    }	    
+//	 // set spagobi  url for backend invocation
+//	    if (!mapPars.containsKey(SpagoBIConstants.SBI_HOST)) {
+//		//String sbiconturl = GeneralUtilities.getSpagoBiContextAddress();
+//		String sbiconturl = GeneralUtilities.getSpagoBiHost();
+//		if (sbiconturl != null) {
+//		    mapPars.put(SpagoBIConstants.SBI_HOST, sbiconturl);
+//		}
+//	    }	    
 
 	    // set country and language (locale)
 	    Locale locale = GeneralUtilities.getDefaultLocale();

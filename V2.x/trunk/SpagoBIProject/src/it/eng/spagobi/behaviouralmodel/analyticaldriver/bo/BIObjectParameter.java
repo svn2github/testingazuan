@@ -23,6 +23,7 @@ package it.eng.spagobi.behaviouralmodel.analyticaldriver.bo;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -86,6 +87,12 @@ public class BIObjectParameter implements Serializable {
 	
 	// default value is false; when the parameter values are set and they are correct, this field must be set to true
 	private boolean hasValidValues = false;
+	
+	// if isIterative is true, it means that the execution must be executed for each value of the parameter,
+	// example: if the parameter values are "a" and "b" and isIterative = true, the document should be executed 2 times: the first time with "a"
+	// and second time with "b"; if isIterative = false, document should be executed only with time with "a" and "b" at the same time.
+	// It is used by scheduler.
+	private boolean isIterative = false;
 	
 	/**
 	 * Gets the id.
@@ -415,5 +422,27 @@ public class BIObjectParameter implements Serializable {
 		this.parameterValuesDescription = parameterValuesDescription;
 	}
 
+	public boolean isIterative() {
+		return isIterative;
+	}
+
+	public void setIterative(boolean isIterative) {
+		this.isIterative = isIterative;
+	}
+
+	
+	public BIObjectParameter clone() {
+		BIObjectParameter toReturn = new BIObjectParameter();
+		toReturn.setLabel(label);
+		toReturn.setParameterUrlName(parameterUrlName);
+		toReturn.setParameterValues(new ArrayList(parameterValues));
+		toReturn.setParameterValuesDescription(parameterValuesDescription);
+		toReturn.setParameter(parameter);
+		toReturn.setIterative(isIterative);
+		toReturn.setTransientParmeters(transientParmeters);
+		toReturn.setHasValidValues(hasValidValues);
+		toReturn.setLovResult(lovResult);
+		return toReturn;
+	}
 	
 }

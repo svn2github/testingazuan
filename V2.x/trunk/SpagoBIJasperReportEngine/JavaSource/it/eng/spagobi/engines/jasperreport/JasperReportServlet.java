@@ -9,6 +9,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
@@ -231,11 +232,11 @@ public class JasperReportServlet extends HttpServlet {
     private Connection getConnection(String requestConnectionName,HttpSession session,String userId,String documentId) {
 	logger.debug("IN.documentId:"+documentId);
 	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
-	SpagoBiDataSource ds =null;
+	IDataSource ds =null;
 	if (requestConnectionName!=null){
-	    ds =proxyDS.getDataSourceByLabel(requestConnectionName);
+	    ds = proxyDS.getDataSourceByLabel(requestConnectionName);
 	}else{
-	    ds =proxyDS.getDataSource(documentId);
+	    ds = proxyDS.getDataSource(documentId);
 	}
 
 	if (ds==null) {
@@ -243,68 +244,16 @@ public class JasperReportServlet extends HttpServlet {
 	    return null;
 	}
 	// get connection
-	String jndi = ds.getJndiName();
-	if (jndi != null && !jndi.equals("")) {
-	    logger.debug("OUT");
-	    return getConnectionFromJndiDS(ds.getJndiName());
-	} else {
-	    logger.debug("OUT");
-	    return getDirectConnection(ds);
-	}
-    }
-
-    /**
-     * Get the connection from JNDI
-     * 
-     * @param jndiName
-     *                String describing data connection
-     * @return Connection to database
-     */
-    private Connection getConnectionFromJndiDS(String jndiName) {
-	logger.debug("IN");	
-	Connection connection = null;
-	Context ctx;
-	String resName = jndiName;
-	logger.debug("resName:"+resName);
+	Connection conn = null;
+	
 	try {
-	    ctx = new InitialContext();
-	    DataSource ds = (DataSource) ctx.lookup(resName);
-	    connection = ds.getConnection();
-	} catch (NamingException ne) {
-	    logger.error("JNDI error", ne);
-	} catch (SQLException sqle) {
-	    logger.error("Cannot retrive connection", sqle);
-	}finally{
-	    logger.debug("OUT");
-	}
-	return connection;
-    }
+		conn = ds.toSpagoBiDataSource().readConnection();
+	} catch (Exception e) {
+		logger.error("Cannot retrive connection", e);
+	} 
+	
+	return conn;
 
-    /**
-     * Get the connection using jdbc
-     * 
-     * @param connectionConfig
-     *                SpagoBiDataSource describing data connection
-     * @return Connection to database
-     */
-    private Connection getDirectConnection(SpagoBiDataSource connectionConfig) {
-	logger.debug("IN");
-	Connection connection = null;
-	try {
-	    String driverName = connectionConfig.getDriver();
-	    Class.forName(driverName);
-	    String url = connectionConfig.getUrl();
-	    String username = connectionConfig.getUser();
-	    String password = connectionConfig.getPassword();
-	    connection = DriverManager.getConnection(url, username, password);
-	} catch (ClassNotFoundException e) {
-	    logger.error("Driver not found", e);
-	} catch (SQLException e) {
-	    logger.error("Cannot retrive connection", e);
-	}finally{
-		logger.debug("OUT");
-	}
-	return connection;
     }
 
 

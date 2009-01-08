@@ -11,7 +11,7 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
-import it.eng.spagobi.services.proxy.DataSetWsServiceProxy;
+import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.utilities.DynamicClassLoader;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
@@ -152,7 +152,7 @@ public class JasperReportRunner {
 	    	ContentServiceProxy contentProxy=new ContentServiceProxy(userUniqueIdentifier,session);
 	    	
 	    	//DataSetWsServiceProxy dataSetProxy=new DataSetWsServiceProxy(userId,session);
-	    	DataSetWsServiceProxy dataSetProxy=new DataSetWsServiceProxy(userUniqueIdentifier,session);
+	    	DataSetServiceProxy dataSetProxy=new DataSetServiceProxy(userUniqueIdentifier,session);
 	    	
 	    	/*DataSetConfig dsConf= dataSetProxy.getDataSetByLabel("ProvaFile");
 	    	if (dsConf!=null) System.out.println("Nome ds"+dsConf.getName());*/

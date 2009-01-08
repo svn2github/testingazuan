@@ -15,7 +15,16 @@ public class ModelNode {
 	ModelNode father = null;
 	List children = null;// List of ModelNodes children
 	Kpi kpiAssociated = null;
+	Integer id = null;
 	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public ModelNode() {
 		super();
 		List children = new ArrayList();

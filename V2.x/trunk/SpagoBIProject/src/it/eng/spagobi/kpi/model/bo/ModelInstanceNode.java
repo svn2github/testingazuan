@@ -10,7 +10,7 @@ public class ModelInstanceNode {
 	Boolean isRoot = null;
 	String name = null;
 	String descr = null;
-	ModelNode reference = null;
+	Integer modelNodeId = null;//the referenced ModelNodeID
 	Integer modelInstanceNodeId = null;
 	Integer fatherId = null;
 	List childrenIds = null;// List of ModelNodesInstances children
@@ -42,12 +42,12 @@ public class ModelInstanceNode {
 	}
 
 
-	public ModelNode getModelReference() {
-		return reference;
+	public Integer getModelReference() {
+		return modelNodeId;
 	}
 
-	public void setModelReference(ModelNode reference) {
-		this.reference = reference;
+	public void setModelReference(Integer modelNodeId) {
+		this.modelNodeId = modelNodeId;
 	}
 
 	public KpiInstance getKpiInstanceAssociated() {

@@ -74,6 +74,7 @@ public class KpiResourceBlock {
 		logger.debug("IN");
 		StringBuffer _htmlStream = new StringBuffer();				
 		if (r!=null){
+			logger.debug("Start Kpi tree for Resource "+r.getName());
 			_htmlStream.append("<div id ='"+r.getName()+"' >\n");				
 			_htmlStream.append("<table style='width:100%;align:left;vertical-align:middle;clear:left;'>\n");
 			_htmlStream.append(" <tr class='kpi_resource_section' ><td>RESOURCE: "+r.getName()+"</td></tr>\n");
@@ -81,10 +82,12 @@ public class KpiResourceBlock {
 		}
 		
 		addItemForTree(userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
+		logger.debug("Started Kpi tree with the root");
 		if (r!=null){
 			_htmlStream.append("</div><br>\n");
 		}
 		 _htmlStream.append("\n");
+		 logger.debug("Ended Kpi tree"); 
 		logger.debug("OUT");
 		return _htmlStream;
 	}
@@ -92,6 +95,8 @@ public class KpiResourceBlock {
 	private StringBuffer addItemForTree(String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight) {
 		
 		logger.debug("IN");
+		logger.debug("*********************");
+		logger.debug("Recursion Level:"+recursionLev);
 		HttpServletRequest httpRequest = httpReq;
 		IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		String requestIdentity = null;
@@ -102,12 +107,15 @@ public class KpiResourceBlock {
 		String alarmImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/alarm.jpg");
 		String docImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/linkedDoc.gif");
 		String modelName = line.getModelNodeName();
+		logger.debug("Model node :"+modelName);
 		Boolean alarm = line.getAlarm();
+		logger.debug("Alarm Control:"+(alarm!=null ? alarm.toString(): "alarm null" ));
 		KpiValue kpiVal = line.getValue();
 		String thresholdJsArray = line.getThresholdsJsArray();
 		if(thresholdJsArray==null){
 			thresholdJsArray ="";
 		}
+		logger.debug("Threshold Js Array to make the legend:"+thresholdJsArray);
 		List thresholds = null;		
 		String value = null;
 		Float lo =null;
@@ -118,10 +126,16 @@ public class KpiResourceBlock {
 			if(value!=null){
 				Double val = new Double(value);
 				lo = new Float( val.floatValue());
+				logger.debug("Kpi value :"+lo);
 				weight = kpiVal.getWeight();
+				logger.debug("Kpi weight :"+weight);
 			}	
 		}
 		Color semaphorColor = line.getSemaphorColor();
+		if (semaphorColor!= null){
+			String semaphorHex = Integer.toHexString( semaphorColor.getRGB() & 0x00ffffff ) ;		
+			logger.debug("Kpi semaphore color:"+semaphorHex);
+		}
 		
 		BulletGraph sbi = (BulletGraph)line.getChartBullet();		
 		List children = line.getChildren();
@@ -145,8 +159,10 @@ public class KpiResourceBlock {
 		}else{
 			_htmlStream.append("		<td width='2%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
+		logger.debug("Written HTML for Semaphore");
 		
 		_htmlStream.append("		<td class='kpi_td_left' style='vertical-align:middle;' width='53%' title='Model Instance Node' ><div style='vertical-align:middle;' class='kpi_div'>"+modelName+"</div></td>\n");
+		logger.debug("Written HTML for ModelName:"+modelName);
 		
 		_htmlStream.append("		<td  width='5%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
 		if (lo!= null && kpiVal.getScaleCode()!=null){
@@ -156,11 +172,14 @@ public class KpiResourceBlock {
 		}else{
 			_htmlStream.append("		<td  width='9%' title='Value' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
+		logger.debug("Written HTML for value");
+		
 		if (display_weight && weight!=null){
 			_htmlStream.append("		<td width='5%' title='Weight' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>["+weight.toString()+"]</div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='5%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
+		logger.debug("Written HTML for weight");
 		
 		if (display_bullet_chart && sbi!=null){
 			
@@ -181,6 +200,7 @@ public class KpiResourceBlock {
 		}else{
 			_htmlStream.append("		<td width='25%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
+		logger.debug("Written HTML for Bullet Chart.");
 		
 		List documents = line.getDocuments();
 		
@@ -213,6 +233,7 @@ public class KpiResourceBlock {
 		}else{
 			_htmlStream.append("		<td width='4%' class='kpi_td_left' ><div style='align:left;' class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
+		logger.debug("Written HTML for Documents linked to the kpi");
 		
 		if (display_alarm){
 			if(alarm) _htmlStream.append("		<td width='2%' title='Kpi under Alarm control' style='vertical-align:middle;' class='kpi_td_right' ><div class='kpi_div' style='vertical-align:middle;' ><img style='vertical-align:middle;' src=\""+alarmImgSrc+"\" alt=\"Kpi under Alarm Control\" /></div></td>\n");
@@ -220,6 +241,7 @@ public class KpiResourceBlock {
 		}else{
 			_htmlStream.append("		<td width='2%' class='kpi_td_right' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
+		logger.debug("Written HTML for alarm control:");
 		
 	   _htmlStream.append("	</tr>\n");
 	   _htmlStream.append("</table></div>\n");
@@ -227,6 +249,7 @@ public class KpiResourceBlock {
 		   recursionLev ++;
 		   Iterator childIt = children.iterator();
 		   while (childIt.hasNext()){
+			   logger.debug("Starting children levels");
 			   KpiLine l = (KpiLine)childIt.next();
 			   
 			   if (evenLine){			   

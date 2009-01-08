@@ -225,7 +225,13 @@ public class DataStore implements IDataStore {
     }
     
     
-    
+	public List getRecords() {
+		return records;
+	}
+
+	public void setRecords(List records) {
+		this.records = records;
+	}
     
     
     
@@ -236,16 +242,7 @@ public class DataStore implements IDataStore {
     
 
 
-   
-    
-    public void applyTranformer(IDataTransformer transformer) {
-		records = transformer.transformData(records);
-    } 
 	
-	public void applyTranformer(IDataTransformer transformer, String pivotColumn,  String pivotRow, String pivotValue) {
-		List recordsPivot = transformer.transformData(records, pivotColumn, pivotRow, pivotValue); 
-		if (recordsPivot != null) records = recordsPivot; 
-    }
 
 
     public String toXml() {
@@ -271,4 +268,6 @@ public class DataStore implements IDataStore {
 		
 		return xml;
     }
+
+
 }

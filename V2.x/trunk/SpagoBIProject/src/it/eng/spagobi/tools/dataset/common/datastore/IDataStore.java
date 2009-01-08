@@ -43,7 +43,5 @@ public interface IDataStore {
     void prependRecord(IRecord record);
 	void insertRecord(int recordIndex, IRecord record);
     
-	void applyTranformer(IDataTransformer transformer);
-    
     String toXml();
 }

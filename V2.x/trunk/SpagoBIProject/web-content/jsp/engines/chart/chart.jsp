@@ -578,29 +578,20 @@ catGroupsNames=new Vector();
 		for (Iterator iterator = ((BarCharts)sbi).getCatGroupNames().iterator(); iterator.hasNext();) {
 		String group = (String) iterator.next(); 
 		catGroupsNames.add(group);
-		if(datasetMap.getSelectedCatGroups().contains(group) || datasetMap.getSelectedCatGroups().contains("allgroups")){
+		//if(datasetMap.getSelectedCatGroups().contains(group) || datasetMap.getSelectedCatGroups().contains("allgroups")){
+		if(datasetMap.getSelectedCatGroups().contains(group)){
 		%>
 				<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" 
-				type="checkbox" checked='checked' />
+				type="radio" checked='checked' />
 				<span><%=group%></span>
 		
 		<%}else{ %>
 				<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" 
-				type="checkbox" />
+				type="radio" />
 				<span><%=group%></span>
 		<%} 
 		 }%>
-			<a onclick = "enableGroups()" title="check all groups"
-			alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
-				<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
-			</a>
-			<a onclick = "disableGroups()" 
-			title="uncheck all groups" 
-			alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
-			<img src='<%= urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
-			</a>		
-		
-		
+	
 	<%	}%>
 
 			<input type="submit" value="Select"/>
@@ -680,17 +671,8 @@ catGroupsNames=new Vector();
 			 </table>
 	</div>
 	
-	
-	
-	
-	
-	
-	
-	
-	
 	<% 
-
- if(showSlider){ %>
+ if(showSlider || filterSeries){ %>
 
  <script type="text/javascript" language="JavaScript">
  
@@ -731,19 +713,19 @@ var checkableSeries = new Array();
 
 	function enableSerie() {	
 		for (x=0;x<checkableSeries.length;x=x+1)  {
-		ser = checkableSeries[x];
-		but=document.getElementById('serie_'+ser);	
-		but.checked = true;
+			ser = checkableSeries[x];
+			but=document.getElementById('serie_'+ser);	
+			but.checked = true;
+		}
 	}
-}
 
 	function disableSerie() {	
 		for (x=0;x<checkableSeries.length;x=x+1)  {
-		ser = checkableSeries[x];
-		but=document.getElementById('serie_'+ser);	
-		but.checked = false;
+			ser = checkableSeries[x];
+			but=document.getElementById('serie_'+ser);	
+			but.checked = false;
+		}
 	}
-}
 	
 	
 	var checkableGroups = new Array(); 
@@ -757,23 +739,6 @@ var checkableSeries = new Array();
 	  }
 %>
 
-	function enableGroups() {	
-		for (x=0;x<checkableGroups.length;x=x+1)  {
-		cat = checkableGroups[x];
-		but=document.getElementById('cat_group_'+cat);	
-		but.checked = true;
-	}
-}	
-		
-	function disableGroups() {	
-		for (x=0;x<checkableGroups.length;x=x+1)  {
-		cat = checkableGroups[x];
-		but=document.getElementById('cat_group_'+cat);	
-		but.checked = false;
-	}
-}
-	
-	
 	Ext.onReady(function() {
 
 		Test = {};

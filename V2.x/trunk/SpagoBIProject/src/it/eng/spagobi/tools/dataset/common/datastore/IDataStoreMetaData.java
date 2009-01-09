@@ -78,5 +78,7 @@ public interface IDataStoreMetaData {
 	
 	
 	Object getProperty(String propertyName);  
-	void setProperty(String propertyName, Object proprtyValue); 
+	void setProperty(String propertyName, Object proprtyValue);
+
+	void deleteFieldMetaDataAt(int pivotFieldIndex); 
 }

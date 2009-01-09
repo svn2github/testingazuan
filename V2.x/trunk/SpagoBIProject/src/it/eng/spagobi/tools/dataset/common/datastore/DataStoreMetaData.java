@@ -136,6 +136,10 @@ public class DataStoreMetaData implements IDataStoreMetaData {
 		return fieldsMeta.toString();
 	}
 
+	public void deleteFieldMetaDataAt(int pivotFieldIndex) {
+		fieldsMeta.remove( pivotFieldIndex );
+	}
+
 	
 
 }

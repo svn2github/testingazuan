@@ -19,17 +19,17 @@ import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.QueryDataSet;
-import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.DataStoreImpl;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
-import it.eng.spagobi.tools.dataset.common.datastore.FieldMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.FieldMetadata;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMeta;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
 import it.eng.spagobi.tools.dataset.common.transformer.PivotingTransformer;
-import it.eng.spagobi.tools.datasource.bo.IDataSource;
+import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -41,152 +41,146 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
- * @author Angelo Bernabei
- *         angelo.bernabei@eng.it
+ * @author Angelo Bernabei angelo.bernabei@eng.it
  */
 public class SQLResultSetReader implements IDataReader {
 
-	private static transient Logger logger = Logger.getLogger(SQLResultSetReader.class);
-    IEngUserProfile profile=null;
-    QueryDataSet ds=null;
+    private static transient Logger logger = Logger.getLogger(SQLResultSetReader.class);
+    IEngUserProfile profile = null;
+    QueryDataSet ds = null;
 
-    
     public IEngUserProfile getProfile() {
-		return profile;
-	}
+	return profile;
+    }
 
-	public void setProfile(IEngUserProfile profile) {
-		this.profile = profile;
-	}
+    public void setProfile(IEngUserProfile profile) {
+	this.profile = profile;
+    }
 
-	public QueryDataSet getDs() {
-		return ds;
-	}
-
+    public QueryDataSet getDs() {
+	return ds;
+    }
 
     public SQLResultSetReader() {
-		super();
-		// TODO Auto-generated constructor stub
+	super();
+	// TODO Auto-generated constructor stub
+    }
+
+    public IDataStore read(HashMap parameters) throws EMFUserError, EMFInternalError {
+
+	logger.debug("IN");
+	IDataStore ids = (IDataStore) new DataStoreImpl();
+	DataSource dataSource = ds.getDataSource();
+	String datasource = null;
+
+	if (dataSource != null) {
+	    datasource = dataSource.getLabel();
+	} else {
+	    logger.error("DataSource is missing");
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "DataSource is null");
 	}
 
-	public IDataStore read(HashMap parameters) throws EMFUserError, EMFInternalError {
-		
-		logger.debug("IN");
-		IDataStore ids = (IDataStore)new DataStore();
-		IDataSource dataSource=ds.getDataSource();
-		String datasource=null;
-	
-			if (dataSource!=null){
-				datasource = dataSource.getLabel();
-			}else{
-				logger.error("DataSource is missing");
-				throw new EMFUserError(EMFErrorSeverity.ERROR, "DataSource is null");
-			}
+	String query = ds.getQuery();
 
-			String query = ds.getQuery();
-		
-			try {
-				query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
-				
-			//check if there are parameters filled
-				if(parameters!=null && !parameters.isEmpty()){
-					query = GeneralUtilities.substituteParametersInString(query, parameters);	
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			SourceBean rowsSourceBean = null;
-			List colNames = new ArrayList();
-			
-			try {
-				rowsSourceBean = (SourceBean) executeSelect(datasource, query, colNames);
-			} catch (SourceBeanException e) {
-				e.printStackTrace();
-				logger.error("SourceBean Exception");
-			}
+	try {
+	    query = GeneralUtilities.substituteProfileAttributesInString(query, profile);
 
-				//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
-				if(rowsSourceBean!=null){
-					List row =rowsSourceBean.getAttributeAsList("ROW");
-					if(row.size()>=1){
-						Iterator iterator = row.iterator(); 
-						
-						while(iterator.hasNext()){
-												
-						SourceBean sb = (SourceBean) iterator.next();
-						//For each row I instanciate an IRecord
-						IRecord r = (IRecord)new Record();
-						
-						List sbas=sb.getContainedAttributes();
-						for (Iterator iterator2 = sbas.iterator(); iterator2.hasNext();) {
-							
-							SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
-							String fieldName=object.getKey();
-							IFieldMetaData fMeta = (IFieldMetaData)new FieldMetaData();
-							fMeta.setName(fieldName);
-							//Each Record is made out of different IFields with a value and metadata
-							IField f = (IField)new Field(fMeta,object);
-							r.appendField(f);
-						}
-						ids.appendRecord(r);
-						}
-					}
-				}
-			
-				// pivoting of results if its configurated
-				if (ds.getPivotColumnName() != null && !ds.getPivotRowName().equals("") && !ds.getPivotColumnName().equals("")){
-					ids.applyTranformer((IDataTransformer)new PivotingTransformer(), ds.getPivotColumnName(), 
-											ds.getPivotRowName(), ds.getPivotColumnValue());
-				}
-				else
-					logger.info("Pivot is not applicated on the result dataset because therisn't a complete configuration.\n" +
-							    " PivotColumnName: " + ds.getPivotColumnName() + " PivotRowName: " + ds.getPivotRowName() + 
-							    " PivotCoumnValue: " + ds.getPivotColumnValue());
-			logger.debug("OUT");
+	    // check if there are parameters filled
+	    if (parameters != null && !parameters.isEmpty()) {
+		query = GeneralUtilities.substituteParametersInString(query, parameters);
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+
+	SourceBean rowsSourceBean = null;
+	List colNames = new ArrayList();
+
+	try {
+	    rowsSourceBean = (SourceBean) executeSelect(datasource, query, colNames);
+	} catch (SourceBeanException e) {
+	    e.printStackTrace();
+	    logger.error("SourceBean Exception");
+	}
+
+	// I must get columnNames. assumo che tutte le righe abbiano le stesse
+	// colonne
+	if (rowsSourceBean != null) {
+	    List row = rowsSourceBean.getAttributeAsList("ROW");
+	    if (row.size() >= 1) {
+		Iterator iterator = row.iterator();
+
+		while (iterator.hasNext()) {
+
+		    SourceBean sb = (SourceBean) iterator.next();
+		    // For each row I instanciate an IRecord
+		    IRecord r = (IRecord) new Record();
+
+		    List sbas = sb.getContainedAttributes();
+		    for (Iterator iterator2 = sbas.iterator(); iterator2.hasNext();) {
+
+			SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+			String fieldName = object.getKey();
+			IFieldMeta fMeta = (IFieldMeta) new FieldMetadata();
+			fMeta.setName(fieldName);
+			// Each Record is made out of different IFields with a
+			// value and metadata
+			IField f = (IField) new Field(fMeta, object);
+			r.appendField(f);
+		    }
+		    ids.appendRow(r);
+		}
+	    }
+	}
+
+	// pivoting of results if its configurated
+	if (ds.getPivotColumnName() != null && !ds.getPivotRowName().equals("") && !ds.getPivotColumnName().equals("")) {
+	    ids.applyTranformer((IDataTransformer) new PivotingTransformer(), ds.getPivotColumnName(), ds
+		    .getPivotRowName(), ds.getPivotColumnValue());
+	} else
+	    logger.info("Pivot is not applicated on the result dataset because therisn't a complete configuration.\n"
+		    + " PivotColumnName: " + ds.getPivotColumnName() + " PivotRowName: " + ds.getPivotRowName()
+		    + " PivotCoumnValue: " + ds.getPivotColumnValue());
+	logger.debug("OUT");
 	return ids;
     }
 
-	public static Object executeSelect(String datasource, String statement, List columnsNames) throws EMFInternalError, SourceBeanException, EMFUserError {
-		
-		logger.debug("IN");
-		Object result = null;
+    public static Object executeSelect(String datasource, String statement, List columnsNames) throws EMFInternalError,
+	    SourceBeanException, EMFUserError {
 
-		DataConnection dataConnection = null;
-		SQLCommand sqlCommand = null;
-		DataResult dataResult = null;
-		try {
-			DataSourceUtilities dsUtil = new DataSourceUtilities();
-			Connection conn = dsUtil.getConnection(datasource); 
-			dataConnection = dsUtil.getDataConnection(conn);
-	
-			sqlCommand = dataConnection.createSelectCommand(statement);
-			dataResult = sqlCommand.execute();
-			if(dataResult!=null){
-				ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult
-				.getDataObject();
-				List temp = Arrays.asList(scrollableDataResult.getColumnNames());
-				columnsNames.addAll(temp);
-				result = scrollableDataResult.getSourceBean();
-			}
-		}catch(EMFInternalError e){
-			logger.error("Error in query Execution");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "Error in query Execution: check your query and Datasource");
-			
-		}finally {
-			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
-		}
-		logger.debug("OUT");
-		return result;
-		
+	logger.debug("IN");
+	Object result = null;
+
+	DataConnection dataConnection = null;
+	SQLCommand sqlCommand = null;
+	DataResult dataResult = null;
+	try {
+	    DataSourceUtilities dsUtil = new DataSourceUtilities();
+	    Connection conn = dsUtil.getConnection(datasource);
+	    dataConnection = dsUtil.getDataConnection(conn);
+
+	    sqlCommand = dataConnection.createSelectCommand(statement);
+	    dataResult = sqlCommand.execute();
+	    if (dataResult != null) {
+		ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
+		List temp = Arrays.asList(scrollableDataResult.getColumnNames());
+		columnsNames.addAll(temp);
+		result = scrollableDataResult.getSourceBean();
+	    }
+	} catch (EMFInternalError e) {
+	    logger.error("Error in query Execution");
+	    throw new EMFUserError(EMFErrorSeverity.ERROR, "Error in query Execution: check your query and Datasource");
+
+	} finally {
+	    Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 	}
+	logger.debug("OUT");
+	return result;
 
-	public void setDataSetConfig(DataSetConfig ds) {
-		this.ds =(QueryDataSet) ds;	
-	}
+    }
 
-
-
-
+    public void setDataSetConfig(DataSetConfig ds) {
+	this.ds = (QueryDataSet) ds;
+    }
 
 }

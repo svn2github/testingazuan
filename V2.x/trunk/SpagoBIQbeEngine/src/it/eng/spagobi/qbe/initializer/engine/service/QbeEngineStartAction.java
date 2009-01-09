@@ -20,41 +20,14 @@
  **/
 package it.eng.spagobi.qbe.initializer.engine.service;
 
-import it.eng.qbe.conf.QbeTemplate;
-import it.eng.qbe.datasource.DBConnection;
-import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
-import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.qbe.QbeEngine;
 import it.eng.spagobi.qbe.QbeEngineInstance;
-import it.eng.spagobi.qbe.commons.constants.QbeConstants;
-import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceManager;
-import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.QbeEngineAnalysisState;
 import it.eng.spagobi.qbe.core.service.QueryEncoder;
-import it.eng.spagobi.services.proxy.ContentServiceProxy;
-import it.eng.spagobi.utilities.ParametersDecoder;
-import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
-import it.eng.spagobi.utilities.engines.AuditServiceProxy;
 import it.eng.spagobi.utilities.engines.EngineConstants;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 

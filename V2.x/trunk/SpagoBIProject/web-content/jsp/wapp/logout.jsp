@@ -30,7 +30,7 @@ else if (active != null && active.equalsIgnoreCase("true")) {
 <%} %>
 <iframe id='invalidSessionJasper'
                  name='invalidSessionJasper'
-                 src='<%=GeneralUtilities.getSpagoBiHostBackEnd()%>/SpagoBIJasperReportEngine/invalidateSession.jsp'
+                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIJasperReportEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >
@@ -38,7 +38,7 @@ else if (active != null && active.equalsIgnoreCase("true")) {
 
 <iframe id='invalidSessionJasper'
                  name='invalidSessionJasper'
-                 src='<%=GeneralUtilities.getSpagoBiHostBackEnd()%>/SpagoBIJPivotEngine/invalidateSession.jsp'
+                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIJPivotEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >
@@ -46,7 +46,7 @@ else if (active != null && active.equalsIgnoreCase("true")) {
 
 <iframe id='invalidSessionJasper'
                  name='invalidSessionJasper'
-                 src='<%=GeneralUtilities.getSpagoBiHostBackEnd()%>/SpagoBIQbeEngine/invalidateSession.jsp'
+                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIQbeEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >
@@ -54,7 +54,7 @@ else if (active != null && active.equalsIgnoreCase("true")) {
 
 <iframe id='invalidSessionJasper'
                  name='invalidSessionJasper'
-                 src='<%=GeneralUtilities.getSpagoBiHostBackEnd()%>/SpagoBIGeoEngine/invalidateSession.jsp'
+                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIGeoEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >

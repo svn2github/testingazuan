@@ -19,7 +19,9 @@ LICENSE: see LICENSE.txt file
 				 it.eng.spagobi.services.proxy.ContentServiceProxy,
 				 it.eng.spagobi.services.content.bo.Content,
 				 it.eng.spagobi.services.proxy.DataSourceServiceProxy,
-				 it.eng.spagobi.services.datasource.bo.SpagoBiDataSource" %>
+				 it.eng.spagobi.services.datasource.bo.SpagoBiDataSource,
+				 it.eng.spagobi.tools.datasource.bo.*" %>
+
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
@@ -48,7 +50,7 @@ LICENSE: see LICENSE.txt file
 		
 		//calls service for gets data source object		
 		DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
-		SpagoBiDataSource ds = null;
+		IDataSource ds = null;
 		if (requestConnectionName != null) {
 		    ds =proxyDS.getDataSourceByLabel(requestConnectionName);
 		} else {
@@ -125,8 +127,8 @@ LICENSE: see LICENSE.txt file
 		query = ParameterUtilities.substituteQueryParameters(query, parameters, request);
 				
 		// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG		
-		if(ds != null  && ds.getJndiName() != null && !ds.getJndiName().equals("")) {
-			String resName = ds.getJndiName();
+		if(ds != null  && ds.getJndi() != null && !ds.getJndi().equals("")) {
+			String resName = ds.getJndi();
 			resName = resName.replace("java:comp/env/","");
 %>
 			<%@page import="it.eng.spagobi.utilities.ParametersDecoder"%>
@@ -164,8 +166,8 @@ LICENSE: see LICENSE.txt file
 		<%	
 		} else {
 		%>
-			 <jp:mondrianQuery id="query01" jdbcDriver="<%=ds.getDriver()%>" jdbcUrl="<%=ds.getUrl()%>" 
-			                   jdbcUser="<%=ds.getUser()%>" jdbcPassword="<%=ds.getPassword()%>" catalogUri="<%=reference%>" >
+			 <jp:mondrianQuery id="query01" jdbcDriver="<%=ds.getDriver()%>" jdbcUrl="<%=ds.getUrlConnection()%>" 
+			                   jdbcUser="<%=ds.getUser()%>" jdbcPassword="<%=ds.getPwd()%>" catalogUri="<%=reference%>" >
 				<%=query%>
 								
 				<%

@@ -52,6 +52,8 @@ public class DataSource implements Serializable, IDataSource {
 	private String pwd;
 	private String driver;
 	private Integer dialectId;	
+	private String hibDialectClass;
+	private String hibDialectName;
 	private Set engines = null;
 	private Set objects = null;
 	
@@ -69,6 +71,8 @@ public class DataSource implements Serializable, IDataSource {
 		sbd.setPassword(pwd);
 		sbd.setUrl(urlConnection);
 		sbd.setUser(user);
+		sbd.setHibDialectClass(hibDialectClass);
+		sbd.setHibDialectName(hibDialectName);
 		return sbd;
 	}
 	
@@ -296,6 +300,22 @@ public class DataSource implements Serializable, IDataSource {
 	 */
 	public void setObjects(Set objects) {
 		this.objects = objects;
+	}
+
+	public String getHibDialectClass() {
+		return hibDialectClass;
+	}
+
+	public void setHibDialectClass(String hibDialectClass) {
+		this.hibDialectClass = hibDialectClass;
+	}
+
+	public String getHibDialectName() {
+		return hibDialectName;
+	}
+
+	public void setHibDialectName(String hibDialectName) {
+		this.hibDialectName = hibDialectName;
 	}
 
 }

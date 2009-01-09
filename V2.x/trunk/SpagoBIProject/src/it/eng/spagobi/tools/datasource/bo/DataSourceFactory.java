@@ -49,6 +49,8 @@ public class DataSourceFactory {
 		dataSource.setPwd( dataSourceConfig.getPassword() );
 		dataSource.setUrlConnection( dataSourceConfig.getUrl() );
 		dataSource.setUser( dataSourceConfig.getUser() );
+		dataSource.setHibDialectClass( dataSourceConfig.getHibDialectClass());
+		dataSource.setHibDialectName( dataSourceConfig.getHibDialectName());
 				
 		return dataSource;
 	}

@@ -180,5 +180,13 @@ public interface IDataSource {
 	 * @param objects the new objects
 	 */
 	public abstract void setObjects(Set objects);
+	
+	public String getHibDialectClass() ;
+
+	public void setHibDialectClass(String hibDialectClass);
+
+	public String getHibDialectName() ;
+
+	public void setHibDialectName(String hibDialectName);
 
 }

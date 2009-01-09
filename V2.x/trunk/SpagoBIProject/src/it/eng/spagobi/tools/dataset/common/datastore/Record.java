@@ -3,6 +3,7 @@
  */
 package it.eng.spagobi.tools.dataset.common.datastore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
  */
-public class Record implements IRecord {
+public class Record implements IRecord,Serializable {
 
 	IDataStore dataStore;
 	List fields = new ArrayList();

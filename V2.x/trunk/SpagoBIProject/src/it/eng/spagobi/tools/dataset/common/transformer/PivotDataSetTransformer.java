@@ -53,6 +53,24 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 	private static transient Logger logger = Logger
 			.getLogger(PivotDataSetTransformer.class);
 
+	/*
+	 * Prerequisites: the pivotDataSetTransform needs in input a datastore with the next structure:
+	 * - X that identifies the row on which the values are aggregated(ie. the month)
+	 * - SER that identifies the column that will pivotted (ie. SER1, SER2, SER3, SER4,..)
+	 * - VAL that identifies the column with the real values of the series
+	 * - xxx other fields that are not used in the operations of pivot
+	 * 
+	 * ie:
+	 *  X                      SER           VAL         IDX   ....
+	Gennaio            SER1           33            1
+	Gennaio            SER2           12            1
+	Gennaio            SER3           64            1
+	Gennaio            SER4           21            1
+	Febbraio           SER1           56            2
+	Febbraio           SER2           35            2
+	Febbraio           SER3           13            2
+	Febbraio           SER4           75            2
+	 */
 	public PivotDataSetTransformer(String pivotFieldName,
 			String valueFieldName, String groupFieldName) {
 		this.setPivotFieldName(pivotFieldName);
@@ -61,6 +79,7 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 		pivotedFieldNames = new ArrayList();
 	}
 
+	
 	void transformDataSetMetaData(IDataStore dataStore) {
 		IDataStoreMetaData dataStoreMeta;
 		int pivotFieldIndex;
@@ -75,7 +94,7 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 		
 		dataStoreMeta = dataStore.getMetaData();
 		dataStoreMeta.deleteFieldMetaDataAt( pivotFieldIndex );
-		dataStoreMeta.deleteFieldMetaDataAt( valueFieldIndex );
+		dataStoreMeta.deleteFieldMetaDataAt( valueFieldIndex-1 );
 		
 		for(int i = 0; i < pivotedFieldNames.size(); i++) {
 			IFieldMetaData fieldMeta;			
@@ -116,7 +135,7 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 				selectedGroupValue = groupField.getValue();
 				if(newRecord != null) {
 					newRecord.getFields().remove(pivotFieldIndex);
-					newRecord.getFields().remove(valueFieldIndex);
+					newRecord.getFields().remove(valueFieldIndex-1);
 					newRecords.add( newRecord );
 				}
 				newRecord = record;

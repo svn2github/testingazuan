@@ -30,7 +30,6 @@ package it.eng.spagobi.tools.dataset.dao;
  */
 
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.tools.dataset.bo.DataSetConfig;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 import java.util.List;

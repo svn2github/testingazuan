@@ -76,11 +76,12 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		standaloneMode = false;		
 		query = new Query();
 				
-		SpagoBiDataSource ds = (SpagoBiDataSource)env.get( EngineConstants.ENV_DATASOURCE );
+		it.eng.spagobi.tools.datasource.bo.IDataSource dataSrc = (it.eng.spagobi.tools.datasource.bo.IDataSource)env.get( EngineConstants.ENV_DATASOURCE );
+		SpagoBiDataSource ds = dataSrc.toSpagoBiDataSource();
 		
 		DBConnection connection = new DBConnection();			
 		connection.setName( ds.getLabel() );
-		connection.setDialect( ds.getHibDialectClass() );			
+		connection.setDialect( ds.getHibDialectName() );			
 		connection.setJndiName( ds.getJndiName() );			
 		connection.setDriverClass( ds.getDriver() );			
 		connection.setPassword( ds.getPassword() );

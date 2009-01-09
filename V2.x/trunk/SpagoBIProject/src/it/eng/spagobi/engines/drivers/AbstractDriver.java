@@ -43,7 +43,9 @@ public class AbstractDriver {
 	if (active != null && active.equals("true") && !((UserProfile)profile).isSchedulerUser(userId)){
 	    logger.debug("I don't put the UserId information in the URL");
 	}else {
-	    pars.put("userId", ((UserProfile) profile).getUserUniqueIdentifier()); 
+	    if (((UserProfile) profile).getUserUniqueIdentifier() != null) {
+		pars.put("userId", ((UserProfile) profile).getUserUniqueIdentifier()); 
+	    }
 	}
 	    
         

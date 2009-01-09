@@ -34,7 +34,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
            this.functions = functions;
            this.roles = roles;
            this.userId = userId;
-           this.uniqueIdentifier = uniqueIdentifier;
+           this.uniqueIdentifier = userIdentifier;
            this.userName = userName;
     }
 

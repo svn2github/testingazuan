@@ -24,6 +24,7 @@ package it.eng.spagobi.tools.dataset.wsconnectors;
 import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Angelo Bernabei

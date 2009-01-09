@@ -106,6 +106,7 @@ public class KpiResourceBlock {
 		requestIdentity = requestIdentity.replaceAll("-", "");
 		String alarmImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/alarm.jpg");
 		String docImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/linkedDoc.gif");
+		String trendImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/trend.jpg");
 		String modelName = line.getModelNodeName();
 		logger.debug("Model node :"+modelName);
 		Boolean alarm = line.getAlarm();
@@ -201,6 +202,64 @@ public class KpiResourceBlock {
 			_htmlStream.append("		<td width='25%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
 		logger.debug("Written HTML for Bullet Chart.");
+				
+		
+		if(lo!= null){		
+
+				HashMap execUrlParMap = new HashMap();
+				execUrlParMap.put(ObjectsTreeConstants.ACTION, "GET_TREND");
+				if (r!=null){
+					execUrlParMap.put("RESOURCE_ID", r.getId());
+					execUrlParMap.put("RESOURCE_NAME", r.getName());
+				}
+				if (d!=null){
+					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
+					"SPAGOBI.DATE-FORMAT"));
+					String format = (String) formatSB.getAttribute("format");
+					SimpleDateFormat f = new SimpleDateFormat();
+					f.applyPattern(format);	
+				    String dat = f.format(d);
+				    execUrlParMap.put("END_DATE", dat);						
+				}
+				execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId());
+			
+				String trendPopupUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
+				_htmlStream.append("		<td  width='3%' title=\"Click to see Kpi values trend on timeline\" class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div' ><a id='linkDetail_"+requestIdentity+"_"+recursionLev+"' ><img style='vertical-align:middle;' src=\""+trendImgSrc+"\" /></div></a></td>\n");
+				// insert javascript for open popup window for the trend
+			    _htmlStream.append(" <script>\n");
+			    _htmlStream.append("   var win"+requestIdentity+"_"+recursionLev+"; \n");
+			    _htmlStream.append("Ext.get('linkDetail_"+requestIdentity+"_"+recursionLev+"').on('click', function(){ \n");
+			    _htmlStream.append("   if ( win"+requestIdentity+"_"+recursionLev+" == null ) {win"+requestIdentity+"_"+recursionLev+"=new Ext.Window({id:'win"+requestIdentity+"_"+recursionLev+"',\n");
+			    _htmlStream.append("            bodyCfg:{ \n" );
+			    _htmlStream.append("                tag:'div' \n");
+			    _htmlStream.append("                ,cls:'x-panel-body' \n");
+			    _htmlStream.append("               ,children:[{ \n");
+			    _htmlStream.append("                    tag:'iframe', \n");
+			    _htmlStream.append("                    name: 'dynamicIframe"+requestIdentity+"_"+recursionLev+"', \n");
+			    _htmlStream.append("                    id  : 'dynamicIframe"+requestIdentity+"_"+recursionLev+"', \n");
+			    _htmlStream.append("                    src: '"+trendPopupUrl+"', \n");
+			    _htmlStream.append("                    frameBorder:0, \n");
+			    _htmlStream.append("                    width:'100%', \n");
+			    _htmlStream.append("                    height:'100%', \n");
+			    _htmlStream.append("                    style: {overflow:'auto'}  \n ");        
+			    _htmlStream.append("               }] \n");
+			    _htmlStream.append("            }, \n");
+			    _htmlStream.append("            modal: true,\n");
+			    _htmlStream.append("            layout:'fit',\n");
+				_htmlStream.append("            height:450,\n");
+				_htmlStream.append("            width:600,\n");
+				_htmlStream.append("            closeAction:'hide',\n");
+		        _htmlStream.append("            scripts: true, \n");
+		        _htmlStream.append("            plain: true \n");       
+		        _htmlStream.append("        }); }; \n");
+			    _htmlStream.append("   win"+requestIdentity+"_"+recursionLev+".show(); \n");
+			    _htmlStream.append("	} \n");
+			    _htmlStream.append(");\n");
+			    _htmlStream.append(" </script>\n");
+			}else{
+				_htmlStream.append("		<td  width='3%' title='Trend' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div' ></div></td>\n");
+			}
+		logger.debug("Written HTML for Popup window with trend.");
 		
 		List documents = line.getDocuments();
 		
@@ -231,7 +290,7 @@ public class KpiResourceBlock {
 			}
 			_htmlStream.append("		</div></td>\n");
 		}else{
-			_htmlStream.append("		<td width='4%' class='kpi_td_left' ><div style='align:left;' class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
+			_htmlStream.append("		<td width='3%' class='kpi_td_left' ><div style='align:left;' class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
 		logger.debug("Written HTML for Documents linked to the kpi");
 		

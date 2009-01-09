@@ -1,5 +1,7 @@
 package it.eng.spagobi.kpi.config.dao;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.bo.Domain;
@@ -185,6 +187,60 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 //			}
 //		}
 		return loadResourcesList(null, null);
+	}
+	
+	public String getKpiTrendXmlResult(Integer resId, Integer kpiInstId, Date endDate) throws SourceBeanException{
+		
+		logger.debug("IN");
+		String toReturn = "";
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criteria finder = aSession.createCriteria(SbiKpiValue.class);
+			finder.add(Expression.eq("sbiKpiInstance.idKpiInstance",
+					kpiInstId));
+			finder.add(Expression.lt("beginDt", endDate));
+
+			if (resId != null) {
+				finder.add(Expression.eq("sbiResources.resourceId", resId));
+			}
+			SourceBean sb = new SourceBean("ROWS");
+			
+			List l = finder.list();
+			if (!l.isEmpty()) {
+				KpiValue tem = null;
+				Iterator it = l.iterator();
+				while (it.hasNext()) {
+					SbiKpiValue temp = (SbiKpiValue) it.next();
+					SourceBean sb2 = new SourceBean("ROW");
+					sb2.setAttribute("x", temp.getBeginDt());
+					sb2.setAttribute("KPI_VALUE", temp.getValue());
+					sb.setAttribute(sb2);
+				}
+			}else{
+				SourceBean sb2 = new SourceBean("ROW");
+				sb.setAttribute(sb2);
+			}
+			
+			toReturn = sb.toString();
+
+		} catch (HibernateException he) {
+
+			if (tx != null)
+				tx.rollback();
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		
+		return toReturn;
 	}
 
 	public Resource loadResourceById(Integer id) throws EMFUserError {
@@ -722,7 +778,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("SbiKpiValue end date: "+(endDate!=null ? endDate.toString(): "End date null"));
 		String val = value.getValue();
 		logger.debug("SbiKpiValue value: "+(val!=null ? val : "Value null"));
-		Integer kpiInstanceID = value.getIdKpiInstanceValue();
+		Integer kpiInstanceID = value.getSbiKpiInstance().getIdKpiInstance();
 		logger.debug("SbiKpiValue kpiInstanceID: "+(kpiInstanceID!=null ? kpiInstanceID.toString() : "kpiInstanceID null"));
 		SbiKpiInstance kpiInst = value.getSbiKpiInstance();
 		Double weight = kpiInst.getWeight();

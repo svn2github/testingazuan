@@ -1,12 +1,12 @@
 package it.eng.spagobi.kpi.config.dao;
 
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
-import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 import java.util.Date;
@@ -48,6 +48,15 @@ public interface IKpiDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public List getThresholds(KpiInstance k)throws EMFUserError;
+	
+	/**
+	 * Returns a List of all the the Threshols of the KpiInstance
+	 * 
+	 * @param Integer resId, Integer kpiInstId, String endDate
+	 * @return List of all the the Threshols of the KpiInstance
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public String getKpiTrendXmlResult(Integer resId, Integer kpiInstId, Date endDate) throws SourceBeanException;
 
 	/**
 	 * Returns an Integer representing the seconds of the Periodicity with id periodicityId

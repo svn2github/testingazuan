@@ -150,8 +150,8 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type === 'schedule') {
-		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
-		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
+		this.records = spagobi.app.data.DataService.loadScheduleRecords();
+	//	form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type == 'roles') {									
 		this.records = spagobi.app.data.DataService.loadRolesRecords();
 		 
@@ -167,7 +167,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	   	
 	   	
 	   	
-	   	if(type != 'roles' && type != 'link1' &&type != 'link2' &&type != 'link3'){ //
+	   	if(type != 'roles' && type != 'link1' &&type != 'link2' &&type != 'link3' &&type !='schedule'){ //
 	   		
 	   	containerBottom = new qx.ui.core.Widget();
 	   	var Vbox = new qx.ui.layout.VBox();

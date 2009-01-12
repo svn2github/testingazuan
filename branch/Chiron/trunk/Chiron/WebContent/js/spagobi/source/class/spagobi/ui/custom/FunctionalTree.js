@@ -12,16 +12,20 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 		  	
  },
   
-  members : 
+  members :
+			
   
   {
+  	
+  			tree : undefined,
+  			
   			createFunctionalTree : function(){
   			
-  		var tree = new spagobi.ui.Tree({root: "Functionalities"});	
+  		 this.tree = new spagobi.ui.Tree({root: "Functionalities"});	
   		
-  		var node1 = tree.addNode({
+  		var node1 = this.tree.addNode({
 		  							name  : "Report",
-		  							parent: tree,
+		  							parent: this.tree,
 		  							data  : {
 		  							 			label : 'ReportLabel',
 		  							 			name  : 'ReportName',
@@ -47,9 +51,9 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 		  					});
 		  					
 	  				
-  		var node2 = tree.addNode({
+  		var node2 = this.tree.addNode({
 		  							name  : "OLAP",
-		  							parent: tree,
+		  							parent: this.tree,
 		  							data  : {
 		  							 			label : 'OLAPLabel',
 		  							 			name  : 'OLAPName',
@@ -72,36 +76,39 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 		  							 			]
 		  							 		}
   								});
-  		var node3 = tree.addNode({
+  		var node3 = this.tree.addNode({
 		  							name  : "myOLAP",
 		  							parent: node2,
+		  							file : true,
 		  							data  : {
 		  							 			label : 'myOLAP Label',
 		  							 			name  : 'myOLAP Name',
 		  							 			desc  : 'myOLAP Desc'
 		  							 		}
   								});
-  		var node4 = tree.addNode({
+  		var node4 = this.tree.addNode({
 		  							name  : "DashBoard",
-		  							parent: tree,
+		  							parent: this.tree,
 		  							data  : {
 		  							 			label : 'DashBoardLabel',
 		  							 			name  : 'DashBoardName',
 		  							 			desc  : 'DashBoardDesc'
 		  							 		}	
   								});
-  		var node5 = tree.addNode({
+  		var node5 = this.tree.addNode({
 		  							name  : "myDashBoardFolder",
-		  							parent: node4,  
+		  							parent: node4,
+		  							file : true, 
 		  							data  : {
 		  							 			label : 'myDashBoardFolderLabel',
 		  							 			name  : 'myDashBoardFolderName',
 		  							 			desc  : 'myDashBoardFolderDesc'
 		  							 		}
 		  						});
-  		var node6 = tree.addNode({
+  		var node6 = this.tree.addNode({
 		  							name  : "myDashBoard",
-		  							parent: node4,  
+		  							parent: node4,
+		  							file : true, 
 		  							data  : {
 		  							 			label : 'myDashBoard Label',
 		  							 			name  : 'myDashBoard Name',
@@ -109,9 +116,47 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 		  							 		}
   								});
   		
-  		this._add(tree);
+  		this._add(this.tree);
+  		
+  		this.tree.addListener("contextmenu",this._createMenu,this);	
   
-  }	
+  },
+  
+  
+          _createMenu : function(e){
+          				
+          			//	alert(typeof e);
+          		//      e.get
+          				var contextMenu = new qx.ui.menu.Menu;
+	             		var insertButton = new qx.ui.menu.Button("Insert");//,null,insertCmd); // handleClick(var vItem, Event e)
+	               		var deleteButton = new qx.ui.menu.Button("Delete");//,null,deleteCmd);
+	             //  	var moveUpButton = new qx.ui.menu.Button("Move Up");//,null,moveUpCmd);
+	             //  	var moveDownButton = new qx.ui.menu.Button("Move Down");//,null,moveDownCmd);
+	               		
+	               		contextMenu.add(insertButton);
+	               		contextMenu.add(deleteButton);
+	               		
+	              		var button = new qx.ui.form.MenuButton("Menu Button",qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/preferences-users.png'), contextMenu);
+	               		button.setMaxWidth(50);
+	               		button.setMaxHeight(50);
+	               		button.setMargin(30,20,30,20);
+	             //  		button.setVisibility("excluded");
+	               		button.setEnabled(true);
+	               		
+	              // 		button.setMarginTop(50);
+	              //	button.setVisibility("visible");
+	               	//	button.setIconPosition({left: 20, top: 20});
+	               //	alert("amit");,
+	       //           e._add(contextMenu);
+	              // 	this.setContextMenu(contextMenu);
+	               		this._add(button);//{edge:"north",height: "10%", width: "10%"});
+	               		if (button.isEnabled()== true)
+	               		{
+	               			button.setEnabled(false);
+	               			button.setVisibility("hidden");
+	               		}
+          	
+          }
   
   
   

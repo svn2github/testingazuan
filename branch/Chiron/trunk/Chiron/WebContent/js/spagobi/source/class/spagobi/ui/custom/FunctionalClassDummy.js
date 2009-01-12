@@ -92,6 +92,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		var node3 = tree.addNode({
 		  							name  : "myOLAP",
 		  							parent: node2,
+		  							file : true,
 		  							data  : {
 		  							 			label : 'myOLAP Label',
 		  							 			name  : 'myOLAP Name',
@@ -109,7 +110,8 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   								});
   		var node5 = tree.addNode({
 		  							name  : "myDashBoardFolder",
-		  							parent: node4,  
+		  							parent: node4,
+		  							file : true, 
 		  							data  : {
 		  							 			label : 'myDashBoardFolderLabel',
 		  							 			name  : 'myDashBoardFolderName',
@@ -118,7 +120,8 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 		  						});
   		var node6 = tree.addNode({
 		  							name  : "myDashBoard",
-		  							parent: node4,  
+		  							parent: node4,
+		  							file : true, 
 		  							data  : {
 		  							 			label : 'myDashBoard Label',
 		  							 			name  : 'myDashBoard Name',
@@ -213,17 +216,17 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
        			this._deleteButton.setEnabled(true);
        			
        			if(item instanceof qx.ui.tree.TreeFile){
-       		//		alert("Never");			//leaf nodes don't have insert option	
+       			//	alert("Never");			//leaf nodes don't have insert option	
        				this._createButton.setEnabled(false);
        				
-					if(this._tree.getPreviousSiblingOf(item) == null){		// first child cannot be moved up
+					if(this._tree.getPreviousSibling(item) == null){		// first child cannot be moved up
        						this._moveUpButton.setEnabled(false);
        					}
        					else{
        						this._moveUpButton.setEnabled(true);
        					}
        			
-       					if(this._tree.getNextSiblingOf(item) == null){	// last child cannot be moved down
+       					if(this._tree.getNextSibling(item) == null){	// last child cannot be moved down
        						this._moveDownButton.setEnabled(false);   
        					}
        					else{

@@ -4,7 +4,7 @@
   <parameter name="sendMultiRefs" value="true"/>
   <parameter name="disablePrettyXML" value="true"/>
   <parameter name="adminPassword" value="admin"/>
-  <parameter name="attachments.Directory" value="D:\progetti\spagobi\exo-portal-1.1.4-SpagoBI-2.0-second\webapps\SpagoBI\WEB-INF\attachments"/>
+  <parameter name="attachments.Directory" value="D:\ProgramFiles\exo-portal-1.1.4-SpagoBI-2.0\webapps\SpagoBI\WEB-INF\attachments"/>
   <parameter name="dotNetSoapEncFix" value="true"/>
   <parameter name="enableNamespacePrefixOptimization" value="false"/>
   <parameter name="sendXMLDeclaration" value="true"/>
@@ -31,7 +31,7 @@
   <parameter name="wsdlServiceElement" value="DocumentExecuteServiceService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobiexecute"/>
   <parameter name="wsdlPortType" value="DocumentExecuteService"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="schemaUnqualified" value="http://xml.apache.org/xml-soap"/>
  </service>
  <service name="DataSourceService" provider="java:RPC">
@@ -42,7 +42,7 @@
   <parameter name="wsdlServiceElement" value="DataSourceServiceService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobidatasource"/>
   <parameter name="wsdlPortType" value="DataSourceService"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="schemaUnqualified" value="urn:spagobidatasource,http://bo.datasource.services.spagobi.eng.it"/>
   <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns1:SpagoBiDataSource" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.datasource.bo.SpagoBiDataSource" xmlns:ns1="http://bo.datasource.services.spagobi.eng.it"/>
   <arrayMapping innerType="ns3:SpagoBiDataSource" languageSpecificType="java:it.eng.spagobi.services.datasource.bo.SpagoBiDataSource[]" qname="ns2:ArrayOf_tns2_SpagoBiDataSource" xmlns:ns2="urn:spagobidatasource" xmlns:ns3="http://bo.datasource.services.spagobi.eng.it"/>
@@ -55,7 +55,7 @@
   <parameter name="wsdlServiceElement" value="SecurityServiceService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobisecurity"/>
   <parameter name="wsdlPortType" value="SecurityService"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="schemaUnqualified" value="http://xml.apache.org/xml-soap,http://bo.security.services.spagobi.eng.it,urn:spagobisecurity"/>
   <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns4:SpagoBIUserProfile" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.security.bo.SpagoBIUserProfile" xmlns:ns4="http://bo.security.services.spagobi.eng.it"/>
   <arrayMapping innerType="soapenc:string" languageSpecificType="java:java.lang.String[]" qname="ns5:ArrayOf_soapenc_string" xmlns:ns5="urn:spagobisecurity" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -64,7 +64,7 @@
   <parameter name="allowedMethods" value="*"/>
   <parameter name="typeMappingVersion" value="1.2"/>
   <parameter name="wsdlPortType" value="EventService"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="className" value="it.eng.spagobi.services.event.stub.EventServiceSoapBindingSkeleton"/>
   <parameter name="wsdlServicePort" value="EventService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobievent"/>
@@ -88,7 +88,7 @@
   <parameter name="wsdlServiceElement" value="DataSetServiceService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobidataset"/>
   <parameter name="wsdlPortType" value="DataSetService"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="schemaUnqualified" value="urn:spagobidataset,http://bo.dataset.services.spagobi.eng.it,http://bo.datasource.services.spagobi.eng.it"/>
   <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns6:SpagoBiDataSet" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.dataset.bo.SpagoBiDataSet" xmlns:ns6="http://bo.dataset.services.spagobi.eng.it"/>
   <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns7:SpagoBiDataSource" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.datasource.bo.SpagoBiDataSource" xmlns:ns7="http://bo.datasource.services.spagobi.eng.it"/>
@@ -98,7 +98,7 @@
   <parameter name="allowedMethods" value="*"/>
   <parameter name="typeMappingVersion" value="1.2"/>
   <parameter name="wsdlPortType" value="SchedulerService"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="className" value="it.eng.spagobi.services.scheduler.stub.SchedulerServiceSoapBindingSkeleton"/>
   <parameter name="wsdlServicePort" value="SchedulerService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobischeduler"/>
@@ -112,14 +112,14 @@
   <parameter name="wsdlServiceElement" value="IWsConnectorService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobiwsdataset"/>
   <parameter name="wsdlPortType" value="IWsConnector"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="schemaUnqualified" value="http://xml.apache.org/xml-soap"/>
  </service>
  <service name="AuditService" provider="java:RPC">
   <parameter name="allowedMethods" value="*"/>
   <parameter name="typeMappingVersion" value="1.2"/>
   <parameter name="wsdlPortType" value="AuditService"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="className" value="it.eng.spagobi.services.audit.stub.AuditServiceSoapBindingSkeleton"/>
   <parameter name="wsdlServicePort" value="AuditService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobiaudit"/>
@@ -133,7 +133,7 @@
   <parameter name="wsdlServiceElement" value="ContentServiceService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobicontent"/>
   <parameter name="wsdlPortType" value="ContentService"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="schemaUnqualified" value="http://bo.content.services.spagobi.eng.it,http://xml.apache.org/xml-soap"/>
   <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns10:Content" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.content.bo.Content" xmlns:ns10="http://bo.content.services.spagobi.eng.it"/>
  </service>

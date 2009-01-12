@@ -163,7 +163,7 @@ CREATE TABLE SBI_OBJ_STATE (
 CREATE TABLE SBI_OBJECTS (
        BIOBJ_ID             INTEGER NOT NULL AUTO_INCREMENT,
        ENGINE_ID            INTEGER NOT NULL,
-       DESCR                VARCHAR(160) NULL,
+       DESCR                VARCHAR(400) NULL,
        LABEL                VARCHAR(20) NOT NULL,
        ENCRYPT              SMALLINT NULL,
        PATH                 VARCHAR(400) NULL,
@@ -177,7 +177,7 @@ CREATE TABLE SBI_OBJECTS (
        STATE_CONS_ID        INTEGER NULL,
        EXEC_MODE_CD         VARCHAR(20) NULL,
        STATE_CONS_CD        VARCHAR(20) NULL,
-       NAME                 VARCHAR(40) NOT NULL,
+       NAME                 VARCHAR(200) NOT NULL,
        VISIBLE              SMALLINT NOT NULL,
        UUID                 VARCHAR(40) NOT NULL,
        DATA_SOURCE_ID 		  INTEGER,

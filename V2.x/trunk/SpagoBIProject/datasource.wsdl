@@ -16,6 +16,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
      <element name="label" nillable="true" type="soapenc:string"/>
      <element name="hibDialectClass" nillable="true" type="soapenc:string"/>
      <element name="hibDialectName" nillable="true" type="soapenc:string"/>
+     <element name="id" type="xsd:int"/>
     </sequence>
    </complexType>
   </schema>

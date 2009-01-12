@@ -80,7 +80,7 @@ public class UserMenuTag extends TagSupport {
 		
 	}
 	
-	private void addItem(SourceBean itemSB, StringBuffer htmlStream) throws EMFInternalError {
+	private void addItem(SourceBean itemSB, StringBuffer htmlStream, String father) throws EMFInternalError {
 		String functionality = (String) itemSB.getAttribute("functionality");
 		String code = (String) itemSB.getAttribute("code");
 		String titleCode = (String) itemSB.getAttribute("title");
@@ -95,7 +95,7 @@ public class UserMenuTag extends TagSupport {
 			while (it.hasNext()) {
 				SourceBean subItemSB = (SourceBean) it.next();
 				if (isAbleToSeeItem(subItemSB)) {
-					addItem(subItemSB, htmlStream);
+					addItem(subItemSB, htmlStream, titleCode);
 					if (it.hasNext()) htmlStream.append("\n ,");
 				}
 			}
@@ -113,6 +113,14 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n 	})");
 			htmlStream.append("\n );");
 		} else {
+			if (father!=null && father.startsWith("#")){
+				father = father.substring(1);
+				father = msgBuilder.getMessage(father, httpRequest);
+			}
+			if (titleCode.startsWith("#")){
+				titleCode = titleCode.substring(1);
+				titleCode = msgBuilder.getMessage(titleCode, httpRequest);
+			}
 			htmlStream.append("\n new Ext.menu.Item({");
 			htmlStream.append("\n 	id: '" + new Double(Math.random()).toString() + "',");
 			iconUrl = iconUrl.replace("${SPAGOBI_CONTEXT}", httpRequest.getContextPath());
@@ -125,7 +133,8 @@ public class UserMenuTag extends TagSupport {
 			}
 			htmlStream.append("\n 	text: '" + getTitle(titleCode) + "',");
 			htmlStream.append("\n 	icon: '" + iconUrl + "', ");
-			htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\")'");
+			//htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\")'");
+			htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\",\""+father+" > "+titleCode+"\")'");			
 			htmlStream.append("\n })");
 		}
 	}
@@ -147,7 +156,7 @@ public class UserMenuTag extends TagSupport {
 		while (it.hasNext()) {
 			SourceBean itemSB = (SourceBean) it.next();
 			if (isAbleToSeeItem(itemSB)) {
-				addItem(itemSB, htmlStream);
+				addItem(itemSB, htmlStream,null);
 			}
 		}
 	}

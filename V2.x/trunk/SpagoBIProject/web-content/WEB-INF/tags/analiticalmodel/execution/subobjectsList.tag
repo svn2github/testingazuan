@@ -25,12 +25,23 @@ RequestContainer requestContainer = ChannelUtilities.getRequestContainer(request
 IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
+Map baseDeleteSubObjUrlPars = new HashMap();
+baseDeleteSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+baseDeleteSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "DELETE_SUBOBJECT");
+baseDeleteSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+
+Map deleteSubObjUrlPars = new HashMap();
+deleteSubObjUrlPars.putAll(baseDeleteSubObjUrlPars);
+//deleteSubObjUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, idSub);
+String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
+
 //if (subobjectsList == null || subobjectsList.size() == 0) {
 	%>
 	<%--<div class='portlet-font'><spagobi:message key="SBIDev.docConf.subBIObject.nosubobjects"/></div> --%>
 	<%
 //} else {
 	%>
+	<form method='POST' action='<%= deleteSubObjUrl %>' id='subobjectsForm' name='subobjectsForm'>
 		<table style='width:100%;' align='left' id="subObjectTable_<%= uuid %>">
 			<thead>
 				<tr>
@@ -57,7 +68,91 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 					<td style='vertical-align:middle;' align='left' class='portlet-section-header'>
 						<spagobi:message key="SBIDev.docConf.subBIObject.visibility"/>
 					</td>
-					<td align='left' class='portlet-section-header' colspan='3' >&nbsp;</td>
+					<td align='left' class='portlet-section-header'>&nbsp;</td>
+					<td align='left' class='portlet-section-header'>&nbsp;</td>
+					<td align='left' class='portlet-section-header'>
+						<img 
+       						src='<%= urlBuilder.getResourceLink(request, "/img/expertok.gif") %>' 
+       						name='selectDeselectAllImg' alt='<spagobi:message key="SBIDev.docConf.subBIObject.selectAll"/>' 
+       						title='<spagobi:message key="SBIDev.docConf.subBIObject.selectAll"/>' 
+       						onClick="selectDeselectAllSubobjects();" />
+						<img 
+	       					src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/ico_delete.gif") %>' 
+	       					alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
+	       					title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
+	       					onClick="deleteSubobjects();" />
+	       					
+       				<script>
+	       				function deleteSubobjects() {
+							checks = document.getElementsByName('<%= SpagoBIConstants.SUBOBJECT_ID %>');
+							atLeastOneSelected = false;
+							for (var i = 0; i < checks.length; i++) {
+								check = checks[i];
+								if (check.checked) {
+									atLeastOneSelected = true;
+									break;
+								}
+							}
+							if (!atLeastOneSelected) {
+								alert('<spagobi:message key="SBIDev.docConf.subBIObject.noSubBIObjectSelected" />');
+								return;
+							}
+							var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteSubObject" />');
+							if (conf) {
+								document.getElementById('subobjectsForm').submit();
+							}
+						}
+						
+						selectableSubobjects = new Array();
+						<%
+						if (subobjectsList != null && subobjectsList.size() > 0) {
+							Iterator iterSubs =  subobjectsList.iterator();
+							while(iterSubs.hasNext()) {
+								SubObject subObj = (SubObject)iterSubs.next();
+								if (subObj.getOwner().equals(((UserProfile)profile).getUserId().toString())
+										|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+									%>
+									selectableSubobjects.push(<%= subObj.getId() %>);
+									<%
+								}
+							}
+						}
+						%>
+						
+						selectedSubobjects = new Array();
+						
+						function selectDeselectAllSubobjects() {
+							if (selectedSubobjects.length == 0) {
+								selectAllSubobjects();
+							} else if (selectedSubobjects.length == selectableSubobjects.length) {
+								deselectAllSubobjects();
+							} else {
+								selectAllSubobjects();
+							}
+						}
+						
+						function selectAllSubobjects() {
+							checks = document.getElementsByName('<%= SpagoBIConstants.SUBOBJECT_ID %>');
+							for (var i = 0; i < checks.length; i++) {
+								check = checks[i];
+								if (!check.checked) {
+									check.click();
+								}
+							}
+						}
+						
+						function deselectAllSubobjects() {
+							checks = document.getElementsByName('<%= SpagoBIConstants.SUBOBJECT_ID %>');
+							for (var i = 0; i < checks.length; i++) {
+								check = checks[i];
+								if (check.checked) {
+									check.click();
+								}
+							}
+						}
+					</script>
+					
+					</td>
 				</tr>
 			</thead>
 			<tboby>
@@ -72,14 +167,8 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 	String creationDate = null;
 	String lastModificationDate = null;
 	String execSubObjUrl = null;
-	String deleteSubObjUrl = null;
 	boolean alternate = false;
 	String rowClass = null;
-	
-    Map baseDeleteSubObjUrlPars = new HashMap();
-    baseDeleteSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-    baseDeleteSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "DELETE_SUBOBJECT");
-    baseDeleteSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
 	
     Map baseExecSubObjUrlPars = new HashMap();
     baseExecSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE );
@@ -108,11 +197,6 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 	        	delete = "delete";
 	        }
 	        
-		    Map deleteSubObjUrlPars = new HashMap();
-		    deleteSubObjUrlPars.putAll(baseDeleteSubObjUrlPars);
-		    deleteSubObjUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, idSub);
-		    deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
-		    
 		    Map execSubObjUrlPars = new HashMap();
 		    execSubObjUrlPars.putAll(baseExecSubObjUrlPars);
 		    execSubObjUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, idSub);
@@ -134,30 +218,7 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 	           			<td class='<%= rowClass %>' width='20px'>&nbsp;</td> 
 	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= visib %></td>
 	           			<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
-	           			<%
-	           		//if (owner.equals(profile.getUserUniqueIdentifier().toString())) {
-	           		if (owner.equals(((UserProfile)profile).getUserId().toString())) {
-	           			%>
-	                   		<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
-	               				<a href="javascript:var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteSubObject" />'); 
-	               									if (conf) {document.location='<%= deleteSubObjUrl.toString() %>';}">
-	               					<img 
-		  	   							src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif") %>' 
-		  	   							name='deleteSub' 
-		  	            				alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption" />' 
-		                				title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption" />' />
-	               				</a>
-	               			</td>
-	               		<%
-	           		} else {
-	           			%>
-	           				<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
-	           					&nbsp;
-	           				</td>
-	           			<%
-	           		}
-	           			%>
-	               		<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
+	           			<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
 	           				<a href='<%= execSubObjUrl %>'>
 	           					<img 
 	  	   							src='<%= urlBuilder.getResourceLink(request, "/img/exec.gif") %>' 
@@ -166,13 +227,32 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 	                				title='<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />' />
 	           				</a>
 	           			</td>
+	           			<%
+	           			if (owner.equals(((UserProfile)profile).getUserId().toString())
+	           				|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+	           			%>
+	                   		<td style='vertical-align:middle;text-align:center;' class='<%= rowClass %>' width='40px'>
+                   				<input type="checkbox" name="<%= SpagoBIConstants.SUBOBJECT_ID %>" id="<%= SpagoBIConstants.SUBOBJECT_ID %>"
+				   					value="<%= idSub %>" 
+				   					onClick="if (this.checked) {selectedSubobjects.push(this.value);} else {selectedSubobjects.removeFirst(this.value);}"/>
+	               			</td>
+	               		<%
+	           			} else {
+	           			%>
+	           				<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
+	           					&nbsp;
+	           				</td>
+	           			<%
+	           			}
+	           			%>
 	           		</tr>
 	     	<%
 	    }
 	}
     %>
-    </tboby>
-	</table>
+    		</tboby>
+		</table>
+	</form>
 	
 	<br/>
 	<br/>
@@ -218,8 +298,8 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 		var empty9 = newRow.insertCell(9);
 		var visib = newRow.insertCell(10);
 		var empty11 = newRow.insertCell(11);
-		var deleteCell = newRow.insertCell(12);
-		var execCell = newRow.insertCell(13);
+		var execCell = newRow.insertCell(12);
+		var deleteCell = newRow.insertCell(13);
 		var cellClass = 'portlet-section-alternate';
 		newRow.className = 'portlet-font';
 		nameCell.innerHTML = subobject.name;
@@ -239,9 +319,10 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 		}
 		visib.className = cellClass;
 		
-		deleteCell.innerHTML = '<a href="javascript:var conf = confirm(\'<spagobi:message key="ConfirmMessages.DeleteSubObject" />\');if (conf) {document.location=\'<%= baseDeleteSubObjUrl.toString() %>&<%= SpagoBIConstants.SUBOBJECT_ID %>=' + subobject.id + '\';}"><img src="<%= urlBuilder.getResourceLink(request, "/img/erase.gif") %>" name="deleteSub" alt="<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption" />" title="<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption" />" /></a>';
+		deleteCell.innerHTML = '<input type="checkbox" name="<%= SpagoBIConstants.SUBOBJECT_ID %>" id="<%= SpagoBIConstants.SUBOBJECT_ID %>" value="' + subobject.id + '" onClick="if (this.checked) {selectedSubobjects.push(this.value);} else {selectedSubobjects.removeFirst(this.value);}"/>';
 		deleteCell.className = cellClass;
 		deleteCell.style.width = '40px';
+		deleteCell.style.textAlign = 'center';
 		execCell.innerHTML = '<a href="<%= baseExecSubObjUrl.toString() %>&<%= SpagoBIConstants.SUBOBJECT_ID %>=' + subobject.id + '" ><img src="<%= urlBuilder.getResourceLink(request, "/img/exec.gif") %>"  name="execSub" alt="<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />" title="<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />" /></a>';
 		execCell.className = cellClass;
 		execCell.style.width = '40px';
@@ -253,6 +334,7 @@ IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer
 		empty9.className = cellClass;
 		empty11.className = cellClass;
 		
+		selectableSubobjects.push(subobject.id);
 	}
 	
 	function loadSubObject(windowName, subObjId) {

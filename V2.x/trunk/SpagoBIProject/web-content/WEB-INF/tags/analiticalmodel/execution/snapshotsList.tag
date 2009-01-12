@@ -27,7 +27,14 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 	<div class='portlet-font'><spagobi:message key="SBIDev.docConf.snapshots.nosnapshots"/></div>
 	<%
 } else {
+    Map deleteSnapUrlPars = new HashMap();
+    deleteSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+    deleteSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.ERASE_SNAPSHOT_MESSAGE);
+    deleteSnapUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+    String deleteSnapUrl = urlBuilder.getUrl(request, deleteSnapUrlPars);
+	
 	%>
+	<form method='POST' action='<%= deleteSnapUrl %>' id='snapshotsForm' name='snapshotsForm'>
 	<table style='width:100%;' align='left'>
 		<thead>
 			<tr>
@@ -44,7 +51,81 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 		   		</td>
 		   		<td align='left' class='portlet-section-header'>&nbsp;</td>
 		   		<td align='left' class='portlet-section-header'>&nbsp;</td>
-		   		<td align='left' class='portlet-section-header'>&nbsp;</td>
+		   		<td align='left' class='portlet-section-header'>
+		   		<%
+		   		if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+		        	%>
+	        		&nbsp;
+	        		<%
+	        	} else {
+	        		%>
+					<img 
+       					src='<%= urlBuilder.getResourceLink(request, "/img/expertok.gif") %>' 
+       					alt='<spagobi:message key="SBIDev.docConf.snapshots.selectAll"/>' 
+       					title='<spagobi:message key="SBIDev.docConf.snapshots.selectAll"/>' 
+       					onClick="selectDeselectAllSnapshots();" />
+					<img 
+       					src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/ico_delete.gif") %>' 
+       					alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
+       					title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
+       					onClick="deleteSnapshots();" />
+       				<script>
+	       				function deleteSnapshots() {
+							checks = document.getElementsByName('<%= SpagoBIConstants.SNAPSHOT_ID %>');
+							atLeastOneSelected = false;
+							for (var i = 0; i < checks.length; i++) {
+								check = checks[i];
+								if (check.checked) {
+									atLeastOneSelected = true;
+									break;
+								}
+							}
+							if (!atLeastOneSelected) {
+								alert('<spagobi:message key="SBIDev.docConf.snapshots.noSnapshotsSelected" />');
+								return;
+							}
+							var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteSnapshot" />');
+							if (conf) {
+								document.getElementById('snapshotsForm').submit();
+							}
+						}
+
+						selectedSnapshots = new Array();
+						
+						function selectDeselectAllSnapshots() {
+							if (selectedSnapshots.length == 0) {
+								selectAllSnapshots();
+							} else if (selectedSnapshots.length == <%= snapshotsList.size() %>) {
+								deselectAllSnapshots();
+							} else {
+								selectAllSnapshots();
+							}
+						}
+						
+						function selectAllSnapshots() {
+							checks = document.getElementsByName('<%= SpagoBIConstants.SNAPSHOT_ID %>');
+							for (var i = 0; i < checks.length; i++) {
+								check = checks[i];
+								if (!check.checked) {
+									check.click();
+								}
+							}
+						}
+						
+						function deselectAllSnapshots() {
+							checks = document.getElementsByName('<%= SpagoBIConstants.SNAPSHOT_ID %>');
+							for (var i = 0; i < checks.length; i++) {
+								check = checks[i];
+								if (check.checked) {
+									check.click();
+								}
+							}
+						}
+					</script>
+				<%
+	        	}
+				%>
+		   		</td>
 	 		</tr>
 		</thead>
 		<tboby>
@@ -55,7 +136,6 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
     String descrSnap = null;
     Date creationDate = null;
     String execSnapUrl = null;
-    String deleteSnapUrl = null;
 	boolean alternate = false;
 	String rowClass = null;
 	   
@@ -74,12 +154,6 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 	    execSnapUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
 	    execSnapUrl = urlBuilder.getUrl(request, execSnapUrlPars);
 		
-	    Map deleteSnapUrlPars = new HashMap();
-	    deleteSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-	    deleteSnapUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.ERASE_SNAPSHOT_MESSAGE);
-	    deleteSnapUrlPars.put(SpagoBIConstants.SNAPSHOT_ID, snap.getId());
-	    deleteSnapUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
-	    deleteSnapUrl = urlBuilder.getUrl(request, deleteSnapUrlPars);
         %>
 	    <tr class='portlet-font'>
 	    	<td style='vertical-align:middle;' class='<%= rowClass %>'><%= nameSnap %></td>
@@ -88,25 +162,6 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 	    	<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
 	    	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= creationDate.toString() %></td>
 	    	<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
-	    	<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
-	    <%
-        if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
-        	%>
-        			&nbsp;
-        	<%
-        } else {
-        	%>
-        			<a href="javascript:var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteSnapshot" />'); 
-        								if (conf) {document.location='<%= deleteSnapUrl.toString() %>';}">
-        				<img 
-        					src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif") %>' 
-        					name='deleteSnapshot' alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
-        					title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' />
-        			</a>
-        	<%
-        }
-	    %>
-        	</td>
         	<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
         		<a href='<%= execSnapUrl %>'>
         			<img 
@@ -116,12 +171,27 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 						title='<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt"/>' />
         		</a>
        		</td>
+	    	<td style='vertical-align:middle;text-align:center;' class='<%= rowClass %>' width='40px' >
+	    <%
+        if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+        	%>
+        		&nbsp;
+        	<%
+        } else {
+        	%>
+				<input type="checkbox" name="<%= SpagoBIConstants.SNAPSHOT_ID %>" id="<%= SpagoBIConstants.SNAPSHOT_ID %>"
+					   value="<%= snap.getId() %>" onClick="if (this.checked) {selectedSnapshots.push(this.value);} else {selectedSnapshots.removeFirst(this.value);}"/>
+        	<%
+        }
+	    %>
+        	</td>
      	</tr>
      	<%
     }
     %>
     </tboby>
 	</table>
+	</form>
     <%
 }
 %>

@@ -30,7 +30,13 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 	<div class='portlet-font'><spagobi:message key="SBIDev.docConf.viewPoint.noViewPoints"/></div>
 	<%
 } else {
+    Map deleteVPUrlPars = new HashMap();
+    deleteVPUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+    deleteVPUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.VIEWPOINT_ERASE);
+    deleteVPUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
+    String deleteVPUrl = urlBuilder.getUrl(request, deleteVPUrlPars);
 	%>
+	<form method='POST' action='<%= deleteVPUrl %>' id='viewpointsForm' name='viewpointsForm'>
 		<table style='width:100%;' align='left'>
 			<thead>
 				<tr>
@@ -55,7 +61,90 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 				  </td>
 				  <td align='left' class='portlet-section-header'>&nbsp;</td>
 				  <td align='left' class='portlet-section-header'>&nbsp;</td>
-				  <td align='left' class='portlet-section-header'>&nbsp;</td>
+				  <td align='left' class='portlet-section-header'>
+				  
+				  	<img 
+       						src='<%= urlBuilder.getResourceLink(request, "/img/expertok.gif") %>' 
+       						name='selectDeselectAllImg' alt='<spagobi:message key="SBIDev.docConf.viewPoint.selectAll"/>' 
+       						title='<spagobi:message key="SBIDev.docConf.viewPoint.selectAll"/>' 
+       						onClick="selectDeselectAllViewpoints();" />
+						<img 
+	       					src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/ico_delete.gif") %>' 
+	       					alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
+	       					title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
+	       					onClick="deleteViewpoints();" />
+	       					
+       				<script>
+	       				function deleteViewpoints() {
+							checks = document.getElementsByName('vpId');
+							atLeastOneSelected = false;
+							for (var i = 0; i < checks.length; i++) {
+								check = checks[i];
+								if (check.checked) {
+									atLeastOneSelected = true;
+									break;
+								}
+							}
+							if (!atLeastOneSelected) {
+								alert('<spagobi:message key="SBIDev.docConf.viewPoint.noViewPointsSelected" />');
+								return;
+							}
+							var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteViewpoint" />');
+							if (conf) {
+								document.getElementById('viewpointsForm').submit();
+							}
+						}
+						
+						selectableViewpoints = new Array();
+						<%
+						if (viewpointsList != null && viewpointsList.size() > 0) {
+							Iterator iterVPs =  viewpointsList.iterator();
+							while(iterVPs.hasNext()) {
+								Viewpoint vp = (Viewpoint) iterVPs.next();
+								if (vp.getVpOwner().equals(((UserProfile)profile).getUserId().toString())
+										|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+									%>
+									selectableViewpoints.push(<%= vp.getVpId() %>);
+									<%
+								}
+							}
+						}
+						%>
+						
+						selectedViewpoints = new Array();
+						
+						function selectDeselectAllViewpoints() {
+							if (selectedViewpoints.length == 0) {
+								selectAllViewpoints();
+							} else if (selectedViewpoints.length == selectableViewpoints.length) {
+								deselectAllViewpoints();
+							} else {
+								selectAllViewpoints();
+							}
+						}
+						
+						function selectAllViewpoints() {
+							checks = document.getElementsByName('vpId');
+							for (var i = 0; i < checks.length; i++) {
+								check = checks[i];
+								if (!check.checked) {
+									check.click();
+								}
+							}
+						}
+						
+						function deselectAllViewpoints() {
+							checks = document.getElementsByName('vpId');
+							for (var i = 0; i < checks.length; i++) {
+								check = checks[i];
+								if (check.checked) {
+									check.click();
+								}
+							}
+						}
+					</script>
+				  
+				  </td>
 				</tr>
 			</thead>
 			<tboby>
@@ -68,7 +157,6 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
     String scopeVP = null;
     Date creationDateVP = null;
     String execVPUrl = null;
-    String deleteVPUrl = null;
     String viewVPUrl = null;				    				   
 	boolean alternate = false;
 	String rowClass = null;
@@ -91,13 +179,6 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 		execVPUrlPars.put("vpId",vp.getVpId());
 		execVPUrl = urlBuilder.getUrl(request, execVPUrlPars);
 			
-	    Map deleteVPUrlPars = new HashMap();
-	    deleteVPUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-	    deleteVPUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.VIEWPOINT_ERASE);
-	    deleteVPUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
-	    deleteVPUrlPars.put("vpId",vp.getVpId());
-	    deleteVPUrl = urlBuilder.getUrl(request, deleteVPUrlPars);
-
 	    Map viewVPUrlPars = new HashMap();
 	    viewVPUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 	    viewVPUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.VIEWPOINT_VIEW);
@@ -131,23 +212,7 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 				        		title='<spagobi:message key="SBIDev.docConf.viewPoint.viewButt" />'
 				        	/>
 				    	</a>
-					</td>	            
-					<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
-					<%
-	                //if (ownerVP.equals(profile.getUserUniqueIdentifier().toString())) {
-	                if (ownerVP.equals(((UserProfile)profile).getUserId().toString()) || profile.getFunctionalities().contains(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
-	                	%>
-	                 	<a href="javascript:var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteViewpoint"/>'); 
-	                 											if (conf) {document.location='<%= deleteVPUrl.toString() %>';}">
-	                 		<img 
-	                 			src='<%= urlBuilder.getResourceLink(request, "/img/erase.gif") %>' 
-	                 			name='deleteViewpoint' alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption" />' 
-	                 			title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption" />' 
-	                 		/>
-	                 	</a>
-	                 	<%
-	                }
-					%>
+					</td>
 					<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
 						<a href='<%= execVPUrl %>'>
 					 		<img 
@@ -158,12 +223,27 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 							/>
 						</a>
 					</td>
+					<td style='vertical-align:middle;text-align:center;' class='<%= rowClass %>' width='40px'>
+					<%
+	                if (ownerVP.equals(((UserProfile)profile).getUserId().toString()) || profile.getFunctionalities().contains(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+	                	%>
+							<input type="checkbox" name="vpId" id="vpId"
+				   					value="<%= vp.getVpId() %>" 
+				   					onClick="if (this.checked) {selectedViewpoints.push(this.value);} else {selectedViewpoints.removeFirst(this.value);}"/>
+	                 	<%
+	                } else {
+	           			%>
+           					&nbsp;
+           				<%
+	                }
+					%>
 				</tr>
      	<%
     }
     %>
-    </tboby>
-	</table>
+    		</tboby>
+		</table>
+	</form>
     <%
 }
 %>

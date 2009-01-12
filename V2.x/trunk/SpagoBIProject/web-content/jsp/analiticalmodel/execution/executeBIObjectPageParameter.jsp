@@ -121,8 +121,7 @@ createToggledBox('<spagobi:message key='sbi.execution.parameters'/>:', 'paramete
 <% if (viewpointsSliderVisible) { %>
 <div style="display:none">
 	<div id="viewpointsContentEl<%= uuid %>">
-		<%--<spagobi:viewPointsList biobjectId="<%= obj.getId() %>" />--%>
-		<execution:viewpointsList viewpointsList="<%= viewpointsList %>" />
+		<execution:viewpointsList viewpointsList="<%= viewpointsList %>" uuid="<%=uuid%>" />
 	</div>
 </div>
 <div id="popout_ViewPoint<%= uuid %>" class="popout"></div>
@@ -136,7 +135,6 @@ createToggledBox('<spagobi:message key='sbi.execution.viewpoints'/>:', 'viewpoin
 <%-- SubObjects --%>
 <div style="display:none">
 	<div id="subobjectsContentEl<%= uuid %>">
-		<%--<spagobi:subObjectsList biobjectId="<%= obj.getId() %>" />--%>
 		<execution:subobjectsList subobjectsList="<%= subobjectsList %>" uuid="<%=uuid%>" />
 	</div>
 </div>
@@ -152,7 +150,7 @@ createToggledBox('<spagobi:message key='sbi.execution.subobjects'/>:', 'subobjec
 <div style="display:none">
 	<div id="snapshotsContentEl<%= uuid %>">
 		<%--<spagobi:snapshotsList snapshotsList="<%= snapshotsList %>" />--%>
-		<execution:snapshotsList snapshotsList="<%= snapshotsList %>" />
+		<execution:snapshotsList snapshotsList="<%= snapshotsList %>" uuid="<%=uuid%>" />
 	</div>
 </div>
 <div id="popout_Snapshot<%= uuid %>" class="popout"></div>

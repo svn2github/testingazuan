@@ -2,6 +2,7 @@
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 
 <%@attribute name="snapshotsList" required="true" type="java.util.List"%>
+<%@attribute name="uuid" required="true" type="java.lang.String"%>
 
 <%@tag import="java.util.Iterator"%>
 <%@tag import="it.eng.spagobi.analiticalmodel.document.bo.Snapshot"%>
@@ -34,7 +35,7 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
     String deleteSnapUrl = urlBuilder.getUrl(request, deleteSnapUrlPars);
 	
 	%>
-	<form method='POST' action='<%= deleteSnapUrl %>' id='snapshotsForm' name='snapshotsForm'>
+	<form method='POST' action='<%= deleteSnapUrl %>' id='snapshotsForm<%= uuid %>' name='snapshotsForm<%= uuid %>'>
 	<table style='width:100%;' align='left'>
 		<thead>
 			<tr>
@@ -63,15 +64,25 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
        					src='<%= urlBuilder.getResourceLink(request, "/img/expertok.gif") %>' 
        					alt='<spagobi:message key="SBIDev.docConf.snapshots.selectAll"/>' 
        					title='<spagobi:message key="SBIDev.docConf.snapshots.selectAll"/>' 
-       					onClick="selectDeselectAllSnapshots();" />
+       					onClick="selectDeselectAllSnapshots<%= uuid %>();" />
 					<img 
        					src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/ico_delete.gif") %>' 
        					alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
        					title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
-       					onClick="deleteSnapshots();" />
+       					onClick="deleteSnapshots<%= uuid %>();" />
        				<script>
-	       				function deleteSnapshots() {
-							checks = document.getElementsByName('<%= SpagoBIConstants.SNAPSHOT_ID %>');
+       					function getSnapshots<%= uuid %>() {
+       						var toReturn = document.snapshotsForm<%= uuid %>.<%= SpagoBIConstants.SNAPSHOT_ID %>;
+       						if (toReturn != null && !toReturn.length) {
+       							var temp = new Array();
+       							temp.push(toReturn);
+       							toReturn = temp;
+       						}
+       						return toReturn;
+       					}
+       					
+	       				function deleteSnapshots<%= uuid %>() {
+							checks = getSnapshots<%= uuid %>();
 							atLeastOneSelected = false;
 							for (var i = 0; i < checks.length; i++) {
 								check = checks[i];
@@ -86,24 +97,24 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 							}
 							var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteSnapshot" />');
 							if (conf) {
-								document.getElementById('snapshotsForm').submit();
+								document.getElementById('snapshotsForm<%= uuid %>').submit();
 							}
 						}
 
-						selectedSnapshots = new Array();
+						selectedSnapshots<%= uuid %> = new Array();
 						
-						function selectDeselectAllSnapshots() {
-							if (selectedSnapshots.length == 0) {
-								selectAllSnapshots();
-							} else if (selectedSnapshots.length == <%= snapshotsList.size() %>) {
-								deselectAllSnapshots();
+						function selectDeselectAllSnapshots<%= uuid %>() {
+							if (selectedSnapshots<%= uuid %>.length == 0) {
+								selectAllSnapshots<%= uuid %>();
+							} else if (selectedSnapshots<%= uuid %>.length == <%= snapshotsList.size() %>) {
+								deselectAllSnapshots<%= uuid %>();
 							} else {
-								selectAllSnapshots();
+								selectAllSnapshots<%= uuid %>();
 							}
 						}
 						
-						function selectAllSnapshots() {
-							checks = document.getElementsByName('<%= SpagoBIConstants.SNAPSHOT_ID %>');
+						function selectAllSnapshots<%= uuid %>() {
+							checks = getSnapshots<%= uuid %>();
 							for (var i = 0; i < checks.length; i++) {
 								check = checks[i];
 								if (!check.checked) {
@@ -112,8 +123,8 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 							}
 						}
 						
-						function deselectAllSnapshots() {
-							checks = document.getElementsByName('<%= SpagoBIConstants.SNAPSHOT_ID %>');
+						function deselectAllSnapshots<%= uuid %>() {
+							checks = getSnapshots<%= uuid %>();
 							for (var i = 0; i < checks.length; i++) {
 								check = checks[i];
 								if (check.checked) {
@@ -180,7 +191,7 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
         } else {
         	%>
 				<input type="checkbox" name="<%= SpagoBIConstants.SNAPSHOT_ID %>" id="<%= SpagoBIConstants.SNAPSHOT_ID %>"
-					   value="<%= snap.getId() %>" onClick="if (this.checked) {selectedSnapshots.push(this.value);} else {selectedSnapshots.removeFirst(this.value);}"/>
+					   value="<%= snap.getId() %>" onClick="if (this.checked) {selectedSnapshots<%= uuid %>.push(this.value);} else {selectedSnapshots<%= uuid %>.removeFirst(this.value);}"/>
         	<%
         }
 	    %>

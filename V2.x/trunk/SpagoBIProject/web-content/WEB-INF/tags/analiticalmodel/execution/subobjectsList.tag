@@ -32,7 +32,6 @@ baseDeleteSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"tru
 
 Map deleteSubObjUrlPars = new HashMap();
 deleteSubObjUrlPars.putAll(baseDeleteSubObjUrlPars);
-//deleteSubObjUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, idSub);
 String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 
 //if (subobjectsList == null || subobjectsList.size() == 0) {
@@ -41,7 +40,7 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 	<%
 //} else {
 	%>
-	<form method='POST' action='<%= deleteSubObjUrl %>' id='subobjectsForm' name='subobjectsForm'>
+	<form method='POST' action='<%= deleteSubObjUrl %>' id='subobjectsForm<%= uuid %>' name='subobjectsForm<%= uuid %>'>
 		<table style='width:100%;' align='left' id="subObjectTable_<%= uuid %>">
 			<thead>
 				<tr>
@@ -75,16 +74,26 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
        						src='<%= urlBuilder.getResourceLink(request, "/img/expertok.gif") %>' 
        						name='selectDeselectAllImg' alt='<spagobi:message key="SBIDev.docConf.subBIObject.selectAll"/>' 
        						title='<spagobi:message key="SBIDev.docConf.subBIObject.selectAll"/>' 
-       						onClick="selectDeselectAllSubobjects();" />
+       						onClick="selectDeselectAllSubobjects<%= uuid %>();" />
 						<img 
 	       					src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/ico_delete.gif") %>' 
 	       					alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
 	       					title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
-	       					onClick="deleteSubobjects();" />
+	       					onClick="deleteSubobjects<%= uuid %>();" />
 	       					
        				<script>
-	       				function deleteSubobjects() {
-							checks = document.getElementsByName('<%= SpagoBIConstants.SUBOBJECT_ID %>');
+       					function getSubobjects<%= uuid %>() {
+       						var toReturn = document.subobjectsForm<%= uuid %>.<%= SpagoBIConstants.SUBOBJECT_ID %>;
+       						if (toReturn != null && !toReturn.length) {
+       							var temp = new Array();
+       							temp.push(toReturn);
+       							toReturn = temp;
+       						}
+       						return toReturn;
+       					}
+       				
+	       				function deleteSubobjects<%= uuid %>() {
+							checks = getSubobjects<%= uuid %>();
 							atLeastOneSelected = false;
 							for (var i = 0; i < checks.length; i++) {
 								check = checks[i];
@@ -99,11 +108,11 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 							}
 							var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteSubObject" />');
 							if (conf) {
-								document.getElementById('subobjectsForm').submit();
+								document.getElementById('subobjectsForm<%= uuid %>').submit();
 							}
 						}
 						
-						selectableSubobjects = new Array();
+						selectableSubobjects<%= uuid %> = new Array();
 						<%
 						if (subobjectsList != null && subobjectsList.size() > 0) {
 							Iterator iterSubs =  subobjectsList.iterator();
@@ -112,27 +121,27 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 								if (subObj.getOwner().equals(((UserProfile)profile).getUserId().toString())
 										|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
 									%>
-									selectableSubobjects.push(<%= subObj.getId() %>);
+									selectableSubobjects<%= uuid %>.push(<%= subObj.getId() %>);
 									<%
 								}
 							}
 						}
 						%>
 						
-						selectedSubobjects = new Array();
+						selectedSubobjects<%= uuid %> = new Array();
 						
-						function selectDeselectAllSubobjects() {
-							if (selectedSubobjects.length == 0) {
-								selectAllSubobjects();
-							} else if (selectedSubobjects.length == selectableSubobjects.length) {
-								deselectAllSubobjects();
+						function selectDeselectAllSubobjects<%= uuid %>() {
+							if (selectedSubobjects<%= uuid %>.length == 0) {
+								selectAllSubobjects<%= uuid %>();
+							} else if (selectedSubobjects<%= uuid %>.length == selectableSubobjects<%= uuid %>.length) {
+								deselectAllSubobjects<%= uuid %>();
 							} else {
-								selectAllSubobjects();
+								selectAllSubobjects<%= uuid %>();
 							}
 						}
 						
-						function selectAllSubobjects() {
-							checks = document.getElementsByName('<%= SpagoBIConstants.SUBOBJECT_ID %>');
+						function selectAllSubobjects<%= uuid %>() {
+							checks = getSubobjects<%= uuid %>();
 							for (var i = 0; i < checks.length; i++) {
 								check = checks[i];
 								if (!check.checked) {
@@ -141,8 +150,8 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 							}
 						}
 						
-						function deselectAllSubobjects() {
-							checks = document.getElementsByName('<%= SpagoBIConstants.SUBOBJECT_ID %>');
+						function deselectAllSubobjects<%= uuid %>() {
+							checks = getSubobjects<%= uuid %>();
 							for (var i = 0; i < checks.length; i++) {
 								check = checks[i];
 								if (check.checked) {
@@ -234,7 +243,7 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 	                   		<td style='vertical-align:middle;text-align:center;' class='<%= rowClass %>' width='40px'>
                    				<input type="checkbox" name="<%= SpagoBIConstants.SUBOBJECT_ID %>" id="<%= SpagoBIConstants.SUBOBJECT_ID %>"
 				   					value="<%= idSub %>" 
-				   					onClick="if (this.checked) {selectedSubobjects.push(this.value);} else {selectedSubobjects.removeFirst(this.value);}"/>
+				   					onClick="if (this.checked) {selectedSubobjects<%= uuid %>.push(this.value);} else {selectedSubobjects<%= uuid %>.removeFirst(this.value);}"/>
 	               			</td>
 	               		<%
 	           			} else {
@@ -319,7 +328,7 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 		}
 		visib.className = cellClass;
 		
-		deleteCell.innerHTML = '<input type="checkbox" name="<%= SpagoBIConstants.SUBOBJECT_ID %>" id="<%= SpagoBIConstants.SUBOBJECT_ID %>" value="' + subobject.id + '" onClick="if (this.checked) {selectedSubobjects.push(this.value);} else {selectedSubobjects.removeFirst(this.value);}"/>';
+		deleteCell.innerHTML = '<input type="checkbox" name="<%= SpagoBIConstants.SUBOBJECT_ID %>" id="<%= SpagoBIConstants.SUBOBJECT_ID %>" value="' + subobject.id + '" onClick="if (this.checked) {selectedSubobjects' + uuid + '.push(this.value);} else {selectedSubobjects' + uuid + '.removeFirst(this.value);}"/>';
 		deleteCell.className = cellClass;
 		deleteCell.style.width = '40px';
 		deleteCell.style.textAlign = 'center';
@@ -334,7 +343,7 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 		empty9.className = cellClass;
 		empty11.className = cellClass;
 		
-		selectableSubobjects.push(subobject.id);
+		eval('selectableSubobjects' + uuid + '.push(' + subobject.id + ')');
 	}
 	
 	function loadSubObject(windowName, subObjId) {

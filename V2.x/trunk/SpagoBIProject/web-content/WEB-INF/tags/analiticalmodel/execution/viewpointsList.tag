@@ -2,6 +2,7 @@
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 
 <%@attribute name="viewpointsList" required="true" type="java.util.List"%>
+<%@attribute name="uuid" required="true" type="java.lang.String"%>
 
 <%@tag import="java.util.Iterator"%>
 <%@tag import="it.eng.spagobi.analiticalmodel.document.bo.Viewpoint"%>
@@ -36,7 +37,7 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
     deleteVPUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
     String deleteVPUrl = urlBuilder.getUrl(request, deleteVPUrlPars);
 	%>
-	<form method='POST' action='<%= deleteVPUrl %>' id='viewpointsForm' name='viewpointsForm'>
+	<form method='POST' action='<%= deleteVPUrl %>' id='viewpointsForm<%= uuid %>' name='viewpointsForm<%= uuid %>'>
 		<table style='width:100%;' align='left'>
 			<thead>
 				<tr>
@@ -67,16 +68,26 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
        						src='<%= urlBuilder.getResourceLink(request, "/img/expertok.gif") %>' 
        						name='selectDeselectAllImg' alt='<spagobi:message key="SBIDev.docConf.viewPoint.selectAll"/>' 
        						title='<spagobi:message key="SBIDev.docConf.viewPoint.selectAll"/>' 
-       						onClick="selectDeselectAllViewpoints();" />
+       						onClick="selectDeselectAllViewpoints<%= uuid %>();" />
 						<img 
 	       					src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/ico_delete.gif") %>' 
 	       					alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
 	       					title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
-	       					onClick="deleteViewpoints();" />
+	       					onClick="deleteViewpoints<%= uuid %>();" />
 	       					
        				<script>
-	       				function deleteViewpoints() {
-							checks = document.getElementsByName('vpId');
+       					function getViewpoints<%= uuid %>() {
+       						var toReturn = document.viewpointsForm<%= uuid %>.vpId;
+       						if (toReturn != null && !toReturn.length) {
+       							var temp = new Array();
+       							temp.push(toReturn);
+       							toReturn = temp;
+       						}
+       						return toReturn;
+       					}
+       				
+	       				function deleteViewpoints<%= uuid %>() {
+							checks = getViewpoints<%= uuid %>();
 							atLeastOneSelected = false;
 							for (var i = 0; i < checks.length; i++) {
 								check = checks[i];
@@ -91,11 +102,11 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 							}
 							var conf = confirm('<spagobi:message key="ConfirmMessages.DeleteViewpoint" />');
 							if (conf) {
-								document.getElementById('viewpointsForm').submit();
+								document.getElementById('viewpointsForm<%= uuid %>').submit();
 							}
 						}
 						
-						selectableViewpoints = new Array();
+						selectableViewpoints<%= uuid %> = new Array();
 						<%
 						if (viewpointsList != null && viewpointsList.size() > 0) {
 							Iterator iterVPs =  viewpointsList.iterator();
@@ -104,27 +115,27 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 								if (vp.getVpOwner().equals(((UserProfile)profile).getUserId().toString())
 										|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
 									%>
-									selectableViewpoints.push(<%= vp.getVpId() %>);
+									selectableViewpoints<%= uuid %>.push(<%= vp.getVpId() %>);
 									<%
 								}
 							}
 						}
 						%>
 						
-						selectedViewpoints = new Array();
+						selectedViewpoints<%= uuid %> = new Array();
 						
-						function selectDeselectAllViewpoints() {
-							if (selectedViewpoints.length == 0) {
-								selectAllViewpoints();
-							} else if (selectedViewpoints.length == selectableViewpoints.length) {
-								deselectAllViewpoints();
+						function selectDeselectAllViewpoints<%= uuid %>() {
+							if (selectedViewpoints<%= uuid %>.length == 0) {
+								selectAllViewpoints<%= uuid %>();
+							} else if (selectedViewpoints<%= uuid %>.length == selectableViewpoints<%= uuid %>.length) {
+								deselectAllViewpoints<%= uuid %>();
 							} else {
-								selectAllViewpoints();
+								selectAllViewpoints<%= uuid %>();
 							}
 						}
 						
-						function selectAllViewpoints() {
-							checks = document.getElementsByName('vpId');
+						function selectAllViewpoints<%= uuid %>() {
+							checks = getViewpoints<%= uuid %>();
 							for (var i = 0; i < checks.length; i++) {
 								check = checks[i];
 								if (!check.checked) {
@@ -133,8 +144,8 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 							}
 						}
 						
-						function deselectAllViewpoints() {
-							checks = document.getElementsByName('vpId');
+						function deselectAllViewpoints<%= uuid %>() {
+							checks = getViewpoints<%= uuid %>();
 							for (var i = 0; i < checks.length; i++) {
 								check = checks[i];
 								if (check.checked) {
@@ -229,7 +240,7 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 	                	%>
 							<input type="checkbox" name="vpId" id="vpId"
 				   					value="<%= vp.getVpId() %>" 
-				   					onClick="if (this.checked) {selectedViewpoints.push(this.value);} else {selectedViewpoints.removeFirst(this.value);}"/>
+				   					onClick="if (this.checked) {selectedViewpoints<%= uuid %>.push(this.value);} else {selectedViewpoints<%= uuid %>.removeFirst(this.value);}"/>
 	                 	<%
 	                } else {
 	           			%>

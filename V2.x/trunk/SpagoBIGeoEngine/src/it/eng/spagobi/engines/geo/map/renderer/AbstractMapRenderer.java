@@ -41,6 +41,9 @@ import org.apache.log4j.Logger;
  */
 public class AbstractMapRenderer extends AbstractGeoEngineComponent  implements  IMapRenderer {
 	
+	/** The selected hierarchy name. */
+	private String selectedMeasureName;
+	
 	/** The measures. */
 	private Map measures;
 	
@@ -189,6 +192,14 @@ public class AbstractMapRenderer extends AbstractGeoEngineComponent  implements 
 
 	public void setGuiSettings(GuiSettings guiSettings) {
 		this.guiSettings = guiSettings;
+	}
+
+	public String getSelectedMeasureName() {
+		return selectedMeasureName;
+	}
+
+	public void setSelectedMeasureName(String selectedMeasureName) {
+		this.selectedMeasureName = selectedMeasureName;
 	}
 
 

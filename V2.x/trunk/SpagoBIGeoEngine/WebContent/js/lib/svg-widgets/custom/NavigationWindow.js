@@ -156,92 +156,84 @@
  */   
 
 
-function NavigationWindow(visible) {
+function NavigationWindow( conf ) {
 
   // Class members
   this.map = undefined;
   this.toolbar = undefined;
-
   
-  // passed as parameter #13 to the constructor of Window class
-  var winPlaceholderStyles = {"fill":"none","stroke":"dimgray","stroke-width":1.5};
+  var defaults = {
+    id: 'navWindow'
+    , parentNodeId: 'Windows'
+    , width: 210
+    , height: 200
+    , x: 10
+    , y: 391
+    , moovable: true
+    , xMin: 0
+    , yMin: 0
+    , xMax: 1100 
+    , yMax: 768
+    , showContent: true
+    , margin: 3
+    , titleBarVisible: true
+    , statusBarVisible: false
+    , title: 'Navigation'
+    , statusBarContent: ''
+    , closeButtonVisible: false
+    , minimizeButtonVisible: true
+    , maximizeButtonVisible: true    
+    
+    , minimized: false    
+  };
   
-  // passed as parameter #14 to the constructor of Window class
-  var windowStyles = {"fill":"#fffce6","stroke":"dimgray","stroke-width":1};
+  var defualtStyles = {
+    winPlaceholderStyles: {"fill":"none","stroke":"dimgray","stroke-width":1.5}
+    , windowStyles: {"fill":"#fffce6","stroke":"dimgray","stroke-width":1}
+    , titlebarStyles: {"fill":"steelblue","stroke":"dimgray","stroke-width":1}
+    , titlebarHeight: 17
+    , statusbarStyles: {"fill":"aliceblue","stroke":"dimgray","stroke-width":1}
+    , statusbarHeight: 13
+    , titletextStyles: {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"}
+    , statustextStyles: {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"}
+    , buttonStyles: {"fill":"steelblue","stroke":"white","stroke-width":2}
+  };
   
-  // passed as parameter #23 to the constructor of Window class
-  var titlebarStyles = {"fill":"steelblue","stroke":"dimgray","stroke-width":1};
-  
-   // passed as parameter #24 to the constructor of Window class
-  var titlebarHeight = 17;
-  
-  // passed as parameter #25 to the constructor of Window class
-  var statusbarStyles = {"fill":"aliceblue","stroke":"dimgray","stroke-width":1};
-  
-  // passed as parameter #26 to the constructor of Window class
-  var statusbarHeight = 13;
-  
-  // passed as parameter #27 to the constructor of Window class
-  var titletextStyles = {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"};
-  
-  // passed as parameter #28 to the constructor of Window class
-  var statustextStyles = {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"};
-  
-  // passed as parameter #29 to the constructor of Window class
-  var buttonStyles = {"fill":"steelblue","stroke":"white","stroke-width":2};
+  var c = {};
+  Utils.apply(c, conf || {}, defaults);
+  var s = {};
+  Utils.apply(s, c.styles, defualtStyles);
+  c.styles = s;
   
   // Call the superclass's constructor in the scope of this.
-  
-  Window.call(this, "navWindow",
-                    "Windows",
-                    210,200,10,391,  // width, height, X, Y
-                    true,            // moovable
-                    8,8,1092,690,    // constrXmin, constrYmin, constrXmax, constrYmax
-                    true,            // showContent while mooving
-                    winPlaceholderStyles,
-                    windowStyles,
-                    3,                // margin
-                    true,             // titleBarVisible
-                    false,            // statusBarVisible
-                    "Navigation",     // title
-                    "",               // statusBar content
-                    false,true,true,  // closeButton, minimizeButton, maximizeButton
-                    titlebarStyles, titlebarHeight, 
-                    statusbarStyles, statusbarHeight,
-                    titletextStyles, statustextStyles,
-                    buttonStyles,
-                    this.eventHandler); 
+  Window.call(this, c.id
+                    , c.parentNodeId
+                    , c.width, c.height, c.x, c.y
+                    , c.moovable
+                    , c.xMin, c.yMin, c.xMax, c.yMax
+                    , c.showContent    // showContent while mooving
+                    , c.styles.winPlaceholderStyles
+                    , c.styles.windowStyles
+                    , c.margin               
+                    , c.titleBarVisible             
+                    , c.statusBarVisible           
+                    , c.title          
+                    , c.statusBarContent               
+                    , c.closeButtonVisible
+                    , c.minimizeButtonVisible
+                    , c.maximizeButtonVisible 
+                    , c.styles.titlebarStyles, c.styles.titlebarHeight 
+                    , c.styles.statusbarStyles, c.styles.statusbarHeight
+                    , c.styles.titletextStyles, c.styles.statustextStyles
+                    , c.styles.buttonStyles
+                    , this.eventHandler); 
   
   this.createContent();  
+  
+  if( c.minimized === true) {
+    this.minimize(true);
+  }
 }
-
-
-
-
-
-/*
-	<svg id="referenceMap" x="10" y="8" viewBox="-2471570.4 -1631093.7 4844781 3030131.8" width="190" height="150" 
-								 xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" 
-								 preserveAspectRatio="xMidYMid meet" zoomAndPan="magnify" cursor="crosshair" display="inherit">
-								 
-								 
-								
-								<!-- here you can place any graphical elements for your reference/overview map -->
-								<use xlink:href="#mainMapGroup" fill="white" stroke-width="2419.9" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
-							
-								<use x="-2471570.4" y="-1631093.7" visibility="hidden" xlink:href="#myDragCrossSymbol"/>
-								
-						
-					</svg>
-
-*/
-
-
-
-
-
-
-
 
 
 NavigationWindow.prototype = new Window(); // Set up the prototype chain.
@@ -262,10 +254,10 @@ NavigationWindow.prototype.createContent = function() {
 	var shadeDarkStyles = {"fill":"dimgray"};
 	var sliderStyles = {"stroke":"dimgray","stroke-width":"2","fill":"dimgray"};
   
-  windowContent = document.getElementById("navWindow");;
+  windowContent = document.getElementById("navWindow");
   if(!windowContent) {
     alert('ERROR');
-    windowContent = document.createElementNS(null,"g");
+    windowContent = document.createElementNS(Utils.svgNSll,"g");
     Utils.applyAttributes(windowContent, {
       'id' : 'navWindow'
       , 'transform' : 'translate(10,537)'
@@ -276,7 +268,7 @@ NavigationWindow.prototype.createContent = function() {
   svgEl = document.getElementById("referenceMap");
   if(!svgEl) {
     alert('ERROR');
-    svgEl = document.createElementNS(null,"svg");
+    svgEl = document.createElementNS(Utils.svgNS,"svg");
     Utils.applyAttributes(svgEl, {
       'id' : 'referenceMap'
       , 'viewBox' : '-2471570.4 -1631093.7 4844781 3030131.8'
@@ -296,7 +288,7 @@ NavigationWindow.prototype.createContent = function() {
     }); 
     windowContent.appendChild(svgEl);  
     
-    useEl = document.createElementNS(null,"g");
+    useEl = document.createElementNS(Utils.svgNS,"g");
     Utils.applyAttributes(useEl, {
       'fill' : 'white'
       //, 'xlink:href' : '#mainMapGroup'
@@ -308,7 +300,7 @@ NavigationWindow.prototype.createContent = function() {
     useEl.setAttributeNS("xlink", "href", "#mainMapGroup");
     svgEl.appendChild(useEl); 
     
-    useEl = document.createElementNS(null,"g");
+    useEl = document.createElementNS(Utils.svgNS,"g");
     Utils.applyAttributes(useEl, {
       'visibility' : 'hidden'
       //, 'xlink:href' : '#myDragCrossSymbol'
@@ -322,7 +314,7 @@ NavigationWindow.prototype.createContent = function() {
   
   
   
-  controlEl = document.createElementNS(null,"g");
+  controlEl = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(controlEl, {
     'id' : 'zoomIn'
     , 'cursor' : 'pointer'
@@ -330,7 +322,7 @@ NavigationWindow.prototype.createContent = function() {
   });
   windowContent.appendChild(controlEl);   
   
-  controlEl = document.createElementNS(null,"g");
+  controlEl = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(controlEl, {
     'id' : 'zoomOut'
     , 'cursor' : 'pointer'
@@ -338,7 +330,7 @@ NavigationWindow.prototype.createContent = function() {
   });
   windowContent.appendChild(controlEl); 
   
-  controlEl = document.createElementNS(null,"g");
+  controlEl = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(controlEl, {
     'id' : 'zoomFull'
     , 'cursor' : 'pointer'
@@ -346,7 +338,7 @@ NavigationWindow.prototype.createContent = function() {
   });
   windowContent.appendChild(controlEl); 
   
-  controlEl = document.createElementNS(null,"g");
+  controlEl = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(controlEl, {
     'id' : 'zoomManual'
     , 'cursor' : 'pointer'
@@ -354,7 +346,7 @@ NavigationWindow.prototype.createContent = function() {
   });
   windowContent.appendChild(controlEl); 
   
-  controlEl = document.createElementNS(null,"g");
+  controlEl = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(controlEl, {
     'id' : 'panManual'
     , 'cursor' : 'pointer'
@@ -362,7 +354,7 @@ NavigationWindow.prototype.createContent = function() {
   });
   windowContent.appendChild(controlEl); 
   
-  controlEl = document.createElementNS(null,"g");
+  controlEl = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(controlEl, {
     'id' : 'infoButton'
     , 'cursor' : 'pointer'
@@ -370,7 +362,7 @@ NavigationWindow.prototype.createContent = function() {
   });
   windowContent.appendChild(controlEl); 
   
-  controlEl = document.createElementNS(null,"g");
+  controlEl = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(controlEl, {
     'id' : 'backwardExtent'
     , 'cursor' : 'pointer'
@@ -378,7 +370,7 @@ NavigationWindow.prototype.createContent = function() {
   });
   windowContent.appendChild(controlEl); 
   
-  controlEl = document.createElementNS(null,"g");
+  controlEl = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(controlEl, {
     'id' : 'forwardExtent'
     , 'cursor' : 'pointer'
@@ -386,7 +378,7 @@ NavigationWindow.prototype.createContent = function() {
   });
   windowContent.appendChild(controlEl); 
 
-  controlEl = document.createElementNS(null,"g");
+  controlEl = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(controlEl, {
     'id' : 'mapZoomSlider'
     , 'cursor' : 'pointer'
@@ -394,7 +386,7 @@ NavigationWindow.prototype.createContent = function() {
   });
   windowContent.appendChild(controlEl);   
   
-  controlEl = document.createElementNS(null,"g");
+  controlEl = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(controlEl, {
     'id' : 'recenterMap'
     , 'display' : 'none'

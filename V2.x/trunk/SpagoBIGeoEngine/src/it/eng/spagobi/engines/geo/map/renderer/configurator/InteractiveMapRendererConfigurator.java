@@ -24,7 +24,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.map.renderer.InteractiveMapRenderer;
-import it.eng.spagobi.engines.geo.map.renderer.LabelProducer;
+import it.eng.spagobi.engines.geo.map.renderer.ILabelProducer;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,51 +66,7 @@ public class InteractiveMapRendererConfigurator {
 		} else {
 			confSB = (SourceBean)conf;
 		}
-		
-		if(confSB != null) {
-			SourceBean labelsConfigurationSB = (SourceBean)confSB.getAttribute("LABELS");
-			if(labelsConfigurationSB != null) {
-				Map labelProducers = getLabelProducers(labelsConfigurationSB);
-				interactiveMapRenderer.setLabelProducers(labelProducers);				
-			}	
-		}
 	}
 	
-	/**
-	 * Gets the label producers.
-	 * 
-	 * @param labelsConfigurationSB the labels configuration sb
-	 * 
-	 * @return the label producers
-	 */
-	public static Map getLabelProducers(SourceBean labelsConfigurationSB) {
-		Map labelProducers = new HashMap();
-		List labelList = labelsConfigurationSB.getAttributeAsList("LABEL");
-		Iterator labelIterator = labelList.iterator();
-		while( labelIterator.hasNext() ) {
-			SourceBean label = (SourceBean)labelIterator.next();
-			String position = (String)label.getAttribute("position");
-			String clazz = (String)label.getAttribute("class_name");
-			
-			LabelProducer labelProducer = null;
-			try {
-				labelProducer = (LabelProducer) Class.forName(clazz).newInstance();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if(labelProducer != null) {
-				labelProducer.init(label); 
-				labelProducers.put(position, labelProducer);
-			}
-		}
-		
-		return labelProducers;
-	}
+	
 }

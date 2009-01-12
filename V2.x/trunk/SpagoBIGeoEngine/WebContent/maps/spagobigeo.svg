@@ -45,7 +45,14 @@ bug fixed in layer's checkboxes generation
 -->
 
 
-<svg contentScriptType="text/ecmascript" zoomAndPan="disable" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" onload="init(evt);" xmlns:attrib="http://www.carto.net/attrib" contentStyleType="text/css" version="1.0" width="100%" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:batik="http://xml.apache.org/batik/ext" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:cc="http://web.resource.org/cc/" sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 768" height="100%" xmlns="http://www.w3.org/2000/svg">
+<svg contentScriptType="text/ecmascript" zoomAndPan="disable" 
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+xmlns:xlink="http://www.w3.org/1999/xlink" 
+xmlns:svg="http://www.w3.org/2000/svg" onload="init(evt);" 
+xmlns:attrib="http://www.carto.net/attrib" contentStyleType="text/css" version="1.0" width="100%" 
+xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:batik="http://xml.apache.org/batik/ext" 
+xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:cc="http://web.resource.org/cc/" 
+sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 768" height="100%" xmlns="http://www.w3.org/2000/svg">
 
 		<g id="imported_scripts"></g>
 		
@@ -53,18 +60,17 @@ bug fixed in layer's checkboxes generation
 				
 		]]></script>
 		
-		<script id="init" type="text/ecmascript" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:actuate="onLoad"  xlink:show="other"><![CDATA[
+		<script id="init" type="text/ecmascript" 
+			xmlns:xlink="http://www.w3.org/1999/xlink" 
+			xlink:type="simple" xlink:actuate="onLoad"  xlink:show="other"><![CDATA[
 
-   
-]]></script>
+   		]]></script>
 		
 		
-<script xlink:type="simple" xlink:actuate="onLoad" xlink:show="other" type="text/ecmascript" xmlns:xlink="http://www.w3.org/1999/xlink"><![CDATA[
+<script xlink:type="simple" 
+	xlink:actuate="onLoad" xlink:show="other" type="text/ecmascript" xmlns:xlink="http://www.w3.org/1999/xlink"><![CDATA[
 		
-		
-	   
-	   
-	   
+		   
 				
 		//global variables for mapApp and map object
 		var myMapApp = new mapApp();
@@ -85,16 +91,48 @@ bug fixed in layer's checkboxes generation
 		
 		function initWindows() {
 		
+		  var guiSettings = sbi.geo.conf.gui_settings;
+		  var windows = guiSettings.windows;
+		  var windowConf;
+		
 			//create windows
 			myMapApp.Windows = new Array();
 			
-			myMapApp.Windows["navWindow"] = new NavigationWindow(true);
-			myMapApp.Windows["basiclayer"] = new LayersWindow(true);
-			myMapApp.Windows["thematic"] = new ThematicWindow(true);
-			myMapApp.Windows["detail"] = new DetailsWindow(true);
-			myMapApp.Windows["legend"] = new LegendWindow(true);
-			myMapApp.Windows["colourpicker"] = new ColourPickerWindow(false);
-			
+			windowConf = Utils.find(windows, 'name', 'navigation');
+			windowConf = Utils.apply({visible:true}, windowConf || {}, guiSettings.windowDefaults || {});
+			if(windowConf && windowConf.visible) {
+        myMapApp.Windows["navWindow"] = new NavigationWindow( windowConf );
+      } 
+      
+      windowConf = Utils.find(windows, 'name', 'measures');
+      windowConf = Utils.apply({visible:true}, windowConf || {}, guiSettings.windowDefaults || {});
+			if(windowConf && windowConf.visible) {
+        myMapApp.Windows["thematic"] = new ThematicWindow( windowConf );
+      } 
+      
+      windowConf = Utils.find(windows, 'name', 'layers');
+      windowConf = Utils.apply({visible:true}, windowConf || {}, guiSettings.windowDefaults || {});
+			if(windowConf && windowConf.visible) {
+        myMapApp.Windows["basiclayer"] = new LayersWindow( windowConf );
+      } 
+      
+      windowConf = Utils.find(windows, 'name', 'detail');
+      windowConf = Utils.apply({visible:true}, windowConf || {}, guiSettings.windowDefaults || {});
+			if(windowConf && windowConf.visible) {
+        myMapApp.Windows["detail"] = new DetailsWindow( windowConf );
+      } 
+      
+      windowConf = Utils.find(windows, 'name', 'detail');
+      windowConf = Utils.apply({visible:true}, windowConf || {}, guiSettings.windowDefaults || {});
+			if(windowConf && windowConf.visible) {
+        myMapApp.Windows["legend"] = new LegendWindow( windowConf );
+      } 
+      
+      windowConf = Utils.find(windows, 'name', 'colourpicker');
+      windowConf = Utils.apply({visible:true}, windowConf || {}, guiSettings.windowDefaults || {});
+			if(windowConf && windowConf.visible) {
+        myMapApp.Windows["colourpicker"] = new ColourPickerWindow( windowConf );
+      } 
 			
 			//create checkboxes array
 			myMapApp.checkBoxes = new Array();
@@ -102,13 +140,6 @@ bug fixed in layer's checkboxes generation
 			
 		}
 		
-		function closeAllWindows() {			
-			myMapApp.Windows["navWindow"].close(true);					
-			myMapApp.Windows["basiclayer"].close(true);		
-			myMapApp.Windows["thematic"].close(true);			
-			myMapApp.Windows["detail"].close(true);		
-			myMapApp.Windows["legend"].close(true);
-		}
 
 	
 		
@@ -132,9 +163,7 @@ bug fixed in layer's checkboxes generation
 			
 			initMainMap();			
 			initWindows();
-			if(sbi.geo.conf.gui_settings.activeWindow == false) {
-				closeAllWindows();
-			}
+		
 			
 		  myMapApp.loadStatus = document.getElementById("statusColorMap");
       
@@ -936,7 +965,9 @@ bug fixed in layer's checkboxes generation
 		
 	
 		<!-- Main Map Frame -->
-		<svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:attrib="http://www.carto.net/attrib" contentStyleType="text/css" id="mainMap" version="1.0" width="1100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 958.69 592.78998" height="768" xmlns="http://www.w3.org/2000/svg" x="0" y="0">
+		<svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    xmlns:attrib="http://www.carto.net/attrib" contentStyleType="text/css" id="mainMap" version="1.0" 
+    width="1100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 958.69 592.78998" height="768" xmlns="http://www.w3.org/2000/svg" x="0" y="0">
 			
 			<style type="text/css" xml:space="preserve">
 				<![CDATA[
@@ -952,7 +983,10 @@ bug fixed in layer's checkboxes generation
 				<g stroke-linecap="round" onmouseover="showData(evt)" fill="white" stroke-linejoin="round" onmouseout="showData(evt)" id="eventCatcher" stroke-width="2000">
 				
 				<g id="targetMap">
-			
+				
+				
+				
+				
 				</g>
 
     
@@ -974,12 +1008,23 @@ bug fixed in layer's checkboxes generation
 	
 	
 	    <!-- WINDOWS CONTENT -->
-	    <g id="Windows">
+	    <svg 
+       contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" version="1.0" 
+       preserveAspectRatio="xMidYMid meet" cursor="crosshair"  xmlns="http://www.w3.org/2000/svg" 
+       width="1100"  height="768"
+       viewBox="0 0 1100 768"
+       x="0" y="0" id="Windows">
+       
+        <!--rect x="0" y="0" fill-opacity="0.8" fill="RED" width="1100" height="768"/ -->
+       
 	    
-        <g id="navWindow" transform="translate(10,537)">
-	       <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" display="inherit" contentStyleType="text/css" id="referenceMap" version="1.0" width="190" preserveAspectRatio="xMidYMid meet" cursor="crosshair" viewBox="-2471570.4 -1631093.7 4844781 3030131.8" height="150" xmlns="http://www.w3.org/2000/svg" x="10" y="8">
+        <g id="navWindow">
+	       <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" display="none" 
+         contentStyleType="text/css" id="referenceMap" version="1.0" width="190" preserveAspectRatio="xMidYMid meet" 
+         cursor="crosshair" viewBox="-2471570.4 -1631093.7 4844781 3030131.8" height="150" xmlns="http://www.w3.org/2000/svg" x="10" y="8">
 							
-								<use stroke-linecap="round" fill="white" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mainMapGroup" stroke-linejoin="round" xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" stroke-width="2419.9" pointer-events="none"/>
+								<use stroke-linecap="round" fill="white" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mainMapGroup" 
+                stroke-linejoin="round" xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" stroke-width="2419.9" pointer-events="none"/>
 							
 								<use x="-2471570.4" y="-1631093.7" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#myDragCrossSymbol" xlink:type="simple" visibility="hidden" xlink:actuate="onLoad" xlink:show="embed"/>
 								
@@ -989,11 +1034,26 @@ bug fixed in layer's checkboxes generation
 				</g>
 			
 				
-      </g>
+      </svg>
       
 					
 			
-			
+	<g id="mapHeader">  
+	      <text id="header-left" x="6" y="25" font-size="20px" startOffset="0" text-anchor="start" fill="black" width="1092" font-family="Arial,Helvetica" 
+        font-weight="bold" pointer-events="none"></text>
+			 
+		    <text id="header-center" x="542" y="25" font-size="20px" startOffset="0" text-anchor="middle" fill="black" width="1092" font-family="Arial,Helvetica" 
+        font-weight="bold" pointer-events="none"></text>
+		
+			 <text id="header-right" x="1092" y="25" font-size="20px" startOffset="0" text-anchor="end" fill="black" width="1092" 
+        font-family="Arial,Helvetica" font-weight="bold" pointer-events="none"></text>
+		  </g>
+	
+	    <g id="mapFooter">  
+	      <text id="footer-left" x="4" y="743" startOffset="0" text-anchor="start"></text>
+	      <text id="footer-center" x="542" y="743" startOffset="0" text-anchor="middle"></text>
+	    	<text id="footer-right" x="1092" y="743" startOffset="0" text-anchor="end"></text>
+	    </g>	
 	
 	
 

@@ -34,6 +34,7 @@ import org.json.JSONObject;
  *
  */
 public class GuiSettings {
+	Map generalSettings;
 	Map windowDefaultSettings;
 	Map navigationWindowSettings;
 	Map measureWindowSettings;
@@ -41,16 +42,19 @@ public class GuiSettings {
 	Map detailWindowSettings;
 	Map legendWindowSettings;
 	Map colourpickerWindowSettings;
+	Map labelProducers;
 	
 	public GuiSettings() {
 		super();
+		generalSettings = new HashMap();
 		windowDefaultSettings = new HashMap();
 		navigationWindowSettings = new HashMap();
 		measureWindowSettings = new HashMap();
 		layersWindowSettings = new HashMap();
 		detailWindowSettings = new HashMap();
 		legendWindowSettings = new HashMap();
-		colourpickerWindowSettings = new HashMap();
+		colourpickerWindowSettings = new HashMap();		
+		labelProducers  = new HashMap();
 	}
 
 	public Map getWindowDefaultSettings() {
@@ -114,7 +118,7 @@ public class GuiSettings {
 		JSONArray windowsSettings;
 		Object settings;
 		
-		guiSettings = new JSONObject();
+		guiSettings = toJSON( getGeneralSettings() );
 		
 		settings = toJSON( getWindowDefaultSettings() );
 		guiSettings.put("windowDefaults", settings);
@@ -167,5 +171,21 @@ public class GuiSettings {
 		}
 		
 		return result;
+	}
+
+	public Map getGeneralSettings() {
+		return generalSettings;
+	}
+
+	public void setGeneralSettings(Map generalSettings) {
+		this.generalSettings = generalSettings;
+	}
+
+	public Map getLabelProducers() {
+		return labelProducers;
+	}
+
+	public void setLabelProducers(Map labelProducers) {
+		this.labelProducers = labelProducers;
 	}
 }

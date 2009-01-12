@@ -40,7 +40,7 @@ import java.util.Set;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class QueryLabelProducer implements LabelProducer {
+public class QueryLabelProducer implements ILabelProducer {
 	
 	/** The data source. */
 	private IDataSource dataSource;

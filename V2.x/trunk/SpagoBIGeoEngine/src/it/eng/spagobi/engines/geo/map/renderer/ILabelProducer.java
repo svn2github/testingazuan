@@ -28,7 +28,7 @@ import it.eng.spago.base.SourceBean;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public interface LabelProducer {
+public interface ILabelProducer {
 	
 	/**
 	 * Inits the.

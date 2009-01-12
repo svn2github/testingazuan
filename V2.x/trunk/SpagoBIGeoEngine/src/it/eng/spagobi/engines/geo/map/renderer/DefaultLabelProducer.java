@@ -28,7 +28,7 @@ import it.eng.spago.base.SourceBean;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class DefaultLabelProducer implements LabelProducer {
+public class DefaultLabelProducer implements ILabelProducer {
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.geo.map.renderer.LabelProducer#init(it.eng.spago.base.SourceBean)

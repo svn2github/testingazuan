@@ -156,63 +156,81 @@
  */   
 
 
-function LegendWindow(visible) {
-
-  // Class members
-
+function LegendWindow( conf ) {
+              
+              
+   var defaults = {
+    id: 'legend'
+    , parentNodeId: 'Windows'
+    , width: 210
+    , height: 200
+    , x: 862
+    , y: 391
+    , moovable: true
+    , xMin: 8
+    , yMin: 8
+    , xMax: 1092
+    , yMax: 690
+    , showContent: true
+    , margin: 3
+    , titleBarVisible: true
+    , statusBarVisible: false
+    , title: 'Legend'
+    , statusBarContent: ''
+    , closeButtonVisible: false
+    , minimizeButtonVisible: true
+    , maximizeButtonVisible: true    
+    
+    , minimized: false    
+  };
   
-  // passed as parameter #13 to the constructor of Window class
-  var winPlaceholderStyles = {"fill":"none","stroke":"dimgray","stroke-width":1.5};
+  var defualtStyles = {
+    winPlaceholderStyles: {"fill":"none","stroke":"dimgray","stroke-width":1.5}
+    , windowStyles: {"fill":"#fffce6","stroke":"dimgray","stroke-width":1}
+    , titlebarStyles: {"fill":"steelblue","stroke":"dimgray","stroke-width":1}
+    , titlebarHeight: 17
+    , statusbarStyles: {"fill":"aliceblue","stroke":"dimgray","stroke-width":1}
+    , statusbarHeight: 13
+    , titletextStyles: {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"}
+    , statustextStyles: {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"}
+    , buttonStyles: {"fill":"steelblue","stroke":"white","stroke-width":2}
+  };
   
-  // passed as parameter #14 to the constructor of Window class
-  var windowStyles = {"fill":"#fffce6","stroke":"dimgray","stroke-width":1};
+  var c = {};
+  Utils.apply(c, conf || {}, defaults);
+  var s = {};
+  Utils.apply(s, c.styles, defualtStyles);
+  c.styles = s;
   
-  // passed as parameter #23 to the constructor of Window class
-  var titlebarStyles = {"fill":"steelblue","stroke":"dimgray","stroke-width":1};
-  
-   // passed as parameter #24 to the constructor of Window class
-  var titlebarHeight = 17;
-  
-  // passed as parameter #25 to the constructor of Window class
-  var statusbarStyles = {"fill":"aliceblue","stroke":"dimgray","stroke-width":1};
-  
-  // passed as parameter #26 to the constructor of Window class
-  var statusbarHeight = 13;
-  
-  // passed as parameter #27 to the constructor of Window class
-  var titletextStyles = {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"};
-  
-  // passed as parameter #28 to the constructor of Window class
-  var statustextStyles = {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"};
-  
-  // passed as parameter #29 to the constructor of Window class
-  var buttonStyles = {"fill":"steelblue","stroke":"white","stroke-width":2};
   
   // Call the superclass's constructor in the scope of this.
-  
-   
-  Window.call(this, "legend",
-                    "Windows",
-                    210,200,862,391,  // width, height, X, Y
-                    true,            // moovable
-                    8,8,1092,690,    // constrXmin, constrYmin, constrXmax, constrYmax
-                    true,            // showContent while mooving
-                    winPlaceholderStyles,
-                    windowStyles,
-                    3,                // margin
-                    true,             // titleBarVisible
-                    false,            // statusBarVisible
-                    "Legend",     // title
-                    "",               // statusBar content
-                    false,true,true,  // closeButton, minimizeButton, maximizeButton
-                    titlebarStyles, titlebarHeight, 
-                    statusbarStyles, statusbarHeight,
-                    titletextStyles, statustextStyles,
-                    buttonStyles,
-                    this.eventHandler); 
-              
+  Window.call(this, c.id
+                    , c.parentNodeId
+                    , c.width, c.height, c.x, c.y
+                    , c.moovable
+                    , c.xMin, c.yMin, c.xMax, c.yMax
+                    , c.showContent    // showContent while mooving
+                    , c.styles.winPlaceholderStyles
+                    , c.styles.windowStyles
+                    , c.margin               
+                    , c.titleBarVisible             
+                    , c.statusBarVisible           
+                    , c.title          
+                    , c.statusBarContent               
+                    , c.closeButtonVisible
+                    , c.minimizeButtonVisible
+                    , c.maximizeButtonVisible 
+                    , c.styles.titlebarStyles, c.styles.titlebarHeight 
+                    , c.styles.statusbarStyles, c.styles.statusbarHeight
+                    , c.styles.titletextStyles, c.styles.statustextStyles
+                    , c.styles.buttonStyles
+                    , this.eventHandler); 
   
   this.createContent();  
+  
+  if( c.minimized === true) {
+    this.minimize(true);
+  } 
 }
 
 
@@ -225,13 +243,13 @@ LegendWindow.prototype.createContent = function() {
   var windowContent;
   var boxes;
  
-  windowContent = document.createElementNS(null,"g");
+  windowContent = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(windowContent, {
     'id' : 'legend'
     , 'transform' : 'translate(649,720)'
   });   
   
-  boxes = document.createElementNS(null,"g");
+  boxes = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(boxes, {
     'id' : 'coulourboxes'
     , 'display' : 'inherit'
@@ -263,7 +281,7 @@ LegendWindow.prototype.initLegendEntries = function() {
 				
         // ...legendpanel
 				var offset = 50 + (i*25);
-				var panel = document.createElementNS(svgNS,"text");
+				var panel = document.createElementNS(Utils.svgNS,"text");
 				panel.setAttribute("id","legpanel" + (i+1));
 				panel.setAttribute("x", "70");
 				panel.setAttribute("y", "" + offset);
@@ -281,7 +299,7 @@ LegendWindow.prototype.initLegendEntries = function() {
 				
 				// ...legendrect
 				var offset = 35 + (i*25);
-				var rect = document.createElementNS(svgNS,"rect");
+				var rect = document.createElementNS(Utils.svgNS,"rect");
 				rect.setAttribute("id","rect" + (i+1));
 				rect.setAttribute("stroke","dimgray");
 				rect.setAttribute("x","30");

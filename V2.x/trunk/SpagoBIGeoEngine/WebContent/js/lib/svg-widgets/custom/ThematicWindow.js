@@ -156,62 +156,82 @@
  */   
 
 
-function ThematicWindow(visible) {
+function ThematicWindow( conf ) {
 
   // Class members
 
+   var defaults = {
+    id: 'thematic'
+    , parentNodeId: 'Windows'
+    , width: 210
+    , height: 200
+    , x: 223
+    , y: 391
+    , moovable: true
+    , xMin: 8
+    , yMin: 8
+    , xMax: 1092
+    , yMax: 690
+    , showContent: true
+    , margin: 3
+    , titleBarVisible: true
+    , statusBarVisible: false
+    , title: 'Thematic Topics'
+    , statusBarContent: ''
+    , closeButtonVisible: false
+    , minimizeButtonVisible: true
+    , maximizeButtonVisible: true    
+    
+    , minimized: false    
+  };
   
-  // passed as parameter #13 to the constructor of Window class
-  var winPlaceholderStyles = {"fill":"none","stroke":"dimgray","stroke-width":1.5};
+  var defualtStyles = {
+    winPlaceholderStyles: {"fill":"none","stroke":"dimgray","stroke-width":1.5}
+    , windowStyles: {"fill":"#fffce6","stroke":"dimgray","stroke-width":1}
+    , titlebarStyles: {"fill":"steelblue","stroke":"dimgray","stroke-width":1}
+    , titlebarHeight: 17
+    , statusbarStyles: {"fill":"aliceblue","stroke":"dimgray","stroke-width":1}
+    , statusbarHeight: 13
+    , titletextStyles: {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"}
+    , statustextStyles: {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"}
+    , buttonStyles: {"fill":"steelblue","stroke":"white","stroke-width":2}
+  };
   
-  // passed as parameter #14 to the constructor of Window class
-  var windowStyles = {"fill":"#fffce6","stroke":"dimgray","stroke-width":1};
+  var c = {};
+  Utils.apply(c, conf || {}, defaults);
+  var s = {};
+  Utils.apply(s, c.styles, defualtStyles);
+  c.styles = s;
   
-  // passed as parameter #23 to the constructor of Window class
-  var titlebarStyles = {"fill":"steelblue","stroke":"dimgray","stroke-width":1};
-  
-   // passed as parameter #24 to the constructor of Window class
-  var titlebarHeight = 17;
-  
-  // passed as parameter #25 to the constructor of Window class
-  var statusbarStyles = {"fill":"aliceblue","stroke":"dimgray","stroke-width":1};
-  
-  // passed as parameter #26 to the constructor of Window class
-  var statusbarHeight = 13;
-  
-  // passed as parameter #27 to the constructor of Window class
-  var titletextStyles = {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"};
-  
-  // passed as parameter #28 to the constructor of Window class
-  var statustextStyles = {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"};
-  
-  // passed as parameter #29 to the constructor of Window class
-  var buttonStyles = {"fill":"steelblue","stroke":"white","stroke-width":2};
   
   // Call the superclass's constructor in the scope of this.
-  
-   
-  Window.call(this, "thematic",
-                    "Windows",
-                    210,200,223,391,  // width, height, X, Y
-                    true,            // moovable
-                    8,8,1092,690,    // constrXmin, constrYmin, constrXmax, constrYmax
-                    true,            // showContent while mooving
-                    winPlaceholderStyles,
-                    windowStyles,
-                    3,                // margin
-                    true,             // titleBarVisible
-                    false,            // statusBarVisible
-                    "Thematic Topics",     // title
-                    "",               // statusBar content
-                    false,true,true,  // closeButton, minimizeButton, maximizeButton
-                    titlebarStyles, titlebarHeight, 
-                    statusbarStyles, statusbarHeight,
-                    titletextStyles, statustextStyles,
-                    buttonStyles,
-                    this.eventHandler); 
+  Window.call(this, c.id
+                    , c.parentNodeId
+                    , c.width, c.height, c.x, c.y
+                    , c.moovable
+                    , c.xMin, c.yMin, c.xMax, c.yMax
+                    , c.showContent    // showContent while mooving
+                    , c.styles.winPlaceholderStyles
+                    , c.styles.windowStyles
+                    , c.margin               
+                    , c.titleBarVisible             
+                    , c.statusBarVisible           
+                    , c.title          
+                    , c.statusBarContent               
+                    , c.closeButtonVisible
+                    , c.minimizeButtonVisible
+                    , c.maximizeButtonVisible 
+                    , c.styles.titlebarStyles, c.styles.titlebarHeight 
+                    , c.styles.statusbarStyles, c.styles.statusbarHeight
+                    , c.styles.titletextStyles, c.styles.statustextStyles
+                    , c.styles.buttonStyles
+                    , this.eventHandler); 
   
   this.createContent();  
+  
+  if( c.minimized === true) {
+    this.minimize(true);
+  }
 }
 
 
@@ -225,21 +245,21 @@ ThematicWindow.prototype.createContent = function() {
   var labelsEl;
   var buttonsEl;
 
-  windowContent = document.createElementNS(null,"g");
+  windowContent = document.createElementNS(Utils.svgNS,"g");
   this.applyAttributes(windowContent, {
     'id' : 'thematic'
     , 'transform' : 'translate(223,537)'
   });
   
   
-  labelsEl = document.createElementNS(null,"g");
+  labelsEl = document.createElementNS(Utils.svgNS,"g");
   this.applyAttributes(labelsEl, {
     'id' : 'windowMainGroupthematic'
     , 'display' : 'inherit'
   });    
   windowContent.appendChild(labelsEl);    
   
-  buttonsEl = document.createElementNS(null,"g");
+  buttonsEl = document.createElementNS(Utils.svgNS,"g");
   this.applyAttributes(buttonsEl, {
     'id' : 'radioButtons'
     , 'display' : 'inherit'
@@ -274,7 +294,7 @@ ThematicWindow.prototype.addThemes = function() {
 			}
 			
 			//load function specific to the current map project
-			radioGroup.selectById(sbi.geo.conf.measures[sbi.geo.conf.selected_measure_index].name,true);
+			radioGroup.selectById(sbi.geo.conf.measures[sbi.geo.conf.selected_measure_index].name, true);
 			
 	
 }

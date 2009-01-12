@@ -73,9 +73,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 
 	/** The close link. */
 	private boolean closeLink = false;
-	
-	/** The label producers. */
-	private Map labelProducers;
+
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(InteractiveMapRenderer.class);
@@ -86,13 +84,6 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 */
 	public InteractiveMapRenderer() {
 		super();
-		labelProducers = new HashMap();
-		labelProducers.put("header-left", new DefaultLabelProducer() );
-		labelProducers.put("header-center", new DefaultLabelProducer() );
-		labelProducers.put("header-right", new DefaultLabelProducer() );
-		labelProducers.put("footer-left", new DefaultLabelProducer() );
-		labelProducers.put("footer-center", new DefaultLabelProducer() );
-		labelProducers.put("footer-right", new DefaultLabelProducer() );
 	}
 	
 	
@@ -157,6 +148,8 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 				
 		addData(targetMap, dataMart);
 		addLink(targetMap, dataMart);
+		addLabels(masterMap, dataMart);
+		
 		
 		SVGMapMerger.margeMap(targetMap, masterMap, null, "targetMap");
 		
@@ -177,8 +170,17 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    JSONArray measures;
 		try {
 			measures = getMeasuresConfigurationScript(dataMart);
-			
-		    conf.put("selected_measure_index", dataMart.getSelectedKpi());
+		    String selectedMeasureName = getSelectedMeasureName();
+		    int selectedMeasureIndexIndex = -1;
+		    for(int i = 0; i < measures.length(); i++) {
+		    	JSONObject measure = (JSONObject)measures.get(i);
+		    	
+		    	if(selectedMeasureName.equals( measure.get("name"))) {
+		    		selectedMeasureIndexIndex = i;
+		    		break;
+		    	}
+		    }
+		    conf.put("selected_measure_index", selectedMeasureIndexIndex);
 		    conf.put("measures", measures);
 		    
 		    JSONArray layers =  getLayersConfigurationScript(targetMap); 
@@ -316,7 +318,11 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 			kpiNames[i] = filedMeta.getName();
 		}
 		
-		int selectedKpiIndex = datamart.getSelectedKpi();
+		
+		
+		
+		
+		int selectedKpiIndex = dataStoreMeta.getFieldIndex( getSelectedMeasureName() );
 		String selectedKpiName = kpiNames[selectedKpiIndex];
 		Measure measure  = getMeasure( selectedKpiName );
 		Double lb_value = null;
@@ -694,30 +700,101 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    Node labelText;
 	    Element label;
 	    
-	    label = masterMap.getElementById("header-left");	    
-	    labelText = masterMap.createTextNode( getLabelProducer("header-left").getLabel() );
-	    label.appendChild(labelText);
+	    ILabelProducer labelProducer;
 	    
-	    label = masterMap.getElementById("header-center");	    
-	    labelText = masterMap.createTextNode( getLabelProducer("header-center").getLabel() );
-	    label.appendChild(labelText);
 	    
-	    label = masterMap.getElementById("header-right");	    
-	    labelText = masterMap.createTextNode( getLabelProducer("header-right").getLabel() );
-	    label.appendChild(labelText);
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-left");
+	    if(labelProducer != null) {
+		    label = masterMap.getElementById("header-left");	    
+		    labelText = masterMap.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
 	    
-	    label = masterMap.getElementById("footer-left");	    
-	    labelText = masterMap.createTextNode( getLabelProducer("footer-left").getLabel() );
-	    label.appendChild(labelText);
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-left");
+	    if(labelProducer != null) {
+		    label = masterMap.getElementById("header-center");	    
+		    labelText = masterMap.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
 	    
-	    label = masterMap.getElementById("footer-center");	    
-	    labelText = masterMap.createTextNode( getLabelProducer("footer-center").getLabel() );
-	    label.appendChild(labelText);
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-left");
+	    if(labelProducer != null) {
+		    label = masterMap.getElementById("header-right");	    
+		    labelText = masterMap.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
 	    
-	    label = masterMap.getElementById("footer-right");	    
-	    labelText = masterMap.createTextNode( getLabelProducer("footer-right").getLabel() );
-	    label.appendChild(labelText);
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-left");
+	    if(labelProducer != null) {
+		    label = masterMap.getElementById("footer-left");	    
+		    labelText = masterMap.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
+	    
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-left");
+	    if(labelProducer != null) {
+		    label = masterMap.getElementById("footer-center");	    
+		    labelText = masterMap.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
+	    
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-left");
+	    if(labelProducer != null) {
+		    label = masterMap.getElementById("footer-right");	    
+		    labelText = masterMap.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
 	}	
+	
+	public void addLabels(SVGDocument map, DataMart datamart) {
+		// add labels
+	    Node labelText;
+	    Element label;
+	    ILabelProducer labelProducer;
+	    
+	    
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-left");
+	    if(labelProducer != null) {
+		    label = map.getElementById("header-left");	    
+		    labelText = map.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
+	    
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-center");
+	    if(labelProducer != null) {
+		    label = map.getElementById("header-center");	    
+		    labelText = map.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
+	    
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-right");
+	    if(labelProducer != null) {
+		    label = map.getElementById("header-right");	    
+		    labelText = map.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
+	    
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("footer-left");
+	    if(labelProducer != null) {
+		    label = map.getElementById("footer-left");	    
+		    labelText = map.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
+	    
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("footer-center");
+	    if(labelProducer != null) {
+		    label = map.getElementById("footer-center");	    
+		    labelText = map.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
+	    
+	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("footer-right");
+	    if(labelProducer != null) {
+		    label = map.getElementById("footer-right");	    
+		    labelText = map.createTextNode( labelProducer.getLabel() );
+		    label.appendChild(labelText);
+	    }
+	}
 	
 	
 	
@@ -1331,42 +1408,15 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		
 		guiSettings = getGuiSettings().toJSON();
 		
-		pVal =(String)getEnv().get(Constants.ENV_IS_DAFAULT_DRILL_NAV);
-		boolean defaultDrillNav = pVal==null||pVal.equalsIgnoreCase("TRUE");
-		guiSettings.put("defaultDrillNav", defaultDrillNav);
+		if( getEnv().get(Constants.ENV_IS_DAFAULT_DRILL_NAV) != null ) {
+			pVal =(String)getEnv().get(Constants.ENV_IS_DAFAULT_DRILL_NAV);
+			boolean defaultDrillNav = pVal==null||pVal.equalsIgnoreCase("TRUE");
+			guiSettings.put("defaultDrillNav", defaultDrillNav);
+		}
 		
 		
 		
 		return	guiSettings;
-	}
-	
-	/**
-	 * Gets the label producer.
-	 * 
-	 * @param key the key
-	 * 
-	 * @return the label producer
-	 */
-	public LabelProducer getLabelProducer(String key) {
-		return (LabelProducer)labelProducers.get(key);
-	}
-
-	/**
-	 * Gets the label producers.
-	 * 
-	 * @return the label producers
-	 */
-	public Map getLabelProducers() {
-		return labelProducers;
-	}
-
-	/**
-	 * Sets the label producers.
-	 * 
-	 * @param labelProducers the new label producers
-	 */
-	public void setLabelProducers(Map labelProducers) {
-		this.labelProducers = labelProducers;
 	}
 
  }

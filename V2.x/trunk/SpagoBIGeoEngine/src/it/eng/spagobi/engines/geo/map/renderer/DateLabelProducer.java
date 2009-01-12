@@ -31,7 +31,7 @@ import java.util.Date;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class DateLabelProducer implements LabelProducer {
+public class DateLabelProducer implements ILabelProducer {
 	
 	/** The day format. */
 	private String dayFormat = "dd/MM/yyyy";

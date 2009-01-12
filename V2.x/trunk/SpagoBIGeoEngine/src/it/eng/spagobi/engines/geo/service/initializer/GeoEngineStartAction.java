@@ -225,7 +225,6 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "FALSE");
 			env.put(Constants.ENV_EXEC_IFRAME_ID, "iframe_" + documentLabel);
 		} else {
-			env.put(Constants.ENV_IS_DAFAULT_DRILL_NAV, "TRUE");
 			env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "TRUE");
 			env.put(Constants.ENV_EXEC_IFRAME_ID, "iframeexec" + executionId);
 		}

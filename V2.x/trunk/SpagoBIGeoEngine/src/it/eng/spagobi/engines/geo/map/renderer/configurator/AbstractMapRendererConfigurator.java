@@ -25,6 +25,7 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer;
 import it.eng.spagobi.engines.geo.map.renderer.GuiSettings;
+import it.eng.spagobi.engines.geo.map.renderer.ILabelProducer;
 import it.eng.spagobi.engines.geo.map.renderer.Layer;
 import it.eng.spagobi.engines.geo.map.renderer.Measure;
 import it.eng.spagobi.utilities.strings.StringUtils;
@@ -73,9 +74,15 @@ public class AbstractMapRendererConfigurator {
 		
 		if(confSB != null) {
 			SourceBean measuresConfigurationSB = (SourceBean)confSB.getAttribute("MEASURES");
+			String defaultMeasureName = (String)measuresConfigurationSB.getAttribute("default_kpi");
+			if(!StringUtils.isEmpty(defaultMeasureName)) {
+				abstractMapRenderer.setSelectedMeasureName(defaultMeasureName);
+			}
 			Map measures = getMeasures(measuresConfigurationSB);
+			
 			SourceBean layersConfigurationSB = (SourceBean)confSB.getAttribute("LAYERS");
 			Map layers = getLayers(layersConfigurationSB);
+			
 			SourceBean guiSettingsConfigurationSB = (SourceBean)confSB.getAttribute("GUI_SETTINGS");
 			GuiSettings guiSettings = getGuiSettings(guiSettingsConfigurationSB); 
 			
@@ -211,6 +218,9 @@ public class AbstractMapRendererConfigurator {
 	private static GuiSettings getGuiSettings(SourceBean guiSettingsConfigurationSB) {
 		GuiSettings guiSettings = null;
 		SourceBean windowSettingsSB;
+		SourceBean labelSettingsSB;
+		
+		
 		SourceBean settingsSB;
 		List params;
 		
@@ -219,11 +229,16 @@ public class AbstractMapRendererConfigurator {
 		
 		if(guiSettingsConfigurationSB == null) return guiSettings;
 		
+		params = guiSettingsConfigurationSB.getAttributeAsList("PARAM");
+		if(params != null) {
+			addSettings(guiSettings.getGeneralSettings(), params);
+		}		
+		
 		
 		windowSettingsSB = (SourceBean)guiSettingsConfigurationSB.getAttribute("WINDOWS");
 		
 		if(windowSettingsSB != null) {
-			settingsSB = (SourceBean)windowSettingsSB.getAttribute("DFAULTS");
+			settingsSB = (SourceBean)windowSettingsSB.getAttribute("DEFAULTS");
 			if(settingsSB != null) {
 				params = settingsSB.getAttributeAsList("PARAM");
 				if(params != null) {
@@ -291,8 +306,52 @@ public class AbstractMapRendererConfigurator {
 				}
 			}	
 		}
+		
+		labelSettingsSB = (SourceBean)guiSettingsConfigurationSB.getAttribute("LABELS");
+		if(labelSettingsSB != null) {
+			Map labelProducers = getLabelProducers(labelSettingsSB);
+			guiSettings.setLabelProducers(labelProducers);				
+		}	
 				
 		return guiSettings;
+	}
+	
+	/**
+	 * Gets the label producers.
+	 * 
+	 * @param labelsConfigurationSB the labels configuration sb
+	 * 
+	 * @return the label producers
+	 */
+	public static Map getLabelProducers(SourceBean labelsConfigurationSB) {
+		Map labelProducers = new HashMap();
+		List labelList = labelsConfigurationSB.getAttributeAsList("LABEL");
+		Iterator labelIterator = labelList.iterator();
+		while( labelIterator.hasNext() ) {
+			SourceBean label = (SourceBean)labelIterator.next();
+			String position = (String)label.getAttribute("position");
+			String clazz = (String)label.getAttribute("class_name");
+			
+			ILabelProducer labelProducer = null;
+			try {
+				labelProducer = (ILabelProducer) Class.forName(clazz).newInstance();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(labelProducer != null) {
+				labelProducer.init(label); 
+				labelProducers.put(position, labelProducer);
+			}
+		}
+		
+		return labelProducers;
 	}
 
 	private static void addSettings(Map settingsMap, List params) {

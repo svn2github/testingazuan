@@ -177,5 +177,4 @@ public class AbstractDataMartProvider extends AbstractGeoEngineComponent impleme
 	public void setSelectedLevelName(String selectedLevelName) {
 		this.selectedLevelName = selectedLevelName;
 	}
-
 }

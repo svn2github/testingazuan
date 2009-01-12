@@ -122,17 +122,10 @@ public class DataMartProvider extends AbstractDataMartProvider {
 			dataMart.setDataStore(dataStore);
 			try {
 
-				dataMart.setTargetFeatureName( getSelectedLevel().getFeatureName() ); 
-	            
-	        	String columnid = getSelectedLevel().getColumnId();
-	            
-	        	
-	        	
+				dataMart.setTargetFeatureName( getSelectedLevel().getFeatureName() ); 	            
+	        	String columnid = getSelectedLevel().getColumnId();	        	
 	        	String[] measureColumnNames = (String[])getMetaData().getMeasureColumnNames().toArray(new String[0]);        
-	            
-	                   
-	            
-	         
+	                     
 	            
 	            Iterator it = dataStore.iterator();
 	            while(it.hasNext()) {
@@ -154,23 +147,9 @@ public class DataMartProvider extends AbstractDataMartProvider {
 	                		continue;
 	                	}
 	                	dataStoreMeta.getFieldMeta( dataStoreMeta.getFieldIndex(measureColumnNames[i]) ).setProperty("ROLE", "MEASURE");
-	                	//attributes.put(measureColumnNames[i], value);
-	                	
-	                	//((Set)orderedKpiValuesMap.get(measureColumnNames[i])).add(new Double(value));
 	                	
 	            	}
-	            	
-	            	//values.put(id, attributes);           	
-	            	
-	                //String link = getSelectedLevel().getLink().toXString(record, this.getEnv());
-	                //links.put(id, link);
-	            	
 	            }
-	            //dataMart.setValues(values);
-	            //dataMart.setLinks(links);
-	            //dataMart.setKpiNames(measureColumnNames);
-	            dataMart.setSelectedKpi(0);
-	            //dataMart.setOrderedKpiValuesMap(orderedKpiValuesMap);
 	            
 	            IDataStoreTransformer dddLinkFieldTransformer = new AddLinkFieldTransformer(getSelectedLevel().getLink(), this.getEnv());
 	            dddLinkFieldTransformer.transform(dataStore);

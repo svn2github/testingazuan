@@ -124,7 +124,6 @@ button.prototype.createButton = function() {
 	for (var attrib in this.shadeLightStyles) {
 		this.upperLeftShadow.setAttributeNS(null,attrib,this.shadeLightStyles[attrib]);
 	}
-	
 	this.buttonGroup.appendChild(this.upperLeftShadow);
 
 	//create lower right button line or ellipse

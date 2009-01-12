@@ -156,62 +156,80 @@
  */   
 
 
-function DetailsWindow(visible) {
-
-  // Class members
-
+function DetailsWindow( conf ) {  
+ 
+ var defaults = {
+    id: 'detail'
+    , parentNodeId: 'Windows'
+    , width: 210
+    , height: 200
+    , x: 649
+    , y: 391
+    , moovable: true
+    , xMin: 8
+    , yMin: 8
+    , xMax: 1092
+    , yMax: 690
+    , showContent: true
+    , margin: 3
+    , titleBarVisible: true
+    , statusBarVisible: false
+    , title: 'Detail'
+    , statusBarContent: ''
+    , closeButtonVisible: false
+    , minimizeButtonVisible: true
+    , maximizeButtonVisible: true    
+    
+    , minimized: false    
+  };
   
-  // passed as parameter #13 to the constructor of Window class
-  var winPlaceholderStyles = {"fill":"none","stroke":"dimgray","stroke-width":1.5};
+  var defualtStyles = {
+    winPlaceholderStyles: {"fill":"none","stroke":"dimgray","stroke-width":1.5}
+    , windowStyles: {"fill":"#fffce6","stroke":"dimgray","stroke-width":1}
+    , titlebarStyles: {"fill":"steelblue","stroke":"dimgray","stroke-width":1}
+    , titlebarHeight: 17
+    , statusbarStyles: {"fill":"aliceblue","stroke":"dimgray","stroke-width":1}
+    , statusbarHeight: 13
+    , titletextStyles: {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"}
+    , statustextStyles: {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"}
+    , buttonStyles: {"fill":"steelblue","stroke":"white","stroke-width":2}
+  };
   
-  // passed as parameter #14 to the constructor of Window class
-  var windowStyles = {"fill":"#fffce6","stroke":"dimgray","stroke-width":1};
+  var c = {};
+  Utils.apply(c, conf || {}, defaults);
+  var s = {};
+  Utils.apply(s, c.styles, defualtStyles);
+  c.styles = s;
   
-  // passed as parameter #23 to the constructor of Window class
-  var titlebarStyles = {"fill":"steelblue","stroke":"dimgray","stroke-width":1};
-  
-   // passed as parameter #24 to the constructor of Window class
-  var titlebarHeight = 17;
-  
-  // passed as parameter #25 to the constructor of Window class
-  var statusbarStyles = {"fill":"aliceblue","stroke":"dimgray","stroke-width":1};
-  
-  // passed as parameter #26 to the constructor of Window class
-  var statusbarHeight = 13;
-  
-  // passed as parameter #27 to the constructor of Window class
-  var titletextStyles = {"font-family":"Arial,Helvetica","font-size":14,"fill":"white"};
-  
-  // passed as parameter #28 to the constructor of Window class
-  var statustextStyles = {"font-family":"Arial,Helvetica","font-size":10,"fill":"dimgray"};
-  
-  // passed as parameter #29 to the constructor of Window class
-  var buttonStyles = {"fill":"steelblue","stroke":"white","stroke-width":2};
   
   // Call the superclass's constructor in the scope of this.
-  
-   
-  Window.call(this, "detail",
-                    "Windows",
-                    210,200,649,391,  // width, height, X, Y
-                    true,            // moovable
-                    8,8,1092,690,    // constrXmin, constrYmin, constrXmax, constrYmax
-                    true,            // showContent while mooving
-                    winPlaceholderStyles,
-                    windowStyles,
-                    3,                // margin
-                    true,             // titleBarVisible
-                    false,            // statusBarVisible
-                    "Detail",     // title
-                    "",               // statusBar content
-                    false,true,true,  // closeButton, minimizeButton, maximizeButton
-                    titlebarStyles, titlebarHeight, 
-                    statusbarStyles, statusbarHeight,
-                    titletextStyles, statustextStyles,
-                    buttonStyles,
-                    this.eventHandler); 
+  Window.call(this, c.id
+                    , c.parentNodeId
+                    , c.width, c.height, c.x, c.y
+                    , c.moovable
+                    , c.xMin, c.yMin, c.xMax, c.yMax
+                    , c.showContent    // showContent while mooving
+                    , c.styles.winPlaceholderStyles
+                    , c.styles.windowStyles
+                    , c.margin               
+                    , c.titleBarVisible             
+                    , c.statusBarVisible           
+                    , c.title          
+                    , c.statusBarContent               
+                    , c.closeButtonVisible
+                    , c.minimizeButtonVisible
+                    , c.maximizeButtonVisible 
+                    , c.styles.titlebarStyles, c.styles.titlebarHeight 
+                    , c.styles.statusbarStyles, c.styles.statusbarHeight
+                    , c.styles.titletextStyles, c.styles.statustextStyles
+                    , c.styles.buttonStyles
+                    , this.eventHandler); 
   
   this.createContent();  
+  
+  if( c.minimized === true) {
+    this.minimize(true);
+  }
 }
 
 
@@ -227,14 +245,14 @@ DetailsWindow.prototype.createContent = function() {
   var tab2;
   var dText;
   
-  windowContent = document.createElementNS(null,"g");
+  windowContent = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(windowContent, {
     'id' : 'detail'
     , 'transform' : 'translate(649,720)'
   });
     
     
-  tabGroup = document.createElementNS(null,"g");
+  tabGroup = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(tabGroup, {
     'id' : 'detailTabGroup'
     , 'display' : 'none'
@@ -243,7 +261,7 @@ DetailsWindow.prototype.createContent = function() {
     
     
    
-  tab1 = document.createElementNS(null,"g");
+  tab1 = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(tab1, {
     'id' : 'detailTabGroup__0_content'
   });    
@@ -251,14 +269,14 @@ DetailsWindow.prototype.createContent = function() {
   
   
   
-  dText = document.createElementNS(null,"g");
+  dText = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(dText, {
     'id' : 'dynamText'
     , 'class' : 'allText normalText'
   });    
   tab1.appendChild(dText);    
   
-  tab2 = document.createElementNS(null,"g");
+  tab2 = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(tab2, {
     'id' : 'detailTabGroup__1_content'
   });    
@@ -305,7 +323,7 @@ DetailsWindow.prototype.initDetailInfopanels =  function () {
       var dynamText = document.getElementById("dynamText");
 			for(i = 0; i < sbi.geo.conf.measures.length; i++) {
 				var offset = 50 + (i*25);
-				var panel = document.createElementNS(svgNS,"text");
+				var panel = document.createElementNS(Utils.svgNS,"text");
 				panel.setAttribute("id","infopanel" + (i+1));
 				panel.setAttribute("x", "20");
 				panel.setAttribute("y", "" + offset);

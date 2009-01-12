@@ -729,6 +729,7 @@ Window.prototype.moveTo = function(coordx,coordy,fireFunction) {
 //append new content to the window main group
 Window.prototype.appendContent = function(node,inheritDisplay) {
 	if (typeof(node) == "string") {
+	  //alert(node);
 		node = document.getElementById(node);
 	}
 	if (inheritDisplay) {

@@ -37,6 +37,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spago.util.JavaScript"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
+<%@page import="org.safehaus.uuid.UUID"%>
+<%@page import="org.safehaus.uuid.UUIDGenerator"%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
@@ -45,6 +47,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("LoginModule"); 
 	List lstMenu = new ArrayList();
+	ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+	String uuid = null;
+	if(instance!=null) uuid=instance.getExecutionId();
+	else uuid="1";
+	
 	if (moduleResponse.getAttribute(LoginModule.LIST_MENU) != null)
 		lstMenu = (List)moduleResponse.getAttribute(LoginModule.LIST_MENU);
 
@@ -52,9 +59,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String menuMode = (String)moduleResponse.getAttribute(LoginModule.MENU_MODE); 
 	String menuExtra = (String)moduleResponse.getAttribute(LoginModule.MENU_EXTRA);
 	boolean first=true;
+	boolean user=false;
+	if (!userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
+			&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
+			&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
+			&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)) 
+				{  // for behavioral model administrators
+					user=true;
+				}
+
 %>
 
 <%-- Javascript object useful for session expired management (see also sessionExpired.jsp) --%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
+<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
+<%@page import="it.eng.spagobi.wapp.util.MenuUtilities"%>
 <script>
 sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 </script>
@@ -117,6 +136,10 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 	<%-- contains the menu --%>
 	<div id="menubar" style="width:100%;background:#EEEFF3;"> 
 	</div>
+
+	<% //if(user==true){%>
+	<div id="trackPath"></div>
+	<%//} %>
 	
 	<% if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){ %>
 	<div id="content" style="margin:2;">
@@ -229,13 +252,11 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 		<%
 		//if the user is a final user, the menu is created and putted into the response with other informations like the type of layout,
 		//otherwise don't, administrators, developers, testers, behavioral model administrators have they own pre-configured menu
-		if (!userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
-				&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
-				&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
-				&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)) {  // for behavioral model administrators
+		if (user==true) {  // for behavioral model administrators
 		Integer currParentId = new Integer("-1");
 		for (int i=0; i<lstMenu.size(); i++){
 			Menu menuElem = (Menu)lstMenu.get(i);
+			String path=MenuUtilities.getMenuPath(menuElem);
 			if (menuElem.getParentId() != null && menuElem.getParentId().intValue() > 0 && 
 					menuElem.getParentId().compareTo(currParentId) != 0)
 				currParentId = menuElem.getParentId();
@@ -250,6 +271,7 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 					List lstChildrenLev2 = menuElem.getLstChildren();
 					for (int j=0; j<lstChildrenLev2.size(); j++){ //LEVEL 2
 						Menu childElemLev2 = (Menu)lstChildrenLev2.get(j);	
+					String path2=MenuUtilities.getMenuPath(childElemLev2);
 						boolean canView2=MenuAccessVerifier.canView(childElemLev2,userProfile);
 						if(canView2){
 							if (childElemLev2.getHasChildren()){
@@ -257,11 +279,11 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 								{id: '<%new Double(Math.random()).toString();%>',
 				    			     text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev2.getName(), "menu", request))%>",
 				    				 		<% if(childElemLev2.getObjId()!=null){%>
-					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
+					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>', <%=path2%>)"                   
 					                        <%} else if(childElemLev2.getStaticPage()!=null) {%>
-						                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev2.getMenuId()%>')"
+						                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev2.getMenuId()%>', '<%=path2%>' )"
 						                    <%} else if(childElemLev2.getFunctionality()!=null) {%>
-						                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev2, contextName)%>')"
+						                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev2, contextName)%>', '<%=path2%>')"
 						                    <%} else {%>
 						                         href: ''     
 						                    <%}%>,		// comma
@@ -274,6 +296,7 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 			    			    <%	 List lstChildrenLev3 = childElemLev2.getLstChildren();
 						    		 for (int k=0; k<lstChildrenLev3.size(); k++){ //LEVEL 3
 						    			 Menu childElemLev3 = (Menu)lstChildrenLev3.get(k);	
+											String path3=MenuUtilities.getMenuPath(childElemLev3);
 									    boolean canView3=MenuAccessVerifier.canView(childElemLev3,userProfile);
 									    if(canView3){
 			    			     %>						    			    
@@ -281,11 +304,11 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 					    			    {id: '<%new Double(Math.random()).toString();%>',
 					    			    text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev3.getName(), "menu", request))%>",
 				    				 		<% if(childElemLev3.getObjId()!=null){%>
-					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   
+					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>', '<%=path3%>')"                   
 					                        <%} else if(childElemLev3.getStaticPage()!=null) {%>
-						                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev3.getMenuId()%>')"
+						                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev3.getMenuId()%>', '<%=path3%>')"
 						                    <%} else if(childElemLev3.getFunctionality()!=null) {%>
-						                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev3, contextName)%>')"
+						                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev3, contextName)%>', '<%=path3%>')"
 						                    <%} else {%>
 						                         href: ''     
 						                    <%}%>,		// comma
@@ -297,7 +320,8 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 					                    items: [
 					    			    <%	 List lstChildrenLev4 = childElemLev3.getLstChildren();
 								    		 for (int x=0; x<lstChildrenLev4.size(); x++){ //LEVEL 4
-								    			 Menu childElemLev4 = (Menu)lstChildrenLev4.get(x);	
+								    			 Menu childElemLev4 = (Menu)lstChildrenLev4.get(x);
+													String path4=MenuUtilities.getMenuPath(childElemLev4);								    		 
 												    boolean canView4=MenuAccessVerifier.canView(childElemLev4,userProfile);
 												    if(canView4){
 					    			    %>
@@ -310,11 +334,11 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 						                            icon: '<%=contextName%><%=icon%>',
 						                            <%}%>
 						    				 		<% if(childElemLev4.getObjId()!=null){%>
-							                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev4.getMenuId()%>')"                   
+							                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev4.getMenuId()%>', '<%=path4%>')"                   
 							                        <%} else if(childElemLev4.getStaticPage()!=null) {%>
-								                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev4.getMenuId()%>')"
+								                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev4.getMenuId()%>', '<%=path4%>')"
 								                    <%} else if(childElemLev4.getFunctionality()!=null) {%>
-								                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev4, contextName)%>')"
+								                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev4, contextName)%>', '<%=path4%>')"
 								                    <%} else {%>
 								                         href: ''     
 								                    <%}%>,		// comma
@@ -338,11 +362,11 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 						                          icon: '<%=contextName%><%=icon%>',
 						                          <%}%>					                             
 					                            <% if(childElemLev3.getObjId()!=null){%>
-						                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>')"                   
+						                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>', '<%=path3%>')"                   
 						                        <%} else if(childElemLev3.getStaticPage()!=null) {%>
-							                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev3.getMenuId()%>')"
+							                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev3.getMenuId()%>', '<%=path3%>')"
 							                    <%} else if(childElemLev3.getFunctionality()!=null) {%>
-							                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev3, contextName)%>')"
+							                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev3, contextName)%>', '<%=path3%>')"
 							                    <%} else {%>
 							                         href: ''     
 							                    <%}%>
@@ -367,11 +391,11 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 										icon: '<%=contextName%><%=icon%>',
 											<%}%>		                             
 		                            <% if(childElemLev2.getObjId()!=null){%>
-			                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>')"                   
+			                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>', '<%=path2%>')"                   
 			                        <%} else if(childElemLev2.getStaticPage()!=null) {%>
-				                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev2.getMenuId()%>')"
+				                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev2.getMenuId()%>', '<%=path2%>')"
 				                    <%} else if(childElemLev2.getFunctionality()!=null) {%>
-				                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev2, contextName)%>')"
+				                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(childElemLev2, contextName)%>', '<%=path2%>')"
 				                    <%} else {%>
 				                         href: ''     
 				                    <%}%>
@@ -388,11 +412,11 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 		                            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(menuElem.getName(), "menu", request))%>",
 		                            group: 'group_1',		                             
 	                            <% if(menuElem.getObjId()!=null){%>
-		                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>')"                   
+		                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>', '<%=path%>')"                   
 		                        <%} else if(menuElem.getStaticPage()!=null) {%>
-			                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>')"
+			                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>', '<%=path%>')"
 			                    <%} else if(menuElem.getFunctionality()!=null) {%>
-			                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>')"
+			                         href: "javascript:execDirectUrl('<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>', '<%=path%>')"
 			                    <%} else {%>
 			                         href: ''     
 			                    <%}%>
@@ -424,7 +448,8 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 							<%String icon=DetailMenuModule.assignImage(menuElem);
 							if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
-							<%}%>					            
+							<%}%>
+							path: '<%=path%>',					            
 				            <% if(menuElem.getObjId()!=null) { %>
 				            	handler: execDirectDoc,
 							<% } else if(menuElem.getStaticPage()!=null) { %>
@@ -448,7 +473,8 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 							<%String icon=DetailMenuModule.assignImage(menuElem);
 							if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
-							<%}%>					            
+							<%}%>
+							path: '<%=path%>',					            												            
 				            <% if(menuElem.getObjId()!=null) { %>
 				            	handler: execDirectDoc,
 							<% } else if(menuElem.getStaticPage()!=null) { %>
@@ -484,8 +510,19 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 			})	
 		);
 		    
+		    
 		//adds exit menu
 		tb.addSeparator();
+
+		tb.add(
+			new Ext.Toolbar.Button({
+	            id: '<%new Double(Math.random()).toString();%>',
+	            //text: '<spagobi:message key="menu.info" />',
+	            icon: '<%=contextName%>/img/question.gif',
+	            cls: 'x-btn-logout x-btn-text-icon bmenu',
+	            handler: info	  
+	        })	
+	    );
 
 		tb.add(
 			new Ext.Toolbar.Button({
@@ -503,6 +540,12 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 	function execDirectDoc(btn){
 		var url = "";
 		var idMenu = btn.id;
+		var path=btn.path;
+		if(path!=null)
+		{document.getElementById('trackPath').innerHTML=path;}
+		else 
+		{document.getElementById('trackPath').innerHTML=path; }
+		
 		if (idMenu != null && idMenu != 'null'){
 			url =  "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+idMenu;
 			document.getElementById('iframeDoc').src = url;
@@ -512,13 +555,20 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 
 	function getFunctionality(btn){
 		var url = btn.url;
-		execDirectUrl(url);
+		var path=btn.path;
+		execDirectUrl(url, path);
 		return;
 	 }
 	 
 	function readHtmlFile(btn){
 		var url = "";
 	 	var idMenu = btn.id;
+	 	var path = btn.path;
+		if(path!=null)
+		{document.getElementById('trackPath').innerHTML=path;}
+		else 
+		{document.getElementById('trackPath').innerHTML=path; }
+
 	 	 if (idMenu != null && idMenu != 'null'){
 			url =  "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+idMenu;
 			document.getElementById('iframeDoc').src = url;
@@ -526,10 +576,44 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 		return;
 	}
 	 	 
-	function execDirectUrl(url){
-		document.getElementById('iframeDoc').src = url;
+	function execDirectUrl(url, path){
+	
+	if(path!=null)
+		{document.getElementById('trackPath').innerHTML=path;}
+	document.getElementById('iframeDoc').src = url;
 		return;
 	}
+	
+	function info(){
+	
+	var win_info_<%=uuid%>;
+
+	<%
+	//String path=request.getRealPath("html/infos.html");
+	
+	String path=GeneralUtilities.getSpagoBiContext()+"/html/infos.html";
+	System.out.println(path);
+		if(path==null) path="";
+	%>
+
+	
+	
+	if(!win_info_<%=uuid%>){
+			win_info_<%=uuid%>= new Ext.Window({
+			id:'win_info_<%=uuid%>',
+			autoLoad: {url: '<%=path%>'},             				
+				layout:'fit',
+				width:200,
+				height:180,
+				closeAction:'hide',
+ 				buttonAlign : 'left',
+				plain: true,
+				title: '<spagobi:message key = "menu.info.title" />'
+			});
+		};
+		win_info_<%=uuid%>.show();
+	}
+	
 	
 	<%
 	//Check if SSO is active
@@ -547,6 +631,8 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 	<% }
 	
 	}%>
+	
+
 	
 <%--} else if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)){ %>
 
@@ -701,32 +787,37 @@ var selectNode = function(node, e) {
   </script>
   
   
+  
 	<!-- I want to execute if there is an homepage, only for user!-->
 	<%
 	if (lstMenu.size() > 0) {
 		Menu menuElem = (Menu) lstMenu.get(0);
+		String pathInit=MenuUtilities.getMenuPath(menuElem);
 		Integer objId=menuElem.getObjId();
 		if (objId!=null) {
 			%> 					
 			<script type="text/javascript">
-			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>'); 
+			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>','<%=pathInit%>'); 
 			</script>  					
 			<%
 		} else if(menuElem.getStaticPage()!=null) {
 			%> 					
 			<script type="text/javascript">
-			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>'); 
+			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>','<%=pathInit%>'); 
 			</script>  					
 			<%
 		} else if(menuElem.getFunctionality()!=null && !menuElem.getFunctionality().trim().equals("")) {
 			String url = DetailMenuModule.findFunctionalityUrl(menuElem, contextName);
 			%> 					
 			<script type="text/javascript">
-			execDirectUrl('<%=url%>');
+			execDirectUrl('<%=url%>','<%=pathInit%>');
 			</script>  					
 			<%
 		}
 	}
   	%>
-  
+ 
+    
+
+
 <%@ include file="/jsp/commons/footer.jsp"%>

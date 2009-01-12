@@ -204,7 +204,7 @@ public abstract class AbstractDataSet implements IDataSet {
 		setDataStoreTransformer(null);
 	}
 
-	public void setDataStoreTransformer(IDataStoreTransformer transformer) {
+	public void setDataStoreTransformer(IDataStoreTransformer dataSetTransformer) {
 		this.dataSetTransformer = dataSetTransformer;
 	}
 	

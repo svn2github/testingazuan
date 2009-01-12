@@ -462,6 +462,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			ds=new WebServiceDataSet();
 			((WebServiceDataSet)ds).setAddress(((SbiWSDataSet)hibDataSet).getAdress());
 			((WebServiceDataSet)ds).setExecutorClass(((SbiWSDataSet)hibDataSet).getExecutorClass());
+			((WebServiceDataSet)ds).setOperation(((SbiWSDataSet)hibDataSet).getOperation());
 		}
 		
 		if(hibDataSet instanceof SbiScriptDataSet){

@@ -30,10 +30,12 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.util.JavaScript;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
+
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -78,6 +80,100 @@ public class UserMenuTag extends TagSupport {
 		
 	}
 	
+	private void addItem(SourceBean itemSB, StringBuffer htmlStream) throws EMFInternalError {
+		String functionality = (String) itemSB.getAttribute("functionality");
+		String code = (String) itemSB.getAttribute("code");
+		String titleCode = (String) itemSB.getAttribute("title");
+		String iconUrl = (String) itemSB.getAttribute("iconUrl");
+		String url = (String) itemSB.getAttribute("url");
+		if (functionality == null) {
+			htmlStream.append("\n var " + code + " = new Ext.menu.Menu({ ");
+			htmlStream.append("\n id: '" + code + "', ");
+			htmlStream.append("\n items: [");
+			List subItems = itemSB.getAttributeAsList("ITEM");
+			Iterator it = subItems.iterator();
+			while (it.hasNext()) {
+				SourceBean subItemSB = (SourceBean) it.next();
+				if (isAbleToSeeItem(subItemSB)) {
+					addItem(subItemSB, htmlStream);
+					if (it.hasNext()) htmlStream.append("\n ,");
+				}
+			}
+			if (htmlStream.charAt(htmlStream.length() - 1) == ',') {
+				htmlStream.deleteCharAt(htmlStream.length() - 1);
+			}
+			htmlStream.append("\n ]");
+			htmlStream.append("\n });");
+			htmlStream.append("\n " + code + ".addListener('mouseexit', function() {" + code + ".hide();});");
+			htmlStream.append("\n tb.add(");
+			htmlStream.append("\n 	new Ext.Toolbar.MenuButton({");
+			htmlStream.append("\n 		text: '" + getTitle(titleCode) + "',");
+			htmlStream.append("\n 		cls: 'x-btn-text-icon bmenu',");
+			htmlStream.append("\n 		menu: " + code);
+			htmlStream.append("\n 	})");
+			htmlStream.append("\n );");
+		} else {
+			htmlStream.append("\n new Ext.menu.Item({");
+			htmlStream.append("\n 	id: '" + new Double(Math.random()).toString() + "',");
+			iconUrl = iconUrl.replace("${SPAGOBI_CONTEXT}", httpRequest.getContextPath());
+			url = url.replace("${SPAGOBI_CONTEXT}", httpRequest.getContextPath());
+			url = url.replace("${SPAGO_ADAPTER_HTTP}", GeneralUtilities.getSpagoAdapterHttpUrl());
+			if (url.indexOf("?") != -1) {
+				url += "&" + LightNavigationManager.LIGHT_NAVIGATOR_RESET_INSERT + "=TRUE";
+			} else {
+				url += "?" + LightNavigationManager.LIGHT_NAVIGATOR_RESET_INSERT + "=TRUE";
+			}
+			htmlStream.append("\n 	text: '" + getTitle(titleCode) + "',");
+			htmlStream.append("\n 	icon: '" + iconUrl + "', ");
+			htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\")'");
+			htmlStream.append("\n })");
+		}
+	}
+	
+	private String getTitle(String titleCode) {
+		String title = null;
+		if (titleCode.startsWith("#")){
+			titleCode = titleCode.substring(1);
+			title = msgBuilder.getMessage(titleCode, httpRequest);
+		} else {
+			title = titleCode;
+		}
+		return title;
+	}
+	
+	private void makeMenu(StringBuffer htmlStream) throws EMFInternalError {
+		List firstLevelItems = ConfigSingleton.getInstance().getAttributeAsList("MENU.ITEM");
+		Iterator it = firstLevelItems.iterator();
+		while (it.hasNext()) {
+			SourceBean itemSB = (SourceBean) it.next();
+			if (isAbleToSeeItem(itemSB)) {
+				addItem(itemSB, htmlStream);
+			}
+		}
+	}
+	
+	private boolean isAbleToSeeItem(SourceBean itemSB) throws EMFInternalError {
+		String functionality = (String) itemSB.getAttribute("functionality");
+		if (functionality == null) {
+			return isAbleToSeeContainedItems(itemSB);
+		} else {
+			return userProfile.isAbleToExecuteAction(functionality);
+		}
+	}
+	
+	private boolean isAbleToSeeContainedItems(SourceBean itemSB) throws EMFInternalError {
+		List subItems = itemSB.getAttributeAsList("ITEM");
+		if (subItems == null || subItems.isEmpty()) return false;
+		Iterator it = subItems.iterator();
+		while (it.hasNext()) {
+			SourceBean subItem = (SourceBean) it.next();
+			String functionality = (String) subItem.getAttribute("functionality");
+			if (userProfile.isAbleToExecuteAction(functionality)) return true;
+		}
+		return false;
+	}
+	
+	/*
 	private void makeResourcesMenu(StringBuffer htmlStream) throws EMFInternalError {
 		boolean canSeeEngines = userProfile.isAbleToExecuteAction(SpagoBIConstants.ENGINES_MANAGEMENT);
 		boolean canSeeDatasources = userProfile.isAbleToExecuteAction(SpagoBIConstants.DATASOURCE_MANAGEMENT);
@@ -88,15 +184,15 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n id: 'reourcesMenu', ");
 			htmlStream.append("\n items: [");
 			if (canSeeEngines) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.ENGINES_MANAGEMENT,"#menu.Resources");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.ENGINES_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (canSeeDatasources) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.DATASOURCE_MANAGEMENT,"#menu.Resources");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.DATASOURCE_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (canSeeDatasets) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.DATASET_MANAGEMENT,"#menu.Resources");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.DATASET_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (htmlStream.charAt(htmlStream.length() - 1) == ',') {
@@ -123,6 +219,7 @@ public class UserMenuTag extends TagSupport {
 //			}
 		}
 	}
+	*/
 	
 	/*
 	private void makeWindowHandler(StringBuffer htmlStream, String functionality) throws EMFInternalError {
@@ -178,6 +275,7 @@ public class UserMenuTag extends TagSupport {
 	}
 	*/
 	
+	/*
 	private void makeAnaliticalModelMenu(StringBuffer htmlStream) throws EMFInternalError {
 		boolean canSeeFolders = userProfile.isAbleToExecuteAction(SpagoBIConstants.FUNCTIONALITIES_MANAGEMENT);
 		boolean canSeeDocuments = userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) 
@@ -187,13 +285,13 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n id: 'analiticalModelMenu', ");
 			htmlStream.append("\n items: [");
 			if (canSeeFolders) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.FUNCTIONALITIES_MANAGEMENT,"#menu.AnaliticalModel");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.FUNCTIONALITIES_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (canSeeDocuments) {
 				String functionality = userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) ? 
 						SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN : SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV;
-				makeSubMenuItem(htmlStream, functionality,"#menu.AnaliticalModel");
+				makeSubMenuItem(htmlStream, functionality);
 				htmlStream.append("\n ,");
 			}
 			if (htmlStream.charAt(htmlStream.length() - 1) == ',') {
@@ -217,7 +315,9 @@ public class UserMenuTag extends TagSupport {
 //			}
 		}
 	}
+	*/
 	
+	/*
 	private void makeBehaviouralModelMenu(StringBuffer htmlStream) throws EMFInternalError {
 		boolean canSeeLovs = userProfile.isAbleToExecuteAction(SpagoBIConstants.LOVS_MANAGEMENT)
 								|| userProfile.isAbleToExecuteAction(SpagoBIConstants.LOVS_VIEW);
@@ -230,15 +330,15 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n id: 'behaviouralModel', ");
 			htmlStream.append("\n items: [");
 			if (canSeeLovs) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.LOVS_MANAGEMENT, "#menu.BehaviouralModelMenu");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.LOVS_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (canSeeChecks) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.CONTSTRAINT_MANAGEMENT,"#menu.BehaviouralModelMenu");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.CONTSTRAINT_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (canSeeParameters) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.PARAMETER_MANAGEMENT,"#menu.BehaviouralModelMenu");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.PARAMETER_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (htmlStream.charAt(htmlStream.length() - 1) == ',') {
@@ -265,7 +365,9 @@ public class UserMenuTag extends TagSupport {
 //			}
 		}
 	}
+	*/
 	
+	/*
 	private void makeToolsMenu(StringBuffer htmlStream) throws EMFInternalError {
 		boolean canSeeImportExport = userProfile.isAbleToExecuteAction(SpagoBIConstants.IMPORT_EXPORT_MANAGEMENT);
 		boolean canSeeScheduler = userProfile.isAbleToExecuteAction(SpagoBIConstants.SCHEDULER_MANAGEMENT);
@@ -277,23 +379,23 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n id: 'toolsMenu', ");
 			htmlStream.append("\n items: [");
 			if (canSeeImportExport) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.IMPORT_EXPORT_MANAGEMENT,"#menu.ToolsMenu");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.IMPORT_EXPORT_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (canSeeScheduler) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.SCHEDULER_MANAGEMENT,"#menu.ToolsMenu");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.SCHEDULER_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (canSeeRoles) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.SYNCRONIZE_ROLES_MANAGEMENT,"#menu.ToolsMenu");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.SYNCRONIZE_ROLES_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (canManageMenues) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.MENU_MANAGEMENT,"#menu.ToolsMenu");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.MENU_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (canManageDistributionLists) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT,"#menu.ToolsMenu");
+				makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT);
 				htmlStream.append("\n ,");
 			}
 			if (htmlStream.charAt(htmlStream.length() - 1) == ',') {
@@ -320,16 +422,18 @@ public class UserMenuTag extends TagSupport {
 //			}
 		}
 	}
+	*/
 	
+	/*
 	private void makeMapCatalogueMenu(StringBuffer htmlStream) throws EMFInternalError {
 		boolean canSeeMapCatalogue = userProfile.isAbleToExecuteAction(SpagoBIConstants.MAPCATALOGUE_MANAGEMENT);
 		if (canSeeMapCatalogue) {
 			htmlStream.append("\n var mapCatalogueMenu = new Ext.menu.Menu({ ");
 			htmlStream.append("\n id: 'mapCatalogueMenu', ");
 			htmlStream.append("\n items: [");
-			makeSubMenuItem(htmlStream, SpagoBIConstants.MAPCATALOGUE_MANAGEMENT,"#menu.MapCatalogueMenu");
+			makeSubMenuItem(htmlStream, SpagoBIConstants.MAPCATALOGUE_MANAGEMENT);
 			htmlStream.append("\n ,");
-			makeSubMenuItem(htmlStream, SpagoBIConstants.MAP_FEATURES_MANAGEMENT,"#menu.MapCatalogueMenu");
+			makeSubMenuItem(htmlStream, SpagoBIConstants.MAP_FEATURES_MANAGEMENT);
 			htmlStream.append("\n ]");
 			htmlStream.append("\n });");
 			htmlStream.append("\n mapCatalogueMenu.addListener('mouseexit', function() {mapCatalogueMenu.hide();});");
@@ -344,6 +448,7 @@ public class UserMenuTag extends TagSupport {
 //			makeWindowHandler(htmlStream, SpagoBIConstants.MAP_FEATURES_MANAGEMENT);
 		}
 	}
+	*/
 	
 	/*
 	private void makeWorkspaceButton(StringBuffer htmlStream) throws EMFInternalError {
@@ -370,17 +475,18 @@ public class UserMenuTag extends TagSupport {
 	}
 	*/
 	
-	private void makeMenu(StringBuffer htmlStream) throws EMFInternalError {
-		makeResourcesMenu(htmlStream);
-		makeAnaliticalModelMenu(htmlStream);
-		makeBehaviouralModelMenu(htmlStream);
-		makeToolsMenu(htmlStream);
-		makeMapCatalogueMenu(htmlStream);
-		makeUserMenu(htmlStream);
-		//makeMenuConfigurationButton(htmlStream);
-		//makeWorkspaceButton(htmlStream);
-	}
+//	private void makeMenu(StringBuffer htmlStream) throws EMFInternalError {
+//		makeResourcesMenu(htmlStream);
+//		makeAnaliticalModelMenu(htmlStream);
+//		makeBehaviouralModelMenu(htmlStream);
+//		makeToolsMenu(htmlStream);
+//		makeMapCatalogueMenu(htmlStream);
+//		makeUserMenu(htmlStream);
+//		//makeMenuConfigurationButton(htmlStream);
+//		//makeWorkspaceButton(htmlStream);
+//	}
 	
+	/*
 	private void makeUserMenu(StringBuffer htmlStream) {
 		htmlStream.append("\n var userMenu = new Ext.menu.Menu({ ");
 		htmlStream.append("\n id: 'userMenu', ");
@@ -388,15 +494,15 @@ public class UserMenuTag extends TagSupport {
 		// TODO uncomment when workspace is working
 //		makeSubMenuItem(htmlStream, SpagoBIConstants.WORKSPACE_MANAGEMENT);
 //		htmlStream.append("\n ,");
-		makeSubMenuItem(htmlStream, SpagoBIConstants.DOCUMENT_MANAGEMENT_USER,"#menu.UserMenu");
+		makeSubMenuItem(htmlStream, SpagoBIConstants.DOCUMENT_MANAGEMENT_USER);
 		htmlStream.append("\n ,");
-		makeSubMenuItem(htmlStream, SpagoBIConstants.WORKLIST_MANAGEMENT,"#menu.UserMenu");
+		makeSubMenuItem(htmlStream, SpagoBIConstants.WORKLIST_MANAGEMENT);
 		htmlStream.append("\n ,");
-		makeSubMenuItem(htmlStream, SpagoBIConstants.HOTLINK_MANAGEMENT,"#menu.UserMenu");
+		makeSubMenuItem(htmlStream, SpagoBIConstants.HOTLINK_MANAGEMENT);
 		htmlStream.append("\n ,");
-		makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_USER,"#menu.UserMenu");
+		makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_USER);
 		htmlStream.append("\n ,");
-		makeSubMenuItem(htmlStream, SpagoBIConstants.EVENTS_MANAGEMENT,"#menu.UserMenu");
+		makeSubMenuItem(htmlStream, SpagoBIConstants.EVENTS_MANAGEMENT);
 		htmlStream.append("\n ");
 		htmlStream.append("\n ]");
 		htmlStream.append("\n });");
@@ -409,8 +515,10 @@ public class UserMenuTag extends TagSupport {
 		htmlStream.append("\n 	})");
 		htmlStream.append("\n );");
 	}
+	*/
 	
-	private void makeSubMenuItem(StringBuffer htmlStream, String functionality, String fatherName) {
+	/*
+	private void makeSubMenuItem(StringBuffer htmlStream, String functionality) {
 		SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("MENU.APPLICATION", "functionality", functionality);
 		logger.debug(" config for functionality: " +  functionality + " and sourcebean: " + config) ;
 		htmlStream.append("\n new Ext.menu.Item({");
@@ -419,10 +527,6 @@ public class UserMenuTag extends TagSupport {
 		if (title.startsWith("#")){
 			title = title.substring(1);
 			title = msgBuilder.getMessage(title, httpRequest);
-		}
-		if (fatherName.startsWith("#")){
-			fatherName = fatherName.substring(1);
-			fatherName = msgBuilder.getMessage(fatherName, httpRequest);
 		}
 		String iconUrl = (String) config.getAttribute("iconUrl");
 		iconUrl = iconUrl.replace("${SPAGOBI_CONTEXT}", httpRequest.getContextPath());
@@ -436,10 +540,11 @@ public class UserMenuTag extends TagSupport {
 		}
 		htmlStream.append("\n 	text: '" + title + "',");
 		htmlStream.append("\n 	icon: '" + iconUrl + "', ");
-		htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\",\""+fatherName+" > "+title+"\")'");
+		htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\")'");
 		//htmlStream.append("\n 	handler: " + functionality);                           
 		htmlStream.append("\n })");
 	}
+	*/
 	
 	/*
 	private void makeMenuItem(StringBuffer htmlStream, String text, String icon, String handler) {

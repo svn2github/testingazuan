@@ -88,15 +88,15 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n id: 'reourcesMenu', ");
 			htmlStream.append("\n items: [");
 			if (canSeeEngines) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.ENGINES_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.ENGINES_MANAGEMENT,"#menu.Resources");
 				htmlStream.append("\n ,");
 			}
 			if (canSeeDatasources) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.DATASOURCE_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.DATASOURCE_MANAGEMENT,"#menu.Resources");
 				htmlStream.append("\n ,");
 			}
 			if (canSeeDatasets) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.DATASET_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.DATASET_MANAGEMENT,"#menu.Resources");
 				htmlStream.append("\n ,");
 			}
 			if (htmlStream.charAt(htmlStream.length() - 1) == ',') {
@@ -187,13 +187,13 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n id: 'analiticalModelMenu', ");
 			htmlStream.append("\n items: [");
 			if (canSeeFolders) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.FUNCTIONALITIES_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.FUNCTIONALITIES_MANAGEMENT,"#menu.AnaliticalModel");
 				htmlStream.append("\n ,");
 			}
 			if (canSeeDocuments) {
 				String functionality = userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) ? 
 						SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN : SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV;
-				makeSubMenuItem(htmlStream, functionality);
+				makeSubMenuItem(htmlStream, functionality,"#menu.AnaliticalModel");
 				htmlStream.append("\n ,");
 			}
 			if (htmlStream.charAt(htmlStream.length() - 1) == ',') {
@@ -230,15 +230,15 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n id: 'behaviouralModel', ");
 			htmlStream.append("\n items: [");
 			if (canSeeLovs) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.LOVS_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.LOVS_MANAGEMENT, "#menu.BehaviouralModelMenu");
 				htmlStream.append("\n ,");
 			}
 			if (canSeeChecks) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.CONTSTRAINT_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.CONTSTRAINT_MANAGEMENT,"#menu.BehaviouralModelMenu");
 				htmlStream.append("\n ,");
 			}
 			if (canSeeParameters) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.PARAMETER_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.PARAMETER_MANAGEMENT,"#menu.BehaviouralModelMenu");
 				htmlStream.append("\n ,");
 			}
 			if (htmlStream.charAt(htmlStream.length() - 1) == ',') {
@@ -277,23 +277,23 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n id: 'toolsMenu', ");
 			htmlStream.append("\n items: [");
 			if (canSeeImportExport) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.IMPORT_EXPORT_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.IMPORT_EXPORT_MANAGEMENT,"#menu.ToolsMenu");
 				htmlStream.append("\n ,");
 			}
 			if (canSeeScheduler) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.SCHEDULER_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.SCHEDULER_MANAGEMENT,"#menu.ToolsMenu");
 				htmlStream.append("\n ,");
 			}
 			if (canSeeRoles) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.SYNCRONIZE_ROLES_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.SYNCRONIZE_ROLES_MANAGEMENT,"#menu.ToolsMenu");
 				htmlStream.append("\n ,");
 			}
 			if (canManageMenues) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.MENU_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.MENU_MANAGEMENT,"#menu.ToolsMenu");
 				htmlStream.append("\n ,");
 			}
 			if (canManageDistributionLists) {
-				makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT);
+				makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT,"#menu.ToolsMenu");
 				htmlStream.append("\n ,");
 			}
 			if (htmlStream.charAt(htmlStream.length() - 1) == ',') {
@@ -327,9 +327,9 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n var mapCatalogueMenu = new Ext.menu.Menu({ ");
 			htmlStream.append("\n id: 'mapCatalogueMenu', ");
 			htmlStream.append("\n items: [");
-			makeSubMenuItem(htmlStream, SpagoBIConstants.MAPCATALOGUE_MANAGEMENT);
+			makeSubMenuItem(htmlStream, SpagoBIConstants.MAPCATALOGUE_MANAGEMENT,"#menu.MapCatalogueMenu");
 			htmlStream.append("\n ,");
-			makeSubMenuItem(htmlStream, SpagoBIConstants.MAP_FEATURES_MANAGEMENT);
+			makeSubMenuItem(htmlStream, SpagoBIConstants.MAP_FEATURES_MANAGEMENT,"#menu.MapCatalogueMenu");
 			htmlStream.append("\n ]");
 			htmlStream.append("\n });");
 			htmlStream.append("\n mapCatalogueMenu.addListener('mouseexit', function() {mapCatalogueMenu.hide();});");
@@ -388,15 +388,15 @@ public class UserMenuTag extends TagSupport {
 		// TODO uncomment when workspace is working
 //		makeSubMenuItem(htmlStream, SpagoBIConstants.WORKSPACE_MANAGEMENT);
 //		htmlStream.append("\n ,");
-		makeSubMenuItem(htmlStream, SpagoBIConstants.DOCUMENT_MANAGEMENT_USER);
+		makeSubMenuItem(htmlStream, SpagoBIConstants.DOCUMENT_MANAGEMENT_USER,"#menu.UserMenu");
 		htmlStream.append("\n ,");
-		makeSubMenuItem(htmlStream, SpagoBIConstants.WORKLIST_MANAGEMENT);
+		makeSubMenuItem(htmlStream, SpagoBIConstants.WORKLIST_MANAGEMENT,"#menu.UserMenu");
 		htmlStream.append("\n ,");
-		makeSubMenuItem(htmlStream, SpagoBIConstants.HOTLINK_MANAGEMENT);
+		makeSubMenuItem(htmlStream, SpagoBIConstants.HOTLINK_MANAGEMENT,"#menu.UserMenu");
 		htmlStream.append("\n ,");
-		makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_USER);
+		makeSubMenuItem(htmlStream, SpagoBIConstants.DISTRIBUTIONLIST_USER,"#menu.UserMenu");
 		htmlStream.append("\n ,");
-		makeSubMenuItem(htmlStream, SpagoBIConstants.EVENTS_MANAGEMENT);
+		makeSubMenuItem(htmlStream, SpagoBIConstants.EVENTS_MANAGEMENT,"#menu.UserMenu");
 		htmlStream.append("\n ");
 		htmlStream.append("\n ]");
 		htmlStream.append("\n });");
@@ -410,7 +410,7 @@ public class UserMenuTag extends TagSupport {
 		htmlStream.append("\n );");
 	}
 	
-	private void makeSubMenuItem(StringBuffer htmlStream, String functionality) {
+	private void makeSubMenuItem(StringBuffer htmlStream, String functionality, String fatherName) {
 		SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("MENU.APPLICATION", "functionality", functionality);
 		logger.debug(" config for functionality: " +  functionality + " and sourcebean: " + config) ;
 		htmlStream.append("\n new Ext.menu.Item({");
@@ -419,6 +419,10 @@ public class UserMenuTag extends TagSupport {
 		if (title.startsWith("#")){
 			title = title.substring(1);
 			title = msgBuilder.getMessage(title, httpRequest);
+		}
+		if (fatherName.startsWith("#")){
+			fatherName = fatherName.substring(1);
+			fatherName = msgBuilder.getMessage(fatherName, httpRequest);
 		}
 		String iconUrl = (String) config.getAttribute("iconUrl");
 		iconUrl = iconUrl.replace("${SPAGOBI_CONTEXT}", httpRequest.getContextPath());
@@ -432,7 +436,7 @@ public class UserMenuTag extends TagSupport {
 		}
 		htmlStream.append("\n 	text: '" + title + "',");
 		htmlStream.append("\n 	icon: '" + iconUrl + "', ");
-		htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\")'");
+		htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\",\""+fatherName+" > "+title+"\")'");
 		//htmlStream.append("\n 	handler: " + functionality);                           
 		htmlStream.append("\n })");
 	}

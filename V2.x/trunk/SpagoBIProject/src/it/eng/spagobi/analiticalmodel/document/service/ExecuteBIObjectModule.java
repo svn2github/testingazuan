@@ -239,12 +239,19 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 			throws EMFUserError, SourceBeanException, NumberFormatException, EMFInternalError {
 		logger.debug("IN");
 		UserProfile profile = (UserProfile) this.getUserProfile();
-		// only if user is administrator, he can erase snapshot 
+		// only if user is administrator, he can erase snapshots
 		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
 			ISnapshotDAO snapdao = DAOFactory.getSnapshotDAO();
-			String snapshotIdStr = (String) request.getAttribute(SpagoBIConstants.SNAPSHOT_ID);
-			Integer snapId = new Integer(snapshotIdStr);
-			snapdao.deleteSnapshot(snapId);
+			List snapshotIdsList = request.getAttributeAsList(SpagoBIConstants.SNAPSHOT_ID);
+			if (snapshotIdsList != null && !snapshotIdsList.isEmpty()) {
+				Iterator it = snapshotIdsList.iterator();
+				while (it.hasNext()) {
+					String snapshotIdStr = (String) it.next();
+					Integer snapId = new Integer(snapshotIdStr);
+					logger.error("Deleting snaphost with id = " + snapId + " ...");
+					snapdao.deleteSnapshot(snapId);
+				}
+			}
 		} else {
 			logger.error("Current user [" + profile.getUserId().toString() + "] CANNOT erase snapshots!!");
 		}
@@ -804,19 +811,37 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 	private void deleteSubObjectHandler(SourceBean request, SourceBean response)
 			throws Exception {
 		logger.debug("IN");
-		// get id of the subobject
-		SubObject subobj = getRequiredSubObject(request);
 		UserProfile profile = (UserProfile) getUserProfile();
 		String userId = profile.getUserId().toString();
-		if (subobj != null) {
-			if (subobj.getOwner().equals(userId) || profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
-				logger.error("Deleting subobject with id = " + subobj.getId() + " ...");
-				// get dao for suboject
-				ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
-				// delete subobject
-				subobjdao.deleteSubObject(subobj.getId());
-			} else {
-				logger.error("Current user [" + userId + "] CANNOT erase subobject with id = " + subobj.getId());
+		ISubObjectDAO subobjdao = DAOFactory.getSubObjectDAO();
+		List subobjectsIdsList = request.getAttributeAsList(SpagoBIConstants.SUBOBJECT_ID);
+		if (subobjectsIdsList != null && !subobjectsIdsList.isEmpty()) {
+			Iterator it = subobjectsIdsList.iterator();
+			while (it.hasNext()) {
+				String subobjectIdStr = (String) it.next();
+				Integer subobjectId = new Integer(subobjectIdStr);
+				// check if the user is able to erase the subobject
+				boolean canDelete = false;
+				// if user is administrator, he can delete it
+				if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+					canDelete = true;
+				} else {
+					// if user is not administrator, he can delete it only if he is the owner
+					SubObject subobject = subobjdao.getSubObject(subobjectId);
+					if (subobject == null) {
+						logger.warn("Subobject with id = " + subobjectId + " not found!");
+						continue;
+					}
+					if (subobject.getOwner().equals(userId)) {
+						canDelete = true;
+					}
+				}
+				if (canDelete) {
+					logger.error("Deleting subobject with id = " + subobjectId + " ...");
+					subobjdao.deleteSubObject(subobjectId);
+				} else {
+					logger.error("Current user [" + userId + "] CANNOT erase subobject with id = " + subobjectId);
+				}
 			}
 		}
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
@@ -1498,25 +1523,38 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 	private void eraseViewpoint(SourceBean request, SourceBean response)
 			throws EMFUserError, SourceBeanException, EMFInternalError {
 		logger.debug("IN");
-		String idStr = (String) request.getAttribute("vpId");
-		Integer id = new Integer(idStr);
-		logger.debug("Viewpoint id = " + id);
-		IViewpointDAO vpDAO = DAOFactory.getViewpointDAO();
-		// check if the user is able to erase the viewpoint
-		boolean canDelete = false;
 		UserProfile profile = (UserProfile) getUserProfile();
 		String userId = profile.getUserId().toString();
-		if (profile.getFunctionalities().contains(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
-			// administrator can delete any viewpoint
-			canDelete = true;
-		} else {
-			// normal user can delete a viewpoints only if he is the owner
-			Viewpoint vp = vpDAO.loadViewpointByID(id);
-			canDelete = userId.equals(vp.getVpOwner());
-		}
-		if (canDelete) vpDAO.eraseViewpoint(new Integer(id));
-		else {
-			logger.error("User cannot delete selected viewpoint!! UserId = [" + userId + "]; viepoint id =[" + id + "]");
+		IViewpointDAO vpDAO = DAOFactory.getViewpointDAO();
+		List viewpointsIdsList = request.getAttributeAsList("vpId");
+		if (viewpointsIdsList != null && !viewpointsIdsList.isEmpty()) {
+			Iterator it = viewpointsIdsList.iterator();
+			while (it.hasNext()) {
+				String vpIdStr = (String) it.next();
+				Integer vpId = new Integer(vpIdStr);
+				// check if the user is able to erase the viewpoint
+				boolean canDelete = false;
+				// if user is administrator, he can delete it
+				if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+					canDelete = true;
+				} else {
+					// if user is not administrator, he can delete it only if he is the owner
+					Viewpoint vp = vpDAO.loadViewpointByID(vpId);
+					if (vp == null) {
+						logger.warn("Viewpoiny with id = " + vpId + " not found!");
+						continue;
+					}
+					if (vp.getVpOwner().equals(userId)) {
+						canDelete = true;
+					}
+				}
+				if (canDelete) {
+					logger.error("Deleting viewpoint with id = " + vpId + " ...");
+					vpDAO.eraseViewpoint(vpId);
+				} else {
+					logger.error("User cannot delete selected viewpoint!! UserId = [" + userId + "]; viepoint id =[" + vpId + "]");
+				}
+			}
 		}
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 		logger.debug("OUT");
@@ -1593,13 +1631,13 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 			errorHandler.addError((EMFUserError) errorsIt.next());
 		}
 		
-		HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
-		while (iterParams.hasNext()) {
-			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
-			String labelUrl = biparam.getParameterUrlName();
-			String descr = biparam.getParameterValuesDescription();
-			paramsDescriptionMap.put(labelUrl, descr);
-		}
+//		HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
+//		while (iterParams.hasNext()) {
+//			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
+//			String labelUrl = biparam.getParameterUrlName();
+//			String descr = biparam.getParameterValuesDescription();
+//			paramsDescriptionMap.put(labelUrl, descr);
+//		}
 		
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ExecuteBIObjectPageParameter");
 		logger.debug("OUT");

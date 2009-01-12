@@ -78,7 +78,7 @@ public class BIObjectParameter implements Serializable {
 	/* VALUES LIST OF THE PARAMETER (STRINGS) */
 	private List parameterValues = null;
 	
-	private String parameterValuesDescription = null;
+	private List parameterValuesDescription = null;
 	
 	/* transient flag. set to true for parameters buil on the fly */
 	private boolean transientParmeters = false;
@@ -409,7 +409,7 @@ public class BIObjectParameter implements Serializable {
 	 * 
 	 * @return the parameter values description
 	 */
-	public String getParameterValuesDescription() {
+	public List getParameterValuesDescription() {
 		return parameterValuesDescription;
 	}
 	
@@ -418,7 +418,7 @@ public class BIObjectParameter implements Serializable {
 	 * 
 	 * @param parameterValuesDescription the new parameter values description
 	 */
-	public void setParameterValuesDescription(String parameterValuesDescription) {
+	public void setParameterValuesDescription(List parameterValuesDescription) {
 		this.parameterValuesDescription = parameterValuesDescription;
 	}
 

@@ -545,7 +545,7 @@ public class ExecutionInstance {
 			return toReturn;
 		}
 		
-		String parameterValuesDescription = "";
+		List parameterValuesDescription = new ArrayList();
 		// get the lov provider detail
 		String lovProvider = lov.getLovProvider();
 		ILovDetail lovProvDet = LovDetailFactory.getLovFromXML(lovProvider);
@@ -557,6 +557,7 @@ public class ExecutionInstance {
 		if (values != null && values.size()>0) {
 			for (int i = 0; i < values.size(); i++) {
 				String value = values.get(i).toString();
+				String description = null;
 				if (!value.equals("") && !lovResultHandler.containsValue(value, lovProvDet
 						.getValueColumnName())) {
 					logger.error("Parameter '" + biparam.getLabel() + "' cannot assume value '" + value + "'" +
@@ -567,11 +568,12 @@ public class ExecutionInstance {
 					l.add(value);
 					EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1077, l);
 					toReturn.add(userError);
+					description = "NOT ADMISSIBLE";
 				} else {
-					parameterValuesDescription += lovResultHandler.getValueDescription(value, 
+					description = lovResultHandler.getValueDescription(value, 
 							lovProvDet.getValueColumnName(), lovProvDet.getDescriptionColumnName());
-					if (i < values.size() - 1) parameterValuesDescription += ";";
 				}
+				parameterValuesDescription.add(description);
 			}
 		}
 		biparam.setParameterValuesDescription(parameterValuesDescription);
@@ -586,7 +588,7 @@ public class ExecutionInstance {
 		while (iterParams.hasNext()) {
 			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
 			biparam.setParameterValues(new ArrayList());
-			biparam.setParameterValuesDescription("");
+			biparam.setParameterValuesDescription(new ArrayList());
 			biparam.setHasValidValues(false);
 			List values = biparam.getParameterValues();
 			if ((values == null) || (values.size() == 0)) {

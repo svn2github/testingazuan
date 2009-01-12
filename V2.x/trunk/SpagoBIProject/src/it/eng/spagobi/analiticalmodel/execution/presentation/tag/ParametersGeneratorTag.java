@@ -821,9 +821,18 @@ public class ParametersGeneratorTag extends TagSupport {
 	
 	String id="p_search_button_"+biparam.getParameterUrlName();
 	htmlStream.append("\n");
-	String description = biparam.getParameterValuesDescription();
-	if (description == null) 
-		description = "";
+	List valuesDescription = biparam.getParameterValuesDescription();
+	StringBuffer buffer = new StringBuffer("");
+	if (valuesDescription != null && !valuesDescription.isEmpty()) {
+		Iterator valuesDescriptionIt = valuesDescription.iterator();
+		while (valuesDescriptionIt.hasNext()) {
+			String description = (String) valuesDescriptionIt.next();
+			buffer.append(description);
+			if (valuesDescriptionIt.hasNext())
+				buffer.append(";");
+		}
+	}
+	String description = buffer.toString();
 	String tmpValue = (description.equals("null"))?"":description;
 	htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(tmpValue) + "' type='text' style='width:230px;' " + "name='' " + "id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
 		+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " "));

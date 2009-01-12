@@ -30,6 +30,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiSnapshots;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
 import it.eng.spagobi.commons.bo.Domain;
@@ -115,6 +116,25 @@ public class ExecuteBIDocumentJob implements Job {
 					List parameters = (List) objectParametersIterator.next();
 					biobj.setBiObjectParameters(parameters);
 				
+					StringBuffer toBeAppendedToName = new StringBuffer();
+					StringBuffer toBeAppendedToDescription = new StringBuffer(" [");
+					Iterator parametersIt = parameters.iterator();
+					while (parametersIt.hasNext()) {
+						BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
+						if (aParameter.isIterative()) {
+							toBeAppendedToName.append("_" + aParameter.getParameterValuesAsString());
+							toBeAppendedToDescription.append(aParameter.getLabel() + ":" + aParameter.getParameterValuesAsString() + "; ");
+						}
+					}
+					// if there are no iterative parameters, toBeAppendedToDescription is " [" and must be cleaned
+					if (toBeAppendedToDescription.length() == 2) {
+						toBeAppendedToDescription.delete(0, 2);
+					} else {
+						// toBeAppendedToDescription ends with "; " and must be cleaned
+						toBeAppendedToDescription.delete(toBeAppendedToDescription.length() - 2, toBeAppendedToDescription.length());
+						toBeAppendedToDescription.append("]");
+					}
+					
 					//check parameters value: if a parameter hasn't value but isn't mandatory the process 
 					//must go on and so hasValidValue is set to true
 					List tmpBIObjectParameters = biobj.getBiObjectParameters();
@@ -166,18 +186,18 @@ public class ExecuteBIDocumentJob implements Job {
 						eventManager.registerEvent("Scheduler", endExecMsg, "", roles);
 						
 						if(sInfo.isSaveAsSnapshot()) {
-							saveAsSnap(sInfo, biobj, response);
+							saveAsSnap(sInfo, biobj, response, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
 						}
 						
 						if(sInfo.isSaveAsDocument()) {
-							saveAsDocument(sInfo, biobj,jex, response, fileextension);
+							saveAsDocument(sInfo, biobj,jex, response, fileextension, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
 						}
 	
 						if(sInfo.isSendMail()) {
-							sendMail(sInfo, biobj, response, retCT, fileextension);
+							sendMail(sInfo, biobj, response, retCT, fileextension, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
 						}
 						if(sInfo.isSendToDl()) {
-							SendToDl(sInfo, biobj, response, retCT, fileextension);
+							sendToDl(sInfo, biobj, response, retCT, fileextension, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
 							if(jex.getNextFireTime()== null){
 								String triggername = jex.getTrigger().getName();
 								List dlIds = sInfo.getDlIds();
@@ -209,14 +229,26 @@ public class ExecuteBIDocumentJob implements Job {
 	
 	
 	
-	private void saveAsSnap(SaveInfo sInfo,BIObject biobj, byte[] response) {
+	private void saveAsSnap(SaveInfo sInfo,BIObject biobj, byte[] response, String toBeAppendedToName, String toBeAppendedToDescription) {
 	    logger.debug("IN");
 		try {
 			String snapName = sInfo.getSnapshotName();
 			if( (snapName==null) || snapName.trim().equals("")) {
 				throw new Exception("Document name not specified");
 			}
-			String snapDesc = sInfo.getSnapshotDescription();
+			snapName += toBeAppendedToName;
+			if (snapName.length() > 100) {
+				logger.warn("Snapshot name [" + snapName + "] exceeds maximum length that is 100, it will be truncated");
+				snapName = snapName.substring(0, 100);
+			}
+			
+			String snapDesc = sInfo.getSnapshotDescription() != null ? sInfo.getSnapshotDescription() : "";
+			snapDesc += toBeAppendedToDescription;
+			if (snapDesc.length() > 1000) {
+				logger.warn("Snapshot description [" + snapDesc + "] exceeds maximum length that is 1000, it will be truncated");
+				snapDesc = snapDesc.substring(0, 1000);
+			}
+			
 			String historylengthStr = sInfo.getSnapshotHistoryLength();
 			// store document as snapshot
 			ISnapshotDAO snapDao = DAOFactory.getSnapshotDAO();
@@ -256,7 +288,7 @@ public class ExecuteBIDocumentJob implements Job {
 	
 	
 	
-	private void saveAsDocument(SaveInfo sInfo,BIObject biobj, JobExecutionContext jex, byte[] response, String fileExt) {
+	private void saveAsDocument(SaveInfo sInfo,BIObject biobj, JobExecutionContext jex, byte[] response, String fileExt, String toBeAppendedToName, String toBeAppendedToDescription) {
 	    logger.debug("IN");
 	    try{
 			String docName = sInfo.getDocumentName();
@@ -282,7 +314,7 @@ public class ExecuteBIDocumentJob implements Job {
 			ObjTemplate objTemp = new ObjTemplate();
 			objTemp.setActive(new Boolean(true));
 			objTemp.setContent(response);
-			objTemp.setName(docName + fileExt);
+			objTemp.setName(docName + toBeAppendedToName + fileExt);
 			// load all functionality
 			List storeInFunctionalities = new ArrayList();
 			String functIdsConcat = sInfo.getFunctionalityIds();
@@ -337,7 +369,7 @@ public class ExecuteBIDocumentJob implements Job {
 	
 	
 	
-	private void sendMail(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt) {
+	private void sendMail(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt, String toBeAppendedToName, String toBeAppendedToDescription) {
 	    logger.debug("IN");
 		try{
 			ConfigSingleton config = ConfigSingleton.getInstance();
@@ -386,15 +418,15 @@ public class ExecuteBIDocumentJob implements Job {
 		    msg.setRecipients(Message.RecipientType.TO, addressTo);
 		    // Setting the Subject and Content Type
 			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-			String subject = biobj.getName() + " " + mailSubj;
+			String subject = mailSubj + " " + biobj.getName() + toBeAppendedToName;
 			msg.setSubject(subject);
 		    // create and fill the first message part
 		    MimeBodyPart mbp1 = new MimeBodyPart();
-		    mbp1.setText(mailTxt);
+		    mbp1.setText(mailTxt + "\n" + toBeAppendedToDescription);
 		    // create the second message part
 		    MimeBodyPart mbp2 = new MimeBodyPart();
 	        // attach the file to the message
-		    SchedulerDataSource sds = new SchedulerDataSource(response, retCT, biobj.getName() + fileExt);
+		    SchedulerDataSource sds = new SchedulerDataSource(response, retCT, biobj.getName() + toBeAppendedToName + fileExt);
 		    mbp2.setDataHandler(new DataHandler(sds));
 		    mbp2.setFileName(sds.getName());
 		    // create the Multipart and add its parts to it
@@ -412,7 +444,7 @@ public class ExecuteBIDocumentJob implements Job {
 		}
 	}
 
-	private void SendToDl(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt) {
+	private void sendToDl(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt, String toBeAppendedToName, String toBeAppendedToDescription) {
 	    logger.debug("IN");
 		try{
 			ConfigSingleton config = ConfigSingleton.getInstance();
@@ -483,7 +515,7 @@ public class ExecuteBIDocumentJob implements Job {
 		    msg.setRecipients(Message.RecipientType.TO, addressTo);
 		    // Setting the Subject and Content Type
 			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
-			String subject = biobj.getName();
+			String subject = biobj.getName() + toBeAppendedToName;
 			msg.setSubject(subject);
 		    // create and fill the first message part
 		    //MimeBodyPart mbp1 = new MimeBodyPart();
@@ -491,7 +523,7 @@ public class ExecuteBIDocumentJob implements Job {
 		    // create the second message part
 		    MimeBodyPart mbp2 = new MimeBodyPart();
 	        // attach the file to the message
-		    SchedulerDataSource sds = new SchedulerDataSource(response, retCT, biobj.getName() + fileExt);
+		    SchedulerDataSource sds = new SchedulerDataSource(response, retCT, biobj.getName() + toBeAppendedToName + fileExt);
 		    mbp2.setDataHandler(new DataHandler(sds));
 		    mbp2.setFileName(sds.getName());
 		    // create the Multipart and add its parts to it

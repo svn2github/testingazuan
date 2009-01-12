@@ -32,6 +32,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * Class to create a list (table) 
  */
 
+/*
+
+#asset(qx/icon/Oxygen/16/actions/schedule.png)
+#asset(qx/icon/Oxygen/16/actions/dialog-ok.png)
+#asset(qx/icon/Oxygen/16/actions/detail.gif)
+*/ 
 qx.Class.define("spagobi.app.data.DataService", {
   type : "static",
   statics : {
@@ -180,7 +186,7 @@ qx.Class.define("spagobi.app.data.DataService", {
   	
   	loadlink1Records: function(){
   		var records = {};
-    	
+    	records.ID = "LINK";
     	records.meta =  this.loadLink1Meta();
     	records.rows =  this.loadLink1Data();
     	
@@ -237,7 +243,7 @@ qx.Class.define("spagobi.app.data.DataService", {
   	
   	loadlink2Records: function(){
   		var records = {};
-    	
+    	records.ID = "LINK";
     	records.meta =  this.loadLink2Meta();
     	records.rows =  this.loadLink2Data();
     	
@@ -288,7 +294,7 @@ qx.Class.define("spagobi.app.data.DataService", {
   	
   	loadlink3Records: function(){
   		var records = {};
-    	
+    	records.ID = "LINK";
     	records.meta =  this.loadLink3Meta();
     	records.rows =  this.loadLink3Data();
     	
@@ -541,7 +547,50 @@ qx.Class.define("spagobi.app.data.DataService", {
   		];
   	},
   	
+  	loadScheduleRecords: function() {
+  		var records = {};
+    	    	
+    	records.ID = "Scheduler";
+    	records.columns = [3,4];
+    	records.meta =  this.loadScheduleMeta();
+    	records.rows =  this.loadScheduleData();
+    	
+    	return records;
+  	},
   	
+  	loadScheduleMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'label',
+	    		name: 'Label'
+    		}, {
+	    		dataIndex: 'description',
+	    		name: 'Description' 
+    		}, {
+	    		dataIndex: 'type',
+	    		name: 'Number of Schedules'
+    		}, {
+	    		dataIndex: 'ScheduleList',
+	    		name: 'Schedule List'
+    		}, {
+	    		dataIndex: 'detail',
+	    		name: 'Details'
+    		}
+    	];
+  	},
+  	
+  	loadScheduleData: function() {
+  		return [
+  			{
+	        	id: '51',
+	        	"label": 'Report Clienti',
+	        	description: 'Dettaglio del profilo cliente',
+	        	type: '0',
+	        	ScheduleList: 'qx/icon/Oxygen/16/actions/schedule.png',//qx.util.AliasManager.getInstance().resolve(//'qx/icon/Oxygen/16/actions/insert-link.png'
+	        	detail: 'qx/icon/Oxygen/16/actions/detail.gif'//qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/detail.gif')//'qx/icon/Oxygen/16/actions/window-new.png'        	
+        	}			
+  		];
+  	},
   	
   	loadDatasetRecords: function() {
   		var records = {};

@@ -101,10 +101,10 @@ qx.Class.define("spagobi.ui.Tree", {
 	               		
 	               		
 	               		
-	               		if(this.getSelectedItem() == undefined){		// null
+	          /*     		if(this.getSelectedItem() == undefined){		// null
 	               			//alert("no Element Selected");
 	               			return;
-	               		}
+	               		}*/
 	               		
 	               		//alert(this.getSelectedElement().getLabel());
 	               		//alert(this.getSelectedElement()); //qx.legacy.ui.tree.Tree / qx.legacy.ui.tree.TreeFolder / qx.legacy.ui.tree.Treefile
@@ -183,27 +183,27 @@ qx.Class.define("spagobi.ui.Tree", {
 	               		if(this.getSelectedItem() == this){		// If Root Node
 	               			contextMenu.add(insertButton,deleteButton);
 	               		} else {
-		               			var selectionManager = this.getManager();
-		               			var item = selectionManager.getSelectedItem();
+		               		//	var selectionManager = this.getManager();
+		               			var item = this.getSelectedItem();
 		               			
-		               			if(item instanceof qx.legacy.ui.tree.TreeFile){			//leaf nodes don't have insert option	
+		               			if(item instanceof qx.ui.tree.TreeFile){			//leaf nodes don't have insert option	
 		               				
-		               				if(selectionManager.getPreviousSibling(item) == undefined){		// first child cannot be moved up
+		               				if(this.getPreviousSibling(item) == undefined){		// first child cannot be moved up
 		               					contextMenu.add(deleteButton,moveDownButton);
 		               				}
 		               			
-		               				else if(selectionManager.getNextSibling(item) == undefined){	// last child cannot be moved down
+		               				else if(this.getNextSibling(item) == undefined){	// last child cannot be moved down
 		               					contextMenu.add(deleteButton,moveUpButton);	               				
 		               				}
 	                 				else{
 		               					contextMenu.add(deleteButton,moveUpButton,moveDownButton);
 	                 				}	
 		               			} else{															// For folders, you have insert option even if they are at leaf
-		               				if(selectionManager.getPreviousSibling(item) == undefined){		// first child cannot be moved up
+		               				if(this.getPreviousSibling(item) == undefined){		// first child cannot be moved up
 		               					contextMenu.add(insertButton,deleteButton,moveDownButton);
 		               				}
 		               			
-		               				else if(selectionManager.getNextSibling(item) == undefined){	// last child cannot be moved down
+		               				else if(this.getNextSibling(item) == undefined){	// last child cannot be moved down
 		               					contextMenu.add(insertButton,deleteButton,moveUpButton);	               				
 		               				}
 	                 				//var previousItem = selectionManager.getPrevious(this.getSelectedItem()); //getLeadItem(), getNextSibling, getPreviousSibling, 
@@ -213,7 +213,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	               				}
 	               		}
   						
-  						contextMenu.addToDocument();		//var d = qx.legacy.ui.core.ClientDocument.getInstance();	//d.add(contextMenu);
+  						this.add(contextMenu);//.addToDocument();		//var d = qx.legacy.ui.core.ClientDocument.getInstance();	//d.add(contextMenu);
   						contextMenu.show();
   						
   						//alert(contextMenu.getParent().getVisibility() + ", "+ contextMenu.getParent().getDisplay());
@@ -231,8 +231,8 @@ qx.Class.define("spagobi.ui.Tree", {
 				        else{
 				            
 				  			var ele = this.getSelectedElement().getElement();
-				  			contextMenu.setLeft(qx.legacy.html.Location.getPageBoxLeft(ele)); 
-				  			contextMenu.setTop(qx.legacy.html.Location.getPageBoxBottom(ele));
+				  			contextMenu.setLeft(qx.html.Location.getPageBoxLeft(ele)); 
+				  			contextMenu.setTop(qx.html.Location.getPageBoxBottom(ele));
 				  			//contextMenu.show();
 				  			
 				  			//this.getSelectedElement().getLeft(); // NULL
@@ -285,17 +285,17 @@ qx.Class.define("spagobi.ui.Tree", {
 	               _insertCmd: function(e){
 	               	
 	               		//alert(e);	//Data Event
-	               		this.insertWin = new qx.legacy.ui.window.Window("Insert");
+	               		this.insertWin = new qx.ui.window.Window("Insert");
 						this.insertWin.setSpace(200, 400, 200, 250);
-						var d = qx.legacy.ui.core.ClientDocument.getInstance();
+						var d = qx.ui.core.ClientDocument.getInstance();
 						d.add(this.insertWin);
 						
-						var nameLabel = new qx.legacy.ui.basic.Label("Name:");
+						var nameLabel = new qx.ui.basic.Label("Name:");
 						nameLabel.setLocation(50, 50);
 						
-						this.nameText = new qx.legacy.ui.form.TextField();	//global .. MAYBE can make LOCAL .. try
+						this.nameText = new qx.ui.form.TextField();	//global .. MAYBE can make LOCAL .. try
 						this.nameText.setLocation(100, 50);
-						this.atom = new qx.legacy.ui.basic.Atom();
+						this.atom = new qx.ui.basic.Atom();
 						this.atom.add(this.nameText);
 						this.atom.setUserData('newNodeName',this.nameText);
 						//this.nameText.setUserData('newNodeName',nameText);
@@ -308,7 +308,7 @@ qx.Class.define("spagobi.ui.Tree", {
 						parentText.setLocation(100, 100);
 						*/
 						
-						var goButton = new qx.legacy.ui.form.Button("Insert");
+						var goButton = new qx.ui.form.Button("Insert");
 				        goButton.setLocation(150, 150);
 				        goButton.addListener("execute", this._insertDetails,this
 				        /*
@@ -411,44 +411,54 @@ qx.Class.define("spagobi.ui.Tree", {
                  	var treeNode;
                  	
                  	if(config.checkBox != undefined){	// to check if its a standard node with just icon and name
-                 										// ... or special node with a icon, checkbox and name 
+                 									// ... or special node with a icon, checkbox and name 
                  	//	alert("1");
-                 		treeRowStructure = new qx.ui.tree.TreeFolder();                 
-                 		treeRowStructure.addIndent();
+                 	//	treeRowStructure = new qx.ui.tree.TreeFolder();
+                 		treeNode  = new qx.ui.tree.TreeFolder();
+                 //		treeNode.addOpenButton();                 
+                 //		treeRowStructure.addIndent();
                  		if(config.init_icon != undefined && config.click_icon != undefined){
-                 	//		alert("2");
-                 			treeRowStructure.addIcon(config.init_icon, config.click_icon);
+                 			
+                 		//	treeRowStructure.addIcon(config.init_icon, config.click_icon);
+                 			treeNode.addIcon(config.init_icon, config.click_icon);
                  		}
                  		// to add default image 
                  		
                  		if (config.checkBox == true){
-                 	//		alert("3"); 
+                 			
                       		var obj = new qx.ui.form.CheckBox();
-                      		treeRowStructure.addWidget(obj, true);
+                     // 		treeRowStructure.addWidget(obj);//, true
+                      		treeNode.addWidget(obj);
+                      	//	treeNode.addSpacer();
                   		}
                   		
-                  		treeRowStructure.addLabel(config.name);
+               //   		treeRowStructure.addLabel(config.name);
+                  		treeNode.addLabel(config.name);
                  	}
                  	
-                 	else{			// if standard node with just Icon and name
+              /*   	else{			// if standard node with just Icon and name
                  		//	alert("4");
                  			treeRowStructure = new qx.ui.tree.TreeFolder(config.name);
-                 	}	 
+                 	}	*/ 
                   	
-                  	if(config.file != undefined){	// to check if node is of type file or folder
+                    else if(config.file != undefined){	// to check if node is of type file or folder
                   	//	alert("5");
                   			if(config.file == true){
                   			//	alert("6");
                   			treeNode = new qx.ui.tree.TreeFile(config.name);
+                  		//	treeNode.addOpenButton();
                   		}
                   		else{
                   		//	alert("7");
                   			treeNode = new qx.ui.tree.TreeFolder(config.name);
+                  		//	treeNode.addOpenButton();
                   		}
                   	}
                   	else{			
                   	//	alert("8");				// by default, node is of Folder type
                   		treeNode = new qx.ui.tree.TreeFolder(config.name);
+                  //		treeNode.addOpenButton();
+                  		
                   	}                                                  
                   	
                   	

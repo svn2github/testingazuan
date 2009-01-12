@@ -144,12 +144,14 @@ qx.Class.define("spagobi.app.Chiron",
         
 	  	// Create header
       	this._headerView = new spagobi.app.ui.Header();
+      	     	
       	//dockLayout.addTop(this._headerView);//change
       	this._container = new qx.ui.container.Composite(dockLayout);
 		this._container.add(this._headerView, {edge:"north"});
 		//this._container.add(this._headerView, {left:0,top:0});//try canvas..not working
-      	
-
+ //     	var AL = new qx.ui.basic.Atom("Gaurav",qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/schedule.png'));
+  //    	var DL = new qx.ui.basic.Atom("Amit",qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/detail.gif'));
+//		this._container.add(DL, {edge:"north"});
       	// Create toolbar
       	this._toolBarView = new spagobi.ui.ToolBar([
       		{
@@ -423,12 +425,12 @@ qx.Class.define("spagobi.app.Chiron",
       					name: 'tool',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/importexport64.png'),
 						page: 'tool',
-						tooltip: 'Dummy'//Import / Export
+						tooltip: 'Import/Eport'//Import / Export
       				}, {
       					name: 'schedule',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/scheduleIcon64_blu.png'),
 						page: 'schedule',
-						tooltip: 'Dummy'//Schedule Document Executions
+						tooltip: 'schedule'//Schedule Document Executions
       				}, {
       					name: 'roles',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/rolesynch64.jpg'),

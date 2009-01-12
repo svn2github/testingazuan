@@ -142,6 +142,8 @@ qx.Class.define("spagobi.ui.FormList", {
 		_currentSubform: undefined,
 		
 		str:"",
+		treeLabel:undefined,
+		_val:undefined,
 		/**
 		 * Function to get the current value of config object
 		 * @return The current config object
@@ -158,7 +160,10 @@ qx.Class.define("spagobi.ui.FormList", {
 		 */
 		setConfig: function(config) {
 			this._config = config;
+		//	alert(typeof(this._config));
 		},
+		
+		
 		
 		/**
 		 * Function to add the subform in the list.
@@ -166,11 +171,23 @@ qx.Class.define("spagobi.ui.FormList", {
 		 * 
 		 * @param o {Object ? null) Object whose elements need to be to set
 		 */
+		
 		addInstance: function(o) {
+		//	alert("debug 3"+typeof(o));
 			var subform;
 			if( typeof(this._config) == 'object' ) {
+			//	alert("debug 6"+ o);
 				subform = new spagobi.ui.Form(this._config);
-			} else {
+				if (this._config.schedule != undefined){
+			//		alert("Gaurav");
+					this._val = this._config.val;
+				}
+			} /*else if ( typeof(o) == 'string' ){
+				alert("debug 5"+ o);
+				this.treeLabel = o;
+			}
+			*/
+			else {
 				subform = new this._config();
 			}
 					//	subform.setBorder(new qx.legacy.ui.core.Border(3));	
@@ -179,7 +196,8 @@ qx.Class.define("spagobi.ui.FormList", {
 			}		
 			
 			this._currentSubform = subform;
-			
+			this.treeLabel = o;
+		//	alert("debug 4"+this.treeLabel);
 			//change
 			/*
 			var subFormButton = new qx.legacy.ui.pageview.tabview.Button('tab-' + this._tabcount);
@@ -198,7 +216,18 @@ qx.Class.define("spagobi.ui.FormList", {
 	  		this._tabView.getPane().setDimension('auto','auto');
 	  			//	subFormPage.setBorder(new qx.legacy.ui.core.Border(1));
 	  		*/
-	  		var subFormPage = new qx.ui.tabview.Page('tab-' + this._tabcount, "qx/icon/Oxygen/16/actions/edit-delete.png");
+	  		if (this.treeLabel != undefined)
+	  		{
+	  			var subFormPage = new qx.ui.tabview.Page(this.treeLabel);//, "qx/icon/Oxygen/16/actions/edit-delete.png"
+	  		}
+	  		else if (this._config.schedule != undefined){
+	  			var subFormPage = new qx.ui.tabview.Page(this._val);
+	  		}
+	  		
+	  		else
+	  		{
+	  			var subFormPage = new qx.ui.tabview.Page('tab-' + this._tabcount, "qx/icon/Oxygen/16/actions/edit-delete.png");
+	  		}
 	  		subFormPage.setLayout(new qx.ui.layout.Grow());//VBox
 	  		this._tabcount++;
 	  		subFormPage.add(subform);
@@ -254,7 +283,11 @@ qx.Class.define("spagobi.ui.FormList", {
     		}
     		//this.childrenList("after New add");
     		this._tabPage = subFormPage;//moved up
+    		if (this.treeLabel != undefined || this._config.schedule != undefined)
+    		{}
+    		else {
     		this._dummyFunction();
+    		}
     		//alert("Form label"+ this._tabView.getSelected().getLabel());
     		//this._tabView.addListener("changeSelected",this._choosePage,this);
 		},

@@ -45,4 +45,8 @@ public class ContentServiceSoapBindingImpl implements it.eng.spagobi.services.co
 	MapCatalogueImpl service=new MapCatalogueImpl();
 	return service.mapCatalogue(in0, in1, in2, in3, in4, in5);
     }
+    public it.eng.spagobi.services.content.bo.Content readMap(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+	MapCatalogueImpl service=new MapCatalogueImpl();
+	return service.readMap(in0, in1, in2);
+    }
 }

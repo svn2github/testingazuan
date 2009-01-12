@@ -31,6 +31,7 @@ import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapFeaturesDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
+import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import java.io.BufferedReader;
@@ -75,6 +76,11 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 	super();
     }
 
+    
+    public Content readMap(String token,String user,String mapName){
+	return null;
+    }
+    
     /**
      * Map catalogue.
      * 
@@ -346,5 +352,6 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 	    logger.debug("OUT");
 	}
     }
+
 
 }

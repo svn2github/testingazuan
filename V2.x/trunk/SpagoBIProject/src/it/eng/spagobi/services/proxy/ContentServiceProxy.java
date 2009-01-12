@@ -73,6 +73,32 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	    throw new SecurityException();
 	}
     }
+
+
+    /**
+     * Read template.
+     * 
+     * @param document String
+     * 
+     * @return Content
+     */
+    public Content readMap(String mapName) {
+	logger.debug("IN.mapName="+mapName);
+	if (mapName==null || mapName.length()==0){
+	    logger.error("mapName is NULL");
+	    return null;
+	}
+	try {
+	    return lookUp().readMap(readTicket(), userId, mapName);
+	} catch (Exception e) {
+	    logger.error("Error during service execution",e);
+
+	}finally{
+	    logger.debug("OUT");
+	}
+	return null;
+    }
+    
     
     /**
      * Read template.

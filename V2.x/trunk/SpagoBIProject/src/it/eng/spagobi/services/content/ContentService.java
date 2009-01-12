@@ -104,5 +104,15 @@ public interface ContentService {
      * @return String
      */
     String mapCatalogue(String token, String user, String operation,String path,String featureName,String mapName);
-	
+
+    
+    /**
+     * Read the SVG Map
+     * @param token String
+     * @param user String
+     * @param mapName String
+     * @return Content
+     */
+    Content readMap(String token,String user,String mapName);  
+    
 }

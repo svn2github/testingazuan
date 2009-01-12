@@ -139,6 +139,20 @@ public class ContentServiceSoapBindingSkeleton implements it.eng.spagobi.service
             _myOperations.put("mapCatalogue", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("mapCatalogue")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("readMap", _params, new javax.xml.namespace.QName("", "readMapReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://bo.content.services.spagobi.eng.it", "Content"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobicontent", "readMap"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("readMap") == null) {
+            _myOperations.put("readMap", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("readMap")).add(_oper);
     }
 
     public ContentServiceSoapBindingSkeleton() {
@@ -187,6 +201,12 @@ public class ContentServiceSoapBindingSkeleton implements it.eng.spagobi.service
     public java.lang.String mapCatalogue(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.lang.String in3, java.lang.String in4, java.lang.String in5) throws java.rmi.RemoteException
     {
         java.lang.String ret = impl.mapCatalogue(in0, in1, in2, in3, in4, in5);
+        return ret;
+    }
+
+    public it.eng.spagobi.services.content.bo.Content readMap(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    {
+        it.eng.spagobi.services.content.bo.Content ret = impl.readMap(in0, in1, in2);
         return ret;
     }
 

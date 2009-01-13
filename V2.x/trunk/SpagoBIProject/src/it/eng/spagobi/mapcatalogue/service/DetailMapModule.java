@@ -23,7 +23,6 @@ package it.eng.spagobi.mapcatalogue.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractHttpModule;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -36,14 +35,10 @@ import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.mapcatalogue.bo.GeoFeature;
 import it.eng.spagobi.mapcatalogue.bo.GeoMap;
 import it.eng.spagobi.mapcatalogue.bo.GeoMapFeature;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,7 +48,6 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
@@ -75,6 +69,7 @@ public class DetailMapModule extends AbstractHttpModule {
 	static private Logger logger = Logger.getLogger(DetailMapModule.class);
 	
 	private String modalita = "";
+	private byte[] content = null;
 	
 	
 	/**
@@ -127,7 +122,7 @@ public class DetailMapModule extends AbstractHttpModule {
 			} else if (message.trim().equalsIgnoreCase(MOD_RETURN_FROM_LOOKUP)) {
 				insRelMapFeature(serviceRequest, serviceResponse);				
 			}else if (message.trim().equalsIgnoreCase(MOD_DOWNLOAD_MAP)) {
-				downloadFile();				
+				downloadFile(serviceRequest);				
 			}
 		} catch (EMFUserError eex) {
 			errorHandler.addError(eex);
@@ -238,7 +233,8 @@ private void modDetailMap(SourceBean serviceRequest, String mod, SourceBean serv
 			 * - insert of the relations (SBI_GEO_MAP_FEATURES) through the method 'loadUpdateMapFeatures'
 			 * (all objects are had taken from the template file)
 			 */
-			DAOFactory.getSbiGeoMapsDAO().insertMap(mapNew);
+			//DAOFactory.getSbiGeoMapsDAO().insertMap(mapNew);
+			DAOFactory.getSbiGeoMapsDAO().insertMap(mapNew, content);
 			loadUpdateMapFeatures(mapNew);
 			GeoMap tmpMap = DAOFactory.getSbiGeoMapsDAO().loadMapByName(mapNew.getName());
 			mapNew.setMapId(tmpMap.getMapId());
@@ -262,9 +258,13 @@ private void modDetailMap(SourceBean serviceRequest, String mod, SourceBean serv
 			 *   there are new features those will be inserted. 
 			 * (all objects had taken from the template file)
 			 */
+			//if content is null is because the user has modified the detail of map but not the content file (not upload)
+			if (content == null){
+				content = DAOFactory.getBinContentDAO().getBinContent(new Integer(mapNew.getBinId()));
+			}
 			List lstOldFeatures = DAOFactory.getSbiGeoMapFeaturesDAO().loadFeaturesByMapId(new Integer(mapNew.getMapId()));
 			//update map
-			DAOFactory.getSbiGeoMapsDAO().modifyMap(mapNew);			
+			DAOFactory.getSbiGeoMapsDAO().modifyMap(mapNew, content);			
 			//update features
 			List lstNewFeatures = loadUpdateMapFeatures(mapNew);			
 			 // If in the new file svg there aren't more some feature, the user can choose if erase theme relations or not.
@@ -296,9 +296,10 @@ private void modDetailMap(SourceBean serviceRequest, String mod, SourceBean serv
 			    return;
 		}					     
 	} catch (EMFUserError e){
+		logger.error("Error while saving catalogue map: " +  e.getMessage());
 		HashMap params = new HashMap();
 		params.put(AdmintoolsConstants.PAGE, ListMapsModule.MODULE_PAGE);
-		throw new EMFUserError(EMFErrorSeverity.ERROR, 5009, new Vector(), params);
+		throw new EMFUserError(EMFErrorSeverity.ERROR, e.getDescription(), new Vector(), params);
 		
 	}
 	
@@ -440,8 +441,8 @@ private void newDetailMap(SourceBean response) throws EMFUserError {
 		map.setMapId(-1);
 		map.setDescr("");
 		map.setName("");
-		map.setUrl("");
 		map.setFormat("");
+		map.setBinId(-1);
 		response.setAttribute("mapObj", map);
 	} catch (Exception ex) {
 		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.MAJOR, "Cannot prepare page for the insertion" + ex.getLocalizedMessage());		
@@ -459,119 +460,47 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 	String description = (String)serviceRequest.getAttribute("DESCR");	
 	String name = (String)serviceRequest.getAttribute("NAME");
 	String format = (String)serviceRequest.getAttribute("FORMAT");
-	String url = null;
-	//gets the file eventually uploaded
-	FileItem uploaded = (FileItem) serviceRequest.getAttribute("UPLOADED_FILE");
-    String fileName = null;
-    if(uploaded!=null) {
-    	fileName = GeneralUtilities.getRelativeFileNames(uploaded.getName());
-		if (uploaded.getSize() == 0) {
-			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "201");
-			getErrorHandler().addError(error);
-			return map;
-		}
-		int maxSize = GeneralUtilities.getTemplateMaxSize();
-		if (uploaded.getSize() > maxSize) {
-			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "202");
-			getErrorHandler().addError(error);
-			return map;
-		}
-    	
-    }
-	
-	if (fileName != null && !fileName.equals("")){		
-	    if (name == null || name.equals("") ||
-	    	fileName == null || fileName.equals("")) return map;
-	    
-		File fileDir = new File(ConfigSingleton.getRootPath()+System.getProperty("file.separator")+"components"+System.getProperty("file.separator")+"mapcatalogue"+System.getProperty("file.separator")+"maps");	
-		if(!(fileDir).exists()) fileDir.mkdirs();	   
-		FileOutputStream tmpFile = new FileOutputStream(fileDir + System.getProperty("file.separator")+fileName);		
-	    
-	    try {
-	    	tmpFile.write(uploaded.get());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
-	
-		//url = fileDir.getPath().substring(ConfigSingleton.getRootPath().length())+"\\"+fileName;
-		url = fileDir.getPath().substring(ConfigSingleton.getRootPath().length())+System.getProperty("file.separator")+fileName;
-	}
-	else
-		url = (String)serviceRequest.getAttribute("sourceUrl");
-	
-	
-//	UploadedFile uploaded = (UploadedFile) serviceRequest.getAttribute("UPLOADED_FILE");
-//    String fileName = null;
-//    if(uploaded!=null) {
-//    	fileName = uploaded.getFileName();
-//    }
-//	
-//	if (fileName != null && !fileName.equals("")){		
-//	    if (name == null || name.equals("") ||
-//	    	fileName == null || fileName.equals("")) return map;
-//	    
-//		File fileDir = new File(ConfigSingleton.getRootPath()+System.getProperty("file.separator")+"components"+System.getProperty("file.separator")+"mapcatalogue"+System.getProperty("file.separator")+"maps");	
-//		if(!(fileDir).exists()) fileDir.mkdirs();	   
-//		FileOutputStream tmpFile = new FileOutputStream(fileDir + System.getProperty("file.separator")+fileName);		
-//	    
-//	    try {
-//	    	tmpFile.write(uploaded.getFileContent());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}		
-//	
-//		//url = fileDir.getPath().substring(ConfigSingleton.getRootPath().length())+"\\"+fileName;
-//		url = fileDir.getPath().substring(ConfigSingleton.getRootPath().length())+System.getProperty("file.separator")+fileName;
-//	}
-//	else
-//		url = (String)serviceRequest.getAttribute("sourceUrl");
+	Integer binId = new Integer((String)serviceRequest.getAttribute("BIN_ID"));
 	
 	map.setMapId(id.intValue());
 	map.setName(name);
 	map.setDescr(description);
 	map.setFormat(format);
-	map.setUrl(url);
+	map.setBinId(binId);
+	
+	//gets the file eventually uploaded and sets the content variable
+	FileItem uploaded = (FileItem) serviceRequest.getAttribute("UPLOADED_FILE");
+    String fileName = null;
+    if(uploaded!=null) {
+    	fileName = GeneralUtilities.getRelativeFileNames(uploaded.getName());
+		if (uploaded.getSize() == 0 && ((String)serviceRequest.getAttribute("MESSAGEDET")).equals("DETAIL_INS")) {
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "201");
+			getErrorHandler().addError(error);
+			return map;
+		}
+		int maxSize = GeneralUtilities.getTemplateMaxSize();
+		if (uploaded.getSize() > maxSize && ((String)serviceRequest.getAttribute("MESSAGEDET")).equals("DETAIL_INS")) {
+			EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "uploadFile", "202");
+			getErrorHandler().addError(error);
+			return map;
+		}
+		if (uploaded.getSize()  > 0){
+	        try {
+		    	content = uploaded.get();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}
+    }
 	
 	return map;
 	}
-		
-	/**
-	 * Fills the request container object with Map information contained into
-	 * the request Source Bean (they are all attributes). It is useful for validation process.
-	 * 
-	 * @param request The request Source Bean 
-	 * @throws SourceBeanException If any exception occurred
-	 */
-//	public void fillRequestContainer (SourceBean request, EMFErrorHandler errorHandler) throws Exception{
-//		RequestContainer req = getRequestContainer();
-//		String name = (String)request.getAttribute("NAME");
-//		String description = (String)request.getAttribute("DESCR");
-//		String format = (String)request.getAttribute("FORMAT");
-//		String url = null;
-//		UploadedFile uploaded = (UploadedFile) request.getAttribute("UPLOADED_FILE");
-//		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, "uploaded: " + uploaded );
-//		if (uploaded != null)
-//		    url = uploaded.getFileName();
-//		
-//		if (url == null || url.equals(""))
-//			url = (String)request.getAttribute("sourceUrl");
-//		
-//		SourceBean _serviceRequest = req.getServiceRequest();
-//		if(_serviceRequest.getAttribute("DESR")==null)
-//			_serviceRequest.setAttribute("DESR",description == null ? "" : description);
-//		if(_serviceRequest.getAttribute("NAME")==null)
-//			_serviceRequest.setAttribute("NAME",name == null ? "": name);
-//		if(_serviceRequest.getAttribute("URL")==null)
-//			_serviceRequest.setAttribute("URL", url == null ? "" : url);
-//		if(_serviceRequest.getAttribute("FORMAT")==null)
-//			_serviceRequest.setAttribute("FORMAT", format == null ? "" : format);
-//	}
 	
 	private List loadUpdateMapFeatures(GeoMap mapNew) throws EMFUserError, Exception {
 		try {
-	//		through the url of a map, gets and opens the svg file and inserts a feature for every tag <g>
+	//		through the content of a map, gets and opens the svg file and inserts a feature for every tag <g>
 			GeoFeature feature = null;
-			List lstHashFeatures = DAOFactory.getSbiGeoMapsDAO().getFeaturesFromSVG(mapNew.getUrl());		
+			List lstHashFeatures = DAOFactory.getSbiGeoMapsDAO().getFeaturesFromSVG(content);	
 			List lstFeatures = new ArrayList();
 			int mapId;
 			int featureId;
@@ -612,6 +541,8 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 				}
 			}//for
 			return lstFeatures;
+		} catch(EMFUserError eu){
+			throw new EMFUserError(eu);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 5009);	
@@ -704,31 +635,31 @@ private GeoMap recoverMapDetails (SourceBean serviceRequest) throws EMFUserError
 	 * @param request the http request
 	 * @param response the http response
 	 */
-	private void downloadFile () throws Exception {			
-		 	freezeHttpResponse();
-		    HttpServletRequest request = getHttpRequest();
-		    HttpServletResponse response = getHttpResponse();
-			String filePathName = ConfigSingleton.getRootPath() + (String)request.getParameter("path");
+	private void downloadFile (SourceBean request) throws EMFUserError, EMFInternalError {			
+			String binId =(String) request.getAttribute("BIN_ID");
 			
  			//download file
- 			try{			
-			File fileMap = new File(filePathName);
-			String fileName = fileMap.getName();
-			response.setHeader("Content-Disposition","attachment; filename=\"" + fileName + "\";");
-			byte[] fileContent = "".getBytes();
-			FileInputStream fis = null;
-			try{
-				fis = new FileInputStream(filePathName);
-				fileContent = GeneralUtilities.getByteArrayFromInputStream(fis);
-			} catch (IOException ioe) {
-				logger.error("Cannot get bytes of the exported file" + ioe);
+ 			try{	
+			if (binId == null || binId.equals("0") ){
+				logger.error("Cannot get content file. The identifier is null.");
+				HashMap params = new HashMap();
+				params.put(AdmintoolsConstants.PAGE, DetailMapModule.MODULE_PAGE);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "5030", new Vector(), params, "component_mapcatalogue_messages");
 			}
-			response.setContentLength(fileContent.length);
-			response.getOutputStream().write(fileContent);
-			response.getOutputStream().flush();
-		 	if(fis!=null)
-		 		fis.close();
-
+			else{
+				freezeHttpResponse();
+			    //HttpServletRequest request = getHttpRequest();
+			    HttpServletResponse response = getHttpResponse();
+				if (content == null){
+					content = DAOFactory.getBinContentDAO().getBinContent(new Integer(binId));
+				}
+				String fileName = "map.svg";
+				response.setHeader("Content-Disposition","attachment; filename=\"" + fileName + "\";");
+				response.setContentLength(content.length);
+				response.getOutputStream().write(content);
+				response.getOutputStream().flush();
+			}
+		
 		} catch (IOException ioe) {
 			logger.error("Cannot flush response" + ioe);
 		}

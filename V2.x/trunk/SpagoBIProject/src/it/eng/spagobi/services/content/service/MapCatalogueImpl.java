@@ -45,10 +45,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import sun.misc.BASE64Encoder;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
-import sun.misc.BASE64Encoder;
 
 public class MapCatalogueImpl extends AbstractServiceImpl {
 
@@ -76,9 +76,40 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 	super();
     }
 
-    
+    //read the template of svg file from the db and create a content object
     public Content readMap(String token,String user,String mapName){
-	return null;
+    	Monitor monitor =MonitorFactory.start("spagobi.service.content.readTemplate");
+        logger.debug("IN");
+        logger.debug("mapName = " +mapName);
+        Content content = new Content();
+        try {
+            validateTicket(token,user);
+            GeoMap tmpMap =  DAOFactory.getSbiGeoMapsDAO().loadMapByName(mapName);
+            if (tmpMap == null) {
+            	logger.info("Map with name " + mapName + " not found on db."); 
+            	return null;
+            }
+            byte[] template = DAOFactory.getBinContentDAO().getBinContent(tmpMap.getBinId());
+   
+            if (template == null)
+            {
+            	logger.info("Template map is empty. Try uploadyng the svg.");
+            	return null;
+            }
+            BASE64Encoder bASE64Encoder = new BASE64Encoder();
+    	    content.setContent(bASE64Encoder.encode(template));
+    	    logger.debug("template read");
+    	    content.setFileName(mapName +".svg");
+    	    
+    	    return content;
+		    
+		} catch (Exception e) {
+		    logger.error("Exception",e); 
+		    return null;
+		}finally{
+		    monitor.stop();
+		    logger.debug("OUT");
+		}        
     }
     
     /**

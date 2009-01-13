@@ -3,18 +3,18 @@
 	<MAP_ACTIONS>
 	</MAP_ACTIONS>
 	<MAP_PAGE_MODULES>
-<MAP_PAGE_MODULE pageName="DetailParameterPage" moduleName="DetailParameterModule" businessProcess="ParameterManagement" />
-<MAP_PAGE_MODULE pageName="ParametersLookupPage" moduleName="ListLookupParametersModule" businessProcess="ParameterManagement" />
-<MAP_PAGE_MODULE pageName="ListObjParusePage" moduleName="ListObjParuseModule" businessProcess="ParameterManagement" />
-<MAP_PAGE_MODULE pageName="ListParametersPage" moduleName="ListParametersModule" businessProcess="ParameterManagement" />
-<MAP_PAGE_MODULE pageName="CheckLinksPage" moduleName="CheckLinksModule" businessProcess="ConstraintManagement" />
-<MAP_PAGE_MODULE pageName="DetailModalitiesChecksPage" moduleName="DetailChecksModule" businessProcess="ConstraintManagement" />
-<MAP_PAGE_MODULE pageName="ListModalitiesChecksPage" moduleName="ListPredefinedChecksModule" businessProcess="ConstraintManagement" />
-<MAP_PAGE_MODULE pageName="ListModalitiesChecksPage" moduleName="ListModalitiesChecksModule" businessProcess="ConstraintManagement" />
-<MAP_PAGE_MODULE pageName="DetailModalitiesValuePage" moduleName="DetailModalitiesValueModule" businessProcess="LovsManagement" />
-<MAP_PAGE_MODULE pageName="DetailModalitiesValuePage" moduleName="ListTestLovModule" businessProcess="LovsManagement" />
-<MAP_PAGE_MODULE pageName="LovLookupPage" moduleName="ListLookupLovModule" businessProcess="LovsManagement" />
-<MAP_PAGE_MODULE pageName="ListLovsPage" moduleName="ListLovsModule" businessProcess="LovsManagement" />
+<MAP_PAGE_MODULE pageName="DetailParameterPage" moduleName="DetailParameterModule" businessProcess="ParameterView" />
+<MAP_PAGE_MODULE pageName="ParametersLookupPage" moduleName="ListLookupParametersModule" businessProcess="ParameterView" />
+<MAP_PAGE_MODULE pageName="ListObjParusePage" moduleName="ListObjParuseModule" businessProcess="ParameterView" />
+<MAP_PAGE_MODULE pageName="ListParametersPage" moduleName="ListParametersModule" businessProcess="ParameterView" />
+<MAP_PAGE_MODULE pageName="CheckLinksPage" moduleName="CheckLinksModule" businessProcess="ConstraintView" />
+<MAP_PAGE_MODULE pageName="DetailModalitiesChecksPage" moduleName="DetailChecksModule" businessProcess="ConstraintView" />
+<MAP_PAGE_MODULE pageName="ListModalitiesChecksPage" moduleName="ListPredefinedChecksModule" businessProcess="ConstraintView" />
+<MAP_PAGE_MODULE pageName="ListModalitiesChecksPage" moduleName="ListModalitiesChecksModule" businessProcess="ConstraintView" />
+<MAP_PAGE_MODULE pageName="DetailModalitiesValuePage" moduleName="DetailModalitiesValueModule" businessProcess="LovsView" />
+<MAP_PAGE_MODULE pageName="DetailModalitiesValuePage" moduleName="ListTestLovModule" businessProcess="LovsView" />
+<MAP_PAGE_MODULE pageName="LovLookupPage" moduleName="ListLookupLovModule" businessProcess="LovsView" />
+<MAP_PAGE_MODULE pageName="ListLovsPage" moduleName="ListLovsModule" businessProcess="LovsView" />
 
 	</MAP_PAGE_MODULES>
 </BUSINESS_MAP>

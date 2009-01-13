@@ -72,7 +72,20 @@
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
-
+  	
+	<PUBLISHER name="JobIterationWarning">
+    	<RENDERING channel="PORTLET" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM mode="VIEW" resource="/jsp/tools/scheduler/jobIterationWarning.jsp"/>
+        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+   	 	<RENDERING channel="HTTP" mode="" type="JSP">
+      		<RESOURCES>
+        		<ITEM prog="0" resource="/jsp/tools/scheduler/jobIterationWarning.jsp"/>
+      		</RESOURCES>
+   	 	</RENDERING>
+  	</PUBLISHER>
 
 	<PUBLISHER name="ReturnToJobList">
     	<RENDERING channel="PORTLET" mode="" type="LOOP">

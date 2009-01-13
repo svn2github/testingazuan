@@ -41,6 +41,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="it.eng.spago.util.StringUtils"%>
 <%@page import="java.text.ParseException"%>
+<%@page import="it.eng.spagobi.tools.dataset.bo.IDataSet"%>
+<%@page import="it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter"%>
 
 <%  
    	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("TriggerManagementModule"); 
@@ -1097,15 +1099,92 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
 					<spagobi:message key="scheduler.sendmail" bundle="component_scheduler_messages" />
 				</span>
 		<div id="mail_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;"> 
-  			<div  class='div_detail_label_scheduler'>
-  		      <span class='portlet-form-field-label'>
-  			       <spagobi:message key="scheduler.mailto" bundle="component_scheduler_messages" />
-  		      </span>
-  	      	</div>
-	  	    <div class='div_detail_form'>
-	  		        <input  type="text" name="mailtos_<%=biobj.getId()%>__<%=index%>" 
-	  		               value="<%=sInfo.getMailTos()%>" size="35" />
-	  	    </div>
+				<input  type="checkbox" name="useFixedRecipients_<%=biobj.getId()%>__<%=index%>" value="true"
+					<%= sInfo.isUseFixedRecipients() ? "checked='checked'" : "" %> />
+				<span class='portlet-form-field-label'>
+					<spagobi:message key="scheduler.fixedRecipients" bundle="component_scheduler_messages" />
+				</span>
+				<div id="fixedRecipients_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
+				  	<div class='div_detail_label_scheduler'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key="scheduler.mailto" bundle="component_scheduler_messages" />
+						</span>
+		  	      	</div>
+			  	    <div class='div_detail_form'>
+			  		        <input  type="text" name="mailtos_<%=biobj.getId()%>__<%=index%>" 
+			  		               value="<%=sInfo.getMailTos()%>" size="35" />
+			  	    </div>
+				</div>
+				
+				<input  type="checkbox" name="useDataset_<%=biobj.getId()%>__<%=index%>" value="true"
+ 		               <%= sInfo.isUseDataSet() ? "checked='checked'" :"" %> />
+				<span class='portlet-form-field-label'>
+					<spagobi:message key="scheduler.useDataset" bundle="component_scheduler_messages" />
+				</span>
+				<div id="dataset_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
+				  	<div  class='div_detail_label_scheduler'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key="scheduler.mailToDataset" bundle="component_scheduler_messages" />
+						</span>
+		  	      	</div>
+			  	    <div class='div_detail_form'>
+					  	<select name='datasetLabel_<%=biobj.getId()%>__<%=index%>'>
+			  		        <%
+			  		        String dsLabel = sInfo.getDataSetLabel();
+			  		        List allDatasets = (List) moduleResponse.getAttribute(SpagoBIConstants.DATASETS_LIST);
+			  		        Iterator dsIt = allDatasets.iterator();
+			  		        while (dsIt.hasNext()) {
+			  		        	IDataSet ds = (IDataSet) dsIt.next();
+			  		        	%>
+			  		        	<option value='<%= ds.getLabel() %>' <%= ds.getLabel().equalsIgnoreCase(dsLabel) ? "selected='selected'" : ""%>>
+			  		        		<%= ds.getName() %>
+			  		        	</option>
+			  		        	<%
+			  		        }
+			  		        %>
+						</select>
+			  	    </div>
+				  	<div  class='div_detail_label_scheduler'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key="scheduler.mailToDatasetParameter" bundle="component_scheduler_messages" />
+						</span>
+		  	      	</div>
+			  	    <div class='div_detail_form'>
+					  	<select name='datasetParameter_<%=biobj.getId()%>__<%=index%>'>
+			  		        <%
+			  		        List parameters = biobj.getBiObjectParameters();
+			  		        String parameterLabel = sInfo.getDataSetParameterLabel();
+			  		        Iterator parametersIt = parameters.iterator();
+			  		        while (parametersIt.hasNext()) {
+			  		        	BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
+			  		        	%>
+			  		        	<option value='<%= aParameter.getLabel() %>' <%= aParameter.getLabel().equalsIgnoreCase(parameterLabel) ? "selected='selected'" : ""%>>
+			  		        		<%= aParameter.getLabel() %>
+			  		        	</option>
+			  		        	<%
+			  		        }
+			  		        %>
+						</select>
+			  	    </div>
+			  	</div>
+			  	
+				<input  type="checkbox" name="useExpression_<%=biobj.getId()%>__<%=index%>" value="true"
+					<%= sInfo.isUseExpression() ? "checked='checked'" : "" %> />
+				<span class='portlet-form-field-label'>
+					<spagobi:message key="scheduler.useExpression" bundle="component_scheduler_messages" />
+				</span>
+				<div id="expression_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
+				  	<div class='div_detail_label_scheduler'>
+						<span class='portlet-form-field-label'>
+							<spagobi:message key="scheduler.mailToExpression" bundle="component_scheduler_messages" />
+						</span>
+		  	      	</div>
+			  	    <div class='div_detail_form'>
+			  		        <input  type="text" name="expression_<%=biobj.getId()%>__<%=index%>" 
+			  		               value="<%=sInfo.getExpression()%>" size="35" />
+			  	    </div>
+				</div>
+			  	    
 	  	    <div class='div_detail_label_scheduler'>
   		      <span class='portlet-form-field-label'>
   			       <spagobi:message key="Mail subject" bundle="component_scheduler_messages"/>

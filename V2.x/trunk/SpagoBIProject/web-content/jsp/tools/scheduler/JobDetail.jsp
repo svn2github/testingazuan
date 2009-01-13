@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
@@ -16,7 +16,7 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 
@@ -202,6 +202,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		document.getElementById('jobdetailform').submit();
 	}
 	
+	function checkValue(parfieldName, elementValue) {
+		var valuesArray = elementValue.split(';');
+	    if (valuesArray.length > 1) {
+	    	document.getElementById(parfieldName + '_Iterative').style.display = 'inline';
+	    } else {
+	    	document.getElementById(parfieldName + '_Iterative').style.display = 'none';
+	    	document.getElementById(parfieldName + '_Iterative').selectedIndex = 0;
+	    }
+	}
+	
 </script>
 
 <!-- ********************** SCRIPT FOR PARAMETER LOOKUP **************************** -->
@@ -274,7 +284,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	observerLRLclose = { 
 		onClose: function(eventName, win) {
 			if (win == winLRL) {
-				valuesArray = new Array();
+				var valuesArray = new Array();
 			    parfield = document.getElementById(parfieldName);
 			    checks = document.getElementsByName('rowcheck');
 			    for(i=0; i<checks.length; i++) {
@@ -634,7 +644,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						  	<input class='portlet-form-input-field' 
 						  	       id="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>"
 						  	       name="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>" 
-						  	       type="text" value="<%=concatenatedValue%>" size="50"/>
+						  	       type="text" value="<%=concatenatedValue%>" size="50" autocomplete="off"
+						  	       onChange="checkValue(this.id,this.value)" />
 						  	&nbsp;&nbsp;&nbsp;
 						  	<%
 						  		List roles = biobjdao.getCorrectRolesForExecution(biobj.getId(), userProfile);
@@ -648,12 +659,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						  	&nbsp;&nbsp;&nbsp;
 						  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_Iterative"%>'
 										id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_Iterative"%>' 
-										style="display:<%= values != null && values.size() > 1 ? "inline" : "none"%>">
-								<option value='false'>Non iterare per ogni valore del parametro</option>
+										style="display:<%= values != null && values.size() > 1 ? "inline" : "none"%>" >
+								<option value='false'><spagobi:message key = "scheduler.doNotIterateOnParameterValues"  bundle="component_scheduler_messages"/></option>
 								<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
-									Itera per ogni valore del parametro
+									<spagobi:message key = "scheduler.iterateOnParameterValues"  bundle="component_scheduler_messages"/>
 								</option>
-							</select>		
+							</select>	
 						  	&nbsp;&nbsp;&nbsp;
 							  	<%
 							  		if(roles.size()==1) {

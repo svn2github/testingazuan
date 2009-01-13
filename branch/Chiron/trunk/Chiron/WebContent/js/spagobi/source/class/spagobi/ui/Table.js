@@ -36,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /*
 
 #asset(img/spagobi/test/*)
-#asset(qx/icon/Oxygen/icon/16/apps/office-calendar.png
+#asset(qx/icon/Oxygen/icon/16/apps/office-calendar.png)
 
 */ 
 qx.Class.define("spagobi.ui.Table",
@@ -319,7 +319,7 @@ qx.Class.define("spagobi.ui.Table",
 					 
 					  var layout = new qx.ui.layout.VBox(20);
 					  var windowWidget = new qx.ui.core.Widget();
-					  windowWidget._setLayout
+					 // windowWidget._setLayout
 					  var win = new qx.ui.window.Window("Details Window", "qx/icon/Oxygen/icon/16/apps/office-calendar.png");
 				      win.setLayout(new qx.ui.layout.VBox(20));
 				      win.setShowStatusbar(true);

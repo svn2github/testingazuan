@@ -349,6 +349,7 @@ CREATE TABLE SBI_GEO_MAPS (
        DESCR                VARCHAR(160) NULL,
        URL					VARCHAR(400) NOT NULL,
        FORMAT 				VARCHAR(40) NULL,       
+	   BIN_ID               INTEGER NULL,
        PRIMARY KEY (MAP_ID)
 )TYPE=INNODB;
 

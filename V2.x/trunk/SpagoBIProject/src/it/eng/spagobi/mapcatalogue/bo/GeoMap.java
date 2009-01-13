@@ -21,10 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.mapcatalogue.bo;
 
-import it.eng.spagobi.engines.config.metadata.SbiEngines;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Defines a value constraint object.
@@ -41,7 +39,8 @@ public class GeoMap  implements Serializable   {
 	private String descr;
 	private String url;	
 	private String format;	
-	//private List biFeatures = null;
+	private int binId;
+	
 	
 	/**
 	 * Gets the descr.
@@ -132,13 +131,24 @@ public class GeoMap  implements Serializable   {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
-	/*
-	public List getBiFeatures() {
-		return biFeatures;
+
+	/**
+	 * Gets the binary id of the map file (ie. the svg).
+	 * 
+	 * @return the binId
+	 */
+	public int getBinId() {
+		return binId;
 	}
-	public void setBiFeatures(List biFeatures) {
-		this.biFeatures = biFeatures;
+
+	/**
+	 * Sets the  binary id of the map file (ie. the svg)..
+	 * 
+	 * @param binId the binId to set
+	 */
+	public void setBinId(int binId) {
+		this.binId = binId;
 	}
-	*/
+
+
 }

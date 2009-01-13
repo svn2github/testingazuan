@@ -21,6 +21,7 @@ public class SbiKpiValue  implements java.io.Serializable {
      private String value;
      private Date beginDt;
      private Date endDt;
+     private String description;
 
 
     // Constructors
@@ -37,13 +38,14 @@ public class SbiKpiValue  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiKpiValue(Integer idKpiInstanceValue, SbiKpiInstance sbiKpiInstance, SbiResources sbiResources, String value, Date beginDt, Date endDt) {
+    public SbiKpiValue(Integer idKpiInstanceValue, SbiKpiInstance sbiKpiInstance, SbiResources sbiResources, String value, Date beginDt, Date endDt, String description) {
         this.idKpiInstanceValue = idKpiInstanceValue;
         this.sbiKpiInstance = sbiKpiInstance;
         this.sbiResources = sbiResources;
         this.value = value;
         this.beginDt = beginDt;
         this.endDt = endDt;
+        this.description = description;
     }
     
 
@@ -98,12 +100,12 @@ public class SbiKpiValue  implements java.io.Serializable {
         this.endDt = endDt;
     }
    
-
-
-
-
-
-
-
+    public String getDescription() {
+        return this.description;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 }

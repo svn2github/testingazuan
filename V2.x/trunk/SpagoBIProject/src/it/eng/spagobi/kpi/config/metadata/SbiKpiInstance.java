@@ -21,7 +21,6 @@ public class SbiKpiInstance  implements java.io.Serializable {
      private Integer idKpiInstance;
      private SbiKpi sbiKpi;
      private SbiDomains sbiDomains;
-     private SbiKpiPeriodicity sbiKpiPeriodicity;
      private SbiThreshold sbiThreshold;
      private SbiMeasureUnit sbiMeasureUnit;
      private Double weight;
@@ -31,6 +30,7 @@ public class SbiKpiInstance  implements java.io.Serializable {
      private Set sbiKpiValues = new HashSet(0);
      private Set sbiAlarms = new HashSet(0);
      private Date beginDt;
+     private Set sbiKpiInstPeriods = new HashSet(0);
 
 
     // Constructors
@@ -48,27 +48,26 @@ public class SbiKpiInstance  implements java.io.Serializable {
     }
 
 	/** minimal constructor */
-    public SbiKpiInstance(Integer idKpiInstance, SbiKpiPeriodicity sbiKpiPeriodicity, SbiKpi sbiKpi, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit) {
+    public SbiKpiInstance(Integer idKpiInstance, SbiKpi sbiKpi, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit) {
         this.idKpiInstance = idKpiInstance;
         this.sbiKpi = sbiKpi;
-        this.sbiKpiPeriodicity = sbiKpiPeriodicity;
         this.sbiThreshold = sbiThreshold;
         this.sbiMeasureUnit = sbiMeasureUnit;
     }
     
     /** full constructor */
-    public SbiKpiInstance(Integer idKpiInstance, SbiKpi sbiKpi,  SbiDomains sbiDomains, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit, double weight, SbiKpiPeriodicity sbiKpiPeriodicity, Set sbiKpiModelInsts, Set sbiKpiInstanceHistories, Set sbiKpiValues, Set sbiAlarms) {
+    public SbiKpiInstance(Integer idKpiInstance, SbiKpi sbiKpi,  SbiDomains sbiDomains, SbiThreshold sbiThreshold, SbiMeasureUnit sbiMeasureUnit, double weight, Set sbiKpiModelInsts, Set sbiKpiInstanceHistories, Set sbiKpiValues, Set sbiAlarms, Set sbiKpiInstPeriods) {
         this.idKpiInstance = idKpiInstance;
         this.sbiKpi = sbiKpi;
         this.sbiThreshold = sbiThreshold;
         this.sbiMeasureUnit = sbiMeasureUnit;
         this.weight = weight;
         this.sbiDomains = sbiDomains;
-        this.sbiKpiPeriodicity = sbiKpiPeriodicity;
         this.sbiKpiModelInsts = sbiKpiModelInsts;
         this.sbiKpiInstanceHistories = sbiKpiInstanceHistories;
         this.sbiKpiValues = sbiKpiValues;
         this.sbiAlarms = sbiAlarms;
+        this.sbiKpiInstPeriods = sbiKpiInstPeriods;
     }
     
 
@@ -114,14 +113,6 @@ public class SbiKpiInstance  implements java.io.Serializable {
     public void setWeight(Double weight) {
         this.weight = weight;
     }
-
-    public SbiKpiPeriodicity getSbiKpiPeriodicity() {
-        return this.sbiKpiPeriodicity;
-    }
-    
-    public void setSbiKpiPeriodicity(SbiKpiPeriodicity sbiKpiPeriodicity) {
-        this.sbiKpiPeriodicity = sbiKpiPeriodicity;
-    } 
 
     public Set getSbiKpiModelInsts() {
         return this.sbiKpiModelInsts;
@@ -170,4 +161,13 @@ public class SbiKpiInstance  implements java.io.Serializable {
 	public void setTarget(Double target) {
 		this.target = target;
 	}
+	
+	public Set getSbiKpiInstPeriods() {
+        return this.sbiKpiInstPeriods;
+    }
+    
+    public void setSbiKpiInstPeriods(Set sbiKpiInstPeriods) {
+        this.sbiKpiInstPeriods = sbiKpiInstPeriods;
+    }
+   
 }

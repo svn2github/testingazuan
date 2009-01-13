@@ -23,14 +23,17 @@
         <property name="minutes" type="integer">
             <column name="minutes" />
         </property>
-        <property name="period" type="string">
-            <column name="period" length="20" />
+        <property name="chronString" type="string">
+            <column name="chron_string" length="20" />
         </property>
-        <set name="sbiKpiInstances" inverse="true">
+        <property name="startDate" type="timestamp">
+            <column name="start_date" length="19" />
+        </property>
+        <set name="sbiKpiInstPeriods" inverse="true">
             <key>
-                <column name="id_kpi_periodicity" not-null="true" />
+                <column name="PERIODICITY_ID" not-null="true" />
             </key>
-            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" />
+            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod" />
         </set>
     </class>
 </hibernate-mapping>

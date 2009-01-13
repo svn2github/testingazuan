@@ -15,6 +15,7 @@ import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.config.metadata.SbiKpi;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
@@ -64,7 +65,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) aSession
-					.load(SbiKpiModelInst.class, id);
+					.get(SbiKpiModelInst.class, id);
 			toReturn = toModelInstanceNode(hibSbiKpiModelInst, requestedDate);
 
 		} catch (HibernateException he) {
@@ -1068,11 +1069,21 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer thresholdId = kpiInst.getSbiThreshold().getThresholdId();
 		Double weight = kpiInst.getWeight();
 		Double target = kpiInst.getTarget();
-		SbiKpiPeriodicity periodicity = kpiInst.getSbiKpiPeriodicity();
 		Integer idPeriodicity = null;
-		if (periodicity != null) {
-			idPeriodicity = periodicity.getIdKpiPeriodicity();
-		}
+		Set periods = kpiInst.getSbiKpiInstPeriods();
+		if (periods!=null && !periods.isEmpty()){
+			Iterator s = periods.iterator();
+			while(s.hasNext()){
+				SbiKpiInstPeriod p = (SbiKpiInstPeriod)s.next();
+				if(p.isDefault_().booleanValue()){
+					SbiKpiPeriodicity periodicity = p.getSbiKpiPeriodicity();
+					if (periodicity != null) {
+						idPeriodicity = periodicity.getIdKpiPeriodicity();
+					}
+				}
+			}
+		}	
+		
 		SbiMeasureUnit unit = kpiInst.getSbiMeasureUnit();
 		String scaleCode = null;
 		String scaleName = null;
@@ -1117,11 +1128,21 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer thresholdId = kpiInstHist.getSbiThreshold().getThresholdId();
 		Double weight = kpiInstHist.getWeight();
 		Double target = kpiInstHist.getTarget();
-		SbiKpiPeriodicity periodicity = kpiInstHist.getSbiKpiInstance().getSbiKpiPeriodicity();
 		Integer idPeriodicity = null;
-		if (periodicity != null) {
-			idPeriodicity = periodicity.getIdKpiPeriodicity();
+		Set periods = kpiInstHist.getSbiKpiInstance().getSbiKpiInstPeriods();
+		if (!periods.isEmpty()){
+			Iterator s = periods.iterator();
+			while(s.hasNext()){
+				SbiKpiInstPeriod p = (SbiKpiInstPeriod)s.next();
+				if(p.isDefault_().booleanValue()){
+					SbiKpiPeriodicity periodicity = p.getSbiKpiPeriodicity();
+					if (periodicity != null) {
+						idPeriodicity = periodicity.getIdKpiPeriodicity();
+					}
+				}
+			}
 		}
+
 		SbiMeasureUnit unit = kpiInstHist.getSbiMeasureUnit();
 		String scaleCode = null;
 		String scaleName = null;

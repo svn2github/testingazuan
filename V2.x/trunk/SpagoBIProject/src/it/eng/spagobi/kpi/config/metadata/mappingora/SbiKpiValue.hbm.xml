@@ -25,5 +25,8 @@
         <property name="endDt" type="timestamp">
             <column name="END_DT" length="10" />
         </property>
+        <property name="description" type="string">
+            <column name="DESCRIPTION" length="100" />
+        </property>
     </class>
 </hibernate-mapping>

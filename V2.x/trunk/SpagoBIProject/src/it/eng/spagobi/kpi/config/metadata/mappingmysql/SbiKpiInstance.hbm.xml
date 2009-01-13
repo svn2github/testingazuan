@@ -16,9 +16,6 @@
         <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
             <column name="CHART_TYPE_ID" />
         </many-to-one>
-        <many-to-one name="sbiKpiPeriodicity" class="it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity" >
-            <column name="id_kpi_periodicity" />
-        </many-to-one>
         <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" >
             <column name="THRESHOLD_ID" />
         </many-to-one>
@@ -54,6 +51,12 @@
                 <column name="id_kpi_instance" not-null="true" />
             </key>
             <one-to-many class="it.eng.spagobi.kpi.alarm.metadata.SbiAlarm" />
+        </set>
+        <set name="sbiKpiInstPeriods" inverse="true">
+            <key>
+                <column name="KPI_INSTANCE_ID" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod" />
         </set>
         <property name="beginDt" type="timestamp">
             <column name="BEGIN_DT" length="10" />

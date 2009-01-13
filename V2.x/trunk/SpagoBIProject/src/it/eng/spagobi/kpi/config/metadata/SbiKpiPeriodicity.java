@@ -1,6 +1,7 @@
 package it.eng.spagobi.kpi.config.metadata;
 // Generated 2-dic-2008 10.47.59 by Hibernate Tools 3.1.0 beta3
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,8 +21,9 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
      private Integer days;
      private Integer hours;
      private Integer minutes;
-     private String period;
-     private Set sbiKpiInstances = new HashSet(0);
+     private String chronString;
+     private Date startDate;
+     private Set sbiKpiInstPeriods = new HashSet(0);
 
 
     // Constructors
@@ -36,15 +38,16 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiKpiPeriodicity(Integer idKpiPeriodicity, String name, Integer months, Integer days, Integer hours, Integer minutes, String period, Set sbiKpiInstances) {
+    public SbiKpiPeriodicity(Integer idKpiPeriodicity, String name, Integer months, Integer days, Integer hours, Integer minutes, String chronString, Date startDate, Set sbiKpiInstPeriods) {
         this.idKpiPeriodicity = idKpiPeriodicity;
         this.name = name;
         this.months = months;
         this.days = days;
         this.hours = hours;
         this.minutes = minutes;
-        this.period = period;
-        this.sbiKpiInstances = sbiKpiInstances;
+        this.chronString = chronString;
+        this.startDate = startDate;
+        this.sbiKpiInstPeriods = sbiKpiInstPeriods;
     }
     
 
@@ -99,20 +102,28 @@ public class SbiKpiPeriodicity  implements java.io.Serializable {
         this.minutes = minutes;
     }
 
-    public String getPeriod() {
-        return this.period;
+    public String getChronString() {
+        return this.chronString;
     }
     
-    public void setPeriod(String period) {
-        this.period = period;
+    public void setChronString(String chronString) {
+        this.chronString = chronString;
     }
 
-    public Set getSbiKpiInstances() {
-        return this.sbiKpiInstances;
+    public Date getStartDate() {
+        return this.startDate;
     }
     
-    public void setSbiKpiInstances(Set sbiKpiInstances) {
-        this.sbiKpiInstances = sbiKpiInstances;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Set getSbiKpiInstPeriods() {
+        return this.sbiKpiInstPeriods;
+    }
+    
+    public void setSbiKpiInstPeriods(Set sbiKpiInstPeriods) {
+        this.sbiKpiInstPeriods = sbiKpiInstPeriods;
     }
    
 }

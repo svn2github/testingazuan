@@ -84,7 +84,8 @@ Create table `SBI_KPI_PERIODICITY` (
 	`days` Int,
 	`hours` Int,
 	`minutes` Int,
-	`period` Varchar(20),
+	`chron_string` Varchar(20),
+	`start_date` TIMESTAMP,
 	UNIQUE (`id_kpi_periodicity`),
  Primary Key (`id_kpi_periodicity`)) ENGINE = InnoDB;
 
@@ -94,11 +95,19 @@ Create table `SBI_KPI_INSTANCE` (
 	`THRESHOLD_ID` Int,
 	`CHART_TYPE_ID` Int,
 	`id_measure_unit` Int,
-	`id_kpi_periodicity` Int,
 	`weight` Double,
 	`target` Double,
 	`BEGIN_DT` Datetime,
  Primary Key (`id_kpi_instance`)) ENGINE = InnoDB;
+
+Create table `SBI_KPI_INST_PERIOD` (
+  `KPI_INST_PERIOD_ID` INTEGER NOT NULL AUTO_INCREMENT,
+  `KPI_INSTANCE_ID` INTEGER NOT NULL,
+  `PERIODICITY_ID` INTEGER NOT NULL,
+  `DEFAULT` BOOLEAN ,
+  PRIMARY KEY (`KPI_INST_PERIOD_ID`)
+)
+ENGINE = InnoDB;
 
 Create table `SBI_KPI_INSTANCE_HISTORY` (
 	`id_kpi_instance_history` Int NOT NULL AUTO_INCREMENT,

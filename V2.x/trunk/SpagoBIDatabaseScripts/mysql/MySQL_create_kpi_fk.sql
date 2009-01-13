@@ -25,7 +25,6 @@ Alter table `SBI_KPI_INSTANCE_HISTORY` add Foreign Key (`id_measure_unit`) refer
 Alter table `SBI_KPI_INSTANCE` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_INSTANCE_HISTORY` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_MODEL_INST` add Foreign Key (`KPI_MODEL_ID`) references `SBI_KPI_MODEL` (`KPI_MODEL_ID`) on delete  restrict on update  restrict;
-Alter table `SBI_KPI_INSTANCE` add Foreign Key (`id_kpi_periodicity`) references `SBI_KPI_PERIODICITY` (`id_kpi_periodicity`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_MODEL_INST` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_VALUE` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_INSTANCE_HISTORY` add Foreign Key (`id_kpi_instance`) references `SBI_KPI_INSTANCE` (`id_kpi_instance`) on delete  restrict on update  restrict;
@@ -33,6 +32,8 @@ Alter table `SBI_KPI_MODEL_INST` add Foreign Key (`KPI_MODEL_INST_PARENT`) refer
 Alter table `SBI_KPI_MODEL_RESOURCES` add Foreign Key (`KPI_MODEL_INST`) references `SBI_KPI_MODEL_INST` (`KPI_MODEL_INST`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_MODEL_RESOURCES` add Foreign Key (`RESOURCE_ID`) references `SBI_RESOURCES` (`RESOURCE_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_VALUE` add Foreign Key (`RESOURCE_ID`) references `SBI_RESOURCES` (`RESOURCE_ID`) on delete  restrict on update  restrict;
+Alter TABLE `SBI_KPI_INST_PERIOD` ADD FOREIGN KEY (`PERIODICITY_ID`) REFERENCES `SBI_KPI_PERIODICITY` (`id_kpi_periodicity`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+Alter TABLE `SBI_KPI_INST_PERIOD` ADD FOREIGN KEY  (`KPI_INSTANCE_ID`) REFERENCES `SBI_KPI_INSTANCE` (`id_kpi_instance`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 -- ALARM
 Alter table `SBI_ALARM` add Foreign Key (`MODALITY_ID`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;

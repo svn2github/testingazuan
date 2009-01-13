@@ -598,11 +598,18 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     							int ore = calendar.get(Calendar.HOUR); 
     							int minuti = calendar.get(Calendar.MINUTE); 
     							int secondi = calendar.get(Calendar.SECOND); 
-    							int AM = calendar.get(Calendar.AM_PM);//TODO AM PM
-    							int millisec =  (secondi*1000) + (minuti *60*1000) + (ore*60*60*1000);
-    							Long milliSecToAdd = new Long (millisec);
-    							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
-    							this.dateOfKPI = new Date(milliseconds);
+    							int AM = calendar.get(Calendar.AM_PM);//if AM then int=0, if PM then int=1
+    							if(AM==0){
+    								int millisec =  (secondi*1000) + (minuti *60*1000) + (ore*60*60*1000);
+        							Long milliSecToAdd = new Long (millisec);
+        							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+        							this.dateOfKPI = new Date(milliseconds);
+    							}else{
+    								int millisec =  (secondi*1000) + (minuti *60*1000) + ((ore+12)*60*60*1000);
+        							Long milliSecToAdd = new Long (millisec);
+        							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+        							this.dateOfKPI = new Date(milliseconds);
+    							}    							
     							
     						}else{
     							//If the date required is today then the time considered will be the actual date
@@ -639,7 +646,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     					f.applyPattern(format);
     					String temp = f.format(this.dateOfKPI);
     					try {
-    					    this.dateOfKPI = f.parse(value);
+    						this.dateOfKPI = f.parse(value);
     					    Long milliseconds = this.dateOfKPI.getTime();
     					    //If the date required is today then the time considered will be the actual date
     						if(temp.equals(value)){
@@ -647,10 +654,18 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     							int ore = calendar.get(Calendar.HOUR); 
     							int minuti = calendar.get(Calendar.MINUTE); 
     							int secondi = calendar.get(Calendar.SECOND); 
-    							int millisec =  (secondi*1000) + (minuti *60*1000) + (ore*60*60*1000);
-    							Long milliSecToAdd = new Long (millisec);
-    							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
-    							this.dateOfKPI = new Date(milliseconds);
+    							int AM = calendar.get(Calendar.AM_PM);//if AM then int=0, if PM then int=1
+    							if(AM==0){
+    								int millisec =  (secondi*1000) + (minuti *60*1000) + (ore*60*60*1000);
+        							Long milliSecToAdd = new Long (millisec);
+        							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+        							this.dateOfKPI = new Date(milliseconds);
+    							}else{
+    								int millisec =  (secondi*1000) + (minuti *60*1000) + ((ore+12)*60*60*1000);
+        							Long milliSecToAdd = new Long (millisec);
+        							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+        							this.dateOfKPI = new Date(milliseconds);
+    							}    							
     							
     						}else{
     							//If the date required is today then the time considered will be the actual date

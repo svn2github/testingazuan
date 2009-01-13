@@ -297,6 +297,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			if (resId != null) {
 				finder.add(Expression.eq("sbiResources.resourceId", resId));
+			}else{
+				finder.add(Expression.eq("sbiResources.resourceId", null));
 			}
 			SourceBean sb = new SourceBean("ROWS");
 			finder.addOrder(Order.asc("beginDt"));
@@ -309,9 +311,11 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				while (it.hasNext()) {
 					SbiKpiValue temp = (SbiKpiValue) it.next();
 					SourceBean sb2 = new SourceBean("ROW");
-					sb2.setAttribute("x", temp.getBeginDt());
-					sb2.setAttribute("KPI_VALUE", temp.getValue());
-					sb.setAttribute(sb2);
+					if(temp.getValue()!=null){
+						sb2.setAttribute("x", temp.getBeginDt());
+						sb2.setAttribute("KPI_VALUE", temp.getValue());
+						sb.setAttribute(sb2);
+					}					
 				}
 			}else{
 				SourceBean sb2 = new SourceBean("ROW");

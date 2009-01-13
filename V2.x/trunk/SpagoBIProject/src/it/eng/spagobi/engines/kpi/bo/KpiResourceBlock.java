@@ -159,14 +159,14 @@ public class KpiResourceBlock {
 		}
 		if (display_semaphore && semaphorColor!= null){
 			String semaphorHex = Integer.toHexString( semaphorColor.getRGB() & 0x00ffffff ) ;		
-			_htmlStream.append("		<td width='52%' style='padding-top:8px;padding-bottom:8px;' ><div style=\"MARGIN-LEFT: "+20*recursionLev+"px;float:left;vertical-align:middle;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div><div style='vertical-align:middle;' class='kpi_div'>"+modelName+"</div></td>\n");
+			_htmlStream.append("		<td width='46%' style='padding-top:8px;padding-bottom:8px;' ><div style=\"MARGIN-LEFT: "+20*recursionLev+"px;float:left;vertical-align:middle;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div><div style='vertical-align:middle;' class='kpi_div'>"+modelName+"</div></td>\n");
 		}else{
-			_htmlStream.append("		<td width='52%' class='kpi_td_left' ><div class='kpi_div'><div style='vertical-align:middle;MARGIN-LEFT: "+20*recursionLev+"px;' class='kpi_div'>"+modelName+"</div></div></td>\n");
+			_htmlStream.append("		<td width='46%' class='kpi_td_left' ><div class='kpi_div'><div style='vertical-align:middle;MARGIN-LEFT: "+20*recursionLev+"px;' class='kpi_div'>"+modelName+"</div></div></td>\n");
 		}
 		logger.debug("Written HTML for Semaphore");
 		logger.debug("Written HTML for ModelName:"+modelName);
 		
-		_htmlStream.append("		<td  width='3%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
+		_htmlStream.append("		<td  width='9%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
 		if (lo!= null && kpiVal.getScaleCode()!=null){
 			_htmlStream.append("		<td  width='10%' title='Value' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"("+kpiVal.getScaleCode()+")</div></td>\n");
 		}else if(lo!= null){
@@ -223,6 +223,7 @@ public class KpiResourceBlock {
 				    execUrlParMap.put("END_DATE", dat);						
 				}
 				execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId());
+				execUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
 			
 				String trendPopupUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
 				_htmlStream.append("		<td  width='3%' title=\"Click to see Kpi values trend on timeline\" class='kpi_td_right' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div' ><a id='linkDetail_"+requestIdentity+"_"+recursionLev+"' ><img style='vertical-align:middle;' src=\""+trendImgSrc+"\" /></div></a></td>\n");

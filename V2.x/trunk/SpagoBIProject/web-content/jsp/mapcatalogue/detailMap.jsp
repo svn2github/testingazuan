@@ -59,13 +59,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		lookupFeatureUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 		String lookupFeraturesUrl = urlBuilder.getUrl(request, lookupFeatureUrlPars);	
 		
-		//MapCatalogueAccessUtils mapCatalogueAccessUtils = MapConfiguration.getMapCatalogueAccessUtils();
-		//String downloadUrl = ChannelUtilities.getSpagoBIContextName(request) + "/servlet/AdapterHTTP?PAGE=DetailMapPage&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE&userid="+userUniqueIdentifier;
 		String downloadUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier) +"&PAGE=DetailMapPage&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
-		
-		String filePath = (map.getUrl()).replace('\\', '/');		
-   	    downloadUrl += "&MESSAGEDET=DOWNLOAD_MAP&path="+  filePath;
-    	//renderResponse.encodeURL("/" + downloadUrl).toString();
+				
+   	    downloadUrl += "&MESSAGEDET=DOWNLOAD_MAP&BIN_ID="+  map.getBinId();
 	   
 		//checks if there are some features that will be erased (if user wants)
 		List lstFeaturesOld = (List)moduleResponse.getAttribute("lstFeaturesOld");	
@@ -96,6 +92,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<input type='hidden' value='<%=modality%>' name='MESSAGEDET' />	
 	<input type='hidden' value='<%=map.getMapId()%>' name='id' />
+	<input type='hidden' value='<%=map.getBinId()%>' name='BIN_ID' />
 	<input type='hidden' value='<%=map.getUrl()%>' name='sourceUrl' />
 	<input type='hidden' value='<%=subMessageDet%>' name='SUBMESSAGEDET' />
 	<input type='hidden' value='<%= lstFeaturesOld %>' name='lstFeaturesOld' />
@@ -187,8 +184,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<!-- <input class='portlet-form-input-field' type="file" 
-	      		       size="58" name="URL" value="<%= map.getUrl() %>"  onchange='fileToUploadInserted()'/>-->
 	      		<input class='portlet-form-input-field' type="file" 
 	      		       size="58" name="uploadFile" id="uploadFile" value="<%= map.getUrl() %>"  onchange='fileToUploadInserted()'/>
 				<input style="height:19px;vertical-align: middle;font-size: 12px;" type="button" value='<spagobi:message key = "SBIMapCatalogue.downloadMap" bundle="component_mapcatalogue_messages"/>'

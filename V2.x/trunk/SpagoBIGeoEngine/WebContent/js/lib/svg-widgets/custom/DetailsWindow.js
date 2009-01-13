@@ -157,10 +157,12 @@
 
 
 function DetailsWindow( conf ) {  
+
+ this.config = {};
  
  var defaults = {
     id: 'detail'
-    , parentNodeId: 'Windows'
+    , parentNodeId: 'detailWindow'
     , width: 210
     , height: 200
     , x: 649
@@ -180,7 +182,8 @@ function DetailsWindow( conf ) {
     , minimizeButtonVisible: true
     , maximizeButtonVisible: true    
     
-    , minimized: false    
+    , minimized: false
+    , transform: 'scale(1.0)'     
   };
   
   var defualtStyles = {
@@ -200,6 +203,7 @@ function DetailsWindow( conf ) {
   var s = {};
   Utils.apply(s, c.styles, defualtStyles);
   c.styles = s;
+  this.config = c;
   
   
   // Call the superclass's constructor in the scope of this.
@@ -239,19 +243,21 @@ DetailsWindow.prototype.constructor = DetailsWindow; // Set the constructor attr
 //append new content to the window main group
 DetailsWindow.prototype.createContent = function() {
   
+  var windowsEl;
   var windowContent;
   var tabGroup;
   var tab1;
   var tab2;
   var dText;
   
+  
+  windowsEl = document.getElementById(this.config.parentNodeId);
+    
   windowContent = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(windowContent, {
-    'id' : 'detail'
-    , 'transform' : 'translate(649,720)'
+    'id' : 'detailWindowBody'
   });
-    
-    
+  
   tabGroup = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(tabGroup, {
     'id' : 'detailTabGroup'
@@ -284,13 +290,15 @@ DetailsWindow.prototype.createContent = function() {
 
 
   tabGroup.appendChild(tab1);   
-  tabGroup.appendChild(tab2);   
-
-
-  var windowsEl = document.getElementById("Windows");
+  tabGroup.appendChild(tab2);  
+  
+  
   windowsEl.appendChild(windowContent);
   
-  this.appendContent("detailTabGroup", true);   
+    
+  this.appendContent("detailTabGroup", true); 
+  
+  windowsEl.setAttributeNS(null, 'transform', this.config.transform); 
 };
 
 DetailsWindow.prototype.initTabGroups = function() {

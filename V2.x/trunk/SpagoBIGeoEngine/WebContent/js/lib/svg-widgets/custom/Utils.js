@@ -7,6 +7,7 @@ Utils.getVersion = function(){
 }
 
 Utils.svgNS = 'http://www.w3.org/2000/svg';
+Utils.xlinkNS = 'http://www.w3.org/1999/xlink';
 
 Utils.find = function(a, pname, pvalue) {
   var result;
@@ -38,20 +39,15 @@ Utils.apply = function(o, c, defaults){
 
 Utils.applyAttributes = function(o, c, defaults){
     if(defaults){
-        // no "this" reference for friendly out of scope calls
         Utils.applyAttributes(o, defaults);
     }
     
-    var str = '';
-    
     if(o && c && typeof c == 'object'){
         for(var p in c){
-            str += p + ": " + c[p] + "\n";
             o.setAttributeNS(null, p, c[p]);
         }
     }
     
-    //alert(str);
     return o;
 };
 
@@ -71,4 +67,58 @@ Utils.toStr = function(o) {
 		
 Utils.dump = function(o) {
 		alert(this.toStr(o));
+};
+
+
+Utils.roundDecimals = function (originalNumber, decimals) {  
+    var result1 = originalNumber * Math.pow(10, decimals);
+	  var result2 = Math.round(result1);
+    var result3 = result2 / Math.pow(10, decimals);
+	
+    return Utils.padWithZeros(result3, decimals);
+};
+
+Utils.padWithZeros = function(rounded_value, decimal_places) {
+		
+    // Convert the number to a string
+		var value_string = rounded_value.toString();
+		   
+		// Locate the decimal point
+		var decimal_location = value_string.indexOf(".");
+		
+    // Is there a decimal point?
+		if (decimal_location == -1) {
+  		// If no, then all decimal places will be padded with 0s
+  		decimal_part_length = 0;
+  		
+      // If decimal_places is greater than zero, tack on a decimal point
+  		value_string += decimal_places > 0 ? "." : "";
+		} else {		
+		  // If yes, then only the extra decimal places will be padded with 0s
+		  decimal_part_length = value_string.length - decimal_location - 1;
+		}
+		   
+		// Calculate the number of decimal places that need to be padded with 0s
+		var pad_total = decimal_places - decimal_part_length;
+		if (pad_total > 0) {
+		 		// Pad the string with 0s
+		 		for (var counter = 1; counter <= pad_total; counter++) value_string += "0";
+		}
+		
+    return value_string;
+};
+
+Utils.numberToString = function(rounded_value, decimals) {
+  	var result = null;
+  	var value_string = rounded_value.toString();
+  	var decimal_location = value_string.indexOf(".");		
+  	
+    if (decimal_location != -1) {
+        var value_float = parseFloat(value_string);
+       	result = Utils.roundDecimals(value_float, decimals);
+    } else {                       	
+        result = value_string;
+    }
+               
+    return result;
 };

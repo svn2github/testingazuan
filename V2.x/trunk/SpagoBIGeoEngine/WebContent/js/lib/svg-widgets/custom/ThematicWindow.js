@@ -159,10 +159,11 @@
 function ThematicWindow( conf ) {
 
   // Class members
+  this.config = {};
 
    var defaults = {
     id: 'thematic'
-    , parentNodeId: 'Windows'
+    , parentNodeId: 'thematicWindow'
     , width: 210
     , height: 200
     , x: 223
@@ -182,7 +183,8 @@ function ThematicWindow( conf ) {
     , minimizeButtonVisible: true
     , maximizeButtonVisible: true    
     
-    , minimized: false    
+    , minimized: false
+    , transform: 'scale(1.0)'     
   };
   
   var defualtStyles = {
@@ -202,6 +204,7 @@ function ThematicWindow( conf ) {
   var s = {};
   Utils.apply(s, c.styles, defualtStyles);
   c.styles = s;
+  this.config = c;
   
   
   // Call the superclass's constructor in the scope of this.
@@ -241,14 +244,16 @@ ThematicWindow.prototype.constructor = ThematicWindow; // Set the constructor at
 //append new content to the window main group
 ThematicWindow.prototype.createContent = function() {
   
+  var windowsEl;
   var windowContent;
   var labelsEl;
   var buttonsEl;
 
+  windowsEl = document.getElementById(this.config.parentNodeId);
+  
   windowContent = document.createElementNS(Utils.svgNS,"g");
   this.applyAttributes(windowContent, {
-    'id' : 'thematic'
-    , 'transform' : 'translate(223,537)'
+    'id' : 'thematicWindowBody'
   });
   
   
@@ -267,10 +272,13 @@ ThematicWindow.prototype.createContent = function() {
   windowContent.appendChild(buttonsEl);               
 
 
-  var windowsEl = document.getElementById("Windows");
   windowsEl.appendChild(windowContent);
   
+  
   this.appendContent("radioButtons", true); 
+  
+  
+  windowsEl.setAttributeNS(null, 'transform', this.config.transform); 
 }
 
 ThematicWindow.prototype.addThemes = function() {

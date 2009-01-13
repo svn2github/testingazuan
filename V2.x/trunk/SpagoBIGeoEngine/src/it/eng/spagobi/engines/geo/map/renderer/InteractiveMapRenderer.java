@@ -1134,8 +1134,13 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	 */
 	public void setMainMapDimension(SVGDocument masterMap, SVGDocument targetMap) {
 		String viewBox = targetMap.getRootElement().getAttribute("viewBox");
+		String[] chunks = viewBox.split(" ");
+		double width = Double.parseDouble(chunks[2]);
+		double heigth = Double.parseDouble(chunks[3]);
+		double mainMapHeight = 1100 *(heigth/width);
 		Element mainMapBlock = masterMap.getElementById("mainMap");
 		mainMapBlock.setAttribute("viewBox", viewBox);
+		masterMap.getRootElement().setAttribute("viewBox", "0 0 1100 " + mainMapHeight);
 	}
 	
 	/**

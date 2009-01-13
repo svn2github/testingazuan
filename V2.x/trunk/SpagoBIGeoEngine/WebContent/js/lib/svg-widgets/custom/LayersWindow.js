@@ -158,11 +158,12 @@
 
 function LayersWindow( conf ) {
 
-
+ // Class members
+ this.config = {};
 
  var defaults = {
-    id: 'basiclayer'
-    , parentNodeId: 'Windows'
+    id: 'layer'
+    , parentNodeId: 'layerWindow'
     , width: 210
     , height: 200
     , x: 436
@@ -183,6 +184,7 @@ function LayersWindow( conf ) {
     , maximizeButtonVisible: true    
     
     , minimized: false    
+    , transform: 'scale(1.0)'  
   };
   
   var defualtStyles = {
@@ -202,6 +204,7 @@ function LayersWindow( conf ) {
   var s = {};
   Utils.apply(s, c.styles, defualtStyles);
   c.styles = s;
+  this.config = c;
   
   
   // Call the superclass's constructor in the scope of this.
@@ -242,14 +245,16 @@ LayersWindow.prototype.constructor = LayersWindow; // Set the constructor attrib
 //append new content to the window main group
 LayersWindow.prototype.createContent = function() {
   
+  var windowsEl;
   var windowContent;
   var layersEl;
   var drillEl;
+  
+  windowsEl = document.getElementById(this.config.parentNodeId);
 
   windowContent = document.createElementNS(Utils.svgNS,"g");
   this.applyAttributes(windowContent, {
-    'id' : 'basiclayer'
-    , 'transform' : 'translate(436,720)'
+    'id' : 'layerWindowBody'
   });
   
   layersEl = document.createElementNS(Utils.svgNS,"g");
@@ -266,12 +271,15 @@ LayersWindow.prototype.createContent = function() {
   });    
   windowContent.appendChild(drillEl);               
 
-  var windowsEl = document.getElementById("Windows");
+
   windowsEl.appendChild(windowContent);
+
   
   this.appendContent("checkBoxes", true);
   this.appendContent("linkRadioGroup", true);
   
+  
+  windowsEl.setAttributeNS(null, 'transform', this.config.transform); 
   
 }
 
@@ -305,14 +313,10 @@ LayersWindow.prototype.createCheckBoxes =  function() {
 			myMapApp.checkBoxes['drill_nav'] = new checkBox("drill_nav","linkRadioGroup",30,offset+60,"radioBorder","radioPoint",false, "Drill Nav.",labeltextStyles,12,linkRadioGroup,undefined);
 	
 			if (sbi.geo.conf.gui_settings.defaultDrillNav == true){
-				//setLinkAction("linkRadioGroup", "drill_nav", "Drill Nav.");
 				linkRadioGroup.selectById("drill_nav");
-				//alert("drill_nav");
 			}
 			else{
-				//setLinkAction("linkRadioGroup", "cross_nav", "Cross Nav.");
 				linkRadioGroup.selectById("cross_nav");
-				//alert("cross_nav");
 			}
 			
 			

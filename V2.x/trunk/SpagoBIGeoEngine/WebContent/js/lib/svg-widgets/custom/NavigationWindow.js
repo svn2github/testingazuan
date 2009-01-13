@@ -159,12 +159,13 @@
 function NavigationWindow( conf ) {
 
   // Class members
+  this.config = {};
   this.map = undefined;
   this.toolbar = undefined;
   
   var defaults = {
-    id: 'navWindow'
-    , parentNodeId: 'Windows'
+    id: 'navigation'
+    , parentNodeId: 'navigationWindow'
     , width: 210
     , height: 200
     , x: 10
@@ -182,9 +183,10 @@ function NavigationWindow( conf ) {
     , statusBarContent: ''
     , closeButtonVisible: false
     , minimizeButtonVisible: true
-    , maximizeButtonVisible: true    
-    
+    , maximizeButtonVisible: true
+        
     , minimized: false    
+    , transform: 'scale(1.0)'  
   };
   
   var defualtStyles = {
@@ -204,6 +206,7 @@ function NavigationWindow( conf ) {
   var s = {};
   Utils.apply(s, c.styles, defualtStyles);
   c.styles = s;
+  this.config = c;
   
   // Call the superclass's constructor in the scope of this.
   Window.call(this, c.id
@@ -242,24 +245,20 @@ NavigationWindow.prototype.constructor = NavigationWindow; // Set the constructo
 
 NavigationWindow.prototype.createContent = function() {
 
+  var windowsEl;
   var windowContent;
   var svgEl;
   var controlEl;
   var useEl;
   
-  //first a few styles
-	var buttonTextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":10};
-	var buttonStyles = {"fill":"white"};
-	var shadeLightStyles = {"fill":"rgb(235,235,235)"};
-	var shadeDarkStyles = {"fill":"dimgray"};
-	var sliderStyles = {"stroke":"dimgray","stroke-width":"2","fill":"dimgray"};
+  windowsEl = document.getElementById(this.config.parentNodeId);
   
-  windowContent = document.getElementById("navWindow");
+  windowContent = document.getElementById("navigationWindowBody");
   if(!windowContent) {
     alert('ERROR');
-    windowContent = document.createElementNS(Utils.svgNSll,"g");
+    windowContent = document.createElementNS(Utils.svgNS,"g");
     Utils.applyAttributes(windowContent, {
-      'id' : 'navWindow'
+      'id' : 'navigationWindowBody'
       , 'transform' : 'translate(10,537)'
     });   
   }
@@ -393,13 +392,15 @@ NavigationWindow.prototype.createContent = function() {
   });
   windowContent.appendChild(controlEl);   
   
-  
-  
-  //var windowsEl = document.getElementById("Windows");
-  //windowsEl.appendChild(windowContent);
-  
   // create buttons
 	myMapApp.buttons = new Array();
+	
+	 //first a few styles
+	var buttonTextStyles = {"font-family":"Arial,Helvetica","fill":"dimgray","font-size":10};
+	var buttonStyles = {"fill":"white"};
+	var shadeLightStyles = {"fill":"rgb(235,235,235)"};
+	var shadeDarkStyles = {"fill":"dimgray"};
+	var sliderStyles = {"stroke":"dimgray","stroke-width":"2","fill":"dimgray"};
  
   myMapApp.buttons["zoomIn"] = new button("zoomIn",zoomImageButtons,"rect",undefined,"magnifyerZoomIn",7,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
   myMapApp.buttons["zoomOut"] = new button("zoomOut",zoomImageButtons,"rect",undefined,"magnifyerZoomOut",32,165,20,20,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
@@ -434,6 +435,9 @@ NavigationWindow.prototype.createContent = function() {
   
   myMainMap.checkButtons();
  
+
+  windowsEl.appendChild(windowContent); 
+ 
   
   this.appendContent("referenceMap", true); 
   
@@ -447,6 +451,9 @@ NavigationWindow.prototype.createContent = function() {
   this.appendContent("forwardExtent", true); 
   
   this.appendContent("mapZoomSlider", true);   
+  
+    
+  windowsEl.setAttributeNS(null, 'transform', this.config.transform);   
   
   
 }

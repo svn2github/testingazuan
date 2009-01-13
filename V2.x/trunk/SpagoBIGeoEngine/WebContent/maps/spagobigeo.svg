@@ -45,33 +45,44 @@ bug fixed in layer's checkboxes generation
 -->
 
 
-<svg contentScriptType="text/ecmascript" zoomAndPan="disable" 
+<svg 
+version="1.0" 
+contentScriptType="text/ecmascript" 
+contentStyleType="text/css" 
+xmlns="http://www.w3.org/2000/svg"
 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
 xmlns:xlink="http://www.w3.org/1999/xlink" 
-xmlns:svg="http://www.w3.org/2000/svg" onload="init(evt);" 
-xmlns:attrib="http://www.carto.net/attrib" contentStyleType="text/css" version="1.0" width="100%" 
-xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:batik="http://xml.apache.org/batik/ext" 
-xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:cc="http://web.resource.org/cc/" 
-sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 768" height="100%" xmlns="http://www.w3.org/2000/svg">
+xmlns:svg="http://www.w3.org/2000/svg"  
+xmlns:attrib="http://www.carto.net/attrib" 
+xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" 
+xmlns:batik="http://xml.apache.org/batik/ext" 
+xmlns:dc="http://purl.org/dc/elements/1.1/" 
+xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" 
+xmlns:cc="http://web.resource.org/cc/" 
+sodipodi:version="0.32" 
+preserveAspectRatio="xMidYMid meet"  zoomAndPan="disable" viewBox="0 0 1100 676" width="100%" height="100%"
+onload="init(evt);">
 
-		<g id="imported_scripts"></g>
+
+		<g id="imported_scripts">
+		
+
+    
+    </g>
 		
 		<script type="text/ecmascript" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:actuate="onLoad" id="included_scripts" xlink:show="other"><![CDATA[
 				
 		]]></script>
 		
-		<script id="init" type="text/ecmascript" 
-			xmlns:xlink="http://www.w3.org/1999/xlink" 
-			xlink:type="simple" xlink:actuate="onLoad"  xlink:show="other"><![CDATA[
+		<script id="init" type="text/ecmascript" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:actuate="onLoad"  xlink:show="other"><![CDATA[
 
-   		]]></script>
+   
+
+]]></script>
 		
 		
-<script xlink:type="simple" 
-	xlink:actuate="onLoad" xlink:show="other" type="text/ecmascript" xmlns:xlink="http://www.w3.org/1999/xlink"><![CDATA[
+<script xlink:type="simple" xlink:actuate="onLoad" xlink:show="other" type="text/ecmascript" xmlns:xlink="http://www.w3.org/1999/xlink"><![CDATA[
 		
-		   
-				
 		//global variables for mapApp and map object
 		var myMapApp = new mapApp();
 		var myMainMap;
@@ -86,6 +97,43 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
 			
 		function init() {
 			window.setTimeout("initApplication()", 500);
+		}
+		
+		function initApplication(evt) {	
+      		
+			if (document.documentElement.suspendRedraw) {
+				suspendProcess = document.documentElement.suspendRedraw(30000);
+			}
+		  			
+			setTresholds();
+			setColourRange();
+			
+			initMainMap();			
+			initWindows();
+		
+			
+		  myMapApp.loadStatus = document.getElementById("statusColorMap");
+      
+			if(myMapApp.Windows["basiclayer"]) myMapApp.Windows["basiclayer"].createCheckBoxes();
+			if(myMapApp.Windows["thematic"]){ 
+        myMapApp.Windows["thematic"].addThemes();
+      } else {
+        setKpi('store_sales','store_sales','Xtore Xales');
+      }
+			if(myMapApp.Windows["detail"]) myMapApp.Windows["detail"].initTabGroups();
+			if(myMapApp.Windows["detail"]) myMapApp.Windows["detail"].initDetailInfopanels();   
+			if(myMapApp.Windows["legend"]) myMapApp.Windows["legend"].initLegendEntries();
+      
+		
+			var target_layer = sbi.geo.conf.layers[ sbi.geo.conf.target_layer_index ];
+		
+			myMapApp.targetLayer = document.getElementById( target_layer.name );
+			
+			loadProjectSpecific();
+			
+			if (document.documentElement.suspendRedraw) {
+				document.documentElement.unsuspendRedraw(suspendProcess);
+			}
 		}
 			
 		
@@ -138,61 +186,7 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
 			myMapApp.checkBoxes = new Array();
 			
 			
-		}
-		
-
-	
-		
-		
-		
-		
-	
-		
-			
-		function initApplication(evt) {	
-      		
-			if (document.documentElement.suspendRedraw) {
-				suspendProcess = document.documentElement.suspendRedraw(30000);
-			}
-		  
-		
-		  
-			
-			setTresholds();
-			setColourRange();
-			
-			initMainMap();			
-			initWindows();
-		
-			
-		  myMapApp.loadStatus = document.getElementById("statusColorMap");
-      
-			if(myMapApp.Windows["basiclayer"]) myMapApp.Windows["basiclayer"].createCheckBoxes();
-			if(myMapApp.Windows["thematic"]){ 
-        myMapApp.Windows["thematic"].addThemes();
-      } else {
-        setKpi('store_sales','store_sales','Xtore Xales');
-      }
-			if(myMapApp.Windows["detail"]) myMapApp.Windows["detail"].initTabGroups();
-			if(myMapApp.Windows["detail"]) myMapApp.Windows["detail"].initDetailInfopanels();   
-			if(myMapApp.Windows["legend"]) myMapApp.Windows["legend"].initLegendEntries();
-      
-		
-			var target_layer = sbi.geo.conf.layers[ sbi.geo.conf.target_layer_index ];
-		
-			myMapApp.targetLayer = document.getElementById( target_layer.name );
-			
-			loadProjectSpecific();
-			
-			if (document.documentElement.suspendRedraw) {
-				document.documentElement.unsuspendRedraw(suspendProcess);
-			}
-		}
-		
-		
-		
-		
-		
+		}	
 		
 	     //this function is called after each pan or zoom or change of map extent
        //you can place project specific functions here that need to re.on the map extent, e.g. adopting line-widths, loading additional data, etc.
@@ -261,8 +255,8 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
                    }
                    if(sbi.geo.conf.includeChartLayer == true) {
                        layerBarChartRenderer.setDataset(names, values, colours);
-                       var chartW = 800;
-                       var chartH = 1600;
+                       var chartW = 80;
+                       var chartH = 160;
                        var centroide = document.getElementById("centroidi_" + targetNode.getAttributeNS(null, "id"));
                        if(centroide != null) {
                        	   layerBarChartRenderer.chartX = centroide.getAttributeNS(null, "cx") - (chartW/2);
@@ -282,7 +276,7 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
                    	   var value_string = rounded_value.toString();
 		   			   var decimal_location = value_string.indexOf(".");		
 		   			   if (decimal_location != -1) {
-                   	   		var value_float = round_decimals( parseFloat(value_string), 2 );
+                   	   		var value_float = Utils.roundDecimals( parseFloat(value_string), 2 );
                    	   		text = value_float.toString();
                    	   } else {                       	
                        		text = values[sbi.geo.conf.selected_measure_index];
@@ -297,7 +291,7 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
 	                       valueLabel.setAttribute("id", "label_" + targetNode.getAttributeNS(null, "id"));
 	                       valueLabel.setAttribute("text-anchor","middle");
 	                       valueLabel.setAttribute("font-family","Arial,Helvetica");
-	                       valueLabel.setAttribute("font-size","600px");
+	                       valueLabel.setAttribute("font-size","32px");
 	                       valueLabel.setAttribute("fill","black");
 	                       var textNode = document.createTextNode(text);
 	                       valueLabel.appendChild(textNode);
@@ -575,7 +569,7 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
   				panel.setAttribute("font-size", "14px");
   				panel.setAttribute("startOffset", "0");
   				var closingChar = (i!=measure.num_group-1?")":"]");
-  				var textString = "-   [" + number_to_string(myMapApp.threshArray[i],2) + " - " + number_to_string(myMapApp.threshArray[i+1],2) + closingChar;
+  				var textString = "-   [" + Utils.numberToString(myMapApp.threshArray[i],2) + " - " + Utils.numberToString(myMapApp.threshArray[i+1],2) + closingChar;
   				var text_node = document.createTextNode(textString);
   				panel.appendChild(text_node);
   				
@@ -635,62 +629,35 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
 			}
 		}
 		
-		function round_decimals(original_number, decimals) {
-		   var result1 = original_number * Math.pow(10, decimals);
-		   var result2 = Math.round(result1);
-		   var result3 = result2 / Math.pow(10, decimals);
-		   return pad_with_zeros(result3, decimals);
-		}
+	
 			
-		function pad_with_zeros(rounded_value, decimal_places) {
-		
-		   // Convert the number to a string
-		   var value_string = rounded_value.toString();
-		   
-		   // Locate the decimal point
-		   var decimal_location = value_string.indexOf(".");
-		
-		   // Is there a decimal point?
-		   if (decimal_location == -1) {
-		       // If no, then all decimal places will be padded with 0s
-		       decimal_part_length = 0;
-		       // If decimal_places is greater than zero, tack on a decimal point
-		       value_string += decimal_places > 0 ? "." : "";
-		   } else {		
-		       // If yes, then only the extra decimal places will be padded with 0s
-		       decimal_part_length = value_string.length - decimal_location - 1;
-		   }
-		   
-		   // Calculate the number of decimal places that need to be padded with 0s
-		   var pad_total = decimal_places - decimal_part_length;
-		   if (pad_total > 0) {
-		   		// Pad the string with 0s
-		   		for (var counter = 1; counter <= pad_total; counter++) value_string += "0";
-		   }
-		   return value_string;
-		}
-		
-		function number_to_string(rounded_value, decimals) {
-			var result = null;
-			var value_string = rounded_value.toString();
-		   	var decimal_location = value_string.indexOf(".");		
-		    if (decimal_location != -1) {
-                var value_float = parseFloat(value_string);
-            	result = round_decimals(value_float, decimals);
-             } else {                       	
-                result = value_string;
-             }
-             
-             return result;
-		}
 
-        function showData(evt){
-           var el = evt.target;
-           var nome = el.getAttributeNS(attribNS,"nome");
-           if(nome == null || nome == "") nome = el.getAttribute("id");
+
+    var prevFill;
+
+    function handleMouseIN(el) {
+      //el.setAttributeNS(null, "opacity", 0.5);
+      prevFill = el.getAttributeNS(null, "fill");
+      el.setAttributeNS(null, "fill", 'yellow');
+    }
+    
+    function handleMouseOUT(el) {
+      //el.setAttributeNS(null, "opacity", 1);
+      el.setAttributeNS(null, "fill", prevFill);
+    }
+
+    function showData(evt){
+      
+      
+      
+      
+      
+      var el = evt.target;
+      var nome = el.getAttributeNS(attribNS,"nome");
+      if(nome == null || nome == "") nome = el.getAttribute("id");
            
-           var id = el.getAttributeNS(null,"id");
-           var kpi_values = [];
+      var id = el.getAttributeNS(null,"id");
+      var kpi_values = [];
            
            for(i = 0; i < sbi.geo.conf.measures.length; i++) {
                    kpi_values[sbi.geo.conf.measures[i].name] = el.getAttributeNS(attribNS,sbi.geo.conf.measures[i].name);
@@ -718,6 +685,7 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
             }
             
            if (evt.type=="mouseover"){
+                handleMouseIN(el);
                if(myMapApp.Windows["detail"]) myMapApp.Windows["detail"].setTitleText(nome);
                if (myMapApp.Windows["detail"] && !myMapApp.Windows["detail"].closed) {
                    for(i = 0; i < sbi.geo.conf.measures.length; i++) {
@@ -726,7 +694,7 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
 		   				var decimal_location = value_string.indexOf(".");		
 		   				if (decimal_location != -1) {
                    	   		var value_float = parseFloat(kpi_values[sbi.geo.conf.measures[i].name]);
-                   	   		myMapApp.infoPanel[i].firstChild.nodeValue = sbi.geo.conf.measures[i].description + " " + round_decimals(value_float,2);
+                   	   		myMapApp.infoPanel[i].firstChild.nodeValue = sbi.geo.conf.measures[i].description + " " + Utils.roundDecimals(value_float,2);
                    	   	} else {                       	
                        		myMapApp.infoPanel[i].firstChild.nodeValue = sbi.geo.conf.measures[i].description + " " + kpi_values[sbi.geo.conf.measures[i].name];
                   		}
@@ -736,7 +704,7 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
                    }
                 }
                              
-                if(myMapApp.Windows["legend"])myMapApp.Windows["legend"].setTitleText(myMapApp.curKpi + ": " + round_decimals(targetValue,2));
+                if(myMapApp.Windows["legend"])myMapApp.Windows["legend"].setTitleText(myMapApp.curKpi + ": " + Utils.roundDecimals(targetValue,2));
                	if (curLegendRect != null && myMapApp.Windows["legend"] && !myMapApp.Windows["legend"].closed) {
                    curLegendRect.setAttributeNS(null, "stroke-width",2);
                    curLegendRect.setAttributeNS(null, "stroke","black");
@@ -744,6 +712,7 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
             }
                      
             if (evt.type=="mouseout"){
+               handleMouseOUT(el);
                if(myMapApp.Windows["detail"]) myMapApp.Windows["detail"].setTitleText("Detail");
                if (myMapApp.Windows["detail"] &&!myMapApp.Windows["detail"].closed) {
                    for(i = 0; i < sbi.geo.conf.measures.length; i++) {
@@ -809,8 +778,8 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
                    	   var value_string = rounded_value.toString();
 		   			   var decimal_location = value_string.indexOf(".");		
 		   			   if (decimal_location != -1) {
-		   			   		//alert(value_string + " - " + parseFloat(value_string) + " - " + round_decimals(parseFloat(value_string), 2) );
-                   	   		var value_float = round_decimals( parseFloat(value_string), 2 );
+		   			   		//alert(value_string + " - " + parseFloat(value_string) + " - " + Utils.roundDecimals(parseFloat(value_string), 2) );
+                   	   		var value_float = Utils.roundDecimals( parseFloat(value_string), 2 );
                    	   		text = value_float.toString();
                    	   } else {                       	
                        		text = targetNode.getAttributeNS(attribNS,myMapApp.curKpi);
@@ -963,11 +932,14 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
 		
     <title>SpagoBI Geo Engine</title>
 		
+		
+	  
 	
 		<!-- Main Map Frame -->
 		<svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" 
     xmlns:attrib="http://www.carto.net/attrib" contentStyleType="text/css" id="mainMap" version="1.0" 
-    width="1100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 958.69 592.78998" height="768" xmlns="http://www.w3.org/2000/svg" x="0" y="0">
+    width="100%" preserveAspectRatio="xMinYMin meet" viewBox="0 0 960 590" xmlns="http://www.w3.org/2000/svg" x="0" y="0"
+    height="100%">
 			
 			<style type="text/css" xml:space="preserve">
 				<![CDATA[
@@ -983,7 +955,6 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
 				<g stroke-linecap="round" onmouseover="showData(evt)" fill="white" stroke-linejoin="round" onmouseout="showData(evt)" id="eventCatcher" stroke-width="2000">
 				
 				<g id="targetMap">
-				
 				
 				
 				
@@ -1008,37 +979,47 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
 	
 	
 	    <!-- WINDOWS CONTENT -->
-	    <svg 
-       contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" version="1.0" 
-       preserveAspectRatio="xMidYMid meet" cursor="crosshair"  xmlns="http://www.w3.org/2000/svg" 
-       width="1100"  height="768"
-       viewBox="0 0 1100 768"
-       x="0" y="0" id="Windows">
+	    <g id="Windows">
+        <g id="detailWindow"/>
+        <g id="thematicWindow"/>
+        <g id="legendWindow"/>
+        <g id="layerWindow"/>
+         <g id="colourpickerWindow"/>
+         
+         
+        
+        
        
-        <!--rect x="0" y="0" fill-opacity="0.8" fill="RED" width="1100" height="768"/ -->
-       
-	    
-        <g id="navWindow">
-	       <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" display="none" 
-         contentStyleType="text/css" id="referenceMap" version="1.0" width="190" preserveAspectRatio="xMidYMid meet" 
-         cursor="crosshair" viewBox="-2471570.4 -1631093.7 4844781 3030131.8" height="150" xmlns="http://www.w3.org/2000/svg" x="10" y="8">
-							
-								<use stroke-linecap="round" fill="white" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mainMapGroup" 
-                stroke-linejoin="round" xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" stroke-width="2419.9" pointer-events="none"/>
-							
-								<use x="-2471570.4" y="-1631093.7" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#myDragCrossSymbol" xlink:type="simple" visibility="hidden" xlink:actuate="onLoad" xlink:show="embed"/>
-								
-								 
-						
-					</svg>
+	      <g id="navigationWindow">
+          <g id="navigationWindowBody">
+  	       <svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" display="none" 
+                contentStyleType="text/css" id="referenceMap" version="1.0" width="190" preserveAspectRatio="xMidYMid meet" 
+                cursor="crosshair" viewBox="-2471570.4 -1631093.7 4844781 3030131.8" height="150" xmlns="http://www.w3.org/2000/svg" x="10" y="8">
+  							
+  								<use stroke-linecap="round" fill="white" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mainMapGroup" 
+                       stroke-linejoin="round" xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" stroke-width="2419.9" pointer-events="none"/>
+  							
+  								<use x="-2471570.4" y="-1631093.7" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#myDragCrossSymbol" xlink:type="simple" visibility="hidden" xlink:actuate="onLoad" xlink:show="embed"/>
+  								
+  								 
+  						
+  					</svg>
+  				</g>
 				</g>
+				
+				
 			
 				
-      </svg>
+      </g>
       
+      
+
+    
+    
+   
+
 					
-			
-	<g id="mapHeader">  
+			<g id="mapHeader">  
 	      <text id="header-left" x="6" y="25" font-size="20px" startOffset="0" text-anchor="start" fill="black" width="1092" font-family="Arial,Helvetica" 
         font-weight="bold" pointer-events="none"></text>
 			 
@@ -1054,13 +1035,13 @@ sodipodi:version="0.32" preserveAspectRatio="xMidYMin meet" viewBox="0 0 1100 76
 	      <text id="footer-center" x="542" y="743" startOffset="0" text-anchor="middle"></text>
 	    	<text id="footer-right" x="1092" y="743" startOffset="0" text-anchor="end"></text>
 	    </g>	
+			
 	
+	  
 	
-
-	
-		
-	
-		<svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" id="logo" version="1.0" width="500" preserveAspectRatio="xMidYMid meet" height="200" xmlns="http://www.w3.org/2000/svg" x="1040" y="-1">
+		<svg contentScriptType="text/ecmascript" zoomAndPan="magnify" xmlns:xlink="http://www.w3.org/1999/xlink" 
+    contentStyleType="text/css" id="logo" version="1.0" width="500" preserveAspectRatio="xMidYMid meet" 
+    height="200" xmlns="http://www.w3.org/2000/svg" x="1040" y="-1">
 			<g transform="scale(0.3)">
 			
 			</g>

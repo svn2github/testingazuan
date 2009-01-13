@@ -157,11 +157,14 @@
 
 
 function LegendWindow( conf ) {
-              
+   
+   // Class members
+   this.config = {};
+           
               
    var defaults = {
     id: 'legend'
-    , parentNodeId: 'Windows'
+    , parentNodeId: 'legendWindow'
     , width: 210
     , height: 200
     , x: 862
@@ -181,7 +184,8 @@ function LegendWindow( conf ) {
     , minimizeButtonVisible: true
     , maximizeButtonVisible: true    
     
-    , minimized: false    
+    , minimized: false  
+    , transform: 'scale(1.0)'  
   };
   
   var defualtStyles = {
@@ -201,6 +205,7 @@ function LegendWindow( conf ) {
   var s = {};
   Utils.apply(s, c.styles, defualtStyles);
   c.styles = s;
+  this.config = c;
   
   
   // Call the superclass's constructor in the scope of this.
@@ -240,13 +245,15 @@ LegendWindow.prototype.constructor = LegendWindow; // Set the constructor attrib
 //append new content to the window main group
 LegendWindow.prototype.createContent = function() {
   
+  var windowsEl;
   var windowContent;
   var boxes;
  
+  windowsEl = document.getElementById(this.config.parentNodeId);
+
   windowContent = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(windowContent, {
-    'id' : 'legend'
-    , 'transform' : 'translate(649,720)'
+    'id' : 'legendWindowBody'
   });   
   
   boxes = document.createElementNS(Utils.svgNS,"g");
@@ -256,12 +263,14 @@ LegendWindow.prototype.createContent = function() {
   });    
   windowContent.appendChild(boxes);    
   
-  var windowsEl = document.getElementById("Windows");
+ 
   windowsEl.appendChild(windowContent);
+  
   
   this.appendContent("coulourboxes", true); 
   
- 
+  
+  windowsEl.setAttributeNS(null, 'transform', this.config.transform);   
 };
 
 LegendWindow.prototype.initLegendEntries = function() {

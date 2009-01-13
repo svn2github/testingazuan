@@ -154,13 +154,15 @@
 
 
 function ColourPickerWindow( conf ) {
-                    
+
+  // Class members
+  this.config = {};                    
   this.groupIndex = 0;
 	this.groupColourBkp = 0;
   
   var defaults = {
     id: 'colourpicker'
-    , parentNodeId: 'Windows'
+    , parentNodeId: 'colourpickerWindow'
     , width: 320
     , height: 200
     , x: 236
@@ -182,6 +184,7 @@ function ColourPickerWindow( conf ) {
     
     , minimized: false    
     , closed: true
+    , transform: 'scale(1.0)' 
   };
   
   var defualtStyles = {
@@ -201,6 +204,7 @@ function ColourPickerWindow( conf ) {
   var s = {};
   Utils.apply(s, c.styles, defualtStyles);
   c.styles = s;
+  this.config = c;
   
   
   // Call the superclass's constructor in the scope of this.
@@ -246,17 +250,19 @@ ColourPickerWindow.prototype.constructor = ColourPickerWindow; // Set the constr
 //append new content to the window main group
 ColourPickerWindow.prototype.createContent = function() {
   
+  var windowsEl;
   var windowContent;
   var boxes;
   var buttonsPanelEl;
   var applyButtonlEl;
   var okButtonEl;
   var cancelButtonEl;
+  
+  windowsEl = document.getElementById(this.config.parentNodeId);
  
   windowContent = document.createElementNS(Utils.svgNS,"g");
   Utils.applyAttributes(windowContent, {
-    'id' : 'colourpicker'
-    , 'transform' : 'translate(649,720)'
+    'id' : 'colourpickerWindowBody'
   });   
   
   
@@ -293,9 +299,8 @@ ColourPickerWindow.prototype.createContent = function() {
   buttonsPanelEl.appendChild(cancelButtonEl); 
   
 						
-						
-  var windowsEl = document.getElementById("Windows");
   windowsEl.appendChild(windowContent);
+  
   
   this.appendContent("colourPickerBox_1", true); 
   this.appendContent("colourPickerButtons", true); 
@@ -341,6 +346,8 @@ ColourPickerWindow.prototype.createContent = function() {
 	new button("colourPickerOk", this.buttonClick,"rect","Ok", undefined, 140, 160, 40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 	new button("colourPickerCancel", this.buttonClick,"rect","Cancel", undefined, 185,160,40,25,buttonTextStyles,buttonStyles,shadeLightStyles,shadeDarkStyles,1);
 			
+	
+	windowsEl.setAttributeNS(null, 'transform', this.config.transform); 
 
 };
 

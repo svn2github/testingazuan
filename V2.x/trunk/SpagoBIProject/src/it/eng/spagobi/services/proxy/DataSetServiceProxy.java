@@ -88,7 +88,9 @@ public final class DataSetServiceProxy extends AbstractServiceProxy{
     	}	
     	try {
     		dataSetConfig = lookUp().getDataSetByLabel(readTicket(), userId, label);
-    		dataSet = DataSetFactory.getDataSet( dataSetConfig );
+    		if(dataSetConfig != null) {
+    			dataSet = DataSetFactory.getDataSet( dataSetConfig );
+    		}
     	} catch (Exception e) {
     	    logger.error("Error during Service LookUp",e);
     	}finally{
@@ -110,7 +112,9 @@ public final class DataSetServiceProxy extends AbstractServiceProxy{
     	}	
     	try {
     		dataSetConfig = lookUp().getDataSet(readTicket(), userId, documentId);
-    		dataSet = DataSetFactory.getDataSet( dataSetConfig );
+    		if(dataSetConfig != null) {
+    			dataSet = DataSetFactory.getDataSet( dataSetConfig );
+    		}
     	} catch (Exception e) {
     	    logger.error("Error during Service LookUp",e);
     	}finally{

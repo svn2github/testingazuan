@@ -100,7 +100,10 @@ public final class DataSourceServiceProxy extends AbstractServiceProxy{
 		}	
 		try {
 			dataSourceConfig = lookUp().getDataSource(readTicket(), userId,documentId);
-			dataSource = DataSourceFactory.getDataSource( dataSourceConfig );
+			if(dataSourceConfig != null) {
+				dataSource = DataSourceFactory.getDataSource( dataSourceConfig );
+			}
+			
 		} catch (Exception e) {
 		    logger.error("Error during Service LookUp",e);
 		}finally{
@@ -129,7 +132,9 @@ public final class DataSourceServiceProxy extends AbstractServiceProxy{
 		}	
 		try {
 			dataSourceConfig = lookUp().getDataSourceByLabel(readTicket(), userId,label);
-		    dataSource = DataSourceFactory.getDataSource( dataSourceConfig );
+			if(dataSourceConfig != null) {
+				dataSource = DataSourceFactory.getDataSource( dataSourceConfig );
+			}
 		} catch (Exception e) {
 		    logger.error("Error during Service LookUp",e);
 		}finally{

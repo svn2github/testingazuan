@@ -60,18 +60,20 @@ public interface ISbiGeoMapsDAO {
 	 * into the input <code>map</code> object.
 	 * 
 	 * @param aMap The object containing all modify information
+	 * @param content the content of svg file
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public void modifyMap(GeoMap aMap) throws EMFUserError;
+	public void modifyMap(GeoMap aMap, byte[] content) throws EMFUserError;
 	
 	/**
 	 * Implements the query to insert a map. All information needed is stored 
 	 * into the input <code>map</code> object.
 	 * 
 	 * @param aMap The object containing all insert information
+	 * @param content the content of svg file 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public void insertMap(GeoMap aMap) throws EMFUserError;
+	public void insertMap(GeoMap aMap, byte[] content) throws EMFUserError;
 	
 	/**
 	 * Implements the query to erase a map. All information needed is stored 
@@ -95,12 +97,12 @@ public interface ISbiGeoMapsDAO {
 	 * @throws EMFUserError If any exception occurred 
 	 */
 	public boolean hasFeaturesAssociated (String mapId) throws EMFUserError;
-
+	
 	/**
 	 * Gets the features (tag <g>) from the SVG File.
-	 * @param url The url about svg file
+	 * @param content The content file
 	 * @throws Exception raised If there are some problems
 	 */ 
-	public List getFeaturesFromSVG(String url) throws Exception ;
+	public List getFeaturesFromSVG(byte[] content) throws Exception ;
 
 }

@@ -40,6 +40,10 @@ public interface IKpiDAO {
 	 */
 	public KpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
 	
+	public KpiInstance loadKpiInstanceByIdFromHistory(Integer id, Date d) throws EMFUserError ;
+	
+	public List loadThresholdsById(Integer id) throws EMFUserError ;
+	
 	/**
 	 * Returns a List of all the the Threshols of the KpiInstance
 	 * 

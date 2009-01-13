@@ -90,29 +90,32 @@ public class LineChart extends ChartImpl{
 
 			//run all the attributes, to define series!
 			int numColumn = 0;
-			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
-				numColumn ++;
-				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
-
-				nameP=new String(object.getKey());
-				value=new String((String)object.getValue());
-				if(nameP.equalsIgnoreCase("x"))
-				{
-					catValue=value;
-					categoriesNumber=categoriesNumber+1;
-					categories.put(new Integer(categoriesNumber),value);
-
-				}
-				else {
-							series.put(nameP, value);
+			if (!atts.isEmpty()){
+				for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
+					numColumn ++;
+					SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+	
+					nameP=new String(object.getKey());
+					value=new String((String)object.getValue());
+					if(nameP.equalsIgnoreCase("x"))
+					{
+						catValue=value;
+						categoriesNumber=categoriesNumber+1;
+						categories.put(new Integer(categoriesNumber),value);
+	
 					}
+					else {
+								series.put(nameP, value);
+						}
+				}
 			}
 
 			String nameS = "KPI_VALUE";
 			String labelS = "kpi Values";
 			String valueS=(String)series.get(nameS);
+			if (valueS!=null){
 			((DefaultCategoryDataset)(datasetMap.getDatasets().get("line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
-
+			}
 		}
 		return datasetMap;
 	}

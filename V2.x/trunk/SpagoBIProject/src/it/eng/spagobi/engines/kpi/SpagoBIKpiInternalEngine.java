@@ -61,7 +61,9 @@ import java.awt.Color;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -88,8 +90,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
     protected IEngUserProfile profile;
 
-    protected String subtype = "";
-
     protected HashMap parametersObject;
 
     protected boolean display_semaphore = false;// true if the semaphore will be
@@ -106,8 +106,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
     protected List resources;// List of resources linked to the
 				// ModelInstanceNode
-
-    protected boolean isActualDateRequired = true;//true if the kpiValues are requested for today's date
     
     protected Date dateOfKPI = new Date();//date when the kpiValues are requested
 
@@ -213,25 +211,25 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    logger.debug("Setted the List of Resources related to the specified Model Instance");
 
 	    if (this.resources == null || this.resources.isEmpty()) {
-		logger.debug("There are no resources assigned to the Model Instance");
-		KpiResourceBlock block = new KpiResourceBlock();
-		block.setD(this.dateOfKPI);
-		KpiLine line = getBlock(modelNodeInstanceID, null);
-		block.setRoot(line);
-		logger.debug("Setted the tree Root.");
-		kpiRBlocks.add(block);
+			logger.debug("There are no resources assigned to the Model Instance");
+			KpiResourceBlock block = new KpiResourceBlock();
+			block.setD(this.dateOfKPI);
+			KpiLine line = getBlock(modelNodeInstanceID, null);
+			block.setRoot(line);
+			logger.debug("Setted the tree Root.");
+			kpiRBlocks.add(block);
 	    } else {
-		Iterator resourcesIt = this.resources.iterator();
-		while (resourcesIt.hasNext()) {
-		    Resource r = (Resource) resourcesIt.next();
-		    logger.debug("Resource: " + r.getName());
-		    KpiResourceBlock block = new KpiResourceBlock();
-		    block.setR(r);
-		    block.setD(dateOfKPI);
-		    KpiLine line = getBlock(modelNodeInstanceID, r);
-		    block.setRoot(line);
-		    kpiRBlocks.add(block);
-		}
+			Iterator resourcesIt = this.resources.iterator();
+			while (resourcesIt.hasNext()) {
+			    Resource r = (Resource) resourcesIt.next();
+			    logger.debug("Resource: " + r.getName());
+			    KpiResourceBlock block = new KpiResourceBlock();
+			    block.setR(r);
+			    block.setD(dateOfKPI);
+			    KpiLine line = getBlock(modelNodeInstanceID, r);
+			    block.setRoot(line);
+			    kpiRBlocks.add(block);
+			}
 	    }
 
 	    try {
@@ -269,88 +267,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	}
     }
 
-    private HashMap readParameters(List parametersList) throws EMFUserError {
-	logger.debug("IN");
-	if (parametersList == null) {
-	    logger.warn("parametersList si NULL!!!");
-	    return new HashMap();
-	}
-	HashMap parametersMap = new HashMap();
-	logger.debug("Check for BIparameters and relative values");
-
-	for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
-	    BIObjectParameter par = (BIObjectParameter) iterator.next();
-	    String url = par.getParameterUrlName();
-	    List values = par.getParameterValues();
-	    if (values != null) {
-		if (values.size() == 1) {
-		    if (url.equals("ParKpiResources")) {
-				this.resources = new ArrayList();
-				String value = (String) values.get(0);
-				Integer res = new Integer(value);
-				Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
-				this.resources.add(toAdd);
-		    
-		    }else {
-			    String value = (String) values.get(0);
-			    parametersMap.put(url, value);
-			    if (url.equals("ParKpiDate")) {
-					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
-						"SPAGOBI.DATE-FORMAT"));
-					String format = (String) formatSB.getAttribute("format");
-					SimpleDateFormat f = new SimpleDateFormat();
-					f.applyPattern(format);
-					String temp = f.format(this.dateOfKPI);
-				
-					try {
-					    this.dateOfKPI = f.parse(value);
-					} catch (ParseException e) {
-					    logger.error("ParseException.value=" + value, e);
-					}
-					if(!temp.equals(value)){
-						isActualDateRequired = false;
-					    }
-			    }
-		     }   
-		   }else if (values != null && values.size() >= 1) {
-			if (url.equals("ParKpiResources")) {
-			    this.resources = new ArrayList();
-			    for (int k = 0; k < values.size(); k++) {
-				String value = (String) values.get(k);
-				Integer res = new Integer(value);
-				Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
-				this.resources.add(toAdd);
-			    }
-			} else {
-			    String value = "'" + (String) values.get(0) + "'";
-			    for (int k = 1; k < values.size(); k++) {
-			    	value = value + ",'" + (String) values.get(k) + "'";
-			    }
-			    parametersMap.put(url, value);
-			    if (url.equals("ParKpiDate")) {
-					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
-						"SPAGOBI.DATE-FORMAT"));
-					String format = (String) formatSB.getAttribute("format");
-					SimpleDateFormat f = new SimpleDateFormat();
-					f.applyPattern(format);
-					String temp = f.format(this.dateOfKPI);
-					try {
-					    this.dateOfKPI = f.parse(value);
-					} catch (ParseException e) {
-					    logger.error("ParseException.value=" + value, e);
-					}
-					if(!temp.equals(value)){
-						isActualDateRequired = false;
-					    }
-			    }
-			}
-	    }
-	}
-	}
-	logger.debug("OUT. Date:" + this.dateOfKPI);
-	return parametersMap;
-
-    }
+   
 
     public KpiLine getBlock(Integer miId, Resource r) throws EMFUserError, EMFInternalError {
 	logger.debug("IN");
@@ -367,7 +284,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    logger.debug("Got KpiInstance with ID: " + kpiI.getKpiInstanceId().toString());
 	    KpiValue value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
 	    logger.debug("Old KpiValue retrieved");
-	    if (value == null && isActualDateRequired) {
+	    if (value == null) {
 			logger.debug("Old value not valid anymore");
 			IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
 		
@@ -467,6 +384,128 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	return line;
     }
 
+
+    public KpiValue getNewKpiValue(IDataSet dataSet, KpiInstance k, Resource r) throws EMFUserError, EMFInternalError {
+
+	logger.debug("IN");
+	logger.debug("START calculating the new KpiValue:");
+	KpiValue kVal = new KpiValue();
+	Date begD = dateOfKPI;
+	kVal.setBeginDate(begD);
+	logger.debug("Setted the KpiValue begin Date:"+begD);
+	KpiInstance kpiInst = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
+	Integer seconds = DAOFactory.getKpiDAO().getPeriodicitySeconds(kpiInst.getPeriodicity());
+	// Transforms seconds into milliseconds
+	long milliSeconds = seconds.longValue() * 1000;
+	long begDtTime = begD.getTime();
+	long endTime = begDtTime + milliSeconds;
+	Date endDate = new Date(endTime);
+	kVal.setEndDate(endDate);
+	Integer kpiInstanceID = k.getKpiInstanceId();
+	Double weight = null;
+	Double target = null;
+	String scaleCode = null;
+	String scaleName = null;
+	List thresholds = null;
+	String chartType = null;
+	logger.debug("Setted the KpiValue end Date:"+endDate);
+	kVal.setKpiInstanceId(kpiInstanceID);
+	logger.debug("Setted the KpiValue Instance ID:"+kpiInstanceID);
+	Date kpiInstBegDt = kpiInst.getD();
+	logger.debug("kpiInstBegDt begin date: "+(kpiInstBegDt!=null ? kpiInstBegDt.toString(): "Begin date null"));
+	
+	if ( (dateOfKPI.after(kpiInstBegDt)||dateOfKPI.equals(kpiInstBegDt))) {
+		
+		logger.debug("Requested date d: "+dateOfKPI.toString()+" in between beginDate and EndDate");
+		weight = kpiInst.getWeight();
+		logger.debug("SbiKpiValue weight: "+(weight!=null ? weight.toString() : "weight null"));
+		target = kpiInst.getTarget();
+		logger.debug("SbiKpiValue target: "+(target!=null ? target.toString() : "target null"));
+		thresholds = DAOFactory.getKpiDAO().getThresholds(kpiInst);
+		chartType = DAOFactory.getKpiDAO().getChartType(kpiInstanceID);
+
+		scaleCode = kpiInst.getScaleCode();
+		logger.debug("SbiKpiValue scaleCode: "+(scaleCode!=null ? scaleCode : "scaleCode null"));
+		scaleName =kpiInst.getScaleName();
+		logger.debug("SbiKpiValue scaleName: "+(scaleName!=null ? scaleName : "scaleName null"));
+
+	} else {// in case older thresholds have to be retrieved
+
+		kpiInst = DAOFactory.getKpiDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI);
+		if (kpiInst!=null){
+			Integer chartId = kpiInst.getChartTypeId();
+			Integer thresholdId = kpiInst.getThresholdId();
+			thresholds = DAOFactory.getKpiDAO().loadThresholdsById(thresholdId);
+			chartType = "BulletGraph";
+			logger.debug("Requested date d: "+dateOfKPI.toString()+" in between beginDate and EndDate");
+			weight = kpiInst.getWeight();
+			logger.debug("SbiKpiValue weight: "+(weight!=null ? weight.toString() : "weight null"));
+			target = kpiInst.getTarget();
+			scaleCode = kpiInst.getScaleCode();
+			logger.debug("SbiKpiValue scaleCode: "+(scaleCode!=null ? scaleCode : "scaleCode null"));
+			scaleName =kpiInst.getScaleName();
+			logger.debug("SbiKpiValue scaleName: "+(scaleName!=null ? scaleName : "scaleName null"));
+		}
+		
+	}
+	
+	kVal.setWeight(k.getWeight());
+	logger.debug("Setted the KpiValue weight:"+k.getWeight());	
+	kVal.setThresholds(thresholds);
+	logger.debug("Setted the KpiValue thresholds");	
+	kVal.setScaleCode(scaleCode);
+	logger.debug("Kpi value scale Code setted");
+	kVal.setScaleName(scaleName);
+	logger.debug("Kpi value scale Name setted");
+	kVal.setTarget(target);
+	logger.debug("Kpi value target setted");
+
+	// If it has to be calculated for a Resource. The resource will be set
+	// as parameter
+	HashMap temp = (HashMap) this.parametersObject.clone();
+	if (r != null) {
+	    String colName = r.getColumn_name();
+	    String value = r.getName();
+	    kVal.setR(r);
+	    logger.debug("Setted the Resource:"+r.getName());
+	    temp.put(colName, value);
+	}
+
+	// If not, the dataset will be calculated without the parameter Resource
+	// and the DataSet won't expect a parameter of type resource
+	if(dataSet.hasBehaviour( QuerableBehaviour.class.getName()) ) {
+		dataSet.setParamsMap(temp);
+		dataSet.setUserProfile(profile);
+	}
+	
+	dataSet.loadData();
+	IDataStore dataStore = dataSet.getDataStore();
+	logger.debug("Gotten the datastore");
+	if (dataStore != null && !dataStore.isEmpty()) {
+	    // Transform result into KPIValue (I suppose that the result has a
+	    // unique value)
+	    IRecord record = dataStore.getRecordAt(0);
+	    List fields = record.getFields();
+	    if (fields != null && !fields.isEmpty()) {
+		IField f = (IField) fields.get(0);
+		if (f != null) {
+		    if (f.getValue() != null) {
+			String fieldValue = f.getValue().toString();
+			kVal.setValue(fieldValue);
+			logger.debug("Setted the kpiValue value:"+fieldValue);
+		    }
+		}
+	    }
+	} else {
+	    logger.warn("The Data Set doesn't return any value!!!!!");
+	}
+	if (chartType != null)
+	    kVal.setChartType(chartType);
+	logger.debug("OUT");
+	return kVal;
+
+    }
+    
     /**
      * This function fills up the vector "intervals" with the intervals of the
      * chart, getting them from a list of Thresholds
@@ -516,78 +555,121 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	logger.debug("OUT");
 	return toReturn;
     }
+    
+    private HashMap readParameters(List parametersList) throws EMFUserError {
+    	logger.debug("IN");
+    	if (parametersList == null) {
+    	    logger.warn("parametersList si NULL!!!");
+    	    return new HashMap();
+    	}
+    	HashMap parametersMap = new HashMap();
+    	logger.debug("Check for BIparameters and relative values");
 
-    public KpiValue getNewKpiValue(IDataSet dataSet, KpiInstance k, Resource r) throws EMFUserError, EMFInternalError {
+    	for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
+    	    BIObjectParameter par = (BIObjectParameter) iterator.next();
+    	    String url = par.getParameterUrlName();
+    	    List values = par.getParameterValues();
+    	    if (values != null) {
+    		if (values.size() == 1) {
+    		    if (url.equals("ParKpiResources")) {
+    				this.resources = new ArrayList();
+    				String value = (String) values.get(0);
+    				Integer res = new Integer(value);
+    				Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
+    				this.resources.add(toAdd);
+    		    
+    		    }else {
+    			    String value = (String) values.get(0);
+    			    parametersMap.put(url, value);
+    			    if (url.equals("ParKpiDate")) {
+    					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
+    						"SPAGOBI.DATE-FORMAT"));
+    					String format = (String) formatSB.getAttribute("format");
+    					SimpleDateFormat f = new SimpleDateFormat();
+    					f.applyPattern(format);
+    					String temp = f.format(this.dateOfKPI);
+    				
+    					try {
+    					    this.dateOfKPI = f.parse(value);
+    					    Long milliseconds = this.dateOfKPI.getTime();
+    					    //If the date required is today then the time considered will be the actual date
+    						if(temp.equals(value)){
+    							Calendar calendar = new GregorianCalendar();
+    							int ore = calendar.get(Calendar.HOUR); 
+    							int minuti = calendar.get(Calendar.MINUTE); 
+    							int secondi = calendar.get(Calendar.SECOND); 
+    							int AM = calendar.get(Calendar.AM_PM);//TODO AM PM
+    							int millisec =  (secondi*1000) + (minuti *60*1000) + (ore*60*60*1000);
+    							Long milliSecToAdd = new Long (millisec);
+    							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+    							this.dateOfKPI = new Date(milliseconds);
+    							
+    						}else{
+    							//If the date required is today then the time considered will be the actual date
+    							Long milliSecToAdd = new Long (60*60*24);
+    							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+    							this.dateOfKPI = new Date(milliseconds);
+    						}
+    					   
+    					} catch (ParseException e) {
+    					    logger.error("ParseException.value=" + value, e);
+    					}
+    			    }
+    		     }   
+    		   }else if (values != null && values.size() >= 1) {
+    			if (url.equals("ParKpiResources")) {
+    			    this.resources = new ArrayList();
+    			    for (int k = 0; k < values.size(); k++) {
+    				String value = (String) values.get(k);
+    				Integer res = new Integer(value);
+    				Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
+    				this.resources.add(toAdd);
+    			    }
+    			} else {
+    			    String value = "'" + (String) values.get(0) + "'";
+    			    for (int k = 1; k < values.size(); k++) {
+    			    	value = value + ",'" + (String) values.get(k) + "'";
+    			    }
+    			    parametersMap.put(url, value);
+    			    if (url.equals("ParKpiDate")) {
+    					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
+    						"SPAGOBI.DATE-FORMAT"));
+    					String format = (String) formatSB.getAttribute("format");
+    					SimpleDateFormat f = new SimpleDateFormat();
+    					f.applyPattern(format);
+    					String temp = f.format(this.dateOfKPI);
+    					try {
+    					    this.dateOfKPI = f.parse(value);
+    					    Long milliseconds = this.dateOfKPI.getTime();
+    					    //If the date required is today then the time considered will be the actual date
+    						if(temp.equals(value)){
+    							Calendar calendar = new GregorianCalendar();
+    							int ore = calendar.get(Calendar.HOUR); 
+    							int minuti = calendar.get(Calendar.MINUTE); 
+    							int secondi = calendar.get(Calendar.SECOND); 
+    							int millisec =  (secondi*1000) + (minuti *60*1000) + (ore*60*60*1000);
+    							Long milliSecToAdd = new Long (millisec);
+    							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+    							this.dateOfKPI = new Date(milliseconds);
+    							
+    						}else{
+    							//If the date required is today then the time considered will be the actual date
+    							Long milliSecToAdd = new Long (60*60*24);
+    							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+    							this.dateOfKPI = new Date(milliseconds);
+    						}
+    					} catch (ParseException e) {
+    					    logger.error("ParseException.value=" + value, e);
+    					}
+    			    }
+    			}
+    	    }
+    	}
+    	}
+    	logger.debug("OUT. Date:" + this.dateOfKPI);
+    	return parametersMap;
 
-	logger.debug("IN");
-	logger.debug("START calculating the new KpiValue:");
-	KpiValue kVal = new KpiValue();
-	Date begD = new Date();
-	kVal.setBeginDate(begD);
-	logger.debug("Setted the KpiValue begin Date:"+begD);
-	KpiInstance sbik = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
-	Integer seconds = DAOFactory.getKpiDAO().getPeriodicitySeconds(sbik.getPeriodicity());
-	// Transforms seconds into milliseconds
-	long milliSeconds = seconds.longValue() * 1000;
-	long begDtTime = begD.getTime();
-	long endTime = begDtTime + milliSeconds;
-	Date endDate = new Date(endTime);
-	kVal.setEndDate(endDate);
-	logger.debug("Setted the KpiValue end Date:"+endDate);
-	kVal.setKpiInstanceId(k.getKpiInstanceId());
-	logger.debug("Setted the KpiValue Instance ID:"+k.getKpiInstanceId());
-	kVal.setWeight(k.getWeight());
-	logger.debug("Setted the KpiValue weight:"+k.getWeight());
-	List thresholds = DAOFactory.getKpiDAO().getThresholds(sbik);
-	kVal.setThresholds(thresholds);
-	logger.debug("Setted the KpiValue thresholds");
-	String chartType = DAOFactory.getKpiDAO().getChartType(sbik.getKpiInstanceId());
-
-	// If it has to be calculated for a Resource. The resource will be set
-	// as parameter
-	HashMap temp = (HashMap) this.parametersObject.clone();
-	if (r != null) {
-	    String colName = r.getColumn_name();
-	    String value = r.getName();
-	    kVal.setR(r);
-	    logger.debug("Setted the Resource:"+r.getName());
-	    temp.put(colName, value);
-	}
-
-	// If not, the dataset will be calculated without the parameter Resource
-	// and the DataSet won't expect a parameter of type resource
-	if(dataSet.hasBehaviour( QuerableBehaviour.class.getName()) ) {
-		dataSet.setParamsMap(temp);
-		dataSet.setUserProfile(profile);
-	}
-	
-	dataSet.loadData();
-	IDataStore dataStore = dataSet.getDataStore();
-	logger.debug("Gotten the datastore");
-	if (dataStore != null && !dataStore.isEmpty()) {
-	    // Transform result into KPIValue (I suppose that the result has a
-	    // unique value)
-	    IRecord record = dataStore.getRecordAt(0);
-	    List fields = record.getFields();
-	    if (fields != null && !fields.isEmpty()) {
-		IField f = (IField) fields.get(0);
-		if (f != null) {
-		    if (f.getValue() != null) {
-			String fieldValue = f.getValue().toString();
-			kVal.setValue(fieldValue);
-			logger.debug("Setted the kpiValue value:"+fieldValue);
-		    }
-		}
-	    }
-	} else {
-	    logger.warn("The Data Set doesn't return any value!!!!!");
-	}
-	if (chartType != null)
-	    kVal.setChartType(chartType);
-	logger.debug("OUT");
-	return kVal;
-
-    }
+        }
 
     public void getSetConf(SourceBean content) {
 	logger.debug("IN");

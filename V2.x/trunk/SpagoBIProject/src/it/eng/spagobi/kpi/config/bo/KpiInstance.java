@@ -12,8 +12,8 @@ public class KpiInstance {
 	Integer periodicityId = null;
 	Integer chartTypeId = null;
 	Integer thresholdId = null;
-//	Integer measureUnitId = null;
-	
+	String scaleCode = null;
+	String scaleName = null;	
 	Integer kpi = null ;// kpiId related to the kpiInstance
 	Date d = null;	
 	Double weight = null; 
@@ -94,6 +94,22 @@ public class KpiInstance {
 
 	public void setTarget(Double target) {
 		this.target = target;
+	}
+
+	public String getScaleCode() {
+		return scaleCode;
+	}
+
+	public void setScaleCode(String scaleCode) {
+		this.scaleCode = scaleCode;
+	}
+
+	public String getScaleName() {
+		return scaleName;
+	}
+
+	public void setScaleName(String scaleName) {
+		this.scaleName = scaleName;
 	}
 	
 

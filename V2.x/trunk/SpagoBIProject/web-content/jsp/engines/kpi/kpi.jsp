@@ -107,11 +107,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 			String resDiv = "";
 			String scriptDiv = "";
-			String scriptViewAll = "<script>";
-			scriptViewAll += "function viewAll(){";
-			String scriptHideAll = "<script>";
-			scriptHideAll += "function hideAll(){";
+			String scriptViewAll = "";
+			String scriptHideAll = "";
 			if(resources!=null && !resources.isEmpty()){
+				scriptViewAll = "<script>";
+				scriptViewAll += "function viewAll(){";
+				scriptHideAll = "<script>";
+				scriptHideAll += "function hideAll(){";
 				Iterator resIt = resources.iterator();
 				scriptDiv += "<script>";
 				resDiv += "<div class='slider_header' ><ul>";
@@ -171,7 +173,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					 element.innerHTML = '<table>';
 			 	for (i = 0;i<thresholds.length;i++)
 					{	
-					   element.innerHTML =element.innerHTML+ '<tr><td style="width:20px;height:9px;vertical-align:middle;" ><div style="width:7px;height:7px;vertical-align:middle;background-color:'+thresholds[i].color+'" /></td><td><div style="font-family:Arial;align:left;vertical-align:middle;font-size:7pt;width:150px;height:9px;" >&nbsp;'+thresholds[i].min + ' - '+thresholds[i].max+': '+ thresholds[i].label+'</td></tr>';
+					   element.innerHTML =element.innerHTML+ '<tr><td style="width:20px;height:9px;vertical-align:middle;" ><div style="width:7px;height:7px;vertical-align:middle;background-color:'+thresholds[i].color+'" /></td><td><div style="font-family:Arial;align:left;vertical-align:middle;font-size:7pt;width:90px;height:9px;" >&nbsp;'+thresholds[i].min + ' - '+thresholds[i].max+': '+ thresholds[i].label+'</td></tr>';
 					}
 					element.innerHTML =element.innerHTML+ '</table>';
 					element.style.display = 'inline' ;

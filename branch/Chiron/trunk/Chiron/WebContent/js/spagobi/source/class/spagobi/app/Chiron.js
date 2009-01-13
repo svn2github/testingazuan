@@ -33,7 +33,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */ 
  
 /*
-#asset(img/spagobi/test/engineAdministrationIcon.png)
 #asset(img/spagobi/test/*)
 #asset(qx/icon/Oxygen/16/actions/dialog-ok.png)
 
@@ -352,12 +351,12 @@ qx.Class.define("spagobi.app.Chiron",
       					name: 'distributionList',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/distributionlistuser.png'),
 						page: 'distributionList',
-						tooltip: 'Dummy'//Distribution List User
+						tooltip: 'Distribution List User'
       				}, {
       					name: 'distributionListConfig',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/distributionlist.png'),
 						page: 'distributionListConfig',
-						tooltip: 'Dummy'//Distribution List Configuration
+						tooltip: 'Distribution List Configuration'
       				}
       			]
       		},
@@ -378,7 +377,7 @@ qx.Class.define("spagobi.app.Chiron",
       					name: 'func',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/mapManagementIcon.png'),
 						page: 'func',
-						tooltip: 'Dummy'//Functionalities
+						tooltip: 'Functionalities'
       				}
       			]
       		},
@@ -399,12 +398,12 @@ qx.Class.define("spagobi.app.Chiron",
       					name: 'workflow',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/todoList_2.png'),
 						page: 'workflow',
-						tooltip: 'Dummy'//Workflow To Do List
+						tooltip: 'Workflow To Do List'
       				}, {
       					name: 'event',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/events.png'),
 						page: 'event',
-						tooltip: 'Dummy'//Events
+						tooltip: 'Events'
       				}
       			]
       		},
@@ -425,12 +424,12 @@ qx.Class.define("spagobi.app.Chiron",
       					name: 'tool',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/importexport64.png'),
 						page: 'tool',
-						tooltip: 'Import/Eport'//Import / Export
+						tooltip: 'Import/Export'//Import / Export
       				}, {
       					name: 'schedule',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/scheduleIcon64_blu.png'),
 						page: 'schedule',
-						tooltip: 'schedule'//Schedule Document Executions
+						tooltip: 'Schedule Document Executions'
       				}, {
       					name: 'roles',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/rolesynch64.jpg'),

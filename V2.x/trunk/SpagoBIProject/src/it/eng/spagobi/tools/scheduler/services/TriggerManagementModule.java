@@ -187,6 +187,8 @@ public class TriggerManagementModule extends AbstractModule {
 			}
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
 			response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
+			List allDatasets = DAOFactory.getDataSetDAO().loadAllDataSets();
+			response.setAttribute(SpagoBIConstants.DATASETS_LIST, allDatasets);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TriggerDetail");
 		} catch (Exception ex) {
 			logger.error("Error while getting detail of the schedule(trigger)", ex);
@@ -266,8 +268,26 @@ public class TriggerManagementModule extends AbstractModule {
 				String sendmail = (String)request.getAttribute("sendmail_"+biobId+"__"+index);	
 				if(sendmail!=null) {
 					sInfo.setSendMail(true);
-					String mailtos = (String)request.getAttribute("mailtos_"+biobId+"__"+index);	
-					sInfo.setMailTos(mailtos);
+					boolean useFixedRecipients = "true".equalsIgnoreCase((String) request.getAttribute("useFixedRecipients_"+biobId+"__"+index));
+					sInfo.setUseFixedRecipients(useFixedRecipients);
+					if (useFixedRecipients) {
+						String mailtos = (String)request.getAttribute("mailtos_"+biobId+"__"+index);	
+						sInfo.setMailTos(mailtos);
+					}
+					boolean useDataset = "true".equalsIgnoreCase((String) request.getAttribute("useDataset_"+biobId+"__"+index));
+					sInfo.setUseDataSet(useDataset);
+					if (useDataset) {
+						String dsLabel = (String)request.getAttribute("datasetLabel_"+biobId+"__"+index);	
+						sInfo.setDataSetLabel(dsLabel);
+						String datasetParameterLabel = (String)request.getAttribute("datasetParameter_"+biobId+"__"+index);	
+						sInfo.setDataSetParameterLabel(datasetParameterLabel);
+					}
+					boolean useExpression = "true".equalsIgnoreCase((String) request.getAttribute("useExpression_"+biobId+"__"+index));
+					sInfo.setUseExpression(useExpression);
+					if (useExpression) {
+						String expression = (String)request.getAttribute("expression_"+biobId+"__"+index);	
+						sInfo.setExpression(expression);
+					}
 					String mailsubj = (String)request.getAttribute("mailsubj_"+biobId+"__"+index);	
 					sInfo.setMailSubj(mailsubj);
 					String mailtxt = (String)request.getAttribute("mailtxt_"+biobId+"__"+index);	
@@ -471,8 +491,17 @@ public class TriggerManagementModule extends AbstractModule {
 			}
 			if(sInfo.isSendMail()) {
 				saveOptString += "sendmail=true%26";
-				if( (sInfo.getMailTos()!=null) && !sInfo.getMailTos().trim().equals("") ) {
+				if(sInfo.isUseFixedRecipients() && sInfo.getMailTos() != null && !sInfo.getMailTos().trim().equals("")) {
 					saveOptString += "mailtos="+sInfo.getMailTos()+"%26";
+				}
+				if(sInfo.isUseDataSet() && sInfo.getDataSetLabel() != null && !sInfo.getDataSetLabel().trim().equals("")) {
+					saveOptString += "datasetLabel="+sInfo.getDataSetLabel()+"%26";
+					if (sInfo.getDataSetParameterLabel() != null && !sInfo.getDataSetParameterLabel().trim().equals("")) {
+						saveOptString += "datasetParameterLabel="+sInfo.getDataSetParameterLabel()+"%26";
+					}
+				}
+				if(sInfo.isUseExpression() && sInfo.getExpression() != null && !sInfo.getExpression().trim().equals("")) {
+					saveOptString += "expression="+sInfo.getExpression()+"%26";
 				}
 				if( (sInfo.getMailSubj()!=null) && !sInfo.getMailSubj().trim().equals("") ) {
 					saveOptString += "mailsubj="+sInfo.getMailSubj()+"%26";

@@ -442,6 +442,15 @@ public class BIObjectParameter implements Serializable {
 		toReturn.setTransientParmeters(transientParmeters);
 		toReturn.setHasValidValues(hasValidValues);
 		toReturn.setLovResult(lovResult);
+		toReturn.setBiObjectID(biObjectID);
+		toReturn.setId(id);
+		toReturn.setModifiable(modifiable);
+		toReturn.setMultivalue(multivalue);
+		toReturn.setParID(parID);
+		toReturn.setPriority(priority);
+		toReturn.setProg(prog);
+		toReturn.setRequired(required);
+		toReturn.setVisible(visible);
 		return toReturn;
 	}
 	

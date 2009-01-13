@@ -42,8 +42,10 @@ import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -91,7 +93,11 @@ public class JobManagementModule extends AbstractModule {
 				deleteJob(request, response);
 			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.MESSAGE_GET_JOB_DETAIL)) {
 				getJobDetail(request, response);	
-			}			
+			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.RETURN_TO_ACTIVITY_DETAIL)) {
+				returnToJobDetail(request, response);	
+			} else if(message.trim().equalsIgnoreCase(SpagoBIConstants.IGNORE_WARNING)) {
+				ignoreWarning(request, response);	
+			}
 		} catch (EMFUserError eex) {
 			errorHandler.addError(eex);
 			return;
@@ -168,7 +174,33 @@ public class JobManagementModule extends AbstractModule {
 		}
 	}
 	
+	private void returnToJobDetail(SourceBean request, SourceBean response) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(true);
+			response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "JobDetail");
+		} catch (Exception ex) {
+			logger.error("Error while recovering objects for scheduling", ex);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "errors.1001", "component_scheduler_messages");
+		} finally {
+			logger.debug("OUT");
+		}
+	}
 	
+	private void ignoreWarning(SourceBean request, SourceBean response) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			JobInfo jobInfo = (JobInfo) sessCont.getAttribute(SpagoBIConstants.JOB_INFO);
+			saveJob(jobInfo);
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ReturnToJobList");	
+		} catch (Exception ex) {
+			logger.error("Error while recovering objects for scheduling", ex);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "errors.1001", "component_scheduler_messages");
+		} finally {
+			logger.debug("OUT");
+		}
+	}
 	
 	private void deleteJob(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
@@ -295,7 +327,6 @@ public class JobManagementModule extends AbstractModule {
 	
 	private void saveJob(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
-		    SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			// get job information from session
 			JobInfo jobInfo = (JobInfo)sessCont.getAttribute(SpagoBIConstants.JOB_INFO);
 			// recover generic data
@@ -303,13 +334,44 @@ public class JobManagementModule extends AbstractModule {
 			// recover parameter values
 			getDocParValuesFromRequest(request, jobInfo);
 			// check for input validation errors 
-			//ValidationCoordinator.validate("PAGE", "JobManagementPage", this);
 			if(!this.getErrorHandler().isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
 				List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(true);
 				response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "JobDetail");
 				return;
 			}
+			
+			boolean warningNeeded = false;
+			Map documents = new HashMap();
+			List biobjs = jobInfo.getBiobjects();
+			Iterator iterbiobj = biobjs.iterator();
+			while(iterbiobj.hasNext()) {
+				BIObject biobj = (BIObject)iterbiobj.next();
+				int combinations = calculateCombinations(biobj);
+				if (combinations > 10) {
+					// if combination of parameters exceeds 10, a warning is needed
+					warningNeeded = true;
+					// documents map will contain documents with exceeding configuration (i.e. combinations of parameters values exceeds 10)
+					documents.put(biobj.getName(), new Integer(combinations));
+				}
+			}
+			if (warningNeeded) {
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "JobIterationWarning");
+				response.setAttribute("EXCEEDING_CONFIGURATIONS", documents);
+				return;
+			}
+			saveJob(jobInfo);
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ReturnToJobList");	
+		} catch (Exception ex) {
+			logger.error("Error while saving job", ex);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "errors.1004", "component_scheduler_messages");
+		}
+	}
+
+	
+	private void saveJob(JobInfo jobInfo) throws EMFUserError {
+		try {
+			SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();
 			// create message to define the new job (for the web service)
 			String jobGroupName = JOB_GROUP;
 			StringBuffer message = new StringBuffer();
@@ -380,17 +442,32 @@ public class JobManagementModule extends AbstractModule {
 			if(!SchedulerUtilities.checkResultOfWSCall(schedModRespSB)){
 				throw new Exception("Job "+jobInfo.getJobName()+" not created by the web service");
 			}
-			// fil response
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ReturnToJobList");	
+			
 		} catch (Exception ex) {
 			logger.error("Error while saving job", ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "errors.1004", "component_scheduler_messages");
 		}
 	}
-
 		
 
 	
+	private int calculateCombinations(BIObject biobj) {
+		logger.debug("IN");
+		int toReturn = 1;
+		List parameters = biobj.getBiObjectParameters();
+		Iterator it = parameters.iterator();
+		while (it.hasNext()) {
+			BIObjectParameter parameter = (BIObjectParameter) it.next();
+			if (parameter.isIterative()) {
+				List values = parameter.getParameterValues();
+				if (values != null && values.size() > 1) 
+					toReturn *= values.size();
+			}
+		}
+		logger.debug("OUT: returning " + toReturn);
+		return toReturn;
+	}
+
 	private void getJobDetail(SourceBean request, SourceBean response) throws EMFUserError {
 		try {
 		    SchedulerServiceSupplier schedulerService=new SchedulerServiceSupplier();

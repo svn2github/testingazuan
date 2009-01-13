@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.scheduler.to;
 
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +33,20 @@ public class SaveInfo {
 	private boolean sendMail = false;
 	private boolean sendToDl = false;
 	private boolean addToDl = false;
+
 	private String snapshotName = "";
 	private String snapshotDescription = "";
 	private String snapshotHistoryLength = "";
 	private String documentName = "";
 	private String documentDescription = "";
 	private String documentHistoryLength = "";
+	private boolean useFixedRecipients = false;
 	private String mailTos = "";
+	private boolean useDataSet = false;
+	private String dataSetLabel = null;
+	private String dataSetParameterLabel = null;
+	private boolean useExpression = false;
+	private String expression = "";
 	private String functionalityIds = "";
 	private String mailSubj = "";
 	private String mailTxt = "";
@@ -366,6 +375,54 @@ public class SaveInfo {
 	 */
 	public void setBiobjId(int biobjId) {
 		this.biobjId = biobjId;
+	}
+
+	public boolean isUseDataSet() {
+		return useDataSet;
+	}
+
+	public void setUseDataSet(boolean useDataSet) {
+		this.useDataSet = useDataSet;
+	}
+
+	public String getDataSetLabel() {
+		return dataSetLabel;
+	}
+
+	public void setDataSetLabel(String dataSetLabel) {
+		this.dataSetLabel = dataSetLabel;
+	}
+
+	public boolean isUseExpression() {
+		return useExpression;
+	}
+
+	public void setUseExpression(boolean useExpression) {
+		this.useExpression = useExpression;
+	}
+
+	public String getExpression() {
+		return expression;
+	}
+
+	public void setExpression(String expression) {
+		this.expression = expression;
+	}
+
+	public String getDataSetParameterLabel() {
+		return dataSetParameterLabel;
+	}
+
+	public void setDataSetParameterLabel(String dataSetParameterLabel) {
+		this.dataSetParameterLabel = dataSetParameterLabel;
+	}
+
+	public boolean isUseFixedRecipients() {
+		return useFixedRecipients;
+	}
+
+	public void setUseFixedRecipients(boolean useFixedRecipients) {
+		this.useFixedRecipients = useFixedRecipients;
 	}
 	
 	

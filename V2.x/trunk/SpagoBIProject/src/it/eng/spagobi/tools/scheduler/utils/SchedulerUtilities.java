@@ -344,7 +344,19 @@ public class SchedulerUtilities {
 				sInfo.setSendMail(true);
 			}
 			if(name.equals("mailtos")) {
+				sInfo.setUseFixedRecipients(true);
 				sInfo.setMailTos(value);
+			}
+			if(name.equals("datasetLabel")) {
+				sInfo.setUseDataSet(true);
+				sInfo.setDataSetLabel(value);
+			}
+			if(name.equals("datasetParameterLabel")) {
+				sInfo.setDataSetParameterLabel(value);
+			}
+			if(name.equals("expression")) {
+				sInfo.setUseExpression(true);
+				sInfo.setExpression(value);
 			}
 			if(name.equals("mailsubj")) {
 				sInfo.setMailSubj(value);

@@ -30,7 +30,6 @@ import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
-import it.eng.spagobi.analiticalmodel.document.metadata.SbiSnapshots;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
 import it.eng.spagobi.commons.bo.Domain;
@@ -55,7 +54,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -135,33 +136,39 @@ public class ExecuteBIDocumentJob implements Job {
 						toBeAppendedToDescription.append("]");
 					}
 					
+					// appending the current date
+					Date date = new Date();
+					SimpleDateFormat sdf = new SimpleDateFormat();
+					sdf.applyPattern("ddMMyyyy");
+					String dateStr = sdf.format(date);
+					toBeAppendedToName.append("_" + dateStr);
+					
 					//check parameters value: if a parameter hasn't value but isn't mandatory the process 
 					//must go on and so hasValidValue is set to true
 					List tmpBIObjectParameters = biobj.getBiObjectParameters();
 					Iterator it = tmpBIObjectParameters.iterator();
-					BIObjectParameter aBIObjectParameter = null;
 					while (it.hasNext()){
-						aBIObjectParameter = (BIObjectParameter)it.next();
+						boolean isMandatory = false;
+						BIObjectParameter aBIObjectParameter = (BIObjectParameter)it.next();
 						List checks = aBIObjectParameter.getParameter().getChecks();
 						if (checks != null && !checks.isEmpty()) {
 							Iterator checksIt = checks.iterator();
 							while (checksIt.hasNext()) {
 								Check check = (Check) checksIt.next();
-								if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")&& 
-										(aBIObjectParameter.getParameterValues() == null  || 
-												 aBIObjectParameter.getParameterValues().size() == 0)){		
-									aBIObjectParameter.setParameterValues(new ArrayList());
-									aBIObjectParameter.setHasValidValues(true);
+								if (check.getValueTypeCd().equalsIgnoreCase("MANDATORY")) {
+									isMandatory = true;
+									break;
 								}
 							}
 						}
-						else {
-							if (aBIObjectParameter.getParameterValues() == null  || aBIObjectParameter.getParameterValues().size() == 0){	
-								aBIObjectParameter.setParameterValues(new ArrayList());
-								aBIObjectParameter.setHasValidValues(true);
-							}
+						if (!isMandatory && 
+								(aBIObjectParameter.getParameterValues() == null  || aBIObjectParameter.getParameterValues().size() == 0)) {
+							aBIObjectParameter.setParameterValues(new ArrayList());
+							aBIObjectParameter.setHasValidValues(true);
 						}
 					}
+
+					
 					// exec the document only if all its parameter are filled
 					if(execCtrl.directExecution()) {
 						
@@ -295,7 +302,8 @@ public class ExecuteBIDocumentJob implements Job {
 			if( (docName==null) || docName.trim().equals("")) {
 				throw new Exception(" Document name not specified");
 			}
-			String docDesc = sInfo.getDocumentDescription();
+			docName += toBeAppendedToName;
+			String docDesc = sInfo.getDocumentDescription() + toBeAppendedToDescription;
 			String docHistorylengthStr = sInfo.getDocumentHistoryLength();
 			
 			// recover office document sbidomains
@@ -314,7 +322,7 @@ public class ExecuteBIDocumentJob implements Job {
 			ObjTemplate objTemp = new ObjTemplate();
 			objTemp.setActive(new Boolean(true));
 			objTemp.setContent(response);
-			objTemp.setName(docName + toBeAppendedToName + fileExt);
+			objTemp.setName(docName + fileExt);
 			// load all functionality
 			List storeInFunctionalities = new ArrayList();
 			String functIdsConcat = sInfo.getFunctionalityIds();

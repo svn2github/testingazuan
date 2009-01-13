@@ -208,6 +208,7 @@ public class SpagoBIConstants {
 	public static final String LOV_MODIFIED = "LOV_MODIFIED";
 	public static final String DATASET_MODIFIED = "DATASET_MODIFIED";
 	
+	public static final String DATASETS_LIST = "DATASETS_LIST";
 	
 	public static final String PROFILE_ATTRIBUTES_TO_FILL = "PROFILE_ATTRIBUTES_TO_FILL";
 	
@@ -245,6 +246,8 @@ public class SpagoBIConstants {
 	public static final String MESSAGE_SAVE_JOB = "MESSAGE_SAVE_JOB";
 	public static final String MESSAGE_DELETE_JOB = "MESSAGE_DELETE_JOB";
 	public static final String MESSAGE_GET_JOB_DETAIL = "MESSAGE_GET_JOB_DETAIL";
+	public static final String RETURN_TO_ACTIVITY_DETAIL = "RETURN_TO_ACTIVITY_DETAIL";
+	public static final String IGNORE_WARNING = "IGNORE_WARNING";
 	public static final String MESSAGE_GET_JOB_SCHEDULES = "MESSAGE_GET_JOB_SCHEDULES";
 	public static final String MESSAGE_NEW_SCHEDULE = "MESSAGE_NEW_SCHEDULE";
 	public static final String MESSAGE_SAVE_SCHEDULE = "MESSAGE_SAVE_SCHEDULE";

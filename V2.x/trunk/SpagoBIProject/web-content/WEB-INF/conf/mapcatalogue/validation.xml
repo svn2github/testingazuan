@@ -39,10 +39,12 @@
 				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="40"/>					
 				</FIELD>
+				<!-- 
 			    <FIELD name="sourceUrl" label="#SBIMapCatalogue.columnUrl">
 					<VALIDATOR validatorName="MANDATORY"/>	
 					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>				
 				</FIELD>
+				 -->
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>

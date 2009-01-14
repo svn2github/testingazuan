@@ -567,10 +567,10 @@ public class DetailMenuModule extends AbstractModule {
 			return url;
 		}
 		else if (menu.getFunctionality() != null && !menu.getFunctionality().equals("")) {
-			SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("MENU.APPLICATION", "functionality", menu.getFunctionality());
+			SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("FINAL_USER_FUNCTIONALITIES.APPLICATION", "functionality", menu.getFunctionality());
 			if (config != null) {
 				String iconUrl = (String) config.getAttribute("iconUrl");
-				iconUrl = iconUrl.replace("${SPAGOBI_CONTEXT}", "");
+				iconUrl = iconUrl.replaceAll("\\$\\{SPAGOBI_CONTEXT\\}", "");
 				return iconUrl;
 			} else return "";
 		}
@@ -586,11 +586,11 @@ public class DetailMenuModule extends AbstractModule {
 			if (functionality == null || functionality.trim().equals("")) {
 				logger.error("Input menu is not associated to a SpagoBI functionality");
 			} else {
-				SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("MENU.APPLICATION", "functionality", functionality);
+				SourceBean config = (SourceBean) ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("FINAL_USER_FUNCTIONALITIES.APPLICATION", "functionality", functionality);
 				if (config != null) {
 					url = (String) config.getAttribute("link");
-					url = url.replace("${SPAGOBI_CONTEXT}", contextPath);
-					url = url.replace("${SPAGO_ADAPTER_HTTP}", GeneralUtilities.getSpagoAdapterHttpUrl());
+					url = url.replaceAll("\\$\\{SPAGOBI_CONTEXT\\}", contextPath);
+					url = url.replaceAll("\\$\\{SPAGO_ADAPTER_HTTP\\}", GeneralUtilities.getSpagoAdapterHttpUrl());
 					if (functionality.equals(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)) {
 						String initialPath = menu.getInitialPath();
 						if (initialPath != null && !initialPath.trim().equals("")) {

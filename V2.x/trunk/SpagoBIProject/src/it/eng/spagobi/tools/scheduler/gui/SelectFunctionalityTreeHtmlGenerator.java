@@ -168,15 +168,9 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
 	   		LowFunctionality folder = (LowFunctionality) it.next();
-	   		if (initialPath != null) {
-	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, false, true, treename);
-	   			else addItemForJSTree(htmlStream, folder, false, false, treename);
-	   		} else {
-	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true, false, treename);
-	   			else addItemForJSTree(htmlStream, folder, false, false, treename);
-	   		}
+	   		if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true, false, treename);
+   			else addItemForJSTree(htmlStream, folder, false, false, treename);
 	   	}
-    	//htmlStream.append("				document.write("+treename+");\n");
 	   	htmlStream.append("				document.getElementById('treeSchedulerFoldersTd" + requestIdentity + "').innerHTML = " + treename + ";\n");
 		htmlStream.append("			</script>\n");
 		htmlStream.append("	</tr>");
@@ -204,21 +198,19 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 		String codeType = folder.getCodType();
 		Integer idFolder = folder.getId();
 		Integer parentId = null;
-		if (isInitialPath) parentId = new Integer (dTreeRootId);
+		if (isRoot) parentId = new Integer (dTreeRootId);
 		else parentId = folder.getParentId();
 
-		if (isRoot) {
+		if (isRoot && !codeType.equalsIgnoreCase(SpagoBIConstants.USER_FUNCTIONALITY_TYPE_CODE)) {
 			htmlStream.append("	"+treename+".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 		} else {
-			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
-				String checked = "";
-				if(functIdsChecked.contains(idFolder)){
-					checked = "true";
-				}
-				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
-				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
-				htmlStream.append("	"+treename+".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '', '"+treename+"_funct_id', '"+idFolder+"', '"+checked+"');\n");
+			String checked = "";
+			if(functIdsChecked.contains(idFolder)){
+				checked = "true";
 			}
+			String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
+			String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+			htmlStream.append("	"+treename+".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '', '"+treename+"_funct_id', '"+idFolder+"', '"+checked+"');\n");
 		}
 	}
 	

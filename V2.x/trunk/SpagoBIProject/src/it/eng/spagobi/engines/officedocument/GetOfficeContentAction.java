@@ -95,7 +95,7 @@ public class GetOfficeContentAction extends AbstractHttpAction {
 		
 		response.setHeader("Cache-Control: ",""); // leave blank to avoid IE errors
 		response.setHeader("Pragma: ",""); // leave blank to avoid IE errors 
-		response.setHeader("content-disposition","attachment; filename="+templateFileName);	
+//		response.setHeader("content-disposition","attachment; filename="+templateFileName);	
 		
 		String fileExtension = null;
 		int extindex = templateFileName.lastIndexOf(".");
@@ -122,7 +122,8 @@ public class GetOfficeContentAction extends AbstractHttpAction {
 		byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
 		response.setContentLength(templateContent.length);
 		response.getOutputStream().write(templateContent);
-		response.getOutputStream().flush();		
+		response.getOutputStream().flush();	
+		response.getOutputStream().close();
 		logger.debug("OUT");
 	}
 

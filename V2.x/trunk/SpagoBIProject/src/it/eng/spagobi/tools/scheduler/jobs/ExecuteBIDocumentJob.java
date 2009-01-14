@@ -44,6 +44,11 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.events.EventsManager;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
@@ -56,9 +61,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -111,6 +119,14 @@ public class ExecuteBIDocumentJob implements Job {
 				execCtrl.setBiObject(biobj);
 				// fill parameters 
 				execCtrl.refreshParameters(biobj, docParQueryString);
+				
+				IDataStore dataStore = null;
+				if (sInfo.isUseDataSet()) {
+					IDataSet dataSet = DAOFactory.getDataSetDAO().loadDataSetByLabel(sInfo.getDataSetLabel());
+					dataSet.setUserProfile(profile);
+					dataSet.loadData();
+					dataStore = dataSet.getDataStore();
+				}
 				
 				BIObjectParametersIterator objectParametersIterator = new BIObjectParametersIterator(biobj.getBiObjectParameters());
 				while (objectParametersIterator.hasNext()) {
@@ -201,7 +217,7 @@ public class ExecuteBIDocumentJob implements Job {
 						}
 	
 						if(sInfo.isSendMail()) {
-							sendMail(sInfo, biobj, response, retCT, fileextension, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
+							sendMail(sInfo, biobj, response, retCT, fileextension, dataStore, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
 						}
 						if(sInfo.isSendToDl()) {
 							sendToDl(sInfo, biobj, response, retCT, fileextension, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
@@ -377,7 +393,7 @@ public class ExecuteBIDocumentJob implements Job {
 	
 	
 	
-	private void sendMail(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt, String toBeAppendedToName, String toBeAppendedToDescription) {
+	private void sendMail(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt, IDataStore dataStore, String toBeAppendedToName, String toBeAppendedToDescription) {
 	    logger.debug("IN");
 		try{
 			ConfigSingleton config = ConfigSingleton.getInstance();
@@ -405,7 +421,7 @@ public class ExecuteBIDocumentJob implements Job {
 
 			String mailTxt = sInfo.getMailTxt();
 
-			String[] recipients = mailTos.split(",");
+			String[] recipients = findRecipients(sInfo, biobj, dataStore);
 			//Set the host smtp address
 		    Properties props = new Properties();
 		    props.put("mail.smtp.host", smtphost);
@@ -451,6 +467,91 @@ public class ExecuteBIDocumentJob implements Job {
 		    logger.debug("OUT");
 		}
 	}
+
+	private String[] findRecipients(SaveInfo info, BIObject biobj,
+			IDataStore dataStore) {
+	    logger.debug("IN");
+	    String[] toReturn = null;
+	    List recipients = new ArrayList();
+		try {
+			if (info.isUseFixedRecipients()) {
+				// in this case recipients are fixed and separated by ","
+				String[] fixedRecipients = info.getMailTos().split(",");
+				recipients.addAll(Arrays.asList(fixedRecipients));
+			}
+			if (info.isUseDataSet()) {
+				// in this case recipients must be retrieved by the dataset (which the datastore in input belongs to)
+				// we must find the parameter value in order to filter the dataset
+				String dsParameterLabel = info.getDataSetParameterLabel();
+				List parameters = biobj.getBiObjectParameters();
+				BIObjectParameter parameter = null;
+				String codeValue = null;
+				Iterator parameterIt = parameters.iterator();
+				while (parameterIt.hasNext()) {
+					BIObjectParameter aParameter = (BIObjectParameter) parameterIt.next();
+					if (aParameter.getLabel().equalsIgnoreCase(dsParameterLabel)) {
+						parameter = aParameter;
+						break;
+					}
+				}
+				List values = parameter.getParameterValues();
+				if (values != null && !values.isEmpty()) {
+					codeValue = (String) values.get(0);
+				}
+				
+				Iterator it = dataStore.iterator();
+				while(it.hasNext()) {
+					String recipient = null;
+				    IRecord record = (IRecord)it.next();
+				    // the parameter value is used to filter on the first dataset field
+				    IField valueField = (IField) record.getFieldAt(0);
+				    Object valueObj = valueField.getValue();
+				    String value = null;
+				    if (valueObj != null) 
+				    	value = valueObj.toString();
+				    if (codeValue.equals(value)) {
+				    	// recipient address is on the second dataset field
+					    IField recipientField = (IField) record.getFieldAt(1);
+					    Object recipientFieldObj = recipientField.getValue();
+					    if (recipientFieldObj != null) 
+					    	recipient = recipientFieldObj.toString();
+					    
+				    }
+				    if (recipient != null) {
+				    	recipients.add(recipient);
+				    }
+				}
+			}
+			if (info.isUseExpression()) {
+				String expression = info.getExpression();
+				Map parametersMap = new HashMap();
+				List parameters = biobj.getBiObjectParameters();
+				Iterator it = parameters.iterator();
+				while (it.hasNext()) {
+					BIObjectParameter parameter = (BIObjectParameter) it.next();
+					List values = parameter.getParameterValues();
+					if (values != null && !values.isEmpty()) {
+						parametersMap.put(parameter.getLabel(), values.get(0));
+					} else {
+						parametersMap.put(parameter.getLabel(), "");
+					}
+				}
+				// we must substitute parameter values on the expression
+				String recipientStr = GeneralUtilities.substituteParametersInString(expression, parametersMap);
+				String[] recipientsArray = recipientStr.split(",");
+				recipients.addAll(Arrays.asList(recipientsArray));
+			}
+		} catch (Exception e) {
+		    logger.error("Error while finding recipients", e);
+		} finally {
+		    logger.debug("OUT: returning " + toReturn);
+		}
+		toReturn = (String[]) recipients.toArray();
+		return toReturn;
+	}
+
+
+
 
 	private void sendToDl(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt, String toBeAppendedToName, String toBeAppendedToDescription) {
 	    logger.debug("IN");

@@ -29,6 +29,8 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.utilities.messages.EngineMessageBundle"%>
 <%@page import="it.eng.spagobi.services.proxy.DataSourceServiceProxy"%>
 <%@page import="it.eng.spagobi.services.datasource.bo.SpagoBiDataSource"%>
+<%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
+
 
 <html>
 <head>
@@ -228,9 +230,9 @@ if (selectedSchema != null) {
 			System.out.println("userId: " + userId);
 			System.out.println("documentId: " + documentId);
 			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
-			SpagoBiDataSource ds = proxyDS.getDataSource( documentId);
-			if (ds == null || (ds.getJndiName()==null && (ds.getDriver()==null || 
-				ds.getUrl() == null || ds.getUser()==null || ds.getPassword()==null))){
+			IDataSource ds = proxyDS.getDataSource( documentId);
+			if (ds == null || (ds.getJndi()==null && (ds.getDriver()==null || 
+				ds.getUrlConnection() == null || ds.getUser()==null || ds.getPwd()==null))){
 			%>
 			<p>
   				<strong style="color:red">Data Source is not correctly defined</strong>
@@ -239,7 +241,7 @@ if (selectedSchema != null) {
 			}
 			else {
 					// execute initial query
-					String resName =(ds.getJndiName()==null)?"":ds.getJndiName();
+					String resName =(ds.getJndi()==null)?"":ds.getJndi();
 					if (!resName.equals("")) {
 					    resName = resName.replace("java:comp/env/","");
 					    String connectionStr = "Provider=mondrian;DataSource="+resName+";Catalog="+catalogUri+";";
@@ -250,9 +252,9 @@ if (selectedSchema != null) {
 					<%
 						} else {
 							String driver = (ds.getDriver()==null)?"":ds.getDriver();
-							String url = (ds.getUrl()==null)?"":ds.getUrl();
+							String url = (ds.getUrlConnection()==null)?"":ds.getUrlConnection();
 							String usr = (ds.getUser()==null)?"":ds.getUser();
-							String pwd = (ds.getPassword()==null)?"":ds.getPassword();
+							String pwd = (ds.getPwd()==null)?"":ds.getPwd();
 							String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+catalogUri+";";
 					%>
 				    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=catalogUri%>" >

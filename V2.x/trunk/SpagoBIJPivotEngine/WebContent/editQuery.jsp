@@ -29,7 +29,7 @@ LICENSE: see LICENSE.txt file
 <%@page import="javax.naming.InitialContext"%>
 <%@page import="it.eng.spagobi.services.proxy.ContentServiceProxy"%>
 <%@page import="it.eng.spagobi.services.content.bo.Content"%>
-
+<%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
 
 <html>
 <head>
@@ -147,12 +147,12 @@ if (schema != null && !schema.trim().equals("")) {
 			//gets datasource
 			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId, session);		
 			//String userId=request.getParameter("user");
-			SpagoBiDataSource datasource = proxyDS.getDataSource(documentId);		
+			IDataSource datasource = proxyDS.getDataSource(documentId);		
 			if (datasource == null) {
 				out.write("Connection not defined as data source in table SBI_DATA_SOURCE .");
 				return;
 			}
-			String resName = datasource.getJndiName();
+			String resName = datasource.getJndi();
 			if (resName != null && !resName.equals("")) {
 				resName = resName.replace("java:comp/env/","");
 			    String connectionStr = "Provider=mondrian;"+resName+";Catalog="+catalogUri+";";
@@ -163,9 +163,9 @@ if (schema != null && !schema.trim().equals("")) {
 			<%
 			} else {
 				String driver = datasource.getDriver();
-				String url = datasource.getUrl();
+				String url = datasource.getUrlConnection();
 				String usr = datasource.getUser();
-				String pwd = datasource.getPassword();
+				String pwd = datasource.getPwd();
 				String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+catalogUri+";";				
 				%>
 			    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=catalogUri%>" >

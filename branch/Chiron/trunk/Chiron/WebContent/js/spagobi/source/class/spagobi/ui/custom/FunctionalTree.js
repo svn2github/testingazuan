@@ -124,7 +124,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
   
   
           _createMenu : function(e){
-          				
+          				//alert(spagobi.commons.CoreUtils.toStr(e._native));
           				var contextMenu = new qx.ui.menu.Menu;
           				
 	             		var insertButton = new qx.ui.menu.Button("Insert");//,null,insertCmd); // handleClick(var vItem, Event e)
@@ -137,10 +137,13 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 	               		
 	               		var node = this.tree.getSelectedItem();
 	               		var ele = node.getContentElement();
-	               		//alert(node.getDecorator() );//ele.getDecorator() not valid
-	               		//alert(this._getLayout.get(left));
-	               		this._add(contextMenu, {left: 100, top: 100});
+	               			//alert(node.getDecorator() );//ele.getDecorator() not valid
+	               			//alert(this._getLayout.get(left));
+	               		
+	               		this._getRoot().add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
+	               		//this._add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
 	               		contextMenu.setOpener(this.tree.getSelectedItem());
+	               		
 	               		
 	               		/*
 	               		var leftCord = qx.bom.element.Location.getLeft(ele);
@@ -152,12 +155,12 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 	               		
 	               		/*
 	              		var button = new qx.ui.form.MenuButton("Menu Button",qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/preferences-users.png'), contextMenu);
-	               		button.setMaxWidth(50);
-	               		button.setMaxHeight(50);
-	               		button.setMargin(30,20,30,20);
+	               		//button.setMaxWidth(50);
+	               		//button.setMaxHeight(50);
+	               		//button.setMargin(30,20,30,20);
 	             //  		button.setVisibility("excluded");
 	               		button.setEnabled(true);
-	               		
+	               		//button.setVisibility("hidden");
 	              // 		button.setMarginTop(50);
 	              //	button.setVisibility("visible");
 	               	//	button.setIconPosition({left: 20, top: 20});
@@ -165,6 +168,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 	       //           e._add(contextMenu);
 	              // 	this.setContextMenu(contextMenu);
 	               		this._add(button);//{edge:"north",height: "10%", width: "10%"});
+	               		
 	               		if (button.isEnabled()== true)
 	               		{
 	               			button.setEnabled(false);

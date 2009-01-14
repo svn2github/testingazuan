@@ -56,9 +56,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 	
 	Map formUrlPars = new HashMap();
-	formUrlPars.put("PAGE", "TriggerManagementPage");
-	formUrlPars.put("MESSAGEDET", SpagoBIConstants.MESSAGE_SAVE_SCHEDULE);
-	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+	//formUrlPars.put("PAGE", "TriggerManagementPage");
+	//formUrlPars.put("MESSAGEDET", SpagoBIConstants.MESSAGE_SAVE_SCHEDULE);
+	//formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);   
 
 %>
@@ -472,8 +472,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- *********************** START HTML CODE ****************************** -->
 
 
-<form id="triggerdetailform" method="post" action="<%=formUrl%>" >
+<form id="triggerdetailform" method="get" action="<%=formUrl%>" >
 	
+	<input type="hidden" name="PAGE" value="TriggerManagementPage" />
+	<input type="hidden" name="MESSAGEDET" value="<%= SpagoBIConstants.MESSAGE_SAVE_SCHEDULE %>" />
+	<input type="hidden" name="<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>" value="TRUE" />
 
 	<table class='header-table-portlet-section'>
 		<tr class='header-row-portlet-section'>
@@ -601,6 +604,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 	<input type="text" value="<%=triggerInfo.getEndDateRFC3339()%>" 
 					       name="enddate" id="enddate"  
 					       dojoType="dropdowndatepicker" widgetId="endDateWidget" />
+					&nbsp;*
 				</div>
 			</div>
 			<div class="div_form_row" >	
@@ -613,6 +617,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<input type="text" value="<%=triggerInfo.getEndTime()%>" 
 					       name="endtime" id="endtime"  
 					       dojoType="dropdowntimepicker" widgetId="endTimeWidget" />
+					&nbsp;*
 				</div>
 			</div>
 			
@@ -1129,17 +1134,20 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
 		  	      	</div>
 			  	    <div class='div_detail_form'>
 					  	<select name='datasetLabel_<%=biobj.getId()%>__<%=index%>'>
+							<option></option>
 			  		        <%
 			  		        String dsLabel = sInfo.getDataSetLabel();
 			  		        List allDatasets = (List) moduleResponse.getAttribute(SpagoBIConstants.DATASETS_LIST);
-			  		        Iterator dsIt = allDatasets.iterator();
-			  		        while (dsIt.hasNext()) {
-			  		        	IDataSet ds = (IDataSet) dsIt.next();
-			  		        	%>
-			  		        	<option value='<%= ds.getLabel() %>' <%= ds.getLabel().equalsIgnoreCase(dsLabel) ? "selected='selected'" : ""%>>
-			  		        		<%= ds.getName() %>
-			  		        	</option>
-			  		        	<%
+			  		        if (allDatasets != null && !allDatasets.isEmpty()) {
+				  		        Iterator dsIt = allDatasets.iterator();
+				  		        while (dsIt.hasNext()) {
+				  		        	IDataSet ds = (IDataSet) dsIt.next();
+				  		        	%>
+				  		        	<option value='<%= ds.getLabel() %>' <%= ds.getLabel().equalsIgnoreCase(dsLabel) ? "selected='selected'" : ""%>>
+				  		        		<%= ds.getName() %>
+				  		        	</option>
+				  		        	<%
+				  		        }
 			  		        }
 			  		        %>
 						</select>
@@ -1151,18 +1159,21 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
 		  	      	</div>
 			  	    <div class='div_detail_form'>
 					  	<select name='datasetParameter_<%=biobj.getId()%>__<%=index%>'>
+					  		<option></option>
 			  		        <%
 			  		        List parameters = biobj.getBiObjectParameters();
-			  		        String parameterLabel = sInfo.getDataSetParameterLabel();
-			  		        Iterator parametersIt = parameters.iterator();
-			  		        while (parametersIt.hasNext()) {
-			  		        	BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
-			  		        	%>
-			  		        	<option value='<%= aParameter.getLabel() %>' <%= aParameter.getLabel().equalsIgnoreCase(parameterLabel) ? "selected='selected'" : ""%>>
-			  		        		<%= aParameter.getLabel() %>
-			  		        	</option>
-			  		        	<%
-			  		        }
+			  		      	if (parameters != null && !parameters.isEmpty()) {
+				  		        String parameterLabel = sInfo.getDataSetParameterLabel();
+				  		        Iterator parametersIt = parameters.iterator();
+				  		        while (parametersIt.hasNext()) {
+				  		        	BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
+				  		        	%>
+				  		        	<option value='<%= aParameter.getLabel() %>' <%= aParameter.getLabel().equalsIgnoreCase(parameterLabel) ? "selected='selected'" : ""%>>
+				  		        		<%= aParameter.getLabel() %>
+				  		        	</option>
+				  		        	<%
+				  		        }
+			  		      	}
 			  		        %>
 						</select>
 			  	    </div>

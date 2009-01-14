@@ -50,7 +50,8 @@ String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
 	</tr>
 </table>
 
-<div class="portlet-form-field-label" style="margin:10px;">
+<div class="div_detail_area_forms" style="margin:10px;width:600px">
+	<span class='portlet-form-field-label'>
 	<%
 	Set keys = documentsExceeding.keySet();
 	Iterator it = keys.iterator();
@@ -66,13 +67,15 @@ String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
 	}
 	%>
 	<br/>
-	<div class='buttons'>
 	<spagobi:message key = "scheduler.manyExecutionConfirm"  bundle="component_scheduler_messages"/>
+	</span>
+	<div class='buttons' style='font-size:8pt;'>
 	<ul>
 		<li><a href='<%= saveUrl %>' class='button p_save_button'><b><b><b><spagobi:message key = "scheduler.saveButton"  bundle="component_scheduler_messages"/></b></b></b></a></li>
 		<li><a href='<%= backUrl %>' class='button p_reset_button'><b><b><b><spagobi:message key = "scheduler.returnToActivityDetail"  bundle="component_scheduler_messages"/></b></b></b></a></li>
 	</ul>
 	</div>
+	<div style="clear:both;"></div>
 </div>
 
 <%@ include file="/jsp/commons/footer.jsp"%>

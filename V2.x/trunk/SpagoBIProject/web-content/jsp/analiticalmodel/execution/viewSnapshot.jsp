@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 // built the url for the content recovering
 String url = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&ACTION_NAME=GET_SNAPSHOT_CONTENT&" 
-		+ SpagoBIConstants.SNAPSHOT_ID + "=" + snapshot.getId() + "&" + ObjectsTreeConstants.OBJECT_ID + "=" + obj.getId();
+		+ SpagoBIConstants.SNAPSHOT_ID + "=" + snapshot.getId() + "&" + ObjectsTreeConstants.OBJECT_ID + "=" + obj.getId() + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
 
 //tries to get from the session the heigh of the output area
 String heightArea = (String) aSessionContainer.getAttribute(SpagoBIConstants.HEIGHT_OUTPUT_AREA);

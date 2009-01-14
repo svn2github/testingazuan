@@ -7,7 +7,6 @@ import java.util.List;
 public class KpiInstance {
 	
 	Integer kpiInstanceId = null;
-	Integer periodicity = null;//id of periodicity of valability in seconds
 	
 	Integer periodicityId = null;
 	Integer chartTypeId = null;
@@ -78,14 +77,6 @@ public class KpiInstance {
 
 	public void setD(Date d) {
 		this.d = d;
-	}
-
-	public Integer getPeriodicity() {
-		return periodicity;
-	}
-
-	public void setPeriodicity(Integer periodicity) {
-		this.periodicity = periodicity;
 	}
 
 	public Double getTarget() {

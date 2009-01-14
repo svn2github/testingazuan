@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.tools.dataset.service;
 
-import groovy.lang.Binding;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
@@ -44,33 +43,20 @@ import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.behaviouralmodel.lov.bo.IJavaClassLov;
-import it.eng.spagobi.behaviouralmodel.lov.bo.JavaClassDetail;
-import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
-import it.eng.spagobi.behaviouralmodel.lov.handlers.ScriptManager;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
-import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
-import it.eng.spagobi.tools.dataset.bo.ConfigurableDataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetFactory;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.dataset.bo.IJavaClassDataSet;
-import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
+import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
-import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 
-import java.io.FileInputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +65,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.xml.sax.InputSource;
 
 
 /**   @author Giulio Gavardi

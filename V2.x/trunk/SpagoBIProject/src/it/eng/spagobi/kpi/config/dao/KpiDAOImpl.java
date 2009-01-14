@@ -511,6 +511,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			logger.debug("Kpi value begin date: "+(beginDt!=null ? beginDt.toString(): "Begin date null"));
 			Date endDt = value.getEndDate();
 			logger.debug("Kpi value end date: "+(endDt!=null ? endDt.toString(): "End date null"));
+			String valueDescr = value.getValueDescr();
+			logger.debug("Kpi value: "+(valueDescr!=null ? valueDescr: "value Description null"));
 			String kpiValue = value.getValue();
 			logger.debug("Kpi value: "+(kpiValue!=null ? kpiValue: "Value null"));
 			Integer kpiInstanceId = value.getKpiInstanceId();
@@ -523,7 +525,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				logger.debug("Resource: "+(r.getName()!=null ? r.getName() : "Resource name null"));
 				hibKpiValue.setSbiResources(sbiResources);
 			}
-
+			hibKpiValue.setDescription(valueDescr);
+			logger.debug("Kpi value description setted");
 			hibKpiValue.setBeginDt(beginDt);
 			logger.debug("Kpi value begin date setted");
 			hibKpiValue.setEndDt(endDt);
@@ -876,6 +879,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("SbiKpiValue end date: "+(endDate!=null ? endDate.toString(): "End date null"));
 		String val = value.getValue();
 		logger.debug("SbiKpiValue value: "+(val!=null ? val : "Value null"));
+		String valueDescr = value.getDescription();
+		logger.debug("SbiKpiValue description: "+(valueDescr!=null ? valueDescr : "Value description null"));
 		Integer kpiInstanceID = null;
 		Double weight = null;
 		Double target = null;
@@ -954,6 +959,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				}
 			}
 		}
+		toReturn.setValueDescr(valueDescr);
+		logger.debug("Kpi value descritpion setted");
 		toReturn.setTarget(target);
 		logger.debug("Kpi value target setted");
 		toReturn.setBeginDate(beginDate);
@@ -1104,7 +1111,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("KpiInstance thresholdId setted");
 		toReturn.setD(d);
 		logger.debug("KpiInstance date setted");
-		toReturn.setPeriodicity(idPeriodicity);
+		toReturn.setPeriodicityId(idPeriodicity);
 		logger.debug("KpiInstance periodicity ID setted");
 		toReturn.setScaleCode(scaleCode);
 		logger.debug("Kpi value scale Code setted");
@@ -1163,7 +1170,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("KpiInstance thresholdId setted");
 		toReturn.setD(d);
 		logger.debug("KpiInstance date setted");
-		toReturn.setPeriodicity(idPeriodicity);
+		toReturn.setPeriodicityId(idPeriodicity);
 		logger.debug("KpiInstance periodicity ID setted");
 		toReturn.setScaleCode(scaleCode);
 		logger.debug("Kpi value scale Code setted");

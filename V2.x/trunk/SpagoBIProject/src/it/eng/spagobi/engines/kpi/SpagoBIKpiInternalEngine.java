@@ -53,8 +53,11 @@ import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
+import it.eng.spagobi.tools.dataset.common.datastore.DataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 import java.awt.Color;
@@ -108,6 +111,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				// ModelInstanceNode
     
     protected Date dateOfKPI = new Date();//date when the kpiValues are requested
+    
+    protected Integer periodInstID = null;
 
     /**
      * Executes the document and populates the response.
@@ -192,6 +197,14 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    if (modelNodeInstanceID == null) {
 		logger.error("The modelNodeInstanceId specified in the template is null");
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "10106", messageBundle);
+	    }
+	    String periodInstanceID = (String) content.getAttribute("periodicity_id");
+	    logger.debug("PeriodInstanceID : " + (periodInstanceID!=null ? periodInstanceID : "null"));
+	    
+	    if (periodInstanceID == null) {
+	    	logger.error("No periodInstID specified");
+	    }else{
+	    	periodInstID = new Integer(periodInstanceID);
 	    }
 	    getSetConf(content);
 	    logger.debug("Setted the configuration of the template");
@@ -394,7 +407,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	kVal.setBeginDate(begD);
 	logger.debug("Setted the KpiValue begin Date:"+begD);
 	KpiInstance kpiInst = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
-	Integer seconds = DAOFactory.getKpiDAO().getPeriodicitySeconds(kpiInst.getPeriodicity());
+	Integer seconds = null;
+	if(periodInstID!=null){
+		kpiInst.setPeriodicityId(periodInstID);
+		logger.debug("Setted new Periodicity ID:"+periodInstID.toString());
+	}
+	seconds = DAOFactory.getKpiDAO().getPeriodicitySeconds(kpiInst.getPeriodicityId());
+		
 	// Transforms seconds into milliseconds
 	long milliSeconds = seconds.longValue() * 1000;
 	long begDtTime = begD.getTime();
@@ -484,17 +503,46 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	if (dataStore != null && !dataStore.isEmpty()) {
 	    // Transform result into KPIValue (I suppose that the result has a
 	    // unique value)
+		IDataStoreMetaData d = dataStore.getMetaData();
+		
+		
 	    IRecord record = dataStore.getRecordAt(0);
 	    List fields = record.getFields();
 	    if (fields != null && !fields.isEmpty()) {
-		IField f = (IField) fields.get(0);
-		if (f != null) {
-		    if (f.getValue() != null) {
-			String fieldValue = f.getValue().toString();
-			kVal.setValue(fieldValue);
-			logger.debug("Setted the kpiValue value:"+fieldValue);
-		    }
-		}
+	    	int length = fields.size();
+	    	for(int fieldIndex =0;fieldIndex<length;fieldIndex++){
+	    		IField f = (IField)fields.get(fieldIndex);
+	    		if (f != null) {
+	    			if (f.getValue() != null) {
+		    			String fieldName = d.getFieldName(fieldIndex);	    			
+		    			if (fieldName.equals("DESCR")){
+		    				String descr = f.getValue().toString();
+			    			kVal.setValueDescr(descr);
+			    			logger.debug("Setted the kpiValue description:"+descr);
+		    			}else if(fieldName.equals("END_DATE")){
+		    				String endD = f.getValue().toString();
+		    				String format = "dd/MM/yyyy";
+	    					SimpleDateFormat form = new SimpleDateFormat();
+	    					form.applyPattern(format);
+	    				
+	    					try {
+								endDate = form.parse(endD);
+							} catch (ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+		    			    				 
+			    			kVal.setEndDate(endDate);
+			    			logger.debug("Setted the new EndDate description:"+endD.toString());
+		    				
+		    			}else{
+		    				String fieldValue = f.getValue().toString();
+			    			kVal.setValue(fieldValue);
+			    			logger.debug("Setted the kpiValue value:"+fieldValue);
+		    			}		    			
+	    		    }
+	    		}
+	    	}		
 	    }
 	} else {
 	    logger.warn("The Data Set doesn't return any value!!!!!");

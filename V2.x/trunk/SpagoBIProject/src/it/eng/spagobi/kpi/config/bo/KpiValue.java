@@ -9,7 +9,8 @@ import java.util.List;
 public class KpiValue {
 	
 	Integer kpiInstanceId = null;
-	String value = null;		
+	String value = null;	
+	String valueDescr = null;
 	List thresholds = null;
 	Double weight = null;
 	Double target = null;
@@ -111,6 +112,14 @@ public class KpiValue {
 
 	public void setTarget(Double target) {
 		this.target = target;
+	}
+
+	public String getValueDescr() {
+		return valueDescr;
+	}
+
+	public void setValueDescr(String valueDescr) {
+		this.valueDescr = valueDescr;
 	}
 
 }

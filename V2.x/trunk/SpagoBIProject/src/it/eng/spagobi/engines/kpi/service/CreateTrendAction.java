@@ -1,19 +1,6 @@
 package it.eng.spagobi.engines.kpi.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -21,10 +8,13 @@ import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
-import it.eng.spagobi.engines.kpi.bo.charttypes.trendcharts.LineChart;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
-import it.eng.spagobi.tools.dataset.bo.IDataSet;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.log4j.Logger;
 
 public class CreateTrendAction extends AbstractHttpAction{
 	

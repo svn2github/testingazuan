@@ -102,7 +102,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				if(block.getR()!=null){
 					resources.add( block.getR());
 				}
-				_htmlStream.append(block.makeTree( userId,request,display_bullet_chart, display_alarm, display_semaphore,display_weight ));
+				_htmlStream.append(block.makeTree(instanceO, userId,request,display_bullet_chart, display_alarm, display_semaphore,display_weight ));
 				
 			}
 			String resDiv = "";

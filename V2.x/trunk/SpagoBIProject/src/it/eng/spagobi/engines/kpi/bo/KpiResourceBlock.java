@@ -2,6 +2,7 @@ package it.eng.spagobi.engines.kpi.bo;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -70,7 +71,7 @@ public class KpiResourceBlock {
 		this.d = d;
 	}
 	
-	public StringBuffer makeTree(String userId,HttpServletRequest httpReq, Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight ){
+	public StringBuffer makeTree(ExecutionInstance instanceO,String userId,HttpServletRequest httpReq, Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight ){
 		logger.debug("IN");
 		StringBuffer _htmlStream = new StringBuffer();				
 		if (r!=null){
@@ -78,14 +79,14 @@ public class KpiResourceBlock {
 			_htmlStream.append("<div id ='"+r.getName()+"' >\n");				
 			_htmlStream.append("<table style='CLEAR: left; VERTICAL-ALIGN: middle; WIDTH: 100%' >\n");
 			_htmlStream.append("<TBODY>\n");
-			_htmlStream.append(" <tr class='kpi_resource_section' ><td colspan=\"8\" id=\"ext-gen58\" >RESOURCE: "+r.getName()+"</td></tr>\n");
+			_htmlStream.append(" <tr class='kpi_resource_section' ><td colspan=\"9\" id=\"ext-gen58\" >RESOURCE: "+r.getName()+"</td></tr>\n");
 			//_htmlStream.append("</table>\n");
 		}else{
 			_htmlStream.append("<table style='CLEAR: left; VERTICAL-ALIGN: middle; WIDTH: 100%' >\n");
 			_htmlStream.append("<TBODY>\n");
 		}
 		
-		addItemForTree(userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
+		addItemForTree(instanceO,userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
 		logger.debug("Started Kpi tree with the root");
 
 			_htmlStream.append("</TBODY>\n");
@@ -100,7 +101,7 @@ public class KpiResourceBlock {
 		return _htmlStream;
 	}
 	
-	private StringBuffer addItemForTree(String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight) {
+	private StringBuffer addItemForTree(ExecutionInstance instanceO,String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight) {
 		
 		logger.debug("IN");
 		logger.debug("*********************");
@@ -113,6 +114,7 @@ public class KpiResourceBlock {
 		requestIdentity = uuid.toString();
 		requestIdentity = requestIdentity.replaceAll("-", "");
 		String alarmImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/alarm.jpg");
+		String infoImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/alarm.jpg");
 		String docImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/linkedDoc.gif");
 		String trendImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/trend.jpg");
 		String modelName = line.getModelNodeName();
@@ -151,6 +153,8 @@ public class KpiResourceBlock {
 		
 		if(recursionLev==0){
 			_htmlStream.append("	<tr style='background-color:#DDDDDD;' class='kpi_line_section_odd'>\n");
+			
+				
 		}
 		else if(evenLine){
 			 _htmlStream.append("	<tr class='kpi_line_section_even' style='border-bottom: 1px solid #660000 !important;height:9px;'>\n");
@@ -159,20 +163,23 @@ public class KpiResourceBlock {
 		}
 		if (display_semaphore && semaphorColor!= null){
 			String semaphorHex = Integer.toHexString( semaphorColor.getRGB() & 0x00ffffff ) ;		
-			_htmlStream.append("		<td width='46%' style='padding-top:8px;padding-bottom:8px;' ><div style=\"MARGIN-LEFT: "+20*recursionLev+"px;float:left;vertical-align:middle;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div><div style='vertical-align:middle;' class='kpi_div'>"+modelName+"</div></td>\n");
+			_htmlStream.append("		<td width='45%' style='padding-top:8px;padding-bottom:8px;' ><div style=\"MARGIN-LEFT: "+20*recursionLev+"px;float:left;vertical-align:middle;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div><div style='vertical-align:middle;' class='kpi_div'>"+modelName+"</div></td>\n");
 		}else{
-			_htmlStream.append("		<td width='46%' class='kpi_td_left' ><div class='kpi_div'><div style='vertical-align:middle;MARGIN-LEFT: "+20*recursionLev+"px;' class='kpi_div'>"+modelName+"</div></div></td>\n");
+			_htmlStream.append("		<td width='45%' class='kpi_td_left' ><div class='kpi_div'><div style='vertical-align:middle;MARGIN-LEFT: "+20*recursionLev+"px;' class='kpi_div'>"+modelName+"</div></div></td>\n");
 		}
 		logger.debug("Written HTML for Semaphore");
 		logger.debug("Written HTML for ModelName:"+modelName);
 		
 		_htmlStream.append("		<td  width='9%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
+		
+		String periodValid = "Value valid from " + kpiVal.getBeginDate().toString()+" to "+ kpiVal.getEndDate().toString();
+		
 		if (lo!= null && kpiVal.getScaleCode()!=null){
-			_htmlStream.append("		<td  width='10%' title='Value' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"("+kpiVal.getScaleCode()+")</div></td>\n");
+			_htmlStream.append("		<td  width='10%' title='"+periodValid+"' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"("+kpiVal.getScaleCode()+")</div></td>\n");
 		}else if(lo!= null){
-			_htmlStream.append("		<td  width='10%' title='Value' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"</div></td>\n");
+			_htmlStream.append("		<td  width='10%' title='"+periodValid+"' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"</div></td>\n");
 		}else{
-			_htmlStream.append("		<td  width='10%' title='Value' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
+			_htmlStream.append("		<td  width='10%' title='"+periodValid+"' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
 		logger.debug("Written HTML for value");
 		
@@ -266,6 +273,8 @@ public class KpiResourceBlock {
 		List documents = line.getDocuments();
 		
 		if (documents!=null && !documents.isEmpty()){
+			String executionFlowId = instanceO.getFlowId();
+			String uuidPrincip = instanceO.getExecutionId();
 			_htmlStream.append("		<td width='3%' style='vertical-align:middle;' class='kpi_td_right' ><div class='kpi_div' style='vertical-align:middle;' >\n");
 			Iterator it = documents.iterator();
 			while(it.hasNext()){
@@ -273,7 +282,10 @@ public class KpiResourceBlock {
 				HashMap execUrlParMap = new HashMap();
 				execUrlParMap.put(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
 				execUrlParMap.put(ObjectsTreeConstants.OBJECT_LABEL, docLabel);
-				execUrlParMap.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
+				execUrlParMap.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
+				execUrlParMap.put("EXECUTION_FLOW_ID", executionFlowId);
+				execUrlParMap.put("SOURCE_EXECUTION_ID", uuidPrincip);
+				
 				if (r!=null){
 					execUrlParMap.put(r.getColumn_name(), r.getName());
 				}
@@ -304,6 +316,14 @@ public class KpiResourceBlock {
 		}
 		logger.debug("Written HTML for alarm control:");
 		
+		String valueDescr = "";
+		if(kpiVal.getValueDescr()!=null){
+			valueDescr = kpiVal.getValueDescr();
+			_htmlStream.append("		<td width='1%' title='"+valueDescr+"' style='vertical-align:middle;' class='kpi_td_right' ><div class='kpi_div' style='vertical-align:middle;' ><img style='vertical-align:middle;' src=\""+infoImgSrc+"\" alt=\"Info\" /></div></td>\n");				
+		}else{
+			_htmlStream.append("		<td width='1%' title='"+valueDescr+"' style='vertical-align:middle;' class='kpi_td_right' ><div class='kpi_div' style='vertical-align:middle;' ></div></td>\n");				
+		}
+		
 	   _htmlStream.append("	</tr>\n");
 
 	   if (children!=null && !children.isEmpty()){
@@ -314,9 +334,9 @@ public class KpiResourceBlock {
 			   KpiLine l = (KpiLine)childIt.next();
 			   
 			   if (evenLine){			   
-				   addItemForTree(userId,recursionLev,false,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
+				   addItemForTree(instanceO,userId,recursionLev,false,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
 			   }else{
-				   addItemForTree(userId,recursionLev,true,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
+				   addItemForTree(instanceO,userId,recursionLev,true,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
 			   }  
 		   }
 	   } 

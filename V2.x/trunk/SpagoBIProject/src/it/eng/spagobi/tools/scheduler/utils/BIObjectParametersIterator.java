@@ -50,9 +50,8 @@ public class BIObjectParametersIterator {
 		for (int i = 0; i < cartproduct.size(); i++) {
 			BIObjectParameter parameter = (BIObjectParameter) cartproduct.get(i);
 			List parameterValues = parameter.getParameterValues();
-			if (parameterValues == null || parameterValues.isEmpty()) {
+			if (parameterValues == null) {
 				parameterValues = new ArrayList();
-				parameterValues.add("NULL");
 			}
 			Iterator curIter = parameterValues.iterator();
 			currstate.put(parameter.getParameterUrlName(), curIter);
@@ -64,9 +63,6 @@ public class BIObjectParametersIterator {
 					clone.setParameterValues(firstValue);
 				}
 				nextelt.add(clone);
-			} else {
-				nextelt = null;
-				break;
 			}
 		}
 	}

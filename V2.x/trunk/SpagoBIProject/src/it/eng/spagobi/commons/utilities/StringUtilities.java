@@ -238,12 +238,13 @@ public class StringUtilities {
      * 
      * @param statement The string to be modified (tipically a query)
      * @param valuesMap Map name-value
+     * @param surroundWithQuotes flag: if true, the replacement will be surrounded by quotes if they are missing
      * 
      * @return The statement with profile attributes replaced by their values.
      * 
      * @throws Exception the exception
      */
-    public static String substituteParametersInString(String statement, Map valuesMap)
+    public static String substituteParametersInString(String statement, Map valuesMap, boolean surroundWithQuotes)
 	    throws Exception {
 	logger.debug("IN");
 	
@@ -252,7 +253,7 @@ public class StringUtilities {
 		//int profileAttributeStartIndex = statement.indexOf("$P{");
 		int profileAttributeStartIndex = statement.indexOf("$P{");
 		if (profileAttributeStartIndex != -1) 
-		    statement = substituteParametersInString(statement, valuesMap, profileAttributeStartIndex);
+		    statement = substituteParametersInString(statement, valuesMap, profileAttributeStartIndex, surroundWithQuotes);
 		else
 		    changePars = false;
 		
@@ -272,11 +273,14 @@ public class StringUtilities {
      * @param profileAttributeStartIndex
      *                The start index for query parsing (useful for recursive
      *                calling)
+     * @param surroundWithQuotes 
+     * 				  Flag: if true, the replacement will be surrounded by quotes if they are missing
+     * 
      * @return The statement with profile attributes replaced by their values.
      * @throws Exception
      */
     private static String substituteParametersInString(String statement, Map valuesMap,
-	    int profileAttributeStartIndex) throws Exception {
+	    int profileAttributeStartIndex, boolean surroundWithQuotes) throws Exception {
 	logger.debug("IN");
 	
 	
@@ -373,8 +377,10 @@ public class StringUtilities {
 	}
 
 	replacement = prefix + newListOfValues + suffix;
-	if (!replacement.startsWith("'")) replacement = "'" + replacement;
-	if (!replacement.endsWith("'")) replacement = replacement + "'";
+	if (surroundWithQuotes) {
+		if (!replacement.startsWith("'")) replacement = "'" + replacement;
+		if (!replacement.endsWith("'")) replacement = replacement + "'";
+	}
 	attribute = quote(attribute);
 	statement = statement.replaceAll("\\$P\\{" + attribute + "\\}", replacement);
 

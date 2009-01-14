@@ -345,16 +345,27 @@ public class JobManagementModule extends AbstractModule {
 			Map documents = new HashMap();
 			List biobjs = jobInfo.getBiobjects();
 			Iterator iterbiobj = biobjs.iterator();
+			int totalCombinations = 0;
 			while(iterbiobj.hasNext()) {
 				BIObject biobj = (BIObject)iterbiobj.next();
 				int combinations = calculateCombinations(biobj);
-				if (combinations > 10) {
-					// if combination of parameters exceeds 10, a warning is needed
-					warningNeeded = true;
-					// documents map will contain documents with exceeding configuration (i.e. combinations of parameters values exceeds 10)
-					documents.put(biobj.getName(), new Integer(combinations));
+				totalCombinations += combinations;
+				int previous = 0;
+				if (documents.containsKey(biobj.getName())) {
+					Integer previousInt = (Integer) documents.get(biobj.getName());
+					previous = previousInt.intValue();
 				}
+				// adds to previous combinations number
+				combinations += previous;
+				// documents map will contain all documents with execution combinations number
+				documents.put(biobj.getName(), new Integer(combinations));
 			}
+			
+			if (totalCombinations > 10) {
+				// if combination of parameters exceeds 10, a warning is needed
+				warningNeeded = true;
+			}
+			
 			if (warningNeeded) {
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "JobIterationWarning");
 				response.setAttribute("EXCEEDING_CONFIGURATIONS", documents);

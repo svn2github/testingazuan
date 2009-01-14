@@ -52,7 +52,7 @@ public class QuerableBehaviour extends AbstractDataSetBehaviour {
 					
 				//check if there are parameters filled
 				if( getTargetDataSet().getParamsMap() != null && !getTargetDataSet().getParamsMap().isEmpty()){
-					statement = StringUtilities.substituteParametersInString(statement, getTargetDataSet().getParamsMap() );
+					statement = StringUtilities.substituteParametersInString(statement, getTargetDataSet().getParamsMap(), true );
 				}	
 				
 				if(queryTransformer != null) {

@@ -435,7 +435,7 @@ public class BIObjectParameter implements Serializable {
 		BIObjectParameter toReturn = new BIObjectParameter();
 		toReturn.setLabel(label);
 		toReturn.setParameterUrlName(parameterUrlName);
-		toReturn.setParameterValues(new ArrayList(parameterValues));
+		toReturn.setParameterValues(parameterValues);
 		toReturn.setParameterValuesDescription(parameterValuesDescription);
 		toReturn.setParameter(parameter);
 		toReturn.setIterative(isIterative);

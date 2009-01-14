@@ -34,7 +34,6 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.services.scheduler.service.SchedulerServiceSupplier;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
@@ -368,7 +367,8 @@ public class TriggerManagementModule extends AbstractModule {
 			
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
 			response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
-			
+			List allDatasets = DAOFactory.getDataSetDAO().loadAllDataSets();
+			response.setAttribute(SpagoBIConstants.DATASETS_LIST, allDatasets);
 			sessCont.setAttribute(SpagoBIConstants.TRIGGER_INFO, ti);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TriggerDetail");
 		} catch (Exception ex) {

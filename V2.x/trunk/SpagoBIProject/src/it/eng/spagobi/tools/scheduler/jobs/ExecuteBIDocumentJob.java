@@ -39,6 +39,7 @@ import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
@@ -46,7 +47,6 @@ import it.eng.spagobi.engines.config.dao.IEngineDAO;
 import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
@@ -372,7 +372,7 @@ public class ExecuteBIDocumentJob implements Job {
 			newbiobj.setBiObjectTypeID(officeDocDom.getValueId());
 			newbiobj.setStateCode(relDom.getValueCd());
 			newbiobj.setStateID(relDom.getValueId());
-			newbiobj.setVisible(new Integer(0));
+			newbiobj.setVisible(new Integer(1));
 			newbiobj.setFunctionalities(storeInFunctionalities);
 			IBIObjectDAO objectDAO = DAOFactory.getBIObjectDAO();
 			
@@ -422,6 +422,11 @@ public class ExecuteBIDocumentJob implements Job {
 			String mailTxt = sInfo.getMailTxt();
 
 			String[] recipients = findRecipients(sInfo, biobj, dataStore);
+			if (recipients == null || recipients.length == 0) {
+				logger.error("No recipients found for email sending!!!");
+				return;
+			}
+			
 			//Set the host smtp address
 		    Properties props = new Properties();
 		    props.put("mail.smtp.host", smtphost);
@@ -472,7 +477,7 @@ public class ExecuteBIDocumentJob implements Job {
 			IDataStore dataStore) {
 	    logger.debug("IN");
 	    String[] toReturn = null;
-	    List recipients = new ArrayList();
+	    List<String> recipients = new ArrayList();
 		try {
 			if (info.isUseFixedRecipients()) {
 				// in this case recipients are fixed and separated by ","
@@ -537,7 +542,7 @@ public class ExecuteBIDocumentJob implements Job {
 					}
 				}
 				// we must substitute parameter values on the expression
-				String recipientStr = GeneralUtilities.substituteParametersInString(expression, parametersMap);
+				String recipientStr = StringUtilities.substituteParametersInString(expression, parametersMap, false);
 				String[] recipientsArray = recipientStr.split(",");
 				recipients.addAll(Arrays.asList(recipientsArray));
 			}
@@ -546,7 +551,7 @@ public class ExecuteBIDocumentJob implements Job {
 		} finally {
 		    logger.debug("OUT: returning " + toReturn);
 		}
-		toReturn = (String[]) recipients.toArray();
+		toReturn = recipients.toArray(new String[0]);
 		return toReturn;
 	}
 

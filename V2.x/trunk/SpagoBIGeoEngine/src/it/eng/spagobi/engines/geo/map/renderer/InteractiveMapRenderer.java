@@ -196,8 +196,8 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		    }
 		    conf.put("target_layer_index", targetLayerIndex);
 		    conf.put("layers", layers);
-		    conf.put("includeChartLayer", false);
-		    conf.put("includeValuesLayer", false);
+		    conf.put("includeChartLayer", getLayer("grafici"));
+		    conf.put("includeValuesLayer", getLayer("valori"));
 		    	    
 		      
 		    

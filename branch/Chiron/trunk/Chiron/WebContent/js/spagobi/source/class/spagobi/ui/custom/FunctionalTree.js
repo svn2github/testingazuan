@@ -118,17 +118,14 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
   		
   		this._add(this.tree, {height: "100%"});
   		
-  		this.tree.addListener("contextmenu",this._createMenu,this);	
+  		this.tree.addListener("contextmenu",this._createMenu,this);	//right-click calls the function
   
   },
   
   
           _createMenu : function(e){
-          				//alert("hi");
-          			//	alert(typeof e);
-          		//      e.get
+          				
           				var contextMenu = new qx.ui.menu.Menu;
-          				contextMenu.setOpener(this.tree.getSelectedItem());
           				
 	             		var insertButton = new qx.ui.menu.Button("Insert");//,null,insertCmd); // handleClick(var vItem, Event e)
 	               		var deleteButton = new qx.ui.menu.Button("Delete");//,null,deleteCmd);
@@ -138,14 +135,21 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 	               		contextMenu.add(insertButton);
 	               		contextMenu.add(deleteButton);
 	               		
+	               		var node = this.tree.getSelectedItem();
+	               		var ele = node.getContentElement();
+	               		//alert(node.getDecorator() );//ele.getDecorator() not valid
+	               		//alert(this._getLayout.get(left));
+	               		this._add(contextMenu, {left: 100, top: 100});
+	               		contextMenu.setOpener(this.tree.getSelectedItem());
 	               		
-	               		//var temp = this.tree.getSelectedItem();
-	               		//alert(temp + ", "+ typeof(temp));
-	               		var e = this.tree.getSelectedItem().getContentElement();
-	               		//alert(e.getLeft());
-	               		this._add(contextMenu/*, {left: , top: }*/);
+	               		/*
+	               		var leftCord = qx.bom.element.Location.getLeft(ele);
+	               		var topCord = qx.bom.element.Location.getTop(ele);
+	               		alert(leftCord + "," + topCord);
+	               		*/
 	               		
 	               		contextMenu.show();
+	               		
 	               		/*
 	              		var button = new qx.ui.form.MenuButton("Menu Button",qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/preferences-users.png'), contextMenu);
 	               		button.setMaxWidth(50);

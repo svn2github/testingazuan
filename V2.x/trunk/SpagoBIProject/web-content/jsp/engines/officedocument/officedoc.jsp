@@ -34,12 +34,105 @@ if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUME
 String strUuid = instanceO.getExecutionId();
 //SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
 BIObject biObj = instanceO.getBIObject();
+//tries to get the heigh of the output area
+String heightArea = ChannelUtilities.getPreferenceValue(aRequestContainer, "HEIGHT_AREA", "");
+String heightStr = "";
+if (heightArea == null || heightArea.trim().equals("")) {
+%>
+	<script>
+		pos<%=strUuid%> = null; 
+	
+		function adaptSize<%=strUuid%>Funct() {
+		
+			if (window != parent) {
+				// case when document is executed inside main iframe in SpagoBI Web application
+				heightMainIFrame = 0;
+				// calculates the iframe height
+				if(isIE5()) { heightMainIFrame = document.body.clientHeight; }
+				if(isIE6()) { heightMainIFrame = document.body.clientHeight; }
+				if(isIE7()) { heightMainIFrame = document.body.clientHeight; }
+				if(isMoz()) { heightMainIFrame = innerHeight; }
+				// minus a fixed size (header height)
+				heightExecIFrame = heightMainIFrame - 70;
+				iframeEl = document.getElementById('iframeexec<%=strUuid%>');
+				iframeEl.style.height = heightExecIFrame + 'px';
+				return;
+			}
+			
+			// calculate height of the visible area
+			heightVisArea = 0;
+
+			if(isIE5()) { heightVisArea = top.document.body.clientHeight; }
+			if(isIE6()) { heightVisArea = top.document.body.clientHeight; }
+			if(isIE7()) { heightVisArea = top.document.documentElement.clientHeight }
+			if(isMoz()) { heightVisArea = top.innerHeight; }
+	
+			// get the frame div object
+			diviframeobj = document.getElementById('divIframe<%=strUuid%>');
+			// find the frame div position
+			pos<%=strUuid%> = findPos(diviframeobj);	
+						
+			// calculate space below position frame div
+			spaceBelowPos = heightVisArea - pos<%=strUuid%>[1];
+			// set height to the frame
+			iframeEl = document.getElementById('iframeexec<%=strUuid%>');
+			iframeEl.style.height = spaceBelowPos + 'px';
+	
+	    	// to give time to the browser to update the dom (dimension of the iframe)
+		  	setTimeout("adaptSize<%=strUuid%>_2Part()", 250);
+		}
+	
+	  	function adaptSize<%=strUuid%>_2Part() {
+        
+        	// calculate height of the win area and height footer
+			heightWinArea = 0;
+  			heightFooter = 0;
+  			if(isIE5()) {
+  				heightWinArea = document.body.scrollHeight;
+  				heightFooter = heightWinArea - heightVisArea;
+  			}
+  			if(isIE6()) {
+  				heightWinArea = document.body.scrollHeight;
+  				heightFooter = heightWinArea - heightVisArea;
+  			}
+  			if(isIE7()) {
+  				heightWinArea = document.body.offsetHeight;
+  				heightFooter = heightWinArea - heightVisArea;
+  			}
+  			if(isMoz()) {
+  				heightWinArea = document.body.offsetHeight;
+  				heightFooter = (heightWinArea - heightVisArea);
+  			}	 
+  	
+  			// calculate height of the frame
+  			heightFrame = heightVisArea - pos<%=strUuid%>[1] - heightFooter;
+  			iframeEl = document.getElementById('iframeexec<%=strUuid%>');
+  			if (heightFrame <= 0) heightFrame = 600;
+  			iframeEl.style.height = heightFrame + 'px';
+		}
+
+		try {
+			SbiJsInitializer.adaptSize<%=strUuid%> = adaptSize<%=strUuid%>Funct;
+	    } catch (err) {
+			alert('Cannot resize the document view area');
+		}
+		
+		try {
+			window.onload = SbiJsInitializer.initialize;
+		} catch (err) {
+			alert('Cannot execute javascript initialize functions');
+		}
+		
+	</script>
+<%
+} else {
+	heightStr = "height:"+heightArea+"px;";
+}
 %>
 
-
 <%-- Start execution iframe --%>
-<div id="divIframe<%= strUuid %>" style="width:100%;overflow=auto;border: 0;display:inline;"> <!-- float:left; -->
-	<iframe id="iframeexec<%= strUuid %>" name="iframeexec<%= strUuid %>" src="<%= GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&userId=" + userId + "&documentId=" + biObj.getId().toString() %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
+<div id="divIframe<%= strUuid %>" style="width:100%;overflow=auto;border: 0;display:inline;<%= heightStr %>">
+	<iframe id="iframeexec<%= strUuid %>" name="iframeexec<%= strUuid %>" src="<%= GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&userId=" + userId + "&documentId=" + biObj.getId().toString() + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE"%>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
 	</iframe>
 </div>    
 <%-- End execution iframe --%>

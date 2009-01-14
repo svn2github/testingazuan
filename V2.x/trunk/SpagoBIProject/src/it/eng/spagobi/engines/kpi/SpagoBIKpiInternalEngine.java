@@ -521,7 +521,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			    			logger.debug("Setted the kpiValue description:"+descr);
 		    			}else if(fieldName.equals("END_DATE")){
 		    				String endD = f.getValue().toString();
-		    				String format = "dd/MM/yyyy";
+		    				String format = "dd/MM/yyyy hh:mm:ss";
 	    					SimpleDateFormat form = new SimpleDateFormat();
 	    					form.applyPattern(format);
 	    				

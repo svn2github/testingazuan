@@ -22,19 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.dataset.bo;
 
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
-<<<<<<< .mine
-import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
-import it.eng.spagobi.tools.dataset.common.dataproxy.FileDataProxy;
-=======
->>>>>>> .r6443
 import it.eng.spagobi.tools.dataset.common.dataproxy.IDataProxy;
-<<<<<<< .mine
-import it.eng.spagobi.tools.dataset.common.dataproxy.JDBCDataProxy;
-import it.eng.spagobi.tools.dataset.common.dataproxy.ScriptDataProxy;
-=======
->>>>>>> .r6443
 import it.eng.spagobi.tools.dataset.common.dataproxy.WebServiceDataProxy;
-import it.eng.spagobi.tools.dataset.common.datareader.JDBCDataReader;
 import it.eng.spagobi.tools.dataset.common.datareader.XmlDataReader;
 
 import org.apache.log4j.Logger;

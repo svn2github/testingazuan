@@ -151,7 +151,7 @@ public class UserMenuTag extends TagSupport {
 	}
 	
 	private void makeMenu(StringBuffer htmlStream) throws EMFInternalError {
-		List firstLevelItems = ConfigSingleton.getInstance().getAttributeAsList("MENU.ITEM");
+		List firstLevelItems = ConfigSingleton.getInstance().getAttributeAsList("TECHNICAL_USER_MENU.ITEM");
 		Iterator it = firstLevelItems.iterator();
 		while (it.hasNext()) {
 			SourceBean itemSB = (SourceBean) it.next();

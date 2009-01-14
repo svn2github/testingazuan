@@ -537,9 +537,9 @@ public class DetailDataSetModule extends AbstractModule {
 							String address=(String)serviceRequest.getAttribute("ADDRESS");
 							ds.setAdress(address);
 						}
-						if(serviceRequest.getAttribute("EXECUTORCLASS")!=null){
-							String executorClass=(String)serviceRequest.getAttribute("EXECUTORCLASS");
-							ds.setExecutorClass(executorClass);
+						if(serviceRequest.getAttribute("OPERATION")!=null){
+							String operation=(String)serviceRequest.getAttribute("OPERATION");
+							ds.setOperation(operation);
 
 						}
 					}else

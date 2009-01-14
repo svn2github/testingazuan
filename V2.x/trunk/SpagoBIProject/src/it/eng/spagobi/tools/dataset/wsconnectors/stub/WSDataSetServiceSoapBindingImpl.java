@@ -9,7 +9,11 @@ package it.eng.spagobi.tools.dataset.wsconnectors.stub;
 
 public class WSDataSetServiceSoapBindingImpl implements it.eng.spagobi.tools.dataset.wsconnectors.stub.IWsConnector{
     public java.lang.String readDataSet(java.lang.String in0, java.util.HashMap in1, java.lang.String in2) throws java.rmi.RemoteException {
-        return "da definire un xml di test";
+        if(in2.equalsIgnoreCase("a"))
+    	return "<ROWS><ROW name='io' value='30'/></ROWS>";
+        if(in2.equalsIgnoreCase("b"))
+        	return "<ROWS><ROW name='io' value='80'/></ROWS>";
+        return null;
     }
 
 }

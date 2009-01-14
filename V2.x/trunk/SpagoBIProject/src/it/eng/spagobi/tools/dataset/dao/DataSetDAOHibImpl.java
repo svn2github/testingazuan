@@ -230,8 +230,8 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				if(((WebServiceDataSet)aDataSet).getAddress()!=null){
 					((SbiWSDataSet)hibDataSet).setAdress(((WebServiceDataSet)aDataSet).getAddress());
 				}
-				if(((WebServiceDataSet)aDataSet).getExecutorClass()!=null){
-					((SbiWSDataSet)hibDataSet).setExecutorClass(((WebServiceDataSet)aDataSet).getExecutorClass());
+				if(((WebServiceDataSet)aDataSet).getOperation()!=null){
+					((SbiWSDataSet)hibDataSet).setOperation(((WebServiceDataSet)aDataSet).getOperation());
 				}	
 			}
 			
@@ -333,8 +333,8 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				if(((WebServiceDataSet)aDataSet).getAddress()!=null){
 					((SbiWSDataSet)hibDataSet).setAdress(((WebServiceDataSet)aDataSet).getAddress());
 				}
-				if(((WebServiceDataSet)aDataSet).getExecutorClass()!=null){
-					((SbiWSDataSet)hibDataSet).setExecutorClass(((WebServiceDataSet)aDataSet).getExecutorClass());
+				if(((WebServiceDataSet)aDataSet).getOperation()!=null){
+					((SbiWSDataSet)hibDataSet).setOperation(((WebServiceDataSet)aDataSet).getOperation());
 				}	
 			}
 			
@@ -461,7 +461,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		if(hibDataSet instanceof SbiWSDataSet){
 			ds=new WebServiceDataSet();
 			((WebServiceDataSet)ds).setAddress(((SbiWSDataSet)hibDataSet).getAdress());
-			((WebServiceDataSet)ds).setExecutorClass(((SbiWSDataSet)hibDataSet).getExecutorClass());
+			((WebServiceDataSet)ds).setOperation(((SbiWSDataSet)hibDataSet).getOperation());
 			((WebServiceDataSet)ds).setOperation(((SbiWSDataSet)hibDataSet).getOperation());
 		}
 		

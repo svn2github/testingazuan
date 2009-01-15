@@ -21,22 +21,34 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.kpi.service;
 
-import java.util.Date;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.ResponseContainer;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.dispatching.service.DefaultRequestContext;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine;
 
-import org.quartz.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.StatefulJob;
 
 public class KpiEngineJob implements Job {
 
         static private Logger logger = Logger.getLogger(KpiEngineJob.class);	
 	
         static public final String MODEL_INSTANCE_ID="MODEL_INSTANCE_ID";
+        static public final String PERIODICITY_ID="PERIODICITY_ID";
     	
 	public void execute(JobExecutionContext context) throws JobExecutionException 
 	{
@@ -50,14 +62,57 @@ public class KpiEngineJob implements Job {
 		      // use this variable for running the KPI Engine
 		      String modelInstanceId = dataMap.getString(MODEL_INSTANCE_ID);
 		      logger.debug("modelInstanceId="+modelInstanceId);
+		      String periodicityID = dataMap.getString(PERIODICITY_ID);
+		      logger.debug("periodicity ID="+periodicityID);
 		      
 	      
 		      Date data=context.getFireTime();
 		      logger.debug("data="+data.toString());
 		      
-		      // invocare il motore KPi passando i parametri:
-		      // - data di riferimento
-		      // - ID del nodo 
+		      
+		      SourceBean request = null;
+	    		SourceBean resp = null;
+	    		EMFErrorHandler errorHandler = null;
+	    		
+	    		try {
+	    			request = new SourceBean("");
+	    			resp = new SourceBean("");
+	    		} catch (SourceBeanException e1) {
+	    			e1.printStackTrace();
+	    		}
+	    		RequestContainer reqContainer = new RequestContainer();
+	    		ResponseContainer resContainer = new ResponseContainer();
+	    		reqContainer.setServiceRequest(request);
+	    		resContainer.setServiceResponse(resp);
+	    		DefaultRequestContext defaultRequestContext = new DefaultRequestContext(
+	    				reqContainer, resContainer);
+	    		resContainer.setErrorHandler(new EMFErrorHandler());
+	    		RequestContainer.setRequestContainer(reqContainer);
+	    		ResponseContainer.setResponseContainer(resContainer);
+	    		Locale locale = new Locale("it","IT","");
+	    		SessionContainer session = new SessionContainer(true);
+	    		reqContainer.setSessionContainer(session);
+	    		SessionContainer permSession = session.getPermanentContainer();
+	    		IEngUserProfile profile =UserProfile.createSchedulerUserProfile();	    		
+	    		permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+	    		errorHandler = defaultRequestContext.getErrorHandler();
+	    		reqContainer.setAttribute("model_node_instance", modelInstanceId);
+	    		reqContainer.setAttribute("periodicity_id", periodicityID);
+	    		reqContainer.setAttribute("start_date", data);
+	    		reqContainer.setAttribute("recalculate_anyway", "true");
+
+	    		SpagoBIKpiInternalEngine engine = new SpagoBIKpiInternalEngine();	    		
+
+				try {
+					engine.execute(reqContainer, resp);
+				} catch (EMFUserError e) {
+					logger.error("Error during engine execution", e);
+					errorHandler.addError(e);
+				} catch (Exception e) {
+					logger.error("Error while engine execution", e);
+					errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
+							100));
+				}
 		
 	     } catch (Throwable e) {
         	    logger.error("Error while executiong KpiEngineJob", e);

@@ -102,6 +102,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     protected boolean display_alarm = false;// true if the alarm state will be
 					    // displayed
     protected boolean register_values = true;//true if the new values calculated will have to be inserted into the db
+    
+    protected boolean recalculate_anyway = false;//true if the scheduler calls the engine and wants the kpi to be calculated even if another value already exists
 
     protected HashMap confMap;// HashMap with all the config parameters
 
@@ -112,6 +114,87 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     
     protected Integer periodInstID = null;
 
+    //Method usually called by the scheduler only in order to recalculate kpi values
+    public void execute(RequestContainer requestContainer, SourceBean response) throws EMFUserError {
+    	logger.debug("IN");
+
+       	ResponseContainer responseContainer = ResponseContainer.getResponseContainer();
+    	EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
+
+    	SessionContainer session = requestContainer.getSessionContainer();
+    	IEngUserProfile userProfile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
+    		IEngUserProfile.ENG_USER_PROFILE);
+   	
+    	this.parametersObject = new HashMap();
+    	String recalculate = (String)requestContainer.getAttribute("recalculate_anyway");
+    	if(recalculate.equals("true")){
+    		this.recalculate_anyway = true;
+    	}	
+    	    // Date for which we want to see the KpiValues
+    	    this.dateOfKPI = (Date)requestContainer.getAttribute("start_date");
+
+    	    // **************take informations on the modelInstance and its KpiValues*****************
+    	    String modelNodeInstance = (String) requestContainer.getAttribute("model_node_instance");
+    	    logger.debug("ModelNodeInstance : " + modelNodeInstance);
+    	    Integer modelNodeInstanceID = new Integer(modelNodeInstance);
+    	    if (modelNodeInstanceID == null) {
+    	    	logger.error("The modelNodeInstanceId specified in the template is null");
+    	    	throw new EMFUserError(EMFErrorSeverity.ERROR, "10106", messageBundle);
+    	    }
+    	    String periodInstanceID = (String)requestContainer.getAttribute("periodicity_id");
+    	    logger.debug("PeriodInstanceID : " + (periodInstanceID!=null ? periodInstanceID : "null"));
+    	    
+    	    if (periodInstanceID == null) {
+    	    	logger.error("No periodInstID specified");
+    	    }else{
+    	    	periodInstID = new Integer(periodInstanceID);
+    	    }
+    	    logger.debug("Setted the configuration of the template");
+
+    	    List kpiRBlocks = new ArrayList();// List of KpiValues Trees for
+    						// each Resource: it will be sent to the jsp
+
+    	    // gets the ModelInstanceNode
+    	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID, this.dateOfKPI);
+    	    logger.debug("ModelInstanceNode, NAME=" + mI.getName());
+    	    logger.debug("Loaded the modelInstanceNode with id " + modelNodeInstanceID.toString());
+    	    // I set the list of resources of that specific ModelInstance
+    	    if (this.resources == null || this.resources.isEmpty()) {
+    	    	this.resources = mI.getResources();
+    	    }
+    	    logger.debug("Setted the List of Resources related to the specified Model Instance");
+
+    	    try {
+    	    if (this.resources == null || this.resources.isEmpty()) {
+    			logger.debug("There are no resources assigned to the Model Instance");
+    			
+    			KpiResourceBlock block = new KpiResourceBlock();
+    			block.setD(this.dateOfKPI);
+    			KpiLine line = getBlock(modelNodeInstanceID, null);				
+    			block.setRoot(line);
+    			logger.debug("Setted the tree Root.");
+    			kpiRBlocks.add(block);
+    			
+    	    } else {
+    			Iterator resourcesIt = this.resources.iterator();
+    			while (resourcesIt.hasNext()) {
+    			    Resource r = (Resource) resourcesIt.next();
+    			    logger.debug("Resource: " + r.getName());
+    			    KpiResourceBlock block = new KpiResourceBlock();
+    			    block.setR(r);
+    			    block.setD(dateOfKPI);
+    			    KpiLine line = getBlock(modelNodeInstanceID, r);
+    			    block.setRoot(line);
+    			    logger.debug("Setted the tree Root.");
+    			    kpiRBlocks.add(block);
+    			}
+    	    }
+    	    } catch (EMFInternalError e) {
+				e.printStackTrace();
+			}
+    	    logger.debug("OUT");    	
+        }
+    
     /**
      * Executes the document and populates the response.
      * 
@@ -130,6 +213,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
     public void execute(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError {
 	logger.debug("IN");
+
+	
 	ResponseContainer responseContainer = ResponseContainer.getResponseContainer();
 	EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 
@@ -296,7 +381,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    logger.debug("Got KpiInstance with ID: " + kpiI.getKpiInstanceId().toString());
 	    KpiValue value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
 	    logger.debug("Old KpiValue retrieved");
-	    if (value == null) {
+	    if (value == null || recalculate_anyway) {
 			logger.debug("Old value not valid anymore");
 			IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
 		

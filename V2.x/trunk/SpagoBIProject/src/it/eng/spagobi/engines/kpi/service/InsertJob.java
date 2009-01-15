@@ -31,7 +31,8 @@ public class InsertJob {
 	    Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 	
 	    JobDataMap data=new JobDataMap();
-	    data.put("MODEL_INSTANCE_ID", "3");
+	    data.put("MODEL_INSTANCE_ID", "1");
+	    data.put("PERIODICITY_ID", "2");
 	    
 		// CREATE JOB DETAIL 
 		JobDetail jobDetail = new JobDetail();

@@ -174,7 +174,7 @@ qx.Class.define("spagobi.ui.PageView", {
     			}
     			else if (pageName== "func")
     			{
-    				this._pages[pageName] = new spagobi.ui.custom.FunctionalTree(pageName);
+    				this._pages[pageName] = new spagobi.ui.custom.FunctionalTree();//pageName
     			}
     			else
     			{	

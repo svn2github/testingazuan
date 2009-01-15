@@ -130,7 +130,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
 
-			HashMap series=new LinkedHashMap();
+			HashMap myseries=new LinkedHashMap();
 			HashMap additionalValues=new LinkedHashMap();
 			String catValue="";
 
@@ -147,6 +147,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 
 
 			//run all the attributes, to define series!
+			int contSer = 0;
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
@@ -178,21 +179,29 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 							additionalValues.put(ind, value);
 						}
 					}
-					else{
-						series.put(nameP, value);
+					else {
+						if (this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()){
+					
+						myseries.put(nameP, value);
+						contSer++;
+						}
+						else if (this.getNumberSerVisualization() == 0 ) 
+							myseries.put(nameP, value);
 					}
 
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
 				}
 			}
 
-			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
+			for (Iterator iterator3 = myseries.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
 				if(!hiddenSeries.contains(nameS)){
-					String valueS=(String)series.get(nameS);
-					dataset.addValue(Double.valueOf(valueS).doubleValue(), value, catValue);
-					//System.out.println("dataset.addValue("+Double.valueOf(valueS).doubleValue()+ ", '"+value+"'"+",'"+catValue+"');");
-					if(!seriesNames.contains(nameS)){
+					String valueS=(String)myseries.get(nameS);
+					String subcat = (String)subCategoryNames.get(realSubCatNumber-1);
+					//dataset.addValue(Double.valueOf(valueS).doubleValue(), value, catValue);
+					dataset.addValue(Double.valueOf(valueS).doubleValue(), subcat, catValue);
+				//	System.out.println("dataset.addValue("+Double.valueOf(valueS).doubleValue()+ ", '"+subcat+"'"+",'"+catValue+"');");
+					if(!seriesNames.contains(nameS)){ 
 						seriesNames.add(nameS);
 					}
 					// if there is an additional label are 

@@ -27,6 +27,7 @@ public class DatasetMap {
 	Integer catsnum;
 	Integer subcatsnum;
 	Integer numberCatVisualization;
+	Integer numberSerVisualization;
 	String catTitle="category";
 	String subcatTitle="subcategory";
 	String serTitle="serie";
@@ -69,7 +70,8 @@ public class DatasetMap {
 		categories=(HashMap)((BarCharts)sbi).getCategories();
 		catsnum=new Integer(sbi.getCategoriesNumber());
 		numberCatVisualization=sbi.getNumberCatVisualization();
-
+		numberSerVisualization=sbi.getNumberSerVisualization();
+		
 		catTitle=sbi.getCategoryLabel();
 		serTitle=sbi.getValueLabel();
 
@@ -182,6 +184,7 @@ public class DatasetMap {
 		copy.setCategories(this.getCategories());
 		copy.setCatsnum(this.getCatsnum());
 		copy.setNumberCatVisualization(this.getNumberCatVisualization());
+		copy.setNumberSerVisualization(this.getNumberSerVisualization());
 		copy.setCatTitle(this.getCatTitle());
 		copy.setSerTitle(this.getSerTitle());
 		copy.setCategoryCurrent(this.getCategoryCurrent());
@@ -220,18 +223,30 @@ public class DatasetMap {
 			}
 
 			// all series present in the dataset
-			// add found series
+			// add found series if the number is less then the max number of visualization
+			int contSer = 0;		
 			for (Iterator iterator2 = (((DefaultCategoryDataset)dataset).getRowKeys()).iterator(); iterator2.hasNext();) {
-				String serie = (String) iterator2.next();
-				if(!series.contains(serie))
-					series.add(serie);
+				if (this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()){
+					String serie = (String) iterator2.next();
+					if(!series.contains(serie)){
+						series.add(serie);
+						contSer++;
+					}
+				}
+				else if (this.getNumberSerVisualization() == 0){
+					String serie = (String) iterator2.next();
+					if(!series.contains(serie)){
+						series.add(serie);
+					}
+				}
 			}
 
 
 			categories=(HashMap)((BarCharts)sbi).getCategories();
 			catsnum=new Integer(sbi.getCategoriesNumber());
 			numberCatVisualization=sbi.getNumberCatVisualization();
-
+			numberSerVisualization=sbi.getNumberSerVisualization();
+			
 			catTitle=sbi.getCategoryLabel();
 			serTitle=sbi.getValueLabel();
 
@@ -329,8 +344,15 @@ public class DatasetMap {
 		// fill the vector containing current series
 		series=new TreeSet();
 		for(int i=0;i<numSeries;i++){
-			String nome=(String)dataset.getSeriesKey(i);
-			series.add(nome);							
+			if (this.getNumberSerVisualization() > 0 && i < this.getNumberSerVisualization()){
+				String nome=(String)dataset.getSeriesKey(i);
+				series.add(nome);	
+			}
+			else if (this.getNumberSerVisualization() == 0){ //tutte le serie
+				String nome=(String)dataset.getSeriesKey(i);
+				series.add(nome);	
+			}
+			
 		}
 
 		// if all series selected return the copy of dataset
@@ -369,8 +391,27 @@ public class DatasetMap {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		series=new TreeSet();
+	//	series=new TreeSet(((DefaultCategoryDataset)dataset).getRowKeys());
+		
+		int contSer = 0;
+		for (Iterator iterator2 = (((DefaultCategoryDataset)dataset).getRowKeys()).iterator(); iterator2.hasNext();) {
+			if (this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()){
+				String serie = (String) iterator2.next();
+				if(!series.contains(serie)){
+					series.add(serie);
+					contSer++;
+				}
+			}
+			else if (this.getNumberSerVisualization() == 0 ){
+				String serie = (String) iterator2.next();
+				if(!series.contains(serie))
+					series.add(serie);
+			}
+			
+		}
 
-		series=new TreeSet(((DefaultCategoryDataset)dataset).getRowKeys());
 
 		//fill the serieNumber MAP by mapping each serie name to its position in the dataset, needed to recover right colors when redrawing
 		/*	for(int i=0;i<series.size();i++){
@@ -381,7 +422,8 @@ public class DatasetMap {
 		categories=(HashMap)((BarCharts)sbi).getCategories();
 		catsnum=new Integer(sbi.getRealCatNumber());
 		numberCatVisualization=sbi.getNumberCatVisualization();
-
+		numberSerVisualization=sbi.getNumberSerVisualization(); 
+		
 		subCategories=(HashMap)((StackedBarGroup)sbi).getSubCategories();
 
 
@@ -420,8 +462,7 @@ public class DatasetMap {
 			}
 		}
 		else{
-			//if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
-			if(!sbiMode.equalsIgnoreCase("WEB") || docComposition)
+			//if(!sbiMode.equalsIgnoreCase("WEB") || docComposition)
 				selectedSeries.add("allseries");
 		}
 
@@ -561,6 +602,21 @@ public class DatasetMap {
 
 	public void setSelectedCatGroups(Vector selectedCatGroups) {
 		this.selectedCatGroups = selectedCatGroups;
+	}
+
+	/**
+	 * @return the numberSerVisualization
+	 */
+	public Integer getNumberSerVisualization() {
+		if (numberSerVisualization == null) numberSerVisualization = new Integer(0);
+		return numberSerVisualization;
+	}
+
+	/**
+	 * @param numberSerVisualization the numberSerVisualization to set
+	 */
+	public void setNumberSerVisualization(Integer numberSerVisualization) {
+		this.numberSerVisualization = numberSerVisualization;
 	}
 
 

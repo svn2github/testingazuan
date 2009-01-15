@@ -90,6 +90,7 @@ public class OverlaidStackedBarLine extends BarCharts {
 
 
 			//run all the attributes, to define series!
+			int contSer = 0;
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
@@ -112,12 +113,27 @@ public class OverlaidStackedBarLine extends BarCharts {
 					}
 					else{						
 						if(seriesLabelsMap!=null){
-							String serieLabel = (String)seriesLabelsMap.get(nameP);
-							series.put(serieLabel, value);
-							seriesCaptions.put(serieLabel, nameP);
+							if((this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()) &&
+									((String)seriesDraw.get(nameP)).equalsIgnoreCase("StackedBar")){
+								String serieLabel = (String)seriesLabelsMap.get(nameP);
+								series.put(serieLabel, value);
+								seriesCaptions.put(serieLabel, nameP);
+								contSer++;
+							}
+							else if(this.getNumberSerVisualization() == 0  || ((String)seriesDraw.get(nameP)).equalsIgnoreCase("line")){ //all series
+								String serieLabel = (String)seriesLabelsMap.get(nameP);
+								series.put(serieLabel, value);
+								seriesCaptions.put(serieLabel, nameP);
+							}
 						}
-						else
+						else if(this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization() &&
+								((String)seriesDraw.get(nameP)).equalsIgnoreCase("StackedBar")){
 							series.put(nameP, value);
+							contSer++;
+						}
+						else if(this.getNumberSerVisualization() == 0  || ((String)seriesDraw.get(nameP)).equalsIgnoreCase("line")){ //all series
+							series.put(nameP, value);
+						}
 					}
 
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie

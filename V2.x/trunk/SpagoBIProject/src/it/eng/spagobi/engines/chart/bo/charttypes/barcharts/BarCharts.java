@@ -33,8 +33,6 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -59,6 +57,7 @@ public class BarCharts extends ChartImpl {
 	String categoryLabel="";
 	String valueLabel="";
 	Integer numberCatVisualization=null;
+	Integer numberSerVisualization=null;
 	HashMap colorMap=null;  // keeps user selected colors// serie position - color
 	HashMap seriesNumber=null; //track serie name with number position (to preserve color)
 	int categoriesNumber=0;
@@ -142,7 +141,7 @@ public class BarCharts extends ChartImpl {
 			
 
 
-			
+			int contSer = 0;
 			//run all the attributes in a row, to define series pertaining to a category!
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
@@ -160,12 +159,12 @@ public class BarCharts extends ChartImpl {
 				else if(name.equalsIgnoreCase("cat_group")){
 					cat_group_name=value;
 				}
-				else {
-					// map containing the series
-					series.put(name, value);
+				else if (this.getNumberSerVisualization().intValue() > 0 && contSer < this.getNumberSerVisualization().intValue()){
+						// map containing the series
+						series.put(name, value);
+						contSer++;
 				}
-				
-
+				else series.put(name, value);
 			}
 			// if a category group was found add it
 			if(!cat_group_name.equalsIgnoreCase("") && !catValue.equalsIgnoreCase("") && catGroups!=null)
@@ -282,14 +281,26 @@ public class BarCharts extends ChartImpl {
 			valueLabel="";
 		}
 
-		if(confParameters.get("n_visualization")!=null){		
+		if(confParameters.get("n_cat_visualization")!=null || confParameters.get("n_visualization")!=null){		
 			String nu=(String)confParameters.get("n_visualization");
+			if (nu == null) nu = (String)confParameters.get("n_cat_visualization");
 			numberCatVisualization=Integer.valueOf(nu);
 		}
 		else
 		{
 			numberCatVisualization=new Integer(1);
 		}
+		
+		if(confParameters.get("n_ser_visualization")!=null){		
+			String nu=(String)confParameters.get("n_ser_visualization");
+			numberSerVisualization=Integer.valueOf(nu);
+		}
+		else
+		{
+			numberSerVisualization=new Integer(0);
+		}
+		
+		
 		
 		if(confParameters.get("filter_cat_groups")!=null){		
 			String filterCatGroupsS=(String)confParameters.get("filter_cat_groups");
@@ -806,6 +817,23 @@ public class BarCharts extends ChartImpl {
 
 	public void setFilterCategories(boolean filterCategories) {
 		this.filterCategories = filterCategories;
+	}
+
+
+	/**
+	 * @return the numberSerVisualization
+	 */
+	public Integer getNumberSerVisualization() {
+		if (numberSerVisualization == null) numberSerVisualization = new Integer(0);
+		return numberSerVisualization;
+	}
+
+
+	/**
+	 * @param numberSerVisualization the numberSerVisualization to set
+	 */
+	public void setNumberSerVisualization(Integer numberSerVisualization) {
+		this.numberSerVisualization = numberSerVisualization;
 	}
 
 

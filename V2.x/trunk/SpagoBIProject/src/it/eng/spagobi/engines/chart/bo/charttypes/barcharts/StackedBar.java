@@ -143,6 +143,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 
 			//run all the attributes, to define series!
+			int contSer = 0;
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
@@ -166,7 +167,12 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 							additionalValues.put(ind, value);
 						}
 					}
-					else{
+					else if (this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()){
+						series.put(nameP, value);
+						orderSeries.add(nameP);
+						contSer++;
+					}
+					else if (this.getNumberSerVisualization() == 0){
 						series.put(nameP, value);
 						orderSeries.add(nameP);
 					}

@@ -7,6 +7,8 @@ import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
@@ -75,12 +77,13 @@ public class KpiResourceBlock {
 		logger.debug("IN");
 		StringBuffer _htmlStream = new StringBuffer();				
 		if (r!=null){
+			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 			logger.debug("Start Kpi tree for Resource "+r.getName());
 			_htmlStream.append("<div id ='"+r.getName()+"' >\n");				
 			_htmlStream.append("<table style='CLEAR: left; VERTICAL-ALIGN: middle; WIDTH: 100%' >\n");
 			_htmlStream.append("<TBODY>\n");
-			_htmlStream.append(" <tr class='kpi_resource_section' ><td colspan=\"9\" id=\"ext-gen58\" >RESOURCE: "+r.getName()+"</td></tr>\n");
-			//_htmlStream.append("</table>\n");
+			String res = msgBuilder.getMessage("sbi.kpi.RESOURCE", httpReq);
+			_htmlStream.append(" <tr class='kpi_resource_section' ><td colspan=\"9\" id=\"ext-gen58\" >"+res+r.getName()+"</td></tr>\n");
 		}else{
 			_htmlStream.append("<table style='CLEAR: left; VERTICAL-ALIGN: middle; WIDTH: 100%' >\n");
 			_htmlStream.append("<TBODY>\n");
@@ -106,6 +109,7 @@ public class KpiResourceBlock {
 		logger.debug("IN");
 		logger.debug("*********************");
 		logger.debug("Recursion Level:"+recursionLev);
+		IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		HttpServletRequest httpRequest = httpReq;
 		IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		String requestIdentity = null;
@@ -172,7 +176,10 @@ public class KpiResourceBlock {
 		
 		_htmlStream.append("		<td  width='9%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
 		
-		String periodValid = "Value valid from " + kpiVal.getBeginDate().toString()+" to "+ kpiVal.getEndDate().toString();
+		
+		String periodValid = msgBuilder.getMessage("sbi.kpi.validPeriod", httpReq);
+		periodValid = periodValid.replaceAll("%0", kpiVal.getBeginDate().toString());
+		periodValid = periodValid.replaceAll("%1", kpiVal.getEndDate().toString());
 		
 		if (lo!= null && kpiVal.getScaleCode()!=null){
 			_htmlStream.append("		<td  width='9%' title='"+periodValid+"' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"("+kpiVal.getScaleCode()+")</div></td>\n");
@@ -183,8 +190,9 @@ public class KpiResourceBlock {
 		}
 		logger.debug("Written HTML for value");
 		
+		String weight2 = msgBuilder.getMessage("sbi.kpi.weight", httpReq);
 		if (display_weight && weight!=null){
-			_htmlStream.append("		<td width='5%' title='Weight' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>["+weight.toString()+"]</div></td>\n");
+			_htmlStream.append("		<td width='5%' title='"+weight2+"' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>["+weight.toString()+"]</div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='5%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
@@ -231,9 +239,10 @@ public class KpiResourceBlock {
 				}
 				execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId());
 				execUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
-			
+				
+				String trend = msgBuilder.getMessage("sbi.kpi.trend", httpReq);
 				String trendPopupUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
-				_htmlStream.append("		<td  width='3%' title=\"Click to see Kpi values trend on timeline\" style='vertical-align:middle;text-align:center;' ><div style='vertical-align:middle;' class='kpi_div' ><a id='linkDetail_"+requestIdentity+"_"+recursionLev+"' ><img style='vertical-align:middle;' src=\""+trendImgSrc+"\" /></div></a></td>\n");
+				_htmlStream.append("		<td  width='3%' title=\""+trend+"\" style='vertical-align:middle;text-align:center;' ><div style='vertical-align:middle;' class='kpi_div' ><a id='linkDetail_"+requestIdentity+"_"+recursionLev+"' ><img style='vertical-align:middle;' src=\""+trendImgSrc+"\" /></div></a></td>\n");
 				// insert javascript for open popup window for the trend
 			    _htmlStream.append(" <script>\n");
 			    _htmlStream.append("   var win"+requestIdentity+"_"+recursionLev+"; \n");
@@ -266,7 +275,7 @@ public class KpiResourceBlock {
 			    _htmlStream.append(");\n");
 			    _htmlStream.append(" </script>\n");
 			}else{
-				_htmlStream.append("		<td  width='3%' title='Trend' style='vertical-align:middle;text-align:center;' ><div style='vertical-align:middle;' class='kpi_div' ></div></td>\n");
+				_htmlStream.append("		<td  width='3%' style='vertical-align:middle;text-align:center;' ><div style='vertical-align:middle;' class='kpi_div' ></div></td>\n");
 			}
 		logger.debug("Written HTML for Popup window with trend.");
 		
@@ -298,9 +307,9 @@ public class KpiResourceBlock {
 				    String dat = f.format(d);
 				    execUrlParMap.put("ParKpiDate", dat);						
 				}
-				
+				String docLinked = msgBuilder.getMessage("sbi.kpi.docLinked", httpReq);
 				String docHref = urlBuilder.getUrl(httpRequest, execUrlParMap);
-				_htmlStream.append("<a style='vertical-align:middle;' title='Document linked to the kpi' href=\""+docHref+"\"> <img style='vertical-align:middle;' src=\""+docImgSrc+"\" alt=\"Attached Document\" /></a>\n");				
+				_htmlStream.append("<a style='vertical-align:middle;' title='"+docLinked+"' href=\""+docHref+"\"> <img style='vertical-align:middle;' src=\""+docImgSrc+"\" alt=\"Attached Document\" /></a>\n");				
 			}
 			_htmlStream.append("		</div></td>\n");
 		}else{
@@ -309,7 +318,8 @@ public class KpiResourceBlock {
 		logger.debug("Written HTML for Documents linked to the kpi");
 		
 		if (display_alarm){
-			if(alarm) _htmlStream.append("		<td width='2%' title='Kpi under Alarm control' style='vertical-align:middle;' class='kpi_td_right' ><div class='kpi_div' style='vertical-align:middle;' ><img style='vertical-align:middle;' src=\""+alarmImgSrc+"\" alt=\"Kpi under Alarm Control\" /></div></td>\n");
+			String alarmControl = msgBuilder.getMessage("sbi.kpi.alarmControl", httpReq);
+			if(alarm) _htmlStream.append("		<td width='2%' title='"+alarmControl+"' style='vertical-align:middle;' class='kpi_td_right' ><div class='kpi_div' style='vertical-align:middle;' ><img style='vertical-align:middle;' src=\""+alarmImgSrc+"\" alt=\"Kpi under Alarm Control\" /></div></td>\n");
 			else _htmlStream.append("		<td width='2%' class='kpi_td_right' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='2%' class='kpi_td_right' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");

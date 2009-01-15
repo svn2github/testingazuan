@@ -53,11 +53,9 @@ import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
-import it.eng.spagobi.tools.dataset.common.datastore.DataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 import java.awt.Color;
@@ -241,6 +239,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			    block.setD(dateOfKPI);
 			    KpiLine line = getBlock(modelNodeInstanceID, r);
 			    block.setRoot(line);
+			    logger.debug("Setted the tree Root.");
 			    kpiRBlocks.add(block);
 			}
 	    }
@@ -528,13 +527,12 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    					try {
 								endDate = form.parse(endD);
 							} catch (ParseException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-		    			    				 
+		    			   if(endDate!=null && endDate.after(begD)) {				 
 			    			kVal.setEndDate(endDate);
 			    			logger.debug("Setted the new EndDate description:"+endD.toString());
-		    				
+		    			   }
 		    			}else{
 		    				String fieldValue = f.getValue().toString();
 			    			kVal.setValue(fieldValue);

@@ -73,7 +73,7 @@ public class ChartImpl {
 	protected Vector intervals ;//List of chart intervals	
 	protected double lower=0.0;//Chart's lower bound
 	protected double upper=0.0;//Chart's higher bound
-	protected Double target=null;//Chart's target to attaign
+	protected Double target=null;//Chart's target to reach
 
 	/**
 	 * This function creates the chart object.
@@ -84,6 +84,12 @@ public class ChartImpl {
 		return null;
 	}
 	
+	/**
+	 * This function calculates the values for the LineChart by transforming the xml string result in a DatasetMap
+	 * 
+	 * @param Xml String result in form ROWS.ROW
+	 * @return DatasetMap
+	 */
 	public DatasetMap calculateValue(String result) throws Exception {
 		return null;
 	}
@@ -182,7 +188,7 @@ public class ChartImpl {
 	 */
 	public String setThresholds(List thresholds) {
 		logger.debug("IN");
-		String thresholdsJsArray = "";
+		String thresholdsJsArray = "";//String that will be needed by the jsp to show the legend in a tooltip
 		if(thresholds!=null && !thresholds.isEmpty()){
 			Iterator it = thresholds.iterator();
 			thresholdsJsArray += "[";

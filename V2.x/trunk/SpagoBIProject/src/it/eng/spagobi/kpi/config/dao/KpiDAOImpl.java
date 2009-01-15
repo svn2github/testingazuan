@@ -108,7 +108,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10110);
 
 		} finally {
 			if (aSession != null) {
@@ -159,7 +159,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10110);
 
 		} finally {
 			if (aSession != null) {
@@ -199,7 +199,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10111);
 
 		} finally {
 			if (aSession != null) {
@@ -231,7 +231,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10112);
 
 		} finally {
 			if (aSession != null) {
@@ -242,43 +242,6 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		}
 		logger.debug("OUT");
 		return toReturn;
-	}
-
-	public List loadResourcesList() throws EMFUserError {
-//		logger.debug("IN");
-//		List toReturn = null;
-//		Session aSession = null;
-//		Transaction tx = null;
-//
-//		try {
-//			aSession = getSession();
-//			tx = aSession.beginTransaction();
-//			toReturn = new ArrayList();
-//			List toTransform = null;
-//			toTransform = aSession.createQuery("from SbiResources").list();
-//
-//			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
-//				SbiResources hibResource = (SbiResources) iterator.next();
-//				Resource resource = toResource(hibResource);
-//				toReturn.add(resource);
-//			}
-//
-//		} catch (HibernateException he) {
-//			logger.error("Error while loading the list of Resources", he);
-//
-//			if (tx != null)
-//				tx.rollback();
-//
-//			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
-//
-//		} finally {
-//			if (aSession != null) {
-//				if (aSession.isOpen())
-//					aSession.close();
-//				logger.debug("OUT");
-//			}
-//		}
-		return loadResourcesList(null, null);
 	}
 	
 	public String getKpiTrendXmlResult(Integer resId, Integer kpiInstId, Date endDate) throws SourceBeanException{
@@ -361,7 +324,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10113);
 
 		} finally {
 			if (aSession != null) {
@@ -485,7 +448,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10114);
 
 		} finally {
 			if (aSession != null) {
@@ -798,7 +761,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			if (tx != null)
 				tx.rollback();
 
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10115);
 
 		} finally {
 			if (aSession != null) {

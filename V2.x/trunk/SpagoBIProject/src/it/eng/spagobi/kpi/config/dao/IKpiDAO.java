@@ -40,8 +40,23 @@ public interface IKpiDAO {
 	 */
 	public KpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
 	
+	/**
+	 * Returns the KpiInstance with id 'id' that was valid in date d 
+	 * 
+	 * @param id of the KpiInstance
+	 * @param Date of when the KpiInstance has to be valid
+	 * @return KpiInstance of the referred id valid in date d
+	 * @throws EMFUserError If an Exception occurred
+	 */
 	public KpiInstance loadKpiInstanceByIdFromHistory(Integer id, Date d) throws EMFUserError ;
 	
+	/**
+	 * Loads the list of Threshold interval for the threshold with id 'id'
+	 * 
+	 * @param Integer id of the threshold
+	 * @return List of all the the Threshols for the threshold with id 'id'
+	 * @throws EMFUserError If an Exception occurred
+	 */
 	public List loadThresholdsById(Integer id) throws EMFUserError ;
 	
 	/**
@@ -88,13 +103,6 @@ public interface IKpiDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */	
 	public Resource loadResourceById(Integer id) throws EMFUserError ;
-	
-	/**
-	 * Returns the list of Resources
-	 * @return the list of Resources
-	 * @throws EMFUserError If an Exception occurred
-	 */
-	public List loadResourcesList() throws EMFUserError;
 	
 	/**
 	 * Returns the DatasetConfig for the KPI with id kpiId

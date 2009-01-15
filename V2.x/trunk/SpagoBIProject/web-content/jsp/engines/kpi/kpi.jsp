@@ -119,12 +119,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				resDiv += "<div class='slider_header' ><ul>";
 				resDiv += "<li class='arrow' id='ss'>";
 				resDiv += "<a  href='javascript:viewAll();' style='margin: 0px 0px 5px 10px;' id='ViewAll_click' name='ViewAll_click' > ";
-				resDiv += " View All";
+				String viewAll = msgBuilder.getMessage("sbi.kpi.viewAll", request);
+				resDiv += viewAll;
 				resDiv += "</a> ";
 				resDiv += "</li>";
 				resDiv += "<li class='arrow' id='ss'>";
 				resDiv += "<a  href='javascript:hideAll();' style='margin: 0px 0px 5px 10px;' id='HideAll_click' name='HideAll_click' > ";
-				resDiv += " Hide All";
+				String hideAll = msgBuilder.getMessage("sbi.kpi.hideAll", request);
+				resDiv += hideAll;
 				resDiv += "</a> ";
 				resDiv += "</li>";	
 				int col = 2;

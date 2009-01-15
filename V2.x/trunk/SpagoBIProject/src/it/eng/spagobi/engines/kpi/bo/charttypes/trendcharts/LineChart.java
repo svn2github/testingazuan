@@ -1,50 +1,32 @@
 package it.eng.spagobi.engines.kpi.bo.charttypes.trendcharts;
 
-import java.awt.BasicStroke;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
+import it.eng.spagobi.engines.kpi.bo.ChartImpl;
+
 import java.awt.Color;
 import java.awt.Font;
-import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.labels.ItemLabelAnchor;
-import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.ValueMarker;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.data.Range;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.HorizontalAlignment;
-import org.jfree.ui.Layer;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
-import org.jfree.ui.TextAnchor;
 import org.jfree.ui.VerticalAlignment;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
-import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
-import it.eng.spagobi.engines.chart.utils.DatasetMap;
-import it.eng.spagobi.engines.kpi.bo.ChartImpl;
-import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
-import it.eng.spagobi.engines.kpi.utils.KpiInterval;
-import it.eng.spagobi.engines.kpi.utils.StyleLabel;
 
 public class LineChart extends ChartImpl{
 	
@@ -62,6 +44,7 @@ public class LineChart extends ChartImpl{
 	
 	public DatasetMap calculateValue(String result) throws Exception {
 
+		logger.debug("IN");
 		res = result;
 		categories=new HashMap();
 		datasetMap=new DatasetMap();
@@ -69,14 +52,13 @@ public class LineChart extends ChartImpl{
 		SourceBean sbRows=SourceBean.fromXMLString(res);
 		List listAtts=sbRows.getAttributeAsList("ROW");
 
-
 		// run all categories (one for each row)
 		categoriesNumber=0;
 
 		datasetMap.getDatasets().put("line", new DefaultCategoryDataset());
 
 		boolean first=true;
-		//categories.put(new Integer(0), "All Categories");
+
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 			SourceBean category = (SourceBean) iterator.next();
 			List atts=category.getContainedAttributes();
@@ -97,6 +79,8 @@ public class LineChart extends ChartImpl{
 	
 					nameP=new String(object.getKey());
 					value=new String((String)object.getValue());
+					logger.error("Name:"+nameP);
+					logger.error("Value:"+value);
 					if(nameP.equalsIgnoreCase("x"))
 					{
 						catValue=value;
@@ -117,6 +101,7 @@ public class LineChart extends ChartImpl{
 			((DefaultCategoryDataset)(datasetMap.getDatasets().get("line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
 			}
 		}
+		logger.debug("OUT");
 		return datasetMap;
 	}
 	
@@ -175,6 +160,7 @@ public class LineChart extends ChartImpl{
 		plot.getDomainAxis().setCategoryLabelPositions(
 				CategoryLabelPositions.UP_45);
 		JFreeChart chart = new JFreeChart(plot);
+		logger.debug("Chart created");
 		TextTitle title=new TextTitle(name,new Font("Arial", Font.BOLD, 20 ),Color.decode("#990200"), RectangleEdge.TOP, HorizontalAlignment.CENTER, VerticalAlignment.TOP, RectangleInsets.ZERO_INSETS);
 		chart.setTitle(title);
 		TextTitle subTitle =new TextTitle(subName,new Font("Arial", Font.PLAIN, 14 ),Color.decode("#000000"), RectangleEdge.TOP, HorizontalAlignment.CENTER, VerticalAlignment.TOP, RectangleInsets.ZERO_INSETS);
@@ -183,6 +169,7 @@ public class LineChart extends ChartImpl{
 		chart.addSubtitle(subTitle2);
 		
 		chart.setBackgroundPaint(Color.white);
+		logger.debug("OUT");
 		return chart;
 	}
 

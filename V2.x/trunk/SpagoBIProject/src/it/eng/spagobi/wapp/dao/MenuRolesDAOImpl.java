@@ -59,6 +59,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 	 */
 	public List loadMenuByRoleId(Integer roleId) throws EMFUserError {
 	    logger.debug("IN");
+	    if (roleId!=null) logger.debug("roleId="+roleId.toString());
 		Session aSession = null;
 		Transaction tx = null;
 		List realResult = new ArrayList();
@@ -68,12 +69,7 @@ public class MenuRolesDAOImpl extends AbstractHibernateDAO implements IMenuRoles
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-/*
-				hql = " select mf.id.menuId, mf.id.extRoleId from SbiMenuRole as mf, SbiMenu m " +
-					  " where mf.id.menuId = m.menuId " + 
-					  " and mf.id.extRoleId = " + roleId.toString() +
-					  " order by m.parentId desc, m.prog";
-*/	
+
 				hql = " select mf.id.menuId, mf.id.extRoleId from SbiMenuRole as mf, SbiMenu m " +
 				  " where mf.id.menuId = m.menuId " + 
 				  " and mf.id.extRoleId = ? " +

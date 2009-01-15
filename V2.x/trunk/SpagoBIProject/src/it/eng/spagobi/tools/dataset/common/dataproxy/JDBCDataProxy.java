@@ -45,7 +45,7 @@ public class JDBCDataProxy implements IDataProxy {
 	IDataSource dataSource;
 	String statement;
 	
-	private static transient Logger logger = Logger.getLogger(JDBCDataReader.class);
+	private static transient Logger logger = Logger.getLogger(JDBCDataProxy.class);
 	
 	
 	public JDBCDataProxy() {
@@ -88,7 +88,7 @@ public class JDBCDataProxy implements IDataProxy {
 				result = (ScrollableDataResult) dataResult.getDataObject();				
 			}
 		} catch(Exception e){
-			logger.error("Error in query Execution");
+			logger.error("Error in query Execution",e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "Error in query Execution: check your query and Datasource");
 		} finally {
 			//Utils.releaseResources(dataConnection, sqlCommand, dataResult);

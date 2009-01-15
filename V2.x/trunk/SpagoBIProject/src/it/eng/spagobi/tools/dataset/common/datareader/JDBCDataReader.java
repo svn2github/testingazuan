@@ -38,6 +38,7 @@ public class JDBCDataReader implements IDataReader {
 
     
     public IDataStore read(Object data) throws EMFUserError, EMFInternalError {
+	logger.debug("IN");
     	DataStore dataStore;
     	DataStoreMetaData dataStoreMeta;
     	FieldMetadata fieldMeta;
@@ -84,7 +85,7 @@ public class JDBCDataReader implements IDataReader {
 			}
 			
 		}
-		
+		logger.debug("OUT");
 		return dataStore;
     }
 }

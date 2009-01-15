@@ -1,31 +1,32 @@
 qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 
-  extend : qx.ui.core.Widget,
+  //extend : qx.ui.core.Widget,//change
+  extend : spagobi.ui.Tree,
   
-  construct : function(type)  {
+  construct : function()  {//type
  
-	  		this.base(arguments);  
-		  	var layout = new qx.ui.layout.Canvas();
-		  	this._setLayout(layout);
+	  		//this.base(arguments);//change
+	  		this.base(arguments,{root: "Functionalities"});  
+		  	//var layout = new qx.ui.layout.Canvas();//change
+		  	//this._setLayout(layout);//change
 		  	this.createFunctionalTree();
 		  	
 		  	
  },
   
-  members :
-			
-  
-  {
+  members : {
   	
-  			tree : undefined,
+  			//tree : undefined,//change
   			
   			createFunctionalTree : function(){
   			
-  		 this.tree = new spagobi.ui.Tree({root: "Functionalities"});	
+  		 		//this.tree = new spagobi.ui.Tree({root: "Functionalities"});//change	
   		
-  		var node1 = this.tree.addNode({
+  				//var node1 = this.tree.addNode({//change
+  				var node1 = this.addNode({	
 		  							name  : "Report",
-		  							parent: this.tree,
+		  							//parent: this.tree,//change
+		  							parent: this,
 		  							data  : {
 		  							 			label : 'ReportLabel',
 		  							 			name  : 'ReportName',
@@ -51,9 +52,9 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 		  					});
 		  					
 	  				
-  		var node2 = this.tree.addNode({
+  		var node2 = this.addNode({
 		  							name  : "OLAP",
-		  							parent: this.tree,
+		  							parent: this,
 		  							data  : {
 		  							 			label : 'OLAPLabel',
 		  							 			name  : 'OLAPName',
@@ -76,7 +77,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 		  							 			]
 		  							 		}
   								});
-  		var node3 = this.tree.addNode({
+  		var node3 = this.addNode({
 		  							name  : "myOLAP",
 		  							parent: node2,
 		  							file : true,
@@ -86,16 +87,16 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 		  							 			desc  : 'myOLAP Desc'
 		  							 		}
   								});
-  		var node4 = this.tree.addNode({
+  		var node4 = this.addNode({
 		  							name  : "DashBoard",
-		  							parent: this.tree,
+		  							parent: this,
 		  							data  : {
 		  							 			label : 'DashBoardLabel',
 		  							 			name  : 'DashBoardName',
 		  							 			desc  : 'DashBoardDesc'
 		  							 		}	
   								});
-  		var node5 = this.tree.addNode({
+  		var node5 = this.addNode({
 		  							name  : "myDashBoardFolder",
 		  							parent: node4,
 		  							file : true, 
@@ -105,7 +106,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 		  							 			desc  : 'myDashBoardFolderDesc'
 		  							 		}
 		  						});
-  		var node6 = this.tree.addNode({
+  		var node6 = this.addNode({
 		  							name  : "myDashBoard",
 		  							parent: node4,
 		  							file : true, 
@@ -116,14 +117,15 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 		  							 		}
   								});
   		
-  		this._add(this.tree, {height: "100%"});
+  		//this._add(this.tree, {height: "100%"});
   		
-  		this.tree.addListener("contextmenu",this._createMenu,this);	//right-click calls the function
+  		this.addListener("contextmenu",this._createMenu,this);	//right-click calls the function
   
   },
   
   
           _createMenu : function(e){
+          				//e is Qooxdoo wrapper event for Javascript mouseevent e._native
           				//alert(spagobi.commons.CoreUtils.toStr(e._native));
           				var contextMenu = new qx.ui.menu.Menu;
           				
@@ -135,46 +137,16 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 	               		contextMenu.add(insertButton);
 	               		contextMenu.add(deleteButton);
 	               		
-	               		var node = this.tree.getSelectedItem();
-	               		var ele = node.getContentElement();
-	               			//alert(node.getDecorator() );//ele.getDecorator() not valid
-	               			//alert(this._getLayout.get(left));
-	               		
-	               		this._getRoot().add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
-	               		//this._add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
-	               		contextMenu.setOpener(this.tree.getSelectedItem());
-	               		
-	               		
-	               		/*
-	               		var leftCord = qx.bom.element.Location.getLeft(ele);
-	               		var topCord = qx.bom.element.Location.getTop(ele);
-	               		alert(leftCord + "," + topCord);
-	               		*/
+	               		//var node = this.tree.getSelectedItem();
+	               		//var ele = node.getContentElement();
+	               		//this._getRoot().add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
+	               		this.getApplicationRoot().add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
+	               		contextMenu.setOpener(this.getSelectedItem());
 	               		
 	               		contextMenu.show();
 	               		
-	               		/*
-	              		var button = new qx.ui.form.MenuButton("Menu Button",qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/preferences-users.png'), contextMenu);
-	               		//button.setMaxWidth(50);
-	               		//button.setMaxHeight(50);
-	               		//button.setMargin(30,20,30,20);
-	             //  		button.setVisibility("excluded");
-	               		button.setEnabled(true);
-	               		//button.setVisibility("hidden");
-	              // 		button.setMarginTop(50);
-	              //	button.setVisibility("visible");
-	               	//	button.setIconPosition({left: 20, top: 20});
-	               //	alert("amit");,
-	       //           e._add(contextMenu);
-	              // 	this.setContextMenu(contextMenu);
-	               		this._add(button);//{edge:"north",height: "10%", width: "10%"});
 	               		
-	               		if (button.isEnabled()== true)
-	               		{
-	               			button.setEnabled(false);
-	               			button.setVisibility("hidden");
-	               		}
-          				*/
+	               		
           }
   
   

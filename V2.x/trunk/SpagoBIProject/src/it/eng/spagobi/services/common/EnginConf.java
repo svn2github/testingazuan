@@ -24,6 +24,10 @@ package it.eng.spagobi.services.common;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 
@@ -33,6 +37,7 @@ import org.xml.sax.InputSource;
 public class EnginConf {
 	private SourceBean config = null;
 	private boolean ssoActive=false;
+	private String resourcePath = null;
 	private static transient Logger logger = Logger.getLogger(EnginConf.class);
 
 	private static EnginConf instance = null;
@@ -93,6 +98,35 @@ public class EnginConf {
 	    SourceBean passSB = (SourceBean)config.getAttribute("PASS");
 	    String pass = (String) passSB.getCharacters();
 	    return pass;
+	}
+
+	/**
+	 * @return the resourcePath
+	 */
+	public String getResourcePath() {
+		logger.debug("IN");	
+		try {
+			Context ctx = new InitialContext();
+			resourcePath  = (String)ctx.lookup("java://comp/env/resourcePath");
+			logger.debug("resourcePath: " + resourcePath);
+			 
+		} catch (NamingException e) {
+		    logger.error(e);
+		} catch (Exception e) {
+		    logger.error(e);
+		} catch (Throwable t) {
+		    logger.error(t);
+		} finally {
+		    logger.debug("OUT");
+		}
+		return resourcePath;
+	}
+
+	/**
+	 * @param resourcePath the resourcePath to set
+	 */
+	public void setResourcePath(String resourcePath) {
+		this.resourcePath = resourcePath;
 	}
 	
 }

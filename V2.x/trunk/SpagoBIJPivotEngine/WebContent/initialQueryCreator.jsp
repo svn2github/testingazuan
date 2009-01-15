@@ -20,6 +20,8 @@ LICENSE: see LICENSE.txt file
 <%@page import="java.util.List"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.net.URL"%>
+<%@page import="java.io.File"%>
+<%@page import="java.io.FileInputStream"%>
 <%@page import="mondrian.olap.MondrianDef.VirtualCube"%>
 <%@page import="it.eng.spagobi.jpivotaddins.bean.TemplateBean"%>
 <%@page import="com.tonbeller.wcf.form.FormComponent"%>
@@ -30,6 +32,7 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.services.proxy.DataSourceServiceProxy"%>
 <%@page import="it.eng.spagobi.services.datasource.bo.SpagoBiDataSource"%>
 <%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
+<%@page import="it.eng.spagobi.services.common.EnginConf" %>
 
 
 <html>
@@ -88,10 +91,12 @@ if (schemas == null) {
 	schemas = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/SCHEMAS/SCHEMA");
 	session.setAttribute("schemas", schemas);
 }
+
 if (schemas == null || schemas.size() == 0) {
 	out.write("No schemas defined in engine-config.xml file.");
 	return;
 }
+
 %>
 <p>
 <%
@@ -135,7 +140,9 @@ if (schemas == null || schemas.size() == 0) {
 //if (selectedSchemaNode == null) selectedSchemaNode = (Node) session.getAttribute("selectedSchemaNode");
 if (selectedSchema != null) {
 	//session.setAttribute("selectedSchemaNode", selectedSchemaNode);
-	String catalogUri = selectedSchemaNode.valueOf("@catalogUri");
+//	String catalogUri = selectedSchemaNode.valueOf("@catalogUri");
+	String catalogUri = EnginConf.getInstance().getResourcePath() + 
+						selectedSchemaNode.valueOf("@catalogUri").replace("/", System.getProperty("file.separator"));
 	MondrianDef.Cube[] cubes = (MondrianDef.Cube[]) session.getAttribute("MondrianCubes");
 	MondrianDef.VirtualCube[] virtualcubes = (MondrianDef.VirtualCube[]) 
 				session.getAttribute("MondrianVirtualCubes");
@@ -143,8 +150,12 @@ if (selectedSchema != null) {
 	if (cubes == null) {
 		cubeWasSelected = false;
 		Parser xmlParser = XOMUtil.createDefaultParser();
-		URL catalogURL = this.getServletContext().getResource(catalogUri);
-		MondrianDef.Schema schema = new MondrianDef.Schema(xmlParser.parse(catalogURL));
+		//URL catalogURL = (this.getServletContext().getResource(catalogUri));
+		//URL catalogURL = (this.getServletContext().getResource(catalogURLStr));
+		//MondrianDef.Schema schema = new MondrianDef.Schema(xmlParser.parse(catalogURL));
+		File tmpFile = new File(catalogUri);
+		FileInputStream fis = new FileInputStream(tmpFile);
+		MondrianDef.Schema schema = new MondrianDef.Schema(xmlParser.parse(fis));
 		cubes = schema.cubes;
 		virtualcubes = schema.virtualCubes;
 		session.setAttribute("MondrianCubes", cubes);
@@ -244,7 +255,6 @@ if (selectedSchema != null) {
 					String resName =(ds.getJndi()==null)?"":ds.getJndi();
 					if (!resName.equals("")) {
 					    resName = resName.replace("java:comp/env/","");
-					    String connectionStr = "Provider=mondrian;DataSource="+resName+";Catalog="+catalogUri+";";
 			%>
 					<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=catalogUri%>">
 						<%=mdxQuery%>
@@ -255,7 +265,6 @@ if (selectedSchema != null) {
 							String url = (ds.getUrlConnection()==null)?"":ds.getUrlConnection();
 							String usr = (ds.getUser()==null)?"":ds.getUser();
 							String pwd = (ds.getPwd()==null)?"":ds.getPwd();
-							String connectionStr = "Provider=mondrian;JdbcDrivers="+driver+";Jdbc="+url+";JdbcUser="+usr+";JdbcPassword="+pwd+";Catalog="+catalogUri+";";
 					%>
 				    <jp:mondrianQuery id="query01" jdbcDriver="<%=driver%>" jdbcUrl="<%=url%>" jdbcUser="<%=usr%>" jdbcPassword="<%=pwd%>" catalogUri="<%=catalogUri%>" >
 						<%=mdxQuery%>

@@ -30,7 +30,7 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.services.proxy.ContentServiceProxy"%>
 <%@page import="it.eng.spagobi.services.content.bo.Content"%>
 <%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
-
+<%@page import="it.eng.spagobi.services.common.EnginConf" %>
 <html>
 <head>
   <title>Initial query creation</title>
@@ -62,11 +62,6 @@ if (documentId != null) session.setAttribute("document", documentId);
 if (documentId == null) documentId = (String) session.getAttribute("document");
 
 
-/*String templateName = request.getParameter("templateName");
-if (templateName != null) session.setAttribute("templateName", templateName);
-String template = request.getParameter("template");
-if (template != null) session.setAttribute("template", template);
-*/
 SAXReader readerConfigFile = new SAXReader();
 Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
 String userId = (String)session.getAttribute("userId");
@@ -77,6 +72,26 @@ if (schema == null) schema = (String) session.getAttribute("schema");
 
 if (schema != null && !schema.trim().equals("")) {
 	session.setAttribute("schema", schema);
+	session.setAttribute("selectedSchema", schema);
+	
+//gets the schema node from engine-config.xml
+List schemas = (List) session.getAttribute("schemas");
+Node selectedSchemaNode = null;
+if (schemas == null) {
+	schemas = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/SCHEMAS/SCHEMA");
+	session.setAttribute("schemas", schemas);
+	
+	Iterator it = schemas.iterator();
+	while (it.hasNext()) {
+		Node aSchema = (Node) it.next();
+		String aSchemaName = aSchema.valueOf("@name");
+		if (aSchemaName.equalsIgnoreCase(schema)) {
+			selectedSchemaNode = aSchema;
+		}
+	}
+}
+
+
 
 %>
 	<form action="editQuery.jsp" method="post">
@@ -134,7 +149,9 @@ if (schema != null && !schema.trim().equals("")) {
 				mdxQuery = queryWithParameters;
 			}
 			Node cube = document.selectSingleNode("//olap/cube");
-			String catalogUri = cube.valueOf("@reference");
+			//String catalogUri = cube.valueOf("@reference");
+			String catalogUri = EnginConf.getInstance().getResourcePath() + 
+								selectedSchemaNode.valueOf("@catalogUri").replace("/", System.getProperty("file.separator"));
 			
 			// puts the catalogUri in session for TemplateBean.saveTemplate() method
 			session.setAttribute("catalogUri", catalogUri);

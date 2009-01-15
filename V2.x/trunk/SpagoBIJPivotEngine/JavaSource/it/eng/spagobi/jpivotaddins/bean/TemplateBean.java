@@ -69,6 +69,7 @@ public class TemplateBean implements Serializable {
 		IEngUserProfile profile=(IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String userUniqueIdentifier = (String) profile.getUserUniqueIdentifier();		
 		String user = (String)((UserProfile) profile).getUserId();
+		String schema = (String)session.getAttribute("selectedSchema");
 		String documentId=(String)session.getAttribute("document");
 		String catalogUri = (String) session.getAttribute("catalogUri"); 
 		OlapModel olapModel = (OlapModel) session.getAttribute("query01");
@@ -92,7 +93,8 @@ public class TemplateBean implements Serializable {
 		HashMap parameters = (HashMap) session.getAttribute("parameters");
 		if (query != null) {
 			String xmlString = "<olap>\n";
-			xmlString += "	<cube reference='" + catalogUri + "' />\n";
+			//xmlString += "	<cube reference='" + catalogUri + "' />\n";
+			xmlString += "	<cube reference='" + schema + "' />\n";
 			xmlString += "	<MDXquery>\n";
 			xmlString += queryWithParameters;
 			if (parameters != null && parameters.size() > 0) {

@@ -544,7 +544,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	              *                                               	               
 	              */
 	             deleteNode: function(e){
-	               
+	               /*
 	             	//var currentItem = this.getSelectedElement();
 	             	
 	             	 var currentItem = this.getSelectedItem();
@@ -561,7 +561,18 @@ qx.Class.define("spagobi.ui.Tree", {
           			}
           			
           			//this.getSelectedElement().getParent().setSelected(true);	//else try getParentFolder()
-          			
+          			*/
+          			var current = this.getSelectedItem();
+					var parent = current.getParent();
+					parent.remove(current);
+					/*
+					var str="" ;
+					var parentChildren = parent.getChildren();
+			        for(i in parentChildren){
+			        	str = str+parentChildren[i].getLabel()+"\n";
+			        }
+			        alert(str);   
+          			*/
                  },
                  
                  /**
@@ -711,7 +722,14 @@ qx.Class.define("spagobi.ui.Tree", {
 			        }
 			
 			        var parentChildren = parent.getChildren();
+			        
+			        var str="" ;
+			        for(i in parentChildren){
+			        	str = str+parentChildren[i].getLabel()+"\n";
+			        }
+			        alert(str);
 			        var index = parentChildren.indexOf(treeItem);
+			        alert(index);
 			        if (index > -1 && index < parentChildren.length-1) {
 			          return parentChildren[index+1];
 			        }

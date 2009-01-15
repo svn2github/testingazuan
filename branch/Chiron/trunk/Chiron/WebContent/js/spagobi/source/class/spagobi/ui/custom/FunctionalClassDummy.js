@@ -327,7 +327,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 	},
 	
 	deleteNode: function(e){
-		this._tree.deleteTreeNode();
+		this._tree.deleteNode();
 	},
 	
 	clearAll: function(e){
@@ -339,13 +339,13 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 		
 		var dataObject = this._right.getData();
 		var parent = this._tree.getSelectedItem();
-		alert(parent);
+		//alert(parent);
 	//	alert(dataObject.label);
-		alert(parent.getLabel());
+		//alert(parent.getLabel());
 		var nodeObject = {};
 		nodeObject.name = dataObject.label;
 		nodeObject.parent = this._tree.getUserData(parent.getLabel());	//nodeid = label .. to be changed
-		alert(nodeObject.parent);
+		//alert(nodeObject.parent);
 	//	alert(nodeObject.parent);
 		nodeObject.data = dataObject;
 		

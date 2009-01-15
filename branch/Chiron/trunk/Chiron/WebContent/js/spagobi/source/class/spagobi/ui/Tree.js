@@ -94,7 +94,30 @@ qx.Class.define("spagobi.ui.Tree", {
 	               * <p> var myTree = new spagobi.ui.Tree({root: "Root"});
 	               * <p> myTree.addListener("click",myTree.onClickMenu,myTree);
 	               *                                                                                     	               
-	               */                               
+	               */
+	               
+	               onClickMenu1: function(e){
+	               	
+	               	var insertCmd = new qx.event.Command();
+        			insertCmd.addListener("execute", this._insertCmd,this);
+        				
+	               	var deleteCmd = new qx.event.Command();
+        			deleteCmd.addListener("execute", this.deleteNode,this);
+        				
+	               	var contextMenu = new qx.ui.menu.Menu;
+	               	
+	               	var insertButton = new qx.ui.menu.Button("Insert",null,insertCmd); 
+	               	var deleteButton = new qx.ui.menu.Button("Delete",null,deleteCmd);
+	               	
+	               	contextMenu.add(insertButton);
+	               	contextMenu.add(deleteButton);
+	               	
+	               	this.getApplicationRoot().add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
+	               	contextMenu.setOpener(this.getSelectedItem());
+	               	contextMenu.show();	
+	               		
+	               },
+	                                    
 	               onClickMenu: function(e){
 	               		
 	               		//alert(this.getManager().getSelectedItem());
@@ -174,14 +197,24 @@ qx.Class.define("spagobi.ui.Tree", {
         				var moveDownCmd = new qx.event.Command();
         				moveDownCmd.addListener("execute", this.moveDownNode,this);
         									
-	               		var contextMenu = new qx.ui.menu.Menu;
+	               		
 	               		var insertButton = new qx.ui.menu.Button("Insert",null,insertCmd); // handleClick(var vItem, Event e)
 	               		var deleteButton = new qx.ui.menu.Button("Delete",null,deleteCmd);
 	               		var moveUpButton = new qx.ui.menu.Button("Move Up",null,moveUpCmd);
 	               		var moveDownButton = new qx.ui.menu.Button("Move Down",null,moveDownCmd);
 	               		
+	               		contextMenu.add(insertButton);
+	               		contextMenu.add(deleteButton);
+	               		//contextMenu.add(moveUpButton);
+	               		//contextMenu.add(moveDownButton);
+	               		this.getApplicationRoot().add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
+	               		contextMenu.setOpener(this.getSelectedItem());
+	               		contextMenu.show();
+	               		
+	               		/*
 	               		if(this.getSelectedItem() == this){		// If Root Node
-	               			contextMenu.add(insertButton,deleteButton);
+	               			contextMenu.add(insertButton);
+	               			contextMenu.add(deleteButton);
 	               		} else {
 		               		//	var selectionManager = this.getManager();
 		               			var item = this.getSelectedItem();
@@ -213,8 +246,10 @@ qx.Class.define("spagobi.ui.Tree", {
 	               				}
 	               		}
   						
-  						this.add(contextMenu);//.addToDocument();		//var d = qx.legacy.ui.core.ClientDocument.getInstance();	//d.add(contextMenu);
-  						contextMenu.show();
+  						
+  						
+  						//this.add(contextMenu);//.addToDocument();		//var d = qx.legacy.ui.core.ClientDocument.getInstance();	//d.add(contextMenu);
+  						//contextMenu.show();
   						
   						//alert(contextMenu.getParent().getVisibility() + ", "+ contextMenu.getParent().getDisplay());
   						//alert(contextMenu.getVisibility() + ", "+ contextMenu.getDisplay());
@@ -269,6 +304,8 @@ qx.Class.define("spagobi.ui.Tree", {
 				        this.getSelectedElement().setSelected(false);
 				        this.setSelectedElement(null);
 				        //this.getManager().setSelectedItem(null);
+				         
+				         */
 	               },
 	               
 	               /**
@@ -286,19 +323,20 @@ qx.Class.define("spagobi.ui.Tree", {
 	               	
 	               		//alert(e);	//Data Event
 	               		this.insertWin = new qx.ui.window.Window("Insert");
-						this.insertWin.setSpace(200, 400, 200, 250);
-						var d = qx.ui.core.ClientDocument.getInstance();
-						d.add(this.insertWin);
+						//this.insertWin.setSpace(200, 400, 200, 250);
+						this.insertWin.setLayout(new qx.ui.layout.VBox(20));
 						
+						this.atom = new qx.ui.container.Composite(new qx.ui.layout.HBox);
 						var nameLabel = new qx.ui.basic.Label("Name:");
-						nameLabel.setLocation(50, 50);
+						//nameLabel.setLocation(50, 50);
+						this.atom.add(nameLabel);
 						
 						this.nameText = new qx.ui.form.TextField();	//global .. MAYBE can make LOCAL .. try
-						this.nameText.setLocation(100, 50);
-						this.atom = new qx.ui.basic.Atom();
+						//this.nameText.setLocation(100, 50);
 						this.atom.add(this.nameText);
 						this.atom.setUserData('newNodeName',this.nameText);
-						//this.nameText.setUserData('newNodeName',nameText);
+						
+						this.insertWin.add(this.atom);
 						
 						/*
 						var parentLabel = new qx.legacy.ui.basic.Label("Parent:");
@@ -309,7 +347,7 @@ qx.Class.define("spagobi.ui.Tree", {
 						*/
 						
 						var goButton = new qx.ui.form.Button("Insert");
-				        goButton.setLocation(150, 150);
+				        //goButton.setLocation(150, 150);
 				        goButton.addListener("execute", this._insertDetails,this
 				        /*
 				        function(e) {
@@ -320,16 +358,16 @@ qx.Class.define("spagobi.ui.Tree", {
 						c.id = "node"+this._nodeId;
 						this._nodeId++;
 						this.addNode(c);
-				        }*/);
+				        }*/
+				        );
+						this.insertWin.add(goButton);
 						
-						this.insertWin.add(nameLabel,this.nameText/*,parentLabel,parentText*/,goButton);
+						this.insertWin.center();
 						this.insertWin.open();
 						
-						//alert("Window "+insertWin);									//window
-						//alert("Type: " + typeof(insertWin));						//object
-						//alert("children count: "+ insertWin.getChildrenLength()); 	//1
-						//alert(insertWin.getChildren());								//vertical Box layout
-	               },
+						//this.getApplicationRoot().add(this.insertWin);
+						
+						},
 	              
 	              /**
 	               * Event Listener function to get the details of the new node to be created
@@ -346,7 +384,8 @@ qx.Class.define("spagobi.ui.Tree", {
 	               		
 						var c = {};
 						c.name = this.atom.getUserData('newNodeName').getValue(); //"Report";(working)
-						c.parent = this.getSelectedElement();
+						
+						c.parent = this.getUserData(this.getSelectedItem().getLabel());//returns the atom
 						c.id = "node"+this._nodeId;
 						this._nodeId++;
 						var node = this.addNode(c);
@@ -407,8 +446,7 @@ qx.Class.define("spagobi.ui.Tree", {
                    */ 
           		 addNode: function(config){
           			
-          			var treeRowStructure;
-                 	var treeNode;
+          			var treeNode;
                  	
                  	if(config.checkBox != undefined){	// to check if its a standard node with just icon and name
                  									// ... or special node with a icon, checkbox and name 
@@ -470,7 +508,11 @@ qx.Class.define("spagobi.ui.Tree", {
                   	}
                    	else{
                    	//	alert("10");
-                   		//alert('adding below tree');
+                   	
+                   		//if(config.parent != undefined){//  this.getSelectedItem()
+                   			//alert(config.parent.getLabel());
+                   		//}
+                   		
                    	 	var p = config.parent.getUserData('node');
                    	 	p.add(treeNode);
                    	}
@@ -508,7 +550,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	             	 var currentItem = this.getSelectedItem();
 	             	
 	             	//alert(currentItem + ","+currentItem.getLabel());
-	             	if(currentItem == this){
+	             	if(currentItem == this.getRoot()){
 	             		alert("Root node cannot be deleted");
 	             	}
           			else if (currentItem != null) {

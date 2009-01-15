@@ -34,11 +34,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */ 
 
 /*
-
 #asset(img/spagobi/test/*)
-#asset(qx/icon/Oxygen/icon/16/apps/office-calendar.png)
+#asset(qx/icon/Oxygen/16/apps/office-calendar.png)
+*/
 
-*/ 
 qx.Class.define("spagobi.ui.Table",
 {
   //extend : qx.legacy.ui.table.Table,//change
@@ -317,16 +316,20 @@ qx.Class.define("spagobi.ui.Table",
 
 				if (e.getColumn() == 4){
 					 
-					  var layout = new qx.ui.layout.VBox(20);
-					  var windowWidget = new qx.ui.core.Widget();
+					  //var layout = new qx.ui.layout.VBox(20);
+					  //var windowWidget = new qx.ui.core.Widget();
 					 // windowWidget._setLayout
-					  var win = new qx.ui.window.Window("Details Window", "qx/icon/Oxygen/icon/16/apps/office-calendar.png");
+					  var win = new qx.ui.window.Window("Details Window", "qx/icon/Oxygen/16/apps/office-calendar.png");
 				      win.setLayout(new qx.ui.layout.VBox(20));
 				      win.setShowStatusbar(true);
 				      win.setStatus("Details loaded");
+				      //win.setHeight(200);
+				      //win.setWidth(200);
+				      //win.setMaxWidth(500);
 				      win.open();
-				      win.setModal(false);//true
-		//		      this.getRoot().add(win, {left:500, top:400});  //
+				      win.setModal(true);
+				      //win.setResizable(false);
+					  //this.getRoot().add(win);//, {left:500, top:400});  //
 				      
 				      var textfield1 = spagobi.commons.WidgetUtils.createInputTextField({
 								        		type: 'text',
@@ -352,10 +355,10 @@ qx.Class.define("spagobi.ui.Table",
 				    win.add(box, {flex:1});
 					this.tree1 = new spagobi.ui.Tree({root: "Functionalities"});	
   		
-  		var node1 = this.tree1.addNode({
+  					var node1 = this.tree1.addNode({
 		  							name  : "Report",
 		  							parent: this.tree1,
-		  							checkBox : true,
+		  							//checkBox : true,
 		  							data  : {
 		  							 			label : 'ReportLabel',
 		  							 			name  : 'ReportName',
@@ -384,7 +387,7 @@ qx.Class.define("spagobi.ui.Table",
   		var node2 = this.tree1.addNode({
 		  							name  : "OLAP",
 		  							parent: this.tree1,
-		  							checkBox : true,
+		  							//checkBox : true,
 		  							data  : {
 		  							 			label : 'OLAPLabel',
 		  							 			name  : 'OLAPName',
@@ -420,7 +423,7 @@ qx.Class.define("spagobi.ui.Table",
   		var node4 = this.tree1.addNode({
 		  							name  : "DashBoard",
 		  							parent: this.tree1,
-		  							checkBox : true,
+		  							//checkBox : true,
 		  							data  : {
 		  							 			label : 'DashBoardLabel',
 		  							 			name  : 'DashBoardName',
@@ -463,7 +466,14 @@ qx.Class.define("spagobi.ui.Table",
         	}
 				this.inputField = spagobi.commons.WidgetUtils.createInputFormList(this.config);
         	
-        	  box.add(this.inputField);
+        	var box1 = new qx.ui.container.Scroll().set({
+					    width: 200,
+					    height: 200
+					  });
+        	
+			box1.add(this.inputField);
+			box.add(box1,{flex:1});
+			//box.add(this.inputField);
         	  
         	  
         /*	  

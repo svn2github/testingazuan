@@ -20,7 +20,10 @@ LICENSE: see LICENSE.txt file
 				 it.eng.spagobi.services.content.bo.Content,
 				 it.eng.spagobi.services.proxy.DataSourceServiceProxy,
 				 it.eng.spagobi.services.datasource.bo.SpagoBiDataSource,
-				 it.eng.spagobi.tools.datasource.bo.*" %>
+				 it.eng.spagobi.tools.datasource.bo.*,
+				 org.eigenbase.xom.Parser,
+				 org.dom4j.io.SAXReader,
+				 it.eng.spagobi.services.common.EnginConf"%>
 
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
@@ -114,7 +117,24 @@ LICENSE: see LICENSE.txt file
 		    if (ds != null)	nameConnection = ds.getLabel();
 			query = document.selectSingleNode("//olap/MDXquery").getStringValue();
 			Node cube = document.selectSingleNode("//olap/cube");
-			reference = cube.valueOf("@reference");
+			//reference = cube.valueOf("@reference");
+			//defines the correct catalogueURI starting the schema name
+			SAXReader readerConfigFile = new SAXReader();
+			Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
+			List schemas = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/SCHEMAS/SCHEMA");
+			
+			
+			Iterator it = schemas.iterator();
+			Node selectedSchemaNode = null;
+			while (it.hasNext()) {
+				Node aSchema = (Node) it.next();
+				String aSchemaName = aSchema.valueOf("@name");
+				if (aSchemaName.equalsIgnoreCase(cube.valueOf("@reference"))) {
+					selectedSchemaNode = aSchema;
+				}
+			}
+			reference = EnginConf.getInstance().getResourcePath() + 
+						selectedSchemaNode.valueOf("@catalogUri").replace("/", System.getProperty("file.separator"));
 			parameters = document.selectNodes("//olap/MDXquery/parameter");
 			analysis = new AnalysisBean();
 			analysis.setConnectionName(nameConnection);

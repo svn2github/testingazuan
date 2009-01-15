@@ -722,14 +722,15 @@ qx.Class.define("spagobi.ui.Tree", {
 			        }
 			
 			        var parentChildren = parent.getChildren();
-			        
+			        /*
 			        var str="" ;
 			        for(i in parentChildren){
 			        	str = str+parentChildren[i].getLabel()+"\n";
 			        }
 			        alert(str);
+			        */ 
 			        var index = parentChildren.indexOf(treeItem);
-			        alert(index);
+			        //alert(index);
 			        if (index > -1 && index < parentChildren.length-1) {
 			          return parentChildren[index+1];
 			        }

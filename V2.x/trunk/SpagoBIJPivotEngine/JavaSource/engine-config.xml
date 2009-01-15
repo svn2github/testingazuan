@@ -19,8 +19,8 @@
 	<DataSetServiceProxy_URL>/services/DataSetService</DataSetServiceProxy_URL>	
 	
 	<SCHEMAS>
-		<SCHEMA catalogUri="/WEB-INF/queries/FoodMart.xml" name="FoodMart" />
-		<SCHEMA catalogUri="/WEB-INF/queries/SbiMonitor.xml" name="SpagoMonitor" />
+		<SCHEMA catalogUri="/Olap/FoodMart.xml" name="FoodMart" />
+		<SCHEMA catalogUri="/Olap/SbiMonitor.xml" name="SpagoMonitor" />
 	</SCHEMAS>
 	
 </ENGINE-CONFIGURATION>

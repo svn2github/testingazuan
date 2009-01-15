@@ -18,19 +18,26 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.analiticalmodel.document.service;
 
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.jaxen.function.IdFunction;
 
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.AbstractModule;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
+import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
+import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 
 
@@ -47,33 +54,62 @@ public class EraseDocumentModule extends AbstractModule {
 	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		try {
+		logger.debug("IN");
+		SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
+		IEngUserProfile profile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
+		if (profile == null) {
+			logger.error("Profile not found");
+			throw new Exception("User profile not found");
+		}
+
+		String userId = ((UserProfile)profile).getUserId().toString();
+
 			boolean onlyOneFunct=false;
 			String objIdStr = (String)request.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+			logger.debug("object id "+objIdStr);
 			String funcIdStr = (String)request.getAttribute(ObjectsTreeConstants.FUNCT_ID);
-			if(funcIdStr!=null && funcIdStr!="") onlyOneFunct=true;
+			logger.debug("funct id "+funcIdStr);
+			if(funcIdStr==null || funcIdStr.equalsIgnoreCase("")){
+				logger.error("Functionality not specified"); 
+				throw new Exception("Functionality not specified");
+			}
+
+			//onlyOneFunct=true;
 			Integer objId = new Integer(objIdStr);
 			IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
 			BIObject obj = biobjdao.loadBIObjectById(objId);
-			List functs = obj.getFunctionalities();
 			Integer fId=Integer.decode(funcIdStr);
-			if(onlyOneFunct){
+
+			// check that the functionality specified is the user one or that user is administrator
+
+			// first case: user is administrator
+			if(profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)){
 				biobjdao.eraseBIObject(obj, fId);
+				logger.debug("Object deleted by administrator");	
 			}
-			else{
-			Iterator iterFuncts = functs.iterator();
-			while(iterFuncts.hasNext()) {
-				Integer functId = (Integer)iterFuncts.next();
-				biobjdao.eraseBIObject(obj, functId);
+			else
+			{ 
+				ILowFunctionalityDAO functDAO = DAOFactory.getLowFunctionalityDAO();
+				LowFunctionality lowFunc = functDAO.loadLowFunctionalityByID(fId, false);
+
+				if(lowFunc==null){
+					logger.error("Functionality does not exist");
+					throw new Exception("Functionality does not exist");					
+				}
+
+				if(lowFunc.getPath().equals("/"+userId)){ // folder is current user one
+					biobjdao.eraseBIObject(obj, fId);
+					logger.debug("Object deleted");
+				}
+				else{
+					logger.error("Functionality is not user's one");
+					throw new Exception("Functionality  is not user's one");					
+				}
+
 			}
-			}
-			
-		} catch (Exception e ) {
-			logger.error("Error while deleting biobject " + e);
+			logger.debug("OUT");
 		}
-		
-		
-		
+
 	}
 
-}

@@ -40,10 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
 qx.Class.define("spagobi.app.Chiron",
 {
-  //extend : qx.legacy.application.Gui,//change
-	//extend : qx.application.Inline,
-	//include : [qx.legacy.application.MGuiCompat],
-	extend : qx.application.Standalone,//not working
+  extend : qx.application.Standalone,
 	
   /*
   *****************************************************************************
@@ -77,10 +74,7 @@ qx.Class.define("spagobi.app.Chiron",
     main : function()
     {
 		 this.base(arguments);
-        // this.compat();//used with Inline
-        
-      	 //alert(qx.icontheme);   //undefined	
-      	 // Define alias for custom resource path
+         // Define alias for custom resource path
       	 //qx.util.AliasManager.getInstance().add("spagobi", qx.core.Setting.get("spagobi.resourceUri"));
       	 //qx.util.AliasManager.getInstance().add("libResource", qx.core.Setting.get("qx.resourceUri"));      	 
       	 qx.util.AliasManager.getInstance().add("spagobi", qxlibraries.spagobi.resourceUri);

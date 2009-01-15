@@ -104,10 +104,10 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 				aKpiInstance.setChartTypeId(sbiKpiInstance.getSbiDomains()
 						.getValueId());
 			}
-			if (sbiKpiInstance.getSbiKpiPeriodicity() != null) {
+		/*TODO	if (sbiKpiInstance.getSbiKpiPeriodicity() != null) {
 				aKpiInstance.setPeriodicityId(sbiKpiInstance
 						.getSbiKpiPeriodicity().getIdKpiPeriodicity());
-			}
+			} */
 			aKpiInstance.setWeight(sbiKpiInstance.getWeight());
 			aKpiInstance.setD(sbiKpiInstance.getBeginDt());
 			//
@@ -215,14 +215,14 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 									oldSbiKpiInstance.getSbiDomains()
 											.getValueId(), value
 											.getKpiInstance().getChartTypeId())))
-							&& (areBothNull(oldSbiKpiInstance
+						/*TODO	&& (areBothNull(oldSbiKpiInstance
 									.getSbiKpiPeriodicity(), value
 									.getKpiInstance().getPeriodicityId()) || (oldSbiKpiInstance
 									.getSbiKpiPeriodicity() != null && areNullOrEquals(
 									oldSbiKpiInstance.getSbiKpiPeriodicity()
 											.getIdKpiPeriodicity(), value
 											.getKpiInstance()
-											.getPeriodicityId()))) && areNullOrEquals(
+											.getPeriodicityId()))) */ && areNullOrEquals(
 							oldSbiKpiInstance.getWeight(), value
 									.getKpiInstance().getWeight()))) {
 				// create new History
@@ -307,13 +307,13 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		} else {
 			sbiKpiInstance.setSbiDomains(null);
 		}
-		if (value.getKpiInstance().getPeriodicityId() != null) {
+		/*TODO	if (value.getKpiInstance().getPeriodicityId() != null) {
 			sbiKpiInstance.setSbiKpiPeriodicity((SbiKpiPeriodicity) aSession
 					.load(SbiKpiPeriodicity.class, value.getKpiInstance()
 							.getPeriodicityId()));
 		} else {
 			sbiKpiInstance.setSbiKpiPeriodicity(null);
-		}
+		}*/
 
 		sbiKpiInstance.setWeight(value.getKpiInstance().getWeight());
 		return sbiKpiInstance;
@@ -459,10 +459,10 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 				aKpiInstance.setChartTypeId(sbiKpiInstance.getSbiDomains()
 						.getValueId());
 			}
-			if (sbiKpiInstance.getSbiKpiPeriodicity() != null) {
+			/*TODO	if (sbiKpiInstance.getSbiKpiPeriodicity() != null) {
 				aKpiInstance.setPeriodicityId(sbiKpiInstance
 						.getSbiKpiPeriodicity().getIdKpiPeriodicity());
-			}
+			}*/
 			aKpiInstance.setWeight(sbiKpiInstance.getWeight());
 			aKpiInstance.setD(sbiKpiInstance.getBeginDt());
 			//

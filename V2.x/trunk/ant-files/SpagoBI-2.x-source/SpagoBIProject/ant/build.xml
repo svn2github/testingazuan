@@ -105,6 +105,18 @@
 	<target name="create.service.client.jar">
     <mkdir dir="${dist}/${webapp_name}"/>
     <jar destfile="${dist}/${webapp_name}/spagobi.service.client-${project.version}.jar">
+    
+    			<fileset dir="${build}/${webapp_name}/WEB-INF/classes"
+				includes="/it/eng/spagobi/tools/dataset/bo/*,
+				it/eng/spagobi/tools/dataset/common/**/*">
+	
+			</fileset>
+			
+			<fileset dir="${build}/${webapp_name}/WEB-INF/classes"
+							includes="/it/eng/spagobi/tools/datasource/bo/*">
+				
+			</fileset>
+			
       <fileset dir="${build}/${webapp_name}/WEB-INF/classes"
 		             includes="it/eng/spagobi/services/audit/stub/AuditService.class,
                    it/eng/spagobi/services/audit/stub/AuditServiceService.class,
@@ -193,7 +205,7 @@
 
   <target name="makeDist" >    
     <antcall target="create.war" />
-    <antcall target="javadoc" />
+<!--    <antcall target="javadoc" />  -->
     <antcall target="create.service.client.jar" />
   </target>
   

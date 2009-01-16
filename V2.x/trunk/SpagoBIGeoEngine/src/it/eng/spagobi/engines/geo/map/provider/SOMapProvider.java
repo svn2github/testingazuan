@@ -71,13 +71,16 @@ public class SOMapProvider extends AbstractMapProvider {
 	 * @see it.eng.spagobi.engines.geo.map.provider.AbstractMapProvider#getSVGMapDOMDocument(java.lang.String)
 	 */
 	public SVGDocument getSVGMapDOMDocument(String mapName) throws GeoEngineException {
+	    logger.debug("IN.mapName="+mapName);
 		SVGDocument svgDocument = null;		
 		String mapUrl = null;		
 		
 			
 		try {
 			mapUrl = mapCatalogueServiceProxy.getMapUrl(mapName);
+			logger.debug("mapUrl="+mapUrl);
 			mapUrl = GeoEngineConfig.getInstance().getSpagoBIServerUrl() +  mapUrl;
+			logger.debug("mapUrl="+mapUrl);
 		} catch (Exception e) {
 			logger.error("An error occurred while invoking mapCatalogueService method: getMapUrl()");
 			throw new GeoEngineException("Impossible to load map from url: " + mapUrl, e);
@@ -92,7 +95,7 @@ public class SOMapProvider extends AbstractMapProvider {
 		}
 		
 		
-		
+		logger.debug("OUT");
 		
 		return svgDocument;
 	}

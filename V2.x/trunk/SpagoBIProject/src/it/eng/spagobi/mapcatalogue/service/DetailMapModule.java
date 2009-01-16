@@ -238,6 +238,7 @@ private void modDetailMap(SourceBean serviceRequest, String mod, SourceBean serv
 			loadUpdateMapFeatures(mapNew);
 			GeoMap tmpMap = DAOFactory.getSbiGeoMapsDAO().loadMapByName(mapNew.getName());
 			mapNew.setMapId(tmpMap.getMapId());
+			mapNew.setBinId(tmpMap.getBinId());
 			serviceResponse.setAttribute("mapObj", mapNew);
 			serviceResponse.setAttribute("modality", SpagoBIConstants.DETAIL_MOD);
 			

@@ -12,7 +12,6 @@
 	        <COLUMN label="ID" name="ID" hidden="true"/>       
 	        <COLUMN label="SBIMapCatalogue.columnName" name="NAME"/>
 	        <COLUMN label="SBIMapCatalogue.columnDescr" name="DESCR"/>
-	        <COLUMN label="SBIMapCatalogue.columnUrl" name="URL"/>
 	        <COLUMN label="SBIMapCatalogue.columnFormat" name="FORMAT"/>
 	        <COLUMN label="SBIMapCatalogue.columnNumFeatures" name="NUM_FEATURES"/>
 	      </COLUMNS>
@@ -32,6 +31,7 @@
 	        <INSERT_BUTTON confirm="FALSE" image="/img/new.png" label="SBIMapCatalogue.insertButton">
 		      <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_NEW"/>
 	          <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="detailMapPage"/> 
+	          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
 	        </INSERT_BUTTON>
 	        <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="SBIMapCatalogue.backButton" onlyPortletRunning="true">
 	          <PARAMETER name="ACTION_NAME" scope="" type="ABSOLUTE" value="START_ACTION"/>

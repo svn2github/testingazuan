@@ -62,12 +62,14 @@ public class KpiEngineJob implements Job {
 		      // use this variable for running the KPI Engine
 		      String modelInstanceId = dataMap.getString(MODEL_INSTANCE_ID);
 		      logger.debug("modelInstanceId="+modelInstanceId);
-		      String periodicityID = dataMap.getString(PERIODICITY_ID);
-		      logger.debug("periodicity ID="+periodicityID);
-		      
+		     /* String periodicityID = dataMap.getString(PERIODICITY_ID);
+		      logger.debug("periodicity ID="+periodicityID);*/
+		      String cascade = dataMap.getString("cascade");		      
 	      
 		      Date data=context.getFireTime();
 		      logger.debug("data="+data.toString());
+		      Date beginDate=context.getScheduledFireTime();
+		      Date endDate=context.getNextFireTime();
 		      
 		      
 		      SourceBean request = null;
@@ -97,8 +99,9 @@ public class KpiEngineJob implements Job {
 	    		permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 	    		errorHandler = defaultRequestContext.getErrorHandler();
 	    		reqContainer.setAttribute("model_node_instance", modelInstanceId);
-	    		reqContainer.setAttribute("periodicity_id", periodicityID);
-	    		reqContainer.setAttribute("start_date", data);
+	    		reqContainer.setAttribute("start_date", beginDate);
+	    		reqContainer.setAttribute("end_date", endDate);
+	    		reqContainer.setAttribute("cascade", cascade);
 	    		reqContainer.setAttribute("recalculate_anyway", "true");
 
 	    		SpagoBIKpiInternalEngine engine = new SpagoBIKpiInternalEngine();	    		

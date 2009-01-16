@@ -112,6 +112,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     
     protected Date dateOfKPI = new Date();//date when the kpiValues are requested
     
+    protected Date endKpiValueDate = null;//End validity date for the kpiValues 
+    
     protected Integer periodInstID = null;
 
     //Method usually called by the scheduler only in order to recalculate kpi values
@@ -132,6 +134,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     	}	
     	    // Date for which we want to see the KpiValues
     	    this.dateOfKPI = (Date)requestContainer.getAttribute("start_date");
+    	    this.endKpiValueDate = (Date)requestContainer.getAttribute("end_date");
+    	    String cascade = (String)requestContainer.getAttribute("cascade");	
+    	   
 
     	    // **************take informations on the modelInstance and its KpiValues*****************
     	    String modelNodeInstance = (String) requestContainer.getAttribute("model_node_instance");
@@ -141,15 +146,14 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     	    	logger.error("The modelNodeInstanceId specified in the template is null");
     	    	throw new EMFUserError(EMFErrorSeverity.ERROR, "10106", messageBundle);
     	    }
-    	    String periodInstanceID = (String)requestContainer.getAttribute("periodicity_id");
+    	    /*String periodInstanceID = (String)requestContainer.getAttribute("periodicity_id");
     	    logger.debug("PeriodInstanceID : " + (periodInstanceID!=null ? periodInstanceID : "null"));
     	    
     	    if (periodInstanceID == null) {
     	    	logger.error("No periodInstID specified");
     	    }else{
     	    	periodInstID = new Integer(periodInstanceID);
-    	    }
-    	    logger.debug("Setted the configuration of the template");
+    	    }*/
 
     	    List kpiRBlocks = new ArrayList();// List of KpiValues Trees for
     						// each Resource: it will be sent to the jsp
@@ -164,34 +168,75 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     	    }
     	    logger.debug("Setted the List of Resources related to the specified Model Instance");
 
-    	    try {
-    	    if (this.resources == null || this.resources.isEmpty()) {
-    			logger.debug("There are no resources assigned to the Model Instance");
-    			
-    			KpiResourceBlock block = new KpiResourceBlock();
-    			block.setD(this.dateOfKPI);
-    			KpiLine line = getBlock(modelNodeInstanceID, null);				
-    			block.setRoot(line);
-    			logger.debug("Setted the tree Root.");
-    			kpiRBlocks.add(block);
-    			
-    	    } else {
-    			Iterator resourcesIt = this.resources.iterator();
-    			while (resourcesIt.hasNext()) {
-    			    Resource r = (Resource) resourcesIt.next();
-    			    logger.debug("Resource: " + r.getName());
-    			    KpiResourceBlock block = new KpiResourceBlock();
-    			    block.setR(r);
-    			    block.setD(dateOfKPI);
-    			    KpiLine line = getBlock(modelNodeInstanceID, r);
-    			    block.setRoot(line);
-    			    logger.debug("Setted the tree Root.");
-    			    kpiRBlocks.add(block);
-    			}
+    	    if (cascade!=null && cascade.equals("true")){//in case all the kpi children have to be calculated too
+    	    	   	    
+	    	    try {
+	    	    if (this.resources == null || this.resources.isEmpty()) {
+	    			logger.debug("There are no resources assigned to the Model Instance");
+	    			
+	    			KpiResourceBlock block = new KpiResourceBlock();
+	    			block.setD(this.dateOfKPI);
+	    			KpiLine line = getBlock(modelNodeInstanceID, null);				
+	    			block.setRoot(line);
+	    			logger.debug("Setted the tree Root.");
+	    			kpiRBlocks.add(block);
+	    			
+	    	    } else {
+	    			Iterator resourcesIt = this.resources.iterator();
+	    			while (resourcesIt.hasNext()) {
+	    			    Resource r = (Resource) resourcesIt.next();
+	    			    logger.debug("Resource: " + r.getName());
+	    			    KpiResourceBlock block = new KpiResourceBlock();
+	    			    block.setR(r);
+	    			    block.setD(dateOfKPI);
+	    			    KpiLine line = getBlock(modelNodeInstanceID, r);
+	    			    block.setRoot(line);
+	    			    logger.debug("Setted the tree Root.");
+	    			    kpiRBlocks.add(block);
+	    			}
+	    	    }
+	    	    } catch (EMFInternalError e) {
+					e.printStackTrace();
+				}
+    	    }else{//in case all the kpi children don't have to be calculated 
+    	    	 try {
+    	    		 	KpiInstance kpiI = mI.getKpiInstanceAssociated();
+		    			IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
+    		    	    if (this.resources == null || this.resources.isEmpty()) {
+    		    			logger.debug("There are no resources assigned to the Model Instance");
+    		    			
+       		    			logger.debug("Retrieved the Dataset to be calculated: " + dataSet.getId());
+    		    			KpiValue value = getNewKpiValue(dataSet, kpiI, null);
+    		    			logger.debug("New value calculated");
+    		    			// Insert new Value into the DB
+    		    			DAOFactory.getKpiDAO().insertKpiValue(value);
+    		    			logger.debug("New value inserted in the DB");		
+    		    			// Checks if the value is alarming (out of a certain range)
+    		    			// If the value is alarming a new line will be inserted in the
+    		    			// sbi_alarm_event table and scheduled to be sent
+    		    			DAOFactory.getKpiDAO().isAlarmingValue(value);   		    			
+    		    			
+    		    	    } else {
+    		    			Iterator resourcesIt = this.resources.iterator();
+    		    			while (resourcesIt.hasNext()) {
+    		    			    Resource r = (Resource) resourcesIt.next();
+    		    			    logger.debug("Resource: " + r.getName());
+    		    			    logger.debug("Retrieved the Dataset to be calculated: " + dataSet.getId());
+        		    			KpiValue value = getNewKpiValue(dataSet, kpiI, r);
+        		    			logger.debug("New value calculated");
+        		    			// Insert new Value into the DB
+        		    			DAOFactory.getKpiDAO().insertKpiValue(value);
+        		    			logger.debug("New value inserted in the DB");		
+        		    			// Checks if the value is alarming (out of a certain range)
+        		    			// If the value is alarming a new line will be inserted in the
+        		    			// sbi_alarm_event table and scheduled to be sent
+        		    			DAOFactory.getKpiDAO().isAlarmingValue(value);   
+    		    			}
+    		    	    }
+    		    	    } catch (EMFInternalError e) {
+    						e.printStackTrace();
+    					}
     	    }
-    	    } catch (EMFInternalError e) {
-				e.printStackTrace();
-			}
     	    logger.debug("OUT");    	
         }
     
@@ -488,22 +533,28 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	logger.debug("START calculating the new KpiValue:");
 	KpiValue kVal = new KpiValue();
 	Date begD = dateOfKPI;
+	Date endDate = null;
 	kVal.setBeginDate(begD);
 	logger.debug("Setted the KpiValue begin Date:"+begD);
 	KpiInstance kpiInst = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
-	Integer seconds = null;
-	if(periodInstID!=null){
-		kpiInst.setPeriodicityId(periodInstID);
-		logger.debug("Setted new Periodicity ID:"+periodInstID.toString());
+	if(endKpiValueDate!=null){
+		endDate = endKpiValueDate;
+		kVal.setEndDate(endKpiValueDate);
+	}else{
+		Integer seconds = null;
+		if(periodInstID!=null){
+			kpiInst.setPeriodicityId(periodInstID);
+			logger.debug("Setted new Periodicity ID:"+periodInstID.toString());
+		}
+		seconds = DAOFactory.getKpiDAO().getPeriodicitySeconds(kpiInst.getPeriodicityId());
+			
+		// Transforms seconds into milliseconds
+		long milliSeconds = seconds.longValue() * 1000;
+		long begDtTime = begD.getTime();
+		long endTime = begDtTime + milliSeconds;
+		endDate = new Date(endTime);
+		kVal.setEndDate(endDate);
 	}
-	seconds = DAOFactory.getKpiDAO().getPeriodicitySeconds(kpiInst.getPeriodicityId());
-		
-	// Transforms seconds into milliseconds
-	long milliSeconds = seconds.longValue() * 1000;
-	long begDtTime = begD.getTime();
-	long endTime = begDtTime + milliSeconds;
-	Date endDate = new Date(endTime);
-	kVal.setEndDate(endDate);
 	Integer kpiInstanceID = k.getKpiInstanceId();
 	Double weight = null;
 	Double target = null;

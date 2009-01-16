@@ -32,7 +32,8 @@ public class InsertJob {
 	
 	    JobDataMap data=new JobDataMap();
 	    data.put("MODEL_INSTANCE_ID", "1");
-	    data.put("PERIODICITY_ID", "2");
+	    data.put("cascade", "false");
+	    //data.put("PERIODICITY_ID", "2");
 	    
 		// CREATE JOB DETAIL 
 		JobDetail jobDetail = new JobDetail();

@@ -30,6 +30,8 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDA
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.tools.scheduler.Formula;
+import it.eng.spagobi.tools.scheduler.FormulaParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.RuntimeLoadingParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
@@ -217,10 +219,24 @@ public class SchedulerUtilities {
 							String loadAtRuntime = loadAtRuntimeArray[count];
 							int parameterUrlNameIndex = loadAtRuntime.lastIndexOf("(");
 							String parameterUrlName = loadAtRuntime.substring(0, parameterUrlNameIndex);
-							String userAndRole = loadAtRuntime.substring(parameterUrlNameIndex + 2, loadAtRuntime.length() - 2);
+							String userAndRole = loadAtRuntime.substring(parameterUrlNameIndex + 1, loadAtRuntime.length() - 1);
 							loadAtRuntimeParameters.put(parameterUrlName, userAndRole);
 						}
 					}
+					SourceBean useFormulaSB = (SourceBean)jobParSB.getFilteredSourceBeanAttribute("JOB_PARAMETER", "name", biobjlbl + "_useFormula");
+					Map<String, String> useFormulaParameters = new HashMap<String, String>();
+					if (useFormulaSB != null) {
+						String useFormulaStr = (String) useFormulaSB.getAttribute("value");
+						String[] useFormulaArray = useFormulaStr.split(";");
+						for (int count = 0; count < useFormulaArray.length; count++) {
+							String useFormula = useFormulaArray[count];
+							int parameterUrlNameIndex = useFormula.lastIndexOf("(");
+							String parameterUrlName = useFormula.substring(0, parameterUrlNameIndex);
+							String fName = useFormula.substring(parameterUrlNameIndex + 1, useFormula.length() - 1);
+							useFormulaParameters.put(parameterUrlName, fName);
+						}
+					}
+					
 					String queryString = (String)queryStringSB.getAttribute("value");
 					String[] parCouples = queryString.split("%26");
 					Iterator iterbiobjpar = biobjpars.iterator();
@@ -237,6 +253,12 @@ public class SchedulerUtilities {
 							String[] userRole = userRoleStr.split("\\|");
 							strategy.setUserIndentifierToBeUsed(userRole[0]);
 							strategy.setRoleToBeUsed(userRole[1]);
+							biobjpar.setParameterValuesRetriever(strategy);
+						} else if (useFormulaParameters.containsKey(biobjpar.getParameterUrlName())) { 
+							FormulaParameterValuesRetriever strategy = new FormulaParameterValuesRetriever();
+							String fName = useFormulaParameters.get(biobjpar.getParameterUrlName());
+							Formula f = Formula.getFormula(fName);
+							strategy.setFormula(f);
 							biobjpar.setParameterValuesRetriever(strategy);
 						} else {
 							for(int j=0; j<parCouples.length; j++) {

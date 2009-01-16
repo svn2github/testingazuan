@@ -52,6 +52,8 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
+import it.eng.spagobi.tools.scheduler.Formula;
+import it.eng.spagobi.tools.scheduler.FormulaParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.RuntimeLoadingParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.utils.BIObjectParametersIterator;
@@ -127,8 +129,10 @@ public class ExecuteBIDocumentJob implements Job {
 				setIterativeParameters(biobj, iterativeParametersString);
 				String loadAtRuntimeParametersString = jdm.getString(docLabel + "_loadAtRuntime");
 				setLoadAtRuntimeParameters(biobj, loadAtRuntimeParametersString);
+				String useFormulaParametersString = jdm.getString(docLabel + "_useFormula");
+				setUseFormulaParameters(biobj, useFormulaParametersString);
 				
-				loadRuntimeParametersValues(biobj);
+				retrieveParametersValues(biobj);
 				
 				IDataStore dataStore = null;
 				if (sInfo.isUseDataSet()) {
@@ -261,7 +265,7 @@ public class ExecuteBIDocumentJob implements Job {
 	
 	
 	
-	private void loadRuntimeParametersValues(BIObject biobj) throws Exception {
+	private void retrieveParametersValues(BIObject biobj) throws Exception {
 		logger.debug("IN");
 		try {
 			List parameters = biobj.getBiObjectParameters();
@@ -322,7 +326,6 @@ public class ExecuteBIDocumentJob implements Job {
 			Iterator it = parameters.iterator();
 			while (it.hasNext()) {
 				BIObjectParameter parameter = (BIObjectParameter) it.next();
-				parameter.setParameterValuesRetriever(null);
 				if (loadAtRuntimeParametersMap.containsKey(parameter.getParameterUrlName())) {
 					logger.debug("Document parameter with url name [" + parameter.getParameterUrlName() + "] was configured to be calculated at runtime.");
 					RuntimeLoadingParameterValuesRetriever strategy = new RuntimeLoadingParameterValuesRetriever();
@@ -369,7 +372,46 @@ public class ExecuteBIDocumentJob implements Job {
 	    }
 	}
 
-
+	private void setUseFormulaParameters(BIObject biobj, String useFormulaParametersString) {
+		logger.debug("IN");
+		try {
+			List parameters = biobj.getBiObjectParameters();
+			if (parameters == null || parameters.isEmpty()) {
+				logger.debug("Document has no parameters");
+				return;
+			}
+			if (useFormulaParametersString == null || useFormulaParametersString.trim().trim().equals("")) {
+				logger.debug("No parameters using formula found");
+				return;
+			}
+			
+			String[] useFormulaParameters = useFormulaParametersString.split(";");
+			
+			Map<String, String> useFormulaParametersMap = new HashMap<String, String>();
+			for (int count = 0; count < useFormulaParameters.length; count++) {
+				String useFormula = useFormulaParameters[count];
+				int parameterUrlNameIndex = useFormula.lastIndexOf("(");
+				String parameterUrlName = useFormula.substring(0, parameterUrlNameIndex);
+				String userAndRole = useFormula.substring(parameterUrlNameIndex + 1, useFormula.length() - 1);
+				useFormulaParametersMap.put(parameterUrlName, userAndRole);
+			}
+			
+			Iterator it = parameters.iterator();
+			while (it.hasNext()) {
+				BIObjectParameter parameter = (BIObjectParameter) it.next();
+				if (useFormulaParametersMap.containsKey(parameter.getParameterUrlName())) {
+					logger.debug("Document parameter with url name [" + parameter.getParameterUrlName() + "] was configured to use a formula.");
+					FormulaParameterValuesRetriever strategy = new FormulaParameterValuesRetriever();
+					String fName = useFormulaParametersMap.get(parameter.getParameterUrlName());
+					Formula f = Formula.getFormula(fName);
+					strategy.setFormula(f);
+					parameter.setParameterValuesRetriever(strategy);
+				}
+			}
+	    } finally {
+	    	logger.debug("OUT");
+	    }
+	}
 
 
 	private void saveAsSnap(SaveInfo sInfo,BIObject biobj, byte[] response, String toBeAppendedToName, String toBeAppendedToDescription) {

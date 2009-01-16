@@ -38,6 +38,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDA
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.services.scheduler.service.SchedulerServiceSupplier;
+import it.eng.spagobi.tools.scheduler.Formula;
 import it.eng.spagobi.tools.scheduler.FormulaParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.RuntimeLoadingParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
@@ -412,6 +413,7 @@ public class JobManagementModule extends AbstractModule {
 				StringBuffer fixedParameters = new StringBuffer("");
 				StringBuffer iterativeParameters = new StringBuffer("");
 				StringBuffer loadAtRuntimeParameters = new StringBuffer("");
+				StringBuffer useFormulaParameters = new StringBuffer("");
 				while(iterPars.hasNext()) {
 					BIObjectParameter biobjpar = (BIObjectParameter)iterPars.next();
 					if (biobjpar.isIterative()) {
@@ -423,6 +425,10 @@ public class JobManagementModule extends AbstractModule {
 						String user = strategy.getUserIndentifierToBeUsed();
 						String role = strategy.getRoleToBeUsed();
 						loadAtRuntimeParameters.append(biobjpar.getParameterUrlName() + "(" + user + "|" + role + ");");
+					} else if (strategyObj != null && strategyObj instanceof FormulaParameterValuesRetriever) { 
+						FormulaParameterValuesRetriever strategy = (FormulaParameterValuesRetriever) strategyObj;
+						String fName = strategy.getFormula().getName();
+						useFormulaParameters.append(biobjpar.getParameterUrlName() + "(" + fName + ");");
 					} else {
 						String concatenatedValue = "";
 						List values = biobjpar.getParameterValues();
@@ -454,6 +460,10 @@ public class JobManagementModule extends AbstractModule {
 				if (loadAtRuntimeParameters.length() > 0) {
 					loadAtRuntimeParameters.deleteCharAt(loadAtRuntimeParameters.length() - 1);
 					message.append("<PARAMETER name=\""+biobj.getLabel()+"__"+index+"_loadAtRuntime\" value=\""+loadAtRuntimeParameters.toString()+"\" />");
+				}
+				if (useFormulaParameters.length() > 0) {
+					useFormulaParameters.deleteCharAt(useFormulaParameters.length() - 1);
+					message.append("<PARAMETER name=\""+biobj.getLabel()+"__"+index+"_useFormula\" value=\""+useFormulaParameters.toString()+"\" />");
 				}
 				doclabels += biobj.getLabel() +"__"+index+ ",";
 			}
@@ -574,9 +584,10 @@ public class JobManagementModule extends AbstractModule {
 				boolean isIterative = isIterativeStr != null && isIterativeStr.equalsIgnoreCase("true");
 				biobjpar.setIterative(isIterative);
 				if (useFormula) {
-					String formula = (String) request.getAttribute(nameParInRequest + "_formula");
+					String fName = (String) request.getAttribute(nameParInRequest + "_formula");
 					FormulaParameterValuesRetriever strategy = new FormulaParameterValuesRetriever();
-					strategy.setFormulaName(formula);
+					Formula f = Formula.getFormula(fName);
+					strategy.setFormula(f);
 					biobjpar.setParameterValuesRetriever(strategy);
 				} else if (loadAtRuntime) {
 					RuntimeLoadingParameterValuesRetriever strategy = new RuntimeLoadingParameterValuesRetriever();
@@ -585,6 +596,7 @@ public class JobManagementModule extends AbstractModule {
 					strategy.setRoleToBeUsed(roleToBeUsed);
 					biobjpar.setParameterValuesRetriever(strategy);
 				} else if (useFixedValues) {
+					biobjpar.setParameterValuesRetriever(null);
 					String valueParConcat = (String)request.getAttribute(nameParInRequest);
 					if(valueParConcat!=null){
 						if(valueParConcat.trim().equals("")) {

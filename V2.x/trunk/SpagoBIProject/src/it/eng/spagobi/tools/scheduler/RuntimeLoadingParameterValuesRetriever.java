@@ -42,6 +42,14 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * 
+ * This class retrieves values for the input BIObjectParameter using the modality related to 
+ * the roleToBeUsed field and the user profile specified by the userIndentifierToBeUsed field.
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public class RuntimeLoadingParameterValuesRetriever extends
 		ParameterValuesRetriever {
 	

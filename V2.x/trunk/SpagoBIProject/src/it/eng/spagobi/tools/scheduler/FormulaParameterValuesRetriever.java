@@ -29,26 +29,38 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * This class retrieves values executing a Formula object
+ * 
+ * @author Zerbetto (davide.zerbetto@eng.it)
+ *
+ */
 public class FormulaParameterValuesRetriever extends
 		ParameterValuesRetriever {
 	
 	static private Logger logger = Logger.getLogger(FormulaParameterValuesRetriever.class);	
 
-	private String formulaName;
+	private Formula formula;
 	
 	@Override
 	public List<String> retrieveValues(BIObjectParameter parameter) throws Exception {
 		logger.debug("IN");
 		List<String> toReturn = new ArrayList<String>();
+		String result = formula.execute();
+		logger.debug("Result obtained from formula is [" + result + "]");
+		if (result != null) {
+			toReturn.add(result);
+		}
+		logger.debug("IN");
 		return toReturn;
 	}
 
-	public String getFormulaName() {
-		return formulaName;
+	public Formula getFormula() {
+		return formula;
 	}
 
-	public void setFormulaName(String formulaName) {
-		this.formulaName = formulaName;
+	public void setFormula(Formula formula) {
+		this.formula = formula;
 	}
 
 }

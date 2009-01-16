@@ -30,6 +30,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -219,13 +220,7 @@ public class TriggerManagementModule extends AbstractModule {
 			triggerInfo.setChronString(chronstr);
 			triggerInfo.setTriggerDescription(triggerDescription);
 			triggerInfo.setTriggerName(triggername);
-			// check for input validation errors 
-			if(!this.getErrorHandler().isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
-				List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
-				response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
-				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TriggerDetail");
-				return;
-			}
+
 			Map saveOptions = new HashMap();
 			List biobjIds = jobInfo.getBiobjectIds();
 			Iterator iterBiobjIds = biobjIds.iterator();
@@ -270,8 +265,14 @@ public class TriggerManagementModule extends AbstractModule {
 					boolean useFixedRecipients = "true".equalsIgnoreCase((String) request.getAttribute("useFixedRecipients_"+biobId+"__"+index));
 					sInfo.setUseFixedRecipients(useFixedRecipients);
 					if (useFixedRecipients) {
-						String mailtos = (String)request.getAttribute("mailtos_"+biobId+"__"+index);	
+						String mailtos = (String)request.getAttribute("mailtos_"+biobId+"__"+index);
 						sInfo.setMailTos(mailtos);
+						if (mailtos == null || mailtos.trim().equals("")) {
+							BIObject biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(biobId);
+							List params = new ArrayList();
+							params.add(biobj.getName());
+							this.getErrorHandler().addError(new EMFValidationError(EMFErrorSeverity.ERROR, null, "errors.trigger.missingFixedRecipients", params, "component_scheduler_messages"));
+						}
 					}
 					boolean useDataset = "true".equalsIgnoreCase((String) request.getAttribute("useDataset_"+biobId+"__"+index));
 					sInfo.setUseDataSet(useDataset);
@@ -280,13 +281,39 @@ public class TriggerManagementModule extends AbstractModule {
 						sInfo.setDataSetLabel(dsLabel);
 						String datasetParameterLabel = (String)request.getAttribute("datasetParameter_"+biobId+"__"+index);	
 						sInfo.setDataSetParameterLabel(datasetParameterLabel);
+						if (dsLabel == null || dsLabel.trim().equals("")) {
+							BIObject biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(biobId);
+							List params = new ArrayList();
+							params.add(biobj.getName());
+							this.getErrorHandler().addError(new EMFValidationError(EMFErrorSeverity.ERROR, null, "errors.trigger.missingDataSet", params, "component_scheduler_messages"));
+						}
+						if (datasetParameterLabel == null || datasetParameterLabel.trim().equals("")) {
+							BIObject biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(biobId);
+							List params = new ArrayList();
+							params.add(biobj.getName());
+							this.getErrorHandler().addError(new EMFValidationError(EMFErrorSeverity.ERROR, null, "errors.trigger.missingDataSetParameter", params, "component_scheduler_messages"));
+						}
 					}
 					boolean useExpression = "true".equalsIgnoreCase((String) request.getAttribute("useExpression_"+biobId+"__"+index));
 					sInfo.setUseExpression(useExpression);
 					if (useExpression) {
 						String expression = (String)request.getAttribute("expression_"+biobId+"__"+index);	
 						sInfo.setExpression(expression);
+						if (expression == null || expression.trim().equals("")) {
+							BIObject biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(biobId);
+							List params = new ArrayList();
+							params.add(biobj.getName());
+							this.getErrorHandler().addError(new EMFValidationError(EMFErrorSeverity.ERROR, null, "errors.trigger.missingExpression", params, "component_scheduler_messages"));
+						}
 					}
+					
+					if (!useFixedRecipients && !useDataset && !useExpression) {
+						BIObject biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(biobId);
+						List params = new ArrayList();
+						params.add(biobj.getName());
+						this.getErrorHandler().addError(new EMFValidationError(EMFErrorSeverity.ERROR, null, "errors.trigger.missingRecipients", params, "component_scheduler_messages"));	
+					}
+					
 					String mailsubj = (String)request.getAttribute("mailsubj_"+biobId+"__"+index);	
 					sInfo.setMailSubj(mailsubj);
 					String mailtxt = (String)request.getAttribute("mailtxt_"+biobId+"__"+index);	
@@ -317,6 +344,14 @@ public class TriggerManagementModule extends AbstractModule {
 				saveOptions.put(biobId+"__"+index, sInfo);
 			}
 			triggerInfo.setSaveOptions(saveOptions);
+			
+			// check for input validation errors 
+			if(!this.getErrorHandler().isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
+				List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
+				response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TriggerDetail");
+				return;
+			}
 			
 			StringBuffer message = createMessageSaveSchedulation(triggerInfo, false);
 			// call the web service to create the schedule

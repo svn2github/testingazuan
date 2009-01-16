@@ -21,11 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.analiticalmodel.document.service;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.log4j.Logger;
-import org.jaxen.function.IdFunction;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;

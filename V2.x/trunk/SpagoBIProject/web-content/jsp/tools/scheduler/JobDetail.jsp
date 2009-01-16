@@ -64,8 +64,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 	
 	Map formUrlPars = new HashMap();
-	formUrlPars.put("PAGE", "JobManagementPage");
-	formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);   
 	   
 	String splitter = ";";
@@ -386,7 +384,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</center>
 </div>
 
-<form id="jobdetailform" method="post" action="<%=formUrl%>" >
+<form id="jobdetailform" method="get" action="<%=formUrl%>" >
+	<input type="hidden" name="PAGE" value="JobManagementPage" />
+	<input type="hidden" name="<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>" value="true" />
 	<input id="formmsg" type="hidden" name="MESSAGEDET" value="" />
 	<input id="splitterparameter" type="hidden" name="splitter" value="<%=splitter%>" />
 	<input id="selected_biobject_ids" type="hidden" name="selected_biobject_ids" value="" />

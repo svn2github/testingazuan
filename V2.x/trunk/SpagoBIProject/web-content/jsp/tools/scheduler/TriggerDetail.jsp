@@ -1203,16 +1203,15 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
   	      	</div>
 	  	    <div class='div_detail_form'>
 	  		        <input type="text" name="mailsubj_<%=biobj.getId()%>__<%=index%>" 
-	  		               value="<%=sInfo.getMailSubj()%>" size="35" />
+	  		               value="<%=sInfo.getMailSubj()%>" size="60" />
 	  	    </div>
 	  	    <div class='div_detail_label_scheduler'>
   		      <span class='portlet-form-field-label'>
   			       <spagobi:message key="Mail text" bundle="component_scheduler_messages"/>
   		      </span>
   	      	</div>
-	  	    <div class='div_detail_form'>
-	  		        <input  type="text" name="mailtxt_<%=biobj.getId()%>__<%=index%>" 
-	  		               value="<%=sInfo.getMailTxt()%>" size="55" />
+	  	    <div class='div_detail_form' style="height:125px;">
+	  	    		<textarea rows="8" cols="60" name="mailtxt_<%=biobj.getId()%>__<%=index%>" style="font-size:9pt"><%=sInfo.getMailTxt()%></textarea>
 	  	    </div>
   	     </div>
 

@@ -12,6 +12,10 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
   members : {
   	
   			insertWin: undefined,
+  			nodeX: undefined,
+  			nodeY: undefined,
+  			contextMenu: undefined,
+  			previousNode: undefined,
   			
   			createFunctionalTree : function(){
   			
@@ -109,40 +113,44 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
   								});
   		
   			//this._add(this.tree, {height: "100%"});
-  		
-  			this.addListener("contextmenu",this._createMenu,this);	//right-click calls the function
   			
+  			
+  			this.addListener("contextmenu",this._createMenu,this);	//right-click calls the function
+  			/*
+  			function context(){
+			//This function takes care of Net 6 and IE.
+			return false;
+			}
+
+			document.onmousedown=right;
+			document.oncontextmenu=context;
+			*/ 
   	},
   
-  /*
+     /**
+	               * Function to show a Context Menu associated to the node when it is clicked
+	               * <p> It is called by a generic event handler associated with the tree
+	               * <p><p>
+	               * *Example :- *
+	               * <p> var myTree = new spagobi.ui.Tree({root: "Root"});
+	               * <p> myTree.addListener("click",myTree.onClickMenu,myTree);
+	               *                                                                                     	               
+	               */
           _createMenu : function(e){
           				//e is Qooxdoo wrapper event for Javascript mouseevent e._native
           				//alert(spagobi.commons.CoreUtils.toStr(e._native));
-          				var contextMenu = new qx.ui.menu.Menu;
           				
-	             		var insertButton = new qx.ui.menu.Button("Insert");//,null,insertCmd); // handleClick(var vItem, Event e)
-	               		var deleteButton = new qx.ui.menu.Button("Delete");//,null,deleteCmd);
-	             //  	var moveUpButton = new qx.ui.menu.Button("Move Up");//,null,moveUpCmd);
-	             //  	var moveDownButton = new qx.ui.menu.Button("Move Down");//,null,moveDownCmd);
-	               		
-	               		contextMenu.add(insertButton);
-	               		contextMenu.add(deleteButton);
-	               		
-	               		//var node = this.tree.getSelectedItem();
-	               		//var ele = node.getContentElement();
-	               		//this._getRoot().add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
-	               		this.getApplicationRoot().add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
-	               		contextMenu.setOpener(this.getSelectedItem());
-	               		
-	               		contextMenu.show();
-	               		
-	               		
-	               		
-          },
-   */    
-          _createMenu : function(e){
-          				//e is Qooxdoo wrapper event for Javascript mouseevent e._native
-          				//alert(spagobi.commons.CoreUtils.toStr(e._native));
+          				
+          				// prevents default context menu by browser over tree node clicks
+          				//but another right-click over the contextmenu still gets the browser menu 
+          				if(navigator.appName === 'Netscape'){
+          					e._native.preventDefault();
+          				}
+          				else{
+          					e._native.returnValue = true;
+          				}
+          				
+          				          				
           				var insertCmd = new qx.event.Command();
         				insertCmd.addListener("execute", this._insertCmd,this);
         				
@@ -155,7 +163,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
         				var moveDownCmd = new qx.event.Command();
         				moveDownCmd.addListener("execute", this.moveDownNode,this);
           				
-          				var contextMenu = new qx.ui.menu.Menu;
+          				this.contextMenu = new qx.ui.menu.Menu;
           				
 	             		var insertButton = new qx.ui.menu.Button("Insert",null,insertCmd); 
 	               		var deleteButton = new qx.ui.menu.Button("Delete",null,deleteCmd);
@@ -164,9 +172,75 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 	               		
 	               		var node = this.getSelectedItem();
 	               		
+	               		//check if right click is done without selecting any node
+	               		if(node == undefined){
+	               			return;
+	               		}
+	               		
+	               		//clicking outside the tree should not show the context menu
+	               		
+	               		if(this.previousNode == undefined){
+	               			this.previousNode = node;
+	               		}
+	               		else if(node == this.previousNode){
+	               				//compare mouse co-ordinates with node coordinates
+	               				
+	               				//var childrenAbove = this.getRoot().getChildren().indexOf(node);
+	               				//var nodeTop = childrenAbove * node.getheight();
+	               				//if(e._native.clientY){
+	               				
+	               				var ele = node.getContentElement();
+	               				var obj = ele._element;
+			               		var curleft = 0;
+			               		var curtop = 0;
+			               		do {
+									curleft += obj.offsetLeft;
+									curtop += obj.offsetTop;
+			               		} while (obj = obj.offsetParent);//(obj = obj.offsetParent)
+	               				
+	               				//alert(curleft + "," + curtop + "," + e._native.clientX + "," + e._native.clientY);
+	               				
+	               				var nodeBounds = node.getBounds();
+	               				if(e._native.clientY < curtop || e._native.clientY > curtop+nodeBounds.height){
+	               					return;
+	               				}
+	               			//this.previousNode = node;	
+	               		}		
+	               		//}
+	               		//else{		//different node selected
+	               		
+	               		//alert(e.getDocumentLeft() + ","+ e.getScreenLeft() +"," + e.getViewportLeft() + "," +e._native.clientX);
+	               		//alert(spagobi.commons.CoreUtils.toStr(ele));//_createDomElement
+	               		//alert(ele._element.offsetLeft);
+	               		
+	               		
+	               		
+	               		 
+	               		//alert(ele._element.left);//spagobi.commons.CoreUtils.toStr(ele)
+	               		//var arr = this.getApplicationRoot().getChildren();
+	               		
+	               		//alert(this.getLayoutParent());
+	               		//var nodeBounds = node.getBounds();	
+	               		//alert("" + nodeBounds.left + "," + nodeBounds.top + ","+ nodeBounds.width + ","+ nodeBounds.height);
+	               		//node.getLayoutProperties();
+	               		//var nodeLayputProp = node.getLayoutProperties();
+	               		//alert(spagobi.commons.CoreUtils.toStr(nodeLayputProp));
+	               		
+	               		/*
+	               		if(this.nodeX != undefined && this.nodeY != undefined){
+	               			if(this.nodeX != e._native.clientX && this.nodeY != e._native.clientY){	//click done outside any node
+	               				return;
+	               			}
+	               		}
+	               		
+	               		this.nodeX = e._native.clientX;
+	               		this.nodeY = e._native.clientY;
+	               		*/
+	               		
+	               		
 	               		if(node == this.getRoot()){		// If Root Node
-	               				contextMenu.add(insertButton);
-		               			//contextMenu.add(deleteButton);
+	               				this.contextMenu.add(insertButton);
+		               			//this.contextMenu.add(deleteButton);
 	               				
 	               		} else {
 		               		//	var selectionManager = this.getManager();
@@ -175,51 +249,66 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 		               			if(node instanceof qx.ui.tree.TreeFile){	//leaf nodes don't have insert option	
 		               				
 		               				if (this.getNextSibling(node) == undefined && this.getPreviousSibling(node) == undefined ){
-	                 					contextMenu.add(deleteButton);
+	                 					this.contextMenu.add(deleteButton);
 	                 				}
 		               			
 		               				else if(this.getNextSibling(node) == undefined){	// last child cannot be moved down
-		               					contextMenu.add(deleteButton);
-		               					contextMenu.add(moveUpButton);               				
+		               					this.contextMenu.add(deleteButton);
+		               					this.contextMenu.add(moveUpButton);               				
 		               				}
 	                 				else if(this.getPreviousSibling(node) == undefined){		// first child cannot be moved up
-		               					contextMenu.add(deleteButton);
-		               					contextMenu.add(moveDownButton);
+		               					this.contextMenu.add(deleteButton);
+		               					this.contextMenu.add(moveDownButton);
 		               				}
 	                 				else{
-		               					contextMenu.add(deleteButton);
-		               					contextMenu.add(moveUpButton);
-		               					contextMenu.add(moveDownButton);
+		               					this.contextMenu.add(deleteButton);
+		               					this.contextMenu.add(moveUpButton);
+		               					this.contextMenu.add(moveDownButton);
 		               					
 		               				}	
 		               			} else{		// For folders, you have insert option even if they are at leaf
 		               				if (this.getNextSibling(node) == undefined && this.getPreviousSibling(node) == undefined ){
-	                 					contextMenu.add(insertButton);
-		               					contextMenu.add(deleteButton);
+	                 					this.contextMenu.add(insertButton);
+		               					this.contextMenu.add(deleteButton);
 	                 				}
 		               				else if(this.getPreviousSibling(node) == undefined){		// first child cannot be moved up
-		               					contextMenu.add(insertButton);
-		               					contextMenu.add(deleteButton);
-		               					contextMenu.add(moveDownButton);
+		               					this.contextMenu.add(insertButton);
+		               					this.contextMenu.add(deleteButton);
+		               					this.contextMenu.add(moveDownButton);
 		               				}
 		               				else if(this.getNextSibling(node) == undefined){	// last child cannot be moved down
-		               					contextMenu.add(insertButton);
-		               					contextMenu.add(deleteButton);
-		               					contextMenu.add(moveUpButton);	               				
+		               					this.contextMenu.add(insertButton);
+		               					this.contextMenu.add(deleteButton);
+		               					this.contextMenu.add(moveUpButton);	               				
 		               				}
 	                 				//var previousItem = selectionManager.getPrevious(this.getSelectedItem()); //getLeadItem(), getNextSibling, getPreviousSibling, 
 	                 				 
 	                 				else{
-		               					contextMenu.add(insertButton);
-		               					contextMenu.add(deleteButton);
-		               					contextMenu.add(moveUpButton);
-		               					contextMenu.add(moveDownButton);
+		               					this.contextMenu.add(insertButton);
+		               					this.contextMenu.add(deleteButton);
+		               					this.contextMenu.add(moveUpButton);
+		               					this.contextMenu.add(moveDownButton);
 	                 				}
 	               				}
 	               		}
-	               		this.getApplicationRoot().add(contextMenu, {left: e._native.clientX, top: e._native.clientY});
-	               		contextMenu.setOpener(this.getSelectedItem());
-	               		contextMenu.show();	
+	               		this.getApplicationRoot().add(this.contextMenu, {left: e._native.clientX, top: e._native.clientY});
+	               		//e.getScreenLeft() is also same as e._native.clientX
+	               		this.contextMenu.setOpener(this.getSelectedItem());
+	               		this.contextMenu.show();
+	               		
+	               		//}//node!=this.previousNode
+          			//}//this.previousNode is undefined
+          			
+	               		this.previousNode = node;
+	               		
+	               		/*
+	               		if (this.contextMenu.isVisible() == false){
+	               			//alert("1");
+	               		}
+	               		else{
+	               			//alert("2");
+	               		}
+	               		*/ 
           },
 	               
 	               /**
@@ -279,6 +368,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 						this.insertWin.center();
 						this.insertWin.open();
 						
+						
 						//this.getApplicationRoot().add(this.insertWin);
 						
 						},
@@ -305,8 +395,20 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 						var node = this.addNode(c);
 						this.insertWin.close();
 						
-						//node.setSelected(true);
+						//set the new node as selected node
+						var treeNode = node.getUserData('node');
+						var treeNodeParent = treeNode.getParent();
+						if(treeNodeParent.isOpen() == false){
+							treeNodeParent.setOpen(true);
+						}
+						this.select(treeNode);
 						
+						this.previousNode = this.getSelectedItem(); //new created node
+	               },
+	               
+	               deleteNode: function(e){
+	               		this.base(arguments); //calls deleteNode of parent class
+	               		this.previousNode = this.getSelectedItem();	//parent of delected node
 	               }
   
   

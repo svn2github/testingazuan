@@ -53,6 +53,9 @@
    <ACTION name="LOGIN_ACTION_SBI_DISTRIBUTIONLISTUSER" class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION> 
+ <ACTION name="CHECK_USER_PROFILE_EXISTENCE" class="it.eng.spagobi.commons.services.CheckUserProfileAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION> 
  
 </ACTIONS>
 

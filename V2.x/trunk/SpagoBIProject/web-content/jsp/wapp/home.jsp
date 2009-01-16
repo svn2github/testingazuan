@@ -43,7 +43,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ include file="/jsp/commons/portlet_base.jsp"%>
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
 
-<%      
+	<%-- START CHECK USER PROFILE EXISTENCE
+	This Ajax call is usefull to find out if a user profile object is in session, i.e. if a user has logged in.
+	In case the user profile object is not found, the browser is redirected to the login page.
+	--%>
+    <script type="text/javascript">
+	Ext.onReady(function(){
+		Ext.Ajax.request({
+			url: '<%= request.getContextPath() + GeneralUtilities.getSpagoAdapterHttpUrl() %>?ACTION_NAME=CHECK_USER_PROFILE_EXISTENCE',
+			method: 'get',
+			params: '',
+			success: function (result, request) {
+				response = result.responseText || "";
+				if (response == '' || response == 'userProfileNotFound') {
+					window.location.href="<%= request.getContextPath() %>";
+				}
+			},
+			failure: somethingWentWrongWhileCheckingUserProfileExistence,
+			disableCaching: true
+		});
+	});
+	
+	function somethingWentWrongWhileCheckingUserProfileExistence() {}
+	</script>
+	<%-- END CHECK USER PROFILE EXISTENCE --%>
+
+<%  
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("LoginModule"); 
 	List lstMenu = new ArrayList();

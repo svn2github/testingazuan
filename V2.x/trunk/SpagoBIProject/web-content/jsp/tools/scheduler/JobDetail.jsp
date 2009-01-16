@@ -39,6 +39,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spagobi.tools.scheduler.to.JobInfo"%>
+<%@page import="it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterValuesRetriever"%>
+<%@page import="it.eng.spagobi.tools.scheduler.RuntimeLoadingParameterValuesRetriever"%>
+<%@page import="it.eng.spagobi.tools.scheduler.FormulaParameterValuesRetriever"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("JobManagementModule"); 
@@ -128,12 +131,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	indexTabOpened = 0;
 	biobidstr = "<%=allObjIDS%>";
 	
-	function changeTab(biobjid) {	
+	function changeTab(biobjid) {
 	  	if(tabOpened==biobjid) {
       		return;
     	}
-    	
-		document.getElementById('areabiobj'+biobjid).style.display="inline";
+		document.getElementById('areabiobj'+biobjid).style.display="block";
 		document.getElementById('areabiobj'+tabOpened).style.display="none";
 		document.getElementById('tabbiobj'+biobjid).className="tab selected";
 		document.getElementById('tabbiobj'+tabOpened).className="tab";
@@ -200,16 +202,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	function saveCall() {
 		document.getElementById('formmsg').value='MESSAGE_SAVE_JOB';
 		document.getElementById('jobdetailform').submit();
-	}
-	
-	function checkValue(parfieldName, elementValue) {
-		var valuesArray = elementValue.split(';');
-	    if (valuesArray.length > 1) {
-	    	document.getElementById(parfieldName + '_Iterative').style.display = 'inline';
-	    } else {
-	    	document.getElementById(parfieldName + '_Iterative').style.display = 'none';
-	    	document.getElementById(parfieldName + '_Iterative').selectedIndex = 0;
-	    }
 	}
 	
 </script>
@@ -298,12 +290,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    }
 			    if(valuesArray.length > 0) {
 			    	parfield.value = valuesArray.join(';');
-			    }
-			    if(valuesArray.length > 1) {
-			    	document.getElementById(parfieldName + '_Iterative').style.display = 'inline';
-			    } else {
-			    	document.getElementById(parfieldName + '_Iterative').style.display = 'none';
-			    	document.getElementById(parfieldName + '_Iterative').selectedIndex = 0;
 			    }
 			}
 		}
@@ -619,6 +605,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				Iterator iterPars = pars.iterator();
 				while(iterPars.hasNext()) {
 					BIObjectParameter biobjpar = (BIObjectParameter)iterPars.next();
+					ParameterValuesRetriever strategy = biobjpar.getParameterValuesRetriever();
 					String concatenatedValue = "";
 					List values = biobjpar.getParameterValues();
 					if(values!=null) {
@@ -639,46 +626,66 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				          	</span>
 				    	</div>
 				    	
-				    	<div class='div_form_field'>
-				    	
-						  	<input class='portlet-form-input-field' 
-						  	       id="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>"
-						  	       name="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>" 
-						  	       type="text" value="<%=concatenatedValue%>" size="50" autocomplete="off"
-						  	       onChange="checkValue(this.id,this.value)" />
-						  	&nbsp;&nbsp;&nbsp;
-						  	<%
-						  		List roles = biobjdao.getCorrectRolesForExecution(biobj.getId(), userProfile);
-						  		if(roles.size()>0) {
-						  	%>
-						  	<a style='text-decoration:none;' href="javascript:getLovList('<%=biobj.getId()%>', '<%=biobjpar.getParID()%>', '<%=biobjpar.getParameterUrlName()%>')">
-						  		<img title='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' 
-      				 				src='<%= urlBuilder.getResourceLink(request, "/img/detail.gif")%>' 
-      				 				alt='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' />
-						  	</a>
-						  	&nbsp;&nbsp;&nbsp;
-						  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_Iterative"%>'
-										id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_Iterative"%>' 
-										style="display:<%= values != null && values.size() > 1 ? "inline" : "none"%>" >
-								<option value='false'><spagobi:message key = "scheduler.doNotIterateOnParameterValues"  bundle="component_scheduler_messages"/></option>
-								<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
-									<spagobi:message key = "scheduler.iterateOnParameterValues"  bundle="component_scheduler_messages"/>
+				    	<div style="float:left;width:500px;">
+
+				    		<spagobi:message key = "scheduler.parameterValuesStrategyQuestion"  bundle="component_scheduler_messages"/>
+				    		<br/>
+						  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_strategy"%>'
+										id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_strategy"%>'
+										onChange="<%="change_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_strategy(this.selectedIndex);"%>">
+								<option value='fixedValues' <%= strategy == null ? "selected='selected'" : "" %>>
+									<spagobi:message key = "scheduler.fixedValuesStrategy"  bundle="component_scheduler_messages"/>
 								</option>
-							</select>	
-						  	&nbsp;&nbsp;&nbsp;
+								<option value='loadAtRuntime' <%= (strategy != null && strategy instanceof RuntimeLoadingParameterValuesRetriever) ? "selected='selected'" : "" %>>
+									<spagobi:message key = "scheduler.loadAtRuntimeStrategy"  bundle="component_scheduler_messages"/>
+								</option>
+								<option value='useFormula' <%= (strategy != null && strategy instanceof FormulaParameterValuesRetriever) ? "selected='selected'" : "" %>>
+									<spagobi:message key = "scheduler.useFormulaStrategy"  bundle="component_scheduler_messages"/>
+								</option>
+							</select>
+							
+							<script>
+							function <%="change_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_strategy"%>(index) {
+								if (index == 0) {
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_fixedValues"%>').style.display='block';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_loadAtRuntime"%>').style.display='none';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_useFormula"%>').style.display='none';
+								}
+								if (index == 1) {
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_fixedValues"%>').style.display='none';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_loadAtRuntime"%>').style.display='block';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_useFormula"%>').style.display='none';
+								}
+								if (index == 2) {
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_fixedValues"%>').style.display='none';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_loadAtRuntime"%>').style.display='none';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_useFormula"%>').style.display='block';
+								}
+							}
+							</script>
+							
+							<br/>
+							
+				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_fixedValues"%>'
+				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_fixedValues"%>'
+				    				style="margin-top:10px;display:<%= strategy == null ? "block" : "none" %>" >
+				    				
+					    		<input class='portlet-form-input-field' 
+							  	       id="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>"
+							  	       name="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>" 
+							  	       type="text" value="<%=concatenatedValue%>" size="50" autocomplete="off" />
+							  	&nbsp;&nbsp;&nbsp;
 							  	<%
-							  		if(roles.size()==1) {
-							    %>
-						  		<input type='hidden' 
-						  			   id='role_par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName()%>' 
-						  			   name='role_par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName()%>'
-						  			   value='<%=roles.get(0)%>' />
-							  	<%
-							  		} else {
-								%>
-								<span class='portlet-form-field-label'>
-									<spagobi:message key = "scheduler.usingrole"  bundle="component_scheduler_messages"/> 
-								</span>
+							  		List roles = biobjdao.getCorrectRolesForExecution(biobj.getId(), userProfile);
+							  		if(roles.size()>0) {
+							  	%>
+							  	<a style='text-decoration:none;' href="javascript:getLovList('<%=biobj.getId()%>', '<%=biobjpar.getParID()%>', '<%=biobjpar.getParameterUrlName()%>')">
+							  		<img title='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' 
+	      				 				src='<%= urlBuilder.getResourceLink(request, "/img/detail.gif")%>' 
+	      				 				alt='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' />
+							  	</a>
+							  	<br/>
+								(<spagobi:message key = "scheduler.usingrole"  bundle="component_scheduler_messages"/> 
 								&nbsp;&nbsp;&nbsp;
 								<select name='role_par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName()%>'
 										id='role_par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName()%>' >
@@ -691,14 +698,60 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									<%
 										}
 									%>
-								</select>
+								</select>)
 								<%
-							  		}
 						  		} // if(roles.size()>0)
 								%>
+				    		</div>
+				    		
+				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_loadAtRuntime"%>'
+				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_loadAtRuntime"%>'
+				    				style="margin-top:10px;display:<%= (strategy != null && strategy instanceof RuntimeLoadingParameterValuesRetriever) ? "block" : "none" %>" >
+				    				
+									<spagobi:message key = "scheduler.loadAtRuntimeRole"  bundle="component_scheduler_messages"/>
+									<select name='par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName() + "_loadWithRole"%>'
+											id='par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName() + "_loadWithRole"%>' >
+										<% 	
+											String roleToBeUsed = null;
+											if (strategy != null && strategy instanceof RuntimeLoadingParameterValuesRetriever) {
+												roleToBeUsed = ((RuntimeLoadingParameterValuesRetriever) strategy).getRoleToBeUsed();
+											}
+											Iterator iterRoles = roles.iterator(); 
+											while(iterRoles.hasNext()) {
+												String role = (String)iterRoles.next();
+										%>
+										<option value='<%=role%>' <%= role.equals(roleToBeUsed) ? "selected='selected'" : "" %>><%=role%></option>
+										<%
+											}
+										%>
+									</select>
+				    		</div>
+				    		
+				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_useFormula"%>'
+				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_useFormula"%>'
+				    				style="margin-top:10px;display:<%= (strategy != null && strategy instanceof FormulaParameterValuesRetriever) ? "block" : "none" %>" >
+				    				
+				    				<spagobi:message key = "scheduler.formulaName"  bundle="component_scheduler_messages"/>
+									<select name='par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName() + "_formula"%>'
+											id='par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName() + "_formula"%>' >
+										<option></option>
+									</select>
+				    		</div>
+				    	
+				    	</div>
+				    	
+				    	<div>
+						  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_Iterative"%>'
+										id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_Iterative"%>'>
+								<option value='false'><spagobi:message key = "scheduler.doNotIterateOnParameterValues"  bundle="component_scheduler_messages"/></option>
+								<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
+									<spagobi:message key = "scheduler.iterateOnParameterValues"  bundle="component_scheduler_messages"/>
+								</option>
+							</select>
+							
 						</div>
 					</div>
-		
+					<div style="clear:left;"></div>
 		
 		<%
 				} // end while
@@ -709,8 +762,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%
 			} // enf if
 		%>
-	</div>
-	
+		</div>
 	
 	
 	
@@ -719,8 +771,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 	%>
 	
-</div>
-
 
 
 <!-- *********************** DIV SELECT DOCUMENT (HIDDEN) ****************************** -->
@@ -754,3 +804,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 </form>
+
+ 
+<%@ include file="/jsp/commons/footer.jsp"%>

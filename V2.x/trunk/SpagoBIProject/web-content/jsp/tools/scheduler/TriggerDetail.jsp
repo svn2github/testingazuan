@@ -604,7 +604,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 	<input type="text" value="<%=triggerInfo.getEndDateRFC3339()%>" 
 					       name="enddate" id="enddate"  
 					       dojoType="dropdowndatepicker" widgetId="endDateWidget" />
-					&nbsp;*
+					&nbsp;
 				</div>
 			</div>
 			<div class="div_form_row" >	
@@ -617,7 +617,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<input type="text" value="<%=triggerInfo.getEndTime()%>" 
 					       name="endtime" id="endtime"  
 					       dojoType="dropdowntimepicker" widgetId="endTimeWidget" />
-					&nbsp;*
+					&nbsp;
 				</div>
 			</div>
 			

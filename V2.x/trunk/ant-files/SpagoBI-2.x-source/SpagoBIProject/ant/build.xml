@@ -106,14 +106,14 @@
     <mkdir dir="${dist}/${webapp_name}"/>
     <jar destfile="${dist}/${webapp_name}/spagobi.service.client-${project.version}.jar">
     
-    			<fileset dir="${build}/${webapp_name}/WEB-INF/classes"
-				includes="/it/eng/spagobi/tools/dataset/bo/*,
+    	<fileset dir="${build}/${webapp_name}/WEB-INF/classes"
+				includes="it/eng/spagobi/tools/dataset/bo/*,
 				it/eng/spagobi/tools/dataset/common/**/*">
 	
 			</fileset>
 			
 			<fileset dir="${build}/${webapp_name}/WEB-INF/classes"
-							includes="/it/eng/spagobi/tools/datasource/bo/*">
+							includes="it/eng/spagobi/tools/datasource/bo/*">
 				
 			</fileset>
 			

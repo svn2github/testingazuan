@@ -218,6 +218,10 @@
       <fileset dir="/home/spagobi/runtime/exo-tomcat-portal-1.1.4/webapps/SpagoBI/img">
       </fileset>
     </copy>
+    <copy todir="${apache.dir}/html" >
+      <fileset dir="/home/spagobi/runtime/exo-tomcat-portal-1.1.4/webapps/SpagoBI/html">
+      </fileset>
+    </copy>    
   </target>
   
 </project>

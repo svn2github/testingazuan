@@ -120,9 +120,9 @@
      <LOOKUP numberRows = "20" />
 
 
-     <SPAGOBI_CONTEXT>@spagobi.context@</SPAGOBI_CONTEXT>
+     <SPAGOBI_CONTEXT>/SpagoBI</SPAGOBI_CONTEXT>
     
-     <SPAGOBI_HOST>@spagobi.host@</SPAGOBI_HOST>
+     <SPAGOBI_HOST_JNDI>java://comp/env/spagobi_host_url</SPAGOBI_HOST_JNDI>
  	 
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	

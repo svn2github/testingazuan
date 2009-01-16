@@ -95,7 +95,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	               * <p> myTree.addListener("click",myTree.onClickMenu,myTree);
 	               *                                                                                     	               
 	               */
-	               
+	               /*
 	               onClickMenu1: function(e){
 	               	
 	               	var insertCmd = new qx.event.Command();
@@ -117,17 +117,18 @@ qx.Class.define("spagobi.ui.Tree", {
 	               	contextMenu.show();	
 	               		
 	               },
-	                                    
+	               */
+	               /*                     
 	               onClickMenu: function(e){
 	               		
 	               		//alert(this.getManager().getSelectedItem());
 	               		
 	               		
 	               		
-	          /*     		if(this.getSelectedItem() == undefined){		// null
+	          			// if(this.getSelectedItem() == undefined){		// null
 	               			//alert("no Element Selected");
-	               			return;
-	               		}*/
+	               		//	return;
+	               		//}
 	               		
 	               		//alert(this.getSelectedElement().getLabel());
 	               		//alert(this.getSelectedElement()); //qx.legacy.ui.tree.Tree / qx.legacy.ui.tree.TreeFolder / qx.legacy.ui.tree.Treefile
@@ -143,53 +144,10 @@ qx.Class.define("spagobi.ui.Tree", {
 	               		//alert(nodeLabel);
 	               		
 	               		var insertCmd = new qx.event.Command();
-        				insertCmd.addListener("execute", this._insertCmd,this
-        													/*
-        													function(e) {			// show form, get details ...
-        													//alert("Insert");	// ... and call addNode(config)
-        													
-        													var insertWin = new qx.legacy.ui.window.Window("Insert");
-        													insertWin.setSpace(200, 400, 200, 250);
-        													var d = qx.legacy.ui.core.ClientDocument.getInstance();
-  															d.add(insertWin);
-  															
-  															var nameLabel = new qx.legacy.ui.basic.Label("Name:");
-  															nameLabel.setLocation(50, 50);
-  															
-  															var nameText = new qx.legacy.ui.form.TextField();
-  															nameText.setLocation(100, 50);
-  															
-  															var parentLabel = new qx.legacy.ui.basic.Label("Parent:");
-  															parentLabel.setLocation(50, 100);
-  															
-  															var parentText = new qx.legacy.ui.form.TextField();
-  															parentText.setLocation(100, 100);
-  															
-  															var goButton = new qx.legacy.ui.form.Button("Insert");
-													        goButton.setLocation(150, 150);
-													        goButton.addListener("execute", function(e) {
-													          
-        													var c = {};
-        													c.name = nameText.getValue();
-        													c.parent = parentText.getValue();
-        													c.id = "node"+this._nodeId;
-        													this._nodeId++;
-        													this.addNode(c);
-													        });
-  															
-  															insertWin.add(nameLabel,nameText,parentLabel,parentText,goButton);
-  															
-  															insertWin.open();
-        													
-        												}*/
-        									);
+        				insertCmd.addListener("execute", this._insertCmd,this);
 	               		
 	               		var deleteCmd = new qx.event.Command();
-        				deleteCmd.addListener("execute", this.deleteNode,this
-        													/*function(e) {			// call deleteNode()
-        													alert("Delete");
-        													}*/
-        									);
+        				deleteCmd.addListener("execute", this.deleteNode,this);
         				
         				var moveUpCmd = new qx.event.Command();
         				moveUpCmd.addListener("execute", this.moveUpNode,this);
@@ -211,7 +169,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	               		contextMenu.setOpener(this.getSelectedItem());
 	               		contextMenu.show();
 	               		
-	               		/*
+	               		
 	               		if(this.getSelectedItem() == this){		// If Root Node
 	               			contextMenu.add(insertButton);
 	               			contextMenu.add(deleteButton);
@@ -305,8 +263,9 @@ qx.Class.define("spagobi.ui.Tree", {
 				        this.setSelectedElement(null);
 				        //this.getManager().setSelectedItem(null);
 				         
-				         */
+				         
 	               },
+	               */
 	               
 	               /**
 	                * Event Listener Function called when the Insert option of Context menu is clicked
@@ -319,6 +278,7 @@ qx.Class.define("spagobi.ui.Tree", {
 	                * <p> var insertButton = new qx.legacy.ui.menu.Button("Insert",null,insertCommand);
 	                * 
 	                */
+	               /* 
 	               _insertCmd: function(e){
 	               	
 	               		//alert(e);	//Data Event
@@ -338,28 +298,17 @@ qx.Class.define("spagobi.ui.Tree", {
 						
 						this.insertWin.add(this.atom);
 						
-						/*
-						var parentLabel = new qx.legacy.ui.basic.Label("Parent:");
-						parentLabel.setLocation(50, 100);
 						
-						var parentText = new qx.legacy.ui.form.TextField();
-						parentText.setLocation(100, 100);
-						*/
+						//var parentLabel = new qx.legacy.ui.basic.Label("Parent:");
+						//parentLabel.setLocation(50, 100);
+						
+						//var parentText = new qx.legacy.ui.form.TextField();
+						//parentText.setLocation(100, 100);
+						
 						
 						var goButton = new qx.ui.form.Button("Insert");
 				        //goButton.setLocation(150, 150);
-				        goButton.addListener("execute", this._insertDetails,this
-				        /*
-				        function(e) {
-				          
-						var c = {};
-						c.name = nameText.getValue();
-						c.parent = parentText.getValue();
-						c.id = "node"+this._nodeId;
-						this._nodeId++;
-						this.addNode(c);
-				        }*/
-				        );
+				        goButton.addListener("execute", this._insertDetails,this);
 						this.insertWin.add(goButton);
 						
 						this.insertWin.center();
@@ -368,11 +317,12 @@ qx.Class.define("spagobi.ui.Tree", {
 						//this.getApplicationRoot().add(this.insertWin);
 						
 						},
-	              
+	              */
 	              /**
 	               * Event Listener function to get the details of the new node to be created
 	               * <p> It is called internally by the _insertCmd() function
-	               */ 
+	               */
+	               /*
 	               _insertDetails: function(e){
 	               		
 						var btn = e.getTarget();
@@ -394,6 +344,7 @@ qx.Class.define("spagobi.ui.Tree", {
 						//node.setSelected(true);
 						
 	               },
+	               */
 	               	
 	      		  /**
 	               * Function to add a Sub-folder(Leaf or Non-Leaf Node) in the tree
@@ -544,27 +495,22 @@ qx.Class.define("spagobi.ui.Tree", {
 	              *                                               	               
 	              */
 	             deleteNode: function(e){
-	               /*
-	             	//var currentItem = this.getSelectedElement();
-	             	
-	             	 var currentItem = this.getSelectedItem();
-	             	
-	             	//alert(currentItem + ","+currentItem.getLabel());
+	               /*	             	
 	             	if(currentItem == this.getRoot()){
 	             		alert("Root node cannot be deleted");
 	             	}
           			else if (currentItem != null) {
-          					
-	              			currentItem.destroy();
-	              			
+          					currentItem.destroy();
 	              			currentItem = null;
           			}
           			
           			//this.getSelectedElement().getParent().setSelected(true);	//else try getParentFolder()
           			*/
+          			
           			var current = this.getSelectedItem();
 					var parent = current.getParent();
 					parent.remove(current);
+					this.select(parent);
 					/*
 					var str="" ;
 					var parentChildren = parent.getChildren();
@@ -632,7 +578,7 @@ qx.Class.define("spagobi.ui.Tree", {
                   * @return {AbstractTreeElement} - The currently selected Node of the tree
                   */
                  getCurrentNode:function(){
-                 	return this.getSelectedItem;//getSelectedElement()
+                 	return this.getSelectedItem();//getSelectedElement()
                  },
                  
                  /**

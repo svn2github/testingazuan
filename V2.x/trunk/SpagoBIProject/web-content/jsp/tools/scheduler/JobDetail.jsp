@@ -42,6 +42,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterValuesRetriever"%>
 <%@page import="it.eng.spagobi.tools.scheduler.RuntimeLoadingParameterValuesRetriever"%>
 <%@page import="it.eng.spagobi.tools.scheduler.FormulaParameterValuesRetriever"%>
+<%@page import="it.eng.spagobi.tools.scheduler.Formula"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("JobManagementModule"); 
@@ -68,6 +69,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);   
 	   
 	String splitter = ";";
+	
+	List<Formula> formulas = Formula.getAvailableFormulas();
 	
 %>
 
@@ -734,7 +737,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    				<spagobi:message key = "scheduler.formulaName"  bundle="component_scheduler_messages"/>
 									<select name='par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName() + "_formula"%>'
 											id='par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName() + "_formula"%>' >
-										<option></option>
+										<% 	
+											String formulaToBeUsed = null;
+											if (strategy != null && strategy instanceof FormulaParameterValuesRetriever) {
+												Formula f = ((FormulaParameterValuesRetriever) strategy).getFormula();
+												formulaToBeUsed = f.getName();
+											}
+											Iterator formulasIt = formulas.iterator(); 
+											while(formulasIt.hasNext()) {
+												Formula f = (Formula) formulasIt.next();
+												String formulaName = f.getName();
+												String formulaDescription = f.getDescription();
+												if (formulaDescription.startsWith("#")) {
+													formulaDescription = msgBuilder.getMessage(formulaDescription.substring(1), "component_scheduler_messages", request);
+												}
+										%>
+										<option value='<%=formulaName%>' <%= formulaName.equals(formulaToBeUsed) ? "selected='selected'" : "" %>><%=formulaDescription%></option>
+										<%
+											}
+										%>
 									</select>
 				    		</div>
 				    	

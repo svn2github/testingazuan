@@ -31,6 +31,7 @@ import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterValuesRetriever;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -51,6 +52,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.distributionlist.bo.Email;
+import it.eng.spagobi.tools.scheduler.RuntimeLoadingParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.utils.BIObjectParametersIterator;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
@@ -82,6 +84,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.commons.validator.GenericValidator;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -119,6 +122,13 @@ public class ExecuteBIDocumentJob implements Job {
 				execCtrl.setBiObject(biobj);
 				// fill parameters 
 				execCtrl.refreshParameters(biobj, docParQueryString);
+				
+				String iterativeParametersString = jdm.getString(docLabel + "_iterative");
+				setIterativeParameters(biobj, iterativeParametersString);
+				String loadAtRuntimeParametersString = jdm.getString(docLabel + "_loadAtRuntime");
+				setLoadAtRuntimeParameters(biobj, loadAtRuntimeParametersString);
+				
+				loadRuntimeParametersValues(biobj);
 				
 				IDataStore dataStore = null;
 				if (sInfo.isUseDataSet()) {
@@ -190,7 +200,6 @@ public class ExecuteBIDocumentJob implements Job {
 						
 						ExecutionProxy proxy = new ExecutionProxy();
 						proxy.setBiObject(biobj);
-						IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 						//String startExecMsgIniPart = msgBuilder.getMessage("scheduler.startexecsched", "component_scheduler_messages");
 						//String startExecMsg = startExecMsgIniPart + " " + biobj.getName();
 						String startExecMsg = "${scheduler.startexecsched} " + biobj.getName();
@@ -252,6 +261,117 @@ public class ExecuteBIDocumentJob implements Job {
 	
 	
 	
+	private void loadRuntimeParametersValues(BIObject biobj) throws Exception {
+		logger.debug("IN");
+		try {
+			List parameters = biobj.getBiObjectParameters();
+			if (parameters == null || parameters.isEmpty()) {
+				logger.debug("Document has no parameters");
+				return;
+			}
+			Iterator it = parameters.iterator();
+			while (it.hasNext()) {
+				BIObjectParameter parameter = (BIObjectParameter) it.next();
+				ParameterValuesRetriever retriever = parameter.getParameterValuesRetriever();
+				if (retriever != null) {
+					logger.debug("Document parameter with url name [" + parameter.getParameterUrlName() + "] has a parameter values retriever: " + retriever);
+					logger.debug("Retrieving values...");
+					List<String> values = null;
+					try {
+						values = retriever.retrieveValues(parameter);
+					} catch (Exception e) {
+						logger.error("Error while retrieving values for parameter with url name [" + parameter.getParameterUrlName() + "] of document [" + biobj.getLabel() + "].", e);
+						throw e;
+					}
+					logger.debug("Values retrieved.");
+					parameter.setParameterValues(values);
+					parameter.setTransientParmeters(true);
+				}
+			}
+	    } finally {
+	    	logger.debug("OUT");
+	    }
+	}
+
+
+
+
+	private void setLoadAtRuntimeParameters(BIObject biobj, String loadAtRuntimeParametersString) {
+		logger.debug("IN");
+		try {
+			List parameters = biobj.getBiObjectParameters();
+			if (parameters == null || parameters.isEmpty()) {
+				logger.debug("Document has no parameters");
+				return;
+			}
+			if (loadAtRuntimeParametersString == null || loadAtRuntimeParametersString.trim().trim().equals("")) {
+				logger.debug("No load-at-runtime parameters found");
+				return;
+			}
+			String[] loadAtRuntimeParameters = loadAtRuntimeParametersString.split(";");
+			
+			Map<String, String> loadAtRuntimeParametersMap = new HashMap<String, String>();
+			for (int count = 0; count < loadAtRuntimeParameters.length; count++) {
+				String loadAtRuntime = loadAtRuntimeParameters[count];
+				int parameterUrlNameIndex = loadAtRuntime.lastIndexOf("(");
+				String parameterUrlName = loadAtRuntime.substring(0, parameterUrlNameIndex);
+				String userAndRole = loadAtRuntime.substring(parameterUrlNameIndex + 1, loadAtRuntime.length() - 1);
+				loadAtRuntimeParametersMap.put(parameterUrlName, userAndRole);
+			}
+			
+			Iterator it = parameters.iterator();
+			while (it.hasNext()) {
+				BIObjectParameter parameter = (BIObjectParameter) it.next();
+				parameter.setParameterValuesRetriever(null);
+				if (loadAtRuntimeParametersMap.containsKey(parameter.getParameterUrlName())) {
+					logger.debug("Document parameter with url name [" + parameter.getParameterUrlName() + "] was configured to be calculated at runtime.");
+					RuntimeLoadingParameterValuesRetriever strategy = new RuntimeLoadingParameterValuesRetriever();
+					String userRoleStr = loadAtRuntimeParametersMap.get(parameter.getParameterUrlName());
+					String[] userRole = userRoleStr.split("\\|");
+					strategy.setUserIndentifierToBeUsed(userRole[0]);
+					strategy.setRoleToBeUsed(userRole[1]);
+					parameter.setParameterValuesRetriever(strategy);
+				}
+			}
+	    } finally {
+	    	logger.debug("OUT");
+	    }
+	}
+
+
+
+
+	private void setIterativeParameters(BIObject biobj, String iterativeParametersString) {
+		logger.debug("IN");
+		try {
+			List parameters = biobj.getBiObjectParameters();
+			if (parameters == null || parameters.isEmpty()) {
+				logger.debug("Document has no parameters");
+				return;
+			}
+			if (iterativeParametersString == null || iterativeParametersString.trim().trim().equals("")) {
+				logger.debug("No iterative parameters found");
+				return;
+			}
+			String[] iterativeParameters = iterativeParametersString.split(";");
+			List iterativeParametersList = Arrays.asList(iterativeParameters);
+			Iterator it = parameters.iterator();
+			while (it.hasNext()) {
+				BIObjectParameter parameter = (BIObjectParameter) it.next();
+				parameter.setIterative(false);
+				if (iterativeParametersList.contains(parameter.getParameterUrlName())) {
+					logger.debug("Document parameter with url name [" + parameter.getParameterUrlName() + "] was configured to be iterative.");
+					parameter.setIterative(true);
+				}
+			}
+	    } finally {
+	    	logger.debug("OUT");
+	    }
+	}
+
+
+
+
 	private void saveAsSnap(SaveInfo sInfo,BIObject biobj, byte[] response, String toBeAppendedToName, String toBeAppendedToDescription) {
 	    logger.debug("IN");
 		try {
@@ -320,7 +440,6 @@ public class ExecuteBIDocumentJob implements Job {
 			}
 			docName += toBeAppendedToName;
 			String docDesc = sInfo.getDocumentDescription() + toBeAppendedToDescription;
-			String docHistorylengthStr = sInfo.getDocumentHistoryLength();
 			
 			// recover office document sbidomains
 			IDomainDAO domainDAO = DAOFactory.getDomainDAO();
@@ -446,7 +565,6 @@ public class ExecuteBIDocumentJob implements Job {
 		    }
 		    msg.setRecipients(Message.RecipientType.TO, addressTo);
 		    // Setting the Subject and Content Type
-			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 			String subject = mailSubj + " " + biobj.getName() + toBeAppendedToName;
 			msg.setSubject(subject);
 		    // create and fill the first message part
@@ -479,83 +597,157 @@ public class ExecuteBIDocumentJob implements Job {
 	    String[] toReturn = null;
 	    List<String> recipients = new ArrayList();
 		try {
-			if (info.isUseFixedRecipients()) {
-				// in this case recipients are fixed and separated by ","
-				String[] fixedRecipients = info.getMailTos().split(",");
-				recipients.addAll(Arrays.asList(fixedRecipients));
-			}
-			if (info.isUseDataSet()) {
-				// in this case recipients must be retrieved by the dataset (which the datastore in input belongs to)
-				// we must find the parameter value in order to filter the dataset
-				String dsParameterLabel = info.getDataSetParameterLabel();
-				List parameters = biobj.getBiObjectParameters();
-				BIObjectParameter parameter = null;
-				String codeValue = null;
-				Iterator parameterIt = parameters.iterator();
-				while (parameterIt.hasNext()) {
-					BIObjectParameter aParameter = (BIObjectParameter) parameterIt.next();
-					if (aParameter.getLabel().equalsIgnoreCase(dsParameterLabel)) {
-						parameter = aParameter;
-						break;
-					}
-				}
-				List values = parameter.getParameterValues();
-				if (values != null && !values.isEmpty()) {
-					codeValue = (String) values.get(0);
-				}
-				
-				Iterator it = dataStore.iterator();
-				while(it.hasNext()) {
-					String recipient = null;
-				    IRecord record = (IRecord)it.next();
-				    // the parameter value is used to filter on the first dataset field
-				    IField valueField = (IField) record.getFieldAt(0);
-				    Object valueObj = valueField.getValue();
-				    String value = null;
-				    if (valueObj != null) 
-				    	value = valueObj.toString();
-				    if (codeValue.equals(value)) {
-				    	// recipient address is on the second dataset field
-					    IField recipientField = (IField) record.getFieldAt(1);
-					    Object recipientFieldObj = recipientField.getValue();
-					    if (recipientFieldObj != null) 
-					    	recipient = recipientFieldObj.toString();
-					    
-				    }
-				    if (recipient != null) {
-				    	recipients.add(recipient);
-				    }
-				}
-			}
-			if (info.isUseExpression()) {
-				String expression = info.getExpression();
-				Map parametersMap = new HashMap();
-				List parameters = biobj.getBiObjectParameters();
-				Iterator it = parameters.iterator();
-				while (it.hasNext()) {
-					BIObjectParameter parameter = (BIObjectParameter) it.next();
-					List values = parameter.getParameterValues();
-					if (values != null && !values.isEmpty()) {
-						parametersMap.put(parameter.getLabel(), values.get(0));
-					} else {
-						parametersMap.put(parameter.getLabel(), "");
-					}
-				}
-				// we must substitute parameter values on the expression
-				String recipientStr = StringUtilities.substituteParametersInString(expression, parametersMap, false);
-				String[] recipientsArray = recipientStr.split(",");
-				recipients.addAll(Arrays.asList(recipientsArray));
-			}
+			recipients.addAll(findRecipientsFromFixedList(info));
 		} catch (Exception e) {
-		    logger.error("Error while finding recipients", e);
-		} finally {
-		    logger.debug("OUT: returning " + toReturn);
+		    logger.error(e);
 		}
-		toReturn = recipients.toArray(new String[0]);
+		try {
+			recipients.addAll(findRecipientsFromDataSet(info, biobj, dataStore));
+		} catch (Exception e) {
+		    logger.error(e);
+		}
+		try {
+			recipients.addAll(findRecipientsFromExpression(info, biobj));
+		} catch (Exception e) {
+		    logger.error(e);
+		}
+		// validates addresses
+		List<String> validRecipients = new ArrayList();
+		Iterator it = recipients.iterator();
+		while (it.hasNext()) {
+			String recipient = (String) it.next();
+			if (GenericValidator.isBlankOrNull(recipient) || !GenericValidator.isEmail(recipient)) {
+				logger.error("[" + recipient + "] is not a valid email address.");
+				continue;
+			}
+			if (validRecipients.contains(recipient))
+				continue;
+			validRecipients.add(recipient);
+		}
+		toReturn = validRecipients.toArray(new String[0]);
+		logger.debug("OUT: returning " + toReturn);
 		return toReturn;
 	}
-
-
+	
+	private List<String> findRecipientsFromFixedList(SaveInfo info) throws Exception {
+		logger.debug("IN");
+		List<String> recipients = new ArrayList();
+		if (info.isUseFixedRecipients()) {
+			logger.debug("Trigger is configured to send mail to fixed recipients: " + info.getMailTos());
+			if (info.getMailTos() == null || info.getMailTos().trim().equals("")) {
+				throw new Exception("Missing fixed recipients list!!!");
+			}
+			// in this case recipients are fixed and separated by ","
+			String[] fixedRecipients = info.getMailTos().split(",");
+			logger.debug("Fixed recipients found: " + fixedRecipients);
+			recipients.addAll(Arrays.asList(fixedRecipients));
+		}
+		logger.debug("OUT");
+		return recipients;
+	}
+	
+	private List<String> findRecipientsFromExpression(SaveInfo info, BIObject biobj) throws Exception {
+		logger.debug("IN");
+		List<String> recipients = new ArrayList();
+		if (info.isUseExpression()) {
+			logger.debug("Trigger is configured to send mail using an expression: " + info.getExpression());
+			String expression = info.getExpression();
+			if (expression == null || expression.trim().equals("")) {
+				throw new Exception("Missing recipients expression!!!");
+			}
+			// building a map for parameters value substitution
+			Map parametersMap = new HashMap();
+			List parameters = biobj.getBiObjectParameters();
+			Iterator it = parameters.iterator();
+			while (it.hasNext()) {
+				BIObjectParameter parameter = (BIObjectParameter) it.next();
+				List values = parameter.getParameterValues();
+				if (values != null && !values.isEmpty()) {
+					parametersMap.put(parameter.getLabel(), values.get(0));
+				} else {
+					parametersMap.put(parameter.getLabel(), "");
+				}
+			}
+			// we must substitute parameter values on the expression
+			String recipientStr = StringUtilities.substituteParametersInString(expression, parametersMap, false);
+			logger.debug("The expression, after substitution, now is [" + recipientStr + "].");
+			String[] recipientsArray = recipientStr.split(",");
+			logger.debug("Recipients found with expression: " + recipientsArray);
+			recipients.addAll(Arrays.asList(recipientsArray));
+		}
+		logger.debug("OUT");
+		return recipients;
+	}
+	
+	private List<String> findRecipientsFromDataSet(SaveInfo info, BIObject biobj,
+			IDataStore dataStore) throws Exception {
+		logger.debug("IN");
+		List<String> recipients = new ArrayList();
+		if (info.isUseDataSet()) {
+			logger.debug("Trigger is configured to send mail to recipients retrieved by a dataset");
+			if (dataStore == null || dataStore.isEmpty()) {
+				throw new Exception("The dataset in input is empty!! Cannot retrieve recipients from it.");
+			}
+			// in this case recipients must be retrieved by the dataset (which the datastore in input belongs to)
+			// we must find the parameter value in order to filter the dataset
+			String dsParameterLabel = info.getDataSetParameterLabel();
+			logger.debug("The dataset will be filtered using the value of the parameter " + dsParameterLabel);
+			// looking for the parameter
+			List parameters = biobj.getBiObjectParameters();
+			BIObjectParameter parameter = null;
+			String codeValue = null;
+			Iterator parameterIt = parameters.iterator();
+			while (parameterIt.hasNext()) {
+				BIObjectParameter aParameter = (BIObjectParameter) parameterIt.next();
+				if (aParameter.getLabel().equalsIgnoreCase(dsParameterLabel)) {
+					parameter = aParameter;
+					break;
+				}
+			}
+			if (parameter == null) {
+				throw new Exception("The document parameter with label [" + dsParameterLabel + "] was not found. Cannot filter the dataset.");
+			}
+			
+			// considering the first value of the parameter
+			List values = parameter.getParameterValues();
+			if (values == null || values.isEmpty()) {
+				throw new Exception("The document parameter with label [" + dsParameterLabel + "] has no values. Cannot filter the dataset.");
+			}
+			
+			codeValue = (String) values.get(0);
+			logger.debug("Using value [" + codeValue + "] for dataset filtering...");
+			
+			Iterator it = dataStore.iterator();
+			while (it.hasNext()) {
+				String recipient = null;
+			    IRecord record = (IRecord)it.next();
+			    // the parameter value is used to filter on the first dataset field
+			    IField valueField = (IField) record.getFieldAt(0);
+			    Object valueObj = valueField.getValue();
+			    String value = null;
+			    if (valueObj != null) 
+			    	value = valueObj.toString();
+			    if (codeValue.equals(value)) {
+			    	logger.debug("Found value [" + codeValue + "] on the first field of a record of the dataset.");
+			    	// recipient address is on the second dataset field
+				    IField recipientField = (IField) record.getFieldAt(1);
+				    Object recipientFieldObj = recipientField.getValue();
+				    if (recipientFieldObj != null) {
+				    	recipient = recipientFieldObj.toString();
+				    	logger.debug("Found recipient [" + recipient + "] on the second field of the record.");
+				    } else {
+				    	logger.warn("The second field of the record is null.");
+				    }
+			    }
+			    if (recipient != null) {
+			    	recipients.add(recipient);
+			    }
+			}
+			logger.debug("Recipients found from dataset: " + recipients.toArray());
+		}
+		logger.debug("OUT");
+		return recipients;
+	}
 
 
 	private void sendToDl(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt, String toBeAppendedToName, String toBeAppendedToDescription) {

@@ -33,6 +33,7 @@ public class JobInfo {
 	private String jobName = "";
 	private String jobGroupName = "";
 	private String jobDescription = "";
+	private String schedulerAdminstratorIdentifier = "";
 	private List biobjects = new ArrayList();
 	
 	/**
@@ -121,6 +122,15 @@ public class JobInfo {
 	 */
 	public void setJobGroupName(String jobGroupName) {
 		this.jobGroupName = jobGroupName;
+	}
+
+	public String getSchedulerAdminstratorIdentifier() {
+		return schedulerAdminstratorIdentifier;
+	}
+
+	public void setSchedulerAdminstratorIdentifier(
+			String schedulerAdminstratorIdentifier) {
+		this.schedulerAdminstratorIdentifier = schedulerAdminstratorIdentifier;
 	}
 	
 }

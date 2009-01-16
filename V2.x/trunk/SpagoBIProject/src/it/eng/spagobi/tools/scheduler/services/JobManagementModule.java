@@ -30,6 +30,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
@@ -37,6 +38,8 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDA
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.services.scheduler.service.SchedulerServiceSupplier;
+import it.eng.spagobi.tools.scheduler.FormulaParameterValuesRetriever;
+import it.eng.spagobi.tools.scheduler.RuntimeLoadingParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
@@ -58,6 +61,7 @@ public class JobManagementModule extends AbstractModule {
 	
 	private RequestContainer reqCont = null;
 	private SessionContainer sessCont = null;
+	private IEngUserProfile profile = null;
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spago.dispatching.module.AbstractModule#init(it.eng.spago.base.SourceBean)
@@ -73,6 +77,7 @@ public class JobManagementModule extends AbstractModule {
 		logger.debug("begin of scheuling service =" +message);
 		reqCont = getRequestContainer();
 		sessCont = reqCont.getSessionContainer();
+		profile = (IEngUserProfile) sessCont.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		EMFErrorHandler errorHandler = getErrorHandler();
 		try {
 			if(message == null) {
@@ -165,6 +170,7 @@ public class JobManagementModule extends AbstractModule {
 		try {
 			List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(true);
 			JobInfo jobInfo = new JobInfo();
+			jobInfo.setSchedulerAdminstratorIdentifier(profile.getUserUniqueIdentifier().toString());
 			response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
 			sessCont.setAttribute(SpagoBIConstants.JOB_INFO, jobInfo);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "JobDetail");
@@ -403,38 +409,52 @@ public class JobManagementModule extends AbstractModule {
 				BIObject biobj = (BIObject)iterbiobj.next();
 				List pars = biobj.getBiObjectParameters();
 				Iterator iterPars = pars.iterator();
-				String queryString= "";
+				StringBuffer fixedParameters = new StringBuffer("");
+				StringBuffer iterativeParameters = new StringBuffer("");
+				StringBuffer loadAtRuntimeParameters = new StringBuffer("");
 				while(iterPars.hasNext()) {
 					BIObjectParameter biobjpar = (BIObjectParameter)iterPars.next();
-					String concatenatedValue = "";
-					List values = biobjpar.getParameterValues();
-					if(values != null && !values.isEmpty()) {
-						// if parameter is iterative, add "ITERATE:{" at the beginning 
-						if (biobjpar.isIterative()) {
-							concatenatedValue = "ITERATE:{";
-						}
-						Iterator itervalues = values.iterator();
-						while(itervalues.hasNext()) {
-							String value = (String)itervalues.next();
-							concatenatedValue += value + ";";
-						}
-						if(concatenatedValue.length()>0) {
-							concatenatedValue = concatenatedValue.substring(0, concatenatedValue.length() - 1);
-						}
-						// if parameter is iterative, add "}" at the end 
-						if (biobjpar.isIterative()) {
-							concatenatedValue += "}";
-						}
-						if(concatenatedValue.length()>0) {
-							queryString += biobjpar.getParameterUrlName() + "=" + concatenatedValue + "%26";
-						}
-
+					if (biobjpar.isIterative()) {
+						iterativeParameters.append(biobjpar.getParameterUrlName() + ";");
 					}
+					Object strategyObj = biobjpar.getParameterValuesRetriever();
+					if (strategyObj != null && strategyObj instanceof RuntimeLoadingParameterValuesRetriever) {
+						RuntimeLoadingParameterValuesRetriever strategy = (RuntimeLoadingParameterValuesRetriever) strategyObj;
+						String user = strategy.getUserIndentifierToBeUsed();
+						String role = strategy.getRoleToBeUsed();
+						loadAtRuntimeParameters.append(biobjpar.getParameterUrlName() + "(" + user + "|" + role + ");");
+					} else {
+						String concatenatedValue = "";
+						List values = biobjpar.getParameterValues();
+						if(values != null && !values.isEmpty()) {
+							Iterator itervalues = values.iterator();
+							while(itervalues.hasNext()) {
+								String value = (String)itervalues.next();
+								concatenatedValue += value + ";";
+							}
+							if(concatenatedValue.length()>0) {
+								concatenatedValue = concatenatedValue.substring(0, concatenatedValue.length() - 1);
+							}
+	
+						}
+						if(concatenatedValue.length()>0) {
+							fixedParameters.append(biobjpar.getParameterUrlName() + "=" + concatenatedValue + "%26");
+						}
+					}
+
 				}
-				if(queryString.length()>0) {
-					queryString = queryString.substring(0, queryString.length()-3);
+				if (fixedParameters.length() > 0) {
+					fixedParameters = fixedParameters.delete(fixedParameters.length() -1, fixedParameters.length() - 1);
 				}
-				message.append("<PARAMETER name=\""+biobj.getLabel()+"__"+index+"\" value=\""+queryString+"\" />");
+				message.append("<PARAMETER name=\""+biobj.getLabel()+"__"+index+"\" value=\""+fixedParameters.toString()+"\" />");
+				if (iterativeParameters.length() > 0) {
+					iterativeParameters.deleteCharAt(iterativeParameters.length() - 1);
+					message.append("<PARAMETER name=\""+biobj.getLabel()+"__"+index+"_iterative\" value=\""+iterativeParameters.toString()+"\" />");
+				}
+				if (loadAtRuntimeParameters.length() > 0) {
+					loadAtRuntimeParameters.deleteCharAt(loadAtRuntimeParameters.length() - 1);
+					message.append("<PARAMETER name=\""+biobj.getLabel()+"__"+index+"_loadAtRuntime\" value=\""+loadAtRuntimeParameters.toString()+"\" />");
+				}
 				doclabels += biobj.getLabel() +"__"+index+ ",";
 			}
 			if(doclabels.length()>0) {
@@ -518,7 +538,7 @@ public class JobManagementModule extends AbstractModule {
 	}
 	
 	
-	private void getDocParValuesFromRequest(SourceBean request, JobInfo jobInfo) {
+	private void getDocParValuesFromRequest(SourceBean request, JobInfo jobInfo) throws Exception {
 		// get the splitter character
 		String splitter = (String)request.getAttribute("splitter");
 		// get the list of biobject previously setted
@@ -537,23 +557,48 @@ public class JobManagementModule extends AbstractModule {
 			while(iterbiobjpars.hasNext()) {
 				BIObjectParameter biobjpar = (BIObjectParameter)iterbiobjpars.next();
 				String nameParInRequest = "par_" + biobj.getId() +"_" + index + "_" + biobjpar.getParameterUrlName();
-				String valueParConcat = (String)request.getAttribute(nameParInRequest);
+				
+				String strategyToBeUsed = (String) request.getAttribute(nameParInRequest + "_strategy");
+				boolean useFixedValues = false;
+				boolean loadAtRuntime = false;
+				boolean useFormula = false;
+				if (strategyToBeUsed == null || strategyToBeUsed.equalsIgnoreCase("fixedValues")) {
+					useFixedValues = true;
+				} else if (strategyToBeUsed.equalsIgnoreCase("loadAtRuntime")) {
+					loadAtRuntime = true;
+				} else if (strategyToBeUsed.equalsIgnoreCase("useFormula")) {
+					useFormula = true;
+				}
+				
 				String isIterativeStr = (String) request.getAttribute(nameParInRequest + "_Iterative");
 				boolean isIterative = isIterativeStr != null && isIterativeStr.equalsIgnoreCase("true");
 				biobjpar.setIterative(isIterative);
-				if(valueParConcat!=null){
-					if(valueParConcat.trim().equals("")) {
-						biobjpar.setParameterValues(new ArrayList());
-						continue;
-					} else {
-						String[] valueParArr = valueParConcat.split(splitter);
-						List valuePar = Arrays.asList(valueParArr);
-						biobjpar.setParameterValues(valuePar);
+				if (useFormula) {
+					String formula = (String) request.getAttribute(nameParInRequest + "_formula");
+					FormulaParameterValuesRetriever strategy = new FormulaParameterValuesRetriever();
+					strategy.setFormulaName(formula);
+					biobjpar.setParameterValuesRetriever(strategy);
+				} else if (loadAtRuntime) {
+					RuntimeLoadingParameterValuesRetriever strategy = new RuntimeLoadingParameterValuesRetriever();
+					strategy.setUserIndentifierToBeUsed(profile.getUserUniqueIdentifier().toString());
+					String roleToBeUsed = (String) request.getAttribute(nameParInRequest + "_loadWithRole");
+					strategy.setRoleToBeUsed(roleToBeUsed);
+					biobjpar.setParameterValuesRetriever(strategy);
+				} else if (useFixedValues) {
+					String valueParConcat = (String)request.getAttribute(nameParInRequest);
+					if(valueParConcat!=null){
+						if(valueParConcat.trim().equals("")) {
+							biobjpar.setParameterValues(new ArrayList());
+							continue;
+						} else {
+							String[] valueParArr = valueParConcat.split(splitter);
+							List valuePar = Arrays.asList(valueParArr);
+							biobjpar.setParameterValues(valuePar);
+						}
 					}
-					newBiobjpars.add(biobjpar);
-				}				
+				}
+				newBiobjpars.add(biobjpar);
 			}
-			biobj.setBiObjectParameters(null);
 			biobj.setBiObjectParameters(newBiobjpars);
 			newBiObjects.add(biobj);
 		}

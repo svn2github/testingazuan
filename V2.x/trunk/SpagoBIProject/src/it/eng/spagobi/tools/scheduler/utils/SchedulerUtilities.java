@@ -30,6 +30,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDA
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.tools.scheduler.RuntimeLoadingParameterValuesRetriever;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.to.TriggerInfo;
@@ -200,26 +201,54 @@ public class SchedulerUtilities {
 					biobj.setBiObjectParameters(biobjpars);
 					String biobjlbl = biobj.getLabel() + "__" + (i+1);
 					SourceBean queryStringSB = (SourceBean)jobParSB.getFilteredSourceBeanAttribute("JOB_PARAMETER", "name", biobjlbl);
+					SourceBean iterativeSB = (SourceBean)jobParSB.getFilteredSourceBeanAttribute("JOB_PARAMETER", "name", biobjlbl + "_iterative");
+					List iterativeParameters = new ArrayList();
+					if (iterativeSB != null) {
+						String iterativeParametersStr = (String) iterativeSB.getAttribute("value");
+						String[] iterativeParametersArray = iterativeParametersStr.split(";");
+						iterativeParameters.addAll(Arrays.asList(iterativeParametersArray));
+					}
+					SourceBean loadAtRuntimeSB = (SourceBean)jobParSB.getFilteredSourceBeanAttribute("JOB_PARAMETER", "name", biobjlbl + "_loadAtRuntime");
+					Map<String, String> loadAtRuntimeParameters = new HashMap<String, String>();
+					if (loadAtRuntimeSB != null) {
+						String loadAtRuntimeStr = (String) loadAtRuntimeSB.getAttribute("value");
+						String[] loadAtRuntimeArray = loadAtRuntimeStr.split(";");
+						for (int count = 0; count < loadAtRuntimeArray.length; count++) {
+							String loadAtRuntime = loadAtRuntimeArray[count];
+							int parameterUrlNameIndex = loadAtRuntime.lastIndexOf("(");
+							String parameterUrlName = loadAtRuntime.substring(0, parameterUrlNameIndex);
+							String userAndRole = loadAtRuntime.substring(parameterUrlNameIndex + 2, loadAtRuntime.length() - 2);
+							loadAtRuntimeParameters.put(parameterUrlName, userAndRole);
+						}
+					}
 					String queryString = (String)queryStringSB.getAttribute("value");
 					String[] parCouples = queryString.split("%26");
-					for(int j=0; j<parCouples.length; j++) {
-						String parCouple = parCouples[j];
-						String[] parDef = parCouple.split("=");
-						Iterator iterbiobjpar = biobjpars.iterator();
-						while(iterbiobjpar.hasNext()) {
-							BIObjectParameter biobjpar = (BIObjectParameter)iterbiobjpar.next();
-							if(biobjpar.getParameterUrlName().equals(parDef[0])){
-								String parameterValues = parDef[1];
-								if (parameterValues.startsWith("ITERATE:{")) {
-									// in this case the parameter is iterative and the values are something like that:
-									// ITERATE:{value1;value2;...}
-									biobjpar.setIterative(true);
-									// deletes "ITERATE:{" at the beginning and "}" at the end
-									parameterValues = parameterValues.substring("ITERATE:{".length(), parameterValues.length() - 1);
+					Iterator iterbiobjpar = biobjpars.iterator();
+					while(iterbiobjpar.hasNext()) {
+						BIObjectParameter biobjpar = (BIObjectParameter)iterbiobjpar.next();
+						if (iterativeParameters.contains(biobjpar.getParameterUrlName())) {
+							biobjpar.setIterative(true);
+						} else {
+							biobjpar.setIterative(false);
+						}
+						if (loadAtRuntimeParameters.containsKey(biobjpar.getParameterUrlName())) {
+							RuntimeLoadingParameterValuesRetriever strategy = new RuntimeLoadingParameterValuesRetriever();
+							String userRoleStr = loadAtRuntimeParameters.get(biobjpar.getParameterUrlName());
+							String[] userRole = userRoleStr.split("\\|");
+							strategy.setUserIndentifierToBeUsed(userRole[0]);
+							strategy.setRoleToBeUsed(userRole[1]);
+							biobjpar.setParameterValuesRetriever(strategy);
+						} else {
+							for(int j=0; j<parCouples.length; j++) {
+								String parCouple = parCouples[j];
+								String[] parDef = parCouple.split("=");
+								if(biobjpar.getParameterUrlName().equals(parDef[0])){
+									String parameterValues = parDef[1];
+									String[] valuesArr = parameterValues.split(";");
+									List values = Arrays.asList(valuesArr);
+									biobjpar.setParameterValues(values);
+									break;
 								}
-								String[] valuesArr = parameterValues.split(";");
-								List values = Arrays.asList(valuesArr);
-								biobjpar.setParameterValues(values);
 							}
 						}
 					}

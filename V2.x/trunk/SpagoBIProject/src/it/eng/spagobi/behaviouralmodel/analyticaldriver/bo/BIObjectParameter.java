@@ -91,8 +91,10 @@ public class BIObjectParameter implements Serializable {
 	// if isIterative is true, it means that the execution must be executed for each value of the parameter,
 	// example: if the parameter values are "a" and "b" and isIterative = true, the document should be executed 2 times: the first time with "a"
 	// and second time with "b"; if isIterative = false, document should be executed only with time with "a" and "b" at the same time.
-	// It is used by scheduler.
+	// It is used by the scheduler.
 	private boolean isIterative = false;
+	
+	private ParameterValuesRetriever parameterValuesRetriever = null;
 	
 	/**
 	 * Gets the id.
@@ -452,6 +454,15 @@ public class BIObjectParameter implements Serializable {
 		toReturn.setRequired(required);
 		toReturn.setVisible(visible);
 		return toReturn;
+	}
+
+	public ParameterValuesRetriever getParameterValuesRetriever() {
+		return parameterValuesRetriever;
+	}
+
+	public void setParameterValuesRetriever(
+			ParameterValuesRetriever parameterValuesRetriever) {
+		this.parameterValuesRetriever = parameterValuesRetriever;
 	}
 	
 }

@@ -21,22 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.handlers;
 
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.util.JavaScript;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IBIObjectParameterDAO;
-import it.eng.spagobi.behaviouralmodel.check.bo.Check;
-import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
-import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
-import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
-import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -44,7 +35,6 @@ import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +46,7 @@ public class ExecutionController {
 	static private Logger logger = Logger.getLogger(ExecutionController.class);
 	
 	private BIObject biObject = null;
-	private Map lovResultMap = new HashMap();
+//	private Map lovResultMap = new HashMap();
 	
 	
 	
@@ -77,10 +67,10 @@ public class ExecutionController {
         Iterator iterPars = biParameters.iterator();
 		
         BIObjectParameter biParameter = null;
-        ModalitiesValue paruse= null;
-        String typeparuse = null;
-        String lovprov = null;
-        ScriptDetail scriptDet = null;
+//        ModalitiesValue paruse= null;
+//        String typeparuse = null;
+//        String lovprov = null;
+//        ScriptDetail scriptDet = null;
         
         while (iterPars.hasNext()){
 			biParameter = (BIObjectParameter)iterPars.next();
@@ -205,6 +195,7 @@ public class ExecutionController {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
+	/*
 	public BIObject prepareBIObjectInSession(SessionContainer aSessionContainer, Integer id, 
 					String aRoleName, String userProvidedParametersStr) throws EMFUserError {
 		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectForExecutionByIdAndRole(id, aRoleName);
@@ -288,6 +279,7 @@ public class ExecutionController {
 		}
 		return obj;
 	}
+	*/
 	
 	
 	/**
@@ -299,6 +291,7 @@ public class ExecutionController {
 	 * 
 	 * @throws SourceBeanException If any Exception occurred
 	 */
+	/*
 	public SourceBean createValidableFieldSourceBean(BIObjectParameter aBIObjectParameter) throws SourceBeanException {
 		
 		//if(aBIObjectParameter.isTransientParmeters()) return null;
@@ -377,6 +370,7 @@ public class ExecutionController {
 		return sb;
 		}	
 	}
+	*/
 	
 	
 	

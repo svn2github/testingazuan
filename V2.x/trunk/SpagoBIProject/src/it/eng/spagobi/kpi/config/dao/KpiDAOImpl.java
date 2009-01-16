@@ -257,7 +257,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			Criteria finder = aSession.createCriteria(SbiKpiValue.class);
 			finder.add(Expression.eq("sbiKpiInstance.idKpiInstance",
 					kpiInstId));
-			finder.add(Expression.lt("beginDt", endDate));
+			finder.add(Expression.le("beginDt", endDate));
 
 			if (resId != null) {
 				finder.add(Expression.eq("sbiResources.resourceId", resId));
@@ -265,21 +265,20 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				finder.add(Expression.eq("sbiResources.resourceId", null));
 			}
 			SourceBean sb = new SourceBean("ROWS");
-			finder.addOrder(Order.asc("beginDt"));
+			finder.addOrder(Order.desc("beginDt"));
 			finder.setMaxResults(10);
 			
 			List l = finder.list();
 			if (!l.isEmpty()) {
-				KpiValue tem = null;
-				Iterator it = l.iterator();
-				while (it.hasNext()) {
-					SbiKpiValue temp = (SbiKpiValue) it.next();
+			
+				for(int k=l.size()-1;k>=0;k--){
+					SbiKpiValue temp = (SbiKpiValue) l.get(k);
 					SourceBean sb2 = new SourceBean("ROW");
 					if(temp.getValue()!=null){
 						sb2.setAttribute("x", temp.getBeginDt());
 						sb2.setAttribute("KPI_VALUE", temp.getValue());
 						sb.setAttribute(sb2);
-					}					
+					}
 				}
 			}else{
 				SourceBean sb2 = new SourceBean("ROW");
@@ -418,25 +417,29 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			tx = aSession.beginTransaction();
 			SbiKpiPeriodicity hibSbiKpiPeriodicity = (SbiKpiPeriodicity) aSession
 					.load(SbiKpiPeriodicity.class, periodicityId);
-			if (hibSbiKpiPeriodicity.getDays() != null) {
-				logger.debug("DAYS: "+hibSbiKpiPeriodicity.getDays().toString());
-				// 86400 seconds in a day
-				seconds += hibSbiKpiPeriodicity.getDays().intValue() * 86400;
-			}
-			if (hibSbiKpiPeriodicity.getHours() != null) {
-				logger.debug("HOURS: "+hibSbiKpiPeriodicity.getHours().toString());
-				// 3600 seconds in an hour
-				seconds += hibSbiKpiPeriodicity.getHours().intValue() * 3600;
-			}
-			if (hibSbiKpiPeriodicity.getMinutes() != null) {
-				logger.debug("MINUTES: "+hibSbiKpiPeriodicity.getMinutes().toString());
-				// 60 seconds in a minute
-				seconds += hibSbiKpiPeriodicity.getMinutes().intValue() * 60;
-			}
-			if (hibSbiKpiPeriodicity.getMonths() != null) {
-				logger.debug("MONTHS: "+hibSbiKpiPeriodicity.getMonths().toString());
-				// 2592000 seconds in a month of 30 days
-				seconds += hibSbiKpiPeriodicity.getMonths().intValue() * 2592000;
+			if(hibSbiKpiPeriodicity.getChronString()!=null){
+				
+			}else{
+				if (hibSbiKpiPeriodicity.getDays() != null) {
+					logger.debug("DAYS: "+hibSbiKpiPeriodicity.getDays().toString());
+					// 86400 seconds in a day
+					seconds += hibSbiKpiPeriodicity.getDays().intValue() * 86400;
+				}
+				if (hibSbiKpiPeriodicity.getHours() != null) {
+					logger.debug("HOURS: "+hibSbiKpiPeriodicity.getHours().toString());
+					// 3600 seconds in an hour
+					seconds += hibSbiKpiPeriodicity.getHours().intValue() * 3600;
+				}
+				if (hibSbiKpiPeriodicity.getMinutes() != null) {
+					logger.debug("MINUTES: "+hibSbiKpiPeriodicity.getMinutes().toString());
+					// 60 seconds in a minute
+					seconds += hibSbiKpiPeriodicity.getMinutes().intValue() * 60;
+				}
+				if (hibSbiKpiPeriodicity.getMonths() != null) {
+					logger.debug("MONTHS: "+hibSbiKpiPeriodicity.getMonths().toString());
+					// 2592000 seconds in a month of 30 days
+					seconds += hibSbiKpiPeriodicity.getMonths().intValue() * 2592000;
+				}
 			}
 			toReturn = new Integer(seconds);
 			logger.debug("Total seconds: "+toReturn.toString());

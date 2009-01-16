@@ -68,6 +68,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -81,6 +84,7 @@ public class GeneralUtilities {
     private static transient Logger logger = Logger.getLogger(GeneralUtilities.class);
     
     public static final int MAX_DEFAULT_TEMPLATE_SIZE = 5242880;
+    public static String SPAGOBI_HOST = null;    
     
     /**
      * The Main method.
@@ -330,6 +334,26 @@ public class GeneralUtilities {
 	return path;
     }      
 
+	private static String readJndiResource(String jndiName) {
+		logger.debug("IN.jndiName="+jndiName);
+		String value=null;
+		try {
+			Context ctx = new InitialContext();
+			value  = (String)ctx.lookup(jndiName);
+			logger.debug("jndiName: " + value);
+			 
+		} catch (NamingException e) {
+		    logger.error(e);
+		} catch (Exception e) {
+		    logger.error(e);
+		} catch (Throwable t) {
+		    logger.error(t);
+		} finally {
+		    logger.debug("OUT.value="+value);
+		}
+		return value;
+	}
+	
     /**
      * Returns the address for SpagoBI as an URL and puts it into a
      * string. The information contained are the Server name and port. Before
@@ -339,23 +363,25 @@ public class GeneralUtilities {
      */
     public static String getSpagoBiHost() {
 	logger.debug("IN");
-	String path = "";
-	try {
-	    logger.debug("Trying to recover SpagoBiHost from ConfigSingleton");
-	    ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
-	    SourceBean sbTmp = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_HOST");
-	    if (sbTmp!=null){
-		path = sbTmp.getCharacters();
-	    }else {
-		logger.debug("SPAGOBI_HOST not set, using the default value ");
-		path ="http://localhost:8080";
+	if (SPAGOBI_HOST == null) {
+	    try {
+		logger.debug("Trying to recover SpagoBiHost from ConfigSingleton");
+		ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+		SourceBean sbTmp = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_HOST_JNDI");
+		if (sbTmp != null) {
+		    String jndi = sbTmp.getCharacters();
+		    SPAGOBI_HOST = readJndiResource(jndi);
+		}
+		if (SPAGOBI_HOST == null) {
+		    logger.debug("SPAGOBI_HOST not set, using the default value ");
+		    SPAGOBI_HOST = "http://localhost:8080";
+		}
+	    } catch (Exception e) {
+		logger.error("Error while recovering getSpagoBiHost", e);
 	    }
-	    logger.debug("SPAGOBI_HOST: " + path);
-	} catch (Exception e) {
-	    logger.error("Error while recovering getSpagoBiHost", e);
 	}
-	logger.debug("OUT:" + path);
-	return path;
+	logger.debug("OUT:" + SPAGOBI_HOST);
+	return SPAGOBI_HOST;
     }  
      
     

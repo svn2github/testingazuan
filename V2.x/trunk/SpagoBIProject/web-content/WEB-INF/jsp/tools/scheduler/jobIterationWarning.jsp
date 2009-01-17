@@ -78,4 +78,4 @@ String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
 	<div style="clear:both;"></div>
 </div>
 
-<%@ include file="/jsp/commons/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

@@ -287,4 +287,4 @@ Integer refreshConvert=new Integer(refreshSeconds.intValue()*1000);
 
 <% } %>
 
-<%@ include file="/jsp/commons/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

@@ -161,4 +161,4 @@ createToggledBox('<spagobi:message key='sbi.execution.snapshots'/>:', 'snapshots
 <% } %>
 <%-- End Snapshots --%>
 
-<%@ include file="/jsp/commons/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

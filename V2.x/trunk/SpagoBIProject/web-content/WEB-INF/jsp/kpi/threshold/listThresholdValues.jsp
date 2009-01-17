@@ -23,4 +23,4 @@
 
 <spagobi:list moduleName="ListThresholdValuesModule" bundle="component_kpi_messages"/>
 
-<%@ include file="/jsp/commons/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

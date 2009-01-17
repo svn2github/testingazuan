@@ -377,4 +377,4 @@ Ext.onReady(function(){
 <% } %>
 <%-- End scripts for my recently used list --%>
 
-<%@ include file="/jsp/commons/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

@@ -137,4 +137,4 @@ if (heightArea == null || heightArea.trim().equals("")) {
 </div>    
 <%-- End execution iframe --%>
 
-<%@ include file="/jsp/commons/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

@@ -29,4 +29,4 @@ String ciao="miao";
 
 <spagobi:list moduleName="SelectDatasetLookupModule" />
 
-<%@ include file="/jsp/commons/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

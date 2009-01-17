@@ -387,4 +387,4 @@ Ext.onReady(function(){
 </div> 	
 	
 
-<%@ include file="/jsp/commons/footer.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

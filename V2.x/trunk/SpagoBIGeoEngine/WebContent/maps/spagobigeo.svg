@@ -118,7 +118,7 @@ onload="init(evt);">
 			if(myMapApp.Windows["thematic"]){ 
         myMapApp.Windows["thematic"].addThemes();
       } else {
-        setKpi('store_sales','store_sales','Xtore Xales');
+        setKpi(sbi.geo.conf.measures[0].name,sbi.geo.conf.measures[0].name,sbi.geo.conf.measures[0].name);
       }
 			if(myMapApp.Windows["detail"]) myMapApp.Windows["detail"].initTabGroups();
 			if(myMapApp.Windows["detail"]) myMapApp.Windows["detail"].initDetailInfopanels();   

@@ -617,8 +617,7 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 	//String path=request.getRealPath("html/infos.html");
 	
 	String path=GeneralUtilities.getSpagoBiContext()+"/html/infos.html";
-	System.out.println(path);
-		if(path==null) path="";
+	if(path==null) path="";
 	%>
 
 	

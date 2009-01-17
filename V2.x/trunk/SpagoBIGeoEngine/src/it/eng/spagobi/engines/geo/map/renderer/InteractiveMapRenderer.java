@@ -1140,7 +1140,9 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		double mainMapHeight = 1100 *(heigth/width);
 		Element mainMapBlock = masterMap.getElementById("mainMap");
 		mainMapBlock.setAttribute("viewBox", viewBox);
-		masterMap.getRootElement().setAttribute("viewBox", "0 0 1100 " + mainMapHeight);
+		//masterMap.getRootElement().setAttribute("viewBox", "0 0 1100 " + mainMapHeight);
+		masterMap.getRootElement().setAttribute("viewBox", 0 + " " + 0 + " 1100 " + mainMapHeight);
+		
 	}
 	
 	/**

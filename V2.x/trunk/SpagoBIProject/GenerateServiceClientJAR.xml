@@ -23,13 +23,13 @@
 		<jar destfile="./dist/spagobi-service-client.jar">
 			
 			<fileset dir="./web-content/WEB-INF/classes"
-				includes="/it/eng/spagobi/tools/dataset/bo/*,
+				includes="it/eng/spagobi/tools/dataset/bo/*,
 				it/eng/spagobi/tools/dataset/common/**/*">
 	
 			</fileset>
 			
 			<fileset dir="./web-content/WEB-INF/classes"
-							includes="/it/eng/spagobi/tools/datasource/bo/*">
+							includes="it/eng/spagobi/tools/datasource/bo/*">
 				
 			</fileset>
 			

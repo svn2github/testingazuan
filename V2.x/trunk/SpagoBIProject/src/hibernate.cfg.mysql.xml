@@ -5,19 +5,15 @@
 <hibernate-configuration>
     <session-factory name="HibernateSessionFactoryMySQL">
     	<property name="hibernate.connection.datasource">java:/comp/env/jdbc/spagobi</property>
-    	<!--
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/spagobi</property>
-        <property name="hibernate.cglib.use_reflection_optimizer">false</property>
-        <property name="hibernate.connection.password">spagobi</property>
-        <property name="hibernate.connection.username">spagobi</property>
-        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        -->
+
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <!--
         <property name="hibernate.show_sql">true</property>
-		<property name="hibernate.cache.use_minimal_puts">true</property>                
+		    <property name="hibernate.cache.use_minimal_puts">true</property>                
         <property name="hibernate.generate_statistics">true</property>       
         <property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
-       
+        <property name="hibernate.hbm2ddl.auto">create</property>
+        -->
         <mapping resource="it/eng/spagobi/events/metadata/mappingmysql/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/events/metadata/mappingmysql/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingmysql/SbiDomains.hbm.xml" />

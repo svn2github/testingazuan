@@ -24,6 +24,7 @@ package it.eng.spagobi.behaviouralmodel.analyticaldriver.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.document.service.DetailBIObjectModule;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterUse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
@@ -47,6 +48,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -61,7 +63,7 @@ import org.hibernate.Transaction;
 public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 		IParameterUseDAO {
 
-	
+    static private Logger logger = Logger.getLogger(ParameterUseDAOHibImpl.class);
 	/**
 	 * Load by id.
 	 * 
@@ -586,7 +588,7 @@ public class ParameterUseDAOHibImpl extends AbstractHibernateDAO implements
 			
 			if (tx != null) tx.rollback();	
 			
-			System.out.println(he.toString());
+		            logger.error("HibernateException",he);
 
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);  
 		

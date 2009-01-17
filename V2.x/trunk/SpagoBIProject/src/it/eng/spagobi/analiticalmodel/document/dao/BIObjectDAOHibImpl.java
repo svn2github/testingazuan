@@ -538,8 +538,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
         try{
         	int rowCount = query.executeUpdate();
         } catch (Exception e) {
-        	// TODO trace exception
-        	System.out.println(e);
+            logger.error("Exception",e);
         }
         // get the next prog for the new template
         Integer nextProg = null;

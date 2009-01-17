@@ -647,7 +647,7 @@ public class AdapterPortlet extends GenericPortlet {
         					Constants.NOME_MODULO,
             	            TracerSingleton.CRITICAL,
             	            "AdapterPortlet::doView: name of start service not find");
-        			System.out.println("AdapterPortlet::doView: name of start service not find");
+        			//System.out.println("AdapterPortlet::doView: name of start service not find");
         			return;
         		}		        		
         		if(serviceType.equalsIgnoreCase(SERVICE_JSP)) {
@@ -659,8 +659,8 @@ public class AdapterPortlet extends GenericPortlet {
             	            Constants.NOME_MODULO,
             	            TracerSingleton.CRITICAL,
             	            "AdapterPortlet::doView: Error during the route to " + serviceName, ex);
-            	        System.out.println("AdapterPortlet::doView: Error during the route to " 
-            	        		            + serviceName + " (see log file)");
+            	       // System.out.println("AdapterPortlet::doView: Error during the route to " 
+            	       // 		            + serviceName + " (see log file)");
             	    }   
         		} else {
         			if(serviceType.equalsIgnoreCase(SERVICE_ACTION)) {
@@ -692,8 +692,8 @@ public class AdapterPortlet extends GenericPortlet {
                 	            TracerSingleton.CRITICAL,
                 	            "AdapterPortlet::doView: Error during the process of the "
 								+ serviceType + " service " + serviceName, e);
-        				System.out.println("AdapterPortlet::doView: Error during the process of the "
-								+ serviceType + " service " + serviceName + " (see log file)");
+        			//	System.out.println("AdapterPortlet::doView: Error during the process of the "
+				//				+ serviceType + " service " + serviceName + " (see log file)");
         			}
         		} 
         		// *******************************************************************

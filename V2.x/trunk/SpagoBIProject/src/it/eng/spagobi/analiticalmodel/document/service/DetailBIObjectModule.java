@@ -232,8 +232,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		try{
 			obj = helper.recoverBIObjectDetails(message);
 		} catch (Exception e) {
-			System.out.println(e);
-			// TODO manage exception 
+	            logger.error("Exception",e);
 		}
 		BIObjectParameter biObjPar = helper.recoverBIObjectParameterDetails(obj.getId());
 		session.setAttribute("LookupBIObject", obj);
@@ -275,7 +274,7 @@ public class DetailBIObjectModule extends AbstractModule {
 		try{
 			obj = helper.recoverBIObjectDetails(message);
 		} catch (Exception e) {
-			System.out.println(e);
+	            logger.error("Exception",e);
 			// TODO manage exception 
 		}
 		

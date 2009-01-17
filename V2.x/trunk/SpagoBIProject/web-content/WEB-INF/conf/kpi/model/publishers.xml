@@ -43,7 +43,7 @@
 	<PUBLISHER name="ListModelPublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/listModel.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/listModel.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -51,7 +51,7 @@
 	<PUBLISHER name="DetailModelPublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/detailModel.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/detailModel.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -98,7 +98,7 @@
 	<PUBLISHER name="ListModelTreePublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/modelTree.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/modelTree.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -107,7 +107,7 @@
 	<PUBLISHER name="DetailModelTreePublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/detailModelTree.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/detailModelTree.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -150,7 +150,7 @@
 	<PUBLISHER name="ListModelInstancePublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/listModelInstance.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/listModelInstance.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -158,7 +158,7 @@
 	<PUBLISHER name="DetailModelInstancePublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/detailModelInstance.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/detailModelInstance.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>	
@@ -208,7 +208,7 @@
 	<PUBLISHER name="ListModelInstanceTreePublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/modelInstanceTree.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/modelInstanceTree.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -217,7 +217,7 @@
 	<PUBLISHER name="DetailModelInstanceTreePublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/detailModelInstanceTree.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/detailModelInstanceTree.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -260,7 +260,7 @@
 	<PUBLISHER name="ListResourcesPublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/listResources.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/listResources.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -268,7 +268,7 @@
 	<PUBLISHER name="DetailResourcesPublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/detailResources.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/detailResources.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -311,7 +311,7 @@
 	<PUBLISHER name="ListModelResourcesPublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
-				<ITEM mode="VIEW" resource="/jsp/kpi/model/listModelResources.jsp" />
+				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/listModelResources.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>

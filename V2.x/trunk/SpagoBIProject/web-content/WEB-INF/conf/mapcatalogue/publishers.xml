@@ -5,7 +5,7 @@
 	<PUBLISHER name="SECURITY_ERROR_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
-				<ITEM prog="0" resource="/jsp/commons/securityError.jsp" />
+				<ITEM prog="0" resource="/WEB-INF/jsp/commons/securityError.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -14,7 +14,7 @@
 	<PUBLISHER name="SERVICE_ERROR_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
-				<ITEM prog="0" resource="/jsp/commons/serviceError.jsp" />
+				<ITEM prog="0" resource="/WEB-INF/jsp/commons/serviceError.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -23,13 +23,13 @@
   <PUBLISHER name="LoginSBIMapCataloguePublisher">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/mapcatalogue/startSBIMapCatalogue.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/mapcatalogue/startSBIMapCatalogue.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/mapcatalogue/startSBIMapCatalogue.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/mapcatalogue/startSBIMapCatalogue.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   </PUBLISHER>
@@ -50,13 +50,13 @@
   	<PUBLISHER name="listMaps">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/mapcatalogue/listMaps.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/mapcatalogue/listMaps.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/mapcatalogue/listMaps.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/mapcatalogue/listMaps.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -75,13 +75,13 @@
   	<PUBLISHER name="detailMap">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/mapcatalogue/detailMap.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/mapcatalogue/detailMap.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/mapcatalogue/detailMap.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/mapcatalogue/detailMap.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -117,13 +117,13 @@
   	<PUBLISHER name="FeaturesLookupPublisher">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/mapcatalogue/listLookupFeatures.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/mapcatalogue/listLookupFeatures.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/mapcatalogue/listLookupFeatures.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/mapcatalogue/listLookupFeatures.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -145,13 +145,13 @@
   	<PUBLISHER name="listFeatures">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/mapcatalogue/listFeatures.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/mapcatalogue/listFeatures.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/mapcatalogue/listFeatures.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/mapcatalogue/listFeatures.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -170,13 +170,13 @@
   	<PUBLISHER name="detailFeature">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/mapcatalogue/detailFeature.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/mapcatalogue/detailFeature.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/mapcatalogue/detailFeature.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/mapcatalogue/detailFeature.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

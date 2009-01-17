@@ -18,7 +18,7 @@
     
 --%>
 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <spagobi:list moduleName="ListKpiModule" bundle="component_kpi_messages"/>
 

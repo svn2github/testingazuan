@@ -18,7 +18,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <%@ page import="it.eng.spago.navigation.LightNavigationManager,it.eng.spagobi.tools.importexport.ImportExportConstants,java.util.List,java.util.Map,java.util.Set,java.util.Iterator,it.eng.spagobi.tools.importexport.*,it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov,it.eng.spagobi.commons.metadata.SbiExtRoles,it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects,it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters,it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions,it.eng.spagobi.engines.config.metadata.SbiEngines,it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks,it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse,it.eng.spagobi.tools.importexport.IImportManager" %>
 <%@page import="java.util.HashMap"%>

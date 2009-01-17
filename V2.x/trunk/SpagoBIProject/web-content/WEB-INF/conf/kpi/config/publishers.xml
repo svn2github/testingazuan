@@ -37,14 +37,14 @@
   <PUBLISHER name="ListKpiPublisher">
     <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       <RESOURCES>
-        <ITEM mode="VIEW" resource="/jsp/kpi/config/listKpi.jsp" />
+        <ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/config/listKpi.jsp" />
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>
   <PUBLISHER name="DetailKpiPublisher">
     <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       <RESOURCES>
-        <ITEM mode="VIEW" resource="/jsp/kpi/config/detailKpi.jsp" />
+        <ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/config/detailKpi.jsp" />
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>

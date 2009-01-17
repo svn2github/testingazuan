@@ -40,7 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.safehaus.uuid.UUID"%>
 <%@page import="org.safehaus.uuid.UUIDGenerator"%>
 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
 
 	<%-- START CHECK USER PROFILE EXISTENCE

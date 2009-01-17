@@ -18,7 +18,7 @@
     
 --%>
 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <%@page import="java.util.Map,java.util.HashMap"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>

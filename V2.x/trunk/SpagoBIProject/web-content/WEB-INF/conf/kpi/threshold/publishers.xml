@@ -37,14 +37,14 @@
   <PUBLISHER name="ListThresholdsPublisher">
     <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       <RESOURCES>
-        <ITEM mode="VIEW" resource="/jsp/kpi/threshold/listThresholds.jsp" />
+        <ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/threshold/listThresholds.jsp" />
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>
   <PUBLISHER name="DetailThresholdPublisher">
     <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       <RESOURCES>
-        <ITEM mode="VIEW" resource="/jsp/kpi/threshold/detailThreshold.jsp" />
+        <ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/threshold/detailThreshold.jsp" />
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>
@@ -86,14 +86,14 @@
   <PUBLISHER name="ListThresholdValuesPublisher">
     <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       <RESOURCES>
-        <ITEM mode="VIEW" resource="/jsp/kpi/threshold/listThresholdValues.jsp" />
+        <ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/threshold/listThresholdValues.jsp" />
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>
   <PUBLISHER name="DetailThresholdValuePublisher">
     <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       <RESOURCES>
-        <ITEM mode="VIEW" resource="/jsp/kpi/threshold/detailThresholdValue.jsp" />
+        <ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/threshold/detailThresholdValue.jsp" />
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>

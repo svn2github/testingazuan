@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.util.HashMap"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <%
 	Map backUrlPars = new HashMap();

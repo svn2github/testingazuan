@@ -33,13 +33,13 @@
   	<PUBLISHER name="listDistributionList">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/distributionlist/listDistributionList.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/distributionlist/listDistributionList.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/distributionlist/listDistributionList.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/distributionlist/listDistributionList.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>    	
   	</PUBLISHER>
@@ -62,13 +62,13 @@
   	<PUBLISHER name="detailDistributionList">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/distributionlist/detailDistributionList.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/distributionlist/detailDistributionList.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/distributionlist/detailDistributionList.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/distributionlist/detailDistributionList.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -131,13 +131,13 @@
   	<PUBLISHER name="listDistributionListUser">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/distributionlist/listDistributionListUser.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/distributionlist/listDistributionListUser.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/distributionlist/listDistributionListUser.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/distributionlist/listDistributionListUser.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -145,13 +145,13 @@
   	<PUBLISHER name="listDistributionListUserWithOutback">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/distributionlist/listDistributionListUserWithOutback.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/distributionlist/listDistributionListUserWithOutback.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/distributionlist/listDistributionListUserWithOutback.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/distributionlist/listDistributionListUserWithOutback.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>  	
@@ -172,13 +172,13 @@
   	<PUBLISHER name="detailDistributionListUser">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/distributionlist/detailDistributionListUser.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/distributionlist/detailDistributionListUser.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/distributionlist/detailDistributionListUser.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/distributionlist/detailDistributionListUser.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -187,13 +187,13 @@
   	<PUBLISHER name="insertEmail">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/distributionlist/insertEmail.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/distributionlist/insertEmail.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/distributionlist/insertEmail.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/distributionlist/insertEmail.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

@@ -20,7 +20,7 @@
 
 <%@ taglib uri='http://java.sun.com/portlet' prefix='portlet'%>
 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <portlet:defineObjects/>
 

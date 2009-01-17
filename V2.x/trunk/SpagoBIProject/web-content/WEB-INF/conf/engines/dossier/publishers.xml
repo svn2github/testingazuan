@@ -30,13 +30,13 @@
   	<PUBLISHER name="DossierDetail">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/engines/dossier/dossierDetail.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/engines/dossier/dossierDetail.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/engines/dossier/dossierDetail.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/engines/dossier/dossierDetail.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -44,13 +44,13 @@
   	<PUBLISHER name="DossierConfiguredDocumentDetail">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/engines/dossier/dossierConfDocDetail.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/engines/dossier/dossierConfDocDetail.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/engines/dossier/dossierConfDocDetail.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/engines/dossier/dossierConfDocDetail.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -137,13 +137,13 @@
     <PUBLISHER name="DossierExecution">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/engines/dossier/dossierExecution.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/engines/dossier/dossierExecution.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/engines/dossier/dossierExecution.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/engines/dossier/dossierExecution.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER> 
@@ -152,13 +152,13 @@
   	 <PUBLISHER name="DossierPresentationVersion">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/engines/dossier/dossierPresentationVersions.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/engines/dossier/dossierPresentationVersions.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/engines/dossier/dossierPresentationVersions.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/engines/dossier/dossierPresentationVersions.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER> 
@@ -199,13 +199,13 @@
     <PUBLISHER name="DossierEditNotesTemplatePart">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/engines/dossier/dossierEditNotesTempPart.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/engines/dossier/dossierEditNotesTempPart.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/engines/dossier/dossierEditNotesTempPart.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/engines/dossier/dossierEditNotesTempPart.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER> 
@@ -215,13 +215,13 @@
      <PUBLISHER name="ValidateFinalDocumentHandler">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/engines/dossier/dossierCheckFinalDocument.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/engines/dossier/dossierCheckFinalDocument.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/engines/dossier/dossierCheckFinalDocument.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/engines/dossier/dossierCheckFinalDocument.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER> 
@@ -272,13 +272,13 @@
      <PUBLISHER name="publishPresentation">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/engines/dossier/dossierPublishPresentation.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/engines/dossier/dossierPublishPresentation.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/engines/dossier/dossierPublishPresentation.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/engines/dossier/dossierPublishPresentation.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER> 

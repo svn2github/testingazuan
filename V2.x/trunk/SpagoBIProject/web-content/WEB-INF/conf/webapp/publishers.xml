@@ -12,7 +12,7 @@
   	<PUBLISHER name="LoginPublisher">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/wapp/login.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/wapp/login.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -20,7 +20,7 @@
   	<PUBLISHER name="LogoutPublisher">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/wapp/logout.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/wapp/logout.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -28,7 +28,7 @@
   	<PUBLISHER name="home">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/wapp/home.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/wapp/home.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -36,7 +36,7 @@
   	<PUBLISHER name="login">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/wapp/login.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/wapp/login.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -44,7 +44,7 @@
   	<PUBLISHER name="authenticationFailed">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/wapp/index.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/wapp/index.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -60,7 +60,7 @@
   	<PUBLISHER name="ViewBuilder">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/wapp/viewBuilder.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/wapp/viewBuilder.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -95,7 +95,7 @@
   	 <PUBLISHER name="MenuConfigurationPublisher">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM PROG="0" resource="/jsp/wapp/menuConfiguration.jsp"/>
+        		<ITEM PROG="0" resource="/WEB-INF/jsp/wapp/menuConfiguration.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -112,7 +112,7 @@
   	<PUBLISHER name="detailMenuPublisher">
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/wapp/detailMenu.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/wapp/detailMenu.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -137,7 +137,7 @@
   	  	<PUBLISHER name="DocumentLookupPublisher">
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/wapp/listLookupDocument.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/wapp/listLookupDocument.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>

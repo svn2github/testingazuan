@@ -12,7 +12,7 @@
 	<PUBLISHER name="LovLookupAjax">
     	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/scheduler/LovLookupAjax.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/scheduler/LovLookupAjax.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -47,13 +47,13 @@
 	<PUBLISHER name="ListJobs">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/scheduler/ListJobs.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/scheduler/ListJobs.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/scheduler/ListJobs.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/scheduler/ListJobs.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -62,13 +62,13 @@
 	<PUBLISHER name="JobDetail">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/scheduler/JobDetail.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/scheduler/JobDetail.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/scheduler/JobDetail.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/scheduler/JobDetail.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -76,13 +76,13 @@
 	<PUBLISHER name="JobIterationWarning">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/scheduler/jobIterationWarning.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/scheduler/jobIterationWarning.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/scheduler/jobIterationWarning.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/scheduler/jobIterationWarning.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -106,13 +106,13 @@
 	<PUBLISHER name="ListTriggers">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/scheduler/ListTriggers.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/scheduler/ListTriggers.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/scheduler/ListTriggers.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/scheduler/ListTriggers.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>
@@ -121,13 +121,13 @@
 	<PUBLISHER name="TriggerDetail">
     	<RENDERING channel="PORTLET" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/jsp/tools/scheduler/TriggerDetail.jsp"/>
-        		<ITEM mode="EDIT" resource="/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/tools/scheduler/TriggerDetail.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
    	 	<RENDERING channel="HTTP" mode="" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/jsp/tools/scheduler/TriggerDetail.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/tools/scheduler/TriggerDetail.jsp"/>
       		</RESOURCES>
    	 	</RENDERING>
   	</PUBLISHER>

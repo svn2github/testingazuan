@@ -19,7 +19,7 @@
 --%>
 <%@page import="java.util.HashMap"%>
 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <spagobi:list moduleName="ListThresholdValuesModule" bundle="component_kpi_messages"/>
 

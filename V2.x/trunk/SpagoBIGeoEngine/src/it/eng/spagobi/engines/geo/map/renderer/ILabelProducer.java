@@ -20,6 +20,8 @@
  **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
+import java.util.Map;
+
 import it.eng.spago.base.SourceBean;
 
 // TODO: Auto-generated Javadoc
@@ -42,5 +44,7 @@ public interface ILabelProducer {
 	 * 
 	 * @return the label
 	 */
-	public String getLabel();	
+	public String getLabel();
+
+	public Map getSettings();	
 }

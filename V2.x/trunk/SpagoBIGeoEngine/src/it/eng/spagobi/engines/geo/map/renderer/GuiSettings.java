@@ -116,7 +116,8 @@ public class GuiSettings {
 	public JSONObject toJSON() throws JSONException {
 		JSONObject guiSettings;
 		JSONArray windowsSettings;
-		Object settings;
+		JSONArray labelsSettings;
+		JSONObject settings;
 		
 		guiSettings = toJSON( getGeneralSettings() );
 		
@@ -145,6 +146,62 @@ public class GuiSettings {
 		
 		guiSettings.put("windows", windowsSettings);
 		
+		
+		
+		
+		labelsSettings = new JSONArray();
+		ILabelProducer labelProducer;
+	    
+		labelProducer = (ILabelProducer)getLabelProducers().get("header-left");
+		if(labelProducer != null) {
+			settings = toJSON( labelProducer.getSettings() );
+			settings.put("position", "header-left");
+			settings.put("text", labelProducer.getLabel());
+			labelsSettings.put(settings);
+		}
+		
+		
+		labelProducer = (ILabelProducer)getLabelProducers().get("header-center");
+		if(labelProducer != null) {
+			settings = toJSON( labelProducer.getSettings() );
+			settings.put("position", "header-center");
+			settings.put("text", labelProducer.getLabel());
+			labelsSettings.put(settings);
+		}
+		
+		labelProducer = (ILabelProducer)getLabelProducers().get("header-right");
+		if(labelProducer != null) {
+			settings = toJSON( labelProducer.getSettings() );
+			settings.put("position", "header-right");
+			settings.put("text", labelProducer.getLabel());
+			labelsSettings.put(settings);
+		}
+		
+		labelProducer = (ILabelProducer)getLabelProducers().get("footer-left");
+		if(labelProducer != null) {
+			settings = toJSON( labelProducer.getSettings() );
+			settings.put("position", "footer-left");
+			settings.put("text", labelProducer.getLabel());
+			labelsSettings.put(settings);
+		}
+		
+		labelProducer = (ILabelProducer)getLabelProducers().get("footer-center");
+		if(labelProducer != null) {
+			settings = toJSON( labelProducer.getSettings() );
+			settings.put("position", "footer-center");
+			settings.put("text", labelProducer.getLabel());
+			labelsSettings.put(settings);
+		}
+		
+		labelProducer = (ILabelProducer)getLabelProducers().get("footer-right");
+		if(labelProducer != null) {
+			settings = toJSON( labelProducer.getSettings() );
+			settings.put("position", "footer-right");
+			settings.put("text", labelProducer.getLabel());
+			labelsSettings.put(settings);
+		}
+	
+		guiSettings.put("labels", labelsSettings);
 		
 		return guiSettings;
 	}

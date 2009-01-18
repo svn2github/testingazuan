@@ -40,7 +40,7 @@ import java.util.Set;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class QueryLabelProducer implements ILabelProducer {
+public class QueryLabelProducer extends AbstractLabelProducer {
 	
 	/** The data source. */
 	private IDataSource dataSource;
@@ -58,6 +58,7 @@ public class QueryLabelProducer implements ILabelProducer {
 	 * @see it.eng.spagobi.engines.geo.map.renderer.LabelProducer#init(it.eng.spago.base.SourceBean)
 	 */
 	public void init(SourceBean conf) {
+		super.init(conf);
 		SourceBean dataSourceSB = (SourceBean)conf.getAttribute("DATASOURCE");
 		dataSource = new DataSource();
 		

@@ -31,7 +31,7 @@ import java.util.Date;
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class DateLabelProducer implements ILabelProducer {
+public class DateLabelProducer extends AbstractLabelProducer {
 	
 	/** The day format. */
 	private String dayFormat = "dd/MM/yyyy";
@@ -46,6 +46,7 @@ public class DateLabelProducer implements ILabelProducer {
 	 * @see it.eng.spagobi.engines.geo.map.renderer.LabelProducer#init(it.eng.spago.base.SourceBean)
 	 */
 	public void init(SourceBean conf) {
+		super.init(conf);
 		SourceBean formatSB = (SourceBean)conf.getAttribute("FORMAT");
 		dayFormat = (String)formatSB.getAttribute("day");
 		hourFormat = (String)formatSB.getAttribute("hour");

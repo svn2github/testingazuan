@@ -354,7 +354,7 @@ public class AbstractMapRendererConfigurator {
 		return labelProducers;
 	}
 
-	private static void addSettings(Map settingsMap, List params) {
+	public static void addSettings(Map settingsMap, List params) {
 		
 		Iterator it = params.iterator();
 		while(it.hasNext()) {

@@ -148,7 +148,6 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 				
 		addData(targetMap, dataMart);
 		addLink(targetMap, dataMart);
-		addLabels(masterMap, dataMart);
 		
 		
 		SVGMapMerger.margeMap(targetMap, masterMap, null, "targetMap");
@@ -196,12 +195,13 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		    }
 		    conf.put("target_layer_index", targetLayerIndex);
 		    conf.put("layers", layers);
-		    conf.put("includeChartLayer", getLayer("grafici")!=null);
-		    conf.put("includeValuesLayer", getLayer("valori")!=null);
+		    
 		    	    
 		      
 		    
 		    JSONObject guiSettings =  getGUIConfigurationScript();
+		    guiSettings.put("includeChartLayer", getLayer("grafici")!=null);
+		    guiSettings.put("includeValuesLayer", getLayer("valori")!=null);
 		    conf.put("gui_settings", guiSettings);
 		} catch (JSONException e1) {
 			logger.error("Impossible to create sbi.geo.conf", e1);
@@ -322,11 +322,11 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		
 		
 		
-		int selectedKpiIndex = dataStoreMeta.getFieldIndex( getSelectedMeasureName() );
-		String selectedKpiName = kpiNames[selectedKpiIndex];
+		//int selectedKpiIndex = dataStoreMeta.getFieldIndex( getSelectedMeasureName() );
+		String selectedKpiName = getSelectedMeasureName(); //kpiNames[selectedKpiIndex];
 		Measure measure  = getMeasure( selectedKpiName );
-		Double lb_value = null;
-		Double ub_value = null;
+		Number lb_value = null;
+		Number ub_value = null;
 		String lb_color = null;
 		String ub_color = null;
 		String null_values_color = null;
@@ -335,8 +335,8 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		Integer trasholdCalculationUniformParams = null;
 		String colorRangeCalculationGradParams = null;
 		String[] col_kpi_array = null;
-		Double[] trash_kpi_array = null;
-		Double[] kpi_ordered_values = null;
+		Number[] trash_kpi_array = null;
+		Number[] kpi_ordered_values = null;
 		
 		
 		
@@ -344,7 +344,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		dataStore.sortRecords( dataStoreMeta.getFieldIndex(selectedKpiName) );
 		List orderedKpiValuesSet = dataStore.getFieldValues( dataStoreMeta.getFieldIndex(selectedKpiName) );
 		//Set orderedKpiValuesSet = datamart.getOrderedKpiValuesSet( selectedKpiName );
-		kpi_ordered_values = (Double[])orderedKpiValuesSet.toArray(new Double[0]);
+		kpi_ordered_values = (Number[])orderedKpiValuesSet.toArray(new Number[0]);
     	
 		
 				
@@ -391,12 +391,12 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
    		}
    		
    		if(lb_value.doubleValue() > ub_value.doubleValue()) {
-   			Double t = lb_value;
+   			Number t = lb_value;
    			ub_value = lb_value;
    			lb_value = t;
    		}
    		
-   		if(ub_value < kpi_ordered_values[0] || lb_value >  kpi_ordered_values[kpi_ordered_values.length-1]) {
+   		if(ub_value.doubleValue() < kpi_ordered_values[0].doubleValue() || lb_value.doubleValue() >  kpi_ordered_values[kpi_ordered_values.length-1].doubleValue()) {
    			lb_value = kpi_ordered_values[0];
    			ub_value = kpi_ordered_values[kpi_ordered_values.length-1];
    		}
@@ -405,16 +405,16 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		
 		if( measure.getTresholdCalculatorType().equalsIgnoreCase("quantile") ) {			
 			
-			trash_kpi_array = new Double[num_group + 1];
+			trash_kpi_array = new Number[num_group + 1];
 			
 			int diff_value_num = 0;	
 			int start_index = -1;	
-			if(kpi_ordered_values[0] >= lb_value && kpi_ordered_values[kpi_ordered_values.length-1] <= ub_value) {
+			if(kpi_ordered_values[0].doubleValue() >= lb_value.doubleValue() && kpi_ordered_values[kpi_ordered_values.length-1].doubleValue() <= ub_value.doubleValue()) {
 				diff_value_num = kpi_ordered_values.length;
 				start_index = 0;
 			} else {
 				for(int j = 0; j < kpi_ordered_values.length; j++) {						
-		   			if(kpi_ordered_values[j] >= lb_value && kpi_ordered_values[j] <= ub_value) {
+		   			if(kpi_ordered_values[j].doubleValue() >= lb_value.doubleValue() && kpi_ordered_values[j].doubleValue() <= ub_value.doubleValue()) {
 		   				start_index = (start_index == -1?j:start_index);
 		   				diff_value_num++;
 		   			}
@@ -432,38 +432,38 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 			trash_kpi_array[num_group] = ub_value;
 			
 		} else if ( measure.getTresholdCalculatorType().equalsIgnoreCase("perc") ) {
-			double range = ub_value - lb_value;
+			double range = ub_value.doubleValue() - lb_value.doubleValue();
 			
 			trasholdCalculationPercParams = getTresholdsArray(measure.getColumnId());
-			trash_kpi_array = new Double[trasholdCalculationPercParams.length + 1];
+			trash_kpi_array = new Number[trasholdCalculationPercParams.length + 1];
 			
 			trash_kpi_array[0] = lb_value;
 			for(int j = 0; j < trasholdCalculationPercParams.length; j++) {
 				double groupSize = (range / 100.0) * Double.parseDouble(trasholdCalculationPercParams[j]);
-				trash_kpi_array[j+1] = trash_kpi_array[j] + groupSize;
+				trash_kpi_array[j+1] = trash_kpi_array[j].doubleValue() + groupSize;
 			}
 			trash_kpi_array[ trash_kpi_array.length - 1] = ub_value;
 			num_group = trash_kpi_array.length - 1;
 		} else if ( measure.getTresholdCalculatorType().equalsIgnoreCase("uniform") ) {
-			trash_kpi_array = new Double[ trasholdCalculationUniformParams.intValue() + 1 ];
+			trash_kpi_array = new Number[ trasholdCalculationUniformParams.intValue() + 1 ];
 			double perc = 100 / (trasholdCalculationUniformParams.doubleValue());
 			trasholdCalculationPercParams = new String[trasholdCalculationUniformParams.intValue() + 1];
 			for(int j = 0; j < trasholdCalculationPercParams.length; j++) {
 				trasholdCalculationPercParams[j] = "" + perc;
 			}
 			
-			double range = ub_value - lb_value;
+			double range = ub_value.doubleValue() - lb_value.doubleValue();
 			trash_kpi_array[0] = lb_value;
 			
 			for(int j = 0; j < trash_kpi_array.length-2; j++) {
 				double groupSize = (range / 100.0) * Double.parseDouble(trasholdCalculationPercParams[j]);
-				trash_kpi_array[j+1] = trash_kpi_array[j] + groupSize;
+				trash_kpi_array[j+1] = trash_kpi_array[j].doubleValue() + groupSize;
 			}
 			trash_kpi_array[ trash_kpi_array.length-1 ] = ub_value;
 			num_group = trasholdCalculationPercParams.length - 1;			
 		} else if ( measure.getTresholdCalculatorType().equalsIgnoreCase("static") ) {
 			String[] trasholdsArray = getTresholdsArray( selectedKpiName );
-			trash_kpi_array = new Double[trasholdsArray.length];
+			trash_kpi_array = new Number[trasholdsArray.length];
 	    	for(int j = 0; j < trasholdsArray.length; j++) {
 	    		trash_kpi_array[j] = new Double( trasholdsArray[j] );
 	    	}
@@ -493,32 +493,33 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    		
 	    		String childId = child.getId();
 	        	String column_id = childId.replaceAll(datamart.getTargetFeatureName() + "_", "");
-	        	IRecord record = dataStore.getRecordAt( dataStoreMeta.getFieldIndex(column_id) );
+	        	
+	        	IRecord record = dataStore.getRecordByID( column_id );
 	        	
 	        	
 	        	//Map attributes = (Map)datamart.getAttributeseById(column_id);
 	        	
 	    		
 	        	String targetColor = null;
-	        	Double kpyValue = null;
+	        	Number kpyValue = null;
 	        	if(record != null) {
 	        		IField field = record.getFieldAt( dataStoreMeta.getFieldIndex(selectedKpiName) );	
-	        		String kpyValueAttr = (String)field.getValue();
+	        		String kpyValueAttr = "" + field.getValue();
 	    			//String kpyValueAttr = (String)attributes.get( selectedKpiName );	
 	    			if(kpyValueAttr == null) {
 	    				targetColor = null_values_color;
 	    			} else {
 	    				kpyValue = Double.parseDouble(kpyValueAttr);
 	    				
-	    				if(kpyValue < lb_value.doubleValue()) {
+	    				if(kpyValue.doubleValue() < lb_value.doubleValue()) {
 	    					targetColor = lb_color;
-	    				} else if(kpyValue > ub_value.doubleValue()) {
+	    				} else if(kpyValue.doubleValue() > ub_value.doubleValue()) {
 	    					targetColor = ub_color;
-	    				} else if(kpyValue == ub_value.doubleValue()) {
+	    				} else if(kpyValue.doubleValue() == ub_value.doubleValue()) {
 	    					targetColor = col_kpi_array[trash_kpi_array.length-2];
 	    				} else  {
 	    					for (int j = 0; j < trash_kpi_array.length-1; j++) {
-	    						if (kpyValue >= trash_kpi_array[j] && kpyValue <  trash_kpi_array[j+1]) {
+	    						if (kpyValue.doubleValue() >= trash_kpi_array[j].doubleValue() && kpyValue.doubleValue() <  trash_kpi_array[j+1].doubleValue()) {
 	    							targetColor = col_kpi_array[j];
 	    							break;
 	    						} 
@@ -528,7 +529,26 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    		}
 	        	
 	        	if(targetColor != null) {
-	        		child.setAttribute("fill", targetColor );
+	        		if(child.getNodeName().equals("path")
+	                    || child.getNodeName().equals("polygon") 
+	                        || child.getNodeName().equals("ellipse")
+	                        || child.getNodeName().equals("circle")
+	                        || child.getNodeName().equals("rect") 
+	                    ) {
+	        			
+	        			child.setAttribute("fill", targetColor );
+	        		} else if(child.getNodeName().equals("line")
+	        				|| child.getNodeName().equals("polyline")
+	        				) {
+	        			child.setAttribute("stroke", targetColor );
+	        		}
+	        		
+	        		String opacity = measure.getColurCalculatorParameters().getProperty("opacity");
+	        		if(opacity != null) {
+	        			child.setAttribute("opacity", opacity );
+	        		}
+	        
+	        		
 	        	}
 	    		
 	    	} 
@@ -640,8 +660,8 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    
 	    Element windowBody = masterMap.createElement("g");
 	    for(int i = 0; i < col_kpi_array.length; i++) {
-	    	Double lb = trash_kpi_array[i];
-	    	Double ub = trash_kpi_array[i + 1];
+	    	Double lb = trash_kpi_array[i].doubleValue();
+	    	Double ub = trash_kpi_array[i + 1].doubleValue();
 	    	String color = col_kpi_array[i];
 	    	
 	    	String lbValueString = null;
@@ -746,55 +766,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    }
 	}	
 	
-	public void addLabels(SVGDocument map, DataMart datamart) {
-		// add labels
-	    Node labelText;
-	    Element label;
-	    ILabelProducer labelProducer;
-	    
-	    
-	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-left");
-	    if(labelProducer != null) {
-		    label = map.getElementById("header-left");	    
-		    labelText = map.createTextNode( labelProducer.getLabel() );
-		    label.appendChild(labelText);
-	    }
-	    
-	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-center");
-	    if(labelProducer != null) {
-		    label = map.getElementById("header-center");	    
-		    labelText = map.createTextNode( labelProducer.getLabel() );
-		    label.appendChild(labelText);
-	    }
-	    
-	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("header-right");
-	    if(labelProducer != null) {
-		    label = map.getElementById("header-right");	    
-		    labelText = map.createTextNode( labelProducer.getLabel() );
-		    label.appendChild(labelText);
-	    }
-	    
-	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("footer-left");
-	    if(labelProducer != null) {
-		    label = map.getElementById("footer-left");	    
-		    labelText = map.createTextNode( labelProducer.getLabel() );
-		    label.appendChild(labelText);
-	    }
-	    
-	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("footer-center");
-	    if(labelProducer != null) {
-		    label = map.getElementById("footer-center");	    
-		    labelText = map.createTextNode( labelProducer.getLabel() );
-		    label.appendChild(labelText);
-	    }
-	    
-	    labelProducer = (ILabelProducer)getGuiSettings().getLabelProducers().get("footer-right");
-	    if(labelProducer != null) {
-		    label = map.getElementById("footer-right");	    
-		    labelText = map.createTextNode( labelProducer.getLabel() );
-		    label.appendChild(labelText);
-	    }
-	}
+	
 	
 	
 	
@@ -915,13 +887,6 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    		}
 	    		child.setAttribute("attrib:nome", child.getAttribute("id"));
 	    		
-	    		/*
-	    		Map attributes = (Map)datamart.getAttributeseById(column_id);
-	    		if(attributes != null) {
-	    			SVGMapHandler.addAttributes(child, attributes);
-	    			child.setAttribute("attrib:nome", child.getAttribute("id"));	    			
-	    		}
-	    		*/
 	    	} 
 	    }
 	}
@@ -1040,16 +1005,18 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    includeScript(buffer, "checkbox_and_radiobutton.js");
 	    includeScript(buffer, "navigation.js");
 	    includeScript(buffer, "tabgroup.js");
-	    includeScript(buffer, "barchart.js");
 	    includeScript(buffer, "colourPicker.js");
 	    
 	    includeScript(buffer, "custom/Utils.js");
+	    includeScript(buffer, "custom/BarChart.js");
 	    includeScript(buffer, "custom/NavigationWindow.js");
 	    includeScript(buffer, "custom/LayersWindow.js");
 	    includeScript(buffer, "custom/ThematicWindow.js");
 	    includeScript(buffer, "custom/DetailsWindow.js");
 	    includeScript(buffer, "custom/LegendWindow.js");
 	    includeScript(buffer, "custom/ColourPickerWindow.js");
+	    includeScript(buffer, "custom/ThresholdsFactory.js");
+	    includeScript(buffer, "custom/ColourRangesFactory.js");
 	    
 	    scriptText.setNodeValue(buffer.toString());
 	}
@@ -1070,16 +1037,18 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    importScipt(doc, "checkbox_and_radiobutton.js");
 	    importScipt(doc, "navigation.js");
 	    importScipt(doc, "tabgroup.js");
-	    importScipt(doc, "barchart.js");
 	    importScipt(doc, "colourPicker.js");
 	    
 	    importScipt(doc, "custom/Utils.js");
+	    importScipt(doc, "custom/BarChart.js");
 	    importScipt(doc, "custom/NavigationWindow.js");
 	    importScipt(doc, "custom/LayersWindow.js");
 	    importScipt(doc, "custom/ThematicWindow.js");
 	    importScipt(doc, "custom/DetailsWindow.js");
 	    importScipt(doc, "custom/LegendWindow.js");
 	    importScipt(doc, "custom/ColourPickerWindow.js");
+	    importScipt(doc, "custom/ThresholdsFactory.js");
+	    importScipt(doc, "custom/ColourRangesFactory.js");
 	    
 	}
 	
@@ -1270,6 +1239,11 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		    	}	    	
 		    	colourCalculatorParams.put("ranges", ranges);
 	    	}
+	    	
+	    	String opacity = getMeasure(measureNames[i]).getColurCalculatorParameters().getProperty("opacity");
+    		if(opacity != null) {
+    			colourCalculatorParams.put("opacity", opacity);
+    		}
 	    	
 	    	colourCalculatorConf.put("params", colourCalculatorParams);
 	    	measure.put("colourrange_calculator_conf", colourCalculatorConf);

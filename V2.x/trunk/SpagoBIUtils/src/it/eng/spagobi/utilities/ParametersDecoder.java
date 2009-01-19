@@ -276,7 +276,7 @@ public class ParametersDecoder {
 					value = valueStr;
 				}
 			} catch (Exception e) {
-				logger.error("Error while decoding parameter with key = [" + key + "] and value = [" + valueStr + "]. It will be not decoded", e);
+				logger.error("Error while decoding parameter with key = [" + key + "] and value = [" + valueStr + "]. It will be not decoded");
 				value = valueStr;
 			}
 			requestParameters.put(key, value);

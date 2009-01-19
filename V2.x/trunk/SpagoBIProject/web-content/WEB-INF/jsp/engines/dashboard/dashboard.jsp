@@ -30,7 +30,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    Integer executionAuditId_dash = null;
    
 	if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
-		<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+		<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
 		<%
 		executionAuditId_dash = executionAuditId;
 	} else {

@@ -26,7 +26,7 @@ ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInsta
 String execContext = instanceO.getExecutionModality();
 if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)) {
 	%>
-	<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+	<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
 	<%
 }
 

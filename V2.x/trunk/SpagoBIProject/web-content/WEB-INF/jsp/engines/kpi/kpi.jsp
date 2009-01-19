@@ -66,7 +66,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String execContext = instanceO.getExecutionModality();
    	// if in document composition case do not include header.jsp
 	   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
-				<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+				<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
 				<%
 			   }
    		else // in document composition case doesn't call header so set Object and uuid

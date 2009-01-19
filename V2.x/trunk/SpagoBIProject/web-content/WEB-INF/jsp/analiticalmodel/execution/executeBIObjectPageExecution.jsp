@@ -76,7 +76,7 @@ if (modalityO != null && modalityO.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_CO
 	<%
 } else {
 %>
-<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
 <%
 // tries to get the heigh of the output area
 String heightArea = ChannelUtilities.getPreferenceValue(aRequestContainer, "HEIGHT_AREA", "");

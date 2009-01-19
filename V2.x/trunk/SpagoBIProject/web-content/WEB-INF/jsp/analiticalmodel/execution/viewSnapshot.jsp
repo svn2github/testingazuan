@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
-<%@ include file="/jsp/analiticalmodel/execution/header.jsp"%>
+<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
 
 <%
 // built the url for the content recovering

@@ -21,7 +21,7 @@
 package it.eng.spagobi.engines.geo.map.renderer;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
@@ -62,13 +62,13 @@ public class QueryLabelProducer extends AbstractLabelProducer {
 		SourceBean dataSourceSB = (SourceBean)conf.getAttribute("DATASOURCE");
 		dataSource = new DataSource();
 		
-		String type = (String)dataSourceSB.getAttribute(Constants.DATASET_TYPE_ATTRIBUTE);				
+		String type = (String)dataSourceSB.getAttribute(GeoEngineConstants.DATASET_TYPE_ATTRIBUTE);				
 		if("connection".equalsIgnoreCase(type)) {
-			dataSource.setJndi( (String)dataSourceSB.getAttribute(Constants.DATASET_NAME_ATTRIBUTE) );
-			dataSource.setDriver( (String)dataSourceSB.getAttribute(Constants.DATASET_DRIVER_ATTRIBUTER) );
-			dataSource.setPwd( (String)dataSourceSB.getAttribute(Constants.DATASET_PWD_ATTRIBUTE) );
-			dataSource.setUser( (String)dataSourceSB.getAttribute(Constants.DATASET_USER_ATTRIBUTE) );
-			dataSource.setUrlConnection( (String)dataSourceSB.getAttribute(Constants.DATASET_URL_ATTRIBUTE) );
+			dataSource.setJndi( (String)dataSourceSB.getAttribute(GeoEngineConstants.DATASET_NAME_ATTRIBUTE) );
+			dataSource.setDriver( (String)dataSourceSB.getAttribute(GeoEngineConstants.DATASET_DRIVER_ATTRIBUTER) );
+			dataSource.setPwd( (String)dataSourceSB.getAttribute(GeoEngineConstants.DATASET_PWD_ATTRIBUTE) );
+			dataSource.setUser( (String)dataSourceSB.getAttribute(GeoEngineConstants.DATASET_USER_ATTRIBUTE) );
+			dataSource.setUrlConnection( (String)dataSourceSB.getAttribute(GeoEngineConstants.DATASET_URL_ATTRIBUTE) );
 		}
 				
 		

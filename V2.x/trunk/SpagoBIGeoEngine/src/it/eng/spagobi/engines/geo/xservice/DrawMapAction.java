@@ -21,7 +21,7 @@
 package it.eng.spagobi.engines.geo.xservice;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapConverter;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
@@ -47,7 +47,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 	// ...
 	
 	// DEFAULT VALUES
-	public static final String DEFAULT_OUTPUT_TYPE = Constants.DSVG;
+	public static final String DEFAULT_OUTPUT_TYPE = GeoEngineConstants.DSVG;
 	
 	// Default serial version number (just to keep eclipse happy).
 	private static final long serialVersionUID = 1L;
@@ -78,12 +78,12 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			
 			if(outputFormat == null) {
 				logger.info("Parameter [" + outputFormat + "] not specified into request");
-				outputFormat = (String)getGeoEngineInstance().getEnv().get(Constants.ENV_OUTPUT_TYPE);
-				logger.debug("Env Parameter [" + Constants.ENV_OUTPUT_TYPE + "] is equal to [" + outputFormat + "]");
+				outputFormat = (String)getGeoEngineInstance().getEnv().get(GeoEngineConstants.ENV_OUTPUT_TYPE);
+				logger.debug("Env Parameter [" + GeoEngineConstants.ENV_OUTPUT_TYPE + "] is equal to [" + outputFormat + "]");
 			}
 			
 			if(outputFormat == null) {
-				logger.info("Parameter [" + Constants.ENV_OUTPUT_TYPE + "] not specified into environment");
+				logger.info("Parameter [" + GeoEngineConstants.ENV_OUTPUT_TYPE + "] not specified into environment");
 				outputFormat = DEFAULT_OUTPUT_TYPE;
 			}
 						
@@ -91,7 +91,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			responseFileName = "map.svg";
 			
 			IStreamEncoder encoder = null;
-			if(outputFormat.equalsIgnoreCase(Constants.JPEG)) {
+			if(outputFormat.equalsIgnoreCase(GeoEngineConstants.JPEG)) {
 				encoder = new SVGMapConverter();
 				responseFileName =  "map.jpeg";
 			}
@@ -130,25 +130,25 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 	 * @return the string code of the content type for the output format
 	 */
 	private String getContentType(String outFormat) {
-		if (outFormat.equalsIgnoreCase(Constants.SVG)
-				|| outFormat.equalsIgnoreCase(Constants.DSVG)
-				|| outFormat.equalsIgnoreCase(Constants.XDSVG))
-			return Constants.SVG_MIME_TYPE;
-		else if (outFormat.equalsIgnoreCase(Constants.PDF))
-			return Constants.PDF_MIME_TYPE;
-		else if (outFormat.equalsIgnoreCase(Constants.GIF))
-			return Constants.GIF_MIME_TYPE;
-		else if (outFormat.equalsIgnoreCase(Constants.JPEG))
-			return Constants.JPEG_MIME_TYPE;
-		else if (outFormat.equalsIgnoreCase(Constants.BMP))
-			return Constants.BMP_MIME_TYPE;
-		else if (outFormat.equalsIgnoreCase(Constants.X_PNG))
-			return Constants.X_PNG_MIME_TYPE;
-		else if (outFormat.equalsIgnoreCase(Constants.HTML))
-			return Constants.HTML_MIME_TYPE;
-		else if (outFormat.equalsIgnoreCase(Constants.XML))
-			return Constants.XML_MIME_TYPE;
-		else return Constants.TEXT_MIME_TYPE;
+		if (outFormat.equalsIgnoreCase(GeoEngineConstants.SVG)
+				|| outFormat.equalsIgnoreCase(GeoEngineConstants.DSVG)
+				|| outFormat.equalsIgnoreCase(GeoEngineConstants.XDSVG))
+			return GeoEngineConstants.SVG_MIME_TYPE;
+		else if (outFormat.equalsIgnoreCase(GeoEngineConstants.PDF))
+			return GeoEngineConstants.PDF_MIME_TYPE;
+		else if (outFormat.equalsIgnoreCase(GeoEngineConstants.GIF))
+			return GeoEngineConstants.GIF_MIME_TYPE;
+		else if (outFormat.equalsIgnoreCase(GeoEngineConstants.JPEG))
+			return GeoEngineConstants.JPEG_MIME_TYPE;
+		else if (outFormat.equalsIgnoreCase(GeoEngineConstants.BMP))
+			return GeoEngineConstants.BMP_MIME_TYPE;
+		else if (outFormat.equalsIgnoreCase(GeoEngineConstants.X_PNG))
+			return GeoEngineConstants.X_PNG_MIME_TYPE;
+		else if (outFormat.equalsIgnoreCase(GeoEngineConstants.HTML))
+			return GeoEngineConstants.HTML_MIME_TYPE;
+		else if (outFormat.equalsIgnoreCase(GeoEngineConstants.XML))
+			return GeoEngineConstants.XML_MIME_TYPE;
+		else return GeoEngineConstants.TEXT_MIME_TYPE;
 	}
 	
 	

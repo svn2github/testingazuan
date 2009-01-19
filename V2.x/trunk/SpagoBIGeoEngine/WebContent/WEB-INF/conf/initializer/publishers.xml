@@ -25,13 +25,5 @@
 		</RENDERING>
 	</PUBLISHER>
 	
-	<!--
-	<PUBLISHER name="GEO_PUBLISHER">
-		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
-			<RESOURCES>
-				<ITEM prog="0" resource="/jsp/xgeo.jsp" />
-			</RESOURCES>
-		</RENDERING>
-	</PUBLISHER>
-	-->
+	
 </PUBLISHERS>

@@ -31,9 +31,4 @@
 	<CONFIGURATOR path="/WEB-INF/conf/core/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/core/publishers.xml" />
 	
-	<!-- start GEO DEPRECATED module -->
-	<CONFIGURATOR path="/WEB-INF/conf/deprecated/actions.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/deprecated/presentation.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/deprecated/publishers.xml" />
-	
 </MASTER>

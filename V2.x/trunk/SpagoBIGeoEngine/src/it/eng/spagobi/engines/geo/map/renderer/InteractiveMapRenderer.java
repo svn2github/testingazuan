@@ -22,7 +22,7 @@ package it.eng.spagobi.engines.geo.map.renderer;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.dataset.DataMart;
@@ -95,20 +95,20 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	
 	public File renderMap(IMapProvider mapProvider, 
 			IDataMartProvider datamartProvider) throws GeoEngineException {
-		return renderMap(mapProvider, datamartProvider, Constants.DSVG);
+		return renderMap(mapProvider, datamartProvider, GeoEngineConstants.DSVG);
 	}
 
 	public File renderMap(IMapProvider mapProvider, 
 						  IDataMartProvider datamartProvider,
 						  String outputFormat) throws GeoEngineException {
 		
-		if(outputFormat.equalsIgnoreCase(Constants.SVG)) {
+		if(outputFormat.equalsIgnoreCase(GeoEngineConstants.SVG)) {
 			return renderSVGMap(mapProvider, datamartProvider);
-		}else if(outputFormat.equalsIgnoreCase(Constants.DSVG)) {
+		}else if(outputFormat.equalsIgnoreCase(GeoEngineConstants.DSVG)) {
 			return renderDSVGMap(mapProvider, datamartProvider, false);
-		} else if(outputFormat.equalsIgnoreCase(Constants.XDSVG)) {
+		} else if(outputFormat.equalsIgnoreCase(GeoEngineConstants.XDSVG)) {
 			return renderDSVGMap(mapProvider, datamartProvider, true);
-		} else if(outputFormat.equalsIgnoreCase(Constants.JPEG)) {
+		} else if(outputFormat.equalsIgnoreCase(GeoEngineConstants.JPEG)) {
 			return renderSVGMap(mapProvider, datamartProvider);
 		}
 		
@@ -1062,7 +1062,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		//File file = new File("D:/Documenti/Prototipi/Test/exo-portal-1.1.4-SpagoBI-2.0/webapps/SpagoBIGeoEngine/js/lib/svg-widgets/" + scriptName);
 		
 		try {
-			URL scriptUrl = new URL((String)getEnv().get(Constants.ENV_ABSOLUTE_CONTEXT_URL) + "/js/lib/svg-widgets/" + scriptName);
+			URL scriptUrl = new URL((String)getEnv().get(GeoEngineConstants.ENV_ABSOLUTE_CONTEXT_URL) + "/js/lib/svg-widgets/" + scriptName);
 			//URL scriptUrl = new URL("http://localhost:8080/SpagoBIGeoEngine" + "/js/lib/svg-widgets/" + scriptName);
 			
 			BufferedReader reader = new BufferedReader( new InputStreamReader( scriptUrl.openStream() ) );
@@ -1088,7 +1088,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	private void importScipt(SVGDocument map, String scriptName) {
 		Element script = map.createElement("script");
 	    script.setAttribute("type", "text/ecmascript");
-	    script.setAttribute("xlink:href",(String)getEnv().get(Constants.ENV_CONTEXT_URL) + "/js/lib/svg-widgets/" + scriptName);
+	    script.setAttribute("xlink:href",(String)getEnv().get(GeoEngineConstants.ENV_CONTEXT_URL) + "/js/lib/svg-widgets/" + scriptName);
 	    Element importsBlock = map.getElementById("imported_scripts");
 	    importsBlock.appendChild(script);
 	    Node lf = map.createTextNode("\n");
@@ -1375,7 +1375,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		JSONObject guiSettings;
 		String pVal = null;
 		
-		pVal =(String)getEnv().get(Constants.ENV_IS_WINDOWS_ACTIVE);
+		pVal =(String)getEnv().get(GeoEngineConstants.ENV_IS_WINDOWS_ACTIVE);
 		boolean activeWindow = pVal==null || pVal.equalsIgnoreCase("TRUE");
 		if(!activeWindow) {
 			getGuiSettings().getColourpickerWindowSettings().put("visible", Boolean.FALSE);
@@ -1389,8 +1389,8 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		
 		guiSettings = getGuiSettings().toJSON();
 		
-		if( getEnv().get(Constants.ENV_IS_DAFAULT_DRILL_NAV) != null ) {
-			pVal =(String)getEnv().get(Constants.ENV_IS_DAFAULT_DRILL_NAV);
+		if( getEnv().get(GeoEngineConstants.ENV_IS_DAFAULT_DRILL_NAV) != null ) {
+			pVal =(String)getEnv().get(GeoEngineConstants.ENV_IS_DAFAULT_DRILL_NAV);
 			boolean defaultDrillNav = pVal==null||pVal.equalsIgnoreCase("TRUE");
 			guiSettings.put("defaultDrillNav", defaultDrillNav);
 		}

@@ -22,7 +22,7 @@ package it.eng.spagobi.engines.geo.datamart.provider.configurator;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.AbstractDataMartProvider;
 import it.eng.spagobi.engines.geo.dataset.DataSetMetaData;
@@ -79,7 +79,7 @@ public class AbstractDataMartProviderConfigurator {
 			selectedLevelName = getSelectedLevelName( confSB );
 			mataData = getMetaData( confSB );
 			
-			String stdHierarchy = (String)abstractDatasetProvider.getEnv().get(Constants.ENV_STD_HIERARCHY);
+			String stdHierarchy = (String)abstractDatasetProvider.getEnv().get(GeoEngineConstants.ENV_STD_HIERARCHY);
 			SourceBean stdHierarchySB = null;
 			try {
 				stdHierarchySB = SourceBean.fromXMLString(stdHierarchy);
@@ -162,31 +162,31 @@ public class AbstractDataMartProviderConfigurator {
 	public static DataSetMetaData getMetaData(SourceBean confSB) {
 		DataSetMetaData metaData = null;
 		
-		SourceBean metadataSB = (SourceBean)confSB.getAttribute(Constants.METADATA_TAG);
+		SourceBean metadataSB = (SourceBean)confSB.getAttribute(GeoEngineConstants.METADATA_TAG);
 		if(metadataSB == null) {
-			logger.warn("Cannot find metadata configuration settings: tag name " + Constants.METADATA_TAG);
+			logger.warn("Cannot find metadata configuration settings: tag name " + GeoEngineConstants.METADATA_TAG);
 			logger.info("Metadata configuration settings must be injected at execution time");
 			return null;
 		}
 		
 		metaData = new DataSetMetaData();
 		
-		List columns = metadataSB.getAttributeAsList(Constants.COLUMN_TAG);
+		List columns = metadataSB.getAttributeAsList(GeoEngineConstants.COLUMN_TAG);
 		for(int i = 0; i < columns.size(); i++) {
 			SourceBean columnSB = (SourceBean)columns.get(i);
-			String columnName = (String)columnSB.getAttribute(Constants.COLUMN_NAME_ATTRIBUTE);
-			String columnType = (String)columnSB.getAttribute(Constants.COLUMN_TYPE_ATTRIBUTE);			
+			String columnName = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_NAME_ATTRIBUTE);
+			String columnType = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_TYPE_ATTRIBUTE);			
 			metaData.addColumn(columnName);
 			metaData.setColumnProperty(columnName, "column_id", columnName);
 			metaData.setColumnProperty(columnName, "type", columnType);
 			
 			if( columnType.equalsIgnoreCase("geoid")) {
-				String hierarchyName = (String)columnSB.getAttribute(Constants.COLUMN_HIERARCHY_REF_ATTRIBUTE);
+				String hierarchyName = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_HIERARCHY_REF_ATTRIBUTE);
 				metaData.setColumnProperty(columnName, "hierarchy", hierarchyName);				
-				String levelName = (String)columnSB.getAttribute(Constants.COLUMN_LEVEL_REF_ATTRIBUTE);				
+				String levelName = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_LEVEL_REF_ATTRIBUTE);				
 				metaData.setColumnProperty(columnName, "level", levelName);
 			} else if( columnType.equalsIgnoreCase("measure")) {
-				String aggFunc = (String)columnSB.getAttribute(Constants.COLUMN_AFUNC_REF_ATTRIBUTE);
+				String aggFunc = (String)columnSB.getAttribute(GeoEngineConstants.COLUMN_AFUNC_REF_ATTRIBUTE);
 				metaData.setColumnProperty(columnName, "func", aggFunc);				
 			}
 			
@@ -206,9 +206,9 @@ public class AbstractDataMartProviderConfigurator {
 	public static Map getHierarchies(SourceBean confSB, SourceBean sdtHierarchySB) {
 		Map hierarchies = null;
 		
-		SourceBean hierarchiesSB = (SourceBean)confSB.getAttribute(Constants.HIERARCHIES_TAG);
+		SourceBean hierarchiesSB = (SourceBean)confSB.getAttribute(GeoEngineConstants.HIERARCHIES_TAG);
 		if(hierarchiesSB == null) {
-			logger.warn("Cannot find hierachies configuration settings: tag name " + Constants.HIERARCHIES_TAG);
+			logger.warn("Cannot find hierachies configuration settings: tag name " + GeoEngineConstants.HIERARCHIES_TAG);
 			logger.info("Hierarchies configuration settings must be injected at execution time");
 			return null;
 		}
@@ -216,22 +216,22 @@ public class AbstractDataMartProviderConfigurator {
 		hierarchies = new HashMap();
 		
 		Hierarchy hierarchy = null;
-		List hierarchyList = hierarchiesSB.getAttributeAsList(Constants.HIERARCHY_TAG);
+		List hierarchyList = hierarchiesSB.getAttributeAsList(GeoEngineConstants.HIERARCHY_TAG);
 		for(int i = 0; i < hierarchyList.size(); i++) {
 			
 			SourceBean hierarchySB = (SourceBean)hierarchyList.get(i);
-			String name = (String)hierarchySB.getAttribute(Constants.HIERARCHY_NAME_ATTRIBUTE);
-			String type = (String)hierarchySB.getAttribute(Constants.HIERARCHY_TYPE_ATTRIBUTE);
+			String name = (String)hierarchySB.getAttribute(GeoEngineConstants.HIERARCHY_NAME_ATTRIBUTE);
+			String type = (String)hierarchySB.getAttribute(GeoEngineConstants.HIERARCHY_TYPE_ATTRIBUTE);
 			List levelList = null;
 			if(type.equalsIgnoreCase("custom"))  {
 				hierarchy = new Hierarchy(name);
-				levelList =  hierarchySB.getAttributeAsList(Constants.HIERARCHY_LEVEL_TAG);
+				levelList =  hierarchySB.getAttributeAsList(GeoEngineConstants.HIERARCHY_LEVEL_TAG);
 			} else {
 				if(sdtHierarchySB!= null) {
 					hierarchySB = sdtHierarchySB;
-					String table = (String)hierarchySB.getAttribute(Constants.HIERARCHY_TABLE_ATRRIBUTE);
+					String table = (String)hierarchySB.getAttribute(GeoEngineConstants.HIERARCHY_TABLE_ATRRIBUTE);
 					hierarchy = new Hierarchy(name, table);
-					levelList = hierarchySB.getAttributeAsList(Constants.HIERARCHY_LEVEL_TAG);
+					levelList = hierarchySB.getAttributeAsList(GeoEngineConstants.HIERARCHY_LEVEL_TAG);
 				} else {
 					logger.error("Impossible to include default hierarchy");
 				}
@@ -239,10 +239,10 @@ public class AbstractDataMartProviderConfigurator {
 			
 			for(int j = 0; j < levelList.size(); j++) {
 				SourceBean levelSB = (SourceBean)levelList.get(j);
-				String lname = (String)levelSB.getAttribute(Constants.HIERARCHY_LEVEL_NAME_ATRRIBUTE);
-				String lcolumnid = (String)levelSB.getAttribute(Constants.HIERARCHY_LEVEL_COLUMN_ID_ATRRIBUTE);
-				String lcolumndesc = (String)levelSB.getAttribute(Constants.HIERARCHY_LEVEL_COLUMN_DESC_ATRRIBUTE);
-				String lfeaturename = (String)levelSB.getAttribute(Constants.HIERARCHY_LEVEL_FEATURE_NAME_ATRRIBUTE);
+				String lname = (String)levelSB.getAttribute(GeoEngineConstants.HIERARCHY_LEVEL_NAME_ATRRIBUTE);
+				String lcolumnid = (String)levelSB.getAttribute(GeoEngineConstants.HIERARCHY_LEVEL_COLUMN_ID_ATRRIBUTE);
+				String lcolumndesc = (String)levelSB.getAttribute(GeoEngineConstants.HIERARCHY_LEVEL_COLUMN_DESC_ATRRIBUTE);
+				String lfeaturename = (String)levelSB.getAttribute(GeoEngineConstants.HIERARCHY_LEVEL_FEATURE_NAME_ATRRIBUTE);
 				Hierarchy.Level level = new Hierarchy.Level();
 				level.setName(lname);
 				level.setColumnId(lcolumnid);

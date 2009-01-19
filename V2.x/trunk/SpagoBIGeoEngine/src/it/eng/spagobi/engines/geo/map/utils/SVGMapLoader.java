@@ -20,10 +20,13 @@
  **/
 package it.eng.spagobi.engines.geo.map.utils;
 
+import it.eng.spagobi.services.content.bo.Content;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -33,6 +36,8 @@ import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.w3c.dom.svg.SVGDocument;
 
+import sun.misc.BASE64Decoder;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class SVGMapLoader.
@@ -40,6 +45,9 @@ import org.w3c.dom.svg.SVGDocument;
  * @author Andrea Gioia
  */
 public class SVGMapLoader {
+	
+	private static final BASE64Decoder DECODER = new BASE64Decoder();
+	
 	
 	/** The document factory. */
 	private static SAXSVGDocumentFactory documentFactory;
@@ -70,6 +78,15 @@ public class SVGMapLoader {
 		String url;		
 		url = file.toURI().toURL().toString();
 		return loadMapAsDocument(url);
+	}
+	
+	
+	public static SVGDocument loadMapAsDocument(Content map) throws IOException {
+		String mapContent;
+		
+		mapContent = new String( DECODER.decodeBuffer(map.getContent()) );
+		
+		return (SVGDocument)documentFactory.createDocument( null, new StringReader(mapContent) );
 	}
 	
 	/**

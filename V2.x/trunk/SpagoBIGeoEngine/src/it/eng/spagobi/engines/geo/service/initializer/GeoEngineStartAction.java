@@ -21,7 +21,7 @@
 package it.eng.spagobi.engines.geo.service.initializer;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.GeoEngine;
 import it.eng.spagobi.engines.geo.GeoEngineInstance;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
@@ -110,7 +110,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			
 			env = getEnv("TRUE".equalsIgnoreCase(isDocumentCompositionModeActive), documentLabel, executionId);
 			if( outputType != null ) {
-				env.put(Constants.ENV_OUTPUT_TYPE, outputType);
+				env.put(GeoEngineConstants.ENV_OUTPUT_TYPE, outputType);
 			}
 			
 			
@@ -215,22 +215,22 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		
 		logger.debug("DataSource: " + dataSource.toString());
 		
-		env.put(Constants.ENV_CONTEXT_URL, getContextUrl());
-		env.put(Constants.ENV_ABSOLUTE_CONTEXT_URL, getAbsoluteContextUrl());
+		env.put(GeoEngineConstants.ENV_CONTEXT_URL, getContextUrl());
+		env.put(GeoEngineConstants.ENV_ABSOLUTE_CONTEXT_URL, getAbsoluteContextUrl());
 		
-		env.put(Constants.ENV_MAPCATALOGUE_SERVICE_PROXY, getMapCatalogueProxy());
+		env.put(GeoEngineConstants.ENV_MAPCATALOGUE_SERVICE_PROXY, getMapCatalogueProxy());
 		
 		if(isDocumentCompositionModeActive) {
-			env.put(Constants.ENV_IS_DAFAULT_DRILL_NAV, "FALSE");
-			env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "FALSE");
-			env.put(Constants.ENV_EXEC_IFRAME_ID, "iframe_" + documentLabel);
+			env.put(GeoEngineConstants.ENV_IS_DAFAULT_DRILL_NAV, "FALSE");
+			env.put(GeoEngineConstants.ENV_IS_WINDOWS_ACTIVE, "FALSE");
+			env.put(GeoEngineConstants.ENV_EXEC_IFRAME_ID, "iframe_" + documentLabel);
 		} else {
-			env.put(Constants.ENV_IS_WINDOWS_ACTIVE, "TRUE");
-			env.put(Constants.ENV_EXEC_IFRAME_ID, "iframeexec" + executionId);
+			env.put(GeoEngineConstants.ENV_IS_WINDOWS_ACTIVE, "TRUE");
+			env.put(GeoEngineConstants.ENV_EXEC_IFRAME_ID, "iframeexec" + executionId);
 		}
 		
 		if(getStandardHierarchy() != null) {
-			env.put(Constants.ENV_STD_HIERARCHY, getStandardHierarchy());
+			env.put(GeoEngineConstants.ENV_STD_HIERARCHY, getStandardHierarchy());
 		}		
 		
 		return env;

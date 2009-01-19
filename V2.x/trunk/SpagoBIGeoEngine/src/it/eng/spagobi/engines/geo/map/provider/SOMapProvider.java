@@ -24,6 +24,7 @@ import it.eng.spagobi.engines.geo.GeoEngineConfig;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.map.provider.configurator.SOMapProviderConfigurator;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
+import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 
 import java.io.FileNotFoundException;
@@ -73,25 +74,22 @@ public class SOMapProvider extends AbstractMapProvider {
 	public SVGDocument getSVGMapDOMDocument(String mapName) throws GeoEngineException {
 	    logger.debug("IN.mapName="+mapName);
 		SVGDocument svgDocument = null;		
-		String mapUrl = null;		
+		Content map = null;		
 		
 			
 		try {
-			mapUrl = mapCatalogueServiceProxy.getMapUrl(mapName);
-			logger.debug("mapUrl="+mapUrl);
-			mapUrl = GeoEngineConfig.getInstance().getSpagoBIServerUrl() +  mapUrl;
-			logger.debug("mapUrl="+mapUrl);
+			map = mapCatalogueServiceProxy.readMap(mapName);			
 		} catch (Exception e) {
-			logger.error("An error occurred while invoking mapCatalogueService method: getMapUrl()");
-			throw new GeoEngineException("Impossible to load map from url: " + mapUrl, e);
+			logger.error("An error occurred while invoking mapCatalogueService method: readMap()");
+			throw new GeoEngineException("Impossible to load map from map catalogue", e);
 		}
 		
 		try {
-			logger.info("Reading map from: [" + mapUrl + "]");
-			svgDocument = SVGMapLoader.loadMapAsDocument(mapUrl);
+			
+			svgDocument = SVGMapLoader.loadMapAsDocument(map);
 		} catch (IOException e) {
-			logger.error("Impossible to load map from url: " + mapUrl);
-			throw new GeoEngineException("Impossible to load map from url: " + mapUrl, e);
+			logger.error("Impossible to load map from map catalogue");
+			throw new GeoEngineException("Impossible to load map from map catalogue", e);
 		}
 		
 		

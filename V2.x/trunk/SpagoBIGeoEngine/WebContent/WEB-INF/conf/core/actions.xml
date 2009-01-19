@@ -38,51 +38,10 @@
 		<CONFIG></CONFIG>
 	</ACTION>	
   	
-  	<!-- 
-	
-  
-  	<ACTION name="SHOW_ANALYSIS_DETAILS_ACTION"
-  			class="it.eng.spagobi.engines.geo.service.ShowAnalysisDetailsAction" 
-  			scope="REQUEST">
-		<CONFIG></CONFIG>
-	</ACTION>	
-    
-  	<ACTION name="SAVE_ANALYSIS_ACTION" 
-  			class="it.eng.spagobi.engines.geo.service.SaveAnalysisAction" 
-  			scope="REQUEST">
-		<CONFIG></CONFIG>
-	</ACTION>	
-	
-	<ACTION name="SAVE_ANALYSIS_AND_EXIT_ACTION" 
-			class="it.eng.spagobi.engines.geo.service.SaveAnalysisAction" 
-			scope="REQUEST">
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	<ACTION name="EXIT_ANALYSIS_DETAILS_ACTION" 
-			class="it.eng.spagobi.engines.geo.service.ExitAnalysisDetailsAction" 
-			scope="REQUEST">
-		<CONFIG></CONFIG>
-	</ACTION>
-    
-    <ACTION name="SHOW_DATA_DETAILS_ACTION" 
-    		class="it.eng.spagobi.engines.geo.service.ShowDataDetailsAction" 
+  	<ACTION name="SHOW_DATA_DETAILS_ACTION" 
+    		class="it.eng.spagobi.engines.geo.xservice.ShowDataDetailsAction" 
     		scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>	
-	
-	<ACTION name="GET_MAPS_ACTION" 
-			class="it.eng.spagobi.engines.geo.service.GetMapsAction" 
-			scope="REQUEST">
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	<ACTION name="GET_LAYERS_ACTION" 
-			class="it.eng.spagobi.engines.geo.service.GetLayersAction" 
-			scope="REQUEST">
-		<CONFIG></CONFIG>
-	</ACTION>  
-	
-	 -->  
     
 </ACTIONS>

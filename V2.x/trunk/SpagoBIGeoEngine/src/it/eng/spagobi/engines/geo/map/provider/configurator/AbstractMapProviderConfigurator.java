@@ -22,7 +22,7 @@ package it.eng.spagobi.engines.geo.map.provider.configurator;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.map.provider.AbstractMapProvider;
 
@@ -63,7 +63,7 @@ public class AbstractMapProviderConfigurator {
 		}
 		
 		if(confSB != null) {
-			String mapName = (String)confSB.getAttribute(Constants.MAP_NAME_TAG);
+			String mapName = (String)confSB.getAttribute(GeoEngineConstants.MAP_NAME_TAG);
 			abstractMapProvider.setSelectedMapName(mapName);
 		}
 	}

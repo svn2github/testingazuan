@@ -105,15 +105,15 @@ public class GeoEngineComponentFactory {
 		String className = null;
 		
 		logger.debug("IN");
-		confSB = (SourceBean)template.getAttribute(Constants.MAP_PROVIDER_TAG);
+		confSB = (SourceBean)template.getAttribute(GeoEngineConstants.MAP_PROVIDER_TAG);
 		if(confSB == null) {
-			logger.warn("Cannot find MapProvider configuration settings: tag name " + Constants.MAP_PROVIDER_TAG);
+			logger.warn("Cannot find MapProvider configuration settings: tag name " + GeoEngineConstants.MAP_PROVIDER_TAG);
 			logger.info("MapProvider configuration settings must be injected at execution time");
 			return null;
 		}
-		className = (String)confSB.getAttribute(Constants.CLASS_NAME_ATTRIBUTE);
+		className = (String)confSB.getAttribute(GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
 		if(className == null) {
-			logger.warn("Cannot find MapProvider class attribute: " + Constants.CLASS_NAME_ATTRIBUTE);
+			logger.warn("Cannot find MapProvider class attribute: " + GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
 			logger.info("MapProvider must be injected at execution time");
 			return null;
 		}
@@ -142,15 +142,15 @@ public class GeoEngineComponentFactory {
 		String className = null;
 		
 		logger.debug("IN");		
-		confSB = (SourceBean)template.getAttribute(Constants.MAP_RENDERER_TAG);
+		confSB = (SourceBean)template.getAttribute(GeoEngineConstants.MAP_RENDERER_TAG);
 		if(confSB == null) {
-			logger.warn("Cannot find MapRenderer configuration settings: tag name " + Constants.MAP_RENDERER_TAG);
+			logger.warn("Cannot find MapRenderer configuration settings: tag name " + GeoEngineConstants.MAP_RENDERER_TAG);
 			logger.info("MapRenderer configuration settings must be injected at execution time");
 			return null;
 		}
-		className = (String)confSB.getAttribute(Constants.CLASS_NAME_ATTRIBUTE);
+		className = (String)confSB.getAttribute(GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
 		if(className == null) {
-			logger.warn("Cannot find MapRenderer class attribute: " + Constants.CLASS_NAME_ATTRIBUTE);
+			logger.warn("Cannot find MapRenderer class attribute: " + GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
 			logger.info("MapRenderer must be injected at execution time");
 			return null;
 		}
@@ -179,15 +179,15 @@ public class GeoEngineComponentFactory {
 		String className = null;
 		
 		logger.debug("IN");
-		confSB = (SourceBean)template.getAttribute(Constants.DATAMART_PROVIDER_TAG);
+		confSB = (SourceBean)template.getAttribute(GeoEngineConstants.DATAMART_PROVIDER_TAG);
 		if(confSB == null) {
-			logger.warn("Cannot find DatasetProvider configuration settings: tag name " + Constants.DATAMART_PROVIDER_TAG);
+			logger.warn("Cannot find DatasetProvider configuration settings: tag name " + GeoEngineConstants.DATAMART_PROVIDER_TAG);
 			logger.info("DatasetProvider configuration settings must be injected at execution time");
 			return null;
 		}
-		className = (String)confSB.getAttribute(Constants.CLASS_NAME_ATTRIBUTE);
+		className = (String)confSB.getAttribute(GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
 		if(className == null) {
-			logger.warn("Cannot find DatasetProvider class attribute: " + Constants.CLASS_NAME_ATTRIBUTE);
+			logger.warn("Cannot find DatasetProvider class attribute: " + GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
 			logger.info("DatasetProvider must be injected at execution time");
 			return null;
 		}

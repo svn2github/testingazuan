@@ -20,7 +20,7 @@
  **/
 package it.eng.spagobi.engines.geo.dataset.provider;
 
-import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
@@ -224,7 +224,7 @@ public class Link {
 		String parametersStr = "";
 		
 		
-		execIframeId = (String) env.get(Constants.ENV_EXEC_IFRAME_ID);
+		execIframeId = (String) env.get(GeoEngineConstants.ENV_EXEC_IFRAME_ID);
 		
     	try{
     		Iterator it = parameters.keySet().iterator();
@@ -264,7 +264,7 @@ public class Link {
 		String parametersStr = "";
 		
 		
-		execIframeId = (String) env.get(Constants.ENV_EXEC_IFRAME_ID);
+		execIframeId = (String) env.get(GeoEngineConstants.ENV_EXEC_IFRAME_ID);
 		
     	try{
     		Iterator it = parameters.keySet().iterator();

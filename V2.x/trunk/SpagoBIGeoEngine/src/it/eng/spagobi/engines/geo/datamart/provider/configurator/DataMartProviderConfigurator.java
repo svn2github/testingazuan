@@ -22,7 +22,7 @@ package it.eng.spagobi.engines.geo.datamart.provider.configurator;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.engines.geo.Constants;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.DataMartProvider;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
@@ -77,9 +77,9 @@ public class DataMartProviderConfigurator {
 				return;
 			}
 			
-			SourceBean dataSetSB = (SourceBean)confSB.getAttribute(Constants.DATASET_TAG);
+			SourceBean dataSetSB = (SourceBean)confSB.getAttribute(GeoEngineConstants.DATASET_TAG);
 			if(dataSetSB == null) {
-				logger.warn("Cannot find dataset configuration settings: tag name " + Constants.DATASET_TAG);
+				logger.warn("Cannot find dataset configuration settings: tag name " + GeoEngineConstants.DATASET_TAG);
 				logger.info("Dataset configuration settings must be injected at execution time");
 			} else {
 				dataSource = getDataSource( dataSetSB );
@@ -109,22 +109,22 @@ public class DataMartProviderConfigurator {
 	public static DataSource getDataSource(SourceBean confSB) throws GeoEngineException {
 		DataSource dataSource = null;
 		
-		SourceBean datasourceSB = (SourceBean)confSB.getAttribute(Constants.DATASOURCE_TAG);
+		SourceBean datasourceSB = (SourceBean)confSB.getAttribute(GeoEngineConstants.DATASOURCE_TAG);
 		if(datasourceSB == null) {
-			logger.warn("Cannot find datasource configuration settings: tag name " + Constants.DATASOURCE_TAG);
+			logger.warn("Cannot find datasource configuration settings: tag name " + GeoEngineConstants.DATASOURCE_TAG);
 			logger.info("Datasource configuration settings must be injected at execution time");
 			return null;
 		}
 		
 		dataSource = new DataSource();
 		
-		String type = (String)datasourceSB.getAttribute(Constants.DATASET_TYPE_ATTRIBUTE);				
+		String type = (String)datasourceSB.getAttribute(GeoEngineConstants.DATASET_TYPE_ATTRIBUTE);				
 		if("connection".equalsIgnoreCase(type)) {
-			dataSource.setJndi( (String)datasourceSB.getAttribute(Constants.DATASET_NAME_ATTRIBUTE) );
-			dataSource.setDriver( (String)datasourceSB.getAttribute(Constants.DATASET_DRIVER_ATTRIBUTER) );
-			dataSource.setPwd( (String)datasourceSB.getAttribute(Constants.DATASET_PWD_ATTRIBUTE) );
-			dataSource.setUser( (String)datasourceSB.getAttribute(Constants.DATASET_USER_ATTRIBUTE) );
-			dataSource.setUrlConnection( (String)datasourceSB.getAttribute(Constants.DATASET_URL_ATTRIBUTE) );
+			dataSource.setJndi( (String)datasourceSB.getAttribute(GeoEngineConstants.DATASET_NAME_ATTRIBUTE) );
+			dataSource.setDriver( (String)datasourceSB.getAttribute(GeoEngineConstants.DATASET_DRIVER_ATTRIBUTER) );
+			dataSource.setPwd( (String)datasourceSB.getAttribute(GeoEngineConstants.DATASET_PWD_ATTRIBUTE) );
+			dataSource.setUser( (String)datasourceSB.getAttribute(GeoEngineConstants.DATASET_USER_ATTRIBUTE) );
+			dataSource.setUrlConnection( (String)datasourceSB.getAttribute(GeoEngineConstants.DATASET_URL_ATTRIBUTE) );
 		}
 		
 		logger.debug("Datasource jndi name: " + dataSource.getJndi());
@@ -153,9 +153,9 @@ public class DataMartProviderConfigurator {
 	private static String getQuery(SourceBean dataSetSB) {
 		String query = null;
 		
-		SourceBean querySB = (SourceBean)dataSetSB.getAttribute(Constants.QUERY_TAG);
+		SourceBean querySB = (SourceBean)dataSetSB.getAttribute(GeoEngineConstants.QUERY_TAG);
 		if(querySB == null) {
-			logger.warn("Cannot find query configuration settings: tag name " + Constants.QUERY_TAG);
+			logger.warn("Cannot find query configuration settings: tag name " + GeoEngineConstants.QUERY_TAG);
 			logger.info("Datasource configuration settings must be injected at execution time");
 			return null;
 		}

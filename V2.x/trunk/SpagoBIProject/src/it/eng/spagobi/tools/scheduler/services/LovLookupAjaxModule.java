@@ -144,11 +144,11 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 		SourceBean rowsSourceBean = null;
 		if(typeLov.equalsIgnoreCase("QUERY")) {
 			QueryDetail qd = QueryDetail.fromXML(looProvider);
-			if (qd.requireProfileAttributes()) {
-				String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported", "component_scheduler_messages");
-				response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
-				return list;
-			}
+//			if (qd.requireProfileAttributes()) {
+//				String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported", "component_scheduler_messages");
+//				response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
+//				return list;
+//			}
 			valColName = qd.getValueColumnName();			
 			//String pool = qd.getConnectionName();
 			String datasource = qd.getDataSource();
@@ -170,11 +170,11 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 			}
 		} else if(typeLov.equalsIgnoreCase("FIXED_LIST")) {
 			FixedListDetail fixlistDet = FixedListDetail.fromXML(looProvider);
-			if (fixlistDet.requireProfileAttributes()) {
-				String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported", "component_scheduler_messages");
-				response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
-				return list;
-			}
+//			if (fixlistDet.requireProfileAttributes()) {
+//				String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported", "component_scheduler_messages");
+//				response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
+//				return list;
+//			}
 			valColName = fixlistDet.getValueColumnName();
 			try{
 				String result = fixlistDet.getLovResult(profile);
@@ -195,11 +195,11 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 			}
 		} else if(typeLov.equalsIgnoreCase("SCRIPT")) {
 			ScriptDetail scriptDetail = ScriptDetail.fromXML(looProvider);
-			if (scriptDetail.requireProfileAttributes()) {
-				String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported", "component_scheduler_messages");
-				response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
-				return list;
-			}
+//			if (scriptDetail.requireProfileAttributes()) {
+//				String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported", "component_scheduler_messages");
+//				response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
+//				return list;
+//			}
 			valColName = scriptDetail.getValueColumnName();
 			try{
 				String result = scriptDetail.getLovResult(profile);
@@ -215,11 +215,11 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 			}
 		} else if(typeLov.equalsIgnoreCase("JAVA_CLASS")) {
 			JavaClassDetail javaClassDetail = JavaClassDetail.fromXML(looProvider);
-			if (javaClassDetail.requireProfileAttributes()) {
-				String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported", "component_scheduler_messages");
-				response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
-				return list;
-			}
+//			if (javaClassDetail.requireProfileAttributes()) {
+//				String message = PortletUtilities.getMessage("scheduler.noProfileAttributesSupported", "component_scheduler_messages");
+//				response.setAttribute(SpagoBIConstants.MESSAGE_INFO, message);
+//				return list;
+//			}
 			valColName = javaClassDetail.getValueColumnName();
 			try{		
 				String javaClassName = javaClassDetail.getJavaClassName();

@@ -352,27 +352,27 @@ public class JobManagementModule extends AbstractModule {
 			Map documents = new HashMap();
 			List biobjs = jobInfo.getBiobjects();
 			Iterator iterbiobj = biobjs.iterator();
-			int totalCombinations = 0;
+			float totalCombinations = 0;
 			while(iterbiobj.hasNext()) {
 				BIObject biobj = (BIObject)iterbiobj.next();
-				int combinations = calculateCombinations(biobj);
+				float combinations = calculateCombinations(biobj);
 				totalCombinations += combinations;
-				int previous = 0;
+				float previous = 0;
 				if (documents.containsKey(biobj.getName())) {
-					Integer previousInt = (Integer) documents.get(biobj.getName());
-					previous = previousInt.intValue();
+					Float previousFloat = (Float) documents.get(biobj.getName());
+					previous = previousFloat.floatValue();
 				}
 				// adds to previous combinations number
 				combinations += previous;
 				// documents map will contain all documents with execution combinations number
-				documents.put(biobj.getName(), new Integer(combinations));
+				documents.put(biobj.getName(), new Float(combinations));
 			}
 			
 			if (totalCombinations > 10) {
 				// if combination of parameters exceeds 10, a warning is needed
 				warningNeeded = true;
 			}
-			
+
 			if (warningNeeded) {
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "JobIterationWarning");
 				response.setAttribute("EXCEEDING_CONFIGURATIONS", documents);
@@ -492,9 +492,9 @@ public class JobManagementModule extends AbstractModule {
 		
 
 	
-	private int calculateCombinations(BIObject biobj) {
+	private float calculateCombinations(BIObject biobj) {
 		logger.debug("IN");
-		int toReturn = 1;
+		float toReturn = 1;
 		List parameters = biobj.getBiObjectParameters();
 		Iterator it = parameters.iterator();
 		while (it.hasNext()) {

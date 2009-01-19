@@ -32,6 +32,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.callbacks.mapcatalogue;
 
+import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 
 import java.util.ArrayList;
@@ -74,6 +75,27 @@ public class MapCatalogueAccessUtils {
 	    this.session = session;
 	    this.userId = userId;
 	}
+	
+	
+	/**
+	 * Gets the standard hierarchy.
+	 * 
+	 * @return the standard hierarchy
+	 * 
+	 * @throws Exception the exception
+	 */
+	public Content readMap(String mapName) throws Exception {
+		Content map;
+		
+		ContentServiceProxy proxy = new ContentServiceProxy(userId, session);
+		map = proxy.readMap(mapName);
+		if (map == null) {
+			throw new Exception("Error while getting map [" + mapName +"] from map catalogue");
+		}
+
+
+		return map;
+    }
 	
 	/**
 	 * Gets the standard hierarchy.

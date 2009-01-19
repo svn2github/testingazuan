@@ -49,5 +49,8 @@
         <property name="functionalFlag" type="short">
             <column name="functional_flag" not-null="true"/>
         </property>
+        <property name="temporalFlag" type="short">
+            <column name="temporal_flag" not-null="true"/>
+        </property>
     </class>
 </hibernate-mapping>

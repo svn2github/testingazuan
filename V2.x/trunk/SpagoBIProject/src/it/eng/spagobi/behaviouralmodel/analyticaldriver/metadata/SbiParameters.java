@@ -46,6 +46,7 @@ public class SbiParameters  implements java.io.Serializable {
      private Set sbiParuses;
      private Set sbiObjPars;
      private Short functionalFlag;
+     private Short temporalFlag;
 
     // Constructors
 
@@ -267,6 +268,14 @@ public class SbiParameters  implements java.io.Serializable {
 	 */
 	public void setFunctionalFlag(Short functionalFlag) {
 		this.functionalFlag = functionalFlag;
+	}
+
+	public Short getTemporalFlag() {
+		return temporalFlag;
+	}
+
+	public void setTemporalFlag(Short temporalFlag) {
+		this.temporalFlag = temporalFlag;
 	}
 	
 }

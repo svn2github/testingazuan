@@ -244,6 +244,7 @@ public class DetailParameterModule extends AbstractModule {
 		parameterClone.setModalityValue(parameter.getModalityValue());
 		parameterClone.setType(parameter.getType());
 		parameterClone.setTypeId(parameter.getTypeId());
+		parameterClone.setIsTemporal(parameter.isTemporal());
 		parameterClone.setIsFunctional(parameter.isFunctional());
 		
 		return parameterClone;
@@ -684,6 +685,7 @@ public class DetailParameterModule extends AbstractModule {
 		String modality = (String) request.getAttribute("modality");
 		String name = (String) request.getAttribute("name");
 		String isFunctional = (String) request.getAttribute("isFunctional");
+		String isTemporal = (String) request.getAttribute("isTemporal");
 
         Parameter parameter  = new Parameter();
         parameter.setId(id);
@@ -703,6 +705,8 @@ public class DetailParameterModule extends AbstractModule {
 		parameter.setName(name);
 		if (isFunctional != null) parameter.setIsFunctional(true);
 		else parameter.setIsFunctional(false);
+		if (isTemporal != null) parameter.setIsTemporal(true);
+		else parameter.setIsTemporal(false);
 		return parameter;
 	}
 
@@ -796,6 +800,7 @@ public class DetailParameterModule extends AbstractModule {
 		parameter.setTypeId(new Integer(0));
 		parameter.setName("");
 		parameter.setIsFunctional(true);
+		parameter.setIsTemporal(false);
 		return parameter;
 	}
 	

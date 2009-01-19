@@ -305,6 +305,9 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 			if (aParameter.isFunctional()) hibParameters.setFunctionalFlag(new Short((short) 1));
 			else hibParameters.setFunctionalFlag(new Short((short) 0));
 			
+			if (aParameter.isTemporal()) hibParameters.setTemporalFlag(new Short((short) 1));
+			else hibParameters.setTemporalFlag(new Short((short) 0));
+			
 			tx.commit();
 		} catch (HibernateException he) {
 			logException(he);
@@ -360,6 +363,8 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 			hibParameters.setParameterType(parameterType);
 			if (aParameter.isFunctional()) hibParameters.setFunctionalFlag(new Short((short) 1));
 			else hibParameters.setFunctionalFlag(new Short((short) 0));
+			if (aParameter.isTemporal()) hibParameters.setTemporalFlag(new Short((short) 1));
+			else hibParameters.setTemporalFlag(new Short((short) 0));
 			aSession.save(hibParameters);
 			tx.commit();
 		} catch (HibernateException he) {
@@ -436,6 +441,8 @@ public class ParameterDAOHibImpl extends AbstractHibernateDAO implements
 		aParameter.setTypeId(hibParameters.getParameterType().getValueId());
 		if (hibParameters.getFunctionalFlag().intValue() == 0) aParameter.setIsFunctional(false);
 		else aParameter.setIsFunctional(true);
+		if (hibParameters.getTemporalFlag().intValue() == 0) aParameter.setIsTemporal(false);
+		else aParameter.setIsTemporal(true);
 		return aParameter;
 	}
 }

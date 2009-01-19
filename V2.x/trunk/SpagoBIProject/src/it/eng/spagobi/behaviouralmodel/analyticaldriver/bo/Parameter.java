@@ -46,6 +46,7 @@ public class Parameter implements Serializable {
 	private Integer typeId;
 	private String modality = "";
 	private boolean isFunctional;
+	private boolean isTemporal;
 	
 	private ModalitiesValue modalityValue = null;
 	private List checks = null;
@@ -264,5 +265,24 @@ public class Parameter implements Serializable {
 	 */
 	public void setIsFunctional(boolean isFunctional) {
 		this.isFunctional = isFunctional;
+	}
+
+	
+	/**
+	 * Checks if the parameter is temporal.
+	 * 
+	 * @return true if the parameter is temporal
+	 */
+	public boolean isTemporal() {
+		return isTemporal;
+	}
+
+	/**
+	 * Sets the checks if the parameter is temporal.
+	 * 
+	 * @param isTemporal the new checks if is temporal
+	 */
+	public void setIsTemporal(boolean isTemporal) {
+		this.isTemporal = isTemporal;
 	}
 }

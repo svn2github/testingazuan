@@ -303,7 +303,7 @@ CREATE TABLE SBI_GEO_MAPS (
        MAP_ID               INTEGER IDENTITY(1, 1) NOT NULL,
        NAME                 VARCHAR(40) NOT NULL,
        DESCR                VARCHAR(160) NULL,
-       URL					VARCHAR(400) NOT NULL,
+       URL					VARCHAR(400) NULL,
        FORMAT 				VARCHAR(40) NULL,   
        BIN_ID         		INTEGER NULL,
        CONSTRAINT XAK1SBI_GEO_MAPS UNIQUE (NAME),

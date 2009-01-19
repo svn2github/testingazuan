@@ -20,7 +20,7 @@
 	<target name="create.jar" depends="init" >
 
 
-		<jar destfile="./dist/spagobi-service-client.jar">
+		<jar destfile="./dist/spagobi-service-client-2.0.0.jar">
 			
 			<fileset dir="./web-content/WEB-INF/classes"
 				includes="it/eng/spagobi/tools/dataset/bo/*,

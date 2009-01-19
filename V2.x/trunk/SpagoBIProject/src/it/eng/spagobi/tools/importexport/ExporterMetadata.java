@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.importexport;
 
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -81,8 +80,8 @@ import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
+import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
@@ -94,10 +93,6 @@ import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -244,6 +239,16 @@ public class ExporterMetadata {
 			hibDataset.setName(dataset.getName());
 			hibDataset.setDescription(dataset.getDescription());
 			hibDataset.setParameters(dataset.getParameters());
+			hibDataset.setPivotColumnName(dataset.getPivotColumnName());
+			hibDataset.setPivotColumnValue(dataset.getPivotColumnValue());
+			hibDataset.setPivotRowName(dataset.getPivotRowName());
+			
+			if (dataset.getTransformerId() != null) {
+				SbiDomains transformerType = (SbiDomains) session.load(SbiEngines.class, dataset.getTransformerId());
+				hibDataset.setTransformer(transformerType);
+			} else {
+				hibDataset.setTransformer(null);
+			}
 
 			session.save(hibDataset);
 			tx.commit();
@@ -649,6 +654,7 @@ public class ExporterMetadata {
 			hibParam.setMask(param.getMask());
 			hibParam.setParameterType(hibParamType);
 			hibParam.setFunctionalFlag(param.isFunctional() ? new Short((short) 1) : new Short((short) 0));
+			hibParam.setTemporalFlag(param.isTemporal() ? new Short((short) 1) : new Short((short) 0));
 			session.save(hibParam);
 			tx.commit();
 		} catch (Exception e) {
@@ -1196,7 +1202,7 @@ public class ExporterMetadata {
 			insertMapFeaturesAssociations(session);
 			
 			// puts map files into export base folder (in order to put them into export zip archive)
-			copyMapsFiles(pathBaseFolder);
+			//copyMapsFiles(pathBaseFolder);
 			
 		} catch (Exception e) {
 			logger.error("Error while inserting map catalogue into export database " , e);
@@ -1227,7 +1233,23 @@ public class ExporterMetadata {
 				hibMap.setFormat(map.getFormat());
 				hibMap.setName(map.getName());
 				hibMap.setUrl(map.getUrl());
+				
+				if (map.getBinId() == 0) {
+					logger.warn("Map with id = " + map.getMapId() + " and name = " + map.getName() + 
+							" has not binary content!!");
+					hibMap.setBinContents(null);
+				} else {
+					SbiBinContents hibBinContent = new SbiBinContents();
+					hibBinContent.setId(map.getBinId());
+					byte[] content = DAOFactory.getBinContentDAO().getBinContent(map.getBinId());
+					hibBinContent.setContent(content);
+					hibMap.setBinContents(hibBinContent);
+					
+					session.save(hibBinContent);
+				}
+				
 				session.save(hibMap);
+
 			}
 			tx.commit();
 		} catch (Exception e) {
@@ -1308,6 +1330,7 @@ public class ExporterMetadata {
 		}
 	}
 	
+	/*
 	private void copyMapsFiles(String pathBaseFolder) throws EMFUserError {
 	    logger.debug("IN");
 	    try {
@@ -1352,4 +1375,5 @@ public class ExporterMetadata {
 	    	logger.debug("OUT");
 	    }
 	}
+	*/
 }

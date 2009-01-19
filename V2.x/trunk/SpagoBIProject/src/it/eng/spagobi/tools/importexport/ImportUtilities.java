@@ -466,6 +466,7 @@ public class ImportUtilities {
 		newPar.setSbiObjPars(new HashSet());
 		newPar.setSbiParuses(new HashSet());
 		newPar.setFunctionalFlag(param.getFunctionalFlag());
+		newPar.setTemporalFlag(param.getTemporalFlag());
 		logger.debug("OUT");
 		return newPar;
 	}
@@ -739,6 +740,7 @@ public class ImportUtilities {
 			existingPar.setName(exportedParameter.getName());
 			existingPar.setSbiParuses(new HashSet());
 			existingPar.setFunctionalFlag(exportedParameter.getFunctionalFlag());
+			existingPar.setTemporalFlag(exportedParameter.getTemporalFlag());
 		    // deletes existing associations between object and parameters 
 		    Set paruses = existingPar.getSbiParuses();
 		    Iterator parusesIt = paruses.iterator();

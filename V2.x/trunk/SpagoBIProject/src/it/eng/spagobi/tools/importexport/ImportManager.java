@@ -1236,7 +1236,7 @@ public class ImportManager implements IImportManager, Serializable {
 		    + objIdExp);
 	    templateList = hibQuery.list();
 	    if (templateList.isEmpty()) {
-			logger.warn(" Template is not present");
+			logger.warn("WARN: exported document with id = " + objIdExp + " has no template");
 			return;
 	    }
 	    // finds the next prog value
@@ -2249,6 +2249,15 @@ public class ImportManager implements IImportManager, Serializable {
 				newMap.setDescr(expMap.getDescr());
 				newMap.setFormat(expMap.getFormat());
 				newMap.setUrl(expMap.getUrl());
+				
+				if (expMap.getBinContents() != null) {
+				    SbiBinContents binary = insertBinaryContent(expMap.getBinContents());
+				    newMap.setBinContents(binary);
+				} else {
+					metaLog.log("WARN: exported map with name '" + expMap.getName() + "' has no content!!");
+					newMap.setBinContents(null);
+				}
+				
 				sessionCurrDB.save(newMap);
 				metaAss.insertCoupleMaps(new Integer(expMap.getMapId()), new Integer(newMap.getMapId()));
 			}
@@ -2338,6 +2347,7 @@ public class ImportManager implements IImportManager, Serializable {
 				sessionCurrDB.save(newMapFeature);
 			}
 			
+			/*
 			// copy all exported map files
 			File mapsDir = new File(ConfigSingleton.getRootPath() + "/components/mapcatalogue/maps");
 			if (!mapsDir.exists()) mapsDir.mkdirs();
@@ -2384,6 +2394,7 @@ public class ImportManager implements IImportManager, Serializable {
 					}
 				}
 			}
+			*/
 			
 		} finally {
 			logger.debug("OUT");

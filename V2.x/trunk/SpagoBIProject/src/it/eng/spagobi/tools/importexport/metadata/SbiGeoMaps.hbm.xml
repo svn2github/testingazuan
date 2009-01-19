@@ -19,13 +19,8 @@
         <property name="format" type="string">
             <column name="FORMAT" />
         </property>        
-        <!--
-        <set name="sbiGeoMapFeatureses" inverse="true">
-            <key>
-                <column name="MAP_ID" not-null="true" />
-            </key>
-            <one-to-many class="it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures" />
-        </set>
-       -->
+       <many-to-one name="binContents" class="it.eng.spagobi.commons.metadata.SbiBinContents">
+            <column name="BIN_ID" not-null="false"/>
+        </many-to-one>
     </class>
 </hibernate-mapping>

@@ -57,10 +57,16 @@ String saveUrl = urlBuilder.getUrl(request, saveUrlPars);
 	Iterator it = keys.iterator();
 	while (it.hasNext()) {
 		String documentName = (String) it.next();
-		Integer combinations = (Integer) documentsExceeding.get(documentName);
-		String message = msgBuilder.getMessage("scheduler.numberOfExecution", "component_scheduler_messages", request);
-		message = message.replaceAll("%0", documentName);
-		message = message.replaceAll("%1", combinations.toString());
+		Float combinations = (Float) documentsExceeding.get(documentName);
+		String message = null;
+		if (combinations.floatValue() != Float.POSITIVE_INFINITY) {
+			message = msgBuilder.getMessage("scheduler.numberOfExecution", "component_scheduler_messages", request);
+			message = message.replaceAll("%0", documentName);
+			message = message.replaceAll("%1", combinations.toString());
+		} else {
+			message = msgBuilder.getMessage("scheduler.numberOfExecutionNotCalculable", "component_scheduler_messages", request);
+			message = message.replaceAll("%0", documentName);
+		}
 		%>
 		<%= message %><br/>
 		<%

@@ -43,6 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.tools.scheduler.RuntimeLoadingParameterValuesRetriever"%>
 <%@page import="it.eng.spagobi.tools.scheduler.FormulaParameterValuesRetriever"%>
 <%@page import="it.eng.spagobi.tools.scheduler.Formula"%>
+<%@page import="it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter"%>
 
 <%  
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("JobManagementModule"); 
@@ -629,7 +630,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				          	</span>
 				    	</div>
 				    	
-				    	<div style="float:left;width:500px;">
+				    	<div style="float:left;width:500px;margin-bottom:30px;">
 
 				    		<spagobi:message key = "scheduler.parameterValuesStrategyQuestion"  bundle="component_scheduler_messages"/>
 				    		<br/>
@@ -642,9 +643,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								<option value='loadAtRuntime' <%= (strategy != null && strategy instanceof RuntimeLoadingParameterValuesRetriever) ? "selected='selected'" : "" %>>
 									<spagobi:message key = "scheduler.loadAtRuntimeStrategy"  bundle="component_scheduler_messages"/>
 								</option>
-								<option value='useFormula' <%= (strategy != null && strategy instanceof FormulaParameterValuesRetriever) ? "selected='selected'" : "" %>>
-									<spagobi:message key = "scheduler.useFormulaStrategy"  bundle="component_scheduler_messages"/>
-								</option>
+								<% 
+								Integer parId = biobjpar.getParID();
+								Parameter parameter = pardao.loadForDetailByParameterID(parId);
+								if (parameter.isTemporal()) { %>
+									<option value='useFormula' <%= (strategy != null && strategy instanceof FormulaParameterValuesRetriever) ? "selected='selected'" : "" %>>
+										<spagobi:message key = "scheduler.useFormulaStrategy"  bundle="component_scheduler_messages"/>
+									</option>
+								<% } %>
 							</select>
 							
 							<script>

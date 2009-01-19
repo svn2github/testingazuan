@@ -1109,6 +1109,27 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
 				<span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.fixedRecipients" bundle="component_scheduler_messages" />
 				</span>
+				<a href="javascript:void(0);" id="mailtos_<%=biobj.getId()%>__<%=index%>_help">
+	      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/question.gif")%>' 
+	      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
+	      				 style="vertical-align:bottom;" />
+      			</a>
+      			<script type="text/javascript">
+      			var fixedRecipientsHelpWin;
+      			Ext.get('mailtos_<%=biobj.getId()%>__<%=index%>_help').on('click', function(){
+      				if(!fixedRecipientsHelpWin){
+      					fixedRecipientsHelpWin = new Ext.Window({
+      						id:'fixedRecipientsHelpWin',
+							contentEl:'scheduler.help.useFixedRecipients',
+							width:350,
+							height:100,
+							title: "<spagobi:message key = "scheduler.fixedRecipients" bundle="component_scheduler_messages" />"
+      					});
+      				};
+      				fixedRecipientsHelpWin.show();
+      			});
+      			</script>
 				<div id="fixedRecipients_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
 				  	<div class='div_detail_label_scheduler'>
 						<span class='portlet-form-field-label'>
@@ -1126,6 +1147,27 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
 				<span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.useDataset" bundle="component_scheduler_messages" />
 				</span>
+				<a href="javascript:void(0);" id="mailToDataset_<%=biobj.getId()%>__<%=index%>_help">
+	      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/question.gif")%>' 
+	      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
+	      				 style="vertical-align:bottom;" />
+      			</a>
+      			<script type="text/javascript">
+      			var mailToDatasetHelpWin;
+      			Ext.get('mailToDataset_<%=biobj.getId()%>__<%=index%>_help').on('click', function(){
+      				if(!mailToDatasetHelpWin){
+      					mailToDatasetHelpWin = new Ext.Window({
+      						id:'mailToDatasetHelpWin',
+							contentEl:'scheduler.help.useDataset',
+							width:350,
+							height:100,
+							title: "<spagobi:message key = "scheduler.useDataset" bundle="component_scheduler_messages" />"
+      					});
+      				};
+      				mailToDatasetHelpWin.show();
+      			});
+      			</script>
 				<div id="dataset_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
 				  	<div  class='div_detail_label_scheduler'>
 						<span class='portlet-form-field-label'>
@@ -1184,6 +1226,27 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
 				<span class='portlet-form-field-label'>
 					<spagobi:message key="scheduler.useExpression" bundle="component_scheduler_messages" />
 				</span>
+				<a href="javascript:void(0);" id="mailToExpression_<%=biobj.getId()%>__<%=index%>_help">
+	      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
+	      				 src='<%= urlBuilder.getResourceLink(request, "/img/question.gif")%>' 
+	      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
+	      				 style="vertical-align:bottom;" />
+      			</a>
+      			<script type="text/javascript">
+      			var mailToExpressionHelpWin;
+      			Ext.get('mailToExpression_<%=biobj.getId()%>__<%=index%>_help').on('click', function(){
+      				if(!mailToExpressionHelpWin){
+      					mailToExpressionHelpWin = new Ext.Window({
+      						id:'mailToExpressionHelpWin',
+							contentEl:'scheduler.help.useExpression',
+							width:350,
+							height:100,
+							title: "<spagobi:message key = "scheduler.useExpression" bundle="component_scheduler_messages" />"
+      					});
+      				};
+      				mailToExpressionHelpWin.show();
+      			});
+      			</script>
 				<div id="expression_<%=biobj.getId()%>__<%=index%>" style="margin-left:50px;margin-top:10px;">
 				  	<div class='div_detail_label_scheduler'>
 						<span class='portlet-form-field-label'>
@@ -1303,3 +1366,14 @@ toggle('dl_<%=biobj.getId()%>__<%=index%>', 'saveasdl_<%=biobj.getId()%>__<%=ind
 
 </form>
 
+<div style="display:none;" >
+	<div id="scheduler.help.useFixedRecipients">
+		<spagobi:message key="scheduler.help.useFixedRecipients" bundle="component_scheduler_messages" />
+	</div>
+	<div id="scheduler.help.useDataset">
+		<spagobi:message key="scheduler.help.useDataset" bundle="component_scheduler_messages" />
+	</div>
+	<div id="scheduler.help.useExpression">
+		<spagobi:message key="scheduler.help.useExpression" bundle="component_scheduler_messages" />
+	</div>
+</div>

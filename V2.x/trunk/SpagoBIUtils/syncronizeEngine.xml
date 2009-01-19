@@ -18,7 +18,7 @@
  
 	<target name="create.jar" depends="init" >
 	
-		<jar destfile="./dist/sbi.utils-2.0.jar">
+		<jar destfile="./dist/sbi.utils-2.0.0.jar">
 			<fileset dir="./bin">
 			  <include name="**/*.class"/>	
 			</fileset>

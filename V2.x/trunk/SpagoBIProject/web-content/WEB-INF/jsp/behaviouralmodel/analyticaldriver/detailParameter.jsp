@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
@@ -16,7 +16,7 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
@@ -197,6 +197,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="checkbox" name="isFunctional" id="isFunctional" <%=disabled%>
 			   value="true" <%=(parameter.isFunctional() ? "checked='checked'" : "")%>/>
+	</div>
+	<div class='div_detail_label'>
+		<span class='portlet-form-field-label'>
+			<spagobi:message key = "SBIDev.param.isTemporal"/>
+		</span>
+	</div>
+	<div class='div_detail_form'>
+		<input class='portlet-form-input-field' type="checkbox" name="isTemporal" id="isTemporal" <%=disabled%>
+			   value="true" <%=(parameter.isTemporal() ? "checked='checked'" : "")%>/>
 	</div>
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>

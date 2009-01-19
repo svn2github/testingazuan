@@ -186,13 +186,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
     <form method='POST' action='<%=formImportUrl%>' id='importForm' name='importForm' enctype="multipart/form-data">
 	<input type="hidden" name="PAGE" value="ImportExportPage" />
+	<input type='hidden' name='MESSAGEDET' value='Import' />
  	<div style="float:left;width:45%" class="div_detail_area_forms">
 		<div class='portlet-section-header' style="float:left;width:78%;">
 				<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>
 		</div>
 		<div style="float:left;width:20%;">
 		  <center>
-			<a class='link_without_dec' href="javascript:document.getElementById('importForm').submit()">
+			<a class='link_without_dec' style="text-decoration:none;" href="javascript:document.getElementById('importForm').submit()">
 					<img src= '<%= urlBuilder.getResourceLink(request, "/img/tools/importexport/importexport32.gif") %>'
 						title='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' 
 						alt='<spagobi:message key = "SBISet.import" bundle="component_impexp_messages"/>' />
@@ -207,68 +208,50 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</center>
 		</div>
 		<div style="clear:left;margin-bottom:10px;padding-top:10px;">
-			<table>
-				<tr>
-					<td>
-						<spagobi:message key = "SBISet.importexport.fileArchive" bundle="component_impexp_messages"/>
-						:
-					</td>
-					<td> 
-						<input type="file"  name="exportedArchive" />
-					</td>
-				</tr>
-				<tr height='20px'><td colspan="2"></td></tr>
-				<tr>
-					<td colspan="2" />
-						<fieldset class='fieldset'>
-							<legend class='form_legend'>
-								<spagobi:message key = "impexp.Associations" bundle="component_impexp_messages"/>
-							</legend>
-							<input type="radio"  name="importAssociationKind" CHECKED value="noassociations"  
-						       onclick="document.getElementById('rowChoseAssFile').style.display='none'"/>
-						    <spagobi:message key = "impexp.withoutAss" bundle="component_impexp_messages"/>
-						    <br/>
-						    <input type="radio"  name="importAssociationKind" value="predefinedassociations"
-						       onclick="document.getElementById('rowChoseAssFile').style.display='inline' "/>
-						    <spagobi:message key = "impexp.mandatoryAss" bundle="component_impexp_messages"/>
-						    <br/>     
-						    <input type="radio"  name="importAssociationKind" value="defaultassociations"
-						       onclick="document.getElementById('rowChoseAssFile').style.display='inline'" /> 
-						    <spagobi:message key = "impexp.defaultAss" bundle="component_impexp_messages"/>
-						    <br/>
-						    <br/>
-						    <table id="rowChoseAssFile" style='display:none;'>
-						    	<tr height='25px'>
-					<td>
-						    			<spagobi:message key = "impexp.savedAss" bundle="component_impexp_messages"/>
-										: &nbsp;&nbsp;
-						    		</td>
-						    		<td>
-						    			<input type="text" id="textReadOnlyAssName" name="textReadOnlyAssName" readonly value="" />
-						    			<input type="hidden" id="hidAssId" name="hidAssId" value="" />
-						    			<a class='link_without_dec' href="javascript:showAssList('SELECT')">
-						    				<img src= '<%= urlBuilder.getResourceLink(request, "/img/detail.gif") %>'
-												 title='<spagobi:message key = "impexp.selectFromList" bundle="component_impexp_messages"/>' 
-												alt='<spagobi:message key = "impexp.selectFromList" bundle="component_impexp_messages"/>' />
-										</a>
-						    		</td>
-						    	</tr>
-						    	<tr height='25px'>
-						    		<td>
-						<spagobi:message key = "SBISet.importexport.fileAssociation" bundle="component_impexp_messages"/>
-										: &nbsp;&nbsp;
-					</td>
-					<td> 
-						<input type="file"  name="associationsFile" />
-						    		</td>
-						    	</tr>
-						    </table>
-						</fieldset>
-					</td>
-				</tr>
-			</table>
-			<input type='hidden' name='MESSAGEDET' value='Import' />
-			
+			<spagobi:message key = "SBISet.importexport.fileArchive" bundle="component_impexp_messages"/>:		
+			<input type="file"  name="exportedArchive" />
+			<br/>
+			<br/>
+			<fieldset class='fieldset'>
+				<legend class='form_legend'>
+					<spagobi:message key = "impexp.Associations" bundle="component_impexp_messages"/>
+				</legend>
+				<input type="radio"  name="importAssociationKind" CHECKED value="noassociations"  
+			       onclick="document.getElementById('rowChoseAssFile').style.display='none'"/>
+			    <spagobi:message key = "impexp.withoutAss" bundle="component_impexp_messages"/>
+			    <br/>
+			    <input type="radio"  name="importAssociationKind" value="predefinedassociations"
+			       onclick="document.getElementById('rowChoseAssFile').style.display='inline' "/>
+			    <spagobi:message key = "impexp.mandatoryAss" bundle="component_impexp_messages"/>
+			    <br/>     
+			    <input type="radio"  name="importAssociationKind" value="defaultassociations"
+			       onclick="document.getElementById('rowChoseAssFile').style.display='inline'" /> 
+			    <spagobi:message key = "impexp.defaultAss" bundle="component_impexp_messages"/>
+			    
+			    <br/>
+			    <br/>
+			    
+			    <div id="rowChoseAssFile" style='display:none;'>
+			    	<div style="width:150px;float:left;">
+				    	<spagobi:message key = "impexp.savedAss" bundle="component_impexp_messages"/>: &nbsp;&nbsp;
+			    	</div>
+		    		<input type="text" id="textReadOnlyAssName" name="textReadOnlyAssName" readonly value="" />
+	    			<input type="hidden" id="hidAssId" name="hidAssId" value="" />
+	    			<a class='link_without_dec' href="javascript:showAssList('SELECT')" style="text-decoration:none;">
+	    				<img src= '<%= urlBuilder.getResourceLink(request, "/img/detail.gif") %>'
+							 title='<spagobi:message key = "impexp.selectFromList" bundle="component_impexp_messages"/>' 
+							alt='<spagobi:message key = "impexp.selectFromList" bundle="component_impexp_messages"/>' />
+					</a>
+					<div style="clear:left;"></div>
+					<div style="width:150px;float:left;">
+						<spagobi:message key = "SBISet.importexport.fileAssociation" bundle="component_impexp_messages"/>: &nbsp;&nbsp;
+					</div>
+					<input type="file"  name="associationsFile" />
+				    <br/>
+				    <br/>
+			    </div>
+			</fieldset>
+		
 		</div>
 		
 		<%

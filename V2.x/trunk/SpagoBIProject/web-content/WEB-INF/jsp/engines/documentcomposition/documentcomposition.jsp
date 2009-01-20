@@ -90,7 +90,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	}
     } 
 	%>
-    <%@ include file="/jsp/engines/documentcomposition/template/dynamicTemplate.jsp"%>
+    <%@ include file="/WEB-INF/jsp/engines/documentcomposition/template/dynamicTemplate.jsp"%>
     <%
     logger.debug("OUT"); 
   

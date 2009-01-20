@@ -1315,9 +1315,7 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		String roleName=(String)request.getAttribute("roleName");
 		List toAddValues=new ArrayList();
 		List toAddDescription=new ArrayList();
-		SessionContainer permSession = this.getRequestContainer().getSessionContainer().getPermanentContainer();
 		IEngUserProfile profile = getUserProfile();
-
 
 		//String parIdS=(String)request.getAttribute("parameterId");
 
@@ -1377,28 +1375,8 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		currbiObjPar.setParameterValuesDescription(toAddDescription);
 		List errors = instance.getParametersErrors();
 
-		// add errors into error handler
-		Iterator errorsIt = errors.iterator();
-		//while (errorsIt.hasNext()) {
-		//errorHandler.addError((EMFUserError) errorsIt.next());
-		//}
-
-		// if there are some errors into the errorHandler does not execute the
-		// BIObject
-		if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			//response.setAttribute("allSelectMode", "true");
-			//response.setAttribute("allSelectPar", parIdS);
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
-			"ExecuteBIObjectPageParameter");
-			return;
-		}
-
-		//response.setAttribute("allSelectMode", "true");
-		//response.setAttribute("allSelectPar", parIdS);
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 		"ExecuteBIObjectPageParameter");
-		// call the execution method
-		//execute(instance, null, null, response);
 		logger.debug("OUT");
 
 		/////////////////////////////////////
@@ -1410,7 +1388,7 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 
 
 	/**
-	 * Called when user has selected all values for a multi-value-parameter
+	 * Called when user has selected none values for a multi-value-parameter
 	 * 
 	 * @param request
 	 *            The request SourceBean
@@ -1428,8 +1406,6 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 
 		Integer objParId=Integer.valueOf(objParIdS);
 
-
-
 		BIObjectParameter currbiObjPar=null;
 		List biObjPars=instance.getBIObject().getBiObjectParameters();
 
@@ -1444,34 +1420,12 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 			}
 		}
 
-		//currbiObjPar.setParameterValues(toReturn);
 		currbiObjPar.setParameterValues(null);
 		currbiObjPar.setParameterValuesDescription(null);
 
 		List errors = instance.getParametersErrors();
-
-		// add errors into error handler
-		Iterator errorsIt = errors.iterator();
-		//while (errorsIt.hasNext()) {
-		//errorHandler.addError((EMFUserError) errorsIt.next());
-		//}
-
-		// if there are some errors into the errorHandler does not execute the
-		// BIObject
-		if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			//response.setAttribute("allSelectMode", "true");
-			//response.setAttribute("allSelectPar", parIdS);
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
-			"ExecuteBIObjectPageParameter");
-			return;
-		}
-
-		//response.setAttribute("allSelectMode", "true");
-		//response.setAttribute("allSelectPar", parIdS);
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 		"ExecuteBIObjectPageParameter");
-		// call the execution method
-		//execute(instance, null, null, response);
 		logger.debug("OUT");
 
 		/////////////////////////////////////

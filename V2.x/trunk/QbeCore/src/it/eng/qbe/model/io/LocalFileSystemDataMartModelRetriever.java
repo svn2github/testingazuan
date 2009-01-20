@@ -20,12 +20,15 @@
  **/
 package it.eng.qbe.model.io;
 
+import it.eng.qbe.datasource.AbstractHibernateDataSource;
 import it.eng.qbe.utility.FileUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 
 // TODO: Auto-generated Javadoc
@@ -34,7 +37,10 @@ import java.util.List;
  */
 public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetriever {
 
+	/** Logger component. */
+    private static transient Logger logger = Logger.getLogger(LocalFileSystemDataMartModelRetriever.class);
 	
+    
 	/** The datamarts dir. */
 	private File datamartsDir = null;
 	
@@ -87,7 +93,11 @@ public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetr
 		targetDatamartDir = new File(datamartsDir, datamartName);
 		datamartJarFile = new File(targetDatamartDir, "datamart.jar");
 		
-		if (!datamartJarFile.exists()) datamartJarFile = null;
+		if (!datamartJarFile.exists()) {
+			logger.warn("[" + datamartName + "] datamart jar file [" + datamartJarFile + "] does not exist");
+			datamartJarFile = null;
+			
+		}
 
 		return datamartJarFile;
 	}

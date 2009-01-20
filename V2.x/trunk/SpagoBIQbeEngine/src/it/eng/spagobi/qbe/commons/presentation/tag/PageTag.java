@@ -20,7 +20,7 @@
  **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
-import it.eng.qbe.conf.QbeEngineConf;
+import it.eng.spagobi.qbe.QbeEngineConfig;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -60,7 +60,7 @@ public class PageTag extends QbeTagSupport {
 		StringBuffer buffer = new StringBuffer();
 		try {
 			initPageContext();
-			if ( QbeEngineConf.getInstance().isWebModalityActive() ){
+			if ( QbeEngineConfig.getInstance().isWebModalityActive() ){
 				buffer.append("<html>\n");
 			}
 	    	pageContext.getOut().print( buffer.toString() );
@@ -77,7 +77,7 @@ public class PageTag extends QbeTagSupport {
 	public int doEndTag() throws JspException {
 		StringBuffer buffer = new StringBuffer();
 		try {
-			if ( QbeEngineConf.getInstance().isWebModalityActive() ){
+			if ( QbeEngineConfig.getInstance().isWebModalityActive() ){
 				buffer.append("</html>\n");
 			}
 	    	pageContext.getOut().print( buffer.toString() );

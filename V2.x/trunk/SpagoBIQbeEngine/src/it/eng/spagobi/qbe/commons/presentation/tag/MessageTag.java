@@ -20,8 +20,8 @@
  **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
-import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.spago.message.MessageBundle;
+import it.eng.spagobi.qbe.QbeEngineConfig;
 
 import java.util.Locale;
 
@@ -50,7 +50,7 @@ public class MessageTag extends QbeTagSupport {
 		
 		try {		
 			Locale locale = getLocale();
-	    	String msg = MessageBundle.getMessage(key, QbeEngineConf.getInstance().getBundle(), locale);
+	    	String msg = MessageBundle.getMessage(key, "component_spagobiqbeIE_messages", locale);
 	    	pageContext.setAttribute(var, msg);
 	      } catch (Exception ex) {
 	         throw new JspTagException(getClass().getName() + ": " + ex.getMessage());

@@ -20,10 +20,10 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
-import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.model.XIStatement;
 import it.eng.qbe.newquery.SelectField;
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.qbe.QbeEngineConfig;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 
@@ -83,7 +83,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			logger.debug(LIMIT + ": " + limit);
 			start = getAttributeAsInteger( START );	
 			logger.debug(START + ": " + start);
-			maxSize = QbeEngineConf.getInstance().getResultLimit();			
+			maxSize = QbeEngineConfig.getInstance().getResultLimit();			
 			logger.debug("max results: " + (maxSize != null? maxSize: "none") );
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");

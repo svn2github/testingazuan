@@ -66,7 +66,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			logger.debug("Template: " + getTemplate());
 						
 			getAuditServiceProxy().notifyServiceStartEvent();
-			
+					
 			qbeEngineInstance = QbeEngine.createInstance( getTemplate(), getEnv() );
 			qbeEngineInstance.setStandaloneMode( false );
 			

@@ -21,9 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe;
 
+import it.eng.qbe.conf.QbeCoreSettings;
+import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 
+import java.io.File;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -34,9 +37,29 @@ import org.apache.log4j.Logger;
  */
 public class QbeEngine {
 	
+	private static QbeEngineConfig engineConfig;
+	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(QbeEngine.class);
 	
+    
+    private static void initEngine() {
+    	if(engineConfig == null) {
+    		engineConfig = QbeEngineConfig.getInstance();
+    			
+    		Object o;
+    		
+    		if( (o = engineConfig.getQbeDataMartDir()) != null) {
+    			QbeCoreSettings.getInstance().setQbeTempDir( (File)o );
+    		}
+    			
+    			
+    		if( (o = engineConfig.getDataMartModelRetriever()) != null) {
+    			QbeCoreSettings.getInstance().setDataMartModelRetriever( (IDataMartModelRetriever)o );
+    		}
+    			
+    	}
+	}
     
 	/**
 	 * Creates the instance.
@@ -51,8 +74,12 @@ public class QbeEngine {
 	public static QbeEngineInstance createInstance(SourceBean template, Map env) throws QbeEngineException {
 		QbeEngineInstance qbeEngineInstance = null;
 		logger.debug("IN");
+		initEngine();
 		qbeEngineInstance = new QbeEngineInstance(template, env);
 		logger.debug("OUT");
 		return qbeEngineInstance;
 	}
+
+
+	
 }

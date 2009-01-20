@@ -20,7 +20,6 @@
  **/
 package it.eng.spagobi.qbe.commons.datasource;
 
-import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.datasource.CompositeHibernateDataSource;
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.DataSourceCache;
@@ -28,6 +27,7 @@ import it.eng.qbe.datasource.DataSourceFactory;
 import it.eng.qbe.datasource.DataSourceManager;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.naming.NamingStrategy;
+import it.eng.spagobi.qbe.QbeEngineConfig;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,8 +57,8 @@ public class QbeDataSourceManager implements DataSourceManager {
 	 */
 	public static QbeDataSourceManager getInstance() {
 		if(instance == null) {
-			NamingStrategy namingStartegy = QbeEngineConf.getInstance().getNamingStrategy();
-			DataSourceCache dataSourceCache = QbeEngineConf.getInstance().getDataSourceCache();
+			NamingStrategy namingStartegy = QbeEngineConfig.getInstance().getNamingStrategy();
+			DataSourceCache dataSourceCache = QbeEngineConfig.getInstance().getDataSourceCache();
 			instance = new QbeDataSourceManager(namingStartegy, dataSourceCache);
 		}
 		

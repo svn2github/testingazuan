@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <QBE>
 	
-    <DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.model.io.LocalFileSystemDataMartModelRetriever"/>
+    <!--  DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.model.io.LocalFileSystemDataMartModelRetriever"/ -->
     <QUERY-PERSISTER className="it.eng.qbe.model.io.LocalFileSystemQueryPersister"/>
-    
-
-    <!--  <DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.utility.SpagoBICmsDataMartModelRetriever"/> 
-	<QUERY-PERSISTER className="it.eng.qbe.utility.SpagoBICmsQueryPersister"/>
-	 -->
+   
 	 
-	<QBE-MODE mode="WEB" page-size="20"/>
+	<!--  QBE-MODE mode="WEB" page-size="20"/ -->
 	
-	<QBE-MART_DIR dir="tmp/datamarts"/>
+	<!--   QBE-MART_DIR dir="tmp/datamarts"/ -->
 	
 	<QBE-ENABLE-SCRIPT enablescript="true" calculateFieldPosition="BEFORE_COLUMNS" /> 
 	<QBE-SCRIPT-DIR dir="tmp/groovy"/> 
-	
-	<!--   <QBE-ENABLE-SCRIPT enablescript="true" calculateFieldPosition="AFTER_COLUMNS" /> -->
-	<!--   <QBE-MSG-HELPER className="it.eng.qbe.utility.QbeSpagoBIMessageHelper"/> -->
 	
 	<QBE-MSG-HELPER className="it.eng.qbe.locale.QbeWebMessageHelper"/>
 	

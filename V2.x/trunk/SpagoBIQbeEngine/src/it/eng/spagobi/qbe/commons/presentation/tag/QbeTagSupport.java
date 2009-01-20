@@ -20,10 +20,10 @@
  **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
-import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.IQuery;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.spagobi.qbe.QbeEngineConfig;
 import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
@@ -160,7 +160,7 @@ public class QbeTagSupport extends BaseTagSupport {
 		}
 		
 		if(pageContext.getAttribute("isWebModality") == null) {
-			pageContext.setAttribute("isWebModality", QbeEngineConf.getInstance().isWebModalityActive() );
+			pageContext.setAttribute("isWebModality", QbeEngineConfig.getInstance().isWebModalityActive() );
 		}
 		return ((Boolean)pageContext.getAttribute("isWebModality")).booleanValue();
 	}
@@ -179,7 +179,7 @@ public class QbeTagSupport extends BaseTagSupport {
 		
 		if(pageContext.getAttribute("UrlGenerator") == null) {
 			IQbeUrlGenerator urlGenerator;
-			if ( QbeEngineConf.getInstance().isWebModalityActive() ) {
+			if ( QbeEngineConfig.getInstance().isWebModalityActive() ) {
 				urlGenerator = new WebQbeUrlGenerator();
 			} else {
 				urlGenerator = new PortletQbeUrlGenerator();

@@ -20,7 +20,6 @@
  **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
-import it.eng.qbe.conf.QbeEngineConf;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.RequestContainerPortletAccess;
@@ -28,6 +27,7 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.ResponseContainerAccess;
 import it.eng.spago.base.ResponseContainerPortletAccess;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spagobi.qbe.QbeEngineConfig;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -72,7 +72,7 @@ public class BaseTagSupport extends BodyTagSupport {
 		}
 		
 		if(pageContext.getAttribute("requestContainer") == null) {
-			if ( QbeEngineConf.getInstance().isWebModalityActive() ) {
+			if ( QbeEngineConfig.getInstance().isWebModalityActive() ) {
 				pageContext.setAttribute("requestContainer", RequestContainerAccess.getRequestContainer( getRequest() ) );
 			} else {
 				pageContext.setAttribute("requestContainer", RequestContainerPortletAccess.getRequestContainer( getRequest() ) );
@@ -92,7 +92,7 @@ public class BaseTagSupport extends BodyTagSupport {
 		}
 		
 		if(pageContext.getAttribute("responseContainer") == null) {
-			if ( QbeEngineConf.getInstance().isWebModalityActive() ) {
+			if ( QbeEngineConfig.getInstance().isWebModalityActive() ) {
 				pageContext.setAttribute("responseContainer", ResponseContainerAccess.getResponseContainer( getRequest() ) );
 			} else {
 				pageContext.setAttribute("responseContainer", ResponseContainerPortletAccess.getResponseContainer( getRequest() ) );

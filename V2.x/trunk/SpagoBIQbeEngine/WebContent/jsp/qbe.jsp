@@ -12,7 +12,7 @@
 
 <qbe:page>
 
-	<%@include file="../../commons/includeExtJS.jspf" %>
+	<%@include file="commons/includeExtJS.jspf" %>
    	
    	
 	<qbe:url type="resource" var="href" ref="../css/spagobi.css"/>
@@ -107,5 +107,3 @@
 	</qbe:page-content>
 
 </qbe:page>
- 
- 

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<PRESENTATION>
-	<MAPPING business_type="ACTION" business_name="EXECUTE_QUERY_AND_SAVE_FROM_SAVE_ACTION" publisher_name="SAVE_QUERY_PUBLISHER"/>
-	<MAPPING business_type="ACTION" business_name="PERSIST_QUERY_ACTION"  publisher_name="SAVE_QUERY_PUBLISHER"/>
-	
-	
-</PRESENTATION>
-

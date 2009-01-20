@@ -267,7 +267,8 @@ private void modDetailMap(SourceBean serviceRequest, String mod, SourceBean serv
 			//update map
 			DAOFactory.getSbiGeoMapsDAO().modifyMap(mapNew, content);			
 			//update features
-			List lstNewFeatures = loadUpdateMapFeatures(mapNew);			
+			List lstNewFeatures = loadUpdateMapFeatures(mapNew);
+			logger.debug("Loaded " +lstNewFeatures.size()+ " features form svg file." );
 			 // If in the new file svg there aren't more some feature, the user can choose if erase theme relations or not.
 			List lstFeaturesDel = new ArrayList();
 			

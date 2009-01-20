@@ -24,7 +24,6 @@ package it.eng.spagobi.mapcatalogue.bo.dao.hibernate;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.mapcatalogue.bo.GeoMap;
@@ -404,19 +403,23 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 	 * @throws Exception raised If there are some problems
 	 */ 
 	public List getFeaturesFromSVG(byte[] content) throws Exception {
+		logger.debug("IN");
 		// load a svg file
 		XMLInputFactory xmlIF =XMLInputFactory.newInstance();		   
 		xmlIF.setProperty(XMLInputFactory.IS_COALESCING , Boolean.TRUE);
 		
 		//create a temporary file for gets the features:
 		String tmpdir = System.getProperty("file.separator") + "temp";
+		logger.debug("** tmpdir: " + tmpdir);
 	    File dir = new File(tmpdir);
 	    dir.mkdirs();
+	    logger.debug("Temporary file created.");
 	    File tmpFile = File.createTempFile("svgfile", ".svg" , dir);
 	    OutputStream out = new FileOutputStream(tmpFile);
 	    try {
 	    	out.write(content);
 		} catch (Exception e) {
+			logger.error("Error: ",e );
 			e.printStackTrace();
 		}
 		    
@@ -430,21 +433,18 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 			//fisMap = new FileInputStream(pathMapFile);
 			fisMap = new FileInputStream(tmpFile);
 		} catch (FileNotFoundException e) {
-			TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.MAJOR, 
-					            "SbiGeoMapsDAOHibImpl :: getFeaturesFromSVG : " +
-					            "file svg not found, path " + tmpFile);
+			logger.error("file svg not found, path " + tmpFile);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notfound");
 		}
 		XMLStreamReader streamReader = null;
 		try {
 			streamReader = xmlIF.createXMLStreamReader(fisMap);
 		} catch (XMLStreamException e) {
-			TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.MAJOR, 
-		            			"SbiGeoMapsDAOHibImpl :: getFeaturesFromSVG : " +
-		            			"Cannot load the stream of the file svg, path " + tmpFile);
+			logger.error("Cannot load the stream of the file svg, path " + tmpFile);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notloaded");
 		}
 		if(streamReader==null) {
+			logger.debug("streamReader is null.");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notloaded");
 		}	
 	
@@ -503,6 +503,7 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 		if (tmpFile != null) tmpFile.delete();
 		if (dir != null) dir.delete();
 		
+		logger.debug("OUT");
 		return lstFeatures;
 	}
 	
@@ -545,9 +546,7 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 	    try {
 			fisMap = new FileInputStream(pathMapFile);
 		} catch (FileNotFoundException e) {
-			TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.MAJOR, 
-					            "SbiGeoMapsDAOHibImpl :: getFeaturesFromSVG : " +
-					            "file svg not found, path " + pathMapFile);
+			logger.error("file svg not found, path " + pathMapFile);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "error.mapfile.notfound");
 		}
 		fisMap.read(template);

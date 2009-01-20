@@ -31,6 +31,8 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.services.content.bo.Content"%>
 <%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
 <%@page import="it.eng.spagobi.services.common.EnginConf" %>
+<%@page import="org.apache.log4j.Logger" %>
+
 <html>
 <head>
   <title>Initial query creation</title>
@@ -46,6 +48,7 @@ LICENSE: see LICENSE.txt file
 <body bgcolor=white lang="en">
 
 <%
+Logger logger = Logger.getLogger(this.getClass());
 // retrieves the locale
 RequestContext context = RequestContext.instance();
 Locale locale = context.getLocale();
@@ -169,6 +172,13 @@ if (schemas == null) {
 				out.write("Connection not defined as data source in table SBI_DATA_SOURCE .");
 				return;
 			}
+			
+			// adjust reference
+			if (!catalogUri.startsWith("file://")) {
+				catalogUri = "file://" + catalogUri;
+				logger.debug("Reference changed to " + catalogUri);
+			}
+			
 			String resName = datasource.getJndi();
 			if (resName != null && !resName.equals("")) {
 				resName = resName.replace("java:comp/env/","");

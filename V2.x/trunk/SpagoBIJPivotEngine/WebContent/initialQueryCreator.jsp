@@ -33,6 +33,7 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.services.datasource.bo.SpagoBiDataSource"%>
 <%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
 <%@page import="it.eng.spagobi.services.common.EnginConf" %>
+<%@page import="org.apache.log4j.Logger"%>
 
 
 <html>
@@ -52,6 +53,7 @@ LICENSE: see LICENSE.txt file
 <input type="hidden" name="action" id="action" value="" />
 
 <%
+Logger logger = Logger.getLogger(this.getClass());
 //retrieves the locale
 RequestContext context = RequestContext.instance();
 Locale locale = context.getLocale();
@@ -253,6 +255,12 @@ if (selectedSchema != null) {
 			else {
 					// execute initial query
 					String resName =(ds.getJndi()==null)?"":ds.getJndi();
+					
+					// adjust reference
+					if (!catalogUri.startsWith("file://")) {
+						catalogUri = "file://" + catalogUri;
+						logger.debug("Reference changed to " + catalogUri);
+					}
 					if (!resName.equals("")) {
 					    resName = resName.replace("java:comp/env/","");
 			%>

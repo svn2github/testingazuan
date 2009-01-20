@@ -90,6 +90,7 @@ LICENSE: see LICENSE.txt file
 				if (ds != null)	nameConnection = ds.getLabel();
 				//nameConnection = analysis.getConnectionName();
 				reference = analysis.getCatalogUri();
+				logger.debug("Reference: " + reference);
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
@@ -135,12 +136,19 @@ LICENSE: see LICENSE.txt file
 			}
 			reference = EnginConf.getInstance().getResourcePath() + 
 						selectedSchemaNode.valueOf("@catalogUri").replace("/", System.getProperty("file.separator"));
+			logger.debug("Reference: " + reference);
 			parameters = document.selectNodes("//olap/MDXquery/parameter");
 			analysis = new AnalysisBean();
 			analysis.setConnectionName(nameConnection);
 			analysis.setCatalogUri(reference);
 			session.setAttribute("analysisBean",analysis);
 			
+		}
+		
+		// adjust reference
+		if (!reference.startsWith("file://")) {
+			reference = "file://" + reference;
+			logger.debug("Reference changed to " + reference);
 		}
 
 		// SUBSTITUTE QUERY PARAMETERS

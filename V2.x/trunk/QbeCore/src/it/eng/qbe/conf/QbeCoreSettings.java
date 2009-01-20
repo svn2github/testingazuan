@@ -35,10 +35,10 @@ import java.io.File;
  * 
  * @author Andrea Gioia
  */
-public class QbeConf {
+public class QbeCoreSettings {
 	
-	/** The data mart model retriever. */
-	private IDataMartModelRetriever dataMartModelRetriever = null;
+	private File qbeDataMartDir;
+	private IDataMartModelRetriever dataMartModelRetriever;
 	
 	/** The query persister. */
 	private IQueryPersister queryPersister = null;
@@ -52,44 +52,53 @@ public class QbeConf {
 	/** The free space lb limit. */
 	private Long freeSpaceLbLimit = null;
 	
-	/** The qbe data mart dir. */
-	private File qbeDataMartDir = null;
+	
+	
 	
 	/** The qbe temp dir. */
 	private File qbeTempDir = null;
 	
 	
 	
+	static private QbeCoreSettings instance = null;
 	
-	
-	/** The instance. */
-	static private QbeConf instance = null;
-	
-	/**
-	 * Gets the single instance of QbeConf.
-	 * 
-	 * @return single instance of QbeConf
-	 */
-	static public QbeConf getInstance() {
-		if(instance == null) instance = new QbeConf();
+
+	static public QbeCoreSettings getInstance() {
+		if(instance == null) instance = new QbeCoreSettings();
 		return instance;
 	}
 	
-	/**
-	 * Instantiates a new qbe conf.
-	 */
-	private QbeConf() {
-		
+	
+	private QbeCoreSettings() {	
+		setQbeDataMartDir( new File("resources/datamarts") );
+		setDataMartModelRetriever( new LocalFileSystemDataMartModelRetriever( getQbeDataMartDir() ) );
 	}
 	
-	/**
-	 * Gets the data mart model retriever.
-	 * 
-	 * @return the data mart model retriever
-	 * 
-	 * @throws Exception the exception
-	 */
+	
+
+	public File getQbeDataMartDir() {
+		/*
+		if(qbeDataMartDir == null) {
+			File baseDir = new File(ConfigSingleton.getInstance().getRootPath());
+			String qbeDataMartDirPath = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");																					
+			if( !FileUtils.isAbsolutePath(qbeDataMartDirPath) )  {
+				String baseDirStr = (baseDir != null)? baseDir.toString(): System.getProperty("user.home");
+				qbeDataMartDirPath = baseDir + System.getProperty("file.separator") + qbeDataMartDirPath;
+				qbeDataMartDir = new File(qbeDataMartDirPath);
+			}
+		}
+		*/
+		
+		return qbeDataMartDir;
+	}
+	
+	public void setQbeDataMartDir(File qbeDataMartDir) {
+		this.qbeDataMartDir = qbeDataMartDir;
+	}
+	
+	
 	public IDataMartModelRetriever getDataMartModelRetriever() throws Exception {		
+		/*
 		if(dataMartModelRetriever == null) {
 			String dataMartModelRetrieverClassName = (String)ConfigSingleton.getInstance().getAttribute("QBE.DATA-MART-MODEL-RETRIEVER.className");
 			dataMartModelRetriever = (IDataMartModelRetriever)Class.forName(dataMartModelRetrieverClassName).newInstance();
@@ -98,17 +107,21 @@ public class QbeConf {
 				localFileSystemDataMartModelRetriever.setContextDir(getQbeDataMartDir());
 			}
 		}
+		*/
 		return dataMartModelRetriever;
 	}
 	
-	/**
-	 * Sets the data mart model retriever.
-	 * 
-	 * @param dataMartModelRetriever the new data mart model retriever
-	 */
+	
 	public void setDataMartModelRetriever(IDataMartModelRetriever dataMartModelRetriever) {
 		this.dataMartModelRetriever = dataMartModelRetriever;
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	/**
@@ -212,33 +225,7 @@ public class QbeConf {
 	}
 
 
-	/**
-	 * Gets the qbe data mart dir.
-	 * 
-	 * @return the qbe data mart dir
-	 */
-	public File getQbeDataMartDir() {
-		if(qbeDataMartDir == null) {
-			File baseDir = new File(ConfigSingleton.getInstance().getRootPath());
-			String qbeDataMartDirPath = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");																					
-			if( !FileUtils.isAbsolutePath(qbeDataMartDirPath) )  {
-				String baseDirStr = (baseDir != null)? baseDir.toString(): System.getProperty("user.home");
-				qbeDataMartDirPath = baseDir + System.getProperty("file.separator") + qbeDataMartDirPath;
-				qbeDataMartDir = new File(qbeDataMartDirPath);
-			}
-		}
-		
-		return qbeDataMartDir;
-	}
-
-	/**
-	 * Sets the qbe data mart dir.
-	 * 
-	 * @param qbeDataMartDir the new qbe data mart dir
-	 */
-	public void setQbeDataMartDir(File qbeDataMartDir) {
-		this.qbeDataMartDir = qbeDataMartDir;
-	}
+	
 	
 
 

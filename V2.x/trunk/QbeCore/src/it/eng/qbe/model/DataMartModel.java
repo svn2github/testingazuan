@@ -22,7 +22,7 @@ package it.eng.qbe.model;
 
 import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.bo.Formula;
-import it.eng.qbe.conf.QbeConf;
+import it.eng.qbe.conf.QbeCoreSettings;
 import it.eng.qbe.datasource.BasicHibernateDataSource;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.IHibernateDataSource;
@@ -184,11 +184,11 @@ public class DataMartModel implements IDataMartModel {
 					UUID uuidObj = uuidGenerator.generateTimeBasedUUID();
 					String uuidGeneration = uuidObj.toString();
 						
-					File tmpDir = QbeConf.getInstance().getQbeTempDir();
+					File tmpDir = QbeCoreSettings.getInstance().getQbeTempDir();
 						
 					thisTmpDir = new File(tmpDir, uuidGeneration);
 						
-					String viewTemplateFileName =  QbeConf.getInstance().getQbeDataMartDir() 
+					String viewTemplateFileName =  QbeCoreSettings.getInstance().getQbeDataMartDir() 
 													+ System.getProperty("file.separator") + getName() 
 													+ System.getProperty("file.separator") + "view.template";
 					
@@ -238,7 +238,7 @@ public class DataMartModel implements IDataMartModel {
 					
 					
 										
-					String destJarFileDirName = QbeConf.getInstance().getQbeDataMartDir()  
+					String destJarFileDirName = QbeCoreSettings.getInstance().getQbeDataMartDir()  
 												+ System.getProperty("file.separator") 
 												+ getName();
 					
@@ -459,11 +459,11 @@ public class DataMartModel implements IDataMartModel {
 	 */
 	private boolean checkSpace(Connection aSqlConnection){
 		
-		if (QbeConf.getInstance().isSpaceCheckerEnabled()){
+		if (QbeCoreSettings.getInstance().isSpaceCheckerEnabled()){
 			try{
-				IDBSpaceChecker spaceChecker = QbeConf.getInstance().getDbSpaceChecker();
+				IDBSpaceChecker spaceChecker = QbeCoreSettings.getInstance().getDbSpaceChecker();
 				int freeSpace = spaceChecker.getPercentageOfFreeSpace(aSqlConnection);
-				if (freeSpace < QbeConf.getInstance().getFreeSpaceLbLimit())
+				if (freeSpace < QbeCoreSettings.getInstance().getFreeSpaceLbLimit())
 					return false;
 				else
 					return true;
@@ -486,7 +486,7 @@ public class DataMartModel implements IDataMartModel {
 	 */
 	public void persistQueryAction(ISingleDataMartWizardObject wizObj){
 		try{
-			QbeConf.getInstance().getQueryPersister().persist(this, wizObj);
+			QbeCoreSettings.getInstance().getQueryPersister().persist(this, wizObj);
 		}catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
 		}
@@ -500,7 +500,7 @@ public class DataMartModel implements IDataMartModel {
 	public List getQueries(){
 		List l = new ArrayList();
 		try{
-			l = QbeConf.getInstance().getQueryPersister().loadAllQueries(this);
+			l = QbeCoreSettings.getInstance().getQueryPersister().loadAllQueries(this);
 		}catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
 		}
@@ -517,7 +517,7 @@ public class DataMartModel implements IDataMartModel {
 	public List getPrivateQueriesFor(String userIdentifier) {
 		List l = new ArrayList();
 		try{
-			IQueryPersister queryPersister = QbeConf.getInstance().getQueryPersister();
+			IQueryPersister queryPersister = QbeCoreSettings.getInstance().getQueryPersister();
 			if(queryPersister instanceof LocalFileSystemQueryPersister) {
 				LocalFileSystemQueryPersister localFileSystemQueryPersister = (LocalFileSystemQueryPersister)queryPersister;
 				l = localFileSystemQueryPersister.getPrivateQueriesFor(this, userIdentifier);
@@ -538,7 +538,7 @@ public class DataMartModel implements IDataMartModel {
 	public ISingleDataMartWizardObject getQuery(String queryId){
 		ISingleDataMartWizardObject  query= null;
 		try{
-			query = QbeConf.getInstance().getQueryPersister().load(this, queryId);
+			query = QbeCoreSettings.getInstance().getQueryPersister().load(this, queryId);
 		}catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
 		}

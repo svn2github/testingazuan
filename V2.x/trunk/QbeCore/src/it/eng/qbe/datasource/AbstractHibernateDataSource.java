@@ -21,7 +21,7 @@
 package it.eng.qbe.datasource;
 
 import it.eng.qbe.bo.Formula;
-import it.eng.qbe.conf.QbeConf;
+import it.eng.qbe.conf.QbeCoreSettings;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.spago.base.ApplicationContainer;
@@ -122,7 +122,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 		File datamartJarFile = null;
 		
 		try{
-			IDataMartModelRetriever dataMartModelRetriever = QbeConf.getInstance().getDataMartModelRetriever();
+			IDataMartModelRetriever dataMartModelRetriever = QbeCoreSettings.getInstance().getDataMartModelRetriever();
 			datamartJarFile = dataMartModelRetriever.getDatamartJarFile(datamartName);
 		}catch (Exception e) {
 			logger.error(DataMartModel.class, e);
@@ -142,7 +142,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 		List viewNames = null;
 		IDataMartModelRetriever dataMartModelRetriever;
 		try {
-			dataMartModelRetriever = QbeConf.getInstance().getDataMartModelRetriever();
+			dataMartModelRetriever = QbeCoreSettings.getInstance().getDataMartModelRetriever();
 			viewNames = dataMartModelRetriever.getViewNames(datamartName);
 		} catch (Exception e) {
 			logger.error(DataMartModel.class, e);
@@ -163,7 +163,7 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 		File viewJarFile = null;
 		
 		try{
-			IDataMartModelRetriever dataMartModelRetriever = QbeConf.getInstance().getDataMartModelRetriever();
+			IDataMartModelRetriever dataMartModelRetriever = QbeCoreSettings.getInstance().getDataMartModelRetriever();
 			viewJarFile =  dataMartModelRetriever.getViewJarFile(datamartName, viewName);
 		}catch (Exception e) {
 			logger.error(DataMartModel.class, e);

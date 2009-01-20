@@ -20,7 +20,7 @@
  **/
 package it.eng.qbe.dao;
 
-import it.eng.qbe.conf.QbeConf;
+import it.eng.qbe.conf.QbeCoreSettings;
 
 import java.io.File;
 
@@ -38,7 +38,7 @@ public class DAOFactory {
 	 * @return the formula dao
 	 */
 	public static FormulaDAO getFormulaDAO() {
-		File datamartsDir = QbeConf.getInstance().getQbeDataMartDir();
+		File datamartsDir = QbeCoreSettings.getInstance().getQbeDataMartDir();
 		return new FormulaDAOFilesystemImpl(datamartsDir);
 	}
 	
@@ -48,7 +48,7 @@ public class DAOFactory {
 	 * @return the datamart jar file dao
 	 */
 	public static DatamartJarFileDAO getDatamartJarFileDAO() {
-		File datamartsDir = QbeConf.getInstance().getQbeDataMartDir();
+		File datamartsDir = QbeCoreSettings.getInstance().getQbeDataMartDir();
 		return new DatamartJarFileDAOFilesystemImpl(datamartsDir);
 	}
 	
@@ -58,7 +58,7 @@ public class DAOFactory {
 	 * @return the view jar file dao
 	 */
 	public static ViewJarFileDAO getViewJarFileDAO() {
-		File datamartsDir = QbeConf.getInstance().getQbeDataMartDir();
+		File datamartsDir = QbeCoreSettings.getInstance().getQbeDataMartDir();
 		return new ViewJarFileDAOFilesystemImpl(datamartsDir);
 	}
 	

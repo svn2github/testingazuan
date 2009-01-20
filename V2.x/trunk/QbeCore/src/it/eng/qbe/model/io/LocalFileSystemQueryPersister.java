@@ -20,7 +20,7 @@
  **/
 package it.eng.qbe.model.io;
 
-import it.eng.qbe.conf.QbeConf;
+import it.eng.qbe.conf.QbeCoreSettings;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.utility.FileUtils;
@@ -229,7 +229,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
      */
     public List loadAllQueries(DataMartModel dm) {
     	String dmName = dm.getName();
-    	File qbeDataMartDir = QbeConf.getInstance().getQbeDataMartDir();
+    	File qbeDataMartDir = QbeCoreSettings.getInstance().getQbeDataMartDir();
     	File publicTargetDir = new File(qbeDataMartDir, dmName);
     	return loadFirstLevelQuery(publicTargetDir.getAbsolutePath());
     }
@@ -244,7 +244,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
      */
     public List getPrivateQueriesFor(DataMartModel dm, String userID) {
     	String dmName = dm.getName();
-    	File qbeDataMartDir = QbeConf.getInstance().getQbeDataMartDir();
+    	File qbeDataMartDir = QbeCoreSettings.getInstance().getQbeDataMartDir();
     	File publicTargetDir = new File(qbeDataMartDir, dmName);
     	File privateTargetDir = new File(publicTargetDir, userID);
     

@@ -49,6 +49,7 @@
     <!-- deletes any previuos sbi.security.exo -->
     <delete>
       <fileset dir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" includes="**/sbi.security.exo*.jar"/>
+      <fileset dir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" includes="**/sbi.security.xml*.jar"/>
     </delete>
     <!-- copies the newly created jar file -->
     <copy file="../../../SpagoBIExoSecurityProvider/dist/SpagoBIExoSecurityProvider/sbi.security.exo-${project.version}.jar" 

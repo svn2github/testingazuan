@@ -409,7 +409,15 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 		xmlIF.setProperty(XMLInputFactory.IS_COALESCING , Boolean.TRUE);
 		
 		//create a temporary file for gets the features:
-		String tmpdir = ConfigSingleton.getRootPath() + System.getProperty("file.separator") + "temp";
+		//String tmpdir = ConfigSingleton.getRootPath() + System.getProperty("file.separator") + "temp";
+	    //create a temporary file for gets the features:
+	    String javaIoTmpDir = System.getProperty("java.io.tmpdir");
+	    String tmpdir = null;
+	    if (javaIoTmpDir.endsWith(System.getProperty("file.separator"))) {
+	     tmpdir = javaIoTmpDir + "temp";
+	    } else {
+	     tmpdir = javaIoTmpDir + System.getProperty("file.separator") + "temp";
+	    }
 		logger.debug("** tmpdir: " + tmpdir);
 	    File dir = new File(tmpdir);
 	    dir.mkdirs();

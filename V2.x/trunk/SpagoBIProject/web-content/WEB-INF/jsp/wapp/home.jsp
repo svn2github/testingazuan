@@ -163,8 +163,10 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 	</div>
 
 	<% //if(user==true){%>
-	<div id="trackPath"></div>
+	<div id="trackPath" style="font:normal 11px tahoma,arial,sans-serif; font-weight: bold;width:100%;background:#EEEFFF;"></div>
 	<%//} %>
+	
+	
 	
 	<% if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){ %>
 	<div id="content" style="margin:2;">

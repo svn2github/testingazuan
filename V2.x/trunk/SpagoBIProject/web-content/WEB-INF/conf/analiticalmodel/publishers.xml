@@ -10,7 +10,7 @@
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/WEB-INF/WEB-INF/jsp/analiticalmodel/execution/SaveObject.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/analiticalmodel/execution/SaveObject.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>
@@ -18,13 +18,13 @@
   	<PUBLISHER name="ReportsLookupPublisher">
     	<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM mode="VIEW" resource="/WEB-INF/WEB-INF/jsp/analiticalmodel/document/listLookupReports.jsp"/>
-        		<ITEM mode="EDIT" resource="/WEB-INF/WEB-INF/jsp/commons/edit.jsp"/>
+        		<ITEM mode="VIEW" resource="/WEB-INF/jsp/analiticalmodel/document/listLookupReports.jsp"/>
+        		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp"/>
       		</RESOURCES>
     	</RENDERING>
     	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
       		<RESOURCES>
-        		<ITEM prog="0" resource="/WEB-INF/WEB-INF/jsp/analiticalmodel/document/listLookupReports.jsp"/>
+        		<ITEM prog="0" resource="/WEB-INF/jsp/analiticalmodel/document/listLookupReports.jsp"/>
       		</RESOURCES>
     	</RENDERING>
   	</PUBLISHER>

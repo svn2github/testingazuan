@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 
 package it.eng.spagobi.commons.presentation.tags;
 
@@ -32,24 +32,21 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spago.validation.EMFValidationError;
-import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
-import it.eng.spagobi.commons.utilities.urls.WebUrlBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,7 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.portlet.PortletURL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -76,7 +72,7 @@ import org.safehaus.uuid.UUIDGenerator;
 public class ListTag extends TagSupport
 {
 	static private Logger logger = Logger.getLogger(ListTag.class);
-	
+
 	protected String _actionName = null;
 	protected String _moduleName = null;
 	protected String _bundle = null;
@@ -91,42 +87,43 @@ public class ListTag extends TagSupport
 	protected EMFErrorHandler _errorHandler = null;
 	protected StringBuffer _htmlStream = null;
 	protected Vector _columns = null;
-    protected String labelLinkSaltoPagina;
-    protected String _filter = null;
-    //the navigation's variables
-    protected String _prevUrl = null;
-    protected String _nextUrl = null;
-    protected String _firstUrl = null;
-    protected String _lastUrl = null;
-    protected String _refreshUrl = null;
-    protected IEngUserProfile profile = null;
-    
-    protected HttpServletRequest httpRequest = null;
-    protected IUrlBuilder urlBuilder = null;
-    protected IMessageBuilder msgBuilder = null;
-    
-    // the _providerUrlMap contains all the parameters for the navigation buttons ("next", "previous", "filter" and "all" buttons)
-    private HashMap _providerUrlMap = new HashMap();
-    // the _paramsMap contains all the ADDITIONAL parameters set by the action or module for the navigation buttons ("next", "previous", "filter" and "all" buttons)
-    protected HashMap _paramsMap = new HashMap();
-    
-    final static int END_RANGE_PAGES = 6;    
-    final static String[] EXCEPTION_MODULES ={"JobManagementPage", "TriggerManagementPage"};
-    final static String[] EXCEPTION_ATTRIBUTES ={"JOBNAME","JOBGROUPNAME"};
+	protected Vector _titleButton = null;	
+	protected String labelLinkSaltoPagina;
+	protected String _filter = null;
+	//the navigation's variables
+	protected String _prevUrl = null;
+	protected String _nextUrl = null;
+	protected String _firstUrl = null;
+	protected String _lastUrl = null;
+	protected String _refreshUrl = null;
+	protected IEngUserProfile profile = null;
 
-    protected String requestIdentity = null;
-    
-    private String rowColor="#F5F6BE";
-    
-    /**
-     * Constructor.
-     */
-    public ListTag()
-    {
-    	labelLinkSaltoPagina = "Vai alla Pagina";	
-    }
+	protected HttpServletRequest httpRequest = null;
+	protected IUrlBuilder urlBuilder = null;
+	protected IMessageBuilder msgBuilder = null;
 
-       
+	// the _providerUrlMap contains all the parameters for the navigation buttons ("next", "previous", "filter" and "all" buttons)
+	private HashMap _providerUrlMap = new HashMap();
+	// the _paramsMap contains all the ADDITIONAL parameters set by the action or module for the navigation buttons ("next", "previous", "filter" and "all" buttons)
+	protected HashMap _paramsMap = new HashMap();
+
+	final static int END_RANGE_PAGES = 6;    
+	final static String[] EXCEPTION_MODULES ={"JobManagementPage", "TriggerManagementPage"};
+	final static String[] EXCEPTION_ATTRIBUTES ={"JOBNAME","JOBGROUPNAME"};
+
+	protected String requestIdentity = null;
+
+	private String rowColor="#F5F6BE";
+
+	/**
+	 * Constructor.
+	 */
+	public ListTag()
+	{
+		labelLinkSaltoPagina = "Vai alla Pagina";	
+	}
+
+
 	/* (non-Javadoc)
 	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
 	 */
@@ -140,18 +137,18 @@ public class ListTag extends TagSupport
 		_errorHandler = _responseContainer.getErrorHandler();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
-		
+
 		if (_bundle == null)
 			_bundle = "messages";
-		
+
 		profile = (IEngUserProfile) _requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		
+
 		// identity string for object of the page
-	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-	    UUID uuid = uuidGen.generateTimeBasedUUID();
-	    requestIdentity = uuid.toString();
-	    requestIdentity = requestIdentity.replaceAll("-", "");
-		
+		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		UUID uuid = uuidGen.generateTimeBasedUUID();
+		requestIdentity = uuid.toString();
+		requestIdentity = requestIdentity.replaceAll("-", "");
+
 		ConfigSingleton configure = ConfigSingleton.getInstance();
 		if (_actionName != null) {
 			_serviceName = _actionName;
@@ -169,8 +166,8 @@ public class ListTag extends TagSupport
 				_paramsMap = params;
 				_providerUrlMap.putAll(_paramsMap);
 			}
-			
-			
+
+
 		} // if (_actionName != null)
 		else if (_moduleName != null) {
 			_serviceName = _moduleName;
@@ -188,8 +185,8 @@ public class ListTag extends TagSupport
 			_providerURL = "PAGE=" + pageName + "&MODULE=" + _moduleName + "&";
 			_providerUrlMap.put("PAGE", pageName);
 			_providerUrlMap.put("MODULE", _moduleName);
-			
-			
+
+
 			//checks for exception module (ie. for job and trigger must added the parameter MESSAGEDET into url
 			for (int i = 0; i < EXCEPTION_MODULES.length; i++){
 				if (pageName.equalsIgnoreCase(EXCEPTION_MODULES[i])){
@@ -202,7 +199,7 @@ public class ListTag extends TagSupport
 				_paramsMap = params;
 				_providerUrlMap.putAll(_paramsMap);
 			}
-			
+
 		} // if (_moduleName != null)
 		else {
 			logger.error("service name not specified");
@@ -237,22 +234,22 @@ public class ListTag extends TagSupport
 		return SKIP_BODY;
 	} // public int doStartTag() throws JspException
 
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Creates a form into the jsp page.
 	 * 
 	 * @throws JspException If any exception occurs.
 	 */
-	
+
 	protected void makeForm() throws JspException {
-		
+
 		String titleCode = (String) _layout.getAttribute("TITLE");
 		SourceBean buttonsSB = (SourceBean) _layout.getAttribute("BUTTONS");
 		List buttons = buttonsSB.getContainedSourceBeanAttributes();
-		
+
 		if (titleCode != null && buttons.size() > 0) {
 			String title = msgBuilder.getMessage(titleCode, _bundle, httpRequest);
 			_htmlStream.append(" <table class=\"header-table-portlet-section\">\n");
@@ -269,31 +266,46 @@ public class ListTag extends TagSupport
 		makeRows();
 		makeFooterList();
 		//makeNavigationButton();
-		
+
 	} // public void makeForm()
 
 	protected void defineColumns() throws JspException{
 		_columns = new Vector();
+		_titleButton=new Vector();
 		List columnsVector = _layout.getAttributeAsList("COLUMNS.COLUMN");
 		for (int i = 0; i < columnsVector.size(); i++) {
 			String hidden = (String)((SourceBean) columnsVector.get(i)).getAttribute("HIDDEN");
-			if (hidden == null || hidden.trim().equalsIgnoreCase("FALSE"))
-				_columns.add((SourceBean) columnsVector.get(i));
+			if (hidden == null || hidden.trim().equalsIgnoreCase("FALSE")){
+				SourceBean sb=(SourceBean) columnsVector.get(i);
+				_columns.add(sb);
+
+				// check if there are columsn buttons	
+				SourceBean sbButton = (SourceBean) sb.getAttribute("BUTTONS");
+				if(sbButton!=null){
+					List buttons = sbButton.getContainedSourceBeanAttributes();
+					_titleButton.add(buttons);	
+					//makeTitleButton(buttons);
+				}
+				else{
+					_titleButton.add(new ArrayList());
+				}
+			}
+
 		}
 		if ((_columns == null) || (_columns.size() == 0)) {
 			logger.error("Columns names not defined");
 			throw new JspException("Columns names not defined");
 		} 
 	}
-	
+
 	/**
 	 * Builds Table list columns, reading all request information.
 	 * 
 	 * @throws JspException If any Exception occurs.
 	 */
-	
+
 	protected void makeColumns() throws JspException {
-		
+
 		SourceBean captionSB = (SourceBean) _layout.getAttribute("CAPTIONS");
 		List captions = captionSB.getContainedSourceBeanAttributes();
 		int numCaps = captions.size();
@@ -301,8 +313,8 @@ public class ListTag extends TagSupport
 		String typeFilter= (String)_serviceRequest.getAttribute("typeFilter");
 		String typeValueFilter = (String)_serviceRequest.getAttribute("typeValueFilter");
 		String valueFilter = (String)_serviceRequest.getAttribute("valueFilter");
-		
-		
+
+
 		_htmlStream.append("<TABLE class='list' style='width:100%;margin-top:1px'>\n");
 		_htmlStream.append("	<TR>\n");
 
@@ -316,7 +328,7 @@ public class ListTag extends TagSupport
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
 			if (align == null || align.trim().equals("")) align = "left";
 			//defines order url for dynamic ordering
-			
+
 			HashMap orderParamsMap = new HashMap();
 			orderParamsMap.putAll(_providerUrlMap);			
 			orderParamsMap.put("FIELD_ORDER", nameColumn);
@@ -331,43 +343,51 @@ public class ListTag extends TagSupport
 			orderParamsMap.remove("TYPE_ORDER");
 			orderParamsMap.put("TYPE_ORDER"," DESC");
 
+			List _makeTitleButton=(List)_titleButton.elementAt(i);
 
-				//orderParamsMap.put("MESSAGEDET",SpagoBIConstants.MESSAGE_ORDER_JOB_LIST);
-			
+			//orderParamsMap.put("MESSAGEDET",SpagoBIConstants.MESSAGE_ORDER_JOB_LIST);
+
 			String orderUrlDesc = createUrl(orderParamsMap);
 			_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" );			
-		    _htmlStream.append(   labelColumn);						
-			 if (!nameColumn.equalsIgnoreCase("INSTANCES")){
+			_htmlStream.append(   labelColumn);						
+			if (!nameColumn.equalsIgnoreCase("INSTANCES")){
 				_htmlStream.append("	<A href=\""+orderUrlAsc+"\">\n");
 				_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowUp.gif")+"'/>\n");
 				_htmlStream.append("	</A>\n");
 				_htmlStream.append("	<A href=\""+orderUrlDesc+"\">\n");
 				_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowDown.gif")+"'/>\n");
 				_htmlStream.append("	</A>\n");
-			 }
-			 _htmlStream.append("</TD>\n");
+			}
+
+			if(_makeTitleButton.size()>0){
+
+				_htmlStream.append(				makeTitleButton(_makeTitleButton) + "\n");
+
+			}
+
+			_htmlStream.append("</TD>\n");
 		} 
 		for(int i=0; i<numCaps; i++) {
 			_htmlStream.append("<TD class='portlet-section-header' style='text-align:center'>&nbsp;</TD>\n");
 		} 
 		_htmlStream.append("</TR>\n");
 	} 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Builds Table list rows, reading all query information.
 	 * 
 	 * @throws JspException If any Exception occurs.
 	 */
-	
-	
+
+
 	protected void makeRows() throws JspException 
 	{
 		List rows = _content.getAttributeAsList("PAGED_LIST.ROWS.ROW");
-		
+
 		//gets the eventual map for the checklist
 		Map subreportMap = new HashMap();
 		for(int i = 0; i < rows.size(); i++) {
@@ -375,11 +395,11 @@ public class ListTag extends TagSupport
 			Integer id = (Integer)subreport.getAttribute("SUBREPORT_ID");
 			if(id!=null) {
 				logger.debug("ListTag::makeRows:request: SUBREPORT_ID = " + id);
-			    subreportMap.put(id.toString(), id);
+				subreportMap.put(id.toString(), id);
 			}
-			    
+
 		}
-	    
+
 		// js function for item action confirm
 		_htmlStream.append(" <script>\n");
 		_htmlStream.append("	function actionConfirm(message, url, functionToEval){\n");
@@ -389,7 +409,7 @@ public class ListTag extends TagSupport
 		_htmlStream.append("		}\n");
 		_htmlStream.append("	}\n");
 		_htmlStream.append(" </script>\n");
-		
+
 
 		int prog=0;
 
@@ -397,11 +417,11 @@ public class ListTag extends TagSupport
 		{
 			prog++ ;
 			SourceBean row = (SourceBean) rows.get(i);
-            
 
-  
-           
-            _htmlStream.append(" <tr onMouseOver=\"this.bgColor='"+rowColor+"';\" onMouseOut=\"this.bgColor='#FFFFFF';\">\n");
+
+
+
+			_htmlStream.append(" <tr onMouseOver=\"this.bgColor='"+rowColor+"';\" onMouseOut=\"this.bgColor='#FFFFFF';\">\n");
 			for (int j = 0; j < _columns.size(); j++) {
 				String nameColumn = (String) ((SourceBean) _columns.elementAt(j)).getAttribute("NAME");
 				Object fieldObject = row.getAttribute(nameColumn);
@@ -415,24 +435,24 @@ public class ListTag extends TagSupport
 				if (align == null || align.trim().equals("")) align = "left";
 				_htmlStream.append(" <td>" + field + "</td>\n");
 			} 
-			
+
 			SourceBean captionsSB = (SourceBean) _layout.getAttribute("CAPTIONS");
 			List captions = captionsSB.getContainedSourceBeanAttributes();
 			Iterator iter = captions.iterator();
-			
+
 			while (iter.hasNext()) {
-				
+
 				SourceBeanAttribute captionSBA = (SourceBeanAttribute)iter.next();
 				SourceBean captionSB = (SourceBean)captionSBA.getValue();
 				String captionName = captionSB.getName();
 				SourceBean conditionsSB = (SourceBean) captionSB.getAttribute("CONDITIONS");
 				boolean conditionsVerified = verifyConditions(conditionsSB, row);
-				
+
 				//verifies if it's a checklist
 				String checklist = (String)captionSB.getAttribute("checkList");
 				boolean isChecklist = false ;
 				if (checklist!=null && checklist.equalsIgnoreCase("true")) isChecklist=true;
-				
+
 				//gets the parameters for the pop up window
 				String popupStr = (String)captionSB.getAttribute("popup");
 				String popupWidth = (String)captionSB.getAttribute("popupW");
@@ -440,21 +460,21 @@ public class ListTag extends TagSupport
 				String popupCloseRefresh = (String)captionSB.getAttribute("popupCandR");
 				String popupSaveStr = (String)captionSB.getAttribute("popupSave");
 				String popupSaveFunction = (String)captionSB.getAttribute("popupSaveFunc");
-				
+
 				boolean popup=false;
 				boolean popupSave = false;
 				boolean closeRefresh = false;
 				if (popupStr!=null && popupStr.equalsIgnoreCase("true")) popup=true;
 				if (popupSaveStr!=null && popupSaveStr.equalsIgnoreCase("true")) popupSave=true;
 				if (popupCloseRefresh!=null && popupCloseRefresh.equalsIgnoreCase("true")) closeRefresh=true;
-				
+
 				if ( !conditionsVerified) {
 					// if conditions are not verified puts an empty column
 					_htmlStream.append(" <td width='40px'  >&nbsp;</td>\n");
 					continue;
 				}
-				
-				
+
+
 				// onclick function
 				SourceBean onClickSB = (SourceBean) captionSB.getAttribute("ONCLICK");
 				String onClickFunction = readOnClickFunction(onClickSB, row);
@@ -466,31 +486,31 @@ public class ListTag extends TagSupport
 					_htmlStream.append("	}\n");
 					_htmlStream.append("	</script>\n");
 				}
-				
-				
+
+
 				List parameters = captionSB.getAttributeAsList("PARAMETER");
 				if (parameters == null || parameters.size() == 0) {
 					// creates a checklist
 					if (isChecklist){
-						
+
 						// gets the value of the current row and puts it as id of the input type checkbox
 						SourceBean rowVal = (SourceBean) captionSB.getAttribute("ROWVALUE");
 						String rowValue = readOnClickFunction(rowVal, row);
-						
+
 						_htmlStream.append(" <td width='20'>\n");
 
 						if (onClickFunctionName != null) {								
 							_htmlStream.append("<input onclick='" + onClickFunctionName + "()' type='checkbox' id='" + rowValue + "' name='checkbox:" + rowValue + "'>");
 						}else{
-								_htmlStream.append("<input type='checkbox'  id='" + rowValue + "' name='checkbox:" + rowValue + "' >");	
+							_htmlStream.append("<input type='checkbox'  id='" + rowValue + "' name='checkbox:" + rowValue + "' >");	
 						}
-						
+
 						_htmlStream.append(" </td>\n");
-						
+
 						// sets the js function that controls if the actual row has already been checked and if yes checks it
 						SourceBean clicked = (SourceBean) captionSB.getAttribute("CLICKED");
 						String clickedFunction = readOnClickFunction(clicked, row);
-						
+
 						if (clickedFunction != null) {
 							_htmlStream.append("	<script type='text/javascript'>\n");
 							//_htmlStream.append("	function check" + rowValue + "() {\n");
@@ -499,19 +519,19 @@ public class ListTag extends TagSupport
 							//_htmlStream.append("	check" + rowValue + "() ;\n");
 							_htmlStream.append("	</script>\n");
 						}
-					
+
 					}else{
-					// if there are no parameters puts an empty column
-					 String img = (String)captionSB.getAttribute("image");
-					 String labelCode = (String)captionSB.getAttribute("label");
-					 String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);					 
-					 _htmlStream.append(" <td width='40px'>\n");
-					 _htmlStream.append(" 	<a name='"+label+"' " + (onClickFunctionName != null ? " href='javascript:void(0);' onclick='" + onClickFunctionName + "()' " : "") + " >\n");
-					_htmlStream.append(" 		<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
-					_htmlStream.append(" 	</a>\n");
-					_htmlStream.append(" </td>\n");
+						// if there are no parameters puts an empty column
+						String img = (String)captionSB.getAttribute("image");
+						String labelCode = (String)captionSB.getAttribute("label");
+						String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);					 
+						_htmlStream.append(" <td width='40px'>\n");
+						_htmlStream.append(" 	<a name='"+label+"' " + (onClickFunctionName != null ? " href='javascript:void(0);' onclick='" + onClickFunctionName + "()' " : "") + " >\n");
+						_htmlStream.append(" 		<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
+						_htmlStream.append(" 	</a>\n");
+						_htmlStream.append(" </td>\n");
 					}
-					
+
 				} else {
 					HashMap paramsMap = getParametersMap(parameters, row);
 					String img = (String)captionSB.getAttribute("image");
@@ -522,7 +542,7 @@ public class ListTag extends TagSupport
 					if (!paramsMap.isEmpty()){
 						buttonUrl = createUrl(paramsMap);
 					}
-					
+
 					boolean confirm = false;
 					// If caption's 'confirm' attribute is true, then all rows will have the confirmation alert
 					// with message code that is specified in the 'label' attribute of the caption tag);
@@ -547,147 +567,147 @@ public class ListTag extends TagSupport
 						}
 					}
 
-					
-		if (confirm && buttonUrl!=null){
-						
+
+					if (confirm && buttonUrl!=null){
+
 						if (onClickFunctionName != null) {
 							_htmlStream.append("     <a href='javascript:actionConfirm(\"" + msg + "\", \"" + buttonUrl+ "\", '" + onClickFunctionName + "()');'>\n");
 						} else 			
 							if (popup){
-							
-							_htmlStream.append("     <a id='linkDetail_"+captionName+"_"+prog+"' >\n");
-							    // insert javascript for open popup
-							    _htmlStream.append(" <script>\n");
-							    _htmlStream.append("Ext.get('linkDetail_"+captionName+"_"+prog+"').on('click', function(){ \n");
-							    _htmlStream.append("  if (confirm(\"" + msg + "\") and win"+captionName+"_"+prog+" == null ) {\n");
-							    _htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
-							    _htmlStream.append("   win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',\n");
-							    _htmlStream.append("            bodyCfg:{");
-							    _htmlStream.append("                tag:'div'");
-							    _htmlStream.append("                ,cls:'x-panel-body'");
-							    _htmlStream.append("               ,children:[{");
-							    _htmlStream.append("                    tag:'iframe',");
-							    _htmlStream.append("                    name: 'dynamicIframe"+captionName+"_"+prog+"',");
-							    _htmlStream.append("                    id  : 'dynamicIframe"+captionName+"_"+prog+"',");
-							    _htmlStream.append("                    src: '" +createUrl_popup(paramsMap)+ "',");
-							    _htmlStream.append("                    frameBorder:0,");
-							    _htmlStream.append("                    width:'100%',");
-							    _htmlStream.append("                    height:'100%',");
-							    _htmlStream.append("                    style: {overflow:'auto'}   ");        
-							    _htmlStream.append("               }]");
-							    _htmlStream.append("            },");
-							    _htmlStream.append("            modal: true,\n");
-							    _htmlStream.append("            layout:'fit',\n");
-								    if (popupHeight!=null) {  _htmlStream.append("           height:"+popupHeight+",\n");}
-								    else {  _htmlStream.append("            height:200,\n");}
-								    if (popupWidth!=null) {  _htmlStream.append("            width:"+popupWidth+",\n");}
-								    else {  _htmlStream.append("            width:500,\n");}
-						        _htmlStream.append("            closeAction:'hide',\n");
-						        if(closeRefresh==true){ _htmlStream.append("            closable : false ,\n");}
-						        
-						        _htmlStream.append("            scripts: true, \n");
-						        
-						        if(closeRefresh==true || popupSave==true) {
-							        _htmlStream.append("            buttons: [ \n");
-							        if(popupSave==true){
-							        _htmlStream.append("          { text: 'Save', \n");
-							      	_htmlStream.append("    	   handler: function(){ \n"); 
-							      	_htmlStream.append("           		dynamicIframe"+captionName+"_"+prog+"."+popupSaveFunction+"(); \n");
-							        _htmlStream.append("              } } "); 
-							        }
-							        if(closeRefresh==true && popupSave==true)  _htmlStream.append(","); 
-							        if(closeRefresh==true){
-							        _htmlStream.append("          {text: 'Close', \n");
-							        _htmlStream.append("           handler: function(){ \n"); 
-							        _htmlStream.append("            	refresh(); \n");
-							        _htmlStream.append("             	win"+captionName+"_"+prog+".hide(); \n"); 
-							        _htmlStream.append("              }} \n"); 
-							        }
-							        _htmlStream.append("           ], \n");
-							        }
-						        _htmlStream.append(" buttonAlign : 'left',\n");
-							    _htmlStream.append("            plain: true \n");
-						        _htmlStream.append("        });\n");
-						        _htmlStream.append("    };\n");
-							    _htmlStream.append("   win"+captionName+"_"+prog+".show() \n");
-							    _htmlStream.append("  }\n");
-							    _htmlStream.append(");\n");
-							    _htmlStream.append(" </script>\n");						
-						    }else{
-						_htmlStream.append("     <a href='javascript:actionConfirm(\"" + msg + "\", \"" + buttonUrl+ "\");'>\n");
-						    }
+
+								_htmlStream.append("     <a id='linkDetail_"+captionName+"_"+prog+"' >\n");
+								// insert javascript for open popup
+								_htmlStream.append(" <script>\n");
+								_htmlStream.append("Ext.get('linkDetail_"+captionName+"_"+prog+"').on('click', function(){ \n");
+								_htmlStream.append("  if (confirm(\"" + msg + "\") and win"+captionName+"_"+prog+" == null ) {\n");
+								_htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
+								_htmlStream.append("   win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',\n");
+								_htmlStream.append("            bodyCfg:{");
+								_htmlStream.append("                tag:'div'");
+								_htmlStream.append("                ,cls:'x-panel-body'");
+								_htmlStream.append("               ,children:[{");
+								_htmlStream.append("                    tag:'iframe',");
+								_htmlStream.append("                    name: 'dynamicIframe"+captionName+"_"+prog+"',");
+								_htmlStream.append("                    id  : 'dynamicIframe"+captionName+"_"+prog+"',");
+								_htmlStream.append("                    src: '" +createUrl_popup(paramsMap)+ "',");
+								_htmlStream.append("                    frameBorder:0,");
+								_htmlStream.append("                    width:'100%',");
+								_htmlStream.append("                    height:'100%',");
+								_htmlStream.append("                    style: {overflow:'auto'}   ");        
+								_htmlStream.append("               }]");
+								_htmlStream.append("            },");
+								_htmlStream.append("            modal: true,\n");
+								_htmlStream.append("            layout:'fit',\n");
+								if (popupHeight!=null) {  _htmlStream.append("           height:"+popupHeight+",\n");}
+								else {  _htmlStream.append("            height:200,\n");}
+								if (popupWidth!=null) {  _htmlStream.append("            width:"+popupWidth+",\n");}
+								else {  _htmlStream.append("            width:500,\n");}
+								_htmlStream.append("            closeAction:'hide',\n");
+								if(closeRefresh==true){ _htmlStream.append("            closable : false ,\n");}
+
+								_htmlStream.append("            scripts: true, \n");
+
+								if(closeRefresh==true || popupSave==true) {
+									_htmlStream.append("            buttons: [ \n");
+									if(popupSave==true){
+										_htmlStream.append("          { text: 'Save', \n");
+										_htmlStream.append("    	   handler: function(){ \n"); 
+										_htmlStream.append("           		dynamicIframe"+captionName+"_"+prog+"."+popupSaveFunction+"(); \n");
+										_htmlStream.append("              } } "); 
+									}
+									if(closeRefresh==true && popupSave==true)  _htmlStream.append(","); 
+									if(closeRefresh==true){
+										_htmlStream.append("          {text: 'Close', \n");
+										_htmlStream.append("           handler: function(){ \n"); 
+										_htmlStream.append("            	refresh(); \n");
+										_htmlStream.append("             	win"+captionName+"_"+prog+".hide(); \n"); 
+										_htmlStream.append("              }} \n"); 
+									}
+									_htmlStream.append("           ], \n");
+								}
+								_htmlStream.append(" buttonAlign : 'left',\n");
+								_htmlStream.append("            plain: true \n");
+								_htmlStream.append("        });\n");
+								_htmlStream.append("    };\n");
+								_htmlStream.append("   win"+captionName+"_"+prog+".show() \n");
+								_htmlStream.append("  }\n");
+								_htmlStream.append(");\n");
+								_htmlStream.append(" </script>\n");						
+							}else{
+								_htmlStream.append("     <a href='javascript:actionConfirm(\"" + msg + "\", \"" + buttonUrl+ "\");'>\n");
+							}
 					}else{
-					    if (popup){
-					    	_htmlStream.append("     <a id='linkDetail_"+captionName+"_"+prog+"' >\n");
-						    // insert javascript for open popup
-						    _htmlStream.append(" <script>\n");
-						    _htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
-						    _htmlStream.append("Ext.get('linkDetail_"+captionName+"_"+prog+"').on('click', function(){ \n");
+						if (popup){
+							_htmlStream.append("     <a id='linkDetail_"+captionName+"_"+prog+"' >\n");
+							// insert javascript for open popup
+							_htmlStream.append(" <script>\n");
+							_htmlStream.append("   var win"+captionName+"_"+prog+"; \n");
+							_htmlStream.append("Ext.get('linkDetail_"+captionName+"_"+prog+"').on('click', function(){ \n");
 
-						    _htmlStream.append("   if ( win"+captionName+"_"+prog+" == null ) {win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',\n");
-						    _htmlStream.append("            bodyCfg:{ \n" );
-						    _htmlStream.append("                tag:'div' \n");
-						    _htmlStream.append("                ,cls:'x-panel-body' \n");
-						    _htmlStream.append("               ,children:[{ \n");
-						    _htmlStream.append("                    tag:'iframe', \n");
-						    _htmlStream.append("                    name: 'dynamicIframe"+captionName+"_"+prog+"', \n");
-						    _htmlStream.append("                    id  : 'dynamicIframe"+captionName+"_"+prog+"', \n");
-						    _htmlStream.append("                    src: '" +createUrl_popup(paramsMap)+ "', \n");
-						    _htmlStream.append("                    frameBorder:0, \n");
-						    _htmlStream.append("                    width:'100%', \n");
-						    _htmlStream.append("                    height:'100%', \n");
-						    _htmlStream.append("                    style: {overflow:'auto'}  \n ");        
-						    _htmlStream.append("               }] \n");
-						    _htmlStream.append("            }, \n");
-						    _htmlStream.append("            modal: true,\n");
-						    _htmlStream.append("            layout:'fit',\n");
-							    if (popupHeight!=null) {  _htmlStream.append("           height:"+popupHeight+",\n");}
-							    else {  _htmlStream.append("            height:200,\n");}
-							    if (popupWidth!=null) {  _htmlStream.append("            width:"+popupWidth+",\n");}
-							    else {  _htmlStream.append("            width:500,\n");}
+							_htmlStream.append("   if ( win"+captionName+"_"+prog+" == null ) {win"+captionName+"_"+prog+"=new Ext.Window({id:'win"+captionName+"_"+prog+"',\n");
+							_htmlStream.append("            bodyCfg:{ \n" );
+							_htmlStream.append("                tag:'div' \n");
+							_htmlStream.append("                ,cls:'x-panel-body' \n");
+							_htmlStream.append("               ,children:[{ \n");
+							_htmlStream.append("                    tag:'iframe', \n");
+							_htmlStream.append("                    name: 'dynamicIframe"+captionName+"_"+prog+"', \n");
+							_htmlStream.append("                    id  : 'dynamicIframe"+captionName+"_"+prog+"', \n");
+							_htmlStream.append("                    src: '" +createUrl_popup(paramsMap)+ "', \n");
+							_htmlStream.append("                    frameBorder:0, \n");
+							_htmlStream.append("                    width:'100%', \n");
+							_htmlStream.append("                    height:'100%', \n");
+							_htmlStream.append("                    style: {overflow:'auto'}  \n ");        
+							_htmlStream.append("               }] \n");
+							_htmlStream.append("            }, \n");
+							_htmlStream.append("            modal: true,\n");
+							_htmlStream.append("            layout:'fit',\n");
+							if (popupHeight!=null) {  _htmlStream.append("           height:"+popupHeight+",\n");}
+							else {  _htmlStream.append("            height:200,\n");}
+							if (popupWidth!=null) {  _htmlStream.append("            width:"+popupWidth+",\n");}
+							else {  _htmlStream.append("            width:500,\n");}
 
-					        _htmlStream.append("            closeAction:'hide',\n");
-					        if(closeRefresh==true){ _htmlStream.append("            closable : false ,\n");}
+							_htmlStream.append("            closeAction:'hide',\n");
+							if(closeRefresh==true){ _htmlStream.append("            closable : false ,\n");}
 
-					        _htmlStream.append("            scripts: true, \n");
-					        
-					        if(closeRefresh==true || popupSave==true) {
-					        _htmlStream.append("            buttons: [ \n");
-					        if(popupSave==true){
-					        _htmlStream.append("          { text: 'Save', \n");
-					      	_htmlStream.append("    	   handler: function(){ \n"); 
-					      	_htmlStream.append("           		dynamicIframe"+captionName+"_"+prog+"."+popupSaveFunction+"(); \n");
-					        _htmlStream.append("              } } "); 
-					        }
-					        if(closeRefresh==true && popupSave==true)  _htmlStream.append(","); 
-					        if(closeRefresh==true){
-					        _htmlStream.append("          {text: 'Close', \n");
-					        _htmlStream.append("           handler: function(){ \n"); 
-					        _htmlStream.append("            	refresh(); \n");
-					        _htmlStream.append("             	win"+captionName+"_"+prog+".hide(); \n"); 
-					        _htmlStream.append("              }} \n"); 
-					        }
-					        _htmlStream.append("           ], \n");
-					        }
-					        _htmlStream.append(" buttonAlign : 'left',\n");
-					        _htmlStream.append("            plain: true \n");
-					        
-					        _htmlStream.append("        }); }; \n");
-						    _htmlStream.append("   win"+captionName+"_"+prog+".show(); \n");
-						    _htmlStream.append("	} \n");
-						    _htmlStream.append(");\n");
-						    _htmlStream.append(" </script>\n");
-										
-					    }else{ 
-					    	if(buttonUrl!=null) {
-					    		if (onClickFunctionName != null) {
-					    			_htmlStream.append("     <a href='javascript:" + onClickFunctionName + "();location.href=\"" + buttonUrl + "\"'>\n");
-					    		} else {
-					    			_htmlStream.append("     <a href='"+buttonUrl+"'>\n");
-					    		}
-					    	}
-					    }
-					    	
+							_htmlStream.append("            scripts: true, \n");
+
+							if(closeRefresh==true || popupSave==true) {
+								_htmlStream.append("            buttons: [ \n");
+								if(popupSave==true){
+									_htmlStream.append("          { text: 'Save', \n");
+									_htmlStream.append("    	   handler: function(){ \n"); 
+									_htmlStream.append("           		dynamicIframe"+captionName+"_"+prog+"."+popupSaveFunction+"(); \n");
+									_htmlStream.append("              } } "); 
+								}
+								if(closeRefresh==true && popupSave==true)  _htmlStream.append(","); 
+								if(closeRefresh==true){
+									_htmlStream.append("          {text: 'Close', \n");
+									_htmlStream.append("           handler: function(){ \n"); 
+									_htmlStream.append("            	refresh(); \n");
+									_htmlStream.append("             	win"+captionName+"_"+prog+".hide(); \n"); 
+									_htmlStream.append("              }} \n"); 
+								}
+								_htmlStream.append("           ], \n");
+							}
+							_htmlStream.append(" buttonAlign : 'left',\n");
+							_htmlStream.append("            plain: true \n");
+
+							_htmlStream.append("        }); }; \n");
+							_htmlStream.append("   win"+captionName+"_"+prog+".show(); \n");
+							_htmlStream.append("	} \n");
+							_htmlStream.append(");\n");
+							_htmlStream.append(" </script>\n");
+
+						}else{ 
+							if(buttonUrl!=null) {
+								if (onClickFunctionName != null) {
+									_htmlStream.append("     <a href='javascript:" + onClickFunctionName + "();location.href=\"" + buttonUrl + "\"'>\n");
+								} else {
+									_htmlStream.append("     <a href='"+buttonUrl+"'>\n");
+								}
+							}
+						}
+
 					}
 					_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
 					_htmlStream.append("     </a>\n");
@@ -696,15 +716,15 @@ public class ListTag extends TagSupport
 			}
 			_htmlStream.append(" </tr>\n");
 		}
-		
+
 		_htmlStream.append(" </table>\n");
-	    _htmlStream.append(" <script>\n");
-	    _htmlStream.append("        function refresh(){ \n");
-	    _htmlStream.append("  			location.href = '"+_refreshUrl+"' ; \n" );
-	    _htmlStream.append("        } \n");
-	    _htmlStream.append(" </script>\n");
+		_htmlStream.append(" <script>\n");
+		_htmlStream.append("        function refresh(){ \n");
+		_htmlStream.append("  			location.href = '"+_refreshUrl+"' ; \n" );
+		_htmlStream.append("        } \n");
+		_htmlStream.append(" </script>\n");
 	} 
-	
+
 	private String readOnClickFunction(SourceBean onClickSB, SourceBean row) {
 		logger.debug("IN");
 		String onClickFunction = onClickSB != null ? onClickSB.getCharacters() : null;
@@ -753,9 +773,9 @@ public class ListTag extends TagSupport
 					String functionality = (String) condition.getAttribute("user_functionality");
 					String inParameterValue = null;
 					Object parameterValueObject = null;
-					
+
 					if (functionality != null && !functionality.equalsIgnoreCase("")) {
-						
+
 						try {
 							if (!profile.isAbleToExecuteAction(functionality)){
 								conditionVerified = false;
@@ -764,14 +784,14 @@ public class ListTag extends TagSupport
 							else {
 								continue;
 							}
-							
+
 						} catch (EMFInternalError e) {
 							e.printStackTrace();
 							logger.error(e);
 						} 
 					}
-					
-					
+
+
 					if (parameterScope != null && parameterScope.equalsIgnoreCase("LOCAL")) {
 						if (row == null) {
 							logger.error("Impossible to associate LOCAL scope: the row is null");
@@ -800,7 +820,7 @@ public class ListTag extends TagSupport
 						} // if (inParameterValue != null)
 						continue;
 					} // if (parameterValue.equalsIgnoreCase("AF_NOT_DEFINED"))
-					
+
 					String operator = (String) condition.getAttribute("OPERATOR");
 					if (operator == null || operator.trim().equals("")) operator = "EQUAL_TO";
 					else operator = operator.trim();
@@ -847,8 +867,8 @@ public class ListTag extends TagSupport
 		}
 		return conditionVerified;
 	}
-	
-	
+
+
 	/**
 	 * Builds list navigation buttons inside the list tag. If the number
 	 * of elements is higher than 10, they are divided into pages; this
@@ -858,7 +878,7 @@ public class ListTag extends TagSupport
 	 * @throws JspException If any Exception occurs
 	 */
 	protected void makeNavigationButton() throws JspException {
-		
+
 		String pageNumberString = (String) _content.getAttribute("PAGED_LIST.PAGE_NUMBER");
 		int pageNumber = 1;
 		try {
@@ -866,9 +886,9 @@ public class ListTag extends TagSupport
 		} 
 		catch (NumberFormatException ex) {
 			TracerSingleton.log(
-				Constants.NOME_MODULO,
-				TracerSingleton.WARNING,
-				"ListTag::makeNavigationButton:: PAGE_NUMBER nullo");
+					Constants.NOME_MODULO,
+					TracerSingleton.WARNING,
+			"ListTag::makeNavigationButton:: PAGE_NUMBER nullo");
 		} 
 		String pagesNumberString = (String) _content.getAttribute("PAGED_LIST.PAGES_NUMBER");
 		int pagesNumber = 1;
@@ -877,9 +897,9 @@ public class ListTag extends TagSupport
 		} 
 		catch (NumberFormatException ex) {
 			TracerSingleton.log(
-				Constants.NOME_MODULO,
-				TracerSingleton.WARNING,
-				"ListTag::makeNavigationButton:: PAGES_NUMBER nullo");
+					Constants.NOME_MODULO,
+					TracerSingleton.WARNING,
+			"ListTag::makeNavigationButton:: PAGES_NUMBER nullo");
 		} 
 
 		int prevPage = pageNumber - 1;
@@ -888,26 +908,26 @@ public class ListTag extends TagSupport
 		int nextPage = pageNumber + 1;
 		if (nextPage > pagesNumber)
 			nextPage = pagesNumber;
-		
+
 		_htmlStream.append(" <TABLE CELLPADDING=0 CELLSPACING=0  WIDTH='100%' BORDER=0>\n");
 		_htmlStream.append("	<TR>\n");
 		//_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='14'>\n");
-		
-        // create link for previous page		
+
+		// create link for previous page		
 		HashMap prevParamsMap = new HashMap();
 		prevParamsMap.putAll(_providerUrlMap);
 		prevParamsMap.put("MESSAGE", "LIST_PAGE");
 		prevParamsMap.put("LIST_PAGE", String.valueOf(prevPage));		
 		_prevUrl = createUrl(prevParamsMap);	
-		
-		 // create url for refresh page		
+
+		// create url for refresh page		
 		HashMap refreshParamsMap = new HashMap();
 		refreshParamsMap.putAll(_providerUrlMap);
 		refreshParamsMap.put("MESSAGE", "LIST_PAGE");
 		refreshParamsMap.put("LIST_PAGE", String.valueOf(pageNumber));
 		_refreshUrl = createUrl(refreshParamsMap);
 		_refreshUrl = _refreshUrl.replaceAll("&amp;", "&");
-		
+
 		// create link for next page
 		HashMap nextParamsMap = new HashMap();
 		nextParamsMap.putAll(_providerUrlMap);
@@ -930,7 +950,7 @@ public class ListTag extends TagSupport
 		_lastUrl = createUrl(lastParamsMap);
 
 		String formId = "formFilter" + requestIdentity;
-		
+
 		String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
 		String typeValueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
 		String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
@@ -941,19 +961,19 @@ public class ListTag extends TagSupport
 			prevParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			prevParamsMap.put(SpagoBIConstants.TYPE_FILTER, typeFilter);
 			_prevUrl = createUrl(prevParamsMap);
-			
+
 			nextParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
 			nextParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
 			nextParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			nextParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
 			_nextUrl = createUrl(nextParamsMap);
-			
+
 			firstParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
 			firstParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
 			firstParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			firstParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
 			_firstUrl = createUrl(firstParamsMap);
-			
+
 			lastParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
 			lastParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
 			lastParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
@@ -965,7 +985,7 @@ public class ListTag extends TagSupport
 			columnFilter = "";
 			typeFilter = "";
 		}
-		
+
 		if(pageNumber != 1) {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
 			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
@@ -982,22 +1002,22 @@ public class ListTag extends TagSupport
 			_htmlStream.append("		</TD>\n");			
 		}		
 		//_htmlStream.append("		</TD>\n");
-				
-		
+
+
 		// Form for list filtering; if not specified, the filter is enabled
 		_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='middle' width='80%'>\n");
 		if (_filter == null || _filter.equalsIgnoreCase("enabled")) {
-			
-			
+
+
 			/*HashMap allUrlMap = (HashMap) _providerUrlMap.clone();
 			allUrlMap.remove("valueFilter");
 			allUrlMap.remove("columnFilter");
 			allUrlMap.remove("typeFilter");
 			allUrlMap.remove("typeValueFilter");*/
-			
+
 			String allUrl = createUrl(_providerUrlMap);
 			String filterURL = createUrl(_providerUrlMap);
-			
+
 			String label =  msgBuilder.getMessage("SBIListLookPage.labelFilter", "messages", httpRequest);
 			String labelTypeValueFilter =  msgBuilder.getMessage("SBIListLookPage.labelTypeValueFilter", "messages", httpRequest);
 			String labelNumber = msgBuilder.getMessage("SBIListLookPage.labelNumber", "messages", httpRequest);
@@ -1013,12 +1033,12 @@ public class ListTag extends TagSupport
 			String labelIsGreaterOrEqualThan =  msgBuilder.getMessage("SBIListLookPage.isGreaterOrEqualThan", "messages", httpRequest);
 			String labelFilter =  msgBuilder.getMessage("SBIListLookPage.filter", "messages", httpRequest);
 			String labelAll =  msgBuilder.getMessage("SBIListLookPage.all", "messages", httpRequest);
-			
+
 			//_htmlStream.append("						    <br/><br/>\n");
 			_htmlStream.append("						    <form action='"+filterURL+"' id='" + formId +"' method='post'>\n");
 			_htmlStream.append("						    "+label+"\n");
 			_htmlStream.append("						    <select name='" + SpagoBIConstants.COLUMN_FILTER + "'>\n");
-			
+
 			for (int i = 0; i < _columns.size(); i++) {
 				String nameColumn = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("NAME");
 				String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
@@ -1084,7 +1104,7 @@ public class ListTag extends TagSupport
 			_htmlStream.append("						    <a href='javascript:document.getElementById(\"" + formId +"\").submit()'>"+labelFilter+"</a> \n");
 			_htmlStream.append(" <a href='"+allUrl+"'>"+labelAll+"</a> \n");
 			_htmlStream.append("						    </form> \n");
-			
+
 			// visualize any validation error present in the errorHandler
 			boolean thereAreValidationErrors = false;
 			StringBuffer errorsHtmlString = new StringBuffer("");
@@ -1098,16 +1118,16 @@ public class ListTag extends TagSupport
 					while (iterator.hasNext()) {
 						error = (EMFAbstractError) iterator.next();
 						if (error instanceof EMFValidationError) {
-				    	 	description = error.getDescription();
-				    	 	errorsHtmlString.append("		" + description + "<br/>\n");
-				    	 	thereAreValidationErrors = true;
+							description = error.getDescription();
+							errorsHtmlString.append("		" + description + "<br/>\n");
+							thereAreValidationErrors = true;
 						}
 					}
 					errorsHtmlString.append("	</div>\n");
 				}
 			}
 			if (thereAreValidationErrors) _htmlStream.append(errorsHtmlString);
-			
+
 		}
 		_htmlStream.append("		</TD>\n");	
 		// create link for next page
@@ -1145,9 +1165,9 @@ public class ListTag extends TagSupport
 		} 
 		catch (NumberFormatException ex) {
 			TracerSingleton.log(
-				Constants.NOME_MODULO,
-				TracerSingleton.WARNING,
-				"ListTag::makeNavigationButton:: PAGE_NUMBER nullo");
+					Constants.NOME_MODULO,
+					TracerSingleton.WARNING,
+			"ListTag::makeNavigationButton:: PAGE_NUMBER nullo");
 		} 
 		String pagesNumberString = (String) _content.getAttribute("PAGED_LIST.PAGES_NUMBER");
 		int pagesNumber = 1;
@@ -1156,18 +1176,18 @@ public class ListTag extends TagSupport
 		} 
 		catch (NumberFormatException ex) {
 			TracerSingleton.log(
-				Constants.NOME_MODULO,
-				TracerSingleton.WARNING,
-				"ListTag::makeNavigationButton:: PAGES_NUMBER nullo");
+					Constants.NOME_MODULO,
+					TracerSingleton.WARNING,
+			"ListTag::makeNavigationButton:: PAGES_NUMBER nullo");
 		} 
-				
+
 		int prevPage = pageNumber - 1;
 		if (prevPage < 1)
 			prevPage = 1;
 		int nextPage = pageNumber + 1;
 		if (nextPage > pagesNumber)
 			nextPage = pagesNumber;
-		
+
 		int startRangePages = 1;
 		int endRangePages = END_RANGE_PAGES;
 		int deltaPages = pagesNumber - endRangePages;
@@ -1191,10 +1211,10 @@ public class ListTag extends TagSupport
 			startRangePages = 1;
 			endRangePages = pagesNumber;
 		}
-					
+
 		_htmlStream.append(" <TABLE CELLPADDING=0 CELLSPACING=0  WIDTH='100%' BORDER=0>\n");
 		_htmlStream.append("	<TR>\n");		
-        // visualize page numbers
+		// visualize page numbers
 		String pageLabel = msgBuilder.getMessage("ListTag.pageLable", "messages", httpRequest);
 		String pageOfLabel = msgBuilder.getMessage("ListTag.pageOfLable", "messages", httpRequest);
 		_htmlStream.append("		<TD class='portlet-section-footer' style='vertical-align:top;horizontal-align:left;width:30%;'>\n");
@@ -1233,14 +1253,14 @@ public class ListTag extends TagSupport
 			tmpParamsMap.put("MESSAGE", "LIST_PAGE");
 			tmpParamsMap.put("LIST_PAGE", String.valueOf(i));
 			String tmpUrl = createUrl(tmpParamsMap);
-			
+
 			String ORDER = (String) _serviceRequest.getAttribute("ORDER");
 			String FIELD_ORDER = (String) _serviceRequest.getAttribute("FIELD_ORDER");
 			if (FIELD_ORDER!= null && ORDER != null){
 				tmpParamsMap.put("FIELD_ORDER", FIELD_ORDER);
 				tmpParamsMap.put("ORDER", ORDER);
 			}
-			
+
 			String valueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.VALUE_FILTER);
 			String typeValueFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.TYPE_VALUE_FILTER);
 			String columnFilter = (String) _serviceRequest.getAttribute(SpagoBIConstants.COLUMN_FILTER);
@@ -1282,7 +1302,7 @@ public class ListTag extends TagSupport
 		_htmlStream.append("	</TR>\n");
 		_htmlStream.append("</TABLE>\n");
 	}
-	
+
 	/**
 	 * Starting from the module <code>buttonsSB</code> object, 
 	 * creates all buttons for the jsp list. 
@@ -1290,7 +1310,7 @@ public class ListTag extends TagSupport
 	 * 
 	 * @throws JspException If any exception occurs.
 	 */
-	
+
 	protected StringBuffer makeButton(List buttons) throws JspException {
 
 		StringBuffer htmlStream = new StringBuffer();
@@ -1299,49 +1319,142 @@ public class ListTag extends TagSupport
 		while (iter.hasNext()) {
 			SourceBeanAttribute buttonSBA = (SourceBeanAttribute)iter.next();
 			SourceBean buttonSB = (SourceBean)buttonSBA.getValue();
-			
+
 			String buttonName = buttonSB.getName();
 			SourceBean conditionsSB = (SourceBean) buttonSB.getAttribute("CONDITIONS");
 			SourceBean row;
 			try {
 				row = new SourceBean("ROWS");
 				boolean conditionsVerified = verifyConditions(conditionsSB, row);
-									
-			if(ChannelUtilities.isWebRunning()){
-				String onlyPort = (String)buttonSB.getAttribute("onlyPortletRunning");
-				if( (onlyPort!=null) && onlyPort.equalsIgnoreCase("true"))  { 
+
+				if(ChannelUtilities.isWebRunning()){
+					String onlyPort = (String)buttonSB.getAttribute("onlyPortletRunning");
+					if( (onlyPort!=null) && onlyPort.equalsIgnoreCase("true"))  { 
+						continue;
+					}
+				}
+				if ( !conditionsVerified) {
+					// if conditions are not verified puts an empty column
+					_htmlStream.append(" <td class='header-button-column-portlet-section' width='40px'>&nbsp;</td>\n");
 					continue;
 				}
-			}
-			if ( !conditionsVerified) {
-				// if conditions are not verified puts an empty column
-				_htmlStream.append(" <td class='header-button-column-portlet-section' width='40px'>&nbsp;</td>\n");
-				continue;
-			}
-			
-			List parameters = buttonSB.getAttributeAsList("PARAMETER");
-			HashMap paramsMap = getParametersMap(parameters, null);
-			
-			String img = (String) buttonSB.getAttribute("image");
-			String labelCode = (String) buttonSB.getAttribute("label");
-			
-			//String label = PortletUtilities.getMessage(labelCode, "messages");
-			String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);
-			String buttonUrl = createUrl(paramsMap);
-			
-			htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
-			htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
-			htmlStream.append("</td>\n");
+
+				List parameters = buttonSB.getAttributeAsList("PARAMETER");
+				HashMap paramsMap = getParametersMap(parameters, null);
+
+				String img = (String) buttonSB.getAttribute("image");
+				String labelCode = (String) buttonSB.getAttribute("label");
+
+				//String label = PortletUtilities.getMessage(labelCode, "messages");
+				String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);
+				String buttonUrl = createUrl(paramsMap);
+
+				htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
+				htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
+				htmlStream.append("</td>\n");
 			} catch (SourceBeanException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
 		return htmlStream;
 	} 
-	
-		
+
+
+	/**
+	 * Starting from the module <code>buttonsSB</code> object, 
+	 * creates all buttons for the jsp list. These buttons are next to colums names 
+	 * @param buttons The list of the buttons 
+	 * 
+	 * @throws JspException If any exception occurs.
+	 */
+
+	protected StringBuffer makeTitleButton(List buttons) throws JspException {
+
+		StringBuffer htmlStream = new StringBuffer();
+		try{
+			Iterator iter = buttons.listIterator();
+			while (iter.hasNext()) {
+				SourceBeanAttribute buttonSBA = (SourceBeanAttribute)iter.next();
+				SourceBean buttonSB = (SourceBean)buttonSBA.getValue();
+
+				String buttonName = buttonSB.getName();
+
+				SourceBean conditionsSB = (SourceBean) buttonSB.getAttribute("CONDITIONS");
+				SourceBean row;
+				row = new SourceBean("ROWS");
+				boolean conditionsVerified = verifyConditions(conditionsSB, row);
+
+				if(ChannelUtilities.isWebRunning()){
+					String onlyPort = (String)buttonSB.getAttribute("onlyPortletRunning");
+					if( (onlyPort!=null) && onlyPort.equalsIgnoreCase("true"))  { 
+						continue;
+					}
+				}
+				if ( !conditionsVerified) {
+					// if conditions are not verified puts an empty column
+					_htmlStream.append(" <td class='header-button-column-portlet-section' width='40px'>&nbsp;</td>\n");
+					continue;
+				}
+
+				List parameters = buttonSB.getAttributeAsList("PARAMETER");
+				HashMap paramsMap = getParametersMap(parameters, null);
+
+				String img = (String) buttonSB.getAttribute("image");
+				String labelCode = (String) buttonSB.getAttribute("label");
+
+				//String label = PortletUtilities.getMessage(labelCode, "messages");
+				String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);
+				//String buttonUrl = createUrl(paramsMap);
+
+
+				// if there is some javascript: onclick function
+				SourceBean onClickSB = (SourceBean) buttonSB.getAttribute("ONCLICK");
+				
+				boolean onClick=false;	
+				if(onClickSB!=null) onClick=true;
+				
+				if(onClick==true){
+					String onClickFunction = onClickSB != null ? onClickSB.getCharacters() : null;
+
+					String functionName = onClickSB != null ? buttonSB.getName() : "";
+
+					String onClickFunctionName = onClickSB != null ? buttonSB.getName() + requestIdentity : null;
+
+					if (onClickFunction != null) {
+						_htmlStream.append("	<script type='text/javascript'>\n");
+						_htmlStream.append("	function " + onClickFunctionName + "() {\n");
+						_htmlStream.append(onClickFunction + "\n");
+						_htmlStream.append("	}\n");
+						_htmlStream.append("	</script>\n");
+					}
+					
+					//String immagine=urlBuilder.getResourceLink(httpRequest, img);
+					htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
+					htmlStream.append("<a href='javascript:"+onClickFunctionName+"()'><img class=\"header-button-image-portlet-section\" title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
+					htmlStream.append("</td>\n");
+
+				}
+
+				if(onClick!=true){
+				String buttonUrl = createUrl(paramsMap);
+
+				htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
+				htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
+				htmlStream.append("</td>\n");}
+
+			}
+		}
+		catch (SourceBeanException e) {
+			logger.error("Error");
+			e.printStackTrace();
+		}
+		return htmlStream;
+	} 
+
+
+
 	/**
 	 * Gets all parameter information from a module, putting them into a HashMap.
 	 * 
@@ -1350,21 +1463,21 @@ public class ListTag extends TagSupport
 	 * @return The parameters Hash Map
 	 * @throws JspException If any Exception occurred
 	 */
-	
+
 	protected HashMap getParametersMap(List parameters, SourceBean row) throws JspException {
-		
+
 		HashMap params = new HashMap(); 
-       
+
 		for (int i = 0; i < parameters.size(); i++) {
 			String name = (String) ((SourceBean) parameters.get(i)).getAttribute("NAME");
 			String type = (String) ((SourceBean) parameters.get(i)).getAttribute("TYPE");
 			String value = (String) ((SourceBean) parameters.get(i)).getAttribute("VALUE");
 			String scope = (String) ((SourceBean) parameters.get(i)).getAttribute("SCOPE");
-			
+
 			if (name != null) {
 				//name = JavaScript.escape(name.toUpperCase());
 				name = name.toUpperCase();
-				
+
 				if ((type != null) && type.equalsIgnoreCase("RELATIVE")) {
 					if ((scope != null) && scope.equalsIgnoreCase("LOCAL")) {
 						if (row == null) {
@@ -1383,14 +1496,14 @@ public class ListTag extends TagSupport
 					value = "";
 				//value = JavaScript.escape(value);
 			} // if (name != null)
-			
+
 			params.put(name, value);
-			
+
 		} // for (int i = 0; i < parameters.size(); i++)
 		return params;
 	} // protected StringBuffer getParametersList(Vector parameters, SourceBean row) throws JspException
 
-	
+
 	/**
 	 * From the parameter HashMap at input, creates the reference navigation url.
 	 * 
@@ -1404,21 +1517,21 @@ public class ListTag extends TagSupport
 	}
 	protected String createUrl_popup(HashMap paramsMap) {
 
-	        String url = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserUniqueIdentifier().toString());
-	        paramsMap.put("TYPE_LIST", "TYPE_LIST");
-			if (paramsMap != null){
-				Iterator keysIt = paramsMap.keySet().iterator();
-				String paramName = null;
-				Object paramValue = null;
-				while (keysIt.hasNext()){
-					paramName = (String)keysIt.next();
-					paramValue = paramsMap.get(paramName); 
-					url += "&"+paramName+"="+paramValue.toString();
-				}
+		String url = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserUniqueIdentifier().toString());
+		paramsMap.put("TYPE_LIST", "TYPE_LIST");
+		if (paramsMap != null){
+			Iterator keysIt = paramsMap.keySet().iterator();
+			String paramName = null;
+			Object paramValue = null;
+			while (keysIt.hasNext()){
+				paramName = (String)keysIt.next();
+				paramValue = paramsMap.get(paramName); 
+				url += "&"+paramName+"="+paramValue.toString();
 			}
+		}
 		return url;
 	}	
-	
+
 	/**
 	 * Traces the setting of an action name.
 	 * 
@@ -1426,9 +1539,9 @@ public class ListTag extends TagSupport
 	 */
 	public void setActionName(String actionName) {
 		TracerSingleton.log(
-			Constants.NOME_MODULO,
-			TracerSingleton.DEBUG,
-			"DefaultDetailTag::setActionName:: actionName [" + actionName + "]");
+				Constants.NOME_MODULO,
+				TracerSingleton.DEBUG,
+				"DefaultDetailTag::setActionName:: actionName [" + actionName + "]");
 		_actionName = actionName;
 	} // public void setActionName(String actionName)
 
@@ -1437,26 +1550,26 @@ public class ListTag extends TagSupport
 	 * 
 	 * @param moduleName The module name string at input.
 	 */
-	
+
 	public void setModuleName(String moduleName) {
 		TracerSingleton.log(
-			Constants.NOME_MODULO,
-			TracerSingleton.INFORMATION,
-			"ListTag::setModuleName:: moduleName [" + moduleName + "]");
+				Constants.NOME_MODULO,
+				TracerSingleton.INFORMATION,
+				"ListTag::setModuleName:: moduleName [" + moduleName + "]");
 		_moduleName = moduleName;
 	} // public void setModuleName(String moduleName)
-	
+
 	/**
 	 * Traces the setting of a bundle name.
 	 * 
 	 * @param bundle The bundle name string at input.
 	 */
-	
+
 	public void setBundle(String bundle) {
 		TracerSingleton.log(
-			Constants.NOME_MODULO,
-			TracerSingleton.INFORMATION,
-			"ListTag::setBundle:: bundle [" + bundle + "]");
+				Constants.NOME_MODULO,
+				TracerSingleton.INFORMATION,
+				"ListTag::setBundle:: bundle [" + bundle + "]");
 		_bundle = bundle;
 	} // public void setBundle(String bundle)
 
@@ -1469,7 +1582,7 @@ public class ListTag extends TagSupport
 	 * 
 	 * @see javax.servlet.jsp.tagext.Tag#doEndTag()
 	 */
-	
+
 	public int doEndTag() throws JspException {
 		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.INFORMATION, "ListTag::doEndTag:: invocato");
 		_actionName = null;
@@ -1501,7 +1614,7 @@ public class ListTag extends TagSupport
 				"ListTag::setFilter:: filter " + filter);
 		_filter = filter;
 	}
-	
+
 	/**
 	 * For exception cases adds into parameters list the attributes necessary for the correct management of list. 
 	 * 
@@ -1509,7 +1622,7 @@ public class ListTag extends TagSupport
 	 * @param serviceRequest The serviceRequest sourcebean.
 	 */
 	private HashMap updateUrlForExceptions(HashMap providerUrlMap, SourceBean serviceRequest) { 
-		
+
 		providerUrlMap.put("MESSAGEDET",SpagoBIConstants.MESSAGE_ORDER_LIST);
 		for (int i=0; i<EXCEPTION_ATTRIBUTES.length; i++){
 			if (serviceRequest.getAttribute(EXCEPTION_ATTRIBUTES[i]) != null ){

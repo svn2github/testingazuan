@@ -95,7 +95,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
     
     private static final String RETURN_FIELD_NAME = "parameterFieldName";
     private boolean isChecklist = false ; 
-    
+    private boolean selectAll=false;
     /**
      * Class Constructor.
      */
@@ -113,6 +113,12 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	String roleName = (String) request.getAttribute("roleName");
 	String parIdStr = (String) request.getAttribute("parameterId");
 	String returnParam = (String) request.getAttribute(RETURN_PARAM);
+	String selectAllS = (String) request.getAttribute("selectAll");
+	if(selectAllS!=null && selectAllS.equalsIgnoreCase("TRUE")){
+		selectAll=true;
+	}
+	else selectAll=false;
+	
 	logger.debug("roleName=" + roleName);
 	logger.debug("parameterId=" + parIdStr);
 	logger.debug("returnParam=" + returnParam);
@@ -227,7 +233,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 				logger.warn("Expression is wrong: number of left breaks is different from right breaks. Returning list without evaluating expression");
 				return list;
 			}
-			
+				
 			//TODO make some more formal check on the expression before start to process it
 			
 			// calculate the list filtered based on each objparuse setting
@@ -427,6 +433,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	    throws Exception {
 	logger.debug("IN");
 	RequestContainer requestContainer = getRequestContainer();
+	String idBiPar= (String)request.getAttribute("objParId");
 	String parameterFieldName = (String) request.getAttribute("parameterFieldName");
 	logger.debug("parameterFieldName=" + parameterFieldName);
 
@@ -541,6 +548,41 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 		moduleConfigStr.append("	<COLUMN name=\"" + colName + "\" />");
 	    }
 	}
+
+	String uuid3 = (String) request.getAttribute("uuid");
+    moduleConfigStr.append("	<COLUMN name=\"Last\">");
+		moduleConfigStr.append("<BUTTONS>");
+		moduleConfigStr.append("<SELECT_ALL confirm='TRUE' image='/img/expertok.gif' label='SBIDev.ListParam.selectAll'>");
+		moduleConfigStr.append("			<ONCLICK>");
+		moduleConfigStr.append("				<![CDATA[");
+		// sets correlation flag and submits parameters form
+		moduleConfigStr.append("parent.setRefreshCorrelationFlag" + uuid3 + "();");
+		moduleConfigStr.append("parent.document.getElementById('messagedet" + uuid3+"').value='SELECT_ALL';");		
+		moduleConfigStr.append("parent.document.getElementById('objParId" + uuid3+"').value='"+idBiPar+"';");		
+		moduleConfigStr.append("parent.document.getElementById('parameterId" + uuid3+"').value='"+parId.toString()+"';");		
+		moduleConfigStr.append("parent.document.getElementById('allSelectMode" + uuid3+"').name='allSelectMode';");		
+		moduleConfigStr.append("parent.document.getElementById('allSelectMode" + uuid3+"').value='true';");		
+		moduleConfigStr.append("parent.document.getElementById('parametersForm" + uuid3+"').submit();");
+		//moduleConfigStr.append("parent.document.getElementById('allForm" +idBiPar+ uuid3 + parId.toString()+"').submit();");
+		moduleConfigStr.append("				]]>");
+		moduleConfigStr.append("			</ONCLICK>");
+		moduleConfigStr.append("</SELECT_ALL>");
+		moduleConfigStr.append("<DESELECT_ALL confirm='TRUE' image='/img/expertclose.gif' label='SBIDev.ListParam.deselectAll'>");
+		moduleConfigStr.append("			<ONCLICK>");
+		moduleConfigStr.append("				<![CDATA[");
+		moduleConfigStr.append("parent.setRefreshCorrelationFlag" + uuid3 + "();");
+		//moduleConfigStr.append("parent.document.getElementById('nooneForm" +idBiPar+ uuid3 + parId.toString()+"').submit();");
+		moduleConfigStr.append("parent.document.getElementById('messagedet" + uuid3+"').value='DESELECT_ALL';");		
+		moduleConfigStr.append("parent.document.getElementById('objParId" + uuid3+"').value='"+idBiPar+"';");		
+		moduleConfigStr.append("parent.document.getElementById('parameterId" + uuid3+"').value='"+parId.toString()+"';");		
+		moduleConfigStr.append("parent.document.getElementById('allSelectMode" + uuid3+"').name='allSelectMode';");		
+		moduleConfigStr.append("parent.document.getElementById('allSelectMode" + uuid3+"').value='true';");		
+		moduleConfigStr.append("parent.document.getElementById('parametersForm" + uuid3+"').submit();");
+		moduleConfigStr.append("				]]>");
+		moduleConfigStr.append("			</ONCLICK>");
+		moduleConfigStr.append("</DESELECT_ALL>");		
+	    moduleConfigStr.append("	</BUTTONS>");		
+	    moduleConfigStr.append("	</COLUMN>");
 	moduleConfigStr.append("	</COLUMNS>");
 	moduleConfigStr.append("	<CAPTIONS>");
 	if(isChecklist){
@@ -648,7 +690,9 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 		
 	}
 	moduleConfigStr.append("	</CAPTIONS>");
-	moduleConfigStr.append("	<BUTTONS/>");
+	moduleConfigStr.append("	<BUTTONS/> ");
+	
+	
 	moduleConfigStr.append("</CONFIG>");
 	SourceBean moduleConfig = SourceBean.fromXMLString(moduleConfigStr.toString());
 	response.setAttribute(moduleConfig);

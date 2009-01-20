@@ -100,17 +100,12 @@ public abstract class AbstractServiceProxy {
 
 	if (engineConfig != null) {
 	    // sono sui motori...
-	    String spagoContext = (String) session.getAttribute(SpagoBIConstants.SBI_CONTEXT);
 	    if (EnginConf.getInstance().isSsoActive()) ssoIsActive = true;
 	    logger.debug("Read activeSso=" + ssoIsActive);
 
-	    SourceBean sourceBeanConf = (SourceBean) engineConfig.getAttribute("SPAGOBI_SERVER_URL");
-	    String spagoBiServerURL= (String) sourceBeanConf.getCharacters();
+	    String spagoBiServerURL = EnginConf.getInstance().getSpagoBiServerUrl();
 	    logger.debug("Read spagoBiServerURL=" + spagoBiServerURL);
-	    if (spagoBiServerURL==null){
-		spagoBiServerURL="http://localhost:8080/SpagoBI";
-	    }
-	    sourceBeanConf = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
+	    SourceBean sourceBeanConf = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
 	    filterReceipt = (String) sourceBeanConf.getCharacters();
 	    logger.debug("Read filterReceipt=" + filterReceipt);
 	    filterReceipt = spagoBiServerURL + filterReceipt;    

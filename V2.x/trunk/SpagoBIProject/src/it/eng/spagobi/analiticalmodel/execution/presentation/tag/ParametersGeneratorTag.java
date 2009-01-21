@@ -289,7 +289,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		htmlStream.append("   <input type='hidden' id='messagedet"+requestIdentity+"' name='" + SpagoBIConstants.MESSAGEDET + "' value='"+ObjectsTreeConstants.EXEC_PHASE_RUN+"'/>\n"); 
 		htmlStream.append("   <input type='hidden' id='objParId"+requestIdentity+"' name='objParId' value=''/>\n"); 
 		htmlStream.append("   <input type='hidden' id='parameterId"+requestIdentity+"' name='parameterId' value=''/>\n"); 
-		htmlStream.append("   <input type='hidden' id='roleName"+requestIdentity+"' name='roleName' value='"+roleName+"'/>\n"); 
+		//htmlStream.append("   <input type='hidden' id='roleName"+requestIdentity+"' name='roleName' value='"+roleName+"'/>\n"); 
 		htmlStream.append("   <input type='hidden' id='allSelectMode"+requestIdentity+"' name='' value=''/>\n"); 
 
 		logger.debug("OUT");

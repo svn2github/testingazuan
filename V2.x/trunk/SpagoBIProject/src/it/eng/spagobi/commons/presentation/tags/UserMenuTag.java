@@ -58,6 +58,8 @@ public class UserMenuTag extends TagSupport {
 	protected IMessageBuilder msgBuilder = null;
 	protected RequestContainer requestContainer = null;
 	protected IEngUserProfile userProfile = null;
+	protected boolean viewTrackPath = false;
+	
 	
 	public int doStartTag() throws JspException {
 		logger.debug("IN");
@@ -113,10 +115,12 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n 	})");
 			htmlStream.append("\n );");
 		} else {
-			if (father!=null && father.startsWith("#")){
+			if (viewTrackPath==true && father!=null && father.startsWith("#")){
 				father = father.substring(1);
 				father = msgBuilder.getMessage(father, httpRequest);
 			}
+			else father=null;
+			
 			if (titleCode.startsWith("#")){
 				titleCode = titleCode.substring(1);
 				titleCode = msgBuilder.getMessage(titleCode, httpRequest);
@@ -134,6 +138,7 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n 	text: '" + getTitle(titleCode) + "',");
 			htmlStream.append("\n 	icon: '" + iconUrl + "', ");
 			//htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\")'");
+
 			htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\",\""+father+" > "+titleCode+"\")'");			
 			htmlStream.append("\n })");
 		}
@@ -180,6 +185,14 @@ public class UserMenuTag extends TagSupport {
 			if (userProfile.isAbleToExecuteAction(functionality)) return true;
 		}
 		return false;
+	}
+
+	public boolean isViewTrackPath() {
+		return viewTrackPath;
+	}
+
+	public void setViewTrackPath(boolean viewTrackPath) {
+		this.viewTrackPath = viewTrackPath;
 	}
 	
 	/*

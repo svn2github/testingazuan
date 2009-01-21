@@ -1312,7 +1312,8 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		logger.debug("IN");
 		ExecutionInstance instance = getExecutionInstance();
 		instance.refreshParametersValues(request, false);
-		String roleName=(String)request.getAttribute("roleName");
+		//String roleName=(String)request.getAttribute("roleName");
+		String roleName=instance.getExecutionRole();
 		List toAddValues=new ArrayList();
 		List toAddDescription=new ArrayList();
 		IEngUserProfile profile = getUserProfile();
@@ -1338,11 +1339,14 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 			}
 		}
 
-		Integer parId=currbiObjPar.getParID();
+		/*Integer parId=currbiObjPar.getParID();
 
 		IParameterDAO pardao = DAOFactory.getParameterDAO();
 		Parameter par = pardao.loadForExecutionByParameterIDandRoleName(parId, roleName);
-		ModalitiesValue modVal = par.getModalityValue();
+		ModalitiesValue modVal = par.getModalityValue();*/
+		
+		
+		ModalitiesValue modVal = currbiObjPar.getParameter().getModalityValue();
 		// get the lov provider
 		String looProvider = modVal.getLovProvider();
 		// get from the request the type of lov
@@ -1373,7 +1377,6 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		// set list of all values
 		currbiObjPar.setParameterValues(toAddValues);
 		currbiObjPar.setParameterValuesDescription(toAddDescription);
-		List errors = instance.getParametersErrors();
 
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 		"ExecuteBIObjectPageParameter");
@@ -1402,7 +1405,8 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		instance.refreshParametersValues(request, false);
 
 		String objParIdS=(String)request.getAttribute("objParId");
-		String roleName=(String)request.getAttribute("roleName");
+		//String roleName=(String)request.getAttribute("roleName");
+		String roleName=instance.getExecutionRole();
 
 		Integer objParId=Integer.valueOf(objParIdS);
 
@@ -1423,7 +1427,6 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		currbiObjPar.setParameterValues(null);
 		currbiObjPar.setParameterValuesDescription(null);
 
-		List errors = instance.getParametersErrors();
 		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME,
 		"ExecuteBIObjectPageParameter");
 		logger.debug("OUT");

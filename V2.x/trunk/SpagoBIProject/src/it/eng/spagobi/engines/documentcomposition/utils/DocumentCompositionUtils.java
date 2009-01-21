@@ -70,6 +70,7 @@ public class DocumentCompositionUtils {
 	 * @return String the complete url. It use this format: <code_error>|<url>. If there is an error during the execution <code_error> is valorized and url is null, else it is null and the url is complete.
 	 */
 	public static String getExecutionUrl(String objLabel, SessionContainer sessionContainer, SourceBean requestSB) {
+		logger.debug("IN");
 		 // get the user profile from session
 		SessionContainer permSession = sessionContainer.getPermanentContainer();
 	    IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -117,6 +118,8 @@ public class DocumentCompositionUtils {
 		}
 		urlReturn += getParametersUrl(document, requestSB, instance);
 		//adds '|' char for management error into jsp if is necessary.
+		logger.debug("urlReturn: " + "|"+urlReturn);
+		logger.debug("OUT");
 		return "|"+urlReturn;
 	}
 
@@ -129,6 +132,7 @@ public class DocumentCompositionUtils {
 	 * @return a string with the url completed
 	 */
 	private static String getParametersUrl(Document document, SourceBean requestSB, ExecutionInstance instance){
+		logger.debug("IN");
 		String paramUrl = "";
 		//set others parameters value
 		Properties lstParams = document.getParams();
@@ -165,6 +169,8 @@ public class DocumentCompositionUtils {
 		else
 			paramUrl = paramUrl.substring(0, paramUrl.length()-5); 
 		*/
+		logger.debug("paramUrl: " + paramUrl);
+		logger.debug("OUT");
 		return paramUrl;
 	}
 

@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Antonella Giachino (antonella.giachino@eng.it)
  *
@@ -42,6 +44,9 @@ import java.util.Properties;
  * and create an object in session.
  */
 public class DocumentCompositionConfiguration {
+	
+	private static transient Logger logger=Logger.getLogger(DocumentCompositionConfiguration.class);
+	
 	private String templateFile;
 	private Map documentsMap;
 	private Map lstDimensions = new LinkedHashMap();
@@ -320,6 +325,7 @@ public class DocumentCompositionConfiguration {
 	}
 	
 	private void initDocuments(SourceBean documentsConfigurationSB) {
+		logger.debug("IN");
 		Document document;
 		String attributeValue;
 		
@@ -334,65 +340,68 @@ public class DocumentCompositionConfiguration {
 		SourceBean parametersSB;
 		SourceBean paramSB;
 		SourceBean refreshDocLinkedSB;
+		try{
 		
-		
-		documentList = documentsConfigurationSB.getAttributeAsList("DOCUMENT");
-		//create dimensions Map
-		
-		//loop on documents
-		for(int i = 0; i < documentList.size(); i++) {
+			documentList = documentsConfigurationSB.getAttributeAsList("DOCUMENT");
+			//create dimensions Map
 			
-			documentSB = (SourceBean)documentList.get(i);
-			document = new Document();	
-			//set the number that identify the document within of hash table
-			document.setNumOrder(i);	
-			attributeValue = (String)documentSB.getAttribute("sbi_obj_label");
-			document.setSbiObjLabel(attributeValue);
-
-			Integer width = (documentsConfigurationSB.getAttribute("video_width")==null)?DEFAULT_WIDTH:Integer.valueOf((String)documentsConfigurationSB.getAttribute("video_width"));
-			Integer height = (documentsConfigurationSB.getAttribute("video_height")==null)?DEFAULT_HEIGHT:Integer.valueOf((String)documentsConfigurationSB.getAttribute("video_height"));
-			document.setVideoWidth(getVideoDimensions("width", width));
-			document.setVideoHeight(getVideoDimensions("height", height));
-
-			dimensionSB = (SourceBean)documentSB.getAttribute("STYLE");			
-			attributeValue = (String)dimensionSB.getAttribute("style");
-			//attributeValue = (String)dimensionSB.getAttribute("class");
-			document.setStyle(attributeValue);			
-			
-			parametersSB = (SourceBean)documentSB.getAttribute("PARAMETERS");	
-			paramList = parametersSB.getAttributeAsList("PARAMETER");
-			Properties param = new Properties();
-			//loop on parameters of single document
-			for(int j = 0; j < paramList.size(); j++) {
-				paramSB = (SourceBean)paramList.get(j);
-				String sbiParLabel = (paramSB.getAttribute("sbi_par_label")==null)?"":(String)paramSB.getAttribute("sbi_par_label");
-				param.setProperty("sbi_par_label_param_"+i+"_"+j, sbiParLabel);
-				String typePar = (paramSB.getAttribute("type")==null)?"":(String)paramSB.getAttribute("type");
-				param.setProperty("type_par_"+i+"_"+j, typePar);
-				String defaultValuePar = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
-				param.setProperty("default_value_param_"+i+"_"+j, defaultValuePar);
+			//loop on documents
+			for(int i = 0; i < documentList.size(); i++) {
 				
-				refreshSB = (SourceBean)paramSB.getAttribute("REFRESH");				
-				refreshDocList = refreshSB.getAttributeAsList("REFRESH_DOC_LINKED");
-				Properties paramRefreshLinked = new Properties();
-				//loop on document linked to single parameter
-				int k = 0;
-				for(k = 0; k < refreshDocList.size(); k++) {
-					refreshDocLinkedSB = (SourceBean)refreshDocList.get(k);
-					String labelDoc = (refreshDocLinkedSB.getAttribute("labelDoc")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelDoc");
-					paramRefreshLinked.setProperty("refresh_doc_linked", labelDoc);
-					String labelPar = (refreshDocLinkedSB.getAttribute("labelParam")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelParam");
-					paramRefreshLinked.setProperty("refresh_par_linked", labelPar);
-					String defaultValueLinked = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
-					paramRefreshLinked.setProperty("default_value_linked", defaultValueLinked);
-					param.setProperty("param_linked_"+i+"_"+j+"_"+k, paramRefreshLinked.toString());
+				documentSB = (SourceBean)documentList.get(i);
+				document = new Document();	
+				//set the number that identify the document within of hash table
+				document.setNumOrder(i);	
+				attributeValue = (String)documentSB.getAttribute("sbi_obj_label");
+				document.setSbiObjLabel(attributeValue);
+	
+				Integer width = (documentsConfigurationSB.getAttribute("video_width")==null)?DEFAULT_WIDTH:Integer.valueOf((String)documentsConfigurationSB.getAttribute("video_width"));
+				Integer height = (documentsConfigurationSB.getAttribute("video_height")==null)?DEFAULT_HEIGHT:Integer.valueOf((String)documentsConfigurationSB.getAttribute("video_height"));
+				document.setVideoWidth(getVideoDimensions("width", width));
+				document.setVideoHeight(getVideoDimensions("height", height));
+	
+				dimensionSB = (SourceBean)documentSB.getAttribute("STYLE");			
+				attributeValue = (String)dimensionSB.getAttribute("style");
+				//attributeValue = (String)dimensionSB.getAttribute("class");
+				document.setStyle(attributeValue);			
+				
+				parametersSB = (SourceBean)documentSB.getAttribute("PARAMETERS");	
+				paramList = parametersSB.getAttributeAsList("PARAMETER");
+				Properties param = new Properties();
+				//loop on parameters of single document
+				for(int j = 0; j < paramList.size(); j++) {
+					paramSB = (SourceBean)paramList.get(j);
+					String sbiParLabel = (paramSB.getAttribute("sbi_par_label")==null)?"":(String)paramSB.getAttribute("sbi_par_label");
+					param.setProperty("sbi_par_label_param_"+i+"_"+j, sbiParLabel);
+					String typePar = (paramSB.getAttribute("type")==null)?"":(String)paramSB.getAttribute("type");
+					param.setProperty("type_par_"+i+"_"+j, typePar);
+					String defaultValuePar = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
+					param.setProperty("default_value_param_"+i+"_"+j, defaultValuePar);
+					
+					refreshSB = (SourceBean)paramSB.getAttribute("REFRESH");				
+					refreshDocList = refreshSB.getAttributeAsList("REFRESH_DOC_LINKED");
+					Properties paramRefreshLinked = new Properties();
+					//loop on document linked to single parameter
+					int k = 0;
+					for(k = 0; k < refreshDocList.size(); k++) {
+						refreshDocLinkedSB = (SourceBean)refreshDocList.get(k);
+						String labelDoc = (refreshDocLinkedSB.getAttribute("labelDoc")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelDoc");
+						paramRefreshLinked.setProperty("refresh_doc_linked", labelDoc);
+						String labelPar = (refreshDocLinkedSB.getAttribute("labelParam")==null)?"":(String)refreshDocLinkedSB.getAttribute("labelParam");
+						paramRefreshLinked.setProperty("refresh_par_linked", labelPar);
+						String defaultValueLinked = (paramSB.getAttribute("default_value")==null)?"":(String)paramSB.getAttribute("default_value");
+						paramRefreshLinked.setProperty("default_value_linked", defaultValueLinked);
+						param.setProperty("param_linked_"+i+"_"+j+"_"+k, paramRefreshLinked.toString());
+					}
+					param.setProperty("num_doc_linked_param_"+i+"_"+j, new Integer(k).toString());
 				}
-				param.setProperty("num_doc_linked_param_"+i+"_"+j, new Integer(k).toString());
-			}
-			document.setParams(param);
-			addDocument(document);
-		}		
-		
+				document.setParams(param);
+				addDocument(document);
+			}		
+		}catch (Exception e){
+			logger.error ("Error while initializing the document. " , e);
+		}
+		logger.debug("OUT");
 	}
 
 	
@@ -429,6 +438,7 @@ public class DocumentCompositionConfiguration {
 	 * @return the labels array
 	 */
 	public List getLabelsArray() {
+		logger.debug("IN");
 		Collection collLabels = documentsMap.values();
 		List retLabels = new ArrayList();
 		Object[] arrDocs = (Object[])collLabels.toArray();
@@ -444,8 +454,10 @@ public class DocumentCompositionConfiguration {
 				}
 			}
 		}catch(Exception e){
+			logger.error("Error while getting documents label ", e);
 			System.out.println(e);
 		}
+		logger.debug("OUT");
 		return retLabels;
 
 	}
@@ -456,6 +468,8 @@ public class DocumentCompositionConfiguration {
 	 * @return the sbi obj labels array
 	 */
 	public List getSbiObjLabelsArray() {
+		logger.debug("IN");
+		
 		Collection collLabels = documentsMap.values();
 		List retLabels = new ArrayList();
 		Object[] arrDocs = (Object[])collLabels.toArray();
@@ -465,8 +479,9 @@ public class DocumentCompositionConfiguration {
 				retLabels.add(tmpDoc.getSbiObjLabel());
 			}
 		}catch(Exception e){
-			System.out.println(e);
+			logger.error("Error while getting documents label.", e);
 		}
+		logger.debug("OUT");
 		return retLabels;
 
 	}
@@ -495,6 +510,7 @@ public class DocumentCompositionConfiguration {
 	 * @return the parameters array
 	 */
 	public List getParametersArray() {
+		logger.debug("IN");
 		Collection collDocs = documentsMap.values();
 		List retParams = new ArrayList();
 		Object[] arrPars = (Object[])collDocs.toArray();
@@ -504,8 +520,9 @@ public class DocumentCompositionConfiguration {
 				retParams.add(tmpDoc.getParams());
 			}
 		}catch(Exception e){
-			System.out.println(e);
+			logger.error("Error while getting parameters.", e);
 		}
+		logger.debug("OUT");
 		return retParams;
 
 	}
@@ -536,6 +553,7 @@ public class DocumentCompositionConfiguration {
 	 * @return the parameters for document
 	 */
 	public HashMap getParametersForDocument(String docLabel) {
+		logger.debug("IN");
 		Collection collDocs = documentsMap.values();
 		HashMap retParams = new LinkedHashMap();
 		Object[] arrDocs = (Object[])collDocs.toArray();
@@ -565,8 +583,11 @@ public class DocumentCompositionConfiguration {
 				}
 			}
 		}catch(Exception e){
-			System.out.println(e);
+			logger.error("Error while reading parameters.", e);
+			
+			
 		}
+		logger.debug("OUT");
 		return retParams;
 
 	}
@@ -577,6 +598,7 @@ public class DocumentCompositionConfiguration {
 	 * @param docLabel the logical label of document presents into document composition
 	 */
 	public void getInfoDocumentLinked(String docLabel) {
+		logger.debug("IN");
 		Document tmpDoc = getDocument(docLabel);
 		int numDoc = 0;
 		if (tmpDoc != null){
@@ -684,8 +706,9 @@ public class DocumentCompositionConfiguration {
 				}
 				
 			}catch(Exception e){
-				System.out.println(e);
+				logger.error("Error while getting informations about documents ", e);
 			}
+			logger.debug("OUT");
 		}
 	}
 

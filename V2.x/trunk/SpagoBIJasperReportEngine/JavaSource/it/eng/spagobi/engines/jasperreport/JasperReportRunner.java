@@ -61,6 +61,7 @@ import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRTextExporter;
+import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
 import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
@@ -290,7 +291,9 @@ public class JasperReportRunner {
 		    } else if (outputType.equalsIgnoreCase("txt")) {
 		    	if(mimeType == null) mimeType = "text/plain";
 		    	servletResponse.setContentType(mimeType);
-		    	if(exporter == null) exporter = new JRTextExporter(); 
+		    	if(exporter == null) exporter = new JRTextExporter();
+		    	exporter.setParameter(JRTextExporterParameter.PAGE_HEIGHT,new Integer(100));
+		    	exporter.setParameter(JRTextExporterParameter.PAGE_WIDTH,new Integer(100));
 		    } else if (outputType.equalsIgnoreCase("pdf"))	{			
 		    	if(mimeType == null) mimeType = "application/pdf";
 		    	servletResponse.setContentType(mimeType);

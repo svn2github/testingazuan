@@ -211,6 +211,11 @@ String getUrl(String baseUrl, Map mapPars) {
 <LINK rel='StyleSheet' 
 	  href='<%=urlBuilder.getResourceLink(request, "css/extjs/ext-all.css")%>' 
 	  type='text/css' />
+	  	  
+<LINK rel='StyleSheet'
+      href='<%=urlBuilder.getResourceLink(request, "css/extjs/xtheme-gray.css")%>'
+      type='text/css' />
+      	  
  <!--   for web menu
 <LINK rel='StyleSheet' 
 	  href='<%=urlBuilder.getResourceLink(request, "css/extjs/extSpagoBI.css")%>' 

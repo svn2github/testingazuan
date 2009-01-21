@@ -3,10 +3,10 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 5-nov-2008 17.17.40 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" table="sbi_threshold" >
+    <class name="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" table="SBI_THRESHOLD" >
         <id name="thresholdId" type="integer">
             <column name="THRESHOLD_ID" />
-			<generator class="native">
+            <generator class="native">
             	<param name="sequence">sbi_threshold_seq</param>
             </generator>
         </id>
@@ -15,7 +15,7 @@
         </many-to-one>
         <property name="name" type="string">
             <column name="name" length="127" />
-        </property>
+		</property>
         <property name="description" type="string">
             <column name="description" />
         </property>

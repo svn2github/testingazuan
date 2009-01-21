@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 5-nov-2008 17.17.40 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue" table="sbi_threshold_value" >
+    <class name="it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue" table="SBI_THRESHOLD_VALUE" >
         <id name="idThresholdValue" type="integer">
             <column name="id_threshold_value" />
             <generator class="native">

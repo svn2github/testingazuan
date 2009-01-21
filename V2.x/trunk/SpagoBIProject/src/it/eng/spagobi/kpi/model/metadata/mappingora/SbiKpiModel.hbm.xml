@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 5-nov-2008 17.17.18 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.kpi.model.metadata.SbiKpiModel" table="sbi_kpi_model" >
+    <class name="it.eng.spagobi.kpi.model.metadata.SbiKpiModel" table="SBI_KPI_MODEL" >
         <id name="kpiModelId" type="integer">
             <column name="KPI_MODEL_ID" />
             <generator class="native">

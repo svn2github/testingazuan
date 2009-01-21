@@ -105,11 +105,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				_htmlStream.append(block.makeTree(instanceO, userId,request,display_bullet_chart, display_alarm, display_semaphore,display_weight ));
 				
 			}
+			
 			String resDiv = "";
 			String scriptDiv = "";
 			String scriptViewAll = "";
 			String scriptHideAll = "";
-			if(resources!=null && !resources.isEmpty()){
+			if(resources!=null && !resources.isEmpty() && resources.size()>1){
 				scriptViewAll = "<script>";
 				scriptViewAll += "function viewAll(){";
 				scriptHideAll = "<script>";
@@ -172,12 +173,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			 <script>
 			 function showLegendTooltip(thresholds,id){
 					 element =  document.getElementById(id);
-					 element.innerHTML = '<table>';
+					 element.innerHTML = '<table><tr>';
 			 	for (i = 0;i<thresholds.length;i++)
 					{	
-					   element.innerHTML =element.innerHTML+ '<tr><td style="width:20px;height:9px;vertical-align:middle;" ><div style="width:7px;height:7px;vertical-align:middle;background-color:'+thresholds[i].color+'" /></td><td><div style="font-family:Arial;align:left;vertical-align:middle;font-size:7pt;width:90px;height:9px;" >&nbsp;'+thresholds[i].min + ' - '+thresholds[i].max+': '+ thresholds[i].label+'</td></tr>';
+					   element.innerHTML =element.innerHTML+ '<td style="width:9px;height:9px;vertical-align:middle;" ><div style="margin-top:8px;margin-left:4px;margin-right:2px;width:7px;height:7px;vertical-align:middle;background-color:'+thresholds[i].color+'" /></td><td><div style="margin-top:6px;font-family:Arial;text-align:left;vertical-align:middle;font-size:7pt;height:9px;" >'+thresholds[i].min + '-'+thresholds[i].max+':'+ thresholds[i].label+'</td>';
 					}
-					element.innerHTML =element.innerHTML+ '</table>';
+					element.innerHTML =element.innerHTML+ '</tr></table>';
 					element.style.display = 'inline' ;
 					
 			 }

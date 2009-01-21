@@ -116,14 +116,14 @@ public class LineChart extends ChartImpl{
 		rangeAxis.setLabelFont(new Font("Arial", Font.PLAIN, 12 ));
 		Color colorLabel= Color.decode("#000000");
 		rangeAxis.setLabelPaint(colorLabel);
-		rangeAxis.setTickLabelFont(new Font("Arial", Font.PLAIN, 12 ));
+		rangeAxis.setTickLabelFont(new Font("Arial", Font.PLAIN, 10 ));
 		rangeAxis.setTickLabelPaint(colorLabel);
 		plot.setRangeAxis(rangeAxis);
 		
-		CategoryAxis domainAxis = new CategoryAxis("Date");
-		domainAxis.setLabelFont(new Font("Arial", Font.PLAIN, 12 ));
+		CategoryAxis domainAxis = new CategoryAxis();
+		domainAxis.setLabelFont(new Font("Arial", Font.PLAIN, 10 ));
         domainAxis.setLabelPaint(colorLabel);
-        domainAxis.setTickLabelFont(new Font("Arial", Font.PLAIN, 12 ));
+        domainAxis.setTickLabelFont(new Font("Arial", Font.PLAIN, 10 ));
         domainAxis.setTickLabelPaint(colorLabel);
 		plot.setDomainAxis(domainAxis);
 
@@ -161,12 +161,13 @@ public class LineChart extends ChartImpl{
 				CategoryLabelPositions.UP_45);
 		JFreeChart chart = new JFreeChart(plot);
 		logger.debug("Chart created");
-		TextTitle title=new TextTitle(name,new Font("Arial", Font.BOLD, 20 ),Color.decode("#990200"), RectangleEdge.TOP, HorizontalAlignment.CENTER, VerticalAlignment.TOP, RectangleInsets.ZERO_INSETS);
+		TextTitle title=new TextTitle(name,new Font("Arial", Font.BOLD, 16 ),Color.decode("#990200"), RectangleEdge.TOP, HorizontalAlignment.CENTER, VerticalAlignment.TOP, RectangleInsets.ZERO_INSETS);
 		chart.setTitle(title);
-		TextTitle subTitle =new TextTitle(subName,new Font("Arial", Font.PLAIN, 14 ),Color.decode("#000000"), RectangleEdge.TOP, HorizontalAlignment.CENTER, VerticalAlignment.TOP, RectangleInsets.ZERO_INSETS);
+		TextTitle subTitle =new TextTitle(subName,new Font("Arial", Font.PLAIN, 12 ),Color.decode("#000000"), RectangleEdge.TOP, HorizontalAlignment.CENTER, VerticalAlignment.TOP, RectangleInsets.ZERO_INSETS);
 		chart.addSubtitle(subTitle);
-		TextTitle subTitle2 =new TextTitle(subName,new Font("Arial", Font.PLAIN, 12 ),Color.decode("#FFFFFF"), RectangleEdge.TOP, HorizontalAlignment.CENTER, VerticalAlignment.TOP, RectangleInsets.ZERO_INSETS);
+		TextTitle subTitle2 =new TextTitle(subName,new Font("Arial", Font.PLAIN, 8 ),Color.decode("#FFFFFF"), RectangleEdge.TOP, HorizontalAlignment.CENTER, VerticalAlignment.TOP, RectangleInsets.ZERO_INSETS);
 		chart.addSubtitle(subTitle2);
+		chart.removeLegend();
 		
 		chart.setBackgroundPaint(Color.white);
 		logger.debug("OUT");

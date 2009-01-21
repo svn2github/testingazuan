@@ -69,7 +69,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String path=dir+"/"+executionId+".png";
 	java.io.File file1 = new java.io.File(path);
 	
-	ChartUtilities.saveChartAsPNG(file1, chart, 550, 400, info);
+	ChartUtilities.saveChartAsPNG(file1, chart, 450, 310, info);
 
 	String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 	"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&userid="+userId+"&path="+path+"&LIGHT_NAVIGATOR_DISABLED=TRUE";

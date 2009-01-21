@@ -80,12 +80,12 @@ public class KpiResourceBlock {
 			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 			logger.debug("Start Kpi tree for Resource "+r.getName());
 			_htmlStream.append("<div id ='"+r.getName()+"' >\n");				
-			_htmlStream.append("<table style='CLEAR: left; VERTICAL-ALIGN: middle; WIDTH: 100%' >\n");
+			_htmlStream.append("<table class='kpi_table' style='CLEAR: left; WIDTH: 100%' >\n");
 			_htmlStream.append("<TBODY>\n");
 			String res = msgBuilder.getMessage("sbi.kpi.RESOURCE", httpReq);
 			_htmlStream.append(" <tr class='kpi_resource_section' ><td colspan=\"9\" id=\"ext-gen58\" >"+res+r.getName()+"</td></tr>\n");
 		}else{
-			_htmlStream.append("<table style='CLEAR: left; VERTICAL-ALIGN: middle; WIDTH: 100%' >\n");
+			_htmlStream.append("<table class='kpi_table' style='CLEAR: left;  WIDTH: 100%' >\n");
 			_htmlStream.append("<TBODY>\n");
 		}
 		
@@ -117,9 +117,9 @@ public class KpiResourceBlock {
 		UUID uuid = uuidGen.generateTimeBasedUUID();
 		requestIdentity = uuid.toString();
 		requestIdentity = requestIdentity.replaceAll("-", "");
-		String alarmImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/alarm.jpg");
-		String infoImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/info.jpg");
-		String docImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/linkedDoc.gif");
+		String alarmImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/alarm.gif");
+		String infoImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/info.gif");
+		String docImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/linkedDoc.gif");
 		String trendImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/trend.jpg");
 		String modelName = line.getModelNodeName();
 		logger.debug("Model node :"+modelName);
@@ -161,30 +161,37 @@ public class KpiResourceBlock {
 				
 		}
 		else if(evenLine){
-			 _htmlStream.append("	<tr class='kpi_line_section_even' style='border-bottom: 1px solid #660000 !important;height:9px;'>\n");
+			 _htmlStream.append("	<tr class='kpi_line_section_even' style='border-bottom: 1px solid #660000 !important;'>\n");
 		}else{
-			_htmlStream.append("	<tr class='kpi_line_section_odd'>\n");
+			_htmlStream.append("	<tr class='kpi_line_section_odd' style='border-bottom: 1px solid #DDDDDD !important;'>\n");
 		}
 		if (display_semaphore && semaphorColor!= null){
 			String semaphorHex = Integer.toHexString( semaphorColor.getRGB() & 0x00ffffff ) ;		
-			_htmlStream.append("		<td width='45%' style='padding-top:8px;padding-bottom:8px;' ><div style=\"MARGIN-LEFT: "+20*recursionLev+"px;float:left;vertical-align:middle;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div><div style='vertical-align:middle;' class='kpi_div'>"+modelName+"</div></td>\n");
+			_htmlStream.append("		<td width='25%' class='kpi_td' ><div style=\"margin-left: "+20*recursionLev+"px;margin-top:5px;margin-right:5px;float:left;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div><div  class='kpi_div'>"+modelName+"</div></td>\n");
 		}else{
-			_htmlStream.append("		<td width='45%' class='kpi_td_left' ><div class='kpi_div'><div style='vertical-align:middle;MARGIN-LEFT: "+20*recursionLev+"px;' class='kpi_div'>"+modelName+"</div></div></td>\n");
+			_htmlStream.append("		<td width='25%'  class='kpi_td' ><div class='kpi_div'><div style='MARGIN-LEFT: "+20*recursionLev+"px;text-align:left;' class='kpi_div'>"+modelName+"</div></div></td>\n");
 		}
 		logger.debug("Written HTML for Semaphore");
 		logger.debug("Written HTML for ModelName:"+modelName);
 		
-		_htmlStream.append("		<td  width='9%' ><div id=\""+requestIdentity+"\" style='display:none'></div></td>\n");
+		_htmlStream.append("		<td  width='28%' class='kpi_td' ><div id=\""+requestIdentity+"\" style='display:none;float:right;'></div></td>\n");
 		
+		String valueDescr = "";
+		if(kpiVal.getValueDescr()!=null){
+			valueDescr = kpiVal.getValueDescr();
+			_htmlStream.append("		<td width='4%' class='kpi_td' title='"+valueDescr+"' style='text-align:center;'  ><div class='kpi_div'  ><img src=\""+infoImgSrc+"\" alt=\"Info\" /></div></td>\n");				
+		}else{
+			_htmlStream.append("		<td width='4%' class='kpi_td' title='"+valueDescr+"'   ><div ></div></td>\n");				
+		}
 		
 		String periodValid = msgBuilder.getMessage("sbi.kpi.validPeriod", httpReq);
 		periodValid = periodValid.replaceAll("%0", kpiVal.getBeginDate().toString());
 		periodValid = periodValid.replaceAll("%1", kpiVal.getEndDate().toString());
 		
 		if (lo!= null && kpiVal.getScaleCode()!=null){
-			_htmlStream.append("		<td  width='9%' title='"+periodValid+"' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"("+kpiVal.getScaleCode()+")</div></td>\n");
+			_htmlStream.append("		<td  width='9%' title='"+periodValid+"' class='kpi_td_left'  ><div  class='kpi_div'>"+lo.toString()+"("+kpiVal.getScaleCode()+")</div></td>\n");
 		}else if(lo!= null){
-			_htmlStream.append("		<td  width='9%' title='"+periodValid+"' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>"+lo.toString()+"</div></td>\n");
+			_htmlStream.append("		<td  width='9%' title='"+periodValid+"' class='kpi_td_left'  ><div  class='kpi_div'>"+lo.toString()+"</div></td>\n");
 		}else{
 			_htmlStream.append("		<td  width='9%' title='"+periodValid+"' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
@@ -192,7 +199,7 @@ public class KpiResourceBlock {
 		
 		String weight2 = msgBuilder.getMessage("sbi.kpi.weight", httpReq);
 		if (display_weight && weight!=null){
-			_htmlStream.append("		<td width='5%' title='"+weight2+"' class='kpi_td_left' style='vertical-align:middle;' ><div style='vertical-align:middle;' class='kpi_div'>["+weight.toString()+"]</div></td>\n");
+			_htmlStream.append("		<td width='5%' title='"+weight2+"' class='kpi_td_left'  ><div  class='kpi_div'>["+weight.toString()+"]</div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='5%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
@@ -212,7 +219,7 @@ public class KpiResourceBlock {
 			}
 			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 			"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&userid=<%=userId%>&path="+path+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
-			_htmlStream.append("		<td width='22%' class='kpi_td_left' style='vertical-align:middle;' ><div class='kpi_div' style='vertical-align:middle;' ><img style=\"align:left;vertical-align:middle;\" onmouseover=\"showLegendTooltip("+thresholdJsArray+",'"+requestIdentity+"');\" onmouseout=\"hideLegendTooltip('"+requestIdentity+"');\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
+			_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div style='margin-top:4px;'><img style=\"align:left;\" onmouseover=\"showLegendTooltip("+thresholdJsArray+",'"+requestIdentity+"');\" onmouseout=\"hideLegendTooltip('"+requestIdentity+"');\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
 			
 		}else{
 			_htmlStream.append("		<td width='22%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
@@ -242,7 +249,7 @@ public class KpiResourceBlock {
 				
 				String trend = msgBuilder.getMessage("sbi.kpi.trend", httpReq);
 				String trendPopupUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
-				_htmlStream.append("		<td  width='3%' title=\""+trend+"\" style='vertical-align:middle;text-align:center;' ><div style='vertical-align:middle;' class='kpi_div' ><a id='linkDetail_"+requestIdentity+"_"+recursionLev+"' ><img style='vertical-align:middle;' src=\""+trendImgSrc+"\" /></div></a></td>\n");
+				_htmlStream.append("		<td  width='3%'  class='kpi_td' title=\""+trend+"\" style='text-align:center;' ><div class='kpi_div'  ><a id='linkDetail_"+requestIdentity+"_"+recursionLev+"' ><img  src=\""+trendImgSrc+"\" /></div></a></td>\n");
 				// insert javascript for open popup window for the trend
 			    _htmlStream.append(" <script>\n");
 			    _htmlStream.append("   var win"+requestIdentity+"_"+recursionLev+"; \n");
@@ -264,8 +271,8 @@ public class KpiResourceBlock {
 			    _htmlStream.append("            }, \n");
 			    _htmlStream.append("            modal: true,\n");
 			    _htmlStream.append("            layout:'fit',\n");
-				_htmlStream.append("            height:460,\n");
-				_htmlStream.append("            width:600,\n");
+				_htmlStream.append("            height:360,\n");
+				_htmlStream.append("            width:500,\n");
 				_htmlStream.append("            closeAction:'hide',\n");
 		        _htmlStream.append("            scripts: true, \n");
 		        _htmlStream.append("            plain: true \n");       
@@ -275,7 +282,7 @@ public class KpiResourceBlock {
 			    _htmlStream.append(");\n");
 			    _htmlStream.append(" </script>\n");
 			}else{
-				_htmlStream.append("		<td  width='3%' style='vertical-align:middle;text-align:center;' ><div style='vertical-align:middle;' class='kpi_div' ></div></td>\n");
+				_htmlStream.append("		<td class='kpi_td' width='3%'  ><div  ></div></td>\n");
 			}
 		logger.debug("Written HTML for Popup window with trend.");
 		
@@ -284,7 +291,7 @@ public class KpiResourceBlock {
 		if (documents!=null && !documents.isEmpty()){
 			String executionFlowId = instanceO.getFlowId();
 			String uuidPrincip = instanceO.getExecutionId();
-			_htmlStream.append("		<td width='2%' style='vertical-align:middle;' class='kpi_td_right' ><div class='kpi_div' style='vertical-align:middle;' >\n");
+			_htmlStream.append("		<td width='2%'  class='kpi_td' ><div class='kpi_div'  >\n");
 			Iterator it = documents.iterator();
 			while(it.hasNext()){
 				String docLabel =(String)it.next();
@@ -309,7 +316,7 @@ public class KpiResourceBlock {
 				}
 				String docLinked = msgBuilder.getMessage("sbi.kpi.docLinked", httpReq);
 				String docHref = urlBuilder.getUrl(httpRequest, execUrlParMap);
-				_htmlStream.append("<a style='vertical-align:middle;' title='"+docLinked+"' href=\""+docHref+"\"> <img style='vertical-align:middle;' src=\""+docImgSrc+"\" alt=\"Attached Document\" /></a>\n");				
+				_htmlStream.append("<a  title='"+docLinked+"' href=\""+docHref+"\"> <img  src=\""+docImgSrc+"\" alt=\"Attached Document\" /></a>\n");				
 			}
 			_htmlStream.append("		</div></td>\n");
 		}else{
@@ -319,20 +326,13 @@ public class KpiResourceBlock {
 		
 		if (display_alarm){
 			String alarmControl = msgBuilder.getMessage("sbi.kpi.alarmControl", httpReq);
-			if(alarm) _htmlStream.append("		<td width='2%' title='"+alarmControl+"' style='vertical-align:middle;' class='kpi_td_right' ><div class='kpi_div' style='vertical-align:middle;' ><img style='vertical-align:middle;' src=\""+alarmImgSrc+"\" alt=\"Kpi under Alarm Control\" /></div></td>\n");
+			if(alarm) _htmlStream.append("		<td width='2%' title='"+alarmControl+"' style='text-align:center;' class='kpi_td_right' ><div class='kpi_div'  ><img  src=\""+alarmImgSrc+"\" alt=\"Kpi under Alarm Control\" /></div></td>\n");
 			else _htmlStream.append("		<td width='2%' class='kpi_td_right' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='2%' class='kpi_td_right' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
 		logger.debug("Written HTML for alarm control:");
 		
-		String valueDescr = "";
-		if(kpiVal.getValueDescr()!=null){
-			valueDescr = kpiVal.getValueDescr();
-			_htmlStream.append("		<td width='3%' title='"+valueDescr+"' style='vertical-align:middle;' class='kpi_td_right' ><div class='kpi_div' style='vertical-align:middle;' ><img style='vertical-align:middle;' src=\""+infoImgSrc+"\" alt=\"Info\" /></div></td>\n");				
-		}else{
-			_htmlStream.append("		<td width='3%' title='"+valueDescr+"' style='vertical-align:middle;' class='kpi_td_right' ><div class='kpi_div' style='vertical-align:middle;' ></div></td>\n");				
-		}
 		
 	   _htmlStream.append("	</tr>\n");
 

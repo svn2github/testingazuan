@@ -90,7 +90,7 @@
 				</FIELD>
 				<FIELD name="className" label="#SBISet.eng.classNameField">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\.\_\-])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>
 				</FIELD>
 				<FIELD name="secondaryUrl" label="#SBISet.eng.secondaryUrlField">

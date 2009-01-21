@@ -162,9 +162,19 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 	<div id="menubar" style="width:100%;background:#EEEFF3;"> 
 	</div>
 
-	<% //if(user==true){%>
+	<% //if(user==true){
+	ConfigSingleton spagoconfig = ConfigSingleton.getInstance(); 
+	// get mode of execution
+	String viewTrack = (String)spagoconfig.getAttribute("SPAGOBI.MENU.pathTracked");   
+	boolean viewTrackPath=false;	
+	if(viewTrack!=null && viewTrack.equalsIgnoreCase("TRUE")){
+	viewTrackPath=true;	
+	}
+	%>
+	
+	<%if(viewTrackPath==true){ %>
 	<div id="trackPath" style="font:normal 11px tahoma,arial,sans-serif; font-weight: bold;width:100%;background:#EEEFFF;"></div>
-	<%//} %>
+	<%} %>
 	
 	
 	
@@ -526,7 +536,9 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 			%>
 		
 		<% } else { %>
-		<spagobiwa:userMenu/>
+		
+		<spagobiwa:userMenu viewTrackPath='<%=viewTrackPath%>'/>
+		
 		<% } %>
 		
 		tb.addFill();
@@ -568,10 +580,9 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 		var url = "";
 		var idMenu = btn.id;
 		var path=btn.path;
-		if(path!=null)
+		var viewTrackPath='<%=viewTrackPath%>';
+		if( viewTrackPath=='true' && path!=null)
 		{document.getElementById('trackPath').innerHTML=path;}
-		else 
-		{document.getElementById('trackPath').innerHTML=path; }
 		
 		if (idMenu != null && idMenu != 'null'){
 			url =  "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+idMenu;
@@ -591,10 +602,9 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 		var url = "";
 	 	var idMenu = btn.id;
 	 	var path = btn.path;
-		if(path!=null)
+		var viewTrackPath='<%=viewTrackPath%>';
+		if( viewTrackPath=='true' && path!=null)
 		{document.getElementById('trackPath').innerHTML=path;}
-		else 
-		{document.getElementById('trackPath').innerHTML=path; }
 
 	 	 if (idMenu != null && idMenu != 'null'){
 			url =  "<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+idMenu;
@@ -604,8 +614,9 @@ sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 	}
 	 	 
 	function execDirectUrl(url, path){
+	var viewTrackPath='<%=viewTrackPath%>';
 	
-	if(path!=null)
+		if( viewTrackPath=='true' && path!=null)
 		{document.getElementById('trackPath').innerHTML=path;}
 	document.getElementById('iframeDoc').src = url;
 		return;

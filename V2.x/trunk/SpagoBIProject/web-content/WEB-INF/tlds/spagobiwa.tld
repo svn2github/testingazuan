@@ -26,6 +26,12 @@
     <tag-class>it.eng.spagobi.commons.presentation.tags.UserMenuTag</tag-class>
     <body-content>EMPTY</body-content>
     <description>Rendering of the menu associated to the user</description>
+  	<attribute>
+			<name>viewTrackPath</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>optional boolean, if to track path</description>
+		</attribute>
   </tag>
  
 </taglib>

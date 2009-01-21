@@ -18,7 +18,7 @@
 			- 'TOP_LEFT': the first level is on the top, while others levels are on the left of the page
 			AT THE TIME BEING, ONLY ALL_TOP WORKS PROPERLY
 	 -->
-	 <MENU mode="ALL_TOP" viewExtra="YES"/> 
+	 <MENU mode="ALL_TOP" viewExtra="YES" pathTracked="false"/> 
 	 
 
     <!-- ********************* END MENU CONFIGURATION ************************** -->

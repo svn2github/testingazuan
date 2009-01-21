@@ -6,6 +6,7 @@
         This application is a portlet. It can not be used outside a portal.
 	</description>
 	
+	<!--
 	<filter>
 		<filter-name>CAS_Filter</filter-name>
 		<filter-class>
@@ -46,17 +47,20 @@
        </init-param> 
        	
 	</filter>
-		
+	-->
+	
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
 	</filter>
 	
+	<!--
 	<filter-mapping>
 		<filter-name>CAS_Filter</filter-name>
 		<url-pattern>/WekaServlet/*</url-pattern>
 	</filter-mapping>
-		
+	-->
+	
 	<filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>
     	<url-pattern>/WekaServlet/*</url-pattern>

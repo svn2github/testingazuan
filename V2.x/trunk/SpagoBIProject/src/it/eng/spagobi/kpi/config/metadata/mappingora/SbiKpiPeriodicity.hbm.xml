@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 2-dic-2008 10.47.58 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity" table="sbi_kpi_periodicity" >
+    <class name="it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity" table="SBI_KPI_PERIODICITY" >
         <id name="idKpiPeriodicity" type="integer">
             <column name="id_kpi_periodicity" />
             <generator class="assigned" />

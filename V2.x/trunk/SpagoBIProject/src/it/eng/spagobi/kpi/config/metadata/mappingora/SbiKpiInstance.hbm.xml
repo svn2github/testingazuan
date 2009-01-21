@@ -3,11 +3,11 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 5-nov-2008 17.16.33 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" table="sbi_kpi_instance" >
+    <class name="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" table="SBI_KPI_INSTANCE" >
         <id name="idKpiInstance" type="integer">
             <column name="id_kpi_instance" />
             <generator class="native">
-            	<param name="sequence">sbi_kpi_instance</param>
+            	<param name="sequence">sbi_kpi_instance_seq</param>
             </generator>
         </id>
         <many-to-one name="sbiKpi" class="it.eng.spagobi.kpi.config.metadata.SbiKpi" >
@@ -52,14 +52,14 @@
             </key>
             <one-to-many class="it.eng.spagobi.kpi.alarm.metadata.SbiAlarm" />
         </set>
-        <property name="beginDt" type="timestamp">
-            <column name="BEGIN_DT" length="10" />
-        </property>
         <set name="sbiKpiInstPeriods" inverse="true">
             <key>
                 <column name="KPI_INSTANCE_ID" not-null="true" />
             </key>
             <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod" />
         </set>
+        <property name="beginDt" type="timestamp">
+            <column name="BEGIN_DT" length="10" />
+        </property>
     </class>
 </hibernate-mapping>

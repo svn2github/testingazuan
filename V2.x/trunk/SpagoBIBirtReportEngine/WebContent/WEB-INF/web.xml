@@ -16,6 +16,16 @@
 		<param-value>en-US</param-value>
 	</context-param>
 
+	<!-- 
+		Default timezone setting.
+		Examples: "Europe/Paris", "GMT+1".
+		Defaults to the container's timezone.		
+	 -->
+	<context-param>
+		<param-name>BIRT_VIEWER_TIMEZONE</param-name>
+		<param-value></param-value>
+	</context-param>
+
 	<!-- Report resources directory for preview. Default to ${birt home} -->
 	<context-param>
 		<param-name>BIRT_VIEWER_WORKING_FOLDER</param-name>
@@ -67,6 +77,22 @@
 	<!-- Preview report max rows limited. -->
 	<context-param>
 		<param-name>BIRT_VIEWER_MAX_ROWS</param-name>
+		<param-value></param-value>
+	</context-param>
+
+	<!-- Preview report max cube fetch levels limited.(Only support to preview a report design file using preview pattern.) -->
+	<context-param>
+		<param-name>BIRT_VIEWER_MAX_CUBE_ROWLEVELS</param-name>
+		<param-value></param-value>
+	</context-param>
+	<context-param>
+		<param-name>BIRT_VIEWER_MAX_CUBE_COLUMNLEVELS</param-name>
+		<param-value></param-value>
+	</context-param>
+
+	<!-- Memory size(MB) for creating cube. -->
+	<context-param>
+		<param-name>BIRT_VIEWER_CUBE_MEMORY_SIZE</param-name>
 		<param-value></param-value>
 	</context-param>
 
@@ -169,22 +195,19 @@
 		<listener-class>org.eclipse.birt.report.listener.ViewerHttpSessionListener</listener-class>
 	</listener>
 	
-	<!-- Viewer Servlet, Support SOAP -->
-	<!--	
+	<!-- Viewer Servlet, Support SOAP 
 	<servlet>
 		<servlet-name>ViewerServlet</servlet-name>
 		<servlet-class>org.eclipse.birt.report.servlet.ViewerServlet</servlet-class>
 	</servlet>
 	-->
-	
-	<!-- Engine Serlvet -->
-	<!--
+	<!-- Engine Serlvet 
 	<servlet>
 		<servlet-name>EngineServlet</servlet-name>
 		<servlet-class>org.eclipse.birt.report.servlet.BirtEngineServlet</servlet-class>
 	</servlet>
 	-->
-
+	
 	<servlet>
   		<servlet-name>ProxyTicketReceptor</servlet-name> 
   		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
@@ -270,6 +293,21 @@
 		<servlet-name>EngineServlet</servlet-name>
 		<url-pattern>/parameter</url-pattern>
 	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>EngineServlet</servlet-name>
+		<url-pattern>/document</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>EngineServlet</servlet-name>
+		<url-pattern>/output</url-pattern>
+	</servlet-mapping>	
+	
+	<servlet-mapping>
+		<servlet-name>EngineServlet</servlet-name>
+		<url-pattern>/extract</url-pattern>
+	</servlet-mapping>
 	-->
 	
 	  <error-page>
@@ -287,10 +325,12 @@
 	  	<location>/html/error.html</location>
 	  </error-page>
 	
-	<taglib>
-		<taglib-uri>/birt.tld</taglib-uri>
-		<taglib-location>/WEB-INF/tlds/birt.tld</taglib-location>
-	</taglib>
+	<jsp-config>
+		<taglib>
+			<taglib-uri>/birt.tld</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/birt.tld</taglib-location>
+		</taglib>
+	</jsp-config>		
 	
 	<!--
 	<resource-ref>

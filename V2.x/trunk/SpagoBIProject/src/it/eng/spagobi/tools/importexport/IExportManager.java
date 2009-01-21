@@ -41,13 +41,27 @@ public interface IExportManager {
 			boolean expSubObj, boolean expSnaps) throws EMFUserError;
 	
 	/**
-	 * Exports objects and creates the archive export file.
+	 * Exports objects
 	 * 
 	 * @param objPaths List of path of the objects to export
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void exportObjects(List objPaths) throws EMFUserError;
+	
+	/**
+	 * Exports resources (OLAP schemas, ETL jobs, datamarts)
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void exportResources() throws EMFUserError;
+	
+	/**
+	 * Creates the archive export file
+	 * 
+	 * @throws EMFUserError
+	 */
+	public void createExportArchive() throws EMFUserError;
 	
 	/**
 	 * Clean the export environment (close sessions and delete temporary files).

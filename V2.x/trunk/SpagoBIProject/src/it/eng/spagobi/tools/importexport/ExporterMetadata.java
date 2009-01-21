@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.importexport;
 
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -78,6 +79,7 @@ import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
+import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
@@ -93,6 +95,10 @@ import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -1183,7 +1189,7 @@ public class ExporterMetadata {
 	 * @param session Hibernate session for the exported database
 	 * @throws EMFUserError
 	 */
-	public void insertMapCatalogue(Session session, String pathBaseFolder) throws EMFUserError {
+	public void insertMapCatalogue(Session session) throws EMFUserError {
 	    logger.debug("IN");
 	    try {
 	    	// controls if the maps are already inserted into export db
@@ -1200,9 +1206,6 @@ public class ExporterMetadata {
 			insertMaps(session);
 			insertFeatures(session);
 			insertMapFeaturesAssociations(session);
-			
-			// puts map files into export base folder (in order to put them into export zip archive)
-			//copyMapsFiles(pathBaseFolder);
 			
 		} catch (Exception e) {
 			logger.error("Error while inserting map catalogue into export database " , e);
@@ -1329,51 +1332,5 @@ public class ExporterMetadata {
 		    logger.debug("OUT");
 		}
 	}
-	
-	/*
-	private void copyMapsFiles(String pathBaseFolder) throws EMFUserError {
-	    logger.debug("IN");
-	    try {
-		    File fileDir = new File(pathBaseFolder + "/components/mapcatalogue/maps");
-			if(!(fileDir).exists()) fileDir.mkdirs();
-			File mapsDir = new File(ConfigSingleton.getRootPath()+System.getProperty("file.separator")+"components"+System.getProperty("file.separator")+"mapcatalogue"+System.getProperty("file.separator")+"maps");
-			if (mapsDir.exists() && mapsDir.isDirectory()) {
-				File[] mapsFiles = mapsDir.listFiles();
-				for (int i = 0; i < mapsFiles.length; i++) {
-					File mapFile = mapsFiles[i];
-					if (mapFile.isFile()) {
-						FileOutputStream fos = null;
-						InputStream is = null;
-						try {
-							File copy = new File(fileDir.getAbsolutePath() + "/" + mapFile.getName());
-					        fos = new FileOutputStream(copy);
-					        is = new FileInputStream(mapFile);
-					        int read = 0;
-					        while ((read = is.read()) != -1) {
-					        	fos.write(read);
-					        }
-					        fos.flush();
-						} finally {
-				        	try {
-					        	if (fos != null) {
-					        		fos.close();
-					        	}
-					        	if (is != null) {
-					        		is.close();
-					        	}
-				        	} catch (Exception e) {
-				        	    logger.error("Error while closing streams " , e);
-				        	}
-						}
-					}
-				}
-			}
-	    } catch (Exception e) {
-        	logger.error("Error during the copy of maps files" , e);
-        	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
-	    } finally {
-	    	logger.debug("OUT");
-	    }
-	}
-	*/
+
 }

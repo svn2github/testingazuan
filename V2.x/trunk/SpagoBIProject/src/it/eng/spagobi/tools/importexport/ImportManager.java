@@ -51,6 +51,7 @@ import it.eng.spagobi.commons.dao.IRoleDAO;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
+import it.eng.spagobi.commons.utilities.FileUtilities;
 import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
@@ -71,7 +72,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,6 +82,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipOutputStream;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -246,9 +249,10 @@ public class ImportManager implements IImportManager, Serializable {
 	importBIObjects(overwrite);
 	importBIObjectLinks();
 	importMapCatalogue(overwrite);
+	importResources(overwrite);
 	logger.debug("OUT");
     }
-    
+
 
 	/**
      * Gets the SpagoBI version of the exported file.
@@ -446,7 +450,7 @@ public class ImportManager implements IImportManager, Serializable {
 	    iri.setManualTasks(manualTaskMap);
 	}
 	// delete the tmp directory of the current import operation
-	ImpExpGeneralUtilities.deleteDir(new File(pathBaseFolder));
+	FileUtilities.deleteDir(new File(pathBaseFolder));
 	// generate the log file
 	File logFile = new File(pathFolderImportOutcome + "/" + exportedFileName + ".log");
 	if (logFile.exists())
@@ -1821,7 +1825,7 @@ public class ImportManager implements IImportManager, Serializable {
 	logger.debug("IN");
 	metaAss.clear();
 	rollback();
-	ImpExpGeneralUtilities.deleteDir(new File(pathBaseFolder));
+	FileUtilities.deleteDir(new File(pathBaseFolder));
 	logger.debug("OUT");
     }
 
@@ -2400,5 +2404,32 @@ public class ImportManager implements IImportManager, Serializable {
 			logger.debug("OUT");
 		}
 	}
+ 
     
+    
+	private void importResources(boolean overwrite) {
+		logger.debug("IN");
+		try {
+			File exportedResourcesDir = new File(pathBaseFolder + "/resources");
+			if (exportedResourcesDir.exists() && exportedResourcesDir.isDirectory()) {
+				SourceBean config = (SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
+				logger.debug("RESOURCE_PATH_JNDI_NAME configuration found: " + config);
+				String resourcePathJndiName = config.getCharacters();
+				Context ctx = new InitialContext();
+				String value = (String)ctx.lookup(resourcePathJndiName);
+				logger.debug("Resource path found from jndi: " + value);
+				File resourcesDir = new File(value);
+				if (overwrite) {
+					FileUtilities.copyDirectory(exportedResourcesDir, resourcesDir, true, true, true);
+				} else {
+					FileUtilities.copyDirectory(exportedResourcesDir, resourcesDir, true, false, false);
+				}
+			}
+		} catch (Exception e) {
+			logger.debug("Error while importing resources", e);
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+	
 }

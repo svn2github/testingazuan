@@ -47,6 +47,7 @@ import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.FileUtilities;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
@@ -61,6 +62,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -110,7 +114,7 @@ public class ExportManager implements IExportManager {
 	    File baseFold = new File(pathBaseFolder);
 	    // if folder exist delete it
 	    if (baseFold.exists()) {
-		ImpExpGeneralUtilities.deleteDir(baseFold);
+	    	FileUtilities.deleteDir(baseFold);
 	    }
 	    baseFold.mkdirs();
 	    pathDBFolder = pathBaseFolder + "/metadata";
@@ -151,8 +155,8 @@ public class ExportManager implements IExportManager {
 		exportSingleObj(idobj);
 	    }
 	    closeSession();
-	    createExportArchive();
-	    deleteTmpFolder();
+//	    createExportArchive();
+//	    deleteTmpFolder();
 	} catch (EMFUserError emfue) {
 	    throw emfue;
 	} catch (Exception e) {
@@ -170,7 +174,7 @@ public class ExportManager implements IExportManager {
 	logger.debug("IN");
 	String folderTmpPath = pathExportFolder + "/" + nameExportFile;
 	File folderTmp = new File(folderTmpPath);
-	ImpExpGeneralUtilities.deleteDir(folderTmp);
+	FileUtilities.deleteDir(folderTmp);
 	logger.debug("OUT");
     }
 
@@ -179,7 +183,7 @@ public class ExportManager implements IExportManager {
      * 
      * @throws EMFUserError
      */
-    private void createExportArchive() throws EMFUserError {
+    public void createExportArchive() throws EMFUserError {
 	logger.debug("IN");
 	FileOutputStream fos = null;
 	ZipOutputStream out = null;
@@ -209,6 +213,7 @@ public class ExportManager implements IExportManager {
 	    }
 	    logger.debug("OUT");
 	}
+	deleteTmpFolder();
     }
 
     /**
@@ -392,7 +397,7 @@ public class ExportManager implements IExportManager {
 		boolean isMap = false;
 		if (biobj.getBiObjectTypeCode().equalsIgnoreCase("MAP")) isMap = true;
 		if (isMap) {
-			exporter.insertMapCatalogue(session, pathBaseFolder);
+			exporter.insertMapCatalogue(session);
 		}
 		
 	    if (exportSubObjects) {
@@ -596,5 +601,25 @@ public class ExportManager implements IExportManager {
 	deleteTmpFolder();
 	logger.debug("OUT");
     }
+
+	public void exportResources() throws EMFUserError {
+	    logger.debug("IN");
+	    try {
+			SourceBean config = (SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
+			logger.debug("RESOURCE_PATH_JNDI_NAME configuration found: " + config);
+			String resourcePathJndiName = config.getCharacters();
+			Context ctx = new InitialContext();
+			String value = (String)ctx.lookup(resourcePathJndiName);
+			logger.debug("Resource path found from jndi: " + value);
+			File resourcesDir = new File(value);
+			File destDir = new File(pathBaseFolder + "/resources");
+			FileUtilities.copyDirectory(resourcesDir, destDir, true, true, false);
+	    } catch (Exception e) {
+        	logger.error("Error during the copy of maps files" , e);
+        	throw new EMFUserError(EMFErrorSeverity.ERROR, "100", "component_impexp_messages");
+	    } finally {
+	    	logger.debug("OUT");
+	    }
+	}
 
 }

@@ -168,6 +168,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<br/>
 				<input type="checkbox" name="exportSnapshots" />	
 				<spagobi:message key = "SBISet.importexport.expSnapshots" bundle="component_impexp_messages"/>
+				<br/>
+				<input type="checkbox" name="exportResources" />	
+				<spagobi:message key = "SBISet.importexport.expResources" bundle="component_impexp_messages"/>
 			</div>
 		
 		</form>

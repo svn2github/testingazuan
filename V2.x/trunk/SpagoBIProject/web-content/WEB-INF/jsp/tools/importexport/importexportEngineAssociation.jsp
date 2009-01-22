@@ -1,4 +1,4 @@
-<!--
+<%--
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
@@ -16,7 +16,7 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
--->
+--%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
@@ -118,7 +118,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='javascript:opencloseInfoPanel()'> 
 		    		<img class='header-button-image-portlet-section' 
 		    			 title='<spagobi:message key="help"  bundle="messages"/>' 
-		    			 src='<%=urlBuilder.getResourceLink(request, "/img/info22.jpg")%>' 
+		    			 src='<%=urlBuilder.getResourceLink(request, "/img/question32.gif")%>' 
 		    			 alt='<spagobi:message key="help"  bundle="messages"/>' />
 				</a>
 			</td>		

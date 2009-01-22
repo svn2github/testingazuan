@@ -151,12 +151,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 style="clear:left;margin-left:15px;padding-top:15px;display:none;color:#074B88;">
 				<spagobi:message key = "SBISet.importexport.opProg" bundle="component_impexp_messages"/>
 			</div>
-			<div id="divDownload" 
-				 style="clear:left;margin-left:15px;padding-top:15px;display:none;color:#074B88;">	 
-				<spagobi:message key = "SBISet.importexport.opComplete"  bundle="component_impexp_messages"/>
-				<a style='text-decoration:none;color:#CC0000;' href="javascript:submitDownloadForm()">
-					<spagobi:message key = "Sbi.download" bundle="component_impexp_messages"/>
-				</a>
+			<div id="divDownload" style="clear:left;display:none;">
+				 <div style="padding-left:15px;padding-right:15px;color:#074B88;">
+					<spagobi:message key = "SBISet.importexport.opComplete"  bundle="component_impexp_messages"/>
+					<a style='text-decoration:none;color:#CC0000;' href="javascript:submitDownloadForm()">
+						<spagobi:message key = "Sbi.download" bundle="component_impexp_messages"/>
+					</a>
+				</div>
+				<div style="padding-left:15px;padding-right:15px;color:#074B88;">
+					<spagobi:message key = "SBISet.importexport.exportCompleteResourcesWarning" bundle="component_impexp_messages"/>
+				</div>
 			</div>
 			<div style="clear:left;margin-left:15px;padding-top:10px;">
 				<spagobi:message key = "SBISet.importexport.nameExp" bundle="component_impexp_messages"/>
@@ -168,9 +172,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<br/>
 				<input type="checkbox" name="exportSnapshots" />	
 				<spagobi:message key = "SBISet.importexport.expSnapshots" bundle="component_impexp_messages"/>
+				<%-- 
 				<br/>
 				<input type="checkbox" name="exportResources" />	
 				<spagobi:message key = "SBISet.importexport.expResources" bundle="component_impexp_messages"/>
+				--%>
 			</div>
 		
 		</form>

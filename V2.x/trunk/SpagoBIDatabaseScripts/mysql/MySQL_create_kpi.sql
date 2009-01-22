@@ -108,6 +108,16 @@ Create table `SBI_KPI_INSTANCE` (
  Primary Key (`id_kpi_instance`)) ENGINE = InnoDB;
 
 
+Create table `SBI_KPI_INST_PERIOD` (
+  `KPI_INST_PERIOD_ID` INTEGER NOT NULL AUTO_INCREMENT,
+  `KPI_INSTANCE_ID` INTEGER NOT NULL,
+  `PERIODICITY_ID` INTEGER NOT NULL,
+  `DEFAULT` BOOLEAN ,
+  PRIMARY KEY (`KPI_INST_PERIOD_ID`)
+)
+ENGINE = InnoDB;
+
+
 Create table `SBI_KPI_INSTANCE_HISTORY` (
 	`id_kpi_instance_history` Int NOT NULL AUTO_INCREMENT,
 	`id_kpi_instance` Int NOT NULL,

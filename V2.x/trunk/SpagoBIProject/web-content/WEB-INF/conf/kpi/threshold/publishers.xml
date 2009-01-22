@@ -16,13 +16,31 @@
                   <PARAMETER name="module" scope="SERVICE_REQUEST" value="ListThresholdsModule" />
                 </CONDITIONS>
               </CHECK>
-              <!--
-              <CHECK target="ListThresholdsPublisher">
+              <CHECK target="DetailThresholdPublisher">
                 <CONDITIONS>
-                  <PARAMETER name="message" scope="SERVICE_REQUEST" value="DETAIL_UPDATE" />
+                  <PARAMETER name="module" scope="SERVICE_REQUEST" value="DetailThresholdModule" />
                 </CONDITIONS>
               </CHECK>
-              -->
+            </CHECKS>
+          </CONFIG>
+        </ITEM>
+      </RESOURCES>
+    </RENDERING>
+    <RENDERING channel="HTTP" type="JAVA" mode="">
+      <RESOURCES>
+        <ITEM prog="0" resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+          <CONFIG>
+            <CHECKS>
+              <CHECK target="ListThresholdsPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="module" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
+                </CONDITIONS>
+              </CHECK>
+              <CHECK target="ListThresholdsPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="module" scope="SERVICE_REQUEST" value="ListThresholdsModule" />
+                </CONDITIONS>
+              </CHECK>
               <CHECK target="DetailThresholdPublisher">
                 <CONDITIONS>
                   <PARAMETER name="module" scope="SERVICE_REQUEST" value="DetailThresholdModule" />
@@ -34,17 +52,31 @@
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>
+  
   <PUBLISHER name="ListThresholdsPublisher">
     <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       <RESOURCES>
         <ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/threshold/listThresholds.jsp" />
+        <ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+      </RESOURCES>
+    </RENDERING>
+	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      <RESOURCES>
+        <ITEM prog="0" resource="/WEB-INF/jsp/kpi/threshold/listThresholds.jsp" />
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>
+  
   <PUBLISHER name="DetailThresholdPublisher">
     <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       <RESOURCES>
         <ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/threshold/detailThreshold.jsp" />
+		<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+      </RESOURCES>
+    </RENDERING>
+    <RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      <RESOURCES>
+         <ITEM prog="0" resource="/WEB-INF/jsp/kpi/threshold/detailThreshold.jsp" />
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>
@@ -65,13 +97,31 @@
                   <PARAMETER name="module" scope="SERVICE_REQUEST" value="ListThresholdValuesModule" />
                 </CONDITIONS>
               </CHECK>
-              <!--
-              <CHECK target="ListThresholdValuesPublisher">
+              <CHECK target="DetailThresholdValuePublisher">
                 <CONDITIONS>
-                  <PARAMETER name="message" scope="SERVICE_REQUEST" value="DETAIL_UPDATE" />
+                  <PARAMETER name="module" scope="SERVICE_REQUEST" value="DetailThresholdValueModule" />
                 </CONDITIONS>
               </CHECK>
-              -->
+            </CHECKS>
+          </CONFIG>
+        </ITEM>
+      </RESOURCES>
+      </RENDERING>
+      <RENDERING channel="HTTP" type="JAVA" mode="">
+      <RESOURCES>
+        <ITEM prog="0" resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+          <CONFIG>
+            <CHECKS>
+              <CHECK target="ListThresholdValuesPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="module" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED" />
+                </CONDITIONS>
+              </CHECK>
+              <CHECK target="ListThresholdValuesPublisher">
+                <CONDITIONS>
+                  <PARAMETER name="module" scope="SERVICE_REQUEST" value="ListThresholdValuesModule" />
+                </CONDITIONS>
+              </CHECK>
               <CHECK target="DetailThresholdValuePublisher">
                 <CONDITIONS>
                   <PARAMETER name="module" scope="SERVICE_REQUEST" value="DetailThresholdValueModule" />
@@ -82,18 +132,33 @@
         </ITEM>
       </RESOURCES>
     </RENDERING>
+   
   </PUBLISHER>
+
   <PUBLISHER name="ListThresholdValuesPublisher">
     <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       <RESOURCES>
         <ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/threshold/listThresholdValues.jsp" />
+        <ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+      </RESOURCES>
+    </RENDERING>
+    <RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      <RESOURCES>
+        <ITEM prog="0" resource="/WEB-INF/jsp/kpi/threshold/listThresholdValues.jsp" />
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>
+
   <PUBLISHER name="DetailThresholdValuePublisher">
     <RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
       <RESOURCES>
         <ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/threshold/detailThresholdValue.jsp" />
+        <ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+      </RESOURCES>
+    </RENDERING>
+    <RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      <RESOURCES>
+        <ITEM prog="0" resource="/WEB-INF/jsp/kpi/threshold/detailThresholdValue.jsp" />
       </RESOURCES>
     </RENDERING>
   </PUBLISHER>

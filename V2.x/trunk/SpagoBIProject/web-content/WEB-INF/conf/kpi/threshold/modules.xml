@@ -96,7 +96,7 @@
           <PARAMETER name="IDT" scope="SERVICE_REQUEST" type="RELATIVE" value="IDT" />
         </INSERT_BUTTON>
         <BACK_BUTTON confirm="FALSE" image="/img/back.png" label="sbi.kpi.button.back.title"
-          onlyPortletRunning="true">
+          onlyPortletRunning="false">
           <PARAMETER name="LIGHT_NAVIGATOR_BACK_TO" scope="" type="ABSOLUTE"
             value="1" />
         </BACK_BUTTON>

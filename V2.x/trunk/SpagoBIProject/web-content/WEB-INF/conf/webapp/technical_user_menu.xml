@@ -104,6 +104,32 @@
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=HOT_LINK_PAGE&amp;OPERATION=GET_HOT_LINK_LIST"
 				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/hotlinks16.gif" />
 	</ITEM>
+	
+	<ITEM	code="kpiModel" 
+			title="#menu.KpiModel">
+		<ITEM	title="#menu.KpiDefinition"
+				functionality="KpiManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=KpiPage"
+				iconUrl="${SPAGOBI_CONTEXT}/img/kpi/kpi16.png" />
+		<ITEM	title="#menu.ThresholdDefinition"
+				functionality="KpiManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ThresholdPage"
+				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png" />
+		<ITEM	title="#menu.ModelDefinition"
+				functionality="KpiManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ModelPage"
+				iconUrl="${SPAGOBI_CONTEXT}/img/kpi/model16.png" />
+		<ITEM	title="#menu.ModelInstanceDefinition"
+				functionality="KpiManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ModelInstancePage"
+				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png" />
+		<ITEM	title="#menu.ResourcesDefinition"
+				functionality="KpiManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ResourcesPage"
+				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png" />
+	</ITEM>
+	
+
 
 	<!-- 
 	<APPLICATION code="DocumentAdmin" 

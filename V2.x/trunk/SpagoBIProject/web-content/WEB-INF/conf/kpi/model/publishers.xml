@@ -20,14 +20,37 @@
 									<PARAMETER name="module" scope="SERVICE_REQUEST"
 										value="ListModelModule" />
 								</CONDITIONS>
-							</CHECK><!--
-							<CHECK target="ListModelPublisher">
+							</CHECK>
+							<CHECK target="DetailModelPublisher">
 								<CONDITIONS>
-									<PARAMETER name="message" scope="SERVICE_REQUEST"
-										value="DETAIL_UPDATE" />
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="DetailModelModule" />
 								</CONDITIONS>
 							</CHECK>
-							--><CHECK target="DetailModelPublisher">
+						</CHECKS>
+					</CONFIG>
+				</ITEM>
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0"
+					resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+					<CONFIG>
+						<CHECKS>
+							<CHECK target="ListModelPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="AF_NOT_DEFINED" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="ListModelPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="ListModelModule" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="DetailModelPublisher">
 								<CONDITIONS>
 									<PARAMETER name="module" scope="SERVICE_REQUEST"
 										value="DetailModelModule" />
@@ -44,6 +67,12 @@
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/listModel.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/listModel.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -52,6 +81,12 @@
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/detailModel.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/detailModel.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -75,14 +110,37 @@
 									<PARAMETER name="module" scope="SERVICE_REQUEST"
 										value="ListModelTreeModule" />
 								</CONDITIONS>
-							</CHECK><!--
-							<CHECK target="ListModelTreePublisher">
+							</CHECK>
+							<CHECK target="DetailModelTreePublisher">
 								<CONDITIONS>
-									<PARAMETER name="message" scope="SERVICE_REQUEST"
-										value="DETAIL_UPDATE" />
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="DetailModelTreeModule" />
 								</CONDITIONS>
 							</CHECK>
-							--><CHECK target="DetailModelTreePublisher">
+						</CHECKS>
+					</CONFIG>
+				</ITEM>
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0"
+					resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+					<CONFIG>
+						<CHECKS>
+							<CHECK target="ListModelTreePublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="AF_NOT_DEFINED" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="ListModelTreePublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="ListModelTreeModule" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="DetailModelTreePublisher">
 								<CONDITIONS>
 									<PARAMETER name="module" scope="SERVICE_REQUEST"
 										value="DetailModelTreeModule" />
@@ -99,6 +157,12 @@
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/modelTree.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/modelTree.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -108,6 +172,12 @@
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/detailModelTree.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/detailModelTree.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -145,12 +215,47 @@
 				</ITEM>
 			</RESOURCES>
 		</RENDERING>
+		<RENDERING channel="HTTP" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0"
+					resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+					<CONFIG>
+						<CHECKS>
+							<CHECK target="ListModelInstancePublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="AF_NOT_DEFINED" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="ListModelInstancePublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="ListModelInstanceModule" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="DetailModelInstancePublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="DetailModelInstanceModule" />
+								</CONDITIONS>
+							</CHECK>
+						</CHECKS>
+					</CONFIG>
+				</ITEM>
+			</RESOURCES>
+		</RENDERING>
 	</PUBLISHER>
 
 	<PUBLISHER name="ListModelInstancePublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/listModelInstance.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/listModelInstance.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -159,6 +264,12 @@
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/detailModelInstance.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/detailModelInstance.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>	
@@ -182,16 +293,35 @@
 										value="ListModelInstanceTreeModule" />
 								</CONDITIONS>
 							</CHECK>
-							
-							<!--
-							<CHECK target="ListModelInstanceTreePublisher">
+							<CHECK target="DetailModelInstanceTreePublisher">
 								<CONDITIONS>
-									<PARAMETER name="message" scope="SERVICE_REQUEST"
-										value="DETAIL_UPDATE" />
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="DetailModelInstanceTreeModule" />
 								</CONDITIONS>
 							</CHECK>
-							-->
-							
+						</CHECKS>
+					</CONFIG>
+				</ITEM>
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0"
+					resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+					<CONFIG>
+						<CHECKS>
+							<CHECK target="ListModelInstanceTreePublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="AF_NOT_DEFINED" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="ListModelInstanceTreePublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="ListModelInstanceTreeModule" />
+								</CONDITIONS>
+							</CHECK>
 							<CHECK target="DetailModelInstanceTreePublisher">
 								<CONDITIONS>
 									<PARAMETER name="module" scope="SERVICE_REQUEST"
@@ -209,6 +339,12 @@
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/modelInstanceTree.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/modelInstanceTree.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -218,6 +354,12 @@
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/detailModelInstanceTree.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/detailModelInstanceTree.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -255,12 +397,47 @@
 				</ITEM>
 			</RESOURCES>
 		</RENDERING>
+		<RENDERING channel="HTTP" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0"
+					resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+					<CONFIG>
+						<CHECKS>
+							<CHECK target="ListResourcesPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="AF_NOT_DEFINED" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="ListResourcesPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="ListResourcesModule" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="DetailResourcesPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="DetailResourcesModule" />
+								</CONDITIONS>
+							</CHECK>
+						</CHECKS>
+					</CONFIG>
+				</ITEM>
+			</RESOURCES>
+		</RENDERING>
 	</PUBLISHER>
 
 	<PUBLISHER name="ListResourcesPublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/listResources.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/listResources.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -269,6 +446,12 @@
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/detailResources.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/detailResources.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -306,14 +489,51 @@
 				</ITEM>
 			</RESOURCES>
 		</RENDERING>
+		<RENDERING channel="HTTP" type="JAVA" mode="">
+			<RESOURCES>
+				<ITEM prog="0"
+					resource="it.eng.spago.presentation.DefaultPublisherDispatcher">
+					<CONFIG>
+						<CHECKS>
+							<CHECK target="ListModelResourcesPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="AF_NOT_DEFINED" />
+								</CONDITIONS>
+							</CHECK>
+							<CHECK target="ModelResourcesBackPublisher">
+								<CONDITIONS>
+									<PARAMETER name="message" scope="SERVICE_REQUEST"
+										value="DETAIL_Select" />
+								</CONDITIONS>	
+							</CHECK>
+							<CHECK target="ListModelResourcesPublisher">
+								<CONDITIONS>
+									<PARAMETER name="module" scope="SERVICE_REQUEST"
+										value="ListModelResourcesModule" />
+								</CONDITIONS>
+							</CHECK>
+						</CHECKS>
+					</CONFIG>
+				</ITEM>
+			</RESOURCES>
+		</RENDERING>
+		
 	</PUBLISHER>
 	
 	<PUBLISHER name="ListModelResourcesPublisher">
 		<RENDERING channel="PORTLET" mode="FORWARD" type="JSP">
 			<RESOURCES>
 				<ITEM mode="VIEW" resource="/WEB-INF/jsp/kpi/model/listModelResources.jsp" />
+				<ITEM mode="EDIT" resource="/WEB-INF/jsp/commons/edit.jsp" />
 			</RESOURCES>
 		</RENDERING>
+		<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+			<RESOURCES>
+				<ITEM prog="0" resource="/WEB-INF/jsp/kpi/model/listModelResources.jsp" />
+			</RESOURCES>
+		</RENDERING>
+		
 	</PUBLISHER>
 	
 	<PUBLISHER name="ModelResourcesBackPublisher">

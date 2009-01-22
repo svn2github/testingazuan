@@ -166,14 +166,16 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 			tx = tmpSession.beginTransaction();
 			
 			//inserts the svg file into sbi_binary_contents
-			SbiBinContents hibBinContents = new SbiBinContents();
-			hibBinContents.setContent(content);
+			SbiBinContents hibBinContents = null;
+			
 			Integer binId = Integer.valueOf(aMap.getBinId());
 			if (binId != null && binId > new Integer("0")){
-				hibBinContents.setId(aMap.getBinId());
-			}
-			else
-			{
+				hibBinContents = (SbiBinContents) tmpSession.load(SbiBinContents.class, binId);
+				hibBinContents.setContent(content);
+				tmpSession.save(hibBinContents);
+			} else {
+				hibBinContents = new SbiBinContents();
+				hibBinContents.setContent(content);
 				Integer idBin = (Integer)tmpSession.save(hibBinContents);
 				// recover the saved binary hibernate object
 				hibBinContents = (SbiBinContents) tmpSession.load(SbiBinContents.class, idBin);

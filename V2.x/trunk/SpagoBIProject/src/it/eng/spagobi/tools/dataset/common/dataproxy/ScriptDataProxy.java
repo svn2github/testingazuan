@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.dataset.common.dataproxy;
 
 import java.io.FileInputStream;
@@ -31,38 +31,45 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.sql.DataRow;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.behaviouralmodel.lov.handlers.ScriptManager;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class ScriptDataProxy implements IDataProxy {
-	
+public class ScriptDataProxy extends AbstractDataProxy {
+
 	String script;
-	
+
 	private static transient Logger logger = Logger.getLogger(ScriptDataProxy.class);
-	
-	
+
+
 	public ScriptDataProxy() {
-		
+
 	}
-			
+
 	public ScriptDataProxy(String script) {
 		setScript( script );
 	}
-	
+
+
 	public Object load(String statement) throws EMFUserError {
-		throw new UnsupportedOperationException("metothd FileDataProxy not yet implemented");
+		if(statement != null) {
+			setScript(statement);
+		}
+		return load();
 	}
 	
-	
+
 	public Object load() throws EMFUserError {
 		String data = null;
 		try {
 			data = ScriptManager.runScript(script);
-			
+
 			// check if the result must be converted into the right xml sintax
 			boolean toconvert = checkSintax(data);
 			if(toconvert) { 
@@ -72,21 +79,22 @@ public class ScriptDataProxy implements IDataProxy {
 			logger.error("SourceBeanException",e);
 			e.printStackTrace();
 		} catch (Exception e) {
-			logger.error("Exception",e);
-			e.printStackTrace();
+			logger.error("script languaga not proper");
+			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9216);						
+			throw userError;
 		}
 		logger.debug("OUT");
-		
+
 		return data;
 	}
-	
+
 	private boolean checkSintax(String result) {
-		
-    	logger.debug("IN");
+
+		logger.debug("IN");
 		List visibleColumnNames = null;
 		String valueColumnName = "";
 		String descriptionColumnName = "";
-		
+
 		boolean toconvert = false;
 		try{
 			SourceBean source = SourceBean.fromXMLString(result);
@@ -139,20 +147,20 @@ public class ScriptDataProxy implements IDataProxy {
 					}
 				}
 			}
-			
+
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			logger.error("the result of the dataset is not formatted with the right structure so it will be wrapped inside an xml envelope",e);
 			toconvert = true;
 		}
 		logger.debug("OUT");
 		return toconvert;
 	}
-	
+
 	private String convertResult(String result) {
-		
+
 		logger.debug("IN");
-		
+
 		List visibleColumnNames = null;
 		String valueColumnName = "";
 		String descriptionColumnName = "";
@@ -164,7 +172,7 @@ public class ScriptDataProxy implements IDataProxy {
 		valueColumnName = "VALUE";
 		String [] visibleColumnNamesArray = new String [] {"VALUE"};
 		visibleColumnNames = Arrays.asList(visibleColumnNamesArray);
-		
+
 		logger.debug("OUT");
 		return sb.toString();
 	}
@@ -177,5 +185,5 @@ public class ScriptDataProxy implements IDataProxy {
 		this.script = script;
 	}
 
-	
+
 }

@@ -3,18 +3,14 @@
  */
 package it.eng.spagobi.tools.dataset.bo;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
+import it.eng.spagobi.tools.dataset.common.dataproxy.AbstractDataProxy;
 import it.eng.spagobi.tools.dataset.common.dataproxy.IDataProxy;
 import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
-import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 import java.util.ArrayList;
@@ -27,56 +23,59 @@ import org.apache.log4j.Logger;
  * @author Andrea Gioia
  */
 public class ConfigurableDataSet extends  AbstractDataSet {
-    
+
 	IDataReader dataReader;
 	IDataProxy dataProxy;
 	IDataStore dataStore;
-	
+
 	Object query;	
-    
-   
-    IEngUserProfile userProfile;
-   
 
-    private static transient Logger logger = Logger.getLogger(ConfigurableDataSet.class);
-    
-    
-    public ConfigurableDataSet(){
-    	super();
-    }
-    
-    public ConfigurableDataSet(SpagoBiDataSet dataSetConfig){
-    	super(dataSetConfig);
-    }
 
-    public void loadData() throws EMFUserError, EMFInternalError{
-    	Object results;
-    	
-    	if( hasBehaviour(QuerableBehaviour.class.getName()) ) {
-    		QuerableBehaviour querableBehaviour = (QuerableBehaviour)getBehaviour(QuerableBehaviour.class.getName()) ;
-    		results = dataProxy.load( querableBehaviour.getStatement() );    		
-    	} else {
-    		results = dataProxy.load( ); 
-    	}
-    	
-    	dataStore = dataReader.read( results );
-    	
-    	if(hasDataStoreTransformer()) {
-    		getDataStoreTransformer().transform(dataStore);
-    	}
-    }
-    
-    public void setFetchSize(int l) {
-    	throw new UnsupportedOperationException("metothd setFetchSize not yet implemented");
-    }
-    
-    public IDataStore fetchNext() {    	
-    	IDataStore dataStore = null;
-    	throw new UnsupportedOperationException("metothd fetchNext not yet implemented");
-    	//return dataStore;
-    }    
+	IEngUserProfile userProfile;
 
-    public IDataStore getDataStore() {    	
+
+	private static transient Logger logger = Logger.getLogger(ConfigurableDataSet.class);
+
+
+	public ConfigurableDataSet(){
+		super();
+	}
+
+	public ConfigurableDataSet(SpagoBiDataSet dataSetConfig){
+		super(dataSetConfig);
+	}
+
+	public void loadData() throws EMFUserError, EMFInternalError{
+		Object results;
+
+
+		if( hasBehaviour(QuerableBehaviour.class.getName()) ) { // Querable Behaviour
+			QuerableBehaviour querableBehaviour = (QuerableBehaviour)getBehaviour(QuerableBehaviour.class.getName()) ;
+			results = dataProxy.load( querableBehaviour.getStatement() );    		
+		} 
+
+		((AbstractDataProxy)dataProxy).bindParameters((HashMap)getParamsMap());
+		((AbstractDataProxy)dataProxy).setProfile(getUserProfile());
+		results = dataProxy.load( ); 
+
+		dataStore = dataReader.read( results );
+
+		if(hasDataStoreTransformer()) {
+			getDataStoreTransformer().transform(dataStore);
+		}
+	}
+
+	public void setFetchSize(int l) {
+		throw new UnsupportedOperationException("metothd setFetchSize not yet implemented");
+	}
+
+	public IDataStore fetchNext() {    	
+		IDataStore dataStore = null;
+		throw new UnsupportedOperationException("metothd fetchNext not yet implemented");
+		//return dataStore;
+	}    
+
+	public IDataStore getDataStore() {    	
 		return this.dataStore;
 	}    
 
@@ -87,7 +86,7 @@ public class ConfigurableDataSet extends  AbstractDataSet {
 	public void setQuery(Object query) {
 		this.query = query;
 	}
-	
+
 	/**
 	 * Gets the list of names of the profile attributes required.
 	 * 

@@ -174,7 +174,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			String datasetDisplay = "none";
 			 
 			DataSetParametersList dataSetParametersList=null;
-			 if(type.equals("query")){
+			 if(type.equals("query") ||
+					 type.equals("script") ||
+					 type.equals("javaclass") ||
+					 type.equals("ws")
+			 ){
 					dataSetParametersList = new DataSetParametersList();
 						datasetDisplay = "inline";
 						String parametersXML = ds.getParameters();
@@ -183,6 +187,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					}
 				 
 				 }
+      	            	     
+      	            	     
+      	            	     
       	            	     %> 
 	
 	<div class='div_background' style='padding-top:5px;padding-left:5px;'>
@@ -405,26 +412,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="ADDRESS" id="ADDRESS"
-				   size="50" value="<%=address%>" maxlength="50" <%=disableWs%> />
+				   size="50" value="<%=address%>" maxlength="150" <%=disableWs%> />
 	   </div>
 	   
-	   		<div class='div_detail_label' id="EXECUTORCLASSLABEL">
+	   		<div class='div_detail_label' id="OPERATION">
 			<span class='portlet-form-field-label'>	
-				<spagobi:message key = "SBISet.ListDataSet.executorClass" />
+				<spagobi:message key = "SBISet.ListDataSet.operation" />
 			</span>
 		</div>
 	    <div class='div_detail_form'>
 		<%
-			   String executorClass =""; 
+			   String operation =""; 
 		       if(WebServiceDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){	
-		    	   executorClass = ds.getExecutorClass();
+		    	   operation = ds.getOperation();
 		       }
-			   if((executorClass==null) || (executorClass.equalsIgnoreCase("null"))  ) {
-				   executorClass = "";
+			   if((operation==null) || (operation.equalsIgnoreCase("null"))  ) {
+				   operation = "";
 			   }
 		%>
-			<input class='portlet-form-input-field' type="text" name="EXECUTORCLASS" id="EXECUTORCLASS"
-				   size="50" value="<%=executorClass%>" maxlength="50" <%=executorClass%> <%=disableWs%>/>
+			<input class='portlet-form-input-field' type="text" name="OPERATION" id="OPERATION"
+				   size="50" value="<%=operation%>" maxlength="50" <%=operation%> <%=disableWs%>/>
 	   </div>		
 			
 	</div>
@@ -632,7 +639,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.FILENAME.disabled=false;
 			document.dsForm.ADDRESS.disabled=true;
 			document.dsForm.QUERY.disabled=true;
-			document.dsForm.EXECUTORCLASS.disabled=true;
+			document.dsForm.OPERATION.disabled=true;
 			document.dsForm.DATASOURCE.disabled=true;
 			document.dsForm.SCRIPT.disabled=true;
 			document.dsForm.JCLASSNAME.disabled=true;
@@ -650,7 +657,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.FILENAME.disabled=true;
 			document.dsForm.ADDRESS.disabled=true;
 			document.dsForm.QUERY.disabled=false;
-			document.dsForm.EXECUTORCLASS.disabled=true;
+			document.dsForm.OPERATION.disabled=true;
 			document.dsForm.DATASOURCE.disabled=false;
 			document.dsForm.SCRIPT.disabled=true;
 			document.dsForm.JCLASSNAME.disabled=true;
@@ -667,11 +674,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.FILENAME.disabled=true;
 			document.dsForm.ADDRESS.disabled=false;
 			document.dsForm.QUERY.disabled=true;
-			document.dsForm.EXECUTORCLASS.disabled=false;
+			document.dsForm.OPERATION.disabled=false;
 			document.dsForm.DATASOURCE.disabled=true;
 			document.dsForm.SCRIPT.disabled=true;
 			document.dsForm.JCLASSNAME.disabled=true;
-			document.getElementById("tag").style.display = "none";
+			document.getElementById("tag").style.display = "inline";
 			document.getElementById("filecontainer").style.display = "none";
 			document.getElementById("querycontainer").style.display = "none";
 			document.getElementById("wscontainer").style.display = "inline";
@@ -684,11 +691,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.FILENAME.disabled=true;
 			document.dsForm.ADDRESS.disabled=true;
 			document.dsForm.QUERY.disabled=true;
-			document.dsForm.EXECUTORCLASS.disabled=true;
+			document.dsForm.OPERATION.disabled=true;
 			document.dsForm.DATASOURCE.disabled=true;
 			document.dsForm.SCRIPT.disabled=false;
 			document.dsForm.JCLASSNAME.disabled=true;
-			document.getElementById("tag").style.display = "none";
+			document.getElementById("tag").style.display = "inline";
 			document.getElementById("filecontainer").style.display = "none";
 			document.getElementById("querycontainer").style.display = "none";
 			document.getElementById("wscontainer").style.display = "none";
@@ -700,11 +707,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.FILENAME.disabled=true;
 			document.dsForm.ADDRESS.disabled=true;
 			document.dsForm.QUERY.disabled=true;
-			document.dsForm.EXECUTORCLASS.disabled=true;
+			document.dsForm.OPERATION.disabled=true;
 			document.dsForm.DATASOURCE.disabled=true;
 			document.dsForm.SCRIPT.disabled=true;
 			document.dsForm.JCLASSNAME.disabled=false;
-			document.getElementById("tag").style.display = "none";
+			document.getElementById("tag").style.display = "inline";
 			document.getElementById("filecontainer").style.display = "none";
 			document.getElementById("querycontainer").style.display = "none";
 			document.getElementById("wscontainer").style.display = "none";
@@ -720,7 +727,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				}
 		
 			function setParametersXMLModifiedField(){
-					if (modified) {
+					if (datasetModified) {
 						document.getElementById("parametersXMLModified").value = 'true';
 					} else {
 						document.getElementById("parametersXMLModified").value = 'false';

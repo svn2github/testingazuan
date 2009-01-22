@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.tools.dataset.bo;
 
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
 import it.eng.spagobi.tools.dataset.common.dataproxy.IDataProxy;
@@ -59,13 +61,21 @@ public class JDBCDataSet extends ConfigurableDataSet {
 		addBehaviour( new QuerableBehaviour(this) );
 	}
     
-    public JDBCDataSet(SpagoBiDataSet dataSetConfig) {
+    public JDBCDataSet(SpagoBiDataSet dataSetConfig) throws EMFUserError {
 		super(dataSetConfig);
 		
 		setDataProxy( new JDBCDataProxy() );
 		setDataReader( new JDBCDataReader() );
 		
+		try{
 		setDataSource( DataSourceFactory.getDataSource( dataSetConfig.getDataSource() ) );
+		}
+		catch (Exception e) {
+			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9212);
+			logger.debug("missing right exstension");
+			throw userError;
+		}
+		
 		setQuery( dataSetConfig.getQuery() );
 		
 		addBehaviour( new QuerableBehaviour(this) );

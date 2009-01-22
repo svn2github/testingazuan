@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.tools.dataset.bo;
 
+import java.util.HashMap;
 import java.util.List;
 
 import it.eng.spago.security.IEngUserProfile;
@@ -35,7 +36,7 @@ public interface IJavaClassDataSet {
 	 * 
 	 * @return the xml string of the values
 	 */
-	public String getValues(IEngUserProfile profile);
+	public String getValues(IEngUserProfile profile, HashMap parameters);
 	
 	
 	/**

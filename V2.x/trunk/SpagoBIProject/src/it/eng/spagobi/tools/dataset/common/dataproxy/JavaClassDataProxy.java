@@ -18,9 +18,17 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.dataset.common.dataproxy;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.behaviouralmodel.lov.bo.JavaClassDetail;
@@ -32,36 +40,48 @@ import org.apache.log4j.Logger;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class JavaClassDataProxy implements IDataProxy {
-	
+public class JavaClassDataProxy extends AbstractDataProxy {
+
 	String className;
-	IEngUserProfile userProfile;
-	
+
 	private static transient Logger logger = Logger.getLogger(JavaClassDataProxy.class);
-	
-	
+
+
 	public JavaClassDataProxy() {
 		super();
 	}
-	
+
 	public JavaClassDataProxy(String className) {
 		setClassName( className );
 	}
-	
+
 	public Object load(String statement) throws EMFUserError {
 		throw new UnsupportedOperationException("metothd load not yet implemented");
 	}
-	
+
 	public Object load() throws EMFUserError {
 		String result = null;				
 		IJavaClassDataSet javaClass;
 		JavaClassDetail javaClassDetail =new JavaClassDetail();
 		try {
 			javaClass = (IJavaClassDataSet) Class.forName( className ).newInstance();
-			result = javaClass.getValues( getUserProfile() );
+
+			if(javaClass==null){
+				logger.debug("java class not found");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 9217);
+			}
+
+			boolean checkProfileAttribute=checkProfileAttribute(javaClass, profile);
+			
+			if(!checkProfileAttribute){
+				logger.debug("error in solving profile Attributes required");
+				throw new EMFUserError(EMFErrorSeverity.ERROR, 9213);
+			}
+			
+			result = javaClass.getValues( getProfile(), getParametersMap());
 			result = result.trim();
-    		boolean toconvert = javaClassDetail.checkSintax(result);
-    		// check if the result must be converted into the right xml sintax
+			boolean toconvert = javaClassDetail.checkSintax(result);
+			// check if the result must be converted into the right xml sintax
 			if(toconvert) { 
 				result = javaClassDetail.convertResult(result);
 			}
@@ -72,10 +92,12 @@ public class JavaClassDataProxy implements IDataProxy {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9217);
+			logger.debug("classe non trovata");
+			throw userError;
 		}
-    	    	
-    	return result;
+
+		return result;
 	}
 
 	public String getClassName() {
@@ -86,12 +108,39 @@ public class JavaClassDataProxy implements IDataProxy {
 		this.className = className;
 	}
 
-	public IEngUserProfile getUserProfile() {
-		return userProfile;
+
+
+	public boolean checkProfileAttribute(IJavaClassDataSet classData, IEngUserProfile profile){
+		List profileAttributeNeeded=classData.getNamesOfProfileAttributeRequired();
+		if(profileAttributeNeeded==null) return true;
+		for (Iterator iterator = profileAttributeNeeded.iterator(); iterator.hasNext();) {
+			String attribute = (String) iterator.next();
+			String value=null;
+			try {
+				value=(String)profile.getUserAttribute(attribute);
+			} catch (EMFInternalError e) {
+				return false;
+			}
+			if(value==null)return false;
+		}		
+		return true;
 	}
 
-	public void setUserProfile(IEngUserProfile userProfile) {
-		this.userProfile = userProfile;
+
+
+	public HashMap addProfileAtributes(HashMap mapNameValue) throws EMFInternalError{
+		if(mapNameValue==null) mapNameValue=new HashMap();
+		Set names=(Set)profile.getUserAttributeNames();
+		for (Iterator iterator = names.iterator(); iterator.hasNext();) {
+			String name = (String) iterator.next();
+			String value=(String)profile.getUserAttribute(name);
+			mapNameValue.put(name, value);
+		}
+		return mapNameValue;
 	}
+
+
+
+
 
 }

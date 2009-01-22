@@ -23,6 +23,7 @@ package it.eng.spagobi.tools.dataset.bo;
 
 import org.apache.log4j.Logger;
 
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 
 /**
@@ -33,7 +34,7 @@ public class DataSetFactory {
 	
 	private static transient Logger logger = Logger.getLogger(DataSetFactory.class);
 	
-	public static IDataSet getDataSet( SpagoBiDataSet dataSetConfig ) {
+	public static IDataSet getDataSet( SpagoBiDataSet dataSetConfig ) throws EMFUserError{
 		IDataSet dataSet = null;
 				
 		if (dataSetConfig == null) {

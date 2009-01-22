@@ -53,6 +53,8 @@ public interface IDataSet {
 	
 	Map getParamsMap();
 	void setParamsMap(Map params);
+
+	
 	
 	boolean hasBehaviour(String behaviourId);
 	Object getBehaviour(String behaviourId);

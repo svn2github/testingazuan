@@ -159,8 +159,9 @@ public class JavaClassDetail implements ILovDetail {
 	 * checks if the result is formatted in the right xml structure
 	 * @param result the result of the lov
 	 * @return true if the result is formatted correctly false otherwise
+	 * @throws EMFUserError 
 	 */
-	public boolean checkSintax(String result) {
+	public boolean checkSintax(String result) throws EMFUserError {
 		boolean toconvert = false;
 		try{
 			SourceBean source = SourceBean.fromXMLString(result);
@@ -177,6 +178,8 @@ public class JavaClassDetail implements ILovDetail {
 			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
 					              "checkSintax", "the result of the java class lov is not formatted " +
 					              "with the right structure so it will be wrapped inside an xml envelope");
+			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9219);
+			throw userError;
 		}
 		return toconvert;
 	}

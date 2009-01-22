@@ -18,14 +18,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.dataset.common.behaviour;
 
+import org.apache.log4j.Logger;
+
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
+import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.common.query.IQueryTransformer;
 
 /**
@@ -33,36 +39,58 @@ import it.eng.spagobi.tools.dataset.common.query.IQueryTransformer;
  *
  */
 public class QuerableBehaviour extends AbstractDataSetBehaviour {
-	
+
 	IQueryTransformer queryTransformer;
-	
+	private static transient Logger logger = Logger.getLogger(QuerableBehaviour.class);
+
 	public QuerableBehaviour(IDataSet targetDataSet) {
 		super(QuerableBehaviour.class.getName(), targetDataSet);
 	}
-	
-	public String getStatement() throws EMFInternalError{
-		
+
+	public String getStatement() throws EMFInternalError, EMFUserError{
+
 		String statement;
-		try {
-			statement = (String)getTargetDataSet().getQuery();
-	    	if(statement != null) {
-	    		
+	
+			IDataSet dataSet=getTargetDataSet();
+			if (dataSet instanceof ScriptDataSet) {
+				statement = (String) ((ScriptDataSet)dataSet).getScript();
+			}
+			else
+				if (dataSet instanceof JDBCDataSet) {
+					statement = (String) ((JDBCDataSet)dataSet).getQuery();
+				}
+				else 
+					// maybe better to delete getQuery from IDataSet
+					statement = (String)dataSet.getQuery();
+
+			if(statement != null) {
+				try {
 				statement = StringUtilities.substituteProfileAttributesInString(statement, getTargetDataSet().getUserProfile() );
-				
-					
+				}
+				catch (Exception e) {
+					EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9213);
+					logger.error("profile attribute not avalaible");
+					throw userError;}
+
 				//check if there are parameters filled
 				if( getTargetDataSet().getParamsMap() != null && !getTargetDataSet().getParamsMap().isEmpty()){
+				try{
 					statement = StringUtilities.substituteParametersInString(statement, getTargetDataSet().getParamsMap(), true );
+				}
+				catch (Exception e) {
+					EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9220);
+					logger.error("profile attribute not avalaible");
+					throw userError;
+					}
+
 				}	
-				
+
 				if(queryTransformer != null) {
 					statement = (String)queryTransformer.transformQuery( statement );
 				}
-	    	}
-		} catch (Exception e) {
-			throw new EMFInternalError("Error occurred while replacing parameters into query", e);
-		}
-    	return statement;
+			}
+
+		return statement;
 	}
 
 	public IQueryTransformer getQueryTransformer() {

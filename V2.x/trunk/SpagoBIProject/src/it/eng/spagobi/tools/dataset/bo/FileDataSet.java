@@ -22,6 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.dataset.bo;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.dataproxy.FileDataProxy;
@@ -60,7 +62,7 @@ public class FileDataSet extends ConfigurableDataSet {
     	super();
     }
     
-    public FileDataSet( SpagoBiDataSet dataSetConfig ){
+    public FileDataSet( SpagoBiDataSet dataSetConfig ) throws EMFUserError{
     	super(dataSetConfig);
     	
     	logger.debug("IN");
@@ -133,17 +135,26 @@ public class FileDataSet extends ConfigurableDataSet {
 		return getDataProxy().getFileName();		
 	}
 	
-	public void setFileName(String fileName) {
+	public void setFileName(String fileName) throws EMFUserError {
 		setFileName(fileName, true);
 	}
-	public void setFileName(String fileName, boolean updateFileFormat) {
+	
+	public void setFileName(String fileName, boolean updateFileFormat) throws EMFUserError {
 		if(fileName == null || fileName.length() == 0) {
 			throw new  IllegalArgumentException("fileName argument cannot be null or an empty string");
 		}
 		getDataProxy().setFileName(fileName);
 		
 		if( updateFileFormat ) {
+		try{	
 			setDataReader(fileName);
+		}
+		catch (Exception e) {
+			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9218);
+			logger.debug("missing right exstension");
+			throw userError;
+
+		}
 		}
 	}
 }

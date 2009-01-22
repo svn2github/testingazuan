@@ -438,8 +438,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 	 * @param hibDataSet The hybernate data set
 	 * 
 	 * @return The corrispondent <code>DataSet</code> object
+	 * @throws EMFUserError 
 	 */
-	public IDataSet toDataSet(SbiDataSetConfig hibDataSet){
+	public IDataSet toDataSet(SbiDataSetConfig hibDataSet) throws EMFUserError{
 		IDataSet ds = null;
 		if(hibDataSet instanceof SbiFileDataSet){
 			ds = new FileDataSet();

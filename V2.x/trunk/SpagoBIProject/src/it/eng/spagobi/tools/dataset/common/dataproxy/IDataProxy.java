@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.dataset.common.dataproxy;
 
+import java.util.HashMap;
+
 import it.eng.spago.error.EMFUserError;
 
 /**
@@ -30,4 +32,6 @@ import it.eng.spago.error.EMFUserError;
 public interface IDataProxy {
 	Object load(String Statement) throws EMFUserError;
 	Object load() throws EMFUserError;
+	
+
 }

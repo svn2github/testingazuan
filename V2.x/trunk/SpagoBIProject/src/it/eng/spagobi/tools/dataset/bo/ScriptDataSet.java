@@ -1,6 +1,7 @@
 package it.eng.spagobi.tools.dataset.bo;
 
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
 import it.eng.spagobi.tools.dataset.common.dataproxy.FileDataProxy;
 import it.eng.spagobi.tools.dataset.common.dataproxy.IDataProxy;
 import it.eng.spagobi.tools.dataset.common.dataproxy.JDBCDataProxy;
@@ -28,7 +29,7 @@ public class ScriptDataSet extends ConfigurableDataSet {
 		
 		setDataProxy( new ScriptDataProxy() );
 		setDataReader( new XmlDataReader() );
-		
+		addBehaviour( new QuerableBehaviour(this) );	
 		setScript( dataSetConfig.getScript() );
 	}
 	

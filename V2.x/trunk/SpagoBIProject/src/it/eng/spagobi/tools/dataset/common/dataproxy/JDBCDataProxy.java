@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class JDBCDataProxy implements IDataProxy {
+public class JDBCDataProxy extends AbstractDataProxy {
 	
 	IDataSource dataSource;
 	String statement;
@@ -89,7 +89,7 @@ public class JDBCDataProxy implements IDataProxy {
 			}
 		} catch(Exception e){
 			logger.error("Error in query Execution",e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, "Error in query Execution: check your query and Datasource");
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 9221);
 		} finally {
 			//Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 			logger.debug("OUT");

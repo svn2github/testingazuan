@@ -25,13 +25,14 @@ import java.io.FileInputStream;
 
 import org.apache.log4j.Logger;
 
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class FileDataProxy implements IDataProxy {
+public class FileDataProxy extends AbstractDataProxy {
 	
 	String fileName;
 	
@@ -57,8 +58,9 @@ public class FileDataProxy implements IDataProxy {
 			inputStream = new FileInputStream(fileName);
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9209);
 			logger.debug("File not found",e);
+			throw userError;
 		}
 		
 		return inputStream;

@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.dataset.bo;
 
+import java.util.HashMap;
+
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.dataproxy.IDataProxy;
 import it.eng.spagobi.tools.dataset.common.dataproxy.WebServiceDataProxy;
@@ -57,6 +59,7 @@ public class WebServiceDataSet extends ConfigurableDataSet {
 		
 		setAddress( dataSetConfig.getAdress() );
 		setOperation( dataSetConfig.getOperation() );
+		//setParamsMap(dataSetConfig.getP)
 		
 		//addBehaviour( new QuerableBehaviour(this) );
 
@@ -72,7 +75,7 @@ public class WebServiceDataSet extends ConfigurableDataSet {
 		
 		sbd.setAdress( getAddress() );
 		sbd.setOperation( getOperation() );
-		
+
 		return sbd;
 	}
 	
@@ -107,13 +110,7 @@ public class WebServiceDataSet extends ConfigurableDataSet {
 	public  void setOperation(String operation) {
 		getDataProxy().setOperation(operation);
 	}
-	
-	public String getExecutorClass() {
-		return getDataProxy().getExecutorClass();
-	}
-	
-	public void setExecutorClass(String executorClass) {
-		getDataProxy().setExecutorClass(executorClass);
-	}
+
+
 	
 }

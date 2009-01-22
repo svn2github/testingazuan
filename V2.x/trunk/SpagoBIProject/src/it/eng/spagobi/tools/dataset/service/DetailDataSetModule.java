@@ -212,6 +212,10 @@ public class DetailDataSetModule extends AbstractModule {
 		//if(dataSetModified != null && !dataSetModified.trim().equals("")) 
 		//session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, dataSetModified);
 	
+		if(session.getAttribute(DetailDataSetModule.PARAMETERS_FILLED)!=null){
+			session.delAttribute(DetailDataSetModule.PARAMETERS_FILLED);
+		}
+		
 		String parametersXMLModified = (String) serviceRequest.getAttribute(DetailDataSetModule.DATASET_MODIFIED);
 		if(parametersXMLModified != null && !parametersXMLModified.trim().equals("")) 
 			session.setAttribute(DetailDataSetModule.DATASET_MODIFIED, parametersXMLModified);
@@ -267,7 +271,7 @@ public class DetailDataSetModule extends AbstractModule {
 				else if(JavaClassDataSet.DS_TYPE.equalsIgnoreCase(dsNew.getType()))type="4";
 
 				// check if it has to change parameters		(now only in Query Case) 
-				if(type.equals("1")){
+				if(type.equals("1") || type.equals("2") || type.equals("3") || type.equals("4")){
 					String parametersXML = dsNew.getParameters();
 					DataSetParametersList dslistDet = null;
 					if( (parametersXML==null) || (parametersXML.trim().equals("")) ) {
@@ -275,8 +279,13 @@ public class DetailDataSetModule extends AbstractModule {
 					} else {
 						dslistDet = new DataSetParametersList(parametersXML);
 					}
+					
+						
 					boolean itemTaskDone = doDatasetParameterItemTask(dsNew, dslistDet, serviceRequest);
-					if(itemTaskDone) { // if something on on parameters is changed
+
+					
+					
+					if(itemTaskDone ) { // if something on on parameters is changed
 						prepareDetailDatasetPage(dsNew, mod, serviceResponse);
 						session.setAttribute(DetailDataSetModule.DATASET_MODIFIED, "true");
 						session.setAttribute(DetailDataSetModule.DATASET, dsNew);
@@ -648,7 +657,7 @@ public class DetailDataSetModule extends AbstractModule {
 			//}
 		}
 		//	checks if it is requested to move down a Fix Lov item
-		Object indexOfItemToDown = request.getAttribute("indexOfItemToDown");
+		Object indexOfItemToDown = request.getAttribute("indexOfParameterToDown");
 		if (indexOfItemToDown != null) {
 			// it is requested to move down a Fix Lov item
 			int indexOfItemToDownInt = new Integer((String)indexOfItemToDown).intValue();
@@ -656,7 +665,7 @@ public class DetailDataSetModule extends AbstractModule {
 			changeItems = true;
 		}
 		// checks if it is requested to move up a Fix Lov item
-		Object indexOfItemToUp = request.getAttribute("indexOfItemToUp");
+		Object indexOfItemToUp = request.getAttribute("indexOfParameterToUp");
 		if (indexOfItemToUp != null) {
 			// it is requested to move down a Fix Lov item
 			int indexOfItemToUpInt = new Integer((String)indexOfItemToUp).intValue();
@@ -679,7 +688,7 @@ public class DetailDataSetModule extends AbstractModule {
 		}
 		return changeItems;
 	}
-
+	
 	/**
 	 * Delete from the list of fix lov items the one at index indexOfFixedListItemToDelete
 	 * @param lovDetList	The list of Fix Lov
@@ -691,6 +700,7 @@ public class DetailDataSetModule extends AbstractModule {
 		dsDetList.setPars(parameters);
 		return dsDetList;
 	}
+	
 
 	/**
 	 * Chnage from the list of fix lov items the one at index indexOfFixedListItemToDelete
@@ -711,6 +721,8 @@ public class DetailDataSetModule extends AbstractModule {
 		return dsDetList;
 	}
 
+
+	
 	/**
 	 * Move up an item of the fix lov list
 	 * @param lovDetList	The list of Fix Lov
@@ -725,6 +737,7 @@ public class DetailDataSetModule extends AbstractModule {
 		return dsDetList;
 	}
 
+	
 	/**
 	 * Move down an item of the fix lov list
 	 * @param lovDetList	The list of Fix Lov
@@ -739,6 +752,7 @@ public class DetailDataSetModule extends AbstractModule {
 		return dsDetList;
 	}
 
+	
 	/**
 	 * Inserts a new Fixed LOV item in the FixedLov Wizard. When this type of Input is selected dring the insertion/
 	 * modify of a Value in the LOV list, it is possible to add a series of FixLov Values, showed
@@ -762,6 +776,7 @@ public class DetailDataSetModule extends AbstractModule {
 		return dsDetList;
 	}
 
+	
 	/**
 	 * Sets some attributes into the response SourceBean. Those attributes are required for 
 	 * the correct visualization of the ModalitiesValue form page.
@@ -893,7 +908,6 @@ public class DetailDataSetModule extends AbstractModule {
 					else if(type.equals("Date")){
 						valueToPass="\'"+value+"\'";
 					}
-
 
 
 					attributes.put(name, valueToPass);

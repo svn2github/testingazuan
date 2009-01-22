@@ -13,7 +13,6 @@ import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.kpi.model.utils.DetailModelInstanceUtil;
-import it.eng.spagobi.kpi.model.utils.DetailModelUtil;
 
 public class DetailModelInstanceModule extends DefaultDetailModule {
 
@@ -48,6 +47,9 @@ public class DetailModelInstanceModule extends DefaultDetailModule {
 					engErrorHandler.addError(new EMFUserError(
 							EMFErrorSeverity.WARNING, "10013",
 							"component_kpi_messages"));
+				} catch (EMFUserError e) {
+					EMFErrorHandler engErrorHandler = getErrorHandler();
+					engErrorHandler.addError(e);
 				}
 
 				DetailModelInstanceUtil.selectModelInstance(Integer

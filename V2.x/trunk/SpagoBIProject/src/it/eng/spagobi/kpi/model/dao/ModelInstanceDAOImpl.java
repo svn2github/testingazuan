@@ -268,7 +268,18 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 			tx.commit();
 
-		} catch (HibernateException he) {
+		}
+		
+		catch (org.hibernate.exception.ConstraintViolationException ce) {
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+			logger.error("Impossible to delete a KpiInstance", ce);
+			throw new EMFUserError(EMFErrorSeverity.WARNING, 10018);
+			
+		}
+		
+		catch (HibernateException he) {
 			logException(he);
 
 			if (tx != null)

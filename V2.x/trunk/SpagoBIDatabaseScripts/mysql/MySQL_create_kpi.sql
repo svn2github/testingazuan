@@ -7,6 +7,7 @@ Create table `SBI_KPI_ROLE` (
 	UNIQUE (`id_kpi_role`),
  Primary Key (`id_kpi_role`)) ENGINE = InnoDB;
 
+
 Create table `SBI_KPI` (
 	`KPI_ID` Int NOT NULL AUTO_INCREMENT,
 	`id_measure_unit` Int,
@@ -21,6 +22,8 @@ Create table `SBI_KPI` (
 	`weight` Double,
 	`flg_is_father` Char(1),
  Primary Key (`KPI_ID`)) ENGINE = InnoDB;
+ 
+ 
 
 Create table `SBI_MEASURE_UNIT` (
 	`id_measure_unit` Int NOT NULL AUTO_INCREMENT,
@@ -29,13 +32,17 @@ Create table `SBI_MEASURE_UNIT` (
 	`SCALE_CD` Varchar(40),
 	`SCALE_NM` Varchar(400),
  Primary Key (`id_measure_unit`)) ENGINE = InnoDB;
+ 
 
 Create table `SBI_THRESHOLD` (
 	`THRESHOLD_ID` Int NOT NULL AUTO_INCREMENT,
 	`THRESHOLD_TYPE_ID` Int NOT NULL,
 	`name` Varchar(400),
 	`description` Varchar(1000),
+	`code` Varchar(45) default NULL,
  Primary Key (`THRESHOLD_ID`)) ENGINE = InnoDB;
+
+  
 
 Create table `SBI_THRESHOLD_VALUE` (
 	`id_threshold_value` Int NOT NULL AUTO_INCREMENT,
@@ -100,14 +107,6 @@ Create table `SBI_KPI_INSTANCE` (
 	`BEGIN_DT` Datetime,
  Primary Key (`id_kpi_instance`)) ENGINE = InnoDB;
 
-Create table `SBI_KPI_INST_PERIOD` (
-  `KPI_INST_PERIOD_ID` INTEGER NOT NULL AUTO_INCREMENT,
-  `KPI_INSTANCE_ID` INTEGER NOT NULL,
-  `PERIODICITY_ID` INTEGER NOT NULL,
-  `DEFAULT` BOOLEAN ,
-  PRIMARY KEY (`KPI_INST_PERIOD_ID`)
-)
-ENGINE = InnoDB;
 
 Create table `SBI_KPI_INSTANCE_HISTORY` (
 	`id_kpi_instance_history` Int NOT NULL AUTO_INCREMENT,
@@ -129,6 +128,7 @@ Create table `SBI_KPI_VALUE` (
 	`VALUE` Varchar(40),
 	`BEGIN_DT` Datetime,
 	`END_DT` Datetime,
+	`DESCRIPTION` Varchar(100),
 	UNIQUE (`id_kpi_instance_value`),
  Primary Key (`id_kpi_instance_value`)) ENGINE = InnoDB;
 

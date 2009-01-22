@@ -172,6 +172,7 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			aDomain.setValueCd((String) aDomainSB.getAttribute("valueCd"));
 			aDomain.setValueNm((String) aDomainSB.getAttribute("valueNm"));
 			aDomain.setValueDs((String) aDomainSB.getAttribute("valueDs"));
+			logger.debug("Inserting Domain with valueCd = [" + aDomainSB.getAttribute("valueCd") + "], domainCd = [" + aDomainSB.getAttribute("domainCd") + "] ...");
 			aSession.save(aDomain);
 		}
 		logger.debug("OUT");
@@ -214,6 +215,8 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			SbiDomains domainBiobjectType = findDomain(aSession, biobjTypeCd, "BIOBJ_TYPE");
 			anEngine.setBiobjType(domainBiobjectType);
 
+			logger.debug("Inserting Engine with label = [" + anEngineSB.getAttribute("label") + "] ...");
+			
 			aSession.save(anEngine);
 		}
 		logger.debug("OUT");
@@ -246,6 +249,8 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			
 			aCheck.setValue1((String) aChecksSB.getAttribute("value1"));
 			aCheck.setValue2((String) aChecksSB.getAttribute("value2"));
+			
+			logger.debug("Inserting Check with label = [" + aChecksSB.getAttribute("label") + "] ...");
 			
 			aSession.save(aCheck);
 		}
@@ -282,6 +287,8 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			aLov.setInputType(domainInputType);
 			aLov.setInputTypeCd(inputTypeCd);
 			
+			logger.debug("Inserting Lov with label = [" + aLovsSB.getAttribute("label") + "] ...");
+			
 			aSession.save(aLov);
 		}
 		logger.debug("OUT");
@@ -312,10 +319,12 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			if (roleTypesObject == null) {
 				throw new Exception("No role type found for user functionality [" + userFunctionality + "]!!!");
 			}
+			StringBuffer roleTypesStrBuffer = new StringBuffer();
 			Set roleTypes = new HashSet();
 			if (roleTypesObject instanceof SourceBean) {
 				SourceBean roleTypeSB = (SourceBean) roleTypesObject;
 				String roleTypeCd = (String) roleTypeSB.getAttribute("roleType");
+				roleTypesStrBuffer.append(roleTypeCd);
 				SbiDomains domainRoleType = findDomain(aSession, roleTypeCd, "ROLE_TYPE");
 				roleTypes.add(domainRoleType);
 			} else if (roleTypesObject instanceof List) {
@@ -324,11 +333,18 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 				while (roleTypesIt.hasNext()) {
 					SourceBean roleTypeSB = (SourceBean) roleTypesIt.next();
 					String roleTypeCd = (String) roleTypeSB.getAttribute("roleType");
+					roleTypesStrBuffer.append(roleTypeCd);
+					if (roleTypesIt.hasNext()) {
+						roleTypesStrBuffer.append(";");
+					}
 					SbiDomains domainRoleType = findDomain(aSession, roleTypeCd, "ROLE_TYPE");
 					roleTypes.add(domainRoleType);
 				}
 			}
 			aUserFunctionality.setRoleType(roleTypes);
+			
+			logger.debug("Inserting UserFunctionality with name = [" + aUSerFunctionalitySB.getAttribute("name") + "] associated to role types [" + roleTypesStrBuffer.toString() + "]...");
+			
 			aSession.save(aUserFunctionality);
 		}
 		logger.debug("OUT");

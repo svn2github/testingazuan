@@ -161,11 +161,11 @@ public class ImportExportModule extends AbstractModule {
 	    if (exportSnapshots != null) {
 		exportSnaps = true;
 	    }
-	    String exportResourcesStr = (String) request.getAttribute("exportResources");
-	    boolean exportResources = false;
-	    if (exportResourcesStr != null) {
-	    	exportResources = true;
-	    }
+//	    String exportResourcesStr = (String) request.getAttribute("exportResources");
+//	    boolean exportResources = false;
+//	    if (exportResourcesStr != null) {
+//	    	exportResources = true;
+//	    }
 	    
 	    String pathExportFolder = ExportUtilities.getExportTempFolderPath();
 	    String idListStr = (String) request.getAttribute(ImportExportConstants.OBJECT_ID);
@@ -174,10 +174,10 @@ public class ImportExportModule extends AbstractModule {
 	    expManager = ExportUtilities.getExportManagerInstance();
 	    expManager.prepareExport(pathExportFolder, exportFileName, expSubObj, exportSnaps);
 	    expManager.exportObjects(ids);
-	    if (exportResources) {
-	    	logger.error("Exporting resources");
-	    	expManager.exportResources();
-	    }
+//	    if (exportResources) {
+//	    	logger.error("Exporting resources");
+//	    	expManager.exportResources();
+//	    }
 	    expManager.createExportArchive();
 	    response.setAttribute(ImportExportConstants.EXPORT_FILE_PATH, exportFileName);
 	} catch (EMFUserError emfue) {

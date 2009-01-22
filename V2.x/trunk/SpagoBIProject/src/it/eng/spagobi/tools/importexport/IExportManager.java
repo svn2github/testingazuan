@@ -54,7 +54,7 @@ public interface IExportManager {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public void exportResources() throws EMFUserError;
+//	public void exportResources() throws EMFUserError;
 	
 	/**
 	 * Creates the archive export file

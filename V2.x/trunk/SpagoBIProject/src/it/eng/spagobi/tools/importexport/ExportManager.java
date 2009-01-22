@@ -601,7 +601,8 @@ public class ExportManager implements IExportManager {
 	deleteTmpFolder();
 	logger.debug("OUT");
     }
-
+    
+    /*
 	public void exportResources() throws EMFUserError {
 	    logger.debug("IN");
 	    try {
@@ -621,5 +622,6 @@ public class ExportManager implements IExportManager {
 	    	logger.debug("OUT");
 	    }
 	}
+	*/
 
 }

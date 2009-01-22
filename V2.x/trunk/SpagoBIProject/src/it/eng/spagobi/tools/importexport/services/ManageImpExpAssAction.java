@@ -261,7 +261,7 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 
     private String generateHtmlForInsertNewForm() {
 		String html = "<div width='100%' class='portlet-section-header'>";
-		html += "			&nbsp;&nbsp;&nbsp;<a class='linkAction' href='javascript:openclosenewform()'>" 
+		html += "			&nbsp;&nbsp;&nbsp;<a style='color:#FFFFFF;' href='javascript:openclosenewform()'>" 
 			+ msgBuild.getMessage("Sbi.saving.insertNew", "component_impexp_messages", locale) 
 			+ "</a>";
 		html += "	   </div>";

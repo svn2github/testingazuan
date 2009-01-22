@@ -249,7 +249,7 @@ public class ImportManager implements IImportManager, Serializable {
 	importBIObjects(overwrite);
 	importBIObjectLinks();
 	importMapCatalogue(overwrite);
-	importResources(overwrite);
+//	importResources(overwrite);
 	logger.debug("OUT");
     }
 
@@ -2406,7 +2406,7 @@ public class ImportManager implements IImportManager, Serializable {
 	}
  
     
-    
+    /*
 	private void importResources(boolean overwrite) {
 		logger.debug("IN");
 		try {
@@ -2431,5 +2431,6 @@ public class ImportManager implements IImportManager, Serializable {
 			logger.debug("OUT");
 		}
 	}
+	*/
 	
 }

@@ -9,5 +9,6 @@
 <qbe:url type="resource" var="ExtCSS" ref="../js/lib/ext-2.0.1/resources/css/ext-all.css"/>
 <link rel="styleSheet" href ="${ExtCSS}" type="text/css" />
 
-<qbe:url type="resource" var="ExtThemeCSS" ref="../js/ext/resources/css/xtheme-gray.css"/>
+<qbe:url type="resource" var="ExtThemeCSS" ref="../js/lib/ext-2.0.1/resources/css/xtheme-gray.css"/>
 <link id="theme" rel="styleSheet" href ="${ExtThemeCSS}" type="text/css" />
+

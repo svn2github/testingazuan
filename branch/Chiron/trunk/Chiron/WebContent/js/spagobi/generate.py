@@ -25,7 +25,7 @@
 import sys, os, subprocess
 
 CMD_PYTHON = 'python'
-QOOXDOO_PATH = '../../../../../../../documenti/codice/spagobiv2/chiron/webcontent/js/qooxdoo-0.8'
+QOOXDOO_PATH = '../qooxdoo-0.8'
 REAL_GENERATOR = os.path.normpath(
                     os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])),
                                  QOOXDOO_PATH, 'tool', 'bin', 'generator.py'))

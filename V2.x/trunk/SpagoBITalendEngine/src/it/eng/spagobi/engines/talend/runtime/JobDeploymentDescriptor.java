@@ -32,7 +32,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.talend.runtime;
 
 import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
-import it.eng.spagobi.engines.talend.SpagoBITalendEngineConfig;
+import it.eng.spagobi.engines.talend.TalendEngineConfig;
 
 import java.io.File;
 import java.io.FileInputStream;

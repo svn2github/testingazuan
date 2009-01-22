@@ -32,11 +32,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.talend.utils;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
 import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
-import it.eng.spagobi.engines.talend.SpagoBITalendEngineConfig;
+import it.eng.spagobi.engines.talend.TalendEngineConfig;
 import it.eng.spagobi.engines.talend.runtime.Job;
 import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
 
@@ -61,10 +62,11 @@ public class TalendScriptAccessUtils {
 			buffer.append(job.getProject().toLowerCase());
     		buffer.append(".");
     		buffer.append(job.getName().toLowerCase());
+    		buffer.append("_" + job.getVersion().replace('.', '_'));
     		buffer.append(".");
     		//not more Java convention but original name
     		buffer.append(job.getName().substring(0,1) + job.getName().substring(1));
-    		//buffer.append(job.getName().substring(0,1).toUpperCase() + job.getName().substring(1));
+    		//buffer.append(job.getName().substring(0,1).toUpperCase() + job.getName().substring(1));    		
     	} else{
     		return null;
     	}
@@ -83,7 +85,7 @@ public class TalendScriptAccessUtils {
 	 */
 	public static String getExecutableFileName(Job job) {
 		StringBuffer buffer = new StringBuffer();
-		SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
+		TalendEngineConfig config = TalendEngineConfig.getInstance();
 		if(job.isPerlJob()) {
     		buffer.append(job.getProject());
     		buffer.append(config.getJobSeparator());
@@ -92,6 +94,7 @@ public class TalendScriptAccessUtils {
     		buffer.append(config.getPerlExt());
     	} else if(job.isJavaJob()) {
     		buffer.append(job.getName().toLowerCase());
+    		buffer.append("_" + job.getVersion().replace('.', '_'));
     		buffer.append(".jar");    		
     	} else{
     		return null;
@@ -128,6 +131,67 @@ public class TalendScriptAccessUtils {
 	}
 	
 	
+	/**
+	 * Gets the class path.
+	 * 
+	 * @param job the job
+	 * 
+	 * @return the class path
+	 */
+	public static String getClassPath(Job job, RuntimeRepository runtimeRepository) {
+    	StringBuffer classpath = new StringBuffer();
+    	File libsDir;
+    	File[] files;
+    	
+    	if(job.isPerlJob()) {
+    		// do nothing
+    	} else if(job.isJavaJob()) {
+    		
+    		//STEP1 : include ../lib directory
+    		classpath.append( "../lib");
+    		
+    		//STEP2 : include jar in ../lib directory
+    		File executableJobProjectDir = runtimeRepository.getExecutableJobProjectDir(job);
+    		libsDir = new File(executableJobProjectDir, "lib");
+    		files = libsDir.listFiles();  
+    		for(int i  = 0; i < files.length; i++) {
+    			classpath.append(File.pathSeparator + "../lib/" + files[i].getName());
+    		}
+    		
+    		//STEP3 : include current directory
+    		classpath.append(File.pathSeparator + ".");
+    		
+    		//STEP4 : include jar in current directory
+    		File executableJobDir = runtimeRepository.getExecutableJobDir(job);
+    		files = executableJobDir.listFiles(new FilenameFilter(){
+    			public boolean accept(File dir, String name) {
+    				return name.endsWith(".jar");
+    			}
+    		});  
+    		for(int i  = 0; i < files.length; i++) {
+    			classpath.append(File.pathSeparator + files[i].getName());
+    		}
+    	}
+    	
+    	
+    	
+    	
+    	/*
+    	List libs = TalendScriptAccessUtils.getIncludedLibs(job, runtimeRepository);    	
+    	for(int i = 0; i < libs.size(); i++){
+    		File file = (File)libs.get(i);    		
+    		classpath.append( (i>0? File.pathSeparator : "") + "../lib/" + file.getName());
+    	}
+    	
+    	classpath.append( (libs.size()>0? File.pathSeparator : "") + TalendScriptAccessUtils.getExecutableFileName(job));
+    	*/
+    	//System.out.println(classpath);
+    	
+    	return classpath.toString();
+    }
+	
+	
+	
 	
 	
 	///////////////////////////////////////////////////////////////
@@ -143,7 +207,7 @@ public class TalendScriptAccessUtils {
 	 */
 	public static String getContextFileName(Job job) {		
 		StringBuffer buffer = new StringBuffer();
-		SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
+		TalendEngineConfig config = TalendEngineConfig.getInstance();
 		if(job.isPerlJob()) {
     		buffer.append(job.getProject());
     		buffer.append(config.getJobSeparator());
@@ -173,7 +237,7 @@ public class TalendScriptAccessUtils {
 		File contextFile = null;
 		StringBuffer buffer = new StringBuffer();
 		
-		SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
+		TalendEngineConfig config = TalendEngineConfig.getInstance();
 		if(job.isPerlJob()) {
     		buffer.append(job.getProject());
     		buffer.append(config.getJobSeparator());

@@ -32,7 +32,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.talend.services;
 
 import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
-import it.eng.spagobi.engines.talend.SpagoBITalendEngineConfig;
+import it.eng.spagobi.engines.talend.TalendEngineConfig;
 import it.eng.spagobi.engines.talend.runtime.Job;
 import it.eng.spagobi.engines.talend.runtime.JobDeploymentDescriptor;
 import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
@@ -77,16 +77,14 @@ public class JobUploadService extends HttpServlet {
 	
 	private static transient Logger logger = Logger.getLogger(JobUploadService.class);
 	
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
+
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		logger.debug("Starting JobUpload service method...");
 		HttpSession session=request.getSession();
-		String engineRootDir = getServletContext().getRealPath("WEB-INF");
-		SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
-		config.setEngineRootDir(new File(engineRootDir));
+		
+		TalendEngineConfig config = TalendEngineConfig.getInstance();
+		
 		
 		
 		//  Check that we have a file upload request
@@ -258,7 +256,7 @@ public class JobUploadService extends HttpServlet {
 		BASE64Encoder encoder = new BASE64Encoder();
 		String templateBase64Coded = encoder.encode(template.getBytes());		
 		
-		SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
+		TalendEngineConfig config = TalendEngineConfig.getInstance();
 		
 		String user = "biadmin";
 		String password = "biadmin";
@@ -330,7 +328,7 @@ public class JobUploadService extends HttpServlet {
 	    BASE64Encoder encoder = new BASE64Encoder();
 	    String templateBase64Coded = encoder.encode(template.getBytes());		
 	    
-	    SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
+	    TalendEngineConfig config = TalendEngineConfig.getInstance();
 	    
 	    String user = "biadmin";
 		String password = "biadmin";

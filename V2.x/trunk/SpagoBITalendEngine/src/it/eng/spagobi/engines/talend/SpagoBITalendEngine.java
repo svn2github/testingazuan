@@ -43,7 +43,7 @@ import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
  */
 public class SpagoBITalendEngine implements Version {
 	
-	private SpagoBITalendEngineConfig config;
+	
 	private RuntimeRepository runtimeRepository;
 	
 	static private SpagoBITalendEngine instance;
@@ -59,7 +59,6 @@ public class SpagoBITalendEngine implements Version {
 	}
 	
 	private SpagoBITalendEngine() { 
-		config = new SpagoBITalendEngineConfig();
 	}
 	
 	/**
@@ -96,21 +95,13 @@ public class SpagoBITalendEngine implements Version {
 	 */
 	public RuntimeRepository getRuntimeRepository() {
 		if(runtimeRepository == null) {
-			File rrRootDir = config.getRuntimeRepositoryRootDir();
+			File rrRootDir = TalendEngineConfig.getInstance().getRuntimeRepositoryRootDir();
 			runtimeRepository = new RuntimeRepository(rrRootDir);
 		}
 		return runtimeRepository;
 	}
 
-	/**
-	 * Gets the config.
-	 * 
-	 * @return the config
-	 */
-	public SpagoBITalendEngineConfig getConfig() {
-		return config;
-	}
-
+	
 	/**
 	 * Gets the compliance version.
 	 * 

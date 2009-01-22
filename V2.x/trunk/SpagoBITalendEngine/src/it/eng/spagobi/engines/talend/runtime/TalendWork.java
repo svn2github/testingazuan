@@ -34,11 +34,15 @@ package it.eng.spagobi.engines.talend.runtime;
 import it.eng.spagobi.engines.talend.utils.FileUtils;
 import it.eng.spagobi.services.proxy.EventServiceProxy;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -69,11 +73,8 @@ public class TalendWork implements Work {
     private File _executableJobDir = null;
     private String[] _envr = null;
     private List _filesToBeDeletedAfterJobExecution = null;
-    private AuditAccessUtils _auditAccessUtils = null;
-    private String _auditId = null;
     private Map _parameters = null;
-    private HttpSession _session = null;
-
+   
     private boolean completeWithoutError = false;
 
     /**
@@ -98,15 +99,12 @@ public class TalendWork implements Work {
      * @param session the session
      */
     public TalendWork(String command, String[] envr, File executableJobDir, List filesToBeDeletedAfterJobExecution,
-	    AuditAccessUtils auditAccessUtils, String auditId, Map parameters, HttpSession session) {
+	    Map parameters) {
 	this._command = command;
 	this._executableJobDir = executableJobDir;
 	this._envr = envr;
 	this._filesToBeDeletedAfterJobExecution = filesToBeDeletedAfterJobExecution;
-	this._auditAccessUtils = auditAccessUtils;
-	this._auditId = auditId;
 	this._parameters = parameters;
-	this._session = session;
     }
 
     /* (non-Javadoc)
@@ -115,8 +113,7 @@ public class TalendWork implements Work {
     public void run() {
 	logger.debug("IN");
 
-	String userId = (String) _parameters.get("userId");
-
+	
 	// registering the start execution event
 	String startExecutionEventDescription = "${talend.execution.started}<br/>";
 
@@ -127,13 +124,14 @@ public class TalendWork implements Work {
 	while (paramKeysIt.hasNext()) {
 	    String key = (String) paramKeysIt.next();
 	    
-	    if (!key.equalsIgnoreCase("template") && !key.equalsIgnoreCase("biobjectId")
+	    if (!key.equalsIgnoreCase("template") 
+	    	&& !key.equalsIgnoreCase("biobjectId")
 		    && !key.equalsIgnoreCase("cr_manager_url") && !key.equalsIgnoreCase("events_manager_url")
 		    && !key.equalsIgnoreCase("user") && !key.equalsIgnoreCase("SPAGOBI_AUDIT_SERVLET")
 		    && !key.equalsIgnoreCase("spagobicontext") && !key.equalsIgnoreCase("SPAGOBI_AUDIT_ID")
 		    && !key.equalsIgnoreCase("username")) {
 		Object valueObj = _parameters.get(key);
-		logger.debug(key+"/"+(String)valueObj);
+		logger.debug(key+"/"+valueObj.toString());
 		parametersList += "<li>" + key + " = " + (valueObj != null ? valueObj.toString() : "") + "</li>";
 	    }
 	}
@@ -142,11 +140,11 @@ public class TalendWork implements Work {
 
 	Map startEventParams = new HashMap();
 	startEventParams.put(EVENT_TYPE, DOCUMENT_EXECUTION_START);
-	// startEventParams.put("biobj-path", params.get(TEMPLATE_PATH));
-	startEventParams.put(BIOBJECT_ID, _parameters.get("document"));
+	startEventParams.put(BIOBJECT_ID, _parameters.get(EngineConstants.ENV_DOCUMENT_ID));
 
 	Integer startEventId = null;
-	EventServiceProxy eventServiceProxy = new EventServiceProxy(userId, _session);
+	EventServiceProxy eventServiceProxy = (EventServiceProxy)_parameters.get( EngineConstants.ENV_EVENT_SERVICE_PROXY);
+	
 
 	try {
 
@@ -181,6 +179,20 @@ public class TalendWork implements Work {
 	    Process p =Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
 
 	    p.waitFor();
+	   
+	    /*
+	   LineNumberReader in = new LineNumberReader( new InputStreamReader(p.getErrorStream()) );
+	   String line = null;
+	   String str = "";
+	   while( (line = in.readLine()) != null) {
+		   str += line  + "\n";
+	   }
+	   logger.debug(str);
+	   */
+	    
+	    
+	   
+	    
 	    //CODICE DA USARE EVENTUALMENTE IN FUTURO CON ALTRE MODIFICHE:
 	    /*this.talendJobClass = Class.forName(talendJobClassName); 
 	    this.runJob = this.talendJobClass.getMethod("runJob", new  Class[]{String[].class}); 

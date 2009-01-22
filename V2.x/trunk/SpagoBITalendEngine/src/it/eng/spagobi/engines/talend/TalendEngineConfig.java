@@ -32,7 +32,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.talend;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.services.common.EnginConf;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.file.FileUtils;
 
 import java.io.File;
 
@@ -42,20 +45,39 @@ import org.apache.log4j.Logger;
  * @author Andrea Gioia
  *
  */
-public class SpagoBITalendEngineConfig {
+public class TalendEngineConfig {
 	
+	private EnginConf engineConfig;
+	
+	private static TalendEngineConfig instance;
+	
+	public static String SPAGOBI_SERVER_URL = "SPAGOBI_SERVER_URL";
+	public static String DEFAULT_SPAGOBI_SERVER_URL = "http://localhost:8080/SpagoBI";
+	
+	public static String RUNTIMEREPOSITORY_ROOT_DIR = "RUNTIMEREPOSITORY_ROOT_DIR";
+	
+	private static transient Logger logger = Logger.getLogger(TalendEngineConfig.class);
 
 	
-	File engineRootDir = new File("");
-	
-	private static transient Logger logger = Logger.getLogger(SpagoBITalendEngineConfig.class);
-	
-	
-	SpagoBITalendEngineConfig() {
-
-	}
-
+	public static TalendEngineConfig getInstance() {
+		if(instance == null) {
+			instance =  new TalendEngineConfig();
+		}
 		
+		return instance;
+	}
+	
+	private TalendEngineConfig() {
+		setEngineConfig( EnginConf.getInstance() );
+	}
+	
+	public SourceBean getConfigSourceBean() {
+		return getEngineConfig().getConfig();
+	}
+	
+	
+	// core settings
+	
 	/**
 	 * Checks if is absolute path.
 	 * 
@@ -76,16 +98,85 @@ public class SpagoBITalendEngineConfig {
 	 */
 	public File getRuntimeRepositoryRootDir() {
 	    
-	        SourceBean config = EnginConf.getInstance().getConfig();
-	        String dirName = (String)config.getCharacters("RUNTIMEREPOSITORY_ROOT_DIR");
+		String property = getProperty( RUNTIMEREPOSITORY_ROOT_DIR );
+		
+		SourceBean config = EnginConf.getInstance().getConfig();
+	        
 	        File dir = null;
-		if( !isAbsolutePath(dirName) )  {
-			dirName = engineRootDir.toString() + System.getProperty("file.separator") + dirName;
+		if( !isAbsolutePath(property) )  {
+			property = getEngineResourcePath() + System.getProperty("file.separator") + property;
 		}		
 		
-		if(dirName != null) dir = new File(dirName);
+		if(property != null) dir = new File(property);
+		
 		return dir;
 	}
+	
+	
+	
+	// engine settings
+	
+	public String getEngineResourcePath() {
+		String path = null;
+		if(getEngineConfig().getResourcePath() != null) {
+			path = getEngineConfig().getResourcePath() + System.getProperty("file.separator") + "talend";
+		} else {
+			path = ConfigSingleton.getRootPath() + System.getProperty("file.separator") + "resources" + System.getProperty("file.separator") + "talend";
+		}
+		
+		return path;
+	}
+	
+	public String getSpagoBIServerUrl() {
+		
+		String spagoBIServerURL = null;
+		SourceBean sourceBeanConf;
+		
+		Assert.assertNotNull( getConfigSourceBean(), "Impossible to parse engine-config.xml file");
+		
+		sourceBeanConf = (SourceBean) getConfigSourceBean().getAttribute(SPAGOBI_SERVER_URL);
+		if(sourceBeanConf != null) {
+			spagoBIServerURL = (String) sourceBeanConf.getCharacters();
+			logger.debug("Configuration attribute [" + SPAGOBI_SERVER_URL + "] is equals to: [" + spagoBIServerURL + "]");
+		}
+		
+		if (spagoBIServerURL == null) {
+			logger.warn("Configuration attribute [" + SPAGOBI_SERVER_URL + "] is not defined in file engine-config.xml");
+			spagoBIServerURL = DEFAULT_SPAGOBI_SERVER_URL;
+			logger.debug("The default value [" + DEFAULT_SPAGOBI_SERVER_URL +"] will be used for configuration attribute [" + SPAGOBI_SERVER_URL + "]");
+		} 
+		
+		return spagoBIServerURL;
+	}
+	
+	
+	// utils 
+	
+	private String getProperty(String propertName) {
+		String propertyValue = null;		
+		SourceBean sourceBeanConf;
+		
+		Assert.assertNotNull( getConfigSourceBean(), "Impossible to parse engine-config.xml file");
+		
+		sourceBeanConf = (SourceBean) getConfigSourceBean().getAttribute( propertName);
+		if(sourceBeanConf != null) {
+			propertyValue  = (String) sourceBeanConf.getCharacters();
+			logger.debug("Configuration attribute [" + propertName + "] is equals to: [" + propertyValue + "]");
+		}
+		
+		return propertyValue;		
+	}
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	
 	
 	/**
 	 * Gets the spagobi target functionality label.
@@ -105,10 +196,13 @@ public class SpagoBITalendEngineConfig {
 	 * @return the spagobi url
 	 */
 	public String getSpagobiUrl() {
+		/*
 		String url = null;
         SourceBean config = EnginConf.getInstance().getConfig();
         url= (String)config.getCharacters("spagobi_context_path");
 		return url;
+		*/
+		return getSpagoBIServerUrl();
 	}
 	
 	/**
@@ -239,21 +333,12 @@ public class SpagoBITalendEngineConfig {
 		return wordS;
 	}
 
-	/**
-	 * Gets the engine root dir.
-	 * 
-	 * @return the engine root dir
-	 */
-	public File getEngineRootDir() {
-		return engineRootDir;
+
+	public EnginConf getEngineConfig() {
+		return engineConfig;
 	}
 
-	/**
-	 * Sets the engine root dir.
-	 * 
-	 * @param engineRootDir the new engine root dir
-	 */
-	public void setEngineRootDir(File engineRootDir) {
-		this.engineRootDir = engineRootDir;
+	public void setEngineConfig(EnginConf engineConfig) {
+		this.engineConfig = engineConfig;
 	}
 }

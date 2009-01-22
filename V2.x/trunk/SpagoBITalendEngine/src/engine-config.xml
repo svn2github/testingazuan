@@ -1,27 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ENGINE-CONFIGURATION>
 	
-	
-
 	<!-- ====================================================================================== -->
-	<!--  SSO settings 																	--> 
+	<!--  GENERAL SETTINGS 																        --> 
 	<!-- ====================================================================================== -->
-	<ACTIVE_SSO_JNDI_NAME>java://comp/env/spagobi_active_sso</ACTIVE_SSO_JNDI_NAME>
-	<FILTER_RECEIPT>/proxyReceptor</FILTER_RECEIPT>
-	<PASS>PASS</PASS>
-	<!--  SPAGOBI_SERVER_URL Address for invoking WebService, if empty use the request parameters -->
-	<SPAGOBI_SERVER_URL></SPAGOBI_SERVER_URL>
-	<SPAGOBI_SERVER_URL_JNDI_NAME>java://comp/env/spagobi_service_url</SPAGOBI_SERVER_URL_JNDI_NAME>	
-	<!--  THE JNDI RESOURCE NAME FOR RETRIVE THE RESOURCE PATH -->
-	<RESOURCE_PATH_JNDI_NAME>java://comp/env/spagobi_resource_path</RESOURCE_PATH_JNDI_NAME>
-	<SecurityServiceProxy_URL>/services/SecurityService</SecurityServiceProxy_URL>
-	<SchedulerServiceProxy_URL>/services/SchedulerService</SchedulerServiceProxy_URL>
-	<EventServiceProxy_URL>/services/EventService</EventServiceProxy_URL>
-	<ContentServiceProxy_URL>/services/ContentService</ContentServiceProxy_URL>
-	<AuditServiceProxy_URL>/services/AuditService</AuditServiceProxy_URL>
-	<DataSourceServiceProxy_URL>/services/DataSourceService</DataSourceServiceProxy_URL>
-	<DocumentExecuteServiceProxy_URL>/services/DocumentExecuteService</DocumentExecuteServiceProxy_URL>
-	<DataSetServiceProxy_URL>/services/DataSetService</DataSetServiceProxy_URL>	
 	
 	<runtimeRepository_root_dir>RuntimeRepository</runtimeRepository_root_dir>
 	
@@ -29,10 +11,11 @@
 	
 	<!-- General Properties -->
 	<spagobi_autopublish>true</spagobi_autopublish>
-	<spagobi_functionality_label>@spagobi_functionality_label@</spagobi_functionality_label>
+	<spagobi_functionality_label>ETL</spagobi_functionality_label>
 	
 	 <!-- ********************* CONTEXT USED FROM EXTERNAL SOURCE ************************ -->
  	 <SPAGOBI_CONTEXT_PATH>@spagobi.context.path@</SPAGOBI_CONTEXT_PATH>
+ 	
  	<!-- ********************* CONTEXT USED FROM INTERNAL SOURCE ************************ -->
  	 <BACKEND_SPAGOBI_CONTEXT_PATH>@backend.spagobi.context.path@</BACKEND_SPAGOBI_CONTEXT_PATH>	
 	
@@ -46,11 +29,40 @@
 
 
 	<!--  Properties needed to run java script --> 
-	<java_install_dir>@java.home@</java_install_dir>
-	<java_bin_dir>bin</java_bin_dir>
+	
 	<java_command>java</java_command>
 	<java_command_option_Xms>256</java_command_option_Xms>
 	<java_command_option_Xmx>1024</java_command_option_Xmx>
+	
+
+	<!-- ====================================================================================== -->
+	<!--  INTERNAL SETTINGS 																    --> 
+	<!-- ====================================================================================== -->
+	
+	<!--  SSO settings  -->
+	<ACTIVE_SSO_JNDI_NAME>java://comp/env/spagobi_active_sso</ACTIVE_SSO_JNDI_NAME>
+	<PASS>PASS</PASS>	
+	
+	<!--  SPAGOBI_SERVER_URL Address for invoking WebService, if empty use the request parameters -->
+	<SPAGOBI_SERVER_URL></SPAGOBI_SERVER_URL>
+	<SPAGOBI_SERVER_URL_JNDI_NAME>java://comp/env/spagobi_service_url</SPAGOBI_SERVER_URL_JNDI_NAME>	
+	
+	<!--  THE JNDI RESOURCE NAME FOR RETRIVE THE RESOURCE PATH -->
+	<RESOURCE_PATH_JNDI_NAME>java://comp/env/spagobi_resource_path</RESOURCE_PATH_JNDI_NAME>
+		
+	
+	<!--  THE JNDI RESOURCE NAME FOR RETRIVE THE RESOURCE PATH -->
+	<FILTER_RECEIPT>/proxyReceptor</FILTER_RECEIPT>
+	<SecurityServiceProxy_URL>/services/SecurityService</SecurityServiceProxy_URL>
+	<SchedulerServiceProxy_URL>/services/SchedulerService</SchedulerServiceProxy_URL>
+	<EventServiceProxy_URL>/services/EventService</EventServiceProxy_URL>
+	<ContentServiceProxy_URL>/services/ContentService</ContentServiceProxy_URL>
+	<AuditServiceProxy_URL>/services/AuditService</AuditServiceProxy_URL>
+	<DataSourceServiceProxy_URL>/services/DataSourceService</DataSourceServiceProxy_URL>
+	<DocumentExecuteServiceProxy_URL>/services/DocumentExecuteService</DocumentExecuteServiceProxy_URL>
+	<DataSetServiceProxy_URL>/services/DataSetService</DataSetServiceProxy_URL>	
+	
+	
 
 
 

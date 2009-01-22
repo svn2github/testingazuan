@@ -44,6 +44,9 @@ import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
+import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.strings.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,52 +69,27 @@ import org.dom4j.DocumentException;
 
 import sun.misc.BASE64Decoder;
 
-public class JobRunService extends HttpServlet {
+public class JobRunService extends AbstractEngineStartServlet {
 
 	private static transient Logger logger = Logger.getLogger(JobRunService.class);
 	public static final String JS_FILE_ZIP = "JS_File";
 	public static final String JS_EXT_ZIP = ".zip";	
-	private Locale locale;
-	private String documentId=null;
-	private String userId=null;
-	private String userUniqueIdentifier=null;	
-
-	protected AuditAccessUtils auditAccessUtils;
-
-	/* (non-Javadoc)
-	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
-	 */
+	
+	
+	
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		logger.debug("Initializing SpagoBI Talend Engine...");
 	}
 
 
-	private Locale getLocale(HttpServletRequest request) {
-		Locale locale = null;
-		String language;
-		String country;
-
-		language = request.getParameter("language");
-		country = request.getParameter("country");
-		logger.debug("Locale parameters received: language = [" + language + "] ; country = [" + country + "]");
-
-		try {
-			locale = new Locale(language, country);
-		} catch (Exception e) {
-			logger.debug("Error while creating Locale object from input parameters: language = [" + language + "] ; country = [" + country + "]");
-			logger.debug("Creating default locale [en,US].");
-			locale = new Locale("en", "US");
-		}
-
-		return locale;
-	}
+	
 
 
 
 	private String getLocalizedMessage(String msg) {
 		if(msg == null) return "";
-		return EngineMessageBundle.getMessage("template.parsing.error", locale);
+		return EngineMessageBundle.getMessage(msg, getLocale());
 	}
 
 
@@ -119,169 +97,142 @@ public class JobRunService extends HttpServlet {
 	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-		logger.debug("Start processing a new request...");
-		HttpSession session=request.getSession();
-		logger.debug("documentId IN Session:"+(String)session.getAttribute("document"));
-
-		String engineRootDir = getServletContext().getRealPath("WEB-INF");
-		SpagoBITalendEngine.getInstance().getConfig().setEngineRootDir(new File(engineRootDir));
-		// USER PROFILE
-		documentId = (String) request.getParameter("document");
-		if (documentId==null){
-			documentId=(String)session.getAttribute("document");
-			logger.debug("documentId From Session:"+documentId);
-		}
-
-		logger.debug("documentId:"+documentId);
-		IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		userId=(String)((UserProfile)profile).getUserId();
-		userUniqueIdentifier=(String)((UserProfile)profile).getUserUniqueIdentifier();
-		Map params = new HashMap();
-		Enumeration enumer = request.getParameterNames();
-		params.put("userId", userId);	
 		
-		String parName = null;
-		String parValue = null;
-		logger.debug("Reading request parameters...");
+		String responseMessage;
+		RuntimeRepository runtimeRepository;
+		Job job;
 
-		while (enumer.hasMoreElements()) {
-			parName = (String) enumer.nextElement();
-
-			if (parName.trim().equalsIgnoreCase("language") 
-					|| parName.trim().equalsIgnoreCase("country")
-					|| parName.trim().equalsIgnoreCase("template")
-					|| parName.trim().equalsIgnoreCase("context")
-			) continue;
-
-			parValue = request.getParameter(parName);
-
-			addParToParMap(params, parName, parValue);
-			logger.debug("Read parameter [" + parName + "] with value ["+ parValue + "] from request");
-		}
-
-		logger.debug("Request parameters read sucesfully" + params);
-
-
-		// AUDIT UPDATE
-		String auditId = request.getParameter("SPAGOBI_AUDIT_ID");
-		AuditAccessUtils auditAccessUtils = (AuditAccessUtils) request.getSession().getAttribute("SPAGOBI_AUDIT_UTILS");
-		if (auditAccessUtils != null)
-			auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, new Long(System
-					.currentTimeMillis()), null, "EXECUTION_STARTED", null, null);
-
-
-		locale = getLocale(request);
-
-
-		//ContentServiceProxy contentProxy=new ContentServiceProxy(userId,session);
-		ContentServiceProxy contentProxy=new ContentServiceProxy(userUniqueIdentifier,session);
-
-		try {
-			HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters(request);
-			Content template=contentProxy.readTemplate(documentId, requestParameters);
-			logger.debug("Read the template."+template.getFileName());
-			InputStream is = null;		
-			BASE64Decoder bASE64Decoder = new BASE64Decoder();
-			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
-			is = new java.io.ByteArrayInputStream(templateContent);
-
+		logger.debug("IN");
+		
+		try {		
+			
+			super.service(request, response);
+		
+		
+			logger.debug("User Id: " + getUserId());
+			logger.debug("Audit Id: " + getAuditId());
+			logger.debug("Document Id: " + getDocumentId());
+			logger.debug("Template: " + getTemplate());
+		
+			
+			
+			
+			Map params = new HashMap();
+			Enumeration enumer = request.getParameterNames();
+			params.put("userId", getUserId());	
+			
+			String parName = null;
+			String parValue = null;
+			logger.debug("Reading request parameters...");
 	
-
-			Job job = new Job();
-
+			while (enumer.hasMoreElements()) {
+				parName = (String) enumer.nextElement();
+	
+				if (parName.trim().equalsIgnoreCase("language") 
+						|| parName.trim().equalsIgnoreCase("country")
+						|| parName.trim().equalsIgnoreCase("template")
+						|| parName.trim().equalsIgnoreCase("context")
+				) continue;
+	
+				parValue = request.getParameter(parName);
+	
+				addParToParMap(params, parName, parValue);
+				logger.debug("Read parameter [" + parName + "] with value ["+ parValue + "] from request");
+			}
+	
+			logger.debug("Request parameters read sucesfully" + params);
+	
+	
+			auditServiceStartEvent();
+		
+		
+			
+			job = new Job(getTemplate());	
+			validateJob(job);
+			
+			runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
+			validateRuntimeRepository(runtimeRepository);
+			
+			
+			
+			
+			
 			try {
-				job.load(is);
-			} 
-			catch (DocumentException e) {
-				logger.error("Error while parsing document template:", e);
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Error while parsing document template", null);
-				response.getOutputStream().write(getLocalizedMessage("template.parsing.error").getBytes());
-				return;
-			}
-
-			if (job.getProject() == null || job.getProject().trim().equalsIgnoreCase("")) {
-				logger.error("Missing Talend project name in document template.");
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Missing Talend project name in document template", null);
-				response.getOutputStream().write(getLocalizedMessage("missing.talend.project").getBytes());
-				return;
-			}
-
-			if (job.getName() == null || job.getName().trim().equalsIgnoreCase("")) {
-				logger.error("Missing Talend job name in document template.");
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Missing Talend job name in document template", null);
-				response.getOutputStream().write(getLocalizedMessage("missing.talend.job").getBytes());
-				return;
-			}
-
-			if (job.getLanguage() == null || job.getLanguage().trim().equalsIgnoreCase("")) {
-				logger.error("Missing Talend job language in document template.");
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Missing Talend job language in document template", null);
-				response.getOutputStream().write(getLocalizedMessage("missing.talend.lang").getBytes());
-				return;
-			}
-
-			// if the context is specified in request, it overrides the context specified in document template 
-			String requestContext = request.getParameter("context");
-			if (requestContext != null && !requestContext.trim().equals("")) {
-				logger.debug("Context parameter with value '" + requestContext + "' found in request.");
-				job.setContext(requestContext);
-			}
-
-			RuntimeRepository runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
-			if(runtimeRepository == null || !runtimeRepository.getRootDir().exists()) {
-				logger.error("Runtime-Repository not available");
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Runtime-Repository not available", null);
-				response.getOutputStream().write(getLocalizedMessage("repository.not.available").getBytes());
-				return;
-			}
-
-			String result = EngineMessageBundle.getMessage("etl.process.started", locale);
-			try {
-				runtimeRepository.runJob(job, params, auditAccessUtils, auditId,session);
+				runtimeRepository.runJob(job, getEnv(), getHttpSession());
 			} catch (JobNotFoundException ex) {
 				logger.error(ex.getMessage());
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Job not existing", null);
-				result = EngineMessageBundle.getMessage("job.not.existing", locale, new String[]{job.getName()});
+
+				throw new SpagoBIEngineException("Job not found",
+						getLocalizedMessage("job.not.existing"));
+		
 			} catch (ContextNotFoundException ex) {
 				logger.error(ex.getMessage(), ex);
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Context script not existing", null);
-				result = EngineMessageBundle.getMessage("context.script.not.existing", locale, new String[]{job.getContext(), job.getName()});
+				
+				throw new SpagoBIEngineException("Context script not found",
+						getLocalizedMessage("context.script.not.existing"));
+			
 			} catch(JobExecutionException ex) {
 				logger.error(ex.getMessage(), ex);
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Job execution error", null);
-				result = EngineMessageBundle.getMessage("perl.exectuion.error", locale);
+				
+				throw new SpagoBIEngineException("Job execution error",
+						getLocalizedMessage("job.exectuion.error"));
+				
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
-				// AUDIT UPDATE
-				if (auditAccessUtils != null) auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System.currentTimeMillis()), 
-						"EXECUTION_FAILED", "Job execution error", null);
-				result = EngineMessageBundle.getMessage("perl.exectuion.error", locale);
+				
+				throw new SpagoBIEngineException("Job execution error",
+						getLocalizedMessage("job.exectuion.error"));
 			}
 
-			response.getOutputStream().write(result.getBytes());
-
-			logger.debug("Ending service method.");
-
-		}finally{}
+			
+			responseMessage = getLocalizedMessage("etl.process.started");
+			response.getOutputStream().write(responseMessage.getBytes());
+		} catch(SpagoBIEngineException error) {
+			logger.error(error.getMessage());
+			auditServiceErrorEvent(error.getMessage());			
+			
+			response.getOutputStream().write(error.getErrorDescription().getBytes());
+		} finally {
+			logger.debug("OUT");
+		}
 	}
 
+	/**
+	 * 
+	 * @TODO move validation in the template parsing step
+	 */
+	public void validateJob(Job job) throws SpagoBIEngineException {
+		if(this.requestContainsParameter("context")) {
+			logger.debug("Context parameter with value '" + getParameterAsString("context") + "' found in request.");
+			job.setContext( getParameterAsString("context") );
+		}
+
+		if ( StringUtils.isEmpty( job.getProject() ) ) {			
+			throw new SpagoBIEngineException("Missing Talend project name in document template",
+					getLocalizedMessage("missing.talend.project"));
+		}
+
+		if ( StringUtils.isEmpty( job.getName() ) ) {
+			throw new SpagoBIEngineException("Missing Talend job name in document template",
+					getLocalizedMessage("missing.talend.job"));
+		}
+
+		if ( StringUtils.isEmpty( job.getLanguage() ) ) {
+			throw new SpagoBIEngineException("Missing Talend job language in document template",
+					getLocalizedMessage("missing.talend.lang"));
+		}			
+	}
+	
+	/**
+	 * 
+	 * @TODO move validation in the configuration parsing step
+	 */
+	public void validateRuntimeRepository(RuntimeRepository runtimeRepository) throws SpagoBIEngineException {
+		if(runtimeRepository == null || !runtimeRepository.getRootDir().exists()) {
+			throw new SpagoBIEngineException("Runtime-Repository not available",
+					getLocalizedMessage("repository.not.available"));
+		}
+	}
 
 		/**
 		 * @param params

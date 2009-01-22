@@ -71,7 +71,6 @@ public class EngineInfoService extends HttpServlet {
 		logger.debug("Starting EngineInfoService service method...");
 		
 		String engineRootDir = getServletContext().getRealPath("WEB-INF");
-		SpagoBITalendEngine.getInstance().getConfig().setEngineRootDir(new File(engineRootDir));
 		
 		SpagoBITalendEngine engine = SpagoBITalendEngine.getInstance();
 		

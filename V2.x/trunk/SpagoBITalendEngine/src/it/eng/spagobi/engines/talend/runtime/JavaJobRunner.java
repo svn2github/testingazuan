@@ -32,7 +32,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.talend.runtime;
 
 import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
-import it.eng.spagobi.engines.talend.SpagoBITalendEngineConfig;
+import it.eng.spagobi.engines.talend.TalendEngineConfig;
 import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
@@ -72,26 +72,20 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
 	public static final String DEFAULT_XMS_VALUE = "256";
 	public static final String DEFAULT_XMX_VALUE = "1024";
 	
-	public HttpSession session=null;
-	
 	
 	
 	JavaJobRunner(RuntimeRepository runtimeRepository) {
 		this.runtimeRepository = runtimeRepository;
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.talend.runtime.IJobRunner#setSession(javax.servlet.http.HttpSession)
-	 */
-	public void setSession(HttpSession _session){
-		session=_session;
-	}
 	
 		
     /* (non-Javadoc)
      * @see it.eng.spagobi.engines.talend.runtime.IJobRunner#run(it.eng.spagobi.engines.talend.runtime.Job, java.util.Map, it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils, java.lang.String)
      */
-    public void run(Job job, Map parameters, AuditAccessUtils auditAccessUtils, String auditId) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
+    public void run(Job job, Map parameters) 
+    	throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
+    	
     	File contextFile = null;
     	String tmpDirName = null;
     	File contextFileDir = null;
@@ -153,8 +147,13 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
 	    	Iterator it = parameters.keySet().iterator();
 	    	while(it.hasNext()) {
 	    		String pname = (String)it.next();
-	    		String pvalue = (parameters.get(pname) != null)? (String)parameters.get(pname): (String)context.getProperty(pname);
-	    		context.setProperty(pname, pvalue);
+	    		Object o = parameters.get(pname);
+	    		
+	    		if(o instanceof String) {
+	    			String pvalue = (String)parameters.get(pname);
+	    			context.setProperty(pname, pvalue);
+	    		}
+	    		
 	    	}
 	    		
 	    	UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
@@ -172,8 +171,10 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
 	    	
 	
 	    	
-	    	String classpath = "." + File.separatorChar + tmpDirName + File.pathSeparator + getClassPath(job);
-	    	SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
+	    	String classpath = "." + File.separatorChar + tmpDirName + File.pathSeparator 
+	    			+ TalendScriptAccessUtils.getClassPath(job, runtimeRepository); //getClassPath(job);
+	    	
+	    	TalendEngineConfig config = TalendEngineConfig.getInstance();
 	    	String cmd = "java";
 	    	
 	    	String javaInstallDir = config.getJavaInstallDir();
@@ -196,7 +197,7 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
 	    	
 	    	WorkManager wm = new WorkManager();
 	    	TalendWork jrt = new TalendWork(cmd, null, executableJobDir, filesToBeDeleted, 
-    			auditAccessUtils, auditId, parameters,session);
+    			parameters);
 	    	TalendWorkListener listener=new TalendWorkListener();
 	    	wm.run(jrt, listener);
 	    	// davide sparire usa run e destroy oppure fai classe statica che lancia comando 	Process p = Runtime.getRuntime().exec(_command, _envr, _executableJobDir);
@@ -230,7 +231,7 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
 	    	buffer = new StringBuffer();
 	    	buffer.append( runtimeRepository.getExecutableJobDir(job).getAbsolutePath() );
 	    	buffer.append("/" +job.getProject().toLowerCase());
-	    	buffer.append("/" + job.getName().toLowerCase());
+	    	buffer.append("/" + job.getName().toLowerCase() + "_" + job.getVersion().replace('.', '_'));
 	    	buffer.append("/contexts");
 	    	buffer.append("/" + job.getContext() + ".properties");
 	    	File contextFile = new File(buffer.toString());
@@ -270,7 +271,7 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
 	public String getClassPath(Job job) {
     	StringBuffer classpath = new StringBuffer();
     	
-    	List libs = TalendScriptAccessUtils.getIncludedLibs(job, runtimeRepository);
+    	List libs = TalendScriptAccessUtils.getIncludedLibs(job, runtimeRepository);    	
     	for(int i = 0; i < libs.size(); i++){
     		File file = (File)libs.get(i);    		
     		classpath.append( (i>0? File.pathSeparator : "") + "../lib/" + file.getName());

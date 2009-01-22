@@ -46,12 +46,6 @@ import javax.servlet.http.HttpSession;
  */
 public interface IJobRunner {
 	
-	/**
-	 * Sets the session.
-	 * 
-	 * @param session the new session
-	 */
-	public abstract void setSession(HttpSession session);
 	
 	 /**
  	 * Run.
@@ -65,7 +59,7 @@ public interface IJobRunner {
  	 * @throws ContextNotFoundException the context not found exception
  	 * @throws JobExecutionException the job execution exception
  	 */
- 	public abstract void run(Job job, Map parameters, AuditAccessUtils auditAccessUtils, String auditId) 
+ 	public abstract void run(Job job, Map env) 
 	 	throws JobNotFoundException, ContextNotFoundException, JobExecutionException;
 
 }

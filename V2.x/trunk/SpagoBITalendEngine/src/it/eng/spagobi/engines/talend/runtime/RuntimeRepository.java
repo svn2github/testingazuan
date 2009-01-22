@@ -90,12 +90,11 @@ public class RuntimeRepository {
 	 * @throws ContextNotFoundException the context not found exception
 	 * @throws JobExecutionException the job execution exception
 	 */
-	public void runJob(Job job, Map parameters, AuditAccessUtils auditAccessUtils, String auditId, HttpSession session) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
+	public void runJob(Job job, Map env, HttpSession session) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
 		IJobRunner jobRunner = getJobRunner(job.getLanguage());
 		if(jobRunner == null) return;
 		if(session!=null)
-		((JavaJobRunner)jobRunner).setSession(session);
-		jobRunner.run(job, parameters, auditAccessUtils, auditId);
+		jobRunner.run(job, env);
 	}
 	
 	/**

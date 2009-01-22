@@ -32,7 +32,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.talend.runtime;
 
 import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
-import it.eng.spagobi.engines.talend.SpagoBITalendEngineConfig;
+import it.eng.spagobi.engines.talend.TalendEngineConfig;
 import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
@@ -63,25 +63,15 @@ public class PerlJobRunner implements IJobRunner {
 	
 	public static final String DEFAULT_CONTEXT = "Default";
 	
-	private HttpSession session=null;
-	
-	
 	PerlJobRunner(RuntimeRepository runtimeRepository) {
 		this.runtimeRepository = runtimeRepository;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.engines.talend.runtime.IJobRunner#setSession(javax.servlet.http.HttpSession)
-	 */
-	public void setSession(HttpSession _session){
-		session=_session;
-	}
-		
+
     /* (non-Javadoc)
      * @see it.eng.spagobi.engines.talend.runtime.IJobRunner#run(it.eng.spagobi.engines.talend.runtime.Job, java.util.Map, it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils, java.lang.String)
      */
-    public void run(Job job, Map parameters, AuditAccessUtils auditAccessUtils, String auditId) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
+    public void run(Job job, Map parameters) throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
     
     	File contextTempScriptFile = null;
     	
@@ -103,7 +93,7 @@ public class PerlJobRunner implements IJobRunner {
     				runtimeRepository.getExecutableJobFile(job) + " does not exist.");
     	}
     	
-    	SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
+    	TalendEngineConfig config = TalendEngineConfig.getInstance();
     	String cmd = config.getPerlInstallDir() + File.separatorChar + config.getPerlBinDir()+ 
     		File.separatorChar + config.getPerlCommand() + " " + TalendScriptAccessUtils.getExecutableFileName(job);
     	
@@ -163,8 +153,7 @@ public class PerlJobRunner implements IJobRunner {
     	
     	try {
 	    WorkManager wm = new WorkManager();
-	    TalendWork jrt = new TalendWork(cmd, null, executableJobDir, filesToBeDeleted, auditAccessUtils, auditId,
-		    parameters, session);
+	    TalendWork jrt = new TalendWork(cmd, null, executableJobDir, filesToBeDeleted, parameters);
 	    TalendWorkListener listener = new TalendWorkListener();
 	    wm.run(jrt, listener);
 	} catch (Exception e) {
@@ -216,7 +205,7 @@ public class PerlJobRunner implements IJobRunner {
 	    }
 	    UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
 	    String tempFileName = uuidGenerator.generateTimeBasedUUID().toString();
-	    SpagoBITalendEngineConfig config = SpagoBITalendEngine.getInstance().getConfig();
+	    TalendEngineConfig config = TalendEngineConfig.getInstance();
 	    File contextScriptTempFile = new File(tempDirPath + File.separatorChar + tempFileName + config.getPerlExt());
 		FileOutputStream fos = new FileOutputStream(contextScriptTempFile);
 		fos.write(filebuff.toString().getBytes());

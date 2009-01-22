@@ -32,6 +32,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.engines.talend.runtime;
 
 
+import it.eng.spago.base.SourceBean;
+
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -51,11 +54,16 @@ public class Job {
 	String project;
 	String language;
 	String context;
+	String version;
 		
 	/**
 	 * Instantiates a new job.
 	 */
 	public Job() {}
+	
+	public Job(SourceBean template) {
+		this.load(template);
+	}
 	
 	/**
 	 * Instantiates a new job.
@@ -93,6 +101,20 @@ public class Job {
 	 */
 	public void load(File file) throws FileNotFoundException, DocumentException {
 		load(new FileInputStream(file));
+	}
+	
+	public void load(SourceBean template) {
+		SourceBean jobSB;
+		
+		jobSB = (SourceBean)template.getAttribute("JOB");
+		if (jobSB != null) {
+	    	this.name = (String)jobSB.getAttribute("jobName");
+	    	this.version = (String)jobSB.getAttribute("version");
+	    	if(version == null) version = "0.1";
+	    	this.project = (String)jobSB.getAttribute("project");
+	    	this.language = (String)jobSB.getAttribute("language");
+	 	    this.context = (String)jobSB.getAttribute("context");
+	    }
 	}
 	
 	/**
@@ -239,5 +261,13 @@ public class Job {
 		Job job = new Job();
 		job.load(is);
 		return job;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 }

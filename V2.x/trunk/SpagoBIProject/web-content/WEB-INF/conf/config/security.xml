@@ -60,6 +60,6 @@
 <PAGE_MODULE pagename="HOT_LINK_PAGE" modulename="HotLinkModule"/>
 <PAGE_MODULE pagename="ExoProfileAttributeManagerPage" modulename="ExoProfileAttributeManagerModule"/>
 <PAGE_MODULE pagename="ExoProfileAttributeManagerListUserPage" modulename="ExoProfileAttributeManagerListUserModule"/>
-
+<PAGE_MODULE pageName="SaveConfigurationPage" modulename="SaveConfigurationModule" />
 </PAGE_MODULES_EXCLUDED_FROM_GLOBAL>
 </SECURITY>

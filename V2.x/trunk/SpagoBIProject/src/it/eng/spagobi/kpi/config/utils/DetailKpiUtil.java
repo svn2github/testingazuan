@@ -14,7 +14,7 @@ public class DetailKpiUtil {
 
 	public static void selectKpi(int id, SourceBean serviceResponse)
 			throws EMFUserError, SourceBeanException {
-		Kpi toReturn = DAOFactory.getKpiDAO().loadKpiById(id);
+		Kpi toReturn = DAOFactory.getKpiDAO().loadKpiDefinitionById(id);
 		serviceResponse.setAttribute("KPI", toReturn);
 	}
 

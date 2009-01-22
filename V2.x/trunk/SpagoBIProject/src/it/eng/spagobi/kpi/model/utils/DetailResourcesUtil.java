@@ -17,7 +17,6 @@ public class DetailResourcesUtil {
 		Resource resource = getResourceFromRequest(serviceRequest);
 		resource.setId(id);
 		DAOFactory.getKpiDAO().modifyResource(resource);
-
 	}
 
 
@@ -48,7 +47,6 @@ public class DetailResourcesUtil {
 
 	public static void newResource(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		Resource toCreate = getResourceFromRequest(serviceRequest);
-		// insert the new model
 		Integer resourceId = DAOFactory.getKpiDAO().insertResource(toCreate);
 
 		serviceResponse.setAttribute("ID", resourceId);

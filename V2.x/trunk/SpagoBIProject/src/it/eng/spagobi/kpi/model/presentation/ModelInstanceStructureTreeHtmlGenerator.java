@@ -185,7 +185,7 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 		if (aModel.getKpiInstance()!= null && aModel.getKpiInstance().getKpi()!= null)
 		{
 			try {
-				kpi = DAOFactory.getKpiDAO().loadKpiById(aModel.getKpiInstance().getKpi()).getCode();
+				kpi = DAOFactory.getKpiDAO().loadKpiDefinitionById(aModel.getKpiInstance().getKpi()).getCode();
 			} catch (EMFUserError e) {
 			}
 		}

@@ -50,9 +50,9 @@ public class ListThresholdValuesModule extends AbstractConfigurableListModule {
 	@Override
 	public void service(SourceBean request, SourceBean response)
 			throws Exception {
-		
+
 		super.service(request, response);
-		
+
 		String thresholdId = (String) request.getAttribute("IDT");
 
 		HashMap parametersMap = (HashMap) response
@@ -89,8 +89,16 @@ public class ListThresholdValuesModule extends AbstractConfigurableListModule {
 			throws SourceBeanException {
 		ThresholdValue aThresholdValue = (ThresholdValue) obj;
 		rowSB.setAttribute("ID", aThresholdValue.getId());
-		rowSB.setAttribute("POSITION", aThresholdValue.getPosition());
-		rowSB.setAttribute("LABEL", aThresholdValue.getLabel());
+		if (aThresholdValue.getPosition() != null) {
+			rowSB.setAttribute("POSITION", aThresholdValue.getPosition());
+		} else {
+			rowSB.setAttribute("POSITION", "");
+		}
+		if (aThresholdValue.getLabel() != null) {
+			rowSB.setAttribute("LABEL", aThresholdValue.getLabel());
+		} else {
+			rowSB.setAttribute("LABEL", "");
+		}
 		if (aThresholdValue.getMinValue() != null) {
 			rowSB.setAttribute("MIN_VALUE", aThresholdValue.getMinValue());
 		} else {

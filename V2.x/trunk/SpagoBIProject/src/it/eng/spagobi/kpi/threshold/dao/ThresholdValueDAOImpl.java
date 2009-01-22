@@ -5,12 +5,10 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 
-import it.eng.spagobi.kpi.config.metadata.SbiKpi;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,6 +27,7 @@ public class ThresholdValueDAOImpl extends AbstractHibernateDAO implements
 
 	static private Logger logger = Logger
 			.getLogger(ThresholdValueDAOImpl.class);
+
 	static private String THRESHOLD_VALUE_POSITION = "position";
 	static private String THRESHOLD_VALUE_LABEL = "label";
 	static private String THRESHOLD_VALUE_MIN_VALUE = "minValue";

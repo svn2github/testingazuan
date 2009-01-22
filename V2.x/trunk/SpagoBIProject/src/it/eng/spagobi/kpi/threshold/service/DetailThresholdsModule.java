@@ -15,7 +15,7 @@ import it.eng.spagobi.kpi.threshold.utils.DetailThresholdsUtil;
 
 public class DetailThresholdsModule extends DefaultDetailModule{
 	
-	private static final String VALIDATION_PAGE = "ThresholdValueDetailPage";
+	private static final String VALIDATION_PAGE = "ThresholdDetailPage";
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		boolean validationError = false;

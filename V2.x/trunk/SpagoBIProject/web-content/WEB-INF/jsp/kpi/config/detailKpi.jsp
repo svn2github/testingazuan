@@ -21,7 +21,7 @@
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <%@ page import="java.util.Map,java.util.HashMap"%>
-<%@page	import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
+<%@ page	import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
 <%@ page import="it.eng.spagobi.kpi.config.bo.Kpi"%>
 <%
 	String title = "";
@@ -108,7 +108,7 @@
 			if (kpi.getStandardWeight() != null)
 				weight = kpi.getStandardWeight().toString();
 			if(kpi.getKpiDs()!=null)
-				ds_id = kpi.getKpiDs().getDsId();
+				ds_id = kpi.getKpiDs().getId();
 			else
 				ds_id = null;
 		}
@@ -116,12 +116,12 @@
 	
 	
 	Map formUrlPars = new HashMap();
-	if(ChannelUtilities.isPortletRunning()) {
+//	if(ChannelUtilities.isPortletRunning()) {
 		formUrlPars.put("PAGE", "KpiPage");
 		formUrlPars.put("MODULE", "DetailKpiModule");
 		formUrlPars.put("MESSAGE", messageSave);
 		formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	}
+//	}
 	
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);
 
@@ -140,7 +140,7 @@
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
-<%@page import="it.eng.spagobi.tools.dataset.bo.DataSetConfig"%>
+<%@page import="it.eng.spagobi.tools.dataset.bo.IDataSet"%> 
 
 <table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
@@ -218,7 +218,7 @@
 	while (sbiDocsIt.hasNext()){
 		BIObject bio = (BIObject)sbiDocsIt.next();
 		String selected = "";
-		if (documentLabel.equalsIgnoreCase(bio.getLabel())) {
+		if (documentLabel!=null && documentLabel.equals(bio.getLabel())) {
 			selected = "selected='selected'";										
 		}	
 		%>    			 		
@@ -242,13 +242,13 @@
 	List dataSets = DAOFactory.getDataSetDAO().loadAllDataSets();
 	Iterator dataSetsIt = dataSets.iterator();
 	while (dataSetsIt.hasNext()){
-		DataSetConfig dataSet = (DataSetConfig)dataSetsIt.next();
+		IDataSet dataSet = (IDataSet)dataSetsIt.next();
 		String selected = "";
-		if (ds_id != null && ds_id.intValue() == dataSet.getDsId()) {
+		if (ds_id != null && ds_id.intValue() == dataSet.getId()) {
 			selected = "selected='selected'";
 		}
 		%>    			 		
-		<option value="<%= dataSet.getDsId() %>" label="<%= dataSet.getLabel() %>" <%= selected %>>
+		<option value="<%= dataSet.getId() %>" label="<%= dataSet.getLabel() %>" <%= selected %>>
 			<%= dataSet.getLabel() %>	
 		</option>
 		<%

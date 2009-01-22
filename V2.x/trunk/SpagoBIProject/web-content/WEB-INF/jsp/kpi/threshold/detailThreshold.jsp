@@ -108,12 +108,12 @@
 	}
 	
 	Map formUrlPars = new HashMap();
-	if(ChannelUtilities.isPortletRunning()) {
+//	if(ChannelUtilities.isPortletRunning()) {
 		formUrlPars.put("PAGE", "ThresholdPage");
 		formUrlPars.put("MODULE", "DetailThresholdModule");
 		formUrlPars.put("MESSAGE", messageSave);
 		formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	}
+//	}
 	
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);
 	

@@ -212,6 +212,83 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		return toReturn;
 	}
 
+	public Kpi loadKpiDefinitionById(Integer id) throws EMFUserError {
+		logger.debug("IN");
+		Kpi toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpi hibSbiKpi = (SbiKpi) aSession.load(SbiKpi.class, id);
+			toReturn = toKpiDefinition(hibSbiKpi);
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Kpi with id "
+					+ ((id == null) ? "" : id.toString()), he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10112);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
+	private Kpi toKpiDefinition(SbiKpi kpi) throws EMFUserError {
+		logger.debug("IN");
+		Kpi toReturn = new Kpi();
+		
+		String code = kpi.getCode();
+		String description = kpi.getDescription();
+		String documentLabel = kpi.getDocumentLabel();
+	
+		Integer kpiId = kpi.getKpiId();
+		String kpiName = kpi.getName();
+		
+		SbiDataSetConfig dsC = kpi.getSbiDataSet();
+		IDataSet ds = null;
+		if (dsC != null) {
+			ds = DAOFactory.getDataSetDAO().loadDataSetByID(dsC.getDsId());
+		}
+
+		Double standardWeight = kpi.getWeight();
+		
+		String metric = kpi.getMetric();
+
+		toReturn.setKpiName(kpiName);
+		logger.debug("Kpi name setted");
+		toReturn.setDocumentLabel(documentLabel);
+		logger.debug("Kpi Documentlabel setted");
+		toReturn.setCode(code);
+		logger.debug("Kpi code setted");
+		toReturn.setMetric(metric);
+		logger.debug("Kpi metric setted");
+		toReturn.setDescription(description);
+		logger.debug("Kpi description setted");
+		toReturn.setStandardWeight(standardWeight);
+		logger.debug("Kpi weight setted");
+		
+		toReturn.setKpiId(kpiId);
+		logger.debug("Kpi Id setted");
+		
+		toReturn.setKpiDs(ds);
+		logger.debug("Kpi dataset setted");
+		
+		logger.debug("OUT");
+		return toReturn;
+		
+	}
+
 	public Kpi loadKpiById(Integer id) throws EMFUserError {
 		logger.debug("IN");
 		Kpi toReturn = null;
@@ -225,7 +302,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			toReturn = toKpi(hibSbiKpiInstance);
 
 		} catch (HibernateException he) {
-			logger.error("Error while loading the Model Instance with id "
+			logger.error("Error while loading the Kpi with id "
 					+ ((id == null) ? "" : id.toString()), he);
 
 			if (tx != null)

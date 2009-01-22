@@ -180,7 +180,7 @@ public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
 		String kpi = null;
 		if(aModel.getKpiId()!= null){
 			try {
-				kpi = DAOFactory.getKpiDAO().loadKpiById(aModel.getKpiId()).getCode();
+				kpi = DAOFactory.getKpiDAO().loadKpiDefinitionById(aModel.getKpiId()).getCode();
 			} catch (EMFUserError e) {
 			}
 		}

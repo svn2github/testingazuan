@@ -96,6 +96,15 @@ public interface IKpiDAO {
 	public Kpi loadKpiById(Integer id) throws EMFUserError ;
 	
 	/**
+	 * Returns the Kpi Definition of the referred id
+	 * 
+	 * @param id of the Kpi
+	 * @return Kpi of the referred id
+	 * @throws EMFUserError If an Exception occurred
+	 */		
+	public Kpi loadKpiDefinitionById(Integer id) throws EMFUserError ;
+	
+	/**
 	 * Returns the Resource of the referred id
 	 * 
 	 * @param id of the Resource

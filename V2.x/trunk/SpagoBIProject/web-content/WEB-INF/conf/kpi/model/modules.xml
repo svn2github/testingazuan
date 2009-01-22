@@ -256,7 +256,7 @@
 			</CAPTIONS>
 			<BUTTONS>
 				<BACK_BUTTON confirm="FALSE" image="/img/back.png"
-					label="sbi.kpi.button.back.title" onlyPortletRunning="true">
+					label="sbi.kpi.button.back.title" onlyPortletRunning="false">
 					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelInstancePage" />
 				</BACK_BUTTON>
 			</BUTTONS>

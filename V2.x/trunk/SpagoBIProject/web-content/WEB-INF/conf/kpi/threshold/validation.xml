@@ -8,7 +8,7 @@
 					<VALIDATOR validatorName="MANDATORY" />
 					<VALIDATOR validatorName="ALFANUMERIC" />
 				</FIELD>
-			</FIELDS>
+				</FIELDS>
 		</VALIDATION>
 	</SERVICE>
 	

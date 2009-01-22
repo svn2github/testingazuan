@@ -140,13 +140,13 @@
 
 	
 	Map formUrlPars = new HashMap();
-	if(ChannelUtilities.isPortletRunning()) {
+//	if(ChannelUtilities.isPortletRunning()) {
 		formUrlPars.put("PAGE", "ThresholdValuePage");
 		formUrlPars.put("MODULE", "DetailThresholdValueModule");
 		formUrlPars.put("MESSAGE", messageSave);
 		formUrlPars.put("IDT", threshold_id);
 		formUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-	}
+//	}
 	
 	String formUrl = urlBuilder.getUrl(request, formUrlPars);
 	

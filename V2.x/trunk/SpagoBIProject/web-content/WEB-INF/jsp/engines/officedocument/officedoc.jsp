@@ -24,16 +24,33 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
 ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 String execContext = instanceO.getExecutionModality();
+
+Integer executionAuditId_office = null;
+
 if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)) {
 	%>
 	<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
 	<%
+	executionAuditId_office = executionAuditId;
+} else {
+	ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+	AuditManager auditManager = AuditManager.getInstance();
+	executionAuditId_office = auditManager.insertAudit(instance.getBIObject(), null, userProfile, instance.getExecutionRole(), instance.getExecutionModality());
 }
 
 // identity string for object of the page
 String strUuid = instanceO.getExecutionId();
 //SourceBean moduleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
 BIObject biObj = instanceO.getBIObject();
+
+// get the url for document retrieval
+String officeDocUrl = GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl();
+officeDocUrl += "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&userId=" + userUniqueIdentifier + "&documentId=" + biObj.getId().toString() + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
+// adding parameters for AUDIT updating
+if (executionAuditId_office != null) {
+	officeDocUrl += "&" + AuditManager.AUDIT_ID + "=" + executionAuditId_office.toString();
+}
+
 //tries to get the heigh of the output area
 String heightArea = ChannelUtilities.getPreferenceValue(aRequestContainer, "HEIGHT_AREA", "");
 String heightStr = "";
@@ -132,7 +149,7 @@ if (heightArea == null || heightArea.trim().equals("")) {
 
 <%-- Start execution iframe --%>
 <div id="divIframe<%= strUuid %>" style="width:100%;overflow=auto;border: 0;display:inline;<%= heightStr %>">
-	<iframe id="iframeexec<%= strUuid %>" name="iframeexec<%= strUuid %>" src="<%= GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&userId=" + userId + "&documentId=" + biObj.getId().toString() + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE"%>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
+	<iframe id="iframeexec<%= strUuid %>" name="iframeexec<%= strUuid %>" src="<%= officeDocUrl %>" style="width:100%;height:300px;z-index:0;" frameborder="0" >
 	</iframe>
 </div>    
 <%-- End execution iframe --%>

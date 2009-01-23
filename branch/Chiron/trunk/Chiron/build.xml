@@ -57,7 +57,7 @@
 	<!-- The source version is not optimized ad is usefull only for debug.				--> 
 	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<target name="createSourceVersion" 
-		    depends="cleanSourceVersion, configureWebSourceScriptFile, configureStandaloneSourceScriptFile, configurePortletSourceScriptFile">
+		    depends="cleanSourceVersion, cleanCache, configureWebSourceScriptFile, configureStandaloneSourceScriptFile, configurePortletSourceScriptFile">
 	</target>
 	
 	<target name="configureWebSourceScriptFile" depends="createSourceScriptFiles">
@@ -130,7 +130,7 @@
 	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	
 	<target name="createBuildVersion" 
-		depends="cleanBuildVersion, configureWebBuildScriptFile, configureStandaloneBuildScriptFile, configurePortletBuildScriptFile">
+		depends="cleanBuildVersion, cleanCache, configureWebBuildScriptFile, configureStandaloneBuildScriptFile, configurePortletBuildScriptFile">
 	</target>
 	
 	<target name="configureWebBuildScriptFile" depends="createBuildScriptFiles">

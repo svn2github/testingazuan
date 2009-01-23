@@ -58,6 +58,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
@@ -433,7 +434,14 @@ public class ListTag extends TagSupport
 				// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 				String align = (String) ((SourceBean) _columns.elementAt(j)).getAttribute("horizontal-align");
 				if (align == null || align.trim().equals("")) align = "left";
-				_htmlStream.append(" <td>" + field + "</td>\n");
+
+				if(field.equalsIgnoreCase("&nbsp;")){
+					_htmlStream.append(" <td>" + field + "</td>\n");					
+				}
+				else
+				{
+				_htmlStream.append(" <td>" + StringEscapeUtils.escapeHtml(field) + "</td>\n");
+				}
 			} 
 
 			SourceBean captionsSB = (SourceBean) _layout.getAttribute("CAPTIONS");

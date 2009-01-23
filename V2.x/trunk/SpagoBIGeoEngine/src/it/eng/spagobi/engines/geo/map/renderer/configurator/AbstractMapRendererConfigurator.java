@@ -170,7 +170,7 @@ public class AbstractMapRendererConfigurator {
 			}
 			measure.setColurCalculatorParameters(colurCalculatorParameters);
 			
-			measures.put(measure.getColumnId(), measure);
+			measures.put(measure.getColumnId().toUpperCase(), measure);
 		}		
 		
 		return measures;

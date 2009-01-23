@@ -94,7 +94,7 @@ public class AbstractMapRenderer extends AbstractGeoEngineComponent  implements 
 	 * @return the measure
 	 */
 	public Measure getMeasure(String measureName) {
-		Measure measure = (Measure)measures.get( measureName );
+		Measure measure = (Measure)measures.get( measureName.toUpperCase() );
 		return  measure;
 	}
 	

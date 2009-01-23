@@ -845,20 +845,36 @@ public class ParametersGeneratorTag extends TagSupport {
 
 		String id="p_search_button_"+biparam.getParameterUrlName();
 		htmlStream.append("\n");
-		List valuesDescription = biparam.getParameterValuesDescription();
-		StringBuffer buffer = new StringBuffer("");
-		if (valuesDescription != null && !valuesDescription.isEmpty()) {
-			Iterator valuesDescriptionIt = valuesDescription.iterator();
-			while (valuesDescriptionIt.hasNext()) {
-				String description = (String) valuesDescriptionIt.next();
-				buffer.append(description);
-				if (valuesDescriptionIt.hasNext())
-					buffer.append(";");
+		
+		// takes the description directly from the request, if it is present
+		String description = httpRequest.getParameter(biparam.getParameterUrlName() + "Desc");
+		String messageDet = httpRequest.getParameter(SpagoBIConstants.MESSAGEDET);
+		String objParIdStr = httpRequest.getParameter("objParId");
+		// in case the request is for select/deselect all values for the current parameter, we cannot consider the value coming from request
+		boolean isSelectAllValuesRequest = messageDet != null && messageDet.equalsIgnoreCase(SpagoBIConstants.SELECT_ALL) 
+							&& objParIdStr != null && objParIdStr.equals(biparam.getId().toString());
+		boolean isDeselectAllValuesRequest = messageDet != null && messageDet.equalsIgnoreCase(SpagoBIConstants.DESELECT_ALL) 
+							&& objParIdStr != null && objParIdStr.equals(biparam.getId().toString());
+		if (description == null || isSelectAllValuesRequest || isDeselectAllValuesRequest) {
+			StringBuffer buffer = new StringBuffer("");
+			List valuesDescription = biparam.getParameterValuesDescription();
+			if (valuesDescription != null && !valuesDescription.isEmpty()) {
+				Iterator valuesDescriptionIt = valuesDescription.iterator();
+				while (valuesDescriptionIt.hasNext()) {
+					String aValueDescription = (String) valuesDescriptionIt.next();
+					buffer.append(aValueDescription);
+					if (valuesDescriptionIt.hasNext())
+						buffer.append(";");
+				}
 			}
+			description = buffer.toString();
 		}
-		String description = buffer.toString();
+
+		// TODO mettere la lettura della descrizione dei valori dei parametri leggendo direttamente dalla request nei metodi ExecutionInstance.refreshParametersValues
+		
 		String tmpValue = (description.equals("null"))?"":description;
-		htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(tmpValue) + "' type='text' style='width:230px;' " + "name='' " + "id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
+		
+		htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(tmpValue) + "' type='text' style='width:230px;' " + "name='" + biparam.getParameterUrlName() + "Desc' id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
 				+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " "));
 		htmlStream.append("onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
 				"setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + "');");

@@ -416,7 +416,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	key="sbi.kpi.label.weight" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="weight"
-	size="10" value="<%=weight%>" maxlength="200" ></div>
+	size="10" value="<%=weight%>" maxlength="200" >&nbsp;*</div>
 
 <hr>
 

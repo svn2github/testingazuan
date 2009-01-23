@@ -1431,7 +1431,8 @@ public class ListTag extends TagSupport
 					}
 					
 					//String immagine=urlBuilder.getResourceLink(httpRequest, img);
-					htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
+					htmlStream.append("<td class=\"portlet-section-header\">\n");
+					//htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
 					htmlStream.append("<a href='javascript:"+onClickFunctionName+"()'><img class=\"header-button-image-portlet-section\" title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
 					htmlStream.append("</td>\n");
 

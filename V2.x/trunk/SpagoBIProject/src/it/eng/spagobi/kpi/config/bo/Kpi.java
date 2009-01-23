@@ -1,9 +1,9 @@
 package it.eng.spagobi.kpi.config.bo;
 
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Kpi {
@@ -24,7 +24,7 @@ public class Kpi {
 	String scaleCode = null;
 	String scaleName = null;
 	String code = null;
-	
+	Threshold threshold = null;
 	
 	
 	public Kpi() {
@@ -237,6 +237,18 @@ public class Kpi {
 
 	public void setKpiInstances(List kpiInstances) {
 		this.kpiInstances = kpiInstances;
+	}
+
+
+
+	public Threshold getThreshold() {
+		return threshold;
+	}
+
+
+
+	public void setThreshold(Threshold threshold) {
+		this.threshold = threshold;
 	}
 	
 

@@ -11,7 +11,6 @@ import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.kpi.config.utils.DetailKpiUtil;
-import it.eng.spagobi.kpi.threshold.utils.DetailThresholdsValueUtil;
 
 public class DetailKpiModule extends DefaultDetailModule {
 

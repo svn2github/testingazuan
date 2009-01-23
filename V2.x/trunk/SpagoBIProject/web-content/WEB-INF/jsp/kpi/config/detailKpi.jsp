@@ -33,6 +33,7 @@
 	String description = "";
 	String weight = "";
 	Integer ds_id = null;
+	Integer threshold_id = null;
 
     String messageBunle = "component_kpi_messages"; 
 
@@ -111,6 +112,10 @@
 				ds_id = kpi.getKpiDs().getId();
 			else
 				ds_id = null;
+			if (kpi.getThreshold()!=null)
+				threshold_id = kpi.getThreshold().getId();
+			else
+				threshold_id = null;	
 		}
 	}
 	
@@ -142,7 +147,8 @@
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="it.eng.spagobi.tools.dataset.bo.IDataSet"%> 
 
-<table class='header-table-portlet-section'>
+
+<%@page import="it.eng.spagobi.kpi.threshold.bo.Threshold"%><table class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'
 			style='vertical-align: middle; padding-left: 5px;'>
@@ -205,6 +211,33 @@
 <div class='div_detail_form' style="height:40px;"><input
   class='portlet-form-input-field' type="text" name="weight" size="50"
   value="<%=weight%>" maxlength="200" ></div>
+  
+  <div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.thresholdType" bundle="<%=messageBunle%>"/> </span></div>
+<div class='div_detail_form' style="height:40px;">
+<select class='portlet-form-field' name="threshold_id" >
+<option value="" label=""></option>
+
+<%
+	List thresholds = DAOFactory.getThresholdDAO().loadThresholdList();
+	Iterator thresholdsIt = thresholds.iterator();
+	while (thresholdsIt.hasNext()){
+		Threshold threshold = (Threshold)thresholdsIt.next();
+		String selected = "";
+		if (threshold_id != null && threshold_id.equals(threshold.getId())) {
+			selected = "selected='selected'";
+		}
+		%>    			 		
+		<option value="<%= threshold.getId() %>" label="<%= threshold.getThresholdName() %>" <%= selected %>>
+			<%= threshold.getThresholdName() %>	
+		</option>
+		<%
+	}
+%>
+
+</select>
+</div>
 
 
 <div class='div_detail_label'><span

@@ -55,6 +55,7 @@ import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
+import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 import java.sql.Connection;
@@ -166,9 +167,11 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		dataSet.setParamsMap(parametersFilled);		
 		dataSet.loadData();
 		IDataStore ids = dataSet.getDataStore();
-		String resultXml = ids.toXml();
 		
-		rowsSourceBean=SourceBean.fromXMLString(resultXml);
+		rowsSourceBean=ids.toSourceBean();
+	//	String resultXml = ids.toXml();
+		//rowsSourceBean=SourceBean.fromXMLString(resultXml);
+		
 		//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
 		if(rowsSourceBean!=null){
 			List row =rowsSourceBean.getAttributeAsList("ROW");

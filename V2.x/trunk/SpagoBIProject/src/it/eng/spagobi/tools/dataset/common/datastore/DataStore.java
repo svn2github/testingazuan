@@ -3,7 +3,9 @@
  */
 package it.eng.spagobi.tools.dataset.common.datastore;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
 
 import java.util.ArrayList;
@@ -234,13 +236,26 @@ public class DataStore implements IDataStore {
 	}
     
     
-    
-    
-    
-    
-    
-    
 
+	public SourceBean toSourceBean() throws SourceBeanException{
+    SourceBean sb1=new SourceBean("ROWS");
+		Iterator it = iterator();
+		while(it.hasNext()) {
+			SourceBean sb2=new SourceBean("ROW");
+		    IRecord record = (IRecord )it.next();
+		    for(int i  =  0; i< getMetaData().getFieldCount(); i++) {
+		          IField field = (IField )record .getFieldAt(i);
+		          IFieldMetaData fieldMeta = getMetaData().getFieldMeta(i);
+		          String name = fieldMeta.getName();
+		          Object value = field .getValue();
+		          Class type = fieldMeta.getType();
+		          if(value==null) value=new String("");
+		          sb2.setAttribute(name, value);
+		    }
+		sb1.setAttribute(sb2);
+		}
+		return sb1;
+	}
 
 	
 

@@ -65,8 +65,6 @@ public class AuditServiceProxy {
 		proxy.updateAudit(session, userId, auditId,  
 				null, new Long(System.currentTimeMillis()), 
 				"EXECUTION_FAILED", msg, null);
-		
-		
 	}
 
 	public void notifyServiceEndEvent() {

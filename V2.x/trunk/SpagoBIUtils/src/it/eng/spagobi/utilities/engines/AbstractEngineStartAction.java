@@ -38,26 +38,21 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.services.content.bo.Content;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -433,7 +428,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 		for(int i = 0; i < requestParameters.size(); i++) {
 			SourceBeanAttribute attrSB = (SourceBeanAttribute)requestParameters.get(i);
 			logger.debug("Parameter [" + attrSB.getKey() + "] has been read from request");
-			logger.debug("Parameter [" + attrSB.getKey() + "] is of type  " + attrSB.getClass().getName());
+			logger.debug("Parameter [" + attrSB.getKey() + "] is of type  " + attrSB.getValue().getClass().getName());
 			logger.debug("Parameter [" + attrSB.getKey() + "] is equal to " + attrSB.getValue().toString());
 			
 			if(parameterStopList.contains(attrSB.getKey())) {

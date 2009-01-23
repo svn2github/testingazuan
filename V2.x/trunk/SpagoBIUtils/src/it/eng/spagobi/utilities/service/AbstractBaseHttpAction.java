@@ -71,9 +71,6 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
     private static transient Logger logger = Logger.getLogger(AbstractBaseHttpAction.class);
     
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spago.dispatching.action.AbstractHttpAction#init(it.eng.spago.base.SourceBean)
-	 */
 	public void init(SourceBean config) {
         super.init(config);
     } 
@@ -97,24 +94,12 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		this.response = response;
 	}
 	
-	/**
-	 * Gets the attribute.
-	 * 
-	 * @param attrName the attr name
-	 * 
-	 * @return the attribute
-	 */
+	
 	public Object getAttribute(String attrName) {
 		return request.getAttribute(attrName);
 	}
 	
-	/**
-	 * Gets the attribute as string.
-	 * 
-	 * @param attrName the attr name
-	 * 
-	 * @return the attribute as string
-	 */
+
 	public String getAttributeAsString(String attrName) {
 		if ( requestContainsAttribute(attrName) ) {
 			return getAttribute(attrName).toString();
@@ -123,13 +108,7 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		return null;
 	}
 	
-	/**
-	 * Gets the attribute as boolean.
-	 * 
-	 * @param attrName the attr name
-	 * 
-	 * @return the attribute as boolean
-	 */
+	
 	public boolean getAttributeAsBoolean(String attrName) {
 		return getAttributeAsBoolean(attrName, false);
 	}

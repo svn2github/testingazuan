@@ -39,6 +39,7 @@ public class SpagoBIEngineException extends SpagoBIException {
 	
 	
 	private IEngineInstance engineInstance;
+	private String errorDescription; // for the final user (better if localized)
     
 	/**
 	 * Builds a <code>SpagoBIEngineException</code>.
@@ -47,6 +48,11 @@ public class SpagoBIEngineException extends SpagoBIException {
 	 */
     public SpagoBIEngineException(String message) {
     	super(message);
+    }
+    
+    public SpagoBIEngineException(String message, String description) {
+    	super(message);
+    	setErrorDescription(description);
     }
 	
     /**
@@ -58,6 +64,11 @@ public class SpagoBIEngineException extends SpagoBIException {
     public SpagoBIEngineException(String message, Throwable ex) {
     	super(message, ex);
     }
+    
+    public SpagoBIEngineException(String message, String description, Throwable ex) {
+    	super(message, ex);
+    	setErrorDescription(description);
+    }
 
 	public IEngineInstance getEngineInstance() {
 		return engineInstance;
@@ -65,6 +76,14 @@ public class SpagoBIEngineException extends SpagoBIException {
 
 	public void setEngineInstance(IEngineInstance engineInstance) {
 		this.engineInstance = engineInstance;
+	}
+
+	public String getErrorDescription() {
+		return errorDescription;
+	}
+
+	public void setErrorDescription(String errorDescription) {
+		this.errorDescription = errorDescription;
 	}
 
 }

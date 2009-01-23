@@ -32,6 +32,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.service;
 
+import it.eng.spagobi.utilities.container.HttpServletRequestContainer;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -44,7 +46,7 @@ import javax.servlet.http.HttpSession;
  *
  */
 public class AbstractBaseServlet extends HttpServlet {
-	private HttpServletRequest request;
+	private HttpServletRequestContainer requestContainer;
 	private HttpServletResponse response;
 	
 	public static final String TRUE = "TRUE";
@@ -63,25 +65,27 @@ public class AbstractBaseServlet extends HttpServlet {
     // REQUEST
     ///////////////////////////////////////////////////////////
 	protected HttpServletRequest getRequest() {
-		return request;
+		return requestContainer.getRequest();
 	}
 	protected void setRequest(HttpServletRequest request) {
-		this.request = request;
+		if(requestContainer == null) {
+			requestContainer = new HttpServletRequestContainer(request);
+		} else {
+			this.requestContainer.setRequest(request);
+		}
+		
 	}
 	
 	protected Object getParameter(String parName) {
-		return getRequest().getParameter( parName );
+		return requestContainer.getProperty(parName);
 	}
 	
 	protected String getParameterAsString(String parName) {
-		if(requestContainsParameter(parName)) {
-			return getRequest().getParameter( parName ).toString();
-		}
-		return null;
+		return requestContainer.getPropertyAsString(parName);
 	}
 	
 	protected boolean requestContainsParameter(String parName) {
-		return getParameter(parName) != null;
+		return requestContainer.containsProperty( parName );
 	}
 	
 	
@@ -104,8 +108,16 @@ public class AbstractBaseServlet extends HttpServlet {
 	///////////////////////////////////////////////////////////
     // SESSION
     ///////////////////////////////////////////////////////////	
-	protected HttpSession getSession() {
+	protected HttpSession getHttpSession() {
 		return getRequest().getSession();
+	}
+	
+	protected Object getAttributeFromHttpSession(String attrName) {
+		return getHttpSession().getAttribute( attrName );
+	}
+	
+	public String getAttributeFromHttpSessionAsString(String attrName) {
+		return (String)getAttributeFromHttpSession(attrName);
 	}
 	
 }

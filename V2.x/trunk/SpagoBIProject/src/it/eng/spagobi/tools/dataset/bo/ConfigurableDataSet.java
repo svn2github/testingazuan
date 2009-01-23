@@ -48,15 +48,17 @@ public class ConfigurableDataSet extends  AbstractDataSet {
 	public void loadData() throws EMFUserError, EMFInternalError{
 		Object results;
 
+		((AbstractDataProxy)dataProxy).bindParameters((HashMap)getParamsMap());
+		((AbstractDataProxy)dataProxy).setProfile(getUserProfile());
+
 
 		if( hasBehaviour(QuerableBehaviour.class.getName()) ) { // Querable Behaviour
 			QuerableBehaviour querableBehaviour = (QuerableBehaviour)getBehaviour(QuerableBehaviour.class.getName()) ;
 			results = dataProxy.load( querableBehaviour.getStatement() );    		
 		} 
-
-		((AbstractDataProxy)dataProxy).bindParameters((HashMap)getParamsMap());
-		((AbstractDataProxy)dataProxy).setProfile(getUserProfile());
-		results = dataProxy.load( ); 
+		else{
+			results = dataProxy.load( ); 
+		}
 
 		dataStore = dataReader.read( results );
 

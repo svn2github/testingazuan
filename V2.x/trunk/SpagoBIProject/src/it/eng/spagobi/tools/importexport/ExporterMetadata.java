@@ -229,7 +229,6 @@ public class ExporterMetadata {
 			if (dataset instanceof WebServiceDataSet) {
 				hibDataset = new SbiWSDataSet();
 				((SbiWSDataSet) hibDataset).setAdress(((WebServiceDataSet) dataset).getAddress());
-				((SbiWSDataSet) hibDataset).setExecutorClass(((WebServiceDataSet) dataset).getExecutorClass());
 				((SbiWSDataSet) hibDataset).setOperation(((WebServiceDataSet) dataset).getOperation());
 			}
 			if (dataset instanceof JavaClassDataSet) {

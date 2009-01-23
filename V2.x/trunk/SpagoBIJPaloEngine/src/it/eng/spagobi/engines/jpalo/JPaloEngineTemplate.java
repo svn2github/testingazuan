@@ -30,7 +30,9 @@ import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.services.content.bo.Content;
+import it.eng.spagobi.utilities.strings.StringUtils;
 import sun.misc.BASE64Decoder;
 
 /**
@@ -38,81 +40,71 @@ import sun.misc.BASE64Decoder;
  *
  */
 public class JPaloEngineTemplate {
-	private Content rowTemplate;
-	private Document parsedTemplateContent;
 	
-	private static final BASE64Decoder DECODER = new BASE64Decoder();
 	
-	public JPaloEngineTemplate(Content template) throws DocumentException, IOException {
-		setRowTemplate(template);
-		parseTemplateContent();
+	/**
+	 * expected template structure:
+	 *
+	 * <olap database="Palo" 
+     *  	 schema="Demo" 
+     *		 cube="Sales">
+	 * </olap>
+	 */
+	private SourceBean templateSB;
+	
+	private static final String DATABASE_ATTRIBUTE_NAME = "database";
+	private static final String SCHEMA_ATTRIBUTE_NAME = "schema";
+	private static final String CUBE_ATTRIBUTE_NAME = "cube";
+	private static final String TABLEONLY_ATTRIBUTE_NAME = "tableonly";
+	private static final String EDITORONLY_ATTRIBUTE_NAME = "editoronly";
+	
+	
+	
+	
+	public JPaloEngineTemplate(SourceBean template) {
+		setTemplateSB(template);
 	}
 
-	protected Content getRowTemplate() {
-		return rowTemplate;
+	protected SourceBean getTemplateSB() {
+		return templateSB;
 	}
 
-	protected void setRowTemplate(Content rowTemplate) {
-		this.rowTemplate = rowTemplate;
+	protected void setTemplateSB(SourceBean templateSB) {
+		this.templateSB = templateSB;
 	}
-	
-	public byte[] getContentAsByteArray() throws IOException {		
-		return DECODER.decodeBuffer( rowTemplate.getContent() );
-	}
-	
-	public InputStream getContentAsInputStream() throws IOException {
-		return new ByteArrayInputStream( getContentAsByteArray() );
-	}
-	
-	protected void parseTemplateContent() throws IOException, DocumentException {
-		SAXReader reader = new org.dom4j.io.SAXReader();
-		parsedTemplateContent = reader.read( getContentAsInputStream() );
-	}
+
 	
 	public String getDatabaseName() {	
-		String result = null;
-		Node rootNode = parsedTemplateContent.selectSingleNode("//olap");
-	    if (rootNode != null) {
-	    	result = rootNode.valueOf("@database");	    	
-	    }
-		return result;
+		return (String)getTemplateSB().getAttribute( DATABASE_ATTRIBUTE_NAME );
 	}
 	
 	public String getSchemaName() {		
-		String result = null;
-		Node rootNode = parsedTemplateContent.selectSingleNode("//olap");
-	    if (rootNode != null) {
-	    	result = rootNode.valueOf("@schema");	    	
-	    }
-		return result;
+		return (String)getTemplateSB().getAttribute( SCHEMA_ATTRIBUTE_NAME );
 	}
 	
 	public String getCubeName() {		
-		String result = null;
-		Node rootNode = parsedTemplateContent.selectSingleNode("//olap");
-	    if (rootNode != null) {
-	    	result = rootNode.valueOf("@cube");	    	
-	    }
-		return result;
+		return (String)getTemplateSB().getAttribute( CUBE_ATTRIBUTE_NAME );
 	}
 
 	public String getTableOnly() {
 		String result = null;
-		Node rootNode = parsedTemplateContent.selectSingleNode("//olap");
-	    if (rootNode != null) {
-	    	result = rootNode.valueOf("@tableonly");	    	
-	    }
-	    if(result == null || result.equalsIgnoreCase("")) result = "false";
+		
+		result = (String)getTemplateSB().getAttribute( TABLEONLY_ATTRIBUTE_NAME );
+		if(StringUtils.isEmpty(result)) {
+			result = "false";
+		}
+		
 		return result;
 	}
 
 	public String getEditorOnly() {
 		String result = null;
-		Node rootNode = parsedTemplateContent.selectSingleNode("//olap");
-	    if (rootNode != null) {
-	    	result = rootNode.valueOf("@editoronly");	    	
-	    }
-	    if(result == null || result.equalsIgnoreCase("")) result = "true";
+		
+		result = (String)getTemplateSB().getAttribute( EDITORONLY_ATTRIBUTE_NAME );
+		if(StringUtils.isEmpty(result)) {
+			result = "true";
+		}
+		
 		return result;
 	}
 	

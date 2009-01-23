@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.jpalo;
 
-import it.eng.spagobi.utilities.service.AbstractEngineStartServlet;
+
+import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import java.io.IOException;
 
@@ -40,6 +42,8 @@ import org.dom4j.DocumentException;
  */
 public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 	
+	private static final String PALO_BASE_URL = "Application.html";
+	
 	/**
      * Logger component
      */
@@ -53,42 +57,47 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 		logger.debug("Initializing SpagoBI JPalo Engine...");
     }
 
-    /**
-     * process jasper report execution requests
-     */
-    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-    	logger.debug("Start processing a new request...");
+   
+    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	JPaloEngineTemplate template;
+    	String jpaloUrl;
     	
-    	setRequest(request);  
-    	setResponse(response);
+    	logger.debug("IN");
+		
+		try {		
+			
+			super.service(request, response);
+			
+			auditServiceStartEvent();
+		
+		
+			logger.debug("User Id: " + getUserId());
+			logger.debug("Audit Id: " + getAuditId());
+			logger.debug("Document Id: " + getDocumentId());
+			logger.debug("Template: " + getTemplate());
+		
+			template = new JPaloEngineTemplate( getTemplate() );			
     	
-    	String documentId = getDocumentId();
-    	logger.debug("documentId:"+documentId);
-    	
-    	String userId = getUserId();
-    	logger.debug("userId:"+userId);
-    	
-    	String auditId = getAuditId();
-    	logger.debug("auditId:"+auditId);
-    	
-    	String jpaloUrl = "Application.html";
-    	try {
-			JPaloEngineTemplate template = new JPaloEngineTemplate( getRowTemplate() );
+	    	jpaloUrl = PALO_BASE_URL;	    	
 			jpaloUrl += "?server=" + template.getDatabaseName();
 			jpaloUrl += "&schema=" + template.getSchemaName();
 			jpaloUrl += "&cube=" + template.getCubeName();
 			jpaloUrl += "&table-only=" + template.getTableOnly();
 			jpaloUrl += "&editor-only=" + template.getEditorOnly();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-			throw new  IOException();			
+	    			
+			
+			String urlWithSessionID = response.encodeRedirectURL( jpaloUrl );
+		    response.sendRedirect( urlWithSessionID );
+	    
+		} catch(Throwable t) {
+			logger.error(t.getMessage());
+			auditServiceErrorEvent(t.getMessage());			
+			
+			response.getOutputStream().write("An unpredicted error occured while executing palo-engine. Please chek the log for more informations on the causes".getBytes());
+		} finally {
+			this.auditServiceEndEvent();
+			logger.debug("OUT");
 		}
-    			
-		//RequestDispatcher dispatcher = request.getRequestDispatcher( jpaloUrl );
-		//dispatcher.forward(request, response);
-		
-		String urlWithSessionID = response.encodeRedirectURL( jpaloUrl);
-	    response.sendRedirect( urlWithSessionID );
 
     }
 }

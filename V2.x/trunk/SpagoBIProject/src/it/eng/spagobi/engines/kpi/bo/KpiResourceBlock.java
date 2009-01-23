@@ -177,7 +177,7 @@ public class KpiResourceBlock {
 		_htmlStream.append("		<td  width='28%' class='kpi_td' ><div id=\""+requestIdentity+"\" style='display:none;float:right;'></div></td>\n");
 		
 		String valueDescr = "";
-		if(kpiVal.getValueDescr()!=null){
+		if(kpiVal !=null && kpiVal.getValueDescr()!=null){
 			valueDescr = kpiVal.getValueDescr();
 			_htmlStream.append("		<td width='4%' class='kpi_td' title='"+valueDescr+"' style='text-align:center;'  ><div class='kpi_div'  ><img src=\""+infoImgSrc+"\" alt=\"Info\" /></div></td>\n");				
 		}else{
@@ -185,10 +185,13 @@ public class KpiResourceBlock {
 		}
 		
 		String periodValid = msgBuilder.getMessage("sbi.kpi.validPeriod", httpReq);
-		periodValid = periodValid.replaceAll("%0", kpiVal.getBeginDate().toString());
-		periodValid = periodValid.replaceAll("%1", kpiVal.getEndDate().toString());
+		if (kpiVal !=null){
+			periodValid = periodValid.replaceAll("%0", kpiVal.getBeginDate().toString());
+			periodValid = periodValid.replaceAll("%1", kpiVal.getEndDate().toString());		    
+		}
+
 		
-		if (lo!= null && kpiVal.getScaleCode()!=null){
+		if (lo!= null && kpiVal !=null && kpiVal.getScaleCode()!=null){
 			_htmlStream.append("		<td  width='9%' title='"+periodValid+"' class='kpi_td_left'  ><div  class='kpi_div'>"+lo.toString()+"("+kpiVal.getScaleCode()+")</div></td>\n");
 		}else if(lo!= null){
 			_htmlStream.append("		<td  width='9%' title='"+periodValid+"' class='kpi_td_left'  ><div  class='kpi_div'>"+lo.toString()+"</div></td>\n");
@@ -244,7 +247,7 @@ public class KpiResourceBlock {
 				    String dat = f.format(d);
 				    execUrlParMap.put("END_DATE", dat);						
 				}
-				execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId());
+				if (kpiVal!=null) execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId());
 				execUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
 				
 				String trend = msgBuilder.getMessage("sbi.kpi.trend", httpReq);

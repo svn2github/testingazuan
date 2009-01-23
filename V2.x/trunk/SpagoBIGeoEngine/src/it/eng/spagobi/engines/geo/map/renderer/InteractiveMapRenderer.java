@@ -22,7 +22,7 @@ package it.eng.spagobi.engines.geo.map.renderer;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.engines.geo.GeoEngineConstants;
+import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.dataset.DataMart;
@@ -174,7 +174,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		    for(int i = 0; i < measures.length(); i++) {
 		    	JSONObject measure = (JSONObject)measures.get(i);
 		    	
-		    	if(selectedMeasureName.equals( measure.get("name"))) {
+		    	if(selectedMeasureName.equalsIgnoreCase( (String)measure.get("name"))) {
 		    		selectedMeasureIndexIndex = i;
 		    		break;
 		    	}
@@ -861,7 +861,14 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		
 		IDataStore dataStore = datamart.getDataStore();
 		
+		logger.debug("XCHIARA -> map: " + map);
+		logger.debug("XCHIARA -> datamart: " + datamart);
+		logger.debug("XCHIARA -> datamart.getTargetFeatureName(): " + datamart.getTargetFeatureName());
+		
 		Element targetLayer = map.getElementById(datamart.getTargetFeatureName());
+		
+		logger.debug("XCHIARA ->targetLayerNode: " + targetLayer);
+		logger.debug("XCHIARA ->mapContent: " + map.toString());
 		
 		NodeList nodeList = targetLayer.getChildNodes();
 	    for(int i = 0; i < nodeList.getLength(); i++){

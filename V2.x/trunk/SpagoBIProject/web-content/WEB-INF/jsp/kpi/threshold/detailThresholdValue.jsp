@@ -237,8 +237,8 @@ var cp = new ColorPicker('window'); // Popup window
 <div class='div_detail_form'>
 <input style="background-color:<%=colour%>"
   class='portlet-form-input-field' type="text" name="colour" id="colour" size="50"
-  value="<%=colour%>" maxlength="20" readonly="readonly">
-<a fref="#" onClick="javascript:cp.select(document.forms[0].colour,'pick');return false;" name="pick" id="pick">Select</a>
+  value="<%=colour%>" maxlength="20">
+<a href="#" onClick="javascript:cp.select(document.forms[0].colour,'pick');return false;" name="pick" id="pick">Select</a>
 <script language="JavaScript">
 cp.writeDiv()
 </script>

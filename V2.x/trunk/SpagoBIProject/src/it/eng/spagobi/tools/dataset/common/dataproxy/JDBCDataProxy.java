@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.dataset.common.dataproxy;
 
+import it.eng.spago.dbaccess.Utils;
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.mappers.SQLMapper;
@@ -29,7 +30,8 @@ import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.tools.dataset.common.datareader.JDBCDataReader;
+import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.sql.Connection;
@@ -62,17 +64,17 @@ public class JDBCDataProxy extends AbstractDataProxy {
 		setStatement(statement);
 	}
 	
-	public Object load(String statement) throws EMFUserError {
+	public IDataStore load(String statement, IDataReader dataReader) throws EMFUserError {
 		if(statement != null) {
 			setStatement(statement);
 		}
-		return load();
+		return load(dataReader);
 	}
 	
-	public Object load() throws EMFUserError {
+	public IDataStore load(IDataReader dataReader) throws EMFUserError {
 		
+		IDataStore dataStore = null;
 		Object result = null;
-
 		logger.debug("IN");
 		
 		DataConnection dataConnection = null;
@@ -81,21 +83,21 @@ public class JDBCDataProxy extends AbstractDataProxy {
 		try {
 			Connection conn = dataSource.toSpagoBiDataSource().readConnection(); 
 			dataConnection = getDataConnection(conn);
-	
 			sqlCommand = dataConnection.createSelectCommand( statement );
 			dataResult = sqlCommand.execute();
 			if(dataResult != null){
 				result = (ScrollableDataResult) dataResult.getDataObject();				
 			}
+			dataStore = dataReader.read( result );
 		} catch(Exception e){
 			logger.error("Error in query Execution",e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 9221);
 		} finally {
-			//Utils.releaseResources(dataConnection, sqlCommand, dataResult);
+			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 			logger.debug("OUT");
 		}
 		
-		return result;
+		return dataStore;
 	}
 	
 	private DataConnection getDataConnection(Connection con) throws EMFInternalError {

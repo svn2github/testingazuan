@@ -36,6 +36,8 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.behaviouralmodel.lov.handlers.ScriptManager;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -57,16 +59,17 @@ public class ScriptDataProxy extends AbstractDataProxy {
 	}
 
 
-	public Object load(String statement) throws EMFUserError {
+	public IDataStore load(String statement, IDataReader dataReader) throws EMFUserError {
 		if(statement != null) {
 			setScript(statement);
 		}
-		return load();
+		return load(dataReader);
 	}
 	
 
-	public Object load() throws EMFUserError {
+	public IDataStore load(IDataReader dataReader) throws EMFUserError {
 		String data = null;
+		IDataStore dataStore = null;
 		try {
 			data = ScriptManager.runScript(script);
 
@@ -75,6 +78,7 @@ public class ScriptDataProxy extends AbstractDataProxy {
 			if(toconvert) { 
 				data = convertResult(data);
 			}
+			dataStore = dataReader.read(data);
 		} catch (SourceBeanException e) {
 			logger.error("SourceBeanException",e);
 			e.printStackTrace();
@@ -85,7 +89,7 @@ public class ScriptDataProxy extends AbstractDataProxy {
 		}
 		logger.debug("OUT");
 
-		return data;
+		return dataStore;
 	}
 
 	private boolean checkSintax(String result) {

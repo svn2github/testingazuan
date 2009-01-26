@@ -24,14 +24,16 @@ package it.eng.spagobi.tools.dataset.common.dataproxy;
 import java.util.HashMap;
 
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
 public interface IDataProxy {
-	Object load(String Statement) throws EMFUserError;
-	Object load() throws EMFUserError;
+	IDataStore load(String Statement, IDataReader dataReader) throws EMFUserError;
+	IDataStore load(IDataReader dataReader) throws EMFUserError;
 	
 
 }

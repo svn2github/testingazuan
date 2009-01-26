@@ -39,6 +39,8 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.services.content.stub.ContentServiceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
+import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.wsconnectors.stub.IWsConnector;
 import it.eng.spagobi.tools.dataset.wsconnectors.stub.IWsConnectorServiceLocator;
 import it.eng.spagobi.tools.dataset.wsconnectors.stub.WSDataSetServiceSoapBindingImpl;
@@ -65,12 +67,13 @@ public class WebServiceDataProxy extends AbstractDataProxy {
 		this.setOperation(operation);
 	}
 
-	public Object load(String statement) throws EMFUserError {
+	public IDataStore load(String statement, IDataReader dataReader) throws EMFUserError {
 		throw new UnsupportedOperationException("metothd load not yet implemented");
 	}
 
 
-	public Object load() throws EMFUserError {
+	public IDataStore load(IDataReader dataReader) throws EMFUserError {
+		IDataStore dataStore = null;
 		String resultXML="";
 		IWsConnectorServiceLocator locator = new IWsConnectorServiceLocator();   
 		IWsConnector connector=null;
@@ -108,7 +111,13 @@ public class WebServiceDataProxy extends AbstractDataProxy {
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "11200", messageBundle);
 		}		
 
-		return resultXML;
+		try {
+			dataStore = dataReader.read(resultXML);
+		} catch (EMFInternalError e) {
+			logger.error(e);
+		}
+		
+		return dataStore;
 
 	}
 

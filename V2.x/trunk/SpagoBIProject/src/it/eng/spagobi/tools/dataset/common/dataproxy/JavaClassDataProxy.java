@@ -33,6 +33,8 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.behaviouralmodel.lov.bo.JavaClassDetail;
 import it.eng.spagobi.tools.dataset.bo.IJavaClassDataSet;
+import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 import org.apache.log4j.Logger;
 
@@ -55,12 +57,13 @@ public class JavaClassDataProxy extends AbstractDataProxy {
 		setClassName( className );
 	}
 
-	public Object load(String statement) throws EMFUserError {
+	public IDataStore load(String statement, IDataReader dataReader) throws EMFUserError {
 		throw new UnsupportedOperationException("metothd load not yet implemented");
 	}
 
-	public Object load() throws EMFUserError {
+	public IDataStore load(IDataReader dataReader) throws EMFUserError {
 		String result = null;				
+		IDataStore dataStore = null;
 		IJavaClassDataSet javaClass;
 		JavaClassDetail javaClassDetail =new JavaClassDetail();
 		try {
@@ -85,6 +88,7 @@ public class JavaClassDataProxy extends AbstractDataProxy {
 			if(toconvert) { 
 				result = javaClassDetail.convertResult(result);
 			}
+			dataStore = dataReader.read(result);
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -95,9 +99,11 @@ public class JavaClassDataProxy extends AbstractDataProxy {
 			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9217);
 			logger.debug("classe non trovata");
 			throw userError;
+		} catch (Exception e) {
+			logger.debug(e);
 		}
 
-		return result;
+		return dataStore;
 	}
 
 	public String getClassName() {

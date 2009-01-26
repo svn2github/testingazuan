@@ -46,7 +46,7 @@ public class ConfigurableDataSet extends  AbstractDataSet {
 	}
 
 	public void loadData() throws EMFUserError, EMFInternalError{
-		Object results;
+//		Object results;
 
 		((AbstractDataProxy)dataProxy).bindParameters((HashMap)getParamsMap());
 		((AbstractDataProxy)dataProxy).setProfile(getUserProfile());
@@ -54,13 +54,22 @@ public class ConfigurableDataSet extends  AbstractDataSet {
 
 		if( hasBehaviour(QuerableBehaviour.class.getName()) ) { // Querable Behaviour
 			QuerableBehaviour querableBehaviour = (QuerableBehaviour)getBehaviour(QuerableBehaviour.class.getName()) ;
-			results = dataProxy.load( querableBehaviour.getStatement() );    		
+			dataStore = dataProxy.load( querableBehaviour.getStatement(), dataReader);    		
 		} 
 		else{
-			results = dataProxy.load( ); 
+			dataStore = dataProxy.load(dataReader); 
 		}
 
-		dataStore = dataReader.read( results );
+		
+		// NOOOOOOOOOOOOOOO!!!!
+		/*
+		 * così la connessione rimane aperta!!! bisogna fare:
+		 * dataStore = dataProxy.load(datareader);
+		 * o 
+		 * dataStore = dataProxy.load(statement, datareader);
+		 * ma dopo il load la connessione deve essere chiusa!!!
+		 */
+//		dataStore = dataReader.read( results );
 
 		if(hasDataStoreTransformer()) {
 			getDataStoreTransformer().transform(dataStore);

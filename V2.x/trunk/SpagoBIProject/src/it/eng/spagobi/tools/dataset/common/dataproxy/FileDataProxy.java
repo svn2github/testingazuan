@@ -22,11 +22,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.dataset.common.dataproxy;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -47,23 +50,33 @@ public class FileDataProxy extends AbstractDataProxy {
 		
 	}
 	
-	public Object load(String statement) throws EMFUserError {
+	public IDataStore load(String statement, IDataReader dataReader) throws EMFUserError {
 		throw new UnsupportedOperationException("metothd FileDataProxy not yet implemented");
 	}
 	
-	public Object load() throws EMFUserError {
+	public IDataStore load(IDataReader dataReader) throws EMFUserError {
+		
+		IDataStore dataStore = null;
 		FileInputStream inputStream = null;
 		
-		try{
+		try {
 			inputStream = new FileInputStream(fileName);
+			dataStore = dataReader.read( inputStream );
 		}
 		catch (Exception e) {
 			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9209);
 			logger.debug("File not found",e);
 			throw userError;
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					logger.error("Error closing input stream", e);
+				}
+			}
 		}
-		
-		return inputStream;
+		return dataStore;
 	}
 
 	public String getFileName() {

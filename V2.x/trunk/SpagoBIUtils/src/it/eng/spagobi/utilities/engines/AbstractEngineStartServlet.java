@@ -34,7 +34,18 @@ package it.eng.spagobi.utilities.engines;
 
 
 
-import java.io.File;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.configuration.FileCreatorConfiguration;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.services.content.bo.Content;
+import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.services.proxy.EventServiceProxy;
+import it.eng.spagobi.utilities.ParametersDecoder;
+import it.eng.spagobi.utilities.service.AbstractBaseServlet;
+
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -44,26 +55,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.configuration.FileCreatorConfiguration;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.services.content.bo.Content;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
-
-import it.eng.spagobi.services.proxy.ContentServiceProxy;
-import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
-import it.eng.spagobi.services.proxy.EventServiceProxy;
-import it.eng.spagobi.tools.datasource.bo.IDataSource;
-import it.eng.spagobi.utilities.ParametersDecoder;
-import it.eng.spagobi.utilities.service.AbstractBaseServlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 
 import org.apache.log4j.Logger;
 
@@ -73,7 +66,7 @@ import sun.misc.BASE64Decoder;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AbstractEngineStartServlet extends AbstractBaseServlet {
+public abstract class AbstractEngineStartServlet extends AbstractBaseServlet {
 	
 	private String userId;
 	private String userUniqueIdentifier;
@@ -86,6 +79,8 @@ public class AbstractEngineStartServlet extends AbstractBaseServlet {
 	private ContentServiceProxy contentProxy;
 	private AuditServiceProxy auditProxy;
 	private EventServiceProxy eventProxy;
+	
+	private Map env;
 	
 	private static final BASE64Decoder DECODER = new BASE64Decoder();
 	
@@ -101,18 +96,38 @@ public class AbstractEngineStartServlet extends AbstractBaseServlet {
      * Logger component
      */
     private static transient Logger logger = Logger.getLogger(AbstractEngineStartServlet.class);
-
-    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    	this.setRequest(request);
-    	this.setResponse(response);
+    
+    public void init(ServletConfig config) throws ServletException {
+    	super.init(config);	
     	
     	String path = getServletConfig().getServletContext().getRealPath("/WEB-INF");
-    	
-    	logger.debug("Root path directory: " + path );
     	ConfigSingleton.setConfigurationCreation( new FileCreatorConfiguration( path ) );
     	ConfigSingleton.setRootPath( path );
-    	ConfigSingleton.setConfigFileName("/empty.xml");
+    	ConfigSingleton.setConfigFileName("/empty.xml");    	
+    }
+    
+    public void doService() throws SpagoBIEngineException {
     	
+    	logger.debug("User Id: " + getUserId());
+		logger.debug("Audit Id: " + getAuditId());
+		logger.debug("Document Id: " + getDocumentId());
+		logger.debug("Template: " + getTemplate());
+		
+    }
+
+    public void handleException(Throwable t) {
+    	logger.error("Service execution failed", t);
+    	
+    	auditServiceErrorEvent(t.getMessage());			
+		
+    	String reponseMessage = getLocalizedMessage("an.unpredicted.error.occured");
+    	if(t instanceof SpagoBIEngineException) {
+    		SpagoBIEngineException e = (SpagoBIEngineException)t;
+    		reponseMessage = getLocalizedMessage(e.getErrorDescription());
+    		  		
+    	} 		
+    	
+    	tryToWriteBackToClient( reponseMessage );		
     }
     
 
@@ -289,15 +304,17 @@ public class AbstractEngineStartServlet extends AbstractBaseServlet {
     
     
     public Map getEnv() {
- 	   Map env = new HashMap();
- 	   
- 	   copyRequestParametersIntoEnv(env);
- 	   //env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
- 	   env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
- 	   env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, getContentServiceProxy());
- 	   env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );
- 	   env.put(EngineConstants.ENV_EVENT_SERVICE_PROXY, getEventServiceProxy() );
- 	   env.put(EngineConstants.ENV_LOCALE, getLocale()); 
+       if(eventProxy == null) {
+	 	   env = new HashMap();
+	 	   
+	 	   copyRequestParametersIntoEnv(env);
+	 	   //env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
+	 	   env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
+	 	   env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, getContentServiceProxy());
+	 	   env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );
+	 	   env.put(EngineConstants.ENV_EVENT_SERVICE_PROXY, getEventServiceProxy() );
+	 	   env.put(EngineConstants.ENV_LOCALE, getLocale()); 
+       }
  		
  	   return env;
     }
@@ -371,6 +388,11 @@ public class AbstractEngineStartServlet extends AbstractBaseServlet {
  			
  		return newParValue;
  	}
+ 	
+ 	protected String getLocalizedMessage(String msg) {
+		if(msg == null) return "";
+		return EngineMessageBundle.getMessage(msg, getLocale());
+	}
 	
 	
 }

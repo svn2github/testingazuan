@@ -32,7 +32,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.service;
 
+import java.io.IOException;
+
 import it.eng.spagobi.utilities.container.HttpServletRequestContainer;
+import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -41,24 +45,45 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class AbstractBaseServlet extends HttpServlet {
+public abstract class AbstractBaseServlet extends HttpServlet {
 	private HttpServletRequestContainer requestContainer;
 	private HttpServletResponse response;
 	
 	public static final String TRUE = "TRUE";
 	public static final String FALSE = "FALSE";
 	
-
-    /* (non-Javadoc)
-     * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
+	 /**
+     * Logger component
      */
+    private static transient Logger logger = Logger.getLogger(AbstractBaseServlet.class);
+    
+	
+
     public void init(ServletConfig config) throws ServletException {
     	super.init(config);	
     }
+    
+    public void service(HttpServletRequest request, HttpServletResponse response) {
+    	this.setRequest(request);
+    	this.setResponse(response);
+    	
+    	try {
+    		String str = this.getClass().getName();
+			this.doService();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+    }
+    
+    public abstract void doService() throws SpagoBIEngineException;
+    
+    public abstract void handleException(Throwable t);
 	
 	
     ///////////////////////////////////////////////////////////
@@ -100,6 +125,36 @@ public class AbstractBaseServlet extends HttpServlet {
 	}
 	protected void setResponse(HttpServletResponse response) {
 		this.response = response;
+	}
+	
+	public boolean tryToWriteBackToClient(String message) {
+		try {
+			writeBackToClient(message);
+		} catch (IOException e) {
+			logger.error("Impossible to write back to the client the message: [" + message + "]", e);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public void writeBackToClient(String message) throws IOException {
+		writeBackToClient(200, message,
+				true,
+				"service-response",
+				"text/plain");
+	}
+	
+	public void writeBackToClient(int statusCode, String content, boolean inline, String fileName, String contentType) throws IOException {
+		
+		// setup response header
+		getResponse().setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + fileName + "\";");
+		getResponse().setContentType( contentType );
+		getResponse().setContentLength( content.length() );
+		getResponse().setStatus(statusCode);
+		
+		getResponse().getWriter().print(content);
+		getResponse().getWriter().flush();
 	}
 	
 	

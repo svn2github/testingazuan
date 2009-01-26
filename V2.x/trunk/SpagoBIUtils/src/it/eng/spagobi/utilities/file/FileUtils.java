@@ -32,6 +32,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.file;
 
+import it.eng.spagobi.utilities.assertion.Assert;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -79,4 +81,22 @@ public class FileUtils {
 		
 		return extension;
 	}
+	
+	public static void doForEach(File rootDir, IFileTransformer transformer) {
+		Assert.assertNotNull(rootDir, "rootDir parameters cannot be null");
+		Assert.assertTrue(rootDir.exists() && rootDir.isDirectory(), "rootDir parameter [" + rootDir + "] is not an existing directory");
+		Assert.assertNotNull(transformer, "transformer parameters cannot be null");
+		
+		File[] files = rootDir.listFiles() ;
+		for(int i = 0; i < files.length; i ++) {
+			File file = files[i];
+			if(file.isDirectory()) {
+				doForEach(file, transformer);
+			} else {
+				transformer.transform(file);
+			}
+		}
+	}
+	
+	
 }

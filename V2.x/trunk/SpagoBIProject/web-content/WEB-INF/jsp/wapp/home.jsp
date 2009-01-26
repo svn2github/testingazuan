@@ -649,7 +649,7 @@ function execCrossNavigation(windowName, label, parameters) {
 			id:'win_info_<%=uuid%>',
 			autoLoad: {url: '<%=path%>'},             				
 				layout:'fit',
-				width:200,
+				width:210,
 				height:180,
 				closeAction:'hide',
  				buttonAlign : 'left',

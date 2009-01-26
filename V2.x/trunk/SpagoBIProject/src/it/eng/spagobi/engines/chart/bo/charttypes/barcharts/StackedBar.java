@@ -208,7 +208,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			for (Iterator iterator3 = orderSeries.iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
 				if(!hiddenSeries.contains(nameS)){
-					String valueS=(String)series.get(nameS);
+					String valueS=((String)series.get(nameS)).equalsIgnoreCase("null")?"0":(String)series.get(nameS);
 					dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
 					cumulativeValue+=Double.valueOf(valueS).doubleValue();
 					if(!seriesNames.contains(nameS)){

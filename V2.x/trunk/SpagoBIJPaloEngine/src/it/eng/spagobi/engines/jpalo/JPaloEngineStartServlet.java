@@ -58,23 +58,19 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
     }
 
    
-    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doService() throws SpagoBIEngineException {
     	JPaloEngineTemplate template;
     	String jpaloUrl;
     	
     	logger.debug("IN");
 		
 		try {		
-			
-			super.service(request, response);
+		
 			
 			auditServiceStartEvent();
 		
 		
-			logger.debug("User Id: " + getUserId());
-			logger.debug("Audit Id: " + getAuditId());
-			logger.debug("Document Id: " + getDocumentId());
-			logger.debug("Template: " + getTemplate());
+			super.doService();
 		
 			template = new JPaloEngineTemplate( getTemplate() );			
     	
@@ -86,14 +82,13 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			jpaloUrl += "&editor-only=" + template.getEditorOnly();
 	    			
 			
-			String urlWithSessionID = response.encodeRedirectURL( jpaloUrl );
-		    response.sendRedirect( urlWithSessionID );
+			String urlWithSessionID = getResponse().encodeRedirectURL( jpaloUrl );
+			getResponse().sendRedirect( urlWithSessionID );
 	    
 		} catch(Throwable t) {
-			logger.error(t.getMessage());
-			auditServiceErrorEvent(t.getMessage());			
+			throw new SpagoBIEngineException("An unpredicted error occured while executing palo-engine. Please chek the log for more informations on the causes",
+			"an.unpredicted.error.occured");		
 			
-			response.getOutputStream().write("An unpredicted error occured while executing palo-engine. Please chek the log for more informations on the causes".getBytes());
 		} finally {
 			this.auditServiceEndEvent();
 			logger.debug("OUT");

@@ -31,20 +31,60 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend;
 
+
+
+import java.io.File;
+
+import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+
 /**
  * @author Andrea Gioia
  *
  */
-public interface Version {
-    public static final String ENGINE_NAME = "SpagoBITalendEngine";
-    public static final String AUTHOR = "Engineering Ingegneria Informatica S.p.a.";
-    public static final String WEB = "http://spagobi.eng.it/";
-    
-    public static final String MAJOR = "1";
-    public static final String MINOR = "9";
-    public static final String REVISION = "2";
-    
-    public static final String CLIENT_COMPLIANCE_VERSION = "0.5.0";
-    
-    
+public class TalendEngine  {
+	
+	private static TalendEngineVersion version;
+	private static TalendEngineConfig config;	
+		
+	
+	private static RuntimeRepository runtimeRepository;
+		
+	
+	static { 
+		TalendEngine.version = TalendEngineVersion.getInstance();
+		TalendEngine.config = TalendEngineConfig.getInstance();
+		
+		File rrRootDir = TalendEngineConfig.getInstance().getRuntimeRepositoryRootDir();
+		TalendEngine.setRuntimeRepository( new RuntimeRepository(rrRootDir) );		
+	}
+	
+	
+	public static RuntimeRepository getRuntimeRepository() throws SpagoBIEngineException {
+		if(runtimeRepository == null || !runtimeRepository.getRootDir().exists()) {
+			throw new SpagoBIEngineException("Runtime-Repository not available",
+					"repository.not.available");
+		}
+		return TalendEngine.runtimeRepository;
+	}
+
+
+	private static void setRuntimeRepository(RuntimeRepository runtimeRepository) {
+		TalendEngine.runtimeRepository = runtimeRepository;
+	}
+
+
+	public static TalendEngineVersion getVersion() {
+		return TalendEngine.version;
+	}
+
+
+	public static TalendEngineConfig getConfig() {
+		return TalendEngine.config;
+	}
+
+	
+	
+	
+	
 }

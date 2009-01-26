@@ -33,6 +33,8 @@ package it.eng.spagobi.engines.talend.runtime;
 
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -56,12 +58,8 @@ public class Job {
 	String context;
 	String version;
 		
-	/**
-	 * Instantiates a new job.
-	 */
-	public Job() {}
 	
-	public Job(SourceBean template) {
+	public Job(SourceBean template) throws SpagoBIEngineException {
 		this.load(template);
 	}
 	
@@ -91,53 +89,36 @@ public class Job {
 		this.context = context;
 	}		
 	
-	/**
-	 * Load.
-	 * 
-	 * @param file the file
-	 * 
-	 * @throws FileNotFoundException the file not found exception
-	 * @throws DocumentException the document exception
-	 */
-	public void load(File file) throws FileNotFoundException, DocumentException {
-		load(new FileInputStream(file));
-	}
-	
-	public void load(SourceBean template) {
+	public void load(SourceBean template) throws SpagoBIEngineException {
 		SourceBean jobSB;
 		
 		jobSB = (SourceBean)template.getAttribute("JOB");
-		if (jobSB != null) {
-	    	this.name = (String)jobSB.getAttribute("jobName");
-	    	this.version = (String)jobSB.getAttribute("version");
-	    	if(version == null) version = "0.1";
-	    	this.project = (String)jobSB.getAttribute("project");
-	    	this.language = (String)jobSB.getAttribute("language");
-	 	    this.context = (String)jobSB.getAttribute("context");
-	    }
+		Assert.assertNotNull(jobSB, "template cannot be null");
+		
+		name = (String)jobSB.getAttribute("jobName");
+		if(name == null) {
+			throw new SpagoBIEngineException("Missing Talend project name in document template",
+					"missing.talend.job");
+		}
+	 
+		project = (String)jobSB.getAttribute("project");
+		if(project == null) {
+			throw new SpagoBIEngineException("Missing Talend project name in document template",
+					"missing.talend.project");
+		}
+		
+		language = (String)jobSB.getAttribute("language");
+		if(language == null) {
+			throw new SpagoBIEngineException("Missing Talend job language in document template",
+					"missing.talend.lang");
+		}
+		
+		context = (String)jobSB.getAttribute("context");
+	    
+	    version = jobSB.getAttribute("version") != null? (String)jobSB.getAttribute("version"): "0.1";	    
 	}
 	
-	/**
-	 * Load.
-	 * 
-	 * @param is the is
-	 * 
-	 * @throws DocumentException the document exception
-	 */
-	public void load(InputStream is) throws DocumentException{
-		SAXReader reader = new org.dom4j.io.SAXReader();
-	    Document document = null;
-	    
-	   	document = reader.read(is);		
-	    
-	    Node job = document.selectSingleNode("//etl/job");
-	    if (job != null) {
-	    	this.name = job.valueOf("@jobName");
-	    	this.project = job.valueOf("@project");
-	    	this.language = job.valueOf("@language");
-	 	    this.context = job.valueOf("@context");
-	    }
-	}
+	
 		
 	/**
 	 * Checks if is perl job.
@@ -248,20 +229,6 @@ public class Job {
 		return buffer.toString();
 	}
 	
-	/**
-	 * Load job.
-	 * 
-	 * @param is the is
-	 * 
-	 * @return the job
-	 * 
-	 * @throws DocumentException the document exception
-	 */
-	public static Job loadJob(InputStream is) throws DocumentException {
-		Job job = new Job();
-		job.load(is);
-		return job;
-	}
 
 	public String getVersion() {
 		return version;

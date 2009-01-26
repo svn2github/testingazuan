@@ -36,7 +36,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
 import it.eng.spagobi.engines.talend.TalendEngineConfig;
 import it.eng.spagobi.engines.talend.runtime.Job;
 import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
@@ -46,6 +45,13 @@ import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
  *
  */
 public class TalendScriptAccessUtils {
+	
+	
+	public static File getContextsBaseDir(Job job, RuntimeRepository runtimeRepository) {
+		return runtimeRepository.getExecutableJobDir(job);
+		//return new File(runtimeRepository.getExecutableJobDir(job), job.getProject().toLowerCase());
+	}
+	
 	
 	
 	/**
@@ -159,7 +165,7 @@ public class TalendScriptAccessUtils {
     		}
     		
     		//STEP3 : include current directory
-    		classpath.append(File.pathSeparator + ".");
+    		//classpath.append(File.pathSeparator + ".");
     		
     		//STEP4 : include jar in current directory
     		File executableJobDir = runtimeRepository.getExecutableJobDir(job);
@@ -173,19 +179,6 @@ public class TalendScriptAccessUtils {
     		}
     	}
     	
-    	
-    	
-    	
-    	/*
-    	List libs = TalendScriptAccessUtils.getIncludedLibs(job, runtimeRepository);    	
-    	for(int i = 0; i < libs.size(); i++){
-    		File file = (File)libs.get(i);    		
-    		classpath.append( (i>0? File.pathSeparator : "") + "../lib/" + file.getName());
-    	}
-    	
-    	classpath.append( (libs.size()>0? File.pathSeparator : "") + TalendScriptAccessUtils.getExecutableFileName(job));
-    	*/
-    	//System.out.println(classpath);
     	
     	return classpath.toString();
     }

@@ -13,11 +13,6 @@
 	<spagobi_autopublish>true</spagobi_autopublish>
 	<spagobi_functionality_label>ETL</spagobi_functionality_label>
 	
-	 <!-- ********************* CONTEXT USED FROM EXTERNAL SOURCE ************************ -->
- 	 <SPAGOBI_CONTEXT_PATH>@spagobi.context.path@</SPAGOBI_CONTEXT_PATH>
- 	
- 	<!-- ********************* CONTEXT USED FROM INTERNAL SOURCE ************************ -->
- 	 <BACKEND_SPAGOBI_CONTEXT_PATH>@backend.spagobi.context.path@</BACKEND_SPAGOBI_CONTEXT_PATH>	
 	
 	<!-- Properties needed to run perl script-->
 	<perl_install_dir>@perl.home@</perl_install_dir>
@@ -28,8 +23,7 @@
 	<perlExt>.pl</perlExt>
 
 
-	<!--  Properties needed to run java script --> 
-	
+	<!--  Properties needed to run java script --> 	
 	<java_command>java</java_command>
 	<java_command_option_Xms>256</java_command_option_Xms>
 	<java_command_option_Xmx>1024</java_command_option_Xmx>

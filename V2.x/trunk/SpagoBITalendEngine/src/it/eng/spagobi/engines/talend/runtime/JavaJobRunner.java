@@ -31,17 +31,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend.runtime;
 
-import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
+import it.eng.spagobi.engines.talend.TalendEngine;
 import it.eng.spagobi.engines.talend.TalendEngineConfig;
 import it.eng.spagobi.engines.talend.exception.ContextNotFoundException;
 import it.eng.spagobi.engines.talend.exception.JobExecutionException;
 import it.eng.spagobi.engines.talend.exception.JobNotFoundException;
 import it.eng.spagobi.engines.talend.utils.TalendScriptAccessUtils;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
+import it.eng.spagobi.utilities.file.FileUtils;
+import it.eng.spagobi.utilities.file.IFileTransformer;
 import it.eng.spagobi.utilities.threadmanager.WorkManager;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -87,7 +90,7 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
     	throws JobNotFoundException, ContextNotFoundException, JobExecutionException {
     	
     	File contextFile = null;
-    	String tmpDirName = null;
+    	//String tmpDirName = null;
     	File contextFileDir = null;
     	
     	try {
@@ -103,73 +106,16 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
 	    	logger.debug("Job base folder: " + executableJobDir);
 	    	
 	    	    	
-
+	    	
 	    	if (!runtimeRepository.containsJob(job)) {	    		
 	    		throw new JobNotFoundException("Job executable file " + 
 	    				runtimeRepository.getExecutableJobFile(job) + " does not exist.");
 	    	}
 	    	
-	   
-	    	
-	    	// if the context is not specified, it looks for the defualt context script file;
-	    	// if it exists, the context is assumed to be the default.
-	    	// Instead, if the context is specified, it looks for the relevant context script file;
-	    	// if it does not exist, an error message is returned.
-	    	
-	    	
-	    	if (job.getContext() == null || job.getContext().trim().equals("")) {
-	    		logger.debug("Context not specified.");
-	    		job.setContext(DEFAULT_CONTEXT);
-	    	} 
-	    		
-	    	/*
-	    	File executableJobFile = runtimeRepository.getExecutableJobFile(job);
-	    	JarFile jarFile = new JarFile(executableJobFile);
-	    	StringBuffer buffer = new StringBuffer();
-	    	buffer.append(job.getProject().toLowerCase());
-	    	buffer.append("/" + job.getName().toLowerCase());
-	    	buffer.append("/contexts");
-	    	buffer.append("/" + job.getContext() + ".properties");
-	    	ZipEntry ze = jarFile.getEntry(buffer.toString());
-	    	if (ze == null) {
-		    	throw new ContextNotFoundException("Script context file " + contextFile + " does not exist.");
-			}
-	    	*/
-	    		
-	    	Properties context = getContext(job);
-	    	if(context == null) {
-	    		throw new ContextNotFoundException("Impossible to load context " + job.getContext());
-	    	}
-	    	/*
-	    	Properties props = new Properties();
-	    	props.load( jarFile.getInputStream(ze) );
-	    	*/
-	    	Iterator it = parameters.keySet().iterator();
-	    	while(it.hasNext()) {
-	    		String pname = (String)it.next();
-	    		Object o = parameters.get(pname);
-	    		
-	    		if(o instanceof String) {
-	    			String pvalue = (String)parameters.get(pname);
-	    			context.setProperty(pname, pvalue);
-	    		}
-	    		
-	    	}
-	    		
-	    	UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
-	    	String uuid = uuidGenerator.generateTimeBasedUUID().toString();
-	    	tmpDirName = "tmp" + uuid;
-	    	String tmpDirPath = runtimeRepository.getExecutableJobDir(job).getAbsolutePath() + File.separatorChar + tmpDirName;
-	    	String contextFileDirPath = tmpDirPath + File.separatorChar + job.getProject().toLowerCase();
-	    	contextFileDirPath += File.separatorChar + job.getName().toLowerCase();
-	    	contextFileDirPath += File.separatorChar + "contexts";
-	    	contextFileDir = new File(contextFileDirPath);
-	    	contextFileDir.mkdirs();
-	    	contextFile = new File(contextFileDir, job.getContext() + ".properties");
-	    	OutputStream out = new FileOutputStream(contextFile);
-	    	context.store(out, "Talend Context");
-	    	
-	
+	    	File tempDir = getTempDir(job);
+	   		String tmpDirName = tempDir.getName();
+	    	initContexts(job, parameters, tempDir);
+	    	//String tmpDirName = instantiateContext(job, parameters);
 	    	
 	    	String classpath = "." + File.separatorChar + tmpDirName + File.pathSeparator 
 	    			+ TalendScriptAccessUtils.getClassPath(job, runtimeRepository); //getClassPath(job);
@@ -215,6 +161,132 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
     	}
     }
     
+    public void initContexts(Job job, Map parameters, File destDir) {
+    	File contextsBaseDir = TalendScriptAccessUtils.getContextsBaseDir(job, runtimeRepository);
+    	
+    	
+    	
+    	FileUtils.doForEach(new File(contextsBaseDir, job.getProject().toLowerCase()), new IFileTransformer() {
+    		Job job;
+    		Map parameters;
+    		File destDir;
+    		File srcDir; 
+    		
+    		public IFileTransformer init(Job job, Map parameters, File srcDir, File destDir) {
+    			this.job = job;
+    			this.parameters = parameters;
+    			this.destDir = destDir;
+    			this.srcDir = srcDir;
+    			return this;
+    		}
+
+			public boolean transform(File file) {
+				String str1 = file.getName();
+				String str2 = job.getContext() + ".properties";
+				
+				if(file.getName().equalsIgnoreCase(job.getContext() + ".properties")) {
+					try {
+					
+						Properties context = new Properties();
+						FileInputStream in = new FileInputStream(file);
+						
+			        	context.load( in );
+			        	Iterator it = parameters.keySet().iterator();
+			        	while(it.hasNext()) {
+			        		String pname = (String)it.next();
+			        		Object o = parameters.get(pname);
+			        		
+			        		if(o instanceof String) {
+			        			String pvalue = (String)parameters.get(pname);
+			        			context.setProperty(pname, pvalue);
+			        		}		        		
+			        	}
+			        	File destFile = null;
+			        	
+			        	String pathToContext = file.getAbsolutePath().substring(srcDir.getAbsolutePath().length());
+			        	destFile = new File(destDir, pathToContext);
+			        	destFile.getParentFile().mkdirs();
+			        	OutputStream out = new FileOutputStream(destFile);
+			        	context.store(out, "Talend Context");
+			        	
+			        	in.close();
+			        	out.flush();
+			        	out.close();
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+						return false;
+					} catch (IOException e) {
+						e.printStackTrace();
+						return false;
+					}
+				}
+				return true;
+				
+			}    		
+    	}.init(job, parameters, contextsBaseDir, destDir) );
+  
+    }
+    
+    public File getTempDir(Job job) {
+    	UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
+    	String uuid = uuidGenerator.generateTimeBasedUUID().toString();
+    	String tmpDirName = "tmp" + uuid;
+    	String tmpDirPath = runtimeRepository.getExecutableJobDir(job).getAbsolutePath() + File.separatorChar + tmpDirName;
+    	return new File(tmpDirPath);
+    }
+    
+    
+    
+    public String instantiateContext(Job job, Map parameters) throws ContextNotFoundException, IOException {
+    	
+    	File contextFile;
+    	File contextFileDir;
+    	String tmpDirName;
+    	
+    	
+    	// if the context is not specified, it looks for the defualt context script file;
+    	// if it exists, the context is assumed to be the default.
+    	// Instead, if the context is specified, it looks for the relevant context script file;
+    	// if it does not exist, an error message is returned.
+    	if (job.getContext() == null || job.getContext().trim().equals("")) {
+    		logger.debug("Context not specified.");
+    		job.setContext(DEFAULT_CONTEXT);
+    	} 
+    		
+    	Properties context = getContext(job);
+    	if(context == null) {
+    		throw new ContextNotFoundException("Impossible to load context " + job.getContext());
+    	}
+    	
+    	Iterator it = parameters.keySet().iterator();
+    	while(it.hasNext()) {
+    		String pname = (String)it.next();
+    		Object o = parameters.get(pname);
+    		
+    		if(o instanceof String) {
+    			String pvalue = (String)parameters.get(pname);
+    			context.setProperty(pname, pvalue);
+    		}
+    		
+    	}
+    		
+    	UUIDGenerator uuidGenerator = UUIDGenerator.getInstance();
+    	String uuid = uuidGenerator.generateTimeBasedUUID().toString();
+    	tmpDirName = "tmp" + uuid;
+    	String tmpDirPath = runtimeRepository.getExecutableJobDir(job).getAbsolutePath() + File.separatorChar + tmpDirName;
+    	String contextFileDirPath = tmpDirPath + File.separatorChar + job.getProject().toLowerCase();
+    	contextFileDirPath += File.separatorChar + job.getName().toLowerCase();
+    	contextFileDirPath += File.separatorChar + "contexts";
+    	contextFileDir = new File(contextFileDirPath);
+    	contextFileDir.mkdirs();
+    	contextFile = new File(contextFileDir, job.getContext() + ".properties");
+    	OutputStream out = new FileOutputStream(contextFile);
+    	context.store(out, "Talend Context");
+    	out.flush();
+    	out.close();
+    	
+    	return tmpDirName;
+    }
     
     /**
      * Gets the context.
@@ -261,27 +333,5 @@ private static transient Logger logger = Logger.getLogger(JavaJobRunner.class);
     	return context;    		
     }
 
-	/**
-	 * Gets the class path.
-	 * 
-	 * @param job the job
-	 * 
-	 * @return the class path
-	 */
-	public String getClassPath(Job job) {
-    	StringBuffer classpath = new StringBuffer();
-    	
-    	List libs = TalendScriptAccessUtils.getIncludedLibs(job, runtimeRepository);    	
-    	for(int i = 0; i < libs.size(); i++){
-    		File file = (File)libs.get(i);    		
-    		classpath.append( (i>0? File.pathSeparator : "") + "../lib/" + file.getName());
-    	}
-    	
-    	classpath.append( (libs.size()>0? File.pathSeparator : "") + TalendScriptAccessUtils.getExecutableFileName(job));
-    	
-    	logger.debug(classpath);
-    	//System.out.println(classpath);
-    	
-    	return classpath.toString();
-    }
+	
 }

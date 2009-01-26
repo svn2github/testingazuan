@@ -3,6 +3,8 @@
 	<name>SpagoBITalendEngine</name>
 	<comment></comment>
 	<projects>
+		<project>SpagoBIUtils</project>
+		<project>SpagoCore</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

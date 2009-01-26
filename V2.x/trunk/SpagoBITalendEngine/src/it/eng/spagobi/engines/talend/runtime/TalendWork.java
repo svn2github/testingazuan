@@ -180,7 +180,7 @@ public class TalendWork implements Work {
 
 	    p.waitFor();
 	   
-	    /*
+	    
 	   LineNumberReader in = new LineNumberReader( new InputStreamReader(p.getErrorStream()) );
 	   String line = null;
 	   String str = "";
@@ -188,7 +188,7 @@ public class TalendWork implements Work {
 		   str += line  + "\n";
 	   }
 	   logger.debug(str);
-	   */
+	   
 	    
 	    
 	   

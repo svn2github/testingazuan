@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app id="SpagoBITalendEngine" 
+		 xmlns="http://java.sun.com/xml/ns/j2ee" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+		 version="2.4" >
+	
+	
 	<display-name>SpagoBITalendEngine</display-name>
+	<description>
+		SpagoBI Talend Engine
+	</description>
 	
-	
-	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>index.htm</welcome-file>
-		<welcome-file>index.jsp</welcome-file>
-		<welcome-file>default.html</welcome-file>
-		<welcome-file>default.htm</welcome-file>
-		<welcome-file>default.jsp</welcome-file>
-	</welcome-file-list>
-<!-- 	
+	<!--  ============================================================================ -->
+	<!--  FILTERS								 									   -->
+	<!--  ============================================================================ -->		
+	<!-- 	
 	<filter>
 		<filter-name>CAS_Filter</filter-name>
 		<filter-class>
@@ -33,10 +38,10 @@
 				https://localhost:8443/exo-cas-2/serviceValidate
 			</param-value>
 		</init-param>
-    <init-param>
-       <param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
-       <param-value>localhost:8443</param-value>
-    </init-param>
+    	<init-param>
+       		<param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
+       		<param-value>localhost:8443</param-value>
+    	</init-param>
 		<init-param>
 			<param-name>
 				edu.yale.its.tp.cas.client.filter.proxyCallbackUrl
@@ -46,29 +51,38 @@
 			</param-value>
 		</init-param>	
 
-     <init-param>
+     	<init-param>
   			 <param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name> 
              <param-value>true</param-value> 
-       </init-param> 
+       	</init-param> 
        	
-	</filter>
-	
- -->	
+	</filter>	
+ 	-->	
+ 	
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
 	</filter>
-<!-- 	
+	
+	<!--  ============================================================================ -->
+	<!--  FILTER MAPPINGS						 									   -->
+	<!--  ============================================================================ -->
+	<!--	
 	<filter-mapping>
 		<filter-name>CAS_Filter</filter-name>
 		<url-pattern>/JobRunService/*</url-pattern>
 	</filter-mapping>
- -->		
+ 	-->		
+	
 	<filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>
     	<url-pattern>/JobRunService/*</url-pattern>
 	</filter-mapping>
 
+
+	<!--  ============================================================================ -->
+	<!--  SERVLETS								 									   -->
+	<!--  ============================================================================ -->
 	<servlet>
   		<servlet-name>ProxyTicketReceptor</servlet-name> 
   		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
@@ -76,7 +90,7 @@
   			<param-name>edu.yale.its.tp.cas.proxyUrl</param-name> 
   			<param-value>https://localhost:8443/exo-cas-2/proxy</param-value> 
   		</init-param>
-  </servlet>
+  	</servlet>
   
 	<servlet>
 		<servlet-name>JobRunService</servlet-name>
@@ -92,7 +106,11 @@
 		<servlet-name>EngineInfoService</servlet-name>
 		<servlet-class>it.eng.spagobi.engines.talend.services.EngineInfoService</servlet-class>
 	</servlet>
-
+	
+	
+	<!--  ============================================================================ -->
+	<!--  SERVLET MAPPINGS						 									   -->
+	<!--  ============================================================================ -->
  	<servlet-mapping>
   		<servlet-name>ProxyTicketReceptor</servlet-name> 
   		<url-pattern>/proxyReceptor</url-pattern> 
@@ -101,6 +119,11 @@
 	<servlet-mapping>
 		<servlet-name>EngineInfoService</servlet-name>
 		<url-pattern>/EngineInfoService</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>EngineInfoService</servlet-name>
+		<url-pattern>/version</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
@@ -118,27 +141,29 @@
 		<url-pattern>/JobUploadService</url-pattern>
 	</servlet-mapping>
 	
-	  <error-page>
+	<!--  ============================================================================ -->
+	<!--  RESOURCES								 									   -->
+	<!--  ============================================================================ -->
+	<resource-ref>
+		<res-ref-name>wm/SpagoWorkManager</res-ref-name>
+ 		<res-type>commonj.work.WorkManager</res-type>
+ 		<res-auth>Container</res-auth>
+ 		<res-sharing-scope>Shareable</res-sharing-scope>
+	</resource-ref>
+		 
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+    
+  	<error-page>
+    	<error-code>404</error-code>
+    	<location>/jsp/errors/error404.jsp</location>
+  	</error-page> 
+  
+  	<error-page>
 	  	<exception-type>java.lang.Throwable</exception-type>
 	  	<location>/html/error.html</location>
-	  </error-page>
-		 
-	  <error-page>
-	  	<error-code>404</error-code>
-	  	<location>/html/error.html</location>
-	  </error-page>
-	 
-	  <error-page>
-	  	<error-code>500</error-code>
-	  	<location>/html/error.html</location>
-	  </error-page>
-	
-	<resource-ref>
-	 <res-ref-name>wm/SpagoWorkManager</res-ref-name>
- 	<res-type>commonj.work.WorkManager</res-type>
- 	<res-auth>Container</res-auth>
- 	<res-sharing-scope>Shareable</res-sharing-scope>
-	</resource-ref>
+	</error-page>
 	
 	
 	

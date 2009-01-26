@@ -31,60 +31,74 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend.services;
 
-import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
-import it.eng.spagobi.engines.talend.runtime.Job;
-import it.eng.spagobi.engines.talend.runtime.JobDeploymentDescriptor;
+import java.util.Date;
+
+import it.eng.spagobi.engines.talend.TalendEngine;
+import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
-
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
-import org.dom4j.DocumentException;
 
 /**
  * @author Andrea Gioia
  *
  */
-public class EngineInfoService extends HttpServlet {
+public class EngineInfoService extends AbstractEngineStartServlet {
+	
+	private static final String INFO_TYPE_PARAM_NAME = "infoType"; 
+	private static final String INFO_TYPE_VERSION = "version"; 
+	private static final String INFO_TYPE_COMPLIANCE_VERSION = "complianceVersion"; 
+	private static final String INFO_TYPE_NAME = "name"; 
+	
+	private static final long serialVersionUID = 1L;
 	
 	private static transient Logger logger = Logger.getLogger(EngineInfoService.class);
 	
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	
+	public void doService() throws SpagoBIEngineException {
 		
-		logger.debug("Starting EngineInfoService service method...");
+		String infoType;
+		String responseMessage;
 		
-		String engineRootDir = getServletContext().getRealPath("WEB-INF");
+		logger.debug("IN");
 		
-		SpagoBITalendEngine engine = SpagoBITalendEngine.getInstance();
+		try {	
+				
+			infoType = getParameterAsString(INFO_TYPE_PARAM_NAME);
 		
-		String infoType = request.getParameter("infoType");
-		if(infoType.equalsIgnoreCase("version")) {
-			response.getOutputStream().write(engine.getVersion().getBytes());
-		} else if(infoType.equalsIgnoreCase("complianceVersion")) {
-				response.getOutputStream().write(engine.getComplianceVersion().getBytes());
-		} else if (infoType.equalsIgnoreCase("name")) {
-			response.getOutputStream().write(engine.getFullName().getBytes());
-		} else {
-			response.getOutputStream().write(engine.getInfo().getBytes());
-		}
-		
+			if(INFO_TYPE_VERSION.equalsIgnoreCase( infoType )) {
+				responseMessage = TalendEngine.getVersion().toString();
+			} else if(INFO_TYPE_COMPLIANCE_VERSION.equalsIgnoreCase( infoType)) {
+				responseMessage = TalendEngine.getVersion().getComplianceVersion();
+			} else if (INFO_TYPE_NAME.equalsIgnoreCase( infoType )) {
+				responseMessage = TalendEngine.getVersion().getFullName();
+			} else {
+				responseMessage = TalendEngine.getVersion().getInfo();
+			}
+			
+			tryToWriteBackToClient( responseMessage );
+			
+		} finally {
+			logger.debug("OUT");
+		}		
 	}
+	
+	public void auditServiceStartEvent() {
+		logger.info("EXECUTION_STARTED: " + new Date(System.currentTimeMillis()));
+	}
+
+	public void auditServiceErrorEvent(String msg) {
+		logger.info("EXECUTION_FAILED: " + new Date(System.currentTimeMillis()));
+	}
+
+	public void auditServiceEndEvent() {
+		logger.info("EXECUTION_PERFORMED: " + new Date(System.currentTimeMillis()));	
+	}
+	
+	
 }
 

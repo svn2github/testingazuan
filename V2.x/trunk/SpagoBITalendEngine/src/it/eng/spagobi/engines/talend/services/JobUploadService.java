@@ -31,33 +31,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend.services;
 
-import it.eng.spagobi.engines.talend.SpagoBITalendEngine;
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.talend.TalendEngine;
 import it.eng.spagobi.engines.talend.TalendEngineConfig;
 import it.eng.spagobi.engines.talend.runtime.Job;
 import it.eng.spagobi.engines.talend.runtime.JobDeploymentDescriptor;
 import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
 import it.eng.spagobi.engines.talend.utils.ZipUtils;
-import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -66,6 +62,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
+import org.xml.sax.InputSource;
 
 import sun.misc.BASE64Encoder;
 
@@ -73,59 +70,91 @@ import sun.misc.BASE64Encoder;
  * @author Andrea Gioia
  *
  */
-public class JobUploadService extends HttpServlet {
+public class JobUploadService extends AbstractEngineStartServlet {
+	
+	private static final String USER = "biadmin";
+	private static final String PASSWORD = "biadmin";
+	
+	private static final long serialVersionUID = 1L;
 	
 	private static transient Logger logger = Logger.getLogger(JobUploadService.class);
 	
+	public void doService() throws SpagoBIEngineException { 
+		
+		boolean isMultipart;
+		FileItemFactory factory;
+		ServletFileUpload upload;
+		JobDeploymentDescriptor jobDeploymentDescriptor;
+		
+		logger.debug("IN");
+		
+		try {		
+			
+			auditServiceStartEvent();
+				
+					
+			//  Check that we have a file upload request
+			isMultipart = ServletFileUpload.isMultipartContent( getRequest() );
+			
+			// Create a factory for disk-based file items
+			factory = new DiskFileItemFactory();
 
-	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		logger.debug("Starting JobUpload service method...");
-		HttpSession session=request.getSession();
-		
-		TalendEngineConfig config = TalendEngineConfig.getInstance();
-		
-		
-		
-		//  Check that we have a file upload request
-		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		
-		// Create a factory for disk-based file items
-		FileItemFactory factory = new DiskFileItemFactory();
+			// Create a new file upload handler
+			upload = new ServletFileUpload(factory);
 
-		// Create a new file upload handler
-		ServletFileUpload upload = new ServletFileUpload(factory);
-
-		// Parse the request
-		List items = null;
-		try {
-			items = upload.parseRequest(request);
-		} catch (FileUploadException e) {
-			e.printStackTrace();
-			throw new IOException(e.getLocalizedMessage());
-		}
-		
-		JobDeploymentDescriptor jobDeploymentDescriptor = getJobsDeploymetDescriptor(items);
-		
-		// Process the uploaded items
-		Iterator iter = items.iterator();
-		while (iter.hasNext()) {
-		    FileItem item = (FileItem) iter.next();
-		    if (item.isFormField()) {
-		        processFormField(item);
-		    } else {
-		        String[] jobNames = processUploadedFile(item, jobDeploymentDescriptor);
-		        if(config.isAutoPublishActive()) {
-		        	if(jobNames == null) continue;
-			        for(int i = 0; i < jobNames.length; i++) {
-			        	publishOnSpagoBI(session,jobDeploymentDescriptor.getLanguage(), jobDeploymentDescriptor.getProject(), jobNames[i]);		 
+			// Parse the request
+			List items = null;
+			try {
+				items = upload.parseRequest(getRequest());
+			} catch (FileUploadException e) {
+				throw new SpagoBIEngineException("Impossible to upload file", "impossible.to.upload.file", e );
+			}
+			
+			jobDeploymentDescriptor = getJobsDeploymetDescriptor(items);
+			
+			// Process the uploaded items
+			Iterator iter = items.iterator();
+			while (iter.hasNext()) {
+			    FileItem item = (FileItem) iter.next();
+			    if (item.isFormField()) {
+			        processFormField(item);
+			    } else {
+			        String[] jobNames = processUploadedFile(item, jobDeploymentDescriptor);
+			        if(TalendEngine.getConfig().isAutoPublishActive()) {
+			        	if(jobNames == null) continue;
+				        for(int i = 0; i < jobNames.length; i++) {
+				        	publishOnSpagoBI(jobDeploymentDescriptor.getLanguage(), jobDeploymentDescriptor.getProject(), jobNames[i]);		 
+				        }
 			        }
-		        }
-		    }
-		}
-		
-		response.getOutputStream().write("OK".getBytes());
+			    }
+			}
+			
+			tryToWriteBackToClient( "OK" );			
+			
+		} catch (Exception e){
+			throw new SpagoBIEngineException("An error occurred while executing [JobUploadService]", "an.unpredicted.error.occured", e);
+		} finally {
+			logger.debug("OUT");
+		}		
 	}
+	
+	public void auditServiceStartEvent() {
+		logger.info("EXECUTION_STARTED: " + new Date(System.currentTimeMillis()));
+	}
+
+	public void auditServiceErrorEvent(String msg) {
+		logger.info("EXECUTION_FAILED: " + new Date(System.currentTimeMillis()));
+	}
+
+	public void auditServiceEndEvent() {
+		logger.info("EXECUTION_PERFORMED: " + new Date(System.currentTimeMillis()));	
+	}
+	
+	public String getUserIdentifier() {    	
+    	return USER;
+    }
+	
+	
 
 	private JobDeploymentDescriptor getJobsDeploymetDescriptor(List items) {
 		JobDeploymentDescriptor jobDeploymentDescriptor = null;
@@ -158,7 +187,7 @@ public class JobUploadService extends HttpServlet {
 		
 	}
 
-	private String[] processUploadedFile(FileItem item, JobDeploymentDescriptor jobDeploymentDescriptor) throws ZipException, IOException {
+	private String[] processUploadedFile(FileItem item, JobDeploymentDescriptor jobDeploymentDescriptor) throws ZipException, IOException, SpagoBIEngineException {
 		String fieldName = item.getFieldName();
 	    String fileName = item.getName();
 	    String contentType = item.getContentType();
@@ -167,7 +196,7 @@ public class JobUploadService extends HttpServlet {
 	    
 	    if(fieldName.equalsIgnoreCase("deploymentDescriptor")) return null;
 	    
-	    RuntimeRepository runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
+	    RuntimeRepository runtimeRepository = TalendEngine.getRuntimeRepository();
 	    File jobsDir = new File(runtimeRepository.getRootDir(), jobDeploymentDescriptor.getLanguage().toLowerCase());
 		File projectDir = new File(jobsDir, jobDeploymentDescriptor.getProject());
 		File tmpDir = new File(projectDir, "tmp");
@@ -204,9 +233,8 @@ public class JobUploadService extends HttpServlet {
 	 */
 	public boolean isValidTemplate(File templateFile) {
 		try {
-		   	InputStream is = new FileInputStream(templateFile);
-			Job job = new Job();
-			job.load(is);
+		   	SourceBean template = SourceBean.fromXMLStream( new InputSource(new FileInputStream(templateFile)) ); 
+			Job job = new Job( template );
 			if(job.getLanguage() == null || job.getProject() == null || job.getName() == null) return false;
 		} catch (Exception e) {
 			 return false;
@@ -215,10 +243,10 @@ public class JobUploadService extends HttpServlet {
 		return true;
 	}
 	
-	private String getTemplate(String language, String projectName, String jobName) throws IOException {
+	private String getTemplate(String language, String projectName, String jobName) throws IOException, SpagoBIEngineException {
 		String template = null;
 		
-		RuntimeRepository runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
+		RuntimeRepository runtimeRepository = TalendEngine.getRuntimeRepository();
 		File jobsDir = new File(runtimeRepository.getRootDir(), language.toLowerCase());
 		File projectDir = new File(jobsDir, projectName);
 		File jobDir = new File(projectDir, jobName);
@@ -248,8 +276,8 @@ public class JobUploadService extends HttpServlet {
 	/*
 	 * TODO: implementare questa funzione tramite una API  WEB Service
 	 */
-	private void publishOnSpagoBI(HttpSession session, String language, String projectName, String jobName) throws IOException {
-		RuntimeRepository runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
+	private void publishOnSpagoBI(String language, String projectName, String jobName) throws IOException, SpagoBIEngineException {
+		RuntimeRepository runtimeRepository = TalendEngine.getRuntimeRepository();
 		
 		String template = getTemplate(language, projectName, jobName);
 		
@@ -258,8 +286,8 @@ public class JobUploadService extends HttpServlet {
 		
 		TalendEngineConfig config = TalendEngineConfig.getInstance();
 		
-		String user = "biadmin";
-		String password = "biadmin";
+		String user = USER;
+		String password = PASSWORD;
 		Date now = new Date();
 		String date = new Long (now.getTime()).toString();
 		String label = jobName.toUpperCase();
@@ -286,11 +314,15 @@ public class JobUploadService extends HttpServlet {
 		
 		try {
 			
+			getContentServiceProxy().publishTemplate(attributes);
+		
+			/*
 			String spagobiurl = config.getSpagobiUrl();
 		    session.setAttribute("BACK_END_SPAGOBI_CONTEXT", spagobiurl);
 		    ContentServiceProxy contentProxy=new ContentServiceProxy(user,session);
 		    contentProxy.publishTemplate(attributes);
-			//PublishAccessUtils.publish(spagobiurl, user, password, label, name, description, encrypt, visible, type, state, functionalitiyCode, templateBase64Coded);
+		    */
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -300,7 +332,7 @@ public class JobUploadService extends HttpServlet {
 	/*
 	 * TODO: implementare questa funzione tramite una API  WEB Service
 	 */
-	private void publishOnSpagoBI(FileItem item, JobDeploymentDescriptor jobDeploymentDescriptor) throws ZipException, IOException {
+	private void publishOnSpagoBI(FileItem item, JobDeploymentDescriptor jobDeploymentDescriptor) throws ZipException, IOException, SpagoBIEngineException {
 		String fieldName = item.getFieldName();
 	    String fileName = item.getName();
 	    String contentType = item.getContentType();
@@ -311,7 +343,7 @@ public class JobUploadService extends HttpServlet {
 	    
 	    
 	    
-	    RuntimeRepository runtimeRepository = SpagoBITalendEngine.getInstance().getRuntimeRepository();
+	    RuntimeRepository runtimeRepository = TalendEngine.getRuntimeRepository();
 	    
 	    String projectName = jobDeploymentDescriptor.getProject();
 	    String projectLanguage = jobDeploymentDescriptor.getLanguage().toLowerCase();

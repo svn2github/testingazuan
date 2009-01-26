@@ -17,8 +17,8 @@
 				iconUrl="${SPAGOBI_CONTEXT}/img/tools/dataset/dataset16.png" />
 	</ITEM>
 	
-	<ITEM	code="analiticalModel" 
-			title="#menu.AnaliticalModel">
+	<ITEM	code="analyticalModel" 
+			title="#menu.AnalyticalModel">
 		<ITEM	title="#menu.FunctMan"
 				functionality="FunctionalitiesManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage&amp;OPERATION=FUNCTIONALITIES_OPERATION"

@@ -39,6 +39,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@page import="org.safehaus.uuid.UUID"%>
 <%@page import="org.safehaus.uuid.UUIDGenerator"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
+<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
+<%@page import="it.eng.spagobi.wapp.util.MenuUtilities"%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 <%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
@@ -96,14 +99,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 
 <%-- Javascript object useful for session expired management (see also sessionExpired.jsp) --%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
-<%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
-<%@page import="it.eng.spagobi.wapp.util.MenuUtilities"%>
 <script>
 sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 </script>
 <%-- End javascript object useful for session expired management (see also sessionExpired.jsp) --%>
 
+<%-- Javascript function for document composition cross navigation (workaround for ie)
+On ie svg plugin, the parent variable seems to return top window, so this function here calls the execCrossNavigation at the correct level
+--%>
+<script>
+function execCrossNavigation(windowName, label, parameters) {
+	document.getElementById('iframeDoc').contentWindow.execCrossNavigation(windowName, label, parameters);
+}
+</script>
+<%-- End javascript function for document composition cross navigation (workaround for ie) --%>
 
 <script type="text/javascript" src="<%=linkSbijs%>"></script>
 	   <script type="text/javascript" src="<%=linkProto%>"></script>

@@ -50,7 +50,7 @@ public class QbeEngine {
     		Object o;
     		
     		if( (o = engineConfig.getQbeDataMartDir()) != null) {
-    			QbeCoreSettings.getInstance().setQbeTempDir( (File)o );
+    			QbeCoreSettings.getInstance().setQbeDataMartDir( (File)o );
     		}
     			
     			

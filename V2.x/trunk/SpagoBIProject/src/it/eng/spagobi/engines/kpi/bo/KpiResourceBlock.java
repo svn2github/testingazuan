@@ -179,7 +179,7 @@ public class KpiResourceBlock {
 		String valueDescr = "";
 		if(kpiVal !=null && kpiVal.getValueDescr()!=null){
 			valueDescr = kpiVal.getValueDescr();
-			_htmlStream.append("		<td width='4%' class='kpi_td' title='"+valueDescr+"' style='text-align:center;'  ><div class='kpi_div'  ><img src=\""+infoImgSrc+"\" alt=\"Info\" /></div></td>\n");				
+			_htmlStream.append("		<td width='4%' class='kpi_td' title='"+valueDescr+"' style='text-align:center;'  ><div class='kpi_div'  ><img src=\""+infoImgSrc+"\" /></div></td>\n");				
 		}else{
 			_htmlStream.append("		<td width='4%' class='kpi_td' title='"+valueDescr+"'   ><div ></div></td>\n");				
 		}

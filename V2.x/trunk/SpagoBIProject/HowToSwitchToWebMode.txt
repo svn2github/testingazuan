@@ -54,8 +54,18 @@ To switch into Web mode you have to:
 </servlet-mapping>
 -->
 
+6) Uncomment master configuration file enabling webapp files:
+<!-- webapp -->
+	<CONFIGURATOR path="/WEB-INF/conf/webapp/modules.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/webapp/pages.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/webapp/presentation.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/webapp/publishers.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/webapp/security.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/webapp/menu.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/webapp/actions.xml" />
+	
 
-6) check that the following libraries are contained into the WEB-INF/lib directory or into the classpath of the 
+7) check that the following libraries are contained into the WEB-INF/lib directory or into the classpath of the 
    application server. You can find all this libraries into the directory 'WebModeLibraries'.
    
    - hibernate-3.1rc2.jar (or major)

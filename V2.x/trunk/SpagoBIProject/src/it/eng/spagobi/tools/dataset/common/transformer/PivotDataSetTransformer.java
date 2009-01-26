@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
 import it.eng.spagobi.tools.dataset.common.datastore.FieldMetadata;
@@ -118,11 +117,54 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 		valueFieldIndex = dataStoreMeta.getFieldIndex(getValueFieldName());
 		groupFieldIndex = dataStoreMeta.getFieldIndex(getGroupFieldName());
 
+		/************************************************************************************
+		* Renaming output column for dynamic records (alias record with different number of columns )
+		/************************************************************************************/
+		String precGroupField = null;
+		String precPivotField = null;
+		int cont = 1;
+		Iterator iterator = dataStore.iterator();
+		while (iterator.hasNext()) {
+			IRecord record = (IRecord) iterator.next();
+
+			IField pivotField = record.getFieldAt(pivotFieldIndex);
+			IField valueField = record.getFieldAt(valueFieldIndex);
+			IField groupField = record.getFieldAt(groupFieldIndex);
+			 
+			if (precGroupField == null)
+				precGroupField = (String)groupField.getValue();
+			
+			if (precPivotField == null)
+				precPivotField = (String)pivotField.getValue();
+			
+			if (precGroupField.equalsIgnoreCase((String)groupField.getValue())){
+				if (precPivotField.equalsIgnoreCase((String)pivotField.getValue())){
+					pivotField.setValue((String)pivotField.getValue()+String.valueOf(cont));
+					cont++;
+				}
+				else{
+					cont = 1;
+					precPivotField = (String)pivotField.getValue();
+					pivotField.setValue((String)pivotField.getValue()+String.valueOf(cont));	
+					cont++;
+				}
+			}
+			else{
+				cont = 1;
+				precGroupField = (String)groupField.getValue();
+				precPivotField = (String)pivotField.getValue();
+				pivotField.setValue((String)pivotField.getValue()+String.valueOf(cont));
+				cont++;
+			}
+			
+		}
+
+		
 		Iterator pivotedFieldNamesIterator = dataStore.getFieldDistinctValues(pivotFieldIndex).iterator();		
 		while ( pivotedFieldNamesIterator.hasNext() ) {
 			pivotedFieldNames.add( pivotedFieldNamesIterator.next() );
 		}
-
+		
 		Iterator it = dataStore.iterator();
 		while (it.hasNext()) {
 			IRecord record = (IRecord) it.next();
@@ -152,7 +194,7 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 		}
 		
 		newRecord.getFields().remove(pivotFieldIndex);
-		newRecord.getFields().remove(valueFieldIndex);
+		newRecord.getFields().remove(valueFieldIndex-1);
 		newRecords.add( newRecord );
 		
 		((DataStore) dataStore).setRecords(newRecords);

@@ -122,7 +122,7 @@ public class ScatterCharts extends ChartImpl {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
 				name=new String(object.getKey());
-				value=new String((String)object.getValue());
+				value=(((String)object.getValue()).equals("null"))?"0":new String((String)object.getValue());
 
 				if(name.equalsIgnoreCase("x"))
 				{
@@ -131,7 +131,8 @@ public class ScatterCharts extends ChartImpl {
 
 				}
 
-				else {
+				else if(String.valueOf(name.charAt(0)).equalsIgnoreCase("x") ||
+						String.valueOf(name.charAt(0)).equalsIgnoreCase("y")) {
 					String pos=String.valueOf(name.charAt(0));
 					String numS=name.substring(1);
 					int num=Integer.valueOf(numS).intValue();

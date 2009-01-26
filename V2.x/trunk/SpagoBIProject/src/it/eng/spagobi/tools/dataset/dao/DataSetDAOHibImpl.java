@@ -24,14 +24,14 @@ package it.eng.spagobi.tools.dataset.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
+import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
+import it.eng.spagobi.tools.dataset.common.transformer.PivotDataSetTransformer;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet;
@@ -79,6 +79,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiDataSetConfig hibDataSet = (SbiDataSetConfig)aSession.load(SbiDataSetConfig.class,  dsID);
+			
 			toReturn = toDataSet(hibDataSet);
 			tx.commit();
 
@@ -485,6 +486,13 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		ds.setPivotColumnValue(hibDataSet.getPivotColumnValue());
 		ds.setDescription(hibDataSet.getDescription());		
 		ds.setParameters(hibDataSet.getParameters());		
+		
+		if(ds.getPivotColumnName() != null 
+				&& ds.getPivotColumnValue() != null
+				&& ds.getPivotRowName() != null){
+			ds.setDataStoreTransformer(
+					new PivotDataSetTransformer(ds.getPivotColumnName(), ds.getPivotColumnValue(), ds.getPivotRowName()));
+		}
 		
 		return ds;
 	}

@@ -270,7 +270,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				datasets=sbi.calculateValue();
 			}	
 			catch (Exception e) {
-				logger.error("Error in retrieving the value");
+				logger.error("Error in retrieving the value", e);
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2006);
 				userError.setBundle("messages");
 				throw userError;

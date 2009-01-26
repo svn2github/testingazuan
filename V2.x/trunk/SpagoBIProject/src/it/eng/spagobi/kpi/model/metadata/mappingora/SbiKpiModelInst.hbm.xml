@@ -28,7 +28,7 @@
         <property name="description" type="string">
             <column name="description" length="1000" />
         </property>
-        <set name="sbiKpiModelInsts" inverse="true">
+        <set name="sbiKpiModelInsts" inverse="true" order-by="name asc" >
             <key>
                 <column name="KPI_MODEL_INST_PARENT" />
             </key>

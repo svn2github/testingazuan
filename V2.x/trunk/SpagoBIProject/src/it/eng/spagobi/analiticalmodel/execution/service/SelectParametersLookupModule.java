@@ -550,7 +550,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	}
 
 	String uuid3 = (String) request.getAttribute("uuid");
-    moduleConfigStr.append("	<COLUMN name=\"Last\">");
+    moduleConfigStr.append("	<COLUMN name=\"\" horizontal-align=\"right\" order_buttons=\"false\">");
 	if(isChecklist){	
     moduleConfigStr.append("<BUTTONS>");
 		moduleConfigStr.append("<SELECT_ALL confirm='TRUE' image='/img/expertok.gif' label='SBIDev.ListParam.selectAll'>");

@@ -327,6 +327,10 @@ public class ListTag extends TagSupport
 			else labelColumn = nameColumn;
 			// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
+			String orderButtons = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("order_buttons");
+			boolean hideOrderButtons=false;
+			if(orderButtons!=null && orderButtons.equalsIgnoreCase("false"))hideOrderButtons=true;
+
 			if (align == null || align.trim().equals("")) align = "left";
 			//defines order url for dynamic ordering
 
@@ -351,6 +355,7 @@ public class ListTag extends TagSupport
 			String orderUrlDesc = createUrl(orderParamsMap);
 			_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" );			
 			_htmlStream.append(   labelColumn);						
+			if(!hideOrderButtons){
 			if (!nameColumn.equalsIgnoreCase("INSTANCES")){
 				_htmlStream.append("	<A href=\""+orderUrlAsc+"\">\n");
 				_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowUp.gif")+"'/>\n");
@@ -359,7 +364,8 @@ public class ListTag extends TagSupport
 				_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowDown.gif")+"'/>\n");
 				_htmlStream.append("	</A>\n");
 			}
-
+			}
+			
 			if(_makeTitleButton.size()>0){
 
 				_htmlStream.append(				makeTitleButton(_makeTitleButton) + "\n");
@@ -440,7 +446,7 @@ public class ListTag extends TagSupport
 				}
 				else
 				{
-				_htmlStream.append(" <td>" + StringEscapeUtils.escapeHtml(field) + "</td>\n");
+					_htmlStream.append(" <td>" + StringEscapeUtils.escapeHtml(field) + "</td>\n");
 				}
 			} 
 
@@ -1383,6 +1389,13 @@ public class ListTag extends TagSupport
 		StringBuffer htmlStream = new StringBuffer();
 		try{
 			Iterator iter = buttons.listIterator();
+			boolean buttonYes=false;
+			if(iter.hasNext()){buttonYes=true;
+			htmlStream.append("<td class=\"portlet-section-header\" style=\"width: 32px;\">\n");
+
+			}
+
+
 			while (iter.hasNext()) {
 				SourceBeanAttribute buttonSBA = (SourceBeanAttribute)iter.next();
 				SourceBean buttonSB = (SourceBean)buttonSBA.getValue();
@@ -1419,10 +1432,10 @@ public class ListTag extends TagSupport
 
 				// if there is some javascript: onclick function
 				SourceBean onClickSB = (SourceBean) buttonSB.getAttribute("ONCLICK");
-				
+
 				boolean onClick=false;	
 				if(onClickSB!=null) onClick=true;
-				
+
 				if(onClick==true){
 					String onClickFunction = onClickSB != null ? onClickSB.getCharacters() : null;
 
@@ -1437,23 +1450,26 @@ public class ListTag extends TagSupport
 						_htmlStream.append("	}\n");
 						_htmlStream.append("	</script>\n");
 					}
-					
+
 					//String immagine=urlBuilder.getResourceLink(httpRequest, img);
-					htmlStream.append("<td class=\"portlet-section-header\">\n");
+					//htmlStream.append("<td class=\"portlet-section-header\">\n");
 					//htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
-					htmlStream.append("<a href='javascript:"+onClickFunctionName+"()'><img class=\"header-button-image-portlet-section\" title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
-					htmlStream.append("</td>\n");
+					htmlStream.append("<div style=\"float: left;\">");
+					htmlStream.append("<a href='javascript:"+onClickFunctionName+"()'><img class=\"header-button-image-portlet-section\" title='"+label+"' alt='"+label+"' style='height: 95%;width: 95%;' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
+					htmlStream.append("</div>");
+					//htmlStream.append("</td>\n");
 
 				}
 
 				if(onClick!=true){
-				String buttonUrl = createUrl(paramsMap);
+					String buttonUrl = createUrl(paramsMap);
 
-				htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
-				htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
-				htmlStream.append("</td>\n");}
+					htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
+					htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
+					htmlStream.append("</td>\n");}
 
 			}
+			if(buttonYes)htmlStream.append("</td>\n");
 		}
 		catch (SourceBeanException e) {
 			logger.error("Error");

@@ -69,6 +69,9 @@ public class DetailKpiUtil {
 			// e.printStackTrace();
 			// }
 		}
+		
+		if (documentLabel!=null && documentLabel.trim().equals(""))
+			documentLabel = null;
 
 		Kpi toReturn = new Kpi();
 

@@ -245,6 +245,7 @@
 	key="sbi.kpi.label.documentLabel" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'>
 <select class='portlet-form-field' name="document_label" >
+<option value="" label=""></option>
 <%
 	List sbiDocs = DAOFactory.getBIObjectDAO().loadAllBIObjects();
 	Iterator sbiDocsIt = sbiDocs.iterator();

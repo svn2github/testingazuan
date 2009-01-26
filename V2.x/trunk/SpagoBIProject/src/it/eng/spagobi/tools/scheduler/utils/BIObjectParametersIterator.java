@@ -32,7 +32,7 @@ import java.util.NoSuchElementException;
 
 public class BIObjectParametersIterator {
 
-	/** A List of Collections. */
+	/** A List of BIObjectParameter objects, each one containing a list of values. */
 	private List cartproduct;
 
 	/** A List of iterators storing the tuple-iterator's state. */
@@ -42,7 +42,7 @@ public class BIObjectParametersIterator {
 
 	/** Constructor.
 	 *
-	 * @param   cartproduct  a List of Collections from which the 
+	 * @param   cartproduct  a List of BIObjectParameter objects from which the 
 	 *                       tuples' components are to be draw.
 	 */
 	public BIObjectParametersIterator(List cartproduct) {
@@ -79,8 +79,8 @@ public class BIObjectParametersIterator {
 	 *
 	 * <p>The iterator stores its state in the private member 
 	 * <code>currstate</code> -- an ArrayList of the iterators of the 
-	 * individual Collections in the cartesian product. In the start state, 
-	 * each iterator returns a single element. Afterwards, while iterator #1 
+	 * individual Collections of any BIObjectParameter in the cartesian product. 
+	 * In the start state, each iterator returns a single element. Afterwards, while iterator #1 
 	 * has anything to return, we replace the first element of the previous 
 	 * tuple to obtain a new tuple. Once iterator #1 runs out of elements we 
 	 * replace it and advance iterator #2. We keep on advancing iterator #1 
@@ -88,12 +88,7 @@ public class BIObjectParametersIterator {
 	 * again, and advance iterator #2 once more. We repeat these operations 
 	 * until iterator #2 runs out of elements and we start advancing 
 	 * iterator #3, and so on, until all iterators run out of elements.
-	 *
-	 * <p> This method of generating the m-tuples is very similar to producing 
-	 * all numbers of m "digits" in the order of their magnitude, where the 
-	 * i-th "digit" is in base<sub>i</sub> = #(i-th Collection in the cartesian
-	 *  product) and we assume that the "numbers" in the i-th Collection are 
-	 * ordered in some way.
+	 * 
 	 */
 	public Object next() {
 		if (nextelt == null) {

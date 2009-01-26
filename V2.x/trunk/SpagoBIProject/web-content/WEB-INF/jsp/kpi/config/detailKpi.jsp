@@ -214,7 +214,7 @@
   
   <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
-	key="sbi.kpi.label.thresholdType" bundle="<%=messageBunle%>"/> </span></div>
+	key="sbi.kpi.label.thresholdName" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form' style="height:40px;">
 <select class='portlet-form-field' name="threshold_id" >
 <option value="" label=""></option>

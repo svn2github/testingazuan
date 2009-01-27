@@ -213,12 +213,15 @@ public class ClusterCharts extends ChartImpl {
 		}
 
 
-		xMin=xTempMin-zMax;
-		xMax=xTempMax+zMax;
+		//xMin=xTempMin-zMax;
+		//xMax=xTempMax+zMax;
 
-		yMin=yTempMin-zMax;
-		yMax=yTempMax+zMax;
-
+		xMin=xTempMin;
+		xMax=xTempMax;
+		yMin=yTempMin;
+		yMax=yTempMax;
+		
+		double xOrder=calculateOrder(xMax)*10;
 
 		// I have all the map full, create the Dataset
 
@@ -228,8 +231,13 @@ public class ClusterCharts extends ChartImpl {
 			SerieCluster serieCluster=(SerieCluster)serie_values.get(serieName);
 			double[] xArr=serieCluster.getX();
 			double[] yArr=serieCluster.getY();
-			double[] zArr=serieCluster.getZ();
 
+			double[] zArr=serieCluster.getZ();
+			// normalizing all z
+			for (int j = 0; j < zArr.length; j++) {
+			zArr[j]=(zArr[j]/zMax)*xOrder;	
+			}
+			
 			double[][] seriesT = new double[][] { yArr, xArr, zArr };
 
 			//double[][] seriesT = new double[][] { xArr, yArr, zArr };
@@ -480,8 +488,16 @@ public class ClusterCharts extends ChartImpl {
 
 
 
+	public static double calculateOrder(double toCalculate){
 
-
+		if(toCalculate<=10){
+			return 0;
+		}
+		else{
+			double newToCalculate=toCalculate/10;
+			return (1+calculateOrder(newToCalculate));
+		}
+	}
 
 
 

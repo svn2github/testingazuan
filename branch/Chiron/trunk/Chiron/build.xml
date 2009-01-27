@@ -277,7 +277,7 @@
 	</target>	
 	
 	<!-- Working-->
-	<target name="createApi" >
+	<target name="createApi" depends="cleanApi">
 		<exec executable="python" failonerror="true" dir="${basedir}/WebContent/js/spagobi">
 		    <arg value="./generate.py"/>
 		    <arg value="api"/>

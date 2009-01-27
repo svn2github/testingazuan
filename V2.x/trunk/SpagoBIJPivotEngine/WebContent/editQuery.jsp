@@ -174,8 +174,8 @@ if (schemas == null) {
 			}
 			
 			// adjust reference
-			if (!catalogUri.startsWith("file://")) {
-				catalogUri = "file://" + catalogUri;
+			if (!catalogUri.startsWith("file:")) {
+				catalogUri = "file:" + catalogUri;
 				logger.debug("Reference changed to " + catalogUri);
 			}
 			

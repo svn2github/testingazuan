@@ -257,8 +257,8 @@ if (selectedSchema != null) {
 					String resName =(ds.getJndi()==null)?"":ds.getJndi();
 					
 					// adjust reference
-					if (!catalogUri.startsWith("file://")) {
-						catalogUri = "file://" + catalogUri;
+					if (!catalogUri.startsWith("file:")) {
+						catalogUri = "file:" + catalogUri;
 						logger.debug("Reference changed to " + catalogUri);
 					}
 					if (!resName.equals("")) {

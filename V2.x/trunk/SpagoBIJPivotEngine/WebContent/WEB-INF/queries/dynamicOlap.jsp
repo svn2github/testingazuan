@@ -146,8 +146,8 @@ LICENSE: see LICENSE.txt file
 		}
 		
 		// adjust reference
-		if (!reference.startsWith("file://")) {
-			reference = "file://" + reference;
+		if (!reference.startsWith("file:")) {
+			reference = "file:" + reference;
 			logger.debug("Reference changed to " + reference);
 		}
 

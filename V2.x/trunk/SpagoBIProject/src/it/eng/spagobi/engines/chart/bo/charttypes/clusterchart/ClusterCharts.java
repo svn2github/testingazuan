@@ -27,15 +27,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.chart.utils.SerieCluster;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,8 +41,6 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.Dataset;
 import org.jfree.data.xy.DefaultXYZDataset;
 
 /**   @author Giulio Gavardi
@@ -63,6 +58,9 @@ public class ClusterCharts extends ChartImpl {
 	String yLabel="";
 	Vector currentSeries=null;
 	HashMap serie_values=null;
+	boolean decimalXValues=false;
+	boolean decimalYValues=false;
+
 
 	HashMap colorMap=new HashMap();
 
@@ -158,11 +156,17 @@ public class ClusterCharts extends ChartImpl {
 
 					double valueD=0.0;
 					try{
-						valueD=(Double.valueOf(value)).doubleValue();
+						Integer intero=Integer.valueOf(value);
+						valueD=intero.doubleValue();						
 					}
 					catch (NumberFormatException e) {
-						Integer intero=Integer.valueOf(value);
-						valueD=intero.doubleValue();
+						valueD=(Double.valueOf(value)).doubleValue();
+						if(name.equalsIgnoreCase("x")){
+							decimalXValues=true;
+						}
+						else if(name.equalsIgnoreCase("y")){
+							decimalYValues=true;
+						}
 					}
 
 
@@ -216,11 +220,11 @@ public class ClusterCharts extends ChartImpl {
 		//xMin=xTempMin-zMax;
 		//xMax=xTempMax+zMax;
 
-		xMin=xTempMin;
-		xMax=xTempMax;
+		xMin=xTempMin-1.0;
+		xMax=xTempMax+1.0;
 		yMin=yTempMin;
 		yMax=yTempMax;
-		
+
 		double xOrder=calculateOrder(xMax)*10;
 
 		// I have all the map full, create the Dataset
@@ -235,9 +239,12 @@ public class ClusterCharts extends ChartImpl {
 			double[] zArr=serieCluster.getZ();
 			// normalizing all z
 			for (int j = 0; j < zArr.length; j++) {
-			zArr[j]=(zArr[j]/zMax)*xOrder;	
+
+				zArr[j]=(zArr[j]/zMax);	
+				if(xOrder>0) zArr[j]=zArr[j]*xOrder;
+
 			}
-			
+
 			double[][] seriesT = new double[][] { yArr, xArr, zArr };
 
 			//double[][] seriesT = new double[][] { xArr, yArr, zArr };

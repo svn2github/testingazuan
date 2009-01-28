@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<ENGINES>
+<ENGINE name="Dashboard Internal Engine" descr="Dashboard Internal Engine" mainUrl="" driverNm="" label="DashboardInternalEng" engineTypeCd="INT" classNm="it.eng.spagobi.engines.dashboard.SpagoBIDashboardInternalEngine" biobjTypeCd="DASH" useDataSet="true" useDataSource="false" encrypt="0" />
+<ENGINE name="Chart Internal Engine" descr="Chart Internal Engine" mainUrl="" driverNm="" label="ChartInternalEng" engineTypeCd="INT" classNm="it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine" biobjTypeCd="DASH" useDataSet="true" useDataSource="false" encrypt="0" />
+<ENGINE name="Dossier Internal Engine" descr="Dossier Internal Engine" mainUrl="" driverNm="" label="DossierInternalEng" engineTypeCd="INT" classNm="it.eng.spagobi.engines.dossier.SpagoBIDossierInternalEngine" biobjTypeCd="DOSSIER" useDataSet="false" useDataSource="false" encrypt="0" />
+<ENGINE name="Office Document Internal Engine" descr="Office Document Internal Engine" mainUrl="" driverNm="" label="OfficeInternalEng" engineTypeCd="INT" classNm="it.eng.spagobi.engines.officedocument.SpagoBIOfficeDocumentInternalEngine" biobjTypeCd="OFFICE_DOC" useDataSet="false" useDataSource="false" encrypt="0" />
+<ENGINE name="Document Composition Internal Engine" descr="Document Composition Internal Engine" mainUrl="" driverNm="" label="DocumentCompositionInternalEng" engineTypeCd="INT" classNm="it.eng.spagobi.engines.documentcomposition.SpagoBIDocumentCompositionInternalEngine" biobjTypeCd="DOCUMENT_COMPOSITE" useDataSet="false" useDataSource="false" encrypt="0" />
+</ENGINES>

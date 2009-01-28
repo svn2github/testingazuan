@@ -98,7 +98,7 @@ public class MarkerScatter extends ScatterCharts {
 
 		JFreeChart chart = ChartFactory.createScatterPlot(
 				name, yLabel, xLabel, dataset, 
-				PlotOrientation.HORIZONTAL, true, true, false);
+				PlotOrientation.HORIZONTAL, false, true, false);
 
 		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
@@ -188,6 +188,11 @@ public class MarkerScatter extends ScatterCharts {
     		domainAxis.setAutoRange(true);
     		domainAxis.setRange(yMin, yMax);
         }
+        
+        if(legend==true){
+			
+			drawLegend(chart);
+		}
 		return chart;
 	}
 

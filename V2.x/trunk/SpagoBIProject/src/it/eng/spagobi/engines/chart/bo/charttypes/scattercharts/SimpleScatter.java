@@ -60,6 +60,11 @@ public class SimpleScatter extends ScatterCharts {
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setAutoRange(true);
 		rangeAxis.setRange(xMin,xMax);
+		
+		if(legend==true){
+			
+			drawLegend(chart);
+		}
 		return chart;
 	}
 

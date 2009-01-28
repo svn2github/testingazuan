@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<TRAPS>
+	<TRAP trap_type="ACTION" trap_name="SERVICE_EXCEPTION_ACTION" name="serviceError" CATEGORY="serviceError"/>
+</TRAPS>

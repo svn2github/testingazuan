@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app id="SpagoBIJasperReportEngine">
+	<display-name>SpagoBIJasperReportEngine</display-name>
+	<description>
+		This application is a portlet. It can not be used outside a
+		portal. 
+	</description>
+
+ <!--
+	<filter>
+		<filter-name>CAS_Filter</filter-name>
+		<filter-class>
+			edu.yale.its.tp.cas.client.filter.CASFilter
+		</filter-class>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.loginUrl
+			</param-name>
+			<param-value>
+				https://localhost:8443/exo-cas-2/login
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.validateUrl
+			</param-name>
+			<param-value>
+				https://localhost:8443/exo-cas-2/serviceValidate
+			</param-value>
+		</init-param>
+    <init-param>
+       <param-name>edu.yale.its.tp.cas.client.filter.serverName</param-name>
+       <param-value>localhost:8443</param-value>
+    </init-param>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.proxyCallbackUrl
+			</param-name>
+			<param-value>
+				https://localhost:8443/SpagoBIJasperReportEngine/proxyReceptor
+			</param-value>
+		</init-param>	
+
+     <init-param>
+  			 <param-name>edu.yale.its.tp.cas.client.filter.wrapRequest</param-name> 
+             <param-value>true</param-value> 
+       </init-param> 
+       	
+	</filter>
+-->
+
+	<filter>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<filter-class>
+			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
+		</filter-class>
+	</filter>
+<!-- 
+	<filter-mapping>
+		<filter-name>CAS_Filter</filter-name>
+		<url-pattern>/JasperReportServlet/*</url-pattern>
+	</filter-mapping>
+-->
+	<filter-mapping>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<url-pattern>/JasperReportServlet/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>SpagoBIAccessFilter</filter-name>
+		<url-pattern>/JasperReportServletBackEnd/*</url-pattern>
+	</filter-mapping>	
+
+	
+    
+	<servlet>
+  		<servlet-name>ProxyTicketReceptor</servlet-name> 
+  		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
+		<init-param>
+  			<param-name>edu.yale.its.tp.cas.proxyUrl</param-name> 
+  			<param-value>https://localhost:8443/exo-cas-2/proxy</param-value> 
+  		</init-param>
+  </servlet>
+
+
+	<servlet>
+		<servlet-name>JasperReportServlet</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.engines.jasperreport.JasperReportServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>JRImageServlet</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.engines.jasperreport.JRImageServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>SpagoBIDrillServlet</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.utilities.callbacks.drill.SpagoBIDrillServlet
+		</servlet-class>
+	</servlet>
+
+ 	<servlet-mapping>
+  		<servlet-name>ProxyTicketReceptor</servlet-name> 
+  		<url-pattern>/proxyReceptor</url-pattern> 
+  	</servlet-mapping> 
+
+
+	<servlet-mapping>
+		<servlet-name>JasperReportServlet</servlet-name>
+		<url-pattern>/JasperReportServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>JasperReportServlet</servlet-name>
+		<url-pattern>/JasperReportServletBackEnd</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>JRImageServlet</servlet-name>
+		<url-pattern>/JRImageServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SpagoBIDrillServlet</servlet-name>
+		<url-pattern>/SpagoBIDrillServlet</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+
+	  <error-page>
+	  	<exception-type>java.lang.Throwable</exception-type>
+	  	<location>/html/error.html</location>
+	  </error-page>
+		 
+	  <error-page>
+	  	<error-code>404</error-code>
+	  	<location>/html/error.html</location>
+	  </error-page>
+  
+	  <error-page>
+	  	<error-code>500</error-code>
+	  	<location>/html/error.html</location>
+	  </error-page>
+
+</web-app>
+

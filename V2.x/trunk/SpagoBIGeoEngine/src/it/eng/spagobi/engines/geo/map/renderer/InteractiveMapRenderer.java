@@ -1216,7 +1216,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    		JSONArray ranges = new JSONArray();
 	    	
 		    	for(int j = 0; j < values.length; j++) {
-		    		ranges.put( values[i] );
+		    		ranges.put( values[j] );
 		    	}	    	
 		    	thresholdCalculatorParams.put("ranges", ranges);
 	    	} else {
@@ -1242,7 +1242,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    		JSONArray ranges = new JSONArray();
 	    	
 		    	for(int j = 0; j < values.length; j++) {
-		    		ranges.put( values[i] );
+		    		ranges.put( values[j] );
 		    	}	    	
 		    	colourCalculatorParams.put("ranges", ranges);
 	    	}

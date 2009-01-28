@@ -95,6 +95,7 @@ public class DataMartProvider extends AbstractDataMartProvider {
     		jdbcDataSet.setQuery(query);
     		jdbcDataSet.setDataSource(dataSource);
     		dataSet = jdbcDataSet;
+    		dataSet.setParamsMap(getEnv());
     	}
     	
     	   	

@@ -597,7 +597,7 @@ onload="init(evt);">
 	       }
            
            var curLegendRect;;
-            if(myMapApp.Windows["detail"]) {
+            if(myMapApp.Windows["legend"]) {
               curLegendRect = (colIndex != -1? eval("myMapApp.legRect[" + colIndex + "]") : null);
             }
             

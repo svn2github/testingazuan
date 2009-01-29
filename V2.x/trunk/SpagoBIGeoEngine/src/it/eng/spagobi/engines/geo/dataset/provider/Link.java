@@ -20,7 +20,7 @@
  **/
 package it.eng.spagobi.engines.geo.dataset.provider;
 
-import it.eng.spagobi.engines.geo.GeoEngineConstants;
+import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;

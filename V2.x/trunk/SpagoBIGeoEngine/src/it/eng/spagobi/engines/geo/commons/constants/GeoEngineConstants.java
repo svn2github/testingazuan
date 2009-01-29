@@ -19,7 +19,7 @@
  * 
  **/
 
-package it.eng.spagobi.engines.geo;
+package it.eng.spagobi.engines.geo.commons.constants;
 
 // TODO: Auto-generated Javadoc
 /**

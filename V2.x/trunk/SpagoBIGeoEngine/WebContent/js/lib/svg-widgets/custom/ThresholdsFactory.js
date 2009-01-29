@@ -19,17 +19,16 @@ ThresholdsFactory.getThresholds = function( measure ){
     if(conf.type === ThresholdsFactory.QUANTILE) {
   	   results = ThresholdsFactory.getQuantileThresholds( measure, conf.params );
   	} else if (conf.type === ThresholdsFactory.PERCENTAGE) {
-  	   results = setPercTrasholds( measure );
+  	   results = ThresholdsFactory.getPercTrasholds( measure );
   	} else if (conf.type === ThresholdsFactory.UNIFORM) {
-  	   results = setUniformTrasholds( measure );
+  	   results = ThresholdsFactory.getUniformTrasholds( measure );
   	} else if (conf.type === ThresholdsFactory.STATIC) {
-  	   ThresholdsFactory.getStaticThresholds( measure, conf.params );
+  	    results =  ThresholdsFactory.getStaticThresholds( measure, conf.params );
   	} else {
-  	  setQuantileTrasholds( measure );
+  	  results = ThresholdsFactory.getQuantileTrasholds( measure );
   	}
   	
   
-  	
   	measure.thresholds = results.thresholds;
   	measure.num_group = results.num_group;  
 };
@@ -38,15 +37,15 @@ ThresholdsFactory.getStaticThresholds = function( measure, params ) {
    var results;
 		  
 	 results = {};
-   results.thresholds= params.ranges;
-	 results.num_group = measure.thresholds.length -1;
+   results.thresholds = params.ranges;
+	 results.num_group = results.thresholds.length -1;
 	 
 
 	 return results;
 };
 
 
-ThresholdsFactory.getQuantileThresholds = function( measure, params ) { 
+ThresholdsFactory.getPercTrasholds = function( measure, params ) { 
 		
 		  var results;
 		  

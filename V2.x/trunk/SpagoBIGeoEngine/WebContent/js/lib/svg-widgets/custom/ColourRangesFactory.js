@@ -13,19 +13,19 @@ ColourRangesFactory.getColourRanges = function( measure ) {
     conf = measure.colourrange_calculator_conf;
 		
 		if(conf.type === ColourRangesFactory.GRADIENT) {
-			results = getGradientColourRange( measure, conf.params );
+			results = ColourRangesFactory.getGradientColourRange( measure, conf.params );
 		} else if (conf.type === ColourRangesFactory.STATIC) {
 			results = ColourRangesFactory.getStaticColourRange( measure, conf.params );
 		} else {
 			results = ColourRangesFactory.getGradientColourRange( measure, conf.params );
 		}	
-		
+	
 		measure.colours = results;
 };
 
 ColourRangesFactory.getStaticColourRange = function( measure, params ) { 
 
-     return conf.params.ranges;
+     return params.ranges;
 };
 
 		

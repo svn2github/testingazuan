@@ -6,6 +6,7 @@ ThresholdsFactory.UNIFORM = 'uniform';
 ThresholdsFactory.STATIC = 'static';
 
 ThresholdsFactory.getThresholds = function( measure ){
+
    
     var results;    
     var conf;
@@ -19,9 +20,9 @@ ThresholdsFactory.getThresholds = function( measure ){
     if(conf.type === ThresholdsFactory.QUANTILE) {
   	   results = ThresholdsFactory.getQuantileThresholds( measure, conf.params );
   	} else if (conf.type === ThresholdsFactory.PERCENTAGE) {
-  	   results = ThresholdsFactory.getPercTrasholds( measure );
+  	   results = ThresholdsFactory.getPercTrasholds( measure, conf.params  );
   	} else if (conf.type === ThresholdsFactory.UNIFORM) {
-  	   results = ThresholdsFactory.getUniformTrasholds( measure );
+  	   results = ThresholdsFactory.getUniformTrasholds( measure, conf.params  );
   	} else if (conf.type === ThresholdsFactory.STATIC) {
   	    results =  ThresholdsFactory.getStaticThresholds( measure, conf.params );
   	} else {

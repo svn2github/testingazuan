@@ -124,12 +124,6 @@ onload="init(evt);">
         myMapApp.Windows["basiclayer"].createCheckBoxes();
       }
       
-			if(myMapApp.Windows["thematic"]){ 
-        myMapApp.Windows["thematic"].addThemes();
-      } else {
-        setKpi(sbi.geo.conf.measures[0].name,sbi.geo.conf.measures[0].name,sbi.geo.conf.measures[0].name);
-      }
-      
 			if(myMapApp.Windows["detail"]) {
         myMapApp.Windows["detail"].initTabGroups();
       }
@@ -142,6 +136,11 @@ onload="init(evt);">
         myMapApp.Windows["legend"].initLegendEntries();
       }
       
+      if(myMapApp.Windows["thematic"]){ 
+        myMapApp.Windows["thematic"].addThemes();
+      } else {
+        setKpi(sbi.geo.conf.measures[0].name,sbi.geo.conf.measures[0].name,sbi.geo.conf.measures[0].name);
+      }
 		
 			var target_layer = sbi.geo.conf.layers[ sbi.geo.conf.target_layer_index ];
 		
@@ -188,7 +187,7 @@ onload="init(evt);">
         myMapApp.Windows["detail"] = new DetailsWindow( windowConf );
       } 
       
-      windowConf = Utils.find(windows, 'name', 'detail');
+      windowConf = Utils.find(windows, 'name', 'legend');
       windowConf = Utils.apply({visible:true}, windowConf || {}, guiSettings.windowDefaults || {});
 			if(windowConf && windowConf.visible) {
         myMapApp.Windows["legend"] = new LegendWindow( windowConf );
@@ -463,7 +462,7 @@ onload="init(evt);">
 			myMapApp.threshArray = measure.thresholds;
 			myMapApp.curLabel = label;
 			
-			if(myMapApp.Windows["detail"]) {
+			if(myMapApp.Windows["legend"]) {
 			
   			var coulourBoxes = document.getElementById("coulourboxes");			
   			for(i = 0; i < myMapApp.legRect.length; i++) {

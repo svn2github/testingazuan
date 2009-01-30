@@ -237,7 +237,7 @@ qx.Class.define("spagobi.ui.ToolBar", {
 				} else {
 							//button.setToolTip(new qx.legacy.ui.popup.ToolTip(this.tr(btnConfig.tooltip)));
           			//button.setToolTip(new qx.legacy.ui.popup.ToolTip(btnConfig.tooltip));//change
-          			button.setToolTip(new qx.legacy.ui.tooltip.ToolTip(btnConfig.tooltip));			
+          			button.setToolTip(new qx.ui.tooltip.ToolTip(btnConfig.tooltip));			
 				}				
 			}
 			

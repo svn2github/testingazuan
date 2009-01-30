@@ -1,6 +1,8 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.scattercharts;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.BasicStroke;
@@ -8,6 +10,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
@@ -91,6 +94,141 @@ public class MarkerScatter extends ScatterCharts {
 		
 		logger.debug("OUT");	
 	}
+	
+	/**
+	 * Inherited by IChart: calculates chart value.
+	 * 
+	 * @return the dataset
+	 * 
+	 * @throws Exception the exception
+	 */
+
+	public DatasetMap calculateValue() throws Exception {
+		logger.debug("IN");
+		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
+
+		DefaultXYDataset dataset = new DefaultXYDataset(); 
+
+		SourceBean sbRows=SourceBean.fromXMLString(res);
+		List listAtts=sbRows.getAttributeAsList("ROW");
+
+		series=new Vector();
+
+		boolean firstX=true;
+		boolean firstY=true;
+		double xTempMax=0.0;
+		double xTempMin=0.0;
+		double yTempMax=0.0;
+		double yTempMin=0.0;
+		boolean first=true;
+
+		// In list atts there are all the series, let's run each
+		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
+			SourceBean serie = (SourceBean) iterator.next();
+			List atts=serie.getContainedAttributes();
+
+			String catValue="";
+			String serValue="";
+
+			if(first){
+				if (name.indexOf("$F{") >= 0){
+					setTitleParameter(atts);
+				}
+				if (yMarkerLabel.indexOf("$F{") >= 0){
+					setYMarkerLabel(atts);
+				}
+				first=false;
+			}
+
+			double[] x=new double[atts.size()];
+			double[] y=new double[atts.size()];
+
+			//List x=new ArrayList();
+			//List y=new ArrayList();
+			//ArrayList z=new ArrayList();
+
+			String name="";
+			String value="";
+
+			//run all the attributes of the serie
+			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
+				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+
+				name=new String(object.getKey());
+				value=(((String)object.getValue()).equals("null"))?"0":new String((String)object.getValue());
+
+				if(name.equalsIgnoreCase("x"))
+				{
+					catValue=value;
+
+
+				}
+
+				else if(String.valueOf(name.charAt(0)).equalsIgnoreCase("x") ||
+						String.valueOf(name.charAt(0)).equalsIgnoreCase("y")) {
+					String pos=String.valueOf(name.charAt(0));
+					String numS=name.substring(1);
+					int num=Integer.valueOf(numS).intValue();
+
+					double valueD=0.0;
+					try{
+						valueD=(Double.valueOf(value)).doubleValue();
+					}
+					catch (NumberFormatException e) {
+						Integer intero=Integer.valueOf(value);
+						valueD=intero.doubleValue();
+
+					}
+
+
+					if(pos.equalsIgnoreCase("x")){
+						x[num]=valueD;
+
+						if(firstX){
+							xTempMin=valueD;
+							xTempMax=valueD;
+							firstX=false;
+						}
+						if(valueD<xTempMin)xTempMin=valueD;
+						if(valueD>xTempMax)xTempMax=valueD;
+
+
+					}
+					else if(pos.equalsIgnoreCase("y")){
+						y[num]=valueD;
+
+						if(firstY){
+							yTempMin=valueD;
+							yTempMax=valueD;
+							firstY=false;
+						}
+							if(valueD<yTempMin)yTempMin=valueD;
+							if(valueD>yTempMax)yTempMax=valueD;		
+
+
+					}
+				}
+
+			}
+			
+			xMin=xTempMin;
+			xMax=xTempMax;
+			
+			yMin=yTempMin;
+			yMax=yTempMax;
+			
+
+			double[][] seriesT = new double[][] { y, x};
+
+			dataset.addSeries(catValue, seriesT);
+			series.add(catValue);
+
+		}
+		logger.debug("OUT");
+		DatasetMap datasets=new DatasetMap();
+		datasets.addDataset("1",dataset);
+		return datasets;
+	}
 
 	public JFreeChart createChart(DatasetMap datasets) {
 
@@ -153,6 +291,7 @@ public class MarkerScatter extends ScatterCharts {
 	        markerY.setLabelOffsetType(LengthAdjustmentType.EXPAND);
 	        if (!yMarkerColor.equals(""))  markerY.setPaint(new Color(Integer.decode(yMarkerColor).intValue()));
 	        markerY.setLabel(yMarkerLabel);
+	        markerY.setLabelFont(new Font("Arial", Font.BOLD, 11));
 	        markerY.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 	        markerY.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 	        plot.addDomainMarker(markerY, Layer.BACKGROUND);
@@ -196,5 +335,31 @@ public class MarkerScatter extends ScatterCharts {
 		return chart;
 	}
 
+	public void setYMarkerLabel(List atts) {
+		try{
+			String tmpYLabel=new String(yMarkerLabel);
+			if (tmpYLabel.indexOf("$F{") >= 0){
+				String fieldName = tmpYLabel.substring(tmpYLabel.indexOf("$F{")+3, tmpYLabel.indexOf("}"));
 
+				for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
+					SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+
+					String nameP=new String(object.getKey());
+					String value=new String((String)object.getValue());
+					if(nameP.equalsIgnoreCase(fieldName))
+					{
+						int pos = tmpYLabel.indexOf("$F{"+fieldName+"}") + (fieldName.length()+4);
+						yMarkerLabel = yMarkerLabel.replace("$F{" + fieldName + "}", value);
+						tmpYLabel = tmpYLabel.substring(pos);
+						break;
+					}
+				}
+
+			}
+		}
+		catch (Exception e) {
+			logger.error("Error in Y Marker Label");
+		}
+
+	}
 }

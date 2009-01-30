@@ -104,6 +104,7 @@ public class ScatterCharts extends ChartImpl {
 				if (name.indexOf("$F{") >= 0){
 					setTitleParameter(atts);
 				}
+				
 				first=false;
 			}
 

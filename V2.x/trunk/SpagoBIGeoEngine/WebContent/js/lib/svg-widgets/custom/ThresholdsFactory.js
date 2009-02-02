@@ -68,7 +68,7 @@ ThresholdsFactory.getPercTrasholds = function( measure, params ) {
 				results.thresholds[j+1] = results.thresholds[j] + groupSize;
 			}
 			
-			results.thresholds[ ranges.length ] = measure.lower_bound;	
+			results.thresholds[ ranges.length ] = measure.upper_bound;	
 			
 			results.num_group = ranges.length;
 			

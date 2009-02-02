@@ -26,12 +26,11 @@
 	  "include" : 
 	  [
 	    "spagobi.app.Chiron",
-	    "${QXTHEME}",
-	    "qx.legacy.theme.ClassicRoyale"
+	    "${QXTHEME}"
 	  ],
 	  "settings" :
 	  {
-	    "qx.legacy.theme" : "qx.legacy.theme.ClassicRoyale",
+	    
 	    "qx.application"  : "spagobi.app.Chiron"
 	  }
 	},
@@ -42,12 +41,9 @@
 
     "build" :
     {
-      "extend" : ["common", "appconf::build"],
+      "extend" : ["common", "appconf::build"]
 
-      "settings" :
-      {
-        "qx.legacy.theme" : "qx.legacy.theme.ClassicRoyale"
-      }
+      
     },
 
     "clean" :
@@ -87,12 +83,9 @@
 
     "source" :
     {
-      "extend" : ["common", "appconf::source"],
+      "extend" : ["common", "appconf::source"]
 
-      "settings" :
-      {
-        "qx.legacy.theme" : "qx.legacy.theme.ClassicRoyale"
-      }
+      
     },
 
     "test" :

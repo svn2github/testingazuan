@@ -20,24 +20,24 @@
 	<target name="clean" depends="cleanSourceVersion, cleanBuildVersion, cleanApi"></target>
 	
 	<target name="cleanSourceVersion" >
-	    <delete dir="${js.spagobi.source.dir}/script"/>
+	    <delete dir="${js.spagobi.source.dir}/script" excludes="**/.svn"/>
 	</target>	
 	
 	<target name="cleanBuildVersion" >
-		<delete dir="${js.spagobi.build.dir}/script"/>    
+		<delete dir="${js.spagobi.build.dir}/script" excludes="**/.svn"/>    
 	</target>	 
 	
 	<target name="cleanApi" >
-		<delete dir="${js.spagobi.api.dir}/script"/>    
+		<delete dir="${js.spagobi.api.dir}/script" excludes="**/.svn"/>    
 	</target>	
 	
 	<target name="cleanStandaloneVersion" >
-		<delete dir="${dist.dir}"/>    
+		<delete dir="${dist.dir}" excludes="**/.svn"/>    
 	</target>
 	
 	<target name="cleanCache" >
-	    <delete dir="${basedir}/WebContent/js/qooxdoo-0.8/application/chiron/cache"/>
-		 <delete dir="${basedir}/WebContent/js/spagobi/cache"/>
+	    <delete dir="${basedir}/WebContent/js/qooxdoo-0.8/application/chiron/cache" excludes="**/.svn"/>
+		 <delete dir="${basedir}/WebContent/js/spagobi/cache" excludes="**/.svn"/>
 	</target>	
 	
 	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

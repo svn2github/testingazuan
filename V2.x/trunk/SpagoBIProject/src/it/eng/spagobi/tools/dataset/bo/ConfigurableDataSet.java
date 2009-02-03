@@ -46,7 +46,6 @@ public class ConfigurableDataSet extends  AbstractDataSet {
 	}
 
 	public void loadData() throws EMFUserError, EMFInternalError{
-//		Object results;
 
 		((AbstractDataProxy)dataProxy).bindParameters((HashMap)getParamsMap());
 		((AbstractDataProxy)dataProxy).setProfile(getUserProfile());
@@ -59,17 +58,6 @@ public class ConfigurableDataSet extends  AbstractDataSet {
 		else{
 			dataStore = dataProxy.load(dataReader); 
 		}
-
-		
-		// NOOOOOOOOOOOOOOO!!!!
-		/*
-		 * così la connessione rimane aperta!!! bisogna fare:
-		 * dataStore = dataProxy.load(datareader);
-		 * o 
-		 * dataStore = dataProxy.load(statement, datareader);
-		 * ma dopo il load la connessione deve essere chiusa!!!
-		 */
-//		dataStore = dataReader.read( results );
 
 		if(hasDataStoreTransformer()) {
 			getDataStoreTransformer().transform(dataStore);

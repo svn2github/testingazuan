@@ -1,19 +1,16 @@
 package it.eng.spagobi.kpi.model.utils;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.jgroups.demos.Chat;
-
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
+
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 public class DetailModelInstanceUtil {
 

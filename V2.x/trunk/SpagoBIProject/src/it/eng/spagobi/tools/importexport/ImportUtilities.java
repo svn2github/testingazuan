@@ -306,6 +306,9 @@ public class ImportUtilities {
 			((SbiWSDataSet) newDataset).setExecutorClass(((SbiWSDataSet) dataset).getExecutorClass());
 			((SbiWSDataSet) newDataset).setOperation(((SbiWSDataSet) dataset).getOperation());
 		}
+		newDataset.setPivotColumnName(dataset.getPivotColumnName());
+		newDataset.setPivotColumnValue(dataset.getPivotColumnValue());
+		newDataset.setPivotRowName(dataset.getPivotRowName());
 		newDataset.setLabel(dataset.getLabel());
 		newDataset.setName(dataset.getName());
 		newDataset.setDescription(dataset.getDescription());
@@ -1004,6 +1007,9 @@ public class ImportUtilities {
 			existingDataset.setName(exportedDataset.getName());			
 			existingDataset.setDescription(exportedDataset.getDescription());
 			existingDataset.setParameters(exportedDataset.getParameters());
+			existingDataset.setPivotColumnName(exportedDataset.getPivotColumnName());
+			existingDataset.setPivotColumnValue(exportedDataset.getPivotColumnValue());
+			existingDataset.setPivotRowName(exportedDataset.getPivotRowName());
 		} finally {
 			logger.debug("OUT");
 		}
@@ -1121,9 +1127,31 @@ public class ImportUtilities {
 					((SbiQueryDataSet) dataset).setDataSource(ds);
 				}
 			}
+			// reading existing transfomer type
+			SbiDomains transformer = getAssociatedTransfomerType(exportedDataset, sessionCurrDB, metaAss, importer);
+			if (transformer != null) {
+				dataset.setTransformer(transformer);
+			}
 		} finally {
 			logger.debug("OUT");
 		}
+	}
+	
+	private static SbiDomains getAssociatedTransfomerType(SbiDataSetConfig exportedDataset,
+			Session sessionCurrDB, MetadataAssociations metaAss, ImporterMetadata importer) throws EMFUserError {
+		logger.debug("IN");
+		SbiDomains transformer = exportedDataset.getTransformer();
+		if (transformer == null) {
+			logger.debug("Transformer not set for exported dataset [" + exportedDataset.getLabel() + "]");
+			return null;
+		}
+		String typeCd = transformer.getValueCd();
+		Map unique = new HashMap();
+		unique.put("valuecd", typeCd);
+		unique.put("domaincd", "TRANSFORMER_TYPE");
+		SbiDomains existDom = (SbiDomains) importer.checkExistence(unique, sessionCurrDB, new SbiDomains());
+		logger.debug("OUT");
+		return existDom;
 	}
 	
 	private static SbiDomains getAssociatedParameterType(SbiParameters exportedParameter,

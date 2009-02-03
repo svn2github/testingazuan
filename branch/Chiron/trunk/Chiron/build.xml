@@ -57,7 +57,8 @@
 	<!-- The source version is not optimized ad is usefull only for debug.				--> 
 	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<target name="createSourceVersion" 
-		    depends="cleanSourceVersion, cleanCache, configureWebSourceScriptFile, configureStandaloneSourceScriptFile, configurePortletSourceScriptFile">
+		    depends="cleanSourceVersion, cleanCache, configureWebSourceScriptFile, configureStandaloneSourceScriptFile, configurePortletSourceScriptFile"
+			description="Task to create the source version for development purpose">
 	</target>
 	
 	<target name="configureWebSourceScriptFile" depends="createSourceScriptFiles">
@@ -130,7 +131,8 @@
 	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	
 	<target name="createBuildVersion" 
-		depends="cleanBuildVersion, cleanCache, configureWebBuildScriptFile, configureStandaloneBuildScriptFile, configurePortletBuildScriptFile">
+		depends="cleanBuildVersion, cleanCache, configureWebBuildScriptFile, configureStandaloneBuildScriptFile, configurePortletBuildScriptFile"
+		description="Task to create the build version for deployement purpose">
 	</target>
 	
 	<target name="configureWebBuildScriptFile" depends="createBuildScriptFiles">
@@ -207,7 +209,8 @@
 	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	
 	<target name="createStandaloneVersion" 
-			depends="cleanStandaloneVersion, init, createAll, cleanCache">
+			depends="cleanStandaloneVersion, init, createAll, cleanCache"
+			description="Task to create the standalone version for simply testing GUI features by others">
 		
 		<copy todir="${dist.dir}/css">
 		    <fileset dir="${basedir}/WebContent/css" />
@@ -270,14 +273,8 @@
 	<!--  CREATE API								                                    -->
 	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
 	
-	<target name="replaceApi" >
-		<replace file="${js.spagobi.api.dir}/script/apiviewer.js">
-								  
-		</replace>	
-	</target>	
-	
-	<!-- Working-->
-	<target name="createApi" depends="cleanApi">
+	<target name="createApi" depends="cleanApi"
+			description="Task to create the API">
 		<exec executable="python" failonerror="true" dir="${basedir}/WebContent/js/spagobi">
 		    <arg value="./generate.py"/>
 		    <arg value="api"/>

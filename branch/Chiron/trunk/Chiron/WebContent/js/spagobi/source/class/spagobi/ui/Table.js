@@ -312,9 +312,9 @@ qx.Class.define("spagobi.ui.Table",
 		  	
 		  	if (e.getColumn() <= 2){
 		  	}
-		  	else {
+		  	else if (e.getColumn() == 4){
 
-				if (e.getColumn() == 4){
+				
 					 
 					  //var layout = new qx.ui.layout.VBox(20);
 					  //var windowWidget = new qx.ui.core.Widget();
@@ -496,9 +496,27 @@ qx.Class.define("spagobi.ui.Table",
 				*/
 				
 				}
+				
+				else {
+					  var win = new qx.ui.window.Window("Details Window", "qx/icon/Oxygen/16/apps/office-calendar.png");
+				      win.setLayout(new qx.ui.layout.VBox(20));
+				      win.setShowStatusbar(true);
+				      win.setStatus("Details loaded");
+				      win.open();
+				      win.setModal(true);
+				      var records = spagobi.app.data.DataService.loadDatasourceRecords();
+				      var window_table = new spagobi.ui.Table(this, records);
+				      win.add(window_table);
+					  var form = new spagobi.ui.custom.DatasourceDetailsForm();
+					  win.add(form);
+				      
+								
+					
+					
+				}
 
 		  	}
-		  	}
+		  	
 		  	
 		 
 		  },

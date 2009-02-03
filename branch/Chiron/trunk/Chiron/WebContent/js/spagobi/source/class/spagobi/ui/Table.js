@@ -455,7 +455,7 @@ qx.Class.define("spagobi.ui.Table",
 				
 				box.add(this.tree1);
 			
-			this.tree1.addListener("changeSelection",this.treeLabel,this);	
+			this.tree1.addListener("dblclick",this.treeLabel,this);	//changeSelection
 			
 				this.config.formList = {
 					schedule : "Scheduler",

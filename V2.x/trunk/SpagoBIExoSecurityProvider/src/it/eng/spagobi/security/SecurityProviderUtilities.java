@@ -202,7 +202,8 @@ public class SecurityProviderUtilities {
 				Iterator infoKeyIter = infoKeys.iterator();
 				while(infoKeyIter.hasNext()) {
 					String labelcode = infoKeyIter.next().toString();
-					String value = userInfoMap.get(labelcode).toString();
+					String value = userInfoMap.get(labelcode) != null ?
+							userInfoMap.get(labelcode).toString() : "";
 					//String label = PortletUtilities.getMessage(labelcode, "exo_userprofile_labels");
 					//exoProfileAttrs.put(label, value);
 					exoProfileAttrs.put(labelcode, value);

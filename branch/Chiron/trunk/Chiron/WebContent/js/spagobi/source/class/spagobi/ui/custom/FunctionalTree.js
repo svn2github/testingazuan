@@ -142,6 +142,9 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
           				
           				
           				// prevents default context menu by browser over tree node clicks
+          				qx.core.Init.getApplication().getRoot().setNativeContextMenu(false);
+          				
+          				/*
           				//but another right-click over the contextmenu still gets the browser menu 
           				if(navigator.appName === 'Netscape'){
           					e._native.preventDefault();
@@ -149,7 +152,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
           				else{
           					e._native.returnValue = true;
           				}
-          				
+          				*/
           				          				
           				var insertCmd = new qx.event.Command();
         				insertCmd.addListener("execute", this._insertCmd,this);

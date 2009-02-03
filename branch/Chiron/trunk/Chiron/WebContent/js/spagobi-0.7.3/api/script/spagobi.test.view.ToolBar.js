@@ -1,1 +1,0 @@
-{type:"class",attributes:{"name":"ToolBar","packageName":"spagobi.test.view","superClass":"qx.ui.toolbar.ToolBar","fullName":"spagobi.test.view.ToolBar","type":"class"},children:[{type:"constructor",children:[{type:"method",attributes:{"isCtor":"true","name":"ctor"},children:[{type:"params",children:[{type:"param",attributes:{"name":"controller"}}]}]}]}]}

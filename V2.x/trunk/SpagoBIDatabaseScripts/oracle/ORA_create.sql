@@ -636,6 +636,7 @@ Create table SBI_KPI_VALUE (
 	BEGIN_DT Timestamp(6),
 	END_DT Timestamp(6),
 	RESOURCE_ID Number(38,0),
+	DESCRIPTION Varchar2 (100),
 primary key ("ID_KPI_INSTANCE_VALUE") 
 ) 
 /
@@ -706,6 +707,7 @@ Create table SBI_THRESHOLD (
 	THRESHOLD_TYPE_ID Number(38,0) Constraint "SYS_C0018249" NOT NULL ,
 	NAME Varchar2 (127),
 	DESCRIPTION Varchar2 (255),
+	CODE Varchar2(45),
 primary key ("THRESHOLD_ID") 
 ) 
  /
@@ -749,7 +751,7 @@ Create table SBI_KPI_MODEL_ATTR_VAL (
 	KPI_MODEL_ATTR_VAL_ID Number(38,0) Constraint "SYS_C0021686" NOT NULL ,
 	KPI_MODEL_ATTR_ID Number(38,0) Constraint "SYS_C0021687" NOT NULL ,
 	KPI_MODEL_ID Number(38,0) Constraint "SYS_C0021688" NOT NULL ,
-	ATTR_VALUE Varchar2 (2048),
+	VALUE Varchar2 (2048),
 primary key ("KPI_MODEL_ATTR_VAL_ID") 
 ) 
 /
@@ -822,6 +824,7 @@ Create table SBI_RESOURCES (
 	TABLE_NAME Varchar2 (40),
 	COLUMN_NAME Varchar2 (40),
 	RESOURCE_NAME Varchar2 (40),
+	RESOURCE_DESCR Varchar2 (400),
 primary key ("RESOURCE_ID") 
 ) 
 /
@@ -846,6 +849,8 @@ Create table SBI_ALARM (
 	TEXT VARCHAR2(1000) ,
 	URL VARCHAR2(20) ,
 	SINGLE_EVENT Char(1) ,
+	AUTO_DISABLED Char(1) ,
+	id_threshold_value INTEGER NOT NULL,
  Primary Key (ALARM_ID)
 ) 
 /

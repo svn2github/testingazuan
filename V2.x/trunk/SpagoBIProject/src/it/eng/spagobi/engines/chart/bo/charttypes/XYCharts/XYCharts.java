@@ -45,6 +45,7 @@ public class XYCharts extends ChartImpl{
 	String zrangeMin="";	
 	String zrangeMax="";	
 	String[] legendLabels =null;
+	String[] yLabels =null;
 	double[] zvalues = null;
 	String colours = "";
 	String add_labels = "false";
@@ -103,14 +104,13 @@ public class XYCharts extends ChartImpl{
 		boolean first=true;
 		
 		
-		for (int r = yMinValue/blockHeight; r < rangey; r++)  {
+    	for (int r = yMinValue/blockHeight; r < rangey; r++)  {
 			for (int c = xMinValue/blockWidth; c < rangex; c ++) {
             	
             	cell = c+r+(r*(rangex-1));
             	data[0][cell] = (new Double(((c+1)*blockWidth)).doubleValue())-(new Double(blockWidth).doubleValue()/2);
     			data[1][cell] = (new Double(((r+1)*blockHeight)).doubleValue())-(new Double(blockHeight).doubleValue()/2);
-    			data[2][cell] =  (new Double(zrangeMax)).doubleValue()*2;
-            	
+    			data[2][cell] = (new Double(zrangeMax)).doubleValue()*2;
             }
         }
 		
@@ -145,11 +145,13 @@ public class XYCharts extends ChartImpl{
 				
 				}
 			cell=col+row+(row*(rangex-1));
-			data[0][cell] = xVal-(new Double(blockWidth).doubleValue()/2);
-			data[1][cell] = yVal-(new Double(blockHeight).doubleValue()/2);
-			data[2][cell] = zVal;
+			if((rangex*rangey)> cell){
+				data[0][cell] = xVal-(new Double(blockWidth).doubleValue()/2);
+				data[1][cell] = yVal-(new Double(blockHeight).doubleValue()/2);
+				data[2][cell] = zVal;				
+				  // setValueInData(data, xMaxValue , yMinValue, xVal, yVal, zVal);
+			}
 			
-			  // setValueInData(data, xMaxValue , yMinValue, xVal, yVal, zVal);
 			}
 			
         dataset.addSeries("Series 1", data);
@@ -185,6 +187,7 @@ public class XYCharts extends ChartImpl{
 		confParameters = new HashMap();
 		SourceBean confSB = (SourceBean)content.getAttribute("CONF");
 		SourceBean zrange = (SourceBean)content.getAttribute("CONF.ZRANGES");
+		SourceBean yrange = (SourceBean)content.getAttribute("CONF.YRANGES");
 
 		if(confSB==null) return;
 		List confAttrsList = confSB.getAttributeAsList("PARAMETER");
@@ -208,6 +211,26 @@ public class XYCharts extends ChartImpl{
 			String valueParam = (String)param.getAttribute("value");
 			confParameters.put(nameParam, valueParam);
 		}	
+		
+		if(yrange!=null) {		
+			List ranges = yrange.getAttributeAsList("RANGE");
+			int rangesNum = ranges.size();
+			yLabels= new String[rangesNum+1];
+			yLabels[0]="";
+			Iterator rangesIter = ranges.iterator();
+			
+			int j = 0;
+			while(rangesIter.hasNext()) {
+				SourceBean range = (SourceBean)rangesIter.next();
+				String nameParam = (String)range.getAttribute("label");				
+				String label = "";
+				if(nameParam!=null){
+					label = nameParam;
+				}
+				yLabels[j+1]=label;
+				j++;				
+			}	
+		}
 		
 		if(zrange==null) return;		
 		List ranges = zrange.getAttributeAsList("RANGE");
@@ -242,7 +265,7 @@ public class XYCharts extends ChartImpl{
 			}else if (nameParam.equals("outbound")){
 				String val = (String)range.getAttribute("value");
 				zrangeMax = val;
-				outboundColor = colour;
+				outboundColor = "#FFFFFF";
 			}
 			j++;
 			

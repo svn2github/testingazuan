@@ -21,6 +21,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisSpace;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTick;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.axis.ValueAxis;
@@ -35,6 +36,7 @@ import org.jfree.data.xy.DefaultXYZDataset;
 import org.jfree.data.xy.XYZDataset;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
+import org.jfree.ui.TextAnchor;
 
 
 
@@ -79,16 +81,18 @@ public class BlockChart extends XYCharts {
         }
         //Creates the yAxis with its label and style
         NumberAxis yAxis = new NumberAxis(yLabel);
+       
         yAxis.setAutoRangeIncludesZero(false);
         yAxis.setInverted(false);
         yAxis.setLowerMargin(0.0);
         yAxis.setUpperMargin(0.0);
+        yAxis.setTickLabelsVisible(true);
         yAxis.setLabel(yLabel);
         if(addLabelsStyle!=null && addLabelsStyle.getFont()!=null){
         	yAxis.setLabelFont(addLabelsStyle.getFont());
         	yAxis.setLabelPaint(addLabelsStyle.getColor());
         }
-        yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+       yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         
         Color outboundCol = new Color(Integer.decode(outboundColor).intValue());
         
@@ -112,9 +116,11 @@ public class BlockChart extends XYCharts {
         
         //configures the plot with title, subtitle, axis ecc.
         XYPlot plot = new XYPlot(dataset, xAxis, yAxis, renderer);
-        plot.setBackgroundPaint(Color.lightGray);
-        plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
+        plot.setBackgroundPaint(Color.white);
+        plot.setDomainGridlinePaint(Color.black);
+        plot.setRangeGridlinePaint(Color.black);
+        plot.setDomainCrosshairPaint(Color.black);
+        
         plot.setForegroundAlpha(0.66f);
         plot.setAxisOffset(new RectangleInsets(5, 5, 5, 5));
         JFreeChart chart = new JFreeChart(plot);
@@ -139,10 +145,34 @@ public class BlockChart extends XYCharts {
       
         //draws legend as chart subtitle
         PaintScaleLegend psl = new PaintScaleLegend(legendPaintScale, scaleAxis);
-        psl.setAxisOffset(5.0);
+        psl.setAxisOffset(2.0);
         psl.setPosition(RectangleEdge.RIGHT);
-        psl.setMargin(new RectangleInsets(5, 5, 5, 5));        
+        psl.setMargin(new RectangleInsets(5, 1, 5, 1));        
         chart.addSubtitle(psl);
+        
+        if(yLabels!=null){
+	        //Sets y legend labels
+	        LookupPaintScale legendPaintScale2 = new LookupPaintScale(0.5, 0.5+(yLabels.length-1), Color.white);
+	        
+	        for (int ke=0; ke<yLabels.length ; ke++){
+	        	Color temp =Color.white;
+	        	legendPaintScale2.add(0.5+ke, temp);
+	        } 
+	        
+	        SymbolAxis scaleAxis2 = new SymbolAxis(null,yLabels);
+	        scaleAxis2.setRange(0.5, 0.5+(yLabels.length-1));
+	        scaleAxis2.setPlot(new PiePlot());
+	        scaleAxis2.setGridBandsVisible(false);
+	      
+	        //draws legend as chart subtitle
+	        PaintScaleLegend psl2 = new PaintScaleLegend(legendPaintScale2, scaleAxis2);
+	        psl2.setAxisOffset(5.0);
+	        psl2.setPosition(RectangleEdge.LEFT);
+	        psl2.setMargin(new RectangleInsets(40, 1, 40, 1));   
+	        psl2.setStripWidth(0);
+	        psl2.setStripOutlineVisible(false);
+	        chart.addSubtitle(psl2);
+        }
         
         return chart;
     }    

@@ -41,6 +41,14 @@ ThresholdsFactory.getStaticThresholds = function( measure, params ) {
    results.thresholds = params.ranges;
 	 results.num_group = results.thresholds.length -1;
 	 
+	 if(measure.upper_bound < results.thresholds[results.thresholds.length - 1]) {
+    measure.upper_bound = results.thresholds[results.thresholds.length - 1];
+   }
+   
+   if(measure.lower_bound > results.thresholds[0]) {
+    measure.lower_bound = results.thresholds[0];
+   }
+	 
 
 	 return results;
 };

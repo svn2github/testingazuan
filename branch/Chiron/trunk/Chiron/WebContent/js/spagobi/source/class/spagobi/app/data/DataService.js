@@ -937,17 +937,17 @@ qx.Class.define("spagobi.app.data.DataService", {
     	];
   	},
   	
-  	loadFunctinalitiesRecords: function() {
+  	loadFunctionalitiesRecords: function() {
   		var records = {};
     	records.ID = "ROLES";
     	records.columns = [2,3,4];
-    	records.meta =  this.loadFunctinalitiesMeta();
-    	records.rows =  this.loadFunctinalitiesData();
+    	records.meta =  this.loadFunctionalitiesMeta();
+    	records.rows =  this.loadFunctionalitiesData();
     	
     	return records;
   	},
   	
-  	loadFunctinalitiesMeta: function() {
+  	loadFunctionalitiesMeta: function() {
   		return [
     		{
 	    		dataIndex: 'roles',
@@ -968,7 +968,7 @@ qx.Class.define("spagobi.app.data.DataService", {
     	];
   	},
   	
-  	loadFunctinalitiesData: function() {
+  	loadFunctionalitiesData: function() {
   		return [
   				{
 				  	id		: '1',

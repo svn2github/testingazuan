@@ -126,7 +126,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalityTreeSubClass", {
    	 	  
    	 	  CreateTableWithCheckbox : function (){
    	 	  
-   	 	  var tableData = spagobi.app.data.DataService.loadFunctinalitiesRecords();
+   	 	  var tableData = spagobi.app.data.DataService.loadFunctionalitiesRecords();
    	 	  var newTable = new spagobi.ui.Table(this, tableData);
    	 	  //newTable.setTop(20);
    	 	  //this.add( newTable );

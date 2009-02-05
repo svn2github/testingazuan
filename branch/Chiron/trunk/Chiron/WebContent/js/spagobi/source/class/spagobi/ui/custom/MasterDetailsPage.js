@@ -264,13 +264,17 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
      * 
      * @return form The selected form 
      */
-    
-    
-    setForm: function(f) {
-    	this._form = f;
-    },
     getForm: function() {
     	return this._form;
+    },
+    
+    /**
+     * Function to set the current form
+     * 
+     * @param form The form to be selected 
+     */
+    setForm: function(f) {
+    	this._form = f;
     },
     
     /**

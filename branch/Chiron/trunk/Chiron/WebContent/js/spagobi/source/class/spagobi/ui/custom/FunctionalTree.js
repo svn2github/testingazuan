@@ -4,7 +4,9 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
   
   construct : function()  {//type
  
-	  		this.base(arguments,{root: "Functionalities"});  
+	  		//this.base(arguments,{root: "Functionalities"}); 
+	  		this.tree = spagobi.app.data.DataService.loadTreeNodes();
+	  		this.base(arguments,this.tree.treeStructure.root); 
 		  	this.createFunctionalTree();
 		  			  	
   },
@@ -16,102 +18,19 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
   			nodeY: undefined,
   			contextMenu: undefined,
   			previousNode: undefined,
+  			tree: undefined,
   			
   			createFunctionalTree : function(){
   			
-  		 		var node1 = this.addNode({	
-		  							name  : "Report",
-		  							parent: this,
-		  							data  : {
-		  							 			label : 'ReportLabel',
-		  							 			name  : 'ReportName',
-		  							 			desc  : 'ReportDesc',
-		  							 			func  : [
-		  							 						{
-		  							 							role	: '/admin',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						},
-		  							 						{
-		  							 							role	: '/community/direction',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						}
-		  							 			]	
-		  							 		}
-		  							 		
-		  					});
-		  					
-	  				
-  				var node2 = this.addNode({
-		  							name  : "OLAP",
-		  							parent: this,
-		  							data  : {
-		  							 			label : 'OLAPLabel',
-		  							 			name  : 'OLAPName',
-		  							 			desc  : 'OLAPDesc',
-		  							 			func  : [
-		  							 						{
-		  							 							role	: '/community',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						},
-		  							 						{
-		  							 							role	: '/guest',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						}
-		  							 			]
-		  							 		}
-  								});
-  				var node3 = this.addNode({
-		  							name  : "myOLAP",
-		  							parent: node2,
-		  							file : true,
-		  							data  : {
-		  							 			label : 'myOLAP Label',
-		  							 			name  : 'myOLAP Name',
-		  							 			desc  : 'myOLAP Desc'
-		  							 		}
-  								});
-  				var node4 = this.addNode({
-		  							name  : "DashBoard",
-		  							parent: this,
-		  							data  : {
-		  							 			label : 'DashBoardLabel',
-		  							 			name  : 'DashBoardName',
-		  							 			desc  : 'DashBoardDesc'
-		  							 		}	
-  								});
-  				var node5 = this.addNode({
-		  							name  : "myDashBoardFolder",
-		  							parent: node4,
-		  							file : true, 
-		  							data  : {
-		  							 			label : 'myDashBoardFolderLabel',
-		  							 			name  : 'myDashBoardFolderName',
-		  							 			desc  : 'myDashBoardFolderDesc'
-		  							 		}
-		  						});
-  				var node6 = this.addNode({
-		  							name  : "myDashBoard",
-		  							parent: node4,
-		  							file : true, 
-		  							data  : {
-		  							 			label : 'myDashBoard Label',
-		  							 			name  : 'myDashBoard Name',
-		  							 			desc  : 'myDashBoard Desc'
-		  							 		}
-  								});
-  		
+  				
+  				 	for(var p in this.tree.treeStructure){	//check as for..in is changed in v0.8.1
+  				 		
+  				 		if(p != 'root'){
+  				 			this.addNode(this.tree.treeStructure[p]);
+  				 		}
+  				 					
+  				 	}
+  				
   			//this._add(this.tree, {height: "100%"});
   			
   			
@@ -135,7 +54,7 @@ qx.Class.define("spagobi.ui.custom.FunctionalTree",{
 	               * <p> var myTree = new spagobi.ui.Tree({root: "Root"});
 	               * <p> myTree.addListener("click",myTree.onClickMenu,myTree);
 	               *                                                                                     	               
-	               */
+	 */
           _createMenu : function(e){
           				//e is Qooxdoo wrapper event for Javascript mouseevent e._native
           				//alert(spagobi.commons.CoreUtils.toStr(e._native));

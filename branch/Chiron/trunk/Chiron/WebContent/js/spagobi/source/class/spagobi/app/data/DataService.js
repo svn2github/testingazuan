@@ -93,27 +93,7 @@ qx.Class.define("spagobi.app.data.DataService", {
   	},
   	
   	loadRolesData: function() {
-  		/*
-      	Test Area Begins --GJ
-      	
-      	var zoo = new qx.legacy.ui.table.cellrenderer.Boolean();
-      	var box = new qx.legacy.ui.form.CheckBox();
-  		box.setDisplay(true);
-      	var atom78 = new qx.legacy.ui.basic.Atom();
-        atom78.add(box); 
-      	     	
-      	var flag_box = {};
-  		flag_box.box = new qx.legacy.ui.form.CheckBox();
-  		flag_box.box.set({
-       			checked: true
-       			//top: config.top,
-       			//left: config.left
-        	});
-        flag_box.box.setDisplay(true);
-        
-        Test Area Ends -- GJ
-        */
-        
+  		        
   		return [
     		{ 
 	        	id: '180',
@@ -1160,6 +1140,163 @@ qx.Class.define("spagobi.app.data.DataService", {
 				   exe      : false
 				}
 	  		   ];
+  	},
+  	
+  	loadTreeNodes: function() {
+  		var records = {};
+    	
+    	//records.root = "Functionalities";
+    	records.treeStructure =  this.loadTreeMeta();	//defines the tree structure
+    	records.treeData =  this.loadTreeData();		//defines the tree data
+    	
+    	return records;
+  	},
+  	
+  	
+  	loadTreeMeta: function() {
+  		//return [
+    	var treeStructure = {
+				    		root: 	{
+				    				root		: 'Functionalities',
+				    				dataIndex	: 'root'
+				    			  	},
+				    			  	
+				    		node11:	{
+				    				name: 'Report',
+				    				parent: 'root',
+					    			dataIndex: 'report',	//'node11'
+		  							data  : {
+		  							 			label : 'ReportLabel',
+		  							 			name  : 'ReportName',
+		  							 			desc  : 'ReportDesc',
+		  							 			func  : [
+		  							 						{
+		  							 							role	: '/admin',
+		  							 							dev		: true,
+		  							 							test	: true,
+		  							 							exe		: true
+		  							 							
+		  							 						},
+		  							 						{
+		  							 							role	: '/community/direction',
+		  							 							dev		: true,
+		  							 							test	: true,
+		  							 							exe		: true
+		  							 							
+		  							 						}
+		  							 			]	
+		  							 		}
+				    				},
+				    			  	
+				    		node12:	{
+				    				name: 'OLAP',
+				    				parent: 'root',
+					    			dataIndex: 'olap',
+					    			data  : {
+		  							 			label : 'OLAPLabel',
+		  							 			name  : 'OLAPName',
+		  							 			desc  : 'OLAPDesc',
+		  							 			func  : [
+		  							 						{
+		  							 							role	: '/community',
+		  							 							dev		: true,
+		  							 							test	: true,
+		  							 							exe		: true
+		  							 							
+		  							 						},
+		  							 						{
+		  							 							role	: '/guest',
+		  							 							dev		: true,
+		  							 							test	: true,
+		  							 							exe		: true
+		  							 							
+		  							 						}
+		  							 			]
+		  							 		}
+				    				},
+				    			  	
+				    		node121:{
+				    				name: 'myOLAP',
+				    				parent: 'OLAP',
+					    			dataIndex: 'myolap',
+		  							file : true,
+		  							data  : {
+		  							 			label : 'myOLAP Label',
+		  							 			name  : 'myOLAP Name',
+		  							 			desc  : 'myOLAP Desc'
+		  							 		}
+				    				},
+				    			  	
+				    		node13:{
+				    				name: 'DashBoard',
+				    				parent: 'root',
+					    			dataIndex: 'dashboard',
+		  							data  : {
+		  							 			label : 'DashBoardLabel',
+		  							 			name  : 'DashBoardName',
+		  							 			desc  : 'DashBoardDesc'
+		  							 		}	
+				    				},
+				    			  	
+				    		node131:{
+				    				name: 'myDashBoardFolder',
+				    				parent: 'DashBoard',
+					    			dataIndex: 'roles',
+		  							file : true, 
+		  							data  : {
+		  							 			label : 'myDashBoardFolderLabel',
+		  							 			name  : 'myDashBoardFolderName',
+		  							 			desc  : 'myDashBoardFolderDesc'
+		  							 		}
+				    				},
+				    			  	
+				    		node132:{
+				    				name: 'myDashBoard',
+				    				parent: 'DashBoard',
+					    			dataIndex: 'roles',
+		  							file : true, 
+		  							data  : {
+		  							 			label : 'myDashBoard Label',
+		  							 			name  : 'myDashBoard Name',
+		  							 			desc  : 'myDashBoard Desc'
+		  							 		}
+				    				}
+				    			  		
+    					}
+  		//];
+  		return treeStructure;
+  	},
+  	
+  	
+  	loadTreeData: function() {
+  		//return [
+  		treeData =	{
+						node11:{	  
+							  		data  : {
+								 			label : 'OLAPLabel',
+								 			name  : 'OLAPName',
+								 			desc  : 'OLAPDesc',
+								 			func  : [
+								 						{
+								 							role	: '/community',
+								 							dev		: true,
+								 							test	: true,
+								 							exe		: true
+								 							
+								 						},
+								 						{
+								 							role	: '/guest',
+								 							dev		: true,
+								 							test	: true,
+								 							exe		: true
+								 							
+								 						}
+								 					]
+					  						}//end of data
+								}	
+				}// end of treeData
+		return treeData;
+				//];
   	}
   	
   }

@@ -400,12 +400,12 @@ qx.Class.define("spagobi.ui.Tree", {
           			var treeNode;
                  	
                  	if(config.checkBox != undefined){	// to check if its a standard node with just icon and name
-                 									// ... or special node with a icon, checkbox and name 
-                 	//	alert("1");
-                 	//	treeRowStructure = new qx.ui.tree.TreeFolder();
+                 										// ... or special node with a icon, checkbox and name 
+                 	
+                 		//	treeRowStructure = new qx.ui.tree.TreeFolder();
                  		treeNode  = new qx.ui.tree.TreeFolder();
-                 //		treeNode.addOpenButton();                 
-                 //		treeRowStructure.addIndent();
+                 		//		treeNode.addOpenButton();                 
+                 		//		treeRowStructure.addIndent();
                  		if(config.init_icon != undefined && config.click_icon != undefined){
                  			
                  		//	treeRowStructure.addIcon(config.init_icon, config.click_icon);
@@ -416,64 +416,66 @@ qx.Class.define("spagobi.ui.Tree", {
                  		if (config.checkBox == true){
                  			
                       		var obj = new qx.ui.form.CheckBox();
-                     // 		treeRowStructure.addWidget(obj);//, true
+                     		// 		treeRowStructure.addWidget(obj);//, true
                       		treeNode.addWidget(obj);
-                      	//	treeNode.addSpacer();
+                      		//	treeNode.addSpacer();
                   		}
                   		
-               //   		treeRowStructure.addLabel(config.name);
+               			//   		treeRowStructure.addLabel(config.name);
                   		treeNode.addLabel(config.name);
                  	}
                  	
-              /*   	else{			// if standard node with just Icon and name
+              		/*   	else{			// if standard node with just Icon and name
                  		//	alert("4");
                  			treeRowStructure = new qx.ui.tree.TreeFolder(config.name);
                  	}	*/ 
                   	
                     else if(config.file != undefined){	// to check if node is of type file or folder
-                  	//	alert("5");
+                  	
                   			if(config.file == true){
-                  			//	alert("6");
+                  			
                   			treeNode = new qx.ui.tree.TreeFile(config.name);
-                  		//	treeNode.addOpenButton();
+                  			//	treeNode.addOpenButton();
                   		}
                   		else{
-                  		//	alert("7");
+                  		
                   			treeNode = new qx.ui.tree.TreeFolder(config.name);
-                  		//	treeNode.addOpenButton();
+                  			//	treeNode.addOpenButton();
                   		}
                   	}
-                  	else{			
-                  	//	alert("8");				// by default, node is of Folder type
+                  	else{			// by default, node is of Folder type
+                  		
                   		treeNode = new qx.ui.tree.TreeFolder(config.name);
-                  //		treeNode.addOpenButton();
+                  		//		treeNode.addOpenButton();
                   		
                   	}                                                  
                   	
                   	
-                  	if(config.parent == this){
-                  	//	alert("9");
+                  	if(config.parent == this || config.parent == 'root'){	//if(config.parent == this)
+                  	
                   		this._root.add(treeNode);
-                  		                 		
-                   	//this.setUserData(config.id, treeNode);
+                  		//this.setUserData(config.id, treeNode);
                   	}
                    	else{
-                   	//	alert("10");
+                   	
                    	
                    		//if(config.parent != undefined){//  this.getSelectedItem()
                    			//alert(config.parent.getLabel());
                    		//}
                    		
-                   	 	var p = config.parent.getUserData('node');
+                   	 	var p = this.getUserData(config.parent).getUserData('node');//config.parent.getUserData('node');
                    	 	p.add(treeNode);
                    	}
                    	
-                   //	alert("11");
+                   	
                    	 var atom = new qx.ui.basic.Atom();
         			 //atom.add(treeNode);//,config.data);
         			 
         			 atom.setUserData('node', treeNode);
-        			 atom.setUserData('data', config.data);
+        			 
+        			 if(config.data != undefined){				//required when dataservice separates tree structure and data
+        			 	atom.setUserData('data', config.data);
+        			 }
         			// alert(atom.getUserData('node'));
         			 this.setUserData(config.name,atom);	//Label of node is used as its id .. later we can use its level or hierarchy path
                    	 

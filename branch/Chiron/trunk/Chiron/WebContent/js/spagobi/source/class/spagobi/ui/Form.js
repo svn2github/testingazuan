@@ -218,6 +218,7 @@ qx.Class.define("spagobi.ui.Form", {
 			}
 			
 			var container = this.getInputField(dataIndex).getUserData('field');//change..added
+		//	alert (typeof container);
 			var object = container.getChildren()[0];//change..added
 			
 			if(this.getInputField(dataIndex).getUserData('type') === 'text') {

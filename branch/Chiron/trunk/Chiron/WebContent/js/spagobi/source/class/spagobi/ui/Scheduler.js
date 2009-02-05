@@ -70,105 +70,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			var box = new qx.ui.container.Composite;
 			box.setLayout(new qx.ui.layout.HBox(10));
 			this.add(box, {flex:1});
-			this.tree1 = new spagobi.ui.Tree({root: "Functionalities"});	
-  		
-  			var node1 = this.tree1.addNode({
-		  							name  : "Report",
-		  							parent: this.tree1,
-		  							//checkBox : true,
-		  							data  : {
-		  							 			label : 'ReportLabel',
-		  							 			name  : 'ReportName',
-		  							 			desc  : 'ReportDesc',
-		  							 			func  : [
-		  							 						{
-		  							 							role	: '/admin',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						},
-		  							 						{
-		  							 							role	: '/community/direction',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						}
-		  							 			]	
-		  							 		}
-		  							 		
-		  					});
-		  					
-	  				
-  			var node2 = this.tree1.addNode({
-		  							name  : "OLAP",
-		  							parent: this.tree1,
-		  							//checkBox : true,
-		  							data  : {
-		  							 			label : 'OLAPLabel',
-		  							 			name  : 'OLAPName',
-		  							 			desc  : 'OLAPDesc',
-		  							 			func  : [
-		  							 						{
-		  							 							role	: '/community',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						},
-		  							 						{
-		  							 							role	: '/guest',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						}
-		  							 			]
-		  							 		}
-  								});
-  			var node3 = this.tree1.addNode({
-		  							name  : "myOLAP",
-		  							parent: node2,
-		  							file : true,
-		  							data  : {
-		  							 			label : 'myOLAP Label',
-		  							 			name  : 'myOLAP Name',
-		  							 			desc  : 'myOLAP Desc'
-		  							 		}
-  								});
-  			var node4 = this.tree1.addNode({
-		  							name  : "DashBoard",
-		  							parent: this.tree1,
-		  							//checkBox : true,
-		  							data  : {
-		  							 			label : 'DashBoardLabel',
-		  							 			name  : 'DashBoardName',
-		  							 			desc  : 'DashBoardDesc'
-		  							 		}	
-  								});
-  			var node5 = this.tree1.addNode({
-		  							name  : "myDashBoardFolder",
-		  							parent: node4,
-		  							file : true, 
-		  							data  : {
-		  							 			label : 'myDashBoardFolderLabel',
-		  							 			name  : 'myDashBoardFolderName',
-		  							 			desc  : 'myDashBoardFolderDesc'
-		  							 		}
-		  						});
-  			var node6 = this.tree1.addNode({
-		  							name  : "myDashBoard",
-		  							parent: node4,
-		  							file : true, 
-		  							data  : {
-		  							 			label : 'myDashBoard Label',
-		  							 			name  : 'myDashBoard Name',
-		  							 			desc  : 'myDashBoard Desc'
-		  							 		}
-  								});
-					
-				
+			
+			this.treeFunction = spagobi.app.data.DataService.loadTreeNodes();
+			this.tree1 = new spagobi.ui.Tree(this.treeFunction.treeStructure.root);	
+			
+			for(var p in this.treeFunction.treeStructure){	//check as for..in is changed in v0.8.1
+				if(p != 'root'){
+					this.tree1.addNode(this.treeFunction.treeStructure[p]);
+				}
+			}	
 				
 			box.add(this.tree1);
 			
@@ -263,6 +173,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     inputField: undefined,
     inputField3: undefined, 
     container : undefined,
+  	treeFunction: undefined,
   	
   	treeLabel : function(e){
 		    	

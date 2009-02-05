@@ -186,13 +186,12 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
   		if(this._tree.getSelectedItem() == this._tree.getRoot()){// If Root Node Remember change this._tree to this._tree.getRoot()
   			
   				nodeData.tree = this._tree;// Remember change this._tree to this._tree.getRoot()
-  		//		alert("1"); 
+  		
   		}
   		else{
-  		//	alert("2");
-	    	nodeData = this._tree.getNodeData();	// Calls getNodeData() function of Tree.js
+  			nodeData = this._tree.getNodeData();	// Calls getNodeData() function of Tree.js
   		}
-  	//	alert("3");	
+  	
   		this._right.setData(nodeData);				// Calls setData() function of FunctionalityTreeSubClass.js
   		
   	},

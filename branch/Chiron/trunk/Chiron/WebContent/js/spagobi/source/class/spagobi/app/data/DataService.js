@@ -1155,6 +1155,7 @@ qx.Class.define("spagobi.app.data.DataService", {
   	
   	loadTreeMeta: function() {
   		//return [
+  		var t = spagobi.app.data.DataService.loadTreeData();
     	var treeStructure = {
 				    		root: 	{
 				    				root		: 'Functionalities',
@@ -1162,104 +1163,51 @@ qx.Class.define("spagobi.app.data.DataService", {
 				    			  	},
 				    			  	
 				    		node11:	{
-				    				name: 'Report',
-				    				parent: 'root',
-					    			dataIndex: 'report',	//'node11'
-		  							data  : {
-		  							 			label : 'ReportLabel',
-		  							 			name  : 'ReportName',
-		  							 			desc  : 'ReportDesc',
-		  							 			func  : [
-		  							 						{
-		  							 							role	: '/admin',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						},
-		  							 						{
-		  							 							role	: '/community/direction',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						}
-		  							 			]	
-		  							 		}
+				    				name		: 'Report',
+				    				parent		: 'root',
+					    			dataIndex	: 'report',	//'node11'
+		  							data  		: t['report']
+		  									
 				    				},
 				    			  	
 				    		node12:	{
-				    				name: 'OLAP',
-				    				parent: 'root',
-					    			dataIndex: 'olap',
-					    			data  : {
-		  							 			label : 'OLAPLabel',
-		  							 			name  : 'OLAPName',
-		  							 			desc  : 'OLAPDesc',
-		  							 			func  : [
-		  							 						{
-		  							 							role	: '/community',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						},
-		  							 						{
-		  							 							role	: '/guest',
-		  							 							dev		: true,
-		  							 							test	: true,
-		  							 							exe		: true
-		  							 							
-		  							 						}
-		  							 			]
-		  							 		}
+				    				name		: 'OLAP',
+				    				parent		: 'root',
+					    			dataIndex	: 'olap',
+					    			data  		: t['olap']
 				    				},
 				    			  	
 				    		node121:{
-				    				name: 'myOLAP',
-				    				parent: 'OLAP',
-					    			dataIndex: 'myolap',
-		  							file : true,
-		  							data  : {
-		  							 			label : 'myOLAP Label',
-		  							 			name  : 'myOLAP Name',
-		  							 			desc  : 'myOLAP Desc'
-		  							 		}
+				    				name		: 'myOLAP',
+				    				parent		: 'OLAP',
+					    			dataIndex	: 'myolap',
+		  							file 		: true,
+		  							data  		: t['myolap']
+		  							
 				    				},
 				    			  	
 				    		node13:{
-				    				name: 'DashBoard',
-				    				parent: 'root',
-					    			dataIndex: 'dashboard',
-		  							data  : {
-		  							 			label : 'DashBoardLabel',
-		  							 			name  : 'DashBoardName',
-		  							 			desc  : 'DashBoardDesc'
-		  							 		}	
+				    				name		: 'DashBoard',
+				    				parent		: 'root',
+					    			dataIndex	: 'dashboard',
+		  							data  		: t['dashboard']
+		  							
 				    				},
 				    			  	
 				    		node131:{
-				    				name: 'myDashBoardFolder',
-				    				parent: 'DashBoard',
-					    			dataIndex: 'roles',
-		  							file : true, 
-		  							data  : {
-		  							 			label : 'myDashBoardFolderLabel',
-		  							 			name  : 'myDashBoardFolderName',
-		  							 			desc  : 'myDashBoardFolderDesc'
-		  							 		}
+				    				name		: 'myDashBoardFolder',
+				    				parent		: 'DashBoard',
+					    			dataIndex	: 'mydashboardfolder',
+		  							file 		: true, 
+		  							data  		: t['mydashboardfolder']
 				    				},
 				    			  	
 				    		node132:{
-				    				name: 'myDashBoard',
-				    				parent: 'DashBoard',
-					    			dataIndex: 'roles',
-		  							file : true, 
-		  							data  : {
-		  							 			label : 'myDashBoard Label',
-		  							 			name  : 'myDashBoard Name',
-		  							 			desc  : 'myDashBoard Desc'
-		  							 		}
+				    				name		: 'myDashBoard',
+				    				parent		: 'DashBoard',
+					    			dataIndex	: 'mydashboard',
+		  							file 		: true, 
+		  							data  		: t['mydashboard']
 				    				}
 				    			  		
     					}
@@ -1270,30 +1218,77 @@ qx.Class.define("spagobi.app.data.DataService", {
   	
   	loadTreeData: function() {
   		//return [
-  		treeData =	{
-						node11:{	  
-							  		data  : {
-								 			label : 'OLAPLabel',
-								 			name  : 'OLAPName',
-								 			desc  : 'OLAPDesc',
-								 			func  : [
-								 						{
-								 							role	: '/community',
-								 							dev		: true,
-								 							test	: true,
-								 							exe		: true
-								 							
-								 						},
-								 						{
-								 							role	: '/guest',
-								 							dev		: true,
-								 							test	: true,
-								 							exe		: true
-								 							
-								 						}
-								 					]
-					  						}//end of data
-								}	
+  		var treeData =	{
+							report:{	  
+							  		label : 'ReportLabel',
+						 			name  : 'ReportName',
+						 			desc  : 'ReportDesc',
+						 			func  : [
+						 						{
+						 							role	: '/admin',
+						 							dev		: true,
+						 							test	: true,
+						 							exe		: true
+						 							
+						 						},
+						 						{
+						 							role	: '/community/direction',
+						 							dev		: true,
+						 							test	: true,
+						 							exe		: true
+						 							
+						 						}
+						 					]	
+		  							},
+		  					olap:{
+		  								
+						 			label : 'OLAPLabel',
+						 			name  : 'OLAPName',
+						 			desc  : 'OLAPDesc',
+						 			func  : [
+						 						{
+						 							role	: '/community',
+						 							dev		: true,
+						 							test	: true,
+						 							exe		: true
+						 							
+						 						},
+						 						{
+						 							role	: '/guest',
+						 							dev		: true,
+						 							test	: true,
+						 							exe		: true
+						 							
+						 						}
+						 					]
+		  							 		
+		  							},
+		  					myolap:{
+		  							label : 'myOLAP Label',
+						 			name  : 'myOLAP Name',
+						 			desc  : 'myOLAP Desc'
+		  							 		
+		  							},
+		  					dashboard:{
+		  								
+						 			label : 'DashBoardLabel',
+						 			name  : 'DashBoardName',
+						 			desc  : 'DashBoardDesc'
+		  							 			
+		  							},
+		  					mydashboardfolder:{
+						 			label : 'myDashBoardFolderLabel',
+						 			name  : 'myDashBoardFolderName',
+						 			desc  : 'myDashBoardFolderDesc'
+						 			
+		  							 },
+		  					mydashboard:{
+						 			label : 'myDashBoard Label',
+						 			name  : 'myDashBoard Name',
+						 			desc  : 'myDashBoard Desc'
+		  							 }	
+		  							 	
+		  							 						
 				}// end of treeData
 		return treeData;
 				//];

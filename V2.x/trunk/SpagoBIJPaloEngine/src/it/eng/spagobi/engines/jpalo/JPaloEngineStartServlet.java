@@ -23,6 +23,7 @@ package it.eng.spagobi.engines.jpalo;
 
 
 import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.EngineStartServletIOManager;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import java.io.IOException;
@@ -58,7 +59,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
     }
 
    
-    public void doService() throws SpagoBIEngineException {
+    public void doService( EngineStartServletIOManager servletIOManager ) throws SpagoBIEngineException {
     	JPaloEngineTemplate template;
     	String jpaloUrl;
     	
@@ -67,12 +68,12 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 		try {		
 		
 			
-			auditServiceStartEvent();
+			servletIOManager.auditServiceStartEvent();
 		
 		
-			super.doService();
+			super.doService( servletIOManager );
 		
-			template = new JPaloEngineTemplate( getTemplate() );			
+			template = new JPaloEngineTemplate( servletIOManager.getTemplate() );			
     	
 	    	jpaloUrl = PALO_BASE_URL;	    	
 			jpaloUrl += "?server=" + template.getDatabaseName();
@@ -82,15 +83,15 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			jpaloUrl += "&editor-only=" + template.getEditorOnly();
 	    			
 			
-			String urlWithSessionID = getResponse().encodeRedirectURL( jpaloUrl );
-			getResponse().sendRedirect( urlWithSessionID );
+			String urlWithSessionID = servletIOManager.getResponse().encodeRedirectURL( jpaloUrl );
+			servletIOManager.getResponse().sendRedirect( urlWithSessionID );
 	    
 		} catch(Throwable t) {
 			throw new SpagoBIEngineException("An unpredicted error occured while executing palo-engine. Please chek the log for more informations on the causes",
 			"an.unpredicted.error.occured");		
 			
 		} finally {
-			this.auditServiceEndEvent();
+			servletIOManager.auditServiceEndEvent();
 			logger.debug("OUT");
 		}
 

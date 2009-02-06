@@ -37,7 +37,7 @@ public class SimpleCluster extends ClusterCharts {
 
 		chart.setBackgroundPaint(color);
 		XYPlot plot = (XYPlot) chart.getPlot();
-		plot.setForegroundAlpha(0.65f);
+		plot.setForegroundAlpha(0.50f);
 
 
 		XYItemRenderer renderer = plot.getRenderer();

@@ -674,7 +674,7 @@ Create table `SBI_KPI` (
 	`name` Varchar(400) NOT NULL,
 	`document_label` Varchar(40),
 	`code` Varchar(40),
-	`metric` Varchar(1000),
+	`metric` Varchar(2000),
 	`description` Varchar(1000),
 	`weight` Double,
 	`flg_is_father` Char(1),
@@ -769,7 +769,7 @@ Create table `SBI_KPI_INST_PERIOD` (
   `KPI_INST_PERIOD_ID` INTEGER NOT NULL AUTO_INCREMENT,
   `KPI_INSTANCE_ID` INTEGER NOT NULL,
   `PERIODICITY_ID` INTEGER NOT NULL,
-  `DEFAULT` BOOLEAN ,
+  `DEFAULT_VALUE` BOOLEAN ,
   PRIMARY KEY (`KPI_INST_PERIOD_ID`)
 )
 ENGINE = InnoDB;

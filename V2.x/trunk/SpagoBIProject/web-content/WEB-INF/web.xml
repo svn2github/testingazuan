@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-                         "http://java.sun.com/dtd/web-app_2_3.dtd">
-<web-app>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   version="2.4">
     <!-- 
 	you must provide a value for the display name tag and it should 
 	match the context root of this web application
@@ -67,24 +68,7 @@
     
     <!-- START SERVLET DEFINITIONS -->
     
-  <servlet>
 
-     <servlet-name>QuartzInitializer</servlet-name>
-     <display-name>Quartz Initializer Servlet</display-name>
-     <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
-     <load-on-startup>1</load-on-startup>
-     <init-param>
-        <param-name>shutdown-on-unload</param-name>
-        <param-value>true</param-value>
-     </init-param>
-
-     <init-param>
-       <param-name>start-scheduler-on-load</param-name>
-       <param-value>false</param-value>
-    </init-param>
-
- </servlet>
- 
 	<servlet>
   		<servlet-name>ProxyTicketReceptor</servlet-name> 
   		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 

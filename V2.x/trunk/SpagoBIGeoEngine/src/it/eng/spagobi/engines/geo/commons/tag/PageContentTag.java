@@ -45,6 +45,7 @@ public class PageContentTag extends GeoTagSupport {
 			}
 	    	pageContext.getOut().print( buffer.toString() );
 	      } catch (Exception ex) {
+	    	  ex.printStackTrace();
 	         throw new JspTagException(getClass().getName() + ": " + ex.getMessage());
 	      }
 	      return EVAL_BODY_INCLUDE;
@@ -61,6 +62,7 @@ public class PageContentTag extends GeoTagSupport {
 			}
 	    	pageContext.getOut().print( buffer.toString() );
 	      } catch (Exception ex) {
+	    	  ex.printStackTrace();
 	         throw new JspTagException(getClass().getName() + ": " + ex.getMessage());
 	      }
 		return EVAL_PAGE;

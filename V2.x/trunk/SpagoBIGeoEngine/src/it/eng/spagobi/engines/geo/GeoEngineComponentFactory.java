@@ -114,9 +114,9 @@ public class GeoEngineComponentFactory {
 		}
 		className = (String)confSB.getAttribute(GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
 		if(className == null) {
+			className = GeoEngineConstants.DEFAULT_MAP_PROVIDER;
 			logger.warn("Cannot find MapProvider class attribute: " + GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
-			logger.info("MapProvider must be injected at execution time");
-			return null;
+			logger.warn("The default MapProvider implementation will be used: [" + className + "]");
 		}
 		logger.debug("Map provider class: " + className);
 		logger.debug("Map provider configuration: " + confSB);
@@ -151,9 +151,9 @@ public class GeoEngineComponentFactory {
 		}
 		className = (String)confSB.getAttribute(GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
 		if(className == null) {
+			className = GeoEngineConstants.DEFAULT_MAP_RENDERER;
 			logger.warn("Cannot find MapRenderer class attribute: " + GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
-			logger.info("MapRenderer must be injected at execution time");
-			return null;
+			logger.warn("The default MapRenderer implementation will be used: [" + className + "]");
 		}
 		logger.debug("Map renderer class: " + className);
 		logger.debug("Map renderer configuration: " + confSB);		
@@ -188,10 +188,10 @@ public class GeoEngineComponentFactory {
 		}
 		className = (String)confSB.getAttribute(GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
 		if(className == null) {
+			className = GeoEngineConstants.DEFAULT_DATAMART_PROVIDER;
 			logger.warn("Cannot find DatasetProvider class attribute: " + GeoEngineConstants.CLASS_NAME_ATTRIBUTE);
-			logger.info("DatasetProvider must be injected at execution time");
-			return null;
-		}
+			logger.warn("The default DataMartProvider implementation will be used: [" + className + "]");
+		} 
 		
 		logger.debug("Dataset provider class: " + className);
 		logger.debug("Dataset provider configuration: " + confSB);

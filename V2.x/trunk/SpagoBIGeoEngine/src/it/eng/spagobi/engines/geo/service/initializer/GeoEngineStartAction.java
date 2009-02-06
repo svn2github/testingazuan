@@ -28,7 +28,6 @@ import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.commons.presentation.DynamicPublisher;
 import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
@@ -132,14 +131,14 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 				geoEngineInstance.setAnalysisState( analysisState );
 			}
 			
-			//setAttribute(IS_DOC_COMPOSITION_MODE_ACTIVE, isDocumentCompositionModeActive); replaced with ...
 			if("TRUE".equalsIgnoreCase(isDocumentCompositionModeActive)){
 				setAttribute(DynamicPublisher.PUBLISHER_NAME, "SIMPLE_UI_PUBLISHER");
 			} else {
 				setAttribute(DynamicPublisher.PUBLISHER_NAME, "AJAX_UI_PUBLISHER");
 			}
-			setAttributeInSession(GEO_ENGINE_INSTANCE, geoEngineInstance);		
-		
+			
+			String id = getAttributeAsString("SBI_EXECUTION_ID");
+			setAttributeInSession(GEO_ENGINE_INSTANCE, geoEngineInstance);					
 		} catch (Exception e) {
 			if(e instanceof GeoEngineException) throw (GeoEngineException)e;
 			

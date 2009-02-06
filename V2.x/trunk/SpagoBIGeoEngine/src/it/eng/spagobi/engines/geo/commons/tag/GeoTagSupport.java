@@ -20,6 +20,12 @@
  **/
 package it.eng.spagobi.engines.geo.commons.tag;
 
+import it.eng.spago.base.SessionContainer;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
+import it.eng.spagobi.container.SpagoBIRequestContainer;
+import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
+import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
 import it.eng.spagobi.engines.geo.GeoEngineInstance;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 
@@ -34,19 +40,29 @@ import java.util.Map;
  */
 public class GeoTagSupport extends BaseTagSupport {
 	
+	protected ContextManager getContextManager() {
+		if(pageContext == null) {
+			return null;
+		}
+		
+		if(pageContext.getAttribute("contextManager") == null) {
+			IContextRetrieverStrategy contextRetriveStrategy;
+			SpagoBIHttpSessionContainer sessionHttpContainer = new SpagoBIHttpSessionContainer( getRequest().getSession() );
+			String executionId = getRequest().getParameter("SBI_EXECUTION_ID");
+			contextRetriveStrategy = new ExecutionContextRetrieverStrategy( executionId );
+			ContextManager conetxtManager = new ContextManager(sessionHttpContainer, contextRetriveStrategy);
+			pageContext.setAttribute("contextManager", conetxtManager );
+		}
+		return (ContextManager)pageContext.getAttribute("contextManager");
+	}
 	
-	/**
-	 * Gets the locale.
-	 * 
-	 * @return the locale
-	 */
 	protected GeoEngineInstance getEngineInstance() {
 		if(pageContext == null) {
 			return null;
 		}
 		
 		if(pageContext.getAttribute("engineInstance") == null) {
-			pageContext.setAttribute("engineInstance", getSessionContainer().getAttribute(EngineConstants.ENGINE_INSTANCE) );
+			pageContext.setAttribute("engineInstance", getContextManager().get(EngineConstants.ENGINE_INSTANCE) );
 		}
 		return (GeoEngineInstance)pageContext.getAttribute("engineInstance");
 	}

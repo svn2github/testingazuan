@@ -35,6 +35,9 @@ import org.apache.log4j.Logger;
  */
 public class GeoEngine {
 	
+	private static GeoEngineVersion version;
+	private static GeoEngineConfig config;	
+	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(GeoEngine.class);
 	
@@ -55,5 +58,15 @@ public class GeoEngine {
 		geoEngineInstance = new GeoEngineInstance(template, env);
 		logger.debug("OUT");
 		return geoEngineInstance;
+	}
+
+
+	public static GeoEngineVersion getVersion() {
+		return version;
+	}
+
+
+	public static GeoEngineConfig getConfig() {
+		return config;
 	}
 }

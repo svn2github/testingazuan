@@ -208,7 +208,7 @@ public class Hierarchy {
 		 * Instantiates a new level.
 		 */
 		public Level() {
-			link = new Link();
+			link = null;
 		}
 		
 		/**

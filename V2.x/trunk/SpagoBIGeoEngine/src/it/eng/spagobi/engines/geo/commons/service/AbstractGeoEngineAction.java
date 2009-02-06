@@ -45,7 +45,7 @@ public class AbstractGeoEngineAction extends AbstractEngineAction {
 	 * @return the geo engine instance
 	 */
 	public GeoEngineInstance getGeoEngineInstance() {
-		return (GeoEngineInstance)getAttributeFromSession( EngineConstants.ENGINE_INSTANCE );
+		return (GeoEngineInstance)getEngineInstance();
 	}
 	
 	

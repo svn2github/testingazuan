@@ -117,8 +117,7 @@ public class DataMartProvider extends AbstractDataMartProvider {
 			IDataStore dataStore = dataSet.getDataStore();
 			IDataStoreMetaData dataStoreMeta = dataStore.getMetaData();
 			dataStoreMeta.setIdField( dataStoreMeta.getFieldIndex( getSelectedLevel().getColumnId() ));
-			
-			System.out.println(dataStore.toXml());
+		
 			dataMart = new DataMart();
 			dataMart.setDataStore(dataStore);
 			try {

@@ -77,8 +77,10 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 	        port: '<%= request.getServerPort()%>',
 	        contextPath: '<%= request.getContextPath().startsWith("/")||request.getContextPath().startsWith("\\")?
 	        				  request.getContextPath().substring(1):
-	        				  request.getContextPath()%>'
+	        				  request.getContextPath()%>',
+	        execId: '<%= request.getParameter("SBI_EXECUTION_ID")%>'
     	};
+    	
     	
     	Sbi.geo.app.serviceRegistry = new Sbi.commons.ServiceRegistry({baseUrl: url});
     </script>

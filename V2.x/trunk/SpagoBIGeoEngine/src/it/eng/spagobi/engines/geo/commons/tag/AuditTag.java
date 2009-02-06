@@ -40,23 +40,25 @@ public class AuditTag extends GeoTagSupport {
 	public int doStartTag() throws JspException {
 		
 		try {
+			/*
 			String auditId = (String)getSessionContainer().getAttribute("SPAGOBI_AUDIT_ID");
 			AuditAccessUtils auditAccessUtils = 
 				(AuditAccessUtils) getSessionContainer().getAttribute("SPAGOBI_AUDIT_UTILS");
 			if (auditId != null) {
 				if (auditAccessUtils != null) {
-					/*				
+								
 					auditAccessUtils.updateAudit(auditId, 
 							null, 
 							new Long(System.currentTimeMillis()), 
 							"EXECUTION_PERFORMED", 
 							null, 
 							null);
-					*/
+					
 				}
 					
 				getSessionContainer().delAttribute("SPAGOBI_AUDIT_ID");
 			}
+			*/
 	    } catch (Exception ex) {
 	         throw new JspTagException(getClass().getName() + ": " + ex.getMessage());
 	    }

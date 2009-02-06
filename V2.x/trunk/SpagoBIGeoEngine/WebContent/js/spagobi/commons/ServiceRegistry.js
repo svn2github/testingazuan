@@ -34,7 +34,8 @@ Sbi.commons.ServiceRegistry = function(config) {
 		host: 'localhost',
         port: '8080',
         contextPath: 'SpagoBI',
-        controllerPath: 'servlet/AdapterHTTP' 
+        controllerPath: 'servlet/AdapterHTTP',
+        execId: -1 
     };
 	
 	Ext.apply(this, config);
@@ -53,7 +54,7 @@ Ext.extend(Sbi.commons.ServiceRegistry, Ext.util.Observable, {
     // public methods
     
     setBaseUrl : function(url) {
-       Ext.apply(baseUrl, url); 
+       Ext.apply(this.baseUrl, url); 
     }
         
     , getServiceUrl : function(actionName, absolute){
@@ -63,10 +64,11 @@ Ext.extend(Sbi.commons.ServiceRegistry, Ext.util.Observable, {
         if(absolute === undefined || absolute === false) {
         	baseUrlStr = 'AdapterHTTP';
         } else {
-        	baseUrlStr = baseUrl.protocol + "://" + baseUrl.host + ":" + baseUrl.port + "/" + baseUrl.contextPath + "/" + baseUrl.controllerPath;
+        	baseUrlStr = this.baseUrl.protocol + "://" + this.baseUrl.host + ":" + this.baseUrl.port + "/" + this.baseUrl.contextPath + "/" + this.baseUrl.controllerPath;
         }
         
-        serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName;
+        serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName + "&SBI_EXECUTION_ID=" + this.baseUrl.execId;
+        
         return serviceUrl;
     }     
 });

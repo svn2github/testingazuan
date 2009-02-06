@@ -59,7 +59,13 @@ public class AddLinkFieldTransformer implements IDataStoreTransformer {
 		Iterator it = dataStore.iterator();
 		while(it.hasNext()) {
 			IRecord record = (IRecord)it.next();
-			IField field = new Field( link.toXString(record, env) );			
+			IField field;
+			if(link != null) {
+				field = new Field( link.toXString(record, env) );	
+			} else {
+				field = new Field( Link.DEFAULT_BASE_URL );				
+			}
+					
 			record.appendField( field );
 		}
 		

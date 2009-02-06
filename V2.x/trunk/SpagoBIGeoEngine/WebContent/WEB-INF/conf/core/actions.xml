@@ -43,5 +43,13 @@
     		scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>	
+	
+	<ACTION name="GET_ENGINE_INFO_ACTION" 
+    		class="it.eng.spagobi.engines.geo.xservice.GetGeoEngineInfosAction" 
+    		scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
     
 </ACTIONS>

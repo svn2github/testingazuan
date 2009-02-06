@@ -21,11 +21,22 @@
 
 package it.eng.spagobi.engines.geo.commons.constants;
 
+import it.eng.spagobi.engines.geo.datamart.provider.DataMartProvider;
+import it.eng.spagobi.engines.geo.map.provider.SOMapProvider;
+import it.eng.spagobi.engines.geo.map.renderer.InteractiveMapRenderer;
+
 // TODO: Auto-generated Javadoc
 /**
  * Contains constant definitions.
  */
 public class GeoEngineConstants {
+	
+	
+	// DEFAULTS
+	
+	public static final String DEFAULT_DATAMART_PROVIDER = DataMartProvider.class.getName();
+	public static final String DEFAULT_MAP_PROVIDER = SOMapProvider.class.getName();
+	public static final String DEFAULT_MAP_RENDERER = InteractiveMapRenderer.class.getName();
 	
 	// TAGS	
 	/** The Constant MAP_PROVIDER_TAG. */
@@ -219,7 +230,7 @@ public class GeoEngineConstants {
 	/** The Constant TEXT_MIME_TYPE. */
 	public static final String TEXT_MIME_TYPE = "text/plan";
 
-	;
+
 	
 	
 		

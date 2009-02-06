@@ -45,6 +45,7 @@ import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.EngineStartServletIOManager;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.strings.StringUtils;
 
@@ -79,7 +80,7 @@ public class JobRunService extends AbstractEngineStartServlet {
 	private static transient Logger logger = Logger.getLogger(JobRunService.class);
 	
 	
-	public void doService() throws SpagoBIEngineException {
+	public void doService( EngineStartServletIOManager servletIOManager ) throws SpagoBIEngineException {
 		
 		RuntimeRepository runtimeRepository;
 		Job job;
@@ -88,15 +89,15 @@ public class JobRunService extends AbstractEngineStartServlet {
 		
 		try {		
 			
-			auditServiceStartEvent();
+			servletIOManager.auditServiceStartEvent();
 				
-			super.doService();
+			super.doService(servletIOManager);
 				
-			job = new Job( getTemplate() );			
+			job = new Job( servletIOManager.getTemplate() );			
 			runtimeRepository = TalendEngine.getRuntimeRepository();
 			
 			try {
-				runtimeRepository.runJob(job, getEnv());
+				runtimeRepository.runJob(job, servletIOManager.getEnv());
 			} catch (JobNotFoundException ex) {
 				logger.error(ex.getMessage());
 
@@ -123,7 +124,7 @@ public class JobRunService extends AbstractEngineStartServlet {
 			}
 
 			
-			tryToWriteBackToClient("etl.process.started");
+			servletIOManager.tryToWriteBackToClient("etl.process.started");
 			
 		} finally {
 			logger.debug("OUT");

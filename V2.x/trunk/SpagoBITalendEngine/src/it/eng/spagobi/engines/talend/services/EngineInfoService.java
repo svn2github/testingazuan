@@ -35,6 +35,7 @@ import java.util.Date;
 
 import it.eng.spagobi.engines.talend.TalendEngine;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.EngineStartServletIOManager;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 
@@ -59,7 +60,7 @@ public class EngineInfoService extends AbstractEngineStartServlet {
 	private static transient Logger logger = Logger.getLogger(EngineInfoService.class);
 	
 	
-	public void doService() throws SpagoBIEngineException {
+	public void doService(EngineStartServletIOManager servletIOManager) throws SpagoBIEngineException {
 		
 		String infoType;
 		String responseMessage;
@@ -68,7 +69,7 @@ public class EngineInfoService extends AbstractEngineStartServlet {
 		
 		try {	
 				
-			infoType = getParameterAsString(INFO_TYPE_PARAM_NAME);
+			infoType = servletIOManager.getParameterAsString(INFO_TYPE_PARAM_NAME);
 		
 			if(INFO_TYPE_VERSION.equalsIgnoreCase( infoType )) {
 				responseMessage = TalendEngine.getVersion().toString();
@@ -80,7 +81,7 @@ public class EngineInfoService extends AbstractEngineStartServlet {
 				responseMessage = TalendEngine.getVersion().getInfo();
 			}
 			
-			tryToWriteBackToClient( responseMessage );
+			servletIOManager.tryToWriteBackToClient( responseMessage );
 			
 		} finally {
 			logger.debug("OUT");

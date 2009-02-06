@@ -23,6 +23,10 @@ package it.eng.spagobi.qbe.commons.presentation.tag;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.IQuery;
 import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
+import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
+import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
 import it.eng.spagobi.qbe.QbeEngineConfig;
 import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
@@ -43,18 +47,29 @@ import java.util.Map;
 public class QbeTagSupport extends BaseTagSupport {
 	
 	
-	/**
-	 * Gets the locale.
-	 * 
-	 * @return the locale
-	 */
+	protected ContextManager getContextManager() {
+		if(pageContext == null) {
+			return null;
+		}
+		
+		if(pageContext.getAttribute("contextManager") == null) {
+			IContextRetrieverStrategy contextRetriveStrategy;
+			SpagoBIHttpSessionContainer sessionHttpContainer = new SpagoBIHttpSessionContainer( getRequest().getSession() );
+			String executionId = getRequest().getParameter("SBI_EXECUTION_ID");
+			contextRetriveStrategy = new ExecutionContextRetrieverStrategy( executionId );
+			ContextManager conetxtManager = new ContextManager(sessionHttpContainer, contextRetriveStrategy);
+			pageContext.setAttribute("contextManager", conetxtManager );
+		}
+		return (ContextManager)pageContext.getAttribute("contextManager");
+	}
+	
 	protected QbeEngineInstance getEngineInstance() {
 		if(pageContext == null) {
 			return null;
 		}
 		
 		if(pageContext.getAttribute("engineInstance") == null) {
-			pageContext.setAttribute("engineInstance", getSessionContainer().getAttribute(EngineConstants.ENGINE_INSTANCE) );
+			pageContext.setAttribute("engineInstance", getContextManager().get(EngineConstants.ENGINE_INSTANCE) );
 		}
 		return (QbeEngineInstance)pageContext.getAttribute("engineInstance");
 	}

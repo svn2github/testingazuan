@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 java.util.Iterator,
 				 it.eng.spago.base.SourceBean,
 				 it.eng.spago.security.IEngUserProfile,
-				 it.eng.spago.configuration.ConfigSingleton,it.engit.eng.spagobi.commons.utilitieses.PortletUtilities" %>
+				 it.eng.spago.configuration.ConfigSingleton,it.eng.spagobi.commons.utilities.PortletUtilities" %>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
@@ -41,7 +41,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%
 
-	SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+	//SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
 	IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	Collection roles = profile.getRoles();
 	boolean hasPortletEditPermissionRoles = false;

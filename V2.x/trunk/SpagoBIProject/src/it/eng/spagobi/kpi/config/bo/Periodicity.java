@@ -8,7 +8,7 @@ public class Periodicity {
     private Integer days;
     private Integer hours;
     private Integer minutes;
-    private String period;
+    private String cronString;
     
    
 	public Periodicity(Integer idKpiPeriodicity, String name, Integer months,
@@ -20,7 +20,7 @@ public class Periodicity {
 		this.days = days;
 		this.hours = hours;
 		this.minutes = minutes;
-		this.period = period;
+		this.cronString = period;
 	}
 
 
@@ -84,13 +84,14 @@ public class Periodicity {
 	}
 
 
-	public String getPeriod() {
-		return period;
+	public String getCronString() {
+		return cronString;
 	}
 
 
-	public void setPeriod(String period) {
-		this.period = period;
+	public void setCronString(String cronString) {
+		this.cronString = cronString;
 	}
+
     
 }

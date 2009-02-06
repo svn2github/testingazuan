@@ -65,16 +65,16 @@ public class ListKpiModule extends AbstractConfigurableListModule {
 		Kpi aKpi = (Kpi) obj;
 		String code = "";
 		String name = "";
-		String description = ""; 
+//		String description = ""; 
 		if (aKpi.getCode()!= null)
 			code = aKpi.getCode();
 		if (aKpi.getKpiName()!= null)
 			name = aKpi.getKpiName();
-		if (aKpi.getDescription()!= null)
-			description = aKpi.getDescription();
+//		if (aKpi.getDescription()!= null)
+//			description = aKpi.getDescription();
 		rowSB.setAttribute("CODE", code);
 		rowSB.setAttribute("NAME", name);
-		rowSB.setAttribute("DESCRIPTION", description);
+//		rowSB.setAttribute("DESCRIPTION", description);
 		rowSB.setAttribute("ID", aKpi.getKpiId());
 	}
 	

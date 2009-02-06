@@ -8,7 +8,7 @@ public class KpiInstance {
 	
 	Integer kpiInstanceId = null;
 	
-	Integer periodicityId = null;
+	Integer periodicityId = null;// kpiInstPeriodicyId
 	Integer chartTypeId = null;
 	Integer thresholdId = null;
 	String scaleCode = null;

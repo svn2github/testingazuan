@@ -12,7 +12,6 @@
       <COLUMNS>
         <COLUMN label="sbi.kpi.label.code" name="CODE" />
         <COLUMN label="sbi.kpi.label.name" name="NAME" />
-        <COLUMN label="sbi.kpi.label.description" name="DESCRIPTION" />
       </COLUMNS>
       <CAPTIONS>
         <SELECT_CAPTION confirm="FALSE" image="/img/detail.gif" label="sbi.kpi.caption.select">

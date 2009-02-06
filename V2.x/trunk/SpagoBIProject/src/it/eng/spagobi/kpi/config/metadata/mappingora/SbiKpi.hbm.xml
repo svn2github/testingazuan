@@ -32,7 +32,7 @@
             <column name="code" length="20" />
         </property>
         <property name="metric" type="string">
-            <column name="metric" length="20" />
+            <column name="metric" length="2000" />
         </property>
         <property name="description" type="string">
             <column name="description" />

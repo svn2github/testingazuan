@@ -29,11 +29,11 @@ public class PeriodicityDAOImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			SbiKpiPeriodicity hibKpiPeriodicity = (SbiKpiPeriodicity)aSession.load(SbiKpiPeriodicity.class,id);
-			/*TODO toReturn = new Periodicity(hibKpiPeriodicity
+			toReturn = new Periodicity(hibKpiPeriodicity
 					.getIdKpiPeriodicity(), hibKpiPeriodicity.getName(),
 					hibKpiPeriodicity.getMonths(), hibKpiPeriodicity
 							.getDays(), hibKpiPeriodicity.getHours(),
-					hibKpiPeriodicity.getMinutes(), hibKpiPeriodicity.getPeriod());*/
+					hibKpiPeriodicity.getMinutes(), hibKpiPeriodicity.getChronString());
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Periodicity with id " + ((id == null)?"":id.toString()), he);			
 
@@ -67,13 +67,13 @@ public class PeriodicityDAOImpl extends AbstractHibernateDAO implements
 			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
 				SbiKpiPeriodicity hibKpiPeriodicity = (SbiKpiPeriodicity) iterator
 						.next();
-				/*TODO Periodicity periodicity = new Periodicity(hibKpiPeriodicity
+				Periodicity periodicity = new Periodicity(hibKpiPeriodicity
 						.getIdKpiPeriodicity(), hibKpiPeriodicity.getName(),
 						hibKpiPeriodicity.getMonths(), hibKpiPeriodicity
 								.getDays(), hibKpiPeriodicity.getHours(),
 						hibKpiPeriodicity.getMinutes(), hibKpiPeriodicity
-								.getPeriod());
-				toReturn.add(periodicity); */
+								.getChronString());
+				toReturn.add(periodicity);
 			}
 
 		} catch (HibernateException he) {

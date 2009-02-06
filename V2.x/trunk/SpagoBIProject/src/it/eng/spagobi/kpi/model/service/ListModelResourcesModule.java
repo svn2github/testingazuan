@@ -1,11 +1,5 @@
 package it.eng.spagobi.kpi.model.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFUserError;
@@ -13,6 +7,11 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.utils.AbstractConfigurableListModule;
+
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 public class ListModelResourcesModule extends AbstractConfigurableListModule {
 

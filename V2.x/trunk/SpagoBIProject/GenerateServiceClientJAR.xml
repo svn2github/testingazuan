@@ -33,6 +33,13 @@
 				
 			</fileset>
 			
+			<fileset dir="./web-content/WEB-INF/classes"
+					includes="it/eng/spagobi/container/*,
+						it/eng/spagobi/container/strategy/*">
+			</fileset>
+			
+			
+			
 		    <fileset dir="./web-content/WEB-INF/classes"
 		             includes="it/eng/spagobi/services/audit/stub/AuditService.class,
                    it/eng/spagobi/services/audit/stub/AuditServiceService.class,
@@ -104,17 +111,7 @@
 		    	    it/eng/spagobi/services/cas/CasSsoService.class,
 				    it/eng/spagobi/commons/bo/UserProfile.class,
 		    	
-		    		it/eng/spagobi/commons/utilities/StringUtilities.class,
-		    	
-		    		it/eng/spagobi/container/AbstractContainer.class,
-		    		it/eng/spagobi/container/Context.class,
-		    		it/eng/spagobi/container/ContextManager.class,
-		    		it/eng/spagobi/container/IContainer.class,
-		    		it/eng/spagobi/container/ISessionContainer.class,
-		    		it/eng/spagobi/container/SpagoBIRequestContainer.class,
-		    		it/eng/spagobi/container/SpagoBISessionContainer.class,
-		    		it/eng/spagobi/container/strategy/IContextRetrieverStrategy.class,
-		    		it/eng/spagobi/container/strategy/ExecutionContextRetrieverStrategy.class"
+		    		it/eng/spagobi/commons/utilities/StringUtilities.class"
 		    />
 		</jar>
 	    	         	           

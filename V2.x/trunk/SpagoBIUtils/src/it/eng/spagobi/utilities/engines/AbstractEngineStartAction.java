@@ -37,6 +37,13 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.IBeanContainer;
+import it.eng.spagobi.container.IContainer;
+import it.eng.spagobi.container.SpagoBIRequestContainer;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
+import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSetServiceProxy;
@@ -63,7 +70,9 @@ import sun.misc.BASE64Decoder;
  *
  */
 public class AbstractEngineStartAction extends AbstractBaseHttpAction {
-		
+	
+	private ContextManager conetxtManager;
+	
 	private String userId;
 	private String userUniqueIdentifier;
 	private String auditId;
@@ -87,6 +96,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	public static final String USER_ID = IEngUserProfile.ENG_USER_PROFILE;
 	public static final String AUDIT_ID = "SPAGOBI_AUDIT_ID";
 	public static final String DOCUMENT_ID = "document";
+	public static final String SBI_EXECUTION_ID = "SBI_EXECUTION_ID";
 	
 	public static final String COUNTRY = "country";
 	public static final String LANGUAGE = "language";
@@ -104,23 +114,43 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     
     
     
-    /* (non-Javadoc)
-     * @see it.eng.spagobi.utilities.service.AbstractBaseHttpAction#init(it.eng.spago.base.SourceBean)
-     */
     public void init(SourceBean config) {
         super.init(config);
     } 
 	
-	/* (non-Javadoc)
-	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-	 */
+
 	public void service(SourceBean request, SourceBean response) throws SpagoBIEngineException {
-		setRequest(request);
-		setResponse(response);				
+		setSpagoBIRequestContainer(request);
+		setSpagoBIResponseContainer(response);				
 	}
 	
+	// all accesses to session into the engine's scope refer to HttpSession and not to Spago's SessionContainer
+	
+	public ContextManager getConetxtManager() {
+		if(conetxtManager == null) {
+			IContextRetrieverStrategy contextRetriveStrategy;
+			contextRetriveStrategy = new ExecutionContextRetrieverStrategy( getSpagoBIRequestContainer() );
+			conetxtManager = new ContextManager(super.getSpagoBIHttpSessionContainer(), contextRetriveStrategy);
+		}
+		
+		List list = conetxtManager.getKeys();
+		
+		return conetxtManager;
+	}
+	
+	
+	public IBeanContainer getSpagoBISessionContainer() {
+		return getSpagoBIHttpSessionContainer();
+	}
+	
+	
+	public IBeanContainer getSpagoBIHttpSessionContainer() {
+		return getConetxtManager();
+	}
+	
+	
 	public UserProfile getUserProfile() {
-		return (UserProfile) getAttributeFromHttpSession( USER_ID ); 
+		return (UserProfile) getAttributeFromSession( USER_ID ); 
 	}
 
     public String getUserId() {
@@ -150,8 +180,6 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
      */
     public String getAuditId() {    	
     	if(auditId == null) {
-    		auditId = (String)getAttribute( AUDIT_ID );
-    		auditId = (String)getHttpRequest().getAttribute( AUDIT_ID );
     		auditId = getHttpRequest().getParameter( AUDIT_ID );
     	}
     	return auditId;
@@ -167,7 +195,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     	String documentIdInSection = null;
     
     	if(documentId == null) {
-	    	documentIdInSection = getAttributeFromHttpSessionAsString( DOCUMENT_ID );
+	    	documentIdInSection = getAttributeFromSessionAsString( DOCUMENT_ID );
 	    	logger.debug("documentId in Session:" + documentIdInSection);
 	    	
 	    	if( requestContainsAttribute( DOCUMENT_ID ) ) {
@@ -356,7 +384,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     	
    public ContentServiceProxy getContentServiceProxy() {
 	   if(contentProxy == null) {
-		   contentProxy = new ContentServiceProxy(getUserIdentifier(), getHttpRequest().getSession());
+		   contentProxy = new ContentServiceProxy(getUserIdentifier(), getHttpSession());
 	   }	   
 	    
 	   return contentProxy;
@@ -364,7 +392,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
    
    public AuditServiceProxy getAuditServiceProxy() {
 	   if(auditProxy == null) {
-		   auditProxy = new AuditServiceProxy(getAuditId(), getUserIdentifier(), getHttpRequest().getSession());
+		   auditProxy = new AuditServiceProxy(getAuditId(), getUserIdentifier(), getHttpSession());
 	   }	   
 	    
 	   return auditProxy;
@@ -391,7 +419,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
    public Map getEnv() {
 	   Map env = new HashMap();
 	   
-	   copyRequestParametersIntoEnv(env, getRequest());
+	   copyRequestParametersIntoEnv(env, getSpagoBIRequestContainer());
 	   env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
 	   env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
 	   env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, getContentServiceProxy());
@@ -407,7 +435,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	 * @param env the env
 	 * @param serviceRequest the service request
 	 */
-	public void copyRequestParametersIntoEnv(Map env, SourceBean serviceRequest) {
+	public void copyRequestParametersIntoEnv(Map env, IContainer request) {
 		Set parameterStopList = null;
 		List requestParameters = null;
 		
@@ -424,7 +452,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 		parameterStopList.add("auditId");
 		
 		
-		requestParameters = serviceRequest.getContainedAttributes();
+		requestParameters = ((SpagoBIRequestContainer)request).getRequest().getContainedAttributes();
 		for(int i = 0; i < requestParameters.size(); i++) {
 			SourceBeanAttribute attrSB = (SourceBeanAttribute)requestParameters.get(i);
 			logger.debug("Parameter [" + attrSB.getKey() + "] has been read from request");

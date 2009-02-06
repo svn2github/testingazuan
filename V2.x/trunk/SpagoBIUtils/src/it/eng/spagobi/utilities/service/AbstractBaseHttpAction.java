@@ -46,6 +46,14 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
+import it.eng.spagobi.container.IBeanContainer;
+import it.eng.spagobi.container.IContainer;
+import it.eng.spagobi.container.SpagoBIRequestContainer;
+import it.eng.spagobi.container.SpagoBIResponseContainer;
+import it.eng.spagobi.container.SpagoBISessionContainer;
+import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -59,11 +67,12 @@ import org.json.JSONObject;
  *
  */
 public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
-	private SourceBean request;
-	private SourceBean response;
 	
-	public static final String TRUE = "TRUE";
-	public static final String FALSE = "FALSE";
+	private SpagoBIRequestContainer spagoBIRequestContainer;
+	private SpagoBIResponseContainer spagoBIResponseContainer;
+	private SpagoBISessionContainer spagoBISessionContainer;
+	private SpagoBIHttpSessionContainer spagoHttpBISessionContainer;
+	
 	
 	/**
      * Logger component
@@ -76,179 +85,73 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
     } 
 	
 
-	// REQUEST utility methods
-	
-	protected SourceBean getRequest() {
-		return request;
-	}
-
-	protected void setRequest(SourceBean request) {
-		this.request = request;
-	}
-
-	protected SourceBean getResponse() {
-		return response;
-	}
-
-	protected void setResponse(SourceBean response) {
-		this.response = response;
-	}
+	// =================================================================================================
+	// REQUEST utility methods 
+	// =================================================================================================
 	
 	
-	public Object getAttribute(String attrName) {
-		return request.getAttribute(attrName);
-	}
-	
-
-	public String getAttributeAsString(String attrName) {
-		if ( requestContainsAttribute(attrName) ) {
-			return getAttribute(attrName).toString();
-		}
+	protected SpagoBIRequestContainer getSpagoBIRequestContainer() {
+		return spagoBIRequestContainer;
 		
-		return null;
+	}
+
+	protected void setSpagoBIRequestContainer(SourceBean request) {
+		spagoBIRequestContainer = new SpagoBIRequestContainer( request );
 	}
 	
+	public boolean requestContainsAttribute(String attrName) {		
+		return !getSpagoBIRequestContainer().isNull( attrName );
+	}
+	
+	public boolean requestContainsAttribute(String attrName, String attrValue) {
+		return ( requestContainsAttribute(attrName) && getAttribute(attrName).toString().equalsIgnoreCase(attrValue) );
+	}
+		
+	public Object getAttribute(String attrName) {
+		return getSpagoBIRequestContainer().get(attrName);
+	}
+	
+	public String getAttributeAsString(String attrName) {
+		return getSpagoBIRequestContainer().getString( attrName );
+	}
+	
+	public Integer getAttributeAsInteger(String attrName) {
+		return getSpagoBIRequestContainer().getInteger( attrName );
+	}
 	
 	public boolean getAttributeAsBoolean(String attrName) {
 		return getAttributeAsBoolean(attrName, false);
 	}
 
-	/**
-	 * Gets the attribute as boolean.
-	 * 
-	 * @param attrName the attr name
-	 * @param defaultValue the default value
-	 * 
-	 * @return the attribute as boolean
-	 */
 	public boolean getAttributeAsBoolean(String attrName, boolean defaultValue) {
 		if( getAttribute(attrName) == null ) return defaultValue;
-		return getAttributeAsString(attrName).equalsIgnoreCase(TRUE);
-	}
-	
-	/**
-	 * Gets the attribute as integer.
-	 * 
-	 * @param attrName the attr name
-	 * 
-	 * @return the attribute as integer
-	 */
-	public Integer getAttributeAsInteger(String attrName) {
-		Integer attrValue;
-		
-		if( !requestContainsAttribute(attrName) ) return null;
-		try {
-			attrValue = new Integer( getAttributeAsString(attrName) );
-		} catch(NumberFormatException e) {
-			logger.warn("Impossible to convert request parameter " + attrName 
-					+ " whose value is " + getAttributeAsString(attrName)
-					+ " to an integer", e);
-			
-			attrValue = null;
-		}
-		
-		return attrValue;
+		return getSpagoBIRequestContainer().getBoolean( attrName ).booleanValue();
 	}
 	
 	public List getAttributeAsStringList(String attrName) {
-		List attrValue = null;
-		Object rawAttrValue;
-		
-		if( !requestContainsAttribute(attrName) ) return null;
-		
-		rawAttrValue = getAttribute(attrName);		
-		if(rawAttrValue != null) {
-			if(rawAttrValue instanceof ArrayList) {
-				attrValue = (List)rawAttrValue;
-			} else if (rawAttrValue instanceof String) {
-				attrValue = new ArrayList();
-				attrValue.add( rawAttrValue );
-			} else {
-				attrValue = new ArrayList();
-				attrValue.add(rawAttrValue.toString());
-			}
-		}
-		
-		return attrValue;		
+		return getSpagoBIRequestContainer().getList( attrName );
 	}
 	
 	public List getAttributeAsCsvStringList(String attrName, String separator) {
-		List attrValue = new ArrayList();
-		
-		if( !requestContainsAttribute(attrName) ) return null;
-		try {
-			String[] chunks = getAttributeAsString(attrName).split(separator);
-			for(int i = 0; i < chunks.length; i++) {
-				logger.info("Chunks " + i + ":" +  chunks[i]);
-				attrValue.add(chunks[i].trim());
-			}
-			
-		} catch (Exception e) {
-			logger.warn("Impossible to convert request parameter " + attrName 
-					+ " whose value is " + getAttributeAsString(attrName)
-					+ " to list", e);
-		}
-		
-		return attrValue;		
+		return getSpagoBIRequestContainer().toCsvList( attrName );
 	}
 	
 	public JSONObject getAttributeAsJSONObject(String attrName) {
-		JSONObject attrValue = null;
-		
-		if( !requestContainsAttribute(attrName) ) return null;
-		try {
-			attrValue = new JSONObject(getAttributeAsString(attrName));
-		} catch (Exception e) {
-			logger.warn("Impossible to convert request parameter " + attrName 
-					+ " whose value is " + getAttributeAsString(attrName)
-					+ " to JSONObject", e);
-		}
-		
-		return attrValue;		
-	}
+		return getSpagoBIRequestContainer().toJSONObject( attrName );
+	}	
 	
 	
-	
-	/**
-	 * Del attribute.
-	 * 
-	 * @param attrName the attr name
-	 */
-	public void delAttribute(String attrName) {
-		if( requestContainsAttribute(attrName) ) {
-			try {
-				request.delAttribute(attrName);
-			} catch (SourceBeanException e) {
-				logger.warn("Impossible to delete parameter " + attrName + " from request", e);
-			}
-		}
-	}
-	
-	/**
-	 * Request contains attribute.
-	 * 
-	 * @param attrName the attr name
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean requestContainsAttribute(String attrName) {
-		return (getAttribute(attrName) != null);
-	}
-	
-	/**
-	 * Request contains attribute.
-	 * 
-	 * @param attrName the attr name
-	 * @param attrValue the attr value
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean requestContainsAttribute(String attrName, String attrValue) {
-		return ( requestContainsAttribute(attrName) && getAttribute(attrName).toString().equalsIgnoreCase(attrValue) );
-	}
-	
-	
+	// =================================================================================================
 	// RESPONSE utility methods
+	// =================================================================================================
+	
+	protected SpagoBIResponseContainer getSpagoBIResponseContainer() {
+		return this.spagoBIResponseContainer;
+	}
+
+	protected void setSpagoBIResponseContainer(SourceBean response) {
+		this.spagoBIResponseContainer = new SpagoBIResponseContainer( response );
+	}
 	
 	/**
 	 * Sets the attribute.
@@ -257,11 +160,25 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 	 * @param value the value
 	 */
 	public void setAttribute(String key, Object value) {
+		getSpagoBIResponseContainer().set(key, value);
+	}
+	
+	public boolean tryToWriteBackToClient(String message) {
 		try {
-			response.setAttribute(key, value);
-		} catch (SourceBeanException e) {
-			e.printStackTrace();
+			writeBackToClient(message);
+		} catch (IOException e) {
+			logger.error("Impossible to write back to the client the message: [" + message + "]", e);
+			return false;
 		}
+		
+		return true;
+	}
+	
+	public void writeBackToClient(String message) throws IOException {
+		writeBackToClient(200, message,
+				true,
+				"service-response",
+				"text/plain");
 	}
 	
 	public void writeBackToClient(IServiceResponse response) throws IOException {
@@ -324,181 +241,107 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 	}
 	
 	
-	// SESSION utility methods	
+	// =================================================================================================
+	// SESSION utility methods
+	// =================================================================================================
 	
-	/**
-	 * Gets the session.
-	 * 
-	 * @return the session
-	 */
-	public SessionContainer getSession() {
+	public SessionContainer getSessionContainer() {
 		return getRequestContainer().getSessionContainer();
 	}
 	
-	/**
-	 * Gets the attribute from session.
-	 * 
-	 * @param attrName the attr name
-	 * 
-	 * @return the attribute from session
-	 */
-	public Object getAttributeFromSession(String attrName) {
-		return getSession().getAttribute(attrName);
-	}
-	
-	/**
-	 * Gets the attribute from session as string.
-	 * 
-	 * @param attrName the attr name
-	 * 
-	 * @return the attribute from session as string
-	 */
-	public String getAttributeFromSessionAsString(String attrName) {
-		if(sessionContainsAttribute(attrName)) {
-			return getAttributeFromSession(attrName).toString();
+	public IBeanContainer getSpagoBISessionContainer() {
+		if(spagoBISessionContainer == null) {
+			spagoBISessionContainer = new SpagoBISessionContainer( getSessionContainer() );
 		}
 		
-		return null;
+		return spagoBISessionContainer;
 	}
 	
-	/**
-	 * Gets the attribute from session as boolean.
-	 * 
-	 * @param key the key
-	 * 
-	 * @return the attribute from session as boolean
-	 */
-	public boolean getAttributeFromSessionAsBoolean(String key) {
-		return getAttributeFromSessionAsBoolean(key, false);
+	public boolean sessionContainsAttribute(String attrName) {
+		return !getSpagoBISessionContainer().isNull(attrName);
+	}
+		
+	public Object getAttributeFromSession(String attrName) {
+		return getSpagoBISessionContainer().get( attrName );
 	}
 
-	/**
-	 * Gets the attribute from session as boolean.
-	 * 
-	 * @param key the key
-	 * @param defaultValue the default value
-	 * 
-	 * @return the attribute from session as boolean
-	 */
-	public boolean getAttributeFromSessionAsBoolean(String key, boolean defaultValue) {
-		if( getAttributeFromSession(key) == null ) return defaultValue;
-		return getAttributeFromSessionAsString(key).equalsIgnoreCase(TRUE);
+	public String getAttributeFromSessionAsString(String attrName) {
+		return getSpagoBISessionContainer().getString( attrName );
+	}
+
+	public boolean getAttributeFromSessionAsBoolean(String attrName) {
+		return getAttributeFromSessionAsBoolean(attrName, false);
+	}
+
+	public boolean getAttributeFromSessionAsBoolean(String attrName, boolean defaultValue) {
+		if( !sessionContainsAttribute(attrName) ) return defaultValue;
+		return getSpagoBISessionContainer().getBoolean( attrName ).booleanValue();
 	}
 	
-	/**
-	 * Del attribute from session.
-	 * 
-	 * @param attrName the attr name
-	 */
 	public void delAttributeFromSession(String attrName) {
-		if(getAttributeFromSession(attrName) != null) {
-			getSession().delAttribute(attrName);
+		if( sessionContainsAttribute(attrName) ) {
+			getSpagoBISessionContainer().remove(attrName);
 		}
 	}
 		
-	/**
-	 * Sets the attribute in session.
-	 * 
-	 * @param attrName the attr name
-	 * @param attrValue the attr value
-	 */
+	
 	public void setAttributeInSession(String attrName, Object attrValue) {
 		delAttributeFromSession(attrName);
-		getSession().setAttribute(attrName, attrValue);
+		getSpagoBISessionContainer().set(attrName, attrValue);
 	}	
 	
-	/**
-	 * Session contains attribute.
-	 * 
-	 * @param attrName the attr name
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean sessionContainsAttribute(String attrName) {
-		return getAttributeFromSession(attrName) != null;
-	}
+	
+	// =================================================================================================
+	// HTTP-SESSION utility methods
+	// =================================================================================================
 	
 	
-
-	
-	
-	// HTTP-SESSION utility methods	
-	
-	/**
-	 * Gets the http session.
-	 * 
-	 * @return the http session
-	 */
-	public HttpSession getHttpSession() {
+	public HttpSession getHttpSession() {		
 		return getHttpRequest().getSession();
 	}
 	
-	/**
-	 * Gets the attribute from http session.
-	 * 
-	 * @param attrName the attr name
-	 * 
-	 * @return the attribute from http session
-	 */
+	public IBeanContainer getSpagoBIHttpSessionContainer() {
+		if(spagoHttpBISessionContainer == null) {
+			spagoHttpBISessionContainer = new SpagoBIHttpSessionContainer( getHttpSession() );
+		}
+		
+		return spagoHttpBISessionContainer;
+	}
+	
+	public boolean httpSessionContainsAttribute(String attrName) {
+		return !getSpagoBIHttpSessionContainer().isNull(attrName);
+	}
+	
+	
 	public Object getAttributeFromHttpSession(String attrName) {
-		return getHttpSession().getAttribute(attrName);
+		return getSpagoBIHttpSessionContainer().get(attrName);
 	}
 	
-	/**
-	 * Gets the attribute from http session as string.
-	 * 
-	 * @param attrName the attr name
-	 * 
-	 * @return the attribute from http session as string
-	 */
+	
 	public String getAttributeFromHttpSessionAsString(String attrName) {
-		return (String)getAttributeFromHttpSession(attrName);
+		return getSpagoBIHttpSessionContainer().getString(attrName);
 	}
 	
-	/**
-	 * Gets the attribute from http session as boolean.
-	 * 
-	 * @param key the key
-	 * 
-	 * @return the attribute from http session as boolean
-	 */
-	public boolean getAttributeFromHttpSessionAsBoolean(String key) {
-		return getAttributeFromHttpSessionAsBoolean(key, false);
+	
+	public boolean getAttributeFromHttpSessionAsBoolean(String attrName) {
+		return getAttributeFromHttpSessionAsBoolean(attrName, false);
 	}
 
-	/**
-	 * Gets the attribute from http session as boolean.
-	 * 
-	 * @param key the key
-	 * @param defaultValue the default value
-	 * 
-	 * @return the attribute from http session as boolean
-	 */
-	public boolean getAttributeFromHttpSessionAsBoolean(String key, boolean defaultValue) {
-		if( getAttributeFromSession(key) == null ) return defaultValue;
-		return getAttributeFromSessionAsString(key).equalsIgnoreCase(TRUE);
+	
+	public boolean getAttributeFromHttpSessionAsBoolean(String attrName, boolean defaultValue) {
+		if( !httpSessionContainsAttribute(attrName) ) return defaultValue;
+		return getSpagoBIHttpSessionContainer().getBoolean( attrName ).booleanValue();
 	}
 	
-	/**
-	 * Del attribute from http session.
-	 * 
-	 * @param attrName the attr name
-	 */
 	public void delAttributeFromHttpSession(String attrName) {
-		if(getAttributeFromHttpSession(attrName) != null) {
-			getHttpSession().removeAttribute(attrName);
+		if( httpSessionContainsAttribute(attrName) ) {
+			getSpagoBIHttpSessionContainer().remove(attrName);
 		}
 	}
 		
-	/**
-	 * Sets the attribute in http session.
-	 * 
-	 * @param attrName the attr name
-	 * @param attrValue the attr value
-	 */
 	public void setAttributeInHttpSession(String attrName, Object attrValue) {
 		delAttributeFromHttpSession(attrName);
-		getHttpSession().setAttribute(attrName, attrValue);
+		getSpagoBIHttpSessionContainer().set(attrName, attrValue);
 	}	
 
 }

@@ -36,6 +36,7 @@ import java.io.IOException;
 
 import it.eng.spagobi.utilities.container.HttpServletRequestContainer;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.BaseServletIOManager;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 import javax.servlet.ServletConfig;
@@ -52,11 +53,7 @@ import org.apache.log4j.Logger;
  *
  */
 public abstract class AbstractBaseServlet extends HttpServlet {
-	private HttpServletRequestContainer requestContainer;
-	private HttpServletResponse response;
 	
-	public static final String TRUE = "TRUE";
-	public static final String FALSE = "FALSE";
 	
 	 /**
      * Logger component
@@ -70,109 +67,33 @@ public abstract class AbstractBaseServlet extends HttpServlet {
     }
     
     public void service(HttpServletRequest request, HttpServletResponse response) {
-    	this.setRequest(request);
-    	this.setResponse(response);
+    	BaseServletIOManager servletIOManager;
+    	
+    	servletIOManager = new BaseServletIOManager(request, response);
     	
     	try {
-    		String str = this.getClass().getName();
-			this.doService();
+			this.doService( servletIOManager );
 		} catch (Throwable t) {
-			handleException(t);
+			handleException(servletIOManager, t);
 		}
     }
     
-    public abstract void doService() throws SpagoBIEngineException;
+    public abstract void doService(BaseServletIOManager servletIOManager) throws SpagoBIEngineException;
     
-    public abstract void handleException(Throwable t);
+    public abstract void handleException(BaseServletIOManager servletIOManager, Throwable t);
 	
 	
-    ///////////////////////////////////////////////////////////
-    // REQUEST
-    ///////////////////////////////////////////////////////////
-	protected HttpServletRequest getRequest() {
-		return requestContainer.getRequest();
-	}
-	protected void setRequest(HttpServletRequest request) {
-		if(requestContainer == null) {
-			requestContainer = new HttpServletRequestContainer(request);
-		} else {
-			this.requestContainer.setRequest(request);
-		}
-		
-	}
-	
-	protected Object getParameter(String parName) {
-		return requestContainer.getProperty(parName);
-	}
-	
-	protected String getParameterAsString(String parName) {
-		return requestContainer.getPropertyAsString(parName);
-	}
-	
-	protected boolean requestContainsParameter(String parName) {
-		return requestContainer.containsProperty( parName );
-	}
+    
 	
 	
 	
 	
 	
-	///////////////////////////////////////////////////////////
-    // RESPONSE
-    ///////////////////////////////////////////////////////////
-	protected HttpServletResponse getResponse() {
-		return response;
-	}
-	protected void setResponse(HttpServletResponse response) {
-		this.response = response;
-	}
-	
-	public boolean tryToWriteBackToClient(String message) {
-		try {
-			writeBackToClient(message);
-		} catch (IOException e) {
-			logger.error("Impossible to write back to the client the message: [" + message + "]", e);
-			return false;
-		}
-		
-		return true;
-	}
-	
-	public void writeBackToClient(String message) throws IOException {
-		writeBackToClient(200, message,
-				true,
-				"service-response",
-				"text/plain");
-	}
-	
-	public void writeBackToClient(int statusCode, String content, boolean inline, String fileName, String contentType) throws IOException {
-		
-		// setup response header
-		getResponse().setHeader("Content-Disposition", (inline?"inline":"attachment") + "; filename=\"" + fileName + "\";");
-		getResponse().setContentType( contentType );
-		getResponse().setContentLength( content.length() );
-		getResponse().setStatus(statusCode);
-		
-		getResponse().getWriter().print(content);
-		getResponse().getWriter().flush();
-	}
 	
 	
 	
 	
-	///////////////////////////////////////////////////////////
-    // SESSION
-    ///////////////////////////////////////////////////////////	
-	protected HttpSession getHttpSession() {
-		return getRequest().getSession();
-	}
 	
-	protected Object getAttributeFromHttpSession(String attrName) {
-		return getHttpSession().getAttribute( attrName );
-	}
 	
-	public String getAttributeFromHttpSessionAsString(String attrName) {
-		return (String)getAttributeFromHttpSession(attrName);
-	}
 	
 }

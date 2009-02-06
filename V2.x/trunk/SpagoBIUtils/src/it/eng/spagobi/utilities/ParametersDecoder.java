@@ -32,9 +32,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities;
 
+import it.eng.spagobi.container.IContainer;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -268,6 +271,32 @@ public class ParametersDecoder {
 			String key = (String) enumer.nextElement();
 			Object value = null;
 			String valueStr = servletRequest.getParameter(key);
+			logger.debug("Found request parameter with key = [" + key + "] and value = [" + valueStr + "]");
+			try {
+				if (decoder.isMultiValues(valueStr)) {
+				    value = decoder.getOriginalValues(valueStr).toArray();
+				} else {
+					value = valueStr;
+				}
+			} catch (Exception e) {
+				logger.error("Error while decoding parameter with key = [" + key + "] and value = [" + valueStr + "]. It will be not decoded");
+				value = valueStr;
+			}
+			requestParameters.put(key, value);
+		}
+		logger.debug("OUT");
+		return requestParameters;
+	}
+	
+	public static HashMap getDecodedRequestParameters(IContainer requestContainer) {
+		logger.debug("IN");
+		HashMap requestParameters = new HashMap();
+		ParametersDecoder decoder = new ParametersDecoder();
+		Iterator it = requestContainer.getKeys().iterator();
+		while (it.hasNext()) {
+			String key = (String) it.next();
+			Object value = null;
+			String valueStr = requestContainer.getString(key);
 			logger.debug("Found request parameter with key = [" + key + "] and value = [" + valueStr + "]");
 			try {
 				if (decoder.isMultiValues(valueStr)) {

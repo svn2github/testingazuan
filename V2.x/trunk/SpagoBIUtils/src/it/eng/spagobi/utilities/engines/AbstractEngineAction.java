@@ -33,10 +33,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 package it.eng.spagobi.utilities.engines;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.IBeanContainer;
+import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
+import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -47,6 +52,8 @@ import org.apache.log4j.Logger;
  *
  */
 public class AbstractEngineAction extends AbstractBaseHttpAction {
+	
+	private ContextManager conetxtManager;
 	
 	public static final String PUBLIC_SCOPE = "Public";
 	public static final String PRIVATE_SCOPE = "Private";
@@ -62,9 +69,33 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
     } 
 	
 	public void service(SourceBean request, SourceBean response) {
-		setRequest( request );
-		setResponse( response );
+		setSpagoBIRequestContainer( request );
+		setSpagoBIResponseContainer( response );
 	}	
+	
+	// all accesses to session into the engine's scope refer to HttpSession and not to Spago's SessionContainer
+	
+	public ContextManager getConetxtManager() {
+		if(conetxtManager == null) {
+			IContextRetrieverStrategy contextRetriveStrategy;
+			contextRetriveStrategy = new ExecutionContextRetrieverStrategy( getSpagoBIRequestContainer() );
+			conetxtManager = new ContextManager(super.getSpagoBIHttpSessionContainer(), contextRetriveStrategy);
+		}
+		
+		List list = conetxtManager.getKeys();
+		
+		return conetxtManager;
+	}
+	
+	
+	public IBeanContainer getSpagoBISessionContainer() {
+		return getSpagoBIHttpSessionContainer();
+	}
+	
+	
+	public IBeanContainer getSpagoBIHttpSessionContainer() {
+		return getConetxtManager();
+	}
 	
 	public IEngineInstance getEngineInstance() {
     	return (IEngineInstance)getAttributeFromSession( EngineConstants.ENGINE_INSTANCE );
@@ -160,57 +191,4 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 	public AuditServiceProxy getAuditServiceProxy() {
 		return (AuditServiceProxy)getEnv().get(EngineConstants.ENV_AUDIT_SERVICE_PROXY);
 	}
-	
-	/*
-	
-	public String getUserId() {
-		return getAttributeFromSessionAsString( EngineConstants.USER_ID );
-	}
-	
-	
-	public void setUserId(String userId) {
-		setAttributeInSession(EngineConstants.USER_ID,userId);
-	}	
-	
-	
-	public String getDocumentId() {
-		return getAttributeFromSessionAsString( EngineConstants.DOCUMENT_ID );
-	}
-	
-	
-	public void setDocumentId(String documentId) {
-		setAttributeInSession(EngineConstants.DOCUMENT_ID,documentId);
-	}
-	
-	
-	public String getAuditId() {
-		return getAttributeFromSessionAsString( EngineConstants.AUDIT_ID );
-	}
-	
-	
-	public void setAuditId(String auditId) {
-		setAttributeInSession(EngineConstants.AUDIT_ID,auditId);
-	}
-	
-	
-	public EngineAnalysisMetadata getAnalysisMetadata() {
-		return (EngineAnalysisMetadata)getAttributeFromSession( EngineConstants.ANALYSIS_METADATA );
-	}
-	
-	
-	public void setAnalysisMetadata(EngineAnalysisMetadata analysisMetadata) {
-		setAttributeInSession(EngineConstants.ANALYSIS_METADATA,analysisMetadata);
-	}
-	
-	
-	public IEngineAnalysisState getAnalysisState() {
-		return (IEngineAnalysisState)getAttributeFromSession( EngineConstants.ANALYSIS_STATE );
-	}
-	
-	
-	public void setAnalysisState(IEngineAnalysisState analysisState) {
-		setAttributeInSession(EngineConstants.ANALYSIS_STATE,analysisState);
-	}
-	
-	*/
 }

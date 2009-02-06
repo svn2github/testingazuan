@@ -10,7 +10,6 @@
         overflowToDisk="true"
         diskPersistent="false"
         diskExpiryThreadIntervalSeconds="120"
-        memoryStoreEvictionPolicy="LRU"
         />
         
     <cache name="it.eng.spagobi.commons.metadata.SbiDomains"

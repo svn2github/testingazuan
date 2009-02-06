@@ -6,12 +6,13 @@ it.eng.spagobi.engines.qbe.serviceregistry.module = function(){
 	// do NOT access DOM from here; elements don't exist yet
  
     // private variables
-    var baseUrl = {
+    this.baseUrl = {
 		protocol: 'http',       
-		host: '1313',
+		host: 'localhost',
         port: '8080',
-        contextPath: 'SpagoBIQbeEngine',
-        controllerPath: 'servlet/AdapterHTTP' 
+        contextPath: 'SpagoBI',
+        controllerPath: 'servlet/AdapterHTTP',
+        execId: -1 
     };
     
  
@@ -36,8 +37,8 @@ it.eng.spagobi.engines.qbe.serviceregistry.module = function(){
         		baseUrlStr = baseUrl.protocol + "://" + baseUrl.host + ":" + baseUrl.port + "/" + baseUrl.contextPath + "/" + baseUrl.controllerPath;
         	}
         	
-        	serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName;
-        	//alert("Service invocation: " + serviceUrl); 
+        	serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName + "&SBI_EXECUTION_ID=" + baseUrl.execId;
+        	
         	return serviceUrl;
         }       
         

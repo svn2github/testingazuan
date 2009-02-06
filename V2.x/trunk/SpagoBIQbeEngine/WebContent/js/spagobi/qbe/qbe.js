@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
  
 // reference local blank image
-Ext.BLANK_IMAGE_URL = '../js/ext/resources/images/default/s.gif';
+Ext.BLANK_IMAGE_URL = '../js/lib/ext-2.0.1/resources/images/default/s.gif';
 
  
 // create namespace

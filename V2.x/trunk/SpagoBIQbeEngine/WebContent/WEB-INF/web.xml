@@ -147,31 +147,27 @@
     
     
 	<session-config>
-		<session-timeout>240</session-timeout>
+		<session-timeout>30</session-timeout>
 	</session-config>
 	
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>index.htm</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
-		<welcome-file>default.html</welcome-file>
-		<welcome-file>default.htm</welcome-file>
-		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
+    
+  	<error-page>
+    	<error-code>404</error-code>
+    	<location>/jsp/errors/error404.jsp</location>
+  	</error-page> 
 	
-	  <error-page>
-	  	<exception-type>java.lang.Throwable</exception-type>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
 	  	<location>/html/error.html</location>
-	  </error-page>
+	</error-page>
 		 
-	  <error-page>
-	  	<error-code>404</error-code>
+	  
+	<error-page>
+		<error-code>500</error-code>
 	  	<location>/html/error.html</location>
-	  </error-page>
-  
-	  <error-page>
-	  	<error-code>500</error-code>
-	  	<location>/html/error.html</location>
-	  </error-page>
+	</error-page>
 	
 </web-app>

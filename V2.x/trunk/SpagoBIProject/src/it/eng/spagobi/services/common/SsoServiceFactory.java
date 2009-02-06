@@ -38,6 +38,6 @@ public abstract class SsoServiceFactory {
      * @return IProxyService
      */
     public static final SsoServiceInterface createProxyService(){
-	return new CasSsoService();
+    	return new CasSsoService();
     }
 }

@@ -21,25 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.dataset.service;
 
+import it.eng.spagobi.services.common.AbstractServiceImpl;
+import it.eng.spagobi.services.dataset.DataSetService;
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+
 import org.apache.log4j.Logger;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.services.common.AbstractServiceImpl;
-import it.eng.spagobi.services.common.SsoServiceFactory;
-import it.eng.spagobi.services.common.SsoServiceInterface;
-import it.eng.spagobi.services.dataset.DataSetService;
-import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
-import it.eng.spagobi.services.datasource.DataSourceService;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
-import it.eng.spagobi.services.datasource.service.DataSourceServiceImpl;
-import it.eng.spagobi.services.datasource.service.DataSourceSupplier;
-import it.eng.spagobi.services.security.exceptions.SecurityException;
-import it.eng.spagobi.tools.dataset.bo.ConfigurableDataSet;
-import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
 
 

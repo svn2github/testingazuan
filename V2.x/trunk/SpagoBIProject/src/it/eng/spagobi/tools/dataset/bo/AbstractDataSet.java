@@ -21,17 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.tools.dataset.bo;
 
+import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
+import it.eng.spagobi.tools.dataset.common.behaviour.IDataSetBehaviour;
+import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
+import it.eng.spagobi.tools.dataset.common.transformer.PivotDataSetTransformer;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-
-
-import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
-import it.eng.spagobi.tools.dataset.common.behaviour.IDataSetBehaviour;
-import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
-import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
-import it.eng.spagobi.tools.dataset.common.transformer.PivotDataSetTransformer;
 
 
 /**

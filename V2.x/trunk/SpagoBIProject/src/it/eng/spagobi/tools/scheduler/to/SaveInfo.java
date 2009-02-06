@@ -21,8 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.scheduler.to;
 
-import it.eng.spagobi.tools.dataset.bo.IDataSet;
-
 import java.util.ArrayList;
 import java.util.List;
 

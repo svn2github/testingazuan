@@ -31,7 +31,6 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.navigation.LightNavigationManager;
-import it.eng.spago.navigation.LightNavigator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;

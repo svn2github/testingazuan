@@ -35,8 +35,8 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.monitoring.dao.AuditManager;
-import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.common.SsoServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -104,8 +104,8 @@ public class GetLovResultAction extends AbstractHttpAction {
 		    SpagoBIUserProfile user = supplier.createUserProfile(userId);
 		    profile = new UserProfile(user);
 		} catch (Exception e) {
-		    logger.error("Exception while creating user profile", e);
-		    throw new SecurityException();
+		    logger.error("Exception while creating user profile");
+		    throw new SecurityException("Exception while creating user profile", e);
 		}
 
 	    }

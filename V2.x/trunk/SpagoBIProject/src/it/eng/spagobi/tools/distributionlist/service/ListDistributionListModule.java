@@ -25,9 +25,6 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
-/**
-* @author Chiarelli Chiara (chiara.chiarelli@eng.it)
-*/
 
 /**
  * Loads the Distributionlist List

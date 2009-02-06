@@ -9,20 +9,14 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.Dataset;
 import org.jfree.data.xy.DefaultXYZDataset;
-import org.jfree.data.xy.XYZDataset;
-import org.jfree.data.xy.YIntervalDataItem;
 
 /**
  * @author chiarelli

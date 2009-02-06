@@ -1,10 +1,5 @@
 package it.eng.spagobi.kpi.model.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.detail.impl.DefaultDetailModule;
 import it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService;
@@ -17,6 +12,11 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.utils.DetailModelInstanceUtil;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public class DetailModelInstanceTreeModule extends DefaultDetailModule {
 

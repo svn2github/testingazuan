@@ -5,7 +5,6 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Paint;
 import java.util.HashMap;
 
 import org.jfree.chart.ChartFactory;
@@ -16,8 +15,6 @@ import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
-
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 public class SimpleBox extends BoxCharts {
 

@@ -78,7 +78,7 @@ public class GetDatasetResultAction extends AbstractHttpAction {
 	    profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	    if (profile == null) {
 		    logger.error("User profile not found");
-		    throw new SecurityException();
+		    throw new SecurityException("User profile not found");
 	    }
 
 	    String documentId = request.getParameter("documentId");

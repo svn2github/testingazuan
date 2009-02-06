@@ -2,9 +2,7 @@ package it.eng.spagobi.tools.dataset.bo;
 
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.dataproxy.IDataProxy;
-import it.eng.spagobi.tools.dataset.common.dataproxy.JDBCDataProxy;
 import it.eng.spagobi.tools.dataset.common.dataproxy.JavaClassDataProxy;
-import it.eng.spagobi.tools.dataset.common.dataproxy.ScriptDataProxy;
 import it.eng.spagobi.tools.dataset.common.datareader.XmlDataReader;
 
 import org.apache.log4j.Logger;

@@ -1,7 +1,5 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.utils;
 
-import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBar;
-
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;

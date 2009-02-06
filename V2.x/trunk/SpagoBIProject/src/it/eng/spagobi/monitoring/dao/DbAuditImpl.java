@@ -23,7 +23,6 @@ package it.eng.spagobi.monitoring.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;

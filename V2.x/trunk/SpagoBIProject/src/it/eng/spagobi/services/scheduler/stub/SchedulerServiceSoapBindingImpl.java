@@ -9,8 +9,6 @@ package it.eng.spagobi.services.scheduler.stub;
 
 import it.eng.spagobi.services.scheduler.service.SchedulerServiceImpl;
 
-import java.rmi.RemoteException;
-
 public class SchedulerServiceSoapBindingImpl implements it.eng.spagobi.services.scheduler.stub.SchedulerService{
     public java.lang.String getJobList(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException {
             SchedulerServiceImpl service = new SchedulerServiceImpl();

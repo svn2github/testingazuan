@@ -28,7 +28,6 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
-import it.eng.spagobi.engines.chart.utils.LovAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
 import java.awt.Color;
@@ -40,7 +39,6 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultValueDataset;
 
 /** 

@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.commons.bo.Subreport;
 
 import java.util.List;

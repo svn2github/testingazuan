@@ -24,25 +24,16 @@ package it.eng.spagobi.engines.chart.utils;
 
 
 
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
-import it.eng.spagobi.tools.dataset.bo.ConfigurableDataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
 import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
-import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
-import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
-import it.eng.spagobi.tools.dataset.service.DetailDataSetModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +41,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 

@@ -23,13 +23,13 @@ package it.eng.spagobi.engines.kpi.bo;
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
-import it.eng.spagobi.engines.kpi.utils.KpiInterval;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.SimpleDial;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Speedometer;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.Thermometer;
 import it.eng.spagobi.engines.kpi.bo.charttypes.trendcharts.LineChart;
+import it.eng.spagobi.engines.kpi.utils.KpiInterval;
 import it.eng.spagobi.engines.kpi.utils.StyleLabel;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 

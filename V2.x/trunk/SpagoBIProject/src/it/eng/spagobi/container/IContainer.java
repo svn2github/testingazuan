@@ -23,6 +23,8 @@ package it.eng.spagobi.container;
 
 import java.util.List;
 
+import org.json.JSONObject;
+
 /**
  * Interface for a generic container (i.e. an object where I can put and retrieve other objects).
  * Objects are stored with a key that is a String.
@@ -89,6 +91,11 @@ public interface IContainer {
 	 * @return If the key has no objects associated, null is returned. Otherwise the object is casted to List and returned.
 	 */
 	public List getList(String key);
+	
+	public List toCsvList(String key);
+	
+	public JSONObject toJSONObject(String key);
+	
 	
 	/**
 	 * Returns all the string keys of the objects stored into this container

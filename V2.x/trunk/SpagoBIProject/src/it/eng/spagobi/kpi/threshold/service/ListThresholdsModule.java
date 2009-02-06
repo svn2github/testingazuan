@@ -21,10 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.kpi.threshold.service;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorHandler;
@@ -33,6 +29,10 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.utils.AbstractConfigurableListModule;
+
+import java.util.List;
+
+import org.apache.log4j.Logger;
 /**
  * Loads the engines list
  * 

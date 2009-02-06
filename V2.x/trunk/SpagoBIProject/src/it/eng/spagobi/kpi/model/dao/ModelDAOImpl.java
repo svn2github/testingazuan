@@ -1,5 +1,16 @@
 package it.eng.spagobi.kpi.model.dao;
 
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.kpi.config.metadata.SbiKpi;
+import it.eng.spagobi.kpi.model.bo.Model;
+import it.eng.spagobi.kpi.model.bo.ModelAttribute;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttr;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttrVal;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,17 +25,6 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.exception.ConstraintViolationException;
-
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.commons.metadata.SbiDomains;
-import it.eng.spagobi.kpi.config.metadata.SbiKpi;
-import it.eng.spagobi.kpi.model.bo.Model;
-import it.eng.spagobi.kpi.model.bo.ModelAttribute;
-import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
-import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttr;
-import it.eng.spagobi.kpi.model.metadata.SbiKpiModelAttrVal;
 
 public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 

@@ -21,11 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.proxy;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import it.eng.spagobi.services.event.stub.EventServiceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
+
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.xml.rpc.ServiceException;
@@ -38,6 +38,8 @@ import org.apache.log4j.Logger;
  *
  */
 public final class EventServiceProxy extends AbstractServiceProxy{
+	
+	static private final String SERVICE_NAME = "Event Service";
 
 	public static final String START_EVENT_ID = "startEventId";
 	public static final String BIOBJECT_ID = "biobjectId";
@@ -73,8 +75,8 @@ public final class EventServiceProxy extends AbstractServiceProxy{
 	    }
 	    return service;
 	} catch (ServiceException e) {
-	    logger.error("Error during service execution", e);
-	    throw new SecurityException();
+		logger.error("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]");
+	    throw new SecurityException("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]", e);
 	}
     }
     

@@ -4,7 +4,6 @@
 package it.eng.spagobi.engines.kpi.service;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.quartz.CronTrigger;
@@ -12,8 +11,6 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SimpleTrigger;
-import org.quartz.Trigger;
-import org.quartz.TriggerUtils;
 import org.quartz.impl.StdSchedulerFactory;
 import org.safehaus.uuid.UUIDGenerator;
 

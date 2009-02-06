@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.events.bo;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * This class map the SBI_EVENTS table

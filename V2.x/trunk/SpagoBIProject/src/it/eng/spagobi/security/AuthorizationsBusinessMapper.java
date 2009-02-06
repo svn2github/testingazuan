@@ -23,6 +23,7 @@ package it.eng.spagobi.security;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;

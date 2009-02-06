@@ -38,7 +38,6 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
-import it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.util.GregorianCalendar;

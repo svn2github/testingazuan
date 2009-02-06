@@ -195,8 +195,8 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 			SpagoBIUserProfile user = supplier.createUserProfile(userId);
 			profile = new UserProfile(user);
 		    } catch (Exception e) {
-			logger.error("Exception while creating user profile", e);
-			throw new SecurityException();
+			logger.error("Exception while creating user profile");
+			throw new SecurityException("Exception while creating user profile", e);
 		    }
 
 		}

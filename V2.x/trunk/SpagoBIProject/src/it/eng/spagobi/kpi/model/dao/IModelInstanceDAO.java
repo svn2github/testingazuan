@@ -1,9 +1,9 @@
 package it.eng.spagobi.kpi.model.dao;
 
-import java.util.List;
-
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
+
+import java.util.List;
 
 public interface IModelInstanceDAO {
 

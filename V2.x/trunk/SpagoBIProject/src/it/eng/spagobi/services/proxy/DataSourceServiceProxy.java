@@ -22,12 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.proxy;
 
 
-import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.datasource.stub.DataSourceServiceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
-import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 import it.eng.spagobi.tools.datasource.bo.DataSourceFactory;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
@@ -48,6 +45,8 @@ import org.apache.log4j.Logger;
  */
 public final class DataSourceServiceProxy extends AbstractServiceProxy{
     
+	static private final String SERVICE_NAME = "DataSource Service";
+	
     static private Logger logger = Logger.getLogger(DataSourceServiceProxy.class);
     
 
@@ -76,8 +75,8 @@ public final class DataSourceServiceProxy extends AbstractServiceProxy{
 	    }
 	    return service;
 	} catch (ServiceException e) {
-	    logger.error("Error during service execution", e);
-	    throw new SecurityException();
+	    logger.error("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]");
+	    throw new SecurityException("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]", e);
 	}
     }
     

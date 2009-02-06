@@ -32,7 +32,6 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
@@ -40,6 +39,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;

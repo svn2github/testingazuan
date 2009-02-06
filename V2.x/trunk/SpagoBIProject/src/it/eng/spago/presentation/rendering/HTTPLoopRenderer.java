@@ -21,8 +21,6 @@
 **/
 package it.eng.spago.presentation.rendering;
 
-import java.util.List;
-
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
@@ -32,9 +30,10 @@ import it.eng.spago.dispatching.service.RequestContextIFace;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.navigation.Navigator;
 import it.eng.spago.presentation.PublisherConfiguration;
-import it.eng.spago.presentation.rendering.RenderIFace;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 

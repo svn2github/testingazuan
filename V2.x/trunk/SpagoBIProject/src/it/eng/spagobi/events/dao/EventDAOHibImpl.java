@@ -21,14 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.events.dao;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreports;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.commons.utilities.HibernateUtil;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.events.bo.Event;
 import it.eng.spagobi.events.metadata.SbiEvents;
 
@@ -39,9 +34,7 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 
 /**
  * @author Gioia

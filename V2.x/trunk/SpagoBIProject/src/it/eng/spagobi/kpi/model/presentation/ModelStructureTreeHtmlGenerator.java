@@ -1,12 +1,5 @@
 package it.eng.spagobi.kpi.model.presentation;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.error.EMFUserError;
@@ -19,6 +12,13 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.kpi.model.bo.Model;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class ModelStructureTreeHtmlGenerator implements ITreeHtmlGenerator {
 

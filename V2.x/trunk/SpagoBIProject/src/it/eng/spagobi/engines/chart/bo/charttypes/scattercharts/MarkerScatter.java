@@ -5,7 +5,6 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Iterator;

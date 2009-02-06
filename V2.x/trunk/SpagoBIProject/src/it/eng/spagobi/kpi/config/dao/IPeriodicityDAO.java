@@ -1,9 +1,9 @@
 package it.eng.spagobi.kpi.config.dao;
 
-import java.util.List;
-
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.kpi.config.bo.Periodicity;
+
+import java.util.List;
 
 public interface IPeriodicityDAO {
 	

@@ -83,9 +83,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipOutputStream;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;

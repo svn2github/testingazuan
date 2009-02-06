@@ -24,13 +24,9 @@ package it.eng.spagobi.services.proxy;
 
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.services.dataset.stub.DataSetServiceServiceLocator;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
-import it.eng.spagobi.tools.dataset.bo.AbstractDataSet;
 import it.eng.spagobi.tools.dataset.bo.DataSetFactory;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
-
-
 
 import javax.servlet.http.HttpSession;
 import javax.xml.rpc.ServiceException;
@@ -45,7 +41,9 @@ import org.apache.log4j.Logger;
  * 
  */
 public final class DataSetServiceProxy extends AbstractServiceProxy{
-
+	
+	static private final String SERVICE_NAME = "DataSet Service";
+	
     static private Logger logger = Logger.getLogger(DataSetServiceProxy.class);
 
 
@@ -70,8 +68,8 @@ public final class DataSetServiceProxy extends AbstractServiceProxy{
 	    }
 	    return service;
 	} catch (ServiceException e) {
-	    logger.error("Error during service execution", e);
-	    throw new SecurityException();
+	    logger.error("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]");
+	    throw new SecurityException("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]", e);
 	}
     }
 

@@ -24,11 +24,9 @@ package it.eng.spagobi.analiticalmodel.functionalitytree.init;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.init.InitializerIFace;
-import it.eng.spagobi.analiticalmodel.document.service.BIObjectsModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.commons.bo.Role;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 
 import java.util.Iterator;

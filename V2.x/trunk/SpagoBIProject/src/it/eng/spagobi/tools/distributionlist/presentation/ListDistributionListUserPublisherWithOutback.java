@@ -27,10 +27,8 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+
 import org.apache.log4j.Logger;
-/**
-* @author Chiarelli Chiara (chiara.chiarelli@eng.it)
-*/
 
 /**
  * Publishes the results of a list information request for distributionlists

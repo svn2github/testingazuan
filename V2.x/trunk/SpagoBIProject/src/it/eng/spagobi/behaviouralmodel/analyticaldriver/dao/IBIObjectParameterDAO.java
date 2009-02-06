@@ -27,11 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.behaviouralmodel.analyticaldriver.dao;
 
-import java.util.List;
-
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+
+import java.util.List;
 
 /**
  * Defines the interfaces for all methods needed to insert, modify and deleting a

@@ -28,13 +28,9 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.engines.drivers.AbstractDriver;
 import it.eng.spagobi.engines.drivers.EngineURL;
@@ -47,8 +43,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-
-import sun.misc.BASE64Encoder;
 
 
 

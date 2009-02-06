@@ -23,7 +23,7 @@ package it.eng.spagobi.analiticalmodel.document.metadata;
 
 import it.eng.spagobi.commons.metadata.SbiDomains;
 
-import java.util.*;
+import java.util.Date;
 
 
 

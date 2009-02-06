@@ -22,9 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.dataset;
 
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
-
-import java.util.HashMap;
 
 /**
  * @author Angelo Bernabei

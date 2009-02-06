@@ -29,21 +29,16 @@ package it.eng.spagobi.behaviouralmodel.check.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseCk;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.service.ListParametersModule;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
 import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
-import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;

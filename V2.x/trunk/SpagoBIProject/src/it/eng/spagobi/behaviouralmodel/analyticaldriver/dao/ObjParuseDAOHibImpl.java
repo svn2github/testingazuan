@@ -36,13 +36,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Expression;
 
 /**
  * Defines the Hibernate implementations for all DAO methods,

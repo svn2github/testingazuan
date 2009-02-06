@@ -24,8 +24,6 @@ package it.eng.spagobi.analiticalmodel.document.handlers;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;

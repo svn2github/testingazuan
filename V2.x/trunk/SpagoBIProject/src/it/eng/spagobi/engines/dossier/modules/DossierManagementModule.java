@@ -41,7 +41,6 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IRoleDAO;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.commons.utilities.UploadedFile;
 import it.eng.spagobi.engines.dossier.bo.ConfiguredBIDocument;
 import it.eng.spagobi.engines.dossier.bo.WorkflowConfiguration;
 import it.eng.spagobi.engines.dossier.constants.DossierConstants;

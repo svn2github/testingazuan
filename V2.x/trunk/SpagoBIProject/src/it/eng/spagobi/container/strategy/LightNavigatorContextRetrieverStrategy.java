@@ -21,13 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.container.strategy;
 
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spagobi.container.Context;
-import it.eng.spagobi.container.ISessionContainer;
+import it.eng.spagobi.container.IBeanContainer;
+
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -73,7 +73,7 @@ public class LightNavigatorContextRetrieverStrategy implements
 	/**
 	 * Retrieves the context from the input ISessionContainer instance
 	 */
-	public Context getContext(ISessionContainer sessionContainer) {
+	public Context getContext(IBeanContainer sessionContainer) {
 		logger.debug("IN");
 		try {
 			logger.debug("Looking at Context on session with key = [" + _key + "]");
@@ -87,7 +87,7 @@ public class LightNavigatorContextRetrieverStrategy implements
 	/**
 	 * Creates a new context and puts it on the input ISessionContainer instance
 	 */
-	public Context createContext(ISessionContainer sessionContainer) {
+	public Context createContext(IBeanContainer sessionContainer) {
 		logger.debug("IN");
 		try {
 			logger.debug("Creating a new context and putting on session with key = [" + _key + "]");
@@ -102,7 +102,7 @@ public class LightNavigatorContextRetrieverStrategy implements
 	/**
 	 * Destroys the current context on the input ISessionContainer instance
 	 */
-	public void destroyCurrentContext(ISessionContainer sessionContainer) {
+	public void destroyCurrentContext(IBeanContainer sessionContainer) {
 		logger.debug("IN");
 		try {
 			Context context = (Context) sessionContainer.get(_key);
@@ -119,7 +119,7 @@ public class LightNavigatorContextRetrieverStrategy implements
 	/**
 	 * Destroys all the contexts on the input ISessionContainer instance older than the number of minutes specified at input.
 	 */
-	public void destroyContextsOlderThan(ISessionContainer session,
+	public void destroyContextsOlderThan(IBeanContainer session,
 			int minutes) {
 		logger.debug("IN");
 		try {

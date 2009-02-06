@@ -3,7 +3,6 @@
  */
 package it.eng.spagobi.tools.dataset.common.datastore;
 
-import it.eng.spago.base.SourceBeanAttribute;
 
 
 /**

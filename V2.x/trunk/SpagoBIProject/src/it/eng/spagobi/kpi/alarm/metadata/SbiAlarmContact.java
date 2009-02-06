@@ -12,8 +12,6 @@ package it.eng.spagobi.kpi.alarm.metadata;
 
  
 
-import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
-
 import java.util.HashSet;
 import java.util.Set;
 

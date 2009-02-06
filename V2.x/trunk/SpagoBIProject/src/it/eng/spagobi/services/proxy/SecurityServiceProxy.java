@@ -23,6 +23,7 @@ package it.eng.spagobi.services.proxy;
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.stub.SecurityServiceServiceLocator;
@@ -42,6 +43,8 @@ import org.apache.log4j.Logger;
  */
 public final class SecurityServiceProxy extends AbstractServiceProxy{
 
+	static private final String SERVICE_NAME = "Security Service";
+	
     static private Logger logger = Logger.getLogger(SecurityServiceProxy.class);
     
 /**
@@ -50,35 +53,40 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
  * @param user user ID
  * @param session HttpSession
  */
-    public SecurityServiceProxy(String user,HttpSession session){
-	super(user,session);
+    public SecurityServiceProxy(String user, HttpSession session){
+    	super(user,session);
     }    
  
     /**
      * Don't use it.
      */
     private SecurityServiceProxy() {
-	super();
-    }     
+    	super();
+    }
+    
     /**
-     * 
      * @return Object used
      * @throws SecurityException catch this if exist error
      */
     private it.eng.spagobi.services.security.stub.SecurityService lookUp() throws SecurityException {
-	try {
-	    SecurityServiceServiceLocator locator = new SecurityServiceServiceLocator();
-	    it.eng.spagobi.services.security.stub.SecurityService service = null;
-	    if (serviceUrl != null) {
-		service = locator.getSecurityService(serviceUrl);
-	    } else {
-		service = locator.getSecurityService();
-	    }
-	    return service;
-	} catch (ServiceException e) {
-	    logger.error("Error during service execution", e);
-	    throw new SecurityException();
-	}
+    	it.eng.spagobi.services.security.stub.SecurityService service;
+    	SecurityServiceServiceLocator locator;
+    	
+    	service = null;
+    	try {
+		    locator = new SecurityServiceServiceLocator();
+		   
+		    if (serviceUrl != null) {
+		    	service = locator.getSecurityService( serviceUrl );
+		    } else {
+		    	service = locator.getSecurityService();
+		    }
+		} catch (Throwable e) {
+			logger.error("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]");
+		    throw new SecurityException("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]", e);
+		}
+		
+		return service;
     }
     
     /**
@@ -89,16 +97,22 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
      * @throws SecurityException if the process has generated an error
      */
     public IEngUserProfile getUserProfile() throws SecurityException{
-	logger.debug("IN");
-	try {
-            SpagoBIUserProfile user= lookUp().getUserProfile(readTicket(),userId);
-            return new UserProfile(user);
-        } catch (Exception e) {
-            logger.error("Error during service execution",e);
-            throw new SecurityException();
+    	UserProfile userProfile;
+    	
+    	logger.debug("IN");
+    	
+    	userProfile = null;
+		try {
+            SpagoBIUserProfile user = lookUp().getUserProfile(readTicket(), userId);
+            userProfile = new UserProfile(user);
+        } catch (Throwable e) {
+            logger.error("Error occured while retrieving user profile of user [" + userId + "] from service [" + SERVICE_NAME + "] at endpoint [" + serviceUrl + "]");
+            throw new SecurityException("Error occured while retrieving user profile of user [" + userId + "] from service [" + SERVICE_NAME + "] at endpoint [" + serviceUrl + "]", e);
         }finally{
             logger.debug("OUT");
         }
+        
+        return userProfile;
     }
 
     /**
@@ -110,15 +124,16 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
      * @return true/false
      */    
     public boolean isAuthorized(String folderId,String mode) {
-	logger.debug("IN");
+    	
+    	logger.debug("IN");
         try {
-            return lookUp().isAuthorized(readTicket(),userId,folderId, mode);
-        } catch (Exception e) {
-            logger.error("Error during service execution",e);
-        }finally{
-            logger.debug("IN");
+            return lookUp().isAuthorized(readTicket(), userId, folderId, mode);
+        } catch (Throwable e) {
+        	logger.error("Error occured while retrieving access right to folder [" + folderId + "] for user [" + folderId+ "] in modality [" + mode + "]");
+        } finally{
+            logger.debug("OUT");
         }
-	return false;
+        return false;
     } 
     
 
@@ -129,9 +144,8 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
      * 
      * @return true/false
      */
-    public boolean checkAuthorization(String function){
-	
-	return false;
+    public boolean checkAuthorization(String function) {
+	   	return false;
     }
     
     /**
@@ -143,7 +157,6 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
      * @return true / false
      */    
     public boolean checkAuthorization(Principal principal,String function){
-	
-	return false;
+    	return false;
     }    
 }

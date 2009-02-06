@@ -21,23 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.dataset.bo;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.dataproxy.FileDataProxy;
 import it.eng.spagobi.tools.dataset.common.dataproxy.IDataProxy;
-import it.eng.spagobi.tools.dataset.common.dataproxy.JDBCDataProxy;
-import it.eng.spagobi.tools.dataset.common.dataproxy.JavaClassDataProxy;
 import it.eng.spagobi.tools.dataset.common.datareader.CsvDataReader;
-import it.eng.spagobi.tools.dataset.common.datareader.JDBCDataReader;
 import it.eng.spagobi.tools.dataset.common.datareader.XmlDataReader;
 
-import java.io.FileInputStream;
-
 import org.apache.log4j.Logger;
-import org.xml.sax.InputSource;
 
 /**
  * @authors

@@ -40,10 +40,10 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import sun.misc.BASE64Decoder;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
-import sun.misc.BASE64Decoder;
 
 public class PublishImpl extends AbstractServiceImpl {
 

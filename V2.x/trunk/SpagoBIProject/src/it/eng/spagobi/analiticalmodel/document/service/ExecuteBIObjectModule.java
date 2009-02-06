@@ -45,8 +45,6 @@ import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
-import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;

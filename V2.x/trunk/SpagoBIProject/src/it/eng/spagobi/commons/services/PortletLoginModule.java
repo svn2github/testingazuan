@@ -77,8 +77,8 @@ public class PortletLoginModule extends AbstractModule {
 	            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
 	            profile=new UserProfile(user);
 	        } catch (Exception e) {
-	            logger.error("Reading user information... ERROR",e);
-	            throw new SecurityException();
+	            logger.error("Reading user information... ERROR");
+	            throw new SecurityException("Reading user information... ERROR",e);
 	        }
 		
 		logger.debug("userProfile created " + profile);

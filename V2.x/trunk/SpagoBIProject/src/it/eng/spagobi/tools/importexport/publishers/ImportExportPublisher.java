@@ -22,8 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.tools.importexport.publishers;
 
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
@@ -33,6 +31,8 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.tools.importexport.ImportExportConstants;
+
+import org.apache.log4j.Logger;
 
 
 /**

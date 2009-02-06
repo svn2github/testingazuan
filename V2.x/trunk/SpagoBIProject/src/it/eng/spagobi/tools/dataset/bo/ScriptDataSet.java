@@ -2,12 +2,8 @@ package it.eng.spagobi.tools.dataset.bo;
 
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
-import it.eng.spagobi.tools.dataset.common.dataproxy.FileDataProxy;
 import it.eng.spagobi.tools.dataset.common.dataproxy.IDataProxy;
-import it.eng.spagobi.tools.dataset.common.dataproxy.JDBCDataProxy;
 import it.eng.spagobi.tools.dataset.common.dataproxy.ScriptDataProxy;
-import it.eng.spagobi.tools.dataset.common.dataproxy.WebServiceDataProxy;
-import it.eng.spagobi.tools.dataset.common.datareader.JDBCDataReader;
 import it.eng.spagobi.tools.dataset.common.datareader.XmlDataReader;
 
 import org.apache.log4j.Logger;

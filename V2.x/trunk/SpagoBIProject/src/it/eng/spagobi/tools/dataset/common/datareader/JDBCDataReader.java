@@ -4,7 +4,6 @@
 package it.eng.spagobi.tools.dataset.common.datareader;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;

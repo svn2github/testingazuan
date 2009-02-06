@@ -37,7 +37,6 @@ import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.ValidationEngineIFace;
 import it.eng.spago.validation.impl.ValidatorLocator;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

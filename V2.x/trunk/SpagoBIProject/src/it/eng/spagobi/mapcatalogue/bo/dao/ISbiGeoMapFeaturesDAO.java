@@ -5,7 +5,6 @@ package it.eng.spagobi.mapcatalogue.bo.dao;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.mapcatalogue.bo.GeoMapFeature;
-import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
 
 import java.util.List;
 

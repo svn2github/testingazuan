@@ -9,7 +9,6 @@ import it.eng.spagobi.tools.dataset.common.datastore.Field;
 import it.eng.spagobi.tools.dataset.common.datastore.FieldMetadata;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 
@@ -18,8 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;

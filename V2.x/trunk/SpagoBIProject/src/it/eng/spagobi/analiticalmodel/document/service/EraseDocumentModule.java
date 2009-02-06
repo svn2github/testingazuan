@@ -21,8 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.analiticalmodel.document.service;
 
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.AbstractModule;
@@ -35,6 +33,8 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+
+import org.apache.log4j.Logger;
 
 
 public class EraseDocumentModule extends AbstractModule {

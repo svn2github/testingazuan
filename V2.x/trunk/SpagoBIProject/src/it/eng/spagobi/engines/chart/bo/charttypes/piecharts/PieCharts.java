@@ -29,7 +29,6 @@ package it.eng.spagobi.engines.chart.bo.charttypes.piecharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
-import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.SimpleBar;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
@@ -41,7 +40,6 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 public class PieCharts extends ChartImpl {

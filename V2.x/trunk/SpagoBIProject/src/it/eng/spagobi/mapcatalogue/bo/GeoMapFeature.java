@@ -21,13 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.mapcatalogue.bo;
 
-import it.eng.spagobi.engines.config.metadata.SbiEngines;
-import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
-import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
-import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
-
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Defines a value constraint object.

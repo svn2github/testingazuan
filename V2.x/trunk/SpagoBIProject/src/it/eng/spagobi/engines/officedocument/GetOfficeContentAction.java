@@ -23,25 +23,15 @@ package it.eng.spagobi.engines.officedocument;
 
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.monitoring.dao.AuditManager;
-import it.eng.spagobi.services.common.SsoServiceFactory;
-import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.content.service.ContentServiceImplSupplier;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import java.io.InputStream;
-import java.security.Principal;
 import java.util.Properties;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

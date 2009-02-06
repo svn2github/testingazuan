@@ -22,8 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.mapcatalogue.service;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
+import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
 
 /**

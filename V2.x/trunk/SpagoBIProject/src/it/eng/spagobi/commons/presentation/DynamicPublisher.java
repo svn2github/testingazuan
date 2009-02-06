@@ -26,7 +26,6 @@ import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 

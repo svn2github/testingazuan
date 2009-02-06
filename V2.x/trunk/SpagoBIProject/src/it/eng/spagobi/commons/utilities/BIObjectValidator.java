@@ -33,7 +33,6 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spago.util.ContextScooping;
 import it.eng.spago.validation.impl.ValidatorLocator;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.commons.validation.SpagoURLValidator;
 
 import java.text.DateFormat;

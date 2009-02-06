@@ -23,10 +23,8 @@ package it.eng.spagobi.tools.importexport.dao;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-
-import it.eng.spagobi.tools.importexport.bo.AssociationFile;
-
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.tools.importexport.bo.AssociationFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

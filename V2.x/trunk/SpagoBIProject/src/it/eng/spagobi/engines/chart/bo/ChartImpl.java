@@ -59,7 +59,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.block.BlockContainer;
 import org.jfree.chart.block.BorderArrangement;
-import org.jfree.chart.block.LabelBlock;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.Dataset;

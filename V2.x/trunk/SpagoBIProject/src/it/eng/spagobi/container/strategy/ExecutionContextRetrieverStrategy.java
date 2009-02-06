@@ -21,9 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.container.strategy;
 
-import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.container.Context;
-import it.eng.spagobi.container.ISessionContainer;
+import it.eng.spagobi.container.IBeanContainer;
+import it.eng.spagobi.container.IContainer;
 
 import java.util.Iterator;
 import java.util.List;
@@ -41,76 +41,86 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class ExecutionContextRetrieverStrategy implements
-		IContextRetrieverStrategy {
+public class ExecutionContextRetrieverStrategy implements IContextRetrieverStrategy {
 
 	static private Logger logger = Logger.getLogger(ExecutionContextRetrieverStrategy.class);
 	
-	private static final String _sessionAttributeBaseKey = "SPAGOBI_SESSION_ATTRIBUTE";
+	private static final String SPAGOBI_SESSION_ATTRIBUTE = "SPAGOBI_SESSION_ATTRIBUTE";
 	private static final String EXECUTION_ID = "SBI_EXECUTION_ID";
 	
-	private String _key;
+	private String contextId;
 	
 	/**
 	 * Look for the "SBI_EXECUTION_ID" attribute on request to get the key for context storage on session.
-	 * @param request The Spago SourceBean service request object
+	 * @param requestContainer The Spago SourceBean service request object
 	 */
-	public ExecutionContextRetrieverStrategy(SourceBean request) {
-		logger.debug("IN");
-		try {
-			String executionId = (String) request.getAttribute(EXECUTION_ID);
-			if (executionId == null || executionId.trim().equals("")) {
-				logger.debug("Request does not contain execution id. Using fix base attribute key...");
-				_key = _sessionAttributeBaseKey;
-			} else {
-				logger.debug("Execution id found on request: [" + executionId + "]");
-				_key = _sessionAttributeBaseKey + "_" + executionId;
-			}
-		} finally {
-			logger.debug("OUT");
+	public ExecutionContextRetrieverStrategy(IContainer requestContainer) {
+		this( requestContainer.getString(EXECUTION_ID) );
+	}
+	
+	public ExecutionContextRetrieverStrategy(String contextId) {
+		if (contextId == null || contextId.trim().equals("")) {
+			logger.debug("Request container does not [" + EXECUTION_ID + "] parameter. Using fix base attribute key...");
+			this.contextId = SPAGOBI_SESSION_ATTRIBUTE;
+		} else {
+			logger.debug("[" + EXECUTION_ID + "] parameter found on request: [" + contextId + "]");
+			this.contextId = SPAGOBI_SESSION_ATTRIBUTE + "_" + contextId;
 		}
 	}
 	
 	/**
-	 * Retrieves the context from the input ISessionContainer instance
+	 * Retrieves the context from the input IBeanContainer instance
 	 */
-	public Context getContext(ISessionContainer sessionContainer) {
+	public Context getContext(IBeanContainer contextsContainer) {
+		Context context;
+		
 		logger.debug("IN");
+		
+		context = null;
 		try {
-			logger.debug("Looking at Context on session with key = [" + _key + "]");
-			Context context = (Context) sessionContainer.get(_key);
-			return context;
+			logger.debug("Looking for context [" + contextId + "]");
+			context = (Context) contextsContainer.get( contextId );
 		} finally {
 			logger.debug("OUT");
 		}
+		
+		return context;
 	}
 
 	/**
-	 * Creates a new context and puts it on the input ISessionContainer instance
+	 * Creates a new context and puts it on the input IBeanContainer instance
 	 */
-	public Context createContext(ISessionContainer sessionContainer) {
+	public Context createContext(IBeanContainer sessionContainer) {
+		Context context;
+		
 		logger.debug("IN");
+		
+		context = null;
 		try {
-			logger.debug("Creating a new context and putting on session with key = [" + _key + "]");
-			Context context = new Context();
-			sessionContainer.set(_key, context);
-			return context;
+			logger.debug("Creating a new context and putting on session with key = [" + contextId + "]");
+			context = new Context();
+			sessionContainer.set(contextId, context);
 		} finally {
 			logger.debug("OUT");
 		}
+		
+		return context;
 	}
 
 	/**
-	 * Destroys the current context on the input ISessionContainer instance
+	 * Destroys the current context on the input IBeanContainer instance
 	 */
-	public void destroyCurrentContext(ISessionContainer sessionContainer) {
+	public void destroyCurrentContext(IBeanContainer sessionContainer) {
+		Context context;
+		
 		logger.debug("IN");
+		
 		try {
-			Context context = (Context) sessionContainer.get(_key);
+			context = (Context) sessionContainer.get(contextId);
 			if (context != null) {
-				sessionContainer.remove(_key);
+				sessionContainer.remove(contextId);
 			} else {
-				logger.warn("Context not found!!");
+				logger.warn("Context [" + contextId + "] not found");
 			}
 		} finally {
 			logger.debug("OUT");
@@ -118,10 +128,9 @@ public class ExecutionContextRetrieverStrategy implements
 	}
 
 	/**
-	 * Destroys all the contexts on the input ISessionContainer instance older than the number of minutes specified at input.
+	 * Destroys all the contexts on the input IBeanContainer instance older than the number of minutes specified at input.
 	 */
-	public void destroyContextsOlderThan(ISessionContainer session,
-			int minutes) {
+	public void destroyContextsOlderThan(IBeanContainer session, int minutes) {
 		logger.debug("IN");
 		try {
 			synchronized (session) {
@@ -129,7 +138,7 @@ public class ExecutionContextRetrieverStrategy implements
 				Iterator it = attributeNames.iterator();
 				while (it.hasNext()) {
 					String attributeName = (String) it.next();
-					if (!attributeName.startsWith(_sessionAttributeBaseKey)) {
+					if (!attributeName.startsWith(SPAGOBI_SESSION_ATTRIBUTE)) {
 						Object attributeObject = session.get(attributeName);
 						if (attributeObject instanceof Context) {
 							Context context = (Context) attributeObject;

@@ -1,38 +1,22 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.XYCharts;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBar;
-import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
-import java.awt.Stroke;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.AxisSpace;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.NumberTick;
 import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.SymbolAxis;
-import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.LookupPaintScale;
 import org.jfree.chart.renderer.xy.XYBlockRenderer;
 import org.jfree.chart.title.PaintScaleLegend;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.xy.DefaultXYZDataset;
 import org.jfree.data.xy.XYZDataset;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;

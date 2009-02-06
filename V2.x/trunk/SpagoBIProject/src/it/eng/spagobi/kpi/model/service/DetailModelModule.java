@@ -1,8 +1,5 @@
 package it.eng.spagobi.kpi.model.service;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.detail.impl.DefaultDetailModule;
 import it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService;
@@ -11,6 +8,9 @@ import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.coordinator.ValidationCoordinator;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.kpi.model.utils.DetailModelUtil;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 public class DetailModelModule extends DefaultDetailModule {
 

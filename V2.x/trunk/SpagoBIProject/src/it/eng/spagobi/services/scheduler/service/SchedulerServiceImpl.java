@@ -21,32 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.scheduler.service;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.log4j.Logger;
-import org.quartz.CronTrigger;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
-import org.quartz.Trigger;
-import org.quartz.TriggerUtils;
-import org.quartz.impl.StdSchedulerFactory;
-import org.safehaus.uuid.UUIDGenerator;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;

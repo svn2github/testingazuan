@@ -32,31 +32,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
 package it.eng.spagobi.engines.drivers.jpalo;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
-import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
-import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
-import it.eng.spagobi.commons.bo.Subreport;
-import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IBinContentDAO;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.engines.drivers.AbstractDriver;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
-import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;

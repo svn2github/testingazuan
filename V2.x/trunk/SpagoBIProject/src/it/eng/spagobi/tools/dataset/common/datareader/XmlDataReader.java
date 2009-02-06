@@ -11,7 +11,6 @@ import it.eng.spagobi.tools.dataset.common.datastore.Field;
 import it.eng.spagobi.tools.dataset.common.datastore.FieldMetadata;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 

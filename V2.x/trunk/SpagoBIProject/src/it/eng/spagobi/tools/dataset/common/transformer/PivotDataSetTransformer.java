@@ -21,12 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.tools.dataset.common.transformer;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
 import it.eng.spagobi.tools.dataset.common.datastore.FieldMetadata;
@@ -36,6 +30,12 @@ import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

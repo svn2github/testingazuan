@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.wapp.metadata;
 
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-// Generated 9-apr-2008 12.18.26 by Hibernate Tools 3.1.0 beta3
 
 
 

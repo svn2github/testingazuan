@@ -28,7 +28,6 @@ import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;

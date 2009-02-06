@@ -21,13 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.common;
 
+import it.eng.spagobi.services.security.exceptions.SecurityException;
+
 import java.io.IOException;
 
 import javax.portlet.PortletSession;
 import javax.servlet.http.HttpSession;
-
-import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 /**
  * 

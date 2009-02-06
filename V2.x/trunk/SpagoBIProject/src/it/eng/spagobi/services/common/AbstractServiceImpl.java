@@ -76,12 +76,12 @@ public abstract class AbstractServiceImpl {
     protected void validateTicket(String ticket, String userId) throws SecurityException {
 	logger.debug("IN");
 	if (ticket==null){
-	    logger.warn("Ticket is NULL!!!!");
-	    throw new SecurityException();	    
+	    logger.warn("Ticket is NULL");
+	    throw new SecurityException("Ticket is NULL");	    
 	}
 	if (userId == null) {
-	    logger.warn("UserID is NULL!!!!");
-	    throw new SecurityException();
+	    logger.warn("UserID is NULL");
+	    throw new SecurityException("Ticket is NULL");
 	}
 	if (activeSso) {
 	    logger.debug("activeSso checks are ON");

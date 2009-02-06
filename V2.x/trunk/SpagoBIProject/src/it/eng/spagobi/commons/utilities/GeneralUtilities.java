@@ -1178,8 +1178,8 @@ public class GeneralUtilities {
 			SpagoBIUserProfile user = supplier.createUserProfile(userId);
 			profile = new UserProfile(user);
 	    } catch (Exception e) {
-			logger.error("Reading user information... ERROR", e);
-			throw new SecurityException();
+			logger.error("An error occurred while creating user profile for user [" + userId + "]");
+			throw new SecurityException("An error occurred while creating user profile for user [" + userId + "]", e);
 	    } finally {
 	    	logger.debug("OUT");
 	    }

@@ -28,10 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.commons.validation;
 
-import java.util.Arrays;
-
 import org.apache.commons.validator.UrlValidator;
-import org.apache.commons.validator.util.Flags;
 import org.apache.oro.text.perl.Perl5Util;
 
 /**

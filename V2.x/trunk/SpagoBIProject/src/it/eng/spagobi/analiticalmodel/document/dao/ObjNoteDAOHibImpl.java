@@ -27,9 +27,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.analiticalmodel.document.dao;
 
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
@@ -37,6 +34,10 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjNotes;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
+
+import java.util.Iterator;
+import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;

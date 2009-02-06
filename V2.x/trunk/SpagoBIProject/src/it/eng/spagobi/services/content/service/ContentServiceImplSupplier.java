@@ -66,44 +66,51 @@ public class ContentServiceImplSupplier {
      * @throws EMFInternalError the EMF internal error
      */
     public Content readTemplate(String user, String document, HashMap parameters) throws SecurityException, EMFUserError, EMFInternalError {
-	logger.debug("IN");
-	logger.debug("user="+user);
-	logger.debug("document="+document);
-	BIObject biobj = null;
-	Content content = new Content();
-	try {
-	    Integer id = new Integer(document);
-	    biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
-	    // only if the user is not Scheduler or Workflow system user or it is a call to retrieve a subreport, check visibility on document and parameter values
-	    if (!UserProfile.isSchedulerUser(user) && !UserProfile.isWorkflowUser(user)  && !isSubReportCall(biobj, parameters)) {
-	    	checkRequestCorrectness(user, biobj, parameters);
-	    }
+    	Content content;
+    	BIObject biobj;
     	
-	    IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
-	    ObjTemplate temp = tempdao.getBIObjectActiveTemplate(biobj.getId());
-	    if (temp==null){
-	       logger.warn("The template is NULL...");
-	       throw new SecurityException();
-	    } 
-	    byte[] template = temp.getContent();
-
-	    BASE64Encoder bASE64Encoder = new BASE64Encoder();
-	    content.setContent(bASE64Encoder.encode(template));
-	    logger.debug("template read");
-	    content.setFileName(temp.getName());
-	    return content;
-	} catch (NumberFormatException e) {
-	    logger.error("NumberFormatException", e);
-	    throw e;
-	} catch (EMFUserError e) {
-	    logger.error("EMFUserError", e);
-	    throw e;
-	} catch (EMFInternalError e) {
-	    logger.error("EMFUserError", e);
-	    throw e;
-	} finally {
-	    logger.debug("OUT");
-	}
+    	logger.debug("IN");
+		
+    	logger.debug("user: [" + user + "]");
+		logger.debug("document: [" + document + "]");
+		
+		
+		content = new Content();
+		try {
+		    Integer id = new Integer(document);
+		    biobj = DAOFactory.getBIObjectDAO().loadBIObjectById(id);
+		    // only if the user is not Scheduler or Workflow system user or it is a call to retrieve a subreport, 
+		    //check visibility on document and parameter values
+		    if (!UserProfile.isSchedulerUser(user) && !UserProfile.isWorkflowUser(user)  && !isSubReportCall(biobj, parameters)) {
+		    	checkRequestCorrectness(user, biobj, parameters);
+		    }
+	    	
+		    IObjTemplateDAO tempdao = DAOFactory.getObjTemplateDAO();
+		    ObjTemplate temp = tempdao.getBIObjectActiveTemplate(biobj.getId());
+		    if (temp==null){
+		       logger.warn("The template dor document [" + id + "] is NULL");
+		       throw new SecurityException("The template dor document [" + id + "] is NULL");
+		    } 
+		    byte[] template = temp.getContent();
+	
+		    BASE64Encoder bASE64Encoder = new BASE64Encoder();
+		    content.setContent(bASE64Encoder.encode(template));
+		    logger.debug("template read");
+		    content.setFileName(temp.getName());		    
+		} catch (NumberFormatException e) {
+		    logger.error("NumberFormatException", e);
+		    throw e;
+		} catch (EMFUserError e) {
+		    logger.error("EMFUserError", e);
+		    throw e;
+		} catch (EMFInternalError e) {
+		    logger.error("EMFUserError", e);
+		    throw e;
+		} finally {
+		    logger.debug("OUT");
+		}
+		
+		return content;
     }
 
     /**
@@ -204,15 +211,15 @@ public class ContentServiceImplSupplier {
 	      		SpagoBIUserProfile userProfile = supplier.createUserProfile(user);
 	      		profile = new UserProfile(userProfile);
 		    } catch (Exception e) {
-	    		logger.error("Reading user information... ERROR", e);
-	    		throw new SecurityException();
+	    		logger.error("An error occurred while creating the profile of user [" + user + "]");
+	    		throw new SecurityException("An error occurred while creating the profile of user [" + user + "]", e);
 		    }
 		    
 		    // Check if the user can execute the document
 		    boolean canSee = ObjectsAccessVerifier.canSee(biobj, profile);
 		    if (!canSee) {
 	    		logger.error("Current user cannot execute the required document");
-	    		throw new SecurityException();
+	    		throw new SecurityException("Current user cannot execute the required document");
 		    }
 		    Integer id = biobj.getId();
 		    // get the correct roles for execution
@@ -226,7 +233,7 @@ public class ContentServiceImplSupplier {
 			logger.debug("correct roles for execution retrived " + correctRoles);
 			if (correctRoles == null || correctRoles.size() == 0) {
 				logger.error("Object cannot be executed by no role of the user");
-				throw new SecurityException();
+				throw new SecurityException("Object cannot be executed by no role of the user");
 			}
 		    
 		    if (parameters == null) {
@@ -244,7 +251,8 @@ public class ContentServiceImplSupplier {
 		    		if (correctRoles == null || correctRoles.size() == 0) {
 		    			logger.error("Role [] is not a valid role for the execution of document with id = [" + biobj.getId() 
 		    					+ "], label = [" + biobj.getLabel() + "]");
-		    			throw new SecurityException();
+		    			throw new SecurityException("Role [] is not a valid role for the execution of document with id = [" + biobj.getId() 
+		    					+ "], label = [" + biobj.getLabel() + "]");
 		    		}
 	    		}
 	    		// check if parameter values are correct for the role

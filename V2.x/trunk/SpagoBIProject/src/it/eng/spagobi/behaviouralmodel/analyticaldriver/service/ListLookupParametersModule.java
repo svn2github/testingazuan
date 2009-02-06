@@ -36,7 +36,6 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterUseDAO;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.HashMap;
 import java.util.List;

@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.importexport;
 
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -79,7 +78,6 @@ import it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeatures;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMapFeaturesId;
 import it.eng.spagobi.mapcatalogue.metadata.SbiGeoMaps;
-import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.tools.dataset.bo.FileDataSet;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
@@ -95,10 +93,6 @@ import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 

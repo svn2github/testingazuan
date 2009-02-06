@@ -40,6 +40,7 @@ import it.eng.spagobi.engines.dossier.constants.DossierConstants;
 
 import java.util.Iterator;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.safehaus.uuid.UUID;

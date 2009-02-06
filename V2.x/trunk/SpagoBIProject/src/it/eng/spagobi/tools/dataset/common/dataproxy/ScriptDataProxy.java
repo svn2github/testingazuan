@@ -21,12 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.tools.dataset.common.dataproxy;
 
-import java.io.FileInputStream;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
@@ -34,10 +28,13 @@ import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.behaviouralmodel.lov.handlers.ScriptManager;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

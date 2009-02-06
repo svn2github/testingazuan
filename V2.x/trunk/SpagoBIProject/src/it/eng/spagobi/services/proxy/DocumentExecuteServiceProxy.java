@@ -3,7 +3,6 @@
  */
 package it.eng.spagobi.services.proxy;
 
-import it.eng.spagobi.services.datasource.stub.DataSourceServiceServiceLocator;
 import it.eng.spagobi.services.execute.stub.DocumentExecuteServiceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
@@ -20,7 +19,8 @@ import org.apache.log4j.Logger;
  */
 public class DocumentExecuteServiceProxy extends AbstractServiceProxy{
 
-    
+	static private final String SERVICE_NAME = "DocumentExecute Service";
+	
     static private Logger logger = Logger.getLogger(DocumentExecuteServiceProxy.class);
     
     /**
@@ -53,8 +53,8 @@ public class DocumentExecuteServiceProxy extends AbstractServiceProxy{
 	    }
 	    return service;
 	} catch (ServiceException e) {
-	    logger.error("Error during service execution", e);
-	    throw new SecurityException();
+		logger.error("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]");
+	    throw new SecurityException("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]", e);
 	}
     }
     

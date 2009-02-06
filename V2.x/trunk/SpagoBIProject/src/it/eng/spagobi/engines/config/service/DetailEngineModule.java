@@ -36,7 +36,6 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.util.Collection;
 import java.util.HashMap;

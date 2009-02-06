@@ -1,11 +1,5 @@
 package it.eng.spagobi.kpi.utils;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -16,6 +10,12 @@ import it.eng.spago.paginator.basic.impl.GenericList;
 import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 public abstract class AbstractConfigurableListModule extends AbstractBasicListModule {
     private static transient Logger logger = Logger.getLogger(AbstractConfigurableListModule.class);	

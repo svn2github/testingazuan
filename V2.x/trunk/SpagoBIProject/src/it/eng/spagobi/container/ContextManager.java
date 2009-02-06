@@ -21,10 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.container;
 
+import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
 
 import org.apache.log4j.Logger;
 
@@ -34,22 +34,23 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class ContextManager extends AbstractContainer {
+public class ContextManager extends AbstractContainer implements IBeanContainer {
+	
 	private static final String _sessionAttributeBaseKey = "SPAGOBI_SESSION_ATTRIBUTE";
-	protected ISessionContainer _session;
-	protected IContextRetrieverStrategy _strategy;
+	protected IBeanContainer contextsContainer;
+	protected IContextRetrieverStrategy contextRetrieverStrategy;
 	
 	static private Logger logger = Logger.getLogger(ContextManager.class);
 	
-	public ContextManager(ISessionContainer session, IContextRetrieverStrategy strategy) {
+	public ContextManager(IBeanContainer beanContainer, IContextRetrieverStrategy strategy) {
 		logger.debug("IN");
 		try {
-			if (session == null)
+			if (beanContainer == null)
 				throw new ExceptionInInitializerError("Session in input is null");
 			if (strategy == null)
 				throw new ExceptionInInitializerError("Strategy in input is null");
-			_session = session;
-			_strategy = strategy;
+			contextsContainer = beanContainer;
+			contextRetrieverStrategy = strategy;
 		} finally {
 			logger.debug("OUT");
 		}
@@ -68,7 +69,7 @@ public class ContextManager extends AbstractContainer {
 		}
 		Object toReturn = null;
 		try {
-			Context context = _strategy.getContext(_session);
+			Context context = contextRetrieverStrategy.getContext(contextsContainer);
 			if (context != null) {
 				logger.debug("Context retrieved");
 				toReturn = context.get(key);
@@ -97,9 +98,9 @@ public class ContextManager extends AbstractContainer {
 			return;
 		}
 		try {
-			Context context = _strategy.getContext(_session);
+			Context context = contextRetrieverStrategy.getContext(contextsContainer);
 			if (context == null) {
-				context = _strategy.createContext(_session);
+				context = contextRetrieverStrategy.createContext(contextsContainer);
 			}
 			Object previous = context.get(key);
 			if (previous == null) {
@@ -124,7 +125,7 @@ public class ContextManager extends AbstractContainer {
 			return;
 		}
 		try {
-			Context context = _strategy.getContext(_session);
+			Context context = contextRetrieverStrategy.getContext(contextsContainer);
 			if (context != null) {
 				Object object = context.get(key);
 				if (object == null) {
@@ -147,7 +148,7 @@ public class ContextManager extends AbstractContainer {
 	public void destroyCurrentContext() {
 		logger.debug("IN");
 		try {
-			_strategy.destroyCurrentContext(_session);
+			contextRetrieverStrategy.destroyCurrentContext(contextsContainer);
 		} finally {
 			logger.debug("OUT");
 		}
@@ -159,7 +160,7 @@ public class ContextManager extends AbstractContainer {
 	public void cleanOldContexts(int minutes) {
 		logger.debug("IN");
 		try {
-			_strategy.destroyContextsOlderThan(_session, minutes);
+			contextRetrieverStrategy.destroyContextsOlderThan(contextsContainer, minutes);
 		} finally {
 			logger.debug("OUT");
 		}
@@ -172,7 +173,7 @@ public class ContextManager extends AbstractContainer {
 		logger.debug("IN");
 		List toReturn = new ArrayList();
 		try {
-			Context context = _strategy.getContext(_session);
+			Context context = contextRetrieverStrategy.getContext(contextsContainer);
 			if (context != null)
 				toReturn = context.getKeys();
 			return toReturn;
@@ -187,7 +188,7 @@ public class ContextManager extends AbstractContainer {
 		List contextObjects = this.getKeys();
 		for (int i=0; i<contextObjects.size(); i++){
 			String attributeName = (String)contextObjects.get(i);
-			Object attributeObject = _session.get(attributeName);
+			Object attributeObject = contextsContainer.get(attributeName);
 			//logger.debug("*** Context Object_ "+i + "  : "+ attributeName + " value: " +((attributeObject==null)?"":attributeObject.toString()));
 			System.out.println("*** Context Object_ "+i + "  : "+ attributeName + " value: " +((attributeObject==null)?"":attributeObject.toString()));
 		}

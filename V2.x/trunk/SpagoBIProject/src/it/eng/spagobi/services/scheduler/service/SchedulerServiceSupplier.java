@@ -26,8 +26,6 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.services.common.AbstractServiceImpl;
-import it.eng.spagobi.services.security.exceptions.SecurityException;
 
 import java.util.ArrayList;
 import java.util.Calendar;

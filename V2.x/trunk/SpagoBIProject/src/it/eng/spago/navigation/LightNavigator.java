@@ -22,7 +22,6 @@
 package it.eng.spago.navigation;
 
 import it.eng.spago.base.Constants;
-import it.eng.spago.navigation.NavigationException;
 import it.eng.spago.tracing.TracerSingleton;
 
 import java.util.ArrayList;

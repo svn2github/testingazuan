@@ -21,10 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.kpi.model.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.error.EMFErrorHandler;
@@ -33,6 +29,11 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 
 public class ListModelInstanceTreeModule extends AbstractModule {

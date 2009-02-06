@@ -43,12 +43,12 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
+import org.hibernate.exception.ConstraintViolationException;
 
 public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 

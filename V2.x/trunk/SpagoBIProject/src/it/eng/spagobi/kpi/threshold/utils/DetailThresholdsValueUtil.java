@@ -5,7 +5,6 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
 public class DetailThresholdsValueUtil {

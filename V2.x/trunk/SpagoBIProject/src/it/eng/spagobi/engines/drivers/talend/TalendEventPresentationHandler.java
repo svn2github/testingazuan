@@ -28,14 +28,9 @@ package it.eng.spagobi.engines.drivers.talend;
  */
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFUserError;
-
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.BIObjectDAOHibImpl;
 import it.eng.spagobi.analiticalmodel.document.dao.SubreportDAOHibImpl;
@@ -43,6 +38,10 @@ import it.eng.spagobi.commons.bo.Subreport;
 import it.eng.spagobi.events.EventsManager;
 import it.eng.spagobi.events.bo.EventLog;
 import it.eng.spagobi.events.handlers.IEventPresentationHandler;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class TalendEventPresentationHandler implements IEventPresentationHandler {
 

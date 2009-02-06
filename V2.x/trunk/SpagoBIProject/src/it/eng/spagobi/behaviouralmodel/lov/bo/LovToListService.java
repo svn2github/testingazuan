@@ -24,7 +24,6 @@ package it.eng.spagobi.behaviouralmodel.lov.bo;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
 import it.eng.spago.paginator.basic.ListIFace;
 import it.eng.spago.paginator.basic.PaginatorIFace;
 import it.eng.spago.paginator.basic.impl.GenericList;

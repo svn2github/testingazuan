@@ -21,12 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.container;
 
-import java.util.List;
-
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 /**
  * Abstract class that implements all <code>it.eng.spagobi.container.IContainer</code> methods apart from get/set/remove/getKeys methods.
@@ -46,15 +47,7 @@ public abstract class AbstractContainer implements IContainer {
 	 * @return true if no objects are stored into the container with the input key, false otherwise
 	 */
 	public boolean isNull(String key) {
-		logger.debug("IN");
-		try {
-			Object object = this.get(key);
-			if (object == null) 
-				return false;
-			else return true;
-		} finally {
-			logger.debug("OUT");
-		}
+		return get(key) == null;
 	}
 	
 	/**
@@ -65,18 +58,7 @@ public abstract class AbstractContainer implements IContainer {
 	 * object exists and its string representation is blank, false otherwise
 	 */
 	public boolean isBlankOrNull(String key) {
-		logger.debug("IN");
-		try {
-			Object object = this.get(key);
-			if (object == null) 
-				return true;
-			else {
-				String string = object.toString();
-				return (string.trim().equals(""));
-			}
-		} finally {
-			logger.debug("OUT");
-		}
+		return isNull(key) || get(key).toString().trim().equals("");
 	}
 	
 	/**
@@ -85,44 +67,9 @@ public abstract class AbstractContainer implements IContainer {
 	 * @return the string representation of the object with the given key; if the key has no objects associated, null is returned
 	 */
 	public String getString(String key) {
-		logger.debug("IN");
-		try {
-			Object object = this.get(key);
-			if (object == null) 
-				return null;
-			if (object instanceof String) 
-				return (String) object;
-			else return object.toString();
-		} finally {
-			logger.debug("OUT");
-		}
-	}
-	
-	/** 
-	 * If the key has no objects associated, null is returned. If a Boolean object is associated to that key, this Boolean is returned.
-	 * Otherwise the string representation of the object is parsed with <code>Boolean.parseBoolean(string);<code> and the result is returned.
-	 * 
-	 * @param key The input key
-	 * @return If the key has no objects associated, null is returned. If a Boolean object is associated to that key, this boolean is returned.
-	 * Otherwise the string representation of the object is parsed with <code>Boolean.parseBoolean(string);<code> and the result is returned.
-	 */
-	public Boolean getBoolean(String key) {
-		logger.debug("IN");
-		try {
-			Object object = this.get(key);
-			if (object == null) 
-				return null;
-			if (object instanceof Boolean) 
-				return (Boolean) object;
-			else {
-				String string = object.toString();
-				boolean toReturn = false;
-				toReturn = Boolean.parseBoolean(string);
-				return new Boolean(toReturn);
-			}
-		} finally {
-			logger.debug("OUT");
-		}
+		assertNotNull(key, "Input paramater [key] cannot be null");
+		if( isNull(key) ) return null;
+		return ObjectUtils.toString( get(key) );
 	}
 	
 	/** 
@@ -134,23 +81,55 @@ public abstract class AbstractContainer implements IContainer {
 	 * Otherwise the string representation of the object is parsed with <code>Integer.parseInt(string);<code> and the result is returned.
 	 */
 	public Integer getInteger(String key) {
-		logger.debug("IN");
-		try {
-			Object object = this.get(key);
-			if (object == null) 
-				return null;
-			if (object instanceof Integer) 
-				return (Integer) object;
-			else {
-				String string = object.toString();
-				int toReturn = 0;
-				toReturn = Integer.parseInt(string);
-				return new Integer(toReturn);
-			}
-		} finally {
-			logger.debug("OUT");
-		}
+		assertNotNull(key, "Input paramater [key] cannot be null");
+		if( isNull(key) ) return null;
+		return ObjectUtils.toInteger( get(key) );
 	}
+	
+	/** 
+	 * If the key has no objects associated, null is returned. If a Boolean object is associated to that key, this Boolean is returned.
+	 * Otherwise the string representation of the object is parsed with <code>Boolean.parseBoolean(string);<code> and the result is returned.
+	 * 
+	 * @param key The input key
+	 * @return If the key has no objects associated, null is returned. If a Boolean object is associated to that key, this boolean is returned.
+	 * Otherwise the string representation of the object is parsed with <code>Boolean.parseBoolean(string);<code> and the result is returned.
+	 */
+	public Boolean getBoolean(String key) {
+		assertNotNull(key, "Input paramater [key] cannot be null");
+		if( isNull(key) ) return null;
+		return ObjectUtils.toBoolean( get(key) );
+	}
+	
+	public List toList(String key) {
+		assertNotNull(key, "Input paramater [key] cannot be null");
+		if( isNull(key) ) return null;
+		return ObjectUtils.toList( get(key) );
+	}
+		
+	public List toCsvList(String key) {
+		assertNotNull(key, "Input paramater [key] cannot be null");
+		if( isNull(key) ) return null;
+		return ObjectUtils.toCsvList( get(key) );
+	}
+	
+	public JSONObject toJSONObject(String key) {
+		assertNotNull(key, "Input paramater [key] cannot be null");
+		if( isNull(key) ) return null;
+		return ObjectUtils.toJSONObject( get(key) );
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * <b>TO BE USED ONLY INSIDE SPAGOBI CORE, NOT INSIDE EXTERNAL ENGINES</b>.
@@ -208,6 +187,13 @@ public abstract class AbstractContainer implements IContainer {
 			return toReturn; 
 		} finally {
 			logger.debug("OUT");
+		}
+	}
+	
+	
+	private static void assertNotNull(Object o, String message) {
+		if(o == null) {
+			throw new IllegalArgumentException( message );
 		}
 	}
 	

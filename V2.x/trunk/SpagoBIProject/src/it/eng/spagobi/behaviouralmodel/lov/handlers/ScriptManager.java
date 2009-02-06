@@ -21,11 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.behaviouralmodel.lov.handlers;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFInternalError;
@@ -33,8 +30,11 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 public class ScriptManager {
 

@@ -26,7 +26,6 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.drivers.handlers.IRolesHandler;
-import it.eng.spagobi.engines.drivers.weka.WekaDriver;
 
 import java.util.Iterator;
 import java.util.List;

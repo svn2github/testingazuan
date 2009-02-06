@@ -1,8 +1,6 @@
 package it.eng.spagobi.kpi.config.bo;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class KpiInstance {
 	

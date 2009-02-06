@@ -36,7 +36,9 @@ import org.apache.log4j.Logger;
  *
  */
 public final class SchedulerServiceProxy extends AbstractServiceProxy{
-
+	
+	static private final String SERVICE_NAME = "Scheduler Service";
+	
     static private Logger logger = Logger.getLogger(SchedulerServiceProxy.class);
 
     /**
@@ -65,8 +67,8 @@ public final class SchedulerServiceProxy extends AbstractServiceProxy{
 	    } 
 	    return service;
 	} catch (ServiceException e) {
-	    logger.error("Error during service execution", e);
-	    throw new SecurityException();
+	    logger.error("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]");
+	    throw new SecurityException("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]", e);
 	}
     }   
     

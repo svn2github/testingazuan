@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.container.strategy;
 
 import it.eng.spagobi.container.Context;
-import it.eng.spagobi.container.ISessionContainer;
+import it.eng.spagobi.container.IBeanContainer;
 
 /**
  * A strategy is delegated to create/retrieve/destroy the it.eng.spagobi.container.Context on a it.eng.spagobi.container.ISessionContainer instance.
@@ -32,12 +32,12 @@ import it.eng.spagobi.container.ISessionContainer;
  */
 public interface IContextRetrieverStrategy {
 
-	public Context getContext(ISessionContainer sessionContainer);
+	public Context getContext(IBeanContainer sessionContainer);
 	
-	public Context createContext(ISessionContainer sessionContainer);
+	public Context createContext(IBeanContainer sessionContainer);
 	
-	public void destroyCurrentContext(ISessionContainer sessionContainer);
+	public void destroyCurrentContext(IBeanContainer sessionContainer);
 	
-	public void destroyContextsOlderThan(ISessionContainer sessionContainer, int minutes);
+	public void destroyContextsOlderThan(IBeanContainer sessionContainer, int minutes);
 	
 }

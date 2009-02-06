@@ -1,5 +1,12 @@
 package it.eng.spagobi.kpi.model.dao;
 
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
+import it.eng.spagobi.kpi.model.metadata.SbiResources;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,13 +15,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
-
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
-import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
-import it.eng.spagobi.kpi.model.metadata.SbiResources;
 
 public class ModelResourceDAOImpl extends AbstractHibernateDAO implements
 		IModelResourceDAO {

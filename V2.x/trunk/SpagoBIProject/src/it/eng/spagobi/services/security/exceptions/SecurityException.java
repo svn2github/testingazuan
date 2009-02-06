@@ -35,7 +35,14 @@ public class SecurityException extends Exception {
 		/**
 		 * Instantiates a new security exception.
 		 */
-		public SecurityException() {
-			
+		public SecurityException(String msg, Throwable e) {
+			super(msg, e);
+		}
+		
+		/**
+		 * @deprecated add always a descriptive message to the exception
+		 */
+		private SecurityException() {
+			super();
 		}
 }

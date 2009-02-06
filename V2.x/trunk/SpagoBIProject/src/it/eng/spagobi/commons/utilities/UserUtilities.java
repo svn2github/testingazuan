@@ -30,7 +30,6 @@ import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.PortletLoginAction;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
@@ -78,8 +77,8 @@ public class UserUtilities {
 		user = supplier.createUserProfile(userId);
 		userProfile = new UserProfile(user);
 	    } catch (Exception e) {
-		logger.error("Reading user information... ERROR", e);
-		throw new SecurityException();
+	    	logger.error("An error occured while retrieving user profile for user[" + userId +"]");
+	    	throw new SecurityException("An error occured while retrieving user profile for user[" + userId +"]", e);
 	    }
 
 	    logger.debug("userProfile created.UserID= " + (String) userProfile.getUserUniqueIdentifier());

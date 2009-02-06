@@ -5,9 +5,7 @@ package it.eng.spagobi.tools.dataset.common.datastore;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.tools.dataset.common.transformer.IDataTransformer;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;

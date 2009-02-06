@@ -52,8 +52,6 @@ import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
 
-import com.fdsapi.DataSetMap;
-
 
 /**
  * A class to generate Speedometer charts

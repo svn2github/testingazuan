@@ -137,8 +137,8 @@ public class LoginModule extends AbstractHttpModule {
 		    			return;
 		        	}
 		        } catch (Exception e) {
-		            logger.error("Reading user information... ERROR",e);
-		            throw new SecurityException();
+		            logger.error("Reading user information... ERROR");
+		            throw new SecurityException("Reading user information... ERROR",e);
 		        }
 	    	}
 	        
@@ -160,8 +160,8 @@ public class LoginModule extends AbstractHttpModule {
 	    			permSess.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
 	    		}
 	        } catch (Exception e) {
-	            logger.error("Reading user information... ERROR",e);
-	            throw new SecurityException();
+	            logger.error("Reading user information... ERROR");
+	            throw new SecurityException("Reading user information... ERROR",e);
 	        }
 	        
 			//String username = (String) profile.getUserUniqueIdentifier();

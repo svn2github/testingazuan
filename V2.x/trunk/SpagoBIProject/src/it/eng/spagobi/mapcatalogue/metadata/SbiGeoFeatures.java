@@ -24,7 +24,6 @@ package it.eng.spagobi.mapcatalogue.metadata;
 
 // Generated 31-mag-2007 14.53.27 by Hibernate Tools 3.2.0.beta8
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**

@@ -21,12 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.execution.service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractAction;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
 
 import org.apache.log4j.Logger;
 

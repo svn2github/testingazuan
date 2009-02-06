@@ -24,7 +24,6 @@ package it.eng.spagobi.behaviouralmodel.analyticaldriver.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.analiticalmodel.document.service.DetailBIObjectModule;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterUse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;

@@ -25,7 +25,6 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.urls.StandardPieURLGenerator;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.PieDataset;
 
 public class MyPieUrlGenerator extends StandardPieURLGenerator{

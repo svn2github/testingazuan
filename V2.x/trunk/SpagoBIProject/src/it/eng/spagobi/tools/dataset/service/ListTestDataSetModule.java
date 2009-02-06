@@ -55,7 +55,6 @@ import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
-import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 
 import java.sql.Connection;

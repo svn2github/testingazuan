@@ -22,15 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.security.service;
 
 
-import java.util.Arrays;
-import java.util.List;
-
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IUserFunctionalityDAO;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.security.SecurityService;

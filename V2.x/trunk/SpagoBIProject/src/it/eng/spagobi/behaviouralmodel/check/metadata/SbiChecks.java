@@ -23,8 +23,6 @@ package it.eng.spagobi.behaviouralmodel.check.metadata;
 
 import it.eng.spagobi.commons.metadata.SbiDomains;
 
-import java.util.*;
-
 
 
 

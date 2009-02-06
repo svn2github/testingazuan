@@ -21,11 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.proxy;
 
-import java.util.HashMap;
-
+import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.content.stub.ContentServiceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
+
+import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 import javax.xml.rpc.ServiceException;
@@ -39,7 +40,8 @@ import org.apache.log4j.Logger;
  */
 public final class ContentServiceProxy extends AbstractServiceProxy{
 
-
+	static private final String SERVICE_NAME = "Content Service";
+	
     static private Logger logger = Logger.getLogger(ContentServiceProxy.class);
 
     /**
@@ -48,7 +50,7 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
      * @param user user ID
      * @param session http session
      */
-    public ContentServiceProxy(String user,HttpSession session) {
+    public ContentServiceProxy(String user, HttpSession session) {
     	super( user,session);
     	if (user==null) logger.error("User ID IS NULL....");
     	if (session==null) logger.error("HttpSession IS NULL....");
@@ -69,8 +71,8 @@ public final class ContentServiceProxy extends AbstractServiceProxy{
 	    }
 	    return service;
 	} catch (ServiceException e) {
-	    logger.error("Error during service execution", e);
-	    throw new SecurityException();
+	    logger.error("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]");
+	    throw new SecurityException("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]", e);
 	}
     }
 

@@ -21,11 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.functionalitytree.bo;
 
-import java.io.Serializable;
-import java.util.List;
-
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.Role;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Defines a <code>LowFunctionality</code> object.

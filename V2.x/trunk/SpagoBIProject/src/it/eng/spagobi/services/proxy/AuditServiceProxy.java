@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.proxy;
 
+import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
 import it.eng.spagobi.services.audit.stub.AuditServiceServiceLocator;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
@@ -36,7 +37,8 @@ import org.apache.log4j.Logger;
  */
 public final class AuditServiceProxy extends AbstractServiceProxy{
 
-
+	static private final String SERVICE_NAME = "Audit Service";
+	
     static private Logger logger = Logger.getLogger(AuditServiceProxy.class);
 
     /**
@@ -46,7 +48,7 @@ public final class AuditServiceProxy extends AbstractServiceProxy{
      * @param session Http Session
      */
     public AuditServiceProxy(String user,HttpSession session) {
-	super(user, session);
+    	super(user, session);
     }
     
     private AuditServiceProxy() {
@@ -64,8 +66,8 @@ public final class AuditServiceProxy extends AbstractServiceProxy{
 	    }
 	    return service;
 	} catch (ServiceException e) {
-	    logger.error("Error during service execution", e);
-	    throw new SecurityException();
+	    logger.error("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]");
+	    throw new SecurityException("Impossible to locate [" + SERVICE_NAME + "] at [" + serviceUrl + "]", e);
 	}
     }
     

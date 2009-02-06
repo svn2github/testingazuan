@@ -24,7 +24,6 @@ package it.eng.spagobi.mapcatalogue.bo.dao.hibernate;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 import it.eng.spagobi.mapcatalogue.bo.GeoMap;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoMapsDAO;

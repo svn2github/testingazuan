@@ -1,7 +1,6 @@
 package it.eng.spagobi.kpi.config.metadata;
 
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-// Generated 5-nov-2008 17.16.36 by Hibernate Tools 3.1.0 beta3
 
 
 

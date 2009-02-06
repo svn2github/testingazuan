@@ -29,10 +29,7 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.mapcatalogue.service.DetailMapModule;
 import it.eng.spagobi.wapp.services.DetailMenuModule;
 /**
  * Publishes the results of a detail request for a functionality into the correct 

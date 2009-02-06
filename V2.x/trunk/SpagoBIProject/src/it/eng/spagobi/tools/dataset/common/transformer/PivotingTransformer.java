@@ -7,9 +7,7 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.tools.dataset.common.datastore.DataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
 import it.eng.spagobi.tools.dataset.common.datastore.FieldMetadata;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.datastore.Record;
 

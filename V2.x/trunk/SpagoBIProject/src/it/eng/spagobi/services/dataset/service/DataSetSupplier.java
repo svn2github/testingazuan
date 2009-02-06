@@ -23,17 +23,12 @@ package it.eng.spagobi.services.dataset.service;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.dao.IDomainDAO;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 

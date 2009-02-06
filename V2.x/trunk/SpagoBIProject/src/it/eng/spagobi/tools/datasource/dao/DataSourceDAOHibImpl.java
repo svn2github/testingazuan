@@ -50,9 +50,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
-/**
- * @author Antonella Giachino (antonella.giachino@eng.it)
- */
 
 
 /**

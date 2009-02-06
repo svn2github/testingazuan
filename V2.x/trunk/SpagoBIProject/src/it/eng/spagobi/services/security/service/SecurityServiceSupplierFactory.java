@@ -21,11 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.security.service;
 
-import org.apache.log4j.Logger;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.commons.services.LoginModule;
+
+import org.apache.log4j.Logger;
 
 /**
  * Factory class for the security supplier 

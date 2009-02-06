@@ -21,14 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.scheduler;
 
-import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.behaviouralmodel.lov.handlers.ScriptManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 

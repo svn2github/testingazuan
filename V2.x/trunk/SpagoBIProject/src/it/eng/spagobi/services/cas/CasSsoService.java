@@ -118,19 +118,20 @@ public class CasSsoService implements SsoServiceInterface {
 			String tmpUserId = pv.getUser();
 			logger.debug("CAS User:" + tmpUserId);
 			if (  userId==null || !userId.equals(tmpUserId)) {
-			    logger.warn("Proxy and application users are not the same !!!!! " + userId + "-"
-				    + tmpUserId);
-			    throw new SecurityException();
+			    logger.warn("Proxy and application users are not the same [" + userId + "-"
+				    + tmpUserId + "]");
+			    throw new SecurityException("Proxy and application users are not the same [" + userId + "-"
+					    + tmpUserId + "]");
 			}
 			
 			
 	    } else {
 		logger.error("Token NOT VALID");
-		throw new SecurityException();
+		throw new SecurityException("Token NOT VALID");
 	    }
 	} catch (Throwable e) {
-	    logger.error("Exception", e);
-	    throw new SecurityException();
+	    logger.error("An exception occured while validating the cas token");
+	    throw new SecurityException("An exception occured while validating the cas token", e);
 	} finally {
 	    logger.debug("OUT");
 	}

@@ -35,8 +35,6 @@ package it.eng.spagobi.engines.chart.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.engines.chart.bo.ChartImpl;
 
 import java.io.File;
 import java.io.FileInputStream;

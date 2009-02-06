@@ -1,5 +1,11 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.others;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts;
+import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
+import it.eng.spagobi.engines.chart.utils.DatasetMap;
+
 import java.awt.Color;
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -22,15 +28,7 @@ import org.jfree.data.DefaultKeyedValues;
 import org.jfree.data.KeyedValues;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.general.DatasetUtilities;
-import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.util.SortOrder;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts;
-import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.PieCharts;
-import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
-import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 
 public class CumulativeCurveChart extends BarCharts{

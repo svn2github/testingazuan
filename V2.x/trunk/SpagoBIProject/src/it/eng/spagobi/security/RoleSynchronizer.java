@@ -33,7 +33,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
 package it.eng.spagobi.security;
 
-import it.eng.spago.base.Constants;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dbaccess.Utils;

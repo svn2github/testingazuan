@@ -21,12 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.importexport.bo;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
+
 import java.io.FileInputStream;
 
 import org.apache.log4j.Logger;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 
 public class AssociationFile {
 

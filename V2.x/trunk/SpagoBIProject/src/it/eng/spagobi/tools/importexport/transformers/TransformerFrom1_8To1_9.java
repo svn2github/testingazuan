@@ -33,7 +33,6 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Properties;
 
 public class TransformerFrom1_8To1_9 implements ITransformer {

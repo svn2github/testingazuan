@@ -103,9 +103,9 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
     	    
     	    return content;
 		    
-		} catch (Exception e) {
+		} catch (Throwable e) {
 		    logger.error("Exception",e); 
-		    return null;
+		    throw new RuntimeException("Exception occured while retrieving map from db", e);
 		}finally{
 		    monitor.stop();
 		    logger.debug("OUT");

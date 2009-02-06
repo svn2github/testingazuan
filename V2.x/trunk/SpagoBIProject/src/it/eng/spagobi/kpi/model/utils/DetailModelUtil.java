@@ -1,10 +1,8 @@
 package it.eng.spagobi.kpi.model.utils;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelAttribute;
 

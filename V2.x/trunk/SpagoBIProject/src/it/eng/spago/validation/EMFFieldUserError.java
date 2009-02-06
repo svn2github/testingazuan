@@ -1,10 +1,10 @@
 package it.eng.spago.validation;
 
-import java.util.List;
-
 import it.eng.spago.base.CloneableObject;
 import it.eng.spago.error.EMFErrorCategory;
-import it.eng.spago.error.EMFUserError;;
+import it.eng.spago.error.EMFUserError;
+
+import java.util.List;
 
 /**
  * Represent an error related to a field.

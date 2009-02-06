@@ -21,14 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.dao;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-import it.eng.spagobi.commons.metadata.SbiUserFunctionality;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;

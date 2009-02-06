@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.distributionlist.metadata;
 
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
-// Generated 19-feb-2008 18.15.47 by Hibernate Tools 3.1.0 beta3
 
 
 

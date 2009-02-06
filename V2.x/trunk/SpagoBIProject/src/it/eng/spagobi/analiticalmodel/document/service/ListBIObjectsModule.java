@@ -34,7 +34,6 @@ import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.TreeObjectsModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -42,7 +41,6 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;

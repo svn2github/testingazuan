@@ -96,8 +96,8 @@ public class PortletLoginAction extends AbstractHttpAction {
 		    SpagoBIUserProfile user = supplier.createUserProfile(userId);
 		    profile = new UserProfile(user);
 		} catch (Exception e) {
-		    logger.error("Reading user information... ERROR", e);
-		    throw new SecurityException();
+		    logger.error("Reading user information... ERROR");
+		    throw new SecurityException("Reading user information... ERROR", e);
 		}
 
 		logger.debug("userProfile created.UserUniqueIDentifier= " + (String) profile.getUserUniqueIdentifier());
@@ -122,8 +122,8 @@ public class PortletLoginAction extends AbstractHttpAction {
 	    }
 
 	} catch (Exception e) {
-	    logger.error("Exception", e);
-	    throw new SecurityException();
+	    logger.error("Exception");
+	    throw new SecurityException("Exception", e);
 	} finally {
 	    logger.debug("OUT");
 	}

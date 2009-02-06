@@ -5,7 +5,6 @@ package it.eng.spagobi.tools.dataset.common.datastore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 

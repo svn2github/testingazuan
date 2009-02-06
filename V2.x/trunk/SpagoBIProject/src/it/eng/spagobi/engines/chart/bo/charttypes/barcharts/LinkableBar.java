@@ -46,7 +46,6 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.general.Dataset;
 
 /**   @author Giulio Gavardi
  *     giulio.gavardi@eng.it

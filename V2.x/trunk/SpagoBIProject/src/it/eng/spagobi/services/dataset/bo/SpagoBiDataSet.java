@@ -31,6 +31,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
     private java.lang.String pivotRowName;
     
     private java.lang.String pivotColumnValue;
+    
+    private boolean numRows;
 
     private java.lang.String name;
 
@@ -60,6 +62,7 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            java.lang.String pivotColumnName,
            java.lang.String pivotRowName,
            java.lang.String pivotColumnValue,
+           boolean numRows,
            java.lang.String name,
            java.lang.String operation,
            java.lang.String parameters,
@@ -78,6 +81,7 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            this.pivotColumnName = pivotColumnName;
            this.pivotRowName = pivotRowName;
            this.pivotColumnValue = pivotColumnValue;
+           this.numRows = numRows;
            this.name = name;
            this.operation = operation;
            this.parameters = parameters;
@@ -593,6 +597,12 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("numRows");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "numRows"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "boolean"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("name");
         elemField.setXmlName(new javax.xml.namespace.QName("", "name"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -683,6 +693,20 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
 	public void setTransformerId(Integer transformerId) {
 		this.transformerId = transformerId;
+	}
+
+	/**
+	 * @return the numRows
+	 */
+	public boolean isNumRows() {
+		return numRows;
+	}
+
+	/**
+	 * @param numRows the numRows to set
+	 */
+	public void setNumRows(boolean numRows) {
+		this.numRows = numRows;
 	}
 
 

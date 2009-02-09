@@ -267,6 +267,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			hibDataSet.setPivotColumnName(aDataSet.getPivotColumnName());
 			hibDataSet.setPivotRowName(aDataSet.getPivotRowName());
 			hibDataSet.setPivotColumnValue(aDataSet.getPivotColumnValue());
+			hibDataSet.setNumRows(aDataSet.isNumRows());
 			hibDataSet.setName(aDataSet.getName());			
 			hibDataSet.setDescription(aDataSet.getDescription());
 			hibDataSet.setParameters(aDataSet.getParameters());
@@ -372,6 +373,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 			hibDataSet.setPivotColumnName(aDataSet.getPivotColumnName());
 			hibDataSet.setPivotRowName(aDataSet.getPivotRowName());
 			hibDataSet.setPivotColumnValue(aDataSet.getPivotColumnValue());
+			hibDataSet.setNumRows(aDataSet.isNumRows());
 			hibDataSet.setDescription(aDataSet.getDescription());
 			hibDataSet.setName(aDataSet.getName());
 			hibDataSet.setParameters(aDataSet.getParameters());
@@ -484,6 +486,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		ds.setPivotColumnName(hibDataSet.getPivotColumnName());
 		ds.setPivotRowName(hibDataSet.getPivotRowName());
 		ds.setPivotColumnValue(hibDataSet.getPivotColumnValue());
+		ds.setNumRows(hibDataSet.isNumRows());
 		ds.setDescription(hibDataSet.getDescription());		
 		ds.setParameters(hibDataSet.getParameters());		
 		
@@ -491,7 +494,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				&& ds.getPivotColumnValue() != null
 				&& ds.getPivotRowName() != null){
 			ds.setDataStoreTransformer(
-					new PivotDataSetTransformer(ds.getPivotColumnName(), ds.getPivotColumnValue(), ds.getPivotRowName()));
+					new PivotDataSetTransformer(ds.getPivotColumnName(), ds.getPivotColumnValue(), ds.getPivotRowName(), ds.isNumRows()));
 		}
 		
 		return ds;

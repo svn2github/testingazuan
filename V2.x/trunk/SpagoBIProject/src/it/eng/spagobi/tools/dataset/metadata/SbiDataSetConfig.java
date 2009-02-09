@@ -37,7 +37,22 @@ public class SbiDataSetConfig {
 	private String pivotColumnName=null;
 	private String pivotRowName=null;
 	private String pivotColumnValue=null;
+	private boolean numRows = false;
     	
+	/**
+	 * @return the numRows
+	 */
+	public boolean isNumRows() {
+		return numRows;
+	}
+
+	/**
+	 * @param numRows the numRows to set
+	 */
+	public void setNumRows(boolean numRows) {
+		this.numRows = numRows;
+	}
+
 	/**
 	 * Gets the parameters.
 	 * 

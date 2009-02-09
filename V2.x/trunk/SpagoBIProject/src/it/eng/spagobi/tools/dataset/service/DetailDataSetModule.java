@@ -598,11 +598,13 @@ public class DetailDataSetModule extends AbstractModule {
 		String pivotName = null;
 		String pivotRow = null;
 		String pivotValue = null;
+		boolean numRows = false;
 		if (domainTransformer!= null){
 			transformerId = domainTransformer.getValueId();
 			pivotName = (String)serviceRequest.getAttribute("PIVOTCOLUMNNAME");;
 			pivotRow = (String)serviceRequest.getAttribute("PIVOTROWNAME");;
 			pivotValue = (String)serviceRequest.getAttribute("PIVOTCOLUMNVALUE");;
+			numRows = Boolean.valueOf((String)(serviceRequest.getAttribute("PIVOTNUMROWS")));;
 		}
 		
 		String description = (String)serviceRequest.getAttribute("DESCR");	
@@ -618,6 +620,7 @@ public class DetailDataSetModule extends AbstractModule {
 		ds.setPivotColumnName(pivotName);
 		ds.setPivotRowName(pivotRow);
 		ds.setPivotColumnValue(pivotValue);
+		ds.setNumRows(numRows);
 		ds.setDescription(description);
 
 		return ds;

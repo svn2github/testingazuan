@@ -24,7 +24,7 @@ public class SimpleCluster extends ClusterCharts {
 
 		JFreeChart chart = ChartFactory.createBubbleChart(
 				name, yLabel, xLabel, dataset, 
-				PlotOrientation.HORIZONTAL, true, true, false);
+				PlotOrientation.HORIZONTAL, legend, true, false);
 
 		/*Font font = new Font("Tahoma", Font.BOLD, titleDimension);
 		TextTitle title = new TextTitle(name, font);
@@ -102,7 +102,8 @@ public class SimpleCluster extends ClusterCharts {
 		//DecimalFormat format=(new DecimalFormat("0"));
 		//rangeAxis.setNumberFormatOverride(format);
 
-
+		if(legend==true)	
+			drawLegend(chart);
 
 		return chart;
 	}

@@ -31,7 +31,6 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.utilities.strings.StringUtils;
 import sun.misc.BASE64Decoder;
 

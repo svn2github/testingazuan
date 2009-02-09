@@ -54,7 +54,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
      * Initialize the engine
      */
     public void init(ServletConfig config) throws ServletException {
-		super.init(config);
+		 super.init(config);
 		logger.debug("Initializing SpagoBI JPalo Engine...");
     }
 

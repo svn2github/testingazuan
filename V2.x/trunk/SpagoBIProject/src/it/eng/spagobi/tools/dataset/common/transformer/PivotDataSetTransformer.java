@@ -46,6 +46,7 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 	String pivotFieldName; // pivotColumn
 	String valueFieldName; // pivotValue
 	String groupFieldName; // pivotRow
+	boolean numRows; 	   // defines whether the output columns must be numbered ie: x1, y1, z1, x2,y2,z2,x3,y,3,z3,... or not ie: x,y,z
 	
 	List pivotedFieldNames;
 
@@ -71,10 +72,11 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 	Febbraio           SER4           75            2
 	 */
 	public PivotDataSetTransformer(String pivotFieldName,
-			String valueFieldName, String groupFieldName) {
+			String valueFieldName, String groupFieldName, boolean numRows) {
 		this.setPivotFieldName(pivotFieldName);
 		this.setValueFieldName(valueFieldName);
 		this.setGroupFieldName(groupFieldName);
+		this.setNumRows(numRows);
 		pivotedFieldNames = new ArrayList();
 	}
 
@@ -119,44 +121,46 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 
 		/************************************************************************************
 		* Renaming output column for dynamic records (alias record with different number of columns )
+		* if requested
 		/************************************************************************************/
-		String precGroupField = null;
-		String precPivotField = null;
-		int cont = 1;
-		Iterator iterator = dataStore.iterator();
-		while (iterator.hasNext()) {
-			IRecord record = (IRecord) iterator.next();
-
-			IField pivotField = record.getFieldAt(pivotFieldIndex);
-			IField valueField = record.getFieldAt(valueFieldIndex);
-			IField groupField = record.getFieldAt(groupFieldIndex);
-			 
-			if (precGroupField == null)
-				precGroupField = (String)groupField.getValue();
-			
-			if (precPivotField == null)
-				precPivotField = (String)pivotField.getValue();
-			
-			if (precGroupField.equalsIgnoreCase((String)groupField.getValue())){
-				if (precPivotField.equalsIgnoreCase((String)pivotField.getValue())){
-					pivotField.setValue((String)pivotField.getValue()+String.valueOf(cont));
-					cont++;
+		if (numRows){
+			String precGroupField = null;
+			String precPivotField = null;
+			int cont = 1;
+			Iterator iterator = dataStore.iterator();
+			while (iterator.hasNext()) {
+				IRecord record = (IRecord) iterator.next();
+	
+				IField pivotField = record.getFieldAt(pivotFieldIndex);
+				IField valueField = record.getFieldAt(valueFieldIndex);
+				IField groupField = record.getFieldAt(groupFieldIndex);
+				 
+				if (precGroupField == null)
+					precGroupField = groupField.getValue().toString();
+				
+				if (precPivotField == null)
+					precPivotField = pivotField.getValue().toString();
+				
+				if (precGroupField.equalsIgnoreCase(groupField.getValue().toString())){
+					if (precPivotField.equalsIgnoreCase(pivotField.getValue().toString())){
+						pivotField.setValue(pivotField.getValue().toString()+String.valueOf(cont));
+						cont++;
+					}
+					else{
+						cont = 1;
+						precPivotField = pivotField.getValue().toString();
+						pivotField.setValue(pivotField.getValue().toString()+String.valueOf(cont));	
+						cont++;
+					}
 				}
 				else{
 					cont = 1;
-					precPivotField = (String)pivotField.getValue();
-					pivotField.setValue((String)pivotField.getValue()+String.valueOf(cont));	
+					precGroupField = groupField.getValue().toString();
+					precPivotField = pivotField.getValue().toString();
+					pivotField.setValue(pivotField.getValue().toString()+String.valueOf(cont));
 					cont++;
 				}
 			}
-			else{
-				cont = 1;
-				precGroupField = (String)groupField.getValue();
-				precPivotField = (String)pivotField.getValue();
-				pivotField.setValue((String)pivotField.getValue()+String.valueOf(cont));
-				cont++;
-			}
-			
 		}
 
 		
@@ -173,7 +177,7 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 			IField valueField = record.getFieldAt(valueFieldIndex);
 			IField groupField = record.getFieldAt(groupFieldIndex);
 
-			if(selectedGroupValue == null || !selectedGroupValue.equals( groupField.getValue() )) {
+			if(selectedGroupValue == null || !selectedGroupValue.equals( groupField.getValue().toString() )) {
 				selectedGroupValue = groupField.getValue();
 				if(newRecord != null) {
 					newRecord.getFields().remove(pivotFieldIndex);
@@ -192,12 +196,13 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 			int pivotedFieldIndex = dataStoreMeta.getFieldCount() + pivotedFieldNames.indexOf( pivotField.getValue() );
 			newRecord.getFieldAt( pivotedFieldIndex ).setValue( valueField.getValue() );
 		}
+		if (newRecord != null){
+			newRecord.getFields().remove(pivotFieldIndex);
+			newRecord.getFields().remove(valueFieldIndex-1);
+			newRecords.add( newRecord );
 		
-		newRecord.getFields().remove(pivotFieldIndex);
-		newRecord.getFields().remove(valueFieldIndex-1);
-		newRecords.add( newRecord );
-		
-		((DataStore) dataStore).setRecords(newRecords);
+			((DataStore) dataStore).setRecords(newRecords);
+		}
 	}
 
 	public String getPivotFieldName() {
@@ -307,9 +312,25 @@ Febbraio           SER4           75            2
 		record.appendField(new Field(new Integer(2)));
 		dataStore.appendRecord(record);
 		
-		IDataStoreTransformer transformer = new PivotDataSetTransformer("SER", "VAL", "X");
+		IDataStoreTransformer transformer = new PivotDataSetTransformer("SER", "VAL", "X", false);
 		transformer.transform(dataStore);
 		System.out.println(dataStore.toXml());
+	}
+
+
+	/**
+	 * @return the numRows
+	 */
+	public boolean isNumRows() {
+		return numRows;
+	}
+
+
+	/**
+	 * @param numRows the numRows to set
+	 */
+	public void setNumRows(boolean numRows) {
+		this.numRows = numRows;
 	}
 
 }

@@ -15,6 +15,8 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.DefaultXYZDataset;
 
 public class SimpleCluster extends ClusterCharts {
+	
+	
 
 	public JFreeChart createChart(DatasetMap datasets) {
 
@@ -37,20 +39,35 @@ public class SimpleCluster extends ClusterCharts {
 
 		chart.setBackgroundPaint(color);
 		XYPlot plot = (XYPlot) chart.getPlot();
-		plot.setForegroundAlpha(0.50f);
+		//plot.setForegroundAlpha(0.50f);
+		plot.setForegroundAlpha(0.45f);
 
 
 		XYItemRenderer renderer = plot.getRenderer();
 
-
+		//define colors
 		int seriesN=dataset.getSeriesCount();
 		if(colorMap!=null){
+			boolean isSerieSel = true;
 			for (int i = 0; i < seriesN; i++) {
 				String serieName=(String)dataset.getSeriesKey(i);
-				Color color=(Color)colorMap.get(serieName);
-				if(color!=null){
+				String tmpName = serieName.replaceAll(" ", "");
+				tmpName = tmpName.replace('.',' ').trim();
+				if (serie_selected != null && serie_selected.size()>0){
+					String serieSel = serie_selected.get(tmpName).toString();
+					isSerieSel = (serieSel.equalsIgnoreCase("TRUE") || serieSel.equalsIgnoreCase("YES") ||
+										  serieSel.equalsIgnoreCase("1"))? true : false;
+					serieName = tmpName;
+				}
+				
+				if(color!=null && isSerieSel){
+					Color color=(Color)colorMap.get(serieName);
 					renderer.setSeriesPaint(i, color);
-				}	
+				}
+				else{
+					Color color = new Color(Integer.decode(defaultColor).intValue());
+					renderer.setSeriesPaint(i, color);
+				}
 			}
 		}
 

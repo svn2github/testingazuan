@@ -58,8 +58,11 @@ public class ClusterCharts extends ChartImpl {
 	String yLabel="";
 	Vector currentSeries=null;
 	HashMap serie_values=null;
+	HashMap serie_selected=null;
 	boolean decimalXValues=false;
 	boolean decimalYValues=false;
+	String  colSel = "";
+	String  defaultColor = "";
 
 
 	HashMap colorMap=new HashMap();
@@ -93,6 +96,7 @@ public class ClusterCharts extends ChartImpl {
 
 		series=new Vector();
 		serie_values=new HashMap();
+		serie_selected=new HashMap();
 
 		boolean firstX=true;
 		boolean firstY=true;
@@ -119,6 +123,7 @@ public class ClusterCharts extends ChartImpl {
 
 			String name="";
 			String value="";
+			String tmpSerieName = "";
 			//run all the attributes of the serie
 
 			for (Iterator iterator2 = attsRow.iterator(); iterator2.hasNext();) {  // run attributes, serieName, x, y, z
@@ -132,6 +137,7 @@ public class ClusterCharts extends ChartImpl {
 				{
 					serieName=value;
 					logger.debug("New Serie: "+serieName);
+					tmpSerieName = serieName;
 					if(!(serie_values.keySet().contains(serieName))) // new serie create the arrays
 					{
 						i=0;
@@ -141,11 +147,11 @@ public class ClusterCharts extends ChartImpl {
 					}
 					else // serie already present
 					{ newSerie=false;
-					i++;
+					  i++;
 
 					}
 				}
-				else {
+				else if (name.equalsIgnoreCase("x") || name.equalsIgnoreCase("y") || name.equalsIgnoreCase("z")){
 					// after the name of serie here are values
 					SerieCluster serieCluster=(SerieCluster)serie_values.get(serieName);
 					if(serieCluster == null){
@@ -211,6 +217,13 @@ public class ClusterCharts extends ChartImpl {
 
 								serieCluster.setZ(zArr);					
 							}
+				}
+				else if (name.equalsIgnoreCase(colSel)){
+					//defines map with selection series informations
+					String tmpName = tmpSerieName.replaceAll(" ", "");
+					tmpName = tmpName.replace('.', ' ').trim();
+					if(!(serie_selected.keySet().contains(tmpName)))
+						serie_selected.put(tmpName, value);
 				}
 			}
 
@@ -347,6 +360,18 @@ public class ClusterCharts extends ChartImpl {
 			yLabel="y";
 		}
 
+		//'column_sel' defines the column in witch there is the indicator of serie selected, 
+		//so the widget can colors the bubbles with the color read into template, otherwise the bubble is white/trasparent.
+		//'default_color' defines the default series color.
+		if(confParameters.get("column_sel")!=null)
+			colSel=(String)confParameters.get("column_sel");
+		else
+			colSel="";
+		
+		if(confParameters.get("default_color")!=null)
+			defaultColor=(String)confParameters.get("default_color");
+		else
+			defaultColor="#FFFFFF";
 
 		//reading series colors if present
 		SourceBean colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
@@ -358,7 +383,7 @@ public class ClusterCharts extends ChartImpl {
 			String num="";
 			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
-
+				//System.out.println(object.getKey());
 				String seriesName=new String(object.getKey());
 
 				colorSerie=new String((String)object.getValue());
@@ -367,10 +392,7 @@ public class ClusterCharts extends ChartImpl {
 					colorMap.put(seriesName,col); 
 				}
 			}		
-
 		}
-
-
 
 		logger.debug("OUT");
 	}

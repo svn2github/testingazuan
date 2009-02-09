@@ -7,8 +7,10 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpi;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstanceHistory;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
@@ -100,10 +102,14 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 				aKpiInstance.setChartTypeId(sbiKpiInstance.getSbiDomains()
 						.getValueId());
 			}
-		/*TODO	if (sbiKpiInstance.getSbiKpiPeriodicity() != null) {
-				aKpiInstance.setPeriodicityId(sbiKpiInstance
-						.getSbiKpiPeriodicity().getIdKpiPeriodicity());
-			} */
+			// TODO
+			if (sbiKpiInstance.getSbiKpiInstPeriods() != null && !(sbiKpiInstance.getSbiKpiInstPeriods().isEmpty())) {
+				SbiKpiInstPeriod instPeriod = (SbiKpiInstPeriod) sbiKpiInstance
+						.getSbiKpiInstPeriods().toArray()[0];
+
+				aKpiInstance.setPeriodicityId(instPeriod.getSbiKpiPeriodicity()
+						.getIdKpiPeriodicity());
+			} //
 			aKpiInstance.setWeight(sbiKpiInstance.getWeight());
 			aKpiInstance.setD(sbiKpiInstance.getBeginDt());
 			//
@@ -211,16 +217,17 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 									oldSbiKpiInstance.getSbiDomains()
 											.getValueId(), value
 											.getKpiInstance().getChartTypeId())))
-						/*TODO	&& (areBothNull(oldSbiKpiInstance
-									.getSbiKpiPeriodicity(), value
-									.getKpiInstance().getPeriodicityId()) || (oldSbiKpiInstance
-									.getSbiKpiPeriodicity() != null && areNullOrEquals(
-									oldSbiKpiInstance.getSbiKpiPeriodicity()
-											.getIdKpiPeriodicity(), value
-											.getKpiInstance()
-											.getPeriodicityId()))) */ && areNullOrEquals(
-							oldSbiKpiInstance.getWeight(), value
-									.getKpiInstance().getWeight()))) {
+					/*
+					 * TODO && (areBothNull(oldSbiKpiInstance
+					 * .getSbiKpiPeriodicity(), value
+					 * .getKpiInstance().getPeriodicityId()) ||
+					 * (oldSbiKpiInstance .getSbiKpiPeriodicity() != null &&
+					 * areNullOrEquals( oldSbiKpiInstance.getSbiKpiPeriodicity()
+					 * .getIdKpiPeriodicity(), value .getKpiInstance()
+					 * .getPeriodicityId())))
+					 */
+					&& areNullOrEquals(oldSbiKpiInstance.getWeight(), value
+							.getKpiInstance().getWeight()))) {
 				// create new History
 				Calendar now = Calendar.getInstance();
 				SbiKpiInstanceHistory sbiKpiInstanceHistory = new SbiKpiInstanceHistory();
@@ -265,16 +272,16 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			tx.commit();
 
 		}
-		
+
 		catch (org.hibernate.exception.ConstraintViolationException ce) {
 			if (tx != null && tx.isActive()) {
 				tx.rollback();
 			}
 			logger.error("Impossible to delete a KpiInstance", ce);
 			throw new EMFUserError(EMFErrorSeverity.WARNING, 10018);
-			
+
 		}
-		
+
 		catch (HibernateException he) {
 			logException(he);
 
@@ -314,13 +321,43 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		} else {
 			sbiKpiInstance.setSbiDomains(null);
 		}
-		/*TODO	if (value.getKpiInstance().getPeriodicityId() != null) {
-			sbiKpiInstance.setSbiKpiPeriodicity((SbiKpiPeriodicity) aSession
+		if (value.getKpiInstance().getPeriodicityId() != null) {
+			// AGGIUNTA O AGGIORNAMENTO RIGA
+			// TODO
+
+			SbiKpiPeriodicity sbiKpiPeriodicity = (SbiKpiPeriodicity) aSession
 					.load(SbiKpiPeriodicity.class, value.getKpiInstance()
-							.getPeriodicityId()));
+							.getPeriodicityId());
+			Criteria critt = aSession.createCriteria(SbiKpiInstPeriod.class);
+			critt.add(Expression.eq("sbiKpiInstance", sbiKpiInstance));
+			List instPeriodsList = critt.list();
+
+			if (instPeriodsList == null || instPeriodsList.isEmpty()) {
+				SbiKpiInstPeriod toInsert = new SbiKpiInstPeriod();
+				toInsert.setSbiKpiInstance(sbiKpiInstance);
+				toInsert.setSbiKpiPeriodicity(sbiKpiPeriodicity);
+				toInsert.setDefault_(true);
+
+				aSession.save(toInsert);
+
+			} else {
+				((SbiKpiInstPeriod)instPeriodsList.get(0)).setSbiKpiPeriodicity(sbiKpiPeriodicity);
+				aSession.update(instPeriodsList.get(0));
+			}
+
+			// sbiKpiInstance.setSbiKpiPeriodicity((SbiKpiPeriodicity) aSession
+			// .load(SbiKpiPeriodicity.class, value.getKpiInstance()
+			// .getPeriodicityId()));
 		} else {
-			sbiKpiInstance.setSbiKpiPeriodicity(null);
-		}*/
+			// RIMOZIONE DELLA RIGA DAL DB
+			Set InstPeriods = sbiKpiInstance.getSbiKpiInstPeriods();
+			for (Iterator iterator = InstPeriods.iterator(); iterator.hasNext();) {
+				SbiKpiInstPeriod sbiKpiInstPeriod = (SbiKpiInstPeriod) iterator
+						.next();
+				aSession.delete(sbiKpiInstPeriod);
+			}
+			//
+		}
 
 		sbiKpiInstance.setWeight(value.getKpiInstance().getWeight());
 		return sbiKpiInstance;
@@ -466,10 +503,14 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 				aKpiInstance.setChartTypeId(sbiKpiInstance.getSbiDomains()
 						.getValueId());
 			}
-			/*TODO	if (sbiKpiInstance.getSbiKpiPeriodicity() != null) {
-				aKpiInstance.setPeriodicityId(sbiKpiInstance
-						.getSbiKpiPeriodicity().getIdKpiPeriodicity());
-			}*/
+			// TODO
+			if (sbiKpiInstance.getSbiKpiInstPeriods() != null && !(sbiKpiInstance.getSbiKpiInstPeriods().isEmpty())) {
+				SbiKpiInstPeriod instPeriod = (SbiKpiInstPeriod) sbiKpiInstance
+						.getSbiKpiInstPeriods().toArray()[0];
+
+				aKpiInstance.setPeriodicityId(instPeriod.getSbiKpiPeriodicity()
+						.getIdKpiPeriodicity());
+			}
 			aKpiInstance.setWeight(sbiKpiInstance.getWeight());
 			aKpiInstance.setD(sbiKpiInstance.getBeginDt());
 			//
@@ -478,11 +519,10 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 		List childrenNodes = new ArrayList();
 
-
 		Criteria critt = session.createCriteria(SbiKpiModelInst.class);
 		critt.add(Expression.eq("sbiKpiModelInst", value));
 		critt.createCriteria("sbiKpiModel").addOrder(Order.asc("kpiModelCd"));
-		
+
 		List children = critt.list();
 
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
@@ -676,15 +716,18 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		}
 	}
 
-	private void deleteModelInstKpiInstResourceValue(Session aSession, SbiKpiModelInst aModelInst) throws EMFUserError {
+	private void deleteModelInstKpiInstResourceValue(Session aSession,
+			SbiKpiModelInst aModelInst) throws EMFUserError {
 		// Delete associations between the model and resources
-		DAOFactory.getModelResources().removeAllModelResource(aModelInst.getKpiModelInst());
+		DAOFactory.getModelResources().removeAllModelResource(
+				aModelInst.getKpiModelInst());
 		// delete the model Inst
 		aSession.delete(aModelInst);
 		// Delete Kpi Instance Kpi Instance History Value
-		if (aModelInst.getSbiKpiInstance()!= null) {
-			deleteKpiInstance(aSession, aModelInst.getSbiKpiInstance().getIdKpiInstance());
-		}		
+		if (aModelInst.getSbiKpiInstance() != null) {
+			deleteKpiInstance(aSession, aModelInst.getSbiKpiInstance()
+					.getIdKpiInstance());
+		}
 	}
 
 	public List loadModelsInstanceRoot(String fieldOrder, String typeOrder)
@@ -698,14 +741,16 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			tx = aSession.beginTransaction();
 			Criteria crit = aSession.createCriteria(SbiKpiModelInst.class);
 			crit.add(Expression.isNull("sbiKpiModelInst"));
-			
+
 			if (fieldOrder != null && typeOrder != null) {
 				if (typeOrder.toUpperCase().trim().equals("ASC"))
-					crit.addOrder(Order.asc(getModelInstanceProperty(fieldOrder)));
+					crit.addOrder(Order
+							.asc(getModelInstanceProperty(fieldOrder)));
 				if (typeOrder.toUpperCase().trim().equals("DESC"))
-					crit.addOrder(Order.desc(getModelInstanceProperty(fieldOrder)));
+					crit.addOrder(Order
+							.desc(getModelInstanceProperty(fieldOrder)));
 			}
-			
+
 			List sbiKpiModelInstanceList = crit.list();
 			for (Iterator iterator = sbiKpiModelInstanceList.iterator(); iterator
 					.hasNext();) {
@@ -735,8 +780,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 	private String getModelInstanceProperty(String property) {
 		String toReturn = null;
-		if(property != null && property.equals("NAME"))
-				toReturn = "name";
+		if (property != null && property.equals("NAME"))
+			toReturn = "name";
 		return toReturn;
 	}
 }

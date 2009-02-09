@@ -161,7 +161,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table width="100%"
   style="margin-top: 3px; margin-left: 3px; margin-right: 3px; margin-bottom: 5px;">
   <tr height="20">
-    <td class="td_tree" ><!-- Column with the navigation tree --> <%
+    <td class="td_tree" valign="top"><!-- Column with the navigation tree --> <%
   // drawing the tree
   
  %> <spagobi:treeObjects moduleName="DetailModelTreeModule"

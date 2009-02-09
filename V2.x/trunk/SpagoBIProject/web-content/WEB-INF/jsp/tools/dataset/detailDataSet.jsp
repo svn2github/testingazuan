@@ -523,7 +523,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   String pivotColumnValue  = ds.getPivotColumnValue();
 				   if((pivotColumnValue==null) || (pivotColumnValue.equalsIgnoreCase(""))  ) {
 					   pivotColumnValue = "";
-				   }	
+				   }
+				   boolean pivotNumRows  = ds.isNumRows();
+				   String strChecked = "";  
+				   if(!pivotNumRows ) {
+					   strChecked ="";
+				   }
+				   else{
+					   strChecked ="checked='checked'";
+				   }
 			%>
 				<span class='portlet-form-field-label'>	
 					<spagobi:message key = "SBISet.ListDataSet.pivotColumn" />
@@ -540,7 +548,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 				<input class='portlet-form-input-field' type="text" name="PIVOTCOLUMNVALUE" 
 					   size="25" value="<%= pivotColumnValue %>" maxlength="50" />
-					   
+				<span class='portlet-form-field-label'>	
+					<spagobi:message key = "SBISet.ListDataSet.numRows" />
+				</span>
+				<input class='portlet-form-input-field' name="PIVOTNUMROWS" value="true" 
+					   type="checkbox" <%=strChecked%> />
 		</div>
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
 	

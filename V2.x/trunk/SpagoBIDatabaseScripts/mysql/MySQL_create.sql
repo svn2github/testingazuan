@@ -792,7 +792,7 @@ Create table `SBI_KPI_INSTANCE_HISTORY` (
 Create table `SBI_KPI_VALUE` (
 	`id_kpi_instance_value` Int NOT NULL AUTO_INCREMENT,
 	`id_kpi_instance` Int NOT NULL,
-	`RESOURCE_ID` Int NOT NULL,
+	`RESOURCE_ID` Int,
 	`VALUE` Varchar(40),
 	`BEGIN_DT` Datetime,
 	`END_DT` Datetime,

@@ -47,6 +47,9 @@ public interface IDataSet {
 	String getPivotColumnValue();
 	void setPivotColumnValue(String pivotColumnValue);
 	
+	boolean isNumRows();
+	void setNumRows(boolean numRows);
+	
 	Object getQuery();
 	void setQuery(Object query);
 	

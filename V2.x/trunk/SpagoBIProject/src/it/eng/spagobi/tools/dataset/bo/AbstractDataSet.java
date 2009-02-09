@@ -49,6 +49,7 @@ public abstract class AbstractDataSet implements IDataSet {
     private String pivotColumnName;
     private String pivotRowName;
     private String pivotColumnValue;
+    private boolean numRows;
     
     IDataStoreTransformer dataSetTransformer;
     
@@ -72,12 +73,13 @@ public abstract class AbstractDataSet implements IDataSet {
 		setPivotColumnName(dataSetConfig.getPivotColumnName());
 		setPivotRowName(dataSetConfig.getPivotRowName());
 		setPivotColumnValue(dataSetConfig.getPivotColumnValue());
+		setNumRows(dataSetConfig.isNumRows());
 		
 		if(this.getPivotColumnName() != null 
 				&& this.getPivotColumnValue() != null
 				&& this.getPivotRowName() != null){
 			setDataStoreTransformer(
-					new PivotDataSetTransformer(getPivotColumnName(), getPivotColumnValue(), getPivotRowName()));
+					new PivotDataSetTransformer(getPivotColumnName(), getPivotColumnValue(), getPivotRowName(), isNumRows()));
 		}
 		
 		behaviours = new HashMap();
@@ -96,7 +98,7 @@ public abstract class AbstractDataSet implements IDataSet {
 		sbd.setPivotColumnName(getPivotColumnName());
 		sbd.setPivotRowName(getPivotRowName());
 		sbd.setPivotColumnValue(getPivotColumnValue());
-		
+		sbd.setNumRows(isNumRows());
 		return sbd;
 	}
 
@@ -208,5 +210,19 @@ public abstract class AbstractDataSet implements IDataSet {
 	
 	public IDataStoreTransformer getDataStoreTransformer() {
 		return this.dataSetTransformer;
+	}
+
+	/**
+	 * @return the numRows
+	 */
+	public boolean isNumRows() {
+		return numRows;
+	}
+
+	/**
+	 * @param numRows the numRows to set
+	 */
+	public void setNumRows(boolean numRows) {
+		this.numRows = numRows;
 	}
 }

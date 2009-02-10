@@ -186,7 +186,7 @@ public class DossierPartsTempDAOHibImpl extends AbstractHibernateDAO implements 
 			//String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=" + dossierId + " " +
 			//		"and partTemp.pageId=" + pageId.toString() + " and partTemp.workflowProcessId = " + workflowProcessId;
 			String hql = "from SbiDossierPartsTemp partTemp where partTemp.sbiObject.biobjId=? " +
-				" and partTemp.pageId=?  and partTemp.workflowProcessId = ?" + workflowProcessId;
+				" and partTemp.pageId=?  and partTemp.workflowProcessId = ?";
 			Query query = aSession.createQuery(hql);
 			query.setInteger(0, dossierId.intValue());
 			query.setInteger(1, pageId.intValue());

@@ -1,8 +1,10 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.clusterchart;
 
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
+import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
 import java.awt.Color;
+import java.awt.Font;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -37,6 +39,11 @@ public class SimpleCluster extends ClusterCharts {
 			chart.addSubtitle(subTitle);
 		}
 
+		Color colorSubInvisibleTitle=Color.decode("#FFFFFF");
+		StyleLabel styleSubSubTitle=new StyleLabel("Arial",12,colorSubInvisibleTitle);
+		TextTitle subsubTitle =setStyleTitle("c", styleSubSubTitle);
+		chart.addSubtitle(subsubTitle);
+		
 		chart.setBackgroundPaint(color);
 		XYPlot plot = (XYPlot) chart.getPlot();
 		//plot.setForegroundAlpha(0.50f);
@@ -78,6 +85,12 @@ public class SimpleCluster extends ClusterCharts {
 		//domainAxis.setAutoRange(true);
 		domainAxis.setRange(yMin, yMax);
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		
+		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
+		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
+		
 		//rangeAxis.setAutoRange(true);
 		rangeAxis.setRange(xMin,xMax);
 
@@ -97,6 +110,12 @@ public class SimpleCluster extends ClusterCharts {
 		
 		rangeAxis.setLowerMargin(1.0);
 		rangeAxis.setUpperMargin(1.0);
+		
+		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+        
 		domainAxis.setLowerMargin(1.0);
 		domainAxis.setUpperMargin(1.0);
 		//DecimalFormat format=(new DecimalFormat("0"));

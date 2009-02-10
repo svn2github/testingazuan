@@ -31,6 +31,7 @@ import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.chart.utils.SerieCluster;
+import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -72,6 +73,10 @@ public class ClusterCharts extends ChartImpl {
 	double yMin;
 	double yMax;
 	double zMax;
+	
+	StyleLabel styleXaxesLabels;
+	StyleLabel styleYaxesLabels;
+	StyleLabel styleValueLabels;
 
 
 	private static transient Logger logger=Logger.getLogger(ClusterCharts.class);
@@ -392,6 +397,125 @@ public class ClusterCharts extends ChartImpl {
 					colorMap.put(seriesName,col); 
 				}
 			}		
+		}
+
+// check if there is some info about additional labels style
+		
+		SourceBean styleXaxisLabelsSB = (SourceBean)content.getAttribute("STYLE_X_AXIS_LABELS");
+		if(styleXaxisLabelsSB!=null){
+
+			String fontS = (String)content.getAttribute("STYLE_X_AXIS_LABELS.font");
+			if(fontS==null){
+				fontS = defaultLabelsStyle.getFontName();
+			}
+			String sizeS = (String)content.getAttribute("STYLE_X_AXIS_LABELS.size");
+			String colorS = (String)content.getAttribute("STYLE_X_AXIS_LABELS.color");
+			String orientationS = (String)content.getAttribute("STYLE_X_AXIS_LABELS.orientation");
+			if(orientationS==null){
+				orientationS = "horizontal";
+			}
+
+			try{
+				Color color= Color.BLACK;
+				if(colorS!=null){
+					color=Color.decode(colorS);
+				}else{
+					defaultLabelsStyle.getColor();
+				}
+				int size= 12;
+				if(sizeS!=null){
+					size=Integer.valueOf(sizeS).intValue();
+				}else{
+					size = defaultLabelsStyle.getSize();
+				}
+				
+				styleXaxesLabels=new StyleLabel(fontS,size,color);
+
+			}
+			catch (Exception e) {
+				logger.error("Wrong style labels settings, use default");
+			}
+
+		}else{
+			styleXaxesLabels = defaultLabelsStyle;
+		}
+		
+		SourceBean styleYaxisLabelsSB = (SourceBean)content.getAttribute("STYLE_Y_AXIS_LABELS");
+		if(styleYaxisLabelsSB!=null){
+
+			String fontS = (String)content.getAttribute("STYLE_Y_AXIS_LABELS.font");
+			if(fontS==null){
+				fontS = defaultLabelsStyle.getFontName();
+			}
+			String sizeS = (String)content.getAttribute("STYLE_Y_AXIS_LABELS.size");
+			String colorS = (String)content.getAttribute("STYLE_Y_AXIS_LABELS.color");
+			String orientationS = (String)content.getAttribute("STYLE_Y_AXIS_LABELS.orientation");
+			if(orientationS==null){
+				orientationS = "horizontal";
+			}
+			
+			try{
+				Color color= Color.BLACK;
+				if(colorS!=null){
+					color=Color.decode(colorS);
+				}else{
+					defaultLabelsStyle.getColor();
+				}
+				int size= 12;
+				if(sizeS!=null){
+					size=Integer.valueOf(sizeS).intValue();
+				}else{
+					size = defaultLabelsStyle.getSize();
+				}
+				
+				styleYaxesLabels=new StyleLabel(fontS,size,color);
+
+			}
+			catch (Exception e) {
+				logger.error("Wrong style labels settings, use default");
+			}
+
+		}else{
+			styleYaxesLabels = defaultLabelsStyle;
+		}
+		
+		SourceBean styleValueLabelsSB = (SourceBean)content.getAttribute("STYLE_VALUE_LABELS");
+		if(styleValueLabelsSB!=null){
+
+			String fontS = (String)content.getAttribute("STYLE_VALUE_LABELS.font");
+			if(fontS==null){
+				fontS = defaultLabelsStyle.getFontName();
+			}
+			String sizeS = (String)content.getAttribute("STYLE_VALUE_LABELS.size");
+			String colorS = (String)content.getAttribute("STYLE_VALUE_LABELS.color");
+			String orientationS = (String)content.getAttribute("STYLE_VALUE_LABELS.orientation");
+			if(orientationS==null){
+				orientationS = "horizontal";
+			}
+
+			try{
+				Color color= Color.BLACK;
+				if(colorS!=null){
+					color=Color.decode(colorS);
+				}else{
+					defaultLabelsStyle.getColor();
+				}
+				int size= 12;
+				if(sizeS!=null){
+					size=Integer.valueOf(sizeS).intValue();
+				}else{
+					size = defaultLabelsStyle.getSize();
+				}
+				
+				styleValueLabels=new StyleLabel(fontS,size,color);
+
+			}
+			catch (Exception e) {
+				logger.error("Wrong style labels settings, use default");
+			}
+
+		}else{
+			styleValueLabels = defaultLabelsStyle;
 		}
 
 		logger.debug("OUT");

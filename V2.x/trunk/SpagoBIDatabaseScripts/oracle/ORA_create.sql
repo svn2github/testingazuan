@@ -619,7 +619,7 @@ Create table SBI_KPI (
 	THRESHOLD_ID Number(38,0),
 	NAME Varchar2 (120) Constraint "SYS_C0021805" NOT NULL ,
 	DOCUMENT_LABEL Varchar2 (20),
-	CODE Varchar2 (20),
+	CODE Varchar2 (40),
 	METRIC Varchar2 (2000),
 	DESCRIPTION Varchar2 (255),
 	WEIGHT Number(38,0),

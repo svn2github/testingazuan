@@ -274,11 +274,28 @@ public class BarCharts extends ChartImpl {
 
 		if(confParameters.get("value_label")!=null){	
 			valueLabel=(String)confParameters.get("value_label");
+			String tmpValueLabel = valueLabel;
+			while (!tmpValueLabel.equals("")){
+				if (tmpValueLabel.indexOf("$P{") >= 0){
+					String parName = tmpValueLabel.substring(tmpValueLabel.indexOf("$P{")+3, tmpValueLabel.indexOf("}"));
+					
+					String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
+					parValue = parValue.replaceAll("\'", "");
+					
+					if(parValue.equals("%")) parValue = "";
+					int pos = tmpValueLabel.indexOf("$P{"+parName+"}") + (parName.length()+4);
+					valueLabel = valueLabel.replace("$P{" + parName + "}", parValue);
+					tmpValueLabel = tmpValueLabel.substring(pos);
+				}
+				else
+					tmpValueLabel = "";
+			}
+			setValueLabel(valueLabel);
 		}
 		else
 		{
 			//valueLabel="values";
-			valueLabel="";
+			setValueLabel("");
 		}
 
 		if(confParameters.get("n_cat_visualization")!=null || confParameters.get("n_visualization")!=null){		

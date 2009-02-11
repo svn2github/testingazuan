@@ -134,35 +134,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					var window_table = new spagobi.ui.Table(m, records);
 					this.add(window_table);
 					this.add(form);
+					
+					var dateField = new qx.ui.form.DateField();
+			        var format = new qx.util.format.DateFormat("dd.MM.yyyy");
+			        dateField.setDateFormat(format);
+			        dateField.setDate(new Date());
+			        this.add(dateField);
+					
+					/*
+					this.container = new qx.ui.container.Composite();
+	     			this.container.setLayout(new qx.ui.layout.HBox(10));
+	     			this.add(this.container);
+	     			this.textfield3 = spagobi.commons.WidgetUtils.createInputTextField({
+											        		type: 'text',
+											        		dataIndex: 'description',
+											        		text: 'Choose Date',
+											        		labelwidth: 100,
+											        		mandatory: false
+											        	});
+								
+					this.container.add(this.textfield3);
+					var chooser = new qx.ui.control.DateChooser();
+					this.container.add(chooser);
+					chooser.addListener("changeDate",this._OnDate, this);
+					 */
 					 
+			  		var timeField = new spagobi.ui.TimeField();
+			        var format = new qx.util.format.DateFormat("hh.mm a");
+			        timeField.setTimeFormat(format);
+			        timeField.setDate(new Date());
+			        this.add(timeField);
 				}
 				
 		  	}
 		  	
-		 this.container = new qx.ui.container.Composite();
-	     this.container.setLayout(new qx.ui.layout.HBox(10));
-	     this.add(this.container);
-	     this.textfield3 = spagobi.commons.WidgetUtils.createInputTextField({
-								        		type: 'text',
-								        		dataIndex: 'description',
-								        		text: 'Choose Date',
-								        		labelwidth: 100,
-								        		mandatory: false
-								        	});
-					
-//		this.textfield3.setUserData('type', 'text');	
-			
-		 this.container.add(this.textfield3);
-		 var chooser = new qx.ui.control.DateChooser();
-		 this.container.add(chooser);
-		 chooser.addListener("changeDate",this._OnDate, this);
-		 var dateField = new qx.ui.form.DateField();
-         var format = new qx.util.format.DateFormat("dd.MM.yyyy");
-         dateField.setDateFormat(format);
-         dateField.setDate(new Date());
-         this.add(dateField);
-  	
-  	
+		 
   },
   
   	members :
@@ -177,30 +183,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	
   	treeLabel : function(e){
 		    	
-		//    	alert("1");
+		
 		    	var item = this.tree1.getSelectedItem();
-		//    	alert(item);
+		
 		    	if(item instanceof qx.ui.tree.TreeFile){
 		    		this.nodeLabel = item.getLabel();
-		    	//	alert("debug 1"+this.nodeLabel);
-	//	    		alert(typeof(this.nodeLabel) );
 		    		this.inputField.addInstance(this.nodeLabel);
-		    //		alert("debug 2"+this.nodeLabel);
-		    		
-		    	}
-		    },
+			   	}
+	},
 		    
 	_OnDate : function(e){
 		
 		
 		// 	var object = this.container.getChildren()[0];
 		// 	alert(e.getData().toString());//(object.setValue(String value));
-		// 	alert(typeof this.textfield3.getUserData('field'));
+		
 		// 	if(this.textfield3.getUserData('type') === 'text')
 		// 	this.textfield3.dataMappings[dataIndex].getUserData('field');
-		// 	alert(e.getData().toString());
+		
 		 	var dummy = e.getData().toString();
-	//	 	alert (typeof dummy === "string");
+	
 		 	var obj = this.textfield3.getUserData('field');
 		 	var obj1 = obj.getChildren()[0];
 		 	obj1.setValue(dummy);
@@ -215,8 +217,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		 	var object = obj.getChildren()[0];
 		 	//if( obj.getInputField(textfield3.dataIndex).getUserData('type') === 'text')
          object.setValue(e.getData());
-    */
+    	*/
 		
+	},
+	
+	showTime: function(e){
+		alert("Image clicked");
 	}
   }
   

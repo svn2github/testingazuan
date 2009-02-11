@@ -16,6 +16,8 @@ public class JavaClassDataSet extends ConfigurableDataSet {
 	
 	public JavaClassDataSet() {
 		super();
+		setDataProxy( new JavaClassDataProxy() );
+		setDataReader( new XmlDataReader() );
 	}
 	
 	public JavaClassDataSet(SpagoBiDataSet dataSetConfig) {

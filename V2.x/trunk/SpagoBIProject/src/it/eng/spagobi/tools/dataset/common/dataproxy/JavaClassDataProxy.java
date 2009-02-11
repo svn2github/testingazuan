@@ -99,7 +99,7 @@ public class JavaClassDataProxy extends AbstractDataProxy {
 			logger.debug("classe non trovata");
 			throw userError;
 		} catch (Exception e) {
-			logger.debug(e);
+			logger.error("Error",e);
 		}
 
 		return dataStore;

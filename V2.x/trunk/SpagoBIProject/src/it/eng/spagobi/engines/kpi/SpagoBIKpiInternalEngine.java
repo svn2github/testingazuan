@@ -89,7 +89,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     protected StyleLabel styleTitle;// Document's title style
     protected StyleLabel styleSubTitle;// Document's subtitle style
 
-    protected IEngUserProfile profile;
+    private IEngUserProfile profile=null;
 
     protected HashMap parametersObject;
 
@@ -124,7 +124,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     	EMFErrorHandler errorHandler = responseContainer.getErrorHandler();
 
     	SessionContainer session = requestContainer.getSessionContainer();
-    	IEngUserProfile userProfile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
+    	profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
     		IEngUserProfile.ENG_USER_PROFILE);
    	
     	this.parametersObject = new HashMap();
@@ -276,9 +276,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	String documentId = obj.getId().toString();
 	logger.debug("Loaded documentId:" + documentId);
 	SessionContainer session = requestContainer.getSessionContainer();
-	IEngUserProfile userProfile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
+	profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
 		IEngUserProfile.ENG_USER_PROFILE);
-	String userId = (String) ((UserProfile) userProfile).getUserId();
+	String userId = (String) ((UserProfile) profile).getUserId();
 
 	logger.debug("Got parameters userId=" + userId + " and documentId=" + documentId.toString());
 

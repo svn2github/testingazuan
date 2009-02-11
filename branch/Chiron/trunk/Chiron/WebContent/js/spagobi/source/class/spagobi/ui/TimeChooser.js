@@ -397,31 +397,19 @@ qx.Class.define("spagobi.ui.TimeChooser",
 
 	_onTimeofDayClicked: function(e){
 		
-		
 		//alert(this._time);
-		//alert(qx.util.format.DateFormat.AM_MARKER);
-		//var df = new qx.util.format.DateFormat('a');
-		//df.format(t);
-		//t.format('a');
+		var currentAmPm = this._time.substring(6,8);
+		var selectedAmPM = e.getTarget().getContent();
 		
-		
-		/*
-		var d = this.getValue();// getDate
-		alert(d);
-		
-		var currentTimeFormat = qx.locale.Date.getTimeFormat("short").toString();
-		var tf = new qx.util.format.DateFormat(currentTimeFormat);
-		var t = tf.format(d);
-		alert(d + "," + tf.AM_MARKER);
-		*/
-		
-		if(e.getTarget().getContent() == 'AM'){
-			this.setDate(new Date(70,1,1,this.fullTime.hour-12,this.fullTime.minute,0));
-		}
-		else if(e.getTarget().getContent() == 'PM'){
-			this.setDate(new Date(70,1,1,this.fullTime.hour+12,this.fullTime.minute,0));	
-		}
-		
+		if (currentAmPm != selectedAmPM){
+			if(selectedAmPM == 'AM'){
+				this.fullTime.hour-=12;
+			}
+			else if(selectedAmPM == 'PM'){
+				this.fullTime.hour+=12;
+			}
+			this.setDate(new Date(70,1,1,this.fullTime.hour,this.fullTime.minute,0)); 
+		}	
 	},
 
     /**

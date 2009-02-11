@@ -182,13 +182,13 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	         		"eventlog.id = eventRole.id.event.id and " +
 	         		"eventRole.id.role.extRoleId = roles.extRoleId " +
 	         		"and " +
-	         		"roles.name in (:ROLE_NAMES) " +
+	         		"roles.name in (?) " +
 	         	"order by " +
 	         		"eventlog.date";
 			
 			hqlQuery = aSession.createQuery(hql);
-			hqlQuery.setString(0, collectionRoles);
-			hqlQuery.setParameterList("ROLE_NAMES", roleNames);
+			hqlQuery.setString(0, "'"+collectionRoles+"'");
+			//hqlQuery.setParameterList("ROLE_NAMES", roleNames);
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();

@@ -1203,7 +1203,7 @@ public class GeneralUtilities {
     	try {
     		// Get userid from request
     		String requestUserId = httpRequest.getParameter("userid");
-    		userId = findUserId(requestUserId, httpRequest.getSession());
+    		userId = findUserId(requestUserId, httpRequest);
     	} finally {
     		logger.debug("OUT: userId = [" + userId + "]");
     	}
@@ -1230,19 +1230,20 @@ public class GeneralUtilities {
     		// Get userid from request
 	    	Object requestUserIdObj = serviceRequest.getAttribute("userid");
 	    	if (requestUserIdObj != null) requestUserId = requestUserIdObj.toString();
-	    	userId = findUserId(requestUserId, httpRequest.getSession());
+	    	userId = findUserId(requestUserId, httpRequest);
     	} finally {
     		logger.debug("OUT: userId = [" + userId + "]");
     	}
     	return userId;
     }
 
-    private static String findUserId(String requestUserId, HttpSession httpSession) throws Exception {
+    private static String findUserId(String requestUserId, HttpServletRequest request) throws Exception {
     	logger.debug("IN");
     	String userId = null;
     	try {
-	    	String sessionUserId = null;
+	    	String ssoUserId = null;
 	    	// Check if SSO is active
+	    	/*
 	    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
 	    	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
 	    	String active = (String) validateSB.getCharacters();
@@ -1253,21 +1254,16 @@ public class GeneralUtilities {
 	    	    if (sessionUserId != null) {
 	    	    	logger.debug("requestUserId: " + requestUserId );
 	    	    	logger.debug("sessionUserId: " + sessionUserId );
-	    			// if userid in session is different from userid in request throws an exception
-	    	    	/*
-	    			if (requestUserId != null && !requestUserId.equals(sessionUserId)) {
-	    			    logger.error("The user identifier specified on service request is diferent from the one detected by SSO system: " +
-	    			    		"requestUserId=" + requestUserId + "/sessionUserId=" + sessionUserId);
-	    			    throw new SecurityException("Invalid userid");
-	    			}
-	    			*/
 	    	    	return sessionUserId;
 	    	    } else {
 	    			logger.error("User id was not found in session");
 	    			throw new SecurityException("User id was not found in session");
 	    	    }
 	    	}
-	    	if (sessionUserId != null) userId = sessionUserId;
+	    	*/
+			SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
+			userId = userProxy.readUserIdentifier(request);	
+	    	if (ssoUserId != null) userId = ssoUserId;
 	    	// warning: the request user id can be null
 	    	else userId = requestUserId;
     	} finally {

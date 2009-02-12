@@ -87,18 +87,22 @@ public class GetLovResultAction extends AbstractHttpAction {
 	    SessionContainer permSess = sessCont.getPermanentContainer();
 	    profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	    if (profile == null) {
+/*
 		ConfigSingleton config = ConfigSingleton.getInstance();
 		SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
 		String active = (String) validateSB.getCharacters();
 		if (active != null && active.equals("true")) {
 		    SsoServiceInterface proxy = SsoServiceFactory.createProxyService();
-		    userId = proxy.readUserIdentifier(request.getSession());
+		    userId = proxy.readUserIdentifier(request);
 		    logger.debug("got userId from IProxyService=" + userId);
 		} else {
 		    userId = request.getParameter("userId");
 		    logger.debug("got userId from Request=" + userId);
 		}
-
+*/
+		SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
+		userId = userProxy.readUserIdentifier(request);
+			
 		ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 		try {
 		    SpagoBIUserProfile user = supplier.createUserProfile(userId);

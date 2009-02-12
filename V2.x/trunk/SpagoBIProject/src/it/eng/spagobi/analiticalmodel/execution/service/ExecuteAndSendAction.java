@@ -178,18 +178,22 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 		profile = (IEngUserProfile) permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 
 		if (profile == null) {
+/*
 		    ConfigSingleton config = ConfigSingleton.getInstance();
 		    SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
 		    String active = (String) validateSB.getCharacters();
 		    if (active != null && active.equals("true")) {
 			SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
-			userId = userProxy.readUserIdentifier(req.getSession());
+			userId = userProxy.readUserIdentifier(req);
 			logger.debug("got userId from IProxyService=" + userId);
 		    } else {
 			userId = req.getParameter("userId");
 			logger.debug("got userId from Request=" + userId);
 		    }
-
+*/
+			SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
+			userId = userProxy.readUserIdentifier(req);
+			
 		    ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 		    try {
 			SpagoBIUserProfile user = supplier.createUserProfile(userId);

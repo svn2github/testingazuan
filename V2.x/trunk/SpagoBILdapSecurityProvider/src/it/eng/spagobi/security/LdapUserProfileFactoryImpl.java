@@ -74,18 +74,26 @@ public class LdapUserProfileFactoryImpl implements ISecurityServiceSupplier {
 	return false;
     }
 
-    public boolean checkAuthentication(String userId, String psw) {
+    public SpagoBIUserProfile checkAuthentication(String userId, String psw) {
 	logger.debug("IN");
 	LDAPConnector conn = LdapConnectorFactory.createLDAPConnector();
 	try {
-	    return conn.autenticateUser(userId, psw);
+	    if ( conn.autenticateUser(userId, psw)){
+	    	SpagoBIUserProfile obj=new SpagoBIUserProfile();
+	    	obj.setUniqueIdentifier(userId);
+	    	obj.setUserId(userId);
+	    	obj.setUserName(userId);
+	    	return obj;
+	    }else{
+	    	return null;
+	    }
 	} catch (UnsupportedEncodingException e) {
 	    logger.error("UnsupportedEncodingException", e);
 	} catch (LDAPException e) {
 	    logger.error("LDAPException", e);
 	}
 	logger.debug("OUT.False");
-	return false;
+	return null;
     }
 
 

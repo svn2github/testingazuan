@@ -136,15 +136,15 @@ public class BlockChart extends XYCharts {
         
         if(yLabels!=null){
 	        //Sets y legend labels
-	        LookupPaintScale legendPaintScale2 = new LookupPaintScale(0.5, 0.5+(yLabels.length-1), Color.white);
+	        LookupPaintScale legendPaintScale2 = new LookupPaintScale(0, (yLabels.length-1), Color.white);
 	        
 	        for (int ke=0; ke<yLabels.length ; ke++){
 	        	Color temp =Color.white;
-	        	legendPaintScale2.add(0.5+ke, temp);
+	        	legendPaintScale2.add(1+ke, temp);
 	        } 
 	        
 	        SymbolAxis scaleAxis2 = new SymbolAxis(null,yLabels);
-	        scaleAxis2.setRange(0.5, 0.5+(yLabels.length-1));
+	        scaleAxis2.setRange(0, (yLabels.length-1));
 	        scaleAxis2.setPlot(new PiePlot());
 	        scaleAxis2.setGridBandsVisible(false);
 	      
@@ -152,7 +152,7 @@ public class BlockChart extends XYCharts {
 	        PaintScaleLegend psl2 = new PaintScaleLegend(legendPaintScale2, scaleAxis2);
 	        psl2.setAxisOffset(5.0);
 	        psl2.setPosition(RectangleEdge.LEFT);
-	        psl2.setMargin(new RectangleInsets(40, 1, 40, 1));   
+	        psl2.setMargin(new RectangleInsets(8, 1, 40, 1));   
 	        psl2.setStripWidth(0);
 	        psl2.setStripOutlineVisible(false);
 	        chart.addSubtitle(psl2);

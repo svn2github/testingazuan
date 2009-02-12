@@ -806,6 +806,7 @@ Create table `SBI_KPI_MODEL_INST` (
 	`KPI_MODEL_ID` Int,
 	`id_kpi_instance` Int,
 	`name` Varchar(400),
+	`label` Varchar(100),
 	`description` Varchar(1000),
     UNIQUE (`name`),
  Primary Key (`KPI_MODEL_INST`)) ENGINE = InnoDB;
@@ -852,6 +853,9 @@ Create table `SBI_ALARM_EVENT` (
 	`THRESHOLD_VALUE` Varchar(50),
 	`KPI_NAME` Varchar(100) COMMENT 'NOME DEL KPI UTILIZZATO PER CALCOLARE L''ALLARME',
 	`RESOURCES` varchar(200) default NULL,
+	`KPI_DESCRIPTION` Varchar (100),
+	`RESOURCE_ID` Int,
+	`KPI_INSTANCE_ID` Int,
  Primary Key (`ALARM_EVENT_ID`)) ENGINE = InnoDB;
 
 Create table `SBI_ALARM_CONTACT` (

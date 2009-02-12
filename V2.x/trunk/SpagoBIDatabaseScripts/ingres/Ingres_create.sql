@@ -720,6 +720,7 @@ Create table SBI_KPI_MODEL_INST (
 	KPI_MODEL_ID Integer,
 	ID_KPI_INSTANCE Integer,
 	NAME Varchar(400),
+	LABEL Varchar(100),	
 	DESCRIPTION Varchar(1000),
 Primary Key (KPI_MODEL_INST)
 ) ;\p\g
@@ -768,6 +769,9 @@ Create table SBI_ALARM_EVENT (
 	THRESHOLD_VALUE Varchar(50),
 	KPI_NAME Varchar(100),
 	RESOURCES Varchar(200),
+	KPI_DESCRIPTION Varchar (100),
+	RESOURCE_ID Integer,
+  KPI_INSTANCE_ID Integer,	
 Primary Key (ALARM_EVENT_ID)
 ) ;\p\g
 

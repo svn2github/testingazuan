@@ -744,8 +744,8 @@ Create table SBI_KPI_INSTANCE_HISTORY (
 	THRESHOLD_ID Number(38,0) Constraint "SYS_C0021694" NOT NULL ,
 	ID_KPI_INSTANCE Number(38,0) Constraint "SYS_C0021695" NOT NULL ,
 	WEIGHT Number(38,0),
-	BEGIN_DATE Timestamp(6),
-	END_DATE Timestamp(6),
+	BEGIN_DT Timestamp(6),
+	END_DT Timestamp(6),
 	CHART_TYPE_ID Number(38,0),
 	TARGET Number(38,6),
 primary key ("ID_KPI_INSTANCE_HISTORY") 
@@ -765,8 +765,9 @@ Create table SBI_KPI_MODEL_INST (
 	KPI_MODEL_INST Number(38,0) Constraint "SYS_C0021700" NOT NULL ,
 	KPI_MODEL_INST_PARENT Number(38,0),
 	ID_KPI_INSTANCE Number(38,0),
-	NAME Varchar2 (20),
-	DESCRIPTION Varchar2 (200),
+	NAME Varchar2 (400),
+	LABEL Varchar2 (100),
+	DESCRIPTION Varchar2 (1000),
 	KPI_MODEL_ID Number(38,0),
 primary key ("KPI_MODEL_INST") 
 )
@@ -818,6 +819,9 @@ Create table SBI_ALARM_EVENT (
 	THRESHOLD_VALUE Varchar2 (50),
 	KPI_NAME Varchar2 (100),
 	RESOURCES Varchar2 (200),
+	KPI_DESCRIPTION Varchar2 (100),
+	RESOURCE_ID Number(38,0),
+  KPI_INSTANCE_ID Number(38,0),
 primary key ("ALARM_EVENT_ID") 
 ) 
 /

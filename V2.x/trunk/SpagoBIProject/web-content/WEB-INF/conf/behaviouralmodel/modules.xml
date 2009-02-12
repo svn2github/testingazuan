@@ -80,7 +80,7 @@
 	        <COLUMN label="ID" name="ID" hidden="true" />
 	        <COLUMN label="SBIDev.ListParam.columnLabel" name="LABEL"/>
 	        <COLUMN label="SBIDev.ListParam.columnName" name="NAME"/>
-	        <COLUMN label="SBIDev.ListParam.columnDesc" name="DESCRIPTION"/>
+	        <COLUMN label="SBIDev.ListParam.columnDesc" name="DESCR"/>
 	        <COLUMN label="SBIDev.ListParam.columnType" name="TYPE"/>
 	        <COLUMN label="SBIDev.ListParam.columnUsesNum" name="NUM_USES" horizontal-align="CENTER"/>
 	        <COLUMN label="SBIDev.ListParam.columnBIObjects" name="NUM_BIOBJECTS" horizontal-align="CENTER"/>
@@ -299,7 +299,7 @@
 	        <COLUMN label="ID" name="ID" hidden="true" />
 	        <COLUMN label="SBIDev.predLovList.columnLabel" name="LABEL" />
 	        <COLUMN label="SBIDev.predLovList.columnName" name="NAME" />
-	        <COLUMN label="SBIDev.predLovList.columnDesc" name="DESCRIPTION"/>
+	        <COLUMN label="SBIDev.predLovList.columnDesc" name="DESCR"/>
 	        <COLUMN label="SBIDev.predLovList.columnType" name="TYPE"/>
 	      </COLUMNS>
 	      <BUTTONS>

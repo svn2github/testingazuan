@@ -136,6 +136,7 @@ public class SimpleBar extends BarCharts{
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
+		rangeAxis.setUpperMargin(0.10);
 
 		// disable bar outlines...
 		BarRenderer renderer = (BarRenderer) plot.getRenderer();

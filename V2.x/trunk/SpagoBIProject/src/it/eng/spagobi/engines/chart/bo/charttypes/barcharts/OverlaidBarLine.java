@@ -242,6 +242,7 @@ public class OverlaidBarLine extends BarCharts {
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
+		rangeAxis.setUpperMargin(0.10);
 		plot.setRangeAxis(rangeAxis);
 
 		CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
@@ -387,7 +388,9 @@ public class OverlaidBarLine extends BarCharts {
 
 
 		if(secondAxis){
-			plot.setRangeAxis(1,new NumberAxis(secondAxisLabel));
+			NumberAxis na=new NumberAxis(secondAxisLabel);
+			na.setUpperMargin(0.10);
+			plot.setRangeAxis(1,na);
 			plot.mapDatasetToRangeAxis(0, 1);
 		}
 

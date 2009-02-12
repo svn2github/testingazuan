@@ -11,6 +11,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.TickUnits;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.SeriesRenderingOrder;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.title.TextTitle;
@@ -46,6 +47,8 @@ public class SimpleCluster extends ClusterCharts {
 		
 		chart.setBackgroundPaint(color);
 		XYPlot plot = (XYPlot) chart.getPlot();
+		SeriesRenderingOrder xxx = plot.getSeriesRenderingOrder();
+		plot.setSeriesRenderingOrder(SeriesRenderingOrder.FORWARD);
 		//plot.setForegroundAlpha(0.50f);
 		plot.setForegroundAlpha(0.45f);
 

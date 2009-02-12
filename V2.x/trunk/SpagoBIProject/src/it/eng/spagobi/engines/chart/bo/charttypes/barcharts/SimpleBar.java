@@ -204,6 +204,7 @@ public class SimpleBar extends BarCharts{
 		domainAxis.setLabelPaint(styleYaxesLabels.getColor());
 		domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
 		domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setUpperMargin(0.10);
 		logger.debug("OUT");
 		return chart;
 

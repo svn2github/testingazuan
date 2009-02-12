@@ -249,6 +249,7 @@ public class OverlaidBarLine extends BarCharts {
 		domainAxis.setLabelPaint(styleYaxesLabels.getColor());
 		domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
 		domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setUpperMargin(0.10);
 		plot.setDomainAxis(domainAxis);
 
 		plot.setOrientation(PlotOrientation.VERTICAL);

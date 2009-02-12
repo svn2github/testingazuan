@@ -18,6 +18,9 @@ public class ScriptDataSet extends ConfigurableDataSet {
 	
 	public ScriptDataSet() {
 		super();
+		setDataProxy( new ScriptDataProxy() );
+		setDataReader( new XmlDataReader() );
+		addBehaviour( new QuerableBehaviour(this) );
 	}
 	
 	public ScriptDataSet(SpagoBiDataSet dataSetConfig) {

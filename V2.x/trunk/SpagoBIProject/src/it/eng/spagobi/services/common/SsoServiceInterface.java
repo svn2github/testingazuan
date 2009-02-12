@@ -26,6 +26,7 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 import java.io.IOException;
 
 import javax.portlet.PortletSession;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -57,7 +58,7 @@ public interface SsoServiceInterface {
      * @param session Http Session
      * @return
      */
-    String readUserIdentifier(HttpSession session);
+    String readUserIdentifier(HttpServletRequest session);
     
     
     /**

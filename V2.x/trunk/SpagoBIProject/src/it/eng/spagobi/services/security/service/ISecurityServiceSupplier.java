@@ -48,10 +48,10 @@ public interface ISecurityServiceSupplier {
 	 */
         boolean checkAuthorization(String userId, String function);
         /**
-         * 
+         * if SpagoBIUserProfile is NULL the password is incorrect!!!!
          * @param userId
          * @param psw
          * @return
          */
-        boolean checkAuthentication(String userId, String psw);
+        SpagoBIUserProfile checkAuthentication(String userId, String psw);
 }

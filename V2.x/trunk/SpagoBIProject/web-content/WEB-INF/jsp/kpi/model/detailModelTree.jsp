@@ -288,7 +288,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <fieldset  style="width:500px;">
 <legend>
 <spagobi:message
-	key="sbi.kpi.kpiDefinition.label" bundle="<%=messageBundle%>" />
+	key="sbi.kpi.set.kpi.label" bundle="<%=messageBundle%>" />
 </legend>
 <div class="div_detail_area_forms">
 <div class='div_detail_label'><span

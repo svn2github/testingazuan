@@ -476,6 +476,8 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		String toReturn = null;
 		if(property != null && property.equals("NAME"))
 				toReturn = "kpiModelNm";
+		if(property != null && property.equals("CODE"))
+			toReturn = "kpiModelCd";
 		return toReturn;
 	}
 

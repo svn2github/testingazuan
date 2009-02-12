@@ -225,12 +225,17 @@
 	while (thresholdsIt.hasNext()){
 		Threshold threshold = (Threshold)thresholdsIt.next();
 		String selected = "";
+		String label;
+		if (threshold.getThresholdCode()!= null)
+			label = threshold.getThresholdCode()+ "-" + threshold.getThresholdName();
+		else
+			label = threshold.getThresholdName();
 		if (threshold_id != null && threshold_id.equals(threshold.getId())) {
 			selected = "selected='selected'";
 		}
 		%>    			 		
-		<option value="<%= threshold.getId() %>" label="<%= threshold.getThresholdName() %>" <%= selected %>>
-			<%= threshold.getThresholdName() %>	
+		<option value="<%= threshold.getId() %>" label="<%= label %>" <%= selected %>>
+			<%= label %>	
 		</option>
 		<%
 	}

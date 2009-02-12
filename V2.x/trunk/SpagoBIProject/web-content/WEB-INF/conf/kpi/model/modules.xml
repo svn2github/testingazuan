@@ -12,6 +12,7 @@
         </SELECT_QUERY>
         </QUERIES>
 			<COLUMNS>
+				<COLUMN label="sbi.kpi.label.code" name="CODE" />
 				<COLUMN label="sbi.kpi.label.name" name="NAME" />
 			</COLUMNS>
 			<CAPTIONS>

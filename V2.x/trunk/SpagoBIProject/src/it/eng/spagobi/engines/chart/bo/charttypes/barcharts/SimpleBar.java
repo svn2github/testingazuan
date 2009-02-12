@@ -145,16 +145,17 @@ public class SimpleBar extends BarCharts{
 		CategorySeriesLabelGenerator generator = new StandardCategorySeriesLabelGenerator("{0}");
 		renderer.setLegendItemLabelGenerator(generator);
 
-		renderer.setBaseItemLabelsVisible(true);
-		renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
-		renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
-
+		if(showValueLabels){
+			renderer.setBaseItemLabelsVisible(true);
+			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+		}
 
 		// PROVA LEGENDA		
 		if(legend==true){
-			
+
 			drawLegend(chart);
-			
+
 			/*BlockContainer wrapper = new BlockContainer(new BorderArrangement());
 			wrapper.setFrame(new BlockBorder(1.0, 1.0, 1.0, 1.0));
 
@@ -174,7 +175,7 @@ public class SimpleBar extends BarCharts{
 			else if(legendPosition.equalsIgnoreCase("right")) legend.setPosition(RectangleEdge.RIGHT);
 			else if(legendPosition.equalsIgnoreCase("top")) legend.setPosition(RectangleEdge.TOP);
 			else legend.setPosition(RectangleEdge.BOTTOM);
-			
+
 			legend.setHorizontalAlignment(HorizontalAlignment.LEFT);
 			chart.addSubtitle(legend);*/
 		}

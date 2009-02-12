@@ -77,7 +77,7 @@ public class BarCharts extends ChartImpl {
 	boolean filterSeries=true;
 	boolean filterCategories=true;
 
-	
+	boolean showValueLabels=false;
 	
 	HashMap catGroups=null; // only if filterCatGroups is set to true, trace cat_name /cat_group_name
 	Vector currentCatGroups=null;
@@ -349,6 +349,16 @@ public class BarCharts extends ChartImpl {
 			filterCategories=true;
 			}
 
+		if(confParameters.get("show_value_labels")!=null){		
+			String valueLabelsS=(String)confParameters.get("show_value_labels");
+			if(valueLabelsS.equalsIgnoreCase("false"))showValueLabels=false;
+			else showValueLabels=true;
+		}
+		else
+		{
+			showValueLabels=false;
+			}
+		
 		
 		
 		//reading series colors if present
@@ -514,7 +524,8 @@ public class BarCharts extends ChartImpl {
 				logger.error("Wrong style labels settings, use default");
 			}
 
-		}else{
+		}
+		else{
 			styleValueLabels = defaultLabelsStyle;
 		}
 

@@ -21,6 +21,7 @@ import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
@@ -137,7 +138,7 @@ public class OverlaidBarLine extends BarCharts {
 					}
 					else
 						labelS = nameS;	
-					
+
 					// if to draw as a line
 					if(seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line")){
 						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
@@ -235,19 +236,19 @@ public class OverlaidBarLine extends BarCharts {
 
 		CategoryPlot plot = new CategoryPlot();
 
-		
+
 		NumberAxis rangeAxis = new NumberAxis(getValueLabel());
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 		plot.setRangeAxis(rangeAxis);
-		
+
 		CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
 		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
-        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+		domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 		plot.setDomainAxis(domainAxis);
 
 		plot.setOrientation(PlotOrientation.VERTICAL);
@@ -259,32 +260,46 @@ public class OverlaidBarLine extends BarCharts {
 
 		//I create one bar renderer and one line
 		MyStandardCategoryItemLabelGenerator generator=null;
+
+		// value labels and additional values are mutually exclusive
+		if(showValueLabels==true)additionalLabels=false;
+
 		if(additionalLabels){
-			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());}
+			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());
+		}
 
 		if(useBars){
+
 			CategoryItemRenderer barRenderer = new BarRenderer();
 
+			if(showValueLabels){
+				barRenderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+				barRenderer.setBaseItemLabelsVisible(true);
+				barRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+				barRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
-			if(additionalLabels){
+				barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+				barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+			}
+			else if(additionalLabels){
 				barRenderer.setBaseItemLabelGenerator(generator);
 				double orient=(-Math.PI / 2.0);
-			if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
+				if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
 					orient=0.0;
 				}
-			barRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
-			barRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
-					
-				barRenderer.setBaseItemLabelsVisible(true);
+
 				barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
 						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
 						orient));
 				barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
 						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-						orient));	
+						orient));
 
 			}
-
 
 
 			if(colorMap!=null){
@@ -292,7 +307,7 @@ public class OverlaidBarLine extends BarCharts {
 					String serName = (String) iterator.next();
 					String labelName = "";
 					int index=-1;
-					
+
 					if (seriesCaptions != null && seriesCaptions.size()>0){
 						labelName = serName;
 						serName = (String)seriesCaptions.get(serName);
@@ -300,7 +315,7 @@ public class OverlaidBarLine extends BarCharts {
 					}
 					else
 						index=datasetBar.getRowIndex(serName);
-					
+
 					Color color=(Color)colorMap.get(serName);
 					if(color!=null){
 						barRenderer.setSeriesPaint(index, color);
@@ -319,10 +334,27 @@ public class OverlaidBarLine extends BarCharts {
 			LineAndShapeRenderer lineRenderer = new LineAndShapeRenderer();
 			//lineRenderer.setShapesFilled(false);
 			lineRenderer.setShapesFilled(true);
-			if(additionalLabels){lineRenderer.setBaseItemLabelGenerator(generator);
-			lineRenderer.setBaseItemLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
-			lineRenderer.setBaseItemLabelPaint(defaultLabelsStyle.getColor());
-			lineRenderer.setBaseItemLabelsVisible(true);
+			
+			
+			
+			if(showValueLabels){
+				lineRenderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+				lineRenderer.setBaseItemLabelsVisible(true);
+				lineRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.ITALIC, styleValueLabels.getSize()));
+				lineRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+
+				lineRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+				lineRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+			}	
+			else if(additionalLabels){
+				lineRenderer.setBaseItemLabelGenerator(generator);
+				lineRenderer.setBaseItemLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
+				lineRenderer.setBaseItemLabelPaint(defaultLabelsStyle.getColor());
+				lineRenderer.setBaseItemLabelsVisible(true);
 			}
 
 			DefaultCategoryDataset datasetLine=(DefaultCategoryDataset)datasets.getDatasets().get("line");
@@ -333,7 +365,7 @@ public class OverlaidBarLine extends BarCharts {
 					String serName = (String) iterator.next();
 					String labelName = "";
 					int index=-1;
-					
+
 					if (seriesCaptions != null && seriesCaptions.size()>0){
 						labelName = serName;
 						serName = (String)seriesCaptions.get(serName);
@@ -341,7 +373,7 @@ public class OverlaidBarLine extends BarCharts {
 					}
 					else
 						index=datasetLine.getRowIndex(serName);
-					
+
 					Color color=(Color)colorMap.get(serName);
 					if(color!=null){
 						lineRenderer.setSeriesPaint(index, color);

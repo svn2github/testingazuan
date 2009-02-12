@@ -36,9 +36,9 @@ import org.exoplatform.services.organization.OrganizationService;
  */
 public class ExoUserProfileImpl implements ISecurityServiceSupplier {
 
-    public boolean checkAuthentication(String userId, String psw) {
+    public SpagoBIUserProfile checkAuthentication(String userId, String psw) {
 	logger.warn("checkAuthentication NOT implemented");
-	return false;
+	return null;
     }
 
     static private Logger logger = Logger.getLogger(ExoUserProfileImpl.class);

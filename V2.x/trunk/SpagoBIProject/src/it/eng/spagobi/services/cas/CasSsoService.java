@@ -27,6 +27,7 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 import java.io.IOException;
 
 import javax.portlet.PortletSession;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -50,7 +51,8 @@ public class CasSsoService implements SsoServiceInterface {
      * 
      * @return String
      */
-    public String readUserIdentifier(HttpSession session){
+    public String readUserIdentifier(HttpServletRequest request){
+    HttpSession session=request.getSession();
 	String user=(String)session.getAttribute(CASFilter.CAS_FILTER_USER);
 	logger.debug("CAS user in HttpSession:"+user);
 	return user;

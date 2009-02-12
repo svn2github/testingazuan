@@ -824,7 +824,10 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 							alarmEv.setResources(resources);
 							alarmEv.setSbiAlarms(alarm);
 							alarmEv.setThresholdValue(thresholdValue);
-
+							alarmEv.setKpiDescription(value.getValueDescr());
+							alarmEv.setResourcesId(value.getR().getId());
+							alarmEv.setKpiInstanceId(value.getKpiInstanceId());
+							
 							DAOFactory.getAlarmEventDAO().insert(alarmEv);
 							logger
 									.debug("A new alarm has been inserted in the Alarm Event Table");

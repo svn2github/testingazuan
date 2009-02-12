@@ -14,7 +14,14 @@ public class ModelInstance {
 	private String description = null;//description of the complete model instance
 	private Integer parentId = null;
 	private KpiInstance kpiInstance = null;
+	private String label;
 	
+	public String getLabel() {
+		return label;
+	}
+	public void setLabel(String label) {
+		this.label = label;
+	}
 	public KpiInstance getKpiInstance() {
 		return kpiInstance;
 	}

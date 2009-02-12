@@ -27,12 +27,45 @@ public class AlarmEvent  implements java.io.Serializable {
  	private String kpiName; 
  	private String resources; 
  	private Alarm sbiAlarms; 
+ 	private String kpiDescription;
+ 	private Integer resourcesId;
+ 	private Integer kpiInstanceId;
+ 	
+ 	public Integer getKpiInstanceId() {
+		return kpiInstanceId;
+	}
 
 
-    public AlarmEvent() {}
+	public void setKpiInstanceId(Integer kpiInstanceId) {
+		this.kpiInstanceId = kpiInstanceId;
+	}
+
 	
 
-    public AlarmEvent(Date eventTs, Boolean active, String kpiValue, String thresholdValue, String kpiName, String resources, Alarm sbiAlarms) {
+    public Integer getResourcesId() {
+		return resourcesId;
+	}
+
+
+	public void setResourcesId(Integer resourcesId) {
+		this.resourcesId = resourcesId;
+	}
+
+
+	public String getKpiDescription() {
+		return kpiDescription;
+	}
+
+
+	public void setKpiDescription(String kpiDescription) {
+		this.kpiDescription = kpiDescription;
+	}
+
+
+	public AlarmEvent() {}
+	
+
+    public AlarmEvent(Date eventTs, Boolean active, String kpiValue, String thresholdValue, String kpiName, String resources, Alarm sbiAlarms,String kpiDescr) {
        this.eventTs = eventTs;
        this.active = active;
        this.kpiValue = kpiValue;
@@ -40,6 +73,7 @@ public class AlarmEvent  implements java.io.Serializable {
        this.kpiName = kpiName;
        this.resources = resources;
        this.sbiAlarms = sbiAlarms;
+       this.kpiDescription=kpiDescr;
     }
 
    

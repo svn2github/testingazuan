@@ -24,9 +24,17 @@ public class SbiKpiModelInst  implements java.io.Serializable {
      private String description;
      private Set sbiKpiModelInsts = new HashSet(0);
      private Set sbiKpiModelResourceses = new HashSet(0);
-
+     private String label;
 
     // Constructors
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
 
 	/** default constructor */
     public SbiKpiModelInst() {

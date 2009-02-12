@@ -32,6 +32,17 @@
             <column name="RESOURCES" length="200" not-null="false" />
         </property>
         
+         <property name="kpiDescription" type="string">
+            <column name="KPI_DESCRIPTION" length="100" not-null="false" />
+        </property>
+               
+         <property name="resourcesId" type="integer">
+            <column name="RESOURCES_ID"  not-null="false" />
+        </property>
+        <property name="kpiInstanceId" type="integer">
+            <column name="KPI_INSTANCE_ID"  not-null="false" />
+        </property>
+                               
         <many-to-one name="sbiAlarms" column="ALARM_ID" unique="true" not-null="true"/>
 
 <!-- 

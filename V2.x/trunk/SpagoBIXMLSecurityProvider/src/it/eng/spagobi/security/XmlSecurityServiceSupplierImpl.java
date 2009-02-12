@@ -121,7 +121,7 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	return profile;
     }
 
-    public boolean checkAuthentication(String userId, String psw) {
+    public SpagoBIUserProfile checkAuthentication(String userId, String psw) {
 	logger.debug("IN - userId: " + userId);
 
 	// get request container
@@ -134,7 +134,7 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 		"userID", userName);
 	if (userPwdsSB == null || userPwdsSB.size() == 0) {
 	    logger.error("UserName/pws not defined into xml file");
-	    return false;
+	    return null;
 	}
 	Iterator iterPwdSB = userPwdsSB.iterator();
 	while (iterPwdSB.hasNext()) {
@@ -142,13 +142,17 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	    String tmpPwd = (String) pwdSB.getAttribute("password");
 	    if (!tmpPwd.equals(psw)) {
 		logger.error("UserName/pws not found into xml file");
-		return false;
+		return null;
 	    }
 
 	}
+	SpagoBIUserProfile obj=new SpagoBIUserProfile();
+	obj.setUniqueIdentifier(userId);
+	obj.setUserId(userId);
+	obj.setUserName(userId);
 
 	logger.debug("OUT");
-	return true;
+	return obj;
     }
 
     /**

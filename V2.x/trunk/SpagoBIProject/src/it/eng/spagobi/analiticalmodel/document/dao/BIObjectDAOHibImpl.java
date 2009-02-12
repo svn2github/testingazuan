@@ -541,12 +541,29 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
             logger.error("Exception",e);
         }
         // get the next prog for the new template
+        Integer maxProg = null;
         Integer nextProg = null;
-        try {
-        	nextProg = DAOFactory.getObjTemplateDAO().getNextProgForTemplate(hibBIObject.getBiobjId());
-        } catch (Exception e) {
-        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-        }
+//        try {
+//        	nextProg = DAOFactory.getObjTemplateDAO().getNextProgForTemplate(hibBIObject.getBiobjId());
+//        } catch (Exception e) {
+//        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+//        }
+        
+		hql = "select max(sot.prog) as maxprog from SbiObjTemplates sot where sot.sbiObject.biobjId=?";
+		query = aSession.createQuery(hql);
+		
+		query.setInteger(0, hibBIObject.getBiobjId().intValue());
+		List result = query.list();
+		Iterator it = result.iterator();
+		while (it.hasNext()){
+			maxProg = (Integer)it.next();
+		}
+		if(maxProg==null){
+			nextProg = new Integer(1);
+		} else {
+			nextProg = new Integer(maxProg.intValue() + 1);
+		}
+        
         // store the object template
 		SbiObjTemplates hibObjTemplate = new SbiObjTemplates();
         //check if id is already defined. In positive case update template else insert a new one

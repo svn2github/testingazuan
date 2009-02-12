@@ -7,7 +7,7 @@
         <id name="kpiModelResourcesId" type="integer">
             <column name="KPI_MODEL_RESOURCES_ID" />
  			<generator class="native">
-            	<param name="sequence">sbi_kpi_model_resources</param>
+            	<param name="sequence">SBI_KPI_MODEL_RESOURCES_SEQ</param>
             </generator>
         </id>
         <many-to-one name="sbiKpiModelInst" class="it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst" >

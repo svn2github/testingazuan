@@ -7,7 +7,7 @@
         <id name="idThresholdValue" type="integer">
             <column name="id_threshold_value" />
             <generator class="native">
-            	<param name="sequence">sbi_threshold_value_seq</param>
+            	<param name="sequence">SBI_THRESHOLD_VAULE_SEQ</param>
             </generator>
         </id>
         <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" >

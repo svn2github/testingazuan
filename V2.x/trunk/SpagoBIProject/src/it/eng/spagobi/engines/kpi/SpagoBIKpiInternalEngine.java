@@ -104,6 +104,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     
     protected boolean recalculate_anyway = false;//true if the scheduler calls the engine and wants the kpi to be calculated even if another value already exists
 
+    protected boolean register_par_setted = false;//true if register_values is setted by SpagoBIparameter and so is more important than the template value
+    
     protected HashMap confMap;// HashMap with all the config parameters
 
     protected List resources;// List of resources linked to the
@@ -795,7 +797,17 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     				Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
     				this.resources.add(toAdd);
     		    
-    		    }else {
+    		    }else if(url.equals("register_values")){
+    		    	String value = (String) values.get(0);
+    		    	if (value.equalsIgnoreCase("true")){
+    		    		this.register_values = true;
+    		    		this.register_par_setted = true;
+    		    	}else if (value.equalsIgnoreCase("false")){
+    		    		this.register_values = false;
+    		    		this.register_par_setted = true;
+    		    	}
+    			}
+    		    else {
     			    String value = (String) values.get(0);
     			    parametersMap.put(url, value);
     			    if (url.equals("ParKpiDate")) {
@@ -849,7 +861,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     				Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
     				this.resources.add(toAdd);
     			    }
-    			} else {
+    			}
+    			else {
     			    String value = "'" + (String) values.get(0) + "'";
     			    for (int k = 1; k < values.size(); k++) {
     			    	value = value + ",'" + (String) values.get(k) + "'";
@@ -893,7 +906,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     					} catch (ParseException e) {
     					    logger.error("ParseException.value=" + value, e);
     					}
-    			    }
+    			    } 
     			}
     	    }
     	}
@@ -1045,14 +1058,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    }
 	    this.confMap.put("display_alarm", display_alarm);
 	    
-	    register_values = true;
-	    if (dataParameters.get("register_values") != null
-		    && !(((String) dataParameters.get("register_values")).equalsIgnoreCase(""))) {
-		String fil = (String) dataParameters.get("register_values");
-		if (fil.equalsIgnoreCase("false"))
-			register_values = false;
+	    if(!register_par_setted){//the spagobi register_values if setted has priority
+		    register_values = true;
+		    if (dataParameters.get("register_values") != null
+			    && !(((String) dataParameters.get("register_values")).equalsIgnoreCase(""))) {
+			String fil = (String) dataParameters.get("register_values");
+			if (fil.equalsIgnoreCase("false"))
+				register_values = false;
+		    }
+		    this.confMap.put("register_values", register_values);
 	    }
-	    this.confMap.put("register_values", register_values);
 	    
 	    if (dataParameters.get("behaviour") != null
 			    && !(((String) dataParameters.get("behaviour")).equalsIgnoreCase(""))) {

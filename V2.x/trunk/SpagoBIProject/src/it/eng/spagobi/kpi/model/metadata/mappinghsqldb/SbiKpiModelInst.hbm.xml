@@ -26,8 +26,8 @@
             <column name="name" length="400" />
         </property>
         <property name="label" type="string">
-            <column name="label" length="400"  unique="true" not-null="true" />
-        </property>        
+            <column name="label" length="400" />
+        </property>
         <property name="description" type="string">
             <column name="description" length="1000" />
         </property>

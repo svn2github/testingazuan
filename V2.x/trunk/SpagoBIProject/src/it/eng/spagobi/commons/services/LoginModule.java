@@ -42,7 +42,6 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
@@ -57,6 +56,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -109,7 +110,7 @@ public class LoginModule extends AbstractHttpModule {
 //		    userId=principal.getName();
 //		    logger.info("User read from Principal."+userId);
 //		}
-		String userId = GeneralUtilities.findUserId(request, this.getHttpRequest());
+		String userId = findUserId(request, this.getHttpRequest());
 		if (userId == null) {
 			logger.error("User identifier not found. Cannot build user profile object");
 			// TODO manager exception
@@ -151,19 +152,15 @@ public class LoginModule extends AbstractHttpModule {
 	    			errorHandler.addError(emfu); 		    	
 	    			return;
 	            }
-	    		Locale locale = MessageBuilder.getBrowserLocaleFromSpago();
-	    		if (locale != null) {
-	    			permSess.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
-	    			permSess.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
-	    			// put in the profile the language
-	    			HashMap hm=user.getAttributes();
-	    			hm.put(SpagoBIConstants.LANGUAGE, locale.getLanguage());
-	    		}
-
 	            profile=new UserProfile(user);
 	            // put user profile into session
 	            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 	    		// updates locale information on permanent container for Spago messages mechanism
+	    		Locale locale = MessageBuilder.getBrowserLocaleFromSpago();
+	    		if (locale != null) {
+	    			permSess.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
+	    			permSess.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
+	    		}
 	        } catch (Exception e) {
 	            logger.error("Reading user information... ERROR");
 	            throw new SecurityException("Reading user information... ERROR",e);
@@ -257,4 +254,29 @@ public class LoginModule extends AbstractHttpModule {
 		}
 		return false;
 	}
+    /**
+     * Finds the user identifier from http request or from SSO system (by the http request in input).
+     * Use the SsoServiceInterface for read the userId in all cases, if SSO is disabled use FakeSsoService.
+     * Check spagobi_sso.xml
+     * 
+     * @param httpRequest The http request
+     * @param serviceRequest the service request
+     * 
+     * @return the current user unique identified
+     * 
+     * @throws Exception in case the SSO is enabled and the user identifier specified on service request is different from the SSO detected one.
+     */
+    private static String findUserId(SourceBean serviceRequest, HttpServletRequest httpRequest) throws Exception {
+    	logger.debug("IN");
+    	String userId = null;
+    	try {
+    		// Get userid from request
+	    	Object requestUserIdObj = serviceRequest.getAttribute("userid");
+	    	if (requestUserIdObj != null) userId = requestUserIdObj.toString();    	
+    	} finally {
+    		logger.debug("OUT: userId = [" + userId + "]");
+    	}
+    	return userId;
+    }
+
 }

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:spagobiwssession" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:spagobiwssession" xmlns:intf="urn:spagobiwssession" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns2="http://exceptions.session.services.spagobi.eng.it" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.3
+Built on Oct 05, 2005 (05:23:37 EDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://exceptions.session.services.spagobi.eng.it" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="AuthenticationException">
+    <sequence/>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="closeSessionResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="openSessionWithTokenRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="openSessionWithTokenResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="openSessionResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="openSessionRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="closeSessionRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="AuthenticationException">
+
+      <wsdl:part name="fault" type="tns2:AuthenticationException"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="SessionService">
+
+      <wsdl:operation name="openSession" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:openSessionRequest" name="openSessionRequest"/>
+
+         <wsdl:output message="impl:openSessionResponse" name="openSessionResponse"/>
+
+         <wsdl:fault message="impl:AuthenticationException" name="AuthenticationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="openSessionWithToken" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:openSessionWithTokenRequest" name="openSessionWithTokenRequest"/>
+
+         <wsdl:output message="impl:openSessionWithTokenResponse" name="openSessionWithTokenResponse"/>
+
+         <wsdl:fault message="impl:AuthenticationException" name="AuthenticationException"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="closeSession">
+
+         <wsdl:input message="impl:closeSessionRequest" name="closeSessionRequest"/>
+
+         <wsdl:output message="impl:closeSessionResponse" name="closeSessionResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="WSSessionServiceSoapBinding" type="impl:SessionService">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="openSession">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="openSessionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobiwssession" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="openSessionResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobiwssession" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="AuthenticationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AuthenticationException" namespace="urn:spagobiwssession" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="openSessionWithToken">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="openSessionWithTokenRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobiwssession" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="openSessionWithTokenResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobiwssession" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="AuthenticationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="AuthenticationException" namespace="urn:spagobiwssession" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="closeSession">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="closeSessionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobiwssession" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="closeSessionResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobiwssession" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="SessionServiceService">
+
+      <wsdl:port binding="impl:WSSessionServiceSoapBinding" name="WSSessionService">
+
+         <wsdlsoap:address location="http://localhost:8080/SpagoBI/services/WSSessionService"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

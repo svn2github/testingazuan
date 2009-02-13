@@ -113,6 +113,13 @@
 		    	
 		    		it/eng/spagobi/commons/utilities/StringUtilities.class"
 		    />
+			
+			<fileset dir="./web-content/WEB-INF/classes"
+					includes="it/eng/spagobi/services/session/stub/*,
+					it/eng/spagobi/services/session/exceptions/*,
+					it/eng/spagobi/services/proxy/SessionServiceProxy.class">
+			</fileset>
+			
 		</jar>
 	    	         	           
 	</target>

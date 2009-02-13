@@ -137,6 +137,24 @@
   <parameter name="schemaUnqualified" value="http://bo.content.services.spagobi.eng.it,http://xml.apache.org/xml-soap"/>
   <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns10:Content" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.content.bo.Content" xmlns:ns10="http://bo.content.services.spagobi.eng.it"/>
  </service>
+ <service name="WSSessionService" provider="java:RPC">
+  <requestFlow>
+   <handler type="java:org.apache.axis.handlers.SimpleSessionHandler"/>
+  </requestFlow>
+  <responseFlow>
+   <handler type="java:org.apache.axis.handlers.SimpleSessionHandler"/>
+  </responseFlow>
+  <parameter name="wsdlServicePort" value="WSSessionService"/>
+  <parameter name="className" value="it.eng.spagobi.services.session.stub.WSSessionServiceSoapBindingSkeleton"/>
+  <parameter name="typeMappingVersion" value="1.2"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="wsdlServiceElement" value="SessionServiceService"/>
+  <parameter name="wsdlTargetNamespace" value="urn:spagobiwssession"/>
+  <parameter name="wsdlPortType" value="SessionService"/>
+  <parameter name="scope" value="Session"/>
+  <parameter name="schemaUnqualified" value="http://exceptions.session.services.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns10:AuthenticationException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.session.exceptions.AuthenticationException" xmlns:ns10="http://exceptions.session.services.spagobi.eng.it"/>
+ </service>
  <transport name="http">
   <requestFlow>
    <handler type="URLMapper"/>

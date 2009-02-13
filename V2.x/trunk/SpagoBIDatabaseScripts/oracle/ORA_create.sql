@@ -766,7 +766,7 @@ Create table SBI_KPI_MODEL_INST (
 	KPI_MODEL_INST_PARENT Number(38,0),
 	ID_KPI_INSTANCE Number(38,0),
 	NAME Varchar2 (400),
-	LABEL Varchar2 (100),
+	LABEL Varchar2 (100) NOT NULL,
 	DESCRIPTION Varchar2 (1000),
 	KPI_MODEL_ID Number(38,0),
 primary key ("KPI_MODEL_INST") 

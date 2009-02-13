@@ -274,6 +274,26 @@ public class UserProfile implements IEngUserProfile {
     public void setAttributes(Map attrs) {
 	this.userAttributes = attrs;
     }
+    
+    /**
+     * Adds an attribute.
+     * 
+     * @param attrs the new attributes
+     */
+    public void addAttributes(String key, Object value) {
+	this.userAttributes.put(key, value);
+    }
+    
+    /**
+     * Modify an attribute value
+     * 
+     * @param attrs the new attributes
+     */
+    public void setAttributeValue(String key, Object value) {
+    	this.userAttributes.remove(key);
+    	this.userAttributes.put(key, value);
+    }
+
 
     /**
      * Sets the roles.

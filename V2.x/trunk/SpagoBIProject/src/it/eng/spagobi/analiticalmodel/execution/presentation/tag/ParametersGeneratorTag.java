@@ -759,9 +759,21 @@ public class ParametersGeneratorTag extends TagSupport {
 
 	private void createDataInputButton(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent) {
 		logger.debug("IN");
-		SourceBean formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
+
+		SessionContainer permSess= requestContainer.getSessionContainer().getPermanentContainer();
+		String language=(String)permSess.getAttribute("AF_LANGUAGE");
+		
+		SourceBean formatSB=null; 
+		// if a particular language is specified take the corrisponding date-format
+		if(language!=null ){
+			formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+language));
+		}
+		if(formatSB==null){
+		formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
+		}
+		
 		String format = (String) formatSB.getAttribute("format");
-		logger.debug("DTE FORMAT:"+format);
+		logger.debug("DATE FORMAT:"+format);
 
 		Date d = new Date();
 		SimpleDateFormat f =  new SimpleDateFormat();

@@ -18,16 +18,18 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.commons.utilities.messages;
 
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.RequestContainerPortletAccess;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.message.MessageBundle;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 
@@ -44,14 +46,14 @@ import org.apache.log4j.Logger;
  */
 public class MessageBuilder implements IMessageBuilder {
 
-    static private Logger logger = Logger.getLogger(MessageBuilder.class);
-	
+	static private Logger logger = Logger.getLogger(MessageBuilder.class);
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessageTextFromResource(java.lang.String, java.util.Locale)
 	 */
 	public String getMessageTextFromResource(String resourceName, Locale locale) {
-	    logger.debug("IN-resourceName:"+resourceName);
-	    logger.debug("IN-locale:"+ (locale != null ? locale.toString() : "null" ));
+		logger.debug("IN-resourceName:"+resourceName);
+		logger.debug("IN-locale:"+ (locale != null ? locale.toString() : "null" ));
 		if (!isValidLocale(locale)) {
 			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
 			locale = getDefaultLocale();
@@ -60,23 +62,23 @@ public class MessageBuilder implements IMessageBuilder {
 		try{
 			// get mode of execution
 			String resourceNameLoc = resourceName + "_" + locale.getLanguage() + "_" + locale.getCountry();
-		 	ClassLoader classLoad = this.getClass().getClassLoader();
-		 	InputStream resIs = classLoad.getResourceAsStream(resourceNameLoc);
-		 	if(resIs==null) {
-		    	logger.warn("Cannot find resource " + resourceName);
-		 		resIs = classLoad.getResourceAsStream(resourceName);
-		 	}
-		 	byte[] resBytes = GeneralUtilities.getByteArrayFromInputStream(resIs);
-		 	message = new String(resBytes);
+			ClassLoader classLoad = this.getClass().getClassLoader();
+			InputStream resIs = classLoad.getResourceAsStream(resourceNameLoc);
+			if(resIs==null) {
+				logger.warn("Cannot find resource " + resourceName);
+				resIs = classLoad.getResourceAsStream(resourceName);
+			}
+			byte[] resBytes = GeneralUtilities.getByteArrayFromInputStream(resIs);
+			message = new String(resBytes);
 		} catch (Exception e) {
 			message = "";
 			logger.error("Error while recovering text of the resource name " + resourceName, e);
 		}
 		logger.debug("OUT-message:"+message);
-	 	return message;
+		return message;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String)
 	 */
@@ -84,7 +86,7 @@ public class MessageBuilder implements IMessageBuilder {
 		Locale locale = getLocale(null);
 		return getMessageInternal(code, "messages", locale);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.util.Locale)
 	 */
@@ -95,8 +97,8 @@ public class MessageBuilder implements IMessageBuilder {
 		}
 		return getMessageInternal(code, "messages", locale);
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String)
 	 */
@@ -104,7 +106,7 @@ public class MessageBuilder implements IMessageBuilder {
 		Locale locale = getLocale(null);
 		return getMessageInternal(code, bundle, locale);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String, java.util.Locale)
 	 */
@@ -115,7 +117,7 @@ public class MessageBuilder implements IMessageBuilder {
 		}
 		return getMessageInternal(code, bundle, locale);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, javax.servlet.http.HttpServletRequest)
 	 */
@@ -123,7 +125,7 @@ public class MessageBuilder implements IMessageBuilder {
 		Locale locale = getLocale(request);
 		return getMessageInternal(code, "messages", locale);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, javax.servlet.http.HttpServletRequest, java.util.Locale)
 	 */
@@ -134,8 +136,8 @@ public class MessageBuilder implements IMessageBuilder {
 		}
 		return getMessageInternal(code, "messages", locale);
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String, javax.servlet.http.HttpServletRequest)
 	 */
@@ -143,7 +145,7 @@ public class MessageBuilder implements IMessageBuilder {
 		Locale locale = getLocale(request);
 		return getMessageInternal(code, bundle, locale);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String, javax.servlet.http.HttpServletRequest, java.util.Locale)
 	 */
@@ -154,12 +156,12 @@ public class MessageBuilder implements IMessageBuilder {
 		}
 		return getMessageInternal(code, bundle, locale);
 	}
-	
-	
-	
+
+
+
 	private String getMessageInternal(String code, String bundle, Locale locale) {
-	    logger.debug("IN-code:"+code);
-	    logger.debug("bundle:"+bundle);
+		logger.debug("IN-code:"+code);
+		logger.debug("bundle:"+bundle);
 		String message = "";
 		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
 		// get mode of execution
@@ -176,11 +178,11 @@ public class MessageBuilder implements IMessageBuilder {
 		logger.debug("OUT-message:"+message);
 		return message;
 	}
-	
-	
-	
+
+
+
 	public static Locale getBrowserLocaleFromSpago() {
-	    logger.debug("IN");
+		logger.debug("IN");
 		Locale browserLocale = null;
 		RequestContainer reqCont = RequestContainer.getRequestContainer();
 		if(reqCont!=null) {
@@ -191,8 +193,8 @@ public class MessageBuilder implements IMessageBuilder {
 					Locale reqLocale = request.getLocale();
 					String language = reqLocale.getLanguage();
 					SourceBean langSB = (SourceBean)ConfigSingleton.getInstance()
-                     					.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
-                     		                           					"language", language);
+					.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+							"language", language);
 					if(langSB!=null) {
 						String country = (String)langSB.getAttribute("country");
 						browserLocale = new Locale(language, country);
@@ -206,18 +208,18 @@ public class MessageBuilder implements IMessageBuilder {
 		logger.debug("OUT");
 		return browserLocale;
 	}
-	
-	
-	
-	
+
+
+
+
 	private Locale getBrowserLocale(HttpServletRequest request) {
-	    logger.debug("IN");
+		logger.debug("IN");
 		Locale browserLocale = null;
 		Locale reqLocale = request.getLocale();
 		String language = reqLocale.getLanguage();
 		SourceBean langSB = (SourceBean)ConfigSingleton.getInstance()
-                    					.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
-                     		                           					"language", language);
+		.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+				"language", language);
 		if(langSB!=null) {
 			String country = (String)langSB.getAttribute("country");
 			browserLocale = new Locale(language, country);
@@ -228,25 +230,25 @@ public class MessageBuilder implements IMessageBuilder {
 		logger.debug("OUT");
 		return browserLocale;
 	}
-	
-	
-	
-	
+
+
+
+
 	public static Locale getDefaultLocale() {
-	    logger.debug("IN");
-	 	// get the configuration sourceBean/language code/country code of the default language
-	 	SourceBean defaultLangSB = (SourceBean)ConfigSingleton.getInstance()
-	 	                           .getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
-	 	                           		                           "default", "true");
-	 	String defaultLang = (String)defaultLangSB.getAttribute("language");
-	 	String defaultCountry = (String)defaultLangSB.getAttribute("country");
-	 	// create the locale
- 		Locale locale = new Locale(defaultLang, defaultCountry);
- 		logger.debug("OUT");
-	 	return locale;
+		logger.debug("IN");
+		// get the configuration sourceBean/language code/country code of the default language
+		SourceBean defaultLangSB = (SourceBean)ConfigSingleton.getInstance()
+		.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
+				"default", "true");
+		String defaultLang = (String)defaultLangSB.getAttribute("language");
+		String defaultCountry = (String)defaultLangSB.getAttribute("country");
+		// create the locale
+		Locale locale = new Locale(defaultLang, defaultCountry);
+		logger.debug("OUT");
+		return locale;
 	}
-	
-	
+
+
 	/**
 	 * Gets the locale.
 	 * 
@@ -260,14 +262,35 @@ public class MessageBuilder implements IMessageBuilder {
 		// based on mode get locale
 		Locale locale = null;
 		if (sbiMode.equalsIgnoreCase("WEB")) {
-			if (request == null) {
-				locale = getBrowserLocaleFromSpago();
-			} else {
-				locale = getBrowserLocale(request);
+
+			//if it is defined a special language in session use that one
+			RequestContainer reqCont = RequestContainer.getRequestContainer();
+			SessionContainer sessCont = reqCont.getSessionContainer();
+			SessionContainer permSess = sessCont.getPermanentContainer();
+			String language=(String)permSess.getAttribute(SpagoBIConstants.AF_LANGUAGE);
+			if(language!=null && (language.equalsIgnoreCase("EN")  || language.equalsIgnoreCase("IT") || language.equalsIgnoreCase("FR"))){
+				if(language.equalsIgnoreCase("IT")) {
+					locale=Locale.ITALY;
+				}
+				if(language.equalsIgnoreCase("EN")) {locale=Locale.US;
+				
+				}
+				if(language.equalsIgnoreCase("FR")) {locale=Locale.FRANCE;
+				
+				}
 			}
-		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
+			else {
+				if (request == null) {
+					locale = getBrowserLocaleFromSpago();
+				} else {
+					locale = getBrowserLocale(request);
+				}
+			} 
+		}
+		else if  (sbiMode.equalsIgnoreCase("PORTLET")){
 			locale = PortletUtilities.getPortalLocale();
 		}
+
 		if (!isValidLocale(locale)) {
 			logger.warn("Request locale " + locale + " not valid since it is not configured.");
 			locale = getDefaultLocale();
@@ -276,12 +299,12 @@ public class MessageBuilder implements IMessageBuilder {
 		logger.debug("OUT-locale:" + (locale != null ? locale.toString() : "null"));
 		return locale;
 	}
-	
+
 	private boolean isValidLocale(Locale locale) {
 		logger.debug("IN");
 		try {
 			if (locale == null) return false;
-		 	// check if the Locale at input is configured
+			// check if the Locale at input is configured
 			String language = locale.getLanguage();
 			Object o = ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
 					"language", language);
@@ -309,7 +332,7 @@ public class MessageBuilder implements IMessageBuilder {
 			logger.debug("OUT");
 		}
 	}
-	
+
 	/**
 	 * Returns 'WEB' in case the request is a http request or 'PORTLET' in case request is a portlet request.
 	 * 
@@ -340,16 +363,16 @@ public class MessageBuilder implements IMessageBuilder {
 		return sbiMode;
 	}
 
-	 /**
- 	 * Gets a localized information text given the resource name which contains the text
- 	 * information.
- 	 * The resource will be searched into the classpath of the application
- 	 * 
- 	 * @param resourceName The complete name of the resource.
- 	 * @param request The http request for locale retrieving
- 	 * 
- 	 * @return A string containing the text
- 	 */
+	/**
+	 * Gets a localized information text given the resource name which contains the text
+	 * information.
+	 * The resource will be searched into the classpath of the application
+	 * 
+	 * @param resourceName The complete name of the resource.
+	 * @param request The http request for locale retrieving
+	 * 
+	 * @return A string containing the text
+	 */
 	public String getMessageTextFromResource(String resourceName,
 			HttpServletRequest request) {
 		logger.debug("IN");

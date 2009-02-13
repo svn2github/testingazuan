@@ -151,15 +151,19 @@ public class LoginModule extends AbstractHttpModule {
 	    			errorHandler.addError(emfu); 		    	
 	    			return;
 	            }
-	            profile=new UserProfile(user);
-	            // put user profile into session
-	            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-	    		// updates locale information on permanent container for Spago messages mechanism
 	    		Locale locale = MessageBuilder.getBrowserLocaleFromSpago();
 	    		if (locale != null) {
 	    			permSess.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
 	    			permSess.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
+	    			// put in the profile the language
+	    			HashMap hm=user.getAttributes();
+	    			hm.put(SpagoBIConstants.LANGUAGE, locale.getLanguage());
 	    		}
+
+	            profile=new UserProfile(user);
+	            // put user profile into session
+	            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+	    		// updates locale information on permanent container for Spago messages mechanism
 	        } catch (Exception e) {
 	            logger.error("Reading user information... ERROR");
 	            throw new SecurityException("Reading user information... ERROR",e);

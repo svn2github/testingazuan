@@ -427,8 +427,20 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	}
 	String modelNodeName = modI.getName();
 	line.setModelNodeName(modelNodeName);
-
+	
+	List children = new ArrayList();
+	List childrenIds = modI.getChildrenIds();
+	if (!childrenIds.isEmpty()) {
+	    Iterator childrenIt = childrenIds.iterator();
+	    while (childrenIt.hasNext()) {
+		Integer id = (Integer) childrenIt.next();	
+		KpiLine childrenLine = getBlock(id, r);
+		children.add(childrenLine);
+	    }
+	}
+	
 	KpiInstance kpiI = modI.getKpiInstanceAssociated();
+	line.setChildren(children);
 	if (kpiI != null) {
 		KpiValue value = new KpiValue();
 	    logger.debug("Got KpiInstance with ID: " + kpiI.getKpiInstanceId().toString());
@@ -543,17 +555,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    }
 	}
 
-	List children = new ArrayList();
-	List childrenIds = modI.getChildrenIds();
-	if (!childrenIds.isEmpty()) {
-	    Iterator childrenIt = childrenIds.iterator();
-	    while (childrenIt.hasNext()) {
-		Integer id = (Integer) childrenIt.next();	
-		KpiLine childrenLine = getBlock(id, r);
-		children.add(childrenLine);
-	    }
-	}
-	line.setChildren(children);
 	logger.debug("OUT");
 	return line;
     }

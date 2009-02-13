@@ -1,0 +1,35 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from SessionServiceService WSDL service -->
+
+  <service name="WSSessionService" provider="java:RPC" style="rpc" use="encoded">
+      <parameter name="wsdlTargetNamespace" value="urn:spagobiwssession"/>
+      <parameter name="wsdlServiceElement" value="SessionServiceService"/>
+      <parameter name="schemaUnqualified" value="http://exceptions.session.services.spagobi.eng.it"/>
+      <parameter name="wsdlServicePort" value="WSSessionService"/>
+      <parameter name="className" value="it.eng.spagobi.services.session.stub.WSSessionServiceSoapBindingSkeleton"/>
+      <parameter name="wsdlPortType" value="SessionService"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <parameter name="allowedMethods" value="*"/>
+      <parameter name="scope" value="Session"/>
+
+      <typeMapping
+        xmlns:ns="http://exceptions.session.services.spagobi.eng.it"
+        qname="ns:AuthenticationException"
+        type="java:it.eng.spagobi.services.session.exceptions.AuthenticationException"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+  </service>
+</deployment>

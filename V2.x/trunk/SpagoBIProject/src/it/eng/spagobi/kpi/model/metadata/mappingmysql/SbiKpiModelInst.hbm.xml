@@ -23,7 +23,7 @@
         </many-to-one>
 
         <property name="name" type="string">
-            <column name="name" length="400" />
+            <column name="name" length="400"/>
         </property>
         <property name="label" type="string">
             <column name="label" length="400" />

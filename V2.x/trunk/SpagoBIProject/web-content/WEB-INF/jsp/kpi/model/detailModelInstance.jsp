@@ -38,6 +38,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	String modelInstanceName = "";
 	String modelInstanceDescription = "";
+	String modelInstanceLabel = "";
 	
 	String modelName = "";
 	String modelDescription = "";
@@ -93,9 +94,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		SourceBean moduleResponse = (SourceBean) aServiceResponse
 				.getAttribute("DetailModelInstanceModule");
 		ModelInstance modelInst = (ModelInstance) moduleResponse.getAttribute("MODELINSTANCE");
-		id = modelInst.getId().toString();
-		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
-		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		if (modelInst != null && modelInst.getId() != null){
+			id = modelInst.getId().toString();
+			messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+			messageSave = DelegatedDetailService.DETAIL_UPDATE;
+		} else {
+			messageIn = DelegatedDetailService.DETAIL_NEW;
+			messageSave = DelegatedDetailService.DETAIL_INSERT;
+		}
 	}
 	
 	
@@ -109,6 +115,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		if (modelInstance != null) {
 			modelInstanceName = modelInstance.getName();
 			modelInstanceDescription = modelInstance.getDescription();
+			modelInstanceLabel = modelInstance.getLabel();
 			Model aModel = modelInstance.getModel();
 			
 			if (aModel != null){
@@ -193,6 +200,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelInstanceName" size="50"
 	value="<%=modelInstanceName%>" maxlength="200"> &nbsp;*</div>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.label" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="modelInstanceLabel" size="50"
+	value="<%=modelInstanceLabel%>" maxlength="100"> &nbsp;*</div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message

@@ -17,16 +17,19 @@ import java.util.Iterator;
 public class DetailModelInstanceModule extends DefaultDetailModule {
 
 	private static final String VALIDATION_PAGE = "ModelInstanceDetailPage";
+	private static final String VALIDATION_INSERT_PAGE = "ModelInstanceDetailInsertPage";
 
 	public void service(SourceBean request, SourceBean response)
 			throws Exception {
 		boolean validationError = false;
+
 		String message = (String) request.getAttribute("MESSAGE");
 		if (message == null) {
 			message = SpagoBIConstants.DETAIL_SELECT;
 		}
 		// VALIDATION
 		validationError = hasValidationError(message);
+		
 		// DETAIL_SELECT
 		if (message.equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)) {
 			String idModel = (String) request.getAttribute("ID");
@@ -62,15 +65,18 @@ public class DetailModelInstanceModule extends DefaultDetailModule {
 
 		// DETAIL_INSERT
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
+			if (!validationError) {
 			DetailModelInstanceUtil.newModelInstance(request, response, null);
+			} else {
+				DetailModelInstanceUtil.restoreModelInstanceValue(null,
+						request, response);
+			}
 		}
 	}
 
 	private boolean hasValidationError(String message) {
 		boolean toReturn = false;
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)
-		// || message
-		// .equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)
 		) {
 			ValidationCoordinator.validate("PAGE", VALIDATION_PAGE, this);
 
@@ -88,6 +94,25 @@ public class DetailModelInstanceModule extends DefaultDetailModule {
 				}
 			}
 		}
+		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)
+				) {
+					ValidationCoordinator.validate("PAGE", VALIDATION_INSERT_PAGE, this);
+
+					EMFErrorHandler errorHandler = getErrorHandler();
+
+					Collection errors = errorHandler.getErrors();
+
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+								toReturn = true;
+							}
+						}
+					}
+				}
+		
 		return toReturn;
 	}
 

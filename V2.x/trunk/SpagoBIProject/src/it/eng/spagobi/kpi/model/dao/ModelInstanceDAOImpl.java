@@ -83,6 +83,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 
 		String name = value.getName();
 		String description = value.getDescription();
+		String label = value.getLabel();
 		Integer id = value.getKpiModelInst();
 		SbiKpiModel sbiKpiModel = value.getSbiKpiModel();
 		Model aModel = ModelDAOImpl.toModelWithoutChildren(sbiKpiModel,
@@ -119,6 +120,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		toReturn.setId(id);
 		toReturn.setName(name);
 		toReturn.setDescription(description);
+		toReturn.setLabel(label);
 		toReturn.setModel(aModel);
 
 		logger.debug("OUT");
@@ -169,11 +171,13 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			Integer kpiModelInstanceId = value.getId();
 			String kpiModelInstanceDesc = value.getDescription();
 			String kpiModelInstanceNm = value.getName();
+			String kpiModelInstanceLb = value.getLabel();
 
 			SbiKpiModelInst sbiKpiModelInst = (SbiKpiModelInst) aSession.load(
 					SbiKpiModelInst.class, kpiModelInstanceId);
 			sbiKpiModelInst.setDescription(kpiModelInstanceDesc);
 			sbiKpiModelInst.setName(kpiModelInstanceNm);
+			sbiKpiModelInst.setLabel(kpiModelInstanceLb);
 
 			SbiKpiInstance oldSbiKpiInstance = sbiKpiModelInst
 					.getSbiKpiInstance();
@@ -397,6 +401,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			SbiKpiModelInst sbiKpiModelInst = new SbiKpiModelInst();
 			sbiKpiModelInst.setName(toCreate.getName());
 			sbiKpiModelInst.setDescription(toCreate.getDescription());
+			sbiKpiModelInst.setLabel(toCreate.getLabel());
 			Model aModel = toCreate.getModel();
 			if (aModel != null && aModel.getId() != null) {
 				SbiKpiModel sbiKpiModel = (SbiKpiModel) aSession.load(
@@ -484,6 +489,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		ModelInstance toReturn = new ModelInstance();
 		String name = value.getName();
 		String description = value.getDescription();
+		String label = value.getLabel();
 		Integer id = value.getKpiModelInst();
 		SbiKpiModel sbiKpiModel = value.getSbiKpiModel();
 		Model aModel = ModelDAOImpl
@@ -535,6 +541,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		toReturn.setId(id);
 		toReturn.setName(name);
 		toReturn.setDescription(description);
+		toReturn.setLabel(label);
 		toReturn.setChildrenNodes(childrenNodes);
 		toReturn.setParentId(parentId);
 		toReturn.setModel(aModel);

@@ -92,7 +92,7 @@ public class DetailModelInstanceUtil {
 						.setKpiInstanceFromKPI(kpiInstance, kpiId);
 			} else {
 				kpiInstance.setThresholdId(thresholdId);
-				if (weight != null) {
+				if (weight != null && !(weight.equals(""))) {
 					kpiInstance.setWeight(new Double(weight));
 				} else {
 					kpiInstance.setWeight(null);
@@ -109,10 +109,14 @@ public class DetailModelInstanceUtil {
 				.getAttribute("modelInstanceName");
 		String modelDescription = (String) serviceRequest
 				.getAttribute("modelInstanceDescription");
+		
+		String modelLabel = (String) serviceRequest
+		.getAttribute("modelInstanceLabel");
 
 		ModelInstance toReturn = new ModelInstance();
 		toReturn.setName(modelName);
 		toReturn.setDescription(modelDescription);
+		toReturn.setLabel(modelLabel);
 		return toReturn;
 	}
 

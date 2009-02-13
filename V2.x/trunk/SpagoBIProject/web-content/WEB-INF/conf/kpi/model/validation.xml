@@ -42,6 +42,12 @@
 					bundle="component_kpi_messages">
 					<VALIDATOR validatorName="MANDATORY" />
 				</FIELD>
+				<FIELD name="modelInstanceLabel" label="#sbi.kpi.label.label" 
+				bundle="component_kpi_messages">
+				    <VALIDATOR validatorName="MANDATORY"/>
+				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
+				</FIELD>
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
@@ -50,9 +56,44 @@
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS />
 			<FIELDS>
+				<FIELD name="modelInstanceLabel" label="#sbi.kpi.label.label" 
+				bundle="component_kpi_messages">
+				    <VALIDATOR validatorName="MANDATORY"/>
+				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
+				</FIELD>
 				<FIELD name="modelInstanceName" label="#sbi.kpi.label.name"
 					bundle="component_kpi_messages">
 					<VALIDATOR validatorName="MANDATORY" />
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+	
+	
+		<SERVICE name="ModelInstanceDetailInsertPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS />
+			<FIELDS>
+				<FIELD name="modelInstanceLabel" label="#sbi.kpi.label.label" 
+				bundle="component_kpi_messages">
+				    <VALIDATOR validatorName="MANDATORY"/>
+				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+
+	<SERVICE name="ModelInstanceTreeDetailInsertPage" type="PAGE">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS />
+			<FIELDS>
+				<FIELD name="modelInstanceLabel" label="#sbi.kpi.label.label" 
+				bundle="component_kpi_messages">
+				    <VALIDATOR validatorName="MANDATORY"/>
+				    <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="100"/>
 				</FIELD>
 			</FIELDS>
 		</VALIDATION>

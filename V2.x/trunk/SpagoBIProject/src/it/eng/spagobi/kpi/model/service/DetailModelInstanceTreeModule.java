@@ -21,16 +21,19 @@ import java.util.List;
 public class DetailModelInstanceTreeModule extends DefaultDetailModule {
 
 	private static final String VALIDATION_PAGE = "ModelInstanceTreeDetailPage";
+	private static final String VALIDATION_INSERT_PAGE = "ModelInstanceTreeDetailInsertPage";
 
 	public void service(SourceBean request, SourceBean response)
 			throws Exception {
 		boolean validationError = false;
+		
 		String message = (String) request.getAttribute("MESSAGE");
 		if (message == null) {
 			message = SpagoBIConstants.DETAIL_SELECT;
 		}
 		// VALIDATION
 		validationError = hasValidationError(message);
+		
 		// DETAIL_SELECT
 		if (message.equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)) {
 			String id = (String) request.getAttribute("MODEL_ID");
@@ -65,8 +68,13 @@ public class DetailModelInstanceTreeModule extends DefaultDetailModule {
 			String parentId = (String) request.getAttribute("MODEL_ID");
 			if (parentId != null && parentId.equalsIgnoreCase("null"))
 				parentId = null;
-			DetailModelInstanceUtil.newModelInstance(request, response, Integer
-					.parseInt(parentId));
+			if (!validationError) {
+				DetailModelInstanceUtil.newModelInstance(request, response, Integer
+						.parseInt(parentId));
+			} else {
+				DetailModelInstanceUtil.restoreModelInstanceValue(Integer
+						.parseInt(parentId), request, response);
+			}
 		}
 
 		String parentId = (String) request.getAttribute("ID");
@@ -80,8 +88,6 @@ public class DetailModelInstanceTreeModule extends DefaultDetailModule {
 	private boolean hasValidationError(String message) {
 		boolean toReturn = false;
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)
-		// || message
-		// .equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)
 		) {
 			ValidationCoordinator.validate("PAGE", VALIDATION_PAGE, this);
 
@@ -99,7 +105,27 @@ public class DetailModelInstanceTreeModule extends DefaultDetailModule {
 				}
 			}
 		}
+		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)
+				) {
+					ValidationCoordinator.validate("PAGE", VALIDATION_INSERT_PAGE, this);
+
+					EMFErrorHandler errorHandler = getErrorHandler();
+
+					Collection errors = errorHandler.getErrors();
+
+					if (errors != null && errors.size() > 0) {
+						Iterator iterator = errors.iterator();
+						while (iterator.hasNext()) {
+							Object error = iterator.next();
+							if (error instanceof EMFValidationError) {
+								toReturn = true;
+							}
+						}
+					}
+				}
+		
 		return toReturn;
 	}
+
 
 }

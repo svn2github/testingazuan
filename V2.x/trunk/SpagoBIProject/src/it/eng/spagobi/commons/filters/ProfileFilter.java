@@ -27,6 +27,8 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.services.common.SsoServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 
 import java.io.IOException;
 
@@ -64,7 +66,7 @@ public class ProfileFilter implements Filter {
 	    if (request instanceof HttpServletRequest) {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpSession session = httpRequest.getSession();
-		String userId = GeneralUtilities.findUserId(httpRequest);
+		String userId = findUserId(httpRequest);
 		logger.debug("User id = " + userId);
 		// in case the user is not specified, does nothing
 		if (userId == null || userId.trim().equals("")) {
@@ -116,6 +118,29 @@ public class ProfileFilter implements Filter {
 
     public void init(FilterConfig config) throws ServletException {
 	// do nothing
+    }
+    /**
+     * Finds the user identifier from http request or from SSO system (by the http request in input).
+     * Use the SsoServiceInterface for read the userId in all cases, if SSO is disabled use FakeSsoService.
+     * Check spagobi_sso.xml
+     * 
+     * @param httpRequest The http request
+     * 
+     * @return the current user unique identified
+     * 
+     * @throws Exception in case the SSO is enabled and the user identifier specified on http request is different from the SSO detected one.
+     */
+    
+    private static String findUserId(HttpServletRequest request) throws Exception {
+    	logger.debug("IN");
+    	String userId = null;
+    	try {
+			SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
+			userId = userProxy.readUserIdentifier(request);	
+    	} finally {
+    		logger.debug("OUT");
+    	}
+    	return userId;
     }
 
 }

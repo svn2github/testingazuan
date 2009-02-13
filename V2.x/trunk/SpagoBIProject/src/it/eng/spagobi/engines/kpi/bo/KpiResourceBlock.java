@@ -208,7 +208,7 @@ public class KpiResourceBlock {
 		}
 		logger.debug("Written HTML for weight");
 		
-		if (display_bullet_chart && sbi!=null){
+		if (display_bullet_chart && kpiVal!=null && !kpiVal.getThresholds().isEmpty() && sbi!=null){
 			
 			JFreeChart chart = sbi.createChart();
 			ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());

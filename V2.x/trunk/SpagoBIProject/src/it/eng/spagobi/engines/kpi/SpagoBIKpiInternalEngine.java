@@ -52,7 +52,6 @@ import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
@@ -115,6 +114,12 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     protected Date endKpiValueDate = null;//End validity date for the kpiValues 
     
     protected Integer periodInstID = null;
+    
+    protected String behaviour = "default";// 4 possible values:
+    //default:all old kpiValues are recalculated; all kpivalues without periodicity will not be recalculated
+    //display:shows all the last calculated values, even if they are not valid anymore
+    //force_recalculation: all the values are recalculated
+    //recalculate:old kpiValues are recalculated and also the one without a periodicity
 
     //Method usually called by the scheduler only in order to recalculate kpi values
     public void execute(RequestContainer requestContainer, SourceBean response) throws EMFUserError {
@@ -141,9 +146,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     	    // **************take informations on the modelInstance and its KpiValues*****************
     	    String modelNodeInstance = (String) requestContainer.getAttribute("model_node_instance");
     	    logger.debug("ModelNodeInstance : " + modelNodeInstance);
-    	    Integer modelNodeInstanceID = new Integer(modelNodeInstance);
-    	    if (modelNodeInstanceID == null) {
-    	    	logger.error("The modelNodeInstanceId specified in the template is null");
+    	    
+    	    if (modelNodeInstance == null) {
+    	    	logger.error("The modelNodeInstance specified in the template is null");
     	    	throw new EMFUserError(EMFErrorSeverity.ERROR, "10106", messageBundle);
     	    }
     	    /*String periodInstanceID = (String)requestContainer.getAttribute("periodicity_id");
@@ -159,9 +164,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     						// each Resource: it will be sent to the jsp
 
     	    // gets the ModelInstanceNode
-    	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID, this.dateOfKPI);
-    	    logger.debug("ModelInstanceNode, NAME=" + mI.getName());
-    	    logger.debug("Loaded the modelInstanceNode with id " + modelNodeInstanceID.toString());
+    	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceByLabel(modelNodeInstance, this.dateOfKPI);
+    	    logger.debug("ModelInstanceNode, ID=" + mI.getModelInstanceNodeId());
+    	    logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
     	    // I set the list of resources of that specific ModelInstance
     	    if (this.resources == null || this.resources.isEmpty()) {
     	    	this.resources = mI.getResources();
@@ -176,7 +181,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    			
 	    			KpiResourceBlock block = new KpiResourceBlock();
 	    			block.setD(this.dateOfKPI);
-	    			KpiLine line = getBlock(modelNodeInstanceID, null);				
+	    			KpiLine line = getBlock(mI.getModelInstanceNodeId(), null);				
 	    			block.setRoot(line);
 	    			logger.debug("Setted the tree Root.");
 	    			kpiRBlocks.add(block);
@@ -189,7 +194,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    			    KpiResourceBlock block = new KpiResourceBlock();
 	    			    block.setR(r);
 	    			    block.setD(dateOfKPI);
-	    			    KpiLine line = getBlock(modelNodeInstanceID, r);
+	    			    KpiLine line = getBlock(mI.getModelInstanceNodeId(), r);
 	    			    block.setRoot(line);
 	    			    logger.debug("Setted the tree Root.");
 	    			    kpiRBlocks.add(block);
@@ -321,16 +326,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    // **************take informations on the modelInstance and its KpiValues*****************
 	    String modelNodeInstance = (String) content.getAttribute("model_node_instance");
 	    logger.debug("ModelNodeInstance : " + modelNodeInstance);
-	    Integer modelNodeInstanceID = new Integer(modelNodeInstance);
-	    if (modelNodeInstanceID == null) {
-		logger.error("The modelNodeInstanceId specified in the template is null");
+	    
+	    if (modelNodeInstance == null) {
+		logger.error("The modelNodeInstance specified in the template is null");
 		throw new EMFUserError(EMFErrorSeverity.ERROR, "10106", messageBundle);
 	    }
 	    String periodInstanceID = (String) content.getAttribute("periodicity_id");
 	    logger.debug("PeriodInstanceID : " + (periodInstanceID!=null ? periodInstanceID : "null"));
 	    
 	    if (periodInstanceID == null) {
-	    	logger.error("No periodInstID specified");
+	    	logger.error("No periodInstID specified will use default one");
 	    }else{
 	    	periodInstID = new Integer(periodInstanceID);
 	    }
@@ -342,9 +347,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						// sent to the jsp
 
 	    // gets the ModelInstanceNode
-	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceById(modelNodeInstanceID, this.dateOfKPI);
-	    logger.debug("ModelInstanceNode, NAME=" + mI.getName());
-	    logger.debug("Loaded the modelInstanceNode with id " + modelNodeInstanceID.toString());
+	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceByLabel(modelNodeInstance, this.dateOfKPI);
+	    logger.debug("ModelInstanceNode, ID=" + (mI.getModelInstanceNodeId()!=null ? mI.getModelInstanceNodeId().toString():"null"));
+	    logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
 	    // I set the list of resources of that specific ModelInstance
 	    if (this.resources == null || this.resources.isEmpty()) {
 	    	this.resources = mI.getResources();
@@ -355,7 +360,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			logger.debug("There are no resources assigned to the Model Instance");
 			KpiResourceBlock block = new KpiResourceBlock();
 			block.setD(this.dateOfKPI);
-			KpiLine line = getBlock(modelNodeInstanceID, null);
+			KpiLine line = getBlock(mI.getModelInstanceNodeId(), null);
 			block.setRoot(line);
 			logger.debug("Setted the tree Root.");
 			kpiRBlocks.add(block);
@@ -367,7 +372,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			    KpiResourceBlock block = new KpiResourceBlock();
 			    block.setR(r);
 			    block.setD(dateOfKPI);
-			    KpiLine line = getBlock(modelNodeInstanceID, r);
+			    KpiLine line = getBlock(mI.getModelInstanceNodeId(), r);
 			    block.setRoot(line);
 			    logger.debug("Setted the tree Root.");
 			    kpiRBlocks.add(block);
@@ -423,11 +428,33 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 	KpiInstance kpiI = modI.getKpiInstanceAssociated();
 	if (kpiI != null) {
+		KpiValue value = new KpiValue();
 	    logger.debug("Got KpiInstance with ID: " + kpiI.getKpiInstanceId().toString());
-	    KpiValue value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
-	    logger.debug("Old KpiValue retrieved");
-	    if (value == null || recalculate_anyway) {
-			logger.debug("Old value not valid anymore");
+		boolean no_period_to_period = false;
+	    
+	    if(behaviour.equalsIgnoreCase("default") || //If the behaviour is default
+	    	(behaviour.equalsIgnoreCase("recalculate") && kpiI.getPeriodicityId()!=null)){//or the behaviour is recalculate and the kpiinstance has a setted periodicity
+	    	// the old value still valid is retrieved
+	    	logger.debug("Trying to retrieve the old value still valid");
+	    	value = DAOFactory.getKpiDAO().getKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
+	    	logger.debug("Old KpiValue retrieved");
+	    	line.setValue(value);
+	    }
+	    if(value!=null && value.getEndDate()!=null && kpiI.getPeriodicityId()!=null){
+		    GregorianCalendar c2 = new GregorianCalendar();		
+			c2.setTime(value.getEndDate());
+			int year = c2.get(1);
+			if(year==9999){
+				no_period_to_period = true;
+				logger.debug("The periodicity was null and now exists");
+			}
+	    }
+	    if (value==null || //If the retrieved value is null
+	    			no_period_to_period || //or the periodicity was before null and now is setted
+	    			 behaviour.equalsIgnoreCase("force_recalculation") || //or the  behaviour is force_recalculation
+	    			(behaviour.equalsIgnoreCase("recalculate") && kpiI.getPeriodicityId()==null) ) {// or the behaviour is recalculate and the kpiinstance hasn't a setted periodicity
+	    	//a new value is calculated
+	    	logger.debug("Old value not valid anymore or recalculation forced");
 			IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
 		
 			logger.debug("Retrieved the Dataset to be calculated: " + dataSet.getId());
@@ -444,11 +471,14 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			DAOFactory.getKpiDAO().isAlarmingValue(value);
 			logger.debug("Alarms sent if the value is over the thresholds");
 			line.setValue(value);
-	    } else if (value != null) {
+	    }else if(behaviour.equalsIgnoreCase("display")){//diplay behaviour
+	    	logger.debug("Display behaviour");
+	    	value = DAOFactory.getKpiDAO().getDisplayKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
+	    	logger.debug("Old KpiValue retrieved it could be still valid or not");
 	    	line.setValue(value);
-	    } else {
+	    } /*else {
 	    	return line;
-	    }
+	    }*/
 	    Integer kpiId = kpiI.getKpi();
 	    Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiId);
 	    logger.debug("Retrieved the kpi with id: " + kpiId.toString());
@@ -462,13 +492,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		    line.setDocuments(documents);
 		}
 	    }
-	    if (display_alarm && value.getValue() != null) {
+	    if (display_alarm && value!=null && value.getValue()!= null) {
 		Boolean alarm = DAOFactory.getKpiDAO().isKpiInstUnderAlramControl(kpiI.getKpiInstanceId());
 		logger.debug("KPI is under alarm control: " + alarm.toString());
 		line.setAlarm(alarm);
 	    }
 
-	    if (display_bullet_chart && value.getValue() != null) {
+	    if (display_bullet_chart &&  value!=null &&  value.getValue()!= null && !value.getThresholds().isEmpty()) {
 
 		List thresholds = value.getThresholds();
 		/*
@@ -501,7 +531,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		line.setChartBullet(sbi);
 
 	    }
-	    if (display_semaphore && value.getValue() != null) {
+	    if (display_semaphore &&  value!=null && value.getValue() != null) {
 		Color semaphorColor = null;
 		List thresholds = value.getThresholds();
 		Double val = new Double(value.getValue());
@@ -516,7 +546,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	if (!childrenIds.isEmpty()) {
 	    Iterator childrenIt = childrenIds.iterator();
 	    while (childrenIt.hasNext()) {
-		Integer id = (Integer) childrenIt.next();
+		Integer id = (Integer) childrenIt.next();	
 		KpiLine childrenLine = getBlock(id, r);
 		children.add(childrenLine);
 	    }
@@ -540,7 +570,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	if(endKpiValueDate!=null){
 		endDate = endKpiValueDate;
 		kVal.setEndDate(endKpiValueDate);
-	}else{
+	}else if(kpiInst.getPeriodicityId()!=null){
 		Integer seconds = null;
 		if(periodInstID!=null){
 			kpiInst.setPeriodicityId(periodInstID);
@@ -553,6 +583,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		long begDtTime = begD.getTime();
 		long endTime = begDtTime + milliSeconds;
 		endDate = new Date(endTime);
+		kVal.setEndDate(endDate);
+	}else{
+		GregorianCalendar c = new GregorianCalendar();
+		c.set(9999, 11, 31);			
+		endDate = c.getTime();
 		kVal.setEndDate(endDate);
 	}
 	Integer kpiInstanceID = k.getKpiInstanceId();
@@ -669,7 +704,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			    			kVal.setEndDate(endDate);
 			    			logger.debug("Setted the new EndDate description:"+endD.toString());
 		    			   }
-		    			}else{
+		    			}else if(fieldName.equals("value")){
 		    				String fieldValue = f.getValue().toString();
 			    			kVal.setValue(fieldValue);
 			    			logger.debug("Setted the kpiValue value:"+fieldValue);
@@ -1018,6 +1053,21 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			register_values = false;
 	    }
 	    this.confMap.put("register_values", register_values);
+	    
+	    if (dataParameters.get("behaviour") != null
+			    && !(((String) dataParameters.get("behaviour")).equalsIgnoreCase(""))) {
+			behaviour = (String) dataParameters.get("behaviour");
+			logger.debug("Behaviour is: "+ behaviour);
+	    }	
+	    
+	    /*recalculate_anyway = false;
+	    if (dataParameters.get("recalculate_anyway") != null
+		    && !(((String) dataParameters.get("recalculate_anyway")).equalsIgnoreCase(""))) {
+		String fil = (String) dataParameters.get("recalculate_anyway");
+		if (fil.equalsIgnoreCase("true"))
+			recalculate_anyway = true;
+	    }
+	    this.confMap.put("recalculate_anyway", recalculate_anyway);*/
 
 	} catch (Exception e) {
 	    logger.error("error in reading data source parameters");

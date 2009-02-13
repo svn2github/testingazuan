@@ -14,7 +14,9 @@ import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,6 +55,23 @@ public class CreateTrendAction extends AbstractHttpAction{
 		f.applyPattern(format);	
 		Date d = new Date();
 		d = f.parse(endDate);
+		Long milliseconds = d.getTime();
+		Calendar calendar = new GregorianCalendar();
+		int ore = calendar.get(Calendar.HOUR); 
+		int minuti = calendar.get(Calendar.MINUTE); 
+		int secondi = calendar.get(Calendar.SECOND); 
+		int AM = calendar.get(Calendar.AM_PM);//if AM then int=0, if PM then int=1
+		if(AM==0){
+			int millisec =  (secondi*1000) + (minuti *60*1000) + (ore*60*60*1000);
+			Long milliSecToAdd = new Long (millisec);
+			milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+			d = new Date(milliseconds);
+		}else{
+			int millisec =  (secondi*1000) + (minuti *60*1000) + ((ore+12)*60*60*1000);
+			Long milliSecToAdd = new Long (millisec);
+			milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+			d = new Date(milliseconds);
+		}  
 		String result = DAOFactory.getKpiDAO().getKpiTrendXmlResult(resID, kpiInstId, d);
 		logger.debug("Result calculated:"+(result!=null ? result : "null"));
 		KpiInstance ki = DAOFactory.getKpiDAO().loadKpiInstanceById(kpiInstId);

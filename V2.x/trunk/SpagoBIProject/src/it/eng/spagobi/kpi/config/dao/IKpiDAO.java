@@ -23,6 +23,15 @@ public interface IKpiDAO {
 	public void insertKpiValue(KpiValue value) throws EMFUserError;
 
 	/**
+	 * Returns the ModelInstance of the referred label
+	 * 
+	 * @param label of the ModelInstance
+	 * @return ModelInstance of the referred id
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public ModelInstanceNode loadModelInstanceByLabel(String label,Date requestedDate) throws EMFUserError ;
+	
+	/**
 	 * Returns the ModelInstance of the referred id
 	 * 
 	 * @param id of the ModelInstance
@@ -130,6 +139,15 @@ public interface IKpiDAO {
 	 * @throws EMFUserError if an Exception occurs
 	 */
 	public KpiValue getKpiValue(Integer kpiInstanceId, Date d, Resource r) throws EMFUserError;
+	
+	/**
+	 * The last KpiValue for the the KpiInstance selected, for the resource selected, in the date selected or before
+	 * 
+	 * @param KpiValue 
+	 * @return The last KpiValue valid for the the KpiInstance selected, for the resource selected, in the date selected or before
+	 * @throws EMFUserError if an Exception occurs
+	 */
+	public KpiValue getDisplayKpiValue(Integer kpiInstanceId, Date d, Resource r) throws EMFUserError;
 	
 	/**
 	 * Returns True if the KPIInstance with id kpiInstID is under AlarmControl, false if it is not 

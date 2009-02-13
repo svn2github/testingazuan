@@ -46,6 +46,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Order;
 import org.hibernate.exception.ConstraintViolationException;
@@ -53,6 +54,42 @@ import org.hibernate.exception.ConstraintViolationException;
 public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 	static private Logger logger = Logger.getLogger(KpiDAOImpl.class);
+	
+	public ModelInstanceNode loadModelInstanceByLabel(String label,Date requestedDate) throws EMFUserError {
+		logger.debug("IN");
+		ModelInstanceNode toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criterion nameCriterrion = Expression.eq("label", label);
+			Criteria criteria = aSession.createCriteria(SbiKpiModelInst.class);
+			criteria.add(nameCriterrion);	
+			SbiKpiModelInst hibSbiKpiModelInst = (SbiKpiModelInst) criteria.uniqueResult();
+			if (hibSbiKpiModelInst == null) return null;
+			toReturn = toModelInstanceNode(hibSbiKpiModelInst, requestedDate);
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Model Instance with name "
+					+ ((label == null) ? "null" : label), he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10101);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
 
 	public ModelInstanceNode loadModelInstanceById(Integer id,
 			Date requestedDate) throws EMFUserError {
@@ -348,19 +385,24 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 					.add(Expression.eq("sbiKpiInstance.idKpiInstance",
 							kpiInstId));
 			finder.add(Expression.le("beginDt", endDate));
+			logger.debug("Begin Date Criteria Setted");
 
 			if (resId != null) {
 				finder.add(Expression.eq("sbiResources.resourceId", resId));
+				logger.debug("Resource setted");
 			} else {
-				finder.add(Expression.eq("sbiResources.resourceId", null));
+				//finder.add(Expression.eq("sbiResources.resourceId", null));
+				logger.debug("Null resource setted");
 			}
 			SourceBean sb = new SourceBean("ROWS");
 			finder.addOrder(Order.desc("beginDt"));
+			logger.debug("Order Date Criteria setted");
 			finder.setMaxResults(10);
+			logger.debug("Max result to 10 setted");
 
 			List l = finder.list();
 			if (!l.isEmpty()) {
-
+				logger.debug("The result list is not empty");
 				for (int k = l.size() - 1; k >= 0; k--) {
 					SbiKpiValue temp = (SbiKpiValue) l.get(k);
 					SourceBean sb2 = new SourceBean("ROW");
@@ -371,6 +413,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 					}
 				}
 			} else {
+				logger.debug("The result list is empty");
 				SourceBean sb2 = new SourceBean("ROW");
 				sb.setAttribute(sb2);
 			}
@@ -651,14 +694,16 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 					SbiKpiInstance.class, k.getKpiInstanceId());
 			SbiThreshold t = hibSbiKpiInstance.getSbiThreshold();
 
-			Set thresholdValues = t.getSbiThresholdValues();
-			Iterator it = thresholdValues.iterator();
-			while (it.hasNext()) {
-				SbiThresholdValue val = (SbiThresholdValue) it.next();
-				Threshold tr = toThreshold(val);
-				logger.debug("Added threshold with label " + tr.getLabel());
-				thresholds.add(tr);
-			}
+			if(t!=null){
+				Set thresholdValues = t.getSbiThresholdValues();
+				Iterator it = thresholdValues.iterator();
+				while (it.hasNext()) {
+					SbiThresholdValue val = (SbiThresholdValue) it.next();
+					Threshold tr = toThreshold(val);
+					logger.debug("Added threshold with label " + tr.getLabel());
+					thresholds.add(tr);
+				}
+			}			
 
 		} catch (HibernateException he) {
 			logger
@@ -906,6 +951,10 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 					kpiInstanceId));
 			finder.add(Expression.le("beginDt", d));
 			finder.add(Expression.ge("endDt", d));
+			finder.addOrder(Order.desc("beginDt"));
+			logger.debug("Order Date Criteria setted");
+			finder.setMaxResults(1);
+			logger.debug("Max result to 1 setted");
 
 			if (r != null) {
 				finder.add(Expression.eq("sbiResources.resourceId", r.getId()));
@@ -917,19 +966,79 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				Iterator it = l.iterator();
 				while (it.hasNext()) {
 					SbiKpiValue temp = (SbiKpiValue) it.next();
-					tem = toKpiValue(temp, d);
-					logger.debug("Temp value in the array: " + tem.getValue()
-							+ ". BeginDate: " + tem.getBeginDate().toString());
-					if (toReturn == null) {
+					toReturn = toKpiValue(temp, d);
+				}
+			}
+
+		} catch (HibernateException he) {
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10108);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
+	public KpiValue getDisplayKpiValue(Integer kpiInstanceId, Date d, Resource r) throws EMFUserError{
+		logger.debug("IN");
+		KpiValue toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criteria finder = aSession.createCriteria(SbiKpiValue.class);
+			finder.add(Expression.eq("sbiKpiInstance.idKpiInstance",
+					kpiInstanceId));
+			finder.add(Expression.le("beginDt", d));
+			finder.add(Expression.ge("endDt", d));
+			finder.addOrder(Order.desc("beginDt"));
+			logger.debug("Order Date Criteria setted");
+			finder.setMaxResults(1);
+			logger.debug("Max result to 1 setted");
+
+			if (r != null) {
+				finder.add(Expression.eq("sbiResources.resourceId", r.getId()));
+			}
+
+			List l = finder.list();
+			if (!l.isEmpty()) {
+				KpiValue tem = null;
+				Iterator it = l.iterator();
+				while (it.hasNext()) {
+					SbiKpiValue temp = (SbiKpiValue) it.next();
+					toReturn = toKpiValue(temp, d);
+				}
+			}else{
+				Criteria finder2 = aSession.createCriteria(SbiKpiValue.class);
+				finder2.add(Expression.eq("sbiKpiInstance.idKpiInstance",
+						kpiInstanceId));
+				finder2.add(Expression.le("beginDt", d));
+				finder2.addOrder(Order.desc("beginDt"));
+				logger.debug("Order Date Criteria setted");
+				finder2.setMaxResults(1);
+				logger.debug("Max result to 1 setted");
+
+				List l2 = finder2.list();
+				if (!l2.isEmpty()) {
+					KpiValue tem = null;
+					Iterator it = l2.iterator();
+					while (it.hasNext()) {
+						SbiKpiValue temp = (SbiKpiValue) it.next();
 						toReturn = toKpiValue(temp, d);
 					}
-					if (temp.getBeginDt().after(toReturn.getBeginDate())) {
-						toReturn = tem;
-					}
-					logger.debug("Actual newer value: " + toReturn.getValue()
-							+ ". BeginDate: "
-							+ toReturn.getBeginDate().toString());
 				}
+				
 			}
 
 		} catch (HibernateException he) {
@@ -1019,13 +1128,15 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			logger.debug("Requested date d: " + d.toString()
 					+ " in between beginDate and EndDate");
 			SbiThreshold t = kpiInst.getSbiThreshold();
-			Set ts = t.getSbiThresholdValues();
-			Iterator i = ts.iterator();
-			while (i.hasNext()) {
-				SbiThresholdValue tls = (SbiThresholdValue) i.next();
-				Threshold tr = toThreshold(tls);
-				thresholds.add(tr);
-			}
+			if(t!=null){
+				Set ts = t.getSbiThresholdValues();
+				Iterator i = ts.iterator();
+				while (i.hasNext()) {
+					SbiThresholdValue tls = (SbiThresholdValue) i.next();
+					Threshold tr = toThreshold(tls);
+					thresholds.add(tr);
+				}
+			}			
 
 		} else {// in case older thresholds have to be retrieved
 
@@ -1058,13 +1169,15 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 										: "scaleName null"));
 					}
 					SbiThreshold t = ih.getSbiThreshold();
-					Set ts = t.getSbiThresholdValues();
-					Iterator it = ts.iterator();
-					while (it.hasNext()) {
-						SbiThresholdValue tls = (SbiThresholdValue) it.next();
-						Threshold tr = toThreshold(tls);
-						thresholds.add(tr);
-					}
+					if(t!=null){
+						Set ts = t.getSbiThresholdValues();
+						Iterator it = ts.iterator();
+						while (it.hasNext()) {
+							SbiThresholdValue tls = (SbiThresholdValue) it.next();
+							Threshold tr = toThreshold(tls);
+							thresholds.add(tr);
+						}
+					}		
 				}
 			}
 		}
@@ -1102,6 +1215,9 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("IN");
 		ModelInstanceNode toReturn = new ModelInstanceNode();
 
+		Integer id = hibSbiKpiModelInst.getKpiModelInst();
+		logger.debug("SbiKpiModelInstanceNode id: "
+				+ (id != null ? id : "id null"));
 		String descr = hibSbiKpiModelInst.getDescription();
 		logger.debug("SbiKpiModelInstanceNode description: "
 				+ (descr != null ? descr : "Description null"));
@@ -1162,6 +1278,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 						+ (reference != null ? reference.toString()
 								: "reference null"));
 
+		toReturn.setModelInstanceNodeId(id);
+		logger.debug("KpiModelInstanceNode id setted");
 		toReturn.setDescr(descr);
 		logger.debug("KpiModelInstanceNode description setted");
 		toReturn.setName(name);
@@ -1193,7 +1311,10 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer k = kpi.getKpiId();
 		Date d = new Date();
 		d = kpiInst.getBeginDt();
-		Integer thresholdId = kpiInst.getSbiThreshold().getThresholdId();
+		Integer thresholdId = null;
+		if(kpiInst.getSbiThreshold()!=null){
+			thresholdId = kpiInst.getSbiThreshold().getThresholdId();
+		}
 		Double weight = kpiInst.getWeight();
 		Double target = kpiInst.getTarget();
 		Integer idPeriodicity = null;

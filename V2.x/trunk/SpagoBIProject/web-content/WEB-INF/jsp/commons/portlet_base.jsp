@@ -18,7 +18,6 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
-
 <%@ page language="java"
          contentType="text/html; charset=ISO-8859-1"
          pageEncoding="ISO-8859-1"
@@ -32,7 +31,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 The following directive catches exceptions thrown by jsps, must be commented in development environment
 --%>
 <%@page errorPage="/html/error.html"%>
-
 <%@page import="it.eng.spagobi.commons.utilities.urls.WebUrlBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.PortletUrlBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.messages.MessageBuilder"%>
@@ -50,7 +48,6 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spagobi.commons.utilities.PortletUtilities"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
-
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 
@@ -95,7 +92,6 @@ String getUrl(String baseUrl, Map mapPars) {
 	SessionContainer aSessionContainer = null;
 	IUrlBuilder urlBuilder = null;
 	IMessageBuilder msgBuilder = null;
-	Locale locale = null;
 	
 	String sbiMode = null;
 		
@@ -113,13 +109,7 @@ String getUrl(String baseUrl, Map mapPars) {
 	String channelType = aRequestContainer.getChannelType();
 	if ("PORTLET".equalsIgnoreCase(channelType)) sbiMode = "PORTLET";
 	else sbiMode = "WEB";
-	
-	if (sbiMode.equals("PORTLET")) {
-		locale = PortletUtilities.getLocaleForMessage();
-	} else {
-		locale = MessageBuilder.getBrowserLocaleFromSpago();
-	}
-	
+
     // = (String)sessionContainer.getAttribute(Constants.USER_LANGUAGE);
     //country = (String)sessionContainer.getAttribute(Constants.USER_COUNTRY);
 	
@@ -148,10 +138,28 @@ String getUrl(String baseUrl, Map mapPars) {
 	String linkProtoAlphaThem = urlBuilder.getResourceLink(request, "/js/prototype/themes/alphacube.css");
 
 	SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+	
+
+	// If Language is alredy defined keep it
+	
+	String curr_language=(String)permanentSession.getAttribute(SpagoBIConstants.AF_LANGUAGE);
+	String curr_country=(String)permanentSession.getAttribute(SpagoBIConstants.AF_COUNTRY);
+	Locale locale = null;
+
+	if(curr_language!=null && curr_country!=null && !curr_language.equals("") && !curr_country.equals("")){
+		locale=new Locale(curr_language, curr_country, "");
+	}
+	else {	
+	if (sbiMode.equals("PORTLET")) {
+		locale = PortletUtilities.getLocaleForMessage();
+	} else {
+		locale = MessageBuilder.getBrowserLocaleFromSpago();
+	}
 	// updates locale information on permanent container for Spago messages mechanism
 	if (locale != null) {
 		permanentSession.setAttribute(Constants.USER_LANGUAGE, locale.getLanguage());
 		permanentSession.setAttribute(Constants.USER_COUNTRY, locale.getCountry());
+	}
 	}
 	
 	IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);

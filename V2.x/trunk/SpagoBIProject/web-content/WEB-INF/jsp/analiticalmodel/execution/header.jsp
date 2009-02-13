@@ -45,6 +45,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
 
+<%@page import="it.eng.spago.base.RequestContainer"%>
+<%@page import="it.eng.spago.base.SessionContainer"%>
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/analiticalmodel/execution/box.js")%>"></script>
@@ -127,6 +129,12 @@ Map documentParametersMap = (Map) moduleResponse.getAttribute(ObjectsTreeConstan
 
 String title = obj.getName();
 
+RequestContainer reqCont = RequestContainer.getRequestContainer();
+SessionContainer sessCont = reqCont.getSessionContainer();
+SessionContainer permSess = sessCont.getPermanentContainer();
+String language=(String)permSess.getAttribute(SpagoBIConstants.AF_LANGUAGE);
+String country=(String)permSess.getAttribute(SpagoBIConstants.AF_COUNTRY);
+
 Map executionParameters = new HashMap();
 if (documentParametersMap != null) executionParameters.putAll(documentParametersMap);
 executionParameters.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
@@ -134,6 +142,12 @@ executionParameters.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoB
 executionParameters.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
 executionParameters.put("SBI_EXECUTION_ID", instance.getExecutionId());
 executionParameters.put(SpagoBIConstants.EXECUTION_ROLE, instance.getExecutionRole());
+
+if(language!=null && country!=null){
+	executionParameters.put(SpagoBIConstants.SBI_LANGUAGE, language);
+	executionParameters.put(SpagoBIConstants.SBI_COUNTRY, country);	
+}
+
 // Auditing
 AuditManager auditManager = AuditManager.getInstance();
 String modality = instance.getExecutionModality();

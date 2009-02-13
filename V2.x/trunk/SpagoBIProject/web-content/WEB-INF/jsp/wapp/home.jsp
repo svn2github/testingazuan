@@ -74,6 +74,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%  
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("LoginModule"); 
+
+	if(moduleResponse==null) moduleResponse=aServiceResponse;
+	
 	List lstMenu = new ArrayList();
 	ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 	String uuid = null;
@@ -562,6 +565,57 @@ function execCrossNavigation(windowName, label, parameters) {
 		//adds exit menu
 		tb.addSeparator();
 
+<%
+// Find if current language is set
+String currLanguage=(String)permanentSession.getAttribute(SpagoBIConstants.AF_LANGUAGE);
+
+String iconLanguage="";
+
+String it=locale.ITALY.getLanguage();
+String eng=locale.US.getLanguage();
+String fr=locale.FRANCE.getLanguage();
+
+if(curr_language!=null){
+	iconLanguage="/SpagoBI/img/"+currLanguage.toLowerCase()+".gif";	
+}
+
+
+%>
+ var languages = new Ext.menu.Menu({ 
+ id: 'languages', 
+ items: [
+ new Ext.menu.Item({
+	 id: '<%new Double(Math.random()).toString();%>',
+ 	text: 'IT',
+	href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=it%>')"
+ })
+ ,
+ new Ext.menu.Item({
+ 	 id: '<%new Double(Math.random()).toString();%>',
+ 	text: 'EN',
+href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=eng%>')"
+ }) ,
+ new Ext.menu.Item({
+ 	 id: '<%new Double(Math.random()).toString();%>',
+ 		text: 'FR',
+		href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=fr%>')" })
+ ]
+ });
+ 
+ resources.addListener('mouseexit', function() {languages.hide();});
+ 
+ tb.add(
+ 	new Ext.Toolbar.MenuButton({
+ 		text: '',
+ 		icon: '<%=iconLanguage%>',
+ 		cls: 'x-btn-text-icon bmenu',
+ 		menu: languages
+ 	})
+ );
+
+
+
+
 		tb.add(
 			new Ext.Toolbar.Button({
 	            id: '<%new Double(Math.random()).toString();%>',
@@ -626,10 +680,17 @@ function execCrossNavigation(windowName, label, parameters) {
 	var viewTrackPath='<%=viewTrackPath%>';
 	
 		if( viewTrackPath=='true' && path!=null)
-		{document.getElementById('trackPath').innerHTML=path;}
-	document.getElementById('iframeDoc').src = url;
+		{
+			document.getElementById('trackPath').innerHTML=path;}
+		document.getElementById('iframeDoc').src = url;
 		return;
 	}
+	
+		function execUrl(url){
+		document.location.href=url;
+		return;
+	}
+	
 	
 	function info(){
 	

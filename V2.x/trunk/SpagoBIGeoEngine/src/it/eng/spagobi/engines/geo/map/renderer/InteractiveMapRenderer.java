@@ -20,23 +20,6 @@
  **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
-import it.eng.spagobi.engines.geo.dataset.DataMart;
-import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
-import it.eng.spagobi.engines.geo.map.renderer.configurator.InteractiveMapRendererConfigurator;
-import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
-import it.eng.spagobi.engines.geo.map.utils.SVGMapMerger;
-import it.eng.spagobi.engines.geo.map.utils.SVGMapSaver;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
-import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
-import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,6 +46,26 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGElement;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
+import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
+import it.eng.spagobi.engines.geo.dataset.DataMart;
+import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
+import it.eng.spagobi.engines.geo.map.renderer.configurator.InteractiveMapRendererConfigurator;
+import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
+import it.eng.spagobi.engines.geo.map.utils.SVGMapMerger;
+import it.eng.spagobi.engines.geo.map.utils.SVGMapSaver;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 /**
  * The Class InteractiveMapRenderer.
@@ -102,14 +105,26 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 						  IDataMartProvider datamartProvider,
 						  String outputFormat) throws GeoEngineException {
 		
-		if(outputFormat.equalsIgnoreCase(GeoEngineConstants.SVG)) {
-			return renderSVGMap(mapProvider, datamartProvider);
-		}else if(outputFormat.equalsIgnoreCase(GeoEngineConstants.DSVG)) {
-			return renderDSVGMap(mapProvider, datamartProvider, false);
-		} else if(outputFormat.equalsIgnoreCase(GeoEngineConstants.XDSVG)) {
-			return renderDSVGMap(mapProvider, datamartProvider, true);
-		} else if(outputFormat.equalsIgnoreCase(GeoEngineConstants.JPEG)) {
-			return renderSVGMap(mapProvider, datamartProvider);
+		Monitor totalTimeMonitor = null;
+		Monitor totalTimePerFormatMonitor = null;
+		
+		try {
+			
+			totalTimeMonitor = MonitorFactory.start("GeoEngine.drawMapAction.renderMap.totalTime");
+			totalTimePerFormatMonitor = MonitorFactory.start("GeoEngine.drawMapAction.renderMap." + outputFormat + ".totalTime");
+			
+			if(outputFormat.equalsIgnoreCase(GeoEngineConstants.SVG)) {
+				return renderSVGMap(mapProvider, datamartProvider);
+			}else if(outputFormat.equalsIgnoreCase(GeoEngineConstants.DSVG)) {
+				return renderDSVGMap(mapProvider, datamartProvider, false);
+			} else if(outputFormat.equalsIgnoreCase(GeoEngineConstants.XDSVG)) {
+				return renderDSVGMap(mapProvider, datamartProvider, true);
+			} else if(outputFormat.equalsIgnoreCase(GeoEngineConstants.JPEG)) {
+				return renderSVGMap(mapProvider, datamartProvider);
+			}
+		} finally {
+			if(totalTimePerFormatMonitor != null) totalTimePerFormatMonitor.stop();
+			if(totalTimeMonitor != null) totalTimeMonitor.stop();			
 		}
 		
 		
@@ -133,106 +148,134 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		
 		SVGDocument targetMap;
 		SVGDocument masterMap = null;
+		File tmpMap;
 		DataMart dataMart;
+		Monitor loadDataMartTotalTimeMonitor = null;
+		Monitor loadMasterMapTotalTimeMonitor = null;
+		Monitor loadTargetMapTotalTimeMonitor = null;
+		Monitor margeAndDecorateMapTotalTimeMonitor = null;
 		
-		dataMart = (DataMart)datamartProvider.getDataMart();
-		
+		// load datamart
 		try {
+			loadDataMartTotalTimeMonitor = MonitorFactory.start("GeoEngine.drawMapAction.renderMap.loadDatamart");
+			dataMart = (DataMart)datamartProvider.getDataMart();
+		} finally {
+			if(loadDataMartTotalTimeMonitor != null) loadDataMartTotalTimeMonitor.stop();
+		}
+		
+		// load master map
+		try {
+			loadMasterMapTotalTimeMonitor = MonitorFactory.start("GeoEngine.drawMapAction.renderMap.loadMasterMap");
 			masterMap = SVGMapLoader.loadMapAsDocument(getMasterMapFile(true));
 		} catch (IOException e) {
 			logger.error("Impossible to load map from file: " + getMasterMapFile(true));
 			String description = "Impossible to load map from file: " + getMasterMapFile(true);
 			throw new GeoEngineException("Impossible to render map", description, e);
-		}		
-		targetMap = mapProvider.getSVGMapDOMDocument();				
-				
-		addData(targetMap, dataMart);
-		addLink(targetMap, dataMart);
-		
-		
-		SVGMapMerger.margeMap(targetMap, masterMap, null, "targetMap");
-		
-		if( includeScript ) {
-			includeScripts(masterMap);
-		} else {
-			importScripts(masterMap);
+		} finally {
+			if(loadMasterMapTotalTimeMonitor != null) loadMasterMapTotalTimeMonitor.stop();
 		}
 		
-		
-		setMainMapDimension(masterMap, targetMap);
-		
-	    Element scriptInit = masterMap.getElementById("init");	    
-	    Node scriptText = scriptInit.getFirstChild();
-	   
-	    JSONObject conf = new JSONObject();	    
-	    
-	    JSONArray measures;
+		// load target map
 		try {
-			measures = getMeasuresConfigurationScript(dataMart);
-		    String selectedMeasureName = getSelectedMeasureName();
-		    int selectedMeasureIndexIndex = -1;
-		    for(int i = 0; i < measures.length(); i++) {
-		    	JSONObject measure = (JSONObject)measures.get(i);
-		    	
-		    	if(selectedMeasureName.equalsIgnoreCase( (String)measure.get("name"))) {
-		    		selectedMeasureIndexIndex = i;
-		    		break;
-		    	}
-		    }
-		    conf.put("selected_measure_index", selectedMeasureIndexIndex);
-		    conf.put("measures", measures);
-		    
-		    JSONArray layers =  getLayersConfigurationScript(targetMap); 
-		    String targetLayer = datamartProvider.getSelectedLevel().getFeatureName();
-		    int targetLayerIndex = -1;
-		    for(int i = 0; i < layers.length(); i++) {
-		    	JSONObject layer = (JSONObject)layers.get(i);
-		    	
-		    	if(targetLayer.equals( layer.get("name"))) {
-		    		targetLayerIndex = i;
-		    		break;
-		    	}
-		    }
-		    conf.put("target_layer_index", targetLayerIndex);
-		    conf.put("layers", layers);
-		    
-		    	    
-		      
-		    
-		    JSONObject guiSettings =  getGUIConfigurationScript();
-		    guiSettings.put("includeChartLayer", getLayer("grafici")!=null);
-		    guiSettings.put("includeValuesLayer", getLayer("valori")!=null);
-		    conf.put("gui_settings", guiSettings);
-		} catch (JSONException e1) {
-			logger.error("Impossible to create sbi.geo.conf", e1);
-			String description = "Impossible to create sbi.geo.conf";
-			throw new GeoEngineException("Impossible to create sbi.geo.conf", description, e1);
+			loadTargetMapTotalTimeMonitor = MonitorFactory.start("GeoEngine.drawMapAction.renderMap.loadTargetMap");
+			targetMap = mapProvider.getSVGMapDOMDocument();	
+		}finally {
+			if(loadTargetMapTotalTimeMonitor != null) loadTargetMapTotalTimeMonitor.stop();
 		}
-	    
-	    scriptText.setNodeValue( "sbi = {};\n sbi.geo = {};\n sbi.geo.conf = " + conf.toString() );
-	    
-		System.out.println( "sbi = {};\n sbi.geo = {};\n sbi.geo.conf = " + conf.toString() );
 		
-		File tmpMap;
+		// marge and decorate map
 		try {
-			tmpMap = getTempFile();
-		} catch (IOException e) {
-			logger.error("Impossible to create a temporary file", e);
-			String description = "Impossible to create a temporary file";
-			throw new GeoEngineException("Impossible to render map", description, e);
-		}				
-		try {
-			SVGMapSaver.saveMap(masterMap, tmpMap);
-		} catch (FileNotFoundException e) {
-			logger.error("Impossible to save map on temporary file " + tmpMap, e);
-			String str = e.getMessage()!=null?e.getMessage():e.getClass().getName();
-			String description = "Impossible to save map on temporary file " + tmpMap + ". Root cause: " + str;
-			throw new GeoEngineException("Impossible to render map", description, e);
-		} catch (TransformerException e) {
-			logger.error("Impossible to save map on temporary file " + tmpMap, e);
-			String str = e.getMessage()!=null?e.getMessage():e.getClass().getName();
-			String description = "Impossible to save map on temporary file " + tmpMap + ". Root cause: " + str;
-			throw new GeoEngineException("Impossible to render map", description, e);
+			
+			margeAndDecorateMapTotalTimeMonitor = MonitorFactory.start("GeoEngine.drawMapAction.renderMap.margeAndDecorateMap");
+			
+			addData(targetMap, dataMart);
+			addLink(targetMap, dataMart);
+			
+			
+			SVGMapMerger.margeMap(targetMap, masterMap, null, "targetMap");
+			
+			if( includeScript ) {
+				includeScripts(masterMap);
+			} else {
+				importScripts(masterMap);
+			}
+			
+			
+			setMainMapDimension(masterMap, targetMap);
+			
+		    Element scriptInit = masterMap.getElementById("init");	    
+		    Node scriptText = scriptInit.getFirstChild();
+		   
+		    JSONObject conf = new JSONObject();	    
+		    
+		    JSONArray measures;
+			try {
+				measures = getMeasuresConfigurationScript(dataMart);
+			    String selectedMeasureName = getSelectedMeasureName();
+			    int selectedMeasureIndexIndex = -1;
+			    for(int i = 0; i < measures.length(); i++) {
+			    	JSONObject measure = (JSONObject)measures.get(i);
+			    	
+			    	if(selectedMeasureName.equalsIgnoreCase( (String)measure.get("name"))) {
+			    		selectedMeasureIndexIndex = i;
+			    		break;
+			    	}
+			    }
+			    conf.put("selected_measure_index", selectedMeasureIndexIndex);
+			    conf.put("measures", measures);
+			    
+			    JSONArray layers =  getLayersConfigurationScript(targetMap); 
+			    String targetLayer = datamartProvider.getSelectedLevel().getFeatureName();
+			    int targetLayerIndex = -1;
+			    for(int i = 0; i < layers.length(); i++) {
+			    	JSONObject layer = (JSONObject)layers.get(i);
+			    	
+			    	if(targetLayer.equals( layer.get("name"))) {
+			    		targetLayerIndex = i;
+			    		break;
+			    	}
+			    }
+			    conf.put("target_layer_index", targetLayerIndex);
+			    conf.put("layers", layers);
+			    
+			    	    
+			      
+			    
+			    JSONObject guiSettings =  getGUIConfigurationScript();
+			    guiSettings.put("includeChartLayer", getLayer("grafici")!=null);
+			    guiSettings.put("includeValuesLayer", getLayer("valori")!=null);
+			    conf.put("gui_settings", guiSettings);
+			} catch (JSONException e1) {
+				logger.error("Impossible to create sbi.geo.conf", e1);
+				String description = "Impossible to create sbi.geo.conf";
+				throw new GeoEngineException("Impossible to create sbi.geo.conf", description, e1);
+			}
+		    
+		    scriptText.setNodeValue( "sbi = {};\n sbi.geo = {};\n sbi.geo.conf = " + conf.toString() );
+		    
+			
+			try {
+				tmpMap = getTempFile();
+			} catch (IOException e) {
+				logger.error("Impossible to create a temporary file", e);
+				String description = "Impossible to create a temporary file";
+				throw new GeoEngineException("Impossible to render map", description, e);
+			}				
+			try {
+				SVGMapSaver.saveMap(masterMap, tmpMap);
+			} catch (FileNotFoundException e) {
+				logger.error("Impossible to save map on temporary file " + tmpMap, e);
+				String str = e.getMessage()!=null?e.getMessage():e.getClass().getName();
+				String description = "Impossible to save map on temporary file " + tmpMap + ". Root cause: " + str;
+				throw new GeoEngineException("Impossible to render map", description, e);
+			} catch (TransformerException e) {
+				logger.error("Impossible to save map on temporary file " + tmpMap, e);
+				String str = e.getMessage()!=null?e.getMessage():e.getClass().getName();
+				String description = "Impossible to save map on temporary file " + tmpMap + ". Root cause: " + str;
+				throw new GeoEngineException("Impossible to render map", description, e);
+			}
+		} finally {
+			if(margeAndDecorateMapTotalTimeMonitor != null) margeAndDecorateMapTotalTimeMonitor.stop();
 		}
 
 		return tmpMap;

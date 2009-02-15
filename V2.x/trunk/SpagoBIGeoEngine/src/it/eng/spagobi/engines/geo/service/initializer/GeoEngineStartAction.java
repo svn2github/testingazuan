@@ -20,6 +20,17 @@
  **/
 package it.eng.spagobi.engines.geo.service.initializer;
 
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.GeoEngine;
 import it.eng.spagobi.engines.geo.GeoEngineInstance;
@@ -32,12 +43,6 @@ import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 
 /**
@@ -71,24 +76,37 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws GeoEngineException {
 		
+		GeoEngineInstance geoEngineInstance;
+		Map env;
+		byte[] analysisStateRowData;
+		GeoEngineAnalysisState analysisState = null;
+		String executionContext;
+		String executionId;
+		String documentLabel;
+		String outputType;
+		
+		Monitor hitsPrimary = null;
+        Monitor hitsByDate = null;
+        Monitor hitsByUserId = null;
+        Monitor hitsByDocumentId = null;
+        Monitor hitsByExecutionContext = null;
+		
+		
 		logger.debug("IN");		
 		
 		try {
 			super.service(serviceRequest, serviceResponse);
-				
-			GeoEngineInstance geoEngineInstance;
-			Map env;
-			byte[] analysisStateRowData;
-			GeoEngineAnalysisState analysisState = null;
-			String executionContext;
-			String executionId;
-			String documentLabel;
-			String outputType;
-			
+						
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
 			logger.debug("Template: " + getTemplate());	
+			
+			hitsPrimary = MonitorFactory.startPrimary("GeoEngine.requestHits");
+	        hitsByDate = MonitorFactory.start("GeoEngine.requestHits." + DateFormat.getDateInstance(DateFormat.SHORT).format(new Date()));
+	        hitsByUserId = MonitorFactory.start("GeoEngine.requestHits." + getUserId());
+	        hitsByDocumentId = MonitorFactory.start("GeoEngine.requestHits." + getDocumentId());
+			
 			
 			executionContext = getAttributeAsString( EXECUTION_CONTEXT ); 
 			logger.debug("Parameter [" + EXECUTION_CONTEXT + "] is equal to [" + executionContext + "]");
@@ -102,18 +120,17 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			outputType = getAttributeAsString(OUTPUT_TYPE);
 			logger.debug("Parameter [" + OUTPUT_TYPE + "] is equal to [" + outputType + "]");
 			
-			
 			logger.debug("Execution context: " + executionContext);
 			String isDocumentCompositionModeActive = (executionContext != null && executionContext.equalsIgnoreCase("DOCUMENT_COMPOSITION") )? "TRUE": "FALSE";
 			logger.debug("Document composition mode active: " + isDocumentCompositionModeActive);
 			
+			hitsByExecutionContext = MonitorFactory.start("GeoEngine.requestHits." + (isDocumentCompositionModeActive.equalsIgnoreCase("TRUE")?"compositeDocument": "singleDocument"));
+			
+			
 			env = getEnv("TRUE".equalsIgnoreCase(isDocumentCompositionModeActive), documentLabel, executionId);
 			if( outputType != null ) {
 				env.put(GeoEngineConstants.ENV_OUTPUT_TYPE, outputType);
-			}
-			
-			
-			
+			}			
 			
 			geoEngineInstance = GeoEngine.createInstance(getTemplate(), env);
 			geoEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
@@ -150,6 +167,13 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			List hints = new ArrayList();
 			hints.add("Sorry, there are no hints available right now on how to fix this problem");
 			throw new GeoEngineException("Service error", description, hints, e);
+		} finally {
+			if(hitsByExecutionContext != null) hitsByExecutionContext.stop();
+			if(hitsByDocumentId != null) hitsByDocumentId.stop();
+			if(hitsByUserId != null) hitsByUserId.stop();
+			if(hitsByDate != null) hitsByDate.stop();
+			if(hitsPrimary != null) hitsPrimary.stop();
+			
 		}
 		
 		logger.debug("OUT");

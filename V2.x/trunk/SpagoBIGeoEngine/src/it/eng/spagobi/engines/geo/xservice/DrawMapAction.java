@@ -20,6 +20,14 @@
  **/
 package it.eng.spagobi.engines.geo.xservice;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
@@ -28,14 +36,10 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.IStreamEncoder;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.log4j.Logger;
-
 
 /**
  * The Class MapDrawAction.
+ * 
  */
 public class DrawMapAction extends AbstractGeoEngineAction {
 	
@@ -62,14 +66,21 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 		File maptmpfile = null;
 		boolean inlineResponse;
 		String responseFileName;
+		Monitor totalTimeMonitor = null;
+		Monitor totalTimePerFormatMonitor = null;
+		Monitor errorHitsMonitor = null;
 	
 		logger.debug("IN");
-			
+		
 		try {		
 			super.service(serviceRequest, serviceResponse);
 			
+			totalTimeMonitor = MonitorFactory.start("GeoEngine.drawMapAction.totalTime");
+			
+			
 			outputFormat = getAttributeAsString( OUTPUT_FORMAT );		
 			logger.debug("Parameter [" + OUTPUT_FORMAT + "] is equal to [" + outputFormat + "]");
+			
 			
 			inlineResponse = getAttributeAsBoolean( INLINE_RESPONSE, true );		
 			logger.debug("Parameter [" + INLINE_RESPONSE + "] is equal to [" + inlineResponse + "]");
@@ -86,7 +97,11 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 				logger.info("Parameter [" + GeoEngineConstants.ENV_OUTPUT_TYPE + "] not specified into environment");
 				outputFormat = DEFAULT_OUTPUT_TYPE;
 			}
+			
+			totalTimePerFormatMonitor = MonitorFactory.start("GeoEngine.drawMapAction." + outputFormat + "totalTime");
+			
 						
+			
 			maptmpfile = getGeoEngineInstance().renderMap( outputFormat );
 			responseFileName = "map.svg";
 			
@@ -109,9 +124,13 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			maptmpfile.delete();	
 			
 		} catch (Throwable t) {
+			errorHitsMonitor = MonitorFactory.start("GeoEngine.errorHits");
+			errorHitsMonitor.stop();
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
-			// no resources need to be released
+			if(totalTimePerFormatMonitor != null) totalTimePerFormatMonitor.stop();
+			if(totalTimeMonitor != null) totalTimeMonitor.stop();
+		
 		}	
 		
 		logger.debug("OUT");

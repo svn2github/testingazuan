@@ -103,7 +103,7 @@
         <servlet-class>it.eng.spagobi.utilities.callbacks.drill.SpagoBIDrillServlet</servlet-class>
     </servlet>
 
-	 
+   	
     <!--  ============================================================================ -->
 	<!--  SERVLET MAPPINGS						 									   -->
 	<!--  ============================================================================ -->
@@ -116,6 +116,10 @@
         <servlet-name>SpagoBIDrillServlet</servlet-name>
         <url-pattern>/SpagoBIDrillServlet</url-pattern>
     </servlet-mapping>
+    
+    
+    
+    
     
     
     

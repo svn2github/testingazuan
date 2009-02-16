@@ -27,14 +27,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.commons.utilities;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFErrorCategory;
-import it.eng.spago.error.EMFErrorHandler;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.security.IEngUserProfile;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +46,14 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFErrorCategory;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
+
 /**
  * Contains some SpagoBI's general utilities.
  */
@@ -72,6 +72,18 @@ public class SpagoBIUtilities {
     public static void main(String[] args) {
     }
 
+    public static boolean isNull(String str) {
+		return str == null;
+	}
+	
+	public static boolean isEmpty(String str) {
+		return isNull( str ) || "".equals( str.trim() );
+	}
+		
+	public static boolean containsOnlySpaces(String str) {
+		return !isNull( str ) && isEmpty( str );
+	}
+    
     /**
      * Gets the spago adapter http url.
      * 

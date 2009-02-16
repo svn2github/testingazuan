@@ -2,7 +2,7 @@
 <ACTIONS>
 
 	<ACTION name="SERVICE_EXCEPTION_ACTION" 
-			class="it.eng.spagobi.engines.geo.xservice.ServiceExceptionAction" 
+			class="it.eng.spagobi.engines.geo.service.ServiceExceptionAction" 
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>    

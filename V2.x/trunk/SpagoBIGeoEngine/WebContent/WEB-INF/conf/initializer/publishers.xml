@@ -12,7 +12,7 @@
 	<PUBLISHER name="AJAX_UI_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
-				<ITEM prog="0" resource="/jsp/geoUIajax.jsp" />
+				<ITEM prog="0" resource="/WEB-INF/jsp/geoUIajax.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
@@ -20,7 +20,7 @@
 	<PUBLISHER name="SIMPLE_UI_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
-				<ITEM prog="0" resource="/jsp/geoUIsimple.jsp" />
+				<ITEM prog="0" resource="/WEB-INF/jsp/geoUIsimple.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>

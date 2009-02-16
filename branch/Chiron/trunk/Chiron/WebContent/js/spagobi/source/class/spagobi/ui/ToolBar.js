@@ -31,6 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /*
 #asset(qx/icon/Oxygen/16/actions/help-about.png)
+#asset(qx/icon/Oxygen/16/actions/system-shutdown.png)
 */
 
 qx.Class.define("spagobi.ui.ToolBar", {
@@ -137,18 +138,42 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	    //this.add(new qx.legacy.ui.toolbar.MenuButton(null, lang_menu, "spagobi/img/spagobi/test/locale.png"));
 		this.add(new qx.ui.toolbar.MenuButton(null, qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/locale.png"), lang_menu));
 		
-		
-		
+				
 		this.addButton({
 	  		command: 'F1',
 	  		handler: this.showAbout,
 	  		context: this,
-	  		"label": this.tr('Help'),
+	  		//"label": this.tr('Help'),
 	  		icon: "qx/icon/Oxygen/16/actions/help-about.png",
 	  		tooltip: 'Help'
 	  	});
 	  	
+	  	this.addSeparator();
 	  	
+	  	var welcomeMsg = "Welcome:";
+	  	var userid = spagobi.app.data.DataService.userName();
+		var userWelcomeLabel = spagobi.commons.WidgetUtils.createLabel({
+																		content: userid,
+																		width: 50
+		});
+		userWelcomeLabel.setLayout(new qx.ui.layout.HBox);
+		userWelcomeLabel.getLayout().setAlignY("middle");
+		this.add(userWelcomeLabel);
+	  	
+	  	var logoutButton = new qx.ui.toolbar.Button(this.tr('Logout'), "qx/icon/Oxygen/16/actions/system-shutdown.png");
+	  	logoutButton.addListener("execute",this.logoutButton,this);
+	  	logoutButton.setToolTip(new qx.ui.tooltip.ToolTip("Logout"));
+	  	this.add(logoutButton);
+	  	/*
+	  	this.addButton({
+	  		command: 'F1',
+	  		handler: this.logoutButton,
+	  		context: this,
+	  		"label": this.tr('Logout'),
+	  		icon: "qx/icon/Oxygen/16/actions/system-shutdown.png",
+	  		tooltip: 'Logout'
+	  	});
+	  	*/
 	},
   
 	members: {
@@ -160,6 +185,11 @@ qx.Class.define("spagobi.ui.ToolBar", {
 	 */	
 		showAbout: function(e) {
 			alert('Help');
+		
+		},
+		
+		logoutButton: function(e) {
+			alert('Logout');
 		
 		},
 					

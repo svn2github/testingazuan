@@ -1292,6 +1292,11 @@ qx.Class.define("spagobi.app.data.DataService", {
 				}// end of treeData
 		return treeData;
 				//];
+  	},
+  	
+  	userName : function(){
+  		var userid = "biadmin";
+  		return userid;
   	}
   	
   }

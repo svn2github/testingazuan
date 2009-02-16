@@ -50,7 +50,7 @@ qx.Class.define("spagobi.app.ui.Header",
 	 html += '<h1>SpagoBI 2.0.0</h1>'
 	 html += '</center>';
 	 var embed = new qx.ui.embed.Html(html);
-	 this.add( embed );
+	 this.add( embed,{flex:1} );
 	 
 	 
   }

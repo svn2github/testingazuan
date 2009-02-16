@@ -15,7 +15,7 @@
   <service name="WSSessionService" provider="java:RPC" style="rpc" use="encoded">
       <parameter name="wsdlTargetNamespace" value="urn:spagobiwssession"/>
       <parameter name="wsdlServiceElement" value="SessionServiceService"/>
-      <parameter name="schemaUnqualified" value="http://exceptions.session.services.spagobi.eng.it"/>
+      <parameter name="schemaUnqualified" value="http://bo.check.behaviouralmodel.services.spagobi.eng.it,http://bo.document.analyticalmodel.services.spagobi.eng.it,http://xml.apache.org/xml-soap,http://bo.analyticaldriver.behaviouralmodel.services.spagobi.eng.it,urn:spagobiwssession,http://exceptions.analyticalmodel.services.spagobi.eng.it,http://exceptions.session.services.spagobi.eng.it"/>
       <parameter name="wsdlServicePort" value="WSSessionService"/>
       <parameter name="className" value="it.eng.spagobi.services.session.stub.WSSessionServiceSoapBindingSkeleton"/>
       <parameter name="wsdlPortType" value="SessionService"/>
@@ -24,11 +24,71 @@
       <parameter name="scope" value="Session"/>
 
       <typeMapping
+        xmlns:ns="http://bo.check.behaviouralmodel.services.spagobi.eng.it"
+        qname="ns:Check"
+        type="java:it.eng.spagobi.services.behaviouralmodel.check.bo.Check"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="urn:spagobiwssession"
+        qname="ns:ArrayOf_tns5_DocumentParameter"
+        type="java:it.eng.spagobi.services.behaviouralmodel.analyticaldriver.bo.DocumentParameter[]"
+        innerType="cmp-ns:DocumentParameter" xmlns:cmp-ns="http://bo.analyticaldriver.behaviouralmodel.services.spagobi.eng.it"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="urn:spagobiwssession"
+        qname="ns:ArrayOf_soapenc_string"
+        type="java:java.lang.String[]"
+        innerType="cmp-ns:string" xmlns:cmp-ns="http://schemas.xmlsoap.org/soap/encoding/"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://exceptions.analyticalmodel.services.spagobi.eng.it"
+        qname="ns:NonExecutableDocumentException"
+        type="java:it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://bo.document.analyticalmodel.services.spagobi.eng.it"
+        qname="ns:Document"
+        type="java:it.eng.spagobi.services.analyticalmodel.document.bo.Document"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://bo.analyticaldriver.behaviouralmodel.services.spagobi.eng.it"
+        qname="ns:DocumentParameter"
+        type="java:it.eng.spagobi.services.behaviouralmodel.analyticaldriver.bo.DocumentParameter"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="urn:spagobiwssession"
+        qname="ns:ArrayOf_tns6_Check"
+        type="java:it.eng.spagobi.services.behaviouralmodel.check.bo.Check[]"
+        innerType="cmp-ns:Check" xmlns:cmp-ns="http://bo.check.behaviouralmodel.services.spagobi.eng.it"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
         xmlns:ns="http://exceptions.session.services.spagobi.eng.it"
         qname="ns:AuthenticationException"
         type="java:it.eng.spagobi.services.session.exceptions.AuthenticationException"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="urn:spagobiwssession"
+        qname="ns:ArrayOf_tns3_Document"
+        type="java:it.eng.spagobi.services.analyticalmodel.document.bo.Document[]"
+        innerType="cmp-ns:Document" xmlns:cmp-ns="http://bo.document.analyticalmodel.services.spagobi.eng.it"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
   </service>

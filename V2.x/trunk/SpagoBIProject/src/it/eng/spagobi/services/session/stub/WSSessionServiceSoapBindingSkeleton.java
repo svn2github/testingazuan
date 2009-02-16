@@ -68,6 +68,17 @@ public class WSSessionServiceSoapBindingSkeleton implements it.eng.spagobi.servi
         _oper.addFault(_fault);
         _params = new org.apache.axis.description.ParameterDesc [] {
         };
+        _oper = new org.apache.axis.description.OperationDesc("isValidSession", _params, new javax.xml.namespace.QName("", "isValidSessionReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobiwssession", "isValidSession"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("isValidSession") == null) {
+            _myOperations.put("isValidSession", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("isValidSession")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+        };
         _oper = new org.apache.axis.description.OperationDesc("closeSession", _params, null);
         _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobiwssession", "closeSession"));
         _oper.setSoapAction("");
@@ -76,6 +87,76 @@ public class WSSessionServiceSoapBindingSkeleton implements it.eng.spagobi.servi
             _myOperations.put("closeSession", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("closeSession")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getDocuments", _params, new javax.xml.namespace.QName("", "getDocumentsReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_Document"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobiwssession", "getDocuments"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getDocuments") == null) {
+            _myOperations.put("getDocuments", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getDocuments")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getCorrectRolesForExecution", _params, new javax.xml.namespace.QName("", "getCorrectRolesForExecutionReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_soapenc_string"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobiwssession", "getCorrectRolesForExecution"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getCorrectRolesForExecution") == null) {
+            _myOperations.put("getCorrectRolesForExecution", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getCorrectRolesForExecution")).add(_oper);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("NonExecutableDocumentException");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobiwssession", "fault"));
+        _fault.setClassName("it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException"));
+        _oper.addFault(_fault);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getDocumentParameters", _params, new javax.xml.namespace.QName("", "getDocumentParametersReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns5_DocumentParameter"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobiwssession", "getDocumentParameters"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getDocumentParameters") == null) {
+            _myOperations.put("getDocumentParameters", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getDocumentParameters")).add(_oper);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("NonExecutableDocumentException");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobiwssession", "fault"));
+        _fault.setClassName("it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException"));
+        _oper.addFault(_fault);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getAdmissibleValues", _params, new javax.xml.namespace.QName("", "getAdmissibleValuesReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "Map"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobiwssession", "getAdmissibleValues"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getAdmissibleValues") == null) {
+            _myOperations.put("getAdmissibleValues", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getAdmissibleValues")).add(_oper);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("NonExecutableDocumentException");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobiwssession", "fault"));
+        _fault.setClassName("it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException"));
+        _oper.addFault(_fault);
     }
 
     public WSSessionServiceSoapBindingSkeleton() {
@@ -95,9 +176,39 @@ public class WSSessionServiceSoapBindingSkeleton implements it.eng.spagobi.servi
         impl.openSessionWithToken(in0, in1);
     }
 
+    public boolean isValidSession() throws java.rmi.RemoteException
+    {
+        boolean ret = impl.isValidSession();
+        return ret;
+    }
+
     public void closeSession() throws java.rmi.RemoteException
     {
         impl.closeSession();
+    }
+
+    public it.eng.spagobi.services.analyticalmodel.document.bo.Document[] getDocuments(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    {
+        it.eng.spagobi.services.analyticalmodel.document.bo.Document[] ret = impl.getDocuments(in0, in1, in2);
+        return ret;
+    }
+
+    public java.lang.String[] getCorrectRolesForExecution(java.lang.Integer in0) throws java.rmi.RemoteException, it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException
+    {
+        java.lang.String[] ret = impl.getCorrectRolesForExecution(in0);
+        return ret;
+    }
+
+    public it.eng.spagobi.services.behaviouralmodel.analyticaldriver.bo.DocumentParameter[] getDocumentParameters(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException
+    {
+        it.eng.spagobi.services.behaviouralmodel.analyticaldriver.bo.DocumentParameter[] ret = impl.getDocumentParameters(in0, in1);
+        return ret;
+    }
+
+    public java.util.HashMap getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException
+    {
+        java.util.HashMap ret = impl.getAdmissibleValues(in0, in1);
+        return ret;
     }
 
 }

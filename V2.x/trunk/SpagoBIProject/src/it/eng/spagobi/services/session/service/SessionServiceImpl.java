@@ -22,9 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.services.session.service;
 
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.UserUtilities;
-import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.services.session.exceptions.AuthenticationException;
@@ -65,6 +63,15 @@ public class SessionServiceImpl {
 		logger.debug("IN");
         logger.debug("OUT");
 	}
+	
+    public boolean isValidSession() {
+        logger.debug("IN");
+        boolean toReturn = false;
+        IEngUserProfile profile = getUserProfile();
+        toReturn = profile != null;
+        logger.debug((new StringBuilder("OUT: isValidSession = ")).append(toReturn).toString());
+        return toReturn;
+    }
 	
 	public void closeSession() {
 		logger.debug("IN");

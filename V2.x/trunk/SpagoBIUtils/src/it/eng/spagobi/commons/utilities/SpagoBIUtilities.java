@@ -71,18 +71,6 @@ public class SpagoBIUtilities {
      */
     public static void main(String[] args) {
     }
-
-    public static boolean isNull(String str) {
-		return str == null;
-	}
-	
-	public static boolean isEmpty(String str) {
-		return isNull( str ) || "".equals( str.trim() );
-	}
-		
-	public static boolean containsOnlySpaces(String str) {
-		return !isNull( str ) && isEmpty( str );
-	}
     
     /**
      * Gets the spago adapter http url.

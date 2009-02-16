@@ -11,6 +11,7 @@
 			<USER userID="biuser" password="biuser" month="04" name="SpagoUser" email="bernabei@eng.it"/>
 			<USER userID="bidev" password="bidev" />
 			<USER userID="moni" password="moni" month="04" name="Monitoraggio" email="bernabei@eng.it"/>
+			<USER userID="chiron" password="chiron" />
 		</USERS>
 		<ROLES>
 			<ROLE roleName="/spagobi/dev" description="/spagobi/dev" />
@@ -28,6 +29,7 @@
 			<BEHAVIOUR userID="biadmin" roleName="/spagobi/admin" />
 			<BEHAVIOUR userID="bidev" roleName="/spagobi/dev" />
 			<BEHAVIOUR userID="moni" roleName="/spagobi/moni" />
+			<BEHAVIOUR userID="chiron" roleName="/spagobi/admin" />
 		</BEHAVIOURS>
 	</RELATIONS>
 </AUTHORIZATIONS>

@@ -117,6 +117,8 @@ public class LoginModule extends AbstractHttpModule {
 			throw new SecurityException("User identifier not found.");
 		}
 		
+		
+		
 		profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		//if (profile==null || !userId.equals(profile.getUserUniqueIdentifier().toString())){
 		if (profile==null || !userId.equals(((UserProfile)profile).getUserId().toString())){
@@ -175,7 +177,12 @@ public class LoginModule extends AbstractHttpModule {
 		}
 		getMenuItems(request, response);
 		// fill response attributes
-		response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
+		if(userId.equals("chiron")) {
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "chiron");
+		} else {
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
+		}
+		
 		logger.debug("OUT");		
 	}
 	

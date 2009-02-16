@@ -187,25 +187,25 @@ public class WSSessionServiceSoapBindingSkeleton implements it.eng.spagobi.servi
         impl.closeSession();
     }
 
-    public it.eng.spagobi.services.analyticalmodel.document.bo.Document[] getDocuments(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
+    public it.eng.spagobi.services.session.bo.Document[] getDocuments(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException
     {
-        it.eng.spagobi.services.analyticalmodel.document.bo.Document[] ret = impl.getDocuments(in0, in1, in2);
+        it.eng.spagobi.services.session.bo.Document[] ret = impl.getDocuments(in0, in1, in2);
         return ret;
     }
 
-    public java.lang.String[] getCorrectRolesForExecution(java.lang.Integer in0) throws java.rmi.RemoteException, it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException
+    public java.lang.String[] getCorrectRolesForExecution(java.lang.Integer in0) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException
     {
         java.lang.String[] ret = impl.getCorrectRolesForExecution(in0);
         return ret;
     }
 
-    public it.eng.spagobi.services.behaviouralmodel.analyticaldriver.bo.DocumentParameter[] getDocumentParameters(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException
+    public it.eng.spagobi.services.session.bo.DocumentParameter[] getDocumentParameters(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException
     {
-        it.eng.spagobi.services.behaviouralmodel.analyticaldriver.bo.DocumentParameter[] ret = impl.getDocumentParameters(in0, in1);
+    	it.eng.spagobi.services.session.bo.DocumentParameter[] ret = impl.getDocumentParameters(in0, in1);
         return ret;
     }
 
-    public java.util.HashMap getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException
+    public java.util.HashMap getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException
     {
         java.util.HashMap ret = impl.getAdmissibleValues(in0, in1);
         return ret;

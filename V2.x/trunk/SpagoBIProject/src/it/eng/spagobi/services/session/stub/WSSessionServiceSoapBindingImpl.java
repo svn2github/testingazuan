@@ -7,7 +7,6 @@
 
 package it.eng.spagobi.services.session.stub;
 
-import it.eng.spagobi.services.analyticalmodel.service.DocumentServiceImpl;
 import it.eng.spagobi.services.session.service.SessionServiceImpl;
 
 public class WSSessionServiceSoapBindingImpl implements it.eng.spagobi.services.session.stub.SessionService{
@@ -31,24 +30,24 @@ public class WSSessionServiceSoapBindingImpl implements it.eng.spagobi.services.
     	ssImpl.closeSession();
     }
 
-    public it.eng.spagobi.services.analyticalmodel.document.bo.Document[] getDocuments(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
-        DocumentServiceImpl dsImpl = new DocumentServiceImpl();
-        return dsImpl.getDocuments(in0, in1, in2);
+    public it.eng.spagobi.services.session.bo.Document[] getDocuments(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
+    	SessionServiceImpl ssImpl = new SessionServiceImpl();
+        return ssImpl.getDocuments(in0, in1, in2);
     }
 
-    public java.lang.String[] getCorrectRolesForExecution(java.lang.Integer in0) throws java.rmi.RemoteException, it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException {
-        DocumentServiceImpl dsImpl = new DocumentServiceImpl();
-        return dsImpl.getCorrectRolesForExecution(in0);
+    public java.lang.String[] getCorrectRolesForExecution(java.lang.Integer in0) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException {
+    	SessionServiceImpl ssImpl = new SessionServiceImpl();
+        return ssImpl.getCorrectRolesForExecution(in0);
     }
 
-    public it.eng.spagobi.services.behaviouralmodel.analyticaldriver.bo.DocumentParameter[] getDocumentParameters(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException {
-        DocumentServiceImpl dsImpl = new DocumentServiceImpl();
-        return dsImpl.getDocumentParameters(in0, in1);
+    public it.eng.spagobi.services.session.bo.DocumentParameter[] getDocumentParameters(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException {
+    	SessionServiceImpl ssImpl = new SessionServiceImpl();
+        return ssImpl.getDocumentParameters(in0, in1);
     }
 
-    public java.util.HashMap getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException {
-        DocumentServiceImpl dsImpl = new DocumentServiceImpl();
-        return dsImpl.getAdmissibleValues(in0, in1);
+    public java.util.HashMap getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException {
+    	SessionServiceImpl ssImpl = new SessionServiceImpl();
+        return ssImpl.getAdmissibleValues(in0, in1);
     }
 
 }

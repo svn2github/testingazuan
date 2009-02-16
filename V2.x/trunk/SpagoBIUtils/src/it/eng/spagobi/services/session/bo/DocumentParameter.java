@@ -5,7 +5,7 @@
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package it.eng.spagobi.services.behaviouralmodel.analyticaldriver.bo;
+package it.eng.spagobi.services.session.bo;
 
 public class DocumentParameter  implements java.io.Serializable {
     private java.lang.Integer id;
@@ -14,7 +14,7 @@ public class DocumentParameter  implements java.io.Serializable {
 
     private java.lang.String urlName;
 
-    private it.eng.spagobi.services.behaviouralmodel.check.bo.Check[] checks;
+    private it.eng.spagobi.services.session.bo.Check[] checks;
 
     public DocumentParameter() {
     }
@@ -23,7 +23,7 @@ public class DocumentParameter  implements java.io.Serializable {
            java.lang.Integer id,
            java.lang.String label,
            java.lang.String urlName,
-           it.eng.spagobi.services.behaviouralmodel.check.bo.Check[] checks) {
+           it.eng.spagobi.services.session.bo.Check[] checks) {
            this.id = id;
            this.label = label;
            this.urlName = urlName;
@@ -96,7 +96,7 @@ public class DocumentParameter  implements java.io.Serializable {
      * 
      * @return checks
      */
-    public it.eng.spagobi.services.behaviouralmodel.check.bo.Check[] getChecks() {
+    public it.eng.spagobi.services.session.bo.Check[] getChecks() {
         return checks;
     }
 
@@ -106,7 +106,7 @@ public class DocumentParameter  implements java.io.Serializable {
      * 
      * @param checks
      */
-    public void setChecks(it.eng.spagobi.services.behaviouralmodel.check.bo.Check[] checks) {
+    public void setChecks(it.eng.spagobi.services.session.bo.Check[] checks) {
         this.checks = checks;
     }
 

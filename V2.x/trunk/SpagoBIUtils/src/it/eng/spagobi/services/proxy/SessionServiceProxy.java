@@ -24,9 +24,9 @@ package it.eng.spagobi.services.proxy;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 
-import it.eng.spagobi.services.analyticalmodel.document.bo.Document;
-import it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException;
-import it.eng.spagobi.services.behaviouralmodel.analyticaldriver.bo.DocumentParameter;
+import it.eng.spagobi.services.session.bo.Document;
+import it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException;
+import it.eng.spagobi.services.session.bo.DocumentParameter;
 import it.eng.spagobi.services.session.stub.WSSessionServiceSoapBindingStub;
 
 public class SessionServiceProxy implements

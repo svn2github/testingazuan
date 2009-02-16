@@ -21,8 +21,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.session.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.UserUtilities;
+import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.services.session.bo.Document;
+import it.eng.spagobi.services.session.bo.DocumentParameter;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.services.session.exceptions.AuthenticationException;
@@ -90,5 +102,92 @@ public class SessionServiceImpl {
         logger.debug("OUT");
         return profile;
 	}
+	
+    public Document[] getDocuments(String type, String state, String folderPath) {
+        Document documents[];
+        logger.debug("IN");
+        documents = (Document[])null;
+        try {
+            IEngUserProfile profile = SessionServiceImpl.getUserProfile();
+            List list = DAOFactory.getBIObjectDAO().loadAllBIObjects();
+            List toReturn = new ArrayList();
+            if(list != null) {
+                for(Iterator it = list.iterator(); it.hasNext();) {
+                    BIObject obj = (BIObject)it.next();
+                    if(ObjectsAccessVerifier.canSee(obj, profile))
+                    {
+                        Document aDoc = new Document();
+                        aDoc.setId(obj.getId());
+                        aDoc.setLabel(obj.getLabel());
+                        aDoc.setName(obj.getName());
+                        aDoc.setDescription(obj.getDescription());
+                        aDoc.setType(obj.getBiObjectTypeCode());
+                        Engine engine = obj.getEngine();
+                        aDoc.setEngineId(engine.getId());
+                        aDoc.setEngineLabel(engine.getLabel());
+                        aDoc.setEngineName(engine.getName());
+                        toReturn.add(aDoc);
+                    }
+                }
+
+            }
+            documents = new Document[toReturn.size()];
+            documents = (Document[])toReturn.toArray(documents);
+        } catch(Exception e) {
+            logger.error(e);
+        }
+        logger.debug("OUT");
+        return documents;
+    }
+
+    public String[] getCorrectRolesForExecution(Integer documentId) {
+        String toReturn[];
+        logger.debug("IN");
+        toReturn = (String[])null;
+        try {
+            it.eng.spago.security.IEngUserProfile profile = SessionServiceImpl.getUserProfile();
+            List correctRoles = ObjectsAccessVerifier.getCorrectRolesForExecution(documentId, profile);
+            if (correctRoles != null)
+            {
+                toReturn = (String[])correctRoles.toArray();
+            }
+        } catch(Exception e) {
+            logger.error(e);
+        }
+        logger.debug("OUT");
+        return toReturn;
+    }
+
+    public it.eng.spagobi.services.session.bo.DocumentParameter[] getDocumentParameters(Integer documentId, String roleName) {
+        it.eng.spagobi.services.session.bo.DocumentParameter parameters[];
+        logger.debug("IN");
+        parameters = (DocumentParameter[])null;
+        try {
+            List parametersList = DAOFactory.getBIObjectParameterDAO().loadBIObjectParametersById(documentId);
+            List toReturn = new ArrayList();
+            if(parametersList != null)
+            {
+                DocumentParameter aDocParameter;
+                for(Iterator it = parametersList.iterator(); it.hasNext(); toReturn.add(aDocParameter))
+                {
+                    BIObjectParameter parameter = (BIObjectParameter)it.next();
+                    aDocParameter = new DocumentParameter();
+                    aDocParameter.setId(parameter.getId());
+                    aDocParameter.setLabel(parameter.getLabel());
+                    aDocParameter.setUrlName(parameter.getParameterUrlName());
+                }
+
+            }
+            parameters = (DocumentParameter[])toReturn.toArray();
+        } catch(Exception e) {
+            logger.error(e);
+        }
+        logger.debug("OUT");
+        return parameters;
+    }
+
+    public HashMap getAdmissibleValues(Integer documentParameterId, String roleName) {
+        return null;
+    }
 	
 }

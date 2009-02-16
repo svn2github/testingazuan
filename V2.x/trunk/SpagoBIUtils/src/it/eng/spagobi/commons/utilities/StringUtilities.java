@@ -21,11 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.utilities;
 
-import it.eng.spago.security.IEngUserProfile;
-
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import it.eng.spago.security.IEngUserProfile;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -35,7 +35,8 @@ public class StringUtilities {
 	 
 	private static transient Logger logger = Logger.getLogger(StringUtilities.class);
 	    
-	 
+
+	
 	/**
      * Substitutes the profile attributes with sintax "${attribute_name}" with
      * the correspondent value in the string passed at input.

@@ -60,8 +60,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
     ConfigSingleton configure = ConfigSingleton.getInstance();
 	SourceBean moduleBean = (SourceBean) configure
-			.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
-					"DetailModelInstanceTreeModule");
+	.getFilteredSourceBeanAttribute("MODULES.MODULE", "NAME",
+			"DetailModelInstanceTreeModule");
 	
 	if (moduleBean.getAttribute("CONFIG.TITLE") != null)
 		title = (String) moduleBean.getAttribute("CONFIG.TITLE");
@@ -70,14 +70,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	// DETAIL_SELECT
 	if (messageIn != null
-			&& messageIn
-					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+	&& messageIn
+			.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
 		messageSave = DelegatedDetailService.DETAIL_UPDATE;
 	}
 	// DETAIL_UPDATE
 	if (messageIn != null
-			&& messageIn
-					.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)) {
+	&& messageIn
+			.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)) {
 		SourceBean moduleResponse = (SourceBean) aServiceResponse
 		.getAttribute("DetailModelInstanceTreeModule");
 		messageIn = (String) moduleResponse.getAttribute("MESSAGE");
@@ -85,67 +85,67 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	//DETAIL_NEW
 	if (messageIn != null
-			&& messageIn
-					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
+	&& messageIn
+			.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
 		messageSave = DelegatedDetailService.DETAIL_INSERT;
 	}
 	//DETAIL_INSERT
 	if (messageIn != null
-			&& messageIn
-					.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
+	&& messageIn
+			.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
 		SourceBean moduleResponse = (SourceBean) aServiceResponse
-				.getAttribute("DetailModelInstanceTreeModule");
+		.getAttribute("DetailModelInstanceTreeModule");
 		ModelInstance modelInst = (ModelInstance) moduleResponse.getAttribute("MODELINSTANCE");
 		
 		if (modelInst != null){
-			modelId = modelInst.getId().toString();
-			messageIn = (String) moduleResponse.getAttribute("MESSAGE");
-			if (messageIn == null) {
-				messageIn = DelegatedDetailService.DETAIL_NEW;
-			    messageSave = DelegatedDetailService.DETAIL_INSERT;
-			} else {
-				messageSave = DelegatedDetailService.DETAIL_UPDATE;
-			}
-			} else {
-				messageIn = DelegatedDetailService.DETAIL_SELECT;
-				messageSave = DelegatedDetailService.DETAIL_INSERT;
-			}
+	modelId = modelInst.getId().toString();
+	messageIn = (String) moduleResponse.getAttribute("MESSAGE");
+	if (messageIn == null) {
+		messageIn = DelegatedDetailService.DETAIL_NEW;
+	    messageSave = DelegatedDetailService.DETAIL_INSERT;
+	} else {
+		messageSave = DelegatedDetailService.DETAIL_UPDATE;
+	}
+	} else {
+		messageIn = DelegatedDetailService.DETAIL_SELECT;
+		messageSave = DelegatedDetailService.DETAIL_INSERT;
+	}
 	}
 	
 	
 	
 	if (messageIn != null
-			&& messageIn
-					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+	&& messageIn
+			.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
 		SourceBean moduleResponse = (SourceBean) aServiceResponse
-				.getAttribute("DetailModelInstanceTreeModule");
+		.getAttribute("DetailModelInstanceTreeModule");
 		ModelInstance modelInstance = (ModelInstance) moduleResponse.getAttribute("MODELINSTANCE");
 		if (modelInstance != null) {
-			modelInstanceName = modelInstance.getName();
-			modelInstanceDescription = modelInstance.getDescription();
-			modelInstanceLabel = modelInstance.getLabel();
-			Model aModel = modelInstance.getModel();
-			
-			if (aModel != null){
-				modelName = aModel.getName();
-				modelDescription = aModel.getDescription();
-				modelCode = aModel.getCode();
-				typeName = aModel.getTypeName();
-				typeDescription = aModel.getTypeDescription();
-				attributeList = aModel.getModelAttributes();
-			}
-			KpiInstance aKpiInstance = modelInstance.getKpiInstance();
-			
-			if (aKpiInstance != null){
-				kpiId = aKpiInstance.getKpi();
-				thresholdId = aKpiInstance.getThresholdId();
-				chartTypeId = aKpiInstance.getChartTypeId();
-				periodicityId = aKpiInstance.getPeriodicityId();
-				Double aWeight = aKpiInstance.getWeight();
-				if (aWeight != null)
-					weight = aWeight.toString(); 
-			}
-			
+	modelInstanceName = modelInstance.getName();
+	modelInstanceDescription = modelInstance.getDescription();
+	modelInstanceLabel = modelInstance.getLabel();
+	Model aModel = modelInstance.getModel();
+	
+	if (aModel != null){
+		modelName = aModel.getName();
+		modelDescription = aModel.getDescription();
+		modelCode = aModel.getCode();
+		typeName = aModel.getTypeName();
+		typeDescription = aModel.getTypeDescription();
+		attributeList = aModel.getModelAttributes();
+	}
+	KpiInstance aKpiInstance = modelInstance.getKpiInstance();
+	
+	if (aKpiInstance != null){
+		kpiId = aKpiInstance.getKpi();
+		thresholdId = aKpiInstance.getThresholdId();
+		chartTypeId = aKpiInstance.getChartTypeId();
+		periodicityId = aKpiInstance.getPeriodicityId();
+		Double aWeight = aKpiInstance.getWeight();
+		if (aWeight != null)
+			weight = aWeight.toString(); 
+	}
+	
 		}
 	}
 

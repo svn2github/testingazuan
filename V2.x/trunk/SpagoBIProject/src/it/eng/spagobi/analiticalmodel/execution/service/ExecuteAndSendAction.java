@@ -36,6 +36,7 @@ import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
@@ -191,6 +192,9 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 			logger.debug("got userId from Request=" + userId);
 		    }
 */
+			
+			profile=UserUtilities.getUserProfile(req);
+			/*
 			SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
 			userId = userProxy.readUserIdentifier(req);
 			
@@ -202,6 +206,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 			logger.error("Exception while creating user profile");
 			throw new SecurityException("Exception while creating user profile", e);
 		    }
+		    */
 
 		}
 

@@ -56,6 +56,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.SpagoBISessionContainer;
 import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 import it.eng.spagobi.engines.InternalEngineIFace;
@@ -99,7 +100,7 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 	EMFErrorHandler errorHandler = null;
 	RequestContainer requestContainer = null;
 	SessionContainer permanentSession = null;
-	ContextManager contextManager = null;
+	CoreContextManager contextManager = null;
 
 	public static final String MODULE_PAGE = "ExecuteBIObjectPage";
 	public static final String MESSAGE_EXECUTION = "MESSAGEEXEC";
@@ -135,7 +136,7 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		errorHandler = getErrorHandler();
 		requestContainer = this.getRequestContainer();
 		SessionContainer session = requestContainer.getSessionContainer();
-		contextManager = new ContextManager(new SpagoBISessionContainer(session), 
+		contextManager = new CoreContextManager(new SpagoBISessionContainer(session), 
 				new LightNavigatorContextRetrieverStrategy(request));
 
 		permanentSession = session.getPermanentContainer();

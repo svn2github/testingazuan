@@ -41,7 +41,7 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="java.util.Enumeration"%>
-<%@page import="it.eng.spagobi.container.ContextManager"%>
+<%@page import="it.eng.spagobi.container.CoreContextManager"%>
 <%@page import="it.eng.spagobi.container.SpagoBISessionContainer"%>
 <%@page import="it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy"%>
 <%@page import="java.util.Iterator"%>
@@ -126,7 +126,7 @@ String getUrl(String baseUrl, Map mapPars) {
 	
 	
 	//get session access control object
-	ContextManager contextManager = new ContextManager(new SpagoBISessionContainer(aSessionContainer), 
+	CoreContextManager contextManager = new CoreContextManager(new SpagoBISessionContainer(aSessionContainer), 
 				new LightNavigatorContextRetrieverStrategy(aServiceRequest));
 	
 	// urls for resources

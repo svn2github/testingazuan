@@ -35,6 +35,7 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.SpagoBISessionContainer;
 import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
@@ -80,7 +81,7 @@ public class DocumentCompositionUtils {
 				+ ObjectsTreeConstants.OBJECT_LABEL + "=" + objLabel + "&" 
 				+ ObjectsTreeConstants.MODALITY + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION;
 	    // get the execution role
-	    ContextManager contextManager = new ContextManager(new SpagoBISessionContainer(sessionContainer), 
+	    CoreContextManager contextManager = new CoreContextManager(new SpagoBISessionContainer(sessionContainer), 
 				new LightNavigatorContextRetrieverStrategy(requestSB));
 	    ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 		String executionRole = instance.getExecutionRole();

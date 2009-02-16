@@ -23,6 +23,7 @@ package it.eng.spagobi.services.session.service;
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
@@ -45,8 +46,13 @@ public class SessionServiceImpl {
     		throw new AuthenticationException();
     	}
     	logger.debug("Authentication successful for username [" + userName + "]!");
-    	SpagoBIUserProfile user = supplier.createUserProfile(userName);
-    	IEngUserProfile profile = new UserProfile(user);
+    	//SpagoBIUserProfile user = supplier.createUserProfile(userName);
+    	IEngUserProfile profile=null;
+		try {
+			profile = UserUtilities.getUserProfile(userName);
+		} catch (Exception e) {
+			logger.error("Exception for username [" + userName + "]!",e);
+		}
     	logger.debug("User profile for username [" + userName + "] created.");
 		MessageContext mc = MessageContext.getCurrentContext();
         Session wsSession =  mc.getSession();

@@ -90,7 +90,7 @@ public class PortletLoginAction extends AbstractHttpAction {
 		Principal principal = portletRequest.getUserPrincipal();
 		userId = principal.getName();
 		logger.debug("got userId from Principal=" + userId);
-
+		/*
 		ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 		try {
 		    SpagoBIUserProfile user = supplier.createUserProfile(userId);
@@ -99,7 +99,8 @@ public class PortletLoginAction extends AbstractHttpAction {
 		    logger.error("Reading user information... ERROR");
 		    throw new SecurityException("Reading user information... ERROR", e);
 		}
-
+*/
+		profile=UserUtilities.getUserProfile(userId);
 		logger.debug("userProfile created.UserUniqueIDentifier= " + (String) profile.getUserUniqueIdentifier());
 		logger.debug("Attributes name of the user profile: " + profile.getUserAttributeNames());
 		logger.debug("Functionalities of the user profile: " + profile.getFunctionalities());

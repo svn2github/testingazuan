@@ -3,6 +3,9 @@
 	<name>SpagoBIProject</name>
 	<comment></comment>
 	<projects>
+		<project>SpagoBIXMLSecurityProvider</project>
+		<project>SpagoBIUtils</project>
+		<project>SpagoBILdapSecurityProvider</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

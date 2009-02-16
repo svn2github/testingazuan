@@ -43,6 +43,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.SpagoBISessionContainer;
 import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 
@@ -57,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
 public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 
 	private EMFErrorHandler errorHand = null;
-	ContextManager contextManager = null;
+	CoreContextManager contextManager = null;
 	
 	protected void getErroHandler() {
 		ResponseContainer respCont = getResponseContainer();
@@ -135,7 +136,7 @@ public abstract class AbstractListLookupModule extends AbstractBasicListModule {
 		ResponseContainer respCont = ChannelUtilities.getResponseContainer(httpRequest);
 		errorHand = respCont.getErrorHandler();
 		SessionContainer sessionCont = reqCont.getSessionContainer();
-		contextManager = new ContextManager(new SpagoBISessionContainer(sessionCont), 
+		contextManager = new CoreContextManager(new SpagoBISessionContainer(sessionCont), 
 				new LightNavigatorContextRetrieverStrategy(request));
 		// get biobject from the session
 		ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());

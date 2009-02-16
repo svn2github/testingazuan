@@ -34,6 +34,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.common.SsoServiceInterface;
@@ -99,7 +100,7 @@ public class GetLovResultAction extends AbstractHttpAction {
 		    userId = request.getParameter("userId");
 		    logger.debug("got userId from Request=" + userId);
 		}
-*/
+
 		SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
 		userId = userProxy.readUserIdentifier(request);
 			
@@ -111,8 +112,11 @@ public class GetLovResultAction extends AbstractHttpAction {
 		    logger.error("Exception while creating user profile");
 		    throw new SecurityException("Exception while creating user profile", e);
 		}
-
+*/
+	    	profile=UserUtilities.getUserProfile(request);
 	    }
+	    
+	    
 	    userId = (String) ((UserProfile)profile).getUserId();
 
 	    String documentId = request.getParameter("documentId");

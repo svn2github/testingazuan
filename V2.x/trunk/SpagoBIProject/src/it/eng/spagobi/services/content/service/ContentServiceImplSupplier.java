@@ -34,6 +34,7 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
@@ -205,7 +206,14 @@ public class ContentServiceImplSupplier {
 			}
 			logger.debug("Input document: id=[" + biobj.getId() + "], name=[" + biobj.getName() + "], label=[" + biobj.getLabel() + "]");
 		    // creates the user profile
-		    IEngUserProfile profile = null;
+			IEngUserProfile profile =null;
+			try{
+				profile = UserUtilities.getUserProfile(user);
+		    } catch (Exception e) {
+	    		logger.error("An error occurred while creating the profile of user [" + user + "]");
+	    		throw new SecurityException("An error occurred while creating the profile of user [" + user + "]", e);
+		    }		    
+		    /*
 		    ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 		    try {
 	      		SpagoBIUserProfile userProfile = supplier.createUserProfile(user);
@@ -214,7 +222,7 @@ public class ContentServiceImplSupplier {
 	    		logger.error("An error occurred while creating the profile of user [" + user + "]");
 	    		throw new SecurityException("An error occurred while creating the profile of user [" + user + "]", e);
 		    }
-		    
+		    */
 		    // Check if the user can execute the document
 		    boolean canSee = ObjectsAccessVerifier.canSee(biobj, profile);
 		    if (!canSee) {

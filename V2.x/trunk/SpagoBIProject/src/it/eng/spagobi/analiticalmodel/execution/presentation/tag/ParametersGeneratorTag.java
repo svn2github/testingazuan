@@ -59,6 +59,7 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.SpagoBISessionContainer;
 import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
 
@@ -94,7 +95,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	private RequestContainer requestContainer = null;
 	protected IUrlBuilder urlBuilder = null;
 	protected IMessageBuilder msgBuilder = null;
-	private ContextManager contextManager = null;
+	private CoreContextManager contextManager = null;
 	public static final int PIXEL_PER_CHAR = 9;
 	// identity string for object of the page
 	protected String requestIdentity;
@@ -138,7 +139,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		if (requestIdentity == null)
 			requestIdentity = "";
 		SessionContainer session = requestContainer.getSessionContainer();
-		contextManager = new ContextManager(new SpagoBISessionContainer(session), 
+		contextManager = new CoreContextManager(new SpagoBISessionContainer(session), 
 				new LightNavigatorContextRetrieverStrategy(request));
 
 		ExecutionInstance instance = null;

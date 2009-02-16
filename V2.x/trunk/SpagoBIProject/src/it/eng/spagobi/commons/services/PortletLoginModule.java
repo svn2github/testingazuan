@@ -71,7 +71,8 @@ public class PortletLoginModule extends AbstractModule {
 	        logger.debug("IN");
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest(); 
 		Principal principal = portletRequest.getUserPrincipal();		
-		IEngUserProfile profile = null;
+		IEngUserProfile profile = UserUtilities.getUserProfile(principal.getName());
+		/*
 		ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 	        try {
 	            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
@@ -80,7 +81,7 @@ public class PortletLoginModule extends AbstractModule {
 	            logger.error("Reading user information... ERROR");
 	            throw new SecurityException("Reading user information... ERROR",e);
 	        }
-		
+		*/
 		logger.debug("userProfile created " + profile);
 		logger.debug("Attributes name of the user profile: "+ profile.getUserAttributeNames());
 		logger.debug("Functionalities of the user profile: "+ profile.getFunctionalities());

@@ -145,14 +145,14 @@ public class LoginModule extends AbstractHttpModule {
 	    	}
 	        
 	        try {
-	            SpagoBIUserProfile user= supplier.createUserProfile(userId);
-	            if (user == null){		            	
+	        	profile=UserUtilities.getUserProfile(userId);
+	            if (profile == null){		            	
 	            	logger.error("user not created");
 	            	EMFUserError emfu = new EMFUserError(EMFErrorSeverity.ERROR, 501);
 	    			errorHandler.addError(emfu); 		    	
 	    			return;
 	            }
-	            profile=new UserProfile(user);
+	           
 	            // put user profile into session
 	            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 	    		// updates locale information on permanent container for Spago messages mechanism

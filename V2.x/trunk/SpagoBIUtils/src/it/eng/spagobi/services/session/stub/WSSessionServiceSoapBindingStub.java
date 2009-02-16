@@ -16,9 +16,9 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
     private java.util.Vector cachedDeserFactories = new java.util.Vector();
 
     static org.apache.axis.description.OperationDesc [] _operations;
-    
-    private Long sessionId = null;
 
+    private Long sessionId = null;
+    
     static {
         _operations = new org.apache.axis.description.OperationDesc[8];
         _initOperationDesc1();
@@ -104,7 +104,7 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("urn:spagobiwssession", "fault"),
                       "it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException",
-                      new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException"), 
+                      new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException"), 
                       true
                      ));
         _operations[5] = oper;
@@ -115,7 +115,7 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns5_DocumentParameter"));
+        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_DocumentParameter"));
         oper.setReturnClass(it.eng.spagobi.services.session.bo.DocumentParameter[].class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getDocumentParametersReturn"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
@@ -123,7 +123,7 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("urn:spagobiwssession", "fault"),
                       "it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException",
-                      new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException"), 
+                      new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException"), 
                       true
                      ));
         _operations[6] = oper;
@@ -142,7 +142,7 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("urn:spagobiwssession", "fault"),
                       "it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException",
-                      new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException"), 
+                      new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException"), 
                       true
                      ));
         _operations[7] = oper;
@@ -178,30 +178,23 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
             java.lang.Class simplelistsf = org.apache.axis.encoding.ser.SimpleListSerializerFactory.class;
             java.lang.Class simplelistdf = org.apache.axis.encoding.ser.SimpleListDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("http://bo.analyticaldriver.behaviouralmodel.services.spagobi.eng.it", "DocumentParameter");
-            cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.bo.DocumentParameter.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://bo.check.behaviouralmodel.services.spagobi.eng.it", "Check");
+            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "Check");
             cachedSerQNames.add(qName);
             cls = it.eng.spagobi.services.session.bo.Check.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://bo.document.analyticalmodel.services.spagobi.eng.it", "Document");
+            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "Document");
             cachedSerQNames.add(qName);
             cls = it.eng.spagobi.services.session.bo.Document.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException");
+            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "DocumentParameter");
             cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException.class;
+            cls = it.eng.spagobi.services.session.bo.DocumentParameter.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -209,6 +202,13 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
             qName = new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "AuthenticationException");
             cachedSerQNames.add(qName);
             cls = it.eng.spagobi.services.session.exceptions.AuthenticationException.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -222,29 +222,29 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
+            qName = new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_Check");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.services.session.bo.Check[].class;
+            cachedSerClasses.add(cls);
+            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "Check");
+            qName2 = null;
+            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
+
             qName = new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_Document");
             cachedSerQNames.add(qName);
             cls = it.eng.spagobi.services.session.bo.Document[].class;
             cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://bo.document.analyticalmodel.services.spagobi.eng.it", "Document");
+            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "Document");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
-            qName = new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns5_DocumentParameter");
+            qName = new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_DocumentParameter");
             cachedSerQNames.add(qName);
             cls = it.eng.spagobi.services.session.bo.DocumentParameter[].class;
             cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://bo.analyticaldriver.behaviouralmodel.services.spagobi.eng.it", "DocumentParameter");
-            qName2 = null;
-            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
-            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
-
-            qName = new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns6_Check");
-            cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.bo.Check[].class;
-            cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://bo.check.behaviouralmodel.services.spagobi.eng.it", "Check");
+            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "DocumentParameter");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());

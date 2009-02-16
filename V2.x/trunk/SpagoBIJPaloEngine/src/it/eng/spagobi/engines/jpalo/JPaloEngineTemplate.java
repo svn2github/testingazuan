@@ -31,7 +31,8 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.utilities.strings.StringUtils;
+import it.eng.spagobi.commons.utilities.StringUtilities;
+
 import sun.misc.BASE64Decoder;
 
 /**
@@ -89,7 +90,7 @@ public class JPaloEngineTemplate {
 		String result = null;
 		
 		result = (String)getTemplateSB().getAttribute( TABLEONLY_ATTRIBUTE_NAME );
-		if(StringUtils.isEmpty(result)) {
+		if(StringUtilities.isEmpty(result)) {
 			result = "false";
 		}
 		
@@ -100,7 +101,7 @@ public class JPaloEngineTemplate {
 		String result = null;
 		
 		result = (String)getTemplateSB().getAttribute( EDITORONLY_ATTRIBUTE_NAME );
-		if(StringUtils.isEmpty(result)) {
+		if(StringUtilities.isEmpty(result)) {
 			result = "true";
 		}
 		

@@ -30,7 +30,7 @@
   <target name="create.SpagoBI.war" >
     <ant dir="../SpagoBIProject/ant" />
   </target>
-  <target name="deploy.SpagoBI.war" depends="create.SpagoBI.war,create.exo.security.jar,create.xlm.security.jar">
+  <target name="deploy.SpagoBI.war" depends="create.sbi.utils.jar,create.SpagoBI.war,create.exo.security.jar,create.xlm.security.jar">
     <delete dir="${tomcat.home}/webapps/SpagoBI" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBI" />
     <unzip src="../../../SpagoBIProject/dist/SpagoBI/SpagoBI.war" dest="${tomcat.home}/webapps/SpagoBI" />
@@ -162,9 +162,9 @@
     qbe.core depends on sbi.utils
     SpagoBIQbeEngine depends on qbe.core and sbi.utils
     -->
-    <antcall target="create.SpagoBI.war" />
     <antcall target="create.sbi.utils.jar" />
-    <antcall target="create.exo.security.jar" />
+    <antcall target="create.SpagoBI.war" />
+    <!-- <antcall target="create.exo.security.jar" />  -->
     <antcall target="create.xlm.security.jar" />
     <antcall target="create.SpagoBIBirtReportEngine.war" />
     <antcall target="create.SpagoBIGeoEngine.war" />

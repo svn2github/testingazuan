@@ -807,6 +807,10 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     		    		this.register_values = false;
     		    		this.register_par_setted = true;
     		    	}
+    			}else if (url.equals("behaviour")){
+    				String value = (String) values.get(0);
+    				behaviour = value;
+    				logger.debug("Behaviour is: "+ behaviour);
     			}
     		    else {
     			    String value = (String) values.get(0);
@@ -1069,12 +1073,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		    }
 		    this.confMap.put("register_values", register_values);
 	    }
-	    
-	    if (dataParameters.get("behaviour") != null
-			    && !(((String) dataParameters.get("behaviour")).equalsIgnoreCase(""))) {
-			behaviour = (String) dataParameters.get("behaviour");
-			logger.debug("Behaviour is: "+ behaviour);
-	    }	
 	    
 	    /*recalculate_anyway = false;
 	    if (dataParameters.get("recalculate_anyway") != null

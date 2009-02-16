@@ -372,7 +372,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    <tr>
 			    <td>
 			  	 	<div align="center">
-						<img id="image" src="<%=urlPng%>" BORDER="1" alt="Error in displaying the chart" USEMAP="#chart"/>
+						<img id="image" src="<%=urlPng%>" BORDER="1" alt="" USEMAP="#chart"/>
 					</div>
 				</td>
 			</tr>
@@ -424,7 +424,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<tr>
 	<td align="center">
 	 	<div>
-	 		<img id="image" src="<%=urlPng%>" BORDER=1 alt="Error in displaying the chart" USEMAP="#chart"/>    
+	 		<img id="image" src="<%=urlPng%>" BORDER=1 alt="" USEMAP="#chart"/>    
 		</div>
 	</td>
 	</tr>
@@ -590,12 +590,12 @@ catGroupsNames=new Vector();
 		%>
 				<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" 
 				type="radio" checked='checked' />
-				<span><%=group%></span>
+				<span class="portlet-font"><%=group%></span>
 		
 		<%}else{ %>
 				<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" 
 				type="radio" />
-				<span><%=group%></span>
+				<span class="portlet-font"><%=group%></span>
 		<%} 
 		 }%>
 	

@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2005-2008 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -19,23 +19,30 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.utilities.strings;
+package it.eng.spagobi.services.security.exceptions;
 
-/**
- * @author Andrea Gioia (andrea.gioia@eng.it)
- *
- */
-public class StringUtils {
-	
-	public static boolean isNull(String str) {
-		return str == null;
-	}
-	
-	public static boolean isEmpty(String str) {
-		return isNull( str ) || "".equals( str.trim() );
-	}
+public class SecurityException extends Exception {
+
+		/**
+		 * Instantiates a new security exception.
+		 * 
+		 * @param msg the msg
+		 */
+		public SecurityException(String msg) {
+			super(msg);
+		}
 		
-	public static boolean containsOnlySpaces(String str) {
-		return !isNull( str ) && isEmpty( str );
-	}
+		/**
+		 * Instantiates a new security exception.
+		 */
+		public SecurityException(String msg, Throwable e) {
+			super(msg, e);
+		}
+		
+		/**
+		 * @deprecated add always a descriptive message to the exception
+		 */
+		private SecurityException() {
+			super();
+		}
 }

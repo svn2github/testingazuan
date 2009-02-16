@@ -28,8 +28,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.file.FileUtils;
-import it.eng.spagobi.utilities.strings.StringUtils;
+
 
 
 /**
@@ -65,22 +66,22 @@ public class MimeUtils {
 	 */ 
 	public static String getMimeType(String fileName) {
 		String mimeType = null;
-		if( StringUtils.isEmpty( fileName ) ){
+		if( StringUtilities.isEmpty( fileName ) ){
 			fileName = "";
 		}
 		
 		// Get the file extension
 		String ext = FileUtils.getFileExtension( fileName );
-		if( StringUtils.isEmpty( ext ) ) {
+		if( StringUtilities.isEmpty( ext ) ) {
 			// we cannot tell from the file extension the correct mime type
 			mimeType = UNKNOWN_MIME_TYPE;
 		} else {
 			// First try case sensitive
 			mimeType = (String)mimeTypes.get(ext);
-			if( StringUtils.isEmpty( mimeType ) ) {
+			if( StringUtilities.isEmpty( mimeType ) ) {
 				//try again case insensitive (lower case)
 				mimeType = (String)mimeTypes.get(ext.toLowerCase());
-				if( StringUtils.isEmpty( mimeType ) ) {
+				if( StringUtilities.isEmpty( mimeType ) ) {
 					// we cannot tell from the file extension the correct mime type
 					mimeType = UNKNOWN_MIME_TYPE;;
 				}

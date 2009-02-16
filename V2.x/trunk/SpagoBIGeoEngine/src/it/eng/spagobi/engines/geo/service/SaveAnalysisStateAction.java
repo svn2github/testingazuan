@@ -20,23 +20,23 @@
  **/
 package it.eng.spagobi.engines.geo.service;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONSuccess;
-import it.eng.spagobi.utilities.strings.StringUtils;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-
-import org.apache.log4j.Logger;
 
 
 /**
@@ -96,9 +96,9 @@ public class SaveAnalysisStateAction extends AbstractGeoEngineAction {
 			
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertTrue(!StringUtils.isEmpty(analysisName), "Input parameter [" + ANALYSIS_NAME + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtils.isEmpty(analysisDescritpion), "Input parameter [" + ANALYSIS_DESCRIPTION + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtils.isEmpty(analysisScope), "Input parameter [" + ANALYSIS_SCOPE + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue(!StringUtilities.isEmpty(analysisName), "Input parameter [" + ANALYSIS_NAME + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue(!StringUtilities.isEmpty(analysisDescritpion), "Input parameter [" + ANALYSIS_DESCRIPTION + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue(!StringUtilities.isEmpty(analysisScope), "Input parameter [" + ANALYSIS_SCOPE + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
 		
 			analysisMetadata = getEngineInstance().getAnalysisMetadata();
 			analysisMetadata.setName( analysisName );

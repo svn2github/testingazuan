@@ -59,19 +59,6 @@
         todir="${web.dir}/WEB-INF/lib" overwrite="true" />
   </target>
 
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <!--   AGGIORNAMENTO JAR SPAGOBI.SERVICE.CLIENT							                      -->
-  <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <target name="sbi.service.client.update" depends="svn.checkout"
-      description="Updates spagobi.service.client library from distribution folder (THIS JAR MUST BE EXISTING)">
-    <!-- deletes any previuos sbi.utils -->
-    <delete>
-      <fileset dir="${web.dir}/WEB-INF/lib" includes="**/spagobi.service.client*.jar,**/spagobi-service-client*.jar"/>
-    </delete>
-    <!-- copies the newly created jar file -->
-    <copy file="${spagobi.service.client.dir}/dist/SpagoBI/spagobi.service.client-${project.version}.jar" 
-        todir="${web.dir}/WEB-INF/lib" overwrite="true" />
-  </target>
 
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!--   AGGIORNAMENTO JAR QBE.CORE							                                    -->
@@ -90,7 +77,7 @@
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!--   COMPILAZIONE							                                                  -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <target name="compile" depends="sbi.utils.update,qbe.core.update,sbi.service.client.update" description="compile the source" >
+  <target name="compile" depends="sbi.utils.update,qbe.core.update" description="compile the source" >
     <!-- Compile the java code from ${src} into ${build}/${webapp_name}/WEB-INF/classes -->
     <javac srcdir="${src}" destdir="${build}/${webapp_name}/WEB-INF/classes" excludes="it/eng/qbe/geo/action/**" debug="on">
       <classpath refid="web.classpath"/>

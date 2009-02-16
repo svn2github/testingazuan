@@ -13,9 +13,9 @@
           		<include name="**/*.jar"/>
     		</fileset>
     		<!-- COMPILATI DI SPAGOBI necessarie per la compilazione -->
-    		<pathelement path="${spagobi.bin.dir}"/>
-    		<!-- LIBRERIE DI SPAGOBI necessarie per la compilazione -->
-    		<fileset dir="${spagobi.lib.dir}">
+    		<pathelement path="${spago_utils.bin.dir}"/>
+
+    		<fileset dir="${project.dir}/lib">
           		<include name="**/*.jar"/>
     		</fileset>
  	</path>

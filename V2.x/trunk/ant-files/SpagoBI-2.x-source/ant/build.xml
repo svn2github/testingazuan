@@ -168,13 +168,14 @@
     <antcall target="create.xlm.security.jar" />
     <antcall target="create.SpagoBIBirtReportEngine.war" />
     <antcall target="create.SpagoBIGeoEngine.war" />
-    <antcall target="create.SpagoBIJasperReportEngine.war" />
     <antcall target="create.SpagoBIJPaloEngine.war" />
+    <antcall target="create.SpagoBITalendEngine.war" />
+    <antcall target="create.SpagoBIWekaEngine.war" />
+    <antcall target="create.SpagoBIJasperReportEngine.war" />
     <antcall target="create.SpagoBIJPivotEngine.war" />
     <antcall target="create.qbe.core.jar" />
     <antcall target="create.SpagoBIQbeEngine.war" />
-    <antcall target="create.SpagoBITalendEngine.war" />
-    <antcall target="create.SpagoBIWekaEngine.war" />
+
   </target>
 
   <target name="deploy.all" >
@@ -195,14 +196,14 @@
 	<delete dir="../SpagoBIBirtReportEngine/ant-build"/>
 	<delete dir="../SpagoBIExoSecurityProvider/ant-build"/>
 	<delete dir="../SpagoBIGeoReportEngine/ant-build"/>
-       <delete dir="../SpagoBIJasperReportReportEngine/ant-build"/>
-<delete dir="../SpagoBIJPaloEngine/ant-build"/>
-<delete dir="../SpagoBIJPivotEngine/ant-build"/>
-<delete dir="../SpagoBIQbeEngine/ant-build"/>
-<delete dir="../SpagoBITalendEngine/ant-build"/>
-<delete dir="../SpagoBIProject/ant-build"/>
-<delete dir="../SpagoBIUtils/ant-build"/>
-<delete dir="../SpagoBIWekaEngine/ant-build"/>
+  <delete dir="../SpagoBIJasperReportReportEngine/ant-build"/>
+  <delete dir="../SpagoBIJPaloEngine/ant-build"/>
+  <delete dir="../SpagoBIJPivotEngine/ant-build"/>
+  <delete dir="../SpagoBIQbeEngine/ant-build"/>
+  <delete dir="../SpagoBITalendEngine/ant-build"/>
+  <delete dir="../SpagoBIProject/ant-build"/>
+  <delete dir="../SpagoBIUtils/ant-build"/>
+  <delete dir="../SpagoBIWekaEngine/ant-build"/>
 	
    </target>
    

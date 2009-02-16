@@ -166,6 +166,24 @@ qx.Class.define("spagobi.ui.FilterBar", {
 			}
 			this.add(txt1);
 			
+			var dummy_label2 = new qx.ui.basic.Label(" ");
+			this.add(dummy_label2);
+			
+			var filterButton = new qx.ui.form.Button("Filter");
+			this.add(filterButton);
+			filterButton.addListener("execute", this.filterFunction,this);
+		},
+		
+		filterFunction: function(e){
+			var b = e.getTarget();
+			var l = b.getLabel();
+			if(l === "Filter"){
+				b.setLabel("All");
+			}	
+			else{
+				b.setLabel("Filter");
+			}	
+			
 		}
 	}
 	

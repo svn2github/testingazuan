@@ -25,12 +25,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.tools.dataset.common.query.AbstractQueryTransformer;
 import it.eng.spagobi.tools.dataset.common.query.GroupByQueryTransformer;
 import it.eng.spagobi.tools.dataset.common.query.IQueryTransformer;
 import it.eng.spagobi.tools.dataset.common.query.JoinQueryTransformer;
-import it.eng.spagobi.utilities.strings.StringUtils;
+
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -88,7 +89,7 @@ public class DrillThroughQueryTransformer extends AbstractQueryTransformer {
     			String aggregationFunction = null;
     			
     			aggregationFunction = datamartProvider.getMetaData().getAggregationFunction(measureColumnName);
-	    		if( StringUtils.isEmpty(aggregationFunction) ) {
+	    		if( StringUtilities.isEmpty(aggregationFunction) ) {
 	    			aggregationFunction = "SUM";
 	    		}
 	    		
@@ -120,7 +121,7 @@ public class DrillThroughQueryTransformer extends AbstractQueryTransformer {
     			String aggregationFunction = null;
     			
     			aggregationFunction = datamartProvider.getMetaData().getAggregationFunction(measureColumnName);
-	    		if( StringUtils.isEmpty(aggregationFunction) ) {
+	    		if( StringUtilities.isEmpty(aggregationFunction) ) {
 	    			aggregationFunction = "SUM";
 	    		}
 	    		
@@ -185,7 +186,7 @@ public class DrillThroughQueryTransformer extends AbstractQueryTransformer {
     			String aggregationFunction = null;
     			
     			aggregationFunction = datamartProvider.getMetaData().getAggregationFunction(measureColumnName);
-	    		if( StringUtils.isEmpty(aggregationFunction) ) {
+	    		if( StringUtilities.isEmpty(aggregationFunction) ) {
 	    			aggregationFunction = "SUM";
 	    		}
 	    		

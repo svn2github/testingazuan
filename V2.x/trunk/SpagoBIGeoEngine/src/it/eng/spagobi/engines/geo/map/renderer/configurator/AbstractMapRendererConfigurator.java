@@ -22,13 +22,14 @@ package it.eng.spagobi.engines.geo.map.renderer.configurator;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 import it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer;
 import it.eng.spagobi.engines.geo.map.renderer.GuiSettings;
 import it.eng.spagobi.engines.geo.map.renderer.ILabelProducer;
 import it.eng.spagobi.engines.geo.map.renderer.Layer;
 import it.eng.spagobi.engines.geo.map.renderer.Measure;
-import it.eng.spagobi.utilities.strings.StringUtils;
+
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -75,7 +76,7 @@ public class AbstractMapRendererConfigurator {
 		if(confSB != null) {
 			SourceBean measuresConfigurationSB = (SourceBean)confSB.getAttribute("MEASURES");
 			String defaultMeasureName = (String)measuresConfigurationSB.getAttribute("default_kpi");
-			if(!StringUtils.isEmpty(defaultMeasureName)) {
+			if(!StringUtilities.isEmpty(defaultMeasureName)) {
 				abstractMapRenderer.setSelectedMeasureName(defaultMeasureName);
 			}
 			Map measures = getMeasures(measuresConfigurationSB);
@@ -361,7 +362,7 @@ public class AbstractMapRendererConfigurator {
 			SourceBean param = (SourceBean)it.next();
 			String paramName = (String)param.getAttribute("name");
 			String paramValue = param.getCharacters().trim();
-			if(!StringUtils.isEmpty(paramName) && !StringUtils.isEmpty(paramValue)) {
+			if(!StringUtilities.isEmpty(paramName) && !StringUtilities.isEmpty(paramValue)) {
 				settingsMap.put(paramName, downCastValue(paramValue));				
 			}
 		}

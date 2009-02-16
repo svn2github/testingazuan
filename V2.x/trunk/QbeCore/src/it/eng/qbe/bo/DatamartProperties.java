@@ -23,7 +23,8 @@ package it.eng.qbe.bo;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
-import it.eng.spagobi.utilities.strings.StringUtils;
+import it.eng.spagobi.commons.utilities.StringUtilities;
+
 
 import java.util.Map;
 import java.util.Properties;
@@ -109,7 +110,7 @@ public class DatamartProperties {
 			throw new IllegalArgumentException("[datamartItem] is an instance of class " + datamartItem.getClass().getName() + ".[datamartItem] can be only an instance of class DataMartEntity or of class DataMartField");
 		}
 		propertyValue = (String)qbeProperties.get( propertyUniqueNameInFile );		
-		return StringUtils.isNull( propertyValue )? null: propertyValue.trim();
+		return StringUtilities.isNull( propertyValue )? null: propertyValue.trim();
 	}
 	
 	private boolean getPropertyAsBoolean(Object datamartItem, String propertyName, boolean defaultValue) {

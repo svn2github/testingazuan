@@ -22,7 +22,8 @@ package it.eng.qbe.bo;
 
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
-import it.eng.spagobi.utilities.strings.StringUtils;
+import it.eng.spagobi.commons.utilities.StringUtilities;
+
 
 import java.util.Properties;
 
@@ -78,7 +79,7 @@ public class DatamartLabels {
 			throw new IllegalArgumentException("[datamartItem] is an instance of class " + datamartItem.getClass().getName() + ".[datamartItem] can be only an instance of class DataMartEntity or of class DataMartField");
 		}
 		label = (String)properties.get( itemUniqueNameInFile );		
-		return StringUtils.isNull( label )? null: label.trim();
+		return StringUtilities.isNull( label )? null: label.trim();
 	}
 	
 	

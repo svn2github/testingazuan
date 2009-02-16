@@ -20,7 +20,9 @@
  **/
 package it.eng.qbe.model.structure;
 
-import it.eng.spagobi.utilities.strings.StringUtils;
+
+
+import it.eng.spagobi.commons.utilities.StringUtilities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,7 +116,7 @@ public class DataMartEntity implements IDataMartItem {
 	 */
 	public String getUniqueType() {
 		String entityType = getType();
-		if ( !StringUtils.isEmpty( getRole() ) ) {
+		if ( !StringUtilities.isEmpty( getRole() ) ) {
 			entityType += "(" + getRole() + ")";
 		}
 		return entityType;

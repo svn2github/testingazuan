@@ -35,6 +35,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -45,7 +46,7 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONAcknowledge;
 import it.eng.spagobi.utilities.service.JSONFailure;
 import it.eng.spagobi.utilities.service.JSONSuccess;
-import it.eng.spagobi.utilities.strings.StringUtils;
+
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -116,11 +117,11 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			logger.debug(QUERY_FILTEREXP + ": " + queryFilterExp);
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertTrue(!StringUtils.isEmpty(queryName), "Input parameter [" + QUERY_NAME + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtils.isEmpty(queryDescritpion), "Input parameter [" + QUERY_DESCRIPTION + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtils.isEmpty(queryScope), "Input parameter [" + QUERY_SCOPE + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtils.isEmpty(queryRecords), "Input parameter [" + QUERY_RECORDS + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtils.isEmpty(queryFilters), "Input parameter [" + QUERY_FILTERS + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue(!StringUtilities.isEmpty(queryName), "Input parameter [" + QUERY_NAME + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue(!StringUtilities.isEmpty(queryDescritpion), "Input parameter [" + QUERY_DESCRIPTION + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue(!StringUtilities.isEmpty(queryScope), "Input parameter [" + QUERY_SCOPE + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue(!StringUtilities.isEmpty(queryRecords), "Input parameter [" + QUERY_RECORDS + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue(!StringUtilities.isEmpty(queryFilters), "Input parameter [" + QUERY_FILTERS + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
 		
 			analysisMetadata = getEngineInstance().getAnalysisMetadata();
 			analysisMetadata.setName( queryName );

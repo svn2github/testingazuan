@@ -27,8 +27,9 @@ import it.eng.qbe.newquery.ExpressionNode;
 import it.eng.qbe.newquery.Query;
 import it.eng.qbe.newquery.SelectField;
 import it.eng.qbe.newquery.WhereField;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.strings.StringUtils;
+
 
 import java.util.Iterator;
 import java.util.List;
@@ -118,7 +119,7 @@ public class QueryEncoder {
 			
 			
 			
-			Assert.assertTrue(!StringUtils.isEmpty(operator), "Undefined operator for filter: " + filterJSON.toString());
+			Assert.assertTrue(!StringUtilities.isEmpty(operator), "Undefined operator for filter: " + filterJSON.toString());
 			Assert.assertTrue(!"NONE".equalsIgnoreCase(operator), "Undefined operator NONE for filter: " + filterJSON.toString());
 			
 			

@@ -50,7 +50,7 @@ qx.Class.define("spagobi.ui.FilterBar", {
 		this.setLayout(new qx.ui.layout.HBox);
 		//this.setAlignX("center");
 		this.getLayout().setAlignX("center");
-		
+		this.getLayout().setAlignY("middle");
 		//this.set({alignX: "right"});//not working
 		//this.setWidth("100%");// try also "auto"
 		//this.setHeight("100%");

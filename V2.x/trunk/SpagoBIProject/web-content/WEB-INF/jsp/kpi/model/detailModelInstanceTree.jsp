@@ -227,12 +227,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	class='portlet-form-input-field' type="text" name="modelInstanceName" size="50"
 	value="<%=modelInstanceName%>" maxlength="200"> &nbsp;*</div>
 
+<%
+	String readOnly ="";
+ 	if (messageIn != null
+ 			&& messageIn
+ 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+ 		readOnly = "readonly";
+ 	}
+ %>
+
+
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.label" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelInstanceLabel" size="50"
-	value="<%=modelInstanceLabel%>" maxlength="100"> &nbsp;*</div>
+	value="<%=modelInstanceLabel%>" maxlength="100" <%=readOnly %>> &nbsp;*</div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message

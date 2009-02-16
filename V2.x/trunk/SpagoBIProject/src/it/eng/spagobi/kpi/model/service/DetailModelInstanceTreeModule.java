@@ -54,6 +54,9 @@ public class DetailModelInstanceTreeModule extends DefaultDetailModule {
 					engErrorHandler.addError(new EMFUserError(
 							EMFErrorSeverity.WARNING, "10013",
 							"component_kpi_messages"));
+				}catch (EMFUserError e) {
+					EMFErrorHandler engErrorHandler = getErrorHandler();
+					engErrorHandler.addError(e);
 				}
 				DetailModelInstanceUtil.selectModelInstance(Integer
 						.parseInt(idModel), response);
@@ -69,8 +72,15 @@ public class DetailModelInstanceTreeModule extends DefaultDetailModule {
 			if (parentId != null && parentId.equalsIgnoreCase("null"))
 				parentId = null;
 			if (!validationError) {
-				DetailModelInstanceUtil.newModelInstance(request, response, Integer
-						.parseInt(parentId));
+				try{
+					DetailModelInstanceUtil.newModelInstance(request, response, Integer
+							.parseInt(parentId));
+					}catch (EMFUserError e) {
+						EMFErrorHandler engErrorHandler = getErrorHandler();
+						engErrorHandler.addError(e);
+						DetailModelInstanceUtil.restoreModelInstanceValue(Integer
+								.parseInt(parentId), request, response);
+					}
 			} else {
 				DetailModelInstanceUtil.restoreModelInstanceValue(Integer
 						.parseInt(parentId), request, response);

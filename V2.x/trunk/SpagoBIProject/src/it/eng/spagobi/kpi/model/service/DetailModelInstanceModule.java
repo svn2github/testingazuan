@@ -66,7 +66,14 @@ public class DetailModelInstanceModule extends DefaultDetailModule {
 		// DETAIL_INSERT
 		if (message.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
 			if (!validationError) {
-			DetailModelInstanceUtil.newModelInstance(request, response, null);
+				try{
+				DetailModelInstanceUtil.newModelInstance(request, response, null);
+				}catch (EMFUserError e) {
+					EMFErrorHandler engErrorHandler = getErrorHandler();
+					engErrorHandler.addError(e);
+					DetailModelInstanceUtil.restoreModelInstanceValue(null,
+							request, response);
+				}
 			} else {
 				DetailModelInstanceUtil.restoreModelInstanceValue(null,
 						request, response);

@@ -281,8 +281,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			if (tx != null && tx.isActive()) {
 				tx.rollback();
 			}
-			logger.error("Impossible to delete a KpiInstance", ce);
-			throw new EMFUserError(EMFErrorSeverity.WARNING, 10018);
+			logger.error("Impossible to modify a Model Instance Instance", ce);
+			throw new EMFUserError(EMFErrorSeverity.WARNING, 101);
 
 		}
 

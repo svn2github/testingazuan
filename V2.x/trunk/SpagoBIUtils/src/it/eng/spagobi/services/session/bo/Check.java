@@ -256,7 +256,7 @@ public class Check  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(Check.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.check.behaviouralmodel.services.spagobi.eng.it", "Check"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "Check"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("description");
         elemField.setXmlName(new javax.xml.namespace.QName("", "description"));

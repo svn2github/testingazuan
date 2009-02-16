@@ -43,7 +43,7 @@ public class NonExecutableDocumentException  extends org.apache.axis.AxisFault  
         new org.apache.axis.description.TypeDesc(NonExecutableDocumentException.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException"));
     }
 
     /**

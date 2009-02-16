@@ -174,7 +174,7 @@ public class DocumentParameter  implements java.io.Serializable {
         new org.apache.axis.description.TypeDesc(DocumentParameter.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.analyticaldriver.behaviouralmodel.services.spagobi.eng.it", "DocumentParameter"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "DocumentParameter"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("id");
         elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
@@ -196,7 +196,7 @@ public class DocumentParameter  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("checks");
         elemField.setXmlName(new javax.xml.namespace.QName("", "checks"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://bo.check.behaviouralmodel.services.spagobi.eng.it", "Check"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "Check"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }

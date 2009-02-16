@@ -20,15 +20,6 @@
  **/
 package it.eng.spagobi.engines.geo.map.renderer.configurator;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.commons.utilities.StringUtilities;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
-import it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer;
-import it.eng.spagobi.engines.geo.map.renderer.GuiSettings;
-import it.eng.spagobi.engines.geo.map.renderer.ILabelProducer;
-import it.eng.spagobi.engines.geo.map.renderer.Layer;
-import it.eng.spagobi.engines.geo.map.renderer.Measure;
 
 
 import java.util.HashMap;
@@ -38,6 +29,16 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer;
+import it.eng.spagobi.engines.geo.map.renderer.GuiSettings;
+import it.eng.spagobi.engines.geo.map.renderer.ILabelProducer;
+import it.eng.spagobi.engines.geo.map.renderer.Layer;
+import it.eng.spagobi.engines.geo.map.renderer.Measure;
 
 // TODO: Auto-generated Javadoc
 /**

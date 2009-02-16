@@ -44,12 +44,15 @@ qx.Class.define("spagobi.app.ui.Header",
    */	
   construct : function()
   {
-	 this.setLayout(new qx.ui.layout.HBox);
-	 var html = '<center>'
-	 html += '<h1>SpagoBI 2.0.0</h1>'
-	 html += '</center>';
-	 var embed = new qx.ui.embed.Html(html);
-	 this.add( embed );
+	 this.base(arguments);
+	    
+	    this.setLayout(new qx.ui.layout.HBox);
+	    var html = '<div style="overflow:hidden; width:100%;background-image:url("/SpagoBI/img/wapp/spagobiMiddle.png"); background-repeat: repeat-x;background-position:bottom;" >'
+	    html += '<div style="float:left"><img src="/SpagoBI/img/wapp/spagobiLeft.png" /></div>'
+	    html += '<div style="float:right"><img src="/SpagoBI/img/wapp/spagobiRight.png" /></div>'
+	    html += '</div>';
+	    var embed = new qx.ui.embed.Html(html);
+	    this.add( embed );
   }
 });
 

@@ -771,7 +771,6 @@ if (toolbarIsVisible) {
 	var win_rating_<%= uuid %>;
 
 	Ext.get('rating_button<%= uuid %>').on('click', function(){
-		alert('pippo');
 		if(!win_rating_<%= uuid %>){
 			win_rating_<%= uuid %> = new Ext.Window({
 				id:'win_rating_<%= uuid %>',
@@ -782,8 +781,7 @@ if (toolbarIsVisible) {
 						tag:'iframe',
 						    name: 'dynamicIframe1', 
                     		id  : 'dynamicIframe1', 
-                    		src:'http://www.google.com',
-	      					//src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&ACTION_NAME=RATING_ACTION&MESSAGEDET=GOTO_DOCUMENT_RATE&OBJECT_ID=" + obj.getId().toString() %>',
+	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&ACTION_NAME=RATING_ACTION&MESSAGEDET=GOTO_DOCUMENT_RATE&OBJECT_ID=" + obj.getId().toString() %>',
 	      					frameBorder:0,
 	      					width:'100%',
 	      					height:'100%',

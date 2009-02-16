@@ -32,22 +32,22 @@ public class WSSessionServiceSoapBindingImpl implements it.eng.spagobi.services.
 
     public it.eng.spagobi.services.session.bo.Document[] getDocuments(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
     	SessionServiceImpl ssImpl = new SessionServiceImpl();
-        return ssImpl.getDocuments(in0, in1, in2);
+    	return ssImpl.getDocuments(in0, in1, in2);
     }
 
     public java.lang.String[] getCorrectRolesForExecution(java.lang.Integer in0) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException {
     	SessionServiceImpl ssImpl = new SessionServiceImpl();
-        return ssImpl.getCorrectRolesForExecution(in0);
+    	return ssImpl.getCorrectRolesForExecution(in0);
     }
 
     public it.eng.spagobi.services.session.bo.DocumentParameter[] getDocumentParameters(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException {
     	SessionServiceImpl ssImpl = new SessionServiceImpl();
-        return ssImpl.getDocumentParameters(in0, in1);
+    	return ssImpl.getDocumentParameters(in0, in1);
     }
 
     public java.util.HashMap getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException {
     	SessionServiceImpl ssImpl = new SessionServiceImpl();
-        return ssImpl.getAdmissibleValues(in0, in1);
+    	return ssImpl.getAdmissibleValues(in0, in1);
     }
 
 }

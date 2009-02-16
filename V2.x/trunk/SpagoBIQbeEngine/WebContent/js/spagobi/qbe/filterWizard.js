@@ -29,8 +29,8 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
         id:'filterWizard',
         title: 'Expression Editor',
 			 	layout:'fit',
-				width:1000,
-				height:500,
+				width:500,
+				height:300,
 				closeAction:'hide',
 				plain: true,
 				

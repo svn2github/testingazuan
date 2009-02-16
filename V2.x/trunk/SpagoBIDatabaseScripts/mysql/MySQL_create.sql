@@ -808,7 +808,7 @@ Create table `SBI_KPI_MODEL_INST` (
 	`name` Varchar(400),
 	`label` Varchar(100) NOT NULL,
 	`description` Varchar(1000),
-    UNIQUE (`KPI_MODEL_INST`),
+    UNIQUE (`label`),
  Primary Key (`KPI_MODEL_INST`)) ENGINE = InnoDB;
 
 Create table `SBI_RESOURCES` (

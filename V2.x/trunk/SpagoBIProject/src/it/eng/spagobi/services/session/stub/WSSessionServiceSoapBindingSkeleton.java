@@ -116,15 +116,15 @@ public class WSSessionServiceSoapBindingSkeleton implements it.eng.spagobi.servi
         _fault = new org.apache.axis.description.FaultDesc();
         _fault.setName("NonExecutableDocumentException");
         _fault.setQName(new javax.xml.namespace.QName("urn:spagobiwssession", "fault"));
-        _fault.setClassName("it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException");
-        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException"));
+        _fault.setClassName("it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException"));
         _oper.addFault(_fault);
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getDocumentParameters", _params, new javax.xml.namespace.QName("", "getDocumentParametersReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns5_DocumentParameter"));
+        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_DocumentParameter"));
         _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobiwssession", "getDocumentParameters"));
         _oper.setSoapAction("");
         _myOperationsList.add(_oper);
@@ -135,8 +135,8 @@ public class WSSessionServiceSoapBindingSkeleton implements it.eng.spagobi.servi
         _fault = new org.apache.axis.description.FaultDesc();
         _fault.setName("NonExecutableDocumentException");
         _fault.setQName(new javax.xml.namespace.QName("urn:spagobiwssession", "fault"));
-        _fault.setClassName("it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException");
-        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException"));
+        _fault.setClassName("it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException"));
         _oper.addFault(_fault);
         _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false), 
@@ -154,8 +154,8 @@ public class WSSessionServiceSoapBindingSkeleton implements it.eng.spagobi.servi
         _fault = new org.apache.axis.description.FaultDesc();
         _fault.setName("NonExecutableDocumentException");
         _fault.setQName(new javax.xml.namespace.QName("urn:spagobiwssession", "fault"));
-        _fault.setClassName("it.eng.spagobi.services.analyticalmodel.exceptions.NonExecutableDocumentException");
-        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.analyticalmodel.services.spagobi.eng.it", "NonExecutableDocumentException"));
+        _fault.setClassName("it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException"));
         _oper.addFault(_fault);
     }
 
@@ -201,7 +201,7 @@ public class WSSessionServiceSoapBindingSkeleton implements it.eng.spagobi.servi
 
     public it.eng.spagobi.services.session.bo.DocumentParameter[] getDocumentParameters(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException
     {
-    	it.eng.spagobi.services.session.bo.DocumentParameter[] ret = impl.getDocumentParameters(in0, in1);
+        it.eng.spagobi.services.session.bo.DocumentParameter[] ret = impl.getDocumentParameters(in0, in1);
         return ret;
     }
 

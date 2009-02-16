@@ -21,6 +21,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.analiticalmodel.execution.presentation.tag;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -58,27 +75,9 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
-import it.eng.spagobi.container.ContextManager;
 import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.SpagoBISessionContainer;
 import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
-
-import org.apache.log4j.Logger;
 
 /**
  * Defines a tag to create a Parameters Input
@@ -325,9 +324,9 @@ public class ParametersGeneratorTag extends TagSupport {
 			String resetMsg = msgBuilder.getMessage("sbi.execution.parametersForm.reset", httpRequest);
 			htmlStream.append("<div class='buttons'>\n");
 			htmlStream.append("	<ul>\n");
-			htmlStream.append("		<li><a href='javascript:void(0);' id='p_execute_button' class='button p_execute_button' onclick='document.getElementById(\"parametersForm" + requestIdentity + "\").submit();'><b><b><b>" + executeMsg + "</b></b></b></a></li>\n");
-			htmlStream.append("		<li><a href='javascript:void(0);' id='p_save_button" + requestIdentity + "'    class='button p_save_button'><b><b><b>" + saveMsg + "</b></b></b></a></li>\n");
-			htmlStream.append("		<li><a href='javascript:void(0);' id='p_reset_button'   class='button p_reset_button' onclick='clearFields" + requestIdentity + "()'><b><b><b>" + resetMsg + "</b></b></b></a></li>\n");
+			htmlStream.append("		<li><a href='#' id='p_execute_button' class='button p_execute_button' onclick='document.getElementById(\"parametersForm" + requestIdentity + "\").submit();'><b><b><b>" + executeMsg + "</b></b></b></a></li>\n");
+			htmlStream.append("		<li><a href='#' id='p_save_button" + requestIdentity + "'    class='button p_save_button'><b><b><b>" + saveMsg + "</b></b></b></a></li>\n");
+			htmlStream.append("		<li><a href='#' id='p_reset_button'   class='button p_reset_button' onclick='clearFields" + requestIdentity + "()'><b><b><b>" + resetMsg + "</b></b></b></a></li>\n");
 			htmlStream.append("	</ul>\n");
 			htmlStream.append("	</ul>\n");
 

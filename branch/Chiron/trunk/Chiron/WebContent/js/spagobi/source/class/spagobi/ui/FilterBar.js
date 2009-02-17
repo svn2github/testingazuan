@@ -47,7 +47,7 @@ qx.Class.define("spagobi.ui.FilterBar", {
 	 */
 	construct : function() {
 		this.base(arguments);
-		this.setLayout(new qx.ui.layout.HBox);
+		this.setLayout(new qx.ui.layout.HBox(10));
 		//this.setAlignX("center");
 		this.getLayout().setAlignX("center");
 		this.getLayout().setAlignY("middle");
@@ -111,7 +111,7 @@ qx.Class.define("spagobi.ui.FilterBar", {
 			*/
 			
 			//var combo1_label = new qx.legacy.ui.basic.Label("  The value of the column   ");//change
-			var combo1_label = new qx.ui.basic.Label("  The value of the column   ");
+			var combo1_label = new qx.ui.basic.Label("The value of the column");
 					
 			this.add(combo1_label);
 			
@@ -127,7 +127,7 @@ qx.Class.define("spagobi.ui.FilterBar", {
 			this.add(combo1);
 			
 			//var combo2_label = new qx.legacy.ui.basic.Label(" as a ");//change
-			var combo2_label = new qx.ui.basic.Label(" as a ");
+			var combo2_label = new qx.ui.basic.Label("as a");
 				//with(combo2_label){	setTextAlign("center");	}
 			this.add(combo2_label);
 			
@@ -141,9 +141,6 @@ qx.Class.define("spagobi.ui.FilterBar", {
             }
 			this.add(combo2);
 			
-			//var dummy_label = new qx.legacy.ui.basic.Label(" ");//change
-			var dummy_label = new qx.ui.basic.Label(" ");
-			this.add(dummy_label);
 			
 			//var combo3 = new qx.legacy.ui.form.ComboBox();//change
 			var combo3 = new qx.ui.form.ComboBox();
@@ -155,9 +152,6 @@ qx.Class.define("spagobi.ui.FilterBar", {
             }
 			this.add(combo3);													 
 			
-			//var dummy_label1 = new qx.legacy.ui.basic.Label(" ");//change
-			var dummy_label1 = new qx.ui.basic.Label(" ");
-			this.add(dummy_label1);
 			
 			//var txt1 = new qx.legacy.ui.form.TextField();//change
 			var txt1 = new qx.ui.form.TextField();
@@ -166,23 +160,23 @@ qx.Class.define("spagobi.ui.FilterBar", {
 			}
 			this.add(txt1);
 			
-			var dummy_label2 = new qx.ui.basic.Label(" ");
-			this.add(dummy_label2);
 			
 			var filterButton = new qx.ui.form.Button("Filter");
 			this.add(filterButton);
 			filterButton.addListener("execute", this.filterFunction,this);
+			
+			var removeFilterButton = new qx.ui.form.Button("All");
+			this.add(removeFilterButton);
+			removeFilterButton.addListener("execute", this.removeFilterFunction,this);
 		},
 		
 		filterFunction: function(e){
-			var b = e.getTarget();
-			var l = b.getLabel();
-			if(l === "Filter"){
-				b.setLabel("All");
-			}	
-			else{
-				b.setLabel("Filter");
-			}	
+			alert("Filter");
+			
+		},
+		
+		removeFilterFunction: function(e){
+			alert("Filter Removed");
 			
 		}
 	}

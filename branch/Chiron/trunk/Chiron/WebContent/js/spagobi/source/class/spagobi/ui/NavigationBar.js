@@ -57,6 +57,7 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 		//this.setHeight("100%");
 				//	this.setCentered(true);//setLeft("center");
 				//	this.setTop(-5);
+//		var number = [{label : '1',url:'http://www.google.com'}];
 		this.createNavBar();
 		
 	},
@@ -72,6 +73,12 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 		 * <p> Button to go to next page of list
 		 * <p> Button to go to last page of list
 		 */
+		
+		PageNum :[ {
+					label : '',
+					url : undefined
+		}], 
+		
 		createNavBar : function(){
 			
 			//var firstPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/firstPage.png");//change
@@ -87,6 +94,27 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 					//horizontalbarLayout.add(new qx.legacy.ui.basic.HorizontalSpacer());
 			
 			//var nextPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/nextPage.png");//change
+			var number = [];
+			number = spagobi.app.data.DataService.loadPageMeta();
+			var labelOfPage = [];
+			for (i in number){
+//				PageNum[i] = number[i];
+//				alert(number[i].label);
+				labelOfPage[i] = new qx.ui.basic.Label(number[i].name);
+				var dummyLabel = new qx.ui.basic.Label("  ");
+				this.add(labelOfPage[i]);
+				this.add(dummyLabel);	
+//				labelOfPage[i].setAlignX("center");
+				labelOfPage[i].setAlignY("middle");
+//				labelOfPage[i].setTextAlign("center");
+				labelOfPage[i].setUserData('url', number[i].url);
+				labelOfPage[i].addListener("click",this._onClick, this);
+				labelOfPage[i].addListener("mouseover",this._onmouseover, this);
+				labelOfPage[i].addListener("mouseout", this._onmouseout, this);
+			}
+			var dummyLabel1 = new qx.ui.basic.Label("  ");
+			this.add(dummyLabel);
+				
 			var nextPageButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/nextPage.png"));
 			this.add(nextPageButton);
 					//horizontalbarLayout.add(nextPageButton);
@@ -97,6 +125,25 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 					//horizontalbarLayout.add(lastPageButton);
 			
 			
-		}	
+		},
+		
+		
+		_onClick : function(e){
+			
+//		alert(e.getTarget().getLabel());
+		var url1 = e.getTarget().getUserData('url');
+		alert (url1);	
+		
+		},
+		
+		 _onmouseover: function(e) {	 		
+	 	
+	 		e.getTarget().setBackgroundColor("orange");
+	 	},
+	 	
+	 	_onmouseout: function(e) {
+	    
+	 			e.getTarget().setBackgroundColor(null);
+	 	}	
 	}
 });

@@ -131,7 +131,7 @@ public class JasperReportDriver extends AbstractDriver implements IEngineDriver 
 
 	// adding date format parameter
 	ConfigSingleton config = ConfigSingleton.getInstance();
-	SourceBean formatSB = (SourceBean) config.getAttribute("DATA-ACCESS.DATE-FORMAT");
+	SourceBean formatSB = (SourceBean) config.getAttribute("SPAGOBI.DATE-FORMAT");
 	String format = (formatSB == null) ? "DD-MM-YYYY" : (String) formatSB.getAttribute("format");
 	pars.put("dateformat", format);
 

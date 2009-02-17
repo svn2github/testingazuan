@@ -575,6 +575,10 @@ String it=locale.ITALY.getLanguage();
 String eng=locale.US.getLanguage();
 String fr=locale.FRANCE.getLanguage();
 
+String itIcon="/SpagoBI/img/it.gif";	
+String frIcon="/SpagoBI/img/fr.gif";	
+String enIcon="/SpagoBI/img/en.gif";	
+
 if(curr_language!=null){
 	iconLanguage="/SpagoBI/img/"+currLanguage.toLowerCase()+".gif";	
 }
@@ -587,17 +591,20 @@ if(curr_language!=null){
  new Ext.menu.Item({
 	 id: '<%new Double(Math.random()).toString();%>',
  	text: 'IT',
+ 	icon: '<%=itIcon%>',
 	href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=it%>')"
  })
  ,
  new Ext.menu.Item({
  	 id: '<%new Double(Math.random()).toString();%>',
  	text: 'EN',
+ 		icon: '<%=enIcon%>',
 href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=eng%>')"
  }) ,
  new Ext.menu.Item({
  	 id: '<%new Double(Math.random()).toString();%>',
  		text: 'FR',
+ 		 icon: '<%=frIcon%>',
 		href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=fr%>')" })
  ]
  });

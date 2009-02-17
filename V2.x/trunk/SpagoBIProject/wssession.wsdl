@@ -30,6 +30,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
      <element name="label" nillable="true" type="soapenc:string"/>
      <element name="name" nillable="true" type="soapenc:string"/>
      <element name="type" nillable="true" type="soapenc:string"/>
+     <element name="state" nillable="true" type="soapenc:string"/>
     </sequence>
    </complexType>
    <complexType name="Check">

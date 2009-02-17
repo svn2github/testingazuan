@@ -24,6 +24,8 @@ public class Document  implements java.io.Serializable {
 
     private java.lang.String type;
 
+    private java.lang.String state;
+
     public Document() {
     }
 
@@ -35,7 +37,8 @@ public class Document  implements java.io.Serializable {
            java.lang.Integer id,
            java.lang.String label,
            java.lang.String name,
-           java.lang.String type) {
+           java.lang.String type,
+           java.lang.String state) {
            this.description = description;
            this.engineId = engineId;
            this.engineLabel = engineLabel;
@@ -44,6 +47,7 @@ public class Document  implements java.io.Serializable {
            this.label = label;
            this.name = name;
            this.type = type;
+           this.state = state;
     }
 
 
@@ -206,6 +210,26 @@ public class Document  implements java.io.Serializable {
         this.type = type;
     }
 
+
+    /**
+     * Gets the state value for this Document.
+     * 
+     * @return state
+     */
+    public java.lang.String getState() {
+        return state;
+    }
+
+
+    /**
+     * Sets the state value for this Document.
+     * 
+     * @param state
+     */
+    public void setState(java.lang.String state) {
+        this.state = state;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof Document)) return false;
@@ -241,7 +265,10 @@ public class Document  implements java.io.Serializable {
               this.name.equals(other.getName()))) &&
             ((this.type==null && other.getType()==null) || 
              (this.type!=null &&
-              this.type.equals(other.getType())));
+              this.type.equals(other.getType()))) &&
+            ((this.state==null && other.getState()==null) || 
+             (this.state!=null &&
+              this.state.equals(other.getState())));
         __equalsCalc = null;
         return _equals;
     }
@@ -276,6 +303,9 @@ public class Document  implements java.io.Serializable {
         }
         if (getType() != null) {
             _hashCode += getType().hashCode();
+        }
+        if (getState() != null) {
+            _hashCode += getState().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -332,6 +362,12 @@ public class Document  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("type");
         elemField.setXmlName(new javax.xml.namespace.QName("", "type"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("state");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "state"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);

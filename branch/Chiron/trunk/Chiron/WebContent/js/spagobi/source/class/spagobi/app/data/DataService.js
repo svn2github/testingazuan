@@ -42,6 +42,26 @@ qx.Class.define("spagobi.app.data.DataService", {
   type : "static",
   statics : {
   	
+  	
+  	
+  	loadPageMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'page1',
+	    		name: '1',
+	    		url : 'http://www.google.com/' 
+    		}, {
+	    		dataIndex: 'page2',
+	    		name: '2',
+	    		url : 'http://www.yahoo.com/' 
+    		}, {
+	    		dataIndex: 'page3',
+	    		name: '3',
+	    		url : 'http://www.msn.com/'
+    		}
+    	];
+  	},
+  	  	
   	loadRolesRecords: function(){
   		var records = {};
     	
@@ -566,8 +586,8 @@ qx.Class.define("spagobi.app.data.DataService", {
 	        	"label": 'Report Clienti',
 	        	description: 'Dettaglio del profilo cliente',
 	        	type: '0',
-	        	ScheduleList: 'qx/icon/Oxygen/16/actions/schedule.png',//qx.util.AliasManager.getInstance().resolve(//'qx/icon/Oxygen/16/actions/insert-link.png'
-	        	detail: 'qx/icon/Oxygen/16/actions/detail.gif'//qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/detail.gif')//'qx/icon/Oxygen/16/actions/window-new.png'        	
+	        	ScheduleList: qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/schedule.png'),
+	        	detail: qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/detail.gif')//'qx/icon/Oxygen/16/actions/window-new.png'        	
         	}			
   		];
   	},

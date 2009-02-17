@@ -311,4 +311,17 @@ public interface IBIObjectDAO {
 	 */
 	public List loadAllBIObjectsFromInitialPath(String initialPath, String filterOrder) throws EMFUserError;
 	
+	/**
+	 * Loads all the BIObjects filtering with the input parameters.
+	 * 
+	 * @param type the type of the biobjects (DASH/REPORT/OLAP...); if it is null, all types will be considered
+	 * @param state the type of the biobjects (REL/DEV...); if it is null, all states will be considered
+	 * @param folderPath the path of the folder; if it is null, all folders will be considered
+	 * 
+	 * @return the list of BIObjects
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List loadBIObjects(String type, String state, String folderPath) throws EMFUserError;
+	
 }

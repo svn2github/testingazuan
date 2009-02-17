@@ -74,12 +74,15 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Restrictions;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
@@ -1557,6 +1560,89 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			logger.error("Error while creating parameter for document composition.", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
+	}
+
+
+
+
+
+	public List loadBIObjects(String type, String state, String folderPath)
+			throws EMFUserError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
+		List realResult = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+//			Criteria criteria = aSession.createCriteria(SbiObjFunc.class);
+//			if (type != null) {
+//				Criterion typeCriterion = Expression.eq("id.sbiObjects.objectTypeCode", type);
+//				criteria.add(typeCriterion);
+//			}
+//			if (state != null) {
+//				Criterion stateCriterion = Expression.eq("id.sbiObjects.stateCode", state);
+//				criteria.add(stateCriterion);
+//			}
+//			if (folderPath != null) {
+//				Criterion folderPathCriterion = Expression.eq("id.sbiFunctions.path", folderPath);
+//				criteria.add(folderPathCriterion);
+//			}
+//			List hibList = criteria.list();
+			
+			StringBuffer buffer = new StringBuffer();
+			if (folderPath != null) {
+				buffer.append("select distinct(objects) from SbiObjects as objects, SbiObjFunc as objFuncs, SbiFunctions as functions " +
+					"where objects.biobjId = objFuncs.id.sbiObjects.biobjId and objFuncs.id.sbiFunctions.functId = functions.functId " +
+					"and functions.path = :PATH and ");
+			} else {
+				buffer.append("select objects from SbiObjects as objects where ");
+			}
+			if (state != null) {
+				buffer.append(" objects.stateCode = :STATE and ");
+			}
+			if (type != null) {
+				buffer.append(" objects.objectTypeCode = :TYPE");
+			}
+			String hql = buffer.toString();
+			if (hql.endsWith(" and ")) {
+				hql = hql.substring(0, hql.length() - " and ".length());
+			}
+			if (hql.endsWith(" where ")) {
+				hql = hql.substring(0, hql.length() - " where ".length());
+			}
+			
+			Query query = aSession.createQuery(hql);
+			if (folderPath != null) {
+				query.setParameter("PATH", folderPath);
+			}
+			if (state != null) {
+				query.setParameter("STATE", state);
+			}
+			if (type != null) {
+				query.setParameter("TYPE", type);
+			}
+			
+			List hibList = query.list();
+			Iterator it = hibList.iterator();
+			while (it.hasNext()) {
+				SbiObjects object = (SbiObjects) it.next();
+				realResult.add(toBIObject(object));
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		logger.debug("OUT");
+		return realResult;
 	}
 }
 

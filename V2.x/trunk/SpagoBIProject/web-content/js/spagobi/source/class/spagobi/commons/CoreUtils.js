@@ -94,8 +94,11 @@ qx.Class.define("spagobi.commons.CoreUtils", {
   	    	s += p + ': ' + o[p] + ";\n";
   	    }
   		
-    	
     	return s;
+  	}
+  	
+  	, dump : function(o) {
+  		alert(this.toStr(o));
   	}
   	
   	, arrayToStr : function(a) {

@@ -37,25 +37,21 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
   statics : {
   	   createLabel : function( config ) {
         	var defultConfig = {
-        		//text : '',//change
         		content: '',
         		top : 0,
         		left : 0,
         		width: 100     		
         	};
         	
-        	//var test_label = new qx.legacy.ui.basic.Label();//change
         	var test_label = new qx.ui.basic.Label();
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
-        	//test_label.set(defultConfig);//change
-        	//test_label.set(config);//change
+     
         	test_label.set({content: config.content, width: config.width});
         	
         	var labelContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);//to set left and top
         	labelContainer.add(test_label, {top: config.top, left: config.left});
         	
-        	//return test_label;
         	return labelContainer;
         },
         
@@ -71,7 +67,6 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	};
         
         	if(password != true){
-            	//var test_textfield = new qx.legacy.ui.form.TextField();//change
             	var test_textfield = new qx.ui.form.TextField();
         	}
         	else{
@@ -93,23 +88,34 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         },
         
         createComboBox : function( config ) {
+        	        	
+        	
         	var defultConfig = {
         		top: 0,
         		left: 0,
+        		proxy: undefined,
         		items: [],
         		listeners: []  		
            	};
-          
+        	
+        	
+        	
           	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
-         
-          	//var combo_box = new qx.legacy.ui.form.ComboBox();//change
-          	var combo_box = new qx.ui.form.SelectBox();
-   //       	combo_box.setSelectable(false);
-          	//combo_box.set({ top: config.top, left: config.left });//change
           	
+          	/*
+          	var combo_box = new qx.ui.form.SelectBox();
+          	alert('B');
           	for(var i=0; i< config.items.length; i++) {
-              //var item = new qx.legacy.ui.form.ListItem(config.items[i]);//change
-              var item = new qx.ui.form.ListItem(config.items[i]);
+          		
+              var item;
+              if(typeof config.items[i] == 'object') {
+            	  alert('combo from object');
+            	  item = new qx.ui.form.ListItem(config.items[i].label, null, config.items[i].value);
+              } else {
+            	  alert('combo from string');
+            	  item = new qx.ui.form.ListItem(config.items[i]);
+              }
+             
               combo_box.add(item);
             }
             
@@ -120,9 +126,9 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
             		combo_box.addListener(config.listeners[i].event, config.listeners[i].handler); 
             	}
             }
-            
-            //combo_box.setSelected(combo_box.getList().getFirstChild());//change
-            //combo_box.setSelection(combo_box.getList().getFirstChild());
+            */
+          	
+          	var combo_box = new spagobi.ui.form.ComboBox(config);
             
             var comboContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
         	comboContainer.add(combo_box, {top: config.top, left: config.left});
@@ -375,29 +381,26 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         	
         	config = spagobi.commons.CoreUtils.apply(defultConfig, config);
         	
+        	
         	var labelField = this.createLabel({
-        		//text : config.text,//change
         		content: config.text,
         		top : config.top,
         		left : config.left,
         		width : config.labelwidth    
         	});
-        	        	   
-	        var comboBox = this.createComboBox({
-	        	top: config.top,
-	        	left: config.left + 10,
-	        	items: config.items,
-	        	listeners: config.listeners
-	        });
         	
-        	//var atom = new qx.legacy.ui.basic.Atom();//change
-        	//var atom = new qx.ui.basic.Atom();//change
+        	config.left += 10;
+        	
+	        var comboBox = this.createComboBox(config);
+	        
+        	
         	var atom = new qx.ui.container.Composite(new qx.ui.layout.HBox);
         	
         	atom.add( labelField );
         	atom.add( comboBox );
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', comboBox);
+        	
         	
         	if(config.visible != undefined){
 				//atom.setDisplay(config.visible);//change

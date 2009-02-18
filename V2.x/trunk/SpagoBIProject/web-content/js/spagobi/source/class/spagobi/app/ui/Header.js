@@ -43,25 +43,17 @@ qx.Class.define("spagobi.app.ui.Header",
   construct : function()
   {
     this.base(arguments);
+	this.setLayout(new qx.ui.layout.HBox);
     
-    this.setLayout(new qx.ui.layout.HBox);
-    var html = '<div style="overflow:hidden; width:100%;background-image:url("/SpagoBI/img/wapp/spagobiMiddle.png"); background-repeat: repeat-x;background-position:bottom;" >'
-    html += '<div style="float:left"><img src="/SpagoBI/img/wapp/spagobiLeft.png" /></div>'
-    html += '<div style="float:right"><img src="/SpagoBI/img/wapp/spagobiRight.png" /></div>'
+   	var html = '<div style="overflow:hidden; width:100%;background-image:url(/SpagoBI/img/wapp/spagobiMiddle.png); background-repeat: repeat-x;background-position:center 13%;" >';
+    
+    html += '<div style="float:left"><img src="/SpagoBI/img/wapp/spagobiLeft.png" /></div>';
+    html += '<div style="float:right"><img src="/SpagoBI/img/wapp/spagobiRight.png" /></div>';
     html += '</div>';
-    var embed = new qx.ui.embed.Html(html);
-    this.add( embed );
     
-    /*
-    this.setAppearance("app-header");
-
-    var title = new qx.ui.basic.Label("SpagoBI - Chiron");
-    var version = new qx.ui.basic.Label("V 0.8");
-
-    this.add(title);
-    this.add(new qx.ui.core.Spacer, {flex : 1});
-    this.add(version);
-    */
+    var embed = new qx.ui.embed.Html(html);
+    embed.setHeight(88);
+    this.add( embed,{flex:1} );
   }
 });
 

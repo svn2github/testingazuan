@@ -114,9 +114,7 @@ qx.Class.define("spagobi.ui.PageView", {
 		this._toolbar = new spagobi.ui.IconBar( toolbarConfig );
 		
 		var buttonsConfig = config.toolbar.buttons;
-		for(var i = 0; i < buttonsConfig.length; i++) {
-	
-			
+		for(var i = 0; i < buttonsConfig.length; i++) {			
 			buttonsConfig[i].handler =  function(e){this.selectPage(e.getTarget().getUserData('name'));};
 			buttonsConfig[i].context = this;
 			this._toolbar.addButton( buttonsConfig[i] );

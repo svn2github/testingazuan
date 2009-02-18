@@ -96,10 +96,7 @@ qx.Class.define("spagobi.ui.Form", {
 	construct : function(config) { 
 		this.base(arguments);
 		this.setLayout(new qx.ui.layout.VBox(5));
-				//	this.setWidth('100%');
-				//	this.setHeight('100%');
-				//	this.setDimension(500,500);		
-		//this.setSpacing(5);//change
+				
   		
   		this.dataMappings = [];
   		
@@ -108,7 +105,6 @@ qx.Class.define("spagobi.ui.Form", {
 	  			this.addInputField( config[i] );
 	  		}
   		}
-  	//	this.setBorder(new qx.legacy.ui.core.Border(5));
 	},
 	
 	members: {
@@ -123,10 +119,6 @@ qx.Class.define("spagobi.ui.Form", {
 			for(prop in this.dataMappings) {
 					
 				if(this.dataObject[prop] != undefined) {
-					
-					// Code to test getdata() function for checkbox and radio button .. Don't Delete
-					//if(prop == 'mychecklist')
-					//if(prop == 'type')
 					this.dataObject[prop] = this.getInputFieldValue(prop);
 				}
 			}
@@ -138,6 +130,8 @@ qx.Class.define("spagobi.ui.Form", {
 		 * of form object
 		 */
 		setData: function(o) {
+			spagobi.commons.CoreUtils.dump( o );
+			
 			for(prop in o) {
 				this.setInputFieldValue(prop, o[prop]);
 			}	
@@ -161,41 +155,24 @@ qx.Class.define("spagobi.ui.Form", {
 			
 			if(!this.getInputField(dataIndex)) return null;
 			
-			var container = this.getInputField(dataIndex).getUserData('field');//change..added
-			var object = container.getChildren()[0];//change..added
+			var container = this.getInputField(dataIndex).getUserData('field');
+			var object = container.getChildren()[0];
 			
 			if(this.getInputField(dataIndex).getUserData('type') === 'text') {
-				//value = this.getInputField(dataIndex).getUserData('field').getValue();//change
-				value = object.getValue();
-				
+				value = object.getValue();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'combo') {
-				//value = this.getInputField(dataIndex).getUserData('field').getValue();
-				value = object.getValue();
-				
+				value = object.getValue();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'flag') {
-				//value = this.getInputField(dataIndex).getUserData('field').isChecked();//change
-				value = object.isChecked();
-				
+				value = object.isChecked();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'form') {	
-				//value = this.getInputField(dataIndex).getUserData('field').getData();//change
-				value = object.getData();
-				
+				value = object.getData();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'formList') {	
-				//value = this.getInputField(dataIndex).getUserData('field').getData();//change
-				value = object.getData();
-				
+				value = object.getData();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {	
-				//value = this.getInputField(dataIndex).getUserData('field').getValue();//change
-				value = object.getValue();
-				
+				value = object.getValue();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {	
-				//value = this.getInputField(dataIndex).getUserData('field').getData();//change
-				value = object.getData();
-				
+				value = object.getData();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'radio') {
-				//var atom = this.getInputField(dataIndex).getUserData('field');//change
-				//var radioButton = atom.getChildren();//change
-				
 				var radioButton = container.getChildren();
 				for(i=0; i<radioButton.length; i++){
 					if(radioButton[i].getChecked() == true){
@@ -213,46 +190,32 @@ qx.Class.define("spagobi.ui.Form", {
 		 * @param value The value of the input field of form
 		 */
 		setInputFieldValue: function(dataIndex, value) {
+			
 			if(!this.getInputField(dataIndex)) {
 				return;
 			}
 			
-			var container = this.getInputField(dataIndex).getUserData('field');//change..added
-		//	alert (typeof container);
-			var object = container.getChildren()[0];//change..added
+			
+			
+			var container = this.getInputField(dataIndex).getUserData('field');
+		
+			var object = container.getChildren()[0];
 			
 			if(this.getInputField(dataIndex).getUserData('type') === 'text') {
-				//this.getInputField(dataIndex).getUserData('field').setValue(value);//change
-				object.setValue(value);
-				
+				object.setValue(value);				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'combo') {
-				//this.getInputField(dataIndex).getUserData('field').setValue(value);//change
-				object.setValue(value);
-				
+				object.setValue('' + value);				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'flag') {
-				//this.getInputField(dataIndex).getUserData('field').setChecked(value);//change
-				object.setChecked(value);
-				
+				object.setChecked(value);				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'form') {		
-				//this.getInputField(dataIndex).getUserData('field').setData(value);//change
-				object.setData(value);
-				
+				object.setData(value);				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'formList') {		
-				//this.getInputField(dataIndex).getUserData('field').setData(value);//change
-				object.setData(value);
-				
+				object.setData(value);				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {		
-				//this.getInputField(dataIndex).getUserData('field').setValue(value);//change
-				object.setValue(value);
-				
+				object.setValue(value);				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {		
-				//this.getInputField(dataIndex).getUserData('field').setData(value);//change
-				object.setData(value);
-				
+				object.setData(value);				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'radio') {
-				//var atom = this.getInputField(dataIndex).getUserData('field');//change
-				//var radioButton = atom.getChildren();//change
-				
 				var radioButton = container.getChildren();
 				for(i=0; i<radioButton.length; i++){
 					if(radioButton[i].getLabel() == value){
@@ -308,8 +271,4 @@ qx.Class.define("spagobi.ui.Form", {
   			this.add(inputField);
 		}
 	}
-	//change ... not needed
-	/*,
-	statics : {
-	}*/
 });

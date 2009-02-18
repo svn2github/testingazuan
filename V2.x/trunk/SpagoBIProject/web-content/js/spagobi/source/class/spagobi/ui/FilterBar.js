@@ -48,15 +48,10 @@ qx.Class.define("spagobi.ui.FilterBar", {
 	construct : function() {
 		this.base(arguments);
 		this.setLayout(new qx.ui.layout.HBox);
-		//this.setAlignX("center");
 		this.getLayout().setAlignX("center");
-		
-		//this.set({alignX: "right"});//not working
-		//this.setWidth("100%");// try also "auto"
-		//this.setHeight("100%");
-				//this.setTop(10);
+		this.getLayout().setAlignY("middle");
+
 		this.createFilterBar();
-				//	this.setOverflow("auto");
 	},
 	
 	members : {

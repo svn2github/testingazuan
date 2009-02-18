@@ -69,7 +69,21 @@ qx.Class.define("spagobi.ui.custom.EngineDetailsForm", {
 	*
 	*/ 	
 	construct : function() { 
-		//this.base(arguments, this.self(arguments).formStructure);
+		
+		var serviceRegistry = new spagobi.commons.ServiceRegistry();
+		var serviceUrl = serviceRegistry.getServiceUrl('LIST_DOMAINS_BY_TYPE_ACTION');
+		var u;
+		
+		u = serviceUrl + '&DOMAIN_TYPE=ENGINE_TYPE'; 
+		var engineTypesDataProxy = new spagobi.data.DataProxy({
+			url: u
+		});
+		
+		u = serviceUrl + '&DOMAIN_TYPE=BIOBJ_TYPE'; 
+		var biobjectTypesDataProxy = new spagobi.data.DataProxy({
+			url: u
+		});
+	
 		this.base(arguments,[
         	{
         		type: 'text',
@@ -90,12 +104,31 @@ qx.Class.define("spagobi.ui.custom.EngineDetailsForm", {
         		type: 'combo',
         		dataIndex: 'documentType',
         		text: 'Document type',
-        		items: ["Report","Map"]		
+        		displayField:'valueName',
+	            valueField: 'valueId',
+        		proxy: biobjectTypesDataProxy,    
+        		items: [{
+        			'name':'Report'
+            		, 'id': '5'
+            	}, {
+            		'name':'Map'
+                	, 'id': '6'
+            	}]	
         	}, {
         		type: 'combo',
         		dataIndex: 'engineType',
         		text: 'Engine type',
-        		items: ["Internal","External"],
+        		displayField:'valueCode',
+	            valueField: 'valueId',
+        		proxy: engineTypesDataProxy,        	
+        		items: [{
+        			'name':'Internal'
+        			, 'id': '47'
+        		}, {
+        			'name':'External'
+            		, 'id': '46'
+        		}],
+         
 	        	listeners: [
 	        		{
 	        			event: 'changeValue',
@@ -124,7 +157,15 @@ qx.Class.define("spagobi.ui.custom.EngineDetailsForm", {
         		type: 'combo',
         		dataIndex: 'dataSource',
         		text: 'Data Source',
-        		items: ["foodmart","geo", "spagobi"]
+        		displayField:'name',
+	            valueField: 'id',
+        		items: [{
+        			'name':'Foodmart'
+                	, 'id': '5'
+                }, {
+                	'name':'SpagoBI'
+                   	, 'id': '6'
+                }]	
         	}, {
         		type: 'text',
         		dataIndex: 'class',
@@ -150,13 +191,8 @@ qx.Class.define("spagobi.ui.custom.EngineDetailsForm", {
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
         	if( this && this.getInputField('url') ) {
-        		//if (e.getValue()=="Internal") {//change
         		if (e.getData()=="Internal") {
-        			/*//change
-					this.getInputField('url').setDisplay(false);
-					this.getInputField('driver').setDisplay(false);
-					this.getInputField('class').setDisplay(true);
-					*/
+        			
 					this.getInputField('url').setVisibility("excluded");
 					this.getInputField('driver').setVisibility("excluded");
 					this.getInputField('class').setVisibility("visible");

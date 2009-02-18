@@ -53,10 +53,6 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 		this.base(arguments);
 		this.setLayout(new qx.ui.layout.HBox);
 		this.getLayout().setAlignX("center");
-		//this.setWidth("100%");// try also "auto"
-		//this.setHeight("100%");
-				//	this.setCentered(true);//setLeft("center");
-				//	this.setTop(-5);
 		this.createNavBar();
 		
 	},
@@ -73,6 +69,7 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 		 * <p> Button to go to last page of list
 		 */
 		createNavBar : function(){
+		
 			
 			//var firstPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/firstPage.png");//change
 			var firstPageButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/firstPage.png"));

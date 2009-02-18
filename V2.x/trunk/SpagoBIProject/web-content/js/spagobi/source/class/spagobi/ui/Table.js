@@ -87,7 +87,7 @@ qx.Class.define("spagobi.ui.Table",
       }
     });
 
-  this.set({
+    this.set({
      // 	flex: 1
      //     height: 150 
       });
@@ -235,11 +235,9 @@ qx.Class.define("spagobi.ui.Table",
      
       if (selectedEntry >= 0) {
         var itemData = this.getTableModel().getRowData(selectedEntry);
-		 
-		 
-        			// If this is undefined, the data is not yet ready...
-        if (itemData) {
-        			//if (this._controller != spagobi.ui.custom.FunctionalityTreeSubClass )
+				 
+        // If this is undefined, the data is not yet ready...
+        if (itemData) {        
           this._controller.selectDataObject(itemData);
         }
       }

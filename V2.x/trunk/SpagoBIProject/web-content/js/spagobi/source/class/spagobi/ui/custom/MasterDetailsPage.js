@@ -62,6 +62,19 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	this.base(arguments,"vertical");
 
 	if(type === 'engine') {
+		
+		/*
+		var serviceRegistry = new spagobi.commons.ServiceRegistry();
+		var serviceUrl = serviceRegistry.getServiceUrl('LIST_DOMAINS_BY_TYPE_ACTION');
+		
+		var httpDataProxy = new spagobi.data.DataProxy({
+			url: serviceUrl
+		});
+		
+		proxy.load( {}, true, this.loadOptions, this);
+		 */
+		
+		
 		this.records = spagobi.app.data.DataService.loadEngineRecords();
 		form = new spagobi.ui.custom.EngineDetailsForm(); 
 	} else if(type === 'datasource') {
@@ -120,7 +133,7 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	
 	
 	
-		this.listPage = new spagobi.ui.PagedTable(this,this.records); 
+	this.listPage = new spagobi.ui.PagedTable(this,this.records); 
 	  
 	   	this.add(this.listPage,0);
 	   	
@@ -130,11 +143,14 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	   		
 	   	containerBottom = new qx.ui.core.Widget();
 	   	var Vbox = new qx.ui.layout.VBox();
+	   	Vbox.setSpacing(10);
 	   	containerBottom._setLayout(Vbox);
 	   	
 	   
 	   	var formBar = new qx.ui.container.Composite(new qx.ui.layout.HBox);
-	   
+	   	formBar.setBackgroundColor("#F9F9F9");
+
+	   	
 	   	var createButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/create.png"));
 	    var createToolTip = new qx.ui.tooltip.ToolTip("New");
 	    createButton.setToolTip(createToolTip);
@@ -162,7 +178,9 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	    
 	    containerBottom._add(this._form);
 	    var scroll = new qx.ui.container.Scroll();
-	     scroll.add(containerBottom);
+	    scroll.add(containerBottom);
+	    scroll.setBackgroundColor("white");
+	    
 	    this.add(scroll,1);
 	   	}
   },
@@ -217,7 +235,6 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     
     //testing for parameter form's getData() function for checkbox list... Don't Delete
     myFunction:function(){
-    	alert("button works");
     	this._form.setData({mychecklist: ["eeee","jjjj"]});
     	var o = this._form.getData();
     	var list = "";

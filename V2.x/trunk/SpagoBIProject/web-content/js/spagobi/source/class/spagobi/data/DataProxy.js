@@ -22,14 +22,14 @@ qx.Class.define("spagobi.data.DataProxy",
     	    		, method: 'GET'    	    		
     	    		, responseMimeType: 'application/json'
     	    };
-    		//, responseMimeType = 'text/plain'
     		
     		var c = spagobi.commons.CoreUtils.apply({}, config, defaultConfig);
     		
     		this._url = c.url;
     		this._params = c.params;
     		this._request = new qx.io.remote.Request(c.url, c.method, c.responseMimeType);    	
-    		
+    		this._request.addListener('completed', this.handleRequestCompleted, this);
+    		this._request.addListener('failed', this.handleRequestFailed, this);
     	}
   	},
 
@@ -41,14 +41,12 @@ qx.Class.define("spagobi.data.DataProxy",
   		, _datastore: undefined
   		
   		
-  		, load: function( params, append ) {
+  		, load: function( params, append, callback, scope ) {
   			
   			var p = spagobi.commons.CoreUtils.apply({}, this._params);
   			if(params) {
   				spagobi.commons.CoreUtils.apply(p, params);
   			}
-  			
-  			alert(this._url);
   			
   			var u = this._url;
   			var s = append? '&': '?';
@@ -58,16 +56,39 @@ qx.Class.define("spagobi.data.DataProxy",
  	        }
   			
   			this._request.setUrl(u);
-  			this._request.setAsynchronous(false);
+  			this._request.setUserData('callback', callback);
+  			this._request.setUserData('scope', scope);
+  			this._request.setUserData('scope', scope);
+  			//this._request.setAsynchronous(false);
   			
-  		
+  			/*
   			this._request.addListener("completed", function(e) {
   				this._datastore = e.getContent();
   			}, this);
-  		
+  			*/
+  			
   			this._request.send();
   			
   			return this._datastore;
   		}
+  	
+  		, handleRequestCompleted: function(response) {
+  			
+  			var request = response.getTarget()
+  			var callback = request.getUserData('callback');
+  			var scope = request.getUserData('scope');
+  			  			
+  			callback.call(scope, response.getContent());
+  		}
+  		
+  		, handleRequestFailed: function(response) {
+  			
+  			//this._datastore = response.getContent();
+  			var request = response.getTarget()
+  			spagobi.commons.CoreUtils.msg('ERROR: Request failed [' + request.getUrl() + ']');
+  			spagobi.commons.CoreUtils.dump(response);
+  		}
+  		
+  		
   	}
 });

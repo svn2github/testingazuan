@@ -324,27 +324,29 @@ qx.Class.define("spagobi.app.data.DataService", {
   	},
   	
   	loadEngineRecords: function() {
-  		alert("Please wait ...");
   		var serviceRegistry = new spagobi.commons.ServiceRegistry();
   		var serviceUrl = serviceRegistry.getServiceUrl('LIST_ENGINES_ACTION');
   		var httpDataProxy = new spagobi.data.DataProxy({
   			url: serviceUrl
   		});
-  		httpDataProxy.load();
+  		httpDataProxy.load({}, true, function(dataset){
+  			alert('Callback body: ' + spagobi.commons.CoreUtils.toStr(dataset));
+  		}, this);
   		
   		
   		
   		var records = {};
-  		alert('?> ' + spagobi.commons.CoreUtils.arrayToStr(httpDataProxy._datastore.metaData.fields));
-  		alert('!> ' + spagobi.commons.CoreUtils.arrayToStr(httpDataProxy._datastore.rows) );
-  		alert('x> ' + spagobi.commons.CoreUtils.arrayToStr(this.loadEngineData()) );
-  		
+  		  		
+  		if(httpDataProxy._datastore) {
+  			records.meta = httpDataProxy._datastore.metaData.fields;
+  			records.rows = httpDataProxy._datastore.rows;
+  		} else {
+  			alert('ERROR');
+  			records.meta =  this.loadEngineMeta();  	  		
+  	    	records.rows =  this.loadEngineData();
+  		}
   		
     	
-  		//records.meta =  this.loadEngineMeta();
-  		records.meta = httpDataProxy._datastore.metaData.fields
-    	//records.rows =  this.loadEngineData();
-    	records.rows = httpDataProxy._datastore.rows;
     
     	
     	return records;

@@ -36,8 +36,8 @@ public class JPivotServlet extends HttpServlet {
 	logger.debug("forward:" + forward);
 	logger.debug("dimAccRulStr:" + dimAccRulStr);
 
-	String language = request.getParameter("language");
-	String country = request.getParameter("country");
+	String language = request.getParameter("SBI_LANGUAGE");
+	String country = request.getParameter("SBI_COUNTRY");
 	logger.debug("Locale parameters received: language = [" + language + "] ; country = [" + country + "]");
 
 	Locale locale = null;

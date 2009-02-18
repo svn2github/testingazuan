@@ -32,27 +32,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.engines;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanAttribute;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.container.ContextManager;
-import it.eng.spagobi.container.IBeanContainer;
-import it.eng.spagobi.container.IContainer;
-import it.eng.spagobi.container.SpagoBIRequestContainer;
-import it.eng.spagobi.container.SpagoBISessionContainer;
-import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
-import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
-import it.eng.spagobi.services.content.bo.Content;
-import it.eng.spagobi.services.proxy.ContentServiceProxy;
-import it.eng.spagobi.services.proxy.DataSetServiceProxy;
-import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
-import it.eng.spagobi.tools.dataset.bo.IDataSet;
-import it.eng.spagobi.tools.datasource.bo.IDataSource;
-import it.eng.spagobi.utilities.ParametersDecoder;
-import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +43,26 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import sun.misc.BASE64Decoder;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.container.ContextManager;
+import it.eng.spagobi.container.IBeanContainer;
+import it.eng.spagobi.container.IContainer;
+import it.eng.spagobi.container.SpagoBIRequestContainer;
+import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
+import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
+import it.eng.spagobi.services.content.bo.Content;
+import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.services.proxy.DataSetServiceProxy;
+import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
+import it.eng.spagobi.utilities.ParametersDecoder;
+import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -98,8 +97,8 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	public static final String DOCUMENT_ID = "document";
 	public static final String SBI_EXECUTION_ID = "SBI_EXECUTION_ID";
 	
-	public static final String COUNTRY = "country";
-	public static final String LANGUAGE = "language";
+	public static final String COUNTRY = "SBI_COUNTRY";
+	public static final String LANGUAGE = "SBI_LANGUAGE";
 	
 	public static final String SUBOBJ_ID = "subobjectId";
 	public static final String SUBOBJ_NAME = "nameSubObject";

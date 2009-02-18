@@ -271,3 +271,7 @@ Alter table `SBI_ALARM` add Foreign Key (`id_threshold_value`) references `SBI_T
 Alter table `SBI_ALARM_EVENT` add Foreign Key (`ALARM_ID`) references `SBI_ALARM` (`ALARM_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_ID`) references `SBI_ALARM` (`ALARM_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_ALARM_DISTRIBUTION` add Foreign Key (`ALARM_CONTACT_ID`) references `SBI_ALARM_CONTACT` (`ALARM_CONTACT_ID`) on delete  restrict on update  restrict;
+
+Alter table `SBI_KPI` add Foreign Key (`kpi_type`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI` add Foreign Key (`metric_scale_type`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI` add Foreign Key (`measure_type`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;

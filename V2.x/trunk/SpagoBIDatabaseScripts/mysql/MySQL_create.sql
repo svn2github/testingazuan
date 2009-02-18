@@ -675,10 +675,17 @@ Create table `SBI_KPI` (
 	`name` Varchar(400) NOT NULL,
 	`document_label` Varchar(40),
 	`code` Varchar(40),
-	`metric` Varchar(2000),
+	`metric` Varchar(1000),
 	`description` Varchar(1000),
 	`weight` Double,
 	`flg_is_father` Char(1),
+	`kpi_type` Int,
+	`metric_scale_type` Int,
+	`measure_type` Int,
+	`interpretation` Varchar(1000),
+	`input_attributes` Varchar(1000),
+	`model_reference` Varchar(255),
+	`target_audience` Varchar(1000),
  Primary Key (`KPI_ID`)) ENGINE = InnoDB;
  
  

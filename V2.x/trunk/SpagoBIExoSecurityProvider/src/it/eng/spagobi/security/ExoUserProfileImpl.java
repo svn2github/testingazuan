@@ -132,6 +132,12 @@ public class ExoUserProfileImpl implements ISecurityServiceSupplier {
 	return profile;
     }
 
+	public SpagoBIUserProfile checkAuthenticationWithToken(String userId,
+			String token) {
+		logger.warn("checkAuthentication NOT implemented");
+		return null;
+	}
+
 
 	
 }

@@ -168,4 +168,10 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
 	logger.warn("checkAuthorization NOT implemented");
 	return false;
     }
+    
+	public SpagoBIUserProfile checkAuthenticationWithToken(String userId,
+			String token) {
+		logger.error("checkAuthenticationWithToken NOT implemented");
+		return null;
+	}
 }

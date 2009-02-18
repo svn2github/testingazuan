@@ -170,4 +170,10 @@ public class LdapUserProfileFactoryImpl implements ISecurityServiceSupplier {
 	return result;
     }
 
+	public SpagoBIUserProfile checkAuthenticationWithToken(String userId,
+			String token) {
+		logger.error("checkAuthenticationWithToken NOT implemented");
+		return null;
+	}
+
 }

@@ -54,4 +54,12 @@ public interface ISecurityServiceSupplier {
          * @return
          */
         SpagoBIUserProfile checkAuthentication(String userId, String psw);
+        
+        /**
+         * if SpagoBIUserProfile is NULL the token is incorrect!!!!
+         * @param userId
+         * @param token
+         * @return
+         */
+        SpagoBIUserProfile checkAuthenticationWithToken(String userId, String token);
 }

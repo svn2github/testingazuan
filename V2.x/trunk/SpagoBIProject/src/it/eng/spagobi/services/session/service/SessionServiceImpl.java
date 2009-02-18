@@ -21,26 +21,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.session.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
+import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
+import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
+import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
+import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
+import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.engines.config.bo.Engine;
-import it.eng.spagobi.services.session.bo.Document;
-import it.eng.spagobi.services.session.bo.DocumentParameter;
-import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
+import it.eng.spagobi.services.session.bo.Document;
+import it.eng.spagobi.services.session.bo.DocumentParameter;
 import it.eng.spagobi.services.session.exceptions.AuthenticationException;
 import it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.axis.MessageContext;
 import org.apache.axis.session.Session;
@@ -50,32 +56,55 @@ public class SessionServiceImpl {
 	
 	static private Logger logger = Logger.getLogger(SessionServiceImpl.class);
 
-	public void openSession(String userName, String password) throws AuthenticationException {
+	public void openSession(String userId, String password) throws AuthenticationException {
 		logger.debug("IN");
     	ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-    	Object ris= supplier.checkAuthentication(userName, password);
+    	Object ris= supplier.checkAuthentication(userId, password);
     	if (ris == null) {
-    		logger.error("Authentication failed for username [" + userName + "]!");
+    		logger.error("Authentication failed for userId [" + userId + "]!");
     		throw new AuthenticationException();
     	}
-    	logger.debug("Authentication successful for username [" + userName + "]!");
+    	logger.debug("Authentication successful for userId [" + userId + "]!");
     	//SpagoBIUserProfile user = supplier.createUserProfile(userName);
     	IEngUserProfile profile=null;
 		try {
-			profile = UserUtilities.getUserProfile(userName);
+			profile = UserUtilities.getUserProfile(userId);
+			logger.debug("User profile for userId [" + userId + "] created.");
 		} catch (Exception e) {
-			logger.error("Exception for username [" + userName + "]!",e);
+			logger.error("Exception creating user profile for userId [" + userId + "]!",e);
 		}
-    	logger.debug("User profile for username [" + userName + "] created.");
-		MessageContext mc = MessageContext.getCurrentContext();
-        Session wsSession =  mc.getSession();
-        wsSession.set(IEngUserProfile.ENG_USER_PROFILE, profile);
-        logger.debug("User profile for username [" + userName + "] put on session.");
+		if (profile != null) {
+			MessageContext mc = MessageContext.getCurrentContext();
+	        Session wsSession =  mc.getSession();
+	        wsSession.set(IEngUserProfile.ENG_USER_PROFILE, profile);
+	        logger.debug("User profile for userId [" + userId + "] put on session.");
+		} else {
+			logger.warn("User profile for userId [" + userId + "] NOT built.");
+		}
         logger.debug("OUT");
 	}
 	
-	public void openSessionWithToken(String userName, String token) throws AuthenticationException {
+	public void openSessionWithToken(String userId, String token) throws AuthenticationException {
 		logger.debug("IN");
+    	ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+    	Object ris= supplier.checkAuthenticationWithToken(userId, token);
+    	if (ris == null) {
+    		logger.error("Authentication failed for userId [" + userId + "]!");
+    		throw new AuthenticationException();
+    	}
+    	logger.debug("Authentication successful for userId [" + userId + "]!");
+    	//SpagoBIUserProfile user = supplier.createUserProfile(userName);
+    	IEngUserProfile profile=null;
+		try {
+			profile = UserUtilities.getUserProfile(userId);
+		} catch (Exception e) {
+			logger.error("Exception for userId [" + userId + "]!",e);
+		}
+    	logger.debug("User profile for userId [" + userId + "] created.");
+		MessageContext mc = MessageContext.getCurrentContext();
+        Session wsSession =  mc.getSession();
+        wsSession.set(IEngUserProfile.ENG_USER_PROFILE, profile);
+        logger.debug("User profile for userId [" + userId + "] put on session.");
         logger.debug("OUT");
 	}
 	
@@ -149,7 +178,7 @@ public class SessionServiceImpl {
             IEngUserProfile profile = SessionServiceImpl.getUserProfile();
             BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(documentId);
             if (!ObjectsAccessVerifier.canSee(obj, profile)) {
-            	logger.error("User [" + ((SpagoBIUserProfile) profile).getUserName() + "] cannot execute document with id = [" + documentId + "]");
+            	logger.error("User [" + ((UserProfile) profile).getUserName() + "] cannot execute document with id = [" + documentId + "]");
             	throw new NonExecutableDocumentException();
             }
             List correctRoles = ObjectsAccessVerifier.getCorrectRolesForExecution(documentId, profile);
@@ -173,16 +202,16 @@ public class SessionServiceImpl {
             IEngUserProfile profile = SessionServiceImpl.getUserProfile();
             BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(documentId);
             if (!ObjectsAccessVerifier.canSee(obj, profile)) {
-            	logger.error("User [" + ((SpagoBIUserProfile) profile).getUserName() + "] cannot execute document with id = [" + documentId + "]");
+            	logger.error("User [" + ((UserProfile) profile).getUserName() + "] cannot execute document with id = [" + documentId + "]");
             	throw new NonExecutableDocumentException();
             }
             List correctRoles = ObjectsAccessVerifier.getCorrectRolesForExecution(documentId, profile);
             if (correctRoles == null || correctRoles.size() == 0) {
-            	logger.error("User [" + ((SpagoBIUserProfile) profile).getUserName() + "] has no roles to execute document with id = [" + documentId + "]");
+            	logger.error("User [" + ((UserProfile) profile).getUserName() + "] has no roles to execute document with id = [" + documentId + "]");
             	throw new NonExecutableDocumentException();
             }
             if (!correctRoles.contains(roleName)) {
-            	logger.error("Role [" + roleName + "] is not a valid role for executing document with id = [" + documentId + "] for user [" + ((SpagoBIUserProfile) profile).getUserName() + "]");
+            	logger.error("Role [" + roleName + "] is not a valid role for executing document with id = [" + documentId + "] for user [" + ((UserProfile) profile).getUserName() + "]");
             	throw new NonExecutableDocumentException();
             }
         	
@@ -230,8 +259,69 @@ public class SessionServiceImpl {
         return parameters;
     }
 
-    public HashMap getAdmissibleValues(Integer documentParameterId, String roleName) {
-        return null;
+    public HashMap getAdmissibleValues(Integer documentParameterId, String roleName) throws NonExecutableDocumentException {
+    	HashMap values = new HashMap<String, String>();
+        logger.debug("IN: documentParameterId = [" + documentParameterId + "]; roleName = [" + roleName + "]");
+        try {
+            IEngUserProfile profile = SessionServiceImpl.getUserProfile();
+            BIObjectParameter documentParameter = DAOFactory.getBIObjectParameterDAO().loadForDetailByObjParId(documentParameterId);
+            BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(documentParameter.getBiObjectID());
+            if (!ObjectsAccessVerifier.canSee(obj, profile)) {
+            	logger.error("User [" + ((UserProfile) profile).getUserName() + "] cannot execute document with id = [" + obj.getId() + "]");
+            	throw new NonExecutableDocumentException();
+            }
+            List correctRoles = ObjectsAccessVerifier.getCorrectRolesForExecution(obj.getId(), profile);
+            if (correctRoles == null || correctRoles.size() == 0) {
+            	logger.error("User [" + ((UserProfile) profile).getUserName() + "] has no roles to execute document with id = [" + obj.getId() + "]");
+            	throw new NonExecutableDocumentException();
+            }
+            if (!correctRoles.contains(roleName)) {
+            	logger.error("Role [" + roleName + "] is not a valid role for executing document with id = [" + obj.getId() + "] for user [" + ((UserProfile) profile).getUserName() + "]");
+            	throw new NonExecutableDocumentException();
+            }
+            
+            // reload BIObjectParameter in execution modality
+            BIObjectParameter biParameter = null;
+            obj = DAOFactory.getBIObjectDAO().loadBIObjectForExecutionByIdAndRole(obj.getId(), roleName);
+            List biparameters = obj.getBiObjectParameters();
+            Iterator biparametersIt = biparameters.iterator();
+            while (biparametersIt.hasNext()) {
+            	BIObjectParameter aDocParameter = (BIObjectParameter) biparametersIt.next();
+            	if (aDocParameter.getId().equals(documentParameterId)) {
+            		biParameter = aDocParameter;
+            		break;
+            	}
+            }
+            
+			Parameter par = biParameter.getParameter();
+			ModalitiesValue paruse = par.getModalityValue();
+			if (paruse.getITypeCd().equals("MAN_IN")) {
+				logger.debug("Document parameter is manual input. An empty HashMap will be returned.");
+			} else {
+	        	String lovResult = biParameter.getLovResult();
+	        	if (lovResult == null) {
+	        		String lovprov = paruse.getLovProvider();
+	            	ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovprov);
+	    			lovResult = lovDetail.getLovResult(profile);
+	    			LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
+	    			biParameter.setLovResult(lovResult);
+	    			List rows = lovResultHandler.getRows();
+	    			Iterator it = rows.iterator();
+	    			while (it.hasNext()) {
+	    				SourceBean row = (SourceBean) it.next();
+	    				String value = (String) row.getAttribute(lovDetail.getValueColumnName());
+	    				String description = (String) row.getAttribute(lovDetail.getDescriptionColumnName());
+	    				values.put(value, description);
+	    			}
+	        	}
+			}
+        } catch(NonExecutableDocumentException e) {
+            throw e;
+        } catch(Exception e) {
+            logger.error(e);
+        }
+        logger.debug("OUT");
+        return values;
     }
 	
 }

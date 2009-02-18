@@ -1106,9 +1106,9 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				+ (kpiInstBegDt != null ? kpiInstBegDt.toString()
 						: "Begin date null"));
 		// in case the current threshold is correct
-		if ((d.before(endDate) || d.equals(endDate))
+		if (((d.before(endDate) || d.equals(endDate))
 				&& (d.after(beginDate) || d.equals(beginDate))
-				&& (d.after(kpiInstBegDt) || d.equals(kpiInstBegDt))) {
+				&& (d.after(kpiInstBegDt) || d.equals(kpiInstBegDt)))|| kpiInst.getSbiKpiInstanceHistories().isEmpty()) {
 
 			weight = kpiInst.getWeight();
 			logger.debug("SbiKpiValue weight: "

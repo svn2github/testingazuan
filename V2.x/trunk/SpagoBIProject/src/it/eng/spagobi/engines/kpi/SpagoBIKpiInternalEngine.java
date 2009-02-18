@@ -512,7 +512,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		line.setAlarm(alarm);
 	    }
 
-	    if (display_bullet_chart &&  value!=null &&  value.getValue()!= null && !value.getThresholds().isEmpty()) {
+	    if (display_bullet_chart &&  value!=null &&  value.getValue()!= null && value.getThresholds()!=null && !value.getThresholds().isEmpty()) {
 
 		List thresholds = value.getThresholds();
 		/*
@@ -606,7 +606,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	Date kpiInstBegDt = kpiInst.getD();
 	logger.debug("kpiInstBegDt begin date: "+(kpiInstBegDt!=null ? kpiInstBegDt.toString(): "Begin date null"));
 	
-	if ( (dateOfKPI.after(kpiInstBegDt)||dateOfKPI.equals(kpiInstBegDt))) {
+	if ( (dateOfKPI.after(kpiInstBegDt)||dateOfKPI.equals(kpiInstBegDt))|| DAOFactory.getKpiDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI)==null) {
 		
 		logger.debug("Requested date d: "+dateOfKPI.toString()+" in between beginDate and EndDate");
 		weight = kpiInst.getWeight();

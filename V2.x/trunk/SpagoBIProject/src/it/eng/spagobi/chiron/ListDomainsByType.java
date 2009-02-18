@@ -22,14 +22,18 @@ import it.eng.spagobi.utilities.service.JSONSuccess;
  * @author Andtra Gioia (andrea.gioia@eng.it)
  *
  */
-public class ListEnginesAction extends AbstractBaseHttpAction{
+public class ListDomainsByType extends AbstractBaseHttpAction {
+	
+	// request parameters
+	public static final String DOMAIN_TYPE = "DOMAIN_TYPE";
 	
 	// logger component
-	private static Logger logger = Logger.getLogger(ListEnginesAction.class);
-	
+	private static Logger logger = Logger.getLogger(ListDomainsByType.class);
+
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		
-		List engines;
+		String domainType;
+		List domains;
 		
 		logger.debug("IN");
 		
@@ -37,31 +41,36 @@ public class ListEnginesAction extends AbstractBaseHttpAction{
 			setSpagoBIRequestContainer( request );
 			setSpagoBIResponseContainer( response );
 			
-			engines = DAOFactory.getEngineDAO().loadAllEngines();
-			JSONArray enginesJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( engines );
+			domainType = getAttributeAsString( DOMAIN_TYPE );
+			logger.debug("Parameter [" + DOMAIN_TYPE + "] is equal to [" + domainType + "]");
+			
+			domains = DAOFactory.getDomainDAO().loadListDomainsByType( domainType );
+			JSONArray domainsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( domains );
 			
 			try {
-				writeBackToClient( new JSONSuccess( createJSONResponse(enginesJSON) ) );
+				writeBackToClient( new JSONSuccess( createJSONResponse(domainsJSON) ) );
 			} catch (IOException e) {
 				throw new SpagoBIException("Impossible to write back the responce to the client", e);
 			}
+		
 		} catch (Throwable t) {
-			throw new SpagoBIException("An unexpected error occured while executing LIST_ENGINES_ACTION", t);
+			throw new SpagoBIException("An unexpected error occured while executing LIST_DOMAINS_BY_TYPE_ACTION", t);
 		} finally {
 			logger.debug("OUT");
 		}
+		
 	}
-	
+
 	private JSONObject createJSONResponse(JSONArray rows) throws JSONException {
 		JSONObject results;
 		JSONObject metadata;
 		JSONArray fields;
 		JSONObject field;
-		
+				
 		results = new JSONObject();
 		metadata = new JSONObject();
 		fields = new JSONArray();
-		rows = new JSONArray();
+		
 		
 		metadata.put("fields", fields);
 		results.put("metaData", metadata);
@@ -69,23 +78,28 @@ public class ListEnginesAction extends AbstractBaseHttpAction{
 		
 		// create metadata
 		field = new JSONObject();
-		field.put("dataIndex", EngineJSONSerializer.LABEL);
-		field.put("name", "Label");
+		field.put("dataIndex", DomainJSONSerializer.DOMAIN_CODE);
+		field.put("name", "Domain Code"); // localize me please
 		fields.put(field);
 		
 		field = new JSONObject();
-		field.put("dataIndex", EngineJSONSerializer.NAME);
-		field.put("name", "Name");
+		field.put("dataIndex", DomainJSONSerializer.DOMAIN_NAME);
+		field.put("name", "Domain Name"); // localize me please
 		fields.put(field);
 		
 		field = new JSONObject();
-		field.put("dataIndex", EngineJSONSerializer.DESCRIPTION);
-		field.put("name", "Description");
+		field.put("dataIndex", DomainJSONSerializer.VALUE_CODE);
+		field.put("name", "Value Code"); // localize me please
 		fields.put(field);
 		
 		field = new JSONObject();
-		field.put("dataIndex", EngineJSONSerializer.DOCUMENT_TYPE);
-		field.put("name", "DocumentType");
+		field.put("dataIndex", DomainJSONSerializer.VALUE_NAME);
+		field.put("name", "Value Name"); // localize me please
+		fields.put(field);
+		
+		field = new JSONObject();
+		field.put("dataIndex", DomainJSONSerializer.VALUE_DECRIPTION);
+		field.put("name", "Value Description"); // localize me please
 		fields.put(field);
 		
 		return results;

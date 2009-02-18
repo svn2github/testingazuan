@@ -22,12 +22,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.commons.presentation.tags;
 
 import it.eng.spagobi.commons.utilities.PortletUtilities;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.tagext.TagSupport;
 
 public class CommonWizardLovTag extends TagSupport {
 
+	protected IMessageBuilder msgBuilder = null;
+	protected String _bundle = null;
+	protected HttpServletRequest httpRequest = null;
+	
 	protected String generateProfAttrTitleSection(String urlImg) {
+	
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		if (_bundle == null)
+			_bundle = "messages";
+
+		httpRequest = (HttpServletRequest) pageContext.getRequest();
+		
 		StringBuffer output = new StringBuffer();
 		output.append("		<td class='titlebar_level_2_empty_section'>&nbsp;</td>\n");
 		output.append("		<td class='titlebar_level_2_button_section'>\n");
@@ -35,8 +49,10 @@ public class CommonWizardLovTag extends TagSupport {
 		output.append("				<img width='22px' height='22px'\n");
 		output.append("				 	 src='" + urlImg +"'\n");
 		output.append("					 name='info'\n");
-		output.append("					 alt='"+PortletUtilities.getMessage("SBIDev.lov.avaiableProfAttr", "messages")+"'\n");
-		output.append("					 title='"+PortletUtilities.getMessage("SBIDev.lov.avaiableProfAttr", "messages")+"'/>\n");
+		output.append("					 alt='"+msgBuilder.getMessage("SBIDev.lov.avaiableProfAttr", _bundle,httpRequest)+"'\n");
+		output.append("					 title='"+msgBuilder.getMessage("SBIDev.lov.avaiableProfAttr", _bundle, httpRequest)+"'/>\n");		
+		//output.append("					 alt='"+PortletUtilities.getMessage("SBIDev.lov.avaiableProfAttr", "messages")+"'\n");
+		//output.append("					 title='"+PortletUtilities.getMessage("SBIDev.lov.avaiableProfAttr", "messages")+"'/>\n");
 		output.append("			</a>\n");
 		output.append("		</td>\n");
 		String outputStr = output.toString();

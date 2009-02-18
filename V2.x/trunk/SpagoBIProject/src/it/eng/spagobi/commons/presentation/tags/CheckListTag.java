@@ -38,6 +38,8 @@ import it.eng.spago.util.ContextScooping;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -88,6 +90,10 @@ public class CheckListTag extends TagSupport
     PortletRequest portReq = null;
     SessionContainer _session = null;
     
+	protected IMessageBuilder msgBuilder = null;
+	protected String _bundle = null;
+
+    
     /**
      * Consructor.
      */
@@ -119,6 +125,10 @@ public class CheckListTag extends TagSupport
 		_serviceRequest = _requestContainer.getServiceRequest();
 		_responseContainer = ResponseContainerPortletAccess.getResponseContainer(httpRequest);
 		
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		if (_bundle == null)
+			_bundle = "messages";
+
 		
 		_session = _requestContainer.getSessionContainer();
 		
@@ -221,7 +231,8 @@ public class CheckListTag extends TagSupport
 		List buttons = buttonsSB.getContainedSourceBeanAttributes();
 		
 		if (titleCode != null && buttons.size() > 0) {
-			String title = PortletUtilities.getMessage(titleCode, "messages");
+			//String title = PortletUtilities.getMessage(titleCode, "messages");
+			String title = msgBuilder.getMessage(titleCode, _bundle, httpRequest);
 			_htmlStream.append(" <table class=\"header-table-portlet-section\">\n");
 			_htmlStream.append("	<tr class='header-row-portlet-section'>\n");
 			_htmlStream.append("			<td class=\"header-title-column-portlet-section\" style=\"vertical-align:middle;padding-left:5px;\" >" + title + "</td>\n");
@@ -269,7 +280,7 @@ public class CheckListTag extends TagSupport
 			String nameColumn = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("NAME");
 			String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
 			String labelColumn = "";
-			if (labelColumnCode != null) labelColumn = PortletUtilities.getMessage(labelColumnCode, "messages");
+			if (labelColumnCode != null) labelColumn = msgBuilder.getMessage(labelColumnCode, _bundle, httpRequest);
 			else labelColumn = nameColumn;
 			// if an horizontal-align is specified it is considered, otherwise the defualt is align='left'
 			String align = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("horizontal-align");
@@ -511,8 +522,8 @@ public class CheckListTag extends TagSupport
 		//_htmlStream.append("		<TD class='portlet-section-footer'>&nbsp;</TD>\n");
 		
         // visualize page numbers
-		String pageLabel = PortletUtilities.getMessage("ListTag.pageLable", "messages");
-		String pageOfLabel = PortletUtilities.getMessage("ListTag.pageOfLable", "messages");
+		String pageLabel = msgBuilder.getMessage("ListTag.pageLable", _bundle, httpRequest);
+		String pageOfLabel = msgBuilder.getMessage("ListTag.pageOfLable", _bundle, httpRequest);
 		_htmlStream.append("						<TD class='portlet-section-footer' align='center'>\n");
 		_htmlStream.append("							<font class='aindice'>&nbsp;"+pageLabel+ " " + pageNumber + " " +pageOfLabel+ " " + pagesNumber + "&nbsp;</font>\n");
 		_htmlStream.append("						    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n");
@@ -523,13 +534,13 @@ public class CheckListTag extends TagSupport
 			PortletURL allUrl = createUrl(_providerUrlMap);
 			PortletURL filterURL = createUrl(_providerUrlMap);
 			
-			String label = PortletUtilities.getMessage("SBIListLookPage.labelFilter", "messages");
-			String labelStart = PortletUtilities.getMessage("SBIListLookPage.startWith", "messages");;
-			String labelEnd = PortletUtilities.getMessage("SBIListLookPage.endWith", "messages");;
-			String labelContain = PortletUtilities.getMessage("SBIListLookPage.contains", "messages");;
-			String labelEqual = PortletUtilities.getMessage("SBIListLookPage.isEquals", "messages");;
-			String labelFilter = PortletUtilities.getMessage("SBIListLookPage.filter", "messages");
-			String labelAll = PortletUtilities.getMessage("SBIListLookPage.all", "messages");
+			String label = msgBuilder.getMessage("SBIListLookPage.labelFilter", _bundle, httpRequest);
+			String labelStart = msgBuilder.getMessage("SBIListLookPage.startWith", _bundle, httpRequest);;
+			String labelEnd = msgBuilder.getMessage("SBIListLookPage.endWith", _bundle, httpRequest);;
+			String labelContain = msgBuilder.getMessage("SBIListLookPage.contains", _bundle, httpRequest);;
+			String labelEqual = msgBuilder.getMessage("SBIListLookPage.isEquals", _bundle, httpRequest);;
+			String labelFilter = msgBuilder.getMessage("SBIListLookPage.filter", _bundle, httpRequest);
+			String labelAll = msgBuilder.getMessage("SBIListLookPage.all", _bundle, httpRequest);
 			
 			_htmlStream.append("						    <br/><br/>\n");
 			_htmlStream.append("						    <form action='"+filterURL+"' id='" + formId +"' method='post'>\n");
@@ -540,7 +551,7 @@ public class CheckListTag extends TagSupport
 				String nameColumn = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("NAME");
 				String labelColumnCode = (String) ((SourceBean) _columns.elementAt(i)).getAttribute("LABEL");
 				String labelColumn = new String(nameColumn);
-				if (labelColumnCode != null) labelColumn = PortletUtilities.getMessage(labelColumnCode, "messages");
+				if (labelColumnCode != null) labelColumn = msgBuilder.getMessage(labelColumnCode, _bundle, httpRequest);
 				String selected = "";
 				if (nameColumn.equalsIgnoreCase(columnFilter))
 					selected = " selected='selected' "; 
@@ -614,7 +625,7 @@ public class CheckListTag extends TagSupport
 			String name = (String) buttonSB.getAttribute("name");
 			String img = (String) buttonSB.getAttribute("image");
 			String labelCode = (String) buttonSB.getAttribute("label");			
-			String label = PortletUtilities.getMessage(labelCode, "messages");
+			String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);
 			
 			PortletURL buttonUrl = createUrl(paramsMap);
 			

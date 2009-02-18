@@ -27,6 +27,8 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.TreeObjectsModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 
 import java.util.Iterator;
 import java.util.List;
@@ -49,6 +51,9 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	private int dTreeRootId = -100;
 	private int dTreeObjects = -1000;
 	protected String requestIdentity = null;
+	
+	protected IMessageBuilder msgBuilder = null;
+	protected String _bundle = null;
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeAccessibleTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
@@ -114,6 +119,11 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 		
 		// identity string for object of the page
+		
+		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		if (_bundle == null)
+			_bundle = "messages";
+		
 	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 	    UUID uuid = uuidGen.generateTimeBasedUUID();
 	    requestIdentity = uuid.toString();
@@ -125,7 +135,10 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 		StringBuffer htmlStream = new StringBuffer();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
 		makeConfigurationDtree(htmlStream);
-		String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"messages");
+		
+		//String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"messages");
+		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,_bundle, httpRequest);		
+		
 		htmlStream.append("<SCRIPT language='JavaScript' src='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/js/dtree.js" )+"'></SCRIPT>");
 		htmlStream.append("<div id='divmenu' style='position:absolute;left:0;top:0;display:none;width:80px;height:120px;background-color:#FFFFCC;border-color:black;border-style:solid;border-weight:1;' onmouseout='hideMenu();' >");
 		htmlStream.append("		menu");
@@ -166,7 +179,9 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
 		
 		String nameLabel = folder.getName();
-		String name = PortletUtilities.getMessage(nameLabel, "messages");
+		//String name = PortletUtilities.getMessage(nameLabel, "messages");
+		String name = msgBuilder.getMessage(nameLabel, _bundle, httpRequest);
+
 		Integer idFolder = folder.getId();
 		Integer parentId = folder.getParentId();
 		String imgFolder = PortletUtilities.createPortletURLForResource(httpRequest, "/img/treefolder.gif");

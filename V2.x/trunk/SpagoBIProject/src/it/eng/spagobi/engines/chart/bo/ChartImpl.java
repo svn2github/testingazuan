@@ -34,6 +34,7 @@ import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup;
 import it.eng.spagobi.engines.chart.bo.charttypes.boxcharts.SimpleBox;
 import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.SimpleCluster;
+import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SBISpeedometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
@@ -368,6 +369,9 @@ public class ChartImpl implements IChart {
 			}
 			else if(subtype.equalsIgnoreCase("meter")){
 				sbi= new Meter();
+			}
+			else if(subtype.equalsIgnoreCase("bullet")){
+				sbi= new BulletGraph();
 			}
 		}
 		if(type.equals("PIECHART")){

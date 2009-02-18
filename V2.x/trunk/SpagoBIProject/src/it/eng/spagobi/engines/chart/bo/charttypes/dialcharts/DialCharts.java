@@ -358,15 +358,4 @@ public class DialCharts extends ChartImpl {
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
 }

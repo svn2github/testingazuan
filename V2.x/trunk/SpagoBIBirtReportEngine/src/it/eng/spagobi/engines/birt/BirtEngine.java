@@ -85,13 +85,15 @@ public class BirtEngine {
 		config.setLogConfig(logDir, level);
 	    }
 
+	    /*DefaultResourceLocator drl=new DefaultResourceLocator();
+	    drl.findResource(birtEngine.openReportDesign(arg0), "messages_it_IT.properties", DefaultResourceLocator.MESSAGE_FILE);
+	    */
 	    config.setEngineHome("");
 	    IPlatformContext context = new PlatformServletContext(sc);
 	    config.setPlatformContext(context);
 
 	    ParameterAccessor.initParameters(sc);
 	    config.setResourcePath(ParameterAccessor.getResourceFolder(request));
-
 	    // Prepare ScriptLib location
 	    String scriptLibDir = ParameterAccessor.scriptLibDir;
 	    ArrayList jarFileList = new ArrayList();

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.kpi.config.service;
 
 import it.eng.spago.base.SourceBean;
@@ -31,6 +31,7 @@ import it.eng.spagobi.kpi.utils.AbstractConfigurableListModule;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
 /**
  * Loads the engines list
  * 
@@ -38,18 +39,17 @@ import org.apache.log4j.Logger;
  */
 
 public class ListKpiModule extends AbstractConfigurableListModule {
-	
-	private static transient Logger logger = Logger
-	.getLogger(ListKpiModule.class);
 
+	private static transient Logger logger = Logger
+			.getLogger(ListKpiModule.class);
 
 	@Override
 	protected List getObjectList(SourceBean request) {
-		String fieldOrder = (String)request.getAttribute("FIELD_ORDER");
-		String typeOrder = (String)request.getAttribute("TYPE_ORDER");
+		String fieldOrder = (String) request.getAttribute("FIELD_ORDER");
+		String typeOrder = (String) request.getAttribute("TYPE_ORDER");
 		List result = null;
 		try {
-//			result = DAOFactory.getKpiDAO().loadKpiList();
+			// result = DAOFactory.getKpiDAO().loadKpiList();
 			result = DAOFactory.getKpiDAO().loadKpiList(fieldOrder, typeOrder);
 		} catch (EMFUserError e) {
 			logger.error(e);
@@ -63,37 +63,47 @@ public class ListKpiModule extends AbstractConfigurableListModule {
 		Kpi aKpi = (Kpi) obj;
 		String code = "";
 		String name = "";
-//		String description = ""; 
-		if (aKpi.getCode()!= null)
+		String threshold = "";
+
+		if (aKpi.getCode() != null)
 			code = aKpi.getCode();
-		if (aKpi.getKpiName()!= null)
+		if (aKpi.getKpiName() != null)
 			name = aKpi.getKpiName();
-//		if (aKpi.getDescription()!= null)
-//			description = aKpi.getDescription();
 		rowSB.setAttribute("CODE", code);
 		rowSB.setAttribute("NAME", name);
-//		rowSB.setAttribute("DESCRIPTION", description);
+		if (aKpi.getThreshold() != null && aKpi.getThreshold().getId() != null) {
+
+			try {
+				if(DAOFactory.getThresholdDAO().loadThresholdById(
+						aKpi.getThreshold().getId()).getThresholdName() != null){
+				threshold = DAOFactory.getThresholdDAO().loadThresholdById(
+						aKpi.getThreshold().getId()).getThresholdName();
+				}
+			} catch (EMFUserError e) {
+		
+			}
+		}
+		rowSB.setAttribute("THRESHOLD", threshold);
 		rowSB.setAttribute("ID", aKpi.getKpiId());
 	}
-	
+
 	@Override
 	public boolean delete(SourceBean request, SourceBean response) {
 		boolean toReturn = false;
-//		String kpiId = (String) request.getAttribute("ID");
-//		try {
-//			toReturn = DAOFactory.getKpiDAO().deleteKpi(Integer.parseInt(kpiId));
-//			toReturn = true;
-//		} catch (NumberFormatException e) {
-//			EMFErrorHandler engErrorHandler = getErrorHandler();
-//			engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
-//					"10012", "component_kpi_messages"));
-//		} catch (EMFUserError e) {
-//			EMFErrorHandler engErrorHandler = getErrorHandler();
-//			engErrorHandler.addError(e);
-//		}
+		// String kpiId = (String) request.getAttribute("ID");
+		// try {
+		// toReturn = DAOFactory.getKpiDAO().deleteKpi(Integer.parseInt(kpiId));
+		// toReturn = true;
+		// } catch (NumberFormatException e) {
+		// EMFErrorHandler engErrorHandler = getErrorHandler();
+		// engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
+		// "10012", "component_kpi_messages"));
+		// } catch (EMFUserError e) {
+		// EMFErrorHandler engErrorHandler = getErrorHandler();
+		// engErrorHandler.addError(e);
+		// }
 
 		return toReturn;
 	}
-	
-} 
 
+}

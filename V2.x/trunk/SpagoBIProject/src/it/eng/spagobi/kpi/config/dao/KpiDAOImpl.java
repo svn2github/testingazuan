@@ -1756,6 +1756,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			toReturn = "name";
 		if (property != null && property.toUpperCase().equals("DESCRIPTION"))
 			toReturn = "description";
+		if (property != null && property.toUpperCase().equals("THRESHOLD"))
+			toReturn = "sbiThreshold";
 		return toReturn;
 	}
 
@@ -1789,6 +1791,12 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				kpi.setDescription(hibKpi.getDescription());
 				kpi.setKpiName(hibKpi.getName());
 				kpi.setKpiId(hibKpi.getKpiId());
+				if(hibKpi.getSbiThreshold() != null){
+					Threshold threshold = new Threshold();
+					threshold.setId(hibKpi.getSbiThreshold().getThresholdId());
+					threshold.setThresholdName(hibKpi.getSbiThreshold().getName());
+					kpi.setThreshold(threshold);
+				}
 				toReturn.add(kpi);
 			}
 

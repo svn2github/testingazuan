@@ -31,20 +31,20 @@ import java.io.InputStream;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class ScriptManager {
+public class GroovyScriptManagerTest {
 	
 	private GroovyClassLoader classLoader;
 	
-	static ScriptManager instance;
+	static GroovyScriptManagerTest instance;
 	
-	public static ScriptManager getInstance() {
+	public static GroovyScriptManagerTest getInstance() {
 		if(instance == null) {
-			instance = new ScriptManager();
+			instance = new GroovyScriptManagerTest();
 		}
 		return instance;
 	}
 	
-	private ScriptManager() {
+	private GroovyScriptManagerTest() {
 		classLoader = new GroovyClassLoader();
 	}
 	
@@ -64,13 +64,13 @@ public class ScriptManager {
 	
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
 		InputStream  stream;
-		stream = ScriptManager.class.getResourceAsStream("script.groovy");
-		ITestInterface o = (ITestInterface)ScriptManager.getInstance().loadAsObject(stream);
+		stream = GroovyScriptManagerTest.class.getResourceAsStream("script.groovy");
+		ITestInterface o = (ITestInterface)GroovyScriptManagerTest.getInstance().loadAsObject(stream);
 		System.out.println(o.getMessage());
 		
 		Binding binding = new Binding();
 		binding.setVariable("a", new Integer(22));
 
-		System.out.println(ScriptManager.getInstance().evaluate("a * 10", binding));
+		System.out.println(GroovyScriptManagerTest.getInstance().evaluate("a * 10", binding));
 	}
 }

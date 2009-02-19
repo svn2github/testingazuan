@@ -583,7 +583,7 @@ if(curr_language!=null){
 	iconLanguage="/SpagoBI/img/"+currLanguage.toLowerCase()+".gif";	
 }
 
-
+if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
 %>
  var languages = new Ext.menu.Menu({ 
  id: 'languages', 
@@ -609,8 +609,10 @@ href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHAN
  ]
  });
  
- resources.addListener('mouseexit', function() {languages.hide();});
- 
+
+ 	languages.addListener('mouseexit', function() {languages.hide();});
+ 	
+ 	
  tb.add(
  	new Ext.Toolbar.MenuButton({
  		text: '',
@@ -619,7 +621,7 @@ href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHAN
  		menu: languages
  	})
  );
-
+<%}%>
 
 
 

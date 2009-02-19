@@ -64,7 +64,7 @@ public class ListThresholdsModule extends AbstractConfigurableListModule {
 		Threshold aThreshold = (Threshold) obj;
 		rowSB.setAttribute("ID", aThreshold.getId());
 		rowSB.setAttribute("NAME", aThreshold.getThresholdName());
-		rowSB.setAttribute("DESCRIPTION", aThreshold.getThresholdDescription());
+		rowSB.setAttribute("CODE", aThreshold.getThresholdCode());
 	}
 	
 	@Override

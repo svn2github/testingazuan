@@ -25,6 +25,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 	static private Logger logger = Logger.getLogger(ThresholdDAOImpl.class);
 	static private String THRESHOLD_NAME = "name";
 	static private String THRESHOLD_DESCRIPTION = "description";
+	static private String THRESHOLD_CODE ="code";
 
 	private String getThreshodProperty(String property) {
 		String toReturn = null;
@@ -32,6 +33,8 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 			toReturn = THRESHOLD_NAME;
 		if (property != null && property.equals("DESCRIPTION"))
 			toReturn = THRESHOLD_DESCRIPTION;
+		if (property != null && property.equals("CODE"))
+			toReturn = THRESHOLD_CODE;
 		return toReturn;
 	}
 

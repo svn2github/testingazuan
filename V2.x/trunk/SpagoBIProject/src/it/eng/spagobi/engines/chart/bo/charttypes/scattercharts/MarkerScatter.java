@@ -363,7 +363,7 @@ public class MarkerScatter extends ScatterCharts {
 	                plot.addAnnotation(annotation);
         		}
         	}
-        	renderer.setShape(new Ellipse2D.Double(-3, -5, 10, 10));
+        	renderer.setShape(new Ellipse2D.Double(-3, -5, 8, 8));
         }
         
         if(legend==true){

@@ -171,9 +171,8 @@
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="it.eng.spagobi.tools.dataset.bo.IDataSet"%> 
-
-
 <%@page import="it.eng.spagobi.kpi.threshold.bo.Threshold"%><table class='header-table-portlet-section'>
+
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'
 			style='vertical-align: middle; padding-left: 5px;'>
@@ -184,7 +183,7 @@
 			<img class='header-button-image-portlet-section'
 			width='22px'
 			height='22px'
-			src='<%=urlBuilder.getResourceLink(request, "/img/info22.png")%>''
+			src='<%=urlBuilder.getResourceLink(request, "/img/info22.png")%>'
 			name='info'
 			alt='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBunle%>"/>'
 			title='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBunle%>"/>'/>
@@ -213,7 +212,7 @@
 
 <div id="tabs1">
 <div id="tab1" class="x-hide-display">
-
+<div class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.name" bundle="<%=messageBunle%>"/> </span></div>
@@ -345,8 +344,10 @@
 </select>
 </div>
 </div>
-<div id="tab2" class="x-hide-display">
+</div>
 
+<div id="tab2" class="x-hide-display">
+<div class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.kpi.type" bundle="<%=messageBunle%>"/> </span></div>
@@ -485,7 +486,7 @@
   cols='40'>
 <%=targetAudience%></textarea></div>
 
- 
+</div> 
 </div>
 </div>
 
@@ -502,7 +503,7 @@
 Ext.onReady(function(){
     var tabs = new Ext.TabPanel({
         renderTo: 'tabs1',
-        width:500,
+        width:550,
         activeTab: 0,
         frame:true,
         defaults:{autoHeight: true},

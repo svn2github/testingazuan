@@ -56,7 +56,10 @@ public class ListModelModule extends AbstractConfigurableListModule {
 		Model aModel = (Model) obj;
 		rowSB.setAttribute("name", aModel.getName());
 		rowSB.setAttribute("id", aModel.getId());
-		rowSB.setAttribute("code", aModel.getCode());
+		String code = "";
+		if(aModel.getCode()!= null)
+			code = aModel.getCode();
+		rowSB.setAttribute("code", code);
 	}
 
 	@Override

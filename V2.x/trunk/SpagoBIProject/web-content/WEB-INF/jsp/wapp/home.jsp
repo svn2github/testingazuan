@@ -907,23 +907,39 @@ var selectNode = function(node, e) {
 	<!-- I want to execute if there is an homepage, only for user!-->
 	<%
 	if (lstMenu.size() > 0) {
-		Menu menuElem = (Menu) lstMenu.get(0);
-		String pathInit=MenuUtilities.getMenuPath(menuElem);
-		Integer objId=menuElem.getObjId();
+		//DAO method returns menu ordered by parentId, but null values are higher or lower on different database:
+		//PostgreSQL - Nulls are considered HIGHER than non-nulls.
+		//DB2 - Higher
+		//MSSQL - Lower
+		//MySQL - Lower
+		//Oracle - Higher
+		//Ingres - Higher
+		// so we must look for the first menu item with null parentId
+		Menu firtsItem = null;
+		Iterator it = lstMenu.iterator();
+		while (it.hasNext()) {
+			Menu aMenuElement = (Menu) it.next();
+			if (aMenuElement.getParentId() == null) {
+				firtsItem = aMenuElement;
+				break;
+			}
+		}
+		String pathInit=MenuUtilities.getMenuPath(firtsItem);
+		Integer objId=firtsItem.getObjId();
 		if (objId!=null) {
 			%> 					
 			<script type="text/javascript">
-			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>','<%=pathInit%>'); 
+			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=firtsItem.getMenuId()%>','<%=pathInit%>'); 
 			</script>  					
 			<%
-		} else if(menuElem.getStaticPage()!=null) {
+		} else if(firtsItem.getStaticPage()!=null) {
 			%> 					
 			<script type="text/javascript">
-			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>','<%=pathInit%>'); 
+			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=firtsItem.getMenuId()%>','<%=pathInit%>'); 
 			</script>  					
 			<%
-		} else if(menuElem.getFunctionality()!=null && !menuElem.getFunctionality().trim().equals("")) {
-			String url = DetailMenuModule.findFunctionalityUrl(menuElem, contextName);
+		} else if(firtsItem.getFunctionality()!=null && !firtsItem.getFunctionality().trim().equals("")) {
+			String url = DetailMenuModule.findFunctionalityUrl(firtsItem, contextName);
 			%> 					
 			<script type="text/javascript">
 			execDirectUrl('<%=url%>','<%=pathInit%>');

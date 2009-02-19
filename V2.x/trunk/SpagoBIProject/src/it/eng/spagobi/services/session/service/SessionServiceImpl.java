@@ -172,7 +172,7 @@ public class SessionServiceImpl {
     }
 
     public String[] getCorrectRolesForExecution(Integer documentId) throws NonExecutableDocumentException {
-        String toReturn[] = null;
+        String[] toReturn = null;
         logger.debug("IN: documentId = [" + documentId + "]");
         try {
             IEngUserProfile profile = SessionServiceImpl.getUserProfile();
@@ -185,6 +185,8 @@ public class SessionServiceImpl {
             if (correctRoles != null) {
             	toReturn = new String[correctRoles.size()];
                 toReturn = (String[]) correctRoles.toArray(toReturn);
+            } else {
+            	toReturn = new String[0];
             }
         } catch(NonExecutableDocumentException e) {
             throw e;

@@ -189,10 +189,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <form method='post' action='<%=formUrl%>' id='ModelForm'
 	name='ModelForm'><input type="hidden" name="ID" value="<%=id%>">
+
+<!-- 
 	<fieldset style="width:500px;">
 	<legend><spagobi:message
 	key="sbi.kpi.modelInstanceDefinition.label" bundle="<%=messageBundle%>" /></legend>
-<div class="div_detail_area_forms">
+-->
+<div id="modelInstanceC">
+<div id="modelInstanceB" class="div_detail_area_forms">
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -225,18 +229,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<textarea name="modelInstanceDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=modelInstanceDescription%></textarea>
 </div>
 </div>
-
-</fieldset>
+</div>
+<!-- </fieldset> -->
 <%
  	if (messageIn != null
  			&& messageIn
  					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
  %>
- <fieldset style="width:500px;">
+ <!-- <fieldset style="width:500px;">
  <legend>
  <spagobi:message
 	key="sbi.kpi.modelDefinition.label" bundle="<%=messageBundle%>" /></legend>
-<div class="div_detail_area_forms">
+	 -->
+	 
+<div id="modelDefinitionC">
+<div id="modelDefinitionB" class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
@@ -256,6 +263,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 	%>
 </select>
+</div>
+</div>
+
 
 <%
 	}
@@ -266,10 +276,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  			&& messageIn
  					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
  %>
- <fieldset style="width:500px;">
-	<legend><spagobi:message
-	key="sbi.kpi.modelDefinition.label" bundle="<%=messageBundle%>" /></legend>
-<div class="div_detail_area_forms">
+
+<div id="modelDefinitionC" >
+<div id="modelDefinitionB" class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
@@ -302,12 +311,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<textarea name="typeDescription" cols="40" style='height: 110px;' class='portlet-text-area-field' disabled="disabled"><%=typeDescription%></textarea>
 </div>
 </div>
-</fieldset>
+</div>
+<!-- </fieldset> -->
 
-<fieldset style="width:500px;">
-<legend><spagobi:message key="sbi.kpi.model.attributes"
-	bundle="<%=messageBundle%>" /></legend>
-<div class="div_detail_area_forms">
+<div id="modelAttributeC">    
+
+<div id="modelAttributeB" class="div_detail_area_forms">
+
 <%
 	List modelAttributesName = new ArrayList();
 		for (int i = 0; attributeList != null
@@ -333,15 +343,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 %>
 </div>
-</fieldset>
+<!--  </fieldset>  -->
+</div>
 
+<!-- 
 <fieldset style="width:500px;">
 <legend>
-<spagobi:message key="sbi.kpi.label.kpiInstance"
-	bundle="<%=messageBundle%>" />
-</legend>
 
-<div class="div_detail_area_forms">
+</legend>
+ -->
+<div id="kpiInstanceC">
+<div id="kpiInstanceB" class="div_detail_area_forms">
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -526,13 +538,61 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%} %>
 </div>
-</fieldset>
+</div>
+<!-- </fieldset> -->
 
 <%
  	}
  %>
 
 </form>
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+
+	var modelInstanceP = new Ext.Panel({
+        title: '<spagobi:message
+        	key="sbi.kpi.modelInstanceDefinition.label" bundle="<%=messageBundle%>" />',
+        collapsible:true,
+   	  	collapsed: false,
+        renderTo: 'modelInstanceC',
+        width:550,
+		contentEl:'modelInstanceB'
+    });
+	
+    var modelDefinitionP = new Ext.Panel({
+        title: '<spagobi:message
+        	key="sbi.kpi.modelDefinition.label" bundle="<%=messageBundle%>" />',
+        collapsible:true,
+        renderTo: 'modelDefinitionC',
+        width:550,
+		contentEl:'modelDefinitionB'
+    });
+
+    var modelAttributeP = new Ext.Panel({
+        title: '<spagobi:message key="sbi.kpi.model.attributes"
+        	bundle="<%=messageBundle%>" />',
+        collapsible:true,
+        collapsed: true,
+        renderTo: 'modelAttributeC',
+        width:550,
+		contentEl:'modelAttributeB'
+    });
+
+    var kpiInstanceP = new Ext.Panel({
+        title: '<spagobi:message key="sbi.kpi.label.kpiInstance"
+        	bundle="<%=messageBundle%>" />',
+        collapsible:true,
+        collapsed: false,
+        renderTo: 'kpiInstanceC',
+        width:550,
+		contentEl:'kpiInstanceB'
+    });
+
+});
+
+</script>
 
 <spagobi:error />
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

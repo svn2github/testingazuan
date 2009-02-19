@@ -1,0 +1,10 @@
+        <!-- Auto create tab 1 -->
+        <div class="x-tab" title="Main Fields">
+             <b>Same info of Kpi Main fields</b><br>
+            ...
+        </div>
+        <!-- Auto create tab 2 -->
+        <div class="x-tab" title="Advanced Fields">
+            <b>Same info of Kpi Description</b><br>
+            ...
+        </div>

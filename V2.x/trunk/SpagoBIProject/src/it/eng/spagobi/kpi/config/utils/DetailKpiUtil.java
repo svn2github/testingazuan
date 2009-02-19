@@ -39,6 +39,37 @@ public class DetailKpiUtil {
 		String sThresold_id = (String) serviceRequest
 				.getAttribute("threshold_id");
 
+		String interpretation = (String) serviceRequest
+				.getAttribute("interpretation");
+		String inputAttribute = (String) serviceRequest
+				.getAttribute("inputAttribute");
+		String modelReference = (String) serviceRequest
+				.getAttribute("modelReference");
+		String targetAudience = (String) serviceRequest
+				.getAttribute("targetAudience");
+
+		String sKpiTypeId = (String) serviceRequest.getAttribute("kpi_type_id");
+		String sMetricScaleId = (String) serviceRequest
+				.getAttribute("metric_scale_type_id");
+		String sMeasureTypeId = (String) serviceRequest
+				.getAttribute("mesure_type_id");
+
+		Integer kpiTypeId = null;
+		Integer metricScaleId = null;
+		Integer measureTypeId = null;
+
+		if (sKpiTypeId != null && (!sKpiTypeId.equals("-1"))) {
+			kpiTypeId = Integer.parseInt(sKpiTypeId);
+		}
+
+		if (sMetricScaleId != null && (!sMetricScaleId.equals("-1"))) {
+			metricScaleId = Integer.parseInt(sMetricScaleId);
+		}
+
+		if (sMeasureTypeId != null && (!sMeasureTypeId.equals("-1"))) {
+			measureTypeId = Integer.parseInt(sMeasureTypeId);
+		}
+
 		Double weight = null;
 		if (sWeight != null && !sWeight.trim().equals(""))
 			try {
@@ -69,8 +100,8 @@ public class DetailKpiUtil {
 			// e.printStackTrace();
 			// }
 		}
-		
-		if (documentLabel!=null && documentLabel.trim().equals(""))
+
+		if (documentLabel != null && documentLabel.trim().equals(""))
 			documentLabel = null;
 
 		Kpi toReturn = new Kpi();
@@ -83,6 +114,15 @@ public class DetailKpiUtil {
 		toReturn.setDocumentLabel(documentLabel);
 		toReturn.setKpiDs(ds);
 		toReturn.setThreshold(threshold);
+
+		toReturn.setInterpretation(interpretation);
+		toReturn.setInputAttribute(inputAttribute);
+		toReturn.setModelReference(modelReference);
+		toReturn.setTargetAudience(targetAudience);
+
+		toReturn.setKpiTypeId(kpiTypeId);
+		toReturn.setMeasureTypeId(measureTypeId);
+		toReturn.setMetricScaleId(metricScaleId);
 
 		return toReturn;
 	}

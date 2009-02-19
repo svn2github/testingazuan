@@ -23,6 +23,7 @@
 <%@ page import="java.util.Map,java.util.HashMap"%>
 <%@ page	import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
 <%@ page import="it.eng.spagobi.kpi.config.bo.Kpi"%>
+<%@page import="it.eng.spagobi.commons.bo.Domain"%>
 <%
 	String title = "";
 	String id = "";
@@ -34,6 +35,15 @@
 	String weight = "";
 	Integer ds_id = null;
 	Integer threshold_id = null;
+	
+	Integer kpiTypeId = null;
+	Integer metricScaleId = null;
+	Integer measureTypeId = null;
+	
+	String interpretation = "";
+	String inputAttribute = "";  
+	String modelReference = "";
+	String targetAudience = "";  
 
     String messageBunle = "component_kpi_messages"; 
 
@@ -115,7 +125,22 @@
 			if (kpi.getThreshold()!=null)
 				threshold_id = kpi.getThreshold().getId();
 			else
-				threshold_id = null;	
+				threshold_id = null;
+			if (kpi.getKpiTypeId()!= null)
+				kpiTypeId = kpi.getKpiTypeId();
+			if (kpi.getMetricScaleId()!=null)
+				metricScaleId = kpi.getMetricScaleId();
+			if (kpi.getMeasureTypeId() != null)
+				measureTypeId = kpi.getMeasureTypeId();
+			
+			if (kpi.getInterpretation() != null)
+				interpretation = kpi.getInterpretation();
+			if (kpi.getInputAttribute() != null)
+				inputAttribute = kpi.getInputAttribute();
+			if (kpi.getModelReference() != null)
+				modelReference = kpi.getModelReference();
+			if (kpi.getTargetAudience() != null)
+				targetAudience = kpi.getTargetAudience();
 		}
 	}
 	
@@ -154,6 +179,19 @@
 			style='vertical-align: middle; padding-left: 5px;'>
 			<spagobi:message key="<%=title%>" bundle="<%=messageBunle%>" /></td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-portlet-section'>
+			<a href='#' id="openInfo"> 
+			<img class='header-button-image-portlet-section'
+			width='22px'
+			height='22px'
+			src='<%=urlBuilder.getResourceLink(request, "/img/info22.png")%>''
+			name='info'
+			alt='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBunle%>"/>'
+			title='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBunle%>"/>'/>
+			</a>
+		</td>
+		
+		
 		<td class='header-button-column-portlet-section'><a
 			href="javascript:document.getElementById('kpiForm').submit()"> <img
 			class='header-button-image-portlet-section'
@@ -172,21 +210,23 @@
 <form method='POST' action='<%=formUrl%>' id='kpiForm' name='kpiForm'>
 <input type='hidden' value='<%=id%>' name='id' />
 
-<div class="div_detail_area_forms">
+
+<div id="tabs1">
+<div id="tab1" class="x-hide-display">
+
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.name" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="name" size="50"
 	value="<%=name%>" maxlength="200"> &nbsp;*</div>
-
-
-<div class='div_detail_label'><span
+	
+	<div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form' style='height: 150px;'>
-<textarea name="description" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=description%></textarea></div>
-
+<textarea id="description" name="description" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=description%></textarea>
+</div>
 
 <div class='div_detail_label'><span
   class='portlet-form-field-label'> <spagobi:message
@@ -195,7 +235,6 @@
   class='portlet-form-input-field' type="text" name="code" size="50"
   value="<%=code%>" maxlength="200"></div>
 
-
 <div class='div_detail_label'><span
   class='portlet-form-field-label'> <spagobi:message
   key="sbi.kpi.label.metric" bundle="<%=messageBunle%>"/> </span></div>
@@ -203,6 +242,15 @@
   style='height: 110px;' class='portlet-text-area-field' name='metric'
   cols='40'>
 <%=metric%></textarea></div>
+
+<div class='div_detail_label'><span
+  class='portlet-form-field-label'> <spagobi:message
+  key="sbi.kpi.label.kpi.interpretation" bundle="<%=messageBunle%>"/> </span></div>
+<div style='height: 150px;' class='div_detail_form'>
+<textarea
+  style='height: 110px;' class='portlet-text-area-field' name='interpretation'
+  cols='40'>
+<%=interpretation%></textarea></div>
 
 
 <div class='div_detail_label'><span
@@ -296,9 +344,176 @@
 
 </select>
 </div>
+</div>
+<div id="tab2" class="x-hide-display">
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.kpi.type" bundle="<%=messageBunle%>"/> </span></div>
+<div class='div_detail_form' style="height:40px;">
+<select class='portlet-form-field' name="kpi_type_id" >
+<%
+	if(kpiTypeId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+	<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
+
+<%
+	List kpiTypeLevels = DAOFactory.getDomainDAO().loadListDomainsByType("KPI_TYPE");
+	Iterator itKpiType = kpiTypeLevels.iterator();
+	while (itKpiType.hasNext()){
+		Domain domain = (Domain)itKpiType.next();
+		String selected = "";
+		if (kpiTypeId != null && kpiTypeId.intValue() == domain.getValueId().intValue()){
+			selected = "selected='selected'";		
+		}
+		%>    			 		
+		<option value="<%= domain.getValueId() %>" label="<%= domain.getValueName() %>" <%= selected %>>
+			<%= domain.getValueName() %>	
+		</option>
+		<%
+	}
+%>
+</select>
+
+
+</div>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.metric.scale.type" bundle="<%=messageBunle%>"/> </span></div>
+<div class='div_detail_form' style="height:40px;">
+<select class='portlet-form-field' name="metric_scale_type_id" >
+<%
+	if(metricScaleId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+	<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
+
+<%
+	List MetricScaleTypeLevels = DAOFactory.getDomainDAO().loadListDomainsByType("METRIC_SCALE_TYPE");
+	Iterator itMetricScaleType = MetricScaleTypeLevels.iterator();
+	while (itMetricScaleType.hasNext()){
+		Domain domain = (Domain)itMetricScaleType.next();
+		String selected = "";
+		if (metricScaleId != null && metricScaleId.intValue() == domain.getValueId().intValue()){
+			selected = "selected='selected'";		
+		}
+		%>    			 		
+		<option value="<%= domain.getValueId() %>" label="<%= domain.getValueName() %>" <%= selected %>>
+			<%= domain.getValueName() %>	
+		</option>
+		<%
+	}
+%>
+
+</select>
+</div>
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.measure.type" bundle="<%=messageBunle%>"/> </span></div>
+<div class='div_detail_form' style="height:40px;">
+<select class='portlet-form-field' name="mesure_type_id" >
+<%
+	if(measureTypeId == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+	<%	}
+	else {  %>
+		<option value="-1"
+			label="" selected>
+		</option>
+<%	} %>
+
+<%
+	List MeasureTypeLevels = DAOFactory.getDomainDAO().loadListDomainsByType("MEASURE_TYPE");
+	Iterator itMeasureType = MeasureTypeLevels.iterator();
+	while (itMeasureType.hasNext()){
+		Domain domain = (Domain)itMeasureType.next();
+		String selected = "";
+		if (measureTypeId != null && measureTypeId.intValue() == domain.getValueId().intValue()){
+			selected = "selected='selected'";		
+		}
+		%>    			 		
+		<option value="<%= domain.getValueId() %>" label="<%= domain.getValueName() %>" <%= selected %>>
+			<%= domain.getValueName() %>	
+		</option>
+		<%
+	}
+%>
+</select>
+</div>
+
+<div class='div_detail_label'><span
+  class='portlet-form-field-label'> <spagobi:message
+  key="sbi.kpi.label.input.attribute" bundle="<%=messageBunle%>"/> </span></div>
+<div style='height: 150px;' class='div_detail_form'>
+<textarea
+  style='height: 110px;' class='portlet-text-area-field' name='inputAttribute'
+  cols='40'>
+<%=inputAttribute%></textarea></div>
+
+<div class='div_detail_label'><span
+  class='portlet-form-field-label'> <spagobi:message
+  key="sbi.kpi.label.model.reference" bundle="<%=messageBunle%>"/> </span></div>
+<div style='height: 150px;' class='div_detail_form'>
+<textarea
+  style='height: 110px;' class='portlet-text-area-field' name='modelReference'
+  cols='40'>
+<%=modelReference%></textarea></div>
+
+
+<div class='div_detail_label'><span
+  class='portlet-form-field-label'> <spagobi:message
+  key="sbi.kpi.label.target.audience" bundle="<%=messageBunle%>"/> </span></div>
+<div style='height: 150px;' class='div_detail_form'>
+<textarea
+  style='height: 110px;' class='portlet-text-area-field' name='targetAudience'
+  cols='40'>
+<%=targetAudience%></textarea></div>
+
+ 
+</div>
+</div>
+
 
 </form>
 
-<spagobi:error/>
 
+<spagobi:error/>
+ 
+<spagobi:infoTag fileName="kpiwizzardinfo" infoTitle="Kpi informations" buttonId="openInfo"/>
+  
+<script type="text/javascript">
+
+Ext.onReady(function(){
+    var tabs = new Ext.TabPanel({
+        renderTo: 'tabs1',
+        width:500,
+        activeTab: 0,
+        frame:true,
+        defaults:{autoHeight: true},
+        items:[
+            {contentEl:'tab1', title: '<spagobi:message key="sbi.kpi.label.main.tab" bundle="<%=messageBunle%>"/>'},
+            {contentEl:'tab2', title: '<spagobi:message key="sbi.kpi.label.advanced.tab" bundle="<%=messageBunle%>"/>'}
+        ]
+    });
+
+});
+
+</script>
+ 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

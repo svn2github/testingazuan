@@ -26,6 +26,14 @@ public class Kpi {
 	String code = null;
 	Threshold threshold = null;
 	
+	String interpretation = null;
+	String inputAttribute = null;
+	String modelReference = null;
+	String targetAudience = null;
+	
+	Integer kpiTypeId = null;
+	Integer metricScaleId = null;
+	Integer measureTypeId = null;
 	
 	public Kpi() {
 		super();
@@ -249,6 +257,90 @@ public class Kpi {
 
 	public void setThreshold(Threshold threshold) {
 		this.threshold = threshold;
+	}
+
+
+
+	public String getInterpretation() {
+		return interpretation;
+	}
+
+
+
+	public void setInterpretation(String interpretation) {
+		this.interpretation = interpretation;
+	}
+
+
+
+	public String getInputAttribute() {
+		return inputAttribute;
+	}
+
+
+
+	public void setInputAttribute(String inputAttribute) {
+		this.inputAttribute = inputAttribute;
+	}
+
+
+
+	public String getModelReference() {
+		return modelReference;
+	}
+
+
+
+	public void setModelReference(String modelReference) {
+		this.modelReference = modelReference;
+	}
+
+
+
+	public String getTargetAudience() {
+		return targetAudience;
+	}
+
+
+
+	public void setTargetAudience(String targetAudience) {
+		this.targetAudience = targetAudience;
+	}
+
+
+
+	public Integer getKpiTypeId() {
+		return kpiTypeId;
+	}
+
+
+
+	public void setKpiTypeId(Integer kpiTypeId) {
+		this.kpiTypeId = kpiTypeId;
+	}
+
+
+
+	public Integer getMetricScaleId() {
+		return metricScaleId;
+	}
+
+
+
+	public void setMetricScaleId(Integer metricScaleId) {
+		this.metricScaleId = metricScaleId;
+	}
+
+
+
+	public Integer getMeasureTypeId() {
+		return measureTypeId;
+	}
+
+
+
+	public void setMeasureTypeId(Integer measureTypeId) {
+		this.measureTypeId = measureTypeId;
 	}
 	
 

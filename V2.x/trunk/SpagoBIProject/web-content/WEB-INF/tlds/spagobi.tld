@@ -337,7 +337,34 @@
     </tag>
     
     
+    
+    
     <!-- END LOV TAGS  -->
+    
+    <!-- InfoTag -->
+    
+     <tag>
+        <name>infoTag</name>
+        <tag-class>it.eng.spagobi.commons.presentation.tags.InfoTag</tag-class>
+        <body-content>EMPTY</body-content>
+        <description>Rendering of same information</description>
+        <attribute>
+            <name>infoTitle</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>fileName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+		<attribute>
+            <name>buttonId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
     
     <!-- Tag for view point list 
     <tag>

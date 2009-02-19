@@ -7,9 +7,9 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.geom.Ellipse2D;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -355,13 +355,15 @@ public class MarkerScatter extends ScatterCharts {
     				double x = Double.parseDouble(pos.substring(0, pos.indexOf("__")));
     				double y = Double.parseDouble(pos.substring(pos.indexOf("__")+2));
 
-	        		final XYTextAnnotation annotation = new XYTextAnnotation(text, y, x+((text.length()>20)?text.length()/3+1:text.length()/2+1));
+	        		//final XYTextAnnotation annotation = new XYTextAnnotation(text, y, x+((text.length()>20)?text.length()/3+1:text.length()/2+1));
+	        		final XYTextAnnotation annotation = new XYTextAnnotation(text, y+2, x);
 	                annotation.setFont(new Font("SansSerif", Font.PLAIN, 11));
 	                //annotation.setRotationAngle(Math.PI / 4.0);
 	                annotation.setRotationAngle(0.0); // horizontal
 	                plot.addAnnotation(annotation);
         		}
         	}
+        	renderer.setShape(new Ellipse2D.Double(-3, -5, 10, 10));
         }
         
         if(legend==true){

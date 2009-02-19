@@ -23,7 +23,7 @@ public class SimpleScatter extends ScatterCharts {
 
 		JFreeChart chart = ChartFactory.createScatterPlot(
 				name, yLabel, xLabel, dataset, 
-				PlotOrientation.HORIZONTAL, true, true, false);
+				PlotOrientation.HORIZONTAL, false, true, false);
 
 		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
 		//TextTitle title = new TextTitle(name, font);
@@ -62,7 +62,6 @@ public class SimpleScatter extends ScatterCharts {
 		rangeAxis.setRange(xMin,xMax);
 		
 		if(legend==true){
-			
 			drawLegend(chart);
 		}
 		return chart;

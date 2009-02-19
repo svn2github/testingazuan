@@ -9,11 +9,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYTextAnnotation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.IntervalMarker;
@@ -138,13 +140,27 @@ public class MarkerScatter extends ScatterCharts {
 				}
 				first=false;
 			}
+			
+			//defines real dimension of attributes x1,y1,x2,y2...the number must be the same for x and y column
+			int  numAttsX = 0;
+			int  numAttsY = 0;
+			
+			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
+				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
-			double[] x=new double[atts.size()];
-			double[] y=new double[atts.size()];
-
-			//List x=new ArrayList();
-			//List y=new ArrayList();
-			//ArrayList z=new ArrayList();
+				String name=new String(object.getKey());
+				if(!name.equalsIgnoreCase("x")) {
+					if (String.valueOf(name.charAt(0)).equalsIgnoreCase("x")) 				
+						numAttsX++;
+					else if (String.valueOf(name.charAt(0)).equalsIgnoreCase("y")) 		
+						numAttsY++;
+				}
+			}
+			int  maxNumAtts = (numAttsX < numAttsY)? numAttsY : numAttsX;
+			//double[] x=new double[atts.size()];
+			//double[] y=new double[atts.size()];
+			double[] x=new double[maxNumAtts];
+			double[] y=new double[maxNumAtts];
 
 			String name="";
 			String value="";
@@ -159,12 +175,11 @@ public class MarkerScatter extends ScatterCharts {
 				if(name.equalsIgnoreCase("x"))
 				{
 					catValue=value;
-
-
 				}
-
 				else if(String.valueOf(name.charAt(0)).equalsIgnoreCase("x") ||
 						String.valueOf(name.charAt(0)).equalsIgnoreCase("y")) {
+					
+					//String pos=name;
 					String pos=String.valueOf(name.charAt(0));
 					String numS=name.substring(1);
 					int num=Integer.valueOf(numS).intValue();
@@ -181,6 +196,7 @@ public class MarkerScatter extends ScatterCharts {
 
 
 					if(pos.equalsIgnoreCase("x")){
+						//num++;
 						x[num]=valueD;
 
 						if(firstX){
@@ -188,8 +204,8 @@ public class MarkerScatter extends ScatterCharts {
 							xTempMax=valueD;
 							firstX=false;
 						}
-						if(valueD<xTempMin)xTempMin=valueD;
-						if(valueD>xTempMax)xTempMax=valueD;
+						if(valueD<xMin)xMin=valueD;
+						if(valueD>xMax)xMax=valueD;
 
 
 					}
@@ -201,27 +217,22 @@ public class MarkerScatter extends ScatterCharts {
 							yTempMax=valueD;
 							firstY=false;
 						}
-							if(valueD<yTempMin)yTempMin=valueD;
-							if(valueD>yTempMax)yTempMax=valueD;		
-
-
+						if(valueD<yMin)yMin=valueD;
+						if(valueD>yMax)yMax=valueD;		
 					}
 				}
-
 			}
-			
-			xMin=xTempMin;
-			xMax=xTempMax;
-			
-			yMin=yTempMin;
-			yMax=yTempMax;
-			
 
 			double[][] seriesT = new double[][] { y, x};
 
 			dataset.addSeries(catValue, seriesT);
 			series.add(catValue);
-
+			//add annotations on the chart if requested
+			if (viewAnnotations != null && viewAnnotations.equalsIgnoreCase("true")){
+					double tmpx = seriesT[1][0];
+					double tmpy = seriesT[0][0];
+					annotationMap.put(catValue, String.valueOf(tmpx)+"__"+String.valueOf(tmpy));
+			}
 		}
 		logger.debug("OUT");
 		DatasetMap datasets=new DatasetMap();
@@ -251,15 +262,14 @@ public class MarkerScatter extends ScatterCharts {
 
 		XYItemRenderer renderer = plot.getRenderer();
 
-
+		//defines colors 
 		int seriesN=dataset.getSeriesCount();
-		if(colorMap!=null){
+		if((colorMap!=null && colorMap.size() > 0) || (defaultColor != null && !defaultColor.equals(""))){
 			for (int i = 0; i < seriesN; i++) {
 				String serieName=(String)dataset.getSeriesKey(i);
-				Color color=(Color)colorMap.get(serieName);
-				if(color!=null){
-					renderer.setSeriesPaint(i, color);
-				}	
+				Color color = new Color(Integer.decode(defaultColor).intValue());
+				if (colorMap != null && colorMap.size() > 0) color=(Color)colorMap.get(serieName);
+				if(color!=null) renderer.setSeriesPaint(i, color);					
 			}
 		}
 		
@@ -268,7 +278,7 @@ public class MarkerScatter extends ScatterCharts {
 		if (yMarkerStartInt != null && yMarkerEndInt != null && !yMarkerStartInt.equals("") && !yMarkerEndInt.equals("")){
 		    Marker intMarkerY = new IntervalMarker(Double.parseDouble(yMarkerStartInt), Double.parseDouble(yMarkerEndInt));
 		    intMarkerY.setLabelOffsetType(LengthAdjustmentType.EXPAND);
-		    intMarkerY.setPaint(new Color(Integer.decode(yMarkerIntColor).intValue()));
+		    intMarkerY.setPaint(new Color(Integer.decode((yMarkerIntColor.equals(""))?"0":yMarkerIntColor).intValue()));
 		    //intMarkerY.setLabel(yMarkerLabel);
 		    intMarkerY.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
 		    intMarkerY.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
@@ -278,7 +288,7 @@ public class MarkerScatter extends ScatterCharts {
         if (xMarkerStartInt != null && xMarkerEndInt != null && !xMarkerStartInt.equals("") && !xMarkerEndInt.equals("")){
 	        Marker intMarkerX = new IntervalMarker(Double.parseDouble(xMarkerStartInt), Double.parseDouble(xMarkerEndInt));
 	        intMarkerX.setLabelOffsetType(LengthAdjustmentType.EXPAND);
-		    intMarkerX.setPaint(new Color(Integer.decode(xMarkerIntColor).intValue()));
+	        intMarkerX.setPaint(new Color(Integer.decode((xMarkerIntColor.equals(""))?"0":xMarkerIntColor).intValue()));
 		    //intMarkerX.setLabel(xMarkerLabel);
 		    intMarkerX.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
 		    intMarkerX.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
@@ -305,8 +315,10 @@ public class MarkerScatter extends ScatterCharts {
 	        markerX.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 	        plot.addRangeMarker(markerX, Layer.BACKGROUND);
         }
-
+        
         if (xRangeLow != null && !xRangeLow.equals("") && xRangeHigh != null && !xRangeHigh.equals("")){
+        	if (Double.valueOf(xRangeLow).doubleValue() > xMin) xRangeLow = String.valueOf(xMin);
+            if (Double.valueOf(xRangeHigh).doubleValue() < xMax) xRangeHigh = String.valueOf(xMax);
 	        ValueAxis rangeAxis = plot.getRangeAxis();
 		    //rangeAxis.setRange(Double.parseDouble(xRangeLow), Double.parseDouble(xRangeHigh));
 		    rangeAxis.setRangeWithMargins(Double.parseDouble(xRangeLow), Double.parseDouble(xRangeHigh));
@@ -316,15 +328,40 @@ public class MarkerScatter extends ScatterCharts {
     		rangeAxis.setAutoRange(true);
     		rangeAxis.setRange(xMin,xMax);
         }
+        
         if (yRangeLow != null && !yRangeLow.equals("") && yRangeHigh != null && !yRangeHigh.equals("")){
-		    ValueAxis domainAxis = plot.getDomainAxis();
+        	if (Double.valueOf(yRangeLow).doubleValue() > yMin) yRangeLow = String.valueOf(yMin);
+            if (Double.valueOf(yRangeHigh).doubleValue() < yMax) yRangeHigh = String.valueOf(yMax);
+            NumberAxis domainAxis = (NumberAxis)plot.getDomainAxis();
 		    //domainAxis.setRange(Double.parseDouble(yRangeLow), Double.parseDouble(yRangeHigh));
 		    domainAxis.setRangeWithMargins(Double.parseDouble(yRangeLow), Double.parseDouble(yRangeHigh));
+		    domainAxis.setAutoRangeIncludesZero(false);
         }
         else{
         	NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
     		domainAxis.setAutoRange(true);
     		domainAxis.setRange(yMin, yMax);
+    		domainAxis.setAutoRangeIncludesZero(false);
+        }
+       
+        //add annotations if requested
+        if (viewAnnotations != null && viewAnnotations.equalsIgnoreCase("true")){
+        	if (annotationMap == null || annotationMap.size() == 0)
+        		logger.error("Annotations on the chart are requested but the annotationMap is null!");
+        	else{
+        		for (Iterator iterator = annotationMap.keySet().iterator(); iterator.hasNext();) {
+    				String text = (String) iterator.next();
+    				String pos = (String)annotationMap.get(text);
+    				double x = Double.parseDouble(pos.substring(0, pos.indexOf("__")));
+    				double y = Double.parseDouble(pos.substring(pos.indexOf("__")+2));
+
+	        		final XYTextAnnotation annotation = new XYTextAnnotation(text, y, x+((text.length()>20)?text.length()/3+1:text.length()/2+1));
+	                annotation.setFont(new Font("SansSerif", Font.PLAIN, 11));
+	                //annotation.setRotationAngle(Math.PI / 4.0);
+	                annotation.setRotationAngle(0.0); // horizontal
+	                plot.addAnnotation(annotation);
+        		}
+        	}
         }
         
         if(legend==true){

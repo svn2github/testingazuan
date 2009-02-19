@@ -54,7 +54,10 @@ public class ScatterCharts extends ChartImpl {
 	String xLabel="";
 	String yLabel="";
 	Vector currentSeries=null;
+	String viewAnnotations="";
 	HashMap colorMap=new HashMap();
+	HashMap annotationMap = new HashMap();
+	String defaultColor = "";
 
 	double xMin;
 	double xMax;
@@ -190,6 +193,10 @@ public class ScatterCharts extends ChartImpl {
 
 			dataset.addSeries(catValue, seriesT);
 			series.add(catValue);
+			//add annotations on the chart if requested
+			if (viewAnnotations != null && viewAnnotations.equalsIgnoreCase("true")){
+				annotationMap.put(catValue, seriesT);
+			}
 
 		}
 		logger.debug("OUT");
@@ -282,7 +289,14 @@ public class ScatterCharts extends ChartImpl {
 			yLabel="y";
 		}
 		
-
+		//reading default color if present
+		if(confParameters.get("default_color")!=null){	
+			defaultColor=(String)confParameters.get("default_color");
+		}
+		else{
+			defaultColor="";
+		}
+		
 		//reading series colors if present
 		SourceBean colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
 		if(colors!=null){
@@ -304,7 +318,15 @@ public class ScatterCharts extends ChartImpl {
 			}		
 
 		}
-
+		
+		//reading annotations choice if present
+		if(confParameters.get("view_annotation")!=null){	
+			viewAnnotations=(String)confParameters.get("view_annotation");
+		}
+		else
+		{
+			viewAnnotations="";
+		}
 
 
 		logger.debug("OUT");

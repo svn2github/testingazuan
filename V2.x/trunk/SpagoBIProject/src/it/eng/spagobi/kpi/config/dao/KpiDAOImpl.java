@@ -2172,7 +2172,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				tx.rollback();
 			}
 			logger.error("Impossible to delete a Kpi", cve);
-			throw new EMFUserError(EMFErrorSeverity.WARNING, 10015);
+			throw new EMFUserError(EMFErrorSeverity.WARNING, 10019);
 
 		} catch (HibernateException e) {
 			if (tx != null && tx.isActive()) {

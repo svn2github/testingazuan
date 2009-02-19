@@ -23,6 +23,8 @@ package it.eng.spagobi.kpi.config.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.config.bo.Kpi;
@@ -90,18 +92,18 @@ public class ListKpiModule extends AbstractConfigurableListModule {
 	@Override
 	public boolean delete(SourceBean request, SourceBean response) {
 		boolean toReturn = false;
-		// String kpiId = (String) request.getAttribute("ID");
-		// try {
-		// toReturn = DAOFactory.getKpiDAO().deleteKpi(Integer.parseInt(kpiId));
-		// toReturn = true;
-		// } catch (NumberFormatException e) {
-		// EMFErrorHandler engErrorHandler = getErrorHandler();
-		// engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
-		// "10012", "component_kpi_messages"));
-		// } catch (EMFUserError e) {
-		// EMFErrorHandler engErrorHandler = getErrorHandler();
-		// engErrorHandler.addError(e);
-		// }
+		 String kpiId = (String) request.getAttribute("ID");
+		 try {
+		 toReturn = DAOFactory.getKpiDAO().deleteKpi(Integer.parseInt(kpiId));
+		 toReturn = true;
+		 } catch (NumberFormatException e) {
+		 EMFErrorHandler engErrorHandler = getErrorHandler();
+		 engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
+		 "10012", "component_kpi_messages"));
+		 } catch (EMFUserError e) {
+		 EMFErrorHandler engErrorHandler = getErrorHandler();
+		 engErrorHandler.addError(e);
+		 }
 
 		return toReturn;
 	}

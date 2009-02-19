@@ -35,7 +35,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 			
 		<iframe id="iframe_1"
 			        name="iframe_1"
-			        src="AdapterHTTP?ACTION_NAME=DRAW_MAP_ACTION"
+			        src='AdapterHTTP?ACTION_NAME=DRAW_MAP_ACTION&SBI_EXECUTION_ID=<%= request.getParameter("SBI_EXECUTION_ID")%>'
 			        width="100%"
 			        height="100%"
 			        frameborder="0"

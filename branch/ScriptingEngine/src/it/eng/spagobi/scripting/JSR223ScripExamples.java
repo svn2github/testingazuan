@@ -45,9 +45,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JSR223ScriptManagerTest  {
+public class JSR223ScripExamples  {
 	
-	public JSR223ScriptManagerTest() {
+	public JSR223ScripExamples() {
 		
 	}
 	
@@ -74,36 +74,52 @@ public class JSR223ScriptManagerTest  {
 	
 	
 	public static void main(String[] args) throws Exception {
-		JSR223ScriptManagerTest scriptMngTst = new JSR223ScriptManagerTest();
+		
+		// ================================================================
+		// EXEMPLE 1: Retrive available engines
+		// ================================================================
+		System.out.println("========\nEXEMPLE 1: Retrive available engines\n========\n");
+		JSR223ScripExamples scriptMngTst = new JSR223ScripExamples();
 		scriptMngTst.printInfo();
 		
-		//Initiate ScriptEngineManager
+		
+		// ================================================================
+		// Initiate ScriptEngines
+		// ================================================================
 		ScriptEngineManager scriptManager = new ScriptEngineManager();
 
-		//get script engines by name
 		ScriptEngine groovyScriptEngine = scriptManager.getEngineByName("groovy");
 		ScriptEngine jsScriptEngine = scriptManager.getEngineByName("js");
 		
-		// eval script
+		
+		// ================================================================
+		// EXEMPLE 2: eval script from string
+		// ================================================================
+		System.out.println("\n\n========\nEXEMPLE 2: eval script from string\n========\n");
 		try {
 			groovyScriptEngine.eval("println 'Can you feel the groove?';");
 		} catch (ScriptException ex) {
 		    ex.printStackTrace();
 		}  
 		
-		//eval script from stream
+		// ================================================================
+		// EXEMPLE 3: eval script from stream
+		// ================================================================
+		System.out.println("\n\n========\nEXEMPLE 3: eval script from stream\n========\n");
 		InputStream  stream;; 
 		try {
-			stream = JSR223ScriptManagerTest.class.getResourceAsStream("HelloWorld.groovy");
+			stream = JSR223ScripExamples.class.getResourceAsStream("HelloWorld.groovy");
 			groovyScriptEngine.eval(new InputStreamReader(stream));
 		} catch (ScriptException ex) {
 		    ex.printStackTrace();
 		}
 		
-		// Invoke a Script Procedure
-		/*
+		// ================================================================
+		// EXEMPLE 4: Invoke a Script Procedure
+		// ================================================================
+		System.out.println("\n\n========\nEXEMPLE 4: Invoke a Script Procedure\n========\n");
 		try {
-			stream = JSR223ScriptManagerTest.class.getResourceAsStream("HelloWorld.js");
+			stream = JSR223ScripExamples.class.getResourceAsStream("HelloWorld.js");
 			jsScriptEngine.eval(new InputStreamReader(stream));
 			Invocable invocableEngine = (Invocable) jsScriptEngine;
 			invocableEngine.invokeFunction("sayCiao");
@@ -111,9 +127,11 @@ public class JSR223ScriptManagerTest  {
 		} catch (ScriptException ex) {
 		    ex.printStackTrace();
 		}
-		*/
-
-		// Script code can both access and modify native Java objects
+		
+		// ================================================================
+		// EXEMPLE 5: Script code can both access and modify native Java objects
+		// ================================================================
+		System.out.println("\n\n========\nEXEMPLE 5: Script code can both access and modify native Java objects\n========\n");
 		List<String> list = new ArrayList<String>();
 		list.add("Angelo");
 		list.add("Davide");
@@ -123,11 +141,11 @@ public class JSR223ScriptManagerTest  {
 		for (String name: list) {
 		    System.out.println(name);
 		}  
-		/*
+		
 		jsScriptEngine.put("list", list);
 		
 		try {
-			stream = JSR223ScriptManagerTest.class.getResourceAsStream("FilterList.js");
+			stream = JSR223ScripExamples.class.getResourceAsStream("FilterList.js");
 			jsScriptEngine.eval(new InputStreamReader(stream));
 		} catch (ScriptException ex) {
 		      ex.printStackTrace();
@@ -136,12 +154,14 @@ public class JSR223ScriptManagerTest  {
 		for (String name: list) {
 		    System.out.println(name);
 		}  
-		*/
 		
-		// Implementing Java Interfaces by Scripts
-		/*
+		
+		// ================================================================
+		// EXEMPLE 6: Use a script to implement a java interface
+		// ================================================================
+		System.out.println("\n\n========\nEXEMPLE 6: Use a script to implement a java interface\n========\n");
 		try {
-			stream = JSR223ScriptManagerTest.class.getResourceAsStream("TestInterfaceImpl.js");
+			stream = JSR223ScripExamples.class.getResourceAsStream("TestInterfaceImpl.js");
 			jsScriptEngine.eval(new InputStreamReader(stream));
 			Invocable invocableEngine = (Invocable) jsScriptEngine;
 			ITestInterface testInterfaceImpl = (ITestInterface)invocableEngine.getInterface(ITestInterface.class);
@@ -150,13 +170,17 @@ public class JSR223ScriptManagerTest  {
 		} catch (ScriptException ex) {
 		    ex.printStackTrace();
 		}
-		*/
 		
 		
+		// ================================================================
+		// EXEMPLE 7: Use a script to implement a java interface
+		// ================================================================
+		System.out.println("\n\n========\nEXEMPLE 7: Use a script to implement a java interface\n========\n");
 		try {
-			stream = JSR223ScriptManagerTest.class.getResourceAsStream("TestInterfaceImpl.groovy");
-			Object o = groovyScriptEngine.eval(new InputStreamReader(stream));
-			System.out.println(o.getClass().getName());
+			stream = JSR223ScripExamples.class.getResourceAsStream("TestInterfaceImpl.groovy");
+			ITestInterface tester = (ITestInterface)groovyScriptEngine.eval(new InputStreamReader(stream));
+			Invocable invocableEngine = (Invocable) groovyScriptEngine;
+			System.out.println(tester.getMessage());
 		} catch (ScriptException ex) {
 		    ex.printStackTrace();
 		}

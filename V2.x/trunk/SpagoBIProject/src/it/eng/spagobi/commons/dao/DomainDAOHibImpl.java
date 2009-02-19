@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- **/
+**/
 /*
  * Created on 20-giu-2005
  *
@@ -27,19 +27,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.commons.dao;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.metadata.SbiDomains;
-import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -56,7 +51,7 @@ import org.hibernate.criterion.Expression;
  * @author zoppello
  */
 public class DomainDAOHibImpl extends AbstractHibernateDAO implements
-IDomainDAO {
+		IDomainDAO {
 
 	/**
 	 * Load list domains by type.
@@ -84,13 +79,13 @@ IDomainDAO {
 			tx = aSession.beginTransaction();
 
 			Criterion domainCdCriterrion = Expression
-			.eq("domainCd", domainType);
+					.eq("domainCd", domainType);
 			Criteria criteria = aSession.createCriteria(SbiDomains.class);
 			criteria.add(domainCdCriterrion);
 
 			List hibList = criteria.list();
 
-
+			
 			Iterator it = hibList.iterator();
 
 			while (it.hasNext()) {
@@ -110,7 +105,7 @@ IDomainDAO {
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
-
+		
 		return realResult;
 
 	}
@@ -165,10 +160,10 @@ IDomainDAO {
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
-
+		
 		return aDomain;
 	}
-
+	
 	/**
 	 * From the hibernate domain object at input, gives
 	 * the corrispondent <code>Domain</code> object.
@@ -178,35 +173,13 @@ IDomainDAO {
 	 * @return The corrispondent <code>Domain</code>
 	 */
 	public Domain toDomain(SbiDomains hibDomain){
-
-		MessageBuilder msgBuild=new MessageBuilder();
-		RequestContainer requestContainer=RequestContainer.getRequestContainer();
-		SessionContainer permSession = requestContainer.getSessionContainer().getPermanentContainer();
-
 		Domain aDomain = new Domain();
-
 		aDomain.setValueCd(hibDomain.getValueCd());
 		aDomain.setValueId(hibDomain.getValueId());
-		aDomain.setDomainCode(hibDomain.getDomainCd());
+		aDomain.setValueName(hibDomain.getValueNm());
+        aDomain.setDomainCode(hibDomain.getDomainCd());
 		aDomain.setDomainName(hibDomain.getDomainNm());
-
-		//internazionalization for value Name
-		//internazionalization for value Description
-
-		Locale locale=null;
-		String valueNm=hibDomain.getValueNm();
-		String valueDs=hibDomain.getValueDs();
-		String language=(String)permSession.getAttribute(SpagoBIConstants.AF_LANGUAGE);
-		String country=(String)permSession.getAttribute(SpagoBIConstants.AF_COUNTRY);
-
-		if(language!=null && country!=null){
-			locale=new Locale(language,country,"");
-			valueNm=msgBuild.getMessage(hibDomain.getValueNm(), locale);
-			valueDs=msgBuild.getMessage(hibDomain.getValueDs(), locale);
-
-		}
-		aDomain.setValueName(valueNm);
-		aDomain.setValueDescription(valueDs);
+		aDomain.setValueDescription(hibDomain.getValueDs());
 		return aDomain;
 	}
 
@@ -222,7 +195,7 @@ IDomainDAO {
 	 * @see it.eng.spagobi.commons.dao.IDomainDAO#loadDomainById(java.lang.Integer)
 	 */
 	public Domain loadDomainById(Integer id) throws EMFUserError {
-
+		
 		Domain toReturn = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -230,12 +203,12 @@ IDomainDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-
+		
 			SbiDomains hibDomain = (SbiDomains) aSession.load(SbiDomains.class, id);
-
+			
 			toReturn = toDomain(hibDomain);
 			tx.commit();
-
+			
 		} catch (HibernateException he) {
 			logException(he);
 
@@ -249,15 +222,15 @@ IDomainDAO {
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
-
+		
 		return toReturn;
 	}
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.commons.dao.IDomainDAO#loadListDomains()
-	 */
-	public List loadListDomains() throws EMFUserError {
+/* (non-Javadoc)
+ * @see it.eng.spagobi.commons.dao.IDomainDAO#loadListDomains()
+ */
+public List loadListDomains() throws EMFUserError {
 		Session aSession = null;
 		Transaction tx = null;
 		List domains = new ArrayList();

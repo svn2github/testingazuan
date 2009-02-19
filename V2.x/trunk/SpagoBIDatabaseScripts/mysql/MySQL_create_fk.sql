@@ -245,6 +245,7 @@ Alter table `SBI_KPI_MODEL_ATTR_VAL` add Foreign Key (`KPI_MODEL_ID`) references
 
 -- INSTANCE
 Alter table `SBI_RESOURCES` add Foreign Key (`RESOURCE_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_KPI_INSTANCE` add Foreign Key (`KPI_ID`) references `SBI_KPI` (`KPI_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_INSTANCE` add Foreign Key (`CHART_TYPE_ID`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_INSTANCE` add Foreign Key (`id_measure_unit`) references `SBI_MEASURE_UNIT` (`id_measure_unit`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI_INSTANCE` add Foreign Key (`THRESHOLD_ID`) references `SBI_THRESHOLD` (`THRESHOLD_ID`) on delete  restrict on update  restrict;

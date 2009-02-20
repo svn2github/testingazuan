@@ -521,7 +521,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 		    	Iterator iterateVisCol = visibleColNames.iterator(); 
 		    	while(iterateVisCol.hasNext()){
 		    		String visibleCol = (String)iterateVisCol.next();
-		    		if (visibleCol.equals(rowKey)){
+		    		if (visibleCol.equalsIgnoreCase(rowKey)){
 		    			colNames.add(rowKey);
 		    		}
 		    	}

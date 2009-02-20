@@ -503,7 +503,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       		    		isTransformer = true;   
       		    	}
       		%>
-      			<option value="<%=transformer.getValueCd()%>"  <%if(isTransformer) out.print(" selected='selected' ");  %>><%=transformer.getValueName()%></option>
+      			<option value="<%=transformer.getValueCd()%>"  <%if(isTransformer) out.print(" selected='selected' ");  %>><%=transformer.getTranslatedValueName(locale)%></option>
       		<% 	
       			}
 			}

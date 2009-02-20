@@ -18,24 +18,30 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.commons.bo;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * Defines a Domain object.
  */
 
 public class Domain  implements Serializable  {
-	
+
 	private Integer valueId ;
 	private String valueCd = "";
 	private String valueName = "";
 	private String valueDescription = "";
 	private String domainCode = "";
 	private String domainName = "";
-	
+
 	/**
 	 * Gets the value cd.
 	 * 
@@ -44,7 +50,7 @@ public class Domain  implements Serializable  {
 	public String getValueCd() {
 		return valueCd;
 	}
-	
+
 	/**
 	 * Sets the value cd.
 	 * 
@@ -53,7 +59,7 @@ public class Domain  implements Serializable  {
 	public void setValueCd(String valueCd) {
 		this.valueCd = valueCd;
 	}
-	
+
 	/**
 	 * Gets the value id.
 	 * 
@@ -62,7 +68,7 @@ public class Domain  implements Serializable  {
 	public Integer  getValueId() {
 		return valueId;
 	}
-	
+
 	/**
 	 * Sets the value id.
 	 * 
@@ -71,7 +77,7 @@ public class Domain  implements Serializable  {
 	public void setValueId(Integer  valueId) {
 		this.valueId = valueId;
 	}
-	
+
 	/**
 	 * Gets the value name.
 	 * 
@@ -80,7 +86,7 @@ public class Domain  implements Serializable  {
 	public String getValueName() {
 		return valueName;
 	}
-	
+
 	/**
 	 * Sets the value name.
 	 * 
@@ -89,7 +95,7 @@ public class Domain  implements Serializable  {
 	public void setValueName(String valueName) {
 		this.valueName = valueName;
 	}
-	
+
 	/**
 	 * Gets the domain code.
 	 * 
@@ -98,7 +104,7 @@ public class Domain  implements Serializable  {
 	public String getDomainCode() {
 		return domainCode;
 	}
-	
+
 	/**
 	 * Sets the domain code.
 	 * 
@@ -107,7 +113,7 @@ public class Domain  implements Serializable  {
 	public void setDomainCode(String domainCode) {
 		this.domainCode = domainCode;
 	}
-	
+
 	/**
 	 * Gets the domain name.
 	 * 
@@ -116,7 +122,7 @@ public class Domain  implements Serializable  {
 	public String getDomainName() {
 		return domainName;
 	}
-	
+
 	/**
 	 * Sets the domain name.
 	 * 
@@ -125,7 +131,7 @@ public class Domain  implements Serializable  {
 	public void setDomainName(String domainName) {
 		this.domainName = domainName;
 	}
-	
+
 	/**
 	 * Gets the value description.
 	 * 
@@ -134,7 +140,7 @@ public class Domain  implements Serializable  {
 	public String getValueDescription() {
 		return valueDescription;
 	}
-	
+
 	/**
 	 * Sets the value description.
 	 * 
@@ -143,9 +149,26 @@ public class Domain  implements Serializable  {
 	public void setValueDescription(String valueDescription) {
 		this.valueDescription = valueDescription;
 	}
+
+	public String getTranslatedValueName(Locale locale){
+		String toReturn=new String(valueName);
+		MessageBuilder msgBuild=new MessageBuilder();
+		toReturn=msgBuild.getMessage(toReturn, locale);
+		return toReturn;		
+
+	}
+
+	
+	public String getTranslatedValueDescription(Locale locale){
+		String toReturn=new String(valueDescription);
+		MessageBuilder msgBuild=new MessageBuilder();
+		toReturn=msgBuild.getMessage(toReturn, locale);
+		return toReturn;		
+	}
+
+
 }
-	
-	
 
 
-	
+
+

@@ -275,7 +275,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String selected = "";
 	%>
 	<option value="<%=domain.getValueId()%>"
-		label="<%=domain.getValueName()%>" <%=selected%>><%=domain.getValueName()%>
+		label="<%=domain.getTranslatedValueName(locale)%>" <%=selected%>><%=domain.getTranslatedValueName(locale)%>
 	</option>
 	<%
 		}

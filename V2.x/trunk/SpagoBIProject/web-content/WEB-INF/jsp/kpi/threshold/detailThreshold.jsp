@@ -191,8 +191,8 @@ if(messageSave.trim().equals(DelegatedDetailService.DETAIL_UPDATE)) {
 			selected = "selected='selected'";
 		}
 		%>    			 		
-		<option value="<%= domain.getValueId() %>" label="<%= domain.getValueName() %>" <%= selected %>>
-			<%= domain.getValueName() %>	
+		<option value="<%= domain.getValueId() %>" label="<%= domain.getTranslatedValueName(locale) %>" <%= selected %>>
+			<%= domain.getTranslatedValueName(locale) %>	
 		</option>
 		<%
 	}

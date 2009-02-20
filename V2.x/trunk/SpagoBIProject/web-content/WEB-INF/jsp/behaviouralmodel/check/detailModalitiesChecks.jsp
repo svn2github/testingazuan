@@ -163,7 +163,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	<% } %>
         </div>
         <%
-           if(dom.getValueName().equalsIgnoreCase("Range")){ 
+           if(dom.getTranslatedValueName(locale).equalsIgnoreCase("Range")){ 
 				keyLabel = "SBIDev.valConst." + dom.getValueCd()+ ".Value2"; %>
      	<div class='div_radio_check'>
 			&nbsp;
@@ -246,7 +246,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				fieldValue2Name = valueCD +"_value2";
 	 	%>     
     			<option value="<%= valueForRaddio  %>" <%if(valueCD.equalsIgnoreCase(actualValueCD)) out.print(" selected='selected' ");%>>
-    				<%=dom.getValueName()%>
+    				<%=dom.getTranslatedValueName(locale) %>
     			</option>
     	<%
     			currCheck = currCheck +1; 
@@ -294,7 +294,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				   value="" size='42' maxlength=50/>
     	 <% } %>
 	     </div>
-	     <% if(dom.getValueName().equalsIgnoreCase("Range")){ 
+	     <% if(dom.getTranslatedValueName(locale).equalsIgnoreCase("Range")){ 
 	     		keyLabel = "SBIDev.valConst." + dom.getValueCd()+ ".Value2";
 	     %>
 	      <div class='div_detail_label_check'  >

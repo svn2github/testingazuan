@@ -237,7 +237,7 @@ for (int i = 0; i < listEngines.size(); i++) {
 		      		    		isType = true;   
 							}
 		      		%>
-		      			<option value="<%=type.getValueId() + "," + type.getValueCd()  %>"<%if(isType) out.print(" selected='selected' ");  %>><%=type.getValueName()%></option>
+		      			<option value="<%=type.getValueId() + "," + type.getValueCd()  %>"<%if(isType) out.print(" selected='selected' ");  %>><%=type.getTranslatedValueName(locale)%></option>
 		      		<% 
 		      		    }
 		      		%>
@@ -419,7 +419,7 @@ for (int i = 0; i < listEngines.size(); i++) {
 		      		    		isState = true;   
 		      		    	}
 		      			%>
-		      				<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getValueName()%></option>
+		      				<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getTranslatedValueName(locale)%></option>
 		      			<%  
 		      		    }
 		      			%>
@@ -444,7 +444,7 @@ for (int i = 0; i < listEngines.size(); i++) {
 			      		    			isState = true;   
 			      		    		}
 			      		    		if (state.getValueCd().equalsIgnoreCase("DEV")){ %>
-			      						<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getValueName()%></option>
+			      						<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getTranslatedValueName(locale)%></option>
 			      					<%  }  
 			      		   		 }%>
 			      		  </select>  

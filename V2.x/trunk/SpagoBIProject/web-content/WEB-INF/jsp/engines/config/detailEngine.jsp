@@ -129,7 +129,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String actualValueId = engine.getBiobjTypeId().toString();
 			 	%>     
     				<option value="<%= valueId  %>" <% if (valueId.equalsIgnoreCase(actualValueId)) out.print(" selected='selected' ");%>>
-    					<%=domain.getValueName()%>
+    					<%=domain.getTranslatedValueName(locale)%>
     				</option>
     				<%
 			}

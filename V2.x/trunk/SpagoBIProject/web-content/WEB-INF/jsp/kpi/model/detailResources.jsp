@@ -210,7 +210,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		Domain domain = (Domain) iterator.next();
 	%>
 	<option value="<%=domain.getValueId()%>"
-		label="<%=domain.getValueName()%>" ><%=domain.getValueName()%>
+		label="<%=domain.getTranslatedValueName(locale)%>" ><%=domain.getTranslatedValueName(locale)%>
 	</option>
 	<%
 		}

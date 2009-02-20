@@ -73,7 +73,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	docName = obj.getName();
 	Integer docTypeId = obj.getBiObjectTypeID();
 	Domain d = DAOFactory.getDomainDAO().loadDomainById(docTypeId);
-	if (d != null) docType = d.getValueName();
+	if (d != null) docType = d.getTranslatedValueName(locale);
 	Engine engine = obj.getEngine();	
 	if (engine != null) engineName = engine.getName();
 

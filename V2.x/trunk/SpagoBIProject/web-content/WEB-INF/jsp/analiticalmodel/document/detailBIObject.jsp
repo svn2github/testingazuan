@@ -369,7 +369,7 @@ function saveDocument(goBack) {
 		      		    		isType = true;   
 							}
 		      		%>
-		      			<option value="<%=type.getValueId() + "," + type.getValueCd()  %>"<%if(isType) out.print(" selected='selected' ");  %>><%=type.getValueName()%></option>
+		      			<option value="<%=type.getValueId() + "," + type.getValueCd()  %>"<%if(isType) out.print(" selected='selected' ");  %>><%=type.getTranslatedValueName(locale)%></option>
 		      		<% 
 		      		    }
 		      		%>
@@ -552,7 +552,7 @@ function saveDocument(goBack) {
 		      		    		isState = true;   
 		      		    	}
 		      			%>
-		      				<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getValueName()%></option>
+		      				<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getTranslatedValueName(locale)%></option>
 		      			<%  
 		      		    }
 		      			%>
@@ -577,7 +577,7 @@ function saveDocument(goBack) {
 			      		    			isState = true;   
 			      		    		}
 			      		    		if (state.getValueCd().equalsIgnoreCase("DEV")){ %>
-			      						<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getValueName()%></option>
+			      						<option value="<%=state.getValueId() + "," + state.getValueCd()  %>"<%if(isState) out.print(" selected='selected' ");  %>><%=state.getTranslatedValueName(locale)%></option>
 			      					<%  }  
 			      		   		 }%>
 			      		  </select>  

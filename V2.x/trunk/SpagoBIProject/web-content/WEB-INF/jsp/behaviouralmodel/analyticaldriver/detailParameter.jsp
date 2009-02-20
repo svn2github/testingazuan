@@ -184,7 +184,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				onclick="radioButtonClicked(this.value)" 
 			<% } %>			   
 	           value="<%= (String)domain.getValueCd()+","+ (domain.getValueId()).toString()%>" <% if(curr_value.equals(domain.getValueId().toString())) { out.println(" checked='checked' "); } %> >
-				<%= domain.getValueName()%>
+				<%= domain.getTranslatedValueName(locale)%>
 		</input>
    	    <% //} %>
    	    <% } %>
@@ -488,7 +488,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	       domain = (Domain)selTypeList.get(i);		
 		%>		
         	<option <%=disabled%> VALUE="<%=(String)domain.getValueCd()%>" <%if(curr_seltype_val.equals(domain.getValueCd().toString())) { out.println(" selected='selected' "); } %> >
-        	<%=domain.getValueName()%>
+        	<%=domain.getTranslatedValueName(locale)%>
        <%} %>
        </select>  
        </div>	     

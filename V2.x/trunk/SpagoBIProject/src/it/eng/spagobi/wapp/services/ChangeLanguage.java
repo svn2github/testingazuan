@@ -25,12 +25,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
@@ -46,54 +49,51 @@ public class ChangeLanguage extends AbstractHttpAction{
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
 
-		String language=(String)serviceRequest.getAttribute("Language_id");
 		Locale locale = MessageBuilder.getBrowserLocaleFromSpago();		
 
-		if(language!=null){
-			logger.debug("language selected: "+language);
-			IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			UserProfile userProfile=null;
-			String lang="";
-			if (profile  instanceof UserProfile) {
-				userProfile = (UserProfile) profile;
-			}
-
-			if(language.equalsIgnoreCase("IT")){
-				//permSess.setAttribute(SpagoBIConstants.CURRENT_LANGUAGE, locale.ITALIAN.getLanguage());
-				permSess.setAttribute("AF_LANGUAGE", locale.ITALY.getLanguage());
-				permSess.setAttribute("AF_COUNTRY", locale.ITALY.getCountry());
-				lang=locale.ITALY.getLanguage();
-			}
-			else if(language.equalsIgnoreCase("EN")){
-				//permSess.setAttribute(SpagoBIConstants.CURRENT_LANGUAGE, locale.ENGLISH.getLanguage());
-				permSess.setAttribute("AF_LANGUAGE", locale.US.getLanguage());
-				permSess.setAttribute("AF_COUNTRY", locale.US.getCountry());
-				lang=locale.US.getLanguage();
-			}
-			if(language.equalsIgnoreCase("FR")){
-				//permSess.setAttribute(SpagoBIConstants.CURRENT_LANGUAGE, locale.FRENCH.getLanguage());
-				permSess.setAttribute("AF_LANGUAGE", locale.FRANCE.getLanguage());
-				permSess.setAttribute("AF_COUNTRY", locale.FRANCE.getCountry());
-				lang=locale.FRANCE.getLanguage();
-			}
-
-			if(userProfile!=null){
-				userProfile.setAttributeValue(SpagoBIConstants.LANGUAGE, lang);
-				logger.debug("modified profile attribute to "+ lang);
-			}
-			else{
-				logger.error("profile attribute not modified to "+ lang);				
-			}
-			
-		}
-		else
-		{
-			logger.debug("Take default language");
-			permSess.setAttribute(SpagoBIConstants.CURRENT_LANGUAGE, locale.getLanguage());
+		String language=(String)serviceRequest.getAttribute("language_id");
+		String country=(String)serviceRequest.getAttribute("country_id");
+		logger.debug("language selected: "+language);
+		IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		UserProfile userProfile=null;
+		String lang="";
+		if (profile  instanceof UserProfile) {
+			userProfile = (UserProfile) profile;
 		}
 
 
+		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
+		List languages=spagoconfig.getAttributeAsList("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE");
 
+		if(language==null){
+			logger.error("language not specified");
+		}
+		else{
+			Iterator iter = languages.iterator();
+			boolean found=false;
+			while (iter.hasNext() && found==false) {
+				SourceBean lang_sb = (SourceBean) iter.next();
+				String lang_supported = (String) lang_sb.getAttribute("language");
+				String country_supported= (String) lang_sb.getAttribute("country");
+
+				if(language.equalsIgnoreCase(lang_supported) && (country==null || country.equalsIgnoreCase(country_supported))){
+
+					locale=new Locale(language,country,"");
+					permSess.setAttribute("AF_LANGUAGE", locale.getLanguage());
+					permSess.setAttribute("AF_COUNTRY", locale.getCountry());   
+
+					if(userProfile!=null){
+						userProfile.setAttributeValue(SpagoBIConstants.LANGUAGE, language);
+						userProfile.setAttributeValue(SpagoBIConstants.COUNTRY, country);
+						logger.debug("modified profile attribute to "+ lang);
+					}
+					else{
+						logger.error("profile attribute not modified to "+ lang);				
+					}
+					found=true;
+				}
+			}
+		}
 
 		serviceResponse.setAttribute("MENU_MODE", "ALL_TOP");
 		serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
@@ -101,5 +101,6 @@ public class ChangeLanguage extends AbstractHttpAction{
 	}
 
 }
+
 
 

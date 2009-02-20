@@ -71,6 +71,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
@@ -98,7 +99,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	public static final int PIXEL_PER_CHAR = 9;
 	// identity string for object of the page
 	protected String requestIdentity;
-	
+
 
 	String userId;
 
@@ -761,18 +762,9 @@ public class ParametersGeneratorTag extends TagSupport {
 		logger.debug("IN");
 
 		SessionContainer permSess= requestContainer.getSessionContainer().getPermanentContainer();
-		String language=(String)permSess.getAttribute("AF_LANGUAGE");
-		
-		SourceBean formatSB=null; 
-		// if a particular language is specified take the corrisponding date-format
-		if(language!=null ){
-			formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+language));
-		}
-		if(formatSB==null){
-		formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
-		}
-		
-		String format = (String) formatSB.getAttribute("format");
+	
+		String format=SpagoBIUtilities.getLocaleDateFormat(permSess);
+
 		logger.debug("DATE FORMAT:"+format);
 
 		Date d = new Date();
@@ -857,16 +849,16 @@ public class ParametersGeneratorTag extends TagSupport {
 
 		String id="p_search_button_"+biparam.getParameterUrlName();
 		htmlStream.append("\n");
-		
+
 		// takes the description directly from the request, if it is present
 		String description = httpRequest.getParameter(biparam.getParameterUrlName() + "Desc");
 		String messageDet = httpRequest.getParameter(SpagoBIConstants.MESSAGEDET);
 		String objParIdStr = httpRequest.getParameter("objParId");
 		// in case the request is for select/deselect all values for the current parameter, we cannot consider the value coming from request
 		boolean isSelectAllValuesRequest = messageDet != null && messageDet.equalsIgnoreCase(SpagoBIConstants.SELECT_ALL) 
-							&& objParIdStr != null && objParIdStr.equals(biparam.getId().toString());
+		&& objParIdStr != null && objParIdStr.equals(biparam.getId().toString());
 		boolean isDeselectAllValuesRequest = messageDet != null && messageDet.equalsIgnoreCase(SpagoBIConstants.DESELECT_ALL) 
-							&& objParIdStr != null && objParIdStr.equals(biparam.getId().toString());
+		&& objParIdStr != null && objParIdStr.equals(biparam.getId().toString());
 		if (description == null || isSelectAllValuesRequest || isDeselectAllValuesRequest) {
 			StringBuffer buffer = new StringBuffer("");
 			List valuesDescription = biparam.getParameterValuesDescription();
@@ -883,9 +875,9 @@ public class ParametersGeneratorTag extends TagSupport {
 		}
 
 		// TODO mettere la lettura della descrizione dei valori dei parametri leggendo direttamente dalla request nei metodi ExecutionInstance.refreshParametersValues
-		
+
 		String tmpValue = (description.equals("null"))?"":description;
-		
+
 		htmlStream.append("<input value='" + GeneralUtilities.substituteQuotesIntoString(tmpValue) + "' type='text' style='width:230px;' " + "name='" + biparam.getParameterUrlName() + "Desc' id='"+biparam.getParameterUrlName()+requestIdentity+"Desc' "
 				+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " "));
 		htmlStream.append("onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +

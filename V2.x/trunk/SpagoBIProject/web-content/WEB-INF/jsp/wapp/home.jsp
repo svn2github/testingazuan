@@ -20,14 +20,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%@ page language="java"
-         extends="it.eng.spago.dispatching.httpchannel.AbstractHttpJspPagePortlet"
-         contentType="text/html; charset=ISO-8859-1"
-         pageEncoding="ISO-8859-1"
-         session="true" 
-         import="it.eng.spago.base.*,
+	extends="it.eng.spago.dispatching.httpchannel.AbstractHttpJspPagePortlet"
+	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"
+	session="true"
+	import="it.eng.spago.base.*,
                  java.util.List,
-                 java.util.ArrayList"
-%>
+                 java.util.ArrayList"%>
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="it.eng.spagobi.commons.services.LoginModule"%>
 <%@page import="it.eng.spagobi.wapp.bo.Menu"%>
@@ -39,18 +37,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@page import="org.safehaus.uuid.UUID"%>
 <%@page import="org.safehaus.uuid.UUIDGenerator"%>
-<%@page import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
+<%@page
+	import="it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.wapp.util.MenuUtilities"%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
-<%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
+<%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa"%>
 
-	<%-- START CHECK USER PROFILE EXISTENCE
+<%-- START CHECK USER PROFILE EXISTENCE
 	This Ajax call is usefull to find out if a user profile object is in session, i.e. if a user has logged in.
 	In case the user profile object is not found, the browser is redirected to the login page.
 	--%>
-    <script type="text/javascript">
+<script type="text/javascript">
 	Ext.onReady(function(){
 		Ext.Ajax.request({
 			url: '<%= request.getContextPath() + GeneralUtilities.getSpagoAdapterHttpUrl() %>?ACTION_NAME=CHECK_USER_PROFILE_EXISTENCE&LIGHT_NAVIGATOR_DISABLED=true',
@@ -69,7 +68,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	function somethingWentWrongWhileCheckingUserProfileExistence() {}
 	</script>
-	<%-- END CHECK USER PROFILE EXISTENCE --%>
+<%-- END CHECK USER PROFILE EXISTENCE --%>
 
 <%  
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
@@ -118,63 +117,68 @@ function execCrossNavigation(windowName, label, parameters) {
 <%-- End javascript function for document composition cross navigation (workaround for ie) --%>
 
 <script type="text/javascript" src="<%=linkSbijs%>"></script>
-	   <script type="text/javascript" src="<%=linkProto%>"></script>
-		<script type="text/javascript" src="<%=linkProtoWin%>"></script>
-		<script type="text/javascript" src="<%=linkProtoEff%>"></script>
-		<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
-		<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
-   
-  <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script>
-  <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script>
-    
-    <link href="<%=contextName%>/css/extjs/ext-all-SpagoBI-web.css" rel="stylesheet" type="text/css"/>
-    
-    <style>
-      body {
-	       font-family: Arial, Helvetica, sans-serif;
-	       padding: 0;
-	       margin: 0;
-      }
-      img {
-      	padding: 0px; 
-      	margin: 0px; 
-      	border: none;		
-      }
-      .dojoHtmlFisheyeListBar {
-      	margin: 0 auto;
-      	text-align: left;
-      }
-      .outerbar {
-      	text-align: left;
-      	position: absolute;
-      	left: 50px;
-      	bottom: 0px;
-      	width: 50%;
-      }
-      
-      iframe {
-		  background-color: transparent;
-	  }
-    </style> 
+<script type="text/javascript" src="<%=linkProto%>"></script>
+<script type="text/javascript" src="<%=linkProtoWin%>"></script>
+<script type="text/javascript" src="<%=linkProtoEff%>"></script>
+<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css" />
+<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css" />
 
-  </head>
+<script type="text/javascript"
+	src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script>
+<script type="text/javascript"
+	src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script>
+
+<link href="<%=contextName%>/css/extjs/ext-all-SpagoBI-web.css"
+	rel="stylesheet" type="text/css" />
+
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	padding: 0;
+	margin: 0;
+}
+
+img {
+	padding: 0px;
+	margin: 0px;
+	border: none;
+}
+
+.dojoHtmlFisheyeListBar {
+	margin: 0 auto;
+	text-align: left;
+}
+
+.outerbar {
+	text-align: left;
+	position: absolute;
+	left: 50px;
+	bottom: 0px;
+	width: 50%;
+}
+
+iframe {
+	background-color: transparent;
+}
+</style>
+
+</head>
 
 
-  <body>
+<body>
 
-	<%
+<%
 	String displayBannerAndFooterParam = (String) aServiceRequest.getAttribute("displayBannerAndFooter");
 	boolean displayBannerAndFooter = !(displayBannerAndFooterParam != null && displayBannerAndFooterParam.equalsIgnoreCase("false"));
 	if (displayBannerAndFooter) {
 	%>
-		<%@include file="/html/banner.html" %>
-	<% } %>
+<%@include file="/html/banner.html"%>
+<% } %>
 
-	<%-- contains the menu --%>
-	<div id="menubar" style="width:100%;background:#EEEFF3;"> 
-	</div>
+<%-- contains the menu --%>
+<div id="menubar" style="width: 100%; background: #EEEFF3;"></div>
 
-	<% //if(user==true){
+<% //if(user==true){
 	ConfigSingleton spagoconfig = ConfigSingleton.getInstance(); 
 	// get mode of execution
 	String viewTrack = (String)spagoconfig.getAttribute("SPAGOBI.MENU.pathTracked");   
@@ -183,43 +187,43 @@ function execCrossNavigation(windowName, label, parameters) {
 	viewTrackPath=true;	
 	}
 	%>
-	
-	<%if(viewTrackPath==true){ %>
-	<div id="trackPath" style="font:normal 11px tahoma,arial,sans-serif; font-weight: bold;width:100%;background:#EEEFFF;"></div>
-	<%} %>
-	
-	
-	
-	<% if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){ %>
-	<div id="content" style="margin:2;">
-		<iframe id='iframeDoc'  name='iframeDoc' src='' width='100%' height='74%' frameborder='0' Style='background-color: white' >
-		</iframe>
-	</div>
-	<% } %>
-	
-	<%--if(menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)) {%>
+
+<%if(viewTrackPath==true){ %>
+<div id="trackPath"
+	style="font: normal 11px tahoma, arial, sans-serif; font-weight: bold; width: 100%; background: #EEEFFF;"></div>
+<%} %>
+
+
+
+<% if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){ %>
+<div id="content" style="margin: 2;"><iframe id='iframeDoc'
+	name='iframeDoc' src='' width='100%' height='74%' frameborder='0'
+	Style='background-color: white'> </iframe></div>
+<% } %>
+
+<%--if(menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_LEFT)) {%>
 	  <div id="leftMenu" style='float:left;background-color: transparent'></div>
 	  <div id="content" style="float:right;top:90px;left:300px;width:90%;height:90%;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(<%=contextName%>/img/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;">
         <iframe id='iframeDoc'  name='iframeDoc' src='' width='85%' height='90%' frameborder='0' Style='background-color: white'>
 		</iframe>
        </div>
 	<%}--%>
-	
-	<script type="text/javascript">
+
+<script type="text/javascript">
 	if (isMoz()) {
 		document.getElementById('iframeDoc').height='75%';
 	} else {
 		document.getElementById('iframeDoc').height='72%';
 	}
 	</script>
-  
-	<%
+
+<%
 	if (displayBannerAndFooter) {
 	%>
-	<%@include file="/html/footer.html" %>
-	<% } %>
-	
-  <script>
+<%@include file="/html/footer.html"%>
+<% } %>
+
+<script>
   	<%-- Ext overriding methods for mouseout and mouseexit from menu --%>
 	Ext.override(Ext.menu.Menu, {
 	  render : function(){
@@ -567,48 +571,66 @@ function execCrossNavigation(windowName, label, parameters) {
 
 <%
 // Find if current language is set
-String currLanguage=(String)permanentSession.getAttribute(SpagoBIConstants.AF_LANGUAGE);
+	String currLanguage=(String)permanentSession.getAttribute(SpagoBIConstants.AF_LANGUAGE);
+	String currCountry=(String)permanentSession.getAttribute(SpagoBIConstants.AF_COUNTRY);
 
-String iconLanguage="";
+//recover all supportedLanguages
+	List languages=spagoconfig.getAttributeAsList("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE");
+	
 
-String it=locale.ITALY.getLanguage();
-String eng=locale.US.getLanguage();
-String fr=locale.FRANCE.getLanguage();
+	String iconLanguage="";
 
-String itIcon="/SpagoBI/img/it.gif";	
-String frIcon="/SpagoBI/img/fr.gif";	
-String enIcon="/SpagoBI/img/en.gif";	
 
-if(curr_language!=null){
-	iconLanguage="/SpagoBI/img/"+currLanguage.toLowerCase()+".gif";	
-}
+	if(curr_language!=null){
+		//iconLanguage=config.getServletContext()+"/img/"+currLanguage;
+		iconLanguage=contextName+"/img/"+currLanguage;
 
-if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
-%>
- var languages = new Ext.menu.Menu({ 
- id: 'languages', 
- items: [
- new Ext.menu.Item({
-	 id: '<%new Double(Math.random()).toString();%>',
- 	text: 'IT',
- 	icon: '<%=itIcon%>',
-	href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=it%>')"
- })
+		if(currCountry!=null){
+			iconLanguage=iconLanguage+"_"+currCountry+".gif";}
+		else
+		iconLanguage=iconLanguage+".gif";	
+	}
+
+
+	if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+	%>
+ 		var languages = new Ext.menu.Menu({ 
+ 			id: 'languages', 
+			 items: [ 
+ 			<% // iterate over avalaible languages
+Iterator iter = languages.iterator();
+	while (iter.hasNext()) {
+		SourceBean lang = (SourceBean) iter.next();
+	    String language = (String) lang.getAttribute("language");
+	    String country= (String) lang.getAttribute("country");
+          
+	    String iconPath=contextName+"/img/"+language;
+	    if(country!=null){
+	    iconPath=iconPath+"_"+country+".gif";	
+	    }
+	    else{
+		    iconPath=iconPath+".gif";	
+	    }
+
+          %>
+          
+ 			new Ext.menu.Item({
+					 id: '<%new Double(Math.random()).toString();%>',
+ 					text: '<%=language%>',
+ 					icon: '<%=iconPath%>',
+				<% if(country!=null) {%>
+					href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=language%>&COUNTRY_ID=<%=country%>')"
+ 				<% }else{%>
+					href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=language%>')" 				
+ 				<%}%>
+ 				
+ 				})
+ <% if(iter.hasNext()) {%>
  ,
- new Ext.menu.Item({
- 	 id: '<%new Double(Math.random()).toString();%>',
- 	text: 'EN',
- 		icon: '<%=enIcon%>',
-href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=eng%>')"
- }) ,
- new Ext.menu.Item({
- 	 id: '<%new Double(Math.random()).toString();%>',
- 		text: 'FR',
- 		 icon: '<%=frIcon%>',
-		href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID=<%=fr%>')" })
+ 	<%}%>
+ <%} %>
  ]
  });
- 
 
  	languages.addListener('mouseexit', function() {languages.hide();});
  	
@@ -901,55 +923,39 @@ var selectNode = function(node, e) {
 <%}--%>
     
   </script>
-  
-  
-  
-	<!-- I want to execute if there is an homepage, only for user!-->
-	<%
+
+
+
+<!-- I want to execute if there is an homepage, only for user!-->
+<%
 	if (lstMenu.size() > 0) {
-		//DAO method returns menu ordered by parentId, but null values are higher or lower on different database:
-		//PostgreSQL - Nulls are considered HIGHER than non-nulls.
-		//DB2 - Higher
-		//MSSQL - Lower
-		//MySQL - Lower
-		//Oracle - Higher
-		//Ingres - Higher
-		// so we must look for the first menu item with null parentId
-		Menu firtsItem = null;
-		Iterator it = lstMenu.iterator();
-		while (it.hasNext()) {
-			Menu aMenuElement = (Menu) it.next();
-			if (aMenuElement.getParentId() == null) {
-				firtsItem = aMenuElement;
-				break;
-			}
-		}
-		String pathInit=MenuUtilities.getMenuPath(firtsItem);
-		Integer objId=firtsItem.getObjId();
+		Menu menuElem = (Menu) lstMenu.get(0);
+		String pathInit=MenuUtilities.getMenuPath(menuElem);
+		Integer objId=menuElem.getObjId();
 		if (objId!=null) {
-			%> 					
-			<script type="text/javascript">
-			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=firtsItem.getMenuId()%>','<%=pathInit%>'); 
-			</script>  					
-			<%
-		} else if(firtsItem.getStaticPage()!=null) {
-			%> 					
-			<script type="text/javascript">
-			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=firtsItem.getMenuId()%>','<%=pathInit%>'); 
-			</script>  					
-			<%
-		} else if(firtsItem.getFunctionality()!=null && !firtsItem.getFunctionality().trim().equals("")) {
-			String url = DetailMenuModule.findFunctionalityUrl(firtsItem, contextName);
-			%> 					
-			<script type="text/javascript">
+			%>
+<script type="text/javascript">
+			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>','<%=pathInit%>'); 
+			</script>
+<%
+		} else if(menuElem.getStaticPage()!=null) {
+			%>
+<script type="text/javascript">
+			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=menuElem.getMenuId()%>','<%=pathInit%>'); 
+			</script>
+<%
+		} else if(menuElem.getFunctionality()!=null && !menuElem.getFunctionality().trim().equals("")) {
+			String url = DetailMenuModule.findFunctionalityUrl(menuElem, contextName);
+			%>
+<script type="text/javascript">
 			execDirectUrl('<%=url%>','<%=pathInit%>');
-			</script>  					
-			<%
+			</script>
+<%
 		}
 	}
   	%>
- 
-    
+
+
 
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

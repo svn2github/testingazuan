@@ -268,16 +268,11 @@ public class MessageBuilder implements IMessageBuilder {
 			SessionContainer sessCont = reqCont.getSessionContainer();
 			SessionContainer permSess = sessCont.getPermanentContainer();
 			String language=(String)permSess.getAttribute(SpagoBIConstants.AF_LANGUAGE);
-			if(language!=null && (language.equalsIgnoreCase("EN")  || language.equalsIgnoreCase("IT") || language.equalsIgnoreCase("FR"))){
-				if(language.equalsIgnoreCase("IT")) {
-					locale=Locale.ITALY;
-				}
-				if(language.equalsIgnoreCase("EN")) {locale=Locale.US;
-				
-				}
-				if(language.equalsIgnoreCase("FR")) {locale=Locale.FRANCE;
-				
-				}
+			String country=(String)permSess.getAttribute(SpagoBIConstants.AF_COUNTRY);
+			if(country==null)country="";
+
+			if(language!=null){
+				locale=new Locale(language,country,"");
 			}
 			else {
 				if (request == null) {

@@ -115,9 +115,9 @@
      <!-- ********************* START GENERAL CONFIGURATION ************************ -->
      <!-- THIS DATE FORMAT IS USED FOR DISPLAY THE DATA -->
      <DATE-FORMAT format="dd/MM/yyyy"/>
-     <DATE-FORMAT-IT format="dd/MM/yyyy"/>
-     <DATE-FORMAT-EN format="dd/MM/yy"/>
-     <DATE-FORMAT-FR format="dd/MM/yy"/>      
+     <DATE-FORMAT-IT_IT format="dd/MM/yyyy"/>
+     <DATE-FORMAT-EN_US format="dd/MM/yy"/>
+     <DATE-FORMAT-FR_FR format="dd/MM/yy"/>      
   	 <TIMESTAMP-FORMAT format="dd/MM/yyyy hh:mm:ss"/>
      
      <LOOKUP numberRows = "20" />

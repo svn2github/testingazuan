@@ -815,6 +815,8 @@ Create table `SBI_KPI_MODEL_INST` (
 	`name` Varchar(400),
 	`label` Varchar(100) NOT NULL,
 	`description` Varchar(1000),
+	`start_date` DATETIME,
+	`end_date` DATETIME,
     UNIQUE (`label`),
  Primary Key (`KPI_MODEL_INST`)) ENGINE = InnoDB;
 

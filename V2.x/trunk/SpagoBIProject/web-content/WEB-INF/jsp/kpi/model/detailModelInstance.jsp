@@ -170,8 +170,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
  			<a href='#' id="openInfo"> 
-				<img class='header-button-image-portlet-section' src='<%=urlBuilder.getResourceLink(request, "/img/info22.png")%>' />
+				<img class='header-button-image-portlet-section'
+				src='<%=urlBuilder.getResourceLink(request, "/img/info22.png")%>' 
+				title='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBundle%>" />'
+				alt='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBundle%>"/>'
+				/> 
 			</a>
+			
 		</td>
 		
 		<td class='header-button-column-portlet-section'><a

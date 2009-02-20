@@ -46,6 +46,15 @@ if (moduleBean.getAttribute("CONFIG.TITLE") != null)
       <spagobi:message key='<%=title%>' bundle='<%=messageBundle%>' />
       </td>
     <td class='header-empty-column-portlet-section'>&nbsp;</td>
+    <td class='header-button-column-portlet-section'>
+ 			<a href='#' id="openInfo"> 
+				<img class='header-button-image-portlet-section'
+				src='<%=urlBuilder.getResourceLink(request, "/img/info22.png")%>' 
+				title='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBundle%>" />'
+				alt='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBundle%>"/>'
+				/> 
+			</a>
+	</td>
     <td class='header-button-column-portlet-section'><a
       href='<%=backUrl%>'> <img
       class='header-button-image-portlet-section'
@@ -59,5 +68,6 @@ if (moduleBean.getAttribute("CONFIG.TITLE") != null)
 		htmlGeneratorClass="it.eng.spagobi.kpi.model.presentation.ModelInstanceStructureTreeHtmlGenerator" />
   		
 <spagobi:error />
+<spagobi:infoTag fileName="modelInstinfo" infoTitle="Model Instance Informations" buttonId="openInfo"/>
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

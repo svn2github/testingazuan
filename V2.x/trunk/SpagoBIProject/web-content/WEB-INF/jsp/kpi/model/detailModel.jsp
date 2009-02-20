@@ -159,12 +159,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <form method='post' action='<%=formUrl%>' id='ModelForm'
 	name='ModelForm'><input type="hidden" name="ID" value="<%=id%>">
-	
-<fieldset  style="width:500px;">
-<legend>
-<spagobi:message
-	key="sbi.kpi.modelDefinition.label" bundle="<%=messageBundle%>" />
-</legend>
+<div id="tabs1" >	
+<div id="modelDefinitionB" class="x-hide-display">
 
 <div class="div_detail_area_forms">
 
@@ -206,13 +202,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<textarea name="typeDescription" cols="40" style='height: 110px;' class='portlet-text-area-field' disabled="disabled"><%=typeDescription%></textarea>
 </div>
 </div>
-</fieldset>
+</div>
 
-<fieldset style="width:500px;">
-<legend>
-<spagobi:message key="sbi.kpi.model.attributes"
-	bundle="<%=messageBundle%>" />
-</legend>
+<div id="modelAttributeB" class="x-hide-display" >
 <div class="div_detail_area_forms">
 <%
 	List modelAttributesName = new ArrayList();
@@ -239,7 +231,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 %>
 </div>
-</fieldset>
+</div>
 
 <input type="hidden" name="MODELATTRIBUTESNAME"
 	value="<%=modelAttributesName.toString()%>"> <%
@@ -270,15 +262,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </select>
 </div>
 </div>
-</fieldset>
 <%
 	}
 %>
-<fieldset  style="width:500px;">
-<legend><spagobi:message
-	key="sbi.kpi.set.kpi.label" bundle="<%=messageBundle%>" />
-</legend>
 
+<div id="kpiB" class="x-hide-display">
 <div class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -322,9 +310,40 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 </div>
 </div>
-</fieldset>
+</div>
 
+</div>
 </form>
 
 <spagobi:error />
+
+<script type="text/javascript">
+
+Ext.onReady(function(){
+    var tabs = new Ext.TabPanel({
+        renderTo: 'tabs1',
+        width:550,
+        activeTab: 0,
+        frame:true,
+        defaults:{autoHeight: true},
+        items:[
+			{contentEl:'modelDefinitionB', title: '<spagobi:message
+			key="sbi.kpi.modelDefinition.label" bundle="<%=messageBundle%>" /> '},
+			<% if (messageIn != null
+ 			&& messageIn
+ 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {%>
+			<% if (!(attributeList == null || attributeList.size() == 0 )) { %>
+            {contentEl:'modelAttributeB', title: '<spagobi:message
+            	key="sbi.kpi.model.attributes" bundle="<%=messageBundle%>" /> '},
+			<%}%>
+			<%}%>
+            {contentEl:'kpiB', title: '<spagobi:message
+            	key="sbi.kpi.label.kpiInstance" bundle="<%=messageBundle%>" /> '}
+        ]
+    });
+
+});
+
+</script>
+
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

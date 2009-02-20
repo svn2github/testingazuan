@@ -247,7 +247,7 @@
 				<COLUMN label="sbi.kpi.label.selected" name="SELECTED" />
 			</COLUMNS>
 			<CAPTIONS>
-				<SELECT_CAPTION confirm="FALSE" image="/img/detail.gif" label="sbi.kpi.caption.select">	
+				<SELECT_CAPTION confirm="FALSE" image="/img/button_ok.gif" label="sbi.kpi.caption.select">	
 					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelResourcesPage" />
 					<PARAMETER name="MODULE" scope="" type="ABSOLUTE" value="ListModelResourcesModule" />
 					<PARAMETER name="MESSAGE" scope="" type="ABSOLUTE" value="DETAIL_SELECT" />

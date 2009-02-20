@@ -152,7 +152,7 @@
     <unzip src="../../../SpagoBIWekaEngine/dist/SpagoBIWekaEngine/SpagoBIWekaEngine.war" dest="${tomcat.home}/webapps/SpagoBIWekaEngine" />
   </target>
   
-  <target name="create.all" >
+  <target name="create.all" depends="clean.all">
     <!--  
     Dependencies between projects:
     SpagoBI is the root, must be compiled first
@@ -164,17 +164,45 @@
     -->
     <antcall target="create.sbi.utils.jar" />
     <antcall target="create.SpagoBI.war" />
+    <copy file="../../../SpagoBIProject/dist/SpagoBI.war" 
+        todir="../../../dist" overwrite="true" />
+        
     <!-- <antcall target="create.exo.security.jar" />  -->
     <antcall target="create.xlm.security.jar" />
     <antcall target="create.SpagoBIBirtReportEngine.war" />
+    <copy file="../../../SpagoBIBirtReportEngine/dist/SpagoBI.war" 
+        todir="../../../dist" overwrite="true" />
+            
     <antcall target="create.SpagoBIGeoEngine.war" />
+    <copy file="../../../SpagoBIGeoEngine/dist/SpagoBI.war" 
+        todir="../../../dist" overwrite="true" />  
+          
     <antcall target="create.SpagoBIJPaloEngine.war" />
+    <copy file="../../../SpagoBIJPaloEngine/dist/SpagoBI.war" 
+        todir="../../../dist" overwrite="true" /> 
+        
     <antcall target="create.SpagoBITalendEngine.war" />
+    <copy file="../../../SpagoBITalendEngine/dist/SpagoBI.war" 
+        todir="../../../dist" overwrite="true" /> 
+            
     <antcall target="create.SpagoBIWekaEngine.war" />
+    <copy file="../../../SpagoBIWekaEngine/dist/SpagoBI.war" 
+        todir="../../../dist" overwrite="true" /> 
+            
     <antcall target="create.SpagoBIJasperReportEngine.war" />
+    <copy file="../../../SpagoBIJasperReportEngine/dist/SpagoBI.war" 
+        todir="../../../dist" overwrite="true" />
+        
     <antcall target="create.SpagoBIJPivotEngine.war" />
+    <copy file="../../../SpagoBIJPivotEngine/dist/SpagoBI.war" 
+        todir="../../../dist" overwrite="true" />    
+        
     <antcall target="create.qbe.core.jar" />
     <antcall target="create.SpagoBIQbeEngine.war" />
+    <copy file="../../../SpagoBIQbeEngine/dist/SpagoBI.war" 
+        todir="../../../dist" overwrite="true" />        
+    
+    
 
   </target>
 
@@ -191,20 +219,31 @@
   </target>
 
    <target name="clean.all" >
-    	<delete dir="../dist"/>
-	<delete dir="../QbeCore/ant-build"/>
-	<delete dir="../SpagoBIBirtReportEngine/ant-build"/>
-	<delete dir="../SpagoBIExoSecurityProvider/ant-build"/>
-	<delete dir="../SpagoBIGeoReportEngine/ant-build"/>
-  <delete dir="../SpagoBIJasperReportReportEngine/ant-build"/>
-  <delete dir="../SpagoBIJPaloEngine/ant-build"/>
-  <delete dir="../SpagoBIJPivotEngine/ant-build"/>
-  <delete dir="../SpagoBIQbeEngine/ant-build"/>
-  <delete dir="../SpagoBITalendEngine/ant-build"/>
-  <delete dir="../SpagoBIProject/ant-build"/>
-  <delete dir="../SpagoBIUtils/ant-build"/>
-  <delete dir="../SpagoBIWekaEngine/ant-build"/>
-	
+    	<delete dir="../../../dist"/>
+	<delete dir="../../../QbeCore/ant-build"/>
+	<delete dir="../../../SpagoBIBirtReportEngine/ant-build"/>
+	<delete dir="../../../SpagoBIExoSecurityProvider/ant-build"/>
+	<delete dir="../../../SpagoBIGeoReportEngine/ant-build"/>
+  <delete dir="../../../SpagoBIJasperReportReportEngine/ant-build"/>
+  <delete dir="../../../SpagoBIJPaloEngine/ant-build"/>
+  <delete dir="../../../SpagoBIJPivotEngine/ant-build"/>
+  <delete dir="../../../SpagoBIQbeEngine/ant-build"/>
+  <delete dir="../../../SpagoBITalendEngine/ant-build"/>
+  <delete dir="../../../SpagoBIProject/ant-build"/>
+  <delete dir="../../../SpagoBIUtils/ant-build"/>
+  <delete dir="../../../SpagoBIWekaEngine/ant-build"/>
+	<delete dir="../../../QbeCore/dist"/>
+	<delete dir="../../../SpagoBIBirtReportEngine/dist"/>
+	<delete dir="../../../SpagoBIExoSecurityProvider/dist"/>
+	<delete dir="../../../SpagoBIGeoReportEngine/dist"/>
+  <delete dir="../../../SpagoBIJasperReportReportEngine/dist"/>
+  <delete dir="../../../SpagoBIJPaloEngine/dist"/>
+  <delete dir="../../../SpagoBIJPivotEngine/dist"/>
+  <delete dir="../../../SpagoBIQbeEngine/dist"/>
+  <delete dir="../../../SpagoBITalendEngine/dist"/>
+  <delete dir="../../../SpagoBIProject/dist"/>
+  <delete dir="../../../SpagoBIUtils/dist"/>
+  <delete dir="../../../SpagoBIWekaEngine/dist"/>	
    </target>
    
   <target name="copy.ss" >

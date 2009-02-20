@@ -95,7 +95,9 @@
 
   <target name="makeDist" >    
     <antcall target="create.jar" />
+    <!--
     <antcall target="javadoc" />
+    -->
   </target>
 
 </project>

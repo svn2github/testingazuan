@@ -114,7 +114,7 @@
 
   <target name="makeDist" >    
     <antcall target="create.war" />
-    <antcall target="javadoc" />
+<!--    <antcall target="javadoc" />  -->
   </target>
 
 </project>

@@ -46,6 +46,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorCategory;
@@ -116,6 +117,32 @@ public class SpagoBIUtilities {
 	logger.debug("OUT:" + locale.toString());
 	return locale;
     }
+    
+    public static String getLocaleDateFormat(SessionContainer permSess){
+		String language=(String)permSess.getAttribute("AF_LANGUAGE");
+		String country=(String)permSess.getAttribute("AF_COUNTRY");
+
+
+		SourceBean formatSB=null; 
+		// if a particular language is specified take the corrisponding date-format
+		if(language!=null ){
+			if(country==null){
+				formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+language.toUpperCase()));
+			}
+			else{
+				formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+language.toUpperCase()+"_"+country.toUpperCase()));				
+			}		
+		}
+		if(formatSB==null){
+			formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
+		}
+
+		String format = (String) formatSB.getAttribute("format");
+		logger.debug("DATE FORMAT:"+format);
+		return format;
+		
+    }
+    
 
     /**
      * Cleans a string from spaces and tabulation characters.

@@ -54,7 +54,7 @@
 <DOMAIN valueCd="ORACLE" valueNm="sbidomains.nm.oracle" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.oracle"/>
 <DOMAIN valueCd="ORACLE 9i/10g" valueNm="sbidomains.nm.oracle_9i10g" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.oracle_9i10g"/>
 <DOMAIN valueCd="SQLSERVER" valueNm="sbidomains.nm.sqlserver" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.sqlserver"/>
-<DOMAIN valueCd="HQL" valueNm="sbidomains.nm.hql" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.hql"/>
+<DOMAIN valueCd="HSQL" valueNm="sbidomains.nm.hsql" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.hsql"/>
 <DOMAIN valueCd="MYSQL" valueNm="sbidomains.nm.mysql" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.mysql"/>
 <DOMAIN valueCd="POSTGRESQL" valueNm="sbidomains.nm.postgresql" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.postgresql"/>
 <DOMAIN valueCd="INGRES" valueNm="sbidomains.nm.ingres" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="sbidomains.ds.ingres"/>

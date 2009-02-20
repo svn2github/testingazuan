@@ -8,12 +8,19 @@ import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.model.bo.Model;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import java.text.ParseException;
+
 public class DetailModelInstanceUtil {
 
+	public static String DATE_FORMAT = "dd/MM/yyyy";
+	
 	static private Logger logger = Logger
 			.getLogger(DetailModelInstanceUtil.class);
 
@@ -52,6 +59,7 @@ public class DetailModelInstanceUtil {
 				.getAttribute("ID_KPI_PERIODICITY");
 		String restoreDefault = (String) serviceRequest
 				.getAttribute("RESTORE_DEFAULT");
+		
 		if (restoreDefault != null) {
 			restoreDefaultFlag = true;
 		}
@@ -109,14 +117,36 @@ public class DetailModelInstanceUtil {
 				.getAttribute("modelInstanceName");
 		String modelDescription = (String) serviceRequest
 				.getAttribute("modelInstanceDescription");
-		
 		String modelLabel = (String) serviceRequest
 		.getAttribute("modelInstanceLabel");
+		String startDateS = (String) serviceRequest
+		.getAttribute("startDate");
+		String endDateS = (String) serviceRequest
+		.getAttribute("endDate");
 
 		ModelInstance toReturn = new ModelInstance();
 		toReturn.setName(modelName);
 		toReturn.setDescription(modelDescription);
 		toReturn.setLabel(modelLabel);
+		// CONTROLLARE LA DATA
+		
+		Date startDate = null;
+		Date endDate = null;
+		
+		try {
+	        // Some examples
+	        DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+	        startDate = (Date)formatter.parse(startDateS);
+	        endDate = (Date)formatter.parse(endDateS);
+	
+	    } catch (ParseException e) {
+	    }
+
+		
+		toReturn.setStartDate(startDate);
+		toReturn.setEndDate(endDate);
+		
+		
 		return toReturn;
 	}
 

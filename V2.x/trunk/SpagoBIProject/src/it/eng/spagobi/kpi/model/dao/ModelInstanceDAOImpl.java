@@ -20,6 +20,7 @@ import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -84,6 +85,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		String name = value.getName();
 		String description = value.getDescription();
 		String label = value.getLabel();
+		Date startDate = value.getStartDate();
+		Date endDate = value.getEndDate();
 		Integer id = value.getKpiModelInst();
 		SbiKpiModel sbiKpiModel = value.getSbiKpiModel();
 		Model aModel = ModelDAOImpl.toModelWithoutChildren(sbiKpiModel,
@@ -121,6 +124,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		toReturn.setName(name);
 		toReturn.setDescription(description);
 		toReturn.setLabel(label);
+		toReturn.setStartDate(startDate);
+		toReturn.setEndDate(endDate);
 		toReturn.setModel(aModel);
 
 		logger.debug("OUT");
@@ -172,12 +177,16 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			String kpiModelInstanceDesc = value.getDescription();
 			String kpiModelInstanceNm = value.getName();
 			String kpiModelInstanceLb = value.getLabel();
+			Date kpiModelInstanceStartDate = value.getStartDate();
+			Date kpiModelInDateEndDate = value.getEndDate();
 
 			SbiKpiModelInst sbiKpiModelInst = (SbiKpiModelInst) aSession.load(
 					SbiKpiModelInst.class, kpiModelInstanceId);
 			sbiKpiModelInst.setDescription(kpiModelInstanceDesc);
 			sbiKpiModelInst.setName(kpiModelInstanceNm);
 			sbiKpiModelInst.setLabel(kpiModelInstanceLb);
+			sbiKpiModelInst.setStartDate(kpiModelInstanceStartDate);
+			sbiKpiModelInst.setEndDate(kpiModelInDateEndDate);
 
 			SbiKpiInstance oldSbiKpiInstance = sbiKpiModelInst
 					.getSbiKpiInstance();
@@ -402,6 +411,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 			sbiKpiModelInst.setName(toCreate.getName());
 			sbiKpiModelInst.setDescription(toCreate.getDescription());
 			sbiKpiModelInst.setLabel(toCreate.getLabel());
+			sbiKpiModelInst.setStartDate(toCreate.getStartDate());
+			sbiKpiModelInst.setEndDate(toCreate.getEndDate());
 			Model aModel = toCreate.getModel();
 			if (aModel != null && aModel.getId() != null) {
 				SbiKpiModel sbiKpiModel = (SbiKpiModel) aSession.load(
@@ -490,6 +501,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		String name = value.getName();
 		String description = value.getDescription();
 		String label = value.getLabel();
+		Date startDate = value.getStartDate();
+		Date endDate = value.getEndDate();
 		Integer id = value.getKpiModelInst();
 		SbiKpiModel sbiKpiModel = value.getSbiKpiModel();
 		Model aModel = ModelDAOImpl
@@ -542,6 +555,8 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		toReturn.setName(name);
 		toReturn.setDescription(description);
 		toReturn.setLabel(label);
+		toReturn.setStartDate(startDate);
+		toReturn.setEndDate(endDate);
 		toReturn.setChildrenNodes(childrenNodes);
 		toReturn.setParentId(parentId);
 		toReturn.setModel(aModel);

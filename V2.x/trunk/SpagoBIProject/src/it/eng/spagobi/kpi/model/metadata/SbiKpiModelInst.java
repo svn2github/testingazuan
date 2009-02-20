@@ -3,6 +3,7 @@ package it.eng.spagobi.kpi.model.metadata;
 
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +23,8 @@ public class SbiKpiModelInst  implements java.io.Serializable {
      private SbiKpiModelInst sbiKpiModelInst; // MODEL_INST
      private String name;
      private String description;
+ 	 private Date startDate;
+ 	 private Date endDate;
      private Set sbiKpiModelInsts = new HashSet(0);
      private Set sbiKpiModelResourceses = new HashSet(0);
      private String label;
@@ -124,13 +127,21 @@ public class SbiKpiModelInst  implements java.io.Serializable {
     public void setSbiKpiModelResourceses(Set sbiKpiModelResourceses) {
         this.sbiKpiModelResourceses = sbiKpiModelResourceses;
     }
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
    
-
-
-
-
-
-
-
-
 }

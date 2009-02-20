@@ -32,6 +32,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.kpi.config.bo.KpiInstance"%>
 <%@page import="it.eng.spagobi.commons.bo.Domain"%>
 <%@page import="it.eng.spagobi.kpi.config.bo.Periodicity"%>
+<%@page import="it.eng.spagobi.kpi.model.utils.DetailModelInstanceUtil"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.text.Format"%>
+<%@page import="java.util.Date"%>
 <%
 	String messageIn = (String) aServiceRequest.getAttribute("MESSAGE");
 	String id = (String) aServiceRequest.getAttribute("ID");
@@ -53,8 +57,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Integer periodicityId = null;
 	String weight = "";
 	
+	String startDateS = "";
+	String endDateS = "";
 
+	String dojoFormat ="MM/dd/yyyy";
+	
 	String title = "";
+	
+	String dateFormat = SpagoBIUtilities.getLocaleDateFormat(aSessionContainer);
 	
     ConfigSingleton configure = ConfigSingleton.getInstance();
 	SourceBean moduleBean = (SourceBean) configure
@@ -116,6 +126,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	modelInstanceName = modelInstance.getName();
 	modelInstanceDescription = modelInstance.getDescription();
 	modelInstanceLabel = modelInstance.getLabel();
+	Date startDate = modelInstance.getStartDate();
+	Date endDate = modelInstance.getEndDate();
+	Format formatter = new SimpleDateFormat(dojoFormat);
+
+	if (startDate != null){
+		startDateS =formatter.format(startDate);
+	}
+	
+	if (endDate != null){
+		endDateS = formatter.format(endDate);
+	}
+	
 	Model aModel = modelInstance.getModel();
 	
 	if (aModel != null){
@@ -125,6 +147,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		typeName = aModel.getTypeName();
 		typeDescription = aModel.getTypeDescription();
 		attributeList = aModel.getModelAttributes();
+		
+		
 	}
 	
 	KpiInstance aKpiInstance = modelInstance.getKpiInstance();
@@ -161,7 +185,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 
 <%@page import="java.util.ArrayList"%>
-<%@page import="it.eng.spagobi.kpi.model.bo.ModelAttribute"%><table
+<%@page import="it.eng.spagobi.kpi.model.bo.ModelAttribute"%>
+<%@page import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%><table
 	class='header-table-portlet-section'>
 	<tr class='header-row-portlet-section'>
 		<td class='header-title-column-portlet-section'
@@ -273,6 +298,30 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class='div_detail_form' style='height: 150px;'>
 	<textarea name="modelInstanceDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=modelInstanceDescription%></textarea>
 </div>
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.start.date" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+<input type='text' 
+name='startDate' 
+dojoType='dropdowndatepicker'
+saveFormat='<%=DetailModelInstanceUtil.DATE_FORMAT %>'
+displayFormat='<%= dateFormat %>'
+widgetId='searchDate'
+value='<%= startDateS %>'/> </div>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.end.date" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+<input type='text' 
+name='endDate' 
+dojoType='dropdowndatepicker'
+saveFormat='<%=DetailModelInstanceUtil.DATE_FORMAT %>'
+displayFormat='<%= dateFormat %>'
+widgetId='searchDate'
+value='<%= endDateS %>'/> </div>
+
 </div>
 </div>
 
@@ -552,13 +601,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  	}
  %>
 </div>
+
 </form>
 
 
-
-
-
- 
 
 
 <spagobi:error />
@@ -597,5 +643,17 @@ Ext.onReady(function(){
 });
 
 </script>
+<%
+String dojoUrl = urlBuilder.getResourceLink(request,"/js/dojo/dojo.js");
+%>
+ 
+<script type='text/javascript' src='<%= dojoUrl %>'></script>
+
+
+<script type='text/javascript'>
+	dojo.require('dojo.widget.DropdownDatePicker');
+</script>
+
+
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

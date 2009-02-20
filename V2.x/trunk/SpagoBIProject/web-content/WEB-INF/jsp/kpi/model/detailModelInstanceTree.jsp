@@ -33,6 +33,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.kpi.config.bo.Kpi"%>
 <%@page import="it.eng.spagobi.kpi.threshold.bo.Threshold"%>
 <%@page import="it.eng.spagobi.kpi.config.bo.KpiInstance"%>
+<%@page import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
+<%@page import="it.eng.spagobi.kpi.model.utils.DetailModelInstanceUtil"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.text.Format"%>
+<%@page import="java.util.Date"%>
 
 <%
 	String messageIn = (String) aServiceRequest.getAttribute("MESSAGE");
@@ -55,8 +60,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Integer chartTypeId = null;
 	Integer periodicityId = null;
 	String weight = "";
+	
+	String startDateS = "";
+	String endDateS = "";
+
+	String dojoFormat ="MM/dd/yyyy";
 
 	String title = "";
+	
+	String dateFormat = SpagoBIUtilities.getLocaleDateFormat(aSessionContainer);
 	
     ConfigSingleton configure = ConfigSingleton.getInstance();
 	SourceBean moduleBean = (SourceBean) configure
@@ -124,6 +136,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	modelInstanceName = modelInstance.getName();
 	modelInstanceDescription = modelInstance.getDescription();
 	modelInstanceLabel = modelInstance.getLabel();
+	Date startDate = modelInstance.getStartDate();
+	Date endDate = modelInstance.getEndDate();
+	Format formatter = new SimpleDateFormat(dojoFormat);
+
+	if (startDate != null){
+		startDateS =formatter.format(startDate);
+	}
+	
+	if (endDate != null){
+		endDateS = formatter.format(endDate);
+	}
+	
+	
 	Model aModel = modelInstance.getModel();
 	
 	if (aModel != null){
@@ -297,6 +322,31 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class='div_detail_form' style='height: 150px;'>
 	<textarea name="modelInstanceDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=modelInstanceDescription%></textarea>
 </div>
+
+<div class='div_detail_form'>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.start.date" bundle="<%=messageBundle%>" /> </span></div>
+<input type='text' 
+name='startDate' 
+dojoType='dropdowndatepicker'
+saveFormat='<%=DetailModelInstanceUtil.DATE_FORMAT %>'
+displayFormat='<%= dateFormat %>'
+widgetId='searchDate'
+value='<%= startDateS %>'/> </div>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.end.date" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+<input type='text' 
+name='endDate' 
+dojoType='dropdowndatepicker'
+saveFormat='<%=DetailModelInstanceUtil.DATE_FORMAT %>'
+displayFormat='<%= dateFormat %>'
+widgetId='searchDate'
+value='<%= endDateS %>'/> </div>
 
 </div>
 </div>
@@ -605,5 +655,17 @@ Ext.onReady(function(){
 });
 
 </script>
+
+<%
+String dojoUrl = urlBuilder.getResourceLink(request,"/js/dojo/dojo.js");
+%>
+ 
+<script type='text/javascript' src='<%= dojoUrl %>'></script>
+
+
+<script type='text/javascript'>
+	dojo.require('dojo.widget.DropdownDatePicker');
+</script>
+
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

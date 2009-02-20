@@ -2,6 +2,7 @@ package it.eng.spagobi.kpi.model.bo;
 
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 
+import java.util.Date;
 import java.util.List;
 
 public class ModelInstance {
@@ -15,6 +16,8 @@ public class ModelInstance {
 	private Integer parentId = null;
 	private KpiInstance kpiInstance = null;
 	private String label;
+	private Date startDate;
+	private Date endDate;
 	
 	public String getLabel() {
 		return label;
@@ -70,7 +73,17 @@ public class ModelInstance {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
+	public Date getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
 
 }

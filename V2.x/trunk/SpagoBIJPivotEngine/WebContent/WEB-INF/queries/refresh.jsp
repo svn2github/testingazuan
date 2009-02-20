@@ -35,21 +35,23 @@ try {
 	String documentId = (String)session.getAttribute("document");
 	// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG
 	//calls service for gets data source object
+		
 	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
-	SpagoBiDataSource ds = proxyDS.getDataSource(documentId);
+	IDataSource ds = proxyDS.getDataSource(documentId);
 	
-	if(ds != null  && !ds.getJndiName().equals("")) {
-		String resName = ds.getJndiName();
+	if(ds != null  && !ds.getJndi().equals("")) {
+		String resName = ds.getJndi();
 		resName = resName.replace("java:comp/env/","");
 		%>
-		<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
+		
+<%@page import="it.eng.spagobi.tools.datasource.bo.IDataSource"%><jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 			<%=query%>
 		</jp:mondrianQuery>
 	<%	
 	} else {		
 		%>
-		<jp:mondrianQuery id="query01" jdbcDriver="<%=ds.getDriver()%>" jdbcUrl="<%=ds.getUrl()%>" 
-		                   jdbcUser="<%=ds.getUser()%>" jdbcPassword="<%=ds.getPassword()%>" catalogUri="<%=reference%>" >
+		<jp:mondrianQuery id="query01" jdbcDriver="<%=ds.getDriver()%>" jdbcUrl="<%=ds.getUrlConnection()%>" 
+		                   jdbcUser="<%=ds.getUser()%>" jdbcPassword="<%=ds.getPwd()%>" catalogUri="<%=reference%>" >
 			<%=query%>	
 		</jp:mondrianQuery>	
 		<%	

@@ -15,6 +15,7 @@ var storeConfig = {
                  limit: 25 },
         proxy: new Ext.data.HttpProxy({
            url: execServiceUrl,
+           timeout : 300000,
            success: function(response){
            	 var o = Ext.util.JSON.decode( response.responseText );
            	 if(o.results == 0) {

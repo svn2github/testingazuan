@@ -786,7 +786,7 @@ public class ParametersGeneratorTag extends TagSupport {
 				+ " <input style='width:230px;' type='text' "
 				+ "	   name='" + biparam.getParameterUrlName()+ "' id='"+ biparam.getParameterUrlName()+requestIdentity+ "'" 
 				+ "	   dojoType='dropdowndatepicker' "
-				+ " saveFormat='"+format+"' displayFormat='"+format+"'"
+				+ " saveFormat='"+datePickerFormat+"' displayFormat='"+format+"'"
 				+ " widgetId='startDateWidget' "
 				+ "    class='portlet-form-input-field' value='" + dateValue + "' "
 				+ "   onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()

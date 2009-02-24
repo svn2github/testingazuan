@@ -67,7 +67,7 @@ public class QuerableBehaviour extends AbstractDataSetBehaviour {
 				}
 				catch (Exception e) {
 					EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9213);
-					logger.error("profile attribute not avalaible");
+					logger.error("Errore nella valorizzazione dei parametri",e);
 					throw userError;}
 
 				//check if there are parameters filled
@@ -77,7 +77,7 @@ public class QuerableBehaviour extends AbstractDataSetBehaviour {
 				}
 				catch (Exception e) {
 					EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9220);
-					logger.error("profile attribute not avalaible");
+					logger.error("Errore nella valorizzazione dei parametri",e);
 					throw userError;
 					}
 

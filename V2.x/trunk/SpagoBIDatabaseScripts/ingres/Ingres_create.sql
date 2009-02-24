@@ -602,6 +602,13 @@ Create table SBI_KPI (
 	DESCRIPTION Varchar(1000),
 	WEIGHT Float,
 	FLG_IS_FATHER Char(1),
+	KPI_TYPE Integer,
+	METRIC_SCALE_TYPE Integer,
+  MEASURE_TYPE Integer,
+	INTERPRETATION Varchar(1000),
+	INPUT_ATTRIBUTES Varchar(1000),
+	MODEL_REFERENCE Varchar(255),
+	TARGET_AUDIENCE Varchar(1000),
 Primary Key (KPI_ID)
 ) ;\p\g
 
@@ -722,6 +729,8 @@ Create table SBI_KPI_MODEL_INST (
 	NAME Varchar(400),
 	LABEL Varchar(100),	
 	DESCRIPTION Varchar(1000),
+	START_DATE Date,
+	END_DATE Date,
 Primary Key (KPI_MODEL_INST)
 ) ;\p\g
 

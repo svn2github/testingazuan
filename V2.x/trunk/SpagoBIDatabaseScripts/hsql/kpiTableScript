@@ -169,6 +169,8 @@ CREATE TABLE SBI_KPI_MODEL_INST (
   id_kpi_instance INTEGER default NULL,
   name VARCHAR(400) NOT NULL,
   description VARCHAR(1000) default NULL,
+  start_date TIMESTAMP default NULL,
+	end_date TIMESTAMP default NULL,
   KPI_MODEL_ID INTEGER default NULL,
   PRIMARY KEY  (KPI_MODEL_INST),
   CONSTRAINT FK_sbi_kpi_model_inst_3 FOREIGN KEY (KPI_MODEL_ID) REFERENCES SBI_KPI_MODEL (KPI_MODEL_ID),

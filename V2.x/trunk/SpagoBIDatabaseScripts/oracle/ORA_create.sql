@@ -751,6 +751,8 @@ Create table SBI_KPI_MODEL_INST (
 	NAME Varchar2 (400),
 	LABEL Varchar2 (100) NOT NULL,
 	DESCRIPTION Varchar2 (1000),
+	START_DATE Timestamp(6),
+	END_DATE Timestamp(6),
 	KPI_MODEL_ID Number(38,0),
 primary key ("KPI_MODEL_INST") 
 )

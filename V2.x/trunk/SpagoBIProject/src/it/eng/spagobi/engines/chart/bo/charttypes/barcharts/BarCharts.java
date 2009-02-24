@@ -180,9 +180,11 @@ public class BarCharts extends ChartImpl {
 
 				if(!hiddenSeries.contains(nameS)){
 					String valueS=(String)series.get(nameS);
-					dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
-					if(!seriesNames.contains(nameS)){
-						seriesNames.add(nameS);
+					if(valueS!=null && !valueS.equals("null") && !valueS.equals("")){
+						dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+						if(!seriesNames.contains(nameS)){
+							seriesNames.add(nameS);
+						}
 					}
 				}
 			}

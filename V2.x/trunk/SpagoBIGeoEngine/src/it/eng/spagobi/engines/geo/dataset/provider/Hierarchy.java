@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import it.eng.spagobi.commons.utilities.StringUtilities;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class Hierarchy.
@@ -49,6 +51,8 @@ public class Hierarchy {
 	
 	/** The level map. */
 	private Map levelMap;
+	
+	private static final String ALL_MEASURE_KEY = "__ALL_MEASURE_KEY__"; 
 	
 	/**
 	 * Instantiates a new hierarchy.
@@ -202,13 +206,13 @@ public class Hierarchy {
 		private String featureName;
 		
 		/** The link. */
-		private Link link;
+		private Map links;
 		
 		/**
 		 * Instantiates a new level.
 		 */
 		public Level() {
-			link = null;
+			links = new HashMap();
 		}
 		
 		/**
@@ -288,7 +292,14 @@ public class Hierarchy {
 		 * 
 		 * @return the link
 		 */
-		public Link getLink() {
+		public Link getLink(String key) {
+			Link link;
+			
+			link = (Link)links.get( key );
+			if(link == null) {
+				link = (Link)links.get( ALL_MEASURE_KEY );
+			}
+			
 			return link;
 		}
 		
@@ -297,8 +308,13 @@ public class Hierarchy {
 		 * 
 		 * @param link the new link
 		 */
-		public void setLink(Link link) {
-			this.link = link;
+		public void setLink(String key, Link link) {
+			if(StringUtilities.isEmpty(key)) {
+				this.links.put(ALL_MEASURE_KEY, link);
+			} else {
+				this.links.put(key, link);
+			}
+			
 		}
 	}
 

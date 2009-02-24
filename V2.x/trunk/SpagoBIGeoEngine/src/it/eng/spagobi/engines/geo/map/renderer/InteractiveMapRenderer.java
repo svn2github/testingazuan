@@ -904,14 +904,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		
 		IDataStore dataStore = datamart.getDataStore();
 		
-		logger.debug("XCHIARA -> map: " + map);
-		logger.debug("XCHIARA -> datamart: " + datamart);
-		logger.debug("XCHIARA -> datamart.getTargetFeatureName(): " + datamart.getTargetFeatureName());
-		
 		Element targetLayer = map.getElementById(datamart.getTargetFeatureName());
-		
-		logger.debug("XCHIARA ->targetLayerNode: " + targetLayer);
-		logger.debug("XCHIARA ->mapContent: " + map.toString());
 		
 		NodeList nodeList = targetLayer.getChildNodes();
 	    for(int i = 0; i < nodeList.getLength(); i++){
@@ -942,12 +935,8 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	}
 
 	
-	/**
-	 * Adds the link.
-	 * 
-	 * @param map the map
-	 * @param datamart the datamart
-	 */
+	
+	
 	private void addLink(SVGDocument map, DataMart datamart) {	
 		
 		IDataStore dataStore = datamart.getDataStore();
@@ -988,7 +977,8 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    	}catch (Exception e){
 	    		e.printStackTrace();
 	    	}
-	    }//for
+	    }
+	    
 	    //adds href links	    
 	    for (int j=0; j<lstLink.size(); j++){	
 	    	Map tmpMap = (Map)lstLink.get(j);
@@ -1001,6 +991,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		    Node lf = map.createTextNode("\n");
 		    targetLayer.appendChild(lf);		    
 	    }	    
+	    
 	    //deletes duplicate path
 	    boolean isNew = false;
 	    for(int i = 0; i < nodeList.getLength(); i++){

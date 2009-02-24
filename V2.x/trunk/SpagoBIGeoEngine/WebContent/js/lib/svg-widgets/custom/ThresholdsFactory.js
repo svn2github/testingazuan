@@ -11,6 +11,8 @@ ThresholdsFactory.getThresholds = function( measure ){
     var results;    
     var conf;
     
+    
+    
     if(measure === undefined || measure.threshold_calculator_conf  === undefined) return;
     
     conf = measure.threshold_calculator_conf;
@@ -29,7 +31,8 @@ ThresholdsFactory.getThresholds = function( measure ){
   	  results = ThresholdsFactory.getQuantileTrasholds( measure );
   	}
   	
-  
+  	
+    
   	measure.thresholds = results.thresholds;
   	measure.num_group = results.num_group;  
 };
@@ -109,6 +112,16 @@ ThresholdsFactory.getQuantileThresholds = function( measure, params ) {
         var MAX = measure.ordered_values[measure.ordered_values.length-1];
         
         
+        var a = new Array();
+        var i = 0;
+        for(j = 0; j < measure.ordered_values.length; j++) {
+          if(i == 0 || a[i-1] != measure.ordered_values[j]) {
+            
+            a[i++] = measure.ordered_values[j];
+          }          
+        }
+        measure.ordered_values = a;
+        
 				var diff_value_num = 0;	
 				var start_index = -1;	
 				if(MIN >= measure.lower_bound && MAX <= measure.upper_bound) {
@@ -122,7 +135,7 @@ ThresholdsFactory.getQuantileThresholds = function( measure, params ) {
 			   			}
 		   		}
 		   	}
-		   			   		
+		   	
 				if(diff_value_num < results.num_group) results.num_group = diff_value_num;
 				var blockSize = Math.floor( diff_value_num / results.num_group );
 			

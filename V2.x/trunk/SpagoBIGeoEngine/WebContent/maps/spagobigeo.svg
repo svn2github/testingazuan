@@ -206,29 +206,32 @@ onload="init(evt);">
 		}	
 		
 		function addLinks(node) {
-		  var crossUrl;
-		  var drillUrl;
-		  
-		  
-		  if(!node || node.nodeName != 'a') {
-		    alert('ERROR: addLinks: node is not a link' + node.toSource());
-		  }
-		      
-      crossUrl = node.getAttributeNS(xlinkNS, 'href');
+			var crossUrl;
+		  	var drillUrl;
+		  	
+		  	if(!node || node.nodeName != 'a') {
+		    	alert('ERROR: addLinks: node is not a link' + node.toSource());
+		  	}
 			
-      drillUrl = "../servlet/AdapterHTTP?ACTION_NAME=SHOW_DATA_DETAILS_ACTION";
+			drillUrl = "../servlet/AdapterHTTP?ACTION_NAME=SHOW_DATA_DETAILS_ACTION";
 			var featureValue = node.firstChild.getAttribute('id');
 			drillUrl += "&featureValue=" + featureValue;
-			
-      node.setAttributeNS(attribNS, "crossUrl", crossUrl);
 			node.setAttributeNS(attribNS, "drillUrl", drillUrl);
+    }
+    
+    function swapLink(node){
+     
+      var child = node.firstChild;
+      
+      var drillUrl = child.getAttributeNS(attribNS, "drillUrl");	
+      var crossUrl = child.getAttributeNS(attribNS, myMapApp.curKpi + "_LINK");
 			
-			
-    	if (sbi.geo.conf.gui_settings.defaultDrillNav == true){
-    	  node.setAttributeNS(xlinkNS, "href", drillUrl);
-      } else {
-        node.setAttributeNS(xlinkNS, "href", crossUrl);
-      }
+    		
+        if (sbi.geo.conf.gui_settings.defaultDrillNav == true){
+    	  		node.setAttributeNS(xlinkNS, "href", drillUrl);
+      		} else {
+        		node.setAttributeNS(xlinkNS, "href", crossUrl);
+      		}
     }
     
     function getDataSet(node) {
@@ -456,7 +459,13 @@ onload="init(evt);">
 			
 			var measure = sbi.geo.conf.measures[ getCurrentKpiIndex() ];
   			
-			
+			var child = myMapApp.targetLayer.firstChild;
+      		while(child) {
+	          	if(child.nodeName == "a") {
+	      			 swapLink(child);
+	      		}
+	      		child = child.nextSibling;
+       		}
 			
 			myMapApp.colArray = measure.colours;
 			myMapApp.threshArray = measure.thresholds;

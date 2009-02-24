@@ -20,6 +20,12 @@
  **/
 package it.eng.spagobi.engines.geo.datamart.provider.configurator;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
@@ -28,12 +34,6 @@ import it.eng.spagobi.engines.geo.datamart.provider.AbstractDataMartProvider;
 import it.eng.spagobi.engines.geo.dataset.DataSetMetaData;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.engines.geo.dataset.provider.Link;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -115,6 +115,9 @@ public class AbstractDataMartProviderConfigurator {
 			String levelName = (String)linkSB.getAttribute("LEVEL");
 			Hierarchy.Level level = (Hierarchy.Level)hierarchy.getLevel(levelName);
 			if(level == null) continue;
+			
+			String measure = (String)linkSB.getAttribute("MEASURE");
+			
 			Link link = new Link();
 			List parameters = linkSB.getAttributeAsList("PARAM");
 			for(int j = 0; j < parameters.size(); j++) {
@@ -126,7 +129,7 @@ public class AbstractDataMartProviderConfigurator {
 				link.addParameter(type, scope, name, value);
 			}
 			
-			level.setLink(link);
+			level.setLink(measure, link);
 		}
 	}
 

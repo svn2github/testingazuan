@@ -20,6 +20,16 @@
  **/
 package it.eng.spagobi.engines.geo.datamart.provider;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
@@ -37,20 +47,6 @@ import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 import it.eng.spagobi.tools.dataset.common.transformer.IDataStoreTransformer;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.engines.EngineConstants;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -151,7 +147,7 @@ public class DataMartProvider extends AbstractDataMartProvider {
 	            	}
 	            }
 	            
-	            IDataStoreTransformer dddLinkFieldTransformer = new AddLinkFieldTransformer(getSelectedLevel().getLink(), this.getEnv());
+	            IDataStoreTransformer dddLinkFieldTransformer = new AddLinkFieldsTransformer(measureColumnNames, getSelectedLevel(), this.getEnv());
 	            dddLinkFieldTransformer.transform(dataStore);
 	        } catch (Exception e) {  
 	        	e.printStackTrace();

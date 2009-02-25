@@ -33,6 +33,7 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveUpLowFunctio
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
@@ -153,7 +154,8 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 
 		String nameLabel = menu.getName();
 
-		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
+		String name = msgBuilder.getUserMessage(nameLabel, SpagoBIConstants.DEFAULT_USER_BUNDLE, httpRequest);
+		//String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		Integer id = menu.getMenuId();
 		Integer parentId = menu.getParentId();
 		Integer level=menu.getLevel();

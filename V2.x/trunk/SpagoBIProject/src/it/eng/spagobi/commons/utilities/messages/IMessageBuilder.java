@@ -126,6 +126,30 @@ public interface IMessageBuilder {
 	public String getMessage(String code, String bundle, HttpServletRequest request);
 	
 	/**
+	 * Returns the message associated with code in the given bundle only if starts with #.
+	 * 
+	 * @param code the code
+	 * @param bundle the bundle
+	 * @param locale the locale
+	 * 
+	 * @return  the message associated with code in the given bundle
+	 */
+	public String getUserMessage(String code, String bundle, Locale locale);
+	
+	/**
+	 * Returns the message associated with code in the given bundle only if starts with #.
+	 * 
+	 * @param code the code
+	 * @param bundle the bundle
+	 * @param request the request
+	 * 
+	 * @return  the message associated with code in the given bundle
+	 */
+	public String getUserMessage(String code, String bundle, HttpServletRequest request);
+	
+	
+	
+	/**
 	 * If the specified locale is valid, returns the message associated with code in the input bundle with the specified locale;
 	 * otherwise returns the message associated with code in the input bundle with request locale.
 	 * 

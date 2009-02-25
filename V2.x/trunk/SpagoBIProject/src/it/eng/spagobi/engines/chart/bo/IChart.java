@@ -27,6 +27,7 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.jfree.chart.JFreeChart;
@@ -220,6 +221,7 @@ public interface IChart {
 	
 	public int getTitleDimension();
 	
+	public void setLocalizedTitle(Locale locale);
 	
 	
 }

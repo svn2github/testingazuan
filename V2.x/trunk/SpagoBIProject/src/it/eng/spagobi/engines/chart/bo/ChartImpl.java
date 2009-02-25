@@ -25,6 +25,9 @@ package it.eng.spagobi.engines.chart.bo;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.chart.bo.charttypes.XYCharts.BlockChart;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.OverlaidBarLine;
@@ -52,6 +55,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
@@ -844,7 +848,18 @@ public class ChartImpl implements IChart {
 		legend.setHorizontalAlignment(HorizontalAlignment.CENTER);
 		chart.addSubtitle(legend);
 		
-		
+		}
+
+	public void setLocalizedTitle(Locale locale) {
+		if(name!=null){
+		IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		String toSet=msgBuilder.getUserMessage(name, SpagoBIConstants.DEFAULT_USER_BUNDLE, locale);
+		setName(toSet);
+		}
+		return;
 	}
+	
+	
+	
 
 }

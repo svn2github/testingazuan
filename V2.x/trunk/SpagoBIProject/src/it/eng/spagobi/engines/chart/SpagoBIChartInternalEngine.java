@@ -38,6 +38,7 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
@@ -48,6 +49,7 @@ import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 
@@ -72,7 +74,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 	/**
 	 * Executes the document and populates the response.
 	 * 
-	 * @param requestContainer The <code>RequestContainer</code> object (the session can be retrieved from this object)
+	 * @param requestContainer The <code>RequestContainer</code>chartImp object (the session can be retrieved from this object)
 	 * @param obj The <code>BIObject</code> representing the document to be executed
 	 * @param response The response <code>SourceBean</code> to be populated
 	 * 
@@ -105,6 +107,13 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 		IEngUserProfile userProfile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String userId=(String)((UserProfile)userProfile).getUserId();
 
+		Locale locale=SpagoBIUtilities.getDefaultLocale();
+		String lang=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_LANGUAGE);
+		String country=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_COUNTRY);
+		if(lang!=null && country!=null){
+			locale=new Locale(lang,country,"");
+		}
+		
 		logger.debug("got parameters userId="+userId+" and documentId="+documentId.toString());
 
 		//		**************get the template*****************
@@ -199,6 +208,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				sbi.setParametersObject(parametersMap);
 				// configure the chart with template parameters
 				sbi.configureChart(content);
+				sbi.setLocalizedTitle(locale);
 				
 				boolean linkable=sbi.isLinkable();
 				if(linkable){

@@ -86,9 +86,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		lstMenu = (List)moduleResponse.getAttribute(LoginModule.LIST_MENU);
 
 	
-	String menuMode = (String)moduleResponse.getAttribute(LoginModule.MENU_MODE); 
-	String menuExtra = (String)moduleResponse.getAttribute(LoginModule.MENU_EXTRA);
-	boolean first=true;
+	String menuMode=null;
+
+	if(moduleResponse.getAttribute(LoginModule.MENU_MODE)!=null && moduleResponse.getAttribute(LoginModule.MENU_MODE) instanceof String){
+		menuMode = (String)moduleResponse.getAttribute(LoginModule.MENU_MODE); 
+		}
+	else{
+		menuMode="ALL_TOP";
+	}
+
+	
+//String menuExtra = (String)moduleResponse.getAttribute(LoginModule.MENU_EXTRA);
+
+
+boolean first=true;
 	boolean user=false;
 	if (!userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
 			&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
@@ -330,7 +341,7 @@ iframe {
 							if (childElemLev2.getHasChildren()){
 							%>
 								{id: '<%new Double(Math.random()).toString();%>',
-				    			     text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev2.getName(), "menu", request))%>",
+				    			     text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev2.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 				    				 		<% if(childElemLev2.getObjId()!=null){%>
 					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>', <%=path2%>)"                   
 					                        <%} else if(childElemLev2.getStaticPage()!=null) {%>
@@ -355,7 +366,7 @@ iframe {
 			    			     %>						    			    
 					    			 <%if (childElemLev3.getHasChildren()){%>
 					    			    {id: '<%new Double(Math.random()).toString();%>',
-					    			    text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev3.getName(), "menu", request))%>",
+					    			    text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev3.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 				    				 		<% if(childElemLev3.getObjId()!=null){%>
 					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>', '<%=path3%>')"                   
 					                        <%} else if(childElemLev3.getStaticPage()!=null) {%>
@@ -380,7 +391,7 @@ iframe {
 					    			    %>
 							    			    new Ext.menu.Item({
 						                            id: '<%new Double(Math.random()).toString();%>',
-						                            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev4.getName(), "menu", request))%>",
+						                            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev4.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 						                            group: 'group_4', 
 						                            <%String icon=DetailMenuModule.assignImage(childElemLev4);
 						                            if( childElemLev4.isViewIcons() && !icon.equalsIgnoreCase("")){%>
@@ -408,7 +419,7 @@ iframe {
 					    			    else{ %>
 					                        new Ext.menu.Item({
 					                            id: '<%new Double(Math.random()).toString();%>',
-					                            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev3.getName(), "menu", request))%>",
+					                            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev3.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 					                            group: 'group_3',
 												<%String icon=DetailMenuModule.assignImage(childElemLev3);
 						                          if(childElemLev3.isViewIcons() && !icon.equalsIgnoreCase("")){%>
@@ -437,7 +448,7 @@ iframe {
 		    			    else{ %>
 		                        new Ext.menu.Item({
 		                            id: '<%new Double(Math.random()).toString();%>',
-		                            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(childElemLev2.getName(), "menu", request))%>",
+		                            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev2.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 		                            group: 'group_2',
 									<%String icon=DetailMenuModule.assignImage(childElemLev2);
 									   if(childElemLev2.isViewIcons() && !icon.equalsIgnoreCase("")){%>
@@ -462,7 +473,7 @@ iframe {
 				    	}else{%>
 				    	 	new Ext.menu.Item({
 		                            id: '<%new Double(Math.random()).toString();%>',
-		                            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(menuElem.getName(), "menu", request))%>",
+		                            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 		                            group: 'group_1',		                             
 	                            <% if(menuElem.getObjId()!=null){%>
 		                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=menuElem.getMenuId()%>', '<%=path%>')"                   
@@ -497,7 +508,7 @@ iframe {
 					tb.add(
 						new Ext.Toolbar.MenuButton({
 							id:'<%=menuElem.getMenuId()%>',
-				            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(menuElem.getName(), "menu", request))%>",
+				            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 							<%String icon=DetailMenuModule.assignImage(menuElem);
 							if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
@@ -522,7 +533,7 @@ iframe {
 			    		tb.add(
 						new Ext.Toolbar.Button({
 							id:'<%=menuElem.getMenuId()%>',
-				            text: "<%=JavaScript.escapeText(msgBuilder.getMessage(menuElem.getName(), "menu", request))%>",
+				            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 							<%String icon=DetailMenuModule.assignImage(menuElem);
 							if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
 								icon: '<%=contextName%><%=icon%>',
@@ -592,7 +603,7 @@ iframe {
 	}
 
 
-	if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+	//if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
 	%>
  		var languages = new Ext.menu.Menu({ 
  			id: 'languages', 
@@ -643,7 +654,7 @@ Iterator iter = languages.iterator();
  		menu: languages
  	})
  );
-<%}%>
+<%//}%>
 
 
 

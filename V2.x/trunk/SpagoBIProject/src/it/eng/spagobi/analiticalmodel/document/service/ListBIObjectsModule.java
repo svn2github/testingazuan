@@ -41,11 +41,15 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 
@@ -53,6 +57,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
     private static transient Logger logger = Logger.getLogger(ListBIObjectsModule.class);
     protected IEngUserProfile profile = null;
     protected String initialPath = null;
+    protected Locale locale=null;
 
     /*
      * (non-Javadoc)
@@ -68,6 +73,11 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	initialPath = (String) request.getAttribute(TreeObjectsModule.PATH_SUBTREE);
 
+	String language=(String)permanentSession.getAttribute(SpagoBIConstants.AF_LANGUAGE);
+	String country=(String)permanentSession.getAttribute(SpagoBIConstants.AF_COUNTRY);
+	if(language!=null && country!=null)locale=new Locale(language,country,"");
+	else locale=SpagoBIUtilities.getDefaultLocale();
+	
 	String currentFieldOrder = (request.getAttribute("FIELD_ORDER") == null || ((String) request
 		.getAttribute("FIELD_ORDER")).equals("")) ? "" : (String) request.getAttribute("FIELD_ORDER");
 	if (currentFieldOrder.equals("")) {
@@ -292,13 +302,16 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 		return null;		
 	}
 
+	IMessageBuilder msgBuilder=MessageBuilderFactory.getMessageBuilder();
+	String localizedName=msgBuilder.getUserMessage(obj.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, locale);
+	
 	 rowSBStr += "		canExec=\"" + canExec + "\"";   
 	 rowSBStr += "		canDev=\"" + canDev + "\"";
 	rowSBStr += "		stateUp=\"" + stateUp + "\"";
 	rowSBStr += "		stateDown=\"" + stateDown + "\"";
 	rowSBStr += "		OBJECT_ID=\"" + obj.getId() + "\"";
 	rowSBStr += "		LABEL=\"" + obj.getLabel() + "\"";
-	rowSBStr += "		NAME=\"" + obj.getName() + "\"";
+	rowSBStr += "		NAME=\"" + localizedName + "\"";
 	rowSBStr += "		DESCR=\"" + (obj.getDescription() != null ? obj.getDescription() : "") + "\"";
 	rowSBStr += "		ENGINE=\"" + obj.getEngine().getName() + "\"";
 	rowSBStr += "		STATE=\"" + objectStateCD + "\"";

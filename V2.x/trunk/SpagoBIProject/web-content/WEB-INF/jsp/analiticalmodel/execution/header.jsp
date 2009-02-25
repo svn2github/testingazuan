@@ -208,7 +208,8 @@ String executionFlowId = instance.getFlowId();
 		}
 	}
 	%>
-	<%= title %>
+		<%=msgBuilder.getUserMessage(title, SpagoBIConstants.DEFAULT_USER_BUNDLE, request)%>
+	
 </div>
 <script type="text/javascript">
 		function changeDivDisplay(id,display){

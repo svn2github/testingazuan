@@ -147,6 +147,42 @@ public class MessageBuilder implements IMessageBuilder {
 	}
 
 	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String, javax.servlet.http.HttpServletRequest)
+	 */
+	public String getUserMessage(String code, String bundle, HttpServletRequest request) {
+		Locale locale = getLocale(request);
+
+		String toReturn=code;
+
+		if(code.length()>4){
+			String prefix=code.substring(0, 4);
+			if(prefix.equalsIgnoreCase("cod_")){
+				String newCode=code.substring(4);
+				toReturn=getMessageInternal(newCode, bundle, locale);
+			}
+		}
+		return toReturn;
+	}
+	
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String, Locale)
+	 */
+	public String getUserMessage(String code, String bundle, Locale locale) {
+
+		String toReturn=code;
+
+		if(code.length()>4){
+			String prefix=code.substring(0, 4);
+			if(prefix.equalsIgnoreCase("cod_")){
+				String newCode=code.substring(4);
+				toReturn=getMessageInternal(newCode, bundle, locale);
+			}
+		}
+		return toReturn;
+	}
+
+
+	/* (non-Javadoc)
 	 * @see it.eng.spagobi.commons.utilities.messages.IMessageBuilder#getMessage(java.lang.String, java.lang.String, javax.servlet.http.HttpServletRequest, java.util.Locale)
 	 */
 	public String getMessage(String code, String bundle, HttpServletRequest request, Locale locale) {

@@ -3,6 +3,7 @@ package it.eng.spagobi.kpi.model.presentation;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -284,6 +285,7 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 		editUrlParMap.put("MESSAGE", "DETAIL_SELECT");
 		editUrlParMap.put("ID", parentId);
 		editUrlParMap.put("MODEL_ID", aModel.getId());
+//		editUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_REPLACE_LAST, "");
 		String editUrl = urlBuilder.getUrl(httpRequest, editUrlParMap);
 
 		return editUrl;
@@ -297,6 +299,7 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 		addUrlParMap.put("MESSAGE", "DETAIL_NEW");
 		addUrlParMap.put("ID", parentId);
 		addUrlParMap.put("MODEL_ID", aModel.getId());
+//		addUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_REPLACE_LAST, "");
 		String addUrl = urlBuilder.getUrl(httpRequest, addUrlParMap);
 		return addUrl;
 	}

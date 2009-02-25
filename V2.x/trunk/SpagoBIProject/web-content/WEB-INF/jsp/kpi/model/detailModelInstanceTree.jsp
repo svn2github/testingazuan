@@ -186,7 +186,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(messageSave.equals(DelegatedDetailService.DETAIL_UPDATE)){
 		backUrlPars.put("ID", parentId);
 	}
-	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
+	backUrlPars.put("MODULE","ListModelInstanceTreeModule");
+	
+	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_RESET, "");
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 	String messageBundle = "component_kpi_messages";

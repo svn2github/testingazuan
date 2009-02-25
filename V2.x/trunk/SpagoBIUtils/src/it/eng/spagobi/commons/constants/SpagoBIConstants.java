@@ -65,6 +65,9 @@ public class SpagoBIConstants {
 	public static final String MODALITY = "MODALITY";
 	public static final String MESSAGEDET = "MESSAGEDET";
 	
+	public static final String DEFAULT_BUNDLE = "messages";
+	public static final String DEFAULT_USER_BUNDLE = "user_messages";
+		
 	public static final String DETAIL_SELECT = "DETAIL_SELECT";
 	public static final String METADATA_SELECT = "METADATA_SELECT";
 	public static final String DETAIL_SUBSC = "DETAIL_SUBSC";

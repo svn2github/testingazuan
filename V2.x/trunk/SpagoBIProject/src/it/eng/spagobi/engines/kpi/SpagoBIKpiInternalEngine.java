@@ -39,6 +39,9 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
@@ -67,6 +70,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -89,7 +93,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     protected String subName = null;// Document's subtitle
     protected StyleLabel styleTitle;// Document's title style
     protected StyleLabel styleSubTitle;// Document's subtitle style
-
+    
+    protected Locale locale=null;
+    
     private IEngUserProfile profile=null;
 
     protected HashMap parametersObject;
@@ -140,6 +146,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     	SessionContainer session = requestContainer.getSessionContainer();
     	profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
     		IEngUserProfile.ENG_USER_PROFILE);
+    	
+		locale=SpagoBIUtilities.getDefaultLocale();
+		String lang=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_LANGUAGE);
+		String country=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_COUNTRY);
+		if(lang!=null && country!=null){
+			locale=new Locale(lang,country,"");
+		}
    	
     	this.parametersObject = new HashMap();
     	String recalculate = (String)requestContainer.getAttribute("recalculate_anyway");
@@ -969,6 +982,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		} else
 		    tmpTitle = "";
 	    }
+	    IMessageBuilder msgBuilder=MessageBuilderFactory.getMessageBuilder();
+	    String localizedTitle=msgBuilder.getUserMessage(titleChart, SpagoBIConstants.DEFAULT_USER_BUNDLE, locale);
+
 	    setName(titleChart);
 	} else
 	    setName("");

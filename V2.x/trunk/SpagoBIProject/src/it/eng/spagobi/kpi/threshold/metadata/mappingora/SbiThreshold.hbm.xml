@@ -40,7 +40,7 @@
             </key>
             <one-to-many class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" />
         </set>
-        <set name="sbiThresholdValues" inverse="true">
+        <set name="sbiThresholdValues" inverse="true" order-by="position" >
             <key>
                 <column name="THRESHOLD_ID" not-null="true" />
             </key>

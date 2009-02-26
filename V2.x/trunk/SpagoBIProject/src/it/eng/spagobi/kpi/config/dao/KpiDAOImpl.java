@@ -1253,6 +1253,12 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("IN");
 		ModelInstanceNode toReturn = new ModelInstanceNode();
 
+		String modelCode = "";
+		
+		if(hibSbiKpiModelInst.getSbiKpiModel()!=null){
+			modelCode = hibSbiKpiModelInst.getSbiKpiModel().getKpiModelCd();
+		}
+	
 		Integer id = hibSbiKpiModelInst.getKpiModelInst();
 		logger.debug("SbiKpiModelInstanceNode id: "
 				+ (id != null ? id : "id null"));
@@ -1334,7 +1340,9 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("KpiModelInstanceNode isRoot setted");
 		toReturn.setChildrenIds(childrenIds);
 		logger.debug("KpiModelInstanceNode childrenIds setted");
-
+		toReturn.setModelCode(modelCode);
+		logger.debug("KpiModelInstanceNode childrenIds setted");
+		
 		logger.debug("OUT");
 		return toReturn;
 	}
@@ -1545,6 +1553,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 		logger.debug("IN");
 		Kpi toReturn = new Kpi();
+		String interpretation = kpi.getInterpretation();
 		String code = kpi.getCode();
 		String description = kpi.getDescription();
 		String documentLabel = kpi.getDocumentLabel();
@@ -1655,6 +1664,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("Kpi scaleCode setted");
 		toReturn.setScaleName(scaleName);
 		logger.debug("Kpi scaleName setted");
+		toReturn.setInterpretation(interpretation);
+		logger.debug("Interpretation setted");
 
 		logger.debug("OUT");
 		return toReturn;

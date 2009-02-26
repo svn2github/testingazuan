@@ -8,7 +8,9 @@ import java.util.List;
 
 public class KpiLine {
 	
+	Integer modelInstanceNodeId = null;
 	String modelNodeName = null;
+	String modelInstanceCode = null;
 	Boolean alarm = false ; //if the kpi is under alarm control
 	KpiValue value = null;
 	String thresholdsJsArray = "";
@@ -24,7 +26,7 @@ public class KpiLine {
 	}
 	public KpiLine(String modelNodeName,String arrayJs, Boolean alarm, KpiValue value,
 			Color semaphorColor, ChartImpl chartBullet, List children,
-			List documents) {
+			List documents, Integer modelInstanceNodeId, String modelInstanceCode ) {
 		super();
 		this.thresholdsJsArray = arrayJs;
 		this.modelNodeName = modelNodeName;
@@ -34,6 +36,8 @@ public class KpiLine {
 		this.chartBullet = chartBullet;
 		this.children = children;
 		this.documents = documents;
+		this.modelInstanceNodeId = modelInstanceNodeId;
+		this.modelInstanceCode = modelInstanceCode;
 	}
 	
 	public String getModelNodeName() {
@@ -83,5 +87,17 @@ public class KpiLine {
 	}
 	public void setThresholdsJsArray(String thresholdsJsArray) {
 		this.thresholdsJsArray = thresholdsJsArray;
+	}
+	public Integer getModelInstanceNodeId() {
+		return modelInstanceNodeId;
+	}
+	public void setModelInstanceNodeId(Integer modelInstanceNodeId) {
+		this.modelInstanceNodeId = modelInstanceNodeId;
+	}
+	public String getModelInstanceCode() {
+		return modelInstanceCode;
+	}
+	public void setModelInstanceCode(String modelInstanceCode) {
+		this.modelInstanceCode = modelInstanceCode;
 	}	
 }

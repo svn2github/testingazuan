@@ -85,5 +85,4 @@ public class ModelInstance {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
 }

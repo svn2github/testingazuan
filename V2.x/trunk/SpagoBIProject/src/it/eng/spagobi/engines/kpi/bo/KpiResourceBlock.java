@@ -73,7 +73,7 @@ public class KpiResourceBlock {
 		this.d = d;
 	}
 	
-	public StringBuffer makeTree(ExecutionInstance instanceO,String userId,HttpServletRequest httpReq, Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight ){
+	public StringBuffer makeTree(ExecutionInstance instanceO,String userId,HttpServletRequest httpReq, Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight,Boolean show_axis ){
 		logger.debug("IN");
 		StringBuffer _htmlStream = new StringBuffer();				
 		if (r!=null){
@@ -89,7 +89,7 @@ public class KpiResourceBlock {
 			_htmlStream.append("<TBODY>\n");
 		}
 		
-		addItemForTree(instanceO,userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
+		addItemForTree(instanceO,userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
 		logger.debug("Started Kpi tree with the root");
 
 			_htmlStream.append("</TBODY>\n");
@@ -104,7 +104,7 @@ public class KpiResourceBlock {
 		return _htmlStream;
 	}
 	
-	private StringBuffer addItemForTree(ExecutionInstance instanceO,String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight) {
+	private StringBuffer addItemForTree(ExecutionInstance instanceO,String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight, Boolean show_axis) {
 		
 		logger.debug("IN");
 		logger.debug("*********************");
@@ -122,6 +122,10 @@ public class KpiResourceBlock {
 		String docImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/linkedDoc.gif");
 		String trendImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/trend.jpg");
 		String modelName = line.getModelNodeName();
+		String modelCode = line.getModelInstanceCode();
+		if(modelCode!=null && !modelCode.equals("")){
+			modelName = modelCode+" - "+ modelName;
+		}
 		logger.debug("Model node :"+modelName);
 		Boolean alarm = line.getAlarm();
 		logger.debug("Alarm Control:"+(alarm!=null ? alarm.toString(): "alarm null" ));
@@ -167,19 +171,67 @@ public class KpiResourceBlock {
 		}
 		if (display_semaphore && semaphorColor!= null){
 			String semaphorHex = Integer.toHexString( semaphorColor.getRGB() & 0x00ffffff ) ;		
-			_htmlStream.append("		<td width='25%' class='kpi_td' ><div style=\"margin-left: "+20*recursionLev+"px;margin-top:5px;margin-right:5px;float:left;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div><div  class='kpi_div'>"+modelName+"</div></td>\n");
+			_htmlStream.append("		<td width='53%' class='kpi_td' ><div style=\"margin-left: "+20*recursionLev+"px;margin-top:5px;margin-right:5px;float:left;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div><div  class='kpi_div'>"+modelName+"</div></td>\n");
 		}else{
-			_htmlStream.append("		<td width='25%'  class='kpi_td' ><div class='kpi_div'><div style='MARGIN-LEFT: "+20*recursionLev+"px;text-align:left;' class='kpi_div'>"+modelName+"</div></div></td>\n");
+			_htmlStream.append("		<td width='53%'  class='kpi_td' ><div class='kpi_div'><div style='MARGIN-LEFT: "+20*recursionLev+"px;text-align:left;' class='kpi_div'>"+modelName+"</div></div></td>\n");
 		}
 		logger.debug("Written HTML for Semaphore");
 		logger.debug("Written HTML for ModelName:"+modelName);
 		
-		_htmlStream.append("		<td  width='28%' class='kpi_td' ><div id=\""+requestIdentity+"\" style='display:none;float:right;'></div></td>\n");
+		_htmlStream.append("		<td  width='0%' class='kpi_td' ><div id=\""+requestIdentity+"\" style='display:none;float:right;'></div></td>\n");
 		
 		String valueDescr = "";
-		if(kpiVal !=null && kpiVal.getValueDescr()!=null){
-			valueDescr = kpiVal.getValueDescr();
-			_htmlStream.append("		<td width='4%' class='kpi_td' title='"+valueDescr+"' style='text-align:center;'  ><div class='kpi_div'  ><img src=\""+infoImgSrc+"\" /></div></td>\n");				
+		if(kpiVal !=null && kpiVal.getKpiInstanceId()!=null){
+			if(kpiVal.getValueDescr()!=null)valueDescr = kpiVal.getValueDescr();		
+			
+			HashMap execUrlParMap = new HashMap();
+			execUrlParMap.put(ObjectsTreeConstants.ACTION, "GET_KPI_METADATA");
+			execUrlParMap.put("KPI_VALUE_DESCR", valueDescr);
+
+			if (kpiVal!=null){
+				execUrlParMap.put("KPI_BEGIN_DATE", kpiVal.getBeginDate());
+				execUrlParMap.put("KPI_END_DATE", kpiVal.getEndDate());
+				execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId());
+				execUrlParMap.put("KPI_TARGET", kpiVal.getTarget());
+			}		
+			execUrlParMap.put("KPI_MODEL_INST_ID", line.getModelInstanceNodeId());
+			execUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
+
+			String metadataPopupUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
+			_htmlStream.append("		<td  width='4%'  class='kpi_td' title='"+valueDescr+"' style='text-align:center;' ><div class='kpi_div'  ><a id='linkMetadata_"+requestIdentity+"_"+recursionLev+"' ><img src=\""+infoImgSrc+"\" /></div></a></td>\n");
+			// insert javascript for open popup window for the trend
+		    _htmlStream.append(" <script>\n");
+		    _htmlStream.append("   var winMetadata"+requestIdentity+"_"+recursionLev+"; \n");
+		    _htmlStream.append("Ext.get('linkMetadata_"+requestIdentity+"_"+recursionLev+"').on('click', function(){ \n");
+		    _htmlStream.append("   if ( winMetadata"+requestIdentity+"_"+recursionLev+" == null ) {winMetadata"+requestIdentity+"_"+recursionLev+"=new Ext.Window({id:'winMetadata"+requestIdentity+"_"+recursionLev+"',\n");
+		    _htmlStream.append("            bodyCfg:{ \n" );
+		    _htmlStream.append("                tag:'div' \n");
+		    _htmlStream.append("                ,cls:'x-panel-body' \n");
+		    _htmlStream.append("               ,children:[{ \n");
+		    _htmlStream.append("                    tag:'iframe', \n");
+		    _htmlStream.append("                    name: 'dynamicIframe"+requestIdentity+"_"+recursionLev+"', \n");
+		    _htmlStream.append("                    id  : 'dynamicIframe"+requestIdentity+"_"+recursionLev+"', \n");
+		    _htmlStream.append("                    src: '"+metadataPopupUrl+"', \n");
+		    _htmlStream.append("                    frameBorder:0, \n");
+		    _htmlStream.append("                    width:'100%', \n");
+		    _htmlStream.append("                    height:'100%', \n");
+		    _htmlStream.append("                    style: {overflow:'auto'}  \n ");        
+		    _htmlStream.append("               }] \n");
+		    _htmlStream.append("            }, \n");
+		    _htmlStream.append("            modal: true,\n");
+		    _htmlStream.append("            layout:'fit',\n");
+			_htmlStream.append("            height:380,\n");
+			_htmlStream.append("            width:500,\n");
+			_htmlStream.append("            closeAction:'hide',\n");
+	        _htmlStream.append("            scripts: true, \n");
+	        _htmlStream.append("            plain: true \n");       
+	        _htmlStream.append("        }); }; \n");
+		    _htmlStream.append("   winMetadata"+requestIdentity+"_"+recursionLev+".show(); \n");
+		    _htmlStream.append("	} \n");
+		    _htmlStream.append(");\n");
+		    _htmlStream.append(" </script>\n");
+			
+			//_htmlStream.append("		<td width='4%' class='kpi_td' title='"+valueDescr+"' style='text-align:center;'  ><div class='kpi_div'  ><img src=\""+infoImgSrc+"\" /></div></td>\n");				
 		}else{
 			_htmlStream.append("		<td width='4%' class='kpi_td' title='"+valueDescr+"'   ><div ></div></td>\n");				
 		}
@@ -216,13 +268,17 @@ public class KpiResourceBlock {
 			String path=dir+"/"+requestIdentity+".png";
 			java.io.File file1 = new java.io.File(path);
 			try {
-				ChartUtilities.saveChartAsPNG(file1, chart, 250, 16, info);
+				if(!show_axis){
+					ChartUtilities.saveChartAsPNG(file1, chart, 250, 16, info);
+				}else{
+					ChartUtilities.saveChartAsPNG(file1, chart, 250, 30, info);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 			"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&userid=<%=userId%>&path="+path+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
-			_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div style='margin-top:4px;'><img style=\"align:left;\" onmouseover=\"showLegendTooltip("+thresholdJsArray+",'"+requestIdentity+"');\" onmouseout=\"hideLegendTooltip('"+requestIdentity+"');\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
+			_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div style='margin-top:4px;'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
 			
 		}else{
 			_htmlStream.append("		<td width='22%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
@@ -347,9 +403,9 @@ public class KpiResourceBlock {
 			   KpiLine l = (KpiLine)childIt.next();
 			   
 			   if (evenLine){			   
-				   addItemForTree(instanceO,userId,recursionLev,false,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
+				   addItemForTree(instanceO,userId,recursionLev,false,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
 			   }else{
-				   addItemForTree(instanceO,userId,recursionLev,true,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight);
+				   addItemForTree(instanceO,userId,recursionLev,true,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
 			   }  
 		   }
 	   } 

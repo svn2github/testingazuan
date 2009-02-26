@@ -28,7 +28,7 @@
         <property name="colour" type="string">
             <column name="colour" length="20" />
         </property>
-        <property name="position" type="integer">
+        <property name="position" type="integer" >
             <column name="position" />
         </property>
         <set name="sbiAlarms" inverse="true">

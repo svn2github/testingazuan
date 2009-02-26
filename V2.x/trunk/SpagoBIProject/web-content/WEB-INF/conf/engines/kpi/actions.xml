@@ -7,5 +7,8 @@
   <ACTION name="GET_TREND" class="it.eng.spagobi.engines.kpi.service.CreateTrendAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+  <ACTION name="GET_KPI_METADATA" class="it.eng.spagobi.engines.kpi.service.CreateKpiMetadataAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 
 </ACTIONS>

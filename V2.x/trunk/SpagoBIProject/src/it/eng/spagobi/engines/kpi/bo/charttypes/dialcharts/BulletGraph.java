@@ -5,6 +5,7 @@ import it.eng.spagobi.engines.kpi.utils.KpiInterval;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
@@ -74,6 +76,7 @@ public class BulletGraph  extends ChartImpl{
         CategoryPlot plot = chart.getCategoryPlot(); 
         plot.setOutlineVisible(true); 
         plot.setOutlinePaint(Color.BLACK);
+       
         plot.setInsets(new RectangleInsets(0.0, 0.0, 0.0, 0.0)); 
         plot.setBackgroundPaint(null); 
         plot.setDomainGridlinesVisible(false); 
@@ -87,6 +90,7 @@ public class BulletGraph  extends ChartImpl{
 	        ValueMarker marker = new ValueMarker( target.doubleValue(), Color.BLACK, new BasicStroke(2.0f)); 	        
 	        plot.addRangeMarker(marker, Layer.FOREGROUND); 
         }
+        
         
         //sets different marks
         for (Iterator iterator = intervals.iterator(); iterator.hasNext();) {
@@ -102,15 +106,22 @@ public class BulletGraph  extends ChartImpl{
         domainAxis.setVisible(false); 
 
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis(); 
-        rangeAxis.setVisible(false); 
+        rangeAxis.setVisible(show_axis); 
+        rangeAxis.setLabelFont(new Font("Arial",Font.PLAIN,4));
         // calculate the upper limit 
         //double upperBound = target * upperFactor; 
         rangeAxis.setRange(new Range(lower, upper)); 
+        plot.setRangeAxisLocation(AxisLocation.BOTTOM_OR_LEFT);
 
         // customize renderer 
         BarRenderer renderer = (BarRenderer) plot.getRenderer(); 
         renderer.setMaximumBarWidth(0.18); 
         renderer.setSeriesPaint(0, Color.BLACK); 
+        /*BasicStroke d = new BasicStroke(3f,BasicStroke.CAP_ROUND ,BasicStroke.JOIN_ROUND);
+        renderer.setSeriesOutlineStroke(0, d);
+        renderer.setSeriesStroke(0, d);
+       
+        renderer.setStroke(d);*/
         
         return chart;
 	}

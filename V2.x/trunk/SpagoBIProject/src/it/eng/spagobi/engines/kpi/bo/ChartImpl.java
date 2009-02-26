@@ -67,6 +67,7 @@ public class ChartImpl {
 	protected IEngUserProfile profile;
 	protected Color color;//background color of the chart
 	protected Boolean legend = true;//true if legend visible; false if not	
+	protected Boolean show_axis = false;
 	
 	protected DefaultValueDataset dataset ;//ValueDataset for the chart
 	
@@ -149,6 +150,8 @@ public class ChartImpl {
 			logger.debug("Chart style title setted");
 		styleSubTitle =(StyleLabel) config.get("styleSubTitle");
 			logger.debug("Chart style subtitle setted");
+		show_axis =(Boolean) config.get("show_axis");
+			logger.debug("Chart show_axis setted");
 		logger.debug("OUT");	
 	}
 	
@@ -421,6 +424,11 @@ public class ChartImpl {
 	public void setLegend(boolean legend) {
 		this.legend = legend;
 	}
+	
+	public void setShowAxis(boolean show_axis) {
+		this.show_axis=show_axis;
+	}
+
 
 
 	public TextTitle setStyleTitle(String title,StyleLabel titleLabel){

@@ -10,6 +10,7 @@ public class ModelInstanceNode {
 	Boolean isRoot = null;
 	String name = null;
 	String descr = null;
+	String modelCode = null;
 	Integer modelNodeId = null;//the referenced ModelNodeID
 	Integer modelInstanceNodeId = null;
 	Integer fatherId = null;
@@ -94,6 +95,22 @@ public class ModelInstanceNode {
 
 	public void setFatherId(Integer fatherId) {
 		this.fatherId = fatherId;
+	}
+
+	public String getModelCode() {
+		return modelCode;
+	}
+
+	public void setModelCode(String modelCode) {
+		this.modelCode = modelCode;
+	}
+
+	public Integer getModelNodeId() {
+		return modelNodeId;
+	}
+
+	public void setModelNodeId(Integer modelNodeId) {
+		this.modelNodeId = modelNodeId;
 	}
 	
 

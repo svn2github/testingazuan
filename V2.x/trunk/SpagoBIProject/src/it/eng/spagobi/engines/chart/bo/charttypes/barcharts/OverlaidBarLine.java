@@ -346,10 +346,10 @@ public class OverlaidBarLine extends BarCharts {
 				lineRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
 				lineRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_RIGHT));
 
 				lineRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_RIGHT));
 
 			}	
 			else if(additionalLabels){

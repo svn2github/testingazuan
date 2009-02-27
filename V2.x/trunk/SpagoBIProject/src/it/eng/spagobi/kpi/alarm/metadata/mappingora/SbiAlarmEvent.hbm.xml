@@ -37,7 +37,7 @@
         </property>
                
          <property name="resourcesId" type="integer">
-            <column name="RESOURCES_ID"  not-null="false" />
+            <column name="RESOURCE_ID"  not-null="false" />
         </property>
         <property name="kpiInstanceId" type="integer">
             <column name="KPI_INSTANCE_ID"  not-null="false" />

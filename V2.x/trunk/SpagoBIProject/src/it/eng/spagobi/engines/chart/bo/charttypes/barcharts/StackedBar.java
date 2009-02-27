@@ -396,13 +396,16 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		StackedBarRenderer renderer = (StackedBarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
 		renderer.setBaseItemLabelsVisible(true);
+		
 		if (percentageValue)
 			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", new DecimalFormat("#,##.#%")));
 		else if(makePercentage)
 		       renderer.setRenderAsPercentages(true);
+		
+		/*
 		else
 			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-		
+		*/
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
 
 		boolean document_composition=false;
@@ -487,8 +490,23 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 		MyStandardCategoryItemLabelGenerator generator=null;
 		logger.debug("Are there addition labels "+additionalLabels);
-		if(additionalLabels){
+		logger.debug("Are there value labels "+showValueLabels);
+		
+		if(showValueLabels){
+        	renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+        	renderer.setBaseItemLabelsVisible(true);
+        	renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+        	renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
+        	renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+        	renderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+		}
+		else if(additionalLabels){
+			
 			generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());
 			logger.debug("generator set");
 
@@ -528,9 +546,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
         domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
         domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 
-		if(legend==true){
-			
-			drawLegend(chart);}
+        plot.setForegroundAlpha(0.6f);
+		if(legend==true) drawLegend(chart);
         
 		logger.debug("OUT");
 		return chart;

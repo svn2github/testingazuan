@@ -33,6 +33,7 @@ import it.eng.spago.dbaccess.sql.SQLCommand;
 import it.eng.spago.dbaccess.sql.result.DataResult;
 import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.dispatching.module.list.basic.AbstractBasicListModule;
+import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.paginator.basic.ListIFace;
@@ -64,6 +65,7 @@ import it.eng.spagobi.commons.utilities.PortletUtilities;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -153,7 +155,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	parametersMap.put("uuid", request.getAttribute("uuid"));
 	
 	// dependencies filter
-	list = filterListForParametersCorrelation(paruse, request, list, parametersMap);
+	list = filterListForParametersCorrelation(paruse, request, list, parametersMap, this.getResponseContainer().getErrorHandler());
 	
 	// fill response
 	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "SelectParameterPublisher");
@@ -175,8 +177,8 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
      * @return the filtered list according to the parameters correlation
      * @throws EMFUserError
      */
-    private ListIFace filterListForParametersCorrelation(ParameterUse paruse,
-			SourceBean request, ListIFace list, HashMap parametersMap) throws EMFUserError {
+    public static ListIFace filterListForParametersCorrelation(ParameterUse paruse,
+			SourceBean request, ListIFace list, HashMap parametersMap, EMFErrorHandler errorHandler) throws EMFUserError {
     	logger.debug("IN");
     	String objParIdStr = (String) request.getAttribute("objParId");
     	Integer objParId = new Integer(objParIdStr);
@@ -185,11 +187,11 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
     	if (dependencies != null && dependencies.size() > 0) {
 			if (dependencies.size() == 1) {
 				ObjParuse objparuse = (ObjParuse) dependencies.get(0);
-				list = filterForCorrelation(list, objparuse, request, parametersMap);
+				list = filterForCorrelation(list, objparuse, request, parametersMap, errorHandler);
 			} else if (dependencies.size()==2) {
 				ObjParuse objpuse1 = (ObjParuse) dependencies.get(0);
 				ObjParuse objpuse2 = (ObjParuse) dependencies.get(1);
-				list = evaluateSingleLogicOperation(objpuse1, objpuse2, list, request, parametersMap);
+				list = evaluateSingleLogicOperation(objpuse1, objpuse2, list, request, parametersMap, errorHandler);
 			} else {
 				// build the expression
 				int posinlist = 0;
@@ -203,7 +205,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 				expr = expr.trim();
 				expr = "(" + expr;
 				expr = expr + ")";
-				list = evaluateExpression(expr, list, dependencies, request, parametersMap);
+				list = evaluateExpression(expr, list, dependencies, request, parametersMap, errorHandler);
 			}
     	}
     	logger.debug("OUT");
@@ -211,7 +213,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 		
 	}
 
-	private ListIFace evaluateExpression(String expr, ListIFace list, List ops, SourceBean request, HashMap parametersMap) {
+	private static ListIFace evaluateExpression(String expr, ListIFace list, List ops, SourceBean request, HashMap parametersMap, EMFErrorHandler errorHandler) {
 		ListIFace previusCalculated = list;
 		try {
 			// check number of left and right break, if numbers are different the expression is wrong
@@ -242,7 +244,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 			Iterator opsIter = ops.iterator();
 			while(opsIter.hasNext()) {
 				ObjParuse op = (ObjParuse)opsIter.next();
-				ListIFace listop = filterForCorrelation(list, op, request, parametersMap);
+				ListIFace listop = filterForCorrelation(list, op, request, parametersMap, errorHandler);
 				calculatedLists.put(String.valueOf(posinlist), listop);
 				posinlist ++;
 			}
@@ -308,14 +310,14 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 		return previusCalculated;
 	}
 
-	private ListIFace evaluateSingleLogicOperation(ObjParuse obpuLeft, ObjParuse obpuRight, ListIFace list, SourceBean request, HashMap parametersMap) {
+	private static ListIFace evaluateSingleLogicOperation(ObjParuse obpuLeft, ObjParuse obpuRight, ListIFace list, SourceBean request, HashMap parametersMap, EMFErrorHandler errorHandler) {
 		ListIFace listToReturn = list;
-		ListIFace listLeft = filterForCorrelation(list, obpuLeft, request, parametersMap);
+		ListIFace listLeft = filterForCorrelation(list, obpuLeft, request, parametersMap, errorHandler);
 		String lo = obpuLeft.getLogicOperator();
 		if(lo.equalsIgnoreCase("AND")) {
-			listToReturn = filterForCorrelation(listLeft, obpuRight, request, parametersMap);
+			listToReturn = filterForCorrelation(listLeft, obpuRight, request, parametersMap, errorHandler);
 		} else if(lo.equalsIgnoreCase("OR")) {
-			ListIFace listRight = filterForCorrelation(list, obpuRight, request, parametersMap);
+			ListIFace listRight = filterForCorrelation(list, obpuRight, request, parametersMap, errorHandler);
 			listToReturn = mergeLists(listLeft, listRight);
 		} else {
 			listToReturn = list;
@@ -323,7 +325,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 		return listToReturn;
 	}
 
-	protected ListIFace mergeLists(ListIFace list1, ListIFace list2) {
+	protected static ListIFace mergeLists(ListIFace list1, ListIFace list2) {
 		// transform all row sourcebean of the list 2 into strings and put them into a list
 		PaginatorIFace pagLis2 = list2.getPaginator();
 		SourceBean allRowsList2 = pagLis2.getAll();
@@ -351,7 +353,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 		return list2;
 	}
 	
-	protected ListIFace intersectLists(ListIFace list1, ListIFace list2) {
+	protected static ListIFace intersectLists(ListIFace list1, ListIFace list2) {
 		
 		// transform all row sourcebean of the list 2 into strings and put them into a list
 		PaginatorIFace pagLis2 = list2.getPaginator();
@@ -386,7 +388,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 		return newlist;
 	}
 	
-	private ListIFace filterForCorrelation(ListIFace list, ObjParuse objParuse, SourceBean request, HashMap parametersMap) {
+	private static ListIFace filterForCorrelation(ListIFace list, ObjParuse objParuse, SourceBean request, HashMap parametersMap, EMFErrorHandler errorHandler) {
 		try {
 			// get the id of the parent parameter
 			Integer objParFatherId = objParuse.getObjParFatherId();
@@ -399,17 +401,24 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	        String valueTypeFilter = parameter.getType();
 			String valueFilter = "";
 			// get the values of the father parameter
-			String valuesDecoded = (String) request.getAttribute(objParFather.getParameterUrlName());
+//			String valuesDecoded = (String) request.getAttribute(objParFather.getParameterUrlName());
+//			// if the father parameter is no valued, returns the list unfiltered
+//			if (valuesDecoded == null || valuesDecoded.trim().equals("")) 
+//				return list;
+//			ParameterValuesDecoder decoder = new ParameterValuesDecoder();
+//			List valuesFilter = decoder.decode(valuesDecoded);
+			String values = (String) request.getAttribute(objParFather.getParameterUrlName());
 			// if the father parameter is no valued, returns the list unfiltered
-			if (valuesDecoded == null || valuesDecoded.trim().equals("")) 
+			if (values == null || values.trim().equals("")) 
 				return list;
-			ParameterValuesDecoder decoder = new ParameterValuesDecoder();
-			List valuesFilter = decoder.decode(valuesDecoded);
+			// values are separated by ";"
+			String[] valuesArray = values.split(";");
+			List valuesFilter = Arrays.asList(valuesArray);
 			if (valuesFilter == null) 
 				return list;
 			
 			// propagates the father parameter value
-			parametersMap.put(objParFather.getParameterUrlName(), valuesDecoded);
+			parametersMap.put(objParFather.getParameterUrlName(), values);
 			
 	        // based on the values number do different filter operations
 			switch (valuesFilter.size()) {
@@ -417,10 +426,10 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 				case 1: valueFilter = (String) valuesFilter.get(0);
 						if (valueFilter != null && !valueFilter.equals(""))
 							return DelegatedBasicListService.filterList(list, valueFilter, valueTypeFilter, 
-								objParuse.getFilterColumn(), objParuse.getFilterOperation(), this.getResponseContainer().getErrorHandler());
+								objParuse.getFilterColumn(), objParuse.getFilterOperation(), errorHandler);
 						else return list;
 				default: return DelegatedBasicListService.filterList(list, valuesFilter, valueTypeFilter, 
-								objParuse.getFilterColumn(), objParuse.getFilterOperation(), this.getResponseContainer().getErrorHandler());
+								objParuse.getFilterColumn(), objParuse.getFilterOperation(), errorHandler);
 			}
 		} catch (Exception e) {
 			logger.error("Error while doing filter for corelation ", e);
@@ -629,8 +638,10 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 			// find parameters form uuid:
 			String uuid = (String) request.getAttribute("uuid");
 			 // sets correlation flag and submits parameters form
-			moduleConfigStr.append("parent.setRefreshCorrelationFlag" + uuid + "();");
-			moduleConfigStr.append("parent.document.getElementById('parametersForm" + uuid + "').submit();");
+			if (mustRefresh(request)) {
+				moduleConfigStr.append("parent.setRefreshCorrelationFlag" + uuid + "();");
+				moduleConfigStr.append("parent.document.getElementById('parametersForm" + uuid + "').submit();");
+			}
 		}
 		moduleConfigStr.append("				]]>");
 		moduleConfigStr.append("			</ONCLICK>");
@@ -680,11 +691,13 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 		    lblBiParamDependent = new ArrayList();
 		}
 		if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
-			// find parameters form uuid:
-			String uuid = (String) request.getAttribute("uuid");
-			 // sets correlation flag and submits parameters form
-			moduleConfigStr.append("parent.setRefreshCorrelationFlag" + uuid + "();");
-			moduleConfigStr.append("parent.document.getElementById('parametersForm" + uuid + "').submit();");
+			if (mustRefresh(request)) {
+				// find parameters form uuid:
+				String uuid = (String) request.getAttribute("uuid");
+				 // sets correlation flag and submits parameters form
+				moduleConfigStr.append("parent.setRefreshCorrelationFlag" + uuid + "();");
+				moduleConfigStr.append("parent.document.getElementById('parametersForm" + uuid + "').submit();");
+			}
 		}
 		moduleConfigStr.append("				]]>");
 		moduleConfigStr.append("			</ONCLICK>");
@@ -717,7 +730,18 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
     }
 
     
-    private SourceBean executeQuery(String lovProvider, SourceBean response, IEngUserProfile profile) throws Exception {
+    private boolean mustRefresh(SourceBean request) {
+		boolean toReturn = false;
+		logger.debug("IN");
+		String mustRefreshCorrelationFlag = (String) request.getAttribute("MUST_REFRESH_PAGE_FOR_CORRELATION");
+		logger.debug("MUST_REFRESH_PAGE_FOR_CORRELATION flag in request = [" + mustRefreshCorrelationFlag + "]");
+		toReturn = mustRefreshCorrelationFlag != null && mustRefreshCorrelationFlag.equalsIgnoreCase("true");
+		logger.debug("OUT: returning " + toReturn);
+		return toReturn;
+		
+	}
+
+	private SourceBean executeQuery(String lovProvider, SourceBean response, IEngUserProfile profile) throws Exception {
 	logger.debug("IN");
 	SourceBean result = null;
 	logger.debug("lovProvider="+lovProvider);

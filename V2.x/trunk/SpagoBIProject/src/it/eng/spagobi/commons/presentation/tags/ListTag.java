@@ -104,9 +104,9 @@ public class ListTag extends TagSupport
 	protected IMessageBuilder msgBuilder = null;
 
 	// the _providerUrlMap contains all the parameters for the navigation buttons ("next", "previous", "filter" and "all" buttons)
-	private HashMap _providerUrlMap = new HashMap();
+	private HashMap _providerUrlMap = null;
 	// the _paramsMap contains all the ADDITIONAL parameters set by the action or module for the navigation buttons ("next", "previous", "filter" and "all" buttons)
-	protected HashMap _paramsMap = new HashMap();
+	protected HashMap _paramsMap = null;
 
 	final static int END_RANGE_PAGES = 6;    
 	final static String[] EXCEPTION_MODULES ={"JobManagementPage", "TriggerManagementPage"};
@@ -130,6 +130,8 @@ public class ListTag extends TagSupport
 	 */
 	public int doStartTag() throws JspException {
 		logger.info(" method invoked");
+		_providerUrlMap = new HashMap();
+		_paramsMap = new HashMap();
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		_requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
 		_responseContainer = ChannelUtilities.getResponseContainer(httpRequest);

@@ -31,6 +31,10 @@ import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.paginator.basic.ListIFace;
+import it.eng.spago.paginator.basic.PaginatorIFace;
+import it.eng.spago.paginator.basic.impl.GenericList;
+import it.eng.spago.paginator.basic.impl.GenericPaginator;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -44,7 +48,10 @@ import it.eng.spagobi.analiticalmodel.document.dao.ISubreportDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionManager;
+import it.eng.spagobi.analiticalmodel.execution.service.SelectParametersLookupModule;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.ParameterUse;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterUseDAO;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
@@ -1353,6 +1360,8 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		//IEngUserProfile profile = GeneralUtilities.createNewUserProfile(userIndentifierToBeUsed);
 		String result = lovDetail.getLovResult(profile);
 		SourceBean rowsSourceBean = SourceBean.fromXMLString(result);
+		// filters for parameters correlation
+		rowsSourceBean = filterForParametersCorrelation(rowsSourceBean, currbiObjPar, roleName, request);
 		List rows = null;
 		if(rowsSourceBean != null) {
 			rows = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);
@@ -1384,8 +1393,31 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		/////////////////////////////////////
 	}
 
-
-
+	
+	private SourceBean filterForParametersCorrelation(SourceBean rowsSourceBean, BIObjectParameter currbiObjPar, String roleName, SourceBean request) throws Exception {
+		logger.debug("IN");
+		SourceBean toReturn = null;
+		if (rowsSourceBean != null) {
+			List rows = rowsSourceBean.getAttributeAsList(DataRow.ROW_TAG);
+			if (rows != null && rows.size() != 0) {
+				// builds list
+				PaginatorIFace paginator = new GenericPaginator();
+				ListIFace list = new GenericList();
+				list.setPaginator(paginator);
+				for (int i = 0; i < rows.size(); i++) {
+					paginator.addRow(rows.get(i));
+				}
+				// filters for correlations
+				IParameterUseDAO parusedao = DAOFactory.getParameterUseDAO();
+				ParameterUse paruse = parusedao.loadByParameterIdandRole(currbiObjPar.getParID(), roleName);
+				list = SelectParametersLookupModule.filterListForParametersCorrelation(paruse, request, list, new HashMap(), errorHandler);
+				// gets SourceBean from filtered list
+				toReturn = list.getPaginator().getAll();
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
 
 
 

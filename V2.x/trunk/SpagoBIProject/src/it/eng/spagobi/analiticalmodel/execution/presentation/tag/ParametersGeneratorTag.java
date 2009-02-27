@@ -822,8 +822,10 @@ public class ParametersGeneratorTag extends TagSupport {
 				+ "   onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()
 				+ requestIdentity + "','" + biparam.getParameterUrlName() + requestIdentity + "');");
 		if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
-			htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
-			htmlStream.append("this.form.submit();");
+			if (mustRefreshPageForCorrelation(lblBiParamDependent)) {
+				htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+				htmlStream.append("this.form.submit();");
+			}
 		}
 		htmlStream.append("\" />\n");
 		logger.debug("OUT");
@@ -837,8 +839,10 @@ public class ParametersGeneratorTag extends TagSupport {
 				+ "autocomplete='off' " + "onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()
 				+ requestIdentity + "Desc','" + biparam.getParameterUrlName() + requestIdentity + "');");
 		if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
-			htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
-			htmlStream.append("this.form.submit();");
+			if (mustRefreshPageForCorrelation(lblBiParamDependent)) {
+				htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+				htmlStream.append("this.form.submit();");
+			}
 		}
 		htmlStream.append("\" />\n");
 	}
@@ -850,11 +854,12 @@ public class ParametersGeneratorTag extends TagSupport {
 		String parameterFieldName="par_"+parameterId+ biparam.getParameterUrlName();
 		userId = getProfile().getUserId().toString();
 		String userUniqueIdentifier = getProfile().getUserUniqueIdentifier().toString();
-		String url = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE" + 
+		boolean mustRefreshPageForCorrelation = mustRefreshPageForCorrelation(lblBiParamDependent);
+		String baseUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE" + 
 		"&PAGE=SelectParameterPage&objParId=" + biparam.getId().toString() +  
 		"&parameterId=" + biparam.getParID().toString() + "&roleName=" + roleName +
 		"&parameterFieldName=" + parameterFieldName + "&returnParam=" + biparam.getParameterUrlName() + requestIdentity +
-		"&uuid=" + requestIdentity;
+		"&uuid=" + requestIdentity + "&MUST_REFRESH_PAGE_FOR_CORRELATION=" + mustRefreshPageForCorrelation;
 
 		//find if has to show the window because coming back from a select_all 
 		boolean selectAllPar=false;
@@ -865,17 +870,17 @@ public class ParametersGeneratorTag extends TagSupport {
 				selectAllPar=true;
 		}
 
-		// does this parameter depend on other parameters? if it is the case, puts in the url the values of the father parameters
-		Map dependencies = getDependencies(biparam);
-		Set keys = dependencies.keySet();
-		Iterator keysIt = keys.iterator();
-		while (keysIt.hasNext()) {
-			String key = (String) keysIt.next();
-			String value = (String) dependencies.get(key);
-			if (value == null) continue;
-			url += "&" + key + "=" + value;
-		}
-		url = GeneralUtilities.substituteQuotesIntoString(url); // javascript escape
+//		// does this parameter depend on other parameters? if it is the case, puts in the url the values of the father parameters
+//		Map dependencies = getDependencies(biparam);
+//		Set keys = dependencies.keySet();
+//		Iterator keysIt = keys.iterator();
+//		while (keysIt.hasNext()) {
+//			String key = (String) keysIt.next();
+//			String value = (String) dependencies.get(key);
+//			if (value == null) continue;
+//			url += "&" + key + "=" + value;
+//		}
+//		url = GeneralUtilities.substituteQuotesIntoString(url); // javascript escape
 
 		String id="p_search_button_"+biparam.getParameterUrlName();
 		htmlStream.append("\n");
@@ -913,8 +918,10 @@ public class ParametersGeneratorTag extends TagSupport {
 		htmlStream.append("onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity + "Desc','" +  biparam.getParameterUrlName() + requestIdentity + "');" +
 				"setChangedFlag" + requestIdentity + "('" + biparam.getParameterUrlName() + "');");
 		if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
-			htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
-			htmlStream.append("this.form.submit();");
+			if (mustRefreshPageForCorrelation) {
+				htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+				htmlStream.append("this.form.submit();");
+			}
 		}
 		htmlStream.append("\" autocomplete='off'/>");
 		htmlStream.append("&nbsp;<a href='javascript:void(0);' id='"+id+"' style='text-decoration:none' >\n");
@@ -923,32 +930,49 @@ public class ParametersGeneratorTag extends TagSupport {
 
 		htmlStream.append("\n<script>\n");
 		htmlStream.append("var win_"+parameterFieldName+";\n");
+		htmlStream.append("function getUrl"+parameterFieldName+"(baseUrl) {\n");
+		List dependencies = getDependencies(biparam);
+		if (dependencies != null && dependencies.size() > 0) {
+			htmlStream.append("	var key;\n");
+			htmlStream.append("	var value;\n");
+			htmlStream.append("	var temp;\n");
+			Iterator it = dependencies.iterator();
+			while (it.hasNext()) {
+				BIObjectParameter aBIParam = (BIObjectParameter) it.next();
+				htmlStream.append("	key = '" + aBIParam.getParameterUrlName() + "';\n");
+				htmlStream.append("	value = document.getElementById('" + aBIParam.getParameterUrlName() + requestIdentity + "').value;\n");
+				htmlStream.append("	temp = '&' + key + '=' + value;\n");
+				htmlStream.append("	temp = temp.replace(/'/g,'&#39;');\n");
+				htmlStream.append("	temp = temp.replace(/\"/g,'&#34;');\n");
+				htmlStream.append("	baseUrl = baseUrl + temp;\n");
+			}	
+		}
+		htmlStream.append(" return baseUrl;\n");
+		htmlStream.append("}\n");
 		htmlStream.append("Ext.get('"+id+"').on('click', function(){\n");
-		htmlStream.append("	if(!win_"+parameterFieldName+") {\n");
 		htmlStream.append("		win_"+parameterFieldName+" = new Ext.Window({\n");
 		htmlStream.append("			id:'popup_" + parameterFieldName + "',\n");
 		htmlStream.append("			title:'" + biparam.getLabel() + "',\n");
-		htmlStream.append("			bodyCfg:{");
-		htmlStream.append("				tag:'div'");
-		htmlStream.append("    			,cls:'x-panel-body'");
-		htmlStream.append("   			,children:[{");
-		htmlStream.append("        			tag:'iframe',");
-		htmlStream.append("        			name: 'iframe_" + parameterFieldName + "',");
-		htmlStream.append("        			id  : 'iframe_" + parameterFieldName + "',");
-		htmlStream.append("        			src: '" + url + "',");
-		htmlStream.append("        			frameBorder:0,");
-		htmlStream.append("        			width:'100%',");
-		htmlStream.append("        			height:'100%',");
-		htmlStream.append("        			style: {overflow:'auto'}   ");  
-		htmlStream.append("   			}]");
-		htmlStream.append("			},");
+		htmlStream.append("			bodyCfg:{\n");
+		htmlStream.append("				tag:'div'\n");
+		htmlStream.append("    			,cls:'x-panel-body'\n");
+		htmlStream.append("   			,children:[{\n");
+		htmlStream.append("        			tag:'iframe',\n");
+		htmlStream.append("        			name: 'iframe_" + parameterFieldName + "',\n");
+		htmlStream.append("        			id  : 'iframe_" + parameterFieldName + "',\n");
+		htmlStream.append("        			src: getUrl"+parameterFieldName+"(\"" + baseUrl + "\"),\n");
+		htmlStream.append("        			frameBorder:0,\n");
+		htmlStream.append("        			width:'100%',\n");
+		htmlStream.append("        			height:'100%',\n");
+		htmlStream.append("        			style: {overflow:'auto'}   \n");  
+		htmlStream.append("   			}]\n");
+		htmlStream.append("			},\n");
 		htmlStream.append("			layout:'fit',\n");
 		htmlStream.append("			width:800,\n");
 		htmlStream.append("			height:320,\n");
-		htmlStream.append("			closeAction:'hide',\n");
+		htmlStream.append("			closeAction:'close',\n");
 		htmlStream.append("			plain: true\n");
 		htmlStream.append("		});\n");
-		htmlStream.append("	};\n");
 		htmlStream.append("	win_"+parameterFieldName+".show();\n");
 		htmlStream.append("	}\n");
 		htmlStream.append(");\n");	
@@ -956,7 +980,6 @@ public class ParametersGeneratorTag extends TagSupport {
 		if(selectAllPar){
 			String parSelected=(String)request.getAttribute("objParId");
 			if(parSelected!=null && parSelected.equalsIgnoreCase(biparam.getId().toString())){
-				htmlStream.append("	if(!win_"+parameterFieldName+") {\n");
 				htmlStream.append("		win_"+parameterFieldName+" = new Ext.Window({\n");
 				htmlStream.append("			id:'popup_" + parameterFieldName + "',\n");
 				htmlStream.append("			title:'" + biparam.getLabel() + "',\n");
@@ -967,7 +990,7 @@ public class ParametersGeneratorTag extends TagSupport {
 				htmlStream.append("        			tag:'iframe',");
 				htmlStream.append("        			name: 'iframe_" + parameterFieldName + "',");
 				htmlStream.append("        			id  : 'iframe_" + parameterFieldName + "',");
-				htmlStream.append("        			src: '" + url + "',");
+				htmlStream.append("        			src: getUrl"+parameterFieldName+"(\"" + baseUrl + "\"),");
 				htmlStream.append("        			frameBorder:0,");
 				htmlStream.append("        			width:'100%',");
 				htmlStream.append("        			height:'100%',");
@@ -977,10 +1000,9 @@ public class ParametersGeneratorTag extends TagSupport {
 				htmlStream.append("			layout:'fit',\n");
 				htmlStream.append("			width:800,\n");
 				htmlStream.append("			height:320,\n");
-				htmlStream.append("			closeAction:'hide',\n");
+				htmlStream.append("			closeAction:'close',\n");
 				htmlStream.append("			plain: true\n");
 				htmlStream.append("		});\n");
-				htmlStream.append("	};\n");
 				htmlStream.append("	win_"+parameterFieldName+".show();\n");
 			}
 		}
@@ -992,17 +1014,16 @@ public class ParametersGeneratorTag extends TagSupport {
 
 	/**
 	 * Finds the parameters the input parameter depends on.
-	 * Returns a map: the key is the father parameter url name, the value is the current father parameter value
+	 * Returns a List of BIObjectParameter instances.
 	 * @param biparam The dependent (if it is the case) parameter
-	 * @return a map: the key is the father parameter url name, the value is the current father parameter value
+	 * @return the list of BIObjectParameter the input parameter depends on.
 	 */
-	private Map getDependencies(BIObjectParameter biparam) {
-		Map toReturn = new HashMap();
+	private List getDependencies(BIObjectParameter biparam) {
+		List toReturn = new ArrayList();
 		ExecutionInstance instance = getExecutionInstance();
 		BIObject obj = instance.getBIObject();
 		BIObjectParameter objParFather = null;
 		ObjParuse objParuse = null;
-		ParameterValuesEncoder parValuesEncoder = new ParameterValuesEncoder();
 		try {
 			IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
 			IParameterUseDAO paruseDAO = DAOFactory.getParameterUseDAO();
@@ -1037,44 +1058,41 @@ public class ParametersGeneratorTag extends TagSupport {
 							logger.error("Cannot find the BIObjectParameter father of the correlation");
 							throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 						}
-						if (objParFather.getParameterValues() != null && objParFather.getParameterValues().size() > 0) {
-							String value = parValuesEncoder.encode(objParFather);
-							toReturn.put(objParFather.getParameterUrlName(), value);
-						}
+						toReturn.add(objParFather);
 					}
 				}
 			}
 		} catch (EMFUserError e) {
 			logger.error("Error while retrieving information from db", e);
-			return new HashMap();
+			return new ArrayList();
 		}
 		return toReturn;
 	}
 
-	private void createHTMLCheckListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream,
-			List lblBiParamDependent) {
-
-		htmlStream.append("<input type='text' style='width:230px;' " + "name='" + biparam.getParameterUrlName()
-				+ "Desc' " + "id='" + biparam.getParameterUrlName() + requestIdentity + "Desc' "
-				+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " ") + "value='"
-				+ GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' "
-				+ "onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity
-				+ "Desc','" + biparam.getParameterUrlName() + requestIdentity + "');" + "setChangedFlag"
-				+ requestIdentity + "('" + biparam.getParameterUrlName() + "');");
-		if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
-			htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
-			htmlStream.append("this.form.submit();");
-		}
-		htmlStream.append("\" ");
-		htmlStream.append("onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName()
-				+ requestIdentity + "Desc');\" " + "autocomplete='off'/>\n");
-
-		htmlStream.append("&nbsp;<input type='image' onclick='setLookupField" + requestIdentity + "(\"" + biparam.getId()
-				+ "\", \"CHECK_LIST\")' \n");
-		htmlStream.append("		src= '" + encodeURL("/img/detail.gif") + "' \n");
-		htmlStream.append("		title='Lookup' alt='Lookup' \n");
-		htmlStream.append("/>\n");
-	}
+//	private void createHTMLCheckListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream,
+//			List lblBiParamDependent) {
+//
+//		htmlStream.append("<input type='text' style='width:230px;' " + "name='" + biparam.getParameterUrlName()
+//				+ "Desc' " + "id='" + biparam.getParameterUrlName() + requestIdentity + "Desc' "
+//				+ "class='portlet-form-input-field' " + (isReadOnly ? "readonly='true' " : " ") + "value='"
+//				+ GeneralUtilities.substituteQuotesIntoString(getParameterDescription(biparam)) + "' "
+//				+ "onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity
+//				+ "Desc','" + biparam.getParameterUrlName() + requestIdentity + "');" + "setChangedFlag"
+//				+ requestIdentity + "('" + biparam.getParameterUrlName() + "');");
+//		if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+//			htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+//			htmlStream.append("this.form.submit();");
+//		}
+//		htmlStream.append("\" ");
+//		htmlStream.append("onclick=\"selectAllText" + requestIdentity + "('" + biparam.getParameterUrlName()
+//				+ requestIdentity + "Desc');\" " + "autocomplete='off'/>\n");
+//
+//		htmlStream.append("&nbsp;<input type='image' onclick='setLookupField" + requestIdentity + "(\"" + biparam.getId()
+//				+ "\", \"CHECK_LIST\")' \n");
+//		htmlStream.append("		src= '" + encodeURL("/img/detail.gif") + "' \n");
+//		htmlStream.append("		title='Lookup' alt='Lookup' \n");
+//		htmlStream.append("/>\n");
+//	}
 
 	/**
 	 * Generate html code for a combobox form
@@ -1096,8 +1114,10 @@ public class ParametersGeneratorTag extends TagSupport {
 					"onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName() + requestIdentity
 					+ "Desc', " + "'" + biparam.getParameterUrlName() + requestIdentity + "');");
 			if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
-				htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
-				htmlStream.append("this.form.submit();");
+				if (mustRefreshPageForCorrelation(lblBiParamDependent)) {
+					htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
+					htmlStream.append("this.form.submit();");
+				}
 			}
 			htmlStream.append("\" >\n");
 			htmlStream.append("<option value=''> </option>\n");
@@ -1168,11 +1188,53 @@ public class ParametersGeneratorTag extends TagSupport {
 		}
 	}
 
-	private void eraseParameterValues(BIObjectParameter biparam) {
-		biparam.setParameterValues(null);
-		HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
-		paramsDescriptionMap.put(biparam.getParameterUrlName(), "");
+	/**
+	 * in case of correlation between parameters, page must be refreshed when there is just one dependent combo-box
+	 * @param lblBiParamDependent
+	 * @return if the page must be refreshed for correlation
+	 */
+	private boolean mustRefreshPageForCorrelation(List lblBiParamDependent) {
+		logger.debug("IN");
+		boolean toReturn = false;
+		try {
+			// if there are no dependencies, no need to refresh page
+			if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
+				ExecutionInstance instance = getExecutionInstance();
+				BIObject obj = instance.getBIObject();
+				List parameters = obj.getBiObjectParameters();
+				Iterator it = parameters.iterator();
+				while (it.hasNext()) {
+					BIObjectParameter biparam = (BIObjectParameter) it.next();
+					if (!lblBiParamDependent.contains(biparam.getLabel())) {
+						continue;
+					}
+					String typeCode = getModalityValue(biparam).getITypeCd();
+					String selectionType = getModalityValue(biparam).getSelectionType();
+					if (selectionType == null) {
+						if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_FIX_LOV_CODE)
+								|| typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_SCRIPT_CODE))
+							selectionType = "COMBOBOX";
+						else if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_QUERY_CODE))
+							selectionType = "LIST";
+					}
+					if ("COMBOBOX".equals(selectionType)) {
+						toReturn = true;
+						break;
+					}
+				}
+			}
+		} finally {
+			logger.debug("OUT: returning " + toReturn);
+		}
+		return toReturn;
 	}
+
+	
+//	private void eraseParameterValues(BIObjectParameter biparam) {
+//		biparam.setParameterValues(null);
+//		HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
+//		paramsDescriptionMap.put(biparam.getParameterUrlName(), "");
+//	}
 
 	private void createHTMLRadioButton(BIObjectParameter biparam, StringBuffer htmlStream) {
 		try {
@@ -1307,14 +1369,14 @@ public class ParametersGeneratorTag extends TagSupport {
 		return SourceBean.fromXMLString(stringXMLValues);
 	}
 
-	private String getParameterDescription(BIObjectParameter biparam) {
-		String description = null;
-
-		HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
-		description = (String) paramsDescriptionMap.get(biparam.getParameterUrlName());
-
-		return description;
-	}
+//	private String getParameterDescription(BIObjectParameter biparam) {
+//		String description = null;
+//
+//		HashMap paramsDescriptionMap = (HashMap) contextManager.get("PARAMS_DESCRIPTION_MAP");
+//		description = (String) paramsDescriptionMap.get(biparam.getParameterUrlName());
+//
+//		return description;
+//	}
 
 	/**
 	 * Gets the modality.

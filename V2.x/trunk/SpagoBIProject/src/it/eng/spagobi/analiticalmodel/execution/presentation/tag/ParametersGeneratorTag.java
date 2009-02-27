@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -661,6 +662,20 @@ public class ParametersGeneratorTag extends TagSupport {
 
 		htmlStream.append("			<span class='portlet-form-field-label'>");
 		String toInsert = biparam.getLabel();
+
+		RequestContainer requestContainer=RequestContainer.getRequestContainer();
+		if(requestContainer!=null){
+			Locale locale=SpagoBIUtilities.getDefaultLocale();
+			SessionContainer permSess=requestContainer.getSessionContainer().getPermanentContainer();
+			String lang=(String)permSess.getAttribute(SpagoBIConstants.AF_LANGUAGE);
+			String country=(String)permSess.getAttribute(SpagoBIConstants.AF_COUNTRY);
+			if(lang!=null && country!=null){
+				locale=new Locale(lang,country,"");
+			}
+			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+			toInsert=msgBuilder.getUserMessage(toInsert, SpagoBIConstants.DEFAULT_USER_BUNDLE, locale);		
+		}
+
 		//Puts an * if the parameter is mandatory
 		List checks = biparam.getParameter().getChecks();
 		if (!checks.isEmpty()){
@@ -762,21 +777,36 @@ public class ParametersGeneratorTag extends TagSupport {
 		logger.debug("IN");
 
 		SessionContainer permSess= requestContainer.getSessionContainer().getPermanentContainer();
-	
+
 		String format=SpagoBIUtilities.getLocaleDateFormat(permSess);
 
 		logger.debug("DATE FORMAT:"+format);
 
-		Date d = new Date();
-		SimpleDateFormat f =  new SimpleDateFormat();
-		f.applyPattern(format);
-		try {
-			d = f.parse(getParameterValuesAsString(biparam));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		String datePickerFormat = "MM/dd/yyyy";
+		Date d = new Date();
+		SimpleDateFormat fVisual =  new SimpleDateFormat();
+		fVisual.applyPattern(format);
+
+		SimpleDateFormat fPar =  new SimpleDateFormat();
+		fPar.applyPattern(datePickerFormat);
+
+
+		// if it finds param value in biparam it must convert from datePickerFormat to user one!
+		String paramValue=getParameterValuesAsString(biparam);
+		try {
+			if(paramValue!=null && !paramValue.equalsIgnoreCase("")){
+				// convert from datePickerFormat
+				Date temp;
+
+				temp = fPar.parse(paramValue);
+				d=temp;				
+			}
+		} catch (ParseException e) {
+
+			e.printStackTrace();
+		}			
+
+
 		String dateValue = StringUtils.dateToString(d, datePickerFormat);
 		htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLink(httpRequest, "/js/dojo/dojo.js" )+ "'></script>"
 				+ "<script type='text/javascript'>"

@@ -349,23 +349,31 @@ public class MarkerScatter extends ScatterCharts {
         	if (annotationMap == null || annotationMap.size() == 0)
         		logger.error("Annotations on the chart are requested but the annotationMap is null!");
         	else{
-        		for (Iterator iterator = annotationMap.keySet().iterator(); iterator.hasNext();) {
+        		int cont = 0;
+        		for (Iterator iterator = annotationMap.keySet().iterator(); iterator.hasNext();) {        			
     				String text = (String) iterator.next();
     				String pos = (String)annotationMap.get(text);
     				double x = Double.parseDouble(pos.substring(0, pos.indexOf("__")));
     				double y = Double.parseDouble(pos.substring(pos.indexOf("__")+2));
-
-	        		//final XYTextAnnotation annotation = new XYTextAnnotation(text, y, x+((text.length()>20)?text.length()/3+1:text.length()/2+1));
-	        		final XYTextAnnotation annotation = new XYTextAnnotation(text, y+2, x);
+    				//default up position
+    				XYTextAnnotation annotation = new XYTextAnnotation(text, y-1, x+((text.length()>20)?text.length()/3+1:text.length()/2+1));
+    				if (cont % 2 == 0)
+    					annotation = new XYTextAnnotation(text, y, x+((text.length()>20)?text.length()/3+1:text.length()/2+1));
+    				else
+    					annotation = new XYTextAnnotation(text, y, x-((text.length()>20)?text.length()/3-1:text.length()/2-1));
+	        		
 	                annotation.setFont(new Font("SansSerif", Font.PLAIN, 11));
 	                //annotation.setRotationAngle(Math.PI / 4.0);
 	                annotation.setRotationAngle(0.0); // horizontal
 	                plot.addAnnotation(annotation);
+	                cont ++;
         		}
-        	}
-        	renderer.setShape(new Ellipse2D.Double(-3, -5, 8, 8));
+        		renderer.setShape(new Ellipse2D.Double(-3, -5, 8, 8));
+        	}        	
         }
-        
+        else  if (viewAnnotations != null && viewAnnotations.equalsIgnoreCase("false")){
+    		renderer.setShape(new Ellipse2D.Double(-3, -5, 8, 8));
+    	}
         if(legend==true){
 			
 			drawLegend(chart);

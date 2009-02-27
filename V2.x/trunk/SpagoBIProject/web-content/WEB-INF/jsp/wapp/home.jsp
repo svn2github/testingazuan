@@ -343,7 +343,7 @@ iframe {
 								{id: '<%new Double(Math.random()).toString();%>',
 				    			     text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev2.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 				    				 		<% if(childElemLev2.getObjId()!=null){%>
-					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>', <%=path2%>)"                   
+					                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>', '<%=path2%>' )"                   
 					                        <%} else if(childElemLev2.getStaticPage()!=null) {%>
 						                         href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=childElemLev2.getMenuId()%>', '<%=path2%>' )"
 						                    <%} else if(childElemLev2.getFunctionality()!=null) {%>

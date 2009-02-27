@@ -304,6 +304,28 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Double standardWeight = kpi.getWeight();
 
 		String metric = kpi.getMetric();
+		
+		String interpretation = kpi.getInterpretation(); 
+		String inputAttribute = kpi.getInputAttributes();
+		String modelReference = kpi.getModelReference();
+		String targetAudience = kpi.getTargetAudience();
+
+		Integer kpiTypeId = null;
+		Integer metricScaleId = null;
+		Integer measureTypeId = null;
+		
+		if (kpi.getSbiDomainsByKpiType() != null) {
+			kpiTypeId = kpi.getSbiDomainsByKpiType().getValueId();
+		}
+		
+		if (kpi.getSbiDomainsByMeasureType() != null) {
+			measureTypeId = kpi.getSbiDomainsByMeasureType().getValueId();
+		}
+		
+		if (kpi.getSbiDomainsByMetricScaleType() != null) {
+			metricScaleId = kpi.getSbiDomainsByMetricScaleType().getValueId();
+		}
+		
 
 		toReturn.setKpiName(kpiName);
 		logger.debug("Kpi name setted");
@@ -331,7 +353,23 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("Kpi threshold setted");
 			
 		}
-
+		
+		toReturn.setInterpretation(interpretation);
+		logger.debug("Kpi Interpretation setted");
+		toReturn.setInputAttribute(inputAttribute);
+		logger.debug("Kpi InputAttribute setted");
+		toReturn.setModelReference(modelReference);	
+		logger.debug("Kpi ModelReference setted");
+		toReturn.setTargetAudience(targetAudience);
+		logger.debug("Kpi TargetAudience setted");
+		
+		toReturn.setKpiTypeId(kpiTypeId);
+		logger.debug("Kpi KpiTypeId setted");
+		toReturn.setMetricScaleId(metricScaleId);
+		logger.debug("Kpi MetricScaleId setted");
+		toReturn.setMeasureTypeId(measureTypeId);
+		logger.debug("Kpi MeasureTypeId setted");
+		
 		logger.debug("OUT");
 		return toReturn;
 
@@ -1729,6 +1767,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			toReturn = "name";
 		if (property != null && property.toUpperCase().equals("DESCRIPTION"))
 			toReturn = "description";
+		if (property != null && property.toUpperCase().equals("THRESHOLD"))
+			toReturn = "sbiThreshold";
 		return toReturn;
 	}
 
@@ -1762,6 +1802,12 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				kpi.setDescription(hibKpi.getDescription());
 				kpi.setKpiName(hibKpi.getName());
 				kpi.setKpiId(hibKpi.getKpiId());
+				if(hibKpi.getSbiThreshold() != null){
+					Threshold threshold = new Threshold();
+					threshold.setId(hibKpi.getSbiThreshold().getThresholdId());
+					threshold.setThresholdName(hibKpi.getSbiThreshold().getName());
+					kpi.setThreshold(threshold);
+				}
 				toReturn.add(kpi);
 			}
 
@@ -1965,6 +2011,41 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			SbiKpi sbiKpi = (SbiKpi) aSession
 					.load(SbiKpi.class, kpi.getKpiId());
 
+			String interpretation = kpi.getInterpretation(); 
+			String inputAttribute = kpi.getInputAttribute();
+			String modelReference = kpi.getModelReference();
+			String targetAudience = kpi.getTargetAudience();
+			
+			SbiDomains kpiType = null;
+			if (kpi.getKpiTypeId() != null) {
+				Integer kpiTypeId = kpi.getKpiTypeId();
+				kpiType = (SbiDomains) aSession.load(SbiDomains.class, kpiTypeId);
+			}
+			
+			SbiDomains metricScaleType = null;
+			if (kpi.getMetricScaleId() != null) {
+				Integer metricScaleId = kpi.getMetricScaleId();
+				metricScaleType = (SbiDomains) aSession.load(SbiDomains.class, metricScaleId);
+			}
+			
+			SbiDomains measureType = null;
+			if (kpi.getMeasureTypeId() != null) {
+				Integer measureTypeId = kpi.getMeasureTypeId();
+				measureType = (SbiDomains) aSession.load(SbiDomains.class, measureTypeId);
+			}
+			
+			sbiKpi.setInterpretation(interpretation);
+			sbiKpi.setInputAttributes(inputAttribute);
+			sbiKpi.setModelReference(modelReference);
+			sbiKpi.setTargetAudience(targetAudience);
+			
+			sbiKpi.setSbiDomainsByKpiType(kpiType);
+			sbiKpi.setSbiDomainsByMeasureType(measureType);
+			sbiKpi.setSbiDomainsByMetricScaleType(metricScaleType);
+			
+			
+			
+			
 			sbiKpi.setName(name);
 			sbiKpi.setDescription(description);
 			sbiKpi.setCode(code);
@@ -2025,6 +2106,39 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 
 			SbiKpi sbiKpi = new SbiKpi();
+			
+			String interpretation = kpi.getInterpretation(); 
+			String inputAttribute = kpi.getInputAttribute();
+			String modelReference = kpi.getModelReference();
+			String targetAudience = kpi.getTargetAudience();
+			
+			SbiDomains kpiType = null;
+			if (kpi.getKpiTypeId() != null) {
+				Integer kpiTypeId = kpi.getKpiTypeId();
+				kpiType = (SbiDomains) aSession.load(SbiDomains.class, kpiTypeId);
+			}
+			
+			SbiDomains metricScaleType = null;
+			if (kpi.getMetricScaleId() != null) {
+				Integer metricScaleId = kpi.getMetricScaleId();
+				metricScaleType = (SbiDomains) aSession.load(SbiDomains.class, metricScaleId);
+			}
+			
+			SbiDomains measureType = null;
+			if (kpi.getMeasureTypeId() != null) {
+				Integer measureTypeId = kpi.getMeasureTypeId();
+				measureType = (SbiDomains) aSession.load(SbiDomains.class, measureTypeId);
+			}
+			
+			sbiKpi.setInterpretation(interpretation);
+			sbiKpi.setInputAttributes(inputAttribute);
+			sbiKpi.setModelReference(modelReference);
+			sbiKpi.setTargetAudience(targetAudience);
+			
+			sbiKpi.setSbiDomainsByKpiType(kpiType);
+			sbiKpi.setSbiDomainsByMeasureType(measureType);
+			sbiKpi.setSbiDomainsByMetricScaleType(metricScaleType);
+			
 
 			sbiKpi.setName(name);
 			sbiKpi.setDescription(description);

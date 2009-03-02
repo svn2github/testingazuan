@@ -43,7 +43,7 @@ public class AbstractDriver {
 	    logger.debug("I don't put the UserId information in the URL");
 	}else {
 	    if (((UserProfile) profile).getUserUniqueIdentifier() != null) {
-		pars.put("userId", ((UserProfile) profile).getUserUniqueIdentifier()); 
+		pars.put("userID", ((UserProfile) profile).getUserUniqueIdentifier()); 
 	    }
 	}
 	    

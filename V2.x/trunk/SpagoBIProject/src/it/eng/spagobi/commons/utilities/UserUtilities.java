@@ -103,6 +103,14 @@ public class UserUtilities {
 	return userProfile;
     }
     
+    public static String getUserId(HttpServletRequest req){
+    	logger.debug("IN");
+    	SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
+		String userId = userProxy.readUserIdentifier(req);
+	    logger.debug("OUT,userId:"+userId);
+	    return userId;
+    }
+    
     public static IEngUserProfile getUserProfile(HttpServletRequest req) throws Exception {
     	logger.debug("IN");
     	SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();

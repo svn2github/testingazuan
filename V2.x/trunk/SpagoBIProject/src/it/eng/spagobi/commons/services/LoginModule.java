@@ -90,6 +90,14 @@ public class LoginModule extends AbstractHttpModule {
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 	    logger.debug("IN");
+	    
+    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
+    	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
+    	String activeStr = (String) validateSB.getCharacters();
+    	boolean activeSoo=false;
+    	if (activeStr != null || activeStr.equalsIgnoreCase("true")) {
+    		activeSoo=true;
+    	}
 		RequestContainer reqCont = RequestContainer.getRequestContainer();
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
@@ -110,27 +118,28 @@ public class LoginModule extends AbstractHttpModule {
 //		    userId=principal.getName();
 //		    logger.info("User read from Principal."+userId);
 //		}
-		String userId = findUserId(request, this.getHttpRequest());
-		if (userId == null) {
-			logger.error("User identifier not found. Cannot build user profile object");
-			// TODO manager exception
-			throw new SecurityException("User identifier not found.");
+		String userId=null;
+		if (!activeSoo){
+			userId = (String)request.getAttribute("userid");
+			if (userId == null) {
+				logger.error("User identifier not found. Cannot build user profile object");
+				throw new SecurityException("User identifier not found.");
+			}			
+		}else{
+			userId=UserUtilities.getUserId(this.getHttpRequest());
 		}
+
 		
 		
 		
 		profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		//if (profile==null || !userId.equals(profile.getUserUniqueIdentifier().toString())){
+
 		if (profile==null || !userId.equals(((UserProfile)profile).getUserId().toString())){
 			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-	    	// Check if SSO is active
-	    	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
-	    	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
-	    	String active = (String) validateSB.getCharacters();
 	    	// If SSO is not active, check username and password, i.e. performs the authentication;
 	    	// instead, if SSO is active, the authentication mechanism is provided by the SSO itself, so SpagoBI does not make 
 	    	// any authentication, just creates the user profile object and puts it into Spago permanent container
-	    	if (active == null || active.equalsIgnoreCase("false")) {
+	    	if (!activeSoo) {
 				String pwd=(String)request.getAttribute("password");       
 		        try {
 		        	Object ris=supplier.checkAuthentication(userId, pwd);
@@ -261,29 +270,6 @@ public class LoginModule extends AbstractHttpModule {
 		}
 		return false;
 	}
-    /**
-     * Finds the user identifier from http request or from SSO system (by the http request in input).
-     * Use the SsoServiceInterface for read the userId in all cases, if SSO is disabled use FakeSsoService.
-     * Check spagobi_sso.xml
-     * 
-     * @param httpRequest The http request
-     * @param serviceRequest the service request
-     * 
-     * @return the current user unique identified
-     * 
-     * @throws Exception in case the SSO is enabled and the user identifier specified on service request is different from the SSO detected one.
-     */
-    private static String findUserId(SourceBean serviceRequest, HttpServletRequest httpRequest) throws Exception {
-    	logger.debug("IN");
-    	String userId = null;
-    	try {
-    		// Get userid from request
-	    	Object requestUserIdObj = serviceRequest.getAttribute("userid");
-	    	if (requestUserIdObj != null) userId = requestUserIdObj.toString();    	
-    	} finally {
-    		logger.debug("OUT: userId = [" + userId + "]");
-    	}
-    	return userId;
-    }
+
 
 }

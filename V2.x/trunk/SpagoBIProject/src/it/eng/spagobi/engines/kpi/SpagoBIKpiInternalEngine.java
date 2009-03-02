@@ -744,7 +744,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			    			kVal.setEndDate(endDate);
 			    			logger.debug("Setted the new EndDate description:"+endD.toString());
 		    			   }
-		    			}else if(fieldName.equalsIgnoreCase("value")){
+		    			}else if(fieldName.equalsIgnoreCase("VALUE")){
 		    				String fieldValue = f.getValue().toString();
 			    			kVal.setValue(fieldValue);
 			    			logger.debug("Setted the kpiValue value:"+fieldValue);

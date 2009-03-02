@@ -21,7 +21,7 @@
           		<include name="**/*.jar"/>
     		</fileset>
     		<!-- LIBRERIA SBI.UTILS DI SPAGOBI necessaria per la compilazione -->
-    		<fileset dir="${sbiutils.dir}/dist/SpagoBIUtils">
+    		<fileset dir="${sbiutils.dir}/dist">
           		<include name="**/*.jar"/>
     		</fileset>
  	</path>
@@ -55,7 +55,7 @@
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!--   COMPILAZIONE							                                                  -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <target name="compile" depends="svn.checkout" description="compile the source" >
+  <target name="compile"  description="compile the source" >
     <!-- Compile the java code from ${src} into ${build}/${webapp_name}/WEB-INF/classes -->
     <javac srcdir="${src}" destdir="${build}" debug="on">
       <classpath refid="jar.classpath"/>
@@ -74,10 +74,10 @@
     </copy>
   </target>
 
-	<target name="create.jar" depends="copy.artifacts" >
-	      <mkdir dir="${dist}/${project.name}"/>
-	      <delete file="${dist}/${project.name}/${jar.name}-${project.version}.jar" />
-	      <jar destfile="${dist}/${project.name}/${jar.name}-${project.version}.jar" 
+	<target name="create.jar" depends="init,copy.artifacts" >
+	      <mkdir dir="${dist}"/>
+	      <delete file="${dist}/${jar.name}-${project.version}.jar" />
+	      <jar destfile="${dist}/${jar.name}-${project.version}.jar" 
 	           basedir="${build}" />
 	</target>
 

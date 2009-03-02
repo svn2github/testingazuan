@@ -48,21 +48,21 @@
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!--   AGGIORNAMENTO JAR SBI.UTILS							                                  -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <target name="sbi.utils.update" depends="svn.checkout"
+  <target name="sbi.utils.update" 
       description="Updates sbi.utils library from distribution folder (THIS JAR MUST BE EXISTING)">
     <!-- deletes any previuos sbi.utils -->
     <delete>
       <fileset dir="${web.dir}/WEB-INF/lib" includes="**/sbi.utils*.jar"/>
     </delete>
     <!-- copies the newly created jar file -->
-    <copy file="${sbiutils.dir}/dist/SpagoBIUtils/sbi.utils-${project.version}.jar" 
+    <copy file="${sbiutils.dir}/dist/sbi.utils-${project.version}.jar" 
         todir="${web.dir}/WEB-INF/lib" overwrite="true" />
   </target>
   
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
   <!--   COMPILAZIONE							                                                  -->
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-  <target name="compile" depends="svn.checkout,sbi.utils.update" description="compile the source" >
+  <target name="compile" depends="sbi.utils.update" description="compile the source" >
     <!-- Compile the java code from ${src} into ${build}/${webapp_name}/WEB-INF/classes -->
     <javac srcdir="${src}" destdir="${build}/${webapp_name}/WEB-INF/classes" debug="on">
       <classpath refid="web.classpath"/>
@@ -85,8 +85,8 @@
         <exclude name="**/*.svn"/>
         <exclude name="**/*.xml"/>
         <exclude name="**/*.properties"/>
-        <exclude name="/js/qooxdoo-0.8/**"/>
-        <exclude name="/js/spagobi/**"/>
+        <exclude name="**/js/qooxdoo-0.8/*.js"/>
+        <exclude name="**/js/spagobi/*.js"/>
       </fileset>
     </copy>
     <!-- copies artifacts with filter (*.xml, *.properties) -->
@@ -98,10 +98,10 @@
     </copy>
   </target>
 
-	<target name="create.war" depends="copy.artifacts" >
-	      <mkdir dir="${dist}/${webapp_name}"/>
-	      <delete file="${dist}/${webapp_name}/${war_name}" />
-	      <war warfile="${dist}/${webapp_name}/${war_name}" 
+	<target name="create.war" depends="init,copy.artifacts" >
+	      <mkdir dir="${dist}"/>
+	      <delete file="${dist}/${war_name}" />
+	      <war warfile="${dist}/${war_name}" 
 	           webxml="${build}/${webapp_name}/WEB-INF/web.xml" 
 	           basedir="${build}/${webapp_name}" />
 	</target>

@@ -33,7 +33,7 @@
   <target name="deploy.SpagoBI.war" depends="create.sbi.utils.jar,create.SpagoBI.war,create.exo.security.jar,create.xlm.security.jar">
     <delete dir="${tomcat.home}/webapps/SpagoBI" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBI" />
-    <unzip src="../../../SpagoBIProject/dist/SpagoBI/SpagoBI.war" dest="${tomcat.home}/webapps/SpagoBI" />
+    <unzip src="../../../SpagoBIProject/dist/SpagoBI.war" dest="${tomcat.home}/webapps/SpagoBI" />
     <!--
     <copy todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/conf" filtering="true" overwrite="true">
       <fileset dir="${tomcat.home}/webapps/SpagoBI/WEB-INF/conf" />
@@ -52,9 +52,9 @@
       <fileset dir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" includes="**/sbi.security.xml*.jar"/>
     </delete>
     <!-- copies the newly created jar file -->
-    <copy file="../../../SpagoBIExoSecurityProvider/dist/SpagoBIExoSecurityProvider/sbi.security.exo-${project.version}.jar" 
+    <copy file="../../../SpagoBIExoSecurityProvider/dist/sbi.security.exo-${project.version}.jar" 
         todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" overwrite="true" />
-    <copy file="../../../SpagoBIXMLSecurityProvider/dist/SpagoBIXMLSecurityProvider/sbi.security.xml-${project.version}.jar" 
+    <copy file="../../../SpagoBIXMLSecurityProvider/dist/sbi.security.xml-${project.version}.jar" 
         todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" overwrite="true" />
   </target>
 
@@ -76,7 +76,7 @@
     <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIBirtReportEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIBirtReportEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIBirtReportEngine" />
-    <unzip src="../../../SpagoBIBirtReportEngine/dist/SpagoBIBirtReportEngine/SpagoBIBirtReportEngine.war" dest="${tomcat.home}/webapps/SpagoBIBirtReportEngine" />
+    <unzip src="../../../SpagoBIBirtReportEngine/dist/SpagoBIBirtReportEngine.war" dest="${tomcat.home}/webapps/SpagoBIBirtReportEngine" />
   </target>
   
   <target name="create.SpagoBIGeoEngine.war" >
@@ -86,7 +86,7 @@
   <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIGeoEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIGeoEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIGeoEngine" />
-    <unzip src="../../../SpagoBIGeoEngine/dist/SpagoBIGeoEngine/SpagoBIGeoEngine.war" dest="${tomcat.home}/webapps/SpagoBIGeoEngine" />
+    <unzip src="../../../SpagoBIGeoEngine/dist/SpagoBIGeoEngine.war" dest="${tomcat.home}/webapps/SpagoBIGeoEngine" />
   </target>
   
   <target name="create.SpagoBIJasperReportEngine.war" >
@@ -96,7 +96,7 @@
     <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIJasperReportEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIJasperReportEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIJasperReportEngine" />
-    <unzip src="../../../SpagoBIJasperReportEngine/dist/SpagoBIJasperReportEngine/SpagoBIJasperReportEngine.war" dest="${tomcat.home}/webapps/SpagoBIJasperReportEngine" />
+    <unzip src="../../../SpagoBIJasperReportEngine/dist/SpagoBIJasperReportEngine.war" dest="${tomcat.home}/webapps/SpagoBIJasperReportEngine" />
   </target>
   
   <target name="create.SpagoBIJPaloEngine.war" >
@@ -106,7 +106,7 @@
     <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIJPaloEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIJPaloEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIJPaloEngine" />
-    <unzip src="../../../SpagoBIJPaloEngine/dist/SpagoBIJPaloEngine/SpagoBIJPaloEngine.war" dest="${tomcat.home}/webapps/SpagoBIJPaloEngine" />
+    <unzip src="../../../SpagoBIJPaloEngine/dist/SpagoBIJPaloEngine.war" dest="${tomcat.home}/webapps/SpagoBIJPaloEngine" />
   </target>
   
   <target name="create.SpagoBIJPivotEngine.war" >
@@ -116,7 +116,7 @@
   <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIJPivotEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIJPivotEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIJPivotEngine" />
-    <unzip src="../../../SpagoBIJPivotEngine/dist/SpagoBIJPivotEngine/SpagoBIJPivotEngine.war" dest="${tomcat.home}/webapps/SpagoBIJPivotEngine" />
+    <unzip src="../../../SpagoBIJPivotEngine/dist/SpagoBIJPivotEngine.war" dest="${tomcat.home}/webapps/SpagoBIJPivotEngine" />
   </target>
 
   <target name="create.qbe.core.jar" >
@@ -129,7 +129,7 @@
     <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIQbeEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIQbeEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIQbeEngine" />
-    <unzip src="../../../SpagoBIQbeEngine/dist/SpagoBIQbeEngine/SpagoBIQbeEngine.war" dest="${tomcat.home}/webapps/SpagoBIQbeEngine" />
+    <unzip src="../../../SpagoBIQbeEngine/dist/SpagoBIQbeEngine.war" dest="${tomcat.home}/webapps/SpagoBIQbeEngine" />
   </target>
   
   <target name="create.SpagoBITalendEngine.war" >
@@ -139,7 +139,7 @@
   <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBITalendEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBITalendEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBITalendEngine" />
-    <unzip src="../../../SpagoBITalendEngine/dist/SpagoBITalendEngine/SpagoBITalendEngine.war" dest="${tomcat.home}/webapps/SpagoBITalendEngine" />
+    <unzip src="../../../SpagoBITalendEngine/dist/SpagoBITalendEngine.war" dest="${tomcat.home}/webapps/SpagoBITalendEngine" />
   </target>
   
   <target name="create.SpagoBIWekaEngine.war" >
@@ -149,7 +149,7 @@
   <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIWekaEngine" />
     <delete dir="${tomcat.home}/webapps/SpagoBIWekaEngine" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBIWekaEngine" />
-    <unzip src="../../../SpagoBIWekaEngine/dist/SpagoBIWekaEngine/SpagoBIWekaEngine.war" dest="${tomcat.home}/webapps/SpagoBIWekaEngine" />
+    <unzip src="../../../SpagoBIWekaEngine/dist/SpagoBIWekaEngine.war" dest="${tomcat.home}/webapps/SpagoBIWekaEngine" />
   </target>
   
   <target name="create.all" depends="clean.all">
@@ -170,36 +170,36 @@
     <!-- <antcall target="create.exo.security.jar" />  -->
     <antcall target="create.xlm.security.jar" />
     <antcall target="create.SpagoBIBirtReportEngine.war" />
-    <copy file="../../../SpagoBIBirtReportEngine/dist/SpagoBI.war" 
+    <copy file="../../../SpagoBIBirtReportEngine/dist/SpagoBIBirtReportEngine.war" 
         todir="../../../dist" overwrite="true" />
             
     <antcall target="create.SpagoBIGeoEngine.war" />
-    <copy file="../../../SpagoBIGeoEngine/dist/SpagoBI.war" 
+    <copy file="../../../SpagoBIGeoEngine/dist/SpagoBIGeoEngine.war" 
         todir="../../../dist" overwrite="true" />  
           
     <antcall target="create.SpagoBIJPaloEngine.war" />
-    <copy file="../../../SpagoBIJPaloEngine/dist/SpagoBI.war" 
+    <copy file="../../../SpagoBIJPaloEngine/dist/SpagoBIJPaloEngine.war" 
         todir="../../../dist" overwrite="true" /> 
         
     <antcall target="create.SpagoBITalendEngine.war" />
-    <copy file="../../../SpagoBITalendEngine/dist/SpagoBI.war" 
+    <copy file="../../../SpagoBITalendEngine/dist/SpagoBITalendEngine.war" 
         todir="../../../dist" overwrite="true" /> 
             
     <antcall target="create.SpagoBIWekaEngine.war" />
-    <copy file="../../../SpagoBIWekaEngine/dist/SpagoBI.war" 
+    <copy file="../../../SpagoBIWekaEngine/dist/SpagoBIWekaEngine.war" 
         todir="../../../dist" overwrite="true" /> 
             
     <antcall target="create.SpagoBIJasperReportEngine.war" />
-    <copy file="../../../SpagoBIJasperReportEngine/dist/SpagoBI.war" 
+    <copy file="../../../SpagoBIJasperReportEngine/dist/SpagoBIJasperReportEngine.war" 
         todir="../../../dist" overwrite="true" />
         
     <antcall target="create.SpagoBIJPivotEngine.war" />
-    <copy file="../../../SpagoBIJPivotEngine/dist/SpagoBI.war" 
+    <copy file="../../../SpagoBIJPivotEngine/dist/SpagoBIJPivotEngine.war" 
         todir="../../../dist" overwrite="true" />    
         
     <antcall target="create.qbe.core.jar" />
     <antcall target="create.SpagoBIQbeEngine.war" />
-    <copy file="../../../SpagoBIQbeEngine/dist/SpagoBI.war" 
+    <copy file="../../../SpagoBIQbeEngine/dist/SpagoBIQbeEngine.war" 
         todir="../../../dist" overwrite="true" />        
     
     
@@ -263,6 +263,23 @@
       <fileset dir="/home/spagobi/runtime/exo-tomcat-portal-1.1.4/webapps/SpagoBI/html">
       </fileset>
     </copy>    
+  </target>
+  
+  <target name="svn.checkout" >
+    <ant dir="../QbeCore/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIBirtReportEngine/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIExoSecurityProvider/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIGeoEngine/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIJasperReportEngine/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIJPaloEngine/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIJPivotEngine/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIProject/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIQbeEngine/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBITalendEngine/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIUtils/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIWekaEngine/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBIXmlSecurityProvider/ant" target="svn.checkout"/>
+    
   </target>
   
 </project>

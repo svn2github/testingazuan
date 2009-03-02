@@ -27,7 +27,7 @@
   <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="catalina.ant.classpath" />    
   <taskdef name="remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="catalina.ant.classpath" />	
   
-  <target name="create.SpagoBI.war" >
+  <target name="create.SpagoBI.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIProject/ant" />
   </target>
   <target name="deploy.SpagoBI.war" depends="create.sbi.utils.jar,create.SpagoBI.war,create.exo.security.jar,create.xlm.security.jar">
@@ -69,7 +69,7 @@
     <ant dir="../SpagoBIXmlSecurityProvider/ant" />
   </target>
   
-  <target name="create.SpagoBIBirtReportEngine.war" >
+  <target name="create.SpagoBIBirtReportEngine.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIBirtReportEngine/ant" />
   </target>
   <target name="deploy.SpagoBIBirtReportEngine.war" depends="create.sbi.utils.jar,create.SpagoBIBirtReportEngine.war">
@@ -79,7 +79,7 @@
     <unzip src="../../../SpagoBIBirtReportEngine/dist/SpagoBIBirtReportEngine.war" dest="${tomcat.home}/webapps/SpagoBIBirtReportEngine" />
   </target>
   
-  <target name="create.SpagoBIGeoEngine.war" >
+  <target name="create.SpagoBIGeoEngine.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIGeoEngine/ant" />
   </target>
   <target name="deploy.SpagoBIGeoEngine.war" depends="create.sbi.utils.jar,create.SpagoBIGeoEngine.war">
@@ -89,7 +89,7 @@
     <unzip src="../../../SpagoBIGeoEngine/dist/SpagoBIGeoEngine.war" dest="${tomcat.home}/webapps/SpagoBIGeoEngine" />
   </target>
   
-  <target name="create.SpagoBIJasperReportEngine.war" >
+  <target name="create.SpagoBIJasperReportEngine.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIJasperReportEngine/ant" />
   </target>
   <target name="deploy.SpagoBIJasperReportEngine.war" depends="create.sbi.utils.jar,create.SpagoBIJasperReportEngine.war">
@@ -99,7 +99,7 @@
     <unzip src="../../../SpagoBIJasperReportEngine/dist/SpagoBIJasperReportEngine.war" dest="${tomcat.home}/webapps/SpagoBIJasperReportEngine" />
   </target>
   
-  <target name="create.SpagoBIJPaloEngine.war" >
+  <target name="create.SpagoBIJPaloEngine.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIJPaloEngine/ant" />
   </target>
   <target name="deploy.SpagoBIJPaloEngine.war" depends="create.sbi.utils.jar,create.SpagoBIJPaloEngine.war">
@@ -109,7 +109,7 @@
     <unzip src="../../../SpagoBIJPaloEngine/dist/SpagoBIJPaloEngine.war" dest="${tomcat.home}/webapps/SpagoBIJPaloEngine" />
   </target>
   
-  <target name="create.SpagoBIJPivotEngine.war" >
+  <target name="create.SpagoBIJPivotEngine.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIJPivotEngine/ant" />
   </target>
   <target name="deploy.SpagoBIJPivotEngine.war" depends="create.sbi.utils.jar,create.SpagoBIJPivotEngine.war">
@@ -119,10 +119,10 @@
     <unzip src="../../../SpagoBIJPivotEngine/dist/SpagoBIJPivotEngine.war" dest="${tomcat.home}/webapps/SpagoBIJPivotEngine" />
   </target>
 
-  <target name="create.qbe.core.jar" >
+  <target name="create.qbe.core.jar" depends="create.sbi.utils.jar">
     <ant dir="../QbeCore/ant" />
   </target>
-  <target name="create.SpagoBIQbeEngine.war" >
+  <target name="create.SpagoBIQbeEngine.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIQbeEngine/ant" />
   </target>
   <target name="deploy.SpagoBIQbeEngine.war" depends="create.sbi.utils.jar,create.qbe.core.jar,create.SpagoBIQbeEngine.war">
@@ -132,7 +132,7 @@
     <unzip src="../../../SpagoBIQbeEngine/dist/SpagoBIQbeEngine.war" dest="${tomcat.home}/webapps/SpagoBIQbeEngine" />
   </target>
   
-  <target name="create.SpagoBITalendEngine.war" >
+  <target name="create.SpagoBITalendEngine.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBITalendEngine/ant" />
   </target>
   <target name="deploy.SpagoBITalendEngine.war" depends="create.sbi.utils.jar,create.SpagoBITalendEngine.war">
@@ -142,7 +142,7 @@
     <unzip src="../../../SpagoBITalendEngine/dist/SpagoBITalendEngine.war" dest="${tomcat.home}/webapps/SpagoBITalendEngine" />
   </target>
   
-  <target name="create.SpagoBIWekaEngine.war" >
+  <target name="create.SpagoBIWekaEngine.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIWekaEngine/ant" />
   </target>
   <target name="deploy.SpagoBIWekaEngine.war" depends="create.sbi.utils.jar,create.SpagoBIWekaEngine.war">

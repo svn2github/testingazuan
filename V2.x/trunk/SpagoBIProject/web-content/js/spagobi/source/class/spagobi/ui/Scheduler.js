@@ -131,7 +131,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					var records = spagobi.app.data.DataService.loadDatasourceRecords();
 					var form = new spagobi.ui.custom.DatasourceDetailsForm();
 					m.setForm(form);
-					var window_table = new spagobi.ui.Table(m, records);
+					var window_table = new spagobi.ui.table.Table(m, records);
 					this.add(window_table);
 					this.add(form);
 					
@@ -206,18 +206,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		 	var obj = this.textfield3.getUserData('field');
 		 	var obj1 = obj.getChildren()[0];
 		 	obj1.setValue(dummy);
-	//	 	obj1.setvalue();
-		 	
-		// 	.setvalue();
-		// 	.getChildren()[0].setValue(e.getData());
-		// 	object.setValue(e.getData().toString());
-		 //	this.container.getChildren()[0]
-		 /*	var obj = new spagobi.ui.Form;
-		 	var container1 = obj.getInputField(textfield3.dataIndex).getUserData('field');
-		 	var object = obj.getChildren()[0];
-		 	//if( obj.getInputField(textfield3.dataIndex).getUserData('type') === 'text')
-         object.setValue(e.getData());
-    	*/
+	
 		
 	},
 	

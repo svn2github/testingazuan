@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 qx.Class.define("spagobi.ui.custom.EngineDetailsForm", {
-	extend: spagobi.ui.Form,
+	extend: spagobi.ui.form.Form,
 
 	/** 
 	*  When the constructor is called it returns an object of form type.
@@ -191,8 +191,7 @@ qx.Class.define("spagobi.ui.custom.EngineDetailsForm", {
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
         	if( this && this.getInputField('url') ) {
-        		if (e.getData()=="Internal") {
-        			
+        		if (e.getData()=="47") {
 					this.getInputField('url').setVisibility("excluded");
 					this.getInputField('driver').setVisibility("excluded");
 					this.getInputField('class').setVisibility("visible");

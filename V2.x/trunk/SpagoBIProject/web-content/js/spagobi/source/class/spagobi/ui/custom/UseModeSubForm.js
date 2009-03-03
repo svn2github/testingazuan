@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 qx.Class.define("spagobi.ui.custom.UseModeSubForm", {
-	extend: spagobi.ui.Form,
+	extend: spagobi.ui.form.Form,
 	
 	construct : function() { 
 		this.base(arguments,[

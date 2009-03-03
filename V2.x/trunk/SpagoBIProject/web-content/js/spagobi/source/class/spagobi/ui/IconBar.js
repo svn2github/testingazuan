@@ -52,23 +52,12 @@ qx.Class.define("spagobi.ui.IconBar", {
 	*/  	
 	construct : function( config ) {   
 	    this.base(arguments);
-	    //this.setWidth(70);
 	    this.set({width: 68});
 		var box = new qx.ui.layout.VBox();
 
 		this.setLayout(box);
 		this.set({allowGrowX : false});
-		/*.set({
-        width: 68,
-    //    decorator: "main",
-    //    backgroundColor: "yellow",
-        allowGrowX: false
-      });*/
-//	    var d = new qx.ui.layout.VBox();
-//	    d.allowGrowX(false);
-	    
-	    //change..added
-	    
+		
 	    
 	    if(config) {
 	    	if(config.selectedBackgroudColor) {
@@ -82,16 +71,10 @@ qx.Class.define("spagobi.ui.IconBar", {
 	    	if(config.defaultSelectedPage) {
 				this._defaultSelectedPageName = config.defaultSelectedPage;
 			}
-		    /*
-		    if(config.buttons) {
-			    for(var i = 0; i < config.buttons.length; i++) {
-			    	this.addButton( config.buttons[i] );
-			    }
-		    }
-		    */		    
+		   		    
 	    }
 	   
-	   //this.add(this._container); 
+	   
 	
 	},
 	
@@ -102,7 +85,7 @@ qx.Class.define("spagobi.ui.IconBar", {
 		_focusedBackgroudColor: 'gray',
 		_defaultSelectedPageName : undefined,
 		_checkedButton        : undefined,
-	    //_container: undefined,//change..added
+	   
 	    
 		/**	  
 		* This function adds the button on the vertical bar (the butons are actually atoms).
@@ -132,7 +115,6 @@ qx.Class.define("spagobi.ui.IconBar", {
 	 	*/
 	 	
 	 	_addAtom: function(name, image, callback, context, tooltip) {	    
-			//var atom = new qx.legacy.ui.basic.Atom('', image);//change
 			var atom = new qx.ui.basic.Atom('', image);
 			
 			atom.setUserData('name', name);
@@ -143,11 +125,9 @@ qx.Class.define("spagobi.ui.IconBar", {
 				this._check(atom);
 			}
 			if (tooltip){
-				//var tt = new qx.legacy.ui.popup.ToolTip(tooltip);//change
 				var tt = new qx.ui.tooltip.ToolTip(tooltip);
 				
 				atom.setToolTip(tt);
-				//tt.setShowInterval(20);//change
 				tt.setShowTimeout(20);
 			}
 			
@@ -255,7 +235,6 @@ qx.Class.define("spagobi.ui.IconBar", {
 	 	
 	 	_onkeypress: function(e) {
 	 		
-	 		//alert(e.getTarget().getLayoutParent());
 			switch(e.getKeyIdentifier()) {
             case "Up":
               var vPrevious = true;
@@ -266,31 +245,11 @@ qx.Class.define("spagobi.ui.IconBar", {
             default:
               return;
           	}
-			/*change-old
-		    var vChild =
-		        (vPrevious
-		         ? (e.getTarget().isFirstChild()
-		            ? e.getTarget().getParent().getLastChild()
-		            : e.getTarget().getPreviousSibling())
-		         : (e.getTarget().isLastChild()
-		            ? e.getTarget().getParent().getFirstChild()
-		            : e.getTarget().getNextSibling()));
-			*/
-			//change-new ..not tested
+			
 			var atom = e.getTarget();
 			var container = atom.getLayoutParent();
 			var vChild;
-			//alert(container.getChildren());
-			/*
-			var vChild =
-		        (vPrevious
-		         ? (atom == container.getChildren()[0]
-		            ? container.getChildren()[container.getChildren().length - 1]
-		            : container.getChildren()[container.getChildren().indexOf(atom)-1])
-		         : (atom == container.getChildren()[container.getChildren().length - 1]
-		            ? container.getChildren()[0]
-		            : container.getChildren()[container.getChildren().indexOf(atom)+1]));
-			*/
+			
 			if(vPrevious){
 				if(atom == container.getChildren()[0]){
 					vChild = container.getChildren()[container.getChildren().length - 1];
@@ -311,9 +270,7 @@ qx.Class.define("spagobi.ui.IconBar", {
 					
 				}
 			}
-		    // focus next/previous button
-		    //vChild.setFocused(true);
-		    //vChild.setBackgroundColor(this._focusedBackgroudColor);
+		   
 			this.select(vChild);
 			atom.setBackgroundColor(null);
 			 

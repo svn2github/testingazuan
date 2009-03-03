@@ -51,7 +51,7 @@ qx.Class.define("spagobi.ui.table.PagedTable", {
 	 * @param controller Object which is used to set the data of the form
 	 * @param data Object containing the layout of the list and the data of the list and form
 	 */
-	construct : function(controller, data)  {
+	construct : function(controller, config)  {
     	   	
     	this.base(arguments);
     	var layout = new qx.ui.layout.VBox();
@@ -59,7 +59,7 @@ qx.Class.define("spagobi.ui.table.PagedTable", {
    
 		this._filterBar = new spagobi.ui.FilterBar();
     	
-    	this._table = new spagobi.ui.table.Table(controller, data);
+    	this._table = new spagobi.ui.table.Table(controller, config);
     	this._navigationBar = new spagobi.ui.NavigationBar(); 
   
     	this._add(this._filterBar);

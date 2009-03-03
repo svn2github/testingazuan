@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Class for the creation of a form
  */ 
-qx.Class.define("spagobi.ui.Form", {
+qx.Class.define("spagobi.ui.form.Form", {
 	//extend: qx.legacy.ui.layout.VerticalBoxLayout,//change
 	extend : qx.ui.container.Composite,
 	

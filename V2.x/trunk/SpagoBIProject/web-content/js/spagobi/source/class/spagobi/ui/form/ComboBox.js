@@ -61,7 +61,6 @@ qx.Class.define("spagobi.ui.form.ComboBox",
 				var item = new qx.ui.form.ListItem('' + rows[i][this._displayField], null, '' + rows[i][this._valueField]);
 				this.add(item);
 			}
-  			alert('-> \n' + str);
   		}
   	}
 });

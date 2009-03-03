@@ -53,28 +53,18 @@ qx.Class.define("spagobi.ui.table.Table",
    * </code>
    * 
    * @param controller Object which is used to set the data of the form
-   * @param data Object containing the layout of the list and the data of the list and form
+   * @param config Object containing the layout of the list and the data of the list and form
    */	
-  construct : function(controller, data)
+  construct : function(controller, config)
   {
     // Establish controller link
     this._controller = controller;
-    this._data = data;
     
-    /*
-    var columnIds = [];
- 	var columnNames = {};
- 	for(var i = 0; i < data.meta.length; i++) {
- 		this.columnIds[i] =  data.meta[i].dataIndex;
- 		columnNames[data.meta[i].dataIndex] = data.meta[i].name;
- 	}
- 	
- 	this._tableModel.setColumnIds( columnIds );
-	    this._tableModel.setColumnNamesById( columnNames );
-	    this.getTableModel().setDataAsMapArray(data.rows, true);
-     this.getSelectionModel().setSelectionInterval(0, 0);
-     */
- 
+    if(config.dataset) {
+    	this._data = config.dataset;
+    }
+    
+    
     // Reset the class member variables so that each button of icon bar shows its resp. table columns
     this.columnIds = [];
     this.columnNames = {};
@@ -92,23 +82,18 @@ qx.Class.define("spagobi.ui.table.Table",
 	
     // Customize the table column model. We want one that
     // automatically resizes columns.
-    this.base(arguments, this._tableModel,
-    {
-      tableColumnModel : function(obj) {
-       
+    this.base(arguments, this._tableModel, {
+      tableColumnModel : function(obj) {       
         return new qx.ui.table.columnmodel.Resize(obj);
       }
     });
 
-    //this.set({});
+    this.set({});
    
 	
     // Configure columns
     var columnModel = this.getTableColumnModel();
     var resizeBehavior = columnModel.getBehavior();
-   
-    this.setStatusBarVisible(false);
-    this.getDataRowRenderer().setHighlightFocusRow(true);
     
     if (this._data.ID != undefined){
    		this.Identity.dummyId = this._data.ID;
@@ -120,29 +105,44 @@ qx.Class.define("spagobi.ui.table.Table",
 				columnModel.setDataCellRenderer(this._data.columns[i], propertyCellRendererFactory);
 				columnModel.setCellEditorFactory(this._data.columns[i], propertyCellEditorFactory);
 			}
-			this.addListener("cellClick",this._onCellClick, this,false );//this.Identity,
+			this.addListener("cellClick",this._onCellClick, this,false );
     	} else if (this._data.ID == "Scheduler"){    		
     		var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.cellRendererFactoryFunction);
  			for(i=0; i<this._data.columns.length; i++){
 				
 				columnModel.setDataCellRenderer(this._data.columns[i], propertyCellRendererFactory);
 			}
-			this.addListener("cellClick",this._onCellClick,this, false);//this._data.ID,
+			this.addListener("cellClick",this._onCellClick,this, false); 
    		} else if (this._data.ID == "LINK"){
 		
 		}
     	
     	
-		
+    	this.setStatusBarVisible(false);
+        this.getDataRowRenderer().setHighlightFocusRow(true);
 		this._tableModel.setDataAsMapArray(this._data.rows, true);
     
    	} else {
 	   
-	   
+   		this.setStatusBarVisible(false);
+   	    this.getDataRowRenderer().setHighlightFocusRow(true);
 	    this._tableModel.setDataAsMapArray(this._data.rows, true);
 	    
-	    // Add selection listener
-	    this.getSelectionModel().addListener("changeSelection", this._onChangeSelection, this);    
+	    	    
+	    
+	    
+	    if(config.proxy) {
+	    	config.proxy.load({}, true, function(dataset){
+	    		this.setData(dataset);
+	    		this._data = dataset;
+	  		}, this);
+	    }
+	    
+	 // Add selection listener
+	  this.getSelectionModel().addListener("changeSelection", this._onChangeSelection, this);   
+	    
+	    //this._data = data;
+	    //this.setData(this._data);
     }
   },
 
@@ -151,8 +151,15 @@ qx.Class.define("spagobi.ui.table.Table",
    */	
   members :
   {
-  	 _data : undefined,		
-  	 columnIds : [],
+  	 _data : {
+ 		meta: [
+		       {dataIndex: 'id', name: 'Data'}
+		]
+		, rows: [{id: ''}]    
+  	 }
+  	 
+  	 
+  	 , columnIds : [],
      columnNames : {},
      Identity: {},
      config : {}, 	
@@ -172,18 +179,33 @@ qx.Class.define("spagobi.ui.table.Table",
    	 * @param data Object containing the layout of the list and the data of the list and form
    	 */
      setData: function(data) {
-      	
+    	 
      	var columnIds = [];
      	var columnNames = {};
-     	for(var i = 0; i < data.meta.length; i++) {
-     		this.columnIds[i] =  data.meta[i].dataIndex;
-     		columnNames[data.meta[i].dataIndex] = data.meta[i].name;
+     	for(var i = 0; i < data.metaData.fields.length; i++) {
+     		this.columnIds[i] =  data.metaData.fields[i].dataIndex;
+     		columnNames[data.metaData.fields[i].dataIndex] = data.metaData.fields[i].name;
      	}
      	
-     	this._tableModel.setColumnIds( columnIds );
- 	    this._tableModel.setColumnNamesById( columnNames );
+     	
+     	var cm = new qx.ui.table.model.Simple();
+     	cm.setColumnIds( this.columnIds );
+     	cm.setColumnNamesById( columnNames );
+ 	    
+ 	   
+     	var menu = this.__columnVisibilityBt.getMenu();
+        if (menu)
+        {
+          var entries = menu.getChildren();
+          for (var i=0,l=entries.length; i<l; i++) {
+            if(entries[i])entries[i].destroy();
+          }
+        }
+     	
+     	this.setTableModel( cm );    
+     	     		
  	    this.getTableModel().setDataAsMapArray(data.rows, true);
-         this.getSelectionModel().setSelectionInterval(0, 0);
+        this.getSelectionModel().setSelectionInterval(0, 0); 	    
      },
      
      

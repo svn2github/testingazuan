@@ -60,86 +60,97 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
   construct : function(type)
   {
 	this.base(arguments,"vertical");
+	
+	var config = {};
 
 	if(type === 'engine') {
-		
-		/*
+		//this.records = spagobi.app.data.DataService.loadEngineRecords();
+		//config.dataset = this.records;
 		var serviceRegistry = new spagobi.commons.ServiceRegistry();
-		var serviceUrl = serviceRegistry.getServiceUrl('LIST_DOMAINS_BY_TYPE_ACTION');
-		
-		var httpDataProxy = new spagobi.data.DataProxy({
-			url: serviceUrl
-		});
-		
-		proxy.load( {}, true, this.loadOptions, this);
-		 */
-		
-		
-		this.records = spagobi.app.data.DataService.loadEngineRecords();
+  		var serviceUrl = serviceRegistry.getServiceUrl('LIST_ENGINES_ACTION');
+  		var httpDataProxy = new spagobi.data.DataProxy({
+  			url: serviceUrl
+  		});
+  		config.proxy = httpDataProxy;
 		form = new spagobi.ui.custom.EngineDetailsForm(); 
 	} else if(type === 'datasource') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type === 'dataset') {
 		this.records = spagobi.app.data.DataService.loadDatasetRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.DatasetDetailsForm(); 
 	} else if(type == 'mapmgmt') {
 		this.records = spagobi.app.data.DataService.loadMapRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.MapDetailsForm(); 
 	} else if(type == 'featuremgmt') {
 		this.records = spagobi.app.data.DataService.loadFeatureRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.FeatureDetailsForm(); 
 	} else if(type == 'lov') {
 		this.records = spagobi.app.data.DataService.loadLOVRecords();
 		form = new spagobi.ui.custom.LOVDetailsForm(); 
 	} else if(type == 'constraints') {
 		this.records = spagobi.app.data.DataService.loadLOVRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.ConstraintDetailsForm(); 
 	} else if(type == 'parameters') {
 		this.records = spagobi.app.data.DataService.loadLOVRecords();
 		form = new spagobi.ui.custom.AnalyticalDriverDetailsForm(); 
 	} else if(type == 'configuration') {									
 		this.records = spagobi.app.data.DataService.loadConfigurationRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.DocumentConfigurationForm(); 
 	} else if(type == 'link1') {									
 		this.records = spagobi.app.data.DataService.loadlink1Records();		
 	} else if(type == 'link2') {									
-		this.records = spagobi.app.data.DataService.loadlink2Records();		
+		this.records = spagobi.app.data.DataService.loadlink2Records();	
+		config.dataset = this.records;
 	} else if(type == 'link3') {									
-		this.records = spagobi.app.data.DataService.loadlink3Records();		
+		this.records = spagobi.app.data.DataService.loadlink3Records();	
+		config.dataset = this.records;
 	} else if(type === 'distributionList') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type === 'distributionListConfig') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type === 'func') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type === 'workflow') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type === 'event') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type === 'tool') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
+		config.dataset = this.records;
 		form = new spagobi.ui.custom.DatasourceDetailsForm(); 
 	} else if(type === 'schedule') {
 		this.records = spagobi.app.data.DataService.loadScheduleRecords();
+		config.dataset = this.records;
 	} else if(type == 'roles') {									
-		this.records = spagobi.app.data.DataService.loadRolesRecords();		 
+		this.records = spagobi.app.data.DataService.loadRolesRecords();		
+		config.dataset = this.records;
 	} 
 	
 	
 	
-	this.listPage = new spagobi.ui.PagedTable(this,this.records); 
+	this._pagedTable = new spagobi.ui.table.PagedTable(this, config); 
 	  
-	   	this.add(this.listPage,0);
+	this.add(this._pagedTable,0);
 	   	
 	   	
 	   	
-	   	if(type != 'roles' && type != 'link1' &&type != 'link2' &&type != 'link3' &&type !='schedule'){ //
+	if(type != 'roles' && type != 'link1' &&type != 'link2' &&type != 'link3' &&type !='schedule'){ //
 	   		
 	   	containerBottom = new qx.ui.core.Widget();
 	   	var Vbox = new qx.ui.layout.VBox();
@@ -154,15 +165,17 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	   	var createButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/create.png"));
 	    var createToolTip = new qx.ui.tooltip.ToolTip("New");
 	    createButton.setToolTip(createToolTip);
+	    createButton.addListener("execute", this._onCreate, this);
 	   		   	   	
 	   	var saveButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/save.png"));
 	    var saveToolTip = new qx.ui.tooltip.ToolTip("Save");
 	    saveButton.setToolTip(saveToolTip);
-	    saveButton.addListener("execute", this.ShowDetails, this);
+	    saveButton.addListener("execute", this._onSave, this);
 	    
 	    var deleteButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/delete.png"));
 	    var deleteToolTip = new qx.ui.tooltip.ToolTip("Delete");
 	    deleteButton.setToolTip(deleteToolTip);
+	    deleteButton.addListener("execute", this._onDelete, this);
 	    
 	    var formBarArray = [createButton, saveButton, deleteButton];//since add() adds only 1 widget at a time
 	    
@@ -187,45 +200,96 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 
   members :
   {
-    _form : undefined,
-    detailBody : undefined,
-    records : undefined,
-    listPage : undefined,
+    _pagedTable : undefined 
+    , _form : undefined
+    
+    // deprecated: TODO change with dataset
+    , records : undefined
+    
     
     /**
      * Function to get the current form
      * 
      * @return form The selected form 
      */
-    getForm: function() {
+    , getForm: function() {
     	return this._form;
-    },
+    }
     
     /**
      * Function to set the current form
      * 
      * @param form The form to be selected 
      */
-    setForm: function(f) {
+    , setForm: function(f) {
     	this._form = f;
-    },
+    }
     
     /**
      * Function to select the object
      * 
      * @param dataObject The data object
      */
-    selectDataObject: function(dataObject) {
+    , selectDataObject: function(dataObject) {
     	this._form.setData(dataObject);
-    },
+    }
     
+    
+    , _onSave: function (e) {
+    	
+		if (this.records && this.records.ID != undefined){
+    		if (this.records.ID == "ROLES"){
+				alert (this._pagedTable._table.getUpdatedData());
+			}
+    	} else {			
+			var engine = this.getForm().getData();
+			alert (spagobi.commons.CoreUtils.toStr(engine));
+			
+			spagobi.dao.DAOFactory.getEngineDAO().saveEngine( engine, {
+				success: {
+					fn: function(){alert('SUCCESS');}
+					, scope: this
+				}, failure: {
+					fn: function(){alert('FAILURE');}
+					, scope: this
+				}
+			});
+			
+			/*
+			var serviceRegistry = new spagobi.commons.ServiceRegistry();
+	  		var serviceUrl = serviceRegistry.getServiceUrl('SAVE_ENGINE_ACTION');
+	  		serviceUrl += '&ENGINE=' + qx.util.Json.stringify(data);
+			var request = new qx.io.remote.Request(serviceUrl, 'POST', 'application/json');    	
+    		request.addListener('completed', function(){alert('SUCCESS: ' + serviceUrl);}, this);
+    		request.addListener('failed', function(){alert('FAILURE: ' + serviceUrl);}, this);
+    		request.send();
+    		alert('request sent to: ' + qx.util.Json.stringify(data));
+    		*/
+		}
+	}	
+    
+    , _onDelete: function(e) {
+    	alert('delete');
+    }
+    
+    , _onCreate: function(e) {
+    	alert('create');
+    }
+    
+    
+    
+    
+    // =====================================
+    // deprecated methods
+    // TODO: refactor asap
+    // =====================================
     
     /**
      * Function to print the "property: value" pairs of an object
      * 
      * @param o The object to be printed in the form of property: value pairs
      */
-    printObject: function(o) {
+    , printObject: function(o) {
     	var str = '';
     	for(p in o) {
     		str += p + ': ' + o[p] + ';\n'
@@ -267,23 +331,6 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
     _onSelectTreeNode:function(e){
     	alert(this + "," + e.getData());
     	this.onClickMenu();
-    },
-    
-    ShowDetails: function (e) {
-    	
-    	
-		if (this.records.ID != undefined){
-    		if (this.records.ID == "ROLES"){
-				alert (this.listPage._table.getUpdatedData());
-			}
-    	}
-		else{
-			
-			
-			var alias = this.getForm().getData();
-			alert (this.printObject(alias));
-			
-		}
-	}	
+    }
   }
 });

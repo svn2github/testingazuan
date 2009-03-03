@@ -15,6 +15,13 @@
 		
 		<CONFIG></CONFIG>
 	</ACTION>
+	
+	<ACTION name="SAVE_ENGINE_ACTION" 
+			class="it.eng.spagobi.chiron.SaveEngineAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
 
 </ACTIONS>
 

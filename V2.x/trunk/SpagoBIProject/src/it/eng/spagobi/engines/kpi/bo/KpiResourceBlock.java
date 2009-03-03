@@ -277,7 +277,7 @@ public class KpiResourceBlock {
 				e.printStackTrace();
 			}
 			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
-			"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&userid=<%=userId%>&path="+path+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
+			"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&path="+path+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
 			_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div style='margin-top:4px;'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
 			
 		}else{

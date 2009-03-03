@@ -36,7 +36,6 @@ public abstract class AbstractServiceImpl {
 
     protected String validateUrl = null;
     protected String validateService = null;
-    protected boolean activeSso = false;
     private String pass = null;
 
     /**
@@ -55,11 +54,6 @@ public abstract class AbstractServiceImpl {
 	validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.VALIDATE-USER.SERVICE");
 	validateService =  (String) validateSB.getCharacters();
 	logger.debug("Read validateService=" + validateService);
-	validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
-	String active = (String) validateSB.getCharacters();
-	if (active != null && active.equals("true"))
-	    activeSso = true;
-	logger.debug("Read activeSso=" + activeSso);
 	validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.PASS");
 	pass = (String) validateSB.getCharacters();
 
@@ -73,27 +67,29 @@ public abstract class AbstractServiceImpl {
      * @return String
      * @throws SecurityException
      */
-    protected void validateTicket(String ticket, String userId) throws SecurityException {
-	logger.debug("IN");
-	if (ticket==null){
-	    logger.warn("Ticket is NULL");
-	    throw new SecurityException("Ticket is NULL");	    
-	}
-	if (userId == null) {
-	    logger.warn("UserID is NULL");
-	    throw new SecurityException("Ticket is NULL");
-	}
-	if (activeSso) {
-	    logger.debug("activeSso checks are ON");
-	    if (ticket.equals(pass)) {
-		logger.debug("JUMP che ticket validation");
-	    } else {
-		SsoServiceInterface proxyService = SsoServiceFactory.createProxyService();
-		proxyService.validateTicket(ticket, userId, validateUrl, validateService);
-	    }
-	}
-	logger.debug("OUT");
+    protected void validateTicket(String ticket, String userId)
+			throws SecurityException {
+		logger.debug("IN");
+		if (ticket == null) {
+			logger.warn("Ticket is NULL");
+			throw new SecurityException("Ticket is NULL");
+		}
+		if (userId == null) {
+			logger.warn("UserID is NULL");
+			throw new SecurityException("Ticket is NULL");
+		}
+		logger.debug("activeSso checks are ON");
+		if (ticket.equals(pass)) {
+			logger.debug("JUMP che ticket validation");
+		} else {
+			SsoServiceInterface proxyService = SsoServiceFactory
+					.createProxyService();
+			proxyService.validateTicket(ticket, userId, validateUrl,
+					validateService);
+		}
 
-    }
+		logger.debug("OUT");
+
+	}
 
 }

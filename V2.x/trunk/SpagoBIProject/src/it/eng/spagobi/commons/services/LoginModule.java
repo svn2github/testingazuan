@@ -95,7 +95,7 @@ public class LoginModule extends AbstractHttpModule {
     	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
     	String activeStr = (String) validateSB.getCharacters();
     	boolean activeSoo=false;
-    	if (activeStr != null || activeStr.equalsIgnoreCase("true")) {
+    	if (activeStr != null && activeStr.equalsIgnoreCase("true")) {
     		activeSoo=true;
     	}
 		RequestContainer reqCont = RequestContainer.getRequestContainer();
@@ -109,18 +109,11 @@ public class LoginModule extends AbstractHttpModule {
 		}
 		errorHandler = getErrorHandler();
 		
-//		Principal principal=this.getHttpRequest().getUserPrincipal();
-//		String userId=null;
-//		if (principal==null){
-//		    userId=(String)request.getAttribute("userId");
-//		    logger.info("User read from request."+userId);
-//		}else {
-//		    userId=principal.getName();
-//		    logger.info("User read from Principal."+userId);
-//		}
+
 		String userId=null;
 		if (!activeSoo){
-			userId = (String)request.getAttribute("userid");
+			userId = (String)request.getAttribute("userID");
+			logger.error("userID="+userId);
 			if (userId == null) {
 				logger.error("User identifier not found. Cannot build user profile object");
 				throw new SecurityException("User identifier not found.");
@@ -129,12 +122,6 @@ public class LoginModule extends AbstractHttpModule {
 			userId=UserUtilities.getUserId(this.getHttpRequest());
 		}
 
-		
-		
-		
-		profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-
-		if (profile==null || !userId.equals(((UserProfile)profile).getUserId().toString())){
 			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 	    	// If SSO is not active, check username and password, i.e. performs the authentication;
 	    	// instead, if SSO is active, the authentication mechanism is provided by the SSO itself, so SpagoBI does not make 
@@ -182,8 +169,7 @@ public class LoginModule extends AbstractHttpModule {
 			if (!UserUtilities.userFunctionalityRootExists(username)) {
 			    UserUtilities.createUserFunctionalityRoot(profile);
 			}
-	            
-		}
+
 		getMenuItems(request, response);
 		// fill response attributes
 		if(userId.equals("chiron")) {

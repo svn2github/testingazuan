@@ -1,5 +1,5 @@
 
-package it.eng.spagobi.chiron;
+package it.eng.spagobi.chiron.serializer;
 
 import java.util.HashMap;
 import java.util.Map;

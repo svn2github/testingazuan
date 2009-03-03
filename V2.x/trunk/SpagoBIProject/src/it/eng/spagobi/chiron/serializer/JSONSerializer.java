@@ -19,50 +19,64 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.chiron;
+package it.eng.spagobi.chiron.serializer;
 
-import org.json.JSONObject;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.json.JSONArray;
 
 import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.engines.config.bo.Engine;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class DomainJSONSerializer implements Serializer {
+public class JSONSerializer implements Serializer {
 	
-	public static final String DOMAIN_CODE = "domainId";
-	public static final String DOMAIN_NAME = "domainCode";
+	Map<Class, Serializer> mappings;
 	
-	public static final String VALUE_ID = "valueId";
-	public static final String VALUE_CODE = "valueCode";
-	public static final String VALUE_NAME = "valueName";
-	public static final String VALUE_DECRIPTION = "valueDescription";
-	
-	
+	public JSONSerializer() {
+		mappings = new HashMap();
+		mappings.put( Domain.class, new DomainJSONSerializer() );
+		mappings.put( Engine.class, new EngineJSONSerializer() );
+	}
+
 	public Object serialize(Object o) throws SerializationException {
-		JSONObject  result = null;
-		
-		if( !(o instanceof Domain) ) {
-			throw new SerializationException("DomainJSONSerializer is unable to serialize object of type: " + o.getClass().getName());
-		}
+		Object result = null;	
 		
 		try {
-			Domain domain = (Domain)o;
-			result = new JSONObject();
-			result.put(DOMAIN_CODE, domain.getDomainCode() ); // BIOBJ_TYPE
-			result.put(DOMAIN_NAME, domain.getDomainName() ); // BI Object types
+			if(o instanceof Collection) {
+				JSONArray r = new JSONArray();
+				Collection c = (Collection)o;
+				Iterator it = c.iterator();
+				while(it.hasNext()) {
+					r.put( serialize( it.next() ) );
+				}
+				result = r;
+			} else {
+				if( !mappings.containsKey(o.getClass())) {
+					throw new SerializationException("JSONSerializer is unable to serialize object of type: " + o.getClass().getName());
+				}
+				
+				Serializer serializer = mappings.get(o.getClass());
+				result = serializer.serialize(o);
+			}			
 			
-			result.put(VALUE_ID, domain.getValueId() ); // ex. 1
-			result.put(VALUE_CODE, domain.getValueCd() ); // REPORT
-			result.put(VALUE_NAME, domain.getValueName() ); // ex. Report
-			result.put(VALUE_DECRIPTION, domain.getValueDescription() ); // Basic business intelligence objects type
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);
 		} finally {
 			
 		}
 		
-		return result;
+		return result;	
 	}
+	
+
+	
+	
+
 
 }

@@ -27,12 +27,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.analiticalmodel.document.dao;
 
+import java.util.List;
+
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
-
-import java.util.List;
 
 /**
  * Defines the interfaces for all methods needed to insert, modify and deleting 
@@ -53,7 +53,7 @@ public interface IBIObjectDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurs
 	 */
-	public BIObject loadBIObjectForExecutionByIdAndRole(Integer id, String role)
+	public  BIObject loadBIObjectForExecutionByIdAndRole(Integer id, String role)
 			throws EMFUserError;
 	
 	/**

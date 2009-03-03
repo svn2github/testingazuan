@@ -92,6 +92,7 @@ qx.Class.define("qx.ui.table.columnmodel.Resize",
     __bAppeared : null,
     __bInProgress : null,
     __table : null,
+    __inizialized : null,
 
 
     // Behavior modifier
@@ -132,6 +133,13 @@ qx.Class.define("qx.ui.table.columnmodel.Resize",
       // Save the table so we can get at its features, as necessary.
       this.__table = table;
 
+      if(this.__inizialized) {
+    	  this.getBehavior()._setNumColumns(numColumns);
+    	  return;
+      }
+      
+      this.__inizialized = true;
+      
       // We'll do our column resizing when the table appears, ...
       table.addListener("appear", this._onappear, this);
 

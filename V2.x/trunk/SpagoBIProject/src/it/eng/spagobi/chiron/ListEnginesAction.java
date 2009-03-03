@@ -12,6 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.chiron.serializer.EngineJSONSerializer;
+import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
@@ -61,7 +63,6 @@ public class ListEnginesAction extends AbstractBaseHttpAction{
 		results = new JSONObject();
 		metadata = new JSONObject();
 		fields = new JSONArray();
-		rows = new JSONArray();
 		
 		metadata.put("fields", fields);
 		results.put("metaData", metadata);

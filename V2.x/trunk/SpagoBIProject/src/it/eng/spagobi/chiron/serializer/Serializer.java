@@ -19,20 +19,12 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.chiron;
+package it.eng.spagobi.chiron.serializer;
 
-import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class SerializationException extends SpagoBIException {
-
-	public SerializationException(String message) {
-		super(message);
-	}
-	
-	public SerializationException(String message, Throwable e) {
-		super(message, e);
-	}
+public interface Serializer {
+	public Object serialize(Object o) throws SerializationException;
 }

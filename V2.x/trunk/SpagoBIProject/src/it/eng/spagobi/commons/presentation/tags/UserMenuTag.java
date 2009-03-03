@@ -86,6 +86,7 @@ public class UserMenuTag extends TagSupport {
 		String functionality = (String) itemSB.getAttribute("functionality");
 		String code = (String) itemSB.getAttribute("code");
 		String titleCode = (String) itemSB.getAttribute("title");
+		String bundle = (String) itemSB.getAttribute("bundle");
 		String iconUrl = (String) itemSB.getAttribute("iconUrl");
 		String url = (String) itemSB.getAttribute("url");
 		if (functionality == null) {
@@ -109,7 +110,7 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n " + code + ".addListener('mouseexit', function() {" + code + ".hide();});");
 			htmlStream.append("\n tb.add(");
 			htmlStream.append("\n 	new Ext.Toolbar.MenuButton({");
-			htmlStream.append("\n 		text: '" + getTitle(titleCode) + "',");
+			htmlStream.append("\n 		text: '" + getTitle(titleCode, bundle) + "',");
 			htmlStream.append("\n 		cls: 'x-btn-text-icon bmenu',");
 			htmlStream.append("\n 		menu: " + code);
 			htmlStream.append("\n 	})");
@@ -121,10 +122,6 @@ public class UserMenuTag extends TagSupport {
 			}
 			else father=null;
 			
-			if (titleCode.startsWith("#")){
-				titleCode = titleCode.substring(1);
-				titleCode = msgBuilder.getMessage(titleCode, httpRequest);
-			}
 			htmlStream.append("\n new Ext.menu.Item({");
 			htmlStream.append("\n 	id: '" + new Double(Math.random()).toString() + "',");
 			iconUrl = iconUrl.replace("${SPAGOBI_CONTEXT}", httpRequest.getContextPath());
@@ -135,7 +132,7 @@ public class UserMenuTag extends TagSupport {
 			} else {
 				url += "?" + LightNavigationManager.LIGHT_NAVIGATOR_RESET_INSERT + "=TRUE";
 			}
-			htmlStream.append("\n 	text: '" + getTitle(titleCode) + "',");
+			htmlStream.append("\n 	text: '" + getTitle(titleCode, bundle) + "',");
 			htmlStream.append("\n 	icon: '" + iconUrl + "', ");
 			//htmlStream.append("\n 	href: 'javascript:execDirectUrl(\"" + JavaScript.escape(url) + "\")'");
 
@@ -144,11 +141,15 @@ public class UserMenuTag extends TagSupport {
 		}
 	}
 	
-	private String getTitle(String titleCode) {
+	private String getTitle(String titleCode, String bundle) {
 		String title = null;
 		if (titleCode.startsWith("#")){
 			titleCode = titleCode.substring(1);
-			title = msgBuilder.getMessage(titleCode, httpRequest);
+			if (bundle == null) {
+				title = msgBuilder.getMessage(titleCode, httpRequest);
+			} else {
+				title = msgBuilder.getMessage(titleCode, bundle, httpRequest);
+			}
 		} else {
 			title = titleCode;
 		}

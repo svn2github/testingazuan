@@ -37,7 +37,7 @@
     <Resource auth="Container" description="User database that can be updated and saved" factory="org.apache.catalina.users.MemoryUserDatabaseFactory" name="UserDatabase" pathname="conf/tomcat-users.xml" type="org.apache.catalina.UserDatabase"/>
     
     <Environment name="spagobi_resource_path" type="java.lang.String" value="C:\progetti\spagobi2.0\workspace\resources"/>
-    <Environment name="spagobi_active_sso" type="java.lang.String" value="false"/>
+    <Environment name="spagobi_sso_class" type="java.lang.String" value="it.eng.spagobi.services.common.FakeSsoService"/>
     <Environment name="spagobi_service_url" type="java.lang.String" value="http://localhost:8080/SpagoBI"/>    
     <Environment name="spagobi_host_url" type="java.lang.String" value="http://localhost:8080"/>  
  
@@ -146,7 +146,7 @@
 		<ResourceLink global="jdbc/foodmart" name="jdbc/foodmart" type="javax.sql.DataSource"/>
 		<ResourceLink global="jdbc/spagobi" name="jdbc/spagobi" type="javax.sql.DataSource"/>
             <ResourceLink global="spagobi_resource_path" name="spagobi_resource_path" type="java.lang.String"/>
-            <ResourceLink global="spagobi_active_sso" name="spagobi_active_sso" type="java.lang.String"/>
+            <ResourceLink global="spagobi_sso_class" name="spagobi_sso_class" type="java.lang.String"/>
             <ResourceLink global="spagobi_service_url" name="spagobi_service_url" type="java.lang.String"/>
 	</Context>
 
@@ -155,7 +155,7 @@
 		<ResourceLink global="jdbc/foodmart" name="jdbc/foodmart" type="javax.sql.DataSource"/>
 		<ResourceLink global="jdbc/spagobi" name="jdbc/spagobi" type="javax.sql.DataSource"/>
             <ResourceLink global="spagobi_resource_path" name="spagobi_resource_path" type="java.lang.String"/>
-            <ResourceLink global="spagobi_active_sso" name="spagobi_active_sso" type="java.lang.String"/>
+            <ResourceLink global="spagobi_sso_class" name="spagobi_sso_class" type="java.lang.String"/>
             <ResourceLink global="spagobi_service_url" name="spagobi_service_url" type="java.lang.String"/>
 	</Context>
 
@@ -164,7 +164,7 @@
         	<ResourceLink global="jdbc/spagobi" name="jdbc/spagobi" type="javax.sql.DataSource"/>
         	<ResourceLink global="jdbc/foodmart" name="jdbc/foodmart" type="javax.sql.DataSource"/>
             <ResourceLink global="spagobi_resource_path" name="spagobi_resource_path" type="java.lang.String"/>
-            <ResourceLink global="spagobi_active_sso" name="spagobi_active_sso" type="java.lang.String"/>
+            <ResourceLink global="spagobi_sso_class" name="spagobi_sso_class" type="java.lang.String"/>
             <ResourceLink global="spagobi_host_url" name="spagobi_host_url" type="java.lang.String"/>
      	</Context>
    </Host>

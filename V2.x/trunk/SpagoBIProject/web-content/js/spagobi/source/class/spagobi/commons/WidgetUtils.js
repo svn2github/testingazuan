@@ -469,7 +469,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 			var subform;
 			
 			if(typeof(config.form) ==  'object') {
-				subform = new spagobi.ui.Form( config.form );
+				subform = new spagobi.ui.form.Form( config.form );
 			} else {
 				//alert( typeof(config.form) );
 				subform = new config.form();
@@ -498,7 +498,7 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 			
 			var subform;
 			
-			subform = new spagobi.ui.FormList( config.formList );
+			subform = new spagobi.ui.form.FormList( config.formList );
 			
 			subform.setUserData('field', subform);
 			

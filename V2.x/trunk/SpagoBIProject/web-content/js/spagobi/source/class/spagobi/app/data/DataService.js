@@ -324,31 +324,11 @@ qx.Class.define("spagobi.app.data.DataService", {
   	},
   	
   	loadEngineRecords: function() {
-  		var serviceRegistry = new spagobi.commons.ServiceRegistry();
-  		var serviceUrl = serviceRegistry.getServiceUrl('LIST_ENGINES_ACTION');
-  		var httpDataProxy = new spagobi.data.DataProxy({
-  			url: serviceUrl
-  		});
-  		httpDataProxy.load({}, true, function(dataset){
-  			alert('Callback body: ' + spagobi.commons.CoreUtils.toStr(dataset));
-  		}, this);
-  		
-  		
-  		
   		var records = {};
   		  		
-  		if(httpDataProxy._datastore) {
-  			records.meta = httpDataProxy._datastore.metaData.fields;
-  			records.rows = httpDataProxy._datastore.rows;
-  		} else {
-  			alert('ERROR');
-  			records.meta =  this.loadEngineMeta();  	  		
-  	    	records.rows =  this.loadEngineData();
-  		}
+  		records.meta =  this.loadEngineMeta();  	  		
+	    records.rows =  this.loadEngineData();
   		
-    	
-    
-    	
     	return records;
   	},
   	

@@ -166,7 +166,7 @@
 			htmlGeneratorClass="it.eng.spagobi.kpi.model.presentation.ModelStructureTreeHtmlGenerator" />
 			 
 		</td>
-	 <td class='td_form'>
+	 <td class='td_form' valign="top">
 	
 	<form method='post' action='<%=formUrl%>' id='ModelTreeForm'
 		name='ModelForm'>
@@ -347,7 +347,7 @@
 			}
 		%>
 		<option value="<%=kpi.getKpiId()%>"
-			label="<%=kpi.getKpiName()%>" <%=selected%>><%=kpi.getKpiName()%>
+			label="[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>" <%=selected%>>[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>
 		</option>
 		<%
 		}
@@ -389,7 +389,7 @@
 				<%}%>
 				<%}%>
 	            {contentEl:'kpiB', title: '<spagobi:message
-	            	key="sbi.kpi.label.kpiInstance" bundle="<%=messageBundle%>" /> '}
+	            	key="sbi.kpi.label.kpi.tab" bundle="<%=messageBundle%>" /> '}
 	        ]
 	    });
 	

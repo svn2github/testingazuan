@@ -36,6 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.text.Format"%>
 <%@page import="java.util.Date"%>
+<%@page import="java.util.UUID"%>
 <%
 	String messageIn = (String) aServiceRequest.getAttribute("MESSAGE");
 	String id = (String) aServiceRequest.getAttribute("ID");
@@ -267,6 +268,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 	}
 %>
+
+
 <div class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -274,24 +277,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelInstanceName" size="50"
 	value="<%=modelInstanceName%>" maxlength="200"><%=mandatory %> </div>
-
-
-<%
-	String readOnly ="";
- 	if (messageIn != null
- 			&& messageIn
- 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
- 		readOnly = "readonly";
- 	}
- %>
-
-<div class='div_detail_label'><span
-	class='portlet-form-field-label'> <spagobi:message
-	key="sbi.kpi.label.label" bundle="<%=messageBundle%>" /> </span></div>
-<div class='div_detail_form'><input
-	class='portlet-form-input-field' type="text" name="modelInstanceLabel" size="50"
-	value="<%=modelInstanceLabel%>" maxlength="100" <%=readOnly %>> &nbsp;*</div>
-
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
@@ -600,6 +585,36 @@ value='<%= endDateS %>'/> </div>
 <%
  	}
  %>
+  <div id="labelB" class="x-hide-display">
+  <div class="div_detail_area_forms">
+ 
+ <%
+	String readOnly ="";
+ 	if (messageIn != null
+ 			&& messageIn
+ 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+ 		readOnly = "readonly";
+ 	}
+ %>
+
+
+<%
+ if (messageIn != null
+ 			&& messageIn
+ 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
+	 	modelInstanceLabel =  java.util.UUID.randomUUID().toString();
+	}	 
+%>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.label" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="modelInstanceLabel" size="50"
+	value="<%=modelInstanceLabel%>" maxlength="100" <%=readOnly %>>&nbsp;*</div>
+ 
+</div>
+</div>
 </div>
 
 </form>
@@ -637,6 +652,8 @@ Ext.onReady(function(){
             {contentEl:'kpiInstanceB', title: '<spagobi:message
             	key="sbi.kpi.label.kpiInstance" bundle="<%=messageBundle%>" /> '}
         	<%}%>
+        	,{contentEl:'labelB', title: '<spagobi:message
+            	key="sbi.kpi.label.advanced.tab" bundle="<%=messageBundle%>" /> '}
         ]
     });
 

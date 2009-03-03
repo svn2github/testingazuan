@@ -1769,6 +1769,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			toReturn = "description";
 		if (property != null && property.toUpperCase().equals("THRESHOLD"))
 			toReturn = "sbiThreshold";
+		if (property != null && property.toUpperCase().equals("THRESHOLDCODE"))
+			toReturn = "sbiThreshold";
 		return toReturn;
 	}
 

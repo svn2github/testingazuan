@@ -28,6 +28,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.config.bo.Kpi;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.utils.AbstractConfigurableListModule;
 
 import java.util.List;
@@ -66,6 +67,7 @@ public class ListKpiModule extends AbstractConfigurableListModule {
 		String code = "";
 		String name = "";
 		String threshold = "";
+		String thresholdCode = "";
 
 		if (aKpi.getCode() != null)
 			code = aKpi.getCode();
@@ -76,15 +78,21 @@ public class ListKpiModule extends AbstractConfigurableListModule {
 		if (aKpi.getThreshold() != null && aKpi.getThreshold().getId() != null) {
 
 			try {
-				if(DAOFactory.getThresholdDAO().loadThresholdById(
-						aKpi.getThreshold().getId()).getThresholdName() != null){
-				threshold = DAOFactory.getThresholdDAO().loadThresholdById(
-						aKpi.getThreshold().getId()).getThresholdName();
+				Threshold thresholdBo = DAOFactory.getThresholdDAO()
+						.loadThresholdById(aKpi.getThreshold().getId());
+				if (thresholdBo != null
+						&& thresholdBo.getThresholdName() != null) {
+					threshold = thresholdBo.getThresholdName();
+				}
+				if (thresholdBo != null
+						&& thresholdBo.getThresholdCode() != null) {
+					thresholdCode = thresholdBo.getThresholdCode();
 				}
 			} catch (EMFUserError e) {
-		
+
 			}
 		}
+		rowSB.setAttribute("THRESHOLDCODE", thresholdCode);
 		rowSB.setAttribute("THRESHOLD", threshold);
 		rowSB.setAttribute("ID", aKpi.getKpiId());
 	}
@@ -92,18 +100,19 @@ public class ListKpiModule extends AbstractConfigurableListModule {
 	@Override
 	public boolean delete(SourceBean request, SourceBean response) {
 		boolean toReturn = false;
-		 String kpiId = (String) request.getAttribute("ID");
-		 try {
-		 toReturn = DAOFactory.getKpiDAO().deleteKpi(Integer.parseInt(kpiId));
-		 toReturn = true;
-		 } catch (NumberFormatException e) {
-		 EMFErrorHandler engErrorHandler = getErrorHandler();
-		 engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
-		 "10012", "component_kpi_messages"));
-		 } catch (EMFUserError e) {
-		 EMFErrorHandler engErrorHandler = getErrorHandler();
-		 engErrorHandler.addError(e);
-		 }
+		String kpiId = (String) request.getAttribute("ID");
+		try {
+			toReturn = DAOFactory.getKpiDAO()
+					.deleteKpi(Integer.parseInt(kpiId));
+			toReturn = true;
+		} catch (NumberFormatException e) {
+			EMFErrorHandler engErrorHandler = getErrorHandler();
+			engErrorHandler.addError(new EMFUserError(EMFErrorSeverity.WARNING,
+					"10012", "component_kpi_messages"));
+		} catch (EMFUserError e) {
+			EMFErrorHandler engErrorHandler = getErrorHandler();
+			engErrorHandler.addError(e);
+		}
 
 		return toReturn;
 	}

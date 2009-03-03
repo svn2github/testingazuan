@@ -12,6 +12,7 @@
       <COLUMNS>
         <COLUMN label="sbi.kpi.label.code" name="CODE" />
         <COLUMN label="sbi.kpi.label.name" name="NAME" />
+		<COLUMN label="sbi.kpi.label.thresholdCode" name="THRESHOLDCODE" />
         <COLUMN label="sbi.kpi.label.thresholdName" name="THRESHOLD" />
       </COLUMNS>
       <CAPTIONS>

@@ -300,7 +300,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 	%>
 	<option value="<%=kpi.getKpiId()%>"
-		label="<%=kpi.getKpiName()%>" <%=selected%>><%=kpi.getKpiName()%>
+		label="[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>" <%=selected%>>[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>
 	</option>
 	<%
 	}
@@ -338,7 +338,7 @@ Ext.onReady(function(){
 			<%}%>
 			<%}%>
             {contentEl:'kpiB', title: '<spagobi:message
-            	key="sbi.kpi.label.kpiInstance" bundle="<%=messageBundle%>" /> '}
+            	key="sbi.kpi.label.kpi.tab" bundle="<%=messageBundle%>" /> '}
         ]
     });
 

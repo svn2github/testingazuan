@@ -68,6 +68,7 @@
 <DOMAIN valueCd="CSP" valueNm="sbidomains.nm.CSP" domainCd="RESOURCE" domainNm="Resource type" valueDs="sbidomains.ds.CSP"/>
 <DOMAIN valueCd="PROCESS" valueNm="sbidomains.nm.Process" domainCd="RESOURCE" domainNm="Resource type" valueDs="sbidomains.ds.Process"/>
 <DOMAIN valueCd="PROJECT" valueNm="sbidomains.nm.Project" domainCd="RESOURCE" domainNm="Resource type" valueDs="sbidomains.ds.Project"/>
+<DOMAIN valueCd="SERVICE" valueNm="sbidomains.nm.Service" domainCd="RESOURCE" domainNm="Resource type" valueDs="sbidomains.ds.Service"/>
 <DOMAIN valueCd="Meter" valueNm="sbidomains.nm.Meter" domainCd="KPI_CHART" domainNm="Kpi Chart type" valueDs="sbidomains.ds.Meter"/>
 <DOMAIN valueCd="SimpleDial" valueNm="sbidomains.nm.SimpleDial" domainCd="KPI_CHART" domainNm="Kpi Chart type" valueDs="sbidomains.ds.SimpleDial"/>
 <DOMAIN valueCd="Speedometer" valueNm="sbidomains.nm.Speedometer" domainCd="KPI_CHART" domainNm="Kpi Chart type" valueDs="sbidomains.ds.Speedometer"/>

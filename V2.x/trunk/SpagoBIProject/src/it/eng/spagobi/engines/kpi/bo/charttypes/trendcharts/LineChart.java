@@ -84,6 +84,7 @@ public class LineChart extends ChartImpl{
 					if(nameP.equalsIgnoreCase("x"))
 					{
 						catValue=value;
+						catValue = catValue.substring(0, 16);
 						categoriesNumber=categoriesNumber+1;
 						categories.put(new Integer(categoriesNumber),value);
 	

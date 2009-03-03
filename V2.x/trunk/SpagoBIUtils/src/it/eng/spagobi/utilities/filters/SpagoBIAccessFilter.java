@@ -161,8 +161,8 @@ public class SpagoBIAccessFilter implements Filter {
 			    	userId = checkUserWithSSO(userId, httpRequest);
 			    }
 		
-			    // If SSO is ACTIVE get the userId from session
-			    if (EnginConf.getInstance().isSsoActive() && !isBackend) {
+			    //  get the userId from session
+			    if ( !isBackend) {
 			    	userId = getUserWithSSO(httpRequest);
 					logger.info("UserIdentifier from Session (SSO is Active):" + userId);
 			    }
@@ -263,16 +263,11 @@ public class SpagoBIAccessFilter implements Filter {
 
     private String checkUserWithSSO(String userId, HttpServletRequest request) throws ServletException {
 		logger.debug("IN");
-		if (EnginConf.getInstance().isSsoActive()) {
-		    SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
-		    String ssoUserIdentifier = userProxy.readUserIdentifier(request);
-		    logger.debug("got ssoUserId from IProxyService=" + ssoUserIdentifier);
-		    logger.debug("OU: got userId from IProxyService=" + userId);
-		    return ssoUserIdentifier;
-		} else {
-		    logger.debug("OUT. SSO is inactive...");
-		    return userId;
-		}
+		SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
+	    String ssoUserIdentifier = userProxy.readUserIdentifier(request);
+	    logger.debug("got ssoUserId from IProxyService=" + ssoUserIdentifier);
+	    logger.debug("OU: got userId from IProxyService=" + userId);
+	    return ssoUserIdentifier;
     }
     
    

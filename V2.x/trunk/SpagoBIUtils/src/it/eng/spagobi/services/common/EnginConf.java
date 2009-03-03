@@ -36,10 +36,13 @@ import org.xml.sax.InputSource;
  */
 public class EnginConf {
 	private SourceBean config = null;
-	private boolean ssoActive=false;
+	
 	private String resourcePath = null;
 	private String spagoBiServerUrl = null;
+	private String spagoBiSsoClass = null;
 	
+
+
 	private static transient Logger logger = Logger.getLogger(EnginConf.class);
 
 	private static EnginConf instance = null;
@@ -60,9 +63,10 @@ public class EnginConf {
 			if (getClass().getResource("/engine-config.xml")!=null){
 				InputSource source=new InputSource(getClass().getResourceAsStream("/engine-config.xml"));
 				config = SourceBean.fromXMLStream(source);   
-				setSsoActive();
+
 				setResourcePath();
 				setSpagoBiServerUrl();
+				setSpagoBiSsoClass();
 			}else logger.debug("Impossible to load configuration for report engine");
 		} catch (SourceBeanException e) {
 			logger.error("Impossible to load configuration for report engine", e);
@@ -77,22 +81,8 @@ public class EnginConf {
 	public SourceBean getConfig() {
 		return config;
 	}
-	private void setSsoActive(){
-	    SourceBean validateSB = (SourceBean)config.getAttribute("ACTIVE_SSO_JNDI_NAME");
-	    String activeJndi = (String) validateSB.getCharacters();
-	    String active= readJndiResource(activeJndi);
-	    if (active != null && active.equals("true")) ssoActive= true;
-	    else ssoActive= false;	    
-	}
+
 	
-	/**
-	 * Checks if is sso active.
-	 * 
-	 * @return true, if is sso active
-	 */
-	public boolean isSsoActive(){
-	    return ssoActive;
-	}
 	
 	/**
 	 * Gets the pass.
@@ -159,5 +149,21 @@ public class EnginConf {
 
 		logger.debug("OUT");
 
-	}	
+	}
+	
+	public String getSpagoBiSsoClass() {
+		return spagoBiSsoClass;
+	}
+
+	private void setSpagoBiSsoClass() {
+		logger.debug("IN");
+		SourceBean sb = (SourceBean)config.getAttribute("INTEGRATION_CLASS_JNDI");
+		String classSso = (String) sb.getCharacters();
+		if (classSso!=null && classSso.length()>0){
+			spagoBiSsoClass=readJndiResource(classSso);	
+		}
+
+		logger.debug("OUT");
+	}
+	
 }

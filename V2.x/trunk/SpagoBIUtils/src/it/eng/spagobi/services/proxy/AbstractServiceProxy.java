@@ -43,9 +43,7 @@ import org.apache.log4j.Logger;
 public abstract class AbstractServiceProxy {
 
     private HttpSession session;
-    
-    
-    private boolean ssoIsActive = false;
+
     private String filterReceipt = null;
     protected URL serviceUrl = null;
     protected String userId = null;
@@ -83,10 +81,7 @@ public abstract class AbstractServiceProxy {
 		SourceBean engineConfig = EnginConf.getInstance().getConfig();
 	
 		if (engineConfig != null) {
-		    // sono sui motori...
-		    if (EnginConf.getInstance().isSsoActive()) ssoIsActive = true;
-		    logger.debug("Read activeSso=" + ssoIsActive);
-	
+
 		    String spagoBiServerURL = EnginConf.getInstance().getSpagoBiServerUrl();
 		    logger.debug("Read spagoBiServerURL=" + spagoBiServerURL);
 		    SourceBean sourceBeanConf = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
@@ -117,7 +112,7 @@ public abstract class AbstractServiceProxy {
 		if (!isSecure){
 		    return pass;
 		}
-		if (ssoIsActive && ! UserProfile.isSchedulerUser(userId) ) {
+		if ( ! UserProfile.isSchedulerUser(userId) ) {
 		    SsoServiceInterface proxyService = SsoServiceFactory.createProxyService();
 		    return proxyService.readTicket(session, filterReceipt);
 		} else

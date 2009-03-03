@@ -21,6 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.common;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 
@@ -47,9 +51,16 @@ public abstract class SsoServiceFactory {
     	logger.debug("IN");
     	SsoServiceInterface daoObject = null;
 		try{
+			String integrationClass=null;
 			ConfigSingleton configSingleton=ConfigSingleton.getInstance();
-			SourceBean validateSB = (SourceBean) configSingleton.getAttribute("SPAGOBI_SSO.INTEGRATION_CLASS");
-			String integrationClass = (String) validateSB.getCharacters();
+			SourceBean validateSB = (SourceBean) configSingleton.getAttribute("SPAGOBI_SSO.INTEGRATION_CLASS_JNDI");
+			if (validateSB!=null){
+				// now we are in the core
+				integrationClass = readJndiResource((String) validateSB.getCharacters());
+			}else {
+				// now we are in the Engine WEB APP
+				integrationClass =EnginConf.getInstance().getSpagoBiSsoClass();
+			}
 			daoObject = (SsoServiceInterface)Class.forName(integrationClass).newInstance();
 			logger.debug(" Instatiate successfully:"+integrationClass);
 		}catch(Exception e){
@@ -57,4 +68,24 @@ public abstract class SsoServiceFactory {
 		}
 		return daoObject;
     }
+    
+	private static String readJndiResource(String jndiName) {
+		logger.debug("IN");
+		String value=null;
+		try {
+			Context ctx = new InitialContext();
+			value  = (String)ctx.lookup(jndiName);
+			logger.debug("jndiName: " + value);
+			 
+		} catch (NamingException e) {
+		    logger.error(e);
+		} catch (Exception e) {
+		    logger.error(e);
+		} catch (Throwable t) {
+		    logger.error(t);
+		} finally {
+		    logger.debug("OUT.value="+value);
+		}
+		return value;
+	}
 }

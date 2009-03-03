@@ -108,7 +108,6 @@ Ext.onReady(function(){
 		<div id="container3"> </div>	
 		<div id="container4"> </div>	
 			
-
 <div id="generalData" class="div_background_no_img" style="padding-top:5px;padding-left:5px;">
 	
 	<!-- TABLE GENERAL DATA -->		
@@ -116,7 +115,7 @@ Ext.onReady(function(){
 	<table style="width:100%;margin-top:1px" >
 		<!-- DOC NAME -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "Kpi Name" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiName" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiName%>
 			</td>
@@ -124,7 +123,7 @@ Ext.onReady(function(){
 		
 		<!-- DOC DESCR -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "Kpi Code" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiCode" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiCode%>
 			</td>
@@ -154,7 +153,7 @@ Ext.onReady(function(){
 	<table style="width:100%;margin-top:1px" >
 		<!-- DOC NAME -->
 		<tr>
-		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "Model Instance Name" />		
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.modelInstanceName" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=modelInstName%>
 			</td>
@@ -162,7 +161,7 @@ Ext.onReady(function(){
 		
 		<!-- DOC DESCR -->
 		<tr>
-		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "Model Instance Description" />		
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.modelInstanceDescr" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=modelInstanceDescr%>
 			</td>
@@ -178,7 +177,7 @@ Ext.onReady(function(){
 	<table style="width:100%;margin-top:1px">
 		<!-- DOC ID -->
 		<tr>
-		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "Kpi Value Begin Date" />		
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiBegDate" />		
 			</td>				
 			<td colspan="2" class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiBeginDate%>
 			</td>
@@ -186,7 +185,7 @@ Ext.onReady(function(){
 		
 		<!-- DOC LABEL -->
 		<tr>
-		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "Kpi Value End Date" />		
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiEndDate" />		
 			</td>				
 			<td  colspan="2" class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiEndDate%>
 			</td>
@@ -194,7 +193,7 @@ Ext.onReady(function(){
 		
 		<!-- DOC TYPE -->
 		<tr>
-		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "Kpi Value Description" />		
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiValueDesc" />		
 			</td>				
 			<td colspan="2" class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiValueDescr%>
 			</td>
@@ -202,7 +201,7 @@ Ext.onReady(function(){
 		
 		<!-- ENGINE -->
 		<tr>
-		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "Kpi Value Target" />		
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiValueTarget" />		
 			</td>				
 			<td colspan="2" class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiTarget%>
 			</td>

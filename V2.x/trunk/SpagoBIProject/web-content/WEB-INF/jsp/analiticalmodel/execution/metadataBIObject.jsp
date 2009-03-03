@@ -178,7 +178,7 @@ Ext.onReady(function(){
 	<table style="width:100%;margin-top:1px" >
 		<!-- DOC NAME -->
 		<tr>
-		    <td class="portlet-section-header" width="170" style="text-align:left"><spagobi:message key = "metadata.docName" />		
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docName" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docName%>
 			</td>
@@ -186,7 +186,7 @@ Ext.onReady(function(){
 		
 		<!-- DOC DESCR -->
 		<tr>
-		    <td class="portlet-section-header" width="170" style="text-align:left"><spagobi:message key = "metadata.docDescr" />		
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docDescr" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docDescr%>
 			</td>
@@ -194,7 +194,7 @@ Ext.onReady(function(){
 		
 		<!-- DOC LONG DESCR -->
 		<tr>
-		    <td class="portlet-section-header"  width="170" style="text-align:left"><spagobi:message key = "metadata.docLongDescr" />		
+		    <td class="portlet-section-header"  width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docLongDescr" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docLongDescr%>
 			</td>
@@ -202,7 +202,7 @@ Ext.onReady(function(){
 		
 		<!-- DOC OBJECTIVE -->
 		<tr>
-		    <td class="portlet-section-header" width="170"  style="text-align:left"><spagobi:message key = "metadata.docObjective" />		
+		    <td class="portlet-section-header" width="170"  style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docObjective" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docObjective%>
 			</td>
@@ -210,7 +210,7 @@ Ext.onReady(function(){
 		
 		<!-- DOC RATING -->
 		<tr>
-		    <td class="portlet-section-header" width="170" style="text-align:left"><spagobi:message key = "metadata.docRating" />		
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docRating" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docRating.toString()%>
 			</td>
@@ -225,7 +225,7 @@ Ext.onReady(function(){
 	<table style="width:100%;margin-top:1px">
 		<!-- DOC ID -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docId" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docId" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docId.toString()%>
 			</td>
@@ -233,7 +233,7 @@ Ext.onReady(function(){
 		
 		<!-- DOC LABEL -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docLabel" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docLabel" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docLabel%>
 			</td>
@@ -241,7 +241,7 @@ Ext.onReady(function(){
 		
 		<!-- DOC TYPE -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docType" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docType" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docType.toString()%>
 			</td>
@@ -249,7 +249,7 @@ Ext.onReady(function(){
 		
 		<!-- ENGINE -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docEngine" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docEngine" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=engineName%>
 			</td>
@@ -257,7 +257,7 @@ Ext.onReady(function(){
 		
 		<!-- LANGUAGE -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docLanguage" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docLanguage" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=docLanguage%>
 			</td>
@@ -265,7 +265,7 @@ Ext.onReady(function(){
 		
 		<!-- TEMPLATE DIMENSION -->
 		<tr>
-		    <td class="portlet-section-header"  width="140" style="text-align:left"><spagobi:message key = "metadata.docTemplDim" />		
+		    <td class="portlet-section-header"  width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docTemplDim" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=templateDimension%>
 			</td>
@@ -273,7 +273,7 @@ Ext.onReady(function(){
 		
 		<!-- DATA SOURCE -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docDS" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docDS" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=dataSource%>
 			</td>
@@ -281,7 +281,7 @@ Ext.onReady(function(){
 		
 		<!-- DRIVERS NAME -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docDriver" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docDriver" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">
 			&nbsp;<%=driverName%>
@@ -290,7 +290,7 @@ Ext.onReady(function(){
 		
 		<!-- CREATION DATE -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docCreateDate" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docCreateDate" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=creationDate%>
 			</td>
@@ -298,7 +298,7 @@ Ext.onReady(function(){
 		
 		<!-- CREATION USER -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docCreateUser" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docCreateUser" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=creationUser%>
 			</td>
@@ -306,7 +306,7 @@ Ext.onReady(function(){
 		
 		<!-- LAST MODIF DATE -->
 		<tr>
-		    <td class="portlet-section-header"  width="140" style="text-align:left"><spagobi:message key = "metadata.docLastModif" />		
+		    <td class="portlet-section-header"  width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docLastModif" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=lastModifDate%>
 			</td>
@@ -314,7 +314,7 @@ Ext.onReady(function(){
 		
 		<!-- LAST MODIF USER -->
 		<tr>
-		    <td class="portlet-section-header"  width="140" style="text-align:left"><spagobi:message key = "metadata.docLastModifUser" />		
+		    <td class="portlet-section-header"  width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docLastModifUser" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=lastModifUser%>
 			</td>
@@ -322,7 +322,7 @@ Ext.onReady(function(){
 		
 		<!-- LAST EXECUTION DATE/TIME DATE -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docLastExecTime" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docLastExecTime" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=lastExecTime%>
 			</td>
@@ -330,7 +330,7 @@ Ext.onReady(function(){
 		
 		<!-- MEDIUM EXECUTION TIME -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"><spagobi:message key = "metadata.docMediumTime" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docMediumTime" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=mediumExecTime.doubleValue()%> &nbsp;sec
 			</td>
@@ -338,7 +338,7 @@ Ext.onReady(function(){
 		
 		<!-- LAST EXECUTION USER -->
 		<tr>
-		    <td class="portlet-section-header" width="140" style="text-align:left"  ><spagobi:message key = "metadata.docLastExecUser" />		
+		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"  ><spagobi:message key = "metadata.docLastExecUser" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=lastExecUser%>
 			</td>
@@ -354,7 +354,7 @@ Ext.onReady(function(){
 	<table style="width:100%;margin-top:1px" >
 		<!-- Business Questions -->
 		<tr>
-		    <td class="portlet-section-header" width="110" style="text-align:left"><spagobi:message key ="metadata.docBusinessQ" />		
+		    <td class="portlet-section-header" width="110" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key ="metadata.docBusinessQ" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;
 			</td>
@@ -369,7 +369,7 @@ Ext.onReady(function(){
 	<table style="width:100%;margin-top:1px" >
 		<!-- Keywords -->
 		<tr>
-		    <td class="portlet-section-header" width="60" style="text-align:left"><spagobi:message key = "metadata.docKeyword" />		
+		    <td class="portlet-section-header" width="60" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docKeyword" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=keywords%>
 			</td>
@@ -377,7 +377,7 @@ Ext.onReady(function(){
 		
 		<!-- Folders in which it's published -->
 		<tr>
-		    <td class="portlet-section-header" width="60" style="text-align:left"><spagobi:message key = "metadata.docFolder" />		
+		    <td class="portlet-section-header" width="60" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docFolder" />		
 			</td>				
 			<td class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;
 			</td>

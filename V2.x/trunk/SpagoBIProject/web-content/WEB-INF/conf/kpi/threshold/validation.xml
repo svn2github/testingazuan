@@ -6,17 +6,13 @@
 			<FIELDS>
 				<FIELD name="name" label="#sbi.kpi.label.name" bundle="component_kpi_messages">
 					<VALIDATOR validatorName="MANDATORY" />
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\.\:\;\,])*$"/>
 				</FIELD>
 				
 				<FIELD name="code" label="#sbi.kpi.label.code" bundle="component_kpi_messages">
-          			<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
+          			<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\.\:\;\,])*$"/>
         		</FIELD>
-        		
-        		<FIELD name="description" label="#sbi.kpi.label.description" bundle="component_kpi_messages">
-          			<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
-        		</FIELD>
-        		
+
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
@@ -30,14 +26,6 @@
 					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
 				</FIELD>
 				
-				<FIELD name="position" label="#sbi.kpi.label.position" bundle="component_kpi_messages">
-          			<VALIDATOR validatorName="NUMERIC"/>
-        		</FIELD>
-				
-				<FIELD name="label" label="#sbi.kpi.label.label" bundle="component_kpi_messages">
-          			<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>
-        		</FIELD>
-        		
 				<FIELD name="position" label="#sbi.kpi.label.position" bundle="component_kpi_messages">
           			<VALIDATOR validatorName="NUMERIC"/>
         		</FIELD>

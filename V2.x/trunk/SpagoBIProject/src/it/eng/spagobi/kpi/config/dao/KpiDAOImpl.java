@@ -1689,8 +1689,10 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String type = sbit.getSbiDomains().getValueCd();
 		Color color = new Color(255, 255, 0);
 		String col = t.getColour();
+		logger.debug("Threshold color is "+ col!=null ? col : "");
 		if (col != null) {
 			color = color.decode(col);
+			logger.debug("Color decoded");
 		}
 
 		toReturn.setColor(color);

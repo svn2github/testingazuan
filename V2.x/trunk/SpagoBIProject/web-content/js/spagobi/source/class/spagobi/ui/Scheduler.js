@@ -34,20 +34,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   
   construct : function(type)
   {
-  	this.base(arguments,"Details Window", "qx/icon/Oxygen/16/apps/office-calendar.png");
-    this.setLayout(new qx.ui.layout.VBox(20));
-    this.setShowStatusbar(true);
-	this.setStatus("Details loaded");
-	this.open();
-	this.setModal(true);
+	 
 	
 	if (type.getColumn() <= 2){
 	 return ;
 	}
   	else {
+  		
+  		this.base(arguments,null, "qx/icon/Oxygen/16/apps/office-calendar.png");
+	    this.setLayout(new qx.ui.layout.VBox(20));
+	    this.setShowStatusbar(true);
+		this.setStatus("Details loaded");
+		this.open();
+		this.setModal(true);
 
-			if (type.getColumn() == 4){
-					 
+		if (type.getColumn() == 4){
+			
+			this.setCaption("Details Window");
 			var textfield1 = spagobi.commons.WidgetUtils.createInputTextField({
 								        		type: 'text',
 								        		dataIndex: 'name',
@@ -91,7 +94,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         		dataIndex: 'features',
         		formList: spagobi.ui.custom.FeatureDetailsForm  */
         	}
-				this.inputField = spagobi.commons.WidgetUtils.createInputFormList(this.config);
+			this.inputField = spagobi.commons.WidgetUtils.createInputFormList(this.config);
         	
         	var box1 = new qx.ui.container.Scroll().set({
 					    width: 200,
@@ -126,6 +129,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				
 				//
 				else {
+					this.setCaption("Scheduler Window");
 					// can also override the container
 					var m = new spagobi.ui.custom.MasterDetailsPage("datasource");//"datasource"
 					var records = spagobi.app.data.DataService.loadDatasourceRecords();

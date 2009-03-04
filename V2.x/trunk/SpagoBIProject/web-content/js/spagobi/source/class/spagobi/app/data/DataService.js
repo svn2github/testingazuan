@@ -1310,6 +1310,11 @@ qx.Class.define("spagobi.app.data.DataService", {
 	    		url : 'http://www.msn.com/'
     		}
     	];
+  	},
+  	
+  	userName : function(){
+  		var userid = "biadmin";
+  		return userid;
   	}
   	
   }

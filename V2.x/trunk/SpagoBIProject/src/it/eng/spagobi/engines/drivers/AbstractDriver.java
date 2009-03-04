@@ -7,6 +7,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class AbstractDriver {
 	    logger.debug("I don't put the UserId information in the URL");
 	}else {
 	    if (((UserProfile) profile).getUserUniqueIdentifier() != null) {
-		pars.put("user_id", ((UserProfile) profile).getUserUniqueIdentifier()); 
+		pars.put(SsoServiceInterface.USER_ID, ((UserProfile) profile).getUserUniqueIdentifier()); 
 	    }
 	}
 	    

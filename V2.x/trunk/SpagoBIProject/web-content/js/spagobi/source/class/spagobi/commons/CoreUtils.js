@@ -111,5 +111,9 @@ qx.Class.define("spagobi.commons.CoreUtils", {
 		}
   		return s;
   	}
+  	
+  	, msg : function(s){
+  		alert(s);
+  	}	
   }
 });

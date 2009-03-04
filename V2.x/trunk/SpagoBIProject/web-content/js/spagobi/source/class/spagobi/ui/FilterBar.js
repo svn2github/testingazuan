@@ -47,7 +47,7 @@ qx.Class.define("spagobi.ui.FilterBar", {
 	 */
 	construct : function() {
 		this.base(arguments);
-		this.setLayout(new qx.ui.layout.HBox);
+		this.setLayout(new qx.ui.layout.HBox(5));
 		this.getLayout().setAlignX("center");
 		this.getLayout().setAlignY("middle");
 
@@ -160,6 +160,23 @@ qx.Class.define("spagobi.ui.FilterBar", {
 				width : 70
 			}
 			this.add(txt1);
+			
+			var filterButton = new qx.ui.form.Button("Filter");
+			this.add(filterButton);
+			filterButton.addListener("execute", this.filterFunction,this);
+			
+			var removeFilterButton = new qx.ui.form.Button("All");
+			this.add(removeFilterButton);
+			removeFilterButton.addListener("execute", this.removeFilterFunction,this);
+		},
+		
+		filterFunction: function(e){
+			alert("Filter");
+			
+		},
+		
+		removeFilterFunction: function(e){
+			alert("Filter Removed");
 			
 		}
 	}

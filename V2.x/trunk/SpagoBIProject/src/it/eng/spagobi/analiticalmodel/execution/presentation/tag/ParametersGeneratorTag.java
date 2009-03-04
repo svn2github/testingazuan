@@ -817,7 +817,7 @@ public class ParametersGeneratorTag extends TagSupport {
 				+ "	   name='" + biparam.getParameterUrlName()+ "' id='"+ biparam.getParameterUrlName()+requestIdentity+ "'" 
 				+ "	   dojoType='dropdowndatepicker' "
 				+ " saveFormat='"+datePickerFormat+"' displayFormat='"+format+"'"
-				+ " widgetId='startDateWidget' "
+				+ " widgetId='"+ biparam.getParameterUrlName()+requestIdentity+ "DatePicker' "
 				+ "    class='portlet-form-input-field' value='" + dateValue + "' "
 				+ "   onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()
 				+ requestIdentity + "','" + biparam.getParameterUrlName() + requestIdentity + "');");
@@ -940,7 +940,13 @@ public class ParametersGeneratorTag extends TagSupport {
 			while (it.hasNext()) {
 				BIObjectParameter aBIParam = (BIObjectParameter) it.next();
 				htmlStream.append("	key = '" + aBIParam.getParameterUrlName() + "';\n");
-				htmlStream.append("	value = document.getElementById('" + aBIParam.getParameterUrlName() + requestIdentity + "').value;\n");
+				htmlStream.append("	if (document.getElementById('" + aBIParam.getParameterUrlName() + requestIdentity + "').value) {\n");
+				// normally
+				htmlStream.append("		value = document.getElementById('" + aBIParam.getParameterUrlName() + requestIdentity + "').value;\n");
+				htmlStream.append("	} else {\n");
+				// date picker case
+				htmlStream.append("		value = dojo.widget.byId('"+ aBIParam.getParameterUrlName()+requestIdentity+ "DatePicker').inputNode.value;\n");
+				htmlStream.append("	}\n");
 				htmlStream.append("	temp = '&' + key + '=' + value;\n");
 				htmlStream.append("	temp = temp.replace(/'/g,'&#39;');\n");
 				htmlStream.append("	temp = temp.replace(/\"/g,'&#34;');\n");

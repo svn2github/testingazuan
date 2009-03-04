@@ -34,7 +34,7 @@
 	<!-- ====================================================================================== -->
 	
 	<!--  SSO settings  -->
-	<ACTIVE_SSO_JNDI_NAME>java://comp/env/spagobi_active_sso</ACTIVE_SSO_JNDI_NAME>
+	<INTEGRATION_CLASS_JNDI>java://comp/env/spagobi_sso_class</INTEGRATION_CLASS_JNDI>
 	<PASS>PASS</PASS>	
 	
 	<!--  SPAGOBI_SERVER_URL Address for invoking WebService, if empty use the request parameters -->

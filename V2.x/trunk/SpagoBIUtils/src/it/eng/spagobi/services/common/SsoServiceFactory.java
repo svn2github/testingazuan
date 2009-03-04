@@ -51,15 +51,14 @@ public abstract class SsoServiceFactory {
     	logger.debug("IN");
     	SsoServiceInterface daoObject = null;
 		try{
-			String integrationClass=null;
-			ConfigSingleton configSingleton=ConfigSingleton.getInstance();
-			SourceBean validateSB = (SourceBean) configSingleton.getAttribute("SPAGOBI_SSO.INTEGRATION_CLASS_JNDI");
-			if (validateSB!=null){
+			String integrationClass=EnginConf.getInstance().getSpagoBiSsoClass();
+			
+			if (integrationClass==null){
 				// now we are in the core
+				ConfigSingleton configSingleton=ConfigSingleton.getInstance();
+				SourceBean validateSB = (SourceBean) configSingleton.getAttribute("SPAGOBI_SSO.INTEGRATION_CLASS_JNDI");
+				
 				integrationClass = readJndiResource((String) validateSB.getCharacters());
-			}else {
-				// now we are in the Engine WEB APP
-				integrationClass =EnginConf.getInstance().getSpagoBiSsoClass();
 			}
 			daoObject = (SsoServiceInterface)Class.forName(integrationClass).newInstance();
 			logger.debug(" Instatiate successfully:"+integrationClass);

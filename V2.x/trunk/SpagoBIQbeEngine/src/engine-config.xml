@@ -17,7 +17,7 @@
 	<!-- ====================================================================================== -->
 	
 	<!--  SSO settings  -->
-	<ACTIVE_SSO_JNDI_NAME>java://comp/env/spagobi_active_sso</ACTIVE_SSO_JNDI_NAME>
+	<INTEGRATION_CLASS_JNDI>java://comp/env/spagobi_sso_class</INTEGRATION_CLASS_JNDI>
 	<FILTER_RECEIPT>/proxyReceptor</FILTER_RECEIPT>	
 	<PASS>PASS</PASS>	
 	

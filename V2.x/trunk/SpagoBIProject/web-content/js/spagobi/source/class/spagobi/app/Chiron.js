@@ -186,6 +186,13 @@ qx.Class.define("spagobi.app.Chiron",
 		  		"label": this.tr('Hot Links'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
+	  		}, {
+		  		command: 'Control+P',
+		  		handler: function() {this._selectToolbar('kpi');},
+		  		context: this,
+		  		"label": this.tr('KPI Model'),
+		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
+		  		tooltip: 'Reload the feeds.'
 	  		}
       	]);
       	      	
@@ -396,6 +403,41 @@ qx.Class.define("spagobi.app.Chiron",
       	});
       	this.containerToolBar.add(this.toolbars['hotLinks']);
   		
+      	this.toolbars['kpi'] = new spagobi.ui.PageView({
+      		toolbar: {
+      			buttons: [
+      				{
+      					name: 'link1',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/kpiDefinition.png'),
+						page: 'link1',
+						tooltip: 'Remember Me'
+      				}, {
+      					name: 'link2',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/bidocuments16.png'),
+						page: 'link2',
+						tooltip: 'Most Popular'
+      				}, {
+      					name: 'link3',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/modelDefinition.png'),
+						page: 'link3',
+						tooltip: 'Most Recently Used'
+      				}, {
+      					name: 'link3',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/bidocuments16.png'),
+						page: 'link3',
+						tooltip: 'Most Recently Used'
+      				}, {
+      					name: 'link3',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/bidocuments16.png'),
+						page: 'link3',
+						tooltip: 'Most Recently Used'
+      				}
+      			]
+      		},
+      		defaultSelectedPage: 'link1'
+      	});
+      	this.containerToolBar.add(this.toolbars['kpi']);
+      	
   		this._container.add(this.containerToolBar, {edge:"west", height: "100%", width: "100%"});
       	
       	return this._container  		

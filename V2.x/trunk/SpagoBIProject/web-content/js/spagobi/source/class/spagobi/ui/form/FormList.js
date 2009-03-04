@@ -155,7 +155,7 @@ qx.Class.define("spagobi.ui.form.FormList", {
 			var subform;
 			if( typeof(this._config) == 'object' ) {
 			//	alert("debug 6"+ o);
-				subform = new spagobi.ui.Form(this._config);
+				subform = new spagobi.ui.form.Form(this._config);
 				if (this._config.schedule != undefined){
 			//		alert("Gaurav");
 					this._val = this._config.val;

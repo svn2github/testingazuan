@@ -182,8 +182,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%
  	if (messageIn != null
- 			&& messageIn
- 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {
+ 			&& messageSave
+ 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_UPDATE)) {
  %>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -196,8 +196,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%
  	if (messageIn != null
- 			&& messageIn
- 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_NEW)) {
+ 			&& messageSave
+ 					.equalsIgnoreCase(DelegatedDetailService.DETAIL_INSERT)) {
  %>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message

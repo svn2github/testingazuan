@@ -20,10 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
-<%@ page
-	import="java.util.Map,java.util.HashMap,java.util.List,java.util.ArrayList"%>
-<%@page
-	import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
+<%@ page import="java.util.Map,java.util.HashMap,java.util.List,java.util.ArrayList"%>
+<%@page import="it.eng.spago.dispatching.service.detail.impl.DelegatedDetailService"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
 <%@page import="it.eng.spagobi.kpi.model.bo.ModelInstance"%>
 <%@page import="it.eng.spagobi.kpi.model.bo.Model"%>
@@ -307,6 +305,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<textarea name="modelInstanceDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=modelInstanceDescription%></textarea>
 </div>
 
+<% if(parentId != null && modelId != null && parentId.equals(modelId)){ %>
+
 <div class='div_detail_form'>
 
 <div class='div_detail_label'><span
@@ -331,6 +331,7 @@ saveFormat='<%=DetailModelInstanceUtil.DATE_FORMAT %>'
 displayFormat='<%= dateFormat %>'
 widgetId='searchDate'
 value='<%= endDateS %>'/> </div>
+<% } %>
 
 </div>
 </div>
@@ -444,7 +445,7 @@ value='<%= endDateS %>'/> </div>
 		}
 	%>
 	<option value="<%=kpi.getKpiId()%>"
-		label="<%=kpi.getKpiName()%>" <%=selected%>><%=kpi.getKpiName()%>
+				label="[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>" <%=selected%>>[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>
 	</option>
 	<%
 	}
@@ -494,7 +495,7 @@ value='<%= endDateS %>'/> </div>
 	}
 	%>
 	<option value="<%=threshold.getId()%>"
-		label="<%=threshold.getThresholdName()%>" <%=selected%>><%=threshold.getThresholdName()%>
+		label="[<%=threshold.getThresholdCode()%>] <%=threshold.getThresholdName()%>" <%=selected%>>[<%=threshold.getThresholdCode()%>] <%=threshold.getThresholdName()%>
 	</option>
 	<%
 	}
@@ -509,7 +510,7 @@ value='<%= endDateS %>'/> </div>
 	key="sbi.kpi.label.weight" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="weight"
-	size="10" value="<%=weight%>" maxlength="200" > &nbsp;*</div>
+	size="10" value="<%=weight%>" maxlength="200" ></div>
 
 <hr>
 
@@ -654,15 +655,15 @@ Ext.onReady(function(){
 			<% if (messageIn != null
  			&& messageIn
  					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {%>
-            
+ 			,{contentEl:'kpiInstanceB', title: '<spagobi:message
+ 		        key="sbi.kpi.label.kpiInstance" bundle="<%=messageBundle%>" /> '}
         	,{contentEl:'modelDefinitionB', title: '<spagobi:message
-            	key="sbi.kpi.modelDefinition.label" bundle="<%=messageBundle%>" /> '},
+            	key="sbi.kpi.label.sourcemodel.tab" bundle="<%=messageBundle%>" /> '}
 			<% if (!(attributeList == null || attributeList.size() == 0 )) { %>
-            {contentEl:'modelAttributeB', title: '<spagobi:message
-            	key="sbi.kpi.model.attributes" bundle="<%=messageBundle%>" /> '},
+            ,{contentEl:'modelAttributeB', title: '<spagobi:message
+            	key="sbi.kpi.model.attributes" bundle="<%=messageBundle%>" /> '}
 			<%}%>
-            {contentEl:'kpiInstanceB', title: '<spagobi:message
-            	key="sbi.kpi.label.kpiInstance" bundle="<%=messageBundle%>" /> '}
+            
         	<%}%>
         	,{contentEl:'labelB', title: '<spagobi:message
             	key="sbi.kpi.label.advanced.tab" bundle="<%=messageBundle%>" /> '}

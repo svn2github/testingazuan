@@ -101,7 +101,11 @@ public class DetailModelInstanceUtil {
 			} else {
 				kpiInstance.setThresholdId(thresholdId);
 				if (weight != null && !(weight.equals(""))) {
+					try{
 					kpiInstance.setWeight(new Double(weight));
+					} catch (NumberFormatException ne){
+						kpiInstance.setWeight(null);
+					}
 				} else {
 					kpiInstance.setWeight(null);
 				}
@@ -130,15 +134,18 @@ public class DetailModelInstanceUtil {
 		toReturn.setLabel(modelLabel);
 		// CONTROLLARE LA DATA
 		
+		
+		
 		Date startDate = null;
 		Date endDate = null;
 		
 		try {
 	        // Some examples
 	        DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-	        startDate = (Date)formatter.parse(startDateS);
-	        endDate = (Date)formatter.parse(endDateS);
-	
+	        if (startDateS != null)
+	        	startDate = (Date)formatter.parse(startDateS);
+	        if (endDateS != null)
+	        	endDate = (Date)formatter.parse(endDateS);
 	    } catch (ParseException e) {
 	    }
 

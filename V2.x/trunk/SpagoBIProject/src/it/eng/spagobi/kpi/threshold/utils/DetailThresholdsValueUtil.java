@@ -52,17 +52,29 @@ public class DetailThresholdsValueUtil {
 
 		Integer position = null;
 		if (sPosition != null && !(sPosition.trim().equals(""))) {
-			position = Integer.parseInt(sPosition);
+			try{
+				position = Integer.parseInt(sPosition);
+			} catch(NumberFormatException nfe){
+				
+			}
 		}
 
 		Double minValue = null;
 		if (sMinValue != null && !(sMinValue.trim().equals(""))) {
-			minValue = new Double(sMinValue);
+			try{
+				minValue = new Double(sMinValue);
+			} catch(NumberFormatException nfe){
+				
+			} 
 		}
 
 		Double maxValue = null;
 		if (sMaxValue != null && !(sMaxValue.trim().equals(""))) {
-			maxValue = new Double(sMaxValue);
+			try{
+				maxValue = new Double(sMaxValue);
+			} catch(NumberFormatException nfe){
+				
+			}
 		}
 
 		Integer severityId = null;

@@ -427,7 +427,7 @@ value='<%= endDateS %>'/> </div>
 		}
 	%>
 	<option value="<%=kpi.getKpiId()%>"
-		label="<%=kpi.getKpiName()%>" <%=selected%>><%=kpi.getKpiName()%>
+		label="[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>" <%=selected%>>[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>
 	</option>
 	<%
 	}
@@ -477,7 +477,7 @@ value='<%= endDateS %>'/> </div>
 	}
 	%>
 	<option value="<%=threshold.getId()%>"
-		label="<%=threshold.getThresholdName()%>" <%=selected%>><%=threshold.getThresholdName()%>
+		label="[<%=threshold.getThresholdCode()%>] <%=threshold.getThresholdName()%>" <%=selected%>>[<%=threshold.getThresholdCode()%>] <%=threshold.getThresholdName()%>
 	</option>
 	<%
 	}
@@ -492,7 +492,7 @@ value='<%= endDateS %>'/> </div>
 	key="sbi.kpi.label.weight" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="weight"
-	size="10" value="<%=weight%>" maxlength="200" >&nbsp;*</div>
+	size="10" value="<%=weight%>" maxlength="200" ></div>
 
 <hr>
 
@@ -642,15 +642,15 @@ Ext.onReady(function(){
 			<% if (messageIn != null
  			&& messageIn
  					.equalsIgnoreCase(DelegatedDetailService.DETAIL_SELECT)) {%>
-            
+			,{contentEl:'kpiInstanceB', title: '<spagobi:message
+				key="sbi.kpi.label.kpiInstance" bundle="<%=messageBundle%>" /> '}
         	,{contentEl:'modelDefinitionB', title: '<spagobi:message
-            	key="sbi.kpi.modelDefinition.label" bundle="<%=messageBundle%>" /> '},
+            	key="sbi.kpi.label.sourcemodel.tab" bundle="<%=messageBundle%>" /> '}
 			<% if (!(attributeList == null || attributeList.size() == 0 )) { %>
-            {contentEl:'modelAttributeB', title: '<spagobi:message
-            	key="sbi.kpi.model.attributes" bundle="<%=messageBundle%>" /> '},
+            ,{contentEl:'modelAttributeB', title: '<spagobi:message
+            	key="sbi.kpi.model.attributes" bundle="<%=messageBundle%>" /> '}
 			<%}%>
-            {contentEl:'kpiInstanceB', title: '<spagobi:message
-            	key="sbi.kpi.label.kpiInstance" bundle="<%=messageBundle%>" /> '}
+            
         	<%}%>
         	,{contentEl:'labelB', title: '<spagobi:message
             	key="sbi.kpi.label.advanced.tab" bundle="<%=messageBundle%>" /> '}

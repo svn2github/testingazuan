@@ -1292,6 +1292,24 @@ qx.Class.define("spagobi.app.data.DataService", {
 				}// end of treeData
 		return treeData;
 				//];
+  	},
+  	
+  	loadPageMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'page1',
+	    		name: ' 1 ',
+	    		url : 'http://www.google.com/' 
+    		}, {
+	    		dataIndex: 'page2',
+	    		name: ' 2 ',
+	    		url : 'http://www.yahoo.com/' 
+    		}, {
+	    		dataIndex: 'page3',
+	    		name: ' 3 ',
+	    		url : 'http://www.msn.com/'
+    		}
+    	];
   	}
   	
   }

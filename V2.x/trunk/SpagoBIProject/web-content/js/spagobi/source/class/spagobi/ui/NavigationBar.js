@@ -51,14 +51,23 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 	 */
 	construct : function() {
 		this.base(arguments);
-		this.setLayout(new qx.ui.layout.HBox);
+		this.setLayout(new qx.ui.layout.HBox(5));
 		this.getLayout().setAlignX("center");
+		
+		this.PageNum = [ {
+							label : '',
+							url : undefined
+						}
+					   ];
+		
 		this.createNavBar();
 		
 	},
 	
 	members : {
 		
+		
+		PageNum : undefined, 
 		/**
 		 * Function to create the navigation bar.
 		 * <p>It is called by the constructor.
@@ -70,30 +79,48 @@ qx.Class.define("spagobi.ui.NavigationBar", {
 		 */
 		createNavBar : function(){
 		
-			
-			//var firstPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/firstPage.png");//change
 			var firstPageButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/firstPage.png"));
 			this.add(firstPageButton);
-					//	horizontalbarLayout.add(firstPageButton);
 			
-			//var prevPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/previousPage.png");//change
 			var prevPageButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/previousPage.png"));
 			this.add(prevPageButton);
-					//horizontalbarLayout.add(prevPageButton);
 			
 					//horizontalbarLayout.add(new qx.legacy.ui.basic.HorizontalSpacer());
 			
-			//var nextPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/nextPage.png");//change
+			var number = [];
+			number = spagobi.app.data.DataService.loadPageMeta();
+			var labelOfPage = [];
+			for (i in number){
+				labelOfPage[i] = new qx.ui.basic.Label(number[i].name);
+				this.add(labelOfPage[i]);
+					labelOfPage[i].setAlignY("middle");
+					labelOfPage[i].setUserData('url', number[i].url);
+					labelOfPage[i].addListener("click",this._onClick, this);
+					labelOfPage[i].addListener("mouseover",this._onmouseover, this);
+					labelOfPage[i].addListener("mouseout", this._onmouseout, this);
+			}
+			
 			var nextPageButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/nextPage.png"));
 			this.add(nextPageButton);
-					//horizontalbarLayout.add(nextPageButton);
 			
-			//var lastPageButton = new qx.legacy.ui.toolbar.Button("", "spagobi/img/spagobi/test/lastPage.png");//change
 			var lastPageButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/lastPage.png"));
 			this.add(lastPageButton);
-					//horizontalbarLayout.add(lastPageButton);
-			
-			
-		}	
+						
+		},
+		
+		_onClick : function(e){
+			var url1 = e.getTarget().getUserData('url');
+			alert (url1);
+		},
+		
+		 _onmouseover: function(e) {	 		
+	 	
+	 		e.getTarget().setBackgroundColor("orange");
+	 	},
+	 	
+	 	_onmouseout: function(e) {
+	    
+	 		e.getTarget().setBackgroundColor(null);
+	 	}	
 	}
 });

@@ -89,7 +89,7 @@ public class CreateTrendAction extends AbstractHttpAction{
 		}
 		
 		String subTitle = msgBuilder.getMessage("sbi.kpi.trendEndDate", request);
-		subTitle = subTitle.replaceAll("%0",endDate);
+		subTitle = subTitle.replaceAll("%0",d.toString());
 	    
 		String chartType = "LineChart";		
 		ChartImpl sbi = ChartImpl.createChart(chartType);

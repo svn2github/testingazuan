@@ -288,6 +288,40 @@ public class GeneralUtilities extends SpagoBIUtilities{
     }
 
 
-    
+	/**
+	 * Returns the complete HTTP URL and puts it into a
+	 * string.
+	 * 
+	 * @param userId the user id
+	 * 
+	 * @return A String with complete HTTP Url
+	 */ 
+	public static String getSpagoBIProfileBaseUrl(String userId) {
+		logger.debug("IN.Trying to recover spago Adapter HTTP Url. userId="+userId);
+		String url = "";
+		String path = "";
+		String adapUrlStr = "";
+		try {
+			adapUrlStr = getSpagoAdapterHttpUrl();
+			path= getSpagoBiHost()+getSpagoBiContext();
+			
+	        ConfigSingleton config = ConfigSingleton.getInstance();
+	        SourceBean configSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
+		    String active = (String) configSB.getCharacters();
+		    logger.debug("active SSO: " + active);
+		    if (active != null && active.equals("true") ){
+		    	url = path + adapUrlStr + "?NEW_SESSION=TRUE";
+		    }else{
+		    	url = path + adapUrlStr + "?NEW_SESSION=TRUE&"+SsoServiceInterface.USER_ID+"="+userId;	
+		    }
+
+			
+			logger.debug("using URL: " + url);
+		} catch (Exception e) {
+			logger.error("Error while recovering complete HTTP Url", e);
+		}
+		logger.debug("OUT");
+		return url;
+	}   
 	
 }

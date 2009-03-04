@@ -884,7 +884,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     							
     						}else{
     							//If the date required is today then the time considered will be the actual date
-    							Long milliSecToAdd = new Long (60*60*24);
+    							Long milliSecToAdd = new Long (60*60*24*1000);
     							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
     							this.dateOfKPI = new Date(milliseconds);
     						}
@@ -941,7 +941,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     							
     						}else{
     							//If the date required is today then the time considered will be the actual date
-    							Long milliSecToAdd = new Long (60*60*24);
+    							Long milliSecToAdd = new Long (60*60*24*1000);
     							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
     							this.dateOfKPI = new Date(milliseconds);
     						}

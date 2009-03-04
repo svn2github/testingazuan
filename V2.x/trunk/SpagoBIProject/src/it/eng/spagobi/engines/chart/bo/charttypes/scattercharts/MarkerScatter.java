@@ -349,7 +349,7 @@ public class MarkerScatter extends ScatterCharts {
         	if (annotationMap == null || annotationMap.size() == 0)
         		logger.error("Annotations on the chart are requested but the annotationMap is null!");
         	else{
-        		int cont = 0;
+        		int cont = 1;
         		for (Iterator iterator = annotationMap.keySet().iterator(); iterator.hasNext();) {        			
     				String text = (String) iterator.next();
     				String pos = (String)annotationMap.get(text);
@@ -357,10 +357,13 @@ public class MarkerScatter extends ScatterCharts {
     				double y = Double.parseDouble(pos.substring(pos.indexOf("__")+2));
     				//default up position
     				XYTextAnnotation annotation = new XYTextAnnotation(text, y-1, x+((text.length()>20)?text.length()/3+1:text.length()/2+1));
-    				if (cont % 2 == 0)
+    				if (cont % 2 != 0)
+    					//dx
     					annotation = new XYTextAnnotation(text, y, x+((text.length()>20)?text.length()/3+1:text.length()/2+1));
     				else
-    					annotation = new XYTextAnnotation(text, y, x-((text.length()>20)?text.length()/3-1:text.length()/2-1));
+    					//sx
+    					//annotation = new XYTextAnnotation(text, y, x-((text.length()%2==0)?text.length():text.length()-1));
+    					annotation = new XYTextAnnotation(text, y, x-(text.length()-1));
 	        		
 	                annotation.setFont(new Font("SansSerif", Font.PLAIN, 11));
 	                //annotation.setRotationAngle(Math.PI / 4.0);

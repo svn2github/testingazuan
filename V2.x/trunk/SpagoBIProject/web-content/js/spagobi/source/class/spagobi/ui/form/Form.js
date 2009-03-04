@@ -130,7 +130,7 @@ qx.Class.define("spagobi.ui.form.Form", {
 		 * of form object
 		 */
 		setData: function(o) {
-			spagobi.commons.CoreUtils.dump( o );
+			//spagobi.commons.CoreUtils.dump( o );
 			
 			for(prop in o) {
 				this.setInputFieldValue(prop, o[prop]);

@@ -46,7 +46,7 @@ public class FakeSsoService implements SsoServiceInterface {
      * @return String
      */
     public String readUserIdentifier(HttpServletRequest request){
-	String user=request.getParameter("user_id");
+	String user=request.getParameter(SsoServiceInterface.USER_ID);
 	logger.debug("CAS user in HttpRequest:"+user);
 	return user;
     }

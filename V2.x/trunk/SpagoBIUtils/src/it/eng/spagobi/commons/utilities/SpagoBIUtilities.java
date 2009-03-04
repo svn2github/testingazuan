@@ -67,6 +67,7 @@ public class SpagoBIUtilities {
 	public static final int MAX_DEFAULT_TEMPLATE_SIZE = 5242880;
 	public static String SPAGOBI_HOST = null;    
 
+
 	/**
 	 * The Main method.
 	 * 
@@ -410,31 +411,7 @@ public class SpagoBIUtilities {
 	}  
 
 
-	/**
-	 * Returns the complete HTTP URL and puts it into a
-	 * string.
-	 * 
-	 * @param userId the user id
-	 * 
-	 * @return A String with complete HTTP Url
-	 */ 
-	public static String getSpagoBIProfileBaseUrl(String userId) {
-		logger.debug("IN.Trying to recover spago Adapter HTTP Url. userId="+userId);
-		String url = "";
-		String path = "";
-		String adapUrlStr = "";
-		try {
-			logger.debug("");
-			adapUrlStr = getSpagoAdapterHttpUrl();
-			path= getSpagoBiHost()+getSpagoBiContext();
-			url = path + adapUrlStr + "?NEW_SESSION=TRUE&userid="+userId;
-			logger.debug("using URL: " + url);
-		} catch (Exception e) {
-			logger.error("Error while recovering complete HTTP Url", e);
-		}
-		logger.debug("OUT");
-		return url;
-	}
+
 
 
 	/**

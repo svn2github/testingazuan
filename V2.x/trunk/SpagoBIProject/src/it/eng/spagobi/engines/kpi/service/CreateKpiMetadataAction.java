@@ -34,17 +34,6 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 		if (kpiInstanceID!=null){
 			
 			KpiInstance kI = DAOFactory.getKpiDAO().loadKpiInstanceById(new Integer(kpiInstanceID));
-			Integer thrsholdId = kI.getThresholdId();
-			if (thrsholdId!=null){
-				List thresholds = DAOFactory.getKpiDAO().loadThresholdsById(thrsholdId);
-				
-				if (thresholds!=null){
-					serviceResponse.setAttribute("KPI_THRESHOLDS", thresholds);
-				}else{
-					serviceResponse.setAttribute("KPI_THRESHOLDS", new ArrayList());
-				}
-				
-			}
 			Integer kpiID = kI.getKpi();
 			if (kpiID!=null){
 				Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiID);
@@ -52,6 +41,7 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 				String kpiDescription = k.getDescription();
 				String kpiInterpretation = k.getInterpretation();
 				String kpiName = k.getKpiName();
+				List thresholds = k.getThresholds();
 				if (kpiCode!=null){
 					serviceResponse.setAttribute("KPI_CODE", kpiCode);
 				}else{
@@ -71,6 +61,11 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 					serviceResponse.setAttribute("KPI_NAME", kpiName);
 				}else{
 					serviceResponse.setAttribute("KPI_NAME", "");
+				}
+				if (thresholds!=null){
+					serviceResponse.setAttribute("KPI_THRESHOLDS", thresholds);
+				}else{
+					serviceResponse.setAttribute("KPI_THRESHOLDS", new ArrayList());
 				}
 			}
 		}

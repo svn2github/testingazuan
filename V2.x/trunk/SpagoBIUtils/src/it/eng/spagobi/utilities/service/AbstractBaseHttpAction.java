@@ -37,29 +37,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spagobi.container.ContextManager;
-import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
-import it.eng.spagobi.container.IBeanContainer;
-import it.eng.spagobi.container.IContainer;
-import it.eng.spagobi.container.SpagoBIRequestContainer;
-import it.eng.spagobi.container.SpagoBIResponseContainer;
-import it.eng.spagobi.container.SpagoBISessionContainer;
-import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.container.IBeanContainer;
+import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
+import it.eng.spagobi.container.SpagoBIRequestContainer;
+import it.eng.spagobi.container.SpagoBIResponseContainer;
+import it.eng.spagobi.container.SpagoBISessionContainer;
 
 
 /**
@@ -227,9 +219,18 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		getHttpResponse().setContentType( contentType );
 		
 		if(encoder == null) {
-			while((b = in.read()) != -1) {
-				getHttpResponse().getOutputStream().write(b);
-				contentLength++;
+			/*
+			byte[] buf = new byte[1024];
+        int i = 0;
+        while ((i = fis.read(buf)) != -1) {
+            fos.write(buf, 0, i);
+        }
+
+			 */
+			byte[] buf = new byte[1024];
+			while((b = in.read(buf)) != -1) {
+				getHttpResponse().getOutputStream().write(buf, 0, b);
+				contentLength+=1024;
 			}	
 			getHttpResponse().setContentLength( contentLength );
 		} else {

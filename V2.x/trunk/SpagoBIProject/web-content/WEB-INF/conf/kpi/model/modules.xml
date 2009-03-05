@@ -120,6 +120,14 @@
 						value="ListModelInstanceTreeModule" />
 					<PARAMETER name="ID" scope="LOCAL" type="RELATIVE" value="ID" />
 				</TREE_CAPTION>
+				<DOCUMENT_CAPTION confirm="FALSE" image="/img/objecticon.gif"
+					label="sbi.kpi.model.detail.report">
+					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ExecuteBIObjectPage" />
+					<PARAMETER name="OBJECT_LABEL" scope="" type="ABSOLUTE" value="ModelInstanceReport" />
+					<PARAMETER name="outputType" scope="" type="ABSOLUTE" value="PDF" />
+					<PARAMETER name="KPI_MODEL_INST" scope="LOCAL" type="RELATIVE" value="ID" />
+				</DOCUMENT_CAPTION>
+				
 				<DELETE_CAPTION confirm="TRUE" image="/img/erase.gif"
 					label="sbi.kpi.caption.delete">
 					<PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="ModelInstancePage" />

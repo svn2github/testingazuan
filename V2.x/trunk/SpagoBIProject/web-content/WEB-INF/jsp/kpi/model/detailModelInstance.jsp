@@ -179,6 +179,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 
 	String messageBundle = "component_kpi_messages";
+	String messageBundle2 = "messages";
 %>
 
 
@@ -347,12 +348,13 @@ value='<%= endDateS %>'/> </div>
 	key="sbi.kpi.model.typeName" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'>
 <input class='portlet-form-input-field' type="text" name="typeName"
-	size="50" value="<%=typeName%>" maxlength="200" readonly disabled="disabled"></div>
+	size="50" value='<spagobi:message key="<%=typeName%>" 
+	bundle="<%=messageBundle2%>" />' maxlength="200" readonly disabled="disabled"></div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.model.typeDescription" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form' style='height: 150px;'>
-	<textarea name="typeDescription" cols="40" style='height: 110px;' class='portlet-text-area-field' disabled="disabled"><%=typeDescription%></textarea>
+	<textarea name="typeDescription" cols="40" style='height: 110px;' class='portlet-text-area-field' disabled="disabled"><spagobi:message key="<%=typeDescription%>" bundle="<%=messageBundle2%>" /> </textarea>
 </div>
 </div>
 </div>

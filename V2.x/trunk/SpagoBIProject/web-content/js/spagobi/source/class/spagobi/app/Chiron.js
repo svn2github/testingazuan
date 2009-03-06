@@ -407,38 +407,38 @@ qx.Class.define("spagobi.app.Chiron",
       		toolbar: {
       			buttons: [
       				{
-      					name: 'link1',
+      					name: 'kpi',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/kpiDefinition.png'),
-						page: 'link1',
-						tooltip: 'Remember Me'
+						page: 'kpi',
+						tooltip: 'KPI Definition'
       				}, {
-      					name: 'link2',
+      					name: 'threshold',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/bidocuments16.png'),
 						page: 'link2',
-						tooltip: 'Most Popular'
+						tooltip: 'Threshold Definition'
       				}, {
-      					name: 'link3',
+      					name: 'modelDefinition',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/modelDefinition.png'),
 						page: 'link3',
-						tooltip: 'Most Recently Used'
+						tooltip: 'Model Definition'
       				}, {
-      					name: 'link3',
+      					name: 'modelInstance',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/bidocuments16.png'),
 						page: 'link3',
-						tooltip: 'Most Recently Used'
+						tooltip: 'Model Instance'
       				}, {
-      					name: 'link3',
+      					name: 'resource',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/bidocuments16.png'),
-						page: 'link3',
-						tooltip: 'Most Recently Used'
+						page: 'resource',
+						tooltip: 'Resource Definition'
       				}
       			]
       		},
-      		defaultSelectedPage: 'link1'
+      		defaultSelectedPage: 'kpi'
       	});
       	this.containerToolBar.add(this.toolbars['kpi']);
       	
-  		this._container.add(this.containerToolBar, {edge:"west", height: "100%", width: "100%"});
+  		this._container.add(this.containerToolBar, {edge:"west", flex:1});
       	
       	return this._container  		
     },

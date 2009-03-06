@@ -139,6 +139,9 @@ qx.Class.define("spagobi.ui.custom.ThresholdDefinitionForm", {
 			var myPage = myTabView.getSelected();
 			var myForm = myPage.getChildren()[0];
 			var l = myForm.getInputField('color').getUserData('field').getChildren()[0];
+			
+			//l.setDecorator(null);
+			l.setDecorator(new qx.ui.decoration.Single(1,"solid","black"));
 			l.setValue(e.getTarget().getValue());
 			l.setBackgroundColor(e.getData());
 	      }

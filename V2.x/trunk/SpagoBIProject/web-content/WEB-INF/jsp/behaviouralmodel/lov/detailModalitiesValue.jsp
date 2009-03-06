@@ -423,7 +423,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		<!-- START DIV SCRIPT WIZARD --> 
         <div id="scriptWizard" style='width:100%;display:<%=scriptDisplay%>'>
-			<spagobi:scriptWizard script='<%= scriptDet.getScript()!= null ? scriptDet.getScript() : "" %>' />
+			<spagobi:scriptWizard script='<%= scriptDet.getScript()!= null ? scriptDet.getScript() : "" %>' languageScript='<%= scriptDet.getLanguageScript()!= null ? scriptDet.getLanguageScript() : ""%>' />
 		</div>	
 		<!-- DIV SCRIPT WIZARD CLOSED -->
 			

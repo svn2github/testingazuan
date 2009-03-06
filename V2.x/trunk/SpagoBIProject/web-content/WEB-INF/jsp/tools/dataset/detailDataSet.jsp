@@ -27,7 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 				         it.eng.spagobi.services.dataset.bo.SpagoBiDataSet,
 	 				         it.eng.spagobi.tools.dataset.bo.*,
 	 				         it.eng.spagobi.tools.dataset.service.DetailDataSetModule" %>
-	 				         <script type="text/javascript" src="<%=linkProto%>"></script>
+	 				         <%@page import="javax.script.ScriptEngineManager"%>
+<%@page import="javax.script.ScriptEngineFactory"%>
+<%@page import="it.eng.spagobi.utilities.scripting.ScriptManager"%>
+<%@page import="it.eng.spagobi.utilities.scripting.ScriptUtilities"%>
+<script type="text/javascript" src="<%=linkProto%>"></script>
 	 				         
 	 				         
 	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
@@ -131,12 +135,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String disableQuery="disabled";
 				String disableWs="disabled";
 				String disableScript="disabled";
+				String disableLanguageScript="disabled";				
 				String disableJClass="disabled";
 			
 				String hideFile="style=\"display: none;\"";
 				String hideQuery="style=\"display: none;\"";
 				String hideWs="style=\"display: none;\"";
 				String hideScript="style=\"display: none;\"";
+				String hideLanguageScript="style=\"display: none;\"";
 				String hideJClass="style=\"display: none;\"";
 				
 		
@@ -161,7 +167,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				else if(ScriptDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){
 					type="script";
 					disableScript="";
+					disableLanguageScript="";
 					hideScript="";
+					hideLanguageScript="";
 				
 				} 
 				else if(JavaClassDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){
@@ -436,6 +444,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 	</div>
 	
+	
+	
 	<div id="scriptcontainer" <%=hideScript%>>
 		<div class='div_detail_label' id="SCRIPTNAMELABEL" >
 			<span class='portlet-form-field-label'>	
@@ -456,6 +466,50 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	   </div>
 	   </div>
+	   
+	   <!-- LANGUAGE SCRIPT  -->
+		<div id="languagescriptcontainer" <%=hideLanguageScript%>>
+		<div class='div_detail_label' id="LANGUAGESCRIPTNAMELABEL" >
+			<span class='portlet-form-field-label'>	
+				<spagobi:message key = "SBISet.ListDataSet.languageScript" />
+			</span>
+		</div>
+	    <div class='div_detail_form' style="height:150px;">
+		<%
+			   String languageScript = "" ; 
+		       if(ScriptDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){	
+		    	   languageScript = ds.getLanguageScript();
+		       }
+			   if((languageScript==null) || (languageScript.equalsIgnoreCase("null"))  ) {
+				   languageScript = "";
+			   }
+		%>
+		<select class='portlet-form-field' name="LANGUAGESCRIPT" id="LANGUAGESCRIPT" <%=disableScript%> >			
+			<%
+
+			Map engineNames=ScriptUtilities.getEngineFactoriesNames();
+			String selected="";
+			for(Iterator it=engineNames.keySet().iterator();it.hasNext();){
+				String engName=(String)it.next(); 
+				String alias=(String)engineNames.get(engName);
+			    selected="";
+			    if(languageScript.equalsIgnoreCase(alias)){
+			    
+					selected="selected='selected'";
+			    }		
+			    String aliasName=ScriptUtilities.bindAliasEngine(alias);
+	%>
+	    	<option value="<%=alias%>" label="<%=alias%>" <%= selected%>>
+    					<%=aliasName%>	
+    		</option>
+	<%
+		}
+			     
+%>			
+		</select>
+	</div>
+	   </div>
+	   
 	   
 	   <div id="jclasscontainer" <%=hideJClass%>>
 		<div class='div_detail_label' id="JCLASSLABEL" >
@@ -654,12 +708,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.OPERATION.disabled=true;
 			document.dsForm.DATASOURCE.disabled=true;
 			document.dsForm.SCRIPT.disabled=true;
+			document.dsForm.LANGUAGESCRIPT.disabled=true;			
 			document.dsForm.JCLASSNAME.disabled=true;
 			document.getElementById("tag").style.display = "none";
 			document.getElementById("filecontainer").style.display = "inline";
 			document.getElementById("querycontainer").style.display = "none";
 			document.getElementById("wscontainer").style.display = "none";
 			document.getElementById("scriptcontainer").style.display = "none";
+			document.getElementById("languagescriptcontainer").style.display = "none";
 			document.getElementById("jclasscontainer").style.display = "none";
 	
 			
@@ -672,12 +728,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.OPERATION.disabled=true;
 			document.dsForm.DATASOURCE.disabled=false;
 			document.dsForm.SCRIPT.disabled=true;
+			document.dsForm.LANGUAGESCRIPT.disabled=true;
 			document.dsForm.JCLASSNAME.disabled=true;
 			document.getElementById("tag").style.display = "inline";
 			document.getElementById("filecontainer").style.display = "none";
 			document.getElementById("querycontainer").style.display = "inline";
 			document.getElementById("wscontainer").style.display = "none";
 			document.getElementById("scriptcontainer").style.display = "none";
+			document.getElementById("languagescriptcontainer").style.display = "none";
 			document.getElementById("jclasscontainer").style.display = "none";
 			
 		}
@@ -689,12 +747,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.OPERATION.disabled=false;
 			document.dsForm.DATASOURCE.disabled=true;
 			document.dsForm.SCRIPT.disabled=true;
+			document.dsForm.LANGUAGESCRIPT.disabled=true;
 			document.dsForm.JCLASSNAME.disabled=true;
 			document.getElementById("tag").style.display = "inline";
 			document.getElementById("filecontainer").style.display = "none";
 			document.getElementById("querycontainer").style.display = "none";
 			document.getElementById("wscontainer").style.display = "inline";
 			document.getElementById("scriptcontainer").style.display = "none";
+			document.getElementById("languagescriptcontainer").style.display = "none";
 			document.getElementById("jclasscontainer").style.display = "none";
 	
 		}
@@ -706,12 +766,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.OPERATION.disabled=true;
 			document.dsForm.DATASOURCE.disabled=true;
 			document.dsForm.SCRIPT.disabled=false;
+			document.dsForm.LANGUAGESCRIPT.disabled=false;
 			document.dsForm.JCLASSNAME.disabled=true;
 			document.getElementById("tag").style.display = "inline";
 			document.getElementById("filecontainer").style.display = "none";
 			document.getElementById("querycontainer").style.display = "none";
 			document.getElementById("wscontainer").style.display = "none";
 			document.getElementById("scriptcontainer").style.display = "inline";
+			document.getElementById("languagescriptcontainer").style.display = "inline";
 			document.getElementById("jclasscontainer").style.display = "none";
 		}
 		else
@@ -722,12 +784,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			document.dsForm.OPERATION.disabled=true;
 			document.dsForm.DATASOURCE.disabled=true;
 			document.dsForm.SCRIPT.disabled=true;
+			document.dsForm.LANGUAGESCRIPT.disabled=true;
 			document.dsForm.JCLASSNAME.disabled=false;
 			document.getElementById("tag").style.display = "inline";
 			document.getElementById("filecontainer").style.display = "none";
 			document.getElementById("querycontainer").style.display = "none";
 			document.getElementById("wscontainer").style.display = "none";
 			document.getElementById("scriptcontainer").style.display = "none";
+			document.getElementById("languagescriptcontainer").style.display = "none";
 			document.getElementById("jclasscontainer").style.display = "inline";
 		}
 	}

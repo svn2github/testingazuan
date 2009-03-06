@@ -272,11 +272,11 @@ qx.Class.define("spagobi.ui.table.Table",
     
     _onCellClick : function(e){
     	
-		
-		if ( ! e instanceof qx.event.type.Data){
+		if ( ! (e instanceof qx.ui.table.pane.CellEvent)){
 				return;
 			}
-        if(this.Identity.dummyId=="ROLES"){
+		
+		if(this.Identity.dummyId=="ROLES"){
   			var d = new spagobi.ui.table.Roles(this, e);
 		  }
     	  

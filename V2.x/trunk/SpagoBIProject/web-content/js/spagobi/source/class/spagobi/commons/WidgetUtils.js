@@ -63,7 +63,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		maxLength:100,//yes     		
         		width: 0,
         		height: 0,//yes
-        		value: ''
+        		value: '',
+        		'readOnly': false
         	};
         
         	if(password != true){
@@ -78,8 +79,12 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
             //test_textfield.set( defultConfig );//change .. not needed
             //test_textfield.set( config );//change
             test_textfield.set({width:config.width, height:config.height, 
-            					value:config.value, maxLength:config.maxLength });
-            					
+            					value:config.value, maxLength:config.maxLength, readOnly:config.readOnly });
+   /*         if (config.read != undefined){
+            	if (config.read == true){
+            		test_textfield.setReadOnly(true);
+            	}  
+            }		*/	
             var textContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
         	textContainer.add(test_textfield, {top: config.top, left: config.left});
         						
@@ -296,7 +301,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
         		labelwidth: 100,
         		value: '',
         		mandatory: false,
-        		password: false
+        		password: false,
+        		'readOnly': false
         	};
         	/*alert(config.labelwidth);*/
         	
@@ -332,7 +338,8 @@ qx.Class.define("spagobi.commons.WidgetUtils", {
 	        		maxLength: config.maxLength,        		
 	        		width: config.width,
 	        		height: config.height,
-	        		value: config.value
+	        		value: config.value,
+	        		'readOnly': config.readOnly
 	           	},config.password);
         	
         	//var atom = new qx.legacy.ui.basic.Atom();//change

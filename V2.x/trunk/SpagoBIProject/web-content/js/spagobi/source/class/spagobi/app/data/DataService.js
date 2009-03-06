@@ -323,6 +323,52 @@ qx.Class.define("spagobi.app.data.DataService", {
     	];
   	},
   	
+  	loadKpiResourceRecords: function() {
+        var records = {};
+                  
+        records.meta =  this.loadKpiResourceMeta();                
+      records.rows =  this.loadKpiResourceData();
+        
+      return records;
+    },
+    
+    loadKpiResourceMeta: function() {
+        return [
+          {
+              dataIndex: 'name',
+              name: 'Name'
+          }
+      ];
+    },
+    
+    
+    loadKpiResourceData: function() {
+        return [
+          {
+              id: '162',
+              name: 'MISP_ILVILLAGE_MSITE_MP',
+              discription: 'MISP_ILVILLAGE_MSITE_MP',
+              tablename: 'O_SERVICES',
+              columnname: 'ORIG_SERVICE_ID',
+              typename: 'CSP'
+          }, {
+              id: '163',
+              name: 'MISP_PUREBROS_OI_NEWS',
+              discription: 'MISP_PUREBROS_OI_NEWS',
+              tablename: 'O_SERVICES',
+              columnname: 'ORIG_SERVICE_ID',
+              typename: 'CSP'
+          }, {
+              id: '164',
+              name: 'MISP_PUREBROS_NAVIGAZIONE_SERVIZI_SEXY',
+              discription: 'MISP_PUREBROS_NAVIGAZIONE_SERVIZI_SEXY',
+              tablename: 'O_SERVICES',
+              columnname: 'ORIG_SERVICE_ID',
+              typename: 'CSP'
+          }
+      ];
+    },
+  	
   	loadEngineRecords: function() {
   		var records = {};
   		  		

@@ -262,7 +262,8 @@ qx.Class.define("spagobi.ui.custom.FunctionalClassDummy",
 		//alert(parent.getLabel());
 		var nodeObject = {};
 		nodeObject.name = dataObject.label;
-		nodeObject.parent = this._tree.getUserData(parent.getLabel());	//nodeid = label .. to be changed
+		//nodeObject.parent = this._tree.getUserData(parent.getLabel());	//nodeid = label .. to be changed
+		nodeObject.parent = parent.getLabel();
 		//alert(nodeObject.parent);
 	//	alert(nodeObject.parent);
 		nodeObject.data = dataObject;

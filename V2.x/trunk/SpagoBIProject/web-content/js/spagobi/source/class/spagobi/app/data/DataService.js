@@ -460,10 +460,6 @@ qx.Class.define("spagobi.app.data.DataService", {
     	];
   	},
   	
-  	
-  	
-  	
-  	
   	loadDatasourceRecords: function() {
   		var records = {};
     	
@@ -1315,6 +1311,82 @@ qx.Class.define("spagobi.app.data.DataService", {
   	userName : function(){
   		var userid = "biadmin";
   		return userid;
+  	},
+  	
+  	loadKpiRecords: function() {
+  		var records = {};
+    	
+    	records.meta =  this.loadKpiMeta();
+    	records.rows =  this.loadKpiData();
+    	
+    	return records;
+  	},
+  	
+  	loadKpiMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'code',
+	    		name: 'Code'
+    		}, {
+	    		dataIndex: 'name',
+	    		name: 'Name' 
+    		}
+    	];
+  	},
+  	
+  	loadKpiData: function() {
+  		return [
+  			{       
+          		id		: '401',
+	        	code	: 'NUMERO_ALLARMI',
+	          	name	: 'NUMERO_ALLARMI',
+	          	description: 'NUMERO_ALLARMI'
+       		}, {       
+          		id		: '402',
+          		code	: 'CSP_BILLING_W',
+          		name	: 'CSP_BILLING_W',
+          		description: 'CSP_BILLING_W'
+       		}
+  		];
+  	},
+  	
+  	loadThresholdRecords: function() {
+  		var records = {};
+    	
+    	records.meta =  this.loadThresholdMeta();
+    	records.rows =  this.loadThresholdData();
+    	
+    	return records;
+  	},
+  	
+  	loadThresholdMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'name',
+	    		name: 'Name' 
+    		}, {
+	    		dataIndex: 'description',
+	    		name: 'Description' 
+    		}
+    	];
+  	},
+  	
+  	loadThresholdData: function() {
+  		return [
+  			{       
+          		id		: '501',
+	        	name	: 'Valore_100',
+	          	description: 'Valore Assoluto 100',
+	          	code	: 'Valore Assoluto 100',
+	          	thresholdtype : 'Range Values'
+       		}, {       
+          		id		: '502',
+          		name	: 'ALLARME',
+          		description: 'Soglia per la generazione allarme',
+          		thresholdtype	: 'Range Values'
+          		
+       		}
+  		];
   	}
   	
   }

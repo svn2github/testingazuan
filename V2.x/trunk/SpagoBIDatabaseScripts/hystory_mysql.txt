@@ -51,6 +51,6 @@ Alter table `SBI_KPI` add Foreign Key (`kpi_type`) references `SBI_DOMAINS` (`VA
 Alter table `SBI_KPI` add Foreign Key (`metric_scale_type`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI` add Foreign Key (`measure_type`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
  
- 
+ALTER TABLE `spagobi`.`sbi_data_set` ADD COLUMN `LANGUAGE_SCRIPT` VARCHAR(50) AFTER `num_rows`; 
  
  

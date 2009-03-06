@@ -93,6 +93,7 @@ Create table SBI_DATA_SET (
 	PIVOT_ROW      VARCHAR(50),
 	PIVOT_VALUE    VARCHAR(50),
 	NUM_ROWS	   SMALLINT DEFAULT 0,
+	LANGUAGE_SCRIPT    Varchar2 (50),
 primary key ("DS_ID") 
 )
 /

@@ -266,6 +266,17 @@ qx.Class.define("spagobi.ui.form.Form", {
   				inputField.setUserData('type', 'radio');
   				
   			}
+  			if(config.read != undefined){
+  					var f = inputField.getUserData('field').getChildren()[0];
+  					f.setEnabled(false);
+  				}
+  			
+  			if(config.button != undefined){
+  				var b = new qx.ui.form.Button(config.button[0].label);
+  				inputField.add(b);
+  				inputField.setUserData('button',b);
+  				b.addListener(config.button[0].event, config.button[0].handler, config.button[0].scope);
+  			}
   			
   			this.dataMappings[config.dataIndex] = inputField;
   			this.add(inputField);

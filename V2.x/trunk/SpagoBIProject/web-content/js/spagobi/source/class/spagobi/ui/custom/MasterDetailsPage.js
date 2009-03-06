@@ -66,14 +66,12 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	if(type === 'engine') {
 		//this.records = spagobi.app.data.DataService.loadEngineRecords();
 		//config.dataset = this.records;
-		
 		var serviceRegistry = new spagobi.commons.ServiceRegistry();
   		var serviceUrl = serviceRegistry.getServiceUrl('LIST_ENGINES_ACTION');
   		var httpDataProxy = new spagobi.data.DataProxy({
   			url: serviceUrl
   		});
   		config.proxy = httpDataProxy;
-  		
 		form = new spagobi.ui.custom.EngineDetailsForm(); 
 	} else if(type === 'datasource') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
@@ -113,6 +111,18 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'link3') {									
 		this.records = spagobi.app.data.DataService.loadlink3Records();	
 		config.dataset = this.records;
+	} else if(type == 'resource') {									
+		this.records = spagobi.app.data.DataService.loadKpiResourceRecords();	
+		config.dataset = this.records;
+		form = new spagobi.ui.custom.ResourceDefinitionForm();
+	} else if(type == 'modelInstance') {									
+		this.records = spagobi.app.data.DataService.loadKpiModelRecords();	
+		config.dataset = this.records;
+		form = new spagobi.ui.custom.ResourceDefinitionForm();
+	} else if(type == 'modelDefinition') {									
+		this.records = spagobi.app.data.DataService.loadKpiInstanceRecords();	
+		config.dataset = this.records;
+		form = new spagobi.ui.custom.ResourceDefinitionForm();
 	} else if(type === 'distributionList') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		config.dataset = this.records;

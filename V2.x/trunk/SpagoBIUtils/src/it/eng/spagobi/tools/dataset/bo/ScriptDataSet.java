@@ -30,6 +30,8 @@ public class ScriptDataSet extends ConfigurableDataSet {
 		setDataReader( new XmlDataReader() );
 		addBehaviour( new QuerableBehaviour(this) );	
 		setScript( dataSetConfig.getScript() );
+		setLanguageScript(dataSetConfig.getLanguageScript());
+		
 	}
 	
 	public SpagoBiDataSet toSpagoBiDataSet() {
@@ -40,6 +42,7 @@ public class ScriptDataSet extends ConfigurableDataSet {
 		sbd.setType( DS_TYPE );		
 		
 		sbd.setScript( getScript() );
+		sbd.setLanguageScript(getLanguageScript());
 		
 		return sbd;
 	}
@@ -66,6 +69,14 @@ public class ScriptDataSet extends ConfigurableDataSet {
 	
 	public String getScript() {
 		return getDataProxy().getScript();
+	}
+	
+	public void setLanguageScript(String languageScript){
+		getDataProxy().setLanguageScript(languageScript);
+	}
+	
+	public String getLanguageScript(){
+		return getDataProxy().getLanguageScript();
 	}
 	
 	

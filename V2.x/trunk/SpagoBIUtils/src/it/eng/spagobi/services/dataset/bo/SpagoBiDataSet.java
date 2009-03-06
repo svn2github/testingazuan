@@ -44,6 +44,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
     private java.lang.String script;
 
+    private java.lang.String languageScript;
+    
     private java.lang.String type;
 
     public SpagoBiDataSet() {
@@ -68,6 +70,7 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            java.lang.String parameters,
            java.lang.String query,
            java.lang.String script,
+           java.lang.String languageScript,           
            java.lang.String type) {
            this.adress = adress;
            this.dataSource = dataSource;
@@ -87,6 +90,7 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            this.parameters = parameters;
            this.query = query;
            this.script = script;
+           this.languageScript = languageScript;
            this.type = type;
     }
 
@@ -367,8 +371,27 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         this.script = script;
     }
 
+    
+    /**
+     * Gets the language script value for this SpagoBiDataSet.
+     * 
+     * @return script
+     */
+
+    public java.lang.String getLanguageScript() {
+		return languageScript;
+	}
 
     /**
+     * Sets the language script value for this SpagoBiDataSet.
+     * 
+     * @param languageScript 
+     */
+	public void setLanguageScript(java.lang.String languageScript) {
+		this.languageScript = languageScript;
+	}
+
+	/**
      * Gets the type value for this SpagoBiDataSet.
      * 
      * @return type

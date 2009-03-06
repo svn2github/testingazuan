@@ -27,9 +27,9 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.behaviouralmodel.lov.handlers.ScriptManager;
 import it.eng.spagobi.tools.dataset.common.datareader.IDataReader;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.utilities.scripting.ScriptManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +43,8 @@ import org.apache.log4j.Logger;
 public class ScriptDataProxy extends AbstractDataProxy {
 
 	String script;
-
+	String languageScript;
+	
 	private static transient Logger logger = Logger.getLogger(ScriptDataProxy.class);
 
 
@@ -51,8 +52,9 @@ public class ScriptDataProxy extends AbstractDataProxy {
 
 	}
 
-	public ScriptDataProxy(String script) {
-		setScript( script );
+	public ScriptDataProxy(String _script, String _languageScript) {
+		setScript( _script );
+		setLanguageScript(_languageScript);
 	}
 
 
@@ -68,7 +70,7 @@ public class ScriptDataProxy extends AbstractDataProxy {
 		String data = null;
 		IDataStore dataStore = null;
 		try {
-			data = ScriptManager.runScript(script);
+			data = ScriptManager.runScript(script, languageScript);
 
 			// check if the result must be converted into the right xml sintax
 			boolean toconvert = checkSintax(data);
@@ -186,5 +188,14 @@ public class ScriptDataProxy extends AbstractDataProxy {
 		this.script = script;
 	}
 
+	public String getLanguageScript() {
+		return languageScript;
+	}
 
+	public void setLanguageScript(String languageScript) {
+		this.languageScript = languageScript;
+	}
+
+
+	
 }

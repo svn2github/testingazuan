@@ -27,8 +27,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 				         it.eng.spagobi.services.dataset.bo.SpagoBiDataSet,
 	 				         it.eng.spagobi.tools.dataset.bo.*,
 	 				         it.eng.spagobi.tools.dataset.service.DetailDataSetModule" %>
-	 				         <%@page import="javax.script.ScriptEngineManager"%>
-<%@page import="javax.script.ScriptEngineFactory"%>
 <%@page import="it.eng.spagobi.utilities.scripting.ScriptManager"%>
 <%@page import="it.eng.spagobi.utilities.scripting.ScriptUtilities"%>
 <script type="text/javascript" src="<%=linkProto%>"></script>

@@ -216,7 +216,7 @@ Ext.onReady(function(){
 				Threshold t =(Threshold)it.next();
 				
 				Color c =t.getColor();
-				String color = "#"+Integer.toHexString( c.getRGB() & 0x00ffffff ) ;
+				String color = "rgb("+c.getRed()+", "+c.getGreen()+", "+c.getBlue()+")" ;
 				Double min = t.getMinValue();
 				Double max = t.getMaxValue();
 				String minMax = "";

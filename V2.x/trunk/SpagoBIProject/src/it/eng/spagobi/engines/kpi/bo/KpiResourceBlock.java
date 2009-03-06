@@ -75,21 +75,24 @@ public class KpiResourceBlock {
 	
 	public StringBuffer makeTree(ExecutionInstance instanceO,String userId,HttpServletRequest httpReq, Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight,Boolean show_axis ){
 		logger.debug("IN");
-		StringBuffer _htmlStream = new StringBuffer();				
+		StringBuffer _htmlStream = new StringBuffer();	
+		String id = "";
 		if (r!=null){
 			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 			logger.debug("Start Kpi tree for Resource "+r.getName());
 			_htmlStream.append("<div id ='"+r.getName()+"' >\n");				
-			_htmlStream.append("<table class='kpi_table' style='CLEAR: left; WIDTH: 100%' >\n");
+			_htmlStream.append("<table class='kpi_table' style='CLEAR: left; WIDTH: 100%' id='KPI_TABLE"+r.getId()+"' >\n");
 			_htmlStream.append("<TBODY>\n");
 			String res = msgBuilder.getMessage("sbi.kpi.RESOURCE", httpReq);
 			_htmlStream.append(" <tr class='kpi_resource_section' ><td colspan=\"9\" id=\"ext-gen58\" >"+res+r.getName()+"</td></tr>\n");
+			id = "node"+r.getId();
 		}else{
-			_htmlStream.append("<table class='kpi_table' style='CLEAR: left;  WIDTH: 100%' >\n");
+			_htmlStream.append("<table class='kpi_table' style='CLEAR: left;  WIDTH: 100%' id='KPI_TABLE' >\n");
 			_htmlStream.append("<TBODY>\n");
+			id = "node1";
 		}
 		
-		addItemForTree(instanceO,userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
+		addItemForTree(id,instanceO,userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
 		logger.debug("Started Kpi tree with the root");
 
 			_htmlStream.append("</TBODY>\n");
@@ -104,7 +107,7 @@ public class KpiResourceBlock {
 		return _htmlStream;
 	}
 	
-	private StringBuffer addItemForTree(ExecutionInstance instanceO,String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight, Boolean show_axis) {
+	private StringBuffer addItemForTree(String id,ExecutionInstance instanceO,String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight, Boolean show_axis) {
 		
 		logger.debug("IN");
 		logger.debug("*********************");
@@ -152,22 +155,25 @@ public class KpiResourceBlock {
 		}
 		Color semaphorColor = line.getSemaphorColor();
 		if (semaphorColor!= null){
-			String semaphorHex = Integer.toHexString( semaphorColor.getRGB() & 0x00ffffff ) ;		
+			String semaphorHex = "rgb("+semaphorColor.getRed()+", "+semaphorColor.getGreen()+", "+semaphorColor.getBlue()+")" ;
 			logger.debug("Kpi semaphore color:"+semaphorHex);
 		}
 		
 		BulletGraph sbi = (BulletGraph)line.getChartBullet();		
 		List children = line.getChildren();
+		String tab_name = "KPI_TABLE";
+		if(r!=null){
+			tab_name = tab_name+r.getId();
+		}
 		
 		if(recursionLev==0){
-			_htmlStream.append("	<tr style='background-color:#DDDDDD;' class='kpi_line_section_odd'>\n");
+			_htmlStream.append("	<tr style='background-color:#DDDDDD;' class='kpi_line_section_odd' id='"+id+"' onclick=\"toggleHideChild(this,'"+tab_name+"');\" >\n");
 			
 				
-		}
-		else if(evenLine){
-			 _htmlStream.append("	<tr class='kpi_line_section_even' style='border-bottom: 1px solid #660000 !important;'>\n");
+		}else if(evenLine){
+			 _htmlStream.append("	<tr class='kpi_line_section_even' style='border-bottom: 1px solid #660000 !important;' id='"+id+"' onclick=\"toggleHideChild(this,'"+tab_name+"');\" >\n");
 		}else{
-			_htmlStream.append("	<tr class='kpi_line_section_odd' style='border-bottom: 1px solid #DDDDDD !important;'>\n");
+			_htmlStream.append("	<tr class='kpi_line_section_odd' style='border-bottom: 1px solid #DDDDDD !important;' id='"+id+"' onclick=\"toggleHideChild(this,'"+tab_name+"');\" >\n");
 		}
 		if (display_semaphore && semaphorColor!= null){
 			String semaphorHex = Integer.toHexString( semaphorColor.getRGB() & 0x00ffffff ) ;		
@@ -401,11 +407,11 @@ public class KpiResourceBlock {
 		   while (childIt.hasNext()){
 			   logger.debug("Starting children levels");
 			   KpiLine l = (KpiLine)childIt.next();
-			   
+			   String idTemp = id+"_child"+children.indexOf(l);
 			   if (evenLine){			   
-				   addItemForTree(instanceO,userId,recursionLev,false,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
+				   addItemForTree(idTemp,instanceO,userId,recursionLev,false,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
 			   }else{
-				   addItemForTree(instanceO,userId,recursionLev,true,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
+				   addItemForTree(idTemp,instanceO,userId,recursionLev,true,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
 			   }  
 		   }
 	   } 

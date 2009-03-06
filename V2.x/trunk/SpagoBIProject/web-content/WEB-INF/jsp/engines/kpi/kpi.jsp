@@ -78,6 +78,35 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
 	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
+	 <script type="text/javascript">
+				function toggleHideChild(obj, tab_name){
+				
+					var objName = obj.id;
+					var nameSuffix = objName.split("_");
+				
+					var objList = document.getElementById(tab_name);
+					for(var j=0;j<objList.rows.length;j++){
+						if(objList.rows(j).getAttribute('id').indexOf(objName)>=0 && objList.rows(j).getAttribute('id')!=objName)
+							if(objList.rows(j).style.display=='none') {
+								var actualSuffix = objList.rows(j).getAttribute('id').split("_");
+								if(actualSuffix.length>nameSuffix.length && actualSuffix.length<=(nameSuffix.length+1))
+									objList.rows(j).style.display='inline';
+							} else {
+								objList.rows(j).style.display='none';
+							}
+					}
+				}	 	
+				
+				function hideAllTr(tab_name){
+					var objList = document.getElementById(tab_name);
+					for(var j=0;j<objList.rows.length;j++){
+						if(objList.rows(j).getAttribute('id').indexOf("child")>0)
+								objList.rows(j).style.display='none';
+				  }
+				
+				}
+
+		</script>
 	<%
 	String title = (String)sbModuleResponse.getAttribute("title");
 	String subTitle = (String)sbModuleResponse.getAttribute("subName");
@@ -111,11 +140,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			String scriptDiv = "";
 			String scriptViewAll = "";
 			String scriptHideAll = "";
+			String scriptHideOnLoad = "";
 			if(resources!=null && !resources.isEmpty() && resources.size()>1){
 				scriptViewAll = "<script>";
 				scriptViewAll += "function viewAll(){";
 				scriptHideAll = "<script>";
 				scriptHideAll += "function hideAll(){";
+				scriptHideOnLoad = "<script>";
+				
 				Iterator resIt = resources.iterator();
 				scriptDiv += "<script>";
 				resDiv += "<div class='slider_header' ><ul>";
@@ -149,6 +181,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 					scriptViewAll += "setVisible('"+resName+"', '"+resName+"_click', true );\n";	
 					scriptHideAll += "setVisible('"+resName+"', '"+resName+"_click', false );\n";	
+					scriptHideOnLoad += "hideAllTr('KPI_TABLE"+r.getId()+"');\n";
 					
 					if(col>7){
 						col = 0;
@@ -161,7 +194,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 scriptHideAll += "</script>";
 				 scriptViewAll += "}";
 				 scriptViewAll += "</script>";
-			}
+				 scriptHideOnLoad += "</script>";
+			}else{
+				 scriptHideOnLoad = "<script>";
+				 scriptHideOnLoad +="hideAllTr('KPI_TABLE');\n";
+				 scriptHideOnLoad += "</script>";
+			}	
 				%>
 			 <%=resDiv%>
 			<p>
@@ -171,6 +209,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			 <%=scriptDiv%>
 			 <%=scriptViewAll%>
 			 <%=scriptHideAll%>
+			  <%=scriptHideOnLoad%>
 			 <script>
 			 function showLegendTooltip(thresholds,id){
 					 element =  document.getElementById(id);
@@ -193,6 +232,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					
 			 }
 			 </script>
+			
 		<%}%>		
 	<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>		
 

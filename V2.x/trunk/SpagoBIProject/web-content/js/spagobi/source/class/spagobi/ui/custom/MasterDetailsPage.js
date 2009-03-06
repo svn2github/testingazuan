@@ -66,12 +66,14 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	if(type === 'engine') {
 		//this.records = spagobi.app.data.DataService.loadEngineRecords();
 		//config.dataset = this.records;
+		
 		var serviceRegistry = new spagobi.commons.ServiceRegistry();
   		var serviceUrl = serviceRegistry.getServiceUrl('LIST_ENGINES_ACTION');
   		var httpDataProxy = new spagobi.data.DataProxy({
   			url: serviceUrl
   		});
   		config.proxy = httpDataProxy;
+  		
 		form = new spagobi.ui.custom.EngineDetailsForm(); 
 	} else if(type === 'datasource') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
@@ -140,6 +142,14 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 	} else if(type == 'roles') {									
 		this.records = spagobi.app.data.DataService.loadRolesRecords();		
 		config.dataset = this.records;
+	} else if(type == 'kpi') {									
+		this.records = spagobi.app.data.DataService.loadKpiRecords();		
+		config.dataset = this.records;
+		form = new spagobi.ui.custom.KpiDefinitionForm();
+	} else if(type == 'threshold') {									
+		this.records = spagobi.app.data.DataService.loadThresholdRecords();		
+		config.dataset = this.records;
+		form = new spagobi.ui.custom.ThresholdDefinitionForm();
 	} 
 	
 	

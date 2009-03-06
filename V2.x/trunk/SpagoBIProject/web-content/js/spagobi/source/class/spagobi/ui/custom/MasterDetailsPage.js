@@ -115,14 +115,6 @@ qx.Class.define("spagobi.ui.custom.MasterDetailsPage",
 		this.records = spagobi.app.data.DataService.loadKpiResourceRecords();	
 		config.dataset = this.records;
 		form = new spagobi.ui.custom.ResourceDefinitionForm();
-	} else if(type == 'modelInstance') {									
-		this.records = spagobi.app.data.DataService.loadKpiModelRecords();	
-		config.dataset = this.records;
-		form = new spagobi.ui.custom.ResourceDefinitionForm();
-	} else if(type == 'modelDefinition') {									
-		this.records = spagobi.app.data.DataService.loadKpiInstanceRecords();	
-		config.dataset = this.records;
-		form = new spagobi.ui.custom.ResourceDefinitionForm();
 	} else if(type === 'distributionList') {
 		this.records = spagobi.app.data.DataService.loadDatasourceRecords();
 		config.dataset = this.records;

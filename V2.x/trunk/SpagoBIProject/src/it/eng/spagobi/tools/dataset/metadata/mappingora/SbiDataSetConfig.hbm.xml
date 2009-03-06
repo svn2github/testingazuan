@@ -65,6 +65,9 @@
 	        <property name="script" type="string">
 	            <column name="SCRIPT" />
 	        </property>
+	        <property name="languageScript" type="string">
+	            <column name="LANGUAGE_SCRIPT" />
+	        </property>	  
 		</subclass>   
 		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet" discriminator-value="SbiJClassDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
 	        <property name="javaClassName" type="string">

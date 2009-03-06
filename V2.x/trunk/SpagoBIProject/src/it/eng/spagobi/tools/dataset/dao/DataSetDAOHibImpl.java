@@ -241,6 +241,10 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				if(((ScriptDataSet)aDataSet).getScript()!=null){
 					((SbiScriptDataSet)hibDataSet).setScript(((ScriptDataSet)aDataSet).getScript());
 				}
+				if(((ScriptDataSet)aDataSet).getLanguageScript()!=null){
+					((SbiScriptDataSet)hibDataSet).setLanguageScript(((ScriptDataSet)aDataSet).getLanguageScript());
+				}
+
 			}
 			
 			else if(aDataSet instanceof JavaClassDataSet){
@@ -351,6 +355,9 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 				hibDataSet=new SbiScriptDataSet();
 				if(((ScriptDataSet)aDataSet).getScript()!=null){
 					((SbiScriptDataSet)hibDataSet).setScript(((ScriptDataSet)aDataSet).getScript());
+				}
+				if(((ScriptDataSet)aDataSet).getLanguageScript()!=null){
+					((SbiScriptDataSet)hibDataSet).setLanguageScript(((ScriptDataSet)aDataSet).getLanguageScript());
 				}
 			}
 
@@ -472,6 +479,7 @@ public class DataSetDAOHibImpl extends AbstractHibernateDAO implements IDataSetD
 		if(hibDataSet instanceof SbiScriptDataSet){
 			ds=new ScriptDataSet();
 			((ScriptDataSet)ds).setScript(((SbiScriptDataSet)hibDataSet).getScript());
+			((ScriptDataSet)ds).setLanguageScript(((SbiScriptDataSet)hibDataSet).getLanguageScript());
 		}
 		
 		if(hibDataSet instanceof SbiJClassDataSet){

@@ -27,12 +27,12 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
-import it.eng.spagobi.behaviouralmodel.lov.handlers.ScriptManager;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.tools.importexport.ITransformer;
 import it.eng.spagobi.tools.importexport.ImportExportConstants;
+import it.eng.spagobi.utilities.scripting.ScriptManager;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -27,10 +27,10 @@ import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.sql.DataRow;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.behaviouralmodel.lov.handlers.ScriptManager;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.utilities.scripting.ScriptManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +47,7 @@ public class ScriptDetail  implements ILovDetail  {
 	 * the script
 	 */
 	private String script = "";
-	private List visibleColumnNames = null;
+	private String languageScript = "";		private List visibleColumnNames = null;
 	private String valueColumnName = "";
 	private String descriptionColumnName = "";
 	private List invisibleColumnNames = null;
@@ -128,6 +128,13 @@ public class ScriptDetail  implements ILovDetail  {
 			}
 		}
 		setInvisibleColumnNames(invisColNames);
+	
+		SourceBean language = (SourceBean)source.getAttribute("LANGUAGE");
+		if(language!=null){
+			String lang=language.getCharacters();
+			if(lang!=null)
+				setLanguageScript(lang);
+		}
 	}
 	
 	
@@ -144,6 +151,7 @@ public class ScriptDetail  implements ILovDetail  {
 				     "<DESCRIPTION-COLUMN>"+this.getDescriptionColumnName()+"</DESCRIPTION-COLUMN>" +
 				     "<VISIBLE-COLUMNS>"+GeneralUtilities.fromListToString(this.getVisibleColumnNames(), ",")+"</VISIBLE-COLUMNS>" +
 				     "<INVISIBLE-COLUMNS>"+GeneralUtilities.fromListToString(this.getInvisibleColumnNames(), ",")+"</INVISIBLE-COLUMNS>" +
+				     "<LANGUAGE>"+this.getLanguageScript()+"</LANGUAGE>" +
 				     "</SCRIPTLOV>";
 		return XML;
 	}
@@ -162,7 +170,7 @@ public class ScriptDetail  implements ILovDetail  {
 		String result = null;
 		HashMap attributes = GeneralUtilities.getAllProfileAttributes(profile);
 		Binding bind = ScriptManager.fillBinding(attributes);
-		result = ScriptManager.runScript(getScript(), bind);
+		result = ScriptManager.runScript(getScript(), bind, languageScript);   
 		// check if the result must be converted into the right xml sintax
 		boolean toconvert = checkSintax(result);
 		if(toconvert) { 
@@ -399,5 +407,15 @@ public class ScriptDetail  implements ILovDetail  {
 		this.visibleColumnNames = visibleColumnNames;
 	}
 
+	public String getLanguageScript() {
+		return languageScript;
+	}
+
+	public void setLanguageScript(String languageScript) {
+		this.languageScript = languageScript;
+	}
+
+	
+	
 	
 }

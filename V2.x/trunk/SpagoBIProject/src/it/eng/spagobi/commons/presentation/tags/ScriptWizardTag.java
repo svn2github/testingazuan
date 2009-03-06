@@ -18,8 +18,12 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.commons.presentation.tags;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
@@ -34,7 +38,11 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.scripting.ScriptManager;
+import it.eng.spagobi.utilities.scripting.ScriptUtilities;
 
+import javax.script.ScriptEngineFactory;
+import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
@@ -42,32 +50,34 @@ import javax.servlet.jsp.JspException;
  * Presentation tag for Script details. 
  */
 public class ScriptWizardTag extends CommonWizardLovTag {
-	
+
 	private HttpServletRequest httpRequest = null;
 	protected RequestContainer requestContainer = null;
 	protected ResponseContainer responseContainer = null;
 	protected IUrlBuilder urlBuilder = null;
-    protected IMessageBuilder msgBuilder = null;
+	protected IMessageBuilder msgBuilder = null;
 	private String script;
-	 String readonly = "readonly" ;
-	  boolean isreadonly = true ;
-	  String disabled = "disabled" ;
-	
+	private String languageScript;
+
+	String readonly = "readonly" ;
+	boolean isreadonly = true ;
+	String disabled = "disabled" ;
+
 	/* (non-Javadoc)
 	 * @see javax.servlet.jsp.tagext.TagSupport#doStartTag()
 	 */
 	public int doStartTag() throws JspException {
-		
+
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
 		responseContainer = ChannelUtilities.getResponseContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		TracerSingleton.log(SpagoBIConstants.NAME_MODULE, TracerSingleton.DEBUG, 
-				           "ScriptWizardTag::doStartTag:: invocato");
+		"ScriptWizardTag::doStartTag:: invocato");
 		RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
-        SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
-        SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+		SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
+		SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
 		IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		boolean isable = false;
 		try {
@@ -76,13 +86,17 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		 if (isable){
-			   	isreadonly = false;
-			   	readonly = "";
-			   	disabled = "";
-			   }
+		if (isable){
+			isreadonly = false;
+			readonly = "";
+			disabled = "";
+		}
 		StringBuffer output = new StringBuffer();
-		
+
+		String lanuageScriptLabel = msgBuilder.getMessage("SBISet.ListDataSet.languageScript", "messages", httpRequest);
+		String scriptLabel = msgBuilder.getMessage("SBIDev.scriptWiz.scriptLbl", "messages", httpRequest);
+
+
 		output.append("<table width='100%' cellspacing='0' border='0'>\n");
 		output.append("	<tr>\n");
 		output.append("		<td class='titlebar_level_2_text_section' style='vertical-align:middle;'>\n");
@@ -102,24 +116,86 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 		output.append(generateProfAttrTitleSection(urlImgProfAttr));
 		output.append("	</tr>\n");
 		output.append("</table>\n");
-		
+
 		output.append("<br/>\n");
-		
-		
+
+
 		output.append("<div class='div_detail_area_forms_lov'>\n");
-		output.append("	<div class='div_detail_label_lov'>\n");
-		String scriptLbl = msgBuilder.getMessage("SBIDev.scriptWiz.scriptLbl", "messages", httpRequest);
+
+
+		//LANGUAGE SCRIPT COMBO		
+
+		output.append("		<div class='div_detail_label_lov'>\n");
 		output.append("			<span class='portlet-form-field-label'>\n");
-		output.append(scriptLbl);
+		output.append(lanuageScriptLabel);
 		output.append("			</span>\n");
-		output.append("	</div>\n");
-		output.append("	<div class='div_detail_form' style='height:185px;'>\n");
-	    output.append("		<textarea id='script' name='script' "+disabled+" onchange='setLovProviderModified(true)' class='portlet-text-area-field' rows='10' cols='50'>" + script + "</textarea>\n");
-	    output.append("	</div>\n");
-	    output.append("</div>\n");
-		
-	    
-	    output.append("<script>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_form'>\n");
+		output.append("			<select  style='width:180px;' class='portlet-form-input-field' name='LANGUAGESCRIPT' id='LANGUAGESCRIPT' >\n");
+
+
+		Map engineNames=ScriptUtilities.getEngineFactoriesNames();
+		String selected="";
+		for(Iterator it=engineNames.keySet().iterator();it.hasNext();){
+			String engName=(String)it.next(); 
+			String alias=(String)engineNames.get(engName);
+			selected="";
+			if(languageScript.equalsIgnoreCase(alias)){
+
+				selected="selected='selected'";
+			}		
+			String aliasName=ScriptUtilities.bindAliasEngine(alias);
+
+
+			/*Map engineNames=ScriptManager.getEngineFactoriesNames();		
+				String selected="";
+				for (Iterator iterator = factories.iterator(); iterator.hasNext();) {
+					ScriptEngineFactory factory = (ScriptEngineFactory) iterator.next();
+					String engName = factory.getEngineName();
+				    String engVersion = factory.getEngineVersion();
+				    String langName = factory.getLanguageName();
+				    String langVersion = factory.getLanguageVersion();
+				    List<String> engNames = factory.getNames();
+				    String alias=engName;
+
+				    if(engNames.size()>=1){
+				    	alias=engNames.get(0);
+				    }
+				    selected="";
+
+					if(langName.equalsIgnoreCase(languageScript)){
+						selected="selected='selected'";
+						}*/
+
+			output.append("<option value='"+alias+"' label='"+alias+"' "+selected+">");
+			output.append(aliasName);	
+			output.append("</option>");
+		}
+		output.append("</select>");
+		output.append("</div>");
+
+		// FINE LANGUAGE SCRIPT
+
+
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			<span class='portlet-form-field-label'>\n");
+		output.append(scriptLabel);
+		output.append("			</span>\n");
+		output.append("		</div>\n");
+		output.append("		<div style='height:110px;' class='div_detail_form'>\n");
+		output.append("			<textarea style='height:100px;'  "+disabled+" class='portlet-text-area-field' name='SCRIPT' onchange='setLovProviderModified(true);'  cols='50'>" + script + "</textarea>\n");
+		output.append("		</div>\n");
+		output.append("		<div class='div_detail_label_lov'>\n");
+		output.append("			&nbsp;\n");
+		output.append("		</div>\n");
+
+
+		// fine DETAIL AREA FORMS
+		output.append("</div>\n");
+
+
+
+		output.append("<script>\n");
 		output.append("		var infowizardscriptopen = false;\n");
 		output.append("		var winSWT = null;\n");
 		output.append("		function opencloseScriptWizardInfo() {\n");
@@ -145,31 +221,31 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 		output.append("		}\n");
 		output.append("		Windows.addObserver(observerSWT);\n");
 		output.append("</script>\n");
-		
+
 		output.append("<div id='scriptwizardinfodiv' style='display:none;'>\n");	
 		output.append(msgBuilder.getMessageTextFromResource("it/eng/spagobi/commons/presentation/tags/info/scriptwizardinfo", httpRequest));
 		output.append("</div>\n");	
-		
-        try {
-            pageContext.getOut().print(output.toString());
-        }
-        catch (Exception ex) {
-            TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "ScriptWizardTag::doStartTag::", ex);
-            throw new JspException(ex.getMessage());
-        }
-		
+
+		try {
+			pageContext.getOut().print(output.toString());
+		}
+		catch (Exception ex) {
+			TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.CRITICAL, "ScriptWizardTag::doStartTag::", ex);
+			throw new JspException(ex.getMessage());
+		}
+
 		return SKIP_BODY;
 	}
-		
-    /* (non-Javadoc)
-     * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
-     */
-    public int doEndTag() throws JspException {
-        TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ScriptWizardTag::doEndTag:: invocato");
-        return super.doEndTag();
-    }
-	
-	
+
+	/* (non-Javadoc)
+	 * @see javax.servlet.jsp.tagext.TagSupport#doEndTag()
+	 */
+	public int doEndTag() throws JspException {
+		TracerSingleton.log(Constants.NOME_MODULO, TracerSingleton.DEBUG, "ScriptWizardTag::doEndTag:: invocato");
+		return super.doEndTag();
+	}
+
+
 	/**
 	 * Gets the script.
 	 * 
@@ -178,7 +254,7 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 	public String getScript() {
 		return script;
 	}
-	
+
 	/**
 	 * Sets the script.
 	 * 
@@ -187,4 +263,14 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 	public void setScript(String script) {
 		this.script = script;
 	}
+
+	public String getLanguageScript() {
+		return languageScript;
+	}
+
+	public void setLanguageScript(String languageScript) {
+		this.languageScript = languageScript;
+	}
+
+
 }

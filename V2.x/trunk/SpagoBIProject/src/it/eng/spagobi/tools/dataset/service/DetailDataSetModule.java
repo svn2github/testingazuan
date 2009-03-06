@@ -562,6 +562,8 @@ public class DetailDataSetModule extends AbstractModule {
 							}
 							if(serviceRequest.getAttribute("SCRIPT")!=null){
 								String script=(String)serviceRequest.getAttribute("SCRIPT");
+								String languageScript=(String)serviceRequest.getAttribute("LANGUAGESCRIPT");
+								ds.setLanguageScript(languageScript);
 								String toVerify = script.toUpperCase();
 								if( !toVerify.contains("<A") &&  !toVerify.contains("<LINK") &&  !toVerify.contains("<IMG") &&  !toVerify.contains("<SCRIPT")){
 									ds.setScript(script);

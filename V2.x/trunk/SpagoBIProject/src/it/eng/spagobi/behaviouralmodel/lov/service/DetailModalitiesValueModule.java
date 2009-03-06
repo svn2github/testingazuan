@@ -361,7 +361,7 @@ public class DetailModalitiesValueModule extends AbstractModule {
 					objectToTest = javaClassDet;
 				} 
 				
-				else if (input_type_cd.equalsIgnoreCase("SCRIPT")) {
+				else if (input_type_cd.equalsIgnoreCase("SCRIPT")) {					
 					String lovProv = modVal.getLovProvider();
 					ScriptDetail scriptDet =  null;
 					if( (lovProv==null) || (lovProv.trim().equals("")) ) {
@@ -769,12 +769,17 @@ public class DetailModalitiesValueModule extends AbstractModule {
 			if(script==null) {
 				script = "";
 			}
+			String languageScript = (String) request.getAttribute("LANGUAGESCRIPT");
+			if(languageScript==null) {
+				languageScript = "";
+			}
 			// TODO controllare se si possono togliere i caratteri di escape
 			//script = script.replaceAll(">", "&gt;");
 			//script = script.replaceAll("<", "&lt;");
 			//script = script.replaceAll("\"", "&quot;");
 			script = "<![CDATA[" + script + "]]>";
-			sdet.setScript(script);	        
+			sdet.setScript(script);	   
+			sdet.setLanguageScript(languageScript);
 	}
 	
 	

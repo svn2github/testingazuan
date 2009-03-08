@@ -585,17 +585,12 @@ CREATE TABLE SBI_KPI_ROLE (
 /
 
 Create table SBI_KPI (
-	KPI_ID Number(38,0) Constraint "SYS_C0021737" NOT NULL ,
+	KPI_ID Number(38,0)  NOT NULL ,
 	ID_MEASURE_UNIT Number(38,0),
 	DS_ID Number(38,0),
 	ID_KPI_PARENT Number(38,0),
 	THRESHOLD_ID Number(38,0),
-	NAME Varchar2 (120) Constraint "SYS_C0021805" NOT NULL ,
-	DOCUMENT_LABEL Varchar2 (20),
-	CODE Varchar2 (20),
-	METRIC Varchar2 (2000),
-	DESCRIPTION Varchar2 (255),
-	NAME Varchar2 (400) Constraint "SYS_C0021805" NOT NULL ,
+	NAME Varchar2 (400)  NOT NULL ,
 	DOCUMENT_LABEL Varchar2 (40),
 	CODE Varchar2 (40),
 	METRIC Varchar2 (1000),
@@ -610,6 +605,7 @@ Create table SBI_KPI (
 	MODEL_REFERENCE Varchar2 (255),
 	TARGET_AUDIENCE Varchar2 (1000),
 primary key ("KPI_ID")  
+)
 /
 
 
@@ -724,8 +720,8 @@ primary key ("ID_KPI_INSTANCE")
 
 Create table SBI_KPI_INSTANCE_HISTORY (
 	ID_KPI_INSTANCE_HISTORY Number(38,0)  NOT NULL ,
-	ID_MEASURE_UNIT Number(38,0)  NOT NULL ,
-	THRESHOLD_ID Number(38,0)  NOT NULL ,
+	ID_MEASURE_UNIT Number(38,0)   ,
+	THRESHOLD_ID Number(38,0)   ,
 	ID_KPI_INSTANCE Number(38,0)  NOT NULL ,
 	WEIGHT Number(38,0),
 	BEGIN_DT Timestamp(6),

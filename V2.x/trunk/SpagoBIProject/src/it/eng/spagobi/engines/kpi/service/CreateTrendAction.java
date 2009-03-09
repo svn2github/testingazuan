@@ -48,7 +48,7 @@ public class CreateTrendAction extends AbstractHttpAction{
 		String tempKpiInstId = (String)serviceRequest.getAttribute("KPI_INST_ID");
 		logger.debug("Got KpiInstance ID:"+(tempKpiInstId!=null ? tempKpiInstId : "null"));
 		Integer kpiInstId = new Integer(tempKpiInstId);
-		SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
+		SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
 		String format = (String) formatSB.getAttribute("format");
 		logger.debug("Got Date format: "+(format!=null ? format : "null"));
 		SimpleDateFormat f = new SimpleDateFormat();

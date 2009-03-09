@@ -853,9 +853,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     			    String value = (String) values.get(0);
     			    parametersMap.put(url, value);
     			    if (url.equals("ParKpiDate")) {
-    					//SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
-    					//	"SPAGOBI.DATE-FORMAT"));
-    					String format = "MM/dd/yyyy";
+    			    	SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+    					String format = (String) formatSB.getAttribute("format");
     					SimpleDateFormat f = new SimpleDateFormat();
     					f.applyPattern(format);
     					String temp = f.format(this.dateOfKPI);

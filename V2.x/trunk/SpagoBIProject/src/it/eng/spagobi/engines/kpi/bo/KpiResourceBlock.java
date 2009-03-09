@@ -301,9 +301,8 @@ public class KpiResourceBlock {
 					execUrlParMap.put("RESOURCE_NAME", r.getName());
 				}
 				if (d!=null){
-					//SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
-					//	"SPAGOBI.DATE-FORMAT"));
-					String format = "MM/dd/yyyy";
+					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+					String format = (String) formatSB.getAttribute("format");
 					SimpleDateFormat f = new SimpleDateFormat();
 					f.applyPattern(format);	
 				    String dat = f.format(d);
@@ -371,9 +370,8 @@ public class KpiResourceBlock {
 					execUrlParMap.put(r.getColumn_name(), r.getName());
 				}
 				if (d!=null){
-					//SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
-					//	"SPAGOBI.DATE-FORMAT"));
-					String format = "MM/dd/yyyy";
+					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+					String format = (String) formatSB.getAttribute("format");
 					SimpleDateFormat f = new SimpleDateFormat();
 					f.applyPattern(format);	
 				    String dat = f.format(d);

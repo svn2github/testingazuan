@@ -696,7 +696,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    String value = r.getName();
 	    kVal.setR(r);
 	    logger.debug("Setted the Resource:"+r.getName());
-	    temp.put("ParKpiResources", value);
+	    temp.put("ParKpiResource", value);
 	}
 	temp.put("ParModelInstance", modelInstanceId);
 

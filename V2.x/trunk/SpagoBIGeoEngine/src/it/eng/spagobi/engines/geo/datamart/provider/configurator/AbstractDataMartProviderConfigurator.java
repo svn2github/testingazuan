@@ -117,6 +117,7 @@ public class AbstractDataMartProviderConfigurator {
 			if(level == null) continue;
 			
 			String measure = (String)linkSB.getAttribute("MEASURE");
+			logger.debug("add link: " + hierarchyName + "->" + levelName + "->" + measure);
 			
 			Link link = new Link();
 			List parameters = linkSB.getAttributeAsList("PARAM");

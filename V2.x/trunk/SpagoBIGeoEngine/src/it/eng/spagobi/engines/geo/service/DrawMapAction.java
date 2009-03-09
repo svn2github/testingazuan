@@ -68,6 +68,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 		String responseFileName;
 		Monitor totalTimeMonitor = null;
 		Monitor totalTimePerFormatMonitor = null;
+		Monitor flushingResponseTotalTimeMonitor = null;
 		Monitor errorHitsMonitor = null;
 	
 		logger.debug("IN");
@@ -112,6 +113,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			}
 			
 			try {
+				flushingResponseTotalTimeMonitor = MonitorFactory.start("GeoEngine.drawMapAction.flushResponse.totalTime");
 				writeBackToClient(maptmpfile, encoder, inlineResponse, responseFileName, getContentType(outputFormat));
 			} catch(IOException e) {
 				logger.error("error while flushing output", e);
@@ -128,6 +130,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			errorHitsMonitor.stop();
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
+			if(flushingResponseTotalTimeMonitor != null) flushingResponseTotalTimeMonitor.stop();
 			if(totalTimePerFormatMonitor != null) totalTimePerFormatMonitor.stop();
 			if(totalTimeMonitor != null) totalTimeMonitor.stop();
 		

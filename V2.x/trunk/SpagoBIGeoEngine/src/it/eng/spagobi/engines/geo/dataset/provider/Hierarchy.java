@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spagobi.commons.utilities.StringUtilities;
 
 // TODO: Auto-generated Javadoc
@@ -53,6 +55,8 @@ public class Hierarchy {
 	private Map levelMap;
 	
 	private static final String ALL_MEASURE_KEY = "__ALL_MEASURE_KEY__"; 
+	
+	public static transient Logger logger = Logger.getLogger(Hierarchy.class);
 	
 	/**
 	 * Instantiates a new hierarchy.
@@ -295,7 +299,7 @@ public class Hierarchy {
 		public Link getLink(String key) {
 			Link link;
 			
-			link = (Link)links.get( key );
+			link = (Link)links.get( key.toUpperCase() );
 			if(link == null) {
 				link = (Link)links.get( ALL_MEASURE_KEY );
 			}
@@ -311,8 +315,10 @@ public class Hierarchy {
 		public void setLink(String key, Link link) {
 			if(StringUtilities.isEmpty(key)) {
 				this.links.put(ALL_MEASURE_KEY, link);
+				logger.debug("impossible to add link on " + key);
 			} else {
-				this.links.put(key, link);
+				this.links.put(key.toUpperCase(), link);
+				logger.debug("added link on " + key);
 			}
 			
 		}

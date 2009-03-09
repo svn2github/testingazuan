@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 import it.eng.spagobi.engines.geo.dataset.provider.Link;
 import it.eng.spagobi.tools.dataset.common.datastore.Field;
@@ -45,6 +47,8 @@ public class AddLinkFieldsTransformer implements IDataStoreTransformer {
 	Hierarchy.Level level;
 	Map env;
 	
+	public static transient Logger logger = Logger.getLogger(AddLinkFieldsTransformer.class);
+	
 	public AddLinkFieldsTransformer(String[] measureColumnNames, Hierarchy.Level level, Map env){
 		this.measureColumnNames = measureColumnNames;
 		this.level = level;
@@ -53,9 +57,12 @@ public class AddLinkFieldsTransformer implements IDataStoreTransformer {
 	
 	public void transform(IDataStore dataStore) {
 		List fieldsMeta = dataStore.getMetaData().findFieldMeta("ROLE", "MEASURE");
+		logger.debug("found " + fieldsMeta.size() + " measure column in dataset");
 		for(int i = 0; i < fieldsMeta.size(); i++) {
+			
 			IFieldMetaData fieldMeta = (IFieldMetaData)fieldsMeta.get(i);
 			String measureFiledName = fieldMeta.getName();
+		
 			String linkFiledName = measureFiledName + "_LINK";
 			Link link = level.getLink(measureFiledName);
 			addLinkField(linkFiledName, link, dataStore);
@@ -68,6 +75,8 @@ public class AddLinkFieldsTransformer implements IDataStoreTransformer {
 		IDataStoreMetaData dataStoreMeta = dataStore.getMetaData();
 		FieldMetadata fieldMeta = new FieldMetadata();
 		
+		logger.debug("add link column " + fieldName + ": " + link);
+		
 		fieldMeta.setName(fieldName);
 		fieldMeta.setType(String.class);
 		fieldMeta.setProperty("ROLE", "CROSSNAVLINK");
@@ -79,6 +88,7 @@ public class AddLinkFieldsTransformer implements IDataStoreTransformer {
 			IRecord record = (IRecord)it.next();
 			IField field;
 			if(link != null) {
+				logger.debug("link added: " + link.toXString(record, env));
 				field = new Field( link.toXString(record, env) );	
 			} else {
 				field = new Field( Link.DEFAULT_BASE_URL );				

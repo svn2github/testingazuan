@@ -136,15 +136,16 @@ onload="init(evt);">
         myMapApp.Windows["legend"].initLegendEntries();
       }
       
+      var target_layer = sbi.geo.conf.layers[ sbi.geo.conf.target_layer_index ];
+	  myMapApp.targetLayer = document.getElementById( target_layer.name );
+			
+			
       if(myMapApp.Windows["thematic"]){ 
         myMapApp.Windows["thematic"].addThemes();
       } else {
         setKpi(sbi.geo.conf.measures[0].name,sbi.geo.conf.measures[0].name,sbi.geo.conf.measures[0].name);
       }
 		
-			var target_layer = sbi.geo.conf.layers[ sbi.geo.conf.target_layer_index ];
-		
-			myMapApp.targetLayer = document.getElementById( target_layer.name );
 			
 			loadProjectSpecific();
 			

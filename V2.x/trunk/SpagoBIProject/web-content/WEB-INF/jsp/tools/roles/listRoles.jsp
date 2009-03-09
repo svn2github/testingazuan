@@ -170,7 +170,7 @@ Ext.onReady(function(){
 	  	Iterator roleTypesIt = roleTypes.iterator();
 	  	while (roleTypesIt.hasNext()) {
 	  		Domain roleType = (Domain) roleTypesIt.next();
-	  		String roleDescription = msgBuilder.getMessage("SBISet.ListRoles.roleType." + roleType.getValueCd(), request);
+	  		String roleDescription = roleType.getTranslatedValueName(locale);
 	  		%>['<%= roleType.getValueCd() %>', '<%= roleDescription %>']<%= roleTypesIt.hasNext() ? "," : "" %><%
 	  	}
 	  	%>  

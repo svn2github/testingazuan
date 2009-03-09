@@ -137,6 +137,8 @@ public class SpagoBIConstants {
 	public static final String INPUT_TYPE_JAVA_CLASS_CODE = "JAVA_CLASS";
 	public static final String INPUT_TYPE_SCRIPT_CODE = "SCRIPT";
 	
+	public static final String THEME = "THEME";
+
 	
 	public static final String BIOBJECT_TYPE_CODE = "BIOBJECT_TYPE_CODE";
 	public static final String REPORT_TYPE_CODE = "REPORT";

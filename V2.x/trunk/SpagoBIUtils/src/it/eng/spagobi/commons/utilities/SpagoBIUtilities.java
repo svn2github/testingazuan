@@ -121,7 +121,7 @@ public class SpagoBIUtilities {
 		return locale;
 	}
 
-	
+
 	public static Locale getCurrentLocale(RequestContainer requestContainer) {
 		Locale locale=null;
 		if(requestContainer!=null){    	
@@ -138,7 +138,7 @@ public class SpagoBIUtilities {
 		return locale;
 	}
 
-	
+
 	public static String getLocaleDateFormat(SessionContainer permSess){
 		String language=(String)permSess.getAttribute("AF_LANGUAGE");
 		String country=(String)permSess.getAttribute("AF_COUNTRY");
@@ -164,6 +164,23 @@ public class SpagoBIUtilities {
 
 	}
 
+	public static String getServerDateFormat(){
+		logger.debug("IN");
+		SourceBean formatSB=null; 
+		// if a particular language is specified take the corrisponding date-format
+		formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+		String format="MM/dd/yyyy";
+		if(formatSB!=null){
+			format = (String) formatSB.getAttribute("format");
+			logger.debug("server date format set to "+format);
+		}
+		else{
+			logger.error("could not find server date format, set default to "+format);			
+		}
+		logger.debug("OUT");
+		return format;
+
+	}
 
 	/**
 	 * Cleans a string from spaces and tabulation characters.

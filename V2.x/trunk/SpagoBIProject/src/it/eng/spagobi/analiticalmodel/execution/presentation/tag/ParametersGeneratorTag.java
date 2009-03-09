@@ -793,6 +793,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		// if it finds param value in biparam it must convert from datePickerFormat to user one!
 		String paramValue=getParameterValuesAsString(biparam);
 		try {
+			
 			if(paramValue!=null && !paramValue.equalsIgnoreCase("")){
 				// convert from datePickerFormat
 				Date temp;
@@ -800,13 +801,14 @@ public class ParametersGeneratorTag extends TagSupport {
 				temp = fPar.parse(paramValue);
 				d=temp;				
 			}
+
 		} catch (ParseException e) {
 
 			e.printStackTrace();
 		}			
 
-
-		String dateValue = StringUtils.dateToString(d, datePickerFormat);
+		String dojoFormat="MM/dd/yyyy";
+		String dateValue = StringUtils.dateToString(d, dojoFormat);
 		htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLink(httpRequest, "/js/dojo/dojo.js" )+ "'></script>"
 				+ "<script type='text/javascript'>"
 				+ " dojo.require('dojo.widget.DropdownDatePicker');"

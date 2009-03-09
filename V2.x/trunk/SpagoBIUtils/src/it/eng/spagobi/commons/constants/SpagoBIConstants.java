@@ -305,7 +305,7 @@ public class SpagoBIConstants {
 	public static final String LOVS_VIEW = "LovsView";
 	public static final String CONTSTRAINT_VIEW = "ConstraintView";
 	public static final String PARAMETER_VIEW = "ParameterView";
-	//public static final String DOCUMENT_ADMINISTRATION = "DocumentAdministration";
+	public static final String DOCUMENT_BROWSER_USER = "DocumentUserBrowser";
 	public static final String DOCUMENT_MANAGEMENT_DEV = "DocumentDevManagement";
 	public static final String DOCUMENT_MANAGEMENT_TEST = "DocumentTestManagement";
 	public static final String DOCUMENT_MANAGEMENT_ADMIN = "DocumentAdminManagement";

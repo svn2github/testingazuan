@@ -12,10 +12,13 @@
     		<fileset dir="${runtime.lib}">
           		<include name="**/*.jar"/>
     		</fileset>
-    		<!-- COMPILATI DI SPAGOBI necessarie per la compilazione -->
+    		<!-- COMPILATI DI SPAGOBIUTILS necessarie per la compilazione -->
     		<pathelement path="${spago_utils.bin.dir}"/>
-
     		<fileset dir="${project.dir}/lib">
+          		<include name="**/*.jar"/>
+    		</fileset>
+    		<!-- LIBRERIE DI SPAGOBI necessarie per la compilazione -->
+    		<fileset dir="${spagobi.lib.dir}">
           		<include name="**/*.jar"/>
     		</fileset>
  	</path>

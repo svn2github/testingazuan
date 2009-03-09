@@ -232,6 +232,7 @@ public class ExporterMetadata {
 			if (dataset instanceof ScriptDataSet) {
 				hibDataset = new SbiScriptDataSet();
 				((SbiScriptDataSet) hibDataset).setScript(((ScriptDataSet) dataset).getScript());
+				((SbiScriptDataSet) hibDataset).setLanguageScript(((ScriptDataSet) dataset).getLanguageScript());
 			}
 			hibDataset.setDsId(dataset.getId());
 			hibDataset.setLabel(dataset.getLabel());
@@ -241,6 +242,7 @@ public class ExporterMetadata {
 			hibDataset.setPivotColumnName(dataset.getPivotColumnName());
 			hibDataset.setPivotColumnValue(dataset.getPivotColumnValue());
 			hibDataset.setPivotRowName(dataset.getPivotRowName());
+			hibDataset.setNumRows(dataset.isNumRows());
 			
 			if (dataset.getTransformerId() != null) {
 				SbiDomains transformerType = (SbiDomains) session.load(SbiDomains.class, dataset.getTransformerId());

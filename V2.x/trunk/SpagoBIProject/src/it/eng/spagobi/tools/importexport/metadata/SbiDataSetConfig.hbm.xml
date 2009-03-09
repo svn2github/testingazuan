@@ -31,6 +31,9 @@
         <property name="pivotColumnValue" type="string">
             <column name="PIVOT_VALUE" />
         </property>
+        <property name="numRows" type="boolean">
+            <column name="NUM_ROWS" />
+        </property>
 		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet" discriminator-value="SbiFileDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
 	        <property name="fileName" type="string">
 	            <column name="FILE_NAME" />
@@ -59,7 +62,10 @@
 	        <property name="script" type="string">
 	            <column name="SCRIPT" />
 	        </property>
-		</subclass>   
+	        <property name="languageScript" type="string">
+	            <column name="LANGUAGE_SCRIPT" />
+	        </property>	        
+		</subclass> 
 		<subclass name="it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet" discriminator-value="SbiJClassDataSet" lazy="false" extends="it.eng.spagobi.tools.dataset.metadata.SbiDataSet" >
 	        <property name="javaClassName" type="string">
 	            <column name="JCLASS_NAME" />

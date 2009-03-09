@@ -81,28 +81,50 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 <script type="text/javascript">
 				function toggleHideChild(obj, tab_name){
 				
-					var objName = obj.id;
-					var nameSuffix = objName.split("_");
+				var objName = obj.id;
+				var nameSuffix = objName.split("_");
+				var objList = document.getElementById(tab_name);
 				
-					var objList = document.getElementById(tab_name);
-					for(var j=0;j<objList.rows.length;j++){
-						if(objList.rows(j).getAttribute('id').indexOf(objName)>=0 && objList.rows(j).getAttribute('id')!=objName)
-							if(objList.rows(j).style.display=='none') {
-								var actualSuffix = objList.rows(j).getAttribute('id').split("_");
-								if(actualSuffix.length>nameSuffix.length && actualSuffix.length<=(nameSuffix.length+1))
-									objList.rows(j).style.display='inline';
-							} else {
-								objList.rows(j).style.display='none';
-							}
-					}
+				 for(var j=0;j<objList.rows.length;j++){
+					  if (navigator.userAgent.indexOf("Firefox")!=-1){
+					   var nome = objList.rows[j].id;
+					  } else {
+					   var nome = objList.rows[j].getAttribute('id');
+					  }
+					 
+					  if(nome.indexOf(objName)>=0 && nome!=objName)
+					   if(objList.rows[j].style.display=='none') {
+					    if (navigator.userAgent.indexOf("Firefox")!=-1){
+					     var actualNome = objList.rows[j].id;
+					    } else {
+					     var actualNome = objList.rows[j].getAttribute('id');
+					    }
+					    var actualSuffix = actualNome.split("_");
+					    if(actualSuffix.length>nameSuffix.length && actualSuffix.length<=(nameSuffix.length+1)){
+					      if (navigator.userAgent.indexOf("Firefox")!=-1){
+					       objList.rows[j].style.display='table-row';
+					      } else {
+					       objList.rows[j].style.display='inline';
+					      }
+					     }
+					    } else {
+					     objList.rows[j].style.display='none';
+					    }
+					 }
 				}	 	
 				
 				function hideAllTr(tab_name){
 					var objList = document.getElementById(tab_name);
-					for(var j=0;j<objList.rows.length;j++){
-						if(objList.rows(j).getAttribute('id').indexOf("child")>0)
-								objList.rows(j).style.display='none';
-				  }
+				
+				   for(var j=0;j<objList.rows.length;j++){
+					  if (navigator.userAgent.indexOf("Firefox")!=-1){
+					   		var nome = objList.rows[j].id;
+					  } else {
+					    	var nome = objList.rows[j].getAttribute('id');
+					  }
+					  if(nome.indexOf("child")>0)
+					    	objList.rows[j].style.display='none';
+					   }
 				
 				}
 

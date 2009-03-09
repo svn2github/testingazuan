@@ -472,7 +472,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<spagobi:message key = "SBISet.ListDataSet.languageScript" />
 			</span>
 		</div>
-	    <div class='div_detail_form' style="height:150px;">
+	    <div class='div_detail_form'>
 		<%
 			   String languageScript = "" ; 
 		       if(ScriptDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){	

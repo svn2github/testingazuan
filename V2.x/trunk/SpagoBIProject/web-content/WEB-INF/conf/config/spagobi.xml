@@ -115,6 +115,7 @@
      <!-- ********************* START GENERAL CONFIGURATION ************************ -->
      <!-- THIS DATE FORMAT IS USED FOR DISPLAY THE DATA -->
      <DATE-FORMAT format="dd/MM/yyyy"/>
+     <DATE-FORMAT-SERVER format="dd/MM/yyyy"/>
      <DATE-FORMAT-IT_IT format="dd/MM/yyyy"/>
      <DATE-FORMAT-EN_US format="dd/MM/yy"/>
      <DATE-FORMAT-FR_FR format="dd/MM/yy"/>      

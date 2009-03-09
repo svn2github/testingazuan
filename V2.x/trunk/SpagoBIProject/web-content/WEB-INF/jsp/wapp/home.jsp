@@ -48,6 +48,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%-- START CHECK USER PROFILE EXISTENCE
 	This Ajax call is usefull to find out if a user profile object is in session, i.e. if a user has logged in.
 	In case the user profile object is not found, the browser is redirected to the login page.
+	
+	N.B.  TODO con il CAS da problemi perchè non valida il ticket ...
 	--%>
 <script type="text/javascript">
 	Ext.onReady(function(){

@@ -155,6 +155,15 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
+			
+			/*
+			 * The following code checks if a equal Remember Me exists, 
+			 * i.e. if a Remember Me for the same user, same document, same 
+			 * parameters or same subobject already exists. In this case 
+			 * the remember me is not saved. 
+			 * This does not work on Ingres because the '=' function 
+			 * (which is the sql translation of hibernate Expression.eq)
+			 * does not work on Long nvarchar fields.
 			Criteria criteria = aSession.createCriteria(SbiRememberMe.class);
 			Criterion userIdCriterion = Expression.eq("userName", userId);
 			criteria.add(userIdCriterion);
@@ -187,6 +196,28 @@ public class RememberMeDAOHibImpl extends AbstractHibernateDAO implements IRemem
 						+ parameters + "] is already present.");
 				return false;
 			}
+			*/
+			
+			/*
+			 * The following code does not check if an equivalent Remember Me already exists,
+			 * it simply inserts it.
+			 */
+			SbiRememberMe temp = new SbiRememberMe();
+			temp.setName(name);
+			temp.setDescription(description);
+			temp.setUserName(userId);
+			SbiObjects obj = (SbiObjects) aSession.load(SbiObjects.class, docId);
+			temp.setSbiObject(obj);
+			SbiSubObjects subObj = null;
+			if (subObjId != null) {
+				subObj = (SbiSubObjects) aSession.load(SbiSubObjects.class, subObjId);
+			}
+			temp.setSbiSubObject(subObj);
+			temp.setParameters(parameters);
+			aSession.save(temp);
+			tx.commit();
+			return true;
+			
 		} catch (HibernateException he) {
 			logException(he);
 			if (tx != null) tx.rollback();	

@@ -587,15 +587,16 @@ public class DelegatedBasicListService {
 		// case of date filtering
 		else if (valuetypefilter.equalsIgnoreCase(SpagoBIConstants.DATE_TYPE_FILTER)) {
 	        ConfigSingleton config = ConfigSingleton.getInstance();
-		    SourceBean formatSB = (SourceBean) config.getAttribute("DATA-ACCESS.DATE-FORMAT");
+//		    SourceBean formatSB = (SourceBean) config.getAttribute("DATA-ACCESS.DATE-FORMAT");
+	        SourceBean formatSB = (SourceBean) config.getAttribute("SPAGOBI.DATE-FORMAT-SERVER");
 		    String format = (String) formatSB.getAttribute("format");
 		    TracerSingleton.log(
 					Constants.NOME_MODULO,
 					TracerSingleton.WARNING,
 					"DelegatedBasicListService::filterList: applying date format " + format + " for filtering.");
-		    format = format.replaceAll("D", "d");
-		    format = format.replaceAll("m", "M");
-		    format = format.replaceAll("Y", "y");
+//		    format = format.replaceAll("D", "d");
+//		    format = format.replaceAll("m", "M");
+//		    format = format.replaceAll("Y", "y");
 	        Date valueDate = null;
 	        Date valueFilterDate = null;
 			try {

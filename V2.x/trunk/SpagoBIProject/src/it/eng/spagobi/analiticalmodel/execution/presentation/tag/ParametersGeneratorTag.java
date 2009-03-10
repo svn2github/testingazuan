@@ -806,29 +806,30 @@ public class ParametersGeneratorTag extends TagSupport {
 
 			e.printStackTrace();
 		}			
-
-		String dojoFormat="MM/dd/yyyy";
-		String dateValue = StringUtils.dateToString(d, dojoFormat);
+		// Dojo DropdownDatePicker requires the value to be formatted with rfc3339 format
+		String rfc3339format="MM/dd/yyyy";
+		String dateValue = StringUtils.dateToString(d, rfc3339format);
 		htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLink(httpRequest, "/js/dojo/dojo.js" )+ "'></script>"
 				+ "<script type='text/javascript'>"
 				+ " dojo.require('dojo.widget.DropdownDatePicker');"
-				+ " "
-				+ " </script>"
-				+ " <input style='width:230px;' type='text' "
-				+ "	   name='" + biparam.getParameterUrlName()+ "' id='"+ biparam.getParameterUrlName()+requestIdentity+ "'" 
-				+ "	   dojoType='dropdowndatepicker' "
-				+ " saveFormat='"+datePickerFormat+"' displayFormat='"+format+"'"
-				+ " widgetId='"+ biparam.getParameterUrlName()+requestIdentity+ "DatePicker' "
-				+ "    class='portlet-form-input-field' value='" + dateValue + "' "
-				+ "   onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()
+				+ " var isInit" + biparam.getParameterUrlName() + requestIdentity + " = true;"
+				+ " </script>\n"
+				+ " <input style='width:230px;' type='text' \n"
+				+ "	   name='" + biparam.getParameterUrlName()+ "' id='"+ biparam.getParameterUrlName()+requestIdentity+ "'\n" 
+				+ "	   dojoType='dropdowndatepicker' \n"
+				+ " saveFormat='"+datePickerFormat+"' displayFormat='"+format+"'\n"
+				+ " widgetId='"+ biparam.getParameterUrlName()+requestIdentity+ "DatePicker' \n"
+				+ "    class='portlet-form-input-field' value='" + dateValue + "' \n"
+				// onValueChanged is triggered also when displaying the date picker, and we avoid this using isInit variable
+				+ "   onValueChanged=\"if (!isInit" + biparam.getParameterUrlName() + requestIdentity + ") { refresh" + requestIdentity + "('" + biparam.getParameterUrlName()
 				+ requestIdentity + "','" + biparam.getParameterUrlName() + requestIdentity + "');");
 		if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {
 			if (mustRefreshPageForCorrelation(lblBiParamDependent)) {
 				htmlStream.append("setRefreshCorrelationFlag" + requestIdentity + "();");
-				htmlStream.append("this.form.submit();");
+				htmlStream.append("document.getElementById('parametersForm" + requestIdentity +"').submit();");
 			}
 		}
-		htmlStream.append("\" />\n");
+		htmlStream.append("} else {isInit" + biparam.getParameterUrlName() + requestIdentity + " = false;}\" />\n");
 		logger.debug("OUT");
 	}
 
@@ -946,7 +947,9 @@ public class ParametersGeneratorTag extends TagSupport {
 				htmlStream.append("		value = document.getElementById('" + aBIParam.getParameterUrlName() + requestIdentity + "').value;\n");
 				htmlStream.append("	} else {\n");
 				// date picker case
-				htmlStream.append("		value = dojo.widget.byId('"+ aBIParam.getParameterUrlName()+requestIdentity+ "DatePicker').inputNode.value;\n");
+				htmlStream.append("		datePickerDate = dojo.widget.byId('"+ aBIParam.getParameterUrlName()+requestIdentity+ "DatePicker').getDate();\n");
+				String serverDateFormat = SpagoBIUtilities.getServerDateFormat();
+				htmlStream.append("		value = dojo.date.format(datePickerDate, {datePattern: '" + serverDateFormat + "'});\n");
 				htmlStream.append("	}\n");
 				htmlStream.append("	temp = '&' + key + '=' + value;\n");
 				htmlStream.append("	temp = temp.replace(/'/g,'&#39;');\n");

@@ -71,15 +71,15 @@ qx.Class.define("qooxdoo.commons.WidgetUtils", {
             	var test_textfield = new qx.ui.form.TextField();
         	}
         	else{
-        		//var test_textfield = new qx.legacy.ui.form.PasswordField();//change
         		var test_textfield = new qx.ui.form.PasswordField();
         	}
         	
         	config = qooxdoo.commons.CoreUtils.apply(defultConfig, config);
             //test_textfield.set( defultConfig );//change .. not needed
             //test_textfield.set( config );//change
-            test_textfield.set({width:config.width, height:config.height, 
-            					value:config.value, maxLength:config.maxLength });
+        	
+        	test_textfield.set({width:config.width, height:config.height, 
+            					value:config.value, maxLength:config.maxLength, readOnly:config.readOnly });
             					
             var textContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
         	textContainer.add(test_textfield, {top: config.top, left: config.left});
@@ -285,7 +285,8 @@ qx.Class.define("qooxdoo.commons.WidgetUtils", {
         		labelwidth: 100,
         		value: '',
         		mandatory: false,
-        		password: false
+        		password: false,
+        		'readOnly': false
         	};
         	
         	config = qooxdoo.commons.CoreUtils.apply(defultConfig, config);
@@ -305,7 +306,8 @@ qx.Class.define("qooxdoo.commons.WidgetUtils", {
 	        		maxLength: config.maxLength,        		
 	        		width: config.width,
 	        		height: config.height,
-	        		value: config.value
+	        		value: config.value,
+	        		'readOnly': config.readOnly
 	           	},config.password);
         	
         	//var atom = new qx.ui.basic.Atom();

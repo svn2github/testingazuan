@@ -777,6 +777,8 @@ public class ParametersGeneratorTag extends TagSupport {
 
 		String format=SpagoBIUtilities.getLocaleDateFormat(permSess);
 
+		Locale currentLocale = SpagoBIUtilities.getCurrentLocale(this.requestContainer);
+		
 		logger.debug("DATE FORMAT:"+format);
 
 		String datePickerFormat = SpagoBIUtilities.getServerDateFormat();
@@ -809,6 +811,12 @@ public class ParametersGeneratorTag extends TagSupport {
 		// Dojo DropdownDatePicker requires the value to be formatted with rfc3339 format
 		String rfc3339format="MM/dd/yyyy";
 		String dateValue = StringUtils.dateToString(d, rfc3339format);
+		htmlStream.append("<script type='text/javascript'>\n");
+		htmlStream.append("if (!djConfig) {\n");
+		htmlStream.append("	var djConfig = { extraLocale: ['" + currentLocale.getLanguage() + "'] };\n");
+		htmlStream.append("}\n");
+		htmlStream.append("</script>\n");
+		
 		htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLink(httpRequest, "/js/dojo/dojo.js" )+ "'></script>"
 				+ "<script type='text/javascript'>"
 				+ " dojo.require('dojo.widget.DropdownDatePicker');"
@@ -816,7 +824,7 @@ public class ParametersGeneratorTag extends TagSupport {
 				+ " </script>\n"
 				+ " <input style='width:230px;' type='text' \n"
 				+ "	   name='" + biparam.getParameterUrlName()+ "' id='"+ biparam.getParameterUrlName()+requestIdentity+ "'\n" 
-				+ "	   dojoType='dropdowndatepicker' \n"
+				+ "	   dojoType='dropdowndatepicker' lang='" + currentLocale.getLanguage() + "'\n"
 				+ " saveFormat='"+datePickerFormat+"' displayFormat='"+format+"'\n"
 				+ " widgetId='"+ biparam.getParameterUrlName()+requestIdentity+ "DatePicker' \n"
 				+ "    class='portlet-form-input-field' value='" + dateValue + "' \n"

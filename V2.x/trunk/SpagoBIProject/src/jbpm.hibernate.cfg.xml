@@ -10,6 +10,7 @@
     <!-- jdbc connection properties -->
     <!-- property name="hibernate.dialect">org.hibernate.dialect.HSQLDialect</property-->
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+    <!-- property name="hibernate.dialect">org.hibernate.dialect.IngresDialect</property-->
     <property name="hibernate.connection.datasource">java:comp/env/jdbc/spagobi</property>
     <!--
     <property name="hibernate.connection.driver_class">org.hsqldb.jdbcDriver</property>

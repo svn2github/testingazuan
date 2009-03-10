@@ -80,7 +80,7 @@ public class DetailKpiUtil {
 
 		Integer ds_id = null;
 		IDataSet ds = null;
-		if (sDs_id != null && !sDs_id.trim().equals("")) {
+		if (sDs_id != null && !sDs_id.trim().equals("") && !sDs_id.trim().equals("-1")) {
 			ds_id = Integer.parseInt(sDs_id);
 			// try {
 			ds = DAOFactory.getDataSetDAO().loadDataSetByID(ds_id);

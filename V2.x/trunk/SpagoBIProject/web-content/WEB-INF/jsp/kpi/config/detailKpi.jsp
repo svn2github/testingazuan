@@ -320,8 +320,11 @@
 	key="sbi.kpi.label.dataSet" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form' style="height:40px;">
 <select class='portlet-form-field' name="ds_id" >
-
-<%
+<%if(ds_id == null) { %>
+		<option value="-1"
+			label="" selected>
+		</option>
+	<%	} 
 	List dataSets = DAOFactory.getDataSetDAO().loadAllDataSets();
 	Iterator dataSetsIt = dataSets.iterator();
 	while (dataSetsIt.hasNext()){

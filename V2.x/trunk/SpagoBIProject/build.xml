@@ -36,8 +36,8 @@
 	</target>
 	
 	<target name="cleanCache" >
-	    <delete dir="${basedir}/WebContent/js/qooxdoo-0.8/application/chiron/cache" excludes="**/.svn"/>
-		 <delete dir="${basedir}/WebContent/js/spagobi/cache" excludes="**/.svn"/>
+	    <delete dir="${basedir}/WebContent/js/lib/qooxdoo-0.8/application/chiron/cache" excludes="**/.svn"/>
+		 <delete dir="${basedir}/WebContent/js/src/spagobi/cache" excludes="**/.svn"/>
 	</target>	
 	
 	<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -66,16 +66,16 @@
 		<replace file="${js.spagobi.source.dir}/script/chiron.web.js">
 	
 			<replacefilter 
-			    token="../../qooxdoo-0.8" 
-			    value="../js/qooxdoo-0.8"/>		  
+			    token="../../../lib/qooxdoo-0.8" 
+			    value="../js/lib/qooxdoo-0.8"/>		  
 			
 			<replacefilter 
-			    token="./class/spagobi" 
-			    value="../js/spagobi/source/class/spagobi"/>
+			    token="./class/qooxdoo" 
+			    value="../js/src/qooxdoo/source/class/qooxdoo"/>
 			
 			<replacefilter 
-				token='qxlibraries["spagobi"]={"resourceUri":"../source/resource"};' 
-				value='qxlibraries["spagobi"]={"resourceUri":".."};'/>
+				token='qxlibraries["qooxdoo"]={"resourceUri":"../source/resource"};' 
+				value='qxlibraries["qooxdoo"]={"resourceUri":".."};'/>
 		
 		</replace>
 		
@@ -84,16 +84,16 @@
 	<target name="configureStandaloneSourceScriptFile" depends="createSourceScriptFiles">
 		<replace file="${js.spagobi.source.dir}/script/chiron.standalone.js">
 			<replacefilter 
-				token='qxlibraries["spagobi"]={"resourceUri":"../source/resource"};'
-				value='qxlibraries["spagobi"]={"resourceUri":"."};'/>	
+				token='qxlibraries["qooxdoo"]={"resourceUri":"../source/resource"};'
+				value='qxlibraries["qooxdoo"]={"resourceUri":"."};'/>	
 			
 			<replacefilter 
-						    token="../../qooxdoo-0.8" 
-						    value="./js/qooxdoo-0.8"/>	
+						    token="../../../lib/qooxdoo-0.8" 
+						    value="../js/lib/qooxdoo-0.8"/>	
 			
 			<replacefilter 
 						    token="./class/spagobi" 
-						    value="./js/spagobi/source/class/spagobi"/>
+						    value="./js/qooxdoo/source/class/qooxdoo"/>
 		</replace>
 	</target>
 	
@@ -103,18 +103,18 @@
 		
 	
 	<target name="createSourceScriptFiles" depends="createSourceTemplateScriptFile">
-		<copy file="${js.spagobi.source.dir}/script/spagobi.js" 
+		<copy file="${js.spagobi.source.dir}/script/qooxdoo.js" 
 			  tofile="${js.spagobi.source.dir}/script/chiron.web.js"/>
 		
-		<copy file="${js.spagobi.source.dir}/script/spagobi.js" 
+		<copy file="${js.spagobi.source.dir}/script/qooxdoo.js" 
 					  tofile="${js.spagobi.source.dir}/script/chiron.standalone.js"/>
 			
-		<copy file="${js.spagobi.source.dir}/script/spagobi.js" 
+		<copy file="${js.spagobi.source.dir}/script/qooxdoo.js" 
 			  tofile="${js.spagobi.source.dir}/script/chiron.portlet.js"/>
 	</target>
 	
 	<target name="createSourceTemplateScriptFile" >
-		 <exec executable="python" failonerror="true" dir="${web.dir}/js/spagobi" >
+		 <exec executable="python" failonerror="true" dir="${web.dir}/js/src/qooxdoo" >
 		 	<arg value="./generate.py"/>
 		 	<arg value="source"/>
 		 </exec> 

@@ -91,7 +91,7 @@
      <!-- ********************* START DATABASE CONFIGURATION ************************ -->
      
      <!-- SPAGOBI HIBERNATE PERSISTENCE CONFIGURATTION -->
-	 <!--  PostgresSQL (Default)  -->
+	 <!--  PostgresSQL -->
 	 <!--  hibernate.cfg.postgres.xml -->
 	 <!--  MySQL: Uncomment the row below and edit the file  to provide connection info -->
 	 <!--  hibernate.cfg.mysql.xml -->
@@ -101,6 +101,8 @@
      <!--   hibernate.cfg.hsql.xml -->
      <!--  SqlServer: Uncomment the row below and edit the file to provide connection info -->
      <!--   hibernate.cfg.sqlserver.xml -->
+     <!--  Ingres: Uncomment the row below and edit the file to provide connection info -->
+     <!--   hibernate.cfg.ingres.xml -->
      
 	 <HIBERNATE-CFGFILE>hibernate.cfg.mysql.xml</HIBERNATE-CFGFILE>
 	
@@ -121,7 +123,7 @@
 
     <!--  Date visual format according to current language-->    
      <DATE-FORMAT-IT_IT format="dd/MM/yyyy"/>
-     <DATE-FORMAT-EN_US format="dd/MM/yy"/>
+     <DATE-FORMAT-EN_US format="MM/dd/yy"/>
      <DATE-FORMAT-FR_FR format="dd/MM/yy"/>      
   	 <TIMESTAMP-FORMAT format="dd/MM/yyyy hh:mm:ss"/>
   	 

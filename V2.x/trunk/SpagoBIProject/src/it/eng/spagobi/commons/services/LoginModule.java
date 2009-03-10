@@ -113,7 +113,7 @@ public class LoginModule extends AbstractHttpModule {
 		String userId=null;
 		if (!activeSoo){
 			userId = (String)request.getAttribute("userID");
-			logger.error("userID="+userId);
+			logger.debug("userID="+userId);
 			if (userId == null) {
 				logger.error("User identifier not found. Cannot build user profile object");
 				throw new SecurityException("User identifier not found.");

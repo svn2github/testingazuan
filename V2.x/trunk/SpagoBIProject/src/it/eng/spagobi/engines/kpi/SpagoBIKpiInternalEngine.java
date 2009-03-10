@@ -881,12 +881,12 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
         							this.dateOfKPI = new Date(milliseconds);
     							}    							
     							
-    						}else{
+    						}/*else{
     							//If the date required is today then the time considered will be the actual date
-    							Long milliSecToAdd = new Long (60*60*24*1000);
-    							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+    							//Long milliSecToAdd = new Long (60*60*24*1000);
+    							//milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
     							this.dateOfKPI = new Date(milliseconds);
-    						}
+    						}*/
     					   
     					} catch (ParseException e) {
     					    logger.error("ParseException.value=" + value, e);
@@ -938,12 +938,12 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
         							this.dateOfKPI = new Date(milliseconds);
     							}    							
     							
-    						}else{
-    							//If the date required is today then the time considered will be the actual date
-    							Long milliSecToAdd = new Long (60*60*24*1000);
-    							milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
-    							this.dateOfKPI = new Date(milliseconds);
-    						}
+    						}/*else{
+							//If the date required is today then the time considered will be the actual date
+							//Long milliSecToAdd = new Long (60*60*24*1000);
+							//milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
+							this.dateOfKPI = new Date(milliseconds);
+						}*/
     					} catch (ParseException e) {
     					    logger.error("ParseException.value=" + value, e);
     					}

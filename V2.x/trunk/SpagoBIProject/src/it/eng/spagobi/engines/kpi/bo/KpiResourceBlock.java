@@ -177,7 +177,7 @@ public class KpiResourceBlock {
 		}
 		if (display_semaphore && semaphorColor!= null){
 			String semaphorHex ="rgb("+semaphorColor.getRed()+", "+semaphorColor.getGreen()+", "+semaphorColor.getBlue()+")" ;	
-			_htmlStream.append("		<td width='53%' class='kpi_td' ><div style=\"margin-left: "+20*recursionLev+"px;margin-top:5px;margin-right:5px;float:left;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:#"+semaphorHex+"\"></div><div  class='kpi_div'>"+modelName+"</div></td>\n");
+			_htmlStream.append("		<td width='53%' class='kpi_td' ><div style=\"margin-left: "+20*recursionLev+"px;margin-top:5px;margin-right:5px;float:left;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:"+semaphorHex+"\"></div><div  class='kpi_div'>"+modelName+"</div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='53%'  class='kpi_td' ><div class='kpi_div'><div style='MARGIN-LEFT: "+20*recursionLev+"px;text-align:left;' class='kpi_div'>"+modelName+"</div></div></td>\n");
 		}

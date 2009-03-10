@@ -80,21 +80,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     	<title>Chiron - Demo</title>    	
     	
     	<script type="text/javascript">
-			if(qxsettings["spagobi.executionMode"]==undefined)qxsettings["spagobi.executionMode"]='web';
+			if(qxsettings["qooxdoo.executionMode"]==undefined)qxsettings["qooxdoo.executionMode"]='web';
 			<%-- 
 			alert('chironMainPage.jsp: qxsettings: ' + qxsettings.toSource());
 			--%> 
 		</script>
 		  
-    	<script type="text/javascript" src='../js/spagobi/<%=rootDir%>/script/chiron.web.js'></script>
+    	<script type="text/javascript" src='../js/src/qooxdoo/<%=rootDir%>/script/chiron.web.js'></script>
 <%} else {%>
 		<script type="text/javascript">
-			if(qxsettings["qx.resourceUri"]==undefined)qxsettings["qx.resourceUri"]='<%=getResourceLink(request, "js/spagobi/build/resource/qx")%>';
-			if(qxsettings["spagobi.resourceUri"]==undefined)qxsettings["spagobi.resourceUri"]='<%=getResourceLink(request, "")%>';
-			if(qxsettings["spagobi.executionMode"]==undefined)qxsettings["spagobi.executionMode"]='portal';
+			if(qxsettings["qx.resourceUri"]==undefined)qxsettings["qx.resourceUri"]='<%=getResourceLink(request, "js/src/qooxdoo/build/resource/qx")%>';
+			if(qxsettings["qooxdoo.resourceUri"]==undefined)qxsettings["qooxdoo.resourceUri"]='<%=getResourceLink(request, "")%>';
+			if(qxsettings["qooxdoo.executionMode"]==undefined)qxsettings["qooxdoo.executionMode"]='portal';
 		</script>
 		  
-		<script type="text/javascript" src='<%=getResourceLink(request, "js/spagobi/" + "source" + "/script/chiron.portlet.js")%>'></script>
+		<script type="text/javascript" src='<%=getResourceLink(request, "js/src/qooxdoo/" + "source" + "/script/chiron.portlet.js")%>'></script>
 
 <% } %>
 	

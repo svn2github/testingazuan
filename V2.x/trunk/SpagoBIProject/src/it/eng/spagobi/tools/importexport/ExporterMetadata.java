@@ -735,8 +735,12 @@ public class ExporterMetadata {
 				while(iterObjParuse.hasNext()) {
 					ObjParuse objparuse = (ObjParuse)iterObjParuse.next();
 					Transaction tx = session.beginTransaction();
+					// TODO controllare perché serve questo controllo: le dipendenze non dovrebbero essere riutilizzabili, per 
+					// cui vengono inseriti una sola volta
 					Query hibQuery = session.createQuery(" from SbiObjParuse where id.sbiObjPar.objParId = " + objparuse.getObjParId() + 
-							                             " and id.sbiParuse.useId = " + objparuse.getParuseId());
+							                             " and id.sbiParuse.useId = " + objparuse.getParuseId() + 
+							                             " and id.sbiObjParFather.objParId = " + objparuse.getObjParFatherId() + 
+							                             " and id.filterOperation = '" + objparuse.getFilterOperation() + "'" );
 					List hibList = hibQuery.list();
 					if(!hibList.isEmpty()) {
 						continue;

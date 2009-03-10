@@ -34,6 +34,7 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiSubObjects;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRole;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFuncRoleId;
 import it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions;
+import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiObjParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuse;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParuseCk;
@@ -65,12 +66,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -721,6 +724,16 @@ public class ImportUtilities {
 		    Iterator objParsIt = objPars.iterator();
 		    while (objParsIt.hasNext()) {
 		    	SbiObjPar objPar = (SbiObjPar) objParsIt.next();
+		    	// for each biobjectparameter deletes all its dependencies, if any
+		    	Query query = sessionCurrDB.createQuery(" from SbiObjParuse where id.sbiObjPar.objParId = " + objPar.getObjParId());
+		    	List dependencies = query.list();
+		    	if (dependencies != null && !dependencies.isEmpty()) {
+		    		Iterator it = dependencies.iterator();
+		    		while (it.hasNext()) {
+		    			SbiObjParuse aSbiObjParuse = (SbiObjParuse) it.next();
+		    			sessionCurrDB.delete(aSbiObjParuse);
+		    		}
+		    	}
 		    	sessionCurrDB.delete(objPar);
 		    }
 		} finally {

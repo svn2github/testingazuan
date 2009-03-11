@@ -1042,6 +1042,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			finder.add(Expression.le("beginDt", d));
 			finder.add(Expression.ge("endDt", d));
 			finder.addOrder(Order.desc("beginDt"));
+			finder.addOrder(Order.desc("idKpiInstanceValue"));
 			logger.debug("Order Date Criteria setted");
 			finder.setMaxResults(1);
 			logger.debug("Max result to 1 setted");

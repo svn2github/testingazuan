@@ -126,7 +126,7 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 		if (numRows){
 			String precGroupField = null;
 			String precPivotField = null;
-			int cont = 1;
+			int cont = 0;
 			Iterator iterator = dataStore.iterator();
 			while (iterator.hasNext()) {
 				IRecord record = (IRecord) iterator.next();
@@ -147,14 +147,14 @@ public class PivotDataSetTransformer extends AbstractDataStoreTransformer {
 						cont++;
 					}
 					else{
-						cont = 1;
+						cont = 0;
 						precPivotField = pivotField.getValue().toString();
 						pivotField.setValue(pivotField.getValue().toString()+String.valueOf(cont));	
 						cont++;
 					}
 				}
 				else{
-					cont = 1;
+					cont = 0;
 					precGroupField = groupField.getValue().toString();
 					precPivotField = pivotField.getValue().toString();
 					pivotField.setValue(pivotField.getValue().toString()+String.valueOf(cont));

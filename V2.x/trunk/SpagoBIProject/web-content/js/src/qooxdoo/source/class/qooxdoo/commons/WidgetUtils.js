@@ -274,6 +274,29 @@ qx.Class.define("qooxdoo.commons.WidgetUtils", {
          	return radioContainer;
 		},
         
+		createGroupBox: function(config){
+			var defultConfig = {top: 0,
+	        					left: 0,
+	        					height: 50,
+	        					width: 400};
+			
+			config = qooxdoo.commons.CoreUtils.apply(defultConfig, config);
+			
+			var gb = new qx.ui.groupbox.GroupBox(config.text);
+			gb.setLayout(new qx.ui.layout.VBox());
+
+			//gb.set( {width:config.width, height:config.height} );
+			if(config.form){
+				var subform = this.createInputForm(config);
+				gb.add(subform);
+			}
+			var groupboxContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);//to set left and top
+			groupboxContainer.add(gb, {top: config.top, left: config.left});
+        	
+        	return groupboxContainer;
+			//return gb;
+		},
+		
         createInputTextField: function( config ) {
         	var defultConfig = {
         		top: 0,
@@ -662,7 +685,21 @@ qx.Class.define("qooxdoo.commons.WidgetUtils", {
         	}
         	
         	return atom;
-        }
+        },
+        
+        createInputGroupBox : function( config ) {
+        	var defultConfig = {
+            		//legend: //setLegend
+            	};
+            	
+            config = qooxdoo.commons.CoreUtils.apply(defultConfig, config);
          	
+            var groupBox = this.createGroupBox(config);
+            
+            var atom = new qx.ui.container.Composite(new qx.ui.layout.HBox);
+            atom.add( groupBox );
+            atom.setUserData('field', groupBox);
+            return atom;
+        }   
   }
 });

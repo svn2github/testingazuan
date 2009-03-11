@@ -154,15 +154,15 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		this.records = qooxdoo.app.data.DataService.loadKpiResourceRecords();	
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.ResourceDefinitionForm();
-	} /*else if(type == 'modelInstance') {									
+	} else if(type == 'modelDefinition') {									
+		this.records = qooxdoo.app.data.DataService.loadKpiModelDefinitionRecords();	
+		config.dataset = this.records;
+		form = new qooxdoo.ui.custom.KpiModelDefinitionForm();
+	}/*else if(type == 'modelInstance') {									
 		this.records = qooxdoo.app.data.DataService.loadKpiModelRecords();	
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.ResourceDefinitionForm();
-	} else if(type == 'modelDefinition') {									
-		this.records = qooxdoo.app.data.DataService.loadKpiInstanceRecords();	
-		config.dataset = this.records;
-		form = new qooxdoo.ui.custom.ResourceDefinitionForm();
-	}*/
+	} */
 	
 	this._pagedTable = new qooxdoo.ui.table.PagedTable(this, config); 
 	this.add(this._pagedTable,0);
@@ -210,13 +210,14 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 	    
 	    this.add(scroll,1);
 	   	}
+	this._type = type;
   },
 
   members :
   {
     _pagedTable : undefined 
     , _form : undefined
-    
+    ,_type: undefined
     // deprecated: TODO change with dataset
     , records : undefined
     
@@ -245,7 +246,18 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
      * @param dataObject The data object
      */
     , selectDataObject: function(dataObject) {
-    	this._form.setData(dataObject);
+    	if(this._type == 'modelDefinition'){
+    		this._form.setData(this._form);
+    		var f = this._form.getData();
+    		alert(qooxdoo.commons.CoreUtils.dump(f));
+    		
+    		for(prop in f){
+    			f[prop].setData(dataObject);
+    		}	
+    		
+    	}
+    	else
+    		this._form.setData(dataObject);
     }
     
     

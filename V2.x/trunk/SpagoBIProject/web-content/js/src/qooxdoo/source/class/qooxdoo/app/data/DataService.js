@@ -1393,6 +1393,49 @@ qx.Class.define("qooxdoo.app.data.DataService", {
   		];
   	},
   	
+  	loadKpiModelDefinitionRecords: function() {
+        var records = {};
+                  
+        records.meta =  this.loadKpiModelDefinitionMeta();                
+        records.rows =  this.loadKpiModelDefinitionData();
+        
+        return records;
+    },
+    
+    loadKpiModelDefinitionMeta: function() {
+        return [
+                {
+                    dataIndex: 'code',
+                    name: 'Code'
+                },
+                {
+                    dataIndex: 'name',
+                    name: 'Name'
+                }
+            ];
+          },
+          
+    loadKpiModelDefinitionData: function() {
+        return [
+                {
+                    id: '171',
+                    code: 'INDICATORI CSP',
+                    name: 'INDICATORI CSP',
+                    description: 'INDICATORI CSP',
+                    typename: 'GQM root',
+                    typedescription :'null'
+                },
+                {
+                    id: '172',
+                    code: 'INDICATORI TIM',
+                    name: 'INDICATORI TIM',
+                    description: 'INDICATORI TIM',
+                    typename: 'GQM root',
+                    typedescription: 'null'
+                }
+                ];
+    },    
+    
   	loadKpiResourceRecords: function() {
         var records = {};
                   

@@ -84,7 +84,7 @@ public class MessageBuilder implements IMessageBuilder {
 	 */
 	public String getMessage(String code) {
 		Locale locale = getLocale(null);
-		return getMessageInternal(code, "messages", locale);
+		return getMessageInternal(code, null, locale);
 	}
 
 	/* (non-Javadoc)
@@ -95,7 +95,7 @@ public class MessageBuilder implements IMessageBuilder {
 			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
 			locale = getDefaultLocale();
 		}
-		return getMessageInternal(code, "messages", locale);
+		return getMessageInternal(code, null, locale);
 	}
 
 
@@ -123,7 +123,7 @@ public class MessageBuilder implements IMessageBuilder {
 	 */
 	public String getMessage(String code, HttpServletRequest request) {
 		Locale locale = getLocale(request);
-		return getMessageInternal(code, "messages", locale);
+		return getMessageInternal(code, null, locale);
 	}
 
 	/* (non-Javadoc)
@@ -134,7 +134,7 @@ public class MessageBuilder implements IMessageBuilder {
 			logger.warn("Request locale " + locale + " in input is not valid since it is null or not configured.");
 			locale = getDefaultLocale();
 		}
-		return getMessageInternal(code, "messages", locale);
+		return getMessageInternal(code, null, locale);
 	}
 
 
@@ -198,19 +198,31 @@ public class MessageBuilder implements IMessageBuilder {
 	private String getMessageInternal(String code, String bundle, Locale locale) {
 		logger.debug("IN-code:"+code);
 		logger.debug("bundle:"+bundle);
-		String message = "";
-		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
-		// get mode of execution
-		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
-		// based on mode get spago object and url builder
-		if (sbiMode.equalsIgnoreCase("WEB")) {
+		String message = null;
+		if (bundle == null) {
+			message = MessageBundle.getMessage(code, locale);
+		} else {
 			message = MessageBundle.getMessage(code, bundle, locale);
-			if((message==null) || message.trim().equals("")) {
-				message = code;
-			}
-		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-			message = PortletUtilities.getMessage(code, bundle);
 		}
+		if (message == null || message.trim().equals("")) {
+			message = code;
+		}
+//		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
+//		// get mode of execution
+//		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
+//		// based on mode get spago object and url builder
+//		if (sbiMode.equalsIgnoreCase("WEB")) {
+//			if (bundle == null) {
+//				message = MessageBundle.getMessage(code, locale);
+//			} else {
+//				message = MessageBundle.getMessage(code, bundle, locale);
+//			}
+//			if((message==null) || message.trim().equals("")) {
+//				message = code;
+//			}
+//		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
+//			message = PortletUtilities.getMessage(code, bundle);
+//		}
 		logger.debug("OUT-message:"+message);
 		return message;
 	}

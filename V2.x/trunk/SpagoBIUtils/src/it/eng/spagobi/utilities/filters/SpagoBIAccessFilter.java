@@ -108,9 +108,9 @@ public class SpagoBIAccessFilter implements Filter {
     		FilterIOManager ioManager = new FilterIOManager(request, response);
     		
     		
-
-    		userId = (String) request.getParameter(USER_ID_PARAM_NAME);
-    		logger.info("Filter userId from request:" + userId);
+    		
+//    		userId = (String) request.getParameter(USER_ID_PARAM_NAME);
+//    		logger.info("Filter userId from request:" + userId);
     		
     		 
 		    documentId = (String) request.getParameter(DOCUMENT_ID_PARAM_NAME);
@@ -133,6 +133,7 @@ public class SpagoBIAccessFilter implements Filter {
 				requestUrl = httpRequest.getRequestURL().toString();
 				logger.info("requestUrl: " + requestUrl);
 				
+				userId = getUserWithSSO(httpRequest);
 				
 				ioManager.initConetxtManager();			    
 		
@@ -157,15 +158,15 @@ public class SpagoBIAccessFilter implements Filter {
 					}
 			    }
 		
-			    if (userId != null && !isBackend) {
-			    	userId = checkUserWithSSO(userId, httpRequest);
-			    }
+//			    if (userId != null && !isBackend) {
+//			    	userId = checkUserWithSSO(userId, httpRequest);
+//			    }
 		
-			    //  get the userId from session
-			    if ( !isBackend) {
-			    	userId = getUserWithSSO(httpRequest);
-					logger.info("UserIdentifier from Session (SSO is Active):" + userId);
-			    }
+//			    //  get the userId from session
+//			    if ( !isBackend) {
+//			    	userId = getUserWithSSO(httpRequest);
+//					logger.info("UserIdentifier from Session (SSO is Active):" + userId);
+//			    }
 			    
 			    String spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
 			    String spagoUrl = request.getParameter(SpagoBIConstants.SBI_HOST);

@@ -169,7 +169,7 @@ public class SpagoBIUtilities {
 		SourceBean formatSB=null; 
 		// if a particular language is specified take the corrisponding date-format
 		formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
-		String format="MM/dd/yyyy";
+		String format="dd/MM/yyyy";
 		if(formatSB!=null){
 			format = (String) formatSB.getAttribute("format");
 			logger.debug("server date format set to "+format);

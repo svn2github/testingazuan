@@ -1098,6 +1098,39 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
 				
         <br/>
 
+	<!--  ADD JAVA CLASS OPTION -->	  	
+        <input type="checkbox" id="sendtojavaclass_<%=biobj.getId()%>__<%=index%>" name="sendtojavaclass_<%=biobj.getId()%>__<%=index%>" 
+               <%if(sInfo.isSendToJavaClass()){out.write(" checked='checked' " );} %> />
+			  <span class='portlet-form-field-label'>
+					<spagobi:message key="scheduler.sendtojavaclass" bundle="component_scheduler_messages" />
+				</span>
+		<div id="javaclass_<%=biobj.getId()%>__<%=index%>"  style="margin-left:50px;margin-top:10px;">
+            <div class='div_detail_label_scheduler'>
+				        <span class='portlet-form-field-label'>
+					         <spagobi:message key="scheduler.javaclasspath" bundle="component_scheduler_messages" />
+				        </span>
+			      </div>
+            <div class='div_detail_form'>
+				        <input type="text" id="javaclasspath" value="<%=sInfo.getJavaClassPath()%>"
+				               name="javaclasspath_<%=biobj.getId()%>__<%=index%>" size="35"/>
+			      </div>
+        </div>
+        
+<script>  
+toggle('javaclass_<%=biobj.getId()%>__<%=index%>', 'sendtojavaclass_<%=biobj.getId()%>__<%=index%>', <%=sInfo.isSendToJavaClass()%> );
+</script> 
+
+		<div> &nbsp;
+		</div>		
+        <br/>
+<!-- END JAVA CLASS OPTION -->			  	
+
+
+
+
+
+
+
 			<input type="checkbox" id="sendmail_<%=biobj.getId()%>__<%=index%>"   name="sendmail_<%=biobj.getId()%>__<%=index%>" 
 				       <%if(sInfo.isSendMail()){out.write(" checked='checked' " );} %> />
 				<span class='portlet-form-field-label'>
@@ -1219,7 +1252,12 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
 			  		        %>
 						</select>
 			  	    </div>
-			  	</div>
+			  	      	 </div>
+		
+			  	
+			
+			  	 
+			  	 <!--  MAIL SEND -->
 			  	
 				<input  type="checkbox" name="useExpression_<%=biobj.getId()%>__<%=index%>" value="true"
 					<%= sInfo.isUseExpression() ? "checked='checked'" : "" %> />
@@ -1285,6 +1323,10 @@ toggle('mail_<%=biobj.getId()%>__<%=index%>', 'sendmail_<%=biobj.getId()%>__<%=i
 		</div>	    
   	    <br/>
 
+<!-- END OF MAIL SEND -->
+
+<!--  DISTRIBUTION LIST -->
+
 		<input type="checkbox" id="saveasdl_<%=biobj.getId()%>__<%=index%>" name="saveasdl_<%=biobj.getId()%>__<%=index%>" 
 				       <%if(sInfo.isSendToDl()){out.write(" checked='checked' " );} %>/>
 				<span class='portlet-form-field-label'>
@@ -1345,6 +1387,7 @@ toggle('mail_<%=biobj.getId()%>__<%=index%>', 'sendmail_<%=biobj.getId()%>__<%=i
 	<% } %>	
   	</table>
   </div>
+  
    </div>						
 <script>
 toggle('dl_<%=biobj.getId()%>__<%=index%>', 'saveasdl_<%=biobj.getId()%>__<%=index%>', <%=sInfo.isSendToDl()%> );

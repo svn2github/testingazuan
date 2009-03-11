@@ -40,6 +40,7 @@ import it.eng.spagobi.tools.distributionlist.bo.DistributionList;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.to.TriggerInfo;
+import it.eng.spagobi.tools.scheduler.utils.JavaClassDestination;
 import it.eng.spagobi.tools.scheduler.utils.SchedulerUtilities;
 
 import java.util.ArrayList;
@@ -49,8 +50,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
+
+import com.sun.org.apache.bcel.internal.classfile.JavaClass;
 
 
 public class TriggerManagementModule extends AbstractModule {
@@ -58,7 +62,7 @@ public class TriggerManagementModule extends AbstractModule {
 	static private Logger logger = Logger.getLogger(TriggerManagementModule.class);
 	private RequestContainer reqCont = null;
 	private SessionContainer sessCont = null;
-	 
+	 private EMFErrorHandler errorHandler=null; 
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spago.dispatching.module.AbstractModule#init(it.eng.spago.base.SourceBean)
@@ -76,7 +80,8 @@ public class TriggerManagementModule extends AbstractModule {
 		reqCont = getRequestContainer();
 		sessCont = reqCont.getSessionContainer();
 
-		EMFErrorHandler errorHandler = getErrorHandler();
+		errorHandler = getErrorHandler();
+		
 		try {
 			if(message == null) {
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 101);
@@ -239,6 +244,32 @@ public class TriggerManagementModule extends AbstractModule {
 					String snaphistlength = (String)request.getAttribute("snapshothistorylength_"+biobId+"__"+index);
 					sInfo.setSnapshotHistoryLength(snaphistlength);
 				}  
+			
+				String sendToJavaClass = (String)request.getAttribute("sendtojavaclass_"+biobId+"__"+index);	
+				if(sendToJavaClass!=null) {
+					sInfo.setSendToJavaClass(true);
+					String javaClassPath = (String)request.getAttribute("javaclasspath_"+biobId+"__"+index);	
+					JavaClassDestination tryClass=null;
+					try{
+					tryClass=(JavaClassDestination)Class.forName(javaClassPath).newInstance();
+					}
+					catch (ClassCastException e) {
+						logger.error("Error in istantiating class");
+						EMFUserError emfError=new EMFUserError(EMFErrorSeverity.ERROR, 12200);
+						errorHandler.addError(emfError);
+						throw emfError;
+					
+					}				
+					catch (Exception e) {
+						logger.error("Error in istantiating class");
+						EMFUserError emfError=new EMFUserError(EMFErrorSeverity.ERROR, 12100);
+						errorHandler.addError(emfError);
+						throw emfError;
+					}					
+					sInfo.setJavaClassPath(javaClassPath);
+				}  
+				
+				
 				String saveasdoc = (String)request.getAttribute("saveasdocument_"+biobId+"__"+index);	
 				if(saveasdoc!=null) {
 					sInfo.setSaveAsDocument(true);
@@ -509,6 +540,12 @@ public class TriggerManagementModule extends AbstractModule {
 					saveOptString += "snapshothistorylength="+sInfo.getSnapshotHistoryLength()+"%26";
 				}
 			}
+			if(sInfo.isSendToJavaClass()) {
+				saveOptString += "sendtojavaclass=true%26";
+				if( (sInfo.getJavaClassPath()!=null) && !sInfo.getJavaClassPath().trim().equals("") ) {
+					saveOptString += "javaclasspath="+sInfo.getJavaClassPath()+"%26";
+				}
+			}			
 			if(sInfo.isSaveAsDocument()) {
 				saveOptString += "saveasdocument=true%26";
 				if( (sInfo.getDocumentName()!=null) && !sInfo.getDocumentName().trim().equals("") ) {

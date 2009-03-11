@@ -376,6 +376,12 @@ public class SchedulerUtilities {
 			if(name.equals("snapshothistorylength")) {
 				sInfo.setSnapshotHistoryLength(value);
 			}
+			if(name.equals("sendtojavaclass")) {
+				sInfo.setSendToJavaClass(true);
+			}
+			if(name.equals("javaclasspath")) {
+				sInfo.setJavaClassPath(value);
+			}
 			if(name.equals("saveasdocument")) {
 				sInfo.setSaveAsDocument(true);
 			}

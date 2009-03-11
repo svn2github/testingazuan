@@ -28,9 +28,12 @@ public class SaveInfo {
 
 	private boolean saveAsSnapshot = false;
 	private boolean saveAsDocument = false;
+
 	private boolean sendMail = false;
 	private boolean sendToDl = false;
 	private boolean addToDl = false;
+	private boolean sendToJavaClass = false;
+	
 
 	private String snapshotName = "";
 	private String snapshotDescription = "";
@@ -48,6 +51,7 @@ public class SaveInfo {
 	private String functionalityIds = "";
 	private String mailSubj = "";
 	private String mailTxt = "";
+	private String javaClassPath = "";	
 	private int biobjId = 0;
 	private List dlIds = new ArrayList();
 	
@@ -421,6 +425,22 @@ public class SaveInfo {
 
 	public void setUseFixedRecipients(boolean useFixedRecipients) {
 		this.useFixedRecipients = useFixedRecipients;
+	}
+
+	public boolean isSendToJavaClass() {
+		return sendToJavaClass;
+	}
+
+	public void setSendToJavaClass(boolean sendToJavaClass) {
+		this.sendToJavaClass = sendToJavaClass;
+	}
+
+	public String getJavaClassPath() {
+		return javaClassPath;
+	}
+
+	public void setJavaClassPath(String javaClassPath) {
+		this.javaClassPath = javaClassPath;
 	}
 	
 	

@@ -4,6 +4,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
@@ -195,15 +196,16 @@ public class KpiResourceBlock {
 			execUrlParMap.put("KPI_VALUE_DESCR", valueDescr);
 
 			if (kpiVal!=null){
-				execUrlParMap.put("KPI_BEGIN_DATE", kpiVal.getBeginDate());
-				execUrlParMap.put("KPI_END_DATE", kpiVal.getEndDate());
-				execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId());
-				execUrlParMap.put("KPI_TARGET", kpiVal.getTarget());
+				execUrlParMap.put("KPI_BEGIN_DATE",kpiVal.getBeginDate() !=null ? kpiVal.getBeginDate().toString():"");
+				execUrlParMap.put("KPI_END_DATE",kpiVal.getEndDate() !=null ? kpiVal.getEndDate().toString():"");
+				execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId()!=null ? kpiVal.getKpiInstanceId().toString():"");
+				execUrlParMap.put("KPI_TARGET",kpiVal.getTarget()!=null ? kpiVal.getTarget().toString():"");
 			}		
-			execUrlParMap.put("KPI_MODEL_INST_ID", line.getModelInstanceNodeId());
+			execUrlParMap.put("KPI_MODEL_INST_ID",line.getModelInstanceNodeId()!=null ? line.getModelInstanceNodeId().toString():"");
 			execUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
 
-			String metadataPopupUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
+			//String metadataPopupUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
+			String metadataPopupUrl = createUrl_popup(execUrlParMap,userId);
 			_htmlStream.append("		<td  width='4%'  class='kpi_td' title='"+valueDescr+"' style='text-align:center;' ><div class='kpi_div'  ><a id='linkMetadata_"+requestIdentity+"_"+recursionLev+"' ><img src=\""+infoImgSrc+"\" /></div></a></td>\n");
 			// insert javascript for open popup window for the trend
 		    _htmlStream.append(" <script>\n");
@@ -297,7 +299,7 @@ public class KpiResourceBlock {
 				HashMap execUrlParMap = new HashMap();
 				execUrlParMap.put(ObjectsTreeConstants.ACTION, "GET_TREND");
 				if (r!=null){
-					execUrlParMap.put("RESOURCE_ID", r.getId());
+					execUrlParMap.put("RESOURCE_ID",r.getId()!=null ? r.getId().toString(): "");
 					execUrlParMap.put("RESOURCE_NAME", r.getName());
 				}
 				if (d!=null){
@@ -308,11 +310,13 @@ public class KpiResourceBlock {
 				    String dat = f.format(d);
 				    execUrlParMap.put("END_DATE", dat);						
 				}
-				if (kpiVal!=null) execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId());
+				if (kpiVal!=null) execUrlParMap.put("KPI_INST_ID",kpiVal.getKpiInstanceId()!=null ? kpiVal.getKpiInstanceId().toString():"");
+				
 				execUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
 				
 				String trend = msgBuilder.getMessage("sbi.kpi.trend", httpReq);
-				String trendPopupUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
+				//String trendPopupUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
+				String trendPopupUrl = createUrl_popup(execUrlParMap,userId);
 				_htmlStream.append("		<td  width='3%'  class='kpi_td' title=\""+trend+"\" style='text-align:center;' ><div class='kpi_div'  ><a id='linkDetail_"+requestIdentity+"_"+recursionLev+"' ><img  src=\""+trendImgSrc+"\" /></div></a></td>\n");
 				// insert javascript for open popup window for the trend
 			    _htmlStream.append(" <script>\n");
@@ -417,5 +421,21 @@ public class KpiResourceBlock {
 	   logger.debug("OUT");
 		return _htmlStream;
 	}
+	
+	protected String createUrl_popup(HashMap paramsMap, String userid) {
+
+		String url = GeneralUtilities.getSpagoBIProfileBaseUrl(userid);
+		if (paramsMap != null){
+			Iterator keysIt = paramsMap.keySet().iterator();
+			String paramName = null;
+			Object paramValue = null;
+			while (keysIt.hasNext()){
+				paramName = (String)keysIt.next();
+				paramValue = paramsMap.get(paramName); 
+				url += "&"+paramName+"="+paramValue.toString();
+			}
+		}
+		return url;
+	}	
 	
 }

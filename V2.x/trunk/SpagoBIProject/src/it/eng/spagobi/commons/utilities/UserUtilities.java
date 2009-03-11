@@ -79,6 +79,7 @@ public class UserUtilities {
 	    SpagoBIUserProfile user = null;
 	    try {
 		user = supplier.createUserProfile(userId);
+		user.setFunctions(readFunctionality(user.getRoles()));
 		userProfile = new UserProfile(user);
 	    } catch (Exception e) {
 	    	logger.error("An error occured while retrieving user profile for user[" + userId +"]");
@@ -205,7 +206,7 @@ public class UserUtilities {
     }
 
 
-    private static String[] readFunctionality(String[] roles) {
+    public static String[] readFunctionality(String[] roles) {
 	logger.debug("IN");
 	try {
 	    it.eng.spagobi.commons.dao.IUserFunctionalityDAO dao = DAOFactory.getUserFunctionalityDAO();

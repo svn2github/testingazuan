@@ -24,6 +24,7 @@ package it.eng.spagobi.services.security.service;
 
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.services.common.AbstractServiceImpl;
 import it.eng.spagobi.services.security.SecurityService;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
@@ -70,6 +71,7 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
 	try {
 	    validateTicket(token, userId);
 	    SpagoBIUserProfile user=supplier.createUserProfile(userId);
+	    user.setFunctions(UserUtilities.readFunctionality(user.getRoles()));
 	    return user;
 	} catch (SecurityException e) {
 	    logger.error("SecurityException", e);
@@ -98,6 +100,7 @@ public SpagoBIUserProfile getUserProfile(String token,String userId) {
 	try {
 	        validateTicket(token, userId);
 		SpagoBIUserProfile profile= supplier.createUserProfile(userId);
+		profile.setFunctions(UserUtilities.readFunctionality(profile.getRoles()));
 		UserProfile userProfile=new UserProfile(profile);			
 		return ObjectsAccessVerifier.canExec(new Integer(idFolder), userProfile);
 	} catch (SecurityException e) {

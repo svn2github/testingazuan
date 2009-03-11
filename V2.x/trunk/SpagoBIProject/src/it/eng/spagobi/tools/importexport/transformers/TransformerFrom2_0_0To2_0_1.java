@@ -63,13 +63,16 @@ public class TransformerFrom2_0_0To2_0_1 implements ITransformer {
 			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
 			String sql = "";
 			Statement stmt = conn.createStatement();
+			// avoid HQL --> HSQL hibernate dialect problem
+			sql =  "UPDATE SBI_DOMAINS SET VALUE_CD = 'HSQL', VALUE_NM = 'HSQL' WHERE VALUE_CD = 'HQL' AND DOMAIN_CD = 'DIALECT_HIB'";
+			stmt.execute(sql);
 			sql =  "ALTER TABLE SBI_DATA_SET ADD COLUMN NUM_ROWS BOOLEAN DEFAULT FALSE";
 			stmt.execute(sql);
 			sql =  "UPDATE SBI_DATA_SET SET NUM_ROWS=FALSE";
 			stmt.executeUpdate(sql);
-			sql =  "ALTER TABLE SBI_DATA_SET ADD COLUMN LANGUAGE_SCRIPT VARCHAR(50) DEFAULT 'groovy'";
+			sql =  "ALTER TABLE SBI_DATA_SET ADD COLUMN LANGUAGE_SCRIPT VARCHAR(50) DEFAULT NULL";
 			stmt.execute(sql);
-			sql =  "UPDATE SBI_DATA_SET SET LANGUAGE_SCRIPT='groovy' where OBJECT_TYPE = 'SbiScriptDataSet'";
+			sql =  "UPDATE SBI_DATA_SET SET LANGUAGE_SCRIPT = 'groovy' where OBJECT_TYPE = 'SbiScriptDataSet'";
 			stmt.executeUpdate(sql);
 			conn.commit();
 			conn.close();

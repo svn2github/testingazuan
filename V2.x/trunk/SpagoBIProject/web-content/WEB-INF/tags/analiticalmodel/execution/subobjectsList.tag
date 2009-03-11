@@ -19,12 +19,16 @@
 <%@tag import="java.util.Date"%>
 <%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@tag import="it.eng.spagobi.commons.bo.UserProfile"%>
+<%@tag import="it.eng.spago.base.SessionContainer"%>
+<%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
+<%@tag import="it.eng.spago.util.StringUtils"%>
+
 
 <%
 RequestContainer requestContainer = ChannelUtilities.getRequestContainer(request);
 IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-
+SessionContainer permSess=requestContainer.getSessionContainer().getPermanentContainer();
 Map baseDeleteSubObjUrlPars = new HashMap();
 baseDeleteSubObjUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 baseDeleteSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "DELETE_SUBOBJECT");
@@ -40,7 +44,7 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 	<%
 //} else {
 	%>
-	<form method='POST' action='<%= deleteSubObjUrl %>' id='subobjectsForm<%= uuid %>' name='subobjectsForm<%= uuid %>'>
+<form method='POST' action='<%= deleteSubObjUrl %>' id='subobjectsForm<%= uuid %>' name='subobjectsForm<%= uuid %>'>
 		<table style='width:100%;' align='left' id="subObjectTable_<%= uuid %>">
 			<thead>
 				<tr>
@@ -194,8 +198,14 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 			nameSub = subObj.getName();
 	        descr = subObj.getDescription();
 	        owner = subObj.getOwner();
-	        creationDate = subObj.getCreationDate().toString();
-	        lastModificationDate = subObj.getLastChangeDate().toString();
+	        
+	        String format=SpagoBIUtilities.getLocaleDateFormat(permSess);
+	        
+	        Date creationDateD = subObj.getCreationDate();
+			creationDate = StringUtils.dateToString(creationDateD, format);
+
+	        Date lastModificationDateD=subObj.getLastChangeDate();
+	        lastModificationDate = StringUtils.dateToString(lastModificationDateD, format);
 	                    
 	        visib = "Private";
 	        if (subObj.getIsPublic().booleanValue()) {

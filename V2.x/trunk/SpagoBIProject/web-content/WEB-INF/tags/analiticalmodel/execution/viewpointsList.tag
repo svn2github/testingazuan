@@ -21,14 +21,19 @@
 <%@tag import="it.eng.spago.base.SourceBean"%>
 <%@tag import="it.eng.spago.util.StringUtils"%>
 <%@tag import="it.eng.spagobi.commons.bo.UserProfile"%>
+<%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
+<%@tag import="it.eng.spago.base.SessionContainer"%>
+
 
 <%
 RequestContainer requestContainer = ChannelUtilities.getRequestContainer(request);
 IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+SessionContainer permSess=requestContainer.getSessionContainer().getPermanentContainer();
+
 if (viewpointsList == null || viewpointsList.size() == 0) {
 	%>
-	<div class='portlet-font'><spagobi:message key="SBIDev.docConf.viewPoint.noViewPoints"/></div>
+<div class='portlet-font'><spagobi:message key="SBIDev.docConf.viewPoint.noViewPoints"/></div>
 	<%
 } else {
     Map deleteVPUrlPars = new HashMap();
@@ -198,12 +203,8 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 	    viewVPUrl = urlBuilder.getUrl(request, viewVPUrlPars);
 
         ConfigSingleton conf = ConfigSingleton.getInstance();
-	    SourceBean formatSB = (SourceBean) conf.getAttribute("DATA-ACCESS.DATE-FORMAT");
-	    String format = (String) formatSB.getAttribute("format");
-	    format = format.replaceAll("D", "d");
-	    format = format.replaceAll("m", "M");
-	    format = format.replaceAll("Y", "y");
-	    String date = StringUtils.dateToString(creationDateVP, format);
+		String format=SpagoBIUtilities.getLocaleDateFormat(permSess);
+        String date = StringUtils.dateToString(creationDateVP, format);
         %>
 				<tr class='portlet-font'>
 					<td style='vertical-align:middle;' class='<%= rowClass %>'><%= nameVP %></td>

@@ -6,7 +6,7 @@
 
 <%@tag import="java.util.Iterator"%>
 <%@tag import="it.eng.spagobi.analiticalmodel.document.bo.Snapshot"%>
-
+<%@tag import="it.eng.spago.base.SessionContainer"%>
 <%@tag import="it.eng.spago.base.RequestContainer"%>
 <%@tag import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@tag import="it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory"%>
@@ -18,14 +18,20 @@
 <%@tag import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@tag import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@tag import="java.util.Date"%>
+<%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
+<%@tag import="it.eng.spago.util.StringUtils"%>
+
 
 <%
 RequestContainer requestContainer = ChannelUtilities.getRequestContainer(request);
 IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+SessionContainer permSess=requestContainer.getSessionContainer().getPermanentContainer();
+
 if (snapshotsList == null || snapshotsList.size() == 0) {
 	%>
-	<div class='portlet-font'><spagobi:message key="SBIDev.docConf.snapshots.nosnapshots"/></div>
+
+<div class='portlet-font'><spagobi:message key="SBIDev.docConf.snapshots.nosnapshots"/></div>
 	<%
 } else {
     Map deleteSnapUrlPars = new HashMap();
@@ -157,6 +163,9 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 		nameSnap = snap.getName();
 		descrSnap = snap.getDescription();
 		creationDate = snap.getDateCreation();
+		String format=SpagoBIUtilities.getLocaleDateFormat(permSess);
+    	String dateValue = StringUtils.dateToString(creationDate, format);
+  
 		
 		Map execSnapUrlPars = new HashMap();
 		execSnapUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
@@ -171,7 +180,7 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 	    	<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
 	    	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= descrSnap %></td>
 	    	<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
-	    	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= creationDate.toString() %></td>
+	    	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= dateValue %></td>
 	    	<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
         	<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
         		<a href='<%= execSnapUrl %>'>

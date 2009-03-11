@@ -188,6 +188,8 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
     baseExecSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "EXEC_SUBOBJECT");
     baseExecSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
     
+    String dateFormat=SpagoBIUtilities.getLocaleDateFormat(permSess);
+    
 	if (subobjectsList != null && subobjectsList.size() > 0) {
 		Iterator iterSubs =  subobjectsList.iterator();
 		while(iterSubs.hasNext()) {
@@ -199,13 +201,11 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 	        descr = subObj.getDescription();
 	        owner = subObj.getOwner();
 	        
-	        String format=SpagoBIUtilities.getLocaleDateFormat(permSess);
-	        
 	        Date creationDateD = subObj.getCreationDate();
-			creationDate = StringUtils.dateToString(creationDateD, format);
+			creationDate = StringUtils.dateToString(creationDateD, dateFormat);
 
 	        Date lastModificationDateD=subObj.getLastChangeDate();
-	        lastModificationDate = StringUtils.dateToString(lastModificationDateD, format);
+	        lastModificationDate = StringUtils.dateToString(lastModificationDateD, dateFormat);
 	                    
 	        visib = "Private";
 	        if (subObj.getIsPublic().booleanValue()) {
@@ -359,7 +359,7 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 	function loadSubObject(windowName, subObjId) {
 		var params;
 		Ext.Ajax.request({
-			url: '<%= GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserId().toString()) %>&ACTION_NAME=GET_SUBOBJECT_INFO&<%=SpagoBIConstants.SUBOBJECT_ID%>=' + subObjId + '&<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE',
+			url: '<%= GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserId().toString()) %>&ACTION_NAME=GET_SUBOBJECT_INFO&<%=SpagoBIConstants.SUBOBJECT_ID%>=' + subObjId + '&DATE_FORMAT=<%= dateFormat %>&<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE',
 			method: 'get',
 			success: function (result, request) {
 				response = result.responseText || "";

@@ -24,6 +24,7 @@ package it.eng.spagobi.analiticalmodel.document.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.util.JavaScript;
+import it.eng.spago.util.StringUtils;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -58,12 +59,29 @@ public class GetSubobjectInfo extends AbstractHttpAction {
 			} else {
 				Integer subObjId = request.getInteger(SpagoBIConstants.SUBOBJECT_ID);
 				SubObject subobject = DAOFactory.getSubObjectDAO().getSubObject(subObjId);
+				String dateFormat = request.getString("DATE_FORMAT");
+				
+				String creationDate = null;
+				String lastModificationDate = null;
+				try {
+					creationDate = StringUtils.dateToString(subobject.getCreationDate(), dateFormat);
+				} catch (Exception e) {
+					logger.error(e);
+					creationDate = subobject.getCreationDate().toString();
+				}
+				try {
+					lastModificationDate = StringUtils.dateToString(subobject.getLastChangeDate(), dateFormat);
+				} catch (Exception e) {
+					logger.error(e);
+					lastModificationDate = subobject.getLastChangeDate().toString();
+				}
+				
 				output.append("{id: " + subobject.getId().toString() + ", " +
 						"name: \"" + JavaScript.escapeText(subobject.getName()) + "\", " +
 						"description: \"" + JavaScript.escapeText(subobject.getDescription()) + "\", " +
 						"owner: \"" + JavaScript.escapeText(subobject.getOwner()) + "\", " +
-						"creationDate: \"" + JavaScript.escapeText(subobject.getCreationDate().toString()) + "\", " +
-						"lastModificationDate: \"" + JavaScript.escapeText(subobject.getLastChangeDate().toString()) + "\", " +
+						"creationDate: \"" + JavaScript.escapeText(creationDate) + "\", " +
+						"lastModificationDate: \"" + JavaScript.escapeText(lastModificationDate) + "\", " +
 						"isPublic: " + JavaScript.escapeText(subobject.getIsPublic().toString()) + "}");
 			}
 		} catch (Exception e) {

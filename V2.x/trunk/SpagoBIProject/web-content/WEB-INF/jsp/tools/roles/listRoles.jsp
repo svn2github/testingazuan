@@ -28,6 +28,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spagobi.commons.bo.Domain"%>
 
+<%!
+Domain getRoleTypeDomain(List roleTypes, String roleTypeCd) {
+	Domain toReturn = null;
+	Iterator it = roleTypes.iterator();
+	while (it.hasNext()) {
+		Domain aDomain = (Domain) it.next();
+		if (aDomain.getValueCd().equals(roleTypeCd)) {
+			toReturn = aDomain;
+			break;
+		}
+	}
+	return toReturn;
+}
+%>
+
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <%
@@ -79,6 +94,7 @@ String synchUrl = urlBuilder.getUrl(request, synchUrlParameters);
 
 <%
 List roles = DAOFactory.getRoleDAO().loadAllRoles();
+List roleTypes = DAOFactory.getDomainDAO().loadListDomainsByType("ROLE_TYPE");
 %>
 
 <script type="text/javascript">
@@ -131,7 +147,8 @@ Ext.onReady(function(){
 			params.put("EXT_ROLE_ID", role.getId().toString());
 			String deleteUrl = urlBuilder.getUrl(request, params);
 			deleteUrl = deleteUrl.replaceAll("&amp;", "&");
-    		String roleTypeDescription = msgBuilder.getMessage("SBISet.ListRoles.roleType." + role.getRoleTypeCD(), request);
+			Domain roleTypeDomain = getRoleTypeDomain(roleTypes, role.getRoleTypeCD());
+    		String roleTypeDescription = roleTypeDomain.getTranslatedValueName(locale);
     		%>['<%= role.getId() %>', '<%= role.getName() %>', '<%= role.getDescription() %>', '<%= roleTypeDescription %>', 
     		 <%= role.isAbleToSaveSubobjects() %>, <%= role.isAbleToSeeSubobjects() %>, <%= role.isAbleToSeeSnapshots() %>,
     		 <%= role.isAbleToSeeViewpoints() %>, <%= role.isAbleToSeeNotes() %>, <%= role.isAbleToSeeMetadata() %>, 
@@ -166,7 +183,6 @@ Ext.onReady(function(){
     
     var roleTypes = [
 	    <%
-	    List roleTypes = DAOFactory.getDomainDAO().loadListDomainsByType("ROLE_TYPE");
 	  	Iterator roleTypesIt = roleTypes.iterator();
 	  	while (roleTypesIt.hasNext()) {
 	  		Domain roleType = (Domain) roleTypesIt.next();
@@ -338,8 +354,10 @@ function getRoleTypeCode(roleType) {
   	roleTypesIt = roleTypes.iterator();
   	while (roleTypesIt.hasNext()) {
   		Domain roleType = (Domain) roleTypesIt.next();
-  		String roleDescription = msgBuilder.getMessage("SBISet.ListRoles.roleType." + roleType.getValueCd(), request);
-  		%>if (roleType == '<%= roleDescription %>') roleType = '<%= roleType.getValueCd() %>';<%
+  		String roleTypeDescription = roleType.getTranslatedValueName(locale);
+  		%>
+  		if (roleType == '<%= roleTypeDescription %>') roleType = '<%= roleType.getValueCd() %>';
+  		<%
   	}
 	%>
 	return roleType;

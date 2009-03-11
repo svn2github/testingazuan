@@ -1423,7 +1423,8 @@ qx.Class.define("qooxdoo.app.data.DataService", {
                     name: 'INDICATORI CSP',
                     description: 'INDICATORI CSP',
                     typename: 'GQM root',
-                    typedescription :'null'
+                    typedescription :'null',
+                    kpiname : 'Numero Alarmi CSP'
                 },
                 {
                     id: '172',
@@ -1431,7 +1432,8 @@ qx.Class.define("qooxdoo.app.data.DataService", {
                     name: 'INDICATORI TIM',
                     description: 'INDICATORI TIM',
                     typename: 'GQM root',
-                    typedescription: 'null'
+                    typedescription: 'null',
+                    kpiname : 'Numero Alarmi CSP'
                 }
                 ];
     },    

@@ -246,15 +246,21 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
      * @param dataObject The data object
      */
     , selectDataObject: function(dataObject) {
-    	if(this._type == 'modelDefinition'){
-    		this._form.setData(this._form);
-    		var f = this._form.getData();
-    		alert(qooxdoo.commons.CoreUtils.dump(f));
+    	
+    	if(this._type == 'modelDefinition'){	//form with multiple group box
     		
-    		for(prop in f){
-    			f[prop].setData(dataObject);
-    		}	
+    		//Go to form inside each groupbox and then set the value of required field
+    		//this._form.setData({'modeldefn' : dataObject}); WORKING for 1 form
     		
+    		// to make generic for forms spanning multiple group-boxes
+    		var o = [];
+    		for(var prop in this._form.dataMappings){
+    			
+    			//this._form.setData({prop : dataObject});
+    			
+    			o[prop] = dataObject;
+    			this._form.setData(o);
+    		}
     	}
     	else
     		this._form.setData(dataObject);

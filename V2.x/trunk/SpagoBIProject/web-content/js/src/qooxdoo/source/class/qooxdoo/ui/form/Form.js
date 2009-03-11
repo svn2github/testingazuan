@@ -180,7 +180,8 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 					}
 				}
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'groupbox') {
-				value = object.getChildren()[0];	//set to form added to the groupbox
+				var form = object.getChildren()[0];	//set to form added to the groupbox
+				value = form.getData();
 			}	
 			
 			return value;			
@@ -224,7 +225,10 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 					}
 				}
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'groupbox') {
-				object.setData(value);
+				var form = object.getChildren()[0];
+				if(form){
+					form.setData(value);
+				}	
 			}
 			
 		},

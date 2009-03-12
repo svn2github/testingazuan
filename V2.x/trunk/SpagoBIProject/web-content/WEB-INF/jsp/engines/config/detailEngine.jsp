@@ -144,7 +144,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</span>
 	</div>	
 	<div class='div_detail_form'>
-		<select class='portlet-form-field' name="engineTypeId" onchange= "changeEngineType(this.options[this.selectedIndex].label)" id="engineType">
+		<select class='portlet-form-input-field' 
+		name="engineTypeId" 
+		onchange= "changeEngineType(this.options[this.selectedIndex].id)" 
+		id="engineType">
 			<%
 			java.util.List engineTypes = DAOFactory.getDomainDAO().loadListDomainsByType("ENGINE_TYPE");
 			java.util.Iterator engineTypesIt = engineTypes.iterator();
@@ -159,14 +162,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					engineType = domain.getValueCd();
 				}
 			 	%>     
-    				<option value="<%= valueId  %>" label="<%= domain.getValueCd() %>" <%= selected %>>
-    					<%
-					if ("EXT".equalsIgnoreCase(domain.getValueCd())) {
-						%> <spagobi:message key = "SBISet.eng.externalEngine" /> <%
-					} else {
-						%> <spagobi:message key = "SBISet.eng.internalEngine" /> <%
-					}
-					%>
+    				<option value="<%= valueId  %>"  id="<%=domain.getValueCd()%>" <%= selected %>>
+    					 <%=domain.getTranslatedValueName(locale)%>    				
     				</option>
     				<%
 			}

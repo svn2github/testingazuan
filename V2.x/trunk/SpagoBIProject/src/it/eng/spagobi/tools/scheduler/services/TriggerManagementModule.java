@@ -255,16 +255,14 @@ public class TriggerManagementModule extends AbstractModule {
 					}
 					catch (ClassCastException e) {
 						logger.error("Error in istantiating class");
-						EMFUserError emfError=new EMFUserError(EMFErrorSeverity.ERROR, 12200);
+						EMFValidationError emfError=new EMFValidationError(EMFErrorSeverity.ERROR, "sendtojavaclass_"+biobId+"__"+index, "12200");
 						errorHandler.addError(emfError);
-						throw emfError;
 					
 					}				
 					catch (Exception e) {
 						logger.error("Error in istantiating class");
-						EMFUserError emfError=new EMFUserError(EMFErrorSeverity.ERROR, 12100);
+						EMFValidationError emfError=new EMFValidationError(EMFErrorSeverity.ERROR, "sendtojavaclass_"+biobId+"__"+index, "12100");
 						errorHandler.addError(emfError);
-						throw emfError;
 					}					
 					sInfo.setJavaClassPath(javaClassPath);
 				}  
@@ -380,6 +378,8 @@ public class TriggerManagementModule extends AbstractModule {
 			if(!this.getErrorHandler().isOKByCategory(EMFErrorCategory.VALIDATION_ERROR)) {
 				List functionalities = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);
 				response.setAttribute(SpagoBIConstants.FUNCTIONALITIES_LIST, functionalities);
+				List allDatasets = DAOFactory.getDataSetDAO().loadAllDataSets();
+				response.setAttribute(SpagoBIConstants.DATASETS_LIST, allDatasets);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "TriggerDetail");
 				return;
 			}

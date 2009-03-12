@@ -472,7 +472,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- *********************** START HTML CODE ****************************** -->
 
 
-<form id="triggerdetailform" method="get" action="<%=formUrl%>" >
+<form id="triggerdetailform" method="post" action="<%=formUrl%>" >
 	
 	<input type="hidden" name="PAGE" value="TriggerManagementPage" />
 	<input type="hidden" name="MESSAGEDET" value="<%= SpagoBIConstants.MESSAGE_SAVE_SCHEDULE %>" />

@@ -385,7 +385,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</center>
 </div>
 
-<form id="jobdetailform" method="get" action="<%=formUrl%>" >
+<form id="jobdetailform" method="post" action="<%=formUrl%>" >
 	<input type="hidden" name="PAGE" value="JobManagementPage" />
 	<input type="hidden" name="<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>" value="true" />
 	<input id="formmsg" type="hidden" name="MESSAGEDET" value="" />

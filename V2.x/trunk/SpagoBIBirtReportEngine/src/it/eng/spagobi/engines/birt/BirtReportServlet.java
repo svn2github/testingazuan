@@ -305,26 +305,16 @@ public class BirtReportServlet extends HttpServlet {
 		logger.debug( "runReport(): template document retrieved.");
 		// Open the report design
 		design = birtReportEngine.openReportDesign(is);
-		 ReportDesignHandle  dh = (ReportDesignHandle) design.getDesignHandle();
 
-		EngineConfig ec=birtReportEngine.getConfig();
-
-		String resourcePath=ParameterAccessor.getResourceFolder(request);
-		resourcePath=resourcePath+"\\WEB-INF\\classes";
-		ec.setResourcePath(resourcePath);
-//		DefaultResourceLocator drl=new DefaultResourceLocator();
-//		ec.setResourceLocator(drl);
-
-		Locale locale=Locale.ITALY;
+		Locale locale = null;
 		String language=request.getParameter("SBI_LANGUAGE");
 		String country=request.getParameter("SBI_COUNTRY");
 		if(language!=null && country!=null){
 			locale=new Locale(language,country,"");
 		}
 		else{
-			locale=locale.ENGLISH;
+			locale=Locale.ENGLISH;
 		}
-		
 		
 		logger.debug( "runReport(): report design opened successfully.");
 		// Create task to run and render the report,

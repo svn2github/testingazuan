@@ -1421,7 +1421,8 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer k = kpi.getKpiId();
 		Date d = new Date();
 		d = kpiInstHist.getBeginDt();
-		Integer thresholdId = kpiInstHist.getSbiThreshold().getThresholdId();
+		Integer thresholdId = null;
+		if (kpiInstHist.getSbiThreshold()!=null) thresholdId = kpiInstHist.getSbiThreshold().getThresholdId();
 		Double weight = kpiInstHist.getWeight();
 		Double target = kpiInstHist.getTarget();
 		Integer idPeriodicity = null;

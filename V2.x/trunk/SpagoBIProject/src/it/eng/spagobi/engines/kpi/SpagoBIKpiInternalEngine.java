@@ -663,7 +663,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		if (kpiInst!=null){
 			Integer chartId = kpiInst.getChartTypeId();
 			Integer thresholdId = kpiInst.getThresholdId();
-			thresholds = DAOFactory.getKpiDAO().loadThresholdsById(thresholdId);
+			if (thresholdId!=null) thresholds = DAOFactory.getKpiDAO().loadThresholdsById(thresholdId);
 			chartType = "BulletGraph";
 			logger.debug("Requested date d: "+dateOfKPI.toString()+" in between beginDate and EndDate");
 			weight = kpiInst.getWeight();

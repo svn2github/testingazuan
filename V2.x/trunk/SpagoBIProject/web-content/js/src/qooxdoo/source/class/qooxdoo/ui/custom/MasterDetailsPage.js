@@ -158,11 +158,11 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		this.records = qooxdoo.app.data.DataService.loadKpiModelDefinitionRecords();	
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.KpiModelDefinitionForm();
-	}/*else if(type == 'modelInstance') {									
-		this.records = qooxdoo.app.data.DataService.loadKpiModelRecords();	
+	}else if(type == 'modelInstance') {									
+		this.records = qooxdoo.app.data.DataService.loadKpiModelDefinitionRecords();	
 		config.dataset = this.records;
-		form = new qooxdoo.ui.custom.ResourceDefinitionForm();
-	} */
+		form = new qooxdoo.ui.custom.KpiModelInstanceForm();
+	}
 	
 	this._pagedTable = new qooxdoo.ui.table.PagedTable(this, config); 
 	this.add(this._pagedTable,0);

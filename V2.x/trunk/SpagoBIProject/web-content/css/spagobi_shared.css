@@ -615,3 +615,10 @@ IMG {
 	color: black;
 	text-align: center;
 }
+
+.toggleKPI{
+      padding-left:10px;
+      background-image: url(/SpagoBI/img/down16.gif);
+      background-repeat: no-repeat;
+      cursor: pointer;
+    }

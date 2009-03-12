@@ -81,7 +81,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 <script type="text/javascript">
 				function toggleHideChild(obj, tab_name){
 				
-				var objName = obj.id;
+				var objName = obj;
 				var nameSuffix = objName.split("_");
 				var objList = document.getElementById(tab_name);
 				
@@ -217,7 +217,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 scriptViewAll += "}";
 				 scriptViewAll += "</script>";
 				 scriptHideOnLoad += "</script>";
-			}else{
+			}else if(resources!=null && !resources.isEmpty() && resources.size()==1){
+				 Resource r = (Resource)resources.get(0);
+				 scriptHideOnLoad = "<script>";
+				 scriptHideOnLoad +="hideAllTr('KPI_TABLE"+r.getId()+"');\n";
+				 scriptHideOnLoad += "</script>";
+			}	
+			else{
 				 scriptHideOnLoad = "<script>";
 				 scriptHideOnLoad +="hideAllTr('KPI_TABLE');\n";
 				 scriptHideOnLoad += "</script>";

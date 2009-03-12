@@ -425,40 +425,41 @@ public class ExecuteBIDocumentJob implements Job {
 	private void sendToJavaClass(SaveInfo sInfo,BIObject biobj, byte[] response) throws Exception {
 		logger.debug("IN");
 
-			String javaClass = sInfo.getJavaClassPath();
-			if( (javaClass==null) || javaClass.trim().equals("")) {
-				throw new Exception("java Class not specified");
-			}
-			// try to get new Instance
-			JavaClassDestination jcDest=null;
-			try{
+		String javaClass = sInfo.getJavaClassPath();
+		if( (javaClass==null) || javaClass.trim().equals("")) {
+			logger.error("Classe java nons specificata");
+			return;
+		}
+		// try to get new Instance
+		JavaClassDestination jcDest=null;
+		try{
 			jcDest=(JavaClassDestination)Class.forName(javaClass).newInstance();
+		}
+		catch (ClassCastException e) {
+			logger.error("Class "+javaClass+" does not extend JavaClassDestination class as expected");
+			return;
+		}
+		catch (Exception e) {
+			logger.error("Error while instantiating the class "+javaClass);
+			return;
 			}
-			catch (ClassCastException e) {
-				logger.error("Class "+javaClass+" does not extend JavaClassDestination class as expected");
-				throw new Exception("Class "+javaClass+" does not extend JavaClassDestination class as expected");
-			}
-			catch (Exception e) {
-				logger.error("Error while instantiating the class "+javaClass);
-				throw new Exception("cannot instantiate Java class "+javaClass);
-			}
-			
-			logger.debug("Sucessfull instantiation of "+javaClass);
-			
-			jcDest.setBiObjID(biobj.getId());
-			jcDest.setDocumentByte(response);
-			
-			try{
+
+		logger.debug("Sucessfull instantiation of "+javaClass);
+
+		jcDest.setBiObj(biobj);
+		jcDest.setDocumentByte(response);
+
+		try{
 			jcDest.execute();
-			}
-			catch (Exception e) {
-				logger.error("Error during execution");
-				throw new Exception("Error during execution");
-			}
-			
-			
-			logger.debug("OUT");
-			
+		}
+		catch (Exception e) {
+			logger.error("Error during execution",e);
+			return;
+		}
+
+
+		logger.debug("OUT");
+
 
 	}
 

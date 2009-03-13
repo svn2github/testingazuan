@@ -81,9 +81,27 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
 		                    kpiname : 'Numero Alarmi CSP'
 						   };
 			var f = this.getRightPart().getUserData('form');
-			//f.setData(nodeData);
 			
 			//same as in selectDataObject() of MasterDetailsPage
+			var o = [];
+    		for(var prop in f.dataMappings){
+    			o[prop] = nodeData;
+    		}	
+    		f.setData(o);
+		},
+		
+		clearAll: function(e){
+			//alert("hi");
+			var nodeData = {
+					id: '171',
+                    code: '',
+                    name: '',
+                    description: '',
+                    typename: '',
+                    typedescription :'',
+                    kpiname : ''
+				   };
+			var f = this.getRightPart().getUserData('form');
 			var o = [];
     		for(var prop in f.dataMappings){
     			o[prop] = nodeData;

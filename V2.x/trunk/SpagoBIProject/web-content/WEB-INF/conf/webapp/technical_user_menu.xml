@@ -15,6 +15,14 @@
 				functionality="DatasetManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDatasetPage"
 				iconUrl="${SPAGOBI_CONTEXT}/img/tools/dataset/dataset16.png" />
+		<ITEM	title="#menu.MapCat"
+				functionality="MapCatalogueManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListMapsPage"
+				iconUrl="${SPAGOBI_CONTEXT}/img/mapcatalogue/maps16.png" />
+		<ITEM	title="#menu.FeatureMapCat"
+				functionality="MapFeaturesManagement"
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListFeaturesPage"
+				iconUrl="${SPAGOBI_CONTEXT}/img/mapcatalogue/featureManagement16.png" />
 	</ITEM>
 	
 	<ITEM	code="analyticalModel" 
@@ -69,6 +77,7 @@
 				iconUrl="${SPAGOBI_CONTEXT}/img/tools/distributionlist/distributionlist16.png" />
 	</ITEM>
 
+	<!--
 	<ITEM	code="mapCatalogue" 
 			title="#menu.MapCatalogueMenu">
 		<ITEM	title="#menu.MapCat"
@@ -80,6 +89,7 @@
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListFeaturesPage"
 				iconUrl="${SPAGOBI_CONTEXT}/img/mapcatalogue/featureManagement16.png" />
 	</ITEM>
+	-->
 	
 	<ITEM	code="userMenu" 
 			title="#menu.UserMenu">

@@ -30,6 +30,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -236,6 +237,11 @@ public class ScriptManager {
 
 		ScriptEngine scriptEngine = scriptManager.getEngineByName(languageScript);
 
+		// if groouvy
+		if(languageScript.equalsIgnoreCase("groovy")){
+			script=addGroovyPredefined(script);
+		}
+
 		if(scriptEngine!=null){
 			logger.debug("Found engine "+scriptEngine.NAME);
 			Object returning=scriptEngine.eval(script);
@@ -256,6 +262,50 @@ public class ScriptManager {
 
 
 
+	static public String addGroovyPredefined(String script) throws IOException{
+		it.eng.spago.base.SourceBean scriptLangSB = (SourceBean)ConfigSingleton.getInstance().
+		getFilteredSourceBeanAttribute("SPAGOBI.SCRIPT_LANGUAGE_SUPPORTED.SCRIPT_LANGUAGE", 
+				"default", "true");
+		// get the name of the default script language
+		String name = (String)scriptLangSB.getAttribute("name");
+		// the only language supported now is groovy so if the default script isn't groovy
+		// throw an exception and return an empty string
+		if(!name.equalsIgnoreCase("groovy")) {
+			SpagoBITracer.critical(SpagoBIConstants.NAME_MODULE, ScriptManager.class.getName(), 
+					"run", "The only script language supported is groovy, " +
+			"the configuration file has no configuration for groovy");
+			return "";
+		}
+		// load predefined script file
+		String predefinedScriptFileName = (String)scriptLangSB.getAttribute("predefinedScriptFile");
+		if(predefinedScriptFileName != null && !predefinedScriptFileName.trim().equals("")) {
+			SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, ScriptManager.class.getName(), 
+					"run", "Trying to load predefined script file '" + predefinedScriptFileName + "'.");
+			InputStream is = null;
+			try {
+				is = Thread.currentThread().getContextClassLoader().getResourceAsStream(predefinedScriptFileName);
+				StringBuffer servbuf = new StringBuffer();
+				int arrayLength = 1024;
+				byte[] bufferbyte = new byte[arrayLength];
+				char[] bufferchar = new char[arrayLength];
+				int len;
+				while ((len = is.read(bufferbyte)) >= 0) {
+					for (int i = 0; i < arrayLength; i++) {
+						bufferchar[i] = (char) bufferbyte[i];
+					}
+					servbuf.append(bufferchar, 0, len);
+				}
+				is.close();
+				script = servbuf.toString() + script;
+			} catch (Exception e) {
+				SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, ScriptManager.class.getName(), 
+						"run", "The predefined script file '" + predefinedScriptFileName + "' was not properly loaded.");
+			} finally {
+				if (is != null) is.close();
+			}
+		}
+	return script;
+	}
 
 
 

@@ -204,7 +204,7 @@ String executionFlowId = instance.getFlowId();
 			recoverExecutionParams.put("EXECUTION_ID", anInstance.getExecutionId());
 			recoverExecutionParams.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
 			String recoverExecutionUrl = urlBuilder.getUrl(request, recoverExecutionParams);
-			%>&nbsp;<a href='<%= recoverExecutionUrl %>' ><%= aBIObject.getName()%></a>&gt;<%
+			%>&nbsp;<a href='<%= recoverExecutionUrl %>' ><%= aBIObject.getName()%></a>&nbsp;&gt;<%
 		}
 	}
 	%>

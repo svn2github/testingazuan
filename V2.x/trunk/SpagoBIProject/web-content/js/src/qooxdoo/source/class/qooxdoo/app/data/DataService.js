@@ -1436,6 +1436,53 @@ qx.Class.define("qooxdoo.app.data.DataService", {
                     kpiname : 'Numero Alarmi CSP'
                 }
                 ];
+    },
+  	
+  	loadKpiModelInstanceRecords: function() {
+        var records = {};
+                  
+        records.meta =  this.loadKpiModelInstanceMeta();                
+        records.rows =  this.loadKpiModelInstanceData();
+        
+        return records;
+    },
+    
+    loadKpiModelInstanceMeta: function() {
+        return [
+                {
+                    dataIndex: 'instancename',
+                    name: 'Name'
+                }
+            ];
+          },
+          
+     loadKpiModelInstanceData: function() {
+        return [
+                {
+                    id: '181',
+                    instancename: 'INDICATORI CSP',
+                    instancelabel: 'INDICATORI CSP',
+                    instancedesc: 'INDICATORI CSP',
+                    defnname: 'INDICATORI CSP',
+                    defndesc : 'INDICATORI CSP',
+                    defncode: 'INDICATORI CSP',
+                    defntypename: 'GQM root',
+                    defntypedesc :'null',
+                    kpiname : 'Numero Alarmi CSP'
+                },
+                {
+                    id: '182',
+                    instancename: 'INDICATORI TIM',
+                    instancelabel: 'INDICATORI TIM',
+                    instancedesc: 'INDICATORI TIM',
+                    defnname: 'INDICATORI TIM',
+                    defndesc : 'INDICATORI TIM',
+                    defncode: 'INDICATORI TIM',
+                    defntypename: 'GQM root',
+                    defntypedesc: 'null',
+                    kpiname : 'Numero Alarmi CSP'
+                }
+                ];
     },    
     
   	loadKpiResourceRecords: function() {

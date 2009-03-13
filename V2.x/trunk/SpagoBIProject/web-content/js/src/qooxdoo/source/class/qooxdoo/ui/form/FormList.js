@@ -151,17 +151,17 @@ qx.Class.define("qooxdoo.ui.form.FormList", {
 		 */
 		
 		addInstance: function(o) {
-		//	alert("debug 3"+typeof(o));
+		
 			var subform;
 			if( typeof(this._config) == 'object' ) {
-			//	alert("debug 6"+ o);
+			
 				subform = new qooxdoo.ui.form.Form(this._config);
 				if (this._config.schedule != undefined){
-			//		alert("Gaurav");
+			
 					this._val = this._config.val;
 				}
 			} /*else if ( typeof(o) == 'string' ){
-				alert("debug 5"+ o);
+				
 				this.treeLabel = o;
 			}
 			*/

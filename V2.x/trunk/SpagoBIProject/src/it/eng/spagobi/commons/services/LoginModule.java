@@ -167,7 +167,11 @@ public class LoginModule extends AbstractHttpModule {
 			//String username = (String) profile.getUserUniqueIdentifier();
 	        String username = (String) ((UserProfile)profile).getUserId();
 			if (!UserUtilities.userFunctionalityRootExists(username)) {
-			    UserUtilities.createUserFunctionalityRoot(profile);
+			    logger.debug("funcitonality root not yet exists for "+username);	
+				//UserUtilities.createUserFunctionalityRoot(profile);
+			}
+			else{
+			    logger.debug("funcitonality root already exists for "+username);					
 			}
 
 		getMenuItems(request, response);

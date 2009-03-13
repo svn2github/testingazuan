@@ -31,6 +31,7 @@ import it.eng.spagobi.analiticalmodel.document.dao.BIObjectDAOHibImpl;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.LowFunctionalityDAOHibImpl;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 
 import java.util.List;
 
@@ -80,13 +81,17 @@ public class SaveToPersonalFolderAction extends AbstractHttpAction {
 			LowFunctionality lf = null;
 			if (exists) {
 				logger.debug("Personal Folder found");	
-				lf = lowFunctionalityDAOHibImpl.loadLowFunctionalityByPath("/" + userId, false);
 			}
 			else {
-				logger.error("Personal Folder doesn't exists");
-				throw new Exception("Personal Folder doesn't exists");
-			}
+				logger.debug("Personal Folder not found, now will be created");	
+				UserUtilities.createUserFunctionalityRoot(profile);
+				logger.debug("Personal Folder created");	
+				if(!(lowFunctionalityDAOHibImpl.checkUserRootExists(userId)))
+				throw new Exception("Personal Folder doesn't exists or could not be created");
 
+			}
+			lf = lowFunctionalityDAOHibImpl.loadLowFunctionalityByPath("/" + userId, false);
+			
 			Integer idFunction = lf.getId();
 			if (idFunction == null) {
 				logger.error("No function associated");

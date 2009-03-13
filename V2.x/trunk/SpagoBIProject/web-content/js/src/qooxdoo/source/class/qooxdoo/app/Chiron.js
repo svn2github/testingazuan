@@ -101,7 +101,7 @@ qx.Class.define("qooxdoo.app.Chiron",
       		this.getRoot().add(applicationLayout, {edge:0});   
       	}
       	
-      	this._selectToolbar('resources');
+      	this._selectToolbar('resources');	// 	//kpi	//analyticalModel
     },
     
     /**
@@ -165,28 +165,28 @@ qx.Class.define("qooxdoo.app.Chiron",
 		  		"label": this.tr('Functionality'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
-	  		}, {
+	  		}/*, {
 		  		command: 'Control+U',
 		  		handler: function() {this._selectToolbar('events');},
 		  		context: this,
 		  		"label": this.tr('Events'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
-	  		}, {
+	  		}*/, {
 		  		command: 'Control+I',
 		  		handler: function() {this._selectToolbar('tools');},
 		  		context: this,
 		  		"label": this.tr('Tools'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
-	  		}, {
+	  		}/*, {
 		  		command: 'Control+O',
 		  		handler: function() {this._selectToolbar('hotLinks');},
 		  		context: this,
 		  		"label": this.tr('Hot Links'),
 		  		icon: 'qx/icon/Oxygen/16/actions/dialog-ok.png',
 		  		tooltip: 'Reload the feeds.'
-	  		}, {
+	  		}*/, {
 		  		command: 'Control+P',
 		  		handler: function() {this._selectToolbar('kpi');},
 		  		context: this,

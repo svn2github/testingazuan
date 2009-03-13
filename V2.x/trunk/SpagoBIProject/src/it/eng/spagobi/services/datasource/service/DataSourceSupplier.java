@@ -91,14 +91,15 @@ public class DataSourceSupplier {
 	    sbds.setPassword(ds.getPwd());
 	    sbds.setDriver(ds.getDriver());
 	    sbds.setHibDialectName(dialectHB.getValueName());
-	    sbds.setHibDialectClass(dialectHB.getValueDescription());
-	    
+//change
+//	    sbds.setHibDialectClass(dialectHB.getValueDescription());
+	    sbds.setHibDialectClass(dialectHB.getValueCd());
 	    logger.info("read DS: Label="+sbds.getLabel()+" Jndi="+sbds.getJndiName()+" HIB="+sbds.getHibDialectClass());
 	    
 	    //gets dialect informations
 	    IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
-	    sbds.setHibDialectClass(doDialect.getValueDescription());
+	    sbds.setHibDialectClass(doDialect.getValueCd());
 	    sbds.setHibDialectName(doDialect.getValueName());
 
 	} catch (Exception e) {
@@ -138,7 +139,7 @@ public class DataSourceSupplier {
 	  //gets dialect informations
 	    IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
-	    sbds.setHibDialectClass(doDialect.getValueDescription());
+	    sbds.setHibDialectClass(doDialect.getValueCd());
 	    sbds.setHibDialectName(doDialect.getValueName());
 	    
 	} catch (Exception e) {
@@ -177,7 +178,7 @@ public class DataSourceSupplier {
 		//gets dialect informations
 	    IDomainDAO domaindao = DAOFactory.getDomainDAO();
 	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
-	    sbds.setHibDialectClass(doDialect.getValueDescription());
+	    sbds.setHibDialectClass(doDialect.getValueCd());
 	    sbds.setHibDialectName(doDialect.getValueName());
 	    
 		tmpList.add(sbds);

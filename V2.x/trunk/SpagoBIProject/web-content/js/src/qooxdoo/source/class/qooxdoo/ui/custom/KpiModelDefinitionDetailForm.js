@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * 
 */
 
-qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceForm", {
+qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionDetailForm", {
 	extend: qooxdoo.ui.form.Form,
 	
 	/**
@@ -45,52 +45,31 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceForm", {
 
 					{
 						type: 'groupbox',
-						dataIndex: 'modelinstance',
-						text: 'Model Instance',
-						form:	[{
-									type: 'text',
-									dataIndex: 'instancename',
-									text: 'Name',
-									mandatory: true	
-								}, {
-									type: 'text',
-									dataIndex: 'instancelabel',
-									text: 'Label'		
-								}, {
-									type: 'textarea',
-									dataIndex: 'instancedesc',
-									text: 'Description'
-								}
-							   ]
-					},
-					{
-						type: 'groupbox',
 						dataIndex: 'modeldefn',
 						text: 'Model Definition',
 						form:	[{
 									type: 'text',
-									dataIndex: 'defnname',
+									dataIndex: 'name',
 									text: 'Name',
 									mandatory: true	
 								}, {
 									type: 'textarea',
-									dataIndex: 'defndesc',
+									dataIndex: 'description',
 									text: 'Description'
 								}, {
 									type: 'text',
-									dataIndex: 'defncode',
+									dataIndex: 'code',
 									text: 'Code'		
 								}, {
 									type: 'text',
-									dataIndex: 'defntypename',
+									dataIndex: 'typename',
 									text: 'Type Name'		
 								}, {
 									type: 'textarea',
-									dataIndex: 'defntypedesc',
+									dataIndex: 'typedescription',
 									text: 'Type Description'
 								}
-							   ],
-						read : true	   
+							   ]
 					},
 					{
 						type: 'groupbox',
@@ -99,8 +78,8 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceForm", {
 					},
 					{
 						type: 'groupbox',
-						dataIndex: 'kpiinstance',
-						text: 'Kpi Instance',
+						dataIndex: 'setkpi',
+						text: 'Set Kpi',
 						form:[
 								{
 									type: 'text',
@@ -114,35 +93,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceForm", {
 								   					scope : this
 								   				}	
 												 ]
-								},
-								{
-									type: 'flag',
-									dataIndex: 'default',
-									text: 'Restore Default'
-								},
-								{
-					        		type: 'combo',
-					        		dataIndex: 'thresholdname',
-					        		text: 'Threshold Name',
-					        		items: ["Vallore","Alarme"]
-								},
-								{
-									type: 'text',
-									dataIndex: 'wtdefault',
-									text: 'Weight default value '
-								},
-								{
-					        		type: 'combo',
-					        		dataIndex: 'charttype',
-					        		text: 'Chart Type',
-					        		items: ["Meter","SimpleDial"]
-								},
-								{
-					        		type: 'combo',
-					        		dataIndex: 'periodicity',
-					        		text: 'Periodicity',
-					        		items: ["Daily","Weekly"]
-								}		
+								}
 						      ]
 					}	
 			]
@@ -152,7 +103,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceForm", {
 	members: {
 		
 		_lookupKpiName : function(e) {
-			var c1 = this.getInputField('kpiinstance');		//container having sub-container
+			var c1 = this.getInputField('setkpi');		//container having sub-container
 			var c2 = c1.getUserData('field');					     //sub-container having label, filed and button
 			var gb = c2.getChildren()[0];                   //field inside sub-container
 			var form = gb.getChildren()[0];

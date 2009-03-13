@@ -1,5 +1,4 @@
 /*
-
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
@@ -20,20 +19,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 
-
 /*
  * @author Andrea Gioia (andrea.gioia@eng.it)
- * @author Amit Rana (amit.rana@eng.it), 
+ * @author Amit Rana (amit.rana@eng.it)
  * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
+ * 
  */
+ 
+
 
 /**
-* This class defines the KPI Model Definition Form. 
-* 
-*/
+ * This class defines the Formlist for a set of subforms on a form
+ *  
+ */
 
 qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionForm", {
-	extend: qooxdoo.ui.form.Form,
+	extend: qx.ui.tabview.TabView,
 	
 	/**
 	 * 
@@ -41,76 +42,37 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionForm", {
 	
 	construct : function() { 
 				
-		this.base(arguments,[
-
-					{
-						type: 'groupbox',
-						dataIndex: 'modeldefn',
-						text: 'Model Definition',
-						form:	[{
-									type: 'text',
-									dataIndex: 'name',
-									text: 'Name',
-									mandatory: true	
-								}, {
-									type: 'textarea',
-									dataIndex: 'description',
-									text: 'Description'
-								}, {
-									type: 'text',
-									dataIndex: 'code',
-									text: 'Code'		
-								}, {
-									type: 'text',
-									dataIndex: 'typename',
-									text: 'Type Name'		
-								}, {
-									type: 'textarea',
-									dataIndex: 'typedescription',
-									text: 'Type Description'
-								}
-							   ]
-					},
-					{
-						type: 'groupbox',
-						dataIndex: 'modelattrib',
-						text: 'Model Attributes'
-					},
-					{
-						type: 'groupbox',
-						dataIndex: 'setkpi',
-						text: 'Set Kpi',
-						form:[
-								{
-									type: 'text',
-									dataIndex: 'kpiname',
-									text: 'Kpi Name',
-									button : [
-								   				{
-								   					label : 'Select',
-								   					event: "mousedown",
-								   					handler: this._lookupKpiName,
-								   					scope : this
-								   				}	
-												 ]
-								}
-						      ]
-					}	
-			]
-		);	
+		this.base(arguments);
+		
+		this.createDetailsTab();
+		
+		this.createTreeTab();
+		
 	},
-	
+		 
+	/**
+	 * Members of the class
+	 */
+		  
 	members: {
 		
-		_lookupKpiName : function(e) {
-			var c1 = this.getInputField('setkpi');		//container having sub-container
-			var c2 = c1.getUserData('field');					     //sub-container having label, filed and button
-			var gb = c2.getChildren()[0];                   //field inside sub-container
-			var form = gb.getChildren()[0];
-			var fieldctr1 = form.getInputField('kpiname');
-			var fieldctr2 = fieldctr1.getUserData('field');
-			var f = fieldctr2.getChildren()[0];
-			f.setValue("KPI Name after Lookup");
+		createDetailsTab: function(){
+			var page = new qx.ui.tabview.Page("DETAIL");
+			page.setLayout(new qx.ui.layout.Grow());
+			
+			var form = new qooxdoo.ui.custom.KpiModelDefinitionDetailForm();
+			page.add(form);
+			
+			this.add(page);
+			this.setUserData('details',page);
+		},
+		
+		createTreeTab: function(){
+			var page = new qx.ui.tabview.Page("TREE");
+			
+			this.add(page);
+			this.setUserData('tree',page);
 		}
-	}
+	}	
 });
+	

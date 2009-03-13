@@ -159,7 +159,7 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.KpiModelDefinitionForm();
 	}else if(type == 'modelInstance') {									
-		this.records = qooxdoo.app.data.DataService.loadKpiModelDefinitionRecords();	
+		this.records = qooxdoo.app.data.DataService.loadKpiModelInstanceRecords();	
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.KpiModelInstanceForm();
 	}
@@ -247,20 +247,28 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
      */
     , selectDataObject: function(dataObject) {
     	
-    	if(this._type == 'modelDefinition'){	//form with multiple group box
+    	if(this._type == 'modelDefinition' || this._type == 'modelInstance'){	//form with multiple group box
     		
     		//Go to form inside each groupbox and then set the value of required field
     		//this._form.setData({'modeldefn' : dataObject}); WORKING for 1 form
     		
     		// to make generic for forms spanning multiple group-boxes
+    		/*
     		var o = [];
     		for(var prop in this._form.dataMappings){
-    			
-    			//this._form.setData({prop : dataObject});
-    			
     			o[prop] = dataObject;
-    			this._form.setData(o);
-    		}
+    		}	
+    		this._form.setData(o);
+    		*/
+    		var page = this._form.getUserData('details');
+    		var f = page.getChildren()[0];
+    		
+    		var o = [];
+    		for(var prop in f.dataMappings){
+    			o[prop] = dataObject;
+    		}	
+    		f.setData(o);
+    		
     	}
     	else
     		this._form.setData(dataObject);

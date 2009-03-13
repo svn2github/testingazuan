@@ -79,8 +79,8 @@ public class LineChart extends ChartImpl{
 	
 					nameP=new String(object.getKey());
 					value=new String((String)object.getValue());
-					logger.error("Name:"+nameP);
-					logger.error("Value:"+value);
+					logger.debug("Name:"+nameP);
+					logger.debug("Value:"+value);
 					if(nameP.equalsIgnoreCase("x"))
 					{
 						catValue=value;

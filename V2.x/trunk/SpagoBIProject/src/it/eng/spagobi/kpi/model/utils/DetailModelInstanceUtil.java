@@ -88,6 +88,7 @@ public class DetailModelInstanceUtil {
 		}
 
 		String weight = (String) serviceRequest.getAttribute("weight");
+		String target = (String) serviceRequest.getAttribute("target");
 
 		KpiInstance kpiInstance = null;
 		if (kpiId != null) {
@@ -110,8 +111,17 @@ public class DetailModelInstanceUtil {
 					kpiInstance.setWeight(null);
 				}
 			}
+			
+			if (target != null && !(target.equals(""))) {
+				try{
+				kpiInstance.setTarget(new Double(target));
+				} catch (NumberFormatException ne){
+					kpiInstance.setTarget(null);
+				}
+			} else {
+				kpiInstance.setTarget(null);
+			}	
 		}
-
 		return kpiInstance;
 	}
 

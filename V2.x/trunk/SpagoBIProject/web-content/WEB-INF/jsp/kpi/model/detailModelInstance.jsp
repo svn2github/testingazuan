@@ -57,6 +57,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Integer chartTypeId = null;
 	Integer periodicityId = null;
 	String weight = "";
+	String target = "";
 	
 	String startDateS = "";
 	String endDateS = "";
@@ -162,6 +163,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		Double aWeight = aKpiInstance.getWeight();
 		if (aWeight != null)
 			weight = aWeight.toString(); 
+		Double aTarget = aKpiInstance.getTarget();
+		if (aTarget != null)
+			target = aTarget.toString();
+		
 	}
 		}
 	}
@@ -495,6 +500,13 @@ value='<%= endDateS %>'/> </div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="weight"
 	size="10" value="<%=weight%>" maxlength="200" ></div>
+
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.target" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'><input
+	class='portlet-form-input-field' type="text" name="target"
+	size="10" value="<%=target%>" maxlength="200" ></div>
 
 <hr>
 

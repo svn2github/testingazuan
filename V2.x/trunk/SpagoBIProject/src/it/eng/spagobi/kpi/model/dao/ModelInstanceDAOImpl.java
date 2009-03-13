@@ -115,6 +115,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 						.getIdKpiPeriodicity());
 			} //
 			aKpiInstance.setWeight(sbiKpiInstance.getWeight());
+			aKpiInstance.setTarget(sbiKpiInstance.getTarget());
 			aKpiInstance.setD(sbiKpiInstance.getBeginDt());
 			//
 			toReturn.setKpiInstance(aKpiInstance);
@@ -373,6 +374,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 		}
 
 		sbiKpiInstance.setWeight(value.getKpiInstance().getWeight());
+		sbiKpiInstance.setTarget((value.getKpiInstance().getTarget()));
 		return sbiKpiInstance;
 	}
 
@@ -531,6 +533,7 @@ public class ModelInstanceDAOImpl extends AbstractHibernateDAO implements
 						.getIdKpiPeriodicity());
 			}
 			aKpiInstance.setWeight(sbiKpiInstance.getWeight());
+			aKpiInstance.setTarget(sbiKpiInstance.getTarget());
 			aKpiInstance.setD(sbiKpiInstance.getBeginDt());
 			//
 			toReturn.setKpiInstance(aKpiInstance);

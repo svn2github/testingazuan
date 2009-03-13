@@ -42,6 +42,18 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
 	construct : function() { 
 				
 		this.base(arguments);
-	}
+		
+		
+		
+	},
+	
+	members:
+	{
+		createRightSideForm: function(){
+			var form = new qooxdoo.ui.custom.KpiModelDefinitionDetailForm();
+			this.getRightPart()._add(form);
+			this.getRightPart().setUserData('form',form);
+		}
+	}	
 
 });

@@ -1,39 +1,45 @@
 qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
 {
-  extend : qx.ui.splitpane.Pane,//qx.legacy.ui.splitpane.HorizontalSplitPane,
+  extend : qx.ui.splitpane.Pane,
   
   construct : function(type)
   {
-   // this.base(arguments, "1*", "2*");
-    this.base(arguments);//,"1*","4*");//, "2*"); //  180
- //   this.setLayout(new qx.ui.layout.Dock);
-     //this.setShowKnob(false);
- //   this.horSplit = new qx.ui.splitpane.Pane();
- //   this.add(this.horSplit,{width:'100%',height:'100%'});
-    
- 	if(type === 'funcManagement') {
- //  	var leftPart = new qx.ui.container.Composite(new qx.ui.layout.Dock);
-//  		leftPart.setWidth("100%");
-//   		leftPart.setHeight("100%");
- //   	leftPart.setOverflow("auto"); 
-  //  	leftPart.setBackgroundColor('white');
- // 		var border = new qx.ui.decoration.Single(1);
-  //  	leftPart.setDecorator(new qx.ui.decoration.Single(1));//leftPart.setBorder(new qx.legacy.ui.core.Border(1));
- //   leftPart.set({width : '10%',Height:'100%'});
- // renderLayout
- // 	var vBox = new qx.ui.layout.VBox();
- // 	vBox.set({height : '100%'});
- // 	var vContainer = new qx.ui.container.Composite(vBox);
- // 	 vContainer.set({height : 700});
- // 		vContainer.set({width : 250});
-  		
- // 	var vbox = new qx.ui.layout.VBox();
-  //	vBox.renderLayout(50,350);
- // 	var headerLabel = new qx.ui.basic.Label("Functionalities Tree");
-   		
- // 	vContainer.add(headerLabel);
- 
+   
+    this.base(arguments);	//,"1*","4*");//, "2*"); //  180 // this.base(arguments, "1*", "2*");
+		    /*
+		    	//  this.setLayout(new qx.ui.layout.Dock);
+		     	//	this.setShowKnob(false);
+		 		//  this.horSplit = new qx.ui.splitpane.Pane();
+		 		//  this.add(this.horSplit,{width:'100%',height:'100%'});
+		    */
+ 	//if(type === 'funcManagement') {
+	 		/*
+	   		var leftPart = new qx.ui.container.Composite(new qx.ui.layout.Dock);
+	  		leftPart.setWidth("100%");
+	   		leftPart.setHeight("100%");
+	    	leftPart.setOverflow("auto"); 
+	    	leftPart.setBackgroundColor('white');
+	  		var border = new qx.ui.decoration.Single(1);
+	    	leftPart.setDecorator(new qx.ui.decoration.Single(1));leftPart.setBorder(new qx.legacy.ui.core.Border(1));
+	    	leftPart.set({width : '10%',Height:'100%'});
+	  		renderLayout
+	  		var vBox = new qx.ui.layout.VBox();
+	  		vBox.set({height : '100%'});
+	  		var vContainer = new qx.ui.container.Composite(vBox);
+	  	 	vContainer.set({height : 700});
+	  		vContainer.set({width : 250});
+	  		
+	  		var vbox = new qx.ui.layout.VBox();
+	  		vBox.renderLayout(50,350);
+	  		var headerLabel = new qx.ui.basic.Label("Functionalities Tree");
+	   		
+	  		vContainer.add(headerLabel);
+	 		 */
  	
+ 	
+ 	this.createTree();
+ 	var tree = this.getTree();	
+ 	/*	
    	this.treeFunction = qooxdoo.app.data.DataService.loadTreeNodes();
    	var tree = new qooxdoo.ui.Tree(this.treeFunction.treeStructure.root);
 	
@@ -43,69 +49,70 @@ qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
   		}
   	}
 	
-	//	tree.setWidth(250);	
-  	
-  	
-  		
-  		this._tree = tree;						
+		//	tree.setWidth(250);	
+  	this._tree = tree;						
   		//tree.addListener("click",tree.onClickMenu,tree);		//contextmenu				
-  		tree.addListener("changeSelection",this.showInfo,this);
+  	tree.addListener("changeSelection",this.showInfo,this);
   		
   		
   		//leftPart.setBackgroundColor('white');
+  		//		vContainer.add(tree);//,{height:330}
+ 		// 		leftPart.add(vContainer,{ height:'100%'});//width:'30%',
+ 	*/	
+  	
+  	this.add(tree,0);
+  	
+  		/*
+  		//	var headerLabel1 = new qooxdoo.ui.custom.FunctionalityTreeSubClass();
+   		//leftPart.setOverflow("auto");	
+  		//	this.horSplit.add(headerLabel,0);
+  		*/
   		
-  //		vContainer.add(tree);//,{height:330}
- // 		leftPart.add(vContainer,{ height:'100%'});//width:'30%',
-  		this.add(tree,0);
-  	//	var headerLabel1 = new qooxdoo.ui.custom.FunctionalityTreeSubClass();
-   
-        
-  		//leftPart.setOverflow("auto");	
+  	var rightPart = new qooxdoo.ui.custom.FunctionalityTreeSubClass();
+  	this._right = rightPart;
+  	
+  	this.createRightSideToolbar();
+  	this.createRightSideForm();
+  	
+  	this.add(rightPart,1);
   		
-  	//	this.horSplit.add(headerLabel,0);
-  		
-  		
-  		var rightPart = new qooxdoo.ui.custom.FunctionalityTreeSubClass();
-  		
-  		this.add(rightPart,1);
-  		
-//  		this.add(this.horSplit,{width:'100%',height:'100%'});
+  		//  		this.add(this.horSplit,{width:'100%',height:'100%'});
   
-  		var toolBar = rightPart.getUserData('toolBar');
-  		
-  		this._createButton = toolBar[0].getUserData('create');
-  		this._createButton.addListener("execute", this.createNode,this);
-  		
-  		this._saveButton = toolBar[1].getUserData('save');
-  		this._saveButton.addListener("execute", this.save,this);
-  		
-  		this._deleteButton = toolBar[2].getUserData('delete');
-  		this._deleteButton.addListener("execute", this.deleteNode,this);
-  		
-  		this._moveUpButton = toolBar[3].getUserData('moveUp');
-  		this._moveUpButton.addListener("execute",this.moveUp,this);
-  		
-  		this._moveDownButton = toolBar[4].getUserData('moveDown');
-  		this._moveDownButton.addListener("execute",this.moveDown,this);
-  		
-  		this._clearAllButton = toolBar[5].getUserData('clearAll');
-  		this._clearAllButton.addListener("execute",this.clearAll,this);
-  		
-  		//Set Focus of buttons only when Node selected
-  		this._createButton.setEnabled(false);
-  		this._saveButton.setEnabled(false);
-  		this._deleteButton.setEnabled(false);
-  		this._moveUpButton.setEnabled(false);
-  		this._moveDownButton.setEnabled(false);
-  		
-  		this._right = rightPart;
+	var toolBar = rightPart.getUserData('toolBar');
+	
+	this._createButton = toolBar[0].getUserData('create');
+	this._createButton.addListener("execute", this.createNode,this);
+	
+	this._saveButton = toolBar[1].getUserData('save');
+	this._saveButton.addListener("execute", this.save,this);
+	
+	this._deleteButton = toolBar[2].getUserData('delete');
+	this._deleteButton.addListener("execute", this.deleteNode,this);
+	
+	this._moveUpButton = toolBar[3].getUserData('moveUp');
+	this._moveUpButton.addListener("execute",this.moveUp,this);
+	
+	this._moveDownButton = toolBar[4].getUserData('moveDown');
+	this._moveDownButton.addListener("execute",this.moveDown,this);
+	
+	this._clearAllButton = toolBar[5].getUserData('clearAll');
+	this._clearAllButton.addListener("execute",this.clearAll,this);
+	
+	//Set Focus of buttons only when Node selected
+	this._createButton.setEnabled(false);
+	this._saveButton.setEnabled(false);
+	this._deleteButton.setEnabled(false);
+	this._moveUpButton.setEnabled(false);
+	this._moveDownButton.setEnabled(false);
+	
+	//this._right = rightPart;
   			
-   } 	
+   //} 	
   },
   
   members :
   {
-//	 horSplit : undefined,
+	  	//	 horSplit : undefined,
   	_tree : undefined,
   	_right: undefined,
   	treeFunction: undefined,
@@ -124,48 +131,46 @@ qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
   			this._deleteButton.setEnabled(false);
   			this._moveUpButton.setEnabled(false);
   			this._moveDownButton.setEnabled(false);
-  		//	alert("1");
-  			return;
+  		return;
   			
 	    } else {
-	    //	alert("2");
-       		//	var selectionManager = this._tree.getManager();
+	    
+       				//	var selectionManager = this._tree.getManager();
        			var item = this._tree.getSelectedItem();
        			this._saveButton.setEnabled(true);
        			this._deleteButton.setEnabled(true);
        			
        			if(item instanceof qx.ui.tree.TreeFile){
-       			//	alert("Never");			//leaf nodes don't have insert option	
-       				this._createButton.setEnabled(false);
        				
-					if(this._tree.getPreviousSibling(item) == null){		// first child cannot be moved up
+       				this._createButton.setEnabled(false);				//leaf nodes don't have insert option
+       				
+					if(this._tree.getPreviousSibling(item) == null){	// first child cannot be moved up
        						this._moveUpButton.setEnabled(false);
-       					}
-       					else{
+       				}
+       				else{
        						this._moveUpButton.setEnabled(true);
-       					}
+       				}
        			
-       					if(this._tree.getNextSibling(item) == null){	// last child cannot be moved down
+       				if(this._tree.getNextSibling(item) == null){		// last child cannot be moved down
        						this._moveDownButton.setEnabled(false);   
-       					}
-       					else{
+       				}
+       				else{
        						this._moveDownButton.setEnabled(true); 
-       					}
-     				//} 
+       				}
+     				
        			}	// end of file nodes
        			else{											// If not Files (i.e. if Folders)
        					
        					this._createButton.setEnabled(true);
-       					if(this._tree.getPreviousSibling(item) == null){		// first child cannot be moved up
-       						
+       					
+       					if(this._tree.getPreviousSibling(item) == null){	// first child cannot be moved up
        						this._moveUpButton.setEnabled(false);
        					}
        					else{
        						this._moveUpButton.setEnabled(true);
        					}
        			
-       					//alert(this._tree.getNextSiblingOf(item).getLabel());
-       					if(this._tree.getNextSibling(item) == null){	// last child cannot be moved down
+       					if(this._tree.getNextSibling(item) == null){		// last child cannot be moved down
        						this._moveDownButton.setEnabled(false);   
        					}
        					else{
@@ -260,7 +265,7 @@ qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
 		
 		var nodeObject = {};
 		nodeObject.name = dataObject.label;
-		//nodeObject.parent = this._tree.getUserData(parent.getLabel());	//nodeid = label .. to be changed
+			//nodeObject.parent = this._tree.getUserData(parent.getLabel());	//nodeid = label .. to be changed
 		nodeObject.parent = parent.getLabel();
 		nodeObject.data = dataObject;
 		
@@ -268,7 +273,47 @@ qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
 		this._tree.select(treeNode.getUserData('node'));
 				
 	}
+	
+	, createTree: function(){
+		
+		this.treeFunction = qooxdoo.app.data.DataService.loadTreeNodes();
+	   	var tree = new qooxdoo.ui.Tree(this.treeFunction.treeStructure.root);
+		
+		for(var p in this.treeFunction.treeStructure){	//check as for..in is changed in v0.8.1
+	  		if(p != 'root'){
+	  			tree.addNode(this.treeFunction.treeStructure[p]);
+	  		}
+	  	}
+		
+			//	tree.setWidth(250);	
+	  						
+	  		//tree.addListener("click",tree.onClickMenu,tree);		//contextmenu				
+	  	tree.addListener("changeSelection",this.showInfo,this);
+	  		
+	  		/*
+	  		//leftPart.setBackgroundColor('white');
+	  		//		vContainer.add(tree);//,{height:330}
+	 		// 		leftPart.add(vContainer,{ height:'100%'});//width:'30%',
+	 		*/
+	  	
+	  	this._tree = tree;
+	}
     
+	, getTree: function(){
+		return this._tree;
+	}
+	
+	, getRightPart: function(){
+		return this._right;
+	}
+	
+	, createRightSideToolbar: function(){
+		this.getRightPart().createToolbar();
+	}
+	
+	, createRightSideForm: function(){
+		this.getRightPart().createForm();
+	}	
   }
   
 });  

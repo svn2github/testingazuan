@@ -58,5 +58,9 @@ ALTER TABLE `spagobi`.`sbi_data_set` ADD COLUMN `LANGUAGE_SCRIPT` VARCHAR(50) AF
 - gigavard
 - 12/03/2009
 ALTER TABLE `spagobi`.`sbi_domains` MODIFY COLUMN `VALUE_CD` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
- 
+
+- From 2.0
+- gigavard
+- 13/03/2009
+ALTER TABLE `spagobi`.`sbi_functions` MODIFY COLUMN `CODE` VARCHAR(40) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL; 
  

@@ -78,7 +78,7 @@ CREATE TABLE SBI_FUNCTIONS (
        NAME                 VARCHAR(40) NULL,
        DESCR                VARCHAR(160) NULL,
        PATH                 VARCHAR(400) NULL,
-       CODE                 VARCHAR(20) NOT NULL,
+       CODE                 VARCHAR(40) NOT NULL,
        PROG 				        INTEGER NOT NULL,
        FUNCT_TYPE_ID        INTEGER NOT NULL,
        CONSTRAINT XAK1SBI_FUNCTIONS UNIQUE (CODE),

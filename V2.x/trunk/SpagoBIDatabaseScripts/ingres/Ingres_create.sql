@@ -267,7 +267,7 @@ Create table SBI_FUNCTIONS (
 	NAME Varchar(40),
 	DESCR Varchar(160),
 	PATH Varchar(400),
-	CODE Varchar(20) NOT NULL,
+	CODE Varchar(40) NOT NULL,
 	PROG Integer NOT NULL,
 	FUNCT_TYPE_ID Integer NOT NULL,
 UNIQUE(CODE),

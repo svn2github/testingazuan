@@ -150,7 +150,7 @@ Primary Key (DLU_ID)
 CREATE SEQUENCE SBI_DOMAINS_SEQ START WITH 200;\p\g
 Create table SBI_DOMAINS (
 	VALUE_ID Integer NOT NULL with default next value for SBI_DOMAINS_SEQ,
-	VALUE_CD Varchar(20) NOT NULL,
+	VALUE_CD Varchar(100) NOT NULL,
 	VALUE_NM Varchar(40),
 	DOMAIN_CD Varchar(20) NOT NULL,
 	DOMAIN_NM Varchar(40),

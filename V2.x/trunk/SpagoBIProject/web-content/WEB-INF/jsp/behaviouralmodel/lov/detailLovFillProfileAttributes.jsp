@@ -70,13 +70,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     testUrlPars.put("PAGE", "detailModalitiesValuePage");
     testUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
     testUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.MESSAGE_TEST_AFTER_ATTRIBUTES_FILLING);
-    String testUrl = urlBuilder.getUrl(request, testUrlPars);	
-    String readonly = "" ;
-    boolean isreadonly = true;
-   if (userProfile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)){
-   	isreadonly = false;
-   	readonly = "readonly";
-   }
+    String testUrl = urlBuilder.getUrl(request, testUrlPars);
     
 %>
 
@@ -154,7 +148,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<input class='portlet-form-input-field' <%=readonly%> type="text" name="<%=profAttrName%>" size="35" >
+				<input class='portlet-form-input-field' type="text" name="<%=profAttrName%>" size="35" >
 	    		&nbsp;*
 			</div>
 		<%    	

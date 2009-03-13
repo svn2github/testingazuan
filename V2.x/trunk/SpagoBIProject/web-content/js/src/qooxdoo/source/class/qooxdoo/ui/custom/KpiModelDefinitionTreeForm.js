@@ -1,4 +1,5 @@
 /*
+
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
@@ -19,22 +20,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 
+
 /*
  * @author Andrea Gioia (andrea.gioia@eng.it)
- * @author Amit Rana (amit.rana@eng.it)
+ * @author Amit Rana (amit.rana@eng.it), 
  * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
- * 
  */
- 
-
 
 /**
- * This class defines the Formlist for a set of subforms on a form
- *  
- */
+* This class defines the KPI Model Definition Form. 
+* 
+*/
 
-qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionForm", {
-	extend: qx.ui.tabview.TabView,
+qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
+	extend: qooxdoo.ui.custom.FunctionalClassDummy,
 	
 	/**
 	 * 
@@ -43,40 +42,6 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionForm", {
 	construct : function() { 
 				
 		this.base(arguments);
-		
-		this.createDetailsTab();
-		
-		this.createTreeTab();
-		
-	},
-		 
-	/**
-	 * Members of the class
-	 */
-		  
-	members: {
-		
-		createDetailsTab: function(){
-			var page = new qx.ui.tabview.Page("DETAIL");
-			page.setLayout(new qx.ui.layout.Grow());
-			
-			var form = new qooxdoo.ui.custom.KpiModelDefinitionDetailForm();
-			page.add(form);
-			
-			this.add(page);
-			this.setUserData('details',page);
-		},
-		
-		createTreeTab: function(){
-			var page = new qx.ui.tabview.Page("TREE");
-			page.setLayout(new qx.ui.layout.Grow());
-			
-			var form = new qooxdoo.ui.custom.KpiModelDefinitionTreeForm();
-			page.add(form);
-			
-			this.add(page);
-			this.setUserData('tree',page);
-		}
-	}	
+	}
+
 });
-	

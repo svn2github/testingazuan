@@ -28,6 +28,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
 <%@page import="it.eng.spagobi.commons.utilities.messages.IMessageBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory"%>
+<%@page import="it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory"%>
+<%@page import="it.eng.spagobi.commons.utilities.urls.IUrlBuilder"%>
 <%      
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
 	String authFailed = "";
@@ -52,6 +54,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 	
+	String sbiMode = "WEB";
+	IUrlBuilder urlBuilder = null;
+	urlBuilder = UrlBuilderFactory.getUrlBuilder(sbiMode);
 %>
 
 
@@ -59,6 +64,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <html>
   <head>
+	<link rel="shortcut icon" href="<%=urlBuilder.getResourceLink(request, "img/favicon.ico")%>" />
     <title>SpagoBI</title>
     <style>
       body {

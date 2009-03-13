@@ -31,9 +31,9 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
-public class TransformerFrom2_0_0To2_0_1 implements ITransformer {
+public class TransformerFrom2_0_0To2_1_0 implements ITransformer {
 
-	static private Logger logger = Logger.getLogger(TransformerFrom2_0_0To2_0_1.class);
+	static private Logger logger = Logger.getLogger(TransformerFrom2_0_0To2_1_0.class);
 	
 	public byte[] transform(byte[] content, String pathImpTmpFolder, String archiveName) {
 		logger.debug("IN");

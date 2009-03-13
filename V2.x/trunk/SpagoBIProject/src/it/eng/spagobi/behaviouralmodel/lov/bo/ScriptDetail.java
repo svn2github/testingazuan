@@ -30,6 +30,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.scripting.ScriptManager;
 
 import java.util.ArrayList;
@@ -170,6 +171,11 @@ public class ScriptDetail  implements ILovDetail  {
 		String result = null;
 		HashMap attributes = GeneralUtilities.getAllProfileAttributes(profile);
 		Binding bind = ScriptManager.fillBinding(attributes);
+
+		//substitute profile attributes
+		String cleanScript = StringUtilities.substituteProfileAttributesInString(getScript(), profile);
+		setScript(cleanScript);
+		
 		result = ScriptManager.runScript(getScript(), bind, languageScript);   
 		// check if the result must be converted into the right xml sintax
 		boolean toconvert = checkSintax(result);

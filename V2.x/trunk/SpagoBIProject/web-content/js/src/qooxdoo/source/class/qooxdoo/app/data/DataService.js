@@ -1273,7 +1273,23 @@ qx.Class.define("qooxdoo.app.data.DataService", {
 		  								
 						 			label : 'DashBoardLabel',
 						 			name  : 'DashBoardName',
-						 			desc  : 'DashBoardDesc'
+						 			desc  : 'DashBoardDesc',
+						 			func  : [
+						 						{
+						 							role	: '/community/editors',
+						 							dev		: true,
+						 							test	: true,
+						 							exe		: true
+						 							
+						 						},
+						 						{
+						 							role	: '/community/hr',
+						 							dev		: true,
+						 							test	: true,
+						 							exe		: true
+						 							
+						 						}
+						 					]
 		  							 			
 		  							},
 		  					mydashboardfolder:{

@@ -181,11 +181,29 @@ qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
 	    
   	},
   	
+  	showFormData: function(){
+  		var nodeData = {};
+  		
+  		if(this._tree.getSelectedItem() == this._tree.getRoot()){// If Root Node Remember change this._tree to this._tree.getRoot()
+  			
+  			nodeData.tree = this._tree;// Remember change this._tree to this._tree.getRoot()
+  		}
+  		else{
+  			nodeData = this._tree.getNodeData();	// Calls getNodeData() function of Tree.js
+  		}
+  	
+  		this._right.setData(nodeData);				// Calls setData() function of FunctionalityTreeSubClass.js
+  		
+  	},
+  	
   	// gets the data from Left part and sets in right part
   	showInfo: function(e){
   		
   		this.showButtons();
   		
+  		this.showFormData();
+  		
+  		/*
   		var nodeData = {};
   		
   		if(this._tree.getSelectedItem() == this._tree.getRoot()){// If Root Node Remember change this._tree to this._tree.getRoot()
@@ -198,7 +216,7 @@ qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
   		}
   	
   		this._right.setData(nodeData);				// Calls setData() function of FunctionalityTreeSubClass.js
-  		
+  		*/
   	},
   	
   	moveUp: function(e){

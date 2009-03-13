@@ -49,11 +49,47 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
 	
 	members:
 	{
-		createRightSideForm: function(){
+		createRightSideForm: function(){	//function over-riding
 			var form = new qooxdoo.ui.custom.KpiModelDefinitionDetailForm();
 			this.getRightPart()._add(form);
 			this.getRightPart().setUserData('form',form);
-		}
+		},
+		
+		showFormData: function(){			//function over-riding
+			
+			
+			/*
+			 if(this._tree.getSelectedItem() == this._tree.getRoot()){// If Root Node Remember change this._tree to this._tree.getRoot()
+  				nodeData.tree = this._tree;// Remember change this._tree to this._tree.getRoot()
+  			 }
+  		     else{
+  		     	nodeData = this._tree.getNodeData(); 
+  		     	// loadTreeData() of DataService.js should have the form fields
+  		     	// This is because nodeData gets data from atom.getUserData('data') inside tree.getNodeData()...
+  		     	//... which gets from atom.setUserData('data', config.data) of tree.addNode() ...
+  		     	//... which from loadTreeMeta() of DataService.js
+  		     	//... whose 'data' property is set from loadTreeData() of DataService.js
+  		     }
+			 */
+			var nodeData = {
+							id: '171',
+		                    code: 'INDICATORI CSP',
+		                    name: 'INDICATORI CSP',
+		                    description: 'INDICATORI CSP',
+		                    typename: 'GQM root',
+		                    typedescription :'null',
+		                    kpiname : 'Numero Alarmi CSP'
+						   };
+			var f = this.getRightPart().getUserData('form');
+			//f.setData(nodeData);
+			
+			//same as in selectDataObject() of MasterDetailsPage
+			var o = [];
+    		for(var prop in f.dataMappings){
+    			o[prop] = nodeData;
+    		}	
+    		f.setData(o);
+		}	
 	}	
 
 });

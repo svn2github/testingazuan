@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<DATA-ACCESS>
+   <DATE-FORMAT format="DD-MM-YYYY"/>
+   <TIMESTAMP-FORMAT format="DD-MM-YYYY hh:mm:ss"/>
+
+	 <CONNECTION-POOL connectionPoolName="dwh" 
+   					connectionPoolFactoryClass="it.eng.spago.dbaccess.factory.AppServerManagedConnectionPoolFactory" 
+   					connectionPoolType="native" connectionDescription="This is a dummy connection">
+      <CONNECTION-POOL-PARAMETER parameterName="initialContext" parameterValue=" "/>
+      <CONNECTION-POOL-PARAMETER parameterName="resourceName" parameterValue=" "/>
+      <CONNECTION-POOL-PARAMETER parameterName="driverVersion" parameterValue="2.1" parameterType=""/>
+      <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass" 
+      							 parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" 
+      							 parameterType=""/>
+   	</CONNECTION-POOL>
+    
+    <CONNECTION-POOL connectionPoolName="spagobi"
+                     connectionPoolFactoryClass="it.eng.spago.dbaccess.factory.AppServerManagedConnectionPoolFactory"
+                     connectionPoolType="native" connectionDescription="SpagoBi Metadata">
+    <CONNECTION-POOL-PARAMETER parameterName="jndiName"
+      parameterValue="java:comp/env/jdbc/spagobi" />
+    <CONNECTION-POOL-PARAMETER parameterName="driverVersion"
+      parameterValue="2.1" parameterType="" />
+    <CONNECTION-POOL-PARAMETER parameterName="sqlMapperClass"
+      parameterValue="it.eng.spago.dbaccess.sql.mappers.OracleSQLMapper" parameterType="" />
+  </CONNECTION-POOL>
+   
+   <CONNECTION-MANAGER>
+      <REGISTER-POOL registeredPoolName="dwh"/>
+      <REGISTER-POOL registeredPoolName="spagobi" />
+   </CONNECTION-MANAGER>
+   
+</DATA-ACCESS>
+

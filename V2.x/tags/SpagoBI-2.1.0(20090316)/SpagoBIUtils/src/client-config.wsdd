@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+ <globalConfiguration>
+  <parameter name="adminPassword" value="admin"/>
+  <parameter name="enableNamespacePrefixOptimization" value="true"/>
+  <parameter name="disablePrettyXML" value="true"/>
+  <parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
+  <parameter name="sendXsiTypes" value="true"/>
+  <parameter name="sendMultiRefs" value="true"/>
+  <parameter name="sendXMLDeclaration" value="true"/>
+ </globalConfiguration>
+ <handler name="session" type="java:org.apache.axis.handlers.SimpleSessionHandler"/>
+ <service name="WSSessionService" provider="java:RPC">
+  <requestFlow>
+   <handler type="session"/>
+  </requestFlow>
+  <responseFlow>
+   <handler type="session"/>
+  </responseFlow>
+  <parameter name="wsdlServicePort" value="WSSessionService"/>
+  <parameter name="className" value="it.eng.spagobi.services.session.stub.WSSessionServiceSoapBindingStub"/>
+  <parameter name="typeMappingVersion" value="1.2"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="wsdlServiceElement" value="SessionServiceService"/>
+  <parameter name="wsdlTargetNamespace" value="urn:spagobiwssession"/>
+  <parameter name="wsdlPortType" value="SessionService"/>
+  <parameter name="scope" value="Session"/>
+  <parameter name="schemaUnqualified" value="http://bo.session.services.spagobi.eng.it,http://xml.apache.org/xml-soap,urn:spagobiwssession,http://exceptions.session.services.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns10:NonExecutableDocumentException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException" xmlns:ns10="http://exceptions.session.services.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns11:DocumentParameter" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.session.bo.DocumentParameter" xmlns:ns11="http://bo.session.services.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns12:Check" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.session.bo.Check" xmlns:ns12="http://bo.session.services.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns13:Document" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.session.bo.Document" xmlns:ns13="http://bo.session.services.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns14:AuthenticationException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.services.session.exceptions.AuthenticationException" xmlns:ns14="http://exceptions.session.services.spagobi.eng.it"/>
+  <arrayMapping innerType="soapenc:string" languageSpecificType="java:java.lang.String[]" qname="ns15:ArrayOf_soapenc_string" xmlns:ns15="urn:spagobiwssession" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"/>
+  <arrayMapping innerType="ns17:DocumentParameter" languageSpecificType="java:it.eng.spagobi.services.session.bo.DocumentParameter[]" qname="ns16:ArrayOf_tns3_DocumentParameter" xmlns:ns16="urn:spagobiwssession" xmlns:ns17="http://bo.session.services.spagobi.eng.it"/>
+  <arrayMapping innerType="ns19:Check" languageSpecificType="java:it.eng.spagobi.services.session.bo.Check[]" qname="ns18:ArrayOf_tns3_Check" xmlns:ns18="urn:spagobiwssession" xmlns:ns19="http://bo.session.services.spagobi.eng.it"/>
+  <arrayMapping innerType="ns21:Document" languageSpecificType="java:it.eng.spagobi.services.session.bo.Document[]" qname="ns20:ArrayOf_tns3_Document" xmlns:ns20="urn:spagobiwssession" xmlns:ns21="http://bo.session.services.spagobi.eng.it"/>
+ </service>
+ <transport name="java" pivot="java:org.apache.axis.transport.java.JavaSender"/>
+ <transport name="http" pivot="java:org.apache.axis.transport.http.HTTPSender"/>
+ <transport name="local" pivot="java:org.apache.axis.transport.local.LocalSender"/>
+</deployment>

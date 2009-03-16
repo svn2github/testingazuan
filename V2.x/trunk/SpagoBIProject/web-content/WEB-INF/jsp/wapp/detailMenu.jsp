@@ -601,6 +601,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div class='div_detail_form'> 
 			<select name="functionality" size="1" class='portlet-form-input-field' onchange="changeInitialPathVisibility(this);">
 				<option value=""> </option>
+				<option value="<%= SpagoBIConstants.DOCUMENT_BROWSER_USER %>" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals(SpagoBIConstants.DOCUMENT_BROWSER_USER)) ? "selected='selected'" : ""%>>
+					<spagobi:message key="menu.Browser" />
+				</option>
 				<option value="<%= SpagoBIConstants.DOCUMENT_MANAGEMENT_USER %>" <%= (menu.getFunctionality() != null && menu.getFunctionality().equals(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER)) ? "selected='selected'" : ""%>>
 					<spagobi:message key="tree.objectstree.name" />
 				</option>

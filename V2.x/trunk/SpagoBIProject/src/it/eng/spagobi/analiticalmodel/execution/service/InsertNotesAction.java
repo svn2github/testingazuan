@@ -95,12 +95,12 @@ public class InsertNotesAction extends AbstractHttpAction {
 			
 			
 			String objId= (String)request.getAttribute("OBJECT_ID");
-			String userId= (String)request.getAttribute("userId");
+			String userId= (String)request.getAttribute("user_id");
 			String execIdentifier = (String)request.getAttribute("execIdentifier");
 			String notes = getNotes(execIdentifier, objId);
 			String conflict = "false";
 			
-			response.setAttribute("userId", userId);
+			response.setAttribute("user_id", userId);
 			response.setAttribute("OBJECT_ID", objId);
 			response.setAttribute("MESSAGEDET", mod);
 			response.setAttribute("execIdentifier", execIdentifier);
@@ -131,8 +131,8 @@ public class InsertNotesAction extends AbstractHttpAction {
 			    objId = (String) request.getAttribute("OBJECT_ID");
 			    logger.debug("got OBJECT_ID from Request=" + objId);
 				} 
-			else if(parName.equals("userid")){
-				userId = (String)request.getAttribute("userid");
+			else if(parName.equals("user_id")){
+				userId = (String)request.getAttribute("user_id");
 			}
 			else if(parName.equals("execIdentifier")){
 				execIdentifier = (String)request.getAttribute("execIdentifier");
@@ -206,7 +206,7 @@ public class InsertNotesAction extends AbstractHttpAction {
 		    
 		    
 		    String notesEnc = new BASE64Encoder().encode(notes.getBytes());
-		    response.setAttribute("userId", userId);
+		    response.setAttribute("user_id", userId);
 			response.setAttribute("OBJECT_ID", objId);
 		    response.setAttribute("NOTES_CONFLICT", conflict);
 		    response.setAttribute("execIdentifier", execIdentifier);

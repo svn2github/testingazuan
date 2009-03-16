@@ -85,9 +85,9 @@ public class DocumentRatingAction extends AbstractHttpAction{
 		private void goToDocumentRating(SourceBean request, String mod, SourceBean response) throws EMFUserError, SourceBeanException  {
 			
 			String objId= (String)request.getAttribute("OBJECT_ID");
-			String userId= (String)request.getAttribute("userId");
+			String userId= (String)request.getAttribute("user_id");
 			
-			response.setAttribute("userId", userId);
+			response.setAttribute("user_id", userId);
 			response.setAttribute("OBJECT_ID", objId);
 			response.setAttribute("MESSAGEDET", mod);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ratingBIObjectPubJ");
@@ -98,7 +98,7 @@ public class DocumentRatingAction extends AbstractHttpAction{
 			
 			String objId = "";
 			String rating = "";
-			String userId= (String)request.getAttribute("userId");
+			String userId= (String)request.getAttribute("user_id");
 			List params = request.getContainedAttributes();
 		    ListIterator it = params.listIterator();
 
@@ -154,7 +154,7 @@ public class DocumentRatingAction extends AbstractHttpAction{
 		       }
 		     }
 		   
-		    response.setAttribute("userId", userId);
+		    response.setAttribute("user_id", userId);
 		    response.setAttribute("MESSAGEDET", mod);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ratingBIObjectPubJ");
 			response.setAttribute("OBJECT_ID",objId);

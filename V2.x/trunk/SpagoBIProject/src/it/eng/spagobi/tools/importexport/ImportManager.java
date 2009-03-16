@@ -1877,11 +1877,11 @@ public class ImportManager implements IImportManager, Serializable {
 	    String labelPar = paramExp.getLabel();
 	    Object existObj = importer.checkExistence(labelPar, sessionCurrDB, new SbiParameters());
 	    if (existObj != null) {
-		SbiParameters paramCurr = (SbiParameters) existObj;
-		metaAss.insertCoupleParameter(paramExp.getParId(), paramCurr.getParId());
-		metaAss.insertCoupleParameter(paramExp, paramCurr);
-		metaLog.log("Found an existing Parameter " + paramCurr.getName() + " with "
-			+ "the same label of the exported parameter " + paramExp.getName());
+			SbiParameters paramCurr = (SbiParameters) existObj;
+			metaAss.insertCoupleParameter(paramExp.getParId(), paramCurr.getParId());
+			metaAss.insertCoupleParameter(paramExp, paramCurr);
+			metaLog.log("Found an existing Parameter " + paramCurr.getName() + " with "
+				+ "the same label of the exported parameter " + paramExp.getName());
 	    }
 	}
 	List exportedRoles = importer.getAllExportedSbiObjects(sessionExpDB, "SbiExtRoles", null);
@@ -1893,14 +1893,14 @@ public class ImportManager implements IImportManager, Serializable {
 	    Map rolesAss = metaAss.getRoleIDAssociation();
 	    Set keysExpRoleAss = rolesAss.keySet();
 	    if (keysExpRoleAss.contains(expRoleId))
-		continue;
+	    	continue;
 	    Object existObj = importer.checkExistence(roleName, sessionCurrDB, new SbiExtRoles());
 	    if (existObj != null) {
-		SbiExtRoles roleCurr = (SbiExtRoles) existObj;
-		metaAss.insertCoupleRole(roleExp.getExtRoleId(), roleCurr.getExtRoleId());
-		metaAss.insertCoupleRole(roleExp, roleCurr);
-		metaLog.log("Found an existing Role " + roleCurr.getName() + " with "
-			+ "the same name of the exported role " + roleExp.getName());
+			SbiExtRoles roleCurr = (SbiExtRoles) existObj;
+			metaAss.insertCoupleRole(roleExp.getExtRoleId(), roleCurr.getExtRoleId());
+			metaAss.insertCoupleRole(roleExp, roleCurr);
+			metaLog.log("Found an existing Role " + roleCurr.getName() + " with "
+				+ "the same name of the exported role " + roleExp.getName());
 	    }
 	}
 	List exportedParuse = importer.getAllExportedSbiObjects(sessionExpDB, "SbiParuse", null);
@@ -1914,18 +1914,19 @@ public class ImportManager implements IImportManager, Serializable {
 	    // parameter
 	    Map paramsAss = metaAss.getParameterIDAssociation();
 	    Integer idParAss = (Integer) paramsAss.get(idPar);
-	    if (idParAss != null)
-		idPar = idParAss;
-	    Map unique = new HashMap();
-	    unique.put("label", label);
-	    unique.put("idpar", idPar);
-	    Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiParuse());
-	    if (existObj != null) {
-		SbiParuse paruseCurr = (SbiParuse) existObj;
-		metaAss.insertCoupleParuse(paruseExp.getUseId(), paruseCurr.getUseId());
-		metaAss.insertCoupleParuse(paruseExp, paruseCurr);
-		metaLog.log("Found an existing Parameter use " + paruseCurr.getName() + " with "
-			+ "the same label of the exported parameter use " + paruseExp.getName());
+	    if (idParAss != null) {
+	    	// only if parameter has already been associated there could be association between its modalities
+		    Map unique = new HashMap();
+		    unique.put("label", label);
+		    unique.put("idpar", idParAss);
+		    Object existObj = importer.checkExistence(unique, sessionCurrDB, new SbiParuse());
+		    if (existObj != null) {
+				SbiParuse paruseCurr = (SbiParuse) existObj;
+				metaAss.insertCoupleParuse(paruseExp.getUseId(), paruseCurr.getUseId());
+				metaAss.insertCoupleParuse(paruseExp, paruseCurr);
+				metaLog.log("Found an existing Parameter use " + paruseCurr.getName() + " with "
+					+ "the same label of the exported parameter use " + paruseExp.getName());
+		    }
 	    }
 	}
 	List exportedBiobj = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjects", null);
@@ -1935,11 +1936,11 @@ public class ImportManager implements IImportManager, Serializable {
 	    String label = objExp.getLabel();
 	    Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiObjects());
 	    if (existObj != null) {
-		SbiObjects objCurr = (SbiObjects) existObj;
-		metaAss.insertCoupleBIObj(objExp.getBiobjId(), objCurr.getBiobjId());
-		metaAss.insertCoupleBIObj(objExp, objCurr);
-		metaLog.log("Found an existing BIObject " + objCurr.getName() + " with "
-			+ "the same label and path of the exported BIObject " + objExp.getName());
+			SbiObjects objCurr = (SbiObjects) existObj;
+			metaAss.insertCoupleBIObj(objExp.getBiobjId(), objCurr.getBiobjId());
+			metaAss.insertCoupleBIObj(objExp, objCurr);
+			metaLog.log("Found an existing BIObject " + objCurr.getName() + " with "
+				+ "the same label and path of the exported BIObject " + objExp.getName());
 	    }
 	}
 	List exportedLov = importer.getAllExportedSbiObjects(sessionExpDB, "SbiLov", null);
@@ -1949,11 +1950,11 @@ public class ImportManager implements IImportManager, Serializable {
 	    String label = lovExp.getLabel();
 	    Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiLov());
 	    if (existObj != null) {
-		SbiLov lovCurr = (SbiLov) existObj;
-		metaAss.insertCoupleLov(lovExp.getLovId(), lovCurr.getLovId());
-		metaAss.insertCoupleLov(lovExp, lovCurr);
-		metaLog.log("Found an existing Lov " + lovCurr.getName() + " with "
-			+ "the same label of the exported lov " + lovExp.getName());
+			SbiLov lovCurr = (SbiLov) existObj;
+			metaAss.insertCoupleLov(lovExp.getLovId(), lovCurr.getLovId());
+			metaAss.insertCoupleLov(lovExp, lovCurr);
+			metaLog.log("Found an existing Lov " + lovCurr.getName() + " with "
+				+ "the same label of the exported lov " + lovExp.getName());
 	    }
 	}
 	List exportedFunct = importer.getAllExportedSbiObjects(sessionExpDB, "SbiFunctions", null);
@@ -1963,11 +1964,11 @@ public class ImportManager implements IImportManager, Serializable {
 	    String code = functExp.getCode();
 	    Object existObj = importer.checkExistence(code, sessionCurrDB, new SbiFunctions());
 	    if (existObj != null) {
-		SbiFunctions functCurr = (SbiFunctions) existObj;
-		metaAss.insertCoupleFunct(functExp.getFunctId(), functCurr.getFunctId());
-		metaAss.insertCoupleFunct(functExp, functCurr);
-		metaLog.log("Found an existing Functionality " + functCurr.getName() + " with "
-			+ "the same CODE of the exported functionality " + functExp.getName());
+			SbiFunctions functCurr = (SbiFunctions) existObj;
+			metaAss.insertCoupleFunct(functExp.getFunctId(), functCurr.getFunctId());
+			metaAss.insertCoupleFunct(functExp, functCurr);
+			metaLog.log("Found an existing Functionality " + functCurr.getName() + " with "
+				+ "the same CODE of the exported functionality " + functExp.getName());
 	    }
 	}
 	List exportedEngine = importer.getAllExportedSbiObjects(sessionExpDB, "SbiEngines", null);
@@ -1979,14 +1980,14 @@ public class ImportManager implements IImportManager, Serializable {
 	    Map engAss = metaAss.getEngineIDAssociation();
 	    Set keysExpEngAss = engAss.keySet();
 	    if (keysExpEngAss.contains(expEngineId))
-		continue;
+	    	continue;
 	    Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiEngines());
 	    if (existObj != null) {
-		SbiEngines engCurr = (SbiEngines) existObj;
-		metaAss.insertCoupleEngine(engExp.getEngineId(), engCurr.getEngineId());
-		metaAss.insertCoupleEngine(engExp, engCurr);
-		metaLog.log("Found an existing Engine " + engCurr.getName() + " with "
-			+ "the same label of the exported engine " + engExp.getName());
+			SbiEngines engCurr = (SbiEngines) existObj;
+			metaAss.insertCoupleEngine(engExp.getEngineId(), engCurr.getEngineId());
+			metaAss.insertCoupleEngine(engExp, engCurr);
+			metaLog.log("Found an existing Engine " + engCurr.getName() + " with "
+				+ "the same label of the exported engine " + engExp.getName());
 	    }
 	}
 	List exportedCheck = importer.getAllExportedSbiObjects(sessionExpDB, "SbiChecks", null);
@@ -1996,11 +1997,11 @@ public class ImportManager implements IImportManager, Serializable {
 	    String label = checkExp.getLabel();
 	    Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiChecks());
 	    if (existObj != null) {
-		SbiChecks checkCurr = (SbiChecks) existObj;
-		metaAss.insertCoupleCheck(checkExp.getCheckId(), checkCurr.getCheckId());
-		metaAss.insertCoupleCheck(checkExp, checkCurr);
-		metaLog.log("Found an existing check " + checkCurr.getName() + " with "
-			+ "the same label of the exported check " + checkExp.getName());
+			SbiChecks checkCurr = (SbiChecks) existObj;
+			metaAss.insertCoupleCheck(checkExp.getCheckId(), checkCurr.getCheckId());
+			metaAss.insertCoupleCheck(checkExp, checkCurr);
+			metaLog.log("Found an existing check " + checkCurr.getName() + " with "
+				+ "the same label of the exported check " + checkExp.getName());
 	    }
 	}
 	List exportedObjPar = importer.getAllExportedSbiObjects(sessionExpDB, "SbiObjPar", null);
@@ -2012,28 +2013,30 @@ public class ImportManager implements IImportManager, Serializable {
 	    Integer objid = objparExp.getSbiObject().getBiobjId();
 	    Map objIdAss = metaAss.getBIobjIDAssociation();
 	    Integer newObjid = (Integer) objIdAss.get(objid);
-	    if (newObjid != null)
-		objid = newObjid;
+	    // only if biobject has already been associated there could be association between its biparameters
+	    if (newObjid == null)
+	    	continue;
 
 	    Integer parid = objparExp.getSbiParameter().getParId();
 	    Map parIdAss = metaAss.getParameterIDAssociation();
 	    Integer newParid = (Integer) parIdAss.get(parid);
-	    if (newParid != null)
-		parid = newParid;
+	    // only if parameter has already been associated there could be association between its biparameters
+	    if (newParid == null)
+	    	continue;
 
 	    Map uniqueMap = new HashMap();
-	    uniqueMap.put("biobjid", objid);
-	    uniqueMap.put("paramid", parid);
+	    uniqueMap.put("biobjid", newObjid);
+	    uniqueMap.put("paramid", newParid);
 	    uniqueMap.put("urlname", urlName);
 	    Object existObj = importer.checkExistence(uniqueMap, sessionCurrDB, new SbiObjPar());
 
 	    if (existObj != null) {
-		SbiObjPar objParCurr = (SbiObjPar) existObj;
-		metaAss.insertCoupleObjpar(objparExp.getObjParId(), objParCurr.getObjParId());
-		metaAss.insertCoupleObjpar(objparExp, objParCurr);
-		metaLog.log("Found an existing association between object " + objparExp.getSbiObject().getName()
-			+ " and parameter " + objparExp.getSbiParameter().getName() + " with " + " the same url "
-			+ objparExp.getParurlNm() + " name of the exported objpar ");
+			SbiObjPar objParCurr = (SbiObjPar) existObj;
+			metaAss.insertCoupleObjpar(objparExp.getObjParId(), objParCurr.getObjParId());
+			metaAss.insertCoupleObjpar(objparExp, objParCurr);
+			metaLog.log("Found an existing association between object " + objparExp.getSbiObject().getName()
+				+ " and parameter " + objparExp.getSbiParameter().getName() + " with " + " the same url "
+				+ objparExp.getParurlNm() + " name of the exported objpar ");
 	    }
 	}
 	List exportedDs = importer.getAllExportedSbiObjects(sessionExpDB, "SbiDataSource", null);

@@ -22,7 +22,7 @@
 <head>
 <meta http-equiv="Content-Language" content="en-us">
 <link rel="stylesheet" type="text/css" href="style.css">
-<title>Map</title>
+<title>SpagoBI Geo Engine's Template Specification</title>
 </head>
 
 <body>
@@ -47,22 +47,32 @@
 
 <h3>Nested elements</h3>
 <h4>MAP_PROVIDER</h4>
-<p>The nested <code>MAP_PROVIDER</code> element specifies the <a
-href="../MAP_PROVIDER.html">MapProvider</a> to use and its configuration. The 
-MapProvider is the componet withing the SpagoBIGeoEngine that have the 
-responsability to provide the map used for the analysis at hand.</p>
+<p>The nested 
+<a href="MAP_PROVIDER.html"><code>MAP_PROVIDER</code></a>
+ element specifies the 
+ <a href="../api/it/eng/spagobi/engines/geo/map/provider/IMapProvider.html">IMapProvider</a>
+ implemetation to use and its configuration block. 
+The MapProvider is the SpagoBIGeoEngine's component that have the 
+responsability to provide maps used for the analysis at hand.</p>
 
 <h4>DATAMART_PROVIDER</h4>
-<p>The nested <code>DATAMART_PROVIDER</code> element specifies the <a
-href="../DATAMART_PROVIDER.html">DataMartProvider</a> to use and its configuration. The 
-MapProvider is the componet withing the SpagoBIGeoEngine that have the 
-responsability to provide the map used for the analysis at hand.</p>
+<p>The nested 
+<a href="DATAMART_PROVIDER.html"><code>DATAMART_PROVIDER</code></a>
+element specifies the 
+<a href="../api/it/eng/spagobi/engines/geo/datamart/provider">IDataMartProvider</a> 
+implementation to use and its configuration block. The 
+MapProvider is the SpagoBIGeoEngine's component that have the 
+responsability to provide the datamart used for the analysis at hand.</p>
 
 <h4>MAP_RENDERER</h4>
-<p>The nested <code>MAP_RENDERER</code> element specifies the <a
-href="../MAP_RENDERER.html">DataMartProvider</a> to use and its configuration. The 
-MapProvider is the componet withing the SpagoBIGeoEngine that have the 
-responsability to provide the map used for the analysis at hand.</p>
+<p>The nested 
+<a href="MAP_RENDERER.html"><code>MAP_RENDERER</code></a>
+element specifies the 
+<a href="../api/it/eng/spagobi/engines/geo/map/renderer/IMapRenderer.html">IMapRenderer</a> 
+implementation to use and its configuration block. The 
+MapRenderer is the SpagoBIGeoEngine's component that have the 
+responsability to use the map retrived by the MapProvidere and the datamart retrived by the DataMartProvider 
+in order to produce the final analysis result</p>
   
   
 <h3>Examples</h3>

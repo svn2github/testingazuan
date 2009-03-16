@@ -250,25 +250,25 @@ public class DatasetWizardTag  extends TagSupport {
 			  			output.append("		</td>\n");
 			  			
 			  			output.append("		<td class='" + rowClass + "'>\n");
-			  			if(i<(parameters.size()-1)) {
+			  		/*	if(i<(parameters.size()-1)) {
 							String tableCol5 = msgBuilder.getMessage("SBIDev.DataSetWiz.tableCol5", "messages", httpRequest);
 							output.append("			<input type='image' onclick='setParametersXMLModified(true);downRow(\""+ i +"\")' class ='portlet-menu-item' \n");
 							output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/down16.gif") + "' \n");
 							output.append("				title='" + tableCol5 + "' alt='" + tableCol5 + "' />\n");
 			  			} else {
 			  				output.append("	        &nbsp;");
-			  			}
+			  			}*/
 			  			output.append("		</td>\n");
 			  			
 			  			output.append("		<td class='" + rowClass + "'>\n");
-			  			if(i>0) {
+			  			/*if(i>0) {
 							String tableCol6 = msgBuilder.getMessage("SBIDev.DataSetWiz.tableCol6", "messages", httpRequest);
 							output.append("			<input type='image' onclick='setParametersXMLModified(true);upRow(\""+ i +"\")' class ='portlet-menu-item' \n");
 							output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/up16.gif") + "' \n");
 							output.append("				title='" + tableCol6 + "' alt='" + tableCol6 + "' />\n");
 			  			} else {
 			  				output.append("	        &nbsp;");
-			  			}
+			  			}*/
 			  			output.append("		</td>\n");
 			  			
 			  			output.append("	</tr>\n");

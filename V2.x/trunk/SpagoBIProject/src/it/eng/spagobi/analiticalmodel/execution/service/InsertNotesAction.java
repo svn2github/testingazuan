@@ -36,6 +36,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjNote;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IObjNoteDAO;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
@@ -93,9 +94,13 @@ public class InsertNotesAction extends AbstractHttpAction {
 	 
 		private void goToInsertNotes(SourceBean request, String mod, SourceBean response) throws EMFUserError, SourceBeanException  {
 			
-			
+			RequestContainer requestContainer = this.getRequestContainer();		
+    		SessionContainer session = requestContainer.getSessionContainer();
+    		SessionContainer permanentSession = session.getPermanentContainer();
+    		UserProfile profile = (UserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    		IEngUserProfile profile2 = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    		String userId= (String) profile.getUserId();
 			String objId= (String)request.getAttribute("OBJECT_ID");
-			String userId= (String)request.getAttribute("user_id");
 			String execIdentifier = (String)request.getAttribute("execIdentifier");
 			String notes = getNotes(execIdentifier, objId);
 			String conflict = "false";
@@ -118,6 +123,12 @@ public class InsertNotesAction extends AbstractHttpAction {
 			String conflict = "false" ;
 			String execIdentifier = "";
 			String userId = "";
+			RequestContainer requestContainer = this.getRequestContainer();		
+    		SessionContainer session = requestContainer.getSessionContainer();
+    		SessionContainer permanentSession = session.getPermanentContainer();
+    		UserProfile profile = (UserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    		IEngUserProfile profile2 = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    		userId= (String) profile.getUserId();
 			List params = request.getContainedAttributes();
 		    ListIterator it = params.listIterator();
 
@@ -156,14 +167,10 @@ public class InsertNotesAction extends AbstractHttpAction {
 		    	if (userId != null && !userId.equals("")){
 		    		
 		    		boolean canSee = false;
-		    		RequestContainer requestContainer = this.getRequestContainer();		
-		    		SessionContainer session = requestContainer.getSessionContainer();
-		    		SessionContainer permanentSession = session.getPermanentContainer();
-		    		IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		    		
 		    		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(new Integer(objId));
 		    		try {
-						canSee = ObjectsAccessVerifier.canSee(obj, profile);
+						canSee = ObjectsAccessVerifier.canSee(obj, profile2);
 					} catch (EMFInternalError e1) {
 						e1.printStackTrace();
 					}
@@ -177,7 +184,7 @@ public class InsertNotesAction extends AbstractHttpAction {
 					// get all correct execution roles
 					List correctRoles = new ArrayList();
 					try {
-						correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(new Integer(objId), profile);
+						correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(new Integer(objId), profile2);
 					} catch (NumberFormatException e2) {
 						e2.printStackTrace();
 					} 

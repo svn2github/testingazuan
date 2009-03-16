@@ -33,6 +33,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
@@ -84,8 +85,13 @@ public class DocumentRatingAction extends AbstractHttpAction{
 	 
 		private void goToDocumentRating(SourceBean request, String mod, SourceBean response) throws EMFUserError, SourceBeanException  {
 			
+			RequestContainer requestContainer = this.getRequestContainer();		
+    		SessionContainer session = requestContainer.getSessionContainer();
+    		SessionContainer permanentSession = session.getPermanentContainer();
+    		UserProfile profile = (UserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    		String userId= (String) profile.getUserId();
 			String objId= (String)request.getAttribute("OBJECT_ID");
-			String userId= (String)request.getAttribute("user_id");
+			
 			
 			response.setAttribute("user_id", userId);
 			response.setAttribute("OBJECT_ID", objId);
@@ -98,7 +104,12 @@ public class DocumentRatingAction extends AbstractHttpAction{
 			
 			String objId = "";
 			String rating = "";
-			String userId= (String)request.getAttribute("user_id");
+			RequestContainer requestContainer = this.getRequestContainer();		
+    		SessionContainer session = requestContainer.getSessionContainer();
+    		SessionContainer permanentSession = session.getPermanentContainer();
+    		UserProfile profile = (UserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    		IEngUserProfile profile2 = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    		String userId= (String) profile.getUserId();
 			List params = request.getContainedAttributes();
 		    ListIterator it = params.listIterator();
 
@@ -117,10 +128,7 @@ public class DocumentRatingAction extends AbstractHttpAction{
 			}
 		    }
 		    boolean canSee = false;
-    		RequestContainer requestContainer = this.getRequestContainer();		
-    		SessionContainer session = requestContainer.getSessionContainer();
-    		SessionContainer permanentSession = session.getPermanentContainer();
-    		IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    		
     		
     		BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(new Integer(objId));
     		try {
@@ -138,7 +146,7 @@ public class DocumentRatingAction extends AbstractHttpAction{
 			// get all correct execution roles
 			List correctRoles = new ArrayList();
 			try {
-				correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(new Integer(objId), profile);
+				correctRoles = DAOFactory.getBIObjectDAO().getCorrectRolesForExecution(new Integer(objId), profile2);
 			} catch (NumberFormatException e2) {
 				e2.printStackTrace();
 			} 

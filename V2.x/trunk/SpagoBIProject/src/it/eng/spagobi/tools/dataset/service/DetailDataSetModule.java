@@ -529,7 +529,7 @@ public class DetailDataSetModule extends AbstractModule {
 						IDataSource dataSource=DAOFactory.getDataSourceDAO().loadDataSourceByID(Integer.valueOf(dataSourceID));
 						ds.setDataSource(dataSource.toSpagoBiDataSource());
 						}else{
-							
+							throw new EMFUserError(EMFErrorSeverity.ERROR, "9222", messageBundle);
 						}
 					}
 				}

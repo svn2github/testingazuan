@@ -6,9 +6,7 @@ La cha&icirc;ne de caract&egrave;res xml doit &ecirc;tre format&eacute;e comme l
 Dans le script il est possible d'utiliser les attributs de profil comme expliqu&eacute; ci-dessous.
 <br/><br/>
 Pour utiliser la valeur d'un attribut simple de profil utilisateur &eacute;crivez &agrave; l'int&eacute;rieur du script cet appel de
-fonction <b>getSingleValueProfileAttribute(nom de l'attribut du profil)</b>. 
-<br/>
-Exemple: instruction du script... getSingleValueProfileAttribute(branch) ... istructions du script
+${nameAttribute}
 <br/><br/>
 Pour utiliser un attribut d'un profil à valeur multiple eacute;crivez &agrave; l'int&eacute;rieur du script cet appel de
 fonction <b>getMultiValueProfileAttribute(nom de l'attribut du profil, prefix, s&eacute;parateur, suffix)</b>.

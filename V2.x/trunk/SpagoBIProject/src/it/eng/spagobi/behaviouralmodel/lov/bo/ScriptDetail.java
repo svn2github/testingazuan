@@ -169,7 +169,7 @@ public class ScriptDetail  implements ILovDetail  {
 	 */
 	public String getLovResult(IEngUserProfile profile) throws Exception {
 		String result = null;
-		HashMap attributes = GeneralUtilities.getAllProfileAttributes(profile);
+		HashMap attributes = GeneralUtilities.getAllProfileAttributes(profile); // to be cancelled, now substitutution inline
 		Binding bind = ScriptManager.fillBinding(attributes);
 
 		//substitute profile attributes

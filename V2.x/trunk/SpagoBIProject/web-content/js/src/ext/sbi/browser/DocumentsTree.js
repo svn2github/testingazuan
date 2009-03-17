@@ -53,6 +53,7 @@ Sbi.browser.DocumentsTree = function(config) {
     Sbi.browser.DocumentsTree.superclass.constructor.call(this, c);
     
     this.rootNode = new Ext.tree.AsyncTreeNode({
+    	id: 'rootNode',
         text		: LN('sbi.browser.documentstree.root'),
         iconCls		: 'icon-ftree-root',
         expanded	: true,

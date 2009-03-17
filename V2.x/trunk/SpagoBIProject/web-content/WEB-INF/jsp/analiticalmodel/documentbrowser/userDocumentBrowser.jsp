@@ -23,6 +23,42 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ page language="java" 
 	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
-	
 
-<H1>CIAO !!!</H1>
+
+
+    
+    
+
+    
+   
+    
+   
+    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/main.css")%>'
+    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/listview.css")%>'
+    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/groupview.css")%>'
+   	<link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/commons/loadmask.css")%>' />
+      
+    
+      
+
+	
+	<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/decorator/LoadMask.js")%>'></SCRIPT>
+	<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/SampleData.js")%>'></SCRIPT>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/SearchField.js")%>'></SCRIPT>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/Toolbar.js")%>'></SCRIPT>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/DocumentsTree.js")%>'></SCRIPT>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/FolderView.js")%>'></SCRIPT>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/FolderDetailPanel.js")%>'></SCRIPT>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/DocumentsBrowser.js")%>'></SCRIPT>
+    
+       
+    <script type="text/javascript">
+    Ext.BLANK_IMAGE_URL = '<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/resources/images/default/s.gif")%>';
+
+    Ext.onReady(function(){
+      Ext.QuickTips.init();              
+      var browser = new Sbi.browser.DocumentsBrowser();
+      var viewport = new Ext.Viewport(browser);     
+    });
+    </script>
+    

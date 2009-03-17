@@ -24,7 +24,7 @@
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 
-Ext.ns("Sbi.effects");
+Ext.ns("Sbi.decorator");
 
 Sbi.decorator.LoadMask = function(el, config){
     this.el = Ext.get(el);

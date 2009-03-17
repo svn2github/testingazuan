@@ -34,10 +34,10 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
                 '<tpl for="samples">',                    
                     '<dd ext:url="{url}">',
                         '<div id="control-panel" class="control-panel">',
-                            '<a href="javascript:alert(\'Document sended succesfully\')"><img title="send by email" src="images/send.gif"/></a>',
-                            '<a href="javascript:alert(\'Document scheduled succesfully\')"><img title="shedule" src="images/schedule.gif"/></a>',
+                            '<a href="javascript:alert(\'Document sended succesfully\')"><img title="send by email" src="../img/analiticalmodel/browser/send.gif"/></a>',
+                            '<a href="javascript:alert(\'Document scheduled succesfully\')"><img title="shedule" src="../img/analiticalmodel/browser/schedule.gif"/></a>',
                         '</div>',
-                        '<div id="icon"><img src="images/{icon}"/></div>',
+                        '<div id="icon"><img src="../img/analiticalmodel/browser/{icon}"/></div>',
                         '<div id="description"><h4>{text}</h4><p>{desc}</p></div>',
                     '</dd>',
                 '</tpl>',
@@ -62,7 +62,7 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     , tpl : Sbi.browser.groupTpl
 
     , onClick : function(e){
-        /*
+        
         var group = e.getTarget('h2', 3, true);
         if(group){
             group.up('div').toggleClass('collapsed');
@@ -73,7 +73,7 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
                 window.open(url);
             }
         }
-        */
+       
         
         return Sbi.browser.FolderView.superclass.onClick.apply(this, arguments);
     }

@@ -21,7 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -31,7 +30,6 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.chiron.ListEnginesAction;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
-import it.eng.spagobi.utilities.service.JSONSuccess;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -53,12 +51,13 @@ public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
 			
 			JSONObject jsonObj = new JSONObject();
 			jsonObj.put("text", "Ciao mondo !!!");
-			
+			/*
 			try {
 				writeBackToClient( new JSONSuccess( jsonObj ) );
 			} catch (IOException e) {
 				throw new SpagoBIException("Impossible to write back the responce to the client", e);
 			}
+			*/
 		} catch (Throwable t) {
 			throw new SpagoBIException("An unexpected error occured while executing LIST_ENGINES_ACTION", t);
 		} finally {

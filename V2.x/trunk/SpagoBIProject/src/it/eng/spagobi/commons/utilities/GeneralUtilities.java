@@ -170,7 +170,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		if (profileAttributeStartIndex != -1) {
 		    IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
 			    IEngUserProfile.ENG_USER_PROFILE);
-		    value = SpagoBIUtilities.substituteProfileAttributesInString(value, profile,
+		    value = StringUtilities.substituteProfileAttributesInString(value, profile,
 			    profileAttributeStartIndex);
 		    biparam.getParameter().getModalityValue().setLovProvider(value);
 		}

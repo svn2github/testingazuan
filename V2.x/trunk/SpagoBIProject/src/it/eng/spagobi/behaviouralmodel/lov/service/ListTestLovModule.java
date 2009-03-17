@@ -49,8 +49,8 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ScriptDetail;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -106,7 +106,7 @@ public class ListTestLovModule extends AbstractBasicListModule {
 			String statement = qd.getQueryDefinition();
 			// execute query
 			try {
-				statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
+				statement = StringUtilities.substituteProfileAttributesInString(statement, profile);
 				//rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement, colNames);
 				rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), datasource, statement, colNames);
 			} catch (Exception e) {

@@ -55,9 +55,9 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -155,7 +155,7 @@ public class LovLookupAjaxModule extends AbstractBasicListModule {
 			String statement = qd.getQueryDefinition();
 			// execute query
 			try {
-				statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
+				statement = StringUtilities.substituteProfileAttributesInString(statement, profile);
 				//rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), pool, statement);
 				rowsSourceBean = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), datasource, statement);
 			} catch (Exception e) {

@@ -330,7 +330,7 @@ public class JPivotDriver extends AbstractDriver implements IEngineDriver {
 		    }
 		    if (memberName != null) {
 			// memberName =
-			// GeneralUtilities.substituteProfileAttributesInString(memberName,
+			// StringUtilities.substituteProfileAttributesInString(memberName,
 			// profile);
 			// datoken += ",member=" + memberName + "=" +
 			// memberAccess;

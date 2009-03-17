@@ -25,6 +25,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -198,7 +199,7 @@ public class FixedListDetail  implements ILovDetail  {
 					  "/>";
 		}
 		lovResult += "</ROWS>";
-		lovResult = GeneralUtilities.substituteProfileAttributesInString(lovResult, profile);
+		lovResult = StringUtilities.substituteProfileAttributesInString(lovResult, profile);
 		return lovResult;
 	}
 		

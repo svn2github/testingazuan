@@ -31,6 +31,7 @@ import it.eng.spago.dbaccess.sql.result.ScrollableDataResult;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -166,7 +167,7 @@ public class QueryDetail  implements ILovDetail  {
 	 */
 	public String getLovResult(IEngUserProfile profile) throws Exception {
 		String statement = getQueryDefinition();
-		statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
+		statement = StringUtilities.substituteProfileAttributesInString(statement, profile);
 		String result = getLovResult(statement);
 		return result;
 	}

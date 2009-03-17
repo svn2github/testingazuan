@@ -62,6 +62,7 @@ import it.eng.spagobi.commons.utilities.DataSourceUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ParameterValuesDecoder;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -764,7 +765,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	String statement = qd.getQueryDefinition();
 
 	try {
-	    statement = GeneralUtilities.substituteProfileAttributesInString(statement, profile);
+	    statement = StringUtilities.substituteProfileAttributesInString(statement, profile);
 	    result = (SourceBean) executeSelect(getRequestContainer(), getResponseContainer(), datasource, statement);
 	} catch (Exception e) {
 	    logger.error("Exception",e);

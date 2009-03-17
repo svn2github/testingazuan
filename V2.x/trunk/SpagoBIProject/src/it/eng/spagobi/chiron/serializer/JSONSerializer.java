@@ -21,15 +21,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
+import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.engines.config.bo.Engine;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.json.JSONArray;
-
-import it.eng.spagobi.commons.bo.Domain;
-import it.eng.spagobi.engines.config.bo.Engine;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -42,6 +44,8 @@ public class JSONSerializer implements Serializer {
 		mappings = new HashMap();
 		mappings.put( Domain.class, new DomainJSONSerializer() );
 		mappings.put( Engine.class, new EngineJSONSerializer() );
+		mappings.put( BIObject.class, new DocumentsJSONSerializer() );
+		mappings.put( LowFunctionality.class, new FoldersJSONSerializer() );
 	}
 
 	public Object serialize(Object o) throws SerializationException {

@@ -23,5 +23,11 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 
+	<ACTION name="LIST_FUNCTIONALITIES_ACTION" 
+			class="it.eng.spagobi.chiron.ListFunctionalitiesAction"  
+			scope="REQUEST">	
+		
+		<CONFIG></CONFIG>
+	</ACTION>
 </ACTIONS>
 

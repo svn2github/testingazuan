@@ -27,6 +27,8 @@
   * by Andrea Gioia (andrea.gioia@eng.it)
   */
 
+Ext.ns("Sbi.service");
+
 Sbi.service.ServiceRegistry = function(config) {
 	
 	this.baseUrl = {

@@ -29,18 +29,55 @@ Ext.ns("Sbi.browser");
 Sbi.browser.DocumentsTree = function(config) {    
     // sub-components   
     
+	var loadFTreeFoldersService = Sbi.config.serviceRegistry.getServiceUrl('GET_FTREE_FOLDERS_ACTION');
+	
+	this.loader = new Ext.tree.TreeLoader({
+        dataUrl   : loadFTreeFoldersService
+    });
+		
     var c = Ext.apply({}, config, {
-      html: ''
+    	title            : LN('sbi.browser.documentstree.title'),
+        collapsible      : true,
+        enableDD		 : true,
+        animCollapse     : true,
+        collapseFirst	 : false,
+        border           : false,
+        autoScroll       : true,
+        containerScroll  : true,
+        animate          : false,
+        trackMouseOver 	 : true,
+        useArrows 		 : true,
+        loader           : this.loader
     })
     
     Sbi.browser.DocumentsTree.superclass.constructor.call(this, c);
+    
+    this.rootNode = new Ext.tree.AsyncTreeNode({
+        text		: LN('sbi.browser.documentstree.root'),
+        iconCls		: 'icon-ftree-root',
+        expanded	: true,
+        expandable  : false,
+        draggable	: false
+    });    
+    this.setRootNode(this.rootNode);    
+    
+    this.addListener('click', this.onClickTestFn, this);
 }
 
 
 
 
-Ext.extend(Sbi.browser.DocumentsTree, Ext.Panel, {
+Ext.extend(Sbi.browser.DocumentsTree, Ext.tree.TreePanel, {
     
-    // static contens and methods definitions
+	loader: null
+	, rootNode: null
+	
+	, onClickTestFn: function(node, e) {
+		alert('id' + node.id + '\ntype:' + node.attributes.type);
+	}
+
+	, refresh: function() {
+		this.loader.load(this.rootNode, function(){});
+	}
    
 });

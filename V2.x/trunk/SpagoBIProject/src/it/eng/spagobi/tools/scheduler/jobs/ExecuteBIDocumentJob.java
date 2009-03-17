@@ -761,7 +761,7 @@ public class ExecuteBIDocumentJob implements Job {
 				}
 			}
 			// we must substitute parameter values on the expression
-			String recipientStr = StringUtilities.substituteParametersInString(expression, parametersMap, false);
+			String recipientStr = StringUtilities.substituteParametersInString(expression, parametersMap,null, false);
 			logger.debug("The expression, after substitution, now is [" + recipientStr + "].");
 			String[] recipientsArray = recipientStr.split(",");
 			logger.debug("Recipients found with expression: " + recipientsArray);

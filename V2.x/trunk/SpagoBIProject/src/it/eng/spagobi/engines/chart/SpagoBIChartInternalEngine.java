@@ -180,6 +180,10 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 					if(values!=null){
 						if(values.size()==1){
 							String value=(String)values.get(0);
+							/*String parType=par.getParameter().getType();
+							if(parType.equalsIgnoreCase("STRING") || parType.equalsIgnoreCase("DATE")){
+								value="'"+value+"'";
+							}*/
 							parametersMap.put(url, value);
 						}else if(values.size() >=1){
 							String value = "'"+(String)values.get(0)+"'";

@@ -20,18 +20,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 var asUrls = new Object();
+var asTitleDocs = new Object();
 var asLinkedDocs = new Object();
 var asLinkedFields = new Object();
 var asStylePanels = new Object();
 var numDocs = 0;
 
 
-function setDocs(pUrls){
+function setDocs(pUrls, pTitle){
 	for (i in pUrls)
 	{
 	   numDocs++;
 	}
 	asUrls = pUrls;
+	asTitleDocs = pTitle;
 }
 
 function setLinkedDocs(pLinkedDocs){
@@ -165,6 +167,7 @@ Ext.onReady(function() {
   				var strDocLabel = totalDocLabel.substring(totalDocLabel.indexOf('|')+1);
   				//gets style (width and height)
   				var style = asStylePanels[strDocLabel];
+  				var titleDoc = asTitleDocs[strDocLabel];
 				var widthPx = "";
 				var heightPx = "";
 				if (style != null){
@@ -174,40 +177,57 @@ Ext.onReady(function() {
 		       		heightPx = heightPx.substring(heightPx.indexOf("HEIGHT_")+7);
 				}
 				//create panel
-  				var p = new Ext.Panel({
-				id:'p'+i,
-		        bodyBorder : true,
-		        collapsible:true,
-		       // width: widthPx,
-		        height:Number(heightPx),
-		        bodyCfg: {
-					tag:'div',
-					cls:'x-panel-body',
-					children:[{
-						tag:'iframe',
-	      				src: asUrls[docLabel],
-	      				frameBorder:0,
-	      				width:'100%',
-	      				height:'100%',
-	      				id: 'iframe_' + strDocLabel,
-	      				name: 'iframe_' + strDocLabel,
-	      				style: {overflow:'auto'},
-	      				scrolling:'no'  //possible values: yes, no, auto  
-	 				}]
-				},
-		        renderTo: 'divIframe_'+ strDocLabel
-			    });
-				
+				if (titleDoc==""){
+					var p = new Ext.Panel({
+						id:'p'+i,
+				        bodyBorder : true,
+				        collapsible:true,
+				        height:Number(heightPx),
+				        bodyCfg: {
+							tag:'div',
+							cls:'x-panel-body',
+							children:[{
+								tag:'iframe',
+			      				src: asUrls[docLabel],
+			      				frameBorder:0,
+			      				width:'100%',
+			      				height:'100%',
+			      				id: 'iframe_' + strDocLabel,
+			      				name: 'iframe_' + strDocLabel,
+			      				style: {overflow:'auto'},
+			      				scrolling:'auto'  //possible values: yes, no, auto  
+			 				}]
+						},
+				        renderTo: 'divIframe_'+ strDocLabel
+					    });
+				}
+				else{
+	  				var p = new Ext.Panel({
+					id:'p'+i,
+			        bodyBorder : true,
+			        collapsible:true,
+			        title: titleDoc,
+			       // width: widthPx,
+			        height:Number(heightPx),
+			        bodyCfg: {
+						tag:'div',
+						cls:'x-panel-body',
+						children:[{
+							tag:'iframe',
+		      				src: asUrls[docLabel],
+		      				frameBorder:0,
+		      				width:'100%',
+		      				height:'100%',
+		      				id: 'iframe_' + strDocLabel,
+		      				name: 'iframe_' + strDocLabel,
+		      				style: {overflow:'auto'},
+		      				scrolling:'auto'  //possible values: yes, no, auto  
+		 				}]
+					},
+			        renderTo: 'divIframe_'+ strDocLabel
+				    });
+				}
 			    p.show(this);
-				//p.load({
-				//   url:urlIframe,
-				//    params: {urlDoc:asUrls[docLabel], nameDoc: strDocLabel},
-				//    discardUrl: false,
-				//    nocache: false,
-				//    text: "Loading ...",
-				//    timeout: 30,
-				//    scripts: true
-				//});   
   			}
   	}
 }); 

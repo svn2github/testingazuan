@@ -57,6 +57,7 @@ public class DocumentCompositionConfiguration {
 	private Map lstDocLinked = new LinkedHashMap();
 	private Map lstFieldLinked = new LinkedHashMap();
 	private Map lstPanelStyle = new LinkedHashMap();
+	private Map lstDocTitles = new LinkedHashMap();
 	
 	//constants for convert panel dimensions from percentage into pixel values
 	Integer[] percentageValues = {new Integer("100"), new Integer("75"), new Integer("50"), new Integer("25")};
@@ -79,6 +80,7 @@ public class DocumentCompositionConfiguration {
 		int numOrder;
 		Integer videoWidth[];
 		Integer videoHeight[];
+		String title;
 		String sbiObjLabel;
 		String style;
 		String namePar;
@@ -204,6 +206,20 @@ public class DocumentCompositionConfiguration {
 			return style;
 		}
 		
+		/**
+		 * @return the title
+		 */
+		public String getTitle() {
+			return title;
+		}
+
+		/**
+		 * @param title the title to set
+		 */
+		public void setTitle(String title) {
+			this.title = title;
+		}
+
 		/**
 		 * Sets the style.
 		 * 
@@ -354,6 +370,8 @@ public class DocumentCompositionConfiguration {
 				document.setNumOrder(i);	
 				attributeValue = (String)documentSB.getAttribute("sbi_obj_label");
 				document.setSbiObjLabel(attributeValue);
+				attributeValue = (documentSB.getAttribute("title")==null)?"":(String)documentSB.getAttribute("title");
+				document.setTitle(attributeValue);
 	
 				Integer width = (documentsConfigurationSB.getAttribute("video_width")==null)?DEFAULT_WIDTH:Integer.valueOf((String)documentsConfigurationSB.getAttribute("video_width"));
 				Integer height = (documentsConfigurationSB.getAttribute("video_height")==null)?DEFAULT_HEIGHT:Integer.valueOf((String)documentsConfigurationSB.getAttribute("video_height"));
@@ -606,6 +624,7 @@ public class DocumentCompositionConfiguration {
 			//set syle for div
 			lstDivStyle.put("STYLE_DOC__"+numDoc, tmpDoc.getStyle());
 			lstDocLinked.put("MAIN_DOC_LABEL__"+numDoc, tmpDoc.getSbiObjLabel());
+			lstDocTitles.put("TITLE_DOC__"+ docLabel, tmpDoc.getTitle());
 			//gets layout informations (width and height) for next settings of ext-panels
 			String docStyles = tmpDoc.getStyle();
 			String tmpStyle = "";
@@ -886,6 +905,20 @@ public class DocumentCompositionConfiguration {
 	 */
 	public Map getLstPanelStyle() {
 		return lstPanelStyle;
+	}
+
+	/**
+	 * @return the lstDocTitles
+	 */
+	public Map getLstDocTitles() {
+		return lstDocTitles;
+	}
+
+	/**
+	 * @param lstDocTitles the lstDocTitles to set
+	 */
+	public void setLstDocTitles(Map lstDocTitles) {
+		this.lstDocTitles = lstDocTitles;
 	}
 
 	/**

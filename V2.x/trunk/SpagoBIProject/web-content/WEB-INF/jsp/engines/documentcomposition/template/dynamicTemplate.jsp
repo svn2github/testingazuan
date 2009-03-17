@@ -55,6 +55,7 @@ for (int i=0; i<lstUrl.size(); i++){
 <script>
 	//Create associative arrays with information for refresh (dependencies, ...)   ACTHUNG: Every array is indipendent!!!!
 	var arUrl = new Object();
+	var arTitleDocs = new Object();
 	var arLinkedDocs  = new Object();
 	var arLinkedFields  = new Object();
 	var arStylePanels  = new Object();
@@ -67,6 +68,7 @@ for (int i=0; i<lstUrl.size(); i++){
 	 	%> 
 	 		arUrl['<%=totalSbiDocLabel%>'] = ['<%=(String)lstUrl.get("URL_DOC__"+(i))%>'];
 	 		arStylePanels['<%=labelDoc%>'] = ['<%=(String)lstStylePanel.get("STYLE__"+labelDoc)%>'];
+	 		arTitleDocs['<%=labelDoc%>'] = ['<%=(String)lstTitles.get("TITLE_DOC__"+labelDoc)%>'];
 	 	<%	//loop on document linked  
 			for (int j=0; j<lstFieldLinked.size(); j++){
 	 			if (mainLabel != null && mainLabel.equalsIgnoreCase(labelDoc)){ 
@@ -100,7 +102,7 @@ for (int i=0; i<lstUrl.size(); i++){
 	 		}
  		}
  	}%>  
-	setDocs(arUrl);
+	setDocs(arUrl, arTitleDocs);
 	setLinkedDocs(arLinkedDocs);
 	setLinkedFields(arLinkedFields);
 	setStylePanels(arStylePanels);

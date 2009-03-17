@@ -181,7 +181,9 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 				}
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'groupbox') {
 				var form = object.getChildren()[0];	//set to form added to the groupbox
-				value = form.getData();
+				if(form){							//Not all groupboxes have form inside - some are empty
+					value = form.getData();
+				}
 			}	
 			
 			return value;			

@@ -282,13 +282,26 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 				alert (this._pagedTable._table.getUpdatedData());
 			}
     	} else {
+    		   		
     		if(this._type == 'modelDefinition' || this._type == 'modelInstance'){
+    			var page = this._form.getUserData('details');
+        		var f = page.getChildren()[0];
+        		var temp_engine = f.getData();
+        		var engine = {};
+        		
+        		for(prop in temp_engine){				// parse the group-boxes
+        			for(sub_prop in temp_engine[prop]){	// parse the form inside groupbox
+        				engine[sub_prop] = temp_engine[prop][sub_prop];
+        			}
+        		}
     		}
     		else{
-				var engine = this.getForm().getData();
-				alert (qooxdoo.commons.CoreUtils.toStr(engine));
+    			var engine = this.getForm().getData();
+    		}	
 				
-				qooxdoo.dao.DAOFactory.getEngineDAO().saveEngine( engine, {
+			alert (qooxdoo.commons.CoreUtils.toStr(engine));
+				
+			qooxdoo.dao.DAOFactory.getEngineDAO().saveEngine( engine, {
 					success: {
 						fn: function(){alert('SUCCESS');}
 						, scope: this
@@ -308,7 +321,7 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 			    		request.send();
 			    		alert('request sent to: ' + qx.util.Json.stringify(data));
 			    		*/
-    		}
+    		
 		}
 	}	
     

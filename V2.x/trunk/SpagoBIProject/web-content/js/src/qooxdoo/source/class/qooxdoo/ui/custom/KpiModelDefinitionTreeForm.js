@@ -107,6 +107,23 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
     			o[prop] = nodeData;
     		}	
     		f.setData(o);
+		},
+		
+		createNode: function(e){
+			alert("Create Node");
+			var f = this.getRightPart().getUserData('form');
+			
+			/*
+			var o = [];
+    		for(var prop in f.dataMappings){
+    			o[prop] = nodeData;
+    		}	
+    		f.getData();
+    		*/
+		},
+		
+		save: function (e) {
+			alert("Save");
 		}	
 	}	
 

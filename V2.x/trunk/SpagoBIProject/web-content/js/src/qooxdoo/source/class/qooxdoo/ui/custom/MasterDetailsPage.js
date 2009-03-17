@@ -281,30 +281,34 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
     		if (this.records.ID == "ROLES"){
 				alert (this._pagedTable._table.getUpdatedData());
 			}
-    	} else {			
-			var engine = this.getForm().getData();
-			alert (qooxdoo.commons.CoreUtils.toStr(engine));
+    	} else {
+    		if(this._type == 'modelDefinition' || this._type == 'modelInstance'){
+    		}
+    		else{
+				var engine = this.getForm().getData();
+				alert (qooxdoo.commons.CoreUtils.toStr(engine));
+				
+				qooxdoo.dao.DAOFactory.getEngineDAO().saveEngine( engine, {
+					success: {
+						fn: function(){alert('SUCCESS');}
+						, scope: this
+					}, failure: {
+						fn: function(){alert('FAILURE');}
+						, scope: this
+					}
+				});
 			
-			qooxdoo.dao.DAOFactory.getEngineDAO().saveEngine( engine, {
-				success: {
-					fn: function(){alert('SUCCESS');}
-					, scope: this
-				}, failure: {
-					fn: function(){alert('FAILURE');}
-					, scope: this
-				}
-			});
-			
-			/*
-			var serviceRegistry = new qooxdoo.commons.ServiceRegistry();
-	  		var serviceUrl = serviceRegistry.getServiceUrl('SAVE_ENGINE_ACTION');
-	  		serviceUrl += '&ENGINE=' + qx.util.Json.stringify(data);
-			var request = new qx.io.remote.Request(serviceUrl, 'POST', 'application/json');    	
-    		request.addListener('completed', function(){alert('SUCCESS: ' + serviceUrl);}, this);
-    		request.addListener('failed', function(){alert('FAILURE: ' + serviceUrl);}, this);
-    		request.send();
-    		alert('request sent to: ' + qx.util.Json.stringify(data));
-    		*/
+						/*
+						var serviceRegistry = new qooxdoo.commons.ServiceRegistry();
+				  		var serviceUrl = serviceRegistry.getServiceUrl('SAVE_ENGINE_ACTION');
+				  		serviceUrl += '&ENGINE=' + qx.util.Json.stringify(data);
+						var request = new qx.io.remote.Request(serviceUrl, 'POST', 'application/json');    	
+			    		request.addListener('completed', function(){alert('SUCCESS: ' + serviceUrl);}, this);
+			    		request.addListener('failed', function(){alert('FAILURE: ' + serviceUrl);}, this);
+			    		request.send();
+			    		alert('request sent to: ' + qx.util.Json.stringify(data));
+			    		*/
+    		}
 		}
 	}	
     

@@ -260,11 +260,14 @@ qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
     				roles : table.getUpdatedData() 		
     	};
     	
+    	/*
     	var str = '';
     	for(p in info) {
     		str += p + ': ' + info[p] + ';\n'
     	}
 		alert(str);
+		*/
+    	qooxdoo.commons.CoreUtils.dump(info);
 	},
 	
 	deleteNode: function(e){

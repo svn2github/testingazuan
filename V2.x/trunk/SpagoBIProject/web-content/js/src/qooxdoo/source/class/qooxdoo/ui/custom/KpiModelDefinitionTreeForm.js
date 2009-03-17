@@ -43,8 +43,6 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
 				
 		this.base(arguments);
 		
-		
-		
 	},
 	
 	members:
@@ -123,7 +121,19 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
 		},
 		
 		save: function (e) {
-			alert("Save");
+			var f = this.getRightPart().getUserData('form');
+			
+			// Same as in Save function in MasterDetails page
+			var temp_engine = f.getData();
+    		var engine = {};
+    		
+    		for(prop in temp_engine){				// parse the group-boxes
+    			for(sub_prop in temp_engine[prop]){	// parse the form inside groupbox
+    				engine[sub_prop] = temp_engine[prop][sub_prop];
+    			}
+    		}
+    		
+    		qooxdoo.commons.CoreUtils.dump(engine);
 		}	
 	}	
 

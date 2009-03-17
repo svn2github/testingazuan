@@ -1,5 +1,4 @@
 /*
-
 SpagoBI - The Business Intelligence Free Platform
 
 Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
@@ -20,20 +19,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 
-
 /*
  * @author Andrea Gioia (andrea.gioia@eng.it)
- * @author Amit Rana (amit.rana@eng.it), 
+ * @author Amit Rana (amit.rana@eng.it)
  * @author Gaurav Jauhri (gaurav.jauhri@eng.it)
+ * 
  */
+ 
+
 
 /**
-* This class defines the KPI Model Definition Form. 
-* 
-*/
+ * This class defines the Formlist for a set of subforms on a form
+ *  
+ */
 
 qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceForm", {
-	extend: qooxdoo.ui.form.Form,
+	extend: qx.ui.tabview.TabView,
 	
 	/**
 	 * 
@@ -41,125 +42,41 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceForm", {
 	
 	construct : function() { 
 				
-		this.base(arguments,[
-
-					{
-						type: 'groupbox',
-						dataIndex: 'modelinstance',
-						text: 'Model Instance',
-						form:	[{
-									type: 'text',
-									dataIndex: 'instancename',
-									text: 'Name',
-									mandatory: true	
-								}, {
-									type: 'text',
-									dataIndex: 'instancelabel',
-									text: 'Label'		
-								}, {
-									type: 'textarea',
-									dataIndex: 'instancedesc',
-									text: 'Description'
-								}
-							   ]
-					},
-					{
-						type: 'groupbox',
-						dataIndex: 'modeldefn',
-						text: 'Model Definition',
-						form:	[{
-									type: 'text',
-									dataIndex: 'defnname',
-									text: 'Name',
-									mandatory: true	
-								}, {
-									type: 'textarea',
-									dataIndex: 'defndesc',
-									text: 'Description'
-								}, {
-									type: 'text',
-									dataIndex: 'defncode',
-									text: 'Code'		
-								}, {
-									type: 'text',
-									dataIndex: 'defntypename',
-									text: 'Type Name'		
-								}, {
-									type: 'textarea',
-									dataIndex: 'defntypedesc',
-									text: 'Type Description'
-								}
-							   ],
-						read : true	   
-					},
-					{
-						type: 'groupbox',
-						dataIndex: 'modelattrib',
-						text: 'Model Attributes'
-					},
-					{
-						type: 'groupbox',
-						dataIndex: 'kpiinstance',
-						text: 'Kpi Instance',
-						form:[
-								{
-									type: 'text',
-									dataIndex: 'kpiname',
-									text: 'Kpi Name',
-									button : [
-								   				{
-								   					label : 'Select',
-								   					event: "mousedown",
-								   					handler: this._lookupKpiName,
-								   					scope : this
-								   				}	
-												 ]
-								},
-								{
-									type: 'flag',
-									dataIndex: 'default',
-									text: 'Restore Default'
-								},
-								{
-					        		type: 'combo',
-					        		dataIndex: 'thresholdname',
-					        		text: 'Threshold Name',
-					        		items: ["Vallore","Alarme"]
-								},
-								{
-									type: 'text',
-									dataIndex: 'wtdefault',
-									text: 'Weight default value '
-								},
-								{
-					        		type: 'combo',
-					        		dataIndex: 'charttype',
-					        		text: 'Chart Type',
-					        		items: ["Meter","SimpleDial"]
-								},
-								{
-					        		type: 'combo',
-					        		dataIndex: 'periodicity',
-					        		text: 'Periodicity',
-					        		items: ["Daily","Weekly"]
-								}		
-						      ]
-					}	
-			]
-		);	
+		this.base(arguments);
+		
+		this.createDetailsTab();
+		
+		this.createTreeTab();
+		
 	},
-	
+		 
+	/**
+	 * Members of the class
+	 */
+		  
 	members: {
 		
-		_lookupKpiName : function(e) {
-			var c1 = this.getInputField('kpiinstance');		//container having sub-container
-			var c2 = c1.getUserData('field');					     //sub-container having label, filed and button
-			var gb = c2.getChildren()[0];                   //field inside sub-container
-			var form = gb.getChildren()[0];
-			var fieldctr1 = form.getInputField('kpiname');
-			var fieldctr2 = fieldctr1.getUserData('field');
-			var f = fieldctr2.getChildren()[0];
-			f.setValue("KPI Name after Lookup");
+		createDetailsTab: function(){
+			var page = new qx.ui.tabview.Page("DETAIL");
+			page.setLayout(new qx.ui.layout.Grow());
+			
+			var form = new qooxdoo.ui.custom.KpiModelInstanceDetailForm();
+			page.add(form);
+			
+			this.add(page);
+			this.setUserData('details',page);
+		},
+		
+		createTreeTab: function(){
+			var page = new qx.ui.tabview.Page("TREE");
+			page.setLayout(new qx.ui.layout.Grow());
+			
+			var form = new qooxdoo.ui.custom.KpiModelInstanceTreeForm();
+			page.add(form);
+			
+			this.add(page);
+			this.setUserData('tree',page);
 		}
-	}
+	}	
 });
+	

@@ -75,7 +75,7 @@ public class StringUtilities {
 	 * @return The statement with profile attributes replaced by their values.
 	 * @throws Exception
 	 */
-	private static String substituteProfileAttributesInString(String statement, IEngUserProfile profile,
+	public static String substituteProfileAttributesInString(String statement, IEngUserProfile profile,
 			int profileAttributeStartIndex) throws Exception {
 		logger.debug("IN");
 		int profileAttributeEndIndex = statement.indexOf("}",profileAttributeStartIndex);

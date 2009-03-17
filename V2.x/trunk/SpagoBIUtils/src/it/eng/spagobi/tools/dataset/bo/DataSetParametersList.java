@@ -31,7 +31,7 @@ package it.eng.spagobi.tools.dataset.bo;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -150,7 +150,7 @@ public class DataSetParametersList {
 					  "/>";
 		}
 		lovResult += "</ROWS>";
-		lovResult = SpagoBIUtilities.substituteProfileAttributesInString(lovResult, profile);
+		lovResult = StringUtilities.substituteProfileAttributesInString(lovResult, profile);
 		logger.debug("OUT");
 		return lovResult;
 	}

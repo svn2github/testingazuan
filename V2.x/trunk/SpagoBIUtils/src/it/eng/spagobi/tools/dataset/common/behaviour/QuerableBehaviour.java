@@ -21,10 +21,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.tools.dataset.common.behaviour;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.tools.dataset.bo.DataSetParameterItem;
+import it.eng.spagobi.tools.dataset.bo.DataSetParametersList;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
@@ -48,47 +56,69 @@ public class QuerableBehaviour extends AbstractDataSetBehaviour {
 	public String getStatement() throws EMFInternalError, EMFUserError{
 
 		String statement;
-	
-			IDataSet dataSet=getTargetDataSet();
-			if (dataSet instanceof ScriptDataSet) {
-				statement = (String) ((ScriptDataSet)dataSet).getScript();
+
+		IDataSet dataSet=getTargetDataSet();
+		if (dataSet instanceof ScriptDataSet) {
+			statement = (String) ((ScriptDataSet)dataSet).getScript();
+		}
+		else
+			if (dataSet instanceof JDBCDataSet) {
+				statement = (String) ((JDBCDataSet)dataSet).getQuery();
 			}
-			else
-				if (dataSet instanceof JDBCDataSet) {
-					statement = (String) ((JDBCDataSet)dataSet).getQuery();
-				}
-				else 
-					// maybe better to delete getQuery from IDataSet
-					statement = (String)dataSet.getQuery();
+			else 
+				// maybe better to delete getQuery from IDataSet
+				statement = (String)dataSet.getQuery();
 
-			if(statement != null) {
-				try {
+		if(statement != null) {
+			try {
 				statement = StringUtilities.substituteProfileAttributesInString(statement, getTargetDataSet().getUserProfile() );
-				}
-				catch (Exception e) {
-					EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9213);
-					logger.error("Errore nella valorizzazione dei parametri",e);
-					throw userError;}
+			}
+			catch (Exception e) {
+				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9213);
+				logger.error("Errore nella valorizzazione dei parametri",e);
+				throw userError;}
 
-				//check if there are parameters filled
-				if( getTargetDataSet().getParamsMap() != null && !getTargetDataSet().getParamsMap().isEmpty()){
+			//check if there are parameters filled
+			if( getTargetDataSet().getParamsMap() != null && !getTargetDataSet().getParamsMap().isEmpty()){
+
 				try{
-					statement = StringUtilities.substituteParametersInString(statement, getTargetDataSet().getParamsMap(), true );
+					Map parTypeMap=getParTypeMap(getTargetDataSet());
+					statement = StringUtilities.substituteParametersInString(statement, getTargetDataSet().getParamsMap(), parTypeMap ,false );
 				}
 				catch (Exception e) {
 					EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9220);
 					logger.error("Errore nella valorizzazione dei parametri",e);
 					throw userError;
-					}
-
-				}	
-
-				if(queryTransformer != null) {
-					statement = (String)queryTransformer.transformQuery( statement );
 				}
+
+			}	
+
+			if(queryTransformer != null) {
+				statement = (String)queryTransformer.transformQuery( statement );
 			}
+		}
 
 		return statement;
+	}
+
+
+	public Map getParTypeMap(IDataSet dataSet) throws SourceBeanException{
+		// recover parameters from dataset and their type
+		Map parTypeMap=new HashMap();
+		String parametersXML=dataSet.getParameters();	
+		List parameters = new ArrayList();
+		if (parametersXML != null  &&  !parametersXML.equals("")){
+			//lovProvider = GeneralUtilities.substituteQuotesIntoString(lovProvider);
+			parameters = DataSetParametersList.fromXML(parametersXML).getItems();
+		}	
+		for (int i = 0; i < parameters.size(); i++) {
+			DataSetParameterItem dsDet = (DataSetParameterItem) parameters.get(i); 
+			String name = dsDet.getName();
+			String type = dsDet.getType();
+			parTypeMap.put(name, type);
+		}
+		return parTypeMap;
+
 	}
 
 	public IQueryTransformer getQueryTransformer() {

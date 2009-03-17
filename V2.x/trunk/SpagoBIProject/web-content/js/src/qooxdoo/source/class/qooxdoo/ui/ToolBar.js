@@ -130,7 +130,7 @@ qx.Class.define("qooxdoo.ui.ToolBar", {
 	  		command: 'F1',
 	  		handler: this.showAbout,
 	  		context: this,
-	  		"label": this.tr('Help'),
+	  		//"label": this.tr('Help'),
 	  		icon: "qx/icon/Oxygen/16/actions/help-about.png",
 	  		tooltip: 'Help'
 	  	});

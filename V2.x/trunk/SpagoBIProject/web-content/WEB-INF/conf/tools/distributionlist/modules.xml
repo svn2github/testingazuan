@@ -2,7 +2,7 @@
 <MODULES>
     
 	<MODULE class="it.eng.spagobi.tools.distributionlist.service.ListDistributionListModule" name="ListDistributionListModule">
-	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListDistributionList.title" >
+	    <CONFIG pool="spagobi" rows="20" title="SBISet.ListDistributionList.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_DL">
 	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
@@ -51,7 +51,7 @@
     </MODULE>
     
 	<MODULE class="it.eng.spagobi.tools.distributionlist.service.ListDistributionListUserModule" name="ListDistributionListUserModuleWithOutback">
-	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListDistributionList.title" >
+	    <CONFIG pool="spagobi" rows="20" title="SBISet.ListDistributionList.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_DL_USER">
 	        	<PARAMETER type="RELATIVE" value="role0" scope="SESSION" />
@@ -119,7 +119,7 @@
   	</MODULE>
   	       
 	<MODULE class="it.eng.spagobi.tools.distributionlist.service.ListDistributionListUserModule" name="ListDistributionListUserModule">
-	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListDistributionList.title" >
+	    <CONFIG pool="spagobi" rows="20" title="SBISet.ListDistributionList.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_DL_USER">
 	        	<PARAMETER type="RELATIVE" value="role0" scope="SESSION" />

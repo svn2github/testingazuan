@@ -6,7 +6,7 @@
      	<CONFIG/>
     </MODULE>  
 <MODULE class="it.eng.spagobi.events.services.ListEventsLogModule" name="ListEventsLogModule">
-     <CONFIG pool="spagobi" rows="10" title="sbievents.list.title">
+     <CONFIG pool="spagobi" rows="20" title="sbievents.list.title">
       <QUERIES/>
       <COLUMNS>
         <COLUMN label="sbievents.list.eventId" name="ID" />

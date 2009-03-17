@@ -2,7 +2,7 @@
 <MODULES>
     
 	<MODULE class="it.eng.spagobi.tools.datasource.service.ListDataSourceModule" name="ListDataSourceModule">
-	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListDataSource.title" >
+	    <CONFIG pool="spagobi" rows="20" title="SBISet.ListDataSource.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_DS">
 	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>

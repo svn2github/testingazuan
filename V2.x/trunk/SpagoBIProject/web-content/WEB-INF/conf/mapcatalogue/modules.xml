@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <MODULES>
 	<MODULE class="it.eng.spagobi.mapcatalogue.service.ListMapsModule"  name="listMapsModule">
-	      <CONFIG pool="spagobi" rows="10" title="SBIMapCatalogue.listMaps">
+	      <CONFIG pool="spagobi" rows="20" title="SBIMapCatalogue.listMaps">
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_MAPS">
 	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER" />
@@ -43,7 +43,7 @@
   	</MODULE>
   	
   	<MODULE class="it.eng.spagobi.mapcatalogue.service.ListFeaturesModule"  name="listFeaturesModule">
-	      <CONFIG pool="spagobi" rows="10" title="SBIMapCatalogue.listFeatures">
+	      <CONFIG pool="spagobi" rows="20" title="SBIMapCatalogue.listFeatures">
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_FEATURES">
 	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
@@ -95,7 +95,7 @@
     </MODULE>
     
    <MODULE class="it.eng.spagobi.mapcatalogue.service.ListLookupFeaturesModule" name="ListLookupFeaturesModule">
-	    <CONFIG pool="spagobi" rows="10" title="SBIMapCatalogue.listFeatures" >
+	    <CONFIG pool="spagobi" rows="20" title="SBIMapCatalogue.listFeatures" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_LOOKUP_FEATURES"/>		       
 	      </QUERIES>

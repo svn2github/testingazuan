@@ -11,7 +11,7 @@
 
 	
 	<MODULE class="it.eng.spagobi.workflow.services.WorkListModule" name="WorkListModule">
-		<CONFIG pool="spagobi" rows="10" title="SBIWorkflowTaskList.workflowToDoList.title" >
+		<CONFIG pool="spagobi" rows="20" title="SBIWorkflowTaskList.workflowToDoList.title" >
 	      <QUERIES/>
 	      <COLUMNS>
 	      	<COLUMN label="ActivityKey" name="ActivityKey" hidden="true" />

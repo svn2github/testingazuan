@@ -42,7 +42,7 @@
     </MODULE>
 
   	<MODULE class="it.eng.spagobi.behaviouralmodel.analyticaldriver.service.ListLookupReportsModule" name="ListLookupReportsModule">
-	  <CONFIG pool="spagobi" rows="10" title="SBIDev.ListSubreport.ListLookupSubreports.title" >
+	  <CONFIG pool="spagobi" rows="20" title="SBIDev.ListSubreport.ListLookupSubreports.title" >
 	     <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="MASTER_ID"/>
 	     <PARAMETER scope="SERVICE_RESPONSE" type="RELATIVE" value="SUBREPORTS"/>
 	      
@@ -89,7 +89,7 @@
     
     
      <MODULE class="it.eng.spagobi.analiticalmodel.execution.service.SelectDatasetLookupModule" name="SelectDatasetLookupModule">
-	  <CONFIG pool="spagobi" rows="10" title="SBISet.ListDataset.title" >
+	  <CONFIG pool="spagobi" rows="20" title="SBISet.ListDataset.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_ALL_DATASET">
 	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>

@@ -9,7 +9,7 @@
 	</MODULE>
     
     <MODULE class="it.eng.spagobi.tools.scheduler.services.JobManagementModule" name="JobManagementModule">
-     	<CONFIG rows="10" title="scheduler.JobList" >
+     	<CONFIG rows="20" title="scheduler.JobList" >
 	      <QUERIES/>
 	      <COLUMNS>
 	      	<COLUMN label="scheduler.JobName" name="jobName" />
@@ -54,7 +54,7 @@
     
     
     <MODULE class="it.eng.spagobi.tools.scheduler.services.TriggerManagementModule" name="TriggerManagementModule">
-     	<CONFIG rows="10" title="scheduler.SchedulationListTitle" >
+     	<CONFIG rows="20" title="scheduler.SchedulationListTitle" >
 	      <QUERIES/>
 	      <COLUMNS>
 	      	<COLUMN label="scheduler.TriggerName" name="TriggerName" />

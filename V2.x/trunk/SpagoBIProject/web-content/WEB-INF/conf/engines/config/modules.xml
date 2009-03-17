@@ -5,7 +5,7 @@
     </MODULE>  
 	
 	<MODULE class="it.eng.spagobi.engines.config.service.ListEnginesModule" name="ListEnginesModule">
-	    <CONFIG pool="spagobi" rows="10" title="SBISet.ListEngine.title" >
+	    <CONFIG pool="spagobi" rows="20" title="SBISet.ListEngine.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_LIST_ENGINE">
 	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>

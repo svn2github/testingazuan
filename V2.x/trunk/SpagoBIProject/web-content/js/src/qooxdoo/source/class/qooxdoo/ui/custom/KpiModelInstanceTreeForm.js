@@ -56,19 +56,25 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceTreeForm", {
 		showFormData: function(){			//function over-riding
 			
 			
-			/*
-			 if(this._tree.getSelectedItem() == this._tree.getRoot()){// If Root Node Remember change this._tree to this._tree.getRoot()
-  				nodeData.tree = this._tree;// Remember change this._tree to this._tree.getRoot()
+			this.clearAll();
+			var nodeData = {};
+			
+			
+			 if(this._tree.getSelectedItem() == this._tree.getRoot()){
+  				nodeData.tree = this._tree.getRoot(); // Remember change this._tree to this._tree.getRoot()
   			 }
   		     else{
-  		     	nodeData = this._tree.getNodeData(); 
-  		     	// loadTreeData() of DataService.js should have the form fields
-  		     	// This is because nodeData gets data from atom.getUserData('data') inside tree.getNodeData()...
-  		     	//... which gets from atom.setUserData('data', config.data) of tree.addNode() ...
-  		     	//... which from loadTreeMeta() of DataService.js
-  		     	//... whose 'data' property is set from loadTreeData() of DataService.js
+  		     
+  		     	nodeData = this._tree.getNodeData();
   		     }
-			 */
+			 var f = this.getRightPart().getUserData('form');
+			 var o = [];
+	    		for(var prop in f.dataMappings){
+	    			o[prop] = nodeData.data;
+	    		}	
+	    	 f.setData(o);
+	    	 
+	    	/* 
 			var nodeData = {
 					id: '181',
                     instancename: 'INDICATORI CSP',
@@ -89,6 +95,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceTreeForm", {
     			o[prop] = nodeData;
     		}	
     		f.setData(o);
+    		*/
 		},
 		
 		clearAll: function(e){
@@ -114,16 +121,28 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceTreeForm", {
 		},
 		
 		createNode: function(e){
-			alert("Create Node");
 			var f = this.getRightPart().getUserData('form');
 			
-			/*
-			var o = [];
-    		for(var prop in f.dataMappings){
-    			o[prop] = nodeData;
-    		}	
-    		f.getData();
-    		*/
+			//same as in Save function below
+			var temp_engine = f.getData();
+    		var engine = {};
+    		//qooxdoo.commons.CoreUtils.dump(temp_engine);
+    		for(prop in temp_engine){				// parse the group-boxes
+    			for(sub_prop in temp_engine[prop]){	// parse the form inside groupbox
+    				engine[sub_prop] = temp_engine[prop][sub_prop];
+    			}
+    		}
+    		//qooxdoo.commons.CoreUtils.dump(engine);
+			var parent = this._tree.getSelectedItem();
+			var nodeObject = {};
+			nodeObject.name = engine['instancename'];
+			//alert(engine['instancename']);
+				//nodeObject.parent = this._tree.getUserData(parent.getLabel());	//nodeid = label .. to be changed
+			nodeObject.parent = parent.getLabel();
+			nodeObject.data = engine;
+			
+			var treeNode = this._tree.addNode(nodeObject);
+			this._tree.select(treeNode.getUserData('node'));
 		},
 		
 		save: function (e) {

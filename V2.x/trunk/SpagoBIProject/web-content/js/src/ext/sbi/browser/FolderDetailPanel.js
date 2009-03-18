@@ -28,21 +28,38 @@ Ext.ns("Sbi.browser");
 
 Sbi.browser.FolderDetailPanel = function(config) {    
     // sub-components   
-    
+	var loadFolderContentService = Sbi.config.serviceRegistry.getServiceUrl('GET_FOLDER_CONTENT_ACTION');
+	
+	this.store = new Ext.data.JsonStore({
+	    url: loadFolderContentService,
+	    baseParams: {
+			folderId: 3
+		},
+	    root: 'folderContent',
+	    fields: ['title', 'icon', 'samples']
+	});
+	
+	this.store.on('loadexception', Sbi.exception.ExceptionHandler.handleFailure);
+	
+	
+	
+	/*
     this.store = new Ext.data.JsonStore({
         idProperty: 'id',
         fields: ['id', 'title', 'samples'],
         data: Sbi.browser.sampleData.folder1Data
     });
+    */
     
     this.folderView = new Sbi.browser.FolderView({
             store: this.store
             , listeners: {
                 'click': {
-    							fn: this.onClick
-    							, scope: this
-    						}
-              }    
+    				fn: this.onClick
+    				, scope: this
+    			}
+    		}
+    		, emptyText: 'No images to display'
         });
         
     var ttbarTextItem = new Ext.Toolbar.TextItem('> ?');  
@@ -119,6 +136,9 @@ Sbi.browser.FolderDetailPanel = function(config) {
     
     
     Sbi.browser.FolderDetailPanel.superclass.constructor.call(this, c);   
+    
+    this.store.load();
+
     
     
 }

@@ -21,9 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-
 import org.json.JSONObject;
+
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 
 /**
  * @author Antonella Giachino (antonella.giachino@eng.it)
@@ -77,7 +77,7 @@ public class DocumentsJSONSerializer implements Serializer {
 			result.put(ENCRYPT, obj.getEncrypt());
 			result.put(VISIBLE, obj.getVisible());
 			result.put(PROFILEDVISIBILITY, obj.getProfiledVisibility());
-			result.put(ENGINE, obj.getEngine());
+			result.put(ENGINE, obj.getEngine().getDescription());
 			result.put(DATASOURCE, obj.getDataSourceId());
 			result.put(DATASET, obj.getDataSetId());
 			result.put(UUID, obj.getUuid());

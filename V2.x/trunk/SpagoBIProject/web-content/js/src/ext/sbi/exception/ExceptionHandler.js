@@ -45,7 +45,7 @@
   */
 
 
-Ext.ns("Sbi.commons.ExceptionHandler");
+Ext.ns("Sbi.exception.ExceptionHandler");
 
 Sbi.exception.ExceptionHandler = function(){
 	// do NOT access DOM from here; elements don't exist yet
@@ -71,7 +71,7 @@ Sbi.exception.ExceptionHandler = function(){
         				errMessage = content.cause;
         			} 
         		} else {
-        			errMessage = Sbi.commons.toStr(response);
+        			errMessage = 'errore';
         		}
         	}
         	

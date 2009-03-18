@@ -38,6 +38,13 @@
  	<CONFIG/>
  </ACTION>
  
+ <ACTION name="GET_FOLDER_CONTENT_ACTION" 
+			class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.GetFolderContentAction"  
+			scope="REQUEST">	
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+ 
  <ACTION name="GET_FTREE_FOLDERS_ACTION" class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.GetFTreeFoldersAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>

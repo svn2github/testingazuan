@@ -171,7 +171,7 @@ LICENSE: see LICENSE.txt file
 						Node clickable = (Node) clickables.get(i);
 						String targetDocument = clickable.valueOf("@targetDocument");
 						String targetDocumentParameters = "";
-						List clickParameters = document.selectNodes("//olap/MDXquery/clickable/clickParameter");
+						List clickParameters = clickable.selectNodes("clickParameter");
 						if (clickParameters != null && clickParameters.size() > 0) {
 							for (int j = 0; j < clickParameters.size(); j++) {
 								Node clickParameter = (Node) clickParameters.get(j);
@@ -206,7 +206,7 @@ LICENSE: see LICENSE.txt file
 						Node clickable = (Node) clickables.get(i);
 						String targetDocument = clickable.valueOf("@targetDocument");
 						String targetDocumentParameters = "";
-						List clickParameters = document.selectNodes("//olap/MDXquery/clickable/clickParameter");
+						List clickParameters = clickable.selectNodes("clickParameter");
 						if (clickParameters != null && clickParameters.size() > 0) {
 							for (int j = 0; j < clickParameters.size(); j++) {
 								Node clickParameter = (Node) clickParameters.get(j);

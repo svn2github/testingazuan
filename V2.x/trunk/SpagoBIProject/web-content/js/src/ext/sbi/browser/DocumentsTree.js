@@ -62,7 +62,7 @@ Sbi.browser.DocumentsTree = function(config) {
     });    
     this.setRootNode(this.rootNode);    
     
-    this.addListener('click', this.onClickTestFn, this);
+    //this.addListener('click', this.onClickTestFn, this);
 }
 
 

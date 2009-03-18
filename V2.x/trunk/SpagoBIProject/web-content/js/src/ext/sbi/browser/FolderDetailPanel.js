@@ -41,16 +41,6 @@ Sbi.browser.FolderDetailPanel = function(config) {
 	
 	this.store.on('loadexception', Sbi.exception.ExceptionHandler.handleFailure);
 	
-	
-	
-	/*
-    this.store = new Ext.data.JsonStore({
-        idProperty: 'id',
-        fields: ['id', 'title', 'samples'],
-        data: Sbi.browser.sampleData.folder1Data
-    });
-    */
-    
     this.folderView = new Sbi.browser.FolderView({
             store: this.store
             , listeners: {
@@ -137,10 +127,7 @@ Sbi.browser.FolderDetailPanel = function(config) {
     
     Sbi.browser.FolderDetailPanel.superclass.constructor.call(this, c);   
     
-    this.store.load();
-
-    
-    
+    this.store.load();    
 }
 
 
@@ -189,7 +176,10 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     
     , loadFolder: function(folderId) {
       this.loadingMask.show();
-      // ...
+      this.store.baseParams = {
+			'folderId': folderId
+	  }
+      this.store.load();
       this.loadingMask.hide();      
     }
     

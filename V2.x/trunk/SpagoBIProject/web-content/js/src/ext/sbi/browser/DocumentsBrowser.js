@@ -28,40 +28,44 @@ Ext.ns("Sbi.browser");
 
 Sbi.browser.DocumentsBrowser = function(config) {    
     // sub-components   
+	
+	this.treePanel = new Sbi.browser.DocumentsTree({               
+        region: 'west',
+        border: true,
+        margins: '3 3 3 3',
+        collapsible: true,
+        collapsed: false,
+        hideCollapseTool: true,
+        titleCollapse: true,
+        collapseMode: 'mini',
+        split: true,
+        autoScroll: true,
+        width: 250,
+        minWidth: 250,
+        layout: 'fit'
+    });
+	
+	this.detailPanel = new Sbi.browser.FolderDetailPanel({ 
+        region: 'center',
+        margins: '0 3 3 0',
+        collapsed: false,
+        split: true,
+        autoScroll: false,
+        height: 100,
+        minHeight: 100,
+        width: 100,
+        minWidth: 0,
+        layout: 'fit'                
+    });
     
     Sbi.browser.DocumentsBrowser.superclass.constructor.call(this, {
       layout: 'border',
        border: false,
        items: [ 
           // CENTER REGION ---------------------------------------------------------
-          new Sbi.browser.FolderDetailPanel({ 
-            region: 'center',
-            margins: '0 3 3 0',
-            collapsed: false,
-            split: true,
-            autoScroll: false,
-            height: 100,
-            minHeight: 100,
-            width: 100,
-            minWidth: 0,
-            layout: 'fit'                
-          }), 
+          this.detailPanel, 
           // WEST REGION -----------------------------------------------------------
-          new Sbi.browser.DocumentsTree({               
-            region: 'west',
-            border: true,
-            margins: '0 0 3 3',
-            collapsible: true,
-            collapsed: false,
-            hideCollapseTool: true,
-            titleCollapse: true,
-            collapseMode: 'mini',
-            split: true,
-            autoScroll: false,
-            width: 250,
-            minWidth: 250,
-            layout: 'fit'
-          }), 
+          this.treePanel, 
           // NORT HREGION -----------------------------------------------------------
           new Sbi.browser.Toolbar({
             region: 'north',
@@ -72,6 +76,8 @@ Sbi.browser.DocumentsBrowser = function(config) {
           })
         ]
     });
+    
+    this.treePanel.addListener('click', this.onTreeClick, this);
 }
 
 
@@ -79,6 +85,12 @@ Sbi.browser.DocumentsBrowser = function(config) {
 
 Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
     
-    // static contens and methods definitions
+    treePanel: null
+    , detailPanel: null
+    
+    , onTreeClick: function(node, e) {
+		this.detailPanel.loadFolder(node.id)
+		//alert('id: ' + node.id);
+	}
    
 });

@@ -21,14 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.chiron.serializer.FoldersJSONSerializer;
-import it.eng.spagobi.chiron.serializer.SerializerFactory;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.utilities.exceptions.SpagoBIException;
-import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
-import it.eng.spagobi.utilities.service.JSONSuccess;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -37,33 +29,49 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.chiron.serializer.FoldersJSONSerializer;
+import it.eng.spagobi.chiron.serializer.SerializerFactory;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.utilities.exceptions.SpagoBIException;
+import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
+import it.eng.spagobi.utilities.service.JSONSuccess;
+
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class GetFTreeFoldersAction extends AbstractBaseHttpAction{
-	public static final String rootNode = "rootNode";
+public class GetFTreeFoldersAction extends AbstractBaseHttpAction {
+	
+	// request parameters
+	public static final String NODE_ID = "node";
+	
+	public static final String ROOT_NODE_ID = "rootNode";
 	
 	// logger component
 	private static Logger logger = Logger.getLogger(GetFTreeFoldersAction.class);
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
-
-		logger.debug("IN");
+		
+		String nodeId;
 		List folders;
+		
+		logger.debug("IN");
+		
 		
 		try {
 			setSpagoBIRequestContainer( request );
 			setSpagoBIResponseContainer( response );
 			
-			String nodeId = this.getAttributeAsString("node");
+			nodeId = getAttributeAsString( NODE_ID );
+			logger.debug("Parameter [" + NODE_ID + "] is equal to [" + nodeId + "]");
 			
-			if (nodeId.equalsIgnoreCase(rootNode))
+			if (nodeId.equalsIgnoreCase(ROOT_NODE_ID)) {
 				//getting all I° level folders
 				folders = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);	
-			else
+			} else {
 				//getting children folders
 				folders = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(new Integer(nodeId), false);	
-			
+			}
 			JSONArray jsonFTree = new JSONArray();
 			jsonFTree = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( folders );
 
@@ -143,15 +151,18 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction{
 		JSONObject node;
 		JSONArray nodes;
 
-		node = new JSONObject();
+		
 		nodes = new JSONArray();
 		
 		for (int i=0; i<jsonFTree.length(); i++){
 			JSONObject tmpNode = jsonFTree.getJSONObject(i);
+			node = new JSONObject();
 			node.put("id", tmpNode.get(FoldersJSONSerializer.ID));
 			node.put("text", tmpNode.get(FoldersJSONSerializer.NAME));
 			node.put("iconCls", "icon-ftree-folder");
-			node.put("attributes", tmpNode);
+			JSONObject nodeAttributes = new JSONObject();
+			nodeAttributes.put("iconCls", "icon-ftree-folder");
+			node.put("attributes", nodeAttributes);
 			nodes.put(node);
 		}
 	

@@ -242,4 +242,17 @@ public interface ILowFunctionalityDAO {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void moveDownLowFunctionality(Integer functionalityID) throws EMFUserError;
+	
+	/**
+	 * Loads the user's functionalities.
+	 * 
+	 * @param onlyFirstLevel If true returns only first level functionalities, if else all
+	 * @param recoverBIObjects If true each <code>LowFunctionality</code> at output will have the
+	 * list of contained <code>BIObject</code> objects
+	 * 
+	 * @return the root functionality
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public List loadUserFunctionalities(boolean onlyFirstLevel, boolean recoverBIObjects) throws EMFUserError;
 }

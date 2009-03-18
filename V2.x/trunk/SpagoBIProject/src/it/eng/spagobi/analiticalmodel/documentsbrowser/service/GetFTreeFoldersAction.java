@@ -67,7 +67,7 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction {
 			
 			if (nodeId.equalsIgnoreCase(ROOT_NODE_ID)) {
 				//getting all I° level folders
-				folders = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);	
+				folders = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(true, false);	
 			} else {
 				//getting children folders
 				folders = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(new Integer(nodeId), false);	

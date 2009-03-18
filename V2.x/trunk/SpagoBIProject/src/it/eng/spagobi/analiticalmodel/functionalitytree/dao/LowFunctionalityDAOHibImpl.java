@@ -46,6 +46,7 @@ import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1250,6 +1251,119 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				logger.debug( "OUT" );
 			}
 		}
+	}
+
+	/**
+	 * Load all functionalities associated the user roles. 
+	 * 
+	 * @param onlyFirstLevel limits functionalities to first level
+	 * @param recoverBIObjects the recover bi objects
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadAllLowFunctionalities(boolean)
+	 */
+	public List loadUserFunctionalities(boolean onlyFirstLevel, boolean recoverBIObjects) throws EMFUserError {
+		logger.debug( "IN" );
+		Session aSession = null;
+		Transaction tx = null;
+		List realResult = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			String username = null;
+			Collection roles = null;
+			IEngUserProfile profile=null;
+			try {
+				RequestContainer reqCont = RequestContainer.getRequestContainer();
+				if(reqCont!=null){
+					SessionContainer sessCont = reqCont.getSessionContainer();
+					SessionContainer permCont = sessCont.getPermanentContainer();
+					profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+					username = (String)((UserProfile)profile).getUserId();
+					roles  = ((UserProfile)profile).getRoles();
+				}
+			} catch (Exception e) {
+				logger.error("Error while recovering user profile", e);
+			}
+			
+			Query hibQuery = null;
+			
+			//getting correct root parent id (if the function must return only functionality of first level)
+			Integer tmpParentId = null;
+			List lstParentId = null;
+			if (onlyFirstLevel){
+				hibQuery = aSession.createQuery(" from SbiFunctions s where s.parentFunct.functId is null and s.functTypeCd  = 'LOW_FUNCT'");
+				//tmpParentId = (Integer)hibQuery.uniqueResult();
+				lstParentId = hibQuery.list();
+				tmpParentId = (lstParentId==null || lstParentId.size() == 0)?new Integer("-1"):((SbiFunctions)lstParentId.get(0)).getFunctId();
+			}
+			
+			//getting functionalities
+			if(username == null || roles == null) {
+				hibQuery = aSession.createQuery(" from SbiFunctions s where s.functTypeCd = 'LOW_FUNCT' order by s.parentFunct.functId, s.prog");
+			} else if (onlyFirstLevel){
+				
+				hibQuery = aSession.createQuery(" from SbiFunctions s where ((s.functTypeCd = 'LOW_FUNCT' and s.parentFunct.functId = ?) or s.path like ? ) " +											
+												" order by s.parentFunct.functId, s.prog");
+				hibQuery.setInteger(0, tmpParentId.intValue());
+				hibQuery.setString(1, "/"+username);
+			} else{
+				hibQuery = aSession.createQuery(" from SbiFunctions s where (s.functTypeCd = 'LOW_FUNCT'  or s.path like ? ) " +											
+												" order by s.parentFunct.functId, s.prog");
+				hibQuery.setString(0, "/"+username);
+			}
+			List hibList = hibQuery.list();	
+			
+			//getting correct ext_role_id
+			String hql = " from SbiExtRoles as extRole where extRole.name in (:roles)  "; 
+			hibQuery = aSession.createQuery(hql);
+			hibQuery.setParameterList("roles", roles);
+			List rolesIds = hibQuery.list();
+
+			
+					
+			Iterator it = hibList.iterator();
+			//maintains functionalities that have the same user's role
+			while (it.hasNext()) {
+				SbiFunctions tmpFunc = (SbiFunctions) it.next();
+				Object[] tmpRole = tmpFunc.getSbiFuncRoles().toArray();
+				for (int j=0; j <rolesIds.size(); j++){
+				//for (int j=0; j<tmpRole.length;j++){
+					//SbiFuncRole role = (SbiFuncRole) tmpRole[j]; 
+					Integer principalRole = ((SbiExtRoles)rolesIds.get(j)).getExtRoleId();
+					//Integer localRoleId = ((SbiFuncRoleId)role.getId()).getRole().getExtRoleId();
+					
+					//for (int i=0; i <rolesIds.size(); i++){
+					for (int i=0; i<tmpRole.length;i++){
+						//Integer principalRole = ((SbiExtRoles)rolesIds.get(i)).getExtRoleId();
+						SbiFuncRole role = (SbiFuncRole) tmpRole[i]; 
+						Integer localRoleId = ((SbiFuncRoleId)role.getId()).getRole().getExtRoleId();
+						if (localRoleId != null && localRoleId.compareTo(principalRole) == 0){
+							realResult.add(toLowFunctionality(tmpFunc, recoverBIObjects));
+							break;
+						}
+					}
+				}
+			}
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error( "HibernateException",he );
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		logger.debug( "OUT" );
+		return realResult;
 	}
 
 }

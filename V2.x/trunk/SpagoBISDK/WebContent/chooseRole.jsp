@@ -17,6 +17,15 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
+
+<%
+/**
+This page retrieves the document choosen by the user on documentsList.jsp and retrieves the valid roles for 
+document execution, according to user's roles.
+If the user has only one valid role, he is automatically redirected to documentParameters.jsp, otherwise a form for role selection is displayed.
+*/
+%>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

@@ -17,6 +17,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
+
+<%
+/**
+This page retrieves the role choosen by the user on chooseRole.jsp and retrieves information about document parameters.
+If the document has no parameters, user is redirected automatically on execution.jsp, otherwise a form pointing to execution.jsp is shown.
+For each parameter, all admissible values are retrieved and shown into a combobox.
+If the parameter is manual input, a manul input appears.
+*/
+%>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

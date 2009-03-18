@@ -17,6 +17,14 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
+
+<%
+/**
+This page use the SpagoBI execution tag, that displays an iframe pointing to SpagoBI context with all information about document execution 
+(document identifier, role to be used, values for parameters).
+*/
+%>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="spagobi" tagdir="/WEB-INF/tags/spagobi" %>

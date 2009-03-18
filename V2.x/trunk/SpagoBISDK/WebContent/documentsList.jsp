@@ -17,6 +17,18 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
+
+<%
+/**
+Given username and password from login.jsp form, a session is opened into SpagoBI server.
+Authentication works properly only if 
+it.eng.spagobi.services.security.service.ISecurityServiceSupplier.checkAuthentication(String userId, String psw) 
+method is implemented, therefore it should work if SpagoBI is installed as a web application.
+If SpagoBI is installed into a portal environment, the above method should be implemented for the portal in use (eXo, Liferay, ...).
+When the authentication succeeds, the user can choose the document he wants to execute; this form points to chooseRole.jsp.
+*/
+%>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -31,6 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </head>
 <body>
 <%
+// retrieving username and password
 String user = request.getParameter("user");
 String password = request.getParameter("password");
 if (user != null && password != null) {
@@ -38,7 +51,7 @@ if (user != null && password != null) {
 	SessionServiceProxy proxy = new SessionServiceProxy();
 	proxy.setEndpoint("http://localhost:8080/SpagoBI/services/WSSessionService");
 	try {
-		// session opening
+		// opening a session into SpagoBI
 		proxy.openSession(user, password);
 		session.setAttribute("spagobi_proxy", proxy);
 	} catch (AuthenticationException e) {
@@ -50,6 +63,7 @@ if (user != null && password != null) {
 
 SessionServiceProxy proxy = (SessionServiceProxy) session.getAttribute("spagobi_proxy");
 
+// display a form for document selection
 if (proxy.isValidSession()) {
 %>
 <span><b>Choose a document</b></span>

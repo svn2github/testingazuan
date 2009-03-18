@@ -201,6 +201,9 @@ qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
   		
   		this.showButtons();
   		
+  		/**@TODO
+  		 * reset the form in case nay field was set before and is not set now
+  		 */
   		this.showFormData();
   		
   		/*

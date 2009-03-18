@@ -55,20 +55,49 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
 		
 		showFormData: function(){			//function over-riding
 			
+			this.clearAll();
+			var nodeData = {};
 			
-			/*
-			 if(this._tree.getSelectedItem() == this._tree.getRoot()){// If Root Node Remember change this._tree to this._tree.getRoot()
-  				nodeData.tree = this._tree;// Remember change this._tree to this._tree.getRoot()
+			
+			 if(this._tree.getSelectedItem() == this._tree.getRoot()){
+  				nodeData.tree = this._tree.getRoot(); // Remember change this._tree to this._tree.getRoot()
   			 }
   		     else{
-  		     	nodeData = this._tree.getNodeData(); 
+  		     
+  		     	nodeData = this._tree.getNodeData();
+  		     	
   		     	// loadTreeData() of DataService.js should have the form fields
   		     	// This is because nodeData gets data from atom.getUserData('data') inside tree.getNodeData()...
   		     	//... which gets from atom.setUserData('data', config.data) of tree.addNode() ...
   		     	//... which from loadTreeMeta() of DataService.js
   		     	//... whose 'data' property is set from loadTreeData() of DataService.js
+  		     	
+  		     	/*
+  		     	//to be removed when actual data is available
+  		     	if( nodeData.data.typename == undefined){
+  		     		var def_nodeData = {
+							id: '171',
+		                    code: 'INDICATORI CSP',
+		                    name: 'INDICATORI CSP',
+		                    description: 'INDICATORI CSP',
+		                    typename: 'GQM root',
+		                    typedescription :'null',
+		                    kpiname : 'Numero Alarmi CSP'
+						   };
+  		     		nodeData.data = qooxdoo.commons.CoreUtils.apply(def_nodeData, nodeData.data);
+  		     	}
+  		     	//qooxdoo.commons.CoreUtils.dump(nodeData.data);
+  		     	*/
   		     }
-			 */
+			 var f = this.getRightPart().getUserData('form');
+			 var o = [];
+	    		for(var prop in f.dataMappings){
+	    			o[prop] = nodeData.data;
+	    		}	
+	    	 f.setData(o);
+			 //f.setData(nodeData.data);
+			 
+			/*
 			var nodeData = {
 							id: '171',
 		                    code: 'INDICATORI CSP',
@@ -86,12 +115,13 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
     			o[prop] = nodeData;
     		}	
     		f.setData(o);
+    		*/
 		},
 		
 		clearAll: function(e){
 			//alert("hi");
 			var nodeData = {
-					id: '171',
+					//id: '171',
                     code: '',
                     name: '',
                     description: '',
@@ -108,9 +138,28 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
 		},
 		
 		createNode: function(e){
-			alert("Create Node");
+			
 			var f = this.getRightPart().getUserData('form');
 			
+			//same as in Save function below
+			var temp_engine = f.getData();
+    		var engine = {};
+    		//qooxdoo.commons.CoreUtils.dump(temp_engine);
+    		for(prop in temp_engine){				// parse the group-boxes
+    			for(sub_prop in temp_engine[prop]){	// parse the form inside groupbox
+    				engine[sub_prop] = temp_engine[prop][sub_prop];
+    			}
+    		}
+    		//qooxdoo.commons.CoreUtils.dump(engine);
+			var parent = this._tree.getSelectedItem();
+			var nodeObject = {};
+			nodeObject.name = engine['name'];
+				//nodeObject.parent = this._tree.getUserData(parent.getLabel());	//nodeid = label .. to be changed
+			nodeObject.parent = parent.getLabel();
+			nodeObject.data = engine;
+			
+			var treeNode = this._tree.addNode(nodeObject);
+			this._tree.select(treeNode.getUserData('node'));
 			/*
 			var o = [];
     		for(var prop in f.dataMappings){
@@ -125,6 +174,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
 			
 			// Same as in Save function in MasterDetails page
 			var temp_engine = f.getData();
+			//qooxdoo.commons.CoreUtils.dump(temp_engine);
     		var engine = {};
     		
     		for(prop in temp_engine){				// parse the group-boxes
@@ -134,6 +184,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionTreeForm", {
     		}
     		
     		qooxdoo.commons.CoreUtils.dump(engine);
+    		//this.clearAll();
 		}	
 	}	
 

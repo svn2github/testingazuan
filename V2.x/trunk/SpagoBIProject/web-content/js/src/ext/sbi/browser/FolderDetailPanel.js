@@ -127,6 +127,8 @@ Sbi.browser.FolderDetailPanel = function(config) {
     
     Sbi.browser.FolderDetailPanel.superclass.constructor.call(this, c);   
     
+    this.addEvents("ondocumentclick", "onfolderclick");
+    
     this.store.load();    
 }
 
@@ -198,7 +200,14 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     // private methods 
     
     , onClick: function(dataview, i, node, e) {
-      alert( this.folderView.getRecord(i).text );
+      //this.folderView.getRecord(i).text;
+      var r = this.folderView.getRecord(i);
+      if(r.engine) {
+    	  this.fireEvent('ondocumentclick', this, r, e);
+      } else{
+    	  this.fireEvent('onfolderclick', this, r, e);
+      }
+      
     }
     
     , setToolbarText: function(text) {

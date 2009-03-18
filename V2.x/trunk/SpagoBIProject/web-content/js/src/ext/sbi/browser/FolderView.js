@@ -52,9 +52,10 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
         '</div>'
 );
 
-Sbi.browser.FolderView = function(config) {   
+Sbi.browser.FolderView = function(config) {
+   config.store.on('load', this.createIndex, this, {groupIndex: 'samples'});
    Sbi.browser.FolderView.superclass.constructor.call(this, config);
-   this.createIndex('samples');
+   //this.createIndex('samples');
 }; 
     
     
@@ -73,11 +74,13 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
         if(group){
             group.up('div').toggleClass('collapsed');
         }else {
+        	/*
             var t = e.getTarget('dd', 5, true);
             if(t && !e.getTarget('a', 2)){
                 var url = t.getAttributeNS('ext', 'url');
                 window.open(url);
             }
+            */
         }
        
         
@@ -117,14 +120,16 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
         return this.lookup[i];
     }
     
-    , createIndex : function(groupIndex) {
+    , createIndex : function(s, r, o) {
       var id = 0;
+      
+      o.groupIndex = 'samples';
       
       this.lookup = {};
       
       var groups = this.store.getRange(0, this.store.getCount());
       for(var i = 0; i < groups.length; i++) {
-        var records = groups[i].data[groupIndex];
+        var records = groups[i].data[o.groupIndex];
         for(var j = 0; j < records.length; j++) {
           this.lookup[id++] = records[j];
         }
@@ -134,23 +139,3 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     
      
 });
-
-
-
-/*    
-Sbi.browser.FolderView.bkp = new Ext.XTemplate(
-        '<div id="sample-ct">',
-            '<tpl for=".">',
-            '<div><a name="{id}"></a><h2><div>{title}</div></h2>',
-            '<dl>',
-                '<tpl for="samples">',
-                    '<dd ext:url="{url}">',
-                        '<img src="images/{icon}"/>',
-                        '<div><h4>{text}</h4><p>{desc}</p></div>',
-                    '</dd>',
-                '</tpl>',
-            '<div style="clear:left"></div></dl></div>',
-            '</tpl>',
-        '</div>'
-    );
-*/

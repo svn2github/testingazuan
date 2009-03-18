@@ -59,7 +59,7 @@ Ext.extend(Sbi.service.ServiceRegistry, Ext.util.Observable, {
        Ext.apply(this.baseUrl, url); 
     }
         
-    , getServiceUrl : function(actionName, absolute){
+    , getServiceUrl : function(actionName, absolute, page){
     	var baseUrlStr;
         var serviceUrl;
         	
@@ -69,8 +69,11 @@ Ext.extend(Sbi.service.ServiceRegistry, Ext.util.Observable, {
         	baseUrlStr = this.baseUrl.protocol + "://" + this.baseUrl.host + ":" + this.baseUrl.port + "/" + this.baseUrl.contextPath + "/" + this.baseUrl.controllerPath;
         }
         
-        serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName + "&SBI_EXECUTION_ID=" + this.baseUrl.execId;
-        
+        if(page === undefined || page === false) {
+        	serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName + "&SBI_EXECUTION_ID=" + this.baseUrl.execId;
+        } else {
+        	serviceUrl = baseUrlStr + "?PAGE=" + actionName + "&SBI_EXECUTION_ID=" + this.baseUrl.execId;
+        }
         return serviceUrl;
     }     
 });

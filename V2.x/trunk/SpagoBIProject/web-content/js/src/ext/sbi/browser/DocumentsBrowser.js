@@ -77,7 +77,11 @@ Sbi.browser.DocumentsBrowser = function(config) {
         ]
     });
     
-    this.treePanel.addListener('click', this.onTreeClick, this);
+    this.treePanel.addListener('click', this.onTreeNodeClick, this);
+    this.detailPanel.addListener('ondocumentclick', this.onDocumentClick, this);
+    this.detailPanel.addListener('onfolderclick', this.onFolderClick, this);
+    
+    
 }
 
 
@@ -88,9 +92,21 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
     treePanel: null
     , detailPanel: null
     
-    , onTreeClick: function(node, e) {
-		this.detailPanel.loadFolder(node.id)
-		//alert('id: ' + node.id);
+    , onTreeNodeClick: function(node, e) {
+		this.detailPanel.loadFolder(node.id);
 	}
+
+	, onDocumentClick: function(node, r) {
+		var execDocumentService = Sbi.config.serviceRegistry.getServiceUrl('ExecuteBIObjectPage', false, true);
+		execDocumentService += '&MESSAGEDET=EXEC_PHASE_CREATE_PAGE';
+		execDocumentService += '&OBJECT_ID=' + r.id;
+		window.location=execDocumentService;
+	}
+	
+	, onFolderClick: function(node, r) {
+		this.detailPanel.loadFolder(r.id);
+	}
+
+	// http://localhost:8080/SpagoBI/servlet/AdapterHTTP?OBJECT_ID=28&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&PAGE=ExecuteBIObjectPage
    
 });

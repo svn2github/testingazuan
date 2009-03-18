@@ -21,6 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.chiron.serializer.FoldersJSONSerializer;
+import it.eng.spagobi.chiron.serializer.SerializerFactory;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.utilities.exceptions.SpagoBIException;
+import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
+import it.eng.spagobi.utilities.service.JSONSuccess;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -29,24 +37,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.utilities.exceptions.SpagoBIException;
-import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
-import it.eng.spagobi.utilities.service.JSONSuccess;
-
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public class GetFTreeFoldersAction extends AbstractBaseHttpAction{
+	public static final String rootNode = "rootNode";
 	
 	// logger component
 	private static Logger logger = Logger.getLogger(GetFTreeFoldersAction.class);
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		
-		List engines;
-		
+
 		logger.debug("IN");
+		List folders;
 		
 		try {
 			setSpagoBIRequestContainer( request );
@@ -54,7 +57,17 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction{
 			
 			String nodeId = this.getAttributeAsString("node");
 			
+			if (nodeId.equalsIgnoreCase(rootNode))
+				//getting all I° level folders
+				folders = DAOFactory.getLowFunctionalityDAO().loadAllLowFunctionalities(false);	
+			else
+				//getting children folders
+				folders = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(new Integer(nodeId), false);	
+			
 			JSONArray jsonFTree = new JSONArray();
+			jsonFTree = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( folders );
+
+			/*
 			JSONArray jsonFolder1Content = new JSONArray();
 			jsonFolder1Content.put(createNode("SubFolder1_1", "SubFolder1", "icon-ftree-folder", null));
 			jsonFolder1Content.put(createNode("SubFolder1_2", "SubFolder2", "icon-ftree-folder", null));
@@ -82,9 +95,9 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction{
 				jsonFTree.put(createNode("Folder2", "Folder2", "icon-ftree-folder", jsonFolder2Content));
 				jsonFTree.put(createNode("Folder3", "Folder3", "icon-ftree-folder", jsonFolder3Content));
 			}
-			
+			*/
 			try {
-				writeBackToClient( new JSONSuccess( jsonFTree ) );
+				writeBackToClient( new JSONSuccess(  createNode(jsonFTree) ) ) ;
 			} catch (IOException e) {
 				throw new SpagoBIException("Impossible to write back the responce to the client", e);
 			}
@@ -118,5 +131,31 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction{
 		}
 		
 		return node;		
+	}
+
+	/**
+	 * Creates a json array with folders informations
+	 * @param jsonFTree the object serialized
+	 * @return the node (folder)
+	 * @throws JSONException
+	 */
+	private JSONArray createNode(JSONArray jsonFTree) throws JSONException {
+		JSONObject node;
+		JSONArray nodes;
+
+		node = new JSONObject();
+		nodes = new JSONArray();
+		
+		for (int i=0; i<jsonFTree.length(); i++){
+			JSONObject tmpNode = jsonFTree.getJSONObject(i);
+			node.put("id", tmpNode.get(FoldersJSONSerializer.ID));
+			node.put("text", tmpNode.get(FoldersJSONSerializer.NAME));
+			node.put("iconCls", "icon-ftree-folder");
+			node.put("attributes", tmpNode);
+			nodes.put(node);
+		}
+	
+
+		return nodes;
 	}
 }

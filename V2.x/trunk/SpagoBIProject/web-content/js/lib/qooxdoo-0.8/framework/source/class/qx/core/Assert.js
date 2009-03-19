@@ -329,8 +329,7 @@ qx.Class.define("qx.core.Assert",
       this.__assert(
         array.indexOf(value) !== -1,
         msg || "",
-        "The value '" + value + "' must have any of the values defined in the array '"
-        + array.join(", ") + "'"
+        "The value '" + value + "' must have any of the values defined in the array '" + /*array.join(", ") + */ "'"
       );
     },
 

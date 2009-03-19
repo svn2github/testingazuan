@@ -1331,19 +1331,15 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				SbiFunctions tmpFunc = (SbiFunctions) it.next();
 				Object[] tmpRole = tmpFunc.getSbiFuncRoles().toArray();
 				for (int j=0; j <rolesIds.size(); j++){
-				//for (int j=0; j<tmpRole.length;j++){
-					//SbiFuncRole role = (SbiFuncRole) tmpRole[j]; 
 					Integer principalRole = ((SbiExtRoles)rolesIds.get(j)).getExtRoleId();
-					//Integer localRoleId = ((SbiFuncRoleId)role.getId()).getRole().getExtRoleId();
-					
-					//for (int i=0; i <rolesIds.size(); i++){
 					for (int i=0; i<tmpRole.length;i++){
-						//Integer principalRole = ((SbiExtRoles)rolesIds.get(i)).getExtRoleId();
 						SbiFuncRole role = (SbiFuncRole) tmpRole[i]; 
 						Integer localRoleId = ((SbiFuncRoleId)role.getId()).getRole().getExtRoleId();
 						if (localRoleId != null && localRoleId.compareTo(principalRole) == 0){
-							realResult.add(toLowFunctionality(tmpFunc, recoverBIObjects));
-							break;
+							if (!existFunction(realResult, tmpFunc)){
+								realResult.add(toLowFunctionality(tmpFunc, recoverBIObjects));
+								break;
+							}
 						}
 					}
 				}
@@ -1364,6 +1360,18 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		}
 		logger.debug( "OUT" );
 		return realResult;
+	}
+	
+	private boolean existFunction (List lstFunctions, SbiFunctions newFunct){
+		boolean res = false;
+		for (int i=0; i< lstFunctions.size(); i++){
+			LowFunctionality tmpFunct = (LowFunctionality)lstFunctions.get(i);
+			if (tmpFunct.getCode().equalsIgnoreCase(newFunct.getCode())){
+				res = true;
+				break;
+			}
+		}
+		return res;
 	}
 
 }

@@ -147,7 +147,7 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction {
 	 * @return the node (folder)
 	 * @throws JSONException
 	 */
-	private JSONArray createNode(JSONArray jsonFTree) throws JSONException {
+	private JSONArray createNode(JSONArray jsonFTree) throws Exception {
 		JSONObject node;
 		JSONArray nodes;
 
@@ -163,6 +163,14 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction {
 			JSONObject nodeAttributes = new JSONObject();
 			nodeAttributes.put("iconCls", "icon-ftree-folder");
 			node.put("attributes", nodeAttributes);
+			
+			try{
+				List childrenFolders = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities((Integer)tmpNode.get(FoldersJSONSerializer.ID), false);
+				if (childrenFolders == null || childrenFolders.size() == 0)
+					node.put("leaf", true);
+			} catch (Throwable t) {
+				throw new Exception("An unexpected error occured while executing GET_FTREE_FOLDERS_ACTION", t);
+			}
 			nodes.put(node);
 		}
 	

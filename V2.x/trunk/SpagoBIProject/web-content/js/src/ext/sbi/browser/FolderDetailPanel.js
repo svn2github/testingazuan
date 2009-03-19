@@ -33,9 +33,9 @@ Sbi.browser.FolderDetailPanel = function(config) {
 	
 	this.store = new Ext.data.JsonStore({
 	    url: loadFolderContentService,
-	    baseParams: {
+	    /*baseParams: {
 			folderId: 3
-		},
+		},*/
 	    root: 'folderContent',
 	    fields: ['title', 'icon', 'samples']
 	});

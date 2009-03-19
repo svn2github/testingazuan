@@ -1,6 +1,23 @@
 /**
- * 
- */
+SpagoBI - The Business Intelligence Free Platform
+
+Copyright (C) 2005-2009 Engineering Ingegneria Informatica S.p.A.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+*/
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
 import java.io.IOException;
@@ -45,7 +62,12 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			
 			Integer functID = getAttributeAsInteger(FOLDER_ID);
 			
-			//Integer functID = (request.getAttribute("folderID")== null)?new Integer("-1"):(Integer)request.getAttribute("folderID");
+			if (functID == null){
+				//getting default folder (root)
+				LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
+				functID = rootFunct.getId();
+			}
+			
 			
 			//getting children documents
 			LowFunctionality lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(functID, true);
@@ -84,21 +106,6 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 		results.put("title", "Documents");
 		results.put("icon", "document.png");
 		results.put("samples", rows);
-		/*
-		JSONObject title;
-		JSONObject icon;
-		JSONArray results;
-			
-		title = new JSONObject();
-		icon = new JSONObject();
-		results = new JSONArray();
-		
-		title.put("title", "Documents");
-		icon.put("icon", "document.png");
-		results.put(title);
-		results.put(icon);
-		results.put(rows);
-		*/
 		return results;
 	}
 
@@ -115,25 +122,6 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 		results.put("title", "Folders");
 		results.put("icon", "folder.png");
 		results.put("samples", rows);
-		
-		/*
-		
-		
-		
-		JSONObject title;
-		JSONObject icon;
-		JSONArray results;
-			
-		title = new JSONObject();
-		icon = new JSONObject();
-		results = new JSONArray();
-		
-		title.put("title", "Folders");
-		icon.put("icon", "folder.png");
-		results.put(title);
-		results.put(icon);
-		results.put(rows);
-	*/
 		return results;
 	}
 

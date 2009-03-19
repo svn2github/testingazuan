@@ -33,7 +33,7 @@ Create table SBI_AUDIT (
 	DOC_NAME Varchar(40) NOT NULL,
 	DOC_TYPE Varchar(20) NOT NULL,
 	DOC_STATE Varchar(20) NOT NULL,
-	DOC_PARAMETERS Long nvarchar,
+	DOC_PARAMETERS Varchar(30000),
 	SUBOBJ_REF Integer,
 	SUBOBJ_ID Integer,
 	SUBOBJ_NAME Varchar(50),
@@ -517,9 +517,9 @@ Create table SBI_REMEMBER_ME (
 	USERNAME Varchar(40) NOT NULL,
 	BIOBJ_ID Integer NOT NULL,
 	SUBOBJ_ID Integer,
-	PARAMETERS Long nvarchar,
+	PARAMETERS Varchar(30000),
 	NAME Varchar(50) NOT NULL,
-	DESCRIPTION Long nvarchar,
+	DESCRIPTION Varchar(30000),
 Primary Key (ID)
 ) ;\p\g
 
@@ -580,6 +580,19 @@ Create table SBI_VIEWPOINTS (
 	VP_CREATION_DATE Date NOT NULL,
 Primary Key (VP_ID)
 ) ;\p\g
+
+CREATE SEQUENCE SBI_KPI_INST_PERIOD_SEQ;\p\g
+Create table SBI_KPI_INST_PERIOD (
+	KPI_INST_PERIOD_ID Integer NOT NULL with default next value for SBI_KPI_INST_PERIOD_SEQ,
+	KPI_INSTANCE_ID Integer NOT NULL,
+	PERIODICITY_ID Integer NOT NULL,
+	DEFAULT_VALUE smallint default 0,
+	label Varchar(100) NOT NULL,
+	start_date Date,
+	end_date Date,
+Primary Key (id_kpi_role)
+) ;\p\g
+
 
 CREATE SEQUENCE SBI_KPI_ROLE_SEQ;\p\g
 Create table SBI_KPI_ROLE (

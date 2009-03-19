@@ -33,10 +33,11 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
             '<dl>',
                 '<tpl for="samples">',                    
                     '<dd ext:url="{url}">',
+                    /*
                         '<div id="control-panel" class="control-panel">',
                             '<a href="javascript:alert(\'Document sended succesfully\')"><img title="send by email" src="../img/analiticalmodel/browser/send.gif"/></a>',
                             '<a href="javascript:alert(\'Document scheduled succesfully\')"><img title="shedule" src="../img/analiticalmodel/browser/schedule.gif"/></a>',
-                        '</div>',
+                        '</div>',*/
                         '<div id="icon"><img src="../img/analiticalmodel/browser/{parent.icon}"/></div>',
                         '<div id="description"><h4>{name}</h4>',
                         '<p><b>type:</b> {typeCode}; ',

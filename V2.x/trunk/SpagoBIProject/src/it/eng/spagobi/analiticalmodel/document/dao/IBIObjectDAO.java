@@ -324,4 +324,15 @@ public interface IBIObjectDAO {
 	 */
 	public List loadBIObjects(String type, String state, String folderPath) throws EMFUserError;
 	
+	/**
+	 * Loads all the BIObjects filtering with the input parameters.
+	 * 
+	 * @param folderID the identifier of the folder; if it is null, all folders will be considered
+	 * @param profile the user profile
+	 * 
+	 * @return the list of BIObjects
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List loadBIObjects(Integer folderID, IEngUserProfile profile)	throws EMFUserError;
 }

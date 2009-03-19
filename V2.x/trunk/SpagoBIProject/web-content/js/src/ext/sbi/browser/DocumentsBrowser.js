@@ -65,15 +65,16 @@ Sbi.browser.DocumentsBrowser = function(config) {
           // CENTER REGION ---------------------------------------------------------
           this.detailPanel, 
           // WEST REGION -----------------------------------------------------------
-          this.treePanel, 
-          // NORT HREGION -----------------------------------------------------------
+          this.treePanel //, 
+          // NORT HREGION -----------------------------------------------------------ricerca
+          /*
           new Sbi.browser.Toolbar({
             region: 'north',
             margins: '3 3 3 3',
             autoScroll: false,
             height: 30,
             layout: 'fit'
-          })
+          })*/
         ]
     });
     

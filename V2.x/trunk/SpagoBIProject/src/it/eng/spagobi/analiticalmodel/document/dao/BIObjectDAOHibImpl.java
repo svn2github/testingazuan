@@ -27,6 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.analiticalmodel.document.dao;
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
@@ -52,6 +54,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IObjParuseDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.commons.bo.Role;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
@@ -1643,6 +1646,73 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		}
 		logger.debug("OUT");
 		return realResult;
+	}
+	
+	/**
+	 * Loads objects of the user roles
+	 * @param folderID
+	 * @return
+	 * @throws EMFUserError
+	 */
+	public List loadBIObjects(Integer folderID, IEngUserProfile profile)	throws EMFUserError {
+	logger.debug("IN");
+	Session aSession = null;
+	Transaction tx = null;
+	List realResult = new ArrayList();
+	try {
+		aSession = getSession();
+		tx = aSession.beginTransaction();
+
+		Collection roles = null;
+		try {
+			RequestContainer reqCont = RequestContainer.getRequestContainer();
+			if(profile != null)
+				roles  = ((UserProfile)profile).getRoles();
+			
+		} catch (Exception e) {
+			logger.error("Error while recovering user profile", e);
+		}
+ 
+		StringBuffer buffer = new StringBuffer();
+		if (folderID != null && roles != null && roles.size() > 0 ) {
+			buffer.append("select distinct(o) from SbiObjects as o, SbiObjFunc as sof, SbiFunctions as f,  SbiFuncRole as fr " +
+				"where sof.id.sbiFunctions.functId = f.functId and o.biobjId = sof.id.sbiObjects.biobjId  " +
+				" and fr.id.role.extRoleId IN (select extRoleId from SbiExtRoles e  where  e.name in (:ROLES)) " +
+				" and fr.id.function.functId = f.functId and fr.id.state.valueId = o.state " + 
+				" and f.functId = :FOLDER_ID  " + 
+				" order by o.name");
+		} else {
+			buffer.append("select objects from SbiObjects as objects ");
+		}
+		
+		String hql = buffer.toString();
+		Query query = aSession.createQuery(hql);
+
+		if (folderID != null && roles != null && roles.size() > 0 ) {
+			query.setInteger("FOLDER_ID", folderID.intValue());
+			query.setParameterList("ROLES", roles);
+		}
+		
+		
+		List hibList = query.list();
+		Iterator it = hibList.iterator();
+		while (it.hasNext()) {
+			SbiObjects object = (SbiObjects) it.next();
+			realResult.add(toBIObject(object));
+		}
+		tx.commit();
+	} catch (HibernateException he) {
+		logger.error(he);
+		if (tx != null)
+			tx.rollback();
+		throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+	} finally {
+		if (aSession!=null){
+			if (aSession.isOpen()) aSession.close();
+		}
+	}
+	logger.debug("OUT");
+	return realResult;
 	}
 }
 

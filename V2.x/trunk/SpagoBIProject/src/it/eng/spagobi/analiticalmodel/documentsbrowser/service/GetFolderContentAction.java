@@ -20,21 +20,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
+import it.eng.spagobi.chiron.serializer.SerializerFactory;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.utilities.exceptions.SpagoBIException;
+import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
+import it.eng.spagobi.utilities.service.JSONSuccess;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
-import it.eng.spagobi.chiron.serializer.SerializerFactory;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.utilities.exceptions.SpagoBIException;
-import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
-import it.eng.spagobi.utilities.service.JSONSuccess;
 
 
 /**
@@ -45,6 +51,8 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 	
 	// REQUEST PARAMETERS
 	public static final String FOLDER_ID = "folderId";
+	
+	public static final String ROOT_NODE_ID = "rootNode";
 	
 	// logger component
 	private static Logger logger = Logger.getLogger(GetFolderContentAction.class);
@@ -60,23 +68,39 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			setSpagoBIRequestContainer( request );
 			setSpagoBIResponseContainer( response );
 			
-			Integer functID = getAttributeAsInteger(FOLDER_ID);
+			String functID = getAttributeAsString(FOLDER_ID);
 			
-			if (functID == null){
+			
+			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID)){
 				//getting default folder (root)
 				LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
-				functID = rootFunct.getId();
+				functID = String.valueOf(rootFunct.getId());
 			}
+			logger.debug("Parameter [" + FOLDER_ID + "] is equal to [" + functID + "]");
+		
+			SessionContainer sessCont = getSessionContainer();
+			SessionContainer permCont = sessCont.getPermanentContainer();
+			IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
 			
 			//getting children documents
-			LowFunctionality lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(functID, true);
-			objects = lowFunct.getBiObjects();
+			//LowFunctionality lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(functID, true);
+			//objects = lowFunct.getBiObjects();
+			List tmpObjects = DAOFactory.getBIObjectDAO().loadBIObjects(Integer.valueOf(functID), profile);
+			objects = new ArrayList();
+			if(tmpObjects != null) {
+                for(Iterator it = tmpObjects.iterator(); it.hasNext();) {
+                    BIObject obj = (BIObject)it.next();
+                    if(ObjectsAccessVerifier.checkProfileVisibility(obj, profile))
+                    	objects.add(obj);
+                }
+			}
+		
 			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects );
 			JSONObject documentsResponseJSON =  createJSONResponseDocuments(documentsJSON);
 			
 			//getting children folders
-			functionalities = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(functID, false);	
+			functionalities = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(Integer.valueOf(functID), false);	
 			JSONArray foldersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( functionalities );			
 			JSONObject foldersResponseJSON =  createJSONResponseFolders(foldersJSON);
 		

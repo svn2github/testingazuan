@@ -27,50 +27,54 @@
 Ext.ns("Sbi.browser");
 
 Sbi.browser.FolderDetailPanel = function(config) {    
-    // sub-components   
+    
 	var loadFolderContentService = Sbi.config.serviceRegistry.getServiceUrl('GET_FOLDER_CONTENT_ACTION');
 	loadFolderContentService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
 	
+	// -- store -------------------------------------------------------
 	this.store = new Ext.data.JsonStore({
 	    url: loadFolderContentService,
-	    /*baseParams: {
+	    /*
+	    baseParams: {
 			folderId: 3
-		},*/
+		},
+		*/
 	    root: 'folderContent',
 	    fields: ['title', 'icon', 'samples']
-	});
-	
+	});	
 	this.store.on('loadexception', Sbi.exception.ExceptionHandler.handleFailure);
 	
+	// -- folderView ----------------------------------------------------
     this.folderView = new Sbi.browser.FolderView({
-            store: this.store
-            , listeners: {
-                'click': {
-    				fn: this.onClick
-    				, scope: this
-    			}
+    	store: this.store
+        , listeners: {
+        	'click': {
+    			fn: this.onClick
+    			, scope: this
     		}
-    		, emptyText: 'No images to display'
-        });
-        
+    	}
+    	, emptyText: LN('sbi.browser.folderdetailpanel.emptytext')
+    });
+    
+    // -- toolbar -----------------------------------------------------------
     var ttbarTextItem = new Ext.Toolbar.TextItem('> ?');  
     var ttbarToggleViewButton = new Ext.Toolbar.Button({
-      tooltip: 'List view',
-		            iconCls:'icon-list-view',
-		            listeners: {
-		            	'click': {
-          					fn: this.toggleDisplayModality,
-          					scope: this
-        				  } 
-		            }
+    	tooltip: LN('sbi.browser.folderdetailpanel.listviewTT'),
+		iconCls:'icon-list-view',
+		listeners: {
+			'click': {
+          		fn: this.toggleDisplayModality,
+          		scope: this
+        	} 
+		}
     });
     
     this.toolbar = new Ext.Toolbar({
       //cls: 'top-toolbar'
       items: [
           ttbarTextItem
-            ,'->'
-            , ttbarToggleViewButton  
+          ,'->'
+          , ttbarToggleViewButton  
       ]
     });
     this.toolbar.text = ttbarTextItem;
@@ -79,14 +83,14 @@ Sbi.browser.FolderDetailPanel = function(config) {
      
     
     this.setBreadcrumbs([{
-      label: 'Foodmart'
-      , url: 'http://www.google.it/search?q=Foodmart'
+      id: 1
+      , label: 'Foodmart'
     }, {
-      label: 'General Manager'
-      , url: 'http://www.google.it/search?q=GeneralManager'
+    	id: 2
+        , label: 'General Manager'
     } , {
-      label: 'Staff'
-      , url: 'http://www.google.it/search?q=Staff'
+    	id: 3
+        , label: 'Staff'
     }]);
       
     if(config.modality && (
@@ -97,6 +101,7 @@ Sbi.browser.FolderDetailPanel = function(config) {
       this.modality = 'group-view';
     }
     
+    // -- mainPanel -----------------------------------------------------------
     this.mainPanel = new Ext.Panel({
         id:'doc-details'
         , cls: this.modality
@@ -110,21 +115,18 @@ Sbi.browser.FolderDetailPanel = function(config) {
         , tbar: this.toolbar 
         
         , listeners: {
-		      'render': {
-            fn: function() {
-          	 this.loadingMask = new Sbi.decorator.LoadMask(this.mainPanel.body, {msg:"Please wait ..."}); 
-            },
-          	scope: this
-          }
+		    'render': {
+            	fn: function() {
+          	 	this.loadingMask = new Sbi.decorator.LoadMask(this.mainPanel.body, {msg:LN('sbi.browser.folderdetailpanel.waitmsg')}); 
+            	},
+            	scope: this
+          	}
         }        
     });
     
     var c = Ext.apply({}, config, {
       items: [this.mainPanel]
-    });
-    
-    
-    
+    });   
     
     Sbi.browser.FolderDetailPanel.superclass.constructor.call(this, c);   
     
@@ -159,7 +161,7 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
         this.mainPanel.addClass('list-view');
         this.modality = 'list-view';
         
-        b.tooltip = 'Group view';
+        b.tooltip = LN('sbi.browser.folderdetailpanel.groupviewTT');
         b.setIconClass('icon-group-view');        
       }
       
@@ -186,17 +188,51 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
       this.loadingMask.hide();      
     }
     
+    , setBreadcrumbs: function(breadcrumbs) {
+    	var txt = '';
+        for(var i=0; i<breadcrumbs.length-1; i++) {
+          txt += '> <span id="' + breadcrumbs[i].id + '">' + breadcrumbs[i].label + '</span> ';
+        }
+        txt += '> ' + breadcrumbs[breadcrumbs.length-1].label;        
+        this.setToolbarText(txt);
+        
+        
+        for(var i=0; i<breadcrumbs.length-1; i++) {
+        	var el =  Ext.ComponentMgr.get(breadcrumbs[i].id);
+        	alert(el.on);
+        	
+        	el.on('click', this.onBreadClick, this, {
+        	    bread: breadcrumbs[i]
+        	});
+        	
+        }
+    }
     
+    , onBreadClick: function(a, b, c, d) {
+    	alert('onBreadClick');
+    	alert(a);
+    	alert(b);
+    	alert(c);
+    	alert(d);
+    	/*
+    	alert(a.toSource());
+    	alert(b.toSource());
+    	alert(c.toSource());
+    	alert(d.toSource());
+    	*/
+    }
     
+    /*
     , setBreadcrumbs: function(breadcrumbs) {
       var txt = '';
       for(var i=0; i<breadcrumbs.length-1; i++) {
-        txt += '> <a href="' + breadcrumbs[i].url + '">' + breadcrumbs[i].label + '</a> ';
+        txt += '> <a href="#">' + breadcrumbs[i].label + '</a> ';
       }
       txt += '> ' + breadcrumbs[breadcrumbs.length-1].label;
       
       this.setToolbarText(txt);
     }
+    */
     
     // private methods 
     

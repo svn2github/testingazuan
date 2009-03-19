@@ -47,5 +47,16 @@ Password: <input type="password" name="password" size="30"/><br/>
 <input type="submit" value="Login" />
 </form>
 
+<%
+boolean authenticationFailed = request.getParameter("authenticationFailed") != null && request.getParameter("authenticationFailed").equalsIgnoreCase("true");
+if (authenticationFailed) {
+	%>
+	<font color="red">
+	User not authenticated
+	</font>
+	<%
+}
+%>
+
 </body>
 </html>

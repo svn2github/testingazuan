@@ -55,9 +55,8 @@ if (user != null && password != null) {
 		proxy.openSession(user, password);
 		session.setAttribute("spagobi_proxy", proxy);
 	} catch (AuthenticationException e) {
-		%>
-		User not authenticated
-		<%
+		response.sendRedirect("login.jsp?authenticationFailed=true");
+		return;
 	}
 }
 
@@ -84,6 +83,8 @@ if (proxy.isValidSession()) {
 	<input type="submit" value="Go on" />
 </form>
 <%
+} else {
+	response.sendRedirect("login.jsp");
 }
 %>
 </body>

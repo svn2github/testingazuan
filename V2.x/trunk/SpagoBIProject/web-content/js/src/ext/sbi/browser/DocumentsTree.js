@@ -30,6 +30,7 @@ Sbi.browser.DocumentsTree = function(config) {
     // sub-components   
     
 	var loadFTreeFoldersService = Sbi.config.serviceRegistry.getServiceUrl('GET_FTREE_FOLDERS_ACTION');
+	loadFTreeFoldersService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
 	
 	this.loader = new Ext.tree.TreeLoader({
         dataUrl   : loadFTreeFoldersService

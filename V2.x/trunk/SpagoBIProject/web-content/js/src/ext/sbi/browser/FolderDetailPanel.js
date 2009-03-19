@@ -29,6 +29,7 @@ Ext.ns("Sbi.browser");
 Sbi.browser.FolderDetailPanel = function(config) {    
     // sub-components   
 	var loadFolderContentService = Sbi.config.serviceRegistry.getServiceUrl('GET_FOLDER_CONTENT_ACTION');
+	loadFolderContentService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
 	
 	this.store = new Ext.data.JsonStore({
 	    url: loadFolderContentService,

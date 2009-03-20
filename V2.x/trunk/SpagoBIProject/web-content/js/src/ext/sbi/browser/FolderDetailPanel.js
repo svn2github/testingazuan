@@ -43,6 +43,8 @@ Sbi.browser.FolderDetailPanel = function(config) {
 	    fields: ['title', 'icon', 'samples']
 	});	
 	this.store.on('loadexception', Sbi.exception.ExceptionHandler.handleFailure);
+	this.store.on('beforeload', function(){if(this.loadingMask) this.loadingMask.show();}, this);
+	this.store.on('load', function(){if(this.loadingMask) this.loadingMask.hide();}, this);
 	
 	// -- folderView ----------------------------------------------------
     this.folderView = new Sbi.browser.FolderView({
@@ -58,6 +60,7 @@ Sbi.browser.FolderDetailPanel = function(config) {
     
     // -- toolbar -----------------------------------------------------------
     var ttbarTextItem = new Ext.Toolbar.TextItem('> ?');  
+    ttbarTextItem.isBreadcrumb = true;
     var ttbarToggleViewButton = new Ext.Toolbar.Button({
     	tooltip: LN('sbi.browser.folderdetailpanel.listviewTT'),
 		iconCls:'icon-list-view',
@@ -77,22 +80,14 @@ Sbi.browser.FolderDetailPanel = function(config) {
           , ttbarToggleViewButton  
       ]
     });
-    this.toolbar.text = ttbarTextItem;
+    this.toolbar.breadcrumbs = new Array();
+    this.toolbar.breadcrumbs.push(ttbarTextItem);
+    //this.toolbar.text = ttbarTextItem;
     this.toolbar.buttonsL = new Array();
     this.toolbar.buttonsL['toggleView'] = ttbarToggleViewButton;
      
     
-    this.setBreadcrumbs([{
-      id: 1
-      , label: 'Foodmart'
-    }, {
-    	id: 2
-        , label: 'General Manager'
-    } , {
-    	id: 3
-        , label: 'Staff'
-    }]);
-      
+    
     if(config.modality && (
       config.modality === 'list-view' || 'group-view'
     )) {
@@ -130,7 +125,7 @@ Sbi.browser.FolderDetailPanel = function(config) {
     
     Sbi.browser.FolderDetailPanel.superclass.constructor.call(this, c);   
     
-    this.addEvents("ondocumentclick", "onfolderclick");
+    this.addEvents("ondocumentclick", "onfolderclick", "onbreadcrumbclick");
     
     this.store.load();    
 }
@@ -180,59 +175,72 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     }
     
     , loadFolder: function(folderId) {
-      this.loadingMask.show();
       this.store.baseParams = {
 			'folderId': folderId
 	  }
       this.store.load();
-      this.loadingMask.hide();      
+      this.setBreadcrumbs([{
+          id: 1
+          , label: 'Foodmart'
+        }, {
+        	id: 2
+            , label: 'General Manager'
+        } , {
+        	id: 3
+            , label: 'Staff'
+        }]);      
     }
     
+   
     , setBreadcrumbs: function(breadcrumbs) {
-    	var txt = '';
-        for(var i=0; i<breadcrumbs.length-1; i++) {
-          txt += '> <span id="' + breadcrumbs[i].id + '">' + breadcrumbs[i].label + '</span> ';
+    	
+    	this.toolbar.items.each(function(item){            
+            this.items.remove(item);
+            item.destroy();           
+        }, this.toolbar.items); 
+    	 
+    	
+        for(var i=0; i<breadcrumbs.length; i++) {
+        	this.toolbar.add({
+        		text: breadcrumbs[i].label
+        		, breadcrumb: breadcrumbs[i]
+        		, listeners: {
+        			'click': {
+                  		fn: this.onBreadCrumbClick,
+                  		scope: this
+                	} 
+        	}
+        	}, ' > ');
         }
-        txt += '> ' + breadcrumbs[breadcrumbs.length-1].label;        
-        this.setToolbarText(txt);
         
-        
-        for(var i=0; i<breadcrumbs.length-1; i++) {
-        	var el =  Ext.ComponentMgr.get(breadcrumbs[i].id);
-        	alert(el.on);
-        	
-        	el.on('click', this.onBreadClick, this, {
-        	    bread: breadcrumbs[i]
-        	});
-        	
+        var tt;
+        var cls;
+        if(this.modality === 'list-view') {
+        	tt = LN('sbi.browser.folderdetailpanel.groupviewTT');
+        	cls = 'icon-group-view';
+        } else {
+        	tt = LN('sbi.browser.folderdetailpanel.listviewTT');
+        	cls = 'icon-list-view';
         }
+        this.toolbar.buttonsL['toggleView'] = new Ext.Toolbar.Button({
+        	tooltip: tt,
+    		iconCls: cls,
+    		listeners: {
+    			'click': {
+              		fn: this.toggleDisplayModality,
+              		scope: this
+            	} 
+    		}
+        });
+        this.toolbar.add('->', this.toolbar.buttonsL['toggleView']);
+    }
+   
+    
+    , onBreadCrumbClick: function(b, e) {    	
+    	this.fireEvent('onbreadcrumbclick', this, b.breadcrumb, e);
     }
     
-    , onBreadClick: function(a, b, c, d) {
-    	alert('onBreadClick');
-    	alert(a);
-    	alert(b);
-    	alert(c);
-    	alert(d);
-    	/*
-    	alert(a.toSource());
-    	alert(b.toSource());
-    	alert(c.toSource());
-    	alert(d.toSource());
-    	*/
-    }
     
-    /*
-    , setBreadcrumbs: function(breadcrumbs) {
-      var txt = '';
-      for(var i=0; i<breadcrumbs.length-1; i++) {
-        txt += '> <a href="#">' + breadcrumbs[i].label + '</a> ';
-      }
-      txt += '> ' + breadcrumbs[breadcrumbs.length-1].label;
-      
-      this.setToolbarText(txt);
-    }
-    */
     
     // private methods 
     
@@ -243,8 +251,7 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     	  this.fireEvent('ondocumentclick', this, r, e);
       } else{
     	  this.fireEvent('onfolderclick', this, r, e);
-      }
-      
+      }      
     }
     
     , setToolbarText: function(text) {

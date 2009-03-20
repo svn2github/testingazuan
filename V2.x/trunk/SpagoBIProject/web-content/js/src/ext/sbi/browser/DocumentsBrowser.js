@@ -65,8 +65,8 @@ Sbi.browser.DocumentsBrowser = function(config) {
           // CENTER REGION ---------------------------------------------------------
           this.detailPanel, 
           // WEST REGION -----------------------------------------------------------
-          this.treePanel //, 
-          // NORT HREGION -----------------------------------------------------------ricerca
+          this.treePanel, 
+          // NORTH HREGION -----------------------------------------------------------
           /*
           new Sbi.browser.Toolbar({
             region: 'north',
@@ -81,6 +81,9 @@ Sbi.browser.DocumentsBrowser = function(config) {
     this.treePanel.addListener('click', this.onTreeNodeClick, this);
     this.detailPanel.addListener('ondocumentclick', this.onDocumentClick, this);
     this.detailPanel.addListener('onfolderclick', this.onFolderClick, this);
+    this.detailPanel.addListener('onbreadcrumbclick', this.onBreadCrumbClick, this);
+    
+    
     
     
 }
@@ -97,15 +100,19 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 		this.detailPanel.loadFolder(node.id);
 	}
 
-	, onDocumentClick: function(node, r) {
+	, onDocumentClick: function(panel, r) {
 		var execDocumentService = Sbi.config.serviceRegistry.getServiceUrl('ExecuteBIObjectPage', false, true);
 		execDocumentService += '&MESSAGEDET=EXEC_PHASE_CREATE_PAGE';
 		execDocumentService += '&OBJECT_ID=' + r.id;
 		window.location=execDocumentService;
 	}
 	
-	, onFolderClick: function(node, r) {
+	, onFolderClick: function(panel, r) {
 		this.detailPanel.loadFolder(r.id);
+	}
+	
+	, onBreadCrumbClick: function(panel, b) {
+		this.detailPanel.loadFolder(b.id);
 	}
 
 	// http://localhost:8080/SpagoBI/servlet/AdapterHTTP?OBJECT_ID=28&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&PAGE=ExecuteBIObjectPage

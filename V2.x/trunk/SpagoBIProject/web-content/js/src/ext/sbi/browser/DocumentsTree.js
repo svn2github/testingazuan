@@ -58,7 +58,7 @@ Sbi.browser.DocumentsTree = function(config) {
         text		: LN('sbi.browser.documentstree.root'),
         iconCls		: 'icon-ftree-root',
         expanded	: true,
-        expandable  : false,
+        expandable  : true,
         draggable	: false
     });    
     this.setRootNode(this.rootNode);    
@@ -74,10 +74,6 @@ Ext.extend(Sbi.browser.DocumentsTree, Ext.tree.TreePanel, {
 	loader: null
 	, rootNode: null
 	
-	, onClickTestFn: function(node, e) {
-		alert('id' + node.id + '\ntype:' + node.attributes.type);
-	}
-
 	, refresh: function() {
 		this.loader.load(this.rootNode, function(){});
 	}

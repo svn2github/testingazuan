@@ -24,9 +24,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page language="java" 
 	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
    
-    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/main.css")%>'
-    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/listview.css")%>'
-    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/groupview.css")%>'
+   	
+   	
+    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/main.css")%>'/>
+    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/listview.css")%>'/>
+    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/groupview.css")%>'/>
    	<link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/commons/loadmask.css")%>' />
 	
 	<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/locale/" + locale.getLanguage() + ".js")%>'></script>

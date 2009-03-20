@@ -70,7 +70,7 @@ public class DocumentsJSONSerializer implements Serializer {
 			result.put(ID, obj.getId() );
 			result.put(LABEL, obj.getLabel() );
 			result.put(NAME, obj.getName() );
-			
+			result.put(DESCRIPTION, obj.getDescription() );
 			
 			result.put(TYPECODE, obj.getBiObjectTypeCode());
 			result.put(TYPEID, obj.getBiObjectTypeID());

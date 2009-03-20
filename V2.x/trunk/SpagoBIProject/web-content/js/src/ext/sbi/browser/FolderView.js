@@ -48,11 +48,8 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
 	                        '<div id="icon"><img src="../img/analiticalmodel/browser/{parent.icon}"/></div>',
 	                        '<div id="description">',
 		                        '<h4>{name}</h4>',
-		                        '<p><b>type:</b> {typeCode}; ',
-		                        '<b>engine:</b> {engine}</p>',
-		                        '<p><b>Document Goal:</b> {objective}</p>',
-		                        '<p><b>Tags:</b> {keywords}</p>',
-		                        '<p><b>created by</b> {creationUser} <b>on</b> {creationDate}</p>',
+		                        '<p><b>Description:</b> {description} ',
+		                        '{extendedDescription}</p>',		                        
 	                        '</div>',
                         '</tpl>',
                         // -- FOLDER -----------------------------------------------

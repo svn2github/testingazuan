@@ -255,4 +255,16 @@ public interface ILowFunctionalityDAO {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public List loadUserFunctionalities(boolean onlyFirstLevel, boolean recoverBIObjects) throws EMFUserError;
+	
+
+	/**
+	 * Load all fathers functionalities to root level. 
+	 * 
+	 * @param functId the identifier of functionality child
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 */
+	public List loadParentFunctionalities(Integer functId) throws EMFUserError;
 }

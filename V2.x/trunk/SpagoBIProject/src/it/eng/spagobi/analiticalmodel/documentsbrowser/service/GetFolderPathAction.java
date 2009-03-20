@@ -25,6 +25,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
+import it.eng.spagobi.chiron.serializer.FoldersJSONSerializer;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
@@ -59,8 +60,7 @@ public class GetFolderPathAction extends AbstractBaseHttpAction{
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		
-		List functionalities;
-		List objects;
+		List functionalities = new ArrayList();
 		
 		logger.debug("IN");
 		
@@ -74,11 +74,21 @@ public class GetFolderPathAction extends AbstractBaseHttpAction{
 			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID)){
 				//getting default folder (root)
 				LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
-				functID = String.valueOf(rootFunct.getId());
+				functionalities.add(rootFunct);
 			}
 			logger.debug("Parameter [" + FOLDER_ID + "] is equal to [" + functID + "]");
 		
+			if (!functID.equalsIgnoreCase(ROOT_NODE_ID)) {
+				//getting father folders
+				functionalities = DAOFactory.getLowFunctionalityDAO().loadParentFunctionalities(Integer.valueOf(functID));	
+			}
+			JSONArray foldersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( functionalities );
 			
+			try {
+				writeBackToClient( new JSONSuccess(  createJSONResponse(foldersJSON) ) ) ;
+			} catch (IOException e) {
+				throw new SpagoBIException("Impossible to write back the responce to the client", e);
+			}
 			
 		} catch (Throwable t) {
 			throw new SpagoBIException("An unexpected error occured while executing " + getActionName(), t);
@@ -87,5 +97,28 @@ public class GetFolderPathAction extends AbstractBaseHttpAction{
 		}
 	}
 	
+	/**
+	 * Creates a json array with parents folder informations
+	 * @param rows
+	 * @return
+	 * @throws JSONException
+	 */
+	private JSONArray createJSONResponse(JSONArray rows) throws JSONException {
+		JSONObject node;
+		JSONArray nodes;
+
+		nodes = new JSONArray();
+		
+		for (int i=0; i<rows.length(); i++){
+			JSONObject tmpNode = rows.getJSONObject(i);
+			node = new JSONObject();
+			node.put("id", tmpNode.get(FoldersJSONSerializer.ID));
+			node.put("name", tmpNode.get(FoldersJSONSerializer.NAME));
+			node.put("path", tmpNode.get(FoldersJSONSerializer.PATH));
+			
+			nodes.put(node);
+		}
+		return nodes;
+	}
 	
 }

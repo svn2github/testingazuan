@@ -1374,4 +1374,52 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 		return res;
 	}
 
+	/**
+	 * Load all fathers functionalities. 
+	 * 
+	 * @param functId the identifier of functionality child
+	 * 
+	 * @return the list
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadAllLowFunctionalities(Integer)
+	 */
+	public List loadParentFunctionalities(Integer functId) throws EMFUserError {
+		logger.debug( "IN" );
+		
+		LowFunctionality funct = null;
+		Integer tmpFunctId = null;
+		Session aSession = null;
+		Transaction tx = null;
+		List realResult = new ArrayList();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			tmpFunctId = functId;
+			
+			while (tmpFunctId != null){
+				SbiFunctions hibFunct = (SbiFunctions)aSession.load(SbiFunctions.class, tmpFunctId);
+				tmpFunctId = hibFunct.getParentFunct().getFunctId();
+				realResult.add(toLowFunctionality(hibFunct, false));
+			}
+			
+			
+			tx.commit();
+		} catch (HibernateException he) {
+			logger.error( "HibernateException",he );
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		logger.debug( "OUT" );
+		return realResult;
+	}
 }

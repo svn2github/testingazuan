@@ -29,9 +29,13 @@ Ext.ns("Sbi.browser");
 Sbi.browser.groupTpl = new Ext.XTemplate(
         '<div id="sample-ct">',
             '<tpl for=".">',
-            '<div><a name="{id}"></a><h2><div>{title}</div></h2>',
+            '<div><a name="{id}"></a><h2><div>{title} ({[values.samples.length]})</div></h2>',
             '<dl>',
-                '<tpl for="samples">',                    
+            	'<tpl if="samples.length == 0">',
+            		'<div id="empty-group-message">No items in this group</div>',
+            	'</tpl>',
+                '<tpl for="samples">',   
+                	'{[engine=""]}',
                     '<dd ext:url="{url}">',
                         '<div id="control-panel" class="control-panel">',
                         /*
@@ -39,19 +43,33 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
                             '<a href="javascript:alert(\'Document scheduled succesfully\')"><img title="shedule" src="../img/analiticalmodel/browser/schedule.gif"/></a>',
                         */
                         '</div>',
-                        '<div id="icon"><img src="../img/analiticalmodel/browser/{parent.icon}"/></div>',
-                        '<div id="description"><h4>{name}</h4>',
-                        '<p><b>type:</b> {typeCode}; ',
-                        '<b>engine:</b> {engine}</p>',
-                        '<p><b>Document Goal:</b> {objective}</p>',
-                        '<p><b>Tags:</b> {keywords}</p>',
-                        '<p><b>created by</b> {creationUser} <b>on</b> {creationDate}</p>',
-                        '</div>',
+                        '<tpl if="this.exists(engine) == true">',
+	                        '<div id="icon"><img src="../img/analiticalmodel/browser/{parent.icon}"/></div>',
+	                        '<div id="description">',
+		                        '<h4>{name}</h4>',
+		                        '<p><b>type:</b> {typeCode}; ',
+		                        '<b>engine:</b> {engine}</p>',
+		                        '<p><b>Document Goal:</b> {objective}</p>',
+		                        '<p><b>Tags:</b> {keywords}</p>',
+		                        '<p><b>created by</b> {creationUser} <b>on</b> {creationDate}</p>',
+	                        '</div>',
+                        '</tpl>',
+                        '<tpl if="this.exists(engine) == false">',
+	                        '<div id="icon"><img src="../img/analiticalmodel/browser/{parent.icon}"/></div>',
+	                        '<div id="description">',
+		                        '<h4>{name}</h4>',
+	                        '</div>',
+                        '</tpl>',
                     '</dd>',
                 '</tpl>',
             '<div style="clear:left"></div></dl></div>',
             '</tpl>',
-        '</div>'
+        '</div>', {
+        	exists: function(o){
+        		return typeof o != 'undefined' && o != null && o!='';
+        	}
+
+        }
 );
 
 Sbi.browser.FolderView = function(config) {

@@ -65,7 +65,7 @@ Sbi.browser.DocumentsBrowser = function(config) {
           // CENTER REGION ---------------------------------------------------------
           this.detailPanel, 
           // WEST REGION -----------------------------------------------------------
-          this.treePanel, 
+          this.treePanel
           // NORTH HREGION -----------------------------------------------------------
           /*
           new Sbi.browser.Toolbar({

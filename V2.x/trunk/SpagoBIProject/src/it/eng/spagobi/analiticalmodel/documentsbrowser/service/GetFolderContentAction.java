@@ -61,6 +61,7 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 		
 		List functionalities;
 		List objects;
+		boolean isRoot = false;
 		
 		logger.debug("IN");
 		
@@ -68,11 +69,10 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			setSpagoBIRequestContainer( request );
 			setSpagoBIResponseContainer( response );
 			
-			String functID = getAttributeAsString(FOLDER_ID);
-			
-			
+			String functID = getAttributeAsString(FOLDER_ID);		
 			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID)){
 				//getting default folder (root)
+				isRoot = true;
 				LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
 				functID = String.valueOf(rootFunct.getId());
 			}
@@ -100,7 +100,11 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			JSONObject documentsResponseJSON =  createJSONResponseDocuments(documentsJSON);
 			
 			//getting children folders
-			functionalities = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(Integer.valueOf(functID), false);	
+			if (isRoot)
+				functionalities = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(true, false);	
+			else
+				functionalities = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(Integer.valueOf(functID), false);	
+			
 			JSONArray foldersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( functionalities );			
 			JSONObject foldersResponseJSON =  createJSONResponseFolders(foldersJSON);
 		

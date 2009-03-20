@@ -70,14 +70,16 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			setSpagoBIResponseContainer( response );
 			
 			String functID = getAttributeAsString(FOLDER_ID);		
-			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID)){
-				//getting default folder (root)
-				isRoot = true;
-				LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
-				functID = String.valueOf(rootFunct.getId());
-			}
+			
 			logger.debug("Parameter [" + FOLDER_ID + "] is equal to [" + functID + "]");
-		
+			//getting default folder (root)
+			LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
+			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID)){
+				isRoot = true;
+				functID = String.valueOf(rootFunct.getId());
+			}else if (functID.equalsIgnoreCase(rootFunct.getId().toString()))
+				isRoot = true;
+			
 			SessionContainer sessCont = getSessionContainer();
 			SessionContainer permCont = sessCont.getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);

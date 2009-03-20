@@ -50,6 +50,9 @@
  </ACTION>
  
  
+ <ACTION name="GET_FOLDER_PATH_ACTION" class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.GetFolderPathAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
  
  
 

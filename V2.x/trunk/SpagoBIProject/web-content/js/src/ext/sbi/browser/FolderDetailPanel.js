@@ -127,7 +127,8 @@ Sbi.browser.FolderDetailPanel = function(config) {
     
     this.addEvents("ondocumentclick", "onfolderclick", "onbreadcrumbclick");
     
-    this.store.load();    
+    //this.store.load();   
+    this.loadFolder(config.folderId);
 }
 
 
@@ -175,48 +176,50 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     }
     
     , loadFolder: function(folderId) {
-      this.store.baseParams = {
-			'folderId': folderId
-	  }
+      if(folderId) {
+	      this.store.baseParams = {
+				'folderId': folderId
+		  }
+      }
       this.store.load();
-      /*
-      this.setBreadcrumbs([{
-          id: 1
-          , label: 'Foodmart'
-        }, {
-        	id: 2
-            , label: 'General Manager'
-        } , {
-        	id: 3
-            , label: 'Staff'
-        }]);
-        */
+     
       var loadFolderPathService = Sbi.config.serviceRegistry.getServiceUrl('GET_FOLDER_PATH_ACTION');
       loadFolderPathService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
-      var proxy = new Ext.data.HttpProxy({
+      Ext.Ajax.request({
           url: loadFolderPathService,
-          success: function(response){
-          	 alert(response.toSource()); 
+          params: { 'folderId': folderId },
+          callback : function(options , success, response){
+    	  	if(success && response !== undefined) {   
+	      		if(response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			if(content !== undefined) {
+	      				this.setBreadcrumbs(content);
+	      			} 
+	      		} else {
+	      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+	      		}
+    	  	}
           },
+          scope: this,
   		  failure: Sbi.exception.ExceptionHandler.handleFailure      
        });
-       proxy.load({
-			'folderId': folderId
- 	   });
     }
     
    
     , setBreadcrumbs: function(breadcrumbs) {
-    	
     	this.toolbar.items.each(function(item){            
             this.items.remove(item);
             item.destroy();           
         }, this.toolbar.items); 
     	 
+    	this.add({
+            iconCls: 'icon-ftree-root',
+            disabled: true
+        });
     	
-        for(var i=0; i<breadcrumbs.length; i++) {
+        for(var i=0; i<breadcrumbs.length-1; i++) {
         	this.toolbar.add({
-        		text: breadcrumbs[i].label
+        		text: breadcrumbs[i].name
         		, breadcrumb: breadcrumbs[i]
         		, listeners: {
         			'click': {
@@ -226,6 +229,14 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
         	}
         	}, ' > ');
         }
+        
+        this.toolbar.add({
+    		text: breadcrumbs[breadcrumbs.length-1].name
+    		, breadcrumb: breadcrumbs[breadcrumbs.length-1]
+    		, disabled: true
+    		, cls: 'sbi-last-folder'
+    	});
+        
         
         var tt;
         var cls;

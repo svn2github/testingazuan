@@ -88,7 +88,7 @@ public class GetFolderPathAction extends AbstractBaseHttpAction{
 			}
 			
 		} catch (Throwable t) {
-			// TODO set up spago's trap mechanism and move this error handling code to e specialized action 
+			// TODO set up spago's trap mechanism and move this error handling code to a specialized action 
 			String message = "Impossible to write back the responce to the client";
 			logger.error(message, t);
 			writeBackToClient( new JSONFailure( new SpagoBIEngineServiceException(getActionName(), message, t) ) );

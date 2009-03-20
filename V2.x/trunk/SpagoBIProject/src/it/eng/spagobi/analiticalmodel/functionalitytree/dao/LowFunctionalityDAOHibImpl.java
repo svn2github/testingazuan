@@ -21,6 +21,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.functionalitytree.dao;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+
+import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.MatchMode;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -44,25 +63,6 @@ import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.RoleDAOHibImpl;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
-
-import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Expression;
-import org.hibernate.criterion.MatchMode;
 
 /**
  * Defines the Hibernate implementations for all DAO methods,
@@ -1400,8 +1400,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			
 			while (tmpFunctId != null){
 				SbiFunctions hibFunct = (SbiFunctions)aSession.load(SbiFunctions.class, tmpFunctId);
-				//tmpFunctId = hibFunct.getParentFunct().getFunctId();
-				tmpFunctId = (hibFunct.getParentFunct()!=null)?hibFunct.getParentFunct().getFunctId(): null;
+				tmpFunctId = (hibFunct.getParentFunct() != null)? hibFunct.getParentFunct().getFunctId(): null;
 				realResult.add(toLowFunctionality(hibFunct, false));
 			}
 			

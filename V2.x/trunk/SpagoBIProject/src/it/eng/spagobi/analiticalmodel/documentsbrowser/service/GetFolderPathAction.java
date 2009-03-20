@@ -20,28 +20,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
-import it.eng.spagobi.chiron.serializer.FoldersJSONSerializer;
-import it.eng.spagobi.chiron.serializer.SerializerFactory;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.utilities.exceptions.SpagoBIException;
-import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
-import it.eng.spagobi.utilities.service.JSONSuccess;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
+import it.eng.spagobi.chiron.serializer.FoldersJSONSerializer;
+import it.eng.spagobi.chiron.serializer.SerializerFactory;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.exceptions.SpagoBIException;
+import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
+import it.eng.spagobi.utilities.service.JSONFailure;
+import it.eng.spagobi.utilities.service.JSONSuccess;
 
 
 /**
@@ -91,7 +88,11 @@ public class GetFolderPathAction extends AbstractBaseHttpAction{
 			}
 			
 		} catch (Throwable t) {
-			throw new SpagoBIException("An unexpected error occured while executing " + getActionName(), t);
+			// TODO set up spago's trap mechanism and move this error handling code to e specialized action 
+			String message = "Impossible to write back the responce to the client";
+			logger.error(message, t);
+			writeBackToClient( new JSONFailure( new SpagoBIEngineServiceException(getActionName(), message, t) ) );
+			//throw new SpagoBIException("An unexpected error occured while executing " + getActionName(), t);
 		} finally {
 			logger.debug("OUT");
 		}

@@ -179,6 +179,7 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
 			'folderId': folderId
 	  }
       this.store.load();
+      /*
       this.setBreadcrumbs([{
           id: 1
           , label: 'Foodmart'
@@ -188,7 +189,20 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
         } , {
         	id: 3
             , label: 'Staff'
-        }]);      
+        }]);
+        */
+      var loadFolderPathService = Sbi.config.serviceRegistry.getServiceUrl('GET_FOLDER_PATH_ACTION');
+      loadFolderPathService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
+      var proxy = new Ext.data.HttpProxy({
+          url: loadFolderPathService,
+          success: function(response){
+          	 alert(response.toSource()); 
+          },
+  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
+       });
+       proxy.load({
+			'folderId': folderId
+ 	   });
     }
     
    

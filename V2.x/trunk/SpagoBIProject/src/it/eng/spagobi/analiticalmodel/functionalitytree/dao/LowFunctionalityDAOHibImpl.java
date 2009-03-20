@@ -1400,7 +1400,8 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			
 			while (tmpFunctId != null){
 				SbiFunctions hibFunct = (SbiFunctions)aSession.load(SbiFunctions.class, tmpFunctId);
-				tmpFunctId = hibFunct.getParentFunct().getFunctId();
+				//tmpFunctId = hibFunct.getParentFunct().getFunctId();
+				tmpFunctId = (hibFunct.getParentFunct()!=null)?hibFunct.getParentFunct().getFunctId(): null;
 				realResult.add(toLowFunctionality(hibFunct, false));
 			}
 			

@@ -110,7 +110,7 @@ public class GetFolderPathAction extends AbstractBaseHttpAction{
 
 		nodes = new JSONArray();
 		
-		for (int i=0; i<rows.length(); i++){
+		for (int i=rows.length()-1; i>=0; i--){
 			JSONObject tmpNode = rows.getJSONObject(i);
 			node = new JSONObject();
 			node.put("id", tmpNode.get(FoldersJSONSerializer.ID));

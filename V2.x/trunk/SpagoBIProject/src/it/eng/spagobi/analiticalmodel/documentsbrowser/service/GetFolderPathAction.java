@@ -66,19 +66,17 @@ public class GetFolderPathAction extends AbstractBaseHttpAction{
 			setSpagoBIResponseContainer( response );
 			
 			String functID = getAttributeAsString(FOLDER_ID);
-			
+			logger.debug("Parameter [" + FOLDER_ID + "] is equal to [" + functID + "]");
 			
 			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID)){
 				//getting default folder (root)
 				LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
 				functionalities.add(rootFunct);
-			}
-			logger.debug("Parameter [" + FOLDER_ID + "] is equal to [" + functID + "]");
-		
-			if (!functID.equalsIgnoreCase(ROOT_NODE_ID)) {
-				//getting father folders
+			} else {
 				functionalities = DAOFactory.getLowFunctionalityDAO().loadParentFunctionalities(Integer.valueOf(functID));	
 			}
+			
+		
 			JSONArray foldersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( functionalities );
 			
 			try {

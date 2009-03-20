@@ -176,18 +176,19 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     }
     
     , loadFolder: function(folderId) {
+      var p;
       if(folderId) {
-	      this.store.baseParams = {
-				'folderId': folderId
-		  }
+	      p = {'folderId': folderId};
       }
+      
+      this.store.baseParams = p;
       this.store.load();
      
       var loadFolderPathService = Sbi.config.serviceRegistry.getServiceUrl('GET_FOLDER_PATH_ACTION');
       loadFolderPathService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
       Ext.Ajax.request({
           url: loadFolderPathService,
-          params: { 'folderId': folderId },
+          params: p,
           callback : function(options , success, response){
     	  	if(success && response !== undefined) {   
 	      		if(response.responseText !== undefined) {
@@ -213,8 +214,8 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
         }, this.toolbar.items); 
     	 
     	this.add({
-            iconCls: 'icon-ftree-root',
-            disabled: true
+            iconCls: 'icon-ftree-root'
+            //, disabled: true
         });
     	
         for(var i=0; i<breadcrumbs.length-1; i++) {

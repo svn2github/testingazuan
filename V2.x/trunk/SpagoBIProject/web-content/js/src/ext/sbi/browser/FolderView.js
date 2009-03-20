@@ -43,6 +43,7 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
                             '<a href="javascript:alert(\'Document scheduled succesfully\')"><img title="shedule" src="../img/analiticalmodel/browser/schedule.gif"/></a>',
                         */
                         '</div>',
+                     // -- DOCUMENT -----------------------------------------------
                         '<tpl if="this.exists(engine) == true">',
 	                        '<div id="icon"><img src="../img/analiticalmodel/browser/{parent.icon}"/></div>',
 	                        '<div id="description">',
@@ -54,8 +55,14 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
 		                        '<p><b>created by</b> {creationUser} <b>on</b> {creationDate}</p>',
 	                        '</div>',
                         '</tpl>',
+                        // -- FOLDER -----------------------------------------------
                         '<tpl if="this.exists(engine) == false">',
-	                        '<div id="icon"><img src="../img/analiticalmodel/browser/{parent.icon}"/></div>',
+                        	'<tpl if="this.isHomeFolder(codType) == true">',
+	                        	'<div id="icon"><img src="../img/analiticalmodel/browser/folder_home.png"/></div>',
+	                        '</tpl>',
+	                        '<tpl if="this.isHomeFolder(codType) == false">',
+                        		'<div id="icon"><img src="../img/analiticalmodel/browser/{parent.icon}"/></div>',
+                        	'</tpl>',
 	                        '<div id="description">',
 		                        '<h4>{name}</h4>',
 	                        '</div>',
@@ -67,6 +74,9 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
         '</div>', {
         	exists: function(o){
         		return typeof o != 'undefined' && o != null && o!='';
+        	}
+        	, isHomeFolder: function(s) {
+        		return s == 'USER_FUNCT';
         	}
 
         }

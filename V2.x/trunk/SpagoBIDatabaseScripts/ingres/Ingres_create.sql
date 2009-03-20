@@ -9,18 +9,6 @@ Version
 Database		Ingres 
 */
 
-Create table TEST_BIN (
-	c_bin Long byte
-) ;\p\g
-
-Create table TEST_TEXT (
-	c_text Long nvarchar
-) ;\p\g
-
-Create table TEST_TIMESTAMP (
-	column_timestamp timestamp
-) ;\p\g
-
 CREATE SEQUENCE SBI_AUDIT_SEQ;\p\g
 
 Create table SBI_AUDIT (
@@ -587,12 +575,8 @@ Create table SBI_KPI_INST_PERIOD (
 	KPI_INSTANCE_ID Integer NOT NULL,
 	PERIODICITY_ID Integer NOT NULL,
 	DEFAULT_VALUE smallint default 0,
-	label Varchar(100) NOT NULL,
-	start_date Date,
-	end_date Date,
-Primary Key (id_kpi_role)
+Primary Key (KPI_INST_PERIOD_ID)
 ) ;\p\g
-
 
 CREATE SEQUENCE SBI_KPI_ROLE_SEQ;\p\g
 Create table SBI_KPI_ROLE (
@@ -642,6 +626,7 @@ Create table SBI_THRESHOLD (
 	THRESHOLD_TYPE_ID Integer NOT NULL,
 	NAME Varchar(400),
 	DESCRIPTION Varchar(1000),
+	CODE Varchar(45) default NULL,
 Primary Key (THRESHOLD_ID)
 ) ;\p\g
 
@@ -694,7 +679,8 @@ Create table SBI_KPI_PERIODICITY (
 	DAYS Integer,
 	HOURS Integer,
 	MINUTES Integer,
-	PERIOD Varchar(20),
+	CHRON_STRING Varchar(20),
+	START_DATE TIMESTAMP,
 Primary Key (id_kpi_periodicity)
 ) ;\p\g
 
@@ -705,9 +691,8 @@ Create table SBI_KPI_INSTANCE (
 	THRESHOLD_ID Integer,
 	CHART_TYPE_ID Integer,
 	ID_MEASURE_UNIT Integer,
-	ID_KPI_PERIODICITY Integer,
 	WEIGHT Float,
-	TARGET Date,
+	TARGET Float,
 	BEGIN_DT Date,
 Primary Key (id_kpi_instance)
 ) ;\p\g
@@ -728,10 +713,11 @@ CREATE SEQUENCE SBI_KPI_VALUE_SEQ;\p\g
 Create table SBI_KPI_VALUE (
 	ID_KPI_INSTANCE_VALUE Integer NOT NULL with default next value for SBI_KPI_VALUE_SEQ,
 	ID_KPI_INSTANCE Integer NOT NULL,
-	RESOURCE_ID Integer NOT NULL,
+	RESOURCE_ID Integer NULL,
 	VALUE Varchar(40),
 	BEGIN_DT Date,
 	END_DT Date,
+	DESCRIPTION Varchar(100),
 Primary Key (id_kpi_instance_value)
 ) ;\p\g
 CREATE SEQUENCE SBI_KPI_MODEL_INST_SEQ;\p\g

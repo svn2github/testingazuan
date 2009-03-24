@@ -54,15 +54,15 @@ public class WekaKFRunner {
 	protected String dbUser = DEFAULT_DB_USER;
 	protected String dbPassword = DEFAULT_DB_PASSWORD;
 	
-	/*
+	
 	private static final String DEFAULT_DB_URL = "jdbc:mysql://localhost/foodmart";
 	private static final String DEFAULT_DB_USER = "root";
 	private static final String DEFAULT_DB_PASSWORD = "admin";
-	*/
+	/*
 	private static final String DEFAULT_DB_URL = "jdbc:dbname://localhost/foodmart";
 	private static final String DEFAULT_DB_USER = "root";
 	private static final String DEFAULT_DB_PASSWORD = "admin";
-	
+	*/
 	private static transient Logger logger = Logger.getLogger(WekaKFRunner.class);
 	
 	static private void log(String msg) {

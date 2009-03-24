@@ -66,7 +66,7 @@ qx.Class.define("qooxdoo.ui.Tree", {
 		     this.setUserData(config.root, dummyatom);
 
           	
-          	 //this.setWidth("100%"); // don't set it, else scroll bar appear permanantly
+          	 //this.setWidth("100%"); // don't set it, else scroll bar appear permanently
     		 //this.setHeight("100%");
     		 
           	 //this.setUserData('node', this);
@@ -77,6 +77,11 @@ qx.Class.define("qooxdoo.ui.Tree", {
           	 //alert(this.getManager().getSelectedItem());
           	 //this.setSelectedElement(this);
           	 //this.getSelectedElement().setSelected(true);
+		     
+		     //Drag-Drop Part 
+		       this.createIndicator();
+		       this.initializeDragAndDrop();
+		      
           },
           
           members: {
@@ -85,6 +90,7 @@ qx.Class.define("qooxdoo.ui.Tree", {
           		   nameText: undefined,
           		   atom: undefined,
           		   insertWin: undefined,
+          		   indicator : null,	//for drag-drop
           		   
           		  /**
 	               * Function to show a Context Menu associated to the node when it is clicked
@@ -444,14 +450,14 @@ qx.Class.define("qooxdoo.ui.Tree", {
                   		}
                   	}
                   	else{			// by default, node is of Folder type
-                  		
+                  		//alert("Node Created");
                   		treeNode = new qx.ui.tree.TreeFolder(config.name);
                   		//		treeNode.addOpenButton();
                   		
                   	}                                                  
                   	
                   	
-                  	if(config.parent == this || config.parent == 'root'){	//if(config.parent == this)
+                  	if(config.parent == this || config.parent == 'root'){	//if(config.parent == this.getRoot())
                   	
                   		this._root.add(treeNode);
                   		//this.setUserData(config.id, treeNode);
@@ -465,6 +471,7 @@ qx.Class.define("qooxdoo.ui.Tree", {
                    		
                    	 	var p = this.getUserData(config.parent).getUserData('node');//config.parent.getUserData('node');
                    	 	p.add(treeNode);
+                   	 	//alert("Node Added");
                    	}
                    	
                    	
@@ -472,13 +479,15 @@ qx.Class.define("qooxdoo.ui.Tree", {
         			 //atom.add(treeNode);//,config.data);
         			 
         			 atom.setUserData('node', treeNode);
+        			 //alert("Atom Created and node set");
         			 
         			 if(config.data != undefined){				//required when dataservice separates tree structure and data
         			 	atom.setUserData('data', config.data);
+        			 	//alert("Node data set");
         			 }
         			// alert(atom.getUserData('node'));
         			 this.setUserData(config.name,atom);	//Label of node is used as its id .. later we can use its level or hierarchy path
-                   	 
+        			// alert(config.name);
                    	
                    	//return treeNode;
                    	return atom;
@@ -619,15 +628,15 @@ qx.Class.define("qooxdoo.ui.Tree", {
                  	
                  	var info = {};
                //  	var node = this.getCurrentNode();
-                 //	alert(node);
+                 
                  	var nodeId = this.getSelectedItem().getLabel();
-                 	
+                	//alert(nodeId);
                  	var atom = this.getUserData(nodeId);	//nodeid = label .. to be changed
                  	
                  	if(atom.getUserData('data') != undefined)
                  		info.data = atom.getUserData('data');
                  	
-                 	info.tree = this;
+                 	info.tree = this;	//this.getRoot();
                  	return info;
                  },
                  
@@ -685,6 +694,90 @@ qx.Class.define("qooxdoo.ui.Tree", {
 			        else{
 			        	return null;
 			        }
-                 }
+                 },
+                 
+                 createIndicator : function()
+                 {
+                   this.indicator = new qx.ui.core.Widget;
+                   this.indicator.setDecorator(new qx.ui.decoration.Single().set({
+                     top : [ 1, "solid", "#33508D" ]}));
+                   
+                   this.indicator.setHeight(0);
+                   this.indicator.setOpacity(0.5);
+                   this.indicator.setLayoutProperties({left: -1000, top: -1000});
+                   this.getApplicationRoot().add(this.indicator);
+                 },
+                 
+                 initializeDragAndDrop : function(){
+                   
+                	 this.setDraggable(true);
+                	 this.setDroppable(true);
+                  
+                	 this.addListener("dragstart", function(e) {
+                		 e.addAction("move");
+                	 });
+                   
+                	 this.addListener("dragend", function(e)	{
+                		// Move indicator away
+                	   this.indicator.setDomPosition(-1000, -1000);
+                	 });
+                   
+                	 this.addListener("drag", function(e){
+	                	var orig = e.getOriginalTarget();
+	                	
+	                	if (!qx.ui.core.Widget.contains(this, orig)) {
+	                		return;
+	                	}
+	
+	                	var origCoords = orig.getContainerLocation();
+	                		       
+        		        var nodeBounds = orig.getBounds();
+        		        this.indicator.setWidth(nodeBounds.width);
+        		        this.indicator.setDomPosition(origCoords.left, origCoords.top);
+                	 });
+                   
+                	 var ele = this.getItems();
+                	 var l = ele.length;
+                	 var flag = false;
+
+                	 this.addListener("dragover", function(e)	{
+                		 // Stop when the dragging comes from outside
+                		 if (e.getRelatedTarget()) {
+                			 e.preventDefault();
+                		 }
+                     
+                		 var n = e.getOriginalTarget();
+                		 //check if n is tree folder and file and not label
+                     
+                		 if( n == ele[l-1])
+                			 flag = !flag;
+                	 });
+
+                	 this.addListener("drop", function(e)	{
+                		 //Also works but new src is simplier as its directly from tree
+                		 //var sel = this.getSortedSelection();
+                		 //var src = sel[0];
+                     
+                		 var src = this.getSelectedItem();
+                		 var dest = null;
+                     
+                		 if(flag)
+                			 dest = ele[l-1];
+                		 else 
+                			 dest = e.getOriginalTarget();
+                     
+                		 //alert(dest.getLabel());
+                     
+                		 var p1 = src.getParent();
+                		 var p2 = dest.getParent();
+                    
+                		 if(p1 == p2){
+                			 if(dest instanceof qx.ui.tree.TreeFolder){
+                				 p2.remove(src);
+                				 p2.addBefore(src, dest);
+                			 }
+                		 } 
+                   });
+                 }    
           }
 });

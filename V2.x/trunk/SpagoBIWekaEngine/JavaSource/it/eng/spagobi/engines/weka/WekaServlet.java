@@ -267,11 +267,13 @@ public class WekaServlet extends HttpServlet {
 
 		logger.info(":service:reading template file ...");
 		
-		String userId=(String)params.get("userId");
-		logger.debug("User ID ="+userId);
+		IEngUserProfile profile = (IEngUserProfile) request.getSession().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
+		//String userId=(String)params.get("userId");
+		//logger.debug("User ID ="+userId);
 		
 		// creo il proxy per invocare il servizio degli eventi...
-		eventService=new EventServiceProxy(userId,request.getSession());
+		eventService=new EventServiceProxy((String)profile.getUserUniqueIdentifier(),request.getSession());
 		
 		File file = null;
 		String message = null;
@@ -280,12 +282,12 @@ public class WekaServlet extends HttpServlet {
 		auditAccessUtils = (AuditAccessUtils) request.getSession()
 				.getAttribute("SPAGOBI_AUDIT_UTILS");
 		
-		IEngUserProfile profile = (IEngUserProfile) request.getSession().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		
 		
 		//usa il profilo per prendere la connessione
 		Connection con = getConnection(request.getSession(),(String)profile.getUserUniqueIdentifier(),(String)params.get("document"));
 		try {
-			ContentServiceProxy contentProxy=new ContentServiceProxy(userId,request.getSession());
+			ContentServiceProxy contentProxy=new ContentServiceProxy((String)profile.getUserUniqueIdentifier(),request.getSession());
 			HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters(request);
 			Content template=contentProxy.readTemplate( (String)params.get("document"),requestParameters);
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();

@@ -7,7 +7,7 @@
         <id name="presentationId" type="integer">
             <column name="PRESENTATION_ID" />
             <generator class="native">
-           		<param name="sequence">sbi_dossier_presentations_seq</param>
+           		<param name="sequence">SBI_DOSSIER_PRES_SEQ</param>
             </generator>
         </id>
         <many-to-one name="sbiObject" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects" >

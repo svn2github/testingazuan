@@ -7,7 +7,6 @@ package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.common.EnginConf;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
@@ -20,23 +19,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 
@@ -191,10 +185,18 @@ public class JasperReportServlet extends HttpServlet {
 		auditAccessUtils.updateAudit(session,(String) profile.getUserUniqueIdentifier(), auditId, null, new Long(System
 			.currentTimeMillis()), "EXECUTION_FAILED", e.getMessage(), null);
 	    return;
+	} finally {
+		try {			
+			if (con != null && !con.isClosed()) 
+					con.close();
+		} catch (SQLException sqle) {
+			logger.error("Error closing connection",sqle);
+		}
+		monitor.stop();
+		logger.debug("OUT: Request processed");
 	}
 
-	monitor.stop();
-	logger.debug("Request processed");
+
     }
 
     /**

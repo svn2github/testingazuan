@@ -346,10 +346,10 @@ public class JasperReportRunner {
 			logger.debug("Report exported succesfully");
 
 
-		}catch(Throwable e){
+		} catch(Throwable e) {
 			logger.error("An exception has occured", e);
 			throw new Exception(e);
-		}finally{	  
+		} finally {
 			// delete tmp dir for dynamic template management
 			File tmpDir = getJRTempDir(servletContext, executionId);
 			//File tmpDir = getJRTempDir(servletContext, executionId).getParentFile();			
@@ -357,14 +357,9 @@ public class JasperReportRunner {
 			logger.debug("Delating temporary directory: " + tmpDir);
 
 			monitor.stop();
+			logger.debug("OUT");
 		}
-
-		try{			
-			if ((conn != null) && (!conn.isClosed())) conn.close();
-		}catch(SQLException sqle){
-			logger.error("SQLException",sqle);
-		}
-		logger.debug("OUT");
+		
 	}
 
 

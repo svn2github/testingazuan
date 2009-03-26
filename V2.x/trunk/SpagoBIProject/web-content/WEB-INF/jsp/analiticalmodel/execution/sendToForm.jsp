@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@page import="java.util.Enumeration"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+<%@page import="it.eng.spagobi.services.common.SsoServiceInterface"%>
 
 <STYLE>
 	
@@ -246,7 +247,7 @@ function sendTo() {
 	while(parKeys.hasMoreElements()) {
 		String parkey = parKeys.nextElement().toString();
 		if (parkey.equals("ACTION_NAME")) continue;
-		if (parkey.equalsIgnoreCase("userid")) continue;
+		if (parkey.equalsIgnoreCase(SsoServiceInterface.USER_ID)) continue;
 		String parvalue = request.getParameter(parkey);
 		%>
 		pars += "&<%=parkey%>=<%=parvalue%>";

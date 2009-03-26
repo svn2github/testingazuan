@@ -531,6 +531,7 @@ public class DossierCollaborationModule extends AbstractModule {
 	
 	private void openNoteEditorHandler(SourceBean request, SourceBean response) {
 		JbpmContext jbpmContext = null;
+		logger.debug("IN");
 		try {
 			// recover task instance and variables
 			String activityKey = (String)request.getAttribute("activityKey");
@@ -563,6 +564,7 @@ public class DossierCollaborationModule extends AbstractModule {
 	    	if (jbpmContext != null) {
 	    		jbpmContext.close();
 	    	}
+	    	logger.debug("OUT");
 		}
 	    
 	}
@@ -646,8 +648,11 @@ public class DossierCollaborationModule extends AbstractModule {
 			
 		} catch(Exception e){
 			logger.error("Error while saving notes", e);
+		} finally {
+	    	if (jbpmContext != null) {
+	    		jbpmContext.close();
+	    	}
 		}
-	    
 	}
 
 }

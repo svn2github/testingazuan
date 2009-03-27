@@ -77,7 +77,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			if (tx != null)
 				tx.rollback();
-
+			logger.error(he);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 10101);
 
 		} finally {
@@ -111,7 +111,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			if (tx != null)
 				tx.rollback();
-
+			logger.error(he);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 10101);
 
 		} finally {
@@ -462,7 +462,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			if (tx != null)
 				tx.rollback();
-
+			logger.error(he);
 		} finally {
 			if (aSession != null) {
 				if (aSession.isOpen())
@@ -959,7 +959,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			if (tx != null)
 				tx.rollback();
-
+			logger.error(he);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 10115);
 
 		} finally {
@@ -1013,7 +1013,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			if (tx != null)
 				tx.rollback();
-
+			logger.error(he);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 10108);
 
 		} finally {
@@ -1085,7 +1085,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 			if (tx != null)
 				tx.rollback();
-
+            logger.error(he);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 10108);
 
 		} finally {

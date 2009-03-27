@@ -99,8 +99,10 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     private IEngUserProfile profile=null;
 
     protected HashMap parametersObject;
+    
+    protected boolean closed_tree  = false;// true if the kpi tree has to start closed
 
-    protected boolean display_semaphore = false;// true if the semaphore will be
+    protected boolean display_semaphore = true;// true if the semaphore will be
 						// displayed
     protected boolean display_bullet_chart = false;// true if the bullet chart
 						    // will be displayed
@@ -423,6 +425,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		response.setAttribute("display_alarm", display_alarm);
 		response.setAttribute("display_semaphore", display_semaphore);
 		response.setAttribute("display_weight", display_weight);
+		response.setAttribute("closed_tree", closed_tree);
 		response.setAttribute("show_axis", show_axis);
 		if (name != null) {
 		    response.setAttribute("title", name);
@@ -1065,6 +1068,15 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		String valueParam = (String) param.getAttribute("value");
 		dataParameters.put(nameParam, valueParam);
 	    }
+	    
+	    closed_tree = true;
+	    if (dataParameters.get("closed_tree") != null
+		    && !(((String) dataParameters.get("closed_tree")).equalsIgnoreCase(""))) {
+		String leg = (String) dataParameters.get("closed_tree");
+		if (leg.equalsIgnoreCase("false"))
+			closed_tree = false;
+	    }
+	    this.confMap.put("closed_tree", closed_tree);
 
 	    display_semaphore = true;
 	    if (dataParameters.get("display_semaphore") != null

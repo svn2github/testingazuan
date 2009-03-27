@@ -139,6 +139,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div class="kpi_subtitle_section"><%=subTitle%></div>
 		
 		<%}
+		Boolean closed_tree = (Boolean)sbModuleResponse.getAttribute("closed_tree");	
 		Boolean display_bullet_chart = (Boolean)sbModuleResponse.getAttribute("display_bullet_chart");	
 		Boolean display_alarm = (Boolean)sbModuleResponse.getAttribute("display_alarm");
 		Boolean display_semaphore = (Boolean)sbModuleResponse.getAttribute("display_semaphore");
@@ -237,7 +238,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			 <%=scriptDiv%>
 			 <%=scriptViewAll%>
 			 <%=scriptHideAll%>
-			  <%=scriptHideOnLoad%>
+			
+			<%  if (closed_tree){ %>
+				 <%=scriptHideOnLoad%>
+			<%  } %>
+			  
 			 <script>
 			 function showLegendTooltip(thresholds,id){
 					 element =  document.getElementById(id);

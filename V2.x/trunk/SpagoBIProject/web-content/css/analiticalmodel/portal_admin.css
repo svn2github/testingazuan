@@ -98,6 +98,7 @@ Section: Main Contents
   overflow: auto;
   border-bottom: 2px solid #9a9a9a;
   margin: 2px;
+  width: 100%;
 }
 
 .slider_header {

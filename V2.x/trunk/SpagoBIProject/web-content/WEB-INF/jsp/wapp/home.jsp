@@ -331,13 +331,37 @@ else {
   	
   	
 	<%//loading menu on TOP (max 4 levels)
+	String userName = ((UserProfile)userProfile).getUserName().toString();
+	int lenghtUserName = userName.length()+10;
+	int lenghtUserNameInPixel = lenghtUserName*5;
 	if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)) {
 	%>
 	Ext.onReady(function(){  	
 		Ext.QuickTips.init();
 		//MENU MANAGEMENT
+		var width = 1024;
+		
+		if (isMoz()) {
+	      	width = document.documentElement.clientWidth;
+	  	} else {
+	     	width = document.body.clientWidth;
+  		}
+		
 		var tb = new Ext.Toolbar();			
 		tb.render('menubar');
+		var tb2 = new Ext.Toolbar();	
+		var tb3 = new Ext.Toolbar();	
+		var secondToolbar = false ;
+		var thirdToolbar = false ;
+		
+		var menulenght = <%=lenghtUserNameInPixel%> + 50;
+        var k = 0;
+        var menuArray2 = new Array();
+        var menulenght2 = 0;
+        var k2 = 0;
+        var menuArray3 = new Array();
+        var menulenght3 = 0;
+        var k3 = 0;
 			
 		<%
 		//if the user is a final user, the menu is created and putted into the response with other informations like the type of layout,
@@ -516,69 +540,224 @@ else {
 				         ]
 					});		
 					menu<%=i%>.addListener('mouseexit', function() {menu<%=i%>.hide();});
-				<%
-				if(first==true){
-				first=false;
-				}
-				else{
-				%>
-					tb.addSeparator();
-				<%
-				}
 				
-						%>
 					
 					
 					<%if(menuElem.getHasChildren()){%>
+					
+					var temp = menu<%=i%>.getEl().getWidth() ;
+					
+					menulenght = menulenght + temp ;
+					
+					 if((menulenght)< width ){
+					    
+						tb.add(
+							new Ext.Toolbar.MenuButton({
+								id:'<%=menuElem.getMenuId()%>',
+					            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
+								<%String icon=DetailMenuModule.assignImage(menuElem);
+								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
+									icon: '<%=contextName%><%=icon%>',
+								<%}%>
+								path: '<%=path%>',					            
+					            <% if(menuElem.getObjId()!=null) { %>
+					            	handler: execDirectDoc,
+								<% } else if(menuElem.getStaticPage()!=null) { %>
+					            	handler: readHtmlFile,
+								<% } else if(menuElem.getFunctionality()!=null) { %>
+									url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
+					            	handler: getFunctionality,
+								<% } %>
+								<%if (menuElem.getHasChildren()) { %>
+					            	menu: menu<%=i%>,
+					            <% } %>
+					            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
+					        })					    				        				
+						);	
 						
-					tb.add(
-						new Ext.Toolbar.MenuButton({
-							id:'<%=menuElem.getMenuId()%>',
-				            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
-							<%String icon=DetailMenuModule.assignImage(menuElem);
-							if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
-								icon: '<%=contextName%><%=icon%>',
-							<%}%>
-							path: '<%=path%>',					            
-				            <% if(menuElem.getObjId()!=null) { %>
-				            	handler: execDirectDoc,
-							<% } else if(menuElem.getStaticPage()!=null) { %>
-				            	handler: readHtmlFile,
-							<% } else if(menuElem.getFunctionality()!=null) { %>
-								url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
-				            	handler: getFunctionality,
-							<% } %>
-							<%if (menuElem.getHasChildren()) { %>
-				            	menu: menu<%=i%>,
-				            <% } %>
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
-				        })					    				        				
-					);				
+						tb.addSeparator();
+						
+					}else{
+					    
+					    menulenght2 = menulenght2 + temp ;
+          			    
+					    if (!secondToolbar){
+					        		
+	      					 tb2.render('menubar');
+					         secondToolbar = true ;
+					    }
+					     if((menulenght2)< width ){
+					     
+					    tb2.add(
+							new Ext.Toolbar.MenuButton({
+								id:'<%=menuElem.getMenuId()%>',
+					            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
+								<%String icon2=DetailMenuModule.assignImage(menuElem);
+								if(menuElem.isViewIcons() && !icon2.equalsIgnoreCase("")){%>
+									icon: '<%=contextName%><%=icon2%>',
+								<%}%>
+								path: '<%=path%>',					            
+					            <% if(menuElem.getObjId()!=null) { %>
+					            	handler: execDirectDoc,
+								<% } else if(menuElem.getStaticPage()!=null) { %>
+					            	handler: readHtmlFile,
+								<% } else if(menuElem.getFunctionality()!=null) { %>
+									url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
+					            	handler: getFunctionality,
+								<% } %>
+								<%if (menuElem.getHasChildren()) { %>
+					            	menu: menu<%=i%>,
+					            <% } %>
+					            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
+					        })					    				        				
+						);	
+						
+						tb2.addSeparator();
+						
+						}else{
+							menulenght3 = menulenght3 + temp ;
+          			    
+						    if (!thirdToolbar){
+						        		
+		      					 tb3.render('menubar');
+						         thirdToolbar = true ;
+						    }
+						     if((menulenght3)< width ){
+						     
+								    tb3.add(
+									new Ext.Toolbar.MenuButton({
+										id:'<%=menuElem.getMenuId()%>',
+							            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
+										<%String icon3=DetailMenuModule.assignImage(menuElem);
+										if(menuElem.isViewIcons() && !icon3.equalsIgnoreCase("")){%>
+											icon: '<%=contextName%><%=icon3%>',
+										<%}%>
+										path: '<%=path%>',					            
+							            <% if(menuElem.getObjId()!=null) { %>
+							            	handler: execDirectDoc,
+										<% } else if(menuElem.getStaticPage()!=null) { %>
+							            	handler: readHtmlFile,
+										<% } else if(menuElem.getFunctionality()!=null) { %>
+											url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
+							            	handler: getFunctionality,
+										<% } %>
+										<%if (menuElem.getHasChildren()) { %>
+							            	menu: menu<%=i%>,
+							            <% } %>
+							            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
+								        })					    				        				
+									);	
+									
+									tb3.addSeparator();
+						     
+						     }	
+						}
+					
+					}		
 				<%}
 					else{%>
-			    		tb.add(
-						new Ext.Toolbar.Button({
-							id:'<%=menuElem.getMenuId()%>',
-				            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
-							<%String icon=DetailMenuModule.assignImage(menuElem);
-							if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
-								icon: '<%=contextName%><%=icon%>',
-							<%}%>
-							path: '<%=path%>',					            												            
-				            <% if(menuElem.getObjId()!=null) { %>
-				            	handler: execDirectDoc,
-							<% } else if(menuElem.getStaticPage()!=null) { %>
-				            	handler: readHtmlFile,
-							<% } else if(menuElem.getFunctionality()!=null) { %>
-								url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
-				            	handler: getFunctionality,
-							<% } %>
-							<%if (menuElem.getHasChildren()) { %>
-				            	menu: menu<%=i%>, 	  
-				            <% } %>
-				            cls: 'x-btn-menubutton x-btn-text-icon bmenu'
-				        })					    				        				
-					);	
+					    
+					    menulenght = menulenght + menu<%=i%>.getEl().getWidth();
+					    
+					    if((menulenght)< width ){
+					    		tb.add(
+								new Ext.Toolbar.Button({
+									id:'<%=menuElem.getMenuId()%>',
+						            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
+									<%String icon=DetailMenuModule.assignImage(menuElem);
+									if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
+										icon: '<%=contextName%><%=icon%>',
+									<%}%>
+									path: '<%=path%>',					            												            
+						            <% if(menuElem.getObjId()!=null) { %>
+						            	handler: execDirectDoc,
+									<% } else if(menuElem.getStaticPage()!=null) { %>
+						            	handler: readHtmlFile,
+									<% } else if(menuElem.getFunctionality()!=null) { %>
+										url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
+						            	handler: getFunctionality,
+									<% } %>
+									<%if (menuElem.getHasChildren()) { %>
+						            	menu: menu<%=i%>, 	  
+						            <% } %>
+						            cls: 'x-btn-menubutton x-btn-text-icon bmenu'
+						        })					    				        				
+							);
+							tb.addSeparator();
+							
+						}else{
+						     menulenght2 = menulenght2 + menu<%=i%>.getEl().getWidth();
+          			    	 
+							 if (!secondToolbar){
+					        		
+		      					 tb2.render('menubar');
+						         secondToolbar = true ;
+					    	}
+						    if((menulenght2)< width ){
+							tb2.add(
+									new Ext.Toolbar.Button({
+										id:'<%=menuElem.getMenuId()%>',
+							            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
+										<%String icon2=DetailMenuModule.assignImage(menuElem);
+										if(menuElem.isViewIcons() && !icon2.equalsIgnoreCase("")){%>
+											icon: '<%=contextName%><%=icon2%>',
+										<%}%>
+										path: '<%=path%>',					            												            
+							            <% if(menuElem.getObjId()!=null) { %>
+							            	handler: execDirectDoc,
+										<% } else if(menuElem.getStaticPage()!=null) { %>
+							            	handler: readHtmlFile,
+										<% } else if(menuElem.getFunctionality()!=null) { %>
+											url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
+							            	handler: getFunctionality,
+										<% } %>
+										<%if (menuElem.getHasChildren()) { %>
+							            	menu: menu<%=i%>, 	  
+							            <% } %>
+							            cls: 'x-btn-menubutton x-btn-text-icon bmenu'
+							        })					    				        				
+								);
+								tb2.addSeparator();
+								}else{
+									menulenght3 = menulenght3 + temp ;
+		          			    
+								    if (!thirdToolbar){
+								        		
+				      					 tb3.render('menubar');
+								         thirdToolbar = true ;
+								    }
+								     if((menulenght3)< width ){
+								     
+										    tb3.add(
+											new Ext.Toolbar.MenuButton({
+												id:'<%=menuElem.getMenuId()%>',
+									            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
+												<%String icon3=DetailMenuModule.assignImage(menuElem);
+												if(menuElem.isViewIcons() && !icon3.equalsIgnoreCase("")){%>
+													icon: '<%=contextName%><%=icon3%>',
+												<%}%>
+												path: '<%=path%>',					            
+									            <% if(menuElem.getObjId()!=null) { %>
+									            	handler: execDirectDoc,
+												<% } else if(menuElem.getStaticPage()!=null) { %>
+									            	handler: readHtmlFile,
+												<% } else if(menuElem.getFunctionality()!=null) { %>
+													url: "<%=DetailMenuModule.findFunctionalityUrl(menuElem, contextName)%>",
+									            	handler: getFunctionality,
+												<% } %>
+												<%if (menuElem.getHasChildren()) { %>
+									            	menu: menu<%=i%>,
+									            <% } %>
+									            cls: 'x-btn-menubutton x-btn-text-icon bmenu '
+										        })					    				        				
+											);	
+											
+											tb3.addSeparator();
+								     
+								     }	
+								}
+						
+						}
 			    	
 						
 		<%				
@@ -594,8 +773,15 @@ else {
 		
 		<% } %>
 		
+		
 		tb.addFill();
-			
+		
+		if(secondToolbar){ 
+			tb2.addFill();
+	    } 
+	    if(thirdToolbar){ 
+			tb3.addFill();
+	    } 
 		tb.add(
 			new Ext.Toolbar.TextItem({
 				text: '<spagobi:message key="menu.welcome" />: <b><%= ((UserProfile)userProfile).getUserName().toString() %></b>&nbsp;&nbsp;&nbsp;'

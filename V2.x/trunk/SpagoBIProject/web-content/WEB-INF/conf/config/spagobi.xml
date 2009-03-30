@@ -129,6 +129,12 @@
   	 
     <!--  Date visual format if language is not found-->      	 
   	<DATE-FORMAT format="dd/MM/yyyy"/>
+
+     <THEMES>
+		<THEME name="sbi_default" default="true" view_name="default" ext_theme="xtheme-gray.css" /> 
+	<!-- <THEME name="other_theme" default="false" view_name="other" />  -->	
+	 </THEMES>
+
      
      <LOOKUP numberRows = "20" />
 

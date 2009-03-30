@@ -60,6 +60,7 @@ import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.SpagoBISessionContainer;
 import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -107,8 +108,8 @@ public class ParametersGeneratorTag extends TagSupport {
 		return contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 	}
 
-	private String encodeURL(String relativePath) {
-		return urlBuilder.getResourceLink(httpRequest, relativePath);
+	private String encodeURL(String relativePath, String currTheme) {
+		return urlBuilder.getResourceLinkByTheme(httpRequest, relativePath, currTheme);
 	}
 
 	private UserProfile getProfile() {
@@ -140,6 +141,9 @@ public class ParametersGeneratorTag extends TagSupport {
 		contextManager = new CoreContextManager(new SpagoBISessionContainer(session), 
 				new LightNavigatorContextRetrieverStrategy(request));
 
+		String currTheme=ThemesManager.getCurrentTheme(requestContainer);
+		if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		ExecutionInstance instance = null;
 		try {
 			instance = getExecutionInstance();
@@ -199,13 +203,13 @@ public class ParametersGeneratorTag extends TagSupport {
 					}
 
 					createParameterLabelDiv(htmlStream, biparam);
-					String objParFatherLabel = createParameterInputboxDiv(biparam, htmlStream);
+					String objParFatherLabel = createParameterInputboxDiv(biparam, htmlStream, currTheme);
 
 					if (objParFatherLabel != null) {
 						String correlation = msgBuilder.getMessage(
 								"SBIDev.docConf.execBIObjectParams.correlatedParameter", "messages", httpRequest);
 						correlation += " " + objParFatherLabel;
-						htmlStream.append("		<img style='text-decoration:none' src= '" + encodeURL("/img/parCorrelation.gif") + "' ");
+						htmlStream.append("		<img style='text-decoration:none' src= '" + encodeURL("/img/parCorrelation.gif", currTheme) + "' ");
 						htmlStream.append("		 title='" + correlation + "' alt='" + correlation + "' />");
 					}
 					htmlStream.append("		</div>\n");
@@ -708,7 +712,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	 *                The buffer containing all html code
 	 * @return The label of the BIObjectParameter of dependancy, if any
 	 */
-	private String createParameterInputboxDiv(BIObjectParameter biparam, StringBuffer htmlStream) {
+	private String createParameterInputboxDiv(BIObjectParameter biparam, StringBuffer htmlStream, String currTheme) {
 		logger.debug("IN");
 		String objParFathLbl = null;
 
@@ -730,7 +734,7 @@ public class ParametersGeneratorTag extends TagSupport {
 
 		if (typeCode.equalsIgnoreCase(SpagoBIConstants.INPUT_TYPE_MAN_IN_CODE)) {
 			if (parType.equals("DATE")){
-				createDataInputButton(biparam, htmlStream, lblBiParamDependent);
+				createDataInputButton(biparam, htmlStream, lblBiParamDependent, currTheme);
 			}else{
 				createHTMLManInputButton(biparam, htmlStream, lblBiParamDependent);
 			}
@@ -762,15 +766,15 @@ public class ParametersGeneratorTag extends TagSupport {
 		} else if (selectionType.equalsIgnoreCase("RADIOBUTTON")) {
 			createHTMLRadioButton(biparam, htmlStream);
 		} else if (selectionType.equalsIgnoreCase("LIST")) {
-			createHTMLListButton(biparam, false, htmlStream, lblBiParamDependent);
+			createHTMLListButton(biparam, false, htmlStream, lblBiParamDependent, currTheme);
 		} else if (selectionType.equalsIgnoreCase("CHECK_LIST")) {
-			createHTMLListButton(biparam, false, htmlStream, lblBiParamDependent);
+			createHTMLListButton(biparam, false, htmlStream, lblBiParamDependent, currTheme);
 		}
 		logger.debug("OUT");
 		return objParFathLbl;
 	}
 
-	private void createDataInputButton(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent) {
+	private void createDataInputButton(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent, String currTheme) {
 		logger.debug("IN");
 
 		SessionContainer permSess= requestContainer.getSessionContainer().getPermanentContainer();
@@ -817,7 +821,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		htmlStream.append("}\n");
 		htmlStream.append("</script>\n");
 		
-		htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLink(httpRequest, "/js/dojo/dojo.js" )+ "'></script>"
+		htmlStream.append("<script type='text/javascript' src='" + urlBuilder.getResourceLinkByTheme(httpRequest, "/js/dojo/dojo.js", currTheme)+ "'></script>"
 				+ "<script type='text/javascript'>"
 				+ " dojo.require('dojo.widget.DropdownDatePicker');"
 				+ " var isInit" + biparam.getParameterUrlName() + requestIdentity + " = true;"
@@ -858,7 +862,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	}
 
 	private void createHTMLListButton(BIObjectParameter biparam, boolean isReadOnly, StringBuffer htmlStream,
-			List lblBiParamDependent) {
+			List lblBiParamDependent, String currTheme) {
 
 		String parameterId=biparam.getId().toString();
 		String parameterFieldName="par_"+parameterId+ biparam.getParameterUrlName();
@@ -935,7 +939,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		}
 		htmlStream.append("\" autocomplete='off'/>");
 		htmlStream.append("&nbsp;<a href='javascript:void(0);' id='"+id+"' style='text-decoration:none' >\n");
-		htmlStream.append("	<img src= '" + encodeURL("/img/detail.gif") + "' title='Lookup' alt='Lookup' />\n");
+		htmlStream.append("	<img src= '" + encodeURL("/img/detail.gif", currTheme) + "' title='Lookup' alt='Lookup' />\n");
 		htmlStream.append("</a>\n");
 
 		htmlStream.append("\n<script>\n");

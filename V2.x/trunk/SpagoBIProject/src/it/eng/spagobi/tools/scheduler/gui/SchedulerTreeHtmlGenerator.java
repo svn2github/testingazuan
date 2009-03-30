@@ -36,6 +36,7 @@ import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.tools.scheduler.to.JobInfo;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -63,6 +64,7 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 	JobInfo jobInfo = null;
 	List biobjIds = new ArrayList();
 	protected String requestIdentity = null;
+	protected String currTheme="";
 
 
 	/**
@@ -142,14 +144,18 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 		SessionContainer sessionContainer = reqCont.getSessionContainer();
 		jobInfo = (JobInfo)sessionContainer.getAttribute(SpagoBIConstants.JOB_INFO); 
 		biobjIds = jobInfo.getBiobjectIds();
+		
+    	currTheme=ThemesManager.getCurrentTheme(reqCont);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
         StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
+		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/css/dtree.css",currTheme )+"' type='text/css' />");
 		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");		
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/dtree.js",currTheme )+"'></SCRIPT>");		
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/contextMenu.js",currTheme )+"'></SCRIPT>");
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr height='1px'>");
 		htmlStream.append("		<td width='10px'>&nbsp;</td>");
@@ -160,7 +166,12 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td id='treeSchedulerObjTd" + requestIdentity + "' name='treeSchedulerObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeCMS';\n");
-	   	htmlStream.append("				treeCMS = new dTree('treeCMS', '" + httpRequest.getContextPath() + "');\n");
+		String context=httpRequest.getContextPath();
+		if (!(context.charAt(context.length() - 1) == '/')) {
+			context += '/';
+		}	   	
+		context+="themes/"+currTheme+"/";
+	   	htmlStream.append("				treeCMS = new dTree('treeCMS', '" + context + "');\n");
 	   	htmlStream.append("	        	treeCMS.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
@@ -198,8 +209,8 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 			htmlStream.append("	treeCMS.add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 		} else {
 			if(codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
-				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
-				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+				String imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolder.gif",currTheme);
+				String imgFolderOp = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderopen.gif",currTheme);
 				htmlStream.append("	treeCMS.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
@@ -212,10 +223,10 @@ public class SchedulerTreeHtmlGenerator implements ITreeHtmlGenerator {
 					}
 					String biObjType = obj.getBiObjectTypeCode();
 					String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
-					String userIcon = urlBuilder.getResourceLink(httpRequest, imgUrl);
+					String userIcon = urlBuilder.getResourceLinkByTheme(httpRequest, imgUrl,currTheme);
 					String biObjState = obj.getStateCode();
 					String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
-					String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
+					String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl,currTheme);
 					Integer idObj = obj.getId();					
 					String stateObj = obj.getStateCode();
 					if(stateObj.equalsIgnoreCase("REL")) {

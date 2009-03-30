@@ -73,7 +73,7 @@ public class ListBIParametersTag extends ListTag
 				}
 				htmlStream.append("	  <input type='hidden' name='"+paramKey+"' value='"+paramValue+"' /> \n");
 			}
-			htmlStream.append("		<a href='javascript:document.getElementById(\"form"+label+"\").submit()'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
+			htmlStream.append("		<a href='javascript:document.getElementById(\"form"+label+"\").submit()'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' /></a>\n");
 			htmlStream.append("	</td>\n");
 			htmlStream.append("</form>\n");
 		}	

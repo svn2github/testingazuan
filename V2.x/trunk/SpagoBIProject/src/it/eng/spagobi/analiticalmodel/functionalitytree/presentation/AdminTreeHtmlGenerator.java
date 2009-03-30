@@ -39,6 +39,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,6 +67,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	protected int dTreeObjects = -1000;
 	protected int dMyFolderId = -50;
 	private boolean privateFolderCreated=false;
+	protected String currTheme="";
 	
 	protected String requestIdentity = null;
 	private String treeName = "treeAdminObj";
@@ -215,7 +217,7 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
 
 		logger.debug("IN");
-		// identity string for object of the page
+// identity string for object of the page
 		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 		UUID uuid = uuidGen.generateTimeBasedUUID();
 		requestIdentity = uuid.toString();
@@ -226,13 +228,17 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		SessionContainer sessionContainer = reqCont.getSessionContainer();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+		
+    	currTheme=ThemesManager.getCurrentTheme(reqCont);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
+		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/css/dtree.css", currTheme )+"' type='text/css' />");
 		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");		
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/dtree.js", currTheme )+"'></SCRIPT>");		
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/contextMenu.js", currTheme )+"'></SCRIPT>");
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr height='1px'>");
 		htmlStream.append("		<td width='10px'>&nbsp;</td>");
@@ -244,7 +250,14 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 		//htmlStream.append("				var nameTree = 'treeCMS';\n");
 		//htmlStream.append("				treeCMS = new dTree('treeCMS');\n");
-		htmlStream.append("				" + treeName + " = new dTree('" + treeName + "', '" + httpRequest.getContextPath() + "');\n");
+	
+		String context=httpRequest.getContextPath();
+		if (!(context.charAt(context.length() - 1) == '/')) {
+			context += '/';
+		}
+		context+="themes/"+currTheme+"/";
+		
+		htmlStream.append("				" + treeName + " = new dTree('" + treeName + "', '" + context + "');\n");
 		htmlStream.append("	        	" + treeName + ".add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 		Iterator it = objectsList.iterator();
 		while (it.hasNext()) {
@@ -293,18 +306,18 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 				htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '', '', 'true');\n");
 			}
 			else{
-				String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
-				String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+				String imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolder.gif", currTheme );
+				String imgFolderOp = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderopen.gif", currTheme);
 				htmlStream.append(treeName + ".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
 				List objects = folder.getBiObjects();
 				for (Iterator it = objects.iterator(); it.hasNext(); ) {
 					BIObject obj = (BIObject) it.next();
 					String biObjType = obj.getBiObjectTypeCode();
 					String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
-					String userIcon = urlBuilder.getResourceLink(httpRequest, imgUrl);
+					String userIcon = urlBuilder.getResourceLinkByTheme(httpRequest, imgUrl, currTheme);
 					String biObjState = obj.getStateCode();
 					String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
-					String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
+					String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl, currTheme);
 					Integer idObj = obj.getId();		
 					String prog = idObj.toString();
 					String localizedName=msgBuilder.getUserMessage(obj.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, httpRequest);
@@ -328,8 +341,8 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 				privateFolderCreated=true;
 				htmlStream.append(treeName + ".add(" + dMyFolderId + ", " + dTreeRootId + ",'" + "Personal Folders" + "', '', '', '', '', '', 'true');\n");
 			}
-			String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolderuser.gif");
-			String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopenuser.gif");
+			String imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderuser.gif", currTheme);
+			String imgFolderOp = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderopenuser.gif", currTheme);
 			htmlStream.append(treeName + ".add(" + idFolder + ", " + dMyFolderId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', 'true');\n");
 
 			List objects = folder.getBiObjects();
@@ -337,10 +350,10 @@ public class AdminTreeHtmlGenerator implements ITreeHtmlGenerator {
 				BIObject obj = (BIObject) it.next();
 				String biObjType = obj.getBiObjectTypeCode();
 				String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
-				String userIcon = urlBuilder.getResourceLink(httpRequest, imgUrl);
+				String userIcon = urlBuilder.getResourceLinkByTheme(httpRequest, imgUrl, currTheme);
 				String biObjState = obj.getStateCode();
 				String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
-				String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
+				String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl, currTheme);
 				Integer idObj = obj.getId();		
 				String prog = idObj.toString();
 				String localizedName=msgBuilder.getUserMessage(obj.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, httpRequest);

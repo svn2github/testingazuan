@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.commons.utilities.urls;
 
+import it.eng.spago.configuration.ConfigSingleton;
+
+import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -120,6 +123,44 @@ public class PortletUrlBuilder implements IUrlBuilder{
 		String newUrl = renderResponse.encodeURL(renderRequest.getContextPath() + "/" + urlToConvert).toString();
 		logger.debug("OUT");
 		return newUrl;
+	}
+	
+	
+	
+	public String getResourceLinkByTheme(HttpServletRequest aHttpServletRequest, String originalUrl, String theme){
+		logger.debug("IN");
+		ConfigSingleton config = ConfigSingleton.getInstance();
+		String rootPath=config.getRootPath();
+		String urlByTheme=originalUrl;
+		originalUrl.trim();
+		if(originalUrl.startsWith("/"))
+			originalUrl=originalUrl.substring(1);
+
+		if(theme!=null)
+		{
+			urlByTheme="/themes/"+theme+"/"+originalUrl;
+		}
+
+		String urlComplete=rootPath+urlByTheme;
+		// check if object exists
+		File check=new File(urlComplete);
+		// if file
+		if(!check.exists())
+		{
+			urlByTheme="/themes/sbi_default/"+originalUrl;
+
+		// check if the default object exist
+		urlComplete=rootPath+urlByTheme;
+		File checkDef=new File(urlComplete);
+		// if file
+		if(!checkDef.exists())
+		{
+			urlByTheme=originalUrl;
+		}
+		}
+
+		logger.debug("OUT");
+		return getResourceLink(aHttpServletRequest, urlByTheme);
 	}
 
 }

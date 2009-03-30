@@ -3,7 +3,6 @@ package it.eng.spagobi.kpi.model.presentation;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -14,6 +13,7 @@ import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.kpi.model.bo.ModelInstance;
 import it.eng.spagobi.kpi.model.utils.DetailModelInstanceUtil;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,6 +28,7 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 	private RequestContainer reqCont;
 	private IMessageBuilder msgBuilder;
 	private Integer parentId;
+	protected String currTheme="";
 
 	public StringBuffer makeAccessibleTree(List objectsList,
 			HttpServletRequest httpRequest, String initialPath) {
@@ -46,6 +47,10 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+
+    	currTheme=ThemesManager.getCurrentTheme(reqCont);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		SessionContainer sessionContainer = reqCont.getSessionContainer();
 		SessionContainer permanentSession = sessionContainer
 				.getPermanentContainer();
@@ -53,16 +58,16 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 		StringBuffer htmlStream = new StringBuffer();
 
 		htmlStream.append("<LINK rel='StyleSheet' href='"
-				+ urlBuilder.getResourceLink(httpRequest, "/css/dtree.css")
+				+ urlBuilder.getResourceLinkByTheme(httpRequest, "/css/dtree.css",currTheme)
 				+ "' type='text/css' />");
 		makeConfigurationDtree(htmlStream, httpRequest);
 
 		// String nameTree = getTreeName(objectsList);
 		htmlStream.append("<SCRIPT language='JavaScript' src='"
-				+ urlBuilder.getResourceLink(httpRequest, "/js/dtree.js")
+				+ urlBuilder.getResourceLinkByTheme(httpRequest, "/js/dtree.js",currTheme)
 				+ "'></SCRIPT>");
 		htmlStream.append("<SCRIPT language='JavaScript' src='"
-				+ urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js")
+				+ urlBuilder.getResourceLinkByTheme(httpRequest, "/js/contextMenu.js", currTheme)
 				+ "'></SCRIPT>");
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr height='1px'>");
@@ -74,8 +79,13 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 		htmlStream.append("		<td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 		htmlStream.append("				var nameTree = 'treeCMS';\n");
+		String context=httpRequest.getContextPath();
+		if (!(context.charAt(context.length() - 1) == '/')) {
+			context += '/';
+		}
+		context+="themes/"+currTheme+"/";
 		htmlStream.append("				treeCMS = new dTree('treeCMS','"
-				+ httpRequest.getContextPath() + "');\n");
+				+ context + "');\n");
 
 		addItems(htmlStream, objectsList, httpRequest, initialPath);
 
@@ -109,48 +119,47 @@ public class ModelInstanceStructureTreeHtmlGenerator implements
 		htmlStream.append("			}\n");
 		htmlStream.append("			this.icon = {\n");
 		htmlStream.append("				root		: '"
-				+ urlBuilder.getResourceLink(httpRequest, "/img/treebase.gif")
+				+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treebase.gif",currTheme)
 				+ "',\n");
 		htmlStream.append("				folder		: '"
 				+ urlBuilder
-						.getResourceLink(httpRequest, "/img/treefolder.gif")
+						.getResourceLinkByTheme(httpRequest, "/img/treefolder.gif",currTheme)
 				+ "',\n");
 		htmlStream.append("				folderOpen	: '"
-				+ urlBuilder.getResourceLink(httpRequest,
-						"/img/treefolderopen.gif") + "',\n");
+				+ urlBuilder.getResourceLinkByTheme(httpRequest,"/img/treefolderopen.gif",currTheme) + "',\n");
 		htmlStream.append("				node		: '"
-				+ urlBuilder.getResourceLink(httpRequest, "/img/treepage.gif")
+				+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treepage.gif",currTheme)
 				+ "',\n");
 		htmlStream.append("				empty		: '"
-				+ urlBuilder.getResourceLink(httpRequest, "/img/treeempty.gif")
+				+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treeempty.gif",currTheme)
 				+ "',\n");
 		htmlStream.append("				line		: '"
-				+ urlBuilder.getResourceLink(httpRequest, "/img/treeline.gif")
+				+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treeline.gif",currTheme)
 				+ "',\n");
 		htmlStream.append("				join		: '"
-				+ urlBuilder.getResourceLink(httpRequest, "/img/treejoin.gif")
+				+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treejoin.gif",currTheme)
 				+ "',\n");
 		htmlStream.append("				joinBottom	: '"
-				+ urlBuilder.getResourceLink(httpRequest,
-						"/img/treejoinbottom.gif") + "',\n");
+				+ urlBuilder.getResourceLinkByTheme(httpRequest,
+						"/img/treejoinbottom.gif",currTheme) + "',\n");
 		htmlStream.append("				plus		: '"
-				+ urlBuilder.getResourceLink(httpRequest, "/img/treeplus.gif")
+				+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treeplus.gif",currTheme)
 				+ "',\n");
 		htmlStream.append("				plusBottom	: '"
-				+ urlBuilder.getResourceLink(httpRequest,
-						"/img/treeplusbottom.gif") + "',\n");
+				+ urlBuilder.getResourceLinkByTheme(httpRequest,
+						"/img/treeplusbottom.gif",currTheme) + "',\n");
 		htmlStream.append("				minus		: '"
-				+ urlBuilder.getResourceLink(httpRequest, "/img/treeminus.gif")
+				+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treeminus.gif",currTheme)
 				+ "',\n");
 		htmlStream.append("				minusBottom	: '"
-				+ urlBuilder.getResourceLink(httpRequest,
-						"/img/treeminusbottom.gif") + "',\n");
+				+ urlBuilder.getResourceLinkByTheme(httpRequest,
+						"/img/treeminusbottom.gif",currTheme) + "',\n");
 		htmlStream.append("				nlPlus		: '"
-				+ urlBuilder.getResourceLink(httpRequest,
-						"/img/treenolines_plus.gif") + "',\n");
+				+ urlBuilder.getResourceLinkByTheme(httpRequest,
+						"/img/treenolines_plus.gif",currTheme) + "',\n");
 		htmlStream.append("				nlMinus		: '"
-				+ urlBuilder.getResourceLink(httpRequest,
-						"/img/treenolines_minus.gif") + "'\n");
+				+ urlBuilder.getResourceLinkByTheme(httpRequest,
+						"/img/treenolines_minus.gif",currTheme) + "'\n");
 		htmlStream.append("			};\n");
 		htmlStream.append("			this.obj = objName;\n");
 		htmlStream.append("			this.aNodes = [];\n");

@@ -21,8 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.importexport.services;
 
+import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
@@ -31,6 +33,7 @@ import it.eng.spagobi.tools.importexport.ImportUtilities;
 import it.eng.spagobi.tools.importexport.bo.AssociationFile;
 import it.eng.spagobi.tools.importexport.dao.AssociationFileDAO;
 import it.eng.spagobi.tools.importexport.dao.IAssociationFileDAO;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,9 +54,11 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 
     private HttpServletRequest httpRequest = null;
     private HttpServletResponse httpResponse = null;
+	protected RequestContainer reqCont = null;
     IMessageBuilder msgBuild = null;
     WebUrlBuilder urlBuilder = null;
     private Locale locale = null;
+    protected String currTheme="";
 
     static private Logger logger = Logger.getLogger(ManageImpExpAssAction.class);
 
@@ -66,9 +71,14 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 	    freezeHttpResponse();
 	    httpRequest = getHttpRequest();
 	    httpResponse = getHttpResponse();
+		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 	    msgBuild = MessageBuilderFactory.getMessageBuilder();
 	    urlBuilder = new WebUrlBuilder();
-		String language = httpRequest.getParameter("language");
+
+    	currTheme=ThemesManager.getCurrentTheme(reqCont);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+	    
+	    String language = httpRequest.getParameter("language");
 		String country = httpRequest.getParameter("country");
 		try {
 			locale = new Locale(language, country);
@@ -251,11 +261,11 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 
     private String generateHtmlJsCss() {
 	String html = "<LINK rel='StyleSheet' type='text/css' " + "      href='"
-		+ urlBuilder.getResourceLink(httpRequest, "css/spagobi_shared.css") + "' />";
+		+ urlBuilder.getResourceLinkByTheme(httpRequest, "css/spagobi_shared.css",currTheme) + "' />";
 	html += "<LINK rel='StyleSheet' type='text/css' " + "      href='"
-		+ urlBuilder.getResourceLink(httpRequest, "css/jsr168.css") + "' />";
+		+ urlBuilder.getResourceLinkByTheme(httpRequest, "css/jsr168.css",currTheme) + "' />";
 	html +=  "<script type=\"text/javascript\"		src=\"" 
-		+ urlBuilder.getResourceLink(httpRequest, "/js/prototype/javascripts/prototype.js") + "\"></script>";
+		+ urlBuilder.getResourceLinkByTheme(httpRequest, "/js/prototype/javascripts/prototype.js",currTheme) + "\"></script>";
 	return html;
     }
 
@@ -318,7 +328,7 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 		html += "			</div>\n";
 		html += "			<div class='div_form_field'>\n";
 		html += "				<a class='link_without_dec' href=\"javascript:checkIfExists()\">\n";
-		html += "					<img src= '"+urlBuilder.getResourceLink(httpRequest, "/img/Save.gif")+"' " +
+		html += "					<img src= '"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/Save.gif",currTheme)+"' " +
 				"                    	title='"+msgBuild.getMessage("impexp.save", "component_impexp_messages", locale)+"' " + 
 				" 					 	alt='"+msgBuild.getMessage("impexp.save", "component_impexp_messages", locale)+"' />\n";
 		html += "				</a>\n";	
@@ -419,13 +429,13 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 				downloadUrl += "&MESSAGE=DOWNLOAD_ASSOCIATION_FILE&ID="+assFile.getId();	
 				html += "<td class='"+rowClass+"'>\n";
 				html += "<a class='link_without_dec' href='"+eraseUrl+"' style='text-decoration:none;'>\n";		
-				html += "<img src='"+urlBuilder.getResourceLink(httpRequest, "/img/erase.gif")+"' \n" + 
+				html += "<img src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/erase.gif",currTheme)+"' \n" + 
 						"title='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages", locale)+"' \n" + 
 						"alt='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages", locale)+"' />\n";
 				html += "</a>\n";		
 				html += "&nbsp;&nbsp;\n";
 				html += "<a class='link_without_dec' href='"+downloadUrl+"' style='text-decoration:none;'>\n";
-				html += "<img src='"+urlBuilder.getResourceLink(httpRequest, "/img/down16.gif")+"' \n" + 
+				html += "<img src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/down16.gif",currTheme)+"' \n" + 
 						"title='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages", locale)+"' \n" + 
 						"alt='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages", locale)+"' />\n";
 				html += "</a>\n";		
@@ -433,7 +443,7 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 			} else if(modality.equals("SELECT") ) {
 				html += "<td class='"+rowClass+"'>\n";
 				html += "<a class='link_without_dec' href=\"javascript:parent.selectAssFile('"+assFile.getId()+"', '"+assFile.getName()+"')\">\n";
-				html += "<img src='"+urlBuilder.getResourceLink(httpRequest, "/img/button_ok.gif")+"' \n" + 
+				html += "<img src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/button_ok.gif",currTheme)+"' \n" + 
 				"title='"+msgBuild.getMessage("impexp.select", "component_impexp_messages", locale)+"' \n" + 
 				"alt='"+msgBuild.getMessage("mpexp.select", "component_impexp_messages", locale)+"' />\n";
 				html += "</a>\n";

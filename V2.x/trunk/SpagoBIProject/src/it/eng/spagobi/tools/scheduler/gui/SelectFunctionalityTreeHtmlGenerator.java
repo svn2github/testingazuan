@@ -34,6 +34,7 @@ import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.tools.scheduler.to.SaveInfo;
 import it.eng.spagobi.tools.scheduler.to.TriggerInfo;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -61,6 +62,7 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 	protected int dTreeObjects = -1000;
     List functIdsChecked = new ArrayList();
     protected String requestIdentity = null;
+    protected String currTheme="";
 
 
 	/**
@@ -129,6 +131,10 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		
+    	currTheme=ThemesManager.getCurrentTheme(reqCont);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		SessionContainer sessionContainer = reqCont.getSessionContainer();
 		TriggerInfo tInfo = (TriggerInfo)sessionContainer.getAttribute(SpagoBIConstants.TRIGGER_INFO);
 		String idObjStr = treename.substring(5);
@@ -148,11 +154,11 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
         StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
+		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/css/dtree.css",currTheme )+"' type='text/css' />");
 		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");		
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/dtree.js",currTheme )+"'></SCRIPT>");		
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/contextMenu.js",currTheme )+"'></SCRIPT>");
 		htmlStream.append("<table width='100%'>");
 		htmlStream.append("	<tr height='1px'>");
 		htmlStream.append("		<td width='10px'>&nbsp;</td>");
@@ -163,7 +169,12 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 		htmlStream.append("		<td id='treeSchedulerFoldersTd" + requestIdentity + "' name='treeSchedulerFoldersTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = '"+treename+"';\n");
-	   	htmlStream.append("				"+treename+" = new dTree('"+treename+"', '" + httpRequest.getContextPath() + "');\n");
+		String context=httpRequest.getContextPath();
+		if (!(context.charAt(context.length() - 1) == '/')) {
+			context += '/';
+		}	   	
+		context+="themes/"+currTheme+"/";
+	   	htmlStream.append("				"+treename+" = new dTree('"+treename+"', '" + context + "');\n");
 	   	htmlStream.append("	        	"+treename+".add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
@@ -208,8 +219,8 @@ public class SelectFunctionalityTreeHtmlGenerator implements ITreeHtmlGenerator 
 			if(functIdsChecked.contains(idFolder)){
 				checked = "true";
 			}
-			String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
-			String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+			String imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolder.gif",currTheme);
+			String imgFolderOp = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderopen.gif",currTheme);
 			htmlStream.append("	"+treename+".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '', '"+treename+"_funct_id', '"+idFolder+"', '"+checked+"');\n");
 		}
 	}

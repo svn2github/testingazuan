@@ -34,6 +34,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -50,6 +51,7 @@ public class JavaClassWizardTag extends CommonWizardLovTag {
 	protected IUrlBuilder urlBuilder = null;
     protected IMessageBuilder msgBuilder = null;
 	private String javaClassName;
+	private String currTheme="";
 	 String readonly = "readonly" ;
 	  boolean isreadonly = true ;
 	  String disabled = "disabled" ;
@@ -70,6 +72,10 @@ public class JavaClassWizardTag extends CommonWizardLovTag {
         SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
         SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
 		IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
+    	currTheme=ThemesManager.getCurrentTheme(requestContainer);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		boolean isable = false;
 		try {
 			isable = userProfile.isAbleToExecuteAction(SpagoBIConstants.LOVS_MANAGEMENT);
@@ -93,13 +99,13 @@ public class JavaClassWizardTag extends CommonWizardLovTag {
 		output.append("		<td class='titlebar_level_2_button_section'>\n");
 		output.append("			<a style='text-decoration:none;' href='javascript:opencloseJavaWizardInfo()'> \n");
 		output.append("				<img width='22px' height='22px'\n");
-		output.append("				 	 src='" + urlBuilder.getResourceLink(httpRequest, "/img/info22.jpg")+"'\n");
+		output.append("				 	 src='" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/info22.jpg",currTheme)+"'\n");
 		output.append("					 name='info'\n");
 		output.append("					 alt='"+msgBuilder.getMessage("SBIDev.javaClassWiz.SintaxLbl", "messages", httpRequest)+"'\n");
 		output.append("					 title='"+msgBuilder.getMessage("SBIDev.javaClassWiz.SintaxLbl", "messages", httpRequest)+"'/>\n");
 		output.append("			</a>\n");
 		output.append("		</td>\n");
-		String urlImgProfAttr = urlBuilder.getResourceLink(httpRequest, "/img/profileAttributes22.jpg");
+		String urlImgProfAttr = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/profileAttributes22.jpg",currTheme);
 		output.append(generateProfAttrTitleSection(urlImgProfAttr));
 		output.append("	</tr>\n");
 		output.append("</table>\n");

@@ -39,6 +39,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -88,6 +89,7 @@ public class CheckBoxTag extends TagSupport {
     protected String _firstUrl = null;
     protected String _lastUrl = null;
     protected String _lstElements = null;
+    private String currTheme="";
     
 	protected EMFErrorHandler _errorHandler = null;
     
@@ -120,6 +122,9 @@ public class CheckBoxTag extends TagSupport {
 		_serviceResponse = _responseContainer.getServiceResponse();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+
+    	currTheme=ThemesManager.getCurrentTheme(_requestContainer);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
 		
 		ConfigSingleton configure = ConfigSingleton.getInstance();
 		if (_actionName != null) {
@@ -337,10 +342,10 @@ public class CheckBoxTag extends TagSupport {
 			//_htmlStream.append("<TD class='portlet-section-header' valign='center' align='" + align + "'  >" + labelColumn + "</TD>\n");
 			_htmlStream.append("<TD class='portlet-section-header' valign='center' align='" + align + "'  >" + labelColumn + "\n");
 			_htmlStream.append("	<A href=\""+orderUrlAsc+"\">\n");
-			_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowUp.gif")+"'/>\n");
+			_htmlStream.append("		<img  src='"+urlBuilder.getResourceLinkByTheme(httpRequest,"/img/commons/ArrowUp.gif",currTheme )+"'/>\n");
 			_htmlStream.append("	</A>\n");
 			_htmlStream.append("	<A href=\""+orderUrlDesc+"\">\n");
-			_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowDown.gif")+"'/>\n");
+			_htmlStream.append("		<img  src='"+urlBuilder.getResourceLinkByTheme(httpRequest,"/img/commons/ArrowDown.gif",currTheme)+"'/>\n");
 			_htmlStream.append("	</A>\n");
 			 _htmlStream.append("</TD>\n");
 		} 
@@ -449,7 +454,7 @@ public class CheckBoxTag extends TagSupport {
 				}else{
 					_htmlStream.append("     <a href='"+buttonUrl+"'>\n");	
 				}
-				_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
+				_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' />\n");
 				_htmlStream.append("     </a>\n");
 				_htmlStream.append(" </td>\n");
 			}
@@ -563,7 +568,7 @@ public class CheckBoxTag extends TagSupport {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "firstPage" + "' " +					  
-					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png") + "' " + 
+					  "src ='"+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2leftarrow.png", currTheme) + "' " + 
 					  "align='right' border='0' " +
 					  "onClick='changePage(this.name)' "+
 					  "alt='" + "GO To First Page" + "'>\n");
@@ -571,17 +576,17 @@ public class CheckBoxTag extends TagSupport {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "prevPage" + "' " +					  
-					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png") + "' " + 
+					  "src ='"+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1leftarrow.png",currTheme) + "' " + 
 					  "align='right' border='0' " +
 					  "onClick='changePage(this.name)' " +
 					  "alt='" + "GO To Previous Page" + "'>\n");
 			_htmlStream.append("		</TD>\n");
 		} else {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2leftarrow.png",currTheme)+"' ALIGN=RIGHT border=0 />\n");				
 			_htmlStream.append("		</TD>\n");
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1leftarrow.png",currTheme)+"' ALIGN=RIGHT border=0 />\n");
 			_htmlStream.append("		</TD>\n");			
 		}	
 				
@@ -621,7 +626,7 @@ public class CheckBoxTag extends TagSupport {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "nextPage" + "' " +
-					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png") + "' " +
+					  "src ='"+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1rightarrow.png",currTheme) + "' " +
 					  "align='right' border='0' " +
 					  "onClick='changePage(this.name)'"+
 					  "alt='" + "GO To Next Page" + "'>\n");
@@ -629,17 +634,17 @@ public class CheckBoxTag extends TagSupport {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "lastPage" + "' " +
-					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png") + "' " +
+					  "src ='"+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2rightarrow.png",currTheme) + "' " +
 					  "align='right' border='0' " +
 					  "onClick='changePage(this.name)'"+
 					  "alt='" + "GO To Last Page" + "'>\n");
 			_htmlStream.append("		</TD>\n");
 		} else {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1rightarrow.png",currTheme)+"' ALIGN=RIGHT border=0>\n");
 			_htmlStream.append("		</TD>\n");
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2rightarrow.png",currTheme)+"' ALIGN=RIGHT border=0>\n");
 			_htmlStream.append("		</TD>\n");
 		}	
 	
@@ -726,7 +731,7 @@ public class CheckBoxTag extends TagSupport {
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "firstPage" + "' " +					  
-					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png") + "' " + 
+					  "src ='"+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2leftarrow.png",currTheme) + "' " + 
 					  "align='right' border='0' " +
 					  "onClick='changePage(this.name)' "+
 					  "alt='" + "GO To First Page" + "'>\n");
@@ -734,17 +739,17 @@ public class CheckBoxTag extends TagSupport {
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "prevPage" + "' " +					  
-					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png") + "' " + 
+					  "src ='"+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1leftarrow.png",currTheme) + "' " + 
 					  "align='right' border='0' " +
 					  "onClick='changePage(this.name)' " +
 					  "alt='" + "GO To Previous Page" + "'>\n");
 			_htmlStream.append("	</TD>\n");
 		} else {
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2leftarrow.png",currTheme)+"' ALIGN=RIGHT border=0 />\n");				
 			_htmlStream.append("	</TD>\n");
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1leftarrow.png",currTheme)+"' ALIGN=RIGHT border=0 />\n");
 			_htmlStream.append("	</TD>\n");			
 		}		
 		_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='15%'>\n");
@@ -779,7 +784,7 @@ public class CheckBoxTag extends TagSupport {
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "nextPage" + "' " +
-					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png") + "' " +
+					  "src ='"+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1rightarrow.png",currTheme) + "' " +
 					  "align='right' border='0' " +
 					  "onClick='changePage(this.name)'"+
 					  "alt='" + "GO To Next Page" + "'>\n");
@@ -787,17 +792,17 @@ public class CheckBoxTag extends TagSupport {
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
 			_htmlStream.append("<input type='image' " +
 					  "name='" + "lastPage" + "' " +
-					  "src ='"+ urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png") + "' " +
+					  "src ='"+ urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2rightarrow.png",currTheme) + "' " +
 					  "align='right' border='0' " +
 					  "onClick='changePage(this.name)'"+
 					  "alt='" + "GO To Last Page" + "'>\n");
 			_htmlStream.append("	</TD>\n");
 		} else {
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1rightarrow.png",currTheme)+"' ALIGN=RIGHT border=0>\n");
 			_htmlStream.append("	</TD>\n");
 			_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2rightarrow.png",currTheme)+"' ALIGN=RIGHT border=0>\n");
 			_htmlStream.append("	</TD>\n");
 		}		
 		_htmlStream.append("		<TD class='portlet-section-footer' width='38%'>\n");
@@ -834,7 +839,7 @@ public class CheckBoxTag extends TagSupport {
 									  "name='" + name + "' " +
 									  "title='" + label + "' " +
 									  "class='header-button-image-portlet-section'" + 	
-									  "src ='"+ urlBuilder.getResourceLink(httpRequest, img) + "' " +
+									  "src ='"+ urlBuilder.getResourceLinkByTheme(httpRequest, img,currTheme) + "' " +
 									  "alt='" + label + "'>\n");
 			htmlStream.append("</td>\n");
 		}

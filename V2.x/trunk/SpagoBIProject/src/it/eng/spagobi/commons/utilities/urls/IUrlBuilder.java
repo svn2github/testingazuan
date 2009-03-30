@@ -51,4 +51,17 @@ public interface IUrlBuilder {
 	 * @return the resource link
 	 */
 	public String getResourceLink(HttpServletRequest aHttpServletRequest, String originalUrl);
+
+	
+	/**
+	 * Gets the resource link.
+	 * 
+	 * @param aHttpServletRequest the http servlet request
+	 * @param originalUrl a String representic a link to static resource img, css, js and so on
+	 * 
+	 * @return the resource link
+	 */
+	public String getResourceLinkByTheme(HttpServletRequest aHttpServletRequest, String originalUrl, String theme);
+
+
 }

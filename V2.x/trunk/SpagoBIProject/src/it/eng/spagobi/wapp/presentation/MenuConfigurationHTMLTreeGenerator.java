@@ -40,6 +40,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 import it.eng.spagobi.wapp.bo.Menu;
 import it.eng.spagobi.wapp.services.CreateMasterMenuAction;
 import it.eng.spagobi.wapp.services.DetailMenuModule;
@@ -58,7 +59,6 @@ import org.safehaus.uuid.UUIDGenerator;
 
 
 
-
 /**
  * Contains all methods needed to generate and modify a tree object for menus.
  * There are methods to generate tree, configure, insert and modify elements.
@@ -73,6 +73,7 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 	private IMessageBuilder msgBuilder = null;
 	private List _objectsList = null;
 	protected String requestIdentity = null;
+	protected String currTheme="";
 
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String, java.lang.String)
@@ -95,14 +96,18 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		_objectsList = objectsList;
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
+		
+    	currTheme=ThemesManager.getCurrentTheme(reqCont);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		StringBuffer htmlStream = new StringBuffer();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
-		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
+		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/css/dtree.css",currTheme )+"' type='text/css' />");
 		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.menutree.name" ,"messages", httpRequest);
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/dtree.js",currTheme )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/contextMenu.js",currTheme )+"'></SCRIPT>");
 		htmlStream.append("<div id='divmenuFunct" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenuFunct" + requestIdentity + "\");' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
@@ -116,7 +121,13 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td id='treeFoldersTd" + requestIdentity + "' name='treeFoldersTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 		htmlStream.append("				var nameTree = 'treeFunct';\n");
-		htmlStream.append("				treeFunct = new dTree('treeFunct', '" + httpRequest.getContextPath() + "');\n");
+		String context=httpRequest.getContextPath();
+		if (!(context.charAt(context.length() - 1) == '/')) {
+			context += '/';
+		}		
+		context+="themes/"+currTheme+"/";
+		
+		htmlStream.append("				treeFunct = new dTree('treeFunct', '" + context + "');\n");
 		//htmlStream.append("	        	treeFunct.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 		htmlStream.append("	treeFunct.add("+dTreeRootId + ",-1,'"+nameTree+"', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(null)+"\\', \\'\\', \\'\\', \\'\\', \\'\\', \\'\\')');\n");
 
@@ -169,20 +180,20 @@ public class MenuConfigurationHTMLTreeGenerator implements ITreeHtmlGenerator {
 		String imgFolder=""; 
 		String imgFolderOp="";
 		if ((menu.getStaticPage() == null || menu.getStaticPage().trim().equals("")) && menu.getObjId() == null) {
-			imgFolder=urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_white.png");
+			imgFolder=urlBuilder.getResourceLinkByTheme(httpRequest, "/img/wapp/bullet_white.png",currTheme);
 			imgFolderOp=imgFolder;
 		} else {
 			if(menu.getObjId()!=null){
 				//String icon=DetailMenuModule.assignImage(menu);
 				if (menu.getSnapshotName() != null || menu.getSubObjName() != null) {
-					imgFolder=urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_yellow.png");
+					imgFolder=urlBuilder.getResourceLinkByTheme(httpRequest, "/img/wapp/bullet_yellow.png",currTheme);
 				} else {
-					imgFolder=urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_blue.png");
+					imgFolder=urlBuilder.getResourceLinkByTheme(httpRequest, "/img/wapp/bullet_blue.png",currTheme);
 				}
 				imgFolderOp=imgFolder;
 			}
 			if (menu.getStaticPage() != null && !menu.getStaticPage().trim().equals("")) {
-				imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/wapp/bullet_gray.png");
+				imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/wapp/bullet_gray.png",currTheme);
 				imgFolderOp=imgFolder;
 			}
 		}

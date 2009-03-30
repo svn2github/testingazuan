@@ -37,6 +37,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class LovWizardTag extends CommonWizardLovTag {
     String readonly = "readonly" ;
 	  boolean isreadonly = true ;
 	  String disabled = "disabled" ;
+	  protected String currTheme="";
 
 	
 	/* (non-Javadoc)
@@ -77,6 +79,10 @@ public class LovWizardTag extends CommonWizardLovTag {
         SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
         SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
 		IEngUserProfile userProfile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+
+    	currTheme=ThemesManager.getCurrentTheme(requestContainer);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+    	
 		boolean isable = false;
 		try {
 			isable = userProfile.isAbleToExecuteAction(SpagoBIConstants.LOVS_MANAGEMENT);
@@ -103,13 +109,13 @@ public class LovWizardTag extends CommonWizardLovTag {
 			output.append("		<td class='titlebar_level_2_button_section'>\n");
 			output.append("			<a style='text-decoration:none;' href='javascript:opencloseFixListWizardInfo()'> \n");
 			output.append("				<img width='22px' height='22px'\n");
-			output.append("				 	 src='" + urlBuilder.getResourceLink(httpRequest, "/img/info22.jpg")+"'\n");
+			output.append("				 	 src='" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/info22.jpg",currTheme)+"'\n");
 			output.append("					 name='info'\n");
 			output.append("					 alt='"+msgBuilder.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages", httpRequest)+"'\n");
 			output.append("					 title='"+msgBuilder.getMessage("SBIDev.fixlovWiz.rulesTitle", "messages", httpRequest)+"'/>\n");
 			output.append("			</a>\n");
 			output.append("		</td>\n");
-			String urlImgProfAttr = urlBuilder.getResourceLink(httpRequest, "/img/profileAttributes22.jpg");
+			String urlImgProfAttr = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/profileAttributes22.jpg",currTheme);
 			output.append(generateProfAttrTitleSection(urlImgProfAttr));
 			output.append("	</tr>\n");
 			output.append("</table>\n");
@@ -142,7 +148,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 			if(!isreadonly){
 			output.append("		<div class='div_detail_form'>\n");
 			output.append("			<input onclick='setLovProviderModified(true);' type='image' name='insertFixLovItem' value='insertFixLovItem'\n");
-			output.append("				src='" + urlBuilder.getResourceLink(httpRequest, "/img/attach.gif") + "'\n");
+			output.append("				src='" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/attach.gif",currTheme) + "'\n");
 			String addButtMsg = msgBuilder.getMessage("SBIDev.lovWiz.addButt", "messages", httpRequest);
 			output.append("				title='" + addButtMsg + "' alt='" + addButtMsg + "'\n");
 			output.append("			/>\n");
@@ -215,13 +221,13 @@ public class LovWizardTag extends CommonWizardLovTag {
 					output.append("			<div style='display:inline;' id='divBtnDetailRow"+i+"'>");
 					output.append("				<a href='javascript:changeRowValues(\""+ i +"\")'>");
 					output.append("				<img class ='portlet-menu-item' \n");
-					output.append("					src= '" + urlBuilder.getResourceLink(httpRequest, "/img/detail.gif") + "' \n");
+					output.append("					src= '" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/detail.gif",currTheme) + "' \n");
 					output.append("					title='" + tooltipRowDetail + "' alt='" + tooltipRowDetail + "' />\n");
 					output.append("				</a>");
 					output.append("			</div>");
 					output.append("			<div style='display:none;' id='divBtnSaveRow"+i+"'>");
 					output.append("				<input type='image' onclick='setLovProviderModified(true);saveRowValues(\""+ i +"\")' class ='portlet-menu-item' \n");
-					output.append("					src= '" + urlBuilder.getResourceLink(httpRequest, "/img/save16.gif") + "' \n");
+					output.append("					src= '" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/save16.gif",currTheme) + "' \n");
 					output.append("					title='" + tooltipRowSave + "' alt='" + tooltipRowSave + "' />\n");
 					output.append("			</div>");
 					output.append("		</td>\n");
@@ -230,7 +236,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 					output.append("		<td class='" + rowClass + "'>\n");
 					String tableCol4 = msgBuilder.getMessage("SBIDev.lovWiz.tableCol4", "messages", httpRequest);
 					output.append("			<input type='image' onclick='setLovProviderModified(true);setIndexOfFixedLovItemToDelete(\""+ i +"\")' class ='portlet-menu-item' \n");
-					output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/erase.gif") + "' \n");
+					output.append("				src= '" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/erase.gif",currTheme) + "' \n");
 					output.append("				title='" + tableCol4 + "' alt='" + tableCol4 + "' />\n");
 		  			output.append("		</td>\n");
 		  			
@@ -238,7 +244,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 		  			if(i<(lovs.size()-1)) {
 						String tableCol5 = msgBuilder.getMessage("SBIDev.lovWiz.tableCol5", "messages", httpRequest);
 						output.append("			<input type='image' onclick='setLovProviderModified(true);downRow(\""+ i +"\")' class ='portlet-menu-item' \n");
-						output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/down16.gif") + "' \n");
+						output.append("				src= '" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/down16.gif",currTheme) + "' \n");
 						output.append("				title='" + tableCol5 + "' alt='" + tableCol5 + "' />\n");
 		  			} else {
 		  				output.append("	        &nbsp;");
@@ -249,7 +255,7 @@ public class LovWizardTag extends CommonWizardLovTag {
 		  			if(i>0) {
 						String tableCol6 = msgBuilder.getMessage("SBIDev.lovWiz.tableCol6", "messages", httpRequest);
 						output.append("			<input type='image' onclick='setLovProviderModified(true);upRow(\""+ i +"\")' class ='portlet-menu-item' \n");
-						output.append("				src= '" + urlBuilder.getResourceLink(httpRequest, "/img/up16.gif") + "' \n");
+						output.append("				src= '" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/up16.gif",currTheme) + "' \n");
 						output.append("				title='" + tableCol6 + "' alt='" + tableCol6 + "' />\n");
 		  			} else {
 		  				output.append("	        &nbsp;");

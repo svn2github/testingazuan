@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.functionalitytree.presentation;
 
+import it.eng.spago.base.RequestContainer;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.service.ExecutionWorkspaceModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
@@ -32,6 +33,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,9 +47,11 @@ public class NestedMenuHtmlGenerator implements ITreeHtmlGenerator {
 
 	HttpServletRequest httpRequest = null;
 	private String baseFolderPath = null;
+	RequestContainer reqCont = null;
 	List objectsList = new ArrayList();
 	protected IUrlBuilder urlBuilder = null;
 	protected IMessageBuilder msgBuilder = null;
+	private String currTheme="";
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeAccessibleTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
@@ -77,10 +81,14 @@ public class NestedMenuHtmlGenerator implements ITreeHtmlGenerator {
 		baseFolderPath = initialPath;
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
+    	currTheme=ThemesManager.getCurrentTheme(reqCont);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		StringBuffer stream = new StringBuffer();
 		StringBuffer htmlStream = new StringBuffer();
 		StringBuffer jsStream = new StringBuffer();
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/menu.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/menu.js", this.currTheme )+"'></SCRIPT>");
 		LowFunctionality root = findRoot(); 
 		List childs = findChilds(root);
 		if(!childs.isEmpty()) {

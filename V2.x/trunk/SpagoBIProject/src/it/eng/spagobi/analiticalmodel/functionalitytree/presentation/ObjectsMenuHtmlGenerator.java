@@ -21,14 +21,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.functionalitytree.presentation;
 
+import it.eng.spago.base.RequestContainer;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.service.ExecutionWorkspaceModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.TreeObjectsModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
+import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
+import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +51,8 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	RenderResponse renderResponse = null;
 	RenderRequest renderRequest = null;
 	HttpServletRequest httpRequest = null;
+	RequestContainer reqCont = null;
+	protected IUrlBuilder urlBuilder = null;
 	private String baseFolderPath = null;
 	int progrJSTree = 0;
 	private int dTreeRootId = -100;
@@ -54,6 +61,7 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	
 	protected IMessageBuilder msgBuilder = null;
 	protected String _bundle = null;
+	private String currTheme="";
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeAccessibleTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
@@ -130,10 +138,17 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 	    requestIdentity = requestIdentity.replaceAll("-", "");
 		httpRequest = httpReq;
 		baseFolderPath = initialPath;
+		urlBuilder = UrlBuilderFactory.getUrlBuilder();
+		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		renderResponse =(RenderResponse)httpRequest.getAttribute("javax.portlet.response");
 		renderRequest = (RenderRequest)httpRequest.getAttribute("javax.portlet.request");	
 		StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<LINK rel='StyleSheet' href='"+renderResponse.encodeURL(renderRequest.getContextPath() + "/css/dtree.css" )+"' type='text/css' />");
+    	currTheme=ThemesManager.getCurrentTheme(reqCont);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
+		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/css/dtree.css", currTheme )+"' type='text/css' />");
+		
+		
 		makeConfigurationDtree(htmlStream);
 		
 		//String nameTree = PortletUtilities.getMessage("tree.objectstree.name" ,"messages");
@@ -153,6 +168,10 @@ public class ObjectsMenuHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td id='treeMenuObjTd" + requestIdentity + "' name='treeMenuObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	htmlStream.append("				var nameTree = 'treeExecObj';\n");
+		/*String context=httpRequest.getContextPath();
+		if (!(context.charAt(context.length() - 1) == '/')) {
+			context += '/';
+		}	  */ 	
 	   	htmlStream.append("				treeExecObj = new dTree('treeExecObj');\n");
 	   	htmlStream.append("	        	treeExecObj.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();

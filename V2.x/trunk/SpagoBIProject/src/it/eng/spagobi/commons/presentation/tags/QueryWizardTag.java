@@ -35,6 +35,7 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,6 +61,7 @@ public class QueryWizardTag extends CommonWizardLovTag {
 	  String readonly = "readonly" ;
 	  boolean isreadonly = true ;
 	  String disabled = "disabled" ;
+	  protected String currTheme="";
 	 
 	
 	/**
@@ -118,6 +120,9 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		String dsLabelField = msgBuilder.getMessage("SBIDev.queryWiz.dsLabelField", "messages", httpRequest);
 		String queryDefField = msgBuilder.getMessage("SBIDev.queryWiz.queryDefField", "messages", httpRequest);
+
+    	currTheme=ThemesManager.getCurrentTheme(requestContainer);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
 		
 		RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
         SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
@@ -155,13 +160,13 @@ public class QueryWizardTag extends CommonWizardLovTag {
 		output.append("		<td class='titlebar_level_2_button_section'>\n");
 		output.append("			<a style='text-decoration:none;' href='javascript:opencloseQueryWizardInfo()'> \n");
 		output.append("				<img width='22px' height='22px'\n");
-		output.append("				 	 src='" + urlBuilder.getResourceLink(httpRequest, "/img/info22.jpg")+"'\n");
+		output.append("				 	 src='" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/info22.jpg",currTheme)+"'\n");
 		output.append("					 name='info'\n");
 		output.append("					 alt='"+msgBuilder.getMessage("SBIDev.queryWiz.showSintax", "messages", httpRequest)+"'\n");
 		output.append("					 title='"+msgBuilder.getMessage("SBIDev.queryWiz.showSintax", "messages", httpRequest)+"'/>\n");
 		output.append("			</a>\n");
 		output.append("		</td>\n");
-		String urlImgProfAttr = urlBuilder.getResourceLink(httpRequest, "/img/profileAttributes22.jpg");
+		String urlImgProfAttr = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/profileAttributes22.jpg",currTheme);
 		output.append(generateProfAttrTitleSection(urlImgProfAttr));
 		output.append("	</tr>\n");
 		output.append("</table>\n");

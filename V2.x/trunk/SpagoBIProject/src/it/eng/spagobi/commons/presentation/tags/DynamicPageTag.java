@@ -51,6 +51,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class DynamicPageTag extends TagSupport {
 	public static final int PIXEL_PER_CHAR = 9;
 	// identity string for object of the page
 	protected String requestIdentity;
+	private String currTheme="";
 	
 	private SessionContainer getSession() {
 		return requestContainer.getSessionContainer();
@@ -91,7 +93,7 @@ public class DynamicPageTag extends TagSupport {
 	
 	
 	private String encodeURL(String relativePath) {
-		return urlBuilder.getResourceLink(httpRequest, relativePath);
+		return urlBuilder.getResourceLinkByTheme(httpRequest, relativePath,currTheme);
 	}
 	
 	
@@ -113,6 +115,10 @@ public class DynamicPageTag extends TagSupport {
 		request = requestContainer.getServiceRequest();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
+
+    	currTheme=ThemesManager.getCurrentTheme(requestContainer);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		if (requestIdentity == null) requestIdentity = "";
 		BIObject obj = getBIObject();
 		List parameters = obj.getBiObjectParameters();

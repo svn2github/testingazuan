@@ -33,6 +33,7 @@ import it.eng.spago.util.JavaScript;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.Iterator;
 import java.util.List;
@@ -125,6 +126,18 @@ public class UserMenuTag extends TagSupport {
 			htmlStream.append("\n new Ext.menu.Item({");
 			htmlStream.append("\n 	id: '" + new Double(Math.random()).toString() + "',");
 			iconUrl = iconUrl.replace("${SPAGOBI_CONTEXT}", httpRequest.getContextPath());
+
+	    	String currTheme=ThemesManager.getCurrentTheme(requestContainer);
+	    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+	    	String iconUrlTemp = iconUrl.replace("${THEME}", currTheme);
+	    	if(!ThemesManager.resourceExistsInTheme(iconUrlTemp,httpRequest.getContextPath())){
+	    		iconUrl=iconUrl.replace("${THEME}", "sbi_default");
+	    	}
+	    	else {
+	    		iconUrl=iconUrlTemp;
+	    	}
+	    	
+	    	
 			url = url.replace("${SPAGOBI_CONTEXT}", httpRequest.getContextPath());
 			url = url.replace("${SPAGO_ADAPTER_HTTP}", GeneralUtilities.getSpagoAdapterHttpUrl());
 			if (url.indexOf("?") != -1) {

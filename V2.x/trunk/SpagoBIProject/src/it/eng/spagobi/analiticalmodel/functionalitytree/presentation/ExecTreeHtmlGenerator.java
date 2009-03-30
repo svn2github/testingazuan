@@ -42,6 +42,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,7 +75,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	// the name of the dtree variable, default value is treeExecObj
 	private String treeName = "treeExecObj";
 	protected String requestIdentity = null;
-
+	private String currTheme="";
 
 	
 	/**
@@ -191,15 +192,19 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		_serviceRequest = reqCont.getServiceRequest();
 		sessionContainer = reqCont.getSessionContainer();
 		SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+
+    	currTheme=ThemesManager.getCurrentTheme(reqCont);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		// get user profile
         profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		StringBuffer htmlStream = new StringBuffer();
-		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLink(httpRequest, "/css/dtree.css" )+"' type='text/css' />");
+		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/css/dtree.css", currTheme )+"' type='text/css' />");
 		//makeConfigurationDtree(htmlStream);
 		String nameTree = msgBuilder.getMessage("tree.objectstree.name" ,"messages", httpRequest);
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/dtree.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/dtree.js", currTheme )+"'></SCRIPT>");
 		/* ********* start luca changes *************** */
-		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js" )+"'></SCRIPT>");
+		htmlStream.append("<SCRIPT language='JavaScript' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/js/contextMenu.js", currTheme )+"'></SCRIPT>");
 		htmlStream.append("<div id='divmenu" + requestIdentity + "' class='dtreemenu' onmouseout='hideMenu(event, \"divmenu" + requestIdentity + "\");' >");
 		htmlStream.append("		menu");
 		htmlStream.append("</div>");
@@ -234,7 +239,14 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td id='treeExecObjTd" + requestIdentity + "' name='treeExecObjTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	   	//htmlStream.append("				var nameTree = 'treeExecObj';\n");
-	   	htmlStream.append("				" + treeName + " = new dTree('" + treeName + "', '" + httpRequest.getContextPath() + "');\n");
+
+		String context=httpRequest.getContextPath();
+		if (!(context.charAt(context.length() - 1) == '/')) {
+			context += '/';
+		}
+		context+="themes/"+currTheme+"/";
+		
+		htmlStream.append("				" + treeName + " = new dTree('" + treeName + "', '" + context + "');\n");
 	   	htmlStream.append("	        	" + treeName + ".add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
 	   	Iterator it = objectsList.iterator();
 	   	while (it.hasNext()) {
@@ -283,7 +295,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
     		htmlStream.append("		<span>" + onlyTestObjectsViewLbl + "</span>\n");
     		htmlStream.append("		<input type=\"checkbox\" name=\"view_only_test_objects\" id=\"view_only_test_objects" + requestIdentity + "\" value=\"true\" " + checked + " />\n");
     		htmlStream.append("		<input type=\"image\" style=\"width:25px;height:25px\" title=\"" + updateTree + "\" alt\"" + updateTree + "\" \n");
-    		htmlStream.append("			src=\"" + urlBuilder.getResourceLink(httpRequest, "/img/updateState.png" ) + "\" />\n");
+    		htmlStream.append("			src=\"" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/updateState.png", currTheme ) + "\" />\n");
     		htmlStream.append("	</form>\n");
     		htmlStream.append("	</div>\n");
 			htmlStream.append("<script type='text/javascript'>\n");
@@ -304,8 +316,8 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 		Integer idFolder = folder.getId();
 		Integer parentId = folder.getParentId();
 		
-		String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
-		String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+		String imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolder.gif", currTheme);
+		String imgFolderOp = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderopen.gif", currTheme);
 		boolean canExec = ObjectsAccessVerifier.canExec(idFolder, profile);
 		boolean canTest = ObjectsAccessVerifier.canTest(idFolder, profile);
 			
@@ -322,10 +334,10 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				//insert the correct image for each BI Object type
 				String biObjType = obj.getBiObjectTypeCode();
 				String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
-				String userIcon = urlBuilder.getResourceLink(httpRequest, imgUrl);
+				String userIcon = urlBuilder.getResourceLinkByTheme(httpRequest, imgUrl, currTheme);
 				String biObjState = obj.getStateCode();
 				String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
-				String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
+				String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl, currTheme);
 				String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
 				
 				Map execUrlPars = new HashMap();
@@ -359,8 +371,8 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	
 		else if (isUserFunct) {
 			logger.debug("User Personal Folder");
-			imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolderuser.gif");
-			imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopenuser.gif");
+			imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderuser.gif", currTheme);
+			imgFolderOp = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderopenuser.gif", currTheme);
 			
 			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + "Personal Folder: "+name + "', 'javascript:linkEmpty()', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'false', 'menu" + requestIdentity + "( \\'\\', event, \\'\\', \\'\\', \\'javascript:eraseFolder("+idFolder+")\\', \\'javascript:addSubFolder("+idFolder+")\\')');\n");
 		
@@ -376,10 +388,10 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				//insert the correct image for each BI Object type
 				String biObjType = obj.getBiObjectTypeCode();
 				String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
-				String userIcon = urlBuilder.getResourceLink(httpRequest, imgUrl);
+				String userIcon = urlBuilder.getResourceLinkByTheme(httpRequest, imgUrl, currTheme);
 				String biObjState = obj.getStateCode();
 				String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
-				String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
+				String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl, currTheme);
 				// create execution link
 				Map execUrlPars = new HashMap();
 				execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
@@ -403,10 +415,10 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 					//insert the correct image for each BI Object type
 					String biObjType = obj.getBiObjectTypeCode();
 					String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
-					String userIcon = urlBuilder.getResourceLink(httpRequest, imgUrl);
+					String userIcon = urlBuilder.getResourceLinkByTheme(httpRequest, imgUrl, currTheme);
 					String biObjState = obj.getStateCode();
 					String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
-					String stateIcon = urlBuilder.getResourceLink(httpRequest, stateImgUrl);
+					String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl, currTheme);
 					String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
 					
 					logger.debug(obj.getName() + ": " + stateObj + " - " + visibleObj);
@@ -418,7 +430,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 						if ((stateObj.equals("TEST")) && canTest && profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
 							thereIsOneOrMoreObjectsInTestState = true;
 
-							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'" + urlBuilder.getResourceLink(httpRequest, "/img/editTemplate.jpg") + "\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
+							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/editTemplate.jpg", currTheme) + "\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
 							//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event,\\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\',\\'" +createMoveDownObjectLink(idObj) + "\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
 						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (stateObj.equals("REL"))&& canExec) {
 								
@@ -427,7 +439,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 							//Nuovo albero con Icona dei metadati
 							boolean profileAttrsOk = ObjectsAccessVerifier.checkProfileVisibility(obj, profile);
 							if (profileAttrsOk) {
-								htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'" + urlBuilder.getResourceLink(httpRequest, "/img/editTemplate.jpg") + "\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
+								htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/editTemplate.jpg", currTheme) + "\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
 							} else {
 								logger.debug("NOT visible " + obj.getName() + " because user profile attribute constraint are not satisfied");
 							}

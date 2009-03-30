@@ -45,6 +45,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -98,6 +99,7 @@ public class ListTag extends TagSupport
 	protected String _lastUrl = null;
 	protected String _refreshUrl = null;
 	protected IEngUserProfile profile = null;
+	protected String currTheme="";
 
 	protected HttpServletRequest httpRequest = null;
 	protected IUrlBuilder urlBuilder = null;
@@ -141,6 +143,9 @@ public class ListTag extends TagSupport
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 
+    	currTheme=ThemesManager.getCurrentTheme(_requestContainer);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		if (_bundle == null)
 			_bundle = "messages";
 
@@ -360,10 +365,10 @@ public class ListTag extends TagSupport
 			if(!hideOrderButtons){
 			if (!nameColumn.equalsIgnoreCase("INSTANCES")){
 				_htmlStream.append("	<A href=\""+orderUrlAsc+"\">\n");
-				_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowUp.gif")+"'/>\n");
+				_htmlStream.append("		<img  src='"+urlBuilder.getResourceLinkByTheme(httpRequest,"/img/commons/ArrowUp.gif",currTheme)+"'/>\n");
 				_htmlStream.append("	</A>\n");
 				_htmlStream.append("	<A href=\""+orderUrlDesc+"\">\n");
-				_htmlStream.append("		<img  src='"+urlBuilder.getResourceLink(httpRequest,"/img/commons/ArrowDown.gif")+"'/>\n");
+				_htmlStream.append("		<img  src='"+urlBuilder.getResourceLinkByTheme(httpRequest,"/img/commons/ArrowDown.gif",currTheme)+"'/>\n");
 				_htmlStream.append("	</A>\n");
 			}
 			}
@@ -543,7 +548,7 @@ public class ListTag extends TagSupport
 						String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);					 
 						_htmlStream.append(" <td width='40px'>\n");
 						_htmlStream.append(" 	<a name='"+label+"' " + (onClickFunctionName != null ? " href='javascript:void(0);' onclick='" + onClickFunctionName + "()' " : "") + " >\n");
-						_htmlStream.append(" 		<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
+						_htmlStream.append(" 		<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' />\n");
 						_htmlStream.append(" 	</a>\n");
 						_htmlStream.append(" </td>\n");
 					}
@@ -725,7 +730,7 @@ public class ListTag extends TagSupport
 						}
 
 					}
-					_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' />\n");
+					_htmlStream.append("			<img title='"+label+"' alt='"+label+"' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' />\n");
 					_htmlStream.append("     </a>\n");
 					_htmlStream.append(" </td>\n");
 				}
@@ -1004,17 +1009,17 @@ public class ListTag extends TagSupport
 
 		if(pageNumber != 1) {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
+			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2leftarrow.png",currTheme)+"' ALIGN=RIGHT border=0></a>\n");
 			_htmlStream.append("		</TD>\n");
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0></a>\n");
+			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1leftarrow.png",currTheme)+"' ALIGN=RIGHT border=0></a>\n");
 			_htmlStream.append("		</TD>\n");
 		} else {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");				
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2leftarrow.png",currTheme)+"' ALIGN=RIGHT border=0 />\n");				
 			_htmlStream.append("		</TD>\n");
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' ALIGN=RIGHT border=0 />\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1leftarrow.png",currTheme)+"' ALIGN=RIGHT border=0 />\n");
 			_htmlStream.append("		</TD>\n");			
 		}		
 		//_htmlStream.append("		</TD>\n");
@@ -1150,17 +1155,17 @@ public class ListTag extends TagSupport
 		//_htmlStream.append("		<TD class='portlet-section-footer' valign='center' align='right' width='14'>\n");				
 		if(pageNumber != pagesNumber) {	
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
+			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1rightarrow.png",currTheme)+"' ALIGN=RIGHT border=0 /></a>\n");
 			_htmlStream.append("		</TD>\n");
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0 /></a>\n");
+			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2rightarrow.png",currTheme)+"' ALIGN=RIGHT border=0 /></a>\n");
 			_htmlStream.append("		</TD>\n");
 		} else {
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1rightarrow.png",currTheme)+"' ALIGN=RIGHT border=0>\n");
 			_htmlStream.append("		</TD>\n");
 			_htmlStream.append("		<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' ALIGN=RIGHT border=0>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2rightarrow.png",currTheme)+"' ALIGN=RIGHT border=0>\n");
 			_htmlStream.append("		</TD>\n");
 		}		
 //		_htmlStream.append("		</TD>\n");
@@ -1244,17 +1249,17 @@ public class ListTag extends TagSupport
 		// visualize navigation's icons
 		if(pageNumber != 1) {
 			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' border=0></a>\n");
+			_htmlStream.append("			<A href=\""+_firstUrl+"\"><IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2leftarrow.png",currTheme)+"' border=0></a>\n");
 			//_htmlStream.append("	</TD>\n");
 			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  align='left' width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' border=0></a>\n");
+			_htmlStream.append("			<A href=\""+_prevUrl+"\"><IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1leftarrow.png",currTheme)+"' border=0></a>\n");
 			//_htmlStream.append("	</TD>\n");
 		} else {
 			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2leftarrow.png")+"' border=0 />\n");				
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2leftarrow.png",currTheme)+"' border=0 />\n");				
 			//_htmlStream.append("	</TD>\n");
 			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center' align='left' width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1leftarrow.png")+"' border=0 />\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1leftarrow.png",currTheme)+"' border=0 />\n");
 			//_htmlStream.append("	</TD>\n");			
 		}
 		//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='20%'>\n");
@@ -1297,17 +1302,17 @@ public class ListTag extends TagSupport
 		//_htmlStream.append("	</TD>\n");
 		if(pageNumber != pagesNumber) {	
 			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' border=0 /></a>\n");
+			_htmlStream.append("			<A href=\""+_nextUrl+"\"><IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1rightarrow.png",currTheme)+"' border=0 /></a>\n");
 			//_htmlStream.append("	</TD>\n");
 			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' border=0 /></a>\n");
+			_htmlStream.append("			<A href=\""+_lastUrl+"\"><IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2rightarrow.png",currTheme)+"' border=0 /></a>\n");
 			//_htmlStream.append("	</TD>\n");
 		} else {
 			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/1rightarrow.png")+"' border=0>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/1rightarrow.png",currTheme)+"' border=0>\n");
 			//_htmlStream.append("	</TD>\n");
 			//_htmlStream.append("	<TD class='portlet-section-footer' valign='center'  width='1%'>\n");
-			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLink(httpRequest, "/img/commons/2rightarrow.png")+"' border=0>\n");
+			_htmlStream.append("			<IMG src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/commons/2rightarrow.png",currTheme)+"' border=0>\n");
 			//_htmlStream.append("	</TD>\n");
 		}
 		_htmlStream.append("		</TD>\n");
@@ -1366,7 +1371,7 @@ public class ListTag extends TagSupport
 				String buttonUrl = createUrl(paramsMap);
 
 				htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
-				htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
+				htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' /></a>\n");
 				htmlStream.append("</td>\n");
 			} catch (SourceBeanException e) {
 				// TODO Auto-generated catch block
@@ -1457,7 +1462,7 @@ public class ListTag extends TagSupport
 					//htmlStream.append("<td class=\"portlet-section-header\">\n");
 					//htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
 					htmlStream.append("<div style=\"float: left;\">");
-					htmlStream.append("<a href='javascript:"+onClickFunctionName+"()'><img class=\"header-button-image-portlet-section\" title='"+label+"' alt='"+label+"' style='height: 95%;width: 95%;' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
+					htmlStream.append("<a href='javascript:"+onClickFunctionName+"()'><img class=\"header-button-image-portlet-section\" title='"+label+"' alt='"+label+"' style='height: 95%;width: 95%;' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' /></a>\n");
 					htmlStream.append("</div>");
 					//htmlStream.append("</td>\n");
 
@@ -1467,7 +1472,7 @@ public class ListTag extends TagSupport
 					String buttonUrl = createUrl(paramsMap);
 
 					htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
-					htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLink(httpRequest, img)+"' /></a>\n");
+					htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' /></a>\n");
 					htmlStream.append("</td>\n");}
 
 			}

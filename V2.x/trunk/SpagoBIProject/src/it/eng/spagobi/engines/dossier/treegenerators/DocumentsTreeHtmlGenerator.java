@@ -37,6 +37,7 @@ import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.dossier.constants.DossierConstants;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.util.Iterator;
 import java.util.List;
@@ -57,6 +58,7 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
     private int dTreeRootId = -100;
     private int dTreeObjects = -1000;
     protected String requestIdentity = null;
+    protected String currTheme="";
 
     /**
      * Make accessible tree.
@@ -95,14 +97,18 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 	SessionContainer permanentSession = sessionContainer.getPermanentContainer();
 	profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 	StringBuffer htmlStream = new StringBuffer();
-	htmlStream.append("<LINK rel='StyleSheet' href='" + urlBuilder.getResourceLink(httpRequest, "/css/dtree.css")
+	
+	currTheme=ThemesManager.getCurrentTheme(reqCont);
+	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+	
+	htmlStream.append("<LINK rel='StyleSheet' href='" + urlBuilder.getResourceLinkByTheme(httpRequest, "/css/dtree.css",currTheme)
 		+ "' type='text/css' />");
 	// makeConfigurationDtree(htmlStream);
 	String nameTree = msgBuilder.getMessage("tree.objectstree.name", "messages", httpRequest);
 	htmlStream.append("<SCRIPT language='JavaScript' src='"
-		+ urlBuilder.getResourceLink(httpRequest, "/js/dtree.js") + "'></SCRIPT>");
+		+ urlBuilder.getResourceLinkByTheme(httpRequest, "/js/dtree.js",currTheme) + "'></SCRIPT>");
 	htmlStream.append("<SCRIPT language='JavaScript' src='"
-		+ urlBuilder.getResourceLink(httpRequest, "/js/contextMenu.js") + "'></SCRIPT>");
+		+ urlBuilder.getResourceLinkByTheme(httpRequest, "/js/contextMenu.js",currTheme) + "'></SCRIPT>");
 	htmlStream.append("<div id='divmenuFunct' class='dtreemenu' onmouseout='hideMenu(event);' >");
 	htmlStream.append("		menu");
 	htmlStream.append("</div>");
@@ -117,7 +123,12 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 		+ "'>&nbsp;</td>");
 	htmlStream.append("			<script language=\"JavaScript1.2\">\n");
 	htmlStream.append("				var nameTree = 'treeCMS';\n");
-	htmlStream.append("				treeCMS = new dTree('treeCMS', '" + httpRequest.getContextPath() + "');\n");
+	String context=httpRequest.getContextPath();
+	if (!(context.charAt(context.length() - 1) == '/')) {
+		context += '/';
+	}
+	context+="themes/"+currTheme+"/";
+	htmlStream.append("				treeCMS = new dTree('treeCMS', '" + context + "');\n");
 	htmlStream.append("	        	treeCMS.add(" + dTreeRootId + ",-1,'" + nameTree + "');\n");
 	Iterator it = objectsList.iterator();
 	while (it.hasNext()) {
@@ -155,8 +166,8 @@ public class DocumentsTreeHtmlGenerator implements ITreeHtmlGenerator {
 		    + "', '', '', '', '', '', 'true');\n");
 	} else {
 	    if (codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
-		String imgFolder = urlBuilder.getResourceLink(httpRequest, "/img/treefolder.gif");
-		String imgFolderOp = urlBuilder.getResourceLink(httpRequest, "/img/treefolderopen.gif");
+		String imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolder.gif",currTheme);
+		String imgFolderOp = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderopen.gif",currTheme);
 		htmlStream.append("	treeCMS.add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '"
 			+ imgFolder + "', '" + imgFolderOp + "', '', '');\n");
 

@@ -1,12 +1,13 @@
 package it.eng.spagobi.engines.kpi.bo;
 
+import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
@@ -15,6 +16,7 @@ import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -40,6 +42,8 @@ public class KpiResourceBlock {
 	Resource r = null;
 	KpiLine root = null;
 	Date d = null;
+	protected String currTheme="";
+	protected RequestContainer requestContainer = null;
 	
 	public KpiResourceBlock(Resource r, KpiLine root, Date d) {
 		super();
@@ -78,6 +82,10 @@ public class KpiResourceBlock {
 		logger.debug("IN");
 		StringBuffer _htmlStream = new StringBuffer();	
 		String id = "";
+		requestContainer = ChannelUtilities.getRequestContainer(httpReq);
+    	currTheme=ThemesManager.getCurrentTheme(requestContainer);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+		
 		if (r!=null){
 			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 			logger.debug("Start Kpi tree for Resource "+r.getName());
@@ -121,10 +129,10 @@ public class KpiResourceBlock {
 		UUID uuid = uuidGen.generateTimeBasedUUID();
 		requestIdentity = uuid.toString();
 		requestIdentity = requestIdentity.replaceAll("-", "");
-		String alarmImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/alarm.gif");
-		String infoImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/info.gif");
-		String docImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/linkedDoc.gif");
-		String trendImgSrc = urlBuilder.getResourceLink(httpRequest, "/img/kpi/trend.jpg");
+		String alarmImgSrc = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/kpi/alarm.gif",currTheme);
+		String infoImgSrc = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/kpi/info.gif",currTheme);
+		String docImgSrc = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/kpi/linkedDoc.gif",currTheme);
+		String trendImgSrc = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/kpi/trend.jpg",currTheme);
 		String modelName = line.getModelNodeName();
 		String modelCode = line.getModelInstanceCode();
 		if(modelCode!=null && !modelCode.equals("")){

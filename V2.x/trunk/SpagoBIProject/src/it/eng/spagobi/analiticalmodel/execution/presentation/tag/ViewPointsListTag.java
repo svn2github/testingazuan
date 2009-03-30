@@ -39,6 +39,7 @@ import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
 import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.io.IOException;
 import java.util.Date;
@@ -83,7 +84,11 @@ public class ViewPointsListTag extends TagSupport {
     	request = requestContainer.getServiceRequest();
     	urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
     	msgBuilder = MessageBuilderFactory.getMessageBuilder();
-    	String html = getHtmlForViewPointsList();
+
+    	String currTheme=ThemesManager.getCurrentTheme(requestContainer);
+    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+    	
+    	String html = getHtmlForViewPointsList(currTheme);
     	try {
     	    pageContext.getOut().print(html);
     	} catch (IOException e) {
@@ -93,7 +98,7 @@ public class ViewPointsListTag extends TagSupport {
     	return SKIP_BODY;
     }
     
-    protected String getHtmlForViewPointsList() {
+    protected String getHtmlForViewPointsList(String currTheme) {
     	logger.debug("IN");
     	String toReturn = null;
     	try {
@@ -200,7 +205,7 @@ public class ViewPointsListTag extends TagSupport {
 		       		buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' width='40px'>\n");
 		       		buffer.append("     	<a href=\"javascript:document.location='" + viewVPUrl.toString() + "';\">\n");
 		       		buffer.append("     		<img \n");
-		       		buffer.append("     			src='" + urlBuilder.getResourceLink(httpRequest, "/img/notes.jpg") + "' \n");
+		       		buffer.append("     			src='" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/notes.jpg", currTheme) + "' \n");
 		       		buffer.append("        			name='getViewpoint' alt='" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.viewButt", httpRequest) + "'\n"); 
 		       		buffer.append("         		title='" + msgBuilder.getMessage("SBIDev.docConf.viewPoint.viewButt", httpRequest) + "'\n");
 		       		buffer.append("         	/>\n");
@@ -212,7 +217,7 @@ public class ViewPointsListTag extends TagSupport {
 	                 	String eraseVPMsg = msgBuilder.getMessage("ConfirmMessages.DeleteViewpoint", httpRequest);
 	                 	buffer.append("		<a href=\"javascript:var conf = confirm('" + eraseVPMsg + "'); if (conf) {document.location='" + deleteVPUrl.toString() + "';}\">\n");
 	                 	buffer.append("			<img \n");
-	                 	buffer.append("				src='" + urlBuilder.getResourceLink(httpRequest, "/img/erase.gif") + "' \n");
+	                 	buffer.append("				src='" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/erase.gif", currTheme) + "' \n");
 	                 	buffer.append("				name='deleteViewpoint' alt='" + msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", httpRequest) + "'\n"); 
 	                 	buffer.append(" 			title='" + msgBuilder.getMessage("SBIDev.docConf.ListdocDetParam.deleteCaption", httpRequest) + "' \n");
 	                 	buffer.append("  		/>\n");
@@ -221,7 +226,7 @@ public class ViewPointsListTag extends TagSupport {
 	                buffer.append("		<td style='vertical-align:middle;' class='" + rowClass + "' width='40px'>\n");
 	                buffer.append("			<a href='" + execVPUrl + "'>\n");
 	                buffer.append("      		 <img \n");
-	                buffer.append("  	   			src='" + urlBuilder.getResourceLink(httpRequest, "/img/exec.gif") + "'\n");
+	                buffer.append("  	   			src='" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/exec.gif", currTheme) + "'\n");
 	                buffer.append("  	       		name='execSnap'\n");
 	                buffer.append("  	        	alt='" + msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", httpRequest) + "'\n");
 	                buffer.append("            		title='" + msgBuilder.getMessage("SBIDev.docConf.execBIObjectParams.execButt", httpRequest) + "'\n");

@@ -26,10 +26,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    
    	
    	
-    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/main.css")%>'/>
-    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/listview.css")%>'/>
-    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/browser/groupview.css")%>'/>
-   	<link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLink(request, "css/commons/loadmask.css")%>' />
+    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/browser/main.css", currTheme)%>'/>
+    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/browser/listview.css", currTheme)%>'/>
+    <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/browser/groupview.css",currTheme)%>'/>
+   	<link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/commons/loadmask.css", currTheme)%>' />
 	
 	<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/locale/" + locale.getLanguage() + ".js")%>'></script>
 	<script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/locale/LocaleUtils.js")%>'></script>

@@ -109,7 +109,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "dossier.back" bundle="component_dossier_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/back.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "dossier.back"  bundle="component_dossier_messages"/>' />
 				</a>
 			</td>
@@ -118,7 +118,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href="<%= saveUrl %>"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "dossier.save" bundle="component_dossier_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/save32.jpg")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/save32.jpg", currTheme)%>' 
 	      				 alt='<spagobi:message key = "dossier.save"  bundle="component_dossier_messages"/>' />
 				</a>
 			</td>
@@ -127,7 +127,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href="<%= saveAndGoBackUrl %>"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "dossier.saveAndGoBack" bundle="component_dossier_messages" />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
+	      				 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/saveAndGoBack.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "dossier.saveAndGoBack"  bundle="component_dossier_messages"/>' />
 				</a>
 			</td>
@@ -193,14 +193,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<td width="20">
 						<a href='<%=formDetailUrl + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' >
 						<img 	title='<spagobi:message key = "dossier.detail" bundle="component_dossier_messages" />' 
-      				 		src='<%= urlBuilder.getResourceLink(request, "/img/dossier/detail.gif")%>' 
+      				 		src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/detail.gif", currTheme)%>' 
       				 		alt='<spagobi:message key = "dossier.detail"  bundle="component_dossier_messages"/>' />
       				 	</a>
 					</td>
 					<td  width="20">
 					    <a href='<%=formEraseUrl + "&configureddocumentidentifier=" + confDoc.getLogicalName() %>' >
 						<img 	title='<spagobi:message key = "dossier.erase" bundle="component_dossier_messages" />' 
-      				 		src='<%= urlBuilder.getResourceLink(request, "/img/dossier/erase.gif")%>' 
+      				 		src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/erase.gif", currTheme)%>' 
       				 		alt='<spagobi:message key = "dossier.erase"  bundle="component_dossier_messages"/>' />
       				 	</a>
 					</td>
@@ -250,7 +250,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			&nbsp;&nbsp;&nbsp;
 			<a style='text-decoration:none;' href='<%=downOOTemplateUrl%>' target="iframeForDownload">
 				<img title='<spagobi:message key="dossier.download" bundle="component_dossier_messages" />' 
-					 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/download16.gif")%>' 
+					 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/download16.gif", currTheme)%>' 
 					 alt='<spagobi:message key="dossier.download"  bundle="component_dossier_messages"/>' />
 			</a>
 		<%
@@ -262,7 +262,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a style='text-decoration:none;display:none;' id='loadTemplatePresentationFormButton' 
 					href='javascript:document.getElementById("loadTemplatePresentationForm").submit();'>
 				<img title='<spagobi:message key="dossier.upload.presentationTemplate" bundle="component_dossier_messages" />' 
-					 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/upload32.png")%>' 
+					 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/upload32.png", currTheme)%>' 
 					 alt='<spagobi:message key="dossier.upload.presentationTemplate"  bundle="component_dossier_messages"/>' />
 			</a>
  		<br/>
@@ -309,7 +309,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			&nbsp;&nbsp;&nbsp;
 			<a style='text-decoration:none;' href='<%=downWorkDefUrl%>' target="iframeForDownload">
 				<img title='<spagobi:message key="dossier.download" bundle="component_dossier_messages" />' 
-					 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/download16.gif")%>' 
+					 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/download16.gif", currTheme)%>' 
 				 	alt='<spagobi:message key="dossier.download"  bundle="component_dossier_messages"/>' />
 			</a>
 		
@@ -322,7 +322,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a style='text-decoration:none;display:none;' id='loadProcessDefinitionFileFormButton'
 					href='javascript:document.getElementById("loadProcessDefinitionFileForm").submit();'>
 				<img title='<spagobi:message key="dossier.upload.processDefinitionFile" bundle="component_dossier_messages" />' 
-					 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/upload32.png")%>' 
+					 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/upload32.png", currTheme)%>' 
 					 alt='<spagobi:message key="dossier.upload.processDefinitionFile"  bundle="component_dossier_messages"/>' />
 			</a>
 		<br/>
@@ -350,7 +350,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<div style="width:8%;float:left;">
 					<input style="margin-left:10px;" type="image" 
 								 title='<spagobi:message key="dossier.addDocument" bundle="component_dossier_messages" />' 
-								 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/add.gif")%>' 
+								 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/add.gif", currTheme)%>' 
 								 alt='<spagobi:message key="dossier.addDocument"  bundle="component_dossier_messages"/>' />
 				</div>
 		</div>

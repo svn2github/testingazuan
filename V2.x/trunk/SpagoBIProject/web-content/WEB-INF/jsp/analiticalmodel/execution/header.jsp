@@ -47,8 +47,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@page import="it.eng.spago.base.RequestContainer"%>
 <%@page import="it.eng.spago.base.SessionContainer"%>
-<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
-<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
+<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/portal_admin.css",currTheme)%>' type='text/css' />
+<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/form.css",currTheme)%>' type='text/css' />
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/analiticalmodel/execution/box.js")%>"></script>
 
 <%--
@@ -243,7 +243,7 @@ if (toolbarIsVisible) {
 			    	%>
 					<a href='<%= urlBuilder.getUrl(request, backUrlPars) %>'>
 						<img width="22px" height="22px" title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />'
-							src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>'
+							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>'
 							alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
 					</a>
 			    </li>
@@ -256,7 +256,7 @@ if (toolbarIsVisible) {
 			    %>
 			    <li>		    
 					<form id="refresh<%=uuid%>" action="<%= refreshUrl %>" method="<%=refreshMode%>">
-					<input id='refreshimage<%= uuid %>' type="image" width="22px" height="22px" src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>'
+					<input id='refreshimage<%= uuid %>' type="image" width="22px" height="22px" src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/updateState.png", currTheme)%>'
 							alt='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>'
 							title='<%=msgBuilder.getMessage("SBIExecution.refresh", "messages", request)%>'/>
 					</form>
@@ -266,7 +266,7 @@ if (toolbarIsVisible) {
 			    <li>		    
 					<a id="sendTo_button<%= uuid %>" href='javascript:void(0);'>
 						<img title='<spagobi:message key = "sbi.execution.sendTo" />'
-							src='<%= urlBuilder.getResourceLink(request, "/img/mail_generic22.png")%>'
+							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/mail_generic22.png", currTheme)%>'
 							alt='<spagobi:message key = "sbi.execution.sendTo" />' />
 					</a>
 				</li>
@@ -275,7 +275,7 @@ if (toolbarIsVisible) {
 			    <li>
 					<a href='javascript:saveIntoPersonalFolder<%= uuid %>()'>
 					    <img title='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />'
-					         src='<%= urlBuilder.getResourceLink(request, "/img/saveIntoPersonalFolder22.png")%>'
+					         src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/saveIntoPersonalFolder22.png", currTheme)%>'
 					         alt='<spagobi:message key = "sbi.execution.saveToPersonalFolder" />' />
 					</a>
 				</li>
@@ -284,7 +284,7 @@ if (toolbarIsVisible) {
 				<li>
 					<a id='saveRememberMe_button<%= uuid %>' href='javascript:void(0);'>
 						<img title='<spagobi:message key = "sbi.execution.saveRememberMe" />'
-							src='<%= urlBuilder.getResourceLink(request, "/img/saveRememberMe22.png")%>'
+							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/saveRememberMe22.png", currTheme)%>'
 							alt='<spagobi:message key = "sbi.execution.saveRememberMe" />' />
 					</a>
 				</li>
@@ -293,7 +293,7 @@ if (toolbarIsVisible) {
 				<li>
 					<a id="notes_button<%= uuid %>" href='javascript:void(0);'>
 						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />'
-							src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg")%>'
+							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/notes.jpg", currTheme)%>'
 							alt='<spagobi:message key = "sbi.execution.notes.opencloseeditor" />' />
 					</a>
 				</li>
@@ -302,14 +302,14 @@ if (toolbarIsVisible) {
 				<li>
 					<a id="metadata_button<%= uuid %>" href='javascript:void(0);'>
 						<img width="22px" height="22px" title='<spagobi:message key = "SBISet.objects.captionMetadata" />'
-							src='<%= urlBuilder.getResourceLink(request, "/img/editTemplate.jpg")%>'
+							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/editTemplate.jpg", currTheme)%>'
 							alt='<spagobi:message key = "SBISet.objects.captionMetadata" />' />
 					</a>
 				</li>
 				<li>
 					<a id="rating_button<%= uuid %>" href='javascript:void(0);'>
 						<img width="22px" height="22px" title='<spagobi:message key = "metadata.Rating" />'
-							src='<%= urlBuilder.getResourceLink(request, "/img/rating.png")%>'
+							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/rating.png", currTheme)%>'
 							alt='<spagobi:message key = "metadata.Rating" />' />
 					</a>
 				</li>
@@ -318,7 +318,7 @@ if (toolbarIsVisible) {
 				<li>
 					<a href='javascript:void(0)' onClick="print<%= uuid %>();">
 						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.print" />'
-							src='<%= urlBuilder.getResourceLink(request, "/img/printer22.png")%>'
+							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/printer22.png", currTheme)%>'
 							alt='<spagobi:message key = "sbi.execution.print" />' />
 					</a>
 				</li>
@@ -824,7 +824,7 @@ if (toolbarIsVisible) {
 	String engineClassName = obj.getEngine().getClassName();
 	if (engineClassName != null && engineClassName.equals("it.eng.spagobi.engines.chart.SpagoBIChartInternalEngine")&& (!obj.getBiObjectTypeCode().equals("DATAMART") && !obj.getBiObjectTypeCode().equals("DATA_MINING") && !obj.getBiObjectTypeCode().equals("DOSSIER") && !obj.getBiObjectTypeCode().equals("ETL") && !obj.getBiObjectTypeCode().equals("OFFICE_DOC"))) {
 		%>
-		<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
+		<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLinkByTheme(request, "css/printImage.css",currTheme)%>" media="print">
 		<script>
 		function print<%= uuid %>() {
 			window.print();

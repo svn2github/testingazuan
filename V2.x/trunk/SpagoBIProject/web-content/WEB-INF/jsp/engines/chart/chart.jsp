@@ -71,15 +71,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<%-- div with wait while loading message --%>
 	<div id="divLoadingMessage<%= uuidO %>" style="display:inline;">
-		<img src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/loading.gif")%>' />
+		<img src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/analiticalmodel/loading.gif", currTheme)%>' />
 		<spagobi:message key='sbi.execution.pleaseWait'/>
 	</div>
 
-<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLink(request, "css/printImage.css")%>" media="print">
+<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLinkByTheme(request, "css/printImage.css",currTheme)%>" media="print">
 		
 	
-	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "css/extjs/ext-ux-slidezone.css")%>"/>
-	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/Ext.ux.SlideZone.js")%>"></script>	
+	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/resources/css/ext-ux-slidezone.css")%>"/>
+	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/Ext.ux.SlideZone.js")%>"></script>	
   
   
   <% 
@@ -539,12 +539,12 @@ catGroupsNames=new Vector();
 				  <!-- PROVA -->
 			  	   		<a onclick = "enableSerie()" title="check all series" 
 			  	   		alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
-							<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+							<img  src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>'/>
 						</a>
 						<a onclick = "disableSerie()" 
 						title="uncheck all series" 
 						alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
-							<img src='<%= urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
+							<img src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>'/>
 						</a>
 		
 		<%

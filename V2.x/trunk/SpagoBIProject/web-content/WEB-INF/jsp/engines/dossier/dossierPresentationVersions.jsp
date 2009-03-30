@@ -96,7 +96,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='<%= backUrl %>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "dossier.back" bundle="component_dossier_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/back.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "dossier.back"  bundle="component_dossier_messages"/>' />
 				</a>
 			</td>
@@ -104,7 +104,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='<%= refreshUrl%>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "dossier.refresh" bundle="component_dossier_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/refresh.gif")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/refresh.gif", currTheme)%>' 
 	      				 alt='<spagobi:message key = "dossier.refresh"  bundle="component_dossier_messages"/>' />
 				</a>
 			</td>
@@ -125,7 +125,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<a href='<%= runCollaborationUrl %>'> 
 	    <img class='header-button-image-portlet-section' 
 	    	 title='<spagobi:message key = "dossier.StartDossierDiscussion" bundle="component_dossier_messages" />' 
-	    	 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/exec.jpg")%>' 
+	    	 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/exec.jpg", currTheme)%>' 
 	    	 alt='<spagobi:message key = "dossier.StartDossierDiscussion"  bundle="component_dossier_messages"/>' />
 		</a>
 	</div>
@@ -195,14 +195,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
                 <a href='<%=eraseVersionUrl+"&"+DossierConstants.VERSION_ID+"="+presVer.getProg()%>'> 
 			    <img title='<spagobi:message key = "dossier.erase" bundle="component_dossier_messages" />' 
-			    	 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/erase.gif")%>' 
+			    	 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/erase.gif", currTheme)%>' 
 			    	 alt='<spagobi:message key = "dossier.erase"  bundle="component_dossier_messages"/>' />
 				</a>
             </td>
             <td style='vertical-align:middle;' class='<%= rowClass %>' width="40px">
                 <a href='<%=downloadVersionUrl + "&" + DossierConstants.VERSION_ID + "=" + presVer.getProg()%>'> 
 			    <img title='<spagobi:message key = "dossier.download" bundle="component_dossier_messages" />' 
-			    	 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/download16.gif")%>' 
+			    	 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/download16.gif", currTheme)%>' 
 			    	 alt='<spagobi:message key = "dossier.download"  bundle="component_dossier_messages"/>' />
 				</a>              		
             </td>
@@ -210,7 +210,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             	<% if(presVer.getApproved() != null && presVer.getApproved().booleanValue()) { %>
                 <a href='<%=publishUrl+"&"+DossierConstants.VERSION_ID+"="+presVer.getProg()%>'> 
 			    <img title='<spagobi:message key = "dossier.deploy" bundle="component_dossier_messages" />' 
-			    	 src='<%= urlBuilder.getResourceLink(request, "/img/dossier/deploy16.png")%>' 
+			    	 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/dossier/deploy16.png", currTheme)%>' 
 			    	 alt='<spagobi:message key = "dossier.deploy"  bundle="component_dossier_messages"/>' />
 				</a>
 				<% } else { out.print("&nbsp"); } %>        		

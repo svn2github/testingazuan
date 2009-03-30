@@ -30,7 +30,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%--
 The following directive catches exceptions thrown by jsps, must be commented in development environment
 --%>
-<%@page errorPage="/html/error.html"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.WebUrlBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.PortletUrlBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.messages.MessageBuilder"%>
@@ -48,6 +47,7 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@page import="it.eng.spagobi.commons.utilities.PortletUtilities"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
+<%@page import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 
@@ -172,20 +172,27 @@ String getUrl(String baseUrl, Map mapPars) {
 		userUniqueIdentifier=(String)userProfile.getUserUniqueIdentifier();
 	}
 	
-%>
+	// Set Theme
+	String currTheme=ThemesManager.getCurrentTheme(aRequestContainer);
+	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+	
+	%>
 
 
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
 <html lang="<%=locale != null ? locale.getLanguage() : GeneralUtilities.getDefaultLocale().getLanguage()%>">
 <head>
-	<link rel="shortcut icon" href="<%=urlBuilder.getResourceLink(request, "img/favicon.ico")%>" />
+	<link rel="shortcut icon" href="<%=urlBuilder.getResourceLinkByTheme(request, "img/favicon.ico", currTheme)%>" />
 </head>
 <body>
 <%} %>
 
-<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-base.js")%>"></script>
-<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/extjs/ext-all.js")%>"></script>
+
+
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/adapter/ext/ext-base.js")%>"></script>
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/ext-all.js")%>"></script>
+ 
 <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
 
 <!-- import css  --> 
@@ -194,37 +201,47 @@ String getUrl(String baseUrl, Map mapPars) {
 	if (sbiMode.equalsIgnoreCase("WEB")) {
 %>
 <LINK rel='StyleSheet' 
-      href='<%=urlBuilder.getResourceLink(request, "css/spagobi_wa.css")%>' 
+      href='<%=urlBuilder.getResourceLinkByTheme(request, "css/spagobi_wa.css",currTheme)%>' 
       type='text/css' />
 <%  } else {  %>
 <LINK rel='StyleSheet' 
-      href='<%=urlBuilder.getResourceLink(request, "css/spagobi_portlet.css")%>' 
+      href='<%=urlBuilder.getResourceLinkByTheme(request, "css/spagobi_portlet.css",currTheme)%>' 
       type='text/css' />
 <%	} %>
 
 <LINK rel='StyleSheet' 
-      href='<%=urlBuilder.getResourceLink(request, "css/spagobi_shared.css")%>' 
+      href='<%=urlBuilder.getResourceLinkByTheme(request, "css/spagobi_shared.css",currTheme)%>' 
       type='text/css' />
 
 <LINK rel='StyleSheet' 
-      href='<%=urlBuilder.getResourceLink(request, "css/jsr168.css")%>' 
+      href='<%=urlBuilder.getResourceLinkByTheme(request, "css/jsr168.css",currTheme)%>' 
       type='text/css' />
       
 <LINK rel='StyleSheet' 
-      href='<%=urlBuilder.getResourceLink(request, "css/external.css")%>' 
+      href='<%=urlBuilder.getResourceLinkByTheme(request, "css/external.css",currTheme)%>' 
       type='text/css' />
       
 <LINK rel='StyleSheet' 
-      href='<%=urlBuilder.getResourceLink(request, "css/menu.css")%>' 
+      href='<%=urlBuilder.getResourceLinkByTheme(request, "css/menu.css",currTheme)%>' 
       type='text/css' />
       
-   
+  <!-- 
 <LINK rel='StyleSheet' 
 	  href='<%=urlBuilder.getResourceLink(request, "css/extjs/ext-all.css")%>' 
 	  type='text/css' />
+	   --> 
+<LINK rel='StyleSheet' 
+	  href='<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/resources/css/ext-all.css")%>' 
+	  type='text/css' />
+
+
+	 
+	 <% // get the current ext theme
+	 String extTheme=ThemesManager.getTheExtTheme(currTheme);
+	 %>
 	  	  
 <LINK rel='StyleSheet'
-      href='<%=urlBuilder.getResourceLink(request, "css/extjs/xtheme-gray.css")%>'
+      href='<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/resources/css/"+extTheme)%>'
       type='text/css' />
       	  
  <!--   for web menu

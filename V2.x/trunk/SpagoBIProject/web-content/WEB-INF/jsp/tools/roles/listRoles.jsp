@@ -68,18 +68,18 @@ String synchUrl = urlBuilder.getUrl(request, synchUrlParameters);
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href="<%=synchUrl%>"> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.ListRoles.synchButton" />' src='<%=urlBuilder.getResourceLink(request, "/img/updateState.png")%>' alt='<spagobi:message key = "SBISet.ListRoles.synchButton" />' /> 
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.ListRoles.synchButton" />' src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/updateState.png", currTheme)%>' alt='<spagobi:message key = "SBISet.ListRoles.synchButton" />' /> 
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:saveRoles();"> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.ListRoles.saveButton" />' src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' alt='<spagobi:message key = "SBISet.ListRoles.saveButton" />' /> 
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.ListRoles.saveButton" />' src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' alt='<spagobi:message key = "SBISet.ListRoles.saveButton" />' /> 
 			</a>
 		</td>
 		<%if(!sbiMode.equalsIgnoreCase("WEB")){ %>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%=backUrl%>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.ListRoles.backButton" />' src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' alt='<spagobi:message key = "SBISet.ListRoles.backButton" />' />
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.ListRoles.backButton" />' src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' alt='<spagobi:message key = "SBISet.ListRoles.backButton" />' />
 			</a>
 		</td>
 		<%} %>
@@ -153,7 +153,7 @@ Ext.onReady(function(){
     		 <%= role.isAbleToSaveSubobjects() %>, <%= role.isAbleToSeeSubobjects() %>, <%= role.isAbleToSeeSnapshots() %>,
     		 <%= role.isAbleToSeeViewpoints() %>, <%= role.isAbleToSeeNotes() %>, <%= role.isAbleToSeeMetadata() %>, 
     		 <%= role.isAbleToSendMail() %>, <%= role.isAbleToSaveRememberMe() %>, 
-    		 <%= role.isAbleToSaveIntoPersonalFolder() %>,'<a href="<%=deleteUrl%>"><img src="<%=urlBuilder.getResourceLink(request, "/img/erase.gif")%>" /></a>']<%= it.hasNext() ? "," : "" %><%
+    		 <%= role.isAbleToSaveIntoPersonalFolder() %>,'<a href="<%=deleteUrl%>"><img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.gif", currTheme)%>" /></a>']<%= it.hasNext() ? "," : "" %><%
     	}
     	%>
     ];

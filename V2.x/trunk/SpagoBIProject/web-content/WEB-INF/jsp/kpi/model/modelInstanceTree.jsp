@@ -49,7 +49,7 @@ if (moduleBean.getAttribute("CONFIG.TITLE") != null)
     <td class='header-button-column-portlet-section'>
  			<a href='#' id="openInfo"> 
 				<img class='header-button-image-portlet-section'
-				src='<%=urlBuilder.getResourceLink(request, "/img/info22.png")%>' 
+				src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/info22.png", currTheme)%>' 
 				title='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBundle%>" />'
 				alt='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBundle%>"/>'
 				/> 
@@ -59,7 +59,7 @@ if (moduleBean.getAttribute("CONFIG.TITLE") != null)
       href='<%=backUrl%>'> <img
       class='header-button-image-portlet-section'
       title='<spagobi:message key="sbi.kpi.button.back.title" bundle="<%=messageBundle%>" />'
-      src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>'
+      src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>'
       alt='<spagobi:message key = "sbi.kpi.button.back.title" bundle="<%=messageBundle%>" />' /> </a></td>
   </tr>
 </table>

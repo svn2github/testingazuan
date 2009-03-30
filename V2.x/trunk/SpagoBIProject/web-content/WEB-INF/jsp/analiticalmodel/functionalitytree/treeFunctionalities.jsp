@@ -49,7 +49,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%=backUrl%>'> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBISet.treeFunct.backButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBISet.treeFunct.backButt" />' />
 			</a>
 		</td>

@@ -294,7 +294,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<input type='image' class='header-button-image-portlet-section' id='testButtonImage' <%=readonly%>
 				onclick='setLovProviderModifiedField();'
 				name="testLovBeforeSave" value="testLovBeforeSave"  
-				src='<%=urlBuilder.getResourceLink(request, "/img/test.png")%>' 
+				src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/test.png", currTheme)%>' 
 				title='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />'  
 				alt='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
 		/>
@@ -304,7 +304,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<input type='hidden' id="saveLov" name="" value=""  />
 			<a href= 'javascript:askForConfirmIfNecessary();' >
 				<img class='header-button-image-portlet-section'
-					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+					src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' 
 					title='<spagobi:message key = "SBIDev.predLov.saveButt" />'  
 					alt='<spagobi:message key = "SBIDev.predLov.saveButt" />' 
 				/>
@@ -315,7 +315,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href= '<%= backUrl %>'> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBIDev.predLov.backButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBIDev.predLov.backButt" />' />
 			</a>
 		</td>

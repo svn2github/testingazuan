@@ -120,7 +120,7 @@ for (int i = 0; i < listEngines.size(); i++) {
 			<input type="hidden" name="" value="" id="loadLinksLookup">
 			<a href='javascript:checkDocumentType("<spagobi:message key = "SBIDev.docConf.docDet.saveBeforeLinksConfig" />");'> 
 			<img style="margin-top:2px;height:21px;" name='links' id='links' class='header-button-image-portlet-section'
-				   src='<%=urlBuilder.getResourceLink(request, "/img/links.jpg") %>'
+				   src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/links.jpg", currTheme) %>'
       		 title='<spagobi:message key = "SBIDev.docConf.docDet.linkButton" />' 
       		 alt='<spagobi:message key = "SBIDev.docConf.docDet.linkButton" />' />
 			</a>
@@ -136,7 +136,7 @@ for (int i = 0; i < listEngines.size(); i++) {
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<input type='image' name='saveAndGoBack' id='saveAndGoBack' value='true' class='header-button-image-portlet-section'
-				src='<%= urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png") %>'
+				src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/saveAndGoBack.png", currTheme) %>'
       				title='<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackButt" />' alt='<spagobi:message key = "SBIDev.docConf.docDet.saveAndGoBackButt" />'
 			/> 
 		</td>
@@ -147,7 +147,7 @@ for (int i = 0; i < listEngines.size(); i++) {
 				<a href='<%=backUrl%>'>
 			<% } %>
       				<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.docConf.docDet.backButt" />' 
-      				src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' alt='<spagobi:message key = "SBIDev.docConf.docDet.backButt"/>' />
+      				src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' alt='<spagobi:message key = "SBIDev.docConf.docDet.backButt"/>' />
 			</a>
 		</td>
 	</tr>
@@ -356,7 +356,7 @@ for (int i = 0; i < listEngines.size(); i++) {
 							name="datasetReadLabel" id="datasetReadLabel" value="<%=currDataSetLabel%>" maxlength="400" /> 
 		
 		<a href='javascript:void(0);' id="datasetLink">
-				<img src="<%=urlBuilder.getResourceLink(request, "/img/detail.gif") %>" title="Lookup" alt="Lookup" />
+				<img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme) %>" title="Lookup" alt="Lookup" />
 			</a> 	
 		</div>
 	</div>
@@ -566,7 +566,7 @@ for (int i = 0; i < listEngines.size(); i++) {
 							<a href="<%=hrefConf%>">
 								<img class='header-button-image-portlet-section' 
 	      				 			 title='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate" />' 
-	      				 			 src='<%=urlBuilder.getResourceLink(request, "/img/createTemplate.jpg")%>' 
+	      				 			 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/createTemplate.jpg", currTheme)%>' 
 	      				 			 alt='<spagobi:message key = "sbi.detailbiobj.generateNewTemplate"  />' />
 							</a>
 					<%
@@ -580,7 +580,7 @@ for (int i = 0; i < listEngines.size(); i++) {
 							<a href="<%=editUrlStr%>">
 								<img class='header-button-image-portlet-section' 
 	      				 			 title='<spagobi:message key = "sbi.detailbiobj.editTemplate" />' 
-	      				 			 src='<%=urlBuilder.getResourceLink(request, "/img/editTemplate.jpg")%>' 
+	      				 			 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/editTemplate.jpg", currTheme)%>' 
 	      				 			 alt='<spagobi:message key = "sbi.detailbiobj.editTemplate"  />' />
 							</a> 	
 					<%
@@ -1145,7 +1145,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:void(0);'
 			   onclick='document.getElementById("priority").selectedIndex=<%= objParPriority - 2 %>;document.getElementById("objectForm").submit();'>
-				<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/Back.gif") %>'
+				<img 	src= '<%=urlBuilder.getResourceLinkByTheme(request, "/img/Back.gif", currTheme) %>'
 					title='<spagobi:message key = "SBIDev.docConf.docDetParam.increasePriority" />' 
 					alt='<spagobi:message key = "SBIDev.docConf.docDetParam.increasePriority" />'
 				/>
@@ -1156,7 +1156,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:void(0);' 
 			   onclick='document.getElementById("priority").selectedIndex=<%= objParPriority %>;document.getElementById("objectForm").submit();'>
-				<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/Forward.gif") %>'
+				<img 	src= '<%=urlBuilder.getResourceLinkByTheme(request, "/img/Forward.gif", currTheme) %>'
 					title='<spagobi:message key = "SBIDev.docConf.docDetParam.reducePriority" />' 
 					alt='<spagobi:message key = "SBIDev.docConf.docDetParam.reducePriority" />'
 				/>
@@ -1168,7 +1168,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 		%>
 			<td class='header-button-column-portlet-section'>
 				<a href='javascript:saveBIParameterConfirm("<spagobi:message key="SBIDev.docConf.docDetParam.saveBIParameterConfirm"/>")'>
-					<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/Class.gif") %>'
+					<img 	src= '<%=urlBuilder.getResourceLinkByTheme(request, "/img/Class.gif", currTheme) %>'
 						title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />'
 						alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersCorrelationManagement" />'
 					/>
@@ -1179,7 +1179,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 		%>
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:deleteBIParameterConfirm("<spagobi:message key="SBIDev.docConf.docDetParam.deleteBIParameterConfirm"/>")'>
-				<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/erase.gif") %>'
+				<img 	src= '<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.gif", currTheme) %>'
 					title='<spagobi:message key = "SBIDev.docConf.docDetParam.eraseButt" />' alt='<spagobi:message key = "SBIDev.docConf.docDetParam.eraseButt" />'
 				/>
 			</a>
@@ -1241,7 +1241,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 
   		&nbsp;*&nbsp;
 		<a style="text-decoration:none;"  href="javascript:verifyDependencies();">
-			<img src='<%=urlBuilder.getResourceLink(request, "/img/detail.gif")%>' 
+			<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif",currTheme)%>' 
 			   title='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersLookupList" />' 
 			   alt='<spagobi:message key = "SBIDev.docConf.docDetParam.parametersLookupList" />' />
 		</a>

@@ -161,7 +161,7 @@ function closeLoadingDocumentMenu() {
  function open_win_DocumentMenu(src) { 
  	if(winDocumentMenu==null) { 
 		winDocumentMenu = new Window('winDocumentMenu', {className: "alphacube", title: "", resizable:true, destroyOnClose:false, width:800, height:500});
-		winDocumentMenu.getContent().innerHTML="<div style='position:absolute;top:30px;left:30px;' id='loadingDocumentMenu'><center><br/><br/><span style='font-size:13pt;font-weight:bold;color:darkblue;'>Loading</span><br/><br/><img src='/SpagoBI/img/wapp/loading.gif' /></center></div><iframe id='frameDocumentMenu' onload='parent.closeLoadingDocumentMenu()' style='width:800px;height:500px;visibility:hidden;' frameborder='0' scrolling='auto' noresize  src='"+src+"' />";
+		winDocumentMenu.getContent().innerHTML="<div style='position:absolute;top:30px;left:30px;' id='loadingDocumentMenu'><center><br/><br/><span style='font-size:13pt;font-weight:bold;color:darkblue;'>Loading</span><br/><br/><img src='/SpagoBI/themes/sbi_default/img/wapp/loading.gif' /></center></div><iframe id='frameDocumentMenu' onload='parent.closeLoadingDocumentMenu()' style='width:800px;height:500px;visibility:hidden;' frameborder='0' scrolling='auto' noresize  src='"+src+"' />";
 		winDocumentMenu.showCenter(false);
 		observerResizeDocumentMenu = {
 			onResize: function(eventName, win) {

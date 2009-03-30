@@ -90,13 +90,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href="javascript:document.getElementById('parametersForm').submit()"> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBIDev.param.saveButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBIDev.param.saveButt" />' /> 
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<input type='image' name='saveAndGoBack' id='saveAndGoBack' value='true' class='header-button-image-portlet-section'
-				src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png") %>'
+				src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/saveAndGoBack.png", currTheme) %>'
       				title='<spagobi:message key = "SBIDev.param.saveAndGoBackButt" />' alt='<spagobi:message key = "SBIDev.param.saveAndGoBackButt" />'
 			/> 
 		</td>
@@ -110,7 +110,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<% } %>
       				<img class='header-button-image-portlet-section' 
 				title='<spagobi:message key = "SBIDev.param.backButt" />'
-				src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+				src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
 				alt='<spagobi:message key = "SBIDev.param.backButt"/>' />
 			</a>
 		</td>
@@ -373,7 +373,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%  if (!isreadonly){%>
 		<td class='header-button-column-portlet-section'>
 			<a href='javascript:deleteParameterUseConfirm("<spagobi:message key="SBIDev.param.deleteParameterUseConfirm"/>")'>
-				<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/erase.gif") %>'
+				<img 	src= '<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.gif", currTheme) %>'
 					title='<spagobi:message key = "SBIDev.param.eraseParameterUseButt" />' alt='<spagobi:message key = "SBIDev.param.eraseParameterUseButt" />'
 				/>
 			</a>
@@ -466,7 +466,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   		%>
   		&nbsp;*&nbsp;
     	<input 	type='image' name="loadLovLookup" <%=readonly%> id="loadLovLookup" value="LovLookup" style='<%if(isLov) {out.println("display:inline;");} else {out.println("display:none;");} %>'
-		   		src='<%=urlBuilder.getResourceLink(request, "/img/detail.gif")%>' 
+		   		src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme)%>' 
 		   		title='Lov Lookup' alt='Lov Lookup'/>
 			 
 		 </div>	
@@ -523,12 +523,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			  	   		<a onclick = "checkAllFreeRoles()" title='<spagobi:message 
 			  	   		key = "SBIDev.paramUse.checkAllFreeRoles" />' 
 			  	   		alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
-							<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+							<img  src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>'/>
 						</a>
 						<a onclick = "uncheckAllFreeRoles()" 
 						title='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />' 
 						alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
-							<img src='<%= urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
+							<img src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>'/>
 						</a>
 					</td>
 					<%  }%>

@@ -125,7 +125,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td>&nbsp;</td>
 		<td>
 			<input type='image' name='save' id='save' value='true' class='header-button-image-portlet-section'
-				src='<%=urlBuilder.getResourceLink(request, "/img/save.png") %>'
+				src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme) %>'
       				title='<spagobi:message key="editConf.save"/>' 
       				alt='<spagobi:message key="editConf.save"/>'
 			/>

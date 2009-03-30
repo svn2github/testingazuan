@@ -57,19 +57,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<input type='image' name='save' id='save' onClick="javascript:saveMap('SAVE')" value='true' class='header-button-image-portlet-section'
-				       src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+				       src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' 
       				   title='<spagobi:message key = "SBIMapCatalogue.saveButton" bundle="component_mapcatalogue_messages" />'  
                        alt='<spagobi:message key = "SBIMapCatalogue.saveButton" bundle="component_mapcatalogue_messages"/>' 
 			   />
 			   <!-- 
 			<a href="javascript:document.getElementById('featureForm').submit()"> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIMapCatalogue.saveButton" />' src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' alt='<spagobi:message key = "SBIMapCatalogue.saveButton" bundle="component_mapcatalogue_messages"/>' /> 
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIMapCatalogue.saveButton" />' src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' alt='<spagobi:message key = "SBIMapCatalogue.saveButton" bundle="component_mapcatalogue_messages"/>' /> 
 			</a>
 			-->
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<a  href='javascript:goBack("<%=msgWarningSave%>", "<%=backUrl%>")'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIMapCatalogue.backButton" />' src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' alt='<spagobi:message key = "SBIMapCatalogue.backButton" bundle="component_mapcatalogue_messages"/>' />
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIMapCatalogue.backButton" />' src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' alt='<spagobi:message key = "SBIMapCatalogue.backButton" bundle="component_mapcatalogue_messages"/>' />
 			</a>
 		</td>
 	</tr>

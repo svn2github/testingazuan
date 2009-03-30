@@ -45,9 +45,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    String msg = "DOCUMENT_RATE";
 	    Map formUrlPars = new HashMap();
 		String ratingForm = GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&ACTION_NAME=RATING_ACTION";	
-	    String starUrl = urlBuilder.getResourceLink(request, "/img/star.jpg");
-	    String halfStarUrl = urlBuilder.getResourceLink(request, "/img/halfStar.jpg");
-	    String smileUrl = urlBuilder.getResourceLink(request, "/img/smile.gif");
+	    String starUrl = urlBuilder.getResourceLinkByTheme(request, "/img/star.jpg", currTheme);
+	    String halfStarUrl = urlBuilder.getResourceLinkByTheme(request, "/img/halfStar.jpg", currTheme);
+	    String smileUrl = urlBuilder.getResourceLinkByTheme(request, "/img/smile.gif", currTheme);
 	    BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(new Integer(objid));
 	    Double rating = DAOFactory.getBIObjectRatingDAO().calculateBIObjectRating(obj);
 	   

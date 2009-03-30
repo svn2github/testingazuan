@@ -37,8 +37,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
 <link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
 
-<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/portal_admin.css")%>' type='text/css' />
-<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "css/analiticalmodel/form.css")%>' type='text/css' />
+<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/portal_admin.css",currTheme)%>' type='text/css' />
+<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/form.css",currTheme)%>' type='text/css' />
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/analiticalmodel/execution/box.js")%>"></script>
 
 <%
@@ -95,7 +95,7 @@ String title = obj.getName();
 		    	%>
 				<a href='<%= urlBuilder.getUrl(request, backUrlPars) %>'>
 					<img width="22px" height="22px" title='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />'
-						src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>'
+						src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>'
 						alt='<spagobi:message key = "SBIDev.docConf.execBIObjectParams.backButt" />' />
 				</a>
 		    </li>

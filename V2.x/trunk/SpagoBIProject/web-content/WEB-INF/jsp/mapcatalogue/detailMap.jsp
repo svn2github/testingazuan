@@ -110,14 +110,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href="javascript:saveMap('SAVE')"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "SBIMapCatalogue.saveButton"  bundle="component_mapcatalogue_messages"/>' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+	      				 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "SBIMapCatalogue.saveButton" bundle="component_mapcatalogue_messages"/>' 
 	      			/> 
 				</a>
 			</td>		 
 			<td class='header-button-column-portlet-section'>
 				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveMap('SAVEBACK')" value='true' class='header-button-image-portlet-section'
-				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
+				       src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/saveAndGoBack.png", currTheme)%>' 
       				   title='<spagobi:message key = "SBIMapCatalogue.saveButtBack" bundle="component_mapcatalogue_messages" />'  
                        alt='<spagobi:message key = "SBIMapCatalogue.saveButtBack" bundle="component_mapcatalogue_messages"/>' 
 			   />
@@ -126,7 +126,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='javascript:goBack("<%=msgWarningSave%>", "<%=backUrl%>")'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "SBIMapCatalogue.backButton"  bundle="component_mapcatalogue_messages"/>' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+	      				 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "SBIMapCatalogue.backButton" bundle="component_mapcatalogue_messages" />' 
 	      			/>
 				</a>
@@ -238,7 +238,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<% if (!selectedFeatureId.equals("-1") && !selectedFeatureId.equals("")) { %>
 	  		<td class='header-button-column-portlet-section'>		
 				<a href='javascript:deleteMapFeature();'>
-					<img 	src= '<%=urlBuilder.getResourceLink(request, "/img/erase.gif") %>'
+					<img 	src= '<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.gif", currTheme) %>'
 						title='<spagobi:message key = "SBIMapCatalogue.eraseButton" bundle="component_mapcatalogue_messages"/>' alt='<spagobi:message key = "SBIMapCatalogue.eraseButton" bundle="component_mapcatalogue_messages"/>'
 					/>
 				</a>
@@ -308,7 +308,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 				<a style="text-decoration:none;" href='<%=lookupFeraturesUrl%>'> 
 	      			<img  
-	 				 src= '<%=urlBuilder.getResourceLink(request, "/img/detail.gif") %>'
+	 				 src= '<%=urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme) %>'
 	      		 	 title='<spagobi:message key = "SBIMapCatalogue.lookupFeaturesButton" bundle="component_mapcatalogue_messages"/>' 
 	      		 	 alt='<spagobi:message key = "SBIMapCatalogue.lookupFeaturesButton" bundle="component_mapcatalogue_messages"/>' />
 				</a>

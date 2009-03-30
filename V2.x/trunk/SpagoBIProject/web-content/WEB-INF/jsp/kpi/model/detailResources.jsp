@@ -135,16 +135,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			href="javascript:document.getElementById('ResourceForm').submit()">
 		<img class='header-button-image-portlet-section'
 			title='<spagobi:message key = "sbi.kpi.button.save.title" bundle="<%=messageBundle%>" />'
-			src='<%=urlBuilder.getResourceLink(request,
-									"/img/save.png")%>'
+			src='<%=urlBuilder.getResourceLinkByTheme(request,
+									"/img/save.png", currTheme)%>'
 			alt='<spagobi:message key = "sbi.kpi.button.save.title" bundle="<%=messageBundle%>"/>' />
 		</a></td>
 		<td class='header-button-column-portlet-section'><a
 			href='<%=backUrl%>'> <img
 			class='header-button-image-portlet-section'
 			title='<spagobi:message key = "sbi.kpi.button.back.title" bundle="<%=messageBundle%>" />'
-			src='<%=urlBuilder.getResourceLink(request,
-									"/img/back.png")%>'
+			src='<%=urlBuilder.getResourceLinkByTheme(request,
+									"/img/back.png", currTheme)%>'
 			alt='<spagobi:message key = "sbi.kpi.button.back.title" bundle="<%=messageBundle%>"/>' />
 		</a></td>
 	</tr>

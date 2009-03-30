@@ -111,6 +111,8 @@ boolean first=true;
 					user=true;
 				}
 
+    if(currTheme==null || currTheme.equalsIgnoreCase(""))currTheme="sbi_default";	
+	
 %>
 
 <%-- Javascript object useful for session expired management (see also sessionExpired.jsp) --%>
@@ -141,7 +143,7 @@ function execCrossNavigation(windowName, label, parameters) {
 <script type="text/javascript"
 	src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script>
 
-<link href="<%=contextName%>/css/extjs/ext-all-SpagoBI-web.css"
+<link href="<%=contextName%>/js/lib/ext-2.0.1/resources/css/ext-all-SpagoBI-web.css"
 	rel="stylesheet" type="text/css" />
 
 <style>
@@ -185,7 +187,18 @@ iframe {
 	boolean displayBannerAndFooter = !(displayBannerAndFooterParam != null && displayBannerAndFooterParam.equalsIgnoreCase("false"));
 	if (displayBannerAndFooter) {
 	%>
-<%@include file="/html/banner.html"%>
+<% 
+String url="";
+if(ThemesManager.resourceExists(currTheme,"/html/banner.html")){
+	url = "/themes/"+currTheme+"/html/banner.html";	
+}
+else {
+	url = "/themes/sbi_default/html/banner.html";	
+}
+
+%>
+<jsp:include page='<%=url%>' />
+
 <% } %>
 
 <%-- contains the menu --%>
@@ -233,8 +246,19 @@ iframe {
 <%
 	if (displayBannerAndFooter) {
 	%>
-<%@include file="/html/footer.html"%>
+<% 
+String url2="";
+if(ThemesManager.resourceExists(currTheme,"/html/footer.html")){
+	url2 = "/themes/"+currTheme+"/html/footer.html";	
+}
+else {
+	url2 = "/themes/sbi_default/html/footer.html";	
+}
+%>
+
+<jsp:include page='<%=url2%>' />
 <% } %>
+
 
 <script>
   	<%-- Ext overriding methods for mouseout and mouseexit from menu --%>
@@ -581,6 +605,72 @@ iframe {
 		    
 		//adds exit menu
 		tb.addSeparator();
+		
+		// THEME COMBO BOX
+ 	
+<%
+String themesIcon="";
+String themeI="img/theme.png";
+if(ThemesManager.resourceExists(currTheme,themeI)){
+	themesIcon=contextName+"/themes/"+currTheme+"/"+themeI;
+}
+else
+{
+	themesIcon=contextName+"/themes/sbi_default/"+themeI;
+}
+
+//recover all themes
+	List themes=spagoconfig.getAttributeAsList("SPAGOBI.THEMES.THEME");
+	boolean drawSelectTheme=ThemesManager.drawSelectTheme(themes);
+	
+	//keep track of current theme view name
+	String currThemeView="";
+	
+	if(drawSelectTheme){
+	%>
+ 		var themes = new Ext.menu.Menu({ 
+ 			id: 'themes', 
+			 items: [ 
+ 			<% // iterate over avalaible themes
+	Iterator iter2 = themes.iterator();
+	while (iter2.hasNext()) {
+		SourceBean t = (SourceBean) iter2.next();
+		String name = (String) t.getAttribute("name");
+		String viewName = (String) t.getAttribute("view_name");
+	if(viewName==null || viewName.equalsIgnoreCase("")){
+		viewName=name;	
+	}
+	if(name.equalsIgnoreCase(currTheme))currThemeView=viewName;
+	
+		//String iconPath=contextName+"/img/"+language;
+          %>
+ 			new Ext.menu.Item({
+					 id: '<%new Double(Math.random()).toString();%>',
+ 					text: '<%=viewName%>',
+					href: "javascript:execUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=CHANGE_THEME&THEME_NAME=<%=name%>')" 				
+ 							})
+ <% if(iter2.hasNext()) {%>
+ ,
+ 	<%}%>
+ <%} %>
+ ]
+ });
+ 
+ 	themes.addListener('mouseexit', function() {themes.hide();});
+ 	
+ 	tb.add(
+ 	new Ext.Toolbar.MenuButton({
+ 		text: '<%=currThemeView%>',
+ 		cls: 'x-btn-text-icon bmenu',
+ 		icon: '<%=themesIcon%>',
+ 		menu: themes
+ 	})
+ );
+ 	
+ 	
+ 	<%} // end if(draw_select_combo)%>
+ 	// END THEME COMBO
+		
 
 <%
 // Find if current language is set
@@ -591,18 +681,26 @@ iframe {
 	List languages=spagoconfig.getAttributeAsList("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE");
 	
 
-	String iconLanguage="";
+	String iconLanguage="/img/";
 
 
 	if(curr_language!=null){
-		//iconLanguage=config.getServletContext()+"/img/"+currLanguage;
-		iconLanguage=contextName+"/img/"+currLanguage;
-
+		iconLanguage+=curr_language;
 		if(currCountry!=null){
 			iconLanguage=iconLanguage+"_"+currCountry+".gif";}
 		else
 		iconLanguage=iconLanguage+".gif";	
+
+		//test if exists in currenTheme else load default one
+		if(ThemesManager.resourceExists(currTheme,iconLanguage)){
+			iconLanguage="/themes/"+currTheme+iconLanguage;
+		}
+		else {
+			iconLanguage="/themes/sbi_default"+iconLanguage;			
+		}
 	}
+	
+	iconLanguage=contextName+iconLanguage;
 
 
 	//if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
@@ -617,7 +715,7 @@ Iterator iter = languages.iterator();
 	    String language = (String) lang.getAttribute("language");
 	    String country= (String) lang.getAttribute("country");
           
-	    String iconPath=contextName+"/img/"+language;
+	    String iconPath=contextName+"/themes/"+currTheme+"/img/"+language;
 	    if(country!=null){
 	    iconPath=iconPath+"_"+country+".gif";	
 	    }
@@ -656,15 +754,35 @@ Iterator iter = languages.iterator();
  		menu: languages
  	})
  );
-<%//}%>
+<%
+String questionIcon="";
+String resToCheckQ="/img/question.gif";
+if(ThemesManager.resourceExists(currTheme,resToCheckQ)){
+	questionIcon=contextName+"/themes/"+currTheme+resToCheckQ;
+}
+else
+{
+	questionIcon=contextName+"/themes/sbi_default/"+resToCheckQ;
+}
+
+String exitIcon="";
+String resToCheckE="/img/wapp/exit16.png";
+if(ThemesManager.resourceExists(currTheme,resToCheckE)){
+	exitIcon=contextName+"/themes/"+currTheme+resToCheckE;
+}
+else
+{
+	exitIcon=contextName+"/themes/sbi_default/"+resToCheckE;
+}
 
 
+%>
 
 		tb.add(
 			new Ext.Toolbar.Button({
 	            id: '<%new Double(Math.random()).toString();%>',
 	            //text: '<spagobi:message key="menu.info" />',
-	            icon: '<%=contextName%>/img/question.gif',
+	            icon: '<%=questionIcon%>',
 	            cls: 'x-btn-logout x-btn-text-icon bmenu',
 	            handler: info	  
 	        })	
@@ -674,7 +792,7 @@ Iterator iter = languages.iterator();
 			new Ext.Toolbar.Button({
 	            id: '<%new Double(Math.random()).toString();%>',
 	            text: '<spagobi:message key="menu.logout" />',
-	            icon: '<%=contextName%>/img/wapp/exit16.png',
+	            icon: '<%=exitIcon%>',
 	            cls: 'x-btn-logout x-btn-text-icon bmenu',
 	            handler: logout	  
 	        })	
@@ -741,9 +859,15 @@ Iterator iter = languages.iterator();
 	var win_info_<%=uuid%>;
 
 	<%
-	//String path=request.getRealPath("html/infos.html");
+	String path="";
+	String resToCheck="/html/infos.html";
+	if(ThemesManager.resourceExists(currTheme,resToCheck)){
+		path=GeneralUtilities.getSpagoBiContext()+"/themes/"+currTheme+resToCheck;
+	}
+	else{
+		path=GeneralUtilities.getSpagoBiContext()+"/themes/sbi_default/"+resToCheck;
+	}
 	
-	String path=GeneralUtilities.getSpagoBiContext()+"/html/infos.html";
 	if(path==null) path="";
 	%>
 
@@ -940,7 +1064,7 @@ var selectNode = function(node, e) {
 
 
 <!-- I want to execute if there is an homepage, only for user!-->
-	<%
+<%
 	if (lstMenu.size() > 0) {
 		//DAO method returns menu ordered by parentId, but null values are higher or lower on different database:
 		//PostgreSQL - Nulls are considered HIGHER than non-nulls.
@@ -962,24 +1086,24 @@ var selectNode = function(node, e) {
 		String pathInit=MenuUtilities.getMenuPath(firtsItem);
 		Integer objId=firtsItem.getObjId();
 		if (objId!=null) {
-			%> 					
-			<script type="text/javascript">
+			%>
+<script type="text/javascript">
 			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=firtsItem.getMenuId()%>','<%=pathInit%>'); 
-			</script>  					
-			<%
+			</script>
+<%
 		} else if(firtsItem.getStaticPage()!=null) {
-			%> 					
-			<script type="text/javascript">
+			%>
+<script type="text/javascript">
 			execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=<%=firtsItem.getMenuId()%>','<%=pathInit%>'); 
-			</script>  					
-			<%
+			</script>
+<%
 		} else if(firtsItem.getFunctionality()!=null && !firtsItem.getFunctionality().trim().equals("")) {
 			String url = DetailMenuModule.findFunctionalityUrl(firtsItem, contextName);
-			%> 					
-			<script type="text/javascript">
+			%>
+<script type="text/javascript">
 			execDirectUrl('<%=url%>','<%=pathInit%>');
-			</script>  					
-			<%
+			</script>
+<%
 		}
 	}
   	%>

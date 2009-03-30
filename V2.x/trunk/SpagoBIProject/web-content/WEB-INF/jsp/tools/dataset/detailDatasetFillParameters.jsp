@@ -80,7 +80,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section' id='testButton'>
 			<input type='image' class='header-button-image-portlet-section' id='testButtonImage'
 					name="testLovBeforeSave" value="testLovBeforeSave" 
-					src='<%=urlBuilder.getResourceLink(request, "/img/test.png")%>' 
+					src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/test.png", currTheme)%>' 
 					title='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />'  
 					alt='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
 			/>
@@ -92,7 +92,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href="<%=backUrl%>"> 
       				<img class='header-button-image-portlet-section' 
       				     title='<spagobi:message key = "SBISet.Funct.backButt" />' 
-      				     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      				     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
       				     alt='<spagobi:message key = "SBISet.Funct.backButt" />' />
 			</a>
 		</td>

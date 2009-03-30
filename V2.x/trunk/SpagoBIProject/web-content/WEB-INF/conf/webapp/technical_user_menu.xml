@@ -6,23 +6,23 @@
 		<ITEM	title="#menu.EngMan"
 				functionality="EnginesManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListEnginesPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/engines16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/engines16.png" />
 		<ITEM	title="#menu.DataSourceMan"
 				functionality="DataSourceManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDataSourcePage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/tools/datasource/datasource16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/tools/datasource/datasource16.png" />
 		<ITEM	title="#menu.DataSetMan"
 				functionality="DatasetManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDatasetPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/tools/dataset/dataset16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/tools/dataset/dataset16.png" />
 		<ITEM	title="#menu.MapCat"
 				functionality="MapCatalogueManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListMapsPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/mapcatalogue/maps16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/mapcatalogue/maps16.png" />
 		<ITEM	title="#menu.FeatureMapCat"
 				functionality="MapFeaturesManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListFeaturesPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/mapcatalogue/featureManagement16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/mapcatalogue/featureManagement16.png" />
 	</ITEM>
 	
 	<ITEM	code="analyticalModel" 
@@ -30,11 +30,11 @@
 		<ITEM	title="#menu.FunctMan"
 				functionality="FunctionalitiesManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage&amp;OPERATION=FUNCTIONALITIES_OPERATION"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/functionalities16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/functionalities16.png" />
 		<ITEM	title="#menu.DocumentDev"
 				functionality="DocumentDevManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/bidocuments16.png" />
 	</ITEM>
 	
 	<ITEM	code="behaviouralModel" 
@@ -42,15 +42,15 @@
 		<ITEM	title="#menu.LovMan"
 				functionality="LovsView"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListLovsPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/lovs16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/lovs16.png" />
 		<ITEM	title="#menu.ConstraintMan"
 				functionality="ConstraintView"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=LISTMODALITIESCHECKSPAGE"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/checks16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/checks16.png" />
 		<ITEM	title="#menu.ParameterMan"
 				functionality="ParameterView"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListParametersPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/parameters16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/parameters16.png" />
 	</ITEM>
 	
 	<ITEM	code="tools" 
@@ -58,23 +58,23 @@
 		<ITEM	title="#menu.ImpExp"
 				functionality="ImportExportManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage&amp;OPERATION=IMPORTEXPORT_OPERATION&amp;OBJECTS_VIEW=VIEW_OBJECTS_AS_TREE"
-				iconUrl="${SPAGOBI_CONTEXT}/img/tools/importexport/importexport16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/tools/importexport/importexport16.png" />
 		<ITEM	title="#menu.Scheduler"
 				functionality="SchedulerManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=JobManagementPage&amp;MESSAGEDET=MESSAGE_GET_ALL_JOBS"
-				iconUrl="${SPAGOBI_CONTEXT}/img/scheduleIcon16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/scheduleIcon16.png" />
 		<ITEM	title="#menu.RolesSynch"
 				functionality="SyncronizeRolesManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=DetailRolesPage&amp;MESSAGEDET=LIST_ROLES"
-				iconUrl="${SPAGOBI_CONTEXT}/img/rolesynch16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/rolesynch16.png" />
 		<ITEM	title="#menu.menuconfiguration"
 				functionality="MenuManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=MenuConfigurationPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/menu16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/menu16.png" />
 		<ITEM	title="#menu.DistributionListList"
 				functionality="DistributionListManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDistributionListPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/tools/distributionlist/distributionlist16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/tools/distributionlist/distributionlist16.png" />
 	</ITEM>
 
 	<!--
@@ -96,23 +96,23 @@
 		<ITEM	title="#menu.DocumentExec"
 				functionality="DocumentUserManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/bidocuments16.png" />
 		<ITEM	title="#menu.Events"
 				functionality="EventsManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=EVENTS_MONITOR_PAGE&amp;WEBMODE=TRUE"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/events16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/events16.png" />
 		<ITEM	title="#menu.Worklist"
 				functionality="WorklistManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=WorkflowToDoListPage&amp;WEBMODE=TRUE"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/worklist16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/worklist16.png" />
 		<ITEM	title="#menu.DistributionListUser"
 				functionality="DistributionListUser"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ListDistributionListUserPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/tools/distributionlist/distributionlistuser16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/tools/distributionlist/distributionlistuser16.png" />
 		<ITEM	title="#menu.HotLink"
 				functionality="HotLinkManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=HOT_LINK_PAGE&amp;OPERATION=GET_HOT_LINK_LIST"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/hotlinks16.gif" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/hotlinks16.gif" />
 	</ITEM>
 
 	<ITEM	code="kpiModel" 
@@ -120,23 +120,23 @@
 		<ITEM	title="#menu.KpiDefinition"
 				functionality="KpiManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=KpiPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/kpi/kpi16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/kpi/kpi16.png" />
 		<ITEM	title="#menu.ThresholdDefinition"
 				functionality="KpiManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ThresholdPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/bidocuments16.png" />
 		<ITEM	title="#menu.ModelDefinition"
 				functionality="KpiManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ModelPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/kpi/model16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/kpi/model16.png" />
 		<ITEM	title="#menu.ModelInstanceDefinition"
 				functionality="KpiManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ModelInstancePage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/bidocuments16.png" />
 		<ITEM	title="#menu.ResourcesDefinition"
 				functionality="KpiManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=ResourcesPage"
-				iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png" />
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/bidocuments16.png" />
 	</ITEM>
 	
 
@@ -149,7 +149,7 @@
 	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage" 
 	             width="800" 
 	             height="500"
-	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/bidocuments16.png">
 	</APPLICATION>
 	<APPLICATION code="DocumentDev" 
 	             title="#menu.DocumentDev"  
@@ -158,7 +158,7 @@
 	             link="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=BIObjectsPage" 
 	             width="800" 
 	             height="500"
-	             iconUrl="${SPAGOBI_CONTEXT}/img/wapp/bidocuments16.png">
+	             iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/bidocuments16.png">
 	</APPLICATION>
 
 

@@ -70,7 +70,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<a href='<%=viewListUrl%>'> 
       			<img class='header-button-image-portlet-section' 
-				src='<%=urlBuilder.getResourceLink(request, "/img/listView.png")%>' 
+				src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/listView.png", currTheme)%>' 
 				title='<spagobi:message key = "SBISet.exeObjects.listViewButt" />' 
 				alt='<spagobi:message key = "SBISet.exeObjects.listViewButt" />' /> 
 			</a>		
@@ -80,7 +80,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<a style="text-decoration:none;" href='<%=refreshUrl%>'> 
 				<img width="26px" height="26px"
-					src='<%= urlBuilder.getResourceLink(request, "/img/updateState.png")%>' 
+					src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/updateState.png", currTheme)%>' 
 					name='refresh' 
 					alt='<spagobi:message key = "SBIExecution.refresh"/>' 
 					title='<spagobi:message key = "SBIExecution.refresh"/>' /> 

@@ -82,7 +82,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href="javascript:testConnection()"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/test.png")%>' 
+	      				 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/test.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
 	      			/> 
 				</a>
@@ -92,14 +92,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href="javascript:saveDS('SAVE')"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "SBISet.ListDS.saveButton" />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+	      				 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "SBISet.ListDS.saveButton"/>' 
 	      			/> 
 				</a>
 			</td>		 
 			<td class='header-button-column-portlet-section'>
 				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDS('SAVEBACK')" class='header-button-image-portlet-section'
-				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
+				       src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/saveAndGoBack.png", currTheme)%>' 
       				   title='<spagobi:message key = "SBISet.ListDS.saveBackButton" />'  
                        alt='<spagobi:message key = "SBISet.ListDS.saveBackButton" />' 
 			   />
@@ -108,7 +108,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='javascript:goBack("<%=msgWarningSave%>", "<%=backUrl%>")'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "SBISet.ListDS.backButton"  />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+	      				 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "SBISet.ListDS.backButton" />' 
 	      			/>
 				</a>

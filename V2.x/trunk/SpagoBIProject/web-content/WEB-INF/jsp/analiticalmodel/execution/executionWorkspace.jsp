@@ -50,7 +50,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	File styleFile = new File(styleFilePath);
 	if (styleFile.exists()) {
 		%>
-		<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLink(request, "/css/guiComponents/" + styleName)%>' type='text/css' />
+		<LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLinkByTheme(request, "/css/guiComponents/" + styleName, currTheme)%>' type='text/css' />
 		<div class="executionWorkspace">
 		<%
 	}
@@ -205,7 +205,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<div id='maximizeDiv<%=requestIdentity%>' style='visibility:visible;'>
 							<a class='documentMaximizeLinkNavBarEW' href='javascript:maximize<%=requestIdentity%>();'>
 								<img class='documentMaximizeIconNavBarEW'
-									src='<%= urlBuilder.getResourceLink(request, "/img/maximize32.jpg")%>'
+									src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/maximize32.jpg", currTheme)%>'
 									name='maximize'
 									alt='<%=msgBuilder.getMessage("SBIExecution.maximize", "messages", request)%>'
 									title='<%=msgBuilder.getMessage("SBIExecution.maximize", "messages", request)%>' />
@@ -229,7 +229,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<td width="5%" align='center'>
 							<a class='documentMaximizeLinkNavBarEW' href='javascript:minimize<%=requestIdentity%>()' >
 								<img class='closeMaximizeIcon'
-									src='<%= urlBuilder.getResourceLink(request, "/img/erase32.png")%>'
+									src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/erase32.png", currTheme)%>'
 									name='close'
 									alt='<%=msgBuilder.getMessage("SBIExecution.close", "messages", request)%>'
 									title='<%=msgBuilder.getMessage("SBIExecution.close", "messages", request)%>' />

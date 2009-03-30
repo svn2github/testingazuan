@@ -98,7 +98,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href="javascript:document.getElementById('formFunct').submit()"> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBISet.detailMenu.saveButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBISet.detailMenu.saveButt" />' />
 			</a>
 		</td>
@@ -107,7 +107,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message 
       			     key = "SBISet.detailMenu.backButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBISet.detailMenu.backButt" />'/>
 			</a>
 		</td>
@@ -418,14 +418,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						if (!biobjectFound) {
 							%>
 							<img id="docNotFoundErrorImg" name="docNotFoundErrorImg" style="display:inline;"
-								src="<%=urlBuilder.getResourceLink(request, "/img/error16.gif") %>" 
+								src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/error16.gif", currTheme) %>" 
 								title="<spagobi:message key = "SBISet.detailMenu.relatedDocNotFound" />" 
 								alt="<spagobi:message key = "SBISet.detailMenu.relatedDocNotFound" />" />
 							<%
 						}
 						%>
 						<a href='javascript:void(0);' id="documentLink" style="text-decoration:none;">
-							<img src="<%=urlBuilder.getResourceLink(request, "/img/detail.gif") %>" title="Lookup" alt="Lookup" />
+							<img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme) %>" title="Lookup" alt="Lookup" />
 						</a>
 		</div>
 				
@@ -645,7 +645,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<input class='portlet-form-input-field' type="text" size="50" readonly="readonly" onchange="checkForErrorImg();"
 						name="initialPath" id="initialPath" value="<%= menu.getInitialPath() != null ? menu.getInitialPath() : "" %>" maxlength="400" />
 				<a href='javascript:void(0);' id="initialPathLink" style="text-decoration:none;">
-					<img src="<%=urlBuilder.getResourceLink(request, "/img/detail.gif") %>" title="Lookup" alt="Lookup" />
+					<img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme) %>" title="Lookup" alt="Lookup" />
 				</a>
 				<%
 				ILowFunctionalityDAO functionalityDAO = DAOFactory.getLowFunctionalityDAO();
@@ -662,7 +662,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					if (!pathFound) {
 						%>
 						<img id="pathNotFoundErrorImg" name="pathNotFoundErrorImg" style="display:inline;"
-							src="<%=urlBuilder.getResourceLink(request, "/img/error16.gif") %>" 
+							src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/error16.gif", currTheme) %>" 
 							title="<spagobi:message key = "SBISet.detailMenu.relatedPathNotFound" />" 
 							alt="<spagobi:message key = "SBISet.detailMenu.relatedPathNotFound" />" />
 						<%
@@ -708,7 +708,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div style="display:none">
 		<div id="divInitialPathSelection" name="divInitialPathSelection" style='background-color:white;'>
 		</div>
-		<LINK rel='StyleSheet' href='<%= urlBuilder.getResourceLink(request, "/css/dtree.css" ) %>' type='text/css' />
+		<LINK rel='StyleSheet' href='<%= urlBuilder.getResourceLinkByTheme(request, "/css/dtree.css", currTheme) %>' type='text/css' />
 		<SCRIPT language='JavaScript' src='<%= urlBuilder.getResourceLink(request, "/js/dtree.js" ) %>'></SCRIPT>
 		<%
 		String nameTree = msgBuilder.getMessage("tree.functtree.name" ,"messages", request);
@@ -720,8 +720,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   	treeFunct.add(-100,-1,'<%= nameTree %>');
 	   	<%
 	   	Iterator fodlersIter = folders.iterator();
-	   	String imgFolder = urlBuilder.getResourceLink(request, "/img/treefolder.gif");
-		String imgFolderOp = urlBuilder.getResourceLink(request, "/img/treefolderopen.gif");
+	   	String imgFolder = urlBuilder.getResourceLinkByTheme(request, "/img/treefolder.gif", currTheme);
+		String imgFolderOp = urlBuilder.getResourceLinkByTheme(request, "/img/treefolderopen.gif", currTheme);
 	   	while (fodlersIter.hasNext()) {
 			LowFunctionality folder = (LowFunctionality) fodlersIter.next();
 	   		boolean isUserFunct = folder.getCodType().equals("USER_FUNCT");
@@ -832,10 +832,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                        <td align="center">&nbsp;</td>       
                        <td align="center">
                        	<a onclick = "selectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
-                       		<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+                       		<img  src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>'/>
                        	</a>
 				    	<a onclick = "deselectAllInColumns('ROLES')" title='<spagobi:message key = "SBISet.detailMenu.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
-				    		<img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>' />
+				    		<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>' />
 				    	</a>
 				    </td>
                     </tr>

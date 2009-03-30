@@ -58,7 +58,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a id="submit" href="javascript:document.getElementById('checkForm').submit()"> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBIDev.valConst.saveButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBIDev.valConst.saveButt" />' /> 
 			</a>
 		</td>
@@ -66,7 +66,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%= backUrl %>'> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBIDev.valConst.backButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBIDev.valConst.backButt" />' />
 			</a>
 		</td>

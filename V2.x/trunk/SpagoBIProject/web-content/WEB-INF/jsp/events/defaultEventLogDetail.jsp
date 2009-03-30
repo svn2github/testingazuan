@@ -53,7 +53,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<a href='<%=backUrl%>'> 
       			<img class='header-button-image-portlet-section' title='<spagobi:message key = "sbievents.detail.backButton" />' 
-      			      src='<%= urlBuilder.getResourceLink(request, "/img/back.png")%>' alt='<spagobi:message key = "sbievents.detail.backButton" />' />
+      			      src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' alt='<spagobi:message key = "sbievents.detail.backButton" />' />
 			</a>
 		</td>
 	</tr>

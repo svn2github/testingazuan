@@ -43,7 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DISTRIBUTIONLIST_USER)) {%>
 			<tr class="portlet-font" vAlign="middle">
 				<td width="100" align="center">
-					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/distributionlist/distributionlistuser.png")%>' />
+					<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/tools/distributionlist/distributionlistuser.png", currTheme)%>' />
 				</td>
 				<td width="20">
 					&nbsp;
@@ -62,7 +62,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DISTRIBUTIONLIST_MANAGEMENT)) {%>		
 			<tr class="portlet-font">
 					<td width="100" align="center">
-						<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/distributionlist/distributionlist.gif")%>' />
+						<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/tools/distributionlist/distributionlist.gif", currTheme)%>' />
 					</td>
 					<td width="20">
 						&nbsp;

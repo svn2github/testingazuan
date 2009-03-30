@@ -381,7 +381,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<spagobi:message key = "loading" />	
 		</span>
 		<br/><br/>
-		<img src='<%= urlBuilder.getResourceLink(request, "/img/wapp/loading.gif")%>' />
+		<img src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/wapp/loading.gif", currTheme)%>' />
 	</center>
 </div>
 
@@ -404,7 +404,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%=backUrl%>'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "scheduler.back" bundle="component_scheduler_messages" />' 
-      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/back.png")%>' 
+      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/tools/scheduler/back.png", currTheme)%>' 
       				 alt='<spagobi:message key = "scheduler.back"  bundle="component_scheduler_messages"/>' />
 			</a>
 		</td>
@@ -413,7 +413,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='javascript:saveCall()'> 
       			<img class='header-button-image-portlet-section' 
       				 title='<spagobi:message key = "scheduler.save" bundle="component_scheduler_messages" />' 
-      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/save.png")%>' 
+      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/tools/scheduler/save.png", currTheme)%>' 
       				 alt='<spagobi:message key = "scheduler.save"  bundle="component_scheduler_messages"/>' />
 			</a>
 		</td>
@@ -489,7 +489,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='javascript:opencloseDocumentSelectionWin()'> 
 	      			<img class='header-button-image-portlet-section_bis' 
 	      				 title='<spagobi:message key = "scheduler.addocument" bundle="component_scheduler_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/edit_add.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/tools/scheduler/edit_add.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "scheduler.addocument"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
@@ -498,7 +498,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href="javascript:removeTab('<spagobi:message key="scheduler.DeleteDocumentConfirm" bundle="component_scheduler_messages"/>')"> 
 	      			<img class='header-button-image-portlet-section_bis' 
 	      				 title='<spagobi:message key = "scheduler.removedocument" bundle="component_scheduler_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/edit_remove.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/tools/scheduler/edit_remove.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "scheduler.removedocument"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
@@ -507,7 +507,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href="javascript:copyTab()"> 
 	      			<img class='header-button-image-portlet-section_bis' 
 	      				 title='<spagobi:message key = "scheduler.copydocument" bundle="component_scheduler_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/copy_schedule.gif")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/tools/scheduler/copy_schedule.gif", currTheme)%>' 
 	      				 alt='<spagobi:message key = "scheduler.copydocument"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
@@ -690,7 +690,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							  	%>
 							  	<a style='text-decoration:none;' href="javascript:getLovList('<%=biobj.getId()%>', '<%=biobjpar.getParID()%>', '<%=biobjpar.getParameterUrlName()%>')">
 							  		<img title='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' 
-	      				 				src='<%= urlBuilder.getResourceLink(request, "/img/detail.gif")%>' 
+	      				 				src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme)%>' 
 	      				 				alt='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' />
 							  	</a>
 							  	<br/>
@@ -816,7 +816,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<a href='javascript:fillParamCall()'> 
 		      			<img class='header-button-image-portlet-section' 
 		      				 title='<spagobi:message key = "scheduler.save" bundle="component_scheduler_messages" />' 
-		      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/save.png")%>' 
+		      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/tools/scheduler/save.png", currTheme)%>' 
 		      				 alt='<spagobi:message key = "scheduler.save"  bundle="component_scheduler_messages"/>' />
 					</a>
 				</td>

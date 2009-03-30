@@ -55,7 +55,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<table>
 		<tr class="portlet-font">
 			<td width="100" align="center">
-				<img height="80px" width="80x" src='<%=urlBuilder.getResourceLink(request, "/img/mapcatalogue/maps.png")%>' />
+				<img height="80px" width="80x" src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/mapcatalogue/maps.png", currTheme)%>' />
 			</td>
 			<td width="20">
 				&nbsp;
@@ -69,7 +69,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</tr>
 		<tr class="portlet-font">
 			<td width="100" align="center">
-				<img height="80px" width="80px" src='<%=urlBuilder.getResourceLink(request, "/img/mapcatalogue/featureManagement.png")%>' />
+				<img height="80px" width="80px" src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/mapcatalogue/featureManagement.png", currTheme)%>' />
 			</td>
 			<td width="20">
 				&nbsp;

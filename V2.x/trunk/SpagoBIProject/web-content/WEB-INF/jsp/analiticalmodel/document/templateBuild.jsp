@@ -98,7 +98,7 @@ String param3="&"+SpagoBIConstants.SBI_HOST+"="+host;
            <a href='<%= backUrl %>'>
                  <img title='<spagobi:message key = "SBIDev.docConf.templateBuild.backButton" />' 
                       class='header-button-image-portlet-section'
-                      src='<%= urlBuilder.getResourceLink(request, "/img/back.png") %>' 
+                      src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme) %>' 
                       alt='<spagobi:message key = "SBIDev.docConf.templateBuild.backButton" />' />
            </a>
        </td>

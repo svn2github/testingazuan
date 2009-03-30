@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <!-- spagobi:error /-->
 
 <style>
-@IMPORT url("/spagobi/css/table.css");
+@IMPORT url("/spagobi/themes/<%=currTheme%>/css/table.css");
 </style>
 
 <spagobi:list moduleName="ListDistributionListModule" />

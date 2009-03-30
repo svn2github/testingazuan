@@ -120,7 +120,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href="javascript:document.getElementById('execRolesForm<%=requestIdentity%>').submit()"> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.execButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/exec.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/exec.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.execButt" />' /> 
 			</a>
 		</td>
@@ -138,7 +138,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<a href='<%= backUrl %>'> 
 						<img class='header-button-image-portlet-section' 
 							title='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.backButt" />' 
-							src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+							src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
 							alt='<spagobi:message key = "SBIDev.docConf.execBIObject.selRoles.backButt" />' />
 					</a>
 				</td>

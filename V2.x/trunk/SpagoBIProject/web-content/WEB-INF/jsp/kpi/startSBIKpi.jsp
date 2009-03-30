@@ -40,7 +40,7 @@
 
   <tr class="portlet-font">
     <td width="100" align="center">
-      <img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/kpi/kpi.png")%>' />
+      <img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/kpi/kpi.png", currTheme)%>' />
     </td>
     <td width="20">&nbsp;</td>
     <td vAlign="middle">
@@ -54,7 +54,7 @@
 
   <tr class="portlet-font">
     <td width="100" align="center">
-      <img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/kpi/thresholds.png")%>' />
+      <img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/kpi/thresholds.png", currTheme)%>' />
     </td>
 	<td width="20">&nbsp;</td>
 	<td vAlign="middle">
@@ -68,7 +68,7 @@
 
   <tr class="portlet-font">
 		<td width="100" align="center"><img
-			src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/kpi/model-def.png")%>' />
+			src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/kpi/model-def.png", currTheme)%>' />
 		</td>
 		<td width="20">&nbsp;</td>
 		<td vAlign="middle">
@@ -83,7 +83,7 @@
 	
 	  <tr class="portlet-font">
 		<td width="100" align="center"><img
-			src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/kpi/model-inst.png")%>' />
+			src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/kpi/model-inst.png", currTheme)%>' />
 		</td>
 		<td width="20">&nbsp;</td>
 		<td vAlign="middle">
@@ -98,7 +98,7 @@
 	
 	<tr class="portlet-font">
 		<td width="100" align="center"><img
-			src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/kpi/resources.png")%>' />
+			src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/kpi/resources.png", currTheme)%>' />
 		</td>
 		<td width="20">&nbsp;</td>
 		<td vAlign="middle">

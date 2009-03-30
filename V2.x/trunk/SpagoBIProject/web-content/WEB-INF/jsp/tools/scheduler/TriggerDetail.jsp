@@ -488,7 +488,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='<%=backUrl%>'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "scheduler.back" bundle="component_scheduler_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/back.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/tools/scheduler/back.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "scheduler.back"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
@@ -497,7 +497,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='javascript:saveCall()'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "scheduler.save" bundle="component_scheduler_messages" />' 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/tools/scheduler/save.png")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/tools/scheduler/save.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "scheduler.save"  bundle="component_scheduler_messages"/>' />
 				</a>
 			</td>
@@ -1144,7 +1144,7 @@ toggle('javaclass_<%=biobj.getId()%>__<%=index%>', 'sendtojavaclass_<%=biobj.get
 				</span>
 				<a href="javascript:void(0);" id="mailtos_<%=biobj.getId()%>__<%=index%>_help">
 	      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/question.gif")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/question.gif", currTheme)%>' 
 	      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
 	      				 style="vertical-align:bottom;" />
       			</a>
@@ -1182,7 +1182,7 @@ toggle('javaclass_<%=biobj.getId()%>__<%=index%>', 'sendtojavaclass_<%=biobj.get
 				</span>
 				<a href="javascript:void(0);" id="mailToDataset_<%=biobj.getId()%>__<%=index%>_help">
 	      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/question.gif")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/question.gif", currTheme)%>' 
 	      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
 	      				 style="vertical-align:bottom;" />
       			</a>
@@ -1266,7 +1266,7 @@ toggle('javaclass_<%=biobj.getId()%>__<%=index%>', 'sendtojavaclass_<%=biobj.get
 				</span>
 				<a href="javascript:void(0);" id="mailToExpression_<%=biobj.getId()%>__<%=index%>_help">
 	      			<img title="<spagobi:message key = "scheduler.help" bundle="component_scheduler_messages" />" 
-	      				 src='<%= urlBuilder.getResourceLink(request, "/img/question.gif")%>' 
+	      				 src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/question.gif", currTheme)%>' 
 	      				 alt="<spagobi:message key = "scheduler.help"  bundle="component_scheduler_messages"/>" 
 	      				 style="vertical-align:bottom;" />
       			</a>

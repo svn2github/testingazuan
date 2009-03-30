@@ -48,7 +48,7 @@ if (moduleBean.getAttribute("CONFIG.TITLE") != null)
       href='<%=backUrl%>'> <img
       class='header-button-image-portlet-section'
       title='<spagobi:message key="sbi.kpi.button.back.title" bundle="<%=messageBundle%>" />'
-      src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>'
+      src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>'
       alt='<spagobi:message key = "sbi.kpi.button.back.title" bundle="<%=messageBundle%>" />' /> </a></td>
   </tr>
 </table>

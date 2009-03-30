@@ -191,12 +191,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:document.getElementById('modalitiesForm').submit()"> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.paramUse.saveButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' alt='<spagobi:message key = "SBIDev.paramUse.saveButt" />' /> 
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.paramUse.saveButt" />' src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' alt='<spagobi:message key = "SBIDev.paramUse.saveButt" />' /> 
 			</a>
 		</td>
 		<td class='header-button-column-portlet-section'>
 			<a href='<%= backUrl.toString() %>'> 
-      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.paramUse.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBIDev.paramUse.backButt" />' />
+      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBIDev.paramUse.backButt" />' src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' alt='<spagobi:message key = "SBIDev.paramUse.backButt" />' />
 			</a>
 		</td>
 	</tr>
@@ -264,7 +264,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   				//lovLookupURL.setParameter("LOV_LIST",typeLov); %>
   				
   				&nbsp;<input type='image' <%=readonly%> name="loadLovLookup" value="LovLookup" 
-				src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/detail.gif")%>' 
+				src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme)%>' 
 				title='Lov Lookup'  
 				alt='Lov Lookup' 
 		        />

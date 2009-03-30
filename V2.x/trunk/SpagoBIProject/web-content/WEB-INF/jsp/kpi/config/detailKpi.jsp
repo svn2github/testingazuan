@@ -183,7 +183,7 @@
 			<img class='header-button-image-portlet-section'
 			width='22px'
 			height='22px'
-			src='<%=urlBuilder.getResourceLink(request, "/img/info22.png")%>'
+			src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/info22.png",currTheme)%>'
 			name='info'
 			alt='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBunle%>"/>'
 			title='<spagobi:message key = "sbi.kpi.button.info.title" bundle="<%=messageBunle%>"/>'/>
@@ -195,13 +195,13 @@
 			href="javascript:document.getElementById('kpiForm').submit()"> <img
 			class='header-button-image-portlet-section'
 			title='<spagobi:message key = "sbi.kpi.button.save.title" bundle="<%=messageBunle%>" />'
-			src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>'
+			src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>'
 			alt='<spagobi:message key = "sbi.kpi.button.save.title" bundle="<%=messageBunle%>" />' /> </a></td>
 		<td class='header-button-column-portlet-section'><a
 			href='<%=backUrl%>'> <img
 			class='header-button-image-portlet-section'
 			title='<spagobi:message key = "sbi.kpi.button.back.title" bundle="<%=messageBunle%>"/>'
-			src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>'
+			src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>'
 			alt='<spagobi:message key = "sbi.kpi.button.back.title" bundle="<%=messageBunle%>"/>' /> </a></td>
 	</tr>
 </table>

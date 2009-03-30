@@ -95,7 +95,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%= backUrl.toString() %>'> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBIErrorPage.backButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBIErrorPage.backButt" />' />
 			</a>
 		</td>

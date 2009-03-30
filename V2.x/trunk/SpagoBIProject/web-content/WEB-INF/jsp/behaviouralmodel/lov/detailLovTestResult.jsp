@@ -168,7 +168,7 @@ function askForConfirmIfNecessary() {
 		<td class='header-button-column-portlet-section'>
 			<a href= 'javascript:askForConfirmIfNecessary();' >
 				<img class='header-button-image-portlet-section'
-					src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+					src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' 
 					title='<spagobi:message key = "SBIDev.predLov.saveButt" />'  
 					alt='<spagobi:message key = "SBIDev.predLov.saveButt" />' 
 				/>
@@ -178,7 +178,7 @@ function askForConfirmIfNecessary() {
 			<a href="<%=backUrl%>"> 
       				<img class='header-button-image-portlet-section' 
       				     title='<spagobi:message key = "SBISet.Funct.backButt" />' 
-      				     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      				     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
       				     alt='<spagobi:message key = "SBISet.Funct.backButt" />' />
 			</a>
 		</td>

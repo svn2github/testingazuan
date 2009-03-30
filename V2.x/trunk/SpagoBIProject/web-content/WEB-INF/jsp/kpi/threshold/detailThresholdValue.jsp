@@ -177,13 +177,13 @@ String urlColorPicker=urlBuilder.getResourceLink(request,"/js/kpi/colorPicker.js
 			href="javascript:document.getElementById('thresholdValueForm').submit()"> <img
 			class='header-button-image-portlet-section'
 			title='<spagobi:message key = "sbi.kpi.button.save.title" bundle="<%=messageBunle%>" />'
-			src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>'
+			src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>'
 			alt='<spagobi:message key = "sbi.kpi.button.save.title" bundle="<%=messageBunle%>" />' /> </a></td>
 		<td class='header-button-column-portlet-section'><a
 			href='<%=backUrl%>'> <img
 			class='header-button-image-portlet-section'
 			title='<spagobi:message key = "sbi.kpi.button.back.title" bundle="<%=messageBunle%>"/>'
-			src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>'
+			src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>'
 			alt='<spagobi:message key = "sbi.kpi.button.back.title" bundle="<%=messageBunle%>"/>' /> </a></td>
 	</tr>
 </table>

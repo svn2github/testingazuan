@@ -54,7 +54,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.IMPORT_EXPORT_MANAGEMENT)) {%>
 			<tr class="portlet-font" vAlign="middle">
 				<td width="100" align="center">
-					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/importexport/importexport64.png")%>' />
+					<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/tools/importexport/importexport64.png", currTheme)%>' />
 				</td>
 				<td width="20">
 					&nbsp;
@@ -75,7 +75,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.SCHEDULER_MANAGEMENT)) {%>
 			<tr class="portlet-font" vAlign="middle">
 				<td width="100" align="center">
-					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/tools/scheduler/scheduleIcon64_blu.png")%>' />
+					<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/tools/scheduler/scheduleIcon64_blu.png", currTheme)%>' />
 				</td>
 				<td width="20">
 					&nbsp;
@@ -92,7 +92,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.SYNCRONIZE_ROLES_MANAGEMENT)) {%>
 			<tr class="portlet-font" vAlign="middle">
 				<td width="100" align="center">
-					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/rolesynch64.jpg")%>' />
+					<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/rolesynch64.jpg", currTheme)%>' />
 				</td>
 				<td width="20">
 					&nbsp;

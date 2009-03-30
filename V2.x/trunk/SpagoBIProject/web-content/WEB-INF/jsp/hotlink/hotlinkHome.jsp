@@ -136,13 +136,17 @@ Ext.onReady(function(){
     });
     storeRememberMe.loadData(myDataRememberMe);
     
+    <%
+    if(currTheme==null || currTheme.equalsIgnoreCase(""))currTheme="sbi_default";
+    %>
+    
    	var menu = 
 		new Ext.menu.Menu({
 			id:'submenu',
 			items: [{
 				text:'<spagobi:message key = "sbi.hotlink.deleteRememberMe" />',
 				scope: this,
-				icon: '<%= request.getContextPath() %>/img/erase.gif',
+				icon: '<%= request.getContextPath() %>/themes/<%=currTheme%>/img/erase.gif',
 				handler:function(){
 					location.href = storeRememberMe.getAt(menu.rowIndex).get('DeleteUrl');
 				}

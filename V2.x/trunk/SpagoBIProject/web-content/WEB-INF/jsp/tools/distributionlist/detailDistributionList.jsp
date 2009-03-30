@@ -77,14 +77,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href="javascript:saveDL('SAVE')"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "SBISet.ListDL.saveButton" />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+	      				 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "SBISet.ListDL.saveButton"/>' 
 	      			/> 
 				</a>
 			</td>		 
 			<td class='header-button-column-portlet-section'>
 				<input type='image' name='saveAndGoBack' id='saveAndGoBack' onClick="javascript:saveDL('SAVEBACK')" class='header-button-image-portlet-section'
-				       src='<%=urlBuilder.getResourceLink(request, "/img/saveAndGoBack.png")%>' 
+				       src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/saveAndGoBack.png", currTheme)%>' 
       				   title='<spagobi:message key = "SBISet.ListDL.saveBackButton" />'  
                        alt='<spagobi:message key = "SBISet.ListDL.saveBackButton" />' 
 			   />
@@ -93,7 +93,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<a href='javascript:goBack("<%=msgWarningSave%>", "<%=backUrl%>")'> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "SBISet.ListDL.backButton"  />' 
-	      				 src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+	      				 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
 	      				 alt='<spagobi:message key = "SBISet.ListDL.backButton" />' 
 	      			/>
 				</a>

@@ -172,7 +172,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div>
 		<a style="text-decoration:none;" href='javascript:sendTo()' >
 			<img width="32px" height="32px"
-				src='<%= urlBuilder.getResourceLink(request, "/img/tools/importexport/next.png")%>'
+				src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/tools/importexport/next.png", currTheme)%>'
 				alt='<%=msgBuilder.getMessage("sbi.execution.send", "messages", request)%>'
 				title='<%=msgBuilder.getMessage("sbi.execution.send", "messages", request)%>' />
 		</a>

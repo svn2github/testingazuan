@@ -47,7 +47,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.WORKLIST_MANAGEMENT)) {%>
 			<tr class="portlet-font" vAlign="middle">
 				<td width="100" align="center">
-					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/event/todoList_2.png")%>' />
+					<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/event/todoList_2.png", currTheme)%>' />
 				</td>
 				<td width="20">
 					&nbsp;
@@ -64,7 +64,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<% if (userProfile.isAbleToExecuteAction(SpagoBIConstants.EVENTS_MANAGEMENT)) {%>
 			<tr class="portlet-font" vAlign="middle">
 				<td width="100" align="center">
-					<img src='<%=renderResponse.encodeURL(renderRequest.getContextPath() + "/img/event/events.png")%>' />
+					<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/event/events.png", currTheme)%>' />
 				</td>
 				<td width="20">
 					&nbsp;

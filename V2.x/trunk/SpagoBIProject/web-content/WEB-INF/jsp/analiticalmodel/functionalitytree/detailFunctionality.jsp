@@ -90,7 +90,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href="javascript:document.getElementById('formFunct').submit()"> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBISet.Funct.saveButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/save.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBISet.Funct.saveButt" />' />
 			</a>
 		</td>
@@ -99,7 +99,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message 
       			     key = "SBISet.Funct.backButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBISet.Funct.backButt" />'/>
 			</a>
 		</td>
@@ -274,10 +274,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					    <a onclick = "selectAllInRows('<%=ruleId%>')" 
 					       title='<spagobi:message key = "SBISet.Funct.selAllRow" />' 
 					       alt='<spagobi:message key = "SBISet.Funct.selAllRow" />'>
-					    	<img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+					    	<img  src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>'/>
 					    </a>
 					    <a onclick = "deselectAllInRows('<%=ruleId%>')" title='<spagobi:message key = "SBISet.Funct.deselAllRow" />' alt='<spagobi:message key = "SBISet.Funct.deselAllRow" />'>
-					    	<img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
+					    	<img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>'/>
 					    </a>
 					    </td> 
 					 </tr>	
@@ -286,26 +286,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
                         <td align="center">&nbsp;</td>       
                         <td align="center">
                         <a onclick = "selectAllInColumns('development')" title='<spagobi:message key = "SBISet.Funct.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
-                        <img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+                        <img  src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>'/>
                         </a>
 					    <a onclick = "deselectAllInColumns('development')" title='<spagobi:message key = "SBISet.Funct.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
-					    <img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>' />
+					    <img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>' />
 					    </a>
 					    </td>
 					    <td align="center">
                         <a onclick = "selectAllInColumns('test')" title='<spagobi:message key = "SBISet.Funct.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
-                        <img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+                        <img  src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>'/>
                         </a>
 					    <a onclick = "deselectAllInColumns('test')" title='<spagobi:message key = "SBISet.Funct.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
-					    <img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
+					    <img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>'/>
 					    </a>
 					    </td>
 					    <td align="center">
                         <a onclick = "selectAllInColumns('execution')" title='<spagobi:message key = "SBISet.Funct.selAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.selAllColumn" />'>
-                        <img  src='<%=urlBuilder.getResourceLink(request, "/img/expertok.gif")%>'/>
+                        <img  src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>'/>
                         </a>
 					    <a onclick = "deselectAllInColumns('execution')" title='<spagobi:message key = "SBISet.Funct.deselAllColumn" />' alt='<spagobi:message key = "SBISet.Funct.deselAllColumn" />'>
-					    <img src='<%=urlBuilder.getResourceLink(request, "/img/erase.png")%>'/>
+					    <img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>'/>
 					    </a>
 					    </td>
 						<td align="center">&nbsp;</td>   

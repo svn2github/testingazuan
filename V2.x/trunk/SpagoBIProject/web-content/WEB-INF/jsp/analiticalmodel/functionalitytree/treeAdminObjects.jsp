@@ -76,7 +76,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%=viewListUrl%>'> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBISet.objects.listViewButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/listView.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/listView.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBISet.objects.listViewButt" />' /> 
 			</a>		
 		</td>
@@ -84,7 +84,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<td class='header-button-column-portlet-section'>
 			<a href='<%=addUrl%>'> 
       			<img title='<spagobi:message key = "SBISet.devObjects.newObjButt" />' width='25px' height='25px' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/new.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/new.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBISet.devObjects.newObjButt" />' />
 			</a>
 		</td>		
@@ -96,7 +96,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<a href='<%=backUrl%>'> 
       			<img class='header-button-image-portlet-section' 
       			     title='<spagobi:message key = "SBISet.objects.backButt" />' 
-      			     src='<%=urlBuilder.getResourceLink(request, "/img/back.png")%>' 
+      			     src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme)%>' 
       			     alt='<spagobi:message key = "SBISet.objects.backButt" />' />
 			</a>
 		</td>

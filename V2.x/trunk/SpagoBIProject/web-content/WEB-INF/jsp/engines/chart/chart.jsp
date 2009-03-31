@@ -52,21 +52,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 	boolean docComposition=false;
 	SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+	Integer executionAuditId_chart = null;
 	ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 	String execContext = instanceO.getExecutionModality();
    	// if in document composition case do not include header.jsp
 	   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
 				<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
 				<%
-			   }
+				executionAuditId_chart = executionAuditId;	   
+	   }
    		else // in document composition case doesn't call header so set Object and uuid
 			   {
 	   				docComposition=true;
+	   				ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+	   				AuditManager auditManager = AuditManager.getInstance();
+	   				executionAuditId_chart = auditManager.insertAudit(instance.getBIObject(), null, userProfile, instance.getExecutionRole(), instance.getExecutionModality());	   				
 			   }
    	
 	BIObject objO = instanceO.getBIObject();
 	String uuidO=instanceO.getExecutionId();
 	String executionFlowIdO=instanceO.getFlowId();
+	
+	
    	%>
 
 	<%-- div with wait while loading message --%>
@@ -290,7 +297,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		   	
 			//String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
 			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
-					"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path_param+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE";
+					"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path_param+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE"+"&"+AuditManager.AUDIT_ID+"="+executionAuditId_chart.toString();
 			
 			//add the serie parameter
 		if(datasetMap.getSelectedSeries().contains("allseries")){
@@ -806,7 +813,13 @@ if(document.getElementById('refreshimage<%= uuidO %>')){
  
  <% 
 	} // End no error case
-	
+	else
+	{    // ERROR CASE; TRACE ON Sbi_AUDIT
+	AuditManager auditManager = AuditManager.getInstance();
+	if(executionAuditId_chart!=null){
+		auditManager.updateAudit(executionAuditId_chart, null, new Long(System.currentTimeMillis()), "EXECUTION_FAILED", "Config Error", null);		
+	   }
+	}
 	%>
 
 <%-- when the execution is performed, the please while loading message is hidden --%>

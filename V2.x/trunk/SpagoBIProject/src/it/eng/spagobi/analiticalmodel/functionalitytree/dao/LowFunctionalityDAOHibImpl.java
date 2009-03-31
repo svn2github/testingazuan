@@ -693,12 +693,14 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			// update prog column in other functions
 			//String hqlUpdateProg = "update SbiFunctions s set s.prog = (s.prog - 1) where s.prog > " 
 			//	+ hibFunct.getProg() + " and s.parentFunct.functId = " + hibFunct.getParentFunct().getFunctId();
+			if(hibFunct.getParentFunct()!=null){
 			String hqlUpdateProg = "update SbiFunctions s set s.prog = (s.prog - 1) where s.prog > ? " 
 				+ " and s.parentFunct.functId = ?" ;
 			Query query = aSession.createQuery(hqlUpdateProg);
 			query.setInteger(0, hibFunct.getProg().intValue());
 			query.setInteger(1, hibFunct.getParentFunct().getFunctId().intValue());
 			query.executeUpdate();
+			}
 			
 			aSession.delete(hibFunct);
 			

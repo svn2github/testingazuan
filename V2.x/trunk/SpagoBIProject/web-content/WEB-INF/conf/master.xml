@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <MASTER>
 
+<!-- IDEAS  -->
+	<CONFIGURATOR path="/WEB-INF/conf/ideas.xml" />
+	
+	
 <!--  chiron -->	
 	<CONFIGURATOR path="/WEB-INF/conf/chiron/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/chiron/presentation.xml" />
@@ -196,7 +200,7 @@
 	
 	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi_SSO.xml" />	 
-	
+	<CONFIGURATOR path="/WEB-INF/conf/config/CAS.xml" />	
 	 	
 	
 	<!--  Spago Config.    -->

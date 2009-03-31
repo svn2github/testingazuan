@@ -35,6 +35,7 @@ package it.eng.spagobi.engines.chart.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,16 +57,36 @@ public class GetPngAction extends AbstractHttpAction {
 	throws Exception {
 		logger.debug("IN");
 		freezeHttpResponse();
+
+		HttpServletResponse res = getHttpResponse();
+		HttpServletRequest req = getHttpRequest();
+
+		Integer auditId = null;
+		String auditIdStr = req.getParameter("SPAGOBI_AUDIT_ID");
+		AuditManager auditManager = AuditManager.getInstance();
+
+		try{		
+		// AUDIT UPDATE
+		if (auditIdStr == null) {
+		    logger.warn("Audit record id not specified! No operations will be performed");
+		} else {
+		    logger.debug("Audit id = [" + auditIdStr + "]");
+		    auditId = new Integer(auditIdStr);
+		}
+		if (auditId != null) {
+		    auditManager.updateAudit(auditId, new Long(System.currentTimeMillis()), null, "EXECUTION_STARTED", null,
+			    null);
+		}
+		
 		if(!(this.getErrorHandler().isOKBySeverity(EMFErrorSeverity.ERROR))){
 			logger.error("There are errors into the error handler!!!");
-			return;
+			throw new Exception("errors in error handler!");
 		}
 
 		HttpServletResponse response = getHttpResponse();
 		ServletOutputStream out = response.getOutputStream();
 		response.setContentType("image/gif");
 
-		HttpServletRequest req = getHttpRequest();
 		String filePath = (String)serviceRequest.getAttribute("path");
 
 		String dir=System.getProperty("java.io.tmpdir");
@@ -90,6 +111,24 @@ public class GetPngAction extends AbstractHttpAction {
 		}else{ 
 			logger.error("File not correctle deleted");
 		} 
+		
+	    // AUDIT UPDATE
+		if(auditId!=null){
+	    auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), "EXECUTION_PERFORMED", null,
+		    null);
+		}
+		
+		}
+		catch (Exception e) {
+			logger.error("Errors in retrieving the .png content");
+		// Audit Update
+			if(auditId!=null){
+			auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), "EXECUTION_FAILED", e
+				    .getMessage(), null);		
+		   }
+		return;    
+		}
+		
 		logger.debug("OUT");
 
 

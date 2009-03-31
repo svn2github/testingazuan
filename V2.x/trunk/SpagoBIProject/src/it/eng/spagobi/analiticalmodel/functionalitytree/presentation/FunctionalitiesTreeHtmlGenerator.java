@@ -18,18 +18,18 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 
 package it.eng.spagobi.analiticalmodel.functionalitytree.presentation;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.DetailFunctionalityModule;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveDownLowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.MoveUpLowFunctionality;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -70,25 +70,25 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpRequest, String initialPath, String treename) {
 		return makeTree(objectsList, httpRequest, initialPath);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)
 	 */
 	public StringBuffer makeTree(List objectsList, HttpServletRequest httpReq, String initialPath) {
-		
+
 		// identity string for object of the page
-	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-	    UUID uuid = uuidGen.generateTimeBasedUUID();
-	    requestIdentity = uuid.toString();
-	    requestIdentity = requestIdentity.replaceAll("-", "");
+		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		UUID uuid = uuidGen.generateTimeBasedUUID();
+		requestIdentity = uuid.toString();
+		requestIdentity = requestIdentity.replaceAll("-", "");
 		_objectsList = objectsList;
 		httpRequest = httpReq;
 		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 		StringBuffer htmlStream = new StringBuffer();
 
-    	currTheme=ThemesManager.getCurrentTheme(reqCont);
-    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
-		
+		currTheme=ThemesManager.getCurrentTheme(reqCont);
+		if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+
 		urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		htmlStream.append("<LINK rel='StyleSheet' href='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/css/dtree.css", currTheme)+"' type='text/css' />");		
@@ -108,57 +108,69 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("		<td>&nbsp;</td>");
 		htmlStream.append("		<td id='treeFoldersTd" + requestIdentity + "' name='treeFoldersTd" + requestIdentity + "'>&nbsp;</td>");
 		htmlStream.append("			<script language=\"JavaScript1.2\">\n");
-	   	htmlStream.append("				var nameTree = 'treeFunct';\n");
+		htmlStream.append("				var nameTree = 'treeFunct';\n");
 
 		String context=httpRequest.getContextPath();
 		if (!(context.charAt(context.length() - 1) == '/')) {
 			context += '/';
 		}
 		context+="themes/"+currTheme+"/";
-	   	htmlStream.append("				treeFunct = new dTree('treeFunct', '" + context + "');\n");
-	   	htmlStream.append("	        	treeFunct.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
-	   	Iterator it = objectsList.iterator();
-	   	while (it.hasNext()) {
-	   		LowFunctionality folder = (LowFunctionality) it.next();
-	   		/* ********* start luca changes *************** */
-	   		RequestContainer reqCont = ChannelUtilities.getRequestContainer(httpRequest);
+		htmlStream.append("				treeFunct = new dTree('treeFunct', '" + context + "');\n");
+		htmlStream.append("	        	treeFunct.add(" + dTreeRootId + ",-1,'"+nameTree+"');\n");
+		Iterator it = objectsList.iterator();
+		while (it.hasNext()) {
+			LowFunctionality folder = (LowFunctionality) it.next();
+			/* ********* start luca changes *************** */
+			RequestContainer reqCont = ChannelUtilities.getRequestContainer(httpRequest);
 			SessionContainer sessionContainer = reqCont.getSessionContainer();
 			SessionContainer permanentSession = sessionContainer.getPermanentContainer();
-	        IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	   		/*boolean isUserFunct = folder.getPath().startsWith("/"+((UserProfile)profile).getUserId());
+			IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			/*boolean isUserFunct = folder.getPath().startsWith("/"+((UserProfile)profile).getUserId());
 	   		if(isUserFunct) {
 	   			continue;
 	   		}*/
-	        
-	   		/* ********* end luca changes ***************** */
-	   		if (initialPath != null) {
-	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, true);
-	   			else addItemForJSTree(htmlStream, folder, false);
-	   		} else {
-	   			if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true);
-	   			else addItemForJSTree(htmlStream, folder, false);
-	   		}
-	   	}
-    	//htmlStream.append("				document.write(treeFunct);\n");
-	   	htmlStream.append("				document.getElementById('treeFoldersTd" + requestIdentity + "').innerHTML = treeFunct;\n");
-    	makeJSFunctionForMenu(htmlStream);	
+
+			/* ********* end luca changes ***************** */
+			if (initialPath != null) {
+				if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, true, profile);
+				else addItemForJSTree(htmlStream, folder, false, profile);
+			} else {
+				if (folder.getParentId() == null) addItemForJSTree(htmlStream, folder, true, profile);
+				else addItemForJSTree(htmlStream, folder, false, profile);
+			}
+		}
+		//htmlStream.append("				document.write(treeFunct);\n");
+		htmlStream.append("				document.getElementById('treeFoldersTd" + requestIdentity + "').innerHTML = treeFunct;\n");
+		makeJSFunctionForMenu(htmlStream);	
 		htmlStream.append("			</script>\n");
 		htmlStream.append("	</tr>");
 		htmlStream.append("</table>");
 		return htmlStream;
 	}
 
-	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot) {
-		
+	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot, IEngUserProfile profile) {
+
 		String nameLabel = folder.getName();
 		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
 		String path = folder.getPath();
 		String codeType = folder.getCodType();
+		boolean user_funct=codeType.equalsIgnoreCase("USER_FUNCT") ? true : false;
 		Integer id = folder.getId();
 		Integer parentId = folder.getParentId();
 
 		if (isRoot) {
-			htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'\\', \\'\\', \\'\\', \\'\\')');\n");
+			try{
+				//if is not user_func will be only possible to insert, if it is user_funct and the user is admin can erase
+				if (user_funct==true && profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+					htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'\\', \\'"+createRemoveFunctionalityLink(path)+"\\', \\'\\', \\'\\')');\n");
+				}
+				else {			
+					htmlStream.append("	treeFunct.add(" + id + ", " + dTreeRootId + ",'" + name + "', 'javascript:linkEmpty()', '', '', '', '', 'true', 'menu" + requestIdentity + "(event, \\'"+createAddFunctionalityLink(path)+"\\', \\'\\', \\'\\', \\'\\', \\'\\')');\n");
+				}
+			} catch (EMFInternalError e) {
+				e.printStackTrace();
+			}
+
 		} else {
 			if (codeType.equalsIgnoreCase(SpagoBIConstants.LOW_FUNCTIONALITY_TYPE_CODE)) {
 				String imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolder.gif", currTheme);
@@ -173,7 +185,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 	 */
 	/*
 	private void makeConfigurationDtree(StringBuffer htmlStream) {
-		
+
 		htmlStream.append("<SCRIPT>\n");
 		htmlStream.append("		function dTree(objName) {\n");
 		htmlStream.append("			this.config = {\n");
@@ -212,10 +224,10 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		htmlStream.append("			this.completed = false;\n");
 		htmlStream.append("		};\n");
 		htmlStream.append("</SCRIPT>\n");
-		
+
 	}
-	*/
-	
+	 */
+
 	/**
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.AdminTreeHtmlGenerator#makeJSFunctionForMenu(java.lang.StringBuffer)
 	 */
@@ -238,7 +250,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 
 		htmlStream.append("		function linkEmpty() {\n");
 		htmlStream.append("		}\n");
-		
+
 		// js function for item action confirm
 		String confirmCaption = msgBuilder.getMessage("SBISet.TreeFunct.confirmCaption", "messages", httpRequest);
 		htmlStream.append("		function actionConfirm(message, url){\n");
@@ -282,12 +294,12 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 			return "";
 		}
 	}
-	
-	
+
+
 	private boolean canBeMovedUp(LowFunctionality folder) {
 		return !(folder.getProg().intValue() == 1);
 	}
-	
+
 	private boolean canBeMovedDown(LowFunctionality folder) {
 		Integer parentId = folder.getParentId();
 		Integer currentProg = folder.getProg();
@@ -328,7 +340,7 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		String delUrl = urlBuilder.getUrl(httpRequest, delUrlParamsMap);
 		return delUrl;
 	}
-	
+
 	/**
 	 * Create the URL to call the create functionality operation.
 	 * @param path	The object tree path String
@@ -343,8 +355,8 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 		String createUrl = urlBuilder.getUrl(httpRequest, createUrlParamsMap);
 		return createUrl;
 	}
-	
-	
+
+
 
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.ITreeHtmlGenerator#makeAccessibleTree(java.util.List, javax.servlet.http.HttpServletRequest, java.lang.String)

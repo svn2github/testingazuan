@@ -32,11 +32,11 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 /**
- * This class contain the specific code of CAS 
+ * This class contain the specific code for TAM
  */
-public class FakeSsoService implements SsoServiceInterface {
+public class TamSsoService implements SsoServiceInterface {
 
-    static private Logger logger = Logger.getLogger(FakeSsoService.class);
+    static private Logger logger = Logger.getLogger(TamSsoService.class);
     
     /**
      * Read user id.
@@ -46,8 +46,8 @@ public class FakeSsoService implements SsoServiceInterface {
      * @return String
      */
     public String readUserIdentifier(HttpServletRequest request){
-	String user=request.getParameter(SsoServiceInterface.USER_ID);
-	logger.debug("CAS user in HttpRequest:"+user);
+	String user=request.getHeader("iv-user");
+	logger.debug("User in HttpHeader (TAM):"+user);
 	return user;
     }
     
@@ -59,7 +59,7 @@ public class FakeSsoService implements SsoServiceInterface {
      * @return String
      */
     public String readUserIdentifier(PortletSession session){
-	logger.debug("NOT Implemented");
+	logger.warn("NOT Implemented");
 	return "";
     }
     
@@ -67,7 +67,6 @@ public class FakeSsoService implements SsoServiceInterface {
      * Get a new ticket.
      * 
      * @param session HttpSession
-     * @param filterReceipt String
      * 
      * @return String
      * 
@@ -82,8 +81,6 @@ public class FakeSsoService implements SsoServiceInterface {
      * 
      * @param ticket String, ticket to validate
      * @param userId String, user id
-     * @param validateUrl String
-     * @param validateService String
      * 
      * @return String
      * 

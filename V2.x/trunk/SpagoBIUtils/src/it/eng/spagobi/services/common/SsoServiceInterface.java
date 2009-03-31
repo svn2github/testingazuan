@@ -42,19 +42,16 @@ public interface SsoServiceInterface {
      * 
      * @param ticket String
      * @param userId String
-     * @param validateUrl String
-     * @param validateService String
      * @throws SecurityException String
      */
-    void validateTicket(String ticket, String userId,String validateUrl,String validateService) throws SecurityException;
+    void validateTicket(String ticket, String userId) throws SecurityException;
     /**
      * 
      * @param session Http Session
-     * @param filterReceipt String
      * @return String
      * @throws IOException
      */
-    String readTicket(HttpSession session,String filterReceipt) throws IOException;
+    String readTicket(HttpSession session) throws IOException;
     /**
      * 
      * @param session Http Session

@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.services.cas;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 
@@ -75,14 +78,20 @@ public class CasSsoService implements SsoServiceInterface {
      * Get a new ticket.
      * 
      * @param session HttpSession
-     * @param filterReceipt String
      * 
      * @return String
      * 
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    public String readTicket(HttpSession session,String filterReceipt) throws IOException{
-	    logger.debug("IN.filterReceipt="+filterReceipt);
+    public String readTicket(HttpSession session) throws IOException{
+	    logger.debug("IN");
+	    String spagoBiServerURL = EnginConf.getInstance().getSpagoBiServerUrl();
+	    logger.debug("Read spagoBiServerURL=" + spagoBiServerURL);
+	    SourceBean engineConfig = EnginConf.getInstance().getConfig();
+	    SourceBean sourceBeanConf = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
+	    String filterReceipt = (String) sourceBeanConf.getCharacters();
+	    logger.debug("Read filterReceipt=" + filterReceipt);
+	    filterReceipt = spagoBiServerURL + filterReceipt;
 	    CASReceipt cr = (CASReceipt) session.getAttribute(CASFilter.CAS_FILTER_RECEIPT);
 	    logger.debug("Read cr=" + cr);
 	    if (cr==null) logger.warn("CASReceipt in session is NULL");
@@ -96,18 +105,26 @@ public class CasSsoService implements SsoServiceInterface {
      * 
      * @param ticket String, ticket to validate
      * @param userId String, user id
-     * @param validateUrl String
-     * @param validateService String
      * 
      * @return String
      * 
      * @throws SecurityException the security exception
      */
-    public void validateTicket(String ticket, String userId,String validateUrl,String validateService)throws SecurityException {
+    public void validateTicket(String ticket, String userId)throws SecurityException {
 	logger.debug("IN");
+	ConfigSingleton config = ConfigSingleton.getInstance();
+	String validateUrl=null;
+	String validateService=null;
+	if (config!=null){
+		// only server side...
+    	SourceBean validateSB = (SourceBean) config.getAttribute("CAS_SSO.VALIDATE-USER.URL");
+    	validateUrl = (String) validateSB.getCharacters();
+    	logger.debug("Read validateUrl=" + validateUrl);
+    	validateSB = (SourceBean) config.getAttribute("CAS_SSO.VALIDATE-USER.SERVICE");
+    	validateService =  (String) validateSB.getCharacters();
+    	logger.debug("Read validateService=" + validateService);
+	}
 	logger.debug("userId:"+userId);
-	logger.debug("validateUrl:"+validateUrl);
-	logger.debug("validateService:"+validateService);
 	try {
 	    ProxyTicketValidator pv = null;
 	    pv = new ProxyTicketValidator();

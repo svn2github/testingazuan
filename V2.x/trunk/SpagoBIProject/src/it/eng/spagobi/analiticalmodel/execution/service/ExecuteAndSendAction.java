@@ -33,16 +33,9 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionController;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ExecutionProxy;
 import it.eng.spagobi.commons.utilities.UserUtilities;
-import it.eng.spagobi.services.common.SsoServiceFactory;
-import it.eng.spagobi.services.common.SsoServiceInterface;
-import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
-import it.eng.spagobi.services.security.exceptions.SecurityException;
-import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
-import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -125,10 +125,11 @@ public class FunctionalitiesTreeHtmlGenerator implements ITreeHtmlGenerator {
 			SessionContainer sessionContainer = reqCont.getSessionContainer();
 			SessionContainer permanentSession = sessionContainer.getPermanentContainer();
 	        IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	   		boolean isUserFunct = folder.getPath().startsWith("/"+((UserProfile)profile).getUserId());
+	   		/*boolean isUserFunct = folder.getPath().startsWith("/"+((UserProfile)profile).getUserId());
 	   		if(isUserFunct) {
 	   			continue;
-	   		}
+	   		}*/
+	        
 	   		/* ********* end luca changes ***************** */
 	   		if (initialPath != null) {
 	   			if (initialPath.equalsIgnoreCase(folder.getPath())) addItemForJSTree(htmlStream, folder, true);

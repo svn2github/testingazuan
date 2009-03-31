@@ -372,8 +372,12 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 	    // gets the ModelInstanceNode
 	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceByLabel(modelNodeInstance, this.dateOfKPI);
-	    logger.debug("ModelInstanceNode, ID=" + (mI.getModelInstanceNodeId()!=null ? mI.getModelInstanceNodeId().toString():"null"));
-	    logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
+	    if (mI==null) {
+	    	logger.error("MODEL INSTANCE IS NULL, CHECK model_node_instance IN DOCUMENT TEMPLATE.!!!!!!!!!!!!!!");
+	    }else {
+	    	logger.debug("ModelInstanceNode, ID=" + (mI.getModelInstanceNodeId()!=null ? mI.getModelInstanceNodeId().toString():"null"));
+	        logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
+	    }
 	    // I set the list of resources of that specific ModelInstance
 	    if (this.resources == null || this.resources.isEmpty()) {
 	    	this.resources = mI.getResources();

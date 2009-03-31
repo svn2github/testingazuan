@@ -34,8 +34,7 @@ public abstract class AbstractServiceImpl {
 
     static private Logger logger = Logger.getLogger(AbstractServiceImpl.class);
 
-    protected String validateUrl = null;
-    protected String validateService = null;
+
     private String pass = null;
 
     /**
@@ -48,13 +47,7 @@ public abstract class AbstractServiceImpl {
     private void init() {
 	logger.debug("IN");
 	ConfigSingleton config = ConfigSingleton.getInstance();
-	SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.VALIDATE-USER.URL");
-	validateUrl = (String) validateSB.getCharacters();
-	logger.debug("Read validateUrl=" + validateUrl);
-	validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.VALIDATE-USER.SERVICE");
-	validateService =  (String) validateSB.getCharacters();
-	logger.debug("Read validateService=" + validateService);
-	validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.PASS");
+	SourceBean validateSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.PASS");
 	pass = (String) validateSB.getCharacters();
 
     }
@@ -84,8 +77,7 @@ public abstract class AbstractServiceImpl {
 		} else {
 			SsoServiceInterface proxyService = SsoServiceFactory
 					.createProxyService();
-			proxyService.validateTicket(ticket, userId, validateUrl,
-					validateService);
+			proxyService.validateTicket(ticket, userId);
 		}
 
 		logger.debug("OUT");

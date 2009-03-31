@@ -23,8 +23,6 @@ package it.eng.spagobi.services.proxy;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.container.IBeanContainer;
-import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.common.SsoServiceInterface;
@@ -44,7 +42,6 @@ public abstract class AbstractServiceProxy {
 
     private HttpSession session;
 
-    private String filterReceipt = null;
     protected URL serviceUrl = null;
     protected String userId = null;
     protected boolean isSecure = true; // if false don't sent a valid ticket
@@ -83,12 +80,8 @@ public abstract class AbstractServiceProxy {
 		if (engineConfig != null) {
 
 		    String spagoBiServerURL = EnginConf.getInstance().getSpagoBiServerUrl();
-		    logger.debug("Read spagoBiServerURL=" + spagoBiServerURL);
-		    SourceBean sourceBeanConf = (SourceBean) engineConfig.getAttribute("FILTER_RECEIPT");
-		    filterReceipt = (String) sourceBeanConf.getCharacters();
-		    logger.debug("Read filterReceipt=" + filterReceipt);
-		    filterReceipt = spagoBiServerURL + filterReceipt;    
-		    sourceBeanConf = (SourceBean) engineConfig.getAttribute(className + "_URL");
+		    logger.debug("Read spagoBiServerURL=" + spagoBiServerURL);  
+		    SourceBean sourceBeanConf = (SourceBean) engineConfig.getAttribute(className + "_URL");
 		    String serviceUrlStr = (String) sourceBeanConf.getCharacters();
 		    logger.debug("Read serviceUrl=" + serviceUrlStr);
 		    try {
@@ -114,7 +107,7 @@ public abstract class AbstractServiceProxy {
 		}
 		if ( ! UserProfile.isSchedulerUser(userId) ) {
 		    SsoServiceInterface proxyService = SsoServiceFactory.createProxyService();
-		    return proxyService.readTicket(session, filterReceipt);
+		    return proxyService.readTicket(session);
 		} else
 		    return "";
 

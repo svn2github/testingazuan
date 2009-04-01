@@ -85,6 +85,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     }
 %>
 
+<%@page import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
 <form action="<%=formAct%>" method="post" id='formFunct' name = 'formFunct'>
 
 <table class='header-table-portlet-section'>		
@@ -565,11 +566,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<select name="staticpage" size="1" class='portlet-form-input-field'>
 				<option value=""> </option>
 					<%//Insert all options (only HTML files) 
+					ConfigSingleton configSingleton = ConfigSingleton.getInstance();
+					SourceBean sb = (SourceBean)configSingleton.getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
+					String path = (String) sb.getCharacters();
+					String resourcePath= SpagoBIUtilities.readJndiResource(path);
+					resourcePath+="/static_menu";
 					String currentStaticPage=menu.getStaticPage();
-					// Get directory
-					String rootPath=ConfigSingleton.getRootPath();
-					String dirPath=rootPath + System.getProperty("file.separator") + "static_content";
-					File dir=new File(dirPath);
+					File dir=new File(resourcePath);
 					if (dir!=null && dir.isDirectory()){
 						// get all avalaible files
 						String[] files=dir.list();
@@ -579,13 +582,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							String ext=fileName.substring(fileName.indexOf(".")+1);
 							selected="";
 							if(ext.equalsIgnoreCase("html") || ext.equalsIgnoreCase("htm")){
-								if(fileName.equals(currentStaticPage)) selected="selected='selected'";
+								if(currentStaticPage!=null && fileName.equals(currentStaticPage)) selected="selected='selected'";
 								%>
 								<option value="<%=fileName%>" <%=selected%>><%=fileName%></option>
 								<%
 							} 
 						}
 					}
+
 					%>
 			</select>	
 		</div>

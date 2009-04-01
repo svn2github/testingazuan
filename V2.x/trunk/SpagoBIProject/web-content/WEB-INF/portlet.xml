@@ -549,5 +549,36 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         <keywords>KPI Configuration</keywords>
       </portlet-info>
     </portlet>
+    
+    
+   <portlet>
+      <description>Documents Browser</description>    
+      <portlet-name>DocumentsBrowser</portlet-name>   
+      <display-name>Documents Browser</display-name>    
+      <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+      <init-param>
+        <name>serviceType</name>
+        <value>ACTION</value>
+      </init-param>
+      <init-param>
+        <name>serviceName</name>
+        <value>DOCUMENT_USER_BROWSER_START_ACTION</value>
+      </init-param>
+      <init-param>
+        <name>light_navigation</name>
+        <value>ENABLED</value>
+      </init-param>           
+      <expiration-cache>0</expiration-cache>
+      <supports>
+        <mime-type>text/html</mime-type>
+        <portlet-mode>VIEW</portlet-mode>
+      </supports>
+      <supported-locale>en</supported-locale>
+      <portlet-info>
+        <title>Documents Browser</title>
+        <short-title>DocumentsBrowser</short-title>
+        <keywords>Documents Browser</keywords>
+      </portlet-info>
+    </portlet>
   
 </portlet-app>

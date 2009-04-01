@@ -183,19 +183,21 @@
     <CONFIGURATOR path="/WEB-INF/conf/hotlink/validation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/hotlink/business_map.xml" />
 	
-	<!-- webapp -->
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/messages.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/modules.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/pages.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/presentation.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/publishers.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/authorizations.xml" /> 
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/technical_user_menu.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/final_users_functionalities.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/actions.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/business_map.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/validation.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />
+<!-- webapp -->
+<!--
+<CONFIGURATOR path="/WEB-INF/conf/webapp/messages.xml" />
+<CONFIGURATOR path="/WEB-INF/conf/webapp/modules.xml" />
+<CONFIGURATOR path="/WEB-INF/conf/webapp/pages.xml" />
+<CONFIGURATOR path="/WEB-INF/conf/webapp/presentation.xml" />
+<CONFIGURATOR path="/WEB-INF/conf/webapp/publishers.xml" />
+<CONFIGURATOR path="/WEB-INF/conf/webapp/authorizations.xml" /> 
+<CONFIGURATOR path="/WEB-INF/conf/webapp/technical_user_menu.xml" />
+<CONFIGURATOR path="/WEB-INF/conf/webapp/final_users_functionalities.xml" />
+<CONFIGURATOR path="/WEB-INF/conf/webapp/actions.xml" />
+<CONFIGURATOR path="/WEB-INF/conf/webapp/business_map.xml" />
+<CONFIGURATOR path="/WEB-INF/conf/webapp/validation.xml" />
+<CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />
+-->
 
 	
 	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />

@@ -5,7 +5,7 @@ To switch into Web mode you have to:
 
 1) change the parameter 'mode' inside the configuration file 'WEB-INF/conf/spagobi/spagobi.xml'
 
-<SPAGOBI-MODE mode="WEB" />
+<SPAGOBI-MODE mode="WEB"/>
 <!-- SPAGOBI-MODE mode="PORTLET" /--> 
 
 

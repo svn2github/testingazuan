@@ -57,26 +57,28 @@ Sbi.browser.DocumentsBrowser = function(config) {
         minWidth: 0,
         layout: 'fit'                
     });
+	
+	var c = Ext.apply({}, config, {
+		layout: 'border',
+	    border: false,
+	    items: [ 
+	            // CENTER REGION ---------------------------------------------------------
+	            this.detailPanel, 
+	            // WEST REGION -----------------------------------------------------------
+	            this.treePanel
+	            // NORTH HREGION -----------------------------------------------------------
+	            /*
+	          	new Sbi.browser.Toolbar({
+	            	region: 'north',
+	            	margins: '3 3 3 3',
+	            	autoScroll: false,
+	            	height: 30,
+	            	layout: 'fit'
+	          	})*/
+	        ]
+	});   
     
-    Sbi.browser.DocumentsBrowser.superclass.constructor.call(this, {
-      layout: 'border',
-       border: false,
-       items: [ 
-          // CENTER REGION ---------------------------------------------------------
-          this.detailPanel, 
-          // WEST REGION -----------------------------------------------------------
-          this.treePanel
-          // NORTH HREGION -----------------------------------------------------------
-          /*
-          new Sbi.browser.Toolbar({
-            region: 'north',
-            margins: '3 3 3 3',
-            autoScroll: false,
-            height: 30,
-            layout: 'fit'
-          })*/
-        ]
-    });
+    Sbi.browser.DocumentsBrowser.superclass.constructor.call(this, c);
     
     this.treePanel.addListener('click', this.onTreeNodeClick, this);
     this.detailPanel.addListener('ondocumentclick', this.onDocumentClick, this);

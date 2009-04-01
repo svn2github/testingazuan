@@ -3,8 +3,7 @@
 
     <!-- ********************* START MODE CONFIGURATION ************************ -->
 
-	 <!-- SPAGOBI-MODE mode="WEB" -->
-	 	 <SPAGOBI-MODE mode="WEB"/>
+	<SPAGOBI-MODE mode="PORTLET"/>
 
     <!-- ********************* END MODE CONFIGURATION ************************** -->
      
@@ -26,9 +25,28 @@
      
     <!-- ********************* START SECURITY CONFIGURATION ************************ -->
      
+<SECURITY>
+<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
+<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoSecurityProviderImpl">
+<CONFIG>
+<NAME_PORTAL_APPLICATION>portal</NAME_PORTAL_APPLICATION>
+</CONFIG>
+</PORTAL-SECURITY-CLASS>
+<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoUserProfileImpl">
+</USER-PROFILE-FACTORY-CLASS>
+<ROLE-NAME-PATTERN-FILTER>/spagobi/.*</ROLE-NAME-PATTERN-FILTER>
+<ROLE-TYPE-PATTERNS>
+<ADMIN-PATTERN>/spagobi/admin</ADMIN-PATTERN>
+<DEV_ROLE-PATTERN>/spagobi/dev</DEV_ROLE-PATTERN>
+<TEST_ROLE-PATTERN>/spagobi/test</TEST_ROLE-PATTERN>
+<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
+</ROLE-TYPE-PATTERNS>
+</SECURITY>
+     
+     
      <!-- Xml (Spago framework) security Provider    -->
-
-     <SECURITY>
+	<!--  
+	<SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.XmlSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.XmlSecurityInfoProviderImpl">
 			<CONFIG />
@@ -42,6 +60,7 @@
 	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
     	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
+	 -->
 
 
 
@@ -62,8 +81,9 @@
     	</ROLE-TYPE-PATTERNS>
 	</SECURITY>
 	--> 
-     <!-- Exo security Provider  
-    
+     
+<!-- Exo security Provider  -->
+<!--
      <SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
 		<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoSecurityProviderImpl">
@@ -81,8 +101,7 @@
 	    	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
     	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
-
-	 -->
+ -->
 
          
     <!-- ********************* END SECURITY CONFIGURATION ************************** --> 

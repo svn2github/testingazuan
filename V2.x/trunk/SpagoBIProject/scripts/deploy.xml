@@ -48,7 +48,7 @@
 <listener-class>org.exoplatform.services.portletcontainer.impl.servlet.PortletApplicationListener</listener-class>
 </listener>]]></replacevalue>
 					
-		<replacetoken><![CDATA[<!-- 
+		<replacetoken><![CDATA[<!--
 <listener>
 <listener-class>org.exoplatform.services.portletcontainer.impl.servlet.PortletApplicationListener</listener-class>
 </listener>
@@ -190,16 +190,16 @@
 		
 		<!-- Comment PortletApplication Listener in file web.xm -->
 		<replace file="${webinf.dir}/web.xml">
-			<replacetoken><![CDATA[
+			<replacevalue><![CDATA[
 <listener>
 <listener-class>org.exoplatform.services.portletcontainer.impl.servlet.PortletApplicationListener</listener-class>
-</listener>]]></replacetoken>
+</listener>]]></replacevalue>
 					
-		<replacevalue><![CDATA[<!-- 
+		<replacetoken><![CDATA[<!-- 
 <listener>
 <listener-class>org.exoplatform.services.portletcontainer.impl.servlet.PortletApplicationListener</listener-class>
 </listener>
--->]]></replacevalue>
+-->]]></replacetoken>
 		</replace>
 		
 		<!-- Comment PortletWrapper servlet in file web.xm -->

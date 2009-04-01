@@ -25,6 +25,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.wapp.bo.Menu;
 
 import java.io.FileInputStream;
@@ -52,6 +53,11 @@ public class ReadHtmlFile extends AbstractHttpAction{
 			Menu menu=DAOFactory.getMenuDAO().loadMenuByID(Integer.valueOf(menuId));
 			String fileName=menu.getStaticPage();
 			
+			if (fileName==null) {
+				logger.error("Menu with id = " + menu.getMenuId() + " has no file name specified");
+				throw new Exception("Menu has no file name specified");
+			}
+
 			// check the validity of the fileName (it must not be a path)
 			// TODO remove this control and write better this action, or remove the action at all
 			if (fileName.contains("\\") || fileName.contains("/") || fileName.contains("..")) {
@@ -60,11 +66,24 @@ public class ReadHtmlFile extends AbstractHttpAction{
 			}
 			
 			logger.debug("fileName="+fileName);
-			String rootPath=ConfigSingleton.getRootPath();
-			String filePath=rootPath+System.getProperty("file.separator")+"static_content"+System.getProperty("file.separator")+fileName;
+			
+			ConfigSingleton configSingleton = ConfigSingleton.getInstance();
+			SourceBean sb = (SourceBean)configSingleton.getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
+			String path = (String) sb.getCharacters();
+			String filePath= SpagoBIUtilities.readJndiResource(path);
+			filePath+="/static_menu/"+fileName;
+			
 			logger.debug("filePath="+filePath);
-			FileInputStream fis=new FileInputStream(filePath);
-
+			
+			FileInputStream fis=null;
+			try{
+			fis=new FileInputStream(filePath);
+			}
+			catch (Exception e) {
+				logger.error("Could not open file "+filePath);
+				throw new Exception("Could not open file");
+			}
+			
 			int avalaible = fis.available();   // Mi informo sul num. bytes.
 
 			for(int i=0; i<avalaible; i++) {
@@ -77,8 +96,8 @@ public class ReadHtmlFile extends AbstractHttpAction{
 			logger.debug("OUT");
 		}
 		else{
-		    logger.error("missin id");
-			throw new Exception("missin id");
+		    logger.error("missing id");
+			throw new Exception("missing id");
 		}
 	}
 

@@ -376,7 +376,7 @@ public class SpagoBIUtilities {
 		return path;
 	}      
 
-	private static String readJndiResource(String jndiName) {
+	public static String readJndiResource(String jndiName) {
 		logger.debug("IN.jndiName="+jndiName);
 		String value=null;
 		try {

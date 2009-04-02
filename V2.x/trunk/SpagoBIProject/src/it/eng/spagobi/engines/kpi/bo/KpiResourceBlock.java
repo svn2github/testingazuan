@@ -20,6 +20,7 @@ import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,19 +43,22 @@ public class KpiResourceBlock {
 	Resource r = null;
 	KpiLine root = null;
 	Date d = null;
+	protected HashMap parMap;
 	protected String currTheme="";
 	protected RequestContainer requestContainer = null;
 	
-	public KpiResourceBlock(Resource r, KpiLine root, Date d) {
+	public KpiResourceBlock(Resource r, KpiLine root, Date d, HashMap parMap) {
 		super();
 		this.r = r;
 		this.root = root;
 		this.d = d;
+		this.parMap = parMap;
 	}
 	
 	public KpiResourceBlock() {
 		super();
 		this.d = new Date();
+		this.parMap = new HashMap();
 	}
 
 	public Resource getR() {
@@ -77,6 +81,15 @@ public class KpiResourceBlock {
 	public void setD(Date d) {
 		this.d = d;
 	}
+	
+	public HashMap getParMap() {
+		return parMap;
+	}
+
+	public void setParMap(HashMap parMap) {
+		this.parMap = parMap;
+	}	
+	
 	
 	public StringBuffer makeTree(ExecutionInstance instanceO,String userId,HttpServletRequest httpReq, Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight,Boolean show_axis ){
 		logger.debug("IN");
@@ -135,6 +148,14 @@ public class KpiResourceBlock {
 		String trendImgSrc = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/kpi/trend.jpg",currTheme);
 		String modelName = line.getModelNodeName();
 		String modelCode = line.getModelInstanceCode();
+		String timeRangeFrom = null;
+		String timeRangeTo = null;
+		if (parMap!=null && !parMap.isEmpty() && parMap.containsKey("TimeRangeFrom")){
+		  timeRangeFrom = (String) parMap.get("TimeRangeFrom");
+		}
+		if (parMap!=null && !parMap.isEmpty() && parMap.containsKey("TimeRangeTo")){
+		  timeRangeTo = (String) parMap.get("TimeRangeTo");
+		}
 		if(modelCode!=null && !modelCode.equals("")){
 			modelName = modelCode+" - "+ modelName;
 		}
@@ -318,13 +339,25 @@ public class KpiResourceBlock {
 					execUrlParMap.put("RESOURCE_ID",r.getId()!=null ? r.getId().toString(): "");
 					execUrlParMap.put("RESOURCE_NAME", r.getName());
 				}
-				if (d!=null){
-					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
-					String format = (String) formatSB.getAttribute("format");
-					SimpleDateFormat f = new SimpleDateFormat();
-					f.applyPattern(format);	
+				SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+				String format = (String) formatSB.getAttribute("format");
+				SimpleDateFormat f = new SimpleDateFormat();
+				f.applyPattern(format);	
+				if (d!=null){	
 				    String dat = f.format(d);
 				    execUrlParMap.put("END_DATE", dat);						
+				}
+				if (timeRangeFrom!=null && timeRangeTo!=null){
+					try{
+						Date timeR_From = f.parse(timeRangeFrom);
+						Date timeR_To = f.parse(timeRangeTo);
+						if (timeR_From.before(timeR_To)){
+							execUrlParMap.put("TimeRangeFrom", timeRangeFrom);	
+							execUrlParMap.put("TimeRangeTo", timeRangeTo);	
+						}
+					} catch (ParseException e) {
+					    logger.error("ParseException.value=" + value, e);
+					}
 				}
 				if (kpiVal!=null) execUrlParMap.put("KPI_INST_ID",kpiVal.getKpiInstanceId()!=null ? kpiVal.getKpiInstanceId().toString():"");
 				
@@ -389,13 +422,26 @@ public class KpiResourceBlock {
 				if (r!=null){
 					execUrlParMap.put(r.getColumn_name(), r.getName());
 				}
-				if (d!=null){
-					SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
-					String format = (String) formatSB.getAttribute("format");
-					SimpleDateFormat f = new SimpleDateFormat();
-					f.applyPattern(format);	
+				SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+				String format = (String) formatSB.getAttribute("format");
+				SimpleDateFormat f = new SimpleDateFormat();
+				f.applyPattern(format);
+				
+				if (d!=null){						
 				    String dat = f.format(d);
 				    execUrlParMap.put("ParKpiDate", dat);						
+				}
+				if (timeRangeFrom!=null && timeRangeTo!=null){
+					try {
+						Date timeR_From = f.parse(timeRangeFrom);
+						Date timeR_To = f.parse(timeRangeTo);
+						if (timeR_From.before(timeR_To)){
+							execUrlParMap.put("TimeRangeFrom", timeRangeFrom);	
+							execUrlParMap.put("TimeRangeTo", timeRangeTo);	
+						}
+					} catch (ParseException e) {
+					    logger.error("ParseException.value=" + value, e);
+					}
 				}
 				String docLinked = msgBuilder.getMessage("sbi.kpi.docLinked", httpReq);
 				String docHref = urlBuilder.getUrl(httpRequest, execUrlParMap);
@@ -452,6 +498,7 @@ public class KpiResourceBlock {
 			}
 		}
 		return url;
-	}	
+	}
+
 	
 }

@@ -85,6 +85,15 @@ public interface IKpiDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public String getKpiTrendXmlResult(Integer resId, Integer kpiInstId, Date endDate) throws SourceBeanException;
+	
+	/**
+	 * Returns a List of all the the Threshols of the KpiInstance
+	 * 
+	 * @param Integer resId, Integer kpiInstId, String endDate
+	 * @return List of all the the Threshols of the KpiInstance
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public String getKpiTrendXmlResult(Integer resId, Integer kpiInstId, Date beginDate , Date endDate) throws SourceBeanException;
 
 	/**
 	 * Returns an Integer representing the seconds of the Periodicity with id periodicityId

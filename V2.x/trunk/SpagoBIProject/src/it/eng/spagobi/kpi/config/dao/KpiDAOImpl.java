@@ -473,6 +473,71 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 		return toReturn;
 	}
+	
+	public String getKpiTrendXmlResult(Integer resId, Integer kpiInstId, Date beginDate , Date endDate) throws SourceBeanException{
+		
+		logger.debug("IN");
+		String toReturn = "";
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criteria finder = aSession.createCriteria(SbiKpiValue.class);
+			finder
+					.add(Expression.eq("sbiKpiInstance.idKpiInstance",
+							kpiInstId));
+			finder.add(Expression.le("beginDt", endDate));
+			finder.add(Expression.ge("beginDt", beginDate));
+			logger.debug("Begin and End Date Criteria Setted");
+
+			if (resId != null) {
+				finder.add(Expression.eq("sbiResources.resourceId", resId));
+				logger.debug("Resource setted");
+			} else {
+				//finder.add(Expression.eq("sbiResources.resourceId", null));
+				logger.debug("Null resource setted");
+			}
+			SourceBean sb = new SourceBean("ROWS");
+			finder.addOrder(Order.desc("beginDt"));
+			logger.debug("Order Date Criteria setted");
+
+			List l = finder.list();
+			if (!l.isEmpty()) {
+				logger.debug("The result list is not empty");
+				for (int k = l.size() - 1; k >= 0; k--) {
+					SbiKpiValue temp = (SbiKpiValue) l.get(k);
+					SourceBean sb2 = new SourceBean("ROW");
+					if (temp.getValue() != null) {
+						sb2.setAttribute("x", temp.getBeginDt());
+						sb2.setAttribute("KPI_VALUE", temp.getValue());
+						sb.setAttribute(sb2);
+					}
+				}
+			} else {
+				logger.debug("The result list is empty");
+				SourceBean sb2 = new SourceBean("ROW");
+				sb.setAttribute(sb2);
+			}
+
+			toReturn = sb.toString();
+
+		} catch (HibernateException he) {
+
+			if (tx != null)
+				tx.rollback();
+			logger.error(he);
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+
+		return toReturn;
+	}
 
 	public Resource loadResourceById(Integer id) throws EMFUserError {
 		logger.debug("IN");

@@ -137,6 +137,10 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     //force_recalculation: all the values are recalculated
     //recalculate:old kpiValues are recalculated and also the one without a periodicity
     
+    protected Date timeRangeFrom = null;//Begin date of range
+    
+    protected Date timeRangeTo = null;//End date of range
+    
 
     //Method usually called by the scheduler only in order to recalculate kpi values
     public void execute(RequestContainer requestContainer, SourceBean response) throws EMFUserError {
@@ -388,22 +392,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			logger.debug("There are no resources assigned to the Model Instance");
 			KpiResourceBlock block = new KpiResourceBlock();
 			block.setD(this.dateOfKPI);
+			block.setParMap(this.parametersObject);
 			KpiLine line = getBlock(mI.getModelInstanceNodeId(), null);
 			block.setRoot(line);
 			logger.debug("Setted the tree Root.");
 			kpiRBlocks.add(block);
-			
-	    } else if (this.resources != null && this.resources.isEmpty() && resources_returned_by_dataset){
-	    	
-	    	//List kpiLines = getBlockLines(mI.getModelInstanceNodeId(),this.resources );
-	    	
-	    	
-	    	KpiResourceBlock block = new KpiResourceBlock();
-		    block.setD(dateOfKPI);
-		    KpiLine line = getBlock(mI.getModelInstanceNodeId(), null);
-		    block.setRoot(line);
-		    logger.debug("Setted the tree Root.");
-		    kpiRBlocks.add(block);
 	    	
 	    }else {
 			Iterator resourcesIt = this.resources.iterator();
@@ -413,6 +406,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			    KpiResourceBlock block = new KpiResourceBlock();
 			    block.setR(r);
 			    block.setD(dateOfKPI);
+			    block.setParMap(this.parametersObject);
 			    KpiLine line = getBlock(mI.getModelInstanceNodeId(), r);
 			    block.setRoot(line);
 			    logger.debug("Setted the tree Root.");
@@ -898,6 +892,33 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     					} catch (ParseException e) {
     					    logger.error("ParseException.value=" + value, e);
     					}
+    			    }else if (url.equals("TimeRangeFrom")) {
+    			    	
+    			    	SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+    					String format = (String) formatSB.getAttribute("format");
+    					SimpleDateFormat f = new SimpleDateFormat();
+    					f.applyPattern(format);
+    					try {
+    						timeRangeFrom = f.parse(value);
+    						
+		    			    } catch (ParseException e) {
+							    logger.error("ParseException.value=" + value, e);
+							}
+        				logger.debug("Setted TIME RANGE FROM");
+        				
+    			    }else if (url.equals("TimeRangeTo")) {
+    			    	
+    			    	SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+    					String format = (String) formatSB.getAttribute("format");
+    					SimpleDateFormat f = new SimpleDateFormat();
+    					f.applyPattern(format);
+    					try {
+    						timeRangeTo = f.parse(value);
+    						
+		    			    } catch (ParseException e) {
+							    logger.error("ParseException.value=" + value, e);
+							}
+        				logger.debug("Setted TIME RANGE TO");
     			    }
     		     }   
     		   }else if (values != null && values.size() >= 1) {

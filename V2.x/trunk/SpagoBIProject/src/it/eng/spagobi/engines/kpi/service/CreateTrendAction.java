@@ -43,6 +43,10 @@ public class CreateTrendAction extends AbstractHttpAction{
 		}
 		String endDate = (String)serviceRequest.getAttribute("END_DATE");
 		logger.debug("Got End Date:"+(endDate!=null ? endDate : "null"));
+		String TimeRangeFrom = (String)serviceRequest.getAttribute("TimeRangeFrom");
+		logger.debug("Got TimeRangeFrom:"+(TimeRangeFrom!=null ? TimeRangeFrom : "null"));
+		String TimeRangeTo = (String)serviceRequest.getAttribute("TimeRangeTo");
+		logger.debug("Got TimeRangeTo:"+(TimeRangeTo!=null ? TimeRangeTo : "null"));
 		String resName = (String)serviceRequest.getAttribute("RESOURCE_NAME");
 		logger.debug("Got resource name:"+(resName!=null ? resName : "null"));
 		String tempKpiInstId = (String)serviceRequest.getAttribute("KPI_INST_ID");
@@ -72,12 +76,18 @@ public class CreateTrendAction extends AbstractHttpAction{
 			milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
 			d = new Date(milliseconds);
 		}  
-		String result = DAOFactory.getKpiDAO().getKpiTrendXmlResult(resID, kpiInstId, d);
-		logger.debug("Result calculated:"+(result!=null ? result : "null"));
+		Date timeFrom = null;
+		if (TimeRangeFrom!=null){
+			timeFrom = f.parse(TimeRangeFrom);
+		}
+		Date timeTo = null;
+		if (TimeRangeTo!=null){
+			timeTo = f.parse(TimeRangeTo);
+		}
+		
 		KpiInstance ki = DAOFactory.getKpiDAO().loadKpiInstanceById(kpiInstId);
 		Integer kpiID = ki.getKpi();
-		Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiID);		
-		
+		Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiID);	
 		String title = "";
 		if (resName!= null){
 			title = msgBuilder.getMessage("sbi.kpi.trendTitleWithResource", request);
@@ -87,21 +97,39 @@ public class CreateTrendAction extends AbstractHttpAction{
 			title = msgBuilder.getMessage("sbi.kpi.trendTitle", request);
 			title = title.replaceAll("%0", k.getKpiName());
 		}
-		
-		String subTitle = msgBuilder.getMessage("sbi.kpi.trendEndDate", request);
-		subTitle = subTitle.replaceAll("%0",d.toString());
-	    
+	
 		String chartType = "LineChart";		
 		ChartImpl sbi = ChartImpl.createChart(chartType);
 		logger.debug("Chart created");
+		
+		String result = null ;
+		if(timeFrom!=null && timeTo!=null && timeFrom.before(timeTo)){
+			result = DAOFactory.getKpiDAO().getKpiTrendXmlResult(resID, kpiInstId, timeFrom,timeTo);
+			String subTitle = msgBuilder.getMessage("sbi.kpi.trendPeriod", request);
+			subTitle = subTitle.replaceAll("%0",TimeRangeFrom);
+			subTitle = subTitle.replaceAll("%1",TimeRangeTo);
+			sbi.setSubName(subTitle);
+			logger.debug("Subtitle setted");
+		}else{
+		    result = DAOFactory.getKpiDAO().getKpiTrendXmlResult(resID, kpiInstId, d);
+		    String subTitle = msgBuilder.getMessage("sbi.kpi.trendEndDate", request);
+		    subTitle = subTitle.replaceAll("%0",endDate);
+		    sbi.setSubName(subTitle);
+			logger.debug("Subtitle setted");
+		}    
+		logger.debug("Result calculated:"+(result!=null ? result : "null"));
+			
+		
+		
+	    
+		
 		sbi.setProfile(profile);
 		logger.debug("Profile setted for the chart");
 		sbi.calculateValue(result);
 		logger.debug("Result setted");
 		sbi.setName(title);
 		logger.debug("Title setted");
-		sbi.setSubName(subTitle);
-		logger.debug("Subtitle setted");
+		
 		
 		serviceResponse.setAttribute("sbi", sbi);
 		

@@ -165,11 +165,16 @@ public class AdapterHTTP extends HttpServlet {
     		parameterToken = st.nextToken();
     		parameterName = parameterToken.substring(0, parameterToken.indexOf("="));
     		parameterValue = parameterToken.substring(parameterToken.indexOf("=")+1);
-    		if (serviceReq.containsAttribute(parameterName)){
-    			serviceReq.updAttribute(parameterName, parameterValue);
-    		} else {
-    			serviceReq.setAttribute(parameterName, parameterValue);
+    		
+    		if(parameterName!= null && !"".equalsIgnoreCase(parameterName)) {
+    			
+    			if (serviceReq.containsAttribute(parameterName)){
+        			serviceReq.updAttribute(parameterName, parameterValue);
+        		} else {
+        			serviceReq.setAttribute(parameterName, parameterValue);
+        		}
     		}
+    		
     	}
     	
     }
@@ -271,14 +276,20 @@ public class AdapterHTTP extends HttpServlet {
         while (names.hasMoreElements()) {
             String parameterName = (String) names.nextElement();
             
-            if (parameterName.startsWith("QUERY_STRING")){
-            	handleQueryStringField(request, serviceRequest, parameterName);
-            }else{
-            	String[] parameterValues = request.getParameterValues(parameterName);
-            	if (parameterValues != null)
-            		for (int i = 0; i < parameterValues.length; i++)
-            			serviceRequest.setAttribute(parameterName, parameterValues[i]);
+            if( parameterName != null && !"".equalsIgnoreCase(parameterName) ) {
+            	
+            	if (parameterName.startsWith("QUERY_STRING")){
+                	handleQueryStringField(request, serviceRequest, parameterName);
+                }else{
+                	String[] parameterValues = request.getParameterValues(parameterName);
+                	if (parameterValues != null)
+                		for (int i = 0; i < parameterValues.length; i++)
+                			serviceRequest.setAttribute(parameterName, parameterValues[i]);
+                }
             }
+            	
+            
+
         } // while (names.hasMoreElements())
     }
     

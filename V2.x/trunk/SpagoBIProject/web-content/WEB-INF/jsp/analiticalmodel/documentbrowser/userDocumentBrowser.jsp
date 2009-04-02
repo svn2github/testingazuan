@@ -56,10 +56,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    contextPath: '<%= request.getContextPath().startsWith("/")||request.getContextPath().startsWith("\\")?
 	        				  request.getContextPath().substring(1):
 	        				  request.getContextPath()%>',
+	    userId:  '<%= userUniqueIdentifier %>',
 	    execId: '<%= request.getParameter("SBI_EXECUTION_ID")%>'
     };
     Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({baseUrl: url});
 
+	alert('ciao: [<%= userUniqueIdentifier %>]');
+	
     <% if ( "WEB".equalsIgnoreCase(sbiMode) ) { %>
     
     Ext.onReady(function(){
@@ -74,7 +77,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         Ext.QuickTips.init();    
         var browser = new Sbi.browser.DocumentsBrowser({
             renderTo: 'container'
-                , height: 700}); 
+                , height : 600}); 
      });
     
     <% } %>
@@ -82,6 +85,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     </script>
     
     <% if ( "PORTLET".equalsIgnoreCase(sbiMode) ) { %>
-    <div id="container" heigth=100% width=100%></div>
+    <div id="container" width=100%></div>
     <%} %>
     

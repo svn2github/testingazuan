@@ -170,6 +170,7 @@ String getUrl(String baseUrl, Map mapPars) {
 	if (userProfile!=null){
 		userId=(String)((UserProfile)userProfile).getUserId();
 		userUniqueIdentifier=(String)userProfile.getUserUniqueIdentifier();
+		System.out.println(userId + " - " + userUniqueIdentifier);
 	}
 	
 	// Set Theme

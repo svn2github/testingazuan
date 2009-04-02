@@ -45,7 +45,8 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
                         '</div>',
                      // -- DOCUMENT -----------------------------------------------
                         '<tpl if="this.exists(engine) == true">',
-	                        '<div id="icon"><img src="../img/analiticalmodel/browser/{parent.icon}"/></div>',
+                        	'<div id="icon" class="document"></div>',
+                        	//'<div id="icon" class="{parent.iconCls}"></div>',
 	                        '<div id="description">',
 		                        '<h4>{name}</h4>',
 		                        '<p><b>Description:</b> {description} ',
@@ -55,10 +56,10 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
                         // -- FOLDER -----------------------------------------------
                         '<tpl if="this.exists(engine) == false">',
                         	'<tpl if="this.isHomeFolder(codType) == true">',
-	                        	'<div id="icon"><img src="../img/analiticalmodel/browser/folder_home.png"/></div>',
+	                        	'<div id="icon" class="folder_home"></div>',
 	                        '</tpl>',
 	                        '<tpl if="this.isHomeFolder(codType) == false">',
-                        		'<div id="icon"><img src="../img/analiticalmodel/browser/{parent.icon}"/></div>',
+	                        	'<div id="icon" class="folder"></div>',
                         	'</tpl>',
 	                        '<div id="description">',
 		                        '<h4>{name}</h4>',

@@ -62,9 +62,20 @@ public class ListThresholdsModule extends AbstractConfigurableListModule {
 	protected void setRowAttribute(SourceBean rowSB, Object obj)
 			throws SourceBeanException {
 		Threshold aThreshold = (Threshold) obj;
-		rowSB.setAttribute("ID", aThreshold.getId());
-		rowSB.setAttribute("NAME", aThreshold.getThresholdName());
-		rowSB.setAttribute("CODE", aThreshold.getThresholdCode());
+		String name = aThreshold.getThresholdName();
+		String code = aThreshold.getThresholdCode();
+		Integer id =  aThreshold.getId();
+		rowSB.setAttribute("ID", id);
+		if (name != null){
+			rowSB.setAttribute("NAME", aThreshold.getThresholdName());
+		} else {
+			rowSB.setAttribute("NAME", "");
+		}
+		if (code != null){
+			rowSB.setAttribute("CODE", aThreshold.getThresholdCode());
+		} else {
+			rowSB.setAttribute("CODE", "");
+		}
 	}
 	
 	@Override

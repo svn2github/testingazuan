@@ -23,32 +23,89 @@
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-Ext.app.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
-    initComponent : function(){
-        Ext.app.SearchField.superclass.initComponent.call(this);
+
+Ext.ns("Sbi.browser");
+
+Sbi.browser.SearchField = function(config) {    
+	
+	var c = Ext.apply({}, config, {
+	});   
+	    
+	Sbi.browser.SearchField.superclass.constructor.call(this, c);  
+	
+	this.addEvents("onsearch", "onreset");
+};
+
+Sbi.browser.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
+    
+	validationEvent:false,
+	validateOnBlur:false,
+	trigger1Class:'x-form-clear-trigger',
+	trigger2Class:'x-form-search-trigger',
+	hideTrigger1:true,
+	//width:244,
+	hasSearch : false,
+	paramName : 'query',
+	
+	initComponent : function(){
+		Sbi.browser.SearchField.superclass.initComponent.call(this);
         this.on('specialkey', function(f, e){
             if(e.getKey() == e.ENTER){
                 this.onTrigger2Click();
             }
         }, this);
+        
+    },  
+    
+    onRender : function(ct, position){
+    	
+    	Ext.form.TriggerField.superclass.onRender.call(this, ct, position);
+        this.wrap = this.el.wrap({cls: "x-form-field-wrap"});
+        this.trigger = this.wrap.createChild(this.triggerConfig ||
+                {tag: "img", src: Ext.BLANK_IMAGE_URL, cls: "x-form-trigger " + this.triggerClass});
+        if(this.hideTrigger){
+            this.trigger.setDisplayed(false);
+        }
+        this.initTrigger();
+    	
+        if(!this.width){
+        	//alert('A ');
+            this.wrap.setWidth(this.el.getWidth()+this.trigger.getWidth());
+        } else {
+        	//alert('B ');
+        	this.wrap.setWidth(200);
+        }    	
     },
 
-    validationEvent:false,
-    validateOnBlur:false,
-    trigger1Class:'x-form-clear-trigger',
-    trigger2Class:'x-form-search-trigger',
-    hideTrigger1:true,
-    width:180,
-    hasSearch : false,
-    paramName : 'query',
+    onTrigger1Click : function(){
+        if(this.hasSearch){
+            alert('search ...');    
+        	this.triggers[0].hide();
+            this.hasSearch = false;                    
+        }
+        this.fireEvent('onreset', this);
+    },
 
+    onTrigger2Click : function(){
+        var v = this.getRawValue();
+        if(v.length < 1){
+            this.onTrigger1Click();
+            return;
+        }
+        
+        alert('search : ' + v);  
+        this.hasSearch = true;
+        this.triggers[0].show();
+        this.fireEvent('onsearch', this, v);
+    }
+    /*
     onTrigger1Click : function(){
         if(this.hasSearch){
             this.el.dom.value = '';
             var o = {start: 0};
             this.store.baseParams = this.store.baseParams || {};
             this.store.baseParams[this.paramName] = '';
-            //this.store.reload({params:o});
+            this.store.reload({params:o});
             this.triggers[0].hide();
             this.hasSearch = false;
         }
@@ -63,8 +120,10 @@ Ext.app.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
         var o = {start: 0};
         this.store.baseParams = this.store.baseParams || {};
         this.store.baseParams[this.paramName] = v;
-        //this.store.reload({params:o});
+        this.store.reload({params:o});
         this.hasSearch = true;
         this.triggers[0].show();
     }
+    */
 });
+

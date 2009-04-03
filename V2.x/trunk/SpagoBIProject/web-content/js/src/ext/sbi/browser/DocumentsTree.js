@@ -38,6 +38,7 @@ Sbi.browser.DocumentsTree = function(config) {
 		
     var c = Ext.apply({}, config, {
     	title            : LN('sbi.browser.documentstree.title'),
+    	bodyStyle		 :'padding:6px 6px 6px 6px; background-color:#FFFFFF',
         collapsible      : true,
         enableDD		 : true,
         animCollapse     : true,

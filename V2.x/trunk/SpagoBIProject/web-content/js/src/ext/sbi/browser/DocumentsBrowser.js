@@ -29,21 +29,39 @@ Ext.ns("Sbi.browser");
 Sbi.browser.DocumentsBrowser = function(config) {    
     // sub-components   
 	
-	this.treePanel = new Sbi.browser.DocumentsTree({               
-        region: 'west',
-        border: true,
-        margins: '3 3 3 3',
-        collapsible: true,
-        collapsed: false,
-        hideCollapseTool: true,
-        titleCollapse: true,
-        collapseMode: 'mini',
-        split: true,
-        autoScroll: true,
-        width: 250,
-        minWidth: 250,
-        layout: 'fit'
+	this.treePanel = new Sbi.browser.DocumentsTree({
+        border:true
     });
+	
+	this.filterPanel = new Sbi.browser.FilterPanel({
+        title:'Sort, group and filter',
+        border:true
+    });
+	
+	this.searchPanel = new Sbi.browser.SearchPanel({
+        title:'Search',
+        border:true
+    });
+	
+	
+	
+	this.westRegionContainer = new Ext.Panel({
+	       id:'westRegionContainer',
+	       split:true,
+	       border:true,
+	       frame:true,
+	       collapsible: true,
+	       //margins:'0 0 0 15',
+	       layout:'accordion',
+	       layoutConfig:{
+	          animate:true
+	       },
+	       items: [
+	               this.searchPanel
+	               , this.filterPanel
+	               , this.treePanel
+	       ]
+	});
 	
 	this.detailPanel = new Sbi.browser.FolderDetailPanel({ 
         region: 'center',
@@ -65,16 +83,33 @@ Sbi.browser.DocumentsBrowser = function(config) {
 	            // CENTER REGION ---------------------------------------------------------
 	            this.detailPanel, 
 	            // WEST REGION -----------------------------------------------------------
-	            this.treePanel
+	            new Ext.Panel({               
+	                region: 'west',
+	                border: false,
+	                frame: false,
+	                //margins: '0 0 3 3',
+	                collapsible: true,
+	                collapsed: false,
+	                hideCollapseTool: true,
+	                titleCollapse: true,
+	                collapseMode: 'mini',
+	                split: true,
+	                autoScroll: false,
+	                width: 280,
+	                minWidth: 280,
+	                layout: 'fit',
+	                items: [this.westRegionContainer]
+	              })
 	            // NORTH HREGION -----------------------------------------------------------
 	            /*
-	          	new Sbi.browser.Toolbar({
+	          	,new Sbi.browser.Toolbar({
 	            	region: 'north',
 	            	margins: '3 3 3 3',
 	            	autoScroll: false,
 	            	height: 30,
 	            	layout: 'fit'
-	          	})*/
+	          	})
+	          	*/
 	        ]
 	});   
     
@@ -96,6 +131,9 @@ Sbi.browser.DocumentsBrowser = function(config) {
 Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
     
     treePanel: null
+    , filterPanel: null
+    , searchPanel: null
+    , westRegionContainer: null
     , detailPanel: null
     
     , onTreeNodeClick: function(node, e) {

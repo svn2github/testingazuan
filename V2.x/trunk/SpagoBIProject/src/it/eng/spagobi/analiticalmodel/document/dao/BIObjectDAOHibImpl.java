@@ -1777,15 +1777,17 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 					           " and fr.id.role.extRoleId IN (select extRoleId from SbiExtRoles e  where  e.name in (:ROLES)) " +
 							   " and fr.id.function.functId = f.functId and fr.id.state.valueId = o.state " ); 
 		} 
-		
+		String operCondition = "";
+		String likeStart ="";
+		String likeEnd ="";
 		if (valueFilter != null && !valueFilter.equals("") && 
 			typeFilter != null && !typeFilter.equals("") &&
-			columnFilter != null && !columnFilter.equals("")){	
-			
-			String operCondition = "";
+			columnFilter != null && !columnFilter.equals("")){			
 			//defines correct logical operator
 			if (typeFilter.equalsIgnoreCase(START_WITH)){
-				operCondition = " like '% :VALUE_FILTER'";
+				operCondition = " like :VALUE_FILTER";
+				likeStart = "%";
+				likeEnd ="";
 			}else if (EQUALS_TO.equalsIgnoreCase( typeFilter )) {
 				operCondition = " = :VALUE_FILTER";
 	 		} else if (NOT_EQUALS_TO.equalsIgnoreCase( typeFilter )) {
@@ -1795,7 +1797,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 		} else if (LESS_THEN.equalsIgnoreCase( typeFilter )) {
 	 			operCondition = " < :VALUE_FILTER";
 	 		} else if (CONTAINS.equalsIgnoreCase( typeFilter )) {
-	 			operCondition = " LIKE '% :VALUE_FILTER %'";
+	 			operCondition = " LIKE :VALUE_FILTER";
+				likeStart = "%";
+				likeEnd = "%";
 	 		} else if (EQUALS_OR_LESS_THEN.equalsIgnoreCase( typeFilter )) {
 	 			operCondition = " <= :VALUE_FILTER";
 	 		} else if (EQUALS_OR_GREATER_THEN.equalsIgnoreCase( typeFilter )) {
@@ -1856,7 +1860,10 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		query.setParameterList("ROLES", roles);
 		
 		if (valueFilter != null){
-			query.setParameter("VALUE_FILTER", valueFilter);
+			if (!likeStart.equals("") || !likeStart.equals(""))
+				query.setParameter("VALUE_FILTER", likeStart + valueFilter + likeEnd);
+			else
+				query.setParameter("VALUE_FILTER", valueFilter);
 		}
 		
 		if (nodeFilter != null && !nodeFilter.equals("") ) {

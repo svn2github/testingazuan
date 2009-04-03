@@ -40,8 +40,7 @@ public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
 	private static Logger logger = Logger.getLogger(ListEnginesAction.class);
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
-		
-		List engines;
+
 		
 		logger.debug("IN");
 		
@@ -59,7 +58,7 @@ public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
 			}
 			*/
 		} catch (Throwable t) {
-			throw new SpagoBIException("An unexpected error occured while executing LIST_ENGINES_ACTION", t);
+			throw new SpagoBIException("An unexpected error occured while executing DOCUMENT_USER_BROWSER_START_ACTION", t);
 		} finally {
 			logger.debug("OUT");
 		}

@@ -28,7 +28,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
@@ -77,15 +76,12 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Expression;
-import org.hibernate.criterion.Restrictions;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
@@ -96,6 +92,13 @@ import org.safehaus.uuid.UUIDGenerator;
 public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		IBIObjectDAO {
     
+	public static final String COLUMN_LABEL = "LABEL";
+	public static final String COLUMN_NAME = "NAME";
+	public static final String COLUMN_ENGINE = "ENGINE";
+	public static final String COLUMN_STATE = "STATE";
+	public static final String COLUMN_DATE = "CREATION_DATE";
+
+	
     static private Logger logger = Logger.getLogger(BIObjectDAOHibImpl.class);
 
 	/**
@@ -1651,6 +1654,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	/**
 	 * Loads objects of the user roles
 	 * @param folderID
+	 * @param profile the profile of the user
 	 * @return
 	 * @throws EMFUserError
 	 */
@@ -1694,6 +1698,121 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		}
 		
 		
+		List hibList = query.list();
+		Iterator it = hibList.iterator();
+		while (it.hasNext()) {
+			SbiObjects object = (SbiObjects) it.next();
+			realResult.add(toBIObject(object));
+		}
+		tx.commit();
+	} catch (HibernateException he) {
+		logger.error(he);
+		if (tx != null)
+			tx.rollback();
+		throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+	} finally {
+		if (aSession!=null){
+			if (aSession.isOpen()) aSession.close();
+		}
+	}
+	logger.debug("OUT");
+	return realResult;
+	}
+	
+	/**
+	 * Search objects with the features specified
+	 * @param valueFilter  the value of the filter for the research
+	 * @param typeFilter   the type of the filter (the operator: equals, starts...)
+	 * @param columnFilter the column on which the filter is applied
+	 * @param nodeFilter   the node (folder id) on which the filter is applied
+	 * @param profile      the profile of the user
+	 * @return
+	 * @throws EMFUserError
+	 */
+	public List searchBIObjects(String valueFilter, String typeFilter, String columnFilter, Integer nodeFilter, IEngUserProfile profile) throws EMFUserError {
+	logger.debug("IN");
+	Session aSession = null;
+	Transaction tx = null;
+	List realResult = new ArrayList();
+	try {
+		aSession = getSession();
+		tx = aSession.beginTransaction();
+
+		Collection roles = null;
+		try {
+			RequestContainer reqCont = RequestContainer.getRequestContainer();
+			if(profile != null)
+				roles  = ((UserProfile)profile).getRoles();
+			
+			logger.debug("Profile roles: " + roles);
+			
+		} catch (Exception e) {
+			logger.error("Error while recovering user profile", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 1084);
+		}
+		
+		StringBuffer bufferSelect = new StringBuffer();
+		StringBuffer bufferFrom = new StringBuffer();
+		StringBuffer bufferWhere = new StringBuffer();
+		StringBuffer bufferOrder = new StringBuffer();
+		
+		//definition of the the search query 
+		if (roles != null && roles.size() > 0 ) {
+			bufferSelect.append(" select distinct(o) ");
+			bufferFrom.append(" from SbiObjects as o, SbiObjFunc as sof, SbiFunctions as f,  SbiFuncRole as fr "); 	
+			bufferWhere.append(" where sof.id.sbiFunctions.functId = f.functId and o.biobjId = sof.id.sbiObjects.biobjId" +
+					           " and fr.id.role.extRoleId IN (select extRoleId from SbiExtRoles e  where  e.name in (:ROLES)) " +
+							   " and fr.id.function.functId = f.functId and fr.id.state.valueId = o.state " ); 
+		} 
+		
+		if (valueFilter != null && !valueFilter.equals("") && 
+			typeFilter != null && !typeFilter.equals("") &&
+			columnFilter != null && !columnFilter.equals("")){	
+			
+			if (columnFilter != null && columnFilter.equalsIgnoreCase(COLUMN_LABEL)){
+				bufferWhere.append(" and o.label " + typeFilter +" :VALUE_FILTER");
+			}
+			if (columnFilter != null && columnFilter.equalsIgnoreCase(COLUMN_NAME)){
+				bufferWhere.append(" and o.name " + typeFilter +"  :VALUE_FILTER");
+			}
+			if (columnFilter.equalsIgnoreCase(COLUMN_ENGINE)){
+				bufferFrom.append(", SbiEngines e ");
+				bufferWhere.append(" and e.engineId = o.engine_id and e.name " + typeFilter +" :VALUE_FILTER");
+			}
+			
+			if (columnFilter.equalsIgnoreCase(COLUMN_STATE)){
+				bufferFrom.append(", SbiDomains d ");
+				bufferWhere.append(" and d.valueId = o.state_id and o.state_cd " + typeFilter +"  :VALUE_FILTER");
+			}	
+			
+			if (columnFilter != null && columnFilter.equalsIgnoreCase(COLUMN_DATE)){
+				bufferWhere.append(" and o.creationDate " + typeFilter +"  :VALUE_FILTER");
+			}
+		}
+		
+		if (nodeFilter != null && !nodeFilter.equals("")){
+			bufferWhere.append(" and (f.funct_Id = :FOLDER_ID or f.parent_funct_id = :FOLDER_ID) ");
+		}
+		
+		bufferOrder.append(" order by o.name");
+		
+		String hql = bufferSelect.toString() + bufferFrom.toString() + bufferWhere.toString() + bufferOrder.toString();
+		
+		logger.debug("query hql: " + hql);
+		
+		Query query = aSession.createQuery(hql);
+		
+		//setting query parameters
+		query.setParameterList("ROLES", roles);
+		
+		if (valueFilter != null){
+			query.setString("FOLDER_ID", valueFilter);
+		}
+		
+		if (nodeFilter != null && !nodeFilter.equals("") ) {
+			query.setInteger("FOLDER_ID", nodeFilter.intValue());			
+		}
+		//executes query
 		List hibList = query.list();
 		Iterator it = hibList.iterator();
 		while (it.hasNext()) {

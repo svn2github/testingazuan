@@ -335,4 +335,20 @@ public interface IBIObjectDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public List loadBIObjects(Integer folderID, IEngUserProfile profile)	throws EMFUserError;
+	
+	/**
+	 * Search objects with the features specified.
+	 * 
+	 * @param valueFilter  the value of the filter for the research
+	 * @param typeFilter   the type of the filter (the operator: equals, starts...)
+	 * @param columnFilter the column on which the filter is applied
+	 * @param nodeFilter   the node (folder id) on which the filter is applied
+	 * @param profile      the profile of the user
+	 * 
+	 * @return the list of BIObjects
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public List searchBIObjects(String valueFilter, String typeFilter, String columnFilter, Integer nodeFilter, IEngUserProfile profile) 
+		throws EMFUserError;
 }

@@ -417,7 +417,7 @@ if (toolbarIsVisible) {
 					cls:'x-panel-body',
 					children:[{
 						tag:'iframe',
-	      					src: "<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&ACTION_NAME=SHOW_SEND_TO_FORM&objlabel=" + obj.getLabel()+"&"+ urlMasterPar%>",
+	      					src: "<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&ACTION_NAME=SHOW_SEND_TO_FORM&LIGHT_NAVIGATOR_DISABLED=true&objlabel=" + obj.getLabel()+"&"+ urlMasterPar%>",
 	      					frameBorder:0,
 	      					width:'100%',
 	      					height:'100%',
@@ -685,7 +685,7 @@ if (toolbarIsVisible) {
 						tag:'iframe',
 							name: 'dynamicIframeNotes', 
                     		id  : 'dynamicIframeNotes', 
-	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&ACTION_NAME=INSERT_NOTES_ACTION&execIdentifier="+execIdentifier+"&MESSAGEDET=OPEN_NOTES_EDITOR&OBJECT_ID=" + obj.getId().toString() %>',
+	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&ACTION_NAME=INSERT_NOTES_ACTION&LIGHT_NAVIGATOR_DISABLED=true&execIdentifier="+execIdentifier+"&MESSAGEDET=OPEN_NOTES_EDITOR&OBJECT_ID=" + obj.getId().toString() %>',
 	      					frameBorder:0,
 	      					width:'100%',
 	      					height:'100%',
@@ -736,7 +736,7 @@ if (toolbarIsVisible) {
 					cls:'x-panel-body',
 					children:[{
 						tag:'iframe',
-	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&PAGE=" + MetadataBIObjectModule.MODULE_PAGE + "&MESSAGEDET=" + ObjectsTreeConstants.METADATA_SELECT + "&OBJECT_ID=" + obj.getId().toString() %>',
+	      					src: '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&PAGE=" + MetadataBIObjectModule.MODULE_PAGE + "&LIGHT_NAVIGATOR_DISABLED=true&MESSAGEDET=" + ObjectsTreeConstants.METADATA_SELECT + "&OBJECT_ID=" + obj.getId().toString() %>',
 	      					frameBorder:0,
 	      					width:'100%',
 	      					height:'100%',

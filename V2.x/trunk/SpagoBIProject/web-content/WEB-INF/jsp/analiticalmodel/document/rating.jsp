@@ -39,7 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  <%
 	    String objid = (String)aServiceResponse.getAttribute("OBJECT_ID");
 	    String mess = (String)aServiceResponse.getAttribute("MESSAGEDET");	
-	    String userid = (String)aServiceResponse.getAttribute("userId");
+	    String userid = (String)aServiceResponse.getAttribute("user_id");
 	    boolean alreadyVoted = false ;
 	    if (mess.equals("DOCUMENT_RATE")) alreadyVoted = true ;
 	    String msg = "DOCUMENT_RATE";

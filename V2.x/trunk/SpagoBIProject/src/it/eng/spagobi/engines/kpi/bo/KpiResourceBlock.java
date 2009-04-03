@@ -3,6 +3,8 @@ package it.eng.spagobi.engines.kpi.bo;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.navigation.LightNavigationManager;
+import it.eng.spago.navigation.LightNavigator;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
@@ -135,6 +137,7 @@ public class KpiResourceBlock {
 		logger.debug("*********************");
 		logger.debug("Recursion Level:"+recursionLev);
 		IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		String execMod = instanceO.getExecutionModality();
 		HttpServletRequest httpRequest = httpReq;
 		IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder();
 		String requestIdentity = null;
@@ -239,7 +242,7 @@ public class KpiResourceBlock {
 				execUrlParMap.put("KPI_TARGET",kpiVal.getTarget()!=null ? kpiVal.getTarget().toString():"");
 			}		
 			execUrlParMap.put("KPI_MODEL_INST_ID",line.getModelInstanceNodeId()!=null ? line.getModelInstanceNodeId().toString():"");
-			execUrlParMap.put("LIGHT_NAVIGATOR_DISABLED", "true");
+			execUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 
 			//String metadataPopupUrl = urlBuilder.getUrl(httpRequest, execUrlParMap);
 			String metadataPopupUrl = createUrl_popup(execUrlParMap,userId);
@@ -418,6 +421,9 @@ public class KpiResourceBlock {
 				execUrlParMap.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
 				execUrlParMap.put("EXECUTION_FLOW_ID", executionFlowId);
 				execUrlParMap.put("SOURCE_EXECUTION_ID", uuidPrincip);
+				execUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+				execUrlParMap.put(ObjectsTreeConstants.MODALITY,execMod );
+				
 				
 				if (r!=null){
 					execUrlParMap.put(r.getColumn_name(), r.getName());

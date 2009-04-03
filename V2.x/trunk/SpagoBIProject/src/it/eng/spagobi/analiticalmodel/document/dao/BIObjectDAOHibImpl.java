@@ -97,7 +97,20 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	public static final String COLUMN_ENGINE = "ENGINE";
 	public static final String COLUMN_STATE = "STATE";
 	public static final String COLUMN_DATE = "CREATION_DATE";
-
+	
+	public static final String START_WITH = "START_WITH";
+	public static final String END_WITH = "END_WITH";
+	public static final String NOT_EQUALS_TO = "NOT_EQUALS_TO";
+	public static final String EQUALS_TO = "EQUALS_TO";
+	public static final String CONTAINS= "CONTAINS";
+	public static final String LESS_THEN = "LESS_THEN";
+	public static final String EQUALS_OR_GREATER_THEN = "EQUALS_OR_GREATER_THEN";
+	public static final String GREATER_THEN  = "GREATER_THEN";
+	public static final String EQUALS_OR_LESS_THEN = "EQUALS_OR_LESS_THEN";
+	public static final String NOT_ENDS_WITH = "NOT_ENDS_WITH";
+	public static final String NOT_CONTAINS = "NOT_CONTAINS";
+	public static final String IS_NULL = "IS_NULL";
+	public static final String NOT_NULL = "NOT_NULL";
 	
     static private Logger logger = Logger.getLogger(BIObjectDAOHibImpl.class);
 
@@ -1769,29 +1782,66 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			typeFilter != null && !typeFilter.equals("") &&
 			columnFilter != null && !columnFilter.equals("")){	
 			
-			if (columnFilter != null && columnFilter.equalsIgnoreCase(COLUMN_LABEL)){
-				bufferWhere.append(" and o.label " + typeFilter +" :VALUE_FILTER");
+			String operCondition = "";
+			//defines correct logical operator
+			if (typeFilter.equalsIgnoreCase(START_WITH)){
+				operCondition = " like '% :VALUE_FILTER'";
+			}else if (EQUALS_TO.equalsIgnoreCase( typeFilter )) {
+				operCondition = " = :VALUE_FILTER";
+	 		} else if (NOT_EQUALS_TO.equalsIgnoreCase( typeFilter )) {
+	 			operCondition = " != :VALUE_FILTER";
+	 		} else if (GREATER_THEN.equalsIgnoreCase(typeFilter )) {
+	 			operCondition = " > :VALUE_FILTER";
+	 		} else if (LESS_THEN.equalsIgnoreCase( typeFilter )) {
+	 			operCondition = " < :VALUE_FILTER";
+	 		} else if (CONTAINS.equalsIgnoreCase( typeFilter )) {
+	 			operCondition = " LIKE '% :VALUE_FILTER %'";
+	 		} else if (EQUALS_OR_LESS_THEN.equalsIgnoreCase( typeFilter )) {
+	 			operCondition = " <= :VALUE_FILTER";
+	 		} else if (EQUALS_OR_GREATER_THEN.equalsIgnoreCase( typeFilter )) {
+	 			operCondition =  " >= :VALUE_FILTER";
+	 		} else if (GREATER_THEN.equalsIgnoreCase( typeFilter )) {
+	 			operCondition =  " > :VALUE_FILTER";
+	 			/*
+	 		}else if (NOT_ENDS_WITH.equalsIgnoreCase( typeFilter )) {
+	 			operCondition =  "NOT LIKE %:VALUE_FILTER";
+	 		} else if (NOT_CONTAINS.equalsIgnoreCase( typeFilter )) {
+	 			operCondition =  "NOT LIKE %:VALUE_FILTER%";
+	 		} else if (IS_NULL.equalsIgnoreCase( typeFilter )) {
+	 			operCondition =  "IS NULL";
+	 		} else if (NOT_NULL.equalsIgnoreCase( typeFilter )) {
+	 			operCondition =  "IS NOT NULL";*/
+	 		} 
+	 		else {
+	 			logger.error("The query Operator " +typeFilter+" is invalid.");
+	 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+	 		}
+			
+			if (columnFilter.equalsIgnoreCase(COLUMN_LABEL)){
+				bufferWhere.append(" and o.label " + operCondition);
 			}
-			if (columnFilter != null && columnFilter.equalsIgnoreCase(COLUMN_NAME)){
-				bufferWhere.append(" and o.name " + typeFilter +"  :VALUE_FILTER");
+			if (columnFilter.equalsIgnoreCase(COLUMN_NAME)){
+				bufferWhere.append(" and o.name " + operCondition);
 			}
 			if (columnFilter.equalsIgnoreCase(COLUMN_ENGINE)){
 				bufferFrom.append(", SbiEngines e ");
-				bufferWhere.append(" and e.engineId = o.engine_id and e.name " + typeFilter +" :VALUE_FILTER");
+				bufferWhere.append(" and e.engineId = o.engine_id and e.name " + operCondition);
 			}
 			
 			if (columnFilter.equalsIgnoreCase(COLUMN_STATE)){
 				bufferFrom.append(", SbiDomains d ");
-				bufferWhere.append(" and d.valueId = o.state_id and o.state_cd " + typeFilter +"  :VALUE_FILTER");
+				bufferWhere.append(" and d.valueId = o.state_id and o.state_cd " + operCondition);
 			}	
 			
 			if (columnFilter != null && columnFilter.equalsIgnoreCase(COLUMN_DATE)){
-				bufferWhere.append(" and o.creationDate " + typeFilter +"  :VALUE_FILTER");
+				bufferWhere.append(" and o.creationDate " + operCondition);
 			}
+			
+			
 		}
 		
 		if (nodeFilter != null && !nodeFilter.equals("")){
-			bufferWhere.append(" and (f.funct_Id = :FOLDER_ID or f.parent_funct_id = :FOLDER_ID) ");
+			bufferWhere.append(" and (f.functId = :FOLDER_ID or f.parentFunct = :FOLDER_ID) ");
 		}
 		
 		bufferOrder.append(" order by o.name");
@@ -1806,11 +1856,11 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		query.setParameterList("ROLES", roles);
 		
 		if (valueFilter != null){
-			query.setString("FOLDER_ID", valueFilter);
+			query.setParameter("VALUE_FILTER", valueFilter);
 		}
 		
 		if (nodeFilter != null && !nodeFilter.equals("") ) {
-			query.setInteger("FOLDER_ID", nodeFilter.intValue());			
+			query.setParameter("FOLDER_ID", nodeFilter);			
 		}
 		//executes query
 		List hibList = query.list();
@@ -1824,8 +1874,13 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		logger.error(he);
 		if (tx != null)
 			tx.rollback();
+		throw new EMFUserError(EMFErrorSeverity.ERROR, 100); 
+	} catch (Exception e) {
+		logger.error(e.getStackTrace());
+		if (tx != null)
+			tx.rollback();
 		throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-	} finally {
+	}finally {
 		if (aSession!=null){
 			if (aSession.isOpen()) aSession.close();
 		}

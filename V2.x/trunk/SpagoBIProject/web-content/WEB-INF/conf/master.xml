@@ -184,7 +184,7 @@
     <CONFIGURATOR path="/WEB-INF/conf/hotlink/business_map.xml" />
 	
 <!-- webapp -->
-<!--
+
 <CONFIGURATOR path="/WEB-INF/conf/webapp/messages.xml" />
 <CONFIGURATOR path="/WEB-INF/conf/webapp/modules.xml" />
 <CONFIGURATOR path="/WEB-INF/conf/webapp/pages.xml" />
@@ -197,7 +197,6 @@
 <CONFIGURATOR path="/WEB-INF/conf/webapp/business_map.xml" />
 <CONFIGURATOR path="/WEB-INF/conf/webapp/validation.xml" />
 <CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />
--->
 
 	
 	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />

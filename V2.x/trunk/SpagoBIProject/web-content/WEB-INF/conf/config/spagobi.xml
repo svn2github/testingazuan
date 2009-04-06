@@ -3,7 +3,7 @@
 
     <!-- ********************* START MODE CONFIGURATION ************************ -->
 
-	<SPAGOBI-MODE mode="PORTLET"/>
+	<SPAGOBI-MODE mode="WEB"/>
 
     <!-- ********************* END MODE CONFIGURATION ************************** -->
      
@@ -26,15 +26,12 @@
     <!-- ********************* START SECURITY CONFIGURATION ************************ -->
      
 <SECURITY>
-<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.ExoPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
-<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.ExoSecurityProviderImpl">
-<CONFIG>
-<NAME_PORTAL_APPLICATION>portal</NAME_PORTAL_APPLICATION>
-</CONFIG>
+<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.XmlSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
+<PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.XmlSecurityInfoProviderImpl">
+<CONFIG />
 </PORTAL-SECURITY-CLASS>
-<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.ExoUserProfileImpl">
-</USER-PROFILE-FACTORY-CLASS>
-<ROLE-NAME-PATTERN-FILTER>/spagobi/.*</ROLE-NAME-PATTERN-FILTER>
+<USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.XmlSecurityServiceSupplierImpl" />
+<ROLE-NAME-PATTERN-FILTER>.*</ROLE-NAME-PATTERN-FILTER>
 <ROLE-TYPE-PATTERNS>
 <ADMIN-PATTERN>/spagobi/admin</ADMIN-PATTERN>
 <DEV_ROLE-PATTERN>/spagobi/dev</DEV_ROLE-PATTERN>

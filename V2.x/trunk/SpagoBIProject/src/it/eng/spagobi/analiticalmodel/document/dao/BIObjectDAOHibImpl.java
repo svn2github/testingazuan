@@ -103,10 +103,10 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	public static final String NOT_EQUALS_TO = "NOT_EQUALS_TO";
 	public static final String EQUALS_TO = "EQUALS_TO";
 	public static final String CONTAINS= "CONTAINS";
-	public static final String LESS_THEN = "LESS_THEN";
-	public static final String EQUALS_OR_GREATER_THEN = "EQUALS_OR_GREATER_THEN";
-	public static final String GREATER_THEN  = "GREATER_THEN";
-	public static final String EQUALS_OR_LESS_THEN = "EQUALS_OR_LESS_THEN";
+	public static final String LESS_THAN = "LESS_THAN";
+	public static final String EQUALS_OR_GREATER_THAN = "EQUALS_OR_GREATER_THAN";
+	public static final String GREATER_THAN  = "GREATER_THAN";
+	public static final String EQUALS_OR_LESS_THAN = "EQUALS_OR_LESS_THAN";
 	public static final String NOT_ENDS_WITH = "NOT_ENDS_WITH";
 	public static final String NOT_CONTAINS = "NOT_CONTAINS";
 	public static final String IS_NULL = "IS_NULL";
@@ -1772,6 +1772,11 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		//definition of the the search query 
 		if (roles != null && roles.size() > 0 ) {
 			bufferSelect.append(" select distinct(o) ");
+			/*bufferSelect.append(" select distinct o.biobjId, o.sbiEngines, o.descr, o.label, o.path, o.relName, o.state, "+
+								" o.stateCode, o.objectTypeCode, o.objectType, o.schedFl, "+
+								" o.execMode, o.stateConsideration, o.execModeCode, o.stateConsiderationCode, o.name, o.visible, o.uuid, " +
+								" o.extendedDescription, o.objectve, o.language, o.creationDate, o.creationUser, "+
+								" o.keywords, o.refreshSeconds, o.profiledVisibility ");*/
 			bufferFrom.append(" from SbiObjects as o, SbiObjFunc as sof, SbiFunctions as f,  SbiFuncRole as fr "); 	
 			bufferWhere.append(" where sof.id.sbiFunctions.functId = f.functId and o.biobjId = sof.id.sbiObjects.biobjId" +
 					           " and fr.id.role.extRoleId IN (select extRoleId from SbiExtRoles e  where  e.name in (:ROLES)) " +
@@ -1786,26 +1791,28 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			//defines correct logical operator
 			if (typeFilter.equalsIgnoreCase(START_WITH)){
 				operCondition = " like :VALUE_FILTER";
+				likeStart = "";
+				likeEnd ="%";
+			}else if (typeFilter.equalsIgnoreCase(END_WITH)){
+				operCondition = " like :VALUE_FILTER";
 				likeStart = "%";
 				likeEnd ="";
 			}else if (EQUALS_TO.equalsIgnoreCase( typeFilter )) {
 				operCondition = " = :VALUE_FILTER";
 	 		} else if (NOT_EQUALS_TO.equalsIgnoreCase( typeFilter )) {
 	 			operCondition = " != :VALUE_FILTER";
-	 		} else if (GREATER_THEN.equalsIgnoreCase(typeFilter )) {
+	 		} else if (GREATER_THAN.equalsIgnoreCase(typeFilter )) {
 	 			operCondition = " > :VALUE_FILTER";
-	 		} else if (LESS_THEN.equalsIgnoreCase( typeFilter )) {
+	 		} else if (LESS_THAN.equalsIgnoreCase( typeFilter )) {
 	 			operCondition = " < :VALUE_FILTER";
 	 		} else if (CONTAINS.equalsIgnoreCase( typeFilter )) {
-	 			operCondition = " LIKE :VALUE_FILTER";
+	 			operCondition = " like :VALUE_FILTER";
 				likeStart = "%";
 				likeEnd = "%";
-	 		} else if (EQUALS_OR_LESS_THEN.equalsIgnoreCase( typeFilter )) {
+	 		} else if (EQUALS_OR_LESS_THAN.equalsIgnoreCase( typeFilter )) {
 	 			operCondition = " <= :VALUE_FILTER";
-	 		} else if (EQUALS_OR_GREATER_THEN.equalsIgnoreCase( typeFilter )) {
+	 		} else if (EQUALS_OR_GREATER_THAN.equalsIgnoreCase( typeFilter )) {
 	 			operCondition =  " >= :VALUE_FILTER";
-	 		} else if (GREATER_THEN.equalsIgnoreCase( typeFilter )) {
-	 			operCondition =  " > :VALUE_FILTER";
 	 			/*
 	 		}else if (NOT_ENDS_WITH.equalsIgnoreCase( typeFilter )) {
 	 			operCondition =  "NOT LIKE %:VALUE_FILTER";
@@ -1829,16 +1836,16 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			if (columnFilter.equalsIgnoreCase(COLUMN_ENGINE)){
 				bufferFrom.append(", SbiEngines e ");
-				bufferWhere.append(" and e.engineId = o.engine_id and e.name " + operCondition);
+				bufferWhere.append(" and e.engineId = o.sbiEngines and e.name " + operCondition);
 			}
 			
 			if (columnFilter.equalsIgnoreCase(COLUMN_STATE)){
 				bufferFrom.append(", SbiDomains d ");
-				bufferWhere.append(" and d.valueId = o.state_id and o.state_cd " + operCondition);
+				bufferWhere.append(" and d.valueId = o.state and d.valueCd " + operCondition);
 			}	
 			
 			if (columnFilter != null && columnFilter.equalsIgnoreCase(COLUMN_DATE)){
-				bufferWhere.append(" and o.creationDate " + operCondition);
+				bufferWhere.append(" and convert(o.creationDate, DATE) " + operCondition);
 			}
 			
 			
@@ -1858,16 +1865,23 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		
 		//setting query parameters
 		query.setParameterList("ROLES", roles);
+		logger.debug("Parameter value ROLES: " + roles);
+		
 		
 		if (valueFilter != null){
-			if (!likeStart.equals("") || !likeStart.equals(""))
+			if (!likeStart.equals("") || !likeEnd.equals("")){
 				query.setParameter("VALUE_FILTER", likeStart + valueFilter + likeEnd);
-			else
+				logger.debug("Parameter value VALUE_FILTER: " + likeStart + valueFilter + likeEnd);
+			}
+			else {
 				query.setParameter("VALUE_FILTER", valueFilter);
+				logger.debug("Parameter value VALUE_FILTER: " + valueFilter);
+			}
 		}
 		
 		if (nodeFilter != null && !nodeFilter.equals("") ) {
-			query.setParameter("FOLDER_ID", nodeFilter);			
+			query.setParameter("FOLDER_ID", nodeFilter);	
+			logger.debug("Parameter value FOLDER_ID: " + nodeFilter);
 		}
 		//executes query
 		List hibList = query.list();

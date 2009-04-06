@@ -31,16 +31,16 @@ Sbi.browser.FolderDetailPanel = function(config) {
 	var loadFolderContentService = Sbi.config.serviceRegistry.getServiceUrl('GET_FOLDER_CONTENT_ACTION');
 	loadFolderContentService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
 	
+	var searchContentService = Sbi.config.serviceRegistry.getServiceUrl('SEARCH_CONTENT_ACTION');
+	searchContentService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
+	
 	// -- store -------------------------------------------------------
 	this.store = new Ext.data.JsonStore({
-	    url: loadFolderContentService,
-	    /*
-	    baseParams: {
-			folderId: 3
-		},
-		*/
-	    root: 'folderContent',
-	    fields: ['title', 'icon', 'samples']
+	    url: loadFolderContentService
+	    , browseUrl: loadFolderContentService
+	    , searchUrl: searchContentService
+	    , root: 'folderContent'
+	    , fields: ['title', 'icon', 'samples']
 	});	
 	this.store.on('loadexception', Sbi.exception.ExceptionHandler.handleFailure);
 	this.store.on('beforeload', function(){if(this.loadingMask) this.loadingMask.show();}, this);
@@ -181,7 +181,8 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
 	      p = {'folderId': folderId};
       }
       
-      this.store.baseParams = p;
+      this.store.proxy.conn.url = this.store.browseUrl;
+      this.store.baseParams = p || {};
       this.store.load();
      
       var loadFolderPathService = Sbi.config.serviceRegistry.getServiceUrl('GET_FOLDER_PATH_ACTION');
@@ -206,12 +207,32 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
        });
     }
     
+    , searchFolder: function(params) {       
+    	this.store.proxy.conn.url = this.store.searchUrl;
+        this.store.baseParams = params || {};
+        this.store.load();  
+        this.setTitle('Query results ...');
+    }
+    
    
+    , setTitle: function(title) {
+    	this.resetToolbar();
+    	this.toolbar.add({
+    		xtype: 'tbtext'
+    		, text: title || ''
+    	});
+    	this.reinitToolbar();
+    }
+    
     , setBreadcrumbs: function(breadcrumbs) {
+    	
+    	this.resetToolbar();
+    	/*
     	this.toolbar.items.each(function(item){            
             this.items.remove(item);
             item.destroy();           
         }, this.toolbar.items); 
+        */
     	 
     	this.add({
             iconCls: 'icon-ftree-root'
@@ -238,8 +259,40 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     		, cls: 'sbi-last-folder'
     	});
         
-        
+        this.reinitToolbar();
+        /*
         var tt;
+        var cls;
+        if(this.modality === 'list-view') {
+        	tt = LN('sbi.browser.folderdetailpanel.groupviewTT');
+        	cls = 'icon-group-view';
+        } else {
+        	tt = LN('sbi.browser.folderdetailpanel.listviewTT');
+        	cls = 'icon-list-view';
+        }
+        this.toolbar.buttonsL['toggleView'] = new Ext.Toolbar.Button({
+        	tooltip: tt,
+    		iconCls: cls,
+    		listeners: {
+    			'click': {
+              		fn: this.toggleDisplayModality,
+              		scope: this
+            	} 
+    		}
+        });
+        this.toolbar.add('->', this.toolbar.buttonsL['toggleView']);
+        */
+    }
+    
+    , resetToolbar: function() {
+    	this.toolbar.items.each(function(item){            
+            this.items.remove(item);
+            item.destroy();           
+        }, this.toolbar.items); 
+    }
+    
+    , reinitToolbar: function() {
+    	var tt;
         var cls;
         if(this.modality === 'list-view') {
         	tt = LN('sbi.browser.folderdetailpanel.groupviewTT');

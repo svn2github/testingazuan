@@ -28,6 +28,7 @@ Ext.ns("Sbi.browser");
 
 Sbi.browser.FilterPanel = function(config) { 
 	
+	/*
 	var filterPanel = new Ext.Panel({
     	frame:true,
     	margins:'15 0 0 0',
@@ -54,16 +55,54 @@ Sbi.browser.FilterPanel = function(config) {
     	titleCollapse: true,
     	style : 'margin: 0px 0px 10px 0px'
     });
+    */
     
 	var c = Ext.apply({}, config, {
-		bodyStyle:'padding:6px 6px 6px 6px; background-color:#FFFFFF',
-    	items: [sortPanel, groupPanel, filterPanel]
+		bodyStyle:'padding:6px 6px 6px 6px; background-color:#FFFFFF'
+		//, items: [sortPanel, groupPanel, filterPanel]
+		, items: [
+		   {
+			   xtype:'fieldset',
+			   title: 'Sort',
+			   collapsible: true,
+			   autoHeight:true,
+			   defaultType: 'textfield',
+			   items :[
+			           new Ext.form.Radio({boxLabel: 'by name', name: 'sort', hideLabel: true, inputValue: 1, checked: true}),
+			           new Ext.form.Radio({boxLabel: 'by label', name: 'sort', hideLabel: true, inputValue: 2}),
+			           new Ext.form.Radio({boxLabel: 'by date', name: 'sort', hideLabel: true, inputValue: 3})        
+			   ]
+			} , {
+				   xtype:'fieldset',
+				   title: 'Group',
+				   collapsible: true,
+				   autoHeight:true,
+				   defaultType: 'textfield',
+				   items :[
+				           new Ext.form.Radio({boxLabel: 'by type', name: 'group', hideLabel: true, inputValue: 1, checked: true}),
+				           new Ext.form.Radio({boxLabel: 'by date', name: 'group', hideLabel: true, inputValue: 2}),
+				           new Ext.form.Radio({boxLabel: 'by engine', name: 'group', hideLabel: true, inputValue: 3})        
+				   ]
+				} , {
+					   xtype:'fieldset',
+					   title: 'Filter',
+					   collapsible: true,
+					   autoHeight:true,
+					   defaultType: 'textfield',
+					   items :[
+					           new Ext.form.Radio({boxLabel: 'all', name: 'filter', hideLabel: true, inputValue: 1, checked: true}),
+					           new Ext.form.Radio({boxLabel: 'folders', name: 'filter', hideLabel: true, inputValue: 2}),
+					           new Ext.form.Radio({boxLabel: 'documents', name: 'filter', hideLabel: true, inputValue: 3})        
+					   ]
+					}			  
+		]
+		        
 	});   
 	
 	Sbi.browser.FilterPanel.superclass.constructor.call(this, c);   
 };
 
-Ext.extend(Sbi.browser.FilterPanel, Ext.Panel, {
+Ext.extend(Sbi.browser.FilterPanel, Ext.FormPanel, {
     
     modality: null
     

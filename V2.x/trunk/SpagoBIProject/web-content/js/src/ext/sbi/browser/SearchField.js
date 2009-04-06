@@ -73,13 +73,12 @@ Sbi.browser.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
             this.wrap.setWidth(this.el.getWidth()+this.trigger.getWidth());
         } else {
         	//alert('B ');
-        	this.wrap.setWidth(200);
+        	//this.wrap.setWidth(200);
         }    	
     },
 
     onTrigger1Click : function(){
-        if(this.hasSearch){
-            alert('search ...');    
+        if(this.hasSearch){ 
         	this.triggers[0].hide();
             this.hasSearch = false;                    
         }
@@ -93,37 +92,9 @@ Sbi.browser.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
             return;
         }
         
-        alert('search : ' + v);  
         this.hasSearch = true;
         this.triggers[0].show();
         this.fireEvent('onsearch', this, v);
     }
-    /*
-    onTrigger1Click : function(){
-        if(this.hasSearch){
-            this.el.dom.value = '';
-            var o = {start: 0};
-            this.store.baseParams = this.store.baseParams || {};
-            this.store.baseParams[this.paramName] = '';
-            this.store.reload({params:o});
-            this.triggers[0].hide();
-            this.hasSearch = false;
-        }
-    },
-
-    onTrigger2Click : function(){
-        var v = this.getRawValue();
-        if(v.length < 1){
-            this.onTrigger1Click();
-            return;
-        }
-        var o = {start: 0};
-        this.store.baseParams = this.store.baseParams || {};
-        this.store.baseParams[this.paramName] = v;
-        this.store.reload({params:o});
-        this.hasSearch = true;
-        this.triggers[0].show();
-    }
-    */
 });
 

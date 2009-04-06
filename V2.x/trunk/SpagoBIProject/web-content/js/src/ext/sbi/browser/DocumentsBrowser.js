@@ -57,9 +57,9 @@ Sbi.browser.DocumentsBrowser = function(config) {
 	          animate:true
 	       },
 	       items: [
-	               this.searchPanel
+	               this.treePanel
 	               , this.filterPanel
-	               , this.treePanel
+	               , this.searchPanel
 	       ]
 	});
 	
@@ -119,6 +119,8 @@ Sbi.browser.DocumentsBrowser = function(config) {
     this.detailPanel.addListener('ondocumentclick', this.onDocumentClick, this);
     this.detailPanel.addListener('onfolderclick', this.onFolderClick, this);
     this.detailPanel.addListener('onbreadcrumbclick', this.onBreadCrumbClick, this);
+    this.searchPanel.addListener('onsearch', this.onSearch, this);
+    
     
     
     
@@ -135,9 +137,17 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
     , searchPanel: null
     , westRegionContainer: null
     , detailPanel: null
+    , selectedFolderId: null
+    
+    , selectFolder: function(folderId) {
+		this.detailPanel.loadFolder(folderId);
+		this.selectedFolderId = folderId;
+		this.searchPanel.selectedFolderId = folderId;
+	}
+    
     
     , onTreeNodeClick: function(node, e) {
-		this.detailPanel.loadFolder(node.id);
+		this.selectFolder(node.id);
 	}
 
 	, onDocumentClick: function(panel, r) {
@@ -148,13 +158,14 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 	}
 	
 	, onFolderClick: function(panel, r) {
-		this.detailPanel.loadFolder(r.id);
+		this.selectFolder(r.id);
 	}
 	
 	, onBreadCrumbClick: function(panel, b) {
-		this.detailPanel.loadFolder(b.id);
+		this.selectFolder(b.id);
 	}
-
-	// http://localhost:8080/SpagoBI/servlet/AdapterHTTP?OBJECT_ID=28&MESSAGEDET=EXEC_PHASE_CREATE_PAGE&PAGE=ExecuteBIObjectPage
-   
+	
+	, onSearch: function(panel, q) {
+		this.detailPanel.searchFolder(q);
+	}
 });

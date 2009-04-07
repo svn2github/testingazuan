@@ -70,8 +70,8 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			setSpagoBIResponseContainer( response );
 			
 			String functID = getAttributeAsString(FOLDER_ID);		
-			
 			logger.debug("Parameter [" + FOLDER_ID + "] is equal to [" + functID + "]");
+			
 			//getting default folder (root)
 			LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
 			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID)){
@@ -103,7 +103,7 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			
 			//getting children folders
 			if (isRoot)
-				functionalities = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(true, false);	
+				functionalities = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(true, false, profile);	
 			else
 				functionalities = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(Integer.valueOf(functID), false);	
 			

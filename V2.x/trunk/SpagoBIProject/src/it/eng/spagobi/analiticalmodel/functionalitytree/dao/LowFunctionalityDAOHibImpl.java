@@ -1267,7 +1267,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadAllLowFunctionalities(boolean)
 	 */
-	public List loadUserFunctionalities(boolean onlyFirstLevel, boolean recoverBIObjects) throws EMFUserError {
+	public List loadUserFunctionalities(boolean onlyFirstLevel, boolean recoverBIObjects, IEngUserProfile profile) throws EMFUserError {
 		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
@@ -1277,13 +1277,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			tx = aSession.beginTransaction();
 			String username = null;
 			Collection roles = null;
-			IEngUserProfile profile=null;
 			try {
 				RequestContainer reqCont = RequestContainer.getRequestContainer();
 				if(reqCont!=null){
-					SessionContainer sessCont = reqCont.getSessionContainer();
-					SessionContainer permCont = sessCont.getPermanentContainer();
-					profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 					username = (String)((UserProfile)profile).getUserId();
 					roles  = ((UserProfile)profile).getRoles();
 				}

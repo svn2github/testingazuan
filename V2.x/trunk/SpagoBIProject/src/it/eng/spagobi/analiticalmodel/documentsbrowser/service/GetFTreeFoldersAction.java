@@ -29,7 +29,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.chiron.serializer.FoldersJSONSerializer;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -65,9 +67,13 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction {
 			nodeId = getAttributeAsString( NODE_ID );
 			logger.debug("Parameter [" + NODE_ID + "] is equal to [" + nodeId + "]");
 			
+			SessionContainer sessCont = getSessionContainer();
+			SessionContainer permCont = sessCont.getPermanentContainer();
+			IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+			
 			if (nodeId.equalsIgnoreCase(ROOT_NODE_ID)) {
 				//getting all I° level folders
-				folders = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(true, false);	
+				folders = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(true, false, profile);	
 			} else {
 				//getting children folders
 				folders = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(new Integer(nodeId), false);	

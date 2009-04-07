@@ -249,12 +249,13 @@ public interface ILowFunctionalityDAO {
 	 * @param onlyFirstLevel If true returns only first level functionalities, if else all
 	 * @param recoverBIObjects If true each <code>LowFunctionality</code> at output will have the
 	 * list of contained <code>BIObject</code> objects
+	 * @param profile the user profile
 	 * 
 	 * @return the root functionality
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public List loadUserFunctionalities(boolean onlyFirstLevel, boolean recoverBIObjects) throws EMFUserError;
+	public List loadUserFunctionalities(boolean onlyFirstLevel, boolean recoverBIObjects,  IEngUserProfile profile) throws EMFUserError;
 	
 
 	/**

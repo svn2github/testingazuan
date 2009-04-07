@@ -1,0 +1,36 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SpagoBI Studio Core Plug-in
+Bundle-SymbolicName: it.eng.spagobi.studio.core; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: it.eng.spagobi.studio.core.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.console,
+ org.eclipse.jdt.ui,
+ org.eclipse.swt,
+ org.eclipse.jface,
+ org.eclipse.ui.workbench,
+ org.eclipse.ui.intro,
+ org.eclipse.ui.intro.universal,
+ org.eclipse.ui.navigator;bundle-version="3.3.102",
+ org.eclipse.ui.navigator.resources;bundle-version="3.3.101"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: lib/sbi.utils-2.1.0.jar,
+ .,
+ lib/activation.jar,
+ lib/axis.jar,
+ lib/commons-discovery-0.2.jar,
+ lib/commons-logging-1.0.jar,
+ lib/commons-logging-api-1.1.jar,
+ lib/jaxrpc.jar,
+ lib/mail-1.4.jar,
+ lib/saaj.jar,
+ lib/wsdl4j-1.5.1.jar

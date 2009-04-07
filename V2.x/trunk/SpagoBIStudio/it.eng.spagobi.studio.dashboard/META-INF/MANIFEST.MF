@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Dashboard Plug-in
+Bundle-SymbolicName: it.eng.spagobi.studio.dashboard; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: it.eng.spagobi.studio.dashboard.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ it.eng.spagobi.studio.core;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

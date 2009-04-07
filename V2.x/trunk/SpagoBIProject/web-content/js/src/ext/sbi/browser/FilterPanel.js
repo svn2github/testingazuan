@@ -28,82 +28,87 @@ Ext.ns("Sbi.browser");
 
 Sbi.browser.FilterPanel = function(config) { 
 	
-	/*
-	var filterPanel = new Ext.Panel({
-    	frame:true,
-    	margins:'15 0 0 0',
-    	title: 'Filter',
-    	collapsible:true,
-    	titleCollapse: true,
-    	style : 'margin: 0px 0px 10px 0px'
-    });
-    
-    var sortPanel = new Ext.Panel({
-    	frame:true,
-    	margins:'15 0 0 0',
-    	title: 'Sort',
-    	collapsible:true,
-    	titleCollapse: true,
-    	style : 'margin: 0px 0px 10px 0px'
-    });
-    
-    var groupPanel = new Ext.Panel({
-    	frame:true,
-    	margins:'15 0 0 0',
-    	title: 'Group',
-    	collapsible:true,
-    	titleCollapse: true,
-    	style : 'margin: 0px 0px 10px 0px'
-    });
-    */
+	// sort group	
+	this.sortRadioGroup = new Array();
+	this.sortRadioGroup[0] = new Ext.form.Radio({boxLabel: 'by label', name: 'sort', hideLabel: true, inputValue: 'label'});
+	this.sortRadioGroup[1] = new Ext.form.Radio({boxLabel: 'by name', name: 'sort', hideLabel: true, inputValue: 'name', checked: true});
+	this.sortRadioGroup[2] = new Ext.form.Radio({boxLabel: 'by date', name: 'sort', hideLabel: true, inputValue: 'creationDate'});
+	for(var i = 0; i < this.sortRadioGroup.length; i++) {
+		this.sortRadioGroup[i].on('check', this.onSortGroupClick, this);
+	}
+	var sortGroup = new Ext.form.FieldSet({
+	   title: 'Sort',
+	   collapsible: true,
+	   autoHeight:true,
+	   defaultType: 'textfield',
+	   items : this.sortRadioGroup
+	});
+	
+	// group group
+	this.groupRadioGroup = new Array();
+	this.groupRadioGroup[0] = new Ext.form.Radio({boxLabel: 'ungroup', name: 'group', hideLabel: true, inputValue: 'ungroup', checked: true});
+	this.groupRadioGroup[1] =  new Ext.form.Radio({boxLabel: 'by date', name: 'group', hideLabel: true, inputValue: 'creationDate'});
+	this.groupRadioGroup[2] = new Ext.form.Radio({boxLabel: 'by engine', name: 'group', hideLabel: true, inputValue: 'engine'});  
+	for(var i = 0; i < this.groupRadioGroup.length; i++) {
+		this.groupRadioGroup[i].on('check', this.onGroupGroupClick, this);
+	}
+	var groupGroup = new Ext.form.FieldSet({
+	   title: 'Group',
+	   collapsible: true,
+	   autoHeight:true,
+	   defaultType: 'textfield',
+	   items : this.groupRadioGroup
+	});
+	
+	// filter group
+	this.filterRadioGroup = new Array();
+	this.filterRadioGroup[0] =  new Ext.form.Radio({boxLabel: 'all', name: 'filter', hideLabel: true, inputValue: 'all', checked: true});
+	this.filterRadioGroup[1] =  new Ext.form.Radio({boxLabel: 'folders', name: 'filter', hideLabel: true, inputValue: 'folders'});
+	this.filterRadioGroup[2] = new Ext.form.Radio({boxLabel: 'documents', name: 'filter', hideLabel: true, inputValue: 'documents'});  
+	for(var i = 0; i < this.filterRadioGroup.length; i++) {
+		this.filterRadioGroup[i].on('check', this.onFilterGroupClick, this);
+	}
+	var filterGroup = new Ext.form.FieldSet({
+		   title: 'Filter',
+		   collapsible: true,
+		   autoHeight:true,
+		   defaultType: 'textfield',
+		   items : this.filterRadioGroup
+	});
     
 	var c = Ext.apply({}, config, {
 		bodyStyle:'padding:6px 6px 6px 6px; background-color:#FFFFFF'
-		//, items: [sortPanel, groupPanel, filterPanel]
-		, items: [
-		   {
-			   xtype:'fieldset',
-			   title: 'Sort',
-			   collapsible: true,
-			   autoHeight:true,
-			   defaultType: 'textfield',
-			   items :[
-			           new Ext.form.Radio({boxLabel: 'by name', name: 'sort', hideLabel: true, inputValue: 1, checked: true}),
-			           new Ext.form.Radio({boxLabel: 'by label', name: 'sort', hideLabel: true, inputValue: 2}),
-			           new Ext.form.Radio({boxLabel: 'by date', name: 'sort', hideLabel: true, inputValue: 3})        
-			   ]
-			} , {
-				   xtype:'fieldset',
-				   title: 'Group',
-				   collapsible: true,
-				   autoHeight:true,
-				   defaultType: 'textfield',
-				   items :[
-				           new Ext.form.Radio({boxLabel: 'by type', name: 'group', hideLabel: true, inputValue: 1, checked: true}),
-				           new Ext.form.Radio({boxLabel: 'by date', name: 'group', hideLabel: true, inputValue: 2}),
-				           new Ext.form.Radio({boxLabel: 'by engine', name: 'group', hideLabel: true, inputValue: 3})        
-				   ]
-				} , {
-					   xtype:'fieldset',
-					   title: 'Filter',
-					   collapsible: true,
-					   autoHeight:true,
-					   defaultType: 'textfield',
-					   items :[
-					           new Ext.form.Radio({boxLabel: 'all', name: 'filter', hideLabel: true, inputValue: 1, checked: true}),
-					           new Ext.form.Radio({boxLabel: 'folders', name: 'filter', hideLabel: true, inputValue: 2}),
-					           new Ext.form.Radio({boxLabel: 'documents', name: 'filter', hideLabel: true, inputValue: 3})        
-					   ]
-					}			  
-		]
+		, items: [ sortGroup ,  groupGroup, filterGroup	]
 		        
 	});   
 	
 	Sbi.browser.FilterPanel.superclass.constructor.call(this, c);   
+	
+	this.addEvents("onsort", "ongroup", "onfilter");
 };
 
 Ext.extend(Sbi.browser.FilterPanel, Ext.FormPanel, {
     
-    modality: null
+	sortRadioGroup : null
+	, groupRadioGroup : null
+	, filterRadioGroup : null
+	
+	, onSortGroupClick : function(cb, checked) {
+		if(checked) {
+			this.fireEvent('onsort', this, cb);
+		}
+	}
+
+	, onGroupGroupClick : function(cb, checked) {
+		if(checked) {
+			this.fireEvent('ongroup', this, cb);
+		}
+	}
+	
+	, onFilterGroupClick : function(cb, checked) {
+		if(checked) {
+			this.fireEvent('onfilter', this, cb);
+		}
+	}
     
 });

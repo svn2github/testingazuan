@@ -227,13 +227,7 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     , setBreadcrumbs: function(breadcrumbs) {
     	
     	this.resetToolbar();
-    	/*
-    	this.toolbar.items.each(function(item){            
-            this.items.remove(item);
-            item.destroy();           
-        }, this.toolbar.items); 
-        */
-    	 
+    	
     	this.add({
             iconCls: 'icon-ftree-root'
             //, disabled: true
@@ -260,28 +254,6 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     	});
         
         this.reinitToolbar();
-        /*
-        var tt;
-        var cls;
-        if(this.modality === 'list-view') {
-        	tt = LN('sbi.browser.folderdetailpanel.groupviewTT');
-        	cls = 'icon-group-view';
-        } else {
-        	tt = LN('sbi.browser.folderdetailpanel.listviewTT');
-        	cls = 'icon-list-view';
-        }
-        this.toolbar.buttonsL['toggleView'] = new Ext.Toolbar.Button({
-        	tooltip: tt,
-    		iconCls: cls,
-    		listeners: {
-    			'click': {
-              		fn: this.toggleDisplayModality,
-              		scope: this
-            	} 
-    		}
-        });
-        this.toolbar.add('->', this.toolbar.buttonsL['toggleView']);
-        */
     }
     
     , resetToolbar: function() {
@@ -333,9 +305,28 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
       }      
     }
     
-    , setToolbarText: function(text) {
-      this.toolbar.text.getEl().innerHTML = text;
+    , sort : function(groupName, attributeName) {
+    	if(this.loadingMask) this.loadingMask.show();
+    	//alert('sort: ' + groupName + ' - ' + attributeName);
+    	this.folderView.sort(groupName, attributeName);
+    	if(this.loadingMask) this.loadingMask.hide();
     }
+    
+    , group : function(groupName, attributeName) {
+    	if(this.loadingMask) this.loadingMask.show();
+    	//alert('group: ' + groupName + ' - ' + attributeName);
+    	this.folderView.group(groupName, attributeName);
+    	if(this.loadingMask) this.loadingMask.hide();
+    }
+    
+    , filter : function(type) {
+    	if(this.loadingMask) this.loadingMask.show();
+    	//alert('filter: ' + type);
+    	this.folderView.filter(type);
+    	if(this.loadingMask) this.loadingMask.hide();
+    }
+    
+   
 });
 
 

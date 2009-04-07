@@ -120,6 +120,9 @@ Sbi.browser.DocumentsBrowser = function(config) {
     this.detailPanel.addListener('onfolderclick', this.onFolderClick, this);
     this.detailPanel.addListener('onbreadcrumbclick', this.onBreadCrumbClick, this);
     this.searchPanel.addListener('onsearch', this.onSearch, this);
+    this.filterPanel.addListener('onsort', this.onSort, this);
+    this.filterPanel.addListener('ongroup', this.onGroup, this);
+    this.filterPanel.addListener('onfilter', this.onFilter, this);
     
     
     
@@ -167,5 +170,17 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 	
 	, onSearch: function(panel, q) {
 		this.detailPanel.searchFolder(q);
+	}
+	
+	, onSort: function(panel, cb) {
+		this.detailPanel.sort('Documents', cb.inputValue);
+	}
+	
+	, onGroup: function(panel, cb) {
+		this.detailPanel.group('Documents', cb.inputValue);
+	}
+	
+	, onFilter: function(panel, cb) {
+		this.detailPanel.filter(cb.inputValue);
 	}
 });

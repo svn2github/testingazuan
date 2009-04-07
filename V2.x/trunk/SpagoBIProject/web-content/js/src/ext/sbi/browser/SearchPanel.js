@@ -223,38 +223,9 @@ Ext.extend(Sbi.browser.SearchPanel, Ext.FormPanel, {
 	}
 	
 	
-	, onSearch: function(field, query) {
-		
+	, onSearch: function(field, query) {		
 		this.fireEvent('onsearch', this, this.getFormState());
 		
-		/*
-		var searchContentService = Sbi.config.serviceRegistry.getServiceUrl('SEARCH_CONTENT_ACTION');
-		searchContentService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
-		
-		var p = this.getFormState();
-		p.valueFilter = query;
-		
-		
-		Ext.Ajax.request({
-	        url: searchContentService,
-	        params: p,
-	        callback : function(options , success, response){
-	  	  	if(success && response !== undefined) {   
-		      		if(response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if(content !== undefined) {
-		      				alert(response.responseText);
-		      			} 
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-		      		}
-	  	  	}
-	        },
-	        scope: this,
-			failure: Sbi.exception.ExceptionHandler.handleFailure      
-	     });
-	     
-	     */
 	}
     
 });

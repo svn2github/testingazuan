@@ -48,7 +48,9 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
                         	'<div id="icon" class="document"></div>',
                         	//'<div id="icon" class="{parent.iconCls}"></div>',
 	                        '<div id="description">',
+	                        	'<h4>{label}</h4>',
 		                        '<h4>{name}</h4>',
+		                        '<i>{creationDate}</i>',
 		                        '<p><b>Description:</b> {description} ',
 		                        '{extendedDescription}</p>',		                        
 	                        '</div>',
@@ -81,9 +83,16 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
 );
 
 Sbi.browser.FolderView = function(config) {
-   config.store.on('load', this.createIndex, this, {groupIndex: 'samples'});
-   Sbi.browser.FolderView.superclass.constructor.call(this, config);
-   //this.createIndex('samples');
+	
+	this.viewState = {
+		filterType: 'all'
+		, sortGroup: 'Documents'
+		, sortAttribute: 'name'
+		, groupGroup: 'Documents'
+		, groupAttribute: 'ungroup'
+	};
+    config.store.on('load', this.onLoad, this, {groupIndex: 'samples'});
+    Sbi.browser.FolderView.superclass.constructor.call(this, config);
 }; 
     
     
@@ -92,7 +101,9 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     frame:true
     , itemSelector: 'dd'
     , overClass: 'over'
+    , groups: null
     , lookup: null
+    , viewState: null
     
     , tpl : Sbi.browser.groupTpl
 
@@ -143,26 +154,154 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
         return Sbi.browser.FolderView.superclass.onMouseOut.apply(this, arguments);
     }
     
-    , getRecord : function(n){
-        var i = (typeof n == 'number')?n:n.viewIndex;
-        return this.lookup[i];
+    , onLoad : function(s, r) {
+    	this.groups = this.store.getRange();
+    	this.applyState();
     }
     
-    , createIndex : function(s, r, o) {
-      var id = 0;
-      
-      o.groupIndex = 'samples';
+    , createIndex : function() {
+      var id = 0;   
       
       this.lookup = {};
       
       var groups = this.store.getRange(0, this.store.getCount());
       for(var i = 0; i < groups.length; i++) {
-        var records = groups[i].data[o.groupIndex];
+        var records = groups[i].data['samples'];
         for(var j = 0; j < records.length; j++) {
           this.lookup[id++] = records[j];
-        }
-        
+        }        
       }
+    }
+    
+    , getRecord : function(n){
+        var i = (typeof n == 'number')?n:n.viewIndex;
+        return this.lookup[i];
+    }
+    
+    , reset : function() {
+    	this.store.removeAll();
+    	this.store.add( this.groups );
+    }
+    
+    , getCollection : function(groupName) {  
+    	var collection = null;
+    	
+    	var groupIndex = this.store.find('title', groupName);    	
+    	if(groupIndex === -1) return null;
+    	var group = this.store.getAt( groupIndex );
+    	var records = group.data['samples'];
+    	collection = new Ext.util.MixedCollection(false);
+    	collection.addAll(records);
+    	
+    	return collection;
+    }
+    
+    
+    , applyState : function() {
+    	this.reset();
+    	this.applyFilter(this.viewState.filterType);
+    	this.applySort(this.viewState.sortGroup, this.viewState.sortAttribute);
+    	this.applyGroup(this.viewState.groupGroup, this.viewState.groupAttribute);
+    	this.createIndex();
+    	this.refresh();
+    }
+    
+    , sort : function(groupName, attributeName) { 
+    	this.viewState.sortGroup = groupName;
+    	this.viewState.sortAttribute = attributeName;
+    	this.applyState();
+    	
+    	/*
+    	this.reset();
+    	this.applySort(groupName, attributeName);
+    	this.createIndex();
+    	this.refresh();
+    	*/
+    }
+    
+    , applySort : function(groupName, attributeName) {
+    	var collection = this.getCollection(groupName, attributeName);
+    	if(collection == null) return;
+    	collection.sort('ASC', function(r1, r2) {
+            var v1 = r1[attributeName], v2 = r2[attributeName];
+            return v1 > v2 ? 1 : (v1 < v2 ? -1 : 0);
+        });
+    	
+    	var groupIndex = this.store.find('title', groupName);    	
+    	var group = this.store.getAt( groupIndex );
+    	group.data['samples'] = collection.getRange();   
+    }
+    
+    , group : function(groupName, attributeName) { 
+    	
+    	this.viewState.groupGroup = groupName;
+    	this.viewState.groupAttribute = attributeName;
+    	this.applyState();
+    	/*
+    	this.reset();
+    	this.applyGroup(groupName, attributeName);
+    	this.createIndex();
+    	this.refresh();
+    	*/
+    }
+    
+    , applyGroup : function(groupName, attributeName) { 
+    	if(attributeName === 'ungroup') return;
+    	var collection = this.getCollection(groupName, attributeName);
+    	if(collection == null) return;
+    	var distinctValues = {};
+    	collection.each(function(item) {
+    		distinctValues[item[attributeName]] = true;
+    	});
+    	var groupIndex = this.store.find('title', groupName);    	
+    	var group = this.store.getAt( groupIndex );
+    	this.store.remove(group);    
+    	
+    	var GroupRecord = Ext.data.Record.create([
+    	    {name: 'title', type: 'string'},
+    	    {name: 'icon', type: 'string'}, 
+    	    {name: 'samples', type: 'string'}
+    	]);
+    	
+    	for(p in distinctValues) {
+    		var newGroup = collection.filter(attributeName, p)
+    		this.store.add([
+    		          	  new GroupRecord({
+    		          		  title: p
+    		          		  , icon: 'document.png'
+    		          		  , samples: newGroup.getRange()
+    		          	  })
+    		          	]);
+    	}
+    	
+    }
+    
+    , filter : function(type) {
+    	this.viewState.filterType = type;
+    	this.applyState();
+    	/*
+    	this.reset();
+    	this.applyFilter(type);
+    	this.createIndex();
+    	this.refresh();
+    	*/
+    }
+    
+    , applyFilter: function(type) {
+    	if(type === 'folders') {
+    		var groupIndex = this.store.find('title', 'Folders'); 
+    		if(groupIndex !== -1) {
+    			var group = this.store.getAt( groupIndex );
+    			this.store.removeAll();  
+    			this.store.add([group]);
+    		}
+    	} else if (type === 'documents') {
+    		var groupIndex = this.store.find('title', 'Folders');  
+    		if(groupIndex !== -1) {
+	        	var group = this.store.getAt( groupIndex );
+	        	this.store.remove(group);   
+    		}
+    	}    	
     }
     
      

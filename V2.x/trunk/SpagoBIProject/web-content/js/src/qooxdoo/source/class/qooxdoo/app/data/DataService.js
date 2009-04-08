@@ -1501,7 +1501,61 @@ qx.Class.define("qooxdoo.app.data.DataService", {
                 ];
     },    
     
-  	loadKpiResourceRecords: function() {
+    loadKpiInstanceResourceRecords: function() {
+        var records = {};
+        records.ID = "ROLES";
+    	records.columns = [1];          
+        records.meta =  this.loadKpiInstanceResourceMeta();                
+        records.rows =  this.loadKpiInstanceResourceData();
+        
+        return records;
+    },
+    
+    loadKpiInstanceResourceMeta: function() {
+        return [
+          {
+              dataIndex: 'name',
+              name: 'Name'
+          },
+          {
+              dataIndex: 'selection',
+              name: 'Selection'
+          }
+          
+      ];
+    },
+    
+    loadKpiInstanceResourceData: function() {
+        return [
+          {
+              id: '162',
+              name: 'MISP_ILVILLAGE_MSITE_MP',
+              selection : true,
+              discription: 'MISP_ILVILLAGE_MSITE_MP',
+              tablename: 'O_SERVICES',
+              columnname: 'ORIG_SERVICE_ID',
+              typename: 'CSP'
+          }, {
+              id: '163',
+              name: 'MISP_PUREBROS_OI_NEWS',
+              selection : true,
+              discription: 'MISP_PUREBROS_OI_NEWS',
+              tablename: 'O_SERVICES',
+              columnname: 'ORIG_SERVICE_ID',
+              typename: 'CSP'
+          }, {
+              id: '164',
+              name: 'MISP_PUREBROS_NAVIGAZIONE_SERVIZI_SEXY',
+              selection : false,
+              discription: 'MISP_PUREBROS_NAVIGAZIONE_SERVIZI_SEXY',
+              tablename: 'O_SERVICES',
+              columnname: 'ORIG_SERVICE_ID',
+              typename: 'CSP'
+          }
+      ];
+    },
+    
+    loadKpiResourceRecords: function() {
         var records = {};
                   
         records.meta =  this.loadKpiResourceMeta();                
@@ -1543,82 +1597,6 @@ qx.Class.define("qooxdoo.app.data.DataService", {
               tablename: 'O_SERVICES',
               columnname: 'ORIG_SERVICE_ID',
               typename: 'CSP'
-          }
-      ];
-    },    
-    
-    loadKpiAlarmRecords: function() {
-        var records = {};
-                  
-        records.meta =  this.loadKpiAlarmMeta();                
-        records.rows =  this.loadKpiAlarmData();
-        
-        return records;
-    },
-    
-    loadKpiAlarmMeta: function() {
-        return [
-          {
-              dataIndex: 'name',
-              name: 'Name'
-          },
-          {
-              dataIndex: 'kpiname',
-              name: 'KPI Name'
-          },
-          {
-              dataIndex: 'kpicode',
-              name: 'KPI Code'
-          },
-          {
-              dataIndex: 'autodisable',
-              name: 'Auto-disable'
-          }
-      ];
-    },
-    
-    
-    loadKpiAlarmData: function() {
-        return [
-          {
-              id: '362',
-              label: 'Alarm1',
-              name: 'ALARM 1',
-              discription: 'Alarm 1',
-              kpiname : '',
-              autodisable: false,
-              mode: 'Value1',
-              document: '',
-              text: 'This is the sample email body',
-              url: 'URL details for more details on Alarm 1',
-              singleevent: false,
-              threshold: ''
-          }, {
-              id: '363',
-              label: 'Alarm2',
-              name: 'ALARM 2',
-              discription: 'Alarm 2',
-              kpiname : '',
-              autodisable: false,
-              mode: 'Value1',
-              document: '',
-              text: 'This is the sample email body',
-              url: 'URL details for more details on Alarm 2',
-              singleevent: false,
-              threshold: ''
-          }, {
-              id: '364',
-              label: 'Alarm3',
-              name: 'ALARM 3',
-              discription: 'Alarm 3',
-              kpiname : '',
-              autodisable: false,
-              mode: 'Value1',
-              document: '',
-              text: 'This is the sample email body',
-              url: 'URL details for more details on Alarm 3',
-              singleevent: false,
-              threshold: ''
           }
       ];
     }

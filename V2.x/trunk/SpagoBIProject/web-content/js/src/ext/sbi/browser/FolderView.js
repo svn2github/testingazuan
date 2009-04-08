@@ -104,6 +104,7 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     , groups: null
     , lookup: null
     , viewState: null
+    , ready: false
     
     , tpl : Sbi.browser.groupTpl
 
@@ -156,6 +157,7 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     
     , onLoad : function(s, r) {
     	this.groups = this.store.getRange();
+    	this.ready = true;
     	this.applyState();
     }
     
@@ -198,6 +200,7 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     
     
     , applyState : function() {
+    	if(!this.ready) return;
     	this.reset();
     	this.applyFilter(this.viewState.filterType);
     	this.applySort(this.viewState.sortGroup, this.viewState.sortAttribute);

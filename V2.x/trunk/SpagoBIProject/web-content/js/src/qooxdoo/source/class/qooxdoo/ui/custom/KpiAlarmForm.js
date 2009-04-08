@@ -44,9 +44,9 @@ qx.Class.define("qooxdoo.ui.custom.KpiAlarmForm", {
 				
 		this.base(arguments);
 		
-		this.createDetailsTab();
+		this.createAlarmDetailsTab();
 		
-		this.createTreeTab();
+		this.createContactDetailsTab();
 		
 	},
 		 
@@ -56,26 +56,26 @@ qx.Class.define("qooxdoo.ui.custom.KpiAlarmForm", {
 		  
 	members: {
 		
-		createDetailsTab: function(){
-			var page = new qx.ui.tabview.Page("DETAIL");
+		createAlarmDetailsTab: function(){
+			var page = new qx.ui.tabview.Page("Alarm");
 			page.setLayout(new qx.ui.layout.Grow());
 			
-			var form = new qooxdoo.ui.custom.KpiModelInstanceDetailForm();
+			var form = new qooxdoo.ui.custom.KpiAlarmDetailForm();
 			page.add(form);
 			
 			this.add(page);
 			this.setUserData('details',page);
 		},
 		
-		createTreeTab: function(){
-			var page = new qx.ui.tabview.Page("TREE");
+		createContactDetailsTab: function(){
+			var page = new qx.ui.tabview.Page("Contacts");
 			page.setLayout(new qx.ui.layout.Grow());
 			
-			var form = new qooxdoo.ui.custom.KpiModelInstanceTreeForm();
-			page.add(form);
+			//var form = new qooxdoo.ui.custom.KpiContactForm();
+			//page.add(form);
 			
 			this.add(page);
-			this.setUserData('tree',page);
+			this.setUserData('contact',page);
 		}
 	}	
 });

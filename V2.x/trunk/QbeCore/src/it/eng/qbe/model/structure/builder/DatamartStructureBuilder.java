@@ -20,12 +20,6 @@
  **/
 package it.eng.qbe.model.structure.builder;
 
-import it.eng.qbe.datasource.IHibernateDataSource;
-import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.spagobi.utilities.assertion.Assert;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -37,10 +31,17 @@ import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.persister.entity.SingleTableEntityPersister;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
 import org.hibernate.type.ManyToOneType;
 import org.hibernate.type.Type;
+
+import it.eng.qbe.datasource.IHibernateDataSource;
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.model.structure.DataMartModelStructure;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -93,6 +94,19 @@ public class DatamartStructureBuilder {
 						, SessionFactory.class.getName()
 						, datamartName );
 			}
+			
+			
+			Map x = getDataSource().getSessionFactory(datamartName).getAllClassMetadata();
+			for (Iterator it = x.values().iterator(); it.hasNext(); ) {
+				SingleTableEntityPersister y = (SingleTableEntityPersister)it.next();
+				System.out.println(y.getName() + " -> " + y.getTableName());
+				for (int j = 0; j < y.getPropertyNames().length; j++) {
+					System.out.println(" " + y.getPropertyNames()[j] + " -> " +
+					(y.getPropertyColumnNames(j).length > 0?
+					y.getPropertyColumnNames(j)[0]: ""));
+				}
+			}
+			
 			classMetadata = sf.getAllClassMetadata();
 			for(Iterator it = classMetadata.keySet().iterator(); it.hasNext(); ) {
 				String entityType = (String)it.next();			
@@ -134,7 +148,7 @@ public class DatamartStructureBuilder {
 			DataMartEntity subentity = (DataMartEntity)it.next();
 			if (subentity.getType().equalsIgnoreCase(dataMartEntity.getType())){
 				// ciclo di periodo 0!
-			} else if(recursionLevel > 3) {
+			} else if(recursionLevel > 10) {
 				// prune recursion tree 
 			} else {
 				addSubEntity(dataMartEntity, 

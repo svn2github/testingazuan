@@ -52,6 +52,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	boolean docComposition=false;
     List resources = new ArrayList();
 	SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
+	Integer executionAuditId_chart = null;
  	EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
 	if(errorHandler.isOK()){    
 		SessionContainer permSession = aSessionContainer.getPermanentContainer();
@@ -68,11 +69,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
 				<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
 				<%
+				 executionAuditId_chart = executionAuditId;
 			   }
    		else // in document composition case doesn't call header so set Object and uuid
 			   {
 	   				docComposition=true;
 			   }
+   	
+	   AuditManager auditManager = AuditManager.getInstance();
+
+		try{		
+			// AUDIT UPDATE
+			
+			if (executionAuditId_chart != null) {
+			    auditManager.updateAudit(executionAuditId_chart, new Long(System.currentTimeMillis()), null, "EXECUTION_STARTED", null,
+				    null);
+			}
+		
 	%>
 		
 	 <script type="text/javascript">
@@ -263,7 +276,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			 }
 			 </script>
 			
-		<%}%>		
+		<%}
+		if (executionAuditId_chart != null) {
+		    auditManager.updateAudit(executionAuditId_chart, null,new Long(System.currentTimeMillis()), "EXECUTION_PERFORMED", null,
+			    null);
+		}
+		}catch (Exception e) {
+		// Audit Update
+			if(executionAuditId_chart!=null){
+			auditManager.updateAudit(executionAuditId_chart, null, new Long(System.currentTimeMillis()), "EXECUTION_FAILED", e
+				    .getMessage(), null);		
+		   }
+		return;    
+		}
+		%>		
 	<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>		
 
 		

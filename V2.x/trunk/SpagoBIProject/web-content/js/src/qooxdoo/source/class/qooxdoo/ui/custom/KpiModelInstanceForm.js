@@ -48,6 +48,8 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceForm", {
 		
 		this.createTreeTab();
 		
+		this.createResourceTab();
+		
 	},
 		 
 	/**
@@ -76,6 +78,17 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelInstanceForm", {
 			
 			this.add(page);
 			this.setUserData('tree',page);
+		},
+		
+		createResourceTab: function(){
+			var page = new qx.ui.tabview.Page("Resource");
+			page.setLayout(new qx.ui.layout.Grow());
+			
+			var form = new qooxdoo.ui.custom.KpiModelInstanceResourceForm();
+			page.add(form);
+			
+			this.add(page);
+			this.setUserData('resource',page);
 		}
 	}	
 });

@@ -108,7 +108,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiAlarmDetailForm", {
 							 ]
 			}, {
         		type: 'textarea',
-        		dataIndex: 'text',
+        		dataIndex: 'textbody',
         		text: 'Text',
         		mandatory: false		
         	}, {

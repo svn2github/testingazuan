@@ -1449,7 +1449,7 @@ qx.Class.define("qooxdoo.app.data.DataService", {
                     description: 'INDICATORI TIM',
                     typename: 'GQM root',
                     typedescription: 'null',
-                    kpiname : 'Numero Alarmi CSP'
+                    kpiname : 'Numero Alarmi TIM'
                 }
                 ];
     },
@@ -1496,7 +1496,7 @@ qx.Class.define("qooxdoo.app.data.DataService", {
                     defncode: 'INDICATORI TIM',
                     defntypename: 'GQM root',
                     defntypedesc: 'null',
-                    kpiname : 'Numero Alarmi CSP'
+                    kpiname : 'Numero Alarmi TIM'
                 }
                 ];
     },    
@@ -1553,9 +1553,9 @@ qx.Class.define("qooxdoo.app.data.DataService", {
               typename: 'CSP'
           }
       ];
-    },
+    },    
     
-    loadKpiResourceRecords: function() {
+  	loadKpiResourceRecords: function() {
         var records = {};
                   
         records.meta =  this.loadKpiResourceMeta();                
@@ -1597,6 +1597,82 @@ qx.Class.define("qooxdoo.app.data.DataService", {
               tablename: 'O_SERVICES',
               columnname: 'ORIG_SERVICE_ID',
               typename: 'CSP'
+          }
+      ];
+    },    
+    
+    loadKpiAlarmRecords: function() {
+        var records = {};
+                  
+        records.meta =  this.loadKpiAlarmMeta();                
+        records.rows =  this.loadKpiAlarmData();
+        
+        return records;
+    },
+    
+    loadKpiAlarmMeta: function() {
+        return [
+          {
+              dataIndex: 'name',
+              name: 'Name'
+          },
+          {
+              dataIndex: 'kpiname',
+              name: 'KPI Name'
+          },
+          {
+              dataIndex: 'kpicode',
+              name: 'KPI Code'
+          },
+          {
+              dataIndex: 'autodisable',
+              name: 'Auto-disable'
+          }
+      ];
+    },
+    
+    
+    loadKpiAlarmData: function() {
+        return [
+          {
+              id: '362',
+              label: 'Alarm1',
+              name: 'ALARM 1',
+              description: 'Alarm 1',
+              kpiname : 'KPI1',
+              autodisable: 'Yes',
+              mode: 'Value1',
+              document: 'Doc1',
+              textbody: 'This is the sample email body',
+              url: 'URL for more details on Alarm 1',
+              singleevent: 'Yes',
+              threshold: 'Threshold1'
+          }, {
+              id: '363',
+              label: 'Alarm2',
+              name: 'ALARM 2',
+              description: 'Alarm 2',
+              kpiname : 'KPI2',
+              autodisable: 'No',
+              mode: 'Value1',
+              document: 'Doc2',
+              textbody: 'This is the sample email body',
+              url: 'URL for more details on Alarm 2',
+              singleevent: 'No',
+              threshold: 'Threshold2'
+          }, {
+              id: '364',
+              label: 'Alarm3',
+              name: 'ALARM 3',
+              description: 'Alarm 3',
+              kpiname : 'KPI3',
+              autodisable: 'Yes',
+              mode: 'Value1',
+              document: 'Doc3',
+              textbody: 'This is the sample email body',
+              url: 'URL for more details on Alarm 3',
+              singleevent: 'Yes',
+              threshold: 'Threshold3'
           }
       ];
     }

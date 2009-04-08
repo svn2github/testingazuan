@@ -251,7 +251,7 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
      */
     , selectDataObject: function(dataObject) {
     	
-    	if(this._type == 'modelDefinition' || this._type == 'modelInstance'){	//form with multiple group box
+    	if(this._type == 'modelDefinition' || this._type == 'modelInstance' || this._type == 'alarm'){	//form with multiple group box
     		
     		//Go to form inside each groupbox and then set the value of required field
     		//this._form.setData({'modeldefn' : dataObject}); WORKING for 1 form
@@ -266,14 +266,22 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
     		*/
     		var page = this._form.getUserData('details');
     		var f = page.getChildren()[0];
-    		
+    		//qooxdoo.commons.CoreUtils.dump(dataObject);
     		var o = [];
-    		for(var prop in f.dataMappings){
-    			o[prop] = dataObject;
-    		}	
+    		if(this._type == 'alarm'){
+    			o = dataObject;
+    		}
+    		
+    		else{
+    			for(var prop in f.dataMappings){	//prop points to group-boxes
+	    			o[prop] = dataObject;
+	    		}
+    		}
+    		
     		f.setData(o);
     		
     	}
+    	
     	else
     		this._form.setData(dataObject);
     }

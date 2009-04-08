@@ -40,6 +40,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
 <%  logger.debug("IN");
 	EMFErrorHandler errorHandler = aResponseContainer.getErrorHandler();
+	AuditManager auditManager2 = AuditManager.getInstance();
+
+	try{		
+		// AUDIT UPDATE
+		
+		if (executionAuditId != null) {
+			auditManager2.updateAudit(executionAuditId, new Long(System.currentTimeMillis()), null, "EXECUTION_STARTED", null,
+			    null);
+		}
 
    	//acquisizione info come template a cui girare la richiesta
     String nameTemplate = "";
@@ -94,6 +103,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
     <%@ include file="/WEB-INF/jsp/engines/documentcomposition/template/dynamicTemplate.jsp"%>
     <%
+    if (executionAuditId != null) {
+    	auditManager2.updateAudit(executionAuditId, null,new Long(System.currentTimeMillis()), "EXECUTION_PERFORMED", null,
+		    null);
+	}
+	}catch (Exception e) {
+	// Audit Update
+		if(executionAuditId!=null){
+			auditManager2.updateAudit(executionAuditId, null, new Long(System.currentTimeMillis()), "EXECUTION_FAILED", e
+			    .getMessage(), null);		
+	   }
+	return;    
+	}
     logger.debug("OUT"); 
   
     %>

@@ -1018,7 +1018,9 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			tx = aSession.beginTransaction();
 			SbiKpi k = (SbiKpi) aSession.load(SbiKpi.class, kpiId);
 			SbiDataSetConfig ds = k.getSbiDataSet();
-			toReturn = DAOFactory.getDataSetDAO().loadDataSetByID(ds.getDsId());
+			if(ds!=null){
+				toReturn = DAOFactory.getDataSetDAO().loadDataSetByID(ds.getDsId());
+			}
 
 		} catch (HibernateException he) {
 

@@ -508,7 +508,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    	logger.debug("Old value not valid anymore or recalculation forced");
 			IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
 		
-			logger.debug("Retrieved the Dataset to be calculated: " + dataSet.getId());
+			logger.debug("Retrieved the Dataset to be calculated: " + (dataSet!=null ? dataSet.getId():"null"));
 			value = getNewKpiValue(dataSet, kpiI, r, miId);
 			logger.debug("New value calculated");
 			if(register_values){

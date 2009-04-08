@@ -190,7 +190,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		    	var item = this.tree1.getSelectedItem();
 		
-		    	if(item instanceof qx.ui.tree.TreeFile){
+		    	if(item instanceof qx.ui.tree.TreeFolder){
 		    		this.nodeLabel = item.getLabel();
 		    		this.inputField.addInstance(this.nodeLabel);
 			   	}

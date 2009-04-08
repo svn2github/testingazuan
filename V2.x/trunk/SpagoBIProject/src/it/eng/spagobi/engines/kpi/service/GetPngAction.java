@@ -23,6 +23,7 @@ package it.eng.spagobi.engines.kpi.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,7 +59,6 @@ public class GetPngAction extends AbstractHttpAction{
 		HttpServletRequest req = getHttpRequest();
 		String path = (String)serviceRequest.getAttribute("path");
 
-
 		FileInputStream fis=new FileInputStream(path);
 
 		int avalaible = fis.available();   // Mi informo sul num. bytes.
@@ -78,6 +78,7 @@ public class GetPngAction extends AbstractHttpAction{
 		}else{ 
 			logger.error("File not correctle deleted");
 		} 
+		
 		logger.debug("OUT");
 	}
 }

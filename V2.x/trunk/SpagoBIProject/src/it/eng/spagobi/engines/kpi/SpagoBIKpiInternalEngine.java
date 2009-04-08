@@ -704,6 +704,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	// If not, the dataset will be calculated without the parameter Resource
 	// and the DataSet won't expect a parameter of type resource
 	//if(dataSet.hasBehaviour( QuerableBehaviour.class.getName()) ) {
+	if(dataSet!=null){
 		dataSet.setParamsMap(temp);
 		dataSet.setUserProfile(profile);
 	//}
@@ -756,6 +757,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    }
 	} else {
 	    logger.warn("The Data Set doesn't return any value!!!!!");
+	}
 	}
 	if (chartType != null)
 	    kVal.setChartType(chartType);

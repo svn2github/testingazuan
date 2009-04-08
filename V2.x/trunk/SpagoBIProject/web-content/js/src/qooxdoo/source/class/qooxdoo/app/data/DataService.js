@@ -1545,6 +1545,82 @@ qx.Class.define("qooxdoo.app.data.DataService", {
               typename: 'CSP'
           }
       ];
+    },    
+    
+    loadKpiAlarmRecords: function() {
+        var records = {};
+                  
+        records.meta =  this.loadKpiAlarmMeta();                
+        records.rows =  this.loadKpiAlarmData();
+        
+        return records;
+    },
+    
+    loadKpiAlarmMeta: function() {
+        return [
+          {
+              dataIndex: 'name',
+              name: 'Name'
+          },
+          {
+              dataIndex: 'kpiname',
+              name: 'KPI Name'
+          },
+          {
+              dataIndex: 'kpicode',
+              name: 'KPI Code'
+          },
+          {
+              dataIndex: 'autodisable',
+              name: 'Auto-disable'
+          }
+      ];
+    },
+    
+    
+    loadKpiAlarmData: function() {
+        return [
+          {
+              id: '362',
+              label: 'Alarm1',
+              name: 'ALARM 1',
+              discription: 'Alarm 1',
+              kpiname : '',
+              autodisable: false,
+              mode: 'Value1',
+              document: '',
+              text: 'This is the sample email body',
+              url: 'URL details for more details on Alarm 1',
+              singleevent: false,
+              threshold: ''
+          }, {
+              id: '363',
+              label: 'Alarm2',
+              name: 'ALARM 2',
+              discription: 'Alarm 2',
+              kpiname : '',
+              autodisable: false,
+              mode: 'Value1',
+              document: '',
+              text: 'This is the sample email body',
+              url: 'URL details for more details on Alarm 2',
+              singleevent: false,
+              threshold: ''
+          }, {
+              id: '364',
+              label: 'Alarm3',
+              name: 'ALARM 3',
+              discription: 'Alarm 3',
+              kpiname : '',
+              autodisable: false,
+              mode: 'Value1',
+              document: '',
+              text: 'This is the sample email body',
+              url: 'URL details for more details on Alarm 3',
+              singleevent: false,
+              threshold: ''
+          }
+      ];
     }
   	
   }

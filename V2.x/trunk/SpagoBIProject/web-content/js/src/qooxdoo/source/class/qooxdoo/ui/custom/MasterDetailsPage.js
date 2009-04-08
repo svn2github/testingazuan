@@ -150,7 +150,7 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		this.records = qooxdoo.app.data.DataService.loadThresholdRecords();		
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.ThresholdDefinitionForm();
-	}  else if(type == 'resource') {									
+	} else if(type == 'resource') {									
 		this.records = qooxdoo.app.data.DataService.loadKpiResourceRecords();	
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.ResourceDefinitionForm();
@@ -158,10 +158,14 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		this.records = qooxdoo.app.data.DataService.loadKpiModelDefinitionRecords();	
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.KpiModelDefinitionForm();
-	}else if(type == 'modelInstance') {									
+	} else if(type == 'modelInstance') {									
 		this.records = qooxdoo.app.data.DataService.loadKpiModelInstanceRecords();	
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.KpiModelInstanceForm();
+	} else if(type == 'alarm') {									
+		this.records = qooxdoo.app.data.DataService.loadKpiAlarmRecords();	
+		config.dataset = this.records;
+		form = new qooxdoo.ui.custom.KpiAlarmForm();
 	}
 	
 	this._pagedTable = new qooxdoo.ui.table.PagedTable(this, config); 

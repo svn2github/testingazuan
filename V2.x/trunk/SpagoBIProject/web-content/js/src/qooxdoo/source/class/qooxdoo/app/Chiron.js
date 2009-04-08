@@ -409,28 +409,33 @@ qx.Class.define("qooxdoo.app.Chiron",
       				{
       					name: 'kpi',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/kpiDefinition.png'),
-						page: 'link1',
+						page: 'kpi',
 						tooltip: 'KPI Definition'
       				}, {
       					name: 'threshold',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/bidocuments16.png'),
-						page: 'link2',
+						page: 'threshold',
 						tooltip: 'Threshold Definition'
       				}, {
       					name: 'modelDefinition',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/modelDefinition.png'),
-						page: 'link3',
+						page: 'modelDefinition',
 						tooltip: 'Model Definition'
       				}, {
       					name: 'modelInstance',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/bidocuments16.png'),
-						page: 'link3',
+						page: 'modelInstance',
 						tooltip: 'Model Instance'
       				}, {
       					name: 'resource',
 						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/bidocuments16.png'),
-						page: 'link3',
+						page: 'resource',
 						tooltip: 'Resource Definition'
+      				}, {
+      					name: 'alarm',
+						image:qx.util.AliasManager.getInstance().resolve('spagobi/img/spagobi/test/bidocuments16.png'),
+						page: 'alarm',
+						tooltip: 'Alarm Definition'
       				}
       			]
       		},

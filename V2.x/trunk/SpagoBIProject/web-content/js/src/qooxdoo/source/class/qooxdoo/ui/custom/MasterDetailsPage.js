@@ -167,8 +167,12 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.KpiAlarmForm();
 	} else if(type == 'kpi_alarm_contact_info') {			//used in qooxdoo.ui.custom.KpiAlarmDetailForm						
-		this.records = qooxdoo.app.data.DataService.loadKpiAlarmContactUpdateRecords();	
-		config.dataset = this.records;
+		this.records = qooxdoo.app.data.DataService.loadKpiAlarmContactRecords();
+		var newrecords = {};	//to remove the delete column in the pop-up window 
+		newrecords.meta = this.records.meta;
+		newrecords.meta.length--;
+		newrecords.rows = this.records.rows;
+		config.dataset = newrecords;
 		form = new qooxdoo.ui.custom.KpiAlarmContactDetailsForm();
 	}
 	

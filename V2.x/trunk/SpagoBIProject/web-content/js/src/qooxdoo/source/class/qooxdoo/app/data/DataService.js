@@ -1511,7 +1511,7 @@ qx.Class.define("qooxdoo.app.data.DataService", {
         return records;
     },
     
-    loadKpiInstanceResourceMeta: function() {
+    loadKpiInstanceResourceMeta: function() {	//used in KPI model instance resource tab
         return [
           {
               dataIndex: 'name',
@@ -1601,77 +1601,6 @@ qx.Class.define("qooxdoo.app.data.DataService", {
       ];
     },    
     
-    loadKpiAlarmContactRecords: function() {
-    	var records = {};
-    	
-    	records.ID = "Contact";
-    	records.columns = [4];
-                  
-        records.meta =  this.loadKpiAlarmContactMeta();                
-        records.rows =  this.loadKpiAlarmContactData();
-        
-        return records;
-    },
-    
-    loadKpiAlarmContactMeta: function() {
-        return [
-          {
-              dataIndex: 'name',
-              name: 'Name'
-          },
-          {
-              dataIndex: 'mobile',
-              name: 'Mobile'
-          },
-          {
-              dataIndex: 'email',
-              name: 'Email'
-          },
-          {
-              dataIndex: 'resource',
-              name: 'Resource'
-          },
-          {
-          	  dataIndex: 'delete',
-          	  name: 'Delete'
-          }
-      ];
-    },
-    
-    loadKpiAlarmContactData: function() {
-    	
-    	 return [
-    	          {
-    	              id: '555',
-    	              name: 'Gaurav Jauhri',
-    	              mobile: '+393453543687',
-    	              email: 'Gaurav.Jauhri@eng.it',
-    	              resource : 'SpagoBI Consultant',
-    	              "delete": 'qx/icon/Oxygen/16/actions/detail.gif'
-    	              
-    	          },
-    	          {
-    	              id: '556',
-    	              name: 'Amit Rana',
-    	              mobile: '+393276115975',
-    	              email: 'Amit.Rana@eng.it',
-    	              resource : 'SpagoBI Consultant',
-    	              "delete": 'qx/icon/Oxygen/16/actions/detail.gif'
-    	              
-    	          },
-    	          {
-    	              id: '557',
-    	              name: 'Andrea Gioia',
-    	              mobile: '+393476132525',
-    	              email: 'Andrea.Gioia@eng.it',
-    	              resource : 'SpagoBI Consultant',
-    	              "delete": 'qx/icon/Oxygen/16/actions/detail.gif'
-    	              
-    	          }
-    	        ];
-    	
-    },
-    
     loadKpiAlarmRecords: function() {
         var records = {};
                   
@@ -1746,6 +1675,80 @@ qx.Class.define("qooxdoo.app.data.DataService", {
               threshold: 'Threshold3'
           }
       ];
+    },    
+    
+    loadKpiAlarmContactRecords: function() { //used in KPI alarm user contact details
+    	var records = {};
+    	
+    	records.ID = "Contact";
+    	records.columns = [4];
+                  
+        records.meta =  this.loadKpiAlarmContactMeta();                
+        records.rows =  this.loadKpiAlarmContactData();
+        
+        return records;
+    },
+    
+    loadKpiAlarmContactMeta: function() {
+        return [
+          {
+              dataIndex: 'name',
+              name: 'Name'
+          },
+          {
+              dataIndex: 'mobile',
+              name: 'Mobile'
+          },
+          {
+              dataIndex: 'email',
+              name: 'Email'
+          },
+          {
+              dataIndex: 'resource',
+              name: 'Resource'
+          },
+          {
+          	  dataIndex: 'delete',
+          	  name: 'Delete'
+          }
+      ];
+    },
+    
+    loadKpiAlarmContactData: function() {
+    	
+    	 return [
+    	          {
+    	              id: '555',
+    	              name: 'Gaurav Jauhri',
+    	              mobile: '+393453543687',
+    	              email: 'GauravJauhri@eng.it',
+    	              resource : 'SpagoBI Consultant',
+    	              "delete": 'qx/icon/Oxygen/16/actions/detail.gif'
+    	              
+    	          }, {
+    	              id: '461',
+    	              name: 'User1',
+    	              mobile: '0123456789',
+    	              email : 'user1@user1.com',
+    	              resource: 'Yes',
+    	              "delete": 'qx/icon/Oxygen/16/actions/detail.gif'
+    	          }, {
+    	              id: '462',
+    	              name: 'User2',
+    	              mobile: '9876543210',
+    	              email : 'user2@user2.org',
+    	              resource: 'Yes',
+    	              "delete": 'qx/icon/Oxygen/16/actions/detail.gif'
+    	          }, {
+    	              id: '463',
+    	              name: 'User3',
+    	              mobile: '1234567890',
+    	              email : 'user3@user3.net',
+    	              resource: 'Yes',
+    	              "delete": 'qx/icon/Oxygen/16/actions/detail.gif'
+    	          }
+    	        ];
+    	
     }
   	
   }

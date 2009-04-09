@@ -166,6 +166,10 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		this.records = qooxdoo.app.data.DataService.loadKpiAlarmRecords();	
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.KpiAlarmForm();
+	} else if(type == 'kpi_alarm_contact_info') {			//used in qooxdoo.ui.custom.KpiAlarmDetailForm						
+		this.records = qooxdoo.app.data.DataService.loadKpiAlarmContactUpdateRecords();	
+		config.dataset = this.records;
+		form = new qooxdoo.ui.custom.KpiAlarmContactDetailsForm();
 	}
 	
 	this._pagedTable = new qooxdoo.ui.table.PagedTable(this, config); 

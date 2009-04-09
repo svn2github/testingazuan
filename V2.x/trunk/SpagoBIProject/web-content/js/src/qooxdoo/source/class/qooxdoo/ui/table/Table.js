@@ -106,6 +106,7 @@ qx.Class.define("qooxdoo.ui.table.Table",
 				columnModel.setCellEditorFactory(this._data.columns[i], propertyCellEditorFactory);
 			}
 			this.addListener("cellClick",this._onCellClick, this,false );
+    	
     	} else if (this._data.ID == "Scheduler"){    		
     		var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.cellRendererFactoryFunction);
  			for(i=0; i<this._data.columns.length; i++){
@@ -113,6 +114,14 @@ qx.Class.define("qooxdoo.ui.table.Table",
 				columnModel.setDataCellRenderer(this._data.columns[i], propertyCellRendererFactory);
 			}
 			this.addListener("cellClick",this._onCellClick,this, false); 
+   		
+    	} else if (this._data.ID == "Contact"){    		
+    		var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.cellRendererFactoryFunction);
+ 			for(i=0; i<this._data.columns.length; i++){
+				columnModel.setDataCellRenderer(this._data.columns[i], propertyCellRendererFactory);
+			}
+			this.addListener("cellClick",this._onCellClick,this, false);
+			
    		} else if (this._data.ID == "LINK"){
 		
 		}
@@ -278,11 +287,17 @@ qx.Class.define("qooxdoo.ui.table.Table",
     	
         if(this.Identity.dummyId=="ROLES"){
   			var d = new qooxdoo.ui.table.Roles(this, e);
-		  }
-    	else{
+		}
+        else if(this.Identity.dummyId=="Scheduler"){
 		  	var d = new qooxdoo.ui.Scheduler(e);
-		 }
-     }
+		}
+    	else if(this._data.ID == "Contact"){
+    		var selectedEntry = this.getSelectionModel().getAnchorSelectionIndex();
+    	    if (selectedEntry >= 0) {
+    	        this._tableModel.removeRows(selectedEntry, 1);
+    	    }
+    	}
+    }
   }
       
       

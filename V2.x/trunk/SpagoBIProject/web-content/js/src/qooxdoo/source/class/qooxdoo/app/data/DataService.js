@@ -1511,7 +1511,7 @@ qx.Class.define("qooxdoo.app.data.DataService", {
         return records;
     },
     
-    loadKpiInstanceResourceMeta: function() {
+    loadKpiInstanceResourceMeta: function() {	//used in KPI model instance resource tab
         return [
           {
               dataIndex: 'name',
@@ -1673,6 +1673,114 @@ qx.Class.define("qooxdoo.app.data.DataService", {
               url: 'URL for more details on Alarm 3',
               singleevent: 'Yes',
               threshold: 'Threshold3'
+          }
+      ];
+    },    
+    
+    loadKpiAlarmContactRecords: function() {
+    	var records = {};
+    	
+    	records.ID = "Contact";
+    	records.columns = [4];
+                  
+        records.meta =  this.loadKpiAlarmContactMeta();                
+        records.rows =  this.loadKpiAlarmContactData();
+        
+        return records;
+    },
+    
+    loadKpiAlarmContactMeta: function() {
+        return [
+          {
+              dataIndex: 'name',
+              name: 'Name'
+          },
+          {
+              dataIndex: 'mobile',
+              name: 'Mobile'
+          },
+          {
+              dataIndex: 'email',
+              name: 'Email'
+          },
+          {
+              dataIndex: 'resource',
+              name: 'Resource'
+          },
+          {
+          	  dataIndex: 'delete',
+          	  name: 'Delete'
+          }
+      ];
+    },
+    
+    loadKpiAlarmContactData: function() {
+    	
+    	 return [
+    	          {
+    	              id: '555',
+    	              name: 'Gaurav Jauhri',
+    	              mobile: '+393453543687',
+    	              email: 'GauravJauhri@eng.it',
+    	              resource : 'SpagoBI Consultant',
+    	              "delete": 'qx/icon/Oxygen/16/actions/detail.gif'
+    	              
+    	          }
+    	        ];
+    	
+    },    
+    
+    loadKpiAlarmContactUpdateRecords: function() {	//used in KPI alarm user contact details
+        var records = {};
+                  
+        records.meta =  this.loadKpiAlarmContactUpdateMeta();                
+        records.rows =  this.loadKpiAlarmContactUpdateData();
+        
+        return records;
+    },
+    
+    loadKpiAlarmContactUpdateMeta: function() {
+        return [
+          {
+              dataIndex: 'name',
+              name: 'Name'
+          },
+          {
+              dataIndex: 'mobile',
+              name: 'Mobile'
+          },
+          {
+              dataIndex: 'email',
+              name: 'Email'
+          },
+          {
+              dataIndex: 'resource',
+              name: 'Resource'
+          }
+      ];
+    },
+    
+    
+    loadKpiAlarmContactUpdateData: function() {
+        return [
+          {
+              id: '461',
+              name: 'User1',
+              mobile: '0123456789',
+              email : 'user1@user1.com',
+              resource: 'Yes'
+          }, {
+              id: '462',
+              name: 'User2',
+              mobile: '9876543210',
+              email : 'user2@user2.org',
+              resource: 'Yes'
+          }, {
+              id: '463',
+              name: 'User3',
+              mobile: '1234567890',
+              email : 'user3@user3.net',
+              resource: 'Yes'
           }
       ];
     }

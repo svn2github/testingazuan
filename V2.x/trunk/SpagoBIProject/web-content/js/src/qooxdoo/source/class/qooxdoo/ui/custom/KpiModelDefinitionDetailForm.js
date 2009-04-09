@@ -88,7 +88,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiModelDefinitionDetailForm", {
 									button : [
 								   				{
 								   					label : 'Select',
-								   					event: "mousedown",
+								   					event: "execute",
 								   					handler: this._lookupKpiName,
 								   					scope : this
 								   				}	

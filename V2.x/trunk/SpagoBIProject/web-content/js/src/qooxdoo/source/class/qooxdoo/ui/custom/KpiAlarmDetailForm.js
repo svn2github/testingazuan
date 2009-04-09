@@ -79,7 +79,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiAlarmDetailForm", {
 				button : [
 			   				{
 			   					label : 'Select',
-			   					event: "mousedown",
+			   					event: "execute",//mousedown
 			   					handler: this._lookupKpiName,
 			   					scope : this
 			   				}	
@@ -101,7 +101,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiAlarmDetailForm", {
 				button : [
 			   				{
 			   					label : 'Select',
-			   					event: "mousedown",
+			   					event: "execute",
 			   					handler: this._lookupDocumentName,
 			   					scope : this
 			   				}	
@@ -128,7 +128,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiAlarmDetailForm", {
 				button : [
 			   				{
 			   					label : 'Select',
-			   					event: "mousedown",
+			   					event: "execute",
 			   					handler: this._lookupThresholdValue,
 			   					scope : this
 			   				}	
@@ -160,6 +160,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiAlarmDetailForm", {
 			var c2 = c1.getUserData('field');			//sub-container having label, filed and button
 			var f = c2.getChildren()[0];                //field inside sub-container
 			f.setValue("Threshold Name after Lookup");
+			
 		}
 	}
 });

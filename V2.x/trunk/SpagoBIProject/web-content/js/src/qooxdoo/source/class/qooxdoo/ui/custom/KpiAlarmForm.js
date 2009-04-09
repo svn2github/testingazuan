@@ -71,8 +71,8 @@ qx.Class.define("qooxdoo.ui.custom.KpiAlarmForm", {
 			var page = new qx.ui.tabview.Page("Contacts");
 			page.setLayout(new qx.ui.layout.Grow());
 			
-			//var form = new qooxdoo.ui.custom.KpiContactForm();
-			//page.add(form);
+			var form = new qooxdoo.ui.custom.KpiContactForm();
+			page.add(form);
 			
 			this.add(page);
 			this.setUserData('contact',page);

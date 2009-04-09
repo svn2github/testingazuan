@@ -506,42 +506,29 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    			(behaviour.equalsIgnoreCase("recalculate") && kpiI.getPeriodicityId()==null) ) {// or the behaviour is recalculate and the kpiinstance hasn't a setted periodicity
 	    	//a new value is calculated
 	    	logger.debug("Old value not valid anymore or recalculation forced");
-			IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());
-		
+			IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());	
 			logger.debug("Retrieved the Dataset to be calculated: " + (dataSet!=null ? dataSet.getId():"null"));
-			value = getNewKpiValue(dataSet, kpiI, r, miId);
-			logger.debug("New value calculated");
-			if(register_values){
-				// Insert new Value into the DB
-				DAOFactory.getKpiDAO().insertKpiValue(value);
-				logger.debug("New value inserted in the DB");
-			}			
-			// Checks if the value is alarming (out of a certain range)
-			// If the value is alarming a new line will be inserted in the
-			// sbi_alarm_event table and scheduled to be sent
-			DAOFactory.getKpiDAO().isAlarmingValue(value);
-			logger.debug("Alarms sent if the value is over the thresholds");
+			value = getNewKpiValue(dataSet, kpiI, r, miId);		
 			line.setValue(value);
+			
 	    }else if(behaviour.equalsIgnoreCase("display")){//diplay behaviour
 	    	logger.debug("Display behaviour");
 	    	value = DAOFactory.getKpiDAO().getDisplayKpiValue(kpiI.getKpiInstanceId(), dateOfKPI, r);
 	    	logger.debug("Old KpiValue retrieved it could be still valid or not");
 	    	line.setValue(value);
-	    } /*else {
-	    	return line;
-	    }*/
+	    } 
 	    Integer kpiId = kpiI.getKpi();
 	    Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiId);
 	    logger.debug("Retrieved the kpi with id: " + kpiId.toString());
 
 	    if (k != null) {
-		String docLabel = k.getDocumentLabel();
-		if (docLabel != null && !docLabel.equals("")) {
-		    List documents = new ArrayList();
-		    logger.debug("Retrieved documents associated to the KPI");
-		    documents.add(docLabel);
-		    line.setDocuments(documents);
-		}
+			String docLabel = k.getDocumentLabel();
+			if (docLabel != null && !docLabel.equals("")) {
+			    List documents = new ArrayList();
+			    logger.debug("Retrieved documents associated to the KPI");
+			    documents.add(docLabel);
+			    line.setDocuments(documents);
+			}
 	    }
 	    if (display_alarm && value!=null && value.getValue()!= null) {
 		Boolean alarm = DAOFactory.getKpiDAO().isKpiInstUnderAlramControl(kpiI.getKpiInstanceId());
@@ -700,67 +687,153 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    temp.put("ParKpiResource", value);
 	}
 	temp.put("ParModelInstance", modelInstanceId);
+	
+	if (chartType != null) kVal.setChartType(chartType);
 
 	// If not, the dataset will be calculated without the parameter Resource
 	// and the DataSet won't expect a parameter of type resource
 	//if(dataSet.hasBehaviour( QuerableBehaviour.class.getName()) ) {
 	if(dataSet!=null){
-		dataSet.setParamsMap(temp);
-		dataSet.setUserProfile(profile);
-	//}
-	
+		
+	dataSet.setParamsMap(temp);
+	dataSet.setUserProfile(profile);	
 	dataSet.loadData();
 	IDataStore dataStore = dataSet.getDataStore();
-	logger.debug("Gotten the datastore");
+	logger.debug("Got the datastore");
 	if (dataStore != null && !dataStore.isEmpty()) {
 	    // Transform result into KPIValue (I suppose that the result has a
 	    // unique value)
-		IDataStoreMetaData d = dataStore.getMetaData();
+		IDataStoreMetaData d = dataStore.getMetaData();		
+		int indexRes = d.getFieldIndex("RESOURCE");
 		
-		
+		if(indexRes!=-1){
+    		Iterator it = dataStore.iterator();
+    		while(it.hasNext()){
+    			
+    			 KpiValue valTemp = kVal.clone();
+    			 IRecord record2 =(IRecord)it.next();
+    			 List fields2 = record2.getFields();
+    			 int length = fields2.size();
+    		     for(int fieldIndex =0; fieldIndex<length; fieldIndex++){
+    		    	 
+    		    		IField f = (IField)fields2.get(fieldIndex);
+    		    		if (f != null) {
+    		    			if (f.getValue() != null) {
+    			    			String fieldName = d.getFieldName(fieldIndex);	  
+    			    			
+    			    			if (fieldName.equalsIgnoreCase("DESCR")){
+    			    				String descr = f.getValue().toString();
+    			    				valTemp.setValueDescr(descr);
+    				    			logger.debug("Setted the kpiValue description:"+descr);
+    			    			}else if(fieldName.equalsIgnoreCase("END_DATE")){
+    			    				String endD = f.getValue().toString();
+    			    				String format = "dd/MM/yyyy hh:mm:ss";
+    		    					SimpleDateFormat form = new SimpleDateFormat();
+    		    					form.applyPattern(format);
+    		    				
+    		    					try {
+    									endDate = form.parse(endD);
+    								} catch (ParseException e) {
+    									e.printStackTrace();
+    								}
+    			    			   if(endDate!=null && endDate.after(begD)) {				 
+    			    				valTemp.setEndDate(endDate);
+    				    			logger.debug("Setted the new EndDate description:"+endD.toString());
+    			    			   }
+    			    			}else if(fieldName.equalsIgnoreCase("VALUE")){
+    			    				
+    			    				String fieldValue = f.getValue().toString();
+    			    				valTemp.setValue(fieldValue);
+    				    			logger.debug("Setted the kpiValue value:"+fieldValue);
+    			    			}    
+    			    			else if(fieldName.equalsIgnoreCase("RESOURCE")){
+    			    				
+    			    				String fieldValue = f.getValue().toString();
+    			    				if (fieldValue!=null){
+    			    					Integer resourceID = new Integer (fieldValue);
+    			    					Resource rTemp = DAOFactory.getKpiDAO().loadResourceById(resourceID);
+    			    					valTemp.setR(rTemp);
+	    				    			logger.debug("Setted the kpiValue Resource with id:"+fieldValue);
+    			    				}
+    			    			}    
+    		    		    }
+    		    		}
+    			    }
+    		     if (valTemp.getR()!=null && kVal.getR()!=null && valTemp.getR().getId().equals(kVal.getR().getId())){
+	    				kVal = valTemp.clone() ;
+	    			}
+	    			logger.debug("New value calculated");
+	    			if(register_values){
+	    			    // Insert new Value into the DB
+	    			    DAOFactory.getKpiDAO().insertKpiValue(valTemp);
+	    			    logger.debug("New value inserted in the DB");
+	    			}			
+	    			    	// Checks if the value is alarming (out of a certain range)
+	    			    	// If the value is alarming a new line will be inserted in the
+	    			    	// sbi_alarm_event table and scheduled to be sent
+	    			DAOFactory.getKpiDAO().isAlarmingValue(valTemp);
+	    			logger.debug("Alarms sent if the value is over the thresholds");
+    		} 			
+		}else{
+			
 	    IRecord record = dataStore.getRecordAt(0);
 	    List fields = record.getFields();
 	    if (fields != null && !fields.isEmpty()) {
+
 	    	int length = fields.size();
 	    	for(int fieldIndex =0;fieldIndex<length;fieldIndex++){
 	    		IField f = (IField)fields.get(fieldIndex);
-	    		if (f != null) {
-	    			if (f.getValue() != null) {
-		    			String fieldName = d.getFieldName(fieldIndex);	    			
-		    			if (fieldName.equalsIgnoreCase("DESCR")){
-		    				String descr = f.getValue().toString();
-			    			kVal.setValueDescr(descr);
-			    			logger.debug("Setted the kpiValue description:"+descr);
-		    			}else if(fieldName.equalsIgnoreCase("END_DATE")){
-		    				String endD = f.getValue().toString();
-		    				String format = "dd/MM/yyyy hh:mm:ss";
-	    					SimpleDateFormat form = new SimpleDateFormat();
-	    					form.applyPattern(format);
-	    				
-	    					try {
-								endDate = form.parse(endD);
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-		    			   if(endDate!=null && endDate.after(begD)) {				 
-			    			kVal.setEndDate(endDate);
-			    			logger.debug("Setted the new EndDate description:"+endD.toString());
-		    			   }
-		    			}else if(fieldName.equalsIgnoreCase("VALUE")){
-		    				String fieldValue = f.getValue().toString();
-			    			kVal.setValue(fieldValue);
-			    			logger.debug("Setted the kpiValue value:"+fieldValue);
-		    			}		    			
-	    		    }
+	    		
+		    		if (f != null) {
+		    			if (f.getValue() != null) {
+			    			String fieldName = d.getFieldName(fieldIndex);	    			
+			    			if (fieldName.equalsIgnoreCase("DESCR")){
+			    				String descr = f.getValue().toString();
+				    			kVal.setValueDescr(descr);
+				    			logger.debug("Setted the kpiValue description:"+descr);
+			    			}else if(fieldName.equalsIgnoreCase("END_DATE")){
+			    				String endD = f.getValue().toString();
+			    				String format = "dd/MM/yyyy hh:mm:ss";
+		    					SimpleDateFormat form = new SimpleDateFormat();
+		    					form.applyPattern(format);
+		    				
+		    					try {
+									endDate = form.parse(endD);
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+			    			   if(endDate!=null && endDate.after(begD)) {				 
+				    			kVal.setEndDate(endDate);
+				    			logger.debug("Setted the new EndDate description:"+endD.toString());
+			    			   }
+			    			}else if(fieldName.equalsIgnoreCase("VALUE")){
+			    				
+			    				String fieldValue = f.getValue().toString();
+				    			kVal.setValue(fieldValue);
+				    			logger.debug("Setted the kpiValue value:"+fieldValue);
+			    			}    			
+		    		    }
+		    		}
 	    		}
-	    	}		
+	    	}	
+	    logger.debug("New value calculated");
+	    if(register_values){
+	    	// Insert new Value into the DB
+	    	DAOFactory.getKpiDAO().insertKpiValue(kVal);
+	    	logger.debug("New value inserted in the DB");
+	    }			
+	    	// Checks if the value is alarming (out of a certain range)
+	    	// If the value is alarming a new line will be inserted in the
+	    	// sbi_alarm_event table and scheduled to be sent
+	    DAOFactory.getKpiDAO().isAlarmingValue(kVal);
+	    logger.debug("Alarms sent if the value is over the thresholds");
+	    	
 	    }
 	} else {
 	    logger.warn("The Data Set doesn't return any value!!!!!");
 	}
 	}
-	if (chartType != null)
-	    kVal.setChartType(chartType);
+
 	logger.debug("OUT");
 	return kVal;
 

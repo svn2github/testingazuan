@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class KpiValue {
+public class KpiValue implements Cloneable{
 	
 	Integer kpiInstanceId = null;
 	String value = null;	
@@ -120,6 +120,23 @@ public class KpiValue {
 
 	public void setValueDescr(String valueDescr) {
 		this.valueDescr = valueDescr;
+	}
+	
+	public KpiValue clone(){
+		 KpiValue toReturn = new KpiValue();
+		 toReturn.setBeginDate(beginDate);
+		 toReturn.setChartType(chartType);
+		 toReturn.setEndDate(endDate);
+		 toReturn.setKpiInstanceId(kpiInstanceId);
+		 toReturn.setR(r);
+		 toReturn.setScaleCode(scaleCode);
+		 toReturn.setScaleName(scaleName);
+		 toReturn.setTarget(target);
+		 toReturn.setThresholds(thresholds);
+		 toReturn.setValue(value);
+		 toReturn.setValueDescr(valueDescr);
+		 toReturn.setWeight(weight);
+		 return toReturn;
 	}
 
 }

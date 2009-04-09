@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
    
    	
-   <% if ( "WEB".equalsIgnoreCase(sbiMode) ) { %>
+   
    	 
     <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/browser/main.css", currTheme)%>'/>
     <link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/browser/listview.css", currTheme)%>'/>
@@ -71,28 +71,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     });
     
     </script>
- <% } else { 
-	 
-	 String url =  "/SpagoBI/servlet/AdapterHTTP?ACTION_NAME=DOCUMENT_USER_BROWSER_START_PORTLET_ACTION";
-	 url += "&SBI_EXECUTION_ID=" + request.getParameter("SBI_EXECUTION_ID");
-	 url += "&user_id=" + userUniqueIdentifier;
-	 url += "&LANGUAGE=" + locale.getLanguage();
-	 url += "&COUNTRY=" + locale.getCountry();
-	 %>
-
- 	<iframe 
- 		id='browserIframe'
- 		name='browserIframe'
- 		src='<%= url %>'
- 		frameBorder = 0
- 		width=100%
- 		height=600
- 	/>
-
- 
- 	 
-    
-    <% } %>
     
     
     

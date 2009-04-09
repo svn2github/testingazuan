@@ -70,19 +70,17 @@ qx.Class.define("qooxdoo.ui.custom.KpiContactForm", {
 		
 		var formBar = new qx.ui.container.Composite(new qx.ui.layout.HBox);
 	   	formBar.setBackgroundColor("#F9F9F9");
-	   	
 	   	var createButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/create.png"));
 	    var createToolTip = new qx.ui.tooltip.ToolTip("New");
 	    createButton.setToolTip(createToolTip);
-	    createButton.addListener("execute", this.create, this);
-	    
-	    var deleteAll = new qx.ui.toolbar.Button("Delete All");//, qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/delete.png"));
+	    createButton.addListener("execute", this.Create, this);
+	    var deleteAll = new qx.ui.toolbar.Button("Delete All", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/delete.png"));
 	    var deleteToolTip = new qx.ui.tooltip.ToolTip("Delete");
 	    deleteAll.setToolTip(deleteToolTip);
-	    deleteAll.addListener("execute", this.deleteall, this);
-	    
+	    deleteAll.addListener("execute", this.Delete, this);
 	    var formBarArray = [createButton, deleteAll];
-		for(var i=0; i<formBarArray.length; i++){
+		
+	    for(var i=0; i<formBarArray.length; i++){
 	   		formBar.add(formBarArray[i]);
 	   		//formBarManager.add(formBarArray[i]);
 	    }
@@ -99,17 +97,16 @@ qx.Class.define("qooxdoo.ui.custom.KpiContactForm", {
 			this.add(this.tableData);
 	},
 	
-		deleteall: function(e) {
-	    	alert('delete');
+		Delete: function(e) {
+	    	var model = this.tableData.getTableModel();
+	    	var rowcount = model.getRowCount();
+	    	alert(rowcount);
+	    	model.removeRows(0, rowcount);
+
 	    },
 		
-		create: function(e) {
-	    	var w = new qx.ui.window.Window(null, "qx/icon/Oxygen/16/apps/office-calendar.png");
-			w.setLayout(new qx.ui.layout.VBox(5));
-			w.open();
-			w.setModal(true);
-			var m = new qooxdoo.ui.custom.MasterDetailsPage("kpi_alarm_contact_info");
-			w.add(m);
+		Create: function(e) {
+	    	alert('create');
 	    }	
 		
 		

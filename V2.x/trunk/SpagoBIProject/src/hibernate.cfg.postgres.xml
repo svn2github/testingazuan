@@ -44,6 +44,12 @@
         <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappingpostgres/SbiDistributionListsObjects.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappingpostgres/SbiDistributionListUser.hbm.xml" />
         
+        <mapping resource="it/eng/spagobi/commons/metadata/mappingmysql/SbiBinContents.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiObjTemplates.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiObjNotes.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiSubObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiSnapshots.hbm.xml" />
+        
                         
         <!-- map catalogue -->
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingpostgres/SbiGeoMapFeatures.hbm.xml" />
@@ -58,6 +64,7 @@
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappingpostgres/SbiRememberMe.hbm.xml" />
         
+        <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappingmysql/SbiDataSetConfig.hbm.xml" />
          <!-- KPI Engine 
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpi.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiInstance.hbm.xml" />

@@ -47,8 +47,6 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  * 
  * This filter tries to build the user profile object, using the user identifier
- * returned by
- * <code>GeneralUtilities.findUserId((HttpServletRequest) request);</code>
  */
 
 public class ProfileFilter implements Filter {
@@ -70,7 +68,7 @@ public class ProfileFilter implements Filter {
 		logger.debug("User id = " + userId);
 		// in case the user is not specified, does nothing
 		if (userId == null || userId.trim().equals("")) {
-		    logger.warn("User identifier not found.");
+		    logger.debug("User identifier not found.");
 		} else {
 		    // looking if a RequestContainer already exists in session
 		    RequestContainer requestContainer = (RequestContainer) session

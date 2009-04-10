@@ -21,40 +21,39 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.services.PortletLoginAction;
+import it.eng.spagobi.utilities.exceptions.SpagoBIException;
+
+
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.chiron.ListEnginesAction;
-import it.eng.spagobi.utilities.exceptions.SpagoBIException;
-import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
-
 /**
- * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Antonella Giachino (antonella.giachino@eng.it)
  */
-public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
+public class UserDocumentsBrowserPortletStartAction extends PortletLoginAction{
 	
 	// logger component
-	private static Logger logger = Logger.getLogger(ListEnginesAction.class);
+	private static Logger logger = Logger.getLogger(UserDocumentsBrowserPortletStartAction.class);
 	
-	public void service(SourceBean request, SourceBean response) throws Exception {
 
+	public void service(SourceBean request, SourceBean response) throws Exception {
 		
 		logger.debug("IN");
 		
 		try {
-			setSpagoBIRequestContainer( request );
-			setSpagoBIResponseContainer( response );
-			
+			super.service(request, response);
 			DocumentsBrowserUtility util = new DocumentsBrowserUtility();
 			JSONObject jsonObj  = util.defineConfiguration(response);
 			
 			response.setAttribute("metaConfiguration", jsonObj);
 			
 		} catch (Throwable t) {
-			throw new SpagoBIException("An unexpected error occured while executing UserDocumentsBrowserStartAction", t);
+			throw new SpagoBIException("An unexpected error occured while executing UserDocumentsBrowserPortletStartAction", t);
 		} finally {
 			logger.debug("OUT");
 		}
-	}
+	}	
 }

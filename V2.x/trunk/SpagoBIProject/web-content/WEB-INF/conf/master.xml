@@ -203,7 +203,8 @@
 
 	
 	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi_SSO.xml" />	 
+	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi_dao.xml" />	
+	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi_SSO.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/CAS.xml" />	
 	 	
 	

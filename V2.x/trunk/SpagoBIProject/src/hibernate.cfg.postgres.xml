@@ -15,10 +15,10 @@
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="hibernate.show_sql">false</property>
         
-        <mapping resource="it/eng/spagobi/events/metadata/mappingpostgres/SbiEvents.hbm.xml" />
+       <mapping resource="it/eng/spagobi/events/metadata/mappingpostgres/SbiEvents.hbm.xml" />
         <mapping resource="it/eng/spagobi/events/metadata/mappingpostgres/SbiEventsLog.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingpostgres/SbiDomains.hbm.xml" />
-        <mapping resource="it/eng/spagobi/commons/metadata/mappingpostgres/SbiEventRole.hbm.xml" />  
+        <mapping resource="it/eng/spagobi/commons/metadata/mappingpostgres/SbiEventRole.hbm.xml" /> 
         <mapping resource="it/eng/spagobi/commons/metadata/mappingpostgres/SbiExtRoles.hbm.xml" />
         <mapping resource="it/eng/spagobi/commons/metadata/mappingpostgres/SbiUserFunctionality.hbm.xml" />
         <mapping resource="it/eng/spagobi/behaviouralmodel/analyticaldriver/metadata/mappingpostgres/SbiParameters.hbm.xml" />
@@ -29,8 +29,8 @@
         <mapping resource="it/eng/spagobi/behaviouralmodel/lov/metadata/mappingpostgres/SbiLov.hbm.xml" />
         <mapping resource="it/eng/spagobi/behaviouralmodel/check/metadata/mappingpostgres/SbiChecks.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjPar.hbm.xml" />
-        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjects.hbm.xml" />
-        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjectsRating.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjects.hbm.xml" /> 
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjectsRating.hbm.xml" />          
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjFunc.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjState.hbm.xml" />
         <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiSubreports.hbm.xml"/>
@@ -44,13 +44,13 @@
         <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappingpostgres/SbiDistributionListsObjects.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappingpostgres/SbiDistributionListUser.hbm.xml" />
         
-        <mapping resource="it/eng/spagobi/commons/metadata/mappingmysql/SbiBinContents.hbm.xml" />
-        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiObjTemplates.hbm.xml" />
-        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiObjNotes.hbm.xml" />
-        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiSubObjects.hbm.xml" />
-        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingmysql/SbiSnapshots.hbm.xml" />
+        <mapping resource="it/eng/spagobi/commons/metadata/mappingpostgres/SbiBinContents.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjTemplates.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiObjNotes.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiSubObjects.hbm.xml" />
+        <mapping resource="it/eng/spagobi/analiticalmodel/document/metadata/mappingpostgres/SbiSnapshots.hbm.xml" />
         
-                        
+
         <!-- map catalogue -->
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingpostgres/SbiGeoMapFeatures.hbm.xml" />
         <mapping resource="it/eng/spagobi/mapcatalogue/metadata/mappingpostgres/SbiGeoFeatures.hbm.xml" />
@@ -64,32 +64,33 @@
         <!-- rememberMe -->
         <mapping resource="it/eng/spagobi/hotlink/rememberme/metadata/mappingpostgres/SbiRememberMe.hbm.xml" />
         
-        <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappingmysql/SbiDataSetConfig.hbm.xml" />
-         <!-- KPI Engine 
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpi.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiInstance.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiInstanceHistory.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiModel.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiModelAttr.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiModelAttrVal.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiModelInst.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiModelResources.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiPeriodicity.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiRole.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiKpiValue.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiMeasureUnit.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiPeriodicity.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiResources.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiThreshold.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/metadata/mappingpostgres/SbiThresholdValue.hbm.xml" />-->
+        <mapping resource="it/eng/spagobi/tools/dataset/metadata/mappingpostgres/SbiDataSetConfig.hbm.xml" />
         
-        <!-- Kpi.alarm 
-        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarm.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmEvent.hbm.xml" />
-        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmContact.hbm.xml" />-->
+         <!-- KPI Engine -->
+         <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingpostgres/SbiKpi.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingpostgres/SbiKpiInstance.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingpostgres/SbiKpiInstPeriod.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingpostgres/SbiKpiInstanceHistory.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingpostgres/SbiKpiModel.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingpostgres/SbiKpiModelAttr.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingpostgres/SbiKpiModelAttrVal.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingpostgres/SbiKpiModelInst.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingpostgres/SbiKpiModelResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingpostgres/SbiKpiPeriodicity.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingpostgres/SbiKpiRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingpostgres/SbiKpiValue.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/config/metadata/mappingpostgres/SbiMeasureUnit.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/model/metadata/mappingpostgres/SbiResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/threshold/metadata/mappingpostgres/SbiThreshold.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/threshold/metadata/mappingpostgres/SbiThresholdValue.hbm.xml" />
         
-        <!-- Menu -->
+          <!-- Menu -->
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingpostgres/SbiMenu.hbm.xml" />
         <mapping resource="it/eng/spagobi/wapp/metadata/mappingpostgres/SbiMenuRole.hbm.xml" />
+        
+        <!-- Kpi.alarm -->
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarm.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmEvent.hbm.xml" />
+        <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmContact.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

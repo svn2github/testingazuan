@@ -164,6 +164,7 @@ public class ChangeLanguage extends AbstractHttpAction{
 	 * @throws EMFUserError If an exception occurs
 	 */   
 	private void getMenuItems(SourceBean request, SourceBean response) throws EMFUserError {
+		logger.debug("IN");
 		try {	
 			List lstFinalMenu = new ArrayList();
 			// get config
@@ -205,10 +206,12 @@ public class ChangeLanguage extends AbstractHttpAction{
 			response.setAttribute(MENU_MODE, DEFAULT_LAYOUT_MODE);
 			
 		} catch (Exception ex) {
-			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
+			logger.error("Cannot fill response container" + ex);	
 			HashMap params = new HashMap();
 			params.put(AdmintoolsConstants.PAGE, LoginModule.MODULE_PAGE);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 500, new Vector(), params);
+		}finally{
+			logger.debug("OUT");
 		}
 	}
 	
@@ -232,33 +235,6 @@ public class ChangeLanguage extends AbstractHttpAction{
 		}
 		return false;
 	}
-    /**
-     * Finds the user identifier from http request or from SSO system (by the http request in input).
-     * Use the SsoServiceInterface for read the userId in all cases, if SSO is disabled use FakeSsoService.
-     * Check spagobi_sso.xml
-     * 
-     * @param httpRequest The http request
-     * @param serviceRequest the service request
-     * 
-     * @return the current user unique identified
-     * 
-     * @throws Exception in case the SSO is enabled and the user identifier specified on service request is different from the SSO detected one.
-     */
-    private static String findUserId(SourceBean serviceRequest, HttpServletRequest httpRequest) throws Exception {
-    	logger.debug("IN");
-    	String userId = null;
-    	try {
-    		// Get userid from request
-	    	Object requestUserIdObj = serviceRequest.getAttribute("userid");
-	    	if (requestUserIdObj != null) userId = requestUserIdObj.toString();    	
-    	} finally {
-    		logger.debug("OUT: userId = [" + userId + "]");
-    	}
-    	return userId;
-    }	
-	
-	
-	
 	
 }
 

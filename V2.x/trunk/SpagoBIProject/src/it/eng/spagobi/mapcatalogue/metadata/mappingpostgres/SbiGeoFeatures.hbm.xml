@@ -4,11 +4,11 @@
 <!-- Generated 31-mag-2007 14.53.27 by Hibernate Tools 3.2.0.beta8 -->
 <hibernate-mapping>
     <class name="it.eng.spagobi.mapcatalogue.metadata.SbiGeoFeatures" table="SBI_GEO_FEATURES" >
-        <id name="featureId" type="integer">
+        <id name="featureId" type="int">
             <column name="FEATURE_ID" />     
-			<generator class="sequence">
-            	<param name="sequence">sbi_features_seq</param> 
-            </generator>
+            <generator class="native">
+           		<param name="sequence">sbi_geo_features_seq</param>
+            </generator>    
         </id>
         <property name="name" type="string">
             <column name="NAME" />

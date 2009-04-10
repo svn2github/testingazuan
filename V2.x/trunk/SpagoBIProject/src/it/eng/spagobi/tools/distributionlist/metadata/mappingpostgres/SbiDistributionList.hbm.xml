@@ -3,11 +3,11 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 19-feb-2008 18.15.46 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionList" table="SBI_DISTRIBUTION_LIST">
+    <class name="it.eng.spagobi.tools.distributionlist.metadata.SbiDistributionList" table="SBI_DIST_LIST">
         <id name="dlId" type="integer">
             <column name="DL_ID" />
-             <generator class="native">
-            	<param name="sequence">sbi_distributionlist_seq</param>
+            <generator class="native">
+           		<param name="sequence">sbi_dist_list_seq</param>
             </generator>
         </id>
         <property name="name" type="string">

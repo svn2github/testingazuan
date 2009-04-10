@@ -6,7 +6,7 @@
         Auto-generated mapping file from
         the hibernate.org cfg2hbm engine
 -->
-    <class name="it.eng.spagobi.monitoring.metadata.SbiAudit" table="sbi_audit" schema="public">
+    <class name="it.eng.spagobi.monitoring.metadata.SbiAudit" table="sbi_audit" >
         <id name="id" type="integer">
             <column name="id" />
             <generator class="sequence">

@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
 --%>
 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 
 <spagobi:list moduleName="ExoProfileAttributeManagerListUserModule" />

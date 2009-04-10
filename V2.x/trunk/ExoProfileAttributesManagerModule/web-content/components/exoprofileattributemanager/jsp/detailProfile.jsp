@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 --%>
 
 
-<%@ include file="/jsp/commons/portlet_base.jsp"%>
+<%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <%@ page import="javax.portlet.PortletURL,
                  it.eng.spago.navigation.LightNavigationManager" %>
@@ -353,13 +353,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 				<a href="javascript:saveAttributes()"> 
 	      			<img class='header-button-image-portlet-section' 
 	      				 title='<spagobi:message key = "SBISet.eng.saveButt" />' 
-	      				 src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/save.png")%>' 
+	      				  src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme) %>' 
 	      				 alt='<spagobi:message key = "SBISet.eng.saveButt" />' /> 
 				</a>
 			</td>
 			<td class='header-button-column-portlet-section'>
 				<a href='<%= backUrl.toString() %>'> 
-	      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.eng.backButt" />' src='<%= renderResponse.encodeURL(renderRequest.getContextPath() + "/img/back.png")%>' alt='<spagobi:message key = "SBISet.eng.backButt" />' />
+	      			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.eng.backButt" />' 
+	      			src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/back.png", currTheme) %>'
+	      			alt='<spagobi:message key = "SBISet.eng.backButt" />' />
 				</a>
 			</td>
 		</tr>

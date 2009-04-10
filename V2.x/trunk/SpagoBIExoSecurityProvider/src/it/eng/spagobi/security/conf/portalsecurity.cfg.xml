@@ -6,7 +6,13 @@
 		<ATTRIBUTE name="city" default="" source="absolute" />
 		<ATTRIBUTE name="month" default="9" source="absolute" />
 		<ATTRIBUTE name="limit" default="5" source="absolute" />
-    
+		
+		<!-- for the profile attribute manager the 'name' and the 'exoname' of the attributes must be equal! -->
+		<ATTRIBUTE name="product" default="" source="exo" exoname="product" />
+		<ATTRIBUTE name="region" default="" source="exo" exoname="region" />
+		<ATTRIBUTE name="Department"  default="" source="exo" exoname="Department" />
+		<ATTRIBUTE name="city" default="" source="exo" exoname="city" />
+   <!-- 
     	<ATTRIBUTE name="olap_dim_filter_customers" default="" source="exo"  exoname="user.olap_dim_filter_customers" /> 
     	<ATTRIBUTE name="olap_dim_filter_products" default="" source="exo"  exoname="user.olap_dim_filter_products" />    
     
@@ -43,7 +49,7 @@
 		<ATTRIBUTE name="BusinessMobile" default="" source="exo"  exoname="user.business-info.telecom.mobile.number" />
 		<ATTRIBUTE name="AvatarUrl" default="" source="exo"  exoname="user.other-info.avatar.url" />
 		<ATTRIBUTE name="Signature" default="" source="exo"  exoname="user.other-info.signature" />
-		
+		 -->
 		<USER-PROFILES>
 			<USER name="biadmin">
 				<ATTRIBUTE name="product" value="Food" />

@@ -473,7 +473,7 @@ public class DocumentCompositionConfiguration {
 			}
 		}catch(Exception e){
 			logger.error("Error while getting documents label ", e);
-			System.out.println(e);
+			//System.out.println(e);
 		}
 		logger.debug("OUT");
 		return retLabels;

@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreports" table="sbi_subreports" schema="public">
+    <class name="it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreports" table="sbi_subreports" >
        <composite-id name="id" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiSubreportsId">
             <key-many-to-one name="masterReport" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects">
                 <column name="master_rpt_id" />

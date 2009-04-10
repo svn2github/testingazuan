@@ -6,7 +6,7 @@
         Auto-generated mapping file from
         the hibernate.org cfg2hbm engine
 -->
-    <class name="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc" table="sbi_obj_func" schema="public">
+    <class name="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc" table="sbi_obj_func" >
         <composite-id name="id" class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFuncId">
             <key-many-to-one name="sbiFunctions" class="it.eng.spagobi.analiticalmodel.functionalitytree.metadata.SbiFunctions">
                 <column name="funct_id" />

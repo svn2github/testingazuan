@@ -6,7 +6,7 @@
         Auto-generated mapping file from
         the hibernate.org cfg2hbm engine
 -->
-    <class name="it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov" table="sbi_lov" schema="public">
+    <class name="it.eng.spagobi.behaviouralmodel.lov.metadata.SbiLov" table="sbi_lov" >
         <id name="lovId" type="integer">
             <column name="lov_id" />
             <generator class="sequence">

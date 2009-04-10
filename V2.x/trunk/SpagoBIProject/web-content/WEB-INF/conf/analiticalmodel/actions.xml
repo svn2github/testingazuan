@@ -41,7 +41,7 @@
  -->
  
  <ACTION name="DOCUMENT_USER_BROWSER_START_ACTION" 
- 	class="it.eng.spagobi.commons.services.PortletLoginAction" scope="REQUEST">
+ 	class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.UserDocumentsBrowserPortletStartAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
  

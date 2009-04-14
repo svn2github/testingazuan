@@ -41,16 +41,7 @@ import org.apache.log4j.Logger;
 public class ChangeTheme extends AbstractHttpAction{
 
 	static private Logger logger = Logger.getLogger(ChangeTheme.class);
-    public static final String MODULE_PAGE = "LoginPage";
-    public static final String DEFAULT_LAYOUT_MODE = "ALL_TOP";
-    public static final String LAYOUT_ALL_TOP = "ALL_TOP";
-    public static final String LAYOUT_ALL_LEFT = "ALL_LEFT";
-    public static final String LAYOUT_TOP_LEFT = "TOP_LEFT";
-    public static final String LAYOUT_ADMIN_MENU = "ADMIN_MENU";
-    public static final String DEFAULT_EXTRA = "NO";
-    public static final String MENU_MODE = "MENU_MODE";
-    public static final String MENU_EXTRA = "MENU_EXTRA";
-    public static final String LIST_MENU = "LIST_MENU";
+
 	
     UserProfile userProfile = null;
 	

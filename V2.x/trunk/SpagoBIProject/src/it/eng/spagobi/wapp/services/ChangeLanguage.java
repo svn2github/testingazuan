@@ -27,28 +27,15 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.LoginModule;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
-import it.eng.spagobi.wapp.bo.Menu;
 import it.eng.spagobi.wapp.util.MenuUtilities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -77,16 +64,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 public class ChangeLanguage extends AbstractHttpAction{
 
 	static private Logger logger = Logger.getLogger(ChangeLanguage.class);
-    public static final String MODULE_PAGE = "LoginPage";
-    public static final String DEFAULT_LAYOUT_MODE = "ALL_TOP";
-    public static final String LAYOUT_ALL_TOP = "ALL_TOP";
-    public static final String LAYOUT_ALL_LEFT = "ALL_LEFT";
-    public static final String LAYOUT_TOP_LEFT = "TOP_LEFT";
-    public static final String LAYOUT_ADMIN_MENU = "ADMIN_MENU";
-    public static final String DEFAULT_EXTRA = "NO";
-    public static final String MENU_MODE = "MENU_MODE";
-    public static final String MENU_EXTRA = "MENU_EXTRA";
-    public static final String LIST_MENU = "LIST_MENU";
+
 	
     UserProfile userProfile = null;
 	

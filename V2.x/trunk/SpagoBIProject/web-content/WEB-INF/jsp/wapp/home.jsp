@@ -84,14 +84,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(instance!=null) uuid=instance.getExecutionId();
 	else uuid="1";
 	
-	if (moduleResponse.getAttribute(LoginModule.LIST_MENU) != null)
-		lstMenu = (List)moduleResponse.getAttribute(LoginModule.LIST_MENU);
+	if (moduleResponse.getAttribute(MenuUtilities.LIST_MENU) != null)
+		lstMenu = (List)moduleResponse.getAttribute(MenuUtilities.LIST_MENU);
 
 	
 	String menuMode=null;
 
-	if(moduleResponse.getAttribute(LoginModule.MENU_MODE)!=null && moduleResponse.getAttribute(LoginModule.MENU_MODE) instanceof String){
-		menuMode = (String)moduleResponse.getAttribute(LoginModule.MENU_MODE); 
+	if(moduleResponse.getAttribute(MenuUtilities.MENU_MODE)!=null && moduleResponse.getAttribute(MenuUtilities.MENU_MODE) instanceof String){
+		menuMode = (String)moduleResponse.getAttribute(MenuUtilities.MENU_MODE); 
 		}
 	else{
 		menuMode="ALL_TOP";
@@ -221,7 +221,7 @@ else {
 
 
 
-<% if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)){ %>
+<% if (menuMode.equalsIgnoreCase(MenuUtilities.LAYOUT_ALL_TOP)){ %>
 <div id="content" style="margin: 2;"><iframe id='iframeDoc'
 	name='iframeDoc' src='' width='100%' height='74%' frameborder='0'
 	Style='background-color: white'> </iframe></div>
@@ -334,7 +334,7 @@ else {
 	String userName = ((UserProfile)userProfile).getUserName().toString();
 	int lenghtUserName = userName.length()+10;
 	int lenghtUserNameInPixel = lenghtUserName*5;
-	if (menuMode.equalsIgnoreCase(LoginModule.LAYOUT_ALL_TOP)) {
+	if (menuMode.equalsIgnoreCase(MenuUtilities.LAYOUT_ALL_TOP)) {
 	%>
 	Ext.onReady(function(){  	
 		Ext.QuickTips.init();

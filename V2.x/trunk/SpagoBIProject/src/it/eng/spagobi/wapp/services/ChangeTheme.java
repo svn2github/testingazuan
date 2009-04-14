@@ -25,24 +25,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.LoginModule;
 import it.eng.spagobi.wapp.bo.Menu;
+import it.eng.spagobi.wapp.util.MenuUtilities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -115,75 +105,13 @@ public class ChangeTheme extends AbstractHttpAction{
 			}
 		}
 */
-		getMenuItems(serviceRequest, serviceResponse);
+		MenuUtilities.getMenuItems(serviceRequest, serviceResponse,profile);
 		
 		serviceResponse.setAttribute("MENU_MODE", "ALL_TOP");
 		serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
 		logger.debug("OUT");
 	}
 
-	
-	
-	
-	
-	/**
-	 * Gets the elements of menu relative by the user logged. It reaches the role from the request and 
-	 * asks to the DB all detail
-	 * menu information, by calling the method <code>loadMenuByRoleId</code>.
-	 *   
-	 * @param request The request Source Bean
-	 * @param response The response Source Bean
-	 * @throws EMFUserError If an exception occurs
-	 */   
-	private void getMenuItems(SourceBean request, SourceBean response) throws EMFUserError {
-		try {	
-			List lstFinalMenu = new ArrayList();
-			// get config
-			SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
-
-			//if the user is a final user, the menu is created and putted into the response with other informations like the type of layout,
-			//otherwise don't, administrators, developers, testers, behavioral model administrators have they own pre-configured menu
-			if (!userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
-					&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
-					&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
-					&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)){  // for behavioral model administrators
-				Collection lstRolesForUser = userProfile.getRoles();
-				logger.debug("** Roles for user: " + lstRolesForUser.size());
-				Object[] arrRoles = lstRolesForUser.toArray();
-				for (int i=0; i< arrRoles.length; i++){
-					logger.debug("*** arrRoles[i]): " + arrRoles[i]);
-					Role role = (Role)DAOFactory.getRoleDAO().loadByName((String)arrRoles[i]);
-					if (role != null){
-						List lstMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
-						if (lstMenuItems == null)
-							logger.debug("Not found menu items for Role " + (String)arrRoles[i] );
-						else {
-							for(int j=0; j<lstMenuItems.size(); j++){
-								Menu tmpObj = (Menu)lstMenuItems.get(j);
-								if (!containsMenu(lstFinalMenu, tmpObj)){						
-									lstFinalMenu.add((Menu)lstMenuItems.get(j));	
-								}
-							}
-						}
-					}
-					else
-						logger.debug("Role " + (String)arrRoles[i] + " not found on db");
-				}
-				response.setAttribute(LIST_MENU, lstFinalMenu);
-			}	
-			logger.debug("List Menu Size " + lstFinalMenu.size());
-			//String menuMode = (configSingleton.getAttribute("SPAGOBI.MENU.mode")==null)?DEFAULT_LAYOUT_MODE:(String)configSingleton.getAttribute("SPAGOBI.MENU.mode");
-			//response.setAttribute(MENU_MODE, menuMode);
-			response.setAttribute(MENU_MODE, DEFAULT_LAYOUT_MODE);
-			
-		} catch (Exception ex) {
-			logger.error("Cannot fill response container" + ex.getLocalizedMessage());	
-			HashMap params = new HashMap();
-			params.put(AdmintoolsConstants.PAGE, LoginModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 500, new Vector(), params);
-		}
-	}
-	
 	
 	
 	

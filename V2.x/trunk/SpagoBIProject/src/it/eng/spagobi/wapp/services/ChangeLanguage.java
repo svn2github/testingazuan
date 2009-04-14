@@ -38,6 +38,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.LoginModule;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.wapp.bo.Menu;
+import it.eng.spagobi.wapp.util.MenuUtilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -143,7 +144,7 @@ public class ChangeLanguage extends AbstractHttpAction{
 			}
 		}
 
-		getMenuItems(serviceRequest, serviceResponse);
+		MenuUtilities.getMenuItems(serviceRequest, serviceResponse, profile);
 		
 		serviceResponse.setAttribute("MENU_MODE", "ALL_TOP");
 		serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
@@ -151,90 +152,6 @@ public class ChangeLanguage extends AbstractHttpAction{
 	}
 
 	
-	
-	
-	
-	/**
-	 * Gets the elements of menu relative by the user logged. It reaches the role from the request and 
-	 * asks to the DB all detail
-	 * menu information, by calling the method <code>loadMenuByRoleId</code>.
-	 *   
-	 * @param request The request Source Bean
-	 * @param response The response Source Bean
-	 * @throws EMFUserError If an exception occurs
-	 */   
-	private void getMenuItems(SourceBean request, SourceBean response) throws EMFUserError {
-		logger.debug("IN");
-		try {	
-			List lstFinalMenu = new ArrayList();
-			// get config
-			SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
-
-			//if the user is a final user, the menu is created and putted into the response with other informations like the type of layout,
-			//otherwise don't, administrators, developers, testers, behavioral model administrators have they own pre-configured menu
-			if (!userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
-					&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
-					&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
-					&& !userProfile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)){  // for behavioral model administrators
-				Collection lstRolesForUser = userProfile.getRoles();
-				logger.debug("** Roles for user: " + lstRolesForUser.size());
-				Object[] arrRoles = lstRolesForUser.toArray();
-				for (int i=0; i< arrRoles.length; i++){
-					logger.debug("*** arrRoles[i]): " + arrRoles[i]);
-					Role role = (Role)DAOFactory.getRoleDAO().loadByName((String)arrRoles[i]);
-					if (role != null){
-						List lstMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
-						if (lstMenuItems == null)
-							logger.debug("Not found menu items for Role " + (String)arrRoles[i] );
-						else {
-							for(int j=0; j<lstMenuItems.size(); j++){
-								Menu tmpObj = (Menu)lstMenuItems.get(j);
-								if (!containsMenu(lstFinalMenu, tmpObj)){						
-									lstFinalMenu.add((Menu)lstMenuItems.get(j));	
-								}
-							}
-						}
-					}
-					else
-						logger.debug("Role " + (String)arrRoles[i] + " not found on db");
-				}
-				response.setAttribute(LIST_MENU, lstFinalMenu);
-			}	
-			logger.debug("List Menu Size " + lstFinalMenu.size());
-			//String menuMode = (configSingleton.getAttribute("SPAGOBI.MENU.mode")==null)?DEFAULT_LAYOUT_MODE:(String)configSingleton.getAttribute("SPAGOBI.MENU.mode");
-			//response.setAttribute(MENU_MODE, menuMode);
-			response.setAttribute(MENU_MODE, DEFAULT_LAYOUT_MODE);
-			
-		} catch (Exception ex) {
-			logger.error("Cannot fill response container" + ex);	
-			HashMap params = new HashMap();
-			params.put(AdmintoolsConstants.PAGE, LoginModule.MODULE_PAGE);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 500, new Vector(), params);
-		}finally{
-			logger.debug("OUT");
-		}
-	}
-	
-	
-	
-	
-	/**
-	 * Check if the menu element in input is already presents into the list
-	 * @param lst the list to check
-	 * @param menu the element to check
-	 * @return true if the element is already presents, false otherwise
-	 */
-	private boolean containsMenu(List lst, Menu menu){
-		if (lst == null)
-			return false;
-		
-		for (int i=0; i<lst.size(); i++){
-			Menu tmpMenu = (Menu)lst.get(i);
-			if (tmpMenu.getMenuId().intValue() == menu.getMenuId().intValue())
-				return true;	
-		}
-		return false;
-	}
 	
 }
 

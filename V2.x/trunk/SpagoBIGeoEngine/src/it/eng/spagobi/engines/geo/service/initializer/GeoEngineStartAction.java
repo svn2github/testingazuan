@@ -181,7 +181,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 	
 	private MapCatalogueAccessUtils getMapCatalogueProxy() {
 		if(mapCatalogueServiceProxy == null) {
-			mapCatalogueServiceProxy = new MapCatalogueAccessUtils( getHttpSession(), getUserId() );
+			mapCatalogueServiceProxy = new MapCatalogueAccessUtils( getHttpSession(), getUserIdentifier() );
 		}
 		
 		return mapCatalogueServiceProxy;

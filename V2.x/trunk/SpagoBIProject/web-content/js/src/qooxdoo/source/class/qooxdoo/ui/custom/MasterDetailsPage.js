@@ -303,16 +303,21 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 			}
     	} else {
     		   		
-    		if(this._type == 'modelDefinition' || this._type == 'modelInstance'){
+    		if(this._type == 'modelDefinition' || this._type == 'modelInstance' || this._type == 'alarm'){
     			var page = this._form.getUserData('details');
         		var f = page.getChildren()[0];
         		var temp_engine = f.getData();
         		var engine = {};
         		
-        		for(prop in temp_engine){				// parse the group-boxes
-        			for(sub_prop in temp_engine[prop]){	// parse the form inside groupbox
-        				engine[sub_prop] = temp_engine[prop][sub_prop];
-        			}
+        		if(this._type == 'alarm'){
+        			engine = temp_engine;
+        		}
+        		else{
+	        		for(prop in temp_engine){				// parse the group-boxes
+	        			for(sub_prop in temp_engine[prop]){	// parse the form inside groupbox
+	        				engine[sub_prop] = temp_engine[prop][sub_prop];
+	        			}
+	        		}
         		}
     		}
     		else{

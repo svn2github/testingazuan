@@ -31,17 +31,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend.services;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.talend.TalendEngine;
-import it.eng.spagobi.engines.talend.TalendEngineConfig;
-import it.eng.spagobi.engines.talend.runtime.Job;
-import it.eng.spagobi.engines.talend.runtime.JobDeploymentDescriptor;
-import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
-import it.eng.spagobi.engines.talend.utils.ZipUtils;
-import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
-import it.eng.spagobi.utilities.engines.EngineStartServletIOManager;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +44,6 @@ import java.util.List;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -66,6 +54,18 @@ import org.dom4j.DocumentException;
 import org.xml.sax.InputSource;
 
 import sun.misc.BASE64Encoder;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.talend.TalendEngine;
+import it.eng.spagobi.engines.talend.TalendEngineConfig;
+import it.eng.spagobi.engines.talend.runtime.Job;
+import it.eng.spagobi.engines.talend.runtime.JobDeploymentDescriptor;
+import it.eng.spagobi.engines.talend.runtime.RuntimeRepository;
+import it.eng.spagobi.engines.talend.utils.ZipUtils;
+import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
+import it.eng.spagobi.utilities.engines.EngineStartServletIOManager;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 /**
  * @author Andrea Gioia
@@ -314,9 +314,9 @@ public class JobUploadService extends AbstractEngineStartServlet {
 		attributes.put("USER", user);
 		
 		try {
-			
-			servletIOManager.getContentServiceProxy().publishTemplate(attributes);
-		
+			ContentServiceProxy contentProxy=new ContentServiceProxy(user, servletIOManager.getHttpSession());
+		    contentProxy.publishTemplate(attributes);
+			//servletIOManager.getContentServiceProxy().publishTemplate(attributes);
 			/*
 			String spagobiurl = config.getSpagobiUrl();
 		    session.setAttribute("BACK_END_SPAGOBI_CONTEXT", spagobiurl);

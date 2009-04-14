@@ -118,9 +118,9 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.DatasourceDetailsForm(); 
 	} else if(type === 'distributionListConfig') {
-		this.records = qooxdoo.app.data.DataService.loadDatasourceRecords();
+		this.records = qooxdoo.app.data.DataService.loadDistributionList();
 		config.dataset = this.records;
-		form = new qooxdoo.ui.custom.DatasourceDetailsForm(); 
+		form = new qooxdoo.ui.custom.DistributionListForm(); 
 	} else if(type === 'func') {
 		this.records = qooxdoo.app.data.DataService.loadDatasourceRecords();
 		form = new qooxdoo.ui.custom.DatasourceDetailsForm(); 
@@ -296,6 +296,16 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
     		
     	}
     	
+    	else if(this._type == 'distributionListConfig'){
+    		var f = this._form.getUserData('form');
+    		f.setData(dataObject);
+    		
+    		var usert = this._form.getUserData('usertable');
+    		usert.getTableModel().setDataAsMapArray(dataObject.userdetails, true);
+    		
+    		var doct = this._form.getUserData('doctable');
+    		doct.getTableModel().setDataAsMapArray(dataObject.docdetails, true);
+    	}
     	else
     		this._form.setData(dataObject);
     }

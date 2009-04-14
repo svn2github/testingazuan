@@ -124,6 +124,8 @@ qx.Class.define("qooxdoo.ui.table.Table",
 			
    		} else if (this._data.ID == "LINK"){
 		
+		} else if (this._data.ID == "UserDetails"){	//Distribution List
+		
 		}
     	
     	

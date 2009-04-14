@@ -1750,7 +1750,178 @@ qx.Class.define("qooxdoo.app.data.DataService", {
     	          }
     	        ];
     	
-    }
+    },    
+    
+    loadDistributionList: function() {
+        var records = {};
+                  
+        records.meta =  this.loadDistributionListMeta();                
+        records.rows =  this.loadDistributionListData();
+        
+        return records;
+    },
+    
+    loadDistributionListMeta: function() {
+        return [
+          {
+              dataIndex: 'name',
+              name: 'Name'
+          },
+          {
+              dataIndex: 'description',
+              name: 'Description'
+          },
+          {
+              dataIndex: 'users',
+              name: 'Users Registered'
+          }
+      ];
+    },
+    
+    
+    loadDistributionListData: function() {
+        return [
+          {
+              id: '362',
+              name: 'retailAnalysis',
+              description: 'Retail Analysis',
+              users: '2',
+              userdetails: [
+				               {
+				                   id: '362',
+				                   email: 'abc@xyz.com'
+				               }, 
+				               {
+				                   id: '363',
+				                   email : 'xyz@abc.com'
+				               }
+				            ],
+			  docdetails:[
+			              {
+			                  id: '362',
+			                  name: 'Report of Products sales by customers',
+			                  description:'Report of Products sales by customer types',
+			                  start: '01/03/2009 00:00:00',
+			                  end: '',
+			                  freq: 'Every Day'
+			                  
+			              }, 
+			              {
+			           	   	  id: '362',
+			                  name: 'Report2',
+			                  description:'Report2',
+			                  start: '02/03/2009 00:00:00',
+			                  end: '',
+			                  freq: 'Weekly'
+			              }
+              ]            
+				            
+          }, {
+              id: '363',
+              name: 'stateAnalysis',
+              description: 'State Analysis',
+              users: '1',
+              userdetails: [
+				               {
+				                   id: '362',
+				                   email: 'pqr@lmn.com'
+				               }
+				           ],
+			  docdetails:[
+			              {
+			                  id: '362',
+			                  name: 'Report1',
+			                  description:'R1',
+			                  start: '03/03/2009 00:00:00',
+			                  end: '',
+			                  freq: 'Monthly'
+			                  
+			              }
+			             ]    
+          }
+      ];
+    },
+    
+    loadDistributionListUserData: function() {
+        
+    	 var records = {};
+         
+    	 records.ID = "UserDetails";
+         records.meta =  this.loadDistributionListUserDataMeta();                
+         records.rows =  this.loadDistributionListUserDataData();
+         
+         return records;
+    },
+    
+    loadDistributionListUserDataMeta: function() {
+        return [
+          {
+              dataIndex: 'email',
+              name: 'User E-mail'
+          }
+      ];
+    },
+    
+    
+    loadDistributionListUserDataData: function() {
+        return [
+	               {
+	                   id: '362',
+	                   email: ''
+	               }
+	           ];
+    },
+    
+    loadDistributionListDocData: function() {
+        
+    	 var records = {};
+         
+    	 records.ID = "UserDetails";
+         records.meta =  this.loadDistributionListDocDataMeta();                
+         records.rows =  this.loadDistributionListDocDataData();
+         
+         return records;
+    },
+    
+    loadDistributionListDocDataMeta: function() {
+        return [
+          {
+              dataIndex: 'name',
+              name: 'Doc. Name'
+          },
+          {
+              dataIndex: 'description',
+              name: 'Doc. Description'
+          },
+          {
+              dataIndex: 'start',
+              name: 'Start Schedule'
+          },
+          {
+              dataIndex: 'end',
+              name: 'End Schedule'
+          },
+          {
+              dataIndex: 'freq',
+              name: 'Frequency'
+          }
+      ];
+    },
+    
+    
+    loadDistributionListDocDataData: function() {
+        return [
+	               {
+	                   id: '362',
+	                   name: '',
+	                   description:'',
+	                   start: '',
+	                   end: '',
+	                   freq: ''
+	                   
+	               }
+	           ];
+    }    
   	
   }
 });

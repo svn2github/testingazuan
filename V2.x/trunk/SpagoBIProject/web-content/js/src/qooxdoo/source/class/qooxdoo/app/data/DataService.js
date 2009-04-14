@@ -1709,7 +1709,7 @@ qx.Class.define("qooxdoo.app.data.DataService", {
               name: 'Resource'
           },
           {
-          	  dataIndex: 'delete',
+          	  dataIndex: 'deletebutton',
           	  name: 'Delete'
           }
       ];
@@ -1724,7 +1724,7 @@ qx.Class.define("qooxdoo.app.data.DataService", {
     	              mobile: '+393453543687',
     	              email: 'GauravJauhri@eng.it',
     	              resource : 'SpagoBI Consultant',
-    	              "delete": 'qx/icon/Oxygen/16/actions/dialog-close.png'
+    	              "deletebutton": 'qx/icon/Oxygen/16/actions/dialog-close.png'
     	              
     	          }, {
     	              id: '461',
@@ -1732,21 +1732,21 @@ qx.Class.define("qooxdoo.app.data.DataService", {
     	              mobile: '0123456789',
     	              email : 'user1@user1.com',
     	              resource: 'Yes',
-    	              "delete": 'qx/icon/Oxygen/16/actions/dialog-close.png'
+    	              "deletebutton": 'qx/icon/Oxygen/16/actions/dialog-close.png'
     	          }, {
     	              id: '462',
     	              name: 'User2',
     	              mobile: '9876543210',
     	              email : 'user2@user2.org',
     	              resource: 'Yes',
-    	              "delete": 'qx/icon/Oxygen/16/actions/dialog-close.png'
+    	              "deletebutton": 'qx/icon/Oxygen/16/actions/dialog-close.png'
     	          }, {
     	              id: '463',
     	              name: 'User3',
     	              mobile: '1234567890',
     	              email : 'user3@user3.net',
     	              resource: 'Yes',
-    	              "delete": 'qx/icon/Oxygen/16/actions/dialog-close.png'
+    	              "deletebutton": 'qx/icon/Oxygen/16/actions/dialog-close.png'
     	          }
     	        ];
     	

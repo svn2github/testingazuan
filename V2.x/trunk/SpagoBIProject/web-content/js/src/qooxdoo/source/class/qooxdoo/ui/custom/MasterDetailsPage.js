@@ -172,7 +172,13 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		newrecords.meta = this.records.meta;
 		newrecords.meta.length--;
 		newrecords.rows = this.records.rows;
-		config.dataset = newrecords;
+		
+		for(var i=0, l=newrecords.rows.length; i<l; i++){
+			delete newrecords.rows[i].deletebutton; //	OR delete newrecords.rows[i]["deletebutton"]
+		}
+		
+		this.records = newrecords;
+		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.KpiAlarmContactDetailsForm();
 	}
 	

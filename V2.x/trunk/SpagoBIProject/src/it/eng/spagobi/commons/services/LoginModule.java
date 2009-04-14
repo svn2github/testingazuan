@@ -48,6 +48,7 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.wapp.bo.Menu;
+import it.eng.spagobi.wapp.services.ChangeTheme;
 import it.eng.spagobi.wapp.util.MenuUtilities;
 
 import java.util.ArrayList;
@@ -80,6 +81,11 @@ public class LoginModule extends AbstractHttpModule {
 	public void service(SourceBean request, SourceBean response) throws Exception {
 	    logger.debug("IN");
 	    
+
+		String theme_name=(String)request.getAttribute(ChangeTheme.THEME_NAME);
+		logger.debug("theme selected: "+theme_name);
+
+		
     	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
     	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
     	String activeStr = (String) validateSB.getCharacters();
@@ -90,6 +96,11 @@ public class LoginModule extends AbstractHttpModule {
 		RequestContainer reqCont = RequestContainer.getRequestContainer();
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
+		
+		// Set THEME
+		if (theme_name!=null && theme_name.length()>0){
+			permSess.setAttribute(SpagoBIConstants.THEME, theme_name);
+		}
 		
 		if (request.getAttribute("MESSAGE") != null && ((String)request.getAttribute("MESSAGE")).equalsIgnoreCase("START_LOGIN")){
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "login");

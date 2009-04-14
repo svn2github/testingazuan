@@ -77,7 +77,7 @@ qx.Class.define("qooxdoo.ui.custom.KpiContactForm", {
 	    createButton.addListener("execute", this.create, this);
 	    
 	    var deleteAll = new qx.ui.toolbar.Button("Delete All");//, qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/delete.png"));
-	    var deleteToolTip = new qx.ui.tooltip.ToolTip("Delete");
+	    var deleteToolTip = new qx.ui.tooltip.ToolTip("Delete All");
 	    deleteAll.setToolTip(deleteToolTip);
 	    deleteAll.addListener("execute", this.deleteall, this);
 	    

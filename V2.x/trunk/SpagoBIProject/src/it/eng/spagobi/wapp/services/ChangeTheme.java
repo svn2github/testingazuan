@@ -42,6 +42,7 @@ public class ChangeTheme extends AbstractHttpAction{
 
 	static private Logger logger = Logger.getLogger(ChangeTheme.class);
 
+	public static final String THEME_NAME="THEME_NAME";
 	
     UserProfile userProfile = null;
 	
@@ -53,49 +54,20 @@ public class ChangeTheme extends AbstractHttpAction{
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
 
-		//Locale locale = MessageBuilder.getBrowserLocaleFromSpago();		
-
-		String theme_name=(String)serviceRequest.getAttribute("THEME_NAME");
+		String theme_name=(String)serviceRequest.getAttribute(THEME_NAME);
 		logger.debug("theme selected: "+theme_name);
 
 		
 		
 		permSess.setAttribute(SpagoBIConstants.THEME, theme_name);
 		
-		
-		
-		
+
 		IEngUserProfile profile = (IEngUserProfile)permSess.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		userProfile=null;
 		if (profile  instanceof UserProfile) {
 			userProfile = (UserProfile) profile;
 		}
 		
-/*
-		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
-		List themes=spagoconfig.getAttributeAsList("SPAGOBI.THEMES.THEME");
-
-	
-		
-		
-	if(theme_name==null){
-			logger.error("theme not specified");
-		}
-		else{
-			Iterator iter = themes.iterator();
-			boolean found=false;
-			while (iter.hasNext() && found==false) {
-				SourceBean t_sb = (SourceBean) iter.next();
-				Theme theme=new Theme(t_sb);
-				String theme_supported = theme.getName();
-
-				if(theme_name.equalsIgnoreCase(theme_supported)){
-					permSess.setAttribute(SpagoBIConstants.THEME, theme_name);
-					found=true;
-				}
-			}
-		}
-*/
 		MenuUtilities.getMenuItems(serviceRequest, serviceResponse,profile);
 		
 		serviceResponse.setAttribute("MENU_MODE", "ALL_TOP");

@@ -42,7 +42,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	else {
   		
   		this.base(arguments,null, "qx/icon/Oxygen/16/apps/office-calendar.png");
-	    this.setLayout(new qx.ui.layout.VBox(20));
+	    this.setLayout(new qx.ui.layout.VBox(10));
 	    this.setShowStatusbar(true);
 		this.setStatus("Details loaded");
 		this.open();
@@ -135,7 +135,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					var records = qooxdoo.app.data.DataService.loadDatasourceRecords();
 					var form = new qooxdoo.ui.custom.DatasourceDetailsForm();
 					m.setForm(form);
-					var window_table = new qooxdoo.ui.table.Table(m, records);
+					this.config.dataset = records;
+					var window_table = new qooxdoo.ui.table.Table(m, this.config);
 					this.add(window_table);
 					this.add(form);
 					

@@ -461,9 +461,100 @@ qx.Class.define("qooxdoo.app.data.DataService", {
     	];
   	},
   	
+  	loadDistributionSublistRecords: function(){
+  		
+  		var records = {};
+	  		
+  		records.meta =  this.loadDistributionSublistMeta();  	  		
+	    records.rows =  this.loadDistributionSublistData();
+  		
+    	return records;
+  		
+  	},
   	
+ 	loadDistributionSublistMeta: function(){
+  		return [
+  	    		{
+  		    		dataIndex: 'docname',
+  		    		name: 'Doc Name'
+  	    		}, {
+  		    		dataIndex: 'docdescription',
+  		    		name: 'Doc Description' 
+  	    		}, {
+  		    		dataIndex: 'startschedule',
+  		    		name: 'Start Schedule'
+  	    		}, {
+  		    		dataIndex: 'endschedule',
+  		    		name: 'End Schedule'
+  	    		}, {
+  		    		dataIndex: 'frequency',
+  		    		name: 'Frequency'
+  	    		}
+  	    	];
+  	},	
   	
+  	loadDistributionSublistData: function(){
   	
+  		return [
+  	  			{       
+  	       			id: '332',
+  	       			docname: 'Report of Products sales by Customer ',
+  		          	docdescription: 'Report of Products sales by Customers type ',
+  		            startschedule: '12/03/2009 00:00:00 ',
+  		            endschedule: '12/05/2009 00:00:00 ',
+  		            frequency: 'Months: JAN;.First Day '
+  		    	}
+  	       	];
+  	},
+  	
+  	loadDistributionListRecords: function(){
+  		
+  		var records = {};
+  		records.ID = "List";
+    	records.columns = [2,3];
+    	records.meta =  this.loadDistributionListMeta();
+    	records.rows =  this.loadDistributionListData();
+    	
+    	return records;
+  		
+  	},
+  	
+  	loadDistributionListMeta: function() {
+  		return [
+    		{
+	    		dataIndex: 'name',
+	    		name: 'Name'
+    		}, {
+	    		dataIndex: 'description',
+	    		name: 'Description' 
+    		}, {
+	    		dataIndex: 'detail',
+	    		name: 'Detail'
+    		}, {
+	    		dataIndex: 'email',
+	    		name: 'Email'
+    		}
+    	];
+  	},
+  	
+  	loadDistributionListData: function() {
+  		return [
+  			{       
+          		id: '330',
+	        	name: 'Retail',
+	          	description: 'Retail Analysis',
+	          	detail: 'qx/icon/Oxygen/16/actions/detail.gif',
+	          	email : 'qx/icon/Oxygen/16/actions/schedule.png' //'qx/icon/Oxygen/16/actions/email_add.png'
+	          	          
+       		}, {       
+       			id: '331',
+	        	name: 'State',
+	          	description: 'State Analysis',
+	          	detail: 'qx/icon/Oxygen/16/actions/detail.gif',
+	          	email : 'qx/icon/Oxygen/16/actions/email_add.png'
+	    	}
+       	];
+  	},
   	
   	loadDatasourceRecords: function() {
   		var records = {};

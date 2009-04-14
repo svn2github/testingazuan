@@ -114,9 +114,9 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		this.records = qooxdoo.app.data.DataService.loadlink3Records();	
 		config.dataset = this.records;
 	} else if(type === 'distributionList') {
-		this.records = qooxdoo.app.data.DataService.loadDatasourceRecords();
+		this.records = qooxdoo.app.data.DataService.loadDistributionListRecords();
 		config.dataset = this.records;
-		form = new qooxdoo.ui.custom.DatasourceDetailsForm(); 
+	//	form = new qooxdoo.ui.custom.DatasourceDetailsForm(); 
 	} else if(type === 'distributionListConfig') {
 		this.records = qooxdoo.app.data.DataService.loadDistributionList();
 		config.dataset = this.records;
@@ -185,7 +185,7 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 	this._pagedTable = new qooxdoo.ui.table.PagedTable(this, config); 
 	this.add(this._pagedTable,0);
 	   	
-	if(type != 'roles' && type != 'link1' && type != 'link2' && type != 'link3' && type !='schedule'){
+	if(type != 'roles' && type != 'link1' && type != 'link2' && type != 'link3' && type !='schedule' && type !='distributionList'){
 	   		
 	   	containerBottom = new qx.ui.core.Widget();
 	   	var Vbox = new qx.ui.layout.VBox();

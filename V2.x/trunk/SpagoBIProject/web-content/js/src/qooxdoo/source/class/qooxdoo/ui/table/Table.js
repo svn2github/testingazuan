@@ -122,6 +122,13 @@ qx.Class.define("qooxdoo.ui.table.Table",
 			}
 			this.addListener("cellClick",this._onCellClick,this, false);
 			
+   		} else if (this._data.ID == "List"){    		
+    		var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.cellRendererFactoryFunction);
+ 			for(i=0; i<this._data.columns.length; i++){
+				columnModel.setDataCellRenderer(this._data.columns[i], propertyCellRendererFactory);
+			}
+			this.addListener("cellClick",this._onCellClick,this, false);
+   		
    		} else if (this._data.ID == "LINK"){
 		
 		} else if (this._data.ID == "UserDetails"){	//Distribution List
@@ -298,6 +305,16 @@ qx.Class.define("qooxdoo.ui.table.Table",
     	    if (selectedEntry >= 0) {
     	        this._tableModel.removeRows(selectedEntry, 1);
     	    }
+    	}
+    	else if(this._data.ID == "List"){
+    		var selectedEntry = this.getSelectionModel().getAnchorSelectionIndex();
+    	     
+    	      if (selectedEntry >= 0) {
+    	        var itemData = this.getTableModel().getRowData(selectedEntry);
+    	      }
+    	      var s = qooxdoo.commons.CoreUtils.toStr(itemData);
+   // 	      alert (s);
+    	        var d = new qooxdoo.ui.DistributionList(e, itemData);
     	}
     }
   }

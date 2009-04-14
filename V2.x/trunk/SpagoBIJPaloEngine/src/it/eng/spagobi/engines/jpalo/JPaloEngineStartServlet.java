@@ -87,9 +87,8 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 			servletIOManager.getResponse().sendRedirect( urlWithSessionID );
 	    
 		} catch(Throwable t) {
-			throw new SpagoBIEngineException("An unpredicted error occured while executing palo-engine. Please chek the log for more informations on the causes",
-			"an.unpredicted.error.occured");		
-			
+			throw new SpagoBIEngineException("An unpredicted error occured while executing palo-engine. Please check the log for more informations on the causes",
+			"an.unpredicted.error.occured", t);				
 		} finally {
 			servletIOManager.auditServiceEndEvent();
 			logger.debug("OUT");

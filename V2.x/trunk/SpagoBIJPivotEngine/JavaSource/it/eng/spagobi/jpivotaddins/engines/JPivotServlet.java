@@ -5,6 +5,7 @@
  */
 package it.eng.spagobi.jpivotaddins.engines;
 
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.jpivotaddins.util.SessionObjectRemoval;
 
 import java.io.IOException;
@@ -36,8 +37,8 @@ public class JPivotServlet extends HttpServlet {
 	logger.debug("forward:" + forward);
 	logger.debug("dimAccRulStr:" + dimAccRulStr);
 
-	String language = request.getParameter("SBI_LANGUAGE");
-	String country = request.getParameter("SBI_COUNTRY");
+	String language = request.getParameter(SpagoBIConstants.SBI_LANGUAGE);
+	String country = request.getParameter(SpagoBIConstants.SBI_COUNTRY);
 	logger.debug("Locale parameters received: language = [" + language + "] ; country = [" + country + "]");
 
 	Locale locale = null;

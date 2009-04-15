@@ -5,10 +5,11 @@
 			<ATTRIBUTE name="month" />
 			<ATTRIBUTE name="email"  />
 			<ATTRIBUTE name="name"  />
+			<ATTRIBUTE name="ente"  />
 		</ATTRIBUTES>	
 		<USERS>
-			<USER userID="biadmin" password="biadmin" month="03" name="SpagoAdmin" email="bernabei@eng.it"/>
-			<USER userID="biuser" password="biuser" month="04" name="SpagoUser" email="bernabei@eng.it"/>
+			<USER userID="biadmin" password="biadmin" month="03" name="SpagoAdmin" email="bernabei@eng.it" ente="ENTE_1"/>
+			<USER userID="biuser" password="biuser" month="04" name="SpagoUser" email="bernabei@eng.it" ente="ENTE_2"/>
 			<USER userID="bidev" password="bidev" />
 			<USER userID="moni" password="moni" month="04" name="Monitoraggio" email="bernabei@eng.it"/>
 			<USER userID="chiron" password="chiron" />

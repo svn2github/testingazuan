@@ -313,12 +313,12 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
     
     , _onSave: function (e) {
     	
-		if (this.records && this.records.ID != undefined){
+		if(this.records && this.records.ID != undefined){
     		if (this.records.ID == "ROLES"){
 				alert (this._pagedTable._table.getUpdatedData());
 			}
-    	} else {
-    		   		
+    	} 
+		else{
     		if(this._type == 'modelDefinition' || this._type == 'modelInstance' || this._type == 'alarm'){
     			var page = this._form.getUserData('details');
         		var f = page.getChildren()[0];
@@ -336,9 +336,13 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 	        		}
         		}
     		}
-    		else{
-    			var engine = this.getForm().getData();
-    		}	
+    		else if(this._type == 'distributionListConfig'){
+    				var f = this._form.getUserData('form');
+	        		var engine = f.getData();
+    			 }	
+    			else{
+    				var engine = this.getForm().getData();
+    			}	
 				
 			alert (qooxdoo.commons.CoreUtils.toStr(engine));
 				

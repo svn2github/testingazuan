@@ -70,7 +70,7 @@ qx.Class.define("qooxdoo.ui.custom.DistributionListDetailsForm", {
         	{
         		type: 'text',
         		dataIndex: 'name',
-        		text: 'Label',
+        		text: 'Name',
         		mandatory: true	
         	}, {
         		type: 'text',

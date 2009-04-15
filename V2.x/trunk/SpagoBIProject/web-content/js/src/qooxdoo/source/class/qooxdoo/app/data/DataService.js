@@ -38,6 +38,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #asset(qx/icon/Oxygen/16/actions/dialog-ok.png)
 #asset(qx/icon/Oxygen/16/actions/detail.gif)
 #asset(qx/icon/Oxygen/16/actions/dialog-close.png)
+#asset(qx/icon/Oxygen/16/actions/mail-mark-unread.png)
 */ 
 qx.Class.define("qooxdoo.app.data.DataService", {
   type : "static",
@@ -543,17 +544,17 @@ qx.Class.define("qooxdoo.app.data.DataService", {
   		return [
   			{       
           		id: '330',
-	        	name: 'Retail',
-	          	description: 'Retail Analysis',
-	          	detail: 'qx/icon/Oxygen/16/actions/detail.gif',
-	          	email : 'qx/icon/Oxygen/16/actions/schedule.png' //'qx/icon/Oxygen/16/actions/email_add.png'
+          		name: 'Retail',
+          		description: 'Retail Analysis',
+          		detail: 'qx/icon/Oxygen/16/actions/detail.gif',
+          		email : 'qx/icon/Oxygen/16/actions/mail-mark-unread.png' //'qx/icon/Oxygen/16/actions/email_add.png'
 	          	          
        		}, {       
        			id: '331',
-	        	name: 'State',
-	          	description: 'State Analysis',
-	          	detail: 'qx/icon/Oxygen/16/actions/detail.gif',
-	          	email : 'qx/icon/Oxygen/16/actions/email_add.png'
+       			name: 'State',
+       			description: 'State Analysis',
+       			detail: 'qx/icon/Oxygen/16/actions/detail.gif',
+       			email : 'qx/icon/Oxygen/16/actions/mail-mark-unread.png'
 	    	}
        	];
   	},

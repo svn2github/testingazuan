@@ -70,45 +70,6 @@ public class JPivotDriver extends AbstractDriver implements IEngineDriver {
 
 	static private Logger logger = Logger.getLogger(JPivotDriver.class);
 
-	/*private void addLocale(Map map) {
-		logger.debug("IN");
-		ConfigSingleton config = ConfigSingleton.getInstance();
-
-		RequestContainer requestContainer=RequestContainer.getRequestContainer();
-		SessionContainer sessionContainer=requestContainer.getSessionContainer();
-		SessionContainer permSess=sessionContainer.getPermanentContainer();
-
-		String afLanguage = (String)permSess.getAttribute("AF_LANGUAGE");
-		String afCountry = (String)permSess.getAttribute("AF_COUNTRY");
-
-		Locale locale=null;
-
-		if(afLanguage!=null){
-
-			locale=new Locale(afLanguage,afCountry,"");		
-		}
-		else{
-			try {
-				locale = PortletUtilities.getPortalLocale();
-				logger.debug("Portal locale: " + locale);
-			} catch (Exception e) {
-				logger.warn("COuld not getting portal locale.");
-				locale = MessageBuilder.getBrowserLocaleFromSpago();
-				logger.debug("Spago locale: " + locale);
-			}
-		}
-		if(locale!=null){
-			map.put("country", locale.getCountry());
-			map.put("language", locale.getLanguage());
-		}
-		else{
-			logger.warn("could not find defined language, put english as default one");
-			map.put("country", "US");
-			map.put("language", "en");
-		}
-
-		logger.debug("OUT");
-	}*/
 
 	/**
 	 * Returns a map of parameters which will be send in the request to the
@@ -196,7 +157,6 @@ public class JPivotDriver extends AbstractDriver implements IEngineDriver {
 			pars.put("query", "dynamicOlap");
 			pars = addDataAccessParameter(profile, roleName, pars, template);
 			pars = addBIParameters(biobj, pars);
-			//addLocale(pars);
 		} catch (Exception e) {
 			logger.error("Error while recovering execution parameter map: \n" + e);
 		}
@@ -537,7 +497,6 @@ public class JPivotDriver extends AbstractDriver implements IEngineDriver {
 		parameters.put("document", documentId);
 		parameters.put("forward", "editQuery.jsp");
 		applySecurity(parameters, profile);
-		//addLocale(parameters);
 		EngineURL engineURL = new EngineURL(url, parameters);
 		logger.debug("OUT");
 		return engineURL;
@@ -570,7 +529,6 @@ public class JPivotDriver extends AbstractDriver implements IEngineDriver {
 		parameters.put("document", documentId);
 		parameters.put("forward", "initialQueryCreator.jsp");
 		applySecurity(parameters, profile);
-		//addLocale(parameters);
 		EngineURL engineURL = new EngineURL(url, parameters);
 		logger.debug("OUT");
 		return engineURL;

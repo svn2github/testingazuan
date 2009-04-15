@@ -61,33 +61,7 @@ public class TalendDriver extends AbstractDriver implements IEngineDriver {
 
 	static private Logger logger = Logger.getLogger(TalendDriver.class);
 
-	private void addLocale(Map map) {
-		logger.debug("IN");
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		Locale portalLocale = null;
-		try {
-			portalLocale =  PortletUtilities.getPortalLocale();
-			logger.debug("Portal locale: " + portalLocale);
-		} catch (Exception e) {
-		    logger.warn("Error while getting portal locale.");
-		    portalLocale = MessageBuilder.getBrowserLocaleFromSpago();
-		    logger.debug("Spago locale: " + portalLocale);
-		}
-		SourceBean languageSB = null;
-		if(portalLocale != null && portalLocale.getLanguage() != null) {
-			languageSB = (SourceBean)config.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
-					"language", portalLocale.getLanguage());
-		}
-		if(languageSB != null) {
-			map.put("country", (String)languageSB.getAttribute("country"));
-			map.put("language", (String)languageSB.getAttribute("language"));
-		} else {
-			map.put("country", "US");
-			map.put("language", "en");
-		}
-		logger.debug("Locale set");
-		logger.debug("OUT");
-	}
+
 
 	/**
 	 * Returns a map of parameters which will be send in the request to the
@@ -143,7 +117,6 @@ public class TalendDriver extends AbstractDriver implements IEngineDriver {
 		String documentId=biobj.getId().toString();
 		pars.put("document", documentId);
 		logger.debug("Add document parameter:"+documentId);
-		addLocale(pars);
 		pars = addBIParameters(biobj, pars);
 		logger.debug("OUT");
 		return pars;

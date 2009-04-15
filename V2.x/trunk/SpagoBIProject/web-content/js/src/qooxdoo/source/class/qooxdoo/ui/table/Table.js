@@ -73,12 +73,12 @@ qx.Class.define("qooxdoo.ui.table.Table",
     	this.columnIds[i] =  this._data.meta[i].dataIndex;
     	this.columnNames[this._data.meta[i].dataIndex] = this._data.meta[i].name;
     }
-
+    
     // Create table model
     this._tableModel = new qx.ui.table.model.Simple();    
     this._tableModel.setColumnIds( this.columnIds );
 	this._tableModel.setColumnNamesById( this.columnNames );
-
+	
 	
     // Customize the table column model. We want one that
     // automatically resizes columns.
@@ -87,7 +87,7 @@ qx.Class.define("qooxdoo.ui.table.Table",
         return new qx.ui.table.columnmodel.Resize(obj);
       }
     });
-
+    
     this.set({});
    
 	
@@ -122,8 +122,8 @@ qx.Class.define("qooxdoo.ui.table.Table",
 			}
 			this.addListener("cellClick",this._onCellClick,this, false);
 			
-   		} else if (this._data.ID == "List"){    		
-    		var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.cellRendererFactoryFunction);
+   		} else if (this._data.ID == "List"){
+   			var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.cellRendererFactoryFunction);
  			for(i=0; i<this._data.columns.length; i++){
 				columnModel.setDataCellRenderer(this._data.columns[i], propertyCellRendererFactory);
 			}
@@ -134,7 +134,6 @@ qx.Class.define("qooxdoo.ui.table.Table",
 		} else if (this._data.ID == "UserDetails"){	//Distribution List
 		
 		}
-    	
     	
     	this.setStatusBarVisible(false);
         this.getDataRowRenderer().setHighlightFocusRow(true);
@@ -301,10 +300,12 @@ qx.Class.define("qooxdoo.ui.table.Table",
 		  	var d = new qooxdoo.ui.Scheduler(e);
 		}
     	else if(this._data.ID == "Contact"){
-    		var selectedEntry = this.getSelectionModel().getAnchorSelectionIndex();
-    	    if (selectedEntry >= 0) {
-    	        this._tableModel.removeRows(selectedEntry, 1);
-    	    }
+    		if(e.getColumn() == 4){
+	    		var selectedEntry = this.getSelectionModel().getAnchorSelectionIndex();
+	    	    if (selectedEntry >= 0) {
+	    	        this._tableModel.removeRows(selectedEntry, 1);
+	    	    }
+    		}
     	}
     	else if(this._data.ID == "List"){
     		var selectedEntry = this.getSelectionModel().getAnchorSelectionIndex();

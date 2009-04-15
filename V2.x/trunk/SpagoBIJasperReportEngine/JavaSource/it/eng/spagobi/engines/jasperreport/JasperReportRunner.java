@@ -8,6 +8,7 @@ package it.eng.spagobi.engines.jasperreport;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.container.SpagoBIContainerFactory;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.content.bo.Content;
@@ -135,9 +136,19 @@ public class JasperReportRunner {
 
 		logger.debug("Read user data from the request. userId="+userId+". DocumentId="+documentId);
 
-		//parameters.put("SBI_USERID", userId);
+		String resourcePath=EnginConf.getInstance().getResourcePath()+"\\img\\";
+		String entity=(String)parameters.get(SpagoBIConstants.SBI_ENTITY);
+		// IF exist an ENTITY  parameter concat to resourcePath
+		if (entity!=null && entity.length()>0){
+			resourcePath=resourcePath.concat(entity+"\\");
+		}
+		logger.debug("SetUp resourcePath:"+resourcePath);
+		
+		
 		parameters.put("SBI_USERID", userUniqueIdentifier);
 		parameters.put("SBI_HTTP_SESSION", session);
+		parameters.put("SBI_RESOURCE_PATH", resourcePath);
+		
 
 
 

@@ -116,7 +116,7 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 	} else if(type === 'distributionList') {
 		this.records = qooxdoo.app.data.DataService.loadDistributionListRecords();
 		config.dataset = this.records;
-	//	form = new qooxdoo.ui.custom.DatasourceDetailsForm(); 
+	
 	} else if(type === 'distributionListConfig') {
 		this.records = qooxdoo.app.data.DataService.loadDistributionList();
 		config.dataset = this.records;

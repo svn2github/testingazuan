@@ -69,6 +69,7 @@ qx.Class.define("qooxdoo.ui.custom.DistributionListForm", {
 			var config = {};
 			config.dataset = records;
 			var usertable = new qooxdoo.ui.table.Table(this, config);
+			usertable.getSelectionModel().removeListener("changeSelection",usertable._onChangeSelection, usertable);
 			this.setUserData('usertable', usertable);
 			userpage.add(usertable);
 			tabview.add(userpage);
@@ -80,6 +81,7 @@ qx.Class.define("qooxdoo.ui.custom.DistributionListForm", {
 			var config2 = {};
 			config2.dataset = records2;
 			var doctable = new qooxdoo.ui.table.Table(this, config2);
+			doctable.getSelectionModel().removeListener("changeSelection",doctable._onChangeSelection, doctable);
 			this.setUserData('doctable', doctable);
 			docpage.add(doctable);
 			tabview.add(docpage);

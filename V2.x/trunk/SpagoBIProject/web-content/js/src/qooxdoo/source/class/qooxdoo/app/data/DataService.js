@@ -1940,7 +1940,7 @@ qx.Class.define("qooxdoo.app.data.DataService", {
         
     	 var records = {};
          
-    	 records.ID = "UserDetails";
+    	 //records.ID = "UserDetails";
          records.meta =  this.loadDistributionListUserDataMeta();                
          records.rows =  this.loadDistributionListUserDataData();
          
@@ -1970,7 +1970,7 @@ qx.Class.define("qooxdoo.app.data.DataService", {
         
     	 var records = {};
          
-    	 records.ID = "UserDetails";
+    	 //records.ID = "UserDetails";
          records.meta =  this.loadDistributionListDocDataMeta();                
          records.rows =  this.loadDistributionListDocDataData();
          

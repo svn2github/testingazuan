@@ -27,6 +27,7 @@ import javax.naming.NamingException;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 
 import org.apache.log4j.Logger;
 
@@ -58,7 +59,7 @@ public abstract class SsoServiceFactory {
 				ConfigSingleton configSingleton=ConfigSingleton.getInstance();
 				SourceBean validateSB = (SourceBean) configSingleton.getAttribute("SPAGOBI_SSO.INTEGRATION_CLASS_JNDI");
 				
-				integrationClass = readJndiResource((String) validateSB.getCharacters());
+				integrationClass = SpagoBIUtilities.readJndiResource((String) validateSB.getCharacters());
 			}
 			daoObject = (SsoServiceInterface)Class.forName(integrationClass).newInstance();
 			logger.debug(" Instatiate successfully:"+integrationClass);
@@ -68,23 +69,5 @@ public abstract class SsoServiceFactory {
 		return daoObject;
     }
     
-	private static String readJndiResource(String jndiName) {
-		logger.debug("IN");
-		String value=null;
-		try {
-			Context ctx = new InitialContext();
-			value  = (String)ctx.lookup(jndiName);
-			logger.debug("jndiName: " + value);
-			 
-		} catch (NamingException e) {
-		    logger.error(e);
-		} catch (Exception e) {
-		    logger.error(e);
-		} catch (Throwable t) {
-		    logger.error(t);
-		} finally {
-		    logger.debug("OUT.value="+value);
-		}
-		return value;
-	}
+
 }

@@ -23,6 +23,7 @@ package it.eng.spagobi.services.common;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -102,30 +103,12 @@ public class EnginConf {
 		logger.debug("IN");
 		SourceBean sb = (SourceBean)config.getAttribute("RESOURCE_PATH_JNDI_NAME");
 		String path = (String) sb.getCharacters();
-		resourcePath= readJndiResource(path);
+		resourcePath= SpagoBIUtilities.readJndiResource(path);
 		logger.debug("OUT");
 	}
 
 	
-	private String readJndiResource(String jndiName) {
-		logger.debug("IN");
-		String value=null;
-		try {
-			Context ctx = new InitialContext();
-			value  = (String)ctx.lookup(jndiName);
-			logger.debug("jndiName: " + value);
-			 
-		} catch (NamingException e) {
-		    logger.error(e);
-		} catch (Exception e) {
-		    logger.error(e);
-		} catch (Throwable t) {
-		    logger.error(t);
-		} finally {
-		    logger.debug("OUT.value="+value);
-		}
-		return value;
-	}
+
 
 	public String getResourcePath() {
 	    return resourcePath;
@@ -144,7 +127,7 @@ public class EnginConf {
 		}else {
 			sb = (SourceBean)config.getAttribute("SPAGOBI_SERVER_URL_JNDI_NAME");
 			server = (String) sb.getCharacters();
-			spagoBiServerUrl= readJndiResource(server);			    
+			spagoBiServerUrl= SpagoBIUtilities.readJndiResource(server);			    
 		}
 
 		logger.debug("OUT");
@@ -160,7 +143,7 @@ public class EnginConf {
 		SourceBean sb = (SourceBean)config.getAttribute("INTEGRATION_CLASS_JNDI");
 		String classSso = (String) sb.getCharacters();
 		if (classSso!=null && classSso.length()>0){
-			spagoBiSsoClass=readJndiResource(classSso);	
+			spagoBiSsoClass=SpagoBIUtilities.readJndiResource(classSso);	
 		}
 
 		logger.debug("OUT");

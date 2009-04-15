@@ -498,11 +498,11 @@ qx.Class.define("qooxdoo.app.data.DataService", {
   		return [
   	  			{       
   	       			id: '332',
-  	       			docname: 'Report of Products sales by Customer ',
-  		          	docdescription: 'Report of Products sales by Customers type ',
-  		            startschedule: '12/03/2009 00:00:00 ',
-  		            endschedule: '12/05/2009 00:00:00 ',
-  		            frequency: 'Months: JAN;.First Day '
+  	       			docname: 'Report of Products',// sales by Customer ',
+  		          	docdescription: 'Report of Products',// sales by Customers type ',
+  		            startschedule: '12/03/20099',// 00:00:00 ',
+  		            endschedule: '12/05/2009',// 00:00:00 ',
+  		            frequency: 'Months: JAN'//;.First Day '
   		    	}
   	       	];
   	},
@@ -512,14 +512,15 @@ qx.Class.define("qooxdoo.app.data.DataService", {
   		var records = {};
   		records.ID = "List";
     	records.columns = [2,3];
-    	records.meta =  this.loadDistributionListMeta();
-    	records.rows =  this.loadDistributionListData();
+    	records.meta =  this.loadDistributionList1Meta();
+    	records.rows =  this.loadDistributionList1Data();
     	
     	return records;
   		
   	},
   	
-  	loadDistributionListMeta: function() {
+  	loadDistributionList1Meta: function() {
+  		
   		return [
     		{
 	    		dataIndex: 'name',
@@ -537,7 +538,8 @@ qx.Class.define("qooxdoo.app.data.DataService", {
     	];
   	},
   	
-  	loadDistributionListData: function() {
+  	loadDistributionList1Data: function() {
+  		
   		return [
   			{       
           		id: '330',
@@ -1811,10 +1813,10 @@ qx.Class.define("qooxdoo.app.data.DataService", {
     	 return [
     	          {
     	              id: '555',
-    	              name: 'Gaurav Jauhri',
-    	              mobile: '+393453543687',
-    	              email: 'GauravJauhri@eng.it',
-    	              resource : 'SpagoBI Consultant',
+    	              name: 'User0',
+    	              mobile: '0123456789',
+    	              email : 'user0@user0.com',
+    	              resource: 'Yes',
     	              "deletebutton": 'qx/icon/Oxygen/16/actions/dialog-close.png'
     	              
     	          }, {

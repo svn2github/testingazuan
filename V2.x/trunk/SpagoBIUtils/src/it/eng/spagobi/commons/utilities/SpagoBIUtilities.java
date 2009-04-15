@@ -75,6 +75,8 @@ public class SpagoBIUtilities {
 	public static void main(String[] args) {
 	}
 
+	
+	
 	/**
 	 * Gets the spago adapter http url.
 	 * 

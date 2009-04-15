@@ -77,7 +77,6 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	
 	private static final BASE64Decoder DECODER = new BASE64Decoder();
 	
-	public static final String USER_ID = IEngUserProfile.ENG_USER_PROFILE;
 	public static final String AUDIT_ID = "SPAGOBI_AUDIT_ID";
 	public static final String DOCUMENT_ID = "document";
 	
@@ -97,7 +96,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	}
 	
 	 public UserProfile getUserProfile() {
-		return (UserProfile) getParameterFromSession( USER_ID ); 
+		return (UserProfile) getParameterFromSession( IEngUserProfile.ENG_USER_PROFILE ); 
 	 }
 
 	 public String getUserId( ) {

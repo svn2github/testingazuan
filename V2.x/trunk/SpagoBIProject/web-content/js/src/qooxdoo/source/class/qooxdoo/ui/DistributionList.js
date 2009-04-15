@@ -79,6 +79,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			container.add(centralLabel);
 			this.add(container);
 			
+	//		var box = new qx.ui.container.Composite;
+	//		box.setLayout(new qx.ui.layout.HBox);
+	//		this.add(box, {flex:1});
 			var records = qooxdoo.app.data.DataService.loadDistributionSublistRecords();
 			this.config.dataset = records;
 			var window_table = new qooxdoo.ui.table.Table(this, this.config);
@@ -99,7 +102,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			this.add(container1);
 			var label3 = new qx.ui.basic.Label("Insert email in order to subscribe: ");
 			this.add(label3);
-			var textfield3 = qooxdoo.commons.WidgetUtils.createInputTextField({
+			this.textfield3 = qooxdoo.commons.WidgetUtils.createInputTextField({
         		type: 'text',
         		dataIndex: 'description',
         		text: 'Email',
@@ -107,7 +110,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         		mandatory: false
         	});
 			
-			this.add(textfield3);
+			this.add(this.textfield3);
 			
 			var container2 = new qx.ui.container.Composite(new qx.ui.layout.HBox(20));
 			
@@ -130,13 +133,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   members :
   {
 	  config : {},
+	  textfield3 : undefined,
 	  
 	   _onDelete: function(e) {
 	    	alert('delete');
 	    }
 	    
 	  , _onSave: function(e) {
-	    	alert('save');
+		  var d = this.textfield3.getUserData('field').getChildren()[0];
+	    	alert(d.getValue());
 	    }
 	  
   }

@@ -1,6 +1,7 @@
-.list-view {
+	.list-view {
         
     }
+    
     .list-view dd {
         float:none;
         width:95%;
@@ -10,6 +11,42 @@
         zoom:1;
         border-bottom:1px solid #ddd;
     }
+    
+    
+     /* ============================================================= */
+    /*	item icon layout					  			 		     */
+    /* ============================================================= */
+    
+    .list-view .document-item-icon {
+        margin:5px 0 0 5px;
+        float:left;
+        border: solid  #0000FF;
+    }
+    
+    .list-view .document-item-icon img {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document.png')!important;
+    }
+    
+    .list-view .document-item-icon .REPORT-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/report-document.png')!important;
+    }
+    
+    .list-view .document-item-icon .OLAP-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/olap-document.png')!important;
+    }
+    
+    .list-view .document-item-icon .CHART-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/chart-document.png')!important;
+    }
+    
     
     .list-view #icon {
     	height:96px;	
@@ -30,12 +67,63 @@
 		background-image: url('../../../img/analiticalmodel/browser/document.png') !important;
 	}
     
-    .list-view #description {
+    /* ============================================================= */
+    /*	item description layout					  			 		 */
+    /* ============================================================= */
+    
+    .list-view .item-desc {
         float:left;
         width:460px;
         margin-left:10px;
-        margin-top:25px;        
+        margin-top:25px;   
+        border: thin #0000FF;     
     }
+    
+    .list-view .field-label {
+    	font-family:tahoma,arial,san-serif;
+        font-size:11px;
+        font-weight:bold;
+    }
+    
+    /* ------------------------------------------------------------ */
+    /*	layout customization on field name base  			 		 */
+    /* -------------------------------------------------------------*/
+     
+     .list-view .item-desc #id .field-value  {
+     	font-family:tahoma,arial,san-serif;
+        color:#555;
+        font-size:11px;
+        font-weight:bold;
+     }
+     
+     .list-view .item-desc #label .field-value  {
+     	font-family:tahoma,arial,san-serif;
+        color:#555;
+        font-size:11px;
+        font-weight:bold;
+     }
+     
+     .list-view .item-desc #name .field-value  {
+     	font-family:tahoma,arial,san-serif;
+        color:#555;
+        font-size:11px;
+        font-weight:bold;
+     }
+     
+     .list-view .item-desc #creationDate .field-label {
+     	font-size:9px;
+     	font-style: italic;
+     }
+          
+     .list-view .item-desc #creationDate .field-value {
+     	font-size:9px;
+     	font-style: italic;
+     }
+    
+    /* -------------------------------------------------------------*/
+    /* ============================================================= */
+    
+    
     
     .list-view #control-panel {
       height: 23px;
@@ -83,3 +171,6 @@
     .list-view .collapsed dl {
         display:none;
     }
+    
+    
+    

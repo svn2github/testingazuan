@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.analiticalmodel.functionalitytree.service.TreeObjectsModule;
 import it.eng.spagobi.chiron.ListEnginesAction;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
@@ -33,6 +34,8 @@ import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
+	
+	public static final String PATH_SUBTREE = "PATH_SUBTREE";
 	
 	// logger component
 	private static Logger logger = Logger.getLogger(ListEnginesAction.class);
@@ -46,8 +49,10 @@ public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
 			setSpagoBIRequestContainer( request );
 			setSpagoBIResponseContainer( response );
 			
-			DocumentsBrowserUtility util = new DocumentsBrowserUtility();
-			JSONObject jsonObj  = util.defineConfiguration(response);
+			String initialPath = this.getAttributeAsString(PATH_SUBTREE);
+			
+			DocumentsBrowserConfig config = DocumentsBrowserConfig.getInstance();
+			JSONObject jsonObj  = config.toJSON();
 			
 			response.setAttribute("metaConfiguration", jsonObj);
 			

@@ -45,8 +45,8 @@ public class UserDocumentsBrowserPortletStartAction extends PortletLoginAction{
 		
 		try {
 			super.service(request, response);
-			DocumentsBrowserUtility util = new DocumentsBrowserUtility();
-			JSONObject jsonObj  = util.defineConfiguration(response);
+			DocumentsBrowserConfig config = DocumentsBrowserConfig.getInstance();
+			JSONObject jsonObj  = config.toJSON();
 			
 			response.setAttribute("metaConfiguration", jsonObj);
 			

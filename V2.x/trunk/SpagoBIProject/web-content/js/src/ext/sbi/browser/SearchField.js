@@ -80,9 +80,9 @@ Sbi.browser.SearchField = Ext.extend(Ext.form.TwinTriggerField, {
     onTrigger1Click : function(){
         if(this.hasSearch){ 
         	this.triggers[0].hide();
-            this.hasSearch = false;                    
-        }
-        this.fireEvent('onreset', this);
+            this.hasSearch = false;   
+            this.fireEvent('onreset', this);
+        }        
     },
 
     onTrigger2Click : function(){

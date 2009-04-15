@@ -1,4 +1,4 @@
-  .group-view {
+	.group-view {
         
     }
         
@@ -14,6 +14,46 @@
     .group-view dd.over {
         background: #F5FDE3 url('../../../img/analiticalmodel/browser/sample-over-120x300.gif') no-repeat 0px 10px;
     }
+    
+    
+    
+    /* ============================================================= */
+    /*	item icon layout					  			 		     */
+    /* ============================================================= */
+    
+    .group-view .document-item-icon {
+        margin:5px 0 0 5px;
+        float:left;
+        border: solid  #0000FF;
+    }
+    
+    .group-view .document-item-icon img {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document.png')!important;
+    }
+    
+    .group-view .document-item-icon .REPORT-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/report-document.png')!important;
+    }
+    
+    .group-view .document-item-icon .OLAP-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/olap-document.png')!important;
+    }
+    
+    .group-view .document-item-icon .CHART-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/chart-document.png')!important;
+    }
+    
+    
+    
+    
     
     .group-view  #icon {
         width:96px;
@@ -33,13 +73,65 @@
 	.document  {
 		background-image: url('../../../img/analiticalmodel/browser/document.png') !important;
 	}
-
-    .group-view #description {
+    
+    /* ============================================================= */
+    /*	item description layout					  			 		 */
+    /* ============================================================= */
+    
+    .group-view .item-desc {
         float:left;
         width:160px;
         margin-left:10px;
-        margin-top:5px;    
+        margin-top:5px;
+       	/* border: thin  #0000FF; */
     }
+    
+    .group-view .field-label {
+    	font-family:tahoma,arial,san-serif;
+        font-size:11px;
+        font-weight:bold;
+     }
+     
+     /* ------------------------------------------------------------ */
+     /*	layout customization on field name base  			 		 */
+     /* -------------------------------------------------------------*/
+     
+     .group-view .item-desc #id .field-value  {
+     	font-family:tahoma,arial,san-serif;
+        color:#555;
+        font-size:11px;
+        font-weight:bold;
+     }
+     
+     .group-view .item-desc #label .field-value  {
+     	font-family:tahoma,arial,san-serif;
+        color:#555;
+        font-size:11px;
+        font-weight:bold;
+     }
+     
+     .group-view .item-desc #name .field-value  {
+     	font-family:tahoma,arial,san-serif;
+        color:#555;
+        font-size:11px;
+        font-weight:bold;
+     }
+     
+     .group-view .item-desc #creationDate .field-label {
+     	font-size:9px;
+     	font-style: italic;
+     }
+          
+     .group-view .item-desc #creationDate .field-value {
+     	font-size:9px;
+     	font-style: italic;     
+     }
+     
+     /* -------------------------------------------------------------*/
+     /* ============================================================= */
+     
+     
+     
     
     .group-view #control-panel {
       height: 20px;
@@ -84,3 +176,7 @@
     .group-view .collapsed dl {
         display:none;
     }
+    
+    
+    
+   

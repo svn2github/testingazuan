@@ -56,6 +56,8 @@ Sbi.browser.FolderDetailPanel = function(config) {
     		}
     	}
     	, emptyText: LN('sbi.browser.folderdetailpanel.emptytext')
+    	, metaFolder: config.metaFolder
+        , metaDocument: config.metaDocument	
     });
     
     // -- toolbar -----------------------------------------------------------

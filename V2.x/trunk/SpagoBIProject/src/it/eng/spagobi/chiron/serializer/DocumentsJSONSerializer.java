@@ -30,6 +30,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
  */
 public class DocumentsJSONSerializer implements Serializer {
 	
+	// please modify also documentBrowser.xml properly everytime this serializer is modified
 	public static final String ID = "id";
 	public static final String LABEL = "label";
 	public static final String NAME = "name";

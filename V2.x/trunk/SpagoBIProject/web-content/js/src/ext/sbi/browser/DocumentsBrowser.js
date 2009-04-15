@@ -27,24 +27,26 @@
 Ext.ns("Sbi.browser");
 
 Sbi.browser.DocumentsBrowser = function(config) {    
-    // sub-components   
+   
+	// sub-components   
 	
 	this.treePanel = new Sbi.browser.DocumentsTree({
         border:true
     });
 	
 	this.filterPanel = new Sbi.browser.FilterPanel({
-        title:'Sort, group and filter',
-        border:true
+        title:'Sort, group and filter'
+        , border:true
+        , metaFolder: config.metaFolder
+        , metaDocument: config.metaDocument	
     });
 	
 	this.searchPanel = new Sbi.browser.SearchPanel({
-        title:'Search',
-        border:true
+        title:'Search'
+        , border:true
+        , metaDocument: config.metaDocument	
     });
-	
-	
-	
+		
 	this.westRegionContainer = new Ext.Panel({
 	       id:'westRegionContainer',
 	       split:true,
@@ -64,19 +66,23 @@ Sbi.browser.DocumentsBrowser = function(config) {
 	});
 	
 	this.detailPanel = new Sbi.browser.FolderDetailPanel({ 
-        region: 'center',
-        margins: '0 3 3 0',
-        collapsed: false,
-        split: true,
-        autoScroll: false,
-        height: 100,
-        minHeight: 100,
-        width: 100,
-        minWidth: 0,
-        layout: 'fit'                
+        region: 'center'
+        , margins: '0 3 3 0'
+        , collapsed: false
+        , split: true
+        , autoScroll: false
+        , height: 100
+        , minHeight: 100
+        , width: 100
+        , minWidth: 0
+        , layout: 'fit'
+        	
+        , metaFolder: config.metaFolder
+        , metaDocument: config.metaDocument	
     });
 	
-	var c = Ext.apply({}, config, {
+	config.baseLayout = config.baseLayout || {}; 	
+	var c = Ext.apply({}, config.baseLayout, {
 		layout: 'border',
 	    border: false,
 	    items: [ 
@@ -116,10 +122,14 @@ Sbi.browser.DocumentsBrowser = function(config) {
     Sbi.browser.DocumentsBrowser.superclass.constructor.call(this, c);
     
     this.treePanel.addListener('click', this.onTreeNodeClick, this);
+   
     this.detailPanel.addListener('ondocumentclick', this.onDocumentClick, this);
     this.detailPanel.addListener('onfolderclick', this.onFolderClick, this);
     this.detailPanel.addListener('onbreadcrumbclick', this.onBreadCrumbClick, this);
+    
     this.searchPanel.addListener('onsearch', this.onSearch, this);
+    this.searchPanel.addListener('onreset', this.onReset, this);
+    
     this.filterPanel.addListener('onsort', this.onSort, this);
     this.filterPanel.addListener('ongroup', this.onGroup, this);
     this.filterPanel.addListener('onfilter', this.onFilter, this);
@@ -174,6 +184,10 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 	
 	, onSort: function(panel, cb) {
 		this.detailPanel.sort('Documents', cb.inputValue);
+	}
+	
+	, onReset: function(panel, cb) {
+		this.selectFolder(this.selectedFolderId);
 	}
 	
 	, onGroup: function(panel, cb) {

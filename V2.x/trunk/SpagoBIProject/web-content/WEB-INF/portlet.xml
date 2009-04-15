@@ -570,15 +570,28 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
       </init-param>           
       <expiration-cache>0</expiration-cache>
       <supports>
-        <mime-type>text/html</mime-type>
-        <portlet-mode>VIEW</portlet-mode>
-      </supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
       <supported-locale>en</supported-locale>
       <portlet-info>
         <title>Documents Browser</title>
         <short-title>DocumentsBrowser</short-title>
         <keywords>Documents Browser</keywords>
       </portlet-info>
+      
+      <portlet-preferences>
+      		<!--
+ 			The path of the subtree to show
+			-->
+            <preference> 
+        		<name>PATH_SUBTREE</name>
+        		<!-- if the MODALITY preference is set to FILTER_TREE you have to write in this preference 
+        			the path of the subTree -->
+        		<value></value>
+        	</preference>
+      </portlet-preferences>
     </portlet>
   
 </portlet-app>

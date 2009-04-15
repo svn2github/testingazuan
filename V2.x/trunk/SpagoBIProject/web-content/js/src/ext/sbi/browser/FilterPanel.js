@@ -28,11 +28,44 @@ Ext.ns("Sbi.browser");
 
 Sbi.browser.FilterPanel = function(config) { 
 	
-	// sort group	
 	this.sortRadioGroup = new Array();
-	this.sortRadioGroup[0] = new Ext.form.Radio({boxLabel: 'by label', name: 'sort', hideLabel: true, inputValue: 'label'});
-	this.sortRadioGroup[1] = new Ext.form.Radio({boxLabel: 'by name', name: 'sort', hideLabel: true, inputValue: 'name', checked: true});
-	this.sortRadioGroup[2] = new Ext.form.Radio({boxLabel: 'by date', name: 'sort', hideLabel: true, inputValue: 'creationDate'});
+	this.groupRadioGroup = new Array();
+	
+	// set defaults
+	this.sortRadioGroup.push(
+			new Ext.form.Radio({
+				boxLabel: 'by name', name: 'sort', hideLabel: true, inputValue: 'name', checked: true
+			})
+	);
+	
+	this.groupRadioGroup.push(
+			new Ext.form.Radio({
+				boxLabel: 'ungroup', name: 'group', hideLabel: true, inputValue: 'ungroup', checked: true
+			})
+	);
+	
+	// load other values
+	for(var i = 0; i < config.metaDocument.length; i++) {
+		var meta = config.metaDocument[i];
+		
+		if(meta.sortable && meta.id != 'name') {
+			this.sortRadioGroup.push(
+					new Ext.form.Radio({
+						boxLabel: 'by ' + meta.id, name: 'sort', hideLabel: true, inputValue: meta.id
+					})
+			);
+		}
+		
+		if(meta.groupable) {
+			this.groupRadioGroup.push(
+					new Ext.form.Radio({
+						boxLabel: 'by ' + meta.id, name: 'group', hideLabel: true, inputValue: meta.id
+					})
+			);
+		}
+	}
+	
+	// init check boxes
 	for(var i = 0; i < this.sortRadioGroup.length; i++) {
 		this.sortRadioGroup[i].on('check', this.onSortGroupClick, this);
 	}
@@ -44,11 +77,6 @@ Sbi.browser.FilterPanel = function(config) {
 	   items : this.sortRadioGroup
 	});
 	
-	// group group
-	this.groupRadioGroup = new Array();
-	this.groupRadioGroup[0] = new Ext.form.Radio({boxLabel: 'ungroup', name: 'group', hideLabel: true, inputValue: 'ungroup', checked: true});
-	this.groupRadioGroup[1] =  new Ext.form.Radio({boxLabel: 'by date', name: 'group', hideLabel: true, inputValue: 'creationDate'});
-	this.groupRadioGroup[2] = new Ext.form.Radio({boxLabel: 'by engine', name: 'group', hideLabel: true, inputValue: 'engine'});  
 	for(var i = 0; i < this.groupRadioGroup.length; i++) {
 		this.groupRadioGroup[i].on('check', this.onGroupGroupClick, this);
 	}
@@ -78,6 +106,7 @@ Sbi.browser.FilterPanel = function(config) {
     
 	var c = Ext.apply({}, config, {
 		bodyStyle:'padding:6px 6px 6px 6px; background-color:#FFFFFF'
+		, autoScroll: true
 		, items: [ sortGroup ,  groupGroup, filterGroup	]
 		        
 	});   

@@ -43,6 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/DocumentsTree.js")%>'></script>
     <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/FilterPanel.js")%>'></script>
     <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/SearchPanel.js")%>'></script>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/FolderViewTemplate.js")%>'></script>
     <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/FolderView.js")%>'></script>
     <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/FolderDetailPanel.js")%>'></script>
     <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/DocumentsBrowser.js")%>'></script>
@@ -63,11 +64,52 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    execId: '<%= request.getParameter("SBI_EXECUTION_ID")%>'
     };
     Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({baseUrl: url});
+	
+    var browserConfig = <%= aServiceResponse.getAttribute("metaConfiguration")%>;
+    browserConfig = Ext.apply(browserConfig, {
+        metaDocument: [
+   			  {id:"label", 				groupable:true, maxChars:20, visible:true, showLabel:false, sortable:false, searchable:true}
+   			, {id:"name", 				groupable:true, maxChars:20, visible:true, showLabel:false, sortable:true, searchable:true}
+   			, {id:"extendedDescription",groupable:false, maxChars:20, visible:true, showLabel:true, sortable:false}
+   			, {id:"description", 		groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"engine", 			groupable:false, maxChars:5, visible:false, showLabel:true, sortable:true, searchable:true}
+   			, {id:"creationUser", 		groupable:true, maxChars:20, visible:true, showLabel:true, sortable:false}
+   			, {id:"creationDate",		groupable:true, maxChars:20, visible:true, showLabel:false, sortable:true, searchable:true}
+   			, {id:"typeCode", 			groupable:false, maxChars:20, visible:true, showLabel:true, sortable:false}
+   			, {id:"encrypt", 			groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"profiledVisibility", groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"datasource", 		groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"dataset", 			groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"uuid",				groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"relname", 			groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"stateCode",			groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"stateId", 			groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"functionalities", 	groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"language", 			groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"objectve", 			groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"keywords", 			groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   			, {id:"refreshSeconds",		groupable:false, maxChars:20, visible:false, showLabel:true, sortable:false}
+   		]
+   		, metaFolder: [
+   		     {maxChars:20, visible:true, showLabel:false, id:"id"}
+   		   , {maxChars:20, visible:true, showLabel:false, id:"name"}
+   		   , {maxChars:20, visible:true, showLabel:false, id:"description"}
+   		   , {maxChars:20, visible:false, showLabel:false, id:"code"}
+   		   , {maxChars:20, visible:false, showLabel:false, id:"codType"}
+   		   , {maxChars:20, visible:false, showLabel:false, id:"path"}
+   		   , {maxChars:20, visible:false, showLabel:false, id:"parentId"}
+   		   , {maxChars:20, visible:false, showLabel:false, id:"devRoles"}
+   		   , {maxChars:20, visible:false, showLabel:false, id:"testRoles"}
+   		   , {maxChars:20, visible:false, showLabel:false, id:"execRoles"}
+   		   , {maxChars:20, visible:false, showLabel:false, id:"biObjects"}
+   		]
+   	});
     
     Ext.onReady(function(){
       Ext.QuickTips.init();              
-      var browser = new Sbi.browser.DocumentsBrowser();
-      var viewport = new Ext.Viewport(browser);     
+      var browser = new Sbi.browser.DocumentsBrowser(browserConfig);
+      var viewport = new Ext.Viewport(browser);  
+         
     });
     
     </script>

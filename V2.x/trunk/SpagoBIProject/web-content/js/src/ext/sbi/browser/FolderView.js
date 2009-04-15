@@ -26,6 +26,9 @@
 
 Ext.ns("Sbi.browser");
 
+//Sbi.browser.groupTpl = new Sbi.browser.FolderViewTemplate();
+
+/*
 Sbi.browser.groupTpl = new Ext.XTemplate(
         '<div id="sample-ct">',
             '<tpl for=".">',
@@ -38,10 +41,10 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
                 	'{[engine=""]}',
                     '<dd ext:url="{url}">',
                         '<div id="control-panel" class="control-panel">',
-                        /*
-                            '<a href="javascript:alert(\'Document sended succesfully\')"><img title="send by email" src="../img/analiticalmodel/browser/send.gif"/></a>',
-                            '<a href="javascript:alert(\'Document scheduled succesfully\')"><img title="shedule" src="../img/analiticalmodel/browser/schedule.gif"/></a>',
-                        */
+                        
+                           // '<a href="javascript:alert(\'Document sended succesfully\')"><img title="send by email" src="../img/analiticalmodel/browser/send.gif"/></a>',
+                           // '<a href="javascript:alert(\'Document scheduled succesfully\')"><img title="shedule" src="../img/analiticalmodel/browser/schedule.gif"/></a>',
+                        
                         '</div>',
                      // -- DOCUMENT -----------------------------------------------
                         '<tpl if="this.exists(engine) == true">',
@@ -81,9 +84,11 @@ Sbi.browser.groupTpl = new Ext.XTemplate(
 
         }
 );
+*/
 
 Sbi.browser.FolderView = function(config) {
 	
+	this.tpl =  new Sbi.browser.FolderViewTemplate(config);
 	this.viewState = {
 		filterType: 'all'
 		, sortGroup: 'Documents'
@@ -97,7 +102,6 @@ Sbi.browser.FolderView = function(config) {
     
     
 Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
-//Sbi.browser.FolderView = Ext.extend(Ext.DataView, {
     frame:true
     , itemSelector: 'dd'
     , overClass: 'over'
@@ -106,7 +110,7 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     , viewState: null
     , ready: false
     
-    , tpl : Sbi.browser.groupTpl
+    , tpl : null
 
     , onClick : function(e){
         
@@ -250,7 +254,7 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     
     , applyGroup : function(groupName, attributeName) { 
     	if(attributeName === 'ungroup') return;
-    	var collection = this.getCollection(groupName, attributeName);
+    	var collection = this.getCollection(groupName);
     	if(collection == null) return;
     	var distinctValues = {};
     	collection.each(function(item) {

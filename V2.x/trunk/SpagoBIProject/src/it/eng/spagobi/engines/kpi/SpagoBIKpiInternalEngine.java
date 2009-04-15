@@ -129,6 +129,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     
     protected Integer periodInstID = null;
     
+    protected Integer modelInstanceRootId = null;
+    
     protected boolean resources_returned_by_dataset = false;
     
     protected String behaviour = "default";// 4 possible values:
@@ -194,6 +196,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     	    // gets the ModelInstanceNode
     	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceByLabel(modelNodeInstance, this.dateOfKPI);
     	    logger.debug("ModelInstanceNode, ID=" + mI.getModelInstanceNodeId());
+    	    modelInstanceRootId = mI.getModelInstanceNodeId();
     	    logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
     	    // I set the list of resources of that specific ModelInstance
     	    if (this.resources == null || this.resources.isEmpty()) {
@@ -380,6 +383,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    	logger.error("MODEL INSTANCE IS NULL, CHECK model_node_instance IN DOCUMENT TEMPLATE.!!!!!!!!!!!!!!");
 	    }else {
 	    	logger.debug("ModelInstanceNode, ID=" + (mI.getModelInstanceNodeId()!=null ? mI.getModelInstanceNodeId().toString():"null"));
+	    	  modelInstanceRootId = (mI.getModelInstanceNodeId()!=null ? mI.getModelInstanceNodeId() : null );
 	        logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
 	    }
 	    // I set the list of resources of that specific ModelInstance
@@ -750,16 +754,15 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     			    				
     			    				String fieldValue = f.getValue().toString();
     			    				if (fieldValue!=null){
-    			    					Integer resourceID = new Integer (fieldValue);
-    			    					Resource rTemp = DAOFactory.getKpiDAO().loadResourceById(resourceID);
+    			    					Resource rTemp = DAOFactory.getKpiDAO().loadResourcesByNameAndModelInst(fieldValue);
     			    					valTemp.setR(rTemp);
-	    				    			logger.debug("Setted the kpiValue Resource with id:"+fieldValue);
+	    				    			logger.debug("Setted the kpiValue Resource with resource name:"+fieldValue);
     			    				}
     			    			}    
     		    		    }
     		    		}
     			    }
-    		     if (valTemp.getR()!=null && kVal.getR()!=null && valTemp.getR().getId().equals(kVal.getR().getId())){
+    		     if (valTemp.getR()!=null && kVal.getR()!=null && valTemp.getR().getId()!=null && kVal.getR().getId()!=null && valTemp.getR().getId().equals(kVal.getR().getId())){
 	    				kVal = valTemp.clone() ;
 	    			}
 	    			logger.debug("New value calculated");

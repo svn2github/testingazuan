@@ -2318,6 +2318,47 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		}
 		return toReturn;
 	}
+	
+	public Resource loadResourcesByNameAndModelInst(String resourceName)
+	throws EMFUserError {
+	logger.debug("IN");
+	Resource toReturn = new Resource();
+	Session aSession = null;
+	Transaction tx = null;
+	
+	try {
+		aSession = getSession();
+		tx = aSession.beginTransaction();
+		Criteria finder = aSession.createCriteria(SbiResources.class);
+		finder.add(Expression.eq("resourceName", resourceName));
+		
+		List l = finder.list();
+		if (l!=null && !l.isEmpty()){
+			if (l.size()==1){
+				SbiResources hibResource = (SbiResources) l.get(0);
+				toReturn = toResource(hibResource);
+			}	else{
+				logger.debug("More Resources with same resourceName exist check the DB tables sbi_resources and sbi_kpi_model_resources");
+			}	
+		}	
+	
+	} catch (HibernateException he) {
+		logger.error("Error while loading the Resource", he);
+	
+		if (tx != null)
+			tx.rollback();
+	
+		throw new EMFUserError(EMFErrorSeverity.ERROR, 9104);
+	
+	} finally {
+		if (aSession != null) {
+			if (aSession.isOpen())
+				aSession.close();
+			logger.debug("OUT");
+		}
+	}
+	return toReturn;
+	}
 
 	private String getResourcesProperty(String property) {
 		String toReturn = null;

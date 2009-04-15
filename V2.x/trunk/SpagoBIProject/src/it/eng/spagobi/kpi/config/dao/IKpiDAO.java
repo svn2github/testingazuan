@@ -132,6 +132,15 @@ public interface IKpiDAO {
 	public Resource loadResourceById(Integer id) throws EMFUserError ;
 	
 	/**
+	 * Returns the Resource of the referred id
+	 * 
+	 * @param id of the Resource
+	 * @return Resource with the referred id
+	 * @throws EMFUserError If an Exception occurred
+	 */	
+	public Resource loadResourcesByNameAndModelInst(String resourceName) throws EMFUserError ;
+	
+	/**
 	 * Returns the DatasetConfig for the KPI with id kpiId
 	 * 
 	 * @param kpiId of the KPI 

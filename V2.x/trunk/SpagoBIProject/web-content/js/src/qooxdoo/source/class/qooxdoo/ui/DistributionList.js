@@ -45,6 +45,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    this.setLayout(new qx.ui.layout.VBox(10));
 	    this.setShowStatusbar(true);
 		this.setStatus("Details loaded");
+		this.addListener("resize", function(){ this.center();}, this);
 		this.open();
 		this.setModal(true);
 		
@@ -79,9 +80,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			container.add(centralLabel);
 			this.add(container);
 			
-	//		var box = new qx.ui.container.Composite;
-	//		box.setLayout(new qx.ui.layout.HBox);
-	//		this.add(box, {flex:1});
 			var records = qooxdoo.app.data.DataService.loadDistributionSublistRecords();
 			this.config.dataset = records;
 			var window_table = new qooxdoo.ui.table.Table(this, this.config);

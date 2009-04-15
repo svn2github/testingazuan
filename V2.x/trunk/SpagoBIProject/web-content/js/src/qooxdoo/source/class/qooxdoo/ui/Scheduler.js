@@ -45,6 +45,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	    this.setLayout(new qx.ui.layout.VBox(10));
 	    this.setShowStatusbar(true);
 		this.setStatus("Details loaded");
+		this.addListener("resize", function(){ this.center();}, this);
 		this.open();
 		this.setModal(true);
 
@@ -132,13 +133,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					this.setCaption("Scheduler Window");
 					// can also override the container
 					var m = new qooxdoo.ui.custom.MasterDetailsPage("datasource");//"datasource"
+					/*
 					var records = qooxdoo.app.data.DataService.loadDatasourceRecords();
 					var form = new qooxdoo.ui.custom.DatasourceDetailsForm();
 					m.setForm(form);
-					this.config.dataset = records;
-					var window_table = new qooxdoo.ui.table.Table(m, this.config);
+					var window_table = new qooxdoo.ui.table.Table(m, records);
 					this.add(window_table);
 					this.add(form);
+					*/
+					this.add(m);
 					
 					var dateField = new qx.ui.form.DateField();
 			        var format = new qx.util.format.DateFormat("dd.MM.yyyy");
@@ -191,13 +194,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		    	var item = this.tree1.getSelectedItem();
 		
-		    	if(item instanceof qx.ui.tree.TreeFolder){
+		    	if(item instanceof qx.ui.tree.TreeFile){	//qx.ui.tree.TreeFolder
 		    		this.nodeLabel = item.getLabel();
 		    		this.inputField.addInstance(this.nodeLabel);
 			   	}
-	},
-		    
-	_OnDate : function(e){
+	}
+	/*	    
+	,_OnDate : function(e){
 		
 		
 		// 	var object = this.container.getChildren()[0];
@@ -218,6 +221,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	showTime: function(e){
 		alert("Image clicked");
 	}
+	*/
   }
   
 });

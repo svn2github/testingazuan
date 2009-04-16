@@ -49,7 +49,7 @@ public class AbstractDriver {
 	}
 	    
         
-        logger.debug("Add parameter: userUniqueIdentifier/" + ((UserProfile) profile).getUserUniqueIdentifier());
+        logger.debug("Add parameter: "+SsoServiceInterface.USER_ID+" / " + ((UserProfile) profile).getUserUniqueIdentifier());
         logger.debug("OUT");
         return pars;
     }

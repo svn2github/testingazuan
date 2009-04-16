@@ -179,6 +179,7 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		
 		this.records = newrecords;
 		config.dataset = this.records;
+		config.selection = 'multiple';
 		form = new qooxdoo.ui.custom.KpiAlarmContactDetailsForm();
 	}
 	

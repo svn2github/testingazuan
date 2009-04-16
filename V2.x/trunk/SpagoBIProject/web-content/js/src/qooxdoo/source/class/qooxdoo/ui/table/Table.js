@@ -157,7 +157,10 @@ qx.Class.define("qooxdoo.ui.table.Table",
 	    
 	 // Add selection listener
 	  this.getSelectionModel().addListener("changeSelection", this._onChangeSelection, this);   
-	    
+	  
+	  if(config.selection){
+		  this.getSelectionModel().setSelectionMode(qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION);
+	  }	  
 	    //this._data = data;
 	    //this.setData(this._data);
     }

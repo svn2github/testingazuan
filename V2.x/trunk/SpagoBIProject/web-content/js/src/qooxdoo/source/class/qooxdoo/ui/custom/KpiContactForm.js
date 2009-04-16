@@ -109,10 +109,56 @@ qx.Class.define("qooxdoo.ui.custom.KpiContactForm", {
 		create: function(e) {
 	    	var w = new qx.ui.window.Window(null, "qx/icon/Oxygen/16/apps/office-calendar.png");
 			w.setLayout(new qx.ui.layout.VBox(5));
+			this.setUserData('contactwindow',w);
+			this.addListener("resize", function(){ this.center();}, this);
 			w.open();
 			w.setModal(true);
 			var m = new qooxdoo.ui.custom.MasterDetailsPage("kpi_alarm_contact_info");
 			w.add(m);
+			this.setUserData('masterdetailspage',m);
+			//Adding button to add contacts from table to sub-table
+			var fBar = m.getUserData('formbar');
+			var addContactButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/create.png"));
+		    var addContactToolTip = new qx.ui.tooltip.ToolTip("Add selected contacts");
+		    addContactButton.setToolTip(addContactToolTip);
+		    addContactButton.addListener("execute", this._onAddContact, this);
+		    fBar.add(addContactButton);
+	    }
+	    
+	    ,_onAddContact: function(e){
+	    	
+	    	var m = this.getUserData('masterdetailspage');
+	    	var t = m._pagedTable._table;
+	    	
+	    	var selectedRowData = [];
+	    	t.getSelectionModel().iterateSelection(function(index) {
+	    		selectedRowData.push(t.getTableModel().getRowData(index));
+	    		//alert(t.getTableModel().getRowData(index));
+	    	});
+	    	
+	    	//qooxdoo.commons.CoreUtils.dump(selectedRowData);
+	    	var t2 = this.getUserData('contactinfo');
+	    	var rowsToBeAdded = [];
+	    	for(var p in selectedRowData){
+	    		//qooxdoo.commons.CoreUtils.dump(selectedRowData[p]);
+	    		//t2.getTableModel().addRows([['User10','1122334455','user10@user10.com','Yes','qx/icon/Oxygen/16/actions/dialog-close.png']]);
+	    		//t2.getTableModel().addRows(selectedRowData[p]);
+	    		
+	    		var temp = [];
+	    		delete selectedRowData[p].id;
+	    		selectedRowData[p].deletebutton = "qx/icon/Oxygen/16/actions/dialog-close.png";
+	    		
+	    		for(prop in selectedRowData[p]){
+	    			temp.push(selectedRowData[p][prop]);
+	    		}	
+	    		rowsToBeAdded.push(temp);
+	    		
+	    	}
+	    	t2.getTableModel().addRows(rowsToBeAdded);
+	    	
+	    	var w = this.getUserData('contactwindow');
+	    	w.close();
+	    	
 	    }	
 		
 		

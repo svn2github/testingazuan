@@ -195,7 +195,8 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 	   	
 	   	var formBar = new qx.ui.container.Composite(new qx.ui.layout.HBox);
 	   	formBar.setBackgroundColor("#F9F9F9");
-
+	   	this.setUserData('formbar',formBar);
+	   	
 	   	var createButton = new qx.ui.toolbar.Button("", qx.util.AliasManager.getInstance().resolve("spagobi/img/spagobi/test/create.png"));
 	    var createToolTip = new qx.ui.tooltip.ToolTip("New");
 	    createButton.setToolTip(createToolTip);

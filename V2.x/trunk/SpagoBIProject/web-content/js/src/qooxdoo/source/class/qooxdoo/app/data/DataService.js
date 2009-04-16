@@ -1741,7 +1741,25 @@ qx.Class.define("qooxdoo.app.data.DataService", {
               textbody: 'This is the sample email body',
               url: 'URL for more details on Alarm 1',
               singleevent: 'Yes',
-              threshold: 'Threshold1'
+              threshold: 'Threshold1',
+              contact: [
+							{
+							    id: '555',
+							    name: 'User0',
+							    mobile: '0123456789',
+							    email : 'user0@user0.com',
+							    resource: 'Yes',
+							    "deletebutton": 'qx/icon/Oxygen/16/actions/dialog-close.png'
+							    
+							}, {
+							    id: '461',
+							    name: 'User1',
+							    mobile: '0123456789',
+							    email : 'user1@user1.com',
+							    resource: 'Yes',
+							    "deletebutton": 'qx/icon/Oxygen/16/actions/dialog-close.png'
+							}
+                       ]
           }, {
               id: '363',
               label: 'Alarm2',
@@ -1754,7 +1772,24 @@ qx.Class.define("qooxdoo.app.data.DataService", {
               textbody: 'This is the sample email body',
               url: 'URL for more details on Alarm 2',
               singleevent: 'No',
-              threshold: 'Threshold2'
+              threshold: 'Threshold2',
+              contact: [
+						{
+						    id: '462',
+						    name: 'User2',
+						    mobile: '9876543210',
+						    email : 'user2@user2.org',
+						    resource: 'Yes',
+						    "deletebutton": 'qx/icon/Oxygen/16/actions/dialog-close.png'
+						}, {
+						    id: '463',
+						    name: 'User3',
+						    mobile: '1234567890',
+						    email : 'user3@user3.net',
+						    resource: 'Yes',
+						    "deletebutton": 'qx/icon/Oxygen/16/actions/dialog-close.png'
+						}
+                       ]
           }, {
               id: '364',
               label: 'Alarm3',
@@ -1767,7 +1802,8 @@ qx.Class.define("qooxdoo.app.data.DataService", {
               textbody: 'This is the sample email body',
               url: 'URL for more details on Alarm 3',
               singleevent: 'Yes',
-              threshold: 'Threshold3'
+              threshold: 'Threshold3',
+              contact: []
           }
       ];
     },    
@@ -1845,6 +1881,58 @@ qx.Class.define("qooxdoo.app.data.DataService", {
     	        ];
     	
     },    
+    
+    loadKpiAlarmContactStructureRecords: function() { //used in KPI alarm user contact details
+    	var records = {};
+    	
+    	records.ID = "Contact";
+    	records.columns = [4];
+                  
+        records.meta =  this.loadKpiAlarmContactStructureMeta();                
+        records.rows =  this.loadKpiAlarmContactStructureData();
+        
+        return records;
+    },
+    
+    loadKpiAlarmContactStructureMeta: function() {
+        return [
+          {
+              dataIndex: 'name',
+              name: 'Name'
+          },
+          {
+              dataIndex: 'mobile',
+              name: 'Mobile'
+          },
+          {
+              dataIndex: 'email',
+              name: 'Email'
+          },
+          {
+              dataIndex: 'resource',
+              name: 'Resource'
+          },
+          {
+          	  dataIndex: 'deletebutton',
+          	  name: 'Delete'
+          }
+      ];
+    },
+    
+    loadKpiAlarmContactStructureData: function() {
+    	
+    	 return [
+    	          {
+    	              id: '',
+    	              name: '',
+    	              mobile: '',
+    	              email : '',
+    	              resource: '',
+    	              "deletebutton": ''
+    	              
+    	          }
+    	          ];
+    },  
     
     loadDistributionList: function() {
         var records = {};

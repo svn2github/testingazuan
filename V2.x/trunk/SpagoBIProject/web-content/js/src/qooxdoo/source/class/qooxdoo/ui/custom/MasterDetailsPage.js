@@ -284,6 +284,11 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
     		var o = [];
     		if(this._type == 'alarm'){
     			o = dataObject;
+    			
+    			var p = this._form.getUserData('contact');	//to fill up the contact table
+    			var form = p.getChildren()[0];	//qooxdoo.ui.custom.KpiContactForm();
+    			var contact_table = form.getUserData('contactinfo');
+    			contact_table.getTableModel().setDataAsMapArray(dataObject.contact, true);
     		}
     		
     		else{

@@ -92,10 +92,11 @@ qx.Class.define("qooxdoo.ui.custom.KpiContactForm", {
 	},
 		
 		createTable: function(){
-			this.records = qooxdoo.app.data.DataService.loadKpiAlarmContactRecords();
+			this.records = qooxdoo.app.data.DataService.loadKpiAlarmContactStructureRecords();
 			var config = {};
 			config.dataset = this.records;
 			this.tableData = new qooxdoo.ui.table.Table(this, config);
+			this.setUserData('contactinfo', this.tableData);
 			this.add(this.tableData);
 	},
 	

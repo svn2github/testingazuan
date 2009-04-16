@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<project name="Native2Asci" default="create">
+
+
+	<target name="clean" >
+
+    </target>
+
+  <target name="create" depends="clean">
+    <native2ascii encoding="UTF-8" src="./MessageFiles" dest="./src"  includes="**/*.properties" />
+  </target>	
+  
+  
+</project>
+	

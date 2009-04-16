@@ -78,7 +78,22 @@
     	<filter-name>SpagoBIAccessFilter</filter-name>
     	<url-pattern>/JobRunService/*</url-pattern>
 	</filter-mapping>
-
+	<filter-mapping>
+    	<filter-name>SpagoBIAccessFilter</filter-name>
+    	<url-pattern>/EngineInfoService/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+    	<filter-name>SpagoBIAccessFilter</filter-name>
+    	<url-pattern>/version/*</url-pattern>
+	</filter-mapping>	
+	<filter-mapping>
+    	<filter-name>SpagoBIAccessFilter</filter-name>
+    	<url-pattern>/JobRunServiceBackEnd/*</url-pattern>
+	</filter-mapping>	
+	<filter-mapping>
+    	<filter-name>SpagoBIAccessFilter</filter-name>
+    	<url-pattern>/JobUploadService/*</url-pattern>
+	</filter-mapping>	
 
 	<!--  ============================================================================ -->
 	<!--  SERVLETS								 									   -->

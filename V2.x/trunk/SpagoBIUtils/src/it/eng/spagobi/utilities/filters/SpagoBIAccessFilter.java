@@ -69,11 +69,9 @@ public class SpagoBIAccessFilter implements Filter {
 	//ContextManager contextManager;
 	
 	public final String AUDIT_ID_PARAM_NAME = "SPAGOBI_AUDIT_ID";
-	public final String USER_ID_PARAM_NAME = "userId";
 	public final String DOCUMENT_ID_PARAM_NAME = "document";
 	
 	public final String AUDIT_ID_ATTR_NAME = AUDIT_ID_PARAM_NAME;
-	public final String USER_ID_ATTR_NAME = USER_ID_PARAM_NAME;
 	public final String DOCUMENT_ID_ATTR_NAME = DOCUMENT_ID_PARAM_NAME;
 	public final String IS_BACKEND_ATTR_NAME= "isBackend";
 	

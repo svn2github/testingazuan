@@ -757,27 +757,30 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     			    				String fieldValue = f.getValue().toString();
     			    				if (fieldValue!=null){
     			    					Resource rTemp = DAOFactory.getKpiDAO().loadResourcesByNameAndModelInst(fieldValue);
-    			    					valTemp.setR(rTemp);
+    			    					if (rTemp.getName()!=null) valTemp.setR(rTemp);
 	    				    			logger.debug("Setted the kpiValue Resource with resource name:"+fieldValue);
     			    				}
     			    			}    
     		    		    }
     		    		}
     			    }
-    		     if (valTemp.getR()!=null && kVal.getR()!=null && valTemp.getR().getId()!=null && kVal.getR().getId()!=null && valTemp.getR().getId().equals(kVal.getR().getId())){
+    		     if (valTemp.getR()!=null && kVal.getR()!=null && valTemp.getR().getId()!=null && 
+    		    		 kVal.getR().getId()!=null && valTemp.getR().getId().equals(kVal.getR().getId())){
 	    				kVal = valTemp.clone() ;
 	    			}
 	    			logger.debug("New value calculated");
-	    			if(register_values){
+	    			if(register_values && valTemp.getR().getName()!=null){
 	    			    // Insert new Value into the DB
 	    			    DAOFactory.getKpiDAO().insertKpiValue(valTemp);
 	    			    logger.debug("New value inserted in the DB");
+
+    			    	// Checks if the value is alarming (out of a certain range)
+    			    	// If the value is alarming a new line will be inserted in the
+    			    	// sbi_alarm_event table and scheduled to be sent
+    			        DAOFactory.getKpiDAO().isAlarmingValue(valTemp);
+    			        logger.debug("Alarms sent if the value is over the thresholds");
 	    			}			
-	    			    	// Checks if the value is alarming (out of a certain range)
-	    			    	// If the value is alarming a new line will be inserted in the
-	    			    	// sbi_alarm_event table and scheduled to be sent
-	    			DAOFactory.getKpiDAO().isAlarmingValue(valTemp);
-	    			logger.debug("Alarms sent if the value is over the thresholds");
+
     		} 			
 		}else{
 			

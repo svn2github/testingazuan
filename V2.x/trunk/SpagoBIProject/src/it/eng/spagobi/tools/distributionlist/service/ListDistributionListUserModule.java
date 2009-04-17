@@ -30,6 +30,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.services.DelegatedHibernateConnectionListService;
 import it.eng.spagobi.commons.utilities.UserUtilities;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -64,7 +65,7 @@ public class ListDistributionListUserModule extends AbstractBasicListModule{
 		String userId="";
 		if (userProfile!=null) userId=(String)((UserProfile)userProfile).getUserId();
 		//sets the userid as input parameter for the query fo statements.xml
-		aSessionContainer.setAttribute("user_id",userId);
+		aSessionContainer.setAttribute(SsoServiceInterface.USER_ID ,userId);
 		
 
 		Collection c = userProfile.getRoles();

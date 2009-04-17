@@ -40,6 +40,7 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -97,15 +98,11 @@ public class InsertNotesAction extends AbstractHttpAction {
 			RequestContainer requestContainer = this.getRequestContainer();		
     		SessionContainer session = requestContainer.getSessionContainer();
     		SessionContainer permanentSession = session.getPermanentContainer();
-    		UserProfile profile = (UserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    		IEngUserProfile profile2 = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    		String userId= (String) profile.getUserId();
 			String objId= (String)request.getAttribute("OBJECT_ID");
 			String execIdentifier = (String)request.getAttribute("execIdentifier");
 			String notes = getNotes(execIdentifier, objId);
 			String conflict = "false";
 			
-			response.setAttribute("user_id", userId);
 			response.setAttribute("OBJECT_ID", objId);
 			response.setAttribute("MESSAGEDET", mod);
 			response.setAttribute("execIdentifier", execIdentifier);
@@ -142,9 +139,6 @@ public class InsertNotesAction extends AbstractHttpAction {
 			    objId = (String) request.getAttribute("OBJECT_ID");
 			    logger.debug("got OBJECT_ID from Request=" + objId);
 				} 
-			else if(parName.equals("user_id")){
-				userId = (String)request.getAttribute("user_id");
-			}
 			else if(parName.equals("execIdentifier")){
 				execIdentifier = (String)request.getAttribute("execIdentifier");
 			}
@@ -213,7 +207,6 @@ public class InsertNotesAction extends AbstractHttpAction {
 		    
 		    
 		    String notesEnc = new BASE64Encoder().encode(notes.getBytes());
-		    response.setAttribute("user_id", userId);
 			response.setAttribute("OBJECT_ID", objId);
 		    response.setAttribute("NOTES_CONFLICT", conflict);
 		    response.setAttribute("execIdentifier", execIdentifier);

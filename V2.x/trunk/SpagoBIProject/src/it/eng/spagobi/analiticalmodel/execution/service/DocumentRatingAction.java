@@ -37,6 +37,7 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,12 +89,8 @@ public class DocumentRatingAction extends AbstractHttpAction{
 			RequestContainer requestContainer = this.getRequestContainer();		
     		SessionContainer session = requestContainer.getSessionContainer();
     		SessionContainer permanentSession = session.getPermanentContainer();
-    		UserProfile profile = (UserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    		String userId= (String) profile.getUserId();
 			String objId= (String)request.getAttribute("OBJECT_ID");
-			
-			
-			response.setAttribute("user_id", userId);
+
 			response.setAttribute("OBJECT_ID", objId);
 			response.setAttribute("MESSAGEDET", mod);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ratingBIObjectPubJ");
@@ -109,7 +106,7 @@ public class DocumentRatingAction extends AbstractHttpAction{
     		SessionContainer permanentSession = session.getPermanentContainer();
     		UserProfile profile = (UserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
     		IEngUserProfile profile2 = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    		String userId= (String) profile.getUserId();
+    		String userId= (profile.getUserUniqueIdentifier()!=null ? profile.getUserUniqueIdentifier().toString():"");
 			List params = request.getContainedAttributes();
 		    ListIterator it = params.listIterator();
 
@@ -162,7 +159,6 @@ public class DocumentRatingAction extends AbstractHttpAction{
 		       }
 		     }
 		   
-		    response.setAttribute("user_id", userId);
 		    response.setAttribute("MESSAGEDET", mod);
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "ratingBIObjectPubJ");
 			response.setAttribute("OBJECT_ID",objId);

@@ -450,7 +450,7 @@ public class ExecutionInstance {
 					Iterator errorsIt = errors.iterator();
 					while (errorsIt.hasNext()) {
 						EMFValidationError error = (EMFValidationError) errorsIt.next();
-						logger.error("Found an error applying check [" + check.getLabel() + "] for biparameter [" + label + "]: " + error.getDescription());
+						logger.warn("Found an error applying check [" + check.getLabel() + "] for biparameter [" + label + "]: " + error.getDescription());
 					}
 					toReturn.addAll(errors);
 				} else {

@@ -757,7 +757,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     			    				String fieldValue = f.getValue().toString();
     			    				if (fieldValue!=null){
     			    					Resource rTemp = DAOFactory.getKpiDAO().loadResourcesByNameAndModelInst(fieldValue);
-    			    					if (rTemp.getName()!=null) valTemp.setR(rTemp);
+    			    					valTemp.setR(rTemp);
 	    				    			logger.debug("Setted the kpiValue Resource with resource name:"+fieldValue);
     			    				}
     			    			}    

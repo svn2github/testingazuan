@@ -359,7 +359,7 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 	function loadSubObject(windowName, subObjId) {
 		var params;
 		Ext.Ajax.request({
-			url: '<%= GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserId().toString()) %>&ACTION_NAME=GET_SUBOBJECT_INFO&<%=SpagoBIConstants.SUBOBJECT_ID%>=' + subObjId + '&DATE_FORMAT=<%= dateFormat %>&<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE',
+			url: '<%= GeneralUtilities.getSpagoBIProfileBaseUrl((String) profile.getUserUniqueIdentifier()) %>&ACTION_NAME=GET_SUBOBJECT_INFO&<%=SpagoBIConstants.SUBOBJECT_ID%>=' + subObjId + '&DATE_FORMAT=<%= dateFormat %>&<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE',
 			method: 'get',
 			success: function (result, request) {
 				response = result.responseText || "";

@@ -35,16 +35,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
 <%@page import="it.eng.spagobi.monitoring.dao.AuditManager"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+<%@page import="it.eng.spagobi.services.common.SsoServiceInterface"%>
 
  <%
 	    String objid = (String)aServiceResponse.getAttribute("OBJECT_ID");
 	    String mess = (String)aServiceResponse.getAttribute("MESSAGEDET");	
-	    String userid = (String)aServiceResponse.getAttribute("user_id");
 	    boolean alreadyVoted = false ;
 	    if (mess.equals("DOCUMENT_RATE")) alreadyVoted = true ;
 	    String msg = "DOCUMENT_RATE";
 	    Map formUrlPars = new HashMap();
-		String ratingForm = GeneralUtilities.getSpagoBIProfileBaseUrl(userId)+"&ACTION_NAME=RATING_ACTION";	
+		String ratingForm = GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+"&ACTION_NAME=RATING_ACTION";	
 	    String starUrl = urlBuilder.getResourceLinkByTheme(request, "/img/star.jpg", currTheme);
 	    String halfStarUrl = urlBuilder.getResourceLinkByTheme(request, "/img/halfStar.jpg", currTheme);
 	    String smileUrl = urlBuilder.getResourceLinkByTheme(request, "/img/smile.gif", currTheme);
@@ -130,7 +130,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div  style='text-align:center;'>
 	<a><img  src='<%= smileUrl%>' /></a>
 	</div>
-	<a href='<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userid)%>&ACTION_NAME=RATING_ACTION&MESSAGEDET=GOTO_DOCUMENT_RATE&OBJECT_ID=<%=objid%>'><spagobi:message key = "metadata.changeVote" /></a>
+	<a href='<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)%>&ACTION_NAME=RATING_ACTION&MESSAGEDET=GOTO_DOCUMENT_RATE&OBJECT_ID=<%=objid%>'><spagobi:message key = "metadata.changeVote" /></a>
 <% } %>
 
 <script>

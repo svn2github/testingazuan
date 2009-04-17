@@ -526,8 +526,9 @@ if (toolbarIsVisible) {
 		changeDivDisplay('divIframe<%= uuid %>','hidden');
 		<% } %>
 		Ext.MessageBox.wait('Please wait...', 'Processing');
-		var url="<%=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl()%>?<%= LightNavigationManager.LIGHT_NAVIGATOR_DISABLED %>=TRUE";
-		url += "&NEW_SESSION=TRUE&userid=<%= userUniqueIdentifier %>&ACTION_NAME=SAVE_REMEMBER_ME&name=" + nameRM + "&description=" + descRM;
+		var url="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)%>";
+		url += "&<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>=TRUE";
+		url += "&ACTION_NAME=SAVE_REMEMBER_ME&name=" + nameRM + "&description=" + descRM;
 		url += "&<%=SpagoBIConstants.OBJECT_ID%>=<%=obj.getId()%>&<%=SpagoBIConstants.EXECUTION_ROLE%>=<%=instance.getExecutionRole()%>";
 		<%
 		String documentParametersStr = "";

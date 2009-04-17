@@ -18,7 +18,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 
-
+<%@page import="it.eng.spagobi.services.common.SsoServiceInterface"%>
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <%@ page language="java" 
@@ -77,9 +77,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     </script>
  <% } else { 
 	 
-	 String url =  "/SpagoBI/servlet/AdapterHTTP?ACTION_NAME=DOCUMENT_USER_BROWSER_START_PORTLET_ACTION";
+	 String url =GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+  "&ACTION_NAME=DOCUMENT_USER_BROWSER_START_PORTLET_ACTION";
 	 url += "&SBI_EXECUTION_ID=" + request.getParameter("SBI_EXECUTION_ID");
-	 url += "&user_id=" + userUniqueIdentifier;
 	 url += "&LANGUAGE=" + locale.getLanguage();
 	 url += "&COUNTRY=" + locale.getCountry();
 	 %>

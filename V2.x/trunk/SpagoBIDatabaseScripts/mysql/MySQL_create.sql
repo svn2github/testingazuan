@@ -729,6 +729,7 @@ Create table `SBI_KPI_MODEL` (
 	`KPI_MODEL_CD` Varchar(40),
 	`KPI_MODEL_NM` Varchar(400),
 	`KPI_MODEL_DESC` Varchar(1000),
+	UNIQUE (`KPI_MODEL_CD`),
  Primary Key (`KPI_MODEL_ID`)) ENGINE = InnoDB;
 
 Create table `SBI_KPI_MODEL_ATTR` (

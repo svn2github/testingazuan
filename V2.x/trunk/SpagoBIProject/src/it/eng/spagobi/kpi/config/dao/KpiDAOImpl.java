@@ -1352,7 +1352,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				SbiKpiModelResources dls = (SbiKpiModelResources) i.next();
 				Resource r = toResource(dls);
 				logger.debug("SbiKpiModelInstanceNode resource name: "
-						+ (r.getColumn_name() != null ? r.getColumn_name()
+						+ (r.getName() != null ? r.getName()
 								: "Resource name null"));
 				res.add(r);
 			}
@@ -1553,15 +1553,15 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		Integer typeId = d.getValueId();
 
 		toReturn.setColumn_name(coumn_name);
-		logger.debug("Resource columnName setted");
+		logger.debug("Resource columnName setted:"+coumn_name);
 		toReturn.setName(name);
-		logger.debug("Resource name setted");
+		logger.debug("Resource name setted:"+name);
 		toReturn.setDescr(descr);
-		logger.debug("Resource description setted");
+		logger.debug("Resource description setted:"+descr);
 		toReturn.setTable_name(table_name);
-		logger.debug("Resource table_name setted");
+		logger.debug("Resource table_name setted:"+table_name);
 		toReturn.setType(type);
-		logger.debug("Resource type setted");
+		logger.debug("Resource type setted:"+type);
 		toReturn.setTypeId(typeId);
 		logger.debug("Resource typeID setted");
 		toReturn.setId(resourceId);

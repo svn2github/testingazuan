@@ -88,7 +88,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     private static transient Logger logger = Logger.getLogger(SpagoBIKpiInternalEngine.class);
 
     public static final String messageBundle = "messages";
-
+    
+    private static final String RESOURCE="RES_NAME";
+    
     protected String name = null;// Document's title
     protected String subName = null;// Document's subtitle
     protected StyleLabel styleTitle;// Document's title style
@@ -366,7 +368,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    logger.debug("PeriodInstanceID : " + (periodInstanceID!=null ? periodInstanceID : "null"));
 	    
 	    if (periodInstanceID == null) {
-	    	logger.error("No periodInstID specified will use default one");
+	    	logger.debug("No periodInstID specified will use default one");
 	    }else{
 	    	periodInstID = new Integer(periodInstanceID);
 	    }
@@ -708,7 +710,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    // Transform result into KPIValue (I suppose that the result has a
 	    // unique value)
 		IDataStoreMetaData d = dataStore.getMetaData();		
-		int indexRes = d.getFieldIndex("RESOURCE");
+		int indexRes = d.getFieldIndex(RESOURCE);
 		
 		if(indexRes!=-1){
     		Iterator it = dataStore.iterator();
@@ -750,7 +752,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     			    				valTemp.setValue(fieldValue);
     				    			logger.debug("Setted the kpiValue value:"+fieldValue);
     			    			}    
-    			    			else if(fieldName.equalsIgnoreCase("RESOURCE")){
+    			    			else if(fieldName.equalsIgnoreCase(RESOURCE)){
     			    				
     			    				String fieldValue = f.getValue().toString();
     			    				if (fieldValue!=null){

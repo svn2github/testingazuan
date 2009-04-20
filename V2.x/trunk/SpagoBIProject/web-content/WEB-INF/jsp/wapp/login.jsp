@@ -94,7 +94,7 @@ else {
 		        		<table>
 		        			<tr>
 		        				<td width = "100px">
-		        				   <img src="<%=contextName%>/themes/<%=currTheme%>/img/wapp/loginUser64.png" />
+		        				   <img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/wapp/loginUser64.png", currTheme)%>"/>
 		        				</td>
 		        				<td>
 		        				    <br/> 
@@ -122,7 +122,7 @@ else {
 		        				<td>
 		        					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		        					<input type="image" 
-		        					       src="<%=contextName%>/themes/<%=currTheme%>/img/wapp/next32.png" 
+		        					       src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/wapp/next32.png", currTheme)%>" 
 		        					       title="<%=msgBuilder.getMessage("login")%>" 
 		        					       alt="<%=msgBuilder.getMessage("login")%>"/>
 		        				</td>

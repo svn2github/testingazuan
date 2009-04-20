@@ -18,20 +18,25 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.dataset.presentation;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.ResponseContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spago.presentation.PublisherDispatcherIFace;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.tools.dataset.service.DetailDataSetModule;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -114,17 +119,31 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 		}
 
 		// if there are some errors into the errorHandler (not validation errors), return the name for the errors publisher
-		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-			return new String("error");
+	/*	if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+			try{
+				Collection list_errori=errorHandler.getErrors();
+				for (Iterator iterator = list_errori.iterator(); iterator.hasNext();) {
+					EMFUserError error = (EMFUserError)iterator.next();
+					int code=error.getCode();
+					if(code==9200){
+						return new String("detailDataSetTestResult");	
+					}
+				}
+			}
+			catch (Exception e) {
+				return new String("error");
+			}
+
+
+		}*/
+
+		// check if the request want to do the test but he must fill profile attributes
+		boolean fillProfAttr = false;
+		Object profAttToFillList = getAttributeFromModuleResponse(detailMR, SpagoBIConstants.PROFILE_ATTRIBUTES_TO_FILL);
+		if(profAttToFillList != null) {
+			fillProfAttr = true;
 		}
 
-        // check if the request want to do the test but he must fill profile attributes
-        boolean fillProfAttr = false;
-        Object profAttToFillList = getAttributeFromModuleResponse(detailMR, SpagoBIConstants.PROFILE_ATTRIBUTES_TO_FILL);
-        if(profAttToFillList != null) {
-        	fillProfAttr = true;
-        }
-		
 
 		boolean parametersToFill=false;
 		List parameters=null;
@@ -136,7 +155,7 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 		}
 
 		boolean afterTest = false;
-		Object testExecuted = getAttributeFromModuleResponse(listTestLovMR, "testExecuted");
+		Object testExecuted = getAttributeFromModuleResponse(listTestLovMR, DetailDataSetModule.TEST_EXECUTED);
 		if(testExecuted != null) {
 			afterTest = true;
 		}

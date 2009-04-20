@@ -924,7 +924,11 @@ public class DetailDataSetModule extends AbstractModule {
 			return;
 		} catch (Exception e) {
 			logger.error("Error while creating user profile for test", e);
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 9200); 
+			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 9200));
+			response.setAttribute(DetailDataSetModule.TEST, "true");
+
+			//throw new EMFUserError(EMFErrorSeverity.ERROR, 9200); 
+		return;
 		}
 	}	
 

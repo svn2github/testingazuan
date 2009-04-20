@@ -154,6 +154,8 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		}
 
 		
+		EMFErrorHandler emfError=getErrorHandler();
+
 		// based on lov type fill the spago list and paginator object
 		SourceBean rowsSourceBean = null;
 		List colNames = new ArrayList();
@@ -164,7 +166,9 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		
 		dataSet.setUserProfile(profile);
 		dataSet.setParamsMap(parametersFilled);		
+		try{
 		dataSet.loadData();
+
 		IDataStore ids = dataSet.getDataStore();
 		
 		rowsSourceBean=ids.toSourceBean();
@@ -185,7 +189,19 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 				}
 				
 			}
+		}		
+		
 		}
+		catch (Exception e) {
+			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2006));
+			if(e.getCause()!=null && e.getMessage()!=null){
+			response.setAttribute("errorMessage", "Cause: "+e.getCause()+" Message: "+e.getMessage());
+			}
+
+			response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "false");
+		}
+		
+
 		
 		// Build the list fill paginator
 		if(rowsSourceBean != null) {

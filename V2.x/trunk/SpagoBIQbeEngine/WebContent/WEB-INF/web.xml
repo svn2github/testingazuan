@@ -110,6 +110,13 @@
     </servlet>
     
     <servlet>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.utilities.engines.EngineTestServlet
+		</servlet-class>
+	</servlet>
+    
+    <servlet>
   		<servlet-name>ProxyTicketReceptor</servlet-name> 
   		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
 		<init-param>
@@ -143,7 +150,10 @@
   		<url-pattern>/proxyReceptor</url-pattern> 
   	</servlet-mapping> 
     
-    
+    <servlet-mapping>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<url-pattern>/servlet/AdapterHTTPTest</url-pattern>
+	</servlet-mapping>
     
     
 	<session-config>

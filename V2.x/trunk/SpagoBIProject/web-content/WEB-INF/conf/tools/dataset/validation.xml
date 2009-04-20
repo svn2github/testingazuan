@@ -4,6 +4,7 @@
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS>
 				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_INS"/>
+				<PARAMETER name="RETURN_FROM_TEST_MSG" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
 			</CONDITIONS>
 			<FIELDS>
 				<FIELD name="LABEL" label="#SBISet.ListDataSet.columnLabel">
@@ -53,6 +54,7 @@
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS>
 				<PARAMETER name="MESSAGEDET" scope="SERVICE_REQUEST" value="DETAIL_MOD"/>
+				<PARAMETER name="RETURN_FROM_TEST_MSG" scope="SERVICE_REQUEST" value="AF_NOT_DEFINED"/>
 			</CONDITIONS>	
 			<FIELDS>
 				<FIELD name="LABEL" label="#SBISet.ListDataSet.columnLabel">

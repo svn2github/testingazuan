@@ -59,16 +59,15 @@
     <listener>
         <listener-class>it.eng.spagobi.tools.scheduler.listeners.SchedulerContextListener</listener-class>
     </listener>
+<!-- 
 
-<!--  
 <listener>
 <listener-class>org.exoplatform.services.portletcontainer.impl.servlet.PortletApplicationListener</listener-class>
 </listener>
--->
 
 			
 
-<!-- END LISTENERS -->
+END LISTENERS -->
     
     <!-- START SERVLET DEFINITIONS -->
     
@@ -96,12 +95,11 @@
         <servlet-class>it.eng.spago.dispatching.httpchannel.AdapterHTTP</servlet-class>
     </servlet>
     
-<!-- 
+<!--
 <servlet>
 <servlet-name>PortletWrapper</servlet-name>
 <servlet-class>org.exoplatform.services.portletcontainer.impl.servlet.ServletWrapper</servlet-class>
-</servlet>
--->
+</servlet>  -->
 
 
     <servlet>
@@ -154,14 +152,13 @@
     <!-- end axis servlet -->
     <servlet-mapping>
         <servlet-name>ReportServlet</servlet-name>
-        <url-pattern>/ReportServlet</url-pattern>
+        <url-pattern>/JasperReportServlet</url-pattern>
     </servlet-mapping>
-<!-- 
+<!--  
 <servlet-mapping>
 <servlet-name>PortletWrapper</servlet-name>
 <url-pattern>/PortletWrapper</url-pattern>
-</servlet-mapping>
--->
+</servlet-mapping>-->
 
 
 

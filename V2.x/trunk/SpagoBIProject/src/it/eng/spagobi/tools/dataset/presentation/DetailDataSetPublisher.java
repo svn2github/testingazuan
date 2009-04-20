@@ -119,14 +119,14 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 		}
 
 		// if there are some errors into the errorHandler (not validation errors), return the name for the errors publisher
-	/*	if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+		if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
 			try{
 				Collection list_errori=errorHandler.getErrors();
 				for (Iterator iterator = list_errori.iterator(); iterator.hasNext();) {
 					EMFUserError error = (EMFUserError)iterator.next();
 					int code=error.getCode();
-					if(code==9200){
-						return new String("detailDataSetTestResult");	
+					if(code==9214){ // if it is not the error of wrong assigned parameter type or of not correct query
+						return new String("error");	
 					}
 				}
 			}
@@ -134,8 +134,7 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 				return new String("error");
 			}
 
-
-		}*/
+		}
 
 		// check if the request want to do the test but he must fill profile attributes
 		boolean fillProfAttr = false;

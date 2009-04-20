@@ -337,6 +337,8 @@ public class DetailDataSetModule extends AbstractModule {
 			if(dsNew.getLabel()==null || dsNew.getLabel().equalsIgnoreCase("")){
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
+				//session.setAttribute(DetailDataSetModule.DATASET, dsNew);
+				//serviceResponse.setAttribute(SpagoBIConstants.MODALITY, SpagoBIConstants.DETAIL_NEW);
 				logger.error("Campo Label obbligatorio");
 				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 9214, new Vector(), params );
 				getErrorHandler().addError(error);

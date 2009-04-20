@@ -100,7 +100,7 @@ Create table SBI_DATA_SOURCE (
 	DESCR Varchar(160),
 	LABEL Varchar(50) NOT NULL,
 	JNDI Varchar(50),
-	URL_CONNECTION Varchar(50),
+	URL_CONNECTION Varchar(500),
 	USERNAME Varchar(50),
 	PWD Varchar(50),
 	DRIVER Varchar(160),

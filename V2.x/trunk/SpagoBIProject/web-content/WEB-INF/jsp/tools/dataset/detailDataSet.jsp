@@ -37,9 +37,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDataSetModule"); 
 		SpagoBiDataSet ds = (SpagoBiDataSet)moduleResponse.getAttribute(DetailDataSetModule.DATASET);
+		if(ds==null) ds=new SpagoBiDataSet();
+		
 		List listTransformerType = (List) moduleResponse.getAttribute(DetailDataSetModule.LIST_TRANSFORMER);
 		String message=(String)aServiceRequest.getAttribute("MESSAGEDET");
 		String modality = (String)moduleResponse.getAttribute(SpagoBIConstants.MODALITY);
+		if(modality==null) modality=SpagoBIConstants.DETAIL_NEW;
 		String subMessageDet = ((String)moduleResponse.getAttribute("SUBMESSAGEDET")==null)?"":(String)moduleResponse.getAttribute("SUBMESSAGEDET");
 		String msgWarningSave = msgBuilder.getMessage("8002", request);
 		
@@ -219,7 +222,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 		<div class='div_detail_form'>
-			<input class='portlet-form-input-field' type="text" <%=isReadonly %>
+			<input class='portlet-form-input-field' type="text" <%=isReadonly %> id="LABEL"s
 				   name="LABEL" size="50" value="<%=label%>" maxlength="50" />
 			&nbsp;*
 		</div>
@@ -235,7 +238,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   	   name = "";
 			   }
 		%>
-			<input class='portlet-form-input-field' type="text" name="NAME" 
+			<input class='portlet-form-input-field' type="text" name="NAME"  id="NAME"
 				   size="50" value="<%=name%>" maxlength="160" />
 				   		&nbsp;*
 		</div>
@@ -687,10 +690,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 		if(!document.dsForm.QUERY.disabled){	
 			if(document.getElementById('DATASOURCE').selectedIndex == 0){
-			 alert("Datasource missing");
+			 alert('<%=msgBuilder.getMessage("9212", "messages",  request) %>');
 			 return;
 			}
 		}
+		
+		if(document.getElementById('LABEL').value == ''){
+			 alert('<%=msgBuilder.getMessage("9214", "messages",  request) %>');
+			 return;
+}
   	  	  document.dsForm.SUBMESSAGEDET.value=type;
   	  	  if (type == 'SAVE'){
       		  document.getElementById('dsForm').submit();}

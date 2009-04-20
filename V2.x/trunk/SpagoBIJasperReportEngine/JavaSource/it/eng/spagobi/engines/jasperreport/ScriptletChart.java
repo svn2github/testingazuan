@@ -73,6 +73,7 @@ public class ScriptletChart extends JRDefaultScriptlet {
 		exclude.add("IS_IGNORE_PAGINATION");
 		exclude.add("REPORT_CONNECTION");
 		exclude.add("REPORT_PARAMETERS_MAP");
+		exclude.add("REPORT_RESOURCE_BUNDLE");
 
 
 

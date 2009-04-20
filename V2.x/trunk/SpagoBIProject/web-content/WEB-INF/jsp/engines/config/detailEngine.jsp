@@ -60,6 +60,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<spagobi:message key = "SBISet.eng.titleMenu" />
 		</td>
 		<td class='header-empty-column-portlet-section'>&nbsp;</td>
+		<td class='header-button-column-portlet-section' id='testButton'>
+				<a href="javascript:testEngineConnection()"> 
+	      			<img class='header-button-image-portlet-section' 
+	      				 title='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
+	      				 src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/test.png", currTheme)%>' 
+	      				 alt='<spagobi:message key = "SBIDev.predLov.TestBeforeSaveLbl" />' 
+	      			/> 
+				</a>
+		</td>
 		<td class='header-button-column-portlet-section'>
 			<a href="javascript:document.getElementById('engineForm').submit()"> 
       			<img class='header-button-image-portlet-section' title='<spagobi:message key = "SBISet.eng.saveButt" />' src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/save.png", currTheme)%>' alt='<spagobi:message key = "SBISet.eng.saveButt" />' /> 
@@ -384,18 +393,126 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <script>
 
-function changeEngineType(value){
-	if (value == 'EXT') {
-		document.getElementById('url').style.display = 'inline';
-		document.getElementById('driverName').style.display = 'inline';
-		document.getElementById('className').style.display = 'none';		
+	function changeEngineType(value){
+		if (value == 'EXT') {
+			document.getElementById('url').style.display = 'inline';
+			document.getElementById('driverName').style.display = 'inline';
+			document.getElementById('className').style.display = 'none';		
+		}
+		if (value == 'INT') {
+			document.getElementById('url').style.display = 'none';
+			document.getElementById('driverName').style.display = 'none';
+			document.getElementById('className').style.display = 'inline';		
+		}
 	}
-	if (value == 'INT') {
-		document.getElementById('url').style.display = 'none';
-		document.getElementById('driverName').style.display = 'none';
-		document.getElementById('className').style.display = 'inline';		
+
+	function testEngineConnection() {
+	
+		var extEngType = document.engineForm.engineType.selectedIndex;
+	    var url = document.engineForm.url.value;
+	    var driverName = document.engineForm.driverName.value;
+	    var className = document.engineForm.className.value;
+
+		if ( extEngType==0 ){	
+			if ( !url ){	
+			Ext.MessageBox.show({
+				msg: 'No url',
+				buttons: Ext.MessageBox.OK,
+				width:150
+			});
+			return;
+			}
+			if ( !driverName ){	
+			Ext.MessageBox.show({
+				msg: 'No driverName',
+				buttons: Ext.MessageBox.OK,
+				width:150
+			});
+			return;
+			}	  
+		}
+		else {	
+			if ( !className ){	
+			Ext.MessageBox.show({
+				msg: 'No className',
+				buttons: Ext.MessageBox.OK,
+				width:150
+			});
+			return;
+			}
+		}
+	
+		var urll;
+		if ( extEngType==0 ){
+		    urll= url+'Test?';
+			Ext.Ajax.request({
+ 				 url: urll,
+ 				 method: 'get',
+				 success: function (result, request) {
+					response = result.responseText || "";
+					if (response=="sbi.connTestOk") {
+						url2="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE"%>";
+						url2 += "&ACTION_NAME=TEST_ENGINE";
+						url2 += "&driverName="+driverName;
+						Ext.Ajax.request({
+		 				 url: url2,
+		 				 method: 'get',
+						 success: function (result, request) {
+							response = result.responseText || "";
+							showEngineTestResult(response);
+						 },
+				 		 failure: somethingWentWrong
+					    });
+					}else{
+						showEngineTestResult(response);
+					}
+				},
+	 		 failure: somethingWentWrong
+		    });
+			 
+		}else{
+		    urll="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE"%>";
+			urll += "&ACTION_NAME=TEST_ENGINE";
+			urll += "&className="+className;
+			Ext.Ajax.request({
+ 				 url: urll,
+ 				 method: 'get',
+				 success: function (result, request) {
+					response = result.responseText || "";
+					showEngineTestResult(response);
+				},
+	 		 failure: somethingWentWrong
+		    });
+		}	
+			  	 
+	  }
+		
+	function showEngineTestResult(response) {
+		var iconRememberMe;
+		if (response=="sbi.connTestOk") {
+			response = "<spagobi:message key="sbi.connTestOk" />";
+			iconRememberMe = Ext.MessageBox.INFO;
+		}
+		else if (response=="ClassNameError") {
+			response = "Class o Driver Name Error";
+			iconRememberMe = Ext.MessageBox.ERROR;
+		}
+		else{
+		    response = "InvocationError check urlName";
+			iconRememberMe = Ext.MessageBox.ERROR;
+		}
+		Ext.MessageBox.show({
+			title: 'Status',
+			msg: response,
+			buttons: Ext.MessageBox.OK,
+			width:250,
+			icon: iconRememberMe
+		});
 	}
-}
+	
+	function somethingWentWrong() {
+		alert('<spagobi:message key="sbi.connTestError" />');
+	}
 
 </script>
  

@@ -120,6 +120,13 @@
 		</servlet-class>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.utilities.engines.EngineTestServlet
+		</servlet-class>
+	</servlet>
+	
 	<!--  ============================================================================ -->
 	<!--  SERVLET MAPPINGS						 									   -->
 	<!--  ============================================================================ -->	
@@ -140,6 +147,11 @@
         <servlet-name>JPaloEngineStartServlet</servlet-name>
         <url-pattern>/com.tensegrity.palowebviewer.modules.application.Application/JPaloEngineStartServlet</url-pattern>
     </servlet-mapping>
+    
+    <servlet-mapping>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<url-pattern>/com.tensegrity.palowebviewer.modules.application.Application/JPaloEngineStartServletTest</url-pattern>
+	</servlet-mapping>
 	
 	
 	<welcome-file-list>

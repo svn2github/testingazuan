@@ -121,9 +121,93 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <div class=''>
 
-
    <!-- ERROR TAG --> 
 	<spagobi:error/>
+
+
+
+<%
+if(listLovMR!=null){
+	String errorMessage = (String) listLovMR.getAttribute("errorMessage");	
+	String stack = (String) listLovMR.getAttribute("stacktrace");
+	if (errorMessage != null) {				  
+%>
+		<br/>
+		<div style="left:10%;width:80%" class='portlet-form-field-label' >
+			<spagobi:message key = "SBIDev.predLov.testExecNotCorrect" />
+		</div>	
+<%
+		if (!errorMessage.trim().equals("")) { 
+%>					  
+			<br/>
+		 	<div style="left:10%;width:80%" class='portlet-form-field-label' >
+		 		<spagobi:message key = "SBIDev.predLov.testErrorMessage" />
+		 	</div>
+			<% if (errorMessage.equalsIgnoreCase("Invalid_XML_Output"))  { %>
+				<div style="left:10%;width:70%" class='portlet-section-alternate'>
+					<spagobi:message key = "SBIDev.predLov.testScriptInvalidXMLOutput" />
+				</div>
+			<% } else { %>
+				<div style="left:10%;width:70%" class='portlet-section-alternate'>
+					<%= errorMessage %>
+				</div>
+			<% } %>
+			<br/>
+<% 
+		}
+
+		if (stack != null) { 
+%>
+			<div id='errorDescriptionJS' style='display:inline;'>
+			  	<br/>
+			  	<div style="left:10%;width:80%;display:inline;" class='portlet-form-field-label' id='showStacktraceDiv'>
+			  		<spagobi:message key = "SBIDev.predLov.testErrorShowStacktrace1" />
+			  		<a href='javascript:showStacktrace()'>
+			 	 		<spagobi:message key = "SBIDev.predLov.testErrorShowStacktrace2" />
+					</a>
+			 		.
+			 	</div>
+			    <div style="left:10%;width:80%;display:none;" class='portlet-form-field-label' id='hideStacktraceDiv'>
+			 		<spagobi:message key = "SBIDev.predLov.testErrorHideStacktrace1" />
+			 		<a href='javascript:hideStacktrace()'>
+				 		<spagobi:message key = "SBIDev.predLov.testErrorHideStacktrace2" />
+			 		</a>
+			 		.
+			 	</div>
+				<br/>	
+				<div id='stacktrace' style="left:10%;width:70%;display:none;" class='portlet-section-alternate'>
+					<%= stack %>
+				</div>
+			 </div>
+<%
+		}
+		
+	}
+	
+	
+		String result = (String) listLovMR.getAttribute("result");
+		if(result != null) { 				  
+	  		result = result.replaceAll(">", "&gt;");
+	  		result = result.replaceAll("<", "&lt;");
+	  		result = result.replaceAll("\"", "&quot;");					  
+%>			  
+			<div width="100%">
+				<br/>
+				<div style="position:relative;left:10%;width:80%" class='portlet-form-field-label' >
+					<spagobi:message key = "SBIDev.predLov.testScriptNonCorrectResult" />
+				</div>
+				<br/>	
+				<div style="position:relative;left:10%;width:70%" class='portlet-section-alternate'>
+					<%= result %>
+				</div>
+			</div>
+			<br/>					  
+<% 
+		} 
+}
+	%>
+	</div>		
+
 
 <% EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
 if(errorHandler.isOK()){    %>

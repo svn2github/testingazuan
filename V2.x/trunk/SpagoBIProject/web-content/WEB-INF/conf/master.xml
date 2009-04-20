@@ -25,13 +25,10 @@
 	<CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/presentation.xml" />
-  	<CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/publishers.xml" />  
-  	<CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/business_map.xml" />
-   	<CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/validation.xml" />
-   	<!-- document browser -->
-    <CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/documentBrowser.xml" />
-    
-	<!-- behaviouralmodel -->
+  <CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/publishers.xml" />  
+   <CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/business_map.xml" />
+   <CONFIGURATOR path="/WEB-INF/conf/analiticalmodel/validation.xml" />
+<!-- behaviouralmodel -->
 	
 	<CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/pages.xml" />
@@ -40,7 +37,7 @@
   	<CONFIGURATOR path="/WEB-INF/conf/behaviouralmodel/business_map.xml" />  
     
 <!-- engines.config -->
-	
+	<CONFIGURATOR path="/WEB-INF/conf/engines/config/actions.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/modules.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/config/presentation.xml" /> 
@@ -187,7 +184,7 @@
     <CONFIGURATOR path="/WEB-INF/conf/hotlink/business_map.xml" />
 	
 <!-- webapp -->
-
+<!-- -->
 <CONFIGURATOR path="/WEB-INF/conf/webapp/messages.xml" />
 <CONFIGURATOR path="/WEB-INF/conf/webapp/modules.xml" />
 <CONFIGURATOR path="/WEB-INF/conf/webapp/pages.xml" />
@@ -201,10 +198,10 @@
 <CONFIGURATOR path="/WEB-INF/conf/webapp/validation.xml" />
 <CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />
 
+
 	
 	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />
-	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi_dao.xml" />	
-	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi_SSO.xml" />
+	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi_SSO.xml" />	 
 	<CONFIGURATOR path="/WEB-INF/conf/config/CAS.xml" />	
 	 	
 	

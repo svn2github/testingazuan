@@ -57,7 +57,7 @@ public class ListEventsLogModule extends AbstractBasicListModule {
 		EventsManager eventsManager = EventsManager.getInstance();		
 		List firedEventsList = eventsManager.getRegisteredEvents(profile);
         ConfigSingleton config = ConfigSingleton.getInstance();
-        SourceBean formatSB = (SourceBean) config.getAttribute("SPAGOBI.DATE_FORMAT");
+        SourceBean formatSB = (SourceBean) config.getAttribute("SPAGOBI.DATE-FORMAT");
         String format = (formatSB==null)?"":(String) formatSB.getAttribute("format");
 	    format = format.replaceAll("D", "d");
 	    format = format.replaceAll("m", "M");

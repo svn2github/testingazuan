@@ -144,13 +144,13 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 		Iterator rolesIt = roles.iterator();
 		while (rolesIt.hasNext()) {
 			String roleName = (String) rolesIt.next();
-			if (isFirtElement) {
-				collectionRoles += roleName;
-				isFirtElement = false;
-			} else {
+			//if (isFirtElement) {
+				//collectionRoles += roleName;
+				//isFirtElement = false;
+			//} else {
 				//collectionRoles += "', '" + roleName;
-				 if (!roleNames.contains(roleName)) roleNames.add(roleName);
-			}
+				if (!roleNames.contains(roleName)) roleNames.add(roleName);
+			//}
 		}
 		try {
 			aSession = getSession();
@@ -182,13 +182,13 @@ public class EventLogDAOHibImpl extends AbstractHibernateDAO implements IEventLo
 	         		"eventlog.id = eventRole.id.event.id and " +
 	         		"eventRole.id.role.extRoleId = roles.extRoleId " +
 	         		"and " +
-	         		"roles.name in (?) " +
+	         		"roles.name in (:ROLE_NAMES) " +
 	         	"order by " +
 	         		"eventlog.date";
 			
 			hqlQuery = aSession.createQuery(hql);
-			hqlQuery.setString(0, "'"+collectionRoles+"'");
-			//hqlQuery.setParameterList("ROLE_NAMES", roleNames);
+			//hqlQuery.setString(0, collectionRoles);
+			hqlQuery.setParameterList("ROLE_NAMES", roleNames);
 			List hibList = hqlQuery.list();
 			
 			Iterator it = hibList.iterator();

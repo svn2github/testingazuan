@@ -1592,8 +1592,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		String tableName = r.getTable_name();
 		Integer resourceId = r.getId();
 		String type = r.getType();
-		Domain domain = DAOFactory.getDomainDAO().loadDomainByCodeAndValue(
-				"RESOURCE", type);
+		Domain domain = DAOFactory.getDomainDAO().loadDomainByCodeAndValue("RESOURCE", type);
 		SbiDomains sbiDomains = new SbiDomains();
 		sbiDomains.setDomainCd(domain.getDomainCode());
 		sbiDomains.setDomainNm(domain.getDomainName());

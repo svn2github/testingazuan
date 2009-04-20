@@ -260,6 +260,13 @@
 			it.eng.spagobi.utilities.callbacks.ticket.ReadTicketServlet
 		</servlet-class>
 	</servlet>
+	
+	<servlet>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<servlet-class>
+			it.eng.spagobi.utilities.engines.EngineTestServlet
+		</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>ReadTicketServlet</servlet-name>
@@ -304,6 +311,11 @@
 	<servlet-mapping>
 		<servlet-name>MondrianXmlaServlet</servlet-name>
 		<url-pattern>/xmla</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>EngineTestServlet</servlet-name>
+		<url-pattern>/JPivotServletTest</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>

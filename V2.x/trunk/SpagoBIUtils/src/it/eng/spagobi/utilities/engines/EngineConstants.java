@@ -40,7 +40,6 @@ import it.eng.spago.security.IEngUserProfile;
  */
 public class EngineConstants {
 	
-	public static final String USER_ID = IEngUserProfile.ENG_USER_PROFILE;
 	public static final String AUDIT_ID = "SPAGOBI_AUDIT_ID";
 	public static final String DOCUMENT_ID = "document";
 

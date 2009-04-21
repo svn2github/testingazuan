@@ -92,7 +92,6 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	
 	private static final BASE64Decoder DECODER = new BASE64Decoder();
 	
-	public static final String USER_ID = IEngUserProfile.ENG_USER_PROFILE;
 	public static final String AUDIT_ID = "SPAGOBI_AUDIT_ID";
 	public static final String DOCUMENT_ID = "document";
 	public static final String SBI_EXECUTION_ID = "SBI_EXECUTION_ID";
@@ -149,7 +148,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	
 	
 	public UserProfile getUserProfile() {
-		return (UserProfile) getAttributeFromSession( USER_ID ); 
+		return (UserProfile) getAttributeFromSession( IEngUserProfile.ENG_USER_PROFILE ); 
 	}
 
     public String getUserId() {

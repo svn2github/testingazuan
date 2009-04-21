@@ -267,5 +267,5 @@ public interface ILowFunctionalityDAO {
 	 * @throws EMFUserError the EMF user error
 	 * 
 	 */
-	public List loadParentFunctionalities(Integer functId) throws EMFUserError;
+	public List loadParentFunctionalities(Integer functId, Integer rootFolderID) throws EMFUserError;
 }

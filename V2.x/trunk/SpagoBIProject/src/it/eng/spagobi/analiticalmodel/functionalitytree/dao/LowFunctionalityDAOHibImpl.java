@@ -1383,7 +1383,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadAllLowFunctionalities(Integer)
 	 */
-	public List loadParentFunctionalities(Integer functId) throws EMFUserError {
+	public List loadParentFunctionalities(Integer functId, Integer rootFolderID) throws EMFUserError {
 		logger.debug( "IN" );
 		
 		LowFunctionality funct = null;
@@ -1396,10 +1396,25 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			tx = aSession.beginTransaction();
 			tmpFunctId = functId;
 			
-			while (tmpFunctId != null){
-				SbiFunctions hibFunct = (SbiFunctions)aSession.load(SbiFunctions.class, tmpFunctId);
-				tmpFunctId = (hibFunct.getParentFunct() != null)? hibFunct.getParentFunct().getFunctId(): null;
+			if(rootFolderID != null) {
+				while (tmpFunctId.intValue() != rootFolderID.intValue()){
+					SbiFunctions hibFunct = (SbiFunctions)aSession.load(SbiFunctions.class, tmpFunctId);
+					tmpFunctId = (hibFunct.getParentFunct() != null)? hibFunct.getParentFunct().getFunctId(): null;
+					realResult.add(toLowFunctionality(hibFunct, false));
+				}
+				
+				SbiFunctions hibFunct = (SbiFunctions)aSession.load(SbiFunctions.class, rootFolderID);
 				realResult.add(toLowFunctionality(hibFunct, false));
+			} else {
+				while (tmpFunctId != null){
+					SbiFunctions hibFunct = (SbiFunctions)aSession.load(SbiFunctions.class, tmpFunctId);
+					tmpFunctId = (hibFunct.getParentFunct() != null)? hibFunct.getParentFunct().getFunctId(): null;
+					realResult.add(toLowFunctionality(hibFunct, false));
+				}
+			}
+			
+			if(rootFolderID != null) {
+				
 			}
 			
 			

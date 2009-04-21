@@ -18,7 +18,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 -->
 
-<%@page import="it.eng.spagobi.services.common.SsoServiceInterface"%>
+
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 
 <%@ page language="java" 
@@ -66,7 +66,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({baseUrl: url});
 
     var browserConfig = <%= aServiceResponse.getAttribute("metaConfiguration")%>;
-    alert(browserConfig.toSource());
         
     Ext.onReady(function(){
       Ext.QuickTips.init();              
@@ -79,6 +78,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 
 	 String url =GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+  "&ACTION_NAME=DOCUMENT_USER_BROWSER_START_PORTLET_ACTION";
 	 url += "&SBI_EXECUTION_ID=" + request.getParameter("SBI_EXECUTION_ID");
+	 url += "&LABEL_SUBTREE_NODE=" + aServiceResponse.getAttribute("labelSubTreeNode");
 	 url += "&LANGUAGE=" + locale.getLanguage();
 	 url += "&COUNTRY=" + locale.getCountry();
 	 %>

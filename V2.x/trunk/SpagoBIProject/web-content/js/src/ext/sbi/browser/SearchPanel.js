@@ -33,7 +33,7 @@ Sbi.browser.SearchPanel = function(config) {
 	
     
 	var c = Ext.apply({}, config, {
-		title:'Search'
+		title: LN('sbi.browser.searchpanel.title')
         , border:true
 		, bodyStyle:'padding:6px 6px 6px 6px; background-color:#FFFFFF'
     	, items: [

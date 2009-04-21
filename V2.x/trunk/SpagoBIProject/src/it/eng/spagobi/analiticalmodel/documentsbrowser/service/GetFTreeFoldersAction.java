@@ -81,35 +81,6 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction {
 			JSONArray jsonFTree = new JSONArray();
 			jsonFTree = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( folders );
 
-			/*
-			JSONArray jsonFolder1Content = new JSONArray();
-			jsonFolder1Content.put(createNode("SubFolder1_1", "SubFolder1", "icon-ftree-folder", null));
-			jsonFolder1Content.put(createNode("SubFolder1_2", "SubFolder2", "icon-ftree-folder", null));
-			jsonFolder1Content.put(createNode("SubFolder1_3", "SubFolder3", "icon-ftree-folder", null));
-			jsonFolder1Content.put(createNode("SubFolder1_4", "SubFolder4", "icon-ftree-folder", null));
-			JSONArray jsonFolder2Content = new JSONArray();
-			jsonFolder2Content.put(createNode("SubFolder2_1", "SubFolder1", "icon-ftree-folder", null));
-			jsonFolder2Content.put(createNode("SubFolder2_2", "SubFolder2", "icon-ftree-folder", null));
-			jsonFolder2Content.put(createNode("SubFolder2_3", "SubFolder3", "icon-ftree-folder", null));
-			JSONArray jsonFolder3Content = new JSONArray();
-			jsonFolder3Content.put(createNode("SubFolder3_1", "SubFolder1", "icon-ftree-folder", null));
-			
-			if(nodeId == null) {
-				jsonFTree.put(createNode("Folder1", "XFolder1", "icon-ftree-folder", jsonFolder1Content));
-				jsonFTree.put(createNode("Folder2", "XFolder2", "icon-ftree-folder", jsonFolder2Content));
-				jsonFTree.put(createNode("Folder3", "XFolder3", "icon-ftree-folder", jsonFolder3Content));
-			} else if(nodeId.equalsIgnoreCase("Folder1")) {
-				jsonFTree = jsonFolder1Content;
-			} else if(nodeId.equalsIgnoreCase("Folder2")) {
-				jsonFTree = jsonFolder2Content;
-			} else if(nodeId.equalsIgnoreCase("Folder3")) {
-				jsonFTree = jsonFolder3Content;
-			} else {
-				jsonFTree.put(createNode("Folder1", "Folder1", "icon-ftree-folder", jsonFolder1Content));
-				jsonFTree.put(createNode("Folder2", "Folder2", "icon-ftree-folder", jsonFolder2Content));
-				jsonFTree.put(createNode("Folder3", "Folder3", "icon-ftree-folder", jsonFolder3Content));
-			}
-			*/
 			try {
 				writeBackToClient( new JSONSuccess(  createNode(jsonFTree) ) ) ;
 			} catch (IOException e) {

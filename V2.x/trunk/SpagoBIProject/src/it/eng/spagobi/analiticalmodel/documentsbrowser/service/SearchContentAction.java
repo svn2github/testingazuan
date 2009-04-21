@@ -52,7 +52,11 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 	
 	// REQUEST PARAMETERS
 	public static final String FOLDER_ID = "folderId";
+	public static final String ROOT_FOLDER_ID = "rootFolderId";
+	
+	
 	public static final String ROOT_NODE_ID = "rootNode";
+		
 	
 	// logger component
 	private static Logger logger = Logger.getLogger(SearchContentAction.class);
@@ -68,14 +72,19 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 			setSpagoBIResponseContainer( response );
 			
 			String folderID = getAttributeAsString(FOLDER_ID);	
+			String rootFolderID = getAttributeAsString(ROOT_FOLDER_ID);	
 			String typeFilter = getAttributeAsString(SpagoBIConstants.TYPE_FILTER);
 			String valueFilter = getAttributeAsString(SpagoBIConstants.VALUE_FILTER);
 			String columnFilter = getAttributeAsString(SpagoBIConstants.COLUMN_FILTER );
 			
+			
 			logger.debug("Parameter [" + FOLDER_ID + "] is equal to [" + folderID + "]");
+			logger.debug("Parameter [" + ROOT_FOLDER_ID + "] is equal to [" + rootFolderID + "]");
 			logger.debug("Parameter [" + SpagoBIConstants.TYPE_FILTER + "] is equal to [" + typeFilter + "]");
 			logger.debug("Parameter [" + SpagoBIConstants.VALUE_FILTER + "] is equal to [" + valueFilter + "]");
 			logger.debug("Parameter [" + SpagoBIConstants.COLUMN_FILTER + "] is equal to [" + columnFilter + "]");
+			
+			folderID = folderID!=null? folderID: rootFolderID;
 			
 			//getting default folder (root)
 			LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);

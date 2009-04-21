@@ -130,7 +130,7 @@ Sbi.browser.FolderDetailPanel = function(config) {
     this.addEvents("ondocumentclick", "onfolderclick", "onbreadcrumbclick");
     
     //this.store.load();   
-    this.loadFolder(config.folderId);
+    this.loadFolder(config.folderId, config.folderId);
 }
 
 
@@ -177,11 +177,17 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
       this.loadingMask.hide();
     }
     
-    , loadFolder: function(folderId) {
-      var p;
+    , loadFolder: function(folderId, rootFolderId) {
+      var p = {};
+      
       if(folderId) {
-	      p = {'folderId': folderId};
+    	  p.folderId = folderId;
       }
+      
+      if(rootFolderId) {
+    	  p.rootFolderId = rootFolderId;
+      }
+     
       
       this.store.proxy.conn.url = this.store.browseUrl;
       this.store.baseParams = p || {};

@@ -30,19 +30,24 @@ Sbi.browser.DocumentsBrowser = function(config) {
    
 	// sub-components   
 	
+	
+	this.rootFolderId = config.rootFolderId || null;
+	this.selectedFolderId = this.rootFolderId;
+	
 	this.treePanel = new Sbi.browser.DocumentsTree({
-        border:true
+        border: true
+        , rootNodeId: this.selectedFolderId 
     });
 	
 	this.filterPanel = new Sbi.browser.FilterPanel({
-        title:'Sort, group and filter'
+        title: LN('sbi.browser.filtrpanel.title')
         , border:true
         , metaFolder: config.metaFolder
         , metaDocument: config.metaDocument	
     });
 	
 	this.searchPanel = new Sbi.browser.SearchPanel({
-        title:'Search'
+        title: LN('sbi.browser.searchpanel.title')
         , border:true
         , metaDocument: config.metaDocument	
     });
@@ -79,6 +84,7 @@ Sbi.browser.DocumentsBrowser = function(config) {
         	
         , metaFolder: config.metaFolder
         , metaDocument: config.metaDocument	
+        , folderId: this.selectedFolderId
     });
 	
 	config.baseLayout = config.baseLayout || {}; 	
@@ -150,10 +156,11 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
     , searchPanel: null
     , westRegionContainer: null
     , detailPanel: null
+    , rootFolderId: null
     , selectedFolderId: null
     
     , selectFolder: function(folderId) {
-		this.detailPanel.loadFolder(folderId);
+		this.detailPanel.loadFolder(folderId, this.rootFolderId);
 		this.selectedFolderId = folderId;
 		this.searchPanel.selectedFolderId = folderId;
 	}
@@ -179,6 +186,7 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 	}
 	
 	, onSearch: function(panel, q) {
+		if(this.rootFolderId) q.rootFolderId = this.rootFolderId;
 		this.detailPanel.searchFolder(q);
 	}
 	

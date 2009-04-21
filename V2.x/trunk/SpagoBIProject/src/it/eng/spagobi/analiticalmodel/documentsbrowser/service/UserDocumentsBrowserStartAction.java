@@ -24,9 +24,13 @@ package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
+import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.service.TreeObjectsModule;
 import it.eng.spagobi.chiron.ListEnginesAction;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 
@@ -35,7 +39,7 @@ import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
  */
 public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
 	
-	public static final String PATH_SUBTREE = "PATH_SUBTREE";
+	public static final String LABEL_SUBTREE_NODE = "LABEL_SUBTREE_NODE";
 	
 	// logger component
 	private static Logger logger = Logger.getLogger(ListEnginesAction.class);
@@ -49,13 +53,20 @@ public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
 			setSpagoBIRequestContainer( request );
 			setSpagoBIResponseContainer( response );
 			
-			String initialPath = this.getAttributeAsString(PATH_SUBTREE);
-			
 			DocumentsBrowserConfig config = DocumentsBrowserConfig.getInstance();
 			JSONObject jsonObj  = config.toJSON();
+			String labelSubTreeNode = this.getAttributeAsString( LABEL_SUBTREE_NODE );
 			
-			response.setAttribute("metaConfiguration", jsonObj);
 			
+			
+			if (labelSubTreeNode != null && !labelSubTreeNode.trim().equals("")) {
+				LowFunctionality luwFunc = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(labelSubTreeNode, false);
+				if(luwFunc != null) {
+					jsonObj.put("rootFolderId", luwFunc.getId());
+				}
+				
+			}
+			response.setAttribute("metaConfiguration", jsonObj);			
 		} catch (Throwable t) {
 			throw new SpagoBIException("An unexpected error occured while executing UserDocumentsBrowserStartAction", t);
 		} finally {

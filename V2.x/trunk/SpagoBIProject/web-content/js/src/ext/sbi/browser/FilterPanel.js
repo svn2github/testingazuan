@@ -31,16 +31,19 @@ Sbi.browser.FilterPanel = function(config) {
 	this.sortRadioGroup = new Array();
 	this.groupRadioGroup = new Array();
 	
+	var label;
+	
 	// set defaults
+	label = LN('sbi.browser.misc.x') + ' ' + LN('sbi.browser.document.name');
 	this.sortRadioGroup.push(
 			new Ext.form.Radio({
-				boxLabel: 'by name', name: 'sort', hideLabel: true, inputValue: 'name', checked: true
+				boxLabel: label, name: 'sort', hideLabel: true, inputValue: 'name', checked: true
 			})
 	);
 	
 	this.groupRadioGroup.push(
 			new Ext.form.Radio({
-				boxLabel: 'ungroup', name: 'group', hideLabel: true, inputValue: 'ungroup', checked: true
+				boxLabel: LN('sbi.browser.misc.ungroup'), name: 'group', hideLabel: true, inputValue: 'ungroup', checked: true
 			})
 	);
 	
@@ -49,17 +52,20 @@ Sbi.browser.FilterPanel = function(config) {
 		var meta = config.metaDocument[i];
 		
 		if(meta.sortable && meta.id != 'name') {
+			label = LN('sbi.browser.misc.x') + ' ' + LN('sbi.browser.document.' + meta.id);
 			this.sortRadioGroup.push(
 					new Ext.form.Radio({
-						boxLabel: 'by ' + meta.id, name: 'sort', hideLabel: true, inputValue: meta.id
+						boxLabel: label, name: 'sort', hideLabel: true, inputValue: meta.id
+						//boxLabel: 'by ' + meta.id, name: 'sort', hideLabel: true, inputValue: meta.id
 					})
 			);
 		}
 		
 		if(meta.groupable) {
+			label = LN('sbi.browser.misc.x') + ' ' + LN('sbi.browser.document.' + meta.id);
 			this.groupRadioGroup.push(
 					new Ext.form.Radio({
-						boxLabel: 'by ' + meta.id, name: 'group', hideLabel: true, inputValue: meta.id
+						boxLabel: label, name: 'group', hideLabel: true, inputValue: meta.id
 					})
 			);
 		}
@@ -70,7 +76,7 @@ Sbi.browser.FilterPanel = function(config) {
 		this.sortRadioGroup[i].on('check', this.onSortGroupClick, this);
 	}
 	var sortGroup = new Ext.form.FieldSet({
-	   title: 'Sort',
+	   title: LN('sbi.browser.filtrpanel.sortgroup.title'),
 	   collapsible: true,
 	   autoHeight:true,
 	   defaultType: 'textfield',
@@ -81,7 +87,7 @@ Sbi.browser.FilterPanel = function(config) {
 		this.groupRadioGroup[i].on('check', this.onGroupGroupClick, this);
 	}
 	var groupGroup = new Ext.form.FieldSet({
-	   title: 'Group',
+	   title: LN('sbi.browser.filtrpanel.groupgroup.title'),
 	   collapsible: true,
 	   autoHeight:true,
 	   defaultType: 'textfield',
@@ -90,14 +96,14 @@ Sbi.browser.FilterPanel = function(config) {
 	
 	// filter group
 	this.filterRadioGroup = new Array();
-	this.filterRadioGroup[0] =  new Ext.form.Radio({boxLabel: 'all', name: 'filter', hideLabel: true, inputValue: 'all', checked: true});
-	this.filterRadioGroup[1] =  new Ext.form.Radio({boxLabel: 'folders', name: 'filter', hideLabel: true, inputValue: 'folders'});
-	this.filterRadioGroup[2] = new Ext.form.Radio({boxLabel: 'documents', name: 'filter', hideLabel: true, inputValue: 'documents'});  
+	this.filterRadioGroup[0] =  new Ext.form.Radio({boxLabel: LN('sbi.browser.filtrpanel.filtergroup.opt.all'), name: 'filter', hideLabel: true, inputValue: 'all', checked: true});
+	this.filterRadioGroup[1] =  new Ext.form.Radio({boxLabel: LN('sbi.browser.filtrpanel.filtergroup.opt.folders'), name: 'filter', hideLabel: true, inputValue: 'folders'});
+	this.filterRadioGroup[2] = new Ext.form.Radio({boxLabel: LN('sbi.browser.filtrpanel.filtergroup.opt.documents'), name: 'filter', hideLabel: true, inputValue: 'documents'});  
 	for(var i = 0; i < this.filterRadioGroup.length; i++) {
 		this.filterRadioGroup[i].on('check', this.onFilterGroupClick, this);
 	}
 	var filterGroup = new Ext.form.FieldSet({
-		   title: 'Filter',
+		   title: LN('sbi.browser.filtrpanel.filtergroup.title'),
 		   collapsible: true,
 		   autoHeight:true,
 		   defaultType: 'textfield',

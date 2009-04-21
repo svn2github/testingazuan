@@ -49,6 +49,7 @@ public class GetFolderPathAction extends AbstractBaseHttpAction{
 	
 	// REQUEST PARAMETERS
 	public static final String FOLDER_ID = "folderId";
+	public static final String ROOT_FOLDER_ID = "rootFolderId";
 	
 	public static final String ROOT_NODE_ID = "rootNode";
 	
@@ -66,14 +67,18 @@ public class GetFolderPathAction extends AbstractBaseHttpAction{
 			setSpagoBIResponseContainer( response );
 			
 			String functID = getAttributeAsString(FOLDER_ID);
+			String rootFolderID = getAttributeAsString(ROOT_FOLDER_ID);	
+			
 			logger.debug("Parameter [" + FOLDER_ID + "] is equal to [" + functID + "]");
+			logger.debug("Parameter [" + ROOT_FOLDER_ID + "] is equal to [" + rootFolderID + "]");
 			
 			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID)){
 				//getting default folder (root)
 				LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
 				functionalities.add(rootFunct);
 			} else {
-				functionalities = DAOFactory.getLowFunctionalityDAO().loadParentFunctionalities(Integer.valueOf(functID));	
+				functionalities = DAOFactory.getLowFunctionalityDAO()
+					.loadParentFunctionalities(Integer.valueOf(functID), (rootFolderID==null?null:Integer.valueOf(rootFolderID)) );	
 			}
 			
 		

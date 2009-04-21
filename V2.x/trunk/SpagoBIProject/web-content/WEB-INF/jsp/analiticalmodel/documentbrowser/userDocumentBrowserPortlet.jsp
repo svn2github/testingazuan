@@ -66,7 +66,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({baseUrl: url});
 	
     var browserConfig = <%= aServiceResponse.getAttribute("metaConfiguration")%>;
+    alert(browserConfig.rootFolderId);
+    
     browserConfig = Ext.apply(browserConfig, {
+        //rootFolderId: 3
+        /*
         metaDocument: [
    			  {id:"label", 				groupable:true, maxChars:20, visible:true, showLabel:false, sortable:false, searchable:true}
    			, {id:"name", 				groupable:true, maxChars:20, visible:true, showLabel:false, sortable:true, searchable:true}
@@ -103,6 +107,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    		   , {maxChars:20, visible:false, showLabel:false, id:"execRoles"}
    		   , {maxChars:20, visible:false, showLabel:false, id:"biObjects"}
    		]
+   		*/
    	});
     
     Ext.onReady(function(){

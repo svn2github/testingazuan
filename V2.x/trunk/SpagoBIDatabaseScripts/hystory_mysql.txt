@@ -54,13 +54,19 @@ Alter table `SBI_KPI` add Foreign Key (`measure_type`) references `SBI_DOMAINS` 
 ALTER TABLE `spagobi`.`sbi_data_set` ADD COLUMN `LANGUAGE_SCRIPT` VARCHAR(50) AFTER `num_rows`; 
 
 ###################################################################################################
-- From 2.0
+- From 2.1
 - gigavard
 - 12/03/2009
 ALTER TABLE `spagobi`.`sbi_domains` MODIFY COLUMN `VALUE_CD` VARCHAR(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
 
-- From 2.0
+- From 2.1
 - gigavard
 - 13/03/2009
 ALTER TABLE `spagobi`.`sbi_functions` MODIFY COLUMN `CODE` VARCHAR(40) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL; 
+
+- From 2.2
+- gigavard
+- 20/04/2009
+ALTER TABLE SBI_DATA_SOURCE MODIFY COLUMN `URL_CONNECTION` VARCHAR(500) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL
+ 
  

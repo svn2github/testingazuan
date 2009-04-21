@@ -35,10 +35,6 @@ package it.eng.spagobi.utilities.filters;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.container.ContextManager;
-import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
-import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
-import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.common.SsoServiceInterface;
@@ -56,23 +52,15 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
 public class SpagoBIAccessFilter implements Filter {
 
-    
-	
-	//ServletRequest request;
-	//ServletResponse response;
-	//ContextManager contextManager;
 	
 	public final String AUDIT_ID_PARAM_NAME = "SPAGOBI_AUDIT_ID";
 	public final String DOCUMENT_ID_PARAM_NAME = "document";
-	
-	public final String AUDIT_ID_ATTR_NAME = AUDIT_ID_PARAM_NAME;
-	public final String DOCUMENT_ID_ATTR_NAME = DOCUMENT_ID_PARAM_NAME;
+
 	public final String IS_BACKEND_ATTR_NAME= "isBackend";
 	
 	
@@ -105,11 +93,6 @@ public class SpagoBIAccessFilter implements Filter {
     	try {
     		FilterIOManager ioManager = new FilterIOManager(request, response);
     		
-    		
-    		
-//    		userId = (String) request.getParameter(USER_ID_PARAM_NAME);
-//    		logger.info("Filter userId from request:" + userId);
-    		
     		 
 		    documentId = (String) request.getParameter(DOCUMENT_ID_PARAM_NAME);
 		    logger.info("Filter documentId  from request:" + documentId);		    
@@ -135,9 +118,9 @@ public class SpagoBIAccessFilter implements Filter {
 				
 				ioManager.initConetxtManager();			    
 		
-				ioManager.setInSession(DOCUMENT_ID_ATTR_NAME, documentId);
+				ioManager.setInSession(DOCUMENT_ID_PARAM_NAME, documentId);
 				ioManager.setInSession(IS_BACKEND_ATTR_NAME, "false");
-				ioManager.contextManager.set(DOCUMENT_ID_ATTR_NAME, documentId);
+				ioManager.contextManager.set(DOCUMENT_ID_PARAM_NAME, documentId);
 				ioManager.contextManager.set(IS_BACKEND_ATTR_NAME, "false");
 			    
 				
@@ -156,16 +139,7 @@ public class SpagoBIAccessFilter implements Filter {
 					}
 			    }
 		
-//			    if (userId != null && !isBackend) {
-//			    	userId = checkUserWithSSO(userId, httpRequest);
-//			    }
-		
-//			    //  get the userId from session
-//			    if ( !isBackend) {
-//			    	userId = getUserWithSSO(httpRequest);
-//					logger.info("UserIdentifier from Session (SSO is Active):" + userId);
-//			    }
-			    
+
 			    String spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
 			    String spagoUrl = request.getParameter(SpagoBIConstants.SBI_HOST);
 			    if (spagobiContext != null) {
@@ -232,7 +206,7 @@ public class SpagoBIAccessFilter implements Filter {
 			
     } catch(Throwable t) {
     	logger.error("--------------------------------------------------------------------------------");
-		logger.error("SpagoBIAccessFilter" + ":doFilter ServletException!!"); 
+	    logger.error("SpagoBIAccessFilter" + ":doFilter ServletException!!",t); 
 		logger.error(" msg: [" + t.getMessage() + "]"); 
 		Throwable z = t.getCause(); 
 		if(z != null) {

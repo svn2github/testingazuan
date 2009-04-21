@@ -146,7 +146,7 @@ Ext.onReady(function(){
 			items: [{
 				text:'<spagobi:message key = "sbi.hotlink.deleteRememberMe" />',
 				scope: this,
-				icon: '<%= request.getContextPath() %>/themes/<%=currTheme%>/img/erase.gif',
+				icon: '<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.gif", currTheme)%>',
 				handler:function(){
 					location.href = storeRememberMe.getAt(menu.rowIndex).get('DeleteUrl');
 				}

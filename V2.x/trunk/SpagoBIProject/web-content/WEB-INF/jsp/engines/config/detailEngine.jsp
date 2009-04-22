@@ -494,11 +494,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			iconRememberMe = Ext.MessageBox.INFO;
 		}
 		else if (response=="ClassNameError") {
-			response = "Class o Driver Name Error";
+			response = "<spagobi:message key="sbi.engineClassTestError"/>";
 			iconRememberMe = Ext.MessageBox.ERROR;
 		}
 		else{
-		    response = "InvocationError check urlName";
+		    response = "<spagobi:message key="sbi.engineTestError"/>";
 			iconRememberMe = Ext.MessageBox.ERROR;
 		}
 		Ext.MessageBox.show({

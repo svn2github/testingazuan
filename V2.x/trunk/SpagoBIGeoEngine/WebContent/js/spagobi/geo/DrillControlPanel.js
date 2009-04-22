@@ -97,6 +97,8 @@ Sbi.geo.DrillControlPanel = function(config) {
     });
     
     
+    
+    
     // --------------------------------------------------------------------------
 		
 	var Map = Ext.data.Record.create([

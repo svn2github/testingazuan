@@ -316,11 +316,14 @@ public class GenerateFinalDocumentAction implements ActionHandler {
 			XText textNote = (XText) UnoRuntime.queryInterface(XText.class, shapeNoteObj);
 			logger.debug("XText: " + textNote);
 			byte[] notesByte = dptDAO.getNotesOfDossierPart(dossierId, pageNum, workflowProcessId);
-			if (notesByte == null)
+			String notes = null;
+			if (notesByte == null) {
 			    logger.debug("Notes bytes array is null!!!!");
-			else
+			    notes = "";
+			} else {
 			    logger.debug("Notes bytes array retrieved");
-			String notes = new String(notesByte);
+			    notes = new String(notesByte);
+			}
 			textNote.setString(notes);
 			logger.debug("Notes applied to the XText");
 		    }

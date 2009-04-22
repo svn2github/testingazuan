@@ -138,10 +138,6 @@ function execCrossNavigation(windowName, label, parameters) {
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css" />
 <link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css" />
 
-<script type="text/javascript"
-	src="<%=urlBuilder.getResourceLink(request, "js/menu.js")%>"></script>
-<script type="text/javascript"
-	src="<%=urlBuilder.getResourceLink(request, "js/wapp/menuTree.js")%>"></script>
 
 <link href="<%=contextName%>/js/lib/ext-2.0.1/resources/css/ext-all-SpagoBI-web.css"
 	rel="stylesheet" type="text/css" />

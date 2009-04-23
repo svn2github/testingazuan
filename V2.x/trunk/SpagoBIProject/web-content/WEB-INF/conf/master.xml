@@ -186,7 +186,7 @@
     <CONFIGURATOR path="/WEB-INF/conf/hotlink/validation.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/hotlink/business_map.xml" />
 	
-<!-- webapp 
+<!-- webapp -->	
 
 <CONFIGURATOR path="/WEB-INF/conf/webapp/messages.xml" />
 <CONFIGURATOR path="/WEB-INF/conf/webapp/modules.xml" />
@@ -201,7 +201,7 @@
 <CONFIGURATOR path="/WEB-INF/conf/webapp/validation.xml" />
 <CONFIGURATOR path="/WEB-INF/conf/webapp/ldap_authorizations.xml" />
 
--->	
+
 	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi_dao.xml" />	
 	<CONFIGURATOR path="/WEB-INF/conf/config/spagobi_SSO.xml" />
@@ -228,7 +228,7 @@
 	<!-- -->      	
 	<CONFIGURATOR path="/WEB-INF/conf/config/security.xml" />	
 
-	<!-- profile manager -->
+	<!-- profile manager 
 	
   	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/pages.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/modules.xml" />
@@ -236,7 +236,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/business_map.xml" />
 	
-
+-->
     <!-- kpi --> 
     <CONFIGURATOR path="/WEB-INF/conf/kpi/actions.xml" />
     <CONFIGURATOR path="/WEB-INF/conf/kpi/graphs.xml" />

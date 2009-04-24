@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
-<%@ page import="java.util.Map" %>
+<%@ page import="java.util.Map"%>
 <%@page import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.List"%>
@@ -27,11 +27,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.jfree.chart.JFreeChart"%>
 <%@page import="org.jfree.chart.ChartUtilities"%>
 <%@page import="java.io.PrintWriter"%>
-<%@page import="org.jfree.chart.imagemap.StandardToolTipTagFragmentGenerator"%>
-<%@page import="org.jfree.chart.imagemap.StandardURLTagFragmentGenerator"%>
+<%@page
+	import="org.jfree.chart.imagemap.StandardToolTipTagFragmentGenerator"%>
+<%@page
+	import="org.jfree.chart.imagemap.StandardURLTagFragmentGenerator"%>
 <%@page import="it.eng.spagobi.engines.chart.bo.ChartImpl"%>
 <%@page import="org.jfree.chart.ChartRenderingInfo"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar"%>
+<%@page
+	import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar"%>
 <%@page import="org.jfree.data.general.Dataset"%>
 <%@page import="org.safehaus.uuid.UUIDGenerator"%>
 
@@ -39,12 +42,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.jfree.chart.entity.StandardEntityCollection"%>
 <%@page import="it.eng.spago.error.EMFErrorHandler"%>
 <%@page import="java.util.Vector"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart"%>
+<%@page
+	import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
+<%@page
+	import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup"%>
+<%@page
+	import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie"%>
+<%@page
+	import="it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart"%>
 <%@page import="it.eng.spagobi.engines.chart.utils.DatasetMap"%>
-<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts"%>
+<%@page
+	import="it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
@@ -57,8 +65,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String execContext = instanceO.getExecutionModality();
    	// if in document composition case do not include header.jsp
 	   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
-				<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
-				<%
+<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
+<%
 				executionAuditId_chart = executionAuditId;	   
 	   }
    		else // in document composition case doesn't call header so set Object and uuid
@@ -76,20 +84,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
    	%>
 
-	<%-- div with wait while loading message --%>
-	<div id="divLoadingMessage<%= uuidO %>" style="display:inline;">
-		<img src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/analiticalmodel/loading.gif", currTheme)%>' />
-		<spagobi:message key='sbi.execution.pleaseWait'/>
-	</div>
+<%-- div with wait while loading message --%>
+<div id="divLoadingMessage<%= uuidO %>" style="display: inline;">
+<img
+	src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/analiticalmodel/loading.gif", currTheme)%>' />
+<spagobi:message key='sbi.execution.pleaseWait' /></div>
 
-<link rel="stylesheet" type="text/css" href="<%=urlBuilder.getResourceLinkByTheme(request, "css/printImage.css",currTheme)%>" media="print">
-		
-	
-	<link type="text/css" rel="stylesheet" href="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/resources/css/ext-ux-slidezone.css")%>"/>
-	<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/Ext.ux.SlideZone.js")%>"></script>	
-  
-  
-  <% 
+<link rel="stylesheet" type="text/css"
+	href="<%=urlBuilder.getResourceLinkByTheme(request, "css/printImage.css",currTheme)%>"
+	media="print">
+
+
+<link type="text/css" rel="stylesheet"
+	href="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/resources/css/ext-ux-slidezone.css")%>" />
+<script type="text/javascript"
+	src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/Ext.ux.SlideZone.js")%>"></script>
+
+
+<% 
 	String maxSlider="0";
 	String minSlider="0";
 	
@@ -296,8 +308,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}
 		   	
 			//String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
+			String auditParameter="";
+			if(executionAuditId_chart!=null){
+				auditParameter="&"+AuditManager.AUDIT_ID+"="+executionAuditId_chart.toString();
+			}
+			
 			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
-					"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path_param+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE"+"&"+AuditManager.AUDIT_ID+"="+executionAuditId_chart.toString();
+					"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path_param+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE"+auditParameter;
 			
 			//add the serie parameter
 		if(datasetMap.getSelectedSeries().contains("allseries")){
@@ -329,12 +346,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 			
 	%>
-	
-	
-	
-	
-	
-	<%
+
+
+
+
+
+<%
 
 	if(sbi.isFilter() && (sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART"))){
 	if(sbi instanceof BarCharts){
@@ -352,8 +369,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		showSlider=true;
 	}
 	%>
-	
-	
+
+
 <% 
 
 	/// If it is a linkable graph  write the MAP
@@ -364,23 +381,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 
 %>
-					<!-- Begin drawing the page -->
+<!-- Begin drawing the page -->
 <br>
 <table align="left">
-  <tr>
-  	<td>
-	<table align="left">
-	
-	<% 
+	<tr>
+		<td>
+		<table align="left">
+
+			<% 
 		    // No slider needed
 		if(!showSlider){
 	
 		    %>
-		    <tr>
-			    <td>
-			  	 	<div align="center">
-						<img id="image" src="<%=urlPng%>" BORDER="1" alt="" USEMAP="#chart"/>
-					</div>
+			<tr>
+				<td>
+				<div align="center"><img id="image" src="<%=urlPng%>"
+					BORDER="1" alt="" USEMAP="#chart" /></div>
 				</td>
 			</tr>
 			<%}
@@ -388,68 +404,59 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			maxSlider=datasetMap.getCatsnum().toString();
 			minSlider="1";
 		%>
-		<tr>
-			<script type="text/javascript" language="JAVASCRIPT">
+			<tr>
+				<script type="text/javascript" language="JAVASCRIPT">
 				<!--
 					arrayCats=new Array(<%=datasetMap.getCatsnum().intValue()%>);
 					-->
 			</script>
-		
-			<%
+
+				<%
 			for (Iterator iterator = datasetMap.getCategories().keySet().iterator(); iterator.hasNext();){  
 				Integer key=(Integer)iterator.next();
 				String name=(String)datasetMap.getCategories().get(key);
 			%>
-	
-			<script type="text/javascript" language="JAVASCRIPT">
+
+				<script type="text/javascript" language="JAVASCRIPT">
 				<!--
 					arrayCats[<%=key%>]='<%=name%>';
 			     //arrayCats[1]='All';
 				//-->
 			</script>
-			<%} %>
-		
-		
-						<td width="75%" align="center">
-	
-											<span class='portlet-form-field-label'>
-												<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();"> View all </a>  <%=datasetMap.getCatTitle()%> or select from
-											</span>
-											
-									<span  class='portlet-form-field-label'id="slider_1_1_value" width="10%" align="right" >
-											</span>
-											
-	
-							<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">
-								<span id="slider1"></span> 
-							</a>
-	
-								</td>		
-					</tr>
-		<!-- 	</form>  -->
+				<%} %>
+
+
+				<td width="75%" align="center"><span
+					class='portlet-form-field-label'> <a
+					href="javascript:void(0)"
+					onClick="document.location.href=getAllActionUrl();"> View all </a>
+				<%=datasetMap.getCatTitle()%> or select from </span> <span
+					class='portlet-form-field-label' id="slider_1_1_value" width="10%"
+					align="right"> </span> <a href="javascript:void(0)"
+					onClick="document.location.href=getActionUrl();"> <span
+					id="slider1"></span> </a></td>
+			</tr>
+			<!-- 	</form>  -->
 			<!--  </table> -->
-	<tr>
-	<td align="center">
-	 	<div>
-	 		<img id="image" src="<%=urlPng%>" BORDER=1 alt="" USEMAP="#chart"/>    
-		</div>
-	</td>
-	</tr>
-	</table>
-	
+			<tr>
+				<td align="center">
+				<div><img id="image" src="<%=urlPng%>" BORDER=1 alt=""
+					USEMAP="#chart" /></div>
+				</td>
+			</tr>
+		</table>
+
 		<% 
 		}
 		/////////////////////// End slider creation ////////////////////////// 
 		%>
-    
-    
-    </td>
-  </tr>
- 
-    
-        
+		</td>
+	</tr>
 
-<% 	 
+
+
+
+	<% 	 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// form to limit the series if it is a barchart
@@ -467,7 +474,7 @@ catGroupsNames=new Vector();
 				refreshUrlSerie=refreshUrl;
 			}
 			%>
-<!--  <tr>
+	<!--  <tr>
    <td>  
 		<table  align="left">
 		<div align="center">
@@ -484,44 +491,34 @@ catGroupsNames=new Vector();
 
 		</td>
 	  </tr>-->
- 	 <tr>
-  	<td>
+	<tr>
+		<td>
 
 
-	   <table id="filterSeriesOrCatGroups" align="left">
-	   
+		<table id="filterSeriesOrCatGroups" align="left">
 
-		<!-- START FORM  -->
-	<form id='serieform' name="serie" action="<%=refreshUrl%>" method="POST" >
-		
-		<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE"/>	
-		<% 	
+
+			<!-- START FORM  -->
+			<form id='serieform' name="serie" action="<%=refreshUrl%>"
+				method="POST"><input type="hidden"
+				name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>"
+				value="TRUE" /> <% 	
 		//refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
 		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
 		{
 				String name = (String) iterator.next();
 				String value=(refreshUrlPars.get(name)).toString();
-		%>		
-					<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
-			<%}%>
-	 
-	 <!--  ROW FOR SELECT THE SERIES-->
-	 <%
+		%> <input type="hidden" name="<%=name%>" value="<%=value%>" /> <%}%> <!--  ROW FOR SELECT THE SERIES-->
+			<%
 	 
 	 if(filterSeries==true){ %>
-	 <tr>
-		<td> 
-		<div align="center" class='div_detail_form'>
-		<%				
+			
+			<tr>
+				<td>
+				<div align="center" class='div_detail_form'>
+				<%				
 		String tlab=((datasetMap.getSerTitle()!=null && !datasetMap.getSerTitle().equalsIgnoreCase("")) ? datasetMap.getSerTitle() : "series");
- 		%>
- 		
-  		
- 		
-
-		
-		
-		<%     	
+ 		%> <%     	
 		// for each possible serie 
 
 		if(datasetMap.getSeries()!=null){	
@@ -530,63 +527,51 @@ catGroupsNames=new Vector();
 		// insert the serie names for evidencing the series
 		seriesNames.add(ser);
 		if(datasetMap.getSelectedSeries().contains(ser) || datasetMap.getSelectedSeries().contains("allseries")){
-		%>
-	
-				<input id="serie_<%=ser%>" name="serie" value="<%=ser%>" 
-				type="checkbox" checked='checked' />
-				<span><%=ser%></span>
-		
-		<%}else{ %>
-			
-				<input id="serie_<%=ser%>" name="serie" value="<%=ser%>" 
-				type="checkbox" />
-				<span><%=ser%></span>
-		<%} 
-		 }%>
-				  <!-- PROVA -->
-			  	   		<a onclick = "enableSerie()" title="check all series" 
-			  	   		alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
-							<img  src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>'/>
-						</a>
-						<a onclick = "disableSerie()" 
-						title="uncheck all series" 
-						alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
-							<img src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>'/>
-						</a>
-		
-		<%
-		}%>
-		<%if(filterCatGroup==false){ %>
-			
-			<input type="submit" value="Select"/>
-		
-		<%} %>
-			</div>
-		</td>
-	</tr>
-	<%}%>
-	 <!--  ROW FOR SELECT THE SERIES-->
+		%> <input id="serie_<%=ser%>" name="serie" value="<%=ser%>"
+					type="checkbox" checked='checked' /> <span><%=ser%></span> <%}else{ %>
 
-	<!--  ROW FOR SELECT THE CATS GROUPS-->
-	<%if(filterCatGroup==true){ 
-	// filter cat group%>	
-		<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE"/>	
-		
-		<% 	
+				<input id="serie_<%=ser%>" name="serie" value="<%=ser%>"
+					type="checkbox" /> <span><%=ser%></span> <%} 
+		 }%> <!-- PROVA --> <a onclick="enableSerie()"
+					title="check all series"
+					alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
+				<img
+					src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>' />
+				</a> <a onclick="disableSerie()" title="uncheck all series"
+					alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
+				<img
+					src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>' />
+				</a> <%
+		}%> <%if(filterCatGroup==false){ %> <input type="submit" value="Select" />
+
+				<%} %>
+				</div>
+				</td>
+			</tr>
+			<%}%>
+			<!--  ROW FOR SELECT THE SERIES-->
+
+			<!--  ROW FOR SELECT THE CATS GROUPS-->
+			<%if(filterCatGroup==true){ 
+	// filter cat group%>
+			<input type="hidden"
+				name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>"
+				value="TRUE" />
+
+			<% 	
 		//refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
 		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
 		{
 		String name = (String) iterator.next();
 		String value=(refreshUrlPars.get(name)).toString();
-		%>		
-		<input type="hidden" name="<%=name%>" value="<%=value%>"/>	
-		<%}%>
+		%>
+			<input type="hidden" name="<%=name%>" value="<%=value%>" />
+			<%}%>
 
-		<tr>
-		<td>
-		<div align="center" class='div_detail_form'>
-	
-		<%     	
+			<tr>
+				<td>
+				<div align="center" class='div_detail_form'>
+				<%     	
 		// for each possible category group
 		if(((BarCharts)sbi).getCatGroupNames()!=null){	
 		for (Iterator iterator = ((BarCharts)sbi).getCatGroupNames().iterator(); iterator.hasNext();) {
@@ -594,27 +579,17 @@ catGroupsNames=new Vector();
 		catGroupsNames.add(group);
 		//if(datasetMap.getSelectedCatGroups().contains(group) || datasetMap.getSelectedCatGroups().contains("allgroups")){
 		if(datasetMap.getSelectedCatGroups().contains(group)){
-		%>
-				<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" 
-				type="radio" checked='checked' />
-				<span class="portlet-font"><%=group%></span>
-		
-		<%}else{ %>
-				<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" 
-				type="radio" />
-				<span class="portlet-font"><%=group%></span>
-		<%} 
-		 }%>
-	
-	<%	}%>
-
-			<input type="submit" value="Select"/>
-			</div>
-		</td>
-		</tr>
-		<%} //close filter cat group case%>
-		<!--  CLOSE ROW FOR SELECT THE CATS GROUPS-->
-		<!-- <tr>
+		%> <input id="cat_group_<%=group%>" name="cat_group"
+					value="<%=group%>" type="radio" checked='checked' /> <span
+					class="portlet-font"><%=group%></span> <%}else{ %> <input
+					id="cat_group_<%=group%>" name="cat_group" value="<%=group%>"
+					type="radio" /> <span class="portlet-font"><%=group%></span> <%} 
+		 }%> <%	}%> <input type="submit" value="Select" /></div>
+				</td>
+			</tr>
+			<%} //close filter cat group case%>
+			<!--  CLOSE ROW FOR SELECT THE CATS GROUPS-->
+			<!-- <tr>
 		<td>
 			<div align="center" class='div_detail_form'>
 			<input type="submit" value="Select"/>
@@ -623,72 +598,71 @@ catGroupsNames=new Vector();
 		</tr> -->
 
 
-		</form>
-	<!--CLOSE FORM  -->
-		
-	
-		
-		</div>
+			</form>
+			<!--CLOSE FORM  -->
 
-		</td>
-		</tr>
+
+
+			</div>
+
+			</td>
+			</tr>
 		</table>
-<!-- </div>-->	
+		<!-- </div>--></td>
+	</tr>
 
-	</td>
-  </tr>
-	
 </table>
 <% 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////// end serie limit
 }
 %>
-	
-	
+
+
 <%
 	////////////////////////////////////////////Radio Buttons IF THERE ARE changeable parameters//////////////////////////////////////////////////////////
 	
 		%>
-		<div>
-			<table id="changepars" align="center">
-			 <tr>
-			 
-		
+<div>
+<table id="changepars" align="center">
+	<tr>
 
-			 		 			 
+
+
+
 		<%   if(sbi.isChangeableView() && !docComposition){
 	    		// for each possible parameter to change creates a checkbox
 	    		for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
 	    			String par = (String) iterator.next(); %>
-					<td align="right">
-						<div class='div_detail_form'>	
-							<span class='portlet-form-field-label'>
-								<%=sbi.getChangeViewParameterLabel(par,0)%> 
-							</span>
-				  		 </div>
-					</td>
-					<td align="left">
-	    				<form  name="<%=par%>" action="<%=refreshUrl%>" method="POST" >
-	    		  		<%if(sbi.getChangeViewParameter(par)){ %>
-	    		  			<input type="radio" name="<%=par%>" value="false" onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
- 				  			<input type="radio" name="<%=par%>" value="true"  checked  onclick="this.form.submit()" align="left"/><%=sbi.getChangeViewParameterLabel(par,2)%>  
- 			  			<%}
-	    		  		else {%>
-	    		 			<input type="radio" name="<%=par%>" value="false" checked onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,1)%><BR>
-							<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()" align="left"/>  <%=sbi.getChangeViewParameterLabel(par,2)%>
- 	    		  		<%} %>
- 	    				</form>
- 	   				</td>
-	  				<%} // close for on cheangeable pars
-	  				}%>  
-			  </tr>
-			 </table>
-	</div>
-	
-	<% 
+		<td align="right">
+		<div class='div_detail_form'><span
+			class='portlet-form-field-label'> <%=sbi.getChangeViewParameterLabel(par,0)%>
+		</span></div>
+		</td>
+		<td align="left">
+		<form name="<%=par%>" action="<%=refreshUrl%>" method="POST">
+		<%if(sbi.getChangeViewParameter(par)){ %> <input type="radio"
+			name="<%=par%>" value="false" onclick="this.form.submit()"
+			align="left" /><%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
+		<input type="radio" name="<%=par%>" value="true" checked
+			onclick="this.form.submit()" align="left" /><%=sbi.getChangeViewParameterLabel(par,2)%>
+		<%}
+	    		  		else {%> <input type="radio" name="<%=par%>" value="false"
+			checked onclick="this.form.submit()" align="left" /> <%=sbi.getChangeViewParameterLabel(par,1)%><BR>
+		<input type="radio" name="<%=par%>" value="true"
+			onclick="this.form.submit()" align="left" /> <%=sbi.getChangeViewParameterLabel(par,2)%>
+		<%} %>
+		</form>
+		</td>
+		<%} // close for on cheangeable pars
+	  				}%>
+	</tr>
+</table>
+</div>
+
+<% 
  if(showSlider || filterSeries){ %>
 
- <script type="text/javascript" language="JavaScript">
+<script type="text/javascript" language="JavaScript">
  
  	function getValue() {return Test.slideZone1.getSlider('start1_1').value;}
 
@@ -791,7 +765,7 @@ if(refreshSeconds!=null && refreshSeconds.intValue()>0){
 Integer refreshConvert=new Integer(refreshSeconds.intValue()*1000);
 %>
 
-<script  type="text/javascript">
+<script type="text/javascript">
 
 function refreshpage(){
 if(document.getElementById('refreshimage<%= uuidO %>')){
@@ -800,18 +774,18 @@ if(document.getElementById('refreshimage<%= uuidO %>')){
 }
 </script>
 
- <script type="text/javascript">
+<script type="text/javascript">
 
     //setTimeout('window.location.reload()', <%=refreshConvert%>);
    setTimeout('javascript:refreshpage()', <%=refreshConvert%>);
    
 </script>
- <%} %>
- 
- 
- 
- 
- <% 
+<%} %>
+
+
+
+
+<% 
 	} // End no error case
 	else
 	{    // ERROR CASE; TRACE ON Sbi_AUDIT
@@ -831,4 +805,4 @@ document.getElementById('divLoadingMessage<%= uuidO %>').style.display = 'none';
 
 
 
-    
+

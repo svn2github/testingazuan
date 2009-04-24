@@ -30,6 +30,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%--
 The following directive catches exceptions thrown by jsps, must be commented in development environment
 --%>
+<%@page errorPage="/html/error.html"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.WebUrlBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.PortletUrlBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.messages.MessageBuilder"%>

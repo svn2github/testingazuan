@@ -57,13 +57,13 @@ public class ServerPWCallback implements CallbackHandler {
                 if (pc.getUsage() == WSPasswordCallback.DECRYPT) {
                 	System.out.println("WSPasswordCallback.DECRYPT=" + WSPasswordCallback.DECRYPT);
                 	pc.setPassword("security");
-                } else if (pc.getUsage() == WSPasswordCallback.USERNAME_TOKEN) {
-					logger.debug("WSPasswordCallback.USERNAME_TOKEN = " + pc.getUsage() + " callback usage");
-					// for passwords sent in digest mode we need to provide the password,
-					// because the original one can't be un-digested from the message
-					String password = getPassword(userId);
-					// this will throw an exception if the passwords don't match
-					pc.setPassword(password);
+//                } else if (pc.getUsage() == WSPasswordCallback.USERNAME_TOKEN) {
+//					logger.debug("WSPasswordCallback.USERNAME_TOKEN = " + pc.getUsage() + " callback usage");
+//					// for passwords sent in digest mode we need to provide the password,
+//					// because the original one can't be un-digested from the message
+//					String password = getPassword(userId);
+//					// this will throw an exception if the passwords don't match
+//					pc.setPassword(password);
 				} else if (pc.getUsage() == WSPasswordCallback.USERNAME_TOKEN_UNKNOWN) {
 					logger.debug("WSPasswordCallback.USERNAME_TOKEN_UNKNOWN = " + pc.getUsage() + " callback usage");
 					// for passwords sent in clear-text mode we can compare passwords directly
@@ -104,18 +104,18 @@ public class ServerPWCallback implements CallbackHandler {
 		}
 	}
 	
-	private String getPassword(String userId) {
-		logger.debug("IN: userId = " + userId);
-		String password = null;
-		try {
-			ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-			password = supplier.getPassword(userId);
-		} catch (Throwable t) {
-			logger.error("Error while authenticating userId = " + userId, t);
-		} finally {
-			logger.debug("OUT");
-		}
-		return password;
-	}
+//	private String getPassword(String userId) {
+//		logger.debug("IN: userId = " + userId);
+//		String password = null;
+//		try {
+//			ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
+//			password = supplier.getPassword(userId);
+//		} catch (Throwable t) {
+//			logger.error("Error while authenticating userId = " + userId, t);
+//		} finally {
+//			logger.debug("OUT");
+//		}
+//		return password;
+//	}
 	
 }

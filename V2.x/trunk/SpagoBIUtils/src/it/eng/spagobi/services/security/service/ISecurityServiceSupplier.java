@@ -40,17 +40,13 @@ public interface ISecurityServiceSupplier {
     	 * @return SpagoBIUserProfile
     	 */
 	SpagoBIUserProfile createUserProfile(String userId);	
-
-	boolean checkAuthorization(String userId,String function);
-	
 	/**
-	 * This method should return the password corresponding to the userId in input.
-	 * This method is invoked by SpagoBI SDK, when password is by sent client in digest mode.
+	 * 
 	 * @param userId
-	 * @return the password corresponding to the userId in input
+	 * @param function
+	 * @return
 	 */
-	String getPassword(String userId);
-	
+        boolean checkAuthorization(String userId, String function);
         /**
          * if SpagoBIUserProfile is NULL the password is incorrect!!!!
          * @param userId

@@ -20,6 +20,7 @@
 <%@tag import="java.util.Date"%>
 <%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
 <%@tag import="it.eng.spago.util.StringUtils"%>
+<%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 
 
 <%
@@ -27,6 +28,12 @@ RequestContainer requestContainer = ChannelUtilities.getRequestContainer(request
 IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 SessionContainer permSess=requestContainer.getSessionContainer().getPermanentContainer();
+
+// Set Theme
+String currTheme=ThemesManager.getCurrentTheme(requestContainer);
+if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+
+
 
 if (snapshotsList == null || snapshotsList.size() == 0) {
 	%>
@@ -67,12 +74,12 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 	        	} else {
 	        		%>
 					<img 
-       					src='<%= urlBuilder.getResourceLink(request, "/img/expertok.gif") %>' 
+       					src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif",currTheme ) %>' 
        					alt='<spagobi:message key="SBIDev.docConf.snapshots.selectAll"/>' 
        					title='<spagobi:message key="SBIDev.docConf.snapshots.selectAll"/>' 
        					onClick="selectDeselectAllSnapshots<%= uuid %>();" />
 					<img 
-       					src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/ico_delete.gif") %>' 
+       					src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/analiticalmodel/ico_delete.gif", currTheme) %>' 
        					alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
        					title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
        					onClick="deleteSnapshots<%= uuid %>();" />
@@ -185,7 +192,7 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
         	<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
         		<a href='<%= execSnapUrl %>'>
         			<img 
-						src='<%= urlBuilder.getResourceLink(request, "/img/exec.gif") %>' 
+						src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/exec.gif", currTheme) %>' 
 						name='execSnap' 
 						alt='<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt"/>' 
 						title='<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt"/>' />

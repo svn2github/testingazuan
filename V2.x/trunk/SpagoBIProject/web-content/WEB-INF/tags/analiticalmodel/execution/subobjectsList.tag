@@ -22,6 +22,7 @@
 <%@tag import="it.eng.spago.base.SessionContainer"%>
 <%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
 <%@tag import="it.eng.spago.util.StringUtils"%>
+<%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 
 
 <%
@@ -37,6 +38,11 @@ baseDeleteSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"tru
 Map deleteSubObjUrlPars = new HashMap();
 deleteSubObjUrlPars.putAll(baseDeleteSubObjUrlPars);
 String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
+
+//Set Theme
+String currTheme=ThemesManager.getCurrentTheme(requestContainer);
+if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+
 
 //if (subobjectsList == null || subobjectsList.size() == 0) {
 	%>
@@ -75,12 +81,12 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 					<td align='left' class='portlet-section-header'>&nbsp;</td>
 					<td align='left' class='portlet-section-header'>
 						<img 
-       						src='<%= urlBuilder.getResourceLink(request, "/img/expertok.gif") %>' 
+       						src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme) %>' 
        						name='selectDeselectAllImg' alt='<spagobi:message key="SBIDev.docConf.subBIObject.selectAll"/>' 
        						title='<spagobi:message key="SBIDev.docConf.subBIObject.selectAll"/>' 
        						onClick="selectDeselectAllSubobjects<%= uuid %>();" />
 						<img 
-	       					src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/ico_delete.gif") %>' 
+	       					src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/analiticalmodel/ico_delete.gif", currTheme) %>' 
 	       					alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
 	       					title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
 	       					onClick="deleteSubobjects<%= uuid %>();" />
@@ -240,7 +246,7 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 	           			<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
 	           				<a href='<%= execSubObjUrl %>'>
 	           					<img 
-	  	   							src='<%= urlBuilder.getResourceLink(request, "/img/exec.gif") %>' 
+	  	   							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/exec.gif", currTheme) %>' 
 	  	   							name='execSub' 
 	  	            				alt='<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />' 
 	                				title='<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />' />
@@ -342,7 +348,7 @@ String deleteSubObjUrl = urlBuilder.getUrl(request, deleteSubObjUrlPars);
 		deleteCell.className = cellClass;
 		deleteCell.style.width = '40px';
 		deleteCell.style.textAlign = 'center';
-		execCell.innerHTML = '<a href="<%= baseExecSubObjUrl.toString() %>&<%= SpagoBIConstants.SUBOBJECT_ID %>=' + subobject.id + '" ><img src="<%= urlBuilder.getResourceLink(request, "/img/exec.gif") %>"  name="execSub" alt="<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />" title="<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />" /></a>';
+		execCell.innerHTML = '<a href="<%= baseExecSubObjUrl.toString() %>&<%= SpagoBIConstants.SUBOBJECT_ID %>=' + subobject.id + '" ><img src="<%= urlBuilder.getResourceLinkByTheme(request, "/img/exec.gif", currTheme) %>"  name="execSub" alt="<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />" title="<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />" /></a>';
 		execCell.className = cellClass;
 		execCell.style.width = '40px';
 		

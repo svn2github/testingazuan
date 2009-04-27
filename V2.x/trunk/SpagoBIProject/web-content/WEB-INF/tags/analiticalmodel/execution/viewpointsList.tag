@@ -23,6 +23,7 @@
 <%@tag import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
 <%@tag import="it.eng.spago.base.SessionContainer"%>
+<%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 
 
 <%
@@ -30,6 +31,11 @@ RequestContainer requestContainer = ChannelUtilities.getRequestContainer(request
 IUrlBuilder urlBuilder = UrlBuilderFactory.getUrlBuilder(requestContainer.getChannelType());
 IEngUserProfile profile = (IEngUserProfile) requestContainer.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 SessionContainer permSess=requestContainer.getSessionContainer().getPermanentContainer();
+
+//Set Theme
+String currTheme=ThemesManager.getCurrentTheme(requestContainer);
+if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+
 
 if (viewpointsList == null || viewpointsList.size() == 0) {
 	%>
@@ -70,12 +76,12 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 				  <td align='left' class='portlet-section-header'>
 				  
 				  	<img 
-       						src='<%= urlBuilder.getResourceLink(request, "/img/expertok.gif") %>' 
+       						src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme) %>' 
        						name='selectDeselectAllImg' alt='<spagobi:message key="SBIDev.docConf.viewPoint.selectAll"/>' 
        						title='<spagobi:message key="SBIDev.docConf.viewPoint.selectAll"/>' 
        						onClick="selectDeselectAllViewpoints<%= uuid %>();" />
 						<img 
-	       					src='<%= urlBuilder.getResourceLink(request, "/img/analiticalmodel/ico_delete.gif") %>' 
+	       					src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/analiticalmodel/ico_delete.gif", currTheme) %>' 
 	       					alt='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
 	       					title='<spagobi:message key="SBIDev.docConf.ListdocDetParam.deleteCaption"/>' 
 	       					onClick="deleteViewpoints<%= uuid %>();" />
@@ -219,7 +225,7 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 					<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
 				    	<a href="javascript:document.location='<%= viewVPUrl.toString() %>';">
 				    		<img 
-				    			src='<%= urlBuilder.getResourceLink(request, "/img/notes.jpg") %>' 
+				    			src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/notes.jpg", currTheme) %>' 
 				       			name='getViewpoint' alt='<spagobi:message key="SBIDev.docConf.viewPoint.viewButt" />' 
 				        		title='<spagobi:message key="SBIDev.docConf.viewPoint.viewButt" />'
 				        	/>
@@ -228,7 +234,7 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 					<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
 						<a href='<%= execVPUrl %>'>
 					 		<img 
-					  	   			src='<%= urlBuilder.getResourceLink(request, "/img/exec.gif") %>'
+					  	   			src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/exec.gif", currTheme) %>'
 					  	       		name='execSnap'
 					  	        	alt='<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />'
 					       			title='<spagobi:message key="SBIDev.docConf.execBIObjectParams.execButt" />'

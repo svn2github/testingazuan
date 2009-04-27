@@ -21,9 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.services.proxy;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 
+import org.apache.axis.client.Stub;
+import org.apache.ws.security.handler.WSHandlerConstants;
+
+import it.eng.spagobi.sdk.callbacks.ClientCredentialsHolder;
 import it.eng.spagobi.services.session.bo.Document;
 import it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.services.session.bo.DocumentParameter;
@@ -34,25 +39,22 @@ public class SessionServiceProxy implements
 	private String _endpoint = null;
 	private it.eng.spagobi.services.session.stub.SessionService sessionService = null;
 	private Long sessionId = null;
+	private ClientCredentialsHolder cch = null;
 
-	public SessionServiceProxy() {
-		_initSessionServiceProxy();
-	}
-
-	public SessionServiceProxy(Long sessionId) {
-		_initSessionServiceProxy();
-		this.sessionId = sessionId;
-	}
-
-	public SessionServiceProxy(String endpoint) {
-		_endpoint = endpoint;
+	public SessionServiceProxy(String user, String pwd) {
+		cch = new ClientCredentialsHolder(user, pwd);
 		_initSessionServiceProxy();
 	}
 
 	private void _initSessionServiceProxy() {
 		try {
-			sessionService = (new it.eng.spagobi.services.session.stub.SessionServiceServiceLocator())
-					.getWSSessionService();
+			it.eng.spagobi.services.session.stub.SessionServiceServiceLocator locator = new it.eng.spagobi.services.session.stub.SessionServiceServiceLocator();
+			Remote remote = locator.getPort(it.eng.spagobi.services.session.stub.SessionService.class);
+	        Stub axisPort = (Stub) remote;
+	        axisPort._setProperty(WSHandlerConstants.USER, cch.getUsername());
+	        axisPort._setProperty(WSHandlerConstants.PW_CALLBACK_REF, cch);
+			sessionService = (it.eng.spagobi.services.session.stub.SessionService) axisPort;
+			
 			if (sessionService != null) {
 				if (_endpoint != null)
 					((javax.xml.rpc.Stub) sessionService)

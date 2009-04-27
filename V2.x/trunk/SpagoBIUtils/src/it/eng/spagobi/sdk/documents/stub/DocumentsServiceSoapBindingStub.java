@@ -1,16 +1,13 @@
 /**
- * WSSessionServiceSoapBindingStub.java
+ * DocumentsServiceSoapBindingStub.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
  */
 
-package it.eng.spagobi.services.session.stub;
+package it.eng.spagobi.sdk.documents.stub;
 
-import org.apache.axis.handlers.SimpleSessionHandler;
-import org.apache.ws.security.handler.WSHandlerConstants;
-
-public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub implements it.eng.spagobi.services.session.stub.SessionService {
+public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub implements it.eng.spagobi.sdk.documents.stub.DocumentsService {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
@@ -18,8 +15,6 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
 
     static org.apache.axis.description.OperationDesc [] _operations;
 
-    private Long sessionId = null;
-    
     static {
         _operations = new org.apache.axis.description.OperationDesc[8];
         _initOperationDesc1();
@@ -29,86 +24,47 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         org.apache.axis.description.OperationDesc oper;
         org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("openSession");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
-        oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
-        oper.addParameter(param);
-        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
-        oper.setStyle(org.apache.axis.constants.Style.RPC);
-        oper.setUse(org.apache.axis.constants.Use.ENCODED);
-        oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("urn:spagobiwssession", "fault"),
-                      "it.eng.spagobi.services.session.exceptions.AuthenticationException",
-                      new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "AuthenticationException"), 
-                      true
-                     ));
-        _operations[0] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("openSessionWithToken");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
-        oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
-        oper.addParameter(param);
-        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
-        oper.setStyle(org.apache.axis.constants.Style.RPC);
-        oper.setUse(org.apache.axis.constants.Use.ENCODED);
-        oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("urn:spagobiwssession", "fault"),
-                      "it.eng.spagobi.services.session.exceptions.AuthenticationException",
-                      new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "AuthenticationException"), 
-                      true
-                     ));
-        _operations[1] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("isValidSession");
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        oper.setReturnClass(boolean.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "isValidSessionReturn"));
-        oper.setStyle(org.apache.axis.constants.Style.RPC);
-        oper.setUse(org.apache.axis.constants.Use.ENCODED);
-        _operations[2] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("closeSession");
-        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
-        oper.setStyle(org.apache.axis.constants.Style.RPC);
-        oper.setUse(org.apache.axis.constants.Use.ENCODED);
-        _operations[3] = oper;
-
-        oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("getDocuments");
+        oper.setName("getDocumentsAsList");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_Document"));
-        oper.setReturnClass(it.eng.spagobi.services.session.bo.Document[].class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "getDocumentsReturn"));
+        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_Document"));
+        oper.setReturnClass(it.eng.spagobi.sdk.documents.bo.Document[].class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "getDocumentsAsListReturn"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
-        _operations[4] = oper;
+        _operations[0] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getDocumentsAsTree");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_Functionality"));
+        oper.setReturnClass(it.eng.spagobi.sdk.documents.bo.Functionality[].class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "getDocumentsAsTreeReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        _operations[1] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getCorrectRolesForExecution");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_soapenc_string"));
+        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_soapenc_string"));
         oper.setReturnClass(java.lang.String[].class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getCorrectRolesForExecutionReturn"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("urn:spagobiwssession", "fault"),
-                      "it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException",
-                      new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException"), 
+                      new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
+                      "it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NonExecutableDocumentException"), 
                       true
                      ));
-        _operations[5] = oper;
+        _operations[2] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getDocumentParameters");
@@ -116,18 +72,18 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.addParameter(param);
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_DocumentParameter"));
-        oper.setReturnClass(it.eng.spagobi.services.session.bo.DocumentParameter[].class);
+        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_DocumentParameter"));
+        oper.setReturnClass(it.eng.spagobi.sdk.documents.bo.DocumentParameter[].class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getDocumentParametersReturn"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("urn:spagobiwssession", "fault"),
-                      "it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException",
-                      new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException"), 
+                      new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
+                      "it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NonExecutableDocumentException"), 
                       true
                      ));
-        _operations[6] = oper;
+        _operations[3] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("getAdmissibleValues");
@@ -141,25 +97,80 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         oper.addFault(new org.apache.axis.description.FaultDesc(
-                      new javax.xml.namespace.QName("urn:spagobiwssession", "fault"),
-                      "it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException",
-                      new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException"), 
+                      new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
+                      "it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NonExecutableDocumentException"), 
+                      true
+                     ));
+        _operations[4] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("downloadTemplate");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Template"));
+        oper.setReturnClass(it.eng.spagobi.sdk.documents.bo.Template.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "downloadTemplateReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
+                      "it.eng.spagobi.sdk.exceptions.NotAllowedOperationException",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NotAllowedOperationException"), 
+                      true
+                     ));
+        _operations[5] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("uploadTemplate");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Template"), it.eng.spagobi.sdk.documents.bo.Template.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
+                      "it.eng.spagobi.sdk.exceptions.NotAllowedOperationException",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NotAllowedOperationException"), 
+                      true
+                     ));
+        _operations[6] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("saveNewDocument");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Document"), it.eng.spagobi.sdk.documents.bo.Document.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Template"), it.eng.spagobi.sdk.documents.bo.Template.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"));
+        oper.setReturnClass(java.lang.Integer.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "saveNewDocumentReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
+                      "it.eng.spagobi.sdk.exceptions.NotAllowedOperationException",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NotAllowedOperationException"), 
                       true
                      ));
         _operations[7] = oper;
 
     }
 
-    public WSSessionServiceSoapBindingStub() throws org.apache.axis.AxisFault {
+    public DocumentsServiceSoapBindingStub() throws org.apache.axis.AxisFault {
          this(null);
     }
 
-    public WSSessionServiceSoapBindingStub(java.net.URL endpointURL, javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
+    public DocumentsServiceSoapBindingStub(java.net.URL endpointURL, javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
          this(service);
          super.cachedEndpoint = endpointURL;
     }
 
-    public WSSessionServiceSoapBindingStub(javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
+    public DocumentsServiceSoapBindingStub(javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
         if (service == null) {
             super.service = new org.apache.axis.client.Service();
         } else {
@@ -179,42 +190,56 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
             java.lang.Class simplelistsf = org.apache.axis.encoding.ser.SimpleListSerializerFactory.class;
             java.lang.Class simplelistdf = org.apache.axis.encoding.ser.SimpleListDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "Check");
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Constraint");
             cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.bo.Check.class;
+            cls = it.eng.spagobi.sdk.documents.bo.Constraint.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "Document");
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Document");
             cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.bo.Document.class;
+            cls = it.eng.spagobi.sdk.documents.bo.Document.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "DocumentParameter");
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "DocumentParameter");
             cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.bo.DocumentParameter.class;
+            cls = it.eng.spagobi.sdk.documents.bo.DocumentParameter.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "AuthenticationException");
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Functionality");
             cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.exceptions.AuthenticationException.class;
+            cls = it.eng.spagobi.sdk.documents.bo.Functionality.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://exceptions.session.services.spagobi.eng.it", "NonExecutableDocumentException");
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Template");
             cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException.class;
+            cls = it.eng.spagobi.sdk.documents.bo.Template.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_soapenc_string");
+            qName = new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NonExecutableDocumentException");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NotAllowedOperationException");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.sdk.exceptions.NotAllowedOperationException.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_soapenc_string");
             cachedSerQNames.add(qName);
             cls = java.lang.String[].class;
             cachedSerClasses.add(cls);
@@ -223,29 +248,38 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
-            qName = new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_Check");
+            qName = new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_Constraint");
             cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.bo.Check[].class;
+            cls = it.eng.spagobi.sdk.documents.bo.Constraint[].class;
             cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "Check");
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Constraint");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
-            qName = new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_Document");
+            qName = new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_Document");
             cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.bo.Document[].class;
+            cls = it.eng.spagobi.sdk.documents.bo.Document[].class;
             cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "Document");
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Document");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
 
-            qName = new javax.xml.namespace.QName("urn:spagobiwssession", "ArrayOf_tns3_DocumentParameter");
+            qName = new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_DocumentParameter");
             cachedSerQNames.add(qName);
-            cls = it.eng.spagobi.services.session.bo.DocumentParameter[].class;
+            cls = it.eng.spagobi.sdk.documents.bo.DocumentParameter[].class;
             cachedSerClasses.add(cls);
-            qName = new javax.xml.namespace.QName("http://bo.session.services.spagobi.eng.it", "DocumentParameter");
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "DocumentParameter");
+            qName2 = null;
+            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
+
+            qName = new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_Functionality");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.sdk.documents.bo.Functionality[].class;
+            cachedSerClasses.add(cls);
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Functionality");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
@@ -255,8 +289,6 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
     protected org.apache.axis.client.Call createCall() throws java.rmi.RemoteException {
         try {
             org.apache.axis.client.Call _call = super._createCall();
-//            _call.setProperty(WSHandlerConstants.USER, "biadmin");
-//            _call.setMaintainSession(true);
             if (super.maintainSessionSet) {
                 _call.setMaintainSession(super.maintainSession);
             }
@@ -319,7 +351,7 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         }
     }
 
-    public void openSession(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.AuthenticationException {
+    public it.eng.spagobi.sdk.documents.bo.Document[] getDocumentsAsList(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -328,155 +360,8 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobiwssession", "openSession"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "getDocumentsAsList"));
 
-        if (this.getSessionId() != null){
-        	_call.getService().getEngine().setOption(SimpleSessionHandler.SESSION_ID, this.sessionId);
-        }
-        
-        setRequestHeaders(_call);
-        setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
-
-        if (_resp instanceof java.rmi.RemoteException) {
-            throw (java.rmi.RemoteException)_resp;
-        }
-        extractAttachments(_call);
-        Long sessionId = (Long)_call.getMessageContext().getProperty(SimpleSessionHandler.SESSION_ID);
-        this.sessionId = sessionId;
-  } catch (org.apache.axis.AxisFault axisFaultException) {
-    if (axisFaultException.detail != null) {
-        if (axisFaultException.detail instanceof java.rmi.RemoteException) {
-              throw (java.rmi.RemoteException) axisFaultException.detail;
-         }
-        if (axisFaultException.detail instanceof it.eng.spagobi.services.session.exceptions.AuthenticationException) {
-              throw (it.eng.spagobi.services.session.exceptions.AuthenticationException) axisFaultException.detail;
-         }
-   }
-  throw axisFaultException;
-}
-    }
-
-    public void openSessionWithToken(java.lang.String in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.AuthenticationException {
-        if (super.cachedEndpoint == null) {
-            throw new org.apache.axis.NoEndPointException();
-        }
-        org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[1]);
-        _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobiwssession", "openSessionWithToken"));
-
-        if (this.getSessionId() != null){
-        	_call.getService().getEngine().setOption(SimpleSessionHandler.SESSION_ID, this.sessionId);
-        }
-        
-        setRequestHeaders(_call);
-        setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
-
-        if (_resp instanceof java.rmi.RemoteException) {
-            throw (java.rmi.RemoteException)_resp;
-        }
-        extractAttachments(_call);
-        Long sessionId = (Long)_call.getMessageContext().getProperty(SimpleSessionHandler.SESSION_ID);
-        this.sessionId = sessionId;
-  } catch (org.apache.axis.AxisFault axisFaultException) {
-    if (axisFaultException.detail != null) {
-        if (axisFaultException.detail instanceof java.rmi.RemoteException) {
-              throw (java.rmi.RemoteException) axisFaultException.detail;
-         }
-        if (axisFaultException.detail instanceof it.eng.spagobi.services.session.exceptions.AuthenticationException) {
-              throw (it.eng.spagobi.services.session.exceptions.AuthenticationException) axisFaultException.detail;
-         }
-   }
-  throw axisFaultException;
-}
-    }
-
-    public boolean isValidSession() throws java.rmi.RemoteException {
-        if (super.cachedEndpoint == null) {
-            throw new org.apache.axis.NoEndPointException();
-        }
-        org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[2]);
-        _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobiwssession", "isValidSession"));
-
-        if (this.getSessionId() != null){
-        	_call.getService().getEngine().setOption(SimpleSessionHandler.SESSION_ID, this.sessionId);
-        }
-        
-        setRequestHeaders(_call);
-        setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {});
-
-        if (_resp instanceof java.rmi.RemoteException) {
-            throw (java.rmi.RemoteException)_resp;
-        }
-        else {
-            extractAttachments(_call);
-            Long sessionId = (Long)_call.getMessageContext().getProperty(SimpleSessionHandler.SESSION_ID);
-            this.sessionId = sessionId;
-            try {
-                return ((java.lang.Boolean) _resp).booleanValue();
-            } catch (java.lang.Exception _exception) {
-                return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class)).booleanValue();
-            }
-        }
-  } catch (org.apache.axis.AxisFault axisFaultException) {
-  throw axisFaultException;
-}
-    }
-
-    public void closeSession() throws java.rmi.RemoteException {
-        if (super.cachedEndpoint == null) {
-            throw new org.apache.axis.NoEndPointException();
-        }
-        org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[3]);
-        _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobiwssession", "closeSession"));
-
-        if (this.getSessionId() != null){
-        	_call.getService().getEngine().setOption(SimpleSessionHandler.SESSION_ID, this.sessionId);
-        }
-        
-        setRequestHeaders(_call);
-        setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {});
-
-        if (_resp instanceof java.rmi.RemoteException) {
-            throw (java.rmi.RemoteException)_resp;
-        }
-        extractAttachments(_call);
-        Long sessionId = (Long)_call.getMessageContext().getProperty(SimpleSessionHandler.SESSION_ID);
-        this.sessionId = sessionId;
-  } catch (org.apache.axis.AxisFault axisFaultException) {
-  throw axisFaultException;
-}
-    }
-
-    public it.eng.spagobi.services.session.bo.Document[] getDocuments(java.lang.String in0, java.lang.String in1, java.lang.String in2) throws java.rmi.RemoteException {
-        if (super.cachedEndpoint == null) {
-            throw new org.apache.axis.NoEndPointException();
-        }
-        org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[4]);
-        _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("");
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobiwssession", "getDocuments"));
-
-        if (this.getSessionId() != null){
-        	_call.getService().getEngine().setOption(SimpleSessionHandler.SESSION_ID, this.sessionId);
-        }
-        
         setRequestHeaders(_call);
         setAttachments(_call);
  try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
@@ -486,12 +371,10 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         }
         else {
             extractAttachments(_call);
-            Long sessionId = (Long)_call.getMessageContext().getProperty(SimpleSessionHandler.SESSION_ID);
-            this.sessionId = sessionId;
             try {
-                return (it.eng.spagobi.services.session.bo.Document[]) _resp;
+                return (it.eng.spagobi.sdk.documents.bo.Document[]) _resp;
             } catch (java.lang.Exception _exception) {
-                return (it.eng.spagobi.services.session.bo.Document[]) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.services.session.bo.Document[].class);
+                return (it.eng.spagobi.sdk.documents.bo.Document[]) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.sdk.documents.bo.Document[].class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {
@@ -499,21 +382,17 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public java.lang.String[] getCorrectRolesForExecution(java.lang.Integer in0) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException {
+    public it.eng.spagobi.sdk.documents.bo.Functionality[] getDocumentsAsTree(java.lang.String in0) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[5]);
+        _call.setOperation(_operations[1]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobiwssession", "getCorrectRolesForExecution"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "getDocumentsAsTree"));
 
-        if (this.getSessionId() != null){
-        	_call.getService().getEngine().setOption(SimpleSessionHandler.SESSION_ID, this.sessionId);
-        }
-        
         setRequestHeaders(_call);
         setAttachments(_call);
  try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0});
@@ -523,8 +402,37 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         }
         else {
             extractAttachments(_call);
-            Long sessionId = (Long)_call.getMessageContext().getProperty(SimpleSessionHandler.SESSION_ID);
-            this.sessionId = sessionId;
+            try {
+                return (it.eng.spagobi.sdk.documents.bo.Functionality[]) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (it.eng.spagobi.sdk.documents.bo.Functionality[]) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.sdk.documents.bo.Functionality[].class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public java.lang.String[] getCorrectRolesForExecution(java.lang.Integer in0) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[2]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "getCorrectRolesForExecution"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
             try {
                 return (java.lang.String[]) _resp;
             } catch (java.lang.Exception _exception) {
@@ -536,29 +444,25 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         if (axisFaultException.detail instanceof java.rmi.RemoteException) {
               throw (java.rmi.RemoteException) axisFaultException.detail;
          }
-        if (axisFaultException.detail instanceof it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException) {
-              throw (it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException) axisFaultException.detail;
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException) {
+              throw (it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException) axisFaultException.detail;
          }
    }
   throw axisFaultException;
 }
     }
 
-    public it.eng.spagobi.services.session.bo.DocumentParameter[] getDocumentParameters(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException {
+    public it.eng.spagobi.sdk.documents.bo.DocumentParameter[] getDocumentParameters(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[6]);
+        _call.setOperation(_operations[3]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobiwssession", "getDocumentParameters"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "getDocumentParameters"));
 
-        if (this.getSessionId() != null){
-        	_call.getService().getEngine().setOption(SimpleSessionHandler.SESSION_ID, this.sessionId);
-        }
-        
         setRequestHeaders(_call);
         setAttachments(_call);
  try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
@@ -568,12 +472,10 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         }
         else {
             extractAttachments(_call);
-            Long sessionId = (Long)_call.getMessageContext().getProperty(SimpleSessionHandler.SESSION_ID);
-            this.sessionId = sessionId;
             try {
-                return (it.eng.spagobi.services.session.bo.DocumentParameter[]) _resp;
+                return (it.eng.spagobi.sdk.documents.bo.DocumentParameter[]) _resp;
             } catch (java.lang.Exception _exception) {
-                return (it.eng.spagobi.services.session.bo.DocumentParameter[]) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.services.session.bo.DocumentParameter[].class);
+                return (it.eng.spagobi.sdk.documents.bo.DocumentParameter[]) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.sdk.documents.bo.DocumentParameter[].class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {
@@ -581,29 +483,25 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         if (axisFaultException.detail instanceof java.rmi.RemoteException) {
               throw (java.rmi.RemoteException) axisFaultException.detail;
          }
-        if (axisFaultException.detail instanceof it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException) {
-              throw (it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException) axisFaultException.detail;
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException) {
+              throw (it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException) axisFaultException.detail;
          }
    }
   throw axisFaultException;
 }
     }
 
-    public java.util.HashMap getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException {
+    public java.util.HashMap getAdmissibleValues(java.lang.Integer in0, java.lang.String in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[7]);
+        _call.setOperation(_operations[4]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobiwssession", "getAdmissibleValues"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "getAdmissibleValues"));
 
-        if (this.getSessionId() != null){
-        	_call.getService().getEngine().setOption(SimpleSessionHandler.SESSION_ID, this.sessionId);
-        }
-        
         setRequestHeaders(_call);
         setAttachments(_call);
  try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
@@ -613,8 +511,6 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         }
         else {
             extractAttachments(_call);
-            Long sessionId = (Long)_call.getMessageContext().getProperty(SimpleSessionHandler.SESSION_ID);
-            this.sessionId = sessionId;
             try {
                 return (java.util.HashMap) _resp;
             } catch (java.lang.Exception _exception) {
@@ -626,20 +522,122 @@ public class WSSessionServiceSoapBindingStub extends org.apache.axis.client.Stub
         if (axisFaultException.detail instanceof java.rmi.RemoteException) {
               throw (java.rmi.RemoteException) axisFaultException.detail;
          }
-        if (axisFaultException.detail instanceof it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException) {
-              throw (it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException) axisFaultException.detail;
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException) {
+              throw (it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException) axisFaultException.detail;
          }
    }
   throw axisFaultException;
 }
     }
-    
-	public Long getSessionId() {
-		return sessionId;
-	}
 
-	public void setSessionId(Long sessionId) {
-		this.sessionId = sessionId;
-	}
+    public it.eng.spagobi.sdk.documents.bo.Template downloadTemplate(java.lang.Integer in0) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[5]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "downloadTemplate"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (it.eng.spagobi.sdk.documents.bo.Template) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (it.eng.spagobi.sdk.documents.bo.Template) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.sdk.documents.bo.Template.class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+    if (axisFaultException.detail != null) {
+        if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+              throw (java.rmi.RemoteException) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.NotAllowedOperationException) {
+              throw (it.eng.spagobi.sdk.exceptions.NotAllowedOperationException) axisFaultException.detail;
+         }
+   }
+  throw axisFaultException;
+}
+    }
+
+    public void uploadTemplate(java.lang.Integer in0, it.eng.spagobi.sdk.documents.bo.Template in1) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[6]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "uploadTemplate"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        extractAttachments(_call);
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+    if (axisFaultException.detail != null) {
+        if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+              throw (java.rmi.RemoteException) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.NotAllowedOperationException) {
+              throw (it.eng.spagobi.sdk.exceptions.NotAllowedOperationException) axisFaultException.detail;
+         }
+   }
+  throw axisFaultException;
+}
+    }
+
+    public java.lang.Integer saveNewDocument(it.eng.spagobi.sdk.documents.bo.Document in0, it.eng.spagobi.sdk.documents.bo.Template in1, java.lang.Integer in2) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[7]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "saveNewDocument"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (java.lang.Integer) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (java.lang.Integer) org.apache.axis.utils.JavaUtils.convert(_resp, java.lang.Integer.class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+    if (axisFaultException.detail != null) {
+        if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+              throw (java.rmi.RemoteException) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.NotAllowedOperationException) {
+              throw (it.eng.spagobi.sdk.exceptions.NotAllowedOperationException) axisFaultException.detail;
+         }
+   }
+  throw axisFaultException;
+}
+    }
 
 }

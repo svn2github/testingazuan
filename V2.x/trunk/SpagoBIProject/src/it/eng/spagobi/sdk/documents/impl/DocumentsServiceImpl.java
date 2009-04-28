@@ -25,26 +25,28 @@ package it.eng.spagobi.sdk.documents.impl;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
+import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
+import it.eng.spagobi.analiticalmodel.functionalitytree.dao.LowFunctionalityDAOHibImpl;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
-import it.eng.spagobi.behaviouralmodel.check.bo.Check;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
-import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.sdk.AbstractSDKService;
 import it.eng.spagobi.sdk.documents.DocumentsService;
-import it.eng.spagobi.sdk.documents.bo.Constraint;
 import it.eng.spagobi.sdk.documents.bo.Document;
 import it.eng.spagobi.sdk.documents.bo.DocumentParameter;
 import it.eng.spagobi.sdk.documents.bo.Functionality;
 import it.eng.spagobi.sdk.documents.bo.Template;
 import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
+import it.eng.spagobi.sdk.utilities.SDKConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -181,31 +183,9 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
             if (parametersList != null) {
                 DocumentParameter aDocParameter;
                 for (Iterator it = parametersList.iterator(); it.hasNext(); toReturn.add(aDocParameter)) {
-                    BIObjectParameter parameter = (BIObjectParameter)it.next();
-                    aDocParameter = new DocumentParameter();
-                    aDocParameter.setId(parameter.getId());
-                    aDocParameter.setLabel(parameter.getLabel());
-                    aDocParameter.setUrlName(parameter.getParameterUrlName());
-                    List checks = parameter.getParameter().getChecks();
-                    List newConstraints = new ArrayList<Constraint>();
-                    if (checks != null && !checks.isEmpty()) {
-                    	Iterator checksIt = checks.iterator();
-                    	while (checksIt.hasNext()) {
-                    		Check aCheck = (Check) checksIt.next();
-                    		Constraint constraint = new Constraint();
-                    		constraint.setId(aCheck.getCheckId());
-                    		constraint.setLabel(aCheck.getLabel());
-                    		constraint.setName(aCheck.getName());
-                    		constraint.setDescription(aCheck.getDescription());
-                    		constraint.setType(aCheck.getValueTypeCd());
-                    		constraint.setFirstValue(aCheck.getFirstValue());
-                    		constraint.setSecondValue(aCheck.getSecondValue());
-                    		newConstraints.add(constraint);
-                    	}
-                    }
-                    it.eng.spagobi.sdk.documents.bo.Constraint[] constraintsArray = new it.eng.spagobi.sdk.documents.bo.Constraint[newConstraints.size()];
-                    constraintsArray = (it.eng.spagobi.sdk.documents.bo.Constraint[]) newConstraints.toArray(constraintsArray);
-                    aDocParameter.setConstraints(constraintsArray);
+                	BIObjectParameter parameter = (BIObjectParameter)it.next();
+                	aDocParameter = new SDKConverter().fromBIObjectParameterToSDKDocumentParameter(parameter);
+                	toReturn.add(aDocParameter);
                 }
             }
             parameters = new DocumentParameter[toReturn.size()];
@@ -231,24 +211,13 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
                     BIObject obj = (BIObject)it.next();
                     if(ObjectsAccessVerifier.canSee(obj, profile))
                     {
-                        Document aDoc = new Document();
-                        aDoc.setId(obj.getId());
-                        aDoc.setLabel(obj.getLabel());
-                        aDoc.setName(obj.getName());
-                        aDoc.setDescription(obj.getDescription());
-                        aDoc.setType(obj.getBiObjectTypeCode());
-                        aDoc.setState(obj.getStateCode());
-                        Engine engine = obj.getEngine();
-                        aDoc.setEngineId(engine.getId());
-                        aDoc.setEngineLabel(engine.getLabel());
-                        aDoc.setEngineName(engine.getName());
+                    	Document aDoc = new SDKConverter().fromBIObjectToSDKDocument(obj);
                         toReturn.add(aDoc);
                     }
                 }
             }
             documents = new Document[toReturn.size()];
             documents = (Document[])toReturn.toArray(documents);
-            
         } catch(Exception e) {
             logger.error(e);
         }
@@ -256,9 +225,95 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
         return documents;
     }
 
-	public Functionality[] getDocumentsAsTree(String initialPath) {
-		// TODO Auto-generated method stub
-		return null;
+	public Functionality getDocumentsAsTree(String initialPath) {
+		logger.debug("IN: initialPath = [" + initialPath + "]");
+		Functionality toReturn = null;
+		try {
+			IEngUserProfile profile = getUserProfile();
+			ILowFunctionalityDAO functionalityDAO = DAOFactory.getLowFunctionalityDAO();
+			boolean canSeeFunctionality;
+			LowFunctionality initialFunctionality = null;
+			if (initialPath == null || initialPath.trim().equals("")) {
+				// loading root functionality, everybody can see it
+				initialFunctionality = functionalityDAO.loadRootLowFunctionality(false);
+				canSeeFunctionality = true;
+			} else {
+				initialFunctionality = functionalityDAO.loadLowFunctionalityByPath(initialPath, false);
+				// if user is administrator, he can see all functionalities
+				if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+					canSeeFunctionality = true;
+				} else {
+					// if user can exec or dev or test on functionality, he can see it, otherwise he cannot see it
+					if (ObjectsAccessVerifier.canExec(initialFunctionality.getId(), profile) ||
+							ObjectsAccessVerifier.canTest(initialFunctionality.getId(), profile) ||
+							ObjectsAccessVerifier.canDev(initialFunctionality.getId(), profile)) {
+						canSeeFunctionality = true;
+					} else {
+						canSeeFunctionality = false;
+					}
+				}
+			}
+			
+			if (canSeeFunctionality) {
+				toReturn = new SDKConverter().fromLowFunctionalityToSDKFunctionality(initialFunctionality);
+				setFunctionalityContent(toReturn);
+			}
+				
+        } catch(Exception e) {
+            logger.error(e);
+        }
+        logger.debug("OUT");
+        return toReturn;
+	}
+	
+	private void setFunctionalityContent(Functionality parentFunctionality) throws Exception {
+		logger.debug("IN");
+		IEngUserProfile profile = getUserProfile();
+		// loading contained documents
+		List containedBIObjects = DAOFactory.getBIObjectDAO().loadBIObjects(parentFunctionality.getId(), profile);
+		List visibleDocumentsList = new ArrayList();
+		if (containedBIObjects != null && containedBIObjects.size() > 0) {
+            for (Iterator it = containedBIObjects.iterator(); it.hasNext();) {
+                BIObject obj = (BIObject) it.next();
+                if (ObjectsAccessVerifier.checkProfileVisibility(obj, profile)) {
+                	Document aDoc = new SDKConverter().fromBIObjectToSDKDocument(obj);
+                	visibleDocumentsList.add(aDoc);
+                }
+            }
+		}
+		Document[] containedDocuments = new Document[visibleDocumentsList.size()];
+		containedDocuments = (Document[]) visibleDocumentsList.toArray(containedDocuments);
+		parentFunctionality.setContainedDocuments(containedDocuments);
+		
+		List containedFunctionalitiesList = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(parentFunctionality.getId(), false);
+		List visibleFunctionalitiesList = new ArrayList();
+		for (Iterator it = containedFunctionalitiesList.iterator(); it.hasNext();) {
+			LowFunctionality lowFunctionality = (LowFunctionality) it.next();
+			boolean canSeeFunctionality;
+			// if user is administrator, he can see all functionalities
+			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+				canSeeFunctionality = true;
+			} else {
+				// if user can exec or dev or test on functionality, he can see it, otherwise he cannot see it
+				if (ObjectsAccessVerifier.canExec(lowFunctionality.getId(), profile) ||
+						ObjectsAccessVerifier.canTest(lowFunctionality.getId(), profile) ||
+						ObjectsAccessVerifier.canDev(lowFunctionality.getId(), profile)) {
+					canSeeFunctionality = true;
+				} else {
+					canSeeFunctionality = false;
+				}
+			}
+			if (canSeeFunctionality) {
+				Functionality childFunctionality = new SDKConverter().fromLowFunctionalityToSDKFunctionality(lowFunctionality);
+				visibleFunctionalitiesList.add(childFunctionality);
+				// recursion
+				setFunctionalityContent(childFunctionality);
+			}
+		}
+		Functionality[] containedFunctionalities = new Functionality[visibleFunctionalitiesList.size()];
+		containedFunctionalities = (Functionality[]) visibleFunctionalitiesList.toArray(containedFunctionalities);
+		parentFunctionality.setContainedFunctionalities(containedFunctionalities);
+		logger.debug("OUT");
 	}
 
 	public Integer saveNewDocument(Document document, Template template,

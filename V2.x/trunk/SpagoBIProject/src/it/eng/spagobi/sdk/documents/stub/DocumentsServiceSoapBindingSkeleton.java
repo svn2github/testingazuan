@@ -48,7 +48,7 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("getDocumentsAsTree", _params, new javax.xml.namespace.QName("", "getDocumentsAsTreeReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_Functionality"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Functionality"));
         _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "getDocumentsAsTree"));
         _oper.setSoapAction("");
         _myOperationsList.add(_oper);
@@ -183,9 +183,9 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
         return ret;
     }
 
-    public it.eng.spagobi.sdk.documents.bo.Functionality[] getDocumentsAsTree(java.lang.String in0) throws java.rmi.RemoteException
+    public it.eng.spagobi.sdk.documents.bo.Functionality getDocumentsAsTree(java.lang.String in0) throws java.rmi.RemoteException
     {
-        it.eng.spagobi.sdk.documents.bo.Functionality[] ret = impl.getDocumentsAsTree(in0);
+        it.eng.spagobi.sdk.documents.bo.Functionality ret = impl.getDocumentsAsTree(in0);
         return ret;
     }
 

@@ -34,7 +34,7 @@ public class AbstractSDKService {
 				}
 				mc.setProperty(IEngUserProfile.ENG_USER_PROFILE, profile);
 			} else {
-				logger.debug("User profile retrieved.");
+				logger.debug("User profile for user [" + profile.getUserUniqueIdentifier() + "] retrieved.");
 			}
 		} finally {
 			logger.debug("OUT");

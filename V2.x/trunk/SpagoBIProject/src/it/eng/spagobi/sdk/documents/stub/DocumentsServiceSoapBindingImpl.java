@@ -15,7 +15,7 @@ public class DocumentsServiceSoapBindingImpl implements it.eng.spagobi.sdk.docum
     	return impl.getDocumentsAsList(in0, in1, in2);
     }
 
-    public it.eng.spagobi.sdk.documents.bo.Functionality[] getDocumentsAsTree(java.lang.String in0) throws java.rmi.RemoteException {
+    public it.eng.spagobi.sdk.documents.bo.Functionality getDocumentsAsTree(java.lang.String in0) throws java.rmi.RemoteException {
     	DocumentsServiceImpl impl = new DocumentsServiceImpl();
     	return impl.getDocumentsAsTree(in0);
     }

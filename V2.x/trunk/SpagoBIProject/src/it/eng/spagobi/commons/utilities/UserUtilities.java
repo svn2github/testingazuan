@@ -123,7 +123,7 @@ public class UserUtilities {
 		user.setFunctions(readFunctionality(user.getRoles()));
 		return new UserProfile(user);
 	    } catch (Exception e) {
-	    	logger.error("Exception while creating user profile");
+	    	logger.error("Exception while creating user profile",e);
 			throw new SecurityException("Exception while creating user profile", e);
 	    }finally{
 	    	logger.debug("OUT");
@@ -138,7 +138,7 @@ public class UserUtilities {
 		user.setFunctions(readFunctionality(user.getRoles()));
 		return new UserProfile(user);
 	    } catch (Exception e) {
-	    	logger.error("Exception while creating user profile");
+	    	logger.error("Exception while creating user profile",e);
 			throw new SecurityException("Exception while creating user profile", e);
 	    }finally{
 	    	logger.debug("OUT");

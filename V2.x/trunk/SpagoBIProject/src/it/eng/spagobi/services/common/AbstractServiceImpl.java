@@ -71,7 +71,6 @@ public abstract class AbstractServiceImpl {
 			logger.warn("UserID is NULL");
 			throw new SecurityException("Ticket is NULL");
 		}
-		logger.debug("activeSso checks are ON");
 		if (ticket.equals(pass)) {
 			logger.debug("JUMP che ticket validation");
 		} else {

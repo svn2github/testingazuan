@@ -12,6 +12,7 @@ public class Model {
 	private String name = null;//name of the complete model (like CMMI/GQM)
 	private String description = null;//description of the complete model
 	private String code = null;//code of the complete model
+	private String typeCd = null;//name of the type of the model (GENERIC_ROOT/GQM_ROOT)
 	private String typeName = null;//name of the type of the model (GENERIC_ROOT/GQM_ROOT)
 	private String typeDescription = null;//description of the type of the model
 	private Integer kpiId = null;// id of Kpi
@@ -102,4 +103,14 @@ public class Model {
 		this.modelAttributes = modelAttributes;
 	}
 
+	public String getTypeCd() {
+		return typeCd;
+	}
+
+	public void setTypeCd(String typeCd) {
+		this.typeCd = typeCd;
+	}
+
+	
+	
 }

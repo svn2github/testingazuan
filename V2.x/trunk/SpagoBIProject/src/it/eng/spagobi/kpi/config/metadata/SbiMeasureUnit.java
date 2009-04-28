@@ -17,7 +17,7 @@ public class SbiMeasureUnit  implements java.io.Serializable {
     // Fields    
 
      private Integer idMeasureUnit;
-     private SbiDomains sbiDomains;
+     private SbiDomains scaleType;
      private String name;
      private String scaleCd;
      private String scaleNm;
@@ -35,13 +35,13 @@ public class SbiMeasureUnit  implements java.io.Serializable {
 	/** minimal constructor */
     public SbiMeasureUnit(Integer idMeasureUnit, SbiDomains sbiDomains) {
         this.idMeasureUnit = idMeasureUnit;
-        this.sbiDomains = sbiDomains;
+        this.scaleType = sbiDomains;
     }
     
     /** full constructor */
     public SbiMeasureUnit(Integer idMeasureUnit, SbiDomains sbiDomains, String name, String scaleCd, String scaleNm, Set sbiKpis, Set sbiKpiInstanceHistories, Set sbiKpiInstances) {
         this.idMeasureUnit = idMeasureUnit;
-        this.sbiDomains = sbiDomains;
+        this.scaleType = sbiDomains;
         this.name = name;
         this.scaleCd = scaleCd;
         this.scaleNm = scaleNm;
@@ -62,12 +62,12 @@ public class SbiMeasureUnit  implements java.io.Serializable {
         this.idMeasureUnit = idMeasureUnit;
     }
 
-    public SbiDomains getSbiDomains() {
-        return this.sbiDomains;
+    public SbiDomains getScaleType() {
+        return this.scaleType;
     }
     
-    public void setSbiDomains(SbiDomains sbiDomains) {
-        this.sbiDomains = sbiDomains;
+    public void setScaleType(SbiDomains sbiDomains) {
+        this.scaleType = sbiDomains;
     }
 
     public String getName() {

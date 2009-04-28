@@ -17,7 +17,7 @@ public class SbiResources  implements java.io.Serializable {
     // Fields    
 
      private Integer resourceId;
-     private SbiDomains sbiDomains;
+     private SbiDomains type;
      private String tableName;
      private String columnName;
      private String resourceName;
@@ -35,13 +35,13 @@ public class SbiResources  implements java.io.Serializable {
 	/** minimal constructor */
     public SbiResources(Integer resourceId, SbiDomains sbiDomains) {
         this.resourceId = resourceId;
-        this.sbiDomains = sbiDomains;
+        this.type = sbiDomains;
     }
     
     /** full constructor */
     public SbiResources(Integer resourceId, SbiDomains sbiDomains, String tableName, String columnName, String resourceName, String resourceDescr, Set sbiKpiValues, Set sbiKpiModelResourceses) {
         this.resourceId = resourceId;
-        this.sbiDomains = sbiDomains;
+        this.type = sbiDomains;
         this.tableName = tableName;
         this.columnName = columnName;
         this.resourceName = resourceName;
@@ -62,12 +62,12 @@ public class SbiResources  implements java.io.Serializable {
         this.resourceId = resourceId;
     }
 
-    public SbiDomains getSbiDomains() {
-        return this.sbiDomains;
+    public SbiDomains getType() {
+        return this.type;
     }
     
-    public void setSbiDomains(SbiDomains sbiDomains) {
-        this.sbiDomains = sbiDomains;
+    public void setType(SbiDomains sbiDomains) {
+        this.type = sbiDomains;
     }
 
     public String getTableName() {

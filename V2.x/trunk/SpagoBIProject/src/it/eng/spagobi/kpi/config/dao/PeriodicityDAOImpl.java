@@ -94,4 +94,70 @@ public class PeriodicityDAOImpl extends AbstractHibernateDAO implements
 		return toReturn;
 	}
 
+	public Integer getPeriodicitySeconds(Integer periodicityId)
+	throws EMFUserError {
+
+		logger.debug("IN");
+		Integer toReturn = null;
+		Session aSession = null;
+		Transaction tx = null;
+		int seconds = 0;
+		logger.debug("Getting seconds of validity for the kpi Value");
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpiPeriodicity hibSbiKpiPeriodicity = (SbiKpiPeriodicity) aSession
+			.load(SbiKpiPeriodicity.class, periodicityId);
+			if (hibSbiKpiPeriodicity.getChronString() != null) {
+
+			} else {
+				if (hibSbiKpiPeriodicity.getDays() != null) {
+					logger.debug("DAYS: "
+							+ hibSbiKpiPeriodicity.getDays().toString());
+					// 86400 seconds in a day
+					seconds += hibSbiKpiPeriodicity.getDays().intValue() * 86400;
+				}
+				if (hibSbiKpiPeriodicity.getHours() != null) {
+					logger.debug("HOURS: "
+							+ hibSbiKpiPeriodicity.getHours().toString());
+					// 3600 seconds in an hour
+					seconds += hibSbiKpiPeriodicity.getHours().intValue() * 3600;
+				}
+				if (hibSbiKpiPeriodicity.getMinutes() != null) {
+					logger.debug("MINUTES: "
+							+ hibSbiKpiPeriodicity.getMinutes().toString());
+					// 60 seconds in a minute
+					seconds += hibSbiKpiPeriodicity.getMinutes().intValue() * 60;
+				}
+				if (hibSbiKpiPeriodicity.getMonths() != null) {
+					logger.debug("MONTHS: "
+							+ hibSbiKpiPeriodicity.getMonths().toString());
+					// 2592000 seconds in a month of 30 days
+					seconds += hibSbiKpiPeriodicity.getMonths().intValue() * 2592000;
+				}
+			}
+			toReturn = new Integer(seconds);
+			logger.debug("Total seconds: " + toReturn.toString());
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the Periodicity with id "
+					+ periodicityId, he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10114);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
 }

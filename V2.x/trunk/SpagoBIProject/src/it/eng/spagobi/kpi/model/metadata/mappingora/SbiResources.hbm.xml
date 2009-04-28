@@ -10,7 +10,7 @@
             	<param name="sequence">RESOURCES_SEQ</param>
             </generator>
         </id>
-        <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
+        <many-to-one name="type" class="it.eng.spagobi.commons.metadata.SbiDomains" >
             <column name="RESOURCE_TYPE_ID" not-null="true" />
         </many-to-one>
         <property name="tableName" type="string">

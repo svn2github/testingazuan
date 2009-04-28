@@ -85,7 +85,8 @@ public class CreateTrendAction extends AbstractHttpAction{
 			timeTo = f.parse(TimeRangeTo);
 		}
 		
-		KpiInstance ki = DAOFactory.getKpiDAO().loadKpiInstanceById(kpiInstId);
+		
+		KpiInstance ki = DAOFactory.getKpiInstanceDAO().loadKpiInstanceById(kpiInstId);
 		Integer kpiID = ki.getKpi();
 		Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiID);	
 		String title = "";

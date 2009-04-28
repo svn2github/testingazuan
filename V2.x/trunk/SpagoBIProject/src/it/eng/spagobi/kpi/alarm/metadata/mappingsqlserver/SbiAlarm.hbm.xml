@@ -16,7 +16,7 @@
         <many-to-one name="sbiKpiInstance" class="it.eng.spagobi.kpi.config.metadata.SbiKpiInstance" >
             <column name="id_kpi_instance" not-null="true" />
         </many-to-one>
-        <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
+        <many-to-one name="modality" class="it.eng.spagobi.commons.metadata.SbiDomains" >
             <column name="MODALITY_ID" not-null="true" />
         </many-to-one>   
         <property name="singleEvent" type="true_false">

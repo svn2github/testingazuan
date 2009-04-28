@@ -13,7 +13,9 @@ import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.kpi.config.bo.Kpi;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
+import it.eng.spagobi.kpi.config.dao.IKpiInstanceDAO;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
+import it.eng.spagobi.kpi.model.dao.IModelInstanceDAO;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 
 public class CreateKpiMetadataAction extends AbstractHttpAction{
@@ -32,8 +34,8 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 		String kpiModelInstanceId = (String)serviceRequest.getAttribute("KPI_MODEL_INST_ID");
 		
 		if (kpiInstanceID!=null){
-			
-			KpiInstance kI = DAOFactory.getKpiDAO().loadKpiInstanceById(new Integer(kpiInstanceID));
+			IKpiInstanceDAO kpiInstDAO=DAOFactory.getKpiInstanceDAO();
+			KpiInstance kI = kpiInstDAO.loadKpiInstanceById(new Integer(kpiInstanceID));
 			Integer kpiID = kI.getKpi();
 			if (kpiID!=null){
 				Kpi k = DAOFactory.getKpiDAO().loadKpiById(kpiID);
@@ -41,7 +43,10 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 				String kpiDescription = k.getDescription();
 				String kpiInterpretation = k.getInterpretation();
 				String kpiName = k.getKpiName();
-				List thresholds = k.getThresholds();
+				List thresholdValues = null;
+				if(kI.getThresholdId()!=null){
+					thresholdValues=DAOFactory.getThresholdValueDAO().loadThresholdValuesByThresholdId(kI.getThresholdId());
+				}
 				if (kpiCode!=null){
 					serviceResponse.setAttribute("KPI_CODE", kpiCode);
 				}else{
@@ -62,8 +67,8 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 				}else{
 					serviceResponse.setAttribute("KPI_NAME", "");
 				}
-				if (thresholds!=null){
-					serviceResponse.setAttribute("KPI_THRESHOLDS", thresholds);
+				if (thresholdValues!=null){
+					serviceResponse.setAttribute("KPI_THRESHOLDS", thresholdValues);
 				}else{
 					serviceResponse.setAttribute("KPI_THRESHOLDS", new ArrayList());
 				}
@@ -72,7 +77,8 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 		if (kpiModelInstanceId!=null){
 			Integer id = new Integer(kpiModelInstanceId);
 			Date d = new Date();
-			ModelInstanceNode n = DAOFactory.getKpiDAO().loadModelInstanceById(id, d);
+			IModelInstanceDAO modInstDAO=DAOFactory.getModelInstanceDAO();
+			ModelInstanceNode n = modInstDAO.loadModelInstanceById(id, d);
 			String name =n.getName();
 			String descr = n.getDescr();
 			if (name!=null){

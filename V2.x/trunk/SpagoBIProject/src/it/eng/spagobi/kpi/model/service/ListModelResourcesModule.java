@@ -29,13 +29,13 @@ public class ListModelResourcesModule extends AbstractConfigurableListModule {
 		modelInstanceId = Integer.parseInt(modelInstId);
 		String resourceId = (String) request.getAttribute("resourceId");
 		if (resourceId != null && message !=null && message.equalsIgnoreCase(SpagoBIConstants.DETAIL_SELECT)) {
-			if (DAOFactory.getModelResources().isSelected(modelInstanceId,
+			if (DAOFactory.getModelResourcesDAO().isSelected(modelInstanceId,
 					Integer.parseInt(resourceId))){
-				DAOFactory.getModelResources().removeModelResource(
+				DAOFactory.getModelResourcesDAO().removeModelResource(
 						Integer.parseInt(modelInstId), Integer.parseInt(resourceId));
 			}
 			else {
-				DAOFactory.getModelResources().addModelResource(
+				DAOFactory.getModelResourcesDAO().addModelResource(
 						Integer.parseInt(modelInstId), Integer.parseInt(resourceId));
 			}
 		}
@@ -59,7 +59,7 @@ public class ListModelResourcesModule extends AbstractConfigurableListModule {
 		String fieldOrder = (String)request.getAttribute("FIELD_ORDER");
 		String typeOrder = (String)request.getAttribute("TYPE_ORDER");
 		try {
-			toReturn = DAOFactory.getKpiDAO().loadResourcesList(fieldOrder, typeOrder);
+			toReturn = DAOFactory.getResourceDAO().loadResourcesList(fieldOrder, typeOrder);
 		} catch (EMFUserError e) {
 			logger.error(e);
 		}
@@ -74,7 +74,7 @@ public class ListModelResourcesModule extends AbstractConfigurableListModule {
 		rowSB.setAttribute("resourceId", aResource.getId());
 		rowSB.setAttribute("Id", modelInstanceId);
 		try {
-			if (DAOFactory.getModelResources().isSelected(modelInstanceId,
+			if (DAOFactory.getModelResourcesDAO().isSelected(modelInstanceId,
 					aResource.getId()))
 			rowSB.setAttribute("selected", "selected");
 			else

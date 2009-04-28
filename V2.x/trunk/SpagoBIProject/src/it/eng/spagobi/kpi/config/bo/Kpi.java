@@ -16,7 +16,6 @@ public class Kpi {
 	Integer fatherId = null;
 	List kpiChildrenIds = null; // List of Kpis children
 	List roles = null;	//roles that can view this KPI
-	List Thresholds = null;
 	List kpiInstances = null; //all the instances of that KPI
 	Double standardWeight = null;
 	String metric = null;
@@ -39,7 +38,6 @@ public class Kpi {
 		super();
 		this.kpiChildrenIds = new ArrayList();
 		this.isRoot = false;	
-		this.Thresholds = new ArrayList();
 		this.roles = new ArrayList();
 		this.kpiInstances = new ArrayList();
 	}
@@ -128,17 +126,6 @@ public class Kpi {
 		this.isRoot = isParent;
 	}
 
-
-
-	public List getThresholds() {
-		return Thresholds;
-	}
-
-
-
-	public void setThresholds(List thresholds) {
-		Thresholds = thresholds;
-	}
 
 
 	public Double getStandardWeight() {

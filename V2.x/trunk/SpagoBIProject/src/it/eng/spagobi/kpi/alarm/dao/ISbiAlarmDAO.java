@@ -10,7 +10,11 @@
 
 package it.eng.spagobi.kpi.alarm.dao;
 
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.kpi.alarm.bo.Alarm;
+import it.eng.spagobi.kpi.alarm.bo.AlarmContact;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
+import it.eng.spagobi.kpi.config.bo.KpiValue;
 
 import java.util.List;
 
@@ -42,5 +46,9 @@ public interface ISbiAlarmDAO{
     public SbiAlarm findById(Integer id);
 
     public List<SbiAlarm> findAll();
+
+	public List<Alarm> loadAllByKpiInstId(Integer kpiInstanceId)  throws EMFUserError;
+
+	public void isAlarmingValue(KpiValue value) throws EMFUserError;
 }
 

@@ -41,6 +41,24 @@
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiGeoFeatures.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiGeoMaps.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiDataSetConfig.hbm.xml" />
-
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiModelInst.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiModelAttr.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiModelAttrVal.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiModelResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiResources.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpi.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiInstance.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiInstanceHistory.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiInstPeriod.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiModel.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiPeriodicity.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiRole.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiKpiValue.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiMeasureUnit.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiAlarm.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiAlarmContact.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiAlarmEvent.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiThreshold.hbm.xml" />
+        <mapping resource="it/eng/spagobi/tools/importexport/metadata/SbiThresholdValue.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.importexport;
 
 import it.eng.spago.error.EMFErrorSeverity;
@@ -27,6 +27,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
+import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFunc;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjFuncId;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjPar;
@@ -68,6 +69,43 @@ import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.kpi.alarm.bo.Alarm;
+import it.eng.spagobi.kpi.alarm.bo.AlarmContact;
+import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmDAO;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
+import it.eng.spagobi.kpi.config.bo.Kpi;
+import it.eng.spagobi.kpi.config.bo.KpiInstPeriod;
+import it.eng.spagobi.kpi.config.bo.KpiInstance;
+import it.eng.spagobi.kpi.config.bo.MeasureUnit;
+import it.eng.spagobi.kpi.config.bo.Periodicity;
+import it.eng.spagobi.kpi.config.dao.IKpiDAO;
+import it.eng.spagobi.kpi.config.dao.IKpiInstPeriodDAO;
+import it.eng.spagobi.kpi.config.dao.IKpiInstanceDAO;
+import it.eng.spagobi.kpi.config.dao.IMeasureUnitDAO;
+import it.eng.spagobi.kpi.config.dao.IPeriodicityDAO;
+import it.eng.spagobi.kpi.config.metadata.SbiKpi;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
+import it.eng.spagobi.kpi.config.metadata.SbiMeasureUnit;
+import it.eng.spagobi.kpi.model.bo.Model;
+import it.eng.spagobi.kpi.model.bo.ModelInstance;
+import it.eng.spagobi.kpi.model.bo.ModelResources;
+import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.model.dao.IModelDAO;
+import it.eng.spagobi.kpi.model.dao.IModelInstanceDAO;
+import it.eng.spagobi.kpi.model.dao.IModelResourceDAO;
+import it.eng.spagobi.kpi.model.dao.IResourceDAO;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
+import it.eng.spagobi.kpi.model.metadata.SbiKpiModelResources;
+import it.eng.spagobi.kpi.model.metadata.SbiResources;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
+import it.eng.spagobi.kpi.threshold.dao.IThresholdDAO;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 import it.eng.spagobi.mapcatalogue.bo.GeoFeature;
 import it.eng.spagobi.mapcatalogue.bo.GeoMap;
 import it.eng.spagobi.mapcatalogue.bo.GeoMapFeature;
@@ -84,6 +122,7 @@ import it.eng.spagobi.tools.dataset.bo.JDBCDataSet;
 import it.eng.spagobi.tools.dataset.bo.JavaClassDataSet;
 import it.eng.spagobi.tools.dataset.bo.ScriptDataSet;
 import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
+import it.eng.spagobi.tools.dataset.dao.IDataSetDAO;
 import it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig;
 import it.eng.spagobi.tools.dataset.metadata.SbiFileDataSet;
 import it.eng.spagobi.tools.dataset.metadata.SbiJClassDataSet;
@@ -93,21 +132,29 @@ import it.eng.spagobi.tools.dataset.metadata.SbiWSDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Expression;
 
 /**
  * Implements methods to insert exported metadata into the exported database 
  */
 public class ExporterMetadata {
 
-    static private Logger logger = Logger.getLogger(ExporterMetadata.class);
-    
+	static private Logger logger = Logger.getLogger(ExporterMetadata.class);
+	private List biObjectToInsert=null;
+
+
 	/**
 	 * Insert a domain into the exported database.
 	 * 
@@ -116,8 +163,8 @@ public class ExporterMetadata {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-    public void insertDomain(Domain domain, Session session) throws EMFUserError {
-	    logger.debug("IN");
+	public void insertDomain(Domain domain, Session session) throws EMFUserError {
+		logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiDomains where valueId = " + domain.getValueId());
@@ -134,13 +181,13 @@ public class ExporterMetadata {
 			session.save(hibDomain);
 			tx.commit();
 		} catch (Exception e) {
-		    logger.error("Error while inserting domain into export database ",e);
-        	    throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+			logger.error("Error while inserting domain into export database ",e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
-		}
+			logger.debug("OUT");
+		}	
 	}
-	
+
 	/**
 	 * Insert data source.
 	 * 
@@ -150,7 +197,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertDataSource(IDataSource ds, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiDataSource where dsId = " + ds.getDsId());
@@ -159,7 +206,7 @@ public class ExporterMetadata {
 				return;
 			}
 			SbiDomains dialect=(SbiDomains)session.load(SbiDomains.class, ds.getDialectId());
-			
+
 			SbiDataSource hibDS = new SbiDataSource(ds.getDsId());
 			hibDS.setDescr(ds.getDescr());
 			hibDS.setDriver(ds.getDriver());
@@ -169,19 +216,19 @@ public class ExporterMetadata {
 			hibDS.setUrl_connection(ds.getUrlConnection());
 			hibDS.setUser(ds.getUser());
 			hibDS.setDialect(dialect);
-			
-		// va aggiunto il legame con gli engine e il doc ????
-			
+
+			// va aggiunto il legame con gli engine e il doc ????
+
 			session.save(hibDS);
 			tx.commit();
 		} catch (Exception e) {
 			logger.error("Error while inserting dataSource into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
+
 	/**
 	 * Insert data set.
 	 * 
@@ -191,15 +238,16 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertDataSet(IDataSet dataset, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			// if it is a query data set, insert datasource first, before opening a new transaction
 			if (dataset instanceof JDBCDataSet) {
 				IDataSource ds = ((JDBCDataSet) dataset).getDataSource();
 				if (ds != null) insertDataSource(ds, session);
 			}
-			
+
 			Transaction tx = session.beginTransaction();
+
 			Query hibQuery = session.createQuery(" from SbiDataSetConfig where dsId = " + dataset.getId());
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
@@ -243,7 +291,7 @@ public class ExporterMetadata {
 			hibDataset.setPivotColumnValue(dataset.getPivotColumnValue());
 			hibDataset.setPivotRowName(dataset.getPivotRowName());
 			hibDataset.setNumRows(dataset.isNumRows());
-			
+
 			if (dataset.getTransformerId() != null) {
 				SbiDomains transformerType = (SbiDomains) session.load(SbiDomains.class, dataset.getTransformerId());
 				hibDataset.setTransformer(transformerType);
@@ -257,10 +305,10 @@ public class ExporterMetadata {
 			logger.error("Error while inserting dataSet into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
+
 	/**
 	 * Insert an engine into the exported database.
 	 * 
@@ -270,7 +318,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertEngine(Engine engine, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiEngines where engineId = " + engine.getId());
@@ -305,7 +353,7 @@ public class ExporterMetadata {
 			logger.error("Error while inserting engine into export database " ,e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
 
@@ -319,14 +367,14 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertAllSnapshot(BIObject biobj, List snapshotLis, Session session) throws EMFUserError {
-	    logger.debug("IN");
-	    Iterator iter=snapshotLis.iterator();
-	    while(iter.hasNext()){
-		insertSnapshot(biobj,(Snapshot)iter.next(),session);
-	    }
-	    logger.debug("OUT");
+		logger.debug("IN");
+		Iterator iter=snapshotLis.iterator();
+		while(iter.hasNext()){
+			insertSnapshot(biobj,(Snapshot)iter.next(),session);
+		}
+		logger.debug("OUT");
 	}
-	
+
 	/**
 	 * Insert a single sub object and their binary content
 	 * @param biobj
@@ -335,24 +383,24 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	private void insertSnapshot(BIObject biobj, Snapshot snapshot, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiSnapshots where snapId = " + snapshot.getId());
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
-			    	logger.warn("Exist another SbiSnapshot");
+				logger.warn("Exist another SbiSnapshot");
 				return;
 			}
-			
+
 			SbiObjects hibBIObj = new SbiObjects(biobj.getId());
 
 			byte[] template = snapshot.getContent();
-			
+
 			SbiBinContents hibBinContent = new SbiBinContents();
 			hibBinContent.setId(snapshot.getBinId());
 			hibBinContent.setContent(template);
-			
+
 			SbiSnapshots sub=new SbiSnapshots();
 			sub.setCreationDate(snapshot.getDateCreation());
 			sub.setDescription(snapshot.getDescription());
@@ -360,8 +408,8 @@ public class ExporterMetadata {
 			sub.setSbiBinContents(hibBinContent);
 			sub.setSbiObject(hibBIObj);
 			sub.setSnapId(snapshot.getId());
-			
-			
+
+
 			session.save(sub);
 			session.save(hibBinContent);
 			tx.commit();
@@ -370,10 +418,10 @@ public class ExporterMetadata {
 			logger.error("Error while inserting biobject into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}	
-	
+
 	/**
 	 * Insert all SubObject and their binary content.
 	 * 
@@ -384,12 +432,12 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertAllSubObject(BIObject biobj, List subObjectLis, Session session) throws EMFUserError {
-	    logger.debug("IN");
-	    Iterator iter=subObjectLis.iterator();
-	    while(iter.hasNext()){
-		insertSubObject(biobj,(SubObject)iter.next(),session);
-	    }
-	    logger.debug("OUT");
+		logger.debug("IN");
+		Iterator iter=subObjectLis.iterator();
+		while(iter.hasNext()){
+			insertSubObject(biobj,(SubObject)iter.next(),session);
+		}
+		logger.debug("OUT");
 	}
 	/**
 	 * Insert a single sub object and their binary content
@@ -399,22 +447,22 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	private void insertSubObject(BIObject biobj, SubObject subObject, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiSubObjects where subObjId = " + subObject.getId());
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
-			    	logger.warn("Exist another SbiSubObjects");
+				logger.warn("Exist another SbiSubObjects");
 				return;
 			}
-			
+
 			SbiObjects hibBIObj = new SbiObjects(biobj.getId());
-			
+
 			SbiBinContents hibBinContent = new SbiBinContents();
 			hibBinContent.setId(subObject.getBinaryContentId());
 			hibBinContent.setContent(subObject.getContent());
-			
+
 			SbiSubObjects sub=new SbiSubObjects();
 			sub.setCreationDate(subObject.getCreationDate());
 			sub.setDescription(subObject.getDescription());
@@ -425,7 +473,7 @@ public class ExporterMetadata {
 			sub.setSbiBinContents(hibBinContent);
 			sub.setSbiObject(hibBIObj);
 			sub.setSubObjId(subObject.getId());
-			
+
 			session.save(sub);
 			session.save(hibBinContent);
 			tx.commit();
@@ -434,10 +482,10 @@ public class ExporterMetadata {
 			logger.error("Error while inserting biobject into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}	
-	
+
 	/**
 	 * Insert a biobject into the exported database.
 	 * 
@@ -447,9 +495,9 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertBIObject(BIObject biobj, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
-			Transaction tx = session.beginTransaction();
+
 			Query hibQuery = session.createQuery(" from SbiObjects where biobjId = " + biobj.getId());
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
@@ -481,11 +529,16 @@ public class ExporterMetadata {
 				hibBIObj.setDataSource(ds);
 			}
 			Integer dataSetId = biobj.getDataSetId();
-			if (dataSetId != null) {
+
+			if (dataSetId != null) { 
+				// if the transaction is new insert dataset if missing   // MODIFIED BY GIULIO 
+				IDataSetDAO datasetDao=DAOFactory.getDataSetDAO();
+				IDataSet ds=datasetDao.loadDataSetByID(dataSetId);
+				insertDataSet(ds, session);
 				SbiDataSetConfig dataset = (SbiDataSetConfig) session.load(SbiDataSetConfig.class, dataSetId);
 				hibBIObj.setDataSet(dataset);
 			}
-			
+
 			hibBIObj.setCreationDate(biobj.getCreationDate());
 			hibBIObj.setCreationUser(biobj.getCreationUser());
 			hibBIObj.setExtendedDescription(biobj.getExtendedDescription());
@@ -494,25 +547,25 @@ public class ExporterMetadata {
 			hibBIObj.setObjectve(biobj.getObjectve());
 			hibBIObj.setRefreshSeconds(biobj.getRefreshSeconds());
 			hibBIObj.setProfiledVisibility(biobj.getProfiledVisibility());
-			
+			Transaction tx = session.beginTransaction();
 			session.save(hibBIObj);
 			tx.commit();
 			ObjTemplate template = biobj.getActiveTemplate();
 			if (template == null) {
 				logger.warn("Biobject with id = " + biobj.getId() + ", label = " + biobj.getLabel() + " and name = " + biobj.getName() + 
-						" has not active template!!");
+				" has not active template!!");
 			} else {
 				insertBIObjectTemplate(hibBIObj, template, session);
 			}
-			
+
 		} catch (Exception e) {
 			logger.error("Error while inserting biobject into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
+
 	/**
 	 * Insert Object Template and Binary Content
 	 * @param hibBIObj
@@ -521,25 +574,26 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	private void insertBIObjectTemplate(SbiObjects hibBIObj,ObjTemplate biobjTempl, Session session) throws EMFUserError {
-	    logger.debug("IN");
-	    
+		logger.debug("IN");
+
 		try {
+			boolean newTransaction=false;
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiObjTemplates where objTempId = " + biobjTempl.getBiobjId());
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
 				return;
 			}
-			
+
 			byte[] template = biobjTempl.getContent();
-			
+
 			SbiBinContents hibBinContent = new SbiBinContents();
 			SbiObjTemplates hibObjTemplate = new SbiObjTemplates();
 			hibObjTemplate.setObjTempId(biobjTempl.getBiobjId());
 			hibBinContent.setId(biobjTempl.getBinId());
 			hibBinContent.setContent(template);
 
-			
+
 			hibObjTemplate.setActive(new Boolean(true));
 			hibObjTemplate.setCreationDate(biobjTempl.getCreationDate());
 			hibObjTemplate.setCreationUser(biobjTempl.getCreationUser());
@@ -548,7 +602,7 @@ public class ExporterMetadata {
 			hibObjTemplate.setProg(biobjTempl.getProg());
 			hibObjTemplate.setSbiBinContents(hibBinContent);
 			hibObjTemplate.setSbiObject(hibBIObj);
-			
+
 			session.save(hibBinContent);
 			session.save(hibObjTemplate);
 			tx.commit();
@@ -556,10 +610,10 @@ public class ExporterMetadata {
 			logger.error("Error while inserting biobject into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}	
-	
+
 	/**
 	 * Insert a BIObject Parameter into the exported database.
 	 * 
@@ -569,8 +623,9 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertBIObjectParameter(BIObjectParameter biobjpar,  Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
+			boolean newTransaction=false;
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiObjPar where objParId = " + biobjpar.getId());
 			List hibList = hibQuery.list();
@@ -594,8 +649,8 @@ public class ExporterMetadata {
 			hibBIObjParId.setSbiObjects(hibBIObject);
 			hibBIObjParId.setSbiParameters(hibParameter);
 			hibBIObjParId.setProg(new Integer(0));
-			*/
-			
+			 */
+
 			// build BI Object Parameter
 			SbiObjPar hibBIObjPar = new SbiObjPar(biobjpar.getId());
 			hibBIObjPar.setLabel(biobjpar.getLabel());
@@ -615,19 +670,19 @@ public class ExporterMetadata {
 			// save the BI Object Parameter
 			session.save(hibBIObjPar);
 			tx.commit();
-		
+
 		} catch (Exception e) {
 			logger.error("Error while inserting BIObjectParameter into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Insert a parameter into the exported database.
 	 * 
@@ -637,8 +692,9 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertParameter(Parameter param, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
+			boolean newTransaction=false;
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiParameters where parId = " + param.getId());
 			List hibList = hibQuery.list();
@@ -658,16 +714,17 @@ public class ExporterMetadata {
 			hibParam.setTemporalFlag(param.isTemporal() ? new Short((short) 1) : new Short((short) 0));
 			session.save(hibParam);
 			tx.commit();
+
 		} catch (Exception e) {
 			logger.error("Error while inserting parameter into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Insert a parameter use into the exported database.
 	 * 
@@ -677,7 +734,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertParUse(ParameterUse parUse, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiParuse where useId = " + parUse.getUseID());
@@ -707,14 +764,14 @@ public class ExporterMetadata {
 			logger.error("Error while inserting parameter use into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Insert Dependencies between parameters.
 	 * 
@@ -724,12 +781,12 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertBiParamDepend(List biparams, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			Iterator iterBIParams = biparams.iterator();
 			while(iterBIParams.hasNext()) {
 				BIObjectParameter biparam = (BIObjectParameter)iterBIParams.next();			    
-			    IObjParuseDAO objparuseDao = DAOFactory.getObjParuseDAO();
+				IObjParuseDAO objparuseDao = DAOFactory.getObjParuseDAO();
 				List objparlist = objparuseDao.loadObjParuses(biparam.getId());
 				Iterator iterObjParuse = objparlist.iterator();
 				while(iterObjParuse.hasNext()) {
@@ -738,9 +795,9 @@ public class ExporterMetadata {
 					// TODO controllare perché serve questo controllo: le dipendenze non dovrebbero essere riutilizzabili, per 
 					// cui vengono inseriti una sola volta
 					Query hibQuery = session.createQuery(" from SbiObjParuse where id.sbiObjPar.objParId = " + objparuse.getObjParId() + 
-							                             " and id.sbiParuse.useId = " + objparuse.getParuseId() + 
-							                             " and id.sbiObjParFather.objParId = " + objparuse.getObjParFatherId() + 
-							                             " and id.filterOperation = '" + objparuse.getFilterOperation() + "'" );
+							" and id.sbiParuse.useId = " + objparuse.getParuseId() + 
+							" and id.sbiObjParFather.objParId = " + objparuse.getObjParFatherId() + 
+							" and id.filterOperation = '" + objparuse.getFilterOperation() + "'" );
 					List hibList = hibQuery.list();
 					if(!hibList.isEmpty()) {
 						continue;
@@ -764,21 +821,21 @@ public class ExporterMetadata {
 					tx.commit();	
 				}
 			}
-			    
+
 		} catch (Exception e) {
 			logger.error("Error while inserting parameter dependencied into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 	/**
 	 * Insert a list of value into the exported database.
 	 * 
@@ -788,8 +845,9 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertLov(ModalitiesValue lov, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
+			boolean newTransaction=false;
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiLov where lovId = " + lov.getId());
 			List hibList = hibQuery.list();
@@ -810,12 +868,12 @@ public class ExporterMetadata {
 			logger.error("Error while inserting lov into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Insert a check into the exported database.
 	 * 
@@ -825,8 +883,8 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertCheck(Check check, Session session) throws EMFUserError {
-	    logger.debug("IN");
-		try {
+		logger.debug("IN");
+		try{
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiChecks where checkId = " + check.getCheckId());
 			List hibList = hibQuery.list();
@@ -848,11 +906,11 @@ public class ExporterMetadata {
 			logger.error("Error while inserting check into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
+
+
 	/**
 	 * Insert an association between a parameter use and a check into the exported database.
 	 * 
@@ -863,13 +921,13 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertParuseCheck(ParameterUse parUse, Check check, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Integer paruseId = parUse.getUseID();
 			Integer checkId = check.getCheckId();
 			String query = " from SbiParuseCk where id.sbiParuse.useId = " + paruseId +
-						   " and id.sbiChecks.checkId = " + checkId;
+			" and id.sbiChecks.checkId = " + checkId;
 			Query hibQuery = session.createQuery(query);
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
@@ -889,12 +947,12 @@ public class ExporterMetadata {
 			logger.error("Error while inserting paruse and check association into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Insert an association between a parameter use and a role into the exported database.
 	 * 
@@ -905,13 +963,13 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertParuseRole(ParameterUse parUse, Role role, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Integer paruseId = parUse.getUseID();
 			Integer roleId = role.getId();
 			String query = " from SbiParuseDet where id.sbiParuse.useId = " + paruseId +
-						   " and id.sbiExtRoles.extRoleId = " + roleId;
+			" and id.sbiExtRoles.extRoleId = " + roleId;
 			Query hibQuery = session.createQuery(query);
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
@@ -930,12 +988,12 @@ public class ExporterMetadata {
 			logger.error("Error while inserting paruse and role association into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Insert an association between a master report and a subreport.
 	 * 
@@ -945,20 +1003,21 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertSubReportAssociation(Subreport sub, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
+
 			Integer masterId = sub.getMaster_rpt_id();
 			Integer subId = sub.getSub_rpt_id();
 			String query = " from SbiSubreports as subreport where " +
-					"subreport.id.masterReport.biobjId = " + masterId + " and " +
-					"subreport.id.subReport.biobjId = " + subId;
+			"subreport.id.masterReport.biobjId = " + masterId + " and " +
+			"subreport.id.subReport.biobjId = " + subId;
 			Query hibQuery = session.createQuery(query);
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
 				return;
 			}
-			
+
 			SbiSubreportsId hibSubreportid = new SbiSubreportsId();
 			SbiObjects masterReport = (SbiObjects) session.load(SbiObjects.class, sub.getMaster_rpt_id());
 			SbiObjects subReport = (SbiObjects) session.load(SbiObjects.class, sub.getSub_rpt_id());
@@ -971,14 +1030,14 @@ public class ExporterMetadata {
 			logger.error("Error while inserting subreport " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Insert a functionality into the exported database.
 	 * 
@@ -988,8 +1047,8 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertFunctionality(LowFunctionality funct, Session session) throws EMFUserError {
-	    logger.debug("IN");
-		try {			
+		logger.debug("IN");
+		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiFunctions where funct_id = " + funct.getId());
 			List hibList = hibQuery.list();
@@ -1009,7 +1068,6 @@ public class ExporterMetadata {
 			hibFunct.setProg(funct.getProg());
 			session.save(hibFunct);
 			tx.commit();
-			
 			Role[] devRoles = funct.getDevRoles();
 			Domain devDom = domDAO.loadDomainByCodeAndValue("STATE", "DEV");
 			for(int i=0; i<devRoles.length; i++) {
@@ -1031,12 +1089,12 @@ public class ExporterMetadata {
 				insertRole(execRole, session);
 				insertFunctRole(execRole, funct, execDom.getValueId(), execDom.getValueCd(), session);
 			}
-			
+
 		} catch (Exception e) {
 			logger.error("Error while inserting Functionality into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}
-		
+
 		// recursively insert parent functionalities
 		Integer parentId = funct.getParentId();
 		if(parentId!=null){
@@ -1045,13 +1103,13 @@ public class ExporterMetadata {
 			insertFunctionality(functPar, session);
 		}
 		logger.debug("OUT");
-		
+
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * Insert a role into the exported database.
 	 * 
@@ -1061,7 +1119,7 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertRole(Role role, Session session) throws EMFUserError {
-	    logger.debug("IN");
+		logger.debug("IN");
 		try {
 			Transaction tx = session.beginTransaction();
 			Query hibQuery = session.createQuery(" from SbiExtRoles where extRoleId = " + role.getId());
@@ -1090,12 +1148,12 @@ public class ExporterMetadata {
 			logger.error("Error while inserting role into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Insert an association between a functionality and a role into the exported database.
 	 * 
@@ -1108,13 +1166,13 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertFunctRole(Role role, LowFunctionality funct, Integer stateId, String stateCD, Session session) throws EMFUserError {
-	    logger.debug("IN");
-	    try {
+		logger.debug("IN");
+		try {
 			Transaction tx = session.beginTransaction();
 			Integer roleid = role.getId();
 			Integer functid = funct.getId();
 			String query = " from SbiFuncRole where id.function = " + functid +
-						   " and id.role = " + roleid + " and id.state = " + stateId ;
+			" and id.role = " + roleid + " and id.state = " + stateId ;
 			Query hibQuery = session.createQuery(query);
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
@@ -1132,16 +1190,17 @@ public class ExporterMetadata {
 			hibFunctRole.setStateCd(stateCD);
 			session.save(hibFunctRole);
 			tx.commit();
+
 		} catch (Exception e) {
 			logger.error("Error while inserting function and role association into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Insert an association between a functionality and a biobject into the exported database.
 	 * 
@@ -1152,13 +1211,14 @@ public class ExporterMetadata {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public void insertObjFunct(BIObject biobj, LowFunctionality funct, Session session) throws EMFUserError {
-	    logger.debug("IN");
-	    try {
+		logger.debug("IN");
+		try {
 			Transaction tx = session.beginTransaction();
+
 			Integer biobjid = biobj.getId();
 			Integer functid = funct.getId();
 			String query = " from SbiObjFunc where id.sbiFunctions = " + functid +
-						   " and id.sbiObjects = " + biobjid;
+			" and id.sbiObjects = " + biobjid;
 			Query hibQuery = session.createQuery(query);
 			List hibList = hibQuery.list();
 			if(!hibList.isEmpty()) {
@@ -1178,7 +1238,7 @@ public class ExporterMetadata {
 			logger.error("Error while inserting function and object association into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		}finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
 
@@ -1189,9 +1249,9 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	public void insertMapCatalogue(Session session) throws EMFUserError {
-	    logger.debug("IN");
-	    try {
-	    	// controls if the maps are already inserted into export db
+		logger.debug("IN");
+		try {
+			// controls if the maps are already inserted into export db
 			Transaction tx = session.beginTransaction();
 			String query = " from SbiGeoMaps";
 			Query hibQuery = session.createQuery(query);
@@ -1201,20 +1261,20 @@ public class ExporterMetadata {
 				return;
 			}
 			tx.commit();
-			
+
 			insertMaps(session);
 			insertFeatures(session);
 			insertMapFeaturesAssociations(session);
-			
+
 		} catch (Exception e) {
 			logger.error("Error while inserting map catalogue into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		} finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
-		
+
 	}
-	
+
 	/**
 	 * Insert the maps of the maps catalogue
 	 * 
@@ -1222,8 +1282,8 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	private void insertMaps(Session session) throws EMFUserError {
-	    logger.debug("IN");
-	    try {
+		logger.debug("IN");
+		try {
 			Transaction tx = session.beginTransaction();
 			ISbiGeoMapsDAO mapsDAO = DAOFactory.getSbiGeoMapsDAO();
 			List allMaps = mapsDAO.loadAllMaps();
@@ -1235,10 +1295,10 @@ public class ExporterMetadata {
 				hibMap.setFormat(map.getFormat());
 				hibMap.setName(map.getName());
 				hibMap.setUrl(map.getUrl());
-				
+
 				if (map.getBinId() == 0) {
 					logger.warn("Map with id = " + map.getMapId() + " and name = " + map.getName() + 
-							" has not binary content!!");
+					" has not binary content!!");
 					hibMap.setBinContents(null);
 				} else {
 					SbiBinContents hibBinContent = new SbiBinContents();
@@ -1246,10 +1306,10 @@ public class ExporterMetadata {
 					byte[] content = DAOFactory.getBinContentDAO().getBinContent(map.getBinId());
 					hibBinContent.setContent(content);
 					hibMap.setBinContents(hibBinContent);
-					
+
 					session.save(hibBinContent);
 				}
-				
+
 				session.save(hibMap);
 
 			}
@@ -1258,10 +1318,10 @@ public class ExporterMetadata {
 			logger.error("Error while inserting maps into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		} finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
+
 	/**
 	 * Insert the features of the maps catalogue
 	 * 
@@ -1269,8 +1329,8 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	private void insertFeatures(Session session) throws EMFUserError {
-	    logger.debug("IN");
-	    try {
+		logger.debug("IN");
+		try {
 			Transaction tx = session.beginTransaction();
 			ISbiGeoFeaturesDAO featuresDAO = DAOFactory.getSbiGeoFeaturesDAO();
 			List allFeatures = featuresDAO.loadAllFeatures();
@@ -1288,10 +1348,10 @@ public class ExporterMetadata {
 			logger.error("Error while inserting features into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		} finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-	
+
 	/**
 	 * Insert the association between maps and features of the maps catalogue
 	 * 
@@ -1299,8 +1359,8 @@ public class ExporterMetadata {
 	 * @throws EMFUserError
 	 */
 	private void insertMapFeaturesAssociations(Session session) throws EMFUserError {
-	    logger.debug("IN");
-	    try {
+		logger.debug("IN");
+		try {
 			Transaction tx = session.beginTransaction();
 			ISbiGeoMapsDAO mapsDAO = DAOFactory.getSbiGeoMapsDAO();
 			List allMaps = mapsDAO.loadAllMaps();
@@ -1328,8 +1388,907 @@ public class ExporterMetadata {
 			logger.error("Error while inserting association between maps and features into export database " , e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
 		} finally{
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
+
+
+
+
+
+
+	/**
+	 * Insert Model Instance Tree.
+	 * 
+	 * @param mi the Model Instance
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public List insertAllFromModelInstance(ModelInstance mi, Session session) throws EMFUserError {
+		logger.debug("IN");
+
+		biObjectToInsert=new ArrayList();
+
+		//I want to insert the whole model instance tree, first of all I get the model instance root
+		IModelInstanceDAO modInstDAO=DAOFactory.getModelInstanceDAO();
+		ModelInstance miRoot=modInstDAO.loadModelInstanceRoot(mi);
+
+		// insert the model (model instance root points to model root)
+		logger.debug("Insert the model root and the tree");		
+		Model modelRoot=miRoot.getModel();
+		insertModelTree(modelRoot, session);
+
+		logger.debug("Insert the model Instance root and the tree");		
+
+		//insert the Model Instanceroot
+		insertModelInstanceTree(miRoot, session);
+
+		logger.debug("OUT");
+		return biObjectToInsert;
+	}
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * Insert Model Instance.
+	 * 
+	 * @param mi the Model Instance
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertModelInstanceTree(ModelInstance mi, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiKpiModelInst where kpiModelInst = " + mi.getId());
+
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+
+			// main attributes			
+			SbiKpiModelInst hibMi = new SbiKpiModelInst();
+			hibMi.setKpiModelInst(mi.getId());
+			hibMi.setName(mi.getName());
+			hibMi.setLabel(mi.getLabel());
+			hibMi.setDescription(mi.getDescription());
+			hibMi.setStartDate(mi.getStartDate());
+			hibMi.setEndDate(mi.getEndDate());
+
+			// insert Parent
+			if(mi.getParentId()!=null){
+				SbiKpiModelInst hibKpiModelInstParent = (SbiKpiModelInst) session.load(SbiKpiModelInst.class, mi.getParentId());
+				hibMi.setSbiKpiModelInst(hibKpiModelInstParent);
+			}
+
+			// model
+			if(mi.getModel()!=null){
+				SbiKpiModel hibModel = (SbiKpiModel) session.load(SbiKpiModel.class, mi.getModel().getId());
+				hibMi.setSbiKpiModel(hibModel);
+			}
+
+			// Load tKpi Instance
+			if (mi.getKpiInstance() != null) {
+				KpiInstance kpiInstance=mi.getKpiInstance();
+				insertKpiInstance(kpiInstance.getKpiInstanceId(), session);
+				SbiKpiInstance hibKpiInst = (SbiKpiInstance) session.load(SbiKpiInstance.class, kpiInstance.getKpiInstanceId());
+				hibMi.setSbiKpiInstance(hibKpiInst);
+
+			}
+
+			Transaction tx = session.beginTransaction();
+			session.save(hibMi);
+			tx.commit();
+
+			// Load all the model resources of the current instance model
+			// after having inserted model instance
+			IModelResourceDAO modelResourceDao=DAOFactory.getModelResourcesDAO();			
+			List modelResources=modelResourceDao.loadModelResourceByModelId(mi.getId());
+			for (Iterator iterator = modelResources.iterator(); iterator.hasNext();) {
+				ModelResources modRes = (ModelResources) iterator.next();
+				insertModelResources(modRes, session);
+				// TODO: maybe insert also the set
+			}
+
+			Set modelInstanceChildren=new HashSet();
+			logger.debug("insert current model instance children");
+			// get the Model Instance children
+			IModelInstanceDAO modelInstDao=DAOFactory.getModelInstanceDAO();
+			ModelInstance modInstWithChildren=modelInstDao.loadModelInstanceWithChildrenById(mi.getId());
+			List childrenList=modInstWithChildren.getChildrenNodes();
+			if(childrenList!=null){
+				for (Iterator iterator = childrenList.iterator(); iterator.hasNext();) {
+					ModelInstance childNode = (ModelInstance) iterator.next();
+					logger.debug("insert child "+childNode.getLabel());
+					insertModelInstanceTree(childNode,session);				
+					SbiKpiModelInst hibKpiModelInst = (SbiKpiModelInst) session.load(SbiKpiModelInst.class, childNode.getId());
+					modelInstanceChildren.add(hibKpiModelInst);
+				}
+			}
+			hibMi.setSbiKpiModelInsts(modelInstanceChildren);  // serve?
+
+		} catch (Exception e) {
+			logger.error("Error while inserting dataSource into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+	/**
+	 * Insert Model .
+	 * 
+	 * @param mod the Model
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertModelTree(Model mod, Session session) throws EMFUserError {
+		logger.debug("IN");
+		IModelDAO modelDao=DAOFactory.getModelDAO();
+		try {
+			Query hibQuery = session.createQuery(" from SbiKpiModel where kpiModelId = " + mod.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+
+
+			// main attributes			
+			SbiKpiModel hibMod = new SbiKpiModel();
+			hibMod.setKpiModelId(mod.getId());
+			hibMod.setKpiModelCd(mod.getCode());
+			hibMod.setKpiModelDesc(mod.getDescription());
+			hibMod.setKpiModelNm(mod.getName());
+
+			// insert Parent
+			if(mod.getParentId()!=null){
+				SbiKpiModel hibKpiModelParent = (SbiKpiModel) session.load(SbiKpiModel.class, mod.getParentId());
+				hibMod.setSbiKpiModel(hibKpiModelParent);
+
+			}
+
+			// sbiDomain
+			Criterion nameCriterrion = Expression.eq("valueCd", mod.getTypeCd());
+			Criteria criteria = session.createCriteria(SbiDomains.class);
+			criteria.add(nameCriterrion);	
+			SbiDomains domainType = (SbiDomains) criteria.uniqueResult();
+			hibMod.setModelType(domainType);
+
+			// load kpi
+			if (mod.getKpiId() != null) {
+				Integer kpiId=mod.getKpiId();
+				insertKpi(kpiId,session);
+				SbiKpi sbiKpi= (SbiKpi) session.load(SbiKpi.class, mod.getKpiId());
+				hibMod.setSbiKpi(sbiKpi);
+			}
+
+			// save current Model
+			Transaction tx = session.beginTransaction();
+			session.save(hibMod);
+			tx.commit();
+			logger.debug("current model "+mod.getCode()+" inserted");
+
+			Set modelChildren=new HashSet();
+			logger.debug("insert current model children");
+
+			//Load model childred
+			Model modWithChildren=modelDao.loadModelWithChildrenById(mod.getId());
+
+			List childrenList=modWithChildren.getChildrenNodes();
+			if(childrenList!=null){
+				for (Iterator iterator = childrenList.iterator(); iterator.hasNext();) {
+					Model childNode = (Model) iterator.next();
+					logger.debug("insert child "+childNode.getCode());
+					insertModelTree(childNode,session);				
+					SbiKpiModel hibKpiModel = (SbiKpiModel) session.load(SbiKpiModel.class, childNode.getId());
+					modelChildren.add(hibKpiModel);
+				}
+			}
+			hibMod.setSbiKpiModels(modelChildren);
+
+		} catch (Exception e) {
+			logger.error("Error while inserting dataSource into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+	/**
+	 * Insert Kpi .
+	 * 
+	 * @param kpi the Kpi
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertKpi(Integer kpiId, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiKpi where kpiId = " + kpiId);
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+			// get the Kpi BO from id
+			IKpiDAO kpiDao=DAOFactory.getKpiDAO();
+			Kpi kpi=kpiDao.loadKpiById(kpiId);
+
+			// main attributes			
+			SbiKpi hibKpi = new SbiKpi();
+			hibKpi.setKpiId(kpi.getKpiId());
+			hibKpi.setCode(kpi.getCode());
+			hibKpi.setDescription(kpi.getDescription());
+			hibKpi.setInterpretation(kpi.getInterpretation());
+			hibKpi.setName(kpi.getKpiName());
+			// Weight???	hibKpi.setWeight(kpi.get)
+			hibKpi.setWeight(kpi.getStandardWeight());
+			char isFather=kpi.getIsParent().equals(true)? 'T' : 'F';
+			hibKpi.setFlgIsFather(new Character(isFather));
+			hibKpi.setInterpretation(kpi.getInterpretation());
+			hibKpi.setInputAttributes(kpi.getInputAttribute());
+			hibKpi.setModelReference(kpi.getModelReference());
+			hibKpi.setTargetAudience(kpi.getTargetAudience());
+
+
+			if(kpi.getMeasureTypeId()!=null){
+				SbiDomains measureType=(SbiDomains)session.load(SbiDomains.class, kpi.getMeasureTypeId());			
+				hibKpi.setSbiDomainsByMeasureType(measureType);
+			}
+			if(kpi.getKpiTypeId()!=null){
+				SbiDomains kpiType=(SbiDomains)session.load(SbiDomains.class, kpi.getKpiTypeId());			
+				hibKpi.setSbiDomainsByKpiType(kpiType);
+			}
+			if(kpi.getMetricScaleId()!=null){
+				SbiDomains metricScaleType=(SbiDomains)session.load(SbiDomains.class, kpi.getMetricScaleId());			
+				hibKpi.setSbiDomainsByMetricScaleType(metricScaleType);
+			}
+
+			// load dataset
+			if (kpi.getKpiDs() != null) {    
+				IDataSet ds=kpi.getKpiDs();
+				insertDataSet(ds, session);
+				SbiDataSetConfig sbiDs= (SbiDataSetConfig) session.load(SbiDataSetConfig.class, ds.getId());
+				hibKpi.setSbiDataSet(sbiDs);
+			}
+
+			// load threshold
+			if (kpi.getThreshold() != null) {
+				Threshold th=kpi.getThreshold();
+				insertThreshold(th, session);
+				SbiThreshold sbiTh= (SbiThreshold) session.load(SbiThreshold.class, th.getId());
+				hibKpi.setSbiThreshold(sbiTh);
+			}
+
+			// Load BI Object
+			if(kpi.getDocumentLabel()!=null){
+				IBIObjectDAO biobjDAO = DAOFactory.getBIObjectDAO();
+				BIObject biobj = biobjDAO.loadBIObjectByLabel(kpi.getDocumentLabel());
+				//insertBIObject(biobj, session);
+				biObjectToInsert.add(biobj.getId());
+				hibKpi.setDocumentLabel(kpi.getDocumentLabel());
+			}
+
+
+			// Measure Unit   ???
+			if(kpi.getScaleCode()!=null && !kpi.getScaleCode().equalsIgnoreCase("")){
+				IMeasureUnitDAO muDao=DAOFactory.getMeasureUnitDAO();
+				MeasureUnit mu=muDao.loadMeasureUnitByCd(kpi.getScaleCode());
+				insertMeasureUnit(mu, session);
+				SbiMeasureUnit sbiMu= (SbiMeasureUnit) session.load(SbiMeasureUnit.class, mu.getId());
+				hibKpi.setSbiMeasureUnit(sbiMu);
+			}
+
+			Transaction tx = session.beginTransaction();
+			session.save(hibKpi);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting kpi into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+
+
+	/**
+	 * Insert Kpi Instance.
+	 * 
+	 * @param kpiInst the Kpi Instance
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertKpiInstance(Integer kpiInstId, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiKpiInstance where idKpiInstance = " + kpiInstId);
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			}
+
+			// recover kpi instance from Id
+			IKpiInstanceDAO kpiInstDAO=DAOFactory.getKpiInstanceDAO();
+			KpiInstance kpiInst=kpiInstDAO.loadKpiInstanceById(kpiInstId);
+
+			// main attributes			
+			SbiKpiInstance hibKpiInst = new SbiKpiInstance();
+			hibKpiInst.setIdKpiInstance(kpiInst.getKpiInstanceId());
+			hibKpiInst.setBeginDt(kpiInst.getD());
+			hibKpiInst.setWeight(kpiInst.getWeight());
+			hibKpiInst.setTarget(kpiInst.getTarget());
+
+			if(kpiInst.getChartTypeId()!=null){
+				SbiDomains chartType=(SbiDomains)session.load(SbiDomains.class, kpiInst.getChartTypeId());			
+				hibKpiInst.setChartType(chartType);
+			}
+
+			// Kpi
+			if (kpiInst.getKpi()!=null) {    
+				insertKpi(kpiInst.getKpi(), session);
+				SbiKpi sbiKpi= (SbiKpi) session.load(SbiKpi.class, kpiInst.getKpi());
+				hibKpiInst.setSbiKpi(sbiKpi);
+			}
+
+			// load threshold
+			if (kpiInst.getThresholdId() != null) {
+				IThresholdDAO thresholdDAO=DAOFactory.getThresholdDAO();
+				Threshold th=thresholdDAO.loadThresholdById(kpiInst.getThresholdId());
+				insertThreshold(th, session);
+				SbiThreshold sbiTh= (SbiThreshold) session.load(SbiThreshold.class, th.getId());
+				hibKpiInst.setSbiThreshold(sbiTh);
+			}
+
+			// load measureUnit!
+			if(kpiInst.getScaleCode()!=null){
+				IMeasureUnitDAO muDao=DAOFactory.getMeasureUnitDAO();
+				MeasureUnit mu=muDao.loadMeasureUnitByCd(kpiInst.getScaleCode());
+				insertMeasureUnit(mu, session);
+				SbiMeasureUnit sbiMu= (SbiMeasureUnit) session.load(SbiMeasureUnit.class, mu.getId());
+				hibKpiInst.setSbiMeasureUnit(sbiMu);
+			}
+
+			// Insert KPI Instance
+
+			Transaction tx = session.beginTransaction();
+			session.save(hibKpiInst);
+			tx.commit();
+
+
+
+			// after inserted Kpi Instance insert periods		
+			// load all alarms
+			ISbiAlarmDAO sbiAlarmDAO=DAOFactory.getAlarmDAO();
+			List<Alarm> alarmsToLoad=sbiAlarmDAO.loadAllByKpiInstId(kpiInstId);
+			for (Iterator iterator = alarmsToLoad.iterator(); iterator.hasNext();) {
+				Alarm alarm = (Alarm) iterator.next();
+				insertAlarm(alarm, session);				
+
+			}
+
+
+			// after inserted Kpi Instance insert periods
+			// Load all the kpi inst period and the periodicity s well
+			IKpiInstPeriodDAO kpiInstPeriodDao=DAOFactory.getKpiInstPeriodDAO();			
+			List kpiInstPeriodList=kpiInstPeriodDao.loadKpiInstPeriodId(kpiInst.getKpiInstanceId());
+			for (Iterator iterator = kpiInstPeriodList.iterator(); iterator.hasNext();) {
+				KpiInstPeriod modKpiInst = (KpiInstPeriod) iterator.next();
+				insertKpiInstancePeriod(modKpiInst, session);
+			}
+
+
+
+		} catch (Exception e) {
+			logger.error("Error while inserting kpi instance into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+
+
+
+	/**
+	 * Insert Threshold .
+	 * 
+	 * @param th the Threshold
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertThreshold(Threshold th, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiThreshold where thresholdId = " + th.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			} 
+
+			SbiDomains thresholdType=(SbiDomains)session.load(SbiDomains.class, th.getThresholdTypeId());
+
+			// main attributes			
+			SbiThreshold hibTh = new SbiThreshold();
+			hibTh.setThresholdId(th.getId());
+			hibTh.setName(th.getName());
+			hibTh.setCode(th.getCode());
+			hibTh.setDescription(th.getDescription());
+			hibTh.setThresholdType(thresholdType);
+			Transaction tx = session.beginTransaction();
+			session.save(hibTh);
+			tx.commit();
+
+			// load Threshold Value
+			if (th.getThresholdValues() != null && th.getThresholdValues().size()>0) {
+				Set thresholdValues=new HashSet(0);
+				for (Iterator iterator = th.getThresholdValues().iterator(); iterator.hasNext();) {
+					ThresholdValue thValue = (ThresholdValue) iterator.next();
+					insertThresholdValue(thValue, session, hibTh);
+					Integer thValueId=thValue.getId();
+					SbiThresholdValue sbiTh= (SbiThresholdValue) session.load(SbiThresholdValue.class, thValue.getId());
+					thresholdValues.add(sbiTh);
+				}
+				//hibTh.setSbiThresholdValues(thresholdValues);
+			}
+
+		} catch (Exception e) {
+			logger.error("Error while inserting dataSource into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+	/**
+	 * Insert Threshold Value.
+	 * 
+	 * @param th the Threshold Value
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertThresholdValue(ThresholdValue thValue, Session session, SbiThreshold sbiTh) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiThresholdValue where idThresholdValue = " + thValue.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			} 
+
+			SbiDomains severity=(SbiDomains)session.load(SbiDomains.class, thValue.getSeverityId());
+
+			// main attributes			
+			SbiThresholdValue hibThValue = new SbiThresholdValue();
+			hibThValue.setIdThresholdValue(thValue.getId());
+			hibThValue.setLabel(thValue.getLabel());
+			hibThValue.setMaxValue(thValue.getMaxValue());
+			hibThValue.setMinValue(thValue.getMinValue());
+
+			//Color col=thValue.getColour();
+			//String colour = "rgb("+col.getRed()+", "+col.getGreen()+", "+col.getBlue()+")" ;
+			String colour=thValue.getColourString();
+			hibThValue.setColour(colour);
+			hibThValue.setPosition(thValue.getPosition());
+			hibThValue.setSeverity(severity);
+
+			// put association with Threshold
+			hibThValue.setSbiThreshold(sbiTh);
+
+			Transaction tx = session.beginTransaction();			
+			session.save(hibThValue);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting threshold value into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+	/**
+	 * Insert Measure Unit.
+	 * 
+	 * @param mu the Measure Unit
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertMeasureUnit(MeasureUnit mu, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiMeasureUnit where idMeasureUnit = " + mu.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			} 
+
+			// main attributes			
+			SbiMeasureUnit hibMu = new SbiMeasureUnit();
+			hibMu.setIdMeasureUnit(mu.getId());
+			hibMu.setName(mu.getName());
+			hibMu.setScaleCd(mu.getScaleCd());
+			hibMu.setScaleNm(mu.getScaleNm());
+
+			SbiDomains scaleType=(SbiDomains)session.load(SbiDomains.class, mu.getScaleTypeId());
+
+			hibMu.setScaleType(scaleType);
+
+			Transaction tx = session.beginTransaction();			
+			session.save(hibMu);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting threshold value into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+
+
+	/**
+	 * Insert Kpi Instance Periodicity.
+	 * 
+	 * @param kpiPeriod kpiInstancePeriodicity
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertKpiInstancePeriod( KpiInstPeriod kpiInstPeriod, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiKpiInstPeriod where kpiInstPeriodId = " + kpiInstPeriod.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			} 
+
+			// main attributes			
+			SbiKpiInstPeriod hibKpiInstPeriod = new SbiKpiInstPeriod();
+			hibKpiInstPeriod.setKpiInstPeriodId(kpiInstPeriod.getId());
+			hibKpiInstPeriod.setDefault_(kpiInstPeriod.getDefaultValue());
+
+			// Kpi instance should be already inserted
+
+			if (kpiInstPeriod.getKpiInstId()!= null) {
+				Integer kpiInstPeriodId=kpiInstPeriod.getKpiInstId();
+				SbiKpiInstance sbiKpiInstance= (SbiKpiInstance) session.load(SbiKpiInstance.class, kpiInstPeriodId);
+				if(sbiKpiInstance!=null){
+					hibKpiInstPeriod.setSbiKpiInstance(sbiKpiInstance);
+				}
+			}
+
+			// load Periodicity
+
+			if (kpiInstPeriod.getPeriodicityId() != null) {
+				Integer periodicityId=kpiInstPeriod.getPeriodicityId();
+				IPeriodicityDAO periodicityDAO=DAOFactory.getPeriodicityDAO();
+				Periodicity period=periodicityDAO.loadPeriodicityById(periodicityId);
+				insertPeriodicity(period, session);
+				SbiKpiPeriodicity sbiKpiPeriodicity= (SbiKpiPeriodicity) session.load(SbiKpiPeriodicity.class, period.getIdKpiPeriodicity());
+				if(sbiKpiPeriodicity!=null){
+					hibKpiInstPeriod.setSbiKpiPeriodicity(sbiKpiPeriodicity);
+				}
+			}
+
+
+
+			Transaction tx = session.beginTransaction();			
+			session.save(hibKpiInstPeriod);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting kpiInstPeriod value into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+
+
+
+	/**
+	 * Insert Periodicity.
+	 * 
+	 * @param mu the Measure Unit
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertPeriodicity(Periodicity per, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiKpiPeriodicity where idKpiPeriodicity = " + per.getIdKpiPeriodicity());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			} 
+
+			// main attributes			
+			SbiKpiPeriodicity hibPer = new SbiKpiPeriodicity();
+			hibPer.setIdKpiPeriodicity(per.getIdKpiPeriodicity());
+			hibPer.setName(per.getName());
+			hibPer.setChronString(per.getCronString());
+			hibPer.setDays(per.getDays());
+			hibPer.setHours(per.getHours());
+			hibPer.setMinutes(per.getMinutes());
+			hibPer.setMonths(per.getMonths());
+			hibPer.setStartDate(null);
+			Transaction tx = session.beginTransaction();			
+			session.save(hibPer);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting Periodicity into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+
+
+
+
+	/**
+	 * Insert ModelResources.
+	 * 
+	 * @param modRes the modelResource
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertModelResources(ModelResources modRes, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiKpiModelResources where kpiModelResourcesId = " + modRes.getModelResourcesId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			} 
+
+			// main attributes			
+			SbiKpiModelResources hibModRes = new SbiKpiModelResources();
+			hibModRes.setKpiModelResourcesId(modRes.getModelResourcesId());
+
+			// Model instance should be already inserted
+
+			if (modRes.getModelInstId() != null) {
+				Integer modelInstId=modRes.getModelInstId();
+				SbiKpiModelInst sbiKpiModInst= (SbiKpiModelInst) session.load(SbiKpiModelInst.class, modelInstId);
+				if(sbiKpiModInst!=null){
+					hibModRes.setSbiKpiModelInst(sbiKpiModInst);
+				}
+			}
+
+			// load resource
+
+			if (modRes.getResourceId() != null) {
+				Integer resId=modRes.getResourceId();
+				IResourceDAO resDAO=DAOFactory.getResourceDAO();
+				Resource res=resDAO.loadResourceById(resId);
+
+				insertResource(res, session);
+				SbiResources sbiRes= (SbiResources) session.load(SbiResources.class, res.getId());
+				if(sbiRes!=null){
+					hibModRes.setSbiResources(sbiRes);
+				}
+			}
+
+
+			Transaction tx = session.beginTransaction();			
+			session.save(hibModRes);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting model resources value into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+
+
+	/**
+	 * Insert Resources.
+	 * 
+	 * @param res the resource
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertResource(Resource res, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiResources where resourceId = " + res.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			} 
+
+			// main attributes			
+			SbiResources hibRes = new SbiResources();
+
+			hibRes.setResourceId(res.getId());
+			hibRes.setResourceName(res.getName());
+			hibRes.setResourceDescr(res.getDescr());
+			hibRes.setColumnName(res.getColumn_name());
+			hibRes.setTableName(res.getTable_name());
+
+			//sbi Domains
+			if(res.getType()!=null){
+				SbiDomains type=(SbiDomains)session.load(SbiDomains.class, res.getTypeId());			
+				hibRes.setType(type);
+			}
+
+			Transaction tx = session.beginTransaction();			
+			session.save(hibRes);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting resource into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+
+	public List getBiObjectToInsert() {
+		return biObjectToInsert;
+	}
+
+	public void setBiObjectToInsert(List biObjectToInsert) {
+		this.biObjectToInsert = biObjectToInsert;
+	}
+
+
+
+
+	/**
+	 * Insert Alarm.
+	 * 
+	 * @param res the Alarm
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertAlarm(Alarm alarm, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiAlarm where id = " + alarm.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			} 
+			
+			// main attributes			
+			SbiAlarm hibAlarm = new SbiAlarm();
+
+			hibAlarm.setId(alarm.getId());
+			hibAlarm.setDescr(alarm.getDescr());
+			hibAlarm.setLabel(alarm.getLabel());
+			hibAlarm.setName(alarm.getName());
+			hibAlarm.setText(alarm.getText());
+			hibAlarm.setUrl(alarm.getUrl()); 
+			hibAlarm.setAutoDisabled(alarm.isAutoDisabled()); 
+			hibAlarm.setSingleEvent(alarm.isSingleEvent());
+
+			// kpi Instance (already inserted)
+			if(alarm.getIdKpiInstance()!=null){
+				SbiKpiInstance sbiKpiInst=(SbiKpiInstance)session.load(SbiKpiInstance.class, alarm.getIdKpiInstance());			
+				hibAlarm.setSbiKpiInstance(sbiKpiInst);
+			}
+
+			// Threshold Value (already inserted)
+			if(alarm.getIdThresholdValue()!=null){
+				SbiThresholdValue sbiThValue=(SbiThresholdValue)session.load(SbiThresholdValue.class, alarm.getIdThresholdValue());			
+				hibAlarm.setSbiThresholdValue(sbiThValue);
+			}
+
+			// SbiDomains modality
+
+			if(alarm.getModalityId()!=null){
+				SbiDomains modality=(SbiDomains)session.load(SbiDomains.class, alarm.getModalityId());			
+				hibAlarm.setModality(modality);
+			}
+
+			// insert all the contacts
+			Set<SbiAlarmContact> listSbiContacts = new HashSet<SbiAlarmContact>();
+			if(alarm.getSbiAlarmContacts()!=null){
+				for (Iterator iterator = alarm.getSbiAlarmContacts().iterator(); iterator.hasNext();) {
+					AlarmContact alarmContact = (AlarmContact) iterator.next();
+					insertAlarmContact(alarmContact, session);
+					SbiAlarmContact sbiAlCon=(SbiAlarmContact)session.load(SbiAlarmContact.class, alarmContact.getId());			
+					listSbiContacts.add(sbiAlCon);
+				}
+			}
+			hibAlarm.setSbiAlarmContacts(listSbiContacts);	
+
+
+			
+			Transaction tx = session.beginTransaction();			
+			session.save(hibAlarm);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting alarm into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * Insert Alarm Contact
+	 * 
+	 * @param con the Alarm Contact
+	 * @param session the session
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public void insertAlarmContact(AlarmContact con, Session session) throws EMFUserError {
+		logger.debug("IN");
+		try {
+			Query hibQuery = session.createQuery(" from SbiAlarmContact where id = " + con.getId());
+			List hibList = hibQuery.list();
+			if(!hibList.isEmpty()) {
+				return;
+			} 
+
+			// main attributes			
+			SbiAlarmContact hibCon = new SbiAlarmContact();
+
+			hibCon.setId(con.getId());
+			hibCon.setEmail(con.getEmail());
+			hibCon.setMobile(con.getMobile());
+			hibCon.setName(con.getName());
+			hibCon.setResources(con.getResources());
+
+			Transaction tx = session.beginTransaction();			
+			session.save(hibCon);
+			tx.commit();
+		} catch (Exception e) {
+			logger.error("Error while inserting alarm contact into export database " , e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "8005", "component_impexp_messages");
+		}finally{
+			logger.debug("OUT");
+		}
+	}
+
+
+
 
 }

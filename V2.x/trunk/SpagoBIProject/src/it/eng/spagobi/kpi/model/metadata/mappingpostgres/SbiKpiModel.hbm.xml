@@ -10,7 +10,7 @@
             	<param name="sequence">sbi_kpi_model_seq</param>
             </generator>
         </id>
-        <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
+        <many-to-one name="modelType" class="it.eng.spagobi.commons.metadata.SbiDomains" >
             <column name="KPI_MODEL_TYPE_ID" not-null="true" />
         </many-to-one>
         <many-to-one name="sbiKpiModel" class="it.eng.spagobi.kpi.model.metadata.SbiKpiModel" >

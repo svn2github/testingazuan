@@ -2,6 +2,7 @@ package it.eng.spagobi.kpi.threshold.dao;
 
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 
 import java.util.List;
 
@@ -32,5 +33,8 @@ public interface IThresholdDAO {
 	public Integer insertThreshold(Threshold toCreate)throws EMFUserError ;
 
 	public boolean deleteThreshold(Integer thresholdId)throws EMFUserError;
+	
+	public Threshold toThreshold(SbiThreshold t) throws EMFUserError; 
 
+	
 }

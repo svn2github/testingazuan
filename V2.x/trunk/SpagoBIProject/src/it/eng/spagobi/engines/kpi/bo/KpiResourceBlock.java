@@ -176,7 +176,7 @@ public class KpiResourceBlock {
 		Float lo =null;
 		Double weight = null;
 		if (kpiVal!=null){
-			thresholds = kpiVal.getThresholds();
+			thresholds = kpiVal.getThresholdValues();
 			value = kpiVal.getValue();
 			if(value!=null){
 				Double val = new Double(value);
@@ -308,7 +308,7 @@ public class KpiResourceBlock {
 		}
 		logger.debug("Written HTML for weight");
 		
-		if (display_bullet_chart && kpiVal!=null && kpiVal.getThresholds()!=null && !kpiVal.getThresholds().isEmpty() && sbi!=null){
+		if (display_bullet_chart && kpiVal!=null && kpiVal.getThresholdValues()!=null && !kpiVal.getThresholdValues().isEmpty() && sbi!=null){
 			
 			JFreeChart chart = sbi.createChart();
 			ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());

@@ -10,7 +10,7 @@
             	<param name="sequence">SBI_MEASURE_UNIT_SEQ</param>
             </generator>
         </id>
-        <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
+        <many-to-one name="scaleType" class="it.eng.spagobi.commons.metadata.SbiDomains" >
             <column name="SCALE_TYPE_ID" not-null="true" />
         </many-to-one>
         <property name="name" type="string">

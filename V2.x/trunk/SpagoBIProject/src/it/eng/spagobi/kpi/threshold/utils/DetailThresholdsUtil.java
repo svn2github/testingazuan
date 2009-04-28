@@ -37,9 +37,9 @@ public class DetailThresholdsUtil {
 
 		Threshold toReturn = new Threshold();
 
-		toReturn.setThresholdName(name);
-		toReturn.setThresholdDescription(description);
-		toReturn.setThresholdCode(code);
+		toReturn.setName(name);
+		toReturn.setDescription(description);
+		toReturn.setCode(code);
 		toReturn.setThresholdTypeId(thresholdTypeId);
 
 		return toReturn;

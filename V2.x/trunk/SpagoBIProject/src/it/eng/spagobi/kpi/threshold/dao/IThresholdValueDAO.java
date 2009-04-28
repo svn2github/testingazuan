@@ -1,7 +1,9 @@
 package it.eng.spagobi.kpi.threshold.dao;
 
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 
 import java.util.List;
 
@@ -16,4 +18,11 @@ public interface IThresholdValueDAO {
 	Integer insertThresholdValue(ThresholdValue toCreate) throws EMFUserError;
 
 	boolean deleteThresholdValue(Integer thresholdId) throws EMFUserError;
+	
+	ThresholdValue toThresholdValue(SbiThresholdValue t)throws EMFUserError;
+
+	public List getThresholdValues(KpiInstance k) throws EMFUserError;
+
+	public List loadThresholdValuesByThresholdId(Integer id) throws EMFUserError;
+
 }

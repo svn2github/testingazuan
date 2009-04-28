@@ -8,7 +8,7 @@ import it.eng.spagobi.kpi.model.bo.Resource;
 public class DetailResourcesUtil {
 
 	public static void selectResource(int id, SourceBean serviceResponse) throws Exception {
-		Resource toReturn = DAOFactory.getKpiDAO().loadResourceById(id);
+		Resource toReturn = DAOFactory.getResourceDAO().loadResourceById(id);
 		serviceResponse.setAttribute("Resource", toReturn);
 	}
 
@@ -16,7 +16,7 @@ public class DetailResourcesUtil {
 			int id) throws Exception{
 		Resource resource = getResourceFromRequest(serviceRequest);
 		resource.setId(id);
-		DAOFactory.getKpiDAO().modifyResource(resource);
+		DAOFactory.getResourceDAO().modifyResource(resource);
 	}
 
 
@@ -47,7 +47,7 @@ public class DetailResourcesUtil {
 
 	public static void newResource(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception {
 		Resource toCreate = getResourceFromRequest(serviceRequest);
-		Integer resourceId = DAOFactory.getKpiDAO().insertResource(toCreate);
+		Integer resourceId = DAOFactory.getResourceDAO().insertResource(toCreate);
 
 		serviceResponse.setAttribute("ID", resourceId);
 		serviceResponse.setAttribute("MESSAGE",SpagoBIConstants.DETAIL_SELECT);

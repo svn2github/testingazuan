@@ -17,7 +17,7 @@ public class SbiKpiModel implements java.io.Serializable {
 	// Fields
 
   	private Integer kpiModelId;
-	private SbiDomains sbiDomains;
+	private SbiDomains modelType;
 	private SbiKpiModel sbiKpiModel;
 	private SbiKpi sbiKpi;
 	private String kpiModelCd;
@@ -35,8 +35,14 @@ public class SbiKpiModel implements java.io.Serializable {
 	/** minimal constructor */
 	public SbiKpiModel(Integer kpiModelId, SbiDomains sbiDomains) {
 		this.kpiModelId = kpiModelId;
-		this.sbiDomains = sbiDomains;
+		this.modelType = sbiDomains;
 	}
+	
+	/** minimal constructor */
+	public SbiKpiModel(Integer kpiModelId) {
+		this.kpiModelId = kpiModelId;
+	}
+	
 
 	/** full constructor */
 	public SbiKpiModel(Integer kpiModelId, SbiDomains sbiDomains,
@@ -44,7 +50,7 @@ public class SbiKpiModel implements java.io.Serializable {
 			String kpiModelNm, String kpiModelDesc, Set sbiKpiModelAttrVals,
 			Set sbiKpiModels, Set sbiKpiModelInsts) {
 		this.kpiModelId = kpiModelId;
-		this.sbiDomains = sbiDomains;
+		this.modelType = sbiDomains;
 		this.sbiKpiModel = sbiKpiModel;
 		this.sbiKpi = sbiKpi;
 		this.kpiModelCd = kpiModelCd;
@@ -65,12 +71,12 @@ public class SbiKpiModel implements java.io.Serializable {
 		this.kpiModelId = kpiModelId;
 	}
 
-	public SbiDomains getSbiDomains() {
-		return this.sbiDomains;
+	public SbiDomains getModelType() {
+		return this.modelType;
 	}
 
-	public void setSbiDomains(SbiDomains sbiDomains) {
-		this.sbiDomains = sbiDomains;
+	public void setModelType(SbiDomains sbiDomains) {
+		this.modelType = sbiDomains;
 	}
 
 	public SbiKpiModel getSbiKpiModel() {

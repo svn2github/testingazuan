@@ -44,6 +44,10 @@ public class SbiKpi implements java.io.Serializable {
 	public SbiKpi(String name) {
 		this.name = name;
 	}
+	
+	public SbiKpi(Integer id) {
+		this.kpiId = id;
+	}
 
 	public SbiKpi(SbiKpi sbiKpi, SbiDataSetConfig sbiDataSet,
 			SbiDomains sbiDomainsByMeasureType, SbiDomains sbiDomainsByKpiType,

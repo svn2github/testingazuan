@@ -30,9 +30,9 @@ public class SbiAlarm  implements java.io.Serializable {
 	private SbiObjects sbiObjects;
 	private SbiThresholdValue sbiThresholdValue;
 	private SbiKpiInstance sbiKpiInstance;
-    private SbiDomains sbiDomains;
- 	private boolean singleEvent;
- 	private boolean autoDisabled;
+    private SbiDomains modality;
+ 	private Boolean singleEvent;
+ 	private Boolean autoDisabled;
  	private String label; 
  	private String name; 
  	private String descr; 
@@ -50,7 +50,7 @@ public class SbiAlarm  implements java.io.Serializable {
        this.sbiObjects = sbiObjects;
        this.sbiThresholdValue = sbiThresholdValue;
        this.sbiKpiInstance = sbiKpiInstance;
-       this.sbiDomains = sbiDomains;
+       this.modality = sbiDomains;
        this.label = label;
        this.name = name;
        this.descr = descr;
@@ -92,26 +92,26 @@ public class SbiAlarm  implements java.io.Serializable {
         this.sbiKpiInstance = sbiKpiInstance;
     }
 
-    public SbiDomains getSbiDomains() {
-        return this.sbiDomains;
+    public SbiDomains getModality() {
+        return this.modality;
     }
     
-    public void setSbiDomains(SbiDomains sbiDomains) {
-        this.sbiDomains = sbiDomains;
+    public void setModality(SbiDomains sbiDomains) {
+        this.modality = sbiDomains;
     }
     
-    public boolean isSingleEvent() {
+    public Boolean isSingleEvent() {
         return this.singleEvent;
     }    
     
     public void setSingleEvent(boolean singleEvent) {
         this.singleEvent = singleEvent;
     }
-    public boolean isAutoDisabled() {
+    public Boolean isAutoDisabled() {
         return this.autoDisabled;
     }    
     
-    public void setAutoDisabled(boolean autoDisabled) {
+    public void setAutoDisabled(Boolean autoDisabled) {
         this.autoDisabled = autoDisabled;
     }
     public String getLabel() {
@@ -181,6 +181,23 @@ public class SbiAlarm  implements java.io.Serializable {
 	    return retValue.toString();
 	}
 
+
+	public Boolean getSingleEvent() {
+		return singleEvent;
+	}
+
+
+	public void setSingleEvent(Boolean singleEvent) {
+		this.singleEvent = singleEvent;
+	}
+
+
+	public Boolean getAutoDisabled() {
+		return autoDisabled;
+	}
+
+
+	
 
 }
 

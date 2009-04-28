@@ -20,7 +20,7 @@ public class SbiKpiInstance  implements java.io.Serializable {
 
      private Integer idKpiInstance;
      private SbiKpi sbiKpi;
-     private SbiDomains sbiDomains;
+     private SbiDomains chartType;
      private SbiThreshold sbiThreshold;
      private SbiMeasureUnit sbiMeasureUnit;
      private Double weight;
@@ -62,7 +62,7 @@ public class SbiKpiInstance  implements java.io.Serializable {
         this.sbiThreshold = sbiThreshold;
         this.sbiMeasureUnit = sbiMeasureUnit;
         this.weight = weight;
-        this.sbiDomains = sbiDomains;
+        this.chartType = sbiDomains;
         this.sbiKpiModelInsts = sbiKpiModelInsts;
         this.sbiKpiInstanceHistories = sbiKpiInstanceHistories;
         this.sbiKpiValues = sbiKpiValues;
@@ -146,12 +146,12 @@ public class SbiKpiInstance  implements java.io.Serializable {
         this.sbiAlarms = sbiAlarms;
     }
    
-    public SbiDomains getSbiDomains() {
-        return this.sbiDomains;
+    public SbiDomains getChartType() {
+        return this.chartType;
     }
     
-    public void setSbiDomains(SbiDomains sbiDomains) {
-        this.sbiDomains = sbiDomains;
+    public void setChartType(SbiDomains sbiDomains) {
+        this.chartType = sbiDomains;
     }
 
 	public Double getTarget() {

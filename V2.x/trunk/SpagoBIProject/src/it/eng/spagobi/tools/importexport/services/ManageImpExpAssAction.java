@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.importexport.services;
 
 import it.eng.spago.base.RequestContainer;
@@ -52,57 +52,61 @@ import org.apache.log4j.Logger;
 
 public class ManageImpExpAssAction extends AbstractHttpAction {
 
-    private HttpServletRequest httpRequest = null;
-    private HttpServletResponse httpResponse = null;
+	private HttpServletRequest httpRequest = null;
+	private HttpServletResponse httpResponse = null;
 	protected RequestContainer reqCont = null;
-    IMessageBuilder msgBuild = null;
-    WebUrlBuilder urlBuilder = null;
-    private Locale locale = null;
-    protected String currTheme="";
+	IMessageBuilder msgBuild = null;
+	WebUrlBuilder urlBuilder = null;
+	private Locale locale = null;
+	protected String currTheme="";
 
-    static private Logger logger = Logger.getLogger(ManageImpExpAssAction.class);
+	static private Logger logger = Logger.getLogger(ManageImpExpAssAction.class);
 
-    /* (non-Javadoc)
-     * @see it.eng.spagobi.commons.services.BaseProfileAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
-     */
-    public void service(SourceBean request, SourceBean response) throws Exception {
-	logger.debug("IN");
-	try {
-	    freezeHttpResponse();
-	    httpRequest = getHttpRequest();
-	    httpResponse = getHttpResponse();
-		reqCont = ChannelUtilities.getRequestContainer(httpRequest);
-	    msgBuild = MessageBuilderFactory.getMessageBuilder();
-	    urlBuilder = new WebUrlBuilder();
-
-    	currTheme=ThemesManager.getCurrentTheme(reqCont);
-    	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
-	    
-	    String language = httpRequest.getParameter("language");
-		String country = httpRequest.getParameter("country");
+	/* (non-Javadoc)
+	 * @see it.eng.spagobi.commons.services.BaseProfileAction#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
+	 */
+	public void service(SourceBean request, SourceBean response) throws Exception {
+		logger.debug("IN");
 		try {
-			locale = new Locale(language, country);
-		} catch (Exception e) {
-			// ignore, the defualt locale will be considered
+			freezeHttpResponse();
+			httpRequest = getHttpRequest();
+			httpResponse = getHttpResponse();
+			reqCont = ChannelUtilities.getRequestContainer(httpRequest);
+			msgBuild = MessageBuilderFactory.getMessageBuilder();
+			urlBuilder = new WebUrlBuilder();
+
+			currTheme=ThemesManager.getCurrentTheme(reqCont);
+			if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
+
+			String language = httpRequest.getParameter("language");
+			String country = httpRequest.getParameter("country");
+			try {
+				locale = new Locale(language, country);
+			} catch (Exception e) {
+				// ignore, the defualt locale will be considered
+			}
+			String message = (String) request.getAttribute("MESSAGE");
+			if ((message != null) && (message.equalsIgnoreCase("SAVE_ASSOCIATION_FILE"))) {
+				saveAssHandler();
+			} else if ((message != null) && (message.equalsIgnoreCase("GET_ASSOCIATION_FILE_LIST"))) {
+				getAssListHandler(request);
+			} else if ((message != null) && (message.equalsIgnoreCase("DELETE_ASSOCIATION_FILE"))) {
+				deleteAssHandler(request);
+			} else if ((message != null) && (message.equalsIgnoreCase("UPLOAD_ASSOCIATION_FILE"))) {
+				uploadAssHandler(request);
+			} else if ((message != null) && (message.equalsIgnoreCase("DOWNLOAD_ASSOCIATION_FILE"))) {
+				downloadAssHandler(request);
+			} else if ((message!=null) && (message.equalsIgnoreCase("CHECK_IF_EXISTS"))) {
+				checkIfExistsHandler(request);
+			}
+		} 
+		catch (Throwable t) {
+			logger.error("error during service method", t);
 		}
-	    String message = (String) request.getAttribute("MESSAGE");
-	    if ((message != null) && (message.equalsIgnoreCase("SAVE_ASSOCIATION_FILE"))) {
-		saveAssHandler();
-	    } else if ((message != null) && (message.equalsIgnoreCase("GET_ASSOCIATION_FILE_LIST"))) {
-		getAssListHandler(request);
-	    } else if ((message != null) && (message.equalsIgnoreCase("DELETE_ASSOCIATION_FILE"))) {
-		deleteAssHandler(request);
-	    } else if ((message != null) && (message.equalsIgnoreCase("UPLOAD_ASSOCIATION_FILE"))) {
-		uploadAssHandler(request);
-	    } else if ((message != null) && (message.equalsIgnoreCase("DOWNLOAD_ASSOCIATION_FILE"))) {
-		downloadAssHandler(request);
-	    } else if ((message!=null) && (message.equalsIgnoreCase("CHECK_IF_EXISTS"))) {
-			checkIfExistsHandler(request);
+		finally {
+			logger.debug("OUT");
 		}
-	} finally {
-	    logger.debug("OUT");
 	}
-    }
 
 	private void checkIfExistsHandler(SourceBean sbrequest) {
 		logger.debug("IN");
@@ -115,161 +119,161 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 		} catch (Exception e){
 			logger.error("Error while sending response to the client, " + e);
 		} finally {
-		    logger.debug("OUT");
+			logger.debug("OUT");
 		}
 	}
-    
-    private void downloadAssHandler(SourceBean sbrequest) {
-	logger.debug("IN");
-	try {
-	    String idass = (String) sbrequest.getAttribute("ID");
-	    IAssociationFileDAO assfiledao = new AssociationFileDAO();
-	    AssociationFile assFile = assfiledao.loadFromID(idass);
-	    byte[] content = assfiledao.getContent(assFile);
-	    httpResponse.setHeader("Content-Disposition", "attachment; filename=\"associations.xml \";");
-	    httpResponse.setContentLength(content.length);
-	    httpResponse.getOutputStream().write(content);
-	    httpResponse.getOutputStream().flush();
-	} catch (Exception e) {
-	    logger.error("Error while filling response with the association file, ", e);
-	} finally {
-	    logger.debug("OUT");
-	}
-    }
 
-    private void uploadAssHandler(SourceBean sbrequest) {
-	logger.debug("IN");
-	try {
-		String modality = "MANAGE";
-		String name = (String)sbrequest.getAttribute("NAME");
-		if (name == null || name.trim().equals("")) {
-			String msg = msgBuild.getMessage("Sbi.saving.nameNotSpecified", "component_impexp_messages", locale);
-			httpResponse.getOutputStream().write(msg.getBytes());
+	private void downloadAssHandler(SourceBean sbrequest) {
+		logger.debug("IN");
+		try {
+			String idass = (String) sbrequest.getAttribute("ID");
+			IAssociationFileDAO assfiledao = new AssociationFileDAO();
+			AssociationFile assFile = assfiledao.loadFromID(idass);
+			byte[] content = assfiledao.getContent(assFile);
+			httpResponse.setHeader("Content-Disposition", "attachment; filename=\"associations.xml \";");
+			httpResponse.setContentLength(content.length);
+			httpResponse.getOutputStream().write(content);
 			httpResponse.getOutputStream().flush();
-			return;
+		} catch (Exception e) {
+			logger.error("Error while filling response with the association file, ", e);
+		} finally {
+			logger.debug("OUT");
 		}
-		String description = (String) sbrequest.getAttribute("DESCRIPTION");
-		if (description == null) description = "";
-//		UploadedFile uplFile = (UploadedFile)sbrequest.getAttribute("UPLOADED_FILE");
-		FileItem uplFile = (FileItem)sbrequest.getAttribute("UPLOADED_FILE");
-		byte[] content = null;
-		if (uplFile == null || uplFile.getName().trim().equals("")) {
-			String msg = msgBuild.getMessage("Sbi.saving.associationFileNotSpecified", "component_impexp_messages", locale);
-			httpResponse.getOutputStream().write(msg.getBytes());
-			httpResponse.getOutputStream().flush();
-			return;
-		} else {
-			if (uplFile.getSize() == 0) {
-				String msg = msgBuild.getMessage("201", "component_impexp_messages", locale);
+	}
+
+	private void uploadAssHandler(SourceBean sbrequest) {
+		logger.debug("IN");
+		try {
+			String modality = "MANAGE";
+			String name = (String)sbrequest.getAttribute("NAME");
+			if (name == null || name.trim().equals("")) {
+				String msg = msgBuild.getMessage("Sbi.saving.nameNotSpecified", "component_impexp_messages", locale);
 				httpResponse.getOutputStream().write(msg.getBytes());
 				httpResponse.getOutputStream().flush();
 				return;
 			}
-			int maxSize = GeneralUtilities.getTemplateMaxSize();
-			if (uplFile.getSize() > maxSize) {
-				String msg = msgBuild.getMessage("202", "component_impexp_messages", locale);
+			String description = (String) sbrequest.getAttribute("DESCRIPTION");
+			if (description == null) description = "";
+//			UploadedFile uplFile = (UploadedFile)sbrequest.getAttribute("UPLOADED_FILE");
+			FileItem uplFile = (FileItem)sbrequest.getAttribute("UPLOADED_FILE");
+			byte[] content = null;
+			if (uplFile == null || uplFile.getName().trim().equals("")) {
+				String msg = msgBuild.getMessage("Sbi.saving.associationFileNotSpecified", "component_impexp_messages", locale);
 				httpResponse.getOutputStream().write(msg.getBytes());
 				httpResponse.getOutputStream().flush();
 				return;
-			}
-			content = uplFile.get();
-			if (!AssociationFile.isValidContent(content)) {
-				String msg = msgBuild.getMessage("Sbi.saving.associationFileNotValid", "component_impexp_messages", locale);
-				httpResponse.getOutputStream().write(msg.getBytes());
-				httpResponse.getOutputStream().flush();
-				return;
-			}
-		}
-		String overwriteStr = (String)sbrequest.getAttribute("OVERWRITE");
-		boolean overwrite = (overwriteStr == null || overwriteStr.trim().equals("")) ? false : Boolean.parseBoolean(overwriteStr);
-		AssociationFile assFile = new AssociationFile();
-		assFile.setDescription(description);
-		assFile.setName(name);
-		assFile.setDateCreation(new Date().getTime());
-		assFile.setId(name);
-		IAssociationFileDAO assfiledao = new AssociationFileDAO();
-		if (assfiledao.exists(assFile.getId())) {
-			if (overwrite) {
-				assfiledao.deleteAssociationFile(assFile);
-				assfiledao.saveAssociationFile(assFile, content);
 			} else {
-				logger.warn("Overwrite parameter is false: association file with id=[" + assFile.getId() + "] " +
-                   		"and name=[" + assFile.getName() + "] will not be saved.");
+				if (uplFile.getSize() == 0) {
+					String msg = msgBuild.getMessage("201", "component_impexp_messages", locale);
+					httpResponse.getOutputStream().write(msg.getBytes());
+					httpResponse.getOutputStream().flush();
+					return;
+				}
+				int maxSize = GeneralUtilities.getTemplateMaxSize();
+				if (uplFile.getSize() > maxSize) {
+					String msg = msgBuild.getMessage("202", "component_impexp_messages", locale);
+					httpResponse.getOutputStream().write(msg.getBytes());
+					httpResponse.getOutputStream().flush();
+					return;
+				}
+				content = uplFile.get();
+				if (!AssociationFile.isValidContent(content)) {
+					String msg = msgBuild.getMessage("Sbi.saving.associationFileNotValid", "component_impexp_messages", locale);
+					httpResponse.getOutputStream().write(msg.getBytes());
+					httpResponse.getOutputStream().flush();
+					return;
+				}
 			}
-		} else {
-			assfiledao.saveAssociationFile(assFile, content);
+			String overwriteStr = (String)sbrequest.getAttribute("OVERWRITE");
+			boolean overwrite = (overwriteStr == null || overwriteStr.trim().equals("")) ? false : Boolean.parseBoolean(overwriteStr);
+			AssociationFile assFile = new AssociationFile();
+			assFile.setDescription(description);
+			assFile.setName(name);
+			assFile.setDateCreation(new Date().getTime());
+			assFile.setId(name);
+			IAssociationFileDAO assfiledao = new AssociationFileDAO();
+			if (assfiledao.exists(assFile.getId())) {
+				if (overwrite) {
+					assfiledao.deleteAssociationFile(assFile);
+					assfiledao.saveAssociationFile(assFile, content);
+				} else {
+					logger.warn("Overwrite parameter is false: association file with id=[" + assFile.getId() + "] " +
+							"and name=[" + assFile.getName() + "] will not be saved.");
+				}
+			} else {
+				assfiledao.saveAssociationFile(assFile, content);
+			}
+			List assFiles = assfiledao.getAssociationFiles();
+			String html = generateHtmlJsCss();
+			html += "<br/>";
+			html += generateHtmlForInsertNewForm();
+			html += "<br/>";
+			html += generateHtmlForList(assFiles, modality);
+			httpResponse.getOutputStream().write(html.getBytes());
+			httpResponse.getOutputStream().flush();	
+		} catch (Exception e) {
+			logger.error("Error while saving the association file, ", e);
+		} finally {
+			logger.debug("OUT");
 		}
-		List assFiles = assfiledao.getAssociationFiles();
-		String html = generateHtmlJsCss();
-		html += "<br/>";
-		html += generateHtmlForInsertNewForm();
-		html += "<br/>";
-		html += generateHtmlForList(assFiles, modality);
-		httpResponse.getOutputStream().write(html.getBytes());
-		httpResponse.getOutputStream().flush();	
-	} catch (Exception e) {
-	    logger.error("Error while saving the association file, ", e);
-	} finally {
-	    logger.debug("OUT");
 	}
-    }
 
-    private void deleteAssHandler(SourceBean sbrequest) {
-	logger.debug("IN");
-	try {
-	    String modality = "MANAGE";
-	    String idass = (String) sbrequest.getAttribute("ID");
-	    IAssociationFileDAO assfiledao = new AssociationFileDAO();
-	    AssociationFile assFile = assfiledao.loadFromID(idass);
-	    assfiledao.deleteAssociationFile(assFile);
-	    List assFiles = assfiledao.getAssociationFiles();
-	    String html = generateHtmlJsCss();
-	    html += "<br/>";
-	    html += generateHtmlForInsertNewForm();
-	    html += "<br/>";
-	    html += generateHtmlForList(assFiles, modality);
-	    httpResponse.getOutputStream().write(html.getBytes());
-	    httpResponse.getOutputStream().flush();
-	} catch (Exception e) {
-	    logger.error("Error while deleting the association file, ", e);
-	} finally {
-	    logger.debug("OUT");
+	private void deleteAssHandler(SourceBean sbrequest) {
+		logger.debug("IN");
+		try {
+			String modality = "MANAGE";
+			String idass = (String) sbrequest.getAttribute("ID");
+			IAssociationFileDAO assfiledao = new AssociationFileDAO();
+			AssociationFile assFile = assfiledao.loadFromID(idass);
+			assfiledao.deleteAssociationFile(assFile);
+			List assFiles = assfiledao.getAssociationFiles();
+			String html = generateHtmlJsCss();
+			html += "<br/>";
+			html += generateHtmlForInsertNewForm();
+			html += "<br/>";
+			html += generateHtmlForList(assFiles, modality);
+			httpResponse.getOutputStream().write(html.getBytes());
+			httpResponse.getOutputStream().flush();
+		} catch (Exception e) {
+			logger.error("Error while deleting the association file, ", e);
+		} finally {
+			logger.debug("OUT");
+		}
 	}
-    }
 
-    private void getAssListHandler(SourceBean sbrequest) {
-	logger.debug("IN");
-	try {
-	    String modality = (String) sbrequest.getAttribute("MODALITY");
-	    IAssociationFileDAO assfiledao = new AssociationFileDAO();
-	    List assFiles = assfiledao.getAssociationFiles();
-	    String html = generateHtmlJsCss();
-	    if (modality.equals("MANAGE")) {
-		html += "<br/>";
-		html += generateHtmlForInsertNewForm();
-	    }
-	    html += "<br/>";
-	    html += generateHtmlForList(assFiles, modality);
-	    httpResponse.getOutputStream().write(html.getBytes());
-	    httpResponse.getOutputStream().flush();
-	} catch (Exception e) {
-	    logger.error("Error while getting the list of association files, ", e);
-	} finally {
-	    logger.debug("OUT");
+	private void getAssListHandler(SourceBean sbrequest) {
+		logger.debug("IN");
+		try {
+			String modality = (String) sbrequest.getAttribute("MODALITY");
+			IAssociationFileDAO assfiledao = new AssociationFileDAO();
+			List assFiles = assfiledao.getAssociationFiles();
+			String html = generateHtmlJsCss();
+			if (modality.equals("MANAGE")) {
+				html += "<br/>";
+				html += generateHtmlForInsertNewForm();
+			}
+			html += "<br/>";
+			html += generateHtmlForList(assFiles, modality);
+			httpResponse.getOutputStream().write(html.getBytes());
+			httpResponse.getOutputStream().flush();
+		} catch (Exception e) {
+			logger.error("Error while getting the list of association files, ", e);
+		} finally {
+			logger.debug("OUT");
+		}
 	}
-    }
 
-    private String generateHtmlJsCss() {
-	String html = "<LINK rel='StyleSheet' type='text/css' " + "      href='"
+	private String generateHtmlJsCss() {
+		String html = "<LINK rel='StyleSheet' type='text/css' " + "      href='"
 		+ urlBuilder.getResourceLinkByTheme(httpRequest, "css/spagobi_shared.css",currTheme) + "' />";
-	html += "<LINK rel='StyleSheet' type='text/css' " + "      href='"
+		html += "<LINK rel='StyleSheet' type='text/css' " + "      href='"
 		+ urlBuilder.getResourceLinkByTheme(httpRequest, "css/jsr168.css",currTheme) + "' />";
-	html +=  "<script type=\"text/javascript\"		src=\"" 
-		+ urlBuilder.getResourceLinkByTheme(httpRequest, "/js/prototype/javascripts/prototype.js",currTheme) + "\"></script>";
-	return html;
-    }
+		html +=  "<script type=\"text/javascript\"		src=\"" 
+			+ urlBuilder.getResourceLinkByTheme(httpRequest, "/js/prototype/javascripts/prototype.js",currTheme) + "\"></script>";
+		return html;
+	}
 
-    private String generateHtmlForInsertNewForm() {
+	private String generateHtmlForInsertNewForm() {
 		String html = "<div width='100%' class='portlet-section-header'>";
 		html += "			&nbsp;&nbsp;&nbsp;<a style='color:#FFFFFF;' href='javascript:openclosenewform()'>" 
 			+ msgBuild.getMessage("Sbi.saving.insertNew", "component_impexp_messages", locale) 
@@ -283,8 +287,8 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 		html += "				<input type='hidden' name='ACTION_NAME' value='MANAGE_IMPEXP_ASS_ACTION' >";
 		html += "				<input type='hidden' name='MESSAGE' value='UPLOAD_ASSOCIATION_FILE' >";
 		html += "				<input type='hidden' name='OVERWRITE' id='OVERWRITE' value='' >";
-		
-		
+
+
 		html += "<div class='div_form_container' >\n";
 		html += "	<div class='div_form_margin' >\n";
 		html += "		<div class='div_form_row' >\n";
@@ -329,8 +333,8 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 		html += "			<div class='div_form_field'>\n";
 		html += "				<a class='link_without_dec' href=\"javascript:checkIfExists()\">\n";
 		html += "					<img src= '"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/Save.gif",currTheme)+"' " +
-				"                    	title='"+msgBuild.getMessage("impexp.save", "component_impexp_messages", locale)+"' " + 
-				" 					 	alt='"+msgBuild.getMessage("impexp.save", "component_impexp_messages", locale)+"' />\n";
+		"                    	title='"+msgBuild.getMessage("impexp.save", "component_impexp_messages", locale)+"' " + 
+		" 					 	alt='"+msgBuild.getMessage("impexp.save", "component_impexp_messages", locale)+"' />\n";
 		html += "				</a>\n";	
 		html += "			</div>\n";
 		html += "		</div>\n";
@@ -340,7 +344,7 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 
 		html += "			</form>";
 		html += "		</div>";
-		
+
 		html += "		<script>";
 		html += "			function openclosenewform() {";
 		html += "				divfna = document.getElementById('divFormNewAss');";
@@ -351,7 +355,7 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 		html += "				}";
 		html += "			}";
 		html += "		</script>";
-		
+
 		// check if the association already exists
 		html += "		<script>\n";
 		html += "		function checkIfExists() {\n";
@@ -379,7 +383,7 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 		html += "		function somethingWentWrongSaveAss() {\n";
 		html += "		}\n";
 		html += "		</script>\n";
-		
+
 		// save the association
 		html += "		<script>\n";
 		html += "		function saveAss(exists) {\n";
@@ -390,9 +394,9 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 		html += "		}\n";
 		html += "		</script>\n";
 		return html;
-    }
+	}
 
-    private String generateHtmlForList(List assFiles, String modality) {
+	private String generateHtmlForList(List assFiles, String modality) {
 		String html = "<table widht='100%'>";
 		html += "<tr>";
 		html += "<td class='portlet-section-header'>"+msgBuild.getMessage("impexp.name", "component_impexp_messages", locale)+"</td>";
@@ -414,11 +418,11 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 			Calendar cal = new GregorianCalendar();
 			cal.setTime(dat);
 			String datSt = "" +  cal.get(Calendar.DAY_OF_MONTH) + "/" +
-								 (cal.get(Calendar.MONTH) + 1) + "/" +
-								 cal.get(Calendar.YEAR) +  "   " +
-								 cal.get(Calendar.HOUR_OF_DAY) + ":" +
-								 (cal.get(Calendar.MINUTE) < 10 ? "0" : "") + 
-								 cal.get(Calendar.MINUTE);
+			(cal.get(Calendar.MONTH) + 1) + "/" +
+			cal.get(Calendar.YEAR) +  "   " +
+			cal.get(Calendar.HOUR_OF_DAY) + ":" +
+			(cal.get(Calendar.MINUTE) < 10 ? "0" : "") + 
+			cal.get(Calendar.MINUTE);
 			html += "<td class='"+rowClass+"'>"+datSt+"</td>";
 			if(modality.equals("MANAGE")) {
 				String eraseUrl = httpRequest.getContextPath(); ;
@@ -430,14 +434,14 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 				html += "<td class='"+rowClass+"'>\n";
 				html += "<a class='link_without_dec' href='"+eraseUrl+"' style='text-decoration:none;'>\n";		
 				html += "<img src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/erase.gif",currTheme)+"' \n" + 
-						"title='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages", locale)+"' \n" + 
-						"alt='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages", locale)+"' />\n";
+				"title='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages", locale)+"' \n" + 
+				"alt='"+msgBuild.getMessage("impexp.erase", "component_impexp_messages", locale)+"' />\n";
 				html += "</a>\n";		
 				html += "&nbsp;&nbsp;\n";
 				html += "<a class='link_without_dec' href='"+downloadUrl+"' style='text-decoration:none;'>\n";
 				html += "<img src='"+urlBuilder.getResourceLinkByTheme(httpRequest, "/img/down16.gif",currTheme)+"' \n" + 
-						"title='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages", locale)+"' \n" + 
-						"alt='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages", locale)+"' />\n";
+				"title='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages", locale)+"' \n" + 
+				"alt='"+msgBuild.getMessage("Sbi.download", "component_impexp_messages", locale)+"' />\n";
 				html += "</a>\n";		
 				html += "</td>";
 			} else if(modality.equals("SELECT") ) {
@@ -452,54 +456,54 @@ public class ManageImpExpAssAction extends AbstractHttpAction {
 		}
 		html += "</table>";
 		return html;
-    }
-
-    private void saveAssHandler() {
-	logger.debug("IN");
-	String htmlResp = "";
-	try {
-		String associationFileName = httpRequest.getParameter("FILE_NAME");
-		String folderName = httpRequest.getParameter("FOLDER_NAME");
-		String name = httpRequest.getParameter("NAME");
-		String description = httpRequest.getParameter("DESCRIPTION");
-		String overwriteStr = httpRequest.getParameter("OVERWRITE");
-		boolean overwrite = (overwriteStr == null || overwriteStr.trim().equals("")) ? false : Boolean.parseBoolean(overwriteStr);
-		AssociationFile assFile = new AssociationFile();
-		assFile.setDescription(description);
-		assFile.setName(name);
-		assFile.setDateCreation(new Date().getTime());
-		assFile.setId(name);
-	    String pathExportFolder = ImportUtilities.getImportTempFolderPath();
-	    File file = new File(pathExportFolder + "/" + folderName + "/" + associationFileName + ".xml");
-		FileInputStream fis = new FileInputStream(file);
-		byte[] fileAssContent = GeneralUtilities.getByteArrayFromInputStream(fis);
-		fis.close();
-		IAssociationFileDAO assfiledao = new AssociationFileDAO();
-		if (assfiledao.exists(assFile.getId())) {
-			if (overwrite) {
-				assfiledao.deleteAssociationFile(assFile);
-				assfiledao.saveAssociationFile(assFile, fileAssContent);
-			} else {
-				logger.warn("Overwrite parameter is false: association file with id=[" + assFile.getId() + "] " +
-                           		"and name=[" + assFile.getName() + "] will not be saved.");
-			}
-		} else {
-			assfiledao.saveAssociationFile(assFile, fileAssContent);
-		}
-		htmlResp = msgBuild.getMessage("Sbi.saved.ok", "component_impexp_messages", locale);
-	} catch (Exception e) {
-	    logger.error("Error wile saving the association file, ", e);
-	    htmlResp = msgBuild.getMessage("Sbi.saved.ko", "component_impexp_messages", locale);
-	} finally {
-	    try {
-			httpResponse.getOutputStream().write(htmlResp.getBytes());
-			httpResponse.getOutputStream().flush();
-	    } catch (Exception e) {
-	    	logger.error("Error while sending response to the client, ", e);
-	    }
-	    logger.debug("OUT");
 	}
-    }
 
-    
+	private void saveAssHandler() {
+		logger.debug("IN");
+		String htmlResp = "";
+		try {
+			String associationFileName = httpRequest.getParameter("FILE_NAME");
+			String folderName = httpRequest.getParameter("FOLDER_NAME");
+			String name = httpRequest.getParameter("NAME");
+			String description = httpRequest.getParameter("DESCRIPTION");
+			String overwriteStr = httpRequest.getParameter("OVERWRITE");
+			boolean overwrite = (overwriteStr == null || overwriteStr.trim().equals("")) ? false : Boolean.parseBoolean(overwriteStr);
+			AssociationFile assFile = new AssociationFile();
+			assFile.setDescription(description);
+			assFile.setName(name);
+			assFile.setDateCreation(new Date().getTime());
+			assFile.setId(name);
+			String pathExportFolder = ImportUtilities.getImportTempFolderPath();
+			File file = new File(pathExportFolder + "/" + folderName + "/" + associationFileName + ".xml");
+			FileInputStream fis = new FileInputStream(file);
+			byte[] fileAssContent = GeneralUtilities.getByteArrayFromInputStream(fis);
+			fis.close();
+			IAssociationFileDAO assfiledao = new AssociationFileDAO();
+			if (assfiledao.exists(assFile.getId())) {
+				if (overwrite) {
+					assfiledao.deleteAssociationFile(assFile);
+					assfiledao.saveAssociationFile(assFile, fileAssContent);
+				} else {
+					logger.warn("Overwrite parameter is false: association file with id=[" + assFile.getId() + "] " +
+							"and name=[" + assFile.getName() + "] will not be saved.");
+				}
+			} else {
+				assfiledao.saveAssociationFile(assFile, fileAssContent);
+			}
+			htmlResp = msgBuild.getMessage("Sbi.saved.ok", "component_impexp_messages", locale);
+		} catch (Exception e) {
+			logger.error("Error wile saving the association file, ", e);
+			htmlResp = msgBuild.getMessage("Sbi.saved.ko", "component_impexp_messages", locale);
+		} finally {
+			try {
+				httpResponse.getOutputStream().write(htmlResp.getBytes());
+				httpResponse.getOutputStream().flush();
+			} catch (Exception e) {
+				logger.error("Error while sending response to the client, ", e);
+			}
+			logger.debug("OUT");
+		}
+	}
+
+
 }

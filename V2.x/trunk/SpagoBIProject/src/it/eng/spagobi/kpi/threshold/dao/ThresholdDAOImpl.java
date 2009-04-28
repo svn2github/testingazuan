@@ -3,13 +3,18 @@ package it.eng.spagobi.kpi.threshold.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
+import it.eng.spagobi.kpi.config.bo.KpiInstance;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
+import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -38,6 +43,11 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 		return toReturn;
 	}
 
+	
+
+	
+	
+	
 	public Threshold loadThresholdById(Integer id) throws EMFUserError {
 		logger.debug("IN");
 		Threshold toReturn = null;
@@ -49,12 +59,11 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 			SbiThreshold hibThreshold = (SbiThreshold) aSession.load(
 					SbiThreshold.class, id);
 			toReturn = new Threshold();
-			toReturn.setThresholdName(hibThreshold.getName());
-			toReturn.setThresholdDescription(hibThreshold.getDescription());
-			toReturn.setThresholdCode(hibThreshold.getCode());
+			toReturn.setName(hibThreshold.getName());
+			toReturn.setDescription(hibThreshold.getDescription());
+			toReturn.setCode(hibThreshold.getCode());
 			toReturn.setId(hibThreshold.getThresholdId());
-			toReturn.setThresholdTypeId(hibThreshold.getSbiDomains()
-					.getValueId());
+			toReturn.setThresholdTypeId(hibThreshold.getThresholdType().getValueId());
 
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Threshold with id "
@@ -75,6 +84,9 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 		return toReturn;
 	}
 
+	
+
+	
 	public List loadThresholdList(String fieldOrder, String typeOrder)
 			throws EMFUserError {
 		logger.debug("IN");
@@ -102,13 +114,11 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 			for (Iterator iterator = toTransform.iterator(); iterator.hasNext();) {
 				SbiThreshold hibThreshold = (SbiThreshold) iterator.next();
 				Threshold threshold = new Threshold();
-				threshold.setThresholdName(hibThreshold.getName());
-				threshold.setThresholdCode(hibThreshold.getCode());
-				threshold
-						.setThresholdDescription(hibThreshold.getDescription());
+				threshold.setName(hibThreshold.getName());
+				threshold.setCode(hibThreshold.getCode());
+				threshold.setDescription(hibThreshold.getDescription());
 				threshold.setId(hibThreshold.getThresholdId());
-				threshold.setThresholdTypeId(hibThreshold.getSbiDomains()
-						.getValueId());
+				threshold.setThresholdTypeId(hibThreshold.getThresholdType().getValueId());
 				toReturn.add(threshold);
 			}
 
@@ -138,9 +148,9 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			String name = threshold.getThresholdName();
-			String description = threshold.getThresholdDescription();
-			String code = threshold.getThresholdCode();
+			String name = threshold.getName();
+			String description = threshold.getDescription();
+			String code = threshold.getCode();
 			Integer thresholdTypeId = threshold.getThresholdTypeId();
 
 			SbiThreshold sbiThreshold = (SbiThreshold) aSession.load(
@@ -155,7 +165,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 			sbiThreshold.setName(name);
 			sbiThreshold.setDescription(description);
 			sbiThreshold.setCode(code);
-			sbiThreshold.setSbiDomains(thresholdType);
+			sbiThreshold.setThresholdType(thresholdType);
 
 			aSession.saveOrUpdate(sbiThreshold);
 
@@ -187,9 +197,9 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 
-			String name = threshold.getThresholdName();
-			String description = threshold.getThresholdDescription();
-			String code = threshold.getThresholdCode();
+			String name = threshold.getName();
+			String description = threshold.getDescription();
+			String code = threshold.getCode();
 			Integer thresholdTypeId = threshold.getThresholdTypeId();
 
 			SbiThreshold sbiThreshold = new SbiThreshold();
@@ -203,7 +213,7 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 			sbiThreshold.setName(name);
 			sbiThreshold.setDescription(description);
 			sbiThreshold.setCode(code);
-			sbiThreshold.setSbiDomains(thresholdType);
+			sbiThreshold.setThresholdType(thresholdType);
 
 			idToReturn = (Integer) aSession.save(sbiThreshold);
 
@@ -258,4 +268,36 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 		return loadThresholdList(null, null);
 	}
 
+	
+	public Threshold toThreshold(SbiThreshold t) throws EMFUserError {
+
+		logger.debug("IN");
+		Threshold toReturn = new Threshold();
+
+		Integer id=t.getThresholdId();
+		String name=t.getName();
+		String description=t.getDescription();
+		String code=t.getCode();
+		SbiDomains d=t.getThresholdType();
+
+		toReturn.setId(id);
+		toReturn.setName(name);
+		toReturn.setDescription(description);
+		toReturn.setCode(code);
+		toReturn.setThresholdTypeId(d.getValueId());
+		
+		// get all the threshold Values
+		IThresholdValueDAO thValuesDao=(IThresholdValueDAO)DAOFactory.getThresholdValueDAO();
+		Set set=t.getSbiThresholdValues();
+		ArrayList thValues=new ArrayList();
+		for (Iterator iterator = set.iterator(); iterator.hasNext();) {
+			SbiThresholdValue sbiThValue = (SbiThresholdValue) iterator.next();
+			thValues.add(thValuesDao.toThresholdValue(sbiThValue));
+		}
+		toReturn.setThresholdValues(thValues);
+		
+		logger.debug("OUT");
+		return toReturn;
+	}
+	
 }

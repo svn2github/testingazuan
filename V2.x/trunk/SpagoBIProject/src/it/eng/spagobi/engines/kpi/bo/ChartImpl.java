@@ -32,6 +32,7 @@ import it.eng.spagobi.engines.kpi.bo.charttypes.trendcharts.LineChart;
 import it.eng.spagobi.engines.kpi.utils.KpiInterval;
 import it.eng.spagobi.engines.kpi.utils.StyleLabel;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -189,20 +190,20 @@ public class ChartImpl {
 	 * 
 	 * @param List of thresholds to set
 	 */
-	public String setThresholds(List thresholds) {
+	public String setThresholdValues(List thresholdValues) {
 		logger.debug("IN");
 		String thresholdsJsArray = "";//String that will be needed by the jsp to show the legend in a tooltip
-		if(thresholds!=null && !thresholds.isEmpty()){
-			Iterator it = thresholds.iterator();
+		if(thresholdValues!=null && !thresholdValues.isEmpty()){
+			Iterator it = thresholdValues.iterator();
 			thresholdsJsArray += "[";
 			while(it.hasNext()){
 				thresholdsJsArray += "{";
-				Threshold t = (Threshold)it.next();
-				String type = t.getType();
+				ThresholdValue t = (ThresholdValue)it.next();
+				String type = t.getThresholdType();
 				Double min = t.getMinValue();
 				Double max = t.getMaxValue();
 				String label = t.getLabel();
-				Color c = t.getColor();
+				Color c = t.getColour();
 				
 				if (type.equals("RANGE")){
 					if (min.doubleValue()<lower){

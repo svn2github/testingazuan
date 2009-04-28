@@ -8,7 +8,7 @@
             <column name="id_measure_unit" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
+        <many-to-one name="scaleType" class="it.eng.spagobi.commons.metadata.SbiDomains" >
             <column name="SCALE_TYPE_ID" not-null="true" />
         </many-to-one>
         <property name="name" type="string">

@@ -29,7 +29,7 @@ public interface IKpiDAO {
 	 * @return ModelInstance of the referred id
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public ModelInstanceNode loadModelInstanceByLabel(String label,Date requestedDate) throws EMFUserError ;
+	//public ModelInstanceNode loadModelInstanceByLabel(String label,Date requestedDate) throws EMFUserError ;
 	
 	/**
 	 * Returns the ModelInstance of the referred id
@@ -38,7 +38,7 @@ public interface IKpiDAO {
 	 * @return ModelInstance of the referred id
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public ModelInstanceNode loadModelInstanceById(Integer id,Date requestedDate) throws EMFUserError ;
+	//public ModelInstanceNode loadModelInstanceById(Integer id,Date requestedDate) throws EMFUserError ;
 	
 	/**
 	 * Returns the KpiInstance of the referred id
@@ -47,7 +47,7 @@ public interface IKpiDAO {
 	 * @return KpiInstance of the referred id
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public KpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
+	//public KpiInstance loadKpiInstanceById(Integer id) throws EMFUserError ;
 	
 	/**
 	 * Returns the KpiInstance with id 'id' that was valid in date d 
@@ -57,7 +57,7 @@ public interface IKpiDAO {
 	 * @return KpiInstance of the referred id valid in date d
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public KpiInstance loadKpiInstanceByIdFromHistory(Integer id, Date d) throws EMFUserError ;
+	//public KpiInstance loadKpiInstanceByIdFromHistory(Integer id, Date d) throws EMFUserError ;
 	
 	/**
 	 * Loads the list of Threshold interval for the threshold with id 'id'
@@ -66,7 +66,7 @@ public interface IKpiDAO {
 	 * @return List of all the the Threshols for the threshold with id 'id'
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public List loadThresholdsById(Integer id) throws EMFUserError ;
+	//public List loadThresholdsById(Integer id) throws EMFUserError ;
 	
 	/**
 	 * Returns a List of all the the Threshols of the KpiInstance
@@ -75,7 +75,7 @@ public interface IKpiDAO {
 	 * @return List of all the the Threshols of the KpiInstance
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public List getThresholds(KpiInstance k)throws EMFUserError;
+	//public List getThresholds(KpiInstance k)throws EMFUserError;
 	
 	/**
 	 * Returns a List of all the the Threshols of the KpiInstance
@@ -85,6 +85,8 @@ public interface IKpiDAO {
 	 * @throws EMFUserError If an Exception occurred
 	 */
 	public String getKpiTrendXmlResult(Integer resId, Integer kpiInstId, Date endDate) throws SourceBeanException;
+	
+	public IDataSet getDsFromKpiId(Integer kpiId) throws EMFUserError; 
 	
 	/**
 	 * Returns a List of all the the Threshols of the KpiInstance
@@ -102,7 +104,7 @@ public interface IKpiDAO {
 	 * @return Integer representing the seconds of the Periodicity with id periodicityId
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public Integer getPeriodicitySeconds(Integer periodicityId)throws EMFUserError;
+	//public Integer getPeriodicitySeconds(Integer periodicityId)throws EMFUserError;
 	
 	/**
 	 * Returns the Kpi of the referred id
@@ -129,7 +131,7 @@ public interface IKpiDAO {
 	 * @return Resource with the referred id
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public Resource loadResourceById(Integer id) throws EMFUserError ;
+	//public Resource loadResourceById(Integer id) throws EMFUserError ;
 	
 	/**
 	 * Returns the Resource of the referred id
@@ -138,7 +140,7 @@ public interface IKpiDAO {
 	 * @return Resource with the referred id
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public Resource loadResourcesByNameAndModelInst(String resourceName) throws EMFUserError ;
+	//public Resource loadResourcesByNameAndModelInst(String resourceName) throws EMFUserError ;
 	
 	/**
 	 * Returns the DatasetConfig for the KPI with id kpiId
@@ -147,7 +149,7 @@ public interface IKpiDAO {
 	 * @return DataSetConfig used to calculate the KPI with ID kpiId 
 	 * @throws EMFUserError if an Exception occurs
 	 */
-	public IDataSet getDsFromKpiId(Integer kpiId) throws EMFUserError;
+	//public IDataSet getDsFromKpiId(Integer kpiId) throws EMFUserError;
 	
 	/**
 	 * KpiValue valid for the the KpiInstance selected, for the resource selected, in the date selected 
@@ -174,7 +176,7 @@ public interface IKpiDAO {
 	 * @return Boolean that shows if the KPIInstance with id kpiInstID is under AlarmControl  
 	 * @throws EMFUserError if an Exception occurs
 	 */
-	public Boolean isKpiInstUnderAlramControl(Integer kpiInstID) throws EMFUserError;
+	//public Boolean isKpiInstUnderAlramControl(Integer kpiInstID) throws EMFUserError;
 	
 	//public boolean hasActualValues(KpiInstance inst, Date d) throws EMFUserError ;
 	
@@ -185,7 +187,7 @@ public interface IKpiDAO {
 	 *  
 	 * @throws EMFUserError if an Exception occurs
 	 */
-	public void isAlarmingValue(KpiValue value)	throws EMFUserError;
+	//public void isAlarmingValue(KpiValue value)	throws EMFUserError;
 	
 	/**
 	 * Returns the ChartType of the specific KpiInstance (it could also be null)
@@ -194,7 +196,7 @@ public interface IKpiDAO {
 	 * @return Returns the ChartType of the specific KpiInstance (it could also be null)
 	 * @throws EMFUserError if an Exception occurs
 	 */
-	public String getChartType(Integer kpiInstanceID) throws EMFUserError;
+	//public String getChartType(Integer kpiInstanceID) throws EMFUserError;
 	
 	/**
 	 * Returns the list of Kpi.
@@ -206,13 +208,13 @@ public interface IKpiDAO {
 	
 	public List loadKpiList(String fieldOrder, String typeOrder) throws EMFUserError;
 
-	public void modifyResource(Resource resource) throws EMFUserError;
+	/*public void modifyResource(Resource resource) throws EMFUserError;
 
 	public Integer insertResource(Resource toCreate) throws EMFUserError;
 	
 	public void setKpiInstanceFromKPI(KpiInstance kpiInstance, Integer kpiId) throws EMFUserError;
 
-	public void deleteResource(Integer resourceId) throws EMFUserError;
+	public void deleteResource(Integer resourceId) throws EMFUserError;*/
 
 	public void modifyKpi(Kpi kpi) throws EMFUserError;
 
@@ -220,7 +222,7 @@ public interface IKpiDAO {
 
 	public boolean deleteKpi(Integer kpiId) throws EMFUserError;
 
-	public List loadResourcesList(String fieldOrder, String typeOrder)throws EMFUserError;
+	//public List loadResourcesList(String fieldOrder, String typeOrder)throws EMFUserError;
 	
 
 }

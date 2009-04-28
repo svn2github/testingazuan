@@ -81,12 +81,12 @@ public class ListKpiModule extends AbstractConfigurableListModule {
 				Threshold thresholdBo = DAOFactory.getThresholdDAO()
 						.loadThresholdById(aKpi.getThreshold().getId());
 				if (thresholdBo != null
-						&& thresholdBo.getThresholdName() != null) {
-					threshold = thresholdBo.getThresholdName();
+						&& thresholdBo.getName() != null) {
+					threshold = thresholdBo.getName();
 				}
 				if (thresholdBo != null
-						&& thresholdBo.getThresholdCode() != null) {
-					thresholdCode = thresholdBo.getThresholdCode();
+						&& thresholdBo.getCode() != null) {
+					thresholdCode = thresholdBo.getCode();
 				}
 			} catch (EMFUserError e) {
 

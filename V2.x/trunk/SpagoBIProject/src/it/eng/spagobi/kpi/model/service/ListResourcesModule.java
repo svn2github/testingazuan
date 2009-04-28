@@ -44,7 +44,7 @@ public class ListResourcesModule extends AbstractConfigurableListModule {
 		String fieldOrder = (String)request.getAttribute("FIELD_ORDER");
 		String typeOrder = (String)request.getAttribute("TYPE_ORDER");
 		try {
-			result = DAOFactory.getKpiDAO().loadResourcesList(fieldOrder, typeOrder);
+			result = DAOFactory.getResourceDAO().loadResourcesList(fieldOrder, typeOrder);
 		} catch (EMFUserError e) {
 			logger.error(e);
 		}
@@ -64,8 +64,7 @@ public class ListResourcesModule extends AbstractConfigurableListModule {
 		String resourceId = (String) request.getAttribute("ID");
 
 		try {
-			 DAOFactory.getKpiDAO().deleteResource(
-					Integer.parseInt(resourceId));
+			 DAOFactory.getResourceDAO().deleteResource(Integer.parseInt(resourceId));
 			 toReturn = true;
 		} catch (NumberFormatException e) {
 			EMFErrorHandler engErrorHandler = getErrorHandler();

@@ -13,7 +13,7 @@
         <many-to-one name="sbiKpi" class="it.eng.spagobi.kpi.config.metadata.SbiKpi" >
             <column name="KPI_ID" not-null="true" />
         </many-to-one>
-        <many-to-one name="sbiDomains" class="it.eng.spagobi.commons.metadata.SbiDomains" >
+        <many-to-one name="chartType" class="it.eng.spagobi.commons.metadata.SbiDomains" >
             <column name="CHART_TYPE_ID" />
         </many-to-one>
         <many-to-one name="sbiThreshold" class="it.eng.spagobi.kpi.threshold.metadata.SbiThreshold" >

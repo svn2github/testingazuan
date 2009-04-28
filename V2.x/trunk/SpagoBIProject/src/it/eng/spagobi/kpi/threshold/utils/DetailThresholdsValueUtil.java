@@ -1,5 +1,7 @@
 package it.eng.spagobi.kpi.threshold.utils;
 
+import java.awt.Color;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFUserError;
@@ -13,7 +15,7 @@ public class DetailThresholdsValueUtil {
 			SourceBean serviceResponse) throws SourceBeanException,
 			EMFUserError {
 		ThresholdValue toReturn = DAOFactory.getThresholdValueDAO()
-				.loadThresholdValueById(id);
+		.loadThresholdValueById(id);
 		serviceResponse.setAttribute("THRESHOLDVALUE", toReturn);
 	}
 
@@ -29,14 +31,14 @@ public class DetailThresholdsValueUtil {
 			SourceBean serviceRequest) {
 		String sId = (String) serviceRequest.getAttribute("id");
 		String sThresholdId = (String) serviceRequest
-				.getAttribute("threshold_id");
+		.getAttribute("threshold_id");
 		String sPosition = (String) serviceRequest.getAttribute("position");
 		String label = (String) serviceRequest.getAttribute("label");
 		String sMinValue = (String) serviceRequest.getAttribute("min_Value");
 		String sMaxValue = (String) serviceRequest.getAttribute("max_Value");
 		String colour = (String) serviceRequest.getAttribute("colour");
 		String sSeverityId = (String) serviceRequest
-				.getAttribute("severity_id");
+		.getAttribute("severity_id");
 
 		ThresholdValue toReturn = new ThresholdValue();
 
@@ -55,7 +57,7 @@ public class DetailThresholdsValueUtil {
 			try{
 				position = Integer.parseInt(sPosition);
 			} catch(NumberFormatException nfe){
-				
+
 			}
 		}
 
@@ -64,7 +66,7 @@ public class DetailThresholdsValueUtil {
 			try{
 				minValue = new Double(sMinValue);
 			} catch(NumberFormatException nfe){
-				
+
 			} 
 		}
 
@@ -73,7 +75,7 @@ public class DetailThresholdsValueUtil {
 			try{
 				maxValue = new Double(sMaxValue);
 			} catch(NumberFormatException nfe){
-				
+
 			}
 		}
 
@@ -88,6 +90,15 @@ public class DetailThresholdsValueUtil {
 		toReturn.setLabel(label);
 		toReturn.setMinValue(minValue);
 		toReturn.setMaxValue(maxValue);
+
+		Color col=null;
+		try{
+			col=Color.decode(colour);
+		}
+		catch (Exception e) {
+			col=Color.red;
+		}
+		toReturn.setColour(col);
 		toReturn.setColourString(colour);
 		toReturn.setSeverityId(severityId);
 
@@ -101,7 +112,7 @@ public class DetailThresholdsValueUtil {
 		ThresholdValue toCreate = getThresholdValueFromRequest(serviceRequest);
 
 		Integer thresholdValueId = DAOFactory.getThresholdValueDAO()
-				.insertThresholdValue(toCreate);
+		.insertThresholdValue(toCreate);
 
 		serviceResponse.setAttribute("ID", thresholdValueId);
 		serviceResponse.setAttribute("MESSAGE", SpagoBIConstants.DETAIL_SELECT);

@@ -197,8 +197,9 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			kpiId = sbiKpi.getKpiId();
 		}
 
-		String typeName = value.getSbiDomains().getValueNm();
-		String typeDescription = value.getSbiDomains().getValueDs();
+		String typeCd = value.getModelType().getValueCd();
+		String typeName = value.getModelType().getValueNm();
+		String typeDescription = value.getModelType().getValueDs();
 		List childrenNodes = new ArrayList();
 
 		// Set children = value.getSbiKpiModels();
@@ -220,6 +221,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setDescription(description);
 		toReturn.setCode(code);
 		toReturn.setTypeName(typeName);
+		toReturn.setTypeCd(typeCd);
 		toReturn.setTypeDescription(typeDescription);
 		toReturn.setChildrenNodes(childrenNodes);
 		toReturn.setParentId(rootId);
@@ -244,13 +246,14 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			kpiId = sbiKpi.getKpiId();
 		}
 
-		String typeName = value.getSbiDomains().getValueNm();
-		String typeDescription = value.getSbiDomains().getValueDs();
+		String typeCd = value.getModelType().getValueCd();
+		String typeName = value.getModelType().getValueNm();
+		String typeDescription = value.getModelType().getValueDs();
 
 		List modelAttributes = new ArrayList();
 		//
 
-		List modelAttrList = getModelAttListByDomain(value.getSbiDomains(),
+		List modelAttrList = getModelAttListByDomain(value.getModelType(),
 				aSession);
 
 		for (Iterator iterator = modelAttrList.iterator(); iterator.hasNext();) {
@@ -280,6 +283,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 		toReturn.setName(name);
 		toReturn.setDescription(description);
 		toReturn.setCode(code);
+		toReturn.setTypeCd(typeCd);		
 		toReturn.setTypeName(typeName);
 		toReturn.setTypeDescription(typeDescription);
 		toReturn.setModelAttributes(modelAttributes);
@@ -333,7 +337,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			sbiKpiModel.setKpiModelNm(model.getName());
 			sbiKpiModel.setKpiModelDesc(model.getDescription());
 			sbiKpiModel.setKpiModelCd(model.getCode());
-			sbiKpiModel.setSbiDomains(sbiDomains);
+			sbiKpiModel.setModelType(sbiDomains);
 			if (parentId != null) {
 				SbiKpiModel sbiKpiParentModel = (SbiKpiModel) aSession.load(
 						SbiKpiModel.class, parentId);
@@ -434,7 +438,7 @@ public class ModelDAOImpl extends AbstractHibernateDAO implements IModelDAO {
 			SbiKpiModel modelExample = new SbiKpiModel();
 
 			Criteria crit = aSession.createCriteria(SbiKpiModel.class);
-			crit.add(Example.create(modelExample)).createCriteria("sbiDomains")
+			crit.add(Example.create(modelExample)).createCriteria("modelType")
 					.add(Example.create(sbiDomains));
 			
 			List toTransform = null;

@@ -18,7 +18,7 @@ public class SbiThresholdValue  implements java.io.Serializable {
 
      private Integer idThresholdValue;
      private SbiThreshold sbiThreshold;
-     private SbiDomains sbiDomains;
+     private SbiDomains severity;
      private Double minValue;
      private Double maxValue;
      private String label;
@@ -43,7 +43,7 @@ public class SbiThresholdValue  implements java.io.Serializable {
     public SbiThresholdValue(Integer idThresholdValue, SbiThreshold sbiThreshold, SbiDomains sbiDomains, double minValue, double maxValue, String label, String colour, Integer position, Set sbiAlarms) {
         this.idThresholdValue = idThresholdValue;
         this.sbiThreshold = sbiThreshold;
-        this.sbiDomains = sbiDomains;
+        this.severity = sbiDomains;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.label = label;
@@ -72,15 +72,15 @@ public class SbiThresholdValue  implements java.io.Serializable {
         this.sbiThreshold = sbiThreshold;
     }
 
-    public SbiDomains getSbiDomains() {
-        return this.sbiDomains;
-    }
-    
-    public void setSbiDomains(SbiDomains sbiDomains) {
-        this.sbiDomains = sbiDomains;
-    }
+    public SbiDomains getSeverity() {
+		return severity;
+	}
 
-    public Double getMinValue() {
+	public void setSeverity(SbiDomains severity) {
+		this.severity = severity;
+	}
+
+	public Double getMinValue() {
         return this.minValue;
     }
     

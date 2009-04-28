@@ -1,125 +1,83 @@
 package it.eng.spagobi.kpi.threshold.bo;
 
-import java.awt.Color;
+import java.util.List;
+
 
 public class Threshold {
 	
-	Integer Id = null;
-	String type = null;//type could be interval/min/max
-	Double minValue = null;// null if type = max
-	Double maxValue = null;// null if type = min
-	String label = null;
-	Color color = null;
-	String severity = null;
-	Integer position = null;
-	
-	String thresholdName = null;//all thresholds referred to the same kpi will have this Name equal
-	String thresholdDescription = null;//all thresholds referred to the same kpi will have this description equal
-	String thresholdCode = null;
+	Integer id = null;
+	String name = null;//all thresholds referred to the same kpi will have this Name equal
+	String description = null;//all thresholds referred to the same kpi will have this description equal
+	String code = null;
 	Integer thresholdTypeId = null;
+	List thresholdValues=null;
 	
-	
-	
-	public Integer getThresholdTypeId() {
-		return thresholdTypeId;
-	}
-
-	public void setThresholdTypeId(Integer thresholdTypeId) {
-		this.thresholdTypeId = thresholdTypeId;
-	}
-
-	public Integer getId() {
-		return Id;
-	}
-
-	public void setId(Integer id) {
-		Id = id;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public Double getMinValue() {
-		return minValue;
-	}
-
-	public void setMinValue(Double minValue) {
-		this.minValue = minValue;
-	}
-
-	public Double getMaxValue() {
-		return maxValue;
-	}
-
-	public void setMaxValue(Double maxValue) {
-		this.maxValue = maxValue;
-	}
-
-	public String getLabel() {
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
-	public Color getColor() {
-		return color;
-	}
-
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
-	public String getThresholdName() {
-		return thresholdName;
-	}
-
-	public void setThresholdName(String thresholdName) {
-		this.thresholdName = thresholdName;
-	}
-
-	public String getThresholdDescription() {
-		return thresholdDescription;
-	}
-
-	public void setThresholdDescription(String thresholdDescription) {
-		this.thresholdDescription = thresholdDescription;
-	}
-
-	public String getSeverity() {
-		return severity;
-	}
-
-	public void setSeverity(String severity) {
-		this.severity = severity;
-	}
 
 	public Threshold() {
 		super();
 	}
 
-	public Integer getPosition() {
-		return position;
+
+	public Integer getId() {
+		return id;
 	}
 
-	public void setPosition(Integer position) {
-		this.position = position;
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public String getThresholdCode() {
-		return thresholdCode;
+
+	public String getName() {
+		return name;
 	}
 
-	public void setThresholdCode(String thresholdCode) {
-		this.thresholdCode = thresholdCode;
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public String getDescription() {
+		return description;
+	}
+
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
+	public String getCode() {
+		return code;
+	}
+
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+
+	public Integer getThresholdTypeId() {
+		return thresholdTypeId;
+	}
+
+
+	public void setThresholdTypeId(Integer thresholdTypeId) {
+		this.thresholdTypeId = thresholdTypeId;
+	}
+
+
+	public List getThresholdValues() {
+		return thresholdValues;
+	}
+
+
+	public void setThresholdValues(List thresholdValues) {
+		this.thresholdValues = thresholdValues;
 	}
 	
-	
+
+
 
 }

@@ -24,4 +24,7 @@ public interface IPeriodicityDAO {
 	 */
 	public List loadPeriodicityList() throws EMFUserError;
 
+	
+	public Integer getPeriodicitySeconds(Integer periodicityId)
+	throws EMFUserError;
 }

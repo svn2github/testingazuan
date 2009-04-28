@@ -11,7 +11,7 @@ public class KpiValue implements Cloneable{
 	Integer kpiInstanceId = null;
 	String value = null;	
 	String valueDescr = null;
-	List thresholds = null;
+	List thresholdValues = null;
 	Double weight = null;
 	Double target = null;
 	Date beginDate = null;
@@ -31,7 +31,7 @@ public class KpiValue implements Cloneable{
 
 	public KpiValue() {
 		super();
-		this.thresholds = new ArrayList();
+		this.thresholdValues = new ArrayList();
 	}
 
 	public String getValue() {
@@ -58,12 +58,12 @@ public class KpiValue implements Cloneable{
 		this.scaleName = scaleName;
 	}
 
-	public List getThresholds() {
-		return thresholds;
+	public List getThresholdValues() {
+		return thresholdValues;
 	}
 
-	public void setThresholds(List thresholds) {
-		this.thresholds = thresholds;
+	public void setThresholdValues(List thresholds) {
+		this.thresholdValues = thresholds;
 	}
 
 	public Double getWeight() {
@@ -132,7 +132,7 @@ public class KpiValue implements Cloneable{
 		 toReturn.setScaleCode(scaleCode);
 		 toReturn.setScaleName(scaleName);
 		 toReturn.setTarget(target);
-		 toReturn.setThresholds(thresholds);
+		 toReturn.setThresholdValues(thresholdValues);
 		 toReturn.setValue(value);
 		 toReturn.setValueDescr(valueDescr);
 		 toReturn.setWeight(weight);

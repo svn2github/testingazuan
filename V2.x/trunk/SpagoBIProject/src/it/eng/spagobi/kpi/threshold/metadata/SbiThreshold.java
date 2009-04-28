@@ -17,7 +17,7 @@ public class SbiThreshold  implements java.io.Serializable {
     // Fields    
 
      private Integer thresholdId;
-     private SbiDomains sbiDomains;
+     private SbiDomains thresholdType;   
      private String name;
      private String description;
      private String code;
@@ -32,17 +32,17 @@ public class SbiThreshold  implements java.io.Serializable {
     /** default constructor */
     public SbiThreshold() {
     }
-
+    
 	/** minimal constructor */
     public SbiThreshold(Integer thresholdId, SbiDomains sbiDomains) {
         this.thresholdId = thresholdId;
-        this.sbiDomains = sbiDomains;
+        this.thresholdType = sbiDomains;
     }
     
     /** full constructor */
     public SbiThreshold(Integer thresholdId, SbiDomains sbiDomains, String name, String description, String code, Set sbiKpis, Set sbiKpiInstanceHistories, Set sbiKpiInstances, Set sbiThresholdValues) {
         this.thresholdId = thresholdId;
-        this.sbiDomains = sbiDomains;
+        this.thresholdType = sbiDomains;
         this.name = name;
         this.description = description;
         this.code = code;
@@ -64,15 +64,16 @@ public class SbiThreshold  implements java.io.Serializable {
         this.thresholdId = thresholdId;
     }
 
-    public SbiDomains getSbiDomains() {
-        return this.sbiDomains;
-    }
-    
-    public void setSbiDomains(SbiDomains sbiDomains) {
-        this.sbiDomains = sbiDomains;
-    }
 
-    public String getName() {
+    public SbiDomains getThresholdType() {
+		return thresholdType;
+	}
+
+	public void setThresholdType(SbiDomains thresholdTypeId) {
+		this.thresholdType = thresholdTypeId;
+	}
+
+	public String getName() {
         return this.name;
     }
     

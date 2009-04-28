@@ -14,9 +14,16 @@ package it.eng.spagobi.kpi.alarm.dao;
 
 
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.kpi.alarm.bo.Alarm;
+import it.eng.spagobi.kpi.alarm.bo.AlarmContact;
+import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -148,6 +155,31 @@ public class SbiAlarmContactDAOHibImpl extends AbstractHibernateDAO implements I
 			session.close();
 		}
     }
+    
+    
+    
+    public AlarmContact loadById(Integer id) {
+        Session session = getSession();
+        Transaction tx = null;
+        try {
+        	tx = session.beginTransaction();
+			SbiAlarmContact item = (SbiAlarmContact)session.get(SbiAlarmContact.class, id);
+			tx.commit();
+			AlarmContact alarmContact=toAlarmContact(item);
+			return alarmContact;
+			
+		} catch (HibernateException e) {
+			if( tx != null && tx.isActive() ){
+				tx.rollback();
+			}
+			throw e;
+			
+		}finally{
+			session.close();
+		}
+    }
+    
+    
 
     @SuppressWarnings("unchecked")
 	public List<SbiAlarmContact> findAll() {
@@ -204,6 +236,18 @@ public class SbiAlarmContactDAOHibImpl extends AbstractHibernateDAO implements I
         List<SbiAlarmContact> list = (List<SbiAlarmContact>)session.createQuery("from SbiAlarmContact where RESOURCES IS NULL ").list();
 	return list;
     }
+    
+    
+	public AlarmContact toAlarmContact(SbiAlarmContact sbiAlarmContact){
+		AlarmContact toReturn=new AlarmContact();
+		toReturn.setEmail(sbiAlarmContact.getEmail());
+		toReturn.setId(sbiAlarmContact.getId());
+		toReturn.setMobile(sbiAlarmContact.getMobile());
+		toReturn.setName(sbiAlarmContact.getName());
+		toReturn.setResources(sbiAlarmContact.getResources());
+		return toReturn;
+	}
+    
 
 }
 

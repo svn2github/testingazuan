@@ -42,7 +42,7 @@ public class BulletGraph  extends ChartImpl{
 	}
 	
 	public String setThresholds(List thresholds) {
-		return super.setThresholds(thresholds);
+		return super.setThresholdValues(thresholds);
 	}
 	
 	

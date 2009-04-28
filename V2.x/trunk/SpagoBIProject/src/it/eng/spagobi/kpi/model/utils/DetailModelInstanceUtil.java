@@ -97,8 +97,7 @@ public class DetailModelInstanceUtil {
 			kpiInstance.setChartTypeId(chartTypeId);
 			kpiInstance.setPeriodicityId(idKpiPeriodicity);
 			if (restoreDefaultFlag) {
-				DAOFactory.getKpiDAO()
-						.setKpiInstanceFromKPI(kpiInstance, kpiId);
+				DAOFactory.getKpiInstanceDAO().setKpiInstanceFromKPI(kpiInstance, kpiId);
 			} else {
 				kpiInstance.setThresholdId(thresholdId);
 				if (weight != null && !(weight.equals(""))) {

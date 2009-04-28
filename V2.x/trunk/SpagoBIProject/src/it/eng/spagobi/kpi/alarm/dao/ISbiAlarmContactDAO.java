@@ -10,6 +10,7 @@ package it.eng.spagobi.kpi.alarm.dao;
  * @version 1.0
  */
 
+import it.eng.spagobi.kpi.alarm.bo.AlarmContact;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
 
 import java.util.List;
@@ -45,5 +46,8 @@ public interface ISbiAlarmContactDAO {
     public List<SbiAlarmContact> findAll();
     
     public List<SbiAlarmContact> findByCsp(String csp);
+    
+    public AlarmContact loadById(Integer id);
+
 }
 

@@ -56,10 +56,14 @@ import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmContactDAO;
 import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmDAO;
 import it.eng.spagobi.kpi.alarm.dao.ISbiAlarmEventDAO;
 import it.eng.spagobi.kpi.config.dao.IKpiDAO;
+import it.eng.spagobi.kpi.config.dao.IKpiInstPeriodDAO;
+import it.eng.spagobi.kpi.config.dao.IKpiInstanceDAO;
+import it.eng.spagobi.kpi.config.dao.IMeasureUnitDAO;
 import it.eng.spagobi.kpi.config.dao.IPeriodicityDAO;
 import it.eng.spagobi.kpi.model.dao.IModelDAO;
 import it.eng.spagobi.kpi.model.dao.IModelInstanceDAO;
 import it.eng.spagobi.kpi.model.dao.IModelResourceDAO;
+import it.eng.spagobi.kpi.model.dao.IResourceDAO;
 import it.eng.spagobi.kpi.threshold.dao.IThresholdDAO;
 import it.eng.spagobi.kpi.threshold.dao.IThresholdValueDAO;
 import it.eng.spagobi.mapcatalogue.bo.dao.ISbiGeoFeaturesDAO;
@@ -474,6 +478,16 @@ public class DAOFactory {
 		return (IKpiDAO)createDAOInstance("KpiDAO");
 	}
 	
+	/**
+	 * Gets the KPI Instance dao.
+	 * 
+	 * @return the KPI Instance dao
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public static IKpiInstanceDAO getKpiInstanceDAO() throws EMFUserError{
+		return (IKpiInstanceDAO)createDAOInstance("KpiInstanceDAO");
+	}
 	
 	/**
 	 * Gets the bI object rating dao.
@@ -558,7 +572,7 @@ public class DAOFactory {
 	 * 
 	 * @throws EMFUserError the EMF user error.
 	 */
-	public static IModelResourceDAO getModelResources() throws EMFUserError{
+	public static IModelResourceDAO getModelResourcesDAO() throws EMFUserError{
 		return (IModelResourceDAO)createDAOInstance("ModelResourceDAO");
 	}
 
@@ -572,4 +586,42 @@ public class DAOFactory {
 	public static IThresholdValueDAO getThresholdValueDAO() throws EMFUserError{
 		return (IThresholdValueDAO)createDAOInstance("ThresholdValueDAO");
 	}
+
+	/**
+	 * Creates a DAO instance for a predefined Measure Unit.
+	 * 
+	 * @return a DAO instance for the  predefined MeasureUnit
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static IMeasureUnitDAO getMeasureUnitDAO() throws EMFUserError{
+		return (IMeasureUnitDAO)createDAOInstance("MeasureUnitDAO");
+	}
+	
+	
+	
+	/**
+	 * Creates a DAO instance for a predefined Resource.
+	 * 
+	 * @return a DAO instance for the  predefined rescource
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static IResourceDAO getResourceDAO() throws EMFUserError{
+		return (IResourceDAO)createDAOInstance("ResourceDAO");
+	}
+	
+
+	/**
+	 * Creates a DAO instance for a predefined Resource.
+	 * 
+	 * @return a DAO instance for the  predefined rescource
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public static IKpiInstPeriodDAO getKpiInstPeriodDAO() throws EMFUserError{
+		return (IKpiInstPeriodDAO)createDAOInstance("KpiInstPeriodDAO");
+	}
+	
+	
 }

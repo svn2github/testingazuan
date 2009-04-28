@@ -29,6 +29,10 @@ public class Alarm  implements java.io.Serializable {
  	private String descr; 
  	private String text; 
  	private String url; 
+ 	private Integer idKpiInstance; 
+ 	private Integer idThresholdValue; 
+ 	private Integer modalityId;
+ 	
  	private Set<AlarmContact> sbiAlarmContacts = new HashSet<AlarmContact>(0); 
 
 
@@ -110,6 +114,38 @@ public class Alarm  implements java.io.Serializable {
     public void setSbiAlarmContacts(Set<AlarmContact> sbiAlarmContacts) {
         this.sbiAlarmContacts = sbiAlarmContacts;
     }    
+
+    
+	public Integer getIdKpiInstance() {
+		return idKpiInstance;
+	}
+
+
+	public void setIdKpiInstance(Integer idKpiInstance) {
+		this.idKpiInstance = idKpiInstance;
+	}
+
+
+	public Integer getIdThresholdValue() {
+		return idThresholdValue;
+	}
+
+
+	public void setIdThresholdValue(Integer _idThresholdValue) {
+		this.idThresholdValue = _idThresholdValue;
+	}
+
+	
+
+	public Integer getModalityId() {
+		return modalityId;
+	}
+
+
+	public void setModalityId(Integer modality) {
+		this.modalityId = modality;
+	}
+
 
 	/**
 	 * Constructs a <code>String</code> with all attributes

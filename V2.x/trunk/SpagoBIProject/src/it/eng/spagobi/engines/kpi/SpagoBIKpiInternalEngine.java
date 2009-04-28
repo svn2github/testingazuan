@@ -55,6 +55,7 @@ import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
@@ -197,7 +198,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     						// each Resource: it will be sent to the jsp
 
     	    // gets the ModelInstanceNode
-    	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceByLabel(modelNodeInstance, this.dateOfKPI);
+    	    ModelInstanceNode mI = DAOFactory.getModelInstanceDAO().loadModelInstanceByLabel(modelNodeInstance, this.dateOfKPI);
     	    logger.debug("ModelInstanceNode, ID=" + mI.getModelInstanceNodeId());
     	    modelInstanceRootId = mI.getModelInstanceNodeId();
     	    logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
@@ -253,7 +254,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     		    			// Checks if the value is alarming (out of a certain range)
     		    			// If the value is alarming a new line will be inserted in the
     		    			// sbi_alarm_event table and scheduled to be sent
-    		    			DAOFactory.getKpiDAO().isAlarmingValue(value);   		    			
+    		    			DAOFactory.getAlarmDAO().isAlarmingValue(value);   		    			
     		    			
     		    	    } else {
     		    			Iterator resourcesIt = this.resources.iterator();
@@ -269,7 +270,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
         		    			// Checks if the value is alarming (out of a certain range)
         		    			// If the value is alarming a new line will be inserted in the
         		    			// sbi_alarm_event table and scheduled to be sent
-        		    			DAOFactory.getKpiDAO().isAlarmingValue(value);   
+        		    			DAOFactory.getAlarmDAO().isAlarmingValue(value);   
     		    			}
     		    	    }
     		    	    } catch (EMFInternalError e) {
@@ -381,7 +382,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						// sent to the jsp
 
 	    // gets the ModelInstanceNode
-	    ModelInstanceNode mI = DAOFactory.getKpiDAO().loadModelInstanceByLabel(modelNodeInstance, this.dateOfKPI);
+	    ModelInstanceNode mI = DAOFactory.getModelInstanceDAO().loadModelInstanceByLabel(modelNodeInstance, this.dateOfKPI);
 	    if (mI==null) {
 	    	logger.error("MODEL INSTANCE IS NULL, CHECK model_node_instance IN DOCUMENT TEMPLATE.!!!!!!!!!!!!!!");
 	    }else {
@@ -463,7 +464,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     public KpiLine getBlock(Integer miId, Resource r) throws EMFUserError, EMFInternalError {
 	logger.debug("IN");
 	KpiLine line = new KpiLine();
-	ModelInstanceNode modI = DAOFactory.getKpiDAO().loadModelInstanceById(miId, dateOfKPI);
+	ModelInstanceNode modI = DAOFactory.getModelInstanceDAO().loadModelInstanceById(miId, dateOfKPI);
 	if (modI != null) {
 	    logger.debug("Loaded Model Instance Node with id: " + modI.getModelInstanceNodeId());
 	}
@@ -538,14 +539,14 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 	    }
 	    if (display_alarm && value!=null && value.getValue()!= null) {
-		Boolean alarm = DAOFactory.getKpiDAO().isKpiInstUnderAlramControl(kpiI.getKpiInstanceId());
+		Boolean alarm = DAOFactory.getKpiInstanceDAO().isKpiInstUnderAlramControl(kpiI.getKpiInstanceId());
 		logger.debug("KPI is under alarm control: " + alarm.toString());
 		line.setAlarm(alarm);
 	    }
 
-	    if (display_bullet_chart &&  value!=null &&  value.getValue()!= null && value.getThresholds()!=null && !value.getThresholds().isEmpty()) {
+	    if (display_bullet_chart &&  value!=null &&  value.getValue()!= null && value.getThresholdValues()!=null && !value.getThresholdValues().isEmpty()) {
 
-		List thresholds = value.getThresholds();
+		List thresholdValues = value.getThresholdValues();
 		/*
 		 * String chartType = value.getChartType(); logger.debug("Got
 		 * chartType: "+(chartType!=null?chartType:""));
@@ -568,7 +569,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 		sbi.configureChart(pars);		
 		logger.debug("Config parameters setted into the chart");
-		String thresholdsJsArray = sbi.setThresholds(thresholds);
+		String thresholdsJsArray = sbi.setThresholdValues(thresholdValues);
 		if (thresholdsJsArray != null) {
 		    line.setThresholdsJsArray(thresholdsJsArray);
 		}
@@ -578,9 +579,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    }
 	    if (display_semaphore &&  value!=null && value.getValue() != null) {
 		Color semaphorColor = null;
-		List thresholds = value.getThresholds();
+		List thresholdValues = value.getThresholdValues();
 		Double val = new Double(value.getValue());
-		semaphorColor = getSemaphorColor(thresholds, val);
+		semaphorColor = getSemaphorColor(thresholdValues, val);
 
 		line.setSemaphorColor(semaphorColor);
 	    }
@@ -599,7 +600,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	Date endDate = null;
 	kVal.setBeginDate(begD);
 	logger.debug("Setted the KpiValue begin Date:"+begD);
-	KpiInstance kpiInst = DAOFactory.getKpiDAO().loadKpiInstanceById(k.getKpiInstanceId());
+	KpiInstance kpiInst = DAOFactory.getKpiInstanceDAO().loadKpiInstanceById(k.getKpiInstanceId());
 	if(endKpiValueDate!=null){
 		endDate = endKpiValueDate;
 		kVal.setEndDate(endKpiValueDate);
@@ -610,7 +611,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			kpiInst.setPeriodicityId(periodInstID);
 			logger.debug("Setted new Periodicity ID:"+periodInstID.toString());
 		}
-		seconds = DAOFactory.getKpiDAO().getPeriodicitySeconds(kpiInst.getPeriodicityId());
+		seconds = DAOFactory.getPeriodicityDAO().getPeriodicitySeconds(kpiInst.getPeriodicityId());
 			
 		// Transforms seconds into milliseconds
 		long milliSeconds = seconds.longValue() * 1000;
@@ -629,7 +630,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	Double target = null;
 	String scaleCode = null;
 	String scaleName = null;
-	List thresholds = null;
+	List thresholdValues = null;
 	String chartType = null;
 	logger.debug("Setted the KpiValue end Date:"+endDate);
 	kVal.setKpiInstanceId(kpiInstanceID);
@@ -637,15 +638,15 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	Date kpiInstBegDt = kpiInst.getD();
 	logger.debug("kpiInstBegDt begin date: "+(kpiInstBegDt!=null ? kpiInstBegDt.toString(): "Begin date null"));
 	
-	if ( (dateOfKPI.after(kpiInstBegDt)||dateOfKPI.equals(kpiInstBegDt))|| DAOFactory.getKpiDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI)==null) {
+	if ( (dateOfKPI.after(kpiInstBegDt)||dateOfKPI.equals(kpiInstBegDt))|| DAOFactory.getKpiInstanceDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI)==null) {
 		
 		logger.debug("Requested date d: "+dateOfKPI.toString()+" in between beginDate and EndDate");
 		weight = kpiInst.getWeight();
 		logger.debug("SbiKpiValue weight: "+(weight!=null ? weight.toString() : "weight null"));
 		target = kpiInst.getTarget();
 		logger.debug("SbiKpiValue target: "+(target!=null ? target.toString() : "target null"));
-		thresholds = DAOFactory.getKpiDAO().getThresholds(kpiInst);
-		chartType = DAOFactory.getKpiDAO().getChartType(kpiInstanceID);
+		thresholdValues = DAOFactory.getThresholdValueDAO().getThresholdValues(kpiInst);
+		chartType = DAOFactory.getKpiInstanceDAO().getChartType(kpiInstanceID);
 
 		scaleCode = kpiInst.getScaleCode();
 		logger.debug("SbiKpiValue scaleCode: "+(scaleCode!=null ? scaleCode : "scaleCode null"));
@@ -654,11 +655,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 	} else {// in case older thresholds have to be retrieved
 
-		kpiInst = DAOFactory.getKpiDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI);
+		kpiInst = DAOFactory.getKpiInstanceDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI);
 		if (kpiInst!=null){
 			Integer chartId = kpiInst.getChartTypeId();
 			Integer thresholdId = kpiInst.getThresholdId();
-			if (thresholdId!=null) thresholds = DAOFactory.getKpiDAO().loadThresholdsById(thresholdId);
+			if (thresholdId!=null) thresholdValues = DAOFactory.getThresholdValueDAO().loadThresholdValuesByThresholdId(thresholdId);
 			chartType = "BulletGraph";
 			logger.debug("Requested date d: "+dateOfKPI.toString()+" in between beginDate and EndDate");
 			weight = kpiInst.getWeight();
@@ -674,7 +675,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	
 	kVal.setWeight(k.getWeight());
 	logger.debug("Setted the KpiValue weight:"+k.getWeight());	
-	kVal.setThresholds(thresholds);
+	kVal.setThresholdValues(thresholdValues);
 	logger.debug("Setted the KpiValue thresholds");	
 	kVal.setScaleCode(scaleCode);
 	logger.debug("Kpi value scale Code setted");
@@ -757,7 +758,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     			    				
     			    				String fieldValue = f.getValue().toString();
     			    				if (fieldValue!=null){
-    			    					Resource rTemp = DAOFactory.getKpiDAO().loadResourcesByNameAndModelInst(fieldValue);
+    			    					Resource rTemp = DAOFactory.getResourceDAO().loadResourcesByNameAndModelInst(fieldValue);
     			    					valTemp.setR(rTemp);
 	    				    			logger.debug("Setted the kpiValue Resource with resource name:"+fieldValue);
     			    				}
@@ -778,7 +779,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     			    	// Checks if the value is alarming (out of a certain range)
     			    	// If the value is alarming a new line will be inserted in the
     			    	// sbi_alarm_event table and scheduled to be sent
-    			        DAOFactory.getKpiDAO().isAlarmingValue(valTemp);
+    			        DAOFactory.getAlarmDAO().isAlarmingValue(valTemp);
     			        logger.debug("Alarms sent if the value is over the thresholds");
 	    			}			
 
@@ -834,7 +835,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    	// Checks if the value is alarming (out of a certain range)
 	    	// If the value is alarming a new line will be inserted in the
 	    	// sbi_alarm_event table and scheduled to be sent
-	    DAOFactory.getKpiDAO().isAlarmingValue(kVal);
+	    DAOFactory.getAlarmDAO().isAlarmingValue(kVal);
 	    logger.debug("Alarms sent if the value is over the thresholds");
 	    	
 	    }
@@ -856,15 +857,15 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
      *                of thresholds to set
      * @return The Color of the interval in which the value falls
      */
-    public Color getSemaphorColor(List thresholds, Double value) {
+    public Color getSemaphorColor(List thresholdValues, Double value) {
 	logger.debug("IN");
 	Color toReturn = null;
-	if (thresholds != null && !thresholds.isEmpty()) {
-	    Iterator it = thresholds.iterator();
+	if (thresholdValues != null && !thresholdValues.isEmpty()) {
+	    Iterator it = thresholdValues.iterator();
 
 	    while (it.hasNext()) {
-		Threshold t = (Threshold) it.next();
-		String type = t.getType();
+		ThresholdValue t = (ThresholdValue) it.next();
+		String type = t.getThresholdType();
 		Double min = t.getMinValue();
 		Double max = t.getMaxValue();
 
@@ -872,13 +873,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			logger.debug("Threshold type RANGE");
 		    if (value.doubleValue() >= min.doubleValue() && value.doubleValue() < max.doubleValue()) {
 			String label = t.getLabel();
-			toReturn = t.getColor();
+			toReturn = t.getColour();
 		    }
 		} else if (type.equals("MINIMUM")) {
 			logger.debug("Threshold type MINIMUM");
 		    if (value.doubleValue() < min.doubleValue()) {
 			String label = t.getLabel();
-			toReturn = t.getColor();
+			toReturn = t.getColour();
 		    } else {
 			toReturn = Color.WHITE;
 		    }
@@ -886,7 +887,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			logger.debug("Threshold type MAXIMUM");
 		    if (value.doubleValue() > max.doubleValue()) {
 			String label = t.getLabel();
-			toReturn = t.getColor();
+			toReturn = t.getColour();
 		    } else {
 			toReturn = Color.WHITE;
 		    }
@@ -917,7 +918,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     				this.resources = new ArrayList();
     				String value = (String) values.get(0);
     				Integer res = new Integer(value);
-    				Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
+    				Resource toAdd = DAOFactory.getResourceDAO().loadResourceById(res);
     				this.resources.add(toAdd);
     		    
     		    }else if(url.equals("register_values")){
@@ -1011,7 +1012,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     			    for (int k = 0; k < values.size(); k++) {
     				String value = (String) values.get(k);
     				Integer res = new Integer(value);
-    				Resource toAdd = DAOFactory.getKpiDAO().loadResourceById(res);
+    				Resource toAdd = DAOFactory.getResourceDAO().loadResourceById(res);
     				this.resources.add(toAdd);
     			    }
     			}

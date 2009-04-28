@@ -38,7 +38,7 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
@@ -107,7 +107,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 		IEngUserProfile userProfile = (IEngUserProfile) session.getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String userId=(String)((UserProfile)userProfile).getUserId();
 
-		Locale locale=SpagoBIUtilities.getDefaultLocale();
+		Locale locale=GeneralUtilities.getDefaultLocale();
 		String lang=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_LANGUAGE);
 		String country=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_COUNTRY);
 		if(lang!=null && country!=null){

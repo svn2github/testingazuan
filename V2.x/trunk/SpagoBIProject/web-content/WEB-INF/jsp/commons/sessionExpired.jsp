@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          pageEncoding="ISO-8859-1" 
 %>
 
+<%@page import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
+
 <%-- 
 SpagoBI Web Application can have different nested iframes. 
 If the session expires, the user would see SpagoBI start page on the nested iframe, that is not so good... 
@@ -38,7 +40,7 @@ try {
 	var parentWindow = parent;
 	while (parentWindow != currentWindow) {
 		if (parentWindow.sessionExpiredSpagoBIJS) {
-			parentWindow.location = '<%= request.getContextPath() %>';
+			parentWindow.location = '<%= SpagoBIUtilities.getSpagoBiContext() %>';
 			sessionExpiredSpagoBIJSFound = true;
 			break;
 		} else {
@@ -49,6 +51,6 @@ try {
 } catch (err) {}
 
 if (!sessionExpiredSpagoBIJSFound) {
-	window.location = '<%= request.getContextPath() %>';
+	window.location = '<%= SpagoBIUtilities.getSpagoBiContext() %>';
 }
 </script>

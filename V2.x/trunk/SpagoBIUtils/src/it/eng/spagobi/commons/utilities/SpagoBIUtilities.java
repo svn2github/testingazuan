@@ -27,16 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.commons.utilities;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorCategory;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +43,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -76,112 +70,13 @@ public class SpagoBIUtilities {
 	}
 
 	
-	
-	/**
-	 * Gets the spago adapter http url.
-	 * 
-	 * @return the spago adapter http url
-	 */
-	public static String getSpagoAdapterHttpUrl() {
-		logger.debug("IN");
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		String attName = "SPAGOBI.SPAGO_ADAPTERHTTP_URL";
-		SourceBean adapUrlSB = (SourceBean) config.getAttribute(attName);
-		String adapUrlStr = adapUrlSB.getCharacters();
-		adapUrlStr = adapUrlStr.trim();
-		logger.debug("OUT:" + adapUrlStr);
-		return adapUrlStr;
-	}
-
-	/**
-	 * Gets the default locale.
-	 * 
-	 * @return the default locale
-	 */
-	public static Locale getDefaultLocale() {
-		logger.debug("IN");
-		String country = null;
-		String language = null;
-		Locale locale = null;
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		String attName = "SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE";
-		SourceBean languageSB = (SourceBean) config.getFilteredSourceBeanAttribute(attName, "default", "true");
-		if (languageSB != null) {
-			country = (String) languageSB.getAttribute("country");
-			language = (String) languageSB.getAttribute("language");
-			if ((country == null) || country.trim().equals("") || (language == null) || language.trim().equals("")) {
-				country = "US";
-				language = "en";
-			}
-		} else {
-			country = "US";
-			language = "en";
-		}
-		locale = new Locale(language, country);
-		logger.debug("OUT:" + locale.toString());
-		return locale;
-	}
 
 
-	public static Locale getCurrentLocale(RequestContainer requestContainer) {
-		Locale locale=null;
-		if(requestContainer!=null){    	
-			SessionContainer permSession = requestContainer.getSessionContainer().getPermanentContainer();
-			if(permSession!=null){			
-				String language=(String)permSession.getAttribute(SpagoBIConstants.AF_LANGUAGE);
-				String country=(String)permSession.getAttribute(SpagoBIConstants.AF_COUNTRY);
-				if(language!=null && country!=null){
-					locale=new Locale(language,country,"");
-				}
-			}
-		}
-		if(locale==null)locale=getDefaultLocale();
-		return locale;
-	}
 
 
-	public static String getLocaleDateFormat(SessionContainer permSess){
-		String language=(String)permSess.getAttribute("AF_LANGUAGE");
-		String country=(String)permSess.getAttribute("AF_COUNTRY");
 
 
-		SourceBean formatSB=null; 
-		// if a particular language is specified take the corrisponding date-format
-		if(language!=null ){
-			if(country==null){
-				formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+language.toUpperCase()));
-			}
-			else{
-				formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+language.toUpperCase()+"_"+country.toUpperCase()));				
-			}		
-		}
-		if(formatSB==null){
-			formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
-		}
 
-		String format = (String) formatSB.getAttribute("format");
-		logger.debug("DATE FORMAT:"+format);
-		return format;
-
-	}
-
-	public static String getServerDateFormat(){
-		logger.debug("IN");
-		SourceBean formatSB=null; 
-		// if a particular language is specified take the corrisponding date-format
-		formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
-		String format="dd/MM/yyyy";
-		if(formatSB!=null){
-			format = (String) formatSB.getAttribute("format");
-			logger.debug("server date format set to "+format);
-		}
-		else{
-			logger.error("could not find server date format, set default to "+format);			
-		}
-		logger.debug("OUT");
-		return format;
-
-	}
 
 	/**
 	 * Cleans a string from spaces and tabulation characters.
@@ -357,26 +252,6 @@ public class SpagoBIUtilities {
 	 * 
 	 * @return A String with SpagoBI's context 
 	 */
-	public static String getSpagoBiContext() {
-		logger.debug("IN");
-		String path = "";
-		try {
-			logger.debug("Trying to recover spagobi context from ConfigSingleton");
-			ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
-			SourceBean sbTmp = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_CONTEXT");
-			if (sbTmp!=null){
-				path = sbTmp.getCharacters();
-			}else {
-				logger.debug("SPAGOBI_CONTEXT not set, using the default value ");
-				path="/SpagoBI";
-			}
-			logger.debug("SPAGOBI_CONTEXT: " + path);
-		} catch (Exception e) {
-			logger.error("Error while recovering SpagoBI context address", e);
-		}
-		logger.debug("OUT:" + path);
-		return path;
-	}      
 
 	public static String readJndiResource(String jndiName) {
 		logger.debug("IN.jndiName="+jndiName);
@@ -405,41 +280,12 @@ public class SpagoBIUtilities {
 	 * 
 	 * @return A String with SpagoBI's adderss
 	 */
-	public static String getSpagoBiHost() {
-		logger.debug("IN");
-		if (SPAGOBI_HOST == null) {
-			try {
-				logger.debug("Trying to recover SpagoBiHost from ConfigSingleton");
-				ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
-				SourceBean sbTmp = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_HOST_JNDI");
-				if (sbTmp != null) {
-					String jndi = sbTmp.getCharacters();
-					SPAGOBI_HOST = readJndiResource(jndi);
-				}
-				if (SPAGOBI_HOST == null) {
-					logger.debug("SPAGOBI_HOST not set, using the default value ");
-					SPAGOBI_HOST = "http://localhost:8080";
-				}
-			} catch (Exception e) {
-				logger.error("Error while recovering getSpagoBiHost", e);
-			}
-		}
-		logger.debug("OUT:" + SPAGOBI_HOST);
-		return SPAGOBI_HOST;
-	}  
 
 
 
 
 
-	/**
-	 * Gets the spagoBI's dashboards servlet information as a string.
-	 * 
-	 * @return A string containing spagoBI's dashboards servlet information
-	 */
-	public static String getSpagoBiDashboardServlet() {
-		return getSpagoBiHost()+getSpagoBiContext() + "/DashboardService";
-	}
+
 
 
 
@@ -747,27 +593,5 @@ public class SpagoBIUtilities {
 		return toReturn;
 	}
 
-	public static int getTemplateMaxSize() {
-		logger.debug("IN");
-		int toReturn = MAX_DEFAULT_TEMPLATE_SIZE;
-		try {
-			ConfigSingleton serverConfig = ConfigSingleton.getInstance();
-			SourceBean maxSizeSB = (SourceBean) serverConfig.getAttribute("SPAGOBI.TEMPLATE_MAX_SIZE");
-			if (maxSizeSB != null) {
-				String maxSizeStr = (String) maxSizeSB.getCharacters();
-				logger.debug("Configuration found for max template size: " + maxSizeStr);
-				Integer maxSizeInt = new Integer(maxSizeStr);
-				toReturn = maxSizeInt.intValue();
-			} else {
-				logger.debug("No configuration found for max template size");
-			}
-		} catch (Exception e) {
-			logger.error("Error while retrieving max template size", e);
-			logger.debug("Considering default value " + MAX_DEFAULT_TEMPLATE_SIZE);
-			toReturn = MAX_DEFAULT_TEMPLATE_SIZE;
-		}
-		logger.debug("OUT: max size = " + toReturn);
-		return toReturn;
-	}
 
 }

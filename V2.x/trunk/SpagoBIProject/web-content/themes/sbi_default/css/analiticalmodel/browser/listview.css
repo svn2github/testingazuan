@@ -20,7 +20,7 @@
     .list-view .document-item-icon {
         margin:5px 0 0 5px;
         float:left;
-        border: solid  #0000FF;
+        /* border: solid  #0000FF; */
     }
     
     .list-view .document-item-icon img {

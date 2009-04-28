@@ -66,8 +66,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({baseUrl: url});
 	
     var browserConfig = <%= aServiceResponse.getAttribute("metaConfiguration")%>;
-    alert(browserConfig.rootFolderId);
-    
+	//var lang = '<%=locale.getLanguage()%>';
+    //alert('language: ' + lang);
+    	       
+   
     browserConfig = Ext.apply(browserConfig, {
         //rootFolderId: 3
         /*

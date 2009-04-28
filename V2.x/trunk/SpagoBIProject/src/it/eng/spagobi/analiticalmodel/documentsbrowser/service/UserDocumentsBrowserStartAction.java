@@ -57,8 +57,6 @@ public class UserDocumentsBrowserStartAction extends AbstractBaseHttpAction{
 			JSONObject jsonObj  = config.toJSON();
 			String labelSubTreeNode = this.getAttributeAsString( LABEL_SUBTREE_NODE );
 			
-			
-			
 			if (labelSubTreeNode != null && !labelSubTreeNode.trim().equals("")) {
 				LowFunctionality luwFunc = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByPath(labelSubTreeNode, false);
 				if(luwFunc != null) {

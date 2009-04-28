@@ -66,7 +66,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({baseUrl: url});
 
     var browserConfig = <%= aServiceResponse.getAttribute("metaConfiguration")%>;
-        
+    
     Ext.onReady(function(){
       Ext.QuickTips.init();              
       var browser = new Sbi.browser.DocumentsBrowser(browserConfig);
@@ -89,7 +89,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  		src='<%= url %>'
  		frameBorder = 0
  		width=100%
- 		height=600
+ 		height=<%= aServiceResponse.getAttribute("height") %>
  	/>
 
  

@@ -31,6 +31,7 @@ import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -85,18 +86,22 @@ public class PortletLoginAction extends AbstractHttpAction {
 		String userId = null;
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest();
 		Principal principal = portletRequest.getUserPrincipal();
-		userId = principal.getName();
+		if(principal != null) {
+			userId = principal.getName();
+		} else {
+			logger.debug("Principal not found on request. Looking for a default user configuration.... ");
+			SourceBean defatulUserSB = (SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.DEFAULT_USER");
+			if(defatulUserSB != null) {
+				userId = defatulUserSB.getCharacters();
+				logger.debug("Default user configuration found = [" + userId + "]");
+			} else 	{
+				logger.error("No default user configuration found");
+				throw new Exception("Cannot identify user");
+			}
+		}		
+		
 		logger.debug("got userId from Principal=" + userId);
-		/*
-		ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-		try {
-		    SpagoBIUserProfile user = supplier.createUserProfile(userId);
-		    profile = new UserProfile(user);
-		} catch (Exception e) {
-		    logger.error("Reading user information... ERROR");
-		    throw new SecurityException("Reading user information... ERROR", e);
-		}
-*/
+		
 		profile=UserUtilities.getUserProfile(userId);
 		logger.debug("userProfile created.UserUniqueIDentifier= " + (String) profile.getUserUniqueIdentifier());
 		logger.debug("Attributes name of the user profile: " + profile.getUserAttributeNames());

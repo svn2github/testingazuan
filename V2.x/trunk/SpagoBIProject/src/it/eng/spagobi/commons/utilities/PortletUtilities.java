@@ -35,6 +35,7 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.constants.UtilitiesConstants;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 
 import java.util.Iterator;
 import java.util.List;
@@ -53,6 +54,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.portlet.PortletFileUpload;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -61,7 +63,10 @@ import org.apache.commons.fileupload.portlet.PortletFileUpload;
  * @author Zoppello
  */
 public class PortletUtilities {
-
+	
+	
+	static private Logger logger = Logger.getLogger(PortletUtilities.class);
+	
 	/**
 	 * Starting from the original URL and the request, creates a string representing the
 	 * Portlet URL.
@@ -74,14 +79,11 @@ public class PortletUtilities {
 	public static String createPortletURL(HttpServletRequest aHttpServletRequest, String originalURL){
 
 		RenderResponse renderResponse =(RenderResponse)aHttpServletRequest.getAttribute("javax.portlet.response");
-		RequestContainer requestContainer = RequestContainerPortletAccess.getRequestContainer(aHttpServletRequest);
 		
 		PortletURL aPortletURL = renderResponse.createActionURL();
 		
-		SpagoBITracer.debug(UtilitiesConstants.NAME_MODULE, 
-							PortletUtilities.class.getName(), 
-							"createPortletURL()",
-							"Original URL.... " + originalURL + "indexOf ? is " + originalURL.indexOf("?"));
+		logger.debug("Original URL.... " + originalURL + "indexOf ? is " + originalURL.indexOf("?"));
+		
 		String parameters = originalURL.substring(originalURL.indexOf("?")+1);
 		
 		StringTokenizer st = new StringTokenizer(parameters, "&", false);
@@ -91,19 +93,14 @@ public class PortletUtilities {
 		String parameterValue = null;
 		while (st.hasMoreTokens()){
 			parameterToken = st.nextToken();
-			SpagoBITracer.debug(UtilitiesConstants.NAME_MODULE, 
-					PortletUtilities.class.getName(), 
-					"createPortletURL()","Parameter Token [" + parameterToken +"]");
+			logger.debug("Parameter Token [" + parameterToken +"]");
+			
 			parameterName = parameterToken.substring(0, parameterToken.indexOf("="));
 			parameterValue = parameterToken.substring(parameterToken.indexOf("=") + 1);
 			
+			logger.debug("Parameter Name [" + parameterName +"]");
+			logger.debug("Parameter Value [" + parameterValue +"]");
 			
-			SpagoBITracer.debug(UtilitiesConstants.NAME_MODULE, 
-					PortletUtilities.class.getName(), 
-					"createPortletURL()","Parameter Name [" + parameterName +"]");
-			SpagoBITracer.debug(UtilitiesConstants.NAME_MODULE, 
-					PortletUtilities.class.getName(), 
-					"createPortletURL()","Parameter Value [" + parameterValue +"]");
 			aPortletURL.setParameter(parameterName, parameterValue);
 		}
 		
@@ -145,51 +142,6 @@ public class PortletUtilities {
 	}
 	
 	/**
-	 * Gets the service request from a Multipart Portlet Request. This method creates a
-	 * new file upload handler, then parses the request and processes the new uploaded items.
-	 * In this way a new uploaded file is obtained, which is put into the <code>serviceRequest</code>
-	 * object.
-	 * 
-	 * @param portletRequest The input portlet request
-	 * 
-	 * @return The <code>serviceRequest</code> SourceBean containing the uploaded file.
-	 */
-//	public static SourceBean getServiceRequestFromMultipartPortletRequest(PortletRequest portletRequest){
-//		SourceBean serviceRequest = null;
-//		try{
-//			serviceRequest = new SourceBean("SERVICEREQUEST");
-//			DiskFileItemFactory factory = new DiskFileItemFactory();
-//			//		 Create a new file upload handler
-//			PortletFileUpload upload = new PortletFileUpload(factory);
-//		
-//			//		 Parse the request
-//			List /* FileItem */ items = upload.parseRequest((ActionRequest)portletRequest);
-//		
-//		
-//			//		 Process the uploaded items
-//			Iterator iter = items.iterator();
-//			while (iter.hasNext()) {
-//				FileItem item = (FileItem) iter.next();
-//
-//				if (item.isFormField()) {
-//					serviceRequest.setAttribute(item.getFieldName(), item.getString());
-//				} else {
-//					UploadedFile uploadedFile = new UploadedFile();
-//					uploadedFile.setFileContent(item.get());
-//					uploadedFile.setFieldNameInForm(item.getFieldName());
-//					uploadedFile.setSizeInBytes(item.getSize());
-//					uploadedFile.setFileName(GeneralUtilities.getRelativeFileNames(item.getName()));
-//					serviceRequest.setAttribute("UPLOADED_FILE", uploadedFile);
-//				}
-//			}
-//		}catch(Exception e){
-//			SpagoBITracer.major(UtilitiesConstants.NAME_MODULE, PortletUtilities.class.getName(),"getServiceRequestFromMultipartPortletRequets","Cannot parse multipart request", e);
-//		}
-//		return serviceRequest;
-//		
-//	}
-	
-	/**
 	 * Gets the first uploaded file from a portlet request. This method creates a new file upload handler, 
 	 * parses the request, processes the uploaded items and then returns the first file as an
 	 * <code>UploadedFile</code> object.
@@ -227,7 +179,7 @@ public class PortletUtilities {
 				}
 			}
 		}catch(Exception e){
-			SpagoBITracer.major(ObjectsTreeConstants.NAME_MODULE,PortletUtilities.class.getName(),"getServiceRequestFromMultipartPortletRequets","Cannot parse multipart request", e);
+			logger.error("Cannot parse multipart request", e);
 		}
 		return uploadedFile;
 		
@@ -265,8 +217,7 @@ public class PortletUtilities {
             message = messages.getString(code);
         } 
         catch (Exception ex) {
-        	SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
-		              "getMessage", "code [" + code + "] not found ");
+        	logger.warn("code [" + code + "] not found ", ex);
         } 
         return message;
     } // public String getMessage(String code)
@@ -278,48 +229,70 @@ public class PortletUtilities {
 		 * @return locale for message resolution
 		 */
 		public static Locale getLocaleForMessage() {
-			String portalLang = null;
-			 try {
-			 	// get the locale and the language of the portal
-			 	Locale portalLocale =  PortletAccess.getPortalLocale();
+			logger.info("IN");
+			
+			Locale locale = null;
+			Locale portalLocale;
+			 
+			
+			try {
+			 	portalLocale =  PortletAccess.getPortalLocale();
 			 	if (portalLocale == null) {
-		        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
-				                        "getLocaleForMessage", 
-				                        "Portal locale not found by PortletAccess.getPortalLocale() method!! " +
-				              		    "May be there is not a portlet request");
+		        	logger.error("Portal locale not found by PortletAccess.getPortalLocale() method");
 			 	} else {
-			 		portalLang = portalLocale.getLanguage();
+			 		logger.error("Portal locale read succesfully: [" +  portalLocale.getLanguage() + "," + portalLocale.getCountry() + "]");
 			 	}
-				// Locale portalLocale = (Locale)portletRequest.getPortletSession().getAttribute("LOCALE");
+			 	
+			 	if( isLocaleSupported(portalLocale) ) {
+			 		logger.error("Portal locale [" +  portalLocale.getLanguage() + "," + portalLocale.getCountry() + "] is supported by SpagoBI");
+			 		locale = portalLocale; 
+			 	} else {
+			 		logger.error("Portal locale [" +  portalLocale.getLanguage() + "," + portalLocale.getCountry() + "] is not supported by SpagoBI");
+			 		locale = getDefaultLocale();
+			 		logger.error("Default locale [" +  locale.getLanguage() + "," + locale.getCountry() + "] will be used");
+			 	}
+			 	
 			} catch (Exception e) {
-	        	SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, "SpagoBIMessageTag", 
-			                        "getLocaleForMessage", "Error while getting portal locale", e);
+				logger.error("Error while getting portal locale", e);
 			}
-		 	// get the configuration sourceBean/language code/country code of the default language
-		 	SourceBean defaultLangSB = (SourceBean)ConfigSingleton.getInstance()
-		 	                           .getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
-		 	                           		                           "default", "true");
-		 	String defaultLang = (String)defaultLangSB.getAttribute("language");
-		 	String defaultCountry = (String)defaultLangSB.getAttribute("country");
-		 	// try to get the configuration sourceBean of the language of the portal, if a portal language was found
-		 	SourceBean portalLangSB = null;
-		 	if (portalLang != null) {
-			 	portalLangSB = (SourceBean)ConfigSingleton.getInstance()
-			 			.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
-	                                              "language", portalLang);
-		 	}
-		 	// if the portal language as no configuration sourceBean use the default language
-		 	Locale locale = null;
-		 	if(portalLangSB!=null) {
-		 		String lang = (String)portalLangSB.getAttribute("language");
-			 	String country = (String)portalLangSB.getAttribute("country");
-			 	locale = new Locale(lang, country);
-		 	} else {
-		 		locale = new Locale(defaultLang, defaultCountry);
-		 	}
+						
+		 	logger.info("OUT");
+		 	
 		 	return locale;
 		}
 		 
+		private static Locale getDefaultLocale() {
+			Locale locale = null;	
+			ConfigSingleton spagobiConf;
+			SourceBean defaultLocaeSB;
+			String language;
+			String country;
+						
+			spagobiConf = ConfigSingleton.getInstance();
+			defaultLocaeSB = (SourceBean)spagobiConf.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", "default", "true");
+			language = (String)defaultLocaeSB.getAttribute("language");
+			country = (String)defaultLocaeSB.getAttribute("country");
+			locale = new Locale(language, country);
+			
+			return locale;
+		}
+		
+		private static boolean isLocaleSupported(Locale locale) {
+				
+			ConfigSingleton spagobiConf;
+			SourceBean defaultLocaeSB;
+			String country;
+			
+			if(locale == null) return false;
+			
+			spagobiConf = ConfigSingleton.getInstance();
+			defaultLocaeSB = (SourceBean)spagobiConf.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", "language", locale.getLanguage());
+			
+			return defaultLocaeSB != null;
+		}
+		
+		
+		
 	 
 	 /**
  	 * Gets the language code of the user portal language. If it's not possible to gather
@@ -351,18 +324,4 @@ public class PortletUtilities {
 			 String defaultLang = (String)defaultLangSB.getAttribute("language");
 		 	 return defaultLang;
 	    } 
-	 
-		 
-		 
-//		public static boolean isMultipartRequest() {
-//			boolean ismultipart = false;
-//			PortletRequest portletRequest = PortletUtilities.getPortletRequest();
-//			if (portletRequest instanceof ActionRequest) {
-//				ActionRequest actionRequest = (ActionRequest) portletRequest;
-//				if (PortletFileUpload.isMultipartContent(actionRequest)) {
-//					ismultipart = true;
-//				}
-//			}
-//			return ismultipart;
-//		}
 }

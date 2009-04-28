@@ -89,7 +89,7 @@ public class SbiGeoMapsDAOHibImpl extends AbstractHibernateDAO implements ISbiGe
 
 			if (tx != null)
 				tx.rollback();
-
+			
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 
 		} finally {			

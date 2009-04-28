@@ -44,6 +44,7 @@ public class UserDocumentsBrowserPortletStartAction extends PortletLoginAction {
 	private static Logger logger = Logger.getLogger(UserDocumentsBrowserPortletStartAction.class);
 	
 	public static final String LABEL_SUBTREE_NODE = "PATH_SUBTREE";
+	public static final String HEIGHT = "HEIGHT";
 	public static final String PORTLET = "PORTLET";
 	
 
@@ -56,14 +57,18 @@ public class UserDocumentsBrowserPortletStartAction extends PortletLoginAction {
 			
 			
 			String labelSubTreeNode = null;
+			String height = null;
 			
 			String channelType = getRequestContainer().getChannelType();			
 			if( PORTLET.equalsIgnoreCase(channelType) ) {
 				PortletRequest portReq = PortletUtilities.getPortletRequest();
 				PortletPreferences prefs = portReq.getPreferences();
 				labelSubTreeNode = (String)prefs.getValue(LABEL_SUBTREE_NODE, "");
+				height = (String)prefs.getValue(HEIGHT, "600");
 				if (labelSubTreeNode != null && !labelSubTreeNode.trim().equals("")) {
 					response.setAttribute("labelSubTreeNode", labelSubTreeNode);
+					response.setAttribute("height", height);
+					
 				}
 			} else {
 				DocumentsBrowserConfig config = DocumentsBrowserConfig.getInstance();

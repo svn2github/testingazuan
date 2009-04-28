@@ -60,7 +60,7 @@ import org.safehaus.uuid.UUIDGenerator;
  * There are methods to generate tree, configure, insert and modify elements.
  */
 public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
-	static private Logger logger = Logger.getLogger(ExecTreeHtmlGenerator.class);
+	
 	HttpServletRequest httpRequest = null;
 	RequestContainer reqCont = null;
 	protected IUrlBuilder urlBuilder = null;
@@ -77,6 +77,7 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 	protected String requestIdentity = null;
 	private String currTheme="";
 
+	static private Logger logger = Logger.getLogger(ExecTreeHtmlGenerator.class);
 	
 	/**
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.presentation.AdminTreeHtmlGenerator#makeJSFunctionForMenu(java.lang.StringBuffer)
@@ -302,12 +303,181 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 			htmlStream.append("	document.getElementById('viewOnlyTestDocument" + requestIdentity + "').style.display='inline';\n");
 			htmlStream.append("</script>\n");
 		}
+		
+		logger.debug("Generated HTML for tree: \n" + htmlStream.toString());
+		
 		logger.debug("OUT");
 		return htmlStream;
 	}
 
+	private void addRootItemForJSTree(StringBuffer htmlStream, LowFunctionality folder) throws EMFInternalError {
+		logger.info("IN");
+		
+		//String exec = msgBuilder.getMessage("SBISet.objects.captionExecute", "messages", httpRequest);
+		//String metadata = msgBuilder.getMessage("SBISet.objects.captionMetadata", "messages", httpRequest);
+		
+		String nameLabel = folder.getName();
+		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
+		Integer idFolder = folder.getId();		
+		String imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolder.gif", currTheme);
+		String imgFolderOp = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderopen.gif", currTheme);
+		boolean canExec = ObjectsAccessVerifier.canExec(idFolder, profile);
+		boolean canTest = ObjectsAccessVerifier.canTest(idFolder, profile);
+		
+		logger.info("Adding ROOT node [" + nameLabel + "] ...");
+		logger.debug("Node [" + nameLabel + "] id property is set to: " + idFolder);
+		logger.debug("Node [" + nameLabel + "] label property is set to: " + name);
+		logger.debug("Node [" + nameLabel + "] executable property is set to: " + canExec);
+		logger.debug("Node [" + nameLabel + "] testable property is set to: " + canTest);
+		
+		
+		htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'true');\n");
+		
+		List objects = folder.getBiObjects();
+		logger.debug("Node [" + nameLabel + "] contains [" + objects.size() + "] document(s)");
+		logger.info("Adding contained dcuments ...");
+		for (Iterator it = objects.iterator(); it.hasNext(); ) {			
+			BIObject obj = (BIObject) it.next();
+			Integer idObj = obj.getId();
+			String stateObj = obj.getStateCode();
+			Integer visibleObj = obj.getVisible();
+			
+			logger.info("Adding document node [" + obj.getName() + "] ...");
+			logger.debug("Node [" + obj.getName() + "] id property is set to: " + idObj);	
+			logger.debug("Node [" + obj.getName() + "] state property is set to: " + stateObj);	
+			logger.debug("Node [" + obj.getName() + "] visible property is set to: " + (visibleObj.intValue() != 0));
+			
+			//insert the correct image for each BI Object type
+			String biObjType = obj.getBiObjectTypeCode();
+			String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
+			String userIcon = urlBuilder.getResourceLinkByTheme(httpRequest, imgUrl, currTheme);
+			String biObjState = obj.getStateCode();
+			String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
+			String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl, currTheme);
+			String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
+			
+			Map execUrlPars = new HashMap();
+			execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
+			execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
+			
+			
+			
+			
+			if (visibleObj != null && visibleObj.intValue() == 0 && (stateObj.equalsIgnoreCase("REL") || stateObj.equalsIgnoreCase("TEST"))) {
+				logger.debug("Node [" + obj.getName() + "] is not accessible by user [" + profile.getUserUniqueIdentifier() + "]");
+			} else {
+				logger.debug("Node [" + obj.getName() + "] is accessible by user [" + profile.getUserUniqueIdentifier() + "]");
+				
+				if (canTest && (stateObj.equals("TEST"))) {
+					logger.debug("Node [" + obj.getName() + "] will be accessed by user [" + profile.getUserUniqueIdentifier() + "] in TEST mode");
+					thereIsOneOrMoreObjectsInTestState = true;
+					String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
+					htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
+				} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (stateObj.equals("REL")) && canExec) {
+					logger.debug("Node [" + obj.getName() + "] will be accessed by user [" + profile.getUserUniqueIdentifier() + "] in EXEC mode");
+					
+					boolean profileAttrsOk = ObjectsAccessVerifier.checkProfileVisibility(obj, profile);
+					if (profileAttrsOk) {
+						String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
+						String localizedName=msgBuilder.getUserMessage(obj.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, httpRequest);
+						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + localizedName + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
+					} else {
+						logger.debug("NOT visible " + obj.getName() + " because user profile attribute constraint are not satisfied");
+					}
+				}
+			}
+			
+			logger.info("... document node [" + obj.getName() + "] added succesfully");
+		}
+		
+		logger.info("... contained dcuments added succesfully");
+		
+		
+		logger.info("OUT");
+	}
+	
+	private void addFolderItemForJSTree(StringBuffer htmlStream, LowFunctionality folder) throws EMFInternalError {
+		logger.info("IN");
+		
+		String exec = msgBuilder.getMessage("SBISet.objects.captionExecute", "messages", httpRequest);
+		String metadata = msgBuilder.getMessage("SBISet.objects.captionMetadata", "messages", httpRequest);
+		
+		String nameLabel = folder.getName();
+		String name = msgBuilder.getMessage(nameLabel, "messages", httpRequest);
+		Integer idFolder = folder.getId();
+		Integer parentId = folder.getParentId();
+		
+		String imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolder.gif", currTheme);
+		String imgFolderOp = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderopen.gif", currTheme);
+		boolean canExec = ObjectsAccessVerifier.canExec(idFolder, profile);
+		boolean canTest = ObjectsAccessVerifier.canTest(idFolder, profile);
+		
+		logger.info("Adding FOLDER node [" + nameLabel + "] ...");
+		logger.debug("Node [" + nameLabel + "] id property is set to: " + idFolder);
+		logger.debug("Node [" + nameLabel + "] label property is set to: " + name);
+		logger.debug("Node [" + nameLabel + "] executable property is set to: " + canExec);
+		logger.debug("Node [" + nameLabel + "] testable property is set to: " + canTest);
+		
+		if (canTest || canExec) {
+			logger.debug("Node [" + nameLabel + "] is accessible by user [" + profile.getUserUniqueIdentifier() + "]");
+			
+			htmlStream.append("	" + treeName + ".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
+			List objects = folder.getBiObjects();
+			logger.debug("Node [" + nameLabel + "] contains [" + objects.size() + "] document(s)");
+			logger.info("Adding contained dcuments ...");
+			for (Iterator it = objects.iterator(); it.hasNext(); ) {
+				BIObject obj = (BIObject) it.next();
+				Integer idObj = obj.getId();
+				String stateObj = obj.getStateCode();
+				Integer visibleObj = obj.getVisible();
+				//insert the correct image for each BI Object type
+				String biObjType = obj.getBiObjectTypeCode();
+				String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
+				String userIcon = urlBuilder.getResourceLinkByTheme(httpRequest, imgUrl, currTheme);
+				String biObjState = obj.getStateCode();
+				String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
+				String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl, currTheme);
+				String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
+				
+				logger.info("Adding document node [" + obj.getName() + "] ...");
+				logger.debug("Node [" + obj.getName() + "] id property is set to: " + idObj);	
+				logger.debug("Node [" + obj.getName() + "] state property is set to: " + stateObj);	
+				logger.debug("Node [" + obj.getName() + "] visible property is set to: " + (visibleObj.intValue() != 0));
+				
+				if (visibleObj != null && visibleObj.intValue() == 0 && (stateObj.equalsIgnoreCase("REL") || stateObj.equalsIgnoreCase("TEST"))) {
+					logger.debug("Node [" + obj.getName() + "] is not accessible by user [" + profile.getUserUniqueIdentifier() + "]");
+				} else {
+					logger.debug("Node [" + obj.getName() + "] is accessible by user [" + profile.getUserUniqueIdentifier() + "]");
+					String prog = idObj.toString();
+					if ((stateObj.equals("TEST")) && canTest && profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
+						thereIsOneOrMoreObjectsInTestState = true;
+
+						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/editTemplate.jpg", currTheme) + "\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
+						//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event,\\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\',\\'" +createMoveDownObjectLink(idObj) + "\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
+					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (stateObj.equals("REL"))&& canExec) {
+							
+						//Nuovo albero con Icona dei metadati
+						boolean profileAttrsOk = ObjectsAccessVerifier.checkProfileVisibility(obj, profile);
+						if (profileAttrsOk) {
+							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/editTemplate.jpg", currTheme) + "\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
+						} else {
+							logger.debug("NOT visible " + obj.getName() + " because user profile attribute constraint are not satisfied");
+						}
+						
+					}
+				}
+				logger.info("... document node [" + obj.getName() + "] added succesfully");
+			}
+			
+			logger.info("... contained dcuments added succesfully");
+		}
+		logger.info("OUT");
+	}
+	
+	
 	private void addItemForJSTree(StringBuffer htmlStream, LowFunctionality folder, boolean isRoot, boolean isUserFunct) throws EMFInternalError {
-		logger.debug("IN");
+		logger.info("IN");
 		String exec = msgBuilder.getMessage("SBISet.objects.captionExecute", "messages", httpRequest);
 		String metadata = msgBuilder.getMessage("SBISet.objects.captionMetadata", "messages", httpRequest);
 		
@@ -323,53 +493,8 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 			
 				
 		if (isRoot) {
-			htmlStream.append(treeName + ".add(" + idFolder + ", " + dTreeRootId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', 'true');\n");
-			//anto
-			List objects = folder.getBiObjects();
-			for (Iterator it = objects.iterator(); it.hasNext(); ) {
-				BIObject obj = (BIObject) it.next();
-				Integer idObj = obj.getId();
-				String stateObj = obj.getStateCode();
-				Integer visibleObj = obj.getVisible();
-				//insert the correct image for each BI Object type
-				String biObjType = obj.getBiObjectTypeCode();
-				String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
-				String userIcon = urlBuilder.getResourceLinkByTheme(httpRequest, imgUrl, currTheme);
-				String biObjState = obj.getStateCode();
-				String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
-				String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl, currTheme);
-				String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
-				
-				Map execUrlPars = new HashMap();
-				execUrlPars.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-				execUrlPars.put(ObjectsTreeConstants.OBJECT_ID, idObj.toString());
-				execUrlPars.put(SpagoBIConstants.MESSAGEDET, ObjectsTreeConstants.EXEC_PHASE_CREATE_PAGE);
-				
-				
-				
-				logger.debug(obj.getName() + ": " + stateObj + " - " + visibleObj);
-				if (visibleObj != null && visibleObj.intValue() == 0 && (stateObj.equalsIgnoreCase("REL") || stateObj.equalsIgnoreCase("TEST"))) {
-					logger.debug("NOT visible " + obj.getName());
-				} else {
-					if (canTest && (stateObj.equals("TEST"))) {
-						thereIsOneOrMoreObjectsInTestState = true;
-						String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
-						htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
-					} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (stateObj.equals("REL")) && canExec) {
-						boolean profileAttrsOk = ObjectsAccessVerifier.checkProfileVisibility(obj, profile);
-						if (profileAttrsOk) {
-							String execUrl = urlBuilder.getUrl(httpRequest, execUrlPars);
-							String localizedName=msgBuilder.getUserMessage(obj.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, httpRequest);
-							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + localizedName + "', '" + execUrl + "', '', '', '" + userIcon + "', '', '', '' );\n");
-						} else {
-							logger.debug("NOT visible " + obj.getName() + " because user profile attribute constraint are not satisfied");
-						}
-					}
-				}
-			}
-		} 
-	
-		else if (isUserFunct) {
+			addRootItemForJSTree(htmlStream, folder);
+		} else if (isUserFunct) {
 			logger.debug("User Personal Folder");
 			imgFolder = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderuser.gif", currTheme);
 			imgFolderOp = urlBuilder.getResourceLinkByTheme(httpRequest, "/img/treefolderopenuser.gif", currTheme);
@@ -401,55 +526,10 @@ public class ExecTreeHtmlGenerator implements ITreeHtmlGenerator {
 				String prog = idObj.toString();
 				htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'"+execUrl+"\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'"+createEraseDocumentLink(idObj,idFolder)+"\\', \\'\\', \\'\\',\\'\\', \\'\\')' );\n");
 			}
-		} 
-	
-		else {
-			if (canTest|| canExec) {
-				htmlStream.append("	" + treeName + ".add(" + idFolder + ", " + parentId + ",'" + name + "', '', '', '', '" + imgFolder + "', '" + imgFolderOp + "', '', '');\n");
-				List objects = folder.getBiObjects();
-				for (Iterator it = objects.iterator(); it.hasNext(); ) {
-					BIObject obj = (BIObject) it.next();
-					Integer idObj = obj.getId();
-					String stateObj = obj.getStateCode();
-					Integer visibleObj = obj.getVisible();
-					//insert the correct image for each BI Object type
-					String biObjType = obj.getBiObjectTypeCode();
-					String imgUrl = "/img/objecticon_"+ biObjType+ ".png";
-					String userIcon = urlBuilder.getResourceLinkByTheme(httpRequest, imgUrl, currTheme);
-					String biObjState = obj.getStateCode();
-					String stateImgUrl = "/img/stateicon_"+ biObjState+ ".png";
-					String stateIcon = urlBuilder.getResourceLinkByTheme(httpRequest, stateImgUrl, currTheme);
-					String onlyTestObjectsView = (String)_serviceRequest.getAttribute("view_only_test_objects");
-					
-					logger.debug(obj.getName() + ": " + stateObj + " - " + visibleObj);
-					if (visibleObj != null && visibleObj.intValue() == 0 && (stateObj.equalsIgnoreCase("REL") || stateObj.equalsIgnoreCase("TEST"))) {
-						logger.debug("NOT visible " + obj.getName());
-					} else {
-						String prog = idObj.toString();
-						logger.debug("VISIBLE " + obj.getName());
-						if ((stateObj.equals("TEST")) && canTest && profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)) {
-							thereIsOneOrMoreObjectsInTestState = true;
-
-							htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/editTemplate.jpg", currTheme) + "\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
-							//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event,\\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\',\\'" +createMoveDownObjectLink(idObj) + "\\', \\'" +createMoveUpObjectLink(idObj) + "\\')' );\n");
-						} else if(!"true".equalsIgnoreCase(onlyTestObjectsView) && (stateObj.equals("REL"))&& canExec) {
-								
-							//Vecchio Albero con menu
-							//htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",'<img src=\\'" + stateIcon + "\\' /> " + obj.getName() + "', 'javascript:linkEmpty()', '', '', '" + userIcon + "', '', '', 'menu" + requestIdentity + "("+prog+", event, \\'" + createExecuteObjectLink(idObj) + "\\',\\'" + createMetadataObjectLink(idObj) + "\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
-							//Nuovo albero con Icona dei metadati
-							boolean profileAttrsOk = ObjectsAccessVerifier.checkProfileVisibility(obj, profile);
-							if (profileAttrsOk) {
-								htmlStream.append(treeName + ".add(" + dTreeObjects-- + ", " + idFolder + ",' <a title=\\'" +exec+"\\' href=\""+createExecuteObjectLink(idObj)+"\">" + obj.getName() +"</a><a title=\""+metadata+"\" href=\"javascript:makePopup(\\'"+prog+"\\',\\'"+createMetadataObjectLink(idObj)+"\\')\" > <img src=\\'" + urlBuilder.getResourceLinkByTheme(httpRequest, "/img/editTemplate.jpg", currTheme) + "\\' /></a>', '', '', '', '" + userIcon + "', '','', 'menu" + requestIdentity + "("+prog+", event, \\'\\',\\'\\', \\'\\', \\'\\', \\'\\',\\'\\',\\'\\')' );\n");
-							} else {
-								logger.debug("NOT visible " + obj.getName() + " because user profile attribute constraint are not satisfied");
-							}
-							
-						}
-					}
-				}
-			}
+		} else {
+			addFolderItemForJSTree(htmlStream, folder);
 		}
-		logger.debug("OUT");
+		logger.info("OUT");
 	}
 
 	/* (non-Javadoc)

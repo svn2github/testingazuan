@@ -32,6 +32,7 @@ import it.eng.spago.message.MessageBundle;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -40,6 +41,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.axis.utils.StringUtils;
 import org.apache.log4j.Logger;
 /**
  * The implementation of IMessageBuilder   
@@ -344,25 +346,37 @@ public class MessageBuilder implements IMessageBuilder {
 	}
 
 	private boolean isValidLocale(Locale locale) {
-		logger.debug("IN");
+		logger.info("IN");
+		
+		ConfigSingleton spagobiConfig;
+		Object localeConf;
+		String language;
+		String country;
+		
+				
+		if (locale == null) return false;
+		
 		try {
-			if (locale == null) return false;
-			// check if the Locale at input is configured
-			String language = locale.getLanguage();
-			Object o = ConfigSingleton.getInstance().getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
-					"language", language);
-			if (o != null) {
-				if (o instanceof SourceBean) {
-					SourceBean langSB = (SourceBean) o;
-					String country = (String) langSB.getAttribute("country");
-					if (locale.getCountry().equalsIgnoreCase(country)) return true;
-					else return false;
-				} else if (o instanceof List) {
-					List list = (List) o;
+			language = locale.getLanguage();
+			
+			spagobiConfig = ConfigSingleton.getInstance();
+			localeConf = spagobiConfig.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", "language", language);
+			
+			if(localeConf == null) return false;
+			
+			if(StringUtilities.isEmpty( locale.getCountry() )) {
+				return true;
+			} else {
+				if (localeConf instanceof SourceBean) {
+					SourceBean localeSB = (SourceBean) localeConf;
+					country = (String) localeSB.getAttribute("country");
+					return locale.getCountry().equalsIgnoreCase(country);
+				} else if (localeConf instanceof List) {
+					List list = (List) localeConf;
 					Iterator it = list.iterator();
 					while (it.hasNext()) {
 						SourceBean langSB = (SourceBean) it.next();
-						String country = (String) langSB.getAttribute("country");
+						country = (String) langSB.getAttribute("country");
 						if (locale.getCountry().equalsIgnoreCase(country)) return true;
 					}
 					return false;
@@ -370,9 +384,9 @@ public class MessageBuilder implements IMessageBuilder {
 					logger.error("Invalid configuration.");
 					return false;
 				}
-			} else return false;
+			}
 		} finally {
-			logger.debug("OUT");
+			logger.info("OUT");
 		}
 	}
 

@@ -24,7 +24,9 @@ package it.eng.spagobi.mapcatalogue.bo.dao.hibernate;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
+import it.eng.spagobi.security.ExoUserProfileImpl;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 
@@ -35,6 +37,8 @@ import org.hibernate.Session;
  * @author Zoppello
  */
 public class AbstractHibernateDAO {
+	
+	static private Logger logger = Logger.getLogger(AbstractHibernateDAO.class);
 	
 	/**
 	 * Gets tre current session.
@@ -51,9 +55,6 @@ public class AbstractHibernateDAO {
 	 * @param t The input throwable object
 	 */
 	public void logException(Throwable t){
-		SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, 
-				            t.getClass().getName(), 
-				            "", 
-				            t.getMessage());
+		logger.error("ERROR", t);
 	}
 }

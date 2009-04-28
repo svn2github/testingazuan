@@ -591,6 +591,12 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         			the path of the subTree -->
         		<value></value>
         	</preference>
+        	
+        	<preference> 
+        		<name>HEIGHT</name>
+        		<value></value>
+        	</preference>
+        	
       </portlet-preferences>
     </portlet>
   

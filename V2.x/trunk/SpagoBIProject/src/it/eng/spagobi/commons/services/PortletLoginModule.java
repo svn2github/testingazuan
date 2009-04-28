@@ -31,6 +31,7 @@ import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.module.AbstractModule;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -66,18 +67,25 @@ public class PortletLoginModule extends AbstractModule {
 	public void service(SourceBean request, SourceBean response) throws Exception {
 	        logger.debug("IN");
 		PortletRequest portletRequest = PortletUtilities.getPortletRequest(); 
-		Principal principal = portletRequest.getUserPrincipal();		
-		IEngUserProfile profile = UserUtilities.getUserProfile(principal.getName());
-		/*
-		ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-	        try {
-	            SpagoBIUserProfile user= supplier.createUserProfile(principal.getName());
-	            profile=new UserProfile(user);
-	        } catch (Exception e) {
-	            logger.error("Reading user information... ERROR");
-	            throw new SecurityException("Reading user information... ERROR",e);
-	        }
-		*/
+		Principal principal = portletRequest.getUserPrincipal();	
+		String userName;
+		if(principal != null) {
+			userName = principal.getName();
+		} else {
+			logger.debug("Principal not found on request. Looking for a default user configuration.... ");
+			SourceBean defatulUserSB = (SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.DEFAULT_USER");
+			if(defatulUserSB != null) {
+				userName = defatulUserSB.getCharacters();
+				logger.debug("Default user configuration found = [" + userName + "]");
+			} else 	{
+				logger.error("No default user configuration found");
+				throw new Exception("Cannot identify user");
+			}
+		}		
+		IEngUserProfile profile = UserUtilities.getUserProfile(userName);
+		
+		
+		
 		logger.debug("userProfile created " + profile);
 		logger.debug("Attributes name of the user profile: "+ profile.getUserAttributeNames());
 		logger.debug("Functionalities of the user profile: "+ profile.getFunctionalities());

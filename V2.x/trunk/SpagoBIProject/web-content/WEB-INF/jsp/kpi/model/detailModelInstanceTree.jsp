@@ -502,7 +502,7 @@ value='<%= endDateS %>'/> </div>
 	}
 	%>
 	<option value="<%=threshold.getId()%>"
-		label="[<%=threshold.getThresholdCode()%>] <%=threshold.getThresholdName()%>" <%=selected%>>[<%=threshold.getThresholdCode()%>] <%=threshold.getThresholdName()%>
+		label="[<%=threshold.getCode()%>] <%=threshold.getName()%>" <%=selected%>>[<%=threshold.getCode()%>] <%=threshold.getName()%>
 	</option>
 	<%
 	}

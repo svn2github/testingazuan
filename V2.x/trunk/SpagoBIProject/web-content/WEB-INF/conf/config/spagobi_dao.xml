@@ -46,6 +46,10 @@
 		<DAO name="ThresholdDAO" implementation="it.eng.spagobi.kpi.threshold.dao.ThresholdDAOImpl"/>
 		<DAO name="ModelResourceDAO" implementation="it.eng.spagobi.kpi.model.dao.ModelResourceDAOImpl" />
 		<DAO name="ThresholdValueDAO" implementation="it.eng.spagobi.kpi.threshold.dao.ThresholdValueDAOImpl" />
+		<DAO name="MeasureUnitDAO" implementation="it.eng.spagobi.kpi.config.dao.MeasureUnitDAOImpl" />
+		<DAO name="KpiInstanceDAO" implementation="it.eng.spagobi.kpi.config.dao.KpiInstanceDAOImpl" />
+		<DAO name="ResourceDAO" implementation="it.eng.spagobi.kpi.model.dao.ResourceDAOImpl" />
+		<DAO name="KpiInstPeriodDAO" implementation="it.eng.spagobi.kpi.config.dao.KpiInstPeriodDAOImpl" />
 	 </DAO-CONF>     
      
      <!-- ********************* END DAO CONFIGURATION ************************ -->

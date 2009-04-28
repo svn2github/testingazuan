@@ -37,6 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
 <%@page import="it.eng.spagobi.monitoring.dao.AuditManager"%>
 <%@page import="it.eng.spagobi.kpi.threshold.bo.Threshold"%>
+<%@page import="it.eng.spagobi.kpi.threshold.bo.ThresholdValue"%>
 <%@page import="java.awt.Color"%>
  
 
@@ -208,14 +209,14 @@ Ext.onReady(function(){
 		</tr>	
 		
 		<% 
-		List thresholds = (List)aServiceResponse.getAttribute("KPI_THRESHOLDS");
-		if (thresholds!=null && !thresholds.isEmpty()){
-			Iterator it = thresholds.iterator();
+		List thresholdValues = (List)aServiceResponse.getAttribute("KPI_THRESHOLDS");
+		if (thresholdValues!=null && !thresholdValues.isEmpty()){
+			Iterator it = thresholdValues.iterator();
 			
 			while(it.hasNext()){
-				Threshold t =(Threshold)it.next();
+				ThresholdValue t =(ThresholdValue)it.next();
 				
-				Color c =t.getColor();
+				Color c =t.getColour();
 				String color = "rgb("+c.getRed()+", "+c.getGreen()+", "+c.getBlue()+")" ;
 				Double min = t.getMinValue();
 				Double max = t.getMaxValue();
@@ -227,7 +228,7 @@ Ext.onReady(function(){
 				}else if (min==null && max!=null){
 					minMax = max.toString();
 				}
-				String type = t.getType();
+				String type = t.getThresholdType();
 				String label = "Threshold " + type+ " "+ t.getLabel();
 				%>
 		<!-- LANGUAGE -->

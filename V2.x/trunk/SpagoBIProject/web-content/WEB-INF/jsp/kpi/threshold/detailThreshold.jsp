@@ -94,12 +94,12 @@
 		if (threshold != null) {
 			if(threshold.getId()!=null)
 				id = threshold.getId().toString();
-			if(threshold.getThresholdName() != null)
-				name = threshold.getThresholdName();
-			if(threshold.getThresholdCode() != null)
-				code = threshold.getThresholdCode();
-			if(threshold.getThresholdDescription() != null)
-				description = threshold.getThresholdDescription();
+			if(threshold.getName() != null)
+				name = threshold.getName();
+			if(threshold.getCode() != null)
+				code = threshold.getCode();
+			if(threshold.getDescription() != null)
+				description = threshold.getDescription();
 			if(threshold.getThresholdTypeId()!= null)
 				threshold_type_id = threshold.getThresholdTypeId();
 			else

@@ -272,7 +272,7 @@
 	while (thresholdsIt.hasNext()){
 		Threshold threshold = (Threshold)thresholdsIt.next();
 		String selected = "";
-		String label = "[" + threshold.getThresholdCode() + "] "+ threshold.getThresholdName();
+		String label = "[" + threshold.getCode() + "] "+ threshold.getName();
 		
 		if (threshold_id != null && threshold_id.equals(threshold.getId())) {
 			selected = "selected='selected'";

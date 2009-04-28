@@ -125,7 +125,7 @@
 				maxValue = thresholdValue.getMaxValue().toString();
 			if(thresholdValue.getLabel()!=null)
 				label = thresholdValue.getLabel();
-			if(thresholdValue.getColourString()!=null)
+			if(thresholdValue.getColour()!=null)
 				colour = thresholdValue.getColourString();
 			if(thresholdValue.getPosition()!=null)
 				position = thresholdValue.getPosition().toString();
@@ -133,8 +133,6 @@
 				threshold_id = thresholdValue.getThresholdId().toString();
 			if (thresholdValue.getSeverityId() != null)
 				severity_id = thresholdValue.getSeverityId();
-			if(thresholdValue.getType() != null)
-				type = thresholdValue.getType();
 		}
 	}
 

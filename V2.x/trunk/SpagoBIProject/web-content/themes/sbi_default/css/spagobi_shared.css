@@ -618,7 +618,7 @@ IMG {
 
 .toggleKPI{
       padding-left:10px;
-      background-image: url(/SpagoBI/img/down16.gif);
+      background-image: url(/SpagoBI/themes/sbi_default/img/down16.gif);
       background-repeat: no-repeat;
       cursor: pointer;
     }

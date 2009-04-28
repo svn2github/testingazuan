@@ -231,29 +231,14 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		try {
 			IEngUserProfile profile = getUserProfile();
 			ILowFunctionalityDAO functionalityDAO = DAOFactory.getLowFunctionalityDAO();
-			boolean canSeeFunctionality;
 			LowFunctionality initialFunctionality = null;
 			if (initialPath == null || initialPath.trim().equals("")) {
 				// loading root functionality, everybody can see it
 				initialFunctionality = functionalityDAO.loadRootLowFunctionality(false);
-				canSeeFunctionality = true;
 			} else {
 				initialFunctionality = functionalityDAO.loadLowFunctionalityByPath(initialPath, false);
-				// if user is administrator, he can see all functionalities
-				if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
-					canSeeFunctionality = true;
-				} else {
-					// if user can exec or dev or test on functionality, he can see it, otherwise he cannot see it
-					if (ObjectsAccessVerifier.canExec(initialFunctionality.getId(), profile) ||
-							ObjectsAccessVerifier.canTest(initialFunctionality.getId(), profile) ||
-							ObjectsAccessVerifier.canDev(initialFunctionality.getId(), profile)) {
-						canSeeFunctionality = true;
-					} else {
-						canSeeFunctionality = false;
-					}
-				}
 			}
-			
+			boolean canSeeFunctionality = ObjectsAccessVerifier.canSee(initialFunctionality, profile);
 			if (canSeeFunctionality) {
 				toReturn = new SDKObjectsConverter().fromLowFunctionalityToSDKFunctionality(initialFunctionality);
 				setFunctionalityContent(toReturn);
@@ -285,24 +270,12 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		containedDocuments = (SDKDocument[]) visibleDocumentsList.toArray(containedDocuments);
 		parentFunctionality.setContainedDocuments(containedDocuments);
 		
+		// loading contained functionalities
 		List containedFunctionalitiesList = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(parentFunctionality.getId(), false);
 		List visibleFunctionalitiesList = new ArrayList();
 		for (Iterator it = containedFunctionalitiesList.iterator(); it.hasNext();) {
 			LowFunctionality lowFunctionality = (LowFunctionality) it.next();
-			boolean canSeeFunctionality;
-			// if user is administrator, he can see all functionalities
-			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
-				canSeeFunctionality = true;
-			} else {
-				// if user can exec or dev or test on functionality, he can see it, otherwise he cannot see it
-				if (ObjectsAccessVerifier.canExec(lowFunctionality.getId(), profile) ||
-						ObjectsAccessVerifier.canTest(lowFunctionality.getId(), profile) ||
-						ObjectsAccessVerifier.canDev(lowFunctionality.getId(), profile)) {
-					canSeeFunctionality = true;
-				} else {
-					canSeeFunctionality = false;
-				}
-			}
+			boolean canSeeFunctionality = ObjectsAccessVerifier.canSee(lowFunctionality, profile);
 			if (canSeeFunctionality) {
 				SDKFunctionality childFunctionality = new SDKObjectsConverter().fromLowFunctionalityToSDKFunctionality(lowFunctionality);
 				visibleFunctionalitiesList.add(childFunctionality);

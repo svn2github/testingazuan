@@ -649,7 +649,53 @@ public class ObjectsAccessVerifier {
 	logger.debug("OUT.canSee=" + canSee);
 	return canSee;
     }
+    
 
+    /**
+     * Controls if the user can see the LowFunctionality.
+     * The root LowFunctionality is visible by everybody.
+     * The administrator can see all LowFunctionalities.
+     * Other users can see the LowFunctionality only if they have 
+     * at least one of the following permission:
+     * - they can develop on that folder;
+     * - they can test on that folder;
+     * - they can execute on that folder.
+     * 
+     * @param lowFunctionality
+     *                The LowFunctionality
+     * @param profile
+     *                user profile
+     * 
+     * @return true if the user can see the specified lowFunctionality, false otherwise
+     * 
+     * @throws EMFInternalError
+     *                 the EMF internal error
+     */
+    public static boolean canSee(LowFunctionality lowFunctionality, IEngUserProfile profile) throws EMFInternalError {
+    	boolean canSee = false;
+    	logger.debug("IN: lowFunctionality path = [" + lowFunctionality.getPath() + "]; userId = [" + ((UserProfile) profile).getUserId() + "]");
+    	// if it is root folder, anybody can see it
+    	if (lowFunctionality.getParentId() == null) {
+    		canSee = true;
+    	} else {
+			// if user is administrator, he can see all functionalities
+			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+				canSee = true;
+			} else {
+				// if user can exec or dev or test on functionality, he can see it, otherwise he cannot see it
+				if (ObjectsAccessVerifier.canExec(lowFunctionality.getId(), profile) ||
+						ObjectsAccessVerifier.canTest(lowFunctionality.getId(), profile) ||
+						ObjectsAccessVerifier.canDev(lowFunctionality.getId(), profile)) {
+					canSee = true;
+				} else {
+					canSee = false;
+				}
+			}
+		}
+    	logger.debug("OUT.canSee=" + canSee);
+    	return canSee;
+    }
+    
     /**
      * Checks if the document in input has profiled visibility constraints. If it is the case, checks if the user in input has 
      * suitable profile attributes.

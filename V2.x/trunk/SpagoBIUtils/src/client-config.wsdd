@@ -54,6 +54,23 @@
   <arrayMapping innerType="ns24:SDKFunctionality" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKFunctionality[]" qname="ns23:ArrayOf_tns2_SDKFunctionality" xmlns:ns23="urn:spagobisdkdocuments" xmlns:ns24="http://bo.documents.sdk.spagobi.eng.it"/>
   <arrayMapping innerType="ns26:SDKConstraint" languageSpecificType="java:it.eng.spagobi.sdk.documents.bo.SDKConstraint[]" qname="ns25:ArrayOf_tns2_SDKConstraint" xmlns:ns25="urn:spagobisdkdocuments" xmlns:ns26="http://bo.documents.sdk.spagobi.eng.it"/>
  </service>
+ <service name="EnginesService" provider="java:RPC">
+  <requestFlow>
+	<handler type="WSDoAllSender"/>
+  </requestFlow>
+  <parameter name="wsdlServicePort" value="EnginesService"/>
+  <parameter name="className" value="it.eng.spagobi.sdk.engines.stub.EnginesServiceSoapBindingStub"/>
+  <parameter name="typeMappingVersion" value="1.2"/>
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="wsdlServiceElement" value="EnginesServiceService"/>
+  <parameter name="wsdlTargetNamespace" value="urn:spagobisdkengines"/>
+  <parameter name="wsdlPortType" value="EnginesService"/>
+  <parameter name="scope" value="Application"/>
+  <parameter name="schemaUnqualified" value="http://exceptions.sdk.spagobi.eng.it,http://bo.engines.sdk.spagobi.eng.it,urn:spagobisdkengines"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns7:NotAllowedOperationException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.exceptions.NotAllowedOperationException" xmlns:ns7="http://exceptions.sdk.spagobi.eng.it"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns8:SDKEngine" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.engines.bo.SDKEngine" xmlns:ns8="http://bo.engines.sdk.spagobi.eng.it"/>
+  <arrayMapping innerType="ns10:SDKEngine" languageSpecificType="java:it.eng.spagobi.sdk.engines.bo.SDKEngine[]" qname="ns9:ArrayOf_tns2_SDKEngine" xmlns:ns10="http://bo.engines.sdk.spagobi.eng.it" xmlns:ns9="urn:spagobisdkengines"/>
+ </service>
  <transport name="java" pivot="java:org.apache.axis.transport.java.JavaSender"/>
  <transport name="http" pivot="java:org.apache.axis.transport.http.HTTPSender"/>
  <transport name="local" pivot="java:org.apache.axis.transport.local.LocalSender"/>

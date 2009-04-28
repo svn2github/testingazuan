@@ -32,11 +32,14 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
+import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.sdk.documents.bo.SDKConstraint;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
+import it.eng.spagobi.sdk.engines.bo.SDKEngine;
 
 public class SDKObjectsConverter {
 
@@ -128,6 +131,36 @@ public class SDKObjectsConverter {
 		functionality.setProg(lowFunctionality.getProg());
         logger.debug("OUT");
         return functionality;
+	}
+	
+	public SDKEngine fromEngineToSDKEngine(Engine engine) {
+		logger.debug("IN");
+		if (engine == null) {
+			logger.warn("Engine in input is null!!");
+			return null;
+		}
+		SDKEngine sdkEngine = null;
+		try {
+			sdkEngine = new SDKEngine();
+			sdkEngine.setId(engine.getId());
+			sdkEngine.setName(engine.getName());
+			sdkEngine.setLabel(engine.getLabel());
+			sdkEngine.setDescription(engine.getDescription());
+			Domain engineType = DAOFactory.getDomainDAO().loadDomainById(engine.getEngineTypeId());
+			sdkEngine.setEngineType(engineType.getValueCd());
+			Domain documentType = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
+			sdkEngine.setDocumentType(documentType.getValueCd());
+			sdkEngine.setClassName(engine.getClassName());
+			sdkEngine.setUrl(engine.getUrl());
+			sdkEngine.setDriverClassName(engine.getDriverName());
+		} catch (Exception e) {
+			logger.error("Error while converting Engine into SDKEngine.", e);
+			logger.debug("Returning null.");
+			return null;
+		} finally {
+			logger.debug("OUT");
+		}
+        return sdkEngine;
 	}
 	
 }

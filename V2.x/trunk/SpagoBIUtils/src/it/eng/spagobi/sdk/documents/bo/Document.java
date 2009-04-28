@@ -8,13 +8,11 @@
 package it.eng.spagobi.sdk.documents.bo;
 
 public class Document  implements java.io.Serializable {
+    private java.lang.Integer dataSetId;
+
     private java.lang.String description;
 
     private java.lang.Integer engineId;
-
-    private java.lang.String engineLabel;
-
-    private java.lang.String engineName;
 
     private java.lang.Integer id;
 
@@ -22,32 +20,50 @@ public class Document  implements java.io.Serializable {
 
     private java.lang.String name;
 
-    private java.lang.String type;
-
     private java.lang.String state;
+
+    private java.lang.String type;
 
     public Document() {
     }
 
     public Document(
+           java.lang.Integer dataSetId,
            java.lang.String description,
            java.lang.Integer engineId,
-           java.lang.String engineLabel,
-           java.lang.String engineName,
            java.lang.Integer id,
            java.lang.String label,
            java.lang.String name,
-           java.lang.String type,
-           java.lang.String state) {
+           java.lang.String state,
+           java.lang.String type) {
+           this.dataSetId = dataSetId;
            this.description = description;
            this.engineId = engineId;
-           this.engineLabel = engineLabel;
-           this.engineName = engineName;
            this.id = id;
            this.label = label;
            this.name = name;
-           this.type = type;
            this.state = state;
+           this.type = type;
+    }
+
+
+    /**
+     * Gets the dataSetId value for this Document.
+     * 
+     * @return dataSetId
+     */
+    public java.lang.Integer getDataSetId() {
+        return dataSetId;
+    }
+
+
+    /**
+     * Sets the dataSetId value for this Document.
+     * 
+     * @param dataSetId
+     */
+    public void setDataSetId(java.lang.Integer dataSetId) {
+        this.dataSetId = dataSetId;
     }
 
 
@@ -88,46 +104,6 @@ public class Document  implements java.io.Serializable {
      */
     public void setEngineId(java.lang.Integer engineId) {
         this.engineId = engineId;
-    }
-
-
-    /**
-     * Gets the engineLabel value for this Document.
-     * 
-     * @return engineLabel
-     */
-    public java.lang.String getEngineLabel() {
-        return engineLabel;
-    }
-
-
-    /**
-     * Sets the engineLabel value for this Document.
-     * 
-     * @param engineLabel
-     */
-    public void setEngineLabel(java.lang.String engineLabel) {
-        this.engineLabel = engineLabel;
-    }
-
-
-    /**
-     * Gets the engineName value for this Document.
-     * 
-     * @return engineName
-     */
-    public java.lang.String getEngineName() {
-        return engineName;
-    }
-
-
-    /**
-     * Sets the engineName value for this Document.
-     * 
-     * @param engineName
-     */
-    public void setEngineName(java.lang.String engineName) {
-        this.engineName = engineName;
     }
 
 
@@ -192,26 +168,6 @@ public class Document  implements java.io.Serializable {
 
 
     /**
-     * Gets the type value for this Document.
-     * 
-     * @return type
-     */
-    public java.lang.String getType() {
-        return type;
-    }
-
-
-    /**
-     * Sets the type value for this Document.
-     * 
-     * @param type
-     */
-    public void setType(java.lang.String type) {
-        this.type = type;
-    }
-
-
-    /**
      * Gets the state value for this Document.
      * 
      * @return state
@@ -230,6 +186,26 @@ public class Document  implements java.io.Serializable {
         this.state = state;
     }
 
+
+    /**
+     * Gets the type value for this Document.
+     * 
+     * @return type
+     */
+    public java.lang.String getType() {
+        return type;
+    }
+
+
+    /**
+     * Sets the type value for this Document.
+     * 
+     * @param type
+     */
+    public void setType(java.lang.String type) {
+        this.type = type;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof Document)) return false;
@@ -242,18 +218,15 @@ public class Document  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            ((this.dataSetId==null && other.getDataSetId()==null) || 
+             (this.dataSetId!=null &&
+              this.dataSetId.equals(other.getDataSetId()))) &&
             ((this.description==null && other.getDescription()==null) || 
              (this.description!=null &&
               this.description.equals(other.getDescription()))) &&
             ((this.engineId==null && other.getEngineId()==null) || 
              (this.engineId!=null &&
               this.engineId.equals(other.getEngineId()))) &&
-            ((this.engineLabel==null && other.getEngineLabel()==null) || 
-             (this.engineLabel!=null &&
-              this.engineLabel.equals(other.getEngineLabel()))) &&
-            ((this.engineName==null && other.getEngineName()==null) || 
-             (this.engineName!=null &&
-              this.engineName.equals(other.getEngineName()))) &&
             ((this.id==null && other.getId()==null) || 
              (this.id!=null &&
               this.id.equals(other.getId()))) &&
@@ -263,12 +236,12 @@ public class Document  implements java.io.Serializable {
             ((this.name==null && other.getName()==null) || 
              (this.name!=null &&
               this.name.equals(other.getName()))) &&
-            ((this.type==null && other.getType()==null) || 
-             (this.type!=null &&
-              this.type.equals(other.getType()))) &&
             ((this.state==null && other.getState()==null) || 
              (this.state!=null &&
-              this.state.equals(other.getState())));
+              this.state.equals(other.getState()))) &&
+            ((this.type==null && other.getType()==null) || 
+             (this.type!=null &&
+              this.type.equals(other.getType())));
         __equalsCalc = null;
         return _equals;
     }
@@ -280,17 +253,14 @@ public class Document  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getDataSetId() != null) {
+            _hashCode += getDataSetId().hashCode();
+        }
         if (getDescription() != null) {
             _hashCode += getDescription().hashCode();
         }
         if (getEngineId() != null) {
             _hashCode += getEngineId().hashCode();
-        }
-        if (getEngineLabel() != null) {
-            _hashCode += getEngineLabel().hashCode();
-        }
-        if (getEngineName() != null) {
-            _hashCode += getEngineName().hashCode();
         }
         if (getId() != null) {
             _hashCode += getId().hashCode();
@@ -301,11 +271,11 @@ public class Document  implements java.io.Serializable {
         if (getName() != null) {
             _hashCode += getName().hashCode();
         }
-        if (getType() != null) {
-            _hashCode += getType().hashCode();
-        }
         if (getState() != null) {
             _hashCode += getState().hashCode();
+        }
+        if (getType() != null) {
+            _hashCode += getType().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -318,6 +288,12 @@ public class Document  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Document"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("dataSetId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "dataSetId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("description");
         elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
@@ -327,18 +303,6 @@ public class Document  implements java.io.Serializable {
         elemField.setFieldName("engineId");
         elemField.setXmlName(new javax.xml.namespace.QName("", "engineId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("engineLabel");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "engineLabel"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
-        elemField.setNillable(true);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("engineName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "engineName"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
@@ -360,14 +324,14 @@ public class Document  implements java.io.Serializable {
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("type");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "type"));
+        elemField.setFieldName("state");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "state"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("state");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "state"));
+        elemField.setFieldName("type");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "type"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);

@@ -34,7 +34,7 @@ public interface DocumentsService {
 	
 	Document[] getDocumentsAsList(String type, String state, String folderPath);
 	
-	Functionality[] getDocumentsAsTree(String initialPath);
+	Functionality getDocumentsAsTree(String initialPath);
 	
 	String[] getCorrectRolesForExecution(Integer documentId) throws NonExecutableDocumentException;
 	

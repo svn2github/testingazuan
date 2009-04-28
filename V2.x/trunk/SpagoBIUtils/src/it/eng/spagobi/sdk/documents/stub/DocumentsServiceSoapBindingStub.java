@@ -42,8 +42,8 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.setName("getDocumentsAsTree");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_Functionality"));
-        oper.setReturnClass(it.eng.spagobi.sdk.documents.bo.Functionality[].class);
+        oper.setReturnType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Functionality"));
+        oper.setReturnClass(it.eng.spagobi.sdk.documents.bo.Functionality.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "getDocumentsAsTreeReturn"));
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
@@ -382,7 +382,7 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public it.eng.spagobi.sdk.documents.bo.Functionality[] getDocumentsAsTree(java.lang.String in0) throws java.rmi.RemoteException {
+    public it.eng.spagobi.sdk.documents.bo.Functionality getDocumentsAsTree(java.lang.String in0) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -403,9 +403,9 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
         else {
             extractAttachments(_call);
             try {
-                return (it.eng.spagobi.sdk.documents.bo.Functionality[]) _resp;
+                return (it.eng.spagobi.sdk.documents.bo.Functionality) _resp;
             } catch (java.lang.Exception _exception) {
-                return (it.eng.spagobi.sdk.documents.bo.Functionality[]) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.sdk.documents.bo.Functionality[].class);
+                return (it.eng.spagobi.sdk.documents.bo.Functionality) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.sdk.documents.bo.Functionality.class);
             }
         }
   } catch (org.apache.axis.AxisFault axisFaultException) {

@@ -61,7 +61,7 @@ public class DocumentsServiceProxy implements it.eng.spagobi.sdk.documents.stub.
     return documentsService.getDocumentsAsList(in0, in1, in2);
   }
   
-  public it.eng.spagobi.sdk.documents.bo.Functionality[] getDocumentsAsTree(java.lang.String in0) throws RemoteException {
+  public it.eng.spagobi.sdk.documents.bo.Functionality getDocumentsAsTree(java.lang.String in0) throws RemoteException {
     if (documentsService == null)
       _initDocumentsServiceProxy();
     return documentsService.getDocumentsAsTree(in0);

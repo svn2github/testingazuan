@@ -666,7 +666,7 @@ public class ParametersGeneratorTag extends TagSupport {
 
 		RequestContainer requestContainer=RequestContainer.getRequestContainer();
 		if(requestContainer!=null){
-			Locale locale=SpagoBIUtilities.getDefaultLocale();
+			Locale locale=GeneralUtilities.getDefaultLocale();
 			SessionContainer permSess=requestContainer.getSessionContainer().getPermanentContainer();
 			String lang=(String)permSess.getAttribute(SpagoBIConstants.AF_LANGUAGE);
 			String country=(String)permSess.getAttribute(SpagoBIConstants.AF_COUNTRY);
@@ -779,13 +779,13 @@ public class ParametersGeneratorTag extends TagSupport {
 
 		SessionContainer permSess= requestContainer.getSessionContainer().getPermanentContainer();
 
-		String format=SpagoBIUtilities.getLocaleDateFormat(permSess);
+		String format=GeneralUtilities.getLocaleDateFormat(permSess);
 
-		Locale currentLocale = SpagoBIUtilities.getCurrentLocale(this.requestContainer);
+		Locale currentLocale = GeneralUtilities.getCurrentLocale(this.requestContainer);
 		
 		logger.debug("DATE FORMAT:"+format);
 
-		String datePickerFormat = SpagoBIUtilities.getServerDateFormat();
+		String datePickerFormat = GeneralUtilities.getServerDateFormat();
 		
 		
 		Date d = new Date();
@@ -960,7 +960,7 @@ public class ParametersGeneratorTag extends TagSupport {
 				htmlStream.append("	} else {\n");
 				// date picker case
 				htmlStream.append("		datePickerDate = dojo.widget.byId('"+ aBIParam.getParameterUrlName()+requestIdentity+ "DatePicker').getDate();\n");
-				String serverDateFormat = SpagoBIUtilities.getServerDateFormat();
+				String serverDateFormat = GeneralUtilities.getServerDateFormat();
 				htmlStream.append("		value = dojo.date.format(datePickerDate, {datePattern: '" + serverDateFormat + "'});\n");
 				htmlStream.append("	}\n");
 				htmlStream.append("	temp = '&' + key + '=' + value;\n");

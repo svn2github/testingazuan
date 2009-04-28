@@ -20,7 +20,7 @@
 <%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@tag import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@tag import="it.eng.spago.base.SessionContainer"%>
-<%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
+<%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@tag import="it.eng.spago.util.StringUtils"%>
 <%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 

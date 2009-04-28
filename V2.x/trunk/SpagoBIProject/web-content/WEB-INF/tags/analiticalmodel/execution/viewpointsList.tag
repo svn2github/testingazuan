@@ -21,7 +21,7 @@
 <%@tag import="it.eng.spago.base.SourceBean"%>
 <%@tag import="it.eng.spago.util.StringUtils"%>
 <%@tag import="it.eng.spagobi.commons.bo.UserProfile"%>
-<%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
+<%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@tag import="it.eng.spago.base.SessionContainer"%>
 <%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 <%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
@@ -40,7 +40,8 @@ if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
 
 if (viewpointsList == null || viewpointsList.size() == 0) {
 	%>
-<div class='portlet-font'><spagobi:message key="SBIDev.docConf.viewPoint.noViewPoints"/></div>
+
+<%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%><div class='portlet-font'><spagobi:message key="SBIDev.docConf.viewPoint.noViewPoints"/></div>
 	<%
 } else {
     Map deleteVPUrlPars = new HashMap();

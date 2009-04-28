@@ -18,7 +18,7 @@
 <%@tag import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@tag import="it.eng.spago.navigation.LightNavigationManager"%>
 <%@tag import="java.util.Date"%>
-<%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
+<%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@tag import="it.eng.spago.util.StringUtils"%>
 <%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 <%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>

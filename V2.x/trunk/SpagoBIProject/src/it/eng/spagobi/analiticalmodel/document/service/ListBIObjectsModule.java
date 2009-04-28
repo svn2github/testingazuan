@@ -40,6 +40,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.services.DelegatedBasicListService;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
@@ -76,7 +77,7 @@ public class ListBIObjectsModule extends AbstractBasicListModule {
 	String language=(String)permanentSession.getAttribute(SpagoBIConstants.AF_LANGUAGE);
 	String country=(String)permanentSession.getAttribute(SpagoBIConstants.AF_COUNTRY);
 	if(language!=null && country!=null)locale=new Locale(language,country,"");
-	else locale=SpagoBIUtilities.getDefaultLocale();
+	else locale=GeneralUtilities.getDefaultLocale();
 	
 	String currentFieldOrder = (request.getAttribute("FIELD_ORDER") == null || ((String) request
 		.getAttribute("FIELD_ORDER")).equals("")) ? "" : (String) request.getAttribute("FIELD_ORDER");

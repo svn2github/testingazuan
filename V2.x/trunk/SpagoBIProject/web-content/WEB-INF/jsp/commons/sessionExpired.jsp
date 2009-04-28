@@ -33,6 +33,9 @@ looks for the parent window (using recursion) that contains that variable, and r
 If this window is not found, than the current window is redirect to SpagoBI start page.
 --%>
 
+
+<%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+
 <script>
 var sessionExpiredSpagoBIJSFound = false;
 try {
@@ -40,7 +43,7 @@ try {
 	var parentWindow = parent;
 	while (parentWindow != currentWindow) {
 		if (parentWindow.sessionExpiredSpagoBIJS) {
-			parentWindow.location = '<%= SpagoBIUtilities.getSpagoBiContext() %>';
+			parentWindow.location = '<%= GeneralUtilities.getSpagoBiContext() %>';
 			sessionExpiredSpagoBIJSFound = true;
 			break;
 		} else {
@@ -51,6 +54,6 @@ try {
 } catch (err) {}
 
 if (!sessionExpiredSpagoBIJSFound) {
-	window.location = '<%= SpagoBIUtilities.getSpagoBiContext() %>';
+	window.location = '<%= GeneralUtilities.getSpagoBiContext() %>';
 }
 </script>

@@ -66,7 +66,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	String title = "";
 	
-	String dateFormat = SpagoBIUtilities.getLocaleDateFormat(aSessionContainer);
+	String dateFormat = GeneralUtilities.getLocaleDateFormat(aSessionContainer);
 	
     ConfigSingleton configure = ConfigSingleton.getInstance();
 	SourceBean moduleBean = (SourceBean) configure

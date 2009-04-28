@@ -24,6 +24,7 @@
 <%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
 <%@tag import="it.eng.spago.base.SessionContainer"%>
 <%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
+<%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 
 
 <%
@@ -209,7 +210,7 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 	    viewVPUrl = urlBuilder.getUrl(request, viewVPUrlPars);
 
         ConfigSingleton conf = ConfigSingleton.getInstance();
-		String format=SpagoBIUtilities.getLocaleDateFormat(permSess);
+		String format=GeneralUtilities.getLocaleDateFormat(permSess);
         String date = StringUtils.dateToString(creationDateVP, format);
         %>
 				<tr class='portlet-font'>

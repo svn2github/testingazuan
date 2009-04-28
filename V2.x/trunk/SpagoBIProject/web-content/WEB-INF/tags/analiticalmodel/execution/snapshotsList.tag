@@ -21,6 +21,7 @@
 <%@tag import="it.eng.spagobi.commons.utilities.SpagoBIUtilities"%>
 <%@tag import="it.eng.spago.util.StringUtils"%>
 <%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
+<%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 
 
 <%
@@ -170,7 +171,7 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 		nameSnap = snap.getName();
 		descrSnap = snap.getDescription();
 		creationDate = snap.getDateCreation();
-		String format=SpagoBIUtilities.getLocaleDateFormat(permSess);
+		String format=GeneralUtilities.getLocaleDateFormat(permSess);
     	String dateValue = StringUtils.dateToString(creationDate, format);
   
 		

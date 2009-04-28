@@ -194,7 +194,7 @@ if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
     baseExecSubObjUrlPars.put(SpagoBIConstants.MESSAGEDET, "EXEC_SUBOBJECT");
     baseExecSubObjUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED,"true");
     
-    String dateFormat=SpagoBIUtilities.getLocaleDateFormat(permSess);
+    String dateFormat=GeneralUtilities.getLocaleDateFormat(permSess);
     
 	if (subobjectsList != null && subobjectsList.size() > 0) {
 		Iterator iterSubs =  subobjectsList.iterator();

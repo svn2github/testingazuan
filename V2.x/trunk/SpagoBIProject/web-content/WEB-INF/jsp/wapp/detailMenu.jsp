@@ -735,8 +735,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			boolean isRoot = (folder.getParentId() == null || folder.getParentId().intValue()==0);
 			String nameLabel = folder.getName();
 			String name = msgBuilder.getMessage(nameLabel, "messages", request);
+			String folderId="";
+			if (folder!=null && folder.getId()!=null){
+				folderId=folder.getId().toString();
+			}
+			String folderIdParent="";
+			if (folder!=null && folder.getParentId()!=null){
+				folderIdParent=folder.getParentId().toString();
+			}			
 			%>
-			treeFunct.add(<%= folder.getId() %>, <%= isRoot ? "-100" : folder.getParentId() %>,"<%= JavaScript.escapeText(name) %>", 
+			treeFunct.add(<%=folderId%>, <%= isRoot ? "-100" : folderIdParent %>,"<%= JavaScript.escapeText(name) %>", 
 				'javascript:setInitialpath(\'<%= folder.getPath() %>\')', '', '', '<%=imgFolder %>', '<%=imgFolderOp %>', '', '');
 			<%
 	   	}

@@ -53,7 +53,6 @@ public class GeoDriver extends AbstractDriver implements IEngineDriver {
 
     public static final String DOCUMENT_ID = "document";
     public static final String DOCUMENT_LABEL = "DOCUMENT_LABEL";
-    public static final String USER_ID = "userId";
 
     public static final String COUNTRY = "country";
     public static final String LANGUAGE = "language";

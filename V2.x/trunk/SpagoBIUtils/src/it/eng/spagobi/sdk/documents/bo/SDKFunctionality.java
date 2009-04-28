@@ -1,5 +1,5 @@
 /**
- * Functionality.java
+ * SDKFunctionality.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
@@ -7,12 +7,12 @@
 
 package it.eng.spagobi.sdk.documents.bo;
 
-public class Functionality  implements java.io.Serializable {
+public class SDKFunctionality  implements java.io.Serializable {
     private java.lang.String code;
 
-    private it.eng.spagobi.sdk.documents.bo.Document[] containedDocuments;
+    private it.eng.spagobi.sdk.documents.bo.SDKDocument[] containedDocuments;
 
-    private it.eng.spagobi.sdk.documents.bo.Functionality[] containedFunctionalities;
+    private it.eng.spagobi.sdk.documents.bo.SDKFunctionality[] containedFunctionalities;
 
     private java.lang.String description;
 
@@ -26,13 +26,13 @@ public class Functionality  implements java.io.Serializable {
 
     private java.lang.Integer prog;
 
-    public Functionality() {
+    public SDKFunctionality() {
     }
 
-    public Functionality(
+    public SDKFunctionality(
            java.lang.String code,
-           it.eng.spagobi.sdk.documents.bo.Document[] containedDocuments,
-           it.eng.spagobi.sdk.documents.bo.Functionality[] containedFunctionalities,
+           it.eng.spagobi.sdk.documents.bo.SDKDocument[] containedDocuments,
+           it.eng.spagobi.sdk.documents.bo.SDKFunctionality[] containedFunctionalities,
            java.lang.String description,
            java.lang.Integer id,
            java.lang.String name,
@@ -52,7 +52,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Gets the code value for this Functionality.
+     * Gets the code value for this SDKFunctionality.
      * 
      * @return code
      */
@@ -62,7 +62,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Sets the code value for this Functionality.
+     * Sets the code value for this SDKFunctionality.
      * 
      * @param code
      */
@@ -72,47 +72,47 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Gets the containedDocuments value for this Functionality.
+     * Gets the containedDocuments value for this SDKFunctionality.
      * 
      * @return containedDocuments
      */
-    public it.eng.spagobi.sdk.documents.bo.Document[] getContainedDocuments() {
+    public it.eng.spagobi.sdk.documents.bo.SDKDocument[] getContainedDocuments() {
         return containedDocuments;
     }
 
 
     /**
-     * Sets the containedDocuments value for this Functionality.
+     * Sets the containedDocuments value for this SDKFunctionality.
      * 
      * @param containedDocuments
      */
-    public void setContainedDocuments(it.eng.spagobi.sdk.documents.bo.Document[] containedDocuments) {
+    public void setContainedDocuments(it.eng.spagobi.sdk.documents.bo.SDKDocument[] containedDocuments) {
         this.containedDocuments = containedDocuments;
     }
 
 
     /**
-     * Gets the containedFunctionalities value for this Functionality.
+     * Gets the containedFunctionalities value for this SDKFunctionality.
      * 
      * @return containedFunctionalities
      */
-    public it.eng.spagobi.sdk.documents.bo.Functionality[] getContainedFunctionalities() {
+    public it.eng.spagobi.sdk.documents.bo.SDKFunctionality[] getContainedFunctionalities() {
         return containedFunctionalities;
     }
 
 
     /**
-     * Sets the containedFunctionalities value for this Functionality.
+     * Sets the containedFunctionalities value for this SDKFunctionality.
      * 
      * @param containedFunctionalities
      */
-    public void setContainedFunctionalities(it.eng.spagobi.sdk.documents.bo.Functionality[] containedFunctionalities) {
+    public void setContainedFunctionalities(it.eng.spagobi.sdk.documents.bo.SDKFunctionality[] containedFunctionalities) {
         this.containedFunctionalities = containedFunctionalities;
     }
 
 
     /**
-     * Gets the description value for this Functionality.
+     * Gets the description value for this SDKFunctionality.
      * 
      * @return description
      */
@@ -122,7 +122,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Sets the description value for this Functionality.
+     * Sets the description value for this SDKFunctionality.
      * 
      * @param description
      */
@@ -132,7 +132,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Gets the id value for this Functionality.
+     * Gets the id value for this SDKFunctionality.
      * 
      * @return id
      */
@@ -142,7 +142,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Sets the id value for this Functionality.
+     * Sets the id value for this SDKFunctionality.
      * 
      * @param id
      */
@@ -152,7 +152,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Gets the name value for this Functionality.
+     * Gets the name value for this SDKFunctionality.
      * 
      * @return name
      */
@@ -162,7 +162,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Sets the name value for this Functionality.
+     * Sets the name value for this SDKFunctionality.
      * 
      * @param name
      */
@@ -172,7 +172,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Gets the parentId value for this Functionality.
+     * Gets the parentId value for this SDKFunctionality.
      * 
      * @return parentId
      */
@@ -182,7 +182,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Sets the parentId value for this Functionality.
+     * Sets the parentId value for this SDKFunctionality.
      * 
      * @param parentId
      */
@@ -192,7 +192,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Gets the path value for this Functionality.
+     * Gets the path value for this SDKFunctionality.
      * 
      * @return path
      */
@@ -202,7 +202,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Sets the path value for this Functionality.
+     * Sets the path value for this SDKFunctionality.
      * 
      * @param path
      */
@@ -212,7 +212,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Gets the prog value for this Functionality.
+     * Gets the prog value for this SDKFunctionality.
      * 
      * @return prog
      */
@@ -222,7 +222,7 @@ public class Functionality  implements java.io.Serializable {
 
 
     /**
-     * Sets the prog value for this Functionality.
+     * Sets the prog value for this SDKFunctionality.
      * 
      * @param prog
      */
@@ -232,8 +232,8 @@ public class Functionality  implements java.io.Serializable {
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof Functionality)) return false;
-        Functionality other = (Functionality) obj;
+        if (!(obj instanceof SDKFunctionality)) return false;
+        SDKFunctionality other = (SDKFunctionality) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -329,10 +329,10 @@ public class Functionality  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(Functionality.class, true);
+        new org.apache.axis.description.TypeDesc(SDKFunctionality.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Functionality"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKFunctionality"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("code");
         elemField.setXmlName(new javax.xml.namespace.QName("", "code"));
@@ -342,13 +342,13 @@ public class Functionality  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("containedDocuments");
         elemField.setXmlName(new javax.xml.namespace.QName("", "containedDocuments"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Document"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKDocument"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("containedFunctionalities");
         elemField.setXmlName(new javax.xml.namespace.QName("", "containedFunctionalities"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Functionality"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKFunctionality"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

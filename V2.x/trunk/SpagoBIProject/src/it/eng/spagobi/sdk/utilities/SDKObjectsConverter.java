@@ -33,23 +33,22 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
 import it.eng.spagobi.engines.config.bo.Engine;
-import it.eng.spagobi.sdk.documents.bo.Constraint;
-import it.eng.spagobi.sdk.documents.bo.Document;
-import it.eng.spagobi.sdk.documents.bo.DocumentParameter;
-import it.eng.spagobi.sdk.documents.bo.Functionality;
-import it.eng.spagobi.sdk.documents.impl.DocumentsServiceImpl;
+import it.eng.spagobi.sdk.documents.bo.SDKConstraint;
+import it.eng.spagobi.sdk.documents.bo.SDKDocument;
+import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
+import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
 
-public class SDKConverter {
+public class SDKObjectsConverter {
 
-	static private Logger logger = Logger.getLogger(DocumentsServiceImpl.class);
+	static private Logger logger = Logger.getLogger(SDKObjectsConverter.class);
 	
-	public Document fromBIObjectToSDKDocument(BIObject obj) {
+	public SDKDocument fromBIObjectToSDKDocument(BIObject obj) {
 		logger.debug("IN");
 		if (obj == null) {
 			logger.warn("BIObject in input is null!!");
 			return null;
 		}
-        Document aDoc = new Document();
+        SDKDocument aDoc = new SDKDocument();
         aDoc.setId(obj.getId());
         aDoc.setLabel(obj.getLabel());
         aDoc.setName(obj.getName());
@@ -64,13 +63,13 @@ public class SDKConverter {
         return aDoc;
 	}
 	
-	public DocumentParameter fromBIObjectParameterToSDKDocumentParameter(BIObjectParameter biParameter) {
+	public SDKDocumentParameter fromBIObjectParameterToSDKDocumentParameter(BIObjectParameter biParameter) {
 		logger.debug("IN");
 		if (biParameter == null) {
 			logger.warn("BIObjectParameter in input is null!!");
 			return null;
 		}
-		DocumentParameter aDocParameter = new DocumentParameter();
+		SDKDocumentParameter aDocParameter = new SDKDocumentParameter();
         aDocParameter.setId(biParameter.getId());
         aDocParameter.setLabel(biParameter.getLabel());
         aDocParameter.setUrlName(biParameter.getParameterUrlName());
@@ -79,29 +78,29 @@ public class SDKConverter {
         if (parameter != null) {
         	checks = parameter.getChecks();
         }
-        List newConstraints = new ArrayList<Constraint>();
+        List newConstraints = new ArrayList<SDKConstraint>();
         if (checks != null && !checks.isEmpty()) {
         	Iterator checksIt = checks.iterator();
         	while (checksIt.hasNext()) {
         		Check aCheck = (Check) checksIt.next();
-        		Constraint constraint = fromCheckToSDKConstraint(aCheck);
+        		SDKConstraint constraint = fromCheckToSDKConstraint(aCheck);
         		newConstraints.add(constraint);
         	}
         }
-        it.eng.spagobi.sdk.documents.bo.Constraint[] constraintsArray = new it.eng.spagobi.sdk.documents.bo.Constraint[newConstraints.size()];
-        constraintsArray = (it.eng.spagobi.sdk.documents.bo.Constraint[]) newConstraints.toArray(constraintsArray);
+        it.eng.spagobi.sdk.documents.bo.SDKConstraint[] constraintsArray = new it.eng.spagobi.sdk.documents.bo.SDKConstraint[newConstraints.size()];
+        constraintsArray = (it.eng.spagobi.sdk.documents.bo.SDKConstraint[]) newConstraints.toArray(constraintsArray);
         aDocParameter.setConstraints(constraintsArray);
 		logger.debug("OUT");
 		return aDocParameter;
 	}
 	
-	public Constraint fromCheckToSDKConstraint(Check aCheck) {
+	public SDKConstraint fromCheckToSDKConstraint(Check aCheck) {
 		logger.debug("IN");
 		if (aCheck == null) {
 			logger.warn("Check in input is null!!");
 			return null;
 		}
-		Constraint constraint = new Constraint();
+		SDKConstraint constraint = new SDKConstraint();
 		constraint.setId(aCheck.getCheckId());
 		constraint.setLabel(aCheck.getLabel());
 		constraint.setName(aCheck.getName());
@@ -113,13 +112,13 @@ public class SDKConverter {
 		return constraint;
 	}
 	
-	public Functionality fromLowFunctionalityToSDKFunctionality(LowFunctionality lowFunctionality) {
+	public SDKFunctionality fromLowFunctionalityToSDKFunctionality(LowFunctionality lowFunctionality) {
 		logger.debug("IN");
 		if (lowFunctionality == null) {
 			logger.warn("LowFunctionality in input is null!!");
 			return null;
 		}
-		Functionality functionality = new Functionality();
+		SDKFunctionality functionality = new SDKFunctionality();
 		functionality.setId(lowFunctionality.getId());
 		functionality.setName(lowFunctionality.getName());
 		functionality.setCode(lowFunctionality.getCode());

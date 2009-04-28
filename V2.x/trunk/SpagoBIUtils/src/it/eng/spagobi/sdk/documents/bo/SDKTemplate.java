@@ -1,5 +1,5 @@
 /**
- * Template.java
+ * SDKTemplate.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
@@ -7,15 +7,15 @@
 
 package it.eng.spagobi.sdk.documents.bo;
 
-public class Template  implements java.io.Serializable {
+public class SDKTemplate  implements java.io.Serializable {
     private java.lang.String content;
 
     private java.lang.String fileName;
 
-    public Template() {
+    public SDKTemplate() {
     }
 
-    public Template(
+    public SDKTemplate(
            java.lang.String content,
            java.lang.String fileName) {
            this.content = content;
@@ -24,7 +24,7 @@ public class Template  implements java.io.Serializable {
 
 
     /**
-     * Gets the content value for this Template.
+     * Gets the content value for this SDKTemplate.
      * 
      * @return content
      */
@@ -34,7 +34,7 @@ public class Template  implements java.io.Serializable {
 
 
     /**
-     * Sets the content value for this Template.
+     * Sets the content value for this SDKTemplate.
      * 
      * @param content
      */
@@ -44,7 +44,7 @@ public class Template  implements java.io.Serializable {
 
 
     /**
-     * Gets the fileName value for this Template.
+     * Gets the fileName value for this SDKTemplate.
      * 
      * @return fileName
      */
@@ -54,7 +54,7 @@ public class Template  implements java.io.Serializable {
 
 
     /**
-     * Sets the fileName value for this Template.
+     * Sets the fileName value for this SDKTemplate.
      * 
      * @param fileName
      */
@@ -64,8 +64,8 @@ public class Template  implements java.io.Serializable {
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof Template)) return false;
-        Template other = (Template) obj;
+        if (!(obj instanceof SDKTemplate)) return false;
+        SDKTemplate other = (SDKTemplate) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -103,10 +103,10 @@ public class Template  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(Template.class, true);
+        new org.apache.axis.description.TypeDesc(SDKTemplate.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Template"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKTemplate"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("content");
         elemField.setXmlName(new javax.xml.namespace.QName("", "content"));

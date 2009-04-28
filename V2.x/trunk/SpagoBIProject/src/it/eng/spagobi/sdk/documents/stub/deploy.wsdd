@@ -23,6 +23,13 @@
       <parameter name="allowedMethods" value="*"/>
       <parameter name="scope" value="Session"/>
 
+      <arrayMapping
+        xmlns:ns="urn:spagobisdkdocuments"
+        qname="ns:ArrayOf_tns2_SDKDocumentParameter"
+        type="java:it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[]"
+        innerType="cmp-ns:SDKDocumentParameter" xmlns:cmp-ns="http://bo.documents.sdk.spagobi.eng.it"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
       <typeMapping
         xmlns:ns="http://exceptions.sdk.spagobi.eng.it"
         qname="ns:NonExecutableDocumentException"
@@ -33,41 +40,17 @@
       />
       <typeMapping
         xmlns:ns="http://bo.documents.sdk.spagobi.eng.it"
-        qname="ns:Constraint"
-        type="java:it.eng.spagobi.sdk.documents.bo.Constraint"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-      />
-      <typeMapping
-        xmlns:ns="http://bo.documents.sdk.spagobi.eng.it"
-        qname="ns:Template"
-        type="java:it.eng.spagobi.sdk.documents.bo.Template"
+        qname="ns:SDKFunctionality"
+        type="java:it.eng.spagobi.sdk.documents.bo.SDKFunctionality"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
       <arrayMapping
         xmlns:ns="urn:spagobisdkdocuments"
-        qname="ns:ArrayOf_tns2_Document"
-        type="java:it.eng.spagobi.sdk.documents.bo.Document[]"
-        innerType="cmp-ns:Document" xmlns:cmp-ns="http://bo.documents.sdk.spagobi.eng.it"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-      />
-      <typeMapping
-        xmlns:ns="http://bo.documents.sdk.spagobi.eng.it"
-        qname="ns:Document"
-        type="java:it.eng.spagobi.sdk.documents.bo.Document"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
-      />
-      <typeMapping
-        xmlns:ns="http://bo.documents.sdk.spagobi.eng.it"
-        qname="ns:DocumentParameter"
-        type="java:it.eng.spagobi.sdk.documents.bo.DocumentParameter"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        qname="ns:ArrayOf_tns2_SDKDocument"
+        type="java:it.eng.spagobi.sdk.documents.bo.SDKDocument[]"
+        innerType="cmp-ns:SDKDocument" xmlns:cmp-ns="http://bo.documents.sdk.spagobi.eng.it"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
       <arrayMapping
@@ -77,26 +60,35 @@
         innerType="cmp-ns:string" xmlns:cmp-ns="http://schemas.xmlsoap.org/soap/encoding/"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
-      <arrayMapping
-        xmlns:ns="urn:spagobisdkdocuments"
-        qname="ns:ArrayOf_tns2_Constraint"
-        type="java:it.eng.spagobi.sdk.documents.bo.Constraint[]"
-        innerType="cmp-ns:Constraint" xmlns:cmp-ns="http://bo.documents.sdk.spagobi.eng.it"
+      <typeMapping
+        xmlns:ns="http://bo.documents.sdk.spagobi.eng.it"
+        qname="ns:SDKConstraint"
+        type="java:it.eng.spagobi.sdk.documents.bo.SDKConstraint"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
       <typeMapping
         xmlns:ns="http://bo.documents.sdk.spagobi.eng.it"
-        qname="ns:Functionality"
-        type="java:it.eng.spagobi.sdk.documents.bo.Functionality"
+        qname="ns:SDKDocument"
+        type="java:it.eng.spagobi.sdk.documents.bo.SDKDocument"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
       <arrayMapping
         xmlns:ns="urn:spagobisdkdocuments"
-        qname="ns:ArrayOf_tns2_DocumentParameter"
-        type="java:it.eng.spagobi.sdk.documents.bo.DocumentParameter[]"
-        innerType="cmp-ns:DocumentParameter" xmlns:cmp-ns="http://bo.documents.sdk.spagobi.eng.it"
+        qname="ns:ArrayOf_tns2_SDKFunctionality"
+        type="java:it.eng.spagobi.sdk.documents.bo.SDKFunctionality[]"
+        innerType="cmp-ns:SDKFunctionality" xmlns:cmp-ns="http://bo.documents.sdk.spagobi.eng.it"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://bo.documents.sdk.spagobi.eng.it"
+        qname="ns:SDKDocumentParameter"
+        type="java:it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
       <typeMapping
@@ -109,9 +101,17 @@
       />
       <arrayMapping
         xmlns:ns="urn:spagobisdkdocuments"
-        qname="ns:ArrayOf_tns2_Functionality"
-        type="java:it.eng.spagobi.sdk.documents.bo.Functionality[]"
-        innerType="cmp-ns:Functionality" xmlns:cmp-ns="http://bo.documents.sdk.spagobi.eng.it"
+        qname="ns:ArrayOf_tns2_SDKConstraint"
+        type="java:it.eng.spagobi.sdk.documents.bo.SDKConstraint[]"
+        innerType="cmp-ns:SDKConstraint" xmlns:cmp-ns="http://bo.documents.sdk.spagobi.eng.it"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://bo.documents.sdk.spagobi.eng.it"
+        qname="ns:SDKTemplate"
+        type="java:it.eng.spagobi.sdk.documents.bo.SDKTemplate"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
       />
   </service>

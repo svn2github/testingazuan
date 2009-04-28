@@ -21,10 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.sdk.documents;
 
-import it.eng.spagobi.sdk.documents.bo.Document;
-import it.eng.spagobi.sdk.documents.bo.DocumentParameter;
-import it.eng.spagobi.sdk.documents.bo.Functionality;
-import it.eng.spagobi.sdk.documents.bo.Template;
+import it.eng.spagobi.sdk.documents.bo.SDKDocument;
+import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
+import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
+import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 
@@ -32,19 +32,19 @@ import java.util.HashMap;
 
 public interface DocumentsService {
 	
-	Document[] getDocumentsAsList(String type, String state, String folderPath);
+	SDKDocument[] getDocumentsAsList(String type, String state, String folderPath);
 	
-	Functionality getDocumentsAsTree(String initialPath);
+	SDKFunctionality getDocumentsAsTree(String initialPath);
 	
 	String[] getCorrectRolesForExecution(Integer documentId) throws NonExecutableDocumentException;
 	
-	DocumentParameter[] getDocumentParameters(Integer documentId, String roleName) throws NonExecutableDocumentException;
+	SDKDocumentParameter[] getDocumentParameters(Integer documentId, String roleName) throws NonExecutableDocumentException;
 	
 	HashMap<String, String> getAdmissibleValues(Integer documentParameterId, String roleName) throws NonExecutableDocumentException;
 	
-	Template downloadTemplate(Integer documentId) throws NotAllowedOperationException;
+	SDKTemplate downloadTemplate(Integer documentId) throws NotAllowedOperationException;
 	
-	void uploadTemplate(Integer documentId, Template template) throws NotAllowedOperationException;
+	void uploadTemplate(Integer documentId, SDKTemplate template) throws NotAllowedOperationException;
 	
-	Integer saveNewDocument(Document document, Template template, Integer functionalityId) throws NotAllowedOperationException;
+	Integer saveNewDocument(SDKDocument document, SDKTemplate template, Integer functionalityId) throws NotAllowedOperationException;
 }

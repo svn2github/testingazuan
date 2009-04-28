@@ -40,13 +40,13 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.sdk.AbstractSDKService;
 import it.eng.spagobi.sdk.documents.DocumentsService;
-import it.eng.spagobi.sdk.documents.bo.Document;
-import it.eng.spagobi.sdk.documents.bo.DocumentParameter;
-import it.eng.spagobi.sdk.documents.bo.Functionality;
-import it.eng.spagobi.sdk.documents.bo.Template;
+import it.eng.spagobi.sdk.documents.bo.SDKDocument;
+import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
+import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
+import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
-import it.eng.spagobi.sdk.utilities.SDKConverter;
+import it.eng.spagobi.sdk.utilities.SDKObjectsConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +60,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
     
     static private Logger logger = Logger.getLogger(DocumentsServiceImpl.class);
 
-	public Template downloadTemplate(Integer documentId)
+	public SDKTemplate downloadTemplate(Integer documentId)
 			throws NotAllowedOperationException {
 		// TODO Auto-generated method stub
 		return null;
@@ -157,8 +157,8 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
         return toReturn;
     }
 
-    public DocumentParameter[] getDocumentParameters(Integer documentId, String roleName) throws NonExecutableDocumentException {
-        DocumentParameter parameters[] = null;
+    public SDKDocumentParameter[] getDocumentParameters(Integer documentId, String roleName) throws NonExecutableDocumentException {
+        SDKDocumentParameter parameters[] = null;
         logger.debug("IN: documentId = [" + documentId + "]; roleName = [" + roleName + "]");
         try {
             IEngUserProfile profile = getUserProfile();
@@ -181,15 +181,15 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
             List parametersList = obj.getBiObjectParameters();
             List toReturn = new ArrayList();
             if (parametersList != null) {
-                DocumentParameter aDocParameter;
+                SDKDocumentParameter aDocParameter;
                 for (Iterator it = parametersList.iterator(); it.hasNext(); toReturn.add(aDocParameter)) {
                 	BIObjectParameter parameter = (BIObjectParameter)it.next();
-                	aDocParameter = new SDKConverter().fromBIObjectParameterToSDKDocumentParameter(parameter);
+                	aDocParameter = new SDKObjectsConverter().fromBIObjectParameterToSDKDocumentParameter(parameter);
                 	toReturn.add(aDocParameter);
                 }
             }
-            parameters = new DocumentParameter[toReturn.size()];
-            parameters = (DocumentParameter[]) toReturn.toArray(parameters);
+            parameters = new SDKDocumentParameter[toReturn.size()];
+            parameters = (SDKDocumentParameter[]) toReturn.toArray(parameters);
         } catch(NonExecutableDocumentException e) {
             throw e;
         } catch(Exception e) {
@@ -199,8 +199,8 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
         return parameters;
     }
 
-    public Document[] getDocumentsAsList(String type, String state, String folderPath) {
-        Document documents[] = null;
+    public SDKDocument[] getDocumentsAsList(String type, String state, String folderPath) {
+        SDKDocument documents[] = null;
         logger.debug("IN");
         try {
             IEngUserProfile profile = getUserProfile();
@@ -211,13 +211,13 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
                     BIObject obj = (BIObject)it.next();
                     if(ObjectsAccessVerifier.canSee(obj, profile))
                     {
-                    	Document aDoc = new SDKConverter().fromBIObjectToSDKDocument(obj);
+                    	SDKDocument aDoc = new SDKObjectsConverter().fromBIObjectToSDKDocument(obj);
                         toReturn.add(aDoc);
                     }
                 }
             }
-            documents = new Document[toReturn.size()];
-            documents = (Document[])toReturn.toArray(documents);
+            documents = new SDKDocument[toReturn.size()];
+            documents = (SDKDocument[])toReturn.toArray(documents);
         } catch(Exception e) {
             logger.error(e);
         }
@@ -225,9 +225,9 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
         return documents;
     }
 
-	public Functionality getDocumentsAsTree(String initialPath) {
+	public SDKFunctionality getDocumentsAsTree(String initialPath) {
 		logger.debug("IN: initialPath = [" + initialPath + "]");
-		Functionality toReturn = null;
+		SDKFunctionality toReturn = null;
 		try {
 			IEngUserProfile profile = getUserProfile();
 			ILowFunctionalityDAO functionalityDAO = DAOFactory.getLowFunctionalityDAO();
@@ -255,7 +255,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			}
 			
 			if (canSeeFunctionality) {
-				toReturn = new SDKConverter().fromLowFunctionalityToSDKFunctionality(initialFunctionality);
+				toReturn = new SDKObjectsConverter().fromLowFunctionalityToSDKFunctionality(initialFunctionality);
 				setFunctionalityContent(toReturn);
 			}
 				
@@ -266,7 +266,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
         return toReturn;
 	}
 	
-	private void setFunctionalityContent(Functionality parentFunctionality) throws Exception {
+	private void setFunctionalityContent(SDKFunctionality parentFunctionality) throws Exception {
 		logger.debug("IN");
 		IEngUserProfile profile = getUserProfile();
 		// loading contained documents
@@ -276,13 +276,13 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
             for (Iterator it = containedBIObjects.iterator(); it.hasNext();) {
                 BIObject obj = (BIObject) it.next();
                 if (ObjectsAccessVerifier.checkProfileVisibility(obj, profile)) {
-                	Document aDoc = new SDKConverter().fromBIObjectToSDKDocument(obj);
+                	SDKDocument aDoc = new SDKObjectsConverter().fromBIObjectToSDKDocument(obj);
                 	visibleDocumentsList.add(aDoc);
                 }
             }
 		}
-		Document[] containedDocuments = new Document[visibleDocumentsList.size()];
-		containedDocuments = (Document[]) visibleDocumentsList.toArray(containedDocuments);
+		SDKDocument[] containedDocuments = new SDKDocument[visibleDocumentsList.size()];
+		containedDocuments = (SDKDocument[]) visibleDocumentsList.toArray(containedDocuments);
 		parentFunctionality.setContainedDocuments(containedDocuments);
 		
 		List containedFunctionalitiesList = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(parentFunctionality.getId(), false);
@@ -304,25 +304,25 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 				}
 			}
 			if (canSeeFunctionality) {
-				Functionality childFunctionality = new SDKConverter().fromLowFunctionalityToSDKFunctionality(lowFunctionality);
+				SDKFunctionality childFunctionality = new SDKObjectsConverter().fromLowFunctionalityToSDKFunctionality(lowFunctionality);
 				visibleFunctionalitiesList.add(childFunctionality);
 				// recursion
 				setFunctionalityContent(childFunctionality);
 			}
 		}
-		Functionality[] containedFunctionalities = new Functionality[visibleFunctionalitiesList.size()];
-		containedFunctionalities = (Functionality[]) visibleFunctionalitiesList.toArray(containedFunctionalities);
+		SDKFunctionality[] containedFunctionalities = new SDKFunctionality[visibleFunctionalitiesList.size()];
+		containedFunctionalities = (SDKFunctionality[]) visibleFunctionalitiesList.toArray(containedFunctionalities);
 		parentFunctionality.setContainedFunctionalities(containedFunctionalities);
 		logger.debug("OUT");
 	}
 
-	public Integer saveNewDocument(Document document, Template template,
+	public Integer saveNewDocument(SDKDocument document, SDKTemplate template,
 			Integer functionalityId) throws NotAllowedOperationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void uploadTemplate(Integer documentId, Template template)
+	public void uploadTemplate(Integer documentId, SDKTemplate template)
 			throws NotAllowedOperationException {
 		// TODO Auto-generated method stub
 	}

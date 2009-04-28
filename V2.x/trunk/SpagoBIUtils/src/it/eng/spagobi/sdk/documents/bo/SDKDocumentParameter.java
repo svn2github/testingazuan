@@ -1,5 +1,5 @@
 /**
- * DocumentParameter.java
+ * SDKDocumentParameter.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
@@ -7,8 +7,8 @@
 
 package it.eng.spagobi.sdk.documents.bo;
 
-public class DocumentParameter  implements java.io.Serializable {
-    private it.eng.spagobi.sdk.documents.bo.Constraint[] constraints;
+public class SDKDocumentParameter  implements java.io.Serializable {
+    private it.eng.spagobi.sdk.documents.bo.SDKConstraint[] constraints;
 
     private java.lang.Integer id;
 
@@ -16,11 +16,11 @@ public class DocumentParameter  implements java.io.Serializable {
 
     private java.lang.String urlName;
 
-    public DocumentParameter() {
+    public SDKDocumentParameter() {
     }
 
-    public DocumentParameter(
-           it.eng.spagobi.sdk.documents.bo.Constraint[] constraints,
+    public SDKDocumentParameter(
+           it.eng.spagobi.sdk.documents.bo.SDKConstraint[] constraints,
            java.lang.Integer id,
            java.lang.String label,
            java.lang.String urlName) {
@@ -32,27 +32,27 @@ public class DocumentParameter  implements java.io.Serializable {
 
 
     /**
-     * Gets the constraints value for this DocumentParameter.
+     * Gets the constraints value for this SDKDocumentParameter.
      * 
      * @return constraints
      */
-    public it.eng.spagobi.sdk.documents.bo.Constraint[] getConstraints() {
+    public it.eng.spagobi.sdk.documents.bo.SDKConstraint[] getConstraints() {
         return constraints;
     }
 
 
     /**
-     * Sets the constraints value for this DocumentParameter.
+     * Sets the constraints value for this SDKDocumentParameter.
      * 
      * @param constraints
      */
-    public void setConstraints(it.eng.spagobi.sdk.documents.bo.Constraint[] constraints) {
+    public void setConstraints(it.eng.spagobi.sdk.documents.bo.SDKConstraint[] constraints) {
         this.constraints = constraints;
     }
 
 
     /**
-     * Gets the id value for this DocumentParameter.
+     * Gets the id value for this SDKDocumentParameter.
      * 
      * @return id
      */
@@ -62,7 +62,7 @@ public class DocumentParameter  implements java.io.Serializable {
 
 
     /**
-     * Sets the id value for this DocumentParameter.
+     * Sets the id value for this SDKDocumentParameter.
      * 
      * @param id
      */
@@ -72,7 +72,7 @@ public class DocumentParameter  implements java.io.Serializable {
 
 
     /**
-     * Gets the label value for this DocumentParameter.
+     * Gets the label value for this SDKDocumentParameter.
      * 
      * @return label
      */
@@ -82,7 +82,7 @@ public class DocumentParameter  implements java.io.Serializable {
 
 
     /**
-     * Sets the label value for this DocumentParameter.
+     * Sets the label value for this SDKDocumentParameter.
      * 
      * @param label
      */
@@ -92,7 +92,7 @@ public class DocumentParameter  implements java.io.Serializable {
 
 
     /**
-     * Gets the urlName value for this DocumentParameter.
+     * Gets the urlName value for this SDKDocumentParameter.
      * 
      * @return urlName
      */
@@ -102,7 +102,7 @@ public class DocumentParameter  implements java.io.Serializable {
 
 
     /**
-     * Sets the urlName value for this DocumentParameter.
+     * Sets the urlName value for this SDKDocumentParameter.
      * 
      * @param urlName
      */
@@ -112,8 +112,8 @@ public class DocumentParameter  implements java.io.Serializable {
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof DocumentParameter)) return false;
-        DocumentParameter other = (DocumentParameter) obj;
+        if (!(obj instanceof SDKDocumentParameter)) return false;
+        SDKDocumentParameter other = (SDKDocumentParameter) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -171,14 +171,14 @@ public class DocumentParameter  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(DocumentParameter.class, true);
+        new org.apache.axis.description.TypeDesc(SDKDocumentParameter.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "DocumentParameter"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKDocumentParameter"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("constraints");
         elemField.setXmlName(new javax.xml.namespace.QName("", "constraints"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Constraint"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKConstraint"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

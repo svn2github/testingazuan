@@ -1,5 +1,5 @@
 /**
- * Constraint.java
+ * SDKDocument.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
@@ -7,10 +7,14 @@
 
 package it.eng.spagobi.sdk.documents.bo;
 
-public class Constraint  implements java.io.Serializable {
+public class SDKDocument  implements java.io.Serializable {
+    private java.lang.Integer dataSetId;
+
+    private java.lang.Integer dataSourceId;
+
     private java.lang.String description;
 
-    private java.lang.String firstValue;
+    private java.lang.Integer engineId;
 
     private java.lang.Integer id;
 
@@ -18,33 +22,77 @@ public class Constraint  implements java.io.Serializable {
 
     private java.lang.String name;
 
-    private java.lang.String secondValue;
+    private java.lang.String state;
 
     private java.lang.String type;
 
-    public Constraint() {
+    public SDKDocument() {
     }
 
-    public Constraint(
+    public SDKDocument(
+           java.lang.Integer dataSetId,
+           java.lang.Integer dataSourceId,
            java.lang.String description,
-           java.lang.String firstValue,
+           java.lang.Integer engineId,
            java.lang.Integer id,
            java.lang.String label,
            java.lang.String name,
-           java.lang.String secondValue,
+           java.lang.String state,
            java.lang.String type) {
+           this.dataSetId = dataSetId;
+           this.dataSourceId = dataSourceId;
            this.description = description;
-           this.firstValue = firstValue;
+           this.engineId = engineId;
            this.id = id;
            this.label = label;
            this.name = name;
-           this.secondValue = secondValue;
+           this.state = state;
            this.type = type;
     }
 
 
     /**
-     * Gets the description value for this Constraint.
+     * Gets the dataSetId value for this SDKDocument.
+     * 
+     * @return dataSetId
+     */
+    public java.lang.Integer getDataSetId() {
+        return dataSetId;
+    }
+
+
+    /**
+     * Sets the dataSetId value for this SDKDocument.
+     * 
+     * @param dataSetId
+     */
+    public void setDataSetId(java.lang.Integer dataSetId) {
+        this.dataSetId = dataSetId;
+    }
+
+
+    /**
+     * Gets the dataSourceId value for this SDKDocument.
+     * 
+     * @return dataSourceId
+     */
+    public java.lang.Integer getDataSourceId() {
+        return dataSourceId;
+    }
+
+
+    /**
+     * Sets the dataSourceId value for this SDKDocument.
+     * 
+     * @param dataSourceId
+     */
+    public void setDataSourceId(java.lang.Integer dataSourceId) {
+        this.dataSourceId = dataSourceId;
+    }
+
+
+    /**
+     * Gets the description value for this SDKDocument.
      * 
      * @return description
      */
@@ -54,7 +102,7 @@ public class Constraint  implements java.io.Serializable {
 
 
     /**
-     * Sets the description value for this Constraint.
+     * Sets the description value for this SDKDocument.
      * 
      * @param description
      */
@@ -64,27 +112,27 @@ public class Constraint  implements java.io.Serializable {
 
 
     /**
-     * Gets the firstValue value for this Constraint.
+     * Gets the engineId value for this SDKDocument.
      * 
-     * @return firstValue
+     * @return engineId
      */
-    public java.lang.String getFirstValue() {
-        return firstValue;
+    public java.lang.Integer getEngineId() {
+        return engineId;
     }
 
 
     /**
-     * Sets the firstValue value for this Constraint.
+     * Sets the engineId value for this SDKDocument.
      * 
-     * @param firstValue
+     * @param engineId
      */
-    public void setFirstValue(java.lang.String firstValue) {
-        this.firstValue = firstValue;
+    public void setEngineId(java.lang.Integer engineId) {
+        this.engineId = engineId;
     }
 
 
     /**
-     * Gets the id value for this Constraint.
+     * Gets the id value for this SDKDocument.
      * 
      * @return id
      */
@@ -94,7 +142,7 @@ public class Constraint  implements java.io.Serializable {
 
 
     /**
-     * Sets the id value for this Constraint.
+     * Sets the id value for this SDKDocument.
      * 
      * @param id
      */
@@ -104,7 +152,7 @@ public class Constraint  implements java.io.Serializable {
 
 
     /**
-     * Gets the label value for this Constraint.
+     * Gets the label value for this SDKDocument.
      * 
      * @return label
      */
@@ -114,7 +162,7 @@ public class Constraint  implements java.io.Serializable {
 
 
     /**
-     * Sets the label value for this Constraint.
+     * Sets the label value for this SDKDocument.
      * 
      * @param label
      */
@@ -124,7 +172,7 @@ public class Constraint  implements java.io.Serializable {
 
 
     /**
-     * Gets the name value for this Constraint.
+     * Gets the name value for this SDKDocument.
      * 
      * @return name
      */
@@ -134,7 +182,7 @@ public class Constraint  implements java.io.Serializable {
 
 
     /**
-     * Sets the name value for this Constraint.
+     * Sets the name value for this SDKDocument.
      * 
      * @param name
      */
@@ -144,27 +192,27 @@ public class Constraint  implements java.io.Serializable {
 
 
     /**
-     * Gets the secondValue value for this Constraint.
+     * Gets the state value for this SDKDocument.
      * 
-     * @return secondValue
+     * @return state
      */
-    public java.lang.String getSecondValue() {
-        return secondValue;
+    public java.lang.String getState() {
+        return state;
     }
 
 
     /**
-     * Sets the secondValue value for this Constraint.
+     * Sets the state value for this SDKDocument.
      * 
-     * @param secondValue
+     * @param state
      */
-    public void setSecondValue(java.lang.String secondValue) {
-        this.secondValue = secondValue;
+    public void setState(java.lang.String state) {
+        this.state = state;
     }
 
 
     /**
-     * Gets the type value for this Constraint.
+     * Gets the type value for this SDKDocument.
      * 
      * @return type
      */
@@ -174,7 +222,7 @@ public class Constraint  implements java.io.Serializable {
 
 
     /**
-     * Sets the type value for this Constraint.
+     * Sets the type value for this SDKDocument.
      * 
      * @param type
      */
@@ -184,8 +232,8 @@ public class Constraint  implements java.io.Serializable {
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof Constraint)) return false;
-        Constraint other = (Constraint) obj;
+        if (!(obj instanceof SDKDocument)) return false;
+        SDKDocument other = (SDKDocument) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -194,12 +242,18 @@ public class Constraint  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            ((this.dataSetId==null && other.getDataSetId()==null) || 
+             (this.dataSetId!=null &&
+              this.dataSetId.equals(other.getDataSetId()))) &&
+            ((this.dataSourceId==null && other.getDataSourceId()==null) || 
+             (this.dataSourceId!=null &&
+              this.dataSourceId.equals(other.getDataSourceId()))) &&
             ((this.description==null && other.getDescription()==null) || 
              (this.description!=null &&
               this.description.equals(other.getDescription()))) &&
-            ((this.firstValue==null && other.getFirstValue()==null) || 
-             (this.firstValue!=null &&
-              this.firstValue.equals(other.getFirstValue()))) &&
+            ((this.engineId==null && other.getEngineId()==null) || 
+             (this.engineId!=null &&
+              this.engineId.equals(other.getEngineId()))) &&
             ((this.id==null && other.getId()==null) || 
              (this.id!=null &&
               this.id.equals(other.getId()))) &&
@@ -209,9 +263,9 @@ public class Constraint  implements java.io.Serializable {
             ((this.name==null && other.getName()==null) || 
              (this.name!=null &&
               this.name.equals(other.getName()))) &&
-            ((this.secondValue==null && other.getSecondValue()==null) || 
-             (this.secondValue!=null &&
-              this.secondValue.equals(other.getSecondValue()))) &&
+            ((this.state==null && other.getState()==null) || 
+             (this.state!=null &&
+              this.state.equals(other.getState()))) &&
             ((this.type==null && other.getType()==null) || 
              (this.type!=null &&
               this.type.equals(other.getType())));
@@ -226,11 +280,17 @@ public class Constraint  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getDataSetId() != null) {
+            _hashCode += getDataSetId().hashCode();
+        }
+        if (getDataSourceId() != null) {
+            _hashCode += getDataSourceId().hashCode();
+        }
         if (getDescription() != null) {
             _hashCode += getDescription().hashCode();
         }
-        if (getFirstValue() != null) {
-            _hashCode += getFirstValue().hashCode();
+        if (getEngineId() != null) {
+            _hashCode += getEngineId().hashCode();
         }
         if (getId() != null) {
             _hashCode += getId().hashCode();
@@ -241,8 +301,8 @@ public class Constraint  implements java.io.Serializable {
         if (getName() != null) {
             _hashCode += getName().hashCode();
         }
-        if (getSecondValue() != null) {
-            _hashCode += getSecondValue().hashCode();
+        if (getState() != null) {
+            _hashCode += getState().hashCode();
         }
         if (getType() != null) {
             _hashCode += getType().hashCode();
@@ -253,20 +313,32 @@ public class Constraint  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(Constraint.class, true);
+        new org.apache.axis.description.TypeDesc(SDKDocument.class, true);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "Constraint"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKDocument"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("dataSetId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "dataSetId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("dataSourceId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "dataSourceId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("description");
         elemField.setXmlName(new javax.xml.namespace.QName("", "description"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("firstValue");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "firstValue"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setFieldName("engineId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "engineId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
@@ -288,8 +360,8 @@ public class Constraint  implements java.io.Serializable {
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("secondValue");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "secondValue"));
+        elemField.setFieldName("state");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "state"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);

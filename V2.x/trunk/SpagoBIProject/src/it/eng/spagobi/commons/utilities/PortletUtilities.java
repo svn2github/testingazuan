@@ -28,14 +28,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.base.PortletAccess;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.RequestContainerPortletAccess;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.constants.UtilitiesConstants;
-import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 
 import java.util.Iterator;
 import java.util.List;
@@ -240,16 +235,16 @@ public class PortletUtilities {
 			 	if (portalLocale == null) {
 		        	logger.error("Portal locale not found by PortletAccess.getPortalLocale() method");
 			 	} else {
-			 		logger.error("Portal locale read succesfully: [" +  portalLocale.getLanguage() + "," + portalLocale.getCountry() + "]");
+			 		logger.debug("Portal locale read succesfully: [" +  portalLocale.getLanguage() + "," + portalLocale.getCountry() + "]");
 			 	}
 			 	
 			 	if( isLocaleSupported(portalLocale) ) {
-			 		logger.error("Portal locale [" +  portalLocale.getLanguage() + "," + portalLocale.getCountry() + "] is supported by SpagoBI");
+			 		logger.debug("Portal locale [" +  portalLocale.getLanguage() + "," + portalLocale.getCountry() + "] is supported by SpagoBI");
 			 		locale = portalLocale; 
 			 	} else {
-			 		logger.error("Portal locale [" +  portalLocale.getLanguage() + "," + portalLocale.getCountry() + "] is not supported by SpagoBI");
+			 		logger.warn("Portal locale [" +  portalLocale.getLanguage() + "," + portalLocale.getCountry() + "] is not supported by SpagoBI");
 			 		locale = getDefaultLocale();
-			 		logger.error("Default locale [" +  locale.getLanguage() + "," + locale.getCountry() + "] will be used");
+			 		logger.debug("Default locale [" +  locale.getLanguage() + "," + locale.getCountry() + "] will be used");
 			 	}
 			 	
 			} catch (Exception e) {

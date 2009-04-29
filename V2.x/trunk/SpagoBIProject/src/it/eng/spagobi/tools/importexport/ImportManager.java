@@ -2339,8 +2339,8 @@ public class ImportManager implements IImportManager, Serializable {
 		Iterator iterSbiAlarm = exportedAlarms.iterator();
 		while (iterSbiAlarm.hasNext()) {
 			SbiAlarm dsExp = (SbiAlarm) iterSbiAlarm.next();
-			String name = dsExp.getName();
-			Object existObj = importer.checkExistence(name, sessionCurrDB, new SbiAlarm());
+			String label = dsExp.getLabel();
+			Object existObj = importer.checkExistence(label, sessionCurrDB, new SbiAlarm());
 			if (existObj != null) {
 				SbiAlarm dsCurr = (SbiAlarm) existObj;
 				metaAss.insertCoupleAlarm(dsExp.getId(), dsCurr.getId());

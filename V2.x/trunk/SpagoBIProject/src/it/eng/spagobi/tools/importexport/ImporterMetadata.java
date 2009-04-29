@@ -46,7 +46,6 @@ import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmContact;
 import it.eng.spagobi.kpi.config.metadata.SbiKpi;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstPeriod;
-import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiPeriodicity;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModel;
 import it.eng.spagobi.kpi.model.metadata.SbiKpiModelInst;
@@ -469,55 +468,103 @@ public class ImporterMetadata {
 			String label = (String) unique;
 			hql = "from SbiThreshold ds where ds.code = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
-			SbiThreshold hibDs = (SbiThreshold) hqlQuery.uniqueResult();
+			SbiThreshold hibDs = null;
+			try{
+			hibDs = (SbiThreshold) hqlQuery.uniqueResult();
+			}
+			catch (Exception e) {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9001", "component_impexp_messages");
+			}
 			return hibDs;
-		} else if (hibObj instanceof SbiThresholdValue) {
+		} /*else if (hibObj instanceof SbiThresholdValue) {
 			String label = (String) unique;
 			hql = "from SbiThresholdValue ds where ds.label = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
 			SbiThresholdValue hibDs = (SbiThresholdValue) hqlQuery.uniqueResult();
 			return hibDs;
-		} 	else if (hibObj instanceof SbiKpi) {
+		} */	else if (hibObj instanceof SbiKpi) {
 			String label = (String) unique;
 			hql = "from SbiKpi ds where ds.code = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
-			SbiKpi hibDs = (SbiKpi) hqlQuery.uniqueResult();
+			SbiKpi hibDs =null;
+			try{
+			hibDs= (SbiKpi) hqlQuery.uniqueResult();
+			}
+			catch (Exception e) {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9002", "component_impexp_messages");
+			}
 			return hibDs;
 		} 	else if (hibObj instanceof SbiKpiModel) {
 			String label = (String) unique;
 			hql = "from SbiKpiModel ds where ds.kpiModelCd = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
-			SbiKpiModel hibDs = (SbiKpiModel) hqlQuery.uniqueResult();
+			SbiKpiModel hibDs =null;
+			try{
+			hibDs=(SbiKpiModel) hqlQuery.uniqueResult();
+			}
+			catch (Exception e) {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9003", "component_impexp_messages");
+			}
 			return hibDs;
 		} 	else if (hibObj instanceof SbiKpiModelInst) {
 			String label = (String) unique;
 			hql = "from SbiKpiModelInst ds where ds.label = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
-			SbiKpiModelInst hibDs = (SbiKpiModelInst) hqlQuery.uniqueResult();
+			SbiKpiModelInst hibDs = null;
+			try{
+			hibDs=(SbiKpiModelInst) hqlQuery.uniqueResult();
+			}
+			catch (Exception e) {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9004", "component_impexp_messages");
+			}
 			return hibDs;
 		} 	else if (hibObj instanceof SbiResources) {
 			String label = (String) unique;
 			hql = "from SbiResources ds where ds.resourceName = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
-			SbiResources hibDs = (SbiResources) hqlQuery.uniqueResult();
+			SbiResources hibDs = null;
+			try{
+			hibDs=(SbiResources) hqlQuery.uniqueResult();
+			}
+			catch (Exception e) {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9005", "component_impexp_messages");
+			}
 			return hibDs;
 		} 	else if (hibObj instanceof SbiKpiPeriodicity) {
 			String label = (String) unique;
 			hql = "from SbiKpiPeriodicity ds where ds.name = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
-			SbiKpiPeriodicity hibDs = (SbiKpiPeriodicity) hqlQuery.uniqueResult();
+			SbiKpiPeriodicity hibDs = null;
+			try{
+			hibDs=(SbiKpiPeriodicity) hqlQuery.uniqueResult();
+			}
+			catch (Exception e) {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9006", "component_impexp_messages");
+			}
 			return hibDs;
 		}  	else if (hibObj instanceof SbiAlarm) {
 			String label = (String) unique;
 			hql = "from SbiAlarm ds where ds.label = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
-			SbiAlarm hibDs = (SbiAlarm) hqlQuery.uniqueResult();
+			SbiAlarm hibDs = null;
+			try{
+			hibDs=(SbiAlarm) hqlQuery.uniqueResult();
+			}
+			catch (Exception e) {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9007", "component_impexp_messages");
+			}
 			return hibDs;
 		}  	else if (hibObj instanceof SbiAlarmContact) {
 			String label = (String) unique;
 			hql = "from SbiAlarmContact ds where ds.name = '" + label + "'";
 			hqlQuery = sessionCurrDB.createQuery(hql);
-			SbiAlarmContact hibDs = (SbiAlarmContact) hqlQuery.uniqueResult();
+			SbiAlarmContact hibDs = null;
+			try{
+			hibDs=(SbiAlarmContact) hqlQuery.uniqueResult();
+			}
+			catch (Exception e) {
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "9008", "component_impexp_messages");
+			}
 			return hibDs;
 		}
 
@@ -583,7 +630,13 @@ public class ImporterMetadata {
 		Query hqlQuery = null;
 		hql = "from SbiThresholdValue where label = '" + labelThValue + "'"+"AND sbiThreshold = '"+thresholdId+"'";
 		hqlQuery = sessionCurrDB.createQuery(hql);
-		SbiThresholdValue hibDs = (SbiThresholdValue) hqlQuery.uniqueResult();
+		SbiThresholdValue hibDs=null;
+		try{
+		hibDs = (SbiThresholdValue) hqlQuery.uniqueResult();
+		}
+		catch (Exception e) {
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "9009", "component_impexp_messages");
+		}
 		return hibDs;
 	}
 

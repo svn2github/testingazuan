@@ -687,6 +687,7 @@ Create table `SBI_KPI` (
 	`input_attributes` Varchar(1000),
 	`model_reference` Varchar(255),
 	`target_audience` Varchar(1000),
+	UNIQUE (`code`),
  Primary Key (`KPI_ID`)) ENGINE = InnoDB;
  
  
@@ -705,7 +706,8 @@ Create table `SBI_THRESHOLD` (
 	`THRESHOLD_TYPE_ID` Int NOT NULL,
 	`name` Varchar(400),
 	`description` Varchar(1000),
-	`code` Varchar(45) default NULL,
+	`code` Varchar(45) NOT NULL,
+	UNIQUE (`code`),
  Primary Key (`THRESHOLD_ID`)) ENGINE = InnoDB;
 
   
@@ -717,8 +719,9 @@ Create table `SBI_THRESHOLD_VALUE` (
 	`position` Int,
 	`min_value` Double,
 	`max_value` Double,
-	`label` Varchar(20),
+	`label` Varchar(20) NOT NULL,
 	`colour` Varchar(20),
+	UNIQUE (`label`),
  Primary Key (`id_threshold_value`)) ENGINE = InnoDB;
 
 Create table `SBI_KPI_MODEL` (
@@ -726,7 +729,7 @@ Create table `SBI_KPI_MODEL` (
 	`KPI_ID` Int,
 	`KPI_MODEL_TYPE_ID` Int NOT NULL,
 	`KPI_PARENT_MODEL_ID` Int,
-	`KPI_MODEL_CD` Varchar(40),
+	`KPI_MODEL_CD` Varchar(40) NOT NULL,
 	`KPI_MODEL_NM` Varchar(400),
 	`KPI_MODEL_DESC` Varchar(1000),
 	UNIQUE (`KPI_MODEL_CD`),
@@ -753,14 +756,14 @@ Create table `SBI_KPI_MODEL_ATTR_VAL` (
 
 Create table `SBI_KPI_PERIODICITY` (
 	`id_kpi_periodicity` Int NOT NULL AUTO_INCREMENT,
-	`name` Varchar(400),
+	`name` Varchar(400) NOT NULL,
 	`months` Int,
 	`days` Int,
 	`hours` Int,
 	`minutes` Int,
 	`chron_string` Varchar(20),
 	`start_date` TIMESTAMP,
-	UNIQUE (`id_kpi_periodicity`),
+	UNIQUE (`name`),
  Primary Key (`id_kpi_periodicity`)) ENGINE = InnoDB;
 
 Create table `SBI_KPI_INSTANCE` (
@@ -827,8 +830,9 @@ Create table `SBI_RESOURCES` (
 	`RESOURCE_TYPE_ID` Int NOT NULL,
 	`TABLE_NAME` Varchar(40),
 	`COLUMN_NAME` Varchar(40),
-	`RESOURCE_NAME` Varchar(40),
+	`RESOURCE_NAME` Varchar(40) NOT NULL,
 	`RESOURCE_DESCR` Varchar(400),
+	UNIQUE (`RESOURCE_NAME`),
  Primary Key (`RESOURCE_ID`)) ENGINE = InnoDB;
 
 Create table `SBI_KPI_MODEL_RESOURCES` (
@@ -844,7 +848,7 @@ Create table `SBI_ALARM` (
 	`id_kpi_instance` Int NOT NULL,
 	`MODALITY_ID` Int NOT NULL COMMENT 'VIA MAIL, SMS,ETC...',
 	`DOCUMENT_ID` Int COMMENT 'DOCUMENTO PER ALLEGARE ALL''ALLARME',
-	`LABEL` Varchar(50),
+	`LABEL` Varchar(50) NOT NULL,
 	`NAME` Varchar(50),
 	`DESCR` Varchar(200),
 	`TEXT` Varchar(1000) COMMENT 'TESTO STATICO DA ALLEGARE ALLA NOTIFICA DELL''ALLARME ',
@@ -852,6 +856,7 @@ Create table `SBI_ALARM` (
 	`SINGLE_EVENT` Char(1) COMMENT 'INDICA SE L''ALLARME DEVE ESSERE RIPETITIVO OPPURE NO, NEL PRIMO CASO L''UTENTE DOVRA'' SPEGNERE L''ALLARME',
 	`AUTO_DISABLED` char(1) default NULL,
 	`id_threshold_value` Int NOT NULL,
+	UNIQUE (`LABEL`),
  Primary Key (`ALARM_ID`)) ENGINE = InnoDB
 COMMENT = 'TABELLA DI DEFINIZIONE DEGLI ALLARMI';
 
@@ -875,6 +880,7 @@ Create table `SBI_ALARM_CONTACT` (
 	`EMAIL` Varchar(100),
 	`MOBILE` Varchar(50),
 	`RESOURCES` varchar(200) default NULL,
+	UNIQUE (`NAME`),
  Primary Key (`ALARM_CONTACT_ID`)) ENGINE = InnoDB;
 
 Create table `SBI_ALARM_DISTRIBUTION` (

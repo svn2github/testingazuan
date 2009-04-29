@@ -607,6 +607,7 @@ Create table SBI_KPI (
 	INPUT_ATTRIBUTES Varchar(1000),
 	MODEL_REFERENCE Varchar(255),
 	TARGET_AUDIENCE Varchar(1000),
+UNIQUE(CODE),	
 Primary Key (KPI_ID)
 ) ;\p\g
 
@@ -626,7 +627,8 @@ Create table SBI_THRESHOLD (
 	THRESHOLD_TYPE_ID Integer NOT NULL,
 	NAME Varchar(400),
 	DESCRIPTION Varchar(1000),
-	CODE Varchar(45) default NULL,
+	CODE Varchar(45) NOT NULL,
+UNIQUE(CODE),	
 Primary Key (THRESHOLD_ID)
 ) ;\p\g
 
@@ -638,8 +640,9 @@ Create table SBI_THRESHOLD_VALUE (
 	POSITION Integer,
 	MIN_VALUE Float,
 	MAX_VALUE Float,
-	LABEL Varchar(20),
+	LABEL Varchar(20) NOT NULL,
 	COLOUR Varchar(20),
+UNIQUE(LABEL, THRESHOLD_ID),	
 Primary Key (id_threshold_value)
 ) ;\p\g
 
@@ -649,7 +652,7 @@ Create table SBI_KPI_MODEL (
 	KPI_ID Integer,
 	KPI_MODEL_TYPE_ID Integer NOT NULL,
 	KPI_PARENT_MODEL_ID Integer,
-	KPI_MODEL_CD Varchar(40),
+	KPI_MODEL_CD Varchar(40) NOT NULL,
 	KPI_MODEL_NM Varchar(400),
 	KPI_MODEL_DESC Varchar(1000),
 UNIQUE(KPI_MODEL_CD),	
@@ -675,13 +678,14 @@ Primary Key (KPI_MODEL_ATTR_VAL_ID)
 CREATE SEQUENCE SBI_KPI_PERIODICITY_SEQ;\p\g
 Create table SBI_KPI_PERIODICITY (
 	ID_KPI_PERIODICITY Integer NOT NULL with default next value for SBI_KPI_PERIODICITY_SEQ,
-	NAME Varchar(400),
+	NAME Varchar(400) NOT NULL,
 	MONTHS Integer,
 	DAYS Integer,
 	HOURS Integer,
 	MINUTES Integer,
 	CHRON_STRING Varchar(20),
 	START_DATE TIMESTAMP,
+UNIQUE(NAME),	
 Primary Key (id_kpi_periodicity)
 ) ;\p\g
 
@@ -732,6 +736,7 @@ Create table SBI_KPI_MODEL_INST (
 	DESCRIPTION Varchar(1000),
 	START_DATE Date,
 	END_DATE Date,
+UNIQUE(LABEL),	
 Primary Key (KPI_MODEL_INST)
 ) ;\p\g
 
@@ -741,7 +746,8 @@ Create table SBI_RESOURCES (
 	RESOURCE_TYPE_ID Integer NOT NULL,
 	TABLE_NAME Varchar(40),
 	COLUMN_NAME Varchar(40),
-	RESOURCE_NAME Varchar(40),
+	RESOURCE_NAME Varchar(40) NOT NULL,
+UNIQUE(RESOURCE_NAME),	
 Primary Key (RESOURCE_ID)
 ) ;\p\g
 CREATE SEQUENCE SBI_KPI_MODEL_RESOURCES_SEQ;\p\g 
@@ -758,7 +764,7 @@ Create table SBI_ALARM (
 	id_kpi_instance Integer NOT NULL,
 	MODALITY_ID Integer NOT NULL,
 	DOCUMENT_ID Integer,
-	LABEL Varchar(50),
+	LABEL Varchar(50) NOT NULL,
 	NAME Varchar(50),
 	DESCR Varchar(200),
 	TEXT Varchar(1000),
@@ -766,6 +772,7 @@ Create table SBI_ALARM (
 	SINGLE_EVENT Char(1),
 	AUTO_DISABLED Char(1),
 	id_threshold_value Integer NOT NULL,
+UNIQUE(LABEL),	
 Primary Key (ALARM_ID)
 ) ;\p\g
 
@@ -792,6 +799,7 @@ Create table SBI_ALARM_CONTACT (
 	EMAIL Varchar(100),
 	MOBILE Varchar(50),
 	RESOURCES Varchar(20),
+UNIQUE(NAME),	
 Primary Key (ALARM_CONTACT_ID)
 ) ;\p\g
 

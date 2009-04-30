@@ -8,7 +8,7 @@
 package it.eng.spagobi.sdk.documents.bo;
 
 public class SDKTemplate  implements java.io.Serializable {
-    private java.lang.String content;
+    private javax.activation.DataHandler content;
 
     private java.lang.String fileName;
 
@@ -16,7 +16,7 @@ public class SDKTemplate  implements java.io.Serializable {
     }
 
     public SDKTemplate(
-           java.lang.String content,
+           javax.activation.DataHandler content,
            java.lang.String fileName) {
            this.content = content;
            this.fileName = fileName;
@@ -28,7 +28,7 @@ public class SDKTemplate  implements java.io.Serializable {
      * 
      * @return content
      */
-    public java.lang.String getContent() {
+    public javax.activation.DataHandler getContent() {
         return content;
     }
 
@@ -38,7 +38,7 @@ public class SDKTemplate  implements java.io.Serializable {
      * 
      * @param content
      */
-    public void setContent(java.lang.String content) {
+    public void setContent(javax.activation.DataHandler content) {
         this.content = content;
     }
 
@@ -110,7 +110,7 @@ public class SDKTemplate  implements java.io.Serializable {
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("content");
         elemField.setXmlName(new javax.xml.namespace.QName("", "content"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "DataHandler"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

@@ -4,6 +4,9 @@
   <parameter name="adminPassword" value="admin"/>
   <parameter name="enableNamespacePrefixOptimization" value="true"/>
   <parameter name="disablePrettyXML" value="true"/>
+  <!-- 
+  <parameter name="attachments.Directory" value="c:/attachments"/>
+  -->
   <parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
   <parameter name="sendXsiTypes" value="true"/>
   <parameter name="sendMultiRefs" value="true"/>

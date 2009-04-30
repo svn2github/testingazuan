@@ -55,7 +55,7 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
    </complexType>
    <complexType name="SDKTemplate">
     <sequence>
-     <element name="content" nillable="true" type="soapenc:string"/>
+     <element name="content" nillable="true" type="apachesoap:DataHandler"/>
      <element name="fileName" nillable="true" type="soapenc:string"/>
     </sequence>
    </complexType>

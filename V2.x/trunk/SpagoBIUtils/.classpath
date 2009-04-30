@@ -19,5 +19,7 @@
 	<classpathentry kind="lib" path="lib/jsr223.jar"/>
 	<classpathentry kind="lib" path="lib/wss4j-1.5.7.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/activation.jar"/>
+	<classpathentry kind="lib" path="lib/mail-1.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

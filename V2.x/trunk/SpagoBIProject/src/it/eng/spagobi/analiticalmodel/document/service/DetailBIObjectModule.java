@@ -826,6 +826,9 @@ public class DetailBIObjectModule extends AbstractModule {
 
 			// build and ObjTemplate object using data into request
 			ObjTemplate objTemp = helper.recoverBIObjTemplateDetails();
+			if (objTemp!= null) {
+				objTemp.setBiobjId(obj.getId());
+			}
 			//if the template is not loaded check if default version is changed
 			if (objTemp == null){
 				String strCurTempVer = (String)request.getAttribute("versionTemplate");

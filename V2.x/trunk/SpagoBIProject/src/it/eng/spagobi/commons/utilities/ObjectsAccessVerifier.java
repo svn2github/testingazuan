@@ -285,6 +285,75 @@ public class ObjectsAccessVerifier {
     }
 
     /**
+     * Control if the user can develop the document specified by the input id
+     * 
+     * @param documentId The id of the document
+     * @param profile The user profile
+     * 
+     * @return A boolean control value
+     */
+    public static boolean canDevBIObject(Integer biObjectID, IEngUserProfile profile) {
+    	boolean toReturn = false;
+    	try {
+    		logger.debug("IN: obj id = [" + biObjectID + "]; user id = [" + ((UserProfile) profile).getUserId() + "]");
+    		// if user is administrator, he can develop, no need to make any query to database
+			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+				logger.debug("User [" + ((UserProfile) profile).getUserId() + "] is administrator. He can develop every document");
+				return true;
+			}
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(biObjectID);
+			toReturn = canDevBIObject(obj, profile);
+		} catch (Exception e) {
+		    logger.error(e);
+		    return false;
+		}
+    	logger.debug("OUT: returning " + toReturn);
+    	return toReturn;
+    }
+    
+    /**
+     * Control if the user can develop the input document
+     * 
+     * @param documentId The id of the document
+     * @param profile The user profile
+     * 
+     * @return A boolean control value
+     */
+    public static boolean canDevBIObject(BIObject obj, IEngUserProfile profile) {
+    	boolean toReturn = false;
+    	try {
+    		logger.debug("IN: obj label = [" + obj.getLabel() + "]; user id = [" + ((UserProfile) profile).getUserId() + "]");
+    		// if user is administrator, he can develop, no need to make any query to database
+			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+				logger.debug("User [" + ((UserProfile) profile).getUserId() + "] is administrator. He can develop every document");
+				return true;
+			}
+			// if user is not an administrator and document is not in DEV state, document cannot be developed
+			if (!"DEV".equals(obj.getStateCode())) {
+				logger.debug("User [" + ((UserProfile) profile).getUserId() + "] is not an administrator and document is not in DEV state, so it cannot be developed");
+				return true;
+			}
+			// if user is not an administrator and document is in DEV state, we must see if he has development permission
+	    	List folders = obj.getFunctionalities();
+	    	Iterator it = folders.iterator();
+	    	while (it.hasNext()) {
+	    		Integer folderId = (Integer) it.next();
+	    		boolean canDevInFolder = canDev(folderId, profile);
+	    		if (canDevInFolder) {
+	    			logger.debug("User can develop in functionality with id = " + folderId);
+	    			toReturn = true;
+	    			break;
+	    		}
+	    	}
+		} catch (Exception e) {
+		    logger.error("Error while loading BIObject", e);
+		    return false;
+		}
+    	logger.debug("OUT: returning " + toReturn);
+    	return toReturn;
+    }
+    
+    /**
      * Control if the current user can develop new object into the functionality
      * identified by its id.
      * 

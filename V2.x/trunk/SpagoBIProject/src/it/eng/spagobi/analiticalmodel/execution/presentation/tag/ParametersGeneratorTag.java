@@ -869,7 +869,7 @@ public class ParametersGeneratorTag extends TagSupport {
 		userId = getProfile().getUserId().toString();
 		String userUniqueIdentifier = getProfile().getUserUniqueIdentifier().toString();
 		boolean mustRefreshPageForCorrelation = mustRefreshPageForCorrelation(lblBiParamDependent);
-		String baseUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE" + 
+		String baseUrl = GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier) + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE" + 
 		"&PAGE=SelectParameterPage&objParId=" + biparam.getId().toString() +  
 		"&parameterId=" + biparam.getParID().toString() + "&roleName=" + roleName +
 		"&parameterFieldName=" + parameterFieldName + "&returnParam=" + biparam.getParameterUrlName() + requestIdentity +

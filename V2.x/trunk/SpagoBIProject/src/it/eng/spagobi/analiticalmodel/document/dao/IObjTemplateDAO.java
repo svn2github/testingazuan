@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 
 import java.util.List;
@@ -81,5 +82,14 @@ public interface IObjTemplateDAO {
 	 * @throws EMFInternalError the EMF internal error
 	 */
 	public void deleteBIObjectTemplate(Integer tempId) throws EMFInternalError;
+	
+	/**
+	 * Insert a new bi object template.
+	 * 
+	 * @param objTemplate the new template
+	 * 
+	 * @throws EMFInternalError the EMF internal error
+	 */
+	public void insertBIObjectTemplate(ObjTemplate objTemplate) throws EMFUserError, EMFInternalError;
 	
 }

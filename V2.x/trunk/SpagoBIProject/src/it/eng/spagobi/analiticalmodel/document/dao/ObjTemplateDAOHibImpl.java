@@ -29,15 +29,19 @@ package it.eng.spagobi.analiticalmodel.document.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjTemplates;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -45,6 +49,7 @@ import org.hibernate.Transaction;
 
 public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjTemplateDAO {
 
+	static private Logger logger = Logger.getLogger(ObjTemplateDAOHibImpl.class);
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO#loadBIObjectTemplate(java.lang.Integer)
@@ -229,6 +234,86 @@ public class ObjTemplateDAOHibImpl extends AbstractHibernateDAO implements IObjT
 				if (aSession.isOpen()) aSession.close();
 			}
 		}		
+	}
+
+
+	public void insertBIObjectTemplate(ObjTemplate objTemplate)
+			throws EMFUserError, EMFInternalError {
+		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;		
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			// store the binary content
+			SbiBinContents hibBinContent = new SbiBinContents();
+			byte[] bytes = objTemplate.getContent();
+			hibBinContent.setContent(bytes);
+			
+			Integer idBin = (Integer) aSession.save(hibBinContent);
+			// recover the saved binary hibernate object
+			hibBinContent = (SbiBinContents) aSession.load(SbiBinContents.class, idBin);
+			// set to not active the current active template
+			String hql = "update SbiObjTemplates sot set sot.active = false where sot.active = true and sot.sbiObject.biobjId=?";
+	        Query query = aSession.createQuery(hql);
+	        query.setInteger(0, objTemplate.getBiobjId().intValue());
+	        try{
+	        	query.executeUpdate();
+	        } catch (Exception e) {
+	            logger.error("Exception",e);
+	        }
+	        // get the next prog for the new template
+	        Integer maxProg = null;
+	        Integer nextProg = null;
+	        
+			hql = "select max(sot.prog) as maxprog from SbiObjTemplates sot where sot.sbiObject.biobjId=?";
+			query = aSession.createQuery(hql);
+			
+			query.setInteger(0, objTemplate.getBiobjId().intValue());
+			List result = query.list();
+			Iterator it = result.iterator();
+			while (it.hasNext()){
+				maxProg = (Integer)it.next();
+			}
+			if (maxProg == null) {
+				nextProg = new Integer(1);
+			} else {
+				nextProg = new Integer(maxProg.intValue() + 1);
+			}
+	        
+	        // store the object template
+			SbiObjTemplates hibObjTemplate = new SbiObjTemplates();
+	        //check if id is already defined. In positive case update template else insert a new one
+	         if (objTemplate.getId() != null && objTemplate.getId().compareTo(new Integer("-1")) != 0){
+	        	hibObjTemplate = (SbiObjTemplates)aSession.load(SbiObjTemplates.class, objTemplate.getId());
+	        	hibObjTemplate.setActive(new Boolean(true));
+	         } else {
+	        	hibObjTemplate.setActive(new Boolean(true));
+	     		hibObjTemplate.setCreationDate(new Date());
+	     		hibObjTemplate.setName(objTemplate.getName());
+	     		hibObjTemplate.setProg(nextProg);
+	     		hibObjTemplate.setSbiBinContents(hibBinContent);
+	     		SbiObjects obj = (SbiObjects) aSession.load(SbiObjects.class, objTemplate.getBiobjId());
+	     		hibObjTemplate.setSbiObject(obj);
+	     		// metadata
+	     		String user = objTemplate.getCreationUser();
+	     		if (user == null || user.equals(""))user = obj.getCreationUser();
+	     		hibObjTemplate.setCreationUser(user);
+	     		hibObjTemplate.setDimension(objTemplate.getDimension());
+	     		
+	     		aSession.save(hibObjTemplate);
+	         }
+			tx.commit();
+		} catch(HibernateException he) {
+			logException(he);
+			if (tx != null) tx.rollback();	
+			throw new EMFUserError(EMFErrorSeverity.ERROR, "100");  
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen()) aSession.close();
+			}
+			logger.debug("OUT");
+		}
 	}
 
 }

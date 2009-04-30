@@ -500,28 +500,30 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				hibObjFunc.add(aSbiObjFunc);
 			}
 			hibBIObject.setSbiObjFuncs(hibObjFunc);
+			
+			tx.commit();
+			
 			// update biobject template info 
-			if(objTemp != null) {
-				try{
+			if (objTemp != null) {
+				try {
 					ObjTemplate oldTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(biObject.getId());
 					//insert or update new template
-					insertObjTemplate(aSession, objTemp, hibBIObject);
+					DAOFactory.getObjTemplateDAO().insertBIObjectTemplate(objTemp);
 					//if the input document is a document composition and template is changed deletes existing parameters 
 					//and creates all new parameters automatically 
 					//(the parameters are recovered from all documents that compose general document)
 					if (loadParsDC &&
 						(oldTemp==null || objTemp.getId()==null || objTemp.getId().compareTo(oldTemp.getId()) != 0)){
-							insertParametersDocComposition(aSession, biObject, objTemp, true);
+							insertParametersDocComposition(biObject, objTemp, true);
 					}
 				 } catch (Exception e) {
 			        	logger.error("Error during creation of document composition parameters : ", e);
 			        	throw new EMFUserError(EMFErrorSeverity.ERROR, e.getMessage());
-			      }
+			     }
 				
 			}
 			
 			
-			tx.commit();	
 			logger.debug("OUT");
 		}  catch (HibernateException he) {
 			logger.error(he);
@@ -529,90 +531,12 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} finally {
-			if (aSession!=null){
+			if (aSession!=null) {
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
 	}
 
-	
-	private void insertObjTemplate(Session aSession, ObjTemplate objTemp, SbiObjects hibBIObject) throws EMFUserError {
-		// store the binary content
-		logger.debug("IN");
-		SbiBinContents hibBinContent = new SbiBinContents();
-		byte[] bytes = null;
-		try {
-			bytes = objTemp.getContent();
-		} catch (EMFInternalError e) {
-			logger.error("Could not retrieve content of ObjTemplate object in input.");
-			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		}
-		hibBinContent.setContent(bytes);
-		
-		Integer idBin = (Integer)aSession.save(hibBinContent);
-		// recover the saved binary hibernate object
-		hibBinContent = (SbiBinContents) aSession.load(SbiBinContents.class, idBin);
-		// set to not active the current active template
-		//String hql = "update SbiObjTemplates sot set sot.active = false where sot.active = true and sot.sbiObject.biobjId="+hibBIObject.getBiobjId();
-		String hql = "update SbiObjTemplates sot set sot.active = false where sot.active = true and sot.sbiObject.biobjId=?";
-        Query query = aSession.createQuery(hql);
-        query.setInteger(0, hibBIObject.getBiobjId().intValue());
-        try{
-        	int rowCount = query.executeUpdate();
-        } catch (Exception e) {
-            logger.error("Exception",e);
-        }
-        // get the next prog for the new template
-        Integer maxProg = null;
-        Integer nextProg = null;
-//        try {
-//        	nextProg = DAOFactory.getObjTemplateDAO().getNextProgForTemplate(hibBIObject.getBiobjId());
-//        } catch (Exception e) {
-//        	throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-//        }
-        
-		hql = "select max(sot.prog) as maxprog from SbiObjTemplates sot where sot.sbiObject.biobjId=?";
-		query = aSession.createQuery(hql);
-		
-		query.setInteger(0, hibBIObject.getBiobjId().intValue());
-		List result = query.list();
-		Iterator it = result.iterator();
-		while (it.hasNext()){
-			maxProg = (Integer)it.next();
-		}
-		if(maxProg==null){
-			nextProg = new Integer(1);
-		} else {
-			nextProg = new Integer(maxProg.intValue() + 1);
-		}
-        
-        // store the object template
-		SbiObjTemplates hibObjTemplate = new SbiObjTemplates();
-        //check if id is already defined. In positive case update template else insert a new one
-         if (objTemp.getId() != null && objTemp.getId().compareTo(new Integer("-1"))!=0){
-        	hibObjTemplate = (SbiObjTemplates)aSession.load(SbiObjTemplates.class, objTemp.getId());
-        	hibObjTemplate.setActive(new Boolean(true));
-         }
-         else{
-        	hibObjTemplate.setActive(new Boolean(true));
-     		hibObjTemplate.setCreationDate(new Date());
-     		hibObjTemplate.setName(objTemp.getName());
-     		hibObjTemplate.setProg(nextProg);
-     		hibObjTemplate.setSbiBinContents(hibBinContent);
-     		hibObjTemplate.setSbiObject(hibBIObject);
-     		// metadata
-     		String user = objTemp.getCreationUser();
-     		if (user == null || user.equals(""))user = hibBIObject.getCreationUser();
-     		hibObjTemplate.setCreationUser(user);
-     		hibObjTemplate.setDimension(objTemp.getDimension());
-     		
-     		aSession.save(hibObjTemplate);
-         }
-         logger.debug("OUT");
-		
-	}
-	
-	
 	/**
 	 * Implements the query to insert a BIObject and its template. All information needed is stored
 	 * into the input <code>BIObject</code> and <code>ObjTemplate</code> objects.
@@ -739,33 +663,34 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 			hibBIObject.setSbiObjFuncs(hibObjFunc);	
 			
-			if(objTemp != null) {
-				insertObjTemplate(aSession, objTemp, hibBIObject);
-			}
+			// we must close transaction before saving ObjTemplate, since ObjTemplateDAO opens a new transaction and it would fail in Ingres
+			tx.commit();
+			obj.setId(id);
 			
+			if (objTemp != null) {
+				objTemp.setBiobjId(id);
+				DAOFactory.getObjTemplateDAO().insertBIObjectTemplate(objTemp);
+			}
 			
 			//if the document is a document composition creates all parameters automatically 
 			//(the parameters are recovered from all documents that compose general document)
-			if (loadParsDC){
-				//next commit is necessary for the insertion of document composition parameters
-				tx.commit();
-				tx = aSession.beginTransaction();
-				insertParametersDocComposition(aSession, hibBIObject);
+			if (loadParsDC) {
+				insertParametersDocComposition(id);
 			}
-			
-			tx.commit();
-			obj.setId(id);
 		} catch (HibernateException he) {
 			logger.error("HibernateException",he);
 			if (tx != null)
 				tx.rollback();
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} catch (EMFInternalError e) {
+			 logger.error("Error inserting new BIObject", e);
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} finally {
-			if (aSession!=null){
+			if (aSession!=null) {
 				if (aSession.isOpen()) aSession.close();
 			}
-			logger.debug("OUT");
 		}
+		logger.debug("OUT");
 	}
 
 	
@@ -1420,10 +1345,14 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @param flgDelete the flag that suggest if is necessary to delete parameters before the insertion
 	 * @throws EMFUserError
 	 */
-	private void insertParametersDocComposition(Session aSession, BIObject biObject, ObjTemplate template, boolean flgDelete) throws EMFUserError {
+	private void insertParametersDocComposition(BIObject biObject, ObjTemplate template, boolean flgDelete) throws EMFUserError {
 		logger.debug("IN");
+		Session aSession = null;
+		Transaction tx = null;
 		//get informations about documents child
-		try{
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
 			//gets document composition configuration
 	        if(template==null)  return;
 	        byte[] contentBytes = template.getContent();
@@ -1499,30 +1428,44 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		        	}
 	        	}
 	        }
-	        logger.debug("OUT");
+	        tx.commit();
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} catch (EMFUserError eu) {
 			throw eu;
 		} catch (Exception e) {
 			logger.error("Error while creating parameter for document composition.", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
 		}
+		logger.debug("OUT");
+
 	}
 	
 	/**
 	 * Called only for document composition (insert object modality).
 	 * Puts parameters into the document composition getting these from document's children.
-	 * @param aSession the hibernate session
-	 * @param sbiObject the hibernate object
+	 * @param biobjectId the document composition biobject id
 	 * @throws EMFUserError
 	 */
-	private void insertParametersDocComposition(Session aSession, SbiObjects sbiObject) throws EMFUserError {
+	private void insertParametersDocComposition(Integer biobjectId) throws EMFUserError {
 		logger.debug("IN");
 		//get informations about documents child
-		try{
+		Session aSession = null;
+		Transaction tx = null;
+		try {
 			//gets document composition configuration
-			ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(sbiObject.getBiobjId());
+			ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(biobjectId);
+			aSession = getSession();
+			tx = aSession.beginTransaction();
 			logger.debug("Template document composition in insert: " + template );
-	        if(template==null)  return;
+	        if (template==null) return;
 	        byte[] contentBytes = template.getContent();
 	        String contentStr = new String(contentBytes);
 	        SourceBean content = SourceBean.fromXMLString(contentStr);
@@ -1547,9 +1490,9 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		        		if (!totalParameters.contains(objPar.getLabel())){
 		        			SbiObjects aSbiObject = new SbiObjects();
 		        			//aSbiObject.setBiobjId(biObject.getId());
-		        			Integer objId = sbiObject.getBiobjId();
+		        			Integer objId = biobjectId;
 							if (objId == null || objId.compareTo(new Integer("0"))==0)
-								objId = sbiObject.getBiobjId();
+								objId = biobjectId;
 		        			aSbiObject.setBiobjId(objId);
 		        			
 		        			SbiParameters aSbiParameter = new SbiParameters();
@@ -1572,13 +1515,23 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		        	}
 	        	}
 	        }
-	        logger.debug("OUT");
-		} catch (EMFUserError eu) {
-			throw eu;
+	        tx.commit();
+		} catch (EMFUserError e) {
+			throw e;
+		} catch (HibernateException he) {
+			logger.error(he);
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		} catch (Exception e) {
 			logger.error("Error while creating parameter for document composition.", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null) {
+				if (aSession.isOpen()) aSession.close();
+			}
 		}
+		logger.debug("OUT");
 	}
 
 

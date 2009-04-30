@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.sdk;
 
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 
 import org.apache.axis.MessageContext;
@@ -44,6 +45,7 @@ public class AbstractSDKService {
 				logger.debug("User identifier found = [" + userIdentifier + "].");
 				if (userIdentifier == null) {
 					logger.warn("User identifier not found!! cannot build user profile object");
+					throw new Exception("Cannot create user profile");
 				} else {
 					try {
 						profile = UserUtilities.getUserProfile(userIdentifier);
@@ -57,6 +59,8 @@ public class AbstractSDKService {
 			} else {
 				logger.debug("User profile for user [" + profile.getUserUniqueIdentifier() + "] retrieved.");
 			}
+			UserProfile userProfile = (UserProfile) profile;
+			logger.info("User profile retrieved: userId = [" + userProfile.getUserId() + "]; username = [" + userProfile.getUserName() + "]");
 		} finally {
 			logger.debug("OUT");
 		}

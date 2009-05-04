@@ -49,6 +49,7 @@ public class DetailModelInstanceUtil {
 		Integer chartTypeId = null;
 		Integer idKpiPeriodicity = null;
 		boolean restoreDefaultFlag = false;
+		boolean saveKpiHistoryFlag = false;
 
 		String kpiIdS = (String) serviceRequest.getAttribute("KPI_ID");
 		String thresholdIdS = (String) serviceRequest
@@ -59,9 +60,15 @@ public class DetailModelInstanceUtil {
 				.getAttribute("ID_KPI_PERIODICITY");
 		String restoreDefault = (String) serviceRequest
 				.getAttribute("RESTORE_DEFAULT");
+		String saveKpiHistory = (String) serviceRequest
+				.getAttribute("SAVE_TO_KPI_HISTORY");
 		
 		if (restoreDefault != null) {
 			restoreDefaultFlag = true;
+		}
+		
+		if (saveKpiHistory != null) {
+			saveKpiHistoryFlag = true;
 		}
 
 		if (kpiIdS == null || kpiIdS.equalsIgnoreCase("-1")) {
@@ -96,6 +103,7 @@ public class DetailModelInstanceUtil {
 			kpiInstance.setKpi(kpiId);
 			kpiInstance.setChartTypeId(chartTypeId);
 			kpiInstance.setPeriodicityId(idKpiPeriodicity);
+			kpiInstance.setSaveKpiHistory(saveKpiHistoryFlag);
 			if (restoreDefaultFlag) {
 				DAOFactory.getKpiInstanceDAO().setKpiInstanceFromKPI(kpiInstance, kpiId);
 			} else {
@@ -142,9 +150,6 @@ public class DetailModelInstanceUtil {
 		toReturn.setDescription(modelDescription);
 		toReturn.setLabel(modelLabel);
 		// CONTROLLARE LA DATA
-		
-		
-		
 		Date startDate = null;
 		Date endDate = null;
 		

@@ -14,8 +14,10 @@ public class KpiInstance {
 	Integer kpi = null ;// kpiId related to the kpiInstance
 	Date d = null;	
 	Double weight = null; 
-	Double target = null; 
-	
+	Double target = null;
+	boolean saveKpiHistory = false; // if is true the value of kpiInstance
+                                    //will store in the kpiInstance History table
+
 	public Integer getPeriodicityId() {
 		return periodicityId;
 	}
@@ -99,6 +101,14 @@ public class KpiInstance {
 
 	public void setScaleName(String scaleName) {
 		this.scaleName = scaleName;
+	}
+
+	public boolean isSaveKpiHistory() {
+		return saveKpiHistory;
+	}
+
+	public void setSaveKpiHistory(boolean saveKpiHistory) {
+		this.saveKpiHistory = saveKpiHistory;
 	}
 	
 

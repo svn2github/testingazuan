@@ -450,6 +450,13 @@ value='<%= endDateS %>'/> </div>
 <input type="checkbox" name="RESTORE_DEFAULT" >
 </div>
 
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.saveToKpiHistory" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+<input type="checkbox" name="SAVE_TO_KPI_HISTORY" >
+</div>
+
 <%if (kpiId != null) {%>
 
 <div class='div_detail_label'><span

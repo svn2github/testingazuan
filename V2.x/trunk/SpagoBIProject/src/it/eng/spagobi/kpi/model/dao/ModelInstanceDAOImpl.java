@@ -468,11 +468,18 @@ IModelInstanceDAO {
 			.getSbiKpiInstance();
 			boolean newKpiInstanceHistory = true;
 			boolean deleteOldHistory = false;
+			boolean dontSaveKpiHistory = false;
 
 			// new kpiInstance is null
 			if (value.getKpiInstance() == null) {
 				newKpiInstanceHistory = false;
 				deleteOldHistory = true;
+			}
+			
+			if (value.getKpiInstance() != null
+					&& (!value.getKpiInstance().isSaveKpiHistory())) {
+				newKpiInstanceHistory = false;
+				dontSaveKpiHistory = true;
 			}
 
 			// old kpiInstance is null and new kpiInstance has a value
@@ -535,7 +542,7 @@ IModelInstanceDAO {
 			SbiKpiInstance kpiInstanceToCreate = null;
 
 			if (value.getKpiInstance() != null) {
-				if (newKpiInstanceHistory) {
+				if (newKpiInstanceHistory || dontSaveKpiHistory) {
 					kpiInstanceToCreate = setSbiKpiInstanceFromModelInstance(
 							aSession, value, oldSbiKpiInstance);
 				} else {

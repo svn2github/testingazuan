@@ -23,7 +23,9 @@ package it.eng.spagobi.sdk;
 
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.UserUtilities;
+import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 
 import org.apache.axis.MessageContext;
 import org.apache.log4j.Logger;
@@ -65,6 +67,34 @@ public class AbstractSDKService {
 			logger.debug("OUT");
 		}
 		return profile;
+	}
+	
+	/**
+	 * Retrieves user profile and check if he has rights for the functionality in input.
+	 * In case he has no rights, a <code>NotAllowedOperationException</code> with the error message in input is thrown.
+	 * 
+	 * @param userFunctionality The user functionality
+	 * @param errorMessage The error message to be used in case a <code>NotAllowedOperationException</code> must be thrown
+	 * @throws NotAllowedOperationException In case the user has no rights for the specified user functionality
+	 * @throws Exception is case of any other error
+	 */
+	protected void checkUserPermissionForFunctionality(String userFunctionality, String errorMessage) 
+						throws NotAllowedOperationException, Exception {
+		logger.debug("IN");
+		try {
+			IEngUserProfile profile = getUserProfile();
+			UserProfile userProfile = (UserProfile) profile;
+	    	if (!userProfile.isAbleToExecuteAction(userFunctionality)) {
+	    		logger.error("Current user [" + userProfile.getUserId() + "] has no rights for " + userFunctionality + " functionality.");
+	    		NotAllowedOperationException e = new NotAllowedOperationException();
+	    		e.setFaultString(errorMessage);
+	    		throw e;
+	    	} else {
+	    		logger.debug("Current user [" + userProfile.getUserId() + "] has rights for " + userFunctionality + " functionality.");
+	    	}
+		} finally {
+			logger.debug("OUT");
+		}
 	}
 	
 }

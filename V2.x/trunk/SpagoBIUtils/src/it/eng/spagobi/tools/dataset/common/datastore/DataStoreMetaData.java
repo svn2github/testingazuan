@@ -37,8 +37,7 @@ public class DataStoreMetaData implements IDataStoreMetaData {
 	List fieldsMeta;
 	Map name2IndexMap;
 	Map properties;
-	
-	
+
 	public DataStoreMetaData() {
 		idFieldIndex = -1;
 		name2IndexMap = new HashMap();
@@ -140,6 +139,12 @@ public class DataStoreMetaData implements IDataStoreMetaData {
 		fieldsMeta.remove( pivotFieldIndex );
 	}
 
+	public Map getProperties() {
+		return properties;
+	}
 	
+	public List getFieldsMeta() {
+		return fieldsMeta;
+	}
 
 }

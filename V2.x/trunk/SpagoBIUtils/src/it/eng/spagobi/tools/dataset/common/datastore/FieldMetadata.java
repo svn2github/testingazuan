@@ -9,7 +9,7 @@ public class FieldMetadata implements IFieldMetaData {
 	String name;
 	Class type;
 	Map properties;
-	
+
 	public FieldMetadata() {
 		super();
 		this.properties= new HashMap();
@@ -50,4 +50,8 @@ public class FieldMetadata implements IFieldMetaData {
 		return name + " (" + type.getName()+ ")";
 	}
 
+	public Map getProperties() {
+		return properties;
+	}
+	
 }

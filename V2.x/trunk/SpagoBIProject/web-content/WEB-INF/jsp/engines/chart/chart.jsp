@@ -27,14 +27,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.jfree.chart.JFreeChart"%>
 <%@page import="org.jfree.chart.ChartUtilities"%>
 <%@page import="java.io.PrintWriter"%>
-<%@page
-	import="org.jfree.chart.imagemap.StandardToolTipTagFragmentGenerator"%>
-<%@page
-	import="org.jfree.chart.imagemap.StandardURLTagFragmentGenerator"%>
+<%@page	import="org.jfree.chart.imagemap.StandardToolTipTagFragmentGenerator"%>
+<%@page	import="org.jfree.chart.imagemap.StandardURLTagFragmentGenerator"%>
 <%@page import="it.eng.spagobi.engines.chart.bo.ChartImpl"%>
 <%@page import="org.jfree.chart.ChartRenderingInfo"%>
-<%@page
-	import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar"%>
+<%@page	import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar"%>
 <%@page import="org.jfree.data.general.Dataset"%>
 <%@page import="org.safehaus.uuid.UUIDGenerator"%>
 
@@ -42,19 +39,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.jfree.chart.entity.StandardEntityCollection"%>
 <%@page import="it.eng.spago.error.EMFErrorHandler"%>
 <%@page import="java.util.Vector"%>
-<%@page
-	import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
-<%@page
-	import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup"%>
-<%@page
-	import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie"%>
-<%@page
-	import="it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart"%>
+<%@page	import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts"%>
+<%@page	import="it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup"%>
+<%@page	import="it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie"%>
+<%@page	import="it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart"%>
 <%@page import="it.eng.spagobi.engines.chart.utils.DatasetMap"%>
-<%@page
-	import="it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts"%>
+<%@page	import="it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="org.jfree.data.category.DefaultCategoryDataset"%>
+<%@page import="org.jfree.data.general.DefaultValueDataset"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 
 <%
@@ -115,18 +108,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Vector seriesNames=null;
 	Vector catGroupsNames=null;
 	
-	//HashMap categories=null;
-	//Vector selectedSeries=null;  // series currently selected
-	//List series=null;  // the series in the complete dataset
-	//int numberCatVisualization=1;
-	//int catsnum=0;
-	//int categoryCurrent=0;
-	//String categoryCurrentName="";
-	//String catTitle="category";
-	//String serTitle="serie";
-	//boolean makeSlider=false;
-
-	
 	String refreshUrlCategory="";
 	String refreshUrlSerie="";
 
@@ -136,14 +117,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		if(userProfile==null){
 			userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-			//userId=(String)userProfile.getUserUniqueIdentifier();
 			userId=(String)((UserProfile)userProfile).getUserId();
 		}
 
-			//ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
 		ChartImpl sbi = (ChartImpl)sbModuleResponse.getAttribute("sbi");
 		String documentid=(objO.getId()).toString();
-		//String documentid=(String)aServiceResponse.getAttribute("documentid");
 		DatasetMap datasetMap=(DatasetMap)sbModuleResponse.getAttribute("datasets");
 		DatasetMap copyDatasets=null;
 
@@ -156,16 +134,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String ch=(String)request.getParameter(par);
 				if(ch.equalsIgnoreCase("true")){
 					sbi.setChangeViewsParameter(par,true);}
-				else {if(ch.equalsIgnoreCase("false"));
+				else {
+					if(ch.equalsIgnoreCase("false"));
 					{
 						sbi.setChangeViewsParameter(par,false);}
-							}
+					}
 				}
 		}
-		
-		
-		// in the case of document composition check if serie or category have been previously defined
 
+		
+	// in the case of document composition check if serie or category have been previously defined
 	datasetMap.setSelectedSeries(new Vector());
 	if(sbiMode.equalsIgnoreCase("WEB") || docComposition){
 		if(sbModuleResponse.getAttribute("category")!=null){
@@ -182,12 +160,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 	}
 
-	
-
 	if(sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART")){
 		//if(sbi.getSubtype().equalsIgnoreCase("simplebar") || sbi.getSubtype().equalsIgnoreCase("linkableBar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar_group")){
 		if(sbi.getSubtype().equalsIgnoreCase("simplebar") || sbi.getSubtype().equalsIgnoreCase("linkableBar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar")){
-// returns a new datasets map filtered
+			// returns a new datasets map filtered
 			copyDatasets=datasetMap.filteringSimpleBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
 			filterCatGroup=((BarCharts)sbi).isFilterCatGroups();
 		}
@@ -198,7 +174,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			copyDatasets=datasetMap.filteringClusterChart(request,(ClusterCharts)sbi,sbiMode,docComposition);
 		}
 		else if(sbi.getSubtype().equalsIgnoreCase("stacked_bar_group")){
-			//copyDatasets=datasetMap;
 			copyDatasets=datasetMap.filteringGroupedBarChart(request,(StackedBarGroup)sbi,sbiMode,docComposition);
 		}
 	}
@@ -253,21 +228,125 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			((ILinkableChart)sbi).setMode(SpagoBIConstants.DOCUMENT_COMPOSITION);
 		
 			completeUrl="javascript:parent.execCrossNavigation(this.name, '"+drillLabel+"','"+rootDocParameter;
-				}
-			else
-			{
-				((ILinkableChart)sbi).setMode("normal");
-			}
-		
-
-		((ILinkableChart)sbi).setRootUrl(completeUrl);
-
 		}
+		else
+		{
+			((ILinkableChart)sbi).setMode("normal");
+		}
+			((ILinkableChart)sbi).setRootUrl(completeUrl);
+
+	}
 
 		
-	////////////// Chart creation/////////////////////77
+	////////////// Chart creation/////////////////////
+	String urlPng = "";
+	boolean showSlider = false;
+	Map refreshUrlPars = new HashMap();
+	//if the chart is multiple every serie represent a dataset and it creates a chart for every dataset
+	if(sbi.getMultichart()){
+		if (sbi.getOrientationMultichart().equalsIgnoreCase("horizontal")){ %>
+		<br>
+		<table align="center">
+			<tr>
+		<% }
+		HashMap mapDataset = copyDatasets.getDatasets();
+		DatasetMap tmpDatasetMap = null;
+		String precKey = "";
+		String  key = "";
+		int idx = 0;
+		Iterator iterator = mapDataset.keySet().iterator();
+		key = (String ) iterator.next();
+		while (iterator.hasNext()){	
+				tmpDatasetMap = new DatasetMap();
+				precKey = (precKey.indexOf("__") > 0 ) ? precKey.substring(0,precKey.indexOf("__")): precKey;
+				String tmpKey = (key.indexOf("__") > 0 ) ? key.substring(0,key.indexOf("__")): key;
+				while (precKey.equals("") || precKey.equalsIgnoreCase(tmpKey)){
+					precKey = tmpKey;
+					
+					DefaultValueDataset dataset=(DefaultValueDataset) mapDataset.get(key);  
+					Dataset copyDataset=null;
+					try {
+						copyDataset = (DefaultValueDataset)dataset.clone();	// clone dataset
+					} catch (CloneNotSupportedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					tmpDatasetMap.getDatasets().put(key, copyDataset);
+					if (iterator.hasNext()){
+						key = (String ) iterator.next();
+						tmpKey = (key.indexOf("__") > 0 ) ? key.substring(0,key.indexOf("__")): key;
+					}
+					else
+						break; //precKey = "__"; // force 
+				}
+				precKey = "";
+				JFreeChart chart=null;
+				// create the chart
+				chart = sbi.createChart(tmpDatasetMap);
+			
+				//Create the temporary file
+				String executionId = uuidO;
+				executionId = executionId.replaceAll("-", "");
 	
-		JFreeChart chart=null;
+				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+				//Saving image on a temporary file
+				String dir=System.getProperty("java.io.tmpdir");
+				String path_param=executionId+idx;
+				String path=dir+"/"+executionId+idx+".png";
+				java.io.File file1 = new java.io.File(path);
+				ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
+	
+				// Set the Url for refreshing the chart: in case of document composition specify also the execution page and document_id
+				refreshUrlPars = new HashMap();
+				refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+					
+				if(sbiMode.equalsIgnoreCase("WEB") || docComposition==true){
+				   	Map pars = new HashMap();
+				   	pars.put("PAGE", "ExecuteBIObjectPage");
+				   	pars.put("MESSAGEDET", "EXEC_PHASE_RUN");
+				   	refreshUrl = urlBuilder.getUrl(request, pars);
+					}
+					else{
+						if(urlBuilder instanceof PortletUrlBuilder){
+						   	refreshUrl = ((PortletUrlBuilder)urlBuilder).getRenderUrl(request, refreshUrlPars);
+						}
+						else{
+						  	refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
+						}
+					}
+				   	
+					//String urlPng=urlBuilder.getResourceLink(request, "/servlet/AdapterHTTP?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path);
+					String auditParameter="";
+					if(executionAuditId_chart!=null){
+						auditParameter="&"+AuditManager.AUDIT_ID+"="+executionAuditId_chart.toString();
+					}
+					
+					urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+							"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path_param+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE"+auditParameter;
+	
+					if (sbi.getOrientationMultichart().equalsIgnoreCase("horizontal")){
+			%>
+			<!-- Begin drawing the page for speedometerMultiValue-->
+				<td> 
+				<%} %>
+					<div align="center">
+						<img id="image" src="<%=urlPng%>" BORDER="0" alt="" USEMAP="#chart" />
+					</div>
+				<%if (sbi.getOrientationMultichart().equalsIgnoreCase("horizontal")){ %>
+				</td>
+				<%} %>
+			
+		
+		<% idx++;
+		} //while (iterator.hasNext()){
+		if (sbi.getOrientationMultichart().equalsIgnoreCase("horizontal")){ %>	
+			</tr>
+		</table>
+		<%} 
+	} //if(sbi.getMultichart())
+		
+	else{
+	    JFreeChart chart=null;
 		// create the chart
 		chart = sbi.createChart(copyDatasets);
 
@@ -277,8 +356,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
 		//Saving image on a temporary file
-		
-		
 		String dir=System.getProperty("java.io.tmpdir");
 		String path_param=executionId;
 		String path=dir+"/"+executionId+".png";
@@ -286,10 +363,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		ChartUtilities.saveChartAsPNG(file1, chart, sbi.getWidth(), sbi.getHeight(), info);
 
 		/// Chart created and saved
-	   		
-		
 		// Set the Url for refreshing the chart: in case of document composition specify also the execution page and document_id
-		Map refreshUrlPars = new HashMap();
+		refreshUrlPars = new HashMap();
 		refreshUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 			
 		if(sbiMode.equalsIgnoreCase("WEB") || docComposition==true){
@@ -313,19 +388,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				auditParameter="&"+AuditManager.AUDIT_ID+"="+executionAuditId_chart.toString();
 			}
 			
-			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+			urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 					"?ACTION_NAME=GET_PNG&NEW_SESSION=TRUE&userid="+userId+"&path="+path_param+"&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE"+auditParameter;
 			
 			//add the serie parameter
 		if(datasetMap.getSelectedSeries().contains("allseries")){
 			refreshUrlCategory=refreshUrl+"&serie=allseries";
-				}
+		}
 		else{
 			refreshUrlCategory=refreshUrl;
 			for(Iterator iterator = datasetMap.getSelectedSeries().iterator(); iterator.hasNext();){
 				String serieS=(String)iterator.next();
 				refreshUrlCategory=refreshUrlCategory+"&serie="+serieS;
-				}	
+			}	
 		} 
 		Vector tmpVec = datasetMap.getSelectedCatGroups();
 		//if(datasetMap.getSelectedCatGroups().contains("allgroups")){
@@ -343,15 +418,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}  	
 		}
 		
-			
-			
-	%>
-
-
-
-
-
-<%
 
 	if(sbi.isFilter() && (sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART"))){
 	if(sbi instanceof BarCharts){
@@ -364,29 +430,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	}
 	
-	boolean showSlider = false;
+	showSlider = false;
 	if(sbi.isSlider() && datasetMap.isMakeSlider()){
 		showSlider=true;
 	}
-	%>
 
-
-<% 
 
 	/// If it is a linkable graph  write the MAP
-	    if(sbi.isLinkable()){
+	if(sbi.isLinkable()){
 		PrintWriter pw = new PrintWriter(out);
 		ChartUtilities.writeImageMap(pw, "chart", info,new StandardToolTipTagFragmentGenerator(),new StandardURLTagFragmentGenerator());
-	    }
+	}
 	
-
 %>
 <!-- Begin drawing the page -->
 <br>
 <table align="left">
 	<tr>
 		<td>
-		<table align="left">
+		<table align="center">
 
 			<% 
 		    // No slider needed
@@ -396,7 +458,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<tr>
 				<td>
 				<div align="center"><img id="image" src="<%=urlPng%>"
-					BORDER="1" alt="" USEMAP="#chart" /></div>
+					BORDER="0" alt="" USEMAP="#chart" /></div>
 				</td>
 			</tr>
 			<%}
@@ -440,7 +502,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<!--  </table> -->
 			<tr>
 				<td align="center">
-				<div><img id="image" src="<%=urlPng%>" BORDER=1 alt=""
+				<div><img id="image" src="<%=urlPng%>" BORDER=0 alt=""
 					USEMAP="#chart" /></div>
 				</td>
 			</tr>
@@ -461,8 +523,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// form to limit the series if it is a barchart
 	
-			seriesNames=new Vector();
-catGroupsNames=new Vector();
+	seriesNames=new Vector();
+	catGroupsNames=new Vector();
 	if(filterSeries || filterCatGroup){
 			//sets the URL
 			if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
@@ -474,23 +536,6 @@ catGroupsNames=new Vector();
 				refreshUrlSerie=refreshUrl;
 			}
 			%>
-	<!--  <tr>
-   <td>  
-		<table  align="left">
-		<div align="center">
-		<tr>
-		<td style="color:white">s
-		</td>
-		</tr>
-		<tr>
-		<td style="color:white">s
-		</td>
-		</tr>
-		</div>
-		</table>
-
-		</td>
-	  </tr>-->
 	<tr>
 		<td>
 
@@ -532,7 +577,7 @@ catGroupsNames=new Vector();
 
 				<input id="serie_<%=ser%>" name="serie" value="<%=ser%>"
 					type="checkbox" /> <span><%=ser%></span> <%} 
-		 }%> <!-- PROVA --> <a onclick="enableSerie()"
+		 }%>  <a onclick="enableSerie()"
 					title="check all series"
 					alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
 				<img
@@ -588,16 +633,6 @@ catGroupsNames=new Vector();
 				</td>
 			</tr>
 			<%} //close filter cat group case%>
-			<!--  CLOSE ROW FOR SELECT THE CATS GROUPS-->
-			<!-- <tr>
-		<td>
-			<div align="center" class='div_detail_form'>
-			<input type="submit" value="Select"/>
-			</div>
-		</td>
-		</tr> -->
-
-
 			</form>
 			<!--CLOSE FORM  -->
 
@@ -757,7 +792,8 @@ var checkableSeries = new Array();
 	
 </script>
 
-<%} %>
+<%}
+} //anto%>
 
 <%
 Integer refreshSeconds=objO.getRefreshSeconds();

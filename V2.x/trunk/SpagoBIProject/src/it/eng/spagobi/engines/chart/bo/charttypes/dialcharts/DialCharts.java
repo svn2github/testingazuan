@@ -55,6 +55,7 @@ public class DialCharts extends ChartImpl {
 	StyleLabel labelsValueStyle;
 	Map confParameters;
 	SourceBean sbRow;
+	
 
 
 	/* (non-Javadoc)
@@ -175,6 +176,20 @@ public class DialCharts extends ChartImpl {
 					logger.error("upper bound not defined");
 					throw new Exception("upper bound not defined");
 				}
+				
+				multichart=false;
+				if(confParameters.get("multichart")!=null && !(((String)confParameters.get("multichart")).equalsIgnoreCase("") )){	
+					String multiple=(String)confParameters.get("multichart");
+					if(multiple.equalsIgnoreCase("true"))
+						setMultichart(true);
+				}
+				
+				orientationMultichart="horizontal";
+				if(confParameters.get("orientation_multichart")!=null && !(((String)confParameters.get("orientation_multichart")).equalsIgnoreCase("") )){	
+					String ori=(String)confParameters.get("orientation_multichart");
+					if(ori.equalsIgnoreCase("horizontal") || ori.equalsIgnoreCase("vertical") )
+						setOrientationMultichart(ori);
+				}
 
 			}
 			else{ // configuration parameters are set in a LOV
@@ -197,7 +212,9 @@ public class DialCharts extends ChartImpl {
 				sbRow=(SourceBean)sourceBeanResult.getAttribute("ROW");
 				String lower=(String)sbRow.getAttribute("lower");
 				String upper=(String)sbRow.getAttribute("upper");
-
+				String legend=(String)sbRow.getAttribute("legend");
+				String multichart=(String)sbRow.getAttribute("multichart");
+				String orientation=(String)sbRow.getAttribute("orientation_multichart");
 
 				if(lower==null || upper==null){
 					logger.error("error in reading configuration lov");
@@ -206,8 +223,12 @@ public class DialCharts extends ChartImpl {
 
 				setLower(Double.valueOf(lower).doubleValue());
 				setUpper(Double.valueOf(upper).doubleValue());
-
+				setMultichart((multichart.equals("true")?true:false));
+				setLegend(legend.equals("true")?true:false);
+				setOrientationMultichart(orientation);
 			}
+			
+			
 		}catch (Exception e) {
 			logger.error("error in reading template configurations");
 		}
@@ -230,7 +251,7 @@ public class DialCharts extends ChartImpl {
 				List atts=new Vector();
 				atts.add(res);
 				setTitleParameter(atts);
-				}
+			}
 			
 			logger.debug("Dataset result:"+res);
 			SourceBean sbRows=SourceBean.fromXMLString(res);
@@ -357,5 +378,5 @@ public class DialCharts extends ChartImpl {
 		this.sbRow = sbRow;
 	}
 
-
+	
 }

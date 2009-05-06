@@ -7,6 +7,7 @@ import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.TreeSet;
 import java.util.Vector;
 
@@ -39,7 +40,7 @@ public class DatasetMap {
 	boolean makeSlider=false;
 
 	public DatasetMap() {
-		this.datasets = new HashMap();
+		this.datasets = new LinkedHashMap();
 	}
 
 	public void addDataset(String key, Dataset dataset){

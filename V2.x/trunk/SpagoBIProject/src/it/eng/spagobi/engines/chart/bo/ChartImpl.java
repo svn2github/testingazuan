@@ -41,6 +41,7 @@ import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Meter;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SBISpeedometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SimpleDial;
+import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.SpeedometerMultiValue;
 import it.eng.spagobi.engines.chart.bo.charttypes.dialcharts.Thermometer;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;
@@ -79,7 +80,8 @@ import org.jfree.ui.VerticalAlignment;
 
 
 public class ChartImpl implements IChart {
-
+	
+	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
 	protected int titleDimension;
 	protected String name=null;
 	protected String subName=null;
@@ -94,7 +96,6 @@ public class ChartImpl implements IChart {
 	protected Color color;
 	protected boolean legend=true;
 	protected String legendPosition="bottom";
-	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
 	protected Map parametersObject;
 	protected boolean filter=true;
 	protected boolean slider=true;
@@ -102,7 +103,14 @@ public class ChartImpl implements IChart {
 	protected StyleLabel styleSubTitle;
 	protected StyleLabel defaultLabelsStyle;
 	protected HashMap seriesLabelsMap = null;
+	
+	protected boolean multichart=false;
+	protected String orientationMultichart="";
 
+	
+	
+
+	
 	/**
 	 * configureChart reads the content of the template and sets the chart parameters.
 	 * 
@@ -328,6 +336,8 @@ public class ChartImpl implements IChart {
 					}
 				}		
 			}
+			
+			
 		}
 		catch (Exception e) {
 			logger.error("error in reading data source parameters");
@@ -349,7 +359,6 @@ public class ChartImpl implements IChart {
 		return null;
 	}
 
-
 	/**
 	 * This function creates the object of the right subtype as specified by type and subtype parameters found in template.
 	 * 
@@ -364,6 +373,9 @@ public class ChartImpl implements IChart {
 		if(type.equals("DIALCHART")){
 			if(subtype.equalsIgnoreCase("speedometer")){
 				sbi=new SBISpeedometer();
+			}
+			if(subtype.equalsIgnoreCase("speedometerMultiValue")){
+				sbi=new SpeedometerMultiValue();
 			}
 			else if(subtype.equalsIgnoreCase("simpledial")){
 				sbi= new SimpleDial();
@@ -823,7 +835,35 @@ public class ChartImpl implements IChart {
 		this.legendPosition = legendPosition;
 	}
 	
-	
+	/**
+	 * @return the multichart
+	 */
+	public boolean getMultichart() {
+		return multichart;
+	}
+
+	/**
+	 * @param multichart the multichart to set
+	 */
+	public void setMultichart(boolean multichart) {
+		this.multichart = multichart;
+	}
+
+	/**
+	 * @return the orientationMultichart
+	 */
+	public String getOrientationMultichart() {
+		return orientationMultichart;
+	}
+
+	/**
+	 * @param orientationMultichart the orientationMultichart to set
+	 */
+	public void setOrientationMultichart(String orientationMultichart) {
+		this.orientationMultichart = orientationMultichart;
+	}
+
+
 	public void drawLegend(JFreeChart chart){
 		BlockContainer wrapper = new BlockContainer(new BorderArrangement());
 		wrapper.setFrame(new BlockBorder(1.0, 1.0, 1.0, 1.0));

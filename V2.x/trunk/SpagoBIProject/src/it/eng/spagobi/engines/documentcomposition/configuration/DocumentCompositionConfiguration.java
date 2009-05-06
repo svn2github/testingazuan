@@ -60,16 +60,16 @@ public class DocumentCompositionConfiguration {
 	private Map lstDocTitles = new LinkedHashMap();
 	
 	//constants for convert panel dimensions from percentage into pixel values
-	Integer[] percentageValues = {new Integer("100"), new Integer("75"), new Integer("50"), new Integer("25")};
-	Integer[] widthPxValues800= {new Integer("800"), new Integer("600"), new Integer("400"), new Integer("200")};
-	Integer[] widthPxValues1024 = {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
-	Integer[] widthPxValues1280 = {new Integer("1200"), new Integer("900"), new Integer("600"), new Integer("300")};
-	Integer[] widthPxValues1400 = {new Integer("1400"), new Integer("1050"), new Integer("700"), new Integer("350")};
-	Integer[] widthPxValues1680 = {new Integer("1600"), new Integer("1200"), new Integer("800"), new Integer("400")};
-	Integer[] heightPxValues600 = {new Integer("600"), new Integer("450"), new Integer("300"), new Integer("150")};
-	Integer[] heightPxValues768 = {new Integer("700"), new Integer("525"), new Integer("350"), new Integer("175")};
-	Integer[] heightPxValues1024= {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("250")};
-	Integer[] heightPxValues1050 = {new Integer("1050"), new Integer("787"), new Integer("525"), new Integer("262")};
+	Integer[] percentageValues = {new Integer("100"), new Integer("75"), new Integer("50"),new Integer("35"),  new Integer("25"), new Integer("15")};
+	Integer[] widthPxValues800= {new Integer("800"), new Integer("600"), new Integer("400"), new Integer("280"), new Integer("200"), new Integer("120")};
+	Integer[] widthPxValues1024 = {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("350"), new Integer("250"), new Integer("150")};
+	Integer[] widthPxValues1280 = {new Integer("1200"), new Integer("900"), new Integer("600"),  new Integer("420"),new Integer("300"), new Integer("180")};
+	Integer[] widthPxValues1400 = {new Integer("1400"), new Integer("1050"), new Integer("700"), new Integer("490"), new Integer("350"), new Integer("210")};
+	Integer[] widthPxValues1680 = {new Integer("1600"), new Integer("1200"), new Integer("800"), new Integer("560"), new Integer("400"), new Integer("240")};
+	Integer[] heightPxValues600 = {new Integer("600"), new Integer("450"), new Integer("300"), new Integer("210"), new Integer("150"), new Integer("90")};
+	Integer[] heightPxValues768 = {new Integer("700"), new Integer("525"), new Integer("350"), new Integer("245"), new Integer("175"), new Integer("105")};
+	Integer[] heightPxValues1024= {new Integer("1000"), new Integer("750"), new Integer("500"), new Integer("350"), new Integer("250"), new Integer("150")};
+	Integer[] heightPxValues1050 = {new Integer("1050"), new Integer("787"), new Integer("525"), new Integer("370"), new Integer("262"), new Integer("160")};
 	Integer[] generalWidthDimensions = {new Integer("1680"), new Integer("1400"), new Integer("1280"),
 								   		new Integer("1024"), new Integer("800")};
 	Integer[] generalHeightDimensions = {new Integer("1050"), new Integer("1024"),  new Integer("768"), new Integer("600")};

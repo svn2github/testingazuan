@@ -293,7 +293,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 	        SourceBean configSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
 		    String active = (String) configSB.getCharacters();
 		    logger.debug("active SSO: " + active);
-		    if (active != null && active.equals("true") ){
+		    if (active != null && active.equalsIgnoreCase("true") ){
 		    	url = path + adapUrlStr + "?NEW_SESSION=TRUE";
 		    }else{
 		    	url = path + adapUrlStr + "?NEW_SESSION=TRUE&"+SsoServiceInterface.USER_ID+"="+userId;	

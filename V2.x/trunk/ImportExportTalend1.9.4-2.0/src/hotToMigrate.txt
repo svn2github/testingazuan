@@ -1,0 +1,30 @@
+
+            ===================================================
+                  Migration Job from SpagoBI 1.9.4 to SpagoBI 2.1
+            ===================================================
+
+
+You can download  workspace for talend Open Studio 2.4,
+ it contains a Job named MIGRATION_JOB, and some subjobs.
+
+It's aim is to export data from a SpagoBI 1.9.4 metadata database and import them into a SpagoBi 2.1 metadata database.
+
+The import database must be empty, with the exception of the table SBI_DOMAINS that must already have  been filled.
+
+Metadata that are exported are about engines, modalities values, Analytical Drivers, checks, functionalities and roles, BiObjects, Audit, viewpoints and subreports.
+
+
+======== How to execute Migration_Job: =====================
+
+Unzip the "workspaceImportExport.7z" file and run talend by selecting it as workspace.
+
+open the job named MIGRATION_JOB
+
+click on the first two components of migration_job, named "driver" and "driver2" and choose the jar files
+containing the jdbc driver for your export and import database:
+
+When starting the job you'll have to fill the connection parameters for both your export and import database; such as
+url, username, password, driver, driver jar file (put it between "").
+
+In the fileLog parameter you can place the path of a file where informations about migration will be placed.
+ 

@@ -1,13 +1,13 @@
 
             ===================================================
-                  Migration Job from SpagoBI 1.9.4 to SpagoBI 2.1
+                  Migration Job from SpagoBI 1.9.4 to SpagoBI 2.*
             ===================================================
 
 
 You can download  workspace for talend Open Studio 2.4,
  it contains a Job named MIGRATION_JOB, and some subjobs.
 
-It's aim is to export data from a SpagoBI 1.9.4 metadata database and import them into a SpagoBi 2.1 metadata database.
+It's aim is to export data from a SpagoBI 1.9.4 metadata database and import them into a SpagoBi 2.* metadata database.
 
 The import database must be empty, with the exception of the table SBI_DOMAINS that must already have  been filled.
 

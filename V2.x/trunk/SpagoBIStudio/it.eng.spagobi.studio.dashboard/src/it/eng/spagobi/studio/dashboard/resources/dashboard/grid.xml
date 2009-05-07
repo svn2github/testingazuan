@@ -1,0 +1,37 @@
+<DASHBOARD name='ASEMAFORIDASHUNIQUE' movie='sbigrid_jsd.lzx.swf' lovlabel='ASEMAFORIUNIQUE'>
+	<DIMENSION width='800' height='120' />
+	<CONFIGURATION>
+		<LINKCOLUMNS>
+			<COLUMN index="0" onlyheader="" fixedquerystring="" prefixvalue="" />
+        </LINKCOLUMNS>
+		<PARAMETERS>
+			<PARAMETER name="heightfirstrow" value="60"/>
+			<PARAMETER name="widthfirstcolumn" value="100"/>
+			<PARAMETER name="refreshtime" value="15000"/>
+			<PARAMETER name="ray" value="18"/>
+			<PARAMETER name="sizetextfirstrow" value="15"/>
+			<PARAMETER name="boldTextFirstRow" value="true"/>
+		</PARAMETERS>
+		<LIGHTCOLUMNS>
+			<COLUMN index="1" defaultcolor="red">
+          		<CONDITIONS>
+            		<CONDITION operator="contains" value1="OK" value2="" conditioncolor="#03f303" tooltip="Va bene !" showvalueintotooltip="true" />
+          		</CONDITIONS>
+        	</COLUMN>
+        	<COLUMN index="2" defaultcolor="red" defaulttooltip="Tooltip di default">
+	          	<CONDITIONS>
+	           		<CONDITION operator="contains" value1="OK" value2="" conditioncolor="#03f303"  tooltip="Va bene !" showvalueintotooltip="true"  />
+	          	</CONDITIONS>
+        	</COLUMN>
+		</LIGHTCOLUMNS>
+		<NAMECOLUMNS>
+			<COLUMN index="0" name="Nome"/>
+		</NAMECOLUMNS>
+		<DIMENSIONCOLUMNS>
+			<COLUMN index="0" width="200"/>
+		</DIMENSIONCOLUMNS>
+	</CONFIGURATION>
+	<DATA url='/DashboardService'>
+		<PARAMETER name='dataname' value='ASEMAFORIUNIQUE' />
+	</DATA>
+</DASHBOARD>

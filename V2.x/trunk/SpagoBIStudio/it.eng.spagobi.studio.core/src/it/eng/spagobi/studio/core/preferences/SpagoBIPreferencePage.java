@@ -1,9 +1,11 @@
 package it.eng.spagobi.studio.core.preferences;
 
-import java.rmi.RemoteException;
+import it.eng.spagobi.sdk.proxy.TestConnectionServiceProxy;
+import it.eng.spagobi.studio.core.Activator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.*;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -11,12 +13,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
-
-import it.eng.spagobi.services.proxy.SessionServiceProxy;
-import it.eng.spagobi.services.session.exceptions.AuthenticationException;
-import it.eng.spagobi.studio.core.Activator;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * This class represents a preference page that
@@ -82,30 +80,18 @@ public class SpagoBIPreferencePage
 	}
 	
 	private void testConnection() {
-        SessionServiceProxy proxy = new SessionServiceProxy();
-        proxy.setEndpoint(serverUrl.getStringValue() + "/services/WSSessionService");
+        TestConnectionServiceProxy proxy = new TestConnectionServiceProxy(userName.getStringValue(), userPassword.getStringValue());
+        proxy.setEndpoint(serverUrl.getStringValue() + "/sdk/TestConnectionService");
     	try {
-    		// opening a session into SpagoBI Server
-    		proxy.openSession(userName.getStringValue(), userPassword.getStringValue());
+    		// testing connection
+    		proxy.connect();
     		MessageDialog.openInformation(this.getShell(), "", "Connection test successful!");
 //    		setErrorMessage(null);
 //    		setValid(true);
-    	} catch (AuthenticationException e) {
-    		MessageDialog.openError(this.getShell(), "", "Authentication failed!");
-//    		setErrorMessage("Authentication failed!");
-//    		setValid(false);
     	} catch (Exception e) {
     		MessageDialog.openError(this.getShell(), "", "Could not connect to SpagoBI Server!");
 //    		setErrorMessage("Could not connect to SpagoBI Server!");
 //    		setValid(false);
-    	} finally {
-    		if (proxy != null) {
-    			try {
-					proxy.closeSession();
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}
-    		}
     	}
 	}
 	

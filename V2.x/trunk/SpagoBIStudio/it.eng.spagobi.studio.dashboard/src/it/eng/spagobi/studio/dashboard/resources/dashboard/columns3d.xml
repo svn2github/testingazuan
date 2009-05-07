@@ -20,8 +20,7 @@
 		<PARAMETER name='column9Color' value='0x9cd000' />
 		<PARAMETER name='column10Color' value='0xfddd09' />	
 	</CONF>
-	<DATA url='/DashboardService'>
-		<PARAMETER name='dataname' value='RAND_TREND' />
+	<DATA url="/servlet/AdapterHTTP?ACTION_NAME=GET_DATASET_RESULT">
 	</DATA>
 </DASHBOARD>
 <!-- 

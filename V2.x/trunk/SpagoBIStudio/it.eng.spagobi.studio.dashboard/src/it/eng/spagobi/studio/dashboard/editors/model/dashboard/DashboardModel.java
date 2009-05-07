@@ -95,9 +95,12 @@ public class DashboardModel {
 			"<DASHBOARD movie='" + movie + "' displayTitleBar='" + displayTitleBar + "'>\n" +
 			"    <DIMENSION width='" + dimension.getWidth() + "' height='" + dimension.getHeight() + "' />\n";
 		String configurationXML = configuration.toXML();
+//		toReturn += configurationXML +
+//			"    <DATA url='" + data.getUrl() + "'>\n";
 		toReturn += configurationXML +
-			"    <DATA url='" + data.getUrl() + "'>\n";
-			Parameter[] dataParameters = data.getParameters();
+		"    <DATA url=\"/servlet/AdapterHTTP?ACTION_NAME=GET_DATASET_RESULT\">\n";
+		
+		Parameter[] dataParameters = data.getParameters();
 			for (int i = 0; i < dataParameters.length; i++) {
 				Parameter aParameter = dataParameters[i];
 				toReturn +=

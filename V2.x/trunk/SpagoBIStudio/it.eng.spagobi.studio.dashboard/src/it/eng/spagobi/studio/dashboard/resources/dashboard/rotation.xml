@@ -19,8 +19,7 @@
 		<PARAMETER name='showMainText' value='true' />
 		<PARAMETER name='showSecText' value='true' />
 	</CONF>
-	<DATA url='/DashboardService'>
-		<PARAMETER name='dataname' value='RAND_COMPET' />
+	<DATA url="/servlet/AdapterHTTP?ACTION_NAME=GET_DATASET_RESULT">
 	</DATA>
 </DASHBOARD>
 <!-- 

@@ -31,8 +31,7 @@
 		<PARAMETER name='line9Color' value='0xfd0c23' />
 		<PARAMETER name='line10Color' value='0x4618de' />
 	</CONF>
-	<DATA url='/DashboardService'>
-		<PARAMETER name='dataname' value='RAND_TREND' />
+	<DATA url="/servlet/AdapterHTTP?ACTION_NAME=GET_DATASET_RESULT">
 	</DATA>
 </DASHBOARD>
 <!-- 

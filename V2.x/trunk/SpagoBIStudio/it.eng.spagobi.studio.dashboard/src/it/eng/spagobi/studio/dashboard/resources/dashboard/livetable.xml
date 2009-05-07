@@ -20,8 +20,7 @@
 		<PARAMETER name='fontSizeHeader' value='12' />
 		<PARAMETER name='fontSizeCell' value='12' />
 	</CONF>
-	<DATA url='/DashboardService'>
-		<PARAMETER name='dataname' value='RAND_BEST_PROD' />
+	<DATA url="/servlet/AdapterHTTP?ACTION_NAME=GET_DATASET_RESULT">
 	</DATA>
 </DASHBOARD>
 <!-- 

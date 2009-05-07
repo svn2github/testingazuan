@@ -1,12 +1,6 @@
 package it.eng.spagobi.studio.dashboard.editors.model.dashboard;
 
 import it.eng.spagobi.studio.dashboard.editors.model.dashboard.DashboardModel.Dimension;
-import it.eng.spagobi.studio.dashboard.editors.model.dashboard.grid.Condition;
-import it.eng.spagobi.studio.dashboard.editors.model.dashboard.grid.DimensionColumn;
-import it.eng.spagobi.studio.dashboard.editors.model.dashboard.grid.GridConfiguration;
-import it.eng.spagobi.studio.dashboard.editors.model.dashboard.grid.LightColumn;
-import it.eng.spagobi.studio.dashboard.editors.model.dashboard.grid.LinkColumn;
-import it.eng.spagobi.studio.dashboard.editors.model.dashboard.grid.NameColumn;
 
 import java.io.InputStream;
 import java.util.List;
@@ -85,7 +79,7 @@ public class DashboardModelFactory {
 			List dataParametersList = templateDocument.selectNodes("//DASHBOARD/DATA/PARAMETER");
 			if (dataParametersList == null || dataParametersList.size() == 0) {
 				// TODO manage exception
-				throw new Exception("missing data parameters");
+				//throw new Exception("missing data parameters");
 			}
 			Data data = new Data(url, movie, configurationDocument);
 			for (int i = 0; i < dataParametersList.size(); i++) {
@@ -98,7 +92,7 @@ public class DashboardModelFactory {
 			
 			// finds configuration parameters
 			Configuration configuration = null;
-			if (movie.equals("sbigrid_jsd.lzx.swf")) {
+		/*	if (movie.equals("sbigrid_jsd.lzx.swf")) {
 				List confParametersList = templateDocument.selectNodes("//DASHBOARD/CONFIGURATION/PARAMETERS/PARAMETER");
 				if (confParametersList == null || confParametersList.size() == 0) {
 					// TODO manage exception
@@ -188,7 +182,8 @@ public class DashboardModelFactory {
 				((GridConfiguration) configuration).setDimensionColumns(dimensionColumns);
 				
 			} else {
-				List confParametersList = templateDocument.selectNodes("//DASHBOARD/CONF/PARAMETER");
+				*/
+			List confParametersList = templateDocument.selectNodes("//DASHBOARD/CONF/PARAMETER");
 				if (confParametersList == null || confParametersList.size() == 0) {
 					// TODO manage exception
 					throw new Exception("missing configuration parameters");
@@ -200,7 +195,7 @@ public class DashboardModelFactory {
 					String value = node.valueOf("@value");
 					configuration.setParameterValue(name, value);
 				}
-			}
+			//}
 			model.setConfiguration(configuration);
 			
 			// TODO change to service from spagobi server

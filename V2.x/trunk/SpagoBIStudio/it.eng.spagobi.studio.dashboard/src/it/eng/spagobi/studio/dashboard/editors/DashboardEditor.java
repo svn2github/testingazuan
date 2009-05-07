@@ -3,7 +3,7 @@ package it.eng.spagobi.studio.dashboard.editors;
 import it.eng.spagobi.studio.dashboard.editors.model.dashboard.DashboardModel;
 import it.eng.spagobi.studio.dashboard.editors.model.dashboard.DashboardModelFactory;
 import it.eng.spagobi.studio.dashboard.editors.model.dashboard.Parameter;
-import it.eng.spagobi.studio.dashboard.utils.SpagoBILogger;
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

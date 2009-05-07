@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/dom4j.jar" sourcepath="it.eng.spagobi.studio.dashboardsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/hsqldb1_8_0_2.jar" sourcepath="it.eng.spagobi.studio.dashboardsrc.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

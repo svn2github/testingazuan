@@ -1,9 +1,9 @@
 package it.eng.spagobi.studio.dashboard.wizards;
 
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.dashboard.Activator;
 import it.eng.spagobi.studio.dashboard.editors.model.dashboard.DashboardModel;
 import it.eng.spagobi.studio.dashboard.utils.GeneralUtils;
-import it.eng.spagobi.studio.dashboard.utils.SpagoBILogger;
 import it.eng.spagobi.studio.dashboard.wizards.pages.NewDashboardWizardPage;
 
 import java.io.ByteArrayInputStream;
@@ -42,7 +42,6 @@ public class SpagoBINewDashboardWizard extends Wizard implements INewWizard {
 	// the workbench instance
 	protected IWorkbench workbench;
 	
-	@Override
 	public boolean performFinish() {
 		// get the name of the dashboard from the form
 		SpagoBILogger.infoLog("Starting dashboard wizard");

@@ -3,7 +3,7 @@ package it.eng.spagobi.studio.dashboard.actions;
 import javax.net.ssl.SSLEngineResult.Status;
 
 import it.eng.spagobi.studio.dashboard.Activator;
-import it.eng.spagobi.studio.dashboard.utils.SpagoBILogger;
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.dashboard.wizards.SpagoBINewDashboardWizard;
 
 import org.eclipse.core.runtime.IStatus;

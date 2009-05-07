@@ -2,7 +2,7 @@ package it.eng.spagobi.studio.core.preferences;
 
 import it.eng.spagobi.sdk.proxy.TestConnectionServiceProxy;
 import it.eng.spagobi.studio.core.Activator;
-import it.eng.spagobi.studio.core.utils.SpagoBILogger;
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
 import org.apache.axis.AxisFault;
 import org.eclipse.jface.dialogs.MessageDialog;

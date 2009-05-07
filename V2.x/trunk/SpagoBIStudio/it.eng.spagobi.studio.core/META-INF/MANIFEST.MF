@@ -12,15 +12,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
  org.eclipse.ui.ide,
- org.eclipse.ui.console,
- org.eclipse.jdt.ui,
- org.eclipse.swt,
- org.eclipse.jface,
- org.eclipse.ui.workbench,
- org.eclipse.ui.intro,
- org.eclipse.ui.intro.universal,
- org.eclipse.ui.navigator;bundle-version="3.3.102",
- org.eclipse.ui.navigator.resources;bundle-version="3.3.101"
+ org.eclipse.ui.navigator;bundle-version="3.3.102"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/sbi.utils-2.1.0.jar,
@@ -38,3 +30,4 @@ Bundle-ClassPath: lib/sbi.utils-2.1.0.jar,
  lib/xercesImpl-2.6.2.jar,
  lib/xml-apis-2.0.2.jar,
  lib/xmlsec-1.4.2.jar
+Export-Package: it.eng.spagobi.studio.core.log

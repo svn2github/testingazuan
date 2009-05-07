@@ -1,4 +1,4 @@
-package it.eng.spagobi.studio.core.utils;
+package it.eng.spagobi.studio.core.log;
 
 import it.eng.spagobi.studio.core.Activator;
 

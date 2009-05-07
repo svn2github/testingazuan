@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.dashboard;
 
+import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;

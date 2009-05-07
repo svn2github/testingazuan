@@ -2,7 +2,9 @@ package it.eng.spagobi.studio.core.preferences;
 
 import it.eng.spagobi.sdk.proxy.TestConnectionServiceProxy;
 import it.eng.spagobi.studio.core.Activator;
+import it.eng.spagobi.studio.core.utils.SpagoBILogger;
 
+import org.apache.axis.AxisFault;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -84,12 +86,19 @@ public class SpagoBIPreferencePage
         proxy.setEndpoint(serverUrl.getStringValue() + "/sdk/TestConnectionService");
     	try {
     		// testing connection
-    		proxy.connect();
-    		MessageDialog.openInformation(this.getShell(), "", "Connection test successful!");
+    		boolean result = proxy.connect();
+    		if (result) {
+    			MessageDialog.openInformation(this.getShell(), "", "Connection test successful!");
+    		} else {
+    			MessageDialog.openError(this.getShell(), "", "Could not connect to SpagoBI Server!");
+    		}
 //    		setErrorMessage(null);
 //    		setValid(true);
+    	} catch (AxisFault e) {
+    		
     	} catch (Exception e) {
     		MessageDialog.openError(this.getShell(), "", "Could not connect to SpagoBI Server!");
+    		SpagoBILogger.errorLog("Could not connect to SpagoBI Server!", e);
 //    		setErrorMessage("Could not connect to SpagoBI Server!");
 //    		setValid(false);
     	}

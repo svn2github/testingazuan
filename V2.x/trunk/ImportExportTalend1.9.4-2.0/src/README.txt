@@ -31,6 +31,7 @@ containing the jdbc drivers for your source and target database.
 
 When starting the job you'll have to fill the connection parameters for both your source and target database; such as
 url, username, password, driver, driver jar file (put driver file name between quotes, for example if you are using Oracle database: "ojdbc5.jar").
+Parameters with "Exp" suffix are referring to source database, parameters with "Imp" suffix are referring to target database.
 
 In the fileLog parameter you can place the path of a file where informations about migration will be placed.
  

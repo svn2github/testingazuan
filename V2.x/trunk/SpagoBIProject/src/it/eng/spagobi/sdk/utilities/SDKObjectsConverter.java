@@ -373,6 +373,8 @@ public class SDKObjectsConverter {
 			SDKDataSetParameter[] parameters = null;
 			if (dataSetParameterItemList != null) {
 				parameters = this.fromDataSetParameterItemListToSDKDataSetParameterArray(dataSetParameterItemList);
+			} else {
+				parameters = new SDKDataSetParameter[0];
 			}
 			
 			toReturn.setParameters(parameters);

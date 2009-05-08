@@ -178,7 +178,7 @@ public class DataSetsSDKServiceImpl extends AbstractSDKService implements DataSe
 						value = value + "'";
 					}
 					toReturn.append(value);
-					if (i < values.length) {
+					if (i < values.length - 1) {
 						toReturn.append(",");
 					}
 				}
@@ -186,7 +186,7 @@ public class DataSetsSDKServiceImpl extends AbstractSDKService implements DataSe
 				for (int i = 0; i < values.length; i++) {
 					String value = values[i];
 					toReturn.append(value);
-					if (i < values.length) {
+					if (i < values.length - 1) {
 						toReturn.append(",");
 					}
 				}

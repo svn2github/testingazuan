@@ -399,7 +399,7 @@ public class DetailDataSetModule extends AbstractModule {
 	 * 
 	 * @throws SourceBeanException the source bean exception
 	 */
-	public List getParametersToFill(SpagoBiDataSet ds) throws SourceBeanException{
+	public static List getParametersToFill(SpagoBiDataSet ds) throws SourceBeanException{
 		String parametersXML=ds.getParameters();
 		if(parametersXML!=null && !((parametersXML.trim()).equals(""))){
 			DataSetParametersList dsParam=new DataSetParametersList(parametersXML);

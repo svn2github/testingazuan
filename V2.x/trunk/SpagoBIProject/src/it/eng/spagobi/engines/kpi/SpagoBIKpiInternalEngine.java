@@ -40,7 +40,6 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
@@ -54,7 +53,6 @@ import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.ModelInstanceNode;
 import it.eng.spagobi.kpi.model.bo.Resource;
-import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
@@ -76,8 +74,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.quartz.JobExecutionContext;
-import org.quartz.Trigger;
 
 /**
  * 
@@ -135,13 +131,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     
     protected Integer modelInstanceRootId = null;
     
-    protected boolean resources_returned_by_dataset = false;
-    
     protected String behaviour = "default";// 4 possible values:
     //default:all old kpiValues are recalculated; all kpivalues without periodicity will not be recalculated
     //display:shows all the last calculated values, even if they are not valid anymore
     //force_recalculation: all the values are recalculated
     //recalculate:old kpiValues are recalculated and also the one without a periodicity
+    
+    protected boolean dataset_multires = false;
     
     protected Date timeRangeFrom = null;//Begin date of range
     
@@ -179,7 +175,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
     	    // **************take informations on the modelInstance and its KpiValues*****************
     	    String modelNodeInstance = (String) requestContainer.getAttribute("model_node_instance");
-    	    logger.debug("ModelNodeInstance : " + modelNodeInstance);
+    	    logger.info("ModelNodeInstance : " + modelNodeInstance);
     	    
     	    if (modelNodeInstance == null) {
     	    	logger.error("The modelNodeInstance specified in the template is null");
@@ -202,6 +198,20 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     	    logger.debug("ModelInstanceNode, ID=" + mI.getModelInstanceNodeId());
     	    modelInstanceRootId = mI.getModelInstanceNodeId();
     	    logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
+    	    
+    	    if(dataset_multires){//if datasets return a value for each resource
+    	    	this.resources = mI.getResources(); //Set all the Resources for the Model Instance
+    	    	logger.info("Dataset multiresource");
+    	    	try {
+    	    	    calculateAndInsertKpiValueWithResources(mI.getModelInstanceNodeId(),this.resources);  	
+    	    	} catch (EMFInternalError e) {
+					e.printStackTrace();
+					logger.error("Error in calculateAndInsertKpiValueWithResources",e);
+				}
+    	    	logger.info("Inserted all values!!");
+    	    	return;    	
+    	    }
+    	    
     	    // I set the list of resources of that specific ModelInstance
     	    if (this.resources == null || this.resources.isEmpty()) {
     	    	this.resources = mI.getResources();
@@ -225,7 +235,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    			Iterator resourcesIt = this.resources.iterator();
 	    			while (resourcesIt.hasNext()) {
 	    			    Resource r = (Resource) resourcesIt.next();
-	    			    logger.debug("Resource: " + r.getName());
+	    			    logger.info("-------Resource: " + r.getName());
 	    			    KpiResourceBlock block = new KpiResourceBlock();
 	    			    block.setR(r);
 	    			    block.setD(dateOfKPI);
@@ -320,7 +330,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		IEngUserProfile.ENG_USER_PROFILE);
 	String userId = (String) ((UserProfile) profile).getUserId();
 
-	logger.debug("Got parameters userId=" + userId + " and documentId=" + documentId.toString());
+	logger.info("Got parameters userId=" + userId + " and documentId=" + documentId.toString());
 
 	// **************get the template*****************
 	logger.debug("Getting template.");
@@ -360,7 +370,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 	    // **************take informations on the modelInstance and its KpiValues*****************
 	    String modelNodeInstance = (String) content.getAttribute("model_node_instance");
-	    logger.debug("ModelNodeInstance : " + modelNodeInstance);
+	    logger.info("ModelNodeInstance : " + modelNodeInstance);
 	    
 	    if (modelNodeInstance == null) {
 		logger.error("The modelNodeInstance specified in the template is null");
@@ -390,6 +400,15 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    	  modelInstanceRootId = (mI.getModelInstanceNodeId()!=null ? mI.getModelInstanceNodeId() : null );
 	        logger.debug("Loaded the modelInstanceNode with LABEL " + modelNodeInstance);
 	    }
+	    
+	    if(dataset_multires){//if datasets return a value for each resource
+	    	this.resources = mI.getResources(); //Set all the Resources for the Model Instance
+	    	logger.info("Dataset multiresource");
+	    	calculateAndInsertKpiValueWithResources(mI.getModelInstanceNodeId(),this.resources);  	
+	    	logger.info("Inserted all values!!");
+	    	return;    	
+	    }
+	    
 	    // I set the list of resources of that specific ModelInstance
 	    if (this.resources == null || this.resources.isEmpty()) {
 	    	this.resources = mI.getResources();
@@ -410,7 +429,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			Iterator resourcesIt = this.resources.iterator();
 			while (resourcesIt.hasNext()) {
 			    Resource r = (Resource) resourcesIt.next();
-			    logger.debug("Resource: " + r.getName());
+			    logger.info("Resource: " + r.getName());
 			    KpiResourceBlock block = new KpiResourceBlock();
 			    block.setR(r);
 			    block.setD(dateOfKPI);
@@ -459,14 +478,222 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	}
     }
 
-   
+    public void calculateAndInsertKpiValueWithResources(Integer miId,List resources)throws EMFUserError, EMFInternalError {
+    	logger.debug("IN");
+    	ModelInstanceNode modI =  DAOFactory.getModelInstanceDAO().loadModelInstanceById(miId, dateOfKPI);
+    	if (modI != null) {
+    	    logger.info("Loaded Model Instance Node with id: " + modI.getModelInstanceNodeId());
+    	}
+    	String modelNodeName = modI.getName();
+
+    	List childrenIds = modI.getChildrenIds();
+    	if (!childrenIds.isEmpty()) {
+    	    Iterator childrenIt = childrenIds.iterator();
+    	    while (childrenIt.hasNext()) {
+    		Integer id = (Integer) childrenIt.next();	
+    		calculateAndInsertKpiValueWithResources(id, resources);
+    	    }
+    	}
+    	KpiInstance kpiI = modI.getKpiInstanceAssociated();
+    	if (kpiI != null) {
+    		KpiValue kVal = new KpiValue();
+    	    logger.info("Got KpiInstance with ID: " + kpiI.getKpiInstanceId().toString());
+    	    IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());	
+			logger.info("Retrieved the Dataset to be calculated: " + (dataSet!=null ? dataSet.getId():"null"));
+  		
+    		Date begD = dateOfKPI;
+    		Date endDate = null;
+    		kVal.setBeginDate(begD);
+    		logger.debug("Setted the KpiValue begin Date:"+begD);
+    		if(endKpiValueDate!=null){
+    			endDate = endKpiValueDate;
+    			kVal.setEndDate(endKpiValueDate);
+    		}else if(kpiI.getPeriodicityId()!=null){
+    		
+    			Integer seconds = null;
+    			if(periodInstID!=null){
+    				kpiI.setPeriodicityId(periodInstID);
+    				logger.debug("Setted new Periodicity ID:"+periodInstID.toString());
+    			}
+    			seconds = DAOFactory.getPeriodicityDAO().getPeriodicitySeconds(kpiI.getPeriodicityId());
+    				
+    			// Transforms seconds into milliseconds
+    			long milliSeconds = seconds.longValue() * 1000;
+    			long begDtTime = begD.getTime();
+    			long endTime = begDtTime + milliSeconds;
+    			endDate = new Date(endTime);
+    			kVal.setEndDate(endDate);
+    		}else{
+    			GregorianCalendar c = new GregorianCalendar();
+    			c.set(9999, 11, 31);			
+    			endDate = c.getTime();
+    			kVal.setEndDate(endDate);
+    		}
+    		Integer kpiInstanceID = kpiI.getKpiInstanceId();
+    		Double weight = null;
+    		Double target = null;
+    		String scaleCode = null;
+    		String scaleName = null;
+    		List thresholdValues = null;
+    		String chartType = null;
+    		logger.debug("Setted the KpiValue end Date:"+endDate);
+    		kVal.setKpiInstanceId(kpiInstanceID);
+    		logger.debug("Setted the KpiValue Instance ID:"+kpiInstanceID);
+    		
+    		Date kpiInstBegDt = kpiI.getD();
+    		logger.debug("kpiInstBegDt begin date: "+(kpiInstBegDt!=null ? kpiInstBegDt.toString(): "Begin date null"));
+    		
+    		if ( (dateOfKPI.after(kpiInstBegDt)||dateOfKPI.equals(kpiInstBegDt))|| DAOFactory.getKpiInstanceDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI)==null) {
+    			
+    			logger.debug("Requested date d: "+dateOfKPI.toString()+" in between beginDate and EndDate");
+    			weight = kpiI.getWeight();
+    			logger.debug("SbiKpiValue weight: "+(weight!=null ? weight.toString() : "weight null"));
+    			target = kpiI.getTarget();
+    			logger.debug("SbiKpiValue target: "+(target!=null ? target.toString() : "target null"));
+    			thresholdValues = DAOFactory.getThresholdValueDAO().getThresholdValues(kpiI);
+    			chartType = DAOFactory.getKpiInstanceDAO().getChartType(kpiInstanceID);
+
+    			scaleCode = kpiI.getScaleCode();
+    			logger.debug("SbiKpiValue scaleCode: "+(scaleCode!=null ? scaleCode : "scaleCode null"));
+    			scaleName =kpiI.getScaleName();
+    			logger.debug("SbiKpiValue scaleName: "+(scaleName!=null ? scaleName : "scaleName null"));
+
+    		} else {// in case older thresholds have to be retrieved
+
+    			kpiI = DAOFactory.getKpiInstanceDAO().loadKpiInstanceByIdFromHistory(kpiInstanceID,dateOfKPI);
+    			if (kpiI!=null){
+    				Integer chartId = kpiI.getChartTypeId();
+    				Integer thresholdId = kpiI.getThresholdId();
+    				if (thresholdId!=null) thresholdValues = DAOFactory.getThresholdValueDAO().loadThresholdValuesByThresholdId(thresholdId);
+    				chartType = "BulletGraph";
+    				logger.debug("Requested date d: "+dateOfKPI.toString()+" in between beginDate and EndDate");
+    				weight = kpiI.getWeight();
+    				logger.debug("SbiKpiValue weight: "+(weight!=null ? weight.toString() : "weight null"));
+    				target = kpiI.getTarget();
+    				scaleCode = kpiI.getScaleCode();
+    				logger.debug("SbiKpiValue scaleCode: "+(scaleCode!=null ? scaleCode : "scaleCode null"));
+    				scaleName =kpiI.getScaleName();
+    				logger.debug("SbiKpiValue scaleName: "+(scaleName!=null ? scaleName : "scaleName null"));
+    			}
+    			
+    		}
+    		
+    		kVal.setWeight(kpiI.getWeight());
+    		logger.debug("Setted the KpiValue weight:"+kpiI.getWeight());	
+    		kVal.setThresholdValues(thresholdValues);
+    		logger.debug("Setted the KpiValue thresholds");	
+    		kVal.setScaleCode(scaleCode);
+    		logger.debug("Kpi value scale Code setted");
+    		kVal.setScaleName(scaleName);
+    		logger.debug("Kpi value scale Name setted");
+    		kVal.setTarget(target);
+    		logger.debug("Kpi value target setted");
+    		
+    		if (chartType != null) kVal.setChartType(chartType);
+
+    		// If not, the dataset will be calculated without the parameter Resource
+    		// and the DataSet won't expect a parameter of type resource
+    		//if(dataSet.hasBehaviour( QuerableBehaviour.class.getName()) ) {
+    		if(dataSet!=null){
+    			
+    		this.parametersObject.put("ParModelInstance", miId);		
+    		dataSet.setParamsMap(this.parametersObject);
+    		dataSet.setUserProfile(profile);	
+    		logger.info("Load Data Set. Label="+dataSet.getLabel());
+    		dataSet.loadData();
+    		IDataStore dataStore = dataSet.getDataStore();
+    		logger.debug("Got the datastore");
+    		if (dataStore != null && !dataStore.isEmpty()) {
+    		    // Transform result into KPIValue (I suppose that the result has a
+    		    // unique value)
+    			IDataStoreMetaData d = dataStore.getMetaData();		
+    			int indexRes = d.getFieldIndex(RESOURCE);
+    			
+    			if(indexRes!=-1){
+    	    		Iterator it = dataStore.iterator();
+    	    		while(it.hasNext()){
+    	    			
+    	    			 KpiValue valTemp = kVal.clone();
+    	    			 IRecord record2 =(IRecord)it.next();
+    	    			 List fields2 = record2.getFields();
+    	    			 int length = fields2.size();
+    	    		     for(int fieldIndex =0; fieldIndex<length; fieldIndex++){
+    	    		    	 
+    	    		    		IField f = (IField)fields2.get(fieldIndex);
+    	    		    		if (f != null) {
+    	    		    			if (f.getValue() != null) {
+    	    			    			String fieldName = d.getFieldName(fieldIndex);	  
+    	    			    			
+    	    			    			if (fieldName.equalsIgnoreCase("DESCR")){
+    	    			    				String descr = f.getValue().toString();
+    	    			    				valTemp.setValueDescr(descr);
+    	    				    			logger.debug("Setted the kpiValue description:"+descr);
+    	    			    			}else if(fieldName.equalsIgnoreCase("END_DATE")){
+    	    			    				String endD = f.getValue().toString();
+    	    			    				String format = "dd/MM/yyyy hh:mm:ss";
+    	    		    					SimpleDateFormat form = new SimpleDateFormat();
+    	    		    					form.applyPattern(format);
+    	    		    				
+    	    		    					try {
+    	    									endDate = form.parse(endD);
+    	    								} catch (ParseException e) {
+    	    									e.printStackTrace();
+    	    								}
+    	    			    			   if(endDate!=null && endDate.after(begD)) {				 
+    	    			    				valTemp.setEndDate(endDate);
+    	    				    			logger.debug("Setted the new EndDate description:"+endD.toString());
+    	    			    			   }
+    	    			    			}else if(fieldName.equalsIgnoreCase("VALUE")){
+    	    			    				
+    	    			    				String fieldValue = f.getValue().toString();
+    	    			    				valTemp.setValue(fieldValue);
+    	    				    			logger.debug("Setted the kpiValue value:"+fieldValue);
+    	    			    			}    
+    	    			    			else if(fieldName.equalsIgnoreCase(RESOURCE)){
+    	    			    				
+    	    			    				String fieldValue = f.getValue().toString();
+    	    			    				if (fieldValue!=null){
+    	    			    					Resource rTemp = DAOFactory.getResourceDAO().loadResourcesByNameAndModelInst(fieldValue);
+    	    			    					valTemp.setR(rTemp);
+    		    				    			logger.info("Setted the kpiValue Resource with resource name:"+fieldValue);
+    	    			    				}
+    	    			    			}    
+    	    		    		    }
+    	    		    		}
+    	    			    }
+    	    		     if (valTemp.getR()!=null && kVal.getR()!=null && valTemp.getR().getId()!=null && 
+    	    		    		 kVal.getR().getId()!=null && valTemp.getR().getId().equals(kVal.getR().getId())){
+    		    				kVal = valTemp.clone() ;
+    		    			}
+    		    			logger.debug("New value calculated");
+    		    			if(register_values && valTemp.getR().getName()!=null){
+    		    			    // Insert new Value into the DB
+    		    			    DAOFactory.getKpiDAO().insertKpiValue(valTemp);
+    		    			    logger.info("New value inserted in the DB. Resource="+valTemp.getR().getName()+" KpiInstanceId="+valTemp.getKpiInstanceId());
+
+
+    	    			    	// Checks if the value is alarming (out of a certain range)
+    	    			    	// If the value is alarming a new line will be inserted in the
+    	    			    	// sbi_alarm_event table and scheduled to be sent
+    	    			        DAOFactory.getAlarmDAO().isAlarmingValue(valTemp);
+    	    			        logger.debug("Alarms sent if the value is over the thresholds");
+    		    			}			
+
+    	    		      } 			
+    			         }
+    		      }
+    		
+            }
+    	} 	
+    	logger.debug("OUT");
+    }
 
     public KpiLine getBlock(Integer miId, Resource r) throws EMFUserError, EMFInternalError {
 	logger.debug("IN");
 	KpiLine line = new KpiLine();
 	ModelInstanceNode modI = DAOFactory.getModelInstanceDAO().loadModelInstanceById(miId, dateOfKPI);
 	if (modI != null) {
-	    logger.debug("Loaded Model Instance Node with id: " + modI.getModelInstanceNodeId());
+	    logger.info("Loaded Model Instance Node with id: " + modI.getModelInstanceNodeId());
 	}
 	String modelNodeName = modI.getName();
 	line.setModelNodeName(modelNodeName);
@@ -488,7 +715,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	line.setChildren(children);
 	if (kpiI != null) {
 		KpiValue value = new KpiValue();
-	    logger.debug("Got KpiInstance with ID: " + kpiI.getKpiInstanceId().toString());
+	    logger.info("Got KpiInstance with ID: " + kpiI.getKpiInstanceId().toString());
 		boolean no_period_to_period = false;
 	    
 	    if(behaviour.equalsIgnoreCase("default") || //If the behaviour is default
@@ -515,7 +742,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    	//a new value is calculated
 	    	logger.debug("Old value not valid anymore or recalculation forced");
 			IDataSet dataSet = DAOFactory.getKpiDAO().getDsFromKpiId(kpiI.getKpi());	
-			logger.debug("Retrieved the Dataset to be calculated: " + (dataSet!=null ? dataSet.getId():"null"));
+			logger.info("Retrieved the Dataset to be calculated: " + (dataSet!=null ? dataSet.getId():"null"));
 			value = getNewKpiValue(dataSet, kpiI, r, miId);		
 			line.setValue(value);
 			
@@ -594,7 +821,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     public KpiValue getNewKpiValue(IDataSet dataSet, KpiInstance k, Resource r, Integer modelInstanceId) throws EMFUserError, EMFInternalError {
 
 	logger.debug("IN");
-	logger.debug("START calculating the new KpiValue:");
 	KpiValue kVal = new KpiValue();
 	Date begD = dateOfKPI;
 	Date endDate = null;
@@ -691,7 +917,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    String colName = r.getColumn_name();
 	    String value = r.getName();
 	    kVal.setR(r);
-	    logger.debug("Setted the Resource:"+r.getName());
+	    logger.info("Setted the Resource:"+r.getName());
 	    temp.put("ParKpiResource", value);
 	}
 	temp.put("ParModelInstance", modelInstanceId);
@@ -705,6 +931,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		
 	dataSet.setParamsMap(temp);
 	dataSet.setUserProfile(profile);	
+	logger.info("Load Data Set. Label="+dataSet.getLabel());
 	dataSet.loadData();
 	IDataStore dataStore = dataSet.getDataStore();
 	logger.debug("Got the datastore");
@@ -760,7 +987,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     			    				if (fieldValue!=null){
     			    					Resource rTemp = DAOFactory.getResourceDAO().loadResourcesByNameAndModelInst(fieldValue);
     			    					valTemp.setR(rTemp);
-	    				    			logger.debug("Setted the kpiValue Resource with resource name:"+fieldValue);
+	    				    			logger.info("Setted the kpiValue Resource with resource name:"+fieldValue);
     			    				}
     			    			}    
     		    		    }
@@ -774,7 +1001,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    			if(register_values && valTemp.getR().getName()!=null){
 	    			    // Insert new Value into the DB
 	    			    DAOFactory.getKpiDAO().insertKpiValue(valTemp);
-	    			    logger.debug("New value inserted in the DB");
+	    			    logger.info("New value inserted in the DB. Resource="+valTemp.getR().getName()+" KpiInstanceId="+valTemp.getKpiInstanceId());
+
 
     			    	// Checks if the value is alarming (out of a certain range)
     			    	// If the value is alarming a new line will be inserted in the
@@ -934,6 +1162,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
     				String value = (String) values.get(0);
     				behaviour = value;
     				logger.debug("Behaviour is: "+ behaviour);
+    			}else if(url.equals("dataset_multires")){
+    		    	String value = (String) values.get(0);
+    		    	if (value.equalsIgnoreCase("true")){
+    		    		this.dataset_multires = true;
+    		    	}else if (value.equalsIgnoreCase("false")){
+    		    		this.dataset_multires = false;
+    		    	}
     			}
     		    else {
     			    String value = (String) values.get(0);
@@ -1234,15 +1469,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		    }
 		    this.confMap.put("register_values", register_values);
 	    }
-	    
-	    resources_returned_by_dataset = false;
-	    if (dataParameters.get("resources_returned_by_dataset") != null
-			    && !(((String) dataParameters.get("resources_returned_by_dataset")).equalsIgnoreCase(""))) {
-			String fil = (String) dataParameters.get("resources_returned_by_dataset");
-			if (fil.equalsIgnoreCase("true"))
-				resources_returned_by_dataset = true;
-		    }
-		this.confMap.put("resources_returned_by_dataset", resources_returned_by_dataset);
 		
 		show_axis = false;
 	    if (dataParameters.get("show_axis") != null
@@ -1252,15 +1478,6 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				show_axis = true;
 		    }
 		this.confMap.put("show_axis", show_axis);
-	    
-	    /*recalculate_anyway = false;
-	    if (dataParameters.get("recalculate_anyway") != null
-		    && !(((String) dataParameters.get("recalculate_anyway")).equalsIgnoreCase(""))) {
-		String fil = (String) dataParameters.get("recalculate_anyway");
-		if (fil.equalsIgnoreCase("true"))
-			recalculate_anyway = true;
-	    }
-	    this.confMap.put("recalculate_anyway", recalculate_anyway);*/
 
 	} catch (Exception e) {
 	    logger.error("error in reading data source parameters");

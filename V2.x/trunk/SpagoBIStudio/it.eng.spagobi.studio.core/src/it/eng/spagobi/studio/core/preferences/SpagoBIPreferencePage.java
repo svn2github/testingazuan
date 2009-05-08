@@ -5,6 +5,7 @@ import it.eng.spagobi.studio.core.Activator;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
 import org.apache.axis.AxisFault;
+import org.apache.ws.security.WSSecurityException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -95,7 +96,12 @@ public class SpagoBIPreferencePage
 //    		setErrorMessage(null);
 //    		setValid(true);
     	} catch (AxisFault e) {
-    		
+    		if (e.getFaultString().startsWith("WSDoAllReceiver")) {
+        		MessageDialog.openError(this.getShell(), "", "Authentication failed!");
+    		} else {
+        		MessageDialog.openError(this.getShell(), "", "Could not connect to SpagoBI Server!");
+        		SpagoBILogger.errorLog("Could not connect to SpagoBI Server!", e);
+    		}
     	} catch (Exception e) {
     		MessageDialog.openError(this.getShell(), "", "Could not connect to SpagoBI Server!");
     		SpagoBILogger.errorLog("Could not connect to SpagoBI Server!", e);

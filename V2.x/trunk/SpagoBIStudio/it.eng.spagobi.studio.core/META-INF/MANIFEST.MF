@@ -30,4 +30,13 @@ Bundle-ClassPath: lib/sbi.utils-2.1.0.jar,
  lib/xercesImpl-2.6.2.jar,
  lib/xml-apis-2.0.2.jar,
  lib/xmlsec-1.4.2.jar
-Export-Package: it.eng.spagobi.studio.core.log
+Export-Package: it.eng.spagobi.sdk.datasets,
+ it.eng.spagobi.sdk.datasets.bo,
+ it.eng.spagobi.sdk.documents,
+ it.eng.spagobi.sdk.documents.bo,
+ it.eng.spagobi.sdk.engines,
+ it.eng.spagobi.sdk.engines.bo,
+ it.eng.spagobi.sdk.exceptions,
+ it.eng.spagobi.sdk.proxy,
+ it.eng.spagobi.studio.core.log,
+ it.eng.spagobi.studio.core.sdk

@@ -34,12 +34,11 @@
  	<CONFIG/>
  </ACTION>
  
- <!-- 
- <ACTION name="DOCUMENT_USER_BROWSER_START_ACTION" class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.UserDocumentsBrowserStartAction" scope="REQUEST">
- 	<CONFIG/>
- </ACTION>
- -->
+ <!-- =================================================================================
+ 		Document Browser
+      ================================================================================= -->
  
+  
  <ACTION name="DOCUMENT_USER_BROWSER_START_ACTION" 
  	class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.UserDocumentsBrowserPortletStartAction" scope="REQUEST">
  	<CONFIG/>
@@ -70,7 +69,29 @@
  	<CONFIG/>
  </ACTION>
  
+ <!-- =================================================================================
+ 		Execution Panel
+      ================================================================================= -->
  
+ <ACTION name="START_EXECUTION_PROCESS_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.StartNewExecutionProcess" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
+ <ACTION name="GET_ROLES_FOR_EXECUTION_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.GetRolesForExecutionAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
+ <ACTION name="GET_PARAMETERS_FOR_EXECUTION_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.GetParametersForExecutionAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
+ <ACTION name="GET_PARAMETER_VALUES_FOR_EXECUTION_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.GetParameterValuesForExecutionAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 
 </ACTIONS>
 

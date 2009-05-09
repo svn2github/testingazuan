@@ -22,6 +22,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.commons.utilities.messages;
 
 
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.RequestContainerAccess;
 import it.eng.spago.base.RequestContainerPortletAccess;
@@ -33,16 +45,6 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.StringUtilities;
-
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.axis.utils.StringUtils;
-import org.apache.log4j.Logger;
 /**
  * The implementation of IMessageBuilder   
  */
@@ -200,34 +202,67 @@ public class MessageBuilder implements IMessageBuilder {
 	private String getMessageInternal(String code, String bundle, Locale locale) {
 		logger.debug("IN-code:"+code);
 		logger.debug("bundle:"+bundle);
+		logger.debug("locale:"+locale);
 		String message = null;
 		if (bundle == null) {
 			message = MessageBundle.getMessage(code, locale);
 		} else {
+			//getMessageSpagoOverwrite(code, bundle, locale);
 			message = MessageBundle.getMessage(code, bundle, locale);
 		}
 		if (message == null || message.trim().equals("")) {
 			message = code;
 		}
-//		ConfigSingleton spagoconfig = ConfigSingleton.getInstance();
-//		// get mode of execution
-//		String sbiMode = (String)spagoconfig.getAttribute("SPAGOBI.SPAGOBI-MODE.mode");   
-//		// based on mode get spago object and url builder
-//		if (sbiMode.equalsIgnoreCase("WEB")) {
-//			if (bundle == null) {
-//				message = MessageBundle.getMessage(code, locale);
-//			} else {
-//				message = MessageBundle.getMessage(code, bundle, locale);
-//			}
-//			if((message==null) || message.trim().equals("")) {
-//				message = code;
-//			}
-//		} else if  (sbiMode.equalsIgnoreCase("PORTLET")){
-//			message = PortletUtilities.getMessage(code, bundle);
-//		}
+
 		logger.debug("OUT-message:"+message);
 		return message;
 	}
+	
+	public static String getMessageSpagoOverwrite(String code, String bundle, Locale userLocale)
+    {
+        String bundleKey = bundle + "_" + userLocale.getLanguage() + userLocale.getCountry();
+        ResourceBundle messages = null;
+        
+        logger.error("bundleKey " + bundleKey);
+        
+        try {
+        	messages = ResourceBundle.getBundle(bundle, userLocale);
+        } catch(MissingResourceException ex) { 
+        	logger.error("Impossible to locate message boundle for locale " + userLocale , ex);
+        }
+        
+        if(messages == null)
+        {
+        	logger.error("Unreachable block (messages == null)");
+            return null;
+        }
+        
+        logger.error("boundle locale " + messages.getLocale());
+        if(messages.getKeys() != null) {
+        	Enumeration e = messages.getKeys();
+        	while(e.hasMoreElements()) {
+        		String cde = (String)e.nextElement();
+        		logger.debug(cde + " = " + messages.getString(cde));
+        	}
+        } else {
+        	logger.error("no keys in the boundle");
+        }
+        
+        
+        
+        String message = null;
+        try
+        {
+            message = messages.getString(code);
+        }
+        catch(Exception ex) { 
+        	logger.error("Impossible to find valid message for key: " + code , ex);
+        }
+        
+        logger.debug("message: " + message);
+        
+        return message;
+    }
 
 
 
@@ -340,7 +375,18 @@ public class MessageBuilder implements IMessageBuilder {
 			logger.warn("Request locale " + locale + " not valid since it is not configured.");
 			locale = getDefaultLocale();
 			logger.debug("Using default locale " + locale + ".");
+		} else {
+			if(StringUtilities.isEmpty(locale.getCountry())) {
+				logger.warn("Request locale " + locale + " not contain the country value. The one specified in configuration will be used");
+				ConfigSingleton spagobiConfig = ConfigSingleton.getInstance();
+				SourceBean localeConf = (SourceBean)spagobiConfig.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", "language", locale.getLanguage());
+				String country = (String) localeConf.getAttribute("country");
+				locale = new Locale(locale.getLanguage(), country);
+			}
 		}
+		
+		
+		
 		logger.debug("OUT-locale:" + (locale != null ? locale.toString() : "null"));
 		return locale;
 	}

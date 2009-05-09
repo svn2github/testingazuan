@@ -145,7 +145,7 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
         return Sbi.browser.FolderView.superclass.onMouseOver.apply(this, arguments);
     }
     
-    ,onMouseOut : function(e){
+    , onMouseOut : function(e){
         var group = e.getTarget('h2', 3, true);
         if(!group){
             var d = e.getTarget('dd', 5, true);

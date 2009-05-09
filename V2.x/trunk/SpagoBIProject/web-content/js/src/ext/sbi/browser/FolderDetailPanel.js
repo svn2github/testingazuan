@@ -28,19 +28,35 @@ Ext.ns("Sbi.browser");
 
 Sbi.browser.FolderDetailPanel = function(config) {    
     
-	var loadFolderContentService = Sbi.config.serviceRegistry.getServiceUrl('GET_FOLDER_CONTENT_ACTION');
-	loadFolderContentService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
+	// always declare exploited services first!
+	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE'};
+	this.services = new Array();
+	this.services['loadFolderContentService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_FOLDER_CONTENT_ACTION'
+		, baseParams: params
+	});
+	this.services['searchContentService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SEARCH_CONTENT_ACTION'
+		, baseParams: params
+	});
+	this.services['loadFolderPathService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_FOLDER_PATH_ACTION'
+		, baseParams: params
+	});
 	
-	var searchContentService = Sbi.config.serviceRegistry.getServiceUrl('SEARCH_CONTENT_ACTION');
-	searchContentService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
+	
+  
+	
+	
+	
 	
 	// -- store -------------------------------------------------------
 	this.store = new Ext.data.JsonStore({
-	    url: loadFolderContentService
-	    , browseUrl: loadFolderContentService
-	    , searchUrl: searchContentService
-	    , root: 'folderContent'
-	    , fields: ['title', 'icon', 'samples']
+		 url: this.services['loadFolderContentService']
+		 , browseUrl: this.services['loadFolderContentService']
+		 , searchUrl: this.services['searchContentService']
+		 , root: 'folderContent'
+		 , fields: ['title', 'icon', 'samples']
 	});	
 	this.store.on('loadexception', Sbi.exception.ExceptionHandler.handleFailure);
 	this.store.on('beforeload', function(){if(this.loadingMask) this.loadingMask.show();}, this);
@@ -138,7 +154,8 @@ Sbi.browser.FolderDetailPanel = function(config) {
 
 Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     
-    modality: null // list-view || group-view
+	services: null
+    , modality: null // list-view || group-view
     , store: null
     , toolbar: null
     , folderView: null
@@ -193,10 +210,9 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
       this.store.baseParams = p || {};
       this.store.load();
      
-      var loadFolderPathService = Sbi.config.serviceRegistry.getServiceUrl('GET_FOLDER_PATH_ACTION');
-      loadFolderPathService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
+     
       Ext.Ajax.request({
-          url: loadFolderPathService,
+          url: this.services['loadFolderPathService'],
           params: p,
           callback : function(options , success, response){
     	  	if(success && response !== undefined) {   

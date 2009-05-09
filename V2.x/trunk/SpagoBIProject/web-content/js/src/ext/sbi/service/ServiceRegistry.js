@@ -31,18 +31,24 @@ Ext.ns("Sbi.service");
 
 Sbi.service.ServiceRegistry = function(config) {
 	
-	this.baseUrl = {
-		protocol: 'http',       
-		host: 'localhost',
-        port: '8080',
-        contextPath: 'SpagoBI',
-        controllerPath: 'servlet/AdapterHTTP',
-        userId: -1,
-        execId: -1 
-    };
+	config = config || {};
 	
-	Ext.apply(this, config);
+	this.baseUrl = Ext.apply({}, config.baseUrl || {}, {
+		protocol: 'http'     
+		, host: 'localhost'
+	    , port: '8080'
+	    , contextPath: 'SpagoBI'
+	    , controllerPath: 'servlet/AdapterHTTP'    
+	});
 	
+	this.baseParams = Ext.apply({}, config.baseParams || {}, {
+		SBI_EXECUTION_ID: -1
+	    , user_id: -1 
+	});
+	
+	this.defaultAbsolute = config.defaultAbsolute !== undefined?  config.defaultAbsolute: false; 
+	this.defaultServiceType = config.defaultServiceType !== undefined?  config.defaultServiceType: 'action'; 
+		
 	//this.addEvents();	
 	
 	// constructor
@@ -52,29 +58,59 @@ Sbi.service.ServiceRegistry = function(config) {
 Ext.extend(Sbi.service.ServiceRegistry, Ext.util.Observable, {
     
     // static contens and methods definitions
-   
+	baseUrl: null
+	, baseParams: null
+	, defaultAbsolute: null
+	, defaultServiceType: null 
+	
    
     // public methods
     
-    setBaseUrl : function(url) {
+    , setBaseUrl : function(url) {
        Ext.apply(this.baseUrl, url); 
     }
         
-    , getServiceUrl : function(actionName, absolute, page){
+    , getServiceUrl : function(s){
+    	var serviceUrl;
+    	
     	var baseUrlStr;
-        var serviceUrl;
-        	
-        if(absolute === undefined || absolute === false) {
-        	baseUrlStr = '/SpagoBI/servlet/AdapterHTTP';
-        } else {
-        	baseUrlStr = this.baseUrl.protocol + "://" + this.baseUrl.host + ":" + this.baseUrl.port + "/" + this.baseUrl.contextPath + "/" + this.baseUrl.controllerPath;
+    	var serviceType;
+    	var params;
+               
+        if(typeof s == 'string') {
+        	s = {serviceName: s};
         }
         
-        if(page === undefined || page === false) {
-        	serviceUrl = baseUrlStr + "?ACTION_NAME=" + actionName + "&SBI_EXECUTION_ID=" + this.baseUrl.execId + "&user_id=" + this.baseUrl.userId;
-        } else {
-        	serviceUrl = baseUrlStr + "?PAGE=" + actionName + "&SBI_EXECUTION_ID=" + this.baseUrl.execId + "&user_id=" + this.baseUrl.userId;
+        serviceType = s.serviceType || this.defaultServiceType;
+        params = Ext.apply({}, s.baseParams || {}, this.baseParams);
+                
+        serviceUrl = this.getBaseUrlStr(s);
+        serviceUrl += '?'
+        serviceUrl += (serviceType === 'action')? 'ACTION_NAME': 'PAGE';
+        serviceUrl += '=';
+        serviceUrl += s.serviceName;
+      
+        for(var p in params){
+        	if(params[p] !== null) {
+        		serviceUrl += '&' + p + '=' + params[p];
+        	}
         }
+        
         return serviceUrl;
     }     
+    
+    , getBaseUrlStr: function(s) {
+    	var baseUrlStr;
+    	
+    	var isAbsolute = s.isAbsolute || this.defaultAbsolute;
+    	var url = Ext.apply({}, s.baseUrl || {}, this.baseUrl);
+    	
+    	if(isAbsolute) {
+    		baseUrlStr = url.protocol + '://' + url.host + ":" + url.port + '/' + url.contextPath + '/' + url.controllerPath;
+    	} else {
+    		baseUrlStr = '/' + url.contextPath+ '/' + url.controllerPath;
+    	}
+    	
+    	return  baseUrlStr;
+    }
 });

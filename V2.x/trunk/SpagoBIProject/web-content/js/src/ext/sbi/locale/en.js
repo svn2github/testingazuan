@@ -66,3 +66,7 @@ Sbi.locale.ln['sbi.browser.document.objectve']  = 'objectve';
 Sbi.locale.ln['sbi.browser.document.keywords']  = 'keywords';
 Sbi.locale.ln['sbi.browser.document.refreshSeconds']  = 'refresh interval';
 
+Sbi.locale.ln['sbi.execution.roleselection.title']  = 'Role selection';
+Sbi.locale.ln['sbi.execution.roleselection.fieldlabel']  = 'Role';
+Sbi.locale.ln['sbi.execution.roleselection.emptytext']  = 'Select a role ...';
+

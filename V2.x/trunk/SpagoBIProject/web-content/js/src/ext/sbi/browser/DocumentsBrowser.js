@@ -70,22 +70,38 @@ Sbi.browser.DocumentsBrowser = function(config) {
 	       ]
 	});
 	
+	
+	
 	this.detailPanel = new Sbi.browser.FolderDetailPanel({ 
-        region: 'center'
-        , margins: '0 3 3 0'
-        , collapsed: false
-        , split: true
-        , autoScroll: false
-        , height: 100
-        , minHeight: 100
-        , width: 100
-        , minWidth: 0
-        , layout: 'fit'
-        	
+		layout: 'fit'
         , metaFolder: config.metaFolder
         , metaDocument: config.metaDocument	
         , folderId: this.selectedFolderId
     });
+	
+	this.executionPanel = new Sbi.execution.ExecutionWizardPanel({
+		/*
+		region: 'center'
+	    , margins: '0 3 3 0'
+	    , collapsed: false
+	    , split: true
+	    */
+	});
+	
+	this.centerContainerPanel = new Ext.Panel({
+		 region: 'center'
+		 , margins: '0 3 3 0'
+		 , collapsed: false
+		 , split: true
+		 , autoScroll: false
+		 , height: 100
+		 , minHeight: 100
+		 , width: 100
+		 , minWidth: 0
+		 , layout: 'fit'
+		 , items: [this.detailPanel]
+	});
+	
 	
 	config.baseLayout = config.baseLayout || {}; 	
 	var c = Ext.apply({}, config.baseLayout, {
@@ -93,7 +109,7 @@ Sbi.browser.DocumentsBrowser = function(config) {
 	    border: false,
 	    items: [ 
 	            // CENTER REGION ---------------------------------------------------------
-	            this.detailPanel, 
+	            this.centerContainerPanel, 
 	            // WEST REGION -----------------------------------------------------------
 	            new Ext.Panel({               
 	                region: 'west',
@@ -150,14 +166,19 @@ Sbi.browser.DocumentsBrowser = function(config) {
 
 
 Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
+    	
+	rootFolderId: null
+    , selectedFolderId: null
     
-    treePanel: null
+	, westRegionContainer: null
+    , treePanel: null
     , filterPanel: null
     , searchPanel: null
-    , westRegionContainer: null
+    
+    , centerRegionContainer: null
     , detailPanel: null
-    , rootFolderId: null
-    , selectedFolderId: null
+    , executionPanel: null
+    
     
     , selectFolder: function(folderId) {
 		this.detailPanel.loadFolder(folderId, this.rootFolderId);
@@ -171,10 +192,19 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 	}
 
 	, onDocumentClick: function(panel, r) {
+		
+		this.centerContainerPanel.remove(this.detailPanel, false);
+		this.centerContainerPanel.add(this.executionPanel);
+		this.centerContainerPanel.doLayout();
+		
+		this.executionPanel.execute(r);
+		
+		/*
 		var execDocumentService = Sbi.config.serviceRegistry.getServiceUrl('ExecuteBIObjectPage', false, true);
 		execDocumentService += '&MESSAGEDET=EXEC_PHASE_CREATE_PAGE';
 		execDocumentService += '&OBJECT_ID=' + r.id;
 		window.location=execDocumentService;
+		*/
 	}
 	
 	, onFolderClick: function(panel, r) {

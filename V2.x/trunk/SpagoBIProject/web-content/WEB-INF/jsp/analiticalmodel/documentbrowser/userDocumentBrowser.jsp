@@ -45,7 +45,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/SearchPanel.js")%>'></script>
     <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/FolderViewTemplate.js")%>'></script>
     <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/FolderView.js")%>'></script>
-    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/FolderDetailPanel.js")%>'></script>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/FolderDetailPanel.js")%>'></script>   
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/execution/RoleSelectionPanel.js")%>'></script>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/execution/ParametersSelectionPanel.js")%>'></script>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/execution/DocumentViewPanel.js")%>'></script>
+    <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/execution/ExecutionWizardPanel.js")%>'></script>
     <script type="text/javascript" src='<%=urlBuilder.getResourceLink(request, "/js/src/ext/sbi/browser/DocumentsBrowser.js")%>'></script>
     
        
@@ -55,15 +59,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Sbi.config = {};
     
     var url = {
-		host: '<%= request.getServerName()%>',
-	    port: '<%= request.getServerPort()%>',
-	    contextPath: '<%= request.getContextPath().startsWith("/")||request.getContextPath().startsWith("\\")?
-	        				  request.getContextPath().substring(1):
-	        				  request.getContextPath()%>',
-	    userId:  '<%= userUniqueIdentifier %>',
-	    execId: '<%= request.getParameter("SBI_EXECUTION_ID")%>'
+    	host: '<%= request.getServerName()%>'
+    	, port: '<%= request.getServerPort()%>'
+    	, contextPath: '<%= request.getContextPath().startsWith("/")||request.getContextPath().startsWith("\\")?
+    	   				  request.getContextPath().substring(1):
+    	   				  request.getContextPath()%>'
+    	    
     };
-    Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({baseUrl: url});
+
+    var params = {
+    	user_id:  <%= userUniqueIdentifier!=null?"'" + userUniqueIdentifier +"'": "null" %>
+    	, SBI_EXECUTION_ID: <%= request.getParameter("SBI_EXECUTION_ID")!=null?"'" + request.getParameter("SBI_EXECUTION_ID") +"'": "null" %>
+    	, LIGHT_NAVIGATOR_DISABLED: 'TRUE'
+    };
+
+    Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
+    	baseUrl: url
+        , baseParams: params
+    });
 
     var browserConfig = <%= aServiceResponse.getAttribute("metaConfiguration")%>;
     

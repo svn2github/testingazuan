@@ -27,13 +27,20 @@
 Ext.ns("Sbi.browser");
 
 Sbi.browser.DocumentsTree = function(config) {    
-    // sub-components   
-    
-	var loadFTreeFoldersService = Sbi.config.serviceRegistry.getServiceUrl('GET_FTREE_FOLDERS_ACTION');
-	loadFTreeFoldersService += '&LIGHT_NAVIGATOR_DISABLED=TRUE';
+
+	// always declare exploited services first!
+	this.services = new Array();
+	this.services['loadFTreeFoldersService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_FTREE_FOLDERS_ACTION'
+		, baseParams: {
+				LIGHT_NAVIGATOR_DISABLED: 'TRUE'
+		}
+	});
+	// -----------------------------------------
+	
 	
 	this.loader = new Ext.tree.TreeLoader({
-        dataUrl   : loadFTreeFoldersService
+        dataUrl   : this.services['loadFTreeFoldersService']
     });
 		
     var c = Ext.apply({}, config, {
@@ -73,7 +80,8 @@ Sbi.browser.DocumentsTree = function(config) {
 
 Ext.extend(Sbi.browser.DocumentsTree, Ext.tree.TreePanel, {
     
-	loader: null
+	services: null
+	, loader: null
 	, rootNode: null
 	, rootNodeId: null
 	

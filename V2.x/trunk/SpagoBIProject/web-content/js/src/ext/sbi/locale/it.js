@@ -58,3 +58,9 @@ Sbi.locale.ln['sbi.browser.document.language']  = 'lingua';
 Sbi.locale.ln['sbi.browser.document.objectve']  = 'scopo';
 Sbi.locale.ln['sbi.browser.document.keywords']  = 'parole chiave';
 Sbi.locale.ln['sbi.browser.document.refreshSeconds']  = 'intervallo di aggiornamento';
+
+Sbi.locale.ln['sbi.execution.roleselection.title']  = 'Selezione ruolo';
+Sbi.locale.ln['sbi.execution.roleselection.fieldlabel']  = 'Ruolo';
+Sbi.locale.ln['sbi.execution.roleselection.emptytext']  = 'Seleziona un ruolo ...';
+
+

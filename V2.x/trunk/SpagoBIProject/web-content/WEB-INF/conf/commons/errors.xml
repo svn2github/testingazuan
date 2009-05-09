@@ -12,10 +12,10 @@ be handled by the corresponding TRAP
 <ERRORS>
 	<!-- DEFAULT ERROR CONFIGURATION USED TO MAP NON SPECIFIC EXCEPTION -->
 	<ERROR class="UNDEFINED" category="serviceError"/>
+	
 	<!-- SessionExpiredException is specific for SpagoWeb module -->
 	<ERROR class="it.eng.spago.error.SessionExpiredException" category="sessionExpiredError"/>
-	<!--
-	<ERROR class="it.eng.spago.security.SecurityException" category="securityError"/>
-	<ERROR class="it.eng.spago.navigation.NavigationException" category="navigationError"/>
-	-->
+	
+	<ERROR class="it.eng.spagobi.utilities.exceptions.SpagoBIServiceException" category="ajaxServiceError"/>
+	
 </ERRORS>

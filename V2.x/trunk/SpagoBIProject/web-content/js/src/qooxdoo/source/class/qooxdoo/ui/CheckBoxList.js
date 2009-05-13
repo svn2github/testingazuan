@@ -191,10 +191,15 @@ qx.Class.define("qooxdoo.ui.CheckBoxList", {
 		 * @param value Array of strings containing the label of checkboxes which need to be set.
 		 */
 		setData: function(value) {
+			
+			for(j=0; j<this.atom.length; j++){
+				this.atom[j].getUserData('field').setChecked(false);
+			}	
 			var flag = false;
+
 			for(i=0; i<value.length; i++){
 				for(j=0; j<this.atom.length; j++){
-					if( value[i] == this.atom[j].getUserData('label').getValue() ){
+					if( value[i] == this.atom[j].getUserData('label').getContent() ){	//getValue
 						this.atom[j].getUserData('field').setChecked(true);
 						flag = true;
 						break;
@@ -205,6 +210,7 @@ qx.Class.define("qooxdoo.ui.CheckBoxList", {
 				}
 				else
 					flag = false;
+				
 				
 			}
 		}

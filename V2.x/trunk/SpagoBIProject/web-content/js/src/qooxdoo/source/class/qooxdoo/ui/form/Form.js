@@ -131,7 +131,7 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 		 */
 		setData: function(o) {
 			//qooxdoo.commons.CoreUtils.dump( o );
-			
+			//qooxdoo.commons.CoreUtils.dump(o);
 			for(prop in o) {
 				this.setInputFieldValue(prop, o[prop]);
 			}	
@@ -195,10 +195,11 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 		 * @param value The value of the input field of form
 		 */
 		setInputFieldValue: function(dataIndex, value) {
-			
+			//alert(dataIndex+' '+value);
 			if(!this.getInputField(dataIndex)) {
 				return;
 			}
+			//alert('debug1');
 			
 			
 			var container = this.getInputField(dataIndex).getUserData('field');
@@ -216,8 +217,14 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 				object.setData(value);				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {		
 				object.setValue(value);				
-			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {		
-				object.setData(value);				
+			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {
+				//object = container.getChildren()[1];
+				//alert("test");
+				//alert(qooxdoo.commons.CoreUtils.arrayToStr(value));
+				
+				container.setData(value);
+				
+				//object.setData(value);				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'radio') {
 				var radioButton = container.getChildren();
 				for(i=0; i<radioButton.length; i++){

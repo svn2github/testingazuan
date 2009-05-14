@@ -212,8 +212,11 @@ qx.Class.define("qooxdoo.ui.table.Table",
      	cm.setColumnIds( this.columnIds );
      	cm.setColumnNamesById( columnNames );
  	    
- 	   
-     	var menu = this.__columnVisibilityBt.getMenu();
+ 	    //var bt = this.__columnVisibilityBt;
+     	//var menu = this.__columnVisibilityBt.getMenu();
+ 	    var bt = this._getChildControl("column-button");
+     	var menu = bt.getMenu();
+ 	    
         if (menu)
         {
           var entries = menu.getChildren();

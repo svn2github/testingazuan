@@ -4,7 +4,6 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.util.HashMap;
 
 import org.jfree.chart.ChartFactory;
@@ -38,9 +37,13 @@ public class SimpleBox extends BoxCharts {
 				name, categoryLabel, valueLabel, dataset, 
 				false);
 
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
-		chart.setTitle(title);     
+		TextTitle title =setStyleTitle(name, styleTitle);
+		chart.setTitle(title);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
+		}
+		
 		CategoryPlot plot = (CategoryPlot) chart.getPlot();
 		BoxAndWhiskerRenderer renderer=(BoxAndWhiskerRenderer)plot.getRenderer();
 		chart.setBackgroundPaint(Color.white);

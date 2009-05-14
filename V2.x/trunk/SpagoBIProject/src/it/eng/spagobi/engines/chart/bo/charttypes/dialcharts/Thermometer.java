@@ -165,7 +165,10 @@ public class Thermometer extends DialCharts{
 
 
 			//reading intervals information
-			SourceBean subrangesSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
+			SourceBean subrangesSB = (SourceBean)content.getAttribute("INTERVALS");
+			if(subrangesSB==null){
+				subrangesSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
+			}
 			List subrangesAttrsList=null;
 			if(subrangesSB!=null){
 				subrangesAttrsList = subrangesSB.getContainedSourceBeanAttributes();

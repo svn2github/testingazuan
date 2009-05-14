@@ -108,7 +108,7 @@ public class ChartImpl implements IChart {
 	protected String orientationMultichart="";
 
 	
-	
+
 
 	
 	/**
@@ -322,7 +322,10 @@ public class ChartImpl implements IChart {
 			}
 
 			//reading series orders if present
-			SourceBean sbSerieLabels = (SourceBean)content.getAttribute("CONF.SERIES_LABELS");
+			SourceBean sbSerieLabels = (SourceBean)content.getAttribute("SERIES_LABELS");
+			if(sbSerieLabels==null){
+				sbSerieLabels = (SourceBean)content.getAttribute("CONF.SERIES_LABELS");
+			}
 			if(sbSerieLabels!=null){
 				seriesLabelsMap=new LinkedHashMap();
 				List atts=sbSerieLabels.getContainedAttributes();

@@ -139,7 +139,10 @@ public class SimpleDial extends DialCharts{
 
 
 			//reading intervals information
-			SourceBean intervalsSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
+			SourceBean intervalsSB = (SourceBean)content.getAttribute("INTERVALS");
+			if(intervalsSB==null){
+				intervalsSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
+			}
 			List intervalsAttrsList=null;
 			if(intervalsSB!=null){
 				intervalsAttrsList = intervalsSB.getContainedSourceBeanAttributes();

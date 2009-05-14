@@ -180,15 +180,36 @@ public class XYCharts extends ChartImpl{
 		super.configureChart(content);
 		confParameters = new HashMap();
 		SourceBean confSB = (SourceBean)content.getAttribute("CONF");
-		SourceBean zrange = (SourceBean)content.getAttribute("CONF.ZRANGES");
-		SourceBean yrange = (SourceBean)content.getAttribute("CONF.YRANGES");
-
+		SourceBean zrange = (SourceBean)content.getAttribute("ZRANGES");
+		if(zrange==null){
+			zrange =(SourceBean)content.getAttributeAsList("CONF.ZRANGES");
+		}
+		SourceBean yrange = (SourceBean)content.getAttribute("YRANGES");
+		if(yrange==null){
+			yrange =(SourceBean)content.getAttributeAsList("CONF.YRANGES");
+		}
+		
 		if(confSB==null) return;
 		List confAttrsList = confSB.getAttributeAsList("PARAMETER");
 
 		Iterator confAttrsIter = confAttrsList.iterator();
 		while(confAttrsIter.hasNext()) {
 			SourceBean param = (SourceBean)confAttrsIter.next();
+			String nameParam = (String)param.getAttribute("name");
+			if (nameParam.equals("grid")){
+				blockW = (String)param.getAttribute("width");
+				blockH = (String)param.getAttribute("height");
+			}
+			String valueParam = (String)param.getAttribute("value");
+			confParameters.put(nameParam, valueParam);
+		}	
+		
+		if(confSB==null) return;
+		List confAttrsList2 = content.getAttributeAsList("PARAMETER");
+
+		Iterator confAttrsIter2 = confAttrsList2.iterator();
+		while(confAttrsIter2.hasNext()) {
+			SourceBean param = (SourceBean)confAttrsIter2.next();
 			String nameParam = (String)param.getAttribute("name");
 			
 			if (nameParam.equals("xrange")){
@@ -197,9 +218,6 @@ public class XYCharts extends ChartImpl{
 			}else if (nameParam.equals("yrange")){
 				yrangeMin = (String)param.getAttribute("value_low");
 				yrangeMax = (String)param.getAttribute("value_high");
-			}else if (nameParam.equals("grid")){
-				blockW = (String)param.getAttribute("width");
-				blockH = (String)param.getAttribute("height");
 			}
 			
 			String valueParam = (String)param.getAttribute("value");

@@ -47,8 +47,10 @@ public class BulletGraph  extends DialCharts{
 		String target=(String)confParameters.get("target");
 		if (target!=null)this.target = new Double(target);
 
-		SourceBean confSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
-
+		SourceBean confSB = (SourceBean)content.getAttribute("INTERVALS");
+		if(confSB==null){
+			confSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
+		}
 		List confAttrsList = confSB.getAttributeAsList("INTERVAL");
 		if (!confAttrsList.isEmpty()){
 			Iterator it = confAttrsList.iterator();

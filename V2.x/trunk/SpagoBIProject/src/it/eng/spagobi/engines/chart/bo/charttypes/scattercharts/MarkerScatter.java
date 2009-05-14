@@ -60,7 +60,10 @@ public class MarkerScatter extends ScatterCharts {
 		super.configureChart(content);
 		SourceBean param = (SourceBean)content.getAttribute("CONF");
 		
-		List parameters = param.getAttributeAsList("PARAMETER");
+		List parameters = content.getAttributeAsList("PARAMETER");
+		if(parameters==null){
+			parameters =content.getAttributeAsList("CONF.PARAMETER");
+		}
 		if(parameters!=null){
  
 			for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {

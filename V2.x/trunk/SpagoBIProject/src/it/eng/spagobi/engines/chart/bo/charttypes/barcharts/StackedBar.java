@@ -299,7 +299,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			percentageValue=false;
 		}
 
-		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
+		SourceBean drillSB = (SourceBean)content.getAttribute("DRILL");
+		if(drillSB==null){
+			drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
+		}
 		if(drillSB!=null){
 			String lab=(String)drillSB.getAttribute("document");
 			if(lab!=null) drillLabel=lab;
@@ -328,7 +331,10 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			}
 		}
 		//reading series colors if present
-		SourceBean colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
+		SourceBean colors = (SourceBean)content.getAttribute("SERIES_COLORS");
+		if(colors==null){
+			colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
+		}
 		if(colors!=null){
 			colorMap=new HashMap();
 			List atts=colors.getContainedAttributes();
@@ -438,7 +444,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 
 		Color colorSubInvisibleTitle=Color.decode("#FFFFFF");
 		StyleLabel styleSubSubTitle=new StyleLabel("Arial",12,colorSubInvisibleTitle);
-		TextTitle subsubTitle =setStyleTitle("c", styleSubSubTitle);
+		TextTitle subsubTitle =setStyleTitle("", styleSubSubTitle);
 		chart.addSubtitle(subsubTitle);
 		// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 

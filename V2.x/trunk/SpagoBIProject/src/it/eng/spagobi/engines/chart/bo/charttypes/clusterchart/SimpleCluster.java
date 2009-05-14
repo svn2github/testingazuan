@@ -42,7 +42,7 @@ public class SimpleCluster extends ClusterCharts {
 
 		Color colorSubInvisibleTitle=Color.decode("#FFFFFF");
 		StyleLabel styleSubSubTitle=new StyleLabel("Arial",12,colorSubInvisibleTitle);
-		TextTitle subsubTitle =setStyleTitle("c", styleSubSubTitle);
+		TextTitle subsubTitle =setStyleTitle("", styleSubSubTitle);
 		chart.addSubtitle(subsubTitle);
 		
 		chart.setBackgroundPaint(color);

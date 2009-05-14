@@ -68,7 +68,10 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
-		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
+		SourceBean drillSB = (SourceBean)content.getAttribute("DRILL");
+		if(drillSB==null){
+			drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
+		}
 		if(drillSB!=null){
 			String lab=(String)drillSB.getAttribute("document");
 			if(lab!=null) drillLabel=lab;

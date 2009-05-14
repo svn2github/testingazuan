@@ -189,7 +189,10 @@ public class OverlaidBarLine extends BarCharts {
 
 
 		//reading series colors if present
-		SourceBean draws = (SourceBean)content.getAttribute("CONF.SERIES_DRAW");
+		SourceBean draws = (SourceBean)content.getAttribute("SERIES_DRAW");
+		if(draws==null){
+			draws = (SourceBean)content.getAttribute("CONF.SERIES_DRAW");
+		}
 		seriesDraw=new LinkedHashMap();
 		if(draws!=null){
 

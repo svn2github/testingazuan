@@ -127,8 +127,7 @@ public class SimplePie extends PieCharts{
 
 
 			PiePlot plot = (PiePlot) chart.getPlot();
-			plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
-			// plot.setNoDataMessages("No data available");
+			plot.setLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
 			plot.setCircular(false);
 			plot.setLabelGap(0.02);
 			plot.setNoDataMessage("No data available");
@@ -167,7 +166,7 @@ public class SimplePie extends PieCharts{
 			plot.setForegroundAlpha(1.0f);
 			plot.setDepthFactor(0.2);
 
-			plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
+			plot.setLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
 			// plot.setNoDataMessages("No data available");
 			plot.setCircular(false);
 			plot.setLabelGap(0.02);

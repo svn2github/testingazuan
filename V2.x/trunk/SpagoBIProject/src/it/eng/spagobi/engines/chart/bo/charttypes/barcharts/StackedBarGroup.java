@@ -311,7 +311,10 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		}
 		*/
 		//reading series colors if present
-		SourceBean colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
+		SourceBean colors = (SourceBean)content.getAttribute("SERIES_COLORS");
+		if(colors==null){
+			colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
+		}
 		if(colors!=null){
 			colorMap=new LinkedHashMap();
 			List atts=colors.getContainedAttributes();
@@ -328,7 +331,10 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 			}		
 		}
 		//reading gradient colors if present
-		SourceBean gradients = (SourceBean)content.getAttribute("CONF.GRADIENTS_COLORS");
+		SourceBean gradients = (SourceBean)content.getAttribute("GRADIENTS_COLORS");
+		if(gradients==null){
+			gradients = (SourceBean)content.getAttribute("CONF.GRADIENTS_COLORS");
+		}
 		if(gradients!=null){
 			gradientMap=new LinkedHashMap();
 			List atts=gradients.getContainedAttributes();
@@ -345,7 +351,10 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 			}		
 		}
 		//reading subcategories labels
-		SourceBean subcatLabels = (SourceBean)content.getAttribute("CONF.SUBCATEGORY_LABELS");
+		SourceBean subcatLabels = (SourceBean)content.getAttribute("SUBCATEGORY_LABELS");
+		if(subcatLabels==null){
+			subcatLabels = (SourceBean)content.getAttribute("CONF.SUBCATEGORY_LABELS");
+		}
 		if(subcatLabels!=null){
 			subCatLabelsMap=new LinkedHashMap();
 			List atts=subcatLabels.getContainedAttributes();

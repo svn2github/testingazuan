@@ -380,7 +380,10 @@ public class ClusterCharts extends ChartImpl {
 			defaultColor="#FFFFFF";
 
 		//reading series colors if present
-		SourceBean colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
+		SourceBean colors = (SourceBean)content.getAttribute("SERIES_COLORS");
+		if(colors==null){
+			colors = (SourceBean)content.getAttribute("CONF.SERIES_COLORS");
+		}
 		if(colors!=null){
 			colorMap=new HashMap();
 			List atts=colors.getContainedAttributes();

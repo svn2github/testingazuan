@@ -106,7 +106,10 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 		}
 
 
-		SourceBean drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
+		SourceBean drillSB = (SourceBean)content.getAttribute("DRILL");
+		if(drillSB==null){
+			drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
+		}
 		if(drillSB!=null){
 			String lab=(String)drillSB.getAttribute("document");
 			if(lab!=null) drillLabel=lab;
@@ -167,8 +170,7 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 
 
 			PiePlot plot = (PiePlot) chart.getPlot();
-			plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
-			// plot.setNoDataMessages("No data available");
+			plot.setLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
 			plot.setCircular(false);
 			plot.setLabelGap(0.02);
 			plot.setNoDataMessage("No data available");
@@ -218,8 +220,7 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 			plot.setForegroundAlpha(1.0f);
 			plot.setDepthFactor(0.2);
 
-			plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
-			// plot.setNoDataMessages("No data available");
+			plot.setLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
 			plot.setCircular(false);
 			plot.setLabelGap(0.02);
 			plot.setNoDataMessage("No data available");
@@ -246,8 +247,7 @@ public class LinkablePie extends PieCharts implements ILinkableChart{
 		}
 
 
-		Font font = new Font("Tahoma", Font.BOLD, titleDimension);
-		TextTitle title = new TextTitle(name, font);
+		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
 		if(subName!= null && !subName.equals("")){
 			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);

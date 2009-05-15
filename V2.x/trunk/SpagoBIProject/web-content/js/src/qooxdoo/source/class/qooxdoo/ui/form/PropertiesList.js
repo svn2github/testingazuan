@@ -86,7 +86,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         
         getData : function () {
 	        	
-        	var data = new Array();
+           var data = new Array();
            for( i = 0; i<this._tableModel.getRowCount(); i++){
            	  var rowData = this._tableModel.getRowDataAsMap(i);
            	  
@@ -106,10 +106,19 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         ,
         
         deleteRow : function (rowIndex) {
+        	alert('DeleteRow'+rowIndex+this._tableModel.getRowCount());
             if(this._tableModel.getRowCount()=== 1){
+            	qooxdoo.commons.CoreUtils.dump(this.emptyRow);
             	this._tableModel.setDataAsMapArray([this.emptyRow] , true);
             }else{
+            	alert('enter else');
         		this._tableModel.removeRows(rowIndex,1);
+        		this.updateContent();
+        		alert('Deleted');
+        		this.syncAppearance();
+        		alert('synched');
+        		this.setWidth(500);
+        		alert('width');
         	}
         } ,
         

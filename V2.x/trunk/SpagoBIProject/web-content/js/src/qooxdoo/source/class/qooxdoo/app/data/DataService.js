@@ -718,6 +718,9 @@ qx.Class.define("qooxdoo.app.data.DataService", {
 	        	 },{
 	        	  name:'par2'
 	        	  , value:'String'
+	        	 },{
+	        	  name:'par3'
+	        	  , value:'Integer'
 	        	 }
 	        	]   	        	
         	}, {

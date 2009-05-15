@@ -93,6 +93,7 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		form = new qooxdoo.ui.custom.FeatureDetailsForm(); 
 	} else if(type == 'lov') {
 		this.records = qooxdoo.app.data.DataService.loadLOVRecords();
+		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.LOVDetailsForm(); 
 	} else if(type == 'constraints') {
 		this.records = qooxdoo.app.data.DataService.loadLOVRecords();
@@ -100,6 +101,7 @@ qx.Class.define("qooxdoo.ui.custom.MasterDetailsPage",
 		form = new qooxdoo.ui.custom.ConstraintDetailsForm(); 
 	} else if(type == 'parameters') {
 		this.records = qooxdoo.app.data.DataService.loadLOVRecords();
+		config.dataset = this.records;
 		form = new qooxdoo.ui.custom.AnalyticalDriverDetailsForm(); 
 	} else if(type == 'configuration') {									
 		this.records = qooxdoo.app.data.DataService.loadConfigurationRecords();

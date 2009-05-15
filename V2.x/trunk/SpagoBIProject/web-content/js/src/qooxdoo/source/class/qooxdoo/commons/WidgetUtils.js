@@ -88,6 +88,7 @@ qx.Class.define("qooxdoo.commons.WidgetUtils", {
           	return textContainer;
         },
         
+        
         createComboBox : function( config ) {
         	        	
         	
@@ -350,6 +351,52 @@ qx.Class.define("qooxdoo.commons.WidgetUtils", {
         	
         	atom.setUserData('label', labelField);
         	atom.setUserData('field', textField);
+        	
+        	if(config.visible != undefined){
+				if(config.visible){
+					atom.setVisibility("visible");
+				}
+				else{
+					atom.setVisibility("excluded");
+				}
+        	}
+        	
+        	return atom;
+        },
+        
+         createPropertiesList: function( config ) {
+        	var defultConfig = {
+        		top: 0,
+        		left: 10,
+        		text: '',     		
+        		width: 800,
+        		height: 20,
+        		labelwidth: 100
+        	};
+        	
+        	config = qooxdoo.commons.CoreUtils.apply(defultConfig, config);
+        	
+        
+        	var labelField = this.createLabel({
+        		//text : config.text,//change
+        		content: config.text,
+        		top : config.top,
+        		left : config.left,
+        		width : config.labelwidth   
+        	});
+        	
+        	var propertiesList = new qooxdoo.ui.form.PropertiesList();
+        	
+        	 var propertiesListContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
+        	propertiesListContainer.add(propertiesList, {top: config.top, left: config.left});
+        	
+        	//var atom = new qx.ui.basic.Atom();
+        	var atom = new qx.ui.container.Composite(new qx.ui.layout.HBox);
+        	atom.add(labelField);//, {top: config.top, left: config.left} 
+        	atom.add(propertiesListContainer);//,  {top: config.top, left: config.left + 30} 
+        	
+        	atom.setUserData('label', labelField);
+        	atom.setUserData('field', propertiesListContainer);
         	
         	if(config.visible != undefined){
 				if(config.visible){

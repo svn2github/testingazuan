@@ -76,7 +76,7 @@ qx.Class.define("qooxdoo.ui.custom.DatasetDetailsForm", {
         		type: 'combo',
         		dataIndex: 'type',
         		text: 'Type',
-        		items: ["File","Web","Query"],
+        		items: ["File","WebService","Query","Script","Classe Java"],
 	        	listeners: [
 	        		{
 	        			event: 'changeValue',
@@ -85,33 +85,179 @@ qx.Class.define("qooxdoo.ui.custom.DatasetDetailsForm", {
 	        		}        		
         		]
         	}, {
+	          type: 'text',
+	          dataIndex: 'fileName',
+	          text: 'File name',
+	          mandatory: false 
+	         },{
+        		type: 'textarea',
+        		dataIndex: 'query',
+        		text: 'Query',
+        		mandatory: true	,
+        		visible: false
+        	}, {
+        		type: 'combo',
+        		dataIndex: 'datasource',
+        		text: 'Data Source',
+        		items: ["Foodmart","SpagoBI"],
+        		mandatory: true	,
+        		visible: false
+        	}, {
+        		type: 'combo',
+        		dataIndex: 'trasformation',
+        		text: 'Trasformation',
+        		items: ["","Pivot Trasformer"],
+        		mandatory: false,
+        		listeners: [
+	        		{
+	        			event: 'changeValue',
+	        			handler: this._changeTransformationHandler,
+	        			scope: this
+	        		}        		
+        		]
+        	}, {
         		type: 'text',
-        		dataIndex: 'fileName',
-        		text: 'File name',
-        		mandatory: false	
+        		dataIndex: 'column',
+        		text: 'Pivot over Column',
+        		mandatory: false	,
+        		visible: false
+        	}, {
+        		type: 'text',
+        		dataIndex: 'row',
+        		text: 'Pivot over Row',
+        		mandatory: false	,
+        		visible: false
+        	}, {
+        		type: 'text',
+        		dataIndex: 'value',
+        		text: 'Pivot Value',
+        		mandatory: false	,
+        		visible: false
+        	}, {
+        		type: 'flag',
+        		dataIndex: 'columnnumbers',
+        		text: 'Column Numbers',
+        		mandatory: false	,
+        		visible: false
+        	}, {
+        		type: 'text',
+        		dataIndex: 'address',
+        		text: 'Address',
+        		mandatory: false	,
+        		visible: false
+        	}, {
+        		type: 'text',
+        		dataIndex: 'operation',
+        		text: 'Operation',
+        		mandatory: false	,
+        		visible: false
+        	}, {
+        		type: 'textarea',
+        		dataIndex: 'script',
+        		text: 'Script',
+        		mandatory: true	,
+        		visible: false,
+        		height: 100
+        	}, {
+        		type: 'combo',
+        		dataIndex: 'language',
+        		text: 'Language',
+        		items: ["Groovy","Javascript"],
+        		mandatory: true	,
+        		visible: false
+        	}, {
+        		type: 'text',
+        		dataIndex: 'javaclass',
+        		text: 'Java Class Name',
+        		mandatory: true	,
+        		visible: false
+        	}, {
+        		type: 'propertiesList',
+        		dataIndex: 'parameters',
+        		text: 'Parameters',
+        		visible: false
         	}
+        	
         ]);
 		
 	},
 	
 	members: {
 		_documentTypeChangeValueHandler : function(e) {
-        	 if( this && this.getInputField('fileName') ) {
-        		/*//change
-        		if (e.getValue()=="File") {
-					this.getInputField('fileName').setDisplay(true);
-					
+				
+				this.setFileInputFieldsVisible( e.getData()==="File" );
+				this.setWebInputFieldsVisible( e.getData()==="WebService" );
+				this.setQueryInputFieldsVisible( e.getData()==="Query" );
+				this.setScriptInputFieldsVisible( e.getData()==="Script" );
+				this.setJavaClassInputFieldsVisible( e.getData()==="Classe Java" );
+   	
+        }
+        
+        , setFileInputFieldsVisible : function(b) {
+        	if (b) {
+				this.getInputField('fileName').setVisibility("visible");
+			} else {
+				this.getInputField('fileName').setVisibility("excluded");
+			}
+        }
+        
+        , setWebInputFieldsVisible : function(b) {
+        	if (b) {
+					this.getInputField('address').setVisibility("visible");
+					this.getInputField('operation').setVisibility("visible");
 				} else {
-					this.getInputField('fileName').setDisplay(false);
+					this.getInputField('address').setVisibility("excluded");
+					this.getInputField('operation').setVisibility("excluded");
 				}
-				*/
-				if (e.getData()=="File") {
-					this.getInputField('fileName').setVisibility("visible");
-					
+        }
+        
+        , setQueryInputFieldsVisible : function(b) {
+        	if (b) {
+					this.getInputField('query').setVisibility("visible");
+					this.getInputField('datasource').setVisibility("visible");
+					this.getInputField('parameters').setVisibility("visible");
 				} else {
-					this.getInputField('fileName').setVisibility("excluded");
+					this.getInputField('query').setVisibility("excluded");
+					this.getInputField('datasource').setVisibility("excluded");
+					this.getInputField('parameters').setVisibility("excluded");
 				}
-        	}        	
+        }
+        
+        , setScriptInputFieldsVisible : function(b) {
+        	if (b) {
+					this.getInputField('script').setVisibility("visible");
+					this.getInputField('language').setVisibility("visible");		
+				} else {
+					this.getInputField('script').setVisibility("excluded");
+					this.getInputField('language').setVisibility("excluded");
+				}
+        }
+        
+        , setJavaClassInputFieldsVisible : function(b) {
+        	if (b) {
+					this.getInputField('javaclass').setVisibility("visible");
+				} else {
+					this.getInputField('javaclass').setVisibility("excluded");
+				}
+        }
+        
+        ,  _changeTransformationHandler : function(e) {
+				
+				this.setPivotTransformerInputFieldsVisible( e.getData()==="Pivot Trasformer" );
+        }
+        
+        , setPivotTransformerInputFieldsVisible : function(b) {
+        	if (b) {
+					this.getInputField('column').setVisibility("visible");
+					this.getInputField('row').setVisibility("visible");
+					this.getInputField('value').setVisibility("visible");
+					this.getInputField('columnnumbers').setVisibility("visible");
+				} else {
+					this.getInputField('column').setVisibility("excluded");
+					this.getInputField('row').setVisibility("excluded");
+					this.getInputField('value').setVisibility("excluded");
+					this.getInputField('columnnumbers').setVisibility("excluded");
+				}
         }
 	}
-});
+})

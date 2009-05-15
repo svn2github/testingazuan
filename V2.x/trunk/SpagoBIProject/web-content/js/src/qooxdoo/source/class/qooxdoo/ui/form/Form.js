@@ -172,6 +172,8 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 				value = object.getValue();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {	
 				value = object.getData();				
+			} else if(this.getInputField(dataIndex).getUserData('type') === 'propertiesList') {	
+				value = object.getData();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'radio') {
 				var radioButton = container.getChildren();
 				for(i=0; i<radioButton.length; i++){
@@ -217,7 +219,9 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 				object.setData(value);				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {		
 				object.setValue(value);				
-			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {
+			}  else if(this.getInputField(dataIndex).getUserData('type') === 'propertiesList') {		
+				object.setValue(value);				
+			}else if(this.getInputField(dataIndex).getUserData('type') === 'check') {
 				//object = container.getChildren()[1];
 				//alert("test");
 				//alert(qooxdoo.commons.CoreUtils.arrayToStr(value));
@@ -279,6 +283,10 @@ qx.Class.define("qooxdoo.ui.form.Form", {
   			} else if(config.type === 'radio') {
   				inputField = qooxdoo.commons.WidgetUtils.createInputRadio(config);    
   				inputField.setUserData('type', 'radio');
+  				
+  			}  else if(config.type === 'propertiesList') {
+  				inputField = qooxdoo.commons.WidgetUtils.createPropertiesList(config);    
+  				inputField.setUserData('type', 'propertiesList');
   				
   			} else if(config.type === 'groupbox') {
   				inputField = qooxdoo.commons.WidgetUtils.createInputGroupBox(config);    

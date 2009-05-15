@@ -709,14 +709,25 @@ qx.Class.define("qooxdoo.app.data.DataService", {
 	        	name: 'Dati per test Chart1',
 	        	description: '',
 	        	type: 'Query',
-	        	fileName: ''       	        	
+	        	query:  'select a from b'  ,
+	        	datasource: 'Foodmart',
+	        	parameters: [
+	        	 {
+	        	  name:'par1'
+	        	  ,value:'String'
+	        	 },{
+	        	  name:'par2'
+	        	  , value:'String'
+	        	 }
+	        	]   	        	
         	}, {
 	        	id: '3',
 	        	"label": 'Chart2',
 	        	name: 'Dati per test Chart2',
 	        	description: '',
-	        	type: 'Web Service',
-	        	fileName: ''       	        	
+	        	type: 'WebService',
+	        	address: 'www.aaa.d.ss'   ,
+	        	operation: 'aaaaa'    	        	
         	}  			
   		];
   	},
@@ -2103,7 +2114,7 @@ qx.Class.define("qooxdoo.app.data.DataService", {
 	                   
 	               }
 	           ];
-    }    
-  	
+    }
+	
   }
 });

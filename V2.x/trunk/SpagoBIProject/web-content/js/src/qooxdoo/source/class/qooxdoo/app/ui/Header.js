@@ -45,10 +45,10 @@ qx.Class.define("qooxdoo.app.ui.Header",
     this.base(arguments);
 	this.setLayout(new qx.ui.layout.HBox);
     
-   	var html = '<div style="overflow:hidden; width:100%;background-image:url(/SpagoBI/img/wapp/spagobiMiddle.png); background-repeat: repeat-x;background-position:center 13%;" >';
+   	var html = '<div style="overflow:hidden; width:100%;background-image:url(/SpagoBI/themes/sbi_default/img/wapp/spagobiMiddle.png); background-repeat: repeat-x;background-position:center 13%;" >';
     
-    html += '<div style="float:left"><img src="/SpagoBI/img/wapp/spagobiLeft.png" /></div>';
-    html += '<div style="float:right"><img src="/SpagoBI/img/wapp/spagobiRight.png" /></div>';
+    html += '<div style="float:left"><img src="/SpagoBI/themes/sbi_default/img/wapp/spagobiLeft.png" /></div>';
+    html += '<div style="float:right"><img src="/SpagoBI/themes/sbi_default/img/wapp/spagobiRight.png" /></div>';
     html += '</div>';
     
     var embed = new qx.ui.embed.Html(html);

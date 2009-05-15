@@ -220,7 +220,7 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {		
 				object.setValue(value);				
 			}  else if(this.getInputField(dataIndex).getUserData('type') === 'propertiesList') {		
-				object.setValue(value);				
+				object.setData(value);				
 			}else if(this.getInputField(dataIndex).getUserData('type') === 'check') {
 				//object = container.getChildren()[1];
 				//alert("test");

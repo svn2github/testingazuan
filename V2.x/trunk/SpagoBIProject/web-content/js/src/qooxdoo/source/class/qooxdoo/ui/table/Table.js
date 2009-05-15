@@ -59,6 +59,8 @@ qx.Class.define("qooxdoo.ui.table.Table",
   {
     
     // Establish controller link
+    
+    
     this._controller = controller;
     
     if(config.dataset) {

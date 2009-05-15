@@ -36,7 +36,7 @@
 				</FIELD>
 				<FIELD name="url" label="#SBISet.eng.urlField">
 					<VALIDATOR validatorName="MANDATORY"/>
-					<VALIDATOR validatorName="URL"/>
+				<!-- 	<VALIDATOR validatorName="URL"/>   -->
 					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>
 				</FIELD>
 				<FIELD name="secondaryUrl" label="#SBISet.eng.secondaryUrlField">

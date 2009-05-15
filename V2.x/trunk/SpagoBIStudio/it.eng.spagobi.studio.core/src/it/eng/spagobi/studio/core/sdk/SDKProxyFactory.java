@@ -6,7 +6,7 @@ import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
 
 public class SDKProxyFactory {
 
-	public DocumentsServiceProxy getDocumentsServiceProxy() {
+	public static DocumentsServiceProxy getDocumentsServiceProxy() {
 		SpagoBIServerConnectionDefinition def = new SpagoBIServerConnectionDefinition();
 		DocumentsServiceProxy proxy = new DocumentsServiceProxy(def.getUserName(), def.getPassword());
 		String serverUrl = def.getServerUrl();
@@ -17,7 +17,7 @@ public class SDKProxyFactory {
 		return proxy;
 	}
 	
-	public EnginesServiceProxy getEnginesServiceProxy() {
+	public static EnginesServiceProxy getEnginesServiceProxy() {
 		SpagoBIServerConnectionDefinition def = new SpagoBIServerConnectionDefinition();
 		EnginesServiceProxy proxy = new EnginesServiceProxy(def.getUserName(), def.getPassword());
 		String serverUrl = def.getServerUrl();
@@ -28,7 +28,7 @@ public class SDKProxyFactory {
 		return proxy;
 	}
 	
-	public DataSetsSDKServiceProxy getDataSetsSDKServiceProxy() {
+	public static DataSetsSDKServiceProxy getDataSetsSDKServiceProxy() {
 		SpagoBIServerConnectionDefinition def = new SpagoBIServerConnectionDefinition();
 		DataSetsSDKServiceProxy proxy = new DataSetsSDKServiceProxy(def.getUserName(), def.getPassword());
 		String serverUrl = def.getServerUrl();

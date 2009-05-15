@@ -57,12 +57,14 @@ qx.Class.define("qooxdoo.ui.table.Table",
    */	
   construct : function(controller, config)
   {
+    
     // Establish controller link
     this._controller = controller;
     
     if(config.dataset) {
     	this._data = config.dataset;
     }
+   
     
     
     // Reset the class member variables so that each button of icon bar shows its resp. table columns

@@ -21,11 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.utilities.service;
 
-import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -36,8 +36,24 @@ public class JSONFailure extends JSONResponse {
 	public JSONFailure(SpagoBIEngineServiceException exception) {
 		super(JSONResponse.FAILURE, createResponseContent(exception) );
 	}
+	
+	public JSONFailure(SpagoBIServiceException exception) {
+		super(JSONResponse.FAILURE, createResponseContent(exception) );
+	}
 
 	private static JSONObject createResponseContent(SpagoBIEngineServiceException exception) {
+		JSONObject content = new JSONObject();
+		
+		try {
+			content.put("cause", exception.getCause());			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return content;
+	}
+	
+	private static JSONObject createResponseContent(SpagoBIServiceException exception) {
 		JSONObject content = new JSONObject();
 		
 		try {

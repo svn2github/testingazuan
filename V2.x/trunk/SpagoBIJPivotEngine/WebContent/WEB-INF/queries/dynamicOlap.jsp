@@ -25,7 +25,7 @@ LICENSE: see LICENSE.txt file
 				 org.dom4j.io.SAXReader,
 				 it.eng.spagobi.services.common.EnginConf"%>
 
-
+<%@ page import="it.eng.spagobi.utilities.ParametersDecoder"%>
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
@@ -157,10 +157,10 @@ LICENSE: see LICENSE.txt file
 		// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG		
 		if(ds != null  && ds.getJndi() != null && !ds.getJndi().equals("")) {
 			String resName = ds.getJndi();
-			resName = resName.replaceAll("java:comp/env/","");
-%>
-			<%@page import="it.eng.spagobi.utilities.ParametersDecoder"%>
-<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
+			//resName = resName.replaceAll("java:comp/env/","");
+		%>
+			
+			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 				<%=query%>
 				
 				<%

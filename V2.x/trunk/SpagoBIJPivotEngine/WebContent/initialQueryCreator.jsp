@@ -262,7 +262,7 @@ if (selectedSchema != null) {
 						logger.debug("Reference changed to " + catalogUri);
 					}
 					if (!resName.equals("")) {
-					    resName = resName.replace("java:comp/env/","");
+					    //resName = resName.replace("java:comp/env/","");
 			%>
 					<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=catalogUri%>">
 						<%=mdxQuery%>

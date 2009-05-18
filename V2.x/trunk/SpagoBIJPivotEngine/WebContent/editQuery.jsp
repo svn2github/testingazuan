@@ -181,7 +181,7 @@ if (schemas == null) {
 			
 			String resName = datasource.getJndi();
 			if (resName != null && !resName.equals("")) {
-				resName = resName.replace("java:comp/env/","");
+				//resName = resName.replace("java:comp/env/","");
 			    String connectionStr = "Provider=mondrian;"+resName+";Catalog="+catalogUri+";";
 			%>
 			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=catalogUri%>">

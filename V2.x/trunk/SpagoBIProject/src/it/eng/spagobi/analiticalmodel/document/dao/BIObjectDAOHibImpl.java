@@ -507,6 +507,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			if (objTemp != null) {
 				try {
 					ObjTemplate oldTemp = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(biObject.getId());
+					// set the biobject id into ObjTemplate (it should not be necessary, but to avoid errors ...)
+					objTemp.setBiobjId(biObject.getId());
 					//insert or update new template
 					DAOFactory.getObjTemplateDAO().insertBIObjectTemplate(objTemp);
 					//if the input document is a document composition and template is changed deletes existing parameters 

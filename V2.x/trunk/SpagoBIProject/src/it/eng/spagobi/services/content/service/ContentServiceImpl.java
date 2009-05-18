@@ -254,6 +254,7 @@ public class ContentServiceImpl extends AbstractServiceImpl{
 	    Integer docId = new Integer(documentiId);
 	    BIObject biobj = objdao.loadBIObjectById(docId);
 	    ObjTemplate objTemp = new ObjTemplate();
+	    objTemp.setBiobjId(biobj.getId());
 	    objTemp.setActive(new Boolean(true));
 	    objTemp.setContent(content.getBytes());
 	    objTemp.setName(templateName);

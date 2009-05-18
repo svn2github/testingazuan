@@ -385,7 +385,7 @@ qx.Class.define("qooxdoo.commons.WidgetUtils", {
         		width : config.labelwidth   
         	});
         	
-        	var propertiesList = new qooxdoo.ui.form.PropertiesList();
+        	var propertiesList = new qooxdoo.ui.form.PropertiesList(config);
         	
         	 var propertiesListContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
         	propertiesListContainer.add(propertiesList, {top: config.top, left: config.left});

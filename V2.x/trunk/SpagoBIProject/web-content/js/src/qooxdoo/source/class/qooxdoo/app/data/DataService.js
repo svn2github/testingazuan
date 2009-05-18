@@ -911,16 +911,22 @@ qx.Class.define("qooxdoo.app.data.DataService", {
   		return [
 	  			{
 		        	id: '1',
+		        	label: 'LOV1',
 		        	name: 'name1',
-		        	description: 'ddd1'
+		        	description: 'ddd1',
+		        	type: 'Fixed List of values'
 		        }, {
 		        	id: '2',
+		        	label: 'LOV2',
 		        	name: 'name2',
-		        	description: 'aaa2'
+		        	description: 'aaa2',
+		        	type: 'Script to load values'
 		        }, {
 		        	id: '3',
+		        	label: 'LOV3',
 		        	name: 'name3',
-		        	description: 'cvcw3'
+		        	description: 'cvcw3',
+		        	type: 'Query Statement'
 		        }  			
   			 ];
   	},

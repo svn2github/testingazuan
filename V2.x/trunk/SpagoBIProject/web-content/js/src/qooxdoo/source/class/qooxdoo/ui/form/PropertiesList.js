@@ -10,10 +10,13 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
 
 	construct : function() {
 	    
+	    this.saveIcon = 'qx/icon/Oxygen/16/actions/list-add.png' ;
 	    this.deleteIcon = 'qx/icon/Oxygen/16/actions/dialog-close.png' ;
+	    
 		this.emptyRow = {
 	        	  name:''
 	        	  ,value:''
+	        	  ,deleteIcon: this.saveIcon
 	        	 };
 		
 		
@@ -21,9 +24,10 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
 			parameters: [this.emptyRow]   
 		};
 		
+		/*
 		for(var i=0; i<config.parameters.length ; i++){
 			config.parameters[i].deleteIcon = this.deleteIcon  ;
-		}
+		}*/
 		
 		var records = {};
 		
@@ -47,7 +51,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
 		}
     	this.base(arguments,{
     		selectDataObject: function(item) {
-    			alert('selectDataObject =  ' + item.toSource());
+    			// alert('selectDataObject =  ' + item.toSource());
     		}
     	},c);
     	
@@ -64,7 +68,8 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
   
 		this.addListener("cellClick",this._onCellClick,this, false);    	
     	
-    	this.setWidth(500);    	
+    	this.setWidth(500);  
+    	 	
   	},
 
   	members :
@@ -72,6 +77,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
     	// public methods
   		
         setData : function (data) {
+        	
        	    this._addDeleteButtonToRows(data);
     		this._tableModel.setDataAsMapArray(data , true);
         }
@@ -95,14 +101,25 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
             } else {
             	alert('not last row');
         		this._tableModel.removeRows(rowIndex,1);
-        		alert('debug 0');
         		this.updateContent();
-        		alert('debug 1');
-        		this.syncAppearance();
-        		alert('debug 2');
-        		this.setWidth(500);
-        		alert('debug 3');
+        		
         	}
+        }
+        , addRow : function (rowIndex) {
+        	
+        	 alert('addRow '+ rowIndex + ' of ' + this._tableModel.getRowCount());
+        	 var rowDataToAdd = this._tableModel.getRowDataAsMap(rowIndex);
+        	
+        	 var data = new Array();
+             for( i = 0; i< rowIndex; i++){
+           	  	var rowData = this._tableModel.getRowDataAsMap(i);           	  
+           	  	data.push(rowData);
+             }
+             data.push({name: rowDataToAdd.name, value: rowDataToAdd.value, deleteIcon: this.deleteIcon});
+             data.push(this.emptyRow);
+             this._tableModel.setDataAsMapArray(data , true);
+             // this.setData(data);
+   
         }
         
         // private methods
@@ -117,8 +134,16 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         
         , _onCellClick : function (e) {
         
+        	
         	if(e.getColumn()===2){
-        		this.deleteRow(e.getRow());
+       
+        		if (e.getRow()===this._tableModel.getRowCount()-1){
+        			alert('Add Row');
+        			this.addRow(e.getRow());
+        		}else{
+        			alert('Delete Row');
+        			this.deleteRow(e.getRow());
+        		}
     		   //qooxdoo.commons.CoreUtils.dump(e);
     		}
         }        
@@ -127,7 +152,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         	for(var i=0; i<rows.length ; i++){
 				rows[i].deleteIcon = this.deleteIcon  ;	
 		    }
-		    
+		    rows.push(this.emptyRow);
 		    return rows ;
         }
   	}

@@ -175,7 +175,9 @@ qx.Class.define("qooxdoo.ui.custom.DatasetDetailsForm", {
         		type: 'propertiesList',
         		dataIndex: 'parameters',
         		text: 'Parameters',
-        		visible: false
+        		visible: false,
+        		nameColumnLabel: 'Name' ,
+        		valueColumnLabel: 'Type'
         	}
         	
         ]);

@@ -154,7 +154,9 @@ qx.Class.define("qooxdoo.ui.custom.LOVDetailsForm", {
         		type: 'propertiesList',
         		dataIndex: 'fixedlov',
         		text: 'Wizard Fix Lov',
-        		visible: false
+        		visible: false ,
+        		nameColumnLabel: 'Value' ,
+        		valueColumnLabel: 'Description'
         	},  /*{
         		type: 'form',
         		dataIndex: 'fixedlov',

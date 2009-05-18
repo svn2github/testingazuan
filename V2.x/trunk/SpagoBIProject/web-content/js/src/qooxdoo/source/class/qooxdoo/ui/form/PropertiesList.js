@@ -45,13 +45,16 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
 		var c = {
 			dataset: records
 		}
-    	this.base(arguments,this,c,true);
+    	this.base(arguments,{
+    		selectDataObject: function(item) {
+    			alert('selectDataObject =  ' + item.toSource());
+    		}
+    	},c);
     	
     	
-    	var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this.cellRendererFactoryFunction);
-    	var propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this.propertyCellEditorFactoryFunc);
+    	var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this._cellRendererFactoryFunction);
+    	var propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this._propertyCellEditorFactoryFunc);
     	
-
  		this._tableModel.setColumnEditable(0,true);
 		this._tableModel.setColumnEditable(1,true);
 		
@@ -59,70 +62,68 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
 		this.getTableColumnModel().setCellEditorFactory(1, propertyCellEditorFactory);
     	this.getTableColumnModel().setDataCellRenderer(2, propertyCellRendererFactory);
   
-		this.addListener("cellClick",this._onCellClick,this, false);
+		this.addListener("cellClick",this._onCellClick,this, false);    	
     	
-    	
-    	
-    	this.setWidth(500);
-    	
+    	this.setWidth(500);    	
   	},
 
   	members :
   	{
-    	cellRendererFactoryFunction : function (cellInfo) {
-    		
-      		return new qx.ui.table.cellrenderer.Image;
-        },
-        propertyCellEditorFactoryFunc: function (cellInfo) {
-    		
-      		return new qx.ui.table.celleditor.TextField ;
-        },
+    	// public methods
+  		
+        setData : function (data) {
+       	    this._addDeleteButtonToRows(data);
+    		this._tableModel.setDataAsMapArray(data , true);
+        }
         
-        setData : function (v) {
-       		
-            this.addDeleteButtonToRows(v);
-    		this._tableModel.setDataAsMapArray(v , true);
-        },
-        
-        getData : function () {
-	        	
+        , getData : function () {	        	
            var data = new Array();
            for( i = 0; i<this._tableModel.getRowCount(); i++){
-           	  var rowData = this._tableModel.getRowDataAsMap(i);
-           	  
+           	  var rowData = this._tableModel.getRowDataAsMap(i);           	  
            	  data.push({name: rowData.name, value: rowData.value});
            }
+           
            return data ;
-
-        },
+        }
         
-        _onCellClick : function (e) {
+        , deleteRow : function (rowIndex) {
+        	
+        	alert('deleteRow '+ rowIndex + ' of ' + this._tableModel.getRowCount());
+            if(this._tableModel.getRowCount()=== 1){
+            	qooxdoo.commons.CoreUtils.dump('last row->reset to empty row: ' + this.emptyRow);
+            	this._tableModel.setDataAsMapArray([this.emptyRow] , true);
+            } else {
+            	alert('not last row');
+        		this._tableModel.removeRows(rowIndex,1);
+        		alert('debug 0');
+        		this.updateContent();
+        		alert('debug 1');
+        		this.syncAppearance();
+        		alert('debug 2');
+        		this.setWidth(500);
+        		alert('debug 3');
+        	}
+        }
+        
+        // private methods
+        
+        , _cellRendererFactoryFunction : function (cellInfo) {    		
+      		return new qx.ui.table.cellrenderer.Image;
+        }
+        
+        , _propertyCellEditorFactoryFunc: function (cellInfo) {
+    		return new qx.ui.table.celleditor.TextField ;
+        }
+        
+        , _onCellClick : function (e) {
         
         	if(e.getColumn()===2){
         		this.deleteRow(e.getRow());
     		   //qooxdoo.commons.CoreUtils.dump(e);
     		}
-        }
-        ,
+        }        
         
-        deleteRow : function (rowIndex) {
-        	alert('DeleteRow'+rowIndex+this._tableModel.getRowCount());
-            if(this._tableModel.getRowCount()=== 1){
-            	qooxdoo.commons.CoreUtils.dump(this.emptyRow);
-            	this._tableModel.setDataAsMapArray([this.emptyRow] , true);
-            }else{
-            	alert('enter else');
-        		this._tableModel.removeRows(rowIndex,1);
-        		this.updateContent();
-        		alert('Deleted');
-        		this.syncAppearance();
-        		alert('synched');
-        		this.setWidth(500);
-        		alert('width');
-        	}
-        } ,
-        
-        addDeleteButtonToRows : function (rows) {
+        , _addDeleteButtonToRows : function (rows) {
         	for(var i=0; i<rows.length ; i++){
 				rows[i].deleteIcon = this.deleteIcon  ;	
 		    }

@@ -6,67 +6,13 @@ qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
   {
    
     this.base(arguments);	//,"1*","4*");//, "2*"); //  180 // this.base(arguments, "1*", "2*");
-		    /*
-		    	//  this.setLayout(new qx.ui.layout.Dock);
-		     	//	this.setShowKnob(false);
-		 		//  this.horSplit = new qx.ui.splitpane.Pane();
-		 		//  this.add(this.horSplit,{width:'100%',height:'100%'});
-		    */
- 	//if(type === 'funcManagement') {
-	 		/*
-	   		var leftPart = new qx.ui.container.Composite(new qx.ui.layout.Dock);
-	  		leftPart.setWidth("100%");
-	   		leftPart.setHeight("100%");
-	    	leftPart.setOverflow("auto"); 
-	    	leftPart.setBackgroundColor('white');
-	  		var border = new qx.ui.decoration.Single(1);
-	    	leftPart.setDecorator(new qx.ui.decoration.Single(1));leftPart.setBorder(new qx.legacy.ui.core.Border(1));
-	    	leftPart.set({width : '10%',Height:'100%'});
-	  		renderLayout
-	  		var vBox = new qx.ui.layout.VBox();
-	  		vBox.set({height : '100%'});
-	  		var vContainer = new qx.ui.container.Composite(vBox);
-	  	 	vContainer.set({height : 700});
-	  		vContainer.set({width : 250});
-	  		
-	  		var vbox = new qx.ui.layout.VBox();
-	  		vBox.renderLayout(50,350);
-	  		var headerLabel = new qx.ui.basic.Label("Functionalities Tree");
-	   		
-	  		vContainer.add(headerLabel);
-	 		 */
- 	
+		   
  	
  	this.createTree();
  	var tree = this.getTree();	
- 	/*	
-   	this.treeFunction = qooxdoo.app.data.DataService.loadTreeNodes();
-   	var tree = new qooxdoo.ui.Tree(this.treeFunction.treeStructure.root);
-	
-	for(var p in this.treeFunction.treeStructure){	//check as for..in is changed in v0.8.1
-  		if(p != 'root'){
-  			tree.addNode(this.treeFunction.treeStructure[p]);
-  		}
-  	}
-	
-		//	tree.setWidth(250);	
-  	this._tree = tree;						
-  		//tree.addListener("click",tree.onClickMenu,tree);		//contextmenu				
-  	tree.addListener("changeSelection",this.showInfo,this);
-  		
-  		
-  		//leftPart.setBackgroundColor('white');
-  		//		vContainer.add(tree);//,{height:330}
- 		// 		leftPart.add(vContainer,{ height:'100%'});//width:'30%',
- 	*/	
-  	
+ 	
   	this.add(tree,0);
   	
-  		/*
-  		//	var headerLabel1 = new qooxdoo.ui.custom.FunctionalityTreeSubClass();
-   		//leftPart.setOverflow("auto");	
-  		//	this.horSplit.add(headerLabel,0);
-  		*/
   		
   	var rightPart = new qooxdoo.ui.custom.FunctionalityTreeSubClass();
   	this._right = rightPart;
@@ -75,8 +21,6 @@ qx.Class.define("qooxdoo.ui.custom.FunctionalClassDummy",
   	this.createRightSideForm();
   	
   	this.add(rightPart,1);
-  		
-  		//  		this.add(this.horSplit,{width:'100%',height:'100%'});
   
 	var toolBar = rightPart.getUserData('toolBar');
 	

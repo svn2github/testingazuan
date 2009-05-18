@@ -28,8 +28,8 @@ import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.IBeanContainer;
@@ -96,7 +96,7 @@ public abstract class AbstractSpagoBIAction extends AbstractBaseHttpAction {
 		
 		RequestContainer requestContainer;
 		
-		locale = SpagoBIUtilities.getDefaultLocale();
+		locale = MessageBuilder.getDefaultLocale();
 		
 		requestContainer = RequestContainer.getRequestContainer();
 		if(requestContainer != null){

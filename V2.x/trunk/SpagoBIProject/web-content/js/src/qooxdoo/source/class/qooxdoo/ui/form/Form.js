@@ -29,7 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * Class for the creation of a form
  */ 
 qx.Class.define("qooxdoo.ui.form.Form", {
-	//extend: qx.legacy.ui.layout.VerticalBoxLayout,//change
+
 	extend : qx.ui.container.Composite,
 	
 	/**
@@ -97,8 +97,9 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 		this.base(arguments);
 		this.setLayout(new qx.ui.layout.VBox(5));
 				
-  		
+		this.dataObject = {};
   		this.dataMappings = [];
+  		
   		
   		if(config) {
 	  		for(var i = 0; i < config.length; i++) {
@@ -108,9 +109,9 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 	},
 	
 	members: {
-		dataObject: {},
 		
-		dataMappings: [],
+		dataObject: null,		
+		dataMappings: null,
 		
 		/**
 		 * Function to get the data of the form fields
@@ -130,8 +131,6 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 		 * of form object
 		 */
 		setData: function(o) {
-			//qooxdoo.commons.CoreUtils.dump( o );
-			//qooxdoo.commons.CoreUtils.dump(o);
 			for(prop in o) {
 				this.setInputFieldValue(prop, o[prop]);
 			}	
@@ -154,6 +153,10 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 			var value;
 			
 			if(!this.getInputField(dataIndex)) return null;
+			
+			if(this.getInputField(dataIndex).isInputField) {
+				return this.getInputField(dataIndex).getData();
+			}
 			
 			var container = this.getInputField(dataIndex).getUserData('field');
 			var object = container.getChildren()[0];
@@ -197,11 +200,15 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 		 * @param value The value of the input field of form
 		 */
 		setInputFieldValue: function(dataIndex, value) {
-			//alert(dataIndex+' '+value);
+			
 			if(!this.getInputField(dataIndex)) {
 				return;
 			}
-			//alert('debug1');
+			
+			if(this.getInputField(dataIndex).isInputField) {
+				this.getInputField(dataIndex).setData(value);
+				return;
+			}
 			
 			
 			var container = this.getInputField(dataIndex).getUserData('field');
@@ -253,8 +260,10 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 		 */
 		addInputField: function(config) {
 			if(config.type === 'text') {
-  				inputField = qooxdoo.commons.WidgetUtils.createInputTextField(config); 
-  				inputField.setUserData('type', 'text');
+  				//inputField = qooxdoo.commons.WidgetUtils.createInputTextField(config); 
+  				//inputField.setUserData('type', 'text');
+				var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				inputField = componentRegistry.createComponent(config, 'textfield');
   				       
   			} else if(config.type === 'combo') {
   				inputField = qooxdoo.commons.WidgetUtils.createInputComboBox(config);    

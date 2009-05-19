@@ -3,7 +3,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/sbi.utils-2.1.0.jar" sourcepath="it.eng.spagobi.studio.coresrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/sbi.utils-2.1.0.jar" sourcepath=""/>
 	<classpathentry exported="true" kind="lib" path="lib/activation-1.1.1.jar" sourcepath="it.eng.spagobi.studio.coresrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/axis-1.4.jar" sourcepath="it.eng.spagobi.studio.coresrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-discovery-0.2.jar" sourcepath="it.eng.spagobi.studio.coresrc.zip"/>

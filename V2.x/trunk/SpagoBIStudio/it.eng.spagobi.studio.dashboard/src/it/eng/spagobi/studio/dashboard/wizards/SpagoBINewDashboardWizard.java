@@ -41,7 +41,7 @@ public class SpagoBINewDashboardWizard extends Wizard implements INewWizard {
 	protected IStructuredSelection selection;
 	// the workbench instance
 	protected IWorkbench workbench;
-	
+
 	public boolean performFinish() {
 		// get the name of the dashboard from the form
 		SpagoBILogger.infoLog("Starting dashboard wizard");
@@ -49,37 +49,39 @@ public class SpagoBINewDashboardWizard extends Wizard implements INewWizard {
 		if (dashboardFileName == null || dashboardFileName.trim().equals("")) {
 			SpagoBILogger.errorLog("DashboardNameEmpty", null);
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-					  					 "Error", "Dashboard name empty");
+					"Error", "Dashboard name empty");
 			return false;
 		}
 		String dashboardType = newDashboardWizardPage.getDashboardTypeCombo().getText();
 		if (dashboardType == null || dashboardType.trim().equals("")) {
 			SpagoBILogger.errorLog("Dashboard Type Not Set", null);
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-					  					 "Error", "Dashboard type not set");
+					"Error", "Dashboard type not set");
 			return false;
 		}
-		
-		// get the folder selected 
+
+		// get the folder selected:  
 		Object objSel = selection.toList().get(0);
-		Folder folderSel = null;
-		
+		Folder folderSel = null;		
 		try{
-		folderSel=(Folder)objSel;
+			// FolderSel is the folder in wich to insert the new template
+			folderSel=(Folder)objSel;
 		}
 		catch (Exception e) {
 			SpagoBILogger.errorLog("no selected folder", e);			
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-           		 "Error", "You must select a folder in wich to insert the dashboard");		}
+					"Error", "You must select a folder in wich to insert the dashboard");		
+		}
 		// get the project
 		String projectName = folderSel.getProject().getName();
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		// get the folder where to insert the dashboard document
 		IProject project = root.getProject(projectName);
-        // generate the byte array input stream used to fill the file
-        ByteArrayInputStream bais = null;
-        Bundle b = Platform.getBundle(Activator.PLUGIN_ID);
-        String dashboardTemplatePath = null;
+	
+		// generate the byte array input stream used to fill the file
+		ByteArrayInputStream bais = null;
+		Bundle b = Platform.getBundle(Activator.PLUGIN_ID);
+		String dashboardTemplatePath = null;
 		try {
 			dashboardTemplatePath = DashboardModel.getDashboardTemplatePath(dashboardType);
 		} catch (Exception e) {
@@ -93,8 +95,8 @@ public class SpagoBINewDashboardWizard extends Wizard implements INewWizard {
 					"Error", "Missing template path for dashboard " + dashboardType);
 			return true;
 		}
-        URL res = b.getResource(dashboardTemplatePath);;
-        InputStream is = null;
+		URL res = b.getResource(dashboardTemplatePath);;
+		InputStream is = null;
 		try {
 			is = res.openStream();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -104,7 +106,7 @@ public class SpagoBINewDashboardWizard extends Wizard implements INewWizard {
 		} catch (Exception e) {
 			SpagoBILogger.errorLog("Error while creating file", e);
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-					             		 "Error", "Error while creating file");
+					"Error", "Error while creating file");
 		} finally {
 			try {
 				if(is!=null) is.close();
@@ -113,7 +115,7 @@ public class SpagoBINewDashboardWizard extends Wizard implements INewWizard {
 				SpagoBILogger.errorLog("Error while creating file", e);
 			}
 		}
-	    // generate the file	       
+		// generate the file	       
 		IPath pathFolder = folderSel.getProjectRelativePath();
 		IPath pathNewFile = pathFolder.append(dashboardFileName + ".sbidash");
 		IFile newFile = project.getFile(pathNewFile);
@@ -122,21 +124,21 @@ public class SpagoBINewDashboardWizard extends Wizard implements INewWizard {
 		} catch (CoreException e) {
 			SpagoBILogger.errorLog("Error while creating file", e);
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-            		 "Error", "Error while creating file; name alreay present");
+					"Error", "Error while creating file; name alreay present");
 		}
-		
+
 		IWorkbench wb = PlatformUI.getWorkbench();
 		IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
 		IWorkbenchPage page = win.getActivePage();
-        IEditorRegistry er = wb.getEditorRegistry();
-        IEditorDescriptor editordesc =  er.getDefaultEditor(newFile.getName());
+		IEditorRegistry er = wb.getEditorRegistry();
+		IEditorDescriptor editordesc =  er.getDefaultEditor(newFile.getName());
 
-        try {
+		try {
 			page.openEditor(new FileEditorInput(newFile), editordesc.getId());
 		} catch (PartInitException e) {
 			SpagoBILogger.errorLog("Error while opening editor", e);
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-            		 "Error", "Error while opening editor");
+					"Error", "Error while opening editor");
 		}
 		SpagoBILogger.infoLog("Open the dashboard wizard");
 		return true;
@@ -147,7 +149,7 @@ public class SpagoBINewDashboardWizard extends Wizard implements INewWizard {
 		this.workbench = workbench;
 		this.selection = selection;
 	}
-	
+
 	public void addPages() {
 		super.addPages();
 		newDashboardWizardPage = new NewDashboardWizardPage("New Dashboard");

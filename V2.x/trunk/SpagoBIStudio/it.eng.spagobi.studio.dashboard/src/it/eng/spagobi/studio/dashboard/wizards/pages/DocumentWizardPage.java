@@ -14,7 +14,7 @@ public class DocumentWizardPage extends WizardPage {
 	
 	public DocumentWizardPage(String pageName) {
 		super(pageName);
-		setTitle("New Document ...");
+		setTitle("New Document Wiza ...");
 	}
 
 	public void createControl(Composite parent) {

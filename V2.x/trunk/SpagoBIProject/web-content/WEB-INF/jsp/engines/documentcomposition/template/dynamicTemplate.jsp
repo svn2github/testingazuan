@@ -53,7 +53,7 @@ for (int i=0; i<lstUrl.size(); i++){
 <br> 
  
 <script>
-	//Create associative arrays with information for refresh (dependencies, ...)   ACTHUNG: Every array is indipendent!!!!
+	/*Create associative arrays with information for refresh (dependencies, ...)   ACTHUNG: Every array is indipendent!!!!*/
 	var arUrl = new Object();
 	var arTitleDocs = new Object();
 	var arLinkedDocs  = new Object();

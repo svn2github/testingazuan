@@ -43,7 +43,13 @@ public class JSONStoreFeedTransformer {
 	private JSONStoreFeedTransformer() {}
 	
 	
-	public Object transform(Object jsonData, String root) throws SerializationException {
+	public Object transform(Object jsonData, 
+			String root, 
+			String id, 
+			String name, 
+			String description,
+			String[] fields) throws SerializationException {
+		
 		JSONObject result;
 	
 		JSONObject jsonObject;
@@ -59,6 +65,21 @@ public class JSONStoreFeedTransformer {
 		
 		result = new JSONObject();
 		try {
+			JSONObject meta = new JSONObject();
+			meta.put("root", root);
+			meta.put("id", id);
+			meta.put("name", name);
+			meta.put("description", description);
+			JSONArray fieldsJSON = new JSONArray();
+			fieldsJSON.put("recNo");
+			for(int i = 0; i < fields.length; i++) {
+				JSONObject field = new JSONObject();
+				field.put("name", fields[i]);
+				field.put("header", fields[i]);
+				fieldsJSON.put(field);
+			}
+			meta.put("fields", fieldsJSON);
+			result.put("metaData", meta);
 			result.put(root, jsonArray);
 		} catch (JSONException e) {
 			throw new SerializationException("An error occurred while transforming object: " + jsonData, e);

@@ -92,5 +92,6 @@
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarm.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmEvent.hbm.xml" />
         <mapping resource="it/eng/spagobi/kpi/alarm/metadata/mappingpostgres/SbiAlarmContact.hbm.xml" />
+        <!-- end mapping -->
     </session-factory>
 </hibernate-configuration>

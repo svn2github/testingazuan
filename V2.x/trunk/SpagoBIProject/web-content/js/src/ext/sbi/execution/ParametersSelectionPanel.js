@@ -94,22 +94,22 @@ Sbi.execution.ParametersSelectionPanel = function(config) {
 	});
 	
 	
-	
+	/*
 	this.inputFieldOption = Ext.data.Record.create([
 	   {name: 'value'}                 
 	   , {name: 'label'} 
 	   , {name: 'description'} 
 	]);
-	
+	*/
 	
 	this.inputFieldOptionsStoreConfig = {
 		proxy: new Ext.data.HttpProxy({
 			url: this.services['getParameterValueForExecutionService']
 		})
 		   
-	   	, reader: new Ext.data.JsonReader({   
+	   	, reader: new Ext.data.JsonReader(/*{   
 	   		root: "root",                        
-		    id: "value" }, this.inputFieldOption)
+		    id: "value" }, this.inputFieldOption*/)
 	};     
   
 
@@ -163,11 +163,9 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
 	
 		for(var i = 0; i < parameters.length; i++) {
-			//alert(parameters[i].toSource());
 			var field = this.createField( executionInstance, parameters[i] ); 
 			this.add(field);
 		}
-		alert("brackpoint");
 		this.doLayout();
 	}
 	
@@ -184,24 +182,26 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 	, createField: function( executionInstance, p ) {
 		var field;
 		
+		alert(p.id + ' - ' + p.selectionType);
+	
+		
 		if(p.selectionType === 'COMBOBOX') {
 			var param = {};
 			Ext.apply(param, executionInstance);
 			Ext.apply(param, {PARAMETER_ID: p.id});
-			alert(param.toSource());
 			
-			//this.inputFieldOptionsStoreConfig.baseParams = param;
+			
 			var store = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
 			
 			field = new Ext.form.ComboBox({
-				tpl: '<tpl for="."><div ext:qtip="{label} ({value}): {description}" class="x-combo-list-item">{label}</div></tpl>',	
-			    editable  : true,
+				tpl: '<tpl for="."><div ext:qtip="{AGEGROUP} ({AGEGROUP}): {AGEGROUP}" class="x-combo-list-item">{AGEGROUP}</div></tpl>',
+                editable  : true,
 			    fieldLabel : p.label,
 			    forceSelection : true,
 			    name : p.id,
 			    store :  store,
-			    displayField:'label',
-			    valueField:'value',
+			    displayField:'ageGroup',
+			    valueField:'ageGroup',
 			    emptyText: 'select value',
 			    typeAhead: true,
 			    triggerAction: 'all',
@@ -215,10 +215,57 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 			       		, scope: this
 			    	}
 			    }
-			});	
+			});				
 			
-			
+			store.on('load', function( store, records ) {
+				   alert("wo wo we are in truble: " + "x");
+				   for(j = 0; j < records.length; j++) {
+					   //alert(records[j].data.toSource());
+				   }
+				   records[0].fields.each(function(item){
+					   //alert(item.toSource());
+				   });
+				   
+				   field.displayField = 'AGEGROUP';
+				   field.valueField = 'AGEGROUP';
+				   field.view = new Ext.DataView({
+		                applyTo: field.innerList,
+		                tpl: '<tpl for="."><div ext:qtip="{AGEGROUP} ({AGEGROUP}): {AGEGROUP}" class="x-combo-list-item">{AGEGROUP}</div></tpl>',
+		                singleSelect: true,
+		                selectedClass: field.selectedClass,
+		                itemSelector: field.itemSelector || '.' + 'x-combo-list' + '-item'
+		            });
+			}, this);
 			store.load({params: param});
+			
+			field.on("render", function(field) {
+				alert(field + ' - ' + field.view)
+				field.view.prepareData = function(d) {
+    			    alert('---> \n' + d.toSource());
+    				//d.totalRecs = ds.reader.jsonData.totalCount;
+    				return d;
+    			};
+
+			}, this);
+			
+			
+			
+		} else if(p.selectionType === 'LIST') {
+			field = new Ext.form.TriggerField({
+				fieldLabel: p.label
+				, name : p.id
+				, triggerClass: 'x-form-search-trigger'
+				,  width: 150
+			});
+			
+			field.on("render", function(field) {
+				field.trigger.on("click", function(e) {
+					this.onLookUp(field, executionInstance); 
+				}, this);
+			}, this);
+			
+					
+			
 		} else {
 			field = new Ext.form.TriggerField({
 				fieldLabel: p.label
@@ -231,6 +278,55 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 		return field;
 	}
 	
+	, onLookUp: function(f, executionInstance) {
+		
+		var cm = new Ext.grid.ColumnModel([
+		      new Ext.grid.RowNumberer(),
+		      {
+		    	  header: "Data",
+		          dataIndex: 'data',
+		          width: 75
+		      }
+		]);
+		
+		var store = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
+		store.on('metachange', function( store, meta ) {
+			   meta.fields[0] = new Ext.grid.RowNumberer();
+			   cm.setConfig(meta.fields);
+		}, this);
+		
+		
+		
+		var win = new Ext.Window({
+			title: 'Select value ...',   
+            layout      : 'fit',
+            width       : 500,
+            height      : 300,
+            closeAction :'hide',
+            plain       : true,
+            items       : [
+            	new Ext.grid.GridPanel({
+            		 store: store,
+            	     cm: cm,
+            	     frame: false,
+            	     border:false,  
+            	     collapsible:false,
+            	     loadMask: true,
+            	     viewConfig: {
+            	        forceFit:true,
+            	        enableRowBody:true,
+            	        showPreview:true
+            	     }
+            	})
+            ]
+		});
+		win.show(f);
+		
+		var param = {};
+		Ext.apply(param, executionInstance);
+		Ext.apply(param, {PARAMETER_ID: f.name});
+		store.load({params: param});
+	}
 	
 	
 });

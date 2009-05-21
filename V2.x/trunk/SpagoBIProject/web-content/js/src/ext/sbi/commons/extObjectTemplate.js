@@ -44,6 +44,8 @@
   * - name (mail)
   */
 
+Ext.ns("Sbi.xxx");
+
 Sbi.xxx.Xxxx = function(conf) {
 	
 	Ext.apply(this, config);

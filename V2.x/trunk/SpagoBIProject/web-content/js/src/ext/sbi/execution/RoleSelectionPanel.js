@@ -56,21 +56,22 @@ Sbi.execution.RoleSelectionPanel = function(config) {
 		, baseParams: params
 	});
 	
+	/*
 	var Role = Ext.data.Record.create([
 	    {name: 'id'}                 
 	    , {name: 'name'} 
 	    , {name: 'description'} 
 	]);
-	                                    
+	 */                                  
 	
     this.roleComboBoxStore = new Ext.data.Store({
 		proxy: new Ext.data.HttpProxy({
 				url: this.services['getRolesForExecutionService']
 		})
 		   
-	   	, reader: new Ext.data.JsonReader({   
+	   	, reader: new Ext.data.JsonReader(/*{   
 	   		root: "root",                        
-		    id: "name" }, Role)
+		    id: "name" }, Role*/)
 	   	
 	    , listeners: {
     		/*

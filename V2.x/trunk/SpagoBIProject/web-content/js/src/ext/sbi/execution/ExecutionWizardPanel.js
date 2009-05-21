@@ -68,7 +68,6 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 	
 	this.roleSelectionPanel = new Sbi.execution.RoleSelectionPanel();
 	this.parametersSelectionPanel =  new Sbi.execution.ParametersSelectionPanel();
-	//new Ext.Panel({id: 'card-1', html: 'Parameters selection page'});
 	this.documentViewPanel = new Ext.Panel({id: 'card-2', html: 'Document execution page'});
 	
 	this.activePanel = 0;
@@ -204,26 +203,4 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		this.executionInstance.SBI_EXECUTION_ID = execContextId;
 		this.parametersSelectionPanel.loadParametersForExecution(this.executionInstance);
 	}
-	/*
-	, loadParametersForExecution: function() {
-				
-		Ext.Ajax.request({
-	          url: this.services['getParametersForExecutionService'],
-	          params: this.executionInstance,
-	          callback : function(options , success, response){
-	    	  	if(success && response !== undefined) {   
-		      		if(response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if(content !== undefined) {
-		      				alert( content.toSource() );		      				
-		      			} 
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-		      		}
-	    	  	}
-	          },
-	          scope: this,
-	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
-	     });
-	}*/
 });

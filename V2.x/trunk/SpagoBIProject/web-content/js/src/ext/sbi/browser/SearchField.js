@@ -28,6 +28,7 @@ Ext.ns("Sbi.browser");
 
 Sbi.browser.SearchField = function(config) {    
 	
+	
 	var c = Ext.apply({}, config, {
 	});   
 	    

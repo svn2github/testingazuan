@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
@@ -133,10 +134,16 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 				Iterator it = rows.iterator();
 				while (it.hasNext()) {
 					SourceBean row = (SourceBean) it.next();
-					String value = (String) row.getAttribute(valueColumn);
-					String description = (String) row.getAttribute(descriptionColumn);
-					
 					JSONObject valueJSON = new JSONObject();
+					
+					List columns = row.getContainedAttributes();
+					for(int i = 0; i < columns.size(); i++) {
+						SourceBeanAttribute attribute = (SourceBeanAttribute)columns.get(i);						
+						valueJSON.put(attribute.getKey().toUpperCase(), attribute.getValue());
+					}
+					
+					String value = (String) row.getAttribute(valueColumn);
+					String description = (String) row.getAttribute(descriptionColumn);					
 					valueJSON.put("value", GeneralUtilities.substituteQuotesIntoString(value));
 					valueJSON.put("label", description);
 					valueJSON.put("description", description);		
@@ -144,7 +151,14 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 					valuesDataJSON.put(valueJSON);
 				}
 				
-				valuesJSON = (JSONObject)JSONStoreFeedTransformer.getInstance().transform(valuesDataJSON, "root");
+				String[] visiblecolumns = (String[])lovProvDet.getVisibleColumnNames().toArray(new String[0]);
+				for(int j = 0; j< visiblecolumns.length; j++) {
+					visiblecolumns[j] = visiblecolumns[j].toUpperCase();
+				}
+				
+				valuesJSON = (JSONObject)JSONStoreFeedTransformer.getInstance().transform(valuesDataJSON, 
+						"root", "value", "label", "description",
+						visiblecolumns);
 			} catch (Exception e) {
 				throw new SpagoBIServiceException("Impossible to serialize response", e);
 			} 

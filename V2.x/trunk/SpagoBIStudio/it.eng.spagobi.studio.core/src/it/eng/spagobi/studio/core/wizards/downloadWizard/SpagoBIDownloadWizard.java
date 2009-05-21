@@ -7,6 +7,7 @@ import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
+import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
 
 import java.io.ByteArrayInputStream;
@@ -29,8 +30,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.ProgressMonitorPart;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorDescriptor;
@@ -48,6 +51,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 	private SpagoBIDownloadWizardPage page;
 	private IStructuredSelection selection;
 	protected IWorkbench workbench;
+
 
 	/**
 	 * Constructor for SampleNewWizard.
@@ -73,8 +77,8 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 	 * using wizard as execution context.
 	 */
 	public boolean performFinish() {
-		TreeItem[] selectedItems=page.getTree().getSelection();
 
+		TreeItem[] selectedItems=page.getTree().getSelection();
 		if(selectedItems==null || selectedItems.length!=1){
 			SpagoBILogger.errorLog("Error; no item or multiple items selected", null);
 		}
@@ -83,7 +87,6 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			Object docObject=selectedItem.getData();
 			SDKDocument document=(SDKDocument)docObject;
 			doFinish(document);
-
 		}
 
 		return true;
@@ -165,6 +168,8 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			return;
 		}
 
+
+
 		// check if file exists, in case ask user if overwrite
 		boolean write=true;
 		if(newFile.exists()==true){
@@ -183,6 +188,17 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				return;
 			}
 
+			
+			//Set File Metadata	
+			try{
+				newFile=setFileMetaData(newFile,document);
+			}
+			catch (CoreException e) {
+				SpagoBILogger.errorLog("Error while setting meta data", e);	
+				return;
+			}
+			
+			
 
 			IWorkbench wb = PlatformUI.getWorkbench();
 			IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
@@ -204,7 +220,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				MessageDialog.openWarning(getShell(), "No editor avalaible", "No editor avalaible for the selected Bi Object type: "+type+ " and engine "+engineName);
 			}
 		}
-		else // chose not to overwrite the file
+		else // choose not to overwrite the file
 		{
 			SpagoBILogger.infoLog("Choose to not overwrite file "+newFile.getName());	
 		}
@@ -263,6 +279,20 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		}
 		return extension;
 
+	}
+
+
+	private IFile setFileMetaData(IFile newFile, SDKDocument document) throws CoreException{
+		newFile.setPersistentProperty(PropertyPage.DOCUMENT_ID, document.getId().toString());
+		newFile.setPersistentProperty(PropertyPage.DOCUMENT_LABEL, document.getLabel());
+		newFile.setPersistentProperty(PropertyPage.DOCUMENT_NAME, document.getName());
+		newFile.setPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION, document.getDescription());
+		newFile.setPersistentProperty(PropertyPage.DOCUMENT_STATE, document.getState());
+		newFile.setPersistentProperty(PropertyPage.DOCUMENT_TYPE, document.getType());
+		newFile.setPersistentProperty(PropertyPage.DATA_SOURCE_ID, (document.getDataSourceId()!=null?document.getDataSourceId().toString(): ""));
+		newFile.setPersistentProperty(PropertyPage.DATASET_ID, (document.getDataSetId()!=null?document.getDataSetId().toString(): ""));
+		newFile.setPersistentProperty(PropertyPage.ENGINE_ID, (document.getEngineId()!=null?document.getEngineId().toString(): ""));
+		return newFile;
 	}
 
 }

@@ -721,7 +721,7 @@ Create table `SBI_THRESHOLD_VALUE` (
 	`max_value` Double,
 	`label` Varchar(20) NOT NULL,
 	`colour` Varchar(20),
-	UNIQUE (`label`, 'THRESHOLD_ID'),
+	UNIQUE (`label`, `THRESHOLD_ID`),
  Primary Key (`id_threshold_value`)) ENGINE = InnoDB;
 
 Create table `SBI_KPI_MODEL` (

@@ -93,23 +93,12 @@ Sbi.execution.ParametersSelectionPanel = function(config) {
 		, baseParams: params
 	});
 	
-	
-	/*
-	this.inputFieldOption = Ext.data.Record.create([
-	   {name: 'value'}                 
-	   , {name: 'label'} 
-	   , {name: 'description'} 
-	]);
-	*/
-	
 	this.inputFieldOptionsStoreConfig = {
 		proxy: new Ext.data.HttpProxy({
 			url: this.services['getParameterValueForExecutionService']
 		})
 		   
-	   	, reader: new Ext.data.JsonReader(/*{   
-	   		root: "root",                        
-		    id: "value" }, this.inputFieldOption*/)
+	   	, reader: new Ext.data.JsonReader()
 	};     
   
 
@@ -188,20 +177,23 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 		if(p.selectionType === 'COMBOBOX') {
 			var param = {};
 			Ext.apply(param, executionInstance);
-			Ext.apply(param, {PARAMETER_ID: p.id});
+			Ext.apply(param, {
+				PARAMETER_ID: p.id
+				, MODE: 'simple'
+			});
 			
 			
 			var store = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
 			
 			field = new Ext.form.ComboBox({
-				tpl: '<tpl for="."><div ext:qtip="{AGEGROUP} ({AGEGROUP}): {AGEGROUP}" class="x-combo-list-item">{AGEGROUP}</div></tpl>',
+				tpl: '<tpl for="."><div ext:qtip="{label} ({value}): {description}" class="x-combo-list-item">{label}</div></tpl>',
                 editable  : true,
 			    fieldLabel : p.label,
 			    forceSelection : true,
 			    name : p.id,
 			    store :  store,
-			    displayField:'ageGroup',
-			    valueField:'ageGroup',
+			    displayField:'label',
+			    valueField:'value',
 			    emptyText: 'select value',
 			    typeAhead: true,
 			    triggerAction: 'all',
@@ -216,41 +208,25 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 			    	}
 			    }
 			});				
-			
-			store.on('load', function( store, records ) {
-				   alert("wo wo we are in truble: " + "x");
-				   for(j = 0; j < records.length; j++) {
-					   //alert(records[j].data.toSource());
-				   }
-				   records[0].fields.each(function(item){
-					   //alert(item.toSource());
-				   });
-				   
-				   field.displayField = 'AGEGROUP';
-				   field.valueField = 'AGEGROUP';
-				   field.view = new Ext.DataView({
-		                applyTo: field.innerList,
-		                tpl: '<tpl for="."><div ext:qtip="{AGEGROUP} ({AGEGROUP}): {AGEGROUP}" class="x-combo-list-item">{AGEGROUP}</div></tpl>',
-		                singleSelect: true,
-		                selectedClass: field.selectedClass,
-		                itemSelector: field.itemSelector || '.' + 'x-combo-list' + '-item'
-		            });
-			}, this);
+						
 			store.load({params: param});
-			
-			field.on("render", function(field) {
-				alert(field + ' - ' + field.view)
-				field.view.prepareData = function(d) {
-    			    alert('---> \n' + d.toSource());
-    				//d.totalRecs = ds.reader.jsonData.totalCount;
-    				return d;
-    			};
-
-			}, this);
-			
-			
-			
+						
 		} else if(p.selectionType === 'LIST') {
+			var params = {};
+			Ext.apply(params, executionInstance);
+			Ext.apply(params, {
+				PARAMETER_ID: p.id
+				, MODE: 'complete'
+			});
+			field = new Sbi.widgets.LookupField({
+				fieldLabel: p.label
+				, name : p.id
+				,  width: 150
+				, store: new Ext.data.Store(this.inputFieldOptionsStoreConfig)
+				, params: params
+			});
+			
+			/*
 			field = new Ext.form.TriggerField({
 				fieldLabel: p.label
 				, name : p.id
@@ -258,15 +234,23 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 				,  width: 150
 			});
 			
+			
 			field.on("render", function(field) {
 				field.trigger.on("click", function(e) {
 					this.onLookUp(field, executionInstance); 
 				}, this);
 			}, this);
-			
+			*/
 					
 			
-		} else {
+		} else if(p.selectionType ===  'CHECK_LIST') {		
+			field = new Ext.form.TriggerField({
+				fieldLabel: p.label
+				, name : p.id
+				, triggerClass: 'x-form-search-trigger'
+				,  width: 150
+			});
+		} else { 
 			field = new Ext.form.TriggerField({
 				fieldLabel: p.label
 				, name : p.id
@@ -324,7 +308,10 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 		
 		var param = {};
 		Ext.apply(param, executionInstance);
-		Ext.apply(param, {PARAMETER_ID: f.name});
+		Ext.apply(param, {
+			PARAMETER_ID: f.name
+			, MODE: 'complete'
+		});
 		store.load({params: param});
 	}
 	

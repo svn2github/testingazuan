@@ -3,13 +3,20 @@
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 <%
 
+boolean backUrlB=false;
+String backUrl="";
+if(session.getAttribute(SpagoBIConstants.BACK_URL)!=null){
+	backUrl=(String)session.getAttribute(SpagoBIConstants.BACK_URL);
+	backUrlB=true;
+}
+
 session.invalidate();
 
 //Check if SSO is active
 ConfigSingleton serverConfig = ConfigSingleton.getInstance();
 SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
 String active = (String) validateSB.getCharacters();
-if (active == null || active.equalsIgnoreCase("false")) {
+if (active == null || active.equalsIgnoreCase("false") && backUrlB==false) {
 	String context = request.getContextPath();
 	response.sendRedirect(context);
 }
@@ -63,3 +70,11 @@ else if (active != null && active.equalsIgnoreCase("true")) {
 <%if (active != null && active.equalsIgnoreCase("true")) { %>
 	<script>window.close();</script>
 <% } %>
+
+<% //if there is a BACK URL specified redirect the page
+
+if(backUrlB==true){
+	response.sendRedirect(backUrl); 
+}
+
+%>

@@ -49,6 +49,8 @@ import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.wapp.bo.Menu;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -102,12 +104,24 @@ public class LoginModule extends AbstractHttpModule {
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
 		
+			HttpServletRequest servletRequest=getHttpRequest();
+		HttpSession httpSession=servletRequest.getSession();
+		
 		if (request.getAttribute("MESSAGE") != null && ((String)request.getAttribute("MESSAGE")).equalsIgnoreCase("START_LOGIN")){
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "login");
 			logger.debug("OUT");
 			return;
 		}
 		errorHandler = getErrorHandler();
+		
+				// Set BACK URL if present
+		String backUrl=(String)request.getAttribute(SpagoBIConstants.BACK_URL);
+		
+		if (backUrl!=null && !backUrl.equalsIgnoreCase("")){
+			//permSess.setAttribute(SpagoBIConstants.BACK_URL, backUrl);
+			httpSession.setAttribute(SpagoBIConstants.BACK_URL, backUrl);		
+		}
+		
 		
 
 		String userId=null;

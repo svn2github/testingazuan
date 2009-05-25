@@ -605,8 +605,12 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 			hibBIObject.setLabel(obj.getLabel());
 			hibBIObject.setName(obj.getName());
+			if(obj.getEncrypt()!=null){
 			hibBIObject.setEncrypt(new Short(obj.getEncrypt().shortValue()));
+			}
+			if(obj.getVisible()!=null){
 			hibBIObject.setVisible(new Short(obj.getVisible().shortValue()));
+			}
 			hibBIObject.setProfiledVisibility(obj.getProfiledVisibility());
 			hibBIObject.setRelName(obj.getRelName());
 			
@@ -1030,9 +1034,17 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			if(descr==null) descr = "";
 			aBIObject.setDescription(descr);
 			// set encrypt flag
+			if(hibBIObject.getEncrypt()!=null){
 			aBIObject.setEncrypt(new Integer(hibBIObject.getEncrypt().intValue()));
+			}
+			else aBIObject.setEncrypt(new Integer(0));
+				
 			// set visible flag
+			if(hibBIObject.getVisible()!=null){
 			aBIObject.setVisible(new Integer(hibBIObject.getVisible().intValue()));
+			}
+			else aBIObject.setVisible(new Integer(0));
+			
 			// set profiled visibility information
 			aBIObject.setProfiledVisibility(hibBIObject.getProfiledVisibility());
 			// set engine						

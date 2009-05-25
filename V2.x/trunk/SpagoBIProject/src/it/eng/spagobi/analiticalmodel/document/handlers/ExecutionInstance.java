@@ -26,6 +26,7 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.util.JavaScript;
 import it.eng.spago.validation.EMFValidationError;
@@ -39,11 +40,13 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.ParameterValuesDecoder;
+import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.validation.SpagoBIValidationImpl;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
@@ -330,23 +333,21 @@ public class ExecutionInstance {
 			JSONObject jsonObject, boolean transientMode) {
 		logger.debug("IN");
 		String nameUrl = biparam.getParameterUrlName();
-//		JSONArray jsonArray = null;
 		List values = new ArrayList();
 		try {
-//			jsonArray = jsonObject.get(nameUrl);
-//			if (jsonArray != null) {
-//				for (int c = 0; c < jsonArray.length(); c++) {
-//					Object o = jsonArray.get(c);
-//					if (o != null) {
-//						values.add(o.toString());
-//					}
-//				}
-//			} else {
-//				logger.debug("No attribute found on input map for biparameter with name [" + biparam.getLabel() + "]");
-//			}
 			Object o = jsonObject.get(nameUrl);
 			if (o != null) {
-				values.add(o.toString());
+				if (o instanceof JSONArray) {
+					JSONArray jsonArray = (JSONArray) o;
+					for (int c = 0; c < jsonArray.length(); c++) {
+						Object anObject = jsonArray.get(c);
+						if (anObject != null) {
+							values.add(anObject.toString());
+						}
+					}
+				} else {
+					values.add(o.toString());
+				}
 			}
 		} catch (JSONException e) {
 			logger.error("Cannot get " + nameUrl + " values from JSON object", e);
@@ -695,12 +696,33 @@ public class ExecutionInstance {
 			mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
 			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
 			
-			// TODO manage subbjects
+			// TODO manage subobjects
 			// TODO manage document composition????
 			
 		}
 		// IF THE ENGINE IS INTERNAL
 		else {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append(GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile) userProfile).getUserId().toString()));
+			buffer.append("&PAGE=ExecuteBIObjectPage");
+			buffer.append("&" + ObjectsTreeConstants.OBJECT_LABEL + "=" + object.getLabel());
+			buffer.append("&" + SpagoBIConstants.ROLE + "=" + executionRole);
+			// identity string for context
+		    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		    UUID uuid = uuidGen.generateRandomBasedUUID();
+			buffer.append("&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + uuid.toString());
+			
+			List parameters = object.getBiObjectParameters();
+			if (parameters != null && parameters.size() > 0) {
+				Iterator it = parameters.iterator();
+				while (it.hasNext()) {
+					BIObjectParameter aParameter = (BIObjectParameter) it.next();
+					ParameterValuesEncoder encoder = new ParameterValuesEncoder();
+					String encodedValue = encoder.encode(aParameter);
+					buffer.append("&" + aParameter.getParameterUrlName() + "=" + encodedValue);
+				}
+			}
+		    url = buffer.toString();
 			
 		}
 		

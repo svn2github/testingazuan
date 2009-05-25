@@ -159,7 +159,12 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 	}
 	
 	, getFormState: function() {
-		var state = {ParProduct : ['664'], ParMonth : ['1']};
+		// Product Sales Details
+		//var state = {ParProduct : ['664'], ParMonth : ['1']};
+		// Chart of sales by age and gender
+		//var state = {cat_group : ['M']};
+		// test_multi_par
+		var state = {id : [1,2,3,4], lname : ["Gutierrez", "Damstra", "Kanagaki"], outputType : 'HTML'};
 		return state;
 	}
 	

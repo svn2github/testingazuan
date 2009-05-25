@@ -9,6 +9,7 @@
 			<FIELDS>
 			    <FIELD name="NAME" label="#SBIMapCatalogue.columnName">
 					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
 				</FIELD>
 				<FIELD name="DESCR" label="#SBISet.eng.descriptionField">
 					 <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)])*$"/>

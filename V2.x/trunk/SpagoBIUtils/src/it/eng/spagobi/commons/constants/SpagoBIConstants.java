@@ -345,5 +345,6 @@ public class SpagoBIConstants {
 	
 	public static final String MENUES_LIST = "MENUES_LIST";
 	
+	public static final String BACK_URL = "BACK_URL";
 	
 }

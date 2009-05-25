@@ -143,12 +143,12 @@ public class JasperReportRunner {
 			resourcePath=resourcePath.concat(entity+"\\");
 		}
 		logger.debug("SetUp resourcePath:"+resourcePath);
-		
-		
+
+
 		parameters.put("SBI_USERID", userUniqueIdentifier);
 		parameters.put("SBI_HTTP_SESSION", session);
 		parameters.put("SBI_RESOURCE_PATH", resourcePath);
-		
+
 
 
 
@@ -197,7 +197,9 @@ public class JasperReportRunner {
 
 			/* Dynamic template management: if the template is a zip file it is opened and every class are added to 
 			 * the classpath
-			 */			
+			 * 
+			 */
+			boolean propertiesLoaded=false;
 			if (flgTemplateStandard.equalsIgnoreCase("false")) {
 				logger.debug("The template is a .ZIP file");
 				File fileZip = new File(getJRTempDir(servletContext,executionId), JS_FILE_ZIP + JS_EXT_ZIP);
@@ -216,9 +218,8 @@ public class JasperReportRunner {
 						ClassLoader previous = Thread.currentThread().getContextClassLoader();
 						DynamicClassLoader dcl = new DynamicClassLoader(jarFile, previous);
 						Thread.currentThread().setContextClassLoader(dcl);
-
 					}
-					if (entry.getName().endsWith(".jrxml")) {
+					else if (entry.getName().endsWith(".jrxml")) {
 						// set InputStream with jrxml
 						File jrxmlFile = new File(getJRTempDirName(servletContext, executionId)+ entry.getName());
 						InputStream isJrxml = new FileInputStream(jrxmlFile);
@@ -226,6 +227,14 @@ public class JasperReportRunner {
 						templateJrxml = util.getByteArrayFromInputStream(isJrxml);
 						is = new java.io.ByteArrayInputStream(templateJrxml);
 					}
+					if (entry.getName().endsWith(".properties")) {
+
+						propertiesLoaded=true;
+
+
+					}					
+
+
 				}
 			}
 
@@ -248,12 +257,21 @@ public class JasperReportRunner {
 				String country=(String)parameters.get("SBI_COUNTRY");
 				logger.debug("Internazionalization in "+language);
 				locale=new Locale(language,country,"");
-				//parameters.put("REPORT_LOCALE", locale);
-				ResourceBundle rs=PropertyResourceBundle.getBundle("messages",locale);
-				parameters.put("REPORT_RESOURCE_BUNDLE", rs);
+
+				ResourceBundle rs;
+
+
+				if(propertiesLoaded==false){
+					rs=PropertyResourceBundle.getBundle("messages",locale);
+					parameters.put("REPORT_RESOURCE_BUNDLE", rs);
+				}
+				else{
+					parameters.put("REPORT_LOCALE", locale);
+					
+				}
 
 			}
-			
+
 			Monitor monitorSubReport = MonitorFactory.start("JasperReportRunner.compileSubReport");
 			// compile subreports
 			compiledSubreports = compileSubreports(parameters, getJRCompilationDir(servletContext, executionId),contentProxy, requestParameters);
@@ -374,7 +392,7 @@ public class JasperReportRunner {
 			monitor.stop();
 			logger.debug("OUT");
 		}
-		
+
 	}
 
 

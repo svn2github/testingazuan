@@ -50,6 +50,7 @@ import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 import java.util.Iterator;
 import java.util.List;
@@ -492,4 +493,34 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		return path;
 	}      
 
+	/**
+	 * Returns an url starting with the given base url and adding parameters as the input parameters map
+	 * @param baseUrl The base url
+	 * @param mapPars The parameters map; those parameters will be added to the url
+	 * @return an url starting with the given base url and adding parameters as the input parameters map
+	 */
+	public static String getUrl(String baseUrl, Map mapPars) {
+		logger.debug("IN");
+		Assert.assertNotNull(baseUrl, "Base url in input is null");
+		StringBuffer buffer = new StringBuffer();
+	    buffer.append(baseUrl);
+	    buffer.append(baseUrl.indexOf("?") == -1 ? "?" : "&");
+		if (mapPars != null && !mapPars.isEmpty()) {
+			java.util.Set keys = mapPars.keySet();
+			Iterator iterKeys = keys.iterator();
+			while (iterKeys.hasNext()) {
+			  	String key = iterKeys.next().toString();
+			  	Object valueObj = mapPars.get(key);
+			  	if (valueObj != null) {
+				  	String value = valueObj.toString();
+				  	buffer.append(key + "=" + value);
+				  	if (iterKeys.hasNext()) {
+				  		buffer.append("&");
+				  	}
+			  	}
+			}
+		}
+		logger.debug("OUT: " + buffer.toString());
+		return buffer.toString();
+	}
 }

@@ -68,7 +68,8 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 	
 	this.roleSelectionPanel = new Sbi.execution.RoleSelectionPanel();
 	this.parametersSelectionPanel =  new Sbi.execution.ParametersSelectionPanel();
-	this.documentViewPanel = new Ext.Panel({id: 'card-2', html: 'Document execution page'});
+	//this.documentViewPanel = new Ext.Panel({id: 'card-2', html: 'Document execution page'});
+	this.documentViewPanel = new Sbi.execution.DocumentViewPanel();
 	
 	this.activePanel = 0;
 	
@@ -88,18 +89,24 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 	this.ttBarButtons['next'] =  new Ext.Toolbar.Button({
 		id: 'card-next'
 		, text: 'Next &raquo;'
+			// permetto ad altri oggetti di mettersi in ascolto di certi eventi
 		, listeners: {
 			'click': {
+			// verrà eseguita la funzione moveToNextPage all'interno del contesto definito da scope
 	        	fn: this.moveToNextPage,
 	          	scope: this
 	        } 
 		}
 	});
 	
+	// potevo anche fare: this.ttBarButtons.on('click', funzione, contesto), il contrario è un
+	// oppure this.ttBarButtons.addListener('click', funzione, contesto), il contrario è removeListener
+	
 	var c = Ext.apply({}, config, {
 		layout:'card',
 		activeItem: this.activePanel, // index or id
 		
+		// '->' indica che i bottoni devono essere allineati destra senza separatore: sono dei caratteri speciali
 		tbar: [ '->', this.ttBarButtons['previous'], this.ttBarButtons['next'] ],
 		
 		items: [
@@ -113,6 +120,8 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     Sbi.execution.ExecutionWizardPanel.superclass.constructor.call(this, c);
     
     this.roleSelectionPanel.addListener('onload', this.onRolesForExecutionLoaded, this);
+    
+    this.documentViewPanel.addListener('loadurlfailure', this.onLoadUrlFailure, this);
     
     if(config.document) {
     	this.execute( config.document );
@@ -137,6 +146,9 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
     , moveToPage: function(pageNumber) {
 		if(this.activePanel == 0 && pageNumber == 1) { // role to params selection 
 			this.startExecution();
+		}
+		if(this.activePanel == 1 && pageNumber == 2) { // from parameters to document view 			
+			this.loadUrlForExecution();
 		}
 		
 		this.activePanel = pageNumber;
@@ -167,6 +179,20 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 
 	, loadRolesForExecution: function() {
 		this.roleSelectionPanel.loadRolesForExecution( this.executionInstance );
+	}
+	
+	, loadUrlForExecution: function() {
+		var formState = this.parametersSelectionPanel.getFormState();
+		var str = '{';
+		for (p in formState) {
+			str += p + ': ' +  formState[p] + ', ';
+		}
+		if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
+			str = str.substring(0, str.length - 3);
+		}
+		str += '}';
+		this.executionInstance.PARAMETERS = str;
+		this.documentViewPanel.loadUrlForExecution( this.executionInstance );
 	}
 
 	, onRolesForExecutionLoaded: function(ds) {
@@ -202,5 +228,9 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		alert(execContextId);
 		this.executionInstance.SBI_EXECUTION_ID = execContextId;
 		this.parametersSelectionPanel.loadParametersForExecution(this.executionInstance);
+	}
+	
+	, onLoadUrlFailure: function ( errors ) {
+		this.moveToPage(1); // go to parameters page
 	}
 });

@@ -159,7 +159,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 	}
 	
 	, getFormState: function() {
-		
+		var state = {ParProduct : ['664'], ParMonth : ['1']};
+		return state;
 	}
 	
 	// private methods

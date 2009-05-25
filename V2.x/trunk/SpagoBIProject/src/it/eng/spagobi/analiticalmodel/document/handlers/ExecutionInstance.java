@@ -21,17 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.handlers;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
-
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFErrorSeverity;
@@ -48,12 +37,31 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
+import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.ParameterValuesDecoder;
 import it.eng.spagobi.commons.validation.SpagoBIValidationImpl;
+import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.engines.drivers.IEngineDriver;
+import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * This class represents a document execution instance.
@@ -307,6 +315,57 @@ public class ExecutionInstance {
 		logger.debug("OUT");
 	}
 	
+	public void refreshParametersValues(JSONObject jsonObject, boolean transientMode) {
+		logger.debug("IN");
+		List biparams = object.getBiObjectParameters();
+		Iterator iterParams = biparams.iterator();
+		while (iterParams.hasNext()) {
+			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
+			refreshParameter(biparam, jsonObject, transientMode);
+		}
+		logger.debug("OUT");
+	}
+	
+	private void refreshParameter(BIObjectParameter biparam,
+			JSONObject jsonObject, boolean transientMode) {
+		logger.debug("IN");
+		String nameUrl = biparam.getParameterUrlName();
+//		JSONArray jsonArray = null;
+		List values = new ArrayList();
+		try {
+//			jsonArray = jsonObject.get(nameUrl);
+//			if (jsonArray != null) {
+//				for (int c = 0; c < jsonArray.length(); c++) {
+//					Object o = jsonArray.get(c);
+//					if (o != null) {
+//						values.add(o.toString());
+//					}
+//				}
+//			} else {
+//				logger.debug("No attribute found on input map for biparameter with name [" + biparam.getLabel() + "]");
+//			}
+			Object o = jsonObject.get(nameUrl);
+			if (o != null) {
+				values.add(o.toString());
+			}
+		} catch (JSONException e) {
+			logger.error("Cannot get " + nameUrl + " values from JSON object", e);
+			// TODO rilanciare un'altra eccezione?
+			return;
+		}
+		
+		if (values.size() > 0) {
+			logger.debug("Updating values of biparameter " + biparam.getLabel() + " to " + values.toString());
+			biparam.setParameterValues(values);
+		} else {
+			logger.debug("Erasing values of biparameter " + biparam.getLabel());
+			biparam.setParameterValues(null);
+		}
+		
+		biparam.setTransientParmeters(transientMode);
+		logger.debug("OUT");
+	}
+
 	public void refreshParametersValues(Map parametersMap, boolean transientMode) {
 		logger.debug("IN");
 		List biparams = object.getBiObjectParameters();
@@ -586,7 +645,7 @@ public class ExecutionInstance {
 	}
 
 	public void eraseParametersValues() {
-		logger.debug("OUT");
+		logger.debug("IN");
 		List biparams = object.getBiObjectParameters();
 		Iterator iterParams = biparams.iterator();
 		while (iterParams.hasNext()) {
@@ -601,7 +660,52 @@ public class ExecutionInstance {
 				biparam.setParameterValues(paramvalues);
 			}
 		}
+		logger.debug("OUT");
+	}
+	
+
+	public String getExecutionUrl() {
 		logger.debug("IN");
+		String url = null;
+		Engine engine = this.getBIObject().getEngine();
+		Domain engineType;
+		try {
+			engineType = DAOFactory.getDomainDAO().loadDomainById(
+					engine.getEngineTypeId());
+		} catch (EMFUserError e) {
+			throw new SpagoBIServiceException("Impossible to load engine type domain", e);
+		}
+		
+		// IF THE ENGINE IS EXTERNAL
+		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
+			// instance the driver class
+			String driverClassName = engine.getDriverName();
+			IEngineDriver aEngineDriver = null;
+			try {
+				aEngineDriver = (IEngineDriver) Class.forName(driverClassName).newInstance();
+			} catch (Exception e) {
+				throw new SpagoBIServiceException("Cannot istantiate engine driver class: " + driverClassName, e);
+			}
+			// get the map of the parameters
+			Map mapPars = aEngineDriver.getParameterMap(object, userProfile, executionRole);
+			// adding "system" parameters
+			mapPars.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
+			mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
+			mapPars.put("SBI_EXECUTION_ID", this.executionId);
+			mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
+			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
+			
+			// TODO manage subbjects
+			// TODO manage document composition????
+			
+		}
+		// IF THE ENGINE IS INTERNAL
+		else {
+			
+		}
+		
+		logger.debug("OUT: returning url = [" + url + "]");
+		return url;
 	}
 	
 	/**

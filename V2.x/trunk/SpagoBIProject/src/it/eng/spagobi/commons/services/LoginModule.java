@@ -93,6 +93,13 @@ public class LoginModule extends AbstractHttpModule {
 			permSess.setAttribute(SpagoBIConstants.THEME, theme_name);
 		}
 		
+		// Set BACK URL if present
+		String backUrl=(String)request.getAttribute(SpagoBIConstants.BACK_URL);
+		
+		if (backUrl!=null && !backUrl.equalsIgnoreCase("")){
+			permSess.setAttribute(SpagoBIConstants.BACK_URL, backUrl);
+		}
+		
 		if (request.getAttribute("MESSAGE") != null && ((String)request.getAttribute("MESSAGE")).equalsIgnoreCase("START_LOGIN")){
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "login");
 			logger.debug("OUT");

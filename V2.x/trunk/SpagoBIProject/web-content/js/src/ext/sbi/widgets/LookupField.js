@@ -48,11 +48,23 @@ Ext.ns("Sbi.widgets");
 
 Sbi.widgets.LookupField = function(config) {
 	
+	Ext.apply(this, config);
+	
 	this.store = config.store;
+	this.store.on('metachange', function( store, meta ) {
+		if(this.grid){
+		   meta.fields[0] = new Ext.grid.RowNumberer();
+		   meta.fields[ meta.fields.length - 1 ] = this.sm;
+		   this.grid.getColumnModel().setConfig(meta.fields);
+		} else {
+		   alert('ERROR: store meta changed before grid instatiation')
+		}
+	}, this);
+	
+
+	this.store.baseParams  = config.params;
 	this.params = config.params;
 	this.initWin();
-	
-	
 	
 	var c = Ext.apply({}, config, {
 		triggerClass: 'x-form-search-trigger'
@@ -62,17 +74,6 @@ Sbi.widgets.LookupField = function(config) {
 	// constructor
 	Sbi.widgets.LookupField.superclass.constructor.call(this, c);
 	
-	this.store.on('metachange', function( store, meta ) {
-		alert('things gonna change');
-		   if(this.grid){
-			   alert('I wish you were here');
-			   meta.fields[0] = new Ext.grid.RowNumberer();
-			   this.grid.getColumnModel().setConfig(meta.fields);
-		   } else {
-			   alert('ERROR: store meta changed before grid instatiation')
-		   }
-		   
-	}, this);
 	
 	this.on("render", function(field) {
 		field.trigger.on("click", function(e) {
@@ -86,6 +87,10 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     store: null
     , grid: null
     , win: null
+    , paging: true
+    , start: 0 
+    , limit: 20
+    , sm: null
    
    
     // public methods
@@ -101,24 +106,55 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	       }
 	    ]);
 		
+		var pagingBar = new Ext.PagingToolbar({
+	        pageSize: this.limit,
+	        store: this.store,
+	        displayInfo: true,
+	        displayMsg: '', //'Displaying topics {0} - {1} of {2}',
+	        emptyMsg: "No topics to display",
+	        
+	        items:[
+	               '->'
+	               , {
+	            	   text: 'Annulla'
+	            	   ,  handler : function(){
+	               	   		alert('Annulla');
+	                   }
+	               } , {
+	            	   text: 'Conferma'
+	            	   , listeners: {
+		           			'click': {
+		                  		fn: this.onOk,
+		                  		scope: this
+		                	} 
+	               		}
+	               }
+	        ]
+	    });
+		
+		this.sm = new Ext.grid.CheckboxSelectionModel( {singleSelect: true} )
+		
 		this.grid = new Ext.grid.GridPanel({
-			store: this.store,
-   	     	cm: cm,
-   	     	frame: false,
-   	     	border:false,  
-   	     	collapsible:false,
-   	     	loadMask: true,
-   	     	viewConfig: {
-   	        	forceFit:true,
-   	        	enableRowBody:true,
-   	        	showPreview:true
+			store: this.store
+   	     	, cm: cm
+   	     	, sm: this.sm
+   	     	, frame: false
+   	     	, border:false  
+   	     	, collapsible:false
+   	     	, loadMask: true
+   	     	, viewConfig: {
+   	        	forceFit:true
+   	        	, enableRowBody:true
+   	        	, showPreview:true
    	     	}
+		
+	        , bbar: pagingBar
 		});
 		
 		this.win = new Ext.Window({
 			title: 'Select value ...',   
             layout      : 'fit',
-            width       : 500,
+            width       : 580,
             height      : 300,
             closeAction :'hide',
             plain       : true,
@@ -127,16 +163,16 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	}
 	
 	, onLookUp: function() {
-		
 		this.win.show(this);
-		/*
-		var param = {};
-		Ext.apply(param, executionInstance);
-		Ext.apply(param, {
-			PARAMETER_ID: f.name
-			, MODE: 'complete'
+		var p = Ext.apply({}, this.params, {
+			start: this.start
+			, limit: this.limit
 		});
-		*/
-		this.store.load({params: this.params});
+		this.store.load({params: p});
+	}
+	
+	, onOk: function() {
+		var records = this.sm.getSelections();
+		alert('OK\n' + records[0].data.toSource());
 	}
 });

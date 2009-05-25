@@ -23,7 +23,6 @@ package it.eng.spagobi.analiticalmodel.document.x;
 
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -56,6 +55,11 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 	
 	// request parameters
 	public static String PARAMETER_ID = "PARAMETER_ID";
+	public static String MODE = "MODE";
+	public static String MODE_SIMPLE = "simple";
+	public static String MODE_COMPLETE = "complete";
+	public static String START = "start";
+	public static String LIMIT = "limit";
 	
 	
 	// logger component
@@ -65,6 +69,9 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 	public void doService() {
 		
 		String biparameterId;
+		String mode;
+		Integer start;
+		Integer limit;
 		BIObjectParameter biparameter;
 		ExecutionInstance executionInstance;
 		
@@ -74,8 +81,17 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 		try {
 		
 			biparameterId = getAttributeAsString( PARAMETER_ID );
-			
+			mode = getAttributeAsString( MODE );
+			start = getAttributeAsInteger( START );
+			limit = getAttributeAsInteger( LIMIT );
 			logger.debug("Parameter [" + PARAMETER_ID + "] is equals to [" + biparameterId + "]");
+			logger.debug("Parameter [" + MODE + "] is equals to [" + mode + "]");
+			logger.debug("Parameter [" + START + "] is equals to [" + start + "]");
+			logger.debug("Parameter [" + LIMIT + "] is equals to [" + limit + "]");
+			
+			if(mode == null) {
+				mode = MODE_SIMPLE;
+			}
 			
 			Assert.assertNotNull(getContext(), "Parameter [" + PARAMETER_ID + "] cannot be null" );
 			Assert.assertNotNull(getContext(), "Execution context cannot be null" );
@@ -131,34 +147,45 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 				// get all the rows of the result and build the option of the combobox
 				LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
 				List rows = lovResultHandler.getRows();
-				Iterator it = rows.iterator();
-				while (it.hasNext()) {
-					SourceBean row = (SourceBean) it.next();
+				
+				int lb = (start != null)? start.intValue(): 0;
+				int ub = (limit != null)? lb + limit.intValue(): rows.size() - lb;
+				ub = (ub > rows.size())? rows.size(): ub;
+				
+				for (int q = lb; q < ub; q++) {
+					SourceBean row = (SourceBean) rows.get(q);
 					JSONObject valueJSON = new JSONObject();
 					
-					List columns = row.getContainedAttributes();
-					for(int i = 0; i < columns.size(); i++) {
-						SourceBeanAttribute attribute = (SourceBeanAttribute)columns.get(i);						
-						valueJSON.put(attribute.getKey().toUpperCase(), attribute.getValue());
-					}
-					
-					String value = (String) row.getAttribute(valueColumn);
-					String description = (String) row.getAttribute(descriptionColumn);					
-					valueJSON.put("value", GeneralUtilities.substituteQuotesIntoString(value));
-					valueJSON.put("label", description);
-					valueJSON.put("description", description);		
+					if(MODE_COMPLETE.equalsIgnoreCase( mode )) {
+						List columns = row.getContainedAttributes();
+						for(int i = 0; i < columns.size(); i++) {
+							SourceBeanAttribute attribute = (SourceBeanAttribute)columns.get(i);						
+							valueJSON.put(attribute.getKey().toUpperCase(), attribute.getValue());
+						}
+					} else {
+						String value = (String) row.getAttribute(valueColumn);
+						String description = (String) row.getAttribute(descriptionColumn);					
+						valueJSON.put("value", GeneralUtilities.substituteQuotesIntoString(value));
+						valueJSON.put("label", description);
+						valueJSON.put("description", description);	
+					}					
 					
 					valuesDataJSON.put(valueJSON);
 				}
 				
-				String[] visiblecolumns = (String[])lovProvDet.getVisibleColumnNames().toArray(new String[0]);
-				for(int j = 0; j< visiblecolumns.length; j++) {
-					visiblecolumns[j] = visiblecolumns[j].toUpperCase();
+				String[] visiblecolumns;
+				
+				if(MODE_COMPLETE.equalsIgnoreCase( mode )) {
+					visiblecolumns = (String[])lovProvDet.getVisibleColumnNames().toArray(new String[0]);
+					for(int j = 0; j< visiblecolumns.length; j++) {
+						visiblecolumns[j] = visiblecolumns[j].toUpperCase();
+					}
+				} else {
+					visiblecolumns = new String[]{"value", "label", "description"};
 				}
 				
 				valuesJSON = (JSONObject)JSONStoreFeedTransformer.getInstance().transform(valuesDataJSON, 
-						"root", "value", "label", "description",
-						visiblecolumns);
+						"root", "results", visiblecolumns, new Integer(rows.size()));
 			} catch (Exception e) {
 				throw new SpagoBIServiceException("Impossible to serialize response", e);
 			} 

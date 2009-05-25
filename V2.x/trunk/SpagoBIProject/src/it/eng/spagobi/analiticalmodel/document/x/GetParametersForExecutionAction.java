@@ -126,8 +126,7 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 			par = biparam.getParameter();
 			parType = par.getType(); 
 			selectionType = par.getModalityValue().getSelectionType();
-			typeCode = par.getModalityValue().getITypeCd();
-			
+			typeCode = par.getModalityValue().getITypeCd();			
 			
 			
 			

@@ -132,8 +132,7 @@ public class GetRolesForExecutionAction extends AbstractSpagoBIAction {
 		try {
 			JSONArray  dataJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( roles );
 			rolesJSON = (JSONObject)JSONStoreFeedTransformer.getInstance().transform(dataJSON, 
-					"root", "id", "name", "description",
-					new String[]{"id", "name", "description"});
+					"root", "results", new String[]{"id", "name", "description"}, new Integer(roleNames.size()));
 		} catch (SerializationException e) {
 			e.printStackTrace();
 		}

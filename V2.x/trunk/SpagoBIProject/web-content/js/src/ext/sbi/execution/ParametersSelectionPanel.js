@@ -183,7 +183,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 				, MODE: 'simple'
 			});
 			
-			
+			this.inputFieldOptionsStoreConfig.reader = new Ext.data.JsonReader();
 			var store = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
 			
 			field = new Ext.form.ComboBox({
@@ -219,11 +219,15 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 				PARAMETER_ID: p.id
 				, MODE: 'complete'
 			});
+			
+			this.inputFieldOptionsStoreConfig.reader = new Ext.data.JsonReader();
+			var s = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
+			
 			field = new Sbi.widgets.LookupField({
 				fieldLabel: p.label
 				, name : p.id
 				,  width: 150
-				, store: new Ext.data.Store(this.inputFieldOptionsStoreConfig)
+				, store: s
 				, params: params
 			});
 			
@@ -285,7 +289,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 		var win = new Ext.Window({
 			title: 'Select value ...',   
             layout      : 'fit',
-            width       : 500,
+            width       : 560,
             height      : 300,
             closeAction :'hide',
             plain       : true,

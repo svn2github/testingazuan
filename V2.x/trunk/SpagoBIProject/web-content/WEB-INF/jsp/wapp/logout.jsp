@@ -4,8 +4,15 @@
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
 <%
 
-session.invalidate();
+boolean backUrlB=false;
+String backUrl="";
+if(session.getAttribute(SpagoBIConstants.BACK_URL)!=null){
+	backUrl=(String)session.getAttribute(SpagoBIConstants.BACK_URL);
+	backUrlB=true;
+}
 
+
+session.invalidate();
 
 
 //Check if SSO is active
@@ -13,12 +20,8 @@ ConfigSingleton serverConfig = ConfigSingleton.getInstance();
 SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
 String active = (String) validateSB.getCharacters();
 
-boolean backUrlB=false;
-String backUrl="";
-if(permanentSession.getAttribute(SpagoBIConstants.BACK_URL)!=null){
-	backUrl=(String)permanentSession.getAttribute(SpagoBIConstants.BACK_URL);
-	backUrlB=true;
-}
+
+
 
 if ((active == null || active.equalsIgnoreCase("false")) && backUrlB==false) {
 	String context = request.getContextPath();

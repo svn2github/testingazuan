@@ -49,6 +49,9 @@ import it.eng.spagobi.wapp.util.MenuUtilities;
 
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.log4j.Logger;
 
 public class LoginModule extends AbstractHttpModule {
@@ -88,6 +91,9 @@ public class LoginModule extends AbstractHttpModule {
 		SessionContainer sessCont = reqCont.getSessionContainer();
 		SessionContainer permSess = sessCont.getPermanentContainer();
 		
+		HttpServletRequest servletRequest=getHttpRequest();
+		HttpSession httpSession=servletRequest.getSession();
+		
 		// Set THEME
 		if (theme_name!=null && theme_name.length()>0){
 			permSess.setAttribute(SpagoBIConstants.THEME, theme_name);
@@ -97,7 +103,8 @@ public class LoginModule extends AbstractHttpModule {
 		String backUrl=(String)request.getAttribute(SpagoBIConstants.BACK_URL);
 		
 		if (backUrl!=null && !backUrl.equalsIgnoreCase("")){
-			permSess.setAttribute(SpagoBIConstants.BACK_URL, backUrl);
+			//permSess.setAttribute(SpagoBIConstants.BACK_URL, backUrl);
+			httpSession.setAttribute(SpagoBIConstants.BACK_URL, backUrl);		
 		}
 		
 		if (request.getAttribute("MESSAGE") != null && ((String)request.getAttribute("MESSAGE")).equalsIgnoreCase("START_LOGIN")){

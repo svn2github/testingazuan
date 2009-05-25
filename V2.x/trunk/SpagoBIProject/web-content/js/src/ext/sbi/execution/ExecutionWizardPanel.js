@@ -185,7 +185,12 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		var formState = this.parametersSelectionPanel.getFormState();
 		var str = '{';
 		for (p in formState) {
-			str += p + ': ' +  formState[p] + ', ';
+			var obj = formState[p];
+			if (typeof obj == 'object') {
+				str += p + ': [' +  obj.toString() + '], ';
+			} else {
+				str += p + ': ' +  obj + ', ';
+			}
 		}
 		if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
 			str = str.substring(0, str.length - 3);

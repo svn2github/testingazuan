@@ -92,6 +92,11 @@
  	class="it.eng.spagobi.analiticalmodel.document.x.GetParameterValuesForExecutionAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+ 
+ <ACTION name="GET_URL_FOR_EXECUTION_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.GetUrlForExecutionAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 
 </ACTIONS>
 

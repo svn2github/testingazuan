@@ -149,6 +149,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		}
 		if(this.activePanel == 1 && pageNumber == 2) { // from parameters to document view 			
 			this.loadUrlForExecution();
+			
 		}
 		
 		this.activePanel = pageNumber;
@@ -186,12 +187,39 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		var str = '{';
 		for (p in formState) {
 			var obj = formState[p];
+			if (typeof obj == 'function') {
+				continue;
+			}
 			if (typeof obj == 'object') {
-				str += p + ': [' +  obj.toString() + '], ';
+				str += p + ': ['
+				for (count in obj) {
+					var temp = obj[count];
+					if (typeof temp == 'function') {
+						continue;
+					}
+					if (typeof obj == 'string') {
+						// the String.escape function escapes the passed string for ' and \
+						temp = String.escape(temp);
+						str += '\'' + temp + '\', ';
+					} else {
+						str += temp + ', ';
+					}
+				}
+				// removing last ', ' string
+				if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
+					str = str.substring(0, str.length - 3);
+				}
+				str += '], ';
+			} else if (typeof obj == 'string') {
+				// the String.escape function escapes the passed string for ' and \
+				obj = String.escape(obj);
+				str += p + ': \'' +  obj + '\', ';
 			} else {
+				// case number or boolean
 				str += p + ': ' +  obj + ', ';
 			}
 		}
+		// removing last ', ' string
 		if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
 			str = str.substring(0, str.length - 3);
 		}

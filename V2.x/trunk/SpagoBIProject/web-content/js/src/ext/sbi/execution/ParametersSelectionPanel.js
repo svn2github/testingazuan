@@ -201,8 +201,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 	, createField: function( executionInstance, p ) {
 		var field;
 		
-		alert(p.id + ' - ' + p.selectionType);
-	
+		alert(p.id + ' - ' + p.selectionType + ' - ' + !p.mandatory);
+		var allowBlank = !p.mandatory;
 		
 		if(p.selectionType === 'COMBOBOX') {
 			var param = {};
@@ -231,6 +231,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 			    selectOnFocus:true,
 			    autoLoad: false,
 			    mode : 'local',
+			    allowBlank: allowBlank,
 			    listeners: {
 			    	'select': {
 			       		fn: function(){}
@@ -258,35 +259,51 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 				, width: 150
 				, store: s
 				, params: params
-				, singleSelect: false
+				, allowBlank: allowBlank
+				, singleSelect: true
 			});
 			
 			
 		} else if(p.selectionType ===  'CHECK_LIST') {		
-			field = new Ext.form.TriggerField({
+			var params = {};
+			Ext.apply(params, executionInstance);
+			Ext.apply(params, {
+				PARAMETER_ID: p.id
+				, MODE: 'complete'
+			});
+			
+			this.inputFieldOptionsStoreConfig.reader = new Ext.data.JsonReader();
+			var s = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
+			
+			field = new Sbi.widgets.LookupField({
 				fieldLabel: p.label
 				, name : p.id
-				, triggerClass: 'x-form-search-trigger'
-				,  width: 150
+				, width: 150
+				, store: s
+				, params: params
+				, allowBlank: allowBlank
+				, singleSelect: false
 			});
 		} else { 
 			if(p.type === 'DATE') {				
 				field = new Ext.form.DateField({
 					fieldLabel: p.label
 					, name : p.id
+					, allowBlank: allowBlank
 					,  width: 150
 				});
 			} else if(p.type === 'NUMBER') {
 				field = new Ext.form.NumberField({
 					fieldLabel: p.label
 					, name : p.id
+					, allowBlank: allowBlank
 					,  width: 150
 				});
 			} else {
 				field = new Ext.form.TextField({
 					fieldLabel: p.label
 					, name : p.id
-					, allowBlank: !p.mandatory 
+					, allowBlank: allowBlank
 					, width: 150
 				});
 			}

@@ -102,13 +102,17 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 	// potevo anche fare: this.ttBarButtons.on('click', funzione, contesto), il contrario è un
 	// oppure this.ttBarButtons.addListener('click', funzione, contesto), il contrario è removeListener
 	
+	
+	// '->' indica che i bottoni devono essere allineati destra senza separatore: sono dei caratteri speciali
+    this.tb = new Ext.Toolbar({
+    	hideMode: "offsets",
+        items: ['->', this.ttBarButtons['previous'], this.ttBarButtons['next']]
+    });
+	
 	var c = Ext.apply({}, config, {
 		layout:'card',
 		activeItem: this.activePanel, // index or id
-		
-		// '->' indica che i bottoni devono essere allineati destra senza separatore: sono dei caratteri speciali
-		tbar: [ '->', this.ttBarButtons['previous'], this.ttBarButtons['next'] ],
-		
+		tbar: this.tb,
 		items: [
 		   this.roleSelectionPanel
 		 , this.parametersSelectionPanel
@@ -149,7 +153,12 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		}
 		if(this.activePanel == 1 && pageNumber == 2) { // from parameters to document view 			
 			this.loadUrlForExecution();
-			
+			//this.tbar.hide(); // lascia uno spazio bianco al posto della toolbars
+			//this.getTopToolbar().destroy(); // fa comparire sotto il document browser, l'iframe non viene ridimensionato
+			//this.getTopToolbar().disable(); // funziona però non la toglie dalla ui
+			//this.remove(this.getTopToolbar()); // come this.getTopToolbar().destroy()
+			//this.getTopToolbar().hide();
+			//this.doLayout();
 		}
 		
 		this.activePanel = pageNumber;

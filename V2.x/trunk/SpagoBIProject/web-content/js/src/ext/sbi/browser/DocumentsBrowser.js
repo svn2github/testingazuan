@@ -77,6 +77,8 @@ Sbi.browser.DocumentsBrowser = function(config) {
         , metaFolder: config.metaFolder
         , metaDocument: config.metaDocument	
         , folderId: this.selectedFolderId
+        //, closable:false
+        //, title: 'Browser'
     });
 	
 	this.executionPanel = new Sbi.execution.ExecutionWizardPanel({
@@ -99,6 +101,17 @@ Sbi.browser.DocumentsBrowser = function(config) {
 		 , width: 100
 		 , minWidth: 0
 		 , layout: 'fit'
+		 
+		 // turn on tab resizing
+		 /*
+		 , resizeTabs:true
+		 , minTabWidth: 115
+		 , tabWidth:135
+		 , enableTabScroll:true
+		 , defaults: {autoScroll:true}
+		 , activeItem: 0
+		 */
+			 
 		 , items: [this.detailPanel]
 	});
 	

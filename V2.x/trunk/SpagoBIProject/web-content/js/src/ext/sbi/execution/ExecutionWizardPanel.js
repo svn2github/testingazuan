@@ -196,9 +196,6 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		var str = '{';
 		for (p in formState) {
 			var obj = formState[p];
-			if (typeof obj == 'function') {
-				continue;
-			}
 			if (typeof obj == 'object') {
 				str += p + ': ['
 				for (count in obj) {
@@ -228,7 +225,6 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 				str += p + ': ' +  obj + ', ';
 			}
 		}
-		// removing last ', ' string
 		if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
 			str = str.substring(0, str.length - 3);
 		}
@@ -238,7 +234,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	}
 
 	, onRolesForExecutionLoaded: function(ds) {
-		alert('roles for execution loaded');
+		//alert('roles for execution loaded');
 	}
 	
 	, startExecution: function() {

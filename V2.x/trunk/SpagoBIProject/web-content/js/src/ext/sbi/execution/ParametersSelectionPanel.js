@@ -123,9 +123,10 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
     , inputFieldOption: null
     , inputFieldOptionsStoreConfig: null
    
-   
+    // ----------------------------------------------------------------------------------------
     // public methods
-	
+    // ----------------------------------------------------------------------------------------
+    
 	, loadParametersForExecution: function( executionInstance ) {
 		
 		Ext.Ajax.request({
@@ -164,15 +165,38 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 		// Chart of sales by age and gender
 		//var state = {cat_group : ['M']};
 		// test_multi_par
-		var state = {id : [1,2,3,4], lname : ["Gutierrez", "Damstra", "Kanagaki"], outputType : 'HTML'};
+		var state;
+		
+		//state = {id : [1,2,3,4], lname : ["Gutierrez", "Damstra", "Kanagaki"], outputType : 'HTML'};
+		
+		var form = this.getForm(); 
+		
+		state = {};
+		for(var i = 0;  i < form.items.getCount(); i++) {
+			var item = form.items.get(i);
+			var value = item.getValue();
+			//alert(item.getName() + ': ' + typeof value);
+			if(value instanceof Date) {
+				alert('wowow');
+				value = value.toString();
+			} 
+			state[item.getName()] = value;
+		}
+		
+		alert(state.toSource());
+		
 		return state;
 	}
 	
-	// private methods
-	
 	, clear: function() {
-	
+		
 	}
+	
+	// ----------------------------------------------------------------------------------------
+	// private methods
+	// ----------------------------------------------------------------------------------------
+	
+	
 	
 	, createField: function( executionInstance, p ) {
 		var field;
@@ -231,27 +255,12 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 			field = new Sbi.widgets.LookupField({
 				fieldLabel: p.label
 				, name : p.id
-				,  width: 150
+				, width: 150
 				, store: s
 				, params: params
+				, singleSelect: false
 			});
 			
-			/*
-			field = new Ext.form.TriggerField({
-				fieldLabel: p.label
-				, name : p.id
-				, triggerClass: 'x-form-search-trigger'
-				,  width: 150
-			});
-			
-			
-			field.on("render", function(field) {
-				field.trigger.on("click", function(e) {
-					this.onLookUp(field, executionInstance); 
-				}, this);
-			}, this);
-			*/
-					
 			
 		} else if(p.selectionType ===  'CHECK_LIST') {		
 			field = new Ext.form.TriggerField({
@@ -261,69 +270,31 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 				,  width: 150
 			});
 		} else { 
-			field = new Ext.form.TriggerField({
-				fieldLabel: p.label
-				, name : p.id
-				, triggerClass: 'x-form-search-trigger'
-				,  width: 150
-			});
+			if(p.type === 'DATE') {				
+				field = new Ext.form.DateField({
+					fieldLabel: p.label
+					, name : p.id
+					,  width: 150
+				});
+			} else if(p.type === 'NUMBER') {
+				field = new Ext.form.NumberField({
+					fieldLabel: p.label
+					, name : p.id
+					,  width: 150
+				});
+			} else {
+				field = new Ext.form.TextField({
+					fieldLabel: p.label
+					, name : p.id
+					, allowBlank: !p.mandatory 
+					, width: 150
+				});
+			}
+			
+			
 		}
 		
 		return field;
 	}
-	
-	, onLookUp: function(f, executionInstance) {
-		
-		var cm = new Ext.grid.ColumnModel([
-		      new Ext.grid.RowNumberer(),
-		      {
-		    	  header: "Data",
-		          dataIndex: 'data',
-		          width: 75
-		      }
-		]);
-		
-		var store = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
-		store.on('metachange', function( store, meta ) {
-			   meta.fields[0] = new Ext.grid.RowNumberer();
-			   cm.setConfig(meta.fields);
-		}, this);
-		
-		
-		
-		var win = new Ext.Window({
-			title: 'Select value ...',   
-            layout      : 'fit',
-            width       : 560,
-            height      : 300,
-            closeAction :'hide',
-            plain       : true,
-            items       : [
-            	new Ext.grid.GridPanel({
-            		 store: store,
-            	     cm: cm,
-            	     frame: false,
-            	     border:false,  
-            	     collapsible:false,
-            	     loadMask: true,
-            	     viewConfig: {
-            	        forceFit:true,
-            	        enableRowBody:true,
-            	        showPreview:true
-            	     }
-            	})
-            ]
-		});
-		win.show(f);
-		
-		var param = {};
-		Ext.apply(param, executionInstance);
-		Ext.apply(param, {
-			PARAMETER_ID: f.name
-			, MODE: 'complete'
-		});
-		store.load({params: param});
-	}
-	
 	
 });

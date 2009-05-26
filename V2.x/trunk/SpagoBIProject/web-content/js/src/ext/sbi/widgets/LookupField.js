@@ -53,9 +53,14 @@ Sbi.widgets.LookupField = function(config) {
 	this.store = config.store;
 	this.store.on('metachange', function( store, meta ) {
 		if(this.grid){
-		   meta.fields[0] = new Ext.grid.RowNumberer();
-		   meta.fields[ meta.fields.length - 1 ] = this.sm;
-		   this.grid.getColumnModel().setConfig(meta.fields);
+			
+			this.valueField = meta.valueField;
+			this.displayField = meta.displayField;
+			this.descriptionField = meta.descriptionField;
+			
+			meta.fields[0] = new Ext.grid.RowNumberer();
+			meta.fields[ meta.fields.length - 1 ] = this.sm;
+			this.grid.getColumnModel().setConfig(meta.fields);
 		} else {
 		   alert('ERROR: store meta changed before grid instatiation')
 		}
@@ -84,16 +89,61 @@ Sbi.widgets.LookupField = function(config) {
 
 Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
-    store: null
-    , grid: null
-    , win: null
+	// ----------------------------------------------------------------------------------------
+	// members
+	// ----------------------------------------------------------------------------------------
+    
+	// STATE MEMBERS
+	  valueField: null
+    , displayField: null
+    , descriptionField: null
+    , xvalue: null
+    
+    , singleSelect: true
+    
     , paging: true
     , start: 0 
     , limit: 20
-    , sm: null
+    
+	// SUB-COMPONENTS MEMBERS
+	, store: null
+	, sm: null
+    , grid: null
+    , win: null
+    
+       
    
-   
+    // ----------------------------------------------------------------------------------------
     // public methods
+	// ----------------------------------------------------------------------------------------
+    
+    
+    , getValue : function(){	   
+		return this.xvalue || '';
+	}
+
+	, setValue : function(v){	 
+		if(typeof v === 'object') {
+			
+			if(v instanceof Array) { // multivalue
+				var displayText = '';
+				this.xvalue = new Array();
+				for(var i = 0; i < v.length; i++) {
+					displayText += v[i].data[this.displayField] + ';'
+					this.xvalue[i] = v[i].data[this.valueField];
+				}				
+				Sbi.widgets.LookupField.superclass.setValue.call(this, displayText);
+			} else { // single value
+				
+				this.xvalue = v.data[this.valueField];
+				Sbi.widgets.LookupField.superclass.setValue.call(this, v.data[this.displayField]);
+			}
+			
+		} else {
+			this.xvalue = v;
+			Sbi.widgets.LookupField.superclass.setValue(v);
+		}
+	}
     
     // private methods
     , initWin: function() {
@@ -117,9 +167,12 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	               '->'
 	               , {
 	            	   text: 'Annulla'
-	            	   ,  handler : function(){
-	               	   		alert('Annulla');
-	                   }
+	            	   , listeners: {
+		           			'click': {
+		                  		fn: this.onCancel,
+		                  		scope: this
+		                	} 
+	               		}
 	               } , {
 	            	   text: 'Conferma'
 	            	   , listeners: {
@@ -132,7 +185,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	        ]
 	    });
 		
-		this.sm = new Ext.grid.CheckboxSelectionModel( {singleSelect: true} )
+		this.sm = new Ext.grid.CheckboxSelectionModel( {singleSelect: this.singleSelect } )
 		
 		this.grid = new Ext.grid.GridPanel({
 			store: this.store
@@ -172,7 +225,21 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	}
 	
 	, onOk: function() {
-		var records = this.sm.getSelections();
-		alert('OK\n' + records[0].data.toSource());
+		if(this.sm.getCount() === 0) {
+			alert('no elements has been selected');
+		} else {
+			var records = this.sm.getSelections();
+			if(this.singleSelect === true) {
+				this.setValue(records[0]);
+			} else {
+				this.setValue(records);
+			}
+			this.win.hide();
+		}
+		
+	}
+	
+	, onCancel: function() {
+		this.win.hide();
 	}
 });

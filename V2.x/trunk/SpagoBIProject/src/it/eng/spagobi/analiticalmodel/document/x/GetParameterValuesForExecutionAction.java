@@ -74,6 +74,9 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 		Integer limit;
 		BIObjectParameter biparameter;
 		ExecutionInstance executionInstance;
+		String valueColumn;
+		String displayColumn;
+		String descriptionColumn;
 		
 		
 		logger.debug("IN");
@@ -141,11 +144,13 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 			try {
 				JSONArray valuesDataJSON = new JSONArray();
 				
-				// get value and description column
-				String valueColumn = lovProvDet.getValueColumnName();
-				String descriptionColumn = lovProvDet.getDescriptionColumnName();
+				valueColumn = lovProvDet.getValueColumnName();
+				displayColumn = lovProvDet.getDescriptionColumnName();
+				descriptionColumn = displayColumn;
+				
 				// get all the rows of the result and build the option of the combobox
 				LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
+		
 				List rows = lovResultHandler.getRows();
 				
 				int lb = (start != null)? start.intValue(): 0;
@@ -176,16 +181,22 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 				String[] visiblecolumns;
 				
 				if(MODE_COMPLETE.equalsIgnoreCase( mode )) {
+			
 					visiblecolumns = (String[])lovProvDet.getVisibleColumnNames().toArray(new String[0]);
 					for(int j = 0; j< visiblecolumns.length; j++) {
 						visiblecolumns[j] = visiblecolumns[j].toUpperCase();
 					}
 				} else {
+					
+					valueColumn = "value";
+					displayColumn = "label";
+					descriptionColumn = "description";
+					
 					visiblecolumns = new String[]{"value", "label", "description"};
 				}
 				
 				valuesJSON = (JSONObject)JSONStoreFeedTransformer.getInstance().transform(valuesDataJSON, 
-						"root", "results", visiblecolumns, new Integer(rows.size()));
+						valueColumn.toUpperCase(), displayColumn.toUpperCase(), descriptionColumn.toUpperCase(), visiblecolumns, new Integer(rows.size()));
 			} catch (Exception e) {
 				throw new SpagoBIServiceException("Impossible to serialize response", e);
 			} 

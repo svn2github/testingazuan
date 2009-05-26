@@ -6,9 +6,11 @@
 package it.eng.spagobi.engines.jasperreport;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.container.SpagoBIContainerFactory;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.content.bo.Content;
@@ -16,6 +18,7 @@ import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSetServiceProxy;
 import it.eng.spagobi.utilities.DynamicClassLoader;
 import it.eng.spagobi.utilities.ParametersDecoder;
+import it.eng.spagobi.utilities.ResourceClassLoader;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
 import java.awt.Graphics2D;
@@ -72,8 +75,10 @@ import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.apache.log4j.Logger;
+import org.apache.tomcat.jni.Directory;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
+import org.xml.sax.InputSource;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -194,7 +199,8 @@ public class JasperReportRunner {
 			if (template.getFileName().indexOf(".zip") > -1) {
 				flgTemplateStandard = "false";
 			}
-
+			
+			
 			/* Dynamic template management: if the template is a zip file it is opened and every class are added to 
 			 * the classpath
 			 * 
@@ -262,14 +268,27 @@ public class JasperReportRunner {
 
 
 				if(propertiesLoaded==false){
-					rs=PropertyResourceBundle.getBundle("messages",locale);
+					
+					//if properties file are not loaded by template load them from resources
+					SourceBean config=null;
+					if (getClass().getResource("/engine-config.xml")!=null){
+						InputSource source=new InputSource(getClass().getResourceAsStream("/engine-config.xml"));
+						config = SourceBean.fromXMLStream(source);   
+					}
+					SourceBean sb = (SourceBean)config.getAttribute("RESOURCE_PATH_JNDI_NAME");
+					String path = (String) sb.getCharacters();
+					String resPath= SpagoBIUtilities.readJndiResource(path);			
+					resPath+="/jasper_messages/";
+					
+					ClassLoader previous = Thread.currentThread().getContextClassLoader();
+					ResourceClassLoader dcl = new ResourceClassLoader(resPath,previous);
+					Thread.currentThread().setContextClassLoader(dcl);
+					rs=PropertyResourceBundle.getBundle("messages",locale, 	Thread.currentThread().getContextClassLoader());
 					parameters.put("REPORT_RESOURCE_BUNDLE", rs);
 				}
 				else{
 					parameters.put("REPORT_LOCALE", locale);
-					
 				}
-
 			}
 
 			Monitor monitorSubReport = MonitorFactory.start("JasperReportRunner.compileSubReport");

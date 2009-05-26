@@ -160,14 +160,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 	}
 	
 	, getFormState: function() {
-		// Product Sales Details
-		//var state = {ParProduct : ['664'], ParMonth : ['1']};
-		// Chart of sales by age and gender
-		//var state = {cat_group : ['M']};
-		// test_multi_par
 		var state;
-		
-		//state = {id : [1,2,3,4], lname : ["Gutierrez", "Damstra", "Kanagaki"], outputType : 'HTML'};
 		
 		var form = this.getForm(); 
 		
@@ -175,9 +168,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 		for(var i = 0;  i < form.items.getCount(); i++) {
 			var item = form.items.get(i);
 			var value = item.getValue();
-			//alert(item.getName() + ': ' + typeof value);
 			if(value instanceof Date) {
-				alert('wowow');
 				value = value.toString();
 			} 
 			state[item.getName()] = value;
@@ -202,6 +193,13 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 		var field;
 		
 		alert(p.id + ' - ' + p.selectionType + ' - ' + !p.mandatory);
+		var baseConfig = {
+	       fieldLabel: p.label
+		   , name : p.id
+		   , width: 200
+		   , allowBlank: !p.mandatory
+		};
+		
 		var allowBlank = !p.mandatory;
 		
 		if(p.selectionType === 'COMBOBOX') {
@@ -215,31 +213,27 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 			this.inputFieldOptionsStoreConfig.reader = new Ext.data.JsonReader();
 			var store = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
 			
-			field = new Ext.form.ComboBox({
-				tpl: '<tpl for="."><div ext:qtip="{label} ({value}): {description}" class="x-combo-list-item">{label}</div></tpl>',
-                editable  : true,
-			    fieldLabel : p.label,
-			    forceSelection : true,
-			    name : p.id,
-			    store :  store,
-			    displayField:'label',
-			    valueField:'value',
-			    emptyText: 'select value',
-			    typeAhead: true,
-			    triggerAction: 'all',
-			    width: 150,
-			    selectOnFocus:true,
-			    autoLoad: false,
-			    mode : 'local',
-			    allowBlank: allowBlank,
-			    listeners: {
+			field = new Ext.form.ComboBox(Ext.apply(baseConfig, {
+				tpl: '<tpl for="."><div ext:qtip="{label} ({value}): {description}" class="x-combo-list-item">{label}</div></tpl>'
+                , editable  : true			    
+			    , forceSelection : true
+			    , store :  store
+			    , displayField:'label'
+			    , valueField:'value'
+			    , emptyText: 'select value'
+			    , typeAhead: true
+			    , triggerAction: 'all'
+			    , selectOnFocus:true
+			    , autoLoad: false
+			    , mode : 'local'
+			    , listeners: {
 			    	'select': {
 			       		fn: function(){}
 			       		, scope: this
 			    	}
 			    }
-			});				
-						
+			}));
+					
 			store.load({params: param});
 						
 		} else if(p.selectionType === 'LIST') {
@@ -253,15 +247,11 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 			this.inputFieldOptionsStoreConfig.reader = new Ext.data.JsonReader();
 			var s = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
 			
-			field = new Sbi.widgets.LookupField({
-				fieldLabel: p.label
-				, name : p.id
-				, width: 150
-				, store: s
-				, params: params
-				, allowBlank: allowBlank
-				, singleSelect: true
-			});
+			field = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
+				  store: s
+					, params: params
+					, singleSelect: true
+			}));
 			
 			
 		} else if(p.selectionType ===  'CHECK_LIST') {		
@@ -275,37 +265,18 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 			this.inputFieldOptionsStoreConfig.reader = new Ext.data.JsonReader();
 			var s = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
 			
-			field = new Sbi.widgets.LookupField({
-				fieldLabel: p.label
-				, name : p.id
-				, width: 150
-				, store: s
+			field = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
+				  store: s
 				, params: params
-				, allowBlank: allowBlank
 				, singleSelect: false
-			});
+			}));
 		} else { 
 			if(p.type === 'DATE') {				
-				field = new Ext.form.DateField({
-					fieldLabel: p.label
-					, name : p.id
-					, allowBlank: allowBlank
-					,  width: 150
-				});
+				field = new Ext.form.DateField(baseConfig);
 			} else if(p.type === 'NUMBER') {
-				field = new Ext.form.NumberField({
-					fieldLabel: p.label
-					, name : p.id
-					, allowBlank: allowBlank
-					,  width: 150
-				});
+				field = new Ext.form.NumberField(baseConfig);
 			} else {
-				field = new Ext.form.TextField({
-					fieldLabel: p.label
-					, name : p.id
-					, allowBlank: allowBlank
-					, width: 150
-				});
+				field = new Ext.form.TextField(baseConfig);
 			}
 			
 			

@@ -80,16 +80,18 @@ Sbi.browser.DocumentsBrowser = function(config) {
         //, closable:false
         //, title: 'Browser'
     });
+    
 	
-	this.executionPanel = new Sbi.execution.ExecutionWizardPanel({
-		/*
-		region: 'center'
-	    , margins: '0 3 3 0'
-	    , collapsed: false
-	    , split: true
-	    */
-	});
+	this.mainTab = new Ext.Panel({ 
+		layout: 'fit'
+        , title: 'Browser'
+        , items: [this.detailPanel]
+    });
 	
+	//this.executionPanel = new Sbi.execution.ExecutionWizardPanel({});
+	
+	
+	/*
 	this.centerContainerPanel = new Ext.Panel({
 		 region: 'center'
 		 , margins: '0 3 3 0'
@@ -102,18 +104,24 @@ Sbi.browser.DocumentsBrowser = function(config) {
 		 , minWidth: 0
 		 , layout: 'fit'
 		 
-		 // turn on tab resizing
-		 /*
+		 , items: [this.detailPanel]
+	});
+	*/
+	
+	this.centerContainerPanel = new Ext.TabPanel({
+		 region: 'center'
+		 
 		 , resizeTabs:true
 		 , minTabWidth: 115
 		 , tabWidth:135
 		 , enableTabScroll:true
 		 , defaults: {autoScroll:true}
 		 , activeItem: 0
-		 */
 			 
-		 , items: [this.detailPanel]
+		 , items: [this.mainTab]
 	});
+	
+	
 	
 	
 	config.baseLayout = config.baseLayout || {}; 	
@@ -205,19 +213,29 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 	}
 
 	, onDocumentClick: function(panel, r) {
-		
+		/*
 		this.centerContainerPanel.remove(this.detailPanel, false);
 		this.centerContainerPanel.add(this.executionPanel);
 		this.centerContainerPanel.doLayout();
 		
 		this.executionPanel.execute(r);
+		*/
+		
+		var executionPanel = new Sbi.execution.ExecutionWizardPanel({
+			title: r.label
+			, closable: true
+		});
 		
 		/*
-		var execDocumentService = Sbi.config.serviceRegistry.getServiceUrl('ExecuteBIObjectPage', false, true);
-		execDocumentService += '&MESSAGEDET=EXEC_PHASE_CREATE_PAGE';
-		execDocumentService += '&OBJECT_ID=' + r.id;
-		window.location=execDocumentService;
+		executionPanel.on('render', function(execPanel){
+			alert(r.id);
+			execPanel.execute(r);
+		}); 
 		*/
+		
+		this.centerContainerPanel.add(executionPanel).show();
+		
+		executionPanel.execute(r);
 	}
 	
 	, onFolderClick: function(panel, r) {

@@ -112,17 +112,20 @@ Sbi.execution.RoleSelectionPanel = function(config) {
 	    }
 	});	
     
+    
 	var fieldset = new Ext.form.FieldSet({
 		title: LN('sbi.execution.roleselection.title')
         , collapsible: false
         , autoHeight:true
         , defaultType: 'textfield'
         , items :[this.roleComboBox]
+        	
 	});
 	
 	var c = Ext.apply({}, config, {
 		bodyStyle:'padding:16px 16px 16px 16px;'
-		, items: [fieldset]
+		//, items: [fieldset]
+		         , items :[this.roleComboBox]
 	});   
 	
 	// constructor

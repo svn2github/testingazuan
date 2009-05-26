@@ -264,7 +264,7 @@ public class JasperReportRunner {
 				logger.debug("Internazionalization in "+language);
 				locale=new Locale(language,country,"");
 
-				ResourceBundle rs;
+				ResourceBundle rs=null;
 
 
 				if(propertiesLoaded==false){
@@ -283,8 +283,13 @@ public class JasperReportRunner {
 					ClassLoader previous = Thread.currentThread().getContextClassLoader();
 					ResourceClassLoader dcl = new ResourceClassLoader(resPath,previous);
 					Thread.currentThread().setContextClassLoader(dcl);
-					rs=PropertyResourceBundle.getBundle("messages",locale, 	Thread.currentThread().getContextClassLoader());
-					parameters.put("REPORT_RESOURCE_BUNDLE", rs);
+				try{	
+					rs=PropertyResourceBundle.getBundle("messages",locale, Thread.currentThread().getContextClassLoader());
+				}
+				catch (Exception e) {
+					logger.error("could not find properties message");
+				}
+				parameters.put("REPORT_RESOURCE_BUNDLE", rs);
 				}
 				else{
 					parameters.put("REPORT_LOCALE", locale);

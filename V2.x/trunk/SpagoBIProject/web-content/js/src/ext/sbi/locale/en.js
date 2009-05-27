@@ -70,3 +70,10 @@ Sbi.locale.ln['sbi.execution.roleselection.title']  = 'Role selection';
 Sbi.locale.ln['sbi.execution.roleselection.fieldlabel']  = 'Role';
 Sbi.locale.ln['sbi.execution.roleselection.emptytext']  = 'Select a role ...';
 
+Sbi.locale.ln['sbi.execution.subobjects.title'] = 'Customized views';
+Sbi.locale.ln['sbi.execution.subobjects.name'] = 'name';
+Sbi.locale.ln['sbi.execution.subobjects.description'] = 'description';
+Sbi.locale.ln['sbi.execution.subobjects.owner'] = 'owner';
+Sbi.locale.ln['sbi.execution.subobjects.creationDate'] = 'creation date';
+Sbi.locale.ln['sbi.execution.subobjects.lastModificationDate'] = 'last modification date';
+Sbi.locale.ln['sbi.execution.subobjects.visibility'] = 'visibility';

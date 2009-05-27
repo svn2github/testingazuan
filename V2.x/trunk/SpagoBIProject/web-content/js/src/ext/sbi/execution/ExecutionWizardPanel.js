@@ -65,7 +65,7 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 	
 	
 	
-	
+	this.subObjectsPanel = new Sbi.execution.SubObjectsPanel();
 	this.roleSelectionPanel = new Sbi.execution.RoleSelectionPanel();
 	this.parametersSelectionPanel =  new Sbi.execution.ParametersSelectionPanel();
 	//this.documentViewPanel = new Ext.Panel({id: 'card-2', html: 'Document execution page'});
@@ -114,7 +114,8 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 		activeItem: this.activePanel, // index or id
 		tbar: this.tb,
 		items: [
-		   this.roleSelectionPanel
+		   this.subObjectsPanel
+		 , this.roleSelectionPanel
 		 , this.parametersSelectionPanel
 		 , this.documentViewPanel
 		]		        
@@ -183,8 +184,8 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		if(doc.id) this.executionInstance.OBJECT_ID = doc.id;
 		if(doc.label) this.executionInstance.OBJECT_LABEL = doc.label;
 		
-		
-		this.loadRolesForExecution();
+		this.loadSubObjects();
+		//this.loadRolesForExecution();
 	}
 
 	, loadRolesForExecution: function() {
@@ -270,5 +271,9 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	
 	, onLoadUrlFailure: function ( errors ) {
 		this.moveToPage(1); // go to parameters page
+	}
+	
+	, loadSubObjects: function() {
+		this.subObjectsPanel.loadSubObjects( this.executionInstance );
 	}
 });

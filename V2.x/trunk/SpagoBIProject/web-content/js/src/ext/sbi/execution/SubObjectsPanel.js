@@ -60,47 +60,17 @@ Sbi.execution.SubObjectsPanel = function(config) {
 		, baseParams: params
 	});
 	
-	
-    this.subObjectsStore = new Ext.data.Store({
-		proxy: new Ext.data.HttpProxy({
-				url: this.services['getSubObjectsService']
+    this.subObjectsStore = new Ext.data.JsonStore({
+        root: 'results'
+        , idProperty: 'id'
+        , fields: ['name', 'description', 'owner', 'creationDate', 'lastModificationDate', 'visibility']
+
+		, proxy: new Ext.data.HttpProxy({
+			url: this.services['getSubObjectsService']
 		})
-		   
-   		, reader: new Ext.data.JsonReader(/*{   
-	   		root: "root",                        
-		    id: "name" }, Role*/)
-	   	
-	    , listeners: {
-    		/*
-		    datachanged : {
-		    	fn: this.handleHierarchySelectorDataChanged
-		    	, scope: this
-		    }
-		    */
-	    }    
+   
     }); 
 
-    /*
-    this.subObjectsArray = [
-          [1, 'ciccio', 'descrizione per ciccio', 'ciccio', new Date(), new Date(), 'public'],
-          [2, 'pelliccio', 'descrizione per pelliccio', 'pelliccio', new Date(), new Date(), 'private']
-    ];
-    
-    // create the data store
-    this.subObjectsStore = new Ext.data.SimpleStore({
-        fields: [
-           {name: 'id'},
-           {name: 'name'},
-           {name: 'description'},
-           {name: 'owner'},
-           {name: 'creationDate'},
-           {name: 'lastModificationDate'},
-           {name: 'visibility'}
-        ],
-        data: this.subObjectsArray
-    });
-    */
-    
     // create the Grid
     this.subObjectsPanel = new Ext.grid.GridPanel({
         store: this.subObjectsStore,
@@ -108,10 +78,10 @@ Sbi.execution.SubObjectsPanel = function(config) {
             {id: "id", header: "Id", sortable: true, dataIndex: 'id',  hidden: true},
             {header: LN('sbi.execution.subobjects.name'), sortable: true, dataIndex: 'name'},
             {header: LN('sbi.execution.subobjects.description'), sortable: true, dataIndex: 'description'},
-            {header: LN('sbi.execution.subobjects.owner'), sortable: true, dataIndex: 'owner'},
-            {header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer('d/m/Y')},
-            {header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate', renderer: Ext.util.Format.dateRenderer('d/m/Y')},
-            {header: LN('sbi.execution.subobjects.visibility'), sortable: true, dataIndex: 'visibility'}
+            //{header: LN('sbi.execution.subobjects.owner'), sortable: true, dataIndex: 'owner'},
+            //{header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer('d/m/Y')},
+            //{header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate', renderer: Ext.util.Format.dateRenderer('d/m/Y')},
+            //{header: LN('sbi.execution.subobjects.visibility'), sortable: true, dataIndex: 'visibility'}
         ],
 		viewConfig: {
         	forceFit: true
@@ -119,8 +89,7 @@ Sbi.execution.SubObjectsPanel = function(config) {
 		forceFit: false,
         stripeRows: true,
         collapsible: true,
-        title: LN('sbi.execution.subobjects.title'),
-		listeners: {}
+        title: LN('sbi.execution.subobjects.title')
     });
     
 	var c = Ext.apply({}, config, {
@@ -135,7 +104,6 @@ Sbi.execution.SubObjectsPanel = function(config) {
 Ext.extend(Sbi.execution.SubObjectsPanel, Ext.Panel, {
 	
 	services: null
-	//, subObjectsArray: null
 	, subObjectsStore: null
 	, subObjectsPanel: null
 	   

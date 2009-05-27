@@ -8,7 +8,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
   	*****************************************************************************
   	*/
 
-	construct : function() {
+	construct : function(config) {
 	    
 	    this.saveIcon = 'qx/icon/Oxygen/16/actions/list-add.png' ;
 	    this.deleteIcon = 'qx/icon/Oxygen/16/actions/dialog-close.png' ;
@@ -20,9 +20,8 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
 	        	 };
 		
 		
-		var config = {
-			parameters: [this.emptyRow]   
-		};
+		config.parameters = [this.emptyRow];
+		
 		
 		/*
 		for(var i=0; i<config.parameters.length ; i++){
@@ -34,10 +33,10 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
 		records.meta = [
     		{
 	    		dataIndex: 'name',
-	    		name: 'Name'
+	    		name: config.nameColumnLabel
     		}, {
 	    		dataIndex: 'value',
-	    		name: 'Type'
+	    		name: config.valueColumnLabel
     		}, {
 	    		dataIndex: 'deleteIcon',
 	    		name: ''
@@ -54,22 +53,22 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
     			// alert('selectDataObject =  ' + item.toSource());
     		}
     	},c);
-    	
-    	
-    	var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this._cellRendererFactoryFunction);
-    	var propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this._propertyCellEditorFactoryFunc);
+
+	    var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this._cellRendererFactoryFunction);
+    	var propertyCellEditorFactory1 = new qx.ui.table.celleditor.Dynamic(this._propertyCellEditorFactoryFunc);
+    	var propertyCellEditorFactory2 = new qx.ui.table.celleditor.Dynamic(this._propertyCellEditorFactoryFunc);	
     	
  		this._tableModel.setColumnEditable(0,true);
 		this._tableModel.setColumnEditable(1,true);
 		
-		this.getTableColumnModel().setCellEditorFactory(0, propertyCellEditorFactory);
-		this.getTableColumnModel().setCellEditorFactory(1, propertyCellEditorFactory);
+		this.getTableColumnModel().setCellEditorFactory(0, propertyCellEditorFactory1);
+		this.getTableColumnModel().setCellEditorFactory(1, propertyCellEditorFactory2);
     	this.getTableColumnModel().setDataCellRenderer(2, propertyCellRendererFactory);
   
 		this.addListener("cellClick",this._onCellClick,this, false);    	
     	
     	this.setWidth(500);  
-    	 	
+
   	},
 
   	members :
@@ -124,12 +123,49 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         
         // private methods
         
-        , _cellRendererFactoryFunction : function (cellInfo) {    		
+        , _cellRendererFactoryFunction : function (cellInfo) {   	 	
       		return new qx.ui.table.cellrenderer.Image;
         }
         
         , _propertyCellEditorFactoryFunc: function (cellInfo) {
-    		return new qx.ui.table.celleditor.TextField ;
+        		alert('Column'+cellInfo.col);
+        		alert('Row'+cellInfo.row);
+        		
+        		var table = cellInfo.table;
+       			var tableModel = table.getTableModel();
+       			
+        		var rowData = tableModel.getRowData(cellInfo.row);
+        		qooxdoo.commons.CoreUtils.dump(rowData);
+                /*var metaData = rowData[cellInfo.col];
+                qooxdoo.commons.CoreUtils.dump(metaData);*/
+        		
+        		var cellEditor = new qx.ui.table.celleditor.TextField;	
+        		
+        		
+           		if(cellInfo.col === 0){
+           			alert('text');
+	      			cellEditor = new qx.ui.table.celleditor.TextField ;
+	      		
+		      	} else if (cellInfo.col === 1){
+		      		alert('combo');
+				      	var combo = new qx.ui.form.ComboBox();
+				      	/*.set({
+					        appearance: "table-editor-combobox"
+					      });*/
+					      
+					   var item = new qx.ui.form.ListItem('a', 'b', 'c');   
+					   combo.add(item);
+					   combo.addListener("appear", function() {
+				        combo.selectAll();
+				      });
+				
+				      return combo;
+        	
+		      		
+		      		//cellEditor = new qx.ui.table.celleditor.ComboBox() ;
+		      		//cellEditor.setListData( metaData['options'] );
+		      	}
+		      	return cellEditor;
         }
         
         , _onCellClick : function (e) {

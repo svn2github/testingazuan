@@ -97,6 +97,11 @@
  	class="it.eng.spagobi.analiticalmodel.document.x.GetUrlForExecutionAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+ 
+ <ACTION name="GET_SUBOBJECTS_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.GetSubObjectsAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 
 </ACTIONS>
 

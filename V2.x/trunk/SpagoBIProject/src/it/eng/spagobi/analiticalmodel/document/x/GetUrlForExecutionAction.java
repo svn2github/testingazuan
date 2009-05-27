@@ -42,11 +42,8 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 	
 	public static final String SERVICE_NAME = "GET_URL_FOR_EXECUTION_ACTION";
 	
-	public static final String EXECUTION_INSTANCE = "executionInstance";
-	
 	// logger component
 	private static Logger logger = Logger.getLogger(GetUrlForExecutionAction.class);
-	
 	
 	public void doService() {
 		logger.debug("IN");

@@ -29,6 +29,7 @@ import java.util.Map;
 import org.json.JSONArray;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.x.GetParametersForExecutionAction;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.Domain;
@@ -49,6 +50,7 @@ public class JSONSerializer implements Serializer {
 		mappings.put( Role.class, new RoleJSONSerializer() );
 		mappings.put( BIObject.class, new DocumentsJSONSerializer() );
 		mappings.put( LowFunctionality.class, new FoldersJSONSerializer() );
+		mappings.put( SubObject.class, new SubObjectsJSONSerializer() );
 		
 		mappings.put( GetParametersForExecutionAction.ParameterForExecution.class, new ParameterForExecutionJSONSerializer() );
 	}

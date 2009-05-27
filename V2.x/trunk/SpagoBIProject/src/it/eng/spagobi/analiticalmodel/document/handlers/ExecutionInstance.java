@@ -50,6 +50,7 @@ import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.validation.SpagoBIValidationImpl;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.util.ArrayList;
@@ -320,6 +321,7 @@ public class ExecutionInstance {
 	
 	public void refreshParametersValues(JSONObject jsonObject, boolean transientMode) {
 		logger.debug("IN");
+		Assert.assertNotNull(jsonObject, "JSONObject in input is null!!");
 		List biparams = object.getBiObjectParameters();
 		Iterator iterParams = biparams.iterator();
 		while (iterParams.hasNext()) {
@@ -332,6 +334,8 @@ public class ExecutionInstance {
 	private void refreshParameter(BIObjectParameter biparam,
 			JSONObject jsonObject, boolean transientMode) {
 		logger.debug("IN");
+		Assert.assertNotNull(biparam, "Parameter in input is null!!");
+		Assert.assertNotNull(jsonObject, "JSONObject in input is null!!");
 		String nameUrl = biparam.getParameterUrlName();
 		List values = new ArrayList();
 		try {
@@ -351,8 +355,7 @@ public class ExecutionInstance {
 			}
 		} catch (JSONException e) {
 			logger.error("Cannot get " + nameUrl + " values from JSON object", e);
-			// TODO rilanciare un'altra eccezione?
-			return;
+			throw new SpagoBIServiceException("Cannot retrieve values for biparameter " + biparam.getLabel(), e);
 		}
 		
 		if (values.size() > 0) {

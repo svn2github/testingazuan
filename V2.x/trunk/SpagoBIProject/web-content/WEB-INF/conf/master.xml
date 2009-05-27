@@ -79,7 +79,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/presentation.xml" />	
 	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/business_map.xml" /> 
-
+	<CONFIGURATOR path="/WEB-INF/conf/engines/kpi/validation.xml" /> 
 	
 <!-- engines.officedocument -->
 	<CONFIGURATOR path="/WEB-INF/conf/engines/officedocument/messages.xml" />
@@ -236,7 +236,7 @@
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/presentation.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/publishers.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/exoprofileattributemanager/business_map.xml" />
-	
+	-->
 -->
     <!-- kpi --> 
     <CONFIGURATOR path="/WEB-INF/conf/kpi/actions.xml" />

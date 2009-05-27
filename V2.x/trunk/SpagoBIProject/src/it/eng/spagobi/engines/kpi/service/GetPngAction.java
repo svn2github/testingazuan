@@ -57,7 +57,12 @@ public class GetPngAction extends AbstractHttpAction{
 		response.setContentType("image/gif");
 
 		HttpServletRequest req = getHttpRequest();
-		String path = (String)serviceRequest.getAttribute("path");
+		//String path = (String)serviceRequest.getAttribute("path");
+		
+		String filePath = (String)serviceRequest.getAttribute("path");
+
+		String dir=System.getProperty("java.io.tmpdir");
+		String path=dir+"/"+filePath+".png";
 
 		FileInputStream fis=new FileInputStream(path);
 

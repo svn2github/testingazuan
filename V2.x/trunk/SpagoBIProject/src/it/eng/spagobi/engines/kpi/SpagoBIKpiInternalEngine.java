@@ -921,6 +921,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	    temp.put("ParKpiResource", value);
 	}
 	temp.put("ParModelInstance", modelInstanceId);
+	temp.put("ParKpiInstance", kpiInstanceID);
 	
 	if (chartType != null) kVal.setChartType(chartType);
 

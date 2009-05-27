@@ -52,6 +52,7 @@ Sbi.widgets.LookupField = function(config) {
 	
 	this.store = config.store;
 	this.store.on('metachange', function( store, meta ) {
+		/*
 		if(this.grid){
 			
 			this.valueField = meta.valueField;
@@ -64,6 +65,11 @@ Sbi.widgets.LookupField = function(config) {
 		} else {
 		   alert('ERROR: store meta changed before grid instatiation')
 		}
+		*/
+		this.updateMeta( meta );
+	}, this);
+	this.store.on('load', function( store, records, options  ) {
+		this.updateSelection();		
 	}, this);
 	
 
@@ -98,6 +104,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     , displayField: null
     , descriptionField: null
     , xvalue: null
+    , xselection: null
     
     , singleSelect: true
     
@@ -214,6 +221,46 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
             items       : [this.grid]
 		});
 	}
+    
+    , updateMeta: function(meta) {
+    	//alert('updateMeta');
+    	if(this.grid){			
+			this.valueField = meta.valueField;
+			this.displayField = meta.displayField;
+			this.descriptionField = meta.descriptionField;
+			
+			meta.fields[0] = new Ext.grid.RowNumberer();
+			meta.fields[ meta.fields.length - 1 ] = this.sm;
+			this.grid.getColumnModel().setConfig(meta.fields);
+		} else {
+		   alert('ERROR: store meta changed before grid instatiation')
+		}
+	}
+    
+    , updateSelection: function() {
+    	//alert('updateSelection: ' + this.getValue());
+  
+    	if(this.grid) {
+    		var v = this.getValue();
+    		if(typeof v !== 'object') {
+    			v = [v];
+    		}
+    		
+    		this.xselection = {};
+    		for(var i = 0; i < v.length; i++) {
+    			this.xselection[ v[i] ] = v[i];
+    		}
+    		    		
+			var selectedRecs = [];
+			this.grid.getStore().each(function(rec){
+		        if(this.xselection[ rec.data[this.valueField]] !== undefined){
+		        	//alert(rec.data.toSource());
+		        	selectedRecs.push(rec);
+		        }
+		    }, this);
+		    this.sm.selectRecords(selectedRecs);
+		 }		
+    }
 	
 	, onLookUp: function() {
 		this.win.show(this);

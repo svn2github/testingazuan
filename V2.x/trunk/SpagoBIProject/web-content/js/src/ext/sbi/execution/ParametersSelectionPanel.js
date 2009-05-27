@@ -46,7 +46,7 @@
 
 
 /**
-	 * Override Ext.FormPanel so that in case whe create a form without items it still has a item list.
+	 * Override Ext.FormPanel so that in case we create a form without items it still has a item list.
 	 * ERROR IS : this.items has no properties
 	 */
 
@@ -200,8 +200,6 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 		   , allowBlank: !p.mandatory
 		};
 		
-		var allowBlank = !p.mandatory;
-		
 		if(p.selectionType === 'COMBOBOX') {
 			var param = {};
 			Ext.apply(param, executionInstance);
@@ -210,8 +208,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 				, MODE: 'simple'
 			});
 			
-			this.inputFieldOptionsStoreConfig.reader = new Ext.data.JsonReader();
-			var store = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
+			var store = this.createStore();
 			
 			field = new Ext.form.ComboBox(Ext.apply(baseConfig, {
 				tpl: '<tpl for="."><div ext:qtip="{label} ({value}): {description}" class="x-combo-list-item">{label}</div></tpl>'
@@ -236,40 +233,20 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 					
 			store.load({params: param});
 						
-		} else if(p.selectionType === 'LIST') {
-			var params = {};
-			Ext.apply(params, executionInstance);
-			Ext.apply(params, {
+		} else if(p.selectionType === 'LIST' || p.selectionType ===  'CHECK_LIST') {
+			
+			var params = Ext.apply({}, {
 				PARAMETER_ID: p.id
 				, MODE: 'complete'
-			});
-			
-			this.inputFieldOptionsStoreConfig.reader = new Ext.data.JsonReader();
-			var s = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
+			}, executionInstance);
 			
 			field = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
-				  store: s
+				  store: this.createStore()
 					, params: params
-					, singleSelect: true
+					, singleSelect: (p.selectionType === 'LIST')
 			}));
 			
 			
-		} else if(p.selectionType ===  'CHECK_LIST') {		
-			var params = {};
-			Ext.apply(params, executionInstance);
-			Ext.apply(params, {
-				PARAMETER_ID: p.id
-				, MODE: 'complete'
-			});
-			
-			this.inputFieldOptionsStoreConfig.reader = new Ext.data.JsonReader();
-			var s = new Ext.data.Store(this.inputFieldOptionsStoreConfig);
-			
-			field = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
-				  store: s
-				, params: params
-				, singleSelect: false
-			}));
 		} else { 
 			if(p.type === 'DATE') {				
 				field = new Ext.form.DateField(baseConfig);
@@ -277,12 +254,16 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 				field = new Ext.form.NumberField(baseConfig);
 			} else {
 				field = new Ext.form.TextField(baseConfig);
-			}
-			
-			
+			}			
 		}
 		
 		return field;
+	}
+	
+	, createStore: function() {
+		return new Ext.data.JsonStore({
+			url: this.services['getParameterValueForExecutionService']
+		});
 	}
 	
 });

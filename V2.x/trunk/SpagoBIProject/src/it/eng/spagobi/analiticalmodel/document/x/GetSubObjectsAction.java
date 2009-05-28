@@ -56,9 +56,8 @@ public class GetSubObjectsAction extends AbstractSpagoBIAction {
 		
 		try {
 			// retrieving execution instance from session, no need to check if user is able to execute the required document
-			//executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
-			//Integer biobjectId = executionInstance.getBIObject().getId();
-			Integer biobjectId = new Integer(31);
+			executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
+			Integer biobjectId = executionInstance.getBIObject().getId();
 			List subObjectsList = null;
 			IEngUserProfile userProfile = this.getUserProfile();
 			try {

@@ -53,8 +53,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(dataurlRel.startsWith("/"))
 		dataurl = dataurl + dataurlRel;
 	else dataurl = dataurl + "/" + dataurlRel;
+	
 	Map confParameters = (Map)sbModuleResponse.getAttribute("confParameters");
 	Map dataParameters = (Map)sbModuleResponse.getAttribute("dataParameters");
+	
 	dataParameters.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	// adding parameters for AUDIT updating
 	if (executionAuditId_dash != null) {
@@ -62,7 +64,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	
 	// start to create the calling url
-	// put the two dimensio parameter
+	// put the two dimension parameter
 	movie += "?paramHeight="+height+"&paramWidth="+width; 
 	// create the dataurl string
 	if (dataurl.contains("?")) dataurl += "&";
@@ -80,25 +82,70 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Set confKeys = confParameters.keySet();
 	Iterator iterConfKeys = confKeys.iterator();
 	while(iterConfKeys.hasNext()) {
-		String name = (String)iterConfKeys.next();
+		String name = (String)iterConfKeys.next();	
 		String value = (String)confParameters.get(name);
 		movie += "&" + name + "=" + value; 
 	}
-	
     // append to the calling url the dataurl	
 	movie += "&dataurl=" + URLEncoder.encode(dataurl);
     
-%>
-
-
-<% // HTML CODE FOR THE FLASH COMPONENT %>
-<center>  
+	//defines dynamic parameters for multichart management (ie. recNum)
+	int numCharts = (confParameters.get("numCharts")==null)? 1:Integer.valueOf((String)confParameters.get("numCharts"));
+	String multichart = (confParameters.get("multichart")==null)?"false":(String)confParameters.get("multichart");
+	String orientation = (confParameters.get("orientation_multichart")==null)?"vertical":(String)confParameters.get("orientation_multichart");
+	String legend = (confParameters.get("legend")==null)?"true":(String)confParameters.get("legend");
+	
+	//defines radius for get dynamic height : only the last chart with the legend uses the total height; the others are riduced.
+	double radiusByWidth = (Integer.valueOf(width)-2*10)/2;
+	double radiusByHeight = (Integer.valueOf(height)-2*10)/(1+(1/4));
+	double radius = 0;
+	String dinHeight = height;
+	 
+    if (radiusByWidth < radiusByHeight) {
+		radius = radiusByWidth;
+    } else {
+		radius = radiusByHeight;
+	}
+	if (orientation.equalsIgnoreCase("horizontal")){ %>
+	<br>
+		<table align="center">
+			<tr>
+	<%	 
+	}
+	for (int i = 0; i < numCharts; i++){
+		
+		if (i==0){
+		 	movie += "&recNumber="+String.valueOf(i);
+		 	//if it's a multichart type and it's required the legend ; it's shows only on the last chart.
+		 	if (multichart.equalsIgnoreCase("true") && legend.equalsIgnoreCase("true")){
+		 		movie = movie.replace("&legend=true","&legend=false");
+		 		dinHeight = String.valueOf(Integer.valueOf(height).intValue()-radius+20);
+		 	}
+		}
+		else{
+			movie = movie.replace("&recNumber="+(i-1),"&recNumber="+i);
+			if (multichart.equalsIgnoreCase("true") && legend.equalsIgnoreCase("true")){
+				if (i < (numCharts-1)){
+			 		movie = movie.replace("&legend=true","&legend=false");
+			 		dinHeight = String.valueOf(Integer.valueOf(height).intValue()-radius+20);
+				}
+				else{
+					movie = movie.replace("&legend=false","&legend=true");
+					dinHeight = height;
+				}
+		 	}
+		}
+ 		if (orientation.equalsIgnoreCase("horizontal")){%>
+			<td> 
+		<%}
+// HTML CODE FOR THE FLASH COMPONENT %>
+<div align="center" >  
        <object  classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" 
                 codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" 
                 type="application/x-shockwave-flash"
                 data="<%=movie%>"  
                 width="<%=width%>" 
-                height="<%=height%>" >
+                height="<%=dinHeight%>" >
        	  <param name="movie" value="<%=movie%>">
        	  <param name="quality" value="high">
        	  <param name="scale" value="noscale">
@@ -108,11 +155,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         <EMBED  src="<%=movie%>" 
                 quality=high 
                 width="<%=width%>" 
-                height="<%=height%>" 
+                height="<%=dinHeight%>" 
                 wmode="transparent" 
    			 TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer">
    		</EMBED>
 	</object>    
-</center>
+</div>
+
+<% if (orientation.equalsIgnoreCase("horizontal")){%>
+  </td>
+<%}
+} //for 
+if (orientation.equalsIgnoreCase("horizontal")){%>
+	</tr>
+</table>
+<%} %>
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

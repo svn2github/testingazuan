@@ -44,6 +44,12 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
     	];
     	records.rows =  config.parameters;
 
+		this.columnNameCellEditor = config.cellNameRendered ;
+		this.columnValueCellEditor = config.cellValueRendered ;
+		this.cellNameOptions = config.cellNameOptions ;
+		this.cellValueOptions = config.cellValueOptions ;
+		alert(this.columnNameCellEditor);
+		alert(this.columnValueCellEditor);
 	
 		var c = {
 			dataset: records
@@ -83,7 +89,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         
         , getData : function () {	        	
            var data = new Array();
-           for( i = 0; i<this._tableModel.getRowCount(); i++){
+           for( i = 0; i<this._tableModel.getRowCount()-1; i++){
            	  var rowData = this._tableModel.getRowDataAsMap(i);           	  
            	  data.push({name: rowData.name, value: rowData.value});
            }
@@ -93,7 +99,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         
         , deleteRow : function (rowIndex) {
         	
-        	alert('deleteRow '+ rowIndex + ' of ' + this._tableModel.getRowCount());
+        	// alert('deleteRow '+ rowIndex + ' of ' + this._tableModel.getRowCount());
             if(this._tableModel.getRowCount()=== 1){
             	qooxdoo.commons.CoreUtils.dump('last row->reset to empty row: ' + this.emptyRow);
             	this._tableModel.setDataAsMapArray([this.emptyRow] , true);
@@ -106,7 +112,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         }
         , addRow : function (rowIndex) {
         	
-        	 alert('addRow '+ rowIndex + ' of ' + this._tableModel.getRowCount());
+        	// alert('addRow '+ rowIndex + ' of ' + this._tableModel.getRowCount());
         	 var rowDataToAdd = this._tableModel.getRowDataAsMap(rowIndex);
         	
         	 var data = new Array();
@@ -128,42 +134,39 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         }
         
         , _propertyCellEditorFactoryFunc: function (cellInfo) {
-        		alert('Column'+cellInfo.col);
-        		alert('Row'+cellInfo.row);
-        		
-        		var table = cellInfo.table;
-       			var tableModel = table.getTableModel();
-       			
-        		var rowData = tableModel.getRowData(cellInfo.row);
-        		qooxdoo.commons.CoreUtils.dump(rowData);
-                /*var metaData = rowData[cellInfo.col];
-                qooxdoo.commons.CoreUtils.dump(metaData);*/
-        		
+
         		var cellEditor = new qx.ui.table.celleditor.TextField;	
-        		
-        		
+	
            		if(cellInfo.col === 0){
-           			alert('text');
-	      			cellEditor = new qx.ui.table.celleditor.TextField ;
+           		alert (this.columnNameCellEditor);
+           		alert (this.config.cellNameRendered);
+           			if(this.columnNameCellEditor === 'combo'){
+           				alert('combo');
+           				cellEditor = new qx.ui.table.celleditor.ComboBox() ;
+			      		var comboOptions = this.cellNameOptions ;
+			      		if(comboOptions){
+			      			cellEditor.setListData(comboOptions);
+			      		}
+			      		
+           			}else{
+           				cellEditor = new qx.ui.table.celleditor.TextField ;
+           			}
 	      		
 		      	} else if (cellInfo.col === 1){
-		      		alert('combo');
-				      	var combo = new qx.ui.form.ComboBox();
-				      	/*.set({
-					        appearance: "table-editor-combobox"
-					      });*/
-					      
-					   var item = new qx.ui.form.ListItem('a', 'b', 'c');   
-					   combo.add(item);
-					   combo.addListener("appear", function() {
-				        combo.selectAll();
-				      });
-				
-				      return combo;
-        	
+		      	alert (this.columnValueCellEditor);
+		      		if(this.columnValueCellEditor === 'combo'){
+		      			alert('combo');
+	           			cellEditor = new qx.ui.table.celleditor.ComboBox() ;
+			      		var comboOptions = this.cellValueOptions ;
+			      		if(comboOptions){
+			      			cellEditor.setListData(comboOptions);
+			      		}	
+			      		
+           			}else{
+           				cellEditor = new qx.ui.table.celleditor.TextField ;
+           			}
 		      		
-		      		//cellEditor = new qx.ui.table.celleditor.ComboBox() ;
-		      		//cellEditor.setListData( metaData['options'] );
+		      		
 		      	}
 		      	return cellEditor;
         }
@@ -174,10 +177,10 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         	if(e.getColumn()===2){
        
         		if (e.getRow()===this._tableModel.getRowCount()-1){
-        			alert('Add Row');
+        			//alert('Add Row');
         			this.addRow(e.getRow());
         		}else{
-        			alert('Delete Row');
+        			//alert('Delete Row');
         			this.deleteRow(e.getRow());
         		}
     		   //qooxdoo.commons.CoreUtils.dump(e);

@@ -48,9 +48,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
 		this.columnValueCellEditor = config.cellValueRendered ;
 		this.cellNameOptions = config.cellNameOptions ;
 		this.cellValueOptions = config.cellValueOptions ;
-		alert(this.columnNameCellEditor);
-		alert(this.columnValueCellEditor);
-	
+		
 		var c = {
 			dataset: records
 		}
@@ -60,15 +58,18 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
     		}
     	},c);
 
+		
+		
 	    var propertyCellRendererFactory = new qx.ui.table.cellrenderer.Dynamic(this._cellRendererFactoryFunction);
-    	var propertyCellEditorFactory1 = new qx.ui.table.celleditor.Dynamic(this._propertyCellEditorFactoryFunc);
-    	var propertyCellEditorFactory2 = new qx.ui.table.celleditor.Dynamic(this._propertyCellEditorFactoryFunc);	
+    	var propertyCellEditorFactory0 = this._createCeddEditorFactory(0);
+    	var propertyCellEditorFactory1 = this._createCeddEditorFactory(1);	
+
     	
  		this._tableModel.setColumnEditable(0,true);
 		this._tableModel.setColumnEditable(1,true);
 		
-		this.getTableColumnModel().setCellEditorFactory(0, propertyCellEditorFactory1);
-		this.getTableColumnModel().setCellEditorFactory(1, propertyCellEditorFactory2);
+		this.getTableColumnModel().setCellEditorFactory(0, propertyCellEditorFactory0);
+		this.getTableColumnModel().setCellEditorFactory(1, propertyCellEditorFactory1);
     	this.getTableColumnModel().setDataCellRenderer(2, propertyCellRendererFactory);
   
 		this.addListener("cellClick",this._onCellClick,this, false);    	
@@ -133,15 +134,67 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
       		return new qx.ui.table.cellrenderer.Image;
         }
         
-        , _propertyCellEditorFactoryFunc: function (cellInfo) {
+        , _createCellTextEditor : function (cellInfo) {   	 	
+      		return new qx.ui.table.celleditor.TextField;
+        }
+        
+         , _createCellComboEditor : function (cellInfo) {   	 	
+      		var cellEditor = new qx.ui.table.celleditor.ComboBox() ;
+      		alert(cellInfo.col);
+      		if(cellInfo.col === 0){
+      			alert(this.cellNameOptions);
+				var comboOptions = this.cellNameOptions ;
+			    if(comboOptions){
+			      	cellEditor.setListData(comboOptions);
+			    }
+			} else if (cellInfo.col === 1){
+				alert(this.cellValueOptions);
+				var comboOptions = this.cellValueOptions ;
+			    if(comboOptions){
+			      	cellEditor.setListData(comboOptions);
+			    }
+			} 
+			return cellEditor;
+        }
+        
+        , _createCeddEditorFactory : function (column) {   	
+        
+        	var propertyCellEditorFactory;	
+        	 	
+      		if(column === 0){
+           		alert ('metodo'+this.columnNameCellEditor);
+           			if(this.columnNameCellEditor === 'combo'){
+           				alert('meodo'+'combo');
+           				
+			      		propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this._createCellComboEditor);	
+			      		
+           			}else{
+           				propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this._createCellTextEditor);	
+           			}
+	      		
+		      	} else if (column === 1){
+		      	alert ('metodo'+this.columnValueCellEditor);
+		      		if(this.columnValueCellEditor === 'combo'){
+		      			alert('combo');
+			      		propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this._createCellComboEditor);	
+			      		
+           			}else{
+           				propertyCellEditorFactory = new qx.ui.table.celleditor.Dynamic(this._createCellTextEditor);	
+           			}
+
+		      	}
+		      	return propertyCellEditorFactory;
+        }
+        
+      /*  , _propertyCellEditorFactoryFunc: function (cellInfo) {
 
         		var cellEditor = new qx.ui.table.celleditor.TextField;	
 	
+				var propertyCellEditorFactory2 = new qx.ui.table.celleditor.Dynamic(this._propertyCellEditorFactoryFunc);	
            		if(cellInfo.col === 0){
-           		alert (this.columnNameCellEditor);
-           		alert (this.config.cellNameRendered);
+           		alert ('meodo'+this.columnNameCellEditor);
            			if(this.columnNameCellEditor === 'combo'){
-           				alert('combo');
+           				alert('meodo'+'combo');
            				cellEditor = new qx.ui.table.celleditor.ComboBox() ;
 			      		var comboOptions = this.cellNameOptions ;
 			      		if(comboOptions){
@@ -153,7 +206,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
            			}
 	      		
 		      	} else if (cellInfo.col === 1){
-		      	alert (this.columnValueCellEditor);
+		      	alert ('meodo'+this.columnValueCellEditor);
 		      		if(this.columnValueCellEditor === 'combo'){
 		      			alert('combo');
 	           			cellEditor = new qx.ui.table.celleditor.ComboBox() ;
@@ -169,7 +222,7 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
 		      		
 		      	}
 		      	return cellEditor;
-        }
+        }*/
         
         , _onCellClick : function (e) {
         

@@ -53,20 +53,6 @@ Sbi.widgets.LookupField = function(config) {
 	
 	this.store = config.store;
 	this.store.on('metachange', function( store, meta ) {
-		/*
-		if(this.grid){
-			
-			this.valueField = meta.valueField;
-			this.displayField = meta.displayField;
-			this.descriptionField = meta.descriptionField;
-			
-			meta.fields[0] = new Ext.grid.RowNumberer();
-			meta.fields[ meta.fields.length - 1 ] = this.sm;
-			this.grid.getColumnModel().setConfig(meta.fields);
-		} else {
-		   alert('ERROR: store meta changed before grid instatiation')
-		}
-		*/
 		this.updateMeta( meta );
 	}, this);
 	this.store.on('load', function( store, records, options  ) {
@@ -80,6 +66,7 @@ Sbi.widgets.LookupField = function(config) {
 	
 	var c = Ext.apply({}, config, {
 		triggerClass: 'x-form-search-trigger'
+		, enableKeyEvents: true
 		,  width: 150
 	});   
 	
@@ -92,6 +79,14 @@ Sbi.widgets.LookupField = function(config) {
 			this.onLookUp(); 
 		}, this);
 	}, this);
+	
+	this.on("render", function(field) {
+		field.el.on("keyup", function(e) {
+			this.xdirty = true;
+		}, this);
+	}, this);
+	
+	
 };
 
 Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
@@ -109,6 +104,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     , xvalue: null
     // oggetto (value: description, *)
     , xselection: null
+    , xdirty: false
     
     , singleSelect: true
     
@@ -130,6 +126,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
     
     , getValue : function(){
+		this.clean();
 		var v = [];
 		this.xvalue = this.xvalue || {};
 		for(p in this.xvalue) {
@@ -144,8 +141,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	}
 
 	, setValue : function(v){	 
-		alert(v.toSource());
-		
+	
 		if(typeof v === 'object') {
 			this.xvalue = {};
 			Ext.apply(this.xvalue, v);
@@ -163,6 +159,8 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			alert('orrore');
 		}
 	}
+	
+	
     
     // private methods
     , initWin: function() {
@@ -237,7 +235,6 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	}
     
     , updateMeta: function(meta) {
-    	//alert('updateMeta');
     	if(this.grid){			
 			this.valueField = meta.valueField;
 			this.displayField = meta.displayField;
@@ -253,6 +250,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
     , resetSelection: function() {
     	this.xselection = Ext.apply({}, this.xvalue);    
+    	//alert('resetSelection: ' + this.xvalue.toSource() + ' \n  ' + this.xselection.toSource());
 	}
     
     , onSelect: function(sm, rowIndex, record) {
@@ -271,7 +269,8 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     }
     
     , applySelection: function() {
-    	alert('applySelection');
+    	this.resetSelection();
+    	//alert('applySelection'  + this.xvalue.toSource() + ' \n  ' + this.xselection.toSource());
   
     	if(this.grid) {    		    		
 			var selectedRecs = [];
@@ -284,8 +283,23 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		 }		
     }
 	
+    , clean: function() {
+    	if(this.xdirty) {
+	    	var text = Sbi.widgets.LookupField.superclass.getValue.call(this);
+	    	var values = text.split(';');
+	    	alert('clean: ' + text + ' -  ' + values);
+	    	this.xvalue = {};
+	    	var ub = (this.singleSelect === true)? 1: values.length;
+	    	for(var i = 0; i < ub; i++) {
+	    		this.xvalue[ '' + values[i] ] = values[i];
+	    	}
+	    	this.xdirty = false;
+    	}
+    }
+    
 	, onLookUp: function() {
-		this.resetSelection();
+		this.clean();
+		
 		this.win.show(this);
 		var p = Ext.apply({}, this.params, {
 			start: this.start

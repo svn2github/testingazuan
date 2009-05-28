@@ -134,9 +134,7 @@ Ext.extend(Sbi.execution.SubObjectsPanel, Ext.grid.GridPanel, {
 	}
 
 	, deleteSelectedSubObjects: function() {
-		alert('entrato in deleteSelectedSubObjects');
 		var recordsSelected = this.getSelectionModel().getSelections();
-		alert('recordsSelected' + recordsSelected);
 		if (recordsSelected && recordsSelected.length > 0) {
 			var ids = new Array();
 			for (var count = 0; count < recordsSelected.length; count++) {

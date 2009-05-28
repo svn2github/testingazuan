@@ -19,6 +19,7 @@
  * 
  **/
  
+
 /**
   * Object name 
   * 
@@ -152,34 +153,15 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			var displayText = '';
 			for(p in this.xvalue) {
 				displayText += this.xvalue[p] + ';'
-			}				
+			}	
+			if(this.singleSelect === true) {
+				displayText = displayText.substr(0, displayText.length-1);
+			}
 			alert(displayText);
 			Sbi.widgets.LookupField.superclass.setValue.call(this, displayText);
 		} else {
 			alert('orrore');
 		}
-		/*
-		if(typeof v === 'object') {
-			
-			if(v instanceof Array) { // multivalue
-				var displayText = '';
-				this.xvalue = new Array();
-				for(var i = 0; i < v.length; i++) {
-					displayText += v[i].data[this.displayField] + ';'
-					this.xvalue[i] = v[i].data[this.valueField];
-				}				
-				Sbi.widgets.LookupField.superclass.setValue.call(this, displayText);
-			} else { // single value
-				
-				this.xvalue = v.data[this.valueField];
-				Sbi.widgets.LookupField.superclass.setValue.call(this, v.data[this.displayField]);
-			}
-			
-		} else {
-			this.xvalue = v;
-			Sbi.widgets.LookupField.superclass.setValue(v);
-		}
-		*/
 	}
     
     // private methods

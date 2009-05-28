@@ -65,10 +65,9 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 	
 	
 	
-	this.subObjectsPanel = new Sbi.execution.SubObjectsPanel();
+	//this.subObjectsPanel = new Sbi.execution.SubObjectsPanel();
 	this.roleSelectionPanel = new Sbi.execution.RoleSelectionPanel();
 	this.parametersSelectionPanel =  new Sbi.execution.ParametersSelectionPanel();
-	//this.documentViewPanel = new Ext.Panel({id: 'card-2', html: 'Document execution page'});
 	this.documentViewPanel = new Sbi.execution.DocumentViewPanel();
 	
 	this.activePanel = 0;
@@ -114,8 +113,8 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 		activeItem: this.activePanel, // index or id
 		tbar: this.tb,
 		items: [
-		   this.subObjectsPanel
-		 , this.roleSelectionPanel
+		 /* this.subObjectsPanel
+		 , */this.roleSelectionPanel
 		 , this.parametersSelectionPanel
 		 , this.documentViewPanel
 		]		        
@@ -184,8 +183,10 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		if(doc.id) this.executionInstance.OBJECT_ID = doc.id;
 		if(doc.label) this.executionInstance.OBJECT_LABEL = doc.label;
 		
-		this.loadSubObjects();
-		//this.loadRolesForExecution();
+		
+		//this.loadSubObjects();
+		
+		this.loadRolesForExecution();
 	}
 
 	, loadRolesForExecution: function() {

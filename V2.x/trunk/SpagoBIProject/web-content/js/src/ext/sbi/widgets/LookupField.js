@@ -69,7 +69,7 @@ Sbi.widgets.LookupField = function(config) {
 		this.updateMeta( meta );
 	}, this);
 	this.store.on('load', function( store, records, options  ) {
-		this.updateSelection();		
+		this.applySelection();		
 	}, this);
 	
 
@@ -103,7 +103,10 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	  valueField: null
     , displayField: null
     , descriptionField: null
+    
+    // oggetto (value: description, *)
     , xvalue: null
+    // oggetto (value: description, *)
     , xselection: null
     
     , singleSelect: true
@@ -125,11 +128,37 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	// ----------------------------------------------------------------------------------------
     
     
-    , getValue : function(){	   
-		return this.xvalue || '';
+    , getValue : function(){
+		var v = [];
+		this.xvalue = this.xvalue || {};
+		for(p in this.xvalue) {
+			v.push(p);
+		}
+			
+		if(this.singleSelect === true) {
+			v = (v.length > 0)? v[0] : '';
+		}
+		
+		return v;
 	}
 
 	, setValue : function(v){	 
+		alert(v.toSource());
+		
+		if(typeof v === 'object') {
+			this.xvalue = {};
+			Ext.apply(this.xvalue, v);
+			alert(this.xvalue.toSource());
+			var displayText = '';
+			for(p in this.xvalue) {
+				displayText += this.xvalue[p] + ';'
+			}				
+			alert(displayText);
+			Sbi.widgets.LookupField.superclass.setValue.call(this, displayText);
+		} else {
+			alert('orrore');
+		}
+		/*
 		if(typeof v === 'object') {
 			
 			if(v instanceof Array) { // multivalue
@@ -150,6 +179,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			this.xvalue = v;
 			Sbi.widgets.LookupField.superclass.setValue(v);
 		}
+		*/
 	}
     
     // private methods
@@ -193,6 +223,8 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	    });
 		
 		this.sm = new Ext.grid.CheckboxSelectionModel( {singleSelect: this.singleSelect } )
+		this.sm.on('rowselect', this.onSelect, this);
+		this.sm.on('rowdeselect', this.onDeselect, this);
 		
 		this.grid = new Ext.grid.GridPanel({
 			store: this.store
@@ -237,24 +269,32 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		}
 	}
     
-    , updateSelection: function() {
-    	//alert('updateSelection: ' + this.getValue());
+    , resetSelection: function() {
+    	this.xselection = Ext.apply({}, this.xvalue);    
+	}
+    
+    , onSelect: function(sm, rowIndex, record) {
+    	//alert('onSelect');
+    	if(this.singleSelect === true){
+    		this.xselection = {}
+    	}
+    	this.xselection[ record.data[this.valueField] ] = record.data[this.displayField];
+    }
+    
+    , onDeselect: function(sm, rowIndex, record) {
+    	//alert('onDeselect');
+    	if( this.xselection[ record.data[this.valueField]] ) {
+    		delete this.xselection[ record.data[this.valueField]];
+    	}    	
+    }
+    
+    , applySelection: function() {
+    	alert('applySelection');
   
-    	if(this.grid) {
-    		var v = this.getValue();
-    		if(typeof v !== 'object') {
-    			v = [v];
-    		}
-    		
-    		this.xselection = {};
-    		for(var i = 0; i < v.length; i++) {
-    			this.xselection[ v[i] ] = v[i];
-    		}
-    		    		
+    	if(this.grid) {    		    		
 			var selectedRecs = [];
 			this.grid.getStore().each(function(rec){
 		        if(this.xselection[ rec.data[this.valueField]] !== undefined){
-		        	//alert(rec.data.toSource());
 		        	selectedRecs.push(rec);
 		        }
 		    }, this);
@@ -263,6 +303,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     }
 	
 	, onLookUp: function() {
+		this.resetSelection();
 		this.win.show(this);
 		var p = Ext.apply({}, this.params, {
 			start: this.start
@@ -272,18 +313,8 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	}
 	
 	, onOk: function() {
-		if(this.sm.getCount() === 0) {
-			alert('no elements has been selected');
-		} else {
-			var records = this.sm.getSelections();
-			if(this.singleSelect === true) {
-				this.setValue(records[0]);
-			} else {
-				this.setValue(records);
-			}
-			this.win.hide();
-		}
-		
+		this.setValue(this.xselection);
+		this.win.hide();		
 	}
 	
 	, onCancel: function() {

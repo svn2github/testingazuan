@@ -220,7 +220,6 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 		
 		this.executionPanel.execute(r);
 		*/
-		
 		var executionPanel = new Sbi.execution.ExecutionWizardPanel({
 			title: r.label
 			, closable: true

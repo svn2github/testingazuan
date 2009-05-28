@@ -70,3 +70,11 @@ Sbi.locale.ln['sbi.execution.subobjects.owner'] = 'proprietario';
 Sbi.locale.ln['sbi.execution.subobjects.creationDate'] = 'data di creazione';
 Sbi.locale.ln['sbi.execution.subobjects.lastModificationDate'] = 'ultima modifica';
 Sbi.locale.ln['sbi.execution.subobjects.visibility'] = 'visibilità';
+
+Sbi.locale.ln['sbi.execution.subobjects.visibility.public'] = 'Pubblico';
+Sbi.locale.ln['sbi.execution.subobjects.visibility.private'] = 'Privato';
+
+Sbi.locale.ln['sbi.execution.subobjects.deleteSelected'] = 'Elimina';
+Sbi.locale.ln['sbi.execution.subobjects.deleteSelectedTooltip'] = 'Elimina le viste customizzate selezionate';
+Sbi.locale.ln['sbi.execution.subobjects.execute'] = 'Esegui';
+Sbi.locale.ln['sbi.execution.subobjects.noSubObjectsSelected'] = 'Nessuna vista customizzata selezionata';

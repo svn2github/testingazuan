@@ -101,11 +101,12 @@ Sbi.execution.ParametersSelectionPanel = function(config) {
 	   	, reader: new Ext.data.JsonReader()
 	};     
   
-
+	this.parametersForm = new Ext.FormPanel({bodyStyle:'padding:16px 16px 16px 16px;'});
 	
 	var c = Ext.apply({}, config, {
-		bodyStyle:'padding:16px 16px 16px 16px;'
+		//bodyStyle:'padding:16px 16px 16px 16px;'
 		//, id: 'card-2', html: 'Document execution page'
+		items: [this.parametersForm]
 	});   
 	
 	
@@ -116,12 +117,13 @@ Sbi.execution.ParametersSelectionPanel = function(config) {
     //this.addEvents();	
 };
 
-Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
+Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
     
     services: null
     , fields: null
     , inputFieldOption: null
     , inputFieldOptionsStoreConfig: null
+    , parametersForm: null
    
     // ----------------------------------------------------------------------------------------
     // public methods
@@ -154,15 +156,16 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.FormPanel, {
 	
 		for(var i = 0; i < parameters.length; i++) {
 			var field = this.createField( executionInstance, parameters[i] ); 
-			this.add(field);
+			this.parametersForm.add(field);
 		}
+		this.parametersForm.doLayout();
 		this.doLayout();
 	}
 	
 	, getFormState: function() {
 		var state;
 		
-		var form = this.getForm(); 
+		var form = this.parametersForm.getForm(); 
 		
 		state = {};
 		for(var i = 0;  i < form.items.getCount(); i++) {

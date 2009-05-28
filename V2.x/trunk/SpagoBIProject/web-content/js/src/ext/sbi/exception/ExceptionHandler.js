@@ -90,9 +90,20 @@ Sbi.exception.ExceptionHandler = function(){
            		, icon: Ext.MessageBox.ERROR
            		, modal: false
        		});
+        },
+        
+        showWarningMessage : function(errMessage, title) {
+        	var m = errMessage || 'Generic warning';
+        	var t = title || 'Warning';
+        	
+        	Ext.MessageBox.show({
+           		title: t
+           		, msg: m
+           		, buttons: Ext.MessageBox.OK     
+           		, icon: Ext.MessageBox. WARNING
+           		, modal: false
+       		});
         }
-        
-        
-        
+
 	};
 }();

@@ -60,40 +60,57 @@ Sbi.execution.SubObjectsPanel = function(config) {
 		, baseParams: params
 	});
 	
+	this.executionInstance = null;
+	this.selectedSubObjectId = null;
+	
     this.subObjectsStore = new Ext.data.JsonStore({
         root: 'results'
         , idProperty: 'id'
-        , fields: ['name', 'description', 'owner', 'creationDate', 'lastModificationDate', 'visibility']
-
-		, proxy: new Ext.data.HttpProxy({
-			url: this.services['getSubObjectsService']
-		})
-   
+        , fields: ['id', 'name', 'description', 'owner', 'creationDate', 'lastModificationDate', 'visibility']
+		, url: this.services['getSubObjectsService']
     }); 
+    
+    this.subObjectsStore.addListener('load', function() { this.doLayout(); alert('cioc');}, this);
 
-    // create the Grid
-    this.subObjectsPanel = new Ext.grid.GridPanel({
+    function visibilityRenderer(val) {
+        if (val) {
+            return LN('sbi.execution.subobjects.visibility.public');
+        } else {
+            return LN('sbi.execution.subobjects.visibility.private');
+        }
+    }
+    
+    this.sm = new Ext.grid.CheckboxSelectionModel();
+    
+	var c = Ext.apply({}, config, {
         store: this.subObjectsStore,
         columns: [
             {id: "id", header: "Id", sortable: true, dataIndex: 'id',  hidden: true},
             {header: LN('sbi.execution.subobjects.name'), sortable: true, dataIndex: 'name'},
             {header: LN('sbi.execution.subobjects.description'), sortable: true, dataIndex: 'description'},
-            //{header: LN('sbi.execution.subobjects.owner'), sortable: true, dataIndex: 'owner'},
-            //{header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer('d/m/Y')},
-            //{header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate', renderer: Ext.util.Format.dateRenderer('d/m/Y')},
-            //{header: LN('sbi.execution.subobjects.visibility'), sortable: true, dataIndex: 'visibility'}
+            {header: LN('sbi.execution.subobjects.owner'), sortable: true, dataIndex: 'owner'},
+            {header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate'}, //, renderer: Ext.util.Format.dateRenderer('d/m/Y')},
+            {header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate'}, //, renderer: Ext.util.Format.dateRenderer('d/m/Y')},
+            {header: LN('sbi.execution.subobjects.visibility'), sortable: true, dataIndex: 'visibility', renderer: visibilityRenderer},
+            this.sm
         ],
 		viewConfig: {
         	forceFit: true
 		},
-		forceFit: false,
-        stripeRows: true,
+        tbar:[
+           '->'
+           , {
+            text: LN('sbi.execution.subobjects.deleteSelected'),
+            tooltip: LN('sbi.execution.subobjects.deleteSelectedTooltip'),
+            iconCls:'icon-remove',
+            scope: this,
+            handler : this.deleteSelectedSubObjects
+        }],
         collapsible: true,
-        title: LN('sbi.execution.subobjects.title')
-    });
-    
-	var c = Ext.apply({}, config, {
-		items: [this.subObjectsPanel]
+        title: LN('sbi.execution.subobjects.title'),
+        sm : this.sm,
+        //layout: 'fit'
+        height: 300
 	});   
 	
 	// constructor
@@ -101,19 +118,55 @@ Sbi.execution.SubObjectsPanel = function(config) {
     
 };
 
-Ext.extend(Sbi.execution.SubObjectsPanel, Ext.Panel, {
+Ext.extend(Sbi.execution.SubObjectsPanel, Ext.grid.GridPanel, {
 	
 	services: null
 	, subObjectsStore: null
-	, subObjectsPanel: null
+	, sm: null
+	, executionInstance: null
+	, selectedSubObjectId: null
 	   
     // public methods
 	
 	, loadSubObjects: function( executionInstance ) {
 		this.subObjectsStore.load({params: executionInstance});
+		this.executionInstance = executionInstance;
 	}
 
-	, deleteSubObjects: function() {
-		
+	, deleteSelectedSubObjects: function() {
+		alert('entrato in deleteSelectedSubObjects');
+		var recordsSelected = this.getSelectionModel().getSelections();
+		alert('recordsSelected' + recordsSelected);
+		if (recordsSelected && recordsSelected.length > 0) {
+			var ids = new Array();
+			for (var count = 0; count < recordsSelected.length; count++) {
+				ids[count] = recordsSelected[count].get('id');
+			}
+			var idsJoined = ids.join(',');
+	
+			Ext.Ajax.request({
+		        url: this.services['deleteSubObjectsService'],
+		        params: {'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID, 'id': idsJoined},
+		        callback : function(options , success, response) {
+		  	  		if(success) {
+		  	  			// removes the subobjects from the store
+		  	  			for (var count = 0; count < recordsSelected.length; count++) {
+		  	  				this.subObjectsStore.remove(recordsSelected[count]);
+		  	  			}
+		  	  		} else { 
+		  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot detele customized views', 'Service Error');
+		  	  		}
+		        },
+		        scope: this,
+				failure: Sbi.exception.ExceptionHandler.handleFailure      
+			});
+		} else {
+			Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.execution.subobjects.noSubObjectsSelected'), 'Warning');
+		}
 	}
+	
+	, getSelectedSubObjectId: function() {
+		return this.selectedSubObjectId;
+	}
+	
 });

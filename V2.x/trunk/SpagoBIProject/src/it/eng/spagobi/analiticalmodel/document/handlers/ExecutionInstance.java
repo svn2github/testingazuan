@@ -31,6 +31,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.util.JavaScript;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
@@ -667,6 +668,43 @@ public class ExecutionInstance {
 		logger.debug("OUT");
 	}
 	
+	
+	public String getSubObjectUrl(SubObject subobj) {
+		logger.debug("IN");
+		String url = null;
+		Engine engine = this.getBIObject().getEngine();
+		Domain engineType;
+		try {
+			engineType = DAOFactory.getDomainDAO().loadDomainById(
+					engine.getEngineTypeId());
+		} catch (EMFUserError e) {
+			throw new SpagoBIServiceException("Impossible to load engine type domain", e);
+		}
+		
+		// IF THE ENGINE IS EXTERNAL
+		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
+			// instance the driver class
+			String driverClassName = engine.getDriverName();
+			IEngineDriver aEngineDriver = null;
+			try {
+				aEngineDriver = (IEngineDriver) Class.forName(driverClassName).newInstance();
+			} catch (Exception e) {
+				throw new SpagoBIServiceException("Cannot istantiate engine driver class: " + driverClassName, e);
+			}
+			// get the map of the parameters
+			Map mapPars = aEngineDriver.getParameterMap(object, subobj, userProfile, executionRole);
+			// adding "system" parameters
+			mapPars.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
+			mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
+			mapPars.put("SBI_EXECUTION_ID", this.executionId);
+			mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
+			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
+		} else {
+			throw new RuntimeException("Internal engines does not support subobjects!!");
+		}
+		logger.debug("OUT: returning url = [" + url + "]");
+		return url;
+	}
 
 	public String getExecutionUrl() {
 		logger.debug("IN");
@@ -698,9 +736,6 @@ public class ExecutionInstance {
 			mapPars.put("SBI_EXECUTION_ID", this.executionId);
 			mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
 			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
-			
-			// TODO manage subobjects
-			// TODO manage document composition????
 			
 		}
 		// IF THE ENGINE IS INTERNAL

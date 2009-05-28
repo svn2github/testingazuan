@@ -1,3 +1,7 @@
 .icon-remove {
 	background-image: url('../../../img/erase.png') !important;
 }
+
+.icon-execute {
+	background-image: url('../../../img/exec16.png') !important;
+}

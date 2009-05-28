@@ -21,8 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
+import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
@@ -52,6 +59,49 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 		try {
 			// retrieving execution instance from session, no need to check if user is able to execute the required document
 			executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
+			UserProfile userProfile = (UserProfile) this.getUserProfile();
+			Integer subObjectId = this.getAttributeAsInteger( "SBI_SUBOBJECT_ID" );
+			if (subObjectId != null) {
+				try {
+					SubObject subObject = DAOFactory.getSubObjectDAO().getSubObject(subObjectId);
+					BIObject obj = executionInstance.getBIObject();
+					if (obj.getId().equals(subObject.getBiobjId())) {
+						boolean canExecuteSubObject = false;
+						if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+							canExecuteSubObject = true;
+						} else {
+							if (subObject.getIsPublic() || subObject.getOwner().equals(userProfile.getUserId().toString())) {
+								canExecuteSubObject = true;
+							}
+						}
+						if (canExecuteSubObject) {
+							
+							JSONObject response = new JSONObject();
+							String url = executionInstance.getSubObjectUrl(subObject);
+							try {
+								response.put("url", url);
+								writeBackToClient( new JSONSuccess( response ) );
+							} catch (IOException e) {
+								throw new SpagoBIServiceException("Impossible to write back the responce to the client", e);
+							} catch (JSONException e) {
+								throw new SpagoBIServiceException("Impossible to serialize the url [" + url + "] to the client", e);
+							}
+							
+						} else {
+							throw new RuntimeException("User cannot execute required customized view");
+						}
+					} else {
+						throw new RuntimeException("Required subobject is not relevant to current document");
+					}
+				} catch (EMFUserError e) {
+					e.printStackTrace();
+				} catch (EMFInternalError e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			
 			
 			JSONObject executionInstanceJSON = this.getAttributeAsJSONObject( "PARAMETERS" );
 			

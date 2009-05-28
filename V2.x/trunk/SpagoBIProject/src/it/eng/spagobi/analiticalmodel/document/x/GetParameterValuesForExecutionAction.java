@@ -181,7 +181,6 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 				String[] visiblecolumns;
 				
 				if(MODE_COMPLETE.equalsIgnoreCase( mode )) {
-			
 					visiblecolumns = (String[])lovProvDet.getVisibleColumnNames().toArray(new String[0]);
 					for(int j = 0; j< visiblecolumns.length; j++) {
 						visiblecolumns[j] = visiblecolumns[j].toUpperCase();

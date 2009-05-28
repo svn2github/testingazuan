@@ -102,6 +102,11 @@
  	class="it.eng.spagobi.analiticalmodel.document.x.GetSubObjectsAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
+ 
+ <ACTION name="DELETE_SUBOBJECTS_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.DeleteSubObjectsAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
 
 </ACTIONS>
 

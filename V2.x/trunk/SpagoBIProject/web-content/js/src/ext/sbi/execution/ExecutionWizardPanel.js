@@ -126,6 +126,8 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     
     this.documentViewPanel.addListener('loadurlfailure', this.onLoadUrlFailure, this);
     
+    this.subObjectsPanel.addListener('onselected', this.onSubObjectSelected, this);
+    
     if(config.document) {
     	this.execute( config.document );
     }
@@ -160,7 +162,10 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 			//this.getTopToolbar().hide();
 			//this.doLayout();
 		}
-		
+		if(this.activePanel == 2 && pageNumber == 1) {
+			delete this.executionInstance.SBI_SUBOBJECT_ID;
+		}
+			
 		this.activePanel = pageNumber;
 		this.getLayout().setActiveItem( this.activePanel );
 	}
@@ -276,5 +281,10 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	
 	, loadSubObjects: function() {
 		this.subObjectsPanel.loadSubObjects( this.executionInstance );
+	}
+	
+	, onSubObjectSelected: function (subObjectId) {
+		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
+		this.moveToPage(2); // go to execution page
 	}
 });

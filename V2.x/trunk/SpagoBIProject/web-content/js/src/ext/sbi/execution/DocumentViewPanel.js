@@ -83,7 +83,7 @@ Sbi.execution.DocumentViewPanel = function(config) {
 
 Ext.extend(Sbi.execution.DocumentViewPanel, Ext.Panel, {
     
-    // static contens and methods definitions
+    // static contents and methods definitions
 	miframe : null
    
     // public methods
@@ -96,7 +96,6 @@ Ext.extend(Sbi.execution.DocumentViewPanel, Ext.Panel, {
 		      		if(response !== undefined && response.responseText !== undefined) {
 		      			var content = Ext.util.JSON.decode( response.responseText );
 		      			if(content !== undefined) {
-		      				//alert( content.url );	
 		      				this.miframe.getFrame().setSrc( content.url );
 		      			} 
 		      		} else {

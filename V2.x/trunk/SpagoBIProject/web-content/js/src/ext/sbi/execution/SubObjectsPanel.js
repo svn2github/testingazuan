@@ -70,7 +70,7 @@ Sbi.execution.SubObjectsPanel = function(config) {
 		, url: this.services['getSubObjectsService']
     }); 
     
-    this.subObjectsStore.addListener('load', function() { this.doLayout(); alert('cioc');}, this);
+    //this.subObjectsStore.addListener('load', function() { this.doLayout(); alert('cioc');}, this);
 
     function visibilityRenderer(val) {
         if (val) {
@@ -79,6 +79,28 @@ Sbi.execution.SubObjectsPanel = function(config) {
             return LN('sbi.execution.subobjects.visibility.private');
         }
     }
+    
+    function fireOnSelectedEvent(grid, rowIndex, event) {
+    	var selectedRecord =  grid.getStore().getAt(rowIndex);
+    	var subObjectId = selectedRecord.get('id');
+    	this.fireEvent('onselected', subObjectId);
+    }
+    
+    this.executeColumn = new Ext.grid.ButtonColumn({
+	       header:  '',
+	       dataIndex: 'delete',
+	       iconCls: 'icon-execute',
+	       clickHandler: function(e, t) {
+	          var index = this.grid.getView().findRowIndex(t);
+	          var selectedRecord = this.grid.subObjectsStore.getAt(index);
+	          var subObjectId = selectedRecord.get('id');
+	          this.grid.fireEvent('onselected', subObjectId);
+	       },
+	       width: 25,
+	       renderer : function(v, p, record){
+	           return '<center><img class="x-mybutton-'+this.id+' '+this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
+	       }
+	});
     
     this.sm = new Ext.grid.CheckboxSelectionModel();
     
@@ -92,8 +114,10 @@ Sbi.execution.SubObjectsPanel = function(config) {
             {header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate'}, //, renderer: Ext.util.Format.dateRenderer('d/m/Y')},
             {header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate'}, //, renderer: Ext.util.Format.dateRenderer('d/m/Y')},
             {header: LN('sbi.execution.subobjects.visibility'), sortable: true, dataIndex: 'visibility', renderer: visibilityRenderer},
+            this.executeColumn,
             this.sm
         ],
+        plugins: this.executeColumn,
 		viewConfig: {
         	forceFit: true
 		},
@@ -106,15 +130,21 @@ Sbi.execution.SubObjectsPanel = function(config) {
             scope: this,
             handler : this.deleteSelectedSubObjects
         }],
+        listeners: {
+			rowdblclick: fireOnSelectedEvent
+        },
         collapsible: true,
         title: LN('sbi.execution.subobjects.title'),
+        autoScroll: true,
         sm : this.sm,
         //layout: 'fit'
-        height: 300
+        height: 200
 	});   
 	
 	// constructor
     Sbi.execution.SubObjectsPanel.superclass.constructor.call(this, c);
+    
+    this.addEvents('onselected');
     
 };
 
@@ -163,8 +193,8 @@ Ext.extend(Sbi.execution.SubObjectsPanel, Ext.grid.GridPanel, {
 		}
 	}
 	
-	, getSelectedSubObjectId: function() {
-		return this.selectedSubObjectId;
-	}
+	//, getSelectedSubObjectId: function() {
+	//	return this.selectedSubObjectId;
+	//}
 	
 });

@@ -105,40 +105,41 @@ Sbi.execution.SubObjectsPanel = function(config) {
     this.sm = new Ext.grid.CheckboxSelectionModel();
     
 	var c = Ext.apply({}, config, {
-        store: this.subObjectsStore,
-        columns: [
-            {id: "id", header: "Id", sortable: true, dataIndex: 'id',  hidden: true},
-            {header: LN('sbi.execution.subobjects.name'), sortable: true, dataIndex: 'name'},
-            {header: LN('sbi.execution.subobjects.description'), sortable: true, dataIndex: 'description'},
-            {header: LN('sbi.execution.subobjects.owner'), sortable: true, dataIndex: 'owner'},
-            {header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate'}, //, renderer: Ext.util.Format.dateRenderer('d/m/Y')},
-            {header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate'}, //, renderer: Ext.util.Format.dateRenderer('d/m/Y')},
-            {header: LN('sbi.execution.subobjects.visibility'), sortable: true, dataIndex: 'visibility', renderer: visibilityRenderer},
-            this.executeColumn,
-            this.sm
-        ],
-        plugins: this.executeColumn,
-		viewConfig: {
+        store: this.subObjectsStore
+        , columns: [
+            {id: "id", header: "Id", sortable: true, dataIndex: 'id',  hidden: true}
+            , {header: LN('sbi.execution.subobjects.name'), sortable: true, dataIndex: 'name'}
+            , {header: LN('sbi.execution.subobjects.description'), sortable: true, dataIndex: 'description'}
+            , {header: LN('sbi.execution.subobjects.owner'), sortable: true, dataIndex: 'owner'}
+            , {header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate'} //, renderer: Ext.util.Format.dateRenderer('d/m/Y')},
+            , {header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate'} //, renderer: Ext.util.Format.dateRenderer('d/m/Y')},
+            , {header: LN('sbi.execution.subobjects.visibility'), sortable: true, dataIndex: 'visibility', renderer: visibilityRenderer}
+            , this.executeColumn
+            , this.sm
+        ]
+        , plugins: this.executeColumn
+		, viewConfig: {
         	forceFit: true
-		},
-        tbar:[
+		}
+        , tbar:[
            '->'
            , {
-            text: LN('sbi.execution.subobjects.deleteSelected'),
-            tooltip: LN('sbi.execution.subobjects.deleteSelectedTooltip'),
-            iconCls:'icon-remove',
-            scope: this,
-            handler : this.deleteSelectedSubObjects
-        }],
-        listeners: {
+        	   text: LN('sbi.execution.subobjects.deleteSelected')
+        	   , tooltip: LN('sbi.execution.subobjects.deleteSelectedTooltip')
+        	   , iconCls:'icon-remove'
+        	   , scope: this
+        	   , handler : this.deleteSelectedSubObjects
+           	}
+        ]
+        , listeners: {
 			rowdblclick: fireOnSelectedEvent
-        },
-        collapsible: true,
-        title: LN('sbi.execution.subobjects.title'),
-        autoScroll: true,
-        sm : this.sm,
-        //layout: 'fit'
-        height: 200
+        }
+        , collapsible: true
+        , title: LN('sbi.execution.subobjects.title')
+        , autoScroll: true
+        , sm : this.sm
+        //, layout: 'fit'
+        , height: 200
 	});   
 	
 	// constructor

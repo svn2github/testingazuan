@@ -193,6 +193,8 @@ String getUrl(String baseUrl, Map mapPars) {
 
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/adapter/ext/ext-base.js")%>"></script>
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/ext-all-debug.js")%>"></script>
+<%-- Ext js overrides --%>
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/src/ext/sbi/overrides/overrides.js")%>"></script>
  
 <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>
 
@@ -234,7 +236,10 @@ String getUrl(String baseUrl, Map mapPars) {
 <LINK rel='StyleSheet' 
 	  href='<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/resources/css/ext-all.css")%>' 
 	  type='text/css' />
-
+<%-- Ext css overrides --%>
+<LINK rel='StyleSheet' 
+	  href='<%=urlBuilder.getResourceLink(request, "js/src/ext/sbi/overrides/overrides.css")%>' 
+	  type='text/css' />
 
 	 
 	 <% // get the current ext theme

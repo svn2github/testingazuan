@@ -1,0 +1,8 @@
+/* 
+The x-grid3-header-offset style override fixes a bug in the Ext.grid.GridPanel: without fixing a width of the GridPanel, the first column takes all the page width in IE 
+(in FF it works fine).
+See 
+http://extjs.com/forum/showthread.php?t=30613
+http://extjs.com/forum/showthread.php?p=282928#post282928
+ */
+.x-grid3-header-offset {width: auto;}

@@ -66,7 +66,10 @@ Sbi.execution.SubObjectsPanel = function(config) {
     this.subObjectsStore = new Ext.data.JsonStore({
         root: 'results'
         , idProperty: 'id'
-        , fields: ['id', 'name', 'description', 'owner', 'creationDate', 'lastModificationDate', 'visibility']
+        , fields: ['id', 'name', 'description', 'owner', 
+                   {name:'creationDate', type:'date', dateFormat: Sbi.config.clientServerDateFormat}, 
+                   {name:'lastModificationDate', type:'date', dateFormat: Sbi.config.clientServerDateFormat}, 
+                   'visibility']
 		, url: this.services['getSubObjectsService']
     }); 
     
@@ -111,8 +114,8 @@ Sbi.execution.SubObjectsPanel = function(config) {
             , {header: LN('sbi.execution.subobjects.name'), sortable: true, dataIndex: 'name'}
             , {header: LN('sbi.execution.subobjects.description'), sortable: true, dataIndex: 'description'}
             , {header: LN('sbi.execution.subobjects.owner'), sortable: true, dataIndex: 'owner'}
-            , {header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate'} //, renderer: Ext.util.Format.dateRenderer('d/m/Y')},
-            , {header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate'} //, renderer: Ext.util.Format.dateRenderer('d/m/Y')},
+            , {header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
+            , {header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
             , {header: LN('sbi.execution.subobjects.visibility'), sortable: true, dataIndex: 'visibility', renderer: visibilityRenderer}
             , this.executeColumn
             , this.sm

@@ -21,7 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 
 import org.json.JSONObject;
 
@@ -46,15 +50,24 @@ public class SubObjectsJSONSerializer implements Serializer {
 		}
 		
 		try {
+			// dates are sent to the client using a fixed format, the one returned by GeneralUtilities.getServerDateFormat()
+			SimpleDateFormat dateFormat =  new SimpleDateFormat();
+			dateFormat.applyPattern(GeneralUtilities.getServerDateFormat());
+			
 			SubObject subObject = (SubObject) o;
 			result = new JSONObject();
 			result.put(ID, subObject.getId() );
 			result.put(NAME, subObject.getName() );
 			result.put(DESCRIPTION, subObject.getDescription() );
 			result.put(OWNER, subObject.getOwner() );
-			result.put(CREATION_DATE, subObject.getCreationDate() );
-			result.put(LAST_MODIFICATION_DATE, subObject.getLastChangeDate() );
+			Date creationDate = subObject.getCreationDate();
+			String creationDateStr = dateFormat.format(creationDate);
+			result.put(CREATION_DATE, creationDateStr );
+			Date lastChangeDate = subObject.getLastChangeDate();
+			String lastChangeDateStr = dateFormat.format(lastChangeDate);
+			result.put(LAST_MODIFICATION_DATE, lastChangeDateStr );
 			result.put(VISIBILITY, subObject.getIsPublic() );
+			
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);
 		} finally {

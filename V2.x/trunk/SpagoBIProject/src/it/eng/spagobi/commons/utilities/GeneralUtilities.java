@@ -432,6 +432,32 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		return format;
 
 	}
+	
+	public static String getLocaleDateFormatForExtJs(SessionContainer permSess){
+		String language=(String)permSess.getAttribute("AF_LANGUAGE");
+		String country=(String)permSess.getAttribute("AF_COUNTRY");
+		SourceBean formatSB=null; 
+		// if a particular language is specified take the corrisponding date-format
+		if(language!=null ){
+			if(country==null){
+				formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+language.toUpperCase()));
+			}
+			else{
+				formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-"+language.toUpperCase()+"_"+country.toUpperCase()));				
+			}		
+		}
+		if(formatSB==null){
+			formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT"));
+		}
+		String format = (String) formatSB.getAttribute("extJsFormat");
+		if (format == null) {
+			logger.warn("Locale date format for ExtJs not found, using d/m/Y as deafult");
+			format = "d/m/Y";
+		}
+		logger.debug("DATE FORMAT:"+format);
+		return format;
+
+	}
 
 	public static String getServerDateFormat(){
 		logger.debug("IN");
@@ -448,8 +474,25 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		}
 		logger.debug("OUT");
 		return format;
-
 	}
+	
+	public static String getServerDateFormatExtJs(){
+		logger.debug("IN");
+		SourceBean formatSB=null; 
+		// if a particular language is specified take the corrisponding date-format
+		formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
+		String format="d/m/Y";
+		if(formatSB!=null){
+			format = (String) formatSB.getAttribute("extJsFormat");
+			logger.debug("server date format for ExtJs set to "+format);
+		}
+		else{
+			logger.error("could not find server date format, set default to "+format);			
+		}
+		logger.debug("OUT");
+		return format;
+	}
+	
 	public static int getTemplateMaxSize() {
 		logger.debug("IN");
 		int toReturn = MAX_DEFAULT_TEMPLATE_SIZE;

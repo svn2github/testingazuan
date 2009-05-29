@@ -73,10 +73,23 @@ public class JSONStoreFeedTransformer {
 			meta.put("descriptionField", descriptionField);
 			JSONArray fieldsJSON = new JSONArray();
 			fieldsJSON.put("recNo");
+			
+			boolean isValueFieldVisible = false;
+			JSONObject field;
 			for(int i = 0; i < fields.length; i++) {
-				JSONObject field = new JSONObject();
+				field = new JSONObject();
+				if(fields[i].equalsIgnoreCase(valueField)) {
+					isValueFieldVisible = true;
+				}
 				field.put("name", fields[i]);
 				field.put("header", fields[i]);
+				fieldsJSON.put(field);
+			}
+			if(!isValueFieldVisible){
+				field = new JSONObject();
+				field.put("name", valueField);
+				field.put("header", valueField);
+				field.put("hidden", true);
 				fieldsJSON.put(field);
 			}
 			fieldsJSON.put("recCk");

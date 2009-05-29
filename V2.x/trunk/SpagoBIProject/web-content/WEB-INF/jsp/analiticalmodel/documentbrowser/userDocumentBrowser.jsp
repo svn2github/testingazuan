@@ -61,6 +61,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     Ext.BLANK_IMAGE_URL = '<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/resources/images/default/s.gif")%>';
     
     Sbi.config = {};
+
+    // the user language
+    Sbi.config.language = '<%= locale.getLanguage() %>';
+	// the user country
+    Sbi.config.country = '<%= locale.getCountry() %>';
+    // the date format localized according to user language and country
+    Sbi.config.localizedDateFormat = '<%= GeneralUtilities.getLocaleDateFormatForExtJs(permanentSession) %>';
+    // the date format to be used when communicating with server
+    Sbi.config.clientServerDateFormat = '<%= GeneralUtilities.getServerDateFormatExtJs() %>';
     
     var url = {
     	host: '<%= request.getServerName()%>'

@@ -56,17 +56,12 @@ Sbi.execution.DocumentViewPanel = function(config) {
 		, baseParams: params
 	});
 	
-	// iframe creation
 	this.miframe = new Ext.ux.ManagedIframePanel({
                 frameConfig : {
-                      autoCreate : {
-                          id : 'frameA',
-                          name : 'frameA'
-                      },
+                      autoCreate : { },
                       disableMessaging : false
                   }
                   , loadMask  : true
-                  //, defaultSrc : 'http://spagobi.eng.it'
     });
 	
 	
@@ -97,6 +92,7 @@ Ext.extend(Sbi.execution.DocumentViewPanel, Ext.Panel, {
 		      			var content = Ext.util.JSON.decode( response.responseText );
 		      			if(content !== undefined) {
 		      				this.miframe.getFrame().setSrc( content.url );
+		      				this.add(this.miframe);
 		      			} 
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');

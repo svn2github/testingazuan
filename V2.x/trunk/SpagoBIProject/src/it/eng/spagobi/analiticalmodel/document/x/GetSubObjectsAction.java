@@ -68,10 +68,10 @@ public class GetSubObjectsAction extends AbstractSpagoBIAction {
 				}
 			} catch (EMFUserError e) {
 				logger.error("Error while recovering subobjects list for document with id = " + biobjectId, e);
-				throw new SpagoBIServiceException("Cannot load customized views", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot load customized views", e);
 			} catch (EMFInternalError e) {
 				logger.error("Error while recovering information about user", e);
-				throw new SpagoBIServiceException("Error while recovering information about user", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Error while recovering information about user", e);
 			}
 			
 			try {
@@ -80,11 +80,11 @@ public class GetSubObjectsAction extends AbstractSpagoBIAction {
 				results.put("results", subObjectsListJSON);
 				writeBackToClient( new JSONSuccess( results ) );
 			} catch (IOException e) {
-				throw new SpagoBIServiceException("Impossible to write back the responce to the client", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to write back the responce to the client", e);
 			} catch (SerializationException e) {
-				throw new SpagoBIServiceException("Cannot serialize objects", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize objects", e);
 			} catch (JSONException e) {
-				throw new SpagoBIServiceException("Cannot serialize objects into a JSON object", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize objects into a JSON object", e);
 			}
 
 		} finally {

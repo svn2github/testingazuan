@@ -23,9 +23,9 @@ package it.eng.spagobi.analiticalmodel.document.x;
 
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
+import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -49,98 +49,127 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 	
 	public static final String SERVICE_NAME = "GET_URL_FOR_EXECUTION_ACTION";
 	
+	public static final String SBI_SUBOBJECT_ID = "SBI_SUBOBJECT_ID";
+	public static final String PARAMETERS = "PARAMETERS";
+	
 	// logger component
 	private static Logger logger = Logger.getLogger(GetUrlForExecutionAction.class);
 	
+	protected ExecutionInstance executionInstance = null;
+	protected UserProfile userProfile = null;
+	
 	public void doService() {
 		logger.debug("IN");
-		ExecutionInstance executionInstance;
-		
 		try {
-			// retrieving execution instance from session, no need to check if user is able to execute the required document
+			// retrieving execution instance from session, no need to check if user is able to execute the current document
 			executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
-			UserProfile userProfile = (UserProfile) this.getUserProfile();
-			Integer subObjectId = this.getAttributeAsInteger( "SBI_SUBOBJECT_ID" );
+			userProfile = (UserProfile) this.getUserProfile();
+			Integer subObjectId = this.getAttributeAsInteger( SBI_SUBOBJECT_ID );
+			JSONObject response = null;
 			if (subObjectId != null) {
-				try {
-					SubObject subObject = DAOFactory.getSubObjectDAO().getSubObject(subObjectId);
-					BIObject obj = executionInstance.getBIObject();
-					if (obj.getId().equals(subObject.getBiobjId())) {
-						boolean canExecuteSubObject = false;
-						if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
-							canExecuteSubObject = true;
-						} else {
-							if (subObject.getIsPublic() || subObject.getOwner().equals(userProfile.getUserId().toString())) {
-								canExecuteSubObject = true;
-							}
-						}
-						if (canExecuteSubObject) {
-							
-							JSONObject response = new JSONObject();
-							String url = executionInstance.getSubObjectUrl(subObject);
-							try {
-								response.put("url", url);
-								writeBackToClient( new JSONSuccess( response ) );
-							} catch (IOException e) {
-								throw new SpagoBIServiceException("Impossible to write back the responce to the client", e);
-							} catch (JSONException e) {
-								throw new SpagoBIServiceException("Impossible to serialize the url [" + url + "] to the client", e);
-							}
-							
-						} else {
-							throw new RuntimeException("User cannot execute required customized view");
-						}
-					} else {
-						throw new RuntimeException("Required subobject is not relevant to current document");
-					}
-				} catch (EMFUserError e) {
-					e.printStackTrace();
-				} catch (EMFInternalError e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				response = handleSubObjectExecution(subObjectId);
+			} else {
+				response = handleNormalExecution();
+			}
+			try {
+				writeBackToClient( new JSONSuccess( response ) );
+			} catch (IOException e) {
+				throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to write back the responce to the client", e);
+			}
+		} finally {
+			logger.debug("OUT");
+		}
+	}
+	
+	protected JSONObject handleSubObjectExecution(Integer subObjectId) {
+		logger.debug("IN");
+		JSONObject response = new JSONObject();
+		try {
+			ISubObjectDAO dao = null;
+			try {
+				dao = DAOFactory.getSubObjectDAO();
+			} catch (EMFUserError e) {
+				logger.error("Error while istantiating DAO", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot access database", e);
 			}
 			
+			SubObject subObject = null;
+			try {
+				subObject = dao.getSubObject(subObjectId);
+			} catch (EMFUserError e) {
+				logger.error("SubObject with id = " + subObjectId + " not found", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Customized view not found", e);
+			}
 			
-			
-			JSONObject executionInstanceJSON = this.getAttributeAsJSONObject( "PARAMETERS" );
-			
+			BIObject obj = executionInstance.getBIObject();
+			if (obj.getId().equals(subObject.getBiobjId())) {
+				boolean canExecuteSubObject = false;
+				if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+					canExecuteSubObject = true;
+				} else {
+					if (subObject.getIsPublic() || subObject.getOwner().equals(userProfile.getUserId().toString())) {
+						canExecuteSubObject = true;
+					}
+				}
+				if (canExecuteSubObject) {
+					String url = executionInstance.getSubObjectUrl(subObject);
+					try {
+						response.put("url", url);
+					} catch (JSONException e) {
+						throw new SpagoBIServiceException("Cannot serialize the url [" + url + "] to the client", e);
+					}
+				} else {
+					throw new SpagoBIServiceException(SERVICE_NAME, "User cannot execute required customized view");
+				}
+			} else {
+				throw new SpagoBIServiceException(SERVICE_NAME, "Required subobject is not relevant to current document");
+			}
+		} catch (EMFInternalError e) {
+			throw new SpagoBIServiceException(SERVICE_NAME, "An internal error has occured", e);
+		} finally {
+			logger.debug("OUT");
+		}
+		return response;
+	}
+	
+	protected JSONObject handleNormalExecution() {
+		logger.debug("IN");
+		JSONObject response = new JSONObject();
+		try {
+			JSONObject executionInstanceJSON = this.getAttributeAsJSONObject( PARAMETERS );
 			executionInstance.refreshParametersValues(executionInstanceJSON, false);
 			List errors = null;
 			try {
 				errors = executionInstance.getParametersErrors();
 			} catch (Exception e) {
-				throw new SpagoBIServiceException("Impossible to find errors on parameters validation", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot evaluate errors on parameters validation", e);
 			}
 			if ( errors != null && errors.size() > 0) {
-				// there are errors on parameters validation, send them to the client
-				JSONArray response = new JSONArray();
+				// there are errors on parameters validation, send errors' descriptions to the client
+				JSONArray errorsArray = new JSONArray();
 				Iterator errorsIt = errors.iterator();
 				while (errorsIt.hasNext()) {
 					EMFUserError error = (EMFUserError) errorsIt.next();
-					response.put(error.getDescription());
+					errorsArray.put(error.getDescription());
 				}
 				try {
-					writeBackToClient( new JSONSuccess( response ) );
-				} catch (IOException e) {
-					throw new SpagoBIServiceException("Impossible to write back the responce to the client", e);
+					response.put("errors", errorsArray);
+				} catch (JSONException e) {
+					throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize errors to the client", e);
 				}
 			} else {
 				// there are no errors, we can proceed, so calculate the execution url and send it back to the client
-				JSONObject response = new JSONObject();
 				String url = executionInstance.getExecutionUrl();
 				try {
 					response.put("url", url);
-					writeBackToClient( new JSONSuccess( response ) );
-				} catch (IOException e) {
-					throw new SpagoBIServiceException("Impossible to write back the responce to the client", e);
 				} catch (JSONException e) {
-					throw new SpagoBIServiceException("Impossible to serialize the url [" + url + "] to the client", e);
+					throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize the url [" + url + "] to the client", e);
 				}
 			}
 		} finally {
 			logger.debug("OUT");
 		}
+		return response;
 	}
 
 }

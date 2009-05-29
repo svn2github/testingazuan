@@ -54,17 +54,17 @@ public class DeleteSubObjectsAction extends AbstractSpagoBIAction {
 		logger.debug("IN");
 		
 		try {
-			// retrieving execution instance from session, no need to check if user is able to execute the required document
+			// retrieving execution instance from session, no need to check if user is able to execute the current document
+			ExecutionInstance executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
+			BIObject obj = executionInstance.getBIObject();
 			UserProfile userProfile = (UserProfile) this.getUserProfile();
 			ISubObjectDAO dao = null;
 			try {
 				dao = DAOFactory.getSubObjectDAO();
 			} catch (EMFUserError e) {
-				logger.error("Error while instantiating DAO", e);
-				throw new SpagoBIServiceException("Cannot access database", e);
+				logger.error("Error while istantiating DAO", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot access database", e);
 			}
-			ExecutionInstance executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
-			BIObject obj = executionInstance.getBIObject();
 			String ids = this.getAttributeAsString(SUBOBJECT_ID);
 			// ids contains the id of the subobjects to be deleted separated by ,
 			String[] idArray = ids.split(",");
@@ -75,7 +75,7 @@ public class DeleteSubObjectsAction extends AbstractSpagoBIAction {
 					subObject = dao.getSubObject(id);
 				} catch (EMFUserError e) {
 					logger.error("SubObject with id = " + id + " not found", e);
-					throw new SpagoBIServiceException("Cannot access database", e);
+					throw new SpagoBIServiceException(SERVICE_NAME, "Customized view not found", e);
 				}
 				if (subObject.getBiobjId().equals(obj.getId())) {
 					boolean canDeleteSubObject = false;
@@ -92,17 +92,17 @@ public class DeleteSubObjectsAction extends AbstractSpagoBIAction {
 						try {
 							dao.deleteSubObject(id);
 						} catch (EMFUserError e) {
-							throw new SpagoBIServiceException("Error while deleting subobject", e);
+							throw new SpagoBIServiceException(SERVICE_NAME, "Error while deleting customized view", e);
 						}
 						logger.debug("Customized view [id: " + subObject.getId() + ", name: " + subObject.getName() + "] deleted.");
 					} else {
 						logger.error("User [id: " + userProfile.getUserUniqueIdentifier() + ", userId: " + userProfile.getUserId() + ", name: " + userProfile.getUserName() + "] cannot delete customized view");
-						throw new RuntimeException("User cannot delete customized view");
+						throw new SpagoBIServiceException(SERVICE_NAME, "User cannot delete customized view");
 					}
 				} else {
 					logger.error("Cannot delete customized view with id = " + subObject.getBiobjId() + ": " +
 							"it is not relevant to the current document [id: " + obj.getId() + ", label: " + obj.getLabel() + ", name: " + obj.getName() + "]");
-					throw new RuntimeException("Cannot delete customized view: it is not relevant to the current document");
+					throw new SpagoBIServiceException(SERVICE_NAME, "Cannot delete customized view: it is not relevant to the current document");
 				}
 				
 			}
@@ -111,13 +111,13 @@ public class DeleteSubObjectsAction extends AbstractSpagoBIAction {
 				results.put("result", "OK");
 				writeBackToClient( new JSONSuccess( results ) );
 			} catch (IOException e) {
-				throw new SpagoBIServiceException("Impossible to write back the responce to the client", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to write back the responce to the client", e);
 			} catch (JSONException e) {
-				throw new SpagoBIServiceException("Cannot serialize objects into a JSON object", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize objects into a JSON object", e);
 			}
 
 		} catch (EMFInternalError e) {
-			throw new SpagoBIServiceException("Cannot retrieve information about user", e);
+			throw new SpagoBIServiceException(SERVICE_NAME, "An internal error has occured", e);
 		} finally {
 			logger.debug("OUT");
 		}

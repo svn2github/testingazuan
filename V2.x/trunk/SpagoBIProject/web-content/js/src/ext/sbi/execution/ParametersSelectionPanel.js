@@ -71,7 +71,7 @@
 				}else if(c.isFormField){
 					f.add(c);
 				}
-			}
+			};
 			this.items.each(fn);
 		}
 	});
@@ -80,6 +80,7 @@
 Ext.ns("Sbi.execution");
 
 Sbi.execution.ParametersSelectionPanel = function(config) {
+	
 	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
@@ -130,16 +131,17 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
     // ----------------------------------------------------------------------------------------
     
 	, loadParametersForExecution: function( executionInstance ) {
-		
 		Ext.Ajax.request({
 	          url: this.services['getParametersForExecutionService'],
+	          
 	          params: executionInstance,
-	          callback : function(options , success, response){
+	          
+	          callback : function(options, success, response){
 	    	  	if(success && response !== undefined) {   
 		      		if(response.responseText !== undefined) {
 		      			var content = Ext.util.JSON.decode( response.responseText );
 		      			if(content !== undefined) {
-		      				alert( content.toSource() );	
+		      				//alert( content.toSource() );	
 		      				this.onParametersForExecutionLoaded(executionInstance, content);
 		      			} 
 		      		} else {
@@ -177,8 +179,6 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 			state[item.getName()] = value;
 		}
 		
-		alert(state.toSource());
-		
 		return state;
 	}
 	
@@ -195,7 +195,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	, createField: function( executionInstance, p ) {
 		var field;
 		
-		alert(p.id + ' - ' + p.selectionType + ' - ' + !p.mandatory);
+		//alert(p.id + ' - ' + p.selectionType + ' - ' + !p.mandatory);
 		var baseConfig = {
 	       fieldLabel: p.label
 		   , name : p.id

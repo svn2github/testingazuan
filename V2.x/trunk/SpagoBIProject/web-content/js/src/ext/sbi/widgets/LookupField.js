@@ -145,15 +145,15 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		if(typeof v === 'object') {
 			this.xvalue = {};
 			Ext.apply(this.xvalue, v);
-			alert(this.xvalue.toSource());
+			//alert(this.xvalue.toSource());
 			var displayText = '';
 			for(p in this.xvalue) {
-				displayText += this.xvalue[p] + ';'
+				displayText += this.xvalue[p] + ';';
 			}	
 			if(this.singleSelect === true) {
 				displayText = displayText.substr(0, displayText.length-1);
 			}
-			alert(displayText);
+			//alert(displayText);
 			Sbi.widgets.LookupField.superclass.setValue.call(this, displayText);
 		} else {
 			alert('orrore');
@@ -202,7 +202,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	        ]
 	    });
 		
-		this.sm = new Ext.grid.CheckboxSelectionModel( {singleSelect: this.singleSelect } )
+		this.sm = new Ext.grid.CheckboxSelectionModel( {singleSelect: this.singleSelect } );
 		this.sm.on('rowselect', this.onSelect, this);
 		this.sm.on('rowdeselect', this.onDeselect, this);
 		
@@ -287,8 +287,9 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     	if(this.xdirty) {
 	    	var text = Sbi.widgets.LookupField.superclass.getValue.call(this);
 	    	var values = text.split(';');
-	    	alert('clean: ' + text + ' -  ' + values);
+	    	//alert('clean: ' + text + ' -  ' + values);
 	    	this.xvalue = {};
+	    	if(text.trim() === '') return;
 	    	var ub = (this.singleSelect === true)? 1: values.length;
 	    	for(var i = 0; i < ub; i++) {
 	    		this.xvalue[ '' + values[i] ] = values[i];

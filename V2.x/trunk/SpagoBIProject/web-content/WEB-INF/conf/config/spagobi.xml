@@ -114,17 +114,26 @@
      <!-- ********************* START GENERAL CONFIGURATION ************************ -->
      
    
-    <!--  Date format sent to server-->
-     <DATE-FORMAT-SERVER format="dd/MM/yyyy"/>
+    <!--  
+    Date format for communications with the server (both on sending and receiving); format attribute is for server side services, see java.text.SimpleDateFormat for details,
+    while extJsFormat is for ExtJs client, that use another standard, see http://extjs.com/deploy/dev/docs/.
+    IF YOU CHANGE ONE FORMAT YOU MUST CHANGE THE OTHER ONE ACCORDINGLY.
+    -->
+     <DATE-FORMAT-SERVER format="dd/MM/yyyy" extJsFormat="d/m/Y" />
 
-    <!--  Date visual format according to current language-->    
-     <DATE-FORMAT-IT_IT format="dd/MM/yyyy"/>
-     <DATE-FORMAT-EN_US format="MM/dd/yy"/>
-     <DATE-FORMAT-FR_FR format="dd/MM/yy"/>      
+    <!--  
+    Date format used while displaying dates according to user current locale.
+    Format attribute is for old presentation mechanism, see java.text.SimpleDateFormat for details,
+    while extJsFormat is for ExtJs client, that use another standard, see http://extjs.com/deploy/dev/docs/.
+    IF YOU CHANGE ONE FORMAT YOU MUST CHANGE THE OTHER ONE ACCORDINGLY.
+    -->    
+     <DATE-FORMAT-IT_IT format="dd/MM/yyyy" extJsFormat="d/m/Y"/>
+     <DATE-FORMAT-EN_US format="MM/dd/yyyy" extJsFormat="m/d/Y"/>
+     <DATE-FORMAT-FR_FR format="dd/MM/yyyy" extJsFormat="d/m/Y"/>      
   	 <TIMESTAMP-FORMAT format="dd/MM/yyyy hh:mm:ss"/>
   	 
     <!--  Date visual format if language is not found-->      	 
-  	<DATE-FORMAT format="dd/MM/yyyy"/>
+  	<DATE-FORMAT format="dd/MM/yyyy" extJsFormat="d/m/Y"/>
 
      <THEMES>
 		<THEME name="sbi_default" default="true" view_name="default" ext_theme="xtheme-gray.css" /> 

@@ -178,45 +178,6 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
 		      	}
 		      	return propertyCellEditorFactory;
         }
-        
-      /*  , _propertyCellEditorFactoryFunc: function (cellInfo) {
-
-        		var cellEditor = new qx.ui.table.celleditor.TextField;	
-	
-				var propertyCellEditorFactory2 = new qx.ui.table.celleditor.Dynamic(this._propertyCellEditorFactoryFunc);	
-           		if(cellInfo.col === 0){
-           		alert ('meodo'+this.columnNameCellEditor);
-           			if(this.columnNameCellEditor === 'combo'){
-           				alert('meodo'+'combo');
-           				cellEditor = new qx.ui.table.celleditor.ComboBox() ;
-			      		var comboOptions = this.cellNameOptions ;
-			      		if(comboOptions){
-			      			cellEditor.setListData(comboOptions);
-			      		}
-			      		
-           			}else{
-           				cellEditor = new qx.ui.table.celleditor.TextField ;
-           			}
-	      		
-		      	} else if (cellInfo.col === 1){
-		      	alert ('meodo'+this.columnValueCellEditor);
-		      		if(this.columnValueCellEditor === 'combo'){
-		      			alert('combo');
-	           			cellEditor = new qx.ui.table.celleditor.ComboBox() ;
-			      		var comboOptions = this.cellValueOptions ;
-			      		if(comboOptions){
-			      			cellEditor.setListData(comboOptions);
-			      		}	
-			      		
-           			}else{
-           				cellEditor = new qx.ui.table.celleditor.TextField ;
-           			}
-		      		
-		      		
-		      	}
-		      	return cellEditor;
-        }*/
-        
         , _onCellClick : function (e) {
         
         	

@@ -177,9 +177,13 @@ qx.Class.define("qooxdoo.ui.custom.DatasetDetailsForm", {
         		text: 'Parameters',
         		visible: false,
         		nameColumnLabel: 'Name' ,
-        		valueColumnLabel: 'Type'
-        	}
-        	
+        		valueColumnLabel: 'Type',
+        		cellNameRendered: 'text',
+        		cellValueRendered: 'combo',
+        		cellValueOptions: [ '' , 'String', 'Integer' ]
+					          	  
+			}
+					        	
         ]);
 		
 	},

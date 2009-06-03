@@ -15,11 +15,24 @@ qx.Class.define("qooxdoo.ui.form.RadioBox",
   	members :
   	{
   		getData: function() {
-  			return this._field.getValue();
+  			var value;
+  			var radioButton = this._field.getChildren();
+				for(i=0; i<radioButton.length; i++){
+					if(radioButton[i].getChecked() == true){
+						value = radioButton[i].getLabel();
+					}
+				}
+  			return value;
   		}
   	
   		, setData: function(data) {
-  			this._field.setValue(data);
+  			var radioButton = this._field.getChildren();
+				for(i=0; i<radioButton.length; i++){
+					if(radioButton[i].getLabel() == data){
+						radioButton[i].setChecked(true);
+						break;
+					}
+				}
   		}
   		
   		, _createField: function(config) {

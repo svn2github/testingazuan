@@ -106,7 +106,7 @@ qx.Class.define("qooxdoo.ui.custom.EngineDetailsForm", {
         		text: 'Document type',
         		displayField:'valueName',
 	            valueField: 'valueId',
-        		proxy: biobjectTypesDataProxy,    
+        		//proxy: biobjectTypesDataProxy,    
         		items: [{
         			'name':'Report'
             		, 'id': '5'
@@ -120,7 +120,7 @@ qx.Class.define("qooxdoo.ui.custom.EngineDetailsForm", {
         		text: 'Engine type',
         		displayField:'valueCode',
 	            valueField: 'valueId',
-        		proxy: engineTypesDataProxy,        	
+        		//proxy: engineTypesDataProxy,        	
         		items: [{
         			'name':'Internal'
         			, 'id': '47'

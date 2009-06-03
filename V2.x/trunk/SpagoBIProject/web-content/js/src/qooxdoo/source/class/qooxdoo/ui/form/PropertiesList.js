@@ -98,11 +98,6 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
            return data ;
         }
         
-        , _createField: function(config) {
-        
-        
-        }
-        
         , deleteRow : function (rowIndex) {
         	
             if(this._tableModel.getRowCount()=== 1){

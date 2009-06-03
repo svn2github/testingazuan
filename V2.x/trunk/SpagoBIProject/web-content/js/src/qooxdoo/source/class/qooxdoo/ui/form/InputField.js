@@ -30,7 +30,7 @@ qx.Class.define("qooxdoo.ui.form.InputField",
 		this._createLabel(config);
 		this._createField(config);
 		
-		alert(config.toSource());
+		//alert(config.toSource());
 		
 		
     	// add label to a container in order to set left and top

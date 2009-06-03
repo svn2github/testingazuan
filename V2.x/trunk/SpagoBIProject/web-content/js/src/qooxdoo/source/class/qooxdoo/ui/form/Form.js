@@ -292,10 +292,10 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 				inputField = componentRegistry.createComponent(config, 'textarea');
   				    
   			} else if(config.type === 'check') {
-  				inputField = qooxdoo.commons.WidgetUtils.createInputCheckBox(config);    
-  				inputField.setUserData('type', 'check'); 
-  				//var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
-				//inputField = componentRegistry.createComponent(config, 'check');
+  				//inputField = qooxdoo.commons.WidgetUtils.createInputCheckBox(config);    
+  				//inputField.setUserData('type', 'check'); 
+  				var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				inputField = componentRegistry.createComponent(config, 'check');
   				   
   			} else if(config.type === 'radio') {
   				//inputField = qooxdoo.commons.WidgetUtils.createInputRadio(config);    

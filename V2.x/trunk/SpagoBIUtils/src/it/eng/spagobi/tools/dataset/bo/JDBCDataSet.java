@@ -92,8 +92,9 @@ public class JDBCDataSet extends ConfigurableDataSet {
 			
 		dataProxy = (JDBCDataProxy)this.getDataProxy();
 		sbd.setDataSource(dataProxy.getDataSource().toSpagoBiDataSource());
+		if(query!=null){
 		sbd.setQuery(query.toString());
-		
+		}
 		return sbd;
 	}
 

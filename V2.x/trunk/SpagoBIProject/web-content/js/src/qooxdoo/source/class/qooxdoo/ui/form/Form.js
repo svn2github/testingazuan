@@ -307,11 +307,13 @@ qx.Class.define("qooxdoo.ui.form.Form", {
   				//inputField = qooxdoo.commons.WidgetUtils.createPropertiesList(config);    
   				//inputField.setUserData('type', 'propertiesList');
   				var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
-				inputField = componentRegistry.createComponent(config, 'propertieslist');
+				inputField = componentRegistry.createComponent(config, 'propertiesList');
   				
   			} else if(config.type === 'groupbox') {
   				inputField = qooxdoo.commons.WidgetUtils.createInputGroupBox(config);    
   				inputField.setUserData('type', 'groupbox');
+  				//var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				//inputField = componentRegistry.createComponent(config, 'groupbox');
   				
   			}
   			

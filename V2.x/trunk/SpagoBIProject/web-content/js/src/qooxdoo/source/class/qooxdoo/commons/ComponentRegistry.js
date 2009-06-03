@@ -22,8 +22,8 @@ qx.Class.define("qooxdoo.commons.ComponentRegistry",
   			, 'textarea' : qooxdoo.ui.form.TextArea
   			, 'combo' : qooxdoo.ui.form.XComboBox
   			, 'check' : qooxdoo.ui.form.CheckBox
-  			, 'formlist' : qooxdoo.ui.form.FormList	
-  			, 'propertieslist' : qooxdoo.ui.form.PropertiesList
+  			, 'formList' : qooxdoo.ui.form.FormList	
+  			, 'propertiesList' : qooxdoo.ui.form.PropertiesList
   			, 'flag' : qooxdoo.ui.form.FlagBox
   			, 'form' : qooxdoo.ui.form.Form
   			, 'radio' : qooxdoo.ui.form.RadioBox

@@ -65,6 +65,9 @@
   <target name="create.exo.security.jar" >
     <ant dir="../SpagoBIExoSecurityProvider/ant" />
   </target>
+  <target name="create.liferay.security.jar" >
+    <ant dir="../SpagoBILiferaySecurityProvider/ant" />
+  </target>  
   <target name="create.xlm.security.jar" >
     <ant dir="../SpagoBIXmlSecurityProvider/ant" />
   </target>
@@ -167,8 +170,10 @@
     <copy file="../../../SpagoBIProject/dist/SpagoBI.war" 
         todir="../../../dist" overwrite="true" />
         
-    <!-- <antcall target="create.exo.security.jar" />  -->
+    <antcall target="create.exo.security.jar" /> 
+    <antcall target="create.liferay.security.jar" />
     <antcall target="create.xlm.security.jar" />
+    
     <antcall target="create.SpagoBIBirtReportEngine.war" />
     <copy file="../../../SpagoBIBirtReportEngine/dist/SpagoBIBirtReportEngine.war" 
         todir="../../../dist" overwrite="true" />
@@ -223,6 +228,8 @@
 	<delete dir="../../../QbeCore/ant-build"/>
 	<delete dir="../../../SpagoBIBirtReportEngine/ant-build"/>
 	<delete dir="../../../SpagoBIExoSecurityProvider/ant-build"/>
+	<delete dir="../../../SpagoBILiferaySecurityProvider/ant-build"/>
+	<delete dir="../../../SpagoBIXMLSecurityProvider/ant-build"/>  	
 	<delete dir="../../../SpagoBIGeoReportEngine/ant-build"/>
   <delete dir="../../../SpagoBIJasperReportReportEngine/ant-build"/>
   <delete dir="../../../SpagoBIJPaloEngine/ant-build"/>
@@ -279,7 +286,25 @@
     <ant dir="../SpagoBIUtils/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIWekaEngine/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIXmlSecurityProvider/ant" target="svn.checkout"/>
+    <ant dir="../SpagoBILiferaySecurityProvider/ant" target="svn.checkout"/>    
     
+  </target>
+  
+  <target name="javadoc" >
+    <ant dir="../QbeCore/ant" target="javadoc"/>
+    <ant dir="../SpagoBIBirtReportEngine/ant" target="javadoc"/>
+    <ant dir="../SpagoBIExoSecurityProvider/ant" target="javadoc"/>
+    <ant dir="../SpagoBIGeoEngine/ant" target="javadoc"/>
+    <ant dir="../SpagoBIJasperReportEngine/ant" target="javadoc"/>
+    <ant dir="../SpagoBIJPaloEngine/ant" target="javadoc"/>
+    <ant dir="../SpagoBIJPivotEngine/ant" target="javadoc"/>
+    <ant dir="../SpagoBIProject/ant" target="javadoc"/>
+    <ant dir="../SpagoBIQbeEngine/ant" target="javadoc"/>
+    <ant dir="../SpagoBITalendEngine/ant" target="javadoc"/>
+    <ant dir="../SpagoBIUtils/ant" target="javadoc"/>
+    <ant dir="../SpagoBIWekaEngine/ant" target="javadoc"/>
+    <ant dir="../SpagoBIXmlSecurityProvider/ant" target="javadoc"/>
+    <ant dir="../SpagoBILiferaySecurityProvider/ant" target="javadoc"/>    
   </target>
   
 </project>

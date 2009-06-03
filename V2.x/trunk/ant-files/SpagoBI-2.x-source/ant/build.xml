@@ -242,6 +242,8 @@
 	<delete dir="../../../QbeCore/dist"/>
 	<delete dir="../../../SpagoBIBirtReportEngine/dist"/>
 	<delete dir="../../../SpagoBIExoSecurityProvider/dist"/>
+	<delete dir="../../../SpagoBILiferaySecurityProvider/dist"/>
+	<delete dir="../../../SpagoBIXMLSecurityProvider/dist"/>  	
 	<delete dir="../../../SpagoBIGeoReportEngine/dist"/>
   <delete dir="../../../SpagoBIJasperReportReportEngine/dist"/>
   <delete dir="../../../SpagoBIJPaloEngine/dist"/>

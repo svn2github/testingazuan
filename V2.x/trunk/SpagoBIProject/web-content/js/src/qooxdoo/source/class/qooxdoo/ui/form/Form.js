@@ -304,8 +304,10 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 				inputField = componentRegistry.createComponent(config, 'radio');
   				
   			}  else if(config.type === 'propertiesList') {
-  				inputField = qooxdoo.commons.WidgetUtils.createPropertiesList(config);    
-  				inputField.setUserData('type', 'propertiesList');
+  				//inputField = qooxdoo.commons.WidgetUtils.createPropertiesList(config);    
+  				//inputField.setUserData('type', 'propertiesList');
+  				var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				inputField = componentRegistry.createComponent(config, 'propertieslist');
   				
   			} else if(config.type === 'groupbox') {
   				inputField = qooxdoo.commons.WidgetUtils.createInputGroupBox(config);    

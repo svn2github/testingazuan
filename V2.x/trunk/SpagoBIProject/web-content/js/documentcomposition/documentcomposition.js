@@ -180,7 +180,8 @@ Ext.onReady(function() {
 				if (titleDoc==""){
 					var p = new Ext.Panel({
 						id:'p'+i,
-				        bodyBorder : true,
+				        bodyBorder : false,
+				        border:false,
 				        collapsible:true,
 				        height:Number(heightPx),
 				        bodyCfg: {

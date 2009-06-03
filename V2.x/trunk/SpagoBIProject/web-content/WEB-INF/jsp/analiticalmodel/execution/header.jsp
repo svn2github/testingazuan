@@ -322,7 +322,19 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "sbi.execution.print" />' />
 					</a>
 				</li>
-				<% } %>
+				<% }
+				if (obj.getBiObjectTypeCode().equals("KPI")){ 
+					String urlExporter=GeneralUtilities.getSpagoBIProfileBaseUrl(userId);
+					urlExporter+="&ACTION_NAME=EXPORT_PDF&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE&"+SpagoBIConstants.OBJECT_ID+"="+obj.getId();
+				%>
+				<li>
+					<a id="export_pdf_kpi<%= uuid %>" href="<%=urlExporter%>" target="_blank">
+						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.kpiPdfExport" />'
+							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/printer22.png", currTheme)%>'
+							alt='<spagobi:message key = "sbi.execution.kpiPdfExport" />' />
+					</a>
+				</li>
+				<% } %>				
 			</ul>
 		</div>
 	</div>

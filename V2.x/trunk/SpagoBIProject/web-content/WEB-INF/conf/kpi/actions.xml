@@ -2,7 +2,10 @@
 <ACTIONS>
     <ACTION name="LOGIN_ACTION_KPI_CONFIGURATION" class="it.eng.spagobi.commons.services.PortletLoginAction"
     scope="REQUEST">
-    
     <CONFIG></CONFIG>
   </ACTION>
+  <ACTION name="EXPORT_PDF" class="it.eng.spagobi.kpi.service.KpiExporter"
+    scope="REQUEST">
+    <CONFIG></CONFIG>
+  </ACTION>  
 </ACTIONS>

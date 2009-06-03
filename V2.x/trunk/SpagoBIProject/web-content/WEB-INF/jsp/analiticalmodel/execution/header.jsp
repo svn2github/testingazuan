@@ -330,7 +330,7 @@ if (toolbarIsVisible) {
 				<li>
 					<a id="export_pdf_kpi<%= uuid %>" href="<%=urlExporter%>" target="_blank">
 						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.kpiPdfExport" />'
-							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/printer22.png", currTheme)%>'
+							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/kpi/pdf.png", currTheme)%>'
 							alt='<spagobi:message key = "sbi.execution.kpiPdfExport" />' />
 					</a>
 				</li>

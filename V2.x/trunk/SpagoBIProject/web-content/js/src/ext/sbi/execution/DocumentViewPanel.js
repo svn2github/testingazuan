@@ -57,17 +57,43 @@ Sbi.execution.DocumentViewPanel = function(config) {
 	});
 	
 	this.miframe = new Ext.ux.ManagedIframePanel({
-                frameConfig : {
+				region:'center'
+                , frameConfig : {
                       autoCreate : { },
                       disableMessaging : false
-                  }
-                  , loadMask  : true
+                }
+                , loadMask  : true
     });
 	
+	this.refreshButton =  new Ext.Toolbar.Button({
+		iconCls: 'icon-refresh' 
+     	, scope: this
+    	, handler : this.refreshExecution
+	});
 	
+    this.tb = new Ext.Toolbar({
+    	cls: 'execution-toolbar'
+        , items: ['->', this.refreshButton]
+    });
+	
+    this.toolbarPanel = new Ext.Panel({
+    	region:'north'
+        , border: false
+        , frame: false
+        , collapsible: true
+        , collapsed: true
+        , hideCollapseTool: true
+        , titleCollapse: true
+        , collapseMode: 'mini'
+    	, tbar: this.tb
+        , split: true
+        , autoScroll: false
+        , layout: 'fit'
+    });	
+    
 	var c = Ext.apply({}, config, {
-		layout: 'fit'
-		, items: [this.miframe]
+		layout: 'border'
+		, items: [this.toolbarPanel, this.miframe]
 	});
 	
 	// constructor
@@ -112,5 +138,9 @@ Ext.extend(Sbi.execution.DocumentViewPanel, Ext.Panel, {
 			  failure: Sbi.exception.ExceptionHandler.handleFailure      
 	   });
 	
+	}
+
+	, refreshExecution: function() {
+		this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
 	}
 });

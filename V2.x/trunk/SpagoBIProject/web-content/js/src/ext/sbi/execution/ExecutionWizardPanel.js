@@ -207,10 +207,13 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 					if (typeof temp == 'function') {
 						continue;
 					}
-					if (typeof obj == 'string') {
+					if (typeof temp == 'string') {
 						// the String.escape function escapes the passed string for ' and \
 						temp = String.escape(temp);
 						str += '\'' + temp + '\', ';
+					} else if (typeof temp == 'date') {
+						temp = Ext.util.Format.date(temp, Sbi.config.clientServerDateFormat);
+						str += p + ': \'' +  temp + '\', ';
 					} else {
 						str += temp + ', ';
 					}
@@ -223,6 +226,9 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 			} else if (typeof obj == 'string') {
 				// the String.escape function escapes the passed string for ' and \
 				obj = String.escape(obj);
+				str += p + ': \'' +  obj + '\', ';
+			} else if (typeof obj == 'date') {
+				obj = Ext.util.Format.date(obj, Sbi.config.clientServerDateFormat);
 				str += p + ': \'' +  obj + '\', ';
 			} else {
 				// case number or boolean

@@ -6,6 +6,14 @@
 	background-image: url('../../../img/exec16.png') !important;
 }
 
+.icon-filter {
+	background:transparent url('../../../img/analiticalmodel/execution/tool-sprites.gif') no-repeat 0 -45px;
+}
+
+.icon-unfilter {
+	background:transparent url('../../../img/analiticalmodel/execution/tool-sprites.gif') no-repeat 0 -45px;
+}
+
 .icon-refresh {
 	background-image: url('../../../img/refresh16.png') !important;
 }

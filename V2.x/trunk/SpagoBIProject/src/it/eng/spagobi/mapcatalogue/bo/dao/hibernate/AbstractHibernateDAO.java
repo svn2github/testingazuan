@@ -21,10 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.mapcatalogue.bo.dao.hibernate;
 
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.HibernateUtil;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
-import it.eng.spagobi.security.ExoUserProfileImpl;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;

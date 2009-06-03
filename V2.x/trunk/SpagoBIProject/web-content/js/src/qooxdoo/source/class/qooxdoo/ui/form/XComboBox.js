@@ -1,4 +1,4 @@
-qx.Class.define("qooxdoo.ui.form.TextField",
+qx.Class.define("qooxdoo.ui.form.XComboBox",
 {
   	extend : qooxdoo.ui.form.InputField,
 
@@ -23,25 +23,26 @@ qx.Class.define("qooxdoo.ui.form.TextField",
   		}
   		
   		, _createField: function(config) {
+  		
   			var defaultConfig = {
-  	        		top: 0,
-  	        		left: 0,
-  	        		maxLength:100,    		
+  					top: 0,
+	        		left: 0,
+	        		proxy: undefined,
+	        		items: [],
+	        		listeners: [],  	
   	        		width: 200,
-        			height: 20,
-  	        		value: '',
-  	        		'readOnly': false
+  	        		height: 20
   	        };
   			config = qooxdoo.commons.CoreUtils.apply(defaultConfig, config);
-  			 
-  	        this._field = new qx.ui.form.TextField();
+  			 alert('combo items '+config.items);
+  	        this._field = new qx.ui.form.ComboBox(config);
+  	        qooxdoo.commons.CoreUtils.dump(config);
   	        this._field.set({
   	        	width:config.width
   	        	, height:config.height
 	        	, left: config.left + 10
-  	        	, value:config.value
-  	        	, maxLength:config.maxLength
-  	        	, readOnly:config.readOnly 
+	        	, items: config.items
+	        	, listeners: config.listeners
   	        });
   	            					
   		}

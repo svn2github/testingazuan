@@ -1,4 +1,4 @@
-qx.Class.define("qooxdoo.ui.form.TextField",
+qx.Class.define("qooxdoo.ui.form.GroupBox",
 {
   	extend : qooxdoo.ui.form.InputField,
 
@@ -23,22 +23,21 @@ qx.Class.define("qooxdoo.ui.form.TextField",
   		}
   		
   		, _createField: function(config) {
-  			var defaultConfig = {
+  			var defultConfig = {
   	        		top: 0,
   	        		left: 0,
   	        		maxLength:100,    		
-  	        		width: 200,
-        			height: 20,
+  	        		width: 0,
+  	        		height: 0,
   	        		value: '',
   	        		'readOnly': false
   	        };
-  			config = qooxdoo.commons.CoreUtils.apply(defaultConfig, config);
+  			config = qooxdoo.commons.CoreUtils.apply(defultConfig, config);
   			 
   	        this._field = new qx.ui.form.TextField();
   	        this._field.set({
   	        	width:config.width
   	        	, height:config.height
-	        	, left: config.left + 10
   	        	, value:config.value
   	        	, maxLength:config.maxLength
   	        	, readOnly:config.readOnly 

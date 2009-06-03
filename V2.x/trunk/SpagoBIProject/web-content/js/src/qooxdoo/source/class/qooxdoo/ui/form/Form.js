@@ -266,12 +266,16 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 				inputField = componentRegistry.createComponent(config, 'textfield');
   				       
   			} else if(config.type === 'combo') {
-  				inputField = qooxdoo.commons.WidgetUtils.createInputComboBox(config);    
-  				inputField.setUserData('type', 'combo');
+  				//inputField = qooxdoo.commons.WidgetUtils.createInputComboBox(config);    
+  				//inputField.setUserData('type', 'combo');
+  				var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				inputField = componentRegistry.createComponent(config, 'combo');
   				    
   			} else if(config.type === 'flag') {
-  				inputField = qooxdoo.commons.WidgetUtils.createInputFlagBox(config);    
-  				inputField.setUserData('type', 'flag');
+  				//inputField = qooxdoo.commons.WidgetUtils.createInputFlagBox(config);    
+  				//inputField.setUserData('type', 'flag');
+  				var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				inputField = componentRegistry.createComponent(config, 'flag');
   				    
   			} else if(config.type === 'form') {
   				inputField = qooxdoo.commons.WidgetUtils.createInputForm(config);    
@@ -282,16 +286,22 @@ qx.Class.define("qooxdoo.ui.form.Form", {
   				inputField.setUserData('type', 'formList');
   				    
   			} else if(config.type === 'textarea') {
-  				inputField = qooxdoo.commons.WidgetUtils.createInputTextArea(config);    
-  				inputField.setUserData('type', 'textarea');
+  				//inputField = qooxdoo.commons.WidgetUtils.createInputTextArea(config);    
+  				//inputField.setUserData('type', 'textarea');
+  				var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				inputField = componentRegistry.createComponent(config, 'textarea');
   				    
   			} else if(config.type === 'check') {
   				inputField = qooxdoo.commons.WidgetUtils.createInputCheckBox(config);    
   				inputField.setUserData('type', 'check'); 
+  				//var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				//inputField = componentRegistry.createComponent(config, 'check');
   				   
   			} else if(config.type === 'radio') {
-  				inputField = qooxdoo.commons.WidgetUtils.createInputRadio(config);    
-  				inputField.setUserData('type', 'radio');
+  				//inputField = qooxdoo.commons.WidgetUtils.createInputRadio(config);    
+  				//inputField.setUserData('type', 'radio');
+  				var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				inputField = componentRegistry.createComponent(config, 'radio');
   				
   			}  else if(config.type === 'propertiesList') {
   				inputField = qooxdoo.commons.WidgetUtils.createPropertiesList(config);    

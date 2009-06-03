@@ -98,14 +98,17 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
            return data ;
         }
         
+        , _createField: function(config) {
+        
+        
+        }
+        
         , deleteRow : function (rowIndex) {
         	
-        	// alert('deleteRow '+ rowIndex + ' of ' + this._tableModel.getRowCount());
             if(this._tableModel.getRowCount()=== 1){
-            	qooxdoo.commons.CoreUtils.dump('last row->reset to empty row: ' + this.emptyRow);
             	this._tableModel.setDataAsMapArray([this.emptyRow] , true);
             } else {
-            	alert('not last row');
+            	
         		this._tableModel.removeRows(rowIndex,1);
         		this.updateContent();
         		
@@ -113,7 +116,6 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         }
         , addRow : function (rowIndex) {
         	
-        	// alert('addRow '+ rowIndex + ' of ' + this._tableModel.getRowCount());
         	 var rowDataToAdd = this._tableModel.getRowDataAsMap(rowIndex);
         	
         	 var data = new Array();
@@ -184,10 +186,10 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
         	if(e.getColumn()===2){
        
         		if (e.getRow()===this._tableModel.getRowCount()-1){
-        			//alert('Add Row');
+        		
         			this.addRow(e.getRow());
         		}else{
-        			//alert('Delete Row');
+        			
         			this.deleteRow(e.getRow());
         		}
     		   //qooxdoo.commons.CoreUtils.dump(e);

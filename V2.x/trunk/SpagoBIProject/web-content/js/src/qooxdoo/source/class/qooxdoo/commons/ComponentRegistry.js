@@ -19,11 +19,15 @@ qx.Class.define("qooxdoo.commons.ComponentRegistry",
   		// this object is shared by all instances of the componentRegistry class 
   		_componentMap: {
   			'textfield' : qooxdoo.ui.form.TextField
-  			, 'textarea' : qooxdoo.ui.form.TextField
-  			, 'combo' : qooxdoo.ui.form.TextField
-  			, 'check' : qooxdoo.ui.form.TextField	
-  			, 'formlist' : qooxdoo.ui.form.TextField	
-  			, 'propertieslist' : qooxdoo.ui.form.TextField
+  			, 'textarea' : qooxdoo.ui.form.TextArea
+  			, 'combo' : qooxdoo.ui.form.XComboBox
+  			, 'check' : qooxdoo.ui.form.CheckBox
+  			, 'formlist' : qooxdoo.ui.form.FormList	
+  			, 'propertieslist' : qooxdoo.ui.form.PropertiesList
+  			, 'flag' : qooxdoo.ui.form.FlagBox
+  			, 'form' : qooxdoo.ui.form.Form
+  			, 'radio' : qooxdoo.ui.form.RadioBox
+  			, 'groupbox' : qooxdoo.ui.form.GroupBox
   		}
   		
   		/**

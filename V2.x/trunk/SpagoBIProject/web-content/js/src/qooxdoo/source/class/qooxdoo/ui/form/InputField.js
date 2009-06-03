@@ -19,8 +19,6 @@ qx.Class.define("qooxdoo.ui.form.InputField",
 				top: 0,
         		left: 10,
         		maxLength:100,        		
-        		width: 200,
-        		height: 20,
         		labelwidth: 100,
         		mandatory: false,
         		'readOnly': false
@@ -95,16 +93,18 @@ qx.Class.define("qooxdoo.ui.form.InputField",
   		// private methods
   		, _createLabel : function( config ) {
   			
-  			var defultConfig = {
+  			var defaultConfig = {
         		text: '',
         		top : 0,
         		left : 10,
+        		width: 200,
+        		height: 20,
         		labelwidth: 100     		
         	};
-  			config = qooxdoo.commons.CoreUtils.apply(defultConfig, config);
+  			config = qooxdoo.commons.CoreUtils.apply(defaultConfig, config);
   			
         	this._label = new qx.ui.basic.Label();
-        	this._label.set({content: config.text, width: config.labelwidth, height: config.height});        	
+        	this._label.set({content: config.text, width: config.labelwidth, height: config.height, left : config.left});        	
 
         }
   		

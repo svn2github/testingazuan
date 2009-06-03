@@ -1,4 +1,4 @@
-qx.Class.define("qooxdoo.ui.form.TextField",
+qx.Class.define("qooxdoo.ui.form.FlagBox",
 {
   	extend : qooxdoo.ui.form.InputField,
 
@@ -23,26 +23,27 @@ qx.Class.define("qooxdoo.ui.form.TextField",
   		}
   		
   		, _createField: function(config) {
+  		
   			var defaultConfig = {
-  	        		top: 0,
-  	        		left: 0,
-  	        		maxLength:100,    		
-  	        		width: 200,
-        			height: 20,
-  	        		value: '',
-  	        		'readOnly': false
+  	        	checked: false,
+        		top: 0,
+        		left: 0,
+        		listeners: []
   	        };
   			config = qooxdoo.commons.CoreUtils.apply(defaultConfig, config);
   			 
-  	        this._field = new qx.ui.form.TextField();
+  	        this._field = new qx.ui.form.CheckBox();
   	        this._field.set({
-  	        	width:config.width
-  	        	, height:config.height
-	        	, left: config.left + 10
-  	        	, value:config.value
-  	        	, maxLength:config.maxLength
-  	        	, readOnly:config.readOnly 
+  	        	 checked: config.checked
   	        });
+  	        
+  	        for(var i=0; i< config.listeners.length; i++) {
+            	if(config.listeners[i].scope) {
+            		this._field.addListener(config.listeners[i].event, config.listeners[i].handler, config.listeners[i].scope); 
+            	} else {
+            		this._field.addListener(config.listeners[i].event, config.listeners[i].handler); 
+            	}
+            }
   	            					
   		}
   	}

@@ -1,13 +1,45 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 4.1.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_4_1_0.dtd">
 
 <liferay-portlet-app>
-	<portlet>
-		<portlet-name>SBISettings</portlet-name>
+<portlet>
+		<portlet-name>SBIBehavioralModels</portlet-name>
 		<instanceable>true</instanceable>
 	</portlet>
 	<portlet>
-		<portlet-name>SBIAdministrationContext</portlet-name>
+		<portlet-name>SBIAdminDistributionList</portlet-name>
+		<instanceable>true</instanceable>
+	</portlet>
+	<portlet>
+		<portlet-name>SBIDistributionList</portlet-name>
+		<instanceable>true</instanceable>
+	</portlet>
+	<portlet>
+		<portlet-name>SBIAnaliticalModels</portlet-name>
+		<instanceable>true</instanceable>
+	</portlet>
+	<portlet>
+		<portlet-name>SBICatalolgues</portlet-name>
+		<instanceable>true</instanceable>
+	</portlet>
+	<portlet>
+		<portlet-name>SbiTools</portlet-name>
+		<instanceable>true</instanceable>
+	</portlet>
+	<portlet>
+		<portlet-name>SbiProfileAttributes</portlet-name>
+		<instanceable>true</instanceable>
+	</portlet>
+	<portlet>
+		<portlet-name>SbiEvents</portlet-name>
+		<instanceable>true</instanceable>
+	</portlet>
+	<portlet>
+		<portlet-name>SbiResources</portlet-name>
+		<instanceable>true</instanceable>
+	</portlet>
+	<portlet>
+		<portlet-name>SbiWorkspace</portlet-name>
 		<instanceable>true</instanceable>
 	</portlet>
 	<portlet>
@@ -15,46 +47,11 @@
 		<instanceable>true</instanceable>
 	</portlet>
 	<portlet>
-		<portlet-name>SBIDevelopmentContext</portlet-name>
-		<instanceable>true</instanceable>
-	</portlet>
-
-	<portlet>
-		<portlet-name>EventsMonitor</portlet-name>
+		<portlet-name>SbiHotLink</portlet-name>
 		<instanceable>true</instanceable>
 	</portlet>
 	<portlet>
-		<portlet-name>SBIWorkflowTaskList</portlet-name>
+		<portlet-name>KPIConfiguration</portlet-name>
 		<instanceable>true</instanceable>
 	</portlet>
-	<portlet>
-		<portlet-name>SbiExecutionWorkspace</portlet-name>
-		<instanceable>true</instanceable>
-	</portlet>	
-	<portlet>
-		<portlet-name>SBIMapCatalolgue</portlet-name>
-		<instanceable>true</instanceable>
-	</portlet>	  
-  			
-					
-	<role-mapper>
-		<role-name>administrator</role-name>
-		<role-link>Administrator</role-link>
-	</role-mapper>
-	<role-mapper>
-		<role-name>guest</role-name>
-		<role-link>Guest</role-link>
-	</role-mapper>
-	<role-mapper>
-		<role-name>power-user</role-name>
-		<role-link>Power User</role-link>
-	</role-mapper>
-	<role-mapper>
-		<role-name>user</role-name>
-		<role-link>User</role-link>
-	</role-mapper>
-	<role-mapper>
-		<role-name>/spagobi/admin</role-name>
-		<role-link>/spagobi/admin</role-link>
-	</role-mapper>	
 </liferay-portlet-app>

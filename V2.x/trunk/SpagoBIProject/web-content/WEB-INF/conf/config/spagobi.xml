@@ -86,6 +86,37 @@
 	 </SECURITY>
  -->
 
+<!-- Liferay security Provider  
+
+     <SECURITY>
+        <PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.LiferayPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
+        <PORTAL-SECURITY-CLASS className="it.eng.spagobi.security.LiferaySecurityInfoProviderImpl">
+	      <CONFIG />
+		</PORTAL-SECURITY-CLASS>
+        <USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.LiferaySecurityServiceSupplierImpl">
+        </USER-PROFILE-FACTORY-CLASS>
+        <ROLE-NAME-PATTERN-FILTER>/spagobi/.*</ROLE-NAME-PATTERN-FILTER>
+		<ROLE-TYPE-PATTERNS>
+                	<ADMIN-PATTERN>/spagobi/admin</ADMIN-PATTERN>
+                	<DEV_ROLE-PATTERN>/spagobi/dev</DEV_ROLE-PATTERN>
+                	<TEST_ROLE-PATTERN>/spagobi/test</TEST_ROLE-PATTERN>
+                	<MODEL_ADMIN-PATTERN>/spagobi/modeladmin</MODEL_ADMIN-PATTERN>
+        </ROLE-TYPE-PATTERNS>
+	    <PROFILE_ATTRIBUTES>
+		    <ATTRIBUTE name="NAME" default="" source="NAME" />
+		    <ATTRIBUTE name="SURNAME" default="" source="SURNAME" />
+		    <ATTRIBUTE name="USER_ID" default="" source="USER_ID" />
+		    <ATTRIBUTE name="E_MAIL" default="" source="E_MAIL" />
+	    </PROFILE_ATTRIBUTES>
+	    <ROLES>
+	    	<ROLE name="/spagobi/admin" desc="/spagobi/admin" />
+	    	<ROLE name="/spagobi/dev" desc="/spagobi/dev" />
+	    	<ROLE name="/spagobi/test" desc="/spagobi/test" />
+	    	<ROLE name="/spagobi/modeladmin" desc="/spagobi/modeladmin" />
+	    	<ROLE name="/spagobi/user" desc="/spagobi/user" />
+	    </ROLES>
+      </SECURITY>
+ -->
          
     <!-- ********************* END SECURITY CONFIGURATION ************************** --> 
 

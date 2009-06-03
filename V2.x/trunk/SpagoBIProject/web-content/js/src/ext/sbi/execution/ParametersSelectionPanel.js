@@ -164,7 +164,18 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		this.doLayout();
 	}
 	
-	, getFormState: function() {
+	, getFormState: function(asObject) {
+		var r;
+		if(asObject === undefined || asObject === true) {
+			r = this.getFormStateAsObject();
+		} else {
+			r = this.getFormStateAsString();
+		}
+		
+		return r;
+	}
+	
+	, getFormStateAsObject: function() {
 		var state;
 		
 		var form = this.parametersForm.getForm(); 
@@ -173,13 +184,52 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		for(var i = 0;  i < form.items.getCount(); i++) {
 			var item = form.items.get(i);
 			var value = item.getValue();
-			if(value instanceof Date) {
-				value = value.toString();
-			} 
 			state[item.getName()] = value;
 		}
 		
 		return state;
+	}
+	
+	, getFormStateAsString: function() {
+		var formState = this.getFormStateAsObject();
+		var str = '{';
+		for (p in formState) {
+			var obj = formState[p];
+			if (typeof obj == 'object') {
+				str += p + ': ['
+				for (count in obj) {
+					var temp = obj[count];
+					if (typeof temp == 'function') {
+						continue;
+					}
+					if (typeof obj == 'string') {
+						// the String.escape function escapes the passed string for ' and \
+						temp = String.escape(temp);
+						str += '\'' + temp + '\', ';
+					} else {
+						str += temp + ', ';
+					}
+				}
+				// removing last ', ' string
+				if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
+					str = str.substring(0, str.length - 3);
+				}
+				str += '], ';
+			} else if (typeof obj == 'string') {
+				// the String.escape function escapes the passed string for ' and \
+				obj = String.escape(obj);
+				str += p + ': \'' +  obj + '\', ';
+			} else {
+				// case number or boolean
+				str += p + ': ' +  obj + ', ';
+			}
+		}
+		if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
+			str = str.substring(0, str.length - 3);
+		}
+		str += '}';
+		
+		return str;
 	}
 	
 	, clear: function() {
@@ -243,8 +293,15 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 				, MODE: 'complete'
 			}, executionInstance);
 			
+			var store = this.createStore();
+			store.on('beforeload', function(store, o) {
+				var p = this.getFormState(false);
+				o.params.PARAMETERS = p;
+				return true;
+			}, this);
+			
 			field = new Sbi.widgets.LookupField(Ext.apply(baseConfig, {
-				  store: this.createStore()
+				  store: store
 					, params: params
 					, singleSelect: (p.selectionType === 'LIST')
 			}));
@@ -264,9 +321,31 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	}
 	
 	, createStore: function() {
-		return new Ext.data.JsonStore({
+		var store;
+		
+		store = new Ext.data.JsonStore({
 			url: this.services['getParameterValueForExecutionService']
 		});
+		
+		store.on('loadexception', function(store, options, response, e) {
+			var msg = '';
+			var content = Ext.util.JSON.decode( response.responseText );
+  			if(content !== undefined) {
+  				//msg += 'Service name: ' + content.serviceName + '\n';
+  				//msg += 'Error description: ' + content.message + '\n';
+  				//msg += 'Error cause: ' + content.cause + '\n';
+  				//msg += 'Stacktrace: ' + Ext.util.Format.ellipsis(content.stacktrace, 200);
+  				msg += content.serviceName + ' : ' + content.message;
+  			} else {
+  				msg += 'Server response is empty';
+  			}
+			
+			
+			Sbi.exception.ExceptionHandler.showErrorMessage(msg, response.statusText);
+		});
+		
+		return store;
+		
 	}
 	
 });

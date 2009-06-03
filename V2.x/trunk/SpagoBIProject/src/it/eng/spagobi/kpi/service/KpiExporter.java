@@ -1,18 +1,12 @@
 package it.eng.spagobi.kpi.service;
 
-import it.businesslogic.ireport.IReportTemplate;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.engines.chart.service.GetPngAction;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.kpi.utils.BasicTemplateBuilder;
-import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
-import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 
 import java.io.BufferedInputStream;
@@ -21,10 +15,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringBufferInputStream;
-import java.sql.Connection;
 import java.util.List;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;

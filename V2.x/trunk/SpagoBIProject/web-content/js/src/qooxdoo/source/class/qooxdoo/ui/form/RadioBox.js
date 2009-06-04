@@ -7,6 +7,7 @@ qx.Class.define("qooxdoo.ui.form.RadioBox",
      CONSTRUCTOR
   	*****************************************************************************
   	*/
+ 	/*Input Filed of type RadioBox A O  B O  C O*/
 
 	construct : function(config) {
     	this.base(arguments, config);

@@ -7,7 +7,8 @@ qx.Class.define("qooxdoo.ui.form.TextArea",
      CONSTRUCTOR
   	*****************************************************************************
   	*/
-
+	/*Input Filed of type Text Area  */
+	
 	construct : function(config) {
     	this.base(arguments, config);
   	},

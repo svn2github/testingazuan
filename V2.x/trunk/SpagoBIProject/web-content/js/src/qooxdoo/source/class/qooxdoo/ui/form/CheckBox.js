@@ -7,6 +7,7 @@ qx.Class.define("qooxdoo.ui.form.CheckBox",
      CONSTRUCTOR
   	*****************************************************************************
   	*/
+  	/*Input Filed of type CheckBox A[X] B[] C[X] D[] E[] */
 
 	construct : function(config) {
     	this.base(arguments, config);
@@ -25,7 +26,7 @@ qx.Class.define("qooxdoo.ui.form.CheckBox",
 		 * @return Array of selected checkbox labels 
 		 */
 		getData: function() {
-			
+			alert('getDataCheckBox');
 			var temp = [];
 			for(i=0,j=0; i<this.atom.length; i++){
 				if(this.atom[i].getUserData('field').getChecked() == true ){
@@ -44,7 +45,7 @@ qx.Class.define("qooxdoo.ui.form.CheckBox",
 		 * @param value Array of strings containing the label of checkboxes which need to be set.
 		 */
 		setData: function(data) {
-			
+			alert('setDataCheckBox');
 			for(j=0; j<this.atom.length; j++){
 				this.atom[j].getUserData('field').setChecked(false);
 			}	

@@ -7,6 +7,7 @@ qx.Class.define("qooxdoo.ui.form.FlagBox",
      CONSTRUCTOR
   	*****************************************************************************
   	*/
+  	/*Input Filed of type FlagBox: only one checkBox A?[X] */
 
 	construct : function(config) {
     	this.base(arguments, config);
@@ -15,12 +16,12 @@ qx.Class.define("qooxdoo.ui.form.FlagBox",
   	members :
   	{
   		getData: function() {
-  			alert('getData'+this._field.isChecked());
+  		
   			return this._field.isChecked();		
   		}
   	
   		, setData: function(data) {
-  			alert('setData '+data);
+  			
   			this._field.setChecked(data);
   		}
   		

@@ -7,6 +7,8 @@ qx.Class.define("qooxdoo.ui.form.PropertiesList",
      CONSTRUCTOR
   	*****************************************************************************
   	*/
+  	/*Input Filed of type Poperties List: Table with 3 columns where the first 2 are input values, while the third one is
+  	a clickable icon to add or delete the current table line  */
 
 	construct : function(config) {
     	this.base(arguments, config);

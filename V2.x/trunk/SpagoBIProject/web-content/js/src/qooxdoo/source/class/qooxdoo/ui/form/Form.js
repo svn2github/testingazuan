@@ -119,9 +119,9 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 		getData: function() {
 			for(prop in this.dataMappings) {
 					
-				if(this.dataObject[prop] != undefined) {
+				
 					this.dataObject[prop] = this.getInputFieldValue(prop);
-				}
+				
 			}
 			return this.dataObject;
 		},
@@ -290,12 +290,16 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 				inputField = componentRegistry.createComponent(config, 'flag');
   				    
   			} else if(config.type === 'form') {
-  				inputField = qooxdoo.commons.WidgetUtils.createInputForm(config);    
-  				inputField.setUserData('type', 'form');
+  				//inputField = qooxdoo.commons.WidgetUtils.createInputForm(config);    
+  				//inputField.setUserData('type', 'form');
+  				var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				inputField = componentRegistry.createComponent(config, 'form');
   				    
   			} else if(config.type === 'formList') {
-  				inputField = qooxdoo.commons.WidgetUtils.createInputFormList(config);    
-  				inputField.setUserData('type', 'formList');
+  				//inputField = qooxdoo.commons.WidgetUtils.createInputFormList(config);    
+  				//inputField.setUserData('type', 'formList');
+  				var componentRegistry = qooxdoo.commons.ComponentRegistry.getInstance();				
+				inputField = componentRegistry.createComponent(config, 'formList');
   				    
   			} else if(config.type === 'textarea') {
   				//inputField = qooxdoo.commons.WidgetUtils.createInputTextArea(config);    

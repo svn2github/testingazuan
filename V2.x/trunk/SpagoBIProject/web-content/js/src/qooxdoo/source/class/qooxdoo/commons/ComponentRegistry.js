@@ -22,10 +22,10 @@ qx.Class.define("qooxdoo.commons.ComponentRegistry",
   			, 'textarea' : qooxdoo.ui.form.TextArea
   			, 'combo' : qooxdoo.ui.form.XComboBox
   			, 'check' : qooxdoo.ui.form.CheckBox
-  			, 'formList' : qooxdoo.ui.form.FormList	
+  			, 'formList' : qooxdoo.ui.form.FormListInputField	
   			, 'propertiesList' : qooxdoo.ui.form.PropertiesList
   			, 'flag' : qooxdoo.ui.form.FlagBox
-  			, 'form' : qooxdoo.ui.form.Form
+  			, 'form' : qooxdoo.ui.form.FormInputField
   			, 'radio' : qooxdoo.ui.form.RadioBox
   			, 'groupbox' : qooxdoo.ui.form.GroupBox
   		}

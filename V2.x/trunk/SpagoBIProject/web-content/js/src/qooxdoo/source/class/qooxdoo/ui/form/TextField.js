@@ -7,6 +7,7 @@ qx.Class.define("qooxdoo.ui.form.TextField",
      CONSTRUCTOR
   	*****************************************************************************
   	*/
+  	/*Input Filed of type Text  */
 
 	construct : function(config) {
     	this.base(arguments, config);

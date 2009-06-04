@@ -128,7 +128,7 @@ qx.Class.define("qooxdoo.ui.custom.LOVDetailsForm", {
 				        		height: 50	
 			        		}
 			        	]
-			        	//,	     visible: false  
+			     ,  invisibleLabel: true  	//,	     visible: false  
         	}, {
         		type: 'combo',
         		dataIndex: 'language',
@@ -149,7 +149,8 @@ qx.Class.define("qooxdoo.ui.custom.LOVDetailsForm", {
 				        		height: 50
         					}
         				],
-			     visible: false 
+			     visible: false ,
+			     invisibleLabel: true  
         	}, {
         		type: 'propertiesList',
         		dataIndex: 'fixedlov',
@@ -217,7 +218,8 @@ qx.Class.define("qooxdoo.ui.custom.LOVDetailsForm", {
 				        		mandatory: true
 				        	}
 			        	],
-			     visible: false 	
+			     visible: true, 	
+			     invisibleLabel: true
         	}
         ]);
 	},

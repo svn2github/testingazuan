@@ -156,7 +156,8 @@ qx.Class.define("qooxdoo.ui.custom.DocumentConfigurationForm", {
         	, {
         		type: 'formList',
         		dataIndex: 'features',
-        		formList: qooxdoo.ui.custom.ConfigurationSubform 
+        		formList: qooxdoo.ui.custom.ConfigurationSubform ,
+        		invisibleLabel: true
         	}
         ]);
 		

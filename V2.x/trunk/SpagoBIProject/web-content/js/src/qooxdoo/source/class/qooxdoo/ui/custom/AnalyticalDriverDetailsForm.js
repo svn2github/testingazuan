@@ -82,7 +82,8 @@ qx.Class.define("qooxdoo.ui.custom.AnalyticalDriverDetailsForm", {
         	}, {
         		type: 'formList',
         		dataIndex: 'features',
-        		formList: qooxdoo.ui.custom.UseModeSubForm 
+        		formList: qooxdoo.ui.custom.UseModeSubForm ,
+        		invisibleLabel: true
         	}
         ]);
         

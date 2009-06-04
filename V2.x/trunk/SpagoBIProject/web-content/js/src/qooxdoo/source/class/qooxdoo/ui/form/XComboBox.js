@@ -7,6 +7,7 @@ qx.Class.define("qooxdoo.ui.form.XComboBox",
      CONSTRUCTOR
   	*****************************************************************************
   	*/
+  	/*Input Filed of type ComboBox */
 
 	construct : function(config) {
     	this.base(arguments, config);

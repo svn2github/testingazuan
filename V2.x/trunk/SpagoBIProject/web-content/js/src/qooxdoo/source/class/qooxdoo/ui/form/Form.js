@@ -154,7 +154,11 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 			
 			if(!this.getInputField(dataIndex)) return null;
 			
+			
+					
+				
 			if(this.getInputField(dataIndex).isInputField) {
+				
 				return this.getInputField(dataIndex).getData();
 			}
 			
@@ -162,22 +166,30 @@ qx.Class.define("qooxdoo.ui.form.Form", {
 			var object = container.getChildren()[0];
 			
 			if(this.getInputField(dataIndex).getUserData('type') === 'text') {
+				alert('flag');	
 				value = object.getValue();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'combo') {
+				alert('combo');	
 				value = object.getValue();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'flag') {
+				alert('flag');	
 				value = object.isChecked();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'form') {	
+				
 				value = object.getData();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'formList') {	
 				value = object.getData();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'textarea') {	
+				alert('textarea');	
 				value = object.getValue();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'check') {	
+				alert('check');	
 				value = object.getData();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'propertiesList') {	
+				alert('propertiesList');	
 				value = object.getData();				
 			} else if(this.getInputField(dataIndex).getUserData('type') === 'radio') {
+				alert('radio');	
 				var radioButton = container.getChildren();
 				for(i=0; i<radioButton.length; i++){
 					if(radioButton[i].getChecked() == true){

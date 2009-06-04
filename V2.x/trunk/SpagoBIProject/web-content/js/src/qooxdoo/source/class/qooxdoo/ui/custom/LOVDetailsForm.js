@@ -158,7 +158,8 @@ qx.Class.define("qooxdoo.ui.custom.LOVDetailsForm", {
         		nameColumnLabel: 'Value' ,
         		valueColumnLabel: 'Description',	
         		cellNameRendered: 'text',
-        		cellValueRendered: 'text'
+        		cellValueRendered: 'text',
+        		invisibleLabel: true
         		
         	},  /*{
         		type: 'form',

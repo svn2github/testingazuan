@@ -15,13 +15,13 @@ qx.Class.define("qooxdoo.ui.form.FlagBox",
   	members :
   	{
   		getData: function() {
-  			alert('getData');
-  			return this._field.checked;		
+  			alert('getData'+this._field.isChecked());
+  			return this._field.isChecked();		
   		}
   	
   		, setData: function(data) {
-  			alert('setData');
-  			this._field.checked = data;
+  			alert('setData '+data);
+  			this._field.setChecked(data);
   		}
   		
   		, _createField: function(config) {

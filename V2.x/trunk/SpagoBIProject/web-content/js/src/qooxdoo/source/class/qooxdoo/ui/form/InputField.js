@@ -8,6 +8,8 @@ qx.Class.define("qooxdoo.ui.form.InputField",
      CONSTRUCTOR
   	*****************************************************************************
   	*/
+  	/* InputField is a class that is extended by all the possible input fields (textFields, comboboxes, flagboxes ...)
+  	   It constructs a label container and a field container. The label is constructed here, while the field is constructed in the class that extends InputField */
 
 	construct : function(config) {
 		var labelContainer;
@@ -27,22 +29,25 @@ qx.Class.define("qooxdoo.ui.form.InputField",
 		config = qooxdoo.commons.CoreUtils.apply(defaultConfig, config);
 		
 		
-		this._createLabel(config);
-		this._createField(config);
-		
 		//alert(config.toSource());
 		
-		
-    	// add label to a container in order to set left and top
-    	labelContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
-    	labelContainer.add(this._label, {top: config.top, left: config.left});
-    	    	 
+		if(config.invisibleLabel){
+				
+		}
+		else{	// add label to a container in order to set left and top
+				this._createLabel(config);
+				labelContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
+    			labelContainer.add(this._label, {top: config.top, left: config.left + 10});
+    			this.add(labelContainer);
+		}
+
+    	this._createField(config);  	 
     	fieldContainer = new qx.ui.container.Composite(new qx.ui.layout.Basic);
     	fieldContainer.add(this._field, {top: config.top, left: config.left + 10});
+  	
+    	this.add(fieldContainer); 
     	
-    	    	
-    	this.add(this._label);
-    	this.add(this._field); 
+    	
     	
     	if(config.mandatory) {
     		var markConfig = {
@@ -58,9 +63,6 @@ qx.Class.define("qooxdoo.ui.form.InputField",
     		this.add(markContainer);
     	}
     	
-    	//this.setUserData('label', labelField);
-    	//this.setUserData('field', textField);
-    	
     	if(config.visible != undefined){
 			if(config.visible){
 				this.setVisibility("visible");
@@ -69,6 +71,8 @@ qx.Class.define("qooxdoo.ui.form.InputField",
 				this.setVisibility("excluded");
 			}
     	}
+    	
+    	
   	},
 
   	members :

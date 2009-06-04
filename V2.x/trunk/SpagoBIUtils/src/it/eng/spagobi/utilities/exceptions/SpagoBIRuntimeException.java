@@ -33,6 +33,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
 package it.eng.spagobi.utilities.exceptions;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,6 +94,12 @@ public class SpagoBIRuntimeException extends RuntimeException {
 		
 		return rootCause;
 	}
+    
+    public String getStackTraceDump() {
+    	StringWriter buffer = new StringWriter();
+    	this.printStackTrace(new PrintWriter(buffer));
+    	return buffer.toString();
+    }
 
 	public String getDescription() {
 		return description;

@@ -57,6 +57,10 @@ public class JSONFailure extends JSONResponse {
 		JSONObject content = new JSONObject();
 		
 		try {
+			content.put("serviceName", exception.getServiceName());
+			content.put("message", exception.getMessage());
+			content.put("localizedMessage", exception.getLocalizedMessage());
+			content.put("stacktrace", exception.getStackTraceDump());			
 			content.put("cause", exception.getCause());			
 		} catch (JSONException e) {
 			e.printStackTrace();

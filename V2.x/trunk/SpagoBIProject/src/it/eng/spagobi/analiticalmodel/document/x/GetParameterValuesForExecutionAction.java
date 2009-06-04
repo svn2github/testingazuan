@@ -78,6 +78,7 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 	// request parameters
 	public static String PARAMETER_ID = "PARAMETER_ID";
 	public static String SELECTED_PARAMETER_VALUES = "PARAMETERS";
+	public static String FILTERS = "FILTERS";	
 	public static String MODE = "MODE";
 	public static String MODE_SIMPLE = "simple";
 	public static String MODE_COMPLETE = "complete";
@@ -93,6 +94,7 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 		
 		String biparameterId;
 		JSONObject selectedParameterValuesJSON;
+		JSONObject filtersJSON = null;
 		Map selectedParameterValues;
 		String mode;
 		Integer start;
@@ -113,10 +115,14 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 		
 			biparameterId = getAttributeAsString( PARAMETER_ID );
 			selectedParameterValuesJSON = getAttributeAsJSONObject( SELECTED_PARAMETER_VALUES );
+			if(this.requestContainsAttribute( FILTERS ) ) {
+				filtersJSON = getAttributeAsJSONObject( FILTERS );
+			}
 			
 			mode = getAttributeAsString( MODE );
 			start = getAttributeAsInteger( START );
 			limit = getAttributeAsInteger( LIMIT );
+			
 			logger.debug("Parameter [" + PARAMETER_ID + "] is equals to [" + biparameterId + "]");
 			logger.debug("Parameter [" + MODE + "] is equals to [" + mode + "]");
 			logger.debug("Parameter [" + START + "] is equals to [" + start + "]");
@@ -199,6 +205,21 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 			
 			Assert.assertNotNull(lovResult, "Impossible to get parameter's values" );
 			Assert.assertNotNull(lovProvDet, "Impossible to get parameter's meta" );
+			
+			
+			try {
+				if(filtersJSON != null) {
+					String valuefilter = (String) filtersJSON.get(SpagoBIConstants.VALUE_FILTER);
+					String columnfilter = (String) filtersJSON.get(SpagoBIConstants.COLUMN_FILTER);
+					String typeFilter = (String) filtersJSON.get(SpagoBIConstants.TYPE_FILTER);
+					String typeValueFilter = (String) filtersJSON.get(SpagoBIConstants.TYPE_VALUE_FILTER);
+					rows = filterList(rows, valuefilter, typeValueFilter, columnfilter, typeFilter);
+				}
+			} catch (JSONException e) {
+				throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to read filter's configuration", e);
+			}
+			
+
 			
 			
 			

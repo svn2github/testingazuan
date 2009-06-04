@@ -71,9 +71,21 @@ Sbi.execution.DocumentViewPanel = function(config) {
     	, handler : this.refreshExecution
 	});
 	
+	this.sendMailButton =  new Ext.Toolbar.Button({
+		iconCls: 'icon-sendMail' 
+     	, scope: this
+    	, handler : this.sendMail
+	});
+	
+	this.saveIntoPersonalFolderButton =  new Ext.Toolbar.Button({
+		iconCls: 'icon-saveIntoPersonalFolder' 
+     	, scope: this
+    	, handler : this.saveIntoPersonalFolder
+	});
+	
     this.tb = new Ext.Toolbar({
     	cls: 'execution-toolbar'
-        , items: ['->', this.refreshButton]
+        , items: ['->', this.refreshButton, this.sendMailButton, this.saveIntoPersonalFolderButton]
     });
 	
     this.toolbarPanel = new Ext.Panel({
@@ -99,7 +111,9 @@ Sbi.execution.DocumentViewPanel = function(config) {
 	// constructor
     Sbi.execution.DocumentViewPanel.superclass.constructor.call(this, c);
 	
-    this.addEvents('loadurlfailure');	
+    this.addEvents('loadurlfailure');
+    this.addEvents('sendMailButtonClicked');
+    this.addEvents('saveIntoPersonalFolderButtonClicked');
 };
 
 Ext.extend(Sbi.execution.DocumentViewPanel, Ext.Panel, {
@@ -142,5 +156,13 @@ Ext.extend(Sbi.execution.DocumentViewPanel, Ext.Panel, {
 
 	, refreshExecution: function() {
 		this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
+	}
+	
+	, sendMail: function() {
+		this.fireEvent('sendMailButtonClicked');
+	}
+	
+	, saveIntoPersonalFolder: function() {
+		this.fireEvent('saveIntoPersonalFolderButtonClicked');
 	}
 });

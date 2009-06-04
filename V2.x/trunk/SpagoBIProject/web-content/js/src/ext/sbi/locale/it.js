@@ -78,3 +78,6 @@ Sbi.locale.ln['sbi.execution.subobjects.deleteSelected'] = 'Elimina';
 Sbi.locale.ln['sbi.execution.subobjects.deleteSelectedTooltip'] = 'Elimina le viste customizzate selezionate';
 Sbi.locale.ln['sbi.execution.subobjects.execute'] = 'Esegui';
 Sbi.locale.ln['sbi.execution.subobjects.noSubObjectsSelected'] = 'Nessuna vista customizzata selezionata';
+
+// Toolbar
+Sbi.locale.ln['sbi.execution.sendTo'] = 'Invia a';

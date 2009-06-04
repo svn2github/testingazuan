@@ -232,6 +232,53 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		return str;
 	}
 	
+	// this method is used in order to invoke the old it.eng.spagobi.analiticalmodel.execution.service.ExecuteAndSendAction
+	// Problems: parameters are sent in a plain string, not as a JSON object, date parameter management is missing,
+	// the separator between values is ';'
+	// This method should be removed when rewriting it.eng.spagobi.analiticalmodel.execution.service.ExecuteAndSendAction
+	, getFormStateAsStringOldSyntax: function() {
+		var formState = this.getFormStateAsObject();
+		var str = '';
+		for (p in formState) {
+			var obj = formState[p];
+			if (typeof obj == 'object') {
+				str += p + '='
+				for (count in obj) {
+					var temp = obj[count];
+					if (typeof temp == 'function') {
+						continue;
+					}
+					if (typeof obj == 'string') {
+						// the String.escape function escapes the passed string for ' and \
+						temp = String.escape(temp);
+						str += temp + ';'; // using ';' as separator between values (TODO: change separator)
+					} else {
+						str += temp + ';'; // using ';' as separator between values (TODO: change separator)
+					}
+				}
+				// removing last ';' string
+				if (str.length > 1 && str.substring(str.length - 2, str.length - 1) == ';') {
+					str = str.substring(0, str.length - 2);
+				}
+				str += '&';
+			} else if (typeof obj == 'string') {
+				// the String.escape function escapes the passed string for ' and \
+				obj = String.escape(obj);
+				str += p + '=' +  obj + '&';
+			} else {
+				// case number or boolean
+				str += p + '=' +  obj + '&';
+			}
+		}
+		if (str.length > 1 && str.substring(str.length - 2, str.length - 1) == '&') {
+			str = str.substring(0, str.length - 2);
+		}
+		alert(str);
+		
+		return str;
+	}
+	
+	
 	, clear: function() {
 		
 	}

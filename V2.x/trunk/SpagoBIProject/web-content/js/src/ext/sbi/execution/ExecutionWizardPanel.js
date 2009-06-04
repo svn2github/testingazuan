@@ -61,8 +61,15 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 		, baseParams: params
 	});
 	
+	this.services['showSendToForm'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SHOW_SEND_TO_FORM'
+		, baseParams: params
+	});
 	
-	
+	this.services['saveIntoPersonalFolder'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SAVE_PERSONAL_FOLDER'
+		, baseParams: params
+	});
 	
 	
 	this.subObjectsPanel = new Sbi.execution.SubObjectsPanel();
@@ -125,6 +132,8 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     this.roleSelectionPanel.addListener('onload', this.onRolesForExecutionLoaded, this);
     
     this.documentViewPanel.addListener('loadurlfailure', this.onLoadUrlFailure, this);
+    this.documentViewPanel.addListener('sendMailButtonClicked', this.onSendMailButtonClicked, this);
+    this.documentViewPanel.addListener('saveIntoPersonalFolderButtonClicked', this.onSaveIntoPersonalFolderButtonClicked, this);
     
     this.subObjectsPanel.addListener('onselected', this.onSubObjectSelected, this);
     
@@ -293,5 +302,18 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	, onSubObjectSelected: function (subObjectId) {
 		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
 		this.moveToPage(2); // go to execution page
+	}
+	
+	, onSendMailButtonClicked: function () {
+		var sendToIframeUrl = this.services['showSendToForm'] 
+		        + '&objlabel=' + this.executionInstance.OBJECT_LABEL
+		        + '&objid=' + this.executionInstance.OBJECT_ID
+				+ '&' + this.parametersSelectionPanel.getFormStateAsStringOldSyntax();
+		this.win_sendTo = new Sbi.execution.SendToWindow({'url': sendToIframeUrl});
+		this.win_sendTo.show();
+	}
+	
+	, onSaveIntoPersonalFolderButtonClicked: function () {
+		
 	}
 });

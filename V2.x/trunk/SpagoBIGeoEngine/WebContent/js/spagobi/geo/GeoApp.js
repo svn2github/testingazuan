@@ -168,7 +168,7 @@ Sbi.geo.app = function() {
         	 				   }]
       	 				}
                 //contentEl : 'docPanel'  
-              }, { // EAST REGION -----------------------------------------------------------
+              }, /*{ // EAST REGION -----------------------------------------------------------
               region: 'east',
               title: 'East Panel',
               collapsible: true,
@@ -193,7 +193,7 @@ Sbi.geo.app = function() {
               
               //items: [east]
               html: ''
-            }, 
+            }, */
             { // WEST REGION -----------------------------------------------------------
               region: 'west',
               //title: 'Control Panel',
@@ -212,7 +212,7 @@ Sbi.geo.app = function() {
                             
               items: [drillPanel]
               //html: ''
-            }, 
+            } /*, 
             { // WEST REGION -----------------------------------------------------------
               region: 'south',
               title: 'Log',
@@ -245,7 +245,7 @@ Sbi.geo.app = function() {
                             
               //items: [west]
               html: ''
-            }
+            } */
             ]
           });           
         }

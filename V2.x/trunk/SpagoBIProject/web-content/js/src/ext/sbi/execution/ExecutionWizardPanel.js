@@ -283,6 +283,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	
 	, onLoadUrlFailure: function ( errors ) {
 		this.moveToPage(1); // go to parameters page
+		
 	}
 	
 	, loadSubObjects: function() {

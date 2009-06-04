@@ -202,6 +202,8 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	        ]
 	    });
 		
+		var filteringToolbar = new Sbi.widgets.FilteringToolbar({store: this.store});
+		
 		this.sm = new Ext.grid.CheckboxSelectionModel( {singleSelect: this.singleSelect } );
 		this.sm.on('rowselect', this.onSelect, this);
 		this.sm.on('rowdeselect', this.onDeselect, this);
@@ -219,7 +221,8 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
    	        	, enableRowBody:true
    	        	, showPreview:true
    	     	}
-		
+			
+			, tbar: filteringToolbar
 	        , bbar: pagingBar
 		});
 		

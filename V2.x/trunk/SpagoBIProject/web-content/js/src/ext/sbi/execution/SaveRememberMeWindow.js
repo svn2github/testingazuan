@@ -46,35 +46,48 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.SendToWindow = function(config) {
+Sbi.execution.SaveRememberMeWindow = function(config) {
 	
-	this.sendToFormIframeUrl = config.url;
+	this.rememberMeName = new Ext.form.TextField({
+		id: 'nameRM',
+		name: 'nameRM',
+		allowBlank: false, 
+		inputType: 'text',
+		maxLength: 50,
+		width: 250,
+		fieldLabel: LN('sbi.rememberme.name') 
+	});
+	
+	this.rememberMeDescr = new Ext.form.HtmlEditor({
+        id:'descrRM',
+        width: 550,
+        height: 150,
+		fieldLabel: LN('sbi.rememberme.descr')  
+    });
+	
+    Ext.form.Field.prototype.msgTarget = 'side';
+    this.saveRememberMeForm = new Ext.form.FormPanel({
+        frame:true,
+        bodyStyle:'padding:5px 5px 0',
+        items: [this.rememberMeName, this.rememberMeDescr],
+        buttons:[{text: LN('sbi.rememberme.save'), handler: this.saveRememberMe}]
+    });
+	
 	this.buddy = undefined;
 	
 	var c = Ext.apply({}, config, {
-		id:'win_sendTo',
-		bodyCfg: {
-			tag:'div',
-			cls:'x-panel-body',
-			children:[{
-				tag:'iframe',
-  				src: this.sendToFormIframeUrl,
-  				frameBorder:0,
-  				width:'100%',
-  				height:'100%',
-  				style: {overflow:'auto'}  
-				}]
-		},
+		id:'popup_saveRM',
 		layout:'fit',
-		width:650,
-		height:400,
+		width:700,
+		height:300,
 		//closeAction:'hide',
 		plain: true,
-		title: LN('sbi.execution.sendTo')
+		title: LN('sbi.execution.saveRememberMe'),
+		items: this.saveRememberMeForm
 	});   
 	
 	// constructor
-    Sbi.execution.SendToWindow.superclass.constructor.call(this, c);
+    Sbi.execution.SaveRememberMeWindow.superclass.constructor.call(this, c);
     
     if (this.buddy === undefined) {
     	this.buddy = new Sbi.commons.ComponentBuddy({
@@ -84,4 +97,14 @@ Sbi.execution.SendToWindow = function(config) {
     
 };
 
-Ext.extend(Sbi.execution.SendToWindow, Ext.Window, {});
+Ext.extend(Sbi.execution.SaveRememberMeWindow, Ext.Window, {
+	
+	rememberMeName: null
+	, rememberMeDescr: null
+	, saveRememberMeForm: null
+	
+	, saveRememberMe: function () {
+		alert('saveRememberMefunction');
+	}
+	
+});

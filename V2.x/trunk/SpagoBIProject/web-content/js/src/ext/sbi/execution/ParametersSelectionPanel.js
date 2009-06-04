@@ -273,7 +273,6 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		if (str.length > 1 && str.substring(str.length - 2, str.length - 1) == '&') {
 			str = str.substring(0, str.length - 2);
 		}
-		alert(str);
 		
 		return str;
 	}

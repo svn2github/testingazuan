@@ -71,7 +71,6 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 		, baseParams: params
 	});
 	
-	
 	this.subObjectsPanel = new Sbi.execution.SubObjectsPanel();
 	this.roleSelectionPanel = new Sbi.execution.RoleSelectionPanel();
 	this.parametersSelectionPanel =  new Sbi.execution.ParametersSelectionPanel();
@@ -134,6 +133,10 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     this.documentViewPanel.addListener('loadurlfailure', this.onLoadUrlFailure, this);
     this.documentViewPanel.addListener('sendMailButtonClicked', this.onSendMailButtonClicked, this);
     this.documentViewPanel.addListener('saveIntoPersonalFolderButtonClicked', this.onSaveIntoPersonalFolderButtonClicked, this);
+    this.documentViewPanel.addListener('saveRememberMeButtonClicked', this.onSaveRememberMeButtonClicked, this);
+    this.documentViewPanel.addListener('notesButtonClicked', this.onNotesButtonClicked, this);
+    this.documentViewPanel.addListener('metadataButtonClicked', this.onMetadataButtonClicked, this);
+    this.documentViewPanel.addListener('ratingButtonClicked', this.onRatingButtonClicked, this);
     
     this.subObjectsPanel.addListener('onselected', this.onSubObjectSelected, this);
     
@@ -352,5 +355,26 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	          scope: this,
 	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
 	     });
+	}
+	
+	
+	, onSaveRememberMeButtonClicked: function () {
+		this.win_saveRememberMe = new Sbi.execution.SaveRememberMeWindow({});
+		this.win_saveRememberMe.show();
+	}
+	
+	, onNotesButtonClicked: function () {
+		this.win_notes = new Sbi.execution.NotesWindow();
+		this.win_notes.show();
+	}
+	
+	, onMetadataButtonClicked: function () {
+		this.win_metadata = new Sbi.execution.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
+		this.win_metadata.show();
+	}
+	
+	, onRatingButtonClicked: function () {
+		this.win_rating = new Sbi.execution.RatingWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
+		this.win_rating.show();
 	}
 });

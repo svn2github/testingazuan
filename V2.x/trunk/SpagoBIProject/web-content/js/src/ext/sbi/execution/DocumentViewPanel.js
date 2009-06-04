@@ -83,9 +83,40 @@ Sbi.execution.DocumentViewPanel = function(config) {
     	, handler : this.saveIntoPersonalFolder
 	});
 	
+	this.saveRememberMeButton =  new Ext.Toolbar.Button({
+		iconCls: 'icon-saveRememberMe' 
+     	, scope: this
+    	, handler : this.saveRememberMe
+	});
+	
+	this.notesButton =  new Ext.Toolbar.Button({
+		iconCls: 'icon-notes' 
+     	, scope: this
+    	, handler : this.openNotesEditor
+	});
+	
+	this.metadataButton =  new Ext.Toolbar.Button({
+		iconCls: 'icon-metadata' 
+     	, scope: this
+    	, handler : this.showMetadata
+	});
+	
+	this.ratingButton =  new Ext.Toolbar.Button({
+		iconCls: 'icon-rating' 
+     	, scope: this
+    	, handler : this.showRating
+	});
+	
+	this.printButton =  new Ext.Toolbar.Button({
+		iconCls: 'icon-print' 
+     	, scope: this
+    	, handler : this.print
+	});
+	
     this.tb = new Ext.Toolbar({
     	cls: 'execution-toolbar'
-        , items: ['->', this.refreshButton, this.sendMailButton, this.saveIntoPersonalFolderButton]
+        , items: ['->', this.refreshButton, this.sendMailButton, this.saveIntoPersonalFolderButton, this.saveRememberMeButton, 
+                  this.notesButton, this.metadataButton, this.ratingButton, this.printButton]
     });
 	
     this.toolbarPanel = new Ext.Panel({
@@ -114,6 +145,11 @@ Sbi.execution.DocumentViewPanel = function(config) {
     this.addEvents('loadurlfailure');
     this.addEvents('sendMailButtonClicked');
     this.addEvents('saveIntoPersonalFolderButtonClicked');
+    this.addEvents('saveRememberMeButtonClicked');
+    this.addEvents('notesButtonClicked');
+    this.addEvents('metadataButtonClicked');
+    this.addEvents('ratingButtonClicked');
+    
 };
 
 Ext.extend(Sbi.execution.DocumentViewPanel, Ext.Panel, {
@@ -164,5 +200,25 @@ Ext.extend(Sbi.execution.DocumentViewPanel, Ext.Panel, {
 	
 	, saveIntoPersonalFolder: function() {
 		this.fireEvent('saveIntoPersonalFolderButtonClicked');
+	}
+	
+	, saveRememberMe: function() {
+		this.fireEvent('saveRememberMeButtonClicked');
+	}
+	
+	, openNotesEditor: function() {
+		this.fireEvent('notesButtonClicked');
+	}
+	
+	, showMetadata: function() {
+		this.fireEvent('metadataButtonClicked');
+	}
+	
+	, showRating: function() {
+		this.fireEvent('ratingButtonClicked');
+	}
+	
+	, print: function() {
+		this.miframe.getFrame().print();
 	}
 });

@@ -84,6 +84,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 	try {
 
 	    // GET PARAMETER
+		String objid = "";
 	    String objLabel = "";
 	    String to = "";
 	    String cc = "";
@@ -107,8 +108,11 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 		String parName = (String) p.getKey();
 		logger.debug("got parName=" + parName);
 		if (parName.equals("objlabel")) {
-		    objLabel = (String) request.getAttribute("objLabel");
+		    objLabel = (String) request.getAttribute("objlabel");
 		    logger.debug("got objLabel from Request=" + objLabel);
+		} else if (parName.equals("objid")) {
+			objid = (String) request.getAttribute("objid");
+		    logger.debug("got objid from Request=" + objid);
 		} else if (parName.equals("to")) {
 		    to = (String) request.getAttribute("to");
 		    logger.debug("got to from Request=" + to);
@@ -152,7 +156,12 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 	    byte[] documentBytes = null;
 
 	    IBIObjectDAO biobjdao = DAOFactory.getBIObjectDAO();
-	    BIObject biobj = biobjdao.loadBIObjectByLabel(objLabel);
+	    BIObject biobj = null;
+	    if (objLabel != null && !objLabel.trim().equals("")) {
+	    	biobj = biobjdao.loadBIObjectByLabel(objLabel);
+	    } else {
+	    	biobj = biobjdao.loadBIObjectById(new Integer(objid));
+	    }
 	    // create the execution controller
 	    ExecutionController execCtrl = new ExecutionController();
 	    execCtrl.setBiObject(biobj);

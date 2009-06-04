@@ -314,6 +314,43 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	}
 	
 	, onSaveIntoPersonalFolderButtonClicked: function () {
-		
+		Ext.Ajax.request({
+	          url: this.services['saveIntoPersonalFolder'],
+	          params: {documentId: this.executionInstance.OBJECT_ID},
+	          callback : function(options , success, response){
+	    	  	if (success && response !== undefined) {   
+		      		if(response.responseText !== undefined) {
+		      			var responseText = response.responseText;
+		      			var iconSaveToPF;
+		      			var message;
+		      			if (responseText=="sbi.execution.stpf.ok") {
+		      				message = LN('sbi.execution.stpf.ok');
+		      				iconSaveToPF = Ext.MessageBox.INFO;
+		      			}
+		      			if (responseText=="sbi.execution.stpf.alreadyPresent") {
+		      				message = LN('sbi.execution.stpf.alreadyPresent');
+		      				iconSaveToPF = Ext.MessageBox.WARNING;
+		      			}
+		      			if (responseText=="sbi.execution.stpf.error") {
+		      				message = LN('sbi.execution.stpf.error');
+		      				iconSaveToPF = Ext.MessageBox.ERROR;
+		      			}
+		      			Ext.MessageBox.show({
+		      				title: 'Status',
+		      				msg: message,
+		      				modal: false,
+		      				buttons: Ext.MessageBox.OK,
+		      				width:300,
+		      				icon: iconSaveToPF,
+		      				animEl: 'root-menu'        			
+		      			});
+		      		} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+		      		}
+	    	  	}
+	          },
+	          scope: this,
+	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
+	     });
 	}
 });

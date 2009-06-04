@@ -338,7 +338,8 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		      				message = LN('sbi.execution.stpf.error');
 		      				iconSaveToPF = Ext.MessageBox.ERROR;
 		      			}
-		      			Ext.MessageBox.show({
+
+		      			var messageBox = Ext.MessageBox.show({
 		      				title: 'Status',
 		      				msg: message,
 		      				modal: false,
@@ -347,6 +348,9 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		      				icon: iconSaveToPF,
 		      				animEl: 'root-menu'        			
 		      			});
+		      	    	//var buddy = new Sbi.commons.ComponentBuddy({
+		      	    	//	buddy : messageBox
+		      	    	//});
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 		      		}

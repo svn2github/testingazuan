@@ -81,3 +81,20 @@ Sbi.locale.ln['sbi.execution.subobjects.noSubObjectsSelected'] = 'Nessuna vista 
 
 // Toolbar
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Invia a';
+//Save into personal folder
+Sbi.locale.ln['sbi.execution.stpf.ok'] = 'Documento salvato correttamente';
+Sbi.locale.ln['sbi.execution.stpf.alreadyPresent'] = 'Documento già presente nella cartella personale';
+Sbi.locale.ln['sbi.execution.stpf.error'] = 'Documento NON salvato per problemi tecnici';
+//Remember me
+Sbi.locale.ln['sbi.execution.saveRememberMe'] = 'Ricordami!! (salva questa esecuzione tra i miei Hot Links)';
+Sbi.locale.ln['sbi.rememberme.name'] = 'Nome';
+Sbi.locale.ln['sbi.rememberme.descr'] = 'Descrizione';
+Sbi.locale.ln['sbi.rememberme.save'] = 'Salva';
+Sbi.locale.ln['sbi.rememberme.missingName'] = 'Indicare un nome';
+Sbi.locale.ln['sbi.rememberme.saveOk'] = 'L\'esecuzione è stata salvata correttamente';
+Sbi.locale.ln['sbi.rememberme.alreadyExisting'] = 'L\'esecuzione è già presente negli Hot Links';
+Sbi.locale.ln['sbi.rememberme.errorWhileSaving'] = 'Errore durante il salvataggio';
+
+Sbi.locale.ln['sbi.execution.metadata'] = 'Metadati';
+Sbi.locale.ln['sbi.execution.rating'] = 'Rating documento';
+Sbi.locale.ln['sbi.execution.rating.vote'] = 'Vota';

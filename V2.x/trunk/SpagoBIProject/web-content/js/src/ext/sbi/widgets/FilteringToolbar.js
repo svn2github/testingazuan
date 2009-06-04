@@ -44,47 +44,50 @@
   * - name (mail)
   */
 
+
 Ext.ns("Sbi.widgets");
 
 Sbi.widgets.FilteringToolbar = function(config) {	
 	Sbi.widgets.FilteringToolbar.superclass.constructor.call(this, config);
 	
-	this.state = 'editing';
+	this.state = this.EDITING;
 };
 
 Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
     
 	state: null
+	, EDITING: 'editing'
+	, FILTERING: 'filtering'
+	, UNFILTERING: 'unfiltering'
+
 	, columnNameStore: null
 	, columnNameCombo: null
-	, columnNameItem: null
 	
 	, typeStore: null
 	, typeCombo: null
-	, typeItem: null
 	
 	, filterStore: null
 	, filterCombo: null
-	, filteItem: null
 	
 	, inputField: null
-	, inputItem: null
+	
+	, initComponent : function(){
+		Sbi.widgets.FilteringToolbar.superclass.initComponent.call(this);
+		this.bind(this.store);
+	}
 	
 	, onRender : function(ct, position) {
 	    
 		Sbi.widgets.FilteringToolbar.superclass.onRender.call(this, ct, position);
 	    
-		this.addText('Il valore della colonna');
-	   	
-		
+		this.addText('Il valore della colonna');	
 		this.addSpacer();
 		
 		
 	    this.columnNameStore = new Ext.data.SimpleStore({
 	        fields: ['value', 'label'],
 	        data : []
-	    });	    
-	    
+	    });	 	    
 	    this.columnNameCombo = new Ext.form.ComboBox({
 	        store: this.columnNameStore,
 	        width: 100,
@@ -95,42 +98,12 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 	        emptyText:'...',
 	        selectOnFocus:true,
 	        mode: 'local'
-	    });
-	    
-	    this.columnNameItem = this.addField( this.columnNameCombo );
-	    
-	    this.store.on('metachange', function( store, meta ) {
-			this.columnNameStore.removeAll();
-			for(var i = 0; i < meta.fields.length; i ++) {
-				if(meta.fields[i].name) {
-					var r = new  this.columnNameStore.recordType({
-						'value': meta.fields[i].name, 
-						'label': meta.fields[i].header || meta.fields[i].name
-					});
-					this.columnNameStore.add([r]);
-				}
-			}
-		}, this);
-	    
-	    this.store.on('beforeload', function(store, o) {
-	    	/*
-			var p = this.getFilterBarState(false);
-			o.params.FILTERS = p;
-			
-			alert('FILTERING_TOOLBAR\n' +  o.params.toSource());
-			*/
-			return true;
-		}, this);
-	    
-	    
+	    });	    
+	    this.addField( this.columnNameCombo );	    
 	    this.addSpacer();
-	    
-	    
+	    	    
 	    this.addText('inteso come');
-	    
-	    
 	    this.addSpacer();
-	    
 	    
 	    this.typeStore = new Ext.data.SimpleStore({
 	        fields: ['value', 'label'],
@@ -140,7 +113,6 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 	                , ['date', 'date']
 	        ]
 	    });	    
-	    
 	    this.typeCombo = new Ext.form.ComboBox({
 	        store: this.typeStore,
 	        width: 65,
@@ -152,13 +124,9 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 	        selectOnFocus:true,
 	        mode: 'local'
 	    });
-	    
-	    this.typeItem = this.addField( this.typeCombo );
-	    
-	    
+	    this.addField( this.typeCombo );
 	    this.addSpacer();
-	    
-	    
+	    	    
 	    this.filterStore = new Ext.data.SimpleStore({
 	        fields: ['value', 'label'],
 	        data : [
@@ -172,7 +140,6 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 	 	            , ['greaterequal', '>=']
 	        ]
 	    });	    
-	    
 	    this.filterCombo = new Ext.form.ComboBox({
 	        store: this.filterStore,
 	        width: 80,
@@ -184,20 +151,12 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 	        selectOnFocus:true,
 	        mode: 'local'
 	    });
-	    
-	    this.filterItem = this.addField( this.filterCombo );
-	    
-	    
+	    this.addField( this.filterCombo );   
 	    this.addSpacer();
 	    
-	    
 	    this.inputField = new Ext.form.TextField({width: 70});
-	    
-	    this.inputItem = this.addField( this.inputField );
-	    
-	     
+	    this.addField( this.inputField );
 	    this.addSeparator();
-	    
 	    
 	    this.doButton = this.addButton({
 	        tooltip: 'apply filter'
@@ -233,55 +192,110 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 		return filterBarState;
 	}
 	
-	, reset: function() {		
+	, resetFilterBarState: function() {		
 		this.columnNameCombo.reset();		
 		this.typeCombo.reset();		
 		this.filterCombo.reset();		
 		this.inputField.reset();
 	}
 	
-	, disable: function() {		
-		this.columnNameItem.disable();		
-		this.columnNameCombo.disable();		
-		this.typeItem.disable();		
-		this.filterItem.disable();		
-		this.inputItem.disable();
-		this.doLayout();
+	, disableEditing: function() {		
+		this.columnNameCombo.disable();	
+		this.typeCombo.disable();	
+		this.filterCombo.disable();		
+		this.inputField.disable();
 	}
 	
-	, disable: function() {		
-		this.columnNameItem.enable();		
-		this.typeItem.enable();		
-		this.filterItem.enable();		
-		this.inputItem.enable();
+	, enableEditing: function() {		
+		this.columnNameCombo.enable();	
+		this.typeCombo.enable();	
+		this.filterCombo.enable();		
+		this.inputField.enable();
 	}
 
 	, onClick: function() {
-		if(this.state === 'editing') {
+		if(this.state === this.EDITING) {
 			alert('applyFilter');
 			this.unfilterButton.enable();
-			alert('applyFilter1');
-			this.disable();
-			alert('applyFilter2');
-			this.state = 'filtering';		
-			//var p = Ext.apply({}, this.store.baseParams);
-			//this.store.load({params: p});			
-		} else if(this.state === 'filtering') {
+			this.disableEditing();
+			
+			this.state = this.FILTERING;		
+			this.doLoad();					
+		} else if(this.state === this.FILTERING) {
 			alert('editFilter');
-			this.enable();
-			this.state = 'editing';
+			this.enableEditing();
+			this.state = this.EDITING;
 		}
 		
 		 
-		 //alert(this.store.baseParams.toSource());
-		
+		 //alert(this.store.baseParams.toSource());		
 	}
 	
 	, onUnfilter: function() {
 		this.unfilterButton.disable();
-		this.reset();
-		this.enable();
-		this.state = 'editing';
-		//this.store.load({params: this.store.baseParams || {} });
+		this.resetFilterBarState();
+		this.enableEditing();
+		
+		this.state = this.UNFILTERING;		
+		this.doLoad();
 	}
+	
+	, doLoad: function() {
+		var p = Ext.apply({}, this.store.baseParams);
+		this.store.load({params: p});	
+	}
+	
+	, boforeLoad: function(store, o) {
+    	
+		if(this.state === this.FILTERING) {
+			var p = this.getFilterBarState(false);
+			o.params.FILTERS = p;
+		} else if(this.state === this.UNFILTERING) {
+			if(o.params.FILTERS !== undefined) 
+				alert('ERROR: While UNFILTERING filters parameter cannot be valorized');
+		} 
+		
+		//alert('FILTERING_TOOLBAR\n' +  o.params.toSource());
+		
+		return true;
+	}
+	
+	, onLoad: function() {
+		if(this.state === this.UNFILTERING) {
+			this.state = this.EDITING;
+		}
+	}
+	
+	, onMetaChange: function(store, meta) {
+		this.columnNameStore.removeAll();
+		for(var i = 0; i < meta.fields.length; i ++) {
+			if(meta.fields[i].name) {
+				var r = new  this.columnNameStore.recordType({
+					'value': meta.fields[i].name, 
+					'label': meta.fields[i].header || meta.fields[i].name
+				});
+				this.columnNameStore.add([r]);
+			}
+		}
+	}
+	
+	, bind: function(store) {
+		store = Ext.StoreMgr.lookup(store);
+		store.on('metachange', this.onMetaChange , this);	    
+	    store.on('beforeload', this.boforeLoad , this);
+	    store.on("load", this.onLoad, this);
+        //store.on("loadexception", this.onLoadError, this);
+	    this.store = store;
+	}
+	
+	, unbind : function(store){
+        store = Ext.StoreMgr.lookup(store);
+        store.un('metachange', this.onMetaChange , this);	    
+	    store.un('beforeload', this.boforeLoad , this);
+        store.un("load", this.onLoad, this);
+        //store.un("loadexception", this.onLoadError, this);
+        this.store = undefined;
+    }
+	
+	
 });

@@ -107,6 +107,16 @@
  	class="it.eng.spagobi.analiticalmodel.document.x.DeleteSubObjectsAction" scope="REQUEST">
  	<CONFIG/>
  </ACTION>
-
+ 
+ <ACTION name="GET_NOTES_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.GetNotesAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
+ <ACTION name="SAVE_NOTES_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.SaveNotesAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
 </ACTIONS>
 

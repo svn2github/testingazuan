@@ -105,3 +105,8 @@ Sbi.locale.ln['sbi.rememberme.errorWhileSaving'] = 'Error while saving';
 Sbi.locale.ln['sbi.execution.metadata'] = 'Metadata';
 Sbi.locale.ln['sbi.execution.rating'] = 'Document rating';
 Sbi.locale.ln['sbi.execution.rating.vote'] = 'Vote';
+
+Sbi.locale.ln['sbi.execution.notes.insertNotes'] = 'Insert notes';
+Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Save';
+Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Notes saved correctly';
+Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Error while saving notes: notes have been modified by another user while you were modifing them. Please reopen this window and try again!';

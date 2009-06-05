@@ -98,3 +98,8 @@ Sbi.locale.ln['sbi.rememberme.errorWhileSaving'] = 'Errore durante il salvataggi
 Sbi.locale.ln['sbi.execution.metadata'] = 'Metadati';
 Sbi.locale.ln['sbi.execution.rating'] = 'Rating documento';
 Sbi.locale.ln['sbi.execution.rating.vote'] = 'Vota';
+
+Sbi.locale.ln['sbi.execution.notes.insertNotes'] = 'Inserisci le note';
+Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Salva';
+Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Note salvate correttamente';
+Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Errore nel salvataggio delle note: sono state modificate da un altro utente. Riapri questa finestra e ritenta!';

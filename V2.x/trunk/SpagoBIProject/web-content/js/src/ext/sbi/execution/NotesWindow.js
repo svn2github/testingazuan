@@ -48,10 +48,46 @@ Ext.ns("Sbi.execution");
 
 Sbi.execution.NotesWindow = function(config) {
 	
+	// always declare exploited services first!
+	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
+	this.services = new Array();
+	this.services['getNotesService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_NOTES_ACTION'
+		, baseParams: params
+	});
+	this.services['saveNotesService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SAVE_NOTES_ACTION'
+		, baseParams: params
+	});
+	
+	this.previousNotes = undefined;
+	this.SBI_EXECUTION_ID = config.SBI_EXECUTION_ID;
+	
 	this.buddy = undefined;
 	
+    this.editor = new Ext.form.HtmlEditor({
+        frame: true,
+        value: '',
+        bodyStyle:'padding:5px 5px 0',
+        width:'100%',
+        disabled: true,
+	    height: 265,
+        id:'notes'        
+    });   
+	
 	var c = Ext.apply({}, config, {
+		title: LN('sbi.execution.notes.insertNotes'),
+		items: [this.editor],
+		buttons: [
+		          {
+		        	  text: LN('sbi.execution.notes.savenotes'), 
+		        	  scope: this,
+		        	  handler: this.saveNotes
+		          }
+		], 
 	});   
+	
+	this.loadNotes();
 	
 	// constructor
     Sbi.execution.NotesWindow.superclass.constructor.call(this, c);
@@ -64,4 +100,69 @@ Sbi.execution.NotesWindow = function(config) {
     
 };
 
-Ext.extend(Sbi.execution.NotesWindow, Ext.Window, {});
+Ext.extend(Sbi.execution.NotesWindow, Ext.Window, {
+	
+	loadNotes: function () {
+		Ext.Ajax.request({
+	        url: this.services['getNotesService'],
+	        params: {SBI_EXECUTION_ID: this.SBI_EXECUTION_ID},
+	        callback : function(options , success, response) {
+	  	  		if (success) {
+		      		if(response !== undefined && response.responseText !== undefined) {
+		      			var content = Ext.util.JSON.decode( response.responseText );
+		      			if (content !== undefined) {
+		      				this.previousNotes = content.notes;
+		      				this.editor.setValue(Ext.util.Format.htmlDecode(content.notes));
+		      				this.editor.enable();
+		      			} 
+		      		} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+		      		}
+	  	  		} else { 
+	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load notes', 'Service Error');
+	  	  		}
+	        },
+	        scope: this,
+			failure: Sbi.exception.ExceptionHandler.handleFailure      
+		});
+	}
+
+	, saveNotes: function () {
+		Ext.Ajax.request({
+	        url: this.services['saveNotesService'],
+	        params: {'SBI_EXECUTION_ID': this.SBI_EXECUTION_ID, 
+						'PREVIOUS_NOTES': this.previousNotes, 'NOTES': this.editor.getValue()},
+	        callback : function(options , success, response) {
+	  	  		if (success) {
+		      		if(response !== undefined && response.responseText !== undefined) {
+		      			var content = Ext.util.JSON.decode( response.responseText );
+		      			if (content !== undefined) {
+		      				if (content.result === 'conflict') {
+		      					Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.execution.notes.notesConflict'), 'Service Error');
+		      				} else {
+				      			Ext.MessageBox.show({
+				      				title: 'Status',
+				      				msg: LN('sbi.execution.notes.notedSaved'),
+				      				modal: false,
+				      				buttons: Ext.MessageBox.OK,
+				      				width:300,
+				      				icon: Ext.MessageBox.INFO,
+				      				animEl: 'root-menu'        			
+				      			});
+				      			this.previousNotes = this.editor.getValue();
+		      				}
+		      			}
+		      		} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+		      		}
+	  	  		} else { 
+	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load notes', 'Service Error');
+	  	  		}
+	        },
+	        scope: this,
+			failure: Sbi.exception.ExceptionHandler.handleFailure      
+		});
+		
+	}
+	
+});

@@ -369,7 +369,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	}
 	
 	, onNotesButtonClicked: function () {
-		this.win_notes = new Sbi.execution.NotesWindow();
+		this.win_notes = new Sbi.execution.NotesWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
 		this.win_notes.show();
 	}
 	

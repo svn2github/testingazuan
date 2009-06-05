@@ -30,7 +30,7 @@
   <target name="create.SpagoBI.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIProject/ant" />
   </target>
-  <target name="deploy.SpagoBI.war" depends="create.sbi.utils.jar,create.SpagoBI.war,create.exo.security.jar,create.xlm.security.jar">
+  <target name="deploy.SpagoBI.war" depends="create.sbi.utils.jar,create.exo.security.jar,create.xlm.security.jar,create.ldap.security.jar,create.liferay.security.jar,create.SpagoBI.war">
     <delete dir="${tomcat.home}/webapps/SpagoBI" />
     <mkdir dir="${tomcat.home}/webapps/SpagoBI" />
     <unzip src="../../../SpagoBIProject/dist/SpagoBI.war" dest="${tomcat.home}/webapps/SpagoBI" />
@@ -46,16 +46,16 @@
                war="file:${dist}/SpagoBI/SpagoBI.war"/>  
     <start url="${manager.url}" username="${username}" password="${password}" path="/SpagoBI"/>
     -->
-    <!-- deletes any previuos sbi.security.exo -->
+    <!-- deletes any previuos sbi.security.* -->
     <delete>
-      <fileset dir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" includes="**/sbi.security.exo*.jar"/>
-      <fileset dir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" includes="**/sbi.security.xml*.jar"/>
+      <fileset dir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" includes="**/sbi.security.*.jar"/>
     </delete>
     <!-- copies the newly created jar file -->
     <copy file="../../../SpagoBIExoSecurityProvider/dist/sbi.security.exo-${project.version}.jar" 
         todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" overwrite="true" />
     <copy file="../../../SpagoBIXMLSecurityProvider/dist/sbi.security.xml-${project.version}.jar" 
         todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" overwrite="true" />
+     
   </target>
 
   <target name="create.sbi.utils.jar" >
@@ -71,6 +71,9 @@
   <target name="create.xlm.security.jar" >
     <ant dir="../SpagoBIXmlSecurityProvider/ant" />
   </target>
+  <target name="create.ldap.security.jar" >
+    <ant dir="../SpagoBILdapSecurityProvider/ant" />
+  </target>  
   
   <target name="create.SpagoBIBirtReportEngine.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIBirtReportEngine/ant" />
@@ -166,13 +169,17 @@
     SpagoBIQbeEngine depends on qbe.core and sbi.utils
     -->
     <antcall target="create.sbi.utils.jar" />
+    
+    <antcall target="create.exo.security.jar" /> 
+    <antcall target="create.liferay.security.jar" />
+    <antcall target="create.xlm.security.jar" />
+    <antcall target="create.ldap.security.jar" />
+            
     <antcall target="create.SpagoBI.war" />
     <copy file="../../../SpagoBIProject/dist/SpagoBI.war" 
         todir="../../../dist" overwrite="true" />
         
-    <antcall target="create.exo.security.jar" /> 
-    <antcall target="create.liferay.security.jar" />
-    <antcall target="create.xlm.security.jar" />
+
     
     <antcall target="create.SpagoBIBirtReportEngine.war" />
     <copy file="../../../SpagoBIBirtReportEngine/dist/SpagoBIBirtReportEngine.war" 
@@ -229,7 +236,8 @@
 	<delete dir="../../../SpagoBIBirtReportEngine/ant-build"/>
 	<delete dir="../../../SpagoBIExoSecurityProvider/ant-build"/>
 	<delete dir="../../../SpagoBILiferaySecurityProvider/ant-build"/>
-	<delete dir="../../../SpagoBIXMLSecurityProvider/ant-build"/>  	
+	<delete dir="../../../SpagoBIXMLSecurityProvider/ant-build"/> 
+	<delete dir="../../../SpagoBILdapSecurityProvider/ant-build"/>    	
 	<delete dir="../../../SpagoBIGeoReportEngine/ant-build"/>
   <delete dir="../../../SpagoBIJasperReportReportEngine/ant-build"/>
   <delete dir="../../../SpagoBIJPaloEngine/ant-build"/>
@@ -243,7 +251,8 @@
 	<delete dir="../../../SpagoBIBirtReportEngine/dist"/>
 	<delete dir="../../../SpagoBIExoSecurityProvider/dist"/>
 	<delete dir="../../../SpagoBILiferaySecurityProvider/dist"/>
-	<delete dir="../../../SpagoBIXMLSecurityProvider/dist"/>  	
+	<delete dir="../../../SpagoBIXMLSecurityProvider/dist"/>  
+  	<delete dir="../../../SpagoBIldapSecurityProvider/dist"/>  	
 	<delete dir="../../../SpagoBIGeoReportEngine/dist"/>
   <delete dir="../../../SpagoBIJasperReportReportEngine/dist"/>
   <delete dir="../../../SpagoBIJPaloEngine/dist"/>
@@ -289,7 +298,7 @@
     <ant dir="../SpagoBIWekaEngine/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIXmlSecurityProvider/ant" target="svn.checkout"/>
     <ant dir="../SpagoBILiferaySecurityProvider/ant" target="svn.checkout"/>    
-    
+    <ant dir="../SpagoBILdapSecurityProvider/ant" target="svn.checkout"/>       
   </target>
   
   <target name="javadoc" >
@@ -307,6 +316,7 @@
     <ant dir="../SpagoBIWekaEngine/ant" target="javadoc"/>
     <ant dir="../SpagoBIXmlSecurityProvider/ant" target="javadoc"/>
     <ant dir="../SpagoBILiferaySecurityProvider/ant" target="javadoc"/>    
+    <ant dir="../SpagoBILdapSecurityProvider/ant" target="javadoc"/>       
   </target>
   
 </project>

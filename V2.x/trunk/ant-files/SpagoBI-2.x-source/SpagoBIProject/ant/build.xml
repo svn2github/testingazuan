@@ -57,6 +57,10 @@
     <!-- copies the newly created jar file -->
     <copy file="${sbiutils.dir}/dist/sbi.utils-${project.version}.jar" 
         todir="${web.dir}/WEB-INF/lib" overwrite="true" />
+    <copy file="${xml.security.dir}/dist/sbi.security.xml-${project.version}.jar" 
+        todir="${web.dir}/WEB-INF/lib" overwrite="true" />
+    <copy file="${ldap.security.dir}/dist/sbi.security.ldap-${project.version}.jar" 
+        todir="${web.dir}/WEB-INF/lib" overwrite="true" />                
   </target>
   
   <!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->

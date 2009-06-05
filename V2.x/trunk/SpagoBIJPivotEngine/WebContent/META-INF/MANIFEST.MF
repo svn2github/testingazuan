@@ -1,3 +1,9 @@
 Manifest-Version: 1.0
-Class-Path: 
+
+Name: SpagoBIJPivotEngine.war
+Implementation-Title: SpagoBIJPivotEngine
+Implementation-Version: 2.2.0 
+
+Included JPivot: 
+Included Mondrian: 3.0.4.11371
 

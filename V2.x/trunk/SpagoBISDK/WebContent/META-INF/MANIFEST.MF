@@ -1,3 +1,6 @@
 Manifest-Version: 1.0
-Class-Path: 
+
+Name: SpagoBISDK.war
+Implementation-Title: SpagoBISDK
+Implementation-Version: 2.2.0 
 

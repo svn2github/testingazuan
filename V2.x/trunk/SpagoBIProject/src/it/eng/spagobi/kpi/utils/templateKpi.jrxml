@@ -49,13 +49,13 @@
 				</line>
 				<staticText>
 					<reportElement
-						x="125"
+						x="111"
 						y="10"
 						width="312"
 						height="33"
 						key="staticText-1"/>
 					<box></box>
-					<textElement>
+					<textElement  textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Bold" size="18" isBold="true"/>
 					</textElement>
 				<text><![CDATA[TITOLO]]></text>

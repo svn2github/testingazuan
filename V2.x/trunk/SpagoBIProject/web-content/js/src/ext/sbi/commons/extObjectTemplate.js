@@ -46,16 +46,16 @@
 
 Ext.ns("Sbi.xxx");
 
-Sbi.xxx.Xxxx = function(conf) {
+Sbi.xxx.Xxxx = function(config) {
 	
-	Ext.apply(this, config);
-	
-	this.addEvents();	
+	var c = Ext.apply({
+		// set default values here
+	}, config || {});
 	
 	// constructor
-    Sbi.xxx.Xxxx.superclass.constructor.call(this, {
-    	
-    })
+    Sbi.xxx.Xxxx.superclass.constructor.call(this, c);
+    
+    this.addEvents();
 };
 
 Ext.extend(Sbi.xxx.Xxxx, Ext.util.Observable, {

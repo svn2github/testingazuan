@@ -215,14 +215,14 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 
 	, onClick: function() {
 		if(this.state === this.EDITING) {
-			alert('applyFilter');
+			//alert('applyFilter');
 			this.unfilterButton.enable();
 			this.disableEditing();
 			
 			this.state = this.FILTERING;		
 			this.doLoad();					
 		} else if(this.state === this.FILTERING) {
-			alert('editFilter');
+			//alert('editFilter');
 			this.enableEditing();
 			this.state = this.EDITING;
 		}

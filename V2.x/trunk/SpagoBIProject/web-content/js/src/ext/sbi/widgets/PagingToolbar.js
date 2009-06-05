@@ -64,7 +64,7 @@ Ext.extend(Sbi.widgets.PagingToolbar, Ext.PagingToolbar, {
 			 o.params[pn.limit] = this.pageSize
 		 }
 		 
-		 alert('PAGING_TOOLBAR\n' +  o.params.toSource());
+		// alert('PAGING_TOOLBAR\n' +  o.params.toSource());
 	
 		 return true;
 	}

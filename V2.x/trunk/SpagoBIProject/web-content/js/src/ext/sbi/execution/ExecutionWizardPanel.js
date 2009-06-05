@@ -285,7 +285,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	}
 	
 	, onExecutionStarted: function( execContextId ) {
-		alert(execContextId);
+		//alert(execContextId);
 		this.executionInstance.SBI_EXECUTION_ID = execContextId;
 		this.parametersSelectionPanel.loadParametersForExecution(this.executionInstance);
 		this.loadSubObjects();

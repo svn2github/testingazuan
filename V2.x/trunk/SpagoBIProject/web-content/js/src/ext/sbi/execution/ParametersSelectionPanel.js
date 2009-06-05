@@ -81,6 +81,11 @@ Ext.ns("Sbi.execution");
 
 Sbi.execution.ParametersSelectionPanel = function(config) {
 	
+	var c = Ext.apply({
+		columnNo: 3
+		, labelAlign: 'left'
+	}, config || {});
+	
 	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
@@ -94,20 +99,39 @@ Sbi.execution.ParametersSelectionPanel = function(config) {
 		, baseParams: params
 	});
 	
-	this.inputFieldOptionsStoreConfig = {
-		proxy: new Ext.data.HttpProxy({
-			url: this.services['getParameterValueForExecutionService']
-		})
-		   
-	   	, reader: new Ext.data.JsonReader()
-	};     
+	var columnsBaseConfig = [];
+	var cw = 1/c.columnNo;
+	for(var i = 0; i < c.columnNo; i++) {
+		
+		columnsBaseConfig[i] = {
+			columnWidth: cw,
+            layout: 'form',
+            border: false,
+            bodyStyle:'padding:5px 5px 5px 5px'
+		}
+	}
   
-	this.parametersForm = new Ext.FormPanel({bodyStyle:'padding:16px 16px 16px 16px;'});
 	
-	var c = Ext.apply({}, config, {
-		//bodyStyle:'padding:16px 16px 16px 16px;'
-		//, id: 'card-2', html: 'Document execution page'
-		items: [this.parametersForm]
+	var top = new Ext.FormPanel({
+	        labelAlign: c.labelAlign,
+	        border: false,
+	        items: [{
+	            layout:'column',
+	            border: false,
+	            autoScroll: true,
+	            items: columnsBaseConfig
+	        }]
+	});
+	 
+	var columnContainer = top.items.get(0);
+	this.columns = [];
+	for(var i = 0; i < c.columnNo; i++) {
+		this.columns[i] = columnContainer.items.get(i);
+	}
+	
+	c = Ext.apply({}, c, {
+		bodyStyle:'padding:5px 5px',
+		items: [top]
 	});   
 	
 	
@@ -122,9 +146,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
     
     services: null
     , fields: null
-    , inputFieldOption: null
-    , inputFieldOptionsStoreConfig: null
     , parametersForm: null
+    , columns: null
    
     // ----------------------------------------------------------------------------------------
     // public methods
@@ -155,12 +178,11 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	}
 
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
-	
+		this.fields = [];
 		for(var i = 0; i < parameters.length; i++) {
-			var field = this.createField( executionInstance, parameters[i] ); 
-			this.parametersForm.add(field);
+			this.fields[i] = this.createField( executionInstance, parameters[i] ); 
+			this.columns[i%this.columns.length].add( this.fields[i] );
 		}
-		this.parametersForm.doLayout();
 		this.doLayout();
 	}
 	
@@ -178,11 +200,9 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	, getFormStateAsObject: function() {
 		var state;
 		
-		var form = this.parametersForm.getForm(); 
-		
 		state = {};
-		for(var i = 0;  i < form.items.getCount(); i++) {
-			var item = form.items.get(i);
+		for(var i = 0;  i < this.fields.length; i++) {
+			var item = this.fields[i];
 			var value = item.getValue();
 			state[item.getName()] = value;
 		}
@@ -298,6 +318,11 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		   , width: 200
 		   , allowBlank: !p.mandatory
 		};
+		
+		alert(p.label + ': '+ p.mandatory);
+		if(p.mandatory === true) {
+			baseConfig.labelStyle = 'font-weight:bold';
+		}
 		
 		if(p.selectionType === 'COMBOBOX') {
 			var param = {};

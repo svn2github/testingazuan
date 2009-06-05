@@ -31,6 +31,7 @@ import it.eng.spagobi.engines.kpi.bo.KpiLine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.service.KpiExporter;
 
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -46,7 +47,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
+
 
 //TODO: Auto-generated Javadoc
 /**
@@ -56,6 +59,7 @@ import org.xml.sax.InputSource;
  */
 public class BasicTemplateBuilder  {
 
+	private static transient org.apache.log4j.Logger logger=Logger.getLogger(BasicTemplateBuilder.class);
 
 
 	static String staticTextNameS="<staticText>" +
@@ -196,19 +200,19 @@ public class BasicTemplateBuilder  {
 	 * @see it.eng.qbe.export.ITemplateBuilder#buildTemplate()
 	 */
 	public String buildTemplate(List resources) {
-		// get the basic template of template
-
+		logger.debug("IN");
+		// name resolution for upper cases tag
 		nameResolution();
-
-		//resources=createStub();
 
 		// Create SOurce Bean of template of template
 		String templateStr = getTemplateTemplate();
 		templateBaseContent =null;
+		logger.debug("Recovered template of templates "+templateStr);
+
 		try {
 			templateBaseContent = SourceBean.fromXMLString(templateStr);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error in converting template of template into a SOurce Bean, check the XML code");
 		}
 
 
@@ -220,19 +224,17 @@ public class BasicTemplateBuilder  {
 			resourceName=SourceBean.fromXMLString(resourceNameS);
 			semaphor=SourceBean.fromXMLString(semaphorS);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error in converting static elemnts into Source Beans, check the XML code");
 		}
 
 		//change title
 		SourceBean titleSB=(SourceBean)templateBaseContent.getAttribute("title");
 		SourceBean titleText=(SourceBean)titleSB.getAttribute("band.staticText.text");
-
 		titleText.setCharacters(documentName);
 
 		// make SUMMARY
 		summary=(SourceBean)templateBaseContent.getAttribute("SUMMARY");
 		band=(SourceBean)summary.getAttribute("BAND");
-
 
 		// cycle on resources
 		for (Iterator iterator = resources.iterator(); iterator.hasNext();) {
@@ -251,8 +253,9 @@ public class BasicTemplateBuilder  {
 			finalTemplate=finalTemplate.replaceAll("<"+toReplace, "<"+replaceWith);
 			finalTemplate=finalTemplate.replaceAll("</"+toReplace, "</"+replaceWith);
 		}
-
-		System.out.println(finalTemplate);
+		logger.debug("Built template: "+finalTemplate);
+		//System.out.println(finalTemplate);
+		logger.debug("OUT");
 		return finalTemplate;
 	}
 
@@ -260,24 +263,27 @@ public class BasicTemplateBuilder  {
 
 	// set the total height 
 	public void increaseHeight(){
+		logger.debug("IN");
 
 		try {
 			templateBaseContent.setAttribute("pageHeight",actualHeight+titleHeight+50);
-
 			band.setAttribute("height", (actualHeight));
 		} catch (SourceBeanException e) {
-			e.printStackTrace();
+			logger.error("error in setting the height");
+			return;
 		}
+		logger.debug("OUT");
+
 
 	}
 
 
 //	Add a resource band
 	public void newResource(KpiResourceBlock block){
-		// for the present Resource get draw a line separator and read the root KpiLine
-		//Set the separator
+		logger.debug("IN");
 		Resource res=block.getR();
 		if(res!=null){
+			logger.debug("add resource band for resource "+res.getName());
 			try{
 				actualHeight+=separatorHeight;
 
@@ -297,15 +303,17 @@ public class BasicTemplateBuilder  {
 				newLine(lineRoot, 0);
 			}
 			catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Error in setting the resource band");
+				return;
 			}
 		}
+		logger.debug("OUT");
 	}
 
 
 	public void newLine(KpiLine kpiLine, int level){
+		logger.debug("IN");
 		try {
-			//increaseHeight();
 			actualHeight+=separatorHeight;
 			SourceBean textCodeName=new SourceBean(staticTextName);   // code -name
 			SourceBean textValue=new SourceBean(staticTextNumber);  //value number
@@ -320,12 +328,9 @@ public class BasicTemplateBuilder  {
 			band.setAttribute(textCodeName);
 			band.setAttribute(textValue);
 			band.setAttribute(textWeight);
-
-			//band.setAttribute(image1);
-
 		} catch (SourceBeanException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("error while adding a line");
+			return;
 		}
 
 		List<KpiLine> children=kpiLine.getChildren();
@@ -335,13 +340,14 @@ public class BasicTemplateBuilder  {
 				newLine(kpiLineChild, level+1);
 			}}
 
-
+		logger.debug("OUT");
 	}
 
 
 
 
 	private void setLineAttributes(KpiLine line,SourceBean semaphor, SourceBean textCodeName, SourceBean textValue, SourceBean textWeight, SourceBean image1, int level){
+		logger.debug("IN");
 		Color colorSemaphor=line.getSemaphorColor();
 		KpiValue kpiValue=line.getValue();
 
@@ -396,7 +402,7 @@ public class BasicTemplateBuilder  {
 		} catch (SourceBeanException e) {
 			e.printStackTrace();
 		}
-
+		logger.debug("OUT");
 	}
 
 
@@ -476,7 +482,7 @@ public class BasicTemplateBuilder  {
 		try{
 			// Used to test
 			//File file = new File("D:/progetti/spagobi/eclipse2/SpagoBIProject/src/it/eng/spagobi/kpi/utils/templateKpi.jrxml");
-			
+
 			String rootPath=ConfigSingleton.getRootPath();
 			String templateDirPath=rootPath+"/WEB-INF/classes/it/eng/spagobi/kpi/utils/";
 			templateDirPath+="templateKPI.jrxml";

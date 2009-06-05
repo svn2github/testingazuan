@@ -24,11 +24,11 @@ package it.eng.spagobi.analiticalmodel.document.handlers;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import sun.misc.BASE64Encoder;
 
@@ -37,6 +37,8 @@ import sun.misc.BASE64Encoder;
  */
 public class BIObjectNotesManager {
 
+	// logger component
+	private static Logger logger = Logger.getLogger(BIObjectNotesManager.class);
 	
 	/**
 	 * Return an identifier for a specific execution. The identifier is composed using the
@@ -48,9 +50,7 @@ public class BIObjectNotesManager {
 	 * @return String of the biobject execution identifier
 	 */
 	public String getExecutionIdentifier(BIObject biobj ) {
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-				            "getExecutionIdentifier", 
-				            "start method execution for biobject label " + biobj.getLabel());
+		logger.debug("start method execution for biobject label " + biobj.getLabel());
 		List biparvalues = null;
 		BIObjectParameter biobjpar = null;
 		String parUrlName = null;
@@ -87,8 +87,7 @@ public class BIObjectNotesManager {
 		 		identif = identif + "&";
 		 	}
 		}
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-	                        "getExecutionIdentifier", "identifier produced : " + identif);
+		logger.debug("identifier produced : " + identif);
 		BASE64Encoder encoder = new BASE64Encoder();
 		
 		String ecodedIdentif = "";
@@ -105,8 +104,7 @@ public class BIObjectNotesManager {
 			index = index + 10;
 		}
 
-		SpagoBITracer.debug(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-	            "getExecutionIdentifier", "end method execution, returning encoded identifier: " + ecodedIdentif);
+		logger.debug("end method execution, returning encoded identifier: " + ecodedIdentif);
 		return ecodedIdentif;
 	}
 	

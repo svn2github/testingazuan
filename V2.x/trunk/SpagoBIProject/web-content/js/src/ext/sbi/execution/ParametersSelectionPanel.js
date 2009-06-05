@@ -45,7 +45,7 @@
   */
 
 
-/**
+	/**
 	 * Override Ext.FormPanel so that in case we create a form without items it still has a item list.
 	 * ERROR IS : this.items has no properties
 	 */
@@ -99,39 +99,39 @@ Sbi.execution.ParametersSelectionPanel = function(config) {
 		, baseParams: params
 	});
 	
-	var columnsBaseConfig = [];
-	var cw = 1/c.columnNo;
-	for(var i = 0; i < c.columnNo; i++) {
-		
-		columnsBaseConfig[i] = {
-			columnWidth: cw,
-            layout: 'form',
-            border: false,
-            bodyStyle:'padding:5px 5px 5px 5px'
-		}
-	}
-  
 	
-	var top = new Ext.FormPanel({
-	        labelAlign: c.labelAlign,
-	        border: false,
-	        items: [{
-	            layout:'column',
-	            border: false,
-	            autoScroll: true,
-	            items: columnsBaseConfig
-	        }]
-	});
-	 
-	var columnContainer = top.items.get(0);
-	this.columns = [];
-	for(var i = 0; i < c.columnNo; i++) {
-		this.columns[i] = columnContainer.items.get(i);
-	}
+	this.init(c);
 	
 	c = Ext.apply({}, c, {
-		bodyStyle:'padding:5px 5px',
-		items: [top]
+		layout: 'border',
+		items: [{
+			region:'center'
+		    , border: false
+		    , frame: false
+		    , collapsible: false
+		    , collapsed: false
+		    , hideCollapseTool: true
+		    , titleCollapse: true
+		    , collapseMode: 'mini'
+		    , split: true
+		    , autoScroll: true
+		    , layout: 'fit'
+		    , items: [this.formPanel]
+		}, {
+			region:'south'
+			, border: false
+			, frame: false
+			, collapsible: true
+			, collapsed: true
+			, hideCollapseTool: true
+			, titleCollapse: true
+			, collapseMode: 'mini'
+			, split: true
+			, autoScroll: true
+			, height: 270
+			, layout: 'fit'
+			, items: [this.shortcutsPanel]
+		}]
 	});   
 	
 	
@@ -146,8 +146,9 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
     
     services: null
     , fields: null
-    , parametersForm: null
     , columns: null
+    , formPanel: null
+    , shortcutsPanel: null
    
     // ----------------------------------------------------------------------------------------
     // public methods
@@ -164,7 +165,6 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		      		if(response.responseText !== undefined) {
 		      			var content = Ext.util.JSON.decode( response.responseText );
 		      			if(content !== undefined) {
-		      				//alert( content.toSource() );	
 		      				this.onParametersForExecutionLoaded(executionInstance, content);
 		      			} 
 		      		} else {
@@ -175,6 +175,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	          scope: this,
 	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
 	     });
+		
+		this.shortcutsPanel.loadSubObjects( executionInstance );
 	}
 
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
@@ -306,6 +308,49 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	// private methods
 	// ----------------------------------------------------------------------------------------
 	
+	, init: function( config ) {
+		this.initFormPanel(config);
+		this.initShortcutsPanel(config);
+	}
+	
+	, initFormPanel: function( config ) {
+		var cw = 1/config.columnNo;
+		var columnsBaseConfig = [];
+		for(var i = 0; i < config.columnNo; i++) {		
+			columnsBaseConfig[i] = {
+				columnWidth: cw,
+	            layout: 'form',
+	            border: false,
+	            bodyStyle:'padding:5px 5px 5px 5px'
+			}
+		}
+	  
+		
+		this.formPanel = new Ext.FormPanel({
+		        labelAlign: config.labelAlign,
+		        border: false,
+		        items: [{
+		            layout:'column',
+		            border: false,
+		            autoScroll: true,
+		            items: columnsBaseConfig
+		        }]
+		});
+		 
+		var columnContainer = this.formPanel.items.get(0);
+		this.columns = [];
+		for(var i = 0; i < config.columnNo; i++) {
+			this.columns[i] = columnContainer.items.get(i);
+		}
+		
+		return this.formPanel;
+	}
+	
+	, initShortcutsPanel: function( config ) {
+		this.shortcutsPanel = new Sbi.execution.SubObjectsPanel();
+		
+		return this.shortcutsPanel;
+	}
 	
 	
 	, createField: function( executionInstance, p ) {
@@ -319,7 +364,6 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		   , allowBlank: !p.mandatory
 		};
 		
-		alert(p.label + ': '+ p.mandatory);
 		if(p.mandatory === true) {
 			baseConfig.labelStyle = 'font-weight:bold';
 		}

@@ -71,7 +71,6 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 		, baseParams: params
 	});
 	
-	this.subObjectsPanel = new Sbi.execution.SubObjectsPanel();
 	this.roleSelectionPanel = new Sbi.execution.RoleSelectionPanel();
 	this.parametersSelectionPanel =  new Sbi.execution.ParametersSelectionPanel();
 	this.documentViewPanel = new Sbi.execution.DocumentViewPanel();
@@ -138,7 +137,7 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     this.documentViewPanel.addListener('metadataButtonClicked', this.onMetadataButtonClicked, this);
     this.documentViewPanel.addListener('ratingButtonClicked', this.onRatingButtonClicked, this);
     
-    this.subObjectsPanel.addListener('onselected', this.onSubObjectSelected, this);
+    //this.subObjectsPanel.addListener('onselected', this.onSubObjectSelected, this);
     
     if(config.document) {
     	this.execute( config.document );
@@ -156,7 +155,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
     , roleSelectionPanel: null
     , parametersSelectionPanel: null
     , documentViewPanel: null   
-    , subObjectsPanel: null
+    //, subObjectsPanel: null
    
     // public methods
     
@@ -288,9 +287,8 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		//alert(execContextId);
 		this.executionInstance.SBI_EXECUTION_ID = execContextId;
 		this.parametersSelectionPanel.loadParametersForExecution(this.executionInstance);
-		this.loadSubObjects();
-		this.parametersSelectionPanel.add(this.subObjectsPanel);
-		this.parametersSelectionPanel.doLayout();
+		//this.loadSubObjects();
+		//this.parametersSelectionPanel.doLayout();
 	}
 	
 	, onLoadUrlFailure: function ( errors ) {
@@ -298,14 +296,17 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		
 	}
 	
+	/*
 	, loadSubObjects: function() {
 		this.subObjectsPanel.loadSubObjects( this.executionInstance );
 	}
+	
 	
 	, onSubObjectSelected: function (subObjectId) {
 		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
 		this.moveToPage(2); // go to execution page
 	}
+	*/
 	
 	, onSendMailButtonClicked: function () {
 		var sendToIframeUrl = this.services['showSendToForm'] 

@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.SubobjectsPanel = function(config) {
+Sbi.execution.SnapshotsPanel = function(config) {
 	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
@@ -146,13 +146,13 @@ Sbi.execution.SubobjectsPanel = function(config) {
 	});   
 	
 	// constructor
-    Sbi.execution.Subobjects.superclass.constructor.call(this, c);
+    Sbi.execution.SnapshotsPanel.superclass.constructor.call(this, c);
     
     this.addEvents('onselected');
     
 };
 
-Ext.extend(Sbi.execution.Subobjects, Ext.grid.GridPanel, {
+Ext.extend(Sbi.execution.SnapshotsPanel, Ext.grid.GridPanel, {
 	
 	services: null
 	, subObjectsStore: null

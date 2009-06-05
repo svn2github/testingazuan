@@ -146,13 +146,13 @@ Sbi.execution.SubobjectsPanel = function(config) {
 	});   
 	
 	// constructor
-    Sbi.execution.Subobjects.superclass.constructor.call(this, c);
+    Sbi.execution.SubobjectsPanel.superclass.constructor.call(this, c);
     
     this.addEvents('onselected');
     
 };
 
-Ext.extend(Sbi.execution.Subobjects, Ext.grid.GridPanel, {
+Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 	
 	services: null
 	, subObjectsStore: null

@@ -347,7 +347,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	}
 	
 	, initShortcutsPanel: function( config ) {
-		this.shortcutsPanel = new Sbi.execution.SubObjectsPanel();
+		this.shortcutsPanel = new Sbi.execution.SubobjectsPanel();
 		
 		return this.shortcutsPanel;
 	}

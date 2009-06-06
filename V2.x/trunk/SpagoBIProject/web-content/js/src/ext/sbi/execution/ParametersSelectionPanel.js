@@ -122,13 +122,13 @@ Sbi.execution.ParametersSelectionPanel = function(config) {
 			, border: false
 			, frame: false
 			, collapsible: true
-			, collapsed: true
+			, collapsed: false
 			, hideCollapseTool: true
 			, titleCollapse: true
 			, collapseMode: 'mini'
 			, split: true
 			, autoScroll: true
-			, height: 270
+			, height: 280
 			, layout: 'fit'
 			, items: [this.shortcutsPanel]
 		}]
@@ -176,7 +176,9 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
 	     });
 		
-		this.shortcutsPanel.loadSubObjects( executionInstance );
+		 this.subobjectsPanel.loadSubObjects( executionInstance );
+	     this.snapshotsPanel.loadSubObjects( executionInstance );
+	     this.viewpointsPanel.loadSubObjects( executionInstance );
 	}
 
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
@@ -329,6 +331,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		this.formPanel = new Ext.FormPanel({
 		        labelAlign: config.labelAlign,
 		        border: false,
+		        bodyStyle:'padding:10px 0px 10px 10px',
 		        items: [{
 		            layout:'column',
 		            border: false,
@@ -347,7 +350,26 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	}
 	
 	, initShortcutsPanel: function( config ) {
-		this.shortcutsPanel = new Sbi.execution.SubobjectsPanel();
+		
+		this.subobjectsPanel =  new Sbi.execution.SubobjectsPanel({border: false});
+		this.snapshotsPanel =  new Sbi.execution.SnapshotsPanel({border: false});
+		this.viewpointsPanel =  new Sbi.execution.ViewpointsPanel({border: false});
+		
+		this.shortcutsPanel = new Ext.Panel({
+			layout:'accordion',
+		    layoutConfig:{
+		          animate:true
+		    },
+		    border: false,
+		    items: [		        
+		        this.viewpointsPanel
+		      , this.subobjectsPanel
+		      , this.snapshotsPanel		      
+		    ]
+		});
+			
+			
+			
 		
 		return this.shortcutsPanel;
 	}

@@ -138,7 +138,7 @@ Sbi.execution.SnapshotsPanel = function(config) {
 			rowdblclick: fireOnSelectedEvent
         }
         , collapsible: false
-        , title: LN('sbi.execution.subobjects.title')
+        , title: LN('sbi.execution.snapshots.title')
         , autoScroll: true
         , sm : this.sm
         //, layout: 'fit'

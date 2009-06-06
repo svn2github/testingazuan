@@ -70,6 +70,9 @@ Sbi.locale.ln['sbi.execution.roleselection.title']  = 'Role selection';
 Sbi.locale.ln['sbi.execution.roleselection.fieldlabel']  = 'Role';
 Sbi.locale.ln['sbi.execution.roleselection.emptytext']  = 'Select a role ...';
 
+Sbi.locale.ln['sbi.execution.viewpoints.title'] = 'Viepoints';
+Sbi.locale.ln['sbi.execution.snapshots.title'] = 'Snapshots';
+
 Sbi.locale.ln['sbi.execution.subobjects.title'] = 'Customized views';
 Sbi.locale.ln['sbi.execution.subobjects.name'] = 'name';
 Sbi.locale.ln['sbi.execution.subobjects.description'] = 'description';
@@ -92,6 +95,7 @@ Sbi.locale.ln['sbi.execution.sendTo'] = 'Send to';
 Sbi.locale.ln['sbi.execution.stpf.ok'] = 'Document saved correctly';
 Sbi.locale.ln['sbi.execution.stpf.alreadyPresent'] = 'Already present in personal folder';
 Sbi.locale.ln['sbi.execution.stpf.error'] = 'Document NOT saved due to technical problems';
+
 // Remember me
 Sbi.locale.ln['sbi.execution.saveRememberMe'] = 'Remember me!! (save this execution as my Hot Link)';
 Sbi.locale.ln['sbi.rememberme.name'] = 'Name';

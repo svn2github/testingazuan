@@ -138,7 +138,7 @@ Sbi.execution.ViewpointsPanel = function(config) {
 			rowdblclick: fireOnSelectedEvent
         }
         , collapsible: false
-        , title: LN('sbi.execution.subobjects.title')
+        , title: LN('sbi.execution.viewpoints.title')
         , autoScroll: true
         , sm : this.sm
         //, layout: 'fit'

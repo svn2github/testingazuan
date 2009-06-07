@@ -32,19 +32,61 @@
     .list-view .document-item-icon .REPORT-icon {
     	width:96px;
         height:96px;
-        background-image:url('../../../img/analiticalmodel/browser/report-document.png')!important;
+        background-image:url('../../../img/analiticalmodel/browser/document_report.png')!important;
     }
     
     .list-view .document-item-icon .OLAP-icon {
     	width:96px;
         height:96px;
-        background-image:url('../../../img/analiticalmodel/browser/olap-document.png')!important;
+        background-image:url('../../../img/analiticalmodel/browser/document_olap.png')!important;
     }
     
-    .list-view .document-item-icon .CHART-icon {
+    .list-view .document-item-icon .OFFICE_DOC-icon {
     	width:96px;
         height:96px;
-        background-image:url('../../../img/analiticalmodel/browser/chart-document.png')!important;
+        background-image:url('../../../img/analiticalmodel/browser/document_officedoc.png')!important;
+    }
+    
+    .list-view .document-item-icon .DOCUMENT_COMPOSITE-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document_dashboard.png')!important;
+    }
+    
+    .list-view .document-item-icon .DASH-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document_chart.png')!important;
+    }
+    
+    .list-view .document-item-icon .DATA_MINING-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document_datamining.png')!important;
+    }
+    
+    .list-view .document-item-icon .MAP-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document_geo.png')!important;
+    }
+    
+    .list-view .document-item-icon .DATAMART-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document_qbe.png')!important;
+    }
+    
+    .list-view .document-item-icon .DOSSIER-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document_dossier.png')!important;
+    }
+    
+     .list-view .document-item-icon .KPI-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document_kpi.png')!important;
     }
     
     

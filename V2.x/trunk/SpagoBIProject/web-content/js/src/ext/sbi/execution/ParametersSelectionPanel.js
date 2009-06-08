@@ -150,23 +150,70 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	}
 
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
-		this.fields = [];
+		this.fields = {};
 		for(var i = 0; i < parameters.length; i++) {
 			//alert(parameters[i].toSource());
-			this.fields[i] = this.createField( executionInstance, parameters[i] ); 
-			this.columns[i%this.columns.length].add( this.fields[i] );
+			var field = this.createField( executionInstance, parameters[i] );
+			this.fields[parameters[i].id] = field;
+			this.columns[i%this.columns.length].add( field );
 		}
 		this.doLayout();
+		
+		for(var j = 0; j < parameters.length; j++) {
+			
+			if(parameters[j].dependencies.length > 0) {
+				var field = this.fields[parameters[j].id];
+				var p = parameters[j];
+				
+				field.on('focus', function(f){
+					for(var i = 0; i < f.dependencies.length; i++) {
+						var field = this.fields[ f.dependencies[i] ];
+						field.getEl().addClass('x-form-dependent-field');                         
+					}		
+					//alert(f.getName() + ' get focus');
+				}, this, {delay:250});
+				
+				field.on('blur', function(f){
+					//alert(f.getName() + ' lose focus');
+					for(var i = 0; i < f.dependencies.length; i++) {
+						var field = this.fields[ f.dependencies[i] ];
+						field.getEl().removeClass('x-form-dependent-field');                         
+					}
+				}, this);
+				
+				for(var i = 0; i < field.dependencies.length; i++) {
+					var f = this.fields[ field.dependencies[i] ];
+					f.dependants = f.dependants || [];
+					f.dependants.push( field.getName() );                      
+				}	
+			}			
+		}
+		
+		
+		for(var p in this.fields) {
+			this.fields[p].on('change', function(f, newVal, oldVal) {
+				for(var i = 0; i < f.dependants.length; i++) {
+					var field = this.fields[ f.dependants[i] ];
+					if(field.initialConf.selectionType === 'COMBOBOX'){ 
+						field.store.load();
+					}
+				}
+			}, this); 
+			
+		}
+		
+		
+		
 	}
 	
 	, getFormState: function() {
 		var state;
 		
 		state = {};
-		for(var i = 0;  i < this.fields.length; i++) {
-			var item = this.fields[i];
-			var value = item.getValue();
-			state[item.getName()] = value;
+		for(p in this.fields) {
+			var field = this.fields[p];
+			var value = field.getValue();
+			state[field.getName()] = value;
 		}
 		
 		return state;
@@ -262,14 +309,21 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		//if(p.dependencies.length > 0) baseConfig.fieldClass = 'background-color:yellow;';
 		
 		if(p.selectionType === 'COMBOBOX') {
-			var param = {};
-			Ext.apply(param, executionInstance);
-			Ext.apply(param, {
+			var baseParams = {};
+			Ext.apply(baseParams, executionInstance);
+			Ext.apply(baseParams, {
 				PARAMETER_ID: p.id
 				, MODE: 'simple'
 			});
 			
 			var store = this.createStore();
+			store.baseParams  = baseParams;
+			store.on('beforeload', function(store, o) {
+				var p = Sbi.commons.Format.toString(this.getFormState());
+				o.params = o.params || {};
+				o.params.PARAMETERS = p;
+				return true;
+			}, this);
 			
 			field = new Ext.form.ComboBox(Ext.apply(baseConfig, {
 				tpl: '<tpl for="."><div ext:qtip="{label} ({value}): {description}" class="x-combo-list-item">{label}</div></tpl>'
@@ -278,7 +332,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 			    , store :  store
 			    , displayField:'label'
 			    , valueField:'value'
-			    , emptyText: 'select value'
+			    , emptyText: ''
 			    , typeAhead: true
 			    , triggerAction: 'all'
 			    , selectOnFocus:true
@@ -292,7 +346,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 			    }
 			}));
 					
-			store.load({params: param});
+			store.load(/*{params: param}*/);
 						
 		} else if(p.selectionType === 'LIST' || p.selectionType ===  'CHECK_LIST') {
 			
@@ -325,14 +379,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 			}			
 		}
 		
-		if(p.dependencies.length > 0) {
-			field.on('focus', function(f){
-				//f.el.addClass('x-form-dependent-field');
-				//f.el.setStyle('background','#DFE8F6');
-
-				//alert('pippo');
-			});
-		}
+		field.initialConf = p;
+		field.dependencies = p.dependencies;
 		
 		return field;
 	}

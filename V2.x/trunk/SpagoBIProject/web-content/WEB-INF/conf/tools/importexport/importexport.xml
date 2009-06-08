@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <IMPORTEXPORT>
-    <CURRENTVERSION version="2.1.0"/>
+    <CURRENTVERSION version="2.2.0"/>
 	<EXPORTER class="it.eng.spagobi.tools.importexport.ExportManager"
 	          exportFolder="${java.io.tmpdir}/exports" />
 	<IMPORTER class="it.eng.spagobi.tools.importexport.ImportManager" 
@@ -12,6 +12,9 @@
 		<TRANSFORM from="{from version}" to="{to version}" class="{transformer class complete name}" />
 		 -->
 	</TRANSFORMERS>
+	<TRANSFORMERS>
+		<TRANSFORM from="2.1.0" to="2.2.0" class="it.eng.spagobi.tools.importexport.transformers.TransformerFrom2_1_0To2_2_0" />
+	</TRANSFORMERS>	
 	<ASSOCIATIONS_REPOSITORY path="Repository_Association_Files"/>
 	<IMPORT_FILE_MAX_SIZE>5242880</IMPORT_FILE_MAX_SIZE>
 </IMPORTEXPORT>

@@ -22,78 +22,61 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.importexport.transformers;
 
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 import it.eng.spagobi.tools.importexport.ITransformer;
-import it.eng.spagobi.tools.importexport.ImportExportConstants;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 
-public class TransformerFrom1_9To1_9_1 implements ITransformer {
+import org.apache.log4j.Logger;
 
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.tools.importexport.ITransformer#transform(byte[], java.lang.String, java.lang.String)
-	 */
+public class TransformerFrom2_1_0To2_2_0 implements ITransformer {
+
+	static private Logger logger = Logger.getLogger(TransformerFrom2_1_0To2_2_0.class);
+	
 	public byte[] transform(byte[] content, String pathImpTmpFolder, String archiveName) {
+		logger.debug("IN");
 		try {
 			TransformersUtilities.decompressArchive(pathImpTmpFolder, archiveName, content);
 		} catch(Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-                                   "transform", "Error while decompressing 1.9 exported archive" + e);	
+			logger.error("Error while unzipping 2.1.0 exported archive", e);	
 		}
 		archiveName = archiveName.substring(0, archiveName.lastIndexOf('.'));
 		changeDatabase(pathImpTmpFolder, archiveName);
-
 		// compress archive
 		try {
 			content = TransformersUtilities.createExportArchive(pathImpTmpFolder, archiveName);
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), 
-					               "transform", "Error while creating creating the export archive " + e);	
+			logger.error("Error while creating creating the export archive", e);	
 		}
 		// delete tmp dir content
 		File tmpDir = new File(pathImpTmpFolder);
 		GeneralUtilities.deleteContentDir(tmpDir);
+		logger.debug("OUT");
 		return content;
 	}
 	
 	private void changeDatabase(String pathImpTmpFolder, String archiveName) {
+		logger.debug("IN");
 		Connection conn = null;
-		try{
+		try {
 			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
-			String sql = "";
-			Statement stmt = conn.createStatement();
-			sql =  "ALTER TABLE sbi_paruse ADD COLUMN SELECTION_TYPE VARCHAR";
-			stmt.execute(sql);
-			sql =  "UPDATE sbi_paruse SET SELECTION_TYPE='LIST'";
-			stmt.executeUpdate(sql);
-			sql =  "ALTER TABLE sbi_paruse ADD COLUMN MULTIVALUE_FLAG SMALLINT";
-			stmt.executeUpdate(sql);
-			sql =  "UPDATE sbi_paruse SET MULTIVALUE_FLAG=0";
-			stmt.executeUpdate(sql);
-			sql =  "ALTER TABLE sbi_parameters ADD COLUMN FUNCTIONAL_FLAG SMALLINT";
-			stmt.execute(sql);
-			sql =  "UPDATE sbi_parameters SET FUNCTIONAL_FLAG=1";
-			stmt.executeUpdate(sql);
-			sql =  "CREATE MEMORY TABLE SBI_EVENTS_ROLES(EVENT_ID INTEGER NOT NULL, ROLE_ID INTEGER NOT NULL)";
-			stmt.execute(sql);
-			sql =  "ALTER TABLE sbi_events_log ALTER COLUMN ID INTEGER NOT NULL";
-			stmt.execute(sql);
-			sql =  "ALTER TABLE sbi_events_log ADD COLUMN HANDLER VARCHAR DEFAULT 'it.eng.spagobi.events.handlers.DefaultEventPresentationHandler' NOT NULL";
-			stmt.execute(sql);
+
 			conn.commit();
-			conn.close();
 		} catch (Exception e) {
-			SpagoBITracer.critical(ImportExportConstants.NAME_MODULE, this.getClass().getName(), "changeDatabase",
-		                           "Error while changing database " + e);	
+			logger.error("Error while changing database", e);	
+		} finally {
+			logger.debug("OUT");
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				logger.error("Error closing connection to export database", e);
+			}
 		}
 	}
 	
 
-	
-
-
-
-	
 }

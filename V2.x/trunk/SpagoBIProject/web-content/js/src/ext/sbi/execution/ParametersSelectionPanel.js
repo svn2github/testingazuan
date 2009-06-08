@@ -45,38 +45,6 @@
   */
 
 
-	/**
-	 * Override Ext.FormPanel so that in case we create a form without items it still has a item list.
-	 * ERROR IS : this.items has no properties
-	 */
-
-	Ext.override(Ext.FormPanel, {
-		// private
-		initFields : function(){
-			//BEGIN FIX It can happend that there is a form created without items (json)
-			this.initItems();
-			//END FIX
-			var f = this.form;
-			var formPanel = this;
-			var fn = function(c){
-				if(c.doLayout && c != formPanel){
-					Ext.applyIf(c, {
-						labelAlign: c.ownerCt.labelAlign,
-						labelWidth: c.ownerCt.labelWidth,
-						itemCls: c.ownerCt.itemCls
-					});
-					if(c.items){
-						c.items.each(fn);
-					}
-				}else if(c.isFormField){
-					f.add(c);
-				}
-			};
-			this.items.each(fn);
-		}
-	});
-
-
 Ext.ns("Sbi.execution");
 
 Sbi.execution.ParametersSelectionPanel = function(config) {
@@ -184,24 +152,14 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
 		this.fields = [];
 		for(var i = 0; i < parameters.length; i++) {
+			//alert(parameters[i].toSource());
 			this.fields[i] = this.createField( executionInstance, parameters[i] ); 
 			this.columns[i%this.columns.length].add( this.fields[i] );
 		}
 		this.doLayout();
 	}
 	
-	, getFormState: function(asObject) {
-		var r;
-		if(asObject === undefined || asObject === true) {
-			r = this.getFormStateAsObject();
-		} else {
-			r = this.getFormStateAsString();
-		}
-		
-		return r;
-	}
-	
-	, getFormStateAsObject: function() {
+	, getFormState: function() {
 		var state;
 		
 		state = {};
@@ -212,93 +170,6 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		}
 		
 		return state;
-	}
-	
-	, getFormStateAsString: function() {
-		var formState = this.getFormStateAsObject();
-		var str = '{';
-		for (p in formState) {
-			var obj = formState[p];
-			if (typeof obj == 'object') {
-				str += p + ': ['
-				for (count in obj) {
-					var temp = obj[count];
-					if (typeof temp == 'function') {
-						continue;
-					}
-					if (typeof obj == 'string') {
-						// the String.escape function escapes the passed string for ' and \
-						temp = String.escape(temp);
-						str += '\'' + temp + '\', ';
-					} else {
-						str += temp + ', ';
-					}
-				}
-				// removing last ', ' string
-				if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
-					str = str.substring(0, str.length - 3);
-				}
-				str += '], ';
-			} else if (typeof obj == 'string') {
-				// the String.escape function escapes the passed string for ' and \
-				obj = String.escape(obj);
-				str += p + ': \'' +  obj + '\', ';
-			} else {
-				// case number or boolean
-				str += p + ': ' +  obj + ', ';
-			}
-		}
-		if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
-			str = str.substring(0, str.length - 3);
-		}
-		str += '}';
-		
-		return str;
-	}
-	
-	// this method is used in order to invoke the old it.eng.spagobi.analiticalmodel.execution.service.ExecuteAndSendAction
-	// Problems: parameters are sent in a plain string, not as a JSON object, date parameter management is missing,
-	// the separator between values is ';'
-	// This method should be removed when rewriting it.eng.spagobi.analiticalmodel.execution.service.ExecuteAndSendAction
-	, getFormStateAsStringOldSyntax: function() {
-		var formState = this.getFormStateAsObject();
-		var str = '';
-		for (p in formState) {
-			var obj = formState[p];
-			if (typeof obj == 'object') {
-				str += p + '='
-				for (count in obj) {
-					var temp = obj[count];
-					if (typeof temp == 'function') {
-						continue;
-					}
-					if (typeof obj == 'string') {
-						// the String.escape function escapes the passed string for ' and \
-						temp = String.escape(temp);
-						str += temp + ';'; // using ';' as separator between values (TODO: change separator)
-					} else {
-						str += temp + ';'; // using ';' as separator between values (TODO: change separator)
-					}
-				}
-				// removing last ';' string
-				if (str.length > 1 && str.substring(str.length - 2, str.length - 1) == ';') {
-					str = str.substring(0, str.length - 2);
-				}
-				str += '&';
-			} else if (typeof obj == 'string') {
-				// the String.escape function escapes the passed string for ' and \
-				obj = String.escape(obj);
-				str += p + '=' +  obj + '&';
-			} else {
-				// case number or boolean
-				str += p + '=' +  obj + '&';
-			}
-		}
-		if (str.length > 1 && str.substring(str.length - 2, str.length - 1) == '&') {
-			str = str.substring(0, str.length - 2);
-		}
-		
-		return str;
 	}
 	
 	
@@ -366,10 +237,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		      , this.subobjectsPanel
 		      , this.snapshotsPanel		      
 		    ]
-		});
-			
-			
-			
+		});			
 		
 		return this.shortcutsPanel;
 	}
@@ -386,9 +254,12 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		   , allowBlank: !p.mandatory
 		};
 		
-		if(p.mandatory === true) {
-			baseConfig.labelStyle = 'font-weight:bold';
-		}
+		var labelStyle = '';
+		labelStyle += (p.mandatory === true)?'font-weight:bold;': '';
+		labelStyle += (p.dependencies.length > 0)?'font-style: italic;': '';
+		baseConfig.labelStyle = labelStyle;
+		
+		//if(p.dependencies.length > 0) baseConfig.fieldClass = 'background-color:yellow;';
 		
 		if(p.selectionType === 'COMBOBOX') {
 			var param = {};
@@ -432,7 +303,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 			
 			var store = this.createStore();
 			store.on('beforeload', function(store, o) {
-				var p = this.getFormState(false);
+				var p = Sbi.commons.Format.toString(this.getFormState());
 				o.params.PARAMETERS = p;
 				return true;
 			}, this);
@@ -452,6 +323,15 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 			} else {
 				field = new Ext.form.TextField(baseConfig);
 			}			
+		}
+		
+		if(p.dependencies.length > 0) {
+			field.on('focus', function(f){
+				//f.el.addClass('x-form-dependent-field');
+				//f.el.setStyle('background','#DFE8F6');
+
+				//alert('pippo');
+			});
 		}
 		
 		return field;

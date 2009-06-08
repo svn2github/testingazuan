@@ -46,6 +46,11 @@
 	background-image: url('../../../img/printer16.png') !important;
 }
 
+.x-form-dependent-field {
+	background-color: yellow;
+	color: blue;
+}
+
 .execution-toolbar {
      color: grey;
 }

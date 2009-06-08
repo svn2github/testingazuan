@@ -30,7 +30,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 
-import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
@@ -116,7 +115,10 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 		String typeCode; // SpagoBIConstants.INPUT_TYPE_X
 		boolean mandatory;
 		
-		ObjParuse fatherObject;
+		/*
+		ObjParuse fatherObject;		
+		List dependencies;
+		*/
 		
 		List dependencies;
 		
@@ -129,7 +131,6 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 			typeCode = par.getModalityValue().getITypeCd();			
 			
 			
-			
 			mandatory = false;
 			Iterator it = par.getChecks().iterator();	
 			while (it.hasNext()){
@@ -140,13 +141,55 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 				}
 			} 
 			
+			ExecutionInstance executionInstance =  getContext().getExecutionInstance( ExecutionInstance.class.getName() );
+			ParameterUse biParameterExecModality;
+			
+			try {
+				// load parameter use ...
+				IParameterUseDAO parusedao = DAOFactory.getParameterUseDAO();
+				biParameterExecModality = parusedao.loadByParameterIdandRole(biparam.getParID(), executionInstance.getExecutionRole());
+			} catch (Exception e) {
+				throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to find any valid execution modality for parameter [" + id + "] and role [" + executionInstance.getExecutionRole() + "]", e);
+			}
+			
+			Assert.assertNotNull(biParameterExecModality, "Impossible to find any valid execution modality for parameter [" + id + "] and role [" + executionInstance.getExecutionRole() + "]" );
+			
+			List biParameterExecDependencies;
+			try {
+				IObjParuseDAO objParuseDAO = DAOFactory.getObjParuseDAO();
+				biParameterExecDependencies = objParuseDAO.loadObjParuse(biparam.getId(), biParameterExecModality.getUseID());
+			} catch (EMFUserError e) {
+				throw new SpagoBIServiceException("An error occurred while loading parameter dependecies for parameter [" + id + "]", e);
+			}
+			
+			dependencies = new ArrayList();
+			it = biParameterExecDependencies.iterator();
+			while (it.hasNext()){
+				ObjParuse dependency = (ObjParuse)it.next();
+				Integer objParFatherId = dependency.getObjParFatherId();
+				try {					
+					BIObjectParameter objParFather = DAOFactory.getBIObjectParameterDAO().loadForDetailByObjParId(objParFatherId);
+					dependencies.add(objParFather.getParameterUrlName());
+				} catch (EMFUserError e) {
+					throw new SpagoBIServiceException("An error occurred while loading parameter [" + objParFatherId + "]", e);
+				}
+			}
+			
+			
+			
+			
+			
+			
+			
+			/*
 			try {
 				dependencies = DAOFactory.getObjParuseDAO().getDependencies(biparam.getId());
 			} catch (EMFUserError e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+			*/
+			/*
 			Object[] results = getObjectFather(biparam);
 			BIObjectParameter objParFather = (BIObjectParameter) results[1];
 			ObjParuse objParuse = (ObjParuse) results[0];
@@ -154,9 +197,10 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 				fatherObject = objParuse;
 				fatherObject.getParuseId(); 
 			}
+			*/
 		}
 		
-		
+		/*
 		private Object[] getObjectFather(BIObjectParameter biparam) {
 			BIObjectParameter objParFather = null;
 			ObjParuse objParuse = null;
@@ -209,6 +253,7 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 		
 			return new Object[] { objParuse, objParFather };
 		}
+		*/
 		
 		public String getId() {
 			return id;
@@ -266,6 +311,8 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 		public void setSelectionType(String selectionType) {
 			this.selectionType = selectionType;
 		}
+		
+		/*
 
 		public ObjParuse getFatherObject() {
 			return fatherObject;
@@ -274,7 +321,8 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 		public void setFatherObject(ObjParuse fatherObject) {
 			this.fatherObject = fatherObject;
 		}
-
+		*/
+		
 		public List getDependencies() {
 			return dependencies;
 		}

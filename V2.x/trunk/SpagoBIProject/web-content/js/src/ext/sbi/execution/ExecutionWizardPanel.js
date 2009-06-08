@@ -208,49 +208,8 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	
 	, loadUrlForExecution: function() {
 		var formState = this.parametersSelectionPanel.getFormState();
-		var str = '{';
-		for (p in formState) {
-			var obj = formState[p];
-			if (typeof obj == 'object') {
-				str += p + ': ['
-				for (count in obj) {
-					var temp = obj[count];
-					if (typeof temp == 'function') {
-						continue;
-					}
-					if (typeof temp == 'string') {
-						// the String.escape function escapes the passed string for ' and \
-						temp = String.escape(temp);
-						str += '\'' + temp + '\', ';
-					} else if (typeof temp == 'date') {
-						temp = Ext.util.Format.date(temp, Sbi.config.clientServerDateFormat);
-						str += p + ': \'' +  temp + '\', ';
-					} else {
-						str += temp + ', ';
-					}
-				}
-				// removing last ', ' string
-				if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
-					str = str.substring(0, str.length - 3);
-				}
-				str += '], ';
-			} else if (typeof obj == 'string') {
-				// the String.escape function escapes the passed string for ' and \
-				obj = String.escape(obj);
-				str += p + ': \'' +  obj + '\', ';
-			} else if (typeof obj == 'date') {
-				obj = Ext.util.Format.date(obj, Sbi.config.clientServerDateFormat);
-				str += p + ': \'' +  obj + '\', ';
-			} else {
-				// case number or boolean
-				str += p + ': ' +  obj + ', ';
-			}
-		}
-		if (str.length > 1 && str.substring(str.length - 3, str.length - 1) == ', ') {
-			str = str.substring(0, str.length - 3);
-		}
-		str += '}';
-		this.executionInstance.PARAMETERS = str;
+		this.executionInstance.PARAMETERS = Sbi.commons.Format.toString( formState );
+		alert(formState + '\n---\n' + this.executionInstance.PARAMETERS);
 		this.documentViewPanel.loadUrlForExecution( this.executionInstance );
 	}
 
@@ -312,7 +271,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		var sendToIframeUrl = this.services['showSendToForm'] 
 		        + '&objlabel=' + this.executionInstance.OBJECT_LABEL
 		        + '&objid=' + this.executionInstance.OBJECT_ID
-				+ '&' + this.parametersSelectionPanel.getFormStateAsStringOldSyntax();
+				+ '&' + Sbi.commons.Format.toStringOldSyntax(this.parametersSelectionPanel.getFormState());
 		this.win_sendTo = new Sbi.execution.SendToWindow({'url': sendToIframeUrl});
 		this.win_sendTo.show();
 	}

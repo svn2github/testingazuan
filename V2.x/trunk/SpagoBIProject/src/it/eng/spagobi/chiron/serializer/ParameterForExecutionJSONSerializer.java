@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
+import java.util.Iterator;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.eng.spagobi.analiticalmodel.document.x.GetParametersForExecutionAction;
@@ -47,7 +50,13 @@ public class ParameterForExecutionJSONSerializer implements Serializer {
 			result.put("selectionType", parameter.getSelectionType() );
 			result.put("typeCode", parameter.getTypeCode() );
 			result.put("mandatory", parameter.isMandatory() );
-			
+			JSONArray dependencies = new JSONArray();
+			Iterator it = parameter.getDependencies().iterator();
+			while( it.hasNext() ) {
+				String dependency = (String)it.next();
+				dependencies.put(dependency);
+			}
+			result.put("dependencies", dependencies);
 			
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);

@@ -51,7 +51,7 @@ Sbi.execution.toolbar.ExecutionToolbar = function(config) {
 	this.buttons = this.createRoleSelectionButtons();
 	
 	var c = Ext.apply({}, config, {
-		items: ['->', this.buttons]
+		items: [this.buttons]
 	}); 
     
 	// constructor
@@ -83,12 +83,14 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 
 	, update: function(pageNumber, executionInstance) {
 		this.reset();
-		this.addFill();
 		if (pageNumber == 0) {
 			this.addButton(this.createRoleSelectionButtons());
+			this.addFill();
 		} else if (pageNumber == 1) {
 			this.addButton(this.createParametersSelectionButtons());
+			this.addFill();
 		}  else if (pageNumber == 2) {
+			this.addFill();
 			this.addButton(this.createExecutionPageButtons());
 		}
 	}

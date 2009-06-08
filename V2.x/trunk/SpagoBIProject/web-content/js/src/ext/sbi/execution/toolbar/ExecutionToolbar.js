@@ -65,6 +65,7 @@ Sbi.execution.toolbar.ExecutionToolbar = function(config) {
 	// constructor
     Sbi.execution.toolbar.ExecutionToolbar.superclass.constructor.call(this, c);
     
+    this.addEvents('backbuttonclick');
     this.addEvents('rolesformsubmit');
     this.addEvents('parametersformsubmit');
     this.addEvents('saveviewpointbuttonclick');
@@ -113,6 +114,11 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 	}
 	
 	, createParametersSelectionButtons: function() {
+		var previousButton =  new Ext.Toolbar.Button({
+			iconCls: 'icon-back' 
+		    , scope: this
+		    , handler : function() {this.fireEvent('backbuttonclick');}
+		});
 		var executeButton = new Ext.Toolbar.Button({
 			iconCls: 'icon-execute'
 		    , scope: this
@@ -128,11 +134,15 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 	     	, scope: this
 	    	, handler : function() {this.fireEvent('clearparametersbuttonclick');}
 		});
-		return [executeButton, saveViewPointButton, clearParametersButton];
+		return [previousButton, executeButton, saveViewPointButton, clearParametersButton];
 	}
 	
 	, createExecutionPageButtons: function(executionInstance) {
-		
+		var previousButton =  new Ext.Toolbar.Button({
+			iconCls: 'icon-back' 
+		    , scope: this
+		    , handler : function() {this.fireEvent('backbuttonclick');}
+		});
 		var refreshButton = new Ext.Toolbar.Button({
 			iconCls: 'icon-refresh' 
 	     	, scope: this
@@ -149,7 +159,7 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 	    	, handler : function() {this.fireEvent('printbuttonclick');}
 		});
 		this.loadDocumentViewButtons(executionInstance);
-		return [refreshButton, ratingButton, printButton];
+		return [previousButton, refreshButton, ratingButton, printButton];
 
 	}
 	

@@ -116,6 +116,7 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     */
 	
     this.tb = new Sbi.execution.toolbar.ExecutionToolbar({initialPage: 0});
+    this.tb.addListener('backbuttonclick', this.moveToPreviousPage, this);
     this.tb.addListener('rolesformsubmit', this.moveToNextPage, this);
     this.tb.addListener('parametersformsubmit', this.moveToNextPage, this);
     this.tb.addListener('refreshbuttonclick', this.onRefreshButtonClicked, this);

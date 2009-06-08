@@ -40,7 +40,7 @@ import com.liferay.portal.service.UserServiceUtil;
 /**
  * 
  * @author Angelo Bernabei (angelo.bernabei@eng.it)
- * @contribution of Sven Werlen (sven.werlen@savoirfairelinux.com)
+ * @author Sven Werlen (sven.werlen@savoirfairelinux.com)
  */
 public class LiferaySecurityServiceSupplierImpl implements ISecurityServiceSupplier {
 

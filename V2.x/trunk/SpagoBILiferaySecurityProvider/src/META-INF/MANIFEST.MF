@@ -4,3 +4,5 @@ Name: sbi.security.liferay-2.2.0.jar
 Implementation-Title: SpagoBILiferaySecurityProvider
 Implementation-Version: 2.2.0
 
+Liferay Version 5.2.2
+

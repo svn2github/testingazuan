@@ -123,5 +123,10 @@
  	<CONFIG/>
  </ACTION>
  
+ <ACTION name="GET_TOOLBAR_BUTTONS_VISIBILITY_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.GetToolbarButtonsVisibilityAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
 </ACTIONS>
 

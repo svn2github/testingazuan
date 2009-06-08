@@ -58,16 +58,20 @@ public class UserFunctionalityDAO extends AbstractHibernateDAO implements IUserF
 		
 		List roleTypes = new ArrayList();
 		
-		for (int i=0;i<roles.length;i++){
-		    String hql = "from SbiExtRoles ser where ser.name=?";
-		    Query query = aSession.createQuery(hql);		   
-		    query.setParameter(0, roles[i]);
-		    SbiExtRoles spaobiRole=(SbiExtRoles)query.uniqueResult();
-		    //strRoles=strRoles+"'"+spaobiRole.getRoleType().getValueCd()+"',";
-		    //strRoles=strRoles+spaobiRole.getRoleType().getValueCd()+",";
-		    String roleTypeCode = spaobiRole.getRoleType().getValueCd();
-		    if (!roleTypes.contains(roleTypeCode)) roleTypes.add(roleTypeCode);
-		}
+		for (int i = 0; i < roles.length; i++) {
+				String hql = "from SbiExtRoles ser where ser.name=?";
+				Query query = aSession.createQuery(hql);
+				query.setParameter(0, roles[i]);
+				logger.debug("Read role of=" + roles[i]);
+				SbiExtRoles spaobiRole = (SbiExtRoles) query.uniqueResult();
+				if (spaobiRole != null) {
+					String roleTypeCode = spaobiRole.getRoleType().getValueCd();
+					if (!roleTypes.contains(roleTypeCode))
+						roleTypes.add(roleTypeCode);
+				}else{
+					logger.warn("The role " + roles[i]+ "doesn't exist in SBI_EXT_ROLES");
+				}
+			}
 		logger.debug("Role type="+roleTypes);
 		if (roleTypes.size()==0) logger.warn("No role types found for the user...!!!!!");
 		

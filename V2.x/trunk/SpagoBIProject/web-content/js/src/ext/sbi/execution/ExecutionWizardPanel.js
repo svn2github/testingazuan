@@ -77,6 +77,7 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 	
 	this.activePanel = 0;
 	
+	/*
 	this.ttBarButtons = new Array();
 	
 	this.ttBarButtons['previous'] =  new Ext.Toolbar.Button({
@@ -112,6 +113,20 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     	hideMode: "offsets",
         items: ['->', this.ttBarButtons['previous'], this.ttBarButtons['next']]
     });
+    */
+	
+    this.tb = new Sbi.execution.toolbar.ExecutionToolbar({initialPage: 0});
+    this.tb.addListener('rolesformsubmit', this.moveToNextPage, this);
+    this.tb.addListener('parametersformsubmit', this.moveToNextPage, this);
+    this.tb.addListener('refreshbuttonclick', this.onRefreshButtonClicked, this);
+    this.tb.addListener('sendmailbuttonclick', this.onSendMailButtonClicked, this);
+    this.tb.addListener('saveintopersonalfolderbuttonclick', this.onSaveIntoPersonalFolderButtonClicked, this);
+    this.tb.addListener('saveremembermebuttonclick', this.onSaveRememberMeButtonClicked, this);
+    this.tb.addListener('notesbuttonclick', this.onNotesButtonClicked, this);
+    this.tb.addListener('metadatabuttonclick', this.onMetadataButtonClicked, this);
+    this.tb.addListener('ratingbuttonclick', this.onRatingButtonClicked, this);
+    this.tb.addListener('printbuttonclick', this.onPrintButtonClicked, this);
+    
 	
 	var c = Ext.apply({}, config, {
 		layout:'card',
@@ -130,12 +145,12 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     this.roleSelectionPanel.addListener('onload', this.onRolesForExecutionLoaded, this);
     
     this.documentViewPanel.addListener('loadurlfailure', this.onLoadUrlFailure, this);
-    this.documentViewPanel.addListener('sendMailButtonClicked', this.onSendMailButtonClicked, this);
-    this.documentViewPanel.addListener('saveIntoPersonalFolderButtonClicked', this.onSaveIntoPersonalFolderButtonClicked, this);
-    this.documentViewPanel.addListener('saveRememberMeButtonClicked', this.onSaveRememberMeButtonClicked, this);
-    this.documentViewPanel.addListener('notesButtonClicked', this.onNotesButtonClicked, this);
-    this.documentViewPanel.addListener('metadataButtonClicked', this.onMetadataButtonClicked, this);
-    this.documentViewPanel.addListener('ratingButtonClicked', this.onRatingButtonClicked, this);
+    //this.documentViewPanel.addListener('sendMailButtonClicked', this.onSendMailButtonClicked, this);
+    //this.documentViewPanel.addListener('saveIntoPersonalFolderButtonClicked', this.onSaveIntoPersonalFolderButtonClicked, this);
+    //this.documentViewPanel.addListener('saveRememberMeButtonClicked', this.onSaveRememberMeButtonClicked, this);
+    //this.documentViewPanel.addListener('notesButtonClicked', this.onNotesButtonClicked, this);
+    //this.documentViewPanel.addListener('metadataButtonClicked', this.onMetadataButtonClicked, this);
+    //this.documentViewPanel.addListener('ratingButtonClicked', this.onRatingButtonClicked, this);
     
     //this.subObjectsPanel.addListener('onselected', this.onSubObjectSelected, this);
     
@@ -176,11 +191,11 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		if(this.activePanel == 2 && pageNumber == 1) {
 			delete this.executionInstance.SBI_SUBOBJECT_ID;
 		}
-			
+		this.tb.update(pageNumber, this.executionInstance);
 		this.activePanel = pageNumber;
 		this.getLayout().setActiveItem( this.activePanel );
 	}
-    
+
     , moveToPreviousPage: function() {
     	this.moveToPage( this.activePanel-1 );
 	}
@@ -267,12 +282,16 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	}
 	*/
 	
+	, onRefreshButtonClicked: function () {
+		this.documentViewPanel.refreshExecution();
+	}
+	
 	, onSendMailButtonClicked: function () {
 		var sendToIframeUrl = this.services['showSendToForm'] 
 		        + '&objlabel=' + this.executionInstance.OBJECT_LABEL
 		        + '&objid=' + this.executionInstance.OBJECT_ID
 				+ '&' + Sbi.commons.Format.toStringOldSyntax(this.parametersSelectionPanel.getFormState());
-		this.win_sendTo = new Sbi.execution.SendToWindow({'url': sendToIframeUrl});
+		this.win_sendTo = new Sbi.execution.toolbar.SendToWindow({'url': sendToIframeUrl});
 		this.win_sendTo.show();
 	}
 	
@@ -323,22 +342,26 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	
 	
 	, onSaveRememberMeButtonClicked: function () {
-		this.win_saveRememberMe = new Sbi.execution.SaveRememberMeWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
+		this.win_saveRememberMe = new Sbi.execution.toolbar.SaveRememberMeWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
 		this.win_saveRememberMe.show();
 	}
 	
 	, onNotesButtonClicked: function () {
-		this.win_notes = new Sbi.execution.NotesWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
+		this.win_notes = new Sbi.execution.toolbar.NotesWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
 		this.win_notes.show();
 	}
 	
 	, onMetadataButtonClicked: function () {
-		this.win_metadata = new Sbi.execution.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
+		this.win_metadata = new Sbi.execution.toolbar.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
 		this.win_metadata.show();
 	}
 	
 	, onRatingButtonClicked: function () {
-		this.win_rating = new Sbi.execution.RatingWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
+		this.win_rating = new Sbi.execution.toolbar.RatingWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
 		this.win_rating.show();
+	}
+	
+	, onPrintButtonClicked: function () {
+		this.documentViewPanel.print();
 	}
 });

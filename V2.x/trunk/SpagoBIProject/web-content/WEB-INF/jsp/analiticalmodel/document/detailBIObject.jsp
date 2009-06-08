@@ -699,7 +699,7 @@ function saveDocument(goBack) {
 										onclick="addConstraint()"/>
 							</td>
 							<td>
-								<img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/clear.gif", currTheme) %>" 
+								<img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/clear16.gif", currTheme) %>" 
 										alt="<spagobi:message key = "SBIDev.docConf.docDet.eraseRules" />" 
 										title="<spagobi:message key = "SBIDev.docConf.docDet.eraseRules" />" 
 										onclick="clearConstraints()"/>

@@ -87,6 +87,7 @@ public class ExecutionInstance {
 	private String flowId = null;
 	private String executionId = null;
 	private BIObject object = null;
+	private SubObject subObject = null;
 	private String executionRole = null;
 	private String executionModality = null;
 	private IEngUserProfile userProfile = null;
@@ -836,6 +837,14 @@ public class ExecutionInstance {
 
 	public void setDisplaySliders(boolean displaySliders) {
 		this.displaySliders = displaySliders;
+	}
+	
+	public SubObject getSubObject() {
+		return subObject;
+	}
+
+	public void setSubObject(SubObject subObject) {
+		this.subObject = subObject;
 	}
 	
 	/* (non-Javadoc)

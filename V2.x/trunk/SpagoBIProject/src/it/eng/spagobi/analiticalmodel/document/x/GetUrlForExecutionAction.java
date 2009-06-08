@@ -112,6 +112,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 					}
 				}
 				if (canExecuteSubObject) {
+					executionInstance.setSubObject(subObject);
 					String url = executionInstance.getSubObjectUrl(subObject);
 					try {
 						response.put("url", url);
@@ -136,6 +137,8 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 		logger.debug("IN");
 		JSONObject response = new JSONObject();
 		try {
+			// we are not executing a subobject, so delete subobject if existing
+			executionInstance.setSubObject(null);
 			JSONObject executionInstanceJSON = this.getAttributeAsJSONObject( PARAMETERS );
 			executionInstance.refreshParametersValues(executionInstanceJSON, false);
 			List errors = null;

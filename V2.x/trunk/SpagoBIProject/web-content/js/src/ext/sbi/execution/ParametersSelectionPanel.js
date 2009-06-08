@@ -122,6 +122,14 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
     // public methods
     // ----------------------------------------------------------------------------------------
     
+    /**
+     * load data from server in order to synchronize panel content with the given 
+     * execution instance (i.e. doc + role)
+     */
+    , synchronize: function( executionInstance ) {
+		this.loadParametersForExecution( executionInstance );
+	}
+    
 	, loadParametersForExecution: function( executionInstance ) {
 		Ext.Ajax.request({
 	          url: this.services['getParametersForExecutionService'],
@@ -144,9 +152,12 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
 	     });
 		
+		this.shortcutsPanel.synchronize( executionInstance );
+		 /*
 		 this.subobjectsPanel.loadSubObjects( executionInstance );
 	     this.snapshotsPanel.loadSubObjects( executionInstance );
 	     this.viewpointsPanel.loadSubObjects( executionInstance );
+	     */
 	}
 
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
@@ -269,6 +280,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	
 	, initShortcutsPanel: function( config ) {
 		
+		/*
 		this.subobjectsPanel =  new Sbi.execution.SubobjectsPanel({border: false});
 		this.snapshotsPanel =  new Sbi.execution.SnapshotsPanel({border: false});
 		this.viewpointsPanel =  new Sbi.execution.ViewpointsPanel({border: false});
@@ -285,6 +297,11 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 		      , this.snapshotsPanel		      
 		    ]
 		});			
+		
+		return this.shortcutsPanel;
+		*/
+		
+		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
 		
 		return this.shortcutsPanel;
 	}

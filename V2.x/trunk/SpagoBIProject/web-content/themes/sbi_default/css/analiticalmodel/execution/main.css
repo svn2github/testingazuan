@@ -1,3 +1,7 @@
+.grid-button {
+	cursor: pointer
+}
+
 .icon-remove {
 	background-image: url('../../../img/erase.png') !important;
 }

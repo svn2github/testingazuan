@@ -162,7 +162,7 @@ Ext.extend(Sbi.execution.ViewpointsPanel, Ext.grid.GridPanel, {
 	   
     // public methods
 	
-	, loadSubObjects: function( executionInstance ) {
+	, synchronize: function( executionInstance ) {
 		this.subObjectsStore.load({params: executionInstance});
 		this.executionInstance = executionInstance;
 	}

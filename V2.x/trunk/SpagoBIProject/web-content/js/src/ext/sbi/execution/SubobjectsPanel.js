@@ -73,21 +73,7 @@ Sbi.execution.SubobjectsPanel = function(config) {
 		, url: this.services['getSubObjectsService']
     }); 
     
-    //this.subObjectsStore.addListener('load', function() { this.doLayout(); alert('cioc');}, this);
-
-    function visibilityRenderer(val) {
-        if (val) {
-            return LN('sbi.execution.subobjects.visibility.public');
-        } else {
-            return LN('sbi.execution.subobjects.visibility.private');
-        }
-    }
     
-    function fireOnSelectedEvent(grid, rowIndex, event) {
-    	var selectedRecord =  grid.getStore().getAt(rowIndex);
-    	var subObjectId = selectedRecord.get('id');
-    	this.fireEvent('onselected', subObjectId);
-    }
     
     this.executeColumn = new Ext.grid.ButtonColumn({
 	       header:  '',
@@ -97,11 +83,12 @@ Sbi.execution.SubobjectsPanel = function(config) {
 	          var index = this.grid.getView().findRowIndex(t);
 	          var selectedRecord = this.grid.subObjectsStore.getAt(index);
 	          var subObjectId = selectedRecord.get('id');
-	          this.grid.fireEvent('onselected', subObjectId);
+	          alert(subObjectId);
+	          this.grid.fireEvent('executionrequest', subObjectId);
 	       },
 	       width: 25,
 	       renderer : function(v, p, record){
-	           return '<center><img class="x-mybutton-'+this.id+' '+this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
+	           return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
 	       }
 	});
     
@@ -116,7 +103,14 @@ Sbi.execution.SubobjectsPanel = function(config) {
             , {header: LN('sbi.execution.subobjects.owner'), sortable: true, dataIndex: 'owner'}
             , {header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
             , {header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
-            , {header: LN('sbi.execution.subobjects.visibility'), sortable: true, dataIndex: 'visibility', renderer: visibilityRenderer}
+            , {
+            	header: LN('sbi.execution.subobjects.visibility')
+            	, sortable: true
+            	, dataIndex: 'visibility'
+            	, renderer: function(val) {
+            		return val? LN('sbi.execution.subobjects.visibility.public'): LN('sbi.execution.subobjects.visibility.private')
+            	}
+            }
             , this.executeColumn
             , this.sm
         ]
@@ -134,21 +128,19 @@ Sbi.execution.SubobjectsPanel = function(config) {
         	   , handler : this.deleteSelectedSubObjects
            	}
         ]
-        , listeners: {
-			rowdblclick: fireOnSelectedEvent
-        }
         , collapsible: false
         , title: LN('sbi.execution.subobjects.title')
         , autoScroll: true
         , sm : this.sm
-        //, layout: 'fit'
         , height: 200
 	});   
 	
 	// constructor
     Sbi.execution.SubobjectsPanel.superclass.constructor.call(this, c);
     
-    this.addEvents('onselected');
+    this.on('rowdblclick', this.onRowDblClick, this);
+    
+    this.addEvents('executionrequest');
     
 };
 
@@ -162,7 +154,7 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 	   
     // public methods
 	
-	, loadSubObjects: function( executionInstance ) {
+	, synchronize: function( executionInstance ) {
 		this.subObjectsStore.load({params: executionInstance});
 		this.executionInstance = executionInstance;
 	}
@@ -197,8 +189,12 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		}
 	}
 	
-	//, getSelectedSubObjectId: function() {
-	//	return this.selectedSubObjectId;
-	//}
+	// private methods
+	
+	, onRowDblClick: function(grid, rowIndex, event) {
+    	var selectedRecord =  grid.getStore().getAt(rowIndex);
+    	var subObjectId = selectedRecord.get('id');
+    	this.fireEvent('executionrequest', subObjectId);
+    }
 	
 });

@@ -144,6 +144,8 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     
     this.roleSelectionPanel.addListener('onload', this.onRolesForExecutionLoaded, this);
     
+    this.parametersSelectionPanel.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
+    
     this.documentViewPanel.addListener('loadurlfailure', this.onLoadUrlFailure, this);
     //this.documentViewPanel.addListener('sendMailButtonClicked', this.onSendMailButtonClicked, this);
     //this.documentViewPanel.addListener('saveIntoPersonalFolderButtonClicked', this.onSaveIntoPersonalFolderButtonClicked, this);
@@ -181,12 +183,6 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 		}
 		if(this.activePanel == 1 && pageNumber == 2) { // from parameters to document view 			
 			this.loadUrlForExecution();
-			//this.tbar.hide(); // lascia uno spazio bianco al posto della toolbars
-			//this.getTopToolbar().destroy(); // fa comparire sotto il document browser, l'iframe non viene ridimensionato
-			//this.getTopToolbar().disable(); // funziona però non la toglie dalla ui
-			//this.remove(this.getTopToolbar()); // come this.getTopToolbar().destroy()
-			//this.getTopToolbar().hide();
-			//this.doLayout();
 		}
 		if(this.activePanel == 2 && pageNumber == 1) {
 			delete this.executionInstance.SBI_SUBOBJECT_ID;
@@ -224,7 +220,6 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	, loadUrlForExecution: function() {
 		var formState = this.parametersSelectionPanel.getFormState();
 		this.executionInstance.PARAMETERS = Sbi.commons.Format.toString( formState );
-		alert(formState + '\n---\n' + this.executionInstance.PARAMETERS);
 		this.documentViewPanel.loadUrlForExecution( this.executionInstance );
 	}
 
@@ -260,7 +255,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	, onExecutionStarted: function( execContextId ) {
 		//alert(execContextId);
 		this.executionInstance.SBI_EXECUTION_ID = execContextId;
-		this.parametersSelectionPanel.loadParametersForExecution(this.executionInstance);
+		this.parametersSelectionPanel.synchronize(this.executionInstance);
 		//this.loadSubObjects();
 		//this.parametersSelectionPanel.doLayout();
 	}
@@ -274,13 +269,13 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	, loadSubObjects: function() {
 		this.subObjectsPanel.loadSubObjects( this.executionInstance );
 	}
+	*/
 	
-	
-	, onSubObjectSelected: function (subObjectId) {
+	, onSubobjectExecutionRequest: function (subObjectId) {
 		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
 		this.moveToPage(2); // go to execution page
 	}
-	*/
+	
 	
 	, onRefreshButtonClicked: function () {
 		this.documentViewPanel.refreshExecution();

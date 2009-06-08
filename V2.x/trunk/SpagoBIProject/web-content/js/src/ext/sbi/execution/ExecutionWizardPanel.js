@@ -323,7 +323,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	
 	
 	, onSaveRememberMeButtonClicked: function () {
-		this.win_saveRememberMe = new Sbi.execution.SaveRememberMeWindow({});
+		this.win_saveRememberMe = new Sbi.execution.SaveRememberMeWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
 		this.win_saveRememberMe.show();
 	}
 	

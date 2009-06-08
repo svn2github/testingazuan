@@ -48,6 +48,14 @@ Ext.ns("Sbi.execution.toolbar");
 
 Sbi.execution.toolbar.ExecutionToolbar = function(config) {
 	
+	// always declare exploited services first!
+	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
+	this.services = new Array();
+	this.services['getToolbarButtonsVisibilityService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_TOOLBAR_BUTTONS_VISIBILITY_ACTION'
+		, baseParams: params
+	});
+	
 	this.buttons = this.createRoleSelectionButtons();
 	
 	var c = Ext.apply({}, config, {
@@ -91,7 +99,7 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 			this.addFill();
 		}  else if (pageNumber == 2) {
 			this.addFill();
-			this.addButton(this.createExecutionPageButtons());
+			this.addButton(this.createExecutionPageButtons(executionInstance));
 		}
 	}
 	
@@ -123,36 +131,12 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 		return [executeButton, saveViewPointButton, clearParametersButton];
 	}
 	
-	, createExecutionPageButtons: function() {
+	, createExecutionPageButtons: function(executionInstance) {
+		
 		var refreshButton = new Ext.Toolbar.Button({
 			iconCls: 'icon-refresh' 
 	     	, scope: this
 	    	, handler : function() {this.fireEvent('refreshbuttonclick');}
-		});
-		var sendMailButton = new Ext.Toolbar.Button({
-			iconCls: 'icon-sendMail' 
-	     	, scope: this
-	    	, handler : function() {this.fireEvent('sendmailbuttonclick');}
-		});
-		var saveIntoPersonalFolderButton = new Ext.Toolbar.Button({
-			iconCls: 'icon-saveIntoPersonalFolder' 
-	     	, scope: this
-	    	, handler : function() {this.fireEvent('saveintopersonalfolderbuttonclick');}
-		});
-		var saveRememberMeButton = new Ext.Toolbar.Button({
-			iconCls: 'icon-saveRememberMe' 
-	     	, scope: this
-	    	, handler : function() {this.fireEvent('saveremembermebuttonclick');}
-		});
-		var notesButton = new Ext.Toolbar.Button({
-			iconCls: 'icon-notes' 
-	     	, scope: this
-	    	, handler : function() {this.fireEvent('notesbuttonclick');}
-		});
-		var metadataButton = new Ext.Toolbar.Button({
-			iconCls: 'icon-metadata' 
-	     	, scope: this
-	    	, handler : function() {this.fireEvent('metadatabuttonclick');}
 		});
 		var ratingButton = new Ext.Toolbar.Button({
 			iconCls: 'icon-rating' 
@@ -164,8 +148,81 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 	     	, scope: this
 	    	, handler : function() {this.fireEvent('printbuttonclick');}
 		});
-		return [refreshButton, sendMailButton, saveIntoPersonalFolderButton, saveRememberMeButton, 
-		        notesButton, metadataButton, ratingButton, printButton];
+		this.loadDocumentViewButtons(executionInstance);
+		return [refreshButton, ratingButton, printButton];
+
+	}
+	
+	, loadDocumentViewButtons: function(executionInstance) {
+		
+		Ext.Ajax.request({
+	        url: this.services['getToolbarButtonsVisibilityService'],
+	        params: {'SBI_EXECUTION_ID': executionInstance.SBI_EXECUTION_ID},
+	        callback : function(options , success, response) {
+	  	  		if(success) {
+		      		if (response && response.responseText !== undefined) {
+		      			var content = Ext.util.JSON.decode( response.responseText );
+		      			if (content !== undefined) {
+		      				this.addProfiledButtons(content);
+		      			} else {
+			      			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load toolbar buttons', 'Service Error');
+			      		}
+		      		} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load toolbar buttons', 'Service Error');
+		      		}
+	  	  		} else { 
+	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load toolbar buttons', 'Service Error');
+	  	  		}
+	        },
+	        scope: this,
+			failure: Sbi.exception.ExceptionHandler.handleFailure      
+		});
+		
+	}
+	
+	, addProfiledButtons: function(visibility) {
+		alert(visibility);
+		alert(visibility.sendMail);
+		if (visibility.sendMail) {
+			var sendMailButton = new Ext.Toolbar.Button({
+				iconCls: 'icon-sendMail' 
+		     	, scope: this
+		    	, handler : function() {this.fireEvent('sendmailbuttonclick');}
+			});
+			this.addButton(sendMailButton);
+		}
+		if (visibility.saveIntoPersonalFolder) {
+			var saveIntoPersonalFolderButton = new Ext.Toolbar.Button({
+				iconCls: 'icon-saveIntoPersonalFolder' 
+		     	, scope: this
+		    	, handler : function() {this.fireEvent('saveintopersonalfolderbuttonclick');}
+			});
+			this.addButton(saveIntoPersonalFolderButton);
+		}
+		if (visibility.rememberMe) {
+			var saveRememberMeButton = new Ext.Toolbar.Button({
+				iconCls: 'icon-saveRememberMe' 
+		     	, scope: this
+		    	, handler : function() {this.fireEvent('saveremembermebuttonclick');}
+			});
+			this.addButton(saveRememberMeButton);
+		}
+		if (visibility.notes) {
+			var notesButton = new Ext.Toolbar.Button({
+				iconCls: 'icon-notes' 
+		     	, scope: this
+		    	, handler : function() {this.fireEvent('notesbuttonclick');}
+			});
+			this.addButton(notesButton);
+		}
+		if (visibility.metadata) {
+			var metadataButton = new Ext.Toolbar.Button({
+				iconCls: 'icon-metadata' 
+		     	, scope: this
+		    	, handler : function() {this.fireEvent('metadatabuttonclick');}
+			});
+			this.addButton(metadataButton);
+		}
 	}
     
 });

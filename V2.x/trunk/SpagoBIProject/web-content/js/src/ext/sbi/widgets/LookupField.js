@@ -145,7 +145,6 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		if(typeof v === 'object') {
 			this.xvalue = {};
 			Ext.apply(this.xvalue, v);
-			//alert(this.xvalue.toSource());
 			var displayText = '';
 			for(p in this.xvalue) {
 				displayText += this.xvalue[p] + ';';
@@ -156,7 +155,9 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			//alert(displayText);
 			Sbi.widgets.LookupField.superclass.setValue.call(this, displayText);
 		} else {
-			alert('orrore');
+			this.xvalue = {};
+			this.xvalue[v] = v;
+			Sbi.widgets.LookupField.superclass.setValue.call(this, v);
 		}
 	}
 	

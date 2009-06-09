@@ -71,16 +71,31 @@ Sbi.execution.ViewpointsPanel = function(config) {
 		, url: this.services['getViewpointsService']
     }); 
     
-    this.applyColumn = new Ext.grid.ButtonColumn({
+    this.execColumn = new Ext.grid.ButtonColumn({
 	       header:  '',
-	       dataIndex: 'delete',
+	       dataIndex: 'execute',
 	       iconCls: 'icon-execute',
 	       clickHandler: function(e, t) {
 	          var index = this.grid.getView().findRowIndex(t);
 	          var selectedRecord = this.grid.viewpointsStore.getAt(index);
 	          var viewpointId = selectedRecord.get('id');
-	          alert(selectedRecord.get('parameters'));
-	          this.grid.fireEvent('executionrequest', viewpointId);
+	          this.grid.fireEvent('executionrequest', selectedRecord.get('parameters'));
+	       },
+	       width: 25,
+	       renderer : function(v, p, record){
+	           return '<center><img class="x-mybutton-'+this.id+' grid-button ' +this.iconCls+'" width="16px" height="16px" src="'+Ext.BLANK_IMAGE_URL+'"/></center>';
+	       }
+	});
+    
+    this.applyColumn = new Ext.grid.ButtonColumn({
+	       header:  '',
+	       dataIndex: 'apply',
+	       iconCls: 'icon-apply-viewpoint',
+	       clickHandler: function(e, t) {
+	          var index = this.grid.getView().findRowIndex(t);
+	          var selectedRecord = this.grid.viewpointsStore.getAt(index);
+	          var viewpointId = selectedRecord.get('id');
+	          this.grid.fireEvent('applyviewpoint', selectedRecord.get('parameters'));
 	       },
 	       width: 25,
 	       renderer : function(v, p, record){
@@ -100,9 +115,10 @@ Sbi.execution.ViewpointsPanel = function(config) {
             , {header: LN('sbi.execution.viewpoints.scope'), sortable: true, dataIndex: 'scope'}
             , {header: LN('sbi.execution.viewpoints.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
             , this.applyColumn
+            , this.execColumn
             , this.sm
         ]
-        , plugins: this.applyColumn
+        , plugins: [ this.applyColumn, this.execColumn ]
 		, viewConfig: {
         	forceFit: true
 		}
@@ -128,7 +144,7 @@ Sbi.execution.ViewpointsPanel = function(config) {
     
     this.on('rowdblclick', this.onRowDblClick, this);
     
-    this.addEvents('executionrequest');
+    this.addEvents('executionrequest', 'applyviewpoint');
     
 };
 
@@ -173,7 +189,6 @@ Ext.extend(Sbi.execution.ViewpointsPanel, Ext.grid.GridPanel, {
 				failure: Sbi.exception.ExceptionHandler.handleFailure      
 			});
 			*/
-			alert('deleteSelectedSubObjects: ' + idsJoined);
 		} else {
 			Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.execution.subobjects.noSubObjectsSelected'), 'Warning');
 		}
@@ -182,8 +197,7 @@ Ext.extend(Sbi.execution.ViewpointsPanel, Ext.grid.GridPanel, {
 	, onRowDblClick: function (grid, rowIndex, event) {
 	    	var selectedRecord =  grid.getStore().getAt(rowIndex);
 	    	var viewpointId = selectedRecord.get('id');
-	    	alert(selectedRecord.get('parameters').toSource());
-	    	this.fireEvent('executionrequest', viewpointId);
+	    	this.fireEvent('executionrequest', selectedRecord.get('parameters'));
 	    }
 	
 });

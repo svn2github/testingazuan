@@ -102,10 +102,12 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 		}]
 	});   
 	
-	
+	this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.setFormState, this.parametersPanel);
 	
 	// constructor
     Sbi.execution.ParametersSelectionPage.superclass.constructor.call(this, c);
+    
+    
     
     //this.addEvents();	
 };
@@ -127,6 +129,14 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
     , synchronize: function( executionInstance ) {
 		this.parametersPanel.synchronize( executionInstance );
 		this.shortcutsPanel.synchronize( executionInstance );
+	}
+
+	, clearParametersForm: function() {
+		this.parametersPanel.clear();
+	}
+	
+	, saveParametersFormStateAsViewpoint: function() {
+		alert('saveParametersFormStateAsViewpoint');
 	}
     
 	

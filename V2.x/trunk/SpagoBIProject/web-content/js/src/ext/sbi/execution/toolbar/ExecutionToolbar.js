@@ -96,7 +96,7 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 			this.addButton(this.createRoleSelectionButtons());
 			this.addFill();
 		} else if (pageNumber == 1) {
-			this.addButton(this.createParametersSelectionButtons());
+			this.addParametersSelectionButtons();
 			this.addFill();
 		}  else if (pageNumber == 2) {
 			this.addFill();
@@ -113,28 +113,40 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 		return nextButton;
 	}
 	
-	, createParametersSelectionButtons: function() {
-		var previousButton =  new Ext.Toolbar.Button({
+	, addParametersSelectionButtons: function() {
+		
+		
+		this.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-back' 
 		    , scope: this
 		    , handler : function() {this.fireEvent('backbuttonclick');}
-		});
-		var executeButton = new Ext.Toolbar.Button({
-			iconCls: 'icon-execute'
-		    , scope: this
-		    , handler : function() {this.fireEvent('parametersformsubmit');}
-		});
-		var saveViewPointButton = new Ext.Toolbar.Button({
-			iconCls: 'icon-save'
-	     	, scope: this
-	    	, handler : function() {this.fireEvent('saveviewpointbuttonclick');}
-		});
-		var clearParametersButton = new Ext.Toolbar.Button({
+		}));
+		
+		this.addSeparator();
+		
+		this.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-clear'
-	     	, scope: this
-	    	, handler : function() {this.fireEvent('clearparametersbuttonclick');}
-		});
-		return [previousButton, executeButton, saveViewPointButton, clearParametersButton];
+		   	, scope: this
+		   	, handler : function() {this.fireEvent('clearparametersbuttonclick');}
+		}));
+		
+		this.addButton(new Ext.Toolbar.Button({
+			iconCls: 'icon-save'
+		   	, scope: this
+		   	, handler : function() {this.fireEvent('saveviewpointbuttonclick');}
+		}));
+			
+		this.addSeparator();
+		
+		this.addButton(new Ext.Toolbar.Button({
+			iconCls: 'icon-execute'
+			, scope: this
+			, handler : function() {this.fireEvent('parametersformsubmit');}
+		}));
+		
+		
+		
+	
 	}
 	
 	, createExecutionPageButtons: function(executionInstance) {

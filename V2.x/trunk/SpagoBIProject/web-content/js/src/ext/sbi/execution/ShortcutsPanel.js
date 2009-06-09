@@ -68,7 +68,17 @@ Sbi.execution.ShortcutsPanel = function(config) {
 	// constructor
     Sbi.execution.ShortcutsPanel.superclass.constructor.call(this, c);
     
-    this.addEvents('subobjectexecutionrequest', 'snapshotexcutionrequest','viewpointselect');
+    this.addEvents('subobjectexecutionrequest', 'snapshotexcutionrequest','viewpointexecutionrequest', 'applyviewpoint');
+    
+    this.viewpointsPanel.on('executionrequest', function(viewpoint) {
+    	alert(viewpoint.toSource());
+    	this.fireEvent('viewpointexecutionrequest', viewpoint);
+    }, this);
+    
+    this.viewpointsPanel.on('applyviewpoint', function(viewpoint) {
+    	alert(viewpoint.toSource());
+    	this.fireEvent('applyviewpoint', viewpoint);
+    }, this);
     
     this.subobjectsPanel.on('executionrequest', function(subObjectId) {
     	this.fireEvent('subobjectexecutionrequest', subObjectId);

@@ -119,7 +119,42 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
     , synchronize: function( executionInstance ) {
 		this.loadParametersForExecution( executionInstance );
 	}
-    
+	
+	, getFormState: function() {
+		var state;
+		
+		state = {};
+		for(p in this.fields) {
+			var field = this.fields[p];
+			var value = field.getValue();
+			state[field.getName()] = value;
+		}
+		
+		return state;
+	}
+	
+	, setFormState: function( state ) {
+		var state;	
+		for(p in state) {
+			var fieldName = p;
+			var fieldValue = state[p];
+			if(this.fields[fieldName]) {
+				this.fields[fieldName].setValue( fieldValue );
+			}
+		}
+	}
+	
+	
+	, clear: function() {
+		for(p in this.fields) {
+			this.fields[p].reset();
+		}
+	}
+	
+	// ----------------------------------------------------------------------------------------
+	// private methods
+	// ----------------------------------------------------------------------------------------
+	
 	, loadParametersForExecution: function( executionInstance ) {
 		Ext.Ajax.request({
 	          url: this.services['getParametersForExecutionService'],
@@ -196,28 +231,6 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			
 		}		
 	}
-	
-	, getFormState: function() {
-		var state;
-		
-		state = {};
-		for(p in this.fields) {
-			var field = this.fields[p];
-			var value = field.getValue();
-			state[field.getName()] = value;
-		}
-		
-		return state;
-	}
-	
-	
-	, clear: function() {
-		
-	}
-	
-	// ----------------------------------------------------------------------------------------
-	// private methods
-	// ----------------------------------------------------------------------------------------
 	
 	, createField: function( executionInstance, p ) {
 		var field;

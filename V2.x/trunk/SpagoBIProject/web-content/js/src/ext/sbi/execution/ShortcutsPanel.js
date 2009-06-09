@@ -48,9 +48,11 @@ Ext.ns("Sbi.execution");
 
 Sbi.execution.ShortcutsPanel = function(config) {
 	
-	this.subobjectsPanel =  new Sbi.execution.SubobjectsPanel({border: false});
-	this.snapshotsPanel =  new Sbi.execution.SnapshotsPanel({border: false});
-	this.viewpointsPanel =  new Sbi.execution.ViewpointsPanel({border: false});
+	config = Ext.applyIf(config, {border: false});
+	
+	this.subobjectsPanel =  new Sbi.execution.SubobjectsPanel(config);
+	this.snapshotsPanel =  new Sbi.execution.SnapshotsPanel(config);
+	this.viewpointsPanel =  new Sbi.execution.ViewpointsPanel(config);
 		
 	var c = Ext.apply({}, config, {
 		layout:'accordion',

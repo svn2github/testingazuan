@@ -59,7 +59,7 @@ Sbi.execution.SubobjectsPanel = function(config) {
 		serviceName: 'DELETE_SUBOBJECTS_ACTION'
 		, baseParams: params
 	});
-	
+	this.subobjectPreference = config.subobject;
 	this.executionInstance = null;
 	this.selectedSubObjectId = null;
 	
@@ -72,8 +72,6 @@ Sbi.execution.SubobjectsPanel = function(config) {
                    'visibility']
 		, url: this.services['getSubObjectsService']
     }); 
-    
-    
     
     this.executeColumn = new Ext.grid.ButtonColumn({
 	       header:  '',
@@ -132,7 +130,7 @@ Sbi.execution.SubobjectsPanel = function(config) {
         , autoScroll: true
         , sm : this.sm
         , height: 200
-	});   
+	});
 	
 	// constructor
     Sbi.execution.SubobjectsPanel.superclass.constructor.call(this, c);
@@ -156,6 +154,26 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 	, synchronize: function( executionInstance ) {
 		this.subObjectsStore.load({params: executionInstance});
 		this.executionInstance = executionInstance;
+		// if there is a preference for a subobject execution, fire executionrequest event
+		/* */
+		if (this.subobjectPreference) {
+			this.subObjectsStore.on(
+				'load', 
+				function() {
+					// get the required subobject from the store
+					var index = this.subObjectsStore.find('name', this.subobjectPreference);
+					if (index != -1) {
+						var record = this.subObjectsStore.getAt(index);
+						var subObjectId = record.get('id');
+				    	this.fireEvent('executionrequest', subObjectId);
+					}
+					// reset preference variable
+					delete this.subobjectPreference;
+				},
+				this
+			);
+		}
+		
 	}
 
 	, deleteSelectedSubObjects: function() {

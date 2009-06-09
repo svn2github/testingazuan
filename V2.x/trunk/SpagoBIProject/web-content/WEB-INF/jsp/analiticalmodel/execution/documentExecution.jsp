@@ -107,12 +107,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var subobject = <%= subobjectName != null ? ("'" + subobjectName.replaceAll("'", "\'") + "'") : "undefined" %>;
 	
     var config = {
-    	executionPanelTitle: object.label
+    	title: object.label
     	, preferences: {
-    		execution: {
-				parameters: parameters
-				, subobject: subobject
-			}
+			parameters: parameters
+			, subobject: subobject
 	    }
 	};
 	

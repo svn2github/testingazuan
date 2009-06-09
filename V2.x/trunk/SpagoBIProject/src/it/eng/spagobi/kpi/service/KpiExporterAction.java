@@ -8,46 +8,26 @@ import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.dispatching.service.DefaultRequestContext;
 import it.eng.spago.error.EMFErrorHandler;
-import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
-import it.eng.spagobi.kpi.utils.BasicTemplateBuilder;
+import it.eng.spagobi.kpi.utils.KpiExporter;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.StringBufferInputStream;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JRExporter;
-import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
-
-import com.novell.ldap.events.edir.eventdata.BinderyObjectEventData;
 
 public class KpiExporterAction extends AbstractHttpAction {
 
@@ -91,7 +71,7 @@ public class KpiExporterAction extends AbstractHttpAction {
 			Object userIdO=serviceRequest.getAttribute("user_id");	
 			if(userIdO!=null)userId=userIdO.toString();
 
-			KpiExporter exporter=new KpiExporter();
+			it.eng.spagobi.kpi.utils.KpiExporter exporter=new KpiExporter();
 			tmpFile=exporter.getKpiReportPDF(listKpiBlocks, document, userId);
 
 			String outputType = "PDF";

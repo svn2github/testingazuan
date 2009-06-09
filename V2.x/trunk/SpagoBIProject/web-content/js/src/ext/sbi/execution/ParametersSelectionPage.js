@@ -117,6 +117,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
     
     parametersPanel: null
     , shortcutsPanel: null
+    , saveViewpointWin: null
    
     // ----------------------------------------------------------------------------------------
     // public methods
@@ -136,7 +137,14 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	}
 	
 	, saveParametersFormStateAsViewpoint: function() {
-		alert('saveParametersFormStateAsViewpoint');
+		//alert('saveParametersFormStateAsViewpoint');
+		if(this.saveViewpointWin === null) {
+			this.saveViewpointWin = new Sbi.widgets.SaveWindow();
+			this.saveViewpointWin.on('save', function(w, state) {
+				alert('save: ' + state.toSource());
+			}, this);
+		}
+		this.saveViewpointWin.show();
 	}
     
 	

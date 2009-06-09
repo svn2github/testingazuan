@@ -187,8 +187,17 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		this.documentExecutionPage.loadUrlForExecution( this.executionInstance );
 	}
 
-	, onRolesForExecutionLoaded: function(ds) {
-		//alert('roles for execution loaded');
+	, onRolesForExecutionLoaded: function(form, store) {
+		var rolesNo = store.getCount();
+		if(rolesNo === 0) {
+			alert("User have no valid roles for the execution of the selected document");
+		} else if(rolesNo === 1) {
+			var role = store.getRange()[0];
+			form.roleComboBox.setValue(role.data.name); 
+			this.moveToNextPage();
+		} else {
+		 // do nothing; let the user choose the role
+		}
 	}
 	
 	, startExecution: function() {

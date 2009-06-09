@@ -84,7 +84,7 @@ Sbi.execution.RoleSelectionPage = function(config) {
     });  
     
     this.roleComboBoxStore.on('load', function() {
-    	this.fireEvent('onload', this);
+    	this.fireEvent('onload', this, this.roleComboBoxStore);
     }, this);
     
     

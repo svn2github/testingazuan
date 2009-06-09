@@ -105,7 +105,7 @@ Sbi.execution.ExecutionPanel = function(config) {
 		 , this.parametersSelectionPage
 		 , this.documentExecutionPage
 		]		        
-	});   
+	});
 	
 	// constructor
     Sbi.execution.ExecutionPanel.superclass.constructor.call(this, c);

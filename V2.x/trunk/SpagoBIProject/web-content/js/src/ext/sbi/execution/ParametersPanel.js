@@ -54,7 +54,11 @@ Sbi.execution.ParametersPanel = function(config) {
 		, labelAlign: 'left'
 	}, config || {});
 	
-	this.parametersPreference = config.preferences.execution.parameters;
+	
+	this.parametersPreference = undefined;
+	if (config && config.preferences && config.preferences.execution && config.preferences.execution.parameters) {
+		this.parametersPreference = config.preferences.execution.parameters;
+	}
 	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};

@@ -4,3 +4,5 @@ Name: SpagoBITalendEngine.war
 Implementation-Title: SpagoBITalendEngine
 Implementation-Version: 2.2.0
 
+Compatible TOS Version:3.0.4
+

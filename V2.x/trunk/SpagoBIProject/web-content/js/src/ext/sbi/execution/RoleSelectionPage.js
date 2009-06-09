@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.RoleSelectionPanel = function(config) {
+Sbi.execution.RoleSelectionPage = function(config) {
 	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
@@ -129,12 +129,12 @@ Sbi.execution.RoleSelectionPanel = function(config) {
 	});   
 	
 	// constructor
-    Sbi.execution.RoleSelectionPanel.superclass.constructor.call(this, c);
+    Sbi.execution.RoleSelectionPage.superclass.constructor.call(this, c);
     
     this.addEvents("onload");
 };
 
-Ext.extend(Sbi.execution.RoleSelectionPanel, Ext.FormPanel, {
+Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 	
 	services: null
 	, roleComboBoxStore: null

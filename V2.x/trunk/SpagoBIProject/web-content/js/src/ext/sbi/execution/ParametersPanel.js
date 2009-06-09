@@ -47,7 +47,7 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.ParametersSelectionPanel = function(config) {
+Sbi.execution.ParametersPanel = function(config) {
 	
 	var c = Ext.apply({
 		columnNo: 3
@@ -67,56 +67,46 @@ Sbi.execution.ParametersSelectionPanel = function(config) {
 		, baseParams: params
 	});
 	
-	
-	this.init(c);
-	
+	var cw = 1/config.columnNo;
+	var columnsBaseConfig = [];
+	for(var i = 0; i < config.columnNo; i++) {		
+		columnsBaseConfig[i] = {
+			columnWidth: cw,
+            layout: 'form',
+            border: false,
+            bodyStyle:'padding:5px 5px 5px 5px'
+		}
+	}
+  
 	c = Ext.apply({}, c, {
-		layout: 'border',
-		items: [{
-			region:'center'
-		    , border: false
-		    , frame: false
-		    , collapsible: false
-		    , collapsed: false
-		    , hideCollapseTool: true
-		    , titleCollapse: true
-		    , collapseMode: 'mini'
-		    , split: true
-		    , autoScroll: true
-		    , layout: 'fit'
-		    , items: [this.formPanel]
-		}, {
-			region:'south'
-			, border: false
-			, frame: false
-			, collapsible: true
-			, collapsed: false
-			, hideCollapseTool: true
-			, titleCollapse: true
-			, collapseMode: 'mini'
-			, split: true
-			, autoScroll: true
-			, height: 280
-			, layout: 'fit'
-			, items: [this.shortcutsPanel]
-		}]
-	});   
-	
-	
+		labelAlign: config.labelAlign,
+        border: false,
+        bodyStyle:'padding:10px 0px 10px 10px',
+        items: [{
+            layout:'column',
+            border: false,
+            autoScroll: true,
+            items: columnsBaseConfig
+        }]
+	});
 	
 	// constructor
-    Sbi.execution.ParametersSelectionPanel.superclass.constructor.call(this, c);
-    
+    Sbi.execution.ParametersPanel.superclass.constructor.call(this, c);
+	
+	var columnContainer = this.items.get(0);
+	this.columns = [];
+	for(var i = 0; i < config.columnNo; i++) {
+		this.columns[i] = columnContainer.items.get(i);
+	}
+	
     //this.addEvents();	
 };
 
-Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
+Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
     
     services: null
     , fields: null
     , columns: null
-    , formPanel: null
-    , shortcutsPanel: null
    
     // ----------------------------------------------------------------------------------------
     // public methods
@@ -151,13 +141,6 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	          scope: this,
 	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
 	     });
-		
-		this.shortcutsPanel.synchronize( executionInstance );
-		 /*
-		 this.subobjectsPanel.loadSubObjects( executionInstance );
-	     this.snapshotsPanel.loadSubObjects( executionInstance );
-	     this.viewpointsPanel.loadSubObjects( executionInstance );
-	     */
 	}
 
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
@@ -211,10 +194,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 				}
 			}, this); 
 			
-		}
-		
-		
-		
+		}		
 	}
 	
 	, getFormState: function() {
@@ -238,74 +218,6 @@ Ext.extend(Sbi.execution.ParametersSelectionPanel, Ext.Panel, {
 	// ----------------------------------------------------------------------------------------
 	// private methods
 	// ----------------------------------------------------------------------------------------
-	
-	, init: function( config ) {
-		this.initFormPanel(config);
-		this.initShortcutsPanel(config);
-	}
-	
-	, initFormPanel: function( config ) {
-		var cw = 1/config.columnNo;
-		var columnsBaseConfig = [];
-		for(var i = 0; i < config.columnNo; i++) {		
-			columnsBaseConfig[i] = {
-				columnWidth: cw,
-	            layout: 'form',
-	            border: false,
-	            bodyStyle:'padding:5px 5px 5px 5px'
-			}
-		}
-	  
-		
-		this.formPanel = new Ext.FormPanel({
-		        labelAlign: config.labelAlign,
-		        border: false,
-		        bodyStyle:'padding:10px 0px 10px 10px',
-		        items: [{
-		            layout:'column',
-		            border: false,
-		            autoScroll: true,
-		            items: columnsBaseConfig
-		        }]
-		});
-		 
-		var columnContainer = this.formPanel.items.get(0);
-		this.columns = [];
-		for(var i = 0; i < config.columnNo; i++) {
-			this.columns[i] = columnContainer.items.get(i);
-		}
-		
-		return this.formPanel;
-	}
-	
-	, initShortcutsPanel: function( config ) {
-		
-		/*
-		this.subobjectsPanel =  new Sbi.execution.SubobjectsPanel({border: false});
-		this.snapshotsPanel =  new Sbi.execution.SnapshotsPanel({border: false});
-		this.viewpointsPanel =  new Sbi.execution.ViewpointsPanel({border: false});
-		
-		this.shortcutsPanel = new Ext.Panel({
-			layout:'accordion',
-		    layoutConfig:{
-		          animate:true
-		    },
-		    border: false,
-		    items: [		        
-		        this.viewpointsPanel
-		      , this.subobjectsPanel
-		      , this.snapshotsPanel		      
-		    ]
-		});			
-		
-		return this.shortcutsPanel;
-		*/
-		
-		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
-		
-		return this.shortcutsPanel;
-	}
-	
 	
 	, createField: function( executionInstance, p ) {
 		var field;

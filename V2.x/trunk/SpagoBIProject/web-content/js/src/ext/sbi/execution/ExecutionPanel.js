@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.ExecutionWizardPanel = function(config) {
+Sbi.execution.ExecutionPanel = function(config) {
 	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
@@ -71,9 +71,9 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 		, baseParams: params
 	});
 	
-	this.roleSelectionPanel = new Sbi.execution.RoleSelectionPanel();
-	this.parametersSelectionPanel =  new Sbi.execution.ParametersSelectionPanel();
-	this.documentViewPanel = new Sbi.execution.DocumentViewPanel();
+	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage();
+	this.parametersSelectionPage =  new Sbi.execution.ParametersSelectionPage();
+	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage();
 	
 	this.activePanel = 0;
 	
@@ -96,20 +96,20 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 		activeItem: this.activePanel, // index or id
 		tbar: this.tb,
 		items: [
-		 this.roleSelectionPanel
-		 , this.parametersSelectionPanel
-		 , this.documentViewPanel
+		 this.roleSelectionPage
+		 , this.parametersSelectionPage
+		 , this.documentExecutionPage
 		]		        
 	});   
 	
 	// constructor
-    Sbi.execution.ExecutionWizardPanel.superclass.constructor.call(this, c);
+    Sbi.execution.ExecutionPanel.superclass.constructor.call(this, c);
     
-    this.roleSelectionPanel.addListener('onload', this.onRolesForExecutionLoaded, this);
+    this.roleSelectionPage.addListener('onload', this.onRolesForExecutionLoaded, this);
     
-    this.parametersSelectionPanel.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
+    this.parametersSelectionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
     
-    this.documentViewPanel.addListener('loadurlfailure', this.onLoadUrlFailure, this);
+    this.documentExecutionPage.addListener('loadurlfailure', this.onLoadUrlFailure, this);
     
     
     if(config.document) {
@@ -120,14 +120,14 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     //this.addEvents();	
 };
 
-Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
+Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
     
 	services: null
     , executionInstance: null
     , activePanel: null
-    , roleSelectionPanel: null
-    , parametersSelectionPanel: null
-    , documentViewPanel: null   
+    , roleSelectionPage: null
+    , parametersSelectionPage: null
+    , documentExecutionPage: null   
     
     // public methods
     
@@ -158,7 +158,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
     // execution
     , execute : function( doc ) {
 		if(!doc || !doc.id || !doc.label) {
-			Sbi.exception.ExceptionHandler.showErrorMessage('ExecutionWizardPanel: document id is required in order to execute a document', 'Intenal Error');
+			Sbi.exception.ExceptionHandler.showErrorMessage('ExecutionPanel: document id is required in order to execute a document', 'Intenal Error');
 		}
 		
 		this.executionInstance = {}
@@ -169,13 +169,13 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	}
 
 	, loadRolesForExecution: function() {
-		this.roleSelectionPanel.loadRolesForExecution( this.executionInstance );
+		this.roleSelectionPage.loadRolesForExecution( this.executionInstance );
 	}
 	
 	, loadUrlForExecution: function() {
-		var formState = this.parametersSelectionPanel.getFormState();
+		var formState = this.parametersSelectionPage.parametersPanel.getFormState();
 		this.executionInstance.PARAMETERS = Sbi.commons.Format.toString( formState );
-		this.documentViewPanel.loadUrlForExecution( this.executionInstance );
+		this.documentExecutionPage.loadUrlForExecution( this.executionInstance );
 	}
 
 	, onRolesForExecutionLoaded: function(ds) {
@@ -183,7 +183,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	}
 	
 	, startExecution: function() {
-		var role = this.roleSelectionPanel.getSelectedRole();
+		var role = this.roleSelectionPage.getSelectedRole();
 		this.executionInstance.ROLE = role;
 		
 		Ext.Ajax.request({
@@ -209,7 +209,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	
 	, onExecutionStarted: function( execContextId ) {
 		this.executionInstance.SBI_EXECUTION_ID = execContextId;
-		this.parametersSelectionPanel.synchronize(this.executionInstance);
+		this.parametersSelectionPage.synchronize(this.executionInstance);
 	}
 	
 	, onLoadUrlFailure: function ( errors ) {
@@ -230,14 +230,14 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	
 	
 	, onRefreshButtonClicked: function () {
-		this.documentViewPanel.refreshExecution();
+		this.documentExecutionPage.refreshExecution();
 	}
 	
 	, onSendMailButtonClicked: function () {
 		var sendToIframeUrl = this.services['showSendToForm'] 
 		        + '&objlabel=' + this.executionInstance.OBJECT_LABEL
 		        + '&objid=' + this.executionInstance.OBJECT_ID
-				+ '&' + Sbi.commons.Format.toStringOldSyntax(this.parametersSelectionPanel.getFormState());
+				+ '&' + Sbi.commons.Format.toStringOldSyntax(this.parametersSelectionPage.parametersPanel.getFormState());
 		this.win_sendTo = new Sbi.execution.toolbar.SendToWindow({'url': sendToIframeUrl});
 		this.win_sendTo.show();
 	}
@@ -309,6 +309,6 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	}
 	
 	, onPrintButtonClicked: function () {
-		this.documentViewPanel.print();
+		this.documentExecutionPage.print();
 	}
 });

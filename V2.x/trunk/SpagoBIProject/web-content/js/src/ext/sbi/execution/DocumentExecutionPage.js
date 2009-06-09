@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.DocumentViewPanel = function(config) {
+Sbi.execution.DocumentExecutionPage = function(config) {
 	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
@@ -88,13 +88,13 @@ Sbi.execution.DocumentViewPanel = function(config) {
 	});
 	
 	// constructor
-    Sbi.execution.DocumentViewPanel.superclass.constructor.call(this, c);
+    Sbi.execution.DocumentExecutionPage.superclass.constructor.call(this, c);
 	
     this.addEvents('loadurlfailure');
     
 };
 
-Ext.extend(Sbi.execution.DocumentViewPanel, Ext.Panel, {
+Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
     
     // static contents and methods definitions
 	miframe : null

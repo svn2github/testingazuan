@@ -128,7 +128,12 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				ObjTemplate template = DAOFactory.getObjTemplateDAO().getBIObjectActiveTemplate(Integer.valueOf(documentId));
 				if(template==null) throw new Exception("Active Template null");
 				contentBytes = template.getContent();
-				if(contentBytes==null) throw new Exception("Content of the Active template null"); 
+				if(contentBytes==null) {
+					logger.error("TEMPLATE DOESN'T EXIST !!!!!!!!!!!!!!!!!!!!!!!!!!!");
+					EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 2007);
+					userError.setBundle("messages");
+					throw userError; 
+				}
 
 				// get bytes of template and transform them into a SourceBean
 

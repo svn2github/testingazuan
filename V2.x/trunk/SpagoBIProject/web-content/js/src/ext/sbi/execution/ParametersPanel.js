@@ -56,8 +56,8 @@ Sbi.execution.ParametersPanel = function(config) {
 	
 	
 	this.parametersPreference = undefined;
-	if (config && config.preferences && config.preferences.execution && config.preferences.execution.parameters) {
-		this.parametersPreference = config.preferences.execution.parameters;
+	if (config.parameters) {
+		this.parametersPreference = config.parameters;
 	}
 	
 	// always declare exploited services first!

@@ -71,9 +71,12 @@ Sbi.execution.ExecutionPanel = function(config) {
 		, baseParams: params
 	});
 	
-	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage(config);
-	this.parametersSelectionPage =  new Sbi.execution.ParametersSelectionPage(config);
-	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(config);
+	var roleSelectionPageConfig = Ext.applyIf(config.preferences, config.roleSelectionPage); 
+	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage(roleSelectionPageConfig);
+	var parametersSelectionPageConfig = Ext.applyIf(config.preferences, config.parametersSelectionPage); 
+	this.parametersSelectionPage =  new Sbi.execution.ParametersSelectionPage(parametersSelectionPageConfig);
+	var documentExecutionPageConfig = Ext.applyIf(config.preferences, config.documentExecutionPage); 
+	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(documentExecutionPageConfig);
 	
 	this.activePanel = 0;
 	
@@ -94,9 +97,7 @@ Sbi.execution.ExecutionPanel = function(config) {
     this.tb.addListener('ratingbuttonclick', this.onRatingButtonClicked, this);
     this.tb.addListener('printbuttonclick', this.onPrintButtonClicked, this);
     
-	
 	var c = Ext.apply({}, config, {
-		title: config.executionPanelTitle,
 		layout:'card',
 		activeItem: this.activePanel, // index or id
 		tbar: this.tb,

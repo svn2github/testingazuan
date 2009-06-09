@@ -124,7 +124,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String documentid=(objO.getId()).toString();
 		DatasetMap datasetMap=(DatasetMap)sbModuleResponse.getAttribute("datasets");
 		DatasetMap copyDatasets=null;
-
+		
+		//get width for slider; it is 80% of the whole
+		int sliderWidth=(sbi.getWidth()/100)*80;
+		
 		// get wich pars can the user set
 		Vector changePars=(Vector)sbi.getPossibleChangePars();
 		//check for each one if a changeparameter has ben set
@@ -456,10 +459,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 		    %>
 			<tr>
-				<td>
-				<div align="center"><img id="image" src="<%=urlPng%>"
-					BORDER="0" alt="" USEMAP="#chart" /></div>
-				</td>
+			   <td>
+				<div align="center">
+					<img id="image" src="<%=urlPng%>" BORDER="0" alt="" USEMAP="#chart" />
+				</div>
+			   </td>
 			</tr>
 			<%}
 		else{   /////////////////////// Beginslider creation //////////////////////////
@@ -471,50 +475,49 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<!--
 					arrayCats=new Array(<%=datasetMap.getCatsnum().intValue()%>);
 					-->
-			</script>
+				</script>
 
 				<%
-			for (Iterator iterator = datasetMap.getCategories().keySet().iterator(); iterator.hasNext();){  
-				Integer key=(Integer)iterator.next();
-				String name=(String)datasetMap.getCategories().get(key);
-			%>
+				for (Iterator iterator = datasetMap.getCategories().keySet().iterator(); iterator.hasNext();){  
+					Integer key=(Integer)iterator.next();
+					String name=(String)datasetMap.getCategories().get(key);
+				%>
 
 				<script type="text/javascript" language="JAVASCRIPT">
 				<!--
 					arrayCats[<%=key%>]='<%=name%>';
-			     //arrayCats[1]='All';
-				//-->
-			</script>
+				-->
+				</script>
 				<%} %>
 
 
-				<td width="75%" align="center"><span
-					class='portlet-form-field-label'> <a
-					href="javascript:void(0)"
-					onClick="document.location.href=getAllActionUrl();"> View all </a>
-				<%=datasetMap.getCatTitle()%> or select from </span> <span
-					class='portlet-form-field-label' id="slider_1_1_value" width="10%"
-					align="right"> </span> <a href="javascript:void(0)"
-					onClick="document.location.href=getActionUrl();"> <span
-					id="slider1"></span> </a></td>
-			</tr>
-			<!-- 	</form>  -->
-			<!--  </table> -->
-			<tr>
-				<td align="center">
-				<div><img id="image" src="<%=urlPng%>" BORDER=0 alt=""
-					USEMAP="#chart" /></div>
+				<td width="75%" align="center">
+					<span class='portlet-form-field-label'> 
+						<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();"> View all </a>
+							<%=datasetMap.getCatTitle()%> or select from 
+					</span> 
+					<span class='portlet-form-field-label' id="slider_1_1_value" width="10%" align="right">
+					</span> 
+					<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"> 
+						<span id="slider1"></span> 
+					</a>
 				</td>
 			</tr>
-		</table>
+			<tr>
+				<td align="center">
+					<div>
+						<img id="image" src="<%=urlPng%>" BORDER=0 alt="" USEMAP="#chart" />
+					</div>
+				</td>
+		    </tr>
+	  <!-- </table>  -->
 
 		<% 
 		}
 		/////////////////////// End slider creation ////////////////////////// 
 		%>
-		</td>
-	</tr>
-
+	 </td>
+   </tr>
 
 
 
@@ -541,108 +544,108 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 		<table id="filterSeriesOrCatGroups" align="left">
-
-
 			<!-- START FORM  -->
 			<form id='serieform' name="serie" action="<%=refreshUrl%>"
-				method="POST"><input type="hidden"
-				name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>"
-				value="TRUE" /> <% 	
-		//refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
-		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
-		{
-				String name = (String) iterator.next();
-				String value=(refreshUrlPars.get(name)).toString();
-		%> <input type="hidden" name="<%=name%>" value="<%=value%>" /> <%}%> <!--  ROW FOR SELECT THE SERIES-->
-			<%
+				method="POST">
+				<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE" /> 
+				<% 	
+				//refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
+					for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
+						{
+							String name = (String) iterator.next();
+							String value=(refreshUrlPars.get(name)).toString();
+						%> 	
+						<input type="hidden" name="<%=name%>" value="<%=value%>" /> 
+						<%}%> 
+						
+						<!--  ROW FOR SELECT THE SERIES--> <%
 	 
-	 if(filterSeries==true){ %>
-			
-			<tr>
-				<td>
-				<div align="center" class='div_detail_form'>
-				<%				
-		String tlab=((datasetMap.getSerTitle()!=null && !datasetMap.getSerTitle().equalsIgnoreCase("")) ? datasetMap.getSerTitle() : "series");
- 		%> <%     	
-		// for each possible serie 
-
-		if(datasetMap.getSeries()!=null){	
-		for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
-		String ser = (String) iterator.next(); 
-		// insert the serie names for evidencing the series
-		seriesNames.add(ser);
-		if(datasetMap.getSelectedSeries().contains(ser) || datasetMap.getSelectedSeries().contains("allseries")){
-		%> <input id="serie_<%=ser%>" name="serie" value="<%=ser%>"
-					type="checkbox" checked='checked' /> <span><%=ser%></span> <%}else{ %>
-
-				<input id="serie_<%=ser%>" name="serie" value="<%=ser%>"
-					type="checkbox" /> <span><%=ser%></span> <%} 
-		 }%>  <a onclick="enableSerie()"
-					title="check all series"
-					alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
-				<img
-					src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>' />
-				</a> <a onclick="disableSerie()" title="uncheck all series"
-					alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
-				<img
-					src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>' />
-				</a> <%
-		}%> <%if(filterCatGroup==false){ %> <input type="submit" value="Select" />
-
-				<%} %>
-				</div>
-				</td>
-			</tr>
-			<%}%>
+	                if(filterSeries==true){ %>
+			              <tr>
+				             <td>
+				              <div align="center" class='div_detail_form'>
+				                <%				
+		                           String tlab=((datasetMap.getSerTitle()!=null && !datasetMap.getSerTitle().equalsIgnoreCase("")) ? datasetMap.getSerTitle() : "series");
+ 								// for each possible serie 
+								   if(datasetMap.getSeries()!=null){	
+									 for (Iterator iterator = datasetMap.getSeries().iterator(); iterator.hasNext();) {
+											String ser = (String) iterator.next(); 
+											// insert the serie names for evidencing the series
+											seriesNames.add(ser);
+											if(datasetMap.getSelectedSeries().contains(ser) || datasetMap.getSelectedSeries().contains("allseries")){
+												%> 
+												<input id="serie_<%=ser%>" name="serie" value="<%=ser%>" type="checkbox" checked='checked' /> 
+												<span><%=ser%></span> <% }
+											else{ %>
+												<input id="serie_<%=ser%>" name="serie" value="<%=ser%>" type="checkbox" /> 
+												<span><%=ser%></span> <% } 
+		 									}%>  
+		 								<a onclick="enableSerie()" title="check all series" alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
+											 <img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>' />
+										</a> 
+										<a onclick="disableSerie()" title="uncheck all series" alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
+											<img src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>' />
+										</a> 
+										<%
+									} 
+								if(filterCatGroup==false){ %> 
+								   <input type="submit" value="Select" />
+								<%} %>
+							</div>
+						</td>
+					</tr>
+				<%}%>
 			<!--  ROW FOR SELECT THE SERIES-->
 
 			<!--  ROW FOR SELECT THE CATS GROUPS-->
-			<%if(filterCatGroup==true){ 
-	// filter cat group%>
-			<input type="hidden"
-				name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>"
-				value="TRUE" />
-
+			<%
+			if(filterCatGroup==true){  	// filter cat group
+			%>
+				<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE" />
 			<% 	
-		//refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
-		for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
-		{
-		String name = (String) iterator.next();
-		String value=(refreshUrlPars.get(name)).toString();
-		%>
-			<input type="hidden" name="<%=name%>" value="<%=value%>" />
-			<%}%>
-
-			<tr>
-				<td>
-				<div align="center" class='div_detail_form'>
-				<%     	
-		// for each possible category group
-		if(((BarCharts)sbi).getCatGroupNames()!=null){	
-		for (Iterator iterator = ((BarCharts)sbi).getCatGroupNames().iterator(); iterator.hasNext();) {
-		String group = (String) iterator.next(); 
-		catGroupsNames.add(group);
-		//if(datasetMap.getSelectedCatGroups().contains(group) || datasetMap.getSelectedCatGroups().contains("allgroups")){
-		if(datasetMap.getSelectedCatGroups().contains(group)){
-		%> <input id="cat_group_<%=group%>" name="cat_group"
-					value="<%=group%>" type="radio" checked='checked' /> <span
-					class="portlet-font"><%=group%></span> <%}else{ %> <input
-					id="cat_group_<%=group%>" name="cat_group" value="<%=group%>"
-					type="radio" /> <span class="portlet-font"><%=group%></span> <%} 
-		 }%> <%	}%> <input type="submit" value="Select" /></div>
-				</td>
+				//refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
+				for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
+					{
+						String name = (String) iterator.next();
+						String value=(refreshUrlPars.get(name)).toString();
+						%>
+						<input type="hidden" name="<%=name%>" value="<%=value%>" />
+				  <%}%>
+			 <tr>
+			   <td>
+				 <div align="center" class='div_detail_form'>
+				 <%     	
+				  // for each possible category group
+					if(((BarCharts)sbi).getCatGroupNames()!=null){	
+						for (Iterator iterator = ((BarCharts)sbi).getCatGroupNames().iterator(); iterator.hasNext();) {
+							String group = (String) iterator.next(); 
+							catGroupsNames.add(group);
+							//if(datasetMap.getSelectedCatGroups().contains(group) || datasetMap.getSelectedCatGroups().contains("allgroups")){
+							if(datasetMap.getSelectedCatGroups().contains(group)){
+							%> 
+								<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" type="radio" checked='checked' /> 
+								<span class="portlet-font"><%=group%></span> 
+							<%}
+							else{ 
+							%> 
+							<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" type="radio" /> 
+							<span class="portlet-font"><%=group%></span> 
+							<%} 
+		 				}
+					}%> 
+				   <input type="submit" value="Select" />
+				  </div>
+			   </td>
 			</tr>
 			<%} //close filter cat group case%>
-			</form>
-			<!--CLOSE FORM  -->
-
-
-
-			</div>
-
-			</td>
-			</tr>
-		</table>
+		</form>
+		<!--CLOSE FORM  -->
+<!-- 
+		</div>
+		</td>
+		</tr>
+ -->		
+	</table>
 		<!-- </div>--></td>
 	</tr>
 
@@ -768,7 +771,7 @@ var checkableSeries = new Array();
 
 		Test.slideZone1 = new Ext.ux.SlideZone('slider1', {  
 			type: 'horizontal',
-			size:500,
+			size:<%=sliderWidth%>,
 			sliderWidth: 18,
 			sliderHeight: 21,
 			maxValue: <%=maxSlider%>,

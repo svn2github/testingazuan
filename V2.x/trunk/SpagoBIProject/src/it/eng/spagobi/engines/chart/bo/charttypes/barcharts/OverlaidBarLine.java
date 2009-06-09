@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
@@ -35,16 +36,20 @@ public class OverlaidBarLine extends BarCharts {
 
 
 	HashMap seriesDraw=null;
+	HashMap seriesScale=null;
 	HashMap seriesCaptions=null;
 	boolean additionalLabels=false;
 	HashMap catSerLabels=null;
+
 	boolean useBars=false;
 	boolean useLines=false;
-
 	boolean secondAxis=false;
 	String secondAxisLabel=null;
+	private static transient Logger logger=Logger.getLogger(OverlaidBarLine.class);
+
 
 	public DatasetMap calculateValue() throws Exception {
+		logger.debug("IN");
 
 		seriesNames=new Vector();
 		seriesCaptions=new LinkedHashMap();
@@ -63,9 +68,16 @@ public class OverlaidBarLine extends BarCharts {
 		// run all categories (one for each row)
 		categoriesNumber=0;
 
-		// new versione: two datasets one for bar and one for lines
-		datasetMap.getDatasets().put("bar", new DefaultCategoryDataset());
-		datasetMap.getDatasets().put("line", new DefaultCategoryDataset());
+		// one dataset for mapping left, one for mapping right
+//		datasetMap.getDatasets().put("bar", new DefaultCategoryDataset());
+//		datasetMap.getDatasets().put("line", new DefaultCategoryDataset());
+
+		datasetMap.getDatasets().put("1-bar", new DefaultCategoryDataset());
+		datasetMap.getDatasets().put("1-line", new DefaultCategoryDataset());
+		datasetMap.getDatasets().put("2-bar", new DefaultCategoryDataset());
+		datasetMap.getDatasets().put("2-line", new DefaultCategoryDataset());
+
+
 
 		boolean first=true;
 		//categories.put(new Integer(0), "All Categories");
@@ -139,16 +151,36 @@ public class OverlaidBarLine extends BarCharts {
 					else
 						labelS = nameS;	
 
-					// if to draw as a line
+
+
+					//Line and second axis
+
+					// LINE CASE
 					if(seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line")){
 						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-						((DefaultCategoryDataset)(datasetMap.getDatasets().get("line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
-					}
-					else{ // if to draw as a bar
-						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-						((DefaultCategoryDataset)(datasetMap.getDatasets().get("bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						// SET THE AXIS
+						if(seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						}
+						else{ // if to draw as a bar
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						}
 
 					}
+					else{ // BAR CASE
+						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
+						// if to draw mapped to first axis
+						if(seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
+							if(!seriesNames.contains(nameS))seriesNames.add(nameS);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						}
+						else{ // if to draw as a bar
+							if(!seriesNames.contains(nameS))seriesNames.add(nameS);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						}
+					}
+
+
 					// if there is an additional label are 
 					if(additionalValues.get(nameS)!=null){
 						String val=(String)additionalValues.get(nameS);
@@ -162,10 +194,9 @@ public class OverlaidBarLine extends BarCharts {
 			}
 
 
-
-
-
 		}
+		logger.debug("OUT");
+
 		return datasetMap;
 
 
@@ -173,6 +204,7 @@ public class OverlaidBarLine extends BarCharts {
 
 	public void configureChart(SourceBean content) {
 		super.configureChart(content);
+		logger.debug("IN");
 
 		if(confParameters.get("add_labels")!=null){	
 			String additional=(String)confParameters.get("add_labels");
@@ -188,7 +220,7 @@ public class OverlaidBarLine extends BarCharts {
 		}
 
 
-		//reading series colors if present
+		//reading series draw: there is specified if a serie has to be drawn as a bar or as a line.
 		SourceBean draws = (SourceBean)content.getAttribute("SERIES_DRAW");
 		if(draws==null){
 			draws = (SourceBean)content.getAttribute("CONF.SERIES_DRAW");
@@ -224,14 +256,57 @@ public class OverlaidBarLine extends BarCharts {
 		if(confParameters.get("second_axis_label")!=null){	
 			secondAxis=true;
 			secondAxisLabel=(String)confParameters.get("second_axis_label");
+
+			// only if second axis is defined check wich series has to be mapped to the first axis and wich to the second
+			SourceBean scales = (SourceBean)content.getAttribute("SERIES_SCALES");
+			if(scales==null){
+				scales = (SourceBean)content.getAttribute("CONF.SERIES_SCALES");
+			}
+			seriesScale=new LinkedHashMap();
+			if(scales!=null){
+
+				List attsScales=scales.getContainedAttributes();
+
+				String serieName="";
+				Integer serieScale=1;
+				for (Iterator iterator = attsScales.iterator(); iterator.hasNext();) {
+					SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
+					serieName=new String(object.getKey());
+					try{
+						String serieScaleS=(String)object.getValue();
+						serieScale=Integer.valueOf(serieScaleS);
+					}
+					catch (Exception e) {
+						logger.error("Not correct numebr scale; setting default 1");
+						serieScale=Integer.valueOf(1);
+					}
+
+					if(serieScale.equals(2)){
+						seriesScale.put(serieName, "2");
+					}
+					else{
+						seriesScale.put(serieName, "1");					
+					}
+
+				}		
+
+			}
+
 		}
 
 
+		logger.debug("OUT");
 
 
 	}
 
+
+
+
+
+
 	public JFreeChart createChart(DatasetMap datasets) {
+		logger.debug("IN");
 
 
 		// create the first renderer...
@@ -246,7 +321,7 @@ public class OverlaidBarLine extends BarCharts {
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setUpperMargin(0.10);
-		plot.setRangeAxis(rangeAxis);
+		plot.setRangeAxis(0,rangeAxis);
 
 		CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
 		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
@@ -260,8 +335,10 @@ public class OverlaidBarLine extends BarCharts {
 		plot.setRangeGridlinesVisible(true);
 		plot.setDomainGridlinesVisible(true);
 
-		DefaultCategoryDataset datasetBar=(DefaultCategoryDataset)datasets.getDatasets().get("bar");
-
+		DefaultCategoryDataset datasetLineFirstAxis=(DefaultCategoryDataset)datasets.getDatasets().get("1-line");
+		DefaultCategoryDataset datasetBarFirstAxis=(DefaultCategoryDataset)datasets.getDatasets().get("1-bar");
+		DefaultCategoryDataset datasetLineSecondAxis=(DefaultCategoryDataset)datasets.getDatasets().get("2-line");
+		DefaultCategoryDataset datasetBarSecondAxis=(DefaultCategoryDataset)datasets.getDatasets().get("2-bar");
 
 		//I create one bar renderer and one line
 		MyStandardCategoryItemLabelGenerator generator=null;
@@ -276,6 +353,7 @@ public class OverlaidBarLine extends BarCharts {
 		if(useBars){
 
 			CategoryItemRenderer barRenderer = new BarRenderer();
+			CategoryItemRenderer barRenderer2 = new BarRenderer();
 
 			if(showValueLabels){
 				barRenderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
@@ -305,10 +383,40 @@ public class OverlaidBarLine extends BarCharts {
 						orient));
 
 			}
+			
+			
+			if(showValueLabels){
+				barRenderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+				barRenderer2.setBaseItemLabelsVisible(true);
+				barRenderer2.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+				barRenderer2.setBaseItemLabelPaint(styleValueLabels.getColor());
+
+				barRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+				barRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+			}
+			else if(additionalLabels){
+				barRenderer2.setBaseItemLabelGenerator(generator);
+				double orient=(-Math.PI / 2.0);
+				if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
+					orient=0.0;
+				}
+
+				barRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+						orient));
+				barRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+						orient));
+
+			}
 
 
 			if(colorMap!=null){
-				for (Iterator iterator = datasetBar.getRowKeys().iterator(); iterator.hasNext();) {
+				for (Iterator iterator = datasetBarFirstAxis.getRowKeys().iterator(); iterator.hasNext();) {
 					String serName = (String) iterator.next();
 					String labelName = "";
 					int index=-1;
@@ -316,32 +424,56 @@ public class OverlaidBarLine extends BarCharts {
 					if (seriesCaptions != null && seriesCaptions.size()>0){
 						labelName = serName;
 						serName = (String)seriesCaptions.get(serName);
-						index=datasetBar.getRowIndex(labelName);
+						index=datasetBarFirstAxis.getRowIndex(labelName);
 					}
 					else
-						index=datasetBar.getRowIndex(serName);
+						index=datasetBarFirstAxis.getRowIndex(serName);
 
 					Color color=(Color)colorMap.get(serName);
 					if(color!=null){
 						barRenderer.setSeriesPaint(index, color);
 					}	
 				}
+				for (Iterator iterator = datasetBarSecondAxis.getRowKeys().iterator(); iterator.hasNext();) {
+					String serName = (String) iterator.next();
+					String labelName = "";
+					int index=-1;
+
+					if (seriesCaptions != null && seriesCaptions.size()>0){
+						labelName = serName;
+						serName = (String)seriesCaptions.get(serName);
+						index=datasetBarFirstAxis.getRowIndex(labelName);
+					}
+					else
+						index=datasetBarSecondAxis.getRowIndex(serName);
+
+					Color color=(Color)colorMap.get(serName);
+					if(color!=null){
+						barRenderer2.setSeriesPaint(index, color);
+					}	
+				}				
 			}
 
 
-			plot.setDataset(1,datasetBar);
-			plot.setRenderer(1,barRenderer);
+			plot.setDataset(2,datasetBarFirstAxis);
+			plot.setDataset(3,datasetBarSecondAxis);
+
+			plot.setRenderer(2,barRenderer);
+			plot.setRenderer(3,barRenderer2);
 
 		}
 
 		if(useLines){
 
 			LineAndShapeRenderer lineRenderer = new LineAndShapeRenderer();
+			LineAndShapeRenderer lineRenderer2 = new LineAndShapeRenderer();
+			
 			//lineRenderer.setShapesFilled(false);
 			lineRenderer.setShapesFilled(true);
-			
-			
-			
+			lineRenderer2.setShapesFilled(true);
+
+
+
 			if(showValueLabels){
 				lineRenderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
 				lineRenderer.setBaseItemLabelsVisible(true);
@@ -361,12 +493,33 @@ public class OverlaidBarLine extends BarCharts {
 				lineRenderer.setBaseItemLabelPaint(defaultLabelsStyle.getColor());
 				lineRenderer.setBaseItemLabelsVisible(true);
 			}
+			
+			if(showValueLabels){
+				lineRenderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+				lineRenderer2.setBaseItemLabelsVisible(true);
+				lineRenderer2.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.ITALIC, styleValueLabels.getSize()));
+				lineRenderer2.setBaseItemLabelPaint(styleValueLabels.getColor());
 
-			DefaultCategoryDataset datasetLine=(DefaultCategoryDataset)datasets.getDatasets().get("line");
+				lineRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_RIGHT));
+
+				lineRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_RIGHT));
+
+			}	
+			else if(additionalLabels){
+				lineRenderer2.setBaseItemLabelGenerator(generator);
+				lineRenderer2.setBaseItemLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
+				lineRenderer2.setBaseItemLabelPaint(defaultLabelsStyle.getColor());
+				lineRenderer2.setBaseItemLabelsVisible(true);
+			}
+			
+
+//			DefaultCategoryDataset datasetSecondAxis=(DefaultCategoryDataset)datasets.getDatasets().get("2");
 
 
 			if(colorMap!=null){
-				for (Iterator iterator = datasetLine.getRowKeys().iterator(); iterator.hasNext();) {
+				for (Iterator iterator = datasetLineSecondAxis.getRowKeys().iterator(); iterator.hasNext();) {
 					String serName = (String) iterator.next();
 					String labelName = "";
 					int index=-1;
@@ -374,19 +527,41 @@ public class OverlaidBarLine extends BarCharts {
 					if (seriesCaptions != null && seriesCaptions.size()>0){
 						labelName = serName;
 						serName = (String)seriesCaptions.get(serName);
-						index=datasetLine.getRowIndex(labelName);
+						index=datasetLineSecondAxis.getRowIndex(labelName);
 					}
 					else
-						index=datasetLine.getRowIndex(serName);
+						index=datasetLineSecondAxis.getRowIndex(serName);
+
+					Color color=(Color)colorMap.get(serName);
+					if(color!=null){
+						lineRenderer2.setSeriesPaint(index, color);
+					}	
+				}
+				for (Iterator iterator = datasetLineFirstAxis.getRowKeys().iterator(); iterator.hasNext();) {
+					String serName = (String) iterator.next();
+					String labelName = "";
+					int index=-1;
+
+					if (seriesCaptions != null && seriesCaptions.size()>0){
+						labelName = serName;
+						serName = (String)seriesCaptions.get(serName);
+						index=datasetLineFirstAxis.getRowIndex(labelName);
+					}
+					else
+						index=datasetLineFirstAxis.getRowIndex(serName);
 
 					Color color=(Color)colorMap.get(serName);
 					if(color!=null){
 						lineRenderer.setSeriesPaint(index, color);
 					}	
 				}
+				
 			}
-			plot.setDataset(0,datasetLine);
+			plot.setDataset(0,datasetLineFirstAxis);
 			plot.setRenderer(0,lineRenderer);
+			plot.setDataset(1,datasetLineSecondAxis);
+			plot.setRenderer(1,lineRenderer2);
+
 		}
 
 
@@ -394,7 +569,11 @@ public class OverlaidBarLine extends BarCharts {
 			NumberAxis na=new NumberAxis(secondAxisLabel);
 			na.setUpperMargin(0.10);
 			plot.setRangeAxis(1,na);
-			plot.mapDatasetToRangeAxis(0, 1);
+			plot.mapDatasetToRangeAxis(0, 0);
+			plot.mapDatasetToRangeAxis(2, 0);
+			plot.mapDatasetToRangeAxis(1, 1);
+			plot.mapDatasetToRangeAxis(3, 1);
+
 		}
 
 
@@ -410,11 +589,218 @@ public class OverlaidBarLine extends BarCharts {
 			chart.addSubtitle(subTitle);
 		}
 		chart.setBackgroundPaint(Color.white);
+
+		logger.debug("OUT");
+
 		return chart;
 
 
 
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	public JFreeChart createChart(DatasetMap datasets) {
+
+
+//	// create the first renderer...
+
+
+//	CategoryPlot plot = new CategoryPlot();
+
+
+//	NumberAxis rangeAxis = new NumberAxis(getValueLabel());
+//	rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+//	rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
+//	rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+//	rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
+//	rangeAxis.setUpperMargin(0.10);
+//	plot.setRangeAxis(rangeAxis);
+
+//	CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
+//	domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+//	domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+//	domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+//	domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+//	domainAxis.setUpperMargin(0.10);
+//	plot.setDomainAxis(domainAxis);
+
+//	plot.setOrientation(PlotOrientation.VERTICAL);
+//	plot.setRangeGridlinesVisible(true);
+//	plot.setDomainGridlinesVisible(true);
+
+//	DefaultCategoryDataset datasetBar=(DefaultCategoryDataset)datasets.getDatasets().get("bar");
+
+
+//	//I create one bar renderer and one line
+//	MyStandardCategoryItemLabelGenerator generator=null;
+
+//	// value labels and additional values are mutually exclusive
+//	if(showValueLabels==true)additionalLabels=false;
+
+//	if(additionalLabels){
+//	generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());
+//	}
+
+//	if(useBars){
+
+//	CategoryItemRenderer barRenderer = new BarRenderer();
+
+//	if(showValueLabels){
+//	barRenderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+//	barRenderer.setBaseItemLabelsVisible(true);
+//	barRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+//	barRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+
+//	barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+//	ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+//	barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+//	ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+//	}
+//	else if(additionalLabels){
+//	barRenderer.setBaseItemLabelGenerator(generator);
+//	double orient=(-Math.PI / 2.0);
+//	if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
+//	orient=0.0;
+//	}
+
+//	barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+//	ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+//	orient));
+//	barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+//	ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
+//	orient));
+
+//	}
+
+
+//	if(colorMap!=null){
+//	for (Iterator iterator = datasetBar.getRowKeys().iterator(); iterator.hasNext();) {
+//	String serName = (String) iterator.next();
+//	String labelName = "";
+//	int index=-1;
+
+//	if (seriesCaptions != null && seriesCaptions.size()>0){
+//	labelName = serName;
+//	serName = (String)seriesCaptions.get(serName);
+//	index=datasetBar.getRowIndex(labelName);
+//	}
+//	else
+//	index=datasetBar.getRowIndex(serName);
+
+//	Color color=(Color)colorMap.get(serName);
+//	if(color!=null){
+//	barRenderer.setSeriesPaint(index, color);
+//	}	
+//	}
+//	}
+
+
+//	plot.setDataset(1,datasetBar);
+//	plot.setRenderer(1,barRenderer);
+
+//	}
+
+//	if(useLines){
+
+//	LineAndShapeRenderer lineRenderer = new LineAndShapeRenderer();
+//	//lineRenderer.setShapesFilled(false);
+//	lineRenderer.setShapesFilled(true);
+
+
+
+//	if(showValueLabels){
+//	lineRenderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+//	lineRenderer.setBaseItemLabelsVisible(true);
+//	lineRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.ITALIC, styleValueLabels.getSize()));
+//	lineRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+
+//	lineRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+//	ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_RIGHT));
+
+//	lineRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+//	ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_RIGHT));
+
+//	}	
+//	else if(additionalLabels){
+//	lineRenderer.setBaseItemLabelGenerator(generator);
+//	lineRenderer.setBaseItemLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
+//	lineRenderer.setBaseItemLabelPaint(defaultLabelsStyle.getColor());
+//	lineRenderer.setBaseItemLabelsVisible(true);
+//	}
+
+//	DefaultCategoryDataset datasetLine=(DefaultCategoryDataset)datasets.getDatasets().get("line");
+
+
+//	if(colorMap!=null){
+//	for (Iterator iterator = datasetLine.getRowKeys().iterator(); iterator.hasNext();) {
+//	String serName = (String) iterator.next();
+//	String labelName = "";
+//	int index=-1;
+
+//	if (seriesCaptions != null && seriesCaptions.size()>0){
+//	labelName = serName;
+//	serName = (String)seriesCaptions.get(serName);
+//	index=datasetLine.getRowIndex(labelName);
+//	}
+//	else
+//	index=datasetLine.getRowIndex(serName);
+
+//	Color color=(Color)colorMap.get(serName);
+//	if(color!=null){
+//	lineRenderer.setSeriesPaint(index, color);
+//	}	
+//	}
+//	}
+//	plot.setDataset(0,datasetLine);
+//	plot.setRenderer(0,lineRenderer);
+//	}
+
+
+//	if(secondAxis){
+//	NumberAxis na=new NumberAxis(secondAxisLabel);
+//	na.setUpperMargin(0.10);
+//	plot.setRangeAxis(1,na);
+//	plot.mapDatasetToRangeAxis(0, 1);
+//	}
+
+
+
+//	//plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
+//	plot.getDomainAxis().setCategoryLabelPositions(
+//	CategoryLabelPositions.UP_45);
+//	JFreeChart chart = new JFreeChart(plot);
+//	TextTitle title = setStyleTitle(name, styleTitle);
+//	chart.setTitle(title);
+//	if(subName!= null && !subName.equals("")){
+//	TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+//	chart.addSubtitle(subTitle);
+//	}
+//	chart.setBackgroundPaint(Color.white);
+//	return chart;
+
+
+
+//	}
 
 
 }

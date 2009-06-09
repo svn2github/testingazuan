@@ -1,6 +1,7 @@
 package it.eng.spagobi.engines.kpi.bo;
 
 import it.eng.spagobi.kpi.config.bo.KpiValue;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class KpiLine {
 	String thresholdsJsArray = "";
 	Color semaphorColor = null;
 	ChartImpl chartBullet = null;	
+	ThresholdValue thresholdOfValue = null;
 	List children = null;//List ok kpiLineChildren
 	List documents = null;//List of documents related to the Kpi
 	
@@ -26,7 +28,7 @@ public class KpiLine {
 	}
 	public KpiLine(String modelNodeName,String arrayJs, Boolean alarm, KpiValue value,
 			Color semaphorColor, ChartImpl chartBullet, List children,
-			List documents, Integer modelInstanceNodeId, String modelInstanceCode ) {
+			List documents, Integer modelInstanceNodeId, String modelInstanceCode,ThresholdValue thresholdOfValue) {
 		super();
 		this.thresholdsJsArray = arrayJs;
 		this.modelNodeName = modelNodeName;
@@ -38,6 +40,7 @@ public class KpiLine {
 		this.documents = documents;
 		this.modelInstanceNodeId = modelInstanceNodeId;
 		this.modelInstanceCode = modelInstanceCode;
+		this.thresholdOfValue = thresholdOfValue;
 	}
 	
 	public String getModelNodeName() {
@@ -99,5 +102,11 @@ public class KpiLine {
 	}
 	public void setModelInstanceCode(String modelInstanceCode) {
 		this.modelInstanceCode = modelInstanceCode;
-	}	
+	}
+	public ThresholdValue getThresholdOfValue() {
+		return thresholdOfValue;
+	}
+	public void setThresholdOfValue(ThresholdValue thresholdOfValue) {
+		this.thresholdOfValue = thresholdOfValue;
+	}
 }

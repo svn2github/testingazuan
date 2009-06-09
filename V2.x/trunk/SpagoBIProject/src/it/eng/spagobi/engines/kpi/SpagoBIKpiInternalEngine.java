@@ -845,7 +845,11 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				Color semaphorColor = null;
 				List thresholdValues = value.getThresholdValues();
 				Double val = new Double(value.getValue());
-				semaphorColor = getSemaphorColor(thresholdValues, val);
+				ThresholdValue t = getSemaphorColor(thresholdValues, val);
+				if(t!=null){
+					semaphorColor = t.getColour();
+					line.setThresholdOfValue(t);
+				}
 
 				line.setSemaphorColor(semaphorColor);
 			}
@@ -1123,9 +1127,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	 *                of thresholds to set
 	 * @return The Color of the interval in which the value falls
 	 */
-	public Color getSemaphorColor(List thresholdValues, Double value) {
+	public ThresholdValue getSemaphorColor(List thresholdValues, Double value) {
 		logger.debug("IN");
-		Color toReturn = null;
+		ThresholdValue toReturn = null;
 		if (thresholdValues != null && !thresholdValues.isEmpty()) {
 			Iterator it = thresholdValues.iterator();
 
@@ -1139,23 +1143,25 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					logger.debug("Threshold type RANGE");
 					if (value.doubleValue() >= min.doubleValue() && value.doubleValue() < max.doubleValue()) {
 						String label = t.getLabel();
-						toReturn = t.getColour();
+						toReturn = t;
 					}
 				} else if (type.equals("MINIMUM")) {
 					logger.debug("Threshold type MINIMUM");
 					if (value.doubleValue() < min.doubleValue()) {
 						String label = t.getLabel();
-						toReturn = t.getColour();
+						toReturn = t;
 					} else {
-						toReturn = Color.WHITE;
+						t.setColour(Color.WHITE) ;
+						toReturn = t;
 					}
 				} else if (type.equals("MAXIMUM")) {
 					logger.debug("Threshold type MAXIMUM");
 					if (value.doubleValue() > max.doubleValue()) {
 						String label = t.getLabel();
-						toReturn = t.getColour();
+						toReturn = t;
 					} else {
-						toReturn = Color.WHITE;
+						t.setColour(Color.WHITE);
+						toReturn = t;
 					}
 				}
 				logger.debug("New interval added to the Vector");

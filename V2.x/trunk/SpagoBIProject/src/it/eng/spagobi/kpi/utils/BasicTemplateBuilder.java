@@ -27,10 +27,13 @@ package it.eng.spagobi.kpi.utils;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.kpi.bo.KpiLine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
+import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -44,6 +47,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.jfree.chart.ChartRenderingInfo;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.entity.StandardEntityCollection;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 import org.xml.sax.InputSource;
 
 
@@ -61,12 +70,12 @@ public class BasicTemplateBuilder  {
 	static String staticTextNameS="<staticText>" +
 	"	<reportElement x=\"0\"" +
 	"	y=\"0\"" +
-	"   width=\"280\"" +
-	"   height=\"20\"" +
+	"   width=\"210\"" +
+	"   height=\"12\"" +
 	"	key=\"staticText-1\" />" +
 	"	<box></box>" +
 	"	<textElement>	" +
-	"	<font/>" +
+	"	<font size=\"8\" />" +
 	"	</textElement>" +
 	"	<text><![CDATA[KPI1]]></text>" +
 	"	</staticText>";
@@ -74,37 +83,51 @@ public class BasicTemplateBuilder  {
 
 	static String staticTextNumberS="<staticText>" +
 	"	<reportElement" +
-	"	x=\"0\"" +
+	"	x=\"235\"" +
 	"	y=\"0\"" +
-	"	width=\"50\"" +
-	"	height=\"20\"" +
+	"	width=\"35\"" +
+	"	height=\"12\"" +
 	"	key=\"staticText-2\"/>" +
 	"	<box></box>" +
-	"	<textElement>" +
-	"	<font size=\"10\" isBold=\"true\"/>" +
+	"	<textElement textAlignment=\"Right\" >" +
+	"	<font size=\"8\" isBold=\"true\"/>" +
+	"	</textElement>" +
+	"	<text></text>" +
+	"	</staticText>";
+	
+	static String staticTextWeightS="<staticText>" +
+	"	<reportElement" +
+	"	x=\"284\"" +
+	"	y=\"0\"" +
+	"	width=\"17\"" +
+	"	height=\"12\"" +
+	"	key=\"staticText-2\"/>" +
+	"	<box></box>" +
+	"	<textElement textAlignment=\"Right\">" +
+	"	<font size=\"8\" isBold=\"true\"/>" +
 	"	</textElement>" +
 	"	<text></text>" +
 	"	</staticText>";
 
 	static String imageS="<image  evaluationTime=\"Now\" hyperlinkType=\"None\"  hyperlinkTarget=\"Self\" >" +
 	"	<reportElement" +
-	"	x=\"347\"" +
+	"	x=\"310\"" +
 	"	y=\"35\"" +
-	"	width=\"112\"" +
-	"	height=\"20\"" +
+	"	width=\"130\"" +
+	"	height=\"11\"" +
 	"	key=\"image-1\"/>" +
 	"	<box></box>" +
 	"	<graphicElement stretchType=\"NoStretch\"/>" +
-	"	<imageExpression class=\"java.lang.String\"><![CDATA[$V{IMMAGINE}]]></imageExpression>" +
+	"	<imageExpression class=\"java.net.URL\"></imageExpression>" +
 	"	</image>";
-
+	
 
 	static String resourceBandS="<rectangle>" +
 	"	<reportElement" +
 	"	x=\"0\"" +
 	"	y=\"0\"" +
 	"	width=\"535\"" +
-	"	height=\"18\"" +
+	"	height=\"14\"" +
 	"	forecolor=\"#FFFFFF\""+
 	"	backcolor=\"#CCCCCC\"" +
 	"	key=\"rectangle-2\"/>" +
@@ -117,11 +140,11 @@ public class BasicTemplateBuilder  {
 	"	x=\"6\"" +
 	"	y=\"0\"" +
 	"	width=\"120\"" +
-	"	height=\"18\"" +
+	"	height=\"14\"" +
 	"	key=\"staticText-3\"/>" +
 	"	<box></box>" +
 	"	<textElement verticalAlignment=\"Middle\" >" +
-	"	<font size=\"12\" isBold=\"true\"/>" +
+	"	<font size=\"10\" isBold=\"true\"/>" +
 	" </textElement>" +
 	"	<text><![CDATA[risorsa]]></text>" +
 	"	</staticText>";
@@ -131,7 +154,7 @@ public class BasicTemplateBuilder  {
 	"	x=\"0\"" +
 	"	y=\"0\"" +
 	"	width=\"535\"" +
-	"	height=\"18\"" +
+	"	height=\"12\"" +
 	"	forecolor=\"#FFFFFF\""+
 	"	backcolor=\"#FFCCCC\"" +
 	"	key=\"rectangle-2\"/>" +
@@ -143,54 +166,96 @@ public class BasicTemplateBuilder  {
 	"	x=\"6\""+
 	"	y=\"15\""+
 	"	width=\"93\""+
-	"	height=\"25\""+
+	"	height=\"12\""+
 	"	forecolor=\"#990000\""+
 	"	key=\"staticText-4\"/>"+
 	"	<box></box>"+
 	"	<textElement verticalAlignment=\"Middle\">"+
-	"	<font pdfFontName=\"Helvetica-Bold\" size=\"12\" isBold=\"true\"/>"+
+	"	<font pdfFontName=\"Helvetica-Bold\" size=\"8\" isBold=\"true\"/>"+
 	"	</textElement>"+
 	"	<text><![CDATA[MODEL]]></text>"+
 	"	</staticText>";
 	  
 	static String columnKPIHeaderS="<staticText>"+
 	"	<reportElement"+
-	"	x=\"230\""+
+	"	x=\"253\""+
 	"	y=\"15\""+
-	"	width=\"90\""+
-	"	height=\"25\""+
+	"	width=\"20\""+
+	"	height=\"12\""+
 	"	forecolor=\"#990000\""+
 	"	key=\"staticText-5\"/>"+
 	"	<box></box>"+
 	"	<textElement verticalAlignment=\"Middle\">"+
-	"	<font pdfFontName=\"Helvetica-Bold\" size=\"12\" isBold=\"true\"/>"+
+	"	<font pdfFontName=\"Helvetica-Bold\" size=\"8\" isBold=\"true\"/>"+
 	"	</textElement>"+
 	"	<text><![CDATA[KPI]]></text>"+
 	"	</staticText>";	
 		
 	static String columnWeightHeaderS="<staticText>"+
 	"	<reportElement"+
-	"	x=\"340\""+
-	"	y=\"17\""+
-	"	width=\"93\""+
-	"	height=\"25\""+
+	"	x=\"278\""+
+	"	y=\"15\""+
+	"	width=\"53\""+
+	"	height=\"12\""+
 	"	forecolor=\"#990000\""+
 	"	key=\"staticText-6\"/>"+
 	"	<box></box>"+
 	"	<textElement verticalAlignment=\"Middle\">"+
-	"	<font pdfFontName=\"Helvetica-Bold\" size=\"12\" isBold=\"true\"/>"+
+	"	<font pdfFontName=\"Helvetica-Bold\" size=\"8\" isBold=\"true\"/>"+
 	"	</textElement>"+
 	"	<text><![CDATA[WEIGHT]]></text>"+
 	"	</staticText>";	
 
+	static String columnThresholdHeaderS="<staticText>"+
+	"	<reportElement"+
+	"	x=\"430\""+
+	"	y=\"15\""+
+	"	width=\"110\""+
+	"	height=\"12\""+
+	"	forecolor=\"#990000\""+
+	"	key=\"staticText-7\"/>"+
+	"	<box></box>"+
+	"	<textElement textAlignment=\"Center\" verticalAlignment=\"Middle\">"+
+	"	<font pdfFontName=\"Helvetica-Bold\" size=\"8\" isBold=\"true\"/>"+
+	"	</textElement>"+
+	"	<text><![CDATA[THRESHOLD RANGE]]></text>"+
+	"	</staticText>";	
+
+	static String thresholdCodeS="<staticText>"+
+	"	<reportElement"+
+	"	x=\"446\""+
+	"	y=\"15\""+
+	"	width=\"72\""+
+	"	height=\"8\""+
+	"	key=\"staticText-8\"/>"+
+	"	<box></box>"+
+	"	<textElement textAlignment=\"Right\" verticalAlignment=\"Middle\">"+
+	"	<font size=\"6\" />"+
+	"	</textElement>"+
+	"	<text></text>"+
+	"	</staticText>";	
+	
+	static String thresholdValueS="<staticText>"+
+	"	<reportElement"+
+	"	x=\"446\""+
+	"	y=\"47\""+
+	"	width=\"72\""+
+	"	height=\"8\""+
+	"	key=\"staticText-9\"/>"+
+	"	<box></box>"+
+	"	<textElement textAlignment=\"Right\" verticalAlignment=\"Middle\">"+
+	"	<font size=\"6\" />"+
+	"	</textElement>"+
+	"	<text></text>"+
+	"	</staticText>";	
 
 	static String semaphorS="<rectangle>" +
 	"	<reportElement" +
 	"	mode=\"Opaque\"" +
 	"	x=\"0\"" +
 	"	y=\"0\"" +
-	"	width=\"10\"" +
-	"	height=\"10\"" +
+	"	width=\"7\"" +
+	"	height=\"7\"" +
 	"	forecolor=\"#000000\"" +
 	"	backcolor=\"#CC0066\"" +
 	"	key=\"rectangle-1\"/>" +
@@ -223,6 +288,7 @@ public class BasicTemplateBuilder  {
 
 	SourceBean staticTextName=null;
 	SourceBean staticTextNumber=null;
+	SourceBean staticTextWeightNumber=null;
 	SourceBean image=null;
 	SourceBean resourceBand=null;
 	SourceBean resourceName=null;
@@ -233,6 +299,9 @@ public class BasicTemplateBuilder  {
 	SourceBean columnModelHeader=null;
 	SourceBean columnKPIHeader=null;
 	SourceBean columnWeightHeader=null;
+	SourceBean columnThresholdHeader=null;
+	SourceBean thresholdCode=null;
+	SourceBean thresholdValue=null;
 
 	String documentName=null;
 
@@ -243,11 +312,13 @@ public class BasicTemplateBuilder  {
 	// margin up of text in summary bend
 	final Integer yStarter=new Integer(5);
 	// Height of the gray band with the resource name
-	final Integer resourceBandHeight=new Integer(18); 
+	final Integer resourceBandHeight=new Integer(14); 
 	// Height of a value row
 	final Integer valueHeight=new Integer(20); 
 //	height between lines
-	final Integer separatorHeight=new Integer(5);
+	final Integer separatorHeight=new Integer(1);
+//	width between elements
+	final Integer separatorWidth = new Integer(5);
 //	Width of text label with code - name
 	final Integer textWidth=new Integer(280);
 //	width of text label with numbers
@@ -257,7 +328,7 @@ public class BasicTemplateBuilder  {
 //	width of the title band
 	final Integer titleHeight=new Integer(50);
 //	height of the column header band
-	final Integer columnHeaderHeight=new Integer(20);
+	final Integer columnHeaderHeight=new Integer(14);
 
 	// counting the actual weight of the report
 	Integer actualHeight=new Integer(0);
@@ -303,7 +374,8 @@ public class BasicTemplateBuilder  {
 
 		try {
 			staticTextName = SourceBean.fromXMLString(staticTextNameS); // this is for text
-			staticTextNumber = SourceBean.fromXMLString(staticTextNumberS); // this is for numbers
+			staticTextNumber = SourceBean.fromXMLString(staticTextNumberS); 
+			staticTextWeightNumber = SourceBean.fromXMLString(staticTextWeightS);
 			image = SourceBean.fromXMLString(imageS);
 			resourceBand=SourceBean.fromXMLString(resourceBandS);
 			resourceName=SourceBean.fromXMLString(resourceNameS);
@@ -314,6 +386,9 @@ public class BasicTemplateBuilder  {
 			columnModelHeader=SourceBean.fromXMLString(columnModelHeaderS);
 			columnKPIHeader=SourceBean.fromXMLString(columnKPIHeaderS);
 			columnWeightHeader=SourceBean.fromXMLString(columnWeightHeaderS);
+			columnThresholdHeader=SourceBean.fromXMLString(columnThresholdHeaderS);
+			thresholdCode=SourceBean.fromXMLString(thresholdCodeS);
+			thresholdValue=SourceBean.fromXMLString(thresholdValueS);
 		} catch (Exception e) {
 			logger.error("Error in converting static elemnts into Source Beans, check the XML code");
 		}
@@ -343,9 +418,10 @@ public class BasicTemplateBuilder  {
 			String replaceWith=nameResolution.get(toReplace);
 			finalTemplate=finalTemplate.replaceAll("<"+toReplace, "<"+replaceWith);
 			finalTemplate=finalTemplate.replaceAll("</"+toReplace, "</"+replaceWith);
+			
 		}
 		logger.debug("Built template: "+finalTemplate);
-		System.out.println(finalTemplate);
+		//System.out.println(finalTemplate);
 		logger.debug("OUT");
 		return finalTemplate;
 	}
@@ -357,7 +433,7 @@ public class BasicTemplateBuilder  {
 		logger.debug("IN");
 
 		try {
-			templateBaseContent.setAttribute("pageHeight",actualHeight+titleHeight+80);
+			templateBaseContent.setAttribute("pageHeight",actualHeight+titleHeight+70);
 			band.setAttribute("height", (actualHeight+5));
 		} catch (SourceBeanException e) {
 			logger.error("error in setting the height");
@@ -373,8 +449,8 @@ public class BasicTemplateBuilder  {
 	public void newResource(KpiResourceBlock block){
 		logger.debug("IN");
 		Resource res=block.getR();
-		if(res!=null){
-			logger.debug("add resource band for resource "+res.getName());
+		
+			
 			try{
 				actualHeight+=separatorHeight;
 
@@ -384,24 +460,31 @@ public class BasicTemplateBuilder  {
 				SourceBean modelColHeader=new SourceBean(columnModelHeader);
 				SourceBean weightColHeader=new SourceBean(columnWeightHeader);
 				SourceBean kpiColHeader=new SourceBean(columnKPIHeader);
-
-				bandRes.setAttribute("reportElement.y", actualHeight.toString());
-				bandName.setAttribute("reportElement.y", actualHeight.toString());
-
-				SourceBean textValue1=(SourceBean)bandName.getAttribute("text");
-				textValue1.setCharacters("RESOURCE: "+res.getName());
-				band.setAttribute(bandRes);
-				band.setAttribute(bandName);
-				actualHeight+=resourceBandHeight;
+				SourceBean kthreshColHeader=new SourceBean(columnThresholdHeader);
+				
+				if(res!=null){
+					bandRes.setAttribute("reportElement.y", actualHeight.toString());
+					bandName.setAttribute("reportElement.y", actualHeight.toString());
+					logger.debug("add resource band for resource "+res.getName());
+					SourceBean textValue1=(SourceBean)bandName.getAttribute("text");
+					textValue1.setCharacters("RESOURCE: "+res.getName());
+					band.setAttribute(bandRes);
+					band.setAttribute(bandName);
+					actualHeight+=resourceBandHeight;
+				}
 				
 				columnHeadBand.setAttribute("reportElement.y",actualHeight.toString());
 				modelColHeader.setAttribute("reportElement.y",actualHeight.toString());
-				weightColHeader.setAttribute("reportElement.y",actualHeight.toString());
 				kpiColHeader.setAttribute("reportElement.y",actualHeight.toString());
+				weightColHeader.setAttribute("reportElement.y",actualHeight.toString());
+				kthreshColHeader.setAttribute("reportElement.y",actualHeight.toString());
+				
 				band.setAttribute(columnHeadBand);
 				band.setAttribute(modelColHeader);
-				band.setAttribute(weightColHeader);
 				band.setAttribute(kpiColHeader);
+				band.setAttribute(weightColHeader);
+				band.setAttribute(kthreshColHeader);
+				
 				
 				actualHeight+=columnHeaderHeight;
 				//The line
@@ -412,7 +495,7 @@ public class BasicTemplateBuilder  {
 				logger.error("Error in setting the resource band");
 				return;
 			}
-		}
+		
 		logger.debug("OUT");
 	}
 
@@ -423,15 +506,17 @@ public class BasicTemplateBuilder  {
 			actualHeight+=separatorHeight;
 			SourceBean textCodeName=new SourceBean(staticTextName);   // code -name
 			SourceBean textValue=new SourceBean(staticTextNumber);  //value number
-			SourceBean textWeight=new SourceBean(staticTextNumber);  // weight number
+			SourceBean textWeight=new SourceBean(staticTextWeightNumber);  // weight number
 			SourceBean image1=new SourceBean(image);
 			SourceBean semaphor1=new SourceBean(semaphor);
+			SourceBean threshCode=new SourceBean(thresholdCode);
+			SourceBean threshValue=new SourceBean(thresholdValue);
 			SourceBean evenLine=new SourceBean(evenLineS);
 			SourceBean oddLine=new SourceBean(oddLineS);
 			if(evenLevel){
-				setLineAttributes(kpiLine,semaphor1,textCodeName,textValue,textWeight,image1,level,evenLine);
+				setLineAttributes(kpiLine,semaphor1,textCodeName,textValue,textWeight,image1,level,evenLine,threshCode,threshValue);
 			}else{
-				setLineAttributes(kpiLine,semaphor1,textCodeName,textValue,textWeight,image1,level,oddLine);
+				setLineAttributes(kpiLine,semaphor1,textCodeName,textValue,textWeight,image1,level,oddLine,threshCode,threshValue);
 			}
 			actualHeight+=valueHeight;
 
@@ -439,6 +524,9 @@ public class BasicTemplateBuilder  {
 			band.setAttribute(textCodeName);
 			band.setAttribute(textValue);
 			band.setAttribute(textWeight);
+			band.setAttribute(image1);
+			band.setAttribute(threshCode);
+			band.setAttribute(threshValue);
 			if(evenLevel){
 				band.setAttribute(evenLine);
 			}else{
@@ -463,10 +551,13 @@ public class BasicTemplateBuilder  {
 
 
 
-	private void setLineAttributes(KpiLine line,SourceBean semaphor, SourceBean textCodeName, SourceBean textValue, SourceBean textWeight, SourceBean image1, int level, SourceBean separatorline){
+	private void setLineAttributes(KpiLine line,SourceBean semaphor, SourceBean textCodeName, SourceBean textValue, 
+			SourceBean textWeight, SourceBean image1, int level, SourceBean separatorline,SourceBean threshCode,SourceBean threshValue){
 		logger.debug("IN");
 		Color colorSemaphor=line.getSemaphorColor();
 		KpiValue kpiValue=line.getValue();
+		
+		
 
 		Integer xValue=xStarter+(xIncrease*Integer.valueOf(level));
 
@@ -476,7 +567,7 @@ public class BasicTemplateBuilder  {
 
 			//set Semaphor
 			semaphor.setAttribute("reportElement.x", xValue.toString());
-			semaphor.setAttribute("reportElement.y", yValue.toString());
+			semaphor.setAttribute("reportElement.y", new Integer(yValue.intValue()+2).toString());
 			if(colorSemaphor!=null){
 
 				String color=Integer.toHexString(colorSemaphor.getRGB());
@@ -488,7 +579,7 @@ public class BasicTemplateBuilder  {
 				semaphor.setAttribute("reportElement.forecolor", "#FFFFFF");
 				semaphor.setAttribute("reportElement.backcolor", "#FFFFFF");
 			}
-			xValue=xValue+semaphorWidth+separatorHeight;
+			xValue=xValue+semaphorWidth+separatorWidth;
 
 			// set text 1: Model CODE - Model NAME
 			textCodeName.setAttribute("reportElement.x", (xValue));
@@ -497,27 +588,73 @@ public class BasicTemplateBuilder  {
 //			textValue1.setCharacters("<![CDATA["+value1+"]]>");
 			textValue1.setCharacters(line.getModelInstanceCode()+"-"+line.getModelNodeName());
 
-			xValue=xValue+textWidth+separatorHeight;
+			xValue=xValue+textWidth+separatorWidth;
 
 			// Value and weight
 			if(kpiValue!=null){
 				String value1=kpiValue.getValue() != null ? kpiValue.getValue() : "";
 				//set text2
-				textValue.setAttribute("reportElement.x", xValue);
+				//textValue.setAttribute("reportElement.x", xValue);
 				textValue.setAttribute("reportElement.y", yValue.toString());
 				SourceBean textValue2=(SourceBean)textValue.getAttribute("text");
 				textValue2.setCharacters(value1);
 
 				String weight=(kpiValue.getWeight()!=null) ? kpiValue.getWeight().toString() : "";
 				//set text2
-				xValue=xValue+numbersWidth+separatorHeight;
-				textWeight.setAttribute("reportElement.x", xValue);
+				xValue=xValue+numbersWidth+separatorWidth;
+				//textWeight.setAttribute("reportElement.x", xValue);
 				textWeight.setAttribute("reportElement.y", yValue.toString());
 				SourceBean textValue3=(SourceBean)textWeight.getAttribute("text");
 				textValue3.setCharacters(weight);
+				
+				ThresholdValue t = line.getThresholdOfValue();
+				String code=t.getLabel() != null ? t.getLabel() : "";
+				String codeTh = "Code: "+code;
+				
+				threshCode.setAttribute("reportElement.y",  new Integer(yValue.intValue()-2).toString());
+				SourceBean threshCode2=(SourceBean)threshCode.getAttribute("text");
+				threshCode2.setCharacters(codeTh);
+				
+				String labelTh=t.getLabel() != null ? t.getLabel() : "";
+				String min = t.getMinValue()!= null ? t.getMinValue().toString() : "";
+				String max = t.getMaxValue()!= null ?  t.getMaxValue().toString() : "";
+				String valueTh = "Value: "+min+"-"+max+" "+labelTh;
+				
+				threshValue.setAttribute("reportElement.y", new Integer(yValue.intValue()+7).toString());
+				SourceBean threshValue2=(SourceBean)threshValue.getAttribute("text");
+				threshValue2.setCharacters(valueTh);
 
 			}
-			separatorline.setAttribute("reportElement.y", new Integer(yValue.intValue()+20).toString());
+			
+			if(line.getChartBullet()!=null){
+				BulletGraph sbi = (BulletGraph)line.getChartBullet();	
+				JFreeChart chart = sbi.createChart();
+				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+				String requestIdentity = null;
+				UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+				UUID uuid = uuidGen.generateTimeBasedUUID();
+				requestIdentity = uuid.toString();
+				requestIdentity = requestIdentity.replaceAll("-", "");
+				String path_param = requestIdentity;
+				String dir=System.getProperty("java.io.tmpdir");
+				String path=dir+"/"+requestIdentity+".png";
+				java.io.File file1 = new java.io.File(path);
+				try {
+					ChartUtilities.saveChartAsPNG(file1, chart, 130, 11, info);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+				"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&path="+path_param+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
+				urlPng = "new java.net.URL(\""+urlPng+"\")";
+				
+				image1.setAttribute("reportElement.y", yValue.toString());
+				SourceBean imageValue=(SourceBean)image1.getAttribute("imageExpression");
+				imageValue.setCharacters(urlPng);
+				
+			}
+			
+			separatorline.setAttribute("reportElement.y", new Integer(yValue.intValue()+16).toString());
 
 
 		} catch (SourceBeanException e) {
@@ -556,7 +693,8 @@ public class BasicTemplateBuilder  {
 //		text
 //		image
 //		imageExpression
-
+		nameResolution.put("IMAGEEXPRESSION", "imageExpression");
+		nameResolution.put("imageEXPRESSION", "imageExpression");
 		nameResolution.put("JASPERREPORT", "jasperReport");
 		nameResolution.put("IMPORT", "import");
 		nameResolution.put("PROPERTY", "property");
@@ -582,8 +720,7 @@ public class BasicTemplateBuilder  {
 		nameResolution.put("SUMMARY", "summary");
 		nameResolution.put("STATICTEXT", "staticText");
 		nameResolution.put("TEXT", "text");
-		nameResolution.put("IMAGE", "image");
-		nameResolution.put("IMAGEEXPRESSION", "imageExpression");
+		nameResolution.put("IMAGE", "image");	
 		nameResolution.put("RECTANGLE", "rectangle");
 		nameResolution.put("INITIALVALUEEXPRESSION", "initialValueExpression");
 		nameResolution.put("COLUMNHEADER", "columnHeader");

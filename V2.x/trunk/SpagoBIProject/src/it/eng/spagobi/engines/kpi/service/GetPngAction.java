@@ -81,7 +81,7 @@ public class GetPngAction extends AbstractHttpAction{
 		if( fileToDelete.delete() ){ 
 			logger.debug("File deleted");	
 		}else{ 
-			logger.error("File not correctle deleted");
+			logger.error("File not correctly deleted");
 		} 
 		
 		logger.debug("OUT");

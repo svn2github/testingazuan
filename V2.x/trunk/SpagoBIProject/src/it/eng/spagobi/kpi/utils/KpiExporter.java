@@ -55,7 +55,7 @@ public class KpiExporter {
 		BasicTemplateBuilder basic=new BasicTemplateBuilder(docName);
 		String template2=basic.buildTemplate(kpiBlocks);
 
-		System.out.println(template2);
+		//System.out.println(template2);
 
 		String outputType = "PDF";
 		HashedMap parameters=new HashedMap();

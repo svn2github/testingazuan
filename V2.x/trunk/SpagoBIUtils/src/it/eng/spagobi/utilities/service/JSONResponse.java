@@ -88,7 +88,7 @@ public class JSONResponse implements IServiceResponse {
 
 	
 	public String getContentType() {		
-		return "text/json";
+		return "application/json; charset=utf-8";
 	}
 
 	public boolean isInline() {

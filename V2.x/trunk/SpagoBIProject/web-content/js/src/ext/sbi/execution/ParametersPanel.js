@@ -54,6 +54,7 @@ Sbi.execution.ParametersPanel = function(config) {
 		, labelAlign: 'left'
 	}, config || {});
 	
+	this.parametersPreference = config.preferences.execution.parameters;
 	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
@@ -107,6 +108,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
     services: null
     , fields: null
     , columns: null
+    , parametersPreference: null
    
     // ----------------------------------------------------------------------------------------
     // public methods
@@ -229,7 +231,13 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 				}
 			}, this); 
 			
-		}		
+		}
+		
+		if (this.parametersPreference) {
+			var preferenceState = Ext.urlDecode(this.parametersPreference);
+			this.setFormState(preferenceState);
+		}
+		
 	}
 	
 	, createField: function( executionInstance, p ) {

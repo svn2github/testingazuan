@@ -128,5 +128,10 @@
  	<CONFIG/>
  </ACTION>
  
+ <ACTION name="GET_VIEWPOINTS_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.GetViewpointsAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
 </ACTIONS>
 

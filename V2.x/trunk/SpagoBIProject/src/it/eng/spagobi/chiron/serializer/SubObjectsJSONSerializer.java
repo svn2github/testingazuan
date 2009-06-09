@@ -24,10 +24,10 @@ package it.eng.spagobi.chiron.serializer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.json.JSONObject;
+
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-
-import org.json.JSONObject;
 
 /**
  * @author Zerbetto Davide
@@ -67,6 +67,8 @@ public class SubObjectsJSONSerializer implements Serializer {
 			String lastChangeDateStr = dateFormat.format(lastChangeDate);
 			result.put(LAST_MODIFICATION_DATE, lastChangeDateStr );
 			result.put(VISIBILITY, subObject.getIsPublic() );
+			
+			
 			
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);

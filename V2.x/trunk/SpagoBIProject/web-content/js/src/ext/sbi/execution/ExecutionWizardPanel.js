@@ -77,44 +77,6 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
 	
 	this.activePanel = 0;
 	
-	/*
-	this.ttBarButtons = new Array();
-	
-	this.ttBarButtons['previous'] =  new Ext.Toolbar.Button({
-		id: 'card-prev'
-		, text: '&laquo; Previous'
-		, listeners: {
-			'click': {
-	        	fn: this.moveToPreviousPage,
-	          	scope: this
-	        } 
-		}
-	});
-	
-	this.ttBarButtons['next'] =  new Ext.Toolbar.Button({
-		id: 'card-next'
-		, text: 'Next &raquo;'
-			// permetto ad altri oggetti di mettersi in ascolto di certi eventi
-		, listeners: {
-			'click': {
-			// verrà eseguita la funzione moveToNextPage all'interno del contesto definito da scope
-	        	fn: this.moveToNextPage,
-	          	scope: this
-	        } 
-		}
-	});
-	
-	// potevo anche fare: this.ttBarButtons.on('click', funzione, contesto), il contrario è un
-	// oppure this.ttBarButtons.addListener('click', funzione, contesto), il contrario è removeListener
-	
-	
-	// '->' indica che i bottoni devono essere allineati destra senza separatore: sono dei caratteri speciali
-    this.tb = new Ext.Toolbar({
-    	hideMode: "offsets",
-        items: ['->', this.ttBarButtons['previous'], this.ttBarButtons['next']]
-    });
-    */
-	
     this.tb = new Sbi.execution.toolbar.ExecutionToolbar({initialPage: 0});
     this.tb.addListener('backbuttonclick', this.moveToPreviousPage, this);
     this.tb.addListener('rolesformsubmit', this.moveToNextPage, this);
@@ -148,14 +110,7 @@ Sbi.execution.ExecutionWizardPanel = function(config) {
     this.parametersSelectionPanel.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
     
     this.documentViewPanel.addListener('loadurlfailure', this.onLoadUrlFailure, this);
-    //this.documentViewPanel.addListener('sendMailButtonClicked', this.onSendMailButtonClicked, this);
-    //this.documentViewPanel.addListener('saveIntoPersonalFolderButtonClicked', this.onSaveIntoPersonalFolderButtonClicked, this);
-    //this.documentViewPanel.addListener('saveRememberMeButtonClicked', this.onSaveRememberMeButtonClicked, this);
-    //this.documentViewPanel.addListener('notesButtonClicked', this.onNotesButtonClicked, this);
-    //this.documentViewPanel.addListener('metadataButtonClicked', this.onMetadataButtonClicked, this);
-    //this.documentViewPanel.addListener('ratingButtonClicked', this.onRatingButtonClicked, this);
     
-    //this.subObjectsPanel.addListener('onselected', this.onSubObjectSelected, this);
     
     if(config.document) {
     	this.execute( config.document );
@@ -173,8 +128,7 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
     , roleSelectionPanel: null
     , parametersSelectionPanel: null
     , documentViewPanel: null   
-    //, subObjectsPanel: null
-   
+    
     // public methods
     
     // toolbar
@@ -254,11 +208,8 @@ Ext.extend(Sbi.execution.ExecutionWizardPanel, Ext.Panel, {
 	}
 	
 	, onExecutionStarted: function( execContextId ) {
-		//alert(execContextId);
 		this.executionInstance.SBI_EXECUTION_ID = execContextId;
 		this.parametersSelectionPanel.synchronize(this.executionInstance);
-		//this.loadSubObjects();
-		//this.parametersSelectionPanel.doLayout();
 	}
 	
 	, onLoadUrlFailure: function ( errors ) {

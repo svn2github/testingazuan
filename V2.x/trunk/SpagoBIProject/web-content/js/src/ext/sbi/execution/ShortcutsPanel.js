@@ -89,7 +89,7 @@ Ext.extend(Sbi.execution.ShortcutsPanel, Ext.Panel, {
 	}
 
 	, synchronizeViewpoints: function( executionInstance ) {
-		//this.viewpointsPanel.synchronize( executionInstance );
+		this.viewpointsPanel.synchronize( executionInstance );
 	}
 	
 	, synchronizeSubobjects: function( executionInstance ) {

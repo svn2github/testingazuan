@@ -44,7 +44,7 @@ public class Viewpoint  implements Serializable   {
     private Date   vpCreationDate;
     
 	/**
-	 * Gets the biobj id.
+	 * Gets the biobj id
 	 * 
 	 * @return the biobjId
 	 */

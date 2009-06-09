@@ -83,7 +83,6 @@ Sbi.execution.SubobjectsPanel = function(config) {
 	          var index = this.grid.getView().findRowIndex(t);
 	          var selectedRecord = this.grid.subObjectsStore.getAt(index);
 	          var subObjectId = selectedRecord.get('id');
-	          alert(subObjectId);
 	          this.grid.fireEvent('executionrequest', subObjectId);
 	       },
 	       width: 25,

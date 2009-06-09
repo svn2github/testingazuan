@@ -70,7 +70,13 @@ Sbi.locale.ln['sbi.execution.roleselection.title']  = 'Role selection';
 Sbi.locale.ln['sbi.execution.roleselection.fieldlabel']  = 'Role';
 Sbi.locale.ln['sbi.execution.roleselection.emptytext']  = 'Select a role ...';
 
-Sbi.locale.ln['sbi.execution.viewpoints.title'] = 'Viepoints';
+Sbi.locale.ln['sbi.execution.viewpoints.title'] = 'Viewpoints';
+Sbi.locale.ln['sbi.execution.viewpoints.name'] = 'name';
+Sbi.locale.ln['sbi.execution.viewpoints.description'] = 'description';
+Sbi.locale.ln['sbi.execution.viewpoints.owner'] = 'owner';
+Sbi.locale.ln['sbi.execution.viewpoints.creationDate'] = 'creation date';
+Sbi.locale.ln['sbi.execution.viewpoints.scope'] = 'scope';
+
 Sbi.locale.ln['sbi.execution.snapshots.title'] = 'Snapshots';
 
 Sbi.locale.ln['sbi.execution.subobjects.title'] = 'Customized views';

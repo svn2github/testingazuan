@@ -22,6 +22,15 @@
 	background-image: url('../../../img/exec16.png') !important;
 }
 
+
+.icon-execute-viewpoint {
+	background-image: url('../../../img/exec16.png') !important;
+}
+
+.icon-apply-viewpoint {
+	background-image: url('../../../img/analiticalmodel/execution/apply-viewpoint16.jpg') !important;
+}
+
 .icon-filter {
 	background:transparent url('../../../img/analiticalmodel/execution/tool-sprites.gif') no-repeat 0 -45px;
 }

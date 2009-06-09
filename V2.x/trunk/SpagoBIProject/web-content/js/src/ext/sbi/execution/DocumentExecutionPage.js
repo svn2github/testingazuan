@@ -84,25 +84,25 @@ Sbi.execution.DocumentExecutionPage = function(config) {
     
     this.init(config);
     
+    this.southPanel = new Ext.Panel({
+		region:'south'
+		, border: false
+		, frame: false
+		, collapsible: true
+		, collapsed: true
+		, hideCollapseTool: true
+		, titleCollapse: true
+		, collapseMode: 'mini'
+		, split: true
+		, autoScroll: true
+		, height: 280
+		, layout: 'fit'
+		, items: [this.shortcutsPanel]
+    });
+    
 	var c = Ext.apply({}, config, {
 		layout: 'border'
-		, items: [this.miframe, 
-		    {
-				region:'south'
-				, border: false
-				, frame: false
-				, collapsible: true
-				, collapsed: true
-				, hideCollapseTool: true
-				, titleCollapse: true
-				, collapseMode: 'mini'
-				, split: true
-				, autoScroll: true
-				, height: 280
-				, layout: 'fit'
-				, items: [this.shortcutsPanel]
-			}
-		]
+		, items: [this.miframe, this.southPanel]
 	});
 	
 	// constructor
@@ -118,6 +118,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	services: null
 	, miframe : null
     , shortcutsPanel: null
+    , southPanel: null
    
 	// ----------------------------------------------------------------------------------------
 	// public methods

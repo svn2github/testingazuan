@@ -141,6 +141,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 			this.loadUrlForExecution();
 		}
 		if(this.activePanel == 2 && pageNumber == 2) { // from to document view to document view itself
+			this.documentExecutionPage.southPanel.collapse();
 			this.loadUrlForExecution();
 		}
 		if(this.activePanel == 2 && pageNumber == 1) {

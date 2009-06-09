@@ -110,6 +110,7 @@ Sbi.execution.ExecutionPanel = function(config) {
     this.parametersSelectionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
     
     this.documentExecutionPage.addListener('loadurlfailure', this.onLoadUrlFailure, this);
+    this.documentExecutionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
     
     
     if(config.document) {
@@ -137,6 +138,9 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 			this.startExecution();
 		}
 		if(this.activePanel == 1 && pageNumber == 2) { // from parameters to document view 			
+			this.loadUrlForExecution();
+		}
+		if(this.activePanel == 2 && pageNumber == 2) { // from to document view to document view itself
 			this.loadUrlForExecution();
 		}
 		if(this.activePanel == 2 && pageNumber == 1) {

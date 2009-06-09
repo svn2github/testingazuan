@@ -66,8 +66,8 @@ Sbi.execution.DocumentExecutionPage = function(config) {
     });
 	
 	/*
-    this.toolbarPanel = new Ext.Panel({
-    	region:'north'
+    this.shortcutsPanel = new Ext.Panel({
+    	region:'south'
         , border: false
         , frame: false
         , collapsible: true
@@ -75,16 +75,34 @@ Sbi.execution.DocumentExecutionPage = function(config) {
         , hideCollapseTool: true
         , titleCollapse: true
         , collapseMode: 'mini'
-    	, tbar: this.tb
         , split: true
+        , height: 280
         , autoScroll: false
         , layout: 'fit'
     });
     */
     
+    this.init(config);
+    
 	var c = Ext.apply({}, config, {
 		layout: 'border'
-		, items: [this.miframe]
+		, items: [this.miframe, 
+		    {
+				region:'south'
+				, border: false
+				, frame: false
+				, collapsible: true
+				, collapsed: true
+				, hideCollapseTool: true
+				, titleCollapse: true
+				, collapseMode: 'mini'
+				, split: true
+				, autoScroll: true
+				, height: 280
+				, layout: 'fit'
+				, items: [this.shortcutsPanel]
+			}
+		]
 	});
 	
 	// constructor
@@ -97,9 +115,13 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
     
     // static contents and methods definitions
-	miframe : null
+	services: null
+	, miframe : null
+    , shortcutsPanel: null
    
-    // public methods
+	// ----------------------------------------------------------------------------------------
+	// public methods
+	// ----------------------------------------------------------------------------------------
 	, loadUrlForExecution: function( executionInstance ) {
 		Ext.Ajax.request({
 	        url: this.services['getUrlForExecutionService'],
@@ -130,6 +152,9 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			  failure: Sbi.exception.ExceptionHandler.handleFailure      
 	   });
 	
+		// synchronize shortcutsPanel (subobjects, snapshots, viewpoints)
+		this.shortcutsPanel.synchronize( executionInstance );
+		
 	}
 
 	, refreshExecution: function() {
@@ -138,6 +163,19 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	
 	, print: function() {
 		this.miframe.getFrame().print();
+	}
+	
+	// ----------------------------------------------------------------------------------------
+	// private methods
+	// ----------------------------------------------------------------------------------------
+	
+	, init: function( config ) {
+		this.initShortcutsPanel(config);
+	}
+	
+	, initShortcutsPanel: function( config ) {
+		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
+		return this.shortcutsPanel;
 	}
 	
 });

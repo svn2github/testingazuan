@@ -236,7 +236,8 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		env.put(EngineConstants.ENV_DATASOURCE, dataSource);
 		env.put(EngineConstants.ENV_DATASET, dataset);
 		
-		logger.debug("DataSource: " + dataSource.toString());
+		if (dataSource!=null) logger.debug("DataSource: " + dataSource.toString());
+		else logger.debug("DataSource is NULL ");
 		
 		env.put(GeoEngineConstants.ENV_CONTEXT_URL, getContextUrl());
 		env.put(GeoEngineConstants.ENV_ABSOLUTE_CONTEXT_URL, getAbsoluteContextUrl());

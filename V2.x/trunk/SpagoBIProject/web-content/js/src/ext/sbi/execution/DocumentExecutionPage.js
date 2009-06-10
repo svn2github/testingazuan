@@ -111,7 +111,7 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 		, collapseMode: 'mini'
 		, split: true
 		, autoScroll: true
-		, height: 180
+		, height: 130
 		, layout: 'fit'
 		, items: [this.parametersPanel]
     });
@@ -136,14 +136,15 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	, parametersPanel: null
     , shortcutsPanel: null
     , southPanel: null
+    , executionInstance: null
    
 	// ----------------------------------------------------------------------------------------
 	// public methods
 	// ----------------------------------------------------------------------------------------
 	, loadUrlForExecution: function( executionInstance, reloadSliders ) {
+		this.executionInstance = executionInstance;
 		
 		if(reloadSliders === undefined || reloadSliders === true) {
-			alert(executionInstance.PARAMETERS);
 			if(executionInstance.PARAMETERS !== undefined) {
 				var parameters = Ext.util.JSON.decode( executionInstance.PARAMETERS );
 				parameters = Ext.urlEncode(parameters);				
@@ -189,7 +190,16 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	}
 
 	, refreshExecution: function() {
-		this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
+		var formState = this.parametersPanel.getFormState();
+		var formStateStr = Sbi.commons.Format.toString( formState );
+		
+		if(formStateStr !== this.executionInstance.PARAMETERS) { // todo: if(parametersPanel.isDirty())		
+			this.executionInstance.PARAMETERS = formStateStr;
+			this.loadUrlForExecution( this.executionInstance, false );
+		} else {
+			this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
+		}
+		
 	}
 	
 	, print: function() {

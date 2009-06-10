@@ -28,17 +28,42 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    String execContext = instanceO.getExecutionModality();
 
    Integer executionAuditId_dash = null;
-   
-	if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
-		<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
-		<%
+   String crossNavigationUrl = "";
+   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
+  		<%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
+		<%		
 		executionAuditId_dash = executionAuditId;
-	} else {
+		Map crossNavigationParameters = new HashMap();
+		crossNavigationParameters.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+		crossNavigationParameters.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
+		crossNavigationParameters.put("EXECUTION_FLOW_ID", executionFlowId);
+		crossNavigationParameters.put("SOURCE_EXECUTION_ID", uuid);
+		crossNavigationParameters.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
+		crossNavigationUrl = urlBuilder.getUrl(request, crossNavigationParameters);%>
+		
+		<form id="crossNavigationForm<%= uuid %>" method="post" action="<%= crossNavigationUrl %>" style="display:none;">
+		    <input type="hidden" id="targetDocumentLabel<%= uuid %>" name="<%= ObjectsTreeConstants.OBJECT_LABEL %>" value="" />  
+			<input type="hidden" id="targetDocumentParameters<%= uuid %>" name="<%= ObjectsTreeConstants.PARAMETERS %>" value="" />
+		</form>
+		
+		<script>
+			function execCrossNavigation(windowName, label, parameters) {
+				var uuid = "<%=uuid%>";
+				document.getElementById('targetDocumentLabel' + uuid).value = label;
+				document.getElementById('targetDocumentParameters' + uuid).value = parameters;
+				document.getElementById('crossNavigationForm' + uuid).submit();
+			}
+		</script>
+		<%-- end cross navigation scripts --%>
+<%	} 
+	else{
 		ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 		AuditManager auditManager = AuditManager.getInstance();
 		executionAuditId_dash = auditManager.insertAudit(instance.getBIObject(), null, userProfile, instance.getExecutionRole(), instance.getExecutionModality());
+		String uuid = instanceO.getExecutionId(); 
    }
-
+   
+   
     String movie = ChannelUtilities.getSpagoBIContextName(request);
     //String movie = renderRequest.getContextPath();
     String relMovie = (String)sbModuleResponse.getAttribute("movie");
@@ -56,6 +81,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	Map confParameters = (Map)sbModuleResponse.getAttribute("confParameters");
 	Map dataParameters = (Map)sbModuleResponse.getAttribute("dataParameters");
+	Map drillParameters = (Map)sbModuleResponse.getAttribute("drillParameters");
 	
 	dataParameters.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 	// adding parameters for AUDIT updating
@@ -86,60 +112,83 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		String value = (String)confParameters.get(name);
 		movie += "&" + name + "=" + value; 
 	}
+	
+	// for drill parameter append to the movie url  
+	Set drillKeys = drillParameters.keySet();
+	Iterator iterDrillKeys = drillKeys.iterator();
+	while(iterDrillKeys.hasNext()) {
+		String name = (String)iterDrillKeys.next();	
+		String value = (String)drillParameters.get(name);
+		movie += "&" + name + "=" + value; 
+	}
+	
     // append to the calling url the dataurl	
 	movie += "&dataurl=" + URLEncoder.encode(dataurl);
-    
+  
 	//defines dynamic parameters for multichart management (ie. recNum)
 	int numCharts = (confParameters.get("numCharts")==null)? 1:Integer.valueOf((String)confParameters.get("numCharts"));
 	String multichart = (confParameters.get("multichart")==null)?"false":(String)confParameters.get("multichart");
 	String orientation = (confParameters.get("orientation_multichart")==null)?"vertical":(String)confParameters.get("orientation_multichart");
 	String legend = (confParameters.get("legend")==null)?"true":(String)confParameters.get("legend");
+	int numItems = (confParameters.get("numNeedles")==null)? 1:Integer.valueOf((String)confParameters.get("numNeedles"));
 	
 	//defines radius for get dynamic height : only the last chart with the legend uses the total height; the others are riduced.
 	double radiusByWidth = (Integer.valueOf(width)-2*10)/2;
 	double radiusByHeight = (Integer.valueOf(height)-2*10)/(1+(1/4));
 	double radius = 0;
 	String dinHeight = height;
+	
+	System.out.println("radiusByWidth: " + radiusByWidth);
+	System.out.println("radiusByHeight: " + radiusByHeight);
 	 
     if (radiusByWidth < radiusByHeight) {
 		radius = radiusByWidth;
     } else {
 		radius = radiusByHeight;
 	}
+    
+   // radius = radiusByWidth;
+    
 	if (orientation.equalsIgnoreCase("horizontal")){ %>
 	<br>
 		<table align="center">
 			<tr>
 	<%	 
 	}
-	for (int i = 0; i < numCharts; i++){
+	for (int idx = 0; idx < numCharts; idx++){
 		
-		if (i==0){
-		 	movie += "&recNumber="+String.valueOf(i);
+		if (idx==0){
+		 	movie += "&recNumber="+String.valueOf(idx);
 		 	//if it's a multichart type and it's required the legend ; it's shows only on the last chart.
 		 	if (multichart.equalsIgnoreCase("true") && legend.equalsIgnoreCase("true")){
 		 		movie = movie.replace("&legend=true","&legend=false");
 		 		dinHeight = String.valueOf(Integer.valueOf(height).intValue()-radius+20);
+		 		//dinHeight = String.valueOf(Integer.valueOf(height).intValue()-(numItems * 30));
 		 	}
 		}
 		else{
-			movie = movie.replace("&recNumber="+(i-1),"&recNumber="+i);
+			movie = movie.replace("&recNumber="+(idx-1),"&recNumber="+idx);
 			if (multichart.equalsIgnoreCase("true") && legend.equalsIgnoreCase("true")){
-				if (i < (numCharts-1)){
+				if (idx < (numCharts-1)){
 			 		movie = movie.replace("&legend=true","&legend=false");
 			 		dinHeight = String.valueOf(Integer.valueOf(height).intValue()-radius+20);
+			 		//dinHeight = String.valueOf(Integer.valueOf(height).intValue()-(numItems * 30));
 				}
 				else{
 					movie = movie.replace("&legend=false","&legend=true");
-					dinHeight = height;
+				//	dinHeight = height;
+					 dinHeight = String.valueOf(Integer.valueOf(height).intValue()+20);
 				}
 		 	}
 		}
+		
+		System.out.println("dinHeight: " + dinHeight);
  		if (orientation.equalsIgnoreCase("horizontal")){%>
 			<td> 
-		<%}
+	<%  } 
+
 // HTML CODE FOR THE FLASH COMPONENT %>
-<div align="center" >  
+ <div align="center" > 
        <object  classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" 
                 codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" 
                 type="application/x-shockwave-flash"
@@ -160,7 +209,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
    			 TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer">
    		</EMBED>
 	</object>    
-</div>
+</div>  
 
 <% if (orientation.equalsIgnoreCase("horizontal")){%>
   </td>

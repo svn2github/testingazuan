@@ -38,9 +38,11 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
+import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -56,6 +58,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
     
     Map confParameters;
     Map dataParameters;
+    Map drillParameters;
 
     /**
      * Executes the document and populates the response.
@@ -113,62 +116,22 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		    String height = (String) content.getAttribute("DIMENSION.height");
 	
 		    String dataurl = (String) content.getAttribute("DATA.url");
+		    
 		    // get all the parameters for data url
 		    dataParameters = new LinkedHashMap();
 		    confParameters = new LinkedHashMap();
-		    SourceBean dataSB = (SourceBean) content.getAttribute("DATA");
-		    List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
-		    Iterator dataAttrsIter = dataAttrsList.iterator();
-		    if(obj.getDataSetId()!=null){
-			    String dataSetId=obj.getDataSetId().toString();
-			    dataParameters.put("datasetid", dataSetId);
-		    }
-		    while (dataAttrsIter.hasNext()) {
-				SourceBeanAttribute paramSBA = (SourceBeanAttribute) dataAttrsIter.next();
-				SourceBean param = (SourceBean) paramSBA.getValue();
-				String nameParam = (String) param.getAttribute("name");
-				String valueParam = (String) param.getAttribute("value");
-		
-				dataParameters.put(nameParam, valueParam);
-		    }
+		    drillParameters = new LinkedHashMap();
 		    
-		    // puts the document id
-		    dataParameters.put("documentId", obj.getId().toString());
-		    // puts the userId into parameters for data recovery
 		    SessionContainer session = requestContainer.getSessionContainer();
 		    IEngUserProfile profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
 			    IEngUserProfile.ENG_USER_PROFILE);
-		    dataParameters.put("userid", ((UserProfile)profile).getUserUniqueIdentifier());
-	
-		    // create the title
-		    String title = "";
-		    title += obj.getName();
-		    String objDescr = obj.getDescription();
-		    if ((objDescr != null) && !objDescr.trim().equals("")) {
-		    	title += ": " + objDescr;
-		    }
 		    
-			String parameters="";
-		    //Search if the chart has parameters
-			List parametersList=obj.getBiObjectParameters();
-			logger.debug("Check for BIparameters and relative values");
-			if(parametersList!=null){
-				for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
-					BIObjectParameter par= (BIObjectParameter) iterator.next();
-					String url=par.getParameterUrlName();
-					List values=par.getParameterValues();
-					if(values!=null){
-						if(values.size()==1){
-							String value=(String)values.get(0);
-							parameters+="&"+url+"="+value;
-							dataParameters.put(url, value);
-							//parametersMap.put(url, value);
-						}
-					}
-				}	
-			}	   
+		    SourceBean serviceRequest=requestContainer.getServiceRequest();
+		    
 			 // get all the parameters for dash configuration
-		    configureChart(content, profile);
+		    defineConfParameters(content, profile);
+		    defineDataParameters(content, obj, profile);
+		    defineLinkParameters(content, serviceRequest);
 		    
 		    // set information into reponse
 		    response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
@@ -177,14 +140,14 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		    response.setAttribute("width", width);
 		    response.setAttribute("height", height);
 		    response.setAttribute("displayTitleBar", displayTitleBar);
-		    response.setAttribute("title", title);
-		    
 		    
 		    response.delAttribute("confParameters");
-		    response.setAttribute("confParameters", confParameters);
+		    response.setAttribute("confParameters", getConfParameters());
 		    response.delAttribute("dataParameters");
-		    response.setAttribute("dataParameters", dataParameters);	    
-		    // response.setAttribute("possibleStateChanges", possibleStates);
+		    response.setAttribute("dataParameters", getDataParameters());	
+		    response.delAttribute("drillParameters");
+		    response.setAttribute("drillParameters", getDrillParameters());	
+
 		    // set information for the publisher
 		    response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "DASHBOARD");
 	
@@ -254,20 +217,19 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
     }
     
     /**
-	 * set parameters for the creation of the dashboard getting them from template or from Dataset/LOV.
+	 * set parameters configuration for the creation of the dashboard getting them from template or from Dataset/LOV.
 	 * 
 	 * @param content the content of the template.
+	 * @param profile the user's profile
 	 * 
 	 * @return A chart that displays a value as a dial.
 	 */
-	private void configureChart(SourceBean content, IEngUserProfile profile) throws Exception {
-
+	private void defineConfParameters(SourceBean content, IEngUserProfile profile) throws Exception {
 		logger.debug("IN");
 		
 		boolean isDsConfDefined = false;
 		String confDataset = "";
-		
-		
+	
 		// get all the parameters for dash configuration
 	    confParameters = new LinkedHashMap();
 	    SourceBean confSB = (SourceBean) content.getAttribute("CONF");
@@ -337,6 +299,173 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		
 		logger.debug("out");
 	}
+	
+    /**
+	 * set parameters for getting the data 
+	 * 
+	 * @param content the content of the template.
+	 * @param obj the object document
+	 * @param profile the user's profile
+	 * 
+	 * @return A chart that displays a value as a dial.
+	 */
+	private void defineDataParameters(SourceBean content, BIObject obj, IEngUserProfile profile) throws Exception {
+		SourceBean dataSB = (SourceBean) content.getAttribute("DATA");
+	    List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
+	    Iterator dataAttrsIter = dataAttrsList.iterator();
+	    
+	    if(obj.getDataSetId()!=null){
+		    String dataSetId=obj.getDataSetId().toString();
+		    dataParameters.put("datasetid", dataSetId);
+	    }
+	    while (dataAttrsIter.hasNext()) {
+			SourceBeanAttribute paramSBA = (SourceBeanAttribute) dataAttrsIter.next();
+			SourceBean param = (SourceBean) paramSBA.getValue();
+			String nameParam = (String) param.getAttribute("name");
+			String valueParam = (String) param.getAttribute("value");
+	
+			dataParameters.put(nameParam, valueParam);
+	    }
+	    
+	    // puts the document id
+	    dataParameters.put("documentId", obj.getId().toString());
+	    // puts the userId into parameters for data recovery
+	    
+	    dataParameters.put("userid", ((UserProfile)profile).getUserUniqueIdentifier());
 
+	    // create the title
+	    String title = "";
+	    title += obj.getName();
+	    String objDescr = obj.getDescription();
+	    if ((objDescr != null) && !objDescr.trim().equals("")) {
+	    	title += ": " + objDescr;
+	    }
+	    
+		String parameters="";
+	    //Search if the chart has parameters
+		List parametersList=obj.getBiObjectParameters();
+		logger.debug("Check for BIparameters and relative values");
+		if(parametersList!=null){
+			for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
+				BIObjectParameter par= (BIObjectParameter) iterator.next();
+				String url=par.getParameterUrlName();
+				List values=par.getParameterValues();
+				if(values!=null){
+					if(values.size()==1){
+						String value=(String)values.get(0);
+						parameters+="&"+url+"="+value;
+						dataParameters.put(url, value);
+					}
+				}
+			}	
+		}
+	}
+	
+    /**
+	 * set parameters for the drill action.
+	 * 
+	 * @param content the content of the template.
+	 * 
+	 * @return A chart that displays a value as a dial.
+	 */
+	private void defineLinkParameters(SourceBean content, SourceBean serviceRequest) throws Exception {
+		logger.debug("IN");
+		
+		SourceBean drillSB = (SourceBean)content.getAttribute("DRILL");
+		String drillLabel="";
+		Map tmpDrillParameters= new LinkedHashMap();
+		
+		if(drillSB!=null){
+			String lab=(String)drillSB.getAttribute("document");
+			if(lab!=null) drillLabel=lab;
+			else{
+				logger.error("Drill label not found");
+			}
 
+			List parameters =drillSB.getAttributeAsList("PARAM");
+			if(parameters!=null){
+				for (Iterator iterator = parameters.iterator(); iterator.hasNext();) {
+					SourceBean att = (SourceBean) iterator.next();
+					String name=(String)att.getAttribute("name");
+					String type=(String)att.getAttribute("type");
+					String value=(String)att.getAttribute("value");
+
+					//looking for the parameter before into the request, then into data parameters.
+					//if the value is a dataset value it leaves the tag field. The swf file will replace the value.
+					if (!value.startsWith("$F{")){
+						String reqValue = (String)serviceRequest.getAttribute(name);
+					
+						if(reqValue == null) {
+							if (getDataParameters().get(name)!=null)
+								value=(String)getDataParameters().get(name);
+						}
+						else
+							value = reqValue;
+					}
+					tmpDrillParameters.put(name, value);
+				}
+			}
+		}
+		
+		//creates the drill url
+		int i=0;
+		String drillUrl  = "javascript:parent.execCrossNavigation(this.name, '"+drillLabel+"','";
+		for (Iterator iterator = tmpDrillParameters.keySet().iterator(); iterator.hasNext();) {
+			String tmpName = (String) iterator.next();			
+			String tmpValue=(String)tmpDrillParameters.get(tmpName);
+			
+			if (i>0)
+				drillUrl += "%26";
+				
+			drillUrl += tmpName + "%3D" + tmpValue;
+			i++;
+		}
+		drillUrl += "');";
+		getDrillParameters().put("drillUrl", drillUrl);
+		logger.debug("drillUrl: " + drillUrl);
+		
+		logger.debug("out");
+	}
+
+	/**
+	 * @return the confParameters
+	 */
+	public Map getConfParameters() {
+		return confParameters;
+	}
+
+	/**
+	 * @param confParameters the confParameters to set
+	 */
+	public void setConfParameters(Map confParameters) {
+		this.confParameters = confParameters;
+	}
+
+	/**
+	 * @return the dataParameters
+	 */
+	public Map getDataParameters() {
+		return dataParameters;
+	}
+
+	/**
+	 * @param dataParameters the dataParameters to set
+	 */
+	public void setDataParameters(Map dataParameters) {
+		this.dataParameters = dataParameters;
+	}
+
+	/**
+	 * @return the drillParameters
+	 */
+	public Map getDrillParameters() {
+		return drillParameters;
+	}
+
+	/**
+	 * @param drillParameters the drillParameters to set
+	 */
+	public void setDrillParameters(Map drillParameters) {
+		this.drillParameters = drillParameters;
+	}
 }

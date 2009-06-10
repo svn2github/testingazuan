@@ -133,6 +133,8 @@
 				threshold_id = thresholdValue.getThresholdId().toString();
 			if (thresholdValue.getSeverityId() != null)
 				severity_id = thresholdValue.getSeverityId();
+			if (thresholdValue.getThresholdType() != null)
+				type = thresholdValue.getThresholdType();
 		}
 	}
 
@@ -204,6 +206,7 @@ String urlColorPicker=urlBuilder.getResourceLink(request,"/js/kpi/colorPicker.js
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="label" size="50"
 	value="<%=label%>" maxlength="20"></div>
+
 <% if(type!=null && (type.trim().equals("RANGE") || type.trim().equals("MINIMUM"))) { %>
 		 
 <div class='div_detail_label'><span

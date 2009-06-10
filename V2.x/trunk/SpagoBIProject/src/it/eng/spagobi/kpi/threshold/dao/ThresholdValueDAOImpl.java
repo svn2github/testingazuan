@@ -235,6 +235,7 @@ IThresholdValueDAO {
 			toReturn.setSeverityId(hibThresholdValue.getSeverity().getValueId());
 			toReturn.setThresholdId(hibThresholdValue.getSbiThreshold()
 					.getThresholdId());
+			toReturn.setThresholdType(hibThresholdValue.getSbiThreshold().getThresholdType().getValueCd());
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error("Error while loading the ThresholdValue with id "

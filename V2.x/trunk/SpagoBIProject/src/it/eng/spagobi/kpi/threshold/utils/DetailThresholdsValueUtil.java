@@ -5,8 +5,10 @@ import java.awt.Color;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
 public class DetailThresholdsValueUtil {
@@ -39,6 +41,7 @@ public class DetailThresholdsValueUtil {
 		String colour = (String) serviceRequest.getAttribute("colour");
 		String sSeverityId = (String) serviceRequest
 		.getAttribute("severity_id");
+		String sThresholdType = null;
 
 		ThresholdValue toReturn = new ThresholdValue();
 
@@ -50,6 +53,13 @@ public class DetailThresholdsValueUtil {
 		Integer thresholdId = null;
 		if (sThresholdId != null && !(sThresholdId.trim().equals(""))) {
 			thresholdId = Integer.parseInt(sThresholdId);
+			try {
+				Threshold threshold = DAOFactory.getThresholdDAO().loadThresholdById(thresholdId);
+				Domain threshodlType = DAOFactory.getDomainDAO().loadDomainById(threshold.getThresholdTypeId());
+				sThresholdType = threshodlType.getValueCd();
+			} catch (EMFUserError e) {
+			}
+			
 		}
 
 		Integer position = null;
@@ -101,6 +111,7 @@ public class DetailThresholdsValueUtil {
 		toReturn.setColour(col);
 		toReturn.setColourString(colour);
 		toReturn.setSeverityId(severityId);
+		toReturn.setThresholdType(sThresholdType);
 
 		return toReturn;
 

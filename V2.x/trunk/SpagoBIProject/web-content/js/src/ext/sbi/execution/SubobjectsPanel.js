@@ -48,6 +48,10 @@ Ext.ns("Sbi.execution");
 
 Sbi.execution.SubobjectsPanel = function(config) {
 	
+	var c = Ext.apply({
+		// defaults
+	}, config || {});
+	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
 	this.services = new Array();
@@ -59,7 +63,7 @@ Sbi.execution.SubobjectsPanel = function(config) {
 		serviceName: 'DELETE_SUBOBJECTS_ACTION'
 		, baseParams: params
 	});
-	this.subobjectPreference = config.subobject;
+	this.subobjectPreference = c.subobject;
 	this.executionInstance = null;
 	this.selectedSubObjectId = null;
 	
@@ -91,7 +95,7 @@ Sbi.execution.SubobjectsPanel = function(config) {
     
     this.sm = new Ext.grid.CheckboxSelectionModel();
     
-	var c = Ext.apply({}, config, {
+	c = Ext.apply({}, c, {
         store: this.subObjectsStore
         , columns: [
             {id: "id", header: "Id", sortable: true, dataIndex: 'id',  hidden: true}

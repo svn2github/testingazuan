@@ -81,17 +81,25 @@ Sbi.geo.app = function() {
                       			var content = Ext.util.JSON.decode( response.responseText );
 								content.text = content.text || "";
 								if (content.text.match('OK - ')) {
+									Ext.MessageBox.show({
+						           		title: 'Customized view saved'
+						           		, msg: 'Customized view saved succesfully !!!'
+						           		, buttons: Ext.MessageBox.OK     
+						           		, icon: Ext.MessageBox.INFO 
+						           		, modal: false
+						       		});
+									// for old execution interface
 									try {
 										parent.loadSubObject(window.name, content.text.substr(5));
-										Ext.MessageBox.show({
-							           		title: 'Customized view saved'
-							           		, msg: 'Customized view saved succesfully !!!'
-							           		, buttons: Ext.MessageBox.OK     
-							           		, icon: Ext.MessageBox.INFO 
-							           		, modal: false
-							       		});
 									} catch (ex) {
-										Sbi.commons.ExceptionHandler.showErrorMessage( ex.toSource() );
+										//Sbi.commons.ExceptionHandler.showErrorMessage( ex.toSource() );
+									}
+									// for new ExtJs-based execution interface
+									try {
+										sendMessage("Subobject saved!!!!","subobjectsaved");
+									} catch (ex) {
+										alert(ex);
+										alert(ex.description);
 									}
 								}
                       		} 

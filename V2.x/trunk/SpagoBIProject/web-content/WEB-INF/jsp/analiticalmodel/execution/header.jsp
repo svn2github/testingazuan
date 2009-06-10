@@ -190,7 +190,7 @@ ExecutionManager executionManager = (ExecutionManager) contextManager.get(Execut
 String executionFlowId = instance.getFlowId();
 
 String titleVisibileStr = (String) aServiceRequest.getAttribute(SpagoBIConstants.TITLE_VISIBLE);
-boolean titleVisibile = titleVisibileStr == null && titleVisibileStr.equalsIgnoreCase("TRUE");
+boolean titleVisibile = titleVisibileStr == null || titleVisibileStr.equalsIgnoreCase("TRUE");
 
 if (titleVisibile) {
 	%>

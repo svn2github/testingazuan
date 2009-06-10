@@ -311,7 +311,7 @@ else {
 	    }, this);
 	    el.on("mouseup", function(e, t){
 	      e.stopEvent();
-	    })
+	    });
 	    this.items.each(function(item){
 	      var li = document.createElement("li");
 	      li.className = "x-menu-list-item";
@@ -379,12 +379,16 @@ else {
 				<%
 				if (menuElem.getHasChildren()){			    		
 					List lstChildrenLev2 = menuElem.getLstChildren();
+					 boolean oneItemAlreadyVisible2 = false ;
 					for (int j=0; j<lstChildrenLev2.size(); j++){ //LEVEL 2
 						Menu childElemLev2 = (Menu)lstChildrenLev2.get(j);	
 					String path2=MenuUtilities.getMenuPath(childElemLev2);
 						boolean canView2=MenuAccessVerifier.canView(childElemLev2,userProfile);
 						if(canView2){
-							if (childElemLev2.getHasChildren()){
+						%> <%if(oneItemAlreadyVisible2){%>
+												, // comma level 4
+												<%}%>		
+							<%if (childElemLev2.getHasChildren()){
 							%>
 								{id: '<%new Double(Math.random()).toString();%>',
 				    			     text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev2.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
@@ -404,12 +408,15 @@ else {
 				                	 menu: {        // <-- submenu 
 				                     items: [
 			    			    <%	 List lstChildrenLev3 = childElemLev2.getLstChildren();
+			    			    	 boolean oneItemAlreadyVisible3 = false ;
 						    		 for (int k=0; k<lstChildrenLev3.size(); k++){ //LEVEL 3
 						    			 Menu childElemLev3 = (Menu)lstChildrenLev3.get(k);	
 											String path3=MenuUtilities.getMenuPath(childElemLev3);
 									    boolean canView3=MenuAccessVerifier.canView(childElemLev3,userProfile);
 									    if(canView3){
-			    			     %>						    			    
+			    			     %>	  <%if(oneItemAlreadyVisible3){%>
+												, // comma level 4
+												<%}%>					    			    
 					    			 <%if (childElemLev3.getHasChildren()){%>
 					    			    {id: '<%new Double(Math.random()).toString();%>',
 					    			    text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev3.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
@@ -429,12 +436,15 @@ else {
 					                	menu: {        // <-- submenu 
 					                    items: [
 					    			    <%	 List lstChildrenLev4 = childElemLev3.getLstChildren();
+					    			    	 boolean oneItemAlreadyVisible4 = false ;
 								    		 for (int x=0; x<lstChildrenLev4.size(); x++){ //LEVEL 4
 								    			 Menu childElemLev4 = (Menu)lstChildrenLev4.get(x);
 													String path4=MenuUtilities.getMenuPath(childElemLev4);								    		 
 												    boolean canView4=MenuAccessVerifier.canView(childElemLev4,userProfile);
 												    if(canView4){
-					    			    %>
+					    			    %>		<%if(oneItemAlreadyVisible4){%>
+												, // comma level 4
+												<%}%>	       
 							    			    new Ext.menu.Item({
 						                            id: '<%new Double(Math.random()).toString();%>',
 						                            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev4.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
@@ -453,10 +463,8 @@ else {
 								                         href: ''     
 								                    <%}%>,		// comma
 						                        })
-												<%if(x < lstChildrenLev4.size()-1){%>
-												, // comma level 4
-												<%}%>	                  	                       				                   		
-					            			<%
+												         	                       				                   		
+					            			<%		 oneItemAlreadyVisible4 = true ; 
 												    } //can View 4
 												}//for LEVEL 4
 								    		%>
@@ -482,10 +490,8 @@ else {
 							                    <%}%>
 					                        })
 					                        
-					                   <%}%>					                      
-					                    <%if(k < lstChildrenLev3.size()-1){%>
-					                            ,
-					                    <%}                             
+					                   <%}
+					    				 oneItemAlreadyVisible3 = true ; 
 									    } //can View 3
 									    } //for LEVEL 3
 					    		%>
@@ -510,10 +516,8 @@ else {
 				                         href: ''     
 				                    <%}%>
 		                        })	                       
-		                    <%}%>		                      
-		                    <%if(j < lstChildrenLev2.size()-1){%>
-		                            ,
 		                    <%}
+							 oneItemAlreadyVisible2 = true ; 
 						    	} //can view level 2
 						    	} //for LEVEL 2			    		  
 				    	}else{%>

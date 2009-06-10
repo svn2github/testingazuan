@@ -10,6 +10,7 @@
         </FIELD>
 		
 		<FIELD name="code" label="#sbi.kpi.label.code" bundle="component_kpi_messages">
+		  <VALIDATOR validatorName="MANDATORY" />
           <VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\.\:\;\,])*$"/>
         </FIELD>
         

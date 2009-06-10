@@ -232,7 +232,7 @@
   key="sbi.kpi.label.code" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'><input
   class='portlet-form-input-field' type="text" name="code" size="50"
-  value="<%=code%>" maxlength="200"></div>
+  value="<%=code%>" maxlength="200">&nbsp;*</div>
 
 <div class='div_detail_label'><span
   class='portlet-form-field-label'> <spagobi:message

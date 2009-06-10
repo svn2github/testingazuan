@@ -3,16 +3,12 @@ package it.eng.spagobi.kpi.threshold.dao;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
-import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;
-import it.eng.spagobi.tools.datasource.bo.DataSource;
-import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -453,6 +449,9 @@ IThresholdValueDAO {
 			toReturn.setThresholdType(sbit.getThresholdType().getValueCd());
 		}
 		
+		if(sbit.getCode()!=null){
+			toReturn.setThresholdCode(sbit.getCode());
+		}
 
 		toReturn.setId(id);
 		toReturn.setThresholdId(thresholdId);

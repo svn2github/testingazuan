@@ -104,7 +104,7 @@ public class BasicTemplateBuilder  {
 	"	key=\"staticText-2\"/>" +
 	"	<box></box>" +
 	"	<textElement textAlignment=\"Right\">" +
-	"	<font size=\"8\" isBold=\"true\"/>" +
+	"	<font size=\"6\" isBold=\"false\"/>" +
 	"	</textElement>" +
 	"	<text></text>" +
 	"	</staticText>";
@@ -129,7 +129,7 @@ public class BasicTemplateBuilder  {
 	"	width=\"535\"" +
 	"	height=\"14\"" +
 	"	forecolor=\"#FFFFFF\""+
-	"	backcolor=\"#CCCCCC\"" +
+	"	backcolor=\"#5B6C7C\"" +
 	"	key=\"rectangle-2\"/>" +
 	"	<graphicElement stretchType=\"NoStretch\"/>" +
 	"	</rectangle>";
@@ -141,6 +141,7 @@ public class BasicTemplateBuilder  {
 	"	y=\"0\"" +
 	"	width=\"120\"" +
 	"	height=\"14\"" +
+	"	forecolor=\"#FFFFFF\""+
 	"	key=\"staticText-3\"/>" +
 	"	<box></box>" +
 	"	<textElement verticalAlignment=\"Middle\" >" +
@@ -156,7 +157,7 @@ public class BasicTemplateBuilder  {
 	"	width=\"535\"" +
 	"	height=\"12\"" +
 	"	forecolor=\"#FFFFFF\""+
-	"	backcolor=\"#FFCCCC\"" +
+	"	backcolor=\"#DDDDDD\"" +
 	"	key=\"rectangle-2\"/>" +
 	"	<graphicElement stretchType=\"NoStretch\"/>" +
 	"	</rectangle>";
@@ -167,7 +168,7 @@ public class BasicTemplateBuilder  {
 	"	y=\"15\""+
 	"	width=\"93\""+
 	"	height=\"12\""+
-	"	forecolor=\"#990000\""+
+	"	forecolor=\"#000000\""+
 	"	key=\"staticText-4\"/>"+
 	"	<box></box>"+
 	"	<textElement verticalAlignment=\"Middle\">"+
@@ -182,7 +183,7 @@ public class BasicTemplateBuilder  {
 	"	y=\"15\""+
 	"	width=\"20\""+
 	"	height=\"12\""+
-	"	forecolor=\"#990000\""+
+	"	forecolor=\"#000000\""+
 	"	key=\"staticText-5\"/>"+
 	"	<box></box>"+
 	"	<textElement verticalAlignment=\"Middle\">"+
@@ -197,7 +198,7 @@ public class BasicTemplateBuilder  {
 	"	y=\"15\""+
 	"	width=\"53\""+
 	"	height=\"12\""+
-	"	forecolor=\"#990000\""+
+	"	forecolor=\"#000000\""+
 	"	key=\"staticText-6\"/>"+
 	"	<box></box>"+
 	"	<textElement verticalAlignment=\"Middle\">"+
@@ -208,11 +209,11 @@ public class BasicTemplateBuilder  {
 
 	static String columnThresholdHeaderS="<staticText>"+
 	"	<reportElement"+
-	"	x=\"430\""+
+	"	x=\"433\""+
 	"	y=\"15\""+
 	"	width=\"110\""+
 	"	height=\"12\""+
-	"	forecolor=\"#990000\""+
+	"	forecolor=\"#000000\""+
 	"	key=\"staticText-7\"/>"+
 	"	<box></box>"+
 	"	<textElement textAlignment=\"Center\" verticalAlignment=\"Middle\">"+
@@ -317,6 +318,8 @@ public class BasicTemplateBuilder  {
 	final Integer valueHeight=new Integer(20); 
 //	height between lines
 	final Integer separatorHeight=new Integer(1);
+//	height between lines
+	final Integer separatorModelsHeight=new Integer(10);
 //	width between elements
 	final Integer separatorWidth = new Integer(5);
 //	Width of text label with code - name
@@ -452,7 +455,7 @@ public class BasicTemplateBuilder  {
 		
 			
 			try{
-				actualHeight+=separatorHeight;
+				actualHeight+=separatorModelsHeight;
 
 				SourceBean bandRes=new SourceBean(resourceBand);
 				SourceBean bandName=new SourceBean(resourceName);
@@ -603,26 +606,29 @@ public class BasicTemplateBuilder  {
 				//set text2
 				xValue=xValue+numbersWidth+separatorWidth;
 				//textWeight.setAttribute("reportElement.x", xValue);
-				textWeight.setAttribute("reportElement.y", yValue.toString());
+				textWeight.setAttribute("reportElement.y", new Integer(yValue.intValue()+2).toString());
 				SourceBean textValue3=(SourceBean)textWeight.getAttribute("text");
 				textValue3.setCharacters(weight);
 				
 				ThresholdValue t = line.getThresholdOfValue();
-				String code=t.getLabel() != null ? t.getLabel() : "";
-				String codeTh = "Code: "+code;
+				if(t!=null){
+					String code=t.getThresholdCode() != null ? t.getThresholdCode() : "";
+					String codeTh = "Code: "+code;
+					
+					threshCode.setAttribute("reportElement.y",  new Integer(yValue.intValue()-2).toString());
+					SourceBean threshCode2=(SourceBean)threshCode.getAttribute("text");
+					threshCode2.setCharacters(codeTh);
 				
-				threshCode.setAttribute("reportElement.y",  new Integer(yValue.intValue()-2).toString());
-				SourceBean threshCode2=(SourceBean)threshCode.getAttribute("text");
-				threshCode2.setCharacters(codeTh);
 				
-				String labelTh=t.getLabel() != null ? t.getLabel() : "";
-				String min = t.getMinValue()!= null ? t.getMinValue().toString() : "";
-				String max = t.getMaxValue()!= null ?  t.getMaxValue().toString() : "";
-				String valueTh = "Value: "+min+"-"+max+" "+labelTh;
-				
-				threshValue.setAttribute("reportElement.y", new Integer(yValue.intValue()+7).toString());
-				SourceBean threshValue2=(SourceBean)threshValue.getAttribute("text");
-				threshValue2.setCharacters(valueTh);
+					String labelTh=t.getLabel() != null ? t.getLabel() : "";
+					String min = t.getMinValue()!= null ? t.getMinValue().toString() : "";
+					String max = t.getMaxValue()!= null ?  t.getMaxValue().toString() : "";
+					String valueTh = "Value: "+min+"-"+max+" "+labelTh;
+					
+					threshValue.setAttribute("reportElement.y", new Integer(yValue.intValue()+7).toString());
+					SourceBean threshValue2=(SourceBean)threshValue.getAttribute("text");
+					threshValue2.setCharacters(valueTh);
+				}
 
 			}
 			

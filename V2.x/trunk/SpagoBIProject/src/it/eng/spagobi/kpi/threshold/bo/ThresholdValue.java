@@ -16,6 +16,7 @@ public class ThresholdValue  {
 	String colourString = null;
 	List alarms=null;
 	String thresholdType=null;
+	String thresholdCode=null;
 	
 	
 	public Integer getId() {
@@ -83,6 +84,12 @@ public class ThresholdValue  {
 	}
 	public void setThresholdType(String thresholdType) {
 		this.thresholdType = thresholdType;
+	}
+	public String getThresholdCode() {
+		return thresholdCode;
+	}
+	public void setThresholdCode(String thresholdCode) {
+		this.thresholdCode = thresholdCode;
 	}
 	
 	

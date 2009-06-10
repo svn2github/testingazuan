@@ -203,8 +203,6 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 	}
 	
 	, addProfiledButtons: function(visibility) {
-		alert(visibility);
-		alert(visibility.sendMail);
 		if (visibility.sendMail) {
 			var sendMailButton = new Ext.Toolbar.Button({
 				iconCls: 'icon-sendMail' 

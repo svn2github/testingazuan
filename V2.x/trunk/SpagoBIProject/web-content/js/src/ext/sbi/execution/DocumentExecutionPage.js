@@ -64,34 +64,48 @@ Sbi.execution.DocumentExecutionPage = function(config) {
         }
         , loadMask  : true
         , disableMessaging :false
-        , listeners  :
-            {
-        		'message:subobjectsaved': {
-        			fn: function(srcFrame, message) {
-	        			this.shortcutsPanel.synchronizeSubobjects(this.executionInstance);
-		        	}
-        			, scope: this
+        , listeners  : {
+        		
+        	'message:subobjectsaved': {
+        		fn: function(srcFrame, message) {
+	        		this.shortcutsPanel.synchronizeSubobjects(this.executionInstance);
+		        }
+        		, scope: this
+        	}
+        
+        	, 'message:crossnavigation' : {
+        		fn: function(srcFrame, message){
+                	alert(message.data.label + ' - ' + message.data.parameters);
+                	
+                	/*
+                	if(this.executionInstance.OBJECT_ID !== undefined ){
+                		delete this.executionInstance.OBJECT_ID;
+                	}                	
+                	
+                	this.executionInstance.OBJECT_LABEL = message.data.label;
+                	var parameters = Ext.urlDecode(message.data.label);
+                	parameters = Ext.util.JSON.encode(parameters);
+                	this.executionInstance.PARAMETERS = parameters;
+                	*/
+   
         		}
+        		, scope: this
             }
+        }
     });
+	this.miframe.on('documentloaded', function() {
+		this.miframe.iframe.execScript("parent = document;");
+		var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
+						"	alert('LABEL: ' + l + '; PARAMETERS: '+ p);" +
+						"	sendMessage({'label': l, parameters: p},'crossnavigation');" +
+						"};";
+		//this.miframe.iframe.execScript("parent.execCrossNavigation = function(d,l,p) {alert('LABEL: ' + l + '; PARAMETERS: '+ p);}");
+		this.miframe.iframe.execScript(scriptFn);
+		
+		
+
+	}, this);
 	
-	/*
-    this.shortcutsPanel = new Ext.Panel({
-    	region:'south'
-        , border: false
-        , frame: false
-        , collapsible: true
-        , collapsed: true
-        , hideCollapseTool: true
-        , titleCollapse: true
-        , collapseMode: 'mini'
-        , split: true
-        , height: 280
-        , autoScroll: false
-        , layout: 'fit'
-    });
-    */
-    
     this.init(config);
     
     this.southPanel = new Ext.Panel({
@@ -157,12 +171,14 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		if(reloadSliders === undefined || reloadSliders === true) {
 			if(executionInstance.PARAMETERS !== undefined) {
 				var parameters = Ext.util.JSON.decode( executionInstance.PARAMETERS );
-				parameters = Ext.urlEncode(parameters);				
+				parameters = Ext.urlEncode(parameters);		
 				this.parametersPanel.parametersPreference = parameters;
 			}
 			this.parametersPanel.synchronize(executionInstance);
 			this.shortcutsPanel.synchronize(executionInstance);
 		}
+		
+		//alert('zuk');
 		
 	
 		Ext.Ajax.request({
@@ -184,6 +200,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		      			var content = Ext.util.JSON.decode( response.responseText );
 		      			if(content !== undefined && content.errors !== undefined) {
 		      				this.fireEvent('loadurlfailure', content.errors);
+		      				alert(content.errors);
 		      			} 
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');

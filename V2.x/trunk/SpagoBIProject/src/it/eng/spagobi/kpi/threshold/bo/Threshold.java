@@ -23,6 +23,17 @@ public class Threshold {
 	}
 
 
+	@Override
+	public boolean equals(Object obj) {
+		Threshold t = (Threshold)obj;
+		if (this.id!= null && this.id.equals(t.getId())){
+		return true;
+		}else{
+			return false;
+		}
+	}
+
+
 	public void setId(Integer id) {
 		this.id = id;
 	}

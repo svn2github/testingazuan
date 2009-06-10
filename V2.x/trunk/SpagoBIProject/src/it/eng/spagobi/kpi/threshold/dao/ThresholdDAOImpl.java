@@ -59,11 +59,12 @@ public class ThresholdDAOImpl extends AbstractHibernateDAO implements
 			SbiThreshold hibThreshold = (SbiThreshold) aSession.load(
 					SbiThreshold.class, id);
 			toReturn = new Threshold();
-			toReturn.setName(hibThreshold.getName());
+			toReturn = toThreshold(hibThreshold);
+			/*toReturn.setName(hibThreshold.getName());
 			toReturn.setDescription(hibThreshold.getDescription());
 			toReturn.setCode(hibThreshold.getCode());
 			toReturn.setId(hibThreshold.getThresholdId());
-			toReturn.setThresholdTypeId(hibThreshold.getThresholdType().getValueId());
+			toReturn.setThresholdTypeId(hibThreshold.getThresholdType().getValueId());*/
 
 		} catch (HibernateException he) {
 			logger.error("Error while loading the Threshold with id "

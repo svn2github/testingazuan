@@ -27,12 +27,15 @@ package it.eng.spagobi.kpi.utils;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.kpi.bo.KpiLine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
 import java.awt.Color;
@@ -209,9 +212,9 @@ public class BasicTemplateBuilder  {
 
 	static String columnThresholdHeaderS="<staticText>"+
 	"	<reportElement"+
-	"	x=\"433\""+
+	"	x=\"436\""+
 	"	y=\"15\""+
-	"	width=\"110\""+
+	"	width=\"97\""+
 	"	height=\"12\""+
 	"	forecolor=\"#000000\""+
 	"	key=\"staticText-7\"/>"+
@@ -257,8 +260,8 @@ public class BasicTemplateBuilder  {
 	"	y=\"0\"" +
 	"	width=\"7\"" +
 	"	height=\"7\"" +
-	"	forecolor=\"#000000\"" +
-	"	backcolor=\"#CC0066\"" +
+	"	forecolor=\"#FFFFFF\"" +
+	"	backcolor=\"#FFFFFF\"" +
 	"	key=\"rectangle-1\"/>" +
 	"	<graphicElement stretchType=\"NoStretch\"/>" +
 	"	</rectangle>";
@@ -285,7 +288,74 @@ public class BasicTemplateBuilder  {
 	"	key=\"line-1\"/>"+
 	"	<graphicElement stretchType=\"NoStretch\"/>"+
 	"	</line>";
+	
+	static String thresholdBandS="<rectangle>" +
+	"	<reportElement" +
+	"	x=\"0\"" +
+	"	y=\"0\"" +
+	"	width=\"535\"" +
+	"	height=\"14\"" +
+	"	forecolor=\"#FFFFFF\""+
+	"	backcolor=\"#009999\"" +
+	"	key=\"rectangle-2\"/>" +
+	"	<graphicElement stretchType=\"NoStretch\"/>" +
+	"	</rectangle>";
+	
+	static String thresholdTitleS="<staticText>" +
+	"	<reportElement" +
+	"	x=\"6\"" +
+	"	y=\"0\"" +
+	"	width=\"120\"" +
+	"	height=\"14\"" +
+	"	forecolor=\"#FFFFFF\""+
+	"	key=\"staticText-3\"/>" +
+	"	<box></box>" +
+	"	<textElement verticalAlignment=\"Middle\" >" +
+	"	<font size=\"10\" isBold=\"true\"/>" +
+	" </textElement>" +
+	"	<text><![CDATA[THRESHOLD DETAILS]]></text>" +
+	"	</staticText>";
 
+
+	static String thresholdTextCodeS="<staticText>" +
+	"	<reportElement" +
+	"	x=\"0\"" +
+	"	y=\"0\"" +
+	"	width=\"95\"" +
+	"	height=\"12\"" +
+	"	forecolor=\"#000000\""+
+	"	key=\"staticText-15\"/>" +
+	"	<box></box>" +
+	"	<textElement verticalAlignment=\"Middle\" textAlignment=\"Left\" >" +
+	"	<font size=\"8\" />" +
+	"   </textElement>" +
+	"	<text></text>" +
+	"	</staticText>";
+
+	static String thresholdValuesCodeS="<staticText>" +
+	"	<reportElement" +
+	"	x=\"0\"" +
+	"	y=\"0\"" +
+	"	width=\"90\"" +
+	"	height=\"12\"" +
+	"	key=\"staticText-15\"/>" +
+	"	<box></box>" +
+	"	<textElement verticalAlignment=\"Middle\" textAlignment=\"Left\" >" +
+	"	<font size=\"8\" />" +
+	"   </textElement>" +
+	"	<text></text>" +
+	"	</staticText>";
+	
+	static String thresholdLineSeparatorS="<line>"+
+	"	<reportElement"+
+	"	x=\"0\""+
+	"	y=\"103\""+
+	"	width=\"535\""+
+	"	height=\"0\""+
+	"	forecolor=\"#000099\""+
+	"	key=\"line-1\"/>"+
+	"	<graphicElement stretchType=\"NoStretch\"/>"+
+	"	</line>";
 
 	SourceBean staticTextName=null;
 	SourceBean staticTextNumber=null;
@@ -303,8 +373,16 @@ public class BasicTemplateBuilder  {
 	SourceBean columnThresholdHeader=null;
 	SourceBean thresholdCode=null;
 	SourceBean thresholdValue=null;
+	
+	SourceBean thresholdBand=null;
+	SourceBean thresholdTitle=null;
+	SourceBean thresholdLineSeparator=null;
+	SourceBean thresholdTextCode=null;
+	SourceBean thresholdTextValue=null;
 
 	String documentName=null;
+	
+	List thresholdsList=new ArrayList();
 
 	// margin left of text in summary band
 	final Integer xStarter=new Integer(0);
@@ -332,6 +410,10 @@ public class BasicTemplateBuilder  {
 	final Integer titleHeight=new Integer(50);
 //	height of the column header band
 	final Integer columnHeaderHeight=new Integer(14);
+//	height of the column header band
+	final Integer thresholdFieldWidth=new Integer(92);
+//	height of the column header band
+	final Integer thresholdFieldSeparatorWidth=new Integer(10);
 
 	// counting the actual weight of the report
 	Integer actualHeight=new Integer(0);
@@ -392,6 +474,12 @@ public class BasicTemplateBuilder  {
 			columnThresholdHeader=SourceBean.fromXMLString(columnThresholdHeaderS);
 			thresholdCode=SourceBean.fromXMLString(thresholdCodeS);
 			thresholdValue=SourceBean.fromXMLString(thresholdValueS);
+			
+			thresholdBand=SourceBean.fromXMLString(thresholdBandS);
+			thresholdTitle=SourceBean.fromXMLString(thresholdTitleS);
+			thresholdTextValue=SourceBean.fromXMLString(thresholdValuesCodeS);
+			thresholdTextCode=SourceBean.fromXMLString(thresholdTextCodeS);
+			thresholdLineSeparator=SourceBean.fromXMLString(thresholdLineSeparatorS);
 		} catch (Exception e) {
 			logger.error("Error in converting static elemnts into Source Beans, check the XML code");
 		}
@@ -410,6 +498,7 @@ public class BasicTemplateBuilder  {
 			KpiResourceBlock thisBlock = (KpiResourceBlock) iterator.next();
 			newResource(thisBlock);			
 		}
+		newThresholdBlock();
 
 		increaseHeight();
 
@@ -559,8 +648,6 @@ public class BasicTemplateBuilder  {
 		logger.debug("IN");
 		Color colorSemaphor=line.getSemaphorColor();
 		KpiValue kpiValue=line.getValue();
-		
-		
 
 		Integer xValue=xStarter+(xIncrease*Integer.valueOf(level));
 
@@ -576,7 +663,7 @@ public class BasicTemplateBuilder  {
 				String color=Integer.toHexString(colorSemaphor.getRGB());
 				color="#"+color.substring(2);
 
-				//semaphor.setAttribute("reportElement.forecolor", color);
+				semaphor.setAttribute("reportElement.forecolor",  "#000000");
 				semaphor.setAttribute("reportElement.backcolor", color);
 			}else{
 				semaphor.setAttribute("reportElement.forecolor", "#FFFFFF");
@@ -612,6 +699,16 @@ public class BasicTemplateBuilder  {
 				
 				ThresholdValue t = line.getThresholdOfValue();
 				if(t!=null){
+					try {
+						Threshold tr = DAOFactory.getThresholdDAO().loadThresholdById(t.getThresholdId());
+						if (!thresholdsList.contains(tr)){
+							thresholdsList.add(tr);
+						}
+						
+					} catch (EMFUserError e) {
+						logger.error(e);
+						e.printStackTrace();
+					}
 					String code=t.getThresholdCode() != null ? t.getThresholdCode() : "";
 					String codeTh = "Code: "+code;
 					
@@ -669,6 +766,117 @@ public class BasicTemplateBuilder  {
 		logger.debug("OUT");
 	}
 
+	public void newThresholdBlock(){
+		logger.debug("IN");
+
+			try{
+				actualHeight+=separatorModelsHeight;
+				SourceBean thresholdBand1=new SourceBean(thresholdBand);  
+				SourceBean thresholdTitle1=new SourceBean(thresholdTitle); 
+				
+				thresholdBand1.setAttribute("reportElement.y",actualHeight.toString());
+				thresholdTitle1.setAttribute("reportElement.y",actualHeight.toString());
+				
+				
+				band.setAttribute(thresholdBand1);
+				band.setAttribute(thresholdTitle1);
+				
+				actualHeight+=columnHeaderHeight;
+				
+				if(thresholdsList!=null && !thresholdsList.isEmpty()){
+					Iterator th = thresholdsList.iterator();
+					while(th.hasNext()){
+						Threshold t =(Threshold)th.next();
+						if (t!=null){
+							actualHeight+=separatorHeight;	
+							Integer yValue=actualHeight;
+							Integer xValue = thresholdFieldWidth;
+							
+							SourceBean thresholdTextCode1=new SourceBean(thresholdTextCode);  
+							String code=t.getCode() != null ? t.getCode() : "";
+							String codeTh = "Code: "+code;
+	
+							thresholdTextCode1.setAttribute("reportElement.y", yValue.toString());
+							SourceBean threshCode2=(SourceBean)thresholdTextCode1.getAttribute("text");
+							threshCode2.setCharacters(codeTh);
+							
+							band.setAttribute(thresholdTextCode1);
+							
+							newThresholdLine(t);
+							
+							SourceBean thresholdLineSeparator1=new SourceBean(thresholdLineSeparator); 
+							thresholdLineSeparator1.setAttribute("reportElement.y",new Integer(yValue.intValue()+16).toString());
+							band.setAttribute(thresholdLineSeparator1);	
+						}
+					}
+				
+				}
+			}	
+			catch (Exception e) {
+				logger.error("Error in setting the resource band");
+				return;
+			}
+		
+		logger.debug("OUT");
+	}
+	
+	public void newThresholdLine(Threshold t){
+		logger.debug("IN");
+		try {
+			actualHeight+=separatorHeight;	
+			Integer yValue=actualHeight;
+			Integer xValue = new Integer(5);
+			List thValues = t.getThresholdValues();
+			if(thValues!=null && !thValues.isEmpty()){
+				Iterator thIt = thValues.iterator();
+				while(thIt.hasNext()){
+					ThresholdValue val = (ThresholdValue)thIt.next();
+					if (val!=null){
+						SourceBean semaphor1=new SourceBean(semaphor);
+						SourceBean thresholdTextValue1=new SourceBean(thresholdTextValue);
+						
+						//Semaphore creation
+						xValue = xValue + thresholdFieldWidth;
+						
+						String colorSemaphor = val.getColourString();
+						semaphor1.setAttribute("reportElement.x", xValue.toString());
+						semaphor1.setAttribute("reportElement.y", new Integer(yValue.intValue()+2).toString());
+						if(colorSemaphor!=null){
+							semaphor1.setAttribute("reportElement.forecolor",  "#000000");
+							semaphor1.setAttribute("reportElement.backcolor", colorSemaphor);
+						}else{
+							semaphor1.setAttribute("reportElement.forecolor", "#FFFFFF");
+							semaphor1.setAttribute("reportElement.backcolor", "#FFFFFF");
+						}
+						
+						//Threshold Value Creation
+						xValue = xValue + thresholdFieldSeparatorWidth;
+						
+						String labelTh=val.getLabel() != null ? val.getLabel() : "";
+						String min = val.getMinValue()!= null ? val.getMinValue().toString() : "";
+						String max = val.getMaxValue()!= null ?  val.getMaxValue().toString() : "";
+						String valueTh = "Value: "+min+"-"+max+" "+labelTh;
+
+						thresholdTextValue1.setAttribute("reportElement.x", xValue.toString());
+						thresholdTextValue1.setAttribute("reportElement.y", yValue.toString());
+						SourceBean threshValue2=(SourceBean)thresholdTextValue1.getAttribute("text");
+						threshValue2.setCharacters(valueTh);
+						
+						band.setAttribute(semaphor1);	
+						band.setAttribute(thresholdTextValue1);	
+					}
+				}
+			}
+
+			actualHeight+=valueHeight;
+			
+		} catch (SourceBeanException e) {
+			logger.error("error while adding a threshold line");
+			return;
+		}
+
+		logger.debug("OUT");
+	}
 
 
 	private void nameResolution(){

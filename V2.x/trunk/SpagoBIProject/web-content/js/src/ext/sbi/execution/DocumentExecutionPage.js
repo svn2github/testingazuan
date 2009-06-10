@@ -63,6 +63,16 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 			disableMessaging : false
         }
         , loadMask  : true
+        , disableMessaging :false
+        , listeners  :
+            {
+        		'message:subobjectsaved': {
+        			fn: function(srcFrame, message) {
+	        			this.shortcutsPanel.synchronizeSubobjects(this.executionInstance);
+		        	}
+        			, scope: this
+        		}
+            }
     });
 	
 	/*

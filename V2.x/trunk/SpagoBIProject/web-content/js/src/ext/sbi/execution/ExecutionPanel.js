@@ -153,8 +153,9 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 			this.documentExecutionPage.southPanel.collapse();
 			this.loadUrlForExecution();
 		}
-		if(this.activePanel == 2 && pageNumber == 1) {
+		if(this.activePanel == 2 && pageNumber == 1) { // from execution page back to parameters page
 			delete this.executionInstance.SBI_SUBOBJECT_ID;
+			this.parametersSelectionPage.shortcutsPanel.synchronizeSubobjects(this.executionInstance);
 		}
 		this.tb.update(pageNumber, this.executionInstance);
 		this.activePanel = pageNumber;

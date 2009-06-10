@@ -72,9 +72,9 @@ Sbi.execution.ParametersPanel = function(config) {
 		, baseParams: params
 	});
 	
-	var cw = 1/config.columnNo;
+	var cw = 1/c.columnNo;
 	var columnsBaseConfig = [];
-	for(var i = 0; i < config.columnNo; i++) {		
+	for(var i = 0; i < c.columnNo; i++) {		
 		columnsBaseConfig[i] = {
 			columnWidth: cw,
             layout: 'form',
@@ -84,7 +84,7 @@ Sbi.execution.ParametersPanel = function(config) {
 	}
   
 	c = Ext.apply({}, c, {
-		labelAlign: config.labelAlign,
+		labelAlign: c.labelAlign,
         border: false,
         bodyStyle:'padding:10px 0px 10px 10px',
         items: [{
@@ -100,7 +100,7 @@ Sbi.execution.ParametersPanel = function(config) {
 	
 	var columnContainer = this.items.get(0);
 	this.columns = [];
-	for(var i = 0; i < config.columnNo; i++) {
+	for(var i = 0; i < c.columnNo; i++) {
 		this.columns[i] = columnContainer.items.get(i);
 	}
 	
@@ -227,10 +227,12 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		
 		for(var p in this.fields) {
 			this.fields[p].on('change', function(f, newVal, oldVal) {
-				for(var i = 0; i < f.dependants.length; i++) {
-					var field = this.fields[ f.dependants[i] ];
-					if(field.initialConf.selectionType === 'COMBOBOX'){ 
-						field.store.load();
+				if(f.dependants !== undefined) {
+					for(var i = 0; i < f.dependants.length; i++) {
+						var field = this.fields[ f.dependants[i] ];
+						if(field.initialConf.selectionType === 'COMBOBOX'){ 
+							field.store.load();
+						}
 					}
 				}
 			}, this); 

@@ -100,9 +100,25 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 		, items: [this.shortcutsPanel]
     });
     
+    this.northPanel = new Ext.Panel({
+		region:'north'
+		, border: false
+		, frame: false
+		, collapsible: true
+		, collapsed: true
+		, hideCollapseTool: true
+		, titleCollapse: true
+		, collapseMode: 'mini'
+		, split: true
+		, autoScroll: true
+		, height: 280
+		, layout: 'fit'
+		, items: [this.parametersPanel]
+    });
+    
 	var c = Ext.apply({}, config, {
 		layout: 'border'
-		, items: [this.miframe, this.southPanel]
+		, items: [this.miframe, this.southPanel, this.northPanel]
 	});
 	
 	// constructor
@@ -117,6 +133,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
     // static contents and methods definitions
 	services: null
 	, miframe : null
+	, parametersPanel: null
     , shortcutsPanel: null
     , southPanel: null
    
@@ -172,11 +189,16 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	
 	, init: function( config ) {
 		this.initShortcutsPanel(config);
+		this.initParametersPanel(config);
+	}
+	
+	, initParametersPanel: function( config ) {
+		this.parametersPanel = new Sbi.execution.ParametersPanel(config);
+		return this.parametersPanel;
 	}
 	
 	, initShortcutsPanel: function( config ) {
 		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
 		return this.shortcutsPanel;
 	}
-	
 });

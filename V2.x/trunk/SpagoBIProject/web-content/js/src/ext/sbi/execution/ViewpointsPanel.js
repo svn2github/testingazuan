@@ -61,9 +61,9 @@ Sbi.execution.ViewpointsPanel = function(config) {
 	});
 	
 	
-    this.viewpointsStore = new Ext.data.JsonStore({
+    this.store = new Ext.data.JsonStore({
         root: 'results'
-        , idProperty: 'id'
+        , idProperty: 'name'
         , fields: ['name', 'owner', 'description', 'scope', 
                    {name:'creationDate', type:'date', dateFormat: Sbi.config.clientServerDateFormat}, 
                    'parameters'
@@ -77,7 +77,7 @@ Sbi.execution.ViewpointsPanel = function(config) {
 	       iconCls: 'icon-execute',
 	       clickHandler: function(e, t) {
 	          var index = this.grid.getView().findRowIndex(t);
-	          var selectedRecord = this.grid.viewpointsStore.getAt(index);
+	          var selectedRecord = this.grid.store.getAt(index);
 	          var viewpointId = selectedRecord.get('id');
 	          this.grid.fireEvent('executionrequest', selectedRecord.get('parameters'));
 	       },
@@ -93,7 +93,7 @@ Sbi.execution.ViewpointsPanel = function(config) {
 	       iconCls: 'icon-apply-viewpoint',
 	       clickHandler: function(e, t) {
 	          var index = this.grid.getView().findRowIndex(t);
-	          var selectedRecord = this.grid.viewpointsStore.getAt(index);
+	          var selectedRecord = this.grid.store.getAt(index);
 	          var viewpointId = selectedRecord.get('id');
 	          this.grid.fireEvent('applyviewpoint', selectedRecord.get('parameters'));
 	       },
@@ -103,11 +103,11 @@ Sbi.execution.ViewpointsPanel = function(config) {
 	       }
 	});
     
-    this.sm = new Ext.grid.CheckboxSelectionModel();
+    var sm = new Ext.grid.CheckboxSelectionModel();
     
    
 	var c = Ext.apply({}, config, {
-        store: this.viewpointsStore
+        store: this.store
         , columns: [
               {header: LN('sbi.execution.viewpoints.name'), sortable: true, dataIndex: 'name'}
             , {header: LN('sbi.execution.viewpoints.description'), sortable: true, dataIndex: 'description'}
@@ -116,7 +116,7 @@ Sbi.execution.ViewpointsPanel = function(config) {
             , {header: LN('sbi.execution.viewpoints.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
             , this.applyColumn
             , this.execColumn
-            , this.sm
+            , sm
         ]
         , plugins: [ this.applyColumn, this.execColumn ]
 		, viewConfig: {
@@ -135,7 +135,7 @@ Sbi.execution.ViewpointsPanel = function(config) {
         , collapsible: false
         , title: LN('sbi.execution.viewpoints.title')
         , autoScroll: true
-        , sm : this.sm
+        , sm : sm
         , height: 200
 	});   
 	
@@ -151,15 +151,29 @@ Sbi.execution.ViewpointsPanel = function(config) {
 Ext.extend(Sbi.execution.ViewpointsPanel, Ext.grid.GridPanel, {
 	
 	services: null
-	, viewpointsStore: null
-	, sm: null
 	, executionInstance: null
+	, store: null
 	 
     // public methods
 	
 	, synchronize: function( executionInstance ) {
-		this.viewpointsStore.load({params: executionInstance});
+		this.store.load({params: executionInstance});
 		this.executionInstance = executionInstance;
+	}
+
+	, addViewpoints: function( viewpoints ) {
+		alert(viewpoints.toSource());
+		if(viewpoints instanceof Array) {
+			// it's ok	
+		} else {
+			viewpoints = [viewpoints];
+		}
+		
+		var records = [];
+		for(var i = 0; i < viewpoints.length; i++) {
+			records[i] = new this.store.recordType( viewpoints[i] );
+		}
+		this.store.add(records);
 	}
 
 	, deleteSelectedSubObjects: function() {
@@ -167,19 +181,19 @@ Ext.extend(Sbi.execution.ViewpointsPanel, Ext.grid.GridPanel, {
 		if (recordsSelected && recordsSelected.length > 0) {
 			var ids = new Array();
 			for (var count = 0; count < recordsSelected.length; count++) {
-				ids[count] = recordsSelected[count].get('id');
+				ids[count] = recordsSelected[count].get('name');
 			}
 			var idsJoined = ids.join(',');
+			alert( idsJoined );
 			
-			/*
 			Ext.Ajax.request({
-		        url: this.services['deleteViewpointsService'],
-		        params: {'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID, 'id': idsJoined},
+		        url: this.services['deleteViewpointService'],
+		        params: {'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID, 'viewpoint_ids': idsJoined},
 		        callback : function(options , success, response) {
 		  	  		if(success) {
 		  	  			// removes the subobjects from the store
 		  	  			for (var count = 0; count < recordsSelected.length; count++) {
-		  	  				this.subObjectsStore.remove(recordsSelected[count]);
+		  	  				this.store.remove(recordsSelected[count]);
 		  	  			}
 		  	  		} else { 
 		  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot detele customized views', 'Service Error');
@@ -188,7 +202,7 @@ Ext.extend(Sbi.execution.ViewpointsPanel, Ext.grid.GridPanel, {
 		        scope: this,
 				failure: Sbi.exception.ExceptionHandler.handleFailure      
 			});
-			*/
+			
 		} else {
 			Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.execution.subobjects.noSubObjectsSelected'), 'Warning');
 		}

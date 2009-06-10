@@ -58,12 +58,8 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
 	this.services = new Array();
-	this.services['getParametersForExecutionService'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'GET_PARAMETERS_FOR_EXECUTION_ACTION'
-		, baseParams: params
-	});
-	this.services['getParameterValueForExecutionService'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'GET_PARAMETER_VALUES_FOR_EXECUTION_ACTION'
+	this.services['saveViewpointService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SAVE_VIEWPOINT_ACTION'
 		, baseParams: params
 	});
 	
@@ -102,7 +98,8 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 		}]
 	});   
 	
-	this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.setFormState, this.parametersPanel);
+	this.shortcutsPanel.on('applyviewpoint', this.onApplyViewpoint, this);
+	this.shortcutsPanel.on('viewpointexecutionrequest', this.onExecuteViewpoint, this);
 	
 	// constructor
     Sbi.execution.ParametersSelectionPage.superclass.constructor.call(this, c);
@@ -114,10 +111,11 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 
 Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
     
-    
-    parametersPanel: null
+	services: null
+    , parametersPanel: null
     , shortcutsPanel: null
     , saveViewpointWin: null
+    , executionInstance: null
    
     // ----------------------------------------------------------------------------------------
     // public methods
@@ -130,6 +128,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
     , synchronize: function( executionInstance ) {
 		this.parametersPanel.synchronize( executionInstance );
 		this.shortcutsPanel.synchronize( executionInstance );
+		this.executionInstance = executionInstance;
 	}
 
 	, clearParametersForm: function() {
@@ -137,15 +136,38 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	}
 	
 	, saveParametersFormStateAsViewpoint: function() {
-		//alert('saveParametersFormStateAsViewpoint');
 		if(this.saveViewpointWin === null) {
 			this.saveViewpointWin = new Sbi.widgets.SaveWindow();
 			this.saveViewpointWin.on('save', function(w, state) {
-				alert('save: ' + state.toSource());
+				var params = Ext.apply({}, state, this.executionInstance);
+				params.viewpoint = Ext.util.JSON.encode( this.parametersPanel.getFormState() );
+				Ext.Ajax.request({
+			          url: this.services['saveViewpointService'],
+			          
+			          params: params,
+			          
+			          callback : function(options, success, response){
+						if(success && response !== undefined) {   
+				      		if(response.responseText !== undefined) {
+				      			var content = Ext.util.JSON.decode( response.responseText );
+				      			if(content !== undefined) {
+				      				alert('Viewpoint saved succesfully');
+				      				this.shortcutsPanel.viewpointsPanel.addViewpoints(content);
+				      			} 
+				      		} else {
+				      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+				      		}
+			    	   }			    	  	
+			          },
+			          scope: this,
+			  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
+			     });
 			}, this);
 		}
 		this.saveViewpointWin.show();
 	}
+	
+	
     
 	
 	// ----------------------------------------------------------------------------------------
@@ -165,6 +187,14 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	, initShortcutsPanel: function( config ) {
 		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
 		return this.shortcutsPanel;
+	}
+	
+	, onApplyViewpoint: function(v) {
+		this.parametersPanel.setFormState(v);
+	}
+	
+	, onExecuteViewpoint: function(v) {
+		this.parametersPanel.setFormState(v);
 	}
 	
 });

@@ -73,7 +73,6 @@ Sbi.execution.ShortcutsPanel = function(config) {
     this.addEvents('subobjectexecutionrequest', 'snapshotexcutionrequest','viewpointexecutionrequest', 'applyviewpoint');
     
     this.viewpointsPanel.on('executionrequest', function(viewpoint) {
-    	alert(viewpoint.toSource());
     	this.fireEvent('viewpointexecutionrequest', viewpoint);
     }, this);
     

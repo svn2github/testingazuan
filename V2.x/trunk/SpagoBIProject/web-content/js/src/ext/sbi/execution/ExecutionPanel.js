@@ -115,6 +115,7 @@ Sbi.execution.ExecutionPanel = function(config) {
     
     this.roleSelectionPage.addListener('onload', this.onRolesForExecutionLoaded, this);
     
+    this.parametersSelectionPage.shortcutsPanel.addListener('viewpointexecutionrequest', this.onViewpointExecutionRequest, this);
     this.parametersSelectionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
     
     this.documentExecutionPage.addListener('loadurlfailure', this.onLoadUrlFailure, this);
@@ -239,11 +240,9 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		
 	}
 	
-	/*
-	, loadSubObjects: function() {
-		this.subObjectsPanel.loadSubObjects( this.executionInstance );
+	, onViewpointExecutionRequest: function(v) {
+		this.moveToPage(2);
 	}
-	*/
 	
 	, onSubobjectExecutionRequest: function (subObjectId) {
 		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;

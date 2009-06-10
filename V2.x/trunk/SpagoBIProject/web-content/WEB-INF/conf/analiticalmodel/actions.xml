@@ -133,5 +133,15 @@
  	<CONFIG/>
  </ACTION>
  
+ <ACTION name="DELETE_VIEWPOINTS_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.DeleteViewpointsAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
+ <ACTION name="SAVE_VIEWPOINT_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.SaveViewpointAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
 </ACTIONS>
 

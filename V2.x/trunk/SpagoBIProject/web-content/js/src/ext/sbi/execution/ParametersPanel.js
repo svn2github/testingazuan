@@ -107,7 +107,7 @@ Sbi.execution.ParametersPanel = function(config) {
 		this.columns[i] = columnContainer.items.get(i);
 	}
 	
-    //this.addEvents();	
+    this.addEvents('readyforexecution');	
 };
 
 Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
@@ -245,6 +245,17 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		if (this.parametersPreference) {
 			var preferenceState = Ext.urlDecode(this.parametersPreference);
 			this.setFormState(preferenceState);
+			var readyForExecution = true;
+			var o = this.getFormState();
+			for(p in o) {
+				if(o[p] !== preferenceState[p]) {
+					readyForExecution = false;
+					break;
+				}
+			}
+			if(readyForExecution === true) {
+				this.fireEvent('readyforexecution', this);
+			}
 		}
 		
 	}

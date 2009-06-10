@@ -76,17 +76,14 @@ Sbi.execution.DocumentExecutionPage = function(config) {
         	, 'message:crossnavigation' : {
         		fn: function(srcFrame, message){
                 	alert(message.data.label + ' - ' + message.data.parameters);
-                	
-                	/*
-                	if(this.executionInstance.OBJECT_ID !== undefined ){
-                		delete this.executionInstance.OBJECT_ID;
-                	}                	
-                	
-                	this.executionInstance.OBJECT_LABEL = message.data.label;
-                	var parameters = Ext.urlDecode(message.data.label);
-                	parameters = Ext.util.JSON.encode(parameters);
-                	this.executionInstance.PARAMETERS = parameters;
-                	*/
+                	var config = {
+                		document: {'label': message.data.label}
+            			, preferences: {
+                			parameters: message.data.parameters
+                		}
+            	    };
+            	    this.fireEvent('crossnavigation', config);
+      
    
         		}
         		, scope: this
@@ -148,7 +145,7 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 	// constructor
     Sbi.execution.DocumentExecutionPage.superclass.constructor.call(this, c);
 	
-    this.addEvents('loadurlfailure');
+    this.addEvents('loadurlfailure', 'crossnavigation');
     
 };
 
@@ -189,8 +186,12 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		      		if(response !== undefined && response.responseText !== undefined) {
 		      			var content = Ext.util.JSON.decode( response.responseText );
 		      			if(content !== undefined) {
-		      				this.miframe.getFrame().setSrc( content.url );
-		      				this.add(this.miframe);
+		      				if(content.errors !== undefined && content.errors.length > 0) {
+		      					this.fireEvent('loadurlfailure', content.errors);
+		      				} else {
+		      					this.miframe.getFrame().setSrc( content.url );
+		      					this.add(this.miframe);
+		      				}
 		      			} 
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
@@ -200,7 +201,6 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		      			var content = Ext.util.JSON.decode( response.responseText );
 		      			if(content !== undefined && content.errors !== undefined) {
 		      				this.fireEvent('loadurlfailure', content.errors);
-		      				alert(content.errors);
 		      			} 
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');

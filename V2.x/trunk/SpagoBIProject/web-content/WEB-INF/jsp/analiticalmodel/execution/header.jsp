@@ -188,29 +188,36 @@ boolean viewpointsSliderVisible = viewpointsList != null && viewpointsList.size(
 String outputType = (String)executionParameters.get("outputType");
 ExecutionManager executionManager = (ExecutionManager) contextManager.get(ExecutionManager.class.getName());
 String executionFlowId = instance.getFlowId();
-%>
 
-<div class='execution-page-title'>
-	<%
-	if (!executionFlowId.equals(uuid) && executionManager != null) {
-		List list = executionManager.getBIObjectsExecutionFlow(executionFlowId);
-		for (int i = 0; i < list.size(); i++) {
-			ExecutionInstance anInstance = (ExecutionInstance) list.get(i);
-			BIObject aBIObject = anInstance.getBIObject();
-			Map recoverExecutionParams = new HashMap();
-			recoverExecutionParams.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
-			recoverExecutionParams.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.RECOVER_EXECUTION_FROM_CROSS_NAVIGATION);
-			recoverExecutionParams.put("EXECUTION_FLOW_ID", anInstance.getFlowId());
-			recoverExecutionParams.put("EXECUTION_ID", anInstance.getExecutionId());
-			recoverExecutionParams.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
-			String recoverExecutionUrl = urlBuilder.getUrl(request, recoverExecutionParams);
-			%>&nbsp;<a href='<%= recoverExecutionUrl %>' ><%= aBIObject.getName()%></a>&nbsp;&gt;<%
-		}
-	}
+String titleVisibileStr = (String) aServiceRequest.getAttribute(SpagoBIConstants.TITLE_VISIBLE);
+boolean titleVisibile = titleVisibileStr == null && titleVisibileStr.equalsIgnoreCase("TRUE");
+
+if (titleVisibile) {
 	%>
-		<%=msgBuilder.getUserMessage(title, SpagoBIConstants.DEFAULT_USER_BUNDLE, request)%>
-	
-</div>
+	<div class='execution-page-title'>
+		<%
+		if (!executionFlowId.equals(uuid) && executionManager != null) {
+			List list = executionManager.getBIObjectsExecutionFlow(executionFlowId);
+			for (int i = 0; i < list.size(); i++) {
+				ExecutionInstance anInstance = (ExecutionInstance) list.get(i);
+				BIObject aBIObject = anInstance.getBIObject();
+				Map recoverExecutionParams = new HashMap();
+				recoverExecutionParams.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+				recoverExecutionParams.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.RECOVER_EXECUTION_FROM_CROSS_NAVIGATION);
+				recoverExecutionParams.put("EXECUTION_FLOW_ID", anInstance.getFlowId());
+				recoverExecutionParams.put("EXECUTION_ID", anInstance.getExecutionId());
+				recoverExecutionParams.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
+				String recoverExecutionUrl = urlBuilder.getUrl(request, recoverExecutionParams);
+				%>&nbsp;<a href='<%= recoverExecutionUrl %>' ><%= aBIObject.getName()%></a>&nbsp;&gt;<%
+			}
+		}
+		%>
+			<%=msgBuilder.getUserMessage(title, SpagoBIConstants.DEFAULT_USER_BUNDLE, request)%>
+		
+	</div>
+	<%
+}
+%>
 <script type="text/javascript">
 		function changeDivDisplay(id,display){
 			elem = document.getElementById(id);

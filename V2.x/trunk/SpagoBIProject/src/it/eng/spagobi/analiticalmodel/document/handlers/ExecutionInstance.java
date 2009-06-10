@@ -744,6 +744,8 @@ public class ExecutionInstance {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append(GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile) userProfile).getUserId().toString()));
 			buffer.append("&PAGE=ExecuteBIObjectPage");
+			buffer.append("&" + SpagoBIConstants.TITLE_VISIBLE + "=FALSE");
+			buffer.append("&" + SpagoBIConstants.TOOLBAR_VISIBLE + "=FALSE");
 			buffer.append("&" + ObjectsTreeConstants.OBJECT_LABEL + "=" + object.getLabel());
 			buffer.append("&" + SpagoBIConstants.ROLE + "=" + executionRole);
 			// identity string for context

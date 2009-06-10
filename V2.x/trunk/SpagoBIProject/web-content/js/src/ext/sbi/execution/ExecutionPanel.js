@@ -73,12 +73,12 @@ Sbi.execution.ExecutionPanel = function(config) {
 	
 	// propagate preferences to role selection page
 	var roleSelectionPageConfig = Ext.applyIf(config.preferences, config.roleSelectionPage); 
-	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage(roleSelectionPageConfig);
+	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage(roleSelectionPageConfig || {});
 	// propagate preferences to parameters selection page
 	var parametersSelectionPageConfig = Ext.applyIf(config.preferences, config.parametersSelectionPage); 
-	this.parametersSelectionPage =  new Sbi.execution.ParametersSelectionPage(parametersSelectionPageConfig);
+	this.parametersSelectionPage =  new Sbi.execution.ParametersSelectionPage(parametersSelectionPageConfig || {});
 	// preferences ARE NOT PROPAGATED to execution page (since panels on ShortcutPanel are instantiated twice, this may generate conflicts)
-	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(config.documentExecutionPage);
+	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(config.documentExecutionPage || {});
 	
 	this.activePanel = 0;
 	

@@ -165,6 +165,7 @@ public class SpagoBIConstants {
 	public static final String VIEWPOINT_ERASE = "VIEWPOINT_ERASE";
 	public static final String VIEWPOINT_VIEW = "VIEWPOINT_VIEW";
 
+	public static final String TITLE_VISIBLE = "TITLE_VISIBLE";
 	public static final String TOOLBAR_VISIBLE = "TOOLBAR_VISIBLE";
 	public static final String SLIDERS_VISIBLE = "SLIDERS_VISIBLE";
 	

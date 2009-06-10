@@ -257,6 +257,9 @@ var getQueryBuilderPanel = function(query) {
 						try {
 							parent.loadSubObject(window.name, content.text.substr(5));
 						} catch (ex) {}
+						try {
+							sendMessage("Subobject saved!!!!","subobjectsaved");
+						} catch (ex) {}
 					}
 				},
 				failure: it.eng.spagobi.engines.qbe.exceptionhandler.module.handleFailure					

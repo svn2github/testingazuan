@@ -236,6 +236,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 	}
 	
 	, onLoadUrlFailure: function ( errors ) {
+		alert("ERROR(onLoadUrlFailure): " + errors);
 		this.moveToPage(1); // go to parameters page
 		
 	}

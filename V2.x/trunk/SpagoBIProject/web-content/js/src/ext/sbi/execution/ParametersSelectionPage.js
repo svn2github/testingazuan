@@ -197,8 +197,12 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	
 	, onApplyViewpoint: function(v) {
 		for(var p in v) {
-			if(v[p].split(';') > 1) {
-				v[p] = v[p].split(';');
+			alert(p + ': ' + v[p] + ':: '+  (typeof v[p]) );
+			var str = '' + v[p];
+			alert(str + ': ' + str.split(';') );
+			if(str.split(';').length > 1) {
+				alert('that\'s it: ' + p);
+				v[p] = str.split(';');
 			}
 		}
 		this.parametersPanel.setFormState(v);

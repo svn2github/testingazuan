@@ -140,10 +140,26 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		return v;
 	}
 
+	/**
+	 * v: 
+	 *  - object -> multivalue with values/descriptions
+	 *  - array -> multivalue with only values
+	 *  - string -> single value
+	 */
 	, setValue : function(v){	 
-	
+		
 		if(typeof v === 'object') {
 			this.xvalue = {};
+			
+			if(v instanceof Array) {
+				alert('set array: ' + this.name);
+				var t = {};
+				for(var i = 0; i < v.length; i++) {
+					t[ v[i] ] = v[i];
+				}
+				v = t;
+			}
+			
 			Ext.apply(this.xvalue, v);
 			var displayText = '';
 			for(p in this.xvalue) {

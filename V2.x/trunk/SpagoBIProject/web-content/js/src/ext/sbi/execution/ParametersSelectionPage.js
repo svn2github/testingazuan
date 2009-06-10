@@ -140,7 +140,13 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 			this.saveViewpointWin = new Sbi.widgets.SaveWindow();
 			this.saveViewpointWin.on('save', function(w, state) {
 				var params = Ext.apply({}, state, this.executionInstance);
-				params.viewpoint = Ext.util.JSON.encode( this.parametersPanel.getFormState() );
+				var formState = this.parametersPanel.getFormState();
+				for(var p in formState) {
+					if(formState[p] instanceof Array ) {
+						formState[p] = formState[p].join(';');
+					}
+				}
+				params.viewpoint = Ext.util.JSON.encode( formState );
 				Ext.Ajax.request({
 			          url: this.services['saveViewpointService'],
 			          
@@ -190,6 +196,11 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	}
 	
 	, onApplyViewpoint: function(v) {
+		for(var p in v) {
+			if(v[p].split(';') > 1) {
+				v[p] = v[p].split(';');
+			}
+		}
 		this.parametersPanel.setFormState(v);
 	}
 	

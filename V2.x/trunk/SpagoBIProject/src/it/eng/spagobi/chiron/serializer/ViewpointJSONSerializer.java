@@ -74,7 +74,9 @@ public class ViewpointJSONSerializer implements Serializer {
 			String[] parameters = str.split("%26");
 			for(int i = 0; i < parameters.length; i++) {
 				String[] parameter = parameters[i].split("%3D");
-				parametersJSON.put(parameter[0], parameter[1]);
+				if(parameter.length > 1 ) {
+					parametersJSON.put(parameter[0], parameter[1]);
+				}
 			}
 			result.put(PARAMETERS, parametersJSON);
 			

@@ -129,7 +129,9 @@ public class SaveViewpointAction extends AbstractSpagoBIAction {
 				}
 				
 				// defines the string of parameters to save into db
-				viewpointString += parameterName + "%3D" + parameterValue + "%26";
+				if(!StringUtilities.isEmpty(parameterValue)) {
+					viewpointString += parameterName + "%3D" + parameterValue + "%26";
+				}
 			}
 			
 			if (viewpointString.endsWith("%26")) {

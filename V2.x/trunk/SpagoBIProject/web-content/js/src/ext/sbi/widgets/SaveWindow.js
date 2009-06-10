@@ -38,7 +38,6 @@ Sbi.widgets.SaveWindow = function(config) {
 	
 	// constructor
 	Sbi.widgets.SaveWindow.superclass.constructor.call(this, {
-    	id:'id1',
 		layout:'fit',
 		width:500,
 		height:250,
@@ -82,7 +81,6 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
 	//private methods
 	, initFormPanel: function(config) {
     	this.nameField = new Ext.form.TextField({
-    		id:'analysisName',
     		name:'analysisName',
     		allowBlank:false, 
     		inputType:'text',
@@ -92,7 +90,6 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
     	});
     	    
     	this.descriptionField = new Ext.form.TextField({
-    		id:'analysisDescription',
     		name:'analysisDescription',
     		allowBlank:false, 
     		inputType:'text',

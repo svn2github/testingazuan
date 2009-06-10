@@ -72,11 +72,13 @@ Sbi.execution.ParametersPanel = function(config) {
 		, baseParams: params
 	});
 	
-	var cw = 1/c.columnNo;
+	//var cw = 1/c.columnNo;
+	var w = (350 * c.columnNo) + 40;
 	var columnsBaseConfig = [];
 	for(var i = 0; i < c.columnNo; i++) {		
 		columnsBaseConfig[i] = {
-			columnWidth: cw,
+			//columnWidth: cw,
+			width: 350,
             layout: 'form',
             border: false,
             bodyStyle:'padding:5px 5px 5px 5px'
@@ -87,10 +89,11 @@ Sbi.execution.ParametersPanel = function(config) {
 		labelAlign: c.labelAlign,
         border: false,
         bodyStyle:'padding:10px 0px 10px 10px',
+        autoScroll: true,
         items: [{
             layout:'column',
+            width: w, 
             border: false,
-            autoScroll: true,
             items: columnsBaseConfig
         }]
 	});

@@ -70,6 +70,9 @@ Sbi.execution.ViewpointsPanel = function(config) {
                    ]
 		, url: this.services['getViewpointsService']
     }); 
+    this.store.on('loadexception', function(store, options, response, e){
+    	Sbi.exception.ExceptionHandler.handleFailure(response, options);
+    }, this);
     
     this.execColumn = new Ext.grid.ButtonColumn({
 	       header:  '',
@@ -157,8 +160,8 @@ Ext.extend(Sbi.execution.ViewpointsPanel, Ext.grid.GridPanel, {
     // public methods
 	
 	, synchronize: function( executionInstance ) {
-		this.store.load({params: executionInstance});
 		this.executionInstance = executionInstance;
+		this.store.load({params: this.executionInstance});
 	}
 
 	, addViewpoints: function( viewpoints ) {

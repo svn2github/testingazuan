@@ -111,7 +111,7 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 		, collapseMode: 'mini'
 		, split: true
 		, autoScroll: true
-		, height: 280
+		, height: 180
 		, layout: 'fit'
 		, items: [this.parametersPanel]
     });
@@ -140,7 +140,20 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	// ----------------------------------------------------------------------------------------
 	// public methods
 	// ----------------------------------------------------------------------------------------
-	, loadUrlForExecution: function( executionInstance ) {
+	, loadUrlForExecution: function( executionInstance, reloadSliders ) {
+		
+		if(reloadSliders === undefined || reloadSliders === true) {
+			alert(executionInstance.PARAMETERS);
+			if(executionInstance.PARAMETERS !== undefined) {
+				var parameters = Ext.util.JSON.decode( executionInstance.PARAMETERS );
+				parameters = Ext.urlEncode(parameters);				
+				this.parametersPanel.parametersPreference = parameters;
+			}
+			this.parametersPanel.synchronize(executionInstance);
+			this.shortcutsPanel.synchronize(executionInstance);
+		}
+		
+	
 		Ext.Ajax.request({
 	        url: this.services['getUrlForExecutionService'],
 	        params: executionInstance,

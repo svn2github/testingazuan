@@ -4,6 +4,7 @@ package it.eng.spagobi.engines.chart.utils;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup;
 import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts;
+import it.eng.spagobi.kpi.utils.BasicTemplateBuilder;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.xy.DefaultXYZDataset;
@@ -39,6 +41,9 @@ public class DatasetMap {
 	Vector selectedCatGroups;
 	boolean makeSlider=false;
 
+	private static transient org.apache.log4j.Logger logger=Logger.getLogger(DatasetMap.class);
+
+
 	public DatasetMap() {
 		this.datasets = new LinkedHashMap();
 	}
@@ -50,126 +55,136 @@ public class DatasetMap {
 
 
 	public DatasetMap filteringSimpleBarChart(HttpServletRequest request, BarCharts sbi, String sbiMode, boolean docComposition){
-
+		logger.debug("IN");
 		DefaultCategoryDataset dataset=(DefaultCategoryDataset)datasets.get("1");
 		Dataset copyDataset=null;
+		DatasetMap newDatasetMap=null;
 		try {
 			copyDataset = (DefaultCategoryDataset)dataset.clone();
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
+			logger.error("error copying dataset");
 			e.printStackTrace();
 		}
+		try{
+			series=new TreeSet(((DefaultCategoryDataset)dataset).getRowKeys());
 
-		series=new TreeSet(((DefaultCategoryDataset)dataset).getRowKeys());
-
-		//fill the serieNumber MAP by mapping each serie name to its position in the dataset, needed to recover right colors when redrawing
-		/*	for(int i=0;i<series.size();i++){
+			//fill the serieNumber MAP by mapping each serie name to its position in the dataset, needed to recover right colors when redrawing
+			/*	for(int i=0;i<series.size();i++){
 			String s=(String)series.get(i);
 			sbi.putSeriesNumber(s,(i+1));
 		}*/
 
-		categories=(HashMap)((BarCharts)sbi).getCategories();
-		catsnum=new Integer(sbi.getCategoriesNumber());
-		numberCatVisualization=sbi.getNumberCatVisualization();
-		numberSerVisualization=sbi.getNumberSerVisualization();
-		
-		catTitle=sbi.getCategoryLabel();
-		serTitle=sbi.getValueLabel();
+			categories=(HashMap)((BarCharts)sbi).getCategories();
+			catsnum=new Integer(sbi.getCategoriesNumber());
+			numberCatVisualization=sbi.getNumberCatVisualization();
+			numberSerVisualization=sbi.getNumberSerVisualization();
 
-		// if slider specifies a category than set view from that point
-		if(request.getParameter("category")!=null){
-			String catS=(String)request.getParameter("category");
-			Double catD=Double.valueOf(catS);
-			categoryCurrent=catD.intValue();
-		}
-		else{ //else set view from first category
-			categoryCurrent=1;
-		}
-		valueSlider=(new Integer(categoryCurrent)).toString();
-		HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
+			catTitle=sbi.getCategoryLabel();
+			serTitle=sbi.getValueLabel();
 
-
-		if(categoryCurrent!=0){
-			categoryCurrentName=(String)cats.get(new Integer(categoryCurrent));
-			copyDataset=(DefaultCategoryDataset)sbi.filterDataset(copyDataset,categories,categoryCurrent,numberCatVisualization.intValue());				
-		}
-		else{
-			categoryCurrentName="All";
-		}
+			// if slider specifies a category than set view from that point
+			if(request.getParameter("category")!=null){
+				String catS=(String)request.getParameter("category");
+				logger.debug("category specified by slider "+catS);
+				Double catD=Double.valueOf(catS);
+				categoryCurrent=catD.intValue();
+			}
+			else{ //else set view from first category
+				logger.debug("no particulary category specified by slider");
+				categoryCurrent=1;
+			}
+			valueSlider=(new Integer(categoryCurrent)).toString();
+			HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
 
 
-
-		// CHECK IF THERE IS TO FILTER CAT_GROUPS
-		selectedCatGroups=new Vector();
-		if(sbi.isFilterCatGroups()==true){
-			
-			if(request.getParameter("cat_group")!=null){
-				// Check if particular cat_groups has been chosen
-
-				String[] cio=request.getParameterValues("cat_group");
-				//Convert array in vector
-				for(int i=0;i<cio.length;i++){
-					selectedCatGroups.add(cio[i]);
-				}
+			if(categoryCurrent!=0){
+				categoryCurrentName=(String)cats.get(new Integer(categoryCurrent));
+				logger.debug("current category "+categoryCurrentName);
+				copyDataset=(DefaultCategoryDataset)sbi.filterDataset(copyDataset,categories,categoryCurrent,numberCatVisualization.intValue());				
 			}
 			else{
-				selectedCatGroups.add("allgroups");
+				logger.debug("current category is the first");
+				categoryCurrentName="All";
 			}
 
-			// if selectedSerie contains allseries 
-			if(selectedCatGroups.contains("allgroups")){
-				((BarCharts)sbi).setCurrentCatGroups(null);
-			}
-			else{	
-				copyDataset=sbi.filterDatasetCatGroups(copyDataset,selectedCatGroups);	
-
-			}
-		}
-		else selectedCatGroups.add("allgroups");
 
 
-		// CHECK IF THERE IS TO FILTER SERIES
-		selectedSeries=new Vector();
-		if(sbi.isFilterSeries()==true){
-			// Check if particular series has been chosen
-			
-			if(request.getParameter("serie")!=null){
-				String[] cio=request.getParameterValues("serie");
-				//Convert array in vector
-				for(int i=0;i<cio.length;i++){
-					selectedSeries.add(cio[i]);
+			// CHECK IF THERE IS TO FILTER CAT_GROUPS
+			selectedCatGroups=new Vector();
+			logger.debug("check particular category groups");
+			if(sbi.isFilterCatGroups()==true){
+
+				if(request.getParameter("cat_group")!=null){
+					// Check if particular cat_groups has been chosen
+
+					String[] cio=request.getParameterValues("cat_group");
+					//Convert array in vector
+					for(int i=0;i<cio.length;i++){
+						selectedCatGroups.add(cio[i]);
+					}
+				}
+				else{
+					selectedCatGroups.add("allgroups");
+				}
+
+				// if selectedSerie contains allseries 
+				if(selectedCatGroups.contains("allgroups")){
+					((BarCharts)sbi).setCurrentCatGroups(null);
+				}
+				else{	
+					copyDataset=sbi.filterDatasetCatGroups(copyDataset,selectedCatGroups);	
+
 				}
 			}
-			else{
-				//if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
-				//if(!sbiMode.equalsIgnoreCase("WEB") || docComposition)
+			else selectedCatGroups.add("allgroups");
 
-				selectedSeries.add("allseries");
+
+			// CHECK IF THERE IS TO FILTER SERIES
+			logger.debug("check if has to filter series");
+			selectedSeries=new Vector();
+			if(sbi.isFilterSeries()==true){
+				// Check if particular series has been chosen
+
+				if(request.getParameter("serie")!=null){
+					String[] cio=request.getParameterValues("serie");
+					//Convert array in vector
+					for(int i=0;i<cio.length;i++){
+						selectedSeries.add(cio[i]);
+					}
+				}
+				else{
+					//if(!sbiMode.equalsIgnoreCase("WEB") && !docComposition)
+					//if(!sbiMode.equalsIgnoreCase("WEB") || docComposition)
+					selectedSeries.add("allseries");
+				}
+
+
+				// if selectedSerie contains allseries 
+				if(selectedSeries.contains("allseries")){
+					((BarCharts)sbi).setCurrentSeries(null);
+				}
+				else{	
+					copyDataset=sbi.filterDatasetSeries(copyDataset,selectedSeries);	
+
+				}
+			}
+			else selectedSeries.add("allseries");
+
+			// consider if drawing the slider
+			if(sbi.isFilterCategories()==true && (catsnum.intValue())>numberCatVisualization.intValue()){
+				logger.debug("slider is to be drawn");
+				makeSlider=true;	    	
 			}
 
+			if(copyDataset==null){copyDataset=dataset;}
 
-			// if selectedSerie contains allseries 
-			if(selectedSeries.contains("allseries")){
-				((BarCharts)sbi).setCurrentSeries(null);
-			}
-			else{	
-				copyDataset=sbi.filterDatasetSeries(copyDataset,selectedSeries);	
-
-			}
+			newDatasetMap=this.copyDatasetMap(copyDataset);
 		}
-		else selectedSeries.add("allseries");
-
-		// consider if drawing the slider
-		if(sbi.isFilterCategories()==true && (catsnum.intValue())>numberCatVisualization.intValue()){
-			makeSlider=true;	    	
+		catch (Exception e) {
+			logger.error("Error while filtering simple Chart ",e);
 		}
 
-		if(copyDataset==null){copyDataset=dataset;}
-
-		DatasetMap newDatasetMap=this.copyDatasetMap(copyDataset);
-
-
-
+		logger.debug("OUT");
 		return newDatasetMap;
 
 	}
@@ -178,6 +193,7 @@ public class DatasetMap {
 
 
 	public DatasetMap copyDatasetMap(Dataset dataset){
+		logger.debug("IN");
 		DatasetMap copy=new DatasetMap();
 
 		copy.setSeries(this.series);
@@ -195,7 +211,7 @@ public class DatasetMap {
 		copy.setMakeSlider(this.isMakeSlider());
 		copy.selectedCatGroups=this.getSelectedCatGroups();
 		copy.addDataset("1", dataset);
-
+		logger.debug("OUT");
 		return copy;
 
 	}
@@ -203,7 +219,7 @@ public class DatasetMap {
 
 
 	public DatasetMap filteringMultiDatasetBarChart(HttpServletRequest request, BarCharts sbi, String sbiMode, boolean docComposition){
-
+		logger.debug("IN");
 		DatasetMap newDatasetMap=new DatasetMap();
 
 		series=new TreeSet();
@@ -247,7 +263,7 @@ public class DatasetMap {
 			catsnum=new Integer(sbi.getCategoriesNumber());
 			numberCatVisualization=sbi.getNumberCatVisualization();
 			numberSerVisualization=sbi.getNumberSerVisualization();
-			
+
 			catTitle=sbi.getCategoryLabel();
 			serTitle=sbi.getValueLabel();
 
@@ -306,6 +322,8 @@ public class DatasetMap {
 
 
 		}
+		
+		logger.debug("OUT");
 		return newDatasetMap;
 
 	}
@@ -315,7 +333,7 @@ public class DatasetMap {
 
 
 	public DatasetMap filteringClusterChart(HttpServletRequest request, ClusterCharts sbi, String sbiMode, boolean docComposition){
-
+		logger.debug("IN");
 		DefaultXYZDataset dataset=(DefaultXYZDataset)datasets.get("1");
 		DefaultXYZDataset copyDataset=null;
 		try {
@@ -353,7 +371,7 @@ public class DatasetMap {
 				String nome=(String)dataset.getSeriesKey(i);
 				series.add(nome);	
 			}
-			
+
 		}
 
 		// if all series selected return the copy of dataset
@@ -376,14 +394,14 @@ public class DatasetMap {
 
 
 		DatasetMap newDatasetMap=this.copyDatasetMap(copyDataset);
-
+		logger.debug("OUT");
 		return newDatasetMap;
 
 	}
 
 
 	public DatasetMap filteringGroupedBarChart(HttpServletRequest request, StackedBarGroup sbi, String sbiMode, boolean docComposition){
-
+		logger.debug("IN");
 		DefaultCategoryDataset dataset=(DefaultCategoryDataset)datasets.get("1");
 		Dataset copyDataset=null;
 		try {
@@ -392,10 +410,10 @@ public class DatasetMap {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		series=new TreeSet();
-	//	series=new TreeSet(((DefaultCategoryDataset)dataset).getRowKeys());
-		
+		//	series=new TreeSet(((DefaultCategoryDataset)dataset).getRowKeys());
+
 		int contSer = 0;
 		for (Iterator iterator2 = (((DefaultCategoryDataset)dataset).getRowKeys()).iterator(); iterator2.hasNext();) {
 			if (this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()){
@@ -410,7 +428,7 @@ public class DatasetMap {
 				if(!series.contains(serie))
 					series.add(serie);
 			}
-			
+
 		}
 
 
@@ -424,7 +442,7 @@ public class DatasetMap {
 		catsnum=new Integer(sbi.getRealCatNumber());
 		numberCatVisualization=sbi.getNumberCatVisualization();
 		numberSerVisualization=sbi.getNumberSerVisualization(); 
-		
+
 		subCategories=(HashMap)((StackedBarGroup)sbi).getSubCategories();
 
 
@@ -464,7 +482,7 @@ public class DatasetMap {
 		}
 		else{
 			//if(!sbiMode.equalsIgnoreCase("WEB") || docComposition)
-				selectedSeries.add("allseries");
+			selectedSeries.add("allseries");
 		}
 
 
@@ -485,7 +503,7 @@ public class DatasetMap {
 
 		DatasetMap newDatasetMap=this.copyDatasetMap(copyDataset);
 
-
+		logger.debug("OUT");
 
 		return newDatasetMap;
 

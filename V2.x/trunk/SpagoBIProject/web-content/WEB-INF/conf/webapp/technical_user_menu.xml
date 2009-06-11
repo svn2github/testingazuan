@@ -113,6 +113,10 @@
 				functionality="HotLinkManagement"
 				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?PAGE=HOT_LINK_PAGE&amp;OPERATION=GET_HOT_LINK_LIST"
 				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/hotlinks16.gif" />
+		<ITEM	title="#menu.Browser"  
+				functionality="DocumentUserManagement" 
+				url="${SPAGOBI_CONTEXT}${SPAGO_ADAPTER_HTTP}?ACTION_NAME=DOCUMENT_USER_BROWSER_START_ACTION" 
+				iconUrl="${SPAGOBI_CONTEXT}/themes/${THEME}/img/wapp/bidocuments16.png" />
 	</ITEM>
 
 	<ITEM	code="kpiModel" 

@@ -52,6 +52,7 @@ import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
 import it.eng.spagobi.commons.validation.SpagoBIValidationImpl;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
+import it.eng.spagobi.monitoring.dao.AuditManager;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
@@ -719,12 +720,28 @@ public class ExecutionInstance {
 			mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
 			mapPars.put("SBI_EXECUTION_ID", this.executionId);
 			mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
+			Integer auditId = createAuditId();
+			if (auditId != null) {
+				mapPars.put(AuditManager.AUDIT_ID, auditId);
+			}
 			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
 		} else {
 			throw new RuntimeException("Internal engines does not support subobjects!!");
 		}
 		logger.debug("OUT: returning url = [" + url + "]");
 		return url;
+	}
+
+	// Auditing
+	private Integer createAuditId() {
+		logger.debug("IN");
+		try {
+			AuditManager auditManager = AuditManager.getInstance();
+			Integer executionAuditId = auditManager.insertAudit(object, subObject, userProfile, executionRole, executionModality);
+			return executionAuditId;
+		} finally {
+			logger.debug("OUT");
+		}
 	}
 
 	public String getExecutionUrl() {
@@ -756,6 +773,10 @@ public class ExecutionInstance {
 			mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
 			mapPars.put("SBI_EXECUTION_ID", this.executionId);
 			mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
+			Integer auditId = createAuditId();
+			if (auditId != null) {
+				mapPars.put(AuditManager.AUDIT_ID, auditId);
+			}
 			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
 			
 		}

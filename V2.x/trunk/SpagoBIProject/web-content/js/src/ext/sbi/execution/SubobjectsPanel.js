@@ -185,7 +185,13 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		if (recordsSelected && recordsSelected.length > 0) {
 			var ids = new Array();
 			for (var count = 0; count < recordsSelected.length; count++) {
-				ids[count] = recordsSelected[count].get('id');
+				// check if user is able to delete subobject
+				var aRecord = recordsSelected[count];
+				if (!Sbi.user.functionalities.contains('DocumentAdminManagement') && aRecord.get('owner') != Sbi.user.userId) {
+					Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.execution.subobjects.cannotDeleteSubObject') + ' \'' + aRecord.get('name') + '\'', 'Warning');
+					return;
+				}
+				ids[count] = aRecord.get('id');
 			}
 			var idsJoined = ids.join(',');
 	

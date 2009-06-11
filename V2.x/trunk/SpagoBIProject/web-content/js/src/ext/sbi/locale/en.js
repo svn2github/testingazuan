@@ -100,6 +100,7 @@ Sbi.locale.ln['sbi.execution.subobjects.deleteSelected'] = 'Delete';
 Sbi.locale.ln['sbi.execution.subobjects.deleteSelectedTooltip'] = 'Delete selected customized views';
 Sbi.locale.ln['sbi.execution.subobjects.execute'] = 'Execute';
 Sbi.locale.ln['sbi.execution.subobjects.noSubObjectsSelected'] = 'No customized views selected';
+Sbi.locale.ln['sbi.execution.subobjects.cannotDeleteSubObject'] = 'You cannot delete customized view';
 
 // Toolbar 
 Sbi.locale.ln['sbi.execution.sendTo'] = 'Send to';

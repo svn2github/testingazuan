@@ -31,6 +31,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.util.JavaScript;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
@@ -88,6 +89,7 @@ public class ExecutionInstance {
 	private String executionId = null;
 	private BIObject object = null;
 	private SubObject subObject = null;
+	private Snapshot snapshot = null;
 	private String executionRole = null;
 	private String executionModality = null;
 	private IEngUserProfile userProfile = null;
@@ -669,9 +671,27 @@ public class ExecutionInstance {
 		logger.debug("OUT");
 	}
 	
-	
-	public String getSubObjectUrl(SubObject subobj) {
+	public String getSnapshotUrl() {
 		logger.debug("IN");
+		if (this.snapshot == null) {
+			throw new SpagoBIServiceException("", "no snapshot set");
+		}
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(GeneralUtilities.getSpagoBIProfileBaseUrl(this.userProfile.getUserUniqueIdentifier().toString()));
+		buffer.append("&ACTION_NAME=GET_SNAPSHOT_CONTENT");
+		buffer.append("&" + SpagoBIConstants.SNAPSHOT_ID + "=" + snapshot.getId());
+		buffer.append("&" + ObjectsTreeConstants.OBJECT_ID + "=" + object.getId());
+		buffer.append("&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE");
+		String url = buffer.toString();
+		logger.debug("OUT: returning url = [" + url + "]");
+		return url;
+	}
+	
+	public String getSubObjectUrl() {
+		logger.debug("IN");
+		if (this.subObject == null) {
+			throw new SpagoBIServiceException("", "no subobject set");
+		}
 		String url = null;
 		Engine engine = this.getBIObject().getEngine();
 		Domain engineType;
@@ -693,7 +713,7 @@ public class ExecutionInstance {
 				throw new SpagoBIServiceException("Cannot istantiate engine driver class: " + driverClassName, e);
 			}
 			// get the map of the parameters
-			Map mapPars = aEngineDriver.getParameterMap(object, subobj, userProfile, executionRole);
+			Map mapPars = aEngineDriver.getParameterMap(object, this.subObject, userProfile, executionRole);
 			// adding "system" parameters
 			mapPars.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
 			mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
@@ -847,6 +867,14 @@ public class ExecutionInstance {
 
 	public void setSubObject(SubObject subObject) {
 		this.subObject = subObject;
+	}
+	
+	public Snapshot getSnapshot() {
+		return snapshot;
+	}
+
+	public void setSnapshot(Snapshot snapshot) {
+		this.snapshot = snapshot;
 	}
 	
 	/* (non-Javadoc)

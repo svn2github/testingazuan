@@ -24,7 +24,9 @@ package it.eng.spagobi.analiticalmodel.document.x;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
+import it.eng.spagobi.analiticalmodel.document.dao.ISnapshotDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.ISubObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -50,6 +52,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 	public static final String SERVICE_NAME = "GET_URL_FOR_EXECUTION_ACTION";
 	
 	public static final String SBI_SUBOBJECT_ID = "SBI_SUBOBJECT_ID";
+	public static final String SBI_SNAPSHOT_ID = "SBI_SNAPSHOT_ID";
 	public static final String PARAMETERS = "PARAMETERS";
 	
 	// logger component
@@ -65,8 +68,11 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 			executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
 			userProfile = (UserProfile) this.getUserProfile();
 			Integer subObjectId = this.getAttributeAsInteger( SBI_SUBOBJECT_ID );
+			Integer snapshotId = this.getAttributeAsInteger( SBI_SNAPSHOT_ID );
 			JSONObject response = null;
-			if (subObjectId != null) {
+			if (snapshotId != null) {
+				response = handleSnapshotExecution(snapshotId);
+			} else if (subObjectId != null) {
 				response = handleSubObjectExecution(subObjectId);
 			} else {
 				response = handleNormalExecution();
@@ -81,10 +87,52 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 		}
 	}
 	
+	private JSONObject handleSnapshotExecution(Integer snapshotId) {
+		logger.debug("IN");
+		JSONObject response = new JSONObject();
+		try {
+			// we are not executing a subobject, so delete subobject if existing
+			executionInstance.setSubObject(null);
+			ISnapshotDAO dao = null;
+			try {
+				dao = DAOFactory.getSnapshotDAO();
+			} catch (EMFUserError e) {
+				logger.error("Error while istantiating DAO", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot access database", e);
+			}
+			
+			Snapshot snapshot = null;
+			try {
+				snapshot = dao.loadSnapshot(snapshotId);
+			} catch (EMFUserError e) {
+				logger.error("Snapshot with id = " + snapshotId + " not found", e);
+				throw new SpagoBIServiceException(SERVICE_NAME, "Scheduled execution not found", e);
+			}
+			
+			BIObject obj = executionInstance.getBIObject();
+			if (obj.getId().equals(snapshot.getBiobjId())) {
+				executionInstance.setSnapshot(snapshot);
+				String url = executionInstance.getSnapshotUrl();
+				try {
+					response.put("url", url);
+				} catch (JSONException e) {
+					throw new SpagoBIServiceException("Cannot serialize the url [" + url + "] to the client", e);
+				}
+			} else {
+				throw new SpagoBIServiceException(SERVICE_NAME, "Required scheduled execution is not relevant to current document");
+			}
+		} finally {
+			logger.debug("OUT");
+		}
+		return response;
+	}
+
 	protected JSONObject handleSubObjectExecution(Integer subObjectId) {
 		logger.debug("IN");
 		JSONObject response = new JSONObject();
 		try {
+			// we are not executing a snapshot, so delete snapshot if existing
+			executionInstance.setSnapshot(null);
 			ISubObjectDAO dao = null;
 			try {
 				dao = DAOFactory.getSubObjectDAO();
@@ -113,7 +161,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 				}
 				if (canExecuteSubObject) {
 					executionInstance.setSubObject(subObject);
-					String url = executionInstance.getSubObjectUrl(subObject);
+					String url = executionInstance.getSubObjectUrl();
 					try {
 						response.put("url", url);
 					} catch (JSONException e) {
@@ -137,8 +185,9 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 		logger.debug("IN");
 		JSONObject response = new JSONObject();
 		try {
-			// we are not executing a subobject, so delete subobject if existing
+			// we are not executing a subobject or a snapshot, so delete subobject/snapshot if existing
 			executionInstance.setSubObject(null);
+			executionInstance.setSnapshot(null);
 			JSONObject executionInstanceJSON = this.getAttributeAsJSONObject( PARAMETERS );
 			executionInstance.refreshParametersValues(executionInstanceJSON, false);
 			List errors = null;

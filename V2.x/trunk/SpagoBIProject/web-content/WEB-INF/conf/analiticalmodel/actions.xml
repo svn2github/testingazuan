@@ -143,5 +143,10 @@
  	<CONFIG/>
  </ACTION>
  
+ <ACTION name="GET_SNAPSHOTS_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.GetSnapshotsAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
 </ACTIONS>
 

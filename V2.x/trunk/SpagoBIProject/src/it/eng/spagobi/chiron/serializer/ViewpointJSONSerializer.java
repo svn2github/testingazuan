@@ -51,7 +51,7 @@ public class ViewpointJSONSerializer implements Serializer {
 		JSONObject  result = null;
 		
 		if( !(o instanceof Viewpoint) ) {
-			throw new SerializationException("EngineJSONSerializer is unable to serialize object of type: " + o.getClass().getName());
+			throw new SerializationException("ViewpointJSONSerializer is unable to serialize object of type: " + o.getClass().getName());
 		}
 		
 		try {

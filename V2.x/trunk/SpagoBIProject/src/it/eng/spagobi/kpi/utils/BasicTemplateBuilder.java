@@ -448,13 +448,14 @@ public class BasicTemplateBuilder  {
 		// Create SOurce Bean of template of template
 		String templateStr = getTemplateTemplate();
 		templateBaseContent =null;
+		String finalTemplate="";
 		logger.debug("Recovered template of templates "+templateStr);
-
-		try {
-			templateBaseContent = SourceBean.fromXMLString(templateStr);
-		} catch (Exception e) {
-			logger.error("Error in converting template of template into a SOurce Bean, check the XML code");
-		}
+		if(templateStr!=null){
+			try {
+				templateBaseContent = SourceBean.fromXMLString(templateStr);
+			} catch (Exception e) {
+				logger.error("Error in converting template of template into a SOurce Bean, check the XML code");
+			}
 
 
 		try {
@@ -502,7 +503,7 @@ public class BasicTemplateBuilder  {
 
 		increaseHeight();
 
-		String finalTemplate=templateBaseContent.toXML();
+		finalTemplate=templateBaseContent.toXML();
 
 
 		for (Iterator iterator = nameResolution.keySet().iterator(); iterator.hasNext();) {
@@ -514,6 +515,7 @@ public class BasicTemplateBuilder  {
 		}
 		logger.debug("Built template: "+finalTemplate);
 		//System.out.println(finalTemplate);
+		}
 		logger.debug("OUT");
 		return finalTemplate;
 	}
@@ -960,11 +962,21 @@ public class BasicTemplateBuilder  {
 			logger.debug("templatePath: "+templateDirPath!=null ? templateDirPath : "");
 			if (templateDirPath!=null){
 				File file=new File(templateDirPath);
+				if(file!=null){
+					logger.debug("File found ");
+				}
 				FileInputStream fis=new FileInputStream(file);
-
+				if(fis!=null){
+					logger.debug("File Input Stream created");
+				}
 				inputSource=new InputSource(fis);
+				if(inputSource!=null){
+					logger.debug("Input Source created");
+				}
 				BufferedReader reader = new BufferedReader( new InputStreamReader(fis) );
-
+				if(reader!=null){
+					logger.debug("Buffer Reader created");
+				}
 				String line = null;
 				try {
 					while( (line = reader.readLine()) != null) {
@@ -977,7 +989,8 @@ public class BasicTemplateBuilder  {
 			}
 		}
 		catch (Exception e) {
-			logger.error("error in retrieving the template");
+			logger.error("error in retrieving the template",e);
+			e.printStackTrace();
 			return null;
 		}
 		logger.debug("OUT");

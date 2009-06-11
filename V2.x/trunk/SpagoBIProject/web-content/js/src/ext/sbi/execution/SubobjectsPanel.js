@@ -194,11 +194,20 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		        params: {'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID, 'id': idsJoined},
 		        callback : function(options , success, response) {
 		  	  		if(success) {
-		  	  			// removes the subobjects from the store
-		  	  			for (var count = 0; count < recordsSelected.length; count++) {
-		  	  				this.subObjectsStore.remove(recordsSelected[count]);
-		  	  			}
-		  	  		} else { 
+			      		if (response && response.responseText !== undefined) {
+			      			var content = Ext.util.JSON.decode( response.responseText );
+			      			if (content !== undefined && content.result == 'OK') {
+				  	  			// removes the subobjects from the store
+				  	  			for (var count = 0; count < recordsSelected.length; count++) {
+				  	  				this.subObjectsStore.remove(recordsSelected[count]);
+				  	  			}
+			      			} else {
+				      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting customized views', 'Service Error');
+				      		}
+			      		} else {
+			      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting customized views', 'Service Error');
+			      		}
+		  	  		} else {
 		  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot detele customized views', 'Service Error');
 		  	  		}
 		        },

@@ -158,7 +158,8 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 		if(this.activePanel == 2 && pageNumber == 1) { // from execution page back to parameters page
 			delete this.executionInstance.SBI_SUBOBJECT_ID;
 			delete this.executionInstance.SBI_SNAPSHOT_ID;
-			this.parametersSelectionPage.shortcutsPanel.synchronizeSubobjects(this.executionInstance);
+			// force synchronization, since subobject, snapshots, viewpoints may have been deleted, or a new subobject may have been created
+			this.parametersSelectionPage.shortcutsPanel.synchronize(this.executionInstance);
 		}
 		this.tb.update(pageNumber, this.executionInstance);
 		this.activePanel = pageNumber;

@@ -59,6 +59,10 @@ Sbi.execution.SnapshotsPanel = function(config) {
 		serviceName: 'GET_SNAPSHOTS_ACTION'
 		, baseParams: params
 	});
+	this.services['deleteSnapshotsService'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'DELETE_SNAPSHOTS_ACTION'
+		, baseParams: params
+	});
 	
 	this.selectedSnapshotId = null;
 	
@@ -85,6 +89,23 @@ Sbi.execution.SnapshotsPanel = function(config) {
 	       }
 	});
     
+    this.sm = new Ext.grid.CheckboxSelectionModel();
+    
+    this.tbar = null;
+    
+    if (Sbi.user.functionalities.contains('DocumentAdminManagement')) {
+    	this.tbar = [
+         '->'
+         , {
+      	   text: LN('sbi.execution.snapshots.deleteSelected')
+      	   , tooltip: LN('sbi.execution.snapshots.deleteSelectedTooltip')
+      	   , iconCls:'icon-remove'
+      	   , scope: this
+      	   , handler : this.deleteSelectedSnapshots
+         }
+      ];
+    }
+    
 	c = Ext.apply({}, c, {
         store: this.snapshotsStore
         , columns: [
@@ -93,14 +114,17 @@ Sbi.execution.SnapshotsPanel = function(config) {
             , {header: LN('sbi.execution.snapshots.description'), sortable: true, dataIndex: 'description'}
             , {header: LN('sbi.execution.snapshots.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
             , this.executeColumn
+            , this.sm
         ]
         , plugins: this.executeColumn
 		, viewConfig: {
         	forceFit: true
 		}
+		, tbar: this.tbar
         , collapsible: false
         , title: LN('sbi.execution.snapshots.title')
         , autoScroll: true
+        , sm : this.sm
         , height: 200
 	});
 	
@@ -127,8 +151,49 @@ Ext.extend(Sbi.execution.SnapshotsPanel, Ext.grid.GridPanel, {
 		this.executionInstance = executionInstance;
 	}
 
-	//private methods
+	
 
+	, deleteSelectedSnapshots: function() {
+		var recordsSelected = this.getSelectionModel().getSelections();
+		if (recordsSelected && recordsSelected.length > 0) {
+			var ids = new Array();
+			for (var count = 0; count < recordsSelected.length; count++) {
+				ids[count] = recordsSelected[count].get('id');
+			}
+			var idsJoined = ids.join(',');
+	
+			Ext.Ajax.request({
+		        url: this.services['deleteSnapshotsService'],
+		        params: {'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID, 'id': idsJoined},
+		        callback : function(options , success, response) {
+		  	  		if(success) {
+			      		if (response && response.responseText !== undefined) {
+			      			var content = Ext.util.JSON.decode( response.responseText );
+			      			if (content !== undefined && content.result == 'OK') {
+				  	  			// removes the snapshots from the store
+				  	  			for (var count = 0; count < recordsSelected.length; count++) {
+				  	  				this.snapshotsStore.remove(recordsSelected[count]);
+				  	  			}
+			      			} else {
+				      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting scheduled executions', 'Service Error');
+				      		}
+			      		} else {
+			      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting scheduled executions', 'Service Error');
+			      		}
+		  	  		} else {
+		  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot detele scheduled executions', 'Service Error');
+		  	  		}
+		        },
+		        scope: this,
+				failure: Sbi.exception.ExceptionHandler.handleFailure      
+			});
+		} else {
+			Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.execution.snapshots.noSnapshotsSelected'), 'Warning');
+		}
+	}
+	
+	//private methods
+	
 	, onRowDblClick: function(grid, rowIndex, event) {
 		var selectedRecord =  grid.getStore().getAt(rowIndex);
 		var snapshotId = selectedRecord.get('id');

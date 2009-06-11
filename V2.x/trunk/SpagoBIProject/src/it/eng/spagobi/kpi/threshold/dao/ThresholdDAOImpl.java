@@ -5,8 +5,6 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiDomains;
-import it.eng.spagobi.kpi.config.bo.KpiInstance;
-import it.eng.spagobi.kpi.config.metadata.SbiKpiInstance;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThreshold;
 import it.eng.spagobi.kpi.threshold.metadata.SbiThresholdValue;

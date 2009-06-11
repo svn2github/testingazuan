@@ -4,7 +4,6 @@ import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.navigation.LightNavigationManager;
-import it.eng.spago.navigation.LightNavigator;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;

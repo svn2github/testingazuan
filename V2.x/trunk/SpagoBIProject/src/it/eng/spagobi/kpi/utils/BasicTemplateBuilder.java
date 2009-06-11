@@ -584,7 +584,7 @@ public class BasicTemplateBuilder  {
 				newLine(lineRoot, 0,true);
 			}
 			catch (Exception e) {
-				logger.error("Error in setting the resource band");
+				logger.error("Error in setting the resource band",e);
 				return;
 			}
 		
@@ -596,15 +596,15 @@ public class BasicTemplateBuilder  {
 		logger.debug("IN");
 		try {
 			actualHeight+=separatorHeight;
-			SourceBean textCodeName=new SourceBean(staticTextName);   // code -name
+			SourceBean textCodeName=new SourceBean(staticTextName);   // code - name
 			SourceBean textValue=new SourceBean(staticTextNumber);  //value number
 			SourceBean textWeight=new SourceBean(staticTextWeightNumber);  // weight number
-			SourceBean image1=new SourceBean(image);
-			SourceBean semaphor1=new SourceBean(semaphor);
-			SourceBean threshCode=new SourceBean(thresholdCode);
-			SourceBean threshValue=new SourceBean(thresholdValue);
-			SourceBean evenLine=new SourceBean(evenLineS);
-			SourceBean oddLine=new SourceBean(oddLineS);
+			SourceBean image1=new SourceBean(image);// Bullet Chart
+			SourceBean semaphor1=new SourceBean(semaphor);// Semaphore
+			SourceBean threshCode=new SourceBean(thresholdCode);// Threshold Code
+			SourceBean threshValue=new SourceBean(thresholdValue);// Threshold Value
+			SourceBean evenLine=new SourceBean(evenLineS);// Separator for even lines
+			SourceBean oddLine=new SourceBean(oddLineS);// Separator for odd lines
 			if(evenLevel){
 				setLineAttributes(kpiLine,semaphor1,textCodeName,textValue,textWeight,image1,level,evenLine,threshCode,threshValue);
 			}else{
@@ -675,16 +675,14 @@ public class BasicTemplateBuilder  {
 			textCodeName.setAttribute("reportElement.x", (xValue));
 			textCodeName.setAttribute("reportElement.y", yValue.toString());
 			SourceBean textValue1=(SourceBean)textCodeName.getAttribute("text");
-//			textValue1.setCharacters("<![CDATA["+value1+"]]>");
 			textValue1.setCharacters(line.getModelInstanceCode()+"-"+line.getModelNodeName());
 
 			xValue=xValue+textWidth+separatorWidth;
 
-			// Value and weight
+			//Set Value, weight and threshold code and value
 			if(kpiValue!=null){
 				String value1=kpiValue.getValue() != null ? kpiValue.getValue() : "";
 				//set text2
-				//textValue.setAttribute("reportElement.x", xValue);
 				textValue.setAttribute("reportElement.y", yValue.toString());
 				SourceBean textValue2=(SourceBean)textValue.getAttribute("text");
 				textValue2.setCharacters(value1);
@@ -692,7 +690,6 @@ public class BasicTemplateBuilder  {
 				String weight=(kpiValue.getWeight()!=null) ? kpiValue.getWeight().toString() : "";
 				//set text2
 				xValue=xValue+numbersWidth+separatorWidth;
-				//textWeight.setAttribute("reportElement.x", xValue);
 				textWeight.setAttribute("reportElement.y", new Integer(yValue.intValue()+2).toString());
 				SourceBean textValue3=(SourceBean)textWeight.getAttribute("text");
 				textValue3.setCharacters(weight);
@@ -706,7 +703,7 @@ public class BasicTemplateBuilder  {
 						}
 						
 					} catch (EMFUserError e) {
-						logger.error(e);
+						logger.error("error in loading the Threshold by Id",e);
 						e.printStackTrace();
 					}
 					String code=t.getThresholdCode() != null ? t.getThresholdCode() : "";
@@ -728,7 +725,7 @@ public class BasicTemplateBuilder  {
 				}
 
 			}
-			
+			//Sets the bullet chart
 			if(line.getChartBullet()!=null){
 				BulletGraph sbi = (BulletGraph)line.getChartBullet();	
 				JFreeChart chart = sbi.createChart();
@@ -761,6 +758,7 @@ public class BasicTemplateBuilder  {
 
 
 		} catch (SourceBeanException e) {
+			logger.error("error in drawing the line",e);
 			e.printStackTrace();
 		}
 		logger.debug("OUT");
@@ -769,14 +767,13 @@ public class BasicTemplateBuilder  {
 	public void newThresholdBlock(){
 		logger.debug("IN");
 
-			try{
+			try{//Draws the Threshold Band and Title
 				actualHeight+=separatorModelsHeight;
 				SourceBean thresholdBand1=new SourceBean(thresholdBand);  
 				SourceBean thresholdTitle1=new SourceBean(thresholdTitle); 
 				
 				thresholdBand1.setAttribute("reportElement.y",actualHeight.toString());
-				thresholdTitle1.setAttribute("reportElement.y",actualHeight.toString());
-				
+				thresholdTitle1.setAttribute("reportElement.y",actualHeight.toString());	
 				
 				band.setAttribute(thresholdBand1);
 				band.setAttribute(thresholdTitle1);
@@ -791,7 +788,7 @@ public class BasicTemplateBuilder  {
 							actualHeight+=separatorHeight;	
 							Integer yValue=actualHeight;
 							Integer xValue = thresholdFieldWidth;
-							
+							//Draws the Threshold Code
 							SourceBean thresholdTextCode1=new SourceBean(thresholdTextCode);  
 							String code=t.getCode() != null ? t.getCode() : "";
 							String codeTh = "Code: "+code;
@@ -803,7 +800,7 @@ public class BasicTemplateBuilder  {
 							band.setAttribute(thresholdTextCode1);
 							
 							newThresholdLine(t);
-							
+							//Adds a separator line
 							SourceBean thresholdLineSeparator1=new SourceBean(thresholdLineSeparator); 
 							thresholdLineSeparator1.setAttribute("reportElement.y",new Integer(yValue.intValue()+16).toString());
 							band.setAttribute(thresholdLineSeparator1);	
@@ -835,7 +832,7 @@ public class BasicTemplateBuilder  {
 						SourceBean semaphor1=new SourceBean(semaphor);
 						SourceBean thresholdTextValue1=new SourceBean(thresholdTextValue);
 						
-						//Semaphore creation
+						//Semaphore Threshold creation
 						xValue = xValue + thresholdFieldWidth;
 						
 						String colorSemaphor = val.getColourString();
@@ -950,31 +947,40 @@ public class BasicTemplateBuilder  {
 	 */
 	public String getTemplateTemplate() {
 		StringBuffer buffer = new StringBuffer();
-
+		logger.debug("IN");
 		try{
 			// Used to test
 			//File file = new File("D:/progetti/spagobi/eclipse2/SpagoBIProject/src/it/eng/spagobi/kpi/utils/templateKpi.jrxml");
 
 			String rootPath=ConfigSingleton.getRootPath();
+			logger.debug("rootPath: "+rootPath!=null ? rootPath : "");
 			String templateDirPath=rootPath+"/WEB-INF/classes/it/eng/spagobi/kpi/utils/";
+			logger.debug("templateDirPath: "+templateDirPath!=null ? templateDirPath : "");
 			templateDirPath+="templateKPI.jrxml";
-			File file=new File(templateDirPath);
-			FileInputStream fis=new FileInputStream(file);
+			logger.debug("templatePath: "+templateDirPath!=null ? templateDirPath : "");
+			if (templateDirPath!=null){
+				File file=new File(templateDirPath);
+				FileInputStream fis=new FileInputStream(file);
 
-			inputSource=new InputSource(fis);
+				inputSource=new InputSource(fis);
+				BufferedReader reader = new BufferedReader( new InputStreamReader(fis) );
 
-			BufferedReader reader = new BufferedReader( new InputStreamReader(fis) );
-			String line = null;
-			try {
-				while( (line = reader.readLine()) != null) {
-					buffer.append(line + "\n");
+				String line = null;
+				try {
+					while( (line = reader.readLine()) != null) {
+						buffer.append(line + "\n");
+					}
+				} catch (IOException e) {
+					logger.error("error in appending lines to the buffer",e);
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		}
 		catch (Exception e) {
+			logger.error("error in retrieving the template");
+			return null;
 		}
+		logger.debug("OUT");
 		return buffer.toString();
 	}
 
@@ -989,127 +995,15 @@ public class BasicTemplateBuilder  {
 	 * @return the string
 	 */
 	private String replaceParam(String template, String pname, String pvalue) {
+		logger.debug("IN");
 		int index = -1;
 		while( (index = template.indexOf("${" + pname + "}")) != -1) {
 			template = template.replaceAll("\\$\\{" + pname + "\\}", pvalue);
 		}
-
+		logger.debug("OUT");
 		return template;
 	}
 
-
-	private List<KpiResourceBlock> createStub(){
-		Resource res=new Resource();
-		res.setId(1);
-		res.setName("uno");
-		res.setDescr("uno");
-
-		KpiResourceBlock block=new KpiResourceBlock();
-		block.setR(res);
-
-		KpiValue value=new KpiValue();
-		value.setValue("ciao");
-		KpiLine line=new KpiLine();
-		line.setValue(value);
-		line.setSemaphorColor(Color.BLUE);
-
-		KpiValue value2=new KpiValue();
-		value2.setValue("ciao2");
-		KpiLine line2=new KpiLine();
-		line2.setValue(value2);
-		line2.setSemaphorColor(Color.GREEN);
-
-		List children=new ArrayList();
-		children.add(line2);
-
-		line.setChildren(children);
-
-		block.setRoot(line);
-
-		Resource res11=new Resource();
-		res11.setId(1);
-		res11.setName("uno");
-		res11.setDescr("uno");
-
-		KpiResourceBlock block11=new KpiResourceBlock();
-		block11.setR(res11);
-
-		KpiValue value11=new KpiValue();
-		value11.setValue("ciao");
-		KpiLine line11=new KpiLine();
-		line11.setValue(value11);
-		line11.setSemaphorColor(Color.BLUE);
-
-		KpiValue value211=new KpiValue();
-		value211.setValue("ciao2");
-		KpiLine line211=new KpiLine();
-		line211.setValue(value211);
-		line211.setSemaphorColor(Color.GREEN);
-
-		KpiValue value311=new KpiValue();
-		value311.setValue("ciao3");
-		value311.setWeight(2.2);
-
-		KpiLine line311=new KpiLine();
-		line311.setValue(value311);
-		line311.setSemaphorColor(Color.GREEN);
-
-
-		List children11=new ArrayList();
-		children11.add(line211);
-		children11.add(line311);
-
-		line11.setChildren(children11);
-
-		block11.setRoot(line11);
-
-
-		Resource res22=new Resource();
-		res22.setId(1);
-		res22.setName("uno");
-		res22.setDescr("uno");
-
-		KpiResourceBlock block22=new KpiResourceBlock();
-		block22.setR(res22);
-
-		KpiValue value22=new KpiValue();
-		value22.setValue("ciao");
-		KpiLine line22=new KpiLine();
-		line22.setValue(value22);
-		line22.setSemaphorColor(Color.BLUE);
-
-		KpiValue value222=new KpiValue();
-		value222.setValue("ciao2");
-		KpiLine line222=new KpiLine();
-		line222.setValue(value222);
-		line222.setSemaphorColor(Color.GREEN);
-
-		KpiValue value322=new KpiValue();
-		value322.setValue("ciao3");
-
-		KpiLine line322=new KpiLine();
-		line322.setValue(value322);
-		line322.setSemaphorColor(Color.GREEN);
-
-
-		List children22=new ArrayList();
-		children22.add(line222);
-		children22.add(line322);
-
-		line22.setChildren(children22);
-
-		block22.setRoot(line22);
-
-
-
-		List list=new ArrayList<KpiResourceBlock>();
-		list.add(block);
-		list.add(block11);
-		list.add(block22);
-
-		return list;
-
-	}
 
 //	/**
 //	* Fill calculated fields.

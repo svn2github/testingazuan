@@ -1,21 +1,14 @@
 package it.eng.spagobi.kpi.utils;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
-import it.eng.spagobi.kpi.utils.BasicTemplateBuilder;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringBufferInputStream;
 import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;

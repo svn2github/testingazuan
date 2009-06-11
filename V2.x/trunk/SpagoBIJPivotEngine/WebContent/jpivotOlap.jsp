@@ -39,7 +39,7 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 <%@page import="java.util.Locale"%>
 <%@page import="it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
-<%@ page import="org.apache.log4j.Logger"%>
+<%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 
 
@@ -60,7 +60,7 @@ The following directive catches exceptions thrown by jsps, must be commented in 
   <link rel="stylesheet" type="text/css" href="wcf/tree/xtree.css">
   <link rel="stylesheet" type="text/css" href="css/stili.css">
 </head>
-<body bgcolor=white lang="en">
+<body bgcolor="white" lang="en">
 
 <%
 Logger logger = Logger.getLogger(this.getClass());
@@ -190,9 +190,16 @@ if (message != null && !message.trim().equals("")) {
 			String subObjId = message.substring("OK - ".length());
 			%>
 			<script type="text/javascript">
+			// for old execution interface
 			try {
 				parent.loadSubObject(window.name, <%= subObjId %>);
 			} catch (ex) {
+			}
+			// for new ExtJs-based execution interface
+			try {
+				window.onload = setTimeout('try {sendMessage("Subobject saved!!!!","subobjectsaved")} catch (ex) {}', 1000);
+			} catch (err) {
+				alert(ex);
 			}
 			</script>
 		<p>

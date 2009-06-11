@@ -182,6 +182,7 @@ String getUrl(String baseUrl, Map mapPars) {
 
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
+
 <html lang="<%=locale != null ? locale.getLanguage() : GeneralUtilities.getDefaultLocale().getLanguage()%>">
 <head>
 	<link rel="shortcut icon" href="<%=urlBuilder.getResourceLinkByTheme(request, "img/favicon.ico", currTheme)%>" />
@@ -198,6 +199,25 @@ String getUrl(String baseUrl, Map mapPars) {
 
 <script type="text/javascript">
     Ext.BLANK_IMAGE_URL = '<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/resources/images/default/s.gif")%>';
+
+    // javascript-side user profile object
+    Ext.ns("Sbi.user");
+	<%
+	StringBuffer buffer = new StringBuffer("[");
+	if (userProfile != null && userProfile.getFunctionalities() != null && !userProfile.getFunctionalities().isEmpty()) {
+		Iterator it = userProfile.getFunctionalities().iterator();
+		while (it.hasNext()) {
+			String functionalityName = (String) it.next();
+			buffer.append("'" + functionalityName + "'");
+			if (it.hasNext()) {
+				buffer.append(",");
+			}
+		}
+	}
+	buffer.append("]");
+	%>
+	// Sbi.user.functionalities is a javascript array containing all user functionalities' names
+	Sbi.user.functionalities = <%= buffer.toString() %>;
 </script>
  
 <SCRIPT language='JavaScript' src='<%=linkSbijs%>'></SCRIPT>

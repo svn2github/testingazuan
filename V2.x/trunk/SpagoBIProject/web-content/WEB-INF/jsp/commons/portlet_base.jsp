@@ -49,6 +49,7 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 <%@page import="it.eng.spagobi.commons.utilities.PortletUtilities"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@page import="it.eng.spagobi.utilities.themes.ThemesManager"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <!-- IMPORT TAG LIBRARY  -->
 <%@ taglib uri="/WEB-INF/tlds/spagobi.tld" prefix="spagobi" %>
 
@@ -183,6 +184,7 @@ String getUrl(String baseUrl, Map mapPars) {
 <!-- based on ecexution mode include initial html  -->   
 <% if (sbiMode.equalsIgnoreCase("WEB")){ %> 
 
+
 <html lang="<%=locale != null ? locale.getLanguage() : GeneralUtilities.getDefaultLocale().getLanguage()%>">
 <head>
 	<link rel="shortcut icon" href="<%=urlBuilder.getResourceLinkByTheme(request, "img/favicon.ico", currTheme)%>" />
@@ -202,6 +204,7 @@ String getUrl(String baseUrl, Map mapPars) {
 
     // javascript-side user profile object
     Ext.ns("Sbi.user");
+    Sbi.user.userId = '<%= StringEscapeUtils.escapeJavaScript(userId) %>';
 	<%
 	StringBuffer buffer = new StringBuffer("[");
 	if (userProfile != null && userProfile.getFunctionalities() != null && !userProfile.getFunctionalities().isEmpty()) {

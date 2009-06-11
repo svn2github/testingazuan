@@ -242,6 +242,7 @@ Map crossNavigationParameters = new HashMap();
 crossNavigationParameters.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 crossNavigationParameters.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
 crossNavigationParameters.put("EXECUTION_FLOW_ID", executionFlowId);
+crossNavigationParameters.put(ObjectsTreeConstants.MODALITY, modality);
 crossNavigationParameters.put("SOURCE_EXECUTION_ID", uuid);
 crossNavigationParameters.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
 String crossNavigationUrl = urlBuilder.getUrl(request, crossNavigationParameters);

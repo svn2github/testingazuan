@@ -38,11 +38,9 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
-import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -110,7 +108,6 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		    }
 		    // get information from the conf SourceBean and pass them into the
 		    // response
-		    String displayTitleBar = (String) content.getAttribute("displayTitleBar");
 		    String movie = (String) content.getAttribute("movie");
 		    String width = (String) content.getAttribute("DIMENSION.width");
 		    String height = (String) content.getAttribute("DIMENSION.height");
@@ -128,9 +125,9 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		    
 		    SourceBean serviceRequest=requestContainer.getServiceRequest();
 		    
-			 // get all the parameters for dash configuration
-		    defineConfParameters(content, profile);
+			 // get all the parameters for dash configuration		    
 		    defineDataParameters(content, obj, profile);
+		    defineConfParameters(content, profile);
 		    defineLinkParameters(content, serviceRequest);
 		    
 		    // set information into reponse
@@ -139,7 +136,6 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		    response.setAttribute("dataurl", dataurl);
 		    response.setAttribute("width", width);
 		    response.setAttribute("height", height);
-		    response.setAttribute("displayTitleBar", displayTitleBar);
 		    
 		    response.delAttribute("confParameters");
 		    response.setAttribute("confParameters", getConfParameters());
@@ -239,7 +235,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			SourceBeanAttribute paramSBA = (SourceBeanAttribute) confAttrsIter.next();
 			SourceBean param = (SourceBean) paramSBA.getValue();
 			String nameParam = (String) param.getAttribute("name");
-			String valueParam = (String) param.getAttribute("value");	
+			String valueParam = replaceParsInString((String) param.getAttribute("value"));	
 			
 			confParameters.put(nameParam, valueParam);
 	    }		
@@ -273,10 +269,15 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			confParameters.put("multichart", (String)sbRow.getAttribute("multichart"));
 			confParameters.put("numCharts", (String)sbRow.getAttribute("numCharts"));
 			confParameters.put("orientation_multichart", (String)sbRow.getAttribute("orientation_multichart"));
-			//defining title and legend variable
+			//defining title and legend variables			
+			confParameters.put("displayTitleBar", (String)sbRow.getAttribute("displayTitleBar"));
+			confParameters.put("title", replaceParsInString((String)sbRow.getAttribute("title")));
 			confParameters.put("colorTitle", (String)sbRow.getAttribute("colorTitle"));
 			confParameters.put("sizeTitle", (String)sbRow.getAttribute("sizeTitle"));
 			confParameters.put("fontTitle", (String)sbRow.getAttribute("fontTitle"));
+			confParameters.put("colocolorTitleSerierTitle", (String)sbRow.getAttribute("colorTitleSerie"));
+			confParameters.put("sizeTitleSerie", (String)sbRow.getAttribute("sizeTitleSerie"));
+			confParameters.put("fontTitleSerie", (String)sbRow.getAttribute("fontTitleSerie"));
 			confParameters.put("legend", (String)sbRow.getAttribute("legend"));
 			
 			String strNeedles = (String)sbRow.getAttribute("numNeedles");
@@ -388,10 +389,10 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 					SourceBean att = (SourceBean) iterator.next();
 					String name=(String)att.getAttribute("name");
 					String type=(String)att.getAttribute("type");
-					String value=(String)att.getAttribute("value");
+					String value=replaceParsInString((String)att.getAttribute("value"));
 
 					//looking for the parameter before into the request, then into data parameters.
-					//if the value is a dataset value it leaves the tag field. The swf file will replace the value.
+					//if the value is a dataset value it leaves the tag field $F{...}. The swf file will replace the value.
 					if (!value.startsWith("$F{")){
 						String reqValue = (String)serviceRequest.getAttribute(name);
 					
@@ -409,7 +410,12 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		
 		//creates the drill url
 		int i=0;
-		String drillUrl  = "javascript:parent.execCrossNavigation(this.name, '"+drillLabel+"','";
+		String drillUrl  = "javascript:execCrossNavigation(this.name, '"+drillLabel+"','";
+
+		if (serviceRequest.getAttribute(ObjectsTreeConstants.MODALITY) != null && 
+				((String)serviceRequest.getAttribute(ObjectsTreeConstants.MODALITY)).equals(SpagoBIConstants.DOCUMENT_COMPOSITION) )
+			drillUrl  = "javascript:parent.execCrossNavigation(this.name, '"+drillLabel+"','";
+
 		for (Iterator iterator = tmpDrillParameters.keySet().iterator(); iterator.hasNext();) {
 			String tmpName = (String) iterator.next();			
 			String tmpValue=(String)tmpDrillParameters.get(tmpName);
@@ -427,6 +433,37 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		logger.debug("out");
 	}
 
+	/**
+	 * set parameters for the drill action.
+	 * 
+	 * @param content the content of the template.
+	 * 
+	 * @return A chart that displays a value as a dial.
+	 */
+	private String replaceParsInString(String strToRep) throws Exception {
+		logger.debug("IN");
+		
+		if (strToRep == null) return "";
+		
+		String strRet = strToRep;
+		
+		logger.debug("String to replace: " + strToRep);
+		int startIdx = strToRep.indexOf("$P{");
+		int endIdx = strToRep.indexOf("}");
+		
+		if (startIdx > -1 && endIdx > -1){
+			String namePar = strToRep.substring(startIdx+3, endIdx);
+			String valuePar = (String)getDataParameters().get(namePar);
+			if (valuePar != null)
+				strRet = strRet.replace("$P{"+namePar+"}", valuePar);
+		}
+		
+		logger.debug("String replaced: " + strRet);
+		
+		logger.debug("OUT");
+		return strRet;
+	}
+	
 	/**
 	 * @return the confParameters
 	 */

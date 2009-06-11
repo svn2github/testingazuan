@@ -125,12 +125,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     // append to the calling url the dataurl	
 	movie += "&dataurl=" + URLEncoder.encode(dataurl);
   
+    
 	//defines dynamic parameters for multichart management (ie. recNum)
 	int numCharts = (confParameters.get("numCharts")==null)? 1:Integer.valueOf((String)confParameters.get("numCharts"));
 	String multichart = (confParameters.get("multichart")==null)?"false":(String)confParameters.get("multichart");
 	String orientation = (confParameters.get("orientation_multichart")==null)?"vertical":(String)confParameters.get("orientation_multichart");
 	String legend = (confParameters.get("legend")==null)?"true":(String)confParameters.get("legend");
-	int numItems = (confParameters.get("numNeedles")==null)? 1:Integer.valueOf((String)confParameters.get("numNeedles"));
+	String displayTitle = (confParameters.get("displayTitleBar")==null)?"false":(String)confParameters.get("displayTitleBar");
+	//int numItems = (confParameters.get("numNeedles")==null)? 1:Integer.valueOf((String)confParameters.get("numNeedles"));
 	
 	//defines radius for get dynamic height : only the last chart with the legend uses the total height; the others are riduced.
 	double radiusByWidth = (Integer.valueOf(width)-2*10)/2;
@@ -147,8 +149,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		radius = radiusByHeight;
 	}
     
-   // radius = radiusByWidth;
-    
 	if (orientation.equalsIgnoreCase("horizontal")){ %>
 	<br>
 		<table align="center">
@@ -159,25 +159,36 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		if (idx==0){
 		 	movie += "&recNumber="+String.valueOf(idx);
-		 	//if it's a multichart type and it's required the legend ; it's shows only on the last chart.
-		 	if (multichart.equalsIgnoreCase("true") && legend.equalsIgnoreCase("true")){
-		 		movie = movie.replace("&legend=true","&legend=false");
-		 		dinHeight = String.valueOf(Integer.valueOf(height).intValue()-radius+20);
-		 		//dinHeight = String.valueOf(Integer.valueOf(height).intValue()-(numItems * 30));
+		 	/*if it's a multichart type and it's required the legend  
+		 	  it's shows only on the last chart while if is required the title it's shows only on the first one*/
+		 	if (multichart.equalsIgnoreCase("true")) {
+				if (legend.equalsIgnoreCase("true")){
+			 		movie = movie.replace("&legend=true","&legend=false");
+			 		dinHeight = String.valueOf(Integer.valueOf(height).intValue()-radius+20);
+				}
 		 	}
+		 	if (displayTitle.equalsIgnoreCase("true")){
+		 		int heightMargin = 40;
+		 		dinHeight = String.valueOf(Double.valueOf(dinHeight).intValue()+heightMargin);
+		 		movie +="&winHeightMargin="+heightMargin;
+			}
 		}
 		else{
 			movie = movie.replace("&recNumber="+(idx-1),"&recNumber="+idx);
-			if (multichart.equalsIgnoreCase("true") && legend.equalsIgnoreCase("true")){
-				if (idx < (numCharts-1)){
-			 		movie = movie.replace("&legend=true","&legend=false");
-			 		dinHeight = String.valueOf(Integer.valueOf(height).intValue()-radius+20);
-			 		//dinHeight = String.valueOf(Integer.valueOf(height).intValue()-(numItems * 30));
-				}
-				else{
-					movie = movie.replace("&legend=false","&legend=true");
-				//	dinHeight = height;
-					 dinHeight = String.valueOf(Integer.valueOf(height).intValue()+20);
+			if (multichart.equalsIgnoreCase("true")){
+				if (legend.equalsIgnoreCase("true")){
+					if (idx < (numCharts-1)){
+				 		movie = movie.replace("&legend=true","&legend=false");
+				 		dinHeight = String.valueOf(Integer.valueOf(height).intValue()-radius+20);
+					}
+					else{
+						movie = movie.replace("&legend=false","&legend=true");
+					//	dinHeight = height;
+						 dinHeight = String.valueOf(Integer.valueOf(height).intValue()+20);
+					}
+					if (displayTitle.equalsIgnoreCase("true")){
+						movie = movie.replace("&displayTitleBar=true","&displayTitleBar=false");
+					}
 				}
 		 	}
 		}

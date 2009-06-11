@@ -143,7 +143,7 @@ Sbi.browser.FolderDetailPanel = function(config) {
     
     Sbi.browser.FolderDetailPanel.superclass.constructor.call(this, c);   
     
-    this.addEvents("ondocumentclick", "onfolderclick", "onbreadcrumbclick");
+    this.addEvents("onfolderload", "ondocumentclick", "onfolderclick", "onbreadcrumbclick");
     
     //this.store.load();   
     this.loadFolder(config.folderId, config.folderId);
@@ -220,6 +220,7 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
 	      			var content = Ext.util.JSON.decode( response.responseText );
 	      			if(content !== undefined) {
 	      				this.setBreadcrumbs(content);
+	      				this.fireEvent('onfolderload', this);
 	      			} 
 	      		} else {
 	      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
@@ -252,10 +253,10 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     	
     	this.resetToolbar();
     	
-    	this.add({
-            iconCls: 'icon-ftree-root'
-            //, disabled: true
-        });
+    	this.toolbar.addSpacer();
+    	this.toolbar.addDom('<image width="12" height="12" src="../themes/sbi_default/img/analiticalmodel/browser/server16x16.png"></image>');
+    	this.toolbar.addSpacer();
+    	
     	
         for(var i=0; i<breadcrumbs.length-1; i++) {
         	this.toolbar.add({
@@ -267,7 +268,11 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
                   		scope: this
                 	} 
         	}
-        	}, ' > ');
+        	});
+        	
+        	this.toolbar.addSpacer();
+        	this.toolbar.addDom('<image width="3" height="6" src="../themes/sbi_default/img/analiticalmodel/execution/c-sep.gif"></image>');
+        	this.toolbar.addSpacer();
         }
         
         this.toolbar.add({

@@ -75,7 +75,6 @@ Sbi.execution.DocumentExecutionPage = function(config) {
         
         	, 'message:crossnavigation' : {
         		fn: function(srcFrame, message){
-                	alert(message.data.label + ' - ' + message.data.parameters);
                 	var config = {
                 		document: {'label': message.data.label}
             			, preferences: {
@@ -93,7 +92,6 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 	this.miframe.on('documentloaded', function() {
 		this.miframe.iframe.execScript("parent = document;");
 		var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
-						"	alert('LABEL: ' + l + '; PARAMETERS: '+ p);" +
 						"	sendMessage({'label': l, parameters: p},'crossnavigation');" +
 						"};";
 		//this.miframe.iframe.execScript("parent.execCrossNavigation = function(d,l,p) {alert('LABEL: ' + l + '; PARAMETERS: '+ p);}");

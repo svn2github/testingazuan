@@ -85,28 +85,11 @@ Sbi.browser.DocumentsBrowser = function(config) {
 	this.mainTab = new Ext.Panel({ 
 		layout: 'fit'
         , title: 'Browser'
+        , iconCls: 'icon-browser-tab'
         , items: [this.detailPanel]
     });
 	
-	//this.executionPanel = new Sbi.execution.ExecutionWizardPanel({});
 	
-	
-	/*
-	this.centerContainerPanel = new Ext.Panel({
-		 region: 'center'
-		 , margins: '0 3 3 0'
-		 , collapsed: false
-		 , split: true
-		 , autoScroll: false
-		 , height: 100
-		 , minHeight: 100
-		 , width: 100
-		 , minWidth: 0
-		 , layout: 'fit'
-		 
-		 , items: [this.detailPanel]
-	});
-	*/
 	
 	this.centerContainerPanel = new Ext.TabPanel({
 		 region: 'center'
@@ -166,6 +149,8 @@ Sbi.browser.DocumentsBrowser = function(config) {
     
     this.treePanel.addListener('click', this.onTreeNodeClick, this);
    
+    
+    this.detailPanel.addListener('onfolderload', this.onFolderLoad, this);
     this.detailPanel.addListener('ondocumentclick', this.onDocumentClick, this);
     this.detailPanel.addListener('onfolderclick', this.onFolderClick, this);
     this.detailPanel.addListener('onbreadcrumbclick', this.onBreadCrumbClick, this);
@@ -206,6 +191,13 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 		this.selectedFolderId = folderId;
 		this.searchPanel.selectedFolderId = folderId;
 	}
+	
+	, onFolderLoad: function(panel) {
+		if(this.centerContainerPanel.getActiveTab() != this.mainTab) {
+			this.centerContainerPanel.setActiveTab(this.mainTab);
+		}
+		
+	}
     
     
     , onTreeNodeClick: function(node, e) {
@@ -213,24 +205,12 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 	}
 
 	, onDocumentClick: function(panel, r) {
-		/*
-		this.centerContainerPanel.remove(this.detailPanel, false);
-		this.centerContainerPanel.add(this.executionPanel);
-		this.centerContainerPanel.doLayout();
-		
-		this.executionPanel.execute(r);
-		*/
+	
 		var executionPanel = new Sbi.execution.ExecutionPanel({
 			title: r.label
 			, closable: true
 		});
 		
-		/*
-		executionPanel.on('render', function(execPanel){
-			alert(r.id);
-			execPanel.execute(r);
-		}); 
-		*/
 		
 		this.centerContainerPanel.add(executionPanel).show();
 		

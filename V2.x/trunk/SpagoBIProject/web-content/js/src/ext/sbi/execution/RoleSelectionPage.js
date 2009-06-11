@@ -124,8 +124,15 @@ Sbi.execution.RoleSelectionPage = function(config) {
 	
 	var c = Ext.apply({}, config, {
 		bodyStyle:'padding:16px 16px 16px 16px;'
-		//, items: [fieldset]
-		         , items :[this.roleComboBox]
+		, listeners: {
+		    'render': {
+            	fn: function() {
+          	 	this.loadingMask = new Sbi.decorator.LoadMask(this.body, {msg:'Loading roles ...'}); 
+            	},
+            	scope: this
+          	}
+        }      	
+		, items :[this.roleComboBox]
 	});   
 	
 	// constructor
@@ -139,6 +146,7 @@ Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 	services: null
 	, roleComboBoxStore: null
 	, roleComboBox: null
+	, loadingMask: null
 	   
     // public methods
 	

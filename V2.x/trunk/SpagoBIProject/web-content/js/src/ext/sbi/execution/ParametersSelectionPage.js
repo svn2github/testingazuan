@@ -52,7 +52,10 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	var c = Ext.apply({
 		columnNo: 3
 		, labelAlign: 'left'
+		, maskOnRender: false
 	}, config || {});
+	
+	this.maskOnRender = c.maskOnRender;
 	
 	
 	// always declare exploited services first!
@@ -67,36 +70,51 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	this.init(c);
 	
 	c = Ext.apply({}, c, {
-		layout: 'border',
+		layout: 'fit',
 		items: [{
-			region:'center'
-		    , border: false
-		    , frame: false
-		    , collapsible: false
-		    , collapsed: false
-		    , hideCollapseTool: true
-		    , titleCollapse: true
-		    , collapseMode: 'mini'
-		    , split: true
-		    , autoScroll: true
-		    , layout: 'fit'
-		    , items: [this.parametersPanel]
-		}, {
-			region:'south'
-			, border: false
-			, frame: false
-			, collapsible: true
-			, collapsed: false
-			, hideCollapseTool: true
-			, titleCollapse: true
-			, collapseMode: 'mini'
-			, split: true
-			, autoScroll: true
-			, height: 280
-			, layout: 'fit'
-			, items: [this.shortcutsPanel]
+			layout: 'border',
+			listeners: {
+			    'render': {
+	            	fn: function() {
+	          	 		this.loadingMask = new Sbi.decorator.LoadMask(this.body, {msg:'Loading parameters ...'}); 
+	          	 		if(this.maskOnRender === true) this.loadingMask.show();
+	            	},
+	            	scope: this
+	          	}
+	        },      	
+			items: [{
+				region:'center'
+			    , border: false
+			    , frame: false
+			    , collapsible: false
+			    , collapsed: false
+			    , hideCollapseTool: true
+			    , titleCollapse: true
+			    , collapseMode: 'mini'
+			    , split: true
+			    , autoScroll: true
+			    , layout: 'fit'
+			    , items: [this.parametersPanel]
+			}, {
+				region:'south'
+				, border: false
+				, frame: false
+				, collapsible: true
+				, collapsed: false
+				, hideCollapseTool: true
+				, titleCollapse: true
+				, collapseMode: 'mini'
+				, split: true
+				, autoScroll: true
+				, height: 280
+				, layout: 'fit'
+				, items: [this.shortcutsPanel]
+			}]
 		}]
 	});   
+	
+	this.parametersPanel.on('beforesynchronize', function(){if(this.loadingMask) this.loadingMask.show();}, this);
+	this.parametersPanel.on('synchronize', function(){if(this.loadingMask) this.loadingMask.hide();}, this);
 	
 	this.shortcutsPanel.on('applyviewpoint', this.onApplyViewpoint, this);
 	this.shortcutsPanel.on('viewpointexecutionrequest', this.onExecuteViewpoint, this);
@@ -116,6 +134,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
     , shortcutsPanel: null
     , saveViewpointWin: null
     , executionInstance: null
+    , loadingMask: null
+    , maskOnRender: null
    
     // ----------------------------------------------------------------------------------------
     // public methods

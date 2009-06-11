@@ -107,15 +107,19 @@ Sbi.execution.ParametersPanel = function(config) {
 		this.columns[i] = columnContainer.items.get(i);
 	}
 	
-    this.addEvents('readyforexecution');	
+    this.addEvents('beforesynchronize', 'synchronize', 'readyforexecution');	
 };
 
 Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
     
     services: null
+    , executionInstance: null
+    , parametersPreference: null
+    
     , fields: null
     , columns: null
-    , parametersPreference: null
+    
+    
    
     // ----------------------------------------------------------------------------------------
     // public methods
@@ -126,7 +130,9 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
      * execution instance (i.e. doc + role)
      */
     , synchronize: function( executionInstance ) {
-		this.loadParametersForExecution( executionInstance );
+		var sync = this.fireEvent('beforesynchronize', this, executionInstance, this.executionInstance);
+		this.executionInstance = executionInstance;
+		this.loadParametersForExecution( this.executionInstance );
 	}
 	
 	, getFormState: function() {
@@ -242,10 +248,10 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			
 		}
 		
+		var readyForExecution = true;
 		if (this.parametersPreference) {
 			var preferenceState = Ext.urlDecode(this.parametersPreference);
 			this.setFormState(preferenceState);
-			var readyForExecution = true;
 			var o = this.getFormState();
 			for(p in o) {
 				if(o[p] !== preferenceState[p]) {
@@ -257,6 +263,8 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 				this.fireEvent('readyforexecution', this);
 			}
 		}
+		
+		this.fireEvent('synchronize', this, readyForExecution, this.parametersPreference);
 		
 	}
 	

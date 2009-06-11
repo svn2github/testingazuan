@@ -10,6 +10,11 @@ k.icon-ftree-rootx {
 	background-image: url('../../../img/analiticalmodel/browser/folder16x16.png') !important;
 }
 
+.icon-browser-tab {
+	background-image: url('../../../img/analiticalmodel/execution/home.png') !important;
+	margin-right: 7px;
+}
+
 
 #doc-details .x-panel-body {
 	background-color:#fff;

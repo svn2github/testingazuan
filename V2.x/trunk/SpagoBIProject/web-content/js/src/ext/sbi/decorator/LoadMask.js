@@ -45,6 +45,8 @@ Sbi.decorator.LoadMask = function(el, config){
 };
 
 Sbi.decorator.LoadMask.prototype = {
+		
+	active: false, 
     /**
      * @cfg {Boolean} removeMask
      * True to create a single-use mask that is automatically destroyed after loading (useful for page loads),
@@ -96,11 +98,18 @@ Sbi.decorator.LoadMask.prototype = {
     },
 
     show: function(){
-        this.onBeforeLoad();
+    	if(this.active === false) {
+    		this.onBeforeLoad();
+            this.active = true;
+    	}
+        
     },
 
     hide: function(){
-        this.onLoad();    
+    	if(this.active === true) {
+    		this.onLoad();  
+    		this.active = false;
+    	}
     },
     
     mask : function(el, msg, msgCls) {

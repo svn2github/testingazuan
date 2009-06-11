@@ -56,14 +56,25 @@ Sbi.execution.toolbar.ExecutionToolbar = function(config) {
 		, baseParams: params
 	});
 	
-	this.buttons = this.createRoleSelectionButtons();
+	//this.buttons = this.createRoleSelectionButtons();
+	
+
 	
 	var c = Ext.apply({}, config, {
-		items: [this.buttons]
+		items: [{
+			iconCls: 'icon-execute'
+			, scope: this
+			, handler : function() {
+				this.fireEvent('rolesformsubmit');
+			}
+		}]
 	}); 
     
+	
 	// constructor
     Sbi.execution.toolbar.ExecutionToolbar.superclass.constructor.call(this, c);
+    
+    this.addEvents('beforeinit');
     
     this.addEvents('backbuttonclick');
     this.addEvents('rolesformsubmit');
@@ -83,7 +94,14 @@ Sbi.execution.toolbar.ExecutionToolbar = function(config) {
 
 Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 	
-    reset: function() {
+	pageNumber: null
+	, executionInstance: null
+	
+	, ROLE_SELECTION_PAGE: 0 
+	, PARAMETER_SELECTION_PAGE: 1 
+	, EXECUTION_PAGE: 2 
+	
+    , reset: function() {
     	this.items.each(function(item) {
             this.items.remove(item);
             item.destroy();           
@@ -91,26 +109,34 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
     }
 
 	, update: function(pageNumber, executionInstance) {
+		
+		this.pageNumber = pageNumber;
+		this.executionInstance = executionInstance;
+				
 		this.reset();
-		if (pageNumber == 0) {
-			this.addButton(this.createRoleSelectionButtons());
+		
+		this.fireEvent('beforeinit', this, pageNumber, executionInstance);
+		
+		if (pageNumber === this.ROLE_SELECTION_PAGE) {
 			this.addFill();
-		} else if (pageNumber == 1) {
+			this.addRoleSelectionPageButtons();			
+		} else if (pageNumber === this.PARAMETER_SELECTION_PAGE) {
+			this.addFill();
 			this.addParametersSelectionButtons();
+		}  else if (pageNumber === this.EXECUTION_PAGE) {
 			this.addFill();
-		}  else if (pageNumber == 2) {
-			this.addFill();
-			this.addButton(this.createExecutionPageButtons(executionInstance));
+			this.addExecutionPageButtons();
 		}
 	}
 	
-	, createRoleSelectionButtons: function() {
-		var nextButton =  new Ext.Toolbar.Button({
+	, addRoleSelectionPageButtons: function() {
+		
+		this.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-execute'
-		    , scope: this
-		    , handler : function() {this.fireEvent('rolesformsubmit');}
-		});
-		return nextButton;
+			, scope: this
+			, handler : function() {this.fireEvent('rolesformsubmit');}
+		}));
+		
 	}
 	
 	, addParametersSelectionButtons: function() {
@@ -149,29 +175,35 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 	
 	}
 	
-	, createExecutionPageButtons: function(executionInstance) {
-		var previousButton =  new Ext.Toolbar.Button({
+	, addExecutionPageButtons: function() {
+		
+		this.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-back' 
-		    , scope: this
-		    , handler : function() {this.fireEvent('backbuttonclick');}
-		});
-		var refreshButton = new Ext.Toolbar.Button({
+			    , scope: this
+			    , handler : function() {this.fireEvent('backbuttonclick');}
+		}));
+		
+		this.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-refresh' 
-	     	, scope: this
-	    	, handler : function() {this.fireEvent('refreshbuttonclick');}
-		});
-		var ratingButton = new Ext.Toolbar.Button({
+		     	, scope: this
+		    	, handler : function() {this.fireEvent('refreshbuttonclick');}			
+		}));
+		
+		this.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-rating' 
-	     	, scope: this
-	    	, handler : function() {this.fireEvent('ratingbuttonclick');}
-		});
-		var printButton = new Ext.Toolbar.Button({
+		     	, scope: this
+		    	, handler : function() {this.fireEvent('ratingbuttonclick');}	
+		}));
+		
+		this.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-print' 
-	     	, scope: this
-	    	, handler : function() {this.fireEvent('printbuttonclick');}
-		});
-		this.loadDocumentViewButtons(executionInstance);
-		return [previousButton, refreshButton, ratingButton, printButton];
+		     	, scope: this
+		    	, handler : function() {this.fireEvent('printbuttonclick');}
+		}));
+		
+		
+		this.loadDocumentViewButtons(this.executionInstance);
+		//return [previousButton, refreshButton, ratingButton, printButton];
 
 	}
 	

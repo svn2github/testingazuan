@@ -74,11 +74,16 @@ Sbi.execution.ExecutionWizard = function(config) {
 	// propagate preferences to role selection page
 	var roleSelectionPageConfig = Ext.applyIf(config.preferences, config.roleSelectionPage); 
 	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage(roleSelectionPageConfig || {});
+	this.roleSelectionPage.maskOnRender = true;
+	
 	// propagate preferences to parameters selection page
 	var parametersSelectionPageConfig = Ext.applyIf(config.preferences, config.parametersSelectionPage); 
 	this.parametersSelectionPage =  new Sbi.execution.ParametersSelectionPage(parametersSelectionPageConfig || {});
+	this.parametersSelectionPage.maskOnRender = true;
+	
 	// preferences ARE NOT PROPAGATED to execution page (since panels on ShortcutPanel are instantiated twice, this may generate conflicts)
 	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(config.documentExecutionPage || {});
+	this.documentExecutionPage.maskOnRender = true;
 	
 	this.activePanel = 0;
 	
@@ -146,6 +151,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
     // toolbar
     , moveToPage: function(pageNumber) {
 		if(this.activePanel == 0 && pageNumber == 1) { // role to params selection 
+			this.roleSelectionPage.loadingMask.hide();
 			this.startExecution();
 		}
 		if(this.activePanel == 1 && pageNumber == 2) { // from parameters to document view 			
@@ -176,11 +182,12 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
     
     // execution
     , execute : function( doc ) {
-    	//alert(doc);
-    	//alert(doc.toSource());
+    	this.roleSelectionPage.loadingMask.show();
 		if(!doc || (!doc.id && !doc.label) ) {
 			Sbi.exception.ExceptionHandler.showErrorMessage('ExecutionWizard: document id is required in order to execute a document', 'Intenal Error');
 		}
+		
+		this.document = doc;
 		
 		this.executionInstance = {}
 		if(doc.id) this.executionInstance.OBJECT_ID = doc.id;
@@ -208,7 +215,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 			form.roleComboBox.setValue(role.data.name); 
 			this.moveToNextPage();
 		} else {
-		 // do nothing; let the user choose the role
+			this.roleSelectionPage.loadingMask.hide();
 		}
 	}
 	

@@ -958,7 +958,7 @@ public class BasicTemplateBuilder  {
 			logger.debug("rootPath: "+rootPath!=null ? rootPath : "");
 			String templateDirPath=rootPath+"/WEB-INF/classes/it/eng/spagobi/kpi/utils/";
 			logger.debug("templateDirPath: "+templateDirPath!=null ? templateDirPath : "");
-			templateDirPath+="templateKPI.jrxml";
+			templateDirPath+="templateKpi.jrxml";
 			logger.debug("templatePath: "+templateDirPath!=null ? templateDirPath : "");
 			if (templateDirPath!=null){
 				File file=new File(templateDirPath);

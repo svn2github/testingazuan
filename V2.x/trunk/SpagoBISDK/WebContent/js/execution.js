@@ -15,13 +15,21 @@ function authenticate(spagobiContext,userId,password){
   catch(e)
     {
     alert ("Your browser does not support XMLHTTP!");
-    return;  
+    return 'KO';  
     }
   }
   
+ try{ 
   var authenticationUrl=spagobiContext+'/servlet/AdapterHTTP?ACTION_NAME=LOGIN_ACTION_WEB&NEW_SESSION=TRUE&userID='+userId+'&password='+password;
 	xmlHttp.open('POST',authenticationUrl,false);										
 	xmlHttp.send(null);
+  }
+  catch(e)
+    {
+    alert ("Could not do the authentication "+e);
+    return 'KO';  
+    }
+
 
 	if(xmlHttp.responseText=='KO') return 'KO';
 	else return 'OK';

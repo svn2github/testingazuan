@@ -98,8 +98,6 @@ Sbi.geo.app = function() {
 									try {
 										sendMessage("Subobject saved!!!!","subobjectsaved");
 									} catch (ex) {
-										alert(ex);
-										alert(ex.description);
 									}
 								}
                       		} 

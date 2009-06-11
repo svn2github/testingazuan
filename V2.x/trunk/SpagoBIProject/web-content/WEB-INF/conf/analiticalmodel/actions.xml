@@ -148,5 +148,10 @@
  	<CONFIG/>
  </ACTION>
  
+ <ACTION name="DELETE_SNAPSHOTS_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.DeleteSnapshotsAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
 </ACTIONS>
 

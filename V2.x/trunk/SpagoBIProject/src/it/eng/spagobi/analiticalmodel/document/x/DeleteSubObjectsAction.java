@@ -79,12 +79,9 @@ public class DeleteSubObjectsAction extends AbstractSpagoBIAction {
 				}
 				if (subObject.getBiobjId().equals(obj.getId())) {
 					boolean canDeleteSubObject = false;
-					if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+					if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) 
+							|| subObject.getOwner().equals(userProfile.getUserId().toString())) {
 						canDeleteSubObject = true;
-					} else {
-						if (subObject.getIsPublic() || subObject.getOwner().equals(userProfile.getUserId().toString())) {
-							canDeleteSubObject = true;
-						}
 					}
 					if (canDeleteSubObject) {
 						logger.info("User [id: " + userProfile.getUserUniqueIdentifier() + ", userId: " + userProfile.getUserId() + ", name: " + userProfile.getUserName() + "] " +

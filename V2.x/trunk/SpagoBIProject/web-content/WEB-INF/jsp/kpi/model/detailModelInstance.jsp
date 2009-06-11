@@ -249,7 +249,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  %>
 	 
 
-<div class="div_detail_area_forms">
+<div class="div_detail_area_forms" style="width:670;">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.select.model" bundle="<%=messageBundle%>" /> </span></div>
@@ -276,7 +276,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 
 
-<div class="div_detail_area_forms">
+<div class="div_detail_area_forms" style="width:670;">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
@@ -328,7 +328,7 @@ value='<%= endDateS %>'/> </div>
  %>
 
 <div id="modelDefinitionB" class="x-hide-display">
-<div  class="div_detail_area_forms">
+<div  class="div_detail_area_forms" style="width:670;">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
@@ -368,7 +368,7 @@ value='<%= endDateS %>'/> </div>
 
     
 <div id="modelAttributeB" class="x-hide-display">
-<div class="div_detail_area_forms">
+<div class="div_detail_area_forms" style="width:670;">
 
 <%
 	List modelAttributesName = new ArrayList();
@@ -400,7 +400,7 @@ value='<%= endDateS %>'/> </div>
 
 
 <div id="kpiInstanceB" class="x-hide-display">
-<div class="div_detail_area_forms">
+<div class="div_detail_area_forms" style="width:670;">
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -607,7 +607,7 @@ value='<%= endDateS %>'/> </div>
  	}
  %>
   <div id="labelB" class="x-hide-display">
-  <div class="div_detail_area_forms">
+  <div class="div_detail_area_forms" style="width:670;">
  
  <%
 	String readOnly ="";
@@ -653,7 +653,7 @@ value='<%= endDateS %>'/> </div>
 Ext.onReady(function(){
     var tabs = new Ext.TabPanel({
         renderTo: 'tabs1',
-        width:550,
+        width:690,
         activeTab: 0,
         frame:true,
         defaults:{autoHeight: true},

@@ -163,7 +163,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <div id="tabs1" >	
 <div id="modelDefinitionB" class="x-hide-display">
 
-<div class="div_detail_area_forms">
+<div class="div_detail_area_forms" style="width: 670;">
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -208,7 +208,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </div>
 
 <div id="modelAttributeB" class="x-hide-display" >
-<div class="div_detail_area_forms">
+<div class="div_detail_area_forms" style="width: 670;">
 <%
 	List modelAttributesName = new ArrayList();
 		for (int i = 0; attributeList != null
@@ -271,7 +271,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 %>
 
 <div id="kpiB" class="x-hide-display">
-<div class="div_detail_area_forms">
+<div class="div_detail_area_forms" style="width: 670;">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.kpi.name" bundle="<%=messageBundle%>" /> </span></div>
@@ -326,7 +326,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 Ext.onReady(function(){
     var tabs = new Ext.TabPanel({
         renderTo: 'tabs1',
-        width:550,
+        width:690,
         activeTab: 0,
         frame:true,
         defaults:{autoHeight: true},

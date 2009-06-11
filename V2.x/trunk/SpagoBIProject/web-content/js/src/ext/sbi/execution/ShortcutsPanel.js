@@ -85,6 +85,10 @@ Sbi.execution.ShortcutsPanel = function(config) {
     	this.fireEvent('subobjectexecutionrequest', subObjectId);
     }, this);
     
+    this.snapshotsPanel.on('executionrequest', function(snapshotId) {
+    	this.fireEvent('snapshotexcutionrequest', snapshotId);
+    }, this);
+    
 };
 
 Ext.extend(Sbi.execution.ShortcutsPanel, Ext.Panel, {
@@ -108,6 +112,6 @@ Ext.extend(Sbi.execution.ShortcutsPanel, Ext.Panel, {
 	}
 	
 	, synchronizeSnapshots: function( executionInstance ) {
-		//this.snapshotsPanel.synchronize( executionInstance );
+		this.snapshotsPanel.synchronize( executionInstance );
 	}
 });

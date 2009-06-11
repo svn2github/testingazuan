@@ -118,10 +118,11 @@ Sbi.execution.ExecutionWizard = function(config) {
     
     this.parametersSelectionPage.shortcutsPanel.addListener('viewpointexecutionrequest', this.onViewpointExecutionRequest, this);
     this.parametersSelectionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
+    this.parametersSelectionPage.shortcutsPanel.addListener('snapshotexcutionrequest', this.onSnapshotExecutionRequest, this);
     
     this.documentExecutionPage.addListener('loadurlfailure', this.onLoadUrlFailure, this);
     this.documentExecutionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
-    
+    this.documentExecutionPage.shortcutsPanel.addListener('snapshotexcutionrequest', this.onSnapshotExecutionRequest, this);
     
     if(config.document) {
     	this.execute( config.document );
@@ -156,6 +157,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 		}
 		if(this.activePanel == 2 && pageNumber == 1) { // from execution page back to parameters page
 			delete this.executionInstance.SBI_SUBOBJECT_ID;
+			delete this.executionInstance.SBI_SNAPSHOT_ID;
 			this.parametersSelectionPage.shortcutsPanel.synchronizeSubobjects(this.executionInstance);
 		}
 		this.tb.update(pageNumber, this.executionInstance);
@@ -254,6 +256,10 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 		this.moveToPage(2); // go to execution page
 	}
 	
+	, onSnapshotExecutionRequest: function (snapshotId) {
+		this.executionInstance.SBI_SNAPSHOT_ID = snapshotId;
+		this.moveToPage(2); // go to execution page
+	}
 	
 	, onRefreshButtonClicked: function () {
 		this.documentExecutionPage.refreshExecution();

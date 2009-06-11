@@ -23,7 +23,7 @@
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
-	<parameter name="KPI_MODEL_INST" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="KPI_MODEL_INST" isForPrompting="true" class="java.lang.String"/>
 	<queryString><![CDATA[SELECT DOMAIN.VALUE_CD AS RESOURCE_TYPE, ARESOURCE.*
 FROM SBI_KPI_MODEL_INST MODEL_INST
 LEFT JOIN SBI_KPI_MODEL_RESOURCES MODEL_RESOUCE

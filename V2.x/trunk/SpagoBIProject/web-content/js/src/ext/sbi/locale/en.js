@@ -77,7 +77,10 @@ Sbi.locale.ln['sbi.execution.viewpoints.owner'] = 'owner';
 Sbi.locale.ln['sbi.execution.viewpoints.creationDate'] = 'creation date';
 Sbi.locale.ln['sbi.execution.viewpoints.scope'] = 'scope';
 
-Sbi.locale.ln['sbi.execution.snapshots.title'] = 'Snapshots';
+Sbi.locale.ln['sbi.execution.snapshots.title'] = 'Scheduled executions';
+Sbi.locale.ln['sbi.execution.snapshots.name'] = 'name';
+Sbi.locale.ln['sbi.execution.snapshots.description'] = 'description';
+Sbi.locale.ln['sbi.execution.snapshots.creationDate'] = 'creation date';
 
 Sbi.locale.ln['sbi.execution.subobjects.title'] = 'Customized views';
 Sbi.locale.ln['sbi.execution.subobjects.name'] = 'name';

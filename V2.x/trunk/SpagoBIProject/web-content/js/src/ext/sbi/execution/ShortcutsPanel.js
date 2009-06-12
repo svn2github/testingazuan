@@ -77,7 +77,6 @@ Sbi.execution.ShortcutsPanel = function(config) {
     }, this);
     
     this.viewpointsPanel.on('applyviewpoint', function(viewpoint) {
-    	alert(viewpoint.toSource());
     	this.fireEvent('applyviewpoint', viewpoint);
     }, this);
     

@@ -165,7 +165,6 @@ Ext.extend(Sbi.execution.ViewpointsPanel, Ext.grid.GridPanel, {
 	}
 
 	, addViewpoints: function( viewpoints ) {
-		alert(viewpoints.toSource());
 		if(viewpoints instanceof Array) {
 			// it's ok	
 		} else {

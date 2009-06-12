@@ -116,8 +116,8 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	this.parametersPanel.on('beforesynchronize', function(){if(this.loadingMask) this.loadingMask.show();}, this);
 	this.parametersPanel.on('synchronize', function(){if(this.loadingMask) this.loadingMask.hide();}, this);
 	
-	this.shortcutsPanel.on('applyviewpoint', this.onApplyViewpoint, this);
-	this.shortcutsPanel.on('viewpointexecutionrequest', this.onExecuteViewpoint, this);
+	this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
+	this.shortcutsPanel.on('viewpointexecutionrequest', this.parametersPanel.applyViewPoint, this.parametersPanel);
 	
 	// constructor
     Sbi.execution.ParametersSelectionPage.superclass.constructor.call(this, c);
@@ -213,19 +213,6 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	, initShortcutsPanel: function( config ) {
 		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
 		return this.shortcutsPanel;
-	}
-	
-	, onApplyViewpoint: function(v) {
-		for(var p in v) {
-			alert(p + ': ' + v[p] + ':: '+  (typeof v[p]) );
-			var str = '' + v[p];
-			alert(str + ': ' + str.split(';') );
-			if(str.split(';').length > 1) {
-				alert('that\'s it: ' + p);
-				v[p] = str.split(';');
-			}
-		}
-		this.parametersPanel.setFormState(v);
 	}
 	
 	, onExecuteViewpoint: function(v) {

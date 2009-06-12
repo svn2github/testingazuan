@@ -159,6 +159,16 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		}
 	}
 	
+	, applyViewPoint: function(v) {
+		for(var p in v) {
+			var str = '' + v[p];
+			if(str.split(';').length > 1) {
+				v[p] = str.split(';');
+			}
+		}
+		this.setFormState(v);
+	}
+	
 	
 	, clear: function() {
 		for(p in this.fields) {
@@ -194,12 +204,21 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 	}
 
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
+		
+		for(p in this.fields) {
+			var el = this.fields[p].el.up('.x-form-item');
+			this.columns[this.fields[p].columnNo].remove( this.fields[p], true );
+			el.remove();
+		}
+		
 		this.fields = {};
+		
 		for(var i = 0; i < parameters.length; i++) {
 			//alert(parameters[i].toSource());
 			var field = this.createField( executionInstance, parameters[i] );
+			field.columnNo = i%this.columns.length;
 			this.fields[parameters[i].id] = field;
-			this.columns[i%this.columns.length].add( field );
+			this.columns[field.columnNo].add( field );
 		}
 		this.doLayout();
 		
@@ -297,7 +316,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			var store = this.createStore();
 			store.baseParams  = baseParams;
 			store.on('beforeload', function(store, o) {
-				var p = Sbi.commons.Format.toString(this.getFormState());
+				var p = Sbi.commons.JSON.encode(this.getFormState());
 				o.params = o.params || {};
 				o.params.PARAMETERS = p;
 				return true;
@@ -335,7 +354,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			
 			var store = this.createStore();
 			store.on('beforeload', function(store, o) {
-				var p = Sbi.commons.Format.toString(this.getFormState());
+				var p = Sbi.commons.JSON.encode(this.getFormState());
 				o.params.PARAMETERS = p;
 				return true;
 			}, this);

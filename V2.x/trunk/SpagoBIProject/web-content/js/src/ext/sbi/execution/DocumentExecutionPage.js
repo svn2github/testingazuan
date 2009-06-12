@@ -135,6 +135,9 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 		, items: [this.parametersPanel]
     });
     
+    
+    this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
+    
 	var c = Ext.apply({}, config, {
 		layout: 'border'
 		, items: [this.miframe, this.southPanel, this.northPanel]
@@ -216,7 +219,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 
 	, refreshExecution: function() {
 		var formState = this.parametersPanel.getFormState();
-		var formStateStr = Sbi.commons.Format.toString( formState );
+		var formStateStr = Sbi.commons.JSON.encode( formState );
 		
 		if(formStateStr !== this.executionInstance.PARAMETERS) { // todo: if(parametersPanel.isDirty())		
 			this.executionInstance.PARAMETERS = formStateStr;

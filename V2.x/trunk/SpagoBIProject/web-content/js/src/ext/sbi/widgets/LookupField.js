@@ -152,7 +152,6 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			this.xvalue = {};
 			
 			if(v instanceof Array) {
-				alert('set array: ' + this.name);
 				var t = {};
 				for(var i = 0; i < v.length; i++) {
 					t[ v[i] ] = v[i];
@@ -168,7 +167,6 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 			if(this.singleSelect === true) {
 				displayText = displayText.substr(0, displayText.length-1);
 			}
-			//alert(displayText);
 			Sbi.widgets.LookupField.superclass.setValue.call(this, displayText);
 		} else {
 			this.xvalue = {};
@@ -270,11 +268,9 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
     , resetSelection: function() {
     	this.xselection = Ext.apply({}, this.xvalue);    
-    	//alert('resetSelection: ' + this.xvalue.toSource() + ' \n  ' + this.xselection.toSource());
-	}
+   	}
     
     , onSelect: function(sm, rowIndex, record) {
-    	//alert('onSelect');
     	if(this.singleSelect === true){
     		this.xselection = {}
     	}
@@ -282,7 +278,6 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     }
     
     , onDeselect: function(sm, rowIndex, record) {
-    	//alert('onDeselect');
     	if( this.xselection[ record.data[this.valueField]] ) {
     		delete this.xselection[ record.data[this.valueField]];
     	}    	
@@ -290,8 +285,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
     , applySelection: function() {
     	this.resetSelection();
-    	//alert('applySelection'  + this.xvalue.toSource() + ' \n  ' + this.xselection.toSource());
-  
+    	
     	if(this.grid) {    		    		
 			var selectedRecs = [];
 			this.grid.getStore().each(function(rec){
@@ -307,7 +301,6 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     	if(this.xdirty) {
 	    	var text = Sbi.widgets.LookupField.superclass.getValue.call(this);
 	    	var values = text.split(';');
-	    	//alert('clean: ' + text + ' -  ' + values);
 	    	this.xvalue = {};
 	    	if(text.trim() === '') return;
 	    	var ub = (this.singleSelect === true)? 1: values.length;

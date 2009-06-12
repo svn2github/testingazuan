@@ -202,7 +202,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	
 	, loadUrlForExecution: function() {
 		var formState = this.parametersSelectionPage.parametersPanel.getFormState();
-		this.executionInstance.PARAMETERS = Sbi.commons.Format.toString( formState );
+		this.executionInstance.PARAMETERS = Sbi.commons.JSON.encode( formState );
 		this.documentExecutionPage.loadUrlForExecution( this.executionInstance );
 	}
 

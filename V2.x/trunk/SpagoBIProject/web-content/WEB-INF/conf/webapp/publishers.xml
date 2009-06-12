@@ -163,10 +163,18 @@
   	
   	
   	<PUBLISHER name="MenuBeforeExecLoopPublisher">
+  		<!--
+    	<RENDERING channel="HTTP" mode="FORWARD" type="JSP">
+      		<RESOURCES>
+      			<ITEM prog="0" resource="/WEB-INF/jsp/analiticalmodel/execution/documentExecution.jsp"/>
+      		</RESOURCES>
+    	</RENDERING>
+  		-->
    	 	<RENDERING channel="HTTP" mode="" type="LOOP">
       		<RESOURCES>
-        		<PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
-                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" />
+      			<PARAMETER name="ACTION_NAME" type="ABSOLUTE" scope="" value="EXECUTE_DOCUMENT_ACTION" />
+        		<!-- PARAMETER name="PAGE" type="ABSOLUTE" scope="" value="ExecuteBIObjectPage" />
+                <PARAMETER name="MESSAGEDET" type="ABSOLUTE" scope="" value="EXEC_PHASE_CREATE_PAGE" /-->
                 <PARAMETER name="OBJECT_ID" type="RELATIVE" scope="SERVICE_RESPONSE" value="OBJECT_ID" />
                 <PARAMETER name="TOOLBAR_VISIBLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="TOOLBAR_VISIBLE" />
                 <PARAMETER name="SLIDERS_VISIBLE" type="RELATIVE" scope="SERVICE_RESPONSE" value="SLIDERS_VISIBLE" />

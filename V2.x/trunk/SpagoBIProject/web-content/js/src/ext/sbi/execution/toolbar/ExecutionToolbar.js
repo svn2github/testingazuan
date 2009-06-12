@@ -48,18 +48,6 @@ Ext.ns("Sbi.execution.toolbar");
 
 Sbi.execution.toolbar.ExecutionToolbar = function(config) {
 	
-	// always declare exploited services first!
-	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
-	this.services = new Array();
-	this.services['getToolbarButtonsVisibilityService'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'GET_TOOLBAR_BUTTONS_VISIBILITY_ACTION'
-		, baseParams: params
-	});
-	
-	//this.buttons = this.createRoleSelectionButtons();
-	
-
-	
 	var c = Ext.apply({}, config, {
 		items: [{
 			iconCls: 'icon-execute'
@@ -108,10 +96,11 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
         }, this.items); 
     }
 
-	, update: function(pageNumber, executionInstance) {
+	, update: function(pageNumber, executionInstance, document) {
 		
 		this.pageNumber = pageNumber;
 		this.executionInstance = executionInstance;
+		this.document = document;
 				
 		this.reset();
 		
@@ -141,7 +130,6 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 	
 	, addParametersSelectionButtons: function() {
 		
-		
 		this.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-back' 
 		    , scope: this
@@ -156,12 +144,14 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 		   	, handler : function() {this.fireEvent('clearparametersbuttonclick');}
 		}));
 		
-		this.addButton(new Ext.Toolbar.Button({
-			iconCls: 'icon-save'
-		   	, scope: this
-		   	, handler : function() {this.fireEvent('saveviewpointbuttonclick');}
-		}));
-			
+		if (Sbi.user.functionalities.contains('SeeViewpointsFunctionality')) {
+			this.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-save'
+			   	, scope: this
+			   	, handler : function() {this.fireEvent('saveviewpointbuttonclick');}
+			}));
+		}
+		
 		this.addSeparator();
 		
 		this.addButton(new Ext.Toolbar.Button({
@@ -169,9 +159,6 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 			, scope: this
 			, handler : function() {this.fireEvent('parametersformsubmit');}
 		}));
-		
-		
-		
 	
 	}
 	
@@ -183,11 +170,13 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 			    , handler : function() {this.fireEvent('backbuttonclick');}
 		}));
 		
-		this.addButton(new Ext.Toolbar.Button({
-			iconCls: 'icon-refresh' 
-		     	, scope: this
-		    	, handler : function() {this.fireEvent('refreshbuttonclick');}			
-		}));
+		if (!this.executionInstance.SBI_SNAPSHOT_ID) {
+			this.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-refresh' 
+			     	, scope: this
+			    	, handler : function() {this.fireEvent('refreshbuttonclick');}			
+			}));
+		}
 		
 		this.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-rating' 
@@ -201,80 +190,47 @@ Ext.extend(Sbi.execution.toolbar.ExecutionToolbar, Ext.Toolbar, {
 		    	, handler : function() {this.fireEvent('printbuttonclick');}
 		}));
 		
-		
-		this.loadDocumentViewButtons(this.executionInstance);
-		//return [previousButton, refreshButton, ratingButton, printButton];
-
-	}
-	
-	, loadDocumentViewButtons: function(executionInstance) {
-		
-		Ext.Ajax.request({
-	        url: this.services['getToolbarButtonsVisibilityService'],
-	        params: {'SBI_EXECUTION_ID': executionInstance.SBI_EXECUTION_ID},
-	        callback : function(options , success, response) {
-	  	  		if(success) {
-		      		if (response && response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if (content !== undefined) {
-		      				this.addProfiledButtons(content);
-		      			} else {
-			      			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load toolbar buttons', 'Service Error');
-			      		}
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load toolbar buttons', 'Service Error');
-		      		}
-	  	  		} else { 
-	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot load toolbar buttons', 'Service Error');
-	  	  		}
-	        },
-	        scope: this,
-			failure: Sbi.exception.ExceptionHandler.handleFailure      
-		});
-		
-	}
-	
-	, addProfiledButtons: function(visibility) {
-		if (visibility.sendMail) {
-			var sendMailButton = new Ext.Toolbar.Button({
+		if (Sbi.user.functionalities.contains('SendMailFunctionality') && !this.executionInstance.SBI_SNAPSHOT_ID
+				&& this.document.type == 'REPORT') {
+			this.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-sendMail' 
 		     	, scope: this
 		    	, handler : function() {this.fireEvent('sendmailbuttonclick');}
-			});
-			this.addButton(sendMailButton);
+			}));
 		}
-		if (visibility.saveIntoPersonalFolder) {
-			var saveIntoPersonalFolderButton = new Ext.Toolbar.Button({
+		
+		if (Sbi.user.functionalities.contains('SaveIntoFolderFunctionality') && !this.executionInstance.SBI_SNAPSHOT_ID) {
+			this.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-saveIntoPersonalFolder' 
 		     	, scope: this
 		    	, handler : function() {this.fireEvent('saveintopersonalfolderbuttonclick');}
-			});
-			this.addButton(saveIntoPersonalFolderButton);
+			}));
 		}
-		if (visibility.rememberMe) {
-			var saveRememberMeButton = new Ext.Toolbar.Button({
+
+		if (Sbi.user.functionalities.contains('SaveRememberMeFunctionality') && !this.executionInstance.SBI_SNAPSHOT_ID) {
+			this.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-saveRememberMe' 
 		     	, scope: this
 		    	, handler : function() {this.fireEvent('saveremembermebuttonclick');}
-			});
-			this.addButton(saveRememberMeButton);
+			}));
 		}
-		if (visibility.notes) {
-			var notesButton = new Ext.Toolbar.Button({
+		
+		if (Sbi.user.functionalities.contains('SeeNotesFunctionality') && !this.executionInstance.SBI_SNAPSHOT_ID) {
+			this.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-notes' 
 		     	, scope: this
 		    	, handler : function() {this.fireEvent('notesbuttonclick');}
-			});
-			this.addButton(notesButton);
+			}));
 		}
-		if (visibility.metadata) {
-			var metadataButton = new Ext.Toolbar.Button({
+		
+		if (Sbi.user.functionalities.contains('SeeMetadataFunctionality') && !this.executionInstance.SBI_SNAPSHOT_ID) {
+			this.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-metadata' 
 		     	, scope: this
 		    	, handler : function() {this.fireEvent('metadatabuttonclick');}
-			});
-			this.addButton(metadataButton);
+			}));
 		}
+		
 	}
-    
+	
 });

@@ -167,7 +167,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 			// force synchronization, since subobject, snapshots, viewpoints may have been deleted, or a new subobject may have been created
 			this.parametersSelectionPage.shortcutsPanel.synchronize(this.executionInstance);
 		}
-		this.tb.update(pageNumber, this.executionInstance);
+		this.tb.update(pageNumber, this.executionInstance, this.document);
 		this.activePanel = pageNumber;
 		this.getLayout().setActiveItem( this.activePanel );
 	}

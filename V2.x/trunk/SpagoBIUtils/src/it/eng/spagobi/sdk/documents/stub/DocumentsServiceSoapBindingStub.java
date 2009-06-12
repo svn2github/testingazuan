@@ -16,7 +16,7 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[8];
+        _operations = new org.apache.axis.description.OperationDesc[9];
         _initOperationDesc1();
     }
 
@@ -159,6 +159,45 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
                      ));
         _operations[7] = oper;
 
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("executeDocument");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKDocument"), it.eng.spagobi.sdk.documents.bo.SDKDocument.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_SDKDocumentParameter"), it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[].class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKExecutedDocumentContent"));
+        oper.setReturnClass(it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "executeDocumentReturn"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
+                      "it.eng.spagobi.sdk.exceptions.InvalidParameterValue",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "InvalidParameterValue"), 
+                      true
+                     ));
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
+                      "it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NonExecutableDocumentException"), 
+                      true
+                     ));
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
+                      "it.eng.spagobi.sdk.exceptions.MissingParameterValue",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "MissingParameterValue"), 
+                      true
+                     ));
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
+                      "it.eng.spagobi.sdk.exceptions.NotAllowedOperationException",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NotAllowedOperationException"), 
+                      true
+                     ));
+        _operations[8] = oper;
+
     }
 
     public DocumentsServiceSoapBindingStub() throws org.apache.axis.AxisFault {
@@ -211,6 +250,13 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+            qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKExecutedDocumentContent");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKFunctionality");
             cachedSerQNames.add(qName);
             cls = it.eng.spagobi.sdk.documents.bo.SDKFunctionality.class;
@@ -225,6 +271,20 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+            qName = new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "InvalidParameterValue");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.sdk.exceptions.InvalidParameterValue.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "MissingParameterValue");
+            cachedSerQNames.add(qName);
+            cls = it.eng.spagobi.sdk.exceptions.MissingParameterValue.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NonExecutableDocumentException");
             cachedSerQNames.add(qName);
             cls = it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException.class;
@@ -235,6 +295,13 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
             qName = new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NotAllowedOperationException");
             cachedSerQNames.add(qName);
             cls = it.eng.spagobi.sdk.exceptions.NotAllowedOperationException.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://xml.apache.org/xml-soap", "mapItem");
+            cachedSerQNames.add(qName);
+            cls = org.apache.xml.xml_soap.MapItem.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -280,6 +347,15 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
             cls = it.eng.spagobi.sdk.documents.bo.SDKFunctionality[].class;
             cachedSerClasses.add(cls);
             qName = new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKFunctionality");
+            qName2 = null;
+            cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
+            cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
+
+            qName = new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_xsd_anyType");
+            cachedSerQNames.add(qName);
+            cls = java.lang.Object[].class;
+            cachedSerClasses.add(cls);
+            qName = new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType");
             qName2 = null;
             cachedSerFactories.add(new org.apache.axis.encoding.ser.ArraySerializerFactory(qName, qName2));
             cachedDeserFactories.add(new org.apache.axis.encoding.ser.ArrayDeserializerFactory());
@@ -631,6 +707,54 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
     if (axisFaultException.detail != null) {
         if (axisFaultException.detail instanceof java.rmi.RemoteException) {
               throw (java.rmi.RemoteException) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.NotAllowedOperationException) {
+              throw (it.eng.spagobi.sdk.exceptions.NotAllowedOperationException) axisFaultException.detail;
+         }
+   }
+  throw axisFaultException;
+}
+    }
+
+    public it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent executeDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[] in1, java.lang.String in2) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.InvalidParameterValue, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException, it.eng.spagobi.sdk.exceptions.MissingParameterValue, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[8]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "executeDocument"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {in0, in1, in2});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent) org.apache.axis.utils.JavaUtils.convert(_resp, it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent.class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+    if (axisFaultException.detail != null) {
+        if (axisFaultException.detail instanceof java.rmi.RemoteException) {
+              throw (java.rmi.RemoteException) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.InvalidParameterValue) {
+              throw (it.eng.spagobi.sdk.exceptions.InvalidParameterValue) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException) {
+              throw (it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.MissingParameterValue) {
+              throw (it.eng.spagobi.sdk.exceptions.MissingParameterValue) axisFaultException.detail;
          }
         if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.NotAllowedOperationException) {
               throw (it.eng.spagobi.sdk.exceptions.NotAllowedOperationException) axisFaultException.detail;

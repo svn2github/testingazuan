@@ -23,8 +23,11 @@ package it.eng.spagobi.sdk.documents;
 
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
+import it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent;
 import it.eng.spagobi.sdk.documents.bo.SDKFunctionality;
 import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
+import it.eng.spagobi.sdk.exceptions.InvalidParameterValue;
+import it.eng.spagobi.sdk.exceptions.MissingParameterValue;
 import it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
 
@@ -47,4 +50,7 @@ public interface DocumentsService {
 	void uploadTemplate(Integer documentId, SDKTemplate template) throws NotAllowedOperationException;
 	
 	Integer saveNewDocument(SDKDocument document, SDKTemplate template, Integer functionalityId) throws NotAllowedOperationException;
+
+    SDKExecutedDocumentContent executeDocument(SDKDocument document, SDKDocumentParameter[] parameters, String roleName) throws NonExecutableDocumentException, NotAllowedOperationException, InvalidParameterValue, MissingParameterValue;
+
 }

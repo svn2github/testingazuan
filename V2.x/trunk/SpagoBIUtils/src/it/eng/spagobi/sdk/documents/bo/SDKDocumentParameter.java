@@ -14,7 +14,11 @@ public class SDKDocumentParameter  implements java.io.Serializable {
 
     private java.lang.String label;
 
+    private java.lang.String type;
+
     private java.lang.String urlName;
+
+    private java.lang.Object[] values;
 
     public SDKDocumentParameter() {
     }
@@ -23,11 +27,15 @@ public class SDKDocumentParameter  implements java.io.Serializable {
            it.eng.spagobi.sdk.documents.bo.SDKConstraint[] constraints,
            java.lang.Integer id,
            java.lang.String label,
-           java.lang.String urlName) {
+           java.lang.String type,
+           java.lang.String urlName,
+           java.lang.Object[] values) {
            this.constraints = constraints;
            this.id = id;
            this.label = label;
+           this.type = type;
            this.urlName = urlName;
+           this.values = values;
     }
 
 
@@ -92,6 +100,26 @@ public class SDKDocumentParameter  implements java.io.Serializable {
 
 
     /**
+     * Gets the type value for this SDKDocumentParameter.
+     * 
+     * @return type
+     */
+    public java.lang.String getType() {
+        return type;
+    }
+
+
+    /**
+     * Sets the type value for this SDKDocumentParameter.
+     * 
+     * @param type
+     */
+    public void setType(java.lang.String type) {
+        this.type = type;
+    }
+
+
+    /**
      * Gets the urlName value for this SDKDocumentParameter.
      * 
      * @return urlName
@@ -108,6 +136,26 @@ public class SDKDocumentParameter  implements java.io.Serializable {
      */
     public void setUrlName(java.lang.String urlName) {
         this.urlName = urlName;
+    }
+
+
+    /**
+     * Gets the values value for this SDKDocumentParameter.
+     * 
+     * @return values
+     */
+    public java.lang.Object[] getValues() {
+        return values;
+    }
+
+
+    /**
+     * Sets the values value for this SDKDocumentParameter.
+     * 
+     * @param values
+     */
+    public void setValues(java.lang.Object[] values) {
+        this.values = values;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -131,9 +179,15 @@ public class SDKDocumentParameter  implements java.io.Serializable {
             ((this.label==null && other.getLabel()==null) || 
              (this.label!=null &&
               this.label.equals(other.getLabel()))) &&
+            ((this.type==null && other.getType()==null) || 
+             (this.type!=null &&
+              this.type.equals(other.getType()))) &&
             ((this.urlName==null && other.getUrlName()==null) || 
              (this.urlName!=null &&
-              this.urlName.equals(other.getUrlName())));
+              this.urlName.equals(other.getUrlName()))) &&
+            ((this.values==null && other.getValues()==null) || 
+             (this.values!=null &&
+              java.util.Arrays.equals(this.values, other.getValues())));
         __equalsCalc = null;
         return _equals;
     }
@@ -162,8 +216,22 @@ public class SDKDocumentParameter  implements java.io.Serializable {
         if (getLabel() != null) {
             _hashCode += getLabel().hashCode();
         }
+        if (getType() != null) {
+            _hashCode += getType().hashCode();
+        }
         if (getUrlName() != null) {
             _hashCode += getUrlName().hashCode();
+        }
+        if (getValues() != null) {
+            for (int i=0;
+                 i<java.lang.reflect.Array.getLength(getValues());
+                 i++) {
+                java.lang.Object obj = java.lang.reflect.Array.get(getValues(), i);
+                if (obj != null &&
+                    !obj.getClass().isArray()) {
+                    _hashCode += obj.hashCode();
+                }
+            }
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -194,9 +262,21 @@ public class SDKDocumentParameter  implements java.io.Serializable {
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("type");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "type"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("urlName");
         elemField.setXmlName(new javax.xml.namespace.QName("", "urlName"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("values");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "values"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }

@@ -84,7 +84,7 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 		        	  scope: this,
 		        	  handler: this.saveNotes
 		          }
-		], 
+		]
 	});   
 	
 	this.loadNotes();

@@ -21,15 +21,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
-import it.eng.spagobi.commons.bo.Role;
-import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -52,48 +52,43 @@ public class GetToolbarButtonsVisibilityAction extends AbstractSpagoBIAction {
 		try {
 			// retrieving execution instance from session, no need to check if user is able to execute the current document
 			ExecutionInstance executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
+			BIObject obj = executionInstance.getBIObject();
 			IEngUserProfile profile = getUserProfile();
-			Role virtualRole = null;
-			try {
-				virtualRole = getVirtualRole(profile);
-			} catch (Exception e) {
-				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot load information about user", e);
-			}
-			
 			try {
 				JSONObject visibility = new JSONObject();
-				visibility.put("sendMail", virtualRole.isAbleToSendMail());
-				visibility.put("saveIntoPersonalFolder", virtualRole.isAbleToSaveIntoPersonalFolder());
-				visibility.put("rememberMe", virtualRole.isAbleToSaveRememberMe());
-				visibility.put("notes", virtualRole.isAbleToSeeNotes());
-				visibility.put("metadata", virtualRole.isAbleToSeeMetadata());
+				
+				boolean isExecutingSnapshot = executionInstance.getSnapshot() != null;
+				
+				// if executing a snapshot, refresh button makes no sense
+				boolean refresh = !isExecutingSnapshot;
+				visibility.put("refresh", refresh);
+				
+				boolean sendMail = profile.isAbleToExecuteAction(SpagoBIConstants.SEND_MAIL_FUNCTIONALITY) && !isExecutingSnapshot  && obj.getBiObjectTypeCode().equals("REPORT");
+				visibility.put("sendMail", sendMail);
+				
+				boolean saveIntoPersonalFolder = profile.isAbleToExecuteAction(SpagoBIConstants.SAVE_INTO_FOLDER_FUNCTIONALITY) && !isExecutingSnapshot;
+				visibility.put("saveIntoPersonalFolder", saveIntoPersonalFolder);
+				
+				boolean rememberMe = profile.isAbleToExecuteAction(SpagoBIConstants.SAVE_REMEMBER_ME_FUNCTIONALITY) && !isExecutingSnapshot;
+				visibility.put("rememberMe", rememberMe);
+				
+				boolean notes = profile.isAbleToExecuteAction(SpagoBIConstants.SEE_NOTES_FUNCTIONALITY) && !isExecutingSnapshot;
+				visibility.put("notes", notes);
+				
+				boolean metadata = profile.isAbleToExecuteAction(SpagoBIConstants.SEE_METADATA_FUNCTIONALITY) && !isExecutingSnapshot;
+				visibility.put("metadata", metadata);
+				
 				writeBackToClient( new JSONSuccess( visibility ) );
 			} catch (IOException e) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to write back the responce to the client", e);
 			} catch (JSONException e) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize objects into a JSON object", e);
+			} catch (EMFInternalError e) {
+				throw new SpagoBIServiceException(SERVICE_NAME, "Error retriving user information", e);
 			}
 		} finally {
 			logger.debug("OUT");
 		}
-	}
-
-	private Role getVirtualRole(IEngUserProfile profile) throws Exception {
-		Role virtualRole = new Role("", "");
-		Iterator it = profile.getRoles().iterator();
-		while (it.hasNext()) {
-			String roleName = (String) it.next();
-			Role anotherRole = DAOFactory.getRoleDAO().loadByName(roleName);
-			if (anotherRole.isAbleToSeeViewpoints()) virtualRole.setIsAbleToSeeSubobjects(true);
-			if (anotherRole.isAbleToSeeSnapshots()) virtualRole.setIsAbleToSeeSnapshots(true);
-			if (anotherRole.isAbleToSeeViewpoints()) virtualRole.setIsAbleToSeeViewpoints(true);
-			if (anotherRole.isAbleToSeeMetadata()) virtualRole.setIsAbleToSeeMetadata(true);
-			if (anotherRole.isAbleToSendMail()) virtualRole.setIsAbleToSendMail(true);
-			if (anotherRole.isAbleToSeeNotes()) virtualRole.setIsAbleToSeeNotes(true);
-			if (anotherRole.isAbleToSaveRememberMe()) virtualRole.setIsAbleToSaveRememberMe(true);
-			if (anotherRole.isAbleToSaveIntoPersonalFolder()) virtualRole.setIsAbleToSaveIntoPersonalFolder(true);
-		}
-		return virtualRole;
 	}
 
 }

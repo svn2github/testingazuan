@@ -23,7 +23,6 @@ package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.UserFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
@@ -40,6 +39,7 @@ import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -161,8 +161,7 @@ public class UserUtilities {
 	    ILowFunctionalityDAO functdao = DAOFactory.getLowFunctionalityDAO();
 	    exists = functdao.checkUserRootExists(username);
 	} catch (Exception e) {
-	    SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, UserUtilities.class.getName(),
-		    "userFunctionalityRootExists", "Error while checking user functionality root existence", e);
+		logger.error("Error while checking user functionality root existence", e);
 	    throw new Exception("Unable to check user functionality existence", e);
 	}
 	return exists;
@@ -199,8 +198,7 @@ public class UserUtilities {
 	    ILowFunctionalityDAO functdao = DAOFactory.getLowFunctionalityDAO();
 	    functdao.insertUserFunctionality(userFunct);
 	} catch (Exception e) {
-	    SpagoBITracer.major(SpagoBIConstants.NAME_MODULE, UserUtilities.class.getName(),
-		    "createUserFunctionalityRoot", "Error while creating user functionality root", e);
+	   logger.error("Error while creating user functionality root", e);
 	    throw new Exception("Unable to create user functionality root", e);
 	}
     }
@@ -213,49 +211,110 @@ public class UserUtilities {
 		    String[] functionalities = dao.readUserFunctionality(roles);
 		    logger.debug("Functionalities retrieved: " + functionalities == null ? "" : functionalities.toString());
 		    
-		    if (isAbleToSaveSubObjects(roles)) {
-				logger.debug("Adding save subobject functionality...");
-				String[] newFunctionalities = new String[functionalities.length + 1];
-				for (int i = 0; i < functionalities.length; i++) {
-				    newFunctionalities[i] = functionalities[i];
-				}
-				newFunctionalities[newFunctionalities.length - 1] = SpagoBIConstants.SAVE_SUBOBJECT_FUNCTIONALITY;
-				functionalities = newFunctionalities;
-		    }
+		    List<String> roleFunctionalities = new ArrayList<String>();
+		    Role virtualRole = getVirtualRole(roles);
+		    
+			if (virtualRole.isAbleToSaveSubobjects()) {
+				roleFunctionalities.add(SpagoBIConstants.SAVE_SUBOBJECT_FUNCTIONALITY);
+			}
+			if (virtualRole.isAbleToSeeSubobjects()) {
+				roleFunctionalities.add(SpagoBIConstants.SEE_SUBOBJECTS_FUNCTIONALITY);
+			}
+			if (virtualRole.isAbleToSeeSnapshots()) {
+				roleFunctionalities.add(SpagoBIConstants.SEE_SNAPSHOTS_FUNCTIONALITY);
+			}
+			if (virtualRole.isAbleToSeeViewpoints()) {
+				roleFunctionalities.add(SpagoBIConstants.SEE_VIEWPOINTS_FUNCTIONALITY);
+			}
+			if (virtualRole.isAbleToSeeNotes()) {
+				roleFunctionalities.add(SpagoBIConstants.SEE_NOTES_FUNCTIONALITY);
+			}
+			if (virtualRole.isAbleToSendMail()) {
+				roleFunctionalities.add(SpagoBIConstants.SEND_MAIL_FUNCTIONALITY);
+			}
+			if (virtualRole.isAbleToSaveIntoPersonalFolder()) {
+				roleFunctionalities.add(SpagoBIConstants.SAVE_INTO_FOLDER_FUNCTIONALITY);
+			}
+			if (virtualRole.isAbleToSaveRememberMe()) {
+				roleFunctionalities.add(SpagoBIConstants.SAVE_REMEMBER_ME_FUNCTIONALITY);
+			}
+			if (virtualRole.isAbleToSeeMetadata()) {
+				roleFunctionalities.add(SpagoBIConstants.SEE_METADATA_FUNCTIONALITY);
+			}
+			
+			if (!roleFunctionalities.isEmpty()) {
+				List<String> roleTypeFunctionalities = Arrays.asList(functionalities);
+				roleFunctionalities.addAll(roleTypeFunctionalities);
+				String[] a = new String[]{""};
+				functionalities = roleFunctionalities.toArray(a);
+			}
+		    
 		    return functionalities;
-		} catch (EMFUserError e) {
-		    logger.error("EMFUserError", e);
 		} catch (Exception e) {
 		    logger.error("Exception", e);
+		    throw new RuntimeException("Error while loading functionalities", e);
 		} finally {
 		    logger.debug("OUT");
 		}
 		
-		return null;
-    }
-
-    private static boolean isAbleToSaveSubObjects(String[] roles) {
-	logger.debug("IN");
-	boolean isAbleToSaveSubObjects = false;
-	try {
-	    if (roles != null && roles.length > 0) {
-			for (int i = 0; i < roles.length; i++) {
-			    String roleName = roles[i];
-			    Role role = DAOFactory.getRoleDAO().loadByName(roleName);
-			    if (role.isAbleToSaveSubobjects()) {
-				logger.debug("User has role " + roleName + " that is able to save subobjects.");
-				isAbleToSaveSubObjects = true;
-				break;
-			    }
-			}
-	    }
-	} catch (EMFUserError e) {
-	    logger.error(e);
-	} finally {
-	    logger.debug("OUT");
-	}
-	return isAbleToSaveSubObjects;
     }
     
+	private static Role getVirtualRole(String[] roles) throws Exception {
+		logger.debug("IN");
+		Role virtualRole = new Role("", "");
+		virtualRole.setIsAbleToSaveSubobjects(false);
+		virtualRole.setIsAbleToSeeSubobjects(false);
+		virtualRole.setIsAbleToSeeSnapshots(false);
+		virtualRole.setIsAbleToSeeViewpoints(false);
+		virtualRole.setIsAbleToSeeMetadata(false);
+		virtualRole.setIsAbleToSendMail(false);
+		virtualRole.setIsAbleToSeeNotes(false);
+		virtualRole.setIsAbleToSaveRememberMe(false);
+		virtualRole.setIsAbleToSaveIntoPersonalFolder(false);
+		if (roles != null) {
+			for (int i = 0; i < roles.length; i++) {
+				String roleName = roles[i];
+				Role anotherRole = DAOFactory.getRoleDAO().loadByName(roleName);
+				if (anotherRole.isAbleToSaveSubobjects()) {
+					logger.debug("User has role " + roleName + " that is able to save subobjects.");
+					virtualRole.setIsAbleToSaveSubobjects(true);
+				}
+				if (anotherRole.isAbleToSeeSubobjects()) {
+					logger.debug("User has role " + roleName + " that is able to see subobjects.");
+					virtualRole.setIsAbleToSeeSubobjects(true);
+				}
+				if (anotherRole.isAbleToSeeViewpoints()) {
+					logger.debug("User has role " + roleName + " that is able to see viewpoints.");
+					virtualRole.setIsAbleToSeeViewpoints(true);
+				}
+				if (anotherRole.isAbleToSeeSnapshots()) {
+					logger.debug("User has role " + roleName + " that is able to see snapshots.");
+					virtualRole.setIsAbleToSeeSnapshots(true);
+				}
+				if (anotherRole.isAbleToSeeMetadata()) {
+					logger.debug("User has role " + roleName + " that is able to see metadata.");
+					virtualRole.setIsAbleToSeeMetadata(true);
+				}
+				if (anotherRole.isAbleToSendMail()) {
+					logger.debug("User has role " + roleName + " that is able to send mail.");
+					virtualRole.setIsAbleToSendMail(true);
+				}
+				if (anotherRole.isAbleToSeeNotes()) {
+					logger.debug("User has role " + roleName + " that is able to see notes.");
+					virtualRole.setIsAbleToSeeNotes(true);
+				}
+				if (anotherRole.isAbleToSaveRememberMe()) {
+					logger.debug("User has role " + roleName + " that is able to save remember me.");
+					virtualRole.setIsAbleToSaveRememberMe(true);
+				}
+				if (anotherRole.isAbleToSaveIntoPersonalFolder()) {
+					logger.debug("User has role " + roleName + " that is able to save into personal folder.");
+					virtualRole.setIsAbleToSaveIntoPersonalFolder(true);
+				}
+			}
+		}
+		logger.debug("OUT");
+		return virtualRole;
+	}
 
 }

@@ -64,6 +64,8 @@ Sbi.execution.SnapshotsPanel = function(config) {
 		, baseParams: params
 	});
 	
+	this.snapshotPreference = c.snapshot;
+	
 	this.selectedSnapshotId = null;
 	
     this.snapshotsStore = new Ext.data.JsonStore({
@@ -149,6 +151,25 @@ Ext.extend(Sbi.execution.SnapshotsPanel, Ext.grid.GridPanel, {
 	, synchronize: function( executionInstance ) {
 		this.snapshotsStore.load({params: executionInstance});
 		this.executionInstance = executionInstance;
+		// if there is a preference for a subobject execution, fire executionrequest event
+		if (this.snapshotPreference && this.snapshotPreference.name) {
+			this.snapshotsStore.on(
+				'load', 
+				function() {
+					// get the required snapshot from the store
+					var record = this.findByNameAndHistoryNumber(this.snapshotPreference.name, this.snapshotPreference.historyNumber);
+					if (record != null) {
+						var snapshotId = record.get('id');
+				    	this.fireEvent('executionrequest', snapshotId);
+					} else {
+						Sbi.exception.ExceptionHandler.showErrorMessage('Scheduled execution \'' + this.snapshotPreference.name + '\' not found ', 'Configuration Error');
+					}
+					// reset preference variable
+					delete this.snapshotPreference;
+				},
+				this
+			);
+		}
 	}
 
 	
@@ -190,6 +211,20 @@ Ext.extend(Sbi.execution.SnapshotsPanel, Ext.grid.GridPanel, {
 		} else {
 			Sbi.exception.ExceptionHandler.showWarningMessage(LN('sbi.execution.snapshots.noSnapshotsSelected'), 'Warning');
 		}
+	}
+	
+	, findByNameAndHistoryNumber: function(name, historyNumber) {
+		var historyCounter = -1;
+		for (var count = 0; count < this.snapshotsStore.getCount(); count++) {
+			var aRecord = this.snapshotsStore.getAt(count);
+			if (aRecord.get('name') == name) {
+				historyCounter++;
+				if (historyCounter == historyNumber) {
+					return aRecord;
+				}
+			}
+		}
+		return null;
 	}
 	
 	//private methods

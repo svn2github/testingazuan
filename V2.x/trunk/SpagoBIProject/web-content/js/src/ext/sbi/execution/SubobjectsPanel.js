@@ -159,7 +159,6 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		this.subObjectsStore.load({params: executionInstance});
 		this.executionInstance = executionInstance;
 		// if there is a preference for a subobject execution, fire executionrequest event
-		/* */
 		if (this.subobjectPreference) {
 			this.subObjectsStore.on(
 				'load', 
@@ -170,6 +169,8 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 						var record = this.subObjectsStore.getAt(index);
 						var subObjectId = record.get('id');
 				    	this.fireEvent('executionrequest', subObjectId);
+					} else {
+						Sbi.exception.ExceptionHandler.showErrorMessage('Customized view \'' + this.subobjectPreference + '\' not found', 'Configuration Error');
 					}
 					// reset preference variable
 					delete this.subobjectPreference;

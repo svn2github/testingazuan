@@ -152,21 +152,10 @@ Ext.extend(Sbi.execution.SnapshotsPanel, Ext.grid.GridPanel, {
 		this.snapshotsStore.load({params: executionInstance});
 		this.executionInstance = executionInstance;
 		// if there is a preference for a subobject execution, fire executionrequest event
-		if (this.snapshotPreference && this.snapshotPreference.name) {
+		if (this.snapshotPreference !== undefined && this.snapshotPreference.name !== undefined) {
 			this.snapshotsStore.on(
 				'load', 
-				function() {
-					// get the required snapshot from the store
-					var record = this.findByNameAndHistoryNumber(this.snapshotPreference.name, this.snapshotPreference.historyNumber);
-					if (record != null) {
-						var snapshotId = record.get('id');
-				    	this.fireEvent('executionrequest', snapshotId);
-					} else {
-						Sbi.exception.ExceptionHandler.showErrorMessage('Scheduled execution \'' + this.snapshotPreference.name + '\' not found ', 'Configuration Error');
-					}
-					// reset preference variable
-					delete this.snapshotPreference;
-				},
+				this.checkPreferences,
 				this
 			);
 		}
@@ -233,6 +222,25 @@ Ext.extend(Sbi.execution.SnapshotsPanel, Ext.grid.GridPanel, {
 		var selectedRecord =  grid.getStore().getAt(rowIndex);
 		var snapshotId = selectedRecord.get('id');
 		this.fireEvent('executionrequest', snapshotId);
+	}
+	
+	, checkPreferences: function () {
+		// get the required snapshot from the store
+		var record = this.findByNameAndHistoryNumber(this.snapshotPreference.name, this.snapshotPreference.historyNumber);
+		if (record != null) {
+			var snapshotId = record.get('id');
+	    	this.fireEvent('executionrequest', snapshotId);
+		} else {
+			Sbi.exception.ExceptionHandler.showErrorMessage('Scheduled execution \'' + this.snapshotPreference.name + '\' not found ', 'Configuration Error');
+		}
+		// reset preference variable
+		delete this.snapshotPreference;
+		// remove the listener
+		this.snapshotsStore.un(
+				'load', 
+				this.checkPreferences,
+				this
+		);
 	}
 	
 });

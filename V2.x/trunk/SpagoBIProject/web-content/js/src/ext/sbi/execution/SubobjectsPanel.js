@@ -234,7 +234,7 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		}
 		// reset preference variable
 		delete this.subobjectPreference;
-		// remove the listerner
+		// remove the listener
 		this.subObjectsStore.un(
 				'load', 
 				this.checkPreferences,

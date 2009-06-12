@@ -159,7 +159,7 @@ public class OverlaidBarLine extends BarCharts {
 					if(seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line")){
 						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
 						// SET THE AXIS
-						if(seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
+						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
 							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
 						}
 						else{ // if to draw as a bar
@@ -170,7 +170,7 @@ public class OverlaidBarLine extends BarCharts {
 					else{ // BAR CASE
 						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
 						// if to draw mapped to first axis
-						if(seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
+						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
 							if(!seriesNames.contains(nameS))seriesNames.add(nameS);
 							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
 						}

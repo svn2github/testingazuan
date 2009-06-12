@@ -159,22 +159,10 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		this.subObjectsStore.load({params: executionInstance});
 		this.executionInstance = executionInstance;
 		// if there is a preference for a subobject execution, fire executionrequest event
-		if (this.subobjectPreference) {
+		if (this.subobjectPreference !== undefined) {
 			this.subObjectsStore.on(
 				'load', 
-				function() {
-					// get the required subobject from the store
-					var index = this.subObjectsStore.find('name', this.subobjectPreference);
-					if (index != -1) {
-						var record = this.subObjectsStore.getAt(index);
-						var subObjectId = record.get('id');
-				    	this.fireEvent('executionrequest', subObjectId);
-					} else {
-						Sbi.exception.ExceptionHandler.showErrorMessage('Customized view \'' + this.subobjectPreference + '\' not found', 'Configuration Error');
-					}
-					// reset preference variable
-					delete this.subobjectPreference;
-				},
+				this.checkPreferences,
 				this
 			);
 		}
@@ -233,5 +221,25 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
     	var subObjectId = selectedRecord.get('id');
     	this.fireEvent('executionrequest', subObjectId);
     }
+	
+	, checkPreferences: function () {
+		// get the required subobject from the store
+		var index = this.subObjectsStore.find('name', this.subobjectPreference);
+		if (index != -1) {
+			var record = this.subObjectsStore.getAt(index);
+			var subObjectId = record.get('id');
+	    	this.fireEvent('executionrequest', subObjectId);
+		} else {
+			Sbi.exception.ExceptionHandler.showErrorMessage('Customized view \'' + this.subobjectPreference + '\' not found', 'Configuration Error');
+		}
+		// reset preference variable
+		delete this.subobjectPreference;
+		// remove the listerner
+		this.subObjectsStore.un(
+				'load', 
+				this.checkPreferences,
+				this
+		);
+	}
 	
 });

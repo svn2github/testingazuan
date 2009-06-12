@@ -334,6 +334,14 @@ public class SpagoBIConstants {
 	public static final String KPI_MANAGEMENT = "KpiManagement";
 	
 	public static final String SAVE_SUBOBJECT_FUNCTIONALITY = "SaveSubobjectFunctionality";
+	public static final String SEE_SUBOBJECTS_FUNCTIONALITY = "SeeSubobjectsFunctionality";
+	public static final String SEE_VIEWPOINTS_FUNCTIONALITY = "SeeViewpointsFunctionality";
+	public static final String SEE_SNAPSHOTS_FUNCTIONALITY = "SeeSnapshotsFunctionality";
+	public static final String SEE_NOTES_FUNCTIONALITY = "SeeNotesFunctionality";
+	public static final String SEND_MAIL_FUNCTIONALITY = "SendMailFunctionality";
+	public static final String SAVE_INTO_FOLDER_FUNCTIONALITY = "SaveIntoFolderFunctionality";
+	public static final String SAVE_REMEMBER_ME_FUNCTIONALITY = "SaveRememberMeFunctionality";
+	public static final String SEE_METADATA_FUNCTIONALITY = "SeeMetadataFunctionality";
 	
 	public static final String DOCUMENT_MOVE_DOWN_STATE = "DocumentMoveDownState" ;
 	public static final String DOCUMENT_MOVE_UP_STATE = "DocumentMoveUpState" ;

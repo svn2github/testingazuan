@@ -103,14 +103,15 @@ public class SaveRememberMeAction extends AbstractSpagoBIAction {
 			if (parametersList != null && parametersList.size() > 0) {
 				for (int i = 0; i < parametersList.size(); i++) {
 					BIObjectParameter parameter = (BIObjectParameter) parametersList.get(i);
-					documentParametersStr.append(parameter.getParameterUrlName() + "=");
 					if (parameter.getParameterValues() != null) {
 						String value = parValuesEncoder.encode(parameter);
-						documentParametersStr.append(value);
-					} else 
-						documentParametersStr.append("NULL");
-					if (i < parametersList.size() - 1) documentParametersStr.append("&");
+						documentParametersStr.append(parameter.getParameterUrlName() + "=" + value);
+						if (i < parametersList.size() - 1) documentParametersStr.append("&");
+					}
 				}
+			}
+			if (documentParametersStr.charAt(documentParametersStr.length() - 1) == '&') {
+				documentParametersStr.deleteCharAt(documentParametersStr.length() - 1);
 			}
 			return documentParametersStr.toString();
 		} finally {

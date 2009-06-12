@@ -123,11 +123,6 @@
  	<CONFIG/>
  </ACTION>
  
- <ACTION name="GET_TOOLBAR_BUTTONS_VISIBILITY_ACTION" 
- 	class="it.eng.spagobi.analiticalmodel.document.x.GetToolbarButtonsVisibilityAction" scope="REQUEST">
- 	<CONFIG/>
- </ACTION>
- 
  <ACTION name="GET_VIEWPOINTS_ACTION" 
  	class="it.eng.spagobi.analiticalmodel.document.x.GetViewpointsAction" scope="REQUEST">
  	<CONFIG/>
@@ -153,5 +148,10 @@
  	<CONFIG/>
  </ACTION>
  
+ <ACTION name="EXECUTE_DOCUMENT_ACTION" 
+ 	class="it.eng.spagobi.analiticalmodel.document.x.ExecuteDocumentAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+
 </ACTIONS>
 

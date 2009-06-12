@@ -26,6 +26,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>    
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="it.eng.spagobi.commons.dao.DAOFactory"%>
+<%@page import="org.apache.log4j.Logger"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.x.ExecuteDocumentAction"%>
+
+<%! private static transient Logger logger = Logger.getLogger(ExecuteDocumentAction.class);%>
+
+<% if ( "WEB".equalsIgnoreCase(sbiMode) ) { %>
 
 	<link rel='stylesheet' type='text/css' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/execution/main.css",currTheme)%>'/>
 	
@@ -95,16 +101,43 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     });
 
     <%
-    Integer objId = new Integer((String) aServiceResponse.getAttribute(ObjectsTreeConstants.OBJECT_ID));
-    BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
-    String parameters = (String) aServiceResponse.getAttribute(ObjectsTreeConstants.PARAMETERS);
-    String subobjectName = (String) aServiceResponse.getAttribute(SpagoBIConstants.SUBOBJECT_NAME);
-    String snapshotName = (String) aServiceResponse.getAttribute(SpagoBIConstants.SNAPSHOT_NAME);
-    String snapshotHistoryNumber = (String) aServiceResponse.getAttribute(SpagoBIConstants.SNAPSHOT_HISTORY_NUMBER);
+    Integer objId = null;
+    String objIdStr = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.OBJECT_ID);
+    logger.debug("Document id in request is [" + objIdStr + "]");
+    if (objIdStr != null && !objIdStr.trim().equals("")) {
+	    try {
+	    	objId = new Integer(objIdStr);
+	    } catch (Exception e) {
+	    	logger.error(e);
+	    }
+    }
+    String objLabel = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
+    logger.debug("Document label in request is [" + objLabel + "]");
+    BIObject obj = null;
+    try {
+    	if (objId != null) {
+    		obj = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
+    	} else if (objLabel != null) {
+    		obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(objLabel);
+    	}
+    } catch (Exception e) {
+    	logger.error(e);
+    }
+    String parameters = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.PARAMETERS);
+    logger.debug("Document parameters in request are [" + parameters + "]");
+    String subobjectName = (String) aServiceRequest.getAttribute(SpagoBIConstants.SUBOBJECT_NAME);
+    logger.debug("Subobject name in request is [" + subobjectName + "]");
+    String snapshotName = (String) aServiceRequest.getAttribute(SpagoBIConstants.SNAPSHOT_NAME);
+    logger.debug("Snapshot name in request is [" + snapshotName + "]");
+    String snapshotHistoryNumber = (String) aServiceRequest.getAttribute(SpagoBIConstants.SNAPSHOT_HISTORY_NUMBER);
+    logger.debug("Snapshot history number in request is [" + snapshotHistoryNumber + "]");
     %>
     //var menuConfig = <%= aServiceResponse.getAttribute("metaConfiguration")%>;
 
-	var object = {id: <%= obj.getId() %>, label: '<%= obj.getLabel() %>'};
+	var object = {id: <%= obj != null ? obj.getId() : "undefined" %>
+			, label: <%= obj != null ? ("'" + obj.getLabel() + "'") : "undefined" %>
+			, type: <%= obj != null ? ("'" + obj.getBiObjectTypeCode() + "'") : "undefined" %>
+			};
 
 	var parameters = <%= parameters != null ? ("'" + parameters.replaceAll("'", "\'") + "'") : "undefined" %>;
 	var subobject = <%= subobjectName != null ? ("'" + subobjectName.replaceAll("'", "\'") + "'") : "undefined" %>;
@@ -124,12 +157,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Ext.onReady(function(){
 		Ext.QuickTips.init();
 		var executionPanel = new Sbi.execution.ExecutionPanel(config);
-		//var mainPanel = new Ext.Panel({
-		//	title: object.label
-	    //    , collapsible: false
-		//	, items: executionPanel
-		//	, layout: 'fit'
-		//});
 		var viewport = new Ext.Viewport({
 			layout: 'border'
 			, items: [
@@ -145,3 +172,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
     </script>
     
+<% } else {
+	 
+	String url =GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+  "&ACTION_NAME=EXECUTE_DOCUMENT_ACTION";
+	url += "&LANGUAGE=" + locale.getLanguage();
+	url += "&COUNTRY=" + locale.getCountry();
+	%>
+
+ 	<iframe 
+ 		id='executionIframe'
+ 		name='executionIframe'
+ 		src='<%= url %>'
+ 		frameBorder = 0
+ 		width=100%
+ 		height=<%= aServiceResponse.getAttribute("height") %>
+ 	/>
+    
+<% } %>
+
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

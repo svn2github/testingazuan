@@ -77,6 +77,8 @@ Sbi.execution.toolbar.NotesWindow = function(config) {
 	
 	var c = Ext.apply({}, config, {
 		title: LN('sbi.execution.notes.insertNotes'),
+		width:700,
+		height:300,
 		items: [this.editor],
 		buttons: [
 		          {

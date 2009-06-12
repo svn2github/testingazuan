@@ -923,6 +923,7 @@ public class BasicTemplateBuilder  {
 		nameResolution.put("TEXTFIELD", "textField");
 		nameResolution.put("BOX", "box");
 		nameResolution.put("TEXTELEMENT", "textElement");
+		nameResolution.put("textELEMENT", "textElement");
 		nameResolution.put("FONT", "font");
 		nameResolution.put("TEXTFIELDEXPRESSION", "textFieldExpression");
 		nameResolution.put("PAGEHEADER", "pageHeader");

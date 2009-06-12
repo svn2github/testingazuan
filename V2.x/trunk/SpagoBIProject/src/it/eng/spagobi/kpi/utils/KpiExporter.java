@@ -72,7 +72,6 @@ public class KpiExporter {
 		String fileName="report"+executionId;
 		File tmpFile = File.createTempFile(fileName, "." + outputType, dir);
 		OutputStream out = new FileOutputStream(tmpFile);
-		BufferedInputStream in =null;
 		try {								
 
 			StringBufferInputStream sbis=new StringBufferInputStream(template2);

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.sdk.utilities;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -71,28 +71,28 @@ import org.apache.log4j.Logger;
 public class SDKObjectsConverter {
 
 	static private Logger logger = Logger.getLogger(SDKObjectsConverter.class);
-	
+
 	public SDKDocument fromBIObjectToSDKDocument(BIObject obj) {
 		logger.debug("IN");
 		if (obj == null) {
 			logger.warn("BIObject in input is null!!");
 			return null;
 		}
-        SDKDocument aDoc = new SDKDocument();
-        aDoc.setId(obj.getId());
-        aDoc.setLabel(obj.getLabel());
-        aDoc.setName(obj.getName());
-        aDoc.setDescription(obj.getDescription());
-        aDoc.setType(obj.getBiObjectTypeCode());
-        aDoc.setState(obj.getStateCode());
-        Engine engine = obj.getEngine();
-        if (engine != null) {
-            aDoc.setEngineId(engine.getId());
-        }
-        logger.debug("OUT");
-        return aDoc;
+		SDKDocument aDoc = new SDKDocument();
+		aDoc.setId(obj.getId());
+		aDoc.setLabel(obj.getLabel());
+		aDoc.setName(obj.getName());
+		aDoc.setDescription(obj.getDescription());
+		aDoc.setType(obj.getBiObjectTypeCode());
+		aDoc.setState(obj.getStateCode());
+		Engine engine = obj.getEngine();
+		if (engine != null) {
+			aDoc.setEngineId(engine.getId());
+		}
+		logger.debug("OUT");
+		return aDoc;
 	}
-	
+
 	public BIObject fromSDKDocumentToBIObject(SDKDocument document) {
 		logger.debug("IN");
 		if (document == null) {
@@ -108,19 +108,19 @@ public class SDKObjectsConverter {
 			obj.setDescription(document.getDescription());
 			obj.setDataSourceId(document.getDataSourceId());
 			obj.setDataSetId(document.getDataSetId());
-			
+
 			IDomainDAO domainDAO = DAOFactory.getDomainDAO();
-			
+
 			// sets biobject type domain
 			Domain type = domainDAO.loadDomainByCodeAndValue("BIOBJ_TYPE", document.getType());
 			obj.setBiObjectTypeCode(type.getValueCd());
 			obj.setBiObjectTypeID(type.getValueId());
-			
+
 			// sets biobject state domain
 			Domain state = domainDAO.loadDomainByCodeAndValue("STATE", document.getState());
 			obj.setStateCode(state.getValueCd());
 			obj.setStateID(state.getValueId());
-			
+
 			// gets engine
 			Engine engine = null;
 			IEngineDAO engineDAO = DAOFactory.getEngineDAO();
@@ -141,10 +141,10 @@ public class SDKObjectsConverter {
 			logger.debug("Returning null.");
 			return null;
 		}
-        logger.debug("OUT");
-        return obj;
+		logger.debug("OUT");
+		return obj;
 	}
-	
+
 	public SDKTemplate fromObjTemplateToSDKTemplate(ObjTemplate objTemplate) {
 		logger.debug("IN");
 		if (objTemplate == null) {
@@ -153,67 +153,67 @@ public class SDKObjectsConverter {
 		}
 		SDKTemplate toReturn = null;
 		try {
-		    byte[] templateContent = objTemplate.getContent();
-		    toReturn = new SDKTemplate();
-		    toReturn.setFileName(objTemplate.getName());
-		    MemoryOnlyDataSource mods = new MemoryOnlyDataSource(templateContent, null);
-		    DataHandler dhSource = new DataHandler(mods);
-		    toReturn.setContent(dhSource);
+			byte[] templateContent = objTemplate.getContent();
+			toReturn = new SDKTemplate();
+			toReturn.setFileName(objTemplate.getName());
+			MemoryOnlyDataSource mods = new MemoryOnlyDataSource(templateContent, null);
+			DataHandler dhSource = new DataHandler(mods);
+			toReturn.setContent(dhSource);
 		} catch (Exception e) {
 			logger.error("Error while converting ObjTemplate into SDKTemplate.", e);
 			logger.debug("Returning null.");
 			return null;
 		}
-	    logger.debug("OUT");
-	    return toReturn;
+		logger.debug("OUT");
+		return toReturn;
 	}
-	
+
 	public ObjTemplate fromSDKTemplateToObjTemplate(SDKTemplate sdkTemplate) {
 		logger.debug("IN");
 		if (sdkTemplate == null) {
 			logger.warn("SDKTemplate in input is null!!");
 			return null;
 		}
-        InputStream is = null;
-        DataHandler dh = null;
-        ObjTemplate toReturn = null;
-        try {
-        	toReturn = new ObjTemplate();
-        	toReturn.setName(sdkTemplate.getFileName());
-        	dh = sdkTemplate.getContent();
-        	is = dh.getInputStream();
-        	byte[] templateContent = SpagoBIUtilities.getByteArrayFromInputStream(is);
-        	toReturn.setContent(templateContent);
-        	toReturn.setDimension(Long.toString(templateContent.length/1000)+" KByte");
+		InputStream is = null;
+		DataHandler dh = null;
+		ObjTemplate toReturn = null;
+		try {
+			toReturn = new ObjTemplate();
+			toReturn.setName(sdkTemplate.getFileName());
+			dh = sdkTemplate.getContent();
+			is = dh.getInputStream();
+			byte[] templateContent = SpagoBIUtilities.getByteArrayFromInputStream(is);
+			toReturn.setContent(templateContent);
+			toReturn.setDimension(Long.toString(templateContent.length/1000)+" KByte");
 		} catch (Exception e) {
 			logger.error("Error while converting SDKTemplate into ObjTemplate.", e);
 			logger.debug("Returning null.");
 			return null;
-        } finally {
-        	if (is != null) {
-        		try {
+		} finally {
+			if (is != null) {
+				try {
 					is.close();
 				} catch (IOException e) {
 					logger.error("Error closing input stream of attachment", e);
 				}
-        	}
-        	if (dh != null) {
-	        	logger.debug("Deleting attachment file ...");
-	        	File attachment = new File(dh.getName());
-	        	if (attachment.exists() && attachment.isFile()) {
-	        		boolean attachmentFileDeleted = attachment.delete();
-	        		if (attachmentFileDeleted) {
-	        			logger.debug("Attachment file deleted");
-	        		} else {
-	        			logger.warn("Attachment file NOT deleted");
-	        		}
-	        	}
-        	}
-        }
-	    logger.debug("OUT");
-	    return toReturn;
+			}
+			if (dh != null) {
+				logger.debug("Deleting attachment file ...");
+				File attachment = new File(dh.getName());
+				if (attachment.exists() && attachment.isFile()) {
+					boolean attachmentFileDeleted = attachment.delete();
+					if (attachmentFileDeleted) {
+						logger.debug("Attachment file deleted");
+					} else {
+						logger.warn("Attachment file NOT deleted");
+					}
+				}
+			}
+		}
+		logger.debug("OUT");
+		return toReturn;
 	}
-	
+
 	public SDKDocumentParameter fromBIObjectParameterToSDKDocumentParameter(BIObjectParameter biParameter) {
 		logger.debug("IN");
 		if (biParameter == null) {
@@ -221,30 +221,30 @@ public class SDKObjectsConverter {
 			return null;
 		}
 		SDKDocumentParameter aDocParameter = new SDKDocumentParameter();
-        aDocParameter.setId(biParameter.getId());
-        aDocParameter.setLabel(biParameter.getLabel());
-        aDocParameter.setUrlName(biParameter.getParameterUrlName());
-        Parameter parameter = biParameter.getParameter();
-        List checks = null;
-        if (parameter != null) {
-        	checks = parameter.getChecks();
-        }
-        List newConstraints = new ArrayList<SDKConstraint>();
-        if (checks != null && !checks.isEmpty()) {
-        	Iterator checksIt = checks.iterator();
-        	while (checksIt.hasNext()) {
-        		Check aCheck = (Check) checksIt.next();
-        		SDKConstraint constraint = fromCheckToSDKConstraint(aCheck);
-        		newConstraints.add(constraint);
-        	}
-        }
-        it.eng.spagobi.sdk.documents.bo.SDKConstraint[] constraintsArray = new it.eng.spagobi.sdk.documents.bo.SDKConstraint[newConstraints.size()];
-        constraintsArray = (it.eng.spagobi.sdk.documents.bo.SDKConstraint[]) newConstraints.toArray(constraintsArray);
-        aDocParameter.setConstraints(constraintsArray);
+		aDocParameter.setId(biParameter.getId());
+		aDocParameter.setLabel(biParameter.getLabel());
+		aDocParameter.setUrlName(biParameter.getParameterUrlName());
+		Parameter parameter = biParameter.getParameter();
+		List checks = null;
+		if (parameter != null) {
+			checks = parameter.getChecks();
+		}
+		List newConstraints = new ArrayList<SDKConstraint>();
+		if (checks != null && !checks.isEmpty()) {
+			Iterator checksIt = checks.iterator();
+			while (checksIt.hasNext()) {
+				Check aCheck = (Check) checksIt.next();
+				SDKConstraint constraint = fromCheckToSDKConstraint(aCheck);
+				newConstraints.add(constraint);
+			}
+		}
+		it.eng.spagobi.sdk.documents.bo.SDKConstraint[] constraintsArray = new it.eng.spagobi.sdk.documents.bo.SDKConstraint[newConstraints.size()];
+		constraintsArray = (it.eng.spagobi.sdk.documents.bo.SDKConstraint[]) newConstraints.toArray(constraintsArray);
+		aDocParameter.setConstraints(constraintsArray);
 		logger.debug("OUT");
 		return aDocParameter;
 	}
-	
+
 	public SDKConstraint fromCheckToSDKConstraint(Check aCheck) {
 		logger.debug("IN");
 		if (aCheck == null) {
@@ -262,7 +262,7 @@ public class SDKObjectsConverter {
 		logger.debug("OUT");
 		return constraint;
 	}
-	
+
 	public SDKFunctionality fromLowFunctionalityToSDKFunctionality(LowFunctionality lowFunctionality) {
 		logger.debug("IN");
 		if (lowFunctionality == null) {
@@ -277,10 +277,10 @@ public class SDKObjectsConverter {
 		functionality.setParentId(lowFunctionality.getParentId());
 		functionality.setPath(lowFunctionality.getPath());
 		functionality.setProg(lowFunctionality.getProg());
-        logger.debug("OUT");
-        return functionality;
+		logger.debug("OUT");
+		return functionality;
 	}
-	
+
 	public SDKEngine fromEngineToSDKEngine(Engine engine) {
 		logger.debug("IN");
 		if (engine == null) {
@@ -308,9 +308,9 @@ public class SDKObjectsConverter {
 		} finally {
 			logger.debug("OUT");
 		}
-        return sdkEngine;
+		return sdkEngine;
 	}
-	
+
 	public SDKDataSet fromSpagoBiDataSetToSDKDataSet(SpagoBiDataSet spagoBiDataSet) {
 		logger.debug("IN");
 		if (spagoBiDataSet == null) {
@@ -324,34 +324,34 @@ public class SDKObjectsConverter {
 			toReturn.setLabel(spagoBiDataSet.getLabel());
 			toReturn.setName(spagoBiDataSet.getName());
 			toReturn.setDescription(spagoBiDataSet.getDescription());
-			
+
 			toReturn.setPivotColumnName(spagoBiDataSet.getPivotColumnName());
 			toReturn.setPivotColumnValue(spagoBiDataSet.getPivotColumnValue());
 			toReturn.setPivotRowName(spagoBiDataSet.getPivotRowName());
 			toReturn.setNumberingRows(spagoBiDataSet.isNumRows());
-			
+
 			// file dataset
 			toReturn.setFileName(spagoBiDataSet.getFileName());
-			
+
 			// jdbc dataset
 			toReturn.setJdbcQuery(spagoBiDataSet.getQuery());
 			if (spagoBiDataSet.getDataSource() != null) {
 				toReturn.setJdbcDataSourceId(spagoBiDataSet.getDataSource().getId());
 			}
-			
+
 			// web service dataset
 			toReturn.setWebServiceAddress(spagoBiDataSet.getAdress());
 			toReturn.setWebServiceOperation(spagoBiDataSet.getOperation());
-			
+
 			// script dataset
 			toReturn.setScriptText(spagoBiDataSet.getScript());
 			toReturn.setScriptLanguage(spagoBiDataSet.getLanguageScript());
-			
+
 			// java dataset
 			toReturn.setJavaClassName(spagoBiDataSet.getJavaClassName());
-			
+
 			String type = null;
-			
+
 			if ( ScriptDataSet.DS_TYPE.equals( spagoBiDataSet.getType() ) ) {
 				type = "SCRIPT";
 			} else if (  JDBCDataSet.DS_TYPE.equals( spagoBiDataSet.getType() ) ) {
@@ -366,9 +366,9 @@ public class SDKObjectsConverter {
 				logger.error("Dataset type [" + spagoBiDataSet.getType() + "] unknown.");
 				type = "UNKNOWN";
 			}
-			
+
 			toReturn.setType(type);
-			
+
 			List dataSetParameterItemList = DetailDataSetModule.getParametersToFill(spagoBiDataSet);
 			SDKDataSetParameter[] parameters = null;
 			if (dataSetParameterItemList != null) {
@@ -376,9 +376,9 @@ public class SDKObjectsConverter {
 			} else {
 				parameters = new SDKDataSetParameter[0];
 			}
-			
+
 			toReturn.setParameters(parameters);
-		
+
 		} catch (Exception e) {
 			logger.error("Error while converting SpagoBiDataSet into SDKDataSet.", e);
 			logger.debug("Returning null.");
@@ -386,9 +386,9 @@ public class SDKObjectsConverter {
 		} finally {
 			logger.debug("OUT");
 		}
-        return toReturn;
+		return toReturn;
 	}
-	
+
 	public SDKDataSetParameter[] fromDataSetParameterItemListToSDKDataSetParameterArray(List dataSetParameterItemList) {
 		logger.debug("IN");
 		if (dataSetParameterItemList == null) {
@@ -401,10 +401,10 @@ public class SDKObjectsConverter {
 			SDKDataSetParameter aSDKDataSetParameter = this.fromDataSetParameterItemToSDKDataSetParameter(aDataSetParameterItem);
 			toReturn[i] = aSDKDataSetParameter;
 		}
-        logger.debug("OUT");
-        return toReturn;
+		logger.debug("OUT");
+		return toReturn;
 	}
-	
+
 	public SDKDataSetParameter fromDataSetParameterItemToSDKDataSetParameter(
 			DataSetParameterItem dataSetParameterItem) {
 		logger.debug("IN");
@@ -415,10 +415,10 @@ public class SDKObjectsConverter {
 		SDKDataSetParameter toReturn = new SDKDataSetParameter();
 		toReturn.setName(dataSetParameterItem.getName());
 		toReturn.setType(dataSetParameterItem.getType());
-        logger.debug("OUT");
-        return toReturn;
+		logger.debug("OUT");
+		return toReturn;
 	}
-	
+
 	public SDKDataStoreMetadata fromDataStoreMetadataToSDKDataStoreMetadata(DataStoreMetaData aDataStoreMetaData) {
 		logger.debug("IN");
 		if (aDataStoreMetaData == null) {
@@ -430,8 +430,8 @@ public class SDKObjectsConverter {
 		toReturn.setProperties(new HashMap(properties));
 		SDKDataStoreFieldMetadata[] fieldsMetadata = this.fromFieldMetadataListToSDKDataStoreFieldMetadataArray(aDataStoreMetaData.getFieldsMeta());
 		toReturn.setFieldsMetadata(fieldsMetadata);
-        logger.debug("OUT");
-        return toReturn;
+		logger.debug("OUT");
+		return toReturn;
 	}
 
 	private SDKDataStoreFieldMetadata[] fromFieldMetadataListToSDKDataStoreFieldMetadataArray(
@@ -447,8 +447,8 @@ public class SDKObjectsConverter {
 			SDKDataStoreFieldMetadata aSDKDataStoreFieldMetadata = this.fromFieldMetadataToSDKDataStoreFieldMetadata(aFieldMetadata);
 			toReturn[i] = aSDKDataStoreFieldMetadata;
 		}
-        logger.debug("OUT");
-        return toReturn;
+		logger.debug("OUT");
+		return toReturn;
 	}
 
 	private SDKDataStoreFieldMetadata fromFieldMetadataToSDKDataStoreFieldMetadata(
@@ -463,23 +463,29 @@ public class SDKObjectsConverter {
 		toReturn.setProperties(new HashMap(properties));
 		toReturn.setName(fieldMetadata.getName());
 		toReturn.setClassName(fieldMetadata.getType().getName());
-        logger.debug("OUT");
-        return toReturn;
+		logger.debug("OUT");
+		return toReturn;
 	}
 
 	public class MemoryOnlyDataSource extends ManagedMemoryDataSource {
 
-	    public MemoryOnlyDataSource(byte[] in, String contentType)
-				throws java.io.IOException {
+		public MemoryOnlyDataSource(byte[] in, String contentType)
+		throws java.io.IOException {
 			super(new java.io.ByteArrayInputStream(in), Integer.MAX_VALUE - 2,
 					contentType, true);
 		}
 
-	    public MemoryOnlyDataSource(String in, String contentType)
-				throws java.io.IOException {
+		public MemoryOnlyDataSource(InputStream in, String contentType)
+		throws java.io.IOException {
+			super(in, Integer.MAX_VALUE - 2,
+					contentType, true);
+		}
+
+		public MemoryOnlyDataSource(String in, String contentType)
+		throws java.io.IOException {
 			this(in.getBytes(), contentType);
 		}
-		
+
 	}
-	
+
 }

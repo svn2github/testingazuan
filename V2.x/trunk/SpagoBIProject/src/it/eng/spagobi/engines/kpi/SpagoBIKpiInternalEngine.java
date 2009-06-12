@@ -93,6 +93,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected String subName = null;// Document's subtitle
 	protected StyleLabel styleTitle;// Document's title style
 	protected StyleLabel styleSubTitle;// Document's subtitle style
+	protected String userIdField=null;
 
 	protected Locale locale=null;
 
@@ -336,7 +337,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			userId=(String) ((UserProfile) profile).getUserId();
 		}
 		else{
-				userId ="biadmin";
+			userId=userIdField;
 		}
 
 		logger.info("Got parameters userId=" + userId + " and documentId=" + documentId.toString());
@@ -498,8 +499,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	 * @throws EMFUserError
 	 * @throws EMFInternalError
 	 */
-	public List<KpiResourceBlock> executeCode(RequestContainer requestContainer, BIObject obj, SourceBean response) throws EMFUserError {   
+	public List<KpiResourceBlock> executeCode(RequestContainer requestContainer, BIObject obj, SourceBean response, String userId) throws EMFUserError {   
 		logger.debug("IN");
+		userIdField=userId;
 		this.execute(requestContainer, obj, response);
 		if(kpiResultsList==null){
 			logger.error("error while executing KPI");

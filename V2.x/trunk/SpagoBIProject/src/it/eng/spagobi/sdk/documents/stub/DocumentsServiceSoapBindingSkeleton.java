@@ -168,6 +168,44 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
         _fault.setClassName("it.eng.spagobi.sdk.exceptions.NotAllowedOperationException");
         _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NotAllowedOperationException"));
         _oper.addFault(_fault);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKDocument"), it.eng.spagobi.sdk.documents.bo.SDKDocument.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("urn:spagobisdkdocuments", "ArrayOf_tns2_SDKDocumentParameter"), it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[].class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("executeDocument", _params, new javax.xml.namespace.QName("", "executeDocumentReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://bo.documents.sdk.spagobi.eng.it", "SDKExecutedDocumentContent"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "executeDocument"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("executeDocument") == null) {
+            _myOperations.put("executeDocument", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("executeDocument")).add(_oper);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("InvalidParameterValue");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"));
+        _fault.setClassName("it.eng.spagobi.sdk.exceptions.InvalidParameterValue");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "InvalidParameterValue"));
+        _oper.addFault(_fault);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("NonExecutableDocumentException");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"));
+        _fault.setClassName("it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NonExecutableDocumentException"));
+        _oper.addFault(_fault);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("MissingParameterValue");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"));
+        _fault.setClassName("it.eng.spagobi.sdk.exceptions.MissingParameterValue");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "MissingParameterValue"));
+        _oper.addFault(_fault);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("NotAllowedOperationException");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"));
+        _fault.setClassName("it.eng.spagobi.sdk.exceptions.NotAllowedOperationException");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NotAllowedOperationException"));
+        _oper.addFault(_fault);
     }
 
     public DocumentsServiceSoapBindingSkeleton() {
@@ -221,6 +259,12 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
     public java.lang.Integer saveNewDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKTemplate in1, java.lang.Integer in2) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException
     {
         java.lang.Integer ret = impl.saveNewDocument(in0, in1, in2);
+        return ret;
+    }
+
+    public it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent executeDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[] in1, java.lang.String in2) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.InvalidParameterValue, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException, it.eng.spagobi.sdk.exceptions.MissingParameterValue, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException
+    {
+        it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent ret = impl.executeDocument(in0, in1, in2);
         return ret;
     }
 

@@ -556,14 +556,16 @@ if (toolbarIsVisible) {
 		if (parametersList != null && parametersList.size() > 0) {
 			for (int i = 0; i < parametersList.size(); i++) {
 				BIObjectParameter parameter = (BIObjectParameter) parametersList.get(i);
-				documentParametersStr += parameter.getParameterUrlName() + "%3D";
 				if (parameter.getParameterValues() != null) {
 					String value = parValuesEncoder.encode(parameter);
-					documentParametersStr += value;
-				} else 
-					documentParametersStr += "NULL";
-				if (i < parametersList.size() - 1) documentParametersStr += "%26";
+					documentParametersStr += parameter.getParameterUrlName() + "%3D" + value;
+					if (i < parametersList.size() - 1) documentParametersStr += "%26";
+				}
+				
 			}
+		}
+		if (documentParametersStr.endsWith("%26")) {
+			documentParametersStr = documentParametersStr.substring(0, documentParametersStr.length() - 4);
 		}
 		%>
 		url += "&parameters=<%= documentParametersStr %>";

@@ -99,6 +99,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
     String parameters = (String) aServiceResponse.getAttribute(ObjectsTreeConstants.PARAMETERS);
     String subobjectName = (String) aServiceResponse.getAttribute(SpagoBIConstants.SUBOBJECT_NAME);
+    String snapshotName = (String) aServiceResponse.getAttribute(SpagoBIConstants.SNAPSHOT_NAME);
+    String snapshotHistoryNumber = (String) aServiceResponse.getAttribute(SpagoBIConstants.SNAPSHOT_HISTORY_NUMBER);
     %>
     //var menuConfig = <%= aServiceResponse.getAttribute("metaConfiguration")%>;
 
@@ -106,12 +108,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	var parameters = <%= parameters != null ? ("'" + parameters.replaceAll("'", "\'") + "'") : "undefined" %>;
 	var subobject = <%= subobjectName != null ? ("'" + subobjectName.replaceAll("'", "\'") + "'") : "undefined" %>;
+	var snapshotName = <%= snapshotName != null ? ("'" + snapshotName.replaceAll("'", "\'") + "'") : "undefined" %>;
+	var snapshotHistoryNumber = <%= snapshotHistoryNumber != null ? snapshotHistoryNumber : "0" %>;
+	var snaphost = {'name': snapshotName, 'historyNumber': snapshotHistoryNumber};
 	
     var config = {
     	title: object.label
     	, preferences: {
 			parameters: parameters
 			, subobject: subobject
+			, snapshot: snaphost
 	    }
 	};
 	

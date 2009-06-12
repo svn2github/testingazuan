@@ -53,12 +53,14 @@ import it.eng.spagobi.commons.validation.SpagoBIValidationImpl;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.monitoring.dao.AuditManager;
+import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -743,6 +745,59 @@ public class ExecutionInstance {
 			logger.debug("OUT");
 		}
 	}
+	
+	
+	/** This method is called by SDK to execute a document; it takes as input a list of SDK parameters, each with its own set of values and fill the BiObject object
+	 * 
+	 * @param obj           The Bi Object
+	 * @param parameters     an array of SDKDocumentParameter
+	 */
+	
+	public void refreshBIObjectWithSDKParameters(SDKDocumentParameter[] parameters){
+
+		logger.debug("IN");
+		List<BIObjectParameter> listPars=object.getBiObjectParameters();
+
+		HashMap<String , List<Object>> parametersMap=new HashMap<String, List<Object>>();
+
+		//create an hashmap of parameters
+		if(parameters!=null){
+			for (int i = 0; i < parameters.length; i++) {
+				SDKDocumentParameter docParameter = (SDKDocumentParameter) parameters[i];
+				List<Object> valuesToInsert=new ArrayList<Object>();
+				
+				for (int j = 0; j < docParameter.getValues().length; j++) {
+					Object ob=docParameter.getValues()[j];
+					String obString=ob.toString();  // for now I convert in string otherwise don't pass examination
+					valuesToInsert.add(obString);
+				}
+				
+
+				parametersMap.put(docParameter.getUrlName(), valuesToInsert);
+			}
+		}
+
+
+		for (Iterator iterator = listPars.iterator(); iterator.hasNext();) {
+			BIObjectParameter objectParameter = (BIObjectParameter) iterator.next();
+			List<Object> listVals=(List<Object>) parametersMap.get(objectParameter.getParameterUrlName());
+			objectParameter.setParameterValues(listVals);
+		}
+
+		object.setBiObjectParameters(listPars);
+		logger.debug("OUT");
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	public String getExecutionUrl() {
 		logger.debug("IN");

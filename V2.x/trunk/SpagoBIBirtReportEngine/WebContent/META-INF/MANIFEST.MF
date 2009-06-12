@@ -5,4 +5,3 @@ Implementation-Title: SpagoBIBirtReportEngine
 Implementation-Version: 2.2.0 
 
 Included Birt: 2.3.1
-

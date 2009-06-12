@@ -51,6 +51,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	N.B.  TODO con il CAS da problemi perchè non valida il ticket ...
 	--%>
+
+	
 <script type="text/javascript">
 	Ext.onReady(function(){
 		Ext.Ajax.request({
@@ -112,6 +114,7 @@ boolean first=true;
 				}
 
     if(currTheme==null || currTheme.equalsIgnoreCase(""))currTheme="sbi_default";	
+    String currThemePath="/themes/"+currTheme;
 	
 %>
 
@@ -403,7 +406,7 @@ else {
 						                    <%}%>,		// comma
 											<%String icon2=DetailMenuModule.assignImage(childElemLev2);
 						                         if(childElemLev2.isViewIcons() && !icon2.equalsIgnoreCase("")){%>
-						                         	icon: '<%=contextName%><%=icon2%>',
+						                         	icon: '<%=contextName%><%=currThemePath%><%=icon2%>',
 						                         <%}%>					    			     
 				                	 menu: {        // <-- submenu 
 				                     items: [
@@ -430,8 +433,9 @@ else {
 						                         href: ''     
 						                    <%}%>,		// comma
 											<%String icon3=DetailMenuModule.assignImage(childElemLev3);
-						                         if(childElemLev3.isViewIcons() && !icon3.equalsIgnoreCase("")){%>
-						                         	icon: '<%=contextName%><%=icon3%>',
+						                         if(childElemLev3.isViewIcons() && !icon3.equalsIgnoreCase("")){
+						                         %>
+						                         	icon: '<%=contextName%><%=currThemePath%><%=icon3%>',
 						                         <%}%>							                            
 					                	menu: {        // <-- submenu 
 					                    items: [
@@ -451,7 +455,7 @@ else {
 						                            group: 'group_4', 
 						                            <%String icon=DetailMenuModule.assignImage(childElemLev4);
 						                            if( childElemLev4.isViewIcons() && !icon.equalsIgnoreCase("")){%>
-						                            icon: '<%=contextName%><%=icon%>',
+						                            icon: '<%=contextName%><%=currThemePath%><%=icon%>',
 						                            <%}%>
 						    				 		<% if(childElemLev4.getObjId()!=null){%>
 							                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev4.getMenuId()%>', '<%=path4%>')"                   
@@ -476,8 +480,10 @@ else {
 					                            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev3.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 					                            group: 'group_3',
 												<%String icon=DetailMenuModule.assignImage(childElemLev3);
-						                          if(childElemLev3.isViewIcons() && !icon.equalsIgnoreCase("")){%>
-						                          icon: '<%=contextName%><%=icon%>',
+						                          if(childElemLev3.isViewIcons() && !icon.equalsIgnoreCase("")){
+
+						                          %>
+						                          icon: '<%=contextName%><%=currThemePath%><%=icon%>',
 						                          <%}%>					                             
 					                            <% if(childElemLev3.getObjId()!=null){%>
 						                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev3.getMenuId()%>', '<%=path3%>')"                   
@@ -503,8 +509,10 @@ else {
 		                            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(childElemLev2.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 		                            group: 'group_2',
 									<%String icon=DetailMenuModule.assignImage(childElemLev2);
-									   if(childElemLev2.isViewIcons() && !icon.equalsIgnoreCase("")){%>
-										icon: '<%=contextName%><%=icon%>',
+									   if(childElemLev2.isViewIcons() && !icon.equalsIgnoreCase("")){
+
+									   %>
+										icon: '<%=contextName%><%=currThemePath%><%=icon%>',
 											<%}%>		                             
 		                            <% if(childElemLev2.getObjId()!=null){%>
 			                       		href: "javascript:execDirectUrl('<%=contextName%>/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID=<%=childElemLev2.getMenuId()%>', '<%=path2%>')"                   
@@ -556,8 +564,10 @@ else {
 								id:'<%=menuElem.getMenuId()%>',
 					            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 								<%String icon=DetailMenuModule.assignImage(menuElem);
-								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
-									icon: '<%=contextName%><%=icon%>',
+								if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){
+
+								%>
+									icon: '<%=contextName%><%=currThemePath%><%=icon%>',
 								<%}%>
 								path: '<%=path%>',					            
 					            <% if(menuElem.getObjId()!=null) { %>
@@ -594,7 +604,7 @@ else {
 					            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 								<%String icon2=DetailMenuModule.assignImage(menuElem);
 								if(menuElem.isViewIcons() && !icon2.equalsIgnoreCase("")){%>
-									icon: '<%=contextName%><%=icon2%>',
+									icon: '<%=contextName%><%=currThemePath%><%=icon2%>',
 								<%}%>
 								path: '<%=path%>',					            
 					            <% if(menuElem.getObjId()!=null) { %>
@@ -630,7 +640,7 @@ else {
 							            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 										<%String icon3=DetailMenuModule.assignImage(menuElem);
 										if(menuElem.isViewIcons() && !icon3.equalsIgnoreCase("")){%>
-											icon: '<%=contextName%><%=icon3%>',
+											icon: '<%=contextName%><%=currThemePath%><%=icon3%>',
 										<%}%>
 										path: '<%=path%>',					            
 							            <% if(menuElem.getObjId()!=null) { %>
@@ -666,7 +676,7 @@ else {
 						            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 									<%String icon=DetailMenuModule.assignImage(menuElem);
 									if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){%>
-										icon: '<%=contextName%><%=icon%>',
+										icon: '<%=contextName%><%=currThemePath%><%=icon%>',
 									<%}%>
 									path: '<%=path%>',					            												            
 						            <% if(menuElem.getObjId()!=null) { %>
@@ -700,7 +710,7 @@ else {
 							            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 										<%String icon2=DetailMenuModule.assignImage(menuElem);
 										if(menuElem.isViewIcons() && !icon2.equalsIgnoreCase("")){%>
-											icon: '<%=contextName%><%=icon2%>',
+											icon: '<%=contextName%><%=currThemePath%><%=icon2%>',
 										<%}%>
 										path: '<%=path%>',					            												            
 							            <% if(menuElem.getObjId()!=null) { %>
@@ -734,7 +744,7 @@ else {
 									            text: "<%=JavaScript.escapeText(msgBuilder.getUserMessage(menuElem.getName(), SpagoBIConstants.DEFAULT_USER_BUNDLE, request))%>",
 												<%String icon3=DetailMenuModule.assignImage(menuElem);
 												if(menuElem.isViewIcons() && !icon3.equalsIgnoreCase("")){%>
-													icon: '<%=contextName%><%=icon3%>',
+													icon: '<%=contextName%><%=currThemePath%><%=icon3%>',
 												<%}%>
 												path: '<%=path%>',					            
 									            <% if(menuElem.getObjId()!=null) { %>

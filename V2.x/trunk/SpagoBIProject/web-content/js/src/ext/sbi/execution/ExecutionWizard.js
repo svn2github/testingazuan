@@ -73,7 +73,7 @@ Sbi.execution.ExecutionWizard = function(config) {
 	
 	// propagate preferences to role selection page
 	var roleSelectionPageConfig = Ext.applyIf(config.preferences, config.roleSelectionPage); 
-	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage(roleSelectionPageConfig || {});
+	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage(roleSelectionPageConfig);
 	this.roleSelectionPage.maskOnRender = true;
 	
 	// propagate preferences to parameters selection page
@@ -84,6 +84,11 @@ Sbi.execution.ExecutionWizard = function(config) {
 	// preferences ARE NOT PROPAGATED to execution page (since panels on ShortcutPanel are instantiated twice, this may generate conflicts)
 	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(config.documentExecutionPage || {});
 	this.documentExecutionPage.maskOnRender = true;
+	
+	this.errorPage = new Ext.Panel({
+		layout: 'fit'
+		, html: 'Impossible to load document'
+	});
 	
 	this.activePanel = 0;
 	
@@ -113,13 +118,15 @@ Sbi.execution.ExecutionWizard = function(config) {
 		 this.roleSelectionPage
 		 , this.parametersSelectionPage
 		 , this.documentExecutionPage
+		 , this.errorPage
 		]		        
 	});
 	
 	// constructor
     Sbi.execution.ExecutionWizard.superclass.constructor.call(this, c);
     
-    this.roleSelectionPage.addListener('onload', this.onRolesForExecutionLoaded, this);
+    this.roleSelectionPage.addListener('synchronize', this.onRolesForExecutionLoaded, this);
+    this.roleSelectionPage.addListener('synchronizeexception', this.onRolesForExecutionLoadException, this);
     
     this.parametersSelectionPage.shortcutsPanel.addListener('viewpointexecutionrequest', this.onViewpointExecutionRequest, this);
     this.parametersSelectionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
@@ -134,50 +141,62 @@ Sbi.execution.ExecutionWizard = function(config) {
     }
     
     
-    //this.addEvents();	
+    this.addEvents('executionfailure');	
 };
 
 Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
     
 	services: null
     , executionInstance: null
-    , activePanel: null
+    
+    , activePageNumber: null
     , roleSelectionPage: null
     , parametersSelectionPage: null
-    , documentExecutionPage: null   
+    , documentExecutionPage: null 
+    , errorPage: null 
+    
+    , ROLE_SELECTION_PAGE_NUMBER: 0 
+	, PARAMETER_SELECTION_PAGE_NUMBER: 1 
+	, EXECUTION_PAGE_NUMBER: 2 
+	, ERROR_PAGE_NUMBER: 2 
     
     // public methods
     
     // toolbar
     , moveToPage: function(pageNumber) {
-		if(this.activePanel == 0 && pageNumber == 1) { // role to params selection 
+	
+		// up-hill ->
+		if(this.activePageNumber == ROLE_SELECTION_PAGE_NUMBER && pageNumber == PARAMETER_SELECTION_PAGE_NUMBER) {
 			this.roleSelectionPage.loadingMask.hide();
 			this.startExecution();
 		}
-		if(this.activePanel == 1 && pageNumber == 2) { // from parameters to document view 			
+		if(this.activePageNumber == PARAMETER_SELECTION_PAGE_NUMBER && pageNumber == EXECUTION_PAGE_NUMBER) {
 			this.loadUrlForExecution();
 		}
-		if(this.activePanel == 2 && pageNumber == 2) { // from to document view to document view itself
+		if(this.activePageNumber == EXECUTION_PAGE_NUMBER && pageNumber == EXECUTION_PAGE_NUMBER) { // todo: handle refresh properly
 			this.documentExecutionPage.southPanel.collapse();
 			this.loadUrlForExecution();
 		}
-		if(this.activePanel == 2 && pageNumber == 1) { // from execution page back to parameters page
+		
+		// down-hill <-
+		if(this.activePageNumber == EXECUTION_PAGE_NUMBER && pageNumber == PARAMETER_SELECTION_PAGE_NUMBER) {
 			delete this.executionInstance.SBI_SUBOBJECT_ID;
 			delete this.executionInstance.SBI_SNAPSHOT_ID;
 			// force synchronization, since subobject, snapshots, viewpoints may have been deleted, or a new subobject may have been created
 			this.parametersSelectionPage.shortcutsPanel.synchronize(this.executionInstance);
 		}
+		
 		this.tb.update(pageNumber, this.executionInstance, this.document);
-		this.activePanel = pageNumber;
-		this.getLayout().setActiveItem( this.activePanel );
+		this.activePageNumber = pageNumber;
+		this.getLayout().setActiveItem( this.activePageNumber );
 	}
 
     , moveToPreviousPage: function() {
-    	this.moveToPage( this.activePanel-1 );
+    	this.moveToPage( this.activePageNumber-1 );
 	}
     
     , moveToNextPage: function() {
-    	this.moveToPage( this.activePanel+1 );
+    	this.moveToPage( this.activePageNumber+1 );
 	}
     
     // execution
@@ -197,7 +216,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	}
 
 	, loadRolesForExecution: function() {
-		this.roleSelectionPage.loadRolesForExecution( this.executionInstance );
+		this.roleSelectionPage.synchronize( this.executionInstance );
 	}
 	
 	, loadUrlForExecution: function() {
@@ -218,6 +237,13 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 			this.roleSelectionPage.loadingMask.hide();
 		}
 	}
+	
+	, onRolesForExecutionLoadException: function(form, store) {
+		this.moveToPage(3);
+		this.roleSelectionPage.loadingMask.hide();
+	}
+	
+	
 	
 	, startExecution: function() {
 		var role = this.roleSelectionPage.getSelectedRole();

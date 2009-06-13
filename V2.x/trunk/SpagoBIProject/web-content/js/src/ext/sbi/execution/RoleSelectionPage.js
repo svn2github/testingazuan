@@ -48,113 +48,130 @@ Ext.ns("Sbi.execution");
 
 Sbi.execution.RoleSelectionPage = function(config) {
 	
-	// always declare exploited services first!
+	// apply defaults values
+	config = Ext.apply({
+		// no defaults
+	}, config || {});
+	
+	// check mandatory values
+	// ...
+		
+	// declare exploited services
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
 	this.services = new Array();
 	this.services['getRolesForExecutionService'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'GET_ROLES_FOR_EXECUTION_ACTION'
 		, baseParams: params
 	});
-	
-	/*
-	var Role = Ext.data.Record.create([
-	    {name: 'id'}                 
-	    , {name: 'name'} 
-	    , {name: 'description'} 
-	]);
-	 */                                  
-	
-    this.roleComboBoxStore = new Ext.data.Store({
-		proxy: new Ext.data.HttpProxy({
-				url: this.services['getRolesForExecutionService']
-		})
-		   
-	   	, reader: new Ext.data.JsonReader(/*{   
-	   		root: "root",                        
-		    id: "name" }, Role*/)
-	   	
-	    , listeners: {
-    		/*
-		    datachanged : {
-		    	fn: this.handleHierarchySelectorDataChanged
-		    	, scope: this
-		    }
-		    */
-	    }      
-    });  
+             
+	// init component
+	this.init();
+   
     
-    this.roleComboBoxStore.on('load', function() {
-    	this.fireEvent('onload', this, this.roleComboBoxStore);
-    }, this);
-    
-    
-	
-    this.roleComboBox = new Ext.form.ComboBox({
-		tpl: '<tpl for="."><div ext:qtip="{name}: {description}" class="x-combo-list-item">{name}</div></tpl>',	
-	    editable  : false,
-	    fieldLabel : LN('sbi.execution.roleselection.fieldlabel'),
-	    forceSelection : true,
-	    mode : 'local',
-	    name : 'typeFilter',
-	    store : this.roleComboBoxStore,
-	    displayField:'name',
-	    valueField:'name',
-	    emptyText: LN('sbi.execution.roleselection.emptytext'),
-	    typeAhead: true,
-	    triggerAction: 'all',
-	    //width: 100,
-	    selectOnFocus:true,
-	    listeners: {
-	    	'select': {
-	       		fn: function(){}
-	       		, scope: this
-	    	}
-	    }
-	});	
-    
-    
-	var fieldset = new Ext.form.FieldSet({
-		title: LN('sbi.execution.roleselection.title')
-        , collapsible: false
-        , autoHeight:true
-        , defaultType: 'textfield'
-        , items :[this.roleComboBox]
-        	
-	});
-	
+	// invoke parent constructor constructor
 	var c = Ext.apply({}, config, {
 		bodyStyle:'padding:16px 16px 16px 16px;'
 		, listeners: {
 		    'render': {
             	fn: function() {
-          	 	this.loadingMask = new Sbi.decorator.LoadMask(this.body, {msg:'Loading roles ...'}); 
+          	 		this.loadingMask = new Sbi.decorator.LoadMask(this.body, {msg:'Loading roles ...'}); 
             	},
             	scope: this
           	}
         }      	
 		, items :[this.roleComboBox]
-	});   
+	});   	
 	
-	// constructor
     Sbi.execution.RoleSelectionPage.superclass.constructor.call(this, c);
     
-    this.addEvents("onload");
+    // add events
+    this.addEvents('beforesynchronize', 'synchronize', 'synchronizeexception', 'ready');
 };
 
 Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 	
 	services: null
-	, roleComboBoxStore: null
+	, executionInstance: null
+	
+	, store: null
 	, roleComboBox: null
+	
 	, loadingMask: null
 	   
+	// ---------------------------------------------------------------------------
     // public methods
+	// ---------------------------------------------------------------------------
 	
-	, loadRolesForExecution: function( executionInstance ) {
-		this.roleComboBoxStore.load({params: executionInstance});
+	, synchronize: function( executionInstance ) {
+	 	if(this.fireEvent('beforesynchronize', this, executionInstance, this.executionInstance) !== false){
+	 		this.executionInstance = executionInstance;
+	 		this.store.load({params: executionInstance});
+	 	}
 	}
 
 	, getSelectedRole: function() {
 		return this.roleComboBox.getValue();
+	}
+	
+	, setSelectedRole: function( role ) {
+		this.roleComboBox.setValue( role );
+	}
+	
+	//---------------------------------------------------------------------------
+	// private methods
+	// ---------------------------------------------------------------------------
+
+	, init: function( config ) {
+		 	
+		this.initStore( config );
+			
+		this.roleComboBox = new Ext.form.ComboBox({
+			tpl: '<tpl for="."><div ext:qtip="{name}: {description}" class="x-combo-list-item">{name}</div></tpl>',	
+		    editable  : false,
+		    fieldLabel : LN('sbi.execution.roleselection.fieldlabel'),
+		    forceSelection : true,
+		    mode : 'local',
+		    name : 'typeFilter',
+		    store : this.store,
+		    displayField:'name',
+		    valueField:'name',
+		    emptyText: LN('sbi.execution.roleselection.emptytext'),
+		    typeAhead: true,
+		    triggerAction: 'all',
+		    selectOnFocus:true,
+		});	
+		
+		 this.roleComboBox.on('beforeselect', function(combo, record, index) {
+			 if(this.roleComboBox.isDirty() === false) {
+				 this.fireEvent('ready', this, record.data.name);
+			 }		    
+		 }, this);
+	}
+	
+	, initStore: function( config ) {
+		this.store = new Ext.data.Store({
+			proxy: new Ext.data.HttpProxy({
+					url: this.services['getRolesForExecutionService']
+			})
+			   
+		   	, reader: new Ext.data.JsonReader() 
+	    });  
+	    
+	    this.store.on('load', function(s, records, options) {
+	    	this.fireEvent('synchronize', this, s, records, options);
+	    }, this);
+	    
+	    this.store.on('loadexception', function(store, options, response, e) {
+			var msg = '';
+			var content = Ext.util.JSON.decode( response.responseText );
+			if(content !== undefined) {
+				msg += content.serviceName + ' : ' + content.message;
+			} else {
+				msg += 'Server response is empty probably due to a timeout';
+			}
+				
+			Sbi.exception.ExceptionHandler.showErrorMessage(msg, response.statusText);
+			this.fireEvent('synchronizeexception', this, store, options, response, e);
+		}, this);	    
 	}
 });

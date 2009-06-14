@@ -48,6 +48,7 @@ Ext.ns("Sbi.execution");
 
 Sbi.execution.ExecutionWizard = function(config) {
 	
+	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
 	this.services = new Array();
@@ -71,6 +72,8 @@ Sbi.execution.ExecutionWizard = function(config) {
 		, baseParams: params
 	});
 	
+	this.addEvents('executionfailure', 'beforetoolbarinit');
+	 
 	// propagate preferences to role selection page
 	var roleSelectionPageConfig = Ext.applyIf(config.preferences, config.roleSelectionPage); 
 	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage(roleSelectionPageConfig);
@@ -90,9 +93,28 @@ Sbi.execution.ExecutionWizard = function(config) {
 		, html: 'Impossible to load document'
 	});
 	
-	this.activePanel = 0;
+	this.activePageNumber = 0;
 	
-    this.tb = new Sbi.execution.toolbar.ExecutionToolbar({initialPage: 0});
+	this.roleSelectionPage.on('movenextrequest', this.moveToNextPage, this);
+	this.roleSelectionPage.on('beforetoolbarinit', function(page, toolbar){
+		this.fireEvent('beforetoolbarinit', toolbar);
+	}, this);
+	
+	this.parametersSelectionPage.on('moveprevrequest', this.moveToPreviousPage, this);
+	this.parametersSelectionPage.on('movenextrequest', this.moveToNextPage, this);
+	this.parametersSelectionPage.on('beforetoolbarinit', function(page, toolbar){
+		this.fireEvent('beforetoolbarinit', toolbar);
+	}, this);
+	
+	this.documentExecutionPage.on('moveprevrequest', this.moveToPreviousPage, this);
+	this.documentExecutionPage.on('beforetoolbarinit', function(page, toolbar){
+		this.fireEvent('beforetoolbarinit', toolbar);
+	}, this);
+	
+	
+	
+	/*
+	this.tb = new Sbi.execution.toolbar.ExecutionToolbar({initialPage: 0});
     this.tb.addListener('backbuttonclick', this.moveToPreviousPage, this);
     this.tb.addListener('rolesformsubmit', this.moveToNextPage, this);
     
@@ -109,11 +131,14 @@ Sbi.execution.ExecutionWizard = function(config) {
     this.tb.addListener('metadatabuttonclick', this.onMetadataButtonClicked, this);
     this.tb.addListener('ratingbuttonclick', this.onRatingButtonClicked, this);
     this.tb.addListener('printbuttonclick', this.onPrintButtonClicked, this);
+    */
+    
+    
     
 	var c = Ext.apply({}, config, {
 		layout:'card',
 		activeItem: this.activePanel, // index or id
-		tbar: this.tb,
+		//tbar: this.tb,
 		items: [
 		 this.roleSelectionPage
 		 , this.parametersSelectionPage
@@ -139,9 +164,7 @@ Sbi.execution.ExecutionWizard = function(config) {
     if(config.document) {
     	this.execute( config.document );
     }
-    
-    
-    this.addEvents('executionfailure');	
+    	
 };
 
 Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
@@ -158,7 +181,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
     , ROLE_SELECTION_PAGE_NUMBER: 0 
 	, PARAMETER_SELECTION_PAGE_NUMBER: 1 
 	, EXECUTION_PAGE_NUMBER: 2 
-	, ERROR_PAGE_NUMBER: 2 
+	, ERROR_PAGE_NUMBER: 3 
     
     // public methods
     
@@ -166,27 +189,27 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
     , moveToPage: function(pageNumber) {
 	
 		// up-hill ->
-		if(this.activePageNumber == ROLE_SELECTION_PAGE_NUMBER && pageNumber == PARAMETER_SELECTION_PAGE_NUMBER) {
+		if(this.activePageNumber == this.ROLE_SELECTION_PAGE_NUMBER && pageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER) {
 			this.roleSelectionPage.loadingMask.hide();
 			this.startExecution();
 		}
-		if(this.activePageNumber == PARAMETER_SELECTION_PAGE_NUMBER && pageNumber == EXECUTION_PAGE_NUMBER) {
+		if(this.activePageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER && pageNumber == this.EXECUTION_PAGE_NUMBER) {
 			this.loadUrlForExecution();
 		}
-		if(this.activePageNumber == EXECUTION_PAGE_NUMBER && pageNumber == EXECUTION_PAGE_NUMBER) { // todo: handle refresh properly
+		if(this.activePageNumber == this.EXECUTION_PAGE_NUMBER && pageNumber == this.EXECUTION_PAGE_NUMBER) { // todo: handle refresh properly
 			this.documentExecutionPage.southPanel.collapse();
 			this.loadUrlForExecution();
 		}
 		
 		// down-hill <-
-		if(this.activePageNumber == EXECUTION_PAGE_NUMBER && pageNumber == PARAMETER_SELECTION_PAGE_NUMBER) {
+		if(this.activePageNumber == this.EXECUTION_PAGE_NUMBER && pageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER) {
 			delete this.executionInstance.SBI_SUBOBJECT_ID;
 			delete this.executionInstance.SBI_SNAPSHOT_ID;
 			// force synchronization, since subobject, snapshots, viewpoints may have been deleted, or a new subobject may have been created
 			this.parametersSelectionPage.shortcutsPanel.synchronize(this.executionInstance);
 		}
 		
-		this.tb.update(pageNumber, this.executionInstance, this.document);
+		//this.tb.update(pageNumber, this.executionInstance, this.document);
 		this.activePageNumber = pageNumber;
 		this.getLayout().setActiveItem( this.activePageNumber );
 	}
@@ -206,6 +229,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 			Sbi.exception.ExceptionHandler.showErrorMessage('ExecutionWizard: document id is required in order to execute a document', 'Intenal Error');
 		}
 		
+		//alert(doc.toSource());
 		this.document = doc;
 		
 		this.executionInstance = {}
@@ -222,10 +246,10 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	, loadUrlForExecution: function() {
 		var formState = this.parametersSelectionPage.parametersPanel.getFormState();
 		this.executionInstance.PARAMETERS = Sbi.commons.JSON.encode( formState );
-		this.documentExecutionPage.loadUrlForExecution( this.executionInstance );
+		this.documentExecutionPage.synchronize( this.executionInstance );
 	}
-
-	, onRolesForExecutionLoaded: function(form, store) {
+	
+	, onRolesForExecutionLoaded: function(form, store, records, options) {
 		var rolesNo = store.getCount();
 		if(rolesNo === 0) {
 			alert("User have no valid roles for the execution of the selected document");
@@ -233,6 +257,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 			var role = store.getRange()[0];
 			form.roleComboBox.setValue(role.data.name); 
 			this.moveToNextPage();
+			//alert("gonext");
 		} else {
 			this.roleSelectionPage.loadingMask.hide();
 		}
@@ -276,7 +301,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	}
 	
 	, onLoadUrlFailure: function ( errors ) {
-		alert("ERROR(onLoadUrlFailure): " + errors);
+		alert("ERROR: " + errors);
 		this.moveToPage(1); // go to parameters page
 		
 	}
@@ -375,6 +400,6 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	}
 	
 	, onPrintButtonClicked: function () {
-		this.documentExecutionPage.print();
+		this.documentExecutionPage.printExecution();
 	}
 });

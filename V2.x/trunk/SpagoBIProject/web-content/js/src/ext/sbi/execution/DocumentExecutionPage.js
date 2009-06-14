@@ -48,173 +48,190 @@ Ext.ns("Sbi.execution");
 
 Sbi.execution.DocumentExecutionPage = function(config) {
 	
-	// always declare exploited services first!
+	// apply defaults values
+	config = Ext.apply({
+		// no defaults
+	}, config || {});
+	
+	// check mandatory values
+	// ...
+		
+	// declare exploited services
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
 	this.services = new Array();
 	this.services['getUrlForExecutionService'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'GET_URL_FOR_EXECUTION_ACTION'
 		, baseParams: params
 	});
+	this.services['showSendToForm'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SHOW_SEND_TO_FORM'
+		, baseParams: params
+	});
 	
-	this.miframe = new Ext.ux.ManagedIframePanel({
-		region:'center'
-        , frameConfig : {
-			autoCreate : { },
-			disableMessaging : false
-        }
-        , loadMask  : true
-        , disableMessaging :false
-        , listeners  : {
-        		
-        	'message:subobjectsaved': {
-        		fn: function(srcFrame, message) {
-	        		this.shortcutsPanel.synchronizeSubobjects(this.executionInstance);
-		        }
-        		, scope: this
-        	}
-        
-        	, 'message:crossnavigation' : {
-        		fn: function(srcFrame, message){
-                	var config = {
-                		document: {'label': message.data.label}
-            			, preferences: {
-                			parameters: message.data.parameters
-                		}
-            	    };
-            	    this.fireEvent('crossnavigation', config);
-      
-   
-        		}
-        		, scope: this
-            }
-        }
-    });
-	this.miframe.on('documentloaded', function() {
-		this.miframe.iframe.execScript("parent = document;");
-		var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
-						"	sendMessage({'label': l, parameters: p},'crossnavigation');" +
-						"};";
-		//this.miframe.iframe.execScript("parent.execCrossNavigation = function(d,l,p) {alert('LABEL: ' + l + '; PARAMETERS: '+ p);}");
-		this.miframe.iframe.execScript(scriptFn);
-		
-		
-
-	}, this);
+	this.services['saveIntoPersonalFolder'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SAVE_PERSONAL_FOLDER'
+		, baseParams: params
+	});
 	
-    this.init(config);
-    
-    this.southPanel = new Ext.Panel({
-		region:'south'
-		, border: false
-		, frame: false
-		, collapsible: true
-		, collapsed: true
-		, hideCollapseTool: true
-		, titleCollapse: true
-		, collapseMode: 'mini'
-		, split: true
-		, autoScroll: true
-		, height: 280
-		, layout: 'fit'
-		, items: [this.shortcutsPanel]
-    });
-    
-    this.northPanel = new Ext.Panel({
-		region:'north'
-		, border: false
-		, frame: false
-		, collapsible: true
-		, collapsed: true
-		, hideCollapseTool: true
-		, titleCollapse: true
-		, collapseMode: 'mini'
-		, split: true
-		, autoScroll: true
-		, height: 130
-		, layout: 'fit'
-		, items: [this.parametersPanel]
-    });
-    
+	// add events
+    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'moveprevrequest', 'loadurlfailure', 'crossnavigation');
+          
+	
+    this.init(config);    
     
     this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
     
 	var c = Ext.apply({}, config, {
 		layout: 'border'
+		, tbar: this.toolbar
 		, items: [this.miframe, this.southPanel, this.northPanel]
 	});
 	
 	// constructor
     Sbi.execution.DocumentExecutionPage.superclass.constructor.call(this, c);
 	
-    this.addEvents('loadurlfailure', 'crossnavigation');
-    
 };
 
 Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
     
     // static contents and methods definitions
 	services: null
+	, executionInstance: null
+	
+	, toolbar: null
 	, miframe : null
 	, parametersPanel: null
     , shortcutsPanel: null
     , southPanel: null
-    , executionInstance: null
+    , northPanel: null
    
 	// ----------------------------------------------------------------------------------------
 	// public methods
 	// ----------------------------------------------------------------------------------------
-	, loadUrlForExecution: function( executionInstance, reloadSliders ) {
-		this.executionInstance = executionInstance;
+    
+    
+    , synchronize: function( executionInstance, synchronizeSliders ) {
 		
-		if(reloadSliders === undefined || reloadSliders === true) {
-			if(executionInstance.PARAMETERS !== undefined) {
-				var parameters = Ext.util.JSON.decode( executionInstance.PARAMETERS );
-				parameters = Ext.urlEncode(parameters);		
-				this.parametersPanel.parametersPreference = parameters;
+		if(this.fireEvent('beforesynchronize', this, executionInstance, this.executionInstance) !== false){
+			this.executionInstance = executionInstance;
+			this.synchronizeToolbar( executionInstance );
+			
+			if(synchronizeSliders === undefined || synchronizeSliders === true) {
+				if(executionInstance.PARAMETERS !== undefined) {
+					var parameters = Ext.util.JSON.decode( executionInstance.PARAMETERS );
+					parameters = Ext.urlEncode(parameters);		
+					this.parametersPanel.parametersPreference = parameters;
+				}
+				this.parametersPanel.synchronize(executionInstance);
+				this.shortcutsPanel.synchronize(executionInstance);
 			}
-			this.parametersPanel.synchronize(executionInstance);
-			this.shortcutsPanel.synchronize(executionInstance);
+			
+			Ext.Ajax.request({
+		        url: this.services['getUrlForExecutionService'],
+		        params: executionInstance,
+		        callback : function(options , success, response){
+		  	  		if(success) {   
+			      		if(response !== undefined && response.responseText !== undefined) {
+			      			var content = Ext.util.JSON.decode( response.responseText );
+			      			if(content !== undefined) {
+			      				if(content.errors !== undefined && content.errors.length > 0) {
+			      					this.fireEvent('loadurlfailure', content.errors);
+			      				} else {
+			      					this.miframe.getFrame().setSrc( content.url );
+			      					this.add(this.miframe);
+			      				}
+			      			} 
+			      		} else {
+			      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+			      		}
+		  	  		} else { 
+			  	  		if(response !== undefined && response.responseText !== undefined) {
+			      			var content = Ext.util.JSON.decode( response.responseText );
+			      			if(content !== undefined && content.errors !== undefined) {
+			      				this.fireEvent('loadurlfailure', content.errors);
+			      			} 
+			      		} else {
+			      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+			      		}
+		  	  		}
+		        },
+		        scope: this,
+				  failure: Sbi.exception.ExceptionHandler.handleFailure      
+		   });
+		}
+	}
+
+	, synchronizeToolbar: function( executionInstance ){
+		this.fireEvent('beforetoolbarinit', this, this.toolbar);
+		
+		this.toolbar.addFill();
+		
+		this.toolbar.addButton(new Ext.Toolbar.Button({
+			iconCls: 'icon-back' 
+			    , scope: this
+			    , handler : function() {this.fireEvent('moveprevrequest');}
+		}));
+		
+		//if (!this.executionInstance.SBI_SNAPSHOT_ID) {
+		this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-refresh' 
+			     	, scope: this
+			    	, handler : this.refreshExecution			
+			}));
+		//}
+		
+		this.toolbar.addButton(new Ext.Toolbar.Button({
+			iconCls: 'icon-rating' 
+		     	, scope: this
+		    	, handler : this.rateExecution	
+		}));
+		
+		this.toolbar.addButton(new Ext.Toolbar.Button({
+			iconCls: 'icon-print' 
+		     	, scope: this
+		    	, handler : this.printExecution
+		}));
+		
+		if (Sbi.user.functionalities.contains('SendMailFunctionality') && !executionInstance.SBI_SNAPSHOT_ID
+				/*&& this.document.type == 'REPORT'*/) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-sendMail' 
+		     	, scope: this
+		    	, handler : this.sendExecution
+			}));
 		}
 		
-		//alert('zuk');
+		if (Sbi.user.functionalities.contains('SaveIntoFolderFunctionality') && !executionInstance.SBI_SNAPSHOT_ID) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-saveIntoPersonalFolder' 
+		     	, scope: this
+		    	, handler : this.saveExecution
+			}));
+		}
+
+		if (Sbi.user.functionalities.contains('SaveRememberMeFunctionality') && !executionInstance.SBI_SNAPSHOT_ID) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-saveRememberMe' 
+		     	, scope: this
+		    	, handler :this.bookmarkExecution
+			}));
+		}
 		
-	
-		Ext.Ajax.request({
-	        url: this.services['getUrlForExecutionService'],
-	        params: executionInstance,
-	        callback : function(options , success, response){
-	  	  		if(success) {   
-		      		if(response !== undefined && response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if(content !== undefined) {
-		      				if(content.errors !== undefined && content.errors.length > 0) {
-		      					this.fireEvent('loadurlfailure', content.errors);
-		      				} else {
-		      					this.miframe.getFrame().setSrc( content.url );
-		      					this.add(this.miframe);
-		      				}
-		      			} 
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-		      		}
-	  	  		} else { 
-		  	  		if(response !== undefined && response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if(content !== undefined && content.errors !== undefined) {
-		      				this.fireEvent('loadurlfailure', content.errors);
-		      			} 
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-		      		}
-	  	  		}
-	        },
-	        scope: this,
-			  failure: Sbi.exception.ExceptionHandler.handleFailure      
-	   });
-	
-		// synchronize shortcutsPanel (subobjects, snapshots, viewpoints)
-		this.shortcutsPanel.synchronize( executionInstance );
+		if (Sbi.user.functionalities.contains('SeeNotesFunctionality') && !executionInstance.SBI_SNAPSHOT_ID) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-notes' 
+		     	, scope: this
+		    	, handler : this.annotateExecution
+			}));
+		}
 		
+		if (Sbi.user.functionalities.contains('SeeMetadataFunctionality') && !this.executionInstance.SBI_SNAPSHOT_ID) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-metadata' 
+		     	, scope: this
+		    	, handler : this.metaExecution
+			}));
+		}
 	}
 
 	, refreshExecution: function() {
@@ -223,15 +240,85 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		
 		if(formStateStr !== this.executionInstance.PARAMETERS) { // todo: if(parametersPanel.isDirty())		
 			this.executionInstance.PARAMETERS = formStateStr;
-			this.loadUrlForExecution( this.executionInstance, false );
+			this.synchronize( this.executionInstance, false );
 		} else {
 			this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
-		}
-		
+		}		
 	}
 	
-	, print: function() {
+	, rateExecution: function() {
+		this.win_rating = new Sbi.execution.toolbar.RatingWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
+		this.win_rating.show();
+	}
+	
+	, printExecution: function() {
 		this.miframe.getFrame().print();
+	}
+	
+	, sendExecution: function () {
+		var sendToIframeUrl = this.services['showSendToForm'] 
+		        + '&objlabel=' + this.executionInstance.OBJECT_LABEL
+		        + '&objid=' + this.executionInstance.OBJECT_ID
+				+ '&' + Sbi.commons.Format.toStringOldSyntax(this.parametersPanel.getFormState());
+		this.win_sendTo = new Sbi.execution.toolbar.SendToWindow({'url': sendToIframeUrl});
+		this.win_sendTo.show();
+	}
+	
+	, saveExecution: function () {
+		Ext.Ajax.request({
+	          url: this.services['saveIntoPersonalFolder'],
+	          params: {documentId: this.executionInstance.OBJECT_ID},
+	          callback : function(options , success, response){
+	    	  	if (success && response !== undefined) {   
+		      		if(response.responseText !== undefined) {
+		      			var responseText = response.responseText;
+		      			var iconSaveToPF;
+		      			var message;
+		      			if (responseText=="sbi.execution.stpf.ok") {
+		      				message = LN('sbi.execution.stpf.ok');
+		      				iconSaveToPF = Ext.MessageBox.INFO;
+		      			}
+		      			if (responseText=="sbi.execution.stpf.alreadyPresent") {
+		      				message = LN('sbi.execution.stpf.alreadyPresent');
+		      				iconSaveToPF = Ext.MessageBox.WARNING;
+		      			}
+		      			if (responseText=="sbi.execution.stpf.error") {
+		      				message = LN('sbi.execution.stpf.error');
+		      				iconSaveToPF = Ext.MessageBox.ERROR;
+		      			}
+
+		      			var messageBox = Ext.MessageBox.show({
+		      				title: 'Status',
+		      				msg: message,
+		      				modal: false,
+		      				buttons: Ext.MessageBox.OK,
+		      				width:300,
+		      				icon: iconSaveToPF,
+		      				animEl: 'root-menu'        			
+		      			});
+		      		} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+		      		}
+	    	  	}
+	          },
+	          scope: this,
+	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
+	     });
+	}
+	
+	, bookmarkExecution: function () {
+		this.win_saveRememberMe = new Sbi.execution.toolbar.SaveRememberMeWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
+		this.win_saveRememberMe.show();
+	}
+	
+	, annotateExecution: function () {
+		this.win_notes = new Sbi.execution.toolbar.NotesWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
+		this.win_notes.show();
+	}
+	
+	, metaExecution: function () {
+		this.win_metadata = new Sbi.execution.toolbar.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
+		this.win_metadata.show();
 	}
 	
 	// ----------------------------------------------------------------------------------------
@@ -239,17 +326,107 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	// ----------------------------------------------------------------------------------------
 	
 	, init: function( config ) {
-		this.initShortcutsPanel(config);
-		this.initParametersPanel(config);
+		this.initToolbar(config);
+		this.initNorthPanel(config);
+		this.initCenterPanel(config);
+		this.initSouthPanel(config);
 	}
 	
-	, initParametersPanel: function( config ) {
+	, initToolbar: function( config ) {
+		this.toolbar = new Ext.Toolbar({
+			items: ['']
+		});
+		
+		this.toolbar.on('render', function() {
+			
+		}, this);
+		
+	}
+	
+	, initNorthPanel: function( config ) {
 		this.parametersPanel = new Sbi.execution.ParametersPanel(config);
-		return this.parametersPanel;
+		
+		this.northPanel = new Ext.Panel({
+				region:'north'
+				, border: false
+				, frame: false
+				, collapsible: true
+				, collapsed: true
+				, hideCollapseTool: true
+				, titleCollapse: true
+				, collapseMode: 'mini'
+				, split: true
+				, autoScroll: true
+				, height: 130
+				, layout: 'fit'
+				, items: [this.parametersPanel]
+		});
 	}
 	
-	, initShortcutsPanel: function( config ) {
+	, initCenterPanel: function( config ) {
+		this.miframe = new Ext.ux.ManagedIframePanel({
+			region:'center'
+	        , frameConfig : {
+				autoCreate : { },
+				disableMessaging : false
+	        }
+	        , loadMask  : true
+	        , disableMessaging :false
+	        , listeners  : {
+	        		
+	        	'message:subobjectsaved': {
+	        		fn: function(srcFrame, message) {
+		        		this.shortcutsPanel.synchronizeSubobjects(this.executionInstance);
+			        }
+	        		, scope: this
+	        	}
+	        
+	        	, 'message:crossnavigation' : {
+	        		fn: function(srcFrame, message){
+	                	var config = {
+	                		document: {'label': message.data.label}
+	            			, preferences: {
+	                			parameters: message.data.parameters
+	                		}
+	            	    };
+	            	    this.fireEvent('crossnavigation', config);
+	      
+	   
+	        		}
+	        		, scope: this
+	            }
+	        }
+	    });
+		this.miframe.on('documentloaded', function() {
+			this.miframe.iframe.execScript("parent = document;");
+			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
+							"	sendMessage({'label': l, parameters: p},'crossnavigation');" +
+							"};";
+			//this.miframe.iframe.execScript("parent.execCrossNavigation = function(d,l,p) {alert('LABEL: ' + l + '; PARAMETERS: '+ p);}");
+			this.miframe.iframe.execScript(scriptFn);
+			
+			
+
+		}, this);
+	}
+	
+	, initSouthPanel: function( config ) {
 		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
-		return this.shortcutsPanel;
+		
+		this.southPanel = new Ext.Panel({
+			region:'south'
+			, border: false
+			, frame: false
+			, collapsible: true
+			, collapsed: true
+			, hideCollapseTool: true
+			, titleCollapse: true
+			, collapseMode: 'mini'
+			, split: true
+			, autoScroll: true
+			, height: 280
+			, layout: 'fit'
+			, items: [this.shortcutsPanel]
+	    });
 	}
 });

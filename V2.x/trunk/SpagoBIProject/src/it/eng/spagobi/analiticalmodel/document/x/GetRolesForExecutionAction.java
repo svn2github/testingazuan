@@ -68,6 +68,10 @@ public class GetRolesForExecutionAction extends AbstractSpagoBIAction {
 		List roleNames;
 		List roles;
 		
+		
+		logger.debug("IN");
+		
+		try {
 		profile = getUserProfile();
 		documentId = requestContainsAttribute( DOCUMENT_ID )? getAttributeAsInteger( DOCUMENT_ID ): null;
 		documentLabel = getAttributeAsString( DOCUMENT_LABEL );
@@ -99,7 +103,7 @@ public class GetRolesForExecutionAction extends AbstractSpagoBIAction {
 		} else {
 			Assert.assertUnreachable("At least one between [" + DOCUMENT_ID + "] and [" + DOCUMENT_LABEL + "] parameter must be specified on request");
 		}
-		Assert.assertNotNull(obj, "Impossible to load document");
+		Assert.assertNotNull(obj, "Impossible to load document [" +  (StringUtilities.isEmpty(documentLabel)? documentId: documentLabel) + "]");
 		logger.info("... docuemnt loaded succesfully");
 			
 		// retrive roles for execution
@@ -141,6 +145,11 @@ public class GetRolesForExecutionAction extends AbstractSpagoBIAction {
 			writeBackToClient( new JSONSuccess( rolesJSON ) );
 		} catch (IOException e) {
 			throw new SpagoBIServiceException("Impossible to write back the responce to the client", e);
+		}
+		} catch (Throwable t) {
+			SpagoBIServiceExceptionHandler.getInstance().getWrappedException(SERVICE_NAME, t);
+		} finally {
+			logger.debug("OUT");
 		}
 	}
 

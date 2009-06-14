@@ -24,9 +24,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page language="java" 
 	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
    
-   <%@ include file="/WEB-INF/jsp/commons/importSbiJS.jspf"%>
    	
    <% if ( "WEB".equalsIgnoreCase(sbiMode) ) { %>
+   
+   	<%@ include file="/WEB-INF/jsp/commons/importSbiJS.jspf"%>
    	 
        
     <script type="text/javascript">

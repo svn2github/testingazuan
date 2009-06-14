@@ -34,7 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <% if ( "WEB".equalsIgnoreCase(sbiMode) ) { %>
 
 	<%@ include file="/WEB-INF/jsp/commons/importSbiJS.jspf"%>
-
+	
     <script type="text/javascript">
     Ext.BLANK_IMAGE_URL = '<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/resources/images/default/s.gif")%>';
     

@@ -58,7 +58,8 @@ Sbi.execution.ExecutionPanel = function(config) {
 	this.activeDocument = new Sbi.execution.ExecutionWizard( config );
 	this.documentsStack.push( this.activeDocument );
 	
-	this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
+	this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
+	//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
 	this.activeDocument.documentExecutionPage.on('crossnavigation', this.executeCrossNavigation , this);
 	
 	
@@ -98,7 +99,8 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		this.documentsStack.push( this.activeDocument );
 		//alert('executeCrossNavigation3');
 		
-		this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
+		this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
+		//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
 		this.activeDocument.documentExecutionPage.on('crossnavigation', this.executeCrossNavigation , this);
 		
 		//this.swapPanel(prevActiveDoc, this.activeDocument);

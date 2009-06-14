@@ -63,6 +63,9 @@ Sbi.execution.RoleSelectionPage = function(config) {
 		serviceName: 'GET_ROLES_FOR_EXECUTION_ACTION'
 		, baseParams: params
 	});
+	
+	// add events
+    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'synchronize', 'synchronizeexception', 'movenextrequest', 'moveprevrequest', 'ready');
              
 	// init component
 	this.init();
@@ -70,28 +73,32 @@ Sbi.execution.RoleSelectionPage = function(config) {
     
 	// invoke parent constructor constructor
 	var c = Ext.apply({}, config, {
-		bodyStyle:'padding:16px 16px 16px 16px;'
+		bodyStyle:'padding:16px 16px 16px 16px;'  	
+		, tbar: this.toolbar
+		, items :[this.roleComboBox]
 		, listeners: {
 		    'render': {
-            	fn: function() {
-          	 		this.loadingMask = new Sbi.decorator.LoadMask(this.body, {msg:'Loading roles ...'}); 
-            	},
-            	scope: this
-          	}
-        }      	
-		, items :[this.roleComboBox]
+	        	fn: function() {
+	      	 		this.loadingMask = new Sbi.decorator.LoadMask(this.body, {msg:'Loading roles ...'}); 
+	        	},
+	        	scope: this
+	      	}
+	    }    
 	});   	
 	
     Sbi.execution.RoleSelectionPage.superclass.constructor.call(this, c);
-    
-    // add events
-    this.addEvents('beforesynchronize', 'synchronize', 'synchronizeexception', 'ready');
 };
 
 Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 	
+	// ---------------------------------------------------------------------------
+    // object's members
+	// ---------------------------------------------------------------------------
+	
 	services: null
 	, executionInstance: null
+	
+	, toolbar: null
 	
 	, store: null
 	, roleComboBox: null
@@ -105,8 +112,22 @@ Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 	, synchronize: function( executionInstance ) {
 	 	if(this.fireEvent('beforesynchronize', this, executionInstance, this.executionInstance) !== false){
 	 		this.executionInstance = executionInstance;
+	 		this.synchronizeToolbar( executionInstance );
 	 		this.store.load({params: executionInstance});
 	 	}
+	}
+
+	, synchronizeToolbar: function( executionInstance ){
+		this.fireEvent('beforetoolbarinit', this, this.toolbar);
+		
+		this.toolbar.addFill();
+		this.toolbar.addButton(new Ext.Toolbar.Button({
+			iconCls: 'icon-execute'
+			, scope: this
+			, handler : function() {
+				this.fireEvent('movenextrequest', this, this.getSelectedRole());
+			}
+		}));
 	}
 
 	, getSelectedRole: function() {
@@ -122,6 +143,8 @@ Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 	// ---------------------------------------------------------------------------
 
 	, init: function( config ) {
+		
+		this.initToolbar( config );
 		 	
 		this.initStore( config );
 			
@@ -138,7 +161,7 @@ Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 		    emptyText: LN('sbi.execution.roleselection.emptytext'),
 		    typeAhead: true,
 		    triggerAction: 'all',
-		    selectOnFocus:true,
+		    selectOnFocus:true
 		});	
 		
 		 this.roleComboBox.on('beforeselect', function(combo, record, index) {
@@ -173,5 +196,26 @@ Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 			Sbi.exception.ExceptionHandler.showErrorMessage(msg, response.statusText);
 			this.fireEvent('synchronizeexception', this, store, options, response, e);
 		}, this);	    
+	}
+	
+	, initToolbar: function( config ) {
+		this.toolbar = new Ext.Toolbar({
+			items: ['']
+		});
+		
+		/*
+		this.toolbar.on('render', function() {
+			this.fireEvent('beforetoolbarinit', this, this.toolbar);
+			
+			this.toolbar.addFill();
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-execute'
+				, scope: this
+				, handler : function() {
+					this.fireEvent('movenextrequest', this, this.getSelectedRole());
+				}
+			}));
+		}, this);
+		*/
 	}
 });

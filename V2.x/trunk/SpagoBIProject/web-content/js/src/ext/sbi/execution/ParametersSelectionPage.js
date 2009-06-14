@@ -65,12 +65,14 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 		serviceName: 'SAVE_VIEWPOINT_ACTION'
 		, baseParams: params
 	});
-	
+	 
+    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'synchronize', 'synchronizeexception', 'movenextrequest', 'moveprevrequest');	
 	
 	this.init(c);
 	
 	c = Ext.apply({}, c, {
 		layout: 'fit',
+		tbar: this.toolbar,
 		items: [{
 			layout: 'border',
 			listeners: {
@@ -115,6 +117,7 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	
 	this.parametersPanel.on('beforesynchronize', function(){if(this.loadingMask) this.loadingMask.show();}, this);
 	this.parametersPanel.on('synchronize', function(){if(this.loadingMask) this.loadingMask.hide();}, this);
+	this.parametersPanel.on('readyforexecution', function(){this.fireEvent('movenextrequest', this);}, this);
 	
 	this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
 	this.shortcutsPanel.on('viewpointexecutionrequest', this.parametersPanel.applyViewPoint, this.parametersPanel);
@@ -123,17 +126,20 @@ Sbi.execution.ParametersSelectionPage = function(config) {
     Sbi.execution.ParametersSelectionPage.superclass.constructor.call(this, c);
     
     
-    
-    //this.addEvents();	
 };
 
 Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
     
 	services: null
+	, executionInstance: null
+	
+	, toolbar: null
+	
     , parametersPanel: null
     , shortcutsPanel: null
+  
     , saveViewpointWin: null
-    , executionInstance: null
+    
     , loadingMask: null
     , maskOnRender: null
    
@@ -141,14 +147,58 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
     // public methods
     // ----------------------------------------------------------------------------------------
     
-    /**
-     * load data from server in order to synchronize panel content with the given 
-     * execution instance (i.e. doc + role)
-     */
+   
     , synchronize: function( executionInstance ) {
-		this.parametersPanel.synchronize( executionInstance );
-		this.shortcutsPanel.synchronize( executionInstance );
-		this.executionInstance = executionInstance;
+		if(this.fireEvent('beforesynchronize', this, executionInstance, this.executionInstance) !== false){
+			this.executionInstance = executionInstance;
+			this.synchronizeToolbar( executionInstance );
+			
+			this.parametersPanelSynchronizationPending = true;
+			this.parametersPanel.synchronize( this.executionInstance );
+			
+			this.shortcutsPanelSynchronizationPending = true;
+			this.shortcutsPanel.synchronize( this.executionInstance );
+		}
+	}
+
+	, synchronizeToolbar: function( executionInstance ){
+		this.fireEvent('beforetoolbarinit', this, this.toolbar);
+		
+		this.toolbar.addFill();
+		
+		this.toolbar.addButton(new Ext.Toolbar.Button({
+			iconCls: 'icon-back' 
+		    , scope: this
+		    , handler : function() {this.fireEvent('moveprevrequest');}
+		}));
+		
+		this.toolbar.addSeparator();
+		
+		this.toolbar.addButton(new Ext.Toolbar.Button({
+			iconCls: 'icon-clear'
+		   	, scope: this
+		   	, handler : function() {
+				this.clearParametersForm();
+			}
+		}));
+		
+		if (Sbi.user.functionalities.contains('SeeViewpointsFunctionality')) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-save'
+			   	, scope: this
+			   	, handler : function() {
+					this.saveParametersFormStateAsViewpoint();
+				}
+			}));
+		}
+		
+		this.toolbar.addSeparator();
+		
+		this.toolbar.addButton(new Ext.Toolbar.Button({
+			iconCls: 'icon-execute'
+			, scope: this
+			, handler : function() {this.fireEvent('movenextrequest');}
+		}));
 	}
 
 	, clearParametersForm: function() {
@@ -201,17 +251,78 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	// ----------------------------------------------------------------------------------------
 	
 	, init: function( config ) {
+		this.initToolbar(config);
 		this.initParametersPanel(config);
 		this.initShortcutsPanel(config);
 	}
 	
+	, initToolbar: function( config ) {
+		this.toolbar = new Ext.Toolbar({
+			items: ['']
+		});
+		
+		/*
+		this.toolbar.on('render', function() {
+			this.fireEvent('beforetoolbarinit', this, this.toolbar);
+			
+			this.toolbar.addFill();
+			
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-back' 
+			    , scope: this
+			    , handler : function() {this.fireEvent('moveprevrequest');}
+			}));
+			
+			this.toolbar.addSeparator();
+			
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-clear'
+			   	, scope: this
+			   	, handler : function() {
+					this.clearParametersForm();
+				}
+			}));
+			
+			if (Sbi.user.functionalities.contains('SeeViewpointsFunctionality')) {
+				this.toolbar.addButton(new Ext.Toolbar.Button({
+					iconCls: 'icon-save'
+				   	, scope: this
+				   	, handler : function() {
+						this.saveParametersFormStateAsViewpoint();
+					}
+				}));
+			}
+			
+			this.toolbar.addSeparator();
+			
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-execute'
+				, scope: this
+				, handler : function() {this.fireEvent('movenextrequest');}
+			}));
+		}, this);
+		*/
+	}
+	
 	, initParametersPanel: function( config ) {
 		this.parametersPanel = new Sbi.execution.ParametersPanel(config);
+		this.parametersPanel.on('synchronize', function() {
+			if(this.shortcutsPanelSynchronizationPending === false) {
+				this.fireEvent('synchronize', this);
+			}
+			this.parametersPanelSynchronizationPending = false;
+		}, this)
 		return this.parametersPanel;
 	}
 	
 	, initShortcutsPanel: function( config ) {
 		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
+		this.shortcutsPanel.on('synchronize', function() {
+			if(this.parametersPanelSynchronizationPending === false) {
+				this.fireEvent('synchronize', this);
+			}
+			this.shortcutsPanelSynchronizationPending = false;
+		}, this)
 		return this.shortcutsPanel;
 	}
 	

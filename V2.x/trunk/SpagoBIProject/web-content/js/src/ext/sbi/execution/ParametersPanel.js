@@ -125,10 +125,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
     // public methods
     // ----------------------------------------------------------------------------------------
     
-    /**
-     * load data from server in order to synchronize panel content with the given 
-     * execution instance (i.e. doc + role)
-     */
+    
     , synchronize: function( executionInstance ) {
 		var sync = this.fireEvent('beforesynchronize', this, executionInstance, this.executionInstance);
 		this.executionInstance = executionInstance;
@@ -267,8 +264,10 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			
 		}
 		
-		var readyForExecution = true;
-		if (this.parametersPreference) {
+		if(parameters.length == 0) {
+			this.fireEvent('readyforexecution', this);
+		} else if (this.parametersPreference) {
+			var readyForExecution = true;
 			var preferenceState = Ext.urlDecode(this.parametersPreference);
 			this.setFormState(preferenceState);
 			var o = this.getFormState();

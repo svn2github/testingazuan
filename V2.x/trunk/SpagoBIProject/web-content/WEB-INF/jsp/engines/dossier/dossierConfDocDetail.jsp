@@ -99,7 +99,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%--
 	<input name="idbiobject" type="hidden" value="<%=idobj%>"/>
 	--%>
-	<input name="biobject_label" type="hidden" value="<%=label%>"/>
+	<input name="biobject_label" type="hidden" value="<%=StringEscapeUtils.escapeHtml(label)%>"/>
 	<br/> 
 	
 	<div class="div_detail_area_forms" >
@@ -108,19 +108,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<td class='portlet-form-field-label' width="130px">
 						<spagobi:message key="dossier.nameObject" bundle="component_dossier_messages" />
 				</td>
-				<td style="font-size:11px;"><%=name %></td>
+				<td style="font-size:11px;"><%=StringEscapeUtils.escapeHtml(name) %></td>
 			</tr>
 			<tr>
 				<td class='portlet-form-field-label' width="130px">
 					<spagobi:message key="dossier.descrObject" bundle="component_dossier_messages" />
 				</td>
-				<td style="font-size:11px;"><%=description %></td>
+				<td style="font-size:11px;"><%=StringEscapeUtils.escapeHtml(description) %></td>
 			</tr>
 			<tr>
 				<td class='portlet-form-field-label' width="130px">
 					<spagobi:message key="dossier.labelObject" bundle="component_dossier_messages" />
 				</td>
-				<td style="font-size:11px;"><%=label %></td>
+				<td style="font-size:11px;"><%=StringEscapeUtils.escapeHtml(label) %></td>
 			</tr>
 			<tr><td colspan="2">&nbsp;</td></tr>
 			<%
@@ -134,7 +134,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<spagobi:message key="dossier.logNameObject" bundle="component_dossier_messages" />
 				</td>
 				<td style="font-size:5;">
-					<input type="text" size="30" name="logicalname" value="<%=logicalname%>" <%=readonlyLogicalName %> />
+					<input type="text" size="30" name="logicalname" value="<%=StringEscapeUtils.escapeHtml(logicalname)%>" <%=readonlyLogicalName %> />
 				</td>
 			</tr>
 		</table>
@@ -170,8 +170,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				
 		%>
 			<tr>
-				<td class='portlet-form-field-label' width="160px"><%=parName%>:</td>
-				<td><input type="text" size="30" name="<%=urlName%>" value="<%=value%>" <%=readonly%> /></td>
+				<td class='portlet-form-field-label' width="160px"><%=StringEscapeUtils.escapeHtml(parName)%>:</td>
+				<td><input type="text" size="30" name="<%=StringEscapeUtils.escapeHtml(urlName)%>" value="<%=StringEscapeUtils.escapeHtml(value)%>" <%=readonly%> /></td>
 			</tr>
 		<% 
 			}

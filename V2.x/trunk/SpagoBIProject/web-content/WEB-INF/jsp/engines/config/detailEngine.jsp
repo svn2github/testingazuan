@@ -95,7 +95,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" name="label" 
-	      	   size="50" value="<%=engine.getLabel()%>" maxlength="20">
+	      	   size="50" value="<%=StringEscapeUtils.escapeHtml(engine.getLabel())%>" maxlength="20">
 	    &nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -105,7 +105,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" 
-			   name="name" size="50" value="<%=engine.getName()%>" maxlength="45">
+			   name="name" size="50" value="<%=StringEscapeUtils.escapeHtml(engine.getName())%>" maxlength="45">
 		&nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -120,7 +120,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   } 
 	%>
 		<input class='portlet-form-input-field' type="text" name="description" 
-			   size="50" value="<%= desc %>" maxlength="130">
+			   size="50" value="<%= StringEscapeUtils.escapeHtml(desc) %>" maxlength="130">
 	</div>
 	<div class='div_detail_label'>
 		<span class='portlet-form-field-label'>
@@ -254,8 +254,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					selected = "selected='selected'";										
 				}				
 			 	%>    			 		
-    				<option value="<%= dsId  %>" label="<%= ds.getLabel() %>" <%= selected %>>
-    					<%= ds.getLabel() %>	
+    				<option value="<%= dsId  %>" label="<%= StringEscapeUtils.escapeHtml(ds.getLabel()) %>" <%= selected %>>
+    					<%= StringEscapeUtils.escapeHtml(ds.getLabel()) %>	
     				</option>
     				<%				
 			}
@@ -277,7 +277,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" name="className"  
-			   	size="50" value="<%=engineClassName%>" maxlength="260">
+			   	size="50" value="<%=StringEscapeUtils.escapeHtml(engineClassName)%>" maxlength="260">
 			&nbsp;*			   
 		</div>
 	</div>
@@ -295,7 +295,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" name="url"  
-			   	size="50" value="<%=engineUrl%>" maxlength="260">
+			   	size="50" value="<%=StringEscapeUtils.escapeHtml(engineUrl)%>" maxlength="260">
 			&nbsp;*
 		</div>
 	</div>
@@ -313,7 +313,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" name="driverName"
-					size="50" value="<%=engineDriver%>" maxlength="260">
+					size="50" value="<%=StringEscapeUtils.escapeHtml(engineDriver)%>" maxlength="260">
 			&nbsp;*				
 		</div>
 	</div>
@@ -329,7 +329,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   } 
 	%>
 		<input class='portlet-form-input-field' type="text" name="secondaryUrl" 
-                size="50" value="<%=secUrl%>" maxlength="260">
+                size="50" value="<%=StringEscapeUtils.escapeHtml(secUrl)%>" maxlength="260">
 	</div>
 	<div class='div_detail_label' style='display:none;'>
 		<span class='portlet-form-field-label'>

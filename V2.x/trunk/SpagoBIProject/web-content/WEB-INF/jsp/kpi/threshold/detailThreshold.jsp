@@ -156,20 +156,20 @@
 	key="sbi.kpi.label.name" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="name" size="50"
-	value="<%=name%>" maxlength="200"> &nbsp;*</div>
+	value="<%=StringEscapeUtils.escapeHtml(name)%>" maxlength="200"> &nbsp;*</div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.code" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="code" size="50"
-	value="<%=code%>" maxlength="200"></div>
+	value="<%=StringEscapeUtils.escapeHtml(code)%>" maxlength="200"></div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form' style="height: 150px;">
 <textarea
-  class='portlet-text-area-field'  cols="40" style='height: 110px;' name="description"><%=description%></textarea></div>
+  class='portlet-text-area-field'  cols="40" style='height: 110px;' name="description"><%=StringEscapeUtils.escapeHtml(description)%></textarea></div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -191,8 +191,8 @@ if(messageSave.trim().equals(DelegatedDetailService.DETAIL_UPDATE)) {
 			selected = "selected='selected'";
 		}
 		%>    			 		
-		<option value="<%= domain.getValueId() %>" label="<%= domain.getTranslatedValueName(locale) %>" <%= selected %>>
-			<%= domain.getTranslatedValueName(locale) %>	
+		<option value="<%= domain.getValueId() %>" label="<%= StringEscapeUtils.escapeHtml(domain.getTranslatedValueName(locale)) %>" <%= selected %>>
+			<%= StringEscapeUtils.escapeHtml(domain.getTranslatedValueName(locale)) %>	
 		</option>
 		<%
 	}

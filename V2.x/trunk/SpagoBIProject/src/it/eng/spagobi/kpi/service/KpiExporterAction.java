@@ -111,7 +111,7 @@ public class KpiExporterAction extends AbstractHttpAction {
 
 
 
-
+/*
 
 	public List<KpiResourceBlock> executeKpi(Integer objectId) throws EMFUserError{
 		SourceBean request = null;
@@ -154,7 +154,7 @@ public class KpiExporterAction extends AbstractHttpAction {
 	}
 
 
-
+*/
 
 
 

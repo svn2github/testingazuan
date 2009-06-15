@@ -223,7 +223,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" <%=isReadonly %> id="LABEL"s
-				   name="LABEL" size="50" value="<%=label%>" maxlength="50" />
+				   name="LABEL" size="50" value="<%=StringEscapeUtils.escapeHtml(label)%>" maxlength="50" />
 			&nbsp;*
 		</div>
 		<div class='div_detail_label'>
@@ -239,7 +239,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="NAME"  id="NAME"
-				   size="50" value="<%=name%>" maxlength="160" />
+				   size="50" value="<%=StringEscapeUtils.escapeHtml(name)%>" maxlength="160" />
 				   		&nbsp;*
 		</div>
 			
@@ -256,7 +256,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="DESCR" 
-				   size="50" value="<%= desc %>" maxlength="160" />
+				   size="50" value="<%= StringEscapeUtils.escapeHtml(desc) %>" maxlength="160" />
 		</div>
 					
 					<%	
@@ -337,7 +337,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="FILENAME" id="FILENAME"
-				   size="50" value="<%=fileName%>" maxlength="300" <%=disableFile%> />
+				   size="50" value="<%=StringEscapeUtils.escapeHtml(fileName)%>" maxlength="300" <%=disableFile%> />
 	   </div>
 	   </div>
 	   
@@ -358,7 +358,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 		
-		<textarea id="QUERY" rows="8" cols="80" name="QUERY" style="font-size:9pt" <%=disableQuery%>><%=query%></textarea>
+		<textarea id="QUERY" rows="8" cols="80" name="QUERY" style="font-size:9pt" <%=disableQuery%>><%=StringEscapeUtils.escapeHtml(query)%></textarea>
 		<BR>
 	   
 	   </div>
@@ -394,8 +394,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					selected = "selected='selected'";										
 					}				
 			 	%>    			 		
-    				<option value="<%= dsId  %>" label="<%= dataSourceD.getLabel() %>" <%= selected %>>
-    					<%=dataSourceD.getLabel() %>	
+    				<option value="<%= dsId  %>" label="<%= StringEscapeUtils.escapeHtml(dataSourceD.getLabel()) %>" <%= selected %>>
+    					<%=StringEscapeUtils.escapeHtml(dataSourceD.getLabel()) %>	
     				</option>
     				<%				
 			  	}
@@ -421,7 +421,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="ADDRESS" id="ADDRESS"
-				   size="50" value="<%=address%>" maxlength="150" <%=disableWs%> />
+				   size="50" value="<%=StringEscapeUtils.escapeHtml(address)%>" maxlength="150" <%=disableWs%> />
 	   </div>
 	   
 	   		<div class='div_detail_label' id="OPERATION">
@@ -440,7 +440,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="OPERATION" id="OPERATION"
-				   size="50" value="<%=operation%>" maxlength="50" <%=operation%> <%=disableWs%>/>
+				   size="50" value="<%=StringEscapeUtils.escapeHtml(operation)%>" maxlength="50" <%=operation%> <%=disableWs%>/>
 	   </div>		
 			
 	</div>
@@ -500,8 +500,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			    }		
 			    String aliasName=ScriptUtilities.bindAliasEngine(alias);
 	%>
-	    	<option value="<%=alias%>" label="<%=alias%>" <%= selected%>>
-    					<%=aliasName%>	
+	    	<option value="<%=StringEscapeUtils.escapeHtml(alias)%>" label="<%=StringEscapeUtils.escapeHtml(alias)%>" <%= selected%>>
+    					<%=StringEscapeUtils.escapeHtml(aliasName)%>	
     		</option>
 	<%
 		}
@@ -529,7 +529,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="JCLASSNAME" id="JCLASSNAME"
-				   size="100" value="<%=javaClassName%>" maxlength="50" <%=disableJClass%> />
+				   size="100" value="<%=StringEscapeUtils.escapeHtml(javaClassName)%>" maxlength="50" <%=disableJClass%> />
 	   </div>
 	   </div>
 	   
@@ -558,7 +558,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       		    		isTransformer = true;   
       		    	}
       		%>
-      			<option value="<%=transformer.getValueCd()%>"  <%if(isTransformer) out.print(" selected='selected' ");  %>><%=transformer.getTranslatedValueName(locale)%></option>
+      			<option value="<%=transformer.getValueCd()%>"  <%if(isTransformer) out.print(" selected='selected' ");  %>><%=StringEscapeUtils.escapeHtml(transformer.getTranslatedValueName(locale))%></option>
       		<% 	
       			}
 			}
@@ -592,17 +592,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<spagobi:message key = "SBISet.ListDataSet.pivotColumn" />
 				</span>
 				<input class='portlet-form-input-field' type="text" name="PIVOTCOLUMNNAME" 
-					   size="25" value="<%= pivotColumnName %>" maxlength="50" />
+					   size="25" value="<%= StringEscapeUtils.escapeHtml(pivotColumnName) %>" maxlength="50" />
 			    <span class='portlet-form-field-label'>	
 					<spagobi:message key = "SBISet.ListDataSet.pivotRow" />
 				</span>
 				<input class='portlet-form-input-field' type="text" name="PIVOTROWNAME" 
-					   size="25" value="<%= pivotRowName %>" maxlength="50" />
+					   size="25" value="<%= StringEscapeUtils.escapeHtml(pivotRowName) %>" maxlength="50" />
 			   <span class='portlet-form-field-label'>	
 					<spagobi:message key = "SBISet.ListDataSet.pivotValue" />
 				</span>
 				<input class='portlet-form-input-field' type="text" name="PIVOTCOLUMNVALUE" 
-					   size="25" value="<%= pivotColumnValue %>" maxlength="50" />
+					   size="25" value="<%= StringEscapeUtils.escapeHtml(pivotColumnValue) %>" maxlength="50" />
 				<span class='portlet-form-field-label'>	
 					<spagobi:message key = "SBISet.ListDataSet.numRows" />
 				</span>
@@ -660,8 +660,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var label = document.dsForm.LABEL.value;
 	var description = document.dsForm.DESCR.value;	
 	
-	if ((label != '<%=ds.getLabel()%>')
-		|| (description != '<%=(ds.getDescription()==null)?"":ds.getDescription()%>'))
+	if ((label != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getLabel()))%>')
+		|| (description != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getDescription()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getDescription()))%>'))
 	{			
 		bFormModified = 'true';
 	}

@@ -157,7 +157,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" <%=sReadonly %>
-				   name="NAME" size="50" value="<%=name%>" maxlength="45" />
+				   name="NAME" size="50" value="<%=StringEscapeUtils.escapeHtml(name)%>" maxlength="45" />
 			&nbsp;*
 		</div>
 		<div class='div_detail_label'>
@@ -173,7 +173,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="DESCR" 
-				   size="50" value="<%= desc %>" maxlength="130" />
+				   size="50" value="<%= StringEscapeUtils.escapeHtml(desc) %>" maxlength="130" />
 		</div>
 	
 		<!-- DISPLAY FORM FOR TEMPLATE  UPLOAD -->
@@ -300,7 +300,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   } 
 			%>
 	    	<input class='portlet-form-input-field' type="text" name="NAME_FEATURE" 
-	    	 size="50" value="<%=nameFeature%>" readonly />
+	    	 size="50" value="<%=StringEscapeUtils.escapeHtml(nameFeature)%>" readonly />
 	    	&nbsp;
 	    	 <% 
     		if (selectedFeatureId.equals("NEW")){
@@ -330,7 +330,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   } 
 			%>
 	    	<input class='portlet-form-input-field' type="text" name="DESCR_FEATURE" 
-	    	 size="50" value="<%=descFeature%>"  readonly />
+	    	 size="50" value="<%=StringEscapeUtils.escapeHtml(descFeature)%>"  readonly />
 	    	&nbsp;
 	    	</div>			
 		
@@ -346,7 +346,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   } 
 			%>
 	    	<input class='portlet-form-input-field' type="text" name="TYPE_FEATURE" 
-	    	 size="50" value="<%=typeFeature%>" readonly />
+	    	 size="50" value="<%=StringEscapeUtils.escapeHtml(typeFeature)%>" readonly />
 	    	&nbsp;
 	    	</div>			
 		</div>
@@ -373,9 +373,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var description = document.mapForm.DESCR.value;	
 	var format = document.mapForm.FORMAT.value;
 
-	if ((name != '<%=map.getName()%>')
-		|| (description != '<%=map.getDescr()%>')
-		|| (format != '<%=map.getFormat()%>')
+	if ((name != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(map.getName()))%>')
+		|| (description != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(map.getDescr()))%>')
+		|| (format != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(map.getFormat()))%>')
 		|| fileUploadChanged=='true') {
 			
 		biMapFormModified = 'true';

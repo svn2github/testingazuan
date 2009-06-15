@@ -25,6 +25,7 @@
 <%@tag import="it.eng.spago.base.SessionContainer"%>
 <%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 <%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
+<%@tag import="org.apache.commons.lang.StringEscapeUtils"%>
 
 
 <%
@@ -215,15 +216,15 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
         String date = StringUtils.dateToString(creationDateVP, format);
         %>
 				<tr class='portlet-font'>
-					<td style='vertical-align:middle;' class='<%= rowClass %>'><%= nameVP %></td>
+					<td style='vertical-align:middle;' class='<%= rowClass %>'><%= StringEscapeUtils.escapeHtml(nameVP) %></td>
 					<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
-					<td style='vertical-align:middle;' class='<%= rowClass %>'><%= ownerVP %></td>
+					<td style='vertical-align:middle;' class='<%= rowClass %>'><%= StringEscapeUtils.escapeHtml(ownerVP) %></td>
 					<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
-					<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= descrVP %></td>
+					<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= StringEscapeUtils.escapeHtml(descrVP) %></td>
 					<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
-					<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= scopeVP %></td>
+					<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= StringEscapeUtils.escapeHtml(scopeVP) %></td>
 					<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
-					<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= date %></td>
+					<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= StringEscapeUtils.escapeHtml(date) %></td>
 					<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
 				    	<a href="javascript:document.location='<%= viewVPUrl.toString() %>';">
 				    		<img 

@@ -552,7 +552,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				
 				%>
 				<div class='div_form_field'>
-					<input id="triggername" value="<%=trigName%>" type="text" name="triggername" size="35" <%=readonly%> />
+					<input id="triggername" value="<%=StringEscapeUtils.escapeHtml(trigName)%>" type="text" name="triggername" size="35" <%=readonly%> />
 				    &nbsp;*
 				</div>
 			</div>
@@ -563,7 +563,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_form_field'>
-					<input type="text" value="<%=triggerInfo.getTriggerDescription()%>" name="triggerdescription" size="35"/>
+					<input type="text" value="<%=StringEscapeUtils.escapeHtml(triggerInfo.getTriggerDescription())%>" name="triggerdescription" size="35"/>
 					&nbsp;
 				</div>
 		     </div>
@@ -574,7 +574,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_form_field'>
-					<input type="text" value="<%=trigStartDate%>" 
+					<input type="text" value="<%=StringEscapeUtils.escapeHtml(trigStartDate)%>" 
 			    		   name="startdate" id="startdate"  
 			    		   saveFormat="<%=saveFormat%>"  displayFormat="<%=saveFormat%>"
 			       		   dojoType="dropdowndatepicker" widgetId="startDateWidget" />
@@ -588,7 +588,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_form_field'>
-					<input type="text" value="<%=triggerInfo.getStartTime()%>" 
+					<input type="text" value="<%=StringEscapeUtils.escapeHtml(triggerInfo.getStartTime())%>" 
 					       name="starttime" id="starttime"  
 					       dojoType="dropdowntimepicker" widgetId="startTimeWidget" />
 					&nbsp;*
@@ -601,7 +601,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_form_field'>
-				 	<input type="text" value="<%=triggerInfo.getEndDateRFC3339()%>" 
+				 	<input type="text" value="<%=StringEscapeUtils.escapeHtml(triggerInfo.getEndDateRFC3339())%>" 
 					       name="enddate" id="enddate"  
 					       dojoType="dropdowndatepicker" widgetId="endDateWidget" />
 					&nbsp;
@@ -614,7 +614,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</span>
 				</div>
 				<div class='div_form_field'>
-					<input type="text" value="<%=triggerInfo.getEndTime()%>" 
+					<input type="text" value="<%=StringEscapeUtils.escapeHtml(triggerInfo.getEndTime())%>" 
 					       name="endtime" id="endtime"  
 					       dojoType="dropdowntimepicker" widgetId="endTimeWidget" />
 					&nbsp;
@@ -633,7 +633,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   	repInterv = "";
 			}
 			%>
-			<input type="hidden" value="<%=repInterv%>" name="repeatInterval" />
+			<input type="hidden" value="<%=StringEscapeUtils.escapeHtml(repInterv)%>" name="repeatInterval" />
 			
 			
 			
@@ -977,7 +977,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
 				<div id="tabbiobj<%=biobj.getId()%>__<%=index%>"  class='<%= tabClass%>'>
 					<a href="javascript:changeTab('<%=biobj.getId()%>__<%=index%>')" style="color:black;"> 
-							<%=biobjName%>
+							<%=StringEscapeUtils.escapeHtml(biobjName)%>
 					</a>
 				</div>
 	<%	
@@ -1029,7 +1029,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				        </span>
 			      </div>
             <div class='div_detail_form'>
-				        <input type="text" id="snaphotname" value="<%=sInfo.getSnapshotName()%>"
+				        <input type="text" id="snaphotname" value="<%=StringEscapeUtils.escapeHtml(sInfo.getSnapshotName())%>"
 				               name="snapshotname_<%=biobj.getId()%>__<%=index%>" size="35"/>
 			      </div>
 			      <div class='div_detail_label_scheduler'>
@@ -1038,7 +1038,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				        </span>
 			       </div>
 			       <div class='div_detail_form'>
-				        <input type="text" value="<%=sInfo.getSnapshotDescription()%>"
+				        <input type="text" value="<%=StringEscapeUtils.escapeHtml(sInfo.getSnapshotDescription())%>"
 				               name="snapshotdescription_<%=biobj.getId()%>__<%=index%>" size="35"/>
 			       </div>
 		      	 <div class='div_detail_label_scheduler'>
@@ -1048,7 +1048,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			       </div>
 			       <div class='div_detail_form'>
 				        <input type="text" name="snapshothistorylength_<%=biobj.getId()%>__<%=index%>" 
-				               value="<%=sInfo.getSnapshotHistoryLength()%>" size="35"/>
+				               value="<%=StringEscapeUtils.escapeHtml(sInfo.getSnapshotHistoryLength())%>" size="35"/>
 			       </div>		       
         </div>
         
@@ -1073,7 +1073,7 @@ toggle('snapshot_<%=biobj.getId()%>__<%=index%>', 'saveassnapshot_<%=biobj.getId
 			      </div>
             <div class='div_detail_form'>
 				        <input type="text" name="documentname_<%=biobj.getId()%>__<%=index%>" 
-				               value="<%=sInfo.getDocumentName()%>" size="35"/>
+				               value="<%=StringEscapeUtils.escapeHtml(sInfo.getDocumentName())%>" size="35"/>
 			      </div>
 			      <div class='div_detail_label_scheduler'>
 				        <span class='portlet-form-field-label'>
@@ -1082,7 +1082,7 @@ toggle('snapshot_<%=biobj.getId()%>__<%=index%>', 'saveassnapshot_<%=biobj.getId
 			       </div>
 			       <div class='div_detail_form'>
 				        <input type="text" name="documentdescription_<%=biobj.getId()%>__<%=index%>" 
-				               value="<%=sInfo.getDocumentDescription()%>" size="35"/>
+				               value="<%=StringEscapeUtils.escapeHtml(sInfo.getDocumentDescription())%>" size="35"/>
 			       </div>   
 			       
 			       <spagobi:treeObjects moduleName="TriggerManagementModule"  
@@ -1111,7 +1111,7 @@ toggle('document_<%=biobj.getId()%>__<%=index%>', 'saveasdocument_<%=biobj.getId
 				        </span>
 			      </div>
             <div class='div_detail_form'>
-				        <input type="text" id="javaclasspath" value="<%=sInfo.getJavaClassPath()%>"
+				        <input type="text" id="javaclasspath" value="<%=StringEscapeUtils.escapeHtml(sInfo.getJavaClassPath())%>"
 				               name="javaclasspath_<%=biobj.getId()%>__<%=index%>" size="35"/>
 			      </div>
         </div>
@@ -1171,7 +1171,7 @@ toggle('javaclass_<%=biobj.getId()%>__<%=index%>', 'sendtojavaclass_<%=biobj.get
 		  	      	</div>
 			  	    <div class='div_detail_form'>
 			  		        <input  type="text" name="mailtos_<%=biobj.getId()%>__<%=index%>" 
-			  		               value="<%=sInfo.getMailTos()%>" size="35" />
+			  		               value="<%=StringEscapeUtils.escapeHtml(sInfo.getMailTos())%>" size="35" />
 			  	    </div>
 				</div>
 				
@@ -1218,8 +1218,8 @@ toggle('javaclass_<%=biobj.getId()%>__<%=index%>', 'sendtojavaclass_<%=biobj.get
 				  		        while (dsIt.hasNext()) {
 				  		        	IDataSet ds = (IDataSet) dsIt.next();
 				  		        	%>
-				  		        	<option value='<%= ds.getLabel() %>' <%= ds.getLabel().equalsIgnoreCase(dsLabel) ? "selected='selected'" : ""%>>
-				  		        		<%= ds.getName() %>
+				  		        	<option value='<%= StringEscapeUtils.escapeHtml(ds.getLabel()) %>' <%= ds.getLabel().equalsIgnoreCase(dsLabel) ? "selected='selected'" : ""%>>
+				  		        		<%= StringEscapeUtils.escapeHtml(ds.getName()) %>
 				  		        	</option>
 				  		        	<%
 				  		        }
@@ -1243,8 +1243,8 @@ toggle('javaclass_<%=biobj.getId()%>__<%=index%>', 'sendtojavaclass_<%=biobj.get
 				  		        while (parametersIt.hasNext()) {
 				  		        	BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
 				  		        	%>
-				  		        	<option value='<%= aParameter.getLabel() %>' <%= aParameter.getLabel().equalsIgnoreCase(parameterLabel) ? "selected='selected'" : ""%>>
-				  		        		<%= aParameter.getLabel() %>
+				  		        	<option value='<%= StringEscapeUtils.escapeHtml(aParameter.getLabel()) %>' <%= aParameter.getLabel().equalsIgnoreCase(parameterLabel) ? "selected='selected'" : ""%>>
+				  		        		<%= StringEscapeUtils.escapeHtml(aParameter.getLabel()) %>
 				  		        	</option>
 				  		        	<%
 				  		        }
@@ -1293,7 +1293,7 @@ toggle('javaclass_<%=biobj.getId()%>__<%=index%>', 'sendtojavaclass_<%=biobj.get
 		  	      	</div>
 			  	    <div class='div_detail_form'>
 			  		        <input  type="text" name="expression_<%=biobj.getId()%>__<%=index%>" 
-			  		               value="<%=sInfo.getExpression()%>" size="35" />
+			  		               value="<%=StringEscapeUtils.escapeHtml(sInfo.getExpression())%>" size="35" />
 			  	    </div>
 				</div>
 			  	    
@@ -1304,7 +1304,7 @@ toggle('javaclass_<%=biobj.getId()%>__<%=index%>', 'sendtojavaclass_<%=biobj.get
   	      	</div>
 	  	    <div class='div_detail_form'>
 	  		        <input type="text" name="mailsubj_<%=biobj.getId()%>__<%=index%>" 
-	  		               value="<%=sInfo.getMailSubj()%>" size="60" />
+	  		               value="<%=StringEscapeUtils.escapeHtml(sInfo.getMailSubj())%>" size="60" />
 	  	    </div>
 	  	    <div class='div_detail_label_scheduler'>
   		      <span class='portlet-form-field-label'>
@@ -1376,9 +1376,9 @@ toggle('mail_<%=biobj.getId()%>__<%=index%>', 'sendmail_<%=biobj.getId()%>__<%=i
 		 	<td  style='vertical-align:right;text-align:right;'> <input type="checkbox" name="sendtodl_<%=listID%>_<%=biobj.getId()%>__<%=index%>"  value=<%=listID%>
                	<%if(sInfo.getDlIds().contains(new Integer(listID))){out.write(" checked='checked' " );} %> />
 			</td>
-		 	<td class='portlet-section-body' style='vertical-align:middle;text-align:left;'> &nbsp; &nbsp;  <%=listName%>	 			
+		 	<td class='portlet-section-body' style='vertical-align:middle;text-align:left;'> &nbsp; &nbsp;  <%=StringEscapeUtils.escapeHtml(listName)%>	 			
 			</td>	
-			<td class='portlet-section-body' style='vertical-align:middle;text-align:left;'><%=listDescr%>
+			<td class='portlet-section-body' style='vertical-align:middle;text-align:left;'><%=StringEscapeUtils.escapeHtml(listDescr)%>
 			</td>
 	    </tr>
 				   		

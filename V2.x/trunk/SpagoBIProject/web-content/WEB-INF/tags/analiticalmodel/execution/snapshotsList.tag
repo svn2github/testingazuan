@@ -22,7 +22,7 @@
 <%@tag import="it.eng.spago.util.StringUtils"%>
 <%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
 <%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
-
+<%@tag import="org.apache.commons.lang.StringEscapeUtils"%>
 
 <%
 RequestContainer requestContainer = ChannelUtilities.getRequestContainer(request);
@@ -184,11 +184,11 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 		
         %>
 	    <tr class='portlet-font'>
-	    	<td style='vertical-align:middle;' class='<%= rowClass %>'><%= nameSnap %></td>
+	    	<td style='vertical-align:middle;' class='<%= rowClass %>'><%= StringEscapeUtils.escapeHtml(nameSnap) %></td>
 	    	<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
-	    	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= descrSnap %></td>
+	    	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= StringEscapeUtils.escapeHtml(descrSnap) %></td>
 	    	<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
-	    	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= dateValue %></td>
+	    	<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= StringEscapeUtils.escapeHtml(dateValue) %></td>
 	    	<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
         	<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
         		<a href='<%= execSnapUrl %>'>

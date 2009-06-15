@@ -110,7 +110,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       		<td class='portlet-form-field-label' ><%=prefName%>:</td>
       		<td>&nbsp;</td>
       		<td>	
-      			<input type="text" name="<%=prefPrefix+prefName%>" value="<%=prefValue != null ? prefValue : ""%>" />
+      			<input type="text" name="<%=prefPrefix+prefName%>" value="<%=prefValue != null ? StringEscapeUtils.escapeHtml(prefValue) : ""%>" />
       		</td>
    		</tr>
 		<%	

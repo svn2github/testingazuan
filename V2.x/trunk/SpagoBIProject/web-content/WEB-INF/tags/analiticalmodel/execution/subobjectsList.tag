@@ -23,6 +23,7 @@
 <%@tag import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
 <%@tag import="it.eng.spago.util.StringUtils"%>
 <%@tag import="it.eng.spagobi.utilities.themes.ThemesManager"%>
+<%@tag import="org.apache.commons.lang.StringEscapeUtils"%>
 
 
 <%
@@ -233,15 +234,15 @@ if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
 	       		    		<%= nameSub %>
 	           			</td>
 	           			<td class='<%= rowClass %>' width='20px'>&nbsp;</td> 
-	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= owner %></td>
+	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= StringEscapeUtils.escapeHtml(owner) %></td>
 	           			<td class='<%= rowClass %>' width='20px'>&nbsp;</td> 
-	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= descr %></td>
+	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= StringEscapeUtils.escapeHtml(descr) %></td>
 	           			<td class='<%= rowClass %>' width='20px'>&nbsp;</td> 
-	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= creationDate %></td>
+	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= StringEscapeUtils.escapeHtml(creationDate) %></td>
 	           			<td class='<%= rowClass %>' width='20px'>&nbsp;</td> 
-	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= lastModificationDate %></td>
+	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= StringEscapeUtils.escapeHtml(lastModificationDate) %></td>
 	           			<td class='<%= rowClass %>' width='20px'>&nbsp;</td> 
-	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= visib %></td>
+	           			<td style='vertical-align:middle;' class='<%= rowClass %>' ><%= StringEscapeUtils.escapeHtml(visib) %></td>
 	           			<td class='<%= rowClass %>' width='20px'>&nbsp;</td>
 	           			<td style='vertical-align:middle;' class='<%= rowClass %>' width='40px'>
 	           				<a href='<%= execSubObjUrl %>'>

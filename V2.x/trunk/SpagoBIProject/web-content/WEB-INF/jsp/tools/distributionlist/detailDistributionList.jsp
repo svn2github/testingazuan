@@ -120,7 +120,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" 
-				   name="NAME" size="50" value="<%=name%>" maxlength="50" />
+				   name="NAME" size="50" value="<%=StringEscapeUtils.escapeHtml(name)%>" maxlength="50" />
 			&nbsp;*
 		</div>
 		
@@ -137,7 +137,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="DESCR" 
-				   size="50" value="<%= descr %>" maxlength="160" />
+				   size="50" value="<%= StringEscapeUtils.escapeHtml(descr) %>" maxlength="160" />
 		</div>
 	
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
@@ -192,9 +192,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		 %>
 				
 		<tr class='portlet-font'>
-		 	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=userName %>	 			
+		 	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=StringEscapeUtils.escapeHtml(userName) %>	 			
 			</td>	
-			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=userEmail %>
+			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=StringEscapeUtils.escapeHtml(userEmail) %>
 			</td>
 	    </tr>
 										
@@ -415,19 +415,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		 %>
 		 <tr class='portlet-font'>
 		 	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>		 	
-			<%=docName%>
+			<%=StringEscapeUtils.escapeHtml(docName)%>
 			</td>	
 			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>
-			<%=docDescr %>
+			<%=StringEscapeUtils.escapeHtml(docDescr) %>
 			</td>
 			 <td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
-					<%=schedBegin %>				   				
+					<%=StringEscapeUtils.escapeHtml(schedBegin) %>				   				
 				   	</td>	
 				   	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
-					<%=schedEnd %>				   				
+					<%=StringEscapeUtils.escapeHtml(schedEnd) %>				   				
 				   	</td>
 					<td class='portlet-section-body' style='vertical-align:left;text-align:left;'>	
-					<%=frequency %>				   				
+					<%=StringEscapeUtils.escapeHtml(frequency) %>				   				
 				   	</td>
 	    </tr>
 				    		
@@ -454,8 +454,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var name = document.dlForm.NAME.value;
 	var description = document.dlForm.DESCR.value;	
 	
-	if ((name != '<%=dl.getName()%>')
-		|| (description != '<%=(dl.getDescr()==null)?"":dl.getDescr()%>')) {
+	if ((name != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(dl.getName()))%>')
+		|| (description != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(dl.getDescr()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(dl.getDescr()))%>')) {
 			
 		bFormModified = 'true';
 	}

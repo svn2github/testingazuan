@@ -370,13 +370,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				<td>&nbsp;&nbsp;
 					<spagobi:message key = "impexp.name" bundle="component_impexp_messages"/>:
 				</td>
-				<td><input type="text" name="NAME" id="nameNewAssToSave" value="<%=associationName%>"/></td>
+				<td><input type="text" name="NAME" id="nameNewAssToSave" value="<%=StringEscapeUtils.escapeHtml(associationName)%>"/></td>
 			</tr>
 			<tr height='25px'>
 				<td>&nbsp;&nbsp;
 					<spagobi:message key = "impexp.description" bundle="component_impexp_messages"/>:
 				</td>
-				<td><input type="text" name="DESCRIPTION" id="descriptionNewAssToSave" value="<%=associationDescription%>"/></td>
+				<td><input type="text" name="DESCRIPTION" id="descriptionNewAssToSave" value="<%=StringEscapeUtils.escapeHtml(associationDescription)%>"/></td>
 			</tr>
 			<tr height='45px' valign='middle'>
 				<td>&nbsp;</td>

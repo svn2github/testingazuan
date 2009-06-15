@@ -91,7 +91,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<tr class='header-row-portlet-section'>
 			<td class='header-title-column-portlet-section-noimage' 
 			    style='vertical-align:middle;padding-left:5px;font-size: 13px;font-weight:600;background:#e0e1e6;font-family: Arial,Verdana,Geneva,Helvetica,sans-serif;color: #074B88;'>
-				<spagobi:message key = "SBISet.ListDL.emailInsertTitle"  /> &nbsp; <%=name%>
+				<spagobi:message key = "SBISet.ListDL.emailInsertTitle"  /> &nbsp; <%=StringEscapeUtils.escapeHtml(name)%>
 			</td>
 		</tr>
 	</table>
@@ -114,7 +114,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" 
-				   name="EMAIL" size="50" value="<%=email%>" maxlength="50" /> *
+				   name="EMAIL" size="50" value="<%=StringEscapeUtils.escapeHtml(email)%>" maxlength="50" /> *
 			
 			
 		</div>

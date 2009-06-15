@@ -444,7 +444,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			%>
 			<div class='div_form_field'>
 				<input class='portlet-form-input-field' type="text" name="jobname" 
-			      	   size="50" value="<%=jobInfo.getJobName()%>"  <%=readonly%> >
+			      	   size="50" value="<%=StringEscapeUtils.escapeHtml(jobInfo.getJobName())%>"  <%=readonly%> >
 			    &nbsp;*
 			</div>
 		</div>
@@ -456,7 +456,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</div>
 			<div class='div_form_field'>
 				<input class='portlet-form-input-field' type="text" 
-					   name="jobdescription" size="50" value="<%=jobInfo.getJobDescription()%>" >
+					   name="jobdescription" size="50" value="<%=StringEscapeUtils.escapeHtml(jobInfo.getJobDescription())%>" >
 			</div>
 		</div>
 	</div>
@@ -542,7 +542,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	%>
 				<div id="tabbiobj<%=biobj.getId()%>__<%=index%>"  class='<%= tabClass%>'>
 					<a href="javascript:changeTab('<%=biobj.getId()%>__<%=index%>')" style="color:black;"> 
-							<%=biobjName%>
+							<%=StringEscapeUtils.escapeHtml(biobjName)%>
 					</a>
 				</div>
 	<%	
@@ -654,41 +654,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							</select>
 							
 							<script>
-							function <%="change_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_strategy"%>(index) {
+							function <%="change_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_strategy"%>(index) {
 								if (index == 0) {
-									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_fixedValues"%>').style.display='block';
-									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_loadAtRuntime"%>').style.display='none';
-									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_useFormula"%>').style.display='none';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_fixedValues"%>').style.display='block';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_loadAtRuntime"%>').style.display='none';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_useFormula"%>').style.display='none';
 								}
 								if (index == 1) {
-									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_fixedValues"%>').style.display='none';
-									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_loadAtRuntime"%>').style.display='block';
-									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_useFormula"%>').style.display='none';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_fixedValues"%>').style.display='none';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_loadAtRuntime"%>').style.display='block';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_useFormula"%>').style.display='none';
 								}
 								if (index == 2) {
-									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_fixedValues"%>').style.display='none';
-									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_loadAtRuntime"%>').style.display='none';
-									$('<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_useFormula"%>').style.display='block';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_fixedValues"%>').style.display='none';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_loadAtRuntime"%>').style.display='none';
+									$('<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_useFormula"%>').style.display='block';
 								}
 							}
 							</script>
 							
 							<br/>
 							
-				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_fixedValues"%>'
-				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_fixedValues"%>'
+				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_fixedValues"%>'
+				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_fixedValues"%>'
 				    				style="margin-top:10px;display:<%= strategy == null ? "block" : "none" %>" >
 				    				
 					    		<input class='portlet-form-input-field' 
-							  	       id="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>"
-							  	       name="<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()%>" 
-							  	       type="text" value="<%=concatenatedValue%>" size="50" autocomplete="off" />
+							  	       id="<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>"
+							  	       name="<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>" 
+							  	       type="text" value="<%=StringEscapeUtils.escapeHtml(concatenatedValue)%>" size="50" autocomplete="off" />
 							  	&nbsp;&nbsp;&nbsp;
 							  	<%
 							  		List roles = biobjdao.getCorrectRolesForExecution(biobj.getId(), userProfile);
 							  		if(roles.size()>0) {
 							  	%>
-							  	<a style='text-decoration:none;' href="javascript:getLovList('<%=biobj.getId()%>', '<%=biobjpar.getParID()%>', '<%=biobjpar.getParameterUrlName()%>')">
+							  	<a style='text-decoration:none;' href="javascript:getLovList('<%=biobj.getId()%>', '<%=biobjpar.getParID()%>', '<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>')">
 							  		<img title='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' 
 	      				 				src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme)%>' 
 	      				 				alt='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' />
@@ -696,14 +696,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							  	<br/>
 								(<spagobi:message key = "scheduler.usingrole"  bundle="component_scheduler_messages"/> 
 								&nbsp;&nbsp;&nbsp;
-								<select name='role_par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName()%>'
-										id='role_par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName()%>' >
+								<select name='role_par_<%=biobj.getId()%>_<%=index%>_<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>'
+										id='role_par_<%=biobj.getId()%>_<%=index%>_<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>' >
 									<% 
 										Iterator iterRoles = roles.iterator(); 
 										while(iterRoles.hasNext()) {
 											String role = (String)iterRoles.next();
 									%>
-									<option value='<%=role%>'><%=role%></option>
+									<option value='<%=role%>'><%=StringEscapeUtils.escapeHtml(role)%></option>
 									<%
 										}
 									%>
@@ -713,13 +713,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								%>
 				    		</div>
 				    		
-				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_loadAtRuntime"%>'
-				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_loadAtRuntime"%>'
+				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_loadAtRuntime"%>'
+				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_loadAtRuntime"%>'
 				    				style="margin-top:10px;display:<%= (strategy != null && strategy instanceof RuntimeLoadingParameterValuesRetriever) ? "block" : "none" %>" >
 				    				
 									<spagobi:message key = "scheduler.loadAtRuntimeRole"  bundle="component_scheduler_messages"/>
-									<select name='par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName() + "_loadWithRole"%>'
-											id='par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName() + "_loadWithRole"%>' >
+									<select name='par_<%=biobj.getId()%>_<%=index%>_<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName()) + "_loadWithRole"%>'
+											id='par_<%=biobj.getId()%>_<%=index%>_<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName()) + "_loadWithRole"%>' >
 										<% 	
 											String roleToBeUsed = null;
 											if (strategy != null && strategy instanceof RuntimeLoadingParameterValuesRetriever) {
@@ -736,13 +736,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									</select>
 				    		</div>
 				    		
-				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_useFormula"%>'
-				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_useFormula"%>'
+				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_useFormula"%>'
+				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_useFormula"%>'
 				    				style="margin-top:10px;display:<%= (strategy != null && strategy instanceof FormulaParameterValuesRetriever) ? "block" : "none" %>" >
 				    				
 				    				<spagobi:message key = "scheduler.formulaName"  bundle="component_scheduler_messages"/>
-									<select name='par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName() + "_formula"%>'
-											id='par_<%=biobj.getId()%>_<%=index%>_<%=biobjpar.getParameterUrlName() + "_formula"%>' >
+									<select name='par_<%=biobj.getId()%>_<%=index%>_<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName()) + "_formula"%>'
+											id='par_<%=biobj.getId()%>_<%=index%>_<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName()) + "_formula"%>' >
 										<% 	
 											String formulaToBeUsed = null;
 											if (strategy != null && strategy instanceof FormulaParameterValuesRetriever) {
@@ -758,7 +758,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 													formulaDescription = msgBuilder.getMessage(formulaDescription.substring(1), "component_scheduler_messages", request);
 												}
 										%>
-										<option value='<%=formulaName%>' <%= formulaName.equals(formulaToBeUsed) ? "selected='selected'" : "" %>><%=formulaDescription%></option>
+										<option value='<%=StringEscapeUtils.escapeHtml(formulaName)%>' <%= formulaName.equals(formulaToBeUsed) ? "selected='selected'" : "" %>><%=StringEscapeUtils.escapeHtml(formulaDescription)%></option>
 										<%
 											}
 										%>
@@ -768,8 +768,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    	</div>
 				    	
 				    	<div>
-						  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_Iterative"%>'
-										id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_Iterative"%>'>
+						  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'
+										id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'>
 								<option value='false'><spagobi:message key = "scheduler.doNotIterateOnParameterValues"  bundle="component_scheduler_messages"/></option>
 								<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
 									<spagobi:message key = "scheduler.iterateOnParameterValues"  bundle="component_scheduler_messages"/>

@@ -93,7 +93,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   } %>
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" <%=sReadonly %>
-			   name="NAME" size="50" value="<%=name%>" maxlength="45">
+			   name="NAME" size="50" value="<%=StringEscapeUtils.escapeHtml(name)%>" maxlength="45">
 		&nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -108,7 +108,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   } 
 	%>
 		<input class='portlet-form-input-field' type="text" name="DESCR" 
-			   size="50" value="<%= desc %>" maxlength="130">
+			   size="50" value="<%= StringEscapeUtils.escapeHtml(desc) %>" maxlength="130">
 	</div>
 	
 	<div class='div_detail_label'>
@@ -151,9 +151,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var description = document.featureForm.DESCR.value;	
 	var type = document.featureForm.TYPE.value;
 
-	if ((name != '<%=feature.getName()%>')
-		|| (description != '<%=feature.getDescr()%>')
-		|| (type != '<%=feature.getType()%>')) {
+	if ((name != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(feature.getName()))%>')
+		|| (description != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(feature.getDescr()))%>')
+		|| (type != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(feature.getType()))%>')) {
 			
 		biFeatureFormModified = 'true';
 	}

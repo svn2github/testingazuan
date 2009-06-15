@@ -139,7 +139,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		%>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' type="text" 
-				   name="LABEL" size="50" value="<%=label%>" maxlength="50" />
+				   name="LABEL" size="50" value="<%=StringEscapeUtils.escapeHtml(label)%>" maxlength="50" />
 			&nbsp;*
 		</div>
 		<div class='div_detail_label'>
@@ -155,7 +155,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="DESCR" 
-				   size="50" value="<%= desc %>" maxlength="160" />
+				   size="50" value="<%= StringEscapeUtils.escapeHtml(desc) %>" maxlength="160" />
 		</div>
 			
 		<div class='div_detail_label'>
@@ -180,7 +180,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       		    		isDialect = true;   
       		    	}
       		%>
-      			<option value="<%=dialect.getValueId() %>"<%if(isDialect) out.print(" selected='selected' ");  %>><%=dialect.getTranslatedValueName(locale)%></option>
+      			<option value="<%=dialect.getValueId() %>"<%if(isDialect) out.print(" selected='selected' ");  %>><%=StringEscapeUtils.escapeHtml(dialect.getTranslatedValueName(locale))%></option>
       		<% 	
       			}
 			}
@@ -232,7 +232,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   	   disabledParam="";
 		%>
 			<input class='portlet-form-input-field' type="text" name="JNDI" 
-				   size="50" value="<%= jndi %>" maxlength="50" <%= disabledJndi %>/>
+				   size="50" value="<%= StringEscapeUtils.escapeHtml(jndi) %>" maxlength="50" <%= disabledJndi %>/>
 	   </div>
 	   <div class='div_detail_label'>
 			<span class='portlet-form-field-label'>	
@@ -247,7 +247,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="URL_CONNECTION" 
-				   size="50" value="<%= url %>" maxlength="50" <%= disabledParam %> />
+				   size="50" value="<%= StringEscapeUtils.escapeHtml(url) %>" maxlength="50" <%= disabledParam %> />
 	   </div>
 	   <div class='div_detail_label'>
 			<span class='portlet-form-field-label'>	
@@ -262,7 +262,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="USER" autocomplete='off'
-				   size="50" value="<%= user %>" maxlength="50" <%= disabledParam %> />
+				   size="50" value="<%= StringEscapeUtils.escapeHtml(user) %>" maxlength="50" <%= disabledParam %> />
 	   </div>
 	   <div class='div_detail_label'>
 			<span class='portlet-form-field-label'>	
@@ -277,7 +277,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="password" name="PWD" autocomplete='off'
-				   size="50" value="<%= pwd %>" maxlength="50" <%= disabledParam %> />
+				   size="50" value="<%= StringEscapeUtils.escapeHtml(pwd) %>" maxlength="50" <%= disabledParam %> />
 	   </div>
 	   <div class='div_detail_label'>
 			<span class='portlet-form-field-label'>	
@@ -292,7 +292,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="DRIVER" 
-				   size="50" value="<%= driver %>" maxlength="160" <%= disabledParam %>/>
+				   size="50" value="<%= StringEscapeUtils.escapeHtml(driver) %>" maxlength="160" <%= disabledParam %>/>
 	   </div>
 	   
 	
@@ -322,14 +322,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var driver = document.dsForm.DRIVER.value;
 
 	
-	if ((label != '<%=ds.getLabel()%>')
+	if ((label != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getLabel()))%>')
 	    || (dialect != '<%=(ds.getDialectId()==null)?"":ds.getDialectId().toString()%>')
-		|| (description != '<%=(ds.getDescr()==null)?"":ds.getDescr()%>')
-		|| ( jndi != '<%=(ds.getJndi()==null)?"":ds.getJndi()%>')
-		|| ( url != '<%=(ds.getUrlConnection()==null)?"":ds.getUrlConnection()%>')
-		|| ( user != '<%=(ds.getUser()==null)?"":ds.getUser()%>')
-		|| ( pwd != '<%=(ds.getPwd()==null)?"":ds.getPwd()%>')
-		|| ( driver != '<%=(ds.getDriver()==null)?"":ds.getDriver()%>')) {
+		|| (description != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getDescr()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getDescr()))%>')
+		|| ( jndi != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getJndi()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getJndi()))%>')
+		|| ( url != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getUrlConnection()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getUrlConnection()))%>')
+		|| ( user != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getUser()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getUser()))%>')
+		|| ( pwd != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getPwd()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getPwd()))%>')
+		|| ( driver != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getDriver()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getDriver()))%>')) {
 			
 		bFormModified = 'true';
 	}

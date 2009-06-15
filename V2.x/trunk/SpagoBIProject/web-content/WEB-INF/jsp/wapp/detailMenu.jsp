@@ -131,7 +131,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='div_detail_form'> 
 		<input class='portlet-form-input-field' type="text" 
 	      	   size="50" name="name" id="" 
-	      	   value="<%= menu.getName() %>"  />
+	      	   value="<%= StringEscapeUtils.escapeHtml(menu.getName()) %>"  />
 	   	&nbsp;*	
 	</div>
 	<div class='div_detail_label'>
@@ -147,7 +147,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       } 
      %>
 		<input class='portlet-form-input-field' type="text" 
-               size="50" name="description" id="" value="<%= desc %>" />
+               size="50" name="description" id="" value="<%= StringEscapeUtils.escapeHtml(desc) %>" />
 	</div>
 
 
@@ -283,7 +283,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					subobjectOption = document.createElement('option');
 					subobjectOption.value = subobject.name;
 					subobjectOption.text = subobject.name;
-					if (biobjectId == <%= menu.getObjId() %> && subobject.name == '<%= menu.getSubObjName() %>') {
+					if (biobjectId == <%= menu.getObjId() %> && subobject.name == '<%= StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(menu.getSubObjName())) %>') {
 						subobjectOption.selected = true;
 					}
 					if (subobject.description != null && subobject.description != '') {
@@ -329,7 +329,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					snapshotOption = document.createElement('option');
 					snapshotOption.value = snapshot.name;
 					snapshotOption.text = snapshot.name;
-					if (biobjectId == <%= menu.getObjId() %> && snapshot.name == '<%= menu.getSnapshotName() %>') {
+					if (biobjectId == <%= menu.getObjId() %> && snapshot.name == '<%= StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(menu.getSnapshotName())) %>') {
 						snapshotOption.selected = true;
 					}
 					if (snapshot.description != null && snapshot.description != '') {
@@ -354,7 +354,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				historyOption = document.createElement('option');
 				historyOption.value = j;
 				historyOption.text = j;
-				if (biobjectId == <%= menu.getObjId() %> && snapshotName == '<%= menu.getSnapshotName() %>' && j == <%= menu.getSnapshotHistory() %>) {
+				if (biobjectId == <%= menu.getObjId() %> && snapshotName == '<%= StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(menu.getSnapshotName())) %>' && j == <%= menu.getSnapshotHistory() %>) {
 					historyOption.selected = true;
 				}
 				addOptionToSelect(historyOption, snapshotHistorySelect);
@@ -414,7 +414,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					 	<input type="hidden" name="menu_obj" id="menu_obj" value="<%=objId%>"/>	
 													
 						<input class='portlet-form-input-field' type="text" size="50" readonly="readonly" 
-										name="documentReadLabel" id="documentReadLabel" value="<%=objName%>" maxlength="400" /> 
+										name="documentReadLabel" id="documentReadLabel" value="<%=StringEscapeUtils.escapeHtml(objName)%>" maxlength="400" /> 
 						<%
 						if (!biobjectFound) {
 							%>
@@ -471,7 +471,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div class='div_detail_form'> 
 			<input class='portlet-form-input-field' type="text" 
 		      	   size="50" maxlength="400" name="objParameters" id="" 
-		      	   value="<%= menu.getObjParameters() != null ? menu.getObjParameters() : "" %>"  />
+		      	   value="<%= menu.getObjParameters() != null ? StringEscapeUtils.escapeHtml(menu.getObjParameters()) : "" %>"  />
 		</div>
 		<%-- End Document parameters --%> 
 		
@@ -584,7 +584,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							if(ext.equalsIgnoreCase("html") || ext.equalsIgnoreCase("htm")){
 								if(currentStaticPage!=null && fileName.equals(currentStaticPage)) selected="selected='selected'";
 								%>
-								<option value="<%=fileName%>" <%=selected%>><%=fileName%></option>
+								<option value="<%=StringEscapeUtils.escapeHtml(fileName)%>" <%=selected%>><%=StringEscapeUtils.escapeHtml(fileName)%></option>
 								<%
 							} 
 						}
@@ -647,7 +647,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</div>
 			<div class='div_detail_form'>
 				<input class='portlet-form-input-field' type="text" size="50" readonly="readonly" onchange="checkForErrorImg();"
-						name="initialPath" id="initialPath" value="<%= menu.getInitialPath() != null ? menu.getInitialPath() : "" %>" maxlength="400" />
+						name="initialPath" id="initialPath" value="<%= menu.getInitialPath() != null ? StringEscapeUtils.escapeHtml(menu.getInitialPath()) : "" %>" maxlength="400" />
 				<a href='javascript:void(0);' id="initialPathLink" style="text-decoration:none;">
 					<img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme) %>" title="Lookup" alt="Lookup" />
 				</a>
@@ -721,7 +721,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   	var nameTree = 'treeFunct';
 	   	treeFunct = new dTree('treeFunct', '<%= request.getContextPath() %>');
 	   	treeFunct.config.useSelection = false;
-	   	treeFunct.add(-100,-1,'<%= nameTree %>');
+	   	treeFunct.add(-100,-1,'<%= StringEscapeUtils.escapeJavaScript(nameTree) %>');
 	   	<%
 	   	Iterator fodlersIter = folders.iterator();
 	   	String imgFolder = urlBuilder.getResourceLinkByTheme(request, "/img/treefolder.gif", currTheme);

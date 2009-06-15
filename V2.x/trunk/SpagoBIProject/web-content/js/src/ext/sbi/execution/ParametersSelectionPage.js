@@ -70,57 +70,64 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	
 	this.init(c);
 	
+	this.centerPanel = new Ext.Panel({
+		region:'center'
+		    , border: false
+		    , frame: false
+		    , collapsible: false
+		    , collapsed: false
+		    , hideCollapseTool: true
+		    , titleCollapse: true
+		    , collapseMode: 'mini'
+		    , split: true
+		    , autoScroll: true
+		    , layout: 'fit'
+		    , items: [this.parametersPanel]
+		});
+	
+	this.southPanel = new Ext.Panel({
+		region:'south'
+			, border: false
+			, frame: false
+			, collapsible: true
+			, collapsed: false
+			, hideCollapseTool: true
+			, titleCollapse: true
+			, collapseMode: 'mini'
+			, split: true
+			, autoScroll: true
+			, height: 280
+			, layout: 'fit'
+			, items: [this.shortcutsPanel]	
+	});
+	
+	
 	c = Ext.apply({}, c, {
 		layout: 'fit',
 		tbar: this.toolbar,
+		//autoScroll : true,
 		items: [{
 			layout: 'border',
 			listeners: {
 			    'render': {
 	            	fn: function() {
-	          	 		this.loadingMask = new Sbi.decorator.LoadMask(this.body, {msg:'Loading parameters ...'}); 
+	          	 		this.loadingMask = new Sbi.decorator.LoadMask(this.body, {msg:LN('sbi.execution.parametersselection.loadingmsg')}); 
 	          	 		if(this.maskOnRender === true) this.loadingMask.show();
 	            	},
 	            	scope: this
 	          	}
-	        },      	
-			items: [{
-				region:'center'
-			    , border: false
-			    , frame: false
-			    , collapsible: false
-			    , collapsed: false
-			    , hideCollapseTool: true
-			    , titleCollapse: true
-			    , collapseMode: 'mini'
-			    , split: true
-			    , autoScroll: true
-			    , layout: 'fit'
-			    , items: [this.parametersPanel]
-			}, {
-				region:'south'
-				, border: false
-				, frame: false
-				, collapsible: true
-				, collapsed: false
-				, hideCollapseTool: true
-				, titleCollapse: true
-				, collapseMode: 'mini'
-				, split: true
-				, autoScroll: true
-				, height: 280
-				, layout: 'fit'
-				, items: [this.shortcutsPanel]
-			}]
+	        },   	        
+			items: [this.centerPanel, this.southPanel]
 		}]
 	});   
+	
 	
 	this.parametersPanel.on('beforesynchronize', function(){if(this.loadingMask) this.loadingMask.show();}, this);
 	this.parametersPanel.on('synchronize', function(){if(this.loadingMask) this.loadingMask.hide();}, this);
 	this.parametersPanel.on('readyforexecution', function(){this.fireEvent('movenextrequest', this);}, this);
 	
 	this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
-	this.shortcutsPanel.on('viewpointexecutionrequest', this.parametersPanel.applyViewPoint, this.parametersPanel);
+	this.shortcutsPanel.on('viewpointexecutionrequest', this.onExecuteViewpoint, this);
 	
 	// constructor
     Sbi.execution.ParametersSelectionPage.superclass.constructor.call(this, c);
@@ -162,12 +169,19 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	}
 
 	, synchronizeToolbar: function( executionInstance ){
+		
+		this.toolbar.items.each( function(item) {
+			this.toolbar.items.remove(item);
+            item.destroy();           
+        }, this); 
+		
 		this.fireEvent('beforetoolbarinit', this, this.toolbar);
 		
 		this.toolbar.addFill();
 		
 		this.toolbar.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-back' 
+			, tooltip: LN('sbi.execution.parametersselection.toolbar.back')
 		    , scope: this
 		    , handler : function() {this.fireEvent('moveprevrequest');}
 		}));
@@ -176,6 +190,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 		
 		this.toolbar.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-clear'
+			, tooltip: LN('sbi.execution.parametersselection.toolbar.clear')
 		   	, scope: this
 		   	, handler : function() {
 				this.clearParametersForm();
@@ -185,6 +200,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 		if (Sbi.user.functionalities.contains('SeeViewpointsFunctionality')) {
 			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-save'
+				, tooltip: LN('sbi.execution.parametersselection.toolbar.save')
 			   	, scope: this
 			   	, handler : function() {
 					this.saveParametersFormStateAsViewpoint();
@@ -196,6 +212,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 		
 		this.toolbar.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-execute'
+			, tooltip: LN('sbi.execution.parametersselection.toolbar.next')
 			, scope: this
 			, handler : function() {this.fireEvent('movenextrequest');}
 		}));
@@ -216,7 +233,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 						formState[p] = formState[p].join(';');
 					}
 				}
-				params.viewpoint = Ext.util.JSON.encode( formState );
+				params.viewpoint = Sbi.commons.JSON.encode( formState );
 				Ext.Ajax.request({
 			          url: this.services['saveViewpointService'],
 			          
@@ -227,7 +244,14 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 				      		if(response.responseText !== undefined) {
 				      			var content = Ext.util.JSON.decode( response.responseText );
 				      			if(content !== undefined) {
-				      				alert('Viewpoint saved succesfully');
+				      				Ext.MessageBox.show({
+					      				title: 'Status',
+					      				msg: LN('sbi.execution.viewpoints.msg.saved'),
+					      				modal: false,
+					      				buttons: Ext.MessageBox.OK,
+					      				width:300,
+					      				icon: Ext.MessageBox.INFO 			
+					      			});
 				      				this.shortcutsPanel.viewpointsPanel.addViewpoints(content);
 				      			} 
 				      		} else {
@@ -258,50 +282,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	
 	, initToolbar: function( config ) {
 		this.toolbar = new Ext.Toolbar({
-			items: ['']
+			items: [new Ext.Toolbar.Button({iconCls: 'icon-back'})]
 		});
-		
-		/*
-		this.toolbar.on('render', function() {
-			this.fireEvent('beforetoolbarinit', this, this.toolbar);
-			
-			this.toolbar.addFill();
-			
-			this.toolbar.addButton(new Ext.Toolbar.Button({
-				iconCls: 'icon-back' 
-			    , scope: this
-			    , handler : function() {this.fireEvent('moveprevrequest');}
-			}));
-			
-			this.toolbar.addSeparator();
-			
-			this.toolbar.addButton(new Ext.Toolbar.Button({
-				iconCls: 'icon-clear'
-			   	, scope: this
-			   	, handler : function() {
-					this.clearParametersForm();
-				}
-			}));
-			
-			if (Sbi.user.functionalities.contains('SeeViewpointsFunctionality')) {
-				this.toolbar.addButton(new Ext.Toolbar.Button({
-					iconCls: 'icon-save'
-				   	, scope: this
-				   	, handler : function() {
-						this.saveParametersFormStateAsViewpoint();
-					}
-				}));
-			}
-			
-			this.toolbar.addSeparator();
-			
-			this.toolbar.addButton(new Ext.Toolbar.Button({
-				iconCls: 'icon-execute'
-				, scope: this
-				, handler : function() {this.fireEvent('movenextrequest');}
-			}));
-		}, this);
-		*/
 	}
 	
 	, initParametersPanel: function( config ) {
@@ -327,7 +309,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	}
 	
 	, onExecuteViewpoint: function(v) {
-		this.parametersPanel.setFormState(v);
+		this.parametersPanel.applyViewPoint(v);
+		this.fireEvent('movenextrequest');
 	}
 	
 });

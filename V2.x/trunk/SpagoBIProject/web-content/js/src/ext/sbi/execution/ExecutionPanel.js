@@ -61,7 +61,13 @@ Sbi.execution.ExecutionPanel = function(config) {
 	this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
 	//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
 	this.activeDocument.documentExecutionPage.on('crossnavigation', this.executeCrossNavigation , this);
-	
+	/*
+	this.activeDocument.parametersSelectionPage.parametersPanel.on('beforesynchronize', function(){
+		this.doLayout();
+		alert('AAA');
+		this.activeDocument.parametersSelectionPage.southPanel.expand();
+	}, this);
+	*/
 	
 	var c = Ext.apply({}, config || {}, {
 		title: title

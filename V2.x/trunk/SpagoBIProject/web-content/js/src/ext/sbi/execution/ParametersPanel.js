@@ -368,6 +368,10 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		} else { 
 			if(p.type === 'DATE') {				
 				field = new Ext.form.DateField(baseConfig);
+				field.menuListeners.beforeshow = function(m) {
+					//m.picker.getEl().setWidth(130);
+					//alert('Time is now');
+				};
 			} else if(p.type === 'NUMBER') {
 				field = new Ext.form.NumberField(baseConfig);
 			} else {

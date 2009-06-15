@@ -516,8 +516,9 @@ qx.Class.define("qx.ui.table.model.Simple",
         removeStart : startIndex,
         removeCount : howMany
       };
-
+      
       this.fireDataEvent(qx.ui.table.ITableModel.EVENT_TYPE_DATA_CHANGED, data);
+
       if (clearSorting !== false) {
         this.clearSorting();
       }

@@ -79,7 +79,7 @@ Sbi.execution.RoleSelectionPage = function(config) {
 		, listeners: {
 		    'render': {
 	        	fn: function() {
-	      	 		this.loadingMask = new Sbi.decorator.LoadMask(this.body, {msg:'Loading roles ...'}); 
+	      	 		this.loadingMask = new Sbi.decorator.LoadMask(this.body, {msg:LN('sbi.execution.roleselection.loadingmsg')}); 
 	        	},
 	        	scope: this
 	      	}
@@ -118,11 +118,18 @@ Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 	}
 
 	, synchronizeToolbar: function( executionInstance ){
+		
+		this.toolbar.items.each( function(item) {
+			this.toolbar.items.remove(item);
+            item.destroy();           
+        }, this); 
+		
 		this.fireEvent('beforetoolbarinit', this, this.toolbar);
 		
 		this.toolbar.addFill();
 		this.toolbar.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-execute'
+			, tooltip: LN('sbi.execution.roleselection.toolbar.next')
 			, scope: this
 			, handler : function() {
 				this.fireEvent('movenextrequest', this, this.getSelectedRole());
@@ -202,20 +209,5 @@ Ext.extend(Sbi.execution.RoleSelectionPage, Ext.FormPanel, {
 		this.toolbar = new Ext.Toolbar({
 			items: ['']
 		});
-		
-		/*
-		this.toolbar.on('render', function() {
-			this.fireEvent('beforetoolbarinit', this, this.toolbar);
-			
-			this.toolbar.addFill();
-			this.toolbar.addButton(new Ext.Toolbar.Button({
-				iconCls: 'icon-execute'
-				, scope: this
-				, handler : function() {
-					this.fireEvent('movenextrequest', this, this.getSelectedRole());
-				}
-			}));
-		}, this);
-		*/
 	}
 });

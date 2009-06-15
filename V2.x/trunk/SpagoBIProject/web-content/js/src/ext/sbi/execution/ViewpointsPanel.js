@@ -60,7 +60,8 @@ Sbi.execution.ViewpointsPanel = function(config) {
 		, baseParams: params
 	});
 	
-	
+	this.addEvents('executionrequest', 'applyviewpoint');
+	 
     this.store = new Ext.data.JsonStore({
         root: 'results'
         , idProperty: 'name'
@@ -147,7 +148,7 @@ Sbi.execution.ViewpointsPanel = function(config) {
     
     this.on('rowdblclick', this.onRowDblClick, this);
     
-    this.addEvents('executionrequest', 'applyviewpoint');
+   
     
 };
 

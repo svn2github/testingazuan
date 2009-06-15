@@ -59,9 +59,33 @@ Sbi.locale.ln['sbi.browser.document.objectve']  = 'scopo';
 Sbi.locale.ln['sbi.browser.document.keywords']  = 'parole chiave';
 Sbi.locale.ln['sbi.browser.document.refreshSeconds']  = 'intervallo di aggiornamento';
 
+Sbi.locale.ln['sbi.execution.error']  = 'Un errore si è verificato durante l\'esecuzione del documento';
+Sbi.locale.ln['sbi.execution.error.nodocid']  = 'Per poter eseguire il documento è necessario specificarne l\'id';
+Sbi.locale.ln['sbi.execution.error.novalidrole']  = 'L\'untente non ha ruoli validi per eseguire il documento';
+
+
 Sbi.locale.ln['sbi.execution.roleselection.title']  = 'Selezione ruolo';
 Sbi.locale.ln['sbi.execution.roleselection.fieldlabel']  = 'Ruolo';
 Sbi.locale.ln['sbi.execution.roleselection.emptytext']  = 'Seleziona un ruolo ...';
+Sbi.locale.ln['sbi.execution.roleselection.loadingmsg']  = 'Caricamento ruoli ...';
+Sbi.locale.ln['sbi.execution.roleselection.toolbar.next']  = 'Conferma ruolo selezionato';
+
+Sbi.locale.ln['sbi.execution.parametersselection.loadingmsg']  = 'Caricamento parametri ...';
+Sbi.locale.ln['sbi.execution.parametersselection.toolbar.back']  = 'Cambia il ruolo selezionato';
+Sbi.locale.ln['sbi.execution.parametersselection.toolbar.clear']  = 'Cancella valori inseriti nel form dei parametri';
+Sbi.locale.ln['sbi.execution.parametersselection.toolbar.save']  = 'Salva valori inseriti nel form dei parametri come viewpoint';
+Sbi.locale.ln['sbi.execution.parametersselection.toolbar.next']  = 'Esegui il documento';
+
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.back'] = 'Torna alla pagina di selezione parametri';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.refresh'] = 'Riesegui il documento';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.rating'] = 'Dai un voto al documento';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.print'] = 'Stampa il documento';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.send'] = 'Invia il documento per posta elettronica';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.save'] = 'Salva il documento nella cartella mia cartella personale';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.bookmark'] = 'Aggiungi il documento ai preferiti';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.annotate'] = 'Annota i documento';
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.metadata'] = 'Mostra i metadati associati al documento';
+
 
 Sbi.locale.ln['sbi.execution.viewpoints.title'] = 'Viewpoints';
 Sbi.locale.ln['sbi.execution.viewpoints.name'] = 'nome';
@@ -69,6 +93,7 @@ Sbi.locale.ln['sbi.execution.viewpoints.description'] = 'descrizione';
 Sbi.locale.ln['sbi.execution.viewpoints.owner'] = 'proprietario';
 Sbi.locale.ln['sbi.execution.viewpoints.creationDate'] = 'data di creazione';
 Sbi.locale.ln['sbi.execution.viewpoints.scope'] = 'visibilità';
+Sbi.locale.ln['sbi.execution.viewpoints.msg.saved'] = 'Viewpoint salvato correttamente';
 
 Sbi.locale.ln['sbi.execution.snapshots.title'] = 'Esecuzioni schedulate';
 Sbi.locale.ln['sbi.execution.snapshots.name'] = 'nome';

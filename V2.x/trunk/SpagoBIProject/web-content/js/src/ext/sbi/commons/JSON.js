@@ -90,8 +90,9 @@ Sbi.commons.JSON = new (function(){
     */
     
     var encodeDate = function(o){
-    	//alert(Sbi.config.clientServerDateFormat);
-        return Ext.util.Format.date(o, Sbi.config.clientServerDateFormat);
+    	o = encodeString(Ext.util.Format.date(o, Sbi.config.clientServerDateFormat))
+    	//alert(Sbi.config.clientServerDateFormat + ' \n' + o);
+        return o;
     };
     
   

@@ -80,6 +80,12 @@ Sbi.execution.DocumentExecutionPage = function(config) {
     this.init(config);    
     
     this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
+    this.shortcutsPanel.on('viewpointexecutionrequest', function(v) {
+    	this.parametersPanel.applyViewPoint(v);
+		this.refreshExecution();
+    }, this);
+    
+    
     
 	var c = Ext.apply({}, config, {
 		layout: 'border'
@@ -162,40 +168,51 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	}
 
 	, synchronizeToolbar: function( executionInstance ){
+		
+		this.toolbar.items.each( function(item) {
+			this.toolbar.items.remove(item);
+            item.destroy();           
+        }, this); 
+		
 		this.fireEvent('beforetoolbarinit', this, this.toolbar);
 		
 		this.toolbar.addFill();
 		
 		this.toolbar.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-back' 
-			    , scope: this
-			    , handler : function() {this.fireEvent('moveprevrequest');}
+			, tooltip: LN('sbi.execution.executionpage.toolbar.back')
+			, scope: this
+			, handler : function() {this.fireEvent('moveprevrequest');}
 		}));
 		
-		//if (!this.executionInstance.SBI_SNAPSHOT_ID) {
-		this.toolbar.addButton(new Ext.Toolbar.Button({
+		if (!this.executionInstance.SBI_SNAPSHOT_ID) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-refresh' 
-			     	, scope: this
-			    	, handler : this.refreshExecution			
+				, tooltip: LN('sbi.execution.executionpage.toolbar.refresh')
+			    , scope: this
+			    , handler : this.refreshExecution			
 			}));
-		//}
+		}
 		
 		this.toolbar.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-rating' 
-		     	, scope: this
-		    	, handler : this.rateExecution	
+			, tooltip: LN('sbi.execution.executionpage.toolbar.rating')
+		    , scope: this
+		    , handler : this.rateExecution	
 		}));
 		
 		this.toolbar.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-print' 
-		     	, scope: this
-		    	, handler : this.printExecution
+			, tooltip: LN('sbi.execution.executionpage.toolbar.print')
+		    , scope: this
+		    , handler : this.printExecution
 		}));
 		
 		if (Sbi.user.functionalities.contains('SendMailFunctionality') && !executionInstance.SBI_SNAPSHOT_ID
 				/*&& this.document.type == 'REPORT'*/) {
 			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-sendMail' 
+				, tooltip: LN('sbi.execution.executionpage.toolbar.send')
 		     	, scope: this
 		    	, handler : this.sendExecution
 			}));
@@ -204,6 +221,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		if (Sbi.user.functionalities.contains('SaveIntoFolderFunctionality') && !executionInstance.SBI_SNAPSHOT_ID) {
 			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-saveIntoPersonalFolder' 
+				, tooltip: LN('sbi.execution.executionpage.toolbar.save')
 		     	, scope: this
 		    	, handler : this.saveExecution
 			}));
@@ -211,7 +229,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 
 		if (Sbi.user.functionalities.contains('SaveRememberMeFunctionality') && !executionInstance.SBI_SNAPSHOT_ID) {
 			this.toolbar.addButton(new Ext.Toolbar.Button({
-				iconCls: 'icon-saveRememberMe' 
+				iconCls: 'icon-saveRememberMe'
+				, tooltip: LN('sbi.execution.executionpage.toolbar.bookmark')
 		     	, scope: this
 		    	, handler :this.bookmarkExecution
 			}));
@@ -220,6 +239,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		if (Sbi.user.functionalities.contains('SeeNotesFunctionality') && !executionInstance.SBI_SNAPSHOT_ID) {
 			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-notes' 
+				, tooltip: LN('sbi.execution.executionpage.toolbar.annotate')
 		     	, scope: this
 		    	, handler : this.annotateExecution
 			}));
@@ -228,6 +248,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		if (Sbi.user.functionalities.contains('SeeMetadataFunctionality') && !this.executionInstance.SBI_SNAPSHOT_ID) {
 			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-metadata' 
+				, tooltip: LN('sbi.execution.executionpage.toolbar.metadata')
 		     	, scope: this
 		    	, handler : this.metaExecution
 			}));

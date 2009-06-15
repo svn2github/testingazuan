@@ -90,7 +90,7 @@ Sbi.execution.ExecutionWizard = function(config) {
 	
 	this.errorPage = new Ext.Panel({
 		layout: 'fit'
-		, html: 'Impossible to load document'
+		, html: LN('sbi.execution.error')
 	});
 	
 	this.activePageNumber = 0;
@@ -105,6 +105,7 @@ Sbi.execution.ExecutionWizard = function(config) {
 	this.parametersSelectionPage.on('beforetoolbarinit', function(page, toolbar){
 		this.fireEvent('beforetoolbarinit', toolbar);
 	}, this);
+	
 	
 	this.documentExecutionPage.on('moveprevrequest', this.moveToPreviousPage, this);
 	this.documentExecutionPage.on('beforetoolbarinit', function(page, toolbar){
@@ -153,7 +154,7 @@ Sbi.execution.ExecutionWizard = function(config) {
     this.roleSelectionPage.addListener('synchronize', this.onRolesForExecutionLoaded, this);
     this.roleSelectionPage.addListener('synchronizeexception', this.onRolesForExecutionLoadException, this);
     
-    this.parametersSelectionPage.shortcutsPanel.addListener('viewpointexecutionrequest', this.onViewpointExecutionRequest, this);
+    //this.parametersSelectionPage.shortcutsPanel.addListener('viewpointexecutionrequest', this.onViewpointExecutionRequest, this);
     this.parametersSelectionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
     this.parametersSelectionPage.shortcutsPanel.addListener('snapshotexcutionrequest', this.onSnapshotExecutionRequest, this);
     
@@ -226,7 +227,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
     , execute : function( doc ) {
     	this.roleSelectionPage.loadingMask.show();
 		if(!doc || (!doc.id && !doc.label) ) {
-			Sbi.exception.ExceptionHandler.showErrorMessage('ExecutionWizard: document id is required in order to execute a document', 'Intenal Error');
+			Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.execution.error.nodocid'), 'Intenal Error');
 		}
 		
 		//alert(doc.toSource());
@@ -252,12 +253,11 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	, onRolesForExecutionLoaded: function(form, store, records, options) {
 		var rolesNo = store.getCount();
 		if(rolesNo === 0) {
-			alert("User have no valid roles for the execution of the selected document");
+			alert(LN('sbi.execution.error.novalidrole'));
 		} else if(rolesNo === 1) {
 			var role = store.getRange()[0];
 			form.roleComboBox.setValue(role.data.name); 
 			this.moveToNextPage();
-			//alert("gonext");
 		} else {
 			this.roleSelectionPage.loadingMask.hide();
 		}
@@ -306,6 +306,8 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 		
 	}
 	
+	
+	/*
 	, onViewpointExecutionRequest: function(v) {
 		this.moveToPage(2);
 	}
@@ -377,8 +379,9 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
 	     });
 	}
+	*/
 	
-	
+	/*
 	, onSaveRememberMeButtonClicked: function () {
 		this.win_saveRememberMe = new Sbi.execution.toolbar.SaveRememberMeWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
 		this.win_saveRememberMe.show();
@@ -402,4 +405,5 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	, onPrintButtonClicked: function () {
 		this.documentExecutionPage.printExecution();
 	}
+	*/
 });

@@ -1676,9 +1676,14 @@ public class ExporterMetadata {
 			if(kpi.getDocumentLabel()!=null){
 				IBIObjectDAO biobjDAO = DAOFactory.getBIObjectDAO();
 				BIObject biobj = biobjDAO.loadBIObjectByLabel(kpi.getDocumentLabel());
-				//insertBIObject(biobj, session);
-				biObjectToInsert.add(biobj.getId());
-				hibKpi.setDocumentLabel(kpi.getDocumentLabel());
+				if(biobj!=null){
+					//insertBIObject(biobj, session);
+					biObjectToInsert.add(biobj.getId());
+					hibKpi.setDocumentLabel(kpi.getDocumentLabel());
+				}
+				else{
+					logger.warn("the biObject with label "+kpi.getDocumentLabel() +"was not found");
+				}
 			}
 
 
@@ -2184,7 +2189,7 @@ public class ExporterMetadata {
 			if(!hibList.isEmpty()) {
 				return;
 			} 
-			
+
 			// main attributes			
 			SbiAlarm hibAlarm = new SbiAlarm();
 
@@ -2229,7 +2234,7 @@ public class ExporterMetadata {
 			hibAlarm.setSbiAlarmContacts(listSbiContacts);	
 
 
-			
+
 			Transaction tx = session.beginTransaction();			
 			session.save(hibAlarm);
 			tx.commit();

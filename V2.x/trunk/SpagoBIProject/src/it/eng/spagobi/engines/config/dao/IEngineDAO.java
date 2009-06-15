@@ -53,6 +53,22 @@ public interface IEngineDAO {
 	 */
 	public Engine loadEngineByID(Integer engineID) throws EMFUserError;
 	
+	
+	/**
+	 * Loads all detail information for an engine identified by its <code>engineLabel</code>. All these information,
+	 * achived by a query to the DB, are stored into an <code>engine</code> object, which is
+	 * returned.
+	 * 
+	 * @param engineLabel The label for the engine to load
+	 * 
+	 * @return An <code>engine</code> object containing all loaded information
+	 * 
+	 * @throws EMFUserError If an Exception occurred
+	 */
+	public Engine loadEngineByLabel(String engineLabel) throws EMFUserError;
+	
+	
+	
 	/**
 	 * Loads all detail information for all engines. For each of them, detail
 	 * information is stored into an <code>engine</code> object. After that, all engines
@@ -126,5 +142,17 @@ public interface IEngineDAO {
 	public boolean hasBIObjAssociated (String engineId) throws EMFUserError;
 
 
+	/**
+	 * Get all the associated Exporters
+	 * 
+	 * @param engineId The engine identifier
+	 * 
+	 * @return The list of associated Exporters
+	 * 
+	 * @throws EMFUserError If any exception occurred
+	 */
+	public List getAssociatedExporters (Engine engineId) throws EMFUserError;
+
+	
 
 }

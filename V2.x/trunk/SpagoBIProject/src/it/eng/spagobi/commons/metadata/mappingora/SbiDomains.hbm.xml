@@ -28,6 +28,11 @@
         <property name="valueDs" type="string">
             <column name="VALUE_DS" length="160" />
         </property>
-
+        <set name="sbiExporterses" inverse="true">
+            <key>
+                <column name="DOMAIN_ID" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.engines.config.metadata.SbiExporters" />
+        </set>
     </class>
 </hibernate-mapping>

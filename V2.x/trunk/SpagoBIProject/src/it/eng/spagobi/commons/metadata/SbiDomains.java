@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.metadata;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 
 
@@ -38,6 +41,7 @@ public class SbiDomains  implements java.io.Serializable {
      private String valueCd;
      private String valueNm;
      private String valueDs;
+     private Set sbiExporterses = new HashSet(0);
 	
 
     // Constructors
@@ -169,6 +173,14 @@ public class SbiDomains  implements java.io.Serializable {
     public void setValueDs(String valueDs) {
         this.valueDs = valueDs;
     }
+
+	public Set getSbiExporterses() {
+		return sbiExporterses;
+	}
+
+	public void setSbiExporterses(Set sbiExporterses) {
+		this.sbiExporterses = sbiExporterses;
+	}
 
 
 

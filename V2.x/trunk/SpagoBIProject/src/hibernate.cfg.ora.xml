@@ -39,6 +39,7 @@
         <mapping resource="it/eng/spagobi/analiticalmodel/functionalitytree/metadata/mappingora/SbiFuncRole.hbm.xml" />
         <mapping resource="it/eng/spagobi/monitoring/metadata/mappingora/SbiAudit.hbm.xml" />
         <mapping resource="it/eng/spagobi/engines/config/metadata/mappingora/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/engines/config/metadata/mappingora/SbiExporters.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/datasource/metadata/mappingora/SbiDataSource.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappingora/SbiDistributionList.hbm.xml" />
         <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappingora/SbiDistributionListsObjects.hbm.xml" />

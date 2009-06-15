@@ -96,5 +96,11 @@
             <one-to-many class="it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects" />
         </set>
         -->
+        <set name="sbiExporterses" inverse="true">
+            <key>
+                <column name="DOMAIN_ID" not-null="true" />
+            </key>
+            <one-to-many class="it.eng.spagobi.engines.config.metadata.SbiExporters" />
+        </set>        
     </class>
 </hibernate-mapping>

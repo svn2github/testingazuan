@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EXPORTERS>
+<EXPORTER domain="PDF" engine="KpiEngine" defaultValue="true"/>
+</EXPORTERS>

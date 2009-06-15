@@ -29,6 +29,8 @@ package it.eng.spagobi.engines.config.dao;
 
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.engines.config.bo.Engine;
@@ -39,10 +41,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Expression;
 
 /**
  * Defines the Hibernate implementations for all DAO methods,
@@ -91,6 +96,53 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		
 		return toReturn;
 	}
+
+	
+	
+	/**
+	 * Load engine by label.
+	 * 
+	 * @param engineLabel the engine label
+	 * 
+	 * @return the engine
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 * 
+	 * @see it.eng.spagobi.engines.config.dao.IEngineDAO#loadEngineByID(java.lang.Integer)
+	 */
+	
+	
+	public Engine loadEngineByLabel(String engineLabel) throws EMFUserError {
+		Engine engine = null;
+		Session aSession = null;
+		Transaction tx = null;
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			Criterion labelCriterrion = Expression.eq("label",
+					engineLabel);
+			Criteria criteria = aSession.createCriteria(SbiEngines.class);
+			criteria.add(labelCriterrion);
+			SbiEngines hibEngine = (SbiEngines) criteria.uniqueResult();
+			if (hibEngine == null) return null;
+			engine = toEngine(hibEngine);
+			tx.commit();
+		} catch (HibernateException he) {
+			if (tx != null)
+				tx.rollback();
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+		return engine;
+	}
+
+
+
+
+
 
 	/**
 	 * Load all engines.
@@ -411,6 +463,41 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			}
 		}
 		return bool;
-		
 	}
+
+	public List getAssociatedExporters(Engine engine) throws EMFUserError {
+		Session aSession = null;
+		Transaction tx = null;
+		Integer engineId=engine.getId();
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			
+			//String hql = " from SbiObjects s where s.sbiEngines.engineId = "+ engineIdInt;
+			String hql = " from SbiExporters s where s.sbiEngines.engineId = ?";
+			Query aQuery = aSession.createQuery(hql);
+			aQuery.setInteger(0, engineId.intValue());
+			List exportersOfEngine = aQuery.list();
+			tx.commit();
+			
+			return exportersOfEngine;
+			
+		} catch (HibernateException he) {
+			logException(he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+
+		} finally {
+			if (aSession!=null){
+				if (aSession.isOpen()) aSession.close();
+			}
+		}
+
+	}
+	
+	
+	
 }

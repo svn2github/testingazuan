@@ -40,6 +40,7 @@
         <mapping resource="it/eng/spagobi/analiticalmodel/functionalitytree/metadata/mappinghsqldb/SbiFuncRole.hbm.xml" />
         <mapping resource="it/eng/spagobi/monitoring/metadata/mappinghsqldb/SbiAudit.hbm.xml" />
         <mapping resource="it/eng/spagobi/engines/config/metadata/mappinghsqldb/SbiEngines.hbm.xml" />
+        <mapping resource="it/eng/spagobi/engines/config/metadata/mappinghsqldb/SbiExporters.hbm.xml" />        
         <mapping resource="it/eng/spagobi/tools/datasource/metadata/mappinghsqldb/SbiDataSource.hbm.xml" />
         
         <mapping resource="it/eng/spagobi/tools/distributionlist/metadata/mappinghsqldb/SbiDistributionList.hbm.xml" />

@@ -431,8 +431,7 @@ public class ExportManager implements IExportManager {
 							}
 						}
 					} catch (Exception e) {
-						logger.error("Error while exporting kpi with id " + idObj + " and label " + biobj.getLabel() + " : " +
-						"could not find dataset reference in its template.");
+						logger.error("Error while exporting kpi with id " + idObj + " and label " + biobj.getLabel());
 						throw new EMFUserError(EMFErrorSeverity.ERROR, "8010", "component_impexp_messages");
 
 					}

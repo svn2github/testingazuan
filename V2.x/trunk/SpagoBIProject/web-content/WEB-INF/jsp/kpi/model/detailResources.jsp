@@ -159,26 +159,26 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="resourceName" size="50"
-	value="<%=resourceName%>" maxlength="200"> &nbsp;*</div>
+	value="<%=StringEscapeUtils.escapeHtml(resourceName)%>" maxlength="200"> &nbsp;*</div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form' style='height: 150px;'>
-	<textarea name="resourceDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=resourceDescription%></textarea>
+	<textarea name="resourceDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=StringEscapeUtils.escapeHtml(resourceDescription)%></textarea>
 </div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.tableName" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="tableName" size="50"
-	value="<%=tableName%>" maxlength="200"></div>
+	value="<%=StringEscapeUtils.escapeHtml(tableName)%>" maxlength="200"></div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.columnName" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="columnName" size="50"
-	value="<%=columnName%>" maxlength="200"></div>
+	value="<%=StringEscapeUtils.escapeHtml(columnName)%>" maxlength="200"></div>
 
 <%
  	if (messageIn != null
@@ -190,7 +190,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	key="sbi.kpi.model.typeName" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="resourceTypeDesc" size="50"
-	value="<%=resourceTypeDescription%>" maxlength="200" readonly></div>	
+	value="<%=StringEscapeUtils.escapeHtml(resourceTypeDescription)%>" maxlength="200" readonly></div>	
 <input type="hidden" name="resourceTypeId" value="<%=resourceTypeId %>">
 <%}%>
 
@@ -210,7 +210,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		Domain domain = (Domain) iterator.next();
 	%>
 	<option value="<%=domain.getValueId()%>"
-		label="<%=domain.getTranslatedValueName(locale)%>" ><%=domain.getTranslatedValueName(locale)%>
+		label="<%=StringEscapeUtils.escapeHtml(domain.getTranslatedValueName(locale))%>" ><%=StringEscapeUtils.escapeHtml(domain.getTranslatedValueName(locale))%>
 	</option>
 	<%
 		}

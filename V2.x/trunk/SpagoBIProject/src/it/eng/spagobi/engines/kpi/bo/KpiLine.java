@@ -109,4 +109,8 @@ public class KpiLine {
 	public void setThresholdOfValue(ThresholdValue thresholdOfValue) {
 		this.thresholdOfValue = thresholdOfValue;
 	}
+	
+	public int compareTo(KpiLine l)    {
+		return this.modelInstanceCode.compareTo(l.getModelInstanceCode());
+	 }
 }

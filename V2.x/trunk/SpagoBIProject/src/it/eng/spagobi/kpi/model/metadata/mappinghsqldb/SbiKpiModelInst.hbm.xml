@@ -37,7 +37,7 @@
         <property name="endDate" type="timestamp">
             <column name="end_date" length="19" />
         </property>
-        <set name="sbiKpiModelInsts" inverse="true" order-by="name asc" >
+        <set name="sbiKpiModelInsts" inverse="true" order-by="name desc" >
             <key>
                 <column name="KPI_MODEL_INST_PARENT" />
             </key>

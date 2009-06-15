@@ -23,10 +23,13 @@ import java.awt.Color;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -472,6 +475,7 @@ public class KpiResourceBlock {
 	   _htmlStream.append("	</tr>\n");
 
 	   if (children!=null && !children.isEmpty()){
+		   children = orderChildren(new ArrayList(),children);
 		   recursionLev ++;
 		   Iterator childIt = children.iterator();
 		   while (childIt.hasNext()){
@@ -504,6 +508,32 @@ public class KpiResourceBlock {
 			}
 		}
 		return url;
+	}
+	//TODO
+	protected List orderChildren(List ordered, List notordered) {
+		//Arrays.fill s = children ;
+		List toReturn = ordered;
+		List temp = new ArrayList();
+		KpiLine l = null;
+		if(notordered!=null && !notordered.isEmpty()){
+			Iterator it = notordered.iterator();
+			while(it.hasNext()){
+				KpiLine k = (KpiLine)it.next();
+				if(l==null){
+					l = k ;
+				}else{
+					if (k!=null && k.compareTo(l)<=0){
+						temp.add(l);
+						l = k;
+					}else{
+						temp.add(k);
+					}
+				}
+			}
+			toReturn.add(l);
+			toReturn = orderChildren(toReturn,temp);
+		}
+		return toReturn;
 	}
 
 	

@@ -1113,6 +1113,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				}
 			} else {
 				logger.warn("The Data Set doesn't return any value!!!!!");
+				if(register_values){
+					// Insert new Value into the DB
+					DAOFactory.getKpiDAO().insertKpiValue(kVal);
+					logger.debug("New value inserted in the DB");
+				}		
+				DAOFactory.getAlarmDAO().isAlarmingValue(kVal);
+				logger.debug("Alarms sent if the value is over the thresholds");
 			}
 		}
 

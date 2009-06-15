@@ -142,7 +142,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" 
                id="label" name="label" size="50" 
-               value="<%=parameter.getLabel()%>" maxlength="20" <%=readonly%> />
+               value="<%=StringEscapeUtils.escapeHtml(parameter.getLabel())%>" maxlength="20" <%=readonly%> />
         &nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -152,7 +152,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text"  <%=readonly%>
-			   id="name" name="name" size="50" value="<%=parameter.getName()%>" maxlength="40" />
+			   id="name" name="name" size="50" value="<%=StringEscapeUtils.escapeHtml(parameter.getName())%>" maxlength="40" />
         &nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -163,7 +163,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" <%=readonly%>
 			   id="description" name="description" size="50" 
- 			   value="<%=(parameter.getDescription() != null ? parameter.getDescription() : "")%>" 
+ 			   value="<%=(parameter.getDescription() != null ? StringEscapeUtils.escapeHtml(parameter.getDescription()) : "")%>" 
                maxlength="160" />
 	</div>
     <% String curr_value = parameter.getTypeId().toString();%>  
@@ -224,7 +224,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='div_detail_form' style='display:none;'>
 		<input class='portlet-form-input-field' type="text" <%=readonly%>
 			   id="mask" name="mask" size="50" 
-			   value="<%=(parameter.getMask() != null ? parameter.getMask() : "")%>" maxlength="20" />
+			   value="<%=(parameter.getMask() != null ? StringEscapeUtils.escapeHtml(parameter.getMask()) : "")%>" maxlength="20" />
 	</div>
 </div>
 
@@ -330,7 +330,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<div class='<%= linkClass%>'>
 				<a href='javascript:changeParameterUse("<%= aParameterUse.getUseID().toString() %>", "<spagobi:message key = "SBIDev.param.saveAndChangeParameterUseConfirm" />")' 
 					style="color:black;"> 
-						<%= aParameterUse.getLabel()%>
+						<%= StringEscapeUtils.escapeHtml(aParameterUse.getLabel())%>
 				</a>
 			</div>
 
@@ -398,7 +398,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" <%=readonly%>
-			   id="paruseLabel" name="paruseLabel" size="50" value="<%=paruse.getLabel()%>" maxlength="20">
+			   id="paruseLabel" name="paruseLabel" size="50" value="<%=StringEscapeUtils.escapeHtml(paruse.getLabel())%>" maxlength="20">
 		&nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -408,7 +408,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	</div>
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" <%=readonly%>
-			   id="paruseName" name="paruseName" size="50" value="<%=paruse.getName()%>" maxlength="40">
+			   id="paruseName" name="paruseName" size="50" value="<%=StringEscapeUtils.escapeHtml(paruse.getName())%>" maxlength="40">
         &nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -419,7 +419,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" <%=readonly%>
 			   id="paruseDescription" name="paruseDescription" size="50" 
-			   value="<%=paruse.getDescription() == null ? "" : paruse.getDescription()%>" maxlength="160">
+			   value="<%=paruse.getDescription() == null ? "" : StringEscapeUtils.escapeHtml(paruse.getDescription())%>" maxlength="160">
 	</div>
 	
 	<div class='div_detail_label'>
@@ -454,7 +454,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   	
 		<input 	class='portlet-form-input-field' type="text" id="paruseLovName" <%=disabled%>
 		   		name="paruseLovName" size="40" 
-				value="<%= lovName != null ? lovName : "" %>" maxlength="100" readonly <%if(!isLov) {out.println("disabled = 'disabled'");} %>>
+				value="<%= lovName != null ? StringEscapeUtils.escapeHtml(lovName) : "" %>" maxlength="100" readonly <%if(!isLov) {out.println("disabled = 'disabled'");} %>>
   		
   		<input 	type='hidden' id='paruseLovId' value='<%=(idLov != null?(idLov.intValue() != -1 ? idLov.toString() : ""):"") %>' <%=disabled%>
            		name='paruseLovId' />           		
@@ -654,7 +654,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	ParameterUse initialParuse = (ParameterUse) aSessionContainer.getAttribute("initial_ParameterUse");
 	if (initialParuse == null) initialParuse = paruse;
 	%>
-    var modality = '<%=initialParameter.getType() + "," + initialParameter.getTypeId()%>';
+    var modality = '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialParameter.getType())) + "," + initialParameter.getTypeId()%>';
 
 	function radioButtonClicked(mod) {
 		modality = mod;
@@ -726,9 +726,9 @@ function isParuseformModified () {
 		
 	var checksChanged = arraysChanged(checks, initialChecks);
 	
-	if ((paruseLabel != '<%=initialParuse.getLabel()%>')
-		|| (paruseName != '<%=initialParuse.getName()%>')
-		|| (paruseDescription != '<%=initialParuse.getDescription() != null ? initialParuse.getDescription() : ""%>') 
+	if ((paruseLabel != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialParuse.getLabel()))%>')
+		|| (paruseName != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialParuse.getName()))%>')
+		|| (paruseDescription != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialParuse.getDescription())) != null ? StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialParuse.getDescription())) : ""%>') 
 		|| (paruseLovId != '<%= initialParuse.getIdLov().intValue() != -1 ? initialParuse.getIdLov().toString() : "" %>')
 		|| (manIn != <%=initialParuse.getManualInput()%>)
 		|| rolesChanged
@@ -775,10 +775,10 @@ function saveAndGoBackConfirm(message, url){
 		var name = document.getElementById('name').value;
 		var description = document.getElementById('description').value;
 
-		if ((label != '<%=initialParameter.getLabel()%>')
-			|| (name != '<%=initialParameter.getName()%>')
-			|| (description != '<%=initialParameter.getDescription()%>')
-			|| (modality != '<%=initialParameter.getType() + "," + initialParameter.getTypeId()%>')) {
+		if ((label != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialParameter.getLabel()))%>')
+			|| (name != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialParameter.getName()))%>')
+			|| (description != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialParameter.getDescription()))%>')
+			|| (modality != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialParameter.getType())) + "," + initialParameter.getTypeId()%>')) {
 			
 			if (confirm(message)) {
 				document.getElementById('saveAndGoBack').click();

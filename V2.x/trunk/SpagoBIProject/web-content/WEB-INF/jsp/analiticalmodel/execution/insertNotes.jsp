@@ -86,7 +86,7 @@ Ext.onReady(function(){
     
     top1 = new Ext.form.HtmlEditor({
         frame: true,
-        value: '<%=notesEditor%>',
+        value: '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(notesEditor))%>',
         bodyStyle:'padding:5px 5px 0',
         width:'100%',
 	    height: 265,
@@ -106,7 +106,7 @@ Ext.onReady(function(){
 	
 
 </script>					
-<input type='hidden' value='<%=notes%>' name='OLD_NOTES' />	
+<input type='hidden' value='<%=StringEscapeUtils.escapeHtml(notes)%>' name='OLD_NOTES' />	
 <input type='hidden' value='<%=objid%>' name='OBJECT_ID' />
 <input type='hidden' value='<%=msg%>' name='MESSAGEDET' />
 <input type='hidden' value='<%=execIdentifier%>' name='execIdentifier' />

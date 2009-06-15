@@ -148,7 +148,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				</span>
 			</div>
 			<div class='div_detail_form'>
-				<input class='portlet-form-input-field' type="text" name="<%=profAttrName%>" size="35" >
+				<input class='portlet-form-input-field' type="text" name="<%=StringEscapeUtils.escapeHtml(profAttrName)%>" size="35" >
 	    		&nbsp;*
 			</div>
 		<%    	

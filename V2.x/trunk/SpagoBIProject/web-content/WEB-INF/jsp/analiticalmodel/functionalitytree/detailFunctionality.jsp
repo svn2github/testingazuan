@@ -126,7 +126,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	  }
     %>
     	<input class='portlet-form-input-field' type="text" 
-	      	   size="50" name="code" id="" value="<%= code %>" />
+	      	   size="50" name="code" id="" value="<%= StringEscapeUtils.escapeHtml(code) %>" />
 	    &nbsp;* 
 	</div>
 	<div class='div_detail_label'>
@@ -137,7 +137,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<div class='div_detail_form'> 
 		<input class='portlet-form-input-field' type="text" 
 	      	   size="50" name="name" id="" 
-	      	   value="<%= functionality.getName() %>"  />
+	      	   value="<%= StringEscapeUtils.escapeHtml(functionality.getName()) %>"  />
 	   	&nbsp;*	
 	</div>
 	<div class='div_detail_label'>
@@ -153,7 +153,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       } 
      %>
 		<input class='portlet-form-input-field' type="text" 
-               size="50" name="description" id="" value="<%= desc %>" />
+               size="50" name="description" id="" value="<%= StringEscapeUtils.escapeHtml(desc) %>" />
 	</div>
 </div>
 

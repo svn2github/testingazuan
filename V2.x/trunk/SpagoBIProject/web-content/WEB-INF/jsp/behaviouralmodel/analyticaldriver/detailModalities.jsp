@@ -145,13 +145,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   			<spagobi:message key = "SBIDev.ListParamUse.parInfo.Label"/>: 
   		</td>
   		<td class='portlet-section-alternate' style='border-top: 1px solid #CCCCCC;'>
-  			<%=paramLabel %>
+  			<%=StringEscapeUtils.escapeHtml(paramLabel) %>
   		</td>
   		<td class='portlet-section-body' style='border-top: 1px solid #CCCCCC;'>
   			<spagobi:message key = "SBIDev.ListParamUse.parInfo.Name"/>: 
   		</td>
   		<td class='portlet-section-alternate' style='border-top: 1px solid #CCCCCC;'>
-  			<%=paramName %>
+  			<%=StringEscapeUtils.escapeHtml(paramName) %>
   		</td>
   	</tr>
   	<tr height = "20">
@@ -163,13 +163,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   			<spagobi:message key = "SBIDev.ListParamUse.parInfo.Type"/>: 
   		</td>
   		<td class = 'portlet-section-alternate'>
-  			<%=paramType %>
+  			<%=StringEscapeUtils.escapeHtml(paramType) %>
   		</td>
   		<td class='portlet-section-body'>
   			<spagobi:message key = "SBIDev.ListParamUse.parInfo.Description"/>: 
   		</td>
   		<td class = 'portlet-section-alternate'>
-  			<%=paramDescription %>
+  			<%=StringEscapeUtils.escapeHtml(paramDescription) %>
   		</td>
   	</tr>
 </table>
@@ -220,13 +220,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       	<td>&nbsp;</td>
       	<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.paramUse.labelField" /></td>
       	<td>&nbsp;</td>
-      	<td><input class='portlet-form-input-field' type="text" <%=readonly%> name="label" size="50" value="<%=param.getLabel()%>" maxlength="20">&nbsp;*</td>
+      	<td><input class='portlet-form-input-field' type="text" <%=readonly%> name="label" size="50" value="<%=StringEscapeUtils.escapeHtml(param.getLabel())%>" maxlength="20">&nbsp;*</td>
     </tr>
     <tr height='25'>
       	<td>&nbsp;</td>
       	<td align='right' class='portlet-form-field-label' ><spagobi:message key = "SBIDev.paramUse.nameField" /></td>
       	<td>&nbsp;</td>
-      	<td><input class='portlet-form-input-field' <%=readonly%> type="text" name="name" size="50" value="<%=param.getName()%>" maxlength="40">&nbsp;*</td>
+      	<td><input class='portlet-form-input-field' <%=readonly%> type="text" name="name" size="50" value="<%=StringEscapeUtils.escapeHtml(param.getName())%>" maxlength="40">&nbsp;*</td>
     </tr>
     <tr height='25'>
       	<td>&nbsp;</td>
@@ -238,7 +238,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       			desc = "";
       		} 
        	%>
-      	<td ><input class='portlet-form-input-field' <%=readonly%> type="text" name="description" size="50" value="<%=desc%>" maxlength="160"></td>
+      	<td ><input class='portlet-form-input-field' <%=readonly%> type="text" name="description" size="50" value="<%=StringEscapeUtils.escapeHtml(desc)%>" maxlength="160"></td>
     </tr>
     <tr height='25'>
     <td>&nbsp;</td>
@@ -255,7 +255,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   				  lovName = modVal.getName();
   				  }
   				 %>
-  				<td><input class='portlet-form-input-field' <%=readonly%> type="text" name="lovName" size="50" value="<%= lovName != null ? lovName : "" %>" maxlength="100" readonly>
+  				<td><input class='portlet-form-input-field' <%=readonly%> type="text" name="lovName" size="50" value="<%= lovName != null ? StringEscapeUtils.escapeHtml(lovName) : "" %>" maxlength="100" readonly>
   				<input type='hidden' <%=readonly%> value='<%=idLov.intValue() != -1 ? idLov.toString() : "" %>' name='idLov' />
   				
   				<%PortletURL lovLookupURL = renderResponse.createActionURL();

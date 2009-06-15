@@ -92,7 +92,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' size='50'
-			 	  type="text" name="label" value="<%=check.getLabel()%>" maxlength="20">
+			 	  type="text" name="label" value="<%=StringEscapeUtils.escapeHtml(check.getLabel())%>" maxlength="20">
 			&nbsp;*
 		</div>
 		<div class='div_detail_label'>
@@ -102,7 +102,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' size='50' 
-			   		type="text" name="name" value="<%=check.getName()%>" maxlength="40">
+			   		type="text" name="name" value="<%=StringEscapeUtils.escapeHtml(check.getName())%>" maxlength="40">
 			&nbsp;*
 		</div>
 		<div class='div_detail_label'>
@@ -112,7 +112,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' size='50'
-			   		type="text" name="description" value="<%=check.getDescription()%>" maxlength="160">
+			   		type="text" name="description" value="<%=StringEscapeUtils.escapeHtml(check.getDescription())%>" maxlength="160">
 		</div>
 		<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
@@ -157,7 +157,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 		<% if (actualValueCD != null && valueCD.equalsIgnoreCase(actualValueCD) && (check != null)){ %>
-    		<input size='42' class='portlet-form-input-field' type="text" name="<%=fieldValue1Name %>" value="<%=(check.getFirstValue() != null ? check.getFirstValue()  : "") %>" maxlength=50/>
+    		<input size='42' class='portlet-form-input-field' type="text" name="<%=fieldValue1Name %>" value="<%=(check.getFirstValue() != null ? StringEscapeUtils.escapeHtml(check.getFirstValue())  : "") %>" maxlength=50/>
     	<% } else { %>
     		<input size='42' class='portlet-form-input-field' type="text" name="<%=fieldValue1Name %>" value="" maxlength=50/>
     	<% } %>
@@ -175,7 +175,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 		<% if (actualValueCD != null && valueCD.equalsIgnoreCase(actualValueCD) && (check != null)){ %>
-				<input size='42' class='portlet-form-input-field' type="text" name="<%=fieldValue2Name %>" value="<%=(check.getSecondValue() != null ? check.getSecondValue()  : "") %>" maxlength=50/>
+				<input size='42' class='portlet-form-input-field' type="text" name="<%=fieldValue2Name %>" value="<%=(check.getSecondValue() != null ? StringEscapeUtils.escapeHtml(check.getSecondValue())  : "") %>" maxlength=50/>
     	    <% } else { %>
     	    	<input size='42' class='portlet-form-input-field' type="text" name="<%=fieldValue2Name %>" value="" maxlength=50/>
     	    <% } %> 
@@ -203,7 +203,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' size='42'
-			 	  type="text" name="label" value="<%=check.getLabel()%>" maxlength="20">
+			 	  type="text" name="label" value="<%=StringEscapeUtils.escapeHtml(check.getLabel())%>" maxlength="20">
 			&nbsp;*
 		</div>
 		<div class='div_detail_label_check'>
@@ -213,7 +213,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' size='42' 
-			   		type="text" name="name" value="<%=check.getName()%>" maxlength="40">
+			   		type="text" name="name" value="<%=StringEscapeUtils.escapeHtml(check.getName())%>" maxlength="40">
 			&nbsp;*
 		</div>
 		<div class='div_detail_label_check'>
@@ -223,7 +223,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</div>
 		<div class='div_detail_form'>
 			<input class='portlet-form-input-field' size='42'
-			   		type="text" name="description" value="<%=check.getDescription()%>" maxlength="160">
+			   		type="text" name="description" value="<%=StringEscapeUtils.escapeHtml(check.getDescription())%>" maxlength="160">
 		</div>
 		<div class='div_detail_label_check'>
 			<span class='portlet-form-field-label'>
@@ -287,10 +287,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	     %>
     		<input class='portlet-form-input-field' type="text" 
     		       name="<%=fieldValue1Name %>"
-				   value="<%=(check.getFirstValue() != null ? check.getFirstValue()  : "") %>" 
+				   value="<%=(check.getFirstValue() != null ? StringEscapeUtils.escapeHtml(check.getFirstValue())  : "") %>" 
 				   size='42'  maxlength=50/>
     	 <% } else { %>
-    		<input class='portlet-form-input-field' type="text" name="<%=fieldValue1Name %>"
+    		<input class='portlet-form-input-field' type="text" name="<%=StringEscapeUtils.escapeHtml(fieldValue1Name) %>"
 				   value="" size='42' maxlength=50/>
     	 <% } %>
 	     </div>
@@ -305,11 +305,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	     <div class='div_detail_form' >
 	     <% if (actualValueCD != null && valueCD.equalsIgnoreCase(actualValueCD) && (check != null)){ %>
     		<input class='portlet-form-input-field' type="text" name="<%=fieldValue2Name %>"
-				   value="<%=(check.getSecondValue() != null ? check.getSecondValue()  : "") %>" 
+				   value="<%=(check.getSecondValue() != null ? StringEscapeUtils.escapeHtml(check.getSecondValue())  : "") %>" 
 				   size='42' maxlength=50/>
     	 <% } else { %>
     	    <input class='portlet-form-input-field' type="text" 
-    	           name="<%=fieldValue2Name %>" value="" size='42'  maxlength=50/>
+    	           name="<%=StringEscapeUtils.escapeHtml(fieldValue2Name) %>" value="" size='42'  maxlength=50/>
     	 <% } %>
 	     </div>
 	     <% } %>

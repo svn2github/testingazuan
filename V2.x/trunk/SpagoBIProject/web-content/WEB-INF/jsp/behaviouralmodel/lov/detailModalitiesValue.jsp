@@ -340,7 +340,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</div>
 			<div class='div_detail_form'>
 				<input class='portlet-form-input-field' type="text" name="label" <%=readonly%> 
-			      	   size="50" value="<%=modVal.getLabel()%>" maxlength="20">
+			      	   size="50" value="<%=StringEscapeUtils.escapeHtml(modVal.getLabel())%>" maxlength="20">
 			    &nbsp;*
 			</div>
 			<div class='div_detail_label_lov'>
@@ -350,7 +350,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</div>
 			<div class='div_detail_form'>
 				<input class='portlet-form-input-field' type="text" name="name" <%=readonly%>
-			      	   size="50" value="<%=modVal.getName()%>" maxlength="40">
+			      	   size="50" value="<%=StringEscapeUtils.escapeHtml(modVal.getName())%>" maxlength="40">
 			    &nbsp;*
 			</div>
 			<div class='div_detail_label_lov'>
@@ -366,7 +366,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			      } 
 			    %>
 			    <input class='portlet-form-input-field' type="text" name="description" <%=readonly%>
-			      	   size="50" value="<%=desc%>" maxlength="160">
+			      	   size="50" value="<%=StringEscapeUtils.escapeHtml(desc)%>" maxlength="160">
 			</div>
 			<div class='div_detail_label_lov'>
 				<span class='portlet-form-field-label'>
@@ -415,29 +415,29 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
          <!-- START DIV QUERY WIZARD --> 
         <div id="queryWizard" style='width:100%;display:<%=queryDisplay%>'>
 			<spagobi:queryWizard 
-				dataSourceLabel='<%= query.getDataSource()!= null ? query.getDataSource().toString() : "" %>' 			 
-				queryDef='<%= query.getQueryDefinition()!= null ? query.getQueryDefinition().toString() : "" %>' />
+				dataSourceLabel='<%= StringEscapeUtils.escapeHtml(query.getDataSource())!= null ? StringEscapeUtils.escapeHtml(query.getDataSource().toString()) : "" %>' 			 
+				queryDef='<%= StringEscapeUtils.escapeHtml(query.getQueryDefinition())!= null ? StringEscapeUtils.escapeHtml(query.getQueryDefinition().toString()) : "" %>' />
 		</div>	
 		<!-- DIV QUERY WIZARD CLOSED -->
 		
 		
 		<!-- START DIV SCRIPT WIZARD --> 
         <div id="scriptWizard" style='width:100%;display:<%=scriptDisplay%>'>
-			<spagobi:scriptWizard script='<%= scriptDet.getScript()!= null ? scriptDet.getScript() : "" %>' languageScript='<%= scriptDet.getLanguageScript()!= null ? scriptDet.getLanguageScript() : ""%>' />
+			<spagobi:scriptWizard script='<%= StringEscapeUtils.escapeHtml(scriptDet.getScript())!= null ? StringEscapeUtils.escapeHtml(scriptDet.getScript()) : "" %>' languageScript='<%= StringEscapeUtils.escapeHtml(scriptDet.getLanguageScript())!= null ? StringEscapeUtils.escapeHtml(scriptDet.getLanguageScript()) : ""%>' />
 		</div>	
 		<!-- DIV SCRIPT WIZARD CLOSED -->
 			
 			
 		<!-- START DIV JAVA CLASS WIZARD --> 
-        <div id="javaClassWizard" style='width:100%;display:<%=javaClassDisplay%>'>
-			<spagobi:javaClassWizard javaClassName='<%= javaClassDetail.getJavaClassName()!= null ? javaClassDetail.getJavaClassName() : "" %>'  />
+        <div id="javaClassWizard" style='width:100%;display:<%=StringEscapeUtils.escapeHtml(javaClassDisplay)%>'>
+			<spagobi:javaClassWizard javaClassName='<%= StringEscapeUtils.escapeHtml(javaClassDetail.getJavaClassName())!= null ? StringEscapeUtils.escapeHtml(javaClassDetail.getJavaClassName()) : "" %>'  />
 		</div>	
 		<!-- DIV JAVA CLASS WIZARD CLOSED -->	
 		
 		
 		<!-- START DIV FIX LIST WIZARD --> 
-        <div id="lovWizard" style='width:100%;display:<%=lovDisplay%>'>
-			<spagobi:lovWizard lovProvider='<%= fixedListDetail.toXML() %>' />
+        <div id="lovWizard" style='width:100%;display:<%=StringEscapeUtils.escapeHtml(lovDisplay)%>'>
+			<spagobi:lovWizard lovProvider='<%= StringEscapeUtils.escapeHtml(fixedListDetail.toXML()) %>' />
 		</div>	
 		<!-- DIV FIX LIST WIZARD CLOSED -->
 

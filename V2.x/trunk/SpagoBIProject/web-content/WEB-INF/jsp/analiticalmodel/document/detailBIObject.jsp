@@ -306,7 +306,7 @@ function saveDocument(goBack) {
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
-							name="label" id="doc_label" value="<%=obj.getLabel()%>" maxlength="20" />
+							name="label" id="doc_label" value="<%=StringEscapeUtils.escapeHtml(obj.getLabel())%>" maxlength="20" />
 					&nbsp;*
 				</div>
 				<div class='div_detail_label'>
@@ -316,7 +316,7 @@ function saveDocument(goBack) {
 				</div>
 				<div class='div_detail_form'>
 					<input class='portlet-form-input-field' type="text" style='width:230px;' 
-							name="name" id="doc_name" value="<%=obj.getName()%>" maxlength="40" />
+							name="name" id="doc_name" value="<%=StringEscapeUtils.escapeHtml(obj.getName())%>" maxlength="40" />
 					&nbsp;*
 				</div>
 				<div class='div_detail_label'>
@@ -332,7 +332,7 @@ function saveDocument(goBack) {
 		      		}
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
- 							name="description" id="doc_description" value="<%=desc%>" maxlength="160" />
+ 							name="description" id="doc_description" value="<%=StringEscapeUtils.escapeHtml(desc)%>" maxlength="160" />
 				</div>
 				<div class='div_detail_label' style='display:none;'>
 					<span class='portlet-form-field-label'>
@@ -347,7 +347,7 @@ function saveDocument(goBack) {
 		      		}
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
-							name="relname" id="doc_relname" value="<%=relName%>" maxlength="400" />
+							name="relname" id="doc_relname" value="<%=StringEscapeUtils.escapeHtml(relName)%>" maxlength="400" />
 				</div>
 				<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
@@ -485,7 +485,7 @@ function saveDocument(goBack) {
 				  	<input type="hidden" name="dataset" id="dataset" value="<%=currDataSetIdValue%>" <%=disableSet%> />	
 												
 					<input class='portlet-form-input-field' style='width:230px;' type="text"  readonly="readonly"
-									name="datasetReadLabel" id="datasetReadLabel" value="<%=currDataSetLabel%>" maxlength="400" /> 
+									name="datasetReadLabel" id="datasetReadLabel" value="<%=StringEscapeUtils.escapeHtml(currDataSetLabel)%>" maxlength="400" /> 
 				
 					<a href='javascript:void(0);' id="datasetLink">
 						<img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme) %>" title="Lookup" alt="Lookup" />
@@ -599,11 +599,11 @@ function saveDocument(goBack) {
 		      		if (userProfile.isAbleToExecuteAction(SpagoBIConstants.MODIFY_REFRESH)){
 		      		%>
 					<input class='portlet-form-input-field' style='width:230px;' type="text" 
- 							name="refreshseconds" id="doc_refresh" value="<%=refresh%>" maxlength="160" />
+ 							name="refreshseconds" id="doc_refresh" value="<%=StringEscapeUtils.escapeHtml(refresh.toString())%>" maxlength="160" />
 						<%}
 					else{%>
 						<%=refresh%>
-						<input type="hidden" name="refreshseconds" value="<%=refresh%>"/>
+						<input type="hidden" name="refreshseconds" value="<%=StringEscapeUtils.escapeHtml(refresh.toString())%>"/>
 					<%} %>
 				</div>     
                    
@@ -1037,7 +1037,7 @@ function saveDocument(goBack) {
 		      		}
 		      		%>
 		<input class='portlet-form-input-field' style='width:230px' type="text" 
- 			name="language" id="language" value="<%=language%>" />
+ 			name="language" id="language" value="<%=StringEscapeUtils.escapeHtml(language)%>" />
 	  </div>	
 		
 	  <div class='div_detail_label'>
@@ -1053,7 +1053,7 @@ function saveDocument(goBack) {
 		      		}
 		      		%>
 			<input class='portlet-form-input-field' style='width:230px' type="text" 
- 					name="Keywords" id="Keywords" value="<%=Keywords%>" />
+ 					name="Keywords" id="Keywords" value="<%=StringEscapeUtils.escapeHtml(Keywords)%>" />
 	  </div>										
 	</td>
   </tr>
@@ -1093,14 +1093,14 @@ Ext.onReady(function(){
         bodyStyle:'padding:5px 5px 0',
         width: 550,
         height: 100,
-        value: '<%=longDesc%>',
+        value: '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(longDesc))%>',
         renderTo: 'containerLongDescr',
             id:'longDescription'            
     });   
     
     var top1 = new Ext.form.HtmlEditor({
         frame: true,
-        value: '<%=objective%>',
+        value: '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(objective))%>',
         bodyStyle:'padding:5px 5px 0',
         width: 550,
         height: 100,
@@ -1138,7 +1138,7 @@ toggleWithCookie('metadata_<%=obj.getId().toString()%>', 'metadataDiv_<%=obj.get
 					<div class='<%= linkClass%>'>
 						<a href='javascript:changeBIParameter("<%= biObjPar.getId().toString() %>", "<spagobi:message key = "SBIDev.docConf.docDetParam.saveBIParameterConfirm" />")'
 						   style="color:black;"> 
-							<%= biObjPar.getLabel()%>
+							<%= StringEscapeUtils.escapeHtml(biObjPar.getLabel())%>
 						</a>
 					</div>
 <%	}
@@ -1188,18 +1188,18 @@ function isBIObjectFormChanged() {
 	var keywords = document.getElementById('Keywords').value;
 
   
-	if ((label != '<%=initialBIObject.getLabel()%>')
-		|| (name != '<%=initialBIObject.getName()%>')
-		|| (description != '<%=initialBIObject.getDescription()%>')
-		|| (relName != '<%=initialBIObject.getRelName()%>')
+	if ((label != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getLabel()))%>')
+		|| (name != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getName()))%>')
+		|| (description != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getDescription()))%>')
+		|| (relName != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getRelName()))%>')
 		|| (type != '<%=initialBIObject.getBiObjectTypeID()+","+initialBIObject.getBiObjectTypeCode()%>')
 		|| (engine != '<%=initialBIObject.getEngine().getId()%>')
 		|| (datasource != '<%=initialBIObject.getDataSourceId() != null ? initialBIObject.getDataSourceId().toString() : ""%>')
 		|| (state != '<%=initialBIObject.getStateID()+","+initialBIObject.getStateCode()%>') 
 		|| (versionTemplateChanged == 'true')
 		|| (fileUploadChanged == 'true') 
-		 || (longDescription != '<%=GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getExtendedDescription(),"'","\\'") : ""%>')
-		 || (objective != '<%=GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") != null ? GeneralUtilities.replace(initialBIObject.getObjectve(),"'","\\'") : ""%>')
+		 || (longDescription != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getExtendedDescription())) != null ? StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getExtendedDescription())) : ""%>')
+		 || (objective != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getObjectve())) != null ? StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObject.getObjectve())) : ""%>')
 		|| (language != '<%= initialBIObject.getLanguage()!= null ? initialBIObject.getLanguage() : "" %>')
 		|| (keywords != '<%= initialBIObject.getKeywords()!= null ? initialBIObject.getKeywords() : "" %>')
 		){
@@ -1219,9 +1219,9 @@ function isBIParameterFormChanged () {
 	var par_Id = document.getElementById('par_Id').value;
 	var parurl_nm = document.getElementById('parurl_nm').value;
 			
-	if ((objParLabel != '<%=initialBIObjectParameter.getLabel()%>')
+	if ((objParLabel != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObjectParameter.getLabel()))%>')
 		|| (par_Id != '<%=(initialBIObjectParameter.getParID() == null || initialBIObjectParameter.getParID().intValue() == -1) ? "" : initialBIObjectParameter.getParID().toString()%>')
-		|| (parurl_nm != '<%=initialBIObjectParameter.getParameterUrlName()%>') )
+		|| (parurl_nm != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(initialBIObjectParameter.getParameterUrlName()))%>') )
 	{
 		biobjParFormModified = 'true';
 	}
@@ -1438,7 +1438,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
 	</div>
 	<div class='div_detail_form'>
 		<input class='portlet-form-input-field' type="text" name="objParLabel" 
-			   id="objParLabel" size="42" value="<%=objPar.getLabel()%>" maxlength="40" />
+			   id="objParLabel" size="42" value="<%=StringEscapeUtils.escapeHtml(objPar.getLabel())%>" maxlength="40" />
 		&nbsp;*
 	</div>
 	<div class='div_detail_label'>
@@ -1464,7 +1464,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
     <input type='hidden' id='par_Id' 
 			   value='<%= parameter != null ? parameter.getId().toString() : "" %>' name='par_Id' />	 
 		<input class='portlet-form-input-field' type="text" id="parameterName" size="42" 
-	    	   name="parameterName" value='<%= parameter != null ? parameter.getName() : "" %>' 
+	    	   name="parameterName" value='<%= parameter != null ? StringEscapeUtils.escapeHtml(parameter.getName()) : "" %>' 
 			   	maxlength="100" readonly />
 
 
@@ -1490,7 +1490,7 @@ function downloadAlsoLinkedTemplatesConfirm(message, urlYes, urlNo){
     	}
     %>
 		<input class='portlet-form-input-field' type="text" size="42" 
-			   name="parurl_nm" id="parurl_nm" value="<%=urlName%>" maxlength="20" />&nbsp;&nbsp;*
+			   name="parurl_nm" id="parurl_nm" value="<%=StringEscapeUtils.escapeHtml(urlName)%>" maxlength="20" />&nbsp;&nbsp;*
 	</div>
 	
 	<div class='div_detail_label'>

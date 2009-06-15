@@ -277,5 +277,5 @@ Alter table `SBI_KPI` add Foreign Key (`kpi_type`) references `SBI_DOMAINS` (`VA
 Alter table `SBI_KPI` add Foreign Key (`metric_scale_type`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
 Alter table `SBI_KPI` add Foreign Key (`measure_type`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;
 
-ALTER TABLE SBI_EXPORTERS ADD CONSTRAINT FK_sbi_exporters_domain FOREIGN KEY FK_sbi_exporters_domain ( DOMAIN_ID ) REFERENCES SBI_DOMAINS ( VALUE_ID ) ON DELETE RESTRICT;
-ALTER TABLE SBI_EXPORTERS ADD CONSTRAINT FK_sbi_exporters_engine FOREIGN KEY FK_sbi_exporters_engine ( ENGINE_ID ) REFERENCES SBI_ENGINE ( ENGINE_ID ) ON DELETE RESTRICT;
+Alter table `SBI_EXPORTERS` add Foreign Key (`engine_id`) references `SBI_ENGINES` (`ENGINE_ID`) on delete  restrict on update  restrict;
+Alter table `SBI_EXPORTERS` add Foreign Key (`domain_id`) references `SBI_DOMAINS` (`VALUE_ID`) on delete  restrict on update  restrict;

@@ -32,6 +32,8 @@ import java.util.Set;
 
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 /**
  * Builds and presents all objects list for all admin 
  * SpagoBI's list modules. Once a list module has been executed, 
@@ -61,6 +63,7 @@ public class ListBIParametersTag extends ListTag
 			String img = (String)buttonSB.getAttribute("image");
 			String labelCode = (String)buttonSB.getAttribute("label");
 			String label = msgBuilder.getMessage(labelCode, "messages", httpRequest);
+			label = StringEscapeUtils.escapeHtml(label);
 			htmlStream.append("<form action='"+urlBuilder.getUrl(httpRequest, new HashMap())+"' id='form"+label+"'  method='POST' >\n");
 			htmlStream.append("	<td class=\"header-button-column-portlet-section\">\n");
 			Set paramsKeys = paramsMap.keySet();

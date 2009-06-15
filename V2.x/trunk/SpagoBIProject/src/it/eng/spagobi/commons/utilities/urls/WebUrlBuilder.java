@@ -30,6 +30,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -94,6 +95,7 @@ public class WebUrlBuilder implements IUrlBuilder{
 			}
 		}
 		String url = sb.toString();
+		url=StringEscapeUtils.escapeHtml(url);
 		logger.debug("OUT.url="+url);
 		return url;
 	}

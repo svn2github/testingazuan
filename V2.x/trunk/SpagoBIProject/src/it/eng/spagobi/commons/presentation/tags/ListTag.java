@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
@@ -102,6 +103,7 @@ public class ListTag extends TagSupport
 	protected String currTheme="";
 
 	protected HttpServletRequest httpRequest = null;
+	protected HttpServletResponse response = null;
 	protected IUrlBuilder urlBuilder = null;
 	protected IMessageBuilder msgBuilder = null;
 
@@ -140,6 +142,7 @@ public class ListTag extends TagSupport
 		_serviceRequest = _requestContainer.getServiceRequest();
 		_serviceResponse = _responseContainer.getServiceResponse();
 		_errorHandler = _responseContainer.getErrorHandler();
+		response = (HttpServletResponse) pageContext.getResponse();
 		urlBuilder = UrlBuilderFactory.getUrlBuilder(_requestContainer.getChannelType());
 		msgBuilder = MessageBuilderFactory.getMessageBuilder();
 
@@ -360,6 +363,7 @@ public class ListTag extends TagSupport
 			//orderParamsMap.put("MESSAGEDET",SpagoBIConstants.MESSAGE_ORDER_JOB_LIST);
 
 			String orderUrlDesc = createUrl(orderParamsMap);
+			
 			_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" );			
 			_htmlStream.append(   labelColumn);						
 			if(!hideOrderButtons){
@@ -940,6 +944,9 @@ public class ListTag extends TagSupport
 		prevParamsMap.put("MESSAGE", "LIST_PAGE");
 		prevParamsMap.put("LIST_PAGE", String.valueOf(prevPage));		
 		_prevUrl = createUrl(prevParamsMap);	
+		_prevUrl = response.encodeURL(_prevUrl);
+		_prevUrl=StringEscapeUtils.escapeHtml(_prevUrl);
+		
 
 		// create url for refresh page		
 		HashMap refreshParamsMap = new HashMap();
@@ -948,6 +955,8 @@ public class ListTag extends TagSupport
 		refreshParamsMap.put("LIST_PAGE", String.valueOf(pageNumber));
 		_refreshUrl = createUrl(refreshParamsMap);
 		_refreshUrl = _refreshUrl.replaceAll("&amp;", "&");
+		_refreshUrl = response.encodeURL(_refreshUrl);
+		_refreshUrl=StringEscapeUtils.escapeHtml(_refreshUrl);
 
 		// create link for next page
 		HashMap nextParamsMap = new HashMap();
@@ -955,6 +964,8 @@ public class ListTag extends TagSupport
 		nextParamsMap.put("MESSAGE", "LIST_PAGE");
 		nextParamsMap.put("LIST_PAGE", String.valueOf(nextPage));
 		_nextUrl = createUrl(nextParamsMap);
+		_nextUrl = response.encodeURL(_nextUrl);
+		_nextUrl=StringEscapeUtils.escapeHtml(_nextUrl);
 
 		// create link for first page
 		HashMap firstParamsMap = new HashMap();
@@ -962,6 +973,8 @@ public class ListTag extends TagSupport
 		firstParamsMap.put("MESSAGE", "LIST_PAGE");
 		firstParamsMap.put("LIST_PAGE","1");
 		_firstUrl = createUrl(firstParamsMap);
+		_firstUrl = response.encodeURL(_firstUrl);
+		_firstUrl=StringEscapeUtils.escapeHtml(_firstUrl);
 
 		// create link for last page
 		HashMap lastParamsMap = new HashMap();
@@ -969,6 +982,8 @@ public class ListTag extends TagSupport
 		lastParamsMap.put("MESSAGE", "LIST_PAGE");
 		lastParamsMap.put("LIST_PAGE", String.valueOf(pagesNumber));
 		_lastUrl = createUrl(lastParamsMap);
+		_lastUrl = response.encodeURL(_lastUrl);
+		_lastUrl=StringEscapeUtils.escapeHtml(_lastUrl);
 
 		String formId = "formFilter" + requestIdentity;
 
@@ -982,24 +997,32 @@ public class ListTag extends TagSupport
 			prevParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			prevParamsMap.put(SpagoBIConstants.TYPE_FILTER, typeFilter);
 			_prevUrl = createUrl(prevParamsMap);
+			_prevUrl = response.encodeURL(_prevUrl);
+			_prevUrl=StringEscapeUtils.escapeHtml(_prevUrl);
 
 			nextParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
 			nextParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
 			nextParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			nextParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
 			_nextUrl = createUrl(nextParamsMap);
+			_nextUrl = response.encodeURL(_nextUrl);
+			_nextUrl=StringEscapeUtils.escapeHtml(_nextUrl);
 
 			firstParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
 			firstParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
 			firstParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			firstParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
 			_firstUrl = createUrl(firstParamsMap);
+			_firstUrl = response.encodeURL(_firstUrl);
+			_firstUrl=StringEscapeUtils.escapeHtml(_firstUrl);
 
 			lastParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
 			lastParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
 			lastParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 			lastParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
 			_lastUrl = createUrl(lastParamsMap);
+			_lastUrl = response.encodeURL(_lastUrl);
+			_lastUrl=StringEscapeUtils.escapeHtml(_lastUrl);
 		} else {
 			valueFilter = "";
 			typeValueFilter = "";
@@ -1121,9 +1144,9 @@ public class ListTag extends TagSupport
 			else selected = "";
 			_htmlStream.append("						    	<option value='"+SpagoBIConstants.GREATER_OR_EQUAL_FILTER +"' "+selected+" >"+labelIsGreaterOrEqualThan+"</option>\n");
 			_htmlStream.append("						    </select>\n");
-			_htmlStream.append("						    <input type=\"text\" name=\"" + SpagoBIConstants.VALUE_FILTER + "\" size=\"10\" value=\""+valueFilter+"\" /> \n");
-			_htmlStream.append("						    <a href='javascript:document.getElementById(\"" + formId +"\").submit()'>"+labelFilter+"</a> \n");
-			_htmlStream.append(" <a href='"+allUrl+"'>"+labelAll+"</a> \n");
+			_htmlStream.append("						    <input type=\"text\" name=\"" + SpagoBIConstants.VALUE_FILTER + "\" size=\"10\" value=\""+StringEscapeUtils.escapeHtml(valueFilter)+"\" /> \n");
+			_htmlStream.append("						    <a href='javascript:document.getElementById(\"" + formId +"\").submit()'>"+StringEscapeUtils.escapeHtml(labelFilter)+"</a> \n");
+			_htmlStream.append(" <a href='"+StringEscapeUtils.escapeHtml(allUrl)+"'>"+StringEscapeUtils.escapeHtml(labelAll)+"</a> \n");
 			_htmlStream.append("						    </form> \n");
 
 			// visualize any validation error present in the errorHandler

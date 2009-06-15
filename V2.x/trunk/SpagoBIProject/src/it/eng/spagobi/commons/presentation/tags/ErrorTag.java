@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 /**
  * It is used when any errors occurs during the execution of a tag. 
  * It handles errors throwing exceptions.
@@ -98,6 +100,7 @@ public class ErrorTag extends TagSupport  {
 	    	while(iter.hasNext()) {
 	    		error = (EMFAbstractError)iter.next();
 	    	 	description = error.getDescription();
+	    	 	description = StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(description));
 	    	 	output.append("			<li>"+description+"</li>\n");
 	    	}
 	    	output.append("			</ul>\n");

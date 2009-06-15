@@ -44,6 +44,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 
 
 public class LovColumnsSelectorTag extends TagSupport {
@@ -177,6 +179,7 @@ public class LovColumnsSelectorTag extends TagSupport {
 			String checked = " ";
 			String selectedValue = " ";
 			String selectedDescr = " ";
+			colName = StringEscapeUtils.escapeHtml(colName);
 			if(colName.equalsIgnoreCase(valueColumn)) {
 				selectedValue = " checked ";
 			}

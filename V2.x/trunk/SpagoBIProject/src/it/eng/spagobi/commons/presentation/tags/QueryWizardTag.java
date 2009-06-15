@@ -44,6 +44,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -185,6 +186,8 @@ public class QueryWizardTag extends CommonWizardLovTag {
 			IDataSource ds = (IDataSource)itDs.next();
 			String dataSource = String.valueOf(ds.getLabel());
 			String dataSourceDescription = ds.getDescr();
+			dataSource = StringEscapeUtils.escapeHtml(dataSource);
+			dataSourceDescription = StringEscapeUtils.escapeHtml(dataSourceDescription);
 			
 			String dsLabeleSelected = "";
 			if (dataSourceLabel.equals(dataSource)) dsLabeleSelected = "selected=\"selected\"";

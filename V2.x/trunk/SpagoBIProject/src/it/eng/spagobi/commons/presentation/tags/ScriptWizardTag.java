@@ -43,6 +43,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 /**
  * Presentation tag for Script details. 
  */
@@ -141,6 +143,7 @@ public class ScriptWizardTag extends CommonWizardLovTag {
 		for(Iterator it=engineNames.keySet().iterator();it.hasNext();){
 			String engName=(String)it.next(); 
 			String alias=(String)engineNames.get(engName);
+			alias = StringEscapeUtils.escapeHtml(alias);
 			selected="";
 			if(languageScript.equalsIgnoreCase(alias)){
 

@@ -2,7 +2,7 @@
  * DocumentsServiceSoapBindingSkeleton.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
 package it.eng.spagobi.sdk.documents.stub;
@@ -183,16 +183,16 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
         }
         ((java.util.List)_myOperations.get("executeDocument")).add(_oper);
         _fault = new org.apache.axis.description.FaultDesc();
-        _fault.setName("InvalidParameterValue");
-        _fault.setQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"));
-        _fault.setClassName("it.eng.spagobi.sdk.exceptions.InvalidParameterValue");
-        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "InvalidParameterValue"));
-        _oper.addFault(_fault);
-        _fault = new org.apache.axis.description.FaultDesc();
         _fault.setName("NonExecutableDocumentException");
         _fault.setQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"));
         _fault.setClassName("it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException");
         _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NonExecutableDocumentException"));
+        _oper.addFault(_fault);
+        _fault = new org.apache.axis.description.FaultDesc();
+        _fault.setName("InvalidParameterValue");
+        _fault.setQName(new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"));
+        _fault.setClassName("it.eng.spagobi.sdk.exceptions.InvalidParameterValue");
+        _fault.setXmlType(new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "InvalidParameterValue"));
         _oper.addFault(_fault);
         _fault = new org.apache.axis.description.FaultDesc();
         _fault.setName("MissingParameterValue");
@@ -262,7 +262,7 @@ public class DocumentsServiceSoapBindingSkeleton implements it.eng.spagobi.sdk.d
         return ret;
     }
 
-    public it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent executeDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[] in1, java.lang.String in2) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.InvalidParameterValue, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException, it.eng.spagobi.sdk.exceptions.MissingParameterValue, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException
+    public it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent executeDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[] in1, java.lang.String in2) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException, it.eng.spagobi.sdk.exceptions.InvalidParameterValue, it.eng.spagobi.sdk.exceptions.MissingParameterValue, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException
     {
         it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent ret = impl.executeDocument(in0, in1, in2);
         return ret;

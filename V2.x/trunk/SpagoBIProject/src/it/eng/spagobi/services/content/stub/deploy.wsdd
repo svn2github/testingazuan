@@ -15,7 +15,7 @@
   <service name="ContentService" provider="java:RPC" style="rpc" use="encoded">
       <parameter name="wsdlTargetNamespace" value="urn:spagobicontent"/>
       <parameter name="wsdlServiceElement" value="ContentServiceService"/>
-      <parameter name="schemaUnqualified" value="http://bo.content.services.spagobi.eng.it,http://xml.apache.org/xml-soap"/>
+      <parameter name="schemaUnqualified" value="http://xml.apache.org/xml-soap,http://bo.content.services.spagobi.eng.it"/>
       <parameter name="wsdlServicePort" value="ContentService"/>
       <parameter name="className" value="it.eng.spagobi.services.content.stub.ContentServiceSoapBindingSkeleton"/>
       <parameter name="wsdlPortType" value="ContentService"/>

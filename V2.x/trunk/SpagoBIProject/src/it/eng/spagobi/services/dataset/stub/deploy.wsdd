@@ -15,7 +15,7 @@
   <service name="DataSetService" provider="java:RPC" style="rpc" use="encoded">
       <parameter name="wsdlTargetNamespace" value="urn:spagobidataset"/>
       <parameter name="wsdlServiceElement" value="DataSetServiceService"/>
-      <parameter name="schemaUnqualified" value="urn:spagobidataset,http://bo.dataset.services.spagobi.eng.it,http://bo.datasource.services.spagobi.eng.it"/>
+      <parameter name="schemaUnqualified" value="http://bo.datasource.services.spagobi.eng.it,http://bo.dataset.services.spagobi.eng.it,urn:spagobidataset"/>
       <parameter name="wsdlServicePort" value="DataSetService"/>
       <parameter name="className" value="it.eng.spagobi.services.dataset.stub.DataSetServiceSoapBindingSkeleton"/>
       <parameter name="wsdlPortType" value="DataSetService"/>

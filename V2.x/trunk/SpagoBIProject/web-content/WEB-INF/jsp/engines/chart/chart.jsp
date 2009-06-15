@@ -508,7 +508,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<table id="slider" align="center">  
 							<tr>
 								<td width="15%">&nbsp;</td>														
-								<td width="60%" align="center">							
+								<td width="5%" align="center">							
 									<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"> 
 										<span  id="slider1"></span> 
 									</a>	
@@ -536,7 +536,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						<table id="slider" align="center">  
 							<tr>
 								<td width="15%">&nbsp;</td>														
-								<td width="60%" align="center">							
+								<td width="5%" align="center">							
 									<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"> 
 										<span  id="slider1"></span> 
 									</a>	
@@ -827,6 +827,8 @@ var checkableSeries = new Array();
 				function() {
 					value= arrayCats[parseInt(this.value)];
 					//orig document.getElementById('slider_1_1_value').innerHTML=value;
+					//alert(document.getElementById('ext-gen27').style.top);
+					document.getElementById('ext-gen27').style.top='10px';					
 					document.getElementById('slider_1_1_value').value=value;
 					//$('slider_1_1_value').innerHTML =value;
 				})

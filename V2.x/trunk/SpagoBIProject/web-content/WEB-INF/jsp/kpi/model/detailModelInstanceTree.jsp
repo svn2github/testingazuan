@@ -280,7 +280,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String selected = "";
 	%>
 	<option value="<%=model.getId()%>"
-		label="<%=model.getName()%>" <%=selected%>><%=model.getName()%>
+		label="<%=StringEscapeUtils.escapeHtml(model.getName())%>" <%=selected%>><%=StringEscapeUtils.escapeHtml(model.getName())%>
 	</option>
 	<%
 		}
@@ -301,13 +301,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelInstanceName" size="50"
-	value="<%=modelInstanceName%>" maxlength="200"> <%=mandatory %></div>
+	value="<%=StringEscapeUtils.escapeHtml(modelInstanceName)%>" maxlength="200"> <%=mandatory %></div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form' style='height: 150px;'>
-	<textarea name="modelInstanceDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=modelInstanceDescription%></textarea>
+	<textarea name="modelInstanceDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=StringEscapeUtils.escapeHtml(modelInstanceDescription)%></textarea>
 </div>
 
 <% if(parentId != null && modelId != null && parentId.equals(modelId)){ %>
@@ -323,7 +323,7 @@ dojoType='dropdowndatepicker'
 saveFormat='<%=DetailModelInstanceUtil.DATE_FORMAT %>'
 displayFormat='<%= dateFormat %>'
 widgetId='searchDate'
-value='<%= startDateS %>'/> </div>
+value='<%= StringEscapeUtils.escapeHtml(startDateS) %>'/> </div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -335,7 +335,7 @@ dojoType='dropdowndatepicker'
 saveFormat='<%=DetailModelInstanceUtil.DATE_FORMAT %>'
 displayFormat='<%= dateFormat %>'
 widgetId='searchDate'
-value='<%= endDateS %>'/> </div>
+value='<%= StringEscapeUtils.escapeHtml(endDateS) %>'/> </div>
 <% } %>
 
 </div>
@@ -355,20 +355,20 @@ value='<%= endDateS %>'/> </div>
 	
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelName" size="50"
-	value="<%=modelName%>" maxlength="200" readonly disabled="disabled"></div>
+	value="<%=StringEscapeUtils.escapeHtml(modelName)%>" maxlength="200" readonly disabled="disabled"></div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form' style='height: 150px;'>
-	<textarea name="modelDescription" cols="40" style='height: 110px;' class='portlet-text-area-field' disabled="disabled"><%=modelDescription%></textarea>
+	<textarea name="modelDescription" cols="40" style='height: 110px;' class='portlet-text-area-field' disabled="disabled"><%=StringEscapeUtils.escapeHtml(modelDescription)%></textarea>
 </div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.code" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelCode" size="50"
-	value="<%=modelCode%>" maxlength="200" readonly disabled="disabled"></div>
+	value="<%=StringEscapeUtils.escapeHtml(modelCode)%>" maxlength="200" readonly disabled="disabled"></div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.model.typeName" bundle="<%=messageBundle%>" /> </span></div>
@@ -376,13 +376,13 @@ value='<%= endDateS %>'/> </div>
 
 <input class='portlet-form-input-field' type="text" name="typeName"
 	size="50" value='<spagobi:message
-	key='<%=typeName%>' bundle="<%=messageBundle2%>" />'
+	key='<%=StringEscapeUtils.escapeHtml(typeName)%>' bundle="<%=messageBundle2%>" />'
 	maxlength="200" readonly disabled="disabled"></div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.model.typeDescription" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form' style='height: 150px;'>
-	<textarea name="typeDescription" cols="40" style='height: 110px;' class='portlet-text-area-field' disabled="disabled"><spagobi:message key="<%=typeDescription%>" bundle="<%=messageBundle2%>" /> </textarea>
+	<textarea name="typeDescription" cols="40" style='height: 110px;' class='portlet-text-area-field' disabled="disabled"><spagobi:message key="<%=StringEscapeUtils.escapeHtml(typeDescription)%>" bundle="<%=messageBundle2%>" /> </textarea>
 </div>
 </div>
 </div>
@@ -409,7 +409,7 @@ value='<%= endDateS %>'/> </div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text"
 	name='<%="M_ATTR" + attributeId.toString()%>' size="50"
-	value="<%=attributeValue%>" maxlength="200" readonly disabled="disabled"></div>
+	value="<%=StringEscapeUtils.escapeHtml(attributeValue)%>" maxlength="200" readonly disabled="disabled"></div>
 <%
 	}
 %>
@@ -452,7 +452,7 @@ value='<%= endDateS %>'/> </div>
 		}
 	%>
 	<option value="<%=kpi.getKpiId()%>"
-				label="[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>" <%=selected%>>[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>
+				label="[<%=StringEscapeUtils.escapeHtml(kpi.getCode())%>] <%=StringEscapeUtils.escapeHtml(kpi.getKpiName())%>" <%=selected%>>[<%=StringEscapeUtils.escapeHtml(kpi.getCode())%>] <%=StringEscapeUtils.escapeHtml(kpi.getKpiName())%>
 	</option>
 	<%
 	}
@@ -509,7 +509,7 @@ value='<%= endDateS %>'/> </div>
 	}
 	%>
 	<option value="<%=threshold.getId()%>"
-		label="[<%=threshold.getCode()%>] <%=threshold.getName()%>" <%=selected%>>[<%=threshold.getCode()%>] <%=threshold.getName()%>
+		label="[<%=StringEscapeUtils.escapeHtml(threshold.getCode())%>] <%=StringEscapeUtils.escapeHtml(threshold.getName())%>" <%=selected%>>[<%=StringEscapeUtils.escapeHtml(threshold.getCode())%>] <%=StringEscapeUtils.escapeHtml(threshold.getName())%>
 	</option>
 	<%
 	}
@@ -524,13 +524,13 @@ value='<%= endDateS %>'/> </div>
 	key="sbi.kpi.label.weight" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="weight"
-	size="10" value="<%=weight%>" maxlength="200" ></div>
+	size="10" value="<%=StringEscapeUtils.escapeHtml(weight)%>" maxlength="200" ></div>
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.target" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="target"
-	size="10" value="<%=target%>" maxlength="200" ></div>
+	size="10" value="<%=StringEscapeUtils.escapeHtml(target)%>" maxlength="200" ></div>
 
 <hr>
 
@@ -568,7 +568,7 @@ value='<%= endDateS %>'/> </div>
 		}
 	%>
 	<option value="<%=domain.getValueId()%>"
-		label="<%=domain.getValueName()%>" <%=selected%>><%=domain.getValueName()%>
+		label="<%=StringEscapeUtils.escapeHtml(domain.getValueName())%>" <%=selected%>><%=StringEscapeUtils.escapeHtml(domain.getValueName())%>
 	</option>
 	<%
 		}
@@ -606,7 +606,7 @@ value='<%= endDateS %>'/> </div>
 		}
 	%>
 	<option value="<%=periodicity.getIdKpiPeriodicity()%>"
-		label="<%=periodicity.getName()%>" <%=selected%>><%=periodicity.getName()%>
+		label="<%=StringEscapeUtils.escapeHtml(periodicity.getName())%>" <%=selected%>><%=StringEscapeUtils.escapeHtml(periodicity.getName())%>
 	</option>
 	<%
 		}
@@ -647,7 +647,7 @@ value='<%= endDateS %>'/> </div>
 	key="sbi.kpi.label.label" bundle="<%=messageBundle%>" /> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="modelInstanceLabel" size="50"
-	value="<%=modelInstanceLabel%>" maxlength="100" <%=readOnly %>>&nbsp;*</div>
+	value="<%=StringEscapeUtils.escapeHtml(modelInstanceLabel)%>" maxlength="100" <%=readOnly %>>&nbsp;*</div>
  
 </div>
 </div>

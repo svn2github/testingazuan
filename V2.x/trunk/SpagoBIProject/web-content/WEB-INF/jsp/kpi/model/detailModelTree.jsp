@@ -189,33 +189,33 @@
 		key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
 	<div class='div_detail_form'><input
 		class='portlet-form-input-field' type="text" name="modelName" size="50"
-		value="<%=modelName%>" maxlength="200"> &nbsp;*</div>
+		value="<%=StringEscapeUtils.escapeHtml(modelName)%>" maxlength="200"> &nbsp;*</div>
 	
 	<div class='div_detail_label'><span
 		class='portlet-form-field-label'> <spagobi:message
 		key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
 	<div class='div_detail_form' style='height: 150px;'>
-		<textarea name="modelDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=modelDescription%></textarea>
+		<textarea name="modelDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=StringEscapeUtils.escapeHtml(modelDescription)%></textarea>
 	</div>
 	<div class='div_detail_label'><span
 		class='portlet-form-field-label'> <spagobi:message
 		key="sbi.kpi.label.code" bundle="<%=messageBundle%>" /> </span></div>
 	<div class='div_detail_form'><input
 		class='portlet-form-input-field' type="text" name="modelCode" size="50"
-		value="<%=modelCode%>" maxlength="200"></div>
+		value="<%=StringEscapeUtils.escapeHtml(modelCode)%>" maxlength="200"></div>
 
 	<div class='div_detail_label'><span
 		class='portlet-form-field-label'> <spagobi:message
 		key="sbi.kpi.model.typeName" bundle="<%=messageBundle%>" /> </span></div>
 	<div class='div_detail_form'>
 	<input class='portlet-form-input-field' type="text" name="typeName"
-		size="50" value='<spagobi:message key='<%=typeName%>'
+		size="50" value='<spagobi:message key='<%=StringEscapeUtils.escapeHtml(typeName)%>'
 		bundle="<%=messageBundle2%>" />' maxlength="200" disabled="disabled"></div>
 	<div class='div_detail_label'><span
 		class='portlet-form-field-label'> <spagobi:message
 		key="sbi.kpi.model.typeDescription" bundle="<%=messageBundle%>" /> </span></div>
 	<div class='div_detail_form' style='height: 150px;'>
-		<textarea name="typeDescription" cols="40" style='height: 110px;' class='portlet-text-area-field' disabled="disabled"><spagobi:message key="<%=typeDescription%>" bundle="<%=messageBundle2%>" /> </textarea>
+		<textarea name="typeDescription" cols="40" style='height: 110px;' class='portlet-text-area-field' disabled="disabled"><spagobi:message key="<%=StringEscapeUtils.escapeHtml(typeDescription)%>" bundle="<%=messageBundle2%>" /> </textarea>
 	</div>
 	
 	</div>
@@ -243,11 +243,11 @@
 	%>
 	<div class='div_detail_label'><span
 		class='portlet-form-field-label'> <spagobi:message
-		key="<%=attributeName%>" /> </span></div>
+		key="<%=StringEscapeUtils.escapeHtml(attributeName)%>" /> </span></div>
 	<div class='div_detail_form'><input
 		class='portlet-form-input-field' type="text"
 		name='<%="M_ATTR" + attributeId.toString()%>' size="50"
-		value="<%=attributeValue%>" maxlength="200"></div>
+		value="<%=StringEscapeUtils.escapeHtml(attributeValue)%>" maxlength="200"></div>
 	<%
 		}
 	%>
@@ -273,20 +273,20 @@
 		key="sbi.kpi.label.name" bundle="<%=messageBundle%>" /> </span></div>
 	<div class='div_detail_form'><input
 		class='portlet-form-input-field' type="text" name="modelName" size="50"
-		value="<%=modelName%>" maxlength="200"> &nbsp;*</div>
+		value="<%=StringEscapeUtils.escapeHtml(modelName)%>" maxlength="200"> &nbsp;*</div>
 	
 	<div class='div_detail_label'><span
 		class='portlet-form-field-label'> <spagobi:message
 		key="sbi.kpi.label.description" bundle="<%=messageBundle%>" /> </span></div>
 	<div class='div_detail_form' style='height: 150px;'>
-		<textarea name="modelDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=modelDescription%></textarea>
+		<textarea name="modelDescription" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=StringEscapeUtils.escapeHtml(modelDescription)%></textarea>
 	</div>
 	<div class='div_detail_label'><span
 		class='portlet-form-field-label'> <spagobi:message
 		key="sbi.kpi.label.code" bundle="<%=messageBundle%>" /> </span></div>
 	<div class='div_detail_form'><input
 		class='portlet-form-input-field' type="text" name="modelCode" size="50"
-		value="<%=modelCode%>" maxlength="200"></div>
+		value="<%=StringEscapeUtils.escapeHtml(modelCode)%>" maxlength="200"></div>
 	 <div class='div_detail_label'><span
 		class='portlet-form-field-label'> <spagobi:message
 		key="sbi.kpi.model.typeName" bundle="<%=messageBundle%>" /> </span></div>
@@ -301,7 +301,7 @@
 					String selected = "";
 		%>
 		<option value="<%=domain.getValueId()%>"
-			label="<%=domain.getTranslatedValueName(locale)%>" <%=selected%>><%=domain.getTranslatedValueName(locale)%>
+			label="<%=StringEscapeUtils.escapeHtml(domain.getTranslatedValueName(locale))%>" <%=selected%>><%=StringEscapeUtils.escapeHtml(domain.getTranslatedValueName(locale))%>
 		</option>
 		<%
 			}
@@ -349,7 +349,7 @@
 			}
 		%>
 		<option value="<%=kpi.getKpiId()%>"
-			label="[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>" <%=selected%>>[<%=kpi.getCode()%>] <%=kpi.getKpiName()%>
+			label="[<%=StringEscapeUtils.escapeHtml(kpi.getCode())%>] <%=StringEscapeUtils.escapeHtml(kpi.getKpiName())%>" <%=selected%>>[<%=StringEscapeUtils.escapeHtml(kpi.getCode())%>] <%=StringEscapeUtils.escapeHtml(kpi.getKpiName())%>
 		</option>
 		<%
 		}

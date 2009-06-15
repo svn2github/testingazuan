@@ -198,15 +198,14 @@ String urlColorPicker=urlBuilder.getResourceLink(request,"/js/kpi/colorPicker.js
 	key="sbi.kpi.label.position" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="position" size="50"
-	value="<%=position%>" maxlength="3"></div>
+	value="<%=StringEscapeUtils.escapeHtml(position)%>" maxlength="3"></div>
 
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.label" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="label" size="50"
-	value="<%=label%>" maxlength="20"></div>
-
+	value="<%=StringEscapeUtils.escapeHtml(label)%>" maxlength="20"></div>
 <% if(type!=null && (type.trim().equals("RANGE") || type.trim().equals("MINIMUM"))) { %>
 		 
 <div class='div_detail_label'><span
@@ -215,7 +214,7 @@ String urlColorPicker=urlBuilder.getResourceLink(request,"/js/kpi/colorPicker.js
 <div class='div_detail_form'>
 <input
   class='portlet-form-input-field' type="text" name="min_Value" size="50"
-  value="<%=minValue%>" maxlength="200"></div>
+  value="<%=StringEscapeUtils.escapeHtml(minValue)%>" maxlength="200"></div>
  <% } %>
 
 <% if(type!=null && (type.trim().equals("RANGE") || type.trim().equals("MAXIMUM"))) { %>
@@ -226,7 +225,7 @@ String urlColorPicker=urlBuilder.getResourceLink(request,"/js/kpi/colorPicker.js
 <div class='div_detail_form'>
 <input
   class='portlet-form-input-field' type="text" name="max_Value" size="50"
-  value="<%=maxValue%>" maxlength="200"></div>
+  value="<%=StringEscapeUtils.escapeHtml(maxValue)%>" maxlength="200"></div>
 <% } %>
 
 <script language="JavaScript">
@@ -238,7 +237,7 @@ var cp = new ColorPicker('window'); // Popup window
 <div class='div_detail_form'>
 <input style="background-color:<%=colour%>"
   class='portlet-form-input-field' type="text" name="colour" id="colour" size="50"
-  value="<%=colour%>" maxlength="20">
+  value="<%=StringEscapeUtils.escapeHtml(colour)%>" maxlength="20">
 <a href="#" onClick="javascript:cp.select(document.forms[0].colour,'pick');return false;" name="pick" id="pick">Select</a>
 <script language="JavaScript">
 cp.writeDiv()
@@ -260,8 +259,8 @@ cp.writeDiv()
 			selected = "selected='selected'";		
 		}
 		%>    			 		
-		<option value="<%= domain.getValueId() %>" label="<%= domain.getTranslatedValueName(locale) %>" <%= selected %>>
-			<%= domain.getTranslatedValueName(locale) %>	
+		<option value="<%= domain.getValueId() %>" label="<%= StringEscapeUtils.escapeHtml(domain.getTranslatedValueName(locale)) %>" <%= selected %>>
+			<%= StringEscapeUtils.escapeHtml(domain.getTranslatedValueName(locale)) %>	
 		</option>
 		<%
 	}

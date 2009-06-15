@@ -212,19 +212,19 @@
 
 <div id="tabs1">
 <div id="tab1" class="x-hide-display">
-<div class="div_detail_area_forms" style="width: 670;">
+<div class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.name" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'><input
 	class='portlet-form-input-field' type="text" name="name" size="50"
-	value="<%=name%>" maxlength="200"> &nbsp;*</div>
+	value="<%=StringEscapeUtils.escapeHtml(name)%>" maxlength="200"> &nbsp;*</div>
 	
 	<div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.description" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form' style='height: 150px;'>
-<textarea id="description" name="description" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=description%></textarea>
+<textarea id="description" name="description" cols="40" style='height: 110px;' class='portlet-text-area-field'><%=StringEscapeUtils.escapeHtml(description)%></textarea>
 </div>
 
 <div class='div_detail_label'><span
@@ -232,7 +232,7 @@
   key="sbi.kpi.label.code" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form'><input
   class='portlet-form-input-field' type="text" name="code" size="50"
-  value="<%=code%>" maxlength="200">&nbsp;*</div>
+  value="<%=StringEscapeUtils.escapeHtml(code)%>" maxlength="200">&nbsp;*</div>
 
 <div class='div_detail_label'><span
   class='portlet-form-field-label'> <spagobi:message
@@ -257,7 +257,7 @@
   key="sbi.kpi.label.weight" bundle="<%=messageBunle%>"/> </span></div>
 <div class='div_detail_form' style="height:40px;"><input
   class='portlet-form-input-field' type="text" name="weight" size="50"
-  value="<%=weight%>" maxlength="200" ></div>
+  value="<%=StringEscapeUtils.escapeHtml(weight)%>" maxlength="200" ></div>
   
   <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
@@ -278,7 +278,7 @@
 			selected = "selected='selected'";
 		}
 		%>    			 		
-		<option value="<%= threshold.getId() %>" label="<%= label %>" <%= selected %>>
+		<option value="<%= threshold.getId() %>" label="<%= StringEscapeUtils.escapeHtml(label) %>" <%= selected %>>
 			<%= label %>	
 		</option>
 		<%
@@ -305,8 +305,8 @@
 			selected = "selected='selected'";										
 		}	
 		%>    			 		
-		<option value="<%= bio.getLabel() %>" label="<%= bio.getLabel() %>" <%= selected %>>
-			<%= bio.getLabel() %>	
+		<option value="<%= StringEscapeUtils.escapeHtml(bio.getLabel()) %>" label="<%= StringEscapeUtils.escapeHtml(bio.getLabel()) %>" <%= selected %>>
+			<%= StringEscapeUtils.escapeHtml(bio.getLabel()) %>	
 		</option>
 		<%
 	}
@@ -334,8 +334,8 @@
 			selected = "selected='selected'";
 		}
 		%>    			 		
-		<option value="<%= dataSet.getId() %>" label="<%= dataSet.getLabel() %>" <%= selected %>>
-			<%= dataSet.getLabel() %>	
+		<option value="<%= dataSet.getId() %>" label="<%= StringEscapeUtils.escapeHtml(dataSet.getLabel()) %>" <%= selected %>>
+			<%= StringEscapeUtils.escapeHtml(dataSet.getLabel()) %>	
 		</option>
 		<%
 	}
@@ -347,7 +347,7 @@
 </div>
 
 <div id="tab2" class="x-hide-display">
-<div class="div_detail_area_forms" style="width: 670;">
+<div class="div_detail_area_forms">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.kpi.type" bundle="<%=messageBunle%>"/> </span></div>
@@ -375,8 +375,8 @@
 			selected = "selected='selected'";		
 		}
 		%>    			 		
-		<option value="<%= domain.getValueId() %>" label="<%= domain.getValueName() %>" <%= selected %>>
-			<%= domain.getValueName() %>	
+		<option value="<%= domain.getValueId() %>" label="<%= StringEscapeUtils.escapeHtml(domain.getValueName()) %>" <%= selected %>>
+			<%= StringEscapeUtils.escapeHtml(domain.getValueName()) %>	
 		</option>
 		<%
 	}
@@ -413,8 +413,8 @@
 			selected = "selected='selected'";		
 		}
 		%>    			 		
-		<option value="<%= domain.getValueId() %>" label="<%= domain.getValueName() %>" <%= selected %>>
-			<%= domain.getValueName() %>	
+		<option value="<%= domain.getValueId() %>" label="<%= StringEscapeUtils.escapeHtml(domain.getValueName()) %>" <%= selected %>>
+			<%= StringEscapeUtils.escapeHtml(domain.getValueName()) %>	
 		</option>
 		<%
 	}
@@ -449,8 +449,8 @@
 			selected = "selected='selected'";		
 		}
 		%>    			 		
-		<option value="<%= domain.getValueId() %>" label="<%= domain.getValueName() %>" <%= selected %>>
-			<%= domain.getValueName() %>	
+		<option value="<%= domain.getValueId() %>" label="<%= StringEscapeUtils.escapeHtml(domain.getValueName()) %>" <%= selected %>>
+			<%= StringEscapeUtils.escapeHtml(domain.getValueName()) %>	
 		</option>
 		<%
 	}
@@ -474,7 +474,7 @@
 <textarea
   style='height: 110px;' class='portlet-text-area-field' name='modelReference'
   cols='40'>
-<%=modelReference%></textarea></div>
+<%=StringEscapeUtils.escapeHtml(modelReference)%></textarea></div>
 
 
 <div class='div_detail_label'><span
@@ -484,7 +484,7 @@
 <textarea
   style='height: 110px;' class='portlet-text-area-field' name='targetAudience'
   cols='40'>
-<%=targetAudience%></textarea></div>
+<%=StringEscapeUtils.escapeHtml(targetAudience)%></textarea></div>
 
 </div> 
 </div>
@@ -503,7 +503,7 @@
 Ext.onReady(function(){
     var tabs = new Ext.TabPanel({
         renderTo: 'tabs1',
-        width:690,
+        width:550,
         activeTab: 0,
         frame:true,
         defaults:{autoHeight: true},

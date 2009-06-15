@@ -97,8 +97,10 @@ public class ChartImpl implements IChart {
 	protected boolean legend=true;
 	protected String legendPosition="bottom";
 	protected Map parametersObject;
+	
 	protected boolean filter=true;
 	protected boolean slider=true;
+	protected String positionSlider;
 	protected StyleLabel styleTitle;
 	protected StyleLabel styleSubTitle;
 	protected StyleLabel defaultLabelsStyle;
@@ -320,7 +322,13 @@ public class ChartImpl implements IChart {
 				if(sli.equalsIgnoreCase("false"))
 					slider=false;
 			}
-
+			
+			
+			positionSlider="top";
+			if(dataParameters.get("position_slider")!=null && !(((String)dataParameters.get("position_slider")).equalsIgnoreCase("") )){	
+				positionSlider=(String)dataParameters.get("position_slider");
+			}
+			
 			//reading series orders if present
 			SourceBean sbSerieLabels = (SourceBean)content.getAttribute("SERIES_LABELS");
 			if(sbSerieLabels==null){
@@ -742,6 +750,20 @@ public class ChartImpl implements IChart {
 
 	public boolean isSlider() {
 		return slider;
+	}
+
+	/**
+	 * @return the positionSlider
+	 */
+	public String getPositionSlider() {
+		return positionSlider;
+	}
+
+	/**
+	 * @param positionSlider the positionSlider to set
+	 */
+	public void setPositionSlider(String positionSlider) {
+		this.positionSlider = positionSlider;
 	}
 
 	public void setSlider(boolean slider) {

@@ -451,7 +451,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <table align="left">
 	<tr>
 		<td>
-		<table align="center">
+		<table align="center" width="80%">
 
 			<% 
 		    // No slider needed
@@ -470,39 +470,59 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			maxSlider=datasetMap.getCatsnum().toString();
 			minSlider="1";
 		%>
-			<tr>
-				<script type="text/javascript" language="JAVASCRIPT">
-				<!--
-					arrayCats=new Array(<%=datasetMap.getCatsnum().intValue()%>);
-					-->
-				</script>
+			
+		<script type="text/javascript" language="JAVASCRIPT">
+		<!--
+			arrayCats=new Array(<%=datasetMap.getCatsnum().intValue()%>);
+			-->
+		</script>
 
-				<%
-				for (Iterator iterator = datasetMap.getCategories().keySet().iterator(); iterator.hasNext();){  
-					Integer key=(Integer)iterator.next();
-					String name=(String)datasetMap.getCategories().get(key);
-				%>
+		<%
+		for (Iterator iterator = datasetMap.getCategories().keySet().iterator(); iterator.hasNext();){  
+			Integer key=(Integer)iterator.next();
+			String name=(String)datasetMap.getCategories().get(key);
+		%>
 
-				<script type="text/javascript" language="JAVASCRIPT">
-				<!--
-					arrayCats[<%=key%>]='<%=name%>';
-				-->
-				</script>
-				<%} %>
+		<script type="text/javascript" language="JAVASCRIPT">
+		<!--
+			arrayCats[<%=key%>]='<%=name%>';
+		-->
+		</script>
+		<%} %>
 
-
-				<td width="75%" align="center">
-					<span class='portlet-form-field-label'> 
-						<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();"> View all </a>
-							<%=datasetMap.getCatTitle()%> or select from 
-					</span> 
-					<span class='portlet-form-field-label' id="slider_1_1_value" width="10%" align="right">
-					</span> 
-					<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"> 
-						<span id="slider1"></span> 
-					</a>
-				</td>
-			</tr>
+			<%-- ORIG
+			<td width="75%" align="center">
+				<span class='portlet-form-field-label'> 
+					<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();"> View all </a>
+						<%=datasetMap.getCatTitle()%> or select from 
+				</span> 
+				<span class='portlet-form-field-label' id="slider_1_1_value" width="10%" align="right">
+				</span> 
+				<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"> 
+					<span id="slider1"></span> 
+				</a>
+			</td> --%>
+			<%if(sbi.getPositionSlider().equalsIgnoreCase("top")){ %>
+				<tr>
+					<td>		
+						<table id="slider" align="center">  
+							<tr>
+								<td width="15%">&nbsp;</td>														
+								<td width="60%" align="center">							
+									<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"> 
+										<span  id="slider1"></span> 
+									</a>	
+								</td>
+								<td width="15%" align="left">							
+									<input class='portlet-form-input-field' type="text"	 id="slider_1_1_value" readonly style="width:30px;"/>
+									<input type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/>
+								</td>					
+								
+							</tr>
+						 </table> 
+					</td>
+				</tr>
+			<%}	%>	
 			<tr>
 				<td align="center">
 					<div>
@@ -510,7 +530,28 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					</div>
 				</td>
 		    </tr>
-	  <!-- </table>  -->
+		    <%if(sbi.getPositionSlider().equalsIgnoreCase("bottom")){ %>
+				<tr>
+					<td>		
+						<table id="slider" align="center">  
+							<tr>
+								<td width="15%">&nbsp;</td>														
+								<td width="60%" align="center">							
+									<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"> 
+										<span  id="slider1"></span> 
+									</a>	
+								</td>
+								<td width="15%" align="left">							
+									<input class='portlet-form-input-field' type="text"	 id="slider_1_1_value" readonly style="width:30px;"/>
+									<input type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/>
+								</td>					
+								
+							</tr>
+						 </table> 
+					</td>
+				</tr>
+			<%}	%>	
+		  <!-- </table>  -->
 
 		<% 
 		}
@@ -575,10 +616,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 											if(datasetMap.getSelectedSeries().contains(ser) || datasetMap.getSelectedSeries().contains("allseries")){
 												%> 
 												<input id="serie_<%=ser%>" name="serie" value="<%=ser%>" type="checkbox" checked='checked' /> 
-												<span><%=ser%></span> <% }
+												<span style="<%=datasetMap.getFilterStyle()%>"><%=ser%></span> <% }
 											else{ %>
 												<input id="serie_<%=ser%>" name="serie" value="<%=ser%>" type="checkbox" /> 
-												<span><%=ser%></span> <% } 
+												<span style="<%=datasetMap.getFilterStyle()%>"><%=ser%></span> <% } 
 		 									}%>  
 		 								<a onclick="enableSerie()" title="check all series" alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
 											 <img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>' />
@@ -589,7 +630,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										<%
 									} 
 								if(filterCatGroup==false){ %> 
-								   <input type="submit" value="Select" />
+								   <input type="submit" value="Apply" />
 								<%} %>
 							</div>
 						</td>
@@ -624,16 +665,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							if(datasetMap.getSelectedCatGroups().contains(group)){
 							%> 
 								<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" type="radio" checked='checked' /> 
-								<span class="portlet-font"><%=group%></span> 
+								<%--<span class="portlet-font" ><%=group%></span> --%>
+								<span style="<%=datasetMap.getFilterStyle()%>" ><%=group%></span>  
 							<%}
 							else{ 
 							%> 
 							<input id="cat_group_<%=group%>" name="cat_group" value="<%=group%>" type="radio" /> 
-							<span class="portlet-font"><%=group%></span> 
+							<%--<span class="portlet-font"><%=group%></span> --%> 
+							<span style="<%=datasetMap.getFilterStyle()%>"><%=group%></span> 
 							<%} 
 		 				}
 					}%> 
-				   <input type="submit" value="Select" />
+				   <input type="submit" value="Apply" />
 				  </div>
 			   </td>
 			</tr>
@@ -776,17 +819,17 @@ var checkableSeries = new Array();
 			sliderHeight: 21,
 			maxValue: <%=maxSlider%>,
 			minValue: <%=minSlider%>,
-			sliderSnap: 1,sliders: [{ value: <%=datasetMap.getValueSlider()%>,  name: 'start1_1'}]
+			sliderSnap: 20, //orig value 1
+			sliders: [{ value: <%=datasetMap.getValueSlider()%>,  name: 'start1_1'}]
 			 });
 	
 		Test.slideZone1.getSlider('start1_1').on('drag',
-		function() {
-		value= arrayCats[parseInt(this.value)];
-		//value="<%=datasetMap.getCatTitle()%>: "+value;		
-		document.getElementById('slider_1_1_value').innerHTML=value;
-		//$('slider_1_1_value').innerHTML =value;
-				}
-		)
+				function() {
+					value= arrayCats[parseInt(this.value)];
+					//orig document.getElementById('slider_1_1_value').innerHTML=value;
+					document.getElementById('slider_1_1_value').value=value;
+					//$('slider_1_1_value').innerHTML =value;
+				})
 	
 			//document.getElementById('slider_1_1_value').innerHTML = currentName;		
 		//$('slider_1_1_value').innerHTML = currentName;

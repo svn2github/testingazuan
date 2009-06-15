@@ -35,6 +35,7 @@ import it.eng.spagobi.engines.chart.utils.StyleLabel;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -76,6 +77,7 @@ public class BarCharts extends ChartImpl {
 	boolean filterCatGroups=true;
 	boolean filterSeries=true;
 	boolean filterCategories=true;
+	String filterStyle="";
 
 	boolean showValueLabels=false;
 	
@@ -339,7 +341,7 @@ public class BarCharts extends ChartImpl {
 		else
 		{
 			filterSeries=true;
-			}
+		}
 		
 		if(confParameters.get("filter_categories")!=null){		
 			String filterCategoriesS=(String)confParameters.get("filter_categories");
@@ -349,7 +351,8 @@ public class BarCharts extends ChartImpl {
 		else
 		{
 			filterCategories=true;
-			}
+		}
+		
 
 		if(confParameters.get("show_value_labels")!=null){		
 			String valueLabelsS=(String)confParameters.get("show_value_labels");
@@ -397,6 +400,27 @@ public class BarCharts extends ChartImpl {
 
 		}
 
+		//reading filter style if present
+		SourceBean sbSerieStyle = (SourceBean)content.getAttribute("STYLE_FILTER");
+		if(sbSerieStyle==null){
+			sbSerieStyle = (SourceBean)content.getAttribute("CONF.STYLE_FILTER");
+		}
+		if(sbSerieStyle!=null){
+			List atts=sbSerieStyle.getContainedAttributes();
+			String StyleValue = "";
+			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
+				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
+				String styleLabel=(String)object.getKey();
+				StyleValue=new String((String)object.getValue());
+				if(StyleValue!=null){
+					if (styleLabel.equalsIgnoreCase("font")) styleLabel = "font-family";
+					else if (styleLabel.equalsIgnoreCase("size")) styleLabel = "font-size";
+					else if (styleLabel.equalsIgnoreCase("color")) styleLabel = "color";
+						
+					filterStyle += styleLabel +":"+StyleValue+";"; 
+				}
+			}		
+		}
 
 		// check if there is some serie to be hidden
 		boolean moreHiddenSeries=true;
@@ -537,6 +561,22 @@ public class BarCharts extends ChartImpl {
 		seriesNumber=new HashMap();
 
 		logger.debug("OUT");
+	}
+
+
+	/**
+	 * @return the filterStyle
+	 */
+	public String getFilterStyle() {
+		return filterStyle;
+	}
+
+
+	/**
+	 * @param filterStyle the filterStyle to set
+	 */
+	public void setFilterStyle(String filterStyle) {
+		this.filterStyle = filterStyle;
 	}
 
 

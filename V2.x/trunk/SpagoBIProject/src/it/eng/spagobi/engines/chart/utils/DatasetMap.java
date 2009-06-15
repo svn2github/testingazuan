@@ -40,6 +40,7 @@ public class DatasetMap {
 	Vector selectedSeries;
 	Vector selectedCatGroups;
 	boolean makeSlider=false;
+	String filterStyle = "";
 
 	private static transient org.apache.log4j.Logger logger=Logger.getLogger(DatasetMap.class);
 
@@ -175,6 +176,9 @@ public class DatasetMap {
 				logger.debug("slider is to be drawn");
 				makeSlider=true;	    	
 			}
+			
+			//gets the filter's style
+			filterStyle=sbi.getFilterStyle();
 
 			if(copyDataset==null){copyDataset=dataset;}
 
@@ -316,6 +320,8 @@ public class DatasetMap {
 				makeSlider=true;	    	
 			}
 
+			//gets the filter's style
+			filterStyle=sbi.getFilterStyle();
 
 			newDatasetMap.getDatasets().put(key, copyDataset);
 
@@ -498,6 +504,9 @@ public class DatasetMap {
 		if(sbi.isFilterCategories()==true && (catsnum.intValue())>numberCatVisualization.intValue()){
 			makeSlider=true;	    	
 		}
+		
+		//gets the filter's style
+		filterStyle=sbi.getFilterStyle();
 
 		if(copyDataset==null){copyDataset=dataset;}
 
@@ -639,9 +648,18 @@ public class DatasetMap {
 	}
 
 
+	/**
+	 * @return the filterStyle
+	 */
+	public String getFilterStyle() {
+		return filterStyle;
+	}
 
-
-
-
+	/**
+	 * @param filterStyle the filterStyle to set
+	 */
+	public void setFilterStyle(String filterStyle) {
+		this.filterStyle = filterStyle;
+	}
 
 }

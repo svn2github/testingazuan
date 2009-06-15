@@ -808,3 +808,10 @@ Create table SBI_ALARM_DISTRIBUTION (
 	ALARM_ID Integer NOT NULL,
 Primary Key (ALARM_CONTACT_ID,ALARM_ID)
 ) ;\p\g
+
+Create table SBI_EXPORTERS (
+	ENGINE_ID Integer NOT NULL,
+	DOMAIN_ID Integer NOT NULL,
+	DEFAULT_VALUE Boolean,
+Primary Key (ENGINE_ID,DOMAIN_ID)
+) ;\p\g

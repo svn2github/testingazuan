@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions targetNamespace="urn:spagobiwsdataset" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:spagobiwsdataset" xmlns:intf="urn:spagobiwsdataset" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-<!--WSDL created by Apache Axis version: 1.3
-Built on Oct 05, 2005 (05:23:37 EDT)-->
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
  <wsdl:types>
   <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -19,6 +19,12 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
   </schema>
  </wsdl:types>
 
+   <wsdl:message name="readDataSetResponse">
+
+      <wsdl:part name="readDataSetReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
    <wsdl:message name="readDataSetRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
@@ -26,12 +32,6 @@ Built on Oct 05, 2005 (05:23:37 EDT)-->
       <wsdl:part name="in1" type="apachesoap:Map"/>
 
       <wsdl:part name="in2" type="soapenc:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="readDataSetResponse">
-
-      <wsdl:part name="readDataSetReturn" type="soapenc:string"/>
 
    </wsdl:message>
 

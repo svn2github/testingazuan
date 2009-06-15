@@ -2,7 +2,7 @@
  * SpagoBiDataSet.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
 package it.eng.spagobi.services.dataset.bo;
@@ -15,8 +15,6 @@ public class SpagoBiDataSet  implements java.io.Serializable {
     private java.lang.String description;
 
     private int dsId;
-    
-    private Integer transformerId;
 
     private java.lang.String executorClass;
 
@@ -25,14 +23,16 @@ public class SpagoBiDataSet  implements java.io.Serializable {
     private java.lang.String javaClassName;
 
     private java.lang.String label;
-    
+
+    private Integer transformerId;
+
     private java.lang.String pivotColumnName;
-    
+
     private java.lang.String pivotRowName;
-    
+
     private java.lang.String pivotColumnValue;
-    
-    private boolean numRows;
+
+    private java.lang.Boolean numRows;
 
     private java.lang.String name;
 
@@ -44,9 +44,9 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
     private java.lang.String script;
 
-    private java.lang.String languageScript;
-    
     private java.lang.String type;
+
+    private java.lang.String languageScript;
 
     public SpagoBiDataSet() {
     }
@@ -56,22 +56,22 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            it.eng.spagobi.services.datasource.bo.SpagoBiDataSource dataSource,
            java.lang.String description,
            int dsId,
-           Integer transformerId,
            java.lang.String executorClass,
            java.lang.String fileName,
            java.lang.String javaClassName,
            java.lang.String label,
+           Integer transformerId,
            java.lang.String pivotColumnName,
            java.lang.String pivotRowName,
            java.lang.String pivotColumnValue,
-           boolean numRows,
+           java.lang.Boolean numRows,
            java.lang.String name,
            java.lang.String operation,
            java.lang.String parameters,
            java.lang.String query,
            java.lang.String script,
-           java.lang.String languageScript,           
-           java.lang.String type) {
+           java.lang.String type,
+           java.lang.String languageScript) {
            this.adress = adress;
            this.dataSource = dataSource;
            this.description = description;
@@ -90,8 +90,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
            this.parameters = parameters;
            this.query = query;
            this.script = script;
-           this.languageScript = languageScript;
            this.type = type;
+           this.languageScript = languageScript;
     }
 
 
@@ -254,23 +254,106 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         this.label = label;
     }
 
-    /**
-     * Gets the pivot column name value for this SpagoBiDataSet.
-     * 
-     * @return pivot column name
-     */
-	public java.lang.String getPivotColumnName() {
-		return pivotColumnName;
-	}
 
     /**
-     * Sets the pivot column name value for this SpagoBiDataSet.
+     * Gets the transformerId value for this SpagoBiDataSet.
      * 
-     * @param pivot column name
+     * @return transformerId
      */
-	public void setPivotColumnName(java.lang.String pivotColumnName) {
-		this.pivotColumnName = pivotColumnName;
-	}
+    public Integer getTransformerId() {
+        return transformerId;
+    }
+
+
+    /**
+     * Sets the transformerId value for this SpagoBiDataSet.
+     * 
+     * @param transformerId
+     */
+    public void setTransformerId(Integer transformerId) {
+        this.transformerId = transformerId;
+    }
+
+
+    /**
+     * Gets the pivotColumnName value for this SpagoBiDataSet.
+     * 
+     * @return pivotColumnName
+     */
+    public java.lang.String getPivotColumnName() {
+        return pivotColumnName;
+    }
+
+
+    /**
+     * Sets the pivotColumnName value for this SpagoBiDataSet.
+     * 
+     * @param pivotColumnName
+     */
+    public void setPivotColumnName(java.lang.String pivotColumnName) {
+        this.pivotColumnName = pivotColumnName;
+    }
+
+
+    /**
+     * Gets the pivotRowName value for this SpagoBiDataSet.
+     * 
+     * @return pivotRowName
+     */
+    public java.lang.String getPivotRowName() {
+        return pivotRowName;
+    }
+
+
+    /**
+     * Sets the pivotRowName value for this SpagoBiDataSet.
+     * 
+     * @param pivotRowName
+     */
+    public void setPivotRowName(java.lang.String pivotRowName) {
+        this.pivotRowName = pivotRowName;
+    }
+
+
+    /**
+     * Gets the pivotColumnValue value for this SpagoBiDataSet.
+     * 
+     * @return pivotColumnValue
+     */
+    public java.lang.String getPivotColumnValue() {
+        return pivotColumnValue;
+    }
+
+
+    /**
+     * Sets the pivotColumnValue value for this SpagoBiDataSet.
+     * 
+     * @param pivotColumnValue
+     */
+    public void setPivotColumnValue(java.lang.String pivotColumnValue) {
+        this.pivotColumnValue = pivotColumnValue;
+    }
+
+
+    /**
+     * Gets the numRows value for this SpagoBiDataSet.
+     * 
+     * @return numRows
+     */
+    public java.lang.Boolean getNumRows() {
+        return numRows;
+    }
+
+
+    /**
+     * Sets the numRows value for this SpagoBiDataSet.
+     * 
+     * @param numRows
+     */
+    public void setNumRows(java.lang.Boolean numRows) {
+        this.numRows = numRows;
+    }
+
 
     /**
      * Gets the name value for this SpagoBiDataSet.
@@ -371,27 +454,8 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         this.script = script;
     }
 
-    
-    /**
-     * Gets the language script value for this SpagoBiDataSet.
-     * 
-     * @return script
-     */
-
-    public java.lang.String getLanguageScript() {
-		return languageScript;
-	}
 
     /**
-     * Sets the language script value for this SpagoBiDataSet.
-     * 
-     * @param languageScript 
-     */
-	public void setLanguageScript(java.lang.String languageScript) {
-		this.languageScript = languageScript;
-	}
-
-	/**
      * Gets the type value for this SpagoBiDataSet.
      * 
      * @return type
@@ -410,6 +474,33 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         this.type = type;
     }
 
+
+    /**
+     * Gets the languageScript value for this SpagoBiDataSet.
+     * 
+     * @return languageScript
+     */
+    public java.lang.String getLanguageScript() {
+        return languageScript;
+    }
+
+
+    /**
+     * Sets the languageScript value for this SpagoBiDataSet.
+     * 
+     * @param languageScript
+     */
+    public void setLanguageScript(java.lang.String languageScript) {
+        this.languageScript = languageScript;
+    }
+
+	/**
+	 * @return the numRows
+	 */
+	public boolean isNumRows() {
+		return numRows;
+	}
+	
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof SpagoBiDataSet)) return false;
@@ -444,18 +535,21 @@ public class SpagoBiDataSet  implements java.io.Serializable {
             ((this.label==null && other.getLabel()==null) || 
              (this.label!=null &&
               this.label.equals(other.getLabel()))) &&
-              ((this.transformerId==null && other.getTransformerId()==null) || 
-                      (this.transformerId!=null &&
-                       this.transformerId.equals(other.getTransformerId()))) &&
+            ((this.transformerId==null && other.getTransformerId()==null) || 
+             (this.transformerId!=null &&
+              this.transformerId.equals(other.getTransformerId()))) &&
             ((this.pivotColumnName==null && other.getPivotColumnName()==null) || 
-              (this.pivotColumnName!=null &&
-               this.pivotColumnName.equals(other.getPivotColumnName()))) &&
-           ((this.pivotRowName==null && other.getPivotRowName()==null) || 
-           (this.pivotRowName!=null &&
-            this.pivotRowName.equals(other.getPivotRowName()))) &&
+             (this.pivotColumnName!=null &&
+              this.pivotColumnName.equals(other.getPivotColumnName()))) &&
+            ((this.pivotRowName==null && other.getPivotRowName()==null) || 
+             (this.pivotRowName!=null &&
+              this.pivotRowName.equals(other.getPivotRowName()))) &&
             ((this.pivotColumnValue==null && other.getPivotColumnValue()==null) || 
-            (this.pivotColumnValue!=null &&
-             this.pivotColumnValue.equals(other.getPivotColumnValue()))) &&
+             (this.pivotColumnValue!=null &&
+              this.pivotColumnValue.equals(other.getPivotColumnValue()))) &&
+            ((this.numRows==null && other.getNumRows()==null) || 
+             (this.numRows!=null &&
+              this.numRows.equals(other.getNumRows()))) &&
             ((this.name==null && other.getName()==null) || 
              (this.name!=null &&
               this.name.equals(other.getName()))) &&
@@ -473,7 +567,10 @@ public class SpagoBiDataSet  implements java.io.Serializable {
               this.script.equals(other.getScript()))) &&
             ((this.type==null && other.getType()==null) || 
              (this.type!=null &&
-              this.type.equals(other.getType())));
+              this.type.equals(other.getType()))) &&
+            ((this.languageScript==null && other.getLanguageScript()==null) || 
+             (this.languageScript!=null &&
+              this.languageScript.equals(other.getLanguageScript())));
         __equalsCalc = null;
         return _equals;
     }
@@ -519,6 +616,9 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         if (getPivotColumnValue() != null) {
             _hashCode += getPivotColumnValue().hashCode();
         }
+        if (getNumRows() != null) {
+            _hashCode += getNumRows().hashCode();
+        }
         if (getName() != null) {
             _hashCode += getName().hashCode();
         }
@@ -536,6 +636,9 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         }
         if (getType() != null) {
             _hashCode += getType().hashCode();
+        }
+        if (getLanguageScript() != null) {
+            _hashCode += getLanguageScript().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -661,6 +764,12 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
         elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("languageScript");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "languageScript"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
     }
 
     /**
@@ -693,45 +802,5 @@ public class SpagoBiDataSet  implements java.io.Serializable {
           new  org.apache.axis.encoding.ser.BeanDeserializer(
             _javaType, _xmlType, typeDesc);
     }
-
-	public java.lang.String getPivotRowName() {
-		return pivotRowName;
-	}
-
-	public void setPivotRowName(java.lang.String pivotRowName) {
-		this.pivotRowName = pivotRowName;
-	}
-
-	public java.lang.String getPivotColumnValue() {
-		return pivotColumnValue;
-	}
-
-	public void setPivotColumnValue(java.lang.String pivotColumnValue) {
-		this.pivotColumnValue = pivotColumnValue;
-	}
-
-	public Integer getTransformerId() {
-		return transformerId;
-	}
-
-	public void setTransformerId(Integer transformerId) {
-		this.transformerId = transformerId;
-	}
-
-	/**
-	 * @return the numRows
-	 */
-	public boolean isNumRows() {
-		return numRows;
-	}
-
-	/**
-	 * @param numRows the numRows to set
-	 */
-	public void setNumRows(boolean numRows) {
-		this.numRows = numRows;
-	}
-
-
 
 }

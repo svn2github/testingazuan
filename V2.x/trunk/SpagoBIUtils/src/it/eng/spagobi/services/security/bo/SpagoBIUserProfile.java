@@ -2,7 +2,7 @@
  * SpagoBIUserProfile.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
 package it.eng.spagobi.services.security.bo;
@@ -28,13 +28,13 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
            java.lang.String[] functions,
            java.lang.String[] roles,
            java.lang.String userId,
-           java.lang.String userIdentifier,
+           java.lang.String uniqueIdentifier,
            java.lang.String userName) {
            this.attributes = attributes;
            this.functions = functions;
            this.roles = roles;
            this.userId = userId;
-           this.uniqueIdentifier = userIdentifier;
+           this.uniqueIdentifier = uniqueIdentifier;
            this.userName = userName;
     }
 
@@ -105,9 +105,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
      * @return userId
      */
     public java.lang.String getUserId() {
-    	String strReturn = userId;
-    	if (strReturn == null) strReturn = uniqueIdentifier;
-        return strReturn;
+        return userId;
     }
 
 
@@ -147,9 +145,7 @@ public class SpagoBIUserProfile  implements java.io.Serializable {
      * @return userName
      */
     public java.lang.String getUserName() {
-    	String strReturn = userName;
-    	if (strReturn == null) strReturn = uniqueIdentifier;
-        return strReturn;
+        return userName;
     }
 
 

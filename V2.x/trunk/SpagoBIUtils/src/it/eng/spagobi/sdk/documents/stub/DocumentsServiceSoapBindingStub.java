@@ -2,7 +2,7 @@
  * DocumentsServiceSoapBindingStub.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
 package it.eng.spagobi.sdk.documents.stub;
@@ -174,14 +174,14 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
-                      "it.eng.spagobi.sdk.exceptions.InvalidParameterValue",
-                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "InvalidParameterValue"), 
+                      "it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NonExecutableDocumentException"), 
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
                       new javax.xml.namespace.QName("urn:spagobisdkdocuments", "fault"),
-                      "it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException",
-                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "NonExecutableDocumentException"), 
+                      "it.eng.spagobi.sdk.exceptions.InvalidParameterValue",
+                      new javax.xml.namespace.QName("http://exceptions.sdk.spagobi.eng.it", "InvalidParameterValue"), 
                       true
                      ));
         oper.addFault(new org.apache.axis.description.FaultDesc(
@@ -716,7 +716,7 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
 }
     }
 
-    public it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent executeDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[] in1, java.lang.String in2) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.InvalidParameterValue, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException, it.eng.spagobi.sdk.exceptions.MissingParameterValue, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException {
+    public it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent executeDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[] in1, java.lang.String in2) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException, it.eng.spagobi.sdk.exceptions.InvalidParameterValue, it.eng.spagobi.sdk.exceptions.MissingParameterValue, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -747,11 +747,11 @@ public class DocumentsServiceSoapBindingStub extends org.apache.axis.client.Stub
         if (axisFaultException.detail instanceof java.rmi.RemoteException) {
               throw (java.rmi.RemoteException) axisFaultException.detail;
          }
-        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.InvalidParameterValue) {
-              throw (it.eng.spagobi.sdk.exceptions.InvalidParameterValue) axisFaultException.detail;
-         }
         if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException) {
               throw (it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException) axisFaultException.detail;
+         }
+        if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.InvalidParameterValue) {
+              throw (it.eng.spagobi.sdk.exceptions.InvalidParameterValue) axisFaultException.detail;
          }
         if (axisFaultException.detail instanceof it.eng.spagobi.sdk.exceptions.MissingParameterValue) {
               throw (it.eng.spagobi.sdk.exceptions.MissingParameterValue) axisFaultException.detail;

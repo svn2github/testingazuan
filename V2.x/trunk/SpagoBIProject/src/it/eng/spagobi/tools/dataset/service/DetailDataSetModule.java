@@ -52,6 +52,7 @@ import it.eng.spagobi.tools.dataset.bo.WebServiceDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -220,6 +221,23 @@ public class DetailDataSetModule extends AbstractModule {
 		if(parametersXMLModified != null && !parametersXMLModified.trim().equals("")) 
 			session.setAttribute(DetailDataSetModule.DATASET_MODIFIED, parametersXMLModified);
 		SpagoBiDataSet	dsNew  = (SpagoBiDataSet) session.getAttribute(DetailDataSetModule.DATASET);
+		
+
+		EMFErrorHandler errorHandler = getErrorHandler();
+		 
+		// if there are some validation errors into the errorHandler does not write into DB
+		Collection errors = errorHandler.getErrors();
+		if (errors != null && errors.size() > 0) {
+			Iterator iterator = errors.iterator();
+			while (iterator.hasNext()) {
+				Object error = iterator.next();
+				if (error instanceof EMFValidationError) {
+					serviceResponse.setAttribute("dsObj", dsNew);
+					serviceResponse.setAttribute("modality", mod);
+					return;
+				}
+			}
+		}
 //		check if we are coming from the test
 		String returnFromTestMsg = (String) serviceRequest.getAttribute(DetailDataSetModule.RETURN_FROM_TEST_MSG);
 		boolean testCase=false;
@@ -469,6 +487,21 @@ public class DetailDataSetModule extends AbstractModule {
 
 			SpagoBiDataSet ds = null;
 			//response.setAttribute("modality", modalita);
+			EMFErrorHandler errorHandler = getErrorHandler();
+			 
+			// if there are some validation errors into the errorHandler does not write into DB
+			Collection errors = errorHandler.getErrors();
+			if (errors != null && errors.size() > 0) {
+				Iterator iterator = errors.iterator();
+				while (iterator.hasNext()) {
+					Object error = iterator.next();
+					if (error instanceof EMFValidationError) {
+						response.setAttribute("dsObj", ds);
+						//response.setAttribute("modality", mod);
+						return;
+					}
+				}
+			}
 			ds = new SpagoBiDataSet();
 			ds.setDsId(-1);
 			ds.setDescription("");

@@ -3,7 +3,7 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated 4-giu-2009 12.50.24 by Hibernate Tools 3.1.0 beta3 -->
 <hibernate-mapping>
-    <class name="it.eng.spagobi.engines.config.metadata.SbiExporters" table="sbi_exporters" catalog="spagobi">
+    <class name="it.eng.spagobi.engines.config.metadata.SbiExporters" table="sbi_exporters" >
         <composite-id name="id" class="it.eng.spagobi.engines.config.metadata.SbiExportersId">
             <key-property name="engineId" type="integer">
                 <column name="ENGINE_ID" />

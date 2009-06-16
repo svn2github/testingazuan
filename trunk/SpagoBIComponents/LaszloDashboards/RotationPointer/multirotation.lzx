@@ -231,6 +231,7 @@
 		}
 		
 		<!-- setting title serie -->
+		Debug.write("linkUrl: -" + linkUrl +"-");
 		if (linkUrl == undefined || linkUrl == ""){
 			new LzText(this,
 						{name:"titleSerie"
@@ -239,6 +240,7 @@
 						 ,fgcolor:serieTitleColor
 						 ,fontstyle:"bold"
 						 ,selectable:false
+						 ,text:""
 						 ,y:centerY-(radius+(serieTitleSize*2))});
 		}
 		else{		 
@@ -250,6 +252,7 @@
 						 ,font:serieTitleFont
 						 ,fontsize:serieTitleSize 
 						 ,color:serieTitleColor
+						 ,text:""
 						 ,fontstyle:"bold"});
 		}
 			
@@ -586,17 +589,19 @@
 		  		 		rotationresponse.selectNext(); 
 		  		 	}
 		  		}
-		  		// defines needles
-	  		 	 for (var i = 0; i < nNeedles; i++) {
-			   		 var valuePar = canvas.display.getValuePar("valueAttributeName"+(i+1)+"");
-			       	 var rotation = rotationresponse.getNodeAttribute(valuePar);
-			       	 canvas.display.changeRotation(rotation, i);
-			       	 	 
-			       	 var serieName = rotationresponse.getNodeAttribute(xSerieAttributeName);			       	
-			       	 if (serieName == undefined || serieName == "undefined")
-			       	 	serieName = rotationresponse.getNodeAttribute(xSerieAttributeName.toUpperCase());
-
-			      	 if (serieName != undefined && serieName != "undefined" && serieName != ""){		      	 	
+		  		
+		  	 	var serieName = rotationresponse.getNodeAttribute(xSerieAttributeName);			       	
+			    if (serieName == undefined || serieName == "undefined")
+			       	 serieName = rotationresponse.getNodeAttribute(xSerieAttributeName.toUpperCase());
+			       	 
+			    if (serieName != undefined && serieName != "undefined" && serieName != ""){	
+			    Debug.write("serieName: -" + serieName + "-");
+			  		// defines needles
+		  		 	 for (var i = 0; i < nNeedles; i++) {
+				   		 var valuePar = canvas.display.getValuePar("valueAttributeName"+(i+1)+"");
+				       	 var rotation = rotationresponse.getNodeAttribute(valuePar);
+				       	 canvas.display.changeRotation(rotation, i);  	
+					      	 	      	 	
 			      	 	// updating titleSerie 
 				      	 var newX = centerX - (serieName.length*3);
 				      	 canvas.display.titleSerie.setAttribute("text",serieName);	 
@@ -622,8 +627,8 @@
 				      	 		canvas.display.titleSerie.setAttribute("href", linkUrl); 
 				      	 	} 
 				      	 }
-				      }
-				 }
+					 }
+				}				 
 	  		}            		  
 	  		canvas.display.rotDisplay.needlesGroup.doStart(); 
 	  		]]>
@@ -638,6 +643,7 @@
 		Debug.write("rotation1: " + rotation + " - isNegRot: " + isNegRot);
 			       	 	
 	    <!--  orig rotation = rotation*180/(max-min); -->
+	    
 			if (isNegRot == "false")
 				rotation = rotation*180/(max-min);
 			else{

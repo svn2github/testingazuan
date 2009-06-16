@@ -509,9 +509,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<tr>
 								<td width="15%">&nbsp;</td>														
 								<td width="5%" align="center">							
-									<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"> 
-										<span  id="slider1"></span> 
-									</a>	
+								<!-- 	<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">   -->
+										<span id="slider1"></span> 
+								<!--  	</a> -->	
 								</td>
 								<td width="15%" align="left">							
 									<input class='portlet-form-input-field' type="text"	 id="slider_1_1_value" readonly style="width:30px;"/>
@@ -537,9 +537,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<tr>
 								<td width="15%">&nbsp;</td>														
 								<td width="5%" align="center">							
-									<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"> 
+								<!-- 	<a href="#" onClick="document.location.href=getActionUrl();">  -->
 										<span  id="slider1"></span> 
-									</a>	
+									<!-- 	</a>	-->
 								</td>
 								<td width="15%" align="left">							
 									<input class='portlet-form-input-field' type="text"	 id="slider_1_1_value" readonly style="width:30px;"/>
@@ -758,7 +758,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
 	function getActionUrl() {
 	// if we are in document composition case then call BObjectExecutePage
-		
 		var variable="&category=";
 		var value=getValue();
 		var second=variable+value;
@@ -812,6 +811,8 @@ var checkableSeries = new Array();
 
 		Test = {};
 
+		var isComposition=<%=docComposition%>;
+		
 		Test.slideZone1 = new Ext.ux.SlideZone('slider1', {  
 			type: 'horizontal',
 			size:<%=sliderWidth%>,
@@ -827,15 +828,31 @@ var checkableSeries = new Array();
 				function() {
 					value= arrayCats[parseInt(this.value)];
 					//orig document.getElementById('slider_1_1_value').innerHTML=value;
-					//alert(document.getElementById('ext-gen27').style.top);
-					document.getElementById('ext-gen27').style.top='10px';					
+					if(isComposition==true){
+						if(document.getElementById('ext-gen8')!=undefined){
+							document.getElementById('ext-gen8').style.top='10px';
+						}	
+					}
+					else {
+						if(document.getElementById('ext-gen27')!=undefined){
+							document.getElementById('ext-gen27').style.top='10px';
+						}		
+					}			
 					document.getElementById('slider_1_1_value').value=value;
 					//$('slider_1_1_value').innerHTML =value;
 				})
+
+		Test.slideZone1.getSlider('start1_1').on('dragend',
+				function() {
+				urlToCall=getActionUrl();
+				document.location.href=urlToCall;
+				});
+	
 	
 			//document.getElementById('slider_1_1_value').innerHTML = currentName;		
 		//$('slider_1_1_value').innerHTML = currentName;
 	
+		//document.getElementById('slider_1_1_value').value=currentVal;
 	});
 	
 </script>

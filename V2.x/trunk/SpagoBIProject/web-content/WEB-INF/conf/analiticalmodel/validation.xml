@@ -16,7 +16,7 @@
 					<VALIDATOR validatorName="MAXLENGTH" arg0="200"/>
 				</FIELD>
 				<FIELD name="description" label="#SBIDev.docConf.docDet.descriptionField">
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\[\]\;\:])*$"/>
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\s\-\_\(\)\[\]\;\:เภ])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="400"/>
 				</FIELD>	
 				<FIELD name="relName" label="#SBIDev.docConf.docDet.relNameField">

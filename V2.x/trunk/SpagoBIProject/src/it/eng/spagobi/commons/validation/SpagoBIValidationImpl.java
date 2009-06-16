@@ -36,7 +36,6 @@ import it.eng.spago.util.ContextScooping;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spago.validation.ValidationEngineIFace;
 import it.eng.spago.validation.impl.ValidatorLocator;
-import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,6 +46,7 @@ import java.util.List;
 
 import org.apache.commons.validator.GenericValidator;
 import org.apache.commons.validator.UrlValidator;
+import org.apache.log4j.Logger;
 
 /**
  * @author zoppello
@@ -55,6 +55,8 @@ import org.apache.commons.validator.UrlValidator;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class SpagoBIValidationImpl implements ValidationEngineIFace {
+	
+	static private Logger logger = Logger.getLogger(SpagoBIValidationImpl.class);
 
 	private String _serviceName = null;
 	private String _serviceType = null;
@@ -403,7 +405,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 		List params = null;
 		
 		if (validatorName.equalsIgnoreCase("MANDATORY")){
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MANDATORY VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug( "Apply the MANDATORY VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			if (GenericValidator.isBlankOrNull(value)){
 				params = new ArrayList();
 				params.add(fieldLabel);
@@ -412,7 +414,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			}
 
 		} else if (validatorName.equalsIgnoreCase("URL")){
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the URL VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug("Apply the URL VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			UrlValidator urlValidator = new SpagoURLValidator();
 			if (!GenericValidator.isBlankOrNull(value) && !urlValidator.isValid(value)){
 				params = new ArrayList();
@@ -421,7 +423,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				
 			}
 		} else if (validatorName.equalsIgnoreCase("LETTERSTRING")){
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the LETTERSTRING VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug("Apply the LETTERSTRING VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, LETTER_STRING_REGEXP)){
 				params = new ArrayList();
 				params.add(fieldLabel);
@@ -429,7 +431,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				
 			}
 		} else if (validatorName.equalsIgnoreCase("ALFANUMERIC")){
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the ALFANUMERIC VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug( "Apply the ALFANUMERIC VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, ALPHANUMERIC_STRING_REGEXP)){
 			
 				params = new ArrayList();
@@ -438,7 +440,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				
 			}
 		} else if (validatorName.equalsIgnoreCase("NUMERIC")){
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the NUMERIC VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug( "Apply the NUMERIC VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			if (!GenericValidator.isBlankOrNull(value) && 
 	            (!(GenericValidator.isInt(value) 
 				|| GenericValidator.isFloat(value) 
@@ -456,7 +458,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			}
 			
 		} else if (validatorName.equalsIgnoreCase("EMAIL")){
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the EMAIL VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug( "Apply the EMAIL VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.isEmail(value)){
 				
 				// Generate errors
@@ -466,7 +468,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 				
 			}
 		} else if (validatorName.equalsIgnoreCase("BOOLEAN")){
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MANDATORY VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug( "Apply the MANDATORY VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			if (!GenericValidator.isBlankOrNull(value) && !value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")){
 				params = new ArrayList();
 				params.add(fieldLabel);
@@ -476,7 +478,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 
 		} 
 		else if (validatorName.equalsIgnoreCase("FISCALCODE")){
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the FISCALCODE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug( "Apply the FISCALCODE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			if (!GenericValidator.isBlankOrNull(value) && !GenericValidator.matchRegexp(value, FISCAL_CODE_REGEXP)){
 				
 //				 Generate errors
@@ -487,15 +489,11 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			}
 		} else if (validatorName.equalsIgnoreCase("DECIMALS")){
 			if (!GenericValidator.isBlankOrNull(value)) {
-				SpagoBITracer.info("SpagoBI", "Validator",
-						"automaticValidator",
-						"Apply the DECIMALS VALIDATOR to field ["
+				logger.debug("Apply the DECIMALS VALIDATOR to field ["
 								+ fieldName + "] with value [" + value
 								+ "]");
 				int maxNumberOfDecimalDigit = Integer.valueOf(arg0).intValue();
-				SpagoBITracer.info("SpagoBI", "Validator",
-						"automaticValidator",
-						"Max Numbers of decimals is ["
+				logger.debug("Max Numbers of decimals is ["
 								+ maxNumberOfDecimalDigit + "]");
 				String decimalSeparator = arg1;
 
@@ -521,21 +519,21 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			}
 		} else if (validatorName.equalsIgnoreCase("NUMERICRANGE")){
 			if (!GenericValidator.isBlankOrNull(value)) {
-				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the NUMERICRANGE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+				logger.debug("Apply the NUMERICRANGE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 				String firstValueStr = arg0;
 				String secondValueStr = arg1;
-				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
+				logger.debug( "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
 				boolean syntaxCorrect = true;
 				if (!GenericValidator.isDouble(value)){
-					SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE NUMERICRANGE VALIDATOR  value ["+value+"] is not a Number");
+					logger.debug(" CANNOT APPLY THE NUMERICRANGE VALIDATOR  value ["+value+"] is not a Number");
 					syntaxCorrect = false;
 				}
 				if (!GenericValidator.isDouble(firstValueStr)){
-					SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE NUMERICRANGE VALIDATOR  first value of range ["+firstValueStr+"] is not a Number");
+					logger.debug(" CANNOT APPLY THE NUMERICRANGE VALIDATOR  first value of range ["+firstValueStr+"] is not a Number");
 					syntaxCorrect = false;
 				}
 				if (!GenericValidator.isDouble(secondValueStr)){
-					SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE NUMERICRANGE VALIDATOR  second value of range ["+secondValueStr+"] is not a Number");
+					logger.debug( " CANNOT APPLY THE NUMERICRANGE VALIDATOR  second value of range ["+secondValueStr+"] is not a Number");
 					syntaxCorrect = false;
 				}
 				if (syntaxCorrect){
@@ -558,28 +556,28 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 		} else if (validatorName.equalsIgnoreCase("DATERANGE")){
 			
 			if (!GenericValidator.isBlankOrNull(value)) {
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the DATERANGE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug("Apply the DATERANGE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			String firstValueStr = arg0;
 			String secondValueStr = arg1;
 			String dateFormat = arg2;
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Date Format is  ["+dateFormat+"]");
+			logger.debug( "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
+			logger.debug( "Date Format is  ["+dateFormat+"]");
 //			//boolean syntaxCorrect = false;
 			boolean syntaxCorrect = true;
 			
 			//if (!GenericValidator.isDate(value,dateFormat,true)){
 			if (!GenericValidator.isDate(value,dateFormat,true)){
-				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE DATERANGE VALIDATOR  value ["+value+"] is not a is not valid Date according to ["+dateFormat+"]");
+				logger.debug( " CANNOT APPLY THE DATERANGE VALIDATOR  value ["+value+"] is not a is not valid Date according to ["+dateFormat+"]");
 				syntaxCorrect = false;
 			}
 			//if (!GenericValidator.isDate(firstValueStr,dateFormat,true)){
 			if (!GenericValidator.isDate(firstValueStr,dateFormat,true)){
-				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE DATERANGE VALIDATOR  first value of range ["+firstValueStr+"] is not valid Date according to ["+dateFormat+"]");
+				logger.debug( " CANNOT APPLY THE DATERANGE VALIDATOR  first value of range ["+firstValueStr+"] is not valid Date according to ["+dateFormat+"]");
 				syntaxCorrect = false;
 			}
 			//if (!GenericValidator.isDate(secondValueStr,dateFormat, true)){
 			if (!GenericValidator.isDate(secondValueStr,dateFormat,true)){
-				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", " CANNOT APPLY THE DATERANGE VALIDATOR  second value of range ["+secondValueStr+"] is not a valid Date according to ["+dateFormat+"]");
+				logger.debug( " CANNOT APPLY THE DATERANGE VALIDATOR  second value of range ["+secondValueStr+"] is not a valid Date according to ["+dateFormat+"]");
 				syntaxCorrect = false;
 			}
 			
@@ -604,11 +602,11 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			}
 		} else if (validatorName.equalsIgnoreCase("STRINGRANGE")){
 			if (!GenericValidator.isBlankOrNull(value)) {
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the STRINGRANGE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug("Apply the STRINGRANGE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			
 			String firstValueStr = arg0;
 			String secondValueStr = arg1;
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
+			logger.debug( "Range is ["+firstValueStr+"< x <"+secondValueStr+"]");
 			//if (firstValueStr.compareTo(secondValueStr) > 0){
 			if ((value.compareTo(firstValueStr) < 0) || (value.compareTo(secondValueStr) > 0)){
 				params = new ArrayList();
@@ -620,9 +618,9 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			}
 		} else if (validatorName.equalsIgnoreCase("MAXLENGTH")){
 			if (!GenericValidator.isBlankOrNull(value)) {
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MAXLENGTH VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug( "Apply the MAXLENGTH VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			int maxLength = Integer.valueOf(arg0).intValue();
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "maxLength is ["+maxLength+"]");
+			logger.debug( "maxLength is ["+maxLength+"]");
 			if (!GenericValidator.maxLength(value, maxLength)){
 				
 				params = new ArrayList();
@@ -635,9 +633,9 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			}
 		} else if (validatorName.equalsIgnoreCase("MINLENGTH")){
 			if (!GenericValidator.isBlankOrNull(value)) {
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the MINLENGTH VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug( "Apply the MINLENGTH VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			int minLength = Integer.valueOf(arg0).intValue();
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "minLength is ["+minLength+"]");
+			logger.debug( "minLength is ["+minLength+"]");
 			if (!GenericValidator.minLength(value, minLength)){
 				
 				// Generate Errors
@@ -651,9 +649,9 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			}
 		} else if (validatorName.equalsIgnoreCase("REGEXP")){
 			if (!GenericValidator.isBlankOrNull(value)) {
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the REGEXP VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug("Apply the REGEXP VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			String regexp  = arg0;
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "regexp is ["+regexp+"]");
+			logger.debug( "regexp is ["+regexp+"]");
 			if (!(GenericValidator.matchRegexp(value, regexp))){
 				
 				// Generate Errors
@@ -667,7 +665,7 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 			}
 		}  else if (validatorName.equalsIgnoreCase("XSS")){
 			if (!GenericValidator.isBlankOrNull(value)) {
-				SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the XSS VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+				logger.debug("Apply the XSS VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 				String toVerify = value.toUpperCase();
 				if( toVerify.contains("<A") ||  toVerify.contains("<LINK") ||  toVerify.contains("<IMG") ||  toVerify.contains("<SCRIPT") ||
 						toVerify.contains("&LT;A") ||  toVerify.contains("&LT;LINK") ||  toVerify.contains("&LT;IMG") ||  toVerify.contains("&LT;SCRIPT")	){
@@ -683,9 +681,9 @@ public class SpagoBIValidationImpl implements ValidationEngineIFace {
 		}else if (validatorName.equalsIgnoreCase("DATE")){
 			
 			if (!GenericValidator.isBlankOrNull(value)) {
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "Apply the DATE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
+			logger.debug( "Apply the DATE VALIDATOR to field ["+fieldName+"] with value ["+value+"]");
 			String dateFormat = arg0;
-			SpagoBITracer.info("SpagoBI", "Validator", "automaticValidator", "dateFormat is ["+dateFormat+"]");
+			logger.debug("dateFormat is ["+dateFormat+"]");
 			//if (!GenericValidator.isDate(value, dateFormat, true)){
 			if (!GenericValidator.isDate(value, dateFormat, true)){
 	

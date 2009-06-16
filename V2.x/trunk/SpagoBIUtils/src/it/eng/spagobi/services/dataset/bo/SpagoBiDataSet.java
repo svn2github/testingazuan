@@ -32,7 +32,7 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
     private java.lang.String pivotColumnValue;
 
-    private java.lang.Boolean numRows;
+    private boolean numRows;
 
     private java.lang.String name;
 
@@ -48,6 +48,18 @@ public class SpagoBiDataSet  implements java.io.Serializable {
 
     private java.lang.String languageScript;
 
+    
+    
+    /**
+	 * @return the numRows
+	 * @WARNINGS: numRows can be null so if numRows is a boolean also the value returned by this method have to be a boolean 
+	 */
+	public boolean isNumRows() {
+		return numRows;
+	}
+    
+    
+    
     public SpagoBiDataSet() {
     }
 
@@ -494,12 +506,7 @@ public class SpagoBiDataSet  implements java.io.Serializable {
         this.languageScript = languageScript;
     }
 
-	/**
-	 * @return the numRows
-	 */
-	public boolean isNumRows() {
-		return numRows;
-	}
+	
 	
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
@@ -547,9 +554,9 @@ public class SpagoBiDataSet  implements java.io.Serializable {
             ((this.pivotColumnValue==null && other.getPivotColumnValue()==null) || 
              (this.pivotColumnValue!=null &&
               this.pivotColumnValue.equals(other.getPivotColumnValue()))) &&
-            ((this.numRows==null && other.getNumRows()==null) || 
+            (/*(this.numRows==null && other.getNumRows()==null) || 
              (this.numRows!=null &&
-              this.numRows.equals(other.getNumRows()))) &&
+              this.numRows.equals(other.getNumRows()))*/ this.numRows == other.getNumRows()) &&
             ((this.name==null && other.getName()==null) || 
              (this.name!=null &&
               this.name.equals(other.getName()))) &&

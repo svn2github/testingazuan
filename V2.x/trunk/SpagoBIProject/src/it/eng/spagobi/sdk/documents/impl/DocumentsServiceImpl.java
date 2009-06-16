@@ -51,10 +51,10 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.engines.exporters.KpiExporter;
 import it.eng.spagobi.engines.exporters.ReportExporter;
 import it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
-import it.eng.spagobi.kpi.utils.KpiExporter;
 import it.eng.spagobi.sdk.AbstractSDKService;
 import it.eng.spagobi.sdk.documents.DocumentsService;
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
@@ -577,7 +577,6 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		SDKExecutedDocumentContent toReturn = null;
 
 		IEngUserProfile profile = null;
-//		BIObject biobj = null;
 
 		Integer idDocument=document.getId();
 
@@ -587,43 +586,6 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		catch (Exception e) {
 			logger.error("could not retrieve profile",e);
 			return null;}
-
-		// Load the bi object for execution
-//		try{
-//			biobjdao = DAOFactory.getBIObjectDAO();
-//			biobj = biobjdao.loadBIObjectForExecutionByIdAndRole(idDocument, roleName);
-//			if(biobj==null){ 
-//				throw new NonExecutableDocumentException();
-//			}
-//		}
-//		catch (Exception e) {
-//			logger.error("COuld not retrieve BiObject");
-//			throw new NonExecutableDocumentException();
-//		}
-//
-//		try{
-//			if (!ObjectsAccessVerifier.canSee(biobj, profile)) {
-//				logger.error("User [" + ((UserProfile) profile).getUserName() + "] cannot execute document with id = [" + biobj.getId() + "]");
-//				throw new NonExecutableDocumentException();
-//			}
-//			List correctRoles = ObjectsAccessVerifier.getCorrectRolesForExecution(biobj.getId(), profile);
-//			if (correctRoles == null || correctRoles.size() == 0) {
-//				logger.error("User [" + ((UserProfile) profile).getUserName() + "] has no roles to execute document with id = [" + biobj.getId() + "]");
-//				throw new NonExecutableDocumentException();
-//			}
-//			if (!correctRoles.contains(roleName)) {
-//				logger.error("Role [" + roleName + "] is not a valid role for executing document with id = [" + biobj.getId() + "] for user [" + ((UserProfile) profile).getUserName() + "]");
-//				throw new NonExecutableDocumentException();
-//			}
-//		}
-//		catch (NonExecutableDocumentException e) {
-//			logger.error("Error while verifying access",e);
-//			throw e;
-//		}
-//		catch (Exception e) {
-//			logger.error("Error while verifying access",e);
-//			throw new NonExecutableDocumentException();
-//		}		
 
 		ExecutionInstance instance =null;
 		try{
@@ -669,12 +631,12 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 
 			if(document.getType().equalsIgnoreCase("KPI")){  // CASE KPI
 				toReturn=executeKpi(document, instance.getBIObject(), (String)profile.getUserUniqueIdentifier());
-			}
-
-			if(document.getType().equalsIgnoreCase("REPORT")){  // CASE REPORT
+			}else if(document.getType().equalsIgnoreCase("REPORT")){  // CASE REPORT
 				Engine engine=instance.getBIObject().getEngine();
 				String engineLabel=engine.getLabel();
 				toReturn=executeReport(document, instance.getBIObject(), profile);					
+			}else {
+				logger.error("NO EXPORTER AVAILABLE");
 			}
 
 		} catch(Exception e) {

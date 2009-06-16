@@ -12,9 +12,9 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.engines.exporters.KpiExporter;
 import it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
-import it.eng.spagobi.kpi.utils.KpiExporter;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -71,7 +71,7 @@ public class KpiExporterAction extends AbstractHttpAction {
 			Object userIdO=serviceRequest.getAttribute("user_id");	
 			if(userIdO!=null)userId=userIdO.toString();
 
-			it.eng.spagobi.kpi.utils.KpiExporter exporter=new KpiExporter();
+			it.eng.spagobi.engines.exporters.KpiExporter exporter=new KpiExporter();
 			tmpFile=exporter.getKpiReportPDF(listKpiBlocks, document, userId);
 
 			String outputType = "PDF";

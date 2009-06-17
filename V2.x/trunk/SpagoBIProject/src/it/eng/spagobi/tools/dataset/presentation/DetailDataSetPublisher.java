@@ -109,13 +109,20 @@ public class DetailDataSetPublisher implements PublisherDispatcherIFace {
 		}
 
 
-
-		// if there are errors and they are only validation errors return the name for the detail publisher
 		if(!errorHandler.isOK()) {
-			if(GeneralUtilities.isErrorHandlerContainingOnlyValidationError(errorHandler)) {
-				logger.info("Publish: detailDataSet"  );
-				return "detailDataSet";
+			logger.error("error handler contains errors");
+			// if the error was while testing
+			if(listTestLovMR!=null && listTestLovMR.getAttribute(DetailDataSetModule.DATASET)!=null){
+				logger.error("errors while testing");
+				return "detailDataSetTestResult";
 			}
+			else{
+				// if the error was in detail				
+				logger.info("errors from detail page"  );
+				return "detailDataSet";
+
+			}
+
 		}
 
 		// if there are some errors into the errorHandler (not validation errors), return the name for the errors publisher

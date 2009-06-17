@@ -154,7 +154,15 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		}
 
 		
-		EMFErrorHandler emfError=getErrorHandler();
+		errorHandler=getErrorHandler();
+		if(!errorHandler.isOK()){
+			logger.error("Some Errors are found in error Handler");
+			logger.error(errorHandler.getStackTrace());
+			response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "false");
+			response.setAttribute(DetailDataSetModule.DATASET,dataSet);
+			return null;
+		}
+		
 
 		// based on lov type fill the spago list and paginator object
 		SourceBean rowsSourceBean = null;
@@ -172,8 +180,6 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		IDataStore ids = dataSet.getDataStore();
 		
 		rowsSourceBean=ids.toSourceBean();
-	//	String resultXml = ids.toXml();
-		//rowsSourceBean=SourceBean.fromXMLString(resultXml);
 		
 		//I must get columnNames. assumo che tutte le righe abbiano le stesse colonne
 		if(rowsSourceBean!=null){
@@ -193,12 +199,14 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		
 		}
 		catch (Exception e) {
+			logger.error("Error while executing dataset for test purpose",e);
 			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2006));
 			if(e.getCause()!=null && e.getMessage()!=null){
-			response.setAttribute("errorMessage", "Cause: "+e.getCause()+" Message: "+e.getMessage());
+				response.setAttribute("errorMessage", "Cause: "+e.getCause()+" Message: "+e.getMessage());
 			}
-
 			response.setAttribute(DetailDataSetModule.TEST_EXECUTED, "false");
+			response.setAttribute(DetailDataSetModule.DATASET,dataSet);
+			return null;		
 		}
 		
 

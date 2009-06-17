@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.tools.dataset.service;
 
 import it.eng.spago.base.RequestContainer;
@@ -84,16 +84,16 @@ public class DetailDataSetModule extends AbstractModule {
 	public static final String PARAMETERS_FILLED="parametersfilled";
 	public static final String TEST_EXECUTED="testExecuted";
 	public final static String LIST_TRANSFORMER = "transformers";
-	
-	
 
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spago.dispatching.module.AbstractModule#init(it.eng.spago.base.SourceBean)
 	 */
 	public void init(SourceBean config) {
 	}
-	
+
 	/**
 	 * Reads the operation asked by the user and calls the insertion, updation or deletion methods.
 	 * 
@@ -105,7 +105,7 @@ public class DetailDataSetModule extends AbstractModule {
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		String message = (String) request.getAttribute("MESSAGEDET");
-		
+
 		logger.debug("begin of detail Data Set service with message =" +message);
 		errorHandler = getErrorHandler();
 		RequestContainer requestContainer = this.getRequestContainer();
@@ -207,40 +207,27 @@ public class DetailDataSetModule extends AbstractModule {
 	 */
 	private void modifyDataSet(SourceBean serviceRequest, String mod, SourceBean serviceResponse)
 	throws EMFUserError, SourceBeanException {
-		// to rember that the lov has been modified 
-		// necessary to show a confirm if the user change the lov and then go back without saving
-		//String dataSetModified = (String) serviceRequest.getAttribute(SpagoBIConstants.DATASET_MODIFIED);
-		//if(dataSetModified != null && !dataSetModified.trim().equals("")) 
-		//session.setAttribute(SpagoBIConstants.DATASET_MODIFIED, dataSetModified);
-	
+
+		boolean testCase=false;
+		// recover dataset Object
+		SpagoBiDataSet	dsNew  = (SpagoBiDataSet) session.getAttribute(DetailDataSetModule.DATASET);
+
+
 		if(session.getAttribute(DetailDataSetModule.PARAMETERS_FILLED)!=null){
 			session.delAttribute(DetailDataSetModule.PARAMETERS_FILLED);
 		}
-		
+		// check if parameters has been modified
 		String parametersXMLModified = (String) serviceRequest.getAttribute(DetailDataSetModule.DATASET_MODIFIED);
 		if(parametersXMLModified != null && !parametersXMLModified.trim().equals("")) 
 			session.setAttribute(DetailDataSetModule.DATASET_MODIFIED, parametersXMLModified);
-		SpagoBiDataSet	dsNew  = (SpagoBiDataSet) session.getAttribute(DetailDataSetModule.DATASET);
-		
 
-		EMFErrorHandler errorHandler = getErrorHandler();
-		 
-		// if there are some validation errors into the errorHandler does not write into DB
-		Collection errors = errorHandler.getErrors();
-		if (errors != null && errors.size() > 0) {
-			Iterator iterator = errors.iterator();
-			while (iterator.hasNext()) {
-				Object error = iterator.next();
-				if (error instanceof EMFValidationError) {
-					serviceResponse.setAttribute("dsObj", dsNew);
-					serviceResponse.setAttribute("modality", mod);
-					return;
-				}
-			}
-		}
+
+
+		errorHandler = getErrorHandler();
+
+
 //		check if we are coming from the test
 		String returnFromTestMsg = (String) serviceRequest.getAttribute(DetailDataSetModule.RETURN_FROM_TEST_MSG);
-		boolean testCase=false;
 
 		if(returnFromTestMsg!=null) { // Case returning from Test View!
 			// save after the test
@@ -251,37 +238,58 @@ public class DetailDataSetModule extends AbstractModule {
 				session.delAttribute(DetailDataSetModule.DATASET);
 				session.delAttribute(SpagoBIConstants.MODALITY);
 			} 
-
-
 			// don't save after the test
 			else 
 				if ("DO_NOT_SAVE".equalsIgnoreCase(returnFromTestMsg)) {   // Don't save
 					try {
 						prepareDetailDatasetPage(dsNew, mod, serviceResponse);
 					} catch (EMFInternalError e) {
-						e.printStackTrace();
+						logger.error("Error while preparing the page after coming back", e);
 					}
 					// exits without writing into DB and without loop
 					return;
 				}
 		} 
 		else{ // if we are not coming from the test result page, the fields are in request
-		
 
-				Object test = serviceRequest.getAttribute(DetailDataSetModule.TEST_BEFORE_SAVE); // are we going to test Object
-				if(test!=null)testCase=true;
+			Object test = serviceRequest.getAttribute(DetailDataSetModule.TEST_BEFORE_SAVE); // are we going to test Object
+			if(test!=null)testCase=true;
 
-				String type="";
-				try{
+			String type="";
+			try{
 				dsNew = recoverDataSetDetails(serviceRequest,mod,dsNew);   // build again the dataSet in case user wanted to change some fields
-				}
-				catch (Exception e) {
-					logger.error("Type not defined");
-					throw new EMFUserError(EMFErrorSeverity.ERROR, "9208", messageBundle);
+			}
+			catch (Exception e) {
+				logger.error("Exception while recovering dataset informations",e); 
+				EMFUserError error=new EMFUserError(EMFErrorSeverity.ERROR, "9208", messageBundle);
+				getErrorHandler().addError(error);
+			}
 
+			// check if errors coming from errorHandler
+			Collection errorsC = errorHandler.getErrors();				
+			// if there are some validation errors into the errorHandler does not write into DB
+			if (errorsC != null && errorsC.size() > 0) {
+				Iterator iterator = errorsC.iterator();
+				while (iterator.hasNext()) {
+					Object error = iterator.next();
+					if (error instanceof EMFValidationError) {
+						logger.error("Validation Error found");
+						serviceResponse.setAttribute("modality", mod);
+						serviceResponse.setAttribute(DetailDataSetModule.DATASET, dsNew);						
+						//session.setAttribute(DetailDataSetModule.DATASET, dsNew);
+						return;
+					}
+					if (error instanceof EMFUserError) {
+						logger.error("User Error found");
+						serviceResponse.setAttribute("modality", mod);
+						serviceResponse.setAttribute(DetailDataSetModule.DATASET, dsNew);						
+						//session.setAttribute(DetailDataSetModule.DATASET, dsNew);
+						return;
+					}					
 				}
-				
-				try {
+			}
+
+			try {
 				if(FileDataSet.DS_TYPE.equalsIgnoreCase(dsNew.getType())) type="0";			// what type is dataset?
 				else if(JDBCDataSet.DS_TYPE.equalsIgnoreCase(dsNew.getType()))type="1";
 				else if(WebServiceDataSet.DS_TYPE.equalsIgnoreCase(dsNew.getType()))type="2";
@@ -297,12 +305,12 @@ public class DetailDataSetModule extends AbstractModule {
 					} else {
 						dslistDet = new DataSetParametersList(parametersXML);
 					}
-					
-						
+
+
 					boolean itemTaskDone = doDatasetParameterItemTask(dsNew, dslistDet, serviceRequest);
 
-					
-					
+
+
 					if(itemTaskDone ) { // if something on on parameters is changed
 						prepareDetailDatasetPage(dsNew, mod, serviceResponse);
 						session.setAttribute(DetailDataSetModule.DATASET_MODIFIED, "true");
@@ -338,8 +346,8 @@ public class DetailDataSetModule extends AbstractModule {
 				logger.error("Cannot fill response container" + e.getLocalizedMessage());
 				HashMap params = new HashMap();
 				params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
-				throw new EMFUserError(EMFErrorSeverity.ERROR, 9203, new Vector(), params);
-
+				EMFUserError error= new EMFUserError(EMFErrorSeverity.ERROR, 9203, new Vector(), params);
+				errorHandler.addError(error);
 			}
 
 			catch (Exception ex) {		
@@ -362,15 +370,15 @@ public class DetailDataSetModule extends AbstractModule {
 				getErrorHandler().addError(error);
 				return;				
 			}
-			
+
 			if (DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel()) != null){
-				HashMap params = new HashMap();
+				HashMap params = new HashMap(); logger.error("label already exists "+dsNew.getLabel());
 				params.put(AdmintoolsConstants.PAGE, ListDataSetModule.MODULE_PAGE);
 				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, 9202, new Vector(), params );
 				getErrorHandler().addError(error);
 				return;
 			}	
-			
+
 			DAOFactory.getDataSetDAO().insertDataSet( DataSetFactory.getDataSet(dsNew) );   //Insert DataSet
 			IDataSet tmpDS = DAOFactory.getDataSetDAO().loadDataSetByLabel(dsNew.getLabel());
 			int t=tmpDS.getId();
@@ -399,10 +407,10 @@ public class DetailDataSetModule extends AbstractModule {
 			serviceResponse.setAttribute(LIST_TRANSFORMER, transformers);
 			return;
 		} 
-		
+
 		serviceResponse.setAttribute("loopback", "true");
 		session.delAttribute(DetailDataSetModule.DATASET_MODIFIED);
-		
+
 	}
 
 
@@ -488,7 +496,7 @@ public class DetailDataSetModule extends AbstractModule {
 			SpagoBiDataSet ds = null;
 			//response.setAttribute("modality", modalita);
 			EMFErrorHandler errorHandler = getErrorHandler();
-			 
+
 			// if there are some validation errors into the errorHandler does not write into DB
 			Collection errors = errorHandler.getErrors();
 			if (errors != null && errors.size() > 0) {
@@ -496,7 +504,7 @@ public class DetailDataSetModule extends AbstractModule {
 				while (iterator.hasNext()) {
 					Object error = iterator.next();
 					if (error instanceof EMFValidationError) {
-						response.setAttribute("dsObj", ds);
+						//response.setAttribute("dsObj", ds); aaa
 						//response.setAttribute("modality", mod);
 						return;
 					}
@@ -520,108 +528,69 @@ public class DetailDataSetModule extends AbstractModule {
 	}
 
 
+
 	private SpagoBiDataSet recoverDataSetDetails (SourceBean serviceRequest, String mod, SpagoBiDataSet dsOld) throws EMFUserError, SourceBeanException, IOException  {
 		SpagoBiDataSet ds  =null;
 		String typeds= (String)serviceRequest.getAttribute("typeDataSet");
 
-		
-			if(typeds.equalsIgnoreCase("0")){
-				if(FileDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
+		if(typeds==null){
+			logger.error("type not defined");
+			EMFUserError emf=new EMFUserError(EMFErrorSeverity.ERROR, "9208", messageBundle);
+			errorHandler.addError(emf);
+			if(dsOld!=null) return dsOld;
+			else return null;
+		}
+
+
+		if(typeds.equalsIgnoreCase("0")){
+			if(FileDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
+				ds = dsOld;
+			}
+			else{
+				ds = new SpagoBiDataSet();
+				ds.setType( FileDataSet.DS_TYPE );
+			}
+		}
+		else 
+			if(typeds.equalsIgnoreCase("1")){
+				if(JDBCDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
 					ds = dsOld;
 				}
 				else{
 					ds = new SpagoBiDataSet();
-					ds.setType( FileDataSet.DS_TYPE );
-				}
-				if(serviceRequest.getAttribute("FILENAME")!=null){
-					String fileName=(String)serviceRequest.getAttribute("FILENAME");
-					ds.setFileName(fileName);
+					ds.setType( JDBCDataSet.DS_TYPE );
 				}
 			}
 			else 
-				if(typeds.equalsIgnoreCase("1")){
-					if(JDBCDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
+				if(typeds.equalsIgnoreCase("2")){
+					if(WebServiceDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
 						ds = dsOld;
 					}
 					else{
 						ds = new SpagoBiDataSet();
-						ds.setType( JDBCDataSet.DS_TYPE );
+						ds.setType( WebServiceDataSet.DS_TYPE );					
 					}
-					if(serviceRequest.getAttribute("QUERY")!=null){
-						String query=(String)serviceRequest.getAttribute("QUERY");
-						String toVerify = query.toUpperCase();
-						if (toVerify.startsWith("SELECT")){
-							ds.setQuery(query);
-						}
-						else {
-							EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "QUERY", "9215");
-							getErrorHandler().addError(error);
-						}
-					}
-					if(serviceRequest.getAttribute("DATASOURCE")!=null){
-						String dataSourceID=(String)serviceRequest.getAttribute("DATASOURCE");
-						if(!dataSourceID.equalsIgnoreCase("") && !(dataSourceID == null)){
-						IDataSource dataSource=DAOFactory.getDataSourceDAO().loadDataSourceByID(Integer.valueOf(dataSourceID));
-						ds.setDataSource(dataSource.toSpagoBiDataSource());
-						}else{
-							throw new EMFUserError(EMFErrorSeverity.ERROR, "9222", messageBundle);
-						}
-					}
-				}
-				else 
-					if(typeds.equalsIgnoreCase("2")){
-						if(WebServiceDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
+
+				}else
+					if(typeds.equalsIgnoreCase("3")){
+						if(ScriptDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
 							ds = dsOld;
 						}
 						else{
 							ds = new SpagoBiDataSet();
-							ds.setType( WebServiceDataSet.DS_TYPE );					
+							ds.setType( ScriptDataSet.DS_TYPE );
 						}
-						if(serviceRequest.getAttribute("ADDRESS")!=null){
-							String address=(String)serviceRequest.getAttribute("ADDRESS");
-							ds.setAdress(address);
-						}
-						if(serviceRequest.getAttribute("OPERATION")!=null){
-							String operation=(String)serviceRequest.getAttribute("OPERATION");
-							ds.setOperation(operation);
-
-						}
-					}else
-						if(typeds.equalsIgnoreCase("3")){
-							if(ScriptDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
+					}
+					else
+						if(typeds.equalsIgnoreCase("4")){
+							if(JavaClassDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
 								ds = dsOld;
 							}
 							else{
 								ds = new SpagoBiDataSet();
-								ds.setType( ScriptDataSet.DS_TYPE );
-							}
-							if(serviceRequest.getAttribute("SCRIPT")!=null){
-								String script=(String)serviceRequest.getAttribute("SCRIPT");
-								String languageScript=(String)serviceRequest.getAttribute("LANGUAGESCRIPT");
-								ds.setLanguageScript(languageScript);
-								String toVerify = script.toUpperCase();
-								if( !toVerify.contains("<A") &&  !toVerify.contains("<LINK") &&  !toVerify.contains("<IMG") &&  !toVerify.contains("<SCRIPT")){
-									ds.setScript(script);
-								}else{
-									EMFValidationError error = new EMFValidationError(EMFErrorSeverity.ERROR, "SCRIPT", "9216");
-									getErrorHandler().addError(error);
-								}								
+								ds.setType( JavaClassDataSet.DS_TYPE );
 							}
 						}
-						else
-							if(typeds.equalsIgnoreCase("4")){
-								if(JavaClassDataSet.DS_TYPE.equalsIgnoreCase( dsOld.getType() )){
-									ds = dsOld;
-								}
-								else{
-									ds = new SpagoBiDataSet();
-									ds.setType( JavaClassDataSet.DS_TYPE );
-								}
-								if(serviceRequest.getAttribute("JCLASSNAME")!=null){
-									String javaClassName=(String)serviceRequest.getAttribute("JCLASSNAME");
-									ds.setJavaClassName(javaClassName);
-								}
-							}
 
 
 
@@ -643,13 +612,9 @@ public class DetailDataSetModule extends AbstractModule {
 			pivotValue = (String)serviceRequest.getAttribute("PIVOTCOLUMNVALUE");;
 			numRows = Boolean.valueOf((String)(serviceRequest.getAttribute("PIVOTNUMROWS")));;
 		}
-		
+
 		String description = (String)serviceRequest.getAttribute("DESCR");	
 		Integer id = new Integer(idStr);
-		if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
-			ds.setDsId(id.intValue());
-		} 
-
 		ds.setDsId(id.intValue());
 		ds.setName(name);
 		ds.setLabel(label);
@@ -660,6 +625,130 @@ public class DetailDataSetModule extends AbstractModule {
 		ds.setNumRows(numRows);
 		ds.setDescription(description);
 
+
+		if(typeds==null){
+			logger.error("type not defined");
+			EMFUserError emf=new EMFUserError(EMFErrorSeverity.ERROR, "9208", messageBundle);
+			errorHandler.addError(emf);
+			return ds;
+		}
+
+
+
+		if(typeds.equalsIgnoreCase("0")){
+			if(serviceRequest.getAttribute("FILENAME")!=null){
+				String fileName=(String)serviceRequest.getAttribute("FILENAME");
+				if(fileName!=null && !fileName.equalsIgnoreCase("") && fileName.length()>0){
+					ds.setFileName(fileName);
+				}
+				else{
+					EMFValidationError emf= new EMFValidationError(EMFErrorSeverity.ERROR, "FILENAME", "9224");
+					errorHandler.addError(emf);					
+					return ds;
+				}
+
+			}
+		}
+		else 
+			if(typeds.equalsIgnoreCase("1")){
+				if(serviceRequest.getAttribute("QUERY")!=null){
+					String query=(String)serviceRequest.getAttribute("QUERY");
+					String toVerify = query.toUpperCase();
+					toVerify=toVerify.trim();					
+					if (toVerify.startsWith("SELECT")){
+						ds.setQuery(query);
+					}
+					else {
+						//I set anyway the query cause I do not want it to be cancelled
+						ds.setQuery(query); 
+						logger.error("Query not valid");
+						EMFValidationError emf= new EMFValidationError(EMFErrorSeverity.ERROR, "QUERY", "9215");
+						errorHandler.addError(emf);
+						// if daling with parameters add this message
+						if(isParameterRelatedEvent(serviceRequest)){
+							EMFUserError emf2= new EMFUserError(EMFErrorSeverity.WARNING, "9225", messageBundle);
+							errorHandler.addError(emf2);
+						}
+						
+						return ds;
+					}
+				}
+				if(serviceRequest.getAttribute("DATASOURCE")!=null){
+					String dataSourceID=(String)serviceRequest.getAttribute("DATASOURCE");
+					if(!dataSourceID.equalsIgnoreCase("") && !(dataSourceID == null)){
+						IDataSource dataSource=DAOFactory.getDataSourceDAO().loadDataSourceByID(Integer.valueOf(dataSourceID));
+						ds.setDataSource(dataSource.toSpagoBiDataSource());
+					}else{
+						logger.error("Data source not assigned");
+						EMFUserError emf= new EMFUserError(EMFErrorSeverity.ERROR, "9222", messageBundle);
+						errorHandler.addError(emf);
+						if(isParameterRelatedEvent(serviceRequest)){
+							EMFUserError emf2= new EMFUserError(EMFErrorSeverity.WARNING, "9225", messageBundle);
+							errorHandler.addError(emf2);
+						}
+
+						return ds;
+					}
+				}
+			}
+			else 
+				if(typeds.equalsIgnoreCase("2")){
+					if(serviceRequest.getAttribute("ADDRESS")!=null){
+						String address=(String)serviceRequest.getAttribute("ADDRESS");
+						ds.setAdress(address);
+					}
+					if(serviceRequest.getAttribute("OPERATION")!=null){
+						String operation=(String)serviceRequest.getAttribute("OPERATION");
+						ds.setOperation(operation);
+
+					}
+				}else
+					if(typeds.equalsIgnoreCase("3")){
+						if(serviceRequest.getAttribute("SCRIPT")!=null){
+							String script=(String)serviceRequest.getAttribute("SCRIPT");
+							String languageScript=(String)serviceRequest.getAttribute("LANGUAGESCRIPT");
+							ds.setLanguageScript(languageScript);
+							String toVerify = script.toUpperCase();
+							if( !toVerify.contains("<A") &&  !toVerify.contains("<LINK") &&  !toVerify.contains("<IMG") &&  !toVerify.contains("<SCRIPT")){
+								ds.setScript(script);
+							}else{
+								logger.error("error in the script");
+								EMFValidationError emf= new EMFValidationError(EMFErrorSeverity.ERROR, "SCRIPT", "9216");
+								errorHandler.addError(emf);
+								if(isParameterRelatedEvent(serviceRequest)){
+									EMFUserError emf2= new EMFUserError(EMFErrorSeverity.WARNING, "9225", messageBundle);
+									errorHandler.addError(emf2);
+								}								
+								return ds;
+							}								
+						}
+					}
+					else
+						if(typeds.equalsIgnoreCase("4")){
+							if(serviceRequest.getAttribute("JCLASSNAME")!=null){
+								String javaClassName=(String)serviceRequest.getAttribute("JCLASSNAME");
+								ds.setJavaClassName(javaClassName);
+							}
+						}
+
+
+		if(mod.equalsIgnoreCase(AdmintoolsConstants.DETAIL_INS)) {
+			//ds.setDsId(id.intValue());
+			// check also that label does not exist already
+			if (DAOFactory.getDataSetDAO().loadDataSetByLabel(label) != null){
+				logger.error("label already exists "+label);
+				EMFUserError error = new EMFUserError(EMFErrorSeverity.ERROR, "9202", messageBundle);
+				errorHandler.addError(error);
+				if(isParameterRelatedEvent(serviceRequest)){
+					EMFUserError emf2= new EMFUserError(EMFErrorSeverity.WARNING, "9225", messageBundle);
+					errorHandler.addError(emf2);
+				}				
+				ds.setLabel("");
+				return ds;
+			}	
+		} 
+
+
 		return ds;
 	}
 
@@ -669,6 +758,37 @@ public class DetailDataSetModule extends AbstractModule {
 		session.delAttribute(DetailDataSetModule.DATASET);
 	}
 
+
+	/** This function return true if the last event deals with dataset Parameters
+	 * 
+	 * @param request
+	 * @return
+	 */
+
+	private boolean isParameterRelatedEvent(SourceBean request){
+		Object indexOfDatasetParameterItemToDeleteObj = request.getAttribute("indexOfDatasetParameterItemToDelete");
+		if (indexOfDatasetParameterItemToDeleteObj != null){
+			return true;
+		}
+		Object indOfDatasetParameterItemToChangeObj = request.getAttribute("indexOfDatasetParameterItemToChange");
+		if (indOfDatasetParameterItemToChangeObj != null) {
+			return true;
+		}
+		Object indexOfItemToDown = request.getAttribute("indexOfParameterToDown");
+		if (indexOfItemToDown != null) {
+			return true;
+		}
+		Object indexOfItemToUp = request.getAttribute("indexOfParameterToUp");
+		if (indexOfItemToUp != null) {
+			return true;
+		}
+		Object insertFixLovItem = request.getAttribute("insertDatasetParameterItem");
+		if (insertFixLovItem != null) {
+			return true;
+		}
+		return false;
+
+	}
 
 
 	private boolean doDatasetParameterItemTask(SpagoBiDataSet dataset, DataSetParametersList datasetlistDet, SourceBean request) throws Exception {
@@ -728,7 +848,7 @@ public class DetailDataSetModule extends AbstractModule {
 		}
 		return changeItems;
 	}
-	
+
 	/**
 	 * Delete from the list of fix lov items the one at index indexOfFixedListItemToDelete
 	 * @param lovDetList	The list of Fix Lov
@@ -740,7 +860,7 @@ public class DetailDataSetModule extends AbstractModule {
 		dsDetList.setPars(parameters);
 		return dsDetList;
 	}
-	
+
 
 	/**
 	 * Chnage from the list of fix lov items the one at index indexOfFixedListItemToDelete
@@ -762,7 +882,7 @@ public class DetailDataSetModule extends AbstractModule {
 	}
 
 
-	
+
 	/**
 	 * Move up an item of the fix lov list
 	 * @param lovDetList	The list of Fix Lov
@@ -777,7 +897,7 @@ public class DetailDataSetModule extends AbstractModule {
 		return dsDetList;
 	}
 
-	
+
 	/**
 	 * Move down an item of the fix lov list
 	 * @param lovDetList	The list of Fix Lov
@@ -792,7 +912,7 @@ public class DetailDataSetModule extends AbstractModule {
 		return dsDetList;
 	}
 
-	
+
 	/**
 	 * Inserts a new Fixed LOV item in the FixedLov Wizard. When this type of Input is selected dring the insertion/
 	 * modify of a Value in the LOV list, it is possible to add a series of FixLov Values, showed
@@ -816,7 +936,7 @@ public class DetailDataSetModule extends AbstractModule {
 		return dsDetList;
 	}
 
-	
+
 	/**
 	 * Sets some attributes into the response SourceBean. Those attributes are required for 
 	 * the correct visualization of the ModalitiesValue form page.
@@ -834,7 +954,7 @@ public class DetailDataSetModule extends AbstractModule {
 		response.setAttribute(SpagoBIConstants.MODALITY, mod);	
 		loadValuesDomain(response);
 		loadAllProfileAttributes(response);
-		
+
 	}
 
 	private void loadAllProfileAttributes(SourceBean response) throws SourceBeanException {
@@ -869,7 +989,7 @@ public class DetailDataSetModule extends AbstractModule {
 		try {
 			List list = DAOFactory.getDomainDAO().loadListDomainsByType("INPUT_TYPE");
 			response.setAttribute (SpagoBIConstants.LIST_INPUT_TYPE, list);
-			
+
 			List transformers = DAOFactory.getDomainDAO().loadListDomainsByType("TRANSFORMER_TYPE");
 			response.setAttribute(LIST_TRANSFORMER, transformers);
 		} catch (Exception ex) {
@@ -897,49 +1017,49 @@ public class DetailDataSetModule extends AbstractModule {
 
 					if(type.equals("String")){
 						//valueToPass="'"+value+"'";
-						
+
 						StringTokenizer st = new StringTokenizer(value);
-						 
-						 String numTemp = "";
-						 value = "";
-						 
-						 
-							 while(st.hasMoreTokens()){
-								 
-								 numTemp = st.nextToken(",");
-									 
-									 value = value + "'"+numTemp+"'";									 
-									 if(st.hasMoreTokens()){
-										 value = value + ",";
-									 }
-							 }
-							 valueToPass = value;	 
-						 
+
+						String numTemp = "";
+						value = "";
+
+
+						while(st.hasMoreTokens()){
+
+							numTemp = st.nextToken(",");
+
+							value = value + "'"+numTemp+"'";									 
+							if(st.hasMoreTokens()){
+								value = value + ",";
+							}
+						}
+						valueToPass = value;	 
+
 					}
 					else if(type.equals("Number")){
 						try {
-							 StringTokenizer st = new StringTokenizer(value);
-							 
-							 String numTemp = "";
-							 Double doubleValue = null;
-							 value = "";
-							 
-							 
-								 while(st.hasMoreTokens()){
-									 
-									 numTemp = st.nextToken(",");
-									 doubleValue=new Double(Double.parseDouble(numTemp));
-									 value = value + doubleValue.toString();
-									 
-									 if(st.hasMoreTokens()){
-										 value = value + ",";
-									 }
-								 }
-							 
-								 
-								 valueToPass = value;
-							 
-							
+							StringTokenizer st = new StringTokenizer(value);
+
+							String numTemp = "";
+							Double doubleValue = null;
+							value = "";
+
+
+							while(st.hasMoreTokens()){
+
+								numTemp = st.nextToken(",");
+								doubleValue=new Double(Double.parseDouble(numTemp));
+								value = value + doubleValue.toString();
+
+								if(st.hasMoreTokens()){
+									value = value + ",";
+								}
+							}
+
+
+							valueToPass = value;
+
+
 						} catch (NumberFormatException e) {
 							throw new Exception();
 						}
@@ -963,7 +1083,7 @@ public class DetailDataSetModule extends AbstractModule {
 			response.setAttribute(DetailDataSetModule.TEST, "true");
 
 			//throw new EMFUserError(EMFErrorSeverity.ERROR, 9200); 
-		return;
+			return;
 		}
 	}	
 

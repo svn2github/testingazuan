@@ -278,14 +278,15 @@ public class JasperReportRunner {
 					
 					ClassLoader previous = Thread.currentThread().getContextClassLoader();
 					ResourceClassLoader dcl = new ResourceClassLoader(resPath,previous);
-					Thread.currentThread().setContextClassLoader(dcl);
-				try{	
-					rs=PropertyResourceBundle.getBundle("messages",locale, Thread.currentThread().getContextClassLoader());
-				}
-				catch (Exception e) {
-					logger.error("could not find properties message");
-				}
-				parameters.put("REPORT_RESOURCE_BUNDLE", rs);
+					//Thread.currentThread().setContextClassLoader(dcl);
+				    try{	
+					    //rs=PropertyResourceBundle.getBundle("messages",locale, Thread.currentThread().getContextClassLoader());
+				    	rs=PropertyResourceBundle.getBundle("messages",locale, dcl);
+				    }
+				    catch (Exception e) {
+					    logger.error("could not find properties message");
+				    }
+				    parameters.put("REPORT_RESOURCE_BUNDLE", rs);
 				}
 				else{
 					parameters.put("REPORT_LOCALE", locale);
@@ -694,6 +695,7 @@ public class JasperReportRunner {
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
 			is = new java.io.ByteArrayInputStream(templateContent);
+			String str = new String(templateContent);
 
 
 			SpagoBIAccessUtils util = new SpagoBIAccessUtils();

@@ -585,7 +585,8 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		}
 		catch (Exception e) {
 			logger.error("could not retrieve profile",e);
-			return null;}
+			throw new NonExecutableDocumentException();
+			}
 
 		ExecutionInstance instance =null;
 		try{
@@ -593,7 +594,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		}
 		catch (Exception e) {
 			logger.error("error while creating instance",e);
-			return null;
+			throw new NonExecutableDocumentException();
 		}
 		// put the parameters value in SDKPArameters into BiObject
 		instance.refreshBIObjectWithSDKParameters(parameters);
@@ -606,17 +607,25 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		}
 		catch (Exception e) {
 			logger.error("error while retrieving parameters errors",e);
-			return null;
+			throw new NonExecutableDocumentException();
 		}
 		if(errors!=null && errors.size()>0){
 			for (Iterator iterator = errors.iterator(); iterator.hasNext();) {
 				Object error = (Object) iterator.next();
 				if(error instanceof EMFUserError){
-					logger.error("Error on parameter values");
+					EMFUserError emfUser=(EMFUserError)error;
+					String message="Error on parameter values ";
+					if(emfUser.getMessage()!=null) message+=" "+emfUser.getMessage();
+					if(emfUser.getAdditionalInfo()!=null) message+=" "+emfUser.getAdditionalInfo();
+					logger.error(message);
 					throw new MissingParameterValue();
 				}
 				else if(error instanceof EMFValidationError){
-					logger.error("Error while checking parameters");
+					EMFValidationError emfValidation=(EMFValidationError)error;
+					String message="Error while checking parameters: ";
+					if(emfValidation.getMessage()!=null) message+=" "+emfValidation.getMessage();
+					if(emfValidation.getAdditionalInfo()!=null) message+=" "+emfValidation.getAdditionalInfo();
+					logger.error(message);
 					throw new InvalidParameterValue();
 
 				}
@@ -641,12 +650,12 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 
 		} catch(Exception e) {
 			logger.error("Error while executing document");
-			return null;
+			throw new NonExecutableDocumentException();
 		}
 
 		if(toReturn==null){
 			logger.error("No result returned by the document");
-			return null;
+			throw new NonExecutableDocumentException();
 		}
 
 		logger.debug("OUT");

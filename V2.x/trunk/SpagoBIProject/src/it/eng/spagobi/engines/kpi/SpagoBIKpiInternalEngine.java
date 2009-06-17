@@ -1535,7 +1535,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			this.confMap.put("show_axis", show_axis);
 
 		} catch (Exception e) {
-			logger.error("error in reading data source parameters");
+			logger.error("error in reading template parameters");
 		}
 	}
 

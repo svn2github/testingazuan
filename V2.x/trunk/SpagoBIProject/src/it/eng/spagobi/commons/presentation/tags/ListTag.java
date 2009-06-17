@@ -1146,7 +1146,7 @@ public class ListTag extends TagSupport
 			_htmlStream.append("						    </select>\n");
 			_htmlStream.append("						    <input type=\"text\" name=\"" + SpagoBIConstants.VALUE_FILTER + "\" size=\"10\" value=\""+StringEscapeUtils.escapeHtml(valueFilter)+"\" /> \n");
 			_htmlStream.append("						    <a href='javascript:document.getElementById(\"" + formId +"\").submit()'>"+StringEscapeUtils.escapeHtml(labelFilter)+"</a> \n");
-			_htmlStream.append(" <a href='"+StringEscapeUtils.escapeHtml(allUrl)+"'>"+StringEscapeUtils.escapeHtml(labelAll)+"</a> \n");
+			_htmlStream.append(" <a href='"+allUrl+"'>"+StringEscapeUtils.escapeHtml(labelAll)+"</a> \n");
 			_htmlStream.append("						    </form> \n");
 
 			// visualize any validation error present in the errorHandler

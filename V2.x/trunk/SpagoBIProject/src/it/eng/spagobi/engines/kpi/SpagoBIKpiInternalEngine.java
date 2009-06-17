@@ -963,8 +963,10 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			logger.info("Setted the Resource:"+r.getName());
 			temp.put("ParKpiResource", value);
 		}
-		temp.put("ParModelInstance", modelInstanceId);
-		temp.put("ParKpiInstance", kpiInstanceID);
+		
+		// cast Integer Ids to String
+		temp.put("ParModelInstance", modelInstanceId.toString());
+		temp.put("ParKpiInstance", kpiInstanceID.toString());
 
 		if (chartType != null) kVal.setChartType(chartType);
 

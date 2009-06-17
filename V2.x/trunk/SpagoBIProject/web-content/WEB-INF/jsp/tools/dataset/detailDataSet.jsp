@@ -37,7 +37,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<%
 		SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("DetailDataSetModule"); 
 		SpagoBiDataSet ds = (SpagoBiDataSet)moduleResponse.getAttribute(DetailDataSetModule.DATASET);
-		if(ds==null) ds=new SpagoBiDataSet();
+		if(ds==null) ds = (SpagoBiDataSet)session.getAttribute(DetailDataSetModule.DATASET); 
+		if(ds==null)  ds=new SpagoBiDataSet();
 		
 		List listTransformerType = (List) moduleResponse.getAttribute(DetailDataSetModule.LIST_TRANSFORMER);
 		String message=(String)aServiceRequest.getAttribute("MESSAGEDET");
@@ -70,6 +71,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript" src="<%=linkProtoEff%>"></script>
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css"/>
 <link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css"/>
+
 
 
 <form method='POST' action='<%=formUrl%>' id='dsForm' name='dsForm' >
@@ -128,6 +130,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			</td>		
 		</tr>
 	</table>
+	
+			<spagobi:error/>
 	
 				<% 
 				
@@ -376,18 +380,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			java.util.List dataSources = DAOFactory.getDataSourceDAO().loadAllDataSources();
 			java.util.Iterator dataSourceIt = dataSources.iterator();
 	
-			String actualDsId="-1"; 
+			String actualDsId=""; 
 			if(JDBCDataSet.DS_TYPE.equalsIgnoreCase(ds.getType())){
-				int id = DAOFactory.getDataSourceDAO().loadDataSourceByLabel(ds.getDataSource().getLabel()).getDsId();
-				
-				actualDsId=(ds.getDataSource()==null)?"":"" + id;
+				if(ds.getDataSource()!=null){
+				int id=DAOFactory.getDataSourceDAO().loadDataSourceByLabel(ds.getDataSource().getLabel()).getDsId();
+				actualDsId=Integer.valueOf(id).toString();
+				}
 			}
 			
 			while (dataSourceIt.hasNext()) {
 				DataSource dataSourceD = (DataSource) dataSourceIt.next();
 				String dsId = String.valueOf(dataSourceD.getDsId());
-				
-
 					
 				String selected = "";
 				if (dsId.equalsIgnoreCase(actualDsId)) {
@@ -620,9 +623,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		
 		<!-- DIV FIX LIST WIZARD CLOSED -->
-		
-		
-		<spagobi:error/>
 	</tr>
 	</table>   <!-- CLOSE TABLE FORM ON LEFT AND VERSION ON RIGHT  -->
 	

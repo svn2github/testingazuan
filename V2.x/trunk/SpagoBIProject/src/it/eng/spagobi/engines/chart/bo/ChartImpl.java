@@ -519,6 +519,13 @@ public class ChartImpl implements IChart {
 		subName=_name;		
 	}
 
+	/**
+	 * @return the subName
+	 */
+	public String getSubName() {
+		return subName;
+	}
+	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.IChart#setWidth(int)
 	 */
@@ -797,6 +804,35 @@ public class ChartImpl implements IChart {
 		}
 
 	}
+	
+	public void setSubTitleParameter(List atts) {
+		try{
+			String tmpTitle=new String(getSubName());
+			if (tmpTitle.indexOf("$F{") >= 0){
+				String parName = tmpTitle.substring(tmpTitle.indexOf("$F{")+3, tmpTitle.indexOf("}"));
+
+				for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
+					SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
+
+					String nameP=new String(object.getKey());
+					String value=new String((String)object.getValue());
+					if(nameP.equalsIgnoreCase(parName))
+					{
+						int pos = tmpTitle.indexOf("$F{"+parName+"}") + (parName.length()+4);
+						setSubName(getSubName().replace("$F{" + parName + "}", value));
+						tmpTitle = tmpTitle.substring(pos);
+					}
+				}
+
+			}
+		}
+		catch (Exception e) {
+			logger.error("Error in parameters Title");
+		}
+
+	}
+
+	
 
 	public TextTitle setStyleTitle(String title,StyleLabel titleLabel){
 		Font font=null;

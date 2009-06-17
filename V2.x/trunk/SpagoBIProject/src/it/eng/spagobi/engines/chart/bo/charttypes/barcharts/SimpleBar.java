@@ -185,10 +185,21 @@ public class SimpleBar extends BarCharts{
 		int seriesN=dataset.getRowCount();
 		if(colorMap!=null){
 			for (int i = 0; i < seriesN; i++) {
-				String serieName=(String)dataset.getRowKey(i);
+				String serieName=(String)dataset.getRowKey(i);	
+				String labelName = "";
+				int index=-1;
+				if (seriesCaptions != null && seriesCaptions.size()>0){
+					labelName = serieName;
+					serieName = (String)seriesCaptions.get(serieName);
+					index=dataset.getRowIndex(labelName);
+				}
+				else
+					index=dataset.getRowIndex(serieName);
+				
 				Color color=(Color)colorMap.get(serieName);
 				if(color!=null){
-					renderer.setSeriesPaint(i, color);
+					//renderer.setSeriesPaint(i, color);
+					renderer.setSeriesPaint(index, color);
 					renderer.setSeriesItemLabelFont(i, new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
 					renderer.setSeriesItemLabelPaint(i, defaultLabelsStyle.getColor());
 				}	

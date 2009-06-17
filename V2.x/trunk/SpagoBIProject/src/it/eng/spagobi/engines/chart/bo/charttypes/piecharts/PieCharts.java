@@ -94,11 +94,13 @@ public class PieCharts extends ChartImpl {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 
 
-
-		if (name.indexOf("$F{") >= 0){
-			List atts=new Vector();
-			atts.add(res);		
+		List atts=new Vector();
+		atts.add(res);
+		if (name.indexOf("$F{") >= 0){					
 			setTitleParameter(atts);
+		}
+		if (getSubName().indexOf("$F") >= 0){
+			setSubTitleParameter(atts);
 		}
 
 		for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {

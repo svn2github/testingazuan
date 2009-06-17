@@ -61,6 +61,7 @@ public class BarCharts extends ChartImpl {
 	Integer numberSerVisualization=null;
 	HashMap colorMap=null;  // keeps user selected colors// serie position - color
 	HashMap seriesNumber=null; //track serie name with number position (to preserve color)
+	HashMap seriesCaptions=null;
 	int categoriesNumber=0;
 	HashMap categories;
 	//int currentSerie=-1;
@@ -100,6 +101,7 @@ public class BarCharts extends ChartImpl {
 		logger.debug("IN");
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 		categories=new HashMap();
+		seriesCaptions=new LinkedHashMap();
 
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
@@ -128,6 +130,9 @@ public class BarCharts extends ChartImpl {
 			if(first){
 				if (name.indexOf("$F{") >= 0){
 					setTitleParameter(atts);
+				}
+				if (getSubName().indexOf("$F") >= 0){
+					setSubTitleParameter(atts);
 				}
 				first=false;
 			}
@@ -166,7 +171,16 @@ public class BarCharts extends ChartImpl {
 						series.put(name, value);
 						contSer++;
 				}
-				else series.put(name, value);
+				else if(seriesLabelsMap!=null){
+					String serieLabel = (String)seriesLabelsMap.get(name);
+					if (serieLabel != null){
+						series.put(serieLabel,value);
+						seriesCaptions.put(serieLabel,name);
+					}
+				}
+				else
+					series.put(name, value);
+			
 			}
 			// if a category group was found add it
 			if(!cat_group_name.equalsIgnoreCase("") && !catValue.equalsIgnoreCase("") && catGroups!=null)
@@ -179,13 +193,24 @@ public class BarCharts extends ChartImpl {
 			// add series to dataset only if not hidden
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
-
+				String labelS = "";
 				if(!hiddenSeries.contains(nameS)){
-					String valueS=(String)series.get(nameS);
-					if(valueS!=null && !valueS.equals("null") && !valueS.equals("")){
-						dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
-						if(!seriesNames.contains(nameS)){
+					if(seriesLabelsMap != null && (seriesCaptions != null && seriesCaptions.size()>0)){
+						nameS = (String)(seriesCaptions.get(nameS));
+						labelS = (String)seriesLabelsMap.get(nameS);
+					}
+					else
+						labelS = nameS;
+					
+					String valueS=(String)series.get(labelS);
+					if(labelS!=null && valueS!=null && !valueS.equals("null") && !valueS.equals("")){
+						//orig dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
+						dataset.addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						/*orig if(!seriesNames.contains(nameS)){
 							seriesNames.add(nameS);
+						}*/
+						if(!seriesNames.contains(labelS)){
+							seriesNames.add(labelS);
 						}
 					}
 				}

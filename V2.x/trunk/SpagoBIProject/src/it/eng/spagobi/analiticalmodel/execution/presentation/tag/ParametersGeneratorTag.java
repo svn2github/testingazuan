@@ -77,6 +77,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -847,9 +848,10 @@ public class ParametersGeneratorTag extends TagSupport {
 
 
 	private void createHTMLManInputButton(BIObjectParameter biparam, StringBuffer htmlStream, List lblBiParamDependent) {
+		String parValues = StringEscapeUtils.escapeHtml(getParameterValuesAsString(biparam));
 		htmlStream.append("<input style='width:230px;' type='text' " + "name='" + biparam.getParameterUrlName()
 				+ "Desc' " + "id='" + biparam.getParameterUrlName() + requestIdentity + "Desc' "
-				+ "class='portlet-form-input-field' " + "value='" + getParameterValuesAsString(biparam) + "' "
+				+ "class='portlet-form-input-field' " + "value='" + parValues + "' "
 				+ "autocomplete='off' " + "onchange=\"refresh" + requestIdentity + "('" + biparam.getParameterUrlName()
 				+ requestIdentity + "Desc','" + biparam.getParameterUrlName() + requestIdentity + "');");
 		if (lblBiParamDependent != null && lblBiParamDependent.size() > 0) {

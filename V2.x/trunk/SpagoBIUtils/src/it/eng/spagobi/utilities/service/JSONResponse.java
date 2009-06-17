@@ -28,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -38,14 +37,39 @@ public class JSONResponse implements IServiceResponse {
 
 	int statusCode;
 	String content;
+	String callback;
 	
 	
+	public String getCallback() {
+		return callback;
+	}
+
+	public void setCallback(String callback) {
+		this.callback = callback;
+	}
+
 	public static int ACKNOWLEDGE = 200;
 	public static int SUCCESS = 200;
 	public static int FAILURE = 500;
 	
 		
 	JSONResponse() {}
+	
+	public JSONResponse(int statusCode, JSONObject content, String callback) {
+		this(statusCode, content);
+		this.callback = callback;
+	}
+	
+	public JSONResponse(int statusCode, JSONArray content, String callback) {
+		this(statusCode, content);
+		this.callback = callback;
+	}
+
+	public JSONResponse(int statusCode, String content, String callback) {
+		this(statusCode, content);
+		this.callback = callback;
+	}
+
 	
 	public JSONResponse(int statusCode, JSONObject content) {
 		setStatusCode( statusCode );
@@ -81,14 +105,23 @@ public class JSONResponse implements IServiceResponse {
 	}
 	
 	public String getContent() throws IOException {
-		return content;
+		String str = "";
+		if(callback != null) str += callback + "(";
+		str += content;
+		if(callback != null) str += ");";
+		return str;
 	}
 
 	
 
 	
 	public String getContentType() {		
-		return "application/json; charset=utf-8";
+		String contentType;
+		
+		contentType = callback != null? "text/javascript": "application/x-json";
+		contentType += "; charset=utf-8";
+		
+		return contentType;
 	}
 
 	public boolean isInline() {

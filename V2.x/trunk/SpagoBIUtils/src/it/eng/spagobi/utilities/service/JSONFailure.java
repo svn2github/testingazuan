@@ -33,6 +33,14 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
  */
 public class JSONFailure extends JSONResponse {
 
+	public JSONFailure(SpagoBIEngineServiceException exception, String callback) {
+		super(JSONResponse.FAILURE, createResponseContent(exception), callback );
+	}
+	
+	public JSONFailure(SpagoBIServiceException exception, String callback) {
+		super(JSONResponse.FAILURE, createResponseContent(exception), callback );
+	}
+	
 	public JSONFailure(SpagoBIEngineServiceException exception) {
 		super(JSONResponse.FAILURE, createResponseContent(exception) );
 	}

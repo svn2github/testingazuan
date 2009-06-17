@@ -31,6 +31,18 @@ import org.json.JSONObject;
  */
 public class JSONSuccess extends JSONResponse {
 	
+	public JSONSuccess(JSONObject content, String callback) {
+		super(JSONResponse.SUCCESS, content, callback);
+	}
+	
+	public JSONSuccess(JSONArray content, String callback) {
+		super(JSONResponse.SUCCESS, content, callback);
+	}
+
+	public JSONSuccess(String content, String callback) {
+		super(JSONResponse.SUCCESS, content, callback);
+	}
+	
 	public JSONSuccess(String content) {
 		super(JSONResponse.SUCCESS, content );
 	}

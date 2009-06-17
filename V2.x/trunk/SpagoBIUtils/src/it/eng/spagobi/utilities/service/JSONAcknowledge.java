@@ -29,6 +29,10 @@ import org.json.JSONObject;
  *
  */
 public class JSONAcknowledge extends JSONResponse {
+	public JSONAcknowledge(String callback) {
+		super(JSONResponse.ACKNOWLEDGE, new JSONObject(), callback);
+	}
+	
 	public JSONAcknowledge() {
 		super(JSONResponse.ACKNOWLEDGE, new JSONObject());
 	}

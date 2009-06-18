@@ -74,6 +74,7 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 		if(!document_composition){
 		String parameters=ObjectsTreeConstants.PARAMETERS;
 		URL=URL.replaceAll(parameters+"=", parameters+"="+toMove);
+		URL=URL+"');";
 		}
 		else{
 			URL=URL+toMove;

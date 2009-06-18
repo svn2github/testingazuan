@@ -170,6 +170,16 @@ if (subObj != null) {
 }
 String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
 
+Map exportUrlPars = new HashMap();
+exportUrlPars.put("PAGE", "ExecuteBIObjectPage");
+exportUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_PHASE_EXPORT);
+exportUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+if (subObj != null) {
+	exportUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, subObj.getId().toString());
+}
+String exportUrl = urlBuilder.getUrl(request, exportUrlPars);
+
+
 // the toolbar (slider + buttons) visibility is determined by preferences
 boolean toolbarIsVisible = instance.displayToolbar();
 boolean sliderIsVisible = instance.displaySliders();
@@ -336,12 +346,35 @@ if (toolbarIsVisible) {
 				%>
 				<li>
 					<a id="export_pdf_kpi<%= uuid %>" href="<%=urlExporter%>" target="_blank">
-						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.kpiPdfExport" />'
+						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.PdfExport" />'
 							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/kpi/pdf.png", currTheme)%>'
-							alt='<spagobi:message key = "sbi.execution.kpiPdfExport" />' />
+							alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
 					</a>
 				</li>
-				<% } %>				
+				<% }
+				if (obj.getBiObjectTypeCode().equals("REPORT")){ 
+				    String exportMode="GET";
+				    if(sbiMode.equals("WEB")){exportMode="POST";}
+					
+					HashMap clonePars=new HashMap();
+					for (Iterator iterator = executionParameters.keySet().iterator(); iterator.hasNext();) {
+						String  key = (String) iterator.next();
+						Object value=executionParameters.get(key);
+						clonePars.put(key,value);
+					}
+					
+					//overrides if already present
+					clonePars.put("outputType","PDF");
+					String urlExporter= getUrl(obj.getEngine().getUrl(), clonePars);
+					%>
+			    <li>	
+			    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.PdfExport" />'
+							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/kpi/pdf.png", currTheme)%>'
+							alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
+					</a>	    
+				</li>
+				<% } %>					
 			</ul>
 		</div>
 	</div>

@@ -56,12 +56,39 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	Integer executionAuditId_chart = null;
 	ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 	String execContext = instanceO.getExecutionModality();
+	String crossNavigationUrl = "";
    	// if in document composition case do not include header.jsp
+   	   	
+   	
 	   if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
 <%@ include file="/WEB-INF/jsp/analiticalmodel/execution/header.jsp"%>
 <%
 				executionAuditId_chart = executionAuditId;	   
-	   }
+
+		Map crossNavigationParameters = new HashMap();
+		crossNavigationParameters.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+		crossNavigationParameters.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
+		crossNavigationParameters.put("EXECUTION_FLOW_ID", executionFlowId);
+		crossNavigationParameters.put("SOURCE_EXECUTION_ID", uuid);
+		crossNavigationParameters.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
+		crossNavigationUrl = urlBuilder.getUrl(request, crossNavigationParameters);%>
+		
+		<form id="crossNavigationForm<%= uuid %>" method="post" action="<%= crossNavigationUrl %>" style="display:none;">
+		    <input type="hidden" id="targetDocumentLabel<%= uuid %>" name="<%= ObjectsTreeConstants.OBJECT_LABEL %>" value="" />  
+			<input type="hidden" id="targetDocumentParameters<%= uuid %>" name="<%= ObjectsTreeConstants.PARAMETERS %>" value="" />
+		</form>
+		
+		<script>
+			function execCrossNavigation(windowName, label, parameters) {
+				var uuid = "<%=uuid%>";
+				document.getElementById('targetDocumentLabel' + uuid).value = label;
+				document.getElementById('targetDocumentParameters' + uuid).value = parameters;
+				document.getElementById('crossNavigationForm' + uuid).submit();
+			}
+		</script>
+		<%-- end cross navigation scripts --%>
+			
+	<%   }
    		else // in document composition case doesn't call header so set Object and uuid
 			   {
 	   				docComposition=true;

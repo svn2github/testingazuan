@@ -420,6 +420,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    });
 		this.miframe.on('documentloaded', function() {
 			this.miframe.iframe.execScript("parent = document;");
+			//this.miframe.iframe.execScript("this.uiType = 'ext'; alert(uiType); alert(execCrossNavigation);");
+			this.miframe.iframe.execScript("uiType = 'ext';");
 			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
 							"	sendMessage({'label': l, parameters: p},'crossnavigation');" +
 							"};";

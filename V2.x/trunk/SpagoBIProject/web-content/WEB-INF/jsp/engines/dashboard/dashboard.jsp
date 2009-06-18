@@ -48,18 +48,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 	
 		<script>
-		if(this.execCrossNavigation === undefined) {
-			alert("is undefined");
+
+		
+		
+
 			function execCrossNavigation(windowName, label, parameters) {
-				alert("execCrossNavigation of dashboard!!! ");
-			
-				var uuid = "<%=uuid%>";
-				document.getElementById('targetDocumentLabel' + uuid).value = label;
-				document.getElementById('targetDocumentParameters' + uuid).value = parameters;
-				document.getElementById('crossNavigationForm' + uuid).submit();
+				if(this.uiType === 'ext'){
+					sendMessage({'label': label, parameters: parameters},'crossnavigation');
+				} else {
+					var uuid = "<%=uuid%>";
+					document.getElementById('targetDocumentLabel' + uuid).value = label;
+					document.getElementById('targetDocumentParameters' + uuid).value = parameters;
+					document.getElementById('crossNavigationForm' + uuid).submit();
+				}
 	
 			}
-		}
+		
 				
 		</script>
 		<%-- end cross navigation scripts --%>

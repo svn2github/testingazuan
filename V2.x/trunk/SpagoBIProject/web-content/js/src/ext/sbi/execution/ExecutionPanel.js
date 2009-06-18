@@ -74,6 +74,7 @@ Sbi.execution.ExecutionPanel = function(config) {
 		, closable: closable
 		, border: false
 		, activeItem: 0
+		, hideMode: !Ext.isIE ? 'nosize' : 'display'
 		, layout: 'card'
 		, items: [this.activeDocument]
 	});

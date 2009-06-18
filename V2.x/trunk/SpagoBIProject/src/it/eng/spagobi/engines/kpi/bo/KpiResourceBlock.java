@@ -509,7 +509,7 @@ public class KpiResourceBlock {
 		}
 		return url;
 	}
-	//TODO
+	
 	protected List orderChildren(List ordered, List notordered) {
 		//Arrays.fill s = children ;
 		List toReturn = ordered;

@@ -633,6 +633,8 @@ public class BasicTemplateBuilder  {
 		}
 
 		List<KpiLine> children=kpiLine.getChildren();
+		children = orderChildren(new ArrayList(),children);
+
 		if(children!=null){
 			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 				KpiLine kpiLineChild = (KpiLine) iterator.next();
@@ -643,7 +645,31 @@ public class BasicTemplateBuilder  {
 	}
 
 
-
+	protected List orderChildren(List ordered, List notordered) {
+		//Arrays.fill s = children ;
+		List toReturn = ordered;
+		List temp = new ArrayList();
+		KpiLine l = null;
+		if(notordered!=null && !notordered.isEmpty()){
+			Iterator it = notordered.iterator();
+			while(it.hasNext()){
+				KpiLine k = (KpiLine)it.next();
+				if(l==null){
+					l = k ;
+				}else{
+					if (k!=null && k.compareTo(l)<=0){
+						temp.add(l);
+						l = k;
+					}else{
+						temp.add(k);
+					}
+				}
+			}
+			toReturn.add(l);
+			toReturn = orderChildren(toReturn,temp);
+		}
+		return toReturn;
+	}
 
 	private void setLineAttributes(KpiLine line,SourceBean semaphor, SourceBean textCodeName, SourceBean textValue, 
 			SourceBean textWeight, SourceBean image1, int level, SourceBean separatorline,SourceBean threshCode,SourceBean threshValue){

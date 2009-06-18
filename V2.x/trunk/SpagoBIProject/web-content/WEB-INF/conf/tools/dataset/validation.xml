@@ -41,7 +41,7 @@
 				</FIELD>
 				<FIELD name="SCRIPT" label="SCRIPT">	
 					<VALIDATOR validatorName="XSS"/>		
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\'\$\;\{\}\(\)\\\/])*$"/>	 
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\'\=\$\;\{\}\(\)\\\/])*$"/>	 
 					<VALIDATOR validatorName="MAXLENGTH" arg0="5000"/>
 				</FIELD>	
 				<FIELD name="JCLASSNAME" label="JCLASSNAME">			
@@ -89,7 +89,7 @@
 				</FIELD>
 				<FIELD name="SCRIPT" label="SCRIPT">	
 					<VALIDATOR validatorName="XSS"/>		
-					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\'\$\;\{\}\(\)\\\/])*$"/>	 
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9.:@\s\-\_\'\=\$\;\{\}\(\)\\\/])*$"/>	 
 					<VALIDATOR validatorName="MAXLENGTH" arg0="5000"/>
 				</FIELD>	
 				<FIELD name="JCLASSNAME" label="JCLASSNAME">			

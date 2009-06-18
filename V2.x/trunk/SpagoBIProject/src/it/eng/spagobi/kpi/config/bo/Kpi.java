@@ -234,12 +234,12 @@ public class Kpi {
 		this.measureTypeId = measureTypeId;
 	}
 
-	public String getComboBoxLabel() {
+	public String getComboBoxLabel(boolean trim) {
 		int htmlLabelLenght = 60;
 		String toReturn = "";
 		toReturn += "[" + this.getCode() + "] ";
 		toReturn += this.getKpiName();
-		if (toReturn.length() >= htmlLabelLenght) {
+		if (toReturn.length() >= htmlLabelLenght && trim) {
 			toReturn = toReturn.substring(0, 57) + "...";
 		}
 		return toReturn;

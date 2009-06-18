@@ -349,7 +349,9 @@
 			}
 		%>
 		<option value="<%=kpi.getKpiId()%>"
-			label="<%=StringEscapeUtils.escapeHtml(kpi.getComboBoxLabel())%>" <%=selected%>><%=StringEscapeUtils.escapeHtml(kpi.getComboBoxLabel())%>
+			label="<%=StringEscapeUtils.escapeHtml(kpi.getComboBoxLabel(true))%>"
+			title="<%=StringEscapeUtils.escapeHtml(kpi.getComboBoxLabel(false))%>" <%=selected%>>
+			<%=StringEscapeUtils.escapeHtml(kpi.getComboBoxLabel(true))%>
 		</option>
 		<%
 		}

@@ -304,7 +304,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		}
 	%>
 	<option value="<%=kpi.getKpiId()%>"
-		label="[<%=StringEscapeUtils.escapeHtml(kpi.getCode())%>] <%=StringEscapeUtils.escapeHtml(kpi.getKpiName())%>" <%=selected%>>[<%=StringEscapeUtils.escapeHtml(kpi.getCode())%>] <%=StringEscapeUtils.escapeHtml(kpi.getKpiName())%>
+		label="<%=StringEscapeUtils.escapeHtml(kpi.getComboBoxLabel())%>" <%=selected%>><%=StringEscapeUtils.escapeHtml(kpi.getComboBoxLabel())%>
 	</option>
 	<%
 	}

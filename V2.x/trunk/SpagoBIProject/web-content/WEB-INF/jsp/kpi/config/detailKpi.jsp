@@ -212,7 +212,7 @@
 
 <div id="tabs1">
 <div id="tab1" class="x-hide-display">
-<div class="div_detail_area_forms">
+<div class="div_detail_area_forms" style="width: 670;">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.name" bundle="<%=messageBunle%>"/> </span></div>
@@ -324,7 +324,13 @@
 		<option value="-1"
 			label="" selected>
 		</option>
+	<%	}
+	else {  %>
+	<option value="-1"
+		label="" selected>
+	</option>
 	<%	} 
+
 	List dataSets = DAOFactory.getDataSetDAO().loadAllDataSets();
 	Iterator dataSetsIt = dataSets.iterator();
 	while (dataSetsIt.hasNext()){
@@ -333,7 +339,8 @@
 		if (ds_id != null && ds_id.intValue() == dataSet.getId()) {
 			selected = "selected='selected'";
 		}
-		%>    			 		
+		%>
+		    			 		
 		<option value="<%= dataSet.getId() %>" label="<%= StringEscapeUtils.escapeHtml(dataSet.getLabel()) %>" <%= selected %>>
 			<%= StringEscapeUtils.escapeHtml(dataSet.getLabel()) %>	
 		</option>
@@ -347,7 +354,7 @@
 </div>
 
 <div id="tab2" class="x-hide-display">
-<div class="div_detail_area_forms">
+<div class="div_detail_area_forms" style="width: 670;">
 <div class='div_detail_label'><span
 	class='portlet-form-field-label'> <spagobi:message
 	key="sbi.kpi.label.kpi.type" bundle="<%=messageBunle%>"/> </span></div>
@@ -503,7 +510,7 @@
 Ext.onReady(function(){
     var tabs = new Ext.TabPanel({
         renderTo: 'tabs1',
-        width:550,
+        width:690,
         activeTab: 0,
         frame:true,
         defaults:{autoHeight: true},

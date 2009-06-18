@@ -452,7 +452,7 @@ value='<%= StringEscapeUtils.escapeHtml(endDateS) %>'/> </div>
 		}
 	%>
 	<option value="<%=kpi.getKpiId()%>"
-				label="[<%=StringEscapeUtils.escapeHtml(kpi.getCode())%>] <%=StringEscapeUtils.escapeHtml(kpi.getKpiName())%>" <%=selected%>>[<%=StringEscapeUtils.escapeHtml(kpi.getCode())%>] <%=StringEscapeUtils.escapeHtml(kpi.getKpiName())%>
+				label="<%=StringEscapeUtils.escapeHtml(kpi.getComboBoxLabel())%>" <%=selected%>><%=StringEscapeUtils.escapeHtml(kpi.getComboBoxLabel())%>
 	</option>
 	<%
 	}

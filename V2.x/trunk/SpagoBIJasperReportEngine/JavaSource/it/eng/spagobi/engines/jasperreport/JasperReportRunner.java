@@ -137,11 +137,11 @@ public class JasperReportRunner {
 
 		logger.debug("Read user data from the request. userId="+userId+". DocumentId="+documentId);
 
-		String resourcePath=EnginConf.getInstance().getResourcePath()+"\\img\\";
+		String resourcePath=EnginConf.getInstance().getResourcePath()+"/img/";
 		String entity=(String)parameters.get(SpagoBIConstants.SBI_ENTITY);
 		// IF exist an ENTITY  parameter concat to resourcePath
 		if (entity!=null && entity.length()>0){
-			resourcePath=resourcePath.concat(entity+"\\");
+			resourcePath=resourcePath.concat(entity+"/");
 		}
 		logger.debug("SetUp resourcePath:"+resourcePath);
 

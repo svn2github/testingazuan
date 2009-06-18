@@ -46,13 +46,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<input type="hidden" id="targetDocumentParameters<%= uuid %>" name="<%= ObjectsTreeConstants.PARAMETERS %>" value="" />
 		</form>
 		
+	
 		<script>
+		if(this.execCrossNavigation === undefined) {
+			alert("is undefined");
 			function execCrossNavigation(windowName, label, parameters) {
+				alert("execCrossNavigation of dashboard!!! ");
+			
 				var uuid = "<%=uuid%>";
 				document.getElementById('targetDocumentLabel' + uuid).value = label;
 				document.getElementById('targetDocumentParameters' + uuid).value = parameters;
 				document.getElementById('crossNavigationForm' + uuid).submit();
+	
 			}
+		}
+				
 		</script>
 		<%-- end cross navigation scripts --%>
 <%	} 
@@ -140,9 +148,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	double radius = 0;
 	String dinHeight = height;
 	
-	System.out.println("radiusByWidth: " + radiusByWidth);
-	System.out.println("radiusByHeight: " + radiusByHeight);
-	 
     if (radiusByWidth < radiusByHeight) {
 		radius = radiusByWidth;
     } else {

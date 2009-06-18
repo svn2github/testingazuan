@@ -170,15 +170,6 @@ if (subObj != null) {
 }
 String refreshUrl = urlBuilder.getUrl(request, refreshUrlPars);
 
-Map exportUrlPars = new HashMap();
-exportUrlPars.put("PAGE", "ExecuteBIObjectPage");
-exportUrlPars.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_PHASE_EXPORT);
-exportUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-if (subObj != null) {
-	exportUrlPars.put(SpagoBIConstants.SUBOBJECT_ID, subObj.getId().toString());
-}
-String exportUrl = urlBuilder.getUrl(request, exportUrlPars);
-
 
 // the toolbar (slider + buttons) visibility is determined by preferences
 boolean toolbarIsVisible = instance.displayToolbar();

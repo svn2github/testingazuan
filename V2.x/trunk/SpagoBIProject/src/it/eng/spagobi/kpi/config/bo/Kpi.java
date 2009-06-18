@@ -240,7 +240,7 @@ public class Kpi {
 		toReturn += "[" + this.getCode() + "] ";
 		toReturn += this.getKpiName();
 		if (toReturn.length() >= htmlLabelLenght) {
-			toReturn = toReturn.substring(57) + "...";
+			toReturn = toReturn.substring(0, 57) + "...";
 		}
 		return toReturn;
 	}

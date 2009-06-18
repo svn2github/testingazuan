@@ -40,6 +40,7 @@ import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
+import it.eng.spagobi.utilities.ParametersDecoder;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -347,14 +348,37 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		List parametersList=obj.getBiObjectParameters();
 		logger.debug("Check for BIparameters and relative values");
 		if(parametersList!=null){
+			ParametersDecoder decoder = new ParametersDecoder();
 			for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
 				BIObjectParameter par= (BIObjectParameter) iterator.next();
 				String url=par.getParameterUrlName();
 				List values=par.getParameterValues();
+				
+				
 				if(values!=null){
+					/*
+					if ((values.size() >=1)) {
+					    List values = decoder.decode(parValue);
+					    newParValue = "";
+					    for (int i = 0; i < values.size(); i++) {
+							newParValue += (i > 0 ? "," : "");
+							newParValue += values.get(i);
+					    }
+
+					} else {
+					    newParValue = parValue;
+					}
+					*/
 					if(values.size()==1){
 						String value=(String)values.get(0);
-						parameters+="&"+url+"="+value;
+						if (value.equals("%")) value = "%25";
+					    else if (value.equals(";%")) value = ";%25";
+						dataParameters.put(url, value);
+					}else if(values.size() >=1){
+						String value = "'"+(String)values.get(0)+"'";					
+						for(int k = 1; k< values.size() ; k++){
+							value = value + ",'" + (String)values.get(k)+"'";
+						}
 						dataParameters.put(url, value);
 					}
 				}
@@ -412,7 +436,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 		int i=0;
 		String drillUrl  = "javascript:execCrossNavigation(this.name, '"+drillLabel+"','";
 
-		if (serviceRequest.getAttribute(ObjectsTreeConstants.MODALITY) != null && 
+		if (serviceRequest.getAttribute(ObjectsTreeConstants.MODALITY) != null &&
 				((String)serviceRequest.getAttribute(ObjectsTreeConstants.MODALITY)).equals(SpagoBIConstants.DOCUMENT_COMPOSITION) )
 			drillUrl  = "javascript:parent.execCrossNavigation(this.name, '"+drillLabel+"','";
 
@@ -427,7 +451,9 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			i++;
 		}
 		drillUrl += "');";
-		getDrillParameters().put("drillUrl", drillUrl);
+		if (i>0)
+			getDrillParameters().put("drillUrl", drillUrl);
+		
 		logger.debug("drillUrl: " + drillUrl);
 		
 		logger.debug("out");

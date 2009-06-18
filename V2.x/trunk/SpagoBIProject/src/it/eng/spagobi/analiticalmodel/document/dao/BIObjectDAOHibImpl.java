@@ -1632,7 +1632,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	}
 	
 	/**
-	 * Loads objects of the user roles
+	 * Loads visible objects of the user roles
 	 * @param folderID
 	 * @param profile the profile of the user
 	 * @return
@@ -1664,6 +1664,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				" and fr.id.role.extRoleId IN (select extRoleId from SbiExtRoles e  where  e.name in (:ROLES)) " +
 				" and fr.id.function.functId = f.functId and fr.id.state.valueId = o.state " + 
 				" and f.functId = :FOLDER_ID  " + 
+				" and o.visible = 1" + //visible=true
 				" order by o.name");
 		} else {
 			buffer.append("select objects from SbiObjects as objects ");

@@ -709,9 +709,9 @@ public class DetailDataSetModule extends AbstractModule {
 							String languageScript=(String)serviceRequest.getAttribute("LANGUAGESCRIPT");
 							ds.setLanguageScript(languageScript);
 							String toVerify = script.toUpperCase();
-							if( !toVerify.contains("<A") &&  !toVerify.contains("<LINK") &&  !toVerify.contains("<IMG") &&  !toVerify.contains("<SCRIPT")){
+						//	if( !toVerify.contains("<A") &&  !toVerify.contains("<LINK") &&  !toVerify.contains("<IMG") &&  !toVerify.contains("<SCRIPT")){
 								ds.setScript(script);
-							}else{
+						/*	}else{
 								logger.error("error in the script");
 								EMFValidationError emf= new EMFValidationError(EMFErrorSeverity.ERROR, "SCRIPT", "9216");
 								errorHandler.addError(emf);
@@ -720,7 +720,7 @@ public class DetailDataSetModule extends AbstractModule {
 									errorHandler.addError(emf2);
 								}								
 								return ds;
-							}								
+							} */								
 						}
 					}
 					else

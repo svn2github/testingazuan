@@ -159,7 +159,7 @@ public class OverlaidBarLine extends BarCharts {
 					//Line and second axis
 
 					// LINE CASE
-					if(seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line")){
+					if(!isHiddenSerie(nameS) && seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line")){
 						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
 						// SET THE AXIS
 						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
@@ -170,7 +170,7 @@ public class OverlaidBarLine extends BarCharts {
 						}
 
 					}
-					else{ // BAR CASE
+					else if(!isHiddenSerie(nameS) && seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("bar")){// BAR CASE
 						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
 						// if to draw mapped to first axis
 						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
@@ -603,7 +603,17 @@ public class OverlaidBarLine extends BarCharts {
 
 
 
-
+	private boolean isHiddenSerie(String serName){
+		boolean res = false;
+		
+		for (int i=0; i < hiddenSeries.size(); i++){
+			if (((String)hiddenSeries.get(i)).equalsIgnoreCase(serName)){
+				res = true;
+				break;
+			}
+		}
+		return res;
+	}
 
 
 
@@ -628,6 +638,7 @@ public class OverlaidBarLine extends BarCharts {
 
 //	CategoryPlot plot = new CategoryPlot();
 
+	
 
 //	NumberAxis rangeAxis = new NumberAxis(getValueLabel());
 //	rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));

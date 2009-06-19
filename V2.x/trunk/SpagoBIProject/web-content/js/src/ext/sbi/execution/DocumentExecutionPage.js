@@ -74,7 +74,7 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 	});
 	
 	// add events
-    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'moveprevrequest', 'loadurlfailure', 'crossnavigation');
+    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'moveprevrequest', 'loadurlfailure', 'crossnavigation', 'beforerefresh');
           
 	
     this.init(config);    
@@ -256,15 +256,18 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	}
 
 	, refreshExecution: function() {
+		
 		var formState = this.parametersPanel.getFormState();
 		var formStateStr = Sbi.commons.JSON.encode( formState );
 		
-		if(formStateStr !== this.executionInstance.PARAMETERS) { // todo: if(parametersPanel.isDirty())		
-			this.executionInstance.PARAMETERS = formStateStr;
-			this.synchronize( this.executionInstance, false );
-		} else {
-			this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
-		}		
+		if(this.fireEvent('beforerefresh', this, this.executionInstance, formState) !== false){
+			if(formStateStr !== this.executionInstance.PARAMETERS) { // todo: if(parametersPanel.isDirty())		
+				this.executionInstance.PARAMETERS = formStateStr;
+				this.synchronize( this.executionInstance, false );
+			} else {
+				this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
+			}
+		}
 	}
 	
 	, rateExecution: function() {

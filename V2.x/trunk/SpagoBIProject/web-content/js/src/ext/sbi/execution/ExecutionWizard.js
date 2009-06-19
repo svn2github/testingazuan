@@ -158,6 +158,8 @@ Sbi.execution.ExecutionWizard = function(config) {
     this.parametersSelectionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
     this.parametersSelectionPage.shortcutsPanel.addListener('snapshotexcutionrequest', this.onSnapshotExecutionRequest, this);
     
+    
+    this.documentExecutionPage.addListener('beforerefresh', function(){ this.prevActivePageNumber = this.EXECUTION_PAGE_NUMBER; }, this);
     this.documentExecutionPage.addListener('loadurlfailure', this.onLoadUrlFailure, this);
     this.documentExecutionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
     this.documentExecutionPage.shortcutsPanel.addListener('snapshotexcutionrequest', this.onSnapshotExecutionRequest, this);
@@ -173,6 +175,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	services: null
     , executionInstance: null
     
+    , prevActivePageNumber: null
     , activePageNumber: null
     , roleSelectionPage: null
     , parametersSelectionPage: null
@@ -188,30 +191,32 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
     
     // toolbar
     , moveToPage: function(pageNumber) {
-	
+		
+		this.prevActivePageNumber = this.activePageNumber;
+		this.activePageNumber = pageNumber;
+		//alert(this.prevActivePageNumber + ' - ' + this.activePageNumber);
+		
 		// up-hill ->
-		if(this.activePageNumber == this.ROLE_SELECTION_PAGE_NUMBER && pageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER) {
+		if(this.prevActivePageNumber == this.ROLE_SELECTION_PAGE_NUMBER && this.activePageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER) {
 			this.roleSelectionPage.loadingMask.hide();
 			this.startExecution();
 		}
-		if(this.activePageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER && pageNumber == this.EXECUTION_PAGE_NUMBER) {
+		if(this.prevActivePageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER && this.activePageNumber == this.EXECUTION_PAGE_NUMBER) {
 			this.loadUrlForExecution();
 		}
-		if(this.activePageNumber == this.EXECUTION_PAGE_NUMBER && pageNumber == this.EXECUTION_PAGE_NUMBER) { // todo: handle refresh properly
+		if(this.prevActivePageNumber == this.EXECUTION_PAGE_NUMBER && this.activePageNumber == this.EXECUTION_PAGE_NUMBER) { // todo: handle refresh properly
 			this.documentExecutionPage.southPanel.collapse();
 			this.loadUrlForExecution();
 		}
 		
 		// down-hill <-
-		if(this.activePageNumber == this.EXECUTION_PAGE_NUMBER && pageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER) {
+		if(this.prevActivePageNumber == this.EXECUTION_PAGE_NUMBER && this.activePageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER) {
 			delete this.executionInstance.SBI_SUBOBJECT_ID;
 			delete this.executionInstance.SBI_SNAPSHOT_ID;
 			// force synchronization, since subobject, snapshots, viewpoints may have been deleted, or a new subobject may have been created
 			this.parametersSelectionPage.shortcutsPanel.synchronize(this.executionInstance);
 		}
 		
-		//this.tb.update(pageNumber, this.executionInstance, this.document);
-		this.activePageNumber = pageNumber;
 		this.getLayout().setActiveItem( this.activePageNumber );
 	}
 
@@ -301,9 +306,18 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	}
 	
 	, onLoadUrlFailure: function ( errors ) {
-		alert("ERROR: " + errors);
-		this.moveToPage(1); // go to parameters page
-		
+		var messageBox = Ext.MessageBox.show({
+				title: 'Error',
+				msg: errors,
+				modal: false,
+				buttons: Ext.MessageBox.OK,
+				width:300,
+				icon: Ext.MessageBox.ERROR,
+				animEl: 'root-menu'        			
+		});
+		if(this.prevActivePageNumber !== this.EXECUTION_PAGE_NUMBER){
+			this.moveToPage( this.prevActivePageNumber ); 
+		}		
 	}
 	
 	

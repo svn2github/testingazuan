@@ -71,15 +71,15 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 		String toMove=serieToMove+categoryToMove;
 
 		// insert into PARAMETERS=
-		if(!document_composition){
+		/*if(!document_composition){
 		String parameters=ObjectsTreeConstants.PARAMETERS;
 		URL=URL.replaceAll(parameters+"=", parameters+"="+toMove);
 		URL=URL+"');";
 		}
-		else{
+		else{*/
 			URL=URL+toMove;
 			URL=URL+"');";
-		}
+		//}
 
 		logger.debug("OUT");
 		return URL;
@@ -199,7 +199,7 @@ public class MyCategoryUrlGenerator extends StandardCategoryURLGenerator{
 		if(URL.contains(toMove)){
 			URL=URL.replaceAll(toMove, "");
 		}
-		if(document_composition && URL.contains("?")){
+		if(URL.contains("?")){
 			int indexQuestion=URL.indexOf('?');
 			URL=URL.replace("?", "");
 		}

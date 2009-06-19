@@ -54,6 +54,7 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 		URL=URL.replaceAll(parameters+"=", parameters+"="+toMove);
 
 		//if(document_composition){
+			URL=URL+toMove;
 			URL=URL+"');";
 		//}
 
@@ -165,12 +166,17 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 		String toMove=URL.substring(startIndex, endIndex);
 
 		URL=URL.replaceAll("&amp;"+toMove, "");
+		URL=URL.replaceAll(toMove, "");
+		
+		if(URL.contains("?")){
+			int indexQuestion=URL.indexOf('?');
+			URL=URL.replace("?", "");
+		}
+		
+		toMove=toMove.replaceAll("category", replacer);	
 
-			toMove=toMove.replaceAll("category", replacer);	
-
-
-		toMove=toMove.replaceAll("=", "%253");
-		toMove="%2526"+toMove;
+		toMove=toMove.replaceAll("=", "%3D");
+		toMove="%26"+toMove;
 
 
 		return toMove;

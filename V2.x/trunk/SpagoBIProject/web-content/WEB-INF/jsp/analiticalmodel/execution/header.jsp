@@ -47,6 +47,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@page import="it.eng.spago.base.RequestContainer"%>
 <%@page import="it.eng.spago.base.SessionContainer"%>
+<%@page import="it.eng.spagobi.engines.config.dao.IEngineDAO"%>
+<%@page import="it.eng.spagobi.engines.config.bo.Engine"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="it.eng.spagobi.commons.metadata.SbiDomains"%>
+<%@page import="it.eng.spagobi.engines.config.metadata.SbiExporters"%>
+<%@page import="it.eng.spagobi.engines.config.bo.Exporters"%>
+<%@page import="it.eng.spagobi.commons.bo.Domain"%>
+<%@page import="it.eng.spagobi.commons.dao.IDomainDAO"%>
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/portal_admin.css",currTheme)%>' type='text/css' />
 <LINK rel='StyleSheet' href='<%=urlBuilder.getResourceLinkByTheme(request, "css/analiticalmodel/form.css",currTheme)%>' type='text/css' />
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/analiticalmodel/execution/box.js")%>"></script>
@@ -330,43 +338,72 @@ if (toolbarIsVisible) {
 							alt='<spagobi:message key = "sbi.execution.print" />' />
 					</a>
 				</li>
-				<% }
-				if (obj.getBiObjectTypeCode().equals("KPI")){ 
-					String urlExporter=GeneralUtilities.getSpagoBIProfileBaseUrl(userId);
-					urlExporter+="&ACTION_NAME=EXPORT_PDF&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE&"+SpagoBIConstants.OBJECT_ID+"="+obj.getId();
-				%>
-				<li>
-					<a id="export_pdf_kpi<%= uuid %>" href="<%=urlExporter%>" target="_blank">
-						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.PdfExport" />'
-							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/kpi/pdf.png", currTheme)%>'
-							alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
-					</a>
-				</li>
-				<% }
-				if (obj.getBiObjectTypeCode().equals("REPORT")){ 
-				    String exportMode="GET";
-				    if(sbiMode.equals("WEB")){exportMode="POST";}
-					
-					HashMap clonePars=new HashMap();
-					for (Iterator iterator = executionParameters.keySet().iterator(); iterator.hasNext();) {
-						String  key = (String) iterator.next();
-						Object value=executionParameters.get(key);
-						clonePars.put(key,value);
-					}
-					
-					//overrides if already present
-					clonePars.put("outputType","PDF");
-					String urlExporter= getUrl(obj.getEngine().getUrl(), clonePars);
-					%>
-			    <li>	
-			    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
-						<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.PdfExport" />'
-							src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/kpi/pdf.png", currTheme)%>'
-							alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
-					</a>	    
-				</li>
-				<% } %>					
+				<% } %>
+
+
+
+
+
+
+				<%
+				// For all exporters associated to the engine
+				Integer engineId=null;
+				Engine engineObj=obj.getEngine();
+				if(engineObj!=null){
+				
+					IEngineDAO engineDao=DAOFactory.getEngineDAO();
+					List exporters=new ArrayList();
+					exporters=engineDao.getAssociatedExporters(engineObj);			
+					for (Iterator iterator = exporters.iterator(); iterator.hasNext();) {
+						 Exporters exp = (Exporters) iterator.next();
+						 Integer domainId=exp.getDomainId();
+						 
+						 IDomainDAO domainDao=DAOFactory.getDomainDAO();
+						 Domain domain=domainDao.loadDomainById(domainId);
+						 if(domain!=null){
+						 String value_cd=domain.getValueCd();
+						 String urlExporter=null;	
+
+			
+							if (obj.getBiObjectTypeCode().equals("KPI")){ 
+								urlExporter=GeneralUtilities.getSpagoBIProfileBaseUrl(userId);
+								urlExporter+="&ACTION_NAME=EXPORT_PDF&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE&"+SpagoBIConstants.OBJECT_ID+"="+obj.getId();
+							}
+							else if (obj.getBiObjectTypeCode().equals("REPORT")){ 
+							    String exportMode="GET";
+							    if(sbiMode.equals("WEB")){exportMode="POST";}
+								
+								HashMap clonePars=new HashMap();
+								
+								for (Iterator iterator2 = executionParameters.keySet().iterator(); iterator2.hasNext();) {
+									String  key = (String) iterator2.next();
+									Object value=executionParameters.get(key);
+									clonePars.put(key,value);
+								}
+								
+								//overrides if already present
+								clonePars.put("outputType","PDF");
+								urlExporter= getUrl(obj.getEngine().getUrl(), clonePars);
+							}
+							
+								%>
+						    <li>	
+						    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+									<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.PdfExport" />'
+										src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/kpi/pdf.png", currTheme)%>'
+										alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
+								</a>	    
+							</li>
+							<% } 
+							}
+							%>	
+			
+			<%} // engine not null %>
+			
 			</ul>
+		
+		
+		
 		</div>
 	</div>
 	

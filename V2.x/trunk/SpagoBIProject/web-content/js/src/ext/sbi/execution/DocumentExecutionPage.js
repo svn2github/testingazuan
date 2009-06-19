@@ -85,7 +85,15 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 		this.refreshExecution();
     }, this);
     
-    
+    this.shortcutsPanel.on('subobjectexecutionrequest', function (subObjectId) {
+		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
+		this.synchronize(this.executionInstance);
+	}, this);
+	
+    this.shortcutsPanel.on('snapshotexcutionrequest', function (snapshotId) {
+		this.executionInstance.SBI_SNAPSHOT_ID = snapshotId;
+		this.synchronize(this.executionInstance);
+	}, this);
     
 	var c = Ext.apply({}, config, {
 		layout: 'border'
@@ -185,14 +193,12 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			, handler : function() {this.fireEvent('moveprevrequest');}
 		}));
 		
-		if (!this.executionInstance.SBI_SNAPSHOT_ID) {
-			this.toolbar.addButton(new Ext.Toolbar.Button({
-				iconCls: 'icon-refresh' 
-				, tooltip: LN('sbi.execution.executionpage.toolbar.refresh')
-			    , scope: this
-			    , handler : this.refreshExecution			
-			}));
-		}
+		this.toolbar.addButton(new Ext.Toolbar.Button({
+			iconCls: 'icon-refresh' 
+			, tooltip: LN('sbi.execution.executionpage.toolbar.refresh')
+		    , scope: this
+		    , handler : this.refreshExecution			
+		}));
 		
 		this.toolbar.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-rating' 
@@ -257,11 +263,21 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 
 	, refreshExecution: function() {
 		
+		var mustSynchronize = false;
+		if (this.executionInstance.SBI_SUBOBJECT_ID !== undefined) {
+			delete this.executionInstance.SBI_SUBOBJECT_ID;
+			mustSynchronize = true;
+		}
+		if (this.executionInstance.SBI_SNAPSHOT_ID !== undefined) {
+			delete this.executionInstance.SBI_SNAPSHOT_ID;
+			mustSynchronize = true;
+		}
+		
 		var formState = this.parametersPanel.getFormState();
 		var formStateStr = Sbi.commons.JSON.encode( formState );
 		
 		if(this.fireEvent('beforerefresh', this, this.executionInstance, formState) !== false){
-			if(formStateStr !== this.executionInstance.PARAMETERS) { // todo: if(parametersPanel.isDirty())		
+			if(mustSynchronize || formStateStr !== this.executionInstance.PARAMETERS) { // todo: if(parametersPanel.isDirty())		
 				this.executionInstance.PARAMETERS = formStateStr;
 				this.synchronize( this.executionInstance, false );
 			} else {

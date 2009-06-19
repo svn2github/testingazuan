@@ -139,9 +139,8 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		for(p in this.fields) {
 			var field = this.fields[p];
 			var value = field.getValue();
-			state[field.getName()] = value;
+			state[field.name] = value;
 		}
-		
 		return state;
 	}
 	
@@ -210,12 +209,19 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		
 		this.fields = {};
 		
+		var nonTransientField = 0;
 		for(var i = 0; i < parameters.length; i++) {
-			//alert(parameters[i].toSource());
 			var field = this.createField( executionInstance, parameters[i] );
-			field.columnNo = i%this.columns.length;
-			this.fields[parameters[i].id] = field;
-			this.columns[field.columnNo].add( field );
+			if(parameters[i].valuesCount !== undefined && parameters[i].valuesCount == 1) {
+				field.isTransient = true;
+				field.setValue(parameters[i].value);
+				this.fields[parameters[i].id] = field;
+			} else {
+				field.isTransient = false;
+				field.columnNo = (nonTransientField++)%this.columns.length;
+				this.fields[parameters[i].id] = field;
+				this.columns[field.columnNo].add( field );
+			}
 		}
 		this.doLayout();
 		
@@ -272,7 +278,19 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			this.setFormState(preferenceState);
 			var o = this.getFormState();
 			for(p in o) {
-				if(o[p] !== preferenceState[p]) {
+				if(o[p] !== preferenceState[p] && this.fields[p].isTransient === false) {
+					readyForExecution = false;
+					break;
+				}
+			}
+			if(readyForExecution === true) {
+				this.fireEvent('readyforexecution', this);
+			}
+		} else {
+			var readyForExecution = true;
+			var o = this.getFormState();
+			for(p in o) {
+				if(this.fields[p].isTransient === false) {
 					readyForExecution = false;
 					break;
 				}

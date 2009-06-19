@@ -105,7 +105,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	var object = {id: <%= obj != null ? obj.getId() : "undefined" %>
 			, label: <%= obj != null ? ("'" + obj.getLabel() + "'") : "undefined" %>
-			, type: <%= obj != null ? ("'" + obj.getBiObjectTypeCode() + "'") : "undefined" %>
+			, typeCode: <%= obj != null ? ("'" + obj.getBiObjectTypeCode() + "'") : "undefined" %>
 			};
 
 	var parameters = <%= parameters != null ? ("'" + parameters.replaceAll("'", "\'") + "'") : "undefined" %>;

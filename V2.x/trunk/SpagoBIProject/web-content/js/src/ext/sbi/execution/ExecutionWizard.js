@@ -138,6 +138,7 @@ Sbi.execution.ExecutionWizard = function(config) {
     
 	var c = Ext.apply({}, config, {
 		layout:'card',
+		hideMode: !Ext.isIE ? 'nosize' : 'display',
 		activeItem: this.activePanel, // index or id
 		//tbar: this.tb,
 		items: [

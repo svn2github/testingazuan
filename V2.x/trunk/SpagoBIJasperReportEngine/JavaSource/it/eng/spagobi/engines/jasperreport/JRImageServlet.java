@@ -34,17 +34,13 @@ public class JRImageServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 
 		java.text.SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");	    
-
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.MINUTE, 10);	//Adding 10 minute to current date time
 		Date date=cal.getTime(); 
 		String dateString=dateFormat.format( date )+" GMT";
-
 		logger.debug(dateString);	
-
 		response.setDateHeader("Expires", date.getTime());
 		//response.setHeader("Expires", "Sat, 6 May 2010 12:00:00 GMT");	
-		
 		response.setHeader("Cache-Control: max-age", "600");
 
 		String mapName = request.getParameter("mapname");

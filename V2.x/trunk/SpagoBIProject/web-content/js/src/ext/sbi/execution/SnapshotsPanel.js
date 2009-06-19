@@ -228,6 +228,7 @@ Ext.extend(Sbi.execution.SnapshotsPanel, Ext.grid.GridPanel, {
 		// get the required snapshot from the store
 		var record = this.findByNameAndHistoryNumber(this.snapshotPreference.name, this.snapshotPreference.historyNumber);
 		if (record != null) {
+			this.executionInstance.isPossibleToComeBackToParametersPage = false;
 			var snapshotId = record.get('id');
 	    	this.fireEvent('executionrequest', snapshotId);
 		} else {

@@ -190,12 +190,14 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		
 		this.toolbar.addFill();
 		
-		this.toolbar.addButton(new Ext.Toolbar.Button({
-			iconCls: 'icon-back' 
-			, tooltip: LN('sbi.execution.executionpage.toolbar.back')
-			, scope: this
-			, handler : function() {this.fireEvent('moveprevrequest');}
-		}));
+		if (executionInstance.isPossibleToComeBackToParametersPage == undefined || executionInstance.isPossibleToComeBackToParametersPage === true) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-back' 
+				, tooltip: LN('sbi.execution.executionpage.toolbar.back')
+				, scope: this
+				, handler : function() {this.fireEvent('moveprevrequest');}
+			}));
+		}
 		
 		this.toolbar.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-refresh' 

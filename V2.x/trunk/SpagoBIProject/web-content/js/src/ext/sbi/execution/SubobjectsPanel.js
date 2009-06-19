@@ -226,6 +226,7 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		// get the required subobject from the store
 		var index = this.subObjectsStore.find('name', this.subobjectPreference);
 		if (index != -1) {
+			this.executionInstance.isPossibleToComeBackToParametersPage = false;
 			var record = this.subObjectsStore.getAt(index);
 			var subObjectId = record.get('id');
 	    	this.fireEvent('executionrequest', subObjectId);

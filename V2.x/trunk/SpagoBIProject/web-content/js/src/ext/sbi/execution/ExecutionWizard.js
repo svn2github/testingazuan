@@ -263,6 +263,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 		} else if(rolesNo === 1) {
 			var role = store.getRange()[0];
 			form.roleComboBox.setValue(role.data.name); 
+			this.executionInstance.isPossibleToComeBackToRolePage = false;
 			this.moveToNextPage();
 		} else {
 			this.roleSelectionPage.loadingMask.hide();

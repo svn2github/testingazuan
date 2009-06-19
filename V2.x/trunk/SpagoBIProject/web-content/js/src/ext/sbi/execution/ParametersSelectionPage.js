@@ -124,7 +124,10 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	
 	this.parametersPanel.on('beforesynchronize', function(){if(this.loadingMask) this.loadingMask.show();}, this);
 	this.parametersPanel.on('synchronize', function(){if(this.loadingMask) this.loadingMask.hide();}, this);
-	this.parametersPanel.on('readyforexecution', function(){this.fireEvent('movenextrequest', this);}, this);
+	this.parametersPanel.on('readyforexecution', function(){
+		this.executionInstance.isPossibleToComeBackToParametersPage = false;
+		this.fireEvent('movenextrequest', this);
+	}, this);
 	
 	this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
 	this.shortcutsPanel.on('viewpointexecutionrequest', this.onExecuteViewpoint, this);
@@ -181,12 +184,14 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 		
 		this.toolbar.addFill();
 		
-		this.toolbar.addButton(new Ext.Toolbar.Button({
-			iconCls: 'icon-back' 
-			, tooltip: LN('sbi.execution.parametersselection.toolbar.back')
-		    , scope: this
-		    , handler : function() {this.fireEvent('moveprevrequest');}
-		}));
+		if (executionInstance.isPossibleToComeBackToRolePage == undefined || executionInstance.isPossibleToComeBackToRolePage === true) {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-back' 
+				, tooltip: LN('sbi.execution.parametersselection.toolbar.back')
+			    , scope: this
+			    , handler : function() {this.fireEvent('moveprevrequest');}
+			}));
+		}
 		
 		this.toolbar.addSeparator();
 		

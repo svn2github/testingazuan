@@ -107,6 +107,7 @@ public class SpagoBIConstants {
 	public static final String VALUE_FILTER = "valueFilter";
 	public static final String COLUMN_FILTER = "columnFilter";
 	public static final String TYPE_VALUE_FILTER = "typeValueFilter";
+	public static final String SCOPE = "scope";
 	public static final String START_FILTER = "start";
 	public static final String END_FILTER = "end";
 	public static final String EQUAL_FILTER = "equal";

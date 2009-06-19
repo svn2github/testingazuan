@@ -951,7 +951,7 @@ public class ListTag extends TagSupport
 		prevParamsMap.put("LIST_PAGE", String.valueOf(prevPage));		
 		_prevUrl = createUrl(prevParamsMap);	
 		//_prevUrl = response.encodeURL(_prevUrl);
-		//_prevUrl=StringEscapeUtils.escapeHtml(_prevUrl);
+		_prevUrl=StringEscapeUtils.escapeHtml(_prevUrl);
 		
 
 		// create url for refresh page		
@@ -962,7 +962,7 @@ public class ListTag extends TagSupport
 		_refreshUrl = createUrl(refreshParamsMap);
 		_refreshUrl = _refreshUrl.replaceAll("&amp;", "&");
 		//_refreshUrl = response.encodeURL(_refreshUrl);
-		//_refreshUrl=StringEscapeUtils.escapeHtml(_refreshUrl);
+		_refreshUrl=StringEscapeUtils.escapeHtml(_refreshUrl);
 
 		// create link for next page
 		HashMap nextParamsMap = new HashMap();
@@ -971,7 +971,7 @@ public class ListTag extends TagSupport
 		nextParamsMap.put("LIST_PAGE", String.valueOf(nextPage));
 		_nextUrl = createUrl(nextParamsMap);
 		//_nextUrl = response.encodeURL(_nextUrl);
-		//_nextUrl=StringEscapeUtils.escapeHtml(_nextUrl);
+		_nextUrl=StringEscapeUtils.escapeHtml(_nextUrl);
 
 		// create link for first page
 		HashMap firstParamsMap = new HashMap();
@@ -980,7 +980,7 @@ public class ListTag extends TagSupport
 		firstParamsMap.put("LIST_PAGE","1");
 		_firstUrl = createUrl(firstParamsMap);
 		//_firstUrl = response.encodeURL(_firstUrl);
-		//_firstUrl=StringEscapeUtils.escapeHtml(_firstUrl);
+		_firstUrl=StringEscapeUtils.escapeHtml(_firstUrl);
 
 		// create link for last page
 		HashMap lastParamsMap = new HashMap();
@@ -989,7 +989,7 @@ public class ListTag extends TagSupport
 		lastParamsMap.put("LIST_PAGE", String.valueOf(pagesNumber));
 		_lastUrl = createUrl(lastParamsMap);
 		//_lastUrl = response.encodeURL(_lastUrl);
-		//_lastUrl=StringEscapeUtils.escapeHtml(_lastUrl);
+		_lastUrl=StringEscapeUtils.escapeHtml(_lastUrl);
 
 		String formId = "formFilter" + requestIdentity;
 
@@ -1004,7 +1004,7 @@ public class ListTag extends TagSupport
 			prevParamsMap.put(SpagoBIConstants.TYPE_FILTER, typeFilter);
 			_prevUrl = createUrl(prevParamsMap);
 			//_prevUrl = response.encodeURL(_prevUrl);
-			//_prevUrl=StringEscapeUtils.escapeHtml(_prevUrl);
+			_prevUrl=StringEscapeUtils.escapeHtml(_prevUrl);
 
 			nextParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
 			nextParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
@@ -1012,7 +1012,7 @@ public class ListTag extends TagSupport
 			nextParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
 			_nextUrl = createUrl(nextParamsMap);
 			//_nextUrl = response.encodeURL(_nextUrl);
-			//_nextUrl=StringEscapeUtils.escapeHtml(_nextUrl);
+			_nextUrl=StringEscapeUtils.escapeHtml(_nextUrl);
 
 			firstParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
 			firstParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
@@ -1020,7 +1020,7 @@ public class ListTag extends TagSupport
 			firstParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
 			_firstUrl = createUrl(firstParamsMap);
 			//_firstUrl = response.encodeURL(_firstUrl);
-			//_firstUrl=StringEscapeUtils.escapeHtml(_firstUrl);
+			_firstUrl=StringEscapeUtils.escapeHtml(_firstUrl);
 
 			lastParamsMap.put(SpagoBIConstants.VALUE_FILTER, valueFilter);
 			lastParamsMap.put(SpagoBIConstants.TYPE_VALUE_FILTER, typeValueFilter);
@@ -1028,7 +1028,7 @@ public class ListTag extends TagSupport
 			lastParamsMap.put(SpagoBIConstants.TYPE_FILTER , typeFilter);
 			_lastUrl = createUrl(lastParamsMap);
 			//_lastUrl = response.encodeURL(_lastUrl);
-			//_lastUrl=StringEscapeUtils.escapeHtml(_lastUrl);
+			_lastUrl=StringEscapeUtils.escapeHtml(_lastUrl);
 		} else {
 			valueFilter = "";
 			typeValueFilter = "";
@@ -1067,6 +1067,7 @@ public class ListTag extends TagSupport
 
 			String allUrl = createUrl(_providerUrlMap);
 			String filterURL = createUrl(_providerUrlMap);
+			filterURL=StringEscapeUtils.escapeHtml(filterURL);
 
 			String label =  msgBuilder.getMessage("SBIListLookPage.labelFilter", "messages", httpRequest);
 			String labelTypeValueFilter =  msgBuilder.getMessage("SBIListLookPage.labelTypeValueFilter", "messages", httpRequest);

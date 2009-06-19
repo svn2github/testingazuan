@@ -95,7 +95,7 @@ public class WebUrlBuilder implements IUrlBuilder{
 			}
 		}
 		String url = sb.toString();
-		url=StringEscapeUtils.escapeHtml(url);
+		
 		logger.debug("OUT.url="+url);
 		return url;
 	}

@@ -53,9 +53,9 @@ public class MyPieUrlGenerator extends StandardPieURLGenerator{
 		String parameters=ObjectsTreeConstants.PARAMETERS;
 		URL=URL.replaceAll(parameters+"=", parameters+"="+toMove);
 
-		if(document_composition){
+		//if(document_composition){
 			URL=URL+"');";
-		}
+		//}
 
 		logger.debug("OUT");
 		return URL;

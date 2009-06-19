@@ -43,10 +43,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spago.error.EMFErrorHandler"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.BIObject"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.handlers.*"%>
+<%@page import="org.safehaus.uuid.UUID"%>
+<%@page import="org.safehaus.uuid.UUIDGenerator"%>
 
 <%  
-	ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
-	String execContext = instanceO.getExecutionModality();
+	//ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+	//String execContext = instanceO.getExecutionModality();
 	EMFErrorHandler errorHandler=aResponseContainer.getErrorHandler();
 	if(errorHandler.isOK()){    
 	SessionContainer permSession = aSessionContainer.getPermanentContainer();
@@ -55,14 +57,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		userProfile = (IEngUserProfile) permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		userId=(String)((UserProfile)userProfile).getUserId();
 	}
-	BIObject objO = instanceO.getBIObject();
-	String uuidO=instanceO.getExecutionId();
-	String executionFlowIdO=instanceO.getFlowId();
-	String executionId = uuidO;
+	//BIObject objO = instanceO.getBIObject();
+	//String uuidO=instanceO.getExecutionId();
+	//String executionFlowIdO=instanceO.getFlowId();
+	//String executionId = uuidO;
 
 	ChartImpl sbi = (ChartImpl)aServiceResponse.getAttribute("sbi");
-	String documentid=(objO.getId()).toString();
-
+	//String documentid=(objO.getId()).toString();
+	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+	UUID uuidObj = uuidGen.generateTimeBasedUUID();
+	String executionId = uuidObj.toString();
+	
 	JFreeChart chart = sbi.createChart();
     ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
     String path_param=executionId;

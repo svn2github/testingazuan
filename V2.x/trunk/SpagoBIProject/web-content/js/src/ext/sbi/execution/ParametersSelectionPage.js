@@ -128,6 +128,8 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	
 	this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
 	this.shortcutsPanel.on('viewpointexecutionrequest', this.onExecuteViewpoint, this);
+	this.shortcutsPanel.on('subobjectexecutionrequest', this.onExecuteSubobject, this);
+	this.shortcutsPanel.on('snapshotexcutionrequest', this.onExecuteSnapshot, this);
 	
 	// constructor
     Sbi.execution.ParametersSelectionPage.superclass.constructor.call(this, c);
@@ -310,6 +312,16 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	
 	, onExecuteViewpoint: function(v) {
 		this.parametersPanel.applyViewPoint(v);
+		this.fireEvent('movenextrequest');
+	}
+	
+	, onExecuteSubobject: function (subObjectId) {
+		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
+		this.fireEvent('movenextrequest');
+	}
+	
+	, onExecuteSnapshot: function (snapshotId) {
+		this.executionInstance.SBI_SNAPSHOT_ID = snapshotId;
 		this.fireEvent('movenextrequest');
 	}
 	

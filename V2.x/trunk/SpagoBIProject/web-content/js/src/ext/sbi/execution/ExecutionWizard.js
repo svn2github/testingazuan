@@ -236,12 +236,12 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 			Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.execution.error.nodocid'), 'Intenal Error');
 		}
 		
-		//alert(doc.toSource());
 		this.document = doc;
 		
 		this.executionInstance = {}
 		if(doc.id) this.executionInstance.OBJECT_ID = doc.id;
 		if(doc.label) this.executionInstance.OBJECT_LABEL = doc.label;
+		this.executionInstance.document = doc;
 		
 		this.loadRolesForExecution();
 	}

@@ -215,7 +215,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		}));
 		
 		if (Sbi.user.functionalities.contains('SendMailFunctionality') && !executionInstance.SBI_SNAPSHOT_ID
-				/*&& this.document.type == 'REPORT'*/) {
+				&& executionInstance.document.typeCode == 'REPORT') {
 			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-sendMail' 
 				, tooltip: LN('sbi.execution.executionpage.toolbar.send')

@@ -471,7 +471,7 @@ public class ExecuteBIDocumentJob implements Job {
 			if( (snapName==null) || snapName.trim().equals("")) {
 				throw new Exception("Document name not specified");
 			}
-			snapName += toBeAppendedToName;
+			//snapName += toBeAppendedToName;
 			if (snapName.length() > 100) {
 				logger.warn("Snapshot name [" + snapName + "] exceeds maximum length that is 100, it will be truncated");
 				snapName = snapName.substring(0, 100);

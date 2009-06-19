@@ -54,6 +54,7 @@ import it.eng.spagobi.behaviouralmodel.analyticaldriver.dao.IParameterDAO;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.metadata.SbiParameters;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.metadata.SbiBinContents;
@@ -1639,7 +1640,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @return
 	 * @throws EMFUserError
 	 */
-	public List loadBIObjects(Integer folderID, IEngUserProfile profile)	throws EMFUserError {
+	public List loadBIObjects(Integer folderID, IEngUserProfile profile) throws EMFUserError {
 	logger.debug("IN");
 	Session aSession = null;
 	Transaction tx = null;
@@ -1665,9 +1666,13 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				"where sof.id.sbiFunctions.functId = f.functId and o.biobjId = sof.id.sbiObjects.biobjId  " +
 				" and fr.id.role.extRoleId IN (select extRoleId from SbiExtRoles e  where  e.name in (:ROLES)) " +
 				" and fr.id.function.functId = f.functId and fr.id.state.valueId = o.state " + 
-				" and f.functId = :FOLDER_ID  " + 
-				" and o.visible = 1" + //visible=true
-				" order by o.name"); 
+				" and f.functId = :FOLDER_ID  " );
+			
+			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) ||
+				profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
+				buffer.append(" and o.visible = 1" ); //only visible objetcs (1 means true)
+			}
+			buffer.append(" order by o.name"); 
 		} else {
 			buffer.append("select objects from SbiObjects as objects ");
 		}

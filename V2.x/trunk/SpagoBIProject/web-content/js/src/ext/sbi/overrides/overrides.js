@@ -28,3 +28,5 @@
 			this.items.each(fn);
 		}
 	});
+	
+	Ext.override(Ext.Component, {hideMode: 'offsets'});

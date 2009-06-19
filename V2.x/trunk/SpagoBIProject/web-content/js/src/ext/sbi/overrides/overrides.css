@@ -13,5 +13,10 @@ http://extjs.com/forum/showthread.php?p=282928#post282928
     padding-top:2px;
     padding-bottom:2px;
     width:130px; /* FF3 */
-} 
+}
+
+.x-date-menu{
+	padding:0!important;
+	width:200px; /* IE */
+}
 

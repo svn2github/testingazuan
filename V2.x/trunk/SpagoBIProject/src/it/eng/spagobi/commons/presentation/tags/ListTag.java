@@ -136,6 +136,12 @@ public class ListTag extends TagSupport
 		logger.info(" method invoked");
 		_providerUrlMap = new HashMap();
 		_paramsMap = new HashMap();
+		
+		// Angelo (19/06/2009) BUG FiX: navigator of Events doesn't work
+		if(ChannelUtilities.isWebRunning()) {
+			_providerUrlMap.put(SpagoBIConstants.WEBMODE, "TRUE");
+		}
+		
 		httpRequest = (HttpServletRequest) pageContext.getRequest();
 		_requestContainer = ChannelUtilities.getRequestContainer(httpRequest);
 		_responseContainer = ChannelUtilities.getResponseContainer(httpRequest);

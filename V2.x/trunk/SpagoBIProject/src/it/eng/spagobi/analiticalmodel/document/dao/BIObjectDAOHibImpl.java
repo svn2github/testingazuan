@@ -97,6 +97,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	public static final String COLUMN_ENGINE = "ENGINE";
 	public static final String COLUMN_STATE = "STATE";
 	public static final String COLUMN_DATE = "CREATION_DATE";
+	public static final String SCOPE_NODE = "node";
 	
 	public static final String START_WITH = "START_WITH";
 	public static final String END_WITH = "END_WITH";
@@ -1657,15 +1658,16 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			logger.error("Error while recovering user profile", e);
 		}
  
+		
 		StringBuffer buffer = new StringBuffer();
 		if (folderID != null && roles != null && roles.size() > 0 ) {
-			buffer.append("select distinct(o) from SbiObjects as o, SbiObjFunc as sof, SbiFunctions as f,  SbiFuncRole as fr " +
+			buffer.append("select o from SbiObjects o, SbiObjFunc sof, SbiFunctions f,  SbiFuncRole fr " +
 				"where sof.id.sbiFunctions.functId = f.functId and o.biobjId = sof.id.sbiObjects.biobjId  " +
 				" and fr.id.role.extRoleId IN (select extRoleId from SbiExtRoles e  where  e.name in (:ROLES)) " +
 				" and fr.id.function.functId = f.functId and fr.id.state.valueId = o.state " + 
 				" and f.functId = :FOLDER_ID  " + 
 				" and o.visible = 1" + //visible=true
-				" order by o.name");
+				" order by o.name"); 
 		} else {
 			buffer.append("select objects from SbiObjects as objects ");
 		}
@@ -1691,6 +1693,11 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		if (tx != null)
 			tx.rollback();
 		throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
+	} catch (Exception e) {
+		logger.error(e);
+		if (tx != null)
+			tx.rollback();
+		throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 	} finally {
 		if (aSession!=null){
 			if (aSession.isOpen()) aSession.close();
@@ -1710,7 +1717,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @return
 	 * @throws EMFUserError
 	 */
-	public List searchBIObjects(String valueFilter, String typeFilter, String columnFilter, Integer nodeFilter, IEngUserProfile profile) throws EMFUserError {
+	public List searchBIObjects(String valueFilter, String typeFilter, String columnFilter, String scope,  Integer nodeFilter, IEngUserProfile profile) throws EMFUserError {
 	logger.debug("IN");
 	Session aSession = null;
 	Transaction tx = null;
@@ -1739,7 +1746,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 		
 		//definition of the the search query 
 		if (roles != null && roles.size() > 0 ) {
-			bufferSelect.append(" select distinct(o) ");
+			bufferSelect.append(" select o ");
 			/*bufferSelect.append(" select distinct o.biobjId, o.sbiEngines, o.descr, o.label, o.path, o.relName, o.state, "+
 								" o.stateCode, o.objectTypeCode, o.objectType, o.schedFl, "+
 								" o.execMode, o.stateConsideration, o.execModeCode, o.stateConsiderationCode, o.name, o.visible, o.uuid, " +
@@ -1819,7 +1826,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			
 		}
 		
-		if (nodeFilter != null && !nodeFilter.equals("")){
+		if (scope != null && scope.equals(SCOPE_NODE) &&
+			nodeFilter != null && !nodeFilter.equals("")){
 			bufferWhere.append(" and (f.functId = :FOLDER_ID or f.parentFunct = :FOLDER_ID) ");
 		}
 		
@@ -1847,7 +1855,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			}
 		}
 		
-		if (nodeFilter != null && !nodeFilter.equals("") ) {
+		if (scope != null && scope.equals("node") && nodeFilter != null && !nodeFilter.equals("") ) {
 			query.setParameter("FOLDER_ID", nodeFilter);	
 			logger.debug("Parameter value FOLDER_ID: " + nodeFilter);
 		}

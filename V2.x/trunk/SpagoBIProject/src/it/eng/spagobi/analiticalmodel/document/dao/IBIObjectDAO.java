@@ -349,6 +349,6 @@ public interface IBIObjectDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public List searchBIObjects(String valueFilter, String typeFilter, String columnFilter, Integer nodeFilter, IEngUserProfile profile) 
+	public List searchBIObjects(String valueFilter, String typeFilter, String columnFilter,  String isGlobal, Integer nodeFilter, IEngUserProfile profile) 
 		throws EMFUserError;
 }

@@ -76,13 +76,14 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 			String typeFilter = getAttributeAsString(SpagoBIConstants.TYPE_FILTER);
 			String valueFilter = getAttributeAsString(SpagoBIConstants.VALUE_FILTER);
 			String columnFilter = getAttributeAsString(SpagoBIConstants.COLUMN_FILTER );
-			
+			String scope = getAttributeAsString(SpagoBIConstants.SCOPE );
 			
 			logger.debug("Parameter [" + FOLDER_ID + "] is equal to [" + folderID + "]");
 			logger.debug("Parameter [" + ROOT_FOLDER_ID + "] is equal to [" + rootFolderID + "]");
 			logger.debug("Parameter [" + SpagoBIConstants.TYPE_FILTER + "] is equal to [" + typeFilter + "]");
 			logger.debug("Parameter [" + SpagoBIConstants.VALUE_FILTER + "] is equal to [" + valueFilter + "]");
 			logger.debug("Parameter [" + SpagoBIConstants.COLUMN_FILTER + "] is equal to [" + columnFilter + "]");
+			logger.debug("Parameter [" + SpagoBIConstants.SCOPE + "] is equal to [" + scope + "]"); //'node' or 'tree'
 			
 			folderID = folderID!=null? folderID: rootFolderID;
 			
@@ -90,14 +91,14 @@ public class SearchContentAction extends AbstractBaseHttpAction{
 			LowFunctionality rootFunct = DAOFactory.getLowFunctionalityDAO().loadRootLowFunctionality(false);
 			if (folderID == null || folderID.equalsIgnoreCase(ROOT_NODE_ID))
 				folderID = String.valueOf(rootFunct.getId());
-			
+						
 			SessionContainer sessCont = getSessionContainer();
 			SessionContainer permCont = sessCont.getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
 			
 			//getting  documents
-			List tmpObjects = DAOFactory.getBIObjectDAO().searchBIObjects(valueFilter, typeFilter, columnFilter, Integer.valueOf(folderID), profile);
+			List tmpObjects = DAOFactory.getBIObjectDAO().searchBIObjects(valueFilter, typeFilter, columnFilter, scope, Integer.valueOf(folderID), profile);
 			objects = new ArrayList();
 			if(tmpObjects != null) {
                 for(Iterator it = tmpObjects.iterator(); it.hasNext();) {

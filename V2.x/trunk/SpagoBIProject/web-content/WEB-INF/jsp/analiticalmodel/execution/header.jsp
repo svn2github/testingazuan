@@ -370,11 +370,7 @@ if (toolbarIsVisible) {
 								urlExporter+="&ACTION_NAME=EXPORT_PDF&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE&"+SpagoBIConstants.OBJECT_ID+"="+obj.getId();
 							}
 							else if (obj.getBiObjectTypeCode().equals("REPORT")){ 
-							    String exportMode="GET";
-							    if(sbiMode.equals("WEB")){exportMode="POST";}
-								
 								HashMap clonePars=new HashMap();
-								
 								for (Iterator iterator2 = executionParameters.keySet().iterator(); iterator2.hasNext();) {
 									String  key = (String) iterator2.next();
 									Object value=executionParameters.get(key);
@@ -382,7 +378,7 @@ if (toolbarIsVisible) {
 								}
 								
 								//overrides if already present
-								clonePars.put("outputType","PDF");
+								clonePars.put("outputType",value_cd);
 								urlExporter= getUrl(obj.getEngine().getUrl(), clonePars);
 							}
 							

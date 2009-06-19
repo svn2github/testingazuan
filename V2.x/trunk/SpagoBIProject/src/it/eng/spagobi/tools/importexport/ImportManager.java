@@ -2135,9 +2135,9 @@ public class ImportManager implements IImportManager, Serializable {
 						+ "the same label of one exported Threshold");
 			}
 		}
-		
-		
-		
+
+
+
 		List exportedThresholdValues = importer.getAllExportedSbiObjects(sessionExpDB, "SbiThresholdValue", null);
 		Iterator iterSbiThValue = exportedThresholdValues.iterator();
 		while (iterSbiThValue.hasNext()) {
@@ -2153,7 +2153,7 @@ public class ImportManager implements IImportManager, Serializable {
 			else{
 				newThresholdId=oldThresholdId.toString();
 			}
-			
+
 			Object existObj = importer.checkExistenceThresholdValue(label, newThresholdId ,sessionCurrDB, new SbiThresholdValue());
 			if (existObj != null) {
 				SbiThresholdValue dsCurr = (SbiThresholdValue) existObj;
@@ -2163,10 +2163,10 @@ public class ImportManager implements IImportManager, Serializable {
 			}
 		}
 
-		
-		
-		
-		
+
+
+
+
 
 		List exportedKpi = importer.getAllExportedSbiObjects(sessionExpDB, "SbiKpi", null);
 		Iterator iterSbiKpi = exportedKpi.iterator();
@@ -2209,8 +2209,8 @@ public class ImportManager implements IImportManager, Serializable {
 						+ "the same label of one exported model instance");
 			}
 		}
-		
-		
+
+
 
 		// Kpi Instance  
 		// for each model instance get the kpi instance id; then take the kpiInstance of the corresponding model instance; map them
@@ -2331,8 +2331,8 @@ public class ImportManager implements IImportManager, Serializable {
 						+ "the same label of one exported domain");
 			}
 		}
-		
-		
+
+
 		// Alarm
 
 		List exportedAlarms = importer.getAllExportedSbiObjects(sessionExpDB, "SbiAlarm", null);
@@ -2348,7 +2348,7 @@ public class ImportManager implements IImportManager, Serializable {
 						+ "the same label of one exported alarm");
 			}
 		}
-		
+
 		// Alarm Contact
 
 		List exportedAlarmContacts = importer.getAllExportedSbiObjects(sessionExpDB, "SbiAlarmContact", null);
@@ -2751,9 +2751,11 @@ public class ImportManager implements IImportManager, Serializable {
 			}
 		} catch (Exception e) {
 			if (exportedModel != null) {
-				logger.error("Error while importing exported kpi with coe [" + exportedModel.getKpiModelCd() + "].", e);
+				logger.error("Error while importing exported model with code [" + exportedModel.getKpiModelCd() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting model ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -2802,7 +2804,9 @@ public class ImportManager implements IImportManager, Serializable {
 			if (exportedModelInst != null) {
 				logger.error("Error while importing exported kpi with code [" + exportedModelInst.getLabel() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting model instance ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -2855,7 +2859,9 @@ public class ImportManager implements IImportManager, Serializable {
 			if (exportedKpi != null) {
 				logger.error("Error while importing exported kpi with coe [" + exportedKpi.getCode() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting kpi ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -2907,7 +2913,9 @@ public class ImportManager implements IImportManager, Serializable {
 			if (exportedKpiInst != null) {
 				logger.error("Error while importing exported kpi instance with id [" + exportedKpiInst.getIdKpiInstance() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting kpi instance ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -2961,7 +2969,9 @@ public class ImportManager implements IImportManager, Serializable {
 			if (exportedThValue != null) {
 				logger.error("Error while importing exported threshold value with coe [" + exportedThValue.getLabel() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting threshold value ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -3009,9 +3019,11 @@ public class ImportManager implements IImportManager, Serializable {
 			}
 		} catch (Exception e) {
 			if (exportedTh != null) {
-				logger.error("Error while importing exported threshold value with coe [" + exportedTh.getCode() + "].", e);
+				logger.error("Error while importing exported threshold with coe [" + exportedTh.getCode() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting threshold ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -3064,7 +3076,9 @@ public class ImportManager implements IImportManager, Serializable {
 			if (exportedResource != null) {
 				logger.error("Error while importing exported resource with name [" + exportedResource.getResourceName() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting resource ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -3117,7 +3131,9 @@ public class ImportManager implements IImportManager, Serializable {
 			if (exportedModResource != null) {
 				logger.error("Error while importing exported model resource with id [" + exportedModResource.getKpiModelResourcesId() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting model resources ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -3176,7 +3192,9 @@ public class ImportManager implements IImportManager, Serializable {
 			if (exportedPeriodicity != null) {
 				logger.error("Error while importing exported resource with name [" + exportedPeriodicity.getName() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting periodicity ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -3229,7 +3247,9 @@ public class ImportManager implements IImportManager, Serializable {
 			if (exportedKpiInstPeriod != null) {
 				logger.error("Error while importing exported kpi Inst Period  with id [" + exportedKpiInstPeriod.getKpiInstPeriodId() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting instance period ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -3281,7 +3301,9 @@ public class ImportManager implements IImportManager, Serializable {
 			if (exportedAlarm != null) {
 				logger.error("Error while importing exported Alarm with label [" + exportedAlarm.getLabel() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting Alarm ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
@@ -3331,13 +3353,15 @@ public class ImportManager implements IImportManager, Serializable {
 			if (exportedAlarmContact != null) {
 				logger.error("Error while importing exported Alarm Contact with label [" + exportedAlarmContact.getName() + "].", e);
 			}
-			logger.error("Error while inserting object ", e);
+			else{
+				logger.error("Error while inserting alarm contact ", e);
+			}
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "8004", "component_impexp_messages");
 		} finally {
 			logger.debug("OUT");
 		}
 	}
-	
+
 
 
 	/*

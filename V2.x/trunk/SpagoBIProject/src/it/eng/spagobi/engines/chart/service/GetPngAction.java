@@ -39,6 +39,9 @@ import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -86,6 +89,18 @@ public class GetPngAction extends AbstractHttpAction {
 		HttpServletResponse response = getHttpResponse();
 		ServletOutputStream out = response.getOutputStream();
 		response.setContentType("image/gif");
+		
+		// Set Cache for print images
+		java.text.SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");	    
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MINUTE, 10);	//Adding 10 minute to current date time
+		Date date=cal.getTime(); 
+		String dateString=dateFormat.format( date )+" GMT";
+		logger.debug(dateString);	
+		response.setDateHeader("Expires", date.getTime());
+		//response.setHeader("Expires", "Sat, 6 May 2010 12:00:00 GMT");	
+		response.setHeader("Cache-Control: max-age", "600");
+		
 
 		String filePath = (String)serviceRequest.getAttribute("path");
 

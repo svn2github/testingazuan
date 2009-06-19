@@ -69,6 +69,10 @@
  	<CONFIG/>
  </ACTION>
  
+  <ACTION name="DELETE_OBJECT" class="it.eng.spagobi.analiticalmodel.documentsbrowser.service.DeleteObjectAction" scope="REQUEST">
+ 	<CONFIG/>
+ </ACTION>
+ 
  <!-- =================================================================================
  		Execution Panel
       ================================================================================= -->

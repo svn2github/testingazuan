@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 /*
  * Created on 20-giu-2005
  *
@@ -34,7 +34,9 @@ import it.eng.spagobi.analiticalmodel.document.metadata.SbiObjects;
 import it.eng.spagobi.commons.dao.AbstractHibernateDAO;
 import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.engines.config.bo.Exporters;
 import it.eng.spagobi.engines.config.metadata.SbiEngines;
+import it.eng.spagobi.engines.config.metadata.SbiExporters;
 import it.eng.spagobi.tools.datasource.metadata.SbiDataSource;
 
 import java.util.ArrayList;
@@ -79,7 +81,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			SbiEngines hibEngine = (SbiEngines)aSession.load(SbiEngines.class,  engineID);
 			toReturn = toEngine(hibEngine);
 			tx.commit();
-			
+
 		} catch (HibernateException he) {
 			logException(he);
 
@@ -93,12 +95,12 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 				if (aSession.isOpen()) aSession.close();
 			}
 		}
-		
+
 		return toReturn;
 	}
 
-	
-	
+
+
 	/**
 	 * Load engine by label.
 	 * 
@@ -110,8 +112,8 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 	 * 
 	 * @see it.eng.spagobi.engines.config.dao.IEngineDAO#loadEngineByID(java.lang.Integer)
 	 */
-	
-	
+
+
 	public Engine loadEngineByLabel(String engineLabel) throws EMFUserError {
 		Engine engine = null;
 		Session aSession = null;
@@ -162,7 +164,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 			tx = aSession.beginTransaction();
 
 			Query hibQuery = aSession.createQuery(" from SbiEngines");
-			
+
 			List hibList = hibQuery.list();
 			Iterator it = hibList.iterator();
 
@@ -230,7 +232,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		}
 		return realResult;
 	}
-	
+
 	/**
 	 * Modify engine.
 	 * 
@@ -383,7 +385,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		}
 
 	}
-	
+
 	/**
 	 * From the hibernate Engine at input, gives
 	 * the corrispondent <code>Engine</code> object.
@@ -413,7 +415,36 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		eng.setDataSourceId(hibEngine.getDataSource() == null ? null : new Integer(hibEngine.getDataSource().getDsId()));
 		return eng;
 	}
-	
+
+
+
+
+
+	/**
+	 * From the hibernate Exporter at input, gives
+	 * the corrispondent <code>Engine</code> object.
+	 * 
+	 * @param hibEngine The hybernate engine
+	 * 
+	 * @return The corrispondent <code>Engine</code> object
+	 */
+	public Exporters toExporter(SbiExporters hibExps){
+		Exporters exp = new Exporters();
+
+		SbiEngines hibEngine=hibExps.getSbiEngines();
+		exp.setEngineId(hibEngine.getEngineId());
+
+		SbiDomains hibDomains=hibExps.getSbiDomains();
+		exp.setDomainId(hibDomains.getValueId());
+
+		exp.setDefaultValue(hibExps.isDefaultValue());
+
+		return exp;
+	}
+
+
+
+
 	/**
 	 * Checks for bi obj associated.
 	 * 
@@ -430,15 +461,15 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		 * TODO Hibernate Implementation
 		 */
 		boolean bool = false; 
-		
-		
+
+
 		Session aSession = null;
 		Transaction tx = null;
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			Integer engineIdInt = Integer.valueOf(engineId);
-			
+
 			//String hql = " from SbiObjects s where s.sbiEngines.engineId = "+ engineIdInt;
 			String hql = " from SbiObjects s where s.sbiEngines.engineId = ?";
 			Query aQuery = aSession.createQuery(hql);
@@ -467,21 +498,29 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 
 	public List getAssociatedExporters(Engine engine) throws EMFUserError {
 		Session aSession = null;
+		List<Exporters> toReturn=new ArrayList<Exporters>();
 		Transaction tx = null;
 		Integer engineId=engine.getId();
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-			
+
 			//String hql = " from SbiObjects s where s.sbiEngines.engineId = "+ engineIdInt;
 			String hql = " from SbiExporters s where s.sbiEngines.engineId = ?";
 			Query aQuery = aSession.createQuery(hql);
 			aQuery.setInteger(0, engineId.intValue());
 			List exportersOfEngine = aQuery.list();
+			if(exportersOfEngine!=null){
+				for (Iterator iterator = exportersOfEngine.iterator(); iterator.hasNext();) {
+					SbiExporters object = (SbiExporters) iterator.next();
+					Exporters exp=toExporter(object);
+					toReturn.add(exp);
+				}
+			}
 			tx.commit();
-			
-			return exportersOfEngine;
-			
+
+			return toReturn;
+
 		} catch (HibernateException he) {
 			logException(he);
 
@@ -497,7 +536,7 @@ public class EngineDAOHibImpl extends AbstractHibernateDAO implements IEngineDAO
 		}
 
 	}
-	
-	
-	
+
+
+
 }

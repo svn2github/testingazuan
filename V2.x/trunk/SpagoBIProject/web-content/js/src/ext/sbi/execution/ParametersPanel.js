@@ -84,7 +84,8 @@ Sbi.execution.ParametersPanel = function(config) {
             bodyStyle:'padding:5px 5px 5px 5px'
 		}
 	}
-  
+	
+
 	c = Ext.apply({}, c, {
 		labelAlign: c.labelAlign,
         border: false,
@@ -201,6 +202,8 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
 		
+		
+	
 		for(p in this.fields) {
 			var el = this.fields[p].el.up('.x-form-item');
 			this.columns[this.fields[p].columnNo].remove( this.fields[p], true );
@@ -223,6 +226,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 				this.columns[field.columnNo].add( field );
 			}
 		}
+		
 		this.doLayout();
 		
 		for(var j = 0; j < parameters.length; j++) {
@@ -384,12 +388,12 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			
 			
 		} else { 
-			if(p.type === 'DATE') {				
+			if(p.type === 'DATE') {		
+				baseConfig.format = Sbi.config.localizedDateFormat;
 				field = new Ext.form.DateField(baseConfig);
-				field.menuListeners.beforeshow = function(m) {
-					//m.picker.getEl().setWidth(130);
-					//alert('Time is now');
-				};
+				
+				
+				
 			} else if(p.type === 'NUMBER') {
 				field = new Ext.form.NumberField(baseConfig);
 			} else {

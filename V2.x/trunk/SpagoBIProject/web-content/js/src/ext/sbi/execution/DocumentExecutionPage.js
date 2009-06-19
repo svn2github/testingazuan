@@ -73,6 +73,10 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 		, baseParams: params
 	});
 	
+	this.services['toPdf'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'EXPORT_PDF'
+		, baseParams: params
+	});
 	// add events
     this.addEvents('beforetoolbarinit', 'beforesynchronize', 'moveprevrequest', 'loadurlfailure', 'crossnavigation', 'beforerefresh');
           
@@ -259,6 +263,15 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		    	, handler : this.metaExecution
 			}));
 		}
+		
+		if ( executionInstance.document.typeCode == 'KPI') {
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-pdf' 
+				, tooltip: LN('sbi.execution.kpiPdfExport')
+		     	, scope: this
+		    	, handler : this.pdfExecution
+			}));
+		}
 	}
 
 	, refreshExecution: function() {
@@ -359,6 +372,12 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	, metaExecution: function () {
 		this.win_metadata = new Sbi.execution.toolbar.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
 		this.win_metadata.show();
+	}
+	
+	, pdfExecution: function () {
+		var urlExporter = this.services['toPdf'] + '&OBJECT_ID=' + this.executionInstance.OBJECT_ID;
+		//alert(urlExporter);
+		window.open(urlExporter,'name','height=750,width=1000');
 	}
 	
 	// ----------------------------------------------------------------------------------------

@@ -71,6 +71,10 @@
 	background-image: url('../../../img/printer16.png') !important;
 }
 
+.icon-pdf {
+	background-image: url('../../../img/kpi/pdf.png') !important;
+}
+
 .x-form-dependent-field {
     padding:1px 3px;
     background:#DFE8F6;

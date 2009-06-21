@@ -143,7 +143,7 @@ Sbi.browser.FolderDetailPanel = function(config) {
     
     Sbi.browser.FolderDetailPanel.superclass.constructor.call(this, c);   
     
-    this.addEvents("onfolderload", "ondocumentclick", "onfolderclick", "onbreadcrumbclick");
+    this.addEvents("onfolderload", "ondocumentclick", "ondocumentactionrequest", "onfolderclick", "onfolderactionrequest", "onbreadcrumbclick");
     
     //this.store.load();   
     this.loadFolder(config.folderId, config.folderId);
@@ -325,13 +325,32 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     // private methods 
     
     , onClick: function(dataview, i, node, e) {
-      //this.folderView.getRecord(i).text;
-      var r = this.folderView.getRecord(i);
-      if(r.engine) {
-    	  this.fireEvent('ondocumentclick', this, r, e);
-      } else{
-    	  this.fireEvent('onfolderclick', this, r, e);
-      }      
+    	
+    	var button = e.getTarget('div[class=button]', 10, true);
+    	var action = null;
+    	if(button) {
+    		var buttonImg = button.down('img');
+    		var startIndex = (' '+buttonImg.dom.className+' ').indexOf(' action-');
+    		if(startIndex != -1) {
+    			action = buttonImg.dom.className.substring(startIndex).trim().split(' ')[0];
+    			action = action.split('-')[1];
+    		}    		
+    	}
+    	
+    	var r = this.folderView.getRecord(i);
+    	if(r.engine) {
+    		if(action !== null) {
+    			this.fireEvent('ondocumentactionrequest', this, r, action, e);
+    		} else {
+    			this.fireEvent('ondocumentclick', this, r, e);
+    		}
+    	} else{
+    		if(action !== null) {
+    			this.fireEvent('onfolderactionrequest', this, r, action, e);
+    		} else {
+    			this.fireEvent('onfolderclick', this, r, e);
+    		}
+    	}      
     }
     
     , sort : function(groupName, attributeName) {

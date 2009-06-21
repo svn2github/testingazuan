@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -55,6 +56,7 @@ public class DocumentsJSONSerializer implements Serializer {
 	public static final String OBJECTVE = "objectve";
 	public static final String KEYWORDS = "keywords";
 	public static final String REFRESHSECONDS = "refreshSeconds";
+	public static final String ACTIONS = "actions";
 	
 	
 	public Object serialize(Object o) throws SerializationException {
@@ -93,6 +95,7 @@ public class DocumentsJSONSerializer implements Serializer {
 			result.put(OBJECTVE, obj.getObjectve());
 			result.put(KEYWORDS, obj.getKeywords());
 			result.put(REFRESHSECONDS, obj.getRefreshSeconds());
+			result.put(ACTIONS, new JSONArray());
 			
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);

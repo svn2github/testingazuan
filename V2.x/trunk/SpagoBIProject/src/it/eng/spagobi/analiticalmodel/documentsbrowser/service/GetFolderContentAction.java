@@ -20,6 +20,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.security.IEngUserProfile;
@@ -31,16 +41,6 @@ import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 import it.eng.spagobi.utilities.service.JSONSuccess;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 /**
@@ -62,6 +62,7 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 		List functionalities;
 		List objects;
 		boolean isRoot = false;
+		boolean isHome = false;
 		
 		logger.debug("IN");
 		
@@ -77,14 +78,18 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			if (functID == null || functID.equalsIgnoreCase(ROOT_NODE_ID)){
 				isRoot = true;
 				functID = String.valueOf(rootFunct.getId());
-			}else if (functID.equalsIgnoreCase(rootFunct.getId().toString()))
+			}else if (functID.equalsIgnoreCase(rootFunct.getId().toString())) {
 				isRoot = true;
+			}
+			
 			
 			SessionContainer sessCont = getSessionContainer();
 			SessionContainer permCont = sessCont.getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
-			
+			LowFunctionality targetFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(new Integer(functID), false);
+			isHome = "USER_FUNCT".equalsIgnoreCase( targetFunct.getCodType() );
+		
 			//getting children documents
 			//LowFunctionality lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(functID, true);
 			//objects = lowFunct.getBiObjects();
@@ -99,6 +104,15 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			}
 		
 			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects );
+			if(isHome) {
+				JSONObject deleteAction = new JSONObject();
+				deleteAction.put("name", "delete");
+				deleteAction.put("description", "Delete this item");
+				for(int i = 0; i < documentsJSON.length(); i++) {
+					JSONObject documentJSON = documentsJSON.getJSONObject(i);
+					documentJSON.getJSONArray("actions").put(deleteAction);
+				}
+			}
 			JSONObject documentsResponseJSON =  createJSONResponseDocuments(documentsJSON);
 			
 			//getting children folders

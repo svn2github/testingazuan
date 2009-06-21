@@ -21,9 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
-import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
-
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 
 /**
  * @author Antonella Giachino (antonella.giachino@eng.it)
@@ -43,6 +44,7 @@ public class FoldersJSONSerializer implements Serializer {
 	public static final String TESTROLES = "testRoles";
 	public static final String EXECROLES = "execRoles";
 	public static final String BIOBJECTS = "biObjects";
+	public static final String ACTIONS = "actions";
 	
 	
 	public Object serialize(Object o) throws SerializationException {
@@ -68,6 +70,7 @@ public class FoldersJSONSerializer implements Serializer {
 			result.put(TESTROLES, lowFunct.getTestRoles() );		
 			result.put(EXECROLES, lowFunct.getExecRoles() );
 			result.put(BIOBJECTS, lowFunct.getBiObjects() );		
+			result.put(ACTIONS, new JSONArray());
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);
 		} finally {

@@ -165,9 +165,23 @@
     /* -------------------------------------------------------------*/
     /* ============================================================= */
     
+    .list-view .group-header {
+        border-bottom: 2px solid #99bbe8;
+        cursor:pointer;
+        margin: 0 0 20 0;    
+        background:transparent url('../../../img/analiticalmodel/browser/group-expand-sprite.gif') no-repeat 3px -47px;
+        padding:4px 4px 4px 17px;
+        color:#3764a0;
+        font:bold 11px tahoma, arial, helvetica, sans-serif;
+    }
+    .list-view .collapsed .group-header {
+        background-position: 3px 3px;
+    }
+    .list-view .collapsed .group-body {
+        display:none;
+    }
     
-    
-    .list-view #control-panel {
+    .list-view .item-control-panel {
       height: 23px;
       width:100%;
       background-color:#F5F9E3;
@@ -175,44 +189,31 @@
       border-bottom: 1px solid #d4eaac;
       visibility: hidden;
     }
-    .list-view #control-panel img {
+    .list-view .item-control-panel img {
       width:16px;
       height:16px;
       margin:4 3 3 3;
       float:right;        
     }
     
-    .list-view dd h4 {
-        font-family:tahoma,arial,san-serif;
-        color:#555;
-        font-size:11px;
-        font-weight:bold;
+    .list-view .item-control-panel .action-delete {
+      width:16px;
+      height:16px;
+      margin:2 2 2 2;
+      float:right;
+      background-image: url('../../../img/analiticalmodel/browser/delete16.gif');
+      background-position:center center;
+	  background-repeat:no-repeat; 
     }
-    .list-view dd p {
+   
+    .list-view .group-item .item-desc p {
         color:#777;
     }
-    .list-view dd.over {
+    .list-view .group-item.over {
         background: #F5FDE3;
     }
     
-    .list-view h2 {
-        border-bottom: 2px solid #99bbe8;
-        cursor:pointer;
-        padding-top:6px;
-        margin: 0 0 20 0;
-    }
-    .list-view h2 div {
-        background:transparent url('../../../img/analiticalmodel/browser/group-expand-sprite.gif') no-repeat 3px -47px;
-        padding:4px 4px 4px 17px;
-        color:#3764a0;
-        font:bold 11px tahoma, arial, helvetica, sans-serif;
-    }
-    .list-view .collapsed h2 div {
-        background-position: 3px 3px;
-    }
-    .list-view .collapsed dl {
-        display:none;
-    }
+    
     
     
     

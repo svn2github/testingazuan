@@ -58,13 +58,6 @@ Sbi.browser.FolderViewTemplate = function(config) {
     documentAttributes +
     '</div>';
 	
-	/*
-	var documentTpl = '' +
-	'<div id="icon" class="document"></div>' +
-    '<div class="item-desc">' +
-    documentAttributes +        
-    '</div>';
-	*/
 	
 	
 	var folderAttributes = '';
@@ -93,28 +86,27 @@ Sbi.browser.FolderViewTemplate = function(config) {
     	'<div id="icon" class="folder"></div>' + 
 	'</tpl>' +
     '<div class="item-desc">' +
-        //'<h4>{name}</h4>' +
         folderAttributes +
     '</div>';
 		
 	Sbi.browser.FolderViewTemplate.superclass.constructor.call(this, 
-			   '<div id="sample-ct">',
+			 '<div id="sample-ct">',
 	            '<tpl for=".">',
-	            '<div><a name="{id}"></a><h2><div>{title} ({[values.samples.length]})</div></h2>',
-	            '<dl>',
+	            '<div class="group">',
+	            '<h2><div class="group-header">{title} ({[values.samples.length]})</div></h2>',
+	            '<dl class="group-body">',
 	            	'<tpl if="samples.length == 0">',
 	            		'<div id="empty-group-message">No items in this group</div>',
 	            	'</tpl>',
 	                '<tpl for="samples">',   
 	                	'{[engine=""]}',
-	                    '<dd ext:url="{url}">',
-	                        '<div id="control-panel" class="control-panel">',
-	                        /*
-	                            '<a href="javascript:alert(\'Document sended succesfully\')"><img title="send by email" src="../img/analiticalmodel/browser/send.gif"/></a>',
-	                            '<a href="javascript:alert(\'Document scheduled succesfully\')"><img title="shedule" src="../img/analiticalmodel/browser/schedule.gif"/></a>',
-	                        */
+	                    '<dd class="group-item">',
+	                        '<div class="item-control-panel">',	 
+	                        	'<tpl for="actions">',   
+	                            	'<div class="button"><img class="action-{name}" title="{description}" src="' + Ext.BLANK_IMAGE_URL + '"/></div>',
+	                            '</tpl>',
 	                        '</div>',
-	                     // -- DOCUMENT -----------------------------------------------
+	                        // -- DOCUMENT -----------------------------------------------
 	                        '<tpl if="this.exists(engine) == true">',
 	                        	documentTpl,
 	                        '</tpl>',

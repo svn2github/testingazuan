@@ -26,65 +26,6 @@
 
 Ext.ns("Sbi.browser");
 
-//Sbi.browser.groupTpl = new Sbi.browser.FolderViewTemplate();
-
-/*
-Sbi.browser.groupTpl = new Ext.XTemplate(
-        '<div id="sample-ct">',
-            '<tpl for=".">',
-            '<div><a name="{id}"></a><h2><div>{title} ({[values.samples.length]})</div></h2>',
-            '<dl>',
-            	'<tpl if="samples.length == 0">',
-            		'<div id="empty-group-message">No items in this group</div>',
-            	'</tpl>',
-                '<tpl for="samples">',   
-                	'{[engine=""]}',
-                    '<dd ext:url="{url}">',
-                        '<div id="control-panel" class="control-panel">',
-                        
-                           // '<a href="javascript:alert(\'Document sended succesfully\')"><img title="send by email" src="../img/analiticalmodel/browser/send.gif"/></a>',
-                           // '<a href="javascript:alert(\'Document scheduled succesfully\')"><img title="shedule" src="../img/analiticalmodel/browser/schedule.gif"/></a>',
-                        
-                        '</div>',
-                     // -- DOCUMENT -----------------------------------------------
-                        '<tpl if="this.exists(engine) == true">',
-                        	'<div id="icon" class="document"></div>',
-                        	//'<div id="icon" class="{parent.iconCls}"></div>',
-	                        '<div id="description">',
-	                        	'<h4>{label}</h4>',
-		                        '<h4>{name}</h4>',
-		                        '<i>{creationDate}</i>',
-		                        '<p><b>Description:</b> {description} ',
-		                        '{extendedDescription}</p>',		                        
-	                        '</div>',
-                        '</tpl>',
-                        // -- FOLDER -----------------------------------------------
-                        '<tpl if="this.exists(engine) == false">',
-                        	'<tpl if="this.isHomeFolder(codType) == true">',
-	                        	'<div id="icon" class="folder_home"></div>',
-	                        '</tpl>',
-	                        '<tpl if="this.isHomeFolder(codType) == false">',
-	                        	'<div id="icon" class="folder"></div>',
-                        	'</tpl>',
-	                        '<div id="description">',
-		                        '<h4>{name}</h4>',
-	                        '</div>',
-                        '</tpl>',
-                    '</dd>',
-                '</tpl>',
-            '<div style="clear:left"></div></dl></div>',
-            '</tpl>',
-        '</div>', {
-        	exists: function(o){
-        		return typeof o != 'undefined' && o != null && o!='';
-        	}
-        	, isHomeFolder: function(s) {
-        		return s == 'USER_FUNCT';
-        	}
-
-        }
-);
-*/
 
 Sbi.browser.FolderView = function(config) {
 	
@@ -113,30 +54,21 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     , tpl : null
 
     , onClick : function(e){
-        
-        var group = e.getTarget('h2', 3, true);
+        // is of type Ext.EventObject		
+        var group = e.getTarget('div[class=group-header]', 10, true);
         if(group){
-            group.up('div').toggleClass('collapsed');
-        }else {
-        	/*
-            var t = e.getTarget('dd', 5, true);
-            if(t && !e.getTarget('a', 2)){
-                var url = t.getAttributeNS('ext', 'url');
-                window.open(url);
-            }
-            */
+            group.up('div[class*=group]').toggleClass('collapsed');
         }
-       
         
         return Sbi.browser.FolderView.superclass.onClick.apply(this, arguments);
     }
     
     , onMouseOver : function(e) {    
-      var group = e.getTarget('h2', 3, true);
-        if(!group){
-            var d = e.getTarget('dd', 5, true);
+      var group = e.getTarget('div[class=group-header]', 10, true);
+      if(!group){
+            var d = e.getTarget('[class*=group-item]', 5, true);
             if(d){
-                var t = d.first('div.control-panel', false);
+                var t = d.first('div[class*=item-control-panel]', false);
                 if(t){   
                   t.applyStyles('visibility:visible');
                 }
@@ -146,11 +78,11 @@ Ext.extend(Sbi.browser.FolderView, Ext.DataView, {
     }
     
     , onMouseOut : function(e){
-        var group = e.getTarget('h2', 3, true);
+        var group = e.getTarget('div[class=group-header]', 10, true);
         if(!group){
-            var d = e.getTarget('dd', 5, true);
+            var d = e.getTarget('[class*=group-item]', 5, true);
             if(d){
-                var t = d.first('div.control-panel', false);
+                var t = d.first('div[class*=item-control-panel]', false);
                 if(t){   
                   t.applyStyles('visibility:hidden');
                 }

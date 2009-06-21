@@ -63,6 +63,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
 		
 		String outputFormat = null;
+		String executionId = null;
 		File maptmpfile = null;
 		boolean inlineResponse;
 		String responseFileName;
@@ -78,6 +79,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			
 			totalTimeMonitor = MonitorFactory.start("GeoEngine.drawMapAction.totalTime");
 			
+			executionId = getAttributeAsString( "SBI_EXECUTION_ID" );
 			
 			outputFormat = getAttributeAsString( OUTPUT_FORMAT );		
 			logger.debug("Parameter [" + OUTPUT_FORMAT + "] is equal to [" + outputFormat + "]");

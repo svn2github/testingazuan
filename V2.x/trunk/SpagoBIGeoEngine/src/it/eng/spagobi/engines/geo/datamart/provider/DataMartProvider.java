@@ -210,9 +210,18 @@ public class DataMartProvider extends AbstractDataMartProvider {
     	 * @return the executable query
     	 */
     	public String getExecutableQuery() {
-			String executableQuery;
+			String executableQuery;			
+			IDataSet dataSet;
+	    	
+	    	dataSet = (IDataSet)getEnv().get(EngineConstants.ENV_DATASET);
 			
-			executableQuery = query;
+	    	if(dataSet != null) {
+	    		executableQuery = (String)dataSet.getQuery();
+	    	} else {
+	    		executableQuery = query;
+	    	}
+	    	
+			
 			if(executableQuery.indexOf("${") == -1) return executableQuery;
 			while(executableQuery.indexOf("${")!=-1) {
 				int startInd = executableQuery.indexOf("${") + 2;
@@ -322,7 +331,12 @@ public class DataMartProvider extends AbstractDataMartProvider {
 	        
 	    	Connection connection = null;
 	        try{
-	        	connection = getDataSource().getConnection();
+	        	JDBCDataSet dataSet = (JDBCDataSet)getEnv().get(EngineConstants.ENV_DATASET);
+	        	if(dataSet != null) {
+	        		connection = dataSet.getDataSource().getConnection();
+	        	} else {
+	        		connection = getDataSource().getConnection();
+	        	}
 	            Statement statement = connection.createStatement();
 	            statement.execute(filteredQuery);
 	            ResultSet resultSet =  statement.getResultSet();

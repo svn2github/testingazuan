@@ -237,20 +237,21 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 			    }
 			    conf.put("target_layer_index", targetLayerIndex);
 			    conf.put("layers", layers);
-			    
-			    	    
-			      
+			    			      
 			    
 			    JSONObject guiSettings =  getGUIConfigurationScript();
 			    guiSettings.put("includeChartLayer", getLayer("grafici")!=null);
 			    guiSettings.put("includeValuesLayer", getLayer("valori")!=null);
 			    conf.put("gui_settings", guiSettings);
+			    
+			    String execId = (String)this.getEnv().get("SBI_EXECUTION_ID");
+			    conf.put("execId", execId);
 			} catch (JSONException e1) {
 				logger.error("Impossible to create sbi.geo.conf", e1);
 				String description = "Impossible to create sbi.geo.conf";
 				throw new GeoEngineException("Impossible to create sbi.geo.conf", description, e1);
 			}
-		    
+			
 		    scriptText.setNodeValue( "sbi = {};\n sbi.geo = {};\n sbi.geo.conf = " + conf.toString() );
 		    
 			

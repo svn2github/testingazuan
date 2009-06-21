@@ -217,6 +217,9 @@ onload="init(evt);">
 			drillUrl = "../servlet/AdapterHTTP?ACTION_NAME=SHOW_DATA_DETAILS_ACTION";
 			var featureValue = node.firstChild.getAttribute('id');
 			drillUrl += "&featureValue=" + featureValue;
+			drillUrl += "&SBI_EXECUTION_ID=" + sbi.geo.conf.execId;
+			
+			
 			node.setAttributeNS(attribNS, "drillUrl", drillUrl);
     }
     

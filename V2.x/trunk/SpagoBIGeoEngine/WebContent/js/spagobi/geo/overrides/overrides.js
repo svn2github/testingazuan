@@ -3,6 +3,7 @@
 * root node change the tree is properly refreshed in order to reflect the 
 * modifications  in the structure.
 ============================================================================= */
+//Ext.override(Ext.Component, {hideMode: 'offsets'});
 
 Ext.override(Ext.tree.TreeNodeUI,{    
 	toggleCheck : function(value){        

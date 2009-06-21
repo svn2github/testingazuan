@@ -43,13 +43,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	responseContainer = ResponseContainerAccess.getResponseContainer(request);
 	sessionContainer = requestContainer.getSessionContainer();
 	
-	SourceBean dataDetailsSB = (SourceBean)sessionContainer.getAttribute("RESULT_SET");
-	sessionContainer.delAttribute("RESULT_SET");
-	String featureDesc = (String)sessionContainer.getAttribute("FEATURE_DESC");
-	sessionContainer.delAttribute("FEATURE_DESC");
+	SourceBean dataDetailsSB ;
+	String featureDesc;
 	
+	dataDetailsSB = (SourceBean)responseContainer.getServiceResponse().getAttribute("RESULT_SET");
+	featureDesc = (String)responseContainer.getServiceResponse().getAttribute("FEATURE_DESC");
 	
-	List rows = dataDetailsSB.getAttributeAsList("ROW");
+	//SourceBean resultSetSB = dataDetailsSB.getAttribute()
+	List rows = dataDetailsSB.getAttributeAsList("ROWS.ROW");
 	SourceBean firstRowSB = (SourceBean)rows.get(0);
 	List firstRowColumnsSB = firstRowSB.getContainedAttributes();
 	List columnLabels = new ArrayList();

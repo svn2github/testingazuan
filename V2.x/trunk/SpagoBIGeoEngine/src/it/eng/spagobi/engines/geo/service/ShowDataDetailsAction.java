@@ -20,12 +20,13 @@
  **/
 package it.eng.spagobi.engines.geo.service;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-
-import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -58,19 +59,27 @@ public class ShowDataDetailsAction extends AbstractGeoEngineAction {
 		
 		String featureValue = null;
 		SourceBean resultSB = null;
+		IDataMartProvider datamartprovicer;
 		
 		logger.debug("IN");
 		
 		try{
 			super.service(serviceRequest, serviceResponse);
 			
+			Assert.assertNotNull(getGeoEngineInstance(), "GeoEngineInstance cannot be null");
+			
 			featureValue = getAttributeAsString(SELECTED_FEATURE_ID);
-			logger.debug("Selected feature: " + featureValue);
-			resultSB = getGeoEngineInstance().getDataMartProvider().getDataDetails(featureValue);
+			logger.debug("Parameter [" + SELECTED_FEATURE_ID + "] is equals to [" + featureValue + "]");
+			Assert.assertNotNull(featureValue, "Parameter [" + SELECTED_FEATURE_ID + "] cannot be null");
+			
+			datamartprovicer =  getGeoEngineInstance().getDataMartProvider();
+			Assert.assertNotNull(datamartprovicer, "Impossible to get datamart");
+			
+			resultSB = datamartprovicer.getDataDetails(featureValue);
 			logger.debug("ResultSet: \n" + resultSB);
 					
-			setAttributeInSession(RESULT_SET, resultSB);
-			setAttributeInSession(SELECTED_FEATURE_DESC, featureValue);
+			setAttribute(RESULT_SET, resultSB);
+			setAttribute(SELECTED_FEATURE_DESC, featureValue);
 		} catch(Throwable t) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {

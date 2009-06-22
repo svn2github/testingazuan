@@ -386,6 +386,13 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		if (ignoreSubNodesStr != null && ignoreSubNodesStr.trim().equalsIgnoreCase("true")) {
 			ignoreSubNodes = true;
 		}
+		
+		// finds if it is not important that all parameters have a value
+		String runAnyway = (String) request.getAttribute(SpagoBIConstants.RUN_ANYWAY);
+		boolean runAnywayB = false;
+		if (runAnyway != null && runAnyway.trim().equalsIgnoreCase("true")) {
+			runAnywayB = true;
+		}
 
 		// check parameters values 
 		List errors = instance.getParametersErrors();
@@ -394,7 +401,7 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		// filled by the user) and if the object has no subobject / snapshots / viewpoints saved
 		// or the request esplicitely asks to ignore subnodes) or (a valid subobject
 		// is specified by request) then execute it directly without pass through parameters page
-		if ((instance.isDirectExecution() && ((subObjects.size() == 0
+		if (((instance.isDirectExecution()||runAnywayB) && ((subObjects.size() == 0
 				&& snapshots.size() == 0 && viewpoints.size() == 0) || ignoreSubNodes))
 				|| subObj != null) {
 

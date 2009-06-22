@@ -844,6 +844,9 @@ public class ExecutionInstance {
 			buffer.append("&" + SpagoBIConstants.TOOLBAR_VISIBLE + "=FALSE");
 			buffer.append("&" + ObjectsTreeConstants.OBJECT_LABEL + "=" + object.getLabel());
 			buffer.append("&" + SpagoBIConstants.ROLE + "=" + executionRole);
+			buffer.append("&" + SpagoBIConstants.RUN_ANYWAY + "=TRUE" );
+			buffer.append("&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "=TRUE" );
+			
 			// identity string for context
 		    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 		    UUID uuid = uuidGen.generateRandomBasedUUID();
@@ -854,9 +857,23 @@ public class ExecutionInstance {
 				Iterator it = parameters.iterator();
 				while (it.hasNext()) {
 					BIObjectParameter aParameter = (BIObjectParameter) it.next();
-					ParameterValuesEncoder encoder = new ParameterValuesEncoder();
+					
+					List list = aParameter.getParameterValues();
+					if(list!=null && !list.isEmpty()){
+						Iterator r = list.iterator();
+						while (r.hasNext()) {
+							String value = (String) r.next();
+							if (value.equals("%")) value = "%25";
+							if(value!=null && !value.equals("")){
+								buffer.append("&" + aParameter.getParameterUrlName() + "=" + value);
+							}
+						}
+					}
+					/*ParameterValuesEncoder encoder = new ParameterValuesEncoder();
 					String encodedValue = encoder.encode(aParameter);
-					buffer.append("&" + aParameter.getParameterUrlName() + "=" + encodedValue);
+					if(encodedValue!=null && !encodedValue.equals("")){
+						buffer.append("&" + aParameter.getParameterUrlName() + "=" + encodedValue);
+					}*/
 				}
 			}
 		    url = buffer.toString();

@@ -20,3 +20,7 @@ http://extjs.com/forum/showthread.php?p=282928#post282928
 	width:200px; /* IE */
 }
 
+/* fixes the alignment problem in grid panels on FF */
+.x-grid3 table {
+    table-layout:fixed;
+}

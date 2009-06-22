@@ -157,7 +157,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						
 						String schedStart = (String)sbOrig.getAttribute("startDate");
 						String temp1 = (String)sbOrig.getAttribute("startTime");
-						String schedStartTime = temp1.substring(0,temp1.indexOf("+"));
+						String schedStartTime = temp1.substring(0,8);
 						String schedBegin = schedStart + " " + schedStartTime ;
 						
 						String schedE = "";					

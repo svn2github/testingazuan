@@ -406,7 +406,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
    
    public DataSetServiceProxy getDataSetServiceProxy() {
 	   if(datasetProxy == null) {
-		   datasetProxy =  datasetProxy = new DataSetServiceProxy(getUserIdentifier() , getHttpSession());
+		   datasetProxy = new DataSetServiceProxy(getUserIdentifier() , getHttpSession());
 	   }	   
 	    
 	   return datasetProxy;

@@ -1284,9 +1284,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 									}else{
 										secondo =""+ secondi;
 									}
-									value = value +" "+ora+":"+minuto+":"+secondo+"";
+									value ="'"+ value +" "+ora+":"+minuto+":"+secondo+"'";
 								}else{
-									value = value +" 00:00:00";
+									value ="'"+ value +" 00:00:00'";
 								}
 							} catch (ParseException e) {
 								logger.error("ParseException.value=" + value, e);
@@ -1393,9 +1393,9 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 									}else{
 										secondo =""+ secondi;
 									}
-									value = value +" "+ora+":"+minuto+":"+secondo+"";
+									value ="'"+ value +" "+ora+":"+minuto+":"+secondo+"'";
 								}else{
-									value = value +" 00:00:00";
+									value ="'"+ value +" 00:00:00'";
 								}
 							} catch (ParseException e) {
 								logger.error("ParseException.value=" + value, e);

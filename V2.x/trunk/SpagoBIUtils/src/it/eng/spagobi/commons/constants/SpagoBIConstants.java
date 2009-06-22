@@ -45,6 +45,8 @@ public class SpagoBIConstants {
 	
 	public static final String IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS = "IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS";
 	
+	public static final String RUN_ANYWAY = "RUN_ANYWAY";
+	
 /*	public static final String ACTOR = "ACTOR";
 	public static final String TESTER_ACTOR = "TESTER_ACTOR";
 	public static final String USER_ACTOR = "USER_ACTOR";

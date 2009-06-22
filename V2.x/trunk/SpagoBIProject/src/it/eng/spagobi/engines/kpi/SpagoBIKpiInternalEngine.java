@@ -1227,7 +1227,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					}
 					else {
 						String value = (String) values.get(0);
-						parametersMap.put(url, value);
+						
 						if (url.equals("ParKpiDate")) {
 							SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
 							String format = (String) formatSB.getAttribute("format");
@@ -1255,15 +1255,17 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 										Long milliSecToAdd = new Long (millisec);
 										milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
 										this.dateOfKPI = new Date(milliseconds);
-									}    							
-
-								}/*else{
-    							//If the date required is today then the time considered will be the actual date
-    							//Long milliSecToAdd = new Long (60*60*24*1000);
-    							//milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
-    							this.dateOfKPI = new Date(milliseconds);
-    						}*/
-
+									}    	
+									String ora = "";
+									String minuto = "";
+									String secondo = "";
+									if(ore<10)ora="0"+ore;
+									if(minuti<10)minuto="0"+minuti;
+									if(secondi<10)secondo="0"+secondi;
+									value = value +" "+ora+":"+minuto+":"+secondo+"";
+								}else{
+									value = value +" 00:00:00";
+								}
 							} catch (ParseException e) {
 								logger.error("ParseException.value=" + value, e);
 							}
@@ -1295,6 +1297,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 							}
 							logger.debug("Setted TIME RANGE TO");
 						}
+						parametersMap.put(url, value);
 					}   
 				}else if (values != null && values.size() >= 1) {
 					if (url.equals("ParKpiResources")) {
@@ -1311,7 +1314,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						for (int k = 1; k < values.size(); k++) {
 							value = value + ",'" + (String) values.get(k) + "'";
 						}
-						parametersMap.put(url, value);
+						
 						if (url.equals("ParKpiDate")) {
 							//SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute(
 							//	"SPAGOBI.DATE-FORMAT"));
@@ -1340,17 +1343,21 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 										milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
 										this.dateOfKPI = new Date(milliseconds);
 									}    							
-
-								}/*else{
-							//If the date required is today then the time considered will be the actual date
-							//Long milliSecToAdd = new Long (60*60*24*1000);
-							//milliseconds = new Long(milliseconds.longValue()+milliSecToAdd.longValue());
-							this.dateOfKPI = new Date(milliseconds);
-						}*/
+									String ora = "";
+									String minuto = "";
+									String secondo = "";
+									if(ore<10)ora="0"+ore;
+									if(minuti<10)minuto="0"+minuti;
+									if(secondi<10)secondo="0"+secondi;
+									value = value +" "+ora+":"+minuto+":"+secondo+"";
+								}else{
+									value = value +" 00:00:00";
+								}
 							} catch (ParseException e) {
 								logger.error("ParseException.value=" + value, e);
 							}
 						} 
+						parametersMap.put(url, value);
 					}
 				}
 			}

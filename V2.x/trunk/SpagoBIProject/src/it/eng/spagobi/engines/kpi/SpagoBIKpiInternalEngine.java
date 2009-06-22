@@ -1260,9 +1260,19 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 									String minuto = "";
 									String secondo = "";
 									if(ore<10){
-										ora="0"+ore;
+										if(AM==0){
+											ora="0"+ore;
+										}else{
+											ore = ore+12;
+											ora=""+ore;
+										}
 									}else{
-										ora =""+ ore;
+										if(AM==0){
+											ora =""+ ore;
+										}else{
+											ore = ore+12;
+											ora=""+ore;
+										}
 									}
 									if(minuti<10){
 										minuto="0"+minuti;
@@ -1359,9 +1369,19 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 									String minuto = "";
 									String secondo = "";
 									if(ore<10){
-										ora="0"+ore;
+										if(AM==0){
+											ora="0"+ore;
+										}else{
+											ore = ore+12;
+											ora=""+ore;
+										}
 									}else{
-										ora =""+ ore;
+										if(AM==0){
+											ora =""+ ore;
+										}else{
+											ore = ore+12;
+											ora=""+ore;
+										}
 									}
 									if(minuti<10){
 										minuto="0"+minuti;

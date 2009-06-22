@@ -39,15 +39,7 @@ var getQueryResultsPanel = function() {
     store = new Ext.data.Store( storeConfig );
     
     store.on('metachange', updateColumnModel);
-    /*
-    store.proxy.on('loadexception', function(proxy, options, response){          
-    	alert(response.responseText);
-    	alert(response.toSource());   
-    	alert(options.toSource());  
-    	alert(proxy.toSource());            
-    }); 
-    */
-    
+   
     cm = new Ext.grid.ColumnModel([
         new Ext.grid.RowNumberer(),
         {

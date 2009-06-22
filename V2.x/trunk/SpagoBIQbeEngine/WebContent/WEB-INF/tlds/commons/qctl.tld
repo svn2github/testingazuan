@@ -9,7 +9,6 @@
     <uri>/QbeCommonTagLibrary</uri>        
                 
 
-
 	<tag>
     	<name>init-page-context</name>
         <tag-class>it.eng.spagobi.qbe.commons.presentation.tag.InitPageContextTag</tag-class>

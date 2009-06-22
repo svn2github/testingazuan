@@ -56,9 +56,11 @@ it.eng.spagobi.engines.qbe.app = function() {
             it.eng.spagobi.engines.qbe.locale.module.init();
             it.eng.spagobi.engines.qbe.locale.module.applyLocale();
            
-            tabs[0] = getQueryBuilderPanel(query);
-            tabs[1] = getQueryResultsPanel(); 
-            //tabs[2] = createGridNodi();          
+            tabs[1] = new Sbi.widgets.DataStorePanel();
+            tabs[0] = getQueryBuilderPanel(query, tabs[1]);
+            //tabs[1] = getQueryResultsPanel();
+           
+            alert('debug1');      
             
             // Main (Tabbed) Panel            
             tabPanel = new Ext.TabPanel({

@@ -47,6 +47,38 @@
 	<script type="text/javascript" src='${src}'/></script>
 	
 	
+	<!-- New OO GUI -->
+	<qbe:url type="resource" var="src" ref="../js/spagobi/service/ServiceRegistry.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/DataStorePanel.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	
+	<script>
+		Sbi.config = {};
+	
+		var url = {
+	    	host: '<%= request.getServerName()%>'
+	    	, port: '<%= request.getServerPort()%>'
+	    	, contextPath: '<%= request.getContextPath().startsWith("/")||request.getContextPath().startsWith("\\")?
+	    	   				  request.getContextPath().substring(1):
+	    	   				  request.getContextPath()%>'
+	    	    
+	    };
+
+	    var params = {
+	    	SBI_EXECUTION_ID: <%= request.getParameter("SBI_EXECUTION_ID")!=null?"'" + request.getParameter("SBI_EXECUTION_ID") +"'": "null" %>
+	    };
+
+	    Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
+	    	baseUrl: url
+	        , baseParams: params
+	    });
+	</script>
+	<!-- New OO GUI -->
+	
+	
 	
 	
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbe/parser.js"/>

@@ -6,11 +6,12 @@
 
 
  
-var getQueryBuilderPanel = function(query) {
+var getQueryBuilderPanel = function(query, dataStorePanel) {
 
             var menuTree1 = it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel();                
             //var menuTree2 = it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel();    
        
+            this.dataStorePanel = dataStorePanel;
     
             var treesPanel = new Ext.Panel({
                 id:'treepanel',
@@ -164,7 +165,11 @@ var getQueryBuilderPanel = function(query) {
         
         var handleExecQuery = function(response, options) {
      		it.eng.spagobi.engines.qbe.app.activateTab();
-        	execQuery();
+     		if(this.dataStorePanel) {
+     			this.dataStorePanel.execQuery();
+     		} else {
+     			execQuery();
+     		}
         };
     
         

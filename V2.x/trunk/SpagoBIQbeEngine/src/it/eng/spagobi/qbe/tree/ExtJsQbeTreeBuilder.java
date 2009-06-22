@@ -20,15 +20,6 @@
  **/
 package it.eng.spagobi.qbe.tree;
 
-import it.eng.qbe.bo.DatamartLabels;
-import it.eng.qbe.bo.DatamartProperties;
-import it.eng.qbe.cache.QbeCacheManager;
-import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -40,7 +31,16 @@ import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSObject;
+import org.json.JSONObject;
+
+import it.eng.qbe.bo.DatamartLabels;
+import it.eng.qbe.bo.DatamartProperties;
+import it.eng.qbe.cache.QbeCacheManager;
+import it.eng.qbe.model.IDataMartModel;
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
 
 /**
  * The Class ExtJsQbeTreeBuilder.
@@ -211,13 +211,13 @@ public class ExtJsQbeTreeBuilder  {
 			
 		JSONArray childrenNodes = getFieldNodes(entity, recursionLevel);
 		
-		JSObject entityNode = new JSObject();
+		JSONObject entityNode = new JSONObject();
 		try {
 			entityNode.put("id", entity.getUniqueName());
 			entityNode.put("text", label );
 			entityNode.put("iconCls", iconCls);
 			
-			JSObject nodeAttributes = new JSObject();
+			JSONObject nodeAttributes = new JSONObject();
 			nodeAttributes.put("iconCls", iconCls);
 			nodeAttributes.put("type", "entity");
 			entityNode.put("attributes", nodeAttributes);
@@ -250,7 +250,7 @@ public class ExtJsQbeTreeBuilder  {
 		Iterator keyFieldIterator = keyFields.iterator();
 		while (keyFieldIterator.hasNext() ) {
 			DataMartField field = (DataMartField)keyFieldIterator.next();
-			JSObject jsObject = getFieldNode(entity, field);
+			JSONObject jsObject = getFieldNode(entity, field);
 			if(jsObject != null) {
 				children.put( jsObject );
 			}
@@ -264,7 +264,7 @@ public class ExtJsQbeTreeBuilder  {
 		Iterator normalFieldIterator = normalFields.iterator();
 		while (normalFieldIterator.hasNext() ) {
 			DataMartField field = (DataMartField)normalFieldIterator.next();
-			JSObject jsObject = getFieldNode(entity, field);
+			JSONObject jsObject = getFieldNode(entity, field);
 			if(jsObject != null) {
 				children.put( jsObject );
 			}
@@ -284,7 +284,7 @@ public class ExtJsQbeTreeBuilder  {
 	 * 
 	 * @return the field node
 	 */
-	public  JSObject getFieldNode(DataMartEntity parentEntity,
+	public  JSONObject getFieldNode(DataMartEntity parentEntity,
 							 DataMartField field) {
 		
 		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();
@@ -294,13 +294,13 @@ public class ExtJsQbeTreeBuilder  {
 		
 		writer.println( field.getUniqueName().replaceAll(":", "/") + "=");
 		
-		JSObject fieldNode = new JSObject();
+		JSONObject fieldNode = new JSONObject();
 		try {
 			fieldNode.put("id", field.getUniqueName());
 			fieldNode.put("text", fieldLabel);
 			fieldNode.put("leaf", true);
 			
-			JSObject nodeAttributes = new JSObject();
+			JSONObject nodeAttributes = new JSONObject();
 			nodeAttributes.put("iconCls", iconCls);
 			nodeAttributes.put("type", "field");
 			nodeAttributes.put("entity", entityLabel);
@@ -389,7 +389,7 @@ public class ExtJsQbeTreeBuilder  {
 		Iterator subEntitiesIterator = subEntities.iterator();
 		while (subEntitiesIterator.hasNext()){
 			DataMartEntity subentity = (DataMartEntity)subEntitiesIterator.next();
-			if (subentity.getType().equalsIgnoreCase( entity.getType() ) || recursionLevel > 3) {
+			if (subentity.getType().equalsIgnoreCase( entity.getType() ) || recursionLevel > 10) {
 				// stop recursion 
 			} else {
 				addEntityNode(nodes,

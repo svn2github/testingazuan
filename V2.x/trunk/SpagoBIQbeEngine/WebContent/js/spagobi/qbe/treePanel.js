@@ -43,6 +43,7 @@ var treePanelComponent = it.eng.spagobi.engines.qbe.querybuilder.treePanel;
 // public variables goes here. Do not use them before invocation of method init.
 
 var loadTreeDataServiceUrl = it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('GET_TREE_ACTION');
+
 /**
   * Initialize the treePanel Component.
   */

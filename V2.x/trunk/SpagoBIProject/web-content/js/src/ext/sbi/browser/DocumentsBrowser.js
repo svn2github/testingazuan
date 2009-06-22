@@ -208,7 +208,7 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 	, onDocumentClick: function(panel, r) {
 	
 		var executionPanel = new Sbi.execution.ExecutionPanel({
-			title: r.label
+			title: r.name
 			, closable: true
 		});
 		

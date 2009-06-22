@@ -418,18 +418,23 @@ public class KpiResourceBlock {
 			Iterator it = documents.iterator();
 			while(it.hasNext()){
 				String docLabel =(String)it.next();
-				HashMap execUrlParMap = new HashMap();
-				execUrlParMap.put(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
-				execUrlParMap.put(ObjectsTreeConstants.OBJECT_LABEL, docLabel);
-				execUrlParMap.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
-				execUrlParMap.put("EXECUTION_FLOW_ID", executionFlowId);
-				execUrlParMap.put("SOURCE_EXECUTION_ID", uuidPrincip);
-				execUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-				execUrlParMap.put(ObjectsTreeConstants.MODALITY,execMod );
+				String parameters = "";
+				//HashMap execUrlParMap = new HashMap();
+				//execUrlParMap.put(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
+				
+				//execUrlParMap.put(ObjectsTreeConstants.OBJECT_LABEL, docLabel);
+				//execUrlParMap.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
+				//execUrlParMap.put("EXECUTION_FLOW_ID", executionFlowId);
+				parameters +="EXECUTION_FLOW_ID="+executionFlowId;
+				//execUrlParMap.put("SOURCE_EXECUTION_ID", uuidPrincip);
+				parameters +="&SOURCE_EXECUTION_ID="+uuidPrincip;
+				//execUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
+				//execUrlParMap.put(ObjectsTreeConstants.MODALITY,execMod );
 				
 				
 				if (r!=null){
-					execUrlParMap.put(r.getColumn_name(), r.getName());
+					//execUrlParMap.put(r.getColumn_name(), r.getName());
+					parameters +="&"+r.getColumn_name()+"="+r.getName();
 				}
 				SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
 				String format = (String) formatSB.getAttribute("format");
@@ -438,22 +443,26 @@ public class KpiResourceBlock {
 				
 				if (d!=null){						
 				    String dat = f.format(d);
-				    execUrlParMap.put("ParKpiDate", dat);						
+				   // execUrlParMap.put("ParKpiDate", dat);	
+				    parameters +="&ParKpiDate="+dat;
 				}
 				if (timeRangeFrom!=null && timeRangeTo!=null){
 					try {
 						Date timeR_From = f.parse(timeRangeFrom);
 						Date timeR_To = f.parse(timeRangeTo);
 						if (timeR_From.before(timeR_To)){
-							execUrlParMap.put("TimeRangeFrom", timeRangeFrom);	
-							execUrlParMap.put("TimeRangeTo", timeRangeTo);	
+							//execUrlParMap.put("TimeRangeFrom", timeRangeFrom);	
+							 parameters +="&TimeRangeFrom="+timeRangeFrom;
+							//execUrlParMap.put("TimeRangeTo", timeRangeTo);	
+							 parameters +="&TimeRangeTo="+timeRangeTo;
 						}
 					} catch (ParseException e) {
 					    logger.error("ParseException.value=" + value, e);
 					}
 				}
 				String docLinked = msgBuilder.getMessage("sbi.kpi.docLinked", httpReq);
-				String docHref = urlBuilder.getUrl(httpRequest, execUrlParMap);
+				//String docHref = urlBuilder.getUrl(httpRequest, execUrlParMap);
+				String docHref="javascript:parent.execCrossNavigation(this.name,'"+docLabel+"','"+parameters+"');";
 				_htmlStream.append("<a  title='"+docLinked+"' href=\""+docHref+"\"> <img  src=\""+docImgSrc+"\" alt=\"Attached Document\" /></a>\n");				
 			}
 			_htmlStream.append("		</div></td>\n");

@@ -2,5 +2,5 @@
 <EXPORTERS>
 <EXPORTER domain="PDF" engine="KpiEngine" defaultValue="true"/>
 <EXPORTER domain="PDF" engine="JasperReport" defaultValue="true"/>
-<EXPORTER domain="PDF" engine="Birt" defaultValue="true"/>
+<EXPORTER domain="PDF" engine="BirtEngine" defaultValue="true"/>
 </EXPORTERS>

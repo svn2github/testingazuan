@@ -1259,9 +1259,21 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 									String ora = "";
 									String minuto = "";
 									String secondo = "";
-									if(ore<10)ora="0"+ore;
-									if(minuti<10)minuto="0"+minuti;
-									if(secondi<10)secondo="0"+secondi;
+									if(ore<10){
+										ora="0"+ore;
+									}else{
+										ora =""+ ore;
+									}
+									if(minuti<10){
+										minuto="0"+minuti;
+									}else{
+										minuto =""+ minuti;
+									}
+									if(secondi<10){
+										secondo="0"+secondi;
+									}else{
+										secondo =""+ secondi;
+									}
 									value = value +" "+ora+":"+minuto+":"+secondo+"";
 								}else{
 									value = value +" 00:00:00";
@@ -1346,9 +1358,21 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 									String ora = "";
 									String minuto = "";
 									String secondo = "";
-									if(ore<10)ora="0"+ore;
-									if(minuti<10)minuto="0"+minuti;
-									if(secondi<10)secondo="0"+secondi;
+									if(ore<10){
+										ora="0"+ore;
+									}else{
+										ora =""+ ore;
+									}
+									if(minuti<10){
+										minuto="0"+minuti;
+									}else{
+										minuto =""+ minuti;
+									}
+									if(secondi<10){
+										secondo="0"+secondi;
+									}else{
+										secondo =""+ secondi;
+									}
 									value = value +" "+ora+":"+minuto+":"+secondo+"";
 								}else{
 									value = value +" 00:00:00";

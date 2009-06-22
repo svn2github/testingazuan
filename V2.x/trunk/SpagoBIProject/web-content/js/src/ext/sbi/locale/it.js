@@ -144,3 +144,5 @@ Sbi.locale.ln['sbi.execution.notes.insertNotes'] = 'Inserisci le note';
 Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Salva';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Note salvate correttamente';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Errore nel salvataggio delle note: sono state modificate da un altro utente. Riapri questa finestra e ritenta!';
+
+Sbi.locale.ln['sbi.execution.PdfExport'] = 'Esporta in formato PDF';

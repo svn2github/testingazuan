@@ -154,3 +154,5 @@ Sbi.locale.ln['sbi.execution.notes.insertNotes'] = 'Inserez notes';
 Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Enregistrer';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Notes enregistrées correctement';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Erreur pendant l\'enregistrement des notes: les notes ont étées modifiées par an autre utilisateur pendant que vous eties en train de les modifier. Reouvréz la fenetre et reessayéz!';
+
+Sbi.locale.ln['sbi.execution.PdfExport'] = 'Exporter en format PDF';

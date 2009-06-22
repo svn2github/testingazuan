@@ -118,6 +118,7 @@ Sbi.execution.SubobjectsPanel = function(config) {
         , plugins: this.executeColumn
 		, viewConfig: {
         	forceFit: true
+        	, emptyText: LN('sbi.execution.subobjects.emptyText')
 		}
         , tbar:[
            '->'

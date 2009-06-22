@@ -121,6 +121,7 @@ Sbi.execution.SnapshotsPanel = function(config) {
         , plugins: this.executeColumn
 		, viewConfig: {
         	forceFit: true
+        	, emptyText: LN('sbi.execution.snapshots.emptyText')
 		}
 		, tbar: this.tbar
         , collapsible: false

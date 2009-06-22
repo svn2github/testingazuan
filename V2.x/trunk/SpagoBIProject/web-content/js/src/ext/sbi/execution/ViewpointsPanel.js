@@ -125,6 +125,7 @@ Sbi.execution.ViewpointsPanel = function(config) {
         , plugins: [ this.applyColumn, this.execColumn ]
 		, viewConfig: {
         	forceFit: true
+        	, emptyText: LN('sbi.execution.viewpoints.emptyText')
 		}
         , tbar:[
            '->'

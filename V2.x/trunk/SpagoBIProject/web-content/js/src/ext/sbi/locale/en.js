@@ -96,15 +96,17 @@ Sbi.locale.ln['sbi.execution.executionpage.toolbar.bookmark'] = 'Bookmark docume
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.annotate'] = 'Annotate document';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.metadata'] = 'Show document metadata';
 
-Sbi.locale.ln['sbi.execution.viewpoints.title'] = 'Viewpoints';
+Sbi.locale.ln['sbi.execution.viewpoints.title'] = 'Saved parameters';
+Sbi.locale.ln['sbi.execution.viewpoints.emptyText'] = '[Document has no saved parameters]';
 Sbi.locale.ln['sbi.execution.viewpoints.name'] = 'name';
 Sbi.locale.ln['sbi.execution.viewpoints.description'] = 'description';
 Sbi.locale.ln['sbi.execution.viewpoints.owner'] = 'owner';
 Sbi.locale.ln['sbi.execution.viewpoints.creationDate'] = 'creation date';
 Sbi.locale.ln['sbi.execution.viewpoints.scope'] = 'scope';
-Sbi.locale.ln['sbi.execution.viewpoints.msg.saved'] = 'Viewpoint saved succesfully';
+Sbi.locale.ln['sbi.execution.viewpoints.msg.saved'] = 'Parameters saved succesfully';
 
 Sbi.locale.ln['sbi.execution.snapshots.title'] = 'Scheduled executions';
+Sbi.locale.ln['sbi.execution.snapshots.emptyText'] = '[Document has no scheduled executions]';
 Sbi.locale.ln['sbi.execution.snapshots.name'] = 'name';
 Sbi.locale.ln['sbi.execution.snapshots.description'] = 'description';
 Sbi.locale.ln['sbi.execution.snapshots.creationDate'] = 'creation date';
@@ -113,6 +115,7 @@ Sbi.locale.ln['sbi.execution.snapshots.deleteSelectedTooltip'] = 'Delete selecte
 Sbi.locale.ln['sbi.execution.snapshots.noSnapshotsSelected'] = 'No scheduled executions selected';
 
 Sbi.locale.ln['sbi.execution.subobjects.title'] = 'Customized views';
+Sbi.locale.ln['sbi.execution.subobjects.emptyText'] = '[Document has no customized views]';
 Sbi.locale.ln['sbi.execution.subobjects.name'] = 'name';
 Sbi.locale.ln['sbi.execution.subobjects.description'] = 'description';
 Sbi.locale.ln['sbi.execution.subobjects.owner'] = 'owner';

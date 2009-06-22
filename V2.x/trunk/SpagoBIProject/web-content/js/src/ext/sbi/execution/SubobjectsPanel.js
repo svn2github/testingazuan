@@ -141,7 +141,7 @@ Sbi.execution.SubobjectsPanel = function(config) {
     
     this.on('rowdblclick', this.onRowDblClick, this);
     
-    this.addEvents('executionrequest');
+    this.addEvents('executionrequest', 'ready');
     
 };
 
@@ -158,14 +158,12 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 	, synchronize: function( executionInstance ) {
 		this.subObjectsStore.load({params: executionInstance});
 		this.executionInstance = executionInstance;
-		// if there is a preference for a subobject execution, fire executionrequest event
-		if (this.subobjectPreference !== undefined) {
-			this.subObjectsStore.on(
-				'load', 
-				this.checkPreferences,
-				this
-			);
-		}
+		// when subobjects are loaded, must check if there a preference for a subobject execution
+		this.subObjectsStore.on(
+			'load', 
+			this.checkPreferences,
+			this
+		);
 		
 	}
 
@@ -223,24 +221,28 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
     }
 	
 	, checkPreferences: function () {
-		// get the required subobject from the store
-		var index = this.subObjectsStore.find('name', this.subobjectPreference);
-		if (index != -1) {
-			this.executionInstance.isPossibleToComeBackToParametersPage = false;
-			var record = this.subObjectsStore.getAt(index);
-			var subObjectId = record.get('id');
-	    	this.fireEvent('executionrequest', subObjectId);
-		} else {
-			Sbi.exception.ExceptionHandler.showErrorMessage('Customized view \'' + this.subobjectPreference + '\' not found', 'Configuration Error');
+		var subObjectId = null;
+		if (this.subobjectPreference !== undefined) {
+			// get the required subobject from the store
+			var index = this.subObjectsStore.find('name', this.subobjectPreference);
+			if (index != -1) {
+				var record = this.subObjectsStore.getAt(index);
+				subObjectId = record.get('id');
+		    	//this.fireEvent('executionrequest', subObjectId);
+			} else {
+				Sbi.exception.ExceptionHandler.showErrorMessage('Customized view \'' + this.subobjectPreference + '\' not found', 'Configuration Error');
+			}
+			// reset preference variable
+			delete this.subobjectPreference;
 		}
-		// reset preference variable
-		delete this.subobjectPreference;
 		// remove the listener
 		this.subObjectsStore.un(
 				'load', 
 				this.checkPreferences,
 				this
 		);
+		// tells that the subobjects panel has been loaded and (eventually) the subobject specified by the preferences
+		this.fireEvent('ready', subObjectId);
 	}
 	
 });

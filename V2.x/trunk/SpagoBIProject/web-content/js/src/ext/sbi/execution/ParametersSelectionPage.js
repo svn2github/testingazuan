@@ -57,6 +57,11 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	
 	this.maskOnRender = c.maskOnRender;
 	
+	this.isParameterPanelReady = false;
+	this.isSubobjectPanelReady = false;
+	this.preferenceSubobjectId = null;
+	this.isSnapshotPanelReady = false;
+	this.preferenceSnapshotId = null;
 	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
@@ -124,15 +129,32 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	
 	this.parametersPanel.on('beforesynchronize', function(){if(this.loadingMask) this.loadingMask.show();}, this);
 	this.parametersPanel.on('synchronize', function(){if(this.loadingMask) this.loadingMask.hide();}, this);
+	/*
 	this.parametersPanel.on('readyforexecution', function(){
 		this.executionInstance.isPossibleToComeBackToParametersPage = false;
 		this.fireEvent('movenextrequest', this);
 	}, this);
-	
+	*/
+	this.parametersPanel.on('readyforexecution', function(){
+		this.isParameterPanelReady = true;
+		this.startExecutionAutomatically();
+	}, this);
 	this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
 	this.shortcutsPanel.on('viewpointexecutionrequest', this.onExecuteViewpoint, this);
 	this.shortcutsPanel.on('subobjectexecutionrequest', this.onExecuteSubobject, this);
 	this.shortcutsPanel.on('snapshotexcutionrequest', this.onExecuteSnapshot, this);
+	
+	this.shortcutsPanel.subobjectsPanel.on('ready', function(preferenceSubobjectId){
+		this.isSubobjectPanelReady = true;
+		this.preferenceSubobjectId = preferenceSubobjectId;
+		this.startExecutionAutomatically();
+	}, this);
+	
+	this.shortcutsPanel.snapshotsPanel.on('ready', function(preferenceSnapshotId){
+		this.isSnapshotPanelReady = true;
+		this.preferenceSnapshotId = preferenceSnapshotId;
+		this.startExecutionAutomatically();
+	}, this);
 	
 	// constructor
     Sbi.execution.ParametersSelectionPage.superclass.constructor.call(this, c);
@@ -313,6 +335,32 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 			this.shortcutsPanelSynchronizationPending = false;
 		}, this)
 		return this.shortcutsPanel;
+	}
+	
+	, startExecutionAutomatically: function() {
+		// must wait subobjects panel and snapshots panel have been loaded
+		// For parameters instead, we cannot wait: the 'readyforexecution' may not be fired
+		if (this.isSubobjectPanelReady === false || this.isSnapshotPanelReady === false) {
+			return;
+		}
+		
+		// subobject preference wins: if a subobject preference is specified, subobject is executed
+		if (this.preferenceSubobjectId != null) {
+			this.executionInstance.isPossibleToComeBackToParametersPage = false;
+			this.onExecuteSubobject(this.preferenceSubobjectId);
+			return;
+		}
+		// snapshot preference follows: if a snapshot preference is specified, snapshot is executed
+		if (this.preferenceSnapshotId != null) {
+			this.executionInstance.isPossibleToComeBackToParametersPage = false;
+			this.onExecuteSnapshot(this.preferenceSnapshotId);
+			return;
+		}
+		// parameters form follows: if there are no parameters to be filled, start main document execution
+		if (this.isParameterPanelReady == true) {
+			this.executionInstance.isPossibleToComeBackToParametersPage = false;
+			this.fireEvent('movenextrequest', this);
+		}
 	}
 	
 	, onExecuteViewpoint: function(v) {

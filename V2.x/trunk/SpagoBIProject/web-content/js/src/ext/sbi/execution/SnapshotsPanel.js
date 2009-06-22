@@ -135,7 +135,7 @@ Sbi.execution.SnapshotsPanel = function(config) {
     
     this.on('rowdblclick', this.onRowDblClick, this);
     
-    this.addEvents('executionrequest');
+    this.addEvents('executionrequest', 'ready');
     
 };
 
@@ -151,14 +151,14 @@ Ext.extend(Sbi.execution.SnapshotsPanel, Ext.grid.GridPanel, {
 	, synchronize: function( executionInstance ) {
 		this.snapshotsStore.load({params: executionInstance});
 		this.executionInstance = executionInstance;
-		// if there is a preference for a subobject execution, fire executionrequest event
-		if (this.snapshotPreference !== undefined && this.snapshotPreference.name !== undefined) {
+		// when snapshots are loaded, must check if there a preference for a snapshot execution
+		//if (this.snapshotPreference !== undefined && this.snapshotPreference.name !== undefined) {
 			this.snapshotsStore.on(
 				'load', 
 				this.checkPreferences,
 				this
 			);
-		}
+		//}
 	}
 
 	
@@ -225,23 +225,27 @@ Ext.extend(Sbi.execution.SnapshotsPanel, Ext.grid.GridPanel, {
 	}
 	
 	, checkPreferences: function () {
-		// get the required snapshot from the store
-		var record = this.findByNameAndHistoryNumber(this.snapshotPreference.name, this.snapshotPreference.historyNumber);
-		if (record != null) {
-			this.executionInstance.isPossibleToComeBackToParametersPage = false;
-			var snapshotId = record.get('id');
-	    	this.fireEvent('executionrequest', snapshotId);
-		} else {
-			Sbi.exception.ExceptionHandler.showErrorMessage('Scheduled execution \'' + this.snapshotPreference.name + '\' not found ', 'Configuration Error');
+		var snapshotId = null;
+		if (this.snapshotPreference !== undefined && this.snapshotPreference.name !== undefined) {
+			// get the required snapshot from the store
+			var record = this.findByNameAndHistoryNumber(this.snapshotPreference.name, this.snapshotPreference.historyNumber);
+			if (record != null) {
+				snapshotId = record.get('id');
+		    	//this.fireEvent('executionrequest', snapshotId);
+			} else {
+				Sbi.exception.ExceptionHandler.showErrorMessage('Scheduled execution \'' + this.snapshotPreference.name + '\' not found ', 'Configuration Error');
+			}
+			// reset preference variable
+			delete this.snapshotPreference;
 		}
-		// reset preference variable
-		delete this.snapshotPreference;
 		// remove the listener
 		this.snapshotsStore.un(
 				'load', 
 				this.checkPreferences,
 				this
 		);
+		// tells that the snapshots panel has been loaded and (eventually) the snapshot specified by the preferences
+		this.fireEvent('ready', snapshotId);
 	}
 	
 });

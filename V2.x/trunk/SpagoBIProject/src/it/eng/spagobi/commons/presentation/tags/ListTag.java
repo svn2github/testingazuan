@@ -361,6 +361,8 @@ public class ListTag extends TagSupport
 				orderParamsMap.put("valueFilter", valueFilter);
 			}
 			String orderUrlAsc = createUrl(orderParamsMap);
+			orderUrlAsc =  StringEscapeUtils.escapeHtml(orderUrlAsc);
+			
 			orderParamsMap.remove("TYPE_ORDER");
 			orderParamsMap.put("TYPE_ORDER"," DESC");
 
@@ -369,6 +371,7 @@ public class ListTag extends TagSupport
 			//orderParamsMap.put("MESSAGEDET",SpagoBIConstants.MESSAGE_ORDER_JOB_LIST);
 
 			String orderUrlDesc = createUrl(orderParamsMap);
+			orderUrlDesc =  StringEscapeUtils.escapeHtml(orderUrlDesc);
 			
 			_htmlStream.append("<TD class='portlet-section-header' style='vertical-align:middle;text-align:" + align + ";'  >" );			
 			_htmlStream.append(   labelColumn);						
@@ -1322,7 +1325,8 @@ public class ListTag extends TagSupport
 				tmpParamsMap.put(SpagoBIConstants.COLUMN_FILTER, columnFilter);
 				tmpParamsMap.put(SpagoBIConstants.TYPE_FILTER, typeFilter);
 				tmpUrl = createUrl(tmpParamsMap);
-			}				 				
+			}			
+			tmpUrl=StringEscapeUtils.escapeHtml(tmpUrl);
 			_htmlStream.append("	<A style='vertical-align:top;' href=\""+tmpUrl+"\">"+String.valueOf(i)+ "</a>\n");
 			_htmlStream.append("&nbsp;&nbsp;\n");			
 		}
@@ -1399,6 +1403,7 @@ public class ListTag extends TagSupport
 				//String label = PortletUtilities.getMessage(labelCode, "messages");
 				String label = msgBuilder.getMessage(labelCode, _bundle, httpRequest);
 				String buttonUrl = createUrl(paramsMap);
+				buttonUrl = StringEscapeUtils.escapeHtml(buttonUrl);
 
 				htmlStream.append("<td class=\"header-button-column-portlet-section\">\n");
 				htmlStream.append("<a href='"+buttonUrl+"'><img class=\"header-button-image-portlet-section\" title='" + label + "' alt='" + label + "' src='"+urlBuilder.getResourceLinkByTheme(httpRequest, img, currTheme)+"' /></a>\n");

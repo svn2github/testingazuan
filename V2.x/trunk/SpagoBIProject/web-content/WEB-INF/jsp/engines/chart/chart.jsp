@@ -857,19 +857,14 @@ var checkableSeries = new Array();
 				function() {
 					value= arrayCats[parseInt(this.value)];
 					//orig document.getElementById('slider_1_1_value').innerHTML=value;
-					if(isComposition==true){
-						if(document.getElementById('ext-gen8')!=undefined){
-							document.getElementById('ext-gen8').style.top='10px';
-						}	
-					}
-					else {
-						if(document.getElementById('ext-gen27')!=undefined){
-							document.getElementById('ext-gen27').style.top='10px';
-						}		
-					}			
+
+			if(document.getElementById('ext-gen8')!=undefined){
+					document.getElementById('ext-gen8').style.top='10px';
+				}	
+					
 					document.getElementById('slider_1_1_value').value=value;
 					//$('slider_1_1_value').innerHTML =value;
-				})
+		})
 
 		Test.slideZone1.getSlider('start1_1').on('dragend',
 				function() {

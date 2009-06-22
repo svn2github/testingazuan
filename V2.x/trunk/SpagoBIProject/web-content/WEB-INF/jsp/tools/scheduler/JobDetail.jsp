@@ -694,8 +694,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	      				 				alt='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' />
 							  	</a>
 							  	<br/>
+							  	
+							  	<div>
+							  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'
+											id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'>
+									<option value='false'><spagobi:message key = "scheduler.doNotIterateOnParameterValues"  bundle="component_scheduler_messages"/></option>
+									<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
+										<spagobi:message key = "scheduler.iterateOnParameterValues"  bundle="component_scheduler_messages"/>
+									</option>
+								</select>
+								</div>
+								
+							  	<br/>
 								(<spagobi:message key = "scheduler.usingrole"  bundle="component_scheduler_messages"/> 
-								&nbsp;&nbsp;&nbsp;
+								&nbsp;
 								<select name='role_par_<%=biobj.getId()%>_<%=index%>_<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>'
 										id='role_par_<%=biobj.getId()%>_<%=index%>_<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>' >
 									<% 
@@ -765,17 +777,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									</select>
 				    		</div>
 				    	
-				    	</div>
 				    	
-				    	<div>
-						  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'
-										id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'>
-								<option value='false'><spagobi:message key = "scheduler.doNotIterateOnParameterValues"  bundle="component_scheduler_messages"/></option>
-								<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
-									<spagobi:message key = "scheduler.iterateOnParameterValues"  bundle="component_scheduler_messages"/>
-								</option>
-							</select>
-							
+				    	
+				    	
 						</div>
 					</div>
 					<div style="clear:left;"></div>

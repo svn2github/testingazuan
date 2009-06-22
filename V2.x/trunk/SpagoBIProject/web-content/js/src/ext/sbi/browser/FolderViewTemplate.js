@@ -42,7 +42,7 @@ Sbi.browser.FolderViewTemplate = function(config) {
 				documentAttributes += '<span class="field-label">' + meta.id + ':</span>';
 			}
 			if(meta.maxChars) {
-				documentAttributes += '<span class="field-value"> {[Ext.util.Format.ellipsis(values.' + meta.id + ', ' + meta.maxChars + ')]}</span>';
+				documentAttributes += '<span class="field-value" title="{' + meta.id + '}"> {[Ext.util.Format.ellipsis(values.' + meta.id + ', ' + meta.maxChars + ')]}</span>';
 			} else {
 				documentAttributes += '<span class="field-value"> {' + meta.id + '}</span>';
 			}

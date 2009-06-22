@@ -152,12 +152,8 @@ Sbi.browser.DocumentsBrowser = function(config) {
     
     this.detailPanel.addListener('onfolderload', this.onFolderLoad, this);
     this.detailPanel.addListener('ondocumentclick', this.onDocumentClick, this);
-    this.detailPanel.addListener('ondocumentactionrequest', this.onDocumentActionRequest, this);
-    
     
     this.detailPanel.addListener('onfolderclick', this.onFolderClick, this);
-    this.detailPanel.addListener('onfolderactionrequest', this.onFolderActionRequest, this);
-    
     this.detailPanel.addListener('onbreadcrumbclick', this.onBreadCrumbClick, this);
     
     this.searchPanel.addListener('onsearch', this.onSearch, this);
@@ -222,17 +218,10 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 		executionPanel.execute(r);
 	}
 	
-	, onDocumentActionRequest: function(panel, r, action) {
-		alert('action [' + action +'] performed on document ' + r.id);
-	}
-	
 	, onFolderClick: function(panel, r) {
 		this.selectFolder(r.id);
 	}
 	
-	, onFolderActionRequest: function(panel, r, action) {
-		alert('action [' + action +'] performed on folder ' + r.id);
-	}
 	
 	, onBreadCrumbClick: function(panel, b) {
 		this.selectFolder(b.id);

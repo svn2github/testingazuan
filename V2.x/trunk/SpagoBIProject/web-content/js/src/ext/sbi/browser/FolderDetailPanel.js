@@ -43,6 +43,10 @@ Sbi.browser.FolderDetailPanel = function(config) {
 		serviceName: 'GET_FOLDER_PATH_ACTION'
 		, baseParams: params
 	});
+	this.services['deleteDocument'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'DELETE_OBJECT_ACTION'
+		, baseParams: params
+	});
 	
 	
   
@@ -143,7 +147,7 @@ Sbi.browser.FolderDetailPanel = function(config) {
     
     Sbi.browser.FolderDetailPanel.superclass.constructor.call(this, c);   
     
-    this.addEvents("onfolderload", "ondocumentclick", "ondocumentactionrequest", "onfolderclick", "onfolderactionrequest", "onbreadcrumbclick");
+    this.addEvents("onfolderload", "ondocumentclick", "beforeperformactionondocument", "onfolderclick", "beforeperformactiononfolder", "onbreadcrumbclick");
     
     //this.store.load();   
     this.loadFolder(config.folderId, config.folderId);
@@ -160,6 +164,7 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     , toolbar: null
     , folderView: null
     , loadingMask: null
+    , folderId: null
     
     , toggleDisplayModality: function() {
       this.loadingMask.show();
@@ -195,6 +200,9 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     }
     
     , loadFolder: function(folderId, rootFolderId) {
+      
+      this.folderId = folderId;	
+      
       var p = {};
       
       if(folderId) {
@@ -340,19 +348,19 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     	var r = this.folderView.getRecord(i);
     	if(r.engine) {
     		if(action !== null) {
-    			this.fireEvent('ondocumentactionrequest', this, r, action, e);
+    			this.performActionOnDocument(r, action);
     		} else {
     			this.fireEvent('ondocumentclick', this, r, e);
     		}
     	} else{
     		if(action !== null) {
-    			this.fireEvent('onfolderactionrequest', this, r, action, e);
+    			this.performActionOnFolder(r, action);
     		} else {
     			this.fireEvent('onfolderclick', this, r, e);
     		}
     	}      
     }
-    
+   
     , sort : function(groupName, attributeName) {
     	if(this.loadingMask) this.loadingMask.show();
     	//alert('sort: ' + groupName + ' - ' + attributeName);
@@ -373,6 +381,59 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     	this.folderView.filter(type);
     	if(this.loadingMask) this.loadingMask.hide();
     }
+    
+    , deleteDocument: function(docId) {
+    	
+    	var p = {};
+        
+        if(docId) {
+      	  p.docId = docId;
+      	  p.folderId = this.folderId;
+        }
+        
+    	Ext.Ajax.request({
+             url: this.services['deleteDocument'],
+             params: p,
+             callback : function(options , success, response){
+    			 //alert(options.params.docId));
+	       	  	 if(success && response !== undefined) {   
+	   	      		if(response.responseText !== undefined) {
+	   	      			Ext.MessageBox.show({
+		      				title: 'Status',
+		      				msg: 'Documnt/s deleted succesfully',
+		      				modal: false,
+		      				buttons: Ext.MessageBox.OK,
+		      				width:300,
+		      				icon: Ext.MessageBox.INFO 			
+		      			});
+	   	      			this.loadFolder(this.folderId);
+	   	      		} else {
+	   	      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+	   	      		}
+	       	  	}
+             },
+             scope: this,
+     		 failure: Sbi.exception.ExceptionHandler.handleFailure      
+       });
+    }
+    
+    
+    , performActionOnDocument: function(docRecord, action) {
+    	if(this.fireEvent('beforeperformactionondocument', this, docRecord, action) !== false){
+    		if(action === 'delete') {
+    			alert(docRecord.id + '; ' + this.folderId);
+    			this.deleteDocument(docRecord.id);
+    		}
+    	}
+    }
+    
+    , performActionOnFolder: function(dirRecord, action) {
+    	if(this.fireEvent('beforeperformactiononfolder', this, dirRecord, action) !== false){
+    	}
+    }
+    
+    
+    
     
    
 });

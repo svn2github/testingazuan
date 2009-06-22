@@ -21,11 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
+import java.io.IOException;
+
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
-import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -34,20 +39,14 @@ import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
-import java.io.IOException;
-
-import org.apache.log4j.Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * @author Bernabei Angelo (angelo.bernabei@eng.it)
  */
 public class DeleteObjectAction extends AbstractSpagoBIAction {
 
 	public static final String SERVICE_NAME = "DELETE_OBJECT_ACTION";
-	public static final String OBJECT_ID = "obj_id";
-	public static final String FUNCT_ID = "fun_id";
+	public static final String OBJECT_ID = "docId";
+	public static final String FUNCT_ID = "folderId";
 
 	// logger component
 	private static Logger logger = Logger.getLogger(DeleteObjectAction.class);
@@ -56,9 +55,6 @@ public class DeleteObjectAction extends AbstractSpagoBIAction {
 		logger.debug("IN");
 
 		try {
-			// retrieving execution instance from session, no need to check if
-			// user is able to execute the current document
-			ExecutionInstance executionInstance = getContext().getExecutionInstance(ExecutionInstance.class.getName());
 			// BIObject obj = executionInstance.getBIObject();
 			UserProfile userProfile = (UserProfile) this.getUserProfile();
 			IBIObjectDAO dao = null;
@@ -84,7 +80,10 @@ public class DeleteObjectAction extends AbstractSpagoBIAction {
 					logger.error("BIObject with id = " + id + " not found", e);
 					throw new SpagoBIServiceException(SERVICE_NAME, "Customized view not found", e);
 				}
-
+				
+				boolean debug;
+				debug = userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN);
+				debug = ObjectsAccessVerifier.canDev(biObject.getStateCode(), iFunc, userProfile);
 				if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) ||
 						ObjectsAccessVerifier.canDev(biObject.getStateCode(), iFunc, userProfile)) {
 					// delete document

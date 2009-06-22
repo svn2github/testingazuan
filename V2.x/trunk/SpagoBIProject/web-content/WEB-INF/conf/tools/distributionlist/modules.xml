@@ -88,6 +88,7 @@
 	      	<SELECT_CAPTION popup="TRUE" popupW="700" popupH="300" popupCandR="FALSE" confirm="FALSE" image="/img/detail.gif" label="SBISet.ListDL.detailCaption">
 	          	  <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListUserPage"/>
 		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
+		           <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
 		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	        </SELECT_CAPTION>
 	        <ALREADYREGISTERED_CAPTION image="/img/button_ok.gif" label="SBISet.ListDL.alreadyRegisteredCaption">
@@ -156,6 +157,7 @@
 	      	<SELECT_CAPTION popup="TRUE" popupW="700" popupH="300" popupCandR="FALSE" confirm="FALSE" image="/img/detail.gif" label="SBISet.ListDL.detailCaption">
 	          	  <PARAMETER name="PAGE" scope="" type="ABSOLUTE" value="DetailDistributionListUserPage"/>
 		          <PARAMETER name="MESSAGEDET" scope="" type="ABSOLUTE" value="DETAIL_SELECT"/>
+		          <PARAMETER name="LIGHT_NAVIGATOR_DISABLED" scope="" type="ABSOLUTE" value="true"/>
 		          <PARAMETER name="DL_ID" scope="LOCAL" type="RELATIVE" value="ID"/>
 	        </SELECT_CAPTION>
 	        <ALREADYREGISTERED_CAPTION image="/img/button_ok.gif" label="SBISet.ListDL.alreadyRegisteredCaption">

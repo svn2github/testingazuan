@@ -255,7 +255,7 @@ public interface ILowFunctionalityDAO {
 	 * 
 	 * @throws EMFUserError the EMF user error
 	 */
-	public List loadUserFunctionalities(boolean onlyFirstLevel, boolean recoverBIObjects,  IEngUserProfile profile) throws EMFUserError;
+	public List loadUserFunctionalities(Integer parentId, boolean recoverBIObjects,  IEngUserProfile profile) throws EMFUserError;
 	
 
 	/**

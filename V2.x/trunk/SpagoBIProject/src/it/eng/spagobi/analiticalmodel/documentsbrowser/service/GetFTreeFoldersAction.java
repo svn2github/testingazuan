@@ -71,13 +71,22 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction {
 			SessionContainer permCont = sessCont.getPermanentContainer();
 			IEngUserProfile profile = (IEngUserProfile)permCont.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 			
+			/*
 			if (nodeId.equalsIgnoreCase(ROOT_NODE_ID)) {
 				//getting all I° level folders
 				folders = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(true, false, profile);	
 			} else {
 				//getting children folders
 				folders = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(new Integer(nodeId), false);	
+			}*/
+			if (nodeId.equalsIgnoreCase(ROOT_NODE_ID)) {
+				//getting all I° level folders
+				folders = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(null, false, profile);	
+			} else {
+				//getting children folders
+				folders = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(new Integer(nodeId), false, profile);		
 			}
+			
 			JSONArray jsonFTree = new JSONArray();
 			jsonFTree = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( folders );
 

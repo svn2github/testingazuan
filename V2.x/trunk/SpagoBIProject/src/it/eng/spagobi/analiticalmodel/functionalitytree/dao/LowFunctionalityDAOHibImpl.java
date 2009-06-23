@@ -1135,7 +1135,6 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			tx = aSession.beginTransaction();
 					
 			// loads sub functionalities
-			//Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.parentFunct.functId = " + parentId);
 			Query hibQuery = aSession.createQuery(" from SbiFunctions s where s.parentFunct.functId = ?" );
 			hibQuery.setInteger(0, parentId.intValue());
 			List hibList = hibQuery.list();
@@ -1267,7 +1266,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 	 * 
 	 * @see it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO#loadAllLowFunctionalities(boolean)
 	 */
-	public List loadUserFunctionalities(boolean onlyFirstLevel, boolean recoverBIObjects, IEngUserProfile profile) throws EMFUserError {
+	public List loadUserFunctionalities(Integer parentId, boolean recoverBIObjects, IEngUserProfile profile) throws EMFUserError {
 		logger.debug( "IN" );
 		Session aSession = null;
 		Transaction tx = null;
@@ -1286,6 +1285,7 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			} catch (Exception e) {
 				logger.error("Error while recovering user profile", e);
 			}
+			boolean onlyFirstLevel = (parentId == null)? true : false;
 			
 			Query hibQuery = null;
 			
@@ -1298,6 +1298,8 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				lstParentId = hibQuery.list();
 				tmpParentId = (lstParentId==null || lstParentId.size() == 0)?new Integer("-1"):((SbiFunctions)lstParentId.get(0)).getFunctId();
 			}
+			else
+				tmpParentId = parentId;
 			
 			//getting functionalities
 			if(username == null || roles == null) {
@@ -1309,9 +1311,9 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 				hibQuery.setInteger(0, tmpParentId.intValue());
 				hibQuery.setString(1, "/"+username);
 			} else{
-				hibQuery = aSession.createQuery(" from SbiFunctions s where (s.functTypeCd = 'LOW_FUNCT'  or s.path like ? ) " +											
+				hibQuery = aSession.createQuery(" from SbiFunctions s where (s.functTypeCd = 'LOW_FUNCT' and s.parentFunct.functId = ?  ) " +											
 												" order by s.parentFunct.functId, s.prog");
-				hibQuery.setString(0, "/"+username);
+				hibQuery.setInteger(0, tmpParentId.intValue());
 			}
 			List hibList = hibQuery.list();	
 			

@@ -116,10 +116,13 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			JSONObject documentsResponseJSON =  createJSONResponseDocuments(documentsJSON);
 			
 			//getting children folders
+			/*
 			if (isRoot)
 				functionalities = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(true, false, profile);	
 			else
 				functionalities = DAOFactory.getLowFunctionalityDAO().loadChildFunctionalities(Integer.valueOf(functID), false);	
+			*/
+			functionalities = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(Integer.valueOf(functID), false, profile);
 			
 			JSONArray foldersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( functionalities );			
 			JSONObject foldersResponseJSON =  createJSONResponseFolders(foldersJSON);

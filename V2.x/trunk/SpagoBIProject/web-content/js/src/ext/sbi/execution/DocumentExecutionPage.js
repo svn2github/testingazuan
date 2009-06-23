@@ -331,7 +331,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		    this.autoWidth();
 		  }
 		});
-		alert(executionInstance.document.exporters);
+		//alert(executionInstance.document.exporters);
 		//executionInstance.document.exporters = ['PDF','XLS','CSV','XML','JPG','TXT','PPT'];
 		if(executionInstance.document.exporters){
 			if ( executionInstance.document.typeCode == 'KPI' && executionInstance.document.exporters.contains('PDF')) {

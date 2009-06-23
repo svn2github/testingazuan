@@ -146,6 +146,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	var object = {id: <%= obj != null ? obj.getId() : "undefined" %>
 			, label: <%= obj != null ? ("'" + obj.getLabel() + "'") : "undefined" %>
+			, name: <%= obj != null ? ("'" + obj.getName().replaceAll("'", "\'") + "'") : "undefined" %>
 			, typeCode: <%= obj != null ? ("'" + obj.getBiObjectTypeCode() + "'") : "undefined" %>
 			, exporters: <%= (obj != null && obj.equals("")) ? exportersJSArray : "undefined" %>
 			};
@@ -157,8 +158,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var snaphost = {'name': snapshotName, 'historyNumber': snapshotHistoryNumber};
 	
     var config = {
-    	title: object.label
-    	, preferences: {
+    	preferences: {
 			parameters: parameters
 			, subobject: subobject
 			, snapshot: snaphost

@@ -217,6 +217,15 @@ public class BarCharts extends ChartImpl {
 			}
 
 		}
+		if (listAtts.size() == 0){
+			if (name.indexOf("$F{") >= 0){
+				setTitleParameter("");
+			}
+			if (getSubName().indexOf("$F") >= 0){
+				setSubTitleParameter("");
+			}
+		}
+			
 		
 		logger.debug("OUT");
 		DatasetMap datasets=new DatasetMap();

@@ -815,8 +815,8 @@ public class ChartImpl implements IChart {
 					SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
 					String nameP=new String(object.getKey());
-					String value=new String((String)object.getValue());
-					if(nameP.equalsIgnoreCase(parName))
+					String value=(object.getValue()==null)?" ":new String((String)object.getValue());
+					if (nameP.equalsIgnoreCase(parName))
 					{
 						int pos = tmpTitle.indexOf("$F{"+parName+"}") + (parName.length()+4);
 						setSubName(getSubName().replace("$F{" + parName + "}", value));
@@ -829,7 +829,36 @@ public class ChartImpl implements IChart {
 		catch (Exception e) {
 			logger.error("Error in parameters Title");
 		}
-
+	}
+	
+	public void setSubTitleParameter(String attValue) {
+		try{
+			String tmpTitle=new String(getSubName());
+			if (tmpTitle.indexOf("$F{") >= 0){
+				String parName = tmpTitle.substring(tmpTitle.indexOf("$F{")+3, tmpTitle.indexOf("}"));
+				int pos = tmpTitle.indexOf("$F{"+parName+"}") + (parName.length()+4);
+				setSubName(getSubName().replace("$F{" + parName + "}", attValue));
+				tmpTitle = tmpTitle.substring(pos);
+			}
+		}
+		catch (Exception e) {
+			logger.error("Error in parameters Title");
+		}
+	}
+	
+	public void setTitleParameter(String attValue) {
+		try{
+			String tmpTitle=new String(getName());
+			if (tmpTitle.indexOf("$F{") >= 0){
+				String parName = tmpTitle.substring(tmpTitle.indexOf("$F{")+3, tmpTitle.indexOf("}"));
+				int pos = tmpTitle.indexOf("$F{"+parName+"}") + (parName.length()+4);
+				setSubName(getName().replace("$F{" + parName + "}", attValue));
+				tmpTitle = tmpTitle.substring(pos);
+			}
+		}
+		catch (Exception e) {
+			logger.error("Error in parameters Title");
+		}
 	}
 
 	

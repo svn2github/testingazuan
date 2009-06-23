@@ -198,6 +198,14 @@ public class OverlaidBarLine extends BarCharts {
 
 
 		}
+		if (listAtts.size() == 0){
+			if (name.indexOf("$F{") >= 0){
+				setTitleParameter("");
+			}
+			if (getSubName().indexOf("$F") >= 0){
+				setSubTitleParameter("");
+			}
+		}
 		logger.debug("OUT");
 
 		return datasetMap;

@@ -159,4 +159,10 @@ Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Enregistrer';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Notes enregistrées correctement';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Erreur pendant l\'enregistrement des notes: les notes ont étées modifiées par an autre utilisateur pendant que vous eties en train de les modifier. Reouvréz la fenetre et reessayéz!';
 
-Sbi.locale.ln['sbi.execution.kpiPdfExport'] = 'Exporter en format PDF';
+Sbi.locale.ln['sbi.execution.PdfExport'] = 'PDF';
+Sbi.locale.ln['sbi.execution.XlsExport'] = 'XLS';
+Sbi.locale.ln['sbi.execution.CsvExport'] = 'CSV';
+Sbi.locale.ln['sbi.execution.JpgExport'] = 'JPG';
+Sbi.locale.ln['sbi.execution.XmlExport'] = 'XML';
+Sbi.locale.ln['sbi.execution.pptExport'] = 'PPT';
+Sbi.locale.ln['sbi.execution.txtExport'] = 'TXT';

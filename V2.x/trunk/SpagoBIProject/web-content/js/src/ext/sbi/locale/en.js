@@ -159,4 +159,10 @@ Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Save';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Notes saved correctly';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Error while saving notes: notes have been modified by another user while you were modifing them. Please reopen this window and try again!';
 
-Sbi.locale.ln['sbi.execution.kpiPdfExport'] = 'Export in PDF format';
+Sbi.locale.ln['sbi.execution.PdfExport'] = 'PDF';
+Sbi.locale.ln['sbi.execution.XlsExport'] = 'XLS';
+Sbi.locale.ln['sbi.execution.CsvExport'] = 'CSV';
+Sbi.locale.ln['sbi.execution.JpgExport'] = 'JPG';
+Sbi.locale.ln['sbi.execution.XmlExport'] = 'XML';
+Sbi.locale.ln['sbi.execution.pptExport'] = 'PPT';
+Sbi.locale.ln['sbi.execution.txtExport'] = 'TXT';

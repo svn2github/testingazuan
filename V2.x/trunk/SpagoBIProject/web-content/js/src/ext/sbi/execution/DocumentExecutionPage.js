@@ -266,6 +266,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			}));
 		}
 		
+		alert(executionInstance.document.exporters);
+		//executionInstance.document.exporters = ['PDF','XLS','CSV','XML','JPG','TXT','PPT'];
 		if(executionInstance.document.exporters){
 			if ( executionInstance.document.typeCode == 'KPI' && executionInstance.document.exporters.contains('PDF')) {
 				this.toolbar.addButton(new Ext.Toolbar.Button({
@@ -276,7 +278,9 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				}));
 			}else if( executionInstance.document.typeCode == 'REPORT') {
 					var menuItems = new Array();
+					alert(executionInstance.document.exporters.length);
 					for(i=0;i<executionInstance.document.exporters.length ;i++){
+						alert(executionInstance.document.exporters[i]);
 						if (executionInstance.document.exporters[i]=='PDF'){
 						menuItems.push(	new Ext.menu.Item({
 				                            id: ''
@@ -284,7 +288,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-pdf' 
 									     	, scope: this
-									     	, width: 35
+									     
 									    	, handler : function() { this.exportReportExecution('PDF'); }
 											, href: ''   
 				                        })	 
@@ -296,7 +300,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-xls' 
 									     	, scope: this
-									     	, width: 35
+									
 									    	, handler : function() { this.exportReportExecution('XLS'); }
 											, href: ''   
 				                        })	
@@ -308,7 +312,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-csv' 
 									     	, scope: this
-									     	, width: 35
+									  
 									    	, handler : function() { this.exportReportExecution('CSV'); }
 											, href: ''   
 				                        })	
@@ -320,7 +324,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-xml' 
 									     	, scope: this
-									     	, width: 35
+									     
 									    	, handler : function() { this.exportReportExecution('XML'); }
 											, href: ''   
 				                        })	
@@ -332,7 +336,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-jpg' 
 									     	, scope: this
-									     	, width: 35
+									    
 									    	, handler : function() { this.exportReportExecution('JPG'); }
 											, href: ''   
 				                        })	
@@ -344,7 +348,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-txt' 
 									     	, scope: this
-									     	, width: 35
+									     	
 									    	, handler : function() { this.exportReportExecution('TXT'); }
 											, href: ''   
 				                        })	
@@ -356,7 +360,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-ppt' 
 									     	, scope: this
-									     	, width: 35
+									     
 									    	, handler : function() { this.exportReportExecution('PPT'); }
 											, href: ''   
 				                        })	
@@ -375,7 +379,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 									, path: 'Exporters'	
 									, iconCls: 'icon-export' 	
 						            , menu: menu0
-						            , width: 35
+						           
 						            , cls: 'x-btn-menubutton x-btn-text-icon bmenu '
 						        })					    				        				
 					);	

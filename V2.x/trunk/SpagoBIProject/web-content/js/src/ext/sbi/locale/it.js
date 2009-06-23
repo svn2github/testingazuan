@@ -71,6 +71,7 @@ Sbi.locale.ln['sbi.execution.roleselection.loadingmsg']  = 'Caricamento ruoli ..
 Sbi.locale.ln['sbi.execution.roleselection.toolbar.next']  = 'Conferma ruolo selezionato';
 
 Sbi.locale.ln['sbi.execution.parametersselection.loadingmsg']  = 'Caricamento parametri ...';
+Sbi.locale.ln['sbi.execution.parametersselection.noParametersToBeFilled']  = '[Il documento non ha parametri da valorizzare]';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.back']  = 'Cambia il ruolo selezionato';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.clear']  = 'Cancella valori inseriti nel form dei parametri';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.save']  = 'Salva valori inseriti nel form dei parametri come viewpoint';

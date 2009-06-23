@@ -202,8 +202,6 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
 		
-		
-	
 		for(p in this.fields) {
 			var el = this.fields[p].el.up('.x-form-item');
 			this.columns[this.fields[p].columnNo].remove( this.fields[p], true );
@@ -211,6 +209,10 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		}
 		
 		this.fields = {};
+		var preferenceState = undefined;
+		if (this.parametersPreference) {
+			preferenceState = Ext.urlDecode(this.parametersPreference);
+		}
 		
 		var nonTransientField = 0;
 		for(var i = 0; i < parameters.length; i++) {
@@ -219,11 +221,32 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 				field.isTransient = true;
 				field.setValue(parameters[i].value);
 				this.fields[parameters[i].id] = field;
+			} else if (preferenceState !== undefined && preferenceState[parameters[i].id] !== undefined) {
+				field.isTransient = true;
+				field.setValue(preferenceState[parameters[i].id]);
+				this.fields[parameters[i].id] = field;
 			} else {
 				field.isTransient = false;
 				field.columnNo = (nonTransientField++)%this.columns.length;
 				this.fields[parameters[i].id] = field;
 				this.columns[field.columnNo].add( field );
+			}
+		}
+		
+		
+		if(parameters.length == 0) {
+			Ext.DomHelper.append(this.body, '<div class="x-grid-empty">' + LN('sbi.execution.parametersselection.noParametersToBeFilled') + '</div>');
+		} else {
+			var thereAreParametersToBeFilled = false;
+			var o = this.getFormState();
+			for(p in o) {
+				if(this.fields[p].isTransient === false) {
+					thereAreParametersToBeFilled = true;
+					break;
+				}
+			}
+			if(thereAreParametersToBeFilled !== true) {
+				Ext.DomHelper.append(this.body, '<div class="x-grid-empty">' + LN('sbi.execution.parametersselection.noParametersToBeFilled') + '</div>');
 			}
 		}
 		
@@ -276,7 +299,8 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		
 		if(parameters.length == 0) {
 			this.fireEvent('readyforexecution', this);
-		} else if (this.parametersPreference) {
+		} else 
+		/*if (this.parametersPreference) {
 			var readyForExecution = true;
 			var preferenceState = Ext.urlDecode(this.parametersPreference);
 			this.setFormState(preferenceState);
@@ -290,7 +314,9 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			if(readyForExecution === true) {
 				this.fireEvent('readyforexecution', this);
 			}
-		} else {
+		} else 
+		*/
+		{
 			var readyForExecution = true;
 			var o = this.getFormState();
 			for(p in o) {

@@ -57,6 +57,7 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	
 	this.maskOnRender = c.maskOnRender;
 	
+	// variables for preferences and for shortcuts/parameters panel synchronization
 	this.isParameterPanelReady = false;
 	this.isSubobjectPanelReady = false;
 	this.preferenceSubobjectId = null;

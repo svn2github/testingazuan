@@ -81,6 +81,7 @@ Sbi.locale.ln['sbi.execution.roleselection.loadingmsg']  = 'Chargement des roles
 Sbi.locale.ln['sbi.execution.roleselection.toolbar.next']  = 'Confirmation du role selectionné';
 
 Sbi.locale.ln['sbi.execution.parametersselection.loadingmsg']  = 'Loading parameters ...';
+Sbi.locale.ln['sbi.execution.parametersselection.noParametersToBeFilled']  = '[Le document n\'a pas de paramètres à valoriser]';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.back']  = 'Change selected role';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.clear']  = 'Reset parameters form';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.save']  = 'Enregistres parametres form state comme viewpoint';
@@ -106,7 +107,7 @@ Sbi.locale.ln['sbi.execution.viewpoints.scope'] = 'scope';
 Sbi.locale.ln['sbi.execution.viewpoints.msg.saved'] = 'Paramètres enregistré correctement';
 
 Sbi.locale.ln['sbi.execution.snapshots.title'] = 'Executions Schedulées';
-Sbi.locale.ln['sbi.execution.subobjects.emptyText'] = '[Le document n\'a pas de executions schedulées]';
+Sbi.locale.ln['sbi.execution.snapshots.emptyText'] = '[Le document n\'a pas de executions schedulées]';
 Sbi.locale.ln['sbi.execution.snapshots.name'] = 'nom';
 Sbi.locale.ln['sbi.execution.snapshots.description'] = 'description';
 Sbi.locale.ln['sbi.execution.snapshots.creationDate'] = 'date de creation';

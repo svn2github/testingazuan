@@ -81,6 +81,7 @@ Sbi.locale.ln['sbi.execution.roleselection.loadingmsg']  = 'Loading roles ...';
 Sbi.locale.ln['sbi.execution.roleselection.toolbar.next']  = 'Confirm role selection';
 
 Sbi.locale.ln['sbi.execution.parametersselection.loadingmsg']  = 'Loading parameters ...';
+Sbi.locale.ln['sbi.execution.parametersselection.noParametersToBeFilled']  = '[Document has no parameters to be filled]';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.back']  = 'Change selected role';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.clear']  = 'Reset parameters form';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.save']  = 'Save parameters form state as viewpoint';

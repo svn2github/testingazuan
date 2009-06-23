@@ -72,54 +72,61 @@ public class DocumentCompositionUtils {
 	 */
 	public static String getExecutionUrl(String objLabel, SessionContainer sessionContainer, SourceBean requestSB) {
 		logger.debug("IN");
-		 // get the user profile from session
-		SessionContainer permSession = sessionContainer.getPermanentContainer();
-	    IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	    String urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserId().toString()) + 
-		//String urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserUniqueIdentifier().toString()) + 
-				"&PAGE=ExecuteBIObjectPage&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "=true&"
-				+ ObjectsTreeConstants.OBJECT_LABEL + "=" + objLabel + "&" 
-				+ ObjectsTreeConstants.MODALITY + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION;
-	    // get the execution role
-	    CoreContextManager contextManager = new CoreContextManager(new SpagoBISessionContainer(sessionContainer), 
-				new LightNavigatorContextRetrieverStrategy(requestSB));
-	    ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
-		String executionRole = instance.getExecutionRole();
-		urlReturn += "&" + SpagoBIConstants.ROLE + "=" + executionRole;
-		// identity string for context
-	    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-	    UUID uuid = uuidGen.generateRandomBasedUUID();
-	    urlReturn += "&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + uuid.toString();
-
-		//get object configuration
-		DocumentCompositionConfiguration docConfig = null;
-	    docConfig = (DocumentCompositionConfiguration) contextManager.get("docConfig");
-	    
-	    Document document = null;
-		//get correct document configuration
-		List lstDoc = docConfig.getLabelsArray();
-		boolean foundDoc = false;
-		for (int i = 0; i < lstDoc.size(); i++){
-			document = (Document)docConfig.getDocument((String)lstDoc.get(i)); 
-			if (document != null){
-				if (!objLabel.equalsIgnoreCase(document.getSbiObjLabel()))
-					continue;
-				else{
-					foundDoc = true;
-					break;
+		 String urlReturn = "";
+		try{
+			 // get the user profile from session
+			SessionContainer permSession = sessionContainer.getPermanentContainer();
+		    IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		    urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserId().toString()) + 
+			//String urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserUniqueIdentifier().toString()) + 
+					"&PAGE=ExecuteBIObjectPage&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "=true&"
+					+ ObjectsTreeConstants.OBJECT_LABEL + "=" + objLabel + "&" 
+					+ ObjectsTreeConstants.MODALITY + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION;
+		    // get the execution role
+		    CoreContextManager contextManager = new CoreContextManager(new SpagoBISessionContainer(sessionContainer), 
+					new LightNavigatorContextRetrieverStrategy(requestSB));
+		    ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+			String executionRole = instance.getExecutionRole();
+			urlReturn += "&" + SpagoBIConstants.ROLE + "=" + executionRole;
+			// identity string for context
+		    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		    UUID uuid = uuidGen.generateRandomBasedUUID();
+		    urlReturn += "&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + uuid.toString();
+	
+			//get object configuration
+			DocumentCompositionConfiguration docConfig = null;
+		    docConfig = (DocumentCompositionConfiguration) contextManager.get("docConfig");
+		    
+		    Document document = null;
+			//get correct document configuration
+			List lstDoc = docConfig.getLabelsArray();
+			boolean foundDoc = false;
+			for (int i = 0; i < lstDoc.size(); i++){
+				document = (Document)docConfig.getDocument((String)lstDoc.get(i)); 
+				if (document != null){
+					if (!objLabel.equalsIgnoreCase(document.getSbiObjLabel()))
+						continue;
+					else{
+						foundDoc = true;
+						break;
+					}
 				}
 			}
+			if (!foundDoc){
+				List l = new ArrayList();
+				l.add(objLabel);
+				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
+				logger.error("The object with label " + objLabel + " hasn't got a document into template" );
+				return "1002|"; 
+			}
+			urlReturn += getParametersUrl(document, requestSB, instance);
+			//adds '|' char for management error into jsp if is necessary.
+			logger.debug("urlReturn: " + "|"+urlReturn);
+		}catch(Exception ex){
+			logger.error("Error while getting execution url: " + ex);
+			return null;
 		}
-		if (!foundDoc){
-			List l = new ArrayList();
-			l.add(objLabel);
-			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
-			logger.error("The object with label " + objLabel + " hasn't got a document into template" );
-			return "1002|"; 
-		}
-		urlReturn += getParametersUrl(document, requestSB, instance);
-		//adds '|' char for management error into jsp if is necessary.
-		logger.debug("urlReturn: " + "|"+urlReturn);
+		
 		logger.debug("OUT");
 		return "|"+urlReturn;
 	}
@@ -138,32 +145,44 @@ public class DocumentCompositionUtils {
 		//set others parameters value
 		Properties lstParams = document.getParams();
 		String key = "";
-		String value = "";
+		List values = new ArrayList();
+		String singleValue = "";
 		int cont = 0;
-		//while(enParams.hasMoreElements()) {
-		for (int i=0; i<lstParams.size(); i++) {
-			String typeParam =  lstParams.getProperty("type_par_"+document.getNumOrder()+"_"+cont);
-			//only for parameter in input to the document managed (type equal 'IN')
-			if (typeParam != null && typeParam.indexOf("IN")>=0) {
-		    	String tmpKey = "sbi_par_label_param_"+document.getNumOrder()+"_"+cont;
-	    		key = lstParams.getProperty(tmpKey);
-	    		if (key == null) break;
-	    		value = (String)requestSB.getAttribute(key);
-	    		//if value isn't defined, check if there is a value into the instance(there is when a document is called from a refresh o viewpoint mode) 
-	    		if((value == null || value.equals(""))){
-	    			value = getInstanceValue(key, instance);
-	    		}
-	    		//if value isn't defined, gets the default value from the template
-			    if(value == null || value.equals("")){
-				    value = lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont));
-		    	}
-			    if (value.equals("%")) value = "%25";
-			    else if (value.equals(";%")) value = ";%25";
-			    if (value != null && !value.equals(""))
-			    	paramUrl += "&" + key + "=" + value;
-			    cont++;
-			}
-	    }
+		
+		try{
+			//while(enParams.hasMoreElements()) {
+			for (int i=0; i<lstParams.size(); i++) {
+				String typeParam =  lstParams.getProperty("type_par_"+document.getNumOrder()+"_"+cont);
+				//only for parameter in input to the document managed (type equal 'IN')
+				if (typeParam != null && typeParam.indexOf("IN")>=0) {
+			    	String tmpKey = "sbi_par_label_param_"+document.getNumOrder()+"_"+cont;
+		    		key = lstParams.getProperty(tmpKey);
+		    		if (key == null) break;
+		    		values = (List)requestSB.getAttributeAsList(key);
+		    		//if value isn't defined, check if there is a value into the instance(there is when a document is called from a refresh o viewpoint mode) 
+		    		if((values == null || values.equals(""))){
+		    			values = getInstanceValue(key, instance);
+		    		}
+		    		//if value isn't defined, gets the default value from the template
+				    if(values == null || values.size() == 0){
+				    	values.add(lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont)));
+			    	}
+				    
+				    for (int j=0; j < values.size(); j++){
+				    	singleValue = (String)values.get(j);
+				    	if (singleValue.equals("%")) singleValue = "%25";
+				    //	 else if (values.equals(";%")) values = ";%25";
+				    	if (singleValue != null && !singleValue.equals(""))
+					    	paramUrl += "&" + key + "=" + singleValue;
+				    }
+				    cont++;
+				}
+			 }
+		}catch(Exception ex){
+			logger.error("Error while getting parameter's document " + document.getSbiObjLabel() + " param: " + key + ": " + ex);
+			return null;
+		}
+	   
 		/*
 		if (forInternalEngine)
 			paramUrl = paramUrl.substring(0, paramUrl.length()-3); 
@@ -193,15 +212,15 @@ public class DocumentCompositionUtils {
 		return retHM;
 	}
 	
-	private static String getInstanceValue(String key, ExecutionInstance instance){
-		String retVal = "";
+	private static List getInstanceValue(String key, ExecutionInstance instance){
+		List retVal = new ArrayList();
 		BIObject obj = instance.getBIObject();
 		List objPars = obj.getBiObjectParameters();
 		
 		for (int i=0; i < objPars.size(); i++){
 			BIObjectParameter objPar = (BIObjectParameter)objPars.get(i);
 			if (objPar.getParameterUrlName().equalsIgnoreCase(key)){
-				retVal = (objPar.getParameterValues()==null)?"":(String)objPar.getParameterValues().get(0);
+				retVal.add((objPar.getParameterValues()==null)?"":(String)objPar.getParameterValues().get(0));
 				break;
 			}
 		}

@@ -111,7 +111,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// Audit Update
 		if(executionAuditId!=null){
 			auditManager2.updateAudit(executionAuditId, null, new Long(System.currentTimeMillis()), "EXECUTION_FAILED", e
-			    .getMessage(), null);		
+			    .getMessage(), null);	
+		logger.error(e);
 	   }
 	return;    
 	}

@@ -59,6 +59,7 @@ function execCrossNavigation(windowName, label, parameters) {
 	var baseName = "iframe_";
 	var labelDocClicked = windowName.substring(baseName.length);
 	var tmpUrl = "";
+	var reload = false;
 	
 	for(var docMaster in asUrls){
 		var sbiLabelMasterDoc = docMaster;
@@ -101,6 +102,7 @@ function execCrossNavigation(windowName, label, parameters) {
 									sbiParMaster = asLinkedFields["SBI_LABEL_PAR_MASTER__" + idPar.substring(0,4)];   
 									tmpNewValue = paramsNewValues[j];
 									if (tmpNewValue.substring(0, tmpNewValue.indexOf("=")) == sbiParMaster){
+										reload = true; //reload only if document target has the parameter inline
 										tmpNewValue = tmpNewValue.substring(tmpNewValue.indexOf("=")+1);
 										var paramsOldValues = null;
 									 	paramsOldValues = tmpUrl.split("&");
@@ -128,11 +130,14 @@ function execCrossNavigation(windowName, label, parameters) {
 						}
 					} //for (var fieldLabel in asLinkedFields){ 	
 					//updated general url  with new values
-					asUrls[generalLabelDoc][0]=newUrl[0];
-					RE = new RegExp("&amp;", "ig");
-					var lastUrl = newUrl[0];
-					lastUrl = lastUrl.replace(RE, "&");
-					sendUrl(nameIframe,lastUrl);
+					if (reload){
+						asUrls[generalLabelDoc][0]=newUrl[0];
+						RE = new RegExp("&amp;", "ig");
+						var lastUrl = newUrl[0];
+						lastUrl = lastUrl.replace(RE, "&");
+						sendUrl(nameIframe,lastUrl);
+						reload = false; 
+					}
 				}//if (docLabel.indexOf(sbiLabelMasterDoc) >= 0){
 			}//for (var docLabel in asLinkedDocs){ 
 		}

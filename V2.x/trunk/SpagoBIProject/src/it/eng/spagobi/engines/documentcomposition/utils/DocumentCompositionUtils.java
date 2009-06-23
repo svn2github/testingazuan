@@ -160,11 +160,11 @@ public class DocumentCompositionUtils {
 		    		if (key == null) break;
 		    		values = (List)requestSB.getAttributeAsList(key);
 		    		//if value isn't defined, check if there is a value into the instance(there is when a document is called from a refresh o viewpoint mode) 
-		    		if((values == null || values.equals(""))){
+		    		if(values == null || values.size() == 0 || ((String)values.get(0)).equals("")){
 		    			values = getInstanceValue(key, instance);
 		    		}
 		    		//if value isn't defined, gets the default value from the template
-				    if(values == null || values.size() == 0){
+				    if(values == null || values.size() == 0 || ((String)values.get(0)).equals("")){
 				    	values.add(lstParams.getProperty(("default_value_param_"+document.getNumOrder()+"_"+cont)));
 			    	}
 				    

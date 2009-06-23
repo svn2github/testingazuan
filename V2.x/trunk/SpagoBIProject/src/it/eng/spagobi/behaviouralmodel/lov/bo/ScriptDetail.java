@@ -260,27 +260,75 @@ public class ScriptDetail  implements ILovDetail  {
 	 * 
 	 * @throws Exception the exception
 	 */
+//	public List getProfileAttributeNames() throws Exception {
+//		List names = new ArrayList();
+//		String script = getScript();
+//		while(script.indexOf("getSingleValueProfileAttribute(")!=-1) {
+//			int startind = script.indexOf("getSingleValueProfileAttribute(");
+//			int endind = startind + 31;
+//			int parind = script.indexOf(")", endind);
+//			String name = script.substring(endind, parind);
+//			script = script.substring(0, startind) + script.substring(parind+1);
+//			names.add(name);
+//		}
+//		while(script.indexOf("getMultiValueProfileAttribute(")!=-1) {
+//			int startind = script.indexOf("getMultiValueProfileAttribute(");
+//			int endind = startind + 30;
+//			int comaind = script.indexOf(",", endind);
+//			String name = script.substring(endind, comaind);
+//			script = script.substring(0, startind) + script.substring(comaind+1);
+//			names.add(name);
+//		}
+//		return names;
+//	}
+	
+	
+	
+	
+	/**
+	 * Gets the list of names of the profile attributes required.
+	 * 
+	 * @return list of profile attribute names
+	 * 
+	 * @throws Exception the exception
+	 */
 	public List getProfileAttributeNames() throws Exception {
 		List names = new ArrayList();
 		String script = getScript();
-		while(script.indexOf("getSingleValueProfileAttribute(")!=-1) {
-			int startind = script.indexOf("getSingleValueProfileAttribute(");
-			int endind = startind + 31;
-			int parind = script.indexOf(")", endind);
-			String name = script.substring(endind, parind);
-			script = script.substring(0, startind) + script.substring(parind+1);
-			names.add(name);
-		}
-		while(script.indexOf("getMultiValueProfileAttribute(")!=-1) {
-			int startind = script.indexOf("getMultiValueProfileAttribute(");
-			int endind = startind + 30;
-			int comaind = script.indexOf(",", endind);
-			String name = script.substring(endind, comaind);
-			script = script.substring(0, startind) + script.substring(comaind+1);
-			names.add(name);
+		while(script.indexOf("${")!=-1) {
+			int startind = script.indexOf("${");
+			int endind = script.indexOf("}", startind);
+			String attributeDef = script.substring(startind + 2, endind);
+			if(attributeDef.indexOf("(")!=-1) {
+				int indroundBrack = script.indexOf("(", startind);
+				String nameAttr = script.substring(startind+2, indroundBrack);
+				names.add(nameAttr);
+			} else {
+				names.add(attributeDef);
+			}
+			script = script.substring(endind);
 		}
 		return names;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * Checks if the lov requires one or more profile attributes.

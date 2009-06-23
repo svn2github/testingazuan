@@ -266,7 +266,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			}));
 		}
 		
-		alert(executionInstance.document.exporters);
+
 		//executionInstance.document.exporters = ['PDF','XLS','CSV','XML','JPG','TXT','PPT'];
 		if(executionInstance.document.exporters){
 			if ( executionInstance.document.typeCode == 'KPI' && executionInstance.document.exporters.contains('PDF')) {
@@ -278,9 +278,9 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				}));
 			}else if( executionInstance.document.typeCode == 'REPORT') {
 					var menuItems = new Array();
-					alert(executionInstance.document.exporters.length);
+					
 					for(i=0;i<executionInstance.document.exporters.length ;i++){
-						alert(executionInstance.document.exporters[i]);
+						
 						if (executionInstance.document.exporters[i]=='PDF'){
 						menuItems.push(	new Ext.menu.Item({
 				                            id: ''

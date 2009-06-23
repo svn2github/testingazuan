@@ -21,10 +21,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.commons.bo.Domain;
+import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.dao.IDomainDAO;
+import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.engines.config.bo.Exporters;
+import it.eng.spagobi.engines.config.dao.IEngineDAO;
 
 /**
  * @author Antonella Giachino (antonella.giachino@eng.it)
@@ -57,6 +67,7 @@ public class DocumentsJSONSerializer implements Serializer {
 	public static final String KEYWORDS = "keywords";
 	public static final String REFRESHSECONDS = "refreshSeconds";
 	public static final String ACTIONS = "actions";
+	public static final String EXPORTERS = "exporters";
 	
 	
 	public Object serialize(Object o) throws SerializationException {
@@ -96,6 +107,41 @@ public class DocumentsJSONSerializer implements Serializer {
 			result.put(KEYWORDS, obj.getKeywords());
 			result.put(REFRESHSECONDS, obj.getRefreshSeconds());
 			result.put(ACTIONS, new JSONArray());
+			 
+			Integer engineId=null;
+				Engine engineObj=obj.getEngine();
+				String exportersJSArray = "";
+				if(engineObj!=null){
+				
+					IEngineDAO engineDao=DAOFactory.getEngineDAO();
+					List exporters=new ArrayList();
+					exporters=engineDao.getAssociatedExporters(engineObj);			
+					if(!exporters.isEmpty()){
+						exportersJSArray = "[" ;
+						for (Iterator iterator = exporters.iterator(); iterator.hasNext();) {
+							
+							 Exporters exp = (Exporters) iterator.next();
+							 Integer domainId=exp.getDomainId();
+							 
+							 IDomainDAO domainDao=DAOFactory.getDomainDAO();
+							 Domain domain=domainDao.loadDomainById(domainId);
+							 if(domain!=null){
+								 String value_cd=domain.getValueCd();
+								 String urlExporter=null;	
+								 if (value_cd!=null){
+									 if(iterator.hasNext()){
+										 exportersJSArray +="'"+value_cd+"'," ;
+									 }else{
+										 exportersJSArray +="'"+value_cd+"']" ;
+									 }
+								 }
+							 }
+						}
+					}
+				}
+				
+				result.put(EXPORTERS, exportersJSArray);
+			
 			
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + o, t);

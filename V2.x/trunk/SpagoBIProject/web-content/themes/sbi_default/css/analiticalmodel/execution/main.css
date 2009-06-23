@@ -75,6 +75,34 @@
 	background-image: url('../../../img/kpi/pdf16.png') !important;
 }
 
+.icon-xls {
+	background-image: url('../../../img/xls16.png') !important;
+}
+
+.icon-txt {
+	background-image: url('../../../img/txt16.png') !important;
+}
+
+.icon-csv {
+	background-image: url('../../../img/csv16.png') !important;
+}
+
+.icon-ppt {
+	background-image: url('../../../img/ppt16.png') !important;
+}
+
+.icon-xml {
+	background-image: url('../../../img/xml16.png') !important;
+}
+
+.icon-jpg {
+	background-image: url('../../../img/jpg16.png') !important;
+}
+
+.icon-export {
+	background-image: url('../../../img/Export.gif') !important;
+}
+
 .x-form-dependent-field {
     padding:1px 3px;
     background:#DFE8F6;

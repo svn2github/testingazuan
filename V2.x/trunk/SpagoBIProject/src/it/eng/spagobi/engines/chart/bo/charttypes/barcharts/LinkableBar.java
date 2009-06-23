@@ -60,7 +60,8 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	HashMap drillParameter=null;
 	String categoryUrlName="";
 	String serieUrlname="";
-
+	boolean horizontalView=false; //false is vertical, true is horizontal
+	boolean horizontalViewConfigured=false;
 
 	private static transient Logger logger=Logger.getLogger(LinkableBar.class);
 
@@ -68,6 +69,19 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
+		
+		if(confParameters.get("orientation")!=null){	
+			String orientation=(String)confParameters.get("orientation");
+			if(orientation.equalsIgnoreCase("vertical")){
+				horizontalViewConfigured=true;
+				horizontalView=false;
+			}
+			else if(orientation.equalsIgnoreCase("horizontal")){
+				horizontalViewConfigured=true;
+				horizontalView=true;
+			}
+		}
+		
 		SourceBean drillSB = (SourceBean)content.getAttribute("DRILL");
 		if(drillSB==null){
 			drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
@@ -155,7 +169,15 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 		CategoryPlot plot = new CategoryPlot((CategoryDataset)dataset, categoryAxis, valueAxis, renderer);
 		plot.setOrientation(PlotOrientation.VERTICAL);
+		if(horizontalView)
+		{
+			plot.setOrientation(PlotOrientation.HORIZONTAL);
+		}
+		
 		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
+		
+		// set the background color for the chart...
+		chart.setBackgroundPaint(color);
 
 		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
@@ -173,7 +195,6 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 		// get a reference to the plot for further customisation...
 		//CategoryPlot plot = (CategoryPlot) chart.getPlot();
-		plot.setBackgroundPaint(Color.lightGray);
 		plot.setDomainGridlinePaint(Color.white);
 		plot.setDomainGridlinesVisible(true);
 		plot.setRangeGridlinePaint(Color.white);

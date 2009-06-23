@@ -110,14 +110,13 @@ public class DocumentsJSONSerializer implements Serializer {
 			 
 			Integer engineId=null;
 				Engine engineObj=obj.getEngine();
-				String exportersJSArray = "";
-				if(engineObj!=null){
-				
+				JSONArray prova = new JSONArray();
+				if(engineObj!=null){	
+					
 					IEngineDAO engineDao=DAOFactory.getEngineDAO();
 					List exporters=new ArrayList();
 					exporters=engineDao.getAssociatedExporters(engineObj);			
 					if(!exporters.isEmpty()){
-						exportersJSArray = "[" ;
 						for (Iterator iterator = exporters.iterator(); iterator.hasNext();) {
 							
 							 Exporters exp = (Exporters) iterator.next();
@@ -129,18 +128,14 @@ public class DocumentsJSONSerializer implements Serializer {
 								 String value_cd=domain.getValueCd();
 								 String urlExporter=null;	
 								 if (value_cd!=null){
-									 if(iterator.hasNext()){
-										 exportersJSArray +="'"+value_cd+"'," ;
-									 }else{
-										 exportersJSArray +="'"+value_cd+"']" ;
-									 }
+									 prova.put(value_cd);
 								 }
 							 }
 						}
 					}
 				}
 				
-				result.put(EXPORTERS, exportersJSArray);
+				result.put(EXPORTERS, prova);
 			
 			
 		} catch (Throwable t) {

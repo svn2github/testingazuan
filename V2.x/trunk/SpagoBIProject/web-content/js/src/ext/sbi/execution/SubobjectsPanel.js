@@ -95,6 +95,8 @@ Sbi.execution.SubobjectsPanel = function(config) {
     
     this.sm = new Ext.grid.CheckboxSelectionModel();
     
+    this.isHidden = !Sbi.user.functionalities.contains('SeeSubobjectsFunctionality');
+    
 	c = Ext.apply({}, c, {
         store: this.subObjectsStore
         , columns: [
@@ -135,6 +137,7 @@ Sbi.execution.SubobjectsPanel = function(config) {
         , autoScroll: true
         , sm : this.sm
         , height: 200
+        , hidden: this.isHidden
 	});
 	
 	// constructor
@@ -157,14 +160,20 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
     // public methods
 	
 	, synchronize: function( executionInstance ) {
-		this.subObjectsStore.load({params: executionInstance});
+		
 		this.executionInstance = executionInstance;
-		// when subobjects are loaded, must check if there a preference for a subobject execution
-		this.subObjectsStore.on(
-			'load', 
-			this.checkPreferences,
-			this
-		);
+		if (this.isHidden === false) {
+			this.subObjectsStore.load({params: executionInstance});
+			// when subobjects are loaded, must check if there a preference for a subobject execution
+			this.subObjectsStore.on(
+				'load', 
+				this.checkPreferences,
+				this
+			);
+		} else {
+			// must fire 'ready' event to inform that the panel is ready (see ParametersSelectionPage.js)
+			this.fireEvent('ready', null);
+		}
 		
 	}
 

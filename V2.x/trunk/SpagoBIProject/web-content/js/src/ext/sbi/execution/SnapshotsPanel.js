@@ -108,6 +108,8 @@ Sbi.execution.SnapshotsPanel = function(config) {
       ];
     }
     
+    this.isHidden = !Sbi.user.functionalities.contains('SeeSnapshotsFunctionality');
+    
 	c = Ext.apply({}, c, {
         store: this.snapshotsStore
         , columns: [
@@ -129,6 +131,7 @@ Sbi.execution.SnapshotsPanel = function(config) {
         , autoScroll: true
         , sm : this.sm
         , height: 200
+        , hidden: this.isHidden
 	});
 	
 	// constructor
@@ -150,16 +153,21 @@ Ext.extend(Sbi.execution.SnapshotsPanel, Ext.grid.GridPanel, {
     // public methods
 	
 	, synchronize: function( executionInstance ) {
-		this.snapshotsStore.load({params: executionInstance});
+		
 		this.executionInstance = executionInstance;
-		// when snapshots are loaded, must check if there a preference for a snapshot execution
-		//if (this.snapshotPreference !== undefined && this.snapshotPreference.name !== undefined) {
+		if (this.isHidden === false) {
+			this.snapshotsStore.load({params: executionInstance});
+			// when snapshots are loaded, must check if there a preference for a snapshot execution
 			this.snapshotsStore.on(
 				'load', 
 				this.checkPreferences,
 				this
 			);
-		//}
+		} else {
+			// must fire 'ready' event to inform that the panel is ready (see listeners in ParametersSelectionPage.js)
+			this.fireEvent('ready', null);
+		}
+
 	}
 
 	

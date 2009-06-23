@@ -109,6 +109,7 @@ Sbi.execution.ViewpointsPanel = function(config) {
     
     var sm = new Ext.grid.CheckboxSelectionModel();
     
+	this.isHidden = !Sbi.user.functionalities.contains('SeeViewpointsFunctionality');
    
 	var c = Ext.apply({}, config, {
         store: this.store
@@ -142,6 +143,7 @@ Sbi.execution.ViewpointsPanel = function(config) {
         , autoScroll: true
         , sm : sm
         , height: 200
+        , hidden: this.isHidden
 	});   
 	
 	// constructor
@@ -163,7 +165,9 @@ Ext.extend(Sbi.execution.ViewpointsPanel, Ext.grid.GridPanel, {
 	
 	, synchronize: function( executionInstance ) {
 		this.executionInstance = executionInstance;
-		this.store.load({params: this.executionInstance});
+		if (this.isHidden === false) {
+			this.store.load({params: this.executionInstance});
+		}
 	}
 
 	, addViewpoints: function( viewpoints ) {

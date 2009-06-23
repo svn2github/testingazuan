@@ -135,11 +135,13 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			this.synchronizeToolbar( executionInstance );
 			
 			if(synchronizeSliders === undefined || synchronizeSliders === true) {
+				/*
 				if(executionInstance.PARAMETERS !== undefined) {
 					var parameters = Ext.util.JSON.decode( executionInstance.PARAMETERS );
 					parameters = Ext.urlEncode(parameters);		
 					this.parametersPanel.parametersPreference = parameters;
 				}
+				*/
 				this.parametersPanel.synchronize(executionInstance);
 				this.shortcutsPanel.synchronize(executionInstance);
 			}
@@ -604,6 +606,10 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	, initSouthPanel: function( config ) {
 		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
 		
+		var shortcutsHidden = !Sbi.user.functionalities.contains('SeeViewpointsFunctionality') 
+								&& !Sbi.user.functionalities.contains('SeeSnapshotsFunctionality') 
+								&& !Sbi.user.functionalities.contains('SeeSubobjectsFunctionality');
+		
 		this.southPanel = new Ext.Panel({
 			region:'south'
 			, border: false
@@ -618,6 +624,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			, height: 280
 			, layout: 'fit'
 			, items: [this.shortcutsPanel]
+			, hidden: shortcutsHidden
 	    });
 	}
 });

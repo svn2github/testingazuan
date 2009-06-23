@@ -276,7 +276,6 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	}
 	
 	
-	
 	, startExecution: function() {
 		var role = this.roleSelectionPage.getSelectedRole();
 		this.executionInstance.ROLE = role;
@@ -322,104 +321,4 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 		}		
 	}
 	
-	
-	/*
-	, onViewpointExecutionRequest: function(v) {
-		this.moveToPage(2);
-	}
-	
-	, onSubobjectExecutionRequest: function (subObjectId) {
-		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
-		this.moveToPage(2); // go to execution page
-	}
-	
-	, onSnapshotExecutionRequest: function (snapshotId) {
-		this.executionInstance.SBI_SNAPSHOT_ID = snapshotId;
-		this.moveToPage(2); // go to execution page
-	}
-	
-	, onRefreshButtonClicked: function () {
-		this.documentExecutionPage.refreshExecution();
-	}
-	
-	, onSendMailButtonClicked: function () {
-		var sendToIframeUrl = this.services['showSendToForm'] 
-		        + '&objlabel=' + this.executionInstance.OBJECT_LABEL
-		        + '&objid=' + this.executionInstance.OBJECT_ID
-				+ '&' + Sbi.commons.Format.toStringOldSyntax(this.parametersSelectionPage.parametersPanel.getFormState());
-		this.win_sendTo = new Sbi.execution.toolbar.SendToWindow({'url': sendToIframeUrl});
-		this.win_sendTo.show();
-	}
-	
-	, onSaveIntoPersonalFolderButtonClicked: function () {
-		Ext.Ajax.request({
-	          url: this.services['saveIntoPersonalFolder'],
-	          params: {documentId: this.executionInstance.OBJECT_ID},
-	          callback : function(options , success, response){
-	    	  	if (success && response !== undefined) {   
-		      		if(response.responseText !== undefined) {
-		      			var responseText = response.responseText;
-		      			var iconSaveToPF;
-		      			var message;
-		      			if (responseText=="sbi.execution.stpf.ok") {
-		      				message = LN('sbi.execution.stpf.ok');
-		      				iconSaveToPF = Ext.MessageBox.INFO;
-		      			}
-		      			if (responseText=="sbi.execution.stpf.alreadyPresent") {
-		      				message = LN('sbi.execution.stpf.alreadyPresent');
-		      				iconSaveToPF = Ext.MessageBox.WARNING;
-		      			}
-		      			if (responseText=="sbi.execution.stpf.error") {
-		      				message = LN('sbi.execution.stpf.error');
-		      				iconSaveToPF = Ext.MessageBox.ERROR;
-		      			}
-
-		      			var messageBox = Ext.MessageBox.show({
-		      				title: 'Status',
-		      				msg: message,
-		      				modal: false,
-		      				buttons: Ext.MessageBox.OK,
-		      				width:300,
-		      				icon: iconSaveToPF,
-		      				animEl: 'root-menu'        			
-		      			});
-		      	    	//var buddy = new Sbi.commons.ComponentBuddy({
-		      	    	//	buddy : messageBox
-		      	    	//});
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-		      		}
-	    	  	}
-	          },
-	          scope: this,
-	  		  failure: Sbi.exception.ExceptionHandler.handleFailure      
-	     });
-	}
-	*/
-	
-	/*
-	, onSaveRememberMeButtonClicked: function () {
-		this.win_saveRememberMe = new Sbi.execution.toolbar.SaveRememberMeWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
-		this.win_saveRememberMe.show();
-	}
-	
-	, onNotesButtonClicked: function () {
-		this.win_notes = new Sbi.execution.toolbar.NotesWindow({'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID});
-		this.win_notes.show();
-	}
-	
-	, onMetadataButtonClicked: function () {
-		this.win_metadata = new Sbi.execution.toolbar.MetadataWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
-		this.win_metadata.show();
-	}
-	
-	, onRatingButtonClicked: function () {
-		this.win_rating = new Sbi.execution.toolbar.RatingWindow({'OBJECT_ID': this.executionInstance.OBJECT_ID});
-		this.win_rating.show();
-	}
-	
-	, onPrintButtonClicked: function () {
-		this.documentExecutionPage.printExecution();
-	}
-	*/
 });

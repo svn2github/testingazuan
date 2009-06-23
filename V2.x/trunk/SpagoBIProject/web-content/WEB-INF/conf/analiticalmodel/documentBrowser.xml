@@ -41,7 +41,8 @@
 	   <FIELD id="language" sortable="false" groupable="fasle" visible="false" showLabel="true" maxChars="20"/>	  
 	   <FIELD id="objectve" sortable="false" groupable="fasle" visible="false" showLabel="true" maxChars="20"/>	  
 	   <FIELD id="keywords" groupable="fasle" visible="false" showLabel="true" maxChars="20"/>	  
-	   <FIELD id="refreshSeconds" sortable="false" groupable="fasle" visible="false" showLabel="true" maxChars="20"/>	  	   
+	   <FIELD id="refreshSeconds" sortable="false" groupable="fasle" visible="false" showLabel="true" maxChars="20"/>	  	  
+	   <FIELD id="exporters" sortable="false" groupable="fasle" visible="false" showLabel="false" maxChars="20"/>	  
   </DOCUMENT>
 
 </DOCUMENT_BROWSER>

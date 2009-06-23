@@ -404,7 +404,7 @@ public class SpagoBIDashboardInternalEngine implements InternalEngineIFace {
 			String lab=(String)drillSB.getAttribute("document");
 			if(lab!=null) drillLabel=lab;
 			else{
-				logger.error("Drill label not found");
+				logger.info("Drill label not found");
 			}
 
 			List parameters =drillSB.getAttributeAsList("PARAM");

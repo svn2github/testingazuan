@@ -136,11 +136,17 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			
 			if(synchronizeSliders === undefined || synchronizeSliders === true) {
 				/*
-				if(executionInstance.PARAMETERS !== undefined) {
-					var parameters = Ext.util.JSON.decode( executionInstance.PARAMETERS );
-					parameters = Ext.urlEncode(parameters);		
-					this.parametersPanel.parametersPreference = parameters;
-				}
+				this.parametersPanel.on(
+						'synchronize',
+						function (parametersPanel) {
+							if(executionInstance.PARAMETERS !== undefined) {
+								var parameters = Ext.util.JSON.decode( executionInstance.PARAMETERS );
+								var state = Ext.urlEncode(parameters);		
+								this.parametersPanel.setFormState(state);
+							}
+						}
+						, this
+				);
 				*/
 				this.parametersPanel.synchronize(executionInstance);
 				this.shortcutsPanel.synchronize(executionInstance);

@@ -202,10 +202,15 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 
 	, onParametersForExecutionLoaded: function( executionInstance, parameters ) {
 		
+		// clears the form
 		for(p in this.fields) {
-			var el = this.fields[p].el.up('.x-form-item');
-			this.columns[this.fields[p].columnNo].remove( this.fields[p], true );
-			el.remove();
+			// if input field has an element (it means that the field was displayed)
+			if (this.fields[p].el !== undefined) {
+				// retrieves the element containing label plus input field and removes it
+				var el = this.fields[p].el.up('.x-form-item');
+				this.columns[this.fields[p].columnNo].remove( this.fields[p], true );
+				el.remove();
+			}
 		}
 		
 		this.fields = {};

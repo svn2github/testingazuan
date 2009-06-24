@@ -84,8 +84,13 @@ Sbi.execution.ExecutionWizard = function(config) {
 	this.parametersSelectionPage =  new Sbi.execution.ParametersSelectionPage(parametersSelectionPageConfig || {});
 	this.parametersSelectionPage.maskOnRender = true;
 	
-	// preferences ARE NOT PROPAGATED to execution page (since panels on ShortcutPanel are instantiated twice, this may generate conflicts)
-	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(config.documentExecutionPage || {});
+	var documentExecutionPageConfig = Ext.applyIf(config.preferences, config.documentExecutionPage); 
+	// preferences for shortcuts ARE NOT PROPAGATED to execution page (since panels on ShortcutPanel are instantiated twice, this may generate conflicts)
+	if (documentExecutionPageConfig !== undefined) {
+		delete documentExecutionPageConfig.subobject;
+		delete documentExecutionPageConfig.snapshot;
+	}
+	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(documentExecutionPageConfig || {});
 	this.documentExecutionPage.maskOnRender = true;
 	
 	this.errorPage = new Ext.Panel({
@@ -253,7 +258,24 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	, loadUrlForExecution: function() {
 		var formState = this.parametersSelectionPage.parametersPanel.getFormState();
 		this.executionInstance.PARAMETERS = Sbi.commons.JSON.encode( formState );
+		this.documentExecutionPage.parametersPanel.on(
+				'synchronize',
+				this.updateParametersFormState,
+				this
+		);
 		this.documentExecutionPage.synchronize( this.executionInstance );
+	}
+	
+	// update parameters form state when moving from parameters page to execution page
+	, updateParametersFormState: function () {
+		var formState = this.parametersSelectionPage.parametersPanel.getFormState();
+		this.documentExecutionPage.parametersPanel.setFormState(formState);
+		// removes listener
+		this.documentExecutionPage.parametersPanel.un(
+				'synchronize',
+				this.updateParametersFormState,
+				this
+		);
 	}
 	
 	, onRolesForExecutionLoaded: function(form, store, records, options) {

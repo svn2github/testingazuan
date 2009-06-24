@@ -118,8 +118,7 @@
       <delete file="${build}/${webapp_name}/WEB-INF/lib/bsh-1.3.0.jar" />                 
       <copy file="${liferay.security.dir}/dist/sbi.security.liferay-2.2.0.jar" todir="${build}/${webapp_name}/WEB-INF/lib" overwrite="true" />  
       <mkdir dir="${build}/${webapp_name}/WEB-INF/conf/spago" />
-      <copy file="${build}/${webapp_name}/WEB-INF/conf/master.xml" todir="${build}/${webapp_name}/WEB-INF/conf/spago" overwrite="true" />  
-      <delete file="${build}/${webapp_name}/WEB-INF/conf/master.xml" /> 
+
       
       <replace file="${build}/${webapp_name}/WEB-INF/web.xml">
 			   <replacetoken><![CDATA[<!-- START-LIFERAY]]></replacetoken>      

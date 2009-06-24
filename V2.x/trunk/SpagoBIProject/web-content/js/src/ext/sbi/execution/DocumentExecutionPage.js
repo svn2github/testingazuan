@@ -290,7 +290,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-pdf' 
 									     	, scope: this
-									     
+									        , width: 15
 									    	, handler : function() { this.exportReportExecution('PDF'); }
 											, href: ''   
 				                        })	 
@@ -302,7 +302,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-xls' 
 									     	, scope: this
-									
+											 , width: 15
 									    	, handler : function() { this.exportReportExecution('XLS'); }
 											, href: ''   
 				                        })	
@@ -314,7 +314,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-csv' 
 									     	, scope: this
-									  
+									   , width: 15
 									    	, handler : function() { this.exportReportExecution('CSV'); }
 											, href: ''   
 				                        })	
@@ -326,7 +326,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-xml' 
 									     	, scope: this
-									     
+									      , width: 15
 									    	, handler : function() { this.exportReportExecution('XML'); }
 											, href: ''   
 				                        })	
@@ -338,7 +338,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-jpg' 
 									     	, scope: this
-									    
+									     , width: 15
 									    	, handler : function() { this.exportReportExecution('JPG'); }
 											, href: ''   
 				                        })	
@@ -350,7 +350,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-txt' 
 									     	, scope: this
-									     	
+									     	 , width: 15
 									    	, handler : function() { this.exportReportExecution('TXT'); }
 											, href: ''   
 				                        })	
@@ -362,7 +362,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-ppt' 
 									     	, scope: this
-									     
+									      , width: 15
 									    	, handler : function() { this.exportReportExecution('PPT'); }
 											, href: ''   
 				                        })	
@@ -381,7 +381,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 									, path: 'Exporters'	
 									, iconCls: 'icon-export' 	
 						            , menu: menu0
-						           
+						            , width: 15
 						            , cls: 'x-btn-menubutton x-btn-text-icon bmenu '
 						        })					    				        				
 					);	

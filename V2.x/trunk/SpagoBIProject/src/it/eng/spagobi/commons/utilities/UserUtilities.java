@@ -175,16 +175,23 @@ public class UserUtilities {
      * @throws Exception the exception
      */
     public static void createUserFunctionalityRoot(IEngUserProfile userProfile) throws Exception {
+    	logger.debug("IN");
 	try {
 	    String username = (String) ((UserProfile)userProfile).getUserId();
 	    logger.debug("username: " + username);
 	    Collection roleStrs = userProfile.getRoles();
 	    Iterator roleIter = roleStrs.iterator();
 	    List roles = new ArrayList();
+	    logger.debug("Roles's number: " + roleStrs.size());
 	    while (roleIter.hasNext()) {
-		String rolename = (String) roleIter.next();
-		Role role = DAOFactory.getRoleDAO().loadByName(rolename);
-		roles.add(role);
+	    	String rolename = (String) roleIter.next();
+	    	logger.debug("Rolename: " + rolename);
+	    	Role role = DAOFactory.getRoleDAO().loadByName(rolename);
+	    	if (role!=null)  {
+	    		roles.add(role);
+	    		logger.debug("Add Rolename ( " + rolename +") ");
+	    	}
+	    	else logger.debug("Rolename ( " + rolename +") doesn't exist in EXT_ROLES");
 	    }
 	    Role[] rolesArr = new Role[roles.size()];
 	    rolesArr = (Role[]) roles.toArray(rolesArr);
@@ -200,6 +207,8 @@ public class UserUtilities {
 	} catch (Exception e) {
 	   logger.error("Error while creating user functionality root", e);
 	    throw new Exception("Unable to create user functionality root", e);
+	}finally{
+		logger.debug("OUT");
 	}
     }
 

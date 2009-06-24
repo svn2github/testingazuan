@@ -176,9 +176,15 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			SbiDomains relStateDomain = (SbiDomains)criteria.uniqueResult();
 			Criterion nameEqrolenameCri = null;
 			Role[] roles = userfunct.getExecRoles();
+			
 			for(int i=0; i<roles.length; i++) {
 				Role role = roles[i];
-				nameEqrolenameCri = Expression.eq("name", role.getName());
+				if (role!=null) {
+					logger.debug("Role Name="+role.getName());
+					nameEqrolenameCri = Expression.eq("name", role.getName());
+				}
+				else logger.debug("Role IS NULL");
+				
 				criteria = aSession.createCriteria(SbiExtRoles.class);
 				criteria.add(nameEqrolenameCri);
 				SbiExtRoles hibRole = (SbiExtRoles)criteria.uniqueResult();

@@ -102,7 +102,117 @@
     </copy>
   </target>
 
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--   ATTIVITA' SPECIFICHE PER APPLICATION SERVER                                  -->
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+  
+  <target name="tomcat">  
+               
+  </target>
+    
+  <target name="liferay.jboss">  
+      <delete file="${build}/${webapp_name}/WEB-INF/lib/dom4j-1.6.1.jar" />
+      <delete file="${build}/${webapp_name}/WEB-INF/lib/xercesImpl-2.6.2.jar" />
+      <delete file="${build}/${webapp_name}/WEB-INF/lib/xml-apis-2.0.2.jar" /> 
+      <delete file="${build}/${webapp_name}/WEB-INF/lib/log4j-1.2.8.jar" /> 
+      <delete file="${build}/${webapp_name}/WEB-INF/lib/bsh-1.3.0.jar" />                 
+      <copy file="${liferay.security.dir}/dist/sbi.security.liferay-2.2.0.jar" todir="${build}/${webapp_name}/WEB-INF/lib" overwrite="true" />  
+      <mkdir dir="${build}/${webapp_name}/WEB-INF/conf/spago" />
+      <copy file="${build}/${webapp_name}/WEB-INF/conf/master.xml" todir="${build}/${webapp_name}/WEB-INF/conf/spago" overwrite="true" />  
+      <delete file="${build}/${webapp_name}/WEB-INF/conf/master.xml" /> 
+      
+      <replace file="${build}/${webapp_name}/WEB-INF/web.xml">
+			   <replacetoken><![CDATA[<!-- START-LIFERAY]]></replacetoken>      
+			   <replacevalue><![CDATA[<!-- START-LIFERAY -->]]></replacevalue>		
+      </replace>
+      <replace file="${build}/${webapp_name}/WEB-INF/web.xml">
+      	 <replacetoken><![CDATA[END-LIFERAY -->]]></replacetoken>
+			   <replacevalue><![CDATA[<!-- END-LIFERAY -->]]></replacevalue>		
+      </replace>  
+      
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+			   <replacetoken><![CDATA[<!-- START-XML -->]]></replacetoken>      
+			   <replacevalue><![CDATA[<!-- START-XML]]></replacevalue>		
+      </replace>
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+      	 <replacetoken><![CDATA[<!-- STOP-XML -->]]></replacetoken>
+			   <replacevalue><![CDATA[STOP-XML -->]]></replacevalue>		
+      </replace> 
+      
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+			   <replacetoken><![CDATA[<!-- START-LIFERAY]]></replacetoken>      
+			   <replacevalue><![CDATA[<!-- START-LIFERAY -->]]></replacevalue>		
+      </replace>
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+      	 <replacetoken><![CDATA[END-LIFERAY -->]]></replacetoken>
+			   <replacevalue><![CDATA[<!-- END-LIFERAY -->]]></replacevalue>		
+      </replace>      
+                          
+  </target>
+
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--   ATTIVITA' SPECIFICHE PER MODALITA' WEB O PORTLET                             -->
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->  
+  <target name="modality.web">  
+             
+  </target>
+   
+    <target name="modality.portlet">  
+      <delete file="${build}/${webapp_name}/WEB-INF/lib/portlet-api-1.0.jar" />  
+      
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/initializers.xml">
+			   <replacetoken><![CDATA[<!-- START-WEB  -->]]></replacetoken>      
+			   <replacevalue><![CDATA[<!-- START-WEB]]></replacevalue>		
+      </replace>
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/initializers.xml">
+      	 <replacetoken><![CDATA[<!-- END-WEB  -->]]></replacetoken>
+			   <replacevalue><![CDATA[END-WEB  -->]]></replacevalue>		
+      </replace>  
+      
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+			   <replacetoken><![CDATA[<!-- START-WEB  -->]]></replacetoken>      
+			   <replacevalue><![CDATA[<!-- START-WEB]]></replacevalue>		
+      </replace>
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+      	 <replacetoken><![CDATA[<!-- END-WEB  -->]]></replacetoken>
+			   <replacevalue><![CDATA[END-WEB  -->]]></replacevalue>		
+      </replace>  
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+			   <replacetoken><![CDATA[<!-- START-PORTLET]]></replacetoken>      
+			   <replacevalue><![CDATA[<!-- START-PORTLET -->]]></replacevalue>		
+      </replace>
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+      	 <replacetoken><![CDATA[END-PORTLET  -->]]></replacetoken>
+			   <replacevalue><![CDATA[<!-- END-PORTLET  -->]]></replacevalue>		
+      </replace>       
+                          
+  </target>
+
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--   ATTIVITA' SPECIFICHE PER COMPRESSIONE CODICE JS                              -->
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->  
+  
+	<target name="production" >
+    
+	</target>
+	
+  <target name="development"  >
+
+
+	</target>
+	
+	
+	
+	
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--   CREAZIONE WAR                                                                -->
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->  
 	<target name="create.war" depends="init,copy.artifacts" >
+
+        <antcall target="${specific.ant.task}" />
+        <antcall target="${modality}" />
+        <antcall target="${ext.deploy}" />
+        
 	      <mkdir dir="${dist}"/>
 	      <delete file="${dist}/${war_name}" />
 	      <war warfile="${dist}/${war_name}" 

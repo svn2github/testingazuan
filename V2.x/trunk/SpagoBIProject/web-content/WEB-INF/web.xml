@@ -52,18 +52,25 @@
     <listener>
         <listener-class>it.eng.spagobi.tools.scheduler.listeners.SchedulerContextListener</listener-class>
     </listener>
-<!-- 
+
+
+<!-- EXO
 
 <listener>
 <listener-class>org.exoplatform.services.portletcontainer.impl.servlet.PortletApplicationListener</listener-class>
 </listener>
 
-			
-
-END LISTENERS -->
+ EXO -->
     
     <!-- START SERVLET DEFINITIONS -->
-    
+ 
+<!-- START-LIFERAY
+   <servlet>
+        <servlet-name>PortletWrapper</servlet-name>
+        <servlet-class>com.liferay.portal.kernel.servlet.PortletServlet</servlet-class>
+  </servlet>  
+END-LIFERAY -->
+     
   <servlet>
      <servlet-name>QuartzInitializer</servlet-name>
      <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>     
@@ -101,11 +108,12 @@ END LISTENERS -->
         <servlet-class>it.eng.spago.dispatching.httpchannel.AdapterHTTP</servlet-class>
     </servlet>
     
-<!--
+<!-- EXO
 <servlet>
 <servlet-name>PortletWrapper</servlet-name>
 <servlet-class>org.exoplatform.services.portletcontainer.impl.servlet.ServletWrapper</servlet-class>
-</servlet>  -->
+</servlet>  
+EXO -->
 
 
     <servlet>
@@ -129,7 +137,13 @@ END LISTENERS -->
 
     <!-- START SERVLET MAPPINGS -->
 
-
+<!-- START-LIFERAY
+    <servlet-mapping>
+        <servlet-name>PortletWrapper</servlet-name>
+        <url-pattern>/PortletWrapper</url-pattern>
+    </servlet-mapping>
+END-LIFERAY -->
+   
 	<servlet-mapping>
   		<servlet-name>ProxyTicketReceptor</servlet-name> 
   		<url-pattern>/proxyReceptor</url-pattern> 
@@ -164,11 +178,7 @@ END LISTENERS -->
         <servlet-name>ReportServlet</servlet-name>
         <url-pattern>/JasperReportServlet</url-pattern>
     </servlet-mapping>
-<!--  
-<servlet-mapping>
-<servlet-name>PortletWrapper</servlet-name>
-<url-pattern>/PortletWrapper</url-pattern>
-</servlet-mapping>-->
+
 
 
 

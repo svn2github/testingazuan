@@ -2,8 +2,13 @@
 <SPAGOBI>
 
     <!-- ********************* START MODE CONFIGURATION ************************ -->
+<!-- START-WEB  -->
+<SPAGOBI-MODE mode="WEB"/>
+<!-- END-WEB  -->
 
-	<SPAGOBI-MODE mode="WEB"/>
+<!-- START-PORTLET 
+	<SPAGOBI-MODE mode="PORTLET"/>
+  END-PORTLET  -->	
 
     <!-- ********************* END MODE CONFIGURATION ************************** -->
      
@@ -27,7 +32,7 @@
      
    
      
-     <!-- Xml (Spago framework) security Provider    -->
+<!-- START-XML -->
 	
 	<SECURITY>
   		<PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.XmlSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
@@ -44,7 +49,7 @@
     	</ROLE-TYPE-PATTERNS>
 	 </SECURITY>
 	 
-
+<!-- STOP-XML -->
 
 
    <!-- Web security Provider  (LDAP) 
@@ -86,7 +91,7 @@
 	 </SECURITY>
  -->
 
-<!-- Liferay security Provider  
+<!-- START-LIFERAY
 
      <SECURITY>
         <PORTAL-SECURITY-INIT-CLASS>it.eng.spagobi.security.init.LiferayPortalSecurityProviderInit</PORTAL-SECURITY-INIT-CLASS>
@@ -116,7 +121,7 @@
 	    	<ROLE name="/spagobi/user" desc="/spagobi/user" />
 	    </ROLES>
       </SECURITY>
- -->
+END-LIFERAY -->
          
     <!-- ********************* END SECURITY CONFIGURATION ************************** --> 
 

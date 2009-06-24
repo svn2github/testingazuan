@@ -736,6 +736,7 @@ public class BasicTemplateBuilder  {
 					}
 					String code=t.getThresholdCode() != null ? t.getThresholdCode() : "";
 					String codeTh = "Code: "+code;
+					if(codeTh.length()>22)codeTh = codeTh.substring(0, 21);
 					
 					threshCode.setAttribute("reportElement.y",  new Integer(yValue.intValue()-2).toString());
 					SourceBean threshCode2=(SourceBean)threshCode.getAttribute("text");
@@ -746,6 +747,7 @@ public class BasicTemplateBuilder  {
 					String min = t.getMinValue()!= null ? t.getMinValue().toString() : "";
 					String max = t.getMaxValue()!= null ?  t.getMaxValue().toString() : "";
 					String valueTh = "Value: "+min+"-"+max+" "+labelTh;
+					if(valueTh.length()>25)valueTh = valueTh.substring(0, 24);
 					
 					threshValue.setAttribute("reportElement.y", new Integer(yValue.intValue()+7).toString());
 					SourceBean threshValue2=(SourceBean)threshValue.getAttribute("text");
@@ -820,6 +822,7 @@ public class BasicTemplateBuilder  {
 							SourceBean thresholdTextCode1=new SourceBean(thresholdTextCode);  
 							String code=t.getCode() != null ? t.getCode() : "";
 							String codeTh = "Code: "+code;
+							if(codeTh.length()>22)codeTh = codeTh.substring(0, 21);
 	
 							thresholdTextCode1.setAttribute("reportElement.y", yValue.toString());
 							SourceBean threshCode2=(SourceBean)thresholdTextCode1.getAttribute("text");
@@ -881,6 +884,7 @@ public class BasicTemplateBuilder  {
 						String min = val.getMinValue()!= null ? val.getMinValue().toString() : "";
 						String max = val.getMaxValue()!= null ?  val.getMaxValue().toString() : "";
 						String valueTh = "Value: "+min+"-"+max+" "+labelTh;
+						if(valueTh.length()>25)valueTh = valueTh.substring(0, 24);
 
 						thresholdTextValue1.setAttribute("reportElement.x", xValue.toString());
 						thresholdTextValue1.setAttribute("reportElement.y", yValue.toString());

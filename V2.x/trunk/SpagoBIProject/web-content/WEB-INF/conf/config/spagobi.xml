@@ -202,6 +202,11 @@
 						identifier="groovy"
 						shortidentifier="gy" 
 						predefinedScriptFile="predefinedGroovyScript.groovy"/>
+		<SCRIPT_LANGUAGE default="false" 
+						name="javascript" 
+						identifier="javascript"
+						shortidentifier="js" 
+						predefinedScriptFile="predefinedJavascriptScript.js"/>						
 	 </SCRIPT_LANGUAGE_SUPPORTED>	
 	
 	

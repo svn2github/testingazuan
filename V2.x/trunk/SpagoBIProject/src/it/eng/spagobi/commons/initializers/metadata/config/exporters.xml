@@ -2,5 +2,10 @@
 <EXPORTERS>
 <EXPORTER domain="PDF" engine="KpiEngine" defaultValue="true"/>
 <EXPORTER domain="PDF" engine="JasperReport" defaultValue="true"/>
+<EXPORTER domain="XLS" engine="JasperReport" defaultValue="true"/>
+<EXPORTER domain="JPG" engine="JasperReport" defaultValue="true"/>
 <EXPORTER domain="PDF" engine="BirtEngine" defaultValue="true"/>
+<EXPORTER domain="XLS" engine="BirtEngine" defaultValue="true"/>
+<EXPORTER domain="JPG" engine="BirtEngine" defaultValue="true"/>
+<EXPORTER domain="PPT" engine="BirtEngine" defaultValue="true"/>
 </EXPORTERS>

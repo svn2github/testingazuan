@@ -80,6 +80,12 @@
 <DOMAIN valueCd="GENERIC_NODE" valueNm="sbidomains.nm.Generic_Node" domainCd="MODEL_NODE" domainNm="Model node type" valueDs="sbidomains.ds.Generic_Node"/>
 <DOMAIN valueCd="PIVOT_TRANSFOMER" valueNm="sbidomains.nm.pivot_transformer" domainCd="TRANSFORMER_TYPE" domainNm="Transformer types" valueDs="sbidomains.ds.pivot_transformer"/>
 <DOMAIN valueCd="PDF" valueNm="PDF" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
+<DOMAIN valueCd="XLS" valueNm="XLS" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
+<DOMAIN valueCd="CSV" valueNm="CSV" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
+<DOMAIN valueCd="XML" valueNm="XML" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
+<DOMAIN valueCd="TXT" valueNm="TXT" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
+<DOMAIN valueCd="JPG" valueNm="JPG" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
+<DOMAIN valueCd="PPT" valueNm="PPT" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
 <DOMAIN valueCd="Basic" valueNm="Basic" domainCd="KPI_TYPE" domainNm="Kpi Type" valueDs=""/>
 <DOMAIN valueCd="Derived" valueNm="Derived" domainCd="KPI_TYPE" domainNm="Kpi Type" valueDs=""/>
 <DOMAIN valueCd="Nominal scale" valueNm="Nominal scale" domainCd="METRIC_SCALE_TYPE" domainNm="Metric Scale Type" valueDs=""/>

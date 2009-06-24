@@ -274,42 +274,45 @@ public class UserUtilities {
 		if (roles != null) {
 			for (int i = 0; i < roles.length; i++) {
 				String roleName = roles[i];
+				logger.debug("RoleName="+roleName);
 				Role anotherRole = DAOFactory.getRoleDAO().loadByName(roleName);
-				if (anotherRole.isAbleToSaveSubobjects()) {
-					logger.debug("User has role " + roleName + " that is able to save subobjects.");
-					virtualRole.setIsAbleToSaveSubobjects(true);
-				}
-				if (anotherRole.isAbleToSeeSubobjects()) {
-					logger.debug("User has role " + roleName + " that is able to see subobjects.");
-					virtualRole.setIsAbleToSeeSubobjects(true);
-				}
-				if (anotherRole.isAbleToSeeViewpoints()) {
-					logger.debug("User has role " + roleName + " that is able to see viewpoints.");
-					virtualRole.setIsAbleToSeeViewpoints(true);
-				}
-				if (anotherRole.isAbleToSeeSnapshots()) {
-					logger.debug("User has role " + roleName + " that is able to see snapshots.");
-					virtualRole.setIsAbleToSeeSnapshots(true);
-				}
-				if (anotherRole.isAbleToSeeMetadata()) {
-					logger.debug("User has role " + roleName + " that is able to see metadata.");
-					virtualRole.setIsAbleToSeeMetadata(true);
-				}
-				if (anotherRole.isAbleToSendMail()) {
-					logger.debug("User has role " + roleName + " that is able to send mail.");
-					virtualRole.setIsAbleToSendMail(true);
-				}
-				if (anotherRole.isAbleToSeeNotes()) {
-					logger.debug("User has role " + roleName + " that is able to see notes.");
-					virtualRole.setIsAbleToSeeNotes(true);
-				}
-				if (anotherRole.isAbleToSaveRememberMe()) {
-					logger.debug("User has role " + roleName + " that is able to save remember me.");
-					virtualRole.setIsAbleToSaveRememberMe(true);
-				}
-				if (anotherRole.isAbleToSaveIntoPersonalFolder()) {
-					logger.debug("User has role " + roleName + " that is able to save into personal folder.");
-					virtualRole.setIsAbleToSaveIntoPersonalFolder(true);
+				if (anotherRole!=null) { 
+					if (anotherRole.isAbleToSaveSubobjects()) {
+						logger.debug("User has role " + roleName + " that is able to save subobjects.");
+						virtualRole.setIsAbleToSaveSubobjects(true);
+					}
+					if (anotherRole.isAbleToSeeSubobjects()) {
+						logger.debug("User has role " + roleName + " that is able to see subobjects.");
+						virtualRole.setIsAbleToSeeSubobjects(true);
+					}
+					if (anotherRole.isAbleToSeeViewpoints()) {
+						logger.debug("User has role " + roleName + " that is able to see viewpoints.");
+						virtualRole.setIsAbleToSeeViewpoints(true);
+					}
+					if (anotherRole.isAbleToSeeSnapshots()) {
+						logger.debug("User has role " + roleName + " that is able to see snapshots.");
+						virtualRole.setIsAbleToSeeSnapshots(true);
+					}
+					if (anotherRole.isAbleToSeeMetadata()) {
+						logger.debug("User has role " + roleName + " that is able to see metadata.");
+						virtualRole.setIsAbleToSeeMetadata(true);
+					}
+					if (anotherRole.isAbleToSendMail()) {
+						logger.debug("User has role " + roleName + " that is able to send mail.");
+						virtualRole.setIsAbleToSendMail(true);
+					}
+					if (anotherRole.isAbleToSeeNotes()) {
+						logger.debug("User has role " + roleName + " that is able to see notes.");
+						virtualRole.setIsAbleToSeeNotes(true);
+					}
+					if (anotherRole.isAbleToSaveRememberMe()) {
+						logger.debug("User has role " + roleName + " that is able to save remember me.");
+						virtualRole.setIsAbleToSaveRememberMe(true);
+					}
+					if (anotherRole.isAbleToSaveIntoPersonalFolder()) {
+						logger.debug("User has role " + roleName + " that is able to save into personal folder.");
+						virtualRole.setIsAbleToSaveIntoPersonalFolder(true);
+					}
 				}
 			}
 		}

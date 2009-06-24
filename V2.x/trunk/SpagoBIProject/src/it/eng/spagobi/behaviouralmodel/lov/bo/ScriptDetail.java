@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.behaviouralmodel.lov.bo;
 
 import groovy.lang.Binding;
@@ -26,7 +26,9 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.sql.DataRow;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
@@ -38,11 +40,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * Defines the <code>ScriptDetail</code> objects. This object is used to store 
  * Script Wizard detail information.
  */
 public class ScriptDetail  implements ILovDetail  {
+
+	static private Logger logger = Logger.getLogger(ScriptDetail.class);
+
 	
 	/**
 	 * the script
@@ -57,7 +64,7 @@ public class ScriptDetail  implements ILovDetail  {
 	 * constructor.
 	 */
 	public ScriptDetail() {}
-	
+
 	/**
 	 * constructor.
 	 * 
@@ -68,8 +75,8 @@ public class ScriptDetail  implements ILovDetail  {
 	public ScriptDetail(String dataDefinition) throws SourceBeanException {
 		loadFromXML (dataDefinition);
 	}
-	
-	
+
+
 	/**
 	 * loads the lov from an xml string.
 	 * 
@@ -94,16 +101,16 @@ public class ScriptDetail  implements ILovDetail  {
 		// get and set the script text
 		SourceBean scriptSB = (SourceBean)source.getAttribute("SCRIPT");
 		String script = scriptSB.getCharacters(); 
-        setScript(script);
-        // get and set value column
-	    String valueColumn = "";
-	    SourceBean valCol = (SourceBean)source.getAttribute("VALUE-COLUMN");
+		setScript(script);
+		// get and set value column
+		String valueColumn = "";
+		SourceBean valCol = (SourceBean)source.getAttribute("VALUE-COLUMN");
 		if(valCol!=null)
 			valueColumn = valCol.getCharacters();
 		setValueColumnName(valueColumn);
-		 // get and set the description column
-	    String descrColumn = "";
-	    SourceBean descColSB = (SourceBean)source.getAttribute("DESCRIPTION-COLUMN");
+		// get and set the description column
+		String descrColumn = "";
+		SourceBean descColSB = (SourceBean)source.getAttribute("DESCRIPTION-COLUMN");
 		if(descColSB!=null)
 			descrColumn = descColSB.getCharacters();
 		setDescriptionColumnName(descrColumn);
@@ -129,7 +136,7 @@ public class ScriptDetail  implements ILovDetail  {
 			}
 		}
 		setInvisibleColumnNames(invisColNames);
-	
+
 		SourceBean language = (SourceBean)source.getAttribute("LANGUAGE");
 		if(language!=null){
 			String lang=language.getCharacters();
@@ -137,9 +144,9 @@ public class ScriptDetail  implements ILovDetail  {
 				setLanguageScript(lang);
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * serialize the lov to an xml string.
 	 * 
@@ -147,17 +154,17 @@ public class ScriptDetail  implements ILovDetail  {
 	 */
 	public String toXML () { 
 		String XML = "<SCRIPTLOV>" +
-				     "<SCRIPT>"+this.getScript()+"</SCRIPT>" +	
-				     "<VALUE-COLUMN>"+this.getValueColumnName()+"</VALUE-COLUMN>" +
-				     "<DESCRIPTION-COLUMN>"+this.getDescriptionColumnName()+"</DESCRIPTION-COLUMN>" +
-				     "<VISIBLE-COLUMNS>"+GeneralUtilities.fromListToString(this.getVisibleColumnNames(), ",")+"</VISIBLE-COLUMNS>" +
-				     "<INVISIBLE-COLUMNS>"+GeneralUtilities.fromListToString(this.getInvisibleColumnNames(), ",")+"</INVISIBLE-COLUMNS>" +
-				     "<LANGUAGE>"+this.getLanguageScript()+"</LANGUAGE>" +
-				     "</SCRIPTLOV>";
+		"<SCRIPT>"+this.getScript()+"</SCRIPT>" +	
+		"<VALUE-COLUMN>"+this.getValueColumnName()+"</VALUE-COLUMN>" +
+		"<DESCRIPTION-COLUMN>"+this.getDescriptionColumnName()+"</DESCRIPTION-COLUMN>" +
+		"<VISIBLE-COLUMNS>"+GeneralUtilities.fromListToString(this.getVisibleColumnNames(), ",")+"</VISIBLE-COLUMNS>" +
+		"<INVISIBLE-COLUMNS>"+GeneralUtilities.fromListToString(this.getInvisibleColumnNames(), ",")+"</INVISIBLE-COLUMNS>" +
+		"<LANGUAGE>"+this.getLanguageScript()+"</LANGUAGE>" +
+		"</SCRIPTLOV>";
 		return XML;
 	}
-	
-	
+
+
 	/**
 	 * Returns the result of the lov using a user profile to fill the lov profile attribute.
 	 * 
@@ -168,23 +175,49 @@ public class ScriptDetail  implements ILovDetail  {
 	 * @throws Exception the exception
 	 */
 	public String getLovResult(IEngUserProfile profile) throws Exception {
+		logger.debug("IN");
 		String result = null;
 		HashMap attributes = GeneralUtilities.getAllProfileAttributes(profile); // to be cancelled, now substitutution inline
 		Binding bind = ScriptManager.fillBinding(attributes);
 
-		//substitute profile attributes
-		String cleanScript = StringUtilities.substituteProfileAttributesInString(getScript(), profile);
+		//Substitute profile attributes with their value
+		String cleanScript=substituteProfileAttributes(getScript(), attributes);
 		setScript(cleanScript);
-		
 		result = ScriptManager.runScript(getScript(), bind, languageScript);   
 		// check if the result must be converted into the right xml sintax
 		boolean toconvert = checkSintax(result);
 		if(toconvert) { 
 			result = convertResult(result);
 		}
+		logger.debug("OUT");
 		return result;
 	}
-	
+
+
+	private String substituteProfileAttributes(String script, HashMap attributes) throws EMFInternalError{
+		logger.debug("IN");
+		String cleanScript=new String(script);
+		int indexSubstitution=0;
+		int profileAttributeStartIndex = script.indexOf("${",indexSubstitution);
+
+		while (profileAttributeStartIndex != -1) {
+			int profileAttributeEndIndex=script.indexOf("}",profileAttributeStartIndex);
+			String attributeName = script.substring(profileAttributeStartIndex + 2, profileAttributeEndIndex).trim();
+			Object attributeValueObj = attributes.get(attributeName);
+			if(attributeValueObj==null)
+			{
+				logger.error("Profile attribute "+attributeName+" not found");
+				attributeValueObj="undefined";
+			}
+			cleanScript=cleanScript.replaceAll("\\$\\{"+attributeName+"\\}", attributeValueObj.toString());
+			indexSubstitution=profileAttributeEndIndex;
+			profileAttributeStartIndex = script.indexOf("${",indexSubstitution);
+		}
+		logger.debug("OUT");
+		return cleanScript;	
+	}
+
+
 	/**
 	 * checks if the result is formatted in the right xml structure
 	 * @param result the result of the lov
@@ -243,16 +276,16 @@ public class ScriptDetail  implements ILovDetail  {
 					}
 				}
 			}
-			
+
 		} catch (Exception e) {
 			SpagoBITracer.warning(SpagoBIConstants.NAME_MODULE, this.getClass().getName(), 
-					              "checkSintax", "the result of the lov is not formatted " +
-					              "with the right structure so it will be wrapped inside an xml envelope");
+					"checkSintax", "the result of the lov is not formatted " +
+			"with the right structure so it will be wrapped inside an xml envelope");
 			toconvert = true;
 		}
 		return toconvert;
 	}
-	
+
 	/**
 	 * Gets the list of names of the profile attributes required.
 	 * 
@@ -261,30 +294,30 @@ public class ScriptDetail  implements ILovDetail  {
 	 * @throws Exception the exception
 	 */
 //	public List getProfileAttributeNames() throws Exception {
-//		List names = new ArrayList();
-//		String script = getScript();
-//		while(script.indexOf("getSingleValueProfileAttribute(")!=-1) {
-//			int startind = script.indexOf("getSingleValueProfileAttribute(");
-//			int endind = startind + 31;
-//			int parind = script.indexOf(")", endind);
-//			String name = script.substring(endind, parind);
-//			script = script.substring(0, startind) + script.substring(parind+1);
-//			names.add(name);
-//		}
-//		while(script.indexOf("getMultiValueProfileAttribute(")!=-1) {
-//			int startind = script.indexOf("getMultiValueProfileAttribute(");
-//			int endind = startind + 30;
-//			int comaind = script.indexOf(",", endind);
-//			String name = script.substring(endind, comaind);
-//			script = script.substring(0, startind) + script.substring(comaind+1);
-//			names.add(name);
-//		}
-//		return names;
+//	List names = new ArrayList();
+//	String script = getScript();
+//	while(script.indexOf("getSingleValueProfileAttribute(")!=-1) {
+//	int startind = script.indexOf("getSingleValueProfileAttribute(");
+//	int endind = startind + 31;
+//	int parind = script.indexOf(")", endind);
+//	String name = script.substring(endind, parind);
+//	script = script.substring(0, startind) + script.substring(parind+1);
+//	names.add(name);
 //	}
-	
-	
-	
-	
+//	while(script.indexOf("getMultiValueProfileAttribute(")!=-1) {
+//	int startind = script.indexOf("getMultiValueProfileAttribute(");
+//	int endind = startind + 30;
+//	int comaind = script.indexOf(",", endind);
+//	String name = script.substring(endind, comaind);
+//	script = script.substring(0, startind) + script.substring(comaind+1);
+//	names.add(name);
+//	}
+//	return names;
+//	}
+
+
+
+
 	/**
 	 * Gets the list of names of the profile attributes required.
 	 * 
@@ -310,26 +343,26 @@ public class ScriptDetail  implements ILovDetail  {
 		}
 		return names;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	/**
 	 * Checks if the lov requires one or more profile attributes.
 	 * 
@@ -348,8 +381,8 @@ public class ScriptDetail  implements ILovDetail  {
 		}
 		return contains;
 	}	
-	
-	
+
+
 	/**
 	 * In case the result of the string is not structured as expected  
 	 * wrap the result into the right xml envelope
@@ -367,8 +400,8 @@ public class ScriptDetail  implements ILovDetail  {
 		visibleColumnNames = Arrays.asList(visibleColumnNamesArray);
 		return sb.toString();
 	}
-	
-	
+
+
 	/**
 	 * Get the string of the script.
 	 * 
@@ -377,7 +410,7 @@ public class ScriptDetail  implements ILovDetail  {
 	public String getScript() {
 		return script;
 	}
-	
+
 	/**
 	 * Set the string of the script.
 	 * 
@@ -386,7 +419,7 @@ public class ScriptDetail  implements ILovDetail  {
 	public void setScript(String script) {
 		this.script = script;
 	}
-	
+
 	/**
 	 * Splits an XML string by using some <code>SourceBean</code> object methods
 	 * in order to obtain the source <code>ScriptDetail</code> objects whom XML has been
@@ -400,11 +433,11 @@ public class ScriptDetail  implements ILovDetail  {
 	 */
 	public static ScriptDetail fromXML (String dataDefinition) throws SourceBeanException {
 		ScriptDetail scriptDet = new ScriptDetail(dataDefinition);
-        return scriptDet;
+		return scriptDet;
 	}
-	
-	
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail#getDescriptionColumnName()
 	 */
@@ -469,7 +502,7 @@ public class ScriptDetail  implements ILovDetail  {
 		this.languageScript = languageScript;
 	}
 
-	
-	
-	
+
+
+
 }

@@ -1,27 +1,31 @@
 <div style='width:600px;font-size:10px;font-family:verdana;' >
 <br/>
 Lo script può essere scritto utilizzando i linguaggi Groovy o JavaScript.
-
-Lo script deve restituire una stringa xml contenente la lista di valori. 
-La stringa xml restituita deve essere formattata utilizzando la struttura xml riporta in fondo alla finestra.
 <br/><br/>
-Per utilizzare un attributo di profilo all'interno dello script con valore singolo si utilizza la sintassi ${nome_attributo}
+Lo script deve restituire una stringa XML contenente la lista di valori con la sintassi sotto riportata. 
+Qualora lo script torni un valore singolo questo viene automaticamente inserito nella stringa XML, altrimenti
+la stringa restituita deve avere la seguente sintassi:
+<i><br/>
+&lt;ROWS&gt;<br/>
+&nbsp;&nbsp;&lt;ROW  value="valore1" ... /&gt;<br/>
+&nbsp;&nbsp;&lt;ROW  value="valore2" ... /&gt;<br/>
+&nbsp;&nbsp;...<br/>
+&lt;/ROWS&gt;<br/></i>
+<br/><br/>
+GLi script possono essere parametrizzati con gli attributi di profilo, richiamati con la sintassi <b>${nome_attributo}</b>; questi possono avere un valore singolo oppure essere multi-valore:
 <br/>
-<i><b>Esempio:</b> istruzioni ... ${month} ... istruzioni </i>
-<br/><br/>
-
-Per usare un attributo di profilo multi-valore si usa la sintassi <b>${nome_attributo_profilo(prefix;splitter;suffix)}</b>
 <br/>
-L'attributo verrà sostituito con prefix+(lista di valori separati dallo splitter)+suffix 
+Un attributo di profilo multi-valore è registrato nel file authorizations.xml; il suo valore è indicato con la sintassi: 
+ <i> {splitter {valore_1 splitter valore_2 splitter ... valore_n}}</i>;
+ 
 <br/>
-<i><b>Esempio:</b> select ... where colonna ${nome_attributo_profilo( in (';',';') )})</i>
-<br/><br/>
+<br/>
 
-Per lo script in linguaggio groovy Ã¨ a disposizione una funzione 
-<b>returnValue('valore da ritornare')</b>: <br/>
-
-
-<br/><br/>
+Per gli script in linguaggio groovy e javascript sono¨a disposizione alcune funzioni che permettono di includere un valore nella stringa XML richiesta e di gestire gli attributi multi-valore:
+<ul>
+<li>
+<b>returnValue(valore_da_ritornare)</b>: Restituisce il valore con la seguente sintassi:
+<br/>
 <b>Struttura Xml della stringa restituita</b>
 <hr/>
 &lt;ROWS&gt;<br/>
@@ -31,4 +35,31 @@ Per lo script in linguaggio groovy Ã¨ a disposizione una funzione
 &nbsp;&nbsp;Tutte le righe devono avere gli stessi attributi !<br/>
 &nbsp;&nbsp;...<br/>
 &lt;/ROWS&gt;<br/>
+</li>
+<li>
+
+<li>
+<b>getListFromMultiValueProfileAttribute(String nome_attributo)</b>: Restituisce la lista dei valori di un attributo multi valore con la seguente sintassi (il parametro deve essere racchiuso tra virgolette):
+<br/>
+&lt;ROWS&gt;<br/>
+&nbsp;&nbsp;&lt;ROW  value="valore1" ... /&gt;<br/>
+&nbsp;&nbsp;&lt;ROW  value="valore2" ... /&gt;<br/>
+&nbsp;&nbsp;...<br/>
+&nbsp;&nbsp;...<br/>
+&lt;/ROWS&gt;<br/>
+<br/>
+<b>Esempio:</b><i> getListFromMultiValueProfileAttribute("${multi_value_attribute}")</i>
+</li>
+
+
+<li>
+<b>getMultiValueProfileAttribute(String nomeAttributo, String prefisso, String nuovoSplitter, String suffisso) </b>:
+ Restitruisce la lista di valori dell'attributo multi-valore, preceduti dal prefisso, separati dal nuovo Splitter e seguiti dal suffisso; (tutti i parametri devono essere racchiusi tra virgolette).
+<br/>
+<i><b>Esempio:</b> select ... where colonna ${nome_attributo_multivalore( "in (" ; "," ; ") ") })</i>
+<br/><br/>
+</li>
+</ul>
+
+
 </div>

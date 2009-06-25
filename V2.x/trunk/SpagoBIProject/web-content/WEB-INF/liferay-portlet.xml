@@ -27,10 +27,6 @@
 		<instanceable>true</instanceable>
 	</portlet>
 	<portlet>
-		<portlet-name>SbiProfileAttributes</portlet-name>
-		<instanceable>true</instanceable>
-	</portlet>
-	<portlet>
 		<portlet-name>SbiEvents</portlet-name>
 		<instanceable>true</instanceable>
 	</portlet>

@@ -8,7 +8,6 @@
 		<portlet id="SBIDistributionList" />
 		<portlet id="SBIAnaliticalModels" />
 		<portlet id="SBICatalolgues" />
-		<portlet id="SbiProfileAttributes" />
 		<portlet id="SbiEvents" />
 		<portlet id="SbiTools" />
 		<portlet id="SbiResources" />

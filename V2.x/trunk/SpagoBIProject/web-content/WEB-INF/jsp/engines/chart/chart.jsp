@@ -153,7 +153,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		DatasetMap copyDatasets=null;
 		
 		//get width for slider; it is 80% of the whole
-		int sliderWidth=(sbi.getWidth()/100)*80;
+		int sliderWidth=(sbi.getWidth()/100)*80; 
 		
 		// get wich pars can the user set
 		Vector changePars=(Vector)sbi.getPossibleChangePars();
@@ -544,7 +544,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								</td>
 								<td width="15%" align="left">							
 									<input class='portlet-form-input-field' type="text"	 id="slider_1_1_value" readonly style="width:30px;"/>
-									<input type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/>
+									<input style="<%=datasetMap.getFilterStyle()%>" class='portlet-form-input-field' type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/>
 								</td>					
 								
 							</tr>
@@ -572,7 +572,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								</td>
 								<td width="15%" align="left">							
 									<input class='portlet-form-input-field' type="text"	 id="slider_1_1_value" readonly style="width:30px;"/>
-									<input type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/>
+									<input style="<%=datasetMap.getFilterStyle()%>" type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/>
 								</td>					
 								
 							</tr>
@@ -659,7 +659,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										<%
 									} 
 								if(filterCatGroup==false){ %> 
-								   <input type="submit" value="Apply" />
+								   <input style="<%=datasetMap.getFilterStyle()%>" type="submit" value="Apply" />
 								<%} %>
 							</div>
 						</td>

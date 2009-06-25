@@ -1668,8 +1668,8 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 				" and fr.id.function.functId = f.functId and fr.id.state.valueId = o.state " + 
 				" and f.functId = :FOLDER_ID  " );
 			
-			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_USER) ||
-				profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)){
+			if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) &&
+				!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
 				buffer.append(" and o.visible = 1" ); //only visible objetcs (1 means true)
 			}
 			buffer.append(" order by o.name"); 

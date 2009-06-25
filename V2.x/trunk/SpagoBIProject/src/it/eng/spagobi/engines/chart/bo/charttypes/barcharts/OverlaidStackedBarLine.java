@@ -372,7 +372,13 @@ public class OverlaidStackedBarLine extends BarCharts {
 
 
 		if(secondAxis){
-			plot.setRangeAxis(1,new NumberAxis(secondAxisLabel));
+			NumberAxis na=new NumberAxis(secondAxisLabel);
+			na.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+			na.setLabelPaint(styleXaxesLabels.getColor());
+			na.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
+			na.setTickLabelPaint(styleXaxesLabels.getColor());
+			na.setUpperMargin(0.10);
+			plot.setRangeAxis(1,na);
 			plot.mapDatasetToRangeAxis(0, 1);
 		}
 

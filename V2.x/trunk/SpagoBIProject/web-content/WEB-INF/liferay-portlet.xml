@@ -39,10 +39,6 @@
 		<instanceable>true</instanceable>
 	</portlet>
 	<portlet>
-		<portlet-name>SbiWorkspace</portlet-name>
-		<instanceable>true</instanceable>
-	</portlet>
-	<portlet>
 		<portlet-name>SBIFunctionality</portlet-name>
 		<instanceable>true</instanceable>
 	</portlet>

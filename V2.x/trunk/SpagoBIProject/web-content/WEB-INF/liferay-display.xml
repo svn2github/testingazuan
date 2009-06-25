@@ -12,7 +12,6 @@
 		<portlet id="SbiEvents" />
 		<portlet id="SbiTools" />
 		<portlet id="SbiResources" />
-		<portlet id="SbiWorkspace" />
 		<portlet id="SBIFunctionality" />
 		<portlet id="SbiHotLink" />
 		<portlet id="KPIConfiguration" />

@@ -208,8 +208,8 @@
 					<replacevalue><![CDATA[<!-- START-DEBUG]]></replacevalue>		
 			</replace>
 			<replace file="${build}/${webapp_name}/WEB-INF/jsp/commons/importSbiJS.jspf">
-			      	 <replacetoken><![CDATA[<!-- STOP-DEBUG -->]]></replacetoken>
-					<replacevalue><![CDATA[STOP-DEBUG -->]]></replacevalue>		
+			      	 <replacetoken><![CDATA[<!-- END-DEBUG -->]]></replacetoken>
+					<replacevalue><![CDATA[END-DEBUG -->]]></replacevalue>		
 			</replace> 
 		</target>
 		

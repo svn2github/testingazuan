@@ -21,12 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="java.util.Set" %>
 <%@page import="java.net.URLEncoder"%>
 
+
 <% 
    SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
    ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 
    String execContext = instanceO.getExecutionModality();
-
+   
    Integer executionAuditId_dash = null;
    String crossNavigationUrl = "";
    if (execContext == null || !execContext.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION)){%>
@@ -74,8 +75,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		executionAuditId_dash = auditManager.insertAudit(instance.getBIObject(), null, userProfile, instance.getExecutionRole(), instance.getExecutionModality());
 		String uuid = instanceO.getExecutionId(); 
    }
+   String uuidO=instanceO.getExecutionId();
+   %>
+   <%-- div with wait while loading message --%>
+   <div id="divLoadingMessage<%= uuidO %>" style="display: inline;">
+   <img	src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/analiticalmodel/loading.gif", currTheme)%>' />
+   <spagobi:message key='sbi.execution.pleaseWait' /></div>
    
-   
+   <%
     String movie = ChannelUtilities.getSpagoBIContextName(request);
     //String movie = renderRequest.getContextPath();
     String relMovie = (String)sbModuleResponse.getAttribute("movie");
@@ -241,3 +248,8 @@ if (orientation.equalsIgnoreCase("horizontal")){%>
 <%} %>
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>
+
+<%-- when the execution is performed, the please while loading message is hidden --%>
+<script type="text/javascript">
+document.getElementById('divLoadingMessage<%= uuidO %>').style.display = 'none';
+</script>

@@ -266,19 +266,19 @@
    
   <target name="copy.ss" >
     <copy todir="${apache.dir}/js" >
-      <fileset dir="/home/spagobi/runtime/exo-tomcat-portal-1.1.4/webapps/SpagoBI/js">
+      <fileset dir="${tomcat.home}/webapps/SpagoBI/js">
       </fileset>
     </copy>
-    <copy todir="${apache.dir}/css" >
-      <fileset dir="/home/spagobi/runtime/exo-tomcat-portal-1.1.4/webapps/SpagoBI/css">
+    <copy todir="${apache.dir}/themes/sbi_default/css" >
+      <fileset dir="${tomcat.home}/webapps/SpagoBI/themes/sbi_default/css">
       </fileset>
     </copy>
-    <copy todir="${apache.dir}/img" >
-      <fileset dir="/home/spagobi/runtime/exo-tomcat-portal-1.1.4/webapps/SpagoBI/img">
+    <copy todir="${apache.dir}/themes/sbi_default/img" >
+      <fileset dir="${tomcat.home}/webapps/SpagoBI/themes/sbi_default/img">
       </fileset>
     </copy>
-    <copy todir="${apache.dir}/html" >
-      <fileset dir="/home/spagobi/runtime/exo-tomcat-portal-1.1.4/webapps/SpagoBI/html">
+    <copy todir="${apache.dir}/themes/sbi_default/html" >
+      <fileset dir="${tomcat.home}/webapps/SpagoBI/themes/sbi_default/html">
       </fileset>
     </copy>    
   </target>

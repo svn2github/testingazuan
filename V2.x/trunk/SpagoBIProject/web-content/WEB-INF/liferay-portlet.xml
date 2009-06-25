@@ -50,4 +50,8 @@
 		<portlet-name>KPIConfiguration</portlet-name>
 		<instanceable>true</instanceable>
 	</portlet>
+	<portlet>
+		<portlet-name>DocumentsBrowser</portlet-name>
+		<instanceable>true</instanceable>
+	</portlet>	
 </liferay-portlet-app>

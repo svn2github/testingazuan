@@ -15,5 +15,6 @@
 		<portlet id="SBIFunctionality" />
 		<portlet id="SbiHotLink" />
 		<portlet id="KPIConfiguration" />
+		<portlet id="DocumentsBrowser" />		
 	</category>
 </display>

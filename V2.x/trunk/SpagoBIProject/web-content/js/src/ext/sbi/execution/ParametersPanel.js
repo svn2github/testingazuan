@@ -141,6 +141,12 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			var field = this.fields[p];
 			var value = field.getValue();
 			state[field.name] = value;
+			var rawValue = field.getRawValue();
+			if (rawValue !== undefined) {
+				// TODO to improve: the value of the field should be an object with actual value and its description
+				// Conflicts with other parameters are avoided since the parameter url name max lenght is 20
+				state[field.name + '_field_visible_description'] = rawValue;
+			}
 		}
 		return state;
 	}
@@ -152,6 +158,11 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			var fieldValue = state[p];
 			if(this.fields[fieldName]) {
 				this.fields[fieldName].setValue( fieldValue );
+				var fieldDescription = fieldName + '_field_visible_description';
+				var rawValue = state[fieldDescription];
+				if (rawValue !== undefined && rawValue != null) {
+					this.fields[fieldName].setRawValue( rawValue );
+				}
 			}
 		}
 	}
@@ -374,15 +385,18 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 				return true;
 			}, this);
 			
+			store.load(/*{params: param}*/);
+			
 			field = new Ext.form.ComboBox(Ext.apply(baseConfig, {
 				tpl: '<tpl for="."><div ext:qtip="{label} ({value}): {description}" class="x-combo-list-item">{label}</div></tpl>'
                 , editable  : true			    
-			    , forceSelection : true
+			    , forceSelection : false
 			    , store :  store
 			    , displayField:'label'
 			    , valueField:'value'
 			    , emptyText: ''
-			    , typeAhead: true
+			    , typeAhead: false
+			    //, typeAheadDelay: 1000
 			    , triggerAction: 'all'
 			    , selectOnFocus:true
 			    , autoLoad: false
@@ -394,9 +408,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			    	}
 			    }
 			}));
-					
-			store.load(/*{params: param}*/);
-						
+			
 		} else if(p.selectionType === 'LIST' || p.selectionType ===  'CHECK_LIST') {
 			
 			var params = Ext.apply({}, {

@@ -151,31 +151,31 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 			    new Ext.Toolbar.Button({
 		            tooltip:'Export in pdf',
 		            iconCls:'pdf',
-		            handler: exportResultToPdf,
+		            handler: this.exportResultToPdf,
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
 		            tooltip:'Export in rtf',
 		            iconCls:'rtf',
-		            handler: exportResultToRtf,
+		            handler: this.exportResultToRtf,
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
 		            tooltip:'Export in xls',
 		            iconCls:'xls',
-		            handler: exportResultToXls,
+		            handler: this.exportResultToXls,
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
 		            tooltip:'Export in csv',
 		            iconCls:'csv',
-		            handler: exportResultToCsv,
+		            handler: this.exportResultToCsv,
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
 		            tooltip:'Export in jrxml',
 		            iconCls:'jrxml',
-		            handler: exportResultToJrxml,
+		            handler: this.exportResultToJrxml,
 		            scope: this
 			    })
 			]
@@ -206,7 +206,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	        },
 	        
 	        tbar:this.exportTBar,
-	        bbar: this.pagingTBar,    
+	        bbar: this.pagingTBar   
 	    });   
 	}
 

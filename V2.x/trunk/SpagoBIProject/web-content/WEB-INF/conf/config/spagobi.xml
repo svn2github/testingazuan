@@ -142,7 +142,7 @@ END-LIFERAY -->
      <!--  Ingres: Uncomment the row below and edit the file to provide connection info -->
      <!--   hibernate.cfg.ingres.xml -->
      
-	 <HIBERNATE-CFGFILE>hibernate.cfg.ora.xml</HIBERNATE-CFGFILE>
+	 <HIBERNATE-CFGFILE>hibernate.cfg.mysql.xml</HIBERNATE-CFGFILE>
 	
      <!-- ********************* END DATABASE CONFIGURATION ************************ -->
      
@@ -182,9 +182,9 @@ END-LIFERAY -->
 
      <SPAGOBI_CONTEXT>/SpagoBI</SPAGOBI_CONTEXT>
     
-     <SPAGOBI_HOST_JNDI>url/spagobi_host_url</SPAGOBI_HOST_JNDI>
+     <SPAGOBI_HOST_JNDI>java://comp/env/spagobi_host_url</SPAGOBI_HOST_JNDI>
      
-     <RESOURCE_PATH_JNDI_NAME>url/spagobi_resource_path</RESOURCE_PATH_JNDI_NAME>
+     <RESOURCE_PATH_JNDI_NAME>java://comp/env/spagobi_resource_path</RESOURCE_PATH_JNDI_NAME>
  	 
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	

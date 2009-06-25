@@ -48,7 +48,7 @@
       description="Sincronizza l'applicazione con il repository">
     <exec dir="${project.dir}" executable="svn" >
       <arg line="checkout ${svn.base.location}/${project.name} ."/>
-    </exec>	 
+    </exec>
   </target>
 
 
@@ -72,6 +72,7 @@
         <exclude name="**/*.java"/>
       </fileset>
     </copy>
+
   </target>
 
 	<target name="create.jar" depends="init,copy.artifacts" >
@@ -85,7 +86,7 @@
     <javadoc packagenames="*"
       sourcepath="${src}"
       defaultexcludes="yes"
-      destdir="${dist}/${project.name}/javadoc"
+      destdir="${dist}/javadoc"
       author="true"
       version="true"
       use="true">
@@ -95,9 +96,6 @@
 
   <target name="makeDist" >    
     <antcall target="create.jar" />
-    <!--
-    <antcall target="javadoc" />
-    -->
   </target>
 
 </project>

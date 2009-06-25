@@ -65,6 +65,7 @@
         <exclude name="**/*.java"/>
       </fileset>
     </copy>
+
   </target>
 
 	<target name="create.jar" depends="init,copy.artifacts" >
@@ -78,7 +79,7 @@
     <javadoc packagenames="*"
       sourcepath="${src}"
       defaultexcludes="yes"
-      destdir="${dist}/${project.name}/javadoc"
+      destdir="${dist}/javadoc"
       author="true"
       version="true"
       use="true">

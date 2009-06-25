@@ -318,5 +318,18 @@
     <ant dir="../SpagoBILiferaySecurityProvider/ant" target="javadoc"/>    
     <ant dir="../SpagoBILdapSecurityProvider/ant" target="javadoc"/>       
   </target>
-  
+
+  <target name="package.all" >
+        <ant dir="../SpagoBIProject/ant" target="package"/> 
+        <ant dir="../SpagoBIBirtReportEngine/ant" target="package"/> 
+        <ant dir="../SpagoBIGeoEngine/ant" target="package"/> 
+        <ant dir="../SpagoBIJasperReportEngine/ant" target="package"/> 
+        <ant dir="../SpagoBIJPaloEngine/ant" target="package"/> 
+        <ant dir="../SpagoBIJPivotEngine/ant" target="package"/> 
+        <ant dir="../SpagoBIQbeEngine/ant" target="package"/> 
+        <ant dir="../SpagoBITalendEngine/ant" target="package"/> 
+        <ant dir="../SpagoBIWekaEngine/ant" target="package"/> 
+                                                                                                        
+  </target>
+    
 </project>

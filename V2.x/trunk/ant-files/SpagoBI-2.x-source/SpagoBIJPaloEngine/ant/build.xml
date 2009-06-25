@@ -86,6 +86,7 @@
         <exclude name="**/*.svn"/>
       </fileset>
     </copy>
+            <copy file="${web.dir}/COPYING" todir="${dist}" overwrite="true" />
   </target>
 
 	<target name="create.war" depends="init,copy.artifacts" >
@@ -100,7 +101,7 @@
     <javadoc packagenames="*"
       sourcepath="${src}"
       defaultexcludes="yes"
-      destdir="${dist}/${webapp_name}/javadoc"
+      destdir="${dist}/javadoc"
       author="true"
       version="true"
       use="true">
@@ -108,9 +109,14 @@
     </javadoc>    
   </target>
 
+  <target name="package">    
+  <zip destfile="../../../../dist/${project.name}-bin-${project.version}_${project.date}.zip"
+       basedir="${dist}"
+  />    
+  </target>
+  
   <target name="makeDist" >    
     <antcall target="create.war" />
-  <!--  <antcall target="javadoc" />  -->
   </target>
 
 </project>

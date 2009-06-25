@@ -82,7 +82,7 @@
     <javadoc packagenames="*"
       sourcepath="${src}"
       defaultexcludes="yes"
-      destdir="${dist}/${project.name}/javadoc"
+      destdir="${dist}/javadoc"
       author="true"
       version="true"
       use="true">

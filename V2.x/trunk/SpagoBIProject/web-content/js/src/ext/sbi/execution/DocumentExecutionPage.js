@@ -564,10 +564,12 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		this.miframe = new Ext.ux.ManagedIframePanel({
 			region:'center'
 	        , frameConfig : {
-				autoCreate : { },
+				// setting an initial iframe height in IE, to fix resize problem
+				autoCreate : Ext.isIE ? {style: 'height:300'} : { },
 				disableMessaging : false
 	        }
 	        , loadMask  : true
+	        //, fitToParent: true  // not valid in a layout
 	        , disableMessaging :false
 	        , listeners  : {
 	        		
@@ -604,7 +606,11 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			//this.miframe.iframe.execScript("parent.execCrossNavigation = function(d,l,p) {alert('LABEL: ' + l + '; PARAMETERS: '+ p);}");
 			this.miframe.iframe.execScript(scriptFn);
 			
-			
+			// iframe resize when iframe content is reloaded
+			if (Ext.isIE) {
+				var aFrame = this.miframe.getFrame();
+				aFrame.dom.style.height = this.miframe.getSize().height - 6;
+			}
 
 		}, this);
 	}

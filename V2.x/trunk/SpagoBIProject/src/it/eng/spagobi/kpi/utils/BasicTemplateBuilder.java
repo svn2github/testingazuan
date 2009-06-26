@@ -765,7 +765,7 @@ public class BasicTemplateBuilder  {
 			subreport1.setAttribute("reportElement.y", new Integer(0));
 			SourceBean subreport2=(SourceBean)subreport1.getAttribute("subreportExpression");
 			String dirS=System.getProperty("java.io.tmpdir");
-			String subr = dirS+"Detail"+numOfSubreport+".jasper";
+			String subr = dirS+ File.separatorChar + "Detail"+numOfSubreport+".jasper";
 			subr = subr.replaceAll("\\\\", "/");
 			subreport2.setCharacters("\""+subr+"\"");
 			if(numOfSubreport==0){
@@ -923,16 +923,17 @@ public class BasicTemplateBuilder  {
 		if(children!=null){
 			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 				KpiLine kpiLineChild = (KpiLine) iterator.next();
-				List sourceBeansToAdd2 = newLine(kpiLineChild, level+1,!evenLevel,bandDetailReport);
-			
-				if (sourceBeansToAdd2!=null && !sourceBeansToAdd2.isEmpty()){
-					Iterator it = sourceBeansToAdd2.iterator();
+				
 					
 					if (actualHeight+10<maxFirstSubTemplateHeight){
-						while(it.hasNext()){
-							SourceBean toAdd = (SourceBean)it.next();
-							bandDetailReport.setAttribute(toAdd);
-						}	
+						List sourceBeansToAdd2 = newLine(kpiLineChild, level+1,!evenLevel,bandDetailReport);
+						if (sourceBeansToAdd2!=null && !sourceBeansToAdd2.isEmpty()){
+						Iterator it = sourceBeansToAdd2.iterator();
+							while(it.hasNext()){
+								SourceBean toAdd = (SourceBean)it.next();
+								bandDetailReport.setAttribute(toAdd);
+							}	
+						}
 					}else{
 						//Add last subreport to the List
 						increaseHeight(subTemplateBaseContent);
@@ -947,13 +948,17 @@ public class BasicTemplateBuilder  {
 						subSummarySB=(SourceBean)subTemplateBaseContent.getAttribute("summary");
 						bandSummaryReport=(SourceBean)subSummarySB.getAttribute("BAND");	
 						//NEW SUBREPORT
-						while(it.hasNext()){
-							SourceBean toAdd = (SourceBean)it.next();
-							bandDetailReport.setAttribute(toAdd);
-						}	
+						List sourceBeansToAdd2 = newLine(kpiLineChild, level+1,!evenLevel,bandDetailReport);
+						if (sourceBeansToAdd2!=null && !sourceBeansToAdd2.isEmpty()){
+						Iterator it = sourceBeansToAdd2.iterator();
+							while(it.hasNext()){
+								SourceBean toAdd = (SourceBean)it.next();
+								bandDetailReport.setAttribute(toAdd);
+							}	
+						}
 					}
 				}
-			}}
+			}
 		} catch (SourceBeanException e) {
 			logger.error("SourceBeanException",e);
 			e.printStackTrace();

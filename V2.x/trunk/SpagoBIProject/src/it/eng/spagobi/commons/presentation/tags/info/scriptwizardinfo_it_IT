@@ -23,21 +23,19 @@ Un attributo di profilo multi-valore è registrato nel file authorizations.xml; i
 
 Per gli script in linguaggio groovy e javascript sono¨a disposizione alcune funzioni che permettono di includere un valore nella stringa XML richiesta e di gestire gli attributi multi-valore:
 <ul>
+<br/>
+<br/>
 <li>
 <b>returnValue(valore_da_ritornare)</b>: Restituisce il valore con la seguente sintassi:
 <br/>
 <b>Struttura Xml della stringa restituita</b>
 <hr/>
 &lt;ROWS&gt;<br/>
-&nbsp;&nbsp;&lt;ROW  nomeAttributo1="valoreAttributo1" nomeAttributo2="valoreAttributo2" ... /&gt;<br/>
-&nbsp;&nbsp;&lt;ROW  nomeAttributo1="valoreAttributo1" nomeAttributo2="valoreAttributo2" ... /&gt;<br/>
-&nbsp;&nbsp;...<br/>
-&nbsp;&nbsp;Tutte le righe devono avere gli stessi attributi !<br/>
-&nbsp;&nbsp;...<br/>
+&nbsp;&nbsp;&lt;ROW  nomeAttributo1="valoreAttributo1"/&gt;<br/>
 &lt;/ROWS&gt;<br/>
 </li>
-<li>
-
+<br/>
+<br/>
 <li>
 <b>getListFromMultiValueProfileAttribute(String nome_attributo)</b>: Restituisce la lista dei valori di un attributo multi valore con la seguente sintassi (il parametro deve essere racchiuso tra virgolette):
 <br/>
@@ -50,7 +48,8 @@ Per gli script in linguaggio groovy e javascript sono¨a disposizione alcune funz
 <br/>
 <b>Esempio:</b><i> getListFromMultiValueProfileAttribute("${multi_value_attribute}")</i>
 </li>
-
+<br/>
+<br/>
 
 <li>
 <b>getMultiValueProfileAttribute(String nomeAttributo, String prefisso, String nuovoSplitter, String suffisso) </b>:

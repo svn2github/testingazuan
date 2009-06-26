@@ -110,6 +110,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String snapshotHistoryNumber = (String) aServiceRequest.getAttribute(SpagoBIConstants.SNAPSHOT_HISTORY_NUMBER);
     logger.debug("Snapshot history number in request is [" + snapshotHistoryNumber + "]");
     
+    String toolbarVisible = (String) aServiceRequest.getAttribute(SpagoBIConstants.TOOLBAR_VISIBLE);
+    boolean toolbarHidden = toolbarVisible == null ? false : !Boolean.parseBoolean(toolbarVisible);
+    String shortcutsVisible = (String) aServiceRequest.getAttribute(SpagoBIConstants.SLIDERS_VISIBLE);
+    boolean shortcutsHidden = shortcutsVisible == null ? false : !Boolean.parseBoolean(shortcutsVisible);
+    
     Integer engineId=null;
 	Engine engineObj=obj.getEngine();
 	String exportersJSArray = "";
@@ -156,12 +161,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var snapshotName = <%= snapshotName != null ? ("'" + snapshotName.replaceAll("'", "\'") + "'") : "undefined" %>;
 	var snapshotHistoryNumber = <%= snapshotHistoryNumber != null ? snapshotHistoryNumber : "0" %>;
 	var snaphost = {'name': snapshotName, 'historyNumber': snapshotHistoryNumber};
+	var shortcutsHidden = <%= shortcutsHidden %>;
+	var toolbarHidden = <%= toolbarHidden %>;
 	
     var config = {
     	preferences: {
 			parameters: parameters
 			, subobject: subobject
 			, snapshot: snaphost
+			, toolbarHidden: toolbarHidden
+			, shortcutsHidden: shortcutsHidden
 	    }
 	};
 	
@@ -171,12 +180,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		var viewport = new Ext.Viewport({
 			layout: 'border'
 			, items: [
-				{
-					region: 'center',
-					layout: 'fit',
-					items: [executionPanel]
-				}
+			    {
+			       region: 'center',
+			       layout: 'fit',
+			       items: [executionPanel]
+			    }
 			]
+
 		});
 		executionPanel.execute(object);
 	});

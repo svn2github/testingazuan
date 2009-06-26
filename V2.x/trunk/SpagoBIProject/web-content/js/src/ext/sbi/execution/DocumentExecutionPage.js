@@ -79,7 +79,8 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 	});
 	// add events
     this.addEvents('beforetoolbarinit', 'beforesynchronize', 'moveprevrequest', 'loadurlfailure', 'crossnavigation', 'beforerefresh');
-          
+    
+    this.toolbarHiddenPreference = config.toolbarHidden!== undefined ? config.toolbarHidden : false;
 	this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
     
     this.init(config);    
@@ -189,6 +190,10 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	}
 
 	, synchronizeToolbar: function( executionInstance ){
+		
+		// if toolbar is hidden, do nothing
+		if (this.toolbarHiddenPreference) 
+			return;
 		
 		this.toolbar.items.each( function(item) {
 			this.toolbar.items.remove(item);
@@ -531,6 +536,10 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	}
 	
 	, initToolbar: function( config ) {
+		
+		if (this.toolbarHiddenPreference) 
+			return;
+			
 		this.toolbar = new Ext.Toolbar({
 			items: ['']
 		});
@@ -538,7 +547,6 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		this.toolbar.on('render', function() {
 			
 		}, this);
-		
 	}
 	
 	, initNorthPanel: function( config ) {

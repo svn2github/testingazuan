@@ -181,19 +181,8 @@ Ext.onReady(function() {
 					widthPx = widthPx.substring(widthPx.indexOf("WIDTH_")+6);
 		       		heightPx = heightPx.substring(heightPx.indexOf("HEIGHT_")+7);
 				}
-				//create panel with iframe
-				var p = new  Ext.ux.ManagedIframePanel({
-						frameConfig:{autoCreate:{id:'iframe_' + strDocLabel, name:'iframe_' + strDocLabel}}
-						,renderTo   : 'divIframe_'+ strDocLabel
-		                ,title      : (titleDoc==null || titleDoc== "")?null:titleDoc
-		                ,defaultSrc : asUrls[docLabel]+""
-		                ,loadMask   : (Ext.isIE)?true:false
-		                ,border		: false //the border style should be defined into document template within the "style" tag
-						,height		: Number(heightPx)
-						,scrolling  : 'auto'	 //possible values: yes, no, auto  
-						});
-				
-				/*	
+				//create panel
+				if (titleDoc==""){
 					var p = new Ext.Panel({
 						id:'p'+i,
 				        bodyBorder : false,
@@ -217,9 +206,35 @@ Ext.onReady(function() {
 						},
 				        renderTo: 'divIframe_'+ strDocLabel
 					    });
+				}
+				else{
+	  				var p = new Ext.Panel({
+					id:'p'+i,
+			        bodyBorder : true,
+			        collapsible:true,
+			        title: titleDoc,
+			       // width: widthPx,
+			        height:Number(heightPx),
+			        bodyCfg: {
+						tag:'div',
+						cls:'x-panel-body',
+						children:[{
+							tag:'iframe',
+		      				src: asUrls[docLabel],
+		      				frameBorder:0,
+		      				width:'100%',
+		      				height:'100%',
+		      				id: 'iframe_' + strDocLabel,
+		      				name: 'iframe_' + strDocLabel,
+		      				style: {overflow:'auto'},
+		      				scrolling:'auto'  //possible values: yes, no, auto  
+		 				}]
+					},
+			        renderTo: 'divIframe_'+ strDocLabel
+				    });
+				}
 			    p.show(this);
   			}
-  			*/
-  	}}
+  	}
 }); 
 

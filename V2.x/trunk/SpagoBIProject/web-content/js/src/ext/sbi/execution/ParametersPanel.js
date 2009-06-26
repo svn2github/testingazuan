@@ -256,7 +256,8 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			var thereAreParametersToBeFilled = false;
 			var o = this.getFormState();
 			for(p in o) {
-				if(this.fields[p].isTransient === false) {
+				// must check is this.fields[p] is undefined because form state contains also parameters' descriptions
+				if(this.fields[p] != undefined && this.fields[p].isTransient === false) {
 					thereAreParametersToBeFilled = true;
 					break;
 				}
@@ -336,7 +337,8 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			var readyForExecution = true;
 			var o = this.getFormState();
 			for(p in o) {
-				if(this.fields[p].isTransient === false) {
+				// must check is this.fields[p] is undefined because form state contains also parameters' descriptions
+				if(this.fields[p] != undefined && this.fields[p].isTransient === false) {
 					readyForExecution = false;
 					break;
 				}

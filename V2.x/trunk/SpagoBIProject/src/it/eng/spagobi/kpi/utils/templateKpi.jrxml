@@ -63,9 +63,9 @@
 				</line>
 				<staticText>
 					<reportElement
-						x="111"
+						x="8"
 						y="6"
-						width="312"
+						width="519"
 						height="26"
 						key="staticText-1"/>
 					<box>					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>

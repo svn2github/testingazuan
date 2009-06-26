@@ -1,15 +1,22 @@
 package it.eng.spagobi.engines.exporters;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.kpi.utils.BasicTemplateBuilder;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringBufferInputStream;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRExporter;
@@ -17,11 +24,12 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
@@ -47,13 +55,18 @@ public class KpiExporter {
 		//Build report template
 		String docName=(obj!=null) ? obj.getName() : "";
 		BasicTemplateBuilder basic=new BasicTemplateBuilder(docName);
-		String template2=basic.buildTemplate(kpiBlocks);
+		String template2= "";
+		List templates = basic.buildTemplate(kpiBlocks);
+		boolean first = true;
+		
+		//String template2=basic.buildTemplate(kpiBlocks);
 
 		//System.out.println(template2);
 
 		String outputType = "PDF";
 		HashedMap parameters=new HashedMap();
 		parameters.put("PARAM_OUTPUT_FORMAT", outputType);
+		
 		//parameters.put("SBI_HTTP_SESSION", session);   ???
 
 		JREmptyDataSource conn=new JREmptyDataSource(1);
@@ -65,23 +78,74 @@ public class KpiExporter {
 		executionId = executionId.replaceAll("-", "");
 
 		//Creta etemp file
-		String dirS=System.getProperty("java.io.tmpdir");
+		String dirS = System.getProperty("java.io.tmpdir");
 		File dir = new File(dirS);
 		dir.mkdirs();
-
+		
+		List filesToDelete = new ArrayList();
 		logger.debug("Create Temp File");
 		String fileName="report"+executionId;
 		File tmpFile = File.createTempFile(fileName, "." + outputType, dir);
 		OutputStream out = new FileOutputStream(tmpFile);
 		try {								
-
+			if(templates!=null && !templates.isEmpty()){
+				int subreports = 0;
+				Iterator it = templates.iterator();
+				while(it.hasNext()){
+					String template =(String)it.next();
+					if(first)template2=template;
+					else{
+					
+					File f = new File(dirS + File.separatorChar + "Detail"+subreports+".jasper");
+					logger.debug("Compiling subtemplate file: " + f);
+					filesToDelete.add(f);
+					
+					File file = new File(dirS + File.separatorChar + "Detail"+subreports+".jrxml");
+					if(file.exists()){
+						boolean deleted = file.delete();
+						file =new File(dirS + File.separatorChar + "Detail"+subreports+".jrxml");
+					}
+					FileOutputStream stream = new FileOutputStream(file);
+					stream.write(template.getBytes());
+					stream.flush();
+					stream.close();
+					filesToDelete.add(file);
+					
+					JasperCompileManager.compileReportToFile(dirS + File.separatorChar + "Detail"+subreports+".jrxml",dirS + File.separatorChar + "Detail"+subreports+".jasper");
+					subreports ++;
+					}
+					first = false;
+				}
+			}
+			
+			File f = new File(dirS + File.separatorChar + "Master.jasper");
+			logger.debug("Compiling subtemplate file: " + f);
+			filesToDelete.add(f);
+			
+			File file = new File(dirS + File.separatorChar + "Master.jrxml");
+			if(file.exists()){
+				boolean deleted = file.delete();
+				file =new File(dirS + File.separatorChar + "Master.jrxml");
+			}
+			FileOutputStream stream = new FileOutputStream(file);
+			stream.write(template2.getBytes());
+			stream.flush();
+			stream.close();
+			filesToDelete.add(file);
+			
 			StringBufferInputStream sbis=new StringBufferInputStream(template2);
-			JasperReport report  = JasperCompileManager.compileReport(sbis);
+			JasperCompileManager.compileReportToFile(dirS + File.separatorChar + "Master.jrxml",dirS + File.separatorChar + "Master.jasper");
 
 			logger.debug("Filling report ...");
-			JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, conn);
+			Context ctx = new InitialContext();
+			Session aSession = HibernateUtil.currentSession();
+			Transaction tx = aSession.beginTransaction();
+			Connection jdbcConnection = aSession.connection();
+			JasperPrint jasperPrint = JasperFillManager.fillReport(dirS + File.separatorChar + "Master.jasper", parameters,jdbcConnection);
 			logger.debug("Report filled succesfully");
-
+			   if (aSession != null) {
+				    if (aSession.isOpen()) aSession.close();
+				   }
 			logger.debug("Exporting report: Output format is [" + outputType + "]");
 			JRExporter exporter=null;
 			//JRExporter exporter = ExporterFactory.getExporter(outputType);	
@@ -106,6 +170,13 @@ public class KpiExporter {
 		} finally {
 			out.flush();
 			out.close();
+			if(filesToDelete!=null && !filesToDelete.isEmpty()){
+				Iterator it = filesToDelete.iterator();
+				while(it.hasNext()){
+					File temp =(File) it.next();
+					temp.delete();
+				}
+			}
 			//tmpFile.delete();
 
 		}

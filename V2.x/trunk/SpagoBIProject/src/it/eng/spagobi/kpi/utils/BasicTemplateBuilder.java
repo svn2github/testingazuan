@@ -59,6 +59,7 @@ import org.safehaus.uuid.UUIDGenerator;
 import org.xml.sax.InputSource;
 
 
+
 //TODO: Auto-generated Javadoc
 /**
  * The Class BasicTemplateBuilder.
@@ -356,6 +357,19 @@ public class BasicTemplateBuilder  {
 	"	key=\"line-1\"/>"+
 	"	<graphicElement stretchType=\"NoStretch\"/>"+
 	"	</line>";
+	
+	static String subReportS ="<subreport  isUsingCache=\"true\">"+
+	"	<reportElement"	+
+	"	x=\"0\""+
+	"	y=\"0\""+
+	"	width=\"535\""+
+	"	height=\"6\""+
+    "	key=\"subreport-1\"/>"+
+	"	<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>"	+
+	"	<subreportExpression  class=\"java.lang.String\"></subreportExpression>"+
+	"	</subreport>";
+	
+
 
 	SourceBean staticTextName=null;
 	SourceBean staticTextNumber=null;
@@ -379,6 +393,8 @@ public class BasicTemplateBuilder  {
 	SourceBean thresholdLineSeparator=null;
 	SourceBean thresholdTextCode=null;
 	SourceBean thresholdTextValue=null;
+	
+	SourceBean subReport=null;
 
 	String documentName=null;
 	
@@ -414,9 +430,19 @@ public class BasicTemplateBuilder  {
 	final Integer thresholdFieldWidth=new Integer(92);
 //	height of the column header band
 	final Integer thresholdFieldSeparatorWidth=new Integer(10);
+//	height of the column header band
+	Integer maxFirstSubTemplateHeight=new Integer(745);
+	final Integer maxSubTemplateHeight=new Integer(760);
+	final Integer subreportHeight = new Integer(8);
 
-	// counting the actual weight of the report
+	int countSubreports = 0;
+	
+	Integer masterHeight=new Integer(10);	
+
+	// counting the actual height of the report
 	Integer actualHeight=new Integer(0);
+	// counting the actual height of the detail band of master report
+	Integer detailMasterHeight=new Integer(0);
 
 	// Map for the name resolution of upper case tag names
 	HashMap<String, String> nameResolution=new HashMap<String, String>();
@@ -424,11 +450,17 @@ public class BasicTemplateBuilder  {
 	List resources;
 	InputSource inputSource;
 
-	public SourceBean templateBaseContent=null; 
-	public SourceBean summary=null;	
-	public SourceBean band=null;
-
-
+	//public SourceBean templateBaseContent=null; 
+	public SourceBean detailMaster=null;
+	//public SourceBean bandDetailReport=null;
+	public SourceBean detailBandMaster=null;
+	
+	public List subreports = new ArrayList();
+	public SourceBean subTemplateBaseContent = null;
+	SourceBean subtitleSB = null;
+	SourceBean bandDetailReport = null;
+	SourceBean subSummarySB = null;
+	SourceBean bandSummaryReport = null;
 
 
 	public BasicTemplateBuilder(String documentName) {
@@ -440,15 +472,20 @@ public class BasicTemplateBuilder  {
 	/* Build the template
 	 * @see it.eng.qbe.export.ITemplateBuilder#buildTemplate()
 	 */
-	public String buildTemplate(List resources) {
+	public List buildTemplate(List resources) {
 		logger.debug("IN");
 		// name resolution for upper cases tag
 		nameResolution();
 
-		// Create SOurce Bean of template of template
+		// Create Source Bean of template of template
 		String templateStr = getTemplateTemplate();
-		templateBaseContent =null;
+		
+		
+		
+		SourceBean templateBaseContent =null;
+		List toReturn = new ArrayList();
 		String finalTemplate="";
+
 		logger.debug("Recovered template of templates "+templateStr);
 		if(templateStr!=null){
 			try {
@@ -481,6 +518,8 @@ public class BasicTemplateBuilder  {
 			thresholdTextValue=SourceBean.fromXMLString(thresholdValuesCodeS);
 			thresholdTextCode=SourceBean.fromXMLString(thresholdTextCodeS);
 			thresholdLineSeparator=SourceBean.fromXMLString(thresholdLineSeparatorS);
+			
+			subReport=SourceBean.fromXMLString(subReportS);
 		} catch (Exception e) {
 			logger.error("Error in converting static elemnts into Source Beans, check the XML code");
 		}
@@ -489,63 +528,286 @@ public class BasicTemplateBuilder  {
 		SourceBean titleSB=(SourceBean)templateBaseContent.getAttribute("title");
 		SourceBean titleText=(SourceBean)titleSB.getAttribute("band.staticText.text");
 		titleText.setCharacters(documentName);
-
-		// make SUMMARY
-		summary=(SourceBean)templateBaseContent.getAttribute("SUMMARY");
-		band=(SourceBean)summary.getAttribute("BAND");
-
-		// cycle on resources
-		for (Iterator iterator = resources.iterator(); iterator.hasNext();) {
-			KpiResourceBlock thisBlock = (KpiResourceBlock) iterator.next();
-			newResource(thisBlock);			
-		}
-		newThresholdBlock();
-
-		increaseHeight();
-
-		finalTemplate=templateBaseContent.toXML();
-
-
+		
+		// make DETAIL BAND of master with subreports
+		detailMaster=(SourceBean)templateBaseContent.getAttribute("DETAIL");
+		detailBandMaster=(SourceBean)detailMaster.getAttribute("BAND");
+		masterHeight = new Integer(0);
+		
+		List subreports = createSubreports(resources);
+		
+		finalTemplate=templateBaseContent.toXML(false, false);
 		for (Iterator iterator = nameResolution.keySet().iterator(); iterator.hasNext();) {
 			String toReplace = (String) iterator.next();
 			String replaceWith=nameResolution.get(toReplace);
 			finalTemplate=finalTemplate.replaceAll("<"+toReplace, "<"+replaceWith);
-			finalTemplate=finalTemplate.replaceAll("</"+toReplace, "</"+replaceWith);
-			
+			finalTemplate=finalTemplate.replaceAll("</"+toReplace, "</"+replaceWith);		
 		}
+		toReturn.add(finalTemplate);
 		logger.debug("Built template: "+finalTemplate);
-		//System.out.println(finalTemplate);
+		
+		
+		if(subreports!=null && !subreports.isEmpty()){
+			Iterator suit = subreports.iterator();
+			while(suit.hasNext()){
+				SourceBean subTemplateContent = (SourceBean)suit.next();
+				String subTemplate = subTemplateContent.toXML(false);
+				for (Iterator iterator = nameResolution.keySet().iterator(); iterator.hasNext();) {
+					String toReplace = (String) iterator.next();
+					String replaceWith=nameResolution.get(toReplace);
+					subTemplate=subTemplate.replaceAll("<"+toReplace, "<"+replaceWith);
+					subTemplate=subTemplate.replaceAll("</"+toReplace, "</"+replaceWith);
+				}
+				toReturn.add(subTemplate);
+				logger.debug("Built subtemplate: "+subTemplate);
+				System.out.println(subTemplate);
+			}
 		}
+	
+		}
+		System.out.println(finalTemplate);
 		logger.debug("OUT");
-		return finalTemplate;
+		return toReturn;
 	}
 
+	public List createSubreports(List resources){
+		logger.debug("IN");
+		subreports = new ArrayList();
+		subTemplateBaseContent = createNewSubReport(countSubreports);
+		countSubreports ++;
+		
+		//change subtemplatetitle
+		subtitleSB=(SourceBean)subTemplateBaseContent.getAttribute("title");
+		bandDetailReport=(SourceBean)subtitleSB.getAttribute("BAND");	
+		
+		//change subtemplatesummary
+		subSummarySB=(SourceBean)subTemplateBaseContent.getAttribute("summary");
+		bandSummaryReport=(SourceBean)subSummarySB.getAttribute("BAND");	
+		
+		try {
+		// cycle on resources
+		for (Iterator iterator = resources.iterator(); iterator.hasNext();) {
+			KpiResourceBlock thisBlock = (KpiResourceBlock) iterator.next();
+			
+				
+				if(actualHeight+separatorModelsHeight+resourceBandHeight+10<maxFirstSubTemplateHeight){
+					List sourceBeansToAdd = newResource(thisBlock,bandDetailReport);	
+					if (sourceBeansToAdd!=null && !sourceBeansToAdd.isEmpty()){
+					Iterator it = sourceBeansToAdd.iterator();
+						while(it.hasNext()){
+							SourceBean toAdd = (SourceBean)it.next();
+							bandDetailReport.setAttribute(toAdd);
+						}
+					}
+				}else{
+					//Add last subreport to the List
+					increaseHeight(subTemplateBaseContent);
+					subreports.add(subTemplateBaseContent);
+					actualHeight = new Integer(0);
+					subTemplateBaseContent = createNewSubReport(countSubreports);
+					countSubreports ++;
+					//Get my bandDetailReport from new subreport
+					subtitleSB=(SourceBean)subTemplateBaseContent.getAttribute("title");
+					bandDetailReport=(SourceBean)subtitleSB.getAttribute("BAND");
+					//change subtemplatesummary
+					subSummarySB=(SourceBean)subTemplateBaseContent.getAttribute("summary");
+					bandSummaryReport=(SourceBean)subSummarySB.getAttribute("BAND");	
+					//NEW SUBREPORT
+					List sourceBeansToAdd = newResource(thisBlock,bandDetailReport);	
+					if (sourceBeansToAdd!=null && !sourceBeansToAdd.isEmpty()){
+					Iterator it = sourceBeansToAdd.iterator();
+						while(it.hasNext()){
+							SourceBean toAdd = (SourceBean)it.next();
+							bandDetailReport.setAttribute(toAdd);
+						}	
+					}
+				}
+			
+			
+			
+					
+					if (actualHeight+separatorHeight+valueHeight+10<maxFirstSubTemplateHeight){
+						KpiLine lineRoot=thisBlock.getRoot();
+						List sourceBeansToAdd2 = newLine(lineRoot, 0,true,bandDetailReport);
+						if (sourceBeansToAdd2!=null && !sourceBeansToAdd2.isEmpty()){
+						Iterator it = sourceBeansToAdd2.iterator();
+							while(it.hasNext()){
+								SourceBean toAdd = (SourceBean)it.next();
+								bandDetailReport.setAttribute(toAdd);
+							}	
+						}
+					}else{
+						//Add last subreport to the List
+						increaseHeight(subTemplateBaseContent);
+						subreports.add(subTemplateBaseContent);
+						actualHeight = new Integer(0);
+						subTemplateBaseContent = createNewSubReport(countSubreports);
+						countSubreports ++;
+						//Get my bandDetailReport from new subreport
+						subtitleSB=(SourceBean)subTemplateBaseContent.getAttribute("title");
+						bandDetailReport=(SourceBean)subtitleSB.getAttribute("BAND");
+						//change subtemplatesummary
+						subSummarySB=(SourceBean)subTemplateBaseContent.getAttribute("summary");
+						bandSummaryReport=(SourceBean)subSummarySB.getAttribute("BAND");	
+						//NEW SUBREPORT
+						KpiLine lineRoot=thisBlock.getRoot();
+						List sourceBeansToAdd2 = newLine(lineRoot, 0,true,bandDetailReport);
+						if (sourceBeansToAdd2!=null && !sourceBeansToAdd2.isEmpty()){
+						Iterator it = sourceBeansToAdd2.iterator();
+							while(it.hasNext()){
+								SourceBean toAdd = (SourceBean)it.next();
+								bandDetailReport.setAttribute(toAdd);
+							}	
+						}
+					}
+				}
+		
+			if (actualHeight+separatorModelsHeight+columnHeaderHeight+10<maxFirstSubTemplateHeight){
+				List sourceBeansToAdd3 = newThresholdBlock(bandDetailReport);
+				if (sourceBeansToAdd3!=null && !sourceBeansToAdd3.isEmpty()){
+				Iterator it = sourceBeansToAdd3.iterator();
+					while(it.hasNext()){
+						SourceBean toAdd = (SourceBean)it.next();
+						bandDetailReport.setAttribute(toAdd);
+					}	
+				}
+			}else{
+				//Add last subreport to the List
+				increaseHeight(subTemplateBaseContent);
+				subreports.add(subTemplateBaseContent);
+				actualHeight = new Integer(0);
+				subTemplateBaseContent = createNewSubReport(countSubreports);
+				countSubreports ++;
+				//Get my bandDetailReport from new subreport
+				subtitleSB=(SourceBean)subTemplateBaseContent.getAttribute("title");
+				bandDetailReport=(SourceBean)subtitleSB.getAttribute("BAND");
+				//change subtemplatesummary
+				subSummarySB=(SourceBean)subTemplateBaseContent.getAttribute("summary");
+				bandSummaryReport=(SourceBean)subSummarySB.getAttribute("BAND");	
+				//NEW SUBREPORT
+				List sourceBeansToAdd3 = newThresholdBlock(bandDetailReport);
+				if (sourceBeansToAdd3!=null && !sourceBeansToAdd3.isEmpty()){
+				Iterator it = sourceBeansToAdd3.iterator();
+					while(it.hasNext()){
+						SourceBean toAdd = (SourceBean)it.next();
+						bandDetailReport.setAttribute(toAdd);
+					}	
+				}
+			}
+		
 
+		if(thresholdsList!=null && !thresholdsList.isEmpty()){
+			Iterator th = thresholdsList.iterator();
+			while(th.hasNext()){
+				Threshold t =(Threshold)th.next();
+
+					if (actualHeight+separatorHeight+10<maxFirstSubTemplateHeight){
+						List sourceBeansToAdd4 = newThresholdLine(t);
+						if (sourceBeansToAdd4!=null && !sourceBeansToAdd4.isEmpty()){
+						Iterator it = sourceBeansToAdd4.iterator();
+							while(it.hasNext()){
+								SourceBean toAdd = (SourceBean)it.next();
+								bandDetailReport.setAttribute(toAdd);
+							}	
+						}
+					}else{
+						//Add last subreport to the List
+						increaseHeight(subTemplateBaseContent);
+						subreports.add(subTemplateBaseContent);
+						actualHeight = new Integer(0);
+						subTemplateBaseContent = createNewSubReport(countSubreports);
+						countSubreports ++;
+						//Get my bandDetailReport from new subreport
+						subtitleSB=(SourceBean)subTemplateBaseContent.getAttribute("title");
+						bandDetailReport=(SourceBean)subtitleSB.getAttribute("BAND");
+						//change subtemplatesummary
+						subSummarySB=(SourceBean)subTemplateBaseContent.getAttribute("summary");
+						bandSummaryReport=(SourceBean)subSummarySB.getAttribute("BAND");	
+						//NEW SUBREPORT
+						List sourceBeansToAdd4 = newThresholdLine(t);
+						if (sourceBeansToAdd4!=null && !sourceBeansToAdd4.isEmpty()){
+						Iterator it = sourceBeansToAdd4.iterator();
+							while(it.hasNext()){
+								SourceBean toAdd = (SourceBean)it.next();
+								bandDetailReport.setAttribute(toAdd);
+							}	
+						}
+					}
+				}
+			}
+		} catch (SourceBeanException e) {
+			logger.error("SourceBeanException",e);
+			e.printStackTrace();
+		}
+		bandDetailReport = increaseHeight(subTemplateBaseContent);
+		subreports.add(subTemplateBaseContent);
+		logger.debug("OUT");
+		return subreports;
+	}
+	
+	public SourceBean createNewSubReport(int numOfSubreport){
+		logger.debug("IN");
+		/*if(numOfSubreport>=1){
+			maxFirstSubTemplateHeight = maxSubTemplateHeight;
+		}*/
+		SourceBean subTemplateBaseContent =null;
+		// Create Source Bean of template of subtemplate
+		String subTemplateStr = getTemplateSubTemplate();
+		try {
+			subTemplateBaseContent = SourceBean.fromXMLString(subTemplateStr);
+		} catch (Exception e) {
+			logger.error("Error in converting template of template into a SOurce Bean, check the XML code");
+		}
+		
+		SourceBean subreport1;
+		try {
+			subreport1 = new SourceBean(subReport);
+			subreport1.setAttribute("reportElement.y", new Integer(0));
+			SourceBean subreport2=(SourceBean)subreport1.getAttribute("subreportExpression");
+			String dirS=System.getProperty("java.io.tmpdir");
+			String subr = dirS+"Detail"+numOfSubreport+".jasper";
+			subr = subr.replaceAll("\\\\", "/");
+			subreport2.setCharacters("\""+subr+"\"");
+			if(numOfSubreport==0){
+				detailBandMaster.setAttribute(subreport1);
+			}else{
+				bandSummaryReport.setAttribute(subreport1);
+			}
+			detailMasterHeight += subreportHeight;
+			
+		} catch (SourceBeanException e) {
+			e.printStackTrace();
+			logger.error(e);
+		}  
+		logger.debug("OUT");
+		return subTemplateBaseContent;
+	}
 
 	// set the total height 
-	public void increaseHeight(){
+	public SourceBean increaseHeight(SourceBean tCont){
 		logger.debug("IN");
 
 		try {
-			templateBaseContent.setAttribute("pageHeight",actualHeight+titleHeight+70);
-			band.setAttribute("height", (actualHeight+5));
+			tCont.setAttribute("pageHeight",maxFirstSubTemplateHeight);
+			bandDetailReport.setAttribute("height", (actualHeight));
+			bandSummaryReport.setAttribute("height", new Integer(7));
 		} catch (SourceBeanException e) {
 			logger.error("error in setting the height");
-			return;
+			return null;
 		}
 		logger.debug("OUT");
-
+		return bandDetailReport;
 
 	}
 
 
 //	Add a resource band
-	public void newResource(KpiResourceBlock block){
+	public List newResource(KpiResourceBlock block, SourceBean bandDetailReport){
 		logger.debug("IN");
+		List sourceBeansToAdd = new ArrayList();
 		Resource res=block.getR();
-		
 			
-			try{
+			try{//if (actualHeight+separatorModelsHeight+resourceBandHeight+10<maxSubTemplateHeight){
 				actualHeight+=separatorModelsHeight;
 
 				SourceBean bandRes=new SourceBean(resourceBand);
@@ -562,8 +824,10 @@ public class BasicTemplateBuilder  {
 					logger.debug("add resource band for resource "+res.getName());
 					SourceBean textValue1=(SourceBean)bandName.getAttribute("text");
 					textValue1.setCharacters("RESOURCE: "+res.getName());
-					band.setAttribute(bandRes);
-					band.setAttribute(bandName);
+					/*bandDetailReport.setAttribute(bandRes);
+					bandDetailReport.setAttribute(bandName);*/
+					sourceBeansToAdd.add(bandRes);
+					sourceBeansToAdd.add(bandName);
 					actualHeight+=resourceBandHeight;
 				}
 				
@@ -573,30 +837,39 @@ public class BasicTemplateBuilder  {
 				weightColHeader.setAttribute("reportElement.y",actualHeight.toString());
 				kthreshColHeader.setAttribute("reportElement.y",actualHeight.toString());
 				
-				band.setAttribute(columnHeadBand);
-				band.setAttribute(modelColHeader);
-				band.setAttribute(kpiColHeader);
-				band.setAttribute(weightColHeader);
-				band.setAttribute(kthreshColHeader);
+				sourceBeansToAdd.add(columnHeadBand);
+				sourceBeansToAdd.add(modelColHeader);
+				sourceBeansToAdd.add(kpiColHeader);
+				sourceBeansToAdd.add(weightColHeader);
+				sourceBeansToAdd.add(kthreshColHeader);
+				
+				/*
+				bandDetailReport.setAttribute(columnHeadBand);
+				bandDetailReport.setAttribute(modelColHeader);
+				bandDetailReport.setAttribute(kpiColHeader);
+				bandDetailReport.setAttribute(weightColHeader);
+				bandDetailReport.setAttribute(kthreshColHeader);*/
 				
 				
 				actualHeight+=columnHeaderHeight;
-				//The line
-				KpiLine lineRoot=block.getRoot();
-				newLine(lineRoot, 0,true);
+				
+				//}
 			}
 			catch (Exception e) {
 				logger.error("Error in setting the resource band",e);
-				return;
+				return null;
 			}
 		
 		logger.debug("OUT");
+		return sourceBeansToAdd;
 	}
 
 
-	public void newLine(KpiLine kpiLine, int level,Boolean evenLevel){
+	public List newLine(KpiLine kpiLine, int level,Boolean evenLevel, SourceBean bandDetailReport){
 		logger.debug("IN");
+		List sourceBeansToAdd = new ArrayList();
 		try {
+			//if (actualHeight+separatorHeight+valueHeight+10<maxSubTemplateHeight){
 			actualHeight+=separatorHeight;
 			SourceBean textCodeName=new SourceBean(staticTextName);   // code - name
 			SourceBean textValue=new SourceBean(staticTextNumber);  //value number
@@ -614,34 +887,80 @@ public class BasicTemplateBuilder  {
 			}
 			actualHeight+=valueHeight;
 
-			band.setAttribute(semaphor1);
-			band.setAttribute(textCodeName);
-			band.setAttribute(textValue);
-			band.setAttribute(textWeight);
-			band.setAttribute(image1);
-			band.setAttribute(threshCode);
-			band.setAttribute(threshValue);
+			/*bandDetailReport.setAttribute(semaphor1);
+			bandDetailReport.setAttribute(textCodeName);
+			bandDetailReport.setAttribute(textValue);
+			bandDetailReport.setAttribute(textWeight);
+			bandDetailReport.setAttribute(image1);
+			bandDetailReport.setAttribute(threshCode);
+			bandDetailReport.setAttribute(threshValue);*/
+			
+			sourceBeansToAdd.add(semaphor1);
+			sourceBeansToAdd.add(textCodeName);
+			sourceBeansToAdd.add(textValue);
+			sourceBeansToAdd.add(textWeight);
+			sourceBeansToAdd.add(image1);
+			sourceBeansToAdd.add(threshCode);
+			sourceBeansToAdd.add(threshValue);
 			if(evenLevel){
-				band.setAttribute(evenLine);
+				//bandDetailReport.setAttribute(evenLine);
+				sourceBeansToAdd.add(evenLine);
 			}else{
-				band.setAttribute(oddLine);
+				//bandDetailReport.setAttribute(oddLine);
+				sourceBeansToAdd.add(oddLine);
 			}	
+			//}
 			
 		} catch (SourceBeanException e) {
 			logger.error("error while adding a line");
-			return;
+			return null;
 		}
 
 		List<KpiLine> children=kpiLine.getChildren();
 		children = orderChildren(new ArrayList(),children);
-
+		try {
+			
 		if(children!=null){
 			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 				KpiLine kpiLineChild = (KpiLine) iterator.next();
-				newLine(kpiLineChild, level+1,!evenLevel);
+				List sourceBeansToAdd2 = newLine(kpiLineChild, level+1,!evenLevel,bandDetailReport);
+			
+				if (sourceBeansToAdd2!=null && !sourceBeansToAdd2.isEmpty()){
+					Iterator it = sourceBeansToAdd2.iterator();
+					
+					if (actualHeight+10<maxFirstSubTemplateHeight){
+						while(it.hasNext()){
+							SourceBean toAdd = (SourceBean)it.next();
+							bandDetailReport.setAttribute(toAdd);
+						}	
+					}else{
+						//Add last subreport to the List
+						increaseHeight(subTemplateBaseContent);
+						subreports.add(subTemplateBaseContent);
+						actualHeight = new Integer(0);
+						subTemplateBaseContent = createNewSubReport(countSubreports);
+						countSubreports ++;
+						//Get my bandDetailReport from new subreport
+						subtitleSB=(SourceBean)subTemplateBaseContent.getAttribute("title");
+						bandDetailReport=(SourceBean)subtitleSB.getAttribute("BAND");
+						//change subtemplatesummary
+						subSummarySB=(SourceBean)subTemplateBaseContent.getAttribute("summary");
+						bandSummaryReport=(SourceBean)subSummarySB.getAttribute("BAND");	
+						//NEW SUBREPORT
+						while(it.hasNext()){
+							SourceBean toAdd = (SourceBean)it.next();
+							bandDetailReport.setAttribute(toAdd);
+						}	
+					}
+				}
 			}}
-
+		} catch (SourceBeanException e) {
+			logger.error("SourceBeanException",e);
+			e.printStackTrace();
+		}
+		
 		logger.debug("OUT");
+		return sourceBeansToAdd;
 	}
 
 
@@ -794,10 +1113,11 @@ public class BasicTemplateBuilder  {
 		logger.debug("OUT");
 	}
 
-	public void newThresholdBlock(){
+	public List newThresholdBlock( SourceBean bandDetailReport){
 		logger.debug("IN");
-
+		List sourceBeansToAdd = new ArrayList();
 			try{//Draws the Threshold Band and Title
+				//if (actualHeight+separatorModelsHeight+columnHeaderHeight+10<maxSubTemplateHeight){
 				actualHeight+=separatorModelsHeight;
 				SourceBean thresholdBand1=new SourceBean(thresholdBand);  
 				SourceBean thresholdTitle1=new SourceBean(thresholdTitle); 
@@ -805,51 +1125,64 @@ public class BasicTemplateBuilder  {
 				thresholdBand1.setAttribute("reportElement.y",actualHeight.toString());
 				thresholdTitle1.setAttribute("reportElement.y",actualHeight.toString());	
 				
-				band.setAttribute(thresholdBand1);
-				band.setAttribute(thresholdTitle1);
+				/*bandDetailReport.setAttribute(thresholdBand1);
+				bandDetailReport.setAttribute(thresholdTitle1);*/
+				sourceBeansToAdd.add(thresholdBand1);
+				sourceBeansToAdd.add(thresholdTitle1);
 				
 				actualHeight+=columnHeaderHeight;
-				
-				if(thresholdsList!=null && !thresholdsList.isEmpty()){
-					Iterator th = thresholdsList.iterator();
-					while(th.hasNext()){
-						Threshold t =(Threshold)th.next();
-						if (t!=null){
-							actualHeight+=separatorHeight;	
-							Integer yValue=actualHeight;
-							Integer xValue = thresholdFieldWidth;
-							//Draws the Threshold Code
-							SourceBean thresholdTextCode1=new SourceBean(thresholdTextCode);  
-							String code=t.getCode() != null ? t.getCode() : "";
-							String codeTh = "Code: "+code;
-							if(codeTh.length()>22)codeTh = codeTh.substring(0, 21);
-	
-							thresholdTextCode1.setAttribute("reportElement.y", yValue.toString());
-							SourceBean threshCode2=(SourceBean)thresholdTextCode1.getAttribute("text");
-							threshCode2.setCharacters(codeTh);
-							
-							band.setAttribute(thresholdTextCode1);
-							
-							newThresholdLine(t);
-							//Adds a separator line
-							SourceBean thresholdLineSeparator1=new SourceBean(thresholdLineSeparator); 
-							thresholdLineSeparator1.setAttribute("reportElement.y",new Integer(yValue.intValue()+16).toString());
-							band.setAttribute(thresholdLineSeparator1);	
-						}
-					}
-				
-				}
+				//}
 			}	
 			catch (Exception e) {
 				logger.error("Error in setting the resource band");
-				return;
+				return null;
 			}
 		
 		logger.debug("OUT");
+		return sourceBeansToAdd;
 	}
 	
-	public void newThresholdLine(Threshold t){
+	public List newThresholdLine(Threshold t){
+		List sourceBeansToAdd = new ArrayList();
+		if (t!=null){
+			try {
+			//if (actualHeight+separatorHeight+10<maxSubTemplateHeight){
+			actualHeight+=separatorHeight;	
+			Integer yValue=actualHeight;
+			Integer xValue = thresholdFieldWidth;
+			//Draws the Threshold Code
+			SourceBean thresholdTextCode1 = new SourceBean(thresholdTextCode);
+			
+			String code=t.getCode() != null ? t.getCode() : "";
+			String codeTh = "Code: "+code;
+			if(codeTh.length()>22)codeTh = codeTh.substring(0, 21);
+
+			thresholdTextCode1.setAttribute("reportElement.y", yValue.toString());
+			SourceBean threshCode2=(SourceBean)thresholdTextCode1.getAttribute("text");
+			threshCode2.setCharacters(codeTh);
+			
+			//bandDetailReport.setAttribute(thresholdTextCode1);
+			sourceBeansToAdd.add(thresholdTextCode1);
+			List semaphoreValue = newThresholdLine(t, bandDetailReport);
+			sourceBeansToAdd.addAll(semaphoreValue);		
+			
+			//Adds a separator line
+			SourceBean thresholdLineSeparator1=new SourceBean(thresholdLineSeparator); 
+			thresholdLineSeparator1.setAttribute("reportElement.y",new Integer(yValue.intValue()+16).toString());
+			//bandDetailReport.setAttribute(thresholdLineSeparator1);	
+			sourceBeansToAdd.add(thresholdLineSeparator1);
+			//}
+			} catch (SourceBeanException e) {
+				logger.error("SourceBeanException", e);
+				e.printStackTrace();
+			}  
+		}
+		return sourceBeansToAdd;
+	}
+	
+	public List newThresholdLine(Threshold t, SourceBean bandDetailReport){
 		logger.debug("IN");
+		List sourceBeansToAdd = new ArrayList();
 		try {
 			actualHeight+=separatorHeight;	
 			Integer yValue=actualHeight;
@@ -891,8 +1224,10 @@ public class BasicTemplateBuilder  {
 						SourceBean threshValue2=(SourceBean)thresholdTextValue1.getAttribute("text");
 						threshValue2.setCharacters(valueTh);
 						
-						band.setAttribute(semaphor1);	
-						band.setAttribute(thresholdTextValue1);	
+						/*bandDetailReport.setAttribute(semaphor1);	
+						bandDetailReport.setAttribute(thresholdTextValue1);	*/
+						sourceBeansToAdd.add(semaphor1);
+						sourceBeansToAdd.add(thresholdTextValue1);
 					}
 				}
 			}
@@ -901,10 +1236,11 @@ public class BasicTemplateBuilder  {
 			
 		} catch (SourceBeanException e) {
 			logger.error("error while adding a threshold line");
-			return;
+			return null;
 		}
 
 		logger.debug("OUT");
+		return sourceBeansToAdd;
 	}
 
 
@@ -936,8 +1272,26 @@ public class BasicTemplateBuilder  {
 //		text
 //		image
 //		imageExpression
+		
+		nameResolution.put("QUERYSTRING", "queryString");
+		nameResolution.put("TOPPEN", "topPen");
+		nameResolution.put("BOTTOMPEN", "bottomPen");
+		nameResolution.put("LEFTPEN", "leftPen");
+		nameResolution.put("RIGHTPEN", "rightPen");
+		nameResolution.put("GROUPEXPRESSION", "groupExpression");
+		nameResolution.put("groupEXPRESSION", "groupExpression");
+		nameResolution.put("GROUPHEADER", "groupHeader");
+		nameResolution.put("GROUPFOOTER", "groupFooter");
+		nameResolution.put("groupHEADER", "groupHeader");
+		nameResolution.put("groupFOOTER", "groupFooter");
+		nameResolution.put("GROUP", "group");
 		nameResolution.put("IMAGEEXPRESSION", "imageExpression");
 		nameResolution.put("imageEXPRESSION", "imageExpression");
+		nameResolution.put("SUBREPORT", "subreport");
+		nameResolution.put("SUBREPORTEXPRESSION", "subreportExpression");
+		nameResolution.put("subreportEXPRESSION", "subreportExpression");
+		nameResolution.put("CONNECTIONEXPRESSION", "connectionExpression");
+		nameResolution.put("connectionEXPRESSION", "connectionExpression");
 		nameResolution.put("JASPERREPORT", "jasperReport");
 		nameResolution.put("IMPORT", "import");
 		nameResolution.put("PROPERTY", "property");
@@ -990,6 +1344,61 @@ public class BasicTemplateBuilder  {
 			String templateDirPath=rootPath+"/WEB-INF/classes/it/eng/spagobi/kpi/utils/";
 			logger.debug("templateDirPath: "+templateDirPath!=null ? templateDirPath : "");
 			templateDirPath+="templateKpi.jrxml";
+			logger.debug("templatePath: "+templateDirPath!=null ? templateDirPath : "");
+			if (templateDirPath!=null){
+				File file=new File(templateDirPath);
+				if(file!=null){
+					logger.debug("File found ");
+				}
+				FileInputStream fis=new FileInputStream(file);
+				if(fis!=null){
+					logger.debug("File Input Stream created");
+				}
+				inputSource=new InputSource(fis);
+				if(inputSource!=null){
+					logger.debug("Input Source created");
+				}
+				BufferedReader reader = new BufferedReader( new InputStreamReader(fis) );
+				if(reader!=null){
+					logger.debug("Buffer Reader created");
+				}
+				String line = null;
+				try {
+					while( (line = reader.readLine()) != null) {
+						buffer.append(line + "\n");
+					}
+				} catch (IOException e) {
+					logger.error("error in appending lines to the buffer",e);
+					e.printStackTrace();
+				}
+			}
+		}
+		catch (Exception e) {
+			logger.error("error in retrieving the template",e);
+			e.printStackTrace();
+			return null;
+		}
+		logger.debug("OUT");
+		return buffer.toString();
+	}
+	
+	/**
+	 * Gets the template template.
+	 * 
+	 * @return the template template
+	 */
+	public String getTemplateSubTemplate() {
+		StringBuffer buffer = new StringBuffer();
+		logger.debug("IN");
+		try{
+			// Used to test
+			//File file = new File("D:/progetti/spagobi/eclipse2/SpagoBIProject/src/it/eng/spagobi/kpi/utils/templateKpi.jrxml");
+
+			String rootPath=ConfigSingleton.getRootPath();
+			logger.debug("rootPath: "+rootPath!=null ? rootPath : "");
+			String templateDirPath=rootPath+"/WEB-INF/classes/it/eng/spagobi/kpi/utils/";
+			logger.debug("templateDirPath: "+templateDirPath!=null ? templateDirPath : "");
+			templateDirPath+="subTemplateKpi.jrxml";
 			logger.debug("templatePath: "+templateDirPath!=null ? templateDirPath : "");
 			if (templateDirPath!=null){
 				File file=new File(templateDirPath);

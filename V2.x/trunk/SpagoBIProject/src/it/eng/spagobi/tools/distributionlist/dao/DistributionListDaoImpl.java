@@ -729,7 +729,7 @@ public class DistributionListDaoImpl extends AbstractHibernateDAO implements IDi
 			tx = tmpSession.beginTransaction();
 			
 			//String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=" + dl.getId()+" and sdlo.sbiObjects.biobjId="+objId+" group by sdlo.xml";
-			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=? and sdlo.sbiObjects.biobjId=? group by sdlo.xml";
+			String hql = "from SbiDistributionListsObjects sdlo where sdlo.sbiDistributionList.dlId=? and sdlo.sbiObjects.biobjId=? group by sdlo.xml, sdlo.relId, sdlo.sbiObjects, sdlo.sbiDistributionList";
 			Query query = tmpSession.createQuery(hql);
 			query.setInteger(0, dl.getId());
 			query.setInteger(1, objId);

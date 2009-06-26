@@ -108,7 +108,11 @@ Sbi.execution.SnapshotsPanel = function(config) {
       ];
     }
     
-    this.isHidden = !Sbi.user.functionalities.contains('SeeSnapshotsFunctionality');
+    this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
+    
+    this.isHidden = !Sbi.user.functionalities.contains('SeeSnapshotsFunctionality')
+    				||
+    				this.shortcutsHiddenPreference;
     
 	c = Ext.apply({}, c, {
         store: this.snapshotsStore

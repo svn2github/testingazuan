@@ -74,6 +74,8 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	 
     this.addEvents('beforetoolbarinit', 'beforesynchronize', 'synchronize', 'synchronizeexception', 'movenextrequest', 'moveprevrequest');	
 	
+    this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
+    
 	this.init(c);
 	
 	this.centerPanel = new Ext.Panel({
@@ -91,9 +93,11 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 		    , items: [this.parametersPanel]
 		});
 	
-	var shortcutsHidden = !Sbi.user.functionalities.contains('SeeViewpointsFunctionality') 
+	var shortcutsHidden = (!Sbi.user.functionalities.contains('SeeViewpointsFunctionality') 
 							&& !Sbi.user.functionalities.contains('SeeSnapshotsFunctionality') 
-							&& !Sbi.user.functionalities.contains('SeeSubobjectsFunctionality');
+							&& !Sbi.user.functionalities.contains('SeeSubobjectsFunctionality'))
+							||
+							this.shortcutsHiddenPreference;
 	
 	this.southPanel = new Ext.Panel({
 		region:'south'

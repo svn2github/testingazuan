@@ -80,7 +80,8 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 	// add events
     this.addEvents('beforetoolbarinit', 'beforesynchronize', 'moveprevrequest', 'loadurlfailure', 'crossnavigation', 'beforerefresh');
           
-	
+	this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
+    
     this.init(config);    
     
     this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
@@ -618,9 +619,11 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	, initSouthPanel: function( config ) {
 		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
 		
-		var shortcutsHidden = !Sbi.user.functionalities.contains('SeeViewpointsFunctionality') 
+		var shortcutsHidden = (!Sbi.user.functionalities.contains('SeeViewpointsFunctionality') 
 								&& !Sbi.user.functionalities.contains('SeeSnapshotsFunctionality') 
-								&& !Sbi.user.functionalities.contains('SeeSubobjectsFunctionality');
+								&& !Sbi.user.functionalities.contains('SeeSubobjectsFunctionality'))
+								||
+								this.shortcutsHiddenPreference;
 		
 		this.southPanel = new Ext.Panel({
 			region:'south'

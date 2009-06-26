@@ -95,7 +95,11 @@ Sbi.execution.SubobjectsPanel = function(config) {
     
     this.sm = new Ext.grid.CheckboxSelectionModel();
     
-    this.isHidden = !Sbi.user.functionalities.contains('SeeSubobjectsFunctionality');
+    this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
+    
+    this.isHidden = !Sbi.user.functionalities.contains('SeeSubobjectsFunctionality')
+        			||
+    				this.shortcutsHiddenPreference;
     
 	c = Ext.apply({}, c, {
         store: this.subObjectsStore

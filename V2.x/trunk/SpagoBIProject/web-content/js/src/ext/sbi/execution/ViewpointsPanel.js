@@ -109,7 +109,11 @@ Sbi.execution.ViewpointsPanel = function(config) {
     
     var sm = new Ext.grid.CheckboxSelectionModel();
     
-	this.isHidden = !Sbi.user.functionalities.contains('SeeViewpointsFunctionality');
+    this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
+    
+	this.isHidden = !Sbi.user.functionalities.contains('SeeViewpointsFunctionality')
+	        		||
+    				this.shortcutsHiddenPreference;
    
 	var c = Ext.apply({}, config, {
         store: this.store

@@ -60,7 +60,7 @@ it.eng.spagobi.engines.qbe.app = function() {
             tabs[0] = getQueryBuilderPanel(query, tabs[1]);
             //tabs[1] = getQueryResultsPanel();
            
-            alert('debug1');      
+            //alert('debug1');      
             
             // Main (Tabbed) Panel            
             tabPanel = new Ext.TabPanel({

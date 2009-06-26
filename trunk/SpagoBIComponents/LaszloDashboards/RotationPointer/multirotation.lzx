@@ -582,53 +582,57 @@
 	<datapointer id="rotationresponse" xpath="data:/rows[0]">
 	  	<handler name="ondata">
 	  	<![CDATA[
-	  		for (var j = 0; j < rotationresponse.getNodeCount(); j++) {
-		  		rotationresponse.selectChild(0);
-	  		 	if (recNum > 0 ){	  		 	
-		  		 	for (k=0; k < recNum; k++){
-		  		 		rotationresponse.selectNext(); 
-		  		 	}
+	  		if (rotationresponse.getNodeCount() >= recNum){
+		  		for (var j = 0; j < rotationresponse.getNodeCount(); j++) {
+			  		rotationresponse.selectChild(0);
+		  		 	if (recNum > 0 ){	  		 	
+			  		 	for (k=0; k < recNum; k++){
+			  		 		rotationresponse.selectNext(); 
+			  		 	}
+			  		}
+			  		
+			  	 	var serieName = rotationresponse.getNodeAttribute(xSerieAttributeName);			       	
+				    if (serieName == undefined || serieName == "undefined")
+				       	 serieName = rotationresponse.getNodeAttribute(xSerieAttributeName.toUpperCase());
+				       	 
+				    if (serieName != undefined && serieName != "undefined" && serieName != ""){	
+				    	Debug.write("serieName: -" + serieName + "-");
+				  		// defines needles
+			  		 	 for (var i = 0; i < nNeedles; i++) {
+					   		 var valuePar = canvas.display.getValuePar("valueAttributeName"+(i+1)+"");
+					       	 var rotation = rotationresponse.getNodeAttribute(valuePar);
+					       	 canvas.display.changeRotation(rotation, i);  	
+						      	 	      	 	
+				      	 	// updating titleSerie 
+					      	 var newX = centerX - (serieName.length*3);
+					      	 canvas.display.titleSerie.setAttribute("text",serieName);	 
+					      	 canvas.display.titleSerie.setAttribute("x", newX); 
+					      	
+					      	 //  updating linkurl
+					      	 if (linkUrl != undefined && linkUrl != ""){
+					      	 	if (linkUrl.indexOf("$F{") > -1){
+					      	 		var lastFieldIdx = 0;
+					      	 		var tmpUrl = linkUrl;	
+					      	 		while (lastFieldIdx > -1){
+					      	 			var idxStart = 	tmpUrl.indexOf("$F{")+3;					
+					      	 			var idxEnd = tmpUrl.indexOf("}");	
+						      	 		var nameField = tmpUrl.substr(idxStart, (idxEnd-idxStart));				      	 		
+						      	 		var valueField = rotationresponse.getNodeAttribute(nameField);
+						      	 		if (valueField != undefined && valueField != ""){
+						      	 			var tmpPar = "$F{" + nameField + "}";
+							      	 		linkUrl = linkUrl.replace(tmpPar, valueField);
+							      	 		tmpUrl = linkUrl.substr(linkUrl.indexOf("&")+1);
+						      	 			lastFieldIdx = tmpUrl.indexOf("$F{");	
+						      	 		}			
+						      	 		else	    
+						      	 			lastFieldIdx = -1;	     	 						      	 
+						      	 	}
+					      	 		canvas.display.titleSerie.setAttribute("href", linkUrl); 
+					      	 	} 
+					      	 }
+						 }
+					}				 
 		  		}
-		  		
-		  	 	var serieName = rotationresponse.getNodeAttribute(xSerieAttributeName);			       	
-			    if (serieName == undefined || serieName == "undefined")
-			       	 serieName = rotationresponse.getNodeAttribute(xSerieAttributeName.toUpperCase());
-			       	 
-			    if (serieName != undefined && serieName != "undefined" && serieName != ""){	
-			    Debug.write("serieName: -" + serieName + "-");
-			  		// defines needles
-		  		 	 for (var i = 0; i < nNeedles; i++) {
-				   		 var valuePar = canvas.display.getValuePar("valueAttributeName"+(i+1)+"");
-				       	 var rotation = rotationresponse.getNodeAttribute(valuePar);
-				       	 canvas.display.changeRotation(rotation, i);  	
-					      	 	      	 	
-			      	 	// updating titleSerie 
-				      	 var newX = centerX - (serieName.length*3);
-				      	 canvas.display.titleSerie.setAttribute("text",serieName);	 
-				      	 canvas.display.titleSerie.setAttribute("x", newX); 
-				      	
-				      	 //  updating linkurl
-				      	 if (linkUrl != undefined && linkUrl != ""){
-				      	 	if (linkUrl.indexOf("$F{") > -1){
-				      	 		var lastFieldIdx = 0;
-				      	 		var tmpUrl = linkUrl;	
-				      	 		while (lastFieldIdx > -1){
-				      	 			var idxStart = 	tmpUrl.indexOf("$F{")+3;					
-				      	 			var idxEnd = tmpUrl.indexOf("}");	
-					      	 		var nameField = tmpUrl.substr(idxStart, (idxEnd-idxStart));				      	 		
-					      	 		var valueField = rotationresponse.getNodeAttribute(nameField);
-					      	 		if (valueField != undefined && valueField != ""){
-					      	 			var tmpPar = "$F{" + nameField + "}";
-						      	 		linkUrl = linkUrl.replace(tmpPar, valueField);
-					      	 		}				    
-					      	 		tmpUrl = linkUrl.substr(linkUrl.indexOf("&")+1);
-					      	 		lastFieldIdx = tmpUrl.indexOf("$F{");			      	 						      	 
-					      	 	}
-				      	 		canvas.display.titleSerie.setAttribute("href", linkUrl); 
-				      	 	} 
-				      	 }
-					 }
-				}				 
 	  		}            		  
 	  		canvas.display.rotDisplay.needlesGroup.doStart(); 
 	  		]]>

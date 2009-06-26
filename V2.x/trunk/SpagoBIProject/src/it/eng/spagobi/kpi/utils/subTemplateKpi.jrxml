@@ -22,7 +22,7 @@
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
-	<queryString><![CDATA[select distinct 1 from sbi_domains]]></queryString>
+	<queryString><![CDATA[SELECT DISTINCT 1 FROM SBI_DOMAINS]]></queryString>
 	<field name="1" class="java.lang.Long"/>
 
 		<background>

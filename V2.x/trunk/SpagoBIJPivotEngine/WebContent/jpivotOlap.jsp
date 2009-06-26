@@ -58,7 +58,6 @@ The following directive catches exceptions thrown by jsps, must be commented in 
   <link rel="stylesheet" type="text/css" href="wcf/form/xform.css">
   <link rel="stylesheet" type="text/css" href="wcf/table/xtable.css">
   <link rel="stylesheet" type="text/css" href="wcf/tree/xtree.css">
-  <link rel="stylesheet" type="text/css" href="css/stili.css">
 </head>
 <body bgcolor="white" lang="en">
 

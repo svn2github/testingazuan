@@ -23,9 +23,11 @@ package it.eng.spagobi.chiron.serializer;
 
 import java.util.Locale;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import it.eng.spagobi.analiticalmodel.documentsbrowser.service.GetFTreeFoldersAction;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 
@@ -34,6 +36,8 @@ import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
  */
 public class FoldersJSONSerializer implements Serializer {
 	
+	private static Logger logger = Logger.getLogger(FoldersJSONSerializer.class);
+
 	public static final String ID = "id";
 	public static final String CODE = "code";
 	public static final String CODTYPE = "codType";
@@ -52,8 +56,9 @@ public class FoldersJSONSerializer implements Serializer {
 	
 	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
-		
+		logger.debug("IN");
 		if( !(o instanceof LowFunctionality) ) {
+			logger.error("FoldersJSONSerializer is unable to serialize object of type: " + o.getClass().getName());
 			throw new SerializationException("FoldersJSONSerializer is unable to serialize object of type: " + o.getClass().getName());
 		}
 		
@@ -78,11 +83,12 @@ public class FoldersJSONSerializer implements Serializer {
 			result.put(BIOBJECTS, lowFunct.getBiObjects() );		
 			result.put(ACTIONS, new JSONArray());
 		} catch (Throwable t) {
+			logger.error("An error occurred while serializing object: " + o);
 			throw new SerializationException("An error occurred while serializing object: " + o, t);
 		} finally {
 			
 		}
-		
+		logger.debug("OUT");
 		return result;
 	}
 	

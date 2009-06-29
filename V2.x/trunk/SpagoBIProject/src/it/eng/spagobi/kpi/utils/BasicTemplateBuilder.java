@@ -560,12 +560,12 @@ public class BasicTemplateBuilder  {
 				}
 				toReturn.add(subTemplate);
 				logger.debug("Built subtemplate: "+subTemplate);
-				System.out.println(subTemplate);
+				//System.out.println(subTemplate);
 			}
 		}
 	
 		}
-		System.out.println(finalTemplate);
+		//System.out.println(finalTemplate);
 		logger.debug("OUT");
 		return toReturn;
 	}

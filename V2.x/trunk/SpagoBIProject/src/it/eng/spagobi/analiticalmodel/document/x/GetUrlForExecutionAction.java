@@ -111,12 +111,10 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Scheduled execution not found", e);
 			}
 			
-			Locale locale=this.getLocale();
-
 			BIObject obj = executionInstance.getBIObject();
 			if (obj.getId().equals(snapshot.getBiobjId())) {
 				executionInstance.setSnapshot(snapshot);
-				String url = executionInstance.getSnapshotUrl(locale);
+				String url = executionInstance.getSnapshotUrl();
 				try {
 					response.put("url", url);
 				} catch (JSONException e) {
@@ -153,6 +151,8 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Customized view not found", e);
 			}
 
+			Locale locale=this.getLocale();
+			
 			BIObject obj = executionInstance.getBIObject();
 			if (obj.getId().equals(subObject.getBiobjId())) {
 				boolean canExecuteSubObject = false;
@@ -165,7 +165,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 				}
 				if (canExecuteSubObject) {
 					executionInstance.setSubObject(subObject);
-					String url = executionInstance.getSubObjectUrl();
+					String url = executionInstance.getSubObjectUrl(locale);
 					try {
 						response.put("url", url);
 					} catch (JSONException e) {

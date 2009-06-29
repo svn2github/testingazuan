@@ -10,7 +10,7 @@
             	<param name="sequence">sbi_kpi</param>
             </generator>
         </id>
-        <many-to-one name="kpiParent" class="it.eng.spagobi.kpi.config.metadata.SbiKpi" >
+        <many-to-one name="sbiKpi" class="it.eng.spagobi.kpi.config.metadata.SbiKpi" >
             <column name="id_kpi_parent" />
         </many-to-one>
         <many-to-one name="sbiDataSet" class="it.eng.spagobi.tools.dataset.metadata.SbiDataSetConfig" >

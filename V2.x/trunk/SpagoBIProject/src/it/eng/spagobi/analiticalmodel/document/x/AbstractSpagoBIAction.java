@@ -92,7 +92,7 @@ public abstract class AbstractSpagoBIAction extends AbstractBaseHttpAction {
 	}
 	
 	public Locale getLocale() {
-		Locale locale;
+		Locale locale=null;
 		
 		RequestContainer requestContainer;
 		

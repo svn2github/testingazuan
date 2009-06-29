@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
 import it.eng.spago.error.EMFInternalError;
@@ -38,6 +38,7 @@ import it.eng.spagobi.utilities.service.JSONSuccess;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -48,19 +49,19 @@ import org.json.JSONObject;
  * @author Zerbetto Davide
  */
 public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
-	
+
 	public static final String SERVICE_NAME = "GET_URL_FOR_EXECUTION_ACTION";
-	
+
 	public static final String SBI_SUBOBJECT_ID = "SBI_SUBOBJECT_ID";
 	public static final String SBI_SNAPSHOT_ID = "SBI_SNAPSHOT_ID";
 	public static final String PARAMETERS = "PARAMETERS";
-	
+
 	// logger component
 	private static Logger logger = Logger.getLogger(GetUrlForExecutionAction.class);
-	
+
 	protected ExecutionInstance executionInstance = null;
 	protected UserProfile userProfile = null;
-	
+
 	public void doService() {
 		logger.debug("IN");
 		try {
@@ -86,7 +87,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 			logger.debug("OUT");
 		}
 	}
-	
+
 	private JSONObject handleSnapshotExecution(Integer snapshotId) {
 		logger.debug("IN");
 		JSONObject response = new JSONObject();
@@ -94,13 +95,14 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 			// we are not executing a subobject, so delete subobject if existing
 			executionInstance.setSubObject(null);
 			ISnapshotDAO dao = null;
+			
 			try {
 				dao = DAOFactory.getSnapshotDAO();
 			} catch (EMFUserError e) {
 				logger.error("Error while istantiating DAO", e);
 				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot access database", e);
 			}
-			
+
 			Snapshot snapshot = null;
 			try {
 				snapshot = dao.loadSnapshot(snapshotId);
@@ -109,10 +111,12 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Scheduled execution not found", e);
 			}
 			
+			Locale locale=this.getLocale();
+
 			BIObject obj = executionInstance.getBIObject();
 			if (obj.getId().equals(snapshot.getBiobjId())) {
 				executionInstance.setSnapshot(snapshot);
-				String url = executionInstance.getSnapshotUrl();
+				String url = executionInstance.getSnapshotUrl(locale);
 				try {
 					response.put("url", url);
 				} catch (JSONException e) {
@@ -140,7 +144,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 				logger.error("Error while istantiating DAO", e);
 				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot access database", e);
 			}
-			
+
 			SubObject subObject = null;
 			try {
 				subObject = dao.getSubObject(subObjectId);
@@ -148,7 +152,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 				logger.error("SubObject with id = " + subObjectId + " not found", e);
 				throw new SpagoBIServiceException(SERVICE_NAME, "Customized view not found", e);
 			}
-			
+
 			BIObject obj = executionInstance.getBIObject();
 			if (obj.getId().equals(subObject.getBiobjId())) {
 				boolean canExecuteSubObject = false;
@@ -180,7 +184,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 		}
 		return response;
 	}
-	
+
 	protected JSONObject handleNormalExecution() {
 		logger.debug("IN");
 		JSONObject response = new JSONObject();
@@ -190,6 +194,9 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 			executionInstance.setSnapshot(null);
 			JSONObject executionInstanceJSON = this.getAttributeAsJSONObject( PARAMETERS );
 			executionInstance.refreshParametersValues(executionInstanceJSON, false);
+
+			Locale locale=this.getLocale();
+
 			List errors = null;
 			try {
 				errors = executionInstance.getParametersErrors();
@@ -211,7 +218,8 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 				}
 			} else {
 				// there are no errors, we can proceed, so calculate the execution url and send it back to the client
-				String url = executionInstance.getExecutionUrl();
+				String url = executionInstance.getExecutionUrl(locale);
+
 				try {
 					response.put("url", url);
 				} catch (JSONException e) {

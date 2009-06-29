@@ -36,6 +36,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.Parameter;
 import it.eng.spagobi.behaviouralmodel.check.bo.Check;
+import it.eng.spagobi.behaviouralmodel.check.metadata.SbiChecks;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
@@ -63,6 +64,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -674,7 +676,7 @@ public class ExecutionInstance {
 		logger.debug("OUT");
 	}
 	
-	public String getSnapshotUrl() {
+	public String getSnapshotUrl(Locale locale) {
 		logger.debug("IN");
 		if (this.snapshot == null) {
 			throw new SpagoBIServiceException("", "no snapshot set");
@@ -685,6 +687,15 @@ public class ExecutionInstance {
 		buffer.append("&" + SpagoBIConstants.SNAPSHOT_ID + "=" + snapshot.getId());
 		buffer.append("&" + ObjectsTreeConstants.OBJECT_ID + "=" + object.getId());
 		buffer.append("&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE");
+
+		// add locale
+		if(locale.getLanguage()!=null){
+			buffer.append("&" + SpagoBIConstants.SBI_LANGUAGE + "="+locale.getLanguage());
+		}
+		if(locale.getCountry()!=null){
+			buffer.append("&" + SpagoBIConstants.SBI_COUNTRY + "="+locale.getCountry());
+		}
+		
 		String url = buffer.toString();
 		logger.debug("OUT: returning url = [" + url + "]");
 		return url;
@@ -799,7 +810,7 @@ public class ExecutionInstance {
 	
 	
 
-	public String getExecutionUrl() {
+	public String getExecutionUrl(Locale locale) {
 		logger.debug("IN");
 		String url = null;
 		Engine engine = this.getBIObject().getEngine();
@@ -832,6 +843,15 @@ public class ExecutionInstance {
 			if (auditId != null) {
 				mapPars.put(AuditManager.AUDIT_ID, auditId);
 			}
+			
+			// add locale
+			if(locale.getLanguage()!=null){
+				mapPars.put(SpagoBIConstants.SBI_LANGUAGE, locale.getLanguage());				
+			}
+			if(locale.getCountry()!=null){
+				mapPars.put(SpagoBIConstants.SBI_COUNTRY,locale.getCountry());
+			}
+			
 			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
 			
 		}

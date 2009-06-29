@@ -1,4 +1,40 @@
 
+// authentication function
+function authenticate(spagobiContext,userId,password){
+
+	try
+  	{// Firefox, Opera 8.0+, Safari, IE7
+  		xmlHttp=new XMLHttpRequest();
+ 		 }
+		catch(e)
+  		{// Old IE
+ 	 try
+    {
+    xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+  catch(e)
+    {
+    alert ("Your browser does not support XMLHTTP!");
+    return 'KO';  
+    }
+  }
+  
+ try{ 
+  var authenticationUrl=spagobiContext+'/servlet/AdapterHTTP?ACTION_NAME=LOGIN_ACTION_WEB&NEW_SESSION=TRUE&user='+userId+'&password='+password;
+	xmlHttp.open('POST',authenticationUrl,false);										
+	xmlHttp.send(null);
+  }
+  catch(e)
+    {
+    alert ("Could not do the authentication "+e);
+    return 'KO';  
+    }
+
+
+	if(xmlHttp.responseText=='KO') return 'KO';
+	else return 'OK';
+}
+
 
 function executeDoc(spagobiContext
 					,documentId
@@ -9,10 +45,8 @@ function executeDoc(spagobiContext
 					,displayToolbar
 					,displaySliders
 					,iframeStyle
-					,theme
-					,authenticationTicket) {
-
-	var url=spagobiContext+'/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&NEW_SESSION=true&MODALITY=SINGLE_OBJECT_EXECUTION_MODALITY';
+					,theme) {
+	var url=spagobiContext+'/servlet/AdapterHTTP?PAGE=ExecuteBIObjectPage&NEW_SESSION=true&MODALITY=SINGLE_OBJECT_EXECUTION_MODALITY&IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS=true';
 
 	if (documentId==null && documentLabel==null) {
   		alert('documentId e documentLabel nulli');
@@ -42,19 +76,19 @@ function executeDoc(spagobiContext
 		}
 
 	}
+	
 
 	if (executionRole != null) url+='&ROLE='+executionRole;
 	if (displayToolbar != null) url+='&TOOLBAR_VISIBLE='+displayToolbar;
 	if (displaySliders != null) url+='&SLIDERS_VISIBLE='+displaySliders;
 	if (theme != null)	url+='&theme='+theme;
-	if (authenticationTicket != null) url+='&auth_ticket='+authenticationTicket;
-
 
 	// once finished the url build the HTML
 	
 	if(iframeStyle==null){
 		iframeStyle="";
 	}
+	alert(url);
 	
 	var htmlCode='<iframe id="frame" src="'+url+'" style="'+iframeStyle+'" width="500" height="500"></iframe>'
 

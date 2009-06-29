@@ -173,8 +173,10 @@ public class MessageBuilder implements IMessageBuilder {
 	 */
 	public String getUserMessage(String code, String bundle, Locale locale) {
 
+		if(code==null) return null;
+		
 		String toReturn=code;
-
+		
 		if(code.length()>4){
 			String prefix=code.substring(0, 4);
 			if(prefix.equalsIgnoreCase("cod_")){

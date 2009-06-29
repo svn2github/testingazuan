@@ -67,7 +67,11 @@ Sbi.exception.ExceptionHandler = function(){
         		
         		if(response.responseText !== undefined) {
         			var content = Ext.util.JSON.decode( response.responseText );
-        			if(content.cause !== undefined) {
+        			if (content.localizedMessage !== undefined && content.localizedMessage !== '') {
+        				errMessage = content.localizedMessage;
+        			} else if (content.message !== undefined && content.message !== '') {
+        				errMessage = content.message;
+        			} else if(content.cause !== undefined) {
         				errMessage = content.cause;
         			} 
         		} else {

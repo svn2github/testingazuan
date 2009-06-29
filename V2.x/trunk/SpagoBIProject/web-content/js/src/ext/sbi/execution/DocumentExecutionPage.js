@@ -87,16 +87,19 @@ Sbi.execution.DocumentExecutionPage = function(config) {
     
     this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
     this.shortcutsPanel.on('viewpointexecutionrequest', function(v) {
+    	this.southPanel.collapse();
     	this.parametersPanel.applyViewPoint(v);
 		this.refreshExecution();
     }, this);
     
     this.shortcutsPanel.on('subobjectexecutionrequest', function (subObjectId) {
+    	this.southPanel.collapse();
 		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
 		this.synchronize(this.executionInstance);
 	}, this);
 	
     this.shortcutsPanel.on('snapshotexcutionrequest', function (snapshotId) {
+    	this.southPanel.collapse();
 		this.executionInstance.SBI_SNAPSHOT_ID = snapshotId;
 		this.synchronize(this.executionInstance);
 	}, this);
@@ -597,23 +600,27 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	                			parameters: message.data.parameters
 	                		}
 	            	    };
-	            	    this.fireEvent('crossnavigation', config);
-	      
-	   
+	                	// workaround for document composition with a svg map on IE: when clicking on the map, this message is thrown
+	                	// but we must invoke execCrossNavigation defined for document composition
+	                	if (Ext.isIE && this.executionInstance.document.typeCode == 'DOCUMENT_COMPOSITE') {
+	                		srcFrame.dom.contentWindow.execCrossNavigation(message.data.windowName, message.data.label, message.data.parameters);
+	                	} else {
+	                		this.fireEvent('crossnavigation', config);
+	                	}
 	        		}
 	        		, scope: this
 	            }
 	        }
 	    });
 		this.miframe.on('documentloaded', function() {
-			this.miframe.iframe.execScript("parent = document;");
+			this.miframe.iframe.execScript("parent = document;", true);
 			//this.miframe.iframe.execScript("this.uiType = 'ext'; alert(uiType); alert(execCrossNavigation);");
-			this.miframe.iframe.execScript("uiType = 'ext';");
 			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
-							"	sendMessage({'label': l, parameters: p},'crossnavigation');" +
+							"	sendMessage({'label': l, parameters: p, windowName: d},'crossnavigation');" +
 							"};";
 			//this.miframe.iframe.execScript("parent.execCrossNavigation = function(d,l,p) {alert('LABEL: ' + l + '; PARAMETERS: '+ p);}");
-			this.miframe.iframe.execScript(scriptFn);
+			this.miframe.iframe.execScript(scriptFn, true);
+			this.miframe.iframe.execScript("uiType = 'ext';", true);
 			
 			// iframe resize when iframe content is reloaded
 			if (Ext.isIE) {

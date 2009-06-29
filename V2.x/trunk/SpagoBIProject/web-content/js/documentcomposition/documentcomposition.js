@@ -148,7 +148,8 @@ function execCrossNavigation(windowName, label, parameters) {
 
 function sendUrl(nameIframe, url){
 	//alert("SendURL - nameIframe: " + nameIframe +  " - url: "+ url);
-	document.getElementById(nameIframe).src = url;
+	//document.getElementById(nameIframe).src = url;
+	Ext.get(nameIframe).setSrc(url);
 	return;	
 }
 
@@ -187,11 +188,39 @@ Ext.onReady(function() {
 						,renderTo   : 'divIframe_'+ strDocLabel
 		                ,title      : (titleDoc==null || titleDoc== "")?null:titleDoc
 		                ,defaultSrc : asUrls[docLabel]+""
-		                ,loadMask   : (Ext.isIE)?true:false
+		                ,loadMask   : true//(Ext.isIE)?true:false
 		                ,border		: false //the border style should be defined into document template within the "style" tag
 						,height		: Number(heightPx)
 						,scrolling  : 'auto'	 //possible values: yes, no, auto  
-						});
+						/*
+						, listeners  : {
+				        	'message:crossnavigation' : {
+				        		fn: function(srcFrame, message){
+									alert('message:crossnavigation da doc composto');
+									try {
+										execCrossNavigation(message.data.windowName, message.data.label, message.data.parameters);
+									} catch (e) {alert(e); alert(e.description);} 
+				        		}
+				        		, scope: this
+				            }
+						}
+						*/
+				});
+				
+				/*
+				p.on('documentloaded', function() {
+				//p.on('domready', function() {
+					this.iframe.execScript("parent = document;", true);
+					var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
+									"	alert('invio il messaggio');" +
+									"	try{" +
+									"		sendMessage({'label': l, parameters: p, windowName: d},'crossnavigation');" +
+									"	} catch (e) {alert(e); alert(e.description);}" +
+									"};";
+					this.iframe.execScript(scriptFn, true);
+					this.iframe.execScript("uiType = 'ext';", true);
+				}, p);
+				*/
 				
 				/*	
 					var p = new Ext.Panel({

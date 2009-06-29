@@ -16,6 +16,21 @@
 		
 		<MAP_ACTION actionName="DELETE_SNAPSHOTS_ACTION"  businessProcess="DocumentAdminManagement"/>
 	
+		<MAP_ACTION actionName="INSERT_NOTES_ACTION"  businessProcess="SeeNotesFunctionality"/>
+	
+		<MAP_ACTION actionName="SAVE_PERSONAL_FOLDER"  businessProcess="SaveIntoFolderFunctionality"/>
+		<MAP_ACTION actionName="SHOW_SEND_TO_FORM"  businessProcess="SendMailFunctionality"/>
+		<MAP_ACTION actionName="SEND_TO_ACTION"  businessProcess="SendMailFunctionality"/>
+		<MAP_ACTION actionName="GET_SUBOBJECTS_ACTION"  businessProcess="SeeSubobjectsFunctionality"/>
+		<MAP_ACTION actionName="DELETE_SUBOBJECTS_ACTION"  businessProcess="SeeSubobjectsFunctionality"/>
+		<MAP_ACTION actionName="GET_NOTES_ACTION"  businessProcess="SeeNotesFunctionality"/>
+		<MAP_ACTION actionName="SAVE_NOTES_ACTION"  businessProcess="SeeNotesFunctionality"/>
+		<MAP_ACTION actionName="SAVE_REMEMBER_ME_ACTION"  businessProcess="SaveRememberMeFunctionality"/>
+		<MAP_ACTION actionName="GET_VIEWPOINTS_ACTION"  businessProcess="SeeViewpointsFunctionality"/>
+		<MAP_ACTION actionName="DELETE_VIEWPOINTS_ACTION"  businessProcess="SeeViewpointsFunctionality"/>
+		<MAP_ACTION actionName="SAVE_VIEWPOINT_ACTION"  businessProcess="SeeViewpointsFunctionality"/>
+		<MAP_ACTION actionName="GET_SNAPSHOTS_ACTION"  businessProcess="SeeSnapshotsFunctionality"/>
+	
 	</MAP_ACTIONS>
 	
 	<MAP_PAGE_MODULES>
@@ -31,6 +46,9 @@
 		<MAP_PAGE_MODULE pageName="DetailBIObjectPage" moduleName="DetailBIObjectModule" businessProcess="DocumentManagement" />
 		<MAP_PAGE_MODULE pageName="DocumentTemplateBuildPage" moduleName="DocumentTemplateBuildModule" businessProcess="DocumentManagement" />
 		<MAP_PAGE_MODULE pageName="ExecuteBIObjectPage" moduleName="ExecuteBIObjectModule" businessProcess="DocumentUserManagement" />
+		
+		<MAP_PAGE_MODULE pageName="MetadataBIObjectPage" moduleName="MetadataBIObjectModule" businessProcess="SeeMetadataFunctionality" />
+		
 	</MAP_PAGE_MODULES>
 
 </BUSINESS_MAP>

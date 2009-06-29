@@ -84,7 +84,7 @@
 	</SERVICE>
 
 
-	<!-- validation for viewpoints saving -->
+	<!-- validation for viewpoints saving, old interface, deprecated -->
 	<SERVICE name="ValidateExecuteBIObjectPage" type="PAGE">
 		<VALIDATION blocking="false" validators="">
 			<CONDITIONS>
@@ -99,6 +99,23 @@
 				<FIELD name="tmp_descVP" label="#SBIDev.docConf.viewPoint.description">
 					<VALIDATOR validatorName="ALFANUMERIC"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="160"/>
+				</FIELD>	
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
+	
+	<!-- service for new Ext-based interface -->
+	<SERVICE name="SAVE_VIEWPOINT_ACTION" type="ACTION">
+		<VALIDATION blocking="true" validators=""> <!-- at the moment the validation is blocking -->
+			<CONDITIONS/>
+			<FIELDS>
+				<FIELD name="name">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="ALFANUMERIC"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="50"/>
+				</FIELD>
+				<FIELD name="description">
+					<VALIDATOR validatorName="MAXLENGTH" arg0="5000"/>
 				</FIELD>	
 			</FIELDS>
 		</VALIDATION>

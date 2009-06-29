@@ -30,11 +30,7 @@
 <ACTION name="LOGOUT_ACTION"/>
 <ACTION name="CHANGE_LANGUAGE"/>
 <ACTION name="CHANGE_THEME"/>
-<ACTION name="SAVE_PERSONAL_FOLDER"/>
 <ACTION name="GET_SNAPSHOT_CONTENT"/>
-<ACTION name="SHOW_SEND_TO_FORM"/>
-<ACTION name="SEND_TO_ACTION"/>
-<ACTION name="INSERT_NOTES_ACTION"/>
 <ACTION name="RATING_ACTION"/>
 <ACTION name="GET_PNG"/>
 <ACTION name="GET_PNG2"/>
@@ -51,6 +47,17 @@
 <ACTION name="AJAX_SERVICE_EXCEPTION_ACTION"/>
 <ACTION name="EXPORT_PDF"/>
 <ACTION name="GET_URL_FOR_EXECUTION_ACTION"/>
+<ACTION name="LOGIN_ACTION_WEB"/>
+<ACTION name="EXECUTE_DOCUMENT_ACTION"/>
+<ACTION name="DELETE_OBJECT_ACTION"/>
+
+<ACTION name="GET_DOCUMENT_INFO_ACTION"/>
+
+<!-- 
+<ACTION name="SAVE_PERSONAL_FOLDER"/>
+<ACTION name="SHOW_SEND_TO_FORM"/>
+<ACTION name="SEND_TO_ACTION"/>
+<ACTION name="INSERT_NOTES_ACTION"/>
 <ACTION name="GET_SUBOBJECTS_ACTION"/>
 <ACTION name="DELETE_SUBOBJECTS_ACTION"/>
 <ACTION name="GET_NOTES_ACTION"/>
@@ -60,11 +67,7 @@
 <ACTION name="DELETE_VIEWPOINTS_ACTION"/>
 <ACTION name="SAVE_VIEWPOINT_ACTION"/>
 <ACTION name="GET_SNAPSHOTS_ACTION"/>
-<ACTION name="LOGIN_ACTION_WEB"/>
-<ACTION name="EXECUTE_DOCUMENT_ACTION"/>
-<ACTION name="DELETE_OBJECT_ACTION"/>
-<ACTION name="GET_DOCUMENT_INFO_ACTION"/>
-
+-->
 
 </ACTIONS_EXCLUDED_FROM_GLOBAL>
 	
@@ -77,7 +80,6 @@
 <PAGE_MODULE pagename="ValidateExecuteBIObjectPage" modulename="ExecuteBIObjectModule"/>
 <PAGE_MODULE pagename="ExecuteBIObjectPage" modulename="ExecuteBIObjectModule"/>
 <PAGE_MODULE pagename="LovLookupAjaxPage" modulename="LovLookupAjaxModule"/>
-<PAGE_MODULE pagename="MetadataBIObjectPage" modulename="MetadataBIObjectModule"/>
 <PAGE_MODULE pagename="SelectParameterPage" modulename="SelectParameterPageModule"/>
 <PAGE_MODULE pagename="SelectDatasetLookupPage" modulename="SelectDatasetLookupModule"/>
 <PAGE_MODULE pagename="ListDistributionListUserPage" modulename="ListDistributionListUserModule"/>
@@ -92,5 +94,10 @@
 <PAGE_MODULE pagename="ExoProfileAttributeManagerPage" modulename="ExoProfileAttributeManagerModule"/>
 <PAGE_MODULE pagename="ExoProfileAttributeManagerListUserPage" modulename="ExoProfileAttributeManagerListUserModule"/>
 <PAGE_MODULE pageName="SaveConfigurationPage" modulename="SaveConfigurationModule" />
+
+<!--
+<PAGE_MODULE pagename="MetadataBIObjectPage" modulename="MetadataBIObjectModule"/>
+-->
+
 </PAGE_MODULES_EXCLUDED_FROM_GLOBAL>
 </SECURITY>

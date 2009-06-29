@@ -4,8 +4,8 @@
 
   <FOLDER>
   	<FIELD id="id" visible="false" showLabel="false" maxChars="20"/>	
-  	<FIELD id="name" visible="true" showLabel="false" maxChars="20"/>	  
-  	<FIELD id="description" visible="true" showLabel="false" maxChars="20"/>	 
+  	<FIELD id="name" visible="true" showLabel="false" maxChars="50"/>	  
+  	<FIELD id="description" visible="true" showLabel="false" maxChars="100"/>	 
   	<FIELD id="code" visible="false" showLabel="false" maxChars="20"/>	
   	<FIELD id="codType" visible="false" showLabel="false" maxChars="20"/>	
   	<FIELD id="path" visible="false" showLabel="false" maxChars="20"/>	
@@ -20,10 +20,10 @@
   
   <DOCUMENT>
   	   <FIELD id="label" sortable="false" groupable="true" searchable="true" visible="false" showLabel="false" maxChars="20"/>	  	
-	   <FIELD id="name" sortable="true" groupable="true" searchable="true" visible="true" showLabel="false" maxChars="20"/>	  
+	   <FIELD id="name" sortable="true" groupable="true" searchable="true" visible="true" showLabel="false" maxChars="40"/>	  
 	   <FIELD id="engine" sortable="true" groupable="false" searchable="true" visible="true" showLabel="true" maxChars="20"/>	  	  
-	   <FIELD id="description" sortable="false" groupable="fasle" visible="true" showLabel="true" maxChars="20"/>	  
-	   <FIELD id="creationDate" sortable="true" groupable="true" searchable="true"  visible="true" showLabel="false" maxChars="20"/>
+	   <FIELD id="description" sortable="false" groupable="fasle" visible="true" showLabel="true" maxChars="70"/>	  
+	   <FIELD id="creationDate" sortable="true" groupable="true" searchable="true"  visible="true" showLabel="false" maxChars="40"/>
 	   
 	   <FIELD id="typeCode" sortable="false" groupable="fasle" visible="false" showLabel="true" maxChars="20"/>	  
 	   <FIELD id="typeId" sortable="false" groupable="fasle" visible="false" showLabel="true" maxChars="20"/>	  

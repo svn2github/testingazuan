@@ -6,7 +6,7 @@ FILE DI PROVA
 	<script type="text/javascript" src=".\execution.js">
 	</script>
 	
-	<div id='mio'>
+	<div id='toInsertDocExecution'>
 	</div>
 	
 	<script type="text/javascript">
@@ -15,15 +15,15 @@ FILE DI PROVA
 
   alert('Autenticazione '+result);
 
-		var parametri = {
+	var parametri = {
 		numero : 5
 		}
 		
-		var paramString='&numero=2';
+	var paramString='&numero=2';
 
-		urlToCall=executeDoc('http://localhost:8080/SpagoBI',null,'docLabel','/spagobi/admin',paramString,null,false,false,null,null);
+	urlToCall=executeDoc('http://localhost:8080/SpagoBI',null,'BOX_CHART','/spagobi/admin',paramString,null,false,false,null,null);
 	
-  	document.getElementById('mio').innerHTML=urlToCall;
+  	document.getElementById('toInsertDocExecution').innerHTML=urlToCall;
 
 		//-->
 	</script>

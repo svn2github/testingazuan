@@ -20,7 +20,7 @@ function authenticate(spagobiContext,userId,password){
   }
   
  try{ 
-  var authenticationUrl=spagobiContext+'/servlet/AdapterHTTP?ACTION_NAME=LOGIN_ACTION_WEB&NEW_SESSION=TRUE&userID='+userId+'&password='+password;
+  var authenticationUrl=spagobiContext+'/servlet/AdapterHTTP?ACTION_NAME=LOGIN_ACTION_WEB&NEW_SESSION=TRUE&user='+userId+'&password='+password;
 	xmlHttp.open('POST',authenticationUrl,false);										
 	xmlHttp.send(null);
   }
@@ -88,6 +88,7 @@ function executeDoc(spagobiContext
 	if(iframeStyle==null){
 		iframeStyle="";
 	}
+	alert(url);
 	
 	var htmlCode='<iframe id="frame" src="'+url+'" style="'+iframeStyle+'" width="500" height="500"></iframe>'
 

@@ -42,7 +42,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	backUrlPars.put(LightNavigationManager.LIGHT_NAVIGATOR_BACK_TO, "1");
 	String backUrl = urlBuilder.getUrl(request, backUrlPars);
 	
-	String msgWarningSave = PortletUtilities.getMessage("5029", "component_mapcatalogue_messages");
+	//String msgWarningSave = PortletUtilities.getMessage("5029", "component_mapcatalogue_messages");
+	String msgWarningSave=msgBuilder.getMessage("5029", "component_mapcatalogue_messages",  request);
 %>
 
 <form method='POST' action='<%=formUrl%>' id='featureForm' name='featureForm'>
@@ -125,8 +126,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		<select class='portlet-form-input-field' name="TYPE" >
 			<option value="" <% if (type.equalsIgnoreCase("")) out.print(" selected='selected' ");  %>>&nbsp;</option>
-			<option value=<spagobi:message key="SBIMapCatalogue.TypeTerritorial" bundle="component_mapcatalogue_messages" /> <% if (type.equalsIgnoreCase(PortletUtilities.getMessage("SBIMapCatalogue.TypeTerritorial", "component_mapcatalogue_messages"))) out.print(" selected='selected' ");  %>><spagobi:message key="SBIMapCatalogue.TypeTerritorial" bundle="component_mapcatalogue_messages" /></option>
-			<option value=<spagobi:message key="SBIMapCatalogue.TypePositional" bundle="component_mapcatalogue_messages" />  <% if (type.equalsIgnoreCase(PortletUtilities.getMessage("SBIMapCatalogue.TypePositional", "component_mapcatalogue_messages"))) out.print(" selected='selected' ");  %>><spagobi:message key="SBIMapCatalogue.TypePositional" bundle="component_mapcatalogue_messages" /></option>
+			<option value=<spagobi:message key="SBIMapCatalogue.TypeTerritorial" bundle="component_mapcatalogue_messages" /> <% if (type.equalsIgnoreCase(msgBuilder.getMessage("SBIMapCatalogue.TypeTerritorial", "component_mapcatalogue_messages",  request))) out.print(" selected='selected' ");  %>><spagobi:message key="SBIMapCatalogue.TypeTerritorial" bundle="component_mapcatalogue_messages" /></option>
+			<option value=<spagobi:message key="SBIMapCatalogue.TypePositional" bundle="component_mapcatalogue_messages" />  <% if (type.equalsIgnoreCase(msgBuilder.getMessage("SBIMapCatalogue.TypePositional", "component_mapcatalogue_messages",  request)))  out.print(" selected='selected' ");  %>><spagobi:message key="SBIMapCatalogue.TypePositional" bundle="component_mapcatalogue_messages" /></option>
 		</select>
 	&nbsp;*
 	</div>

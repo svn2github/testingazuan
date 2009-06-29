@@ -112,9 +112,9 @@ Ext.onReady(function(){
 			params.put("REMEMBER_ME_ID", rm.getId().toString());
 			String deleteUrl = urlBuilder.getUrl(request, params);
 			deleteUrl = deleteUrl.replaceAll("&amp;", "&");
-			%>['<%= rm.getName() %>','<%= rm.getDescription() %>','<%= rm.getDocumentLabel() %>','<%= rm.getDocumentName() %>',
-				'<%= rm.getDocumentDescription() != null ? rm.getDocumentDescription() : "" %>',
-				'<%= rm.getDocumentType() %>','<%= executeUrl %>','<%= deleteUrl %>']<%= rememberMeListIt.hasNext() ? "," : "" %><%
+			%>['<%= StringEscapeUtils.escapeJavaScript(rm.getName()) %>','<%= StringEscapeUtils.escapeJavaScript(rm.getDescription()) %>','<%= StringEscapeUtils.escapeJavaScript(rm.getDocumentLabel()) %>','<%= StringEscapeUtils.escapeJavaScript(rm.getDocumentName()) %>',
+				'<%= rm.getDocumentDescription() != null ? StringEscapeUtils.escapeJavaScript(rm.getDocumentDescription()) : "" %>',
+				'<%= rm.getDocumentType() %>','<%= StringEscapeUtils.escapeJavaScript(executeUrl) %>','<%= StringEscapeUtils.escapeJavaScript(deleteUrl) %>']<%= rememberMeListIt.hasNext() ? "," : "" %><%
 		}
 		%>
     ];

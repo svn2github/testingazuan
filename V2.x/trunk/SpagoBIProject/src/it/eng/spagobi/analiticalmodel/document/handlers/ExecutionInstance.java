@@ -674,7 +674,7 @@ public class ExecutionInstance {
 		logger.debug("OUT");
 	}
 
-	public String getSnapshotUrl(Locale locale) {
+	public String getSnapshotUrl() {
 		logger.debug("IN");
 		if (this.snapshot == null) {
 			throw new SpagoBIServiceException("", "no snapshot set");
@@ -686,22 +686,12 @@ public class ExecutionInstance {
 		buffer.append("&" + ObjectsTreeConstants.OBJECT_ID + "=" + object.getId());
 		buffer.append("&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE");
 
-		if(locale!=null){
-			// add locale
-			if(locale.getLanguage()!=null){
-				buffer.append("&" + SpagoBIConstants.SBI_LANGUAGE + "="+locale.getLanguage());
-			}
-			if(locale.getCountry()!=null){
-				buffer.append("&" + SpagoBIConstants.SBI_COUNTRY + "="+locale.getCountry());
-			}
-		}
-
 		String url = buffer.toString();
 		logger.debug("OUT: returning url = [" + url + "]");
 		return url;
 	}
 
-	public String getSubObjectUrl() {
+	public String getSubObjectUrl(Locale locale) {
 		logger.debug("IN");
 		if (this.subObject == null) {
 			throw new SpagoBIServiceException("", "no subobject set");
@@ -737,6 +727,16 @@ public class ExecutionInstance {
 			if (auditId != null) {
 				mapPars.put(AuditManager.AUDIT_ID, auditId);
 			}
+			
+			if(locale!=null){
+				if(locale.getLanguage()!=null){
+					mapPars.put(SpagoBIConstants.SBI_LANGUAGE, locale.getLanguage());				
+				}
+				if(locale.getCountry()!=null){
+					mapPars.put(SpagoBIConstants.SBI_COUNTRY,locale.getCountry());
+				}
+			}
+			
 			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
 		} else {
 			throw new RuntimeException("Internal engines does not support subobjects!!");

@@ -47,7 +47,7 @@ public class ListDomainsByType extends AbstractBaseHttpAction {
 			logger.debug("Parameter [" + DOMAIN_TYPE + "] is equal to [" + domainType + "]");
 			
 			domains = DAOFactory.getDomainDAO().loadListDomainsByType( domainType );
-			JSONArray domainsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( domains );
+			JSONArray domainsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( domains ,null);
 			
 			try {
 				writeBackToClient( new JSONSuccess( createJSONResponse(domainsJSON) ) );

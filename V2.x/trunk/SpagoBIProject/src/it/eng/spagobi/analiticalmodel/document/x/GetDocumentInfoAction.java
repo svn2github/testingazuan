@@ -26,10 +26,14 @@ import it.eng.spagobi.chiron.serializer.SerializationException;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
 
 import java.io.IOException;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
@@ -63,7 +67,9 @@ public class GetDocumentInfoAction extends AbstractSpagoBIAction {
 				logger.error("Error while recovering info about document with label [" + label + "]", e);
 				throw new SpagoBIServiceException(SERVICE_NAME, "Error while recovering info about document with label [" + label + "]", e);
 			}
-			
+			HttpServletRequest httpRequest = getHttpRequest();
+			MessageBuilder m = new MessageBuilder();
+			Locale locale = m.getLocale(httpRequest);
 			try {
 				JSONObject result = new JSONObject();
 				if (!found) {
@@ -73,7 +79,7 @@ public class GetDocumentInfoAction extends AbstractSpagoBIAction {
 					if (!canSee) {
 						result.put("canSee", false);
 					} else {
-						JSONObject document = (JSONObject) SerializerFactory.getSerializer("application/json").serialize( obj );
+						JSONObject document = (JSONObject) SerializerFactory.getSerializer("application/json").serialize( obj ,locale);
 						result.put("document", document);
 						result.put("canSee", true);
 					}

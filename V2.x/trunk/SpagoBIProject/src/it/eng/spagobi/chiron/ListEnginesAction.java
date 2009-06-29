@@ -40,7 +40,7 @@ public class ListEnginesAction extends AbstractBaseHttpAction{
 			setSpagoBIResponseContainer( response );
 			
 			engines = DAOFactory.getEngineDAO().loadAllEngines();
-			JSONArray enginesJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( engines );
+			JSONArray enginesJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( engines,null );
 			
 			try {
 				writeBackToClient( new JSONSuccess( createJSONResponse(enginesJSON) ) );

@@ -23,6 +23,9 @@ package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -35,6 +38,7 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.chiron.serializer.FoldersJSONSerializer;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -86,9 +90,11 @@ public class GetFTreeFoldersAction extends AbstractBaseHttpAction {
 				//getting children folders
 				folders = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(new Integer(nodeId), false, profile);		
 			}
-			
+			HttpServletRequest httpRequest = getHttpRequest();
+			MessageBuilder m = new MessageBuilder();
+			Locale locale = m.getLocale(httpRequest);
 			JSONArray jsonFTree = new JSONArray();
-			jsonFTree = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( folders );
+			jsonFTree = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( folders,locale );
 
 			try {
 				writeBackToClient( new JSONSuccess(  createNode(jsonFTree) ) ) ;

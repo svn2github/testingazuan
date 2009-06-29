@@ -25,6 +25,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.json.JSONObject;
 
@@ -43,7 +44,7 @@ public class SnapshotJSONSerializer implements Serializer {
 	// dates are sent to the client using a fixed format, the one returned by GeneralUtilities.getServerDateFormat()
 	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( GeneralUtilities.getServerDateFormat() );
 
-	public Object serialize(Object o) throws SerializationException {
+	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
 		
 		if( !(o instanceof Snapshot) ) {

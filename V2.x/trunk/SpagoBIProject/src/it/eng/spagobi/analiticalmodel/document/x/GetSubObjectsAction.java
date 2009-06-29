@@ -75,7 +75,7 @@ public class GetSubObjectsAction extends AbstractSpagoBIAction {
 			}
 			
 			try {
-				JSONArray subObjectsListJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize( subObjectsList );
+				JSONArray subObjectsListJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize( subObjectsList,null );
 				JSONObject results = new JSONObject();
 				results.put("results", subObjectsListJSON);
 				writeBackToClient( new JSONSuccess( results ) );

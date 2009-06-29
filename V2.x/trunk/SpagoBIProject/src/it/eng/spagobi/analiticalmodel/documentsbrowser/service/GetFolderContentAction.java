@@ -24,6 +24,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -38,6 +41,7 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -58,6 +62,7 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 	private static Logger logger = Logger.getLogger(GetFolderContentAction.class);
 	
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		
 		
 		List functionalities;
 		List objects;
@@ -102,8 +107,10 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
                     	objects.add(obj);
                 }
 			}
-		
-			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects );
+			HttpServletRequest httpRequest = getHttpRequest();
+			MessageBuilder m = new MessageBuilder();
+			Locale locale = m.getLocale(httpRequest);
+			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects ,locale);
 			if(isHome) {
 				JSONObject deleteAction = new JSONObject();
 				deleteAction.put("name", "delete");
@@ -124,7 +131,7 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			*/
 			functionalities = DAOFactory.getLowFunctionalityDAO().loadUserFunctionalities(Integer.valueOf(functID), false, profile);
 			
-			JSONArray foldersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( functionalities );			
+			JSONArray foldersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( functionalities,locale );			
 			JSONObject foldersResponseJSON =  createJSONResponseFolders(foldersJSON);
 		
 			try {

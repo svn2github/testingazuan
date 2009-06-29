@@ -92,7 +92,7 @@ public class GetViewpointsAction extends AbstractSpagoBIAction {
 			logger.debug("Document [" + biobjectId + "] have " + (viewpoints==null?"0":""+viewpoints.size() ) + " valid viewpoints for user [" + userProfile.getUserUniqueIdentifier() + "]");
 			
 			try {
-				JSONArray viewpointsJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize( viewpoints );
+				JSONArray viewpointsJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize( viewpoints ,null);
 				JSONObject results = new JSONObject();
 				results.put("results", viewpointsJSON);
 				writeBackToClient( new JSONSuccess( results ) );

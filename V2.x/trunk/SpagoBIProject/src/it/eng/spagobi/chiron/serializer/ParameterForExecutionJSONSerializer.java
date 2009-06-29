@@ -22,11 +22,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.chiron.serializer;
 
 import java.util.Iterator;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.eng.spagobi.analiticalmodel.document.x.GetParametersForExecutionAction;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -34,7 +36,7 @@ import it.eng.spagobi.analiticalmodel.document.x.GetParametersForExecutionAction
 public class ParameterForExecutionJSONSerializer implements Serializer {
 
 	
-	public Object serialize(Object o) throws SerializationException {
+	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
 		
 		if( !(o instanceof GetParametersForExecutionAction.ParameterForExecution) ) {
@@ -45,7 +47,9 @@ public class ParameterForExecutionJSONSerializer implements Serializer {
 			GetParametersForExecutionAction.ParameterForExecution parameter = (GetParametersForExecutionAction.ParameterForExecution)o;
 			result = new JSONObject();
 			result.put("id", parameter.getId() );
-			result.put("label", parameter.getLabel() );
+			MessageBuilder msgBuild=new MessageBuilder();
+			String label=msgBuild.getUserMessage(parameter.getLabel(),null, locale);
+			result.put("label",label);
 			result.put("type", parameter.getParType() );
 			result.put("selectionType", parameter.getSelectionType() );
 			result.put("typeCode", parameter.getTypeCode() );

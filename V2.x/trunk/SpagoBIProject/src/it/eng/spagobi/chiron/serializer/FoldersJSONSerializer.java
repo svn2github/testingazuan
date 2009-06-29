@@ -21,10 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
+import java.util.Locale;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 
 /**
  * @author Antonella Giachino (antonella.giachino@eng.it)
@@ -47,7 +50,7 @@ public class FoldersJSONSerializer implements Serializer {
 	public static final String ACTIONS = "actions";
 	
 	
-	public Object serialize(Object o) throws SerializationException {
+	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
 		
 		if( !(o instanceof LowFunctionality) ) {
@@ -64,8 +67,11 @@ public class FoldersJSONSerializer implements Serializer {
 			result.put(PATH, lowFunct.getPath() );			
 			result.put(PROG, lowFunct.getProg() );
 			result.put(PARENTID, lowFunct.getParentId() );
-			result.put(NAME, lowFunct.getName() );			
-			result.put(DESCRIPTION, lowFunct.getDescription() );	
+			MessageBuilder msgBuild=new MessageBuilder();
+			String lowFunctName=msgBuild.getUserMessage(lowFunct.getName(),null, locale);
+			result.put(NAME, lowFunctName );		
+			String description=msgBuild.getUserMessage(lowFunct.getDescription(), null,locale);
+			result.put(DESCRIPTION, description);	
 			result.put(DEVROLES, lowFunct.getDevRoles() );
 			result.put(TESTROLES, lowFunct.getTestRoles() );		
 			result.put(EXECROLES, lowFunct.getExecRoles() );

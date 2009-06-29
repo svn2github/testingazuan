@@ -167,7 +167,7 @@ public class SaveViewpointAction extends AbstractSpagoBIAction {
 			}
 				
 			try {
-				JSONObject results = (JSONObject) SerializerFactory.getSerializer("application/json").serialize( viewpoint );
+				JSONObject results = (JSONObject) SerializerFactory.getSerializer("application/json").serialize( viewpoint,null );
 				writeBackToClient( new JSONSuccess( results ) );
 			} catch (IOException e) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to write back the responce to the client", e);

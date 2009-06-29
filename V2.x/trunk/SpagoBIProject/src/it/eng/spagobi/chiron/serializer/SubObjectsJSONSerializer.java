@@ -23,6 +23,7 @@ package it.eng.spagobi.chiron.serializer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.json.JSONObject;
 
@@ -42,7 +43,7 @@ public class SubObjectsJSONSerializer implements Serializer {
 	public static final String LAST_MODIFICATION_DATE = "lastModificationDate";
 	public static final String VISIBILITY = "visibility";
 
-	public Object serialize(Object o) throws SerializationException {
+	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
 		
 		if( !(o instanceof SubObject) ) {

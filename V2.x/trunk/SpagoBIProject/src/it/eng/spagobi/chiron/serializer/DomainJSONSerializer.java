@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
+import java.util.Locale;
+
 import org.json.JSONObject;
 
 import it.eng.spagobi.commons.bo.Domain;
@@ -39,7 +41,7 @@ public class DomainJSONSerializer implements Serializer {
 	public static final String VALUE_DECRIPTION = "valueDescription";
 	
 	
-	public Object serialize(Object o) throws SerializationException {
+	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
 		
 		if( !(o instanceof Domain) ) {

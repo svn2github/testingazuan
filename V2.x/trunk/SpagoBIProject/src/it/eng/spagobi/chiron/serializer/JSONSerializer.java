@@ -24,6 +24,7 @@ package it.eng.spagobi.chiron.serializer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -60,7 +61,7 @@ public class JSONSerializer implements Serializer {
 		mappings.put( GetParametersForExecutionAction.ParameterForExecution.class, new ParameterForExecutionJSONSerializer() );
 	}
 
-	public Object serialize(Object o) throws SerializationException {
+	public Object serialize(Object o, Locale locale) throws SerializationException {
 		Object result = null;	
 		
 		try {
@@ -69,7 +70,7 @@ public class JSONSerializer implements Serializer {
 				Collection c = (Collection)o;
 				Iterator it = c.iterator();
 				while(it.hasNext()) {
-					r.put( serialize( it.next() ) );
+					r.put( serialize( it.next() ,locale) );
 				}
 				result = r;
 			} else {
@@ -78,7 +79,7 @@ public class JSONSerializer implements Serializer {
 				}
 				
 				Serializer serializer = mappings.get(o.getClass());
-				result = serializer.serialize(o);
+				result = serializer.serialize(o,locale);
 			}			
 			
 		} catch (Throwable t) {

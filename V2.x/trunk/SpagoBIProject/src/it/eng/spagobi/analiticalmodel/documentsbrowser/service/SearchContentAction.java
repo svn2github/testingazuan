@@ -108,7 +108,7 @@ public class SearchContentAction extends AbstractBaseHttpAction{
                 }
 			}
 		
-			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects );
+			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects,null );
 			JSONObject documentsResponseJSON =  createJSONResponseDocuments(documentsJSON);
 		
 			try {

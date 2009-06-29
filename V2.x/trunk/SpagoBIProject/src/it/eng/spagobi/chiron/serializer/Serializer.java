@@ -21,10 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.chiron.serializer;
 
+import java.util.Locale;
+
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public interface Serializer {
-	public Object serialize(Object o) throws SerializationException;
+	public Object serialize(Object o, Locale locale) throws SerializationException;
 }

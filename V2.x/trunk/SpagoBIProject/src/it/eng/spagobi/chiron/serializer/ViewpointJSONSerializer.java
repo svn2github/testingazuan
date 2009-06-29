@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.chiron.serializer;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.json.JSONObject;
 
@@ -47,7 +48,7 @@ public class ViewpointJSONSerializer implements Serializer {
 	// dates are sent to the client using a fixed format, the one returned by GeneralUtilities.getServerDateFormat()
 	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( GeneralUtilities.getServerDateFormat() );
 
-	public Object serialize(Object o) throws SerializationException {
+	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
 		
 		if( !(o instanceof Viewpoint) ) {

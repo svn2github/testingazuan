@@ -24,6 +24,7 @@ package it.eng.spagobi.chiron.serializer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,6 +33,7 @@ import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.dao.IDomainDAO;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.config.bo.Exporters;
 import it.eng.spagobi.engines.config.dao.IEngineDAO;
@@ -70,7 +72,7 @@ public class DocumentsJSONSerializer implements Serializer {
 	public static final String EXPORTERS = "exporters";
 	
 	
-	public Object serialize(Object o) throws SerializationException {
+	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
 		
 		if( !(o instanceof BIObject) ) {
@@ -83,9 +85,11 @@ public class DocumentsJSONSerializer implements Serializer {
 			
 			result.put(ID, obj.getId() );
 			result.put(LABEL, obj.getLabel() );
-			result.put(NAME, obj.getName() );
-			result.put(DESCRIPTION, obj.getDescription() );
-			
+			MessageBuilder msgBuild=new MessageBuilder();
+			String objName=msgBuild.getUserMessage(obj.getName(),null, locale);
+			result.put(NAME, objName );
+			String description=msgBuild.getUserMessage( obj.getDescription() ,null, locale);
+			result.put(DESCRIPTION, description);		
 			result.put(TYPECODE, obj.getBiObjectTypeCode());
 			result.put(TYPEID, obj.getBiObjectTypeID());
 			result.put(ENCRYPT, obj.getEncrypt());

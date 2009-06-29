@@ -23,6 +23,9 @@ package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -34,6 +37,7 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.chiron.serializer.FoldersJSONSerializer;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
@@ -81,8 +85,10 @@ public class GetFolderPathAction extends AbstractBaseHttpAction{
 					.loadParentFunctionalities(Integer.valueOf(functID), (rootFolderID==null?null:Integer.valueOf(rootFolderID)) );	
 			}
 			
-		
-			JSONArray foldersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( functionalities );
+			HttpServletRequest httpRequest = getHttpRequest();
+			MessageBuilder m = new MessageBuilder();
+			Locale locale = m.getLocale(httpRequest);
+			JSONArray foldersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( functionalities,locale );
 			
 			try {
 				writeBackToClient( new JSONSuccess(  createJSONResponse(foldersJSON) ) ) ;

@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -50,6 +53,7 @@ import it.eng.spagobi.chiron.serializer.SerializationException;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -92,10 +96,12 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 				parametersForExecution.add( new ParameterForExecution(biparam) );
 			}
 		}
-		
+		HttpServletRequest httpRequest = getHttpRequest();
+		MessageBuilder m = new MessageBuilder();
+		Locale locale = m.getLocale(httpRequest);
 		JSONArray parametersJSON = null;
 		try {
-			parametersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( parametersForExecution );
+			parametersJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( parametersForExecution,locale );
 		} catch (SerializationException e) {
 			e.printStackTrace();
 		}

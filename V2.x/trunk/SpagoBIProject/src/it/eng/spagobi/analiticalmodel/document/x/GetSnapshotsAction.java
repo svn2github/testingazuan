@@ -64,7 +64,7 @@ public class GetSnapshotsAction extends AbstractSpagoBIAction {
 			}
 			
 			try {
-				JSONArray snapshotsListJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize( snapshotsList );
+				JSONArray snapshotsListJSON = (JSONArray) SerializerFactory.getSerializer("application/json").serialize( snapshotsList ,null);
 				JSONObject results = new JSONObject();
 				results.put("results", snapshotsListJSON);
 				writeBackToClient( new JSONSuccess( results ) );

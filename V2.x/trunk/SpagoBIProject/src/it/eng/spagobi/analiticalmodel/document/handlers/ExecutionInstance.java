@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.analiticalmodel.document.handlers;
 
 import it.eng.spago.base.SourceBean;
@@ -85,9 +85,9 @@ import org.safehaus.uuid.UUIDGenerator;
  *
  */
 public class ExecutionInstance {
-	
+
 	static private Logger logger = Logger.getLogger(ExecutionInstance.class);
-	
+
 	private String flowId = null;
 	private String executionId = null;
 	private BIObject object = null;
@@ -99,24 +99,24 @@ public class ExecutionInstance {
 	private boolean displayToolbar = true;
 	private boolean displaySliders = true;
 	private Calendar calendar = null;
-	
-	
+
+
 	/**
-     * Instantiates a new execution instance.
-     * 
-     * @param flowId the flow id
-     * @param executionId the execution id
-     * @param obj the obj
-     * @param executionRole the execution role
+	 * Instantiates a new execution instance.
+	 * 
+	 * @param flowId the flow id
+	 * @param executionId the execution id
+	 * @param obj the obj
+	 * @param executionRole the execution role
 	 * @throws Exception 
-     */
-    public ExecutionInstance (IEngUserProfile userProfile, String flowId, String executionId, Integer biobjectId, String executionRole, String executionModality) throws Exception {
-    	logger.debug("IN: input parameters: userProfile = [" + userProfile + "]; flowId = [" + flowId + "]; executionId = [" + executionId + "]; " +
-    			"biobjectId" + biobjectId + "]; executionRole = [" + executionRole + "]");
-    	if (userProfile == null || flowId == null || executionId == null || biobjectId == null) {
-    		throw new Exception("Invalid arguments.");
-    	}
-    	this.userProfile = userProfile;
+	 */
+	public ExecutionInstance (IEngUserProfile userProfile, String flowId, String executionId, Integer biobjectId, String executionRole, String executionModality) throws Exception {
+		logger.debug("IN: input parameters: userProfile = [" + userProfile + "]; flowId = [" + flowId + "]; executionId = [" + executionId + "]; " +
+				"biobjectId" + biobjectId + "]; executionRole = [" + executionRole + "]");
+		if (userProfile == null || flowId == null || executionId == null || biobjectId == null) {
+			throw new Exception("Invalid arguments.");
+		}
+		this.userProfile = userProfile;
 		this.flowId = flowId;
 		this.executionId = executionId;
 		this.object = DAOFactory.getBIObjectDAO().loadBIObjectForExecutionByIdAndRole(biobjectId, executionRole);
@@ -124,42 +124,42 @@ public class ExecutionInstance {
 		this.executionRole = executionRole;
 		this.executionModality = (executionModality == null) ? SpagoBIConstants.NORMAL_EXECUTION_MODALITY : executionModality;
 		initBIParameters();
-    }
-	
-    public ExecutionInstance (IEngUserProfile userProfile, String flowId, String executionId, Integer biobjectId, 
-    		String executionRole, String executionModality, boolean displayToolbar) throws Exception {
-    	this(userProfile, flowId, executionId, biobjectId, executionRole, executionModality);
-    	this.displayToolbar = displayToolbar;
-    }
-    
-    public ExecutionInstance (IEngUserProfile userProfile, String flowId, String executionId, Integer biobjectId, 
-    		String executionRole, String executionModality, boolean displayToolbar, boolean displaySliders) throws Exception {
-    	this(userProfile, flowId, executionId, biobjectId, executionRole, executionModality, displayToolbar);
-    	this.displaySliders = displaySliders;
-    }
-    
-    
-    
-    
-    
-    public void changeExecutionRole(String newRole) throws Exception {
-    	logger.debug("IN");
-    	List correctExecutionRoles = loadCorrectRolesForExecution();
-    	if (!correctExecutionRoles.contains(newRole)) {
-    		throw new Exception("The role [" + newRole + "] is not a valid role for executing document [" + object.getLabel() + "].");
-    	}
-    	// reload the biobject
-    	this.object = DAOFactory.getBIObjectDAO().loadBIObjectForExecutionByIdAndRole(object.getId(), newRole);
+	}
+
+	public ExecutionInstance (IEngUserProfile userProfile, String flowId, String executionId, Integer biobjectId, 
+			String executionRole, String executionModality, boolean displayToolbar) throws Exception {
+		this(userProfile, flowId, executionId, biobjectId, executionRole, executionModality);
+		this.displayToolbar = displayToolbar;
+	}
+
+	public ExecutionInstance (IEngUserProfile userProfile, String flowId, String executionId, Integer biobjectId, 
+			String executionRole, String executionModality, boolean displayToolbar, boolean displaySliders) throws Exception {
+		this(userProfile, flowId, executionId, biobjectId, executionRole, executionModality, displayToolbar);
+		this.displaySliders = displaySliders;
+	}
+
+
+
+
+
+	public void changeExecutionRole(String newRole) throws Exception {
+		logger.debug("IN");
+		List correctExecutionRoles = loadCorrectRolesForExecution();
+		if (!correctExecutionRoles.contains(newRole)) {
+			throw new Exception("The role [" + newRole + "] is not a valid role for executing document [" + object.getLabel() + "].");
+		}
+		// reload the biobject
+		this.object = DAOFactory.getBIObjectDAO().loadBIObjectForExecutionByIdAndRole(object.getId(), newRole);
 		// generates a new execution id
-    	UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 		UUID uuidObj = uuidGen.generateTimeBasedUUID();
 		String executionId = uuidObj.toString();
 		this.executionId = executionId.replaceAll("-", "");
 		this.calendar = new GregorianCalendar();
 		initBIParameters();
-    	logger.debug("OUT");
-    }
-    
+		logger.debug("OUT");
+	}
+
 	private void initBIParameters() {
 		logger.debug("IN");
 		List tmpBIObjectParameters = object.getBiObjectParameters();
@@ -173,23 +173,23 @@ public class ExecutionInstance {
 				ModalitiesValue paruse = par.getModalityValue();
 				if (!paruse.getITypeCd().equals("MAN_IN")) {					
 					try {
-			        	String lovResult = aBIObjectParameter.getLovResult();
-			        	if(lovResult == null) {
-			        		String lovprov = paruse.getLovProvider();
-			            	ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovprov);
-			    			lovResult = lovDetail.getLovResult(this.userProfile);
-			    			LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
-			    			aBIObjectParameter.setLovResult(lovResult);
-			    			// if the lov is single value and the parameter value is not set, the parameter value 
-			    			// is the lov result
-			    			if(lovResultHandler.isSingleValue() && aBIObjectParameter.getParameterValues() == null) {
-			    				aBIObjectParameter.setParameterValues(lovResultHandler.getValues(lovDetail.getValueColumnName()));
-			    				aBIObjectParameter.setHasValidValues(true);
-			    				aBIObjectParameter.setTransientParmeters(true);
-			    			}
-			        	}        	       
-		        	} catch (Exception e) {
-		        		logger.error(e);
+						String lovResult = aBIObjectParameter.getLovResult();
+						if(lovResult == null) {
+							String lovprov = paruse.getLovProvider();
+							ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovprov);
+							lovResult = lovDetail.getLovResult(this.userProfile);
+							LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
+							aBIObjectParameter.setLovResult(lovResult);
+							// if the lov is single value and the parameter value is not set, the parameter value 
+							// is the lov result
+							if(lovResultHandler.isSingleValue() && aBIObjectParameter.getParameterValues() == null) {
+								aBIObjectParameter.setParameterValues(lovResultHandler.getValues(lovDetail.getValueColumnName()));
+								aBIObjectParameter.setHasValidValues(true);
+								aBIObjectParameter.setTransientParmeters(true);
+							}
+						}        	       
+					} catch (Exception e) {
+						logger.error(e);
 						continue;
 					}
 				}
@@ -197,14 +197,14 @@ public class ExecutionInstance {
 		}
 		logger.debug("OUT");
 	}
-	
+
 	private List loadCorrectRolesForExecution() throws EMFInternalError, EMFUserError {
 		logger.debug("IN");
 		List correctRoles = ObjectsAccessVerifier.getCorrectRolesForExecution(object.getId(), userProfile);
 		logger.debug("OUT");
 		return correctRoles;
 	}
-	
+
 	public boolean isDirectExecution() {
 		logger.debug("IN");
 		if (object == null) {
@@ -212,34 +212,34 @@ public class ExecutionInstance {
 			return false;
 		}
 		List biParameters = object.getBiObjectParameters();
-        if (biParameters == null) {
-        	logger.error("BIParameters list cannot be null!!!");
-        	return false;
-        }
-        if (biParameters.size() == 0) {
-        	logger.debug("BIParameters list is empty.");
-        	return true;
-        }
-        int countHidePar = 0;
-        Iterator iterPars = biParameters.iterator();
-        BIObjectParameter biParameter = null;
-        while (iterPars.hasNext()){
+		if (biParameters == null) {
+			logger.error("BIParameters list cannot be null!!!");
+			return false;
+		}
+		if (biParameters.size() == 0) {
+			logger.debug("BIParameters list is empty.");
+			return true;
+		}
+		int countHidePar = 0;
+		Iterator iterPars = biParameters.iterator();
+		BIObjectParameter biParameter = null;
+		while (iterPars.hasNext()){
 			biParameter = (BIObjectParameter)iterPars.next();
-            Parameter par = biParameter.getParameter();
-        	if (biParameter.isTransientParmeters()) {
-        		countHidePar ++;
-            	continue;
-        	}
-        	if (biParameter.hasValidValues()) {
-        		countHidePar ++;
-            	continue;
-        	}
-        	if (par == null) {
+			Parameter par = biParameter.getParameter();
+			if (biParameter.isTransientParmeters()) {
+				countHidePar ++;
+				continue;
+			}
+			if (biParameter.hasValidValues()) {
+				countHidePar ++;
+				continue;
+			}
+			if (par == null) {
 				logger.error("The biparameter with label = ['" + biParameter.getLabel() + "'] and url name = ['" + biParameter.getParameterUrlName() + "'] has no parameter associated. ");
-        		continue;
-        	}
-        	if (biParameter.getLovResult() == null) continue;
-        	LovResultHandler lovResultHandler;
+				continue;
+			}
+			if (biParameter.getLovResult() == null) continue;
+			LovResultHandler lovResultHandler;
 			try {
 				lovResultHandler = new LovResultHandler(biParameter.getLovResult());
 				if(lovResultHandler.isSingleValue()) countHidePar ++;
@@ -247,9 +247,9 @@ public class ExecutionInstance {
 				continue;
 			}
 		}
-        if (countHidePar == biParameters.size())
-        	return true;
-        else return false;
+		if (countHidePar == biParameters.size())
+			return true;
+		else return false;
 	}
 
 	public void setParameterValues(String userProvidedParametersStr, boolean transientMode) {
@@ -267,7 +267,7 @@ public class ExecutionInstance {
 				String[] chunks = userProvidedParameters[i].split("=");
 				if (chunks == null || chunks.length > 2) {
 					logger.warn("User provided parameter [" + userProvidedParameters[i] + "] cannot be splitted in " +
-			 						"[parameter url name=parameter value] by '=' characters.");
+					"[parameter url name=parameter value] by '=' characters.");
 					continue;
 				}
 				String parUrlName = chunks[0];
@@ -297,7 +297,7 @@ public class ExecutionInstance {
 //					List parameterValues = new ArrayList();
 //					String[] values = parValue.split(";");
 //					for (int m = 0; m < values.length; m++) {
-//						parameterValues.add(values[m]);
+//					parameterValues.add(values[m]);
 //					}
 					biparameter.setParameterValues(parameterValues);
 				}
@@ -306,7 +306,7 @@ public class ExecutionInstance {
 		}
 		logger.debug("OUT");
 	}
-	
+
 	public void refreshParametersValues(SourceBean request, boolean transientMode) {
 		logger.debug("IN");
 		String pendingDelete = (String) request.getAttribute("PENDING_DELETE");
@@ -325,7 +325,7 @@ public class ExecutionInstance {
 		}
 		logger.debug("OUT");
 	}
-	
+
 	public void refreshParametersValues(JSONObject jsonObject, boolean transientMode) {
 		logger.debug("IN");
 		Assert.assertNotNull(jsonObject, "JSONObject in input is null!!");
@@ -337,7 +337,7 @@ public class ExecutionInstance {
 		}
 		logger.debug("OUT");
 	}
-	
+
 	private void refreshParameter(BIObjectParameter biparam,
 			JSONObject jsonObject, boolean transientMode) {
 		logger.debug("IN");
@@ -364,7 +364,7 @@ public class ExecutionInstance {
 			logger.error("Cannot get " + nameUrl + " values from JSON object", e);
 			throw new SpagoBIServiceException("Cannot retrieve values for biparameter " + biparam.getLabel(), e);
 		}
-		
+
 		if (values.size() > 0) {
 			logger.debug("Updating values of biparameter " + biparam.getLabel() + " to " + values.toString());
 			biparam.setParameterValues(values);
@@ -372,7 +372,7 @@ public class ExecutionInstance {
 			logger.debug("Erasing values of biparameter " + biparam.getLabel());
 			biparam.setParameterValues(null);
 		}
-		
+
 		biparam.setTransientParmeters(transientMode);
 		logger.debug("OUT");
 	}
@@ -387,7 +387,7 @@ public class ExecutionInstance {
 		}
 		logger.debug("OUT");
 	}
-	
+
 	private void refreshParameter(BIObjectParameter biparam, SourceBean request, boolean transientMode) {
 		logger.debug("IN");
 		String nameUrl = biparam.getParameterUrlName();
@@ -411,7 +411,7 @@ public class ExecutionInstance {
 		biparam.setTransientParmeters(transientMode);
 		logger.debug("OUT");
 	}
-	
+
 	private void refreshParameter(BIObjectParameter biparam, Map parametersMap, boolean transientMode) {
 		logger.debug("IN");
 		String nameUrl = biparam.getParameterUrlName();
@@ -439,7 +439,7 @@ public class ExecutionInstance {
 		} else {
 			logger.debug("No attribute found on input map for biparameter with name [" + biparam.getLabel() + "]");
 		}
-		
+
 		if (values != null && values.size() > 0) {
 			logger.debug("Updating values of biparameter " + biparam.getLabel() + " to " + values.toString());
 			biparam.setParameterValues(values);
@@ -447,11 +447,11 @@ public class ExecutionInstance {
 			logger.debug("Erasing values of biparameter " + biparam.getLabel());
 			biparam.setParameterValues(null);
 		}
-		
+
 		biparam.setTransientParmeters(transientMode);
 		logger.debug("OUT");
 	}
-	
+
 	/**
 	 * Checks if is single value.
 	 * 
@@ -472,7 +472,7 @@ public class ExecutionInstance {
 		logger.debug("OUT");
 		return isSingleValue;
 	}
-	
+
 	public List getParametersErrors() throws Exception {
 		logger.debug("IN");
 		List toReturn = new ArrayList();
@@ -504,7 +504,7 @@ public class ExecutionInstance {
 		logger.debug("OUT");
 		return toReturn;
 	}
-	
+
 	private List getValidationErrorsOnChecks(BIObjectParameter biparameter) throws Exception {
 		logger.debug("IN");
 		List toReturn = new ArrayList();
@@ -530,12 +530,12 @@ public class ExecutionInstance {
 				} else {
 					logger.debug("No errors found applying check [" + check.getLabel() + "] to biparameter [" + label + "].");
 				}
-		}
-		logger.debug("OUT");
-		return toReturn;
+			}
+			logger.debug("OUT");
+			return toReturn;
 		}	
 	}
-	
+
 	private List getValidationErrorOnCheck(BIObjectParameter biparameter, Check check) throws Exception {
 		logger.debug("IN: Examining check with name " + check.getName() + " ...");
 		List toReturn = new ArrayList();
@@ -607,7 +607,7 @@ public class ExecutionInstance {
 		logger.debug("OUT");
 		return toReturn;
 	}
-	
+
 	private List getValidationErrorsOnValues(BIObjectParameter biparam) throws Exception {
 		logger.debug("IN");
 		String biparamLabel = biparam.getLabel();
@@ -618,7 +618,7 @@ public class ExecutionInstance {
 			logger.debug("Modality in use for biparameter [" + biparamLabel + "] is manual input");
 			return toReturn;
 		}
-		
+
 		List parameterValuesDescription = new ArrayList();
 		// get the lov provider detail
 		String lovProvider = lov.getLovProvider();
@@ -635,8 +635,8 @@ public class ExecutionInstance {
 				if (!value.equals("") && !lovResultHandler.containsValue(value, lovProvDet
 						.getValueColumnName())) {
 					logger.error("Parameter '" + biparam.getLabel() + "' cannot assume value '" + value + "'" +
-        					" for user '" + ((UserProfile)this.userProfile).getUserId().toString()
-        					+ "' with role '" + this.executionRole + "'.");
+							" for user '" + ((UserProfile)this.userProfile).getUserId().toString()
+							+ "' with role '" + this.executionRole + "'.");
 					List l = new ArrayList();
 					l.add(biparam.getLabel());
 					l.add(value);
@@ -673,7 +673,7 @@ public class ExecutionInstance {
 		}
 		logger.debug("OUT");
 	}
-	
+
 	public String getSnapshotUrl(Locale locale) {
 		logger.debug("IN");
 		if (this.snapshot == null) {
@@ -686,19 +686,21 @@ public class ExecutionInstance {
 		buffer.append("&" + ObjectsTreeConstants.OBJECT_ID + "=" + object.getId());
 		buffer.append("&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE");
 
-		// add locale
-		if(locale.getLanguage()!=null){
-			buffer.append("&" + SpagoBIConstants.SBI_LANGUAGE + "="+locale.getLanguage());
+		if(locale!=null){
+			// add locale
+			if(locale.getLanguage()!=null){
+				buffer.append("&" + SpagoBIConstants.SBI_LANGUAGE + "="+locale.getLanguage());
+			}
+			if(locale.getCountry()!=null){
+				buffer.append("&" + SpagoBIConstants.SBI_COUNTRY + "="+locale.getCountry());
+			}
 		}
-		if(locale.getCountry()!=null){
-			buffer.append("&" + SpagoBIConstants.SBI_COUNTRY + "="+locale.getCountry());
-		}
-		
+
 		String url = buffer.toString();
 		logger.debug("OUT: returning url = [" + url + "]");
 		return url;
 	}
-	
+
 	public String getSubObjectUrl() {
 		logger.debug("IN");
 		if (this.subObject == null) {
@@ -713,7 +715,7 @@ public class ExecutionInstance {
 		} catch (EMFUserError e) {
 			throw new SpagoBIServiceException("Impossible to load engine type domain", e);
 		}
-		
+
 		// IF THE ENGINE IS EXTERNAL
 		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
 			// instance the driver class
@@ -754,14 +756,14 @@ public class ExecutionInstance {
 			logger.debug("OUT");
 		}
 	}
-	
-	
+
+
 	/** This method is called by SDK to execute a document; it takes as input a list of SDK parameters, each with its own set of values and fill the BiObject object
 	 * 
 	 * @param obj           The Bi Object
 	 * @param parameters     an array of SDKDocumentParameter
 	 */
-	
+
 	public void refreshBIObjectWithSDKParameters(SDKDocumentParameter[] parameters){
 
 		logger.debug("IN");
@@ -774,13 +776,13 @@ public class ExecutionInstance {
 			for (int i = 0; i < parameters.length; i++) {
 				SDKDocumentParameter docParameter = (SDKDocumentParameter) parameters[i];
 				List<Object> valuesToInsert=new ArrayList<Object>();
-				
+
 				for (int j = 0; j < docParameter.getValues().length; j++) {
 					Object ob=docParameter.getValues()[j];
 					String obString=ob.toString();  // for now I convert in string otherwise don't pass examination
 					valuesToInsert.add(obString);
 				}
-				
+
 
 				parametersMap.put(docParameter.getUrlName(), valuesToInsert);
 			}
@@ -796,17 +798,17 @@ public class ExecutionInstance {
 		object.setBiObjectParameters(listPars);
 		logger.debug("OUT");
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
 
 	public String getExecutionUrl(Locale locale) {
 		logger.debug("IN");
@@ -819,7 +821,7 @@ public class ExecutionInstance {
 		} catch (EMFUserError e) {
 			throw new SpagoBIServiceException("Impossible to load engine type domain", e);
 		}
-		
+
 		// IF THE ENGINE IS EXTERNAL
 		if ("EXT".equalsIgnoreCase(engineType.getValueCd())) {
 			// instance the driver class
@@ -841,17 +843,18 @@ public class ExecutionInstance {
 			if (auditId != null) {
 				mapPars.put(AuditManager.AUDIT_ID, auditId);
 			}
-			
-			// add locale
-			if(locale.getLanguage()!=null){
-				mapPars.put(SpagoBIConstants.SBI_LANGUAGE, locale.getLanguage());				
+
+			if(locale!=null){
+				if(locale.getLanguage()!=null){
+					mapPars.put(SpagoBIConstants.SBI_LANGUAGE, locale.getLanguage());				
+				}
+				if(locale.getCountry()!=null){
+					mapPars.put(SpagoBIConstants.SBI_COUNTRY,locale.getCountry());
+				}
 			}
-			if(locale.getCountry()!=null){
-				mapPars.put(SpagoBIConstants.SBI_COUNTRY,locale.getCountry());
-			}
-			
+
 			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
-			
+
 		}
 		// IF THE ENGINE IS INTERNAL
 		else {
@@ -864,18 +867,18 @@ public class ExecutionInstance {
 			buffer.append("&" + SpagoBIConstants.ROLE + "=" + executionRole);
 			buffer.append("&" + SpagoBIConstants.RUN_ANYWAY + "=TRUE" );
 			buffer.append("&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "=TRUE" );
-			
+
 			// identity string for context
-		    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-		    UUID uuid = uuidGen.generateRandomBasedUUID();
+			UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+			UUID uuid = uuidGen.generateRandomBasedUUID();
 			buffer.append("&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + uuid.toString());
-			
+
 			List parameters = object.getBiObjectParameters();
 			if (parameters != null && parameters.size() > 0) {
 				Iterator it = parameters.iterator();
 				while (it.hasNext()) {
 					BIObjectParameter aParameter = (BIObjectParameter) it.next();
-					
+
 					List list = aParameter.getParameterValues();
 					if(list!=null && !list.isEmpty()){
 						Iterator r = list.iterator();
@@ -894,20 +897,20 @@ public class ExecutionInstance {
 					}*/
 				}
 			}
-		    url = buffer.toString();
-			
+			url = buffer.toString();
+
 		}
-		
+
 		logger.debug("OUT: returning url = [" + url + "]");
 		return url;
 	}
-	
+
 	/**
-     * Gets the execution id.
-     * 
-     * @return the execution id
-     */
-    public String getExecutionId() {
+	 * Gets the execution id.
+	 * 
+	 * @return the execution id
+	 */
+	public String getExecutionId() {
 		return executionId;
 	}
 
@@ -919,7 +922,7 @@ public class ExecutionInstance {
 	public String getFlowId() {
 		return flowId;
 	}
-	
+
 	/**
 	 * Gets the bI object.
 	 * 
@@ -928,7 +931,7 @@ public class ExecutionInstance {
 	public BIObject getBIObject() {
 		return object;
 	}
-	
+
 	/**
 	 * Gets the calendar.
 	 * 
@@ -937,7 +940,7 @@ public class ExecutionInstance {
 	public Calendar getCalendar() {
 		return calendar;
 	}
-	
+
 	/**
 	 * Gets the current execution role.
 	 * 
@@ -946,7 +949,7 @@ public class ExecutionInstance {
 	public String getExecutionRole() {
 		return executionRole;
 	}
-	
+
 	/**
 	 * Gets the execution modality.
 	 * 
@@ -955,7 +958,7 @@ public class ExecutionInstance {
 	public String getExecutionModality() {
 		return executionModality;
 	}
-	
+
 	public boolean displayToolbar() {
 		return displayToolbar;
 	}
@@ -963,7 +966,7 @@ public class ExecutionInstance {
 	public void setDisplayToolbar(boolean displayToolbar) {
 		this.displayToolbar = displayToolbar;
 	}
-	
+
 	public boolean displaySliders() {
 		return displaySliders;
 	}
@@ -971,7 +974,7 @@ public class ExecutionInstance {
 	public void setDisplaySliders(boolean displaySliders) {
 		this.displaySliders = displaySliders;
 	}
-	
+
 	public SubObject getSubObject() {
 		return subObject;
 	}
@@ -979,7 +982,7 @@ public class ExecutionInstance {
 	public void setSubObject(SubObject subObject) {
 		this.subObject = subObject;
 	}
-	
+
 	public Snapshot getSnapshot() {
 		return snapshot;
 	}
@@ -987,14 +990,14 @@ public class ExecutionInstance {
 	public void setSnapshot(Snapshot snapshot) {
 		this.snapshot = snapshot;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object another) {
 		if (another instanceof ExecutionInstance) {;
-			ExecutionInstance anInstance = (ExecutionInstance) another;
-			return this.executionId.equals(anInstance.executionId);
+		ExecutionInstance anInstance = (ExecutionInstance) another;
+		return this.executionId.equals(anInstance.executionId);
 		} else 
 			return false;
 	}

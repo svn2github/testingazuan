@@ -22,8 +22,8 @@
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
-	<queryString><![CDATA[SELECT DISTINCT 1 FROM SBI_DOMAINS]]></queryString>
-	<field name="1" class="java.lang.Long"/>
+	<queryString><![CDATA[SELECT DISTINCT MIN(VALUE_ID) AS C FROM SBI_DOMAINS]]></queryString>
+	<field name="C" class="java.lang.Integer"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >

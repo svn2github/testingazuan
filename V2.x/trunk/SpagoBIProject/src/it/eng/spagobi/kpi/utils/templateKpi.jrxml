@@ -22,8 +22,8 @@
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />
 
-	<queryString><![CDATA[SELECT DISTINCT 1 FROM SBI_DOMAINS]]></queryString>
-	<field name="1" class="java.lang.Long"/>
+	<queryString><![CDATA[SELECT DISTINCT MIN(VALUE_ID) AS C FROM SBI_DOMAINS]]></queryString>
+	<field name="C" class="java.lang.Integer"/>
 
 
 		<group  name="r" isStartNewPage="true" >
@@ -97,7 +97,33 @@
 			</band>
 		</columnFooter>
 		<pageFooter>
-			<band height="0"  isSplitAllowed="true" >
+			<band height="10"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="100"
+						height="10"
+						key="textField"/>
+					<box></box>
+					<textElement>
+						<font size="5"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="433"
+						y="0"
+						width="100"
+						height="10"
+						key="textField-1"/>
+					<box></box>
+					<textElement textAlignment="Right">
+						<font size="5"/>
+					</textElement>
+				<textFieldExpression   class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+				</textField>
 			</band>
 		</pageFooter>
 		<summary>

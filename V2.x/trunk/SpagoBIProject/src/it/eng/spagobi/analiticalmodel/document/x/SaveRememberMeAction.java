@@ -110,7 +110,7 @@ public class SaveRememberMeAction extends AbstractSpagoBIAction {
 					}
 				}
 			}
-			if (documentParametersStr.charAt(documentParametersStr.length() - 1) == '&') {
+			if (documentParametersStr.length() > 1 && documentParametersStr.charAt(documentParametersStr.length() - 1) == '&') {
 				documentParametersStr.deleteCharAt(documentParametersStr.length() - 1);
 			}
 			return documentParametersStr.toString();

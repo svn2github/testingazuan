@@ -28,23 +28,35 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.Viewpoint;
+import it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.container.ContextManager;
 import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.SpagoBISessionContainer;
 import it.eng.spagobi.container.strategy.LightNavigatorContextRetrieverStrategy;
+import it.eng.spagobi.engines.config.bo.Engine;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration;
 import it.eng.spagobi.engines.documentcomposition.configuration.DocumentCompositionConfiguration.Document;
+import it.eng.spagobi.engines.drivers.IEngineDriver;
+import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.safehaus.uuid.UUID;
@@ -72,30 +84,68 @@ public class DocumentCompositionUtils {
 	 */
 	public static String getExecutionUrl(String objLabel, SessionContainer sessionContainer, SourceBean requestSB) {
 		logger.debug("IN");
-		 String urlReturn = "";
+		String urlReturn = "";
+		
+		if (objLabel == null || objLabel.equals("")){
+			logger.error("Object Label is null: cannot get engine's url.");
+			return "1008|";
+		}
+		
 		try{
 			 // get the user profile from session
 			SessionContainer permSession = sessionContainer.getPermanentContainer();
-		    IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		    urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserId().toString()) + 
-			//String urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserUniqueIdentifier().toString()) + 
-					"&PAGE=ExecuteBIObjectPage&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "=true&"
-					+ ObjectsTreeConstants.OBJECT_LABEL + "=" + objLabel + "&" 
-					+ ObjectsTreeConstants.MODALITY + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION;
+			IEngUserProfile profile = (IEngUserProfile)permSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		    // get the execution role
 		    CoreContextManager contextManager = new CoreContextManager(new SpagoBISessionContainer(sessionContainer), 
 					new LightNavigatorContextRetrieverStrategy(requestSB));
 		    ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
 			String executionRole = instance.getExecutionRole();
-			urlReturn += "&" + SpagoBIConstants.ROLE + "=" + executionRole;
-			// identity string for context
-		    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-		    UUID uuid = uuidGen.generateRandomBasedUUID();
-		    urlReturn += "&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + uuid.toString();
-	
+			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(objLabel);
+			if (obj == null){
+				logger.error("Cannot obtain engine url. Document with label " + objLabel +" doesn't exist into database.");		
+				
+				List l = new ArrayList();
+				l.add(objLabel);
+				throw new EMFUserError(EMFErrorSeverity.ERROR, "1005", l, messageBundle);
+			}
+			Engine engine = obj.getEngine();
+			// GET THE TYPE OF ENGINE (INTERNAL / EXTERNAL) AND THE SUITABLE BIOBJECT TYPES
+			Domain engineType = null;
+			Domain compatibleBiobjType = null;
+			try {
+				engineType = DAOFactory.getDomainDAO().loadDomainById(engine.getEngineTypeId());
+				compatibleBiobjType = DAOFactory.getDomainDAO().loadDomainById(engine.getBiobjTypeId());
+			} catch (EMFUserError error) {
+				 logger.error("Error retrieving document's engine information", error);
+				 return "1009|";
+			} catch (Exception error) {
+				 logger.error("Error retrieving document's engine information", error);
+				 return "1009|";
+			}
+			
+			String compatibleBiobjTypeCd = compatibleBiobjType.getValueCd();
+			String biobjTypeCd = obj.getBiObjectTypeCode();
+			
+			// CHECK IF THE BIOBJECT IS COMPATIBLE WITH THE TYPES SUITABLE FOR THE ENGINE
+			if (!compatibleBiobjTypeCd.equalsIgnoreCase(biobjTypeCd)) {
+				// the engine document type and the biobject type are not compatible
+				 logger.error("Engine cannot execute input document type: " +
+			 				"the engine " + engine.getName() + " can execute '" + compatibleBiobjTypeCd + "' type documents " +
+			 						"while the input document is a '" + biobjTypeCd + "'.");
+				Vector params = new Vector();
+				params.add(engine.getName());
+				params.add(compatibleBiobjTypeCd);
+				params.add(biobjTypeCd);
+				//errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR, 2002, params));
+				return "2002|";
+			}
+			
+			// IF USER CAN'T EXECUTE THE OBJECT RETURN
+			if (!ObjectsAccessVerifier.canSee(obj, profile)) return "1010|"; 
+			
 			//get object configuration
 			DocumentCompositionConfiguration docConfig = null;
-		    docConfig = (DocumentCompositionConfiguration) contextManager.get("docConfig");
+		    docConfig = (DocumentCompositionConfiguration)contextManager.get("docConfig");
 		    
 		    Document document = null;
 			//get correct document configuration
@@ -104,7 +154,7 @@ public class DocumentCompositionUtils {
 			for (int i = 0; i < lstDoc.size(); i++){
 				document = (Document)docConfig.getDocument((String)lstDoc.get(i)); 
 				if (document != null){
-					if (!objLabel.equalsIgnoreCase(document.getSbiObjLabel()))
+					if (!obj.getLabel().equalsIgnoreCase(document.getSbiObjLabel()))
 						continue;
 					else{
 						foundDoc = true;
@@ -114,11 +164,77 @@ public class DocumentCompositionUtils {
 			}
 			if (!foundDoc){
 				List l = new ArrayList();
-				l.add(objLabel);
+				l.add(obj.getLabel());
 				EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 1079, l);
-				logger.error("The object with label " + objLabel + " hasn't got a document into template" );
+				logger.error("The object with label " + obj.getLabel() + " hasn't got a document into template" );
 				return "1002|"; 
 			}
+			
+			String className = obj.getEngine().getClassName();
+			if (className == null || className.trim().equals("")) {
+				// external engine
+				urlReturn = obj.getEngine().getUrl() + "?";
+				String driverClassName = obj.getEngine().getDriverName();
+	            IEngineDriver aEngineDriver = (IEngineDriver)Class.forName(driverClassName).newInstance();
+	            Map mapPars = aEngineDriver.getParameterMap(obj, profile, executionRole);
+				String id = (String) requestSB.getAttribute("vpId");
+				if (id != null){
+					IViewpointDAO VPDAO = DAOFactory.getViewpointDAO();		
+					Viewpoint vp =  VPDAO.loadViewpointByID(new Integer(id));
+					String[] vpParameters = vp.getVpValueParams().split("%26");
+					if (vpParameters != null){
+						for (int i=0; i< vpParameters.length; i++){
+							String param = (String)vpParameters[i];
+							String name = param.substring(0, param.indexOf("%3D"));
+							String value = param.substring(param.indexOf("%3D")+3);
+							if (mapPars.get(name) != null){
+								mapPars.remove(name);
+								mapPars.put(name, value);
+							}
+							else
+								mapPars.put(name, value);
+						}
+					}
+				}
+	            mapPars.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
+	            mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
+	            mapPars.put("SBI_EXECUTION_ID", instance.getExecutionId());
+	            mapPars.put("EXECUTION_CONTEXT", "DOCUMENT_COMPOSITION");
+	        	// Auditing
+	        	AuditManager auditManager = AuditManager.getInstance();
+	        	Integer executionAuditId = auditManager.insertAudit(instance.getBIObject(), null, profile, instance.getExecutionRole(), instance.getExecutionModality());
+	        	// adding parameters for AUDIT updating
+	        	if (executionAuditId != null) {
+	        		mapPars.put(AuditManager.AUDIT_ID, executionAuditId.toString());
+	        	}
+	            
+                Set parKeys = mapPars.keySet();
+                Iterator parKeysIter = parKeys.iterator();
+                do
+                {
+                    if(!parKeysIter.hasNext())
+                    {
+                        break;
+                    }
+                    String parkey = parKeysIter.next().toString();
+                    String parvalue = mapPars.get(parkey).toString();
+                    urlReturn = (new StringBuilder()).append(urlReturn).append("&").append(parkey).append("=").append(parvalue).toString();
+                } while(true);
+	            
+			} else {
+				// internal engine
+			    urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(profile.getUserUniqueIdentifier().toString()) + 
+				//String urlReturn = GeneralUtilities.getSpagoBIProfileBaseUrl(((UserProfile)profile).getUserUniqueIdentifier().toString()) + 
+						"&PAGE=ExecuteBIObjectPage&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "=true&"
+						+ ObjectsTreeConstants.OBJECT_LABEL + "=" + objLabel + "&" 
+						+ ObjectsTreeConstants.MODALITY + "=" + SpagoBIConstants.DOCUMENT_COMPOSITION;
+				// identity string for context
+			    UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+			    UUID uuid = uuidGen.generateRandomBasedUUID();
+			    urlReturn += "&" + LightNavigationManager.LIGHT_NAVIGATOR_ID + "=" + uuid.toString();
+			}
+
+			urlReturn += "&" + SpagoBIConstants.ROLE + "=" + executionRole;
 			urlReturn += getParametersUrl(document, requestSB, instance);
 			//adds '|' char for management error into jsp if is necessary.
 			logger.debug("urlReturn: " + "|"+urlReturn);

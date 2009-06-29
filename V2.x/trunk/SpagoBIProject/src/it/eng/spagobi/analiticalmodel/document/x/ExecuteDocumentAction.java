@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
+import it.eng.spago.base.Constants;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -37,7 +39,16 @@ public class ExecuteDocumentAction extends AbstractSpagoBIAction {
 	
 	public void doService() {
 		logger.debug("IN");
-		logger.debug("This method does nothing");
+		// setting locale
+		// TODO move this language operations to a common class
+		String language = this.getAttributeAsString("SBI_LANGUAGE");
+		String country = this.getAttributeAsString("SBI_COUNTRY");
+		if (language != null && !language.trim().equals("")) {
+			this.getSessionContainer().getPermanentContainer().setAttribute(Constants.USER_LANGUAGE, language);
+			if (country != null && !country.trim().equals("")) {
+				this.getSessionContainer().getPermanentContainer().setAttribute(Constants.USER_COUNTRY, country);
+			}
+		}
 		logger.debug("OUT");
 	}
 

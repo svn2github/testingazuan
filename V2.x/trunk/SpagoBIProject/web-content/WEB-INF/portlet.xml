@@ -546,13 +546,9 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
       </portlet-info>
       
       <portlet-preferences>
-      		<!--
- 			The path of the subtree to show
-			-->
-            <preference> 
+
+          <preference> 
         		<name>PATH_SUBTREE</name>
-        		<!-- if the MODALITY preference is set to FILTER_TREE you have to write in this preference 
-        			the path of the subTree -->
         		<value></value>
         	</preference>
         	

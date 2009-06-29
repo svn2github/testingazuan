@@ -559,5 +559,74 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	
       </portlet-preferences>
     </portlet>
+    
+    
+   <portlet>
+      <description>Document Execution</description>    
+      <portlet-name>DocumentExecution</portlet-name>   
+      <display-name>Document Execution</display-name>    
+      <portlet-class>it.eng.spago.dispatching.httpchannel.AdapterPortlet</portlet-class>
+      <init-param>
+        <name>serviceType</name>
+        <value>ACTION</value>
+      </init-param>
+      <init-param>
+        <name>serviceName</name>
+        <value>LOGIN_ACTION_SBI_DOCUMENTEXECUTION</value>
+      </init-param>
+      <init-param>
+        <name>light_navigation</name>
+        <value>ENABLED</value>
+      </init-param>           
+      <expiration-cache>0</expiration-cache>
+      <supports>
+	    	<mime-type>text/html</mime-type>
+            <portlet-mode>VIEW</portlet-mode>
+            <portlet-mode>EDIT</portlet-mode>
+		</supports>
+      <supported-locale>en</supported-locale>
+      <portlet-info>
+        <title>Document Execution</title>
+        <short-title>DocumentExecution</short-title>
+        <keywords>Document Execution</keywords>
+      </portlet-info>
+      
+      <portlet-preferences>
+
+		<preference> 
+			<name>DOCUMENT_LABEL</name>
+			<value></value>
+		</preference>
+		<preference> 
+			<name>DOCUMENT_PARAMETERS</name>
+			<value></value>
+		</preference>
+		<preference>
+			<name>CUSTOMIZED_VIEW_LABEL</name>
+			<value></value>
+		</preference>
+		<preference> 
+			<name>SCHEDULED_EXECUTION_NAME</name>
+			<value></value>
+		</preference>
+		<preference> 
+			<name>SCHEDULED_EXECUTION_NUMBER</name>
+			<value></value>
+		</preference>
+		<preference> 
+			<name>HEIGHT</name>
+			<value></value>
+		</preference>
+		<preference> 
+			<name>TOOLBAR_VISIBLE</name>
+			<value></value>
+		</preference>
+		<preference> 
+			<name>SLIDERS_VISIBLE</name>
+			<value></value>
+		</preference>
+
+      </portlet-preferences>
+    </portlet>
   
 </portlet-app>

@@ -32,6 +32,8 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.x.AbstractSpagoBIAction;
+import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
+import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
@@ -80,23 +82,34 @@ public class DeleteObjectAction extends AbstractSpagoBIAction {
 					logger.error("BIObject with id = " + id + " not found", e);
 					throw new SpagoBIServiceException(SERVICE_NAME, "Customized view not found", e);
 				}
-				
-				boolean debug;
-				debug = userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN);
-				debug = ObjectsAccessVerifier.canDev(biObject.getStateCode(), iFunc, userProfile);
-				if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) ||
-						ObjectsAccessVerifier.canDev(biObject.getStateCode(), iFunc, userProfile)) {
+
+				if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
 					// delete document
 					try {
 						dao.eraseBIObject(biObject, iFunc);
+						logger.debug("Object deleted by administrator");
 					} catch (EMFUserError e) {
 						logger.error("Error to delete Document", e);
 						throw new SpagoBIServiceException(SERVICE_NAME, "Error to delete Document", e);
 					}
 				} else {
-					logger.error("User [id: " + userProfile.getUserUniqueIdentifier() + ", userId: " + userProfile.getUserId() + ", name: "
-							+ userProfile.getUserName() + "] cannot delete document");
-					throw new SpagoBIServiceException(SERVICE_NAME, "User cannot delete Document");
+					String userId = ((UserProfile)userProfile).getUserId().toString();
+					ILowFunctionalityDAO functDAO = DAOFactory.getLowFunctionalityDAO();
+					LowFunctionality lowFunc = functDAO.loadLowFunctionalityByID(iFunc, false);
+
+					if(lowFunc==null){
+						logger.error("Functionality does not exist");
+						throw new Exception("Functionality does not exist");					
+					}
+
+					if(lowFunc.getPath().equals("/"+userId)){ // folder is current user one
+						dao.eraseBIObject(biObject, iFunc);
+						logger.debug("Object deleted");
+					}
+					else{
+						logger.error("Functionality is not user's one");
+						throw new Exception("Functionality  is not user's one");					
+					}
 				}
 
 			}
@@ -109,8 +122,10 @@ public class DeleteObjectAction extends AbstractSpagoBIAction {
 			} catch (JSONException e) {
 				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize objects into a JSON object", e);
 			}
-
 		} catch (EMFInternalError e) {
+			throw new SpagoBIServiceException(SERVICE_NAME, "An internal error has occured", e);
+		
+		} catch (Exception e) {
 			throw new SpagoBIServiceException(SERVICE_NAME, "An internal error has occured", e);
 		} finally {
 			logger.debug("OUT");

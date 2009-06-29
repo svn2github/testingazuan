@@ -67,9 +67,10 @@ public class UserDocumentsBrowserPortletStartAction extends PortletLoginAction {
 				height = (String)prefs.getValue(HEIGHT, "600");
 				if (labelSubTreeNode != null && !labelSubTreeNode.trim().equals("")) {
 					response.setAttribute("labelSubTreeNode", labelSubTreeNode);
-					response.setAttribute("height", height);
-					
 				}
+				if (height != null && !height.trim().equals("")) {
+					response.setAttribute("height", height);
+				}				
 			} else {
 				DocumentsBrowserConfig config = DocumentsBrowserConfig.getInstance();
 				JSONObject jsonObj  = config.toJSON();

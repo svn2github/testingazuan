@@ -256,35 +256,17 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 		while (it.hasNext()) {
 			SourceBean anExporterSB = (SourceBean) it.next();
 
-			String domainLabel=((String) anExporterSB.getAttribute("domain"));
-			Domain domain=null;
-			SbiDomains hibDomain=null;
-			if(domainLabel!=null){
-				domain=DAOFactory.getDomainDAO().loadDomainByCodeAndValue("EXPORT_TYPE", domainLabel);
-				if(domain!=null){
-					hibDomain=(SbiDomains)aSession.load(SbiDomains.class, domain.getValueId());
-				}
-
-			}
-
-			if(hibDomain==null) {
+			String domainLabel = ((String) anExporterSB.getAttribute("domain"));
+			SbiDomains hibDomain = findDomain(aSession, domainLabel, "EXPORT_TYPE");
+			if (hibDomain == null) {
 				logger.error("Could not find domain for exporter");
 				return;
 			}
 
-			String engineLabel=((String) anExporterSB.getAttribute("engine"));
-			Engine engine=null;
-			SbiEngines hibEngine=null;
-			if(engineLabel!=null){
-				engine=DAOFactory.getEngineDAO().loadEngineByLabel(engineLabel);
-
-				if(engine!=null){
-					hibEngine = (SbiEngines)aSession.load(SbiEngines.class,  engine.getId());
-				}
-			}
-
-			if(hibEngine==null){
-				logger.error("Could not find engine for exporter");
+			String engineLabel = ((String) anExporterSB.getAttribute("engine"));
+			SbiEngines hibEngine = findEngine(aSession, engineLabel);
+			if (hibEngine == null) {
+				logger.error("Could not find engine with label [" + engineLabel + "] for exporter");
 				return;
 			}
 
@@ -445,5 +427,15 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 		SbiDomains domain = (SbiDomains) hqlQuery.uniqueResult();
 		logger.debug("OUT");
 		return domain;
+	}
+	
+	private SbiEngines findEngine(Session aSession, String label) {
+		logger.debug("IN");
+		String hql = "from SbiEngines where label = ?";
+		Query hqlQuery = aSession.createQuery(hql);
+		hqlQuery.setParameter(0, label);
+		SbiEngines engine = (SbiEngines) hqlQuery.uniqueResult();
+		logger.debug("OUT");
+		return engine;
 	}
 }

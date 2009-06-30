@@ -361,36 +361,98 @@ if (toolbarIsVisible) {
 						 IDomainDAO domainDao=DAOFactory.getDomainDAO();
 						 Domain domain=domainDao.loadDomainById(domainId);
 						 if(domain!=null){
-						 String value_cd=domain.getValueCd();
-						 String urlExporter=null;	
-
-			
-							if (obj.getBiObjectTypeCode().equals("KPI")){ 
-								urlExporter=GeneralUtilities.getSpagoBIProfileBaseUrl(userId);
-								urlExporter+="&ACTION_NAME=EXPORT_PDF&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE&"+SpagoBIConstants.OBJECT_ID+"="+obj.getId();
-							}
-							else if (obj.getBiObjectTypeCode().equals("REPORT")){ 
-								HashMap clonePars=new HashMap();
-								for (Iterator iterator2 = executionParameters.keySet().iterator(); iterator2.hasNext();) {
-									String  key = (String) iterator2.next();
-									Object value=executionParameters.get(key);
-									clonePars.put(key,value);
+							 String value_cd=domain.getValueCd();
+							 String urlExporter=null;	
+	
+				
+								if (obj.getBiObjectTypeCode().equals("KPI")){ 
+									urlExporter=GeneralUtilities.getSpagoBIProfileBaseUrl(userId);
+									urlExporter+="&ACTION_NAME=EXPORT_PDF&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE&"+SpagoBIConstants.OBJECT_ID+"="+obj.getId();
 								}
-								
-								//overrides if already present
-								clonePars.put("outputType",value_cd);
-								urlExporter= getUrl(obj.getEngine().getUrl(), clonePars);
-							}
-							
-								%>
-						    <li>	
-						    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
-									<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.PdfExport" />'
-										src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/kpi/pdf.png", currTheme)%>'
-										alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
-								</a>	    
-							</li>
-							<% } 
+								else if (obj.getBiObjectTypeCode().equals("REPORT")){ 
+									HashMap clonePars=new HashMap();
+									for (Iterator iterator2 = executionParameters.keySet().iterator(); iterator2.hasNext();) {
+										String  key = (String) iterator2.next();
+										Object value=executionParameters.get(key);
+										clonePars.put(key,value);
+									}
+									
+									//overrides if already present
+									clonePars.put("outputType",value_cd);
+									urlExporter= getUrl(obj.getEngine().getUrl(), clonePars);
+								}
+								if(value_cd!=null && value_cd.equals("XLS")){
+									%>
+									<li>	
+								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.XlsExport" />'
+												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/xls.gif", currTheme)%>'
+												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
+										</a>	    
+									</li>
+									<% 
+								}else if(value_cd!=null && value_cd.equals("PDF")){
+									%>
+									<li>	
+								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.PdfExport" />'
+												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/kpi/pdf.png", currTheme)%>'
+												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
+										</a>	    
+									</li>
+									<% 
+								}else if(value_cd!=null && value_cd.equals("JPG")){
+									%>
+									<li>	
+								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.JpgExport" />'
+												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/jpg16.png", currTheme)%>'
+												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
+										</a>	    
+									</li>
+									<% 
+								}else if(value_cd!=null && value_cd.equals("CSV")){
+									%>
+									<li>	
+								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.CsvExport" />'
+												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/csv.gif", currTheme)%>'
+												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
+										</a>	    
+									</li>
+									<% 
+								}else if(value_cd!=null && value_cd.equals("XML")){
+									%>
+									<!--  <li>	
+								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.XmlExport" />'
+												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/xml16.png", currTheme)%>'
+												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
+										</a>	    
+									</li>-->
+									<% 
+								}else if(value_cd!=null && value_cd.equals("TXT")){
+									%>
+									<!--<li>	
+								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.txtExport" />'
+												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/txt16.png", currTheme)%>'
+												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
+										</a>	    
+									</li>-->
+									<% 
+								}else if(value_cd!=null && value_cd.equals("PPT")){
+									%>
+									<!--<li>	
+								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.pptExport" />'
+												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/ppt16.png", currTheme)%>'
+												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
+										</a>	    
+									</li>-->
+									<% 
+								}							
+							  } 
 							}
 							%>	
 			

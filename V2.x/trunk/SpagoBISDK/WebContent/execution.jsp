@@ -89,9 +89,9 @@ if (user != null && password != null) {
 
 	<%
 	String documentType = document.getType();
-	if (documentType.equals("REPORT")) {
+	if (documentType.equals("REPORT") || documentType.equals("KPI")) {
 		%>
-		<a href="ExportServlet">Export report</a><br/>
+		<a href="ExportServlet">Export to PDF</a><br/>
 		<%
 	}
 	%>

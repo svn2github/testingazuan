@@ -59,7 +59,7 @@ if (user != null && password != null) {
 		response.sendRedirect("execution.jsp");
 	} else {
 		%>
-		<span><b>Choose a document</b></span>
+		<span><b>Choose parameters</b></span>
 		<form action="execution.jsp" method="post">
 			<%
 			for (int i = 0; i < parameters.length; i++) {

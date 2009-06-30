@@ -1286,6 +1286,7 @@ Alter table SBI_THRESHOLD_VALUE add Foreign Key (THRESHOLD_ID) references SBI_TH
 -- KPI INSTANCE
 Alter table SBI_KPI_MODEL_INST add  Foreign Key (id_kpi_instance) references SBI_KPI_INSTANCE (id_kpi_instance);
 Alter table SBI_KPI_MODEL_INST add  Foreign Key (KPI_MODEL_INST_PARENT) references SBI_KPI_MODEL_INST (KPI_MODEL_INST);
+Alter table SBI_KPI_MODEL_INST add  Foreign Key (KPI_MODEL_ID) references SBI_KPI_MODEL (KPI_MODEL_ID);
 Alter table SBI_KPI_INSTANCE add  Foreign Key (KPI_ID) references SBI_KPI (KPI_ID);
 Alter table SBI_KPI_INSTANCE add Foreign Key (id_measure_unit) references SBI_MEASURE_UNIT (id_measure_unit);
 Alter table SBI_KPI_INSTANCE add  Foreign Key (THRESHOLD_ID) references SBI_THRESHOLD (THRESHOLD_ID);

@@ -31,13 +31,20 @@ When the authentication succeeds, the user can choose the document he wants to e
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page errorPage="error.jsp"%>
 <%@page import="it.eng.spagobi.sdk.proxy.DocumentsServiceProxy"%>
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocument"%>
+<%@page import="it.eng.spagobi.sdk.proxy.TestConnectionServiceProxy"%>
+<%@page import="org.apache.axis.AxisFault"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Choose document</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Choose document</title>
+	<style>
+	body, p { font-family:Tahoma; font-size:10pt; padding-left:30; }
+	pre { font-size:8pt; }
+	</style>
 </head>
 <body>
 <%
@@ -45,8 +52,17 @@ When the authentication succeeds, the user can choose the document he wants to e
 String user = request.getParameter("user");
 String password = request.getParameter("password");
 if (user != null && password != null) {
-	session.setAttribute("spagobi_user", user);
-	session.setAttribute("spagobi_pwd", password);
+	TestConnectionServiceProxy proxy = new TestConnectionServiceProxy(user, password);
+    proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/TestConnectionService");
+	boolean result = proxy.connect();
+	if (result) {
+		// connection successful
+		session.setAttribute("spagobi_user", user);
+		session.setAttribute("spagobi_pwd", password);
+	} else {
+		response.sendRedirect("login.jsp?connectionFailed=true");
+		return;
+	}
 }
 user = (String) session.getAttribute("spagobi_user");
 password = (String) session.getAttribute("spagobi_pwd");

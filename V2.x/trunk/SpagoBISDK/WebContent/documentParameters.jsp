@@ -36,8 +36,12 @@ If the parameter is manual input, a manul input appears.
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Choose parameters</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Choose parameters</title>
+	<style>
+	body, p { font-family:Tahoma; font-size:10pt; padding-left:30; }
+	pre { font-size:8pt; }
+	</style>
 </head>
 <body>
 <%

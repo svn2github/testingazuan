@@ -34,8 +34,12 @@ If the user has only one valid role, he is automatically redirected to documentP
 <%@page import="it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Choose role</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Choose role</title>
+	<style>
+	body, p { font-family:Tahoma; font-size:10pt; padding-left:30; }
+	pre { font-size:8pt; }
+	</style>
 </head>
 <body>
 

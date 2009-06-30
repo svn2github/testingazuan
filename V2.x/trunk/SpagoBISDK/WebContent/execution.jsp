@@ -35,8 +35,12 @@ This page use the SpagoBI execution tag, that displays an iframe pointing to Spa
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocument"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Document execution</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Document execution</title>
+	<style>
+	body, p { font-family:Tahoma; font-size:10pt; padding-left:30; }
+	pre { font-size:8pt; }
+	</style>
 </head>
 <body>
 <%

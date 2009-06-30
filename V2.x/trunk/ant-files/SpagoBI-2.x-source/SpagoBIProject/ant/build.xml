@@ -307,7 +307,10 @@
 	      <delete file="${dist}/${war_name}" />
 	      <war warfile="${dist}/${war_name}" 
 	           webxml="${build}/${webapp_name}/WEB-INF/web.xml" 
-	           basedir="${build}/${webapp_name}" />
+	           manifest="${build}/${webapp_name}/META-INF/MANIFEST.MF" 
+	           basedir="${build}/${webapp_name}"/>
+
+
 	</target>
 
   <target name="javadoc">    

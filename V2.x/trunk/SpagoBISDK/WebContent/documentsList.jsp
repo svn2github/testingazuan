@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%
 /**
-Given username and password from login.jsp form, a session is opened into SpagoBI server.
+Given username and password from login.jsp form, they are used to invoke each SpagoBI web service.
 Authentication works properly only if 
 it.eng.spagobi.services.security.service.ISecurityServiceSupplier.checkAuthentication(String userId, String psw) 
 method is implemented, therefore it should work if SpagoBI is installed as a web application.
@@ -32,10 +32,8 @@ When the authentication succeeds, the user can choose the document he wants to e
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-
-<%@page import="it.eng.spagobi.services.proxy.SessionServiceProxy"%>
-<%@page import="it.eng.spagobi.services.session.exceptions.AuthenticationException"%>
-<%@page import="it.eng.spagobi.services.session.bo.Document"%>
+<%@page import="it.eng.spagobi.sdk.proxy.DocumentsServiceProxy"%>
+<%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocument"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -48,22 +46,13 @@ String user = request.getParameter("user");
 String password = request.getParameter("password");
 if (user != null && password != null) {
 	session.setAttribute("spagobi_user", user);
-	SessionServiceProxy proxy = new SessionServiceProxy();
-	proxy.setEndpoint("http://localhost:8080/SpagoBI/services/WSSessionService");
-	try {
-		// opening a session into SpagoBI
-		proxy.openSession(user, password);
-		session.setAttribute("spagobi_proxy", proxy);
-	} catch (AuthenticationException e) {
-		response.sendRedirect("login.jsp?authenticationFailed=true");
-		return;
-	}
+	session.setAttribute("spagobi_pwd", password);
 }
-
-SessionServiceProxy proxy = (SessionServiceProxy) session.getAttribute("spagobi_proxy");
+user = (String) session.getAttribute("spagobi_user");
+password = (String) session.getAttribute("spagobi_pwd");
 
 // display a form for document selection
-if (proxy.isValidSession()) {
+if (user != null && password != null) {
 %>
 <span><b>Choose a document</b></span>
 <form action="chooseRole.jsp" method="post">
@@ -71,9 +60,10 @@ if (proxy.isValidSession()) {
 	<select name="documentId">
 	<%
 	// gets all visible documents list
-	Document[] documents = proxy.getDocuments(null, null, null);
+	DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
+	SDKDocument[] documents = proxy.getDocumentsAsList(null, null, null);
 	for (int i = 0; i < documents.length; i++) {
-		Document aDoc = documents[i];
+		SDKDocument aDoc = documents[i];
 		%>
 		<option value="<%= aDoc.getId() %>"><%= aDoc.getName() %></option>
 		<%

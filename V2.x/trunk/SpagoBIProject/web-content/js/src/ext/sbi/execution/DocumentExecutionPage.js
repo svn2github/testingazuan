@@ -300,7 +300,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 						
 						if (executionInstance.document.exporters[i]=='PDF'){
 						menuItems.push(	new Ext.menu.Item({
-				                            id: ''
+				                            id:  Ext.id()
 				                            , text: LN('sbi.execution.PdfExport')
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-pdf' 
@@ -312,7 +312,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                       ); 
 						}else if(executionInstance.document.exporters[i]=='XLS'){
 						menuItems.push(   new Ext.menu.Item({
-				                            id: ''
+				                            id:  Ext.id()
 				                            , text: LN('sbi.execution.XlsExport')
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-xls' 
@@ -324,7 +324,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                        ); 
 						}else if(executionInstance.document.exporters[i]=='CSV'){
 						menuItems.push(   new Ext.menu.Item({
-				                            id: ''
+				                            id:  Ext.id()
 				                            , text: LN('sbi.execution.CsvExport')
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-csv' 
@@ -336,7 +336,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                        ); 
 						}else if(executionInstance.document.exporters[i]=='XML'){
 						menuItems.push(   new Ext.menu.Item({
-				                            id: ''
+				                            id:  Ext.id()
 				                            , text: LN('sbi.execution.XmlExport')
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-xml' 
@@ -348,7 +348,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                        ); 
 						}else if(executionInstance.document.exporters[i]=='JPG'){
 						menuItems.push(   new Ext.menu.Item({
-				                            id: ''
+				                            id: Ext.id()
 				                            , text: LN('sbi.execution.JpgExport')
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-jpg' 
@@ -360,7 +360,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                        ); 
 						}else if(executionInstance.document.exporters[i]=='TXT'){
 						menuItems.push(   new Ext.menu.Item({
-				                            id: ''
+				                            id:  Ext.id()
 				                            , text: LN('sbi.execution.txtExport')
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-txt' 
@@ -372,7 +372,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 				                        ); 
 						}else if(executionInstance.document.exporters[i]=='PPT'){
 						menuItems.push(   new Ext.menu.Item({
-				                            id: ''
+				                            id:  Ext.id()
 				                            , text: LN('sbi.execution.pptExport')
 				                            , group: 'group_2'
 				                            , iconCls: 'icon-ppt' 
@@ -391,7 +391,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 					
 					this.toolbar.add(
 								new Ext.Toolbar.MenuButton({
-									id:'1'
+									id: Ext.id()
 						            , tooltip: 'Exporters'
 									, path: 'Exporters'	
 									, iconCls: 'icon-export' 	

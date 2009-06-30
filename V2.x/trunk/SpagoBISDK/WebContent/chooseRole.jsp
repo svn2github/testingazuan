@@ -30,8 +30,8 @@ If the user has only one valid role, he is automatically redirected to documentP
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<%@page import="it.eng.spagobi.services.proxy.SessionServiceProxy"%>
-<%@page import="it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException"%>
+<%@page import="it.eng.spagobi.sdk.proxy.DocumentsServiceProxy"%>
+<%@page import="it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -40,44 +40,50 @@ If the user has only one valid role, he is automatically redirected to documentP
 <body>
 
 <%
-SessionServiceProxy proxy = (SessionServiceProxy) session.getAttribute("spagobi_proxy");
-String documentIdStr = request.getParameter("documentId");
-Integer documentId = new Integer(documentIdStr);
-session.setAttribute("spagobi_documentId", documentId);
-// request for valid roles for the execution of a document 
-String[] validRoles = null;
-try {
-	validRoles =  proxy.getCorrectRolesForExecution(documentId);
-	if (validRoles.length == 0) {
+String user = (String) session.getAttribute("spagobi_user");
+String password = (String) session.getAttribute("spagobi_pwd");
+if (user != null && password != null) {
+	String documentIdStr = request.getParameter("documentId");
+	Integer documentId = new Integer(documentIdStr);
+	session.setAttribute("spagobi_documentId", documentId);
+	// request for valid roles for the execution of a document 
+	String[] validRoles = null;
+	try {
+		DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
+		validRoles =  proxy.getCorrectRolesForExecution(documentId);
+		if (validRoles.length == 0) {
+			%>
+			User cannot execute document
+			<%
+		} else if (validRoles.length == 1) {
+			response.sendRedirect("documentParameters.jsp?role=" + validRoles[0]);
+		} else {
+			%>
+			<span><b>Choose the role</b></span>
+			<form action="documentParameters.jsp" method="post">
+				Choose role: 
+				<select name="role">
+				<%
+				for (int i = 0; i < validRoles.length; i++) {
+					%>
+					<option value="<%= validRoles[i] %>"><%= validRoles[i] %></option>
+					<%
+				}
+				%>
+				</select>
+				<input type="submit" value="Go on" />
+			</form>
+			<%
+		}
+	} catch (NonExecutableDocumentException e) {
 		%>
 		User cannot execute document
 		<%
-	} else if (validRoles.length == 1) {
-		response.sendRedirect("documentParameters.jsp?role=" + validRoles[0]);
-	} else {
-		%>
-		<span><b>Choose the role</b></span>
-		<form action="documentParameters.jsp" method="post">
-			Choose role: 
-			<select name="role">
-			<%
-			for (int i = 0; i < validRoles.length; i++) {
-				%>
-				<option value="<%= validRoles[i] %>"><%= validRoles[i] %></option>
-				<%
-			}
-			%>
-			</select>
-			<input type="submit" value="Go on" />
-		</form>
-		<%
 	}
-} catch (NonExecutableDocumentException e) {
-	%>
-	User cannot execute document
-	<%
+
+} else {
+	response.sendRedirect("login.jsp");
 }
 %>
-
 </body>
 </html>

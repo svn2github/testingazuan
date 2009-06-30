@@ -336,7 +336,7 @@
   </target>
  
  <target name="package.all.src" depends="clean.all">
- <mkdir dir="../../../dist" />
+   <mkdir dir="../../../dist" />
    <zip destfile="../../../dist/SpagoBI-src-${project.version}_${project.date}.zip"
         excludes="**/*.svn"  basedir="../../../">
 

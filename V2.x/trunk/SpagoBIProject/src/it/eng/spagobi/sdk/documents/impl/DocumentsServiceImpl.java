@@ -201,7 +201,8 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			List toReturn = new ArrayList();
 			if (parametersList != null) {
 				SDKDocumentParameter aDocParameter;
-				for (Iterator it = parametersList.iterator(); it.hasNext(); toReturn.add(aDocParameter)) {
+				Iterator it = parametersList.iterator();
+				while (it.hasNext()) {
 					BIObjectParameter parameter = (BIObjectParameter)it.next();
 					aDocParameter = new SDKObjectsConverter().fromBIObjectParameterToSDKDocumentParameter(parameter);
 					toReturn.add(aDocParameter);

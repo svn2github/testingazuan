@@ -196,7 +196,6 @@ Ext.extend(Sbi.execution.ViewpointsPanel, Ext.grid.GridPanel, {
 				ids[count] = recordsSelected[count].get('name');
 			}
 			var idsJoined = ids.join(',');
-			alert( idsJoined );
 			
 			Ext.Ajax.request({
 		        url: this.services['deleteViewpointService'],

@@ -509,9 +509,9 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 			String mimeType = "application/pdf";
 			FileDataSource mods = new FileDataSource(tmpFile);
 
-			DataHandler dataHandler=new DataHandler(mods);
-
-			toReturn.setContent(dataHandler);
+//			DataHandler dataHandler=new DataHandler(mods);
+//
+//			toReturn.setContent(dataHandler);
 			toReturn.setFileName(biobj.getLabel()+".pdf");
 			toReturn.setFileType(mimeType);
 			DataHandler dhSource = new DataHandler(mods);
@@ -522,9 +522,9 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 
 		finally{
 			logger.debug("deleting file Tmp");
-			if(tmpFile!=null){
-				tmpFile.delete();
-			}
+//			if(tmpFile!=null){
+//				tmpFile.delete();
+//			}
 			logger.debug("file Tmp deleted");
 		}
 		logger.debug("OUT");

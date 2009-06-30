@@ -32,6 +32,7 @@ This page use the SpagoBI execution tag, that displays an iframe pointing to Spa
 
 <%@page import="java.util.*"%>
 <%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter"%>
+<%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocument"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -43,6 +44,15 @@ String user = (String) session.getAttribute("spagobi_user");
 String password = (String) session.getAttribute("spagobi_pwd");
 if (user != null && password != null) {
 	Integer documentId = (Integer) session.getAttribute("spagobi_documentId");
+	SDKDocument document = null;
+	SDKDocument[] documents = (SDKDocument[]) session.getAttribute("spagobi_documents");
+	for (int i = 0; i < documents.length; i++) {
+		SDKDocument aDocument = documents[i];
+		if (aDocument.getId().equals(documentId)) {
+			document = aDocument;
+		}
+	}
+	session.setAttribute("spagobi_current_document", document);
 	String userId = (String) session.getAttribute("spagobi_user");
 	String role = (String) session.getAttribute("spagobi_role");
 	SDKDocumentParameter[] parameters = (SDKDocumentParameter[]) session.getAttribute("spagobi_document_parameters"); 
@@ -52,10 +62,13 @@ if (user != null && password != null) {
 			SDKDocumentParameter aParameter = parameters[i];
 			String value = request.getParameter(aParameter.getUrlName());
 			if (value != null) {
+				aParameter.setValues(new String[]{value});
 				if (parameterValues.length() > 0) {
 					parameterValues.append("&");
 				}
 				parameterValues.append(aParameter.getUrlName() + "=" + value);
+			} else {
+				aParameter.setValues(null);
 			}
 		}
 	}
@@ -70,6 +83,14 @@ if (user != null && password != null) {
 	        displayToolbar="<%= Boolean.TRUE %>"
 	        displaySliders="<%= Boolean.TRUE %>" />
 
+	<%
+	String documentType = document.getType();
+	if (documentType.equals("KPI") || documentType.equals("REPORT")) {
+		%>
+		<a href="ExportServlet">Export in PDF</a><br/>
+		<%
+	}
+	%>
 	<a href="documentsList.jsp">Back to documents list</a>
 	<%
 } else {

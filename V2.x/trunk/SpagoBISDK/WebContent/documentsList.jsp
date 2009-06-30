@@ -63,6 +63,7 @@ if (user != null && password != null) {
 	DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
 	proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DocumentsService");
 	SDKDocument[] documents = proxy.getDocumentsAsList(null, null, null);
+	session.setAttribute("spagobi_documents", documents);
 	for (int i = 0; i < documents.length; i++) {
 		SDKDocument aDoc = documents[i];
 		%>

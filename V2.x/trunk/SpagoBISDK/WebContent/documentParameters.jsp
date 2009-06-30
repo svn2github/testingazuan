@@ -31,11 +31,9 @@ If the parameter is manual input, a manul input appears.
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<%@page import="it.eng.spagobi.services.proxy.SessionServiceProxy"%>
-<%@page import="it.eng.spagobi.services.session.exceptions.NonExecutableDocumentException"%>
-<%@page import="it.eng.spagobi.services.session.bo.DocumentParameter"%>
-<%@page import="it.eng.spagobi.services.session.bo.Check"%>
 <%@page import="java.util.*"%>
+<%@page import="it.eng.spagobi.sdk.proxy.DocumentsServiceProxy"%>
+<%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -43,51 +41,58 @@ If the parameter is manual input, a manul input appears.
 </head>
 <body>
 <%
-SessionServiceProxy proxy = (SessionServiceProxy) session.getAttribute("spagobi_proxy");
-Integer documentId = (Integer) session.getAttribute("spagobi_documentId");
-String role = request.getParameter("role");
-session.setAttribute("spagobi_role", role);
-DocumentParameter[] parameters = proxy.getDocumentParameters(documentId, role);
-session.setAttribute("spagobi_document_parameters", parameters);
-if (parameters == null || parameters.length == 0) {
-	response.sendRedirect("execution.jsp");
-} else {
-	%>
-	<span><b>Choose a document</b></span>
-	<form action="execution.jsp" method="post">
-		<%
-		for (int i = 0; i < parameters.length; i++) {
-			DocumentParameter aDocParameter = parameters[i];
-			%>
-			<%= aDocParameter.getLabel() %>
+String user = (String) session.getAttribute("spagobi_user");
+String password = (String) session.getAttribute("spagobi_pwd");
+if (user != null && password != null) {
+	DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
+	proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DocumentsService");
+	Integer documentId = (Integer) session.getAttribute("spagobi_documentId");
+	String role = request.getParameter("role");
+	session.setAttribute("spagobi_role", role);
+	SDKDocumentParameter[] parameters = proxy.getDocumentParameters(documentId, role);
+	session.setAttribute("spagobi_document_parameters", parameters);
+	if (parameters == null || parameters.length == 0) {
+		response.sendRedirect("execution.jsp");
+	} else {
+		%>
+		<span><b>Choose a document</b></span>
+		<form action="execution.jsp" method="post">
 			<%
-			// admissible values for parameter
-			HashMap values = proxy.getAdmissibleValues(aDocParameter.getId(), role);
-			if (values == null || values.isEmpty()) {
+			for (int i = 0; i < parameters.length; i++) {
+				SDKDocumentParameter aDocParameter = parameters[i];
 				%>
-				<input type="text" name="<%= aDocParameter.getUrlName() %>" size="30"/>
+				<%= aDocParameter.getLabel() %>
 				<%
-			} else {
-				%>
-				<select name="<%= aDocParameter.getUrlName() %>">
-				<%
-				Set entries = values.entrySet();
-				Iterator it = entries.iterator();
-				while (it.hasNext()) {
-					Map.Entry entry = (Map.Entry) it.next();
+				// admissible values for parameter
+				HashMap values = proxy.getAdmissibleValues(aDocParameter.getId(), role);
+				if (values == null || values.isEmpty()) {
 					%>
-					<option value="<%= entry.getKey() %>"><%= entry.getValue() %></option>
+					<input type="text" name="<%= aDocParameter.getUrlName() %>" size="30"/>
+					<%
+				} else {
+					%>
+					<select name="<%= aDocParameter.getUrlName() %>">
+					<%
+					Set entries = values.entrySet();
+					Iterator it = entries.iterator();
+					while (it.hasNext()) {
+						Map.Entry entry = (Map.Entry) it.next();
+						%>
+						<option value="<%= entry.getKey() %>"><%= entry.getValue() %></option>
+						<%
+					}
+					%>
+					</select><br/>
 					<%
 				}
-				%>
-				</select><br/>
-				<%
 			}
-		}
-		%>
-	<input type="submit" value="Execute" />
-	</form>
-	<%
+			%>
+		<input type="submit" value="Execute" />
+		</form>
+		<%
+	}
+} else {
+	response.sendRedirect("login.jsp");
 }
 %>
 </body>

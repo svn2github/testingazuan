@@ -50,6 +50,7 @@ if (user != null && password != null) {
 	String[] validRoles = null;
 	try {
 		DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
+		proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DocumentsService");
 		validRoles =  proxy.getCorrectRolesForExecution(documentId);
 		if (validRoles.length == 0) {
 			%>

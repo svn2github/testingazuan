@@ -31,39 +31,50 @@ This page use the SpagoBI execution tag, that displays an iframe pointing to Spa
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%@page import="java.util.*"%>
-<%@page import="it.eng.spagobi.services.session.bo.DocumentParameter"%><html>
+<%@page import="it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter"%>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Document execution</title>
 </head>
 <body>
 <%
-Integer documentId = (Integer) session.getAttribute("spagobi_documentId");
-String userId = (String) session.getAttribute("spagobi_user");
-String role = (String) session.getAttribute("spagobi_role");
-DocumentParameter[] parameters = (DocumentParameter[]) session.getAttribute("spagobi_document_parameters"); 
-Map parameterValues = new HashMap();
-if (parameters != null && parameters.length > 0) {
-	for (int i = 0; i < parameters.length; i++) {
-		DocumentParameter aParameter = parameters[i];
-		String value = request.getParameter(aParameter.getUrlName());
-		if (value != null) {
-			parameterValues.put(aParameter.getUrlName(), value);
+String user = (String) session.getAttribute("spagobi_user");
+String password = (String) session.getAttribute("spagobi_pwd");
+if (user != null && password != null) {
+	Integer documentId = (Integer) session.getAttribute("spagobi_documentId");
+	String userId = (String) session.getAttribute("spagobi_user");
+	String role = (String) session.getAttribute("spagobi_role");
+	SDKDocumentParameter[] parameters = (SDKDocumentParameter[]) session.getAttribute("spagobi_document_parameters"); 
+	StringBuffer parameterValues = new StringBuffer();
+	if (parameters != null && parameters.length > 0) {
+		for (int i = 0; i < parameters.length; i++) {
+			SDKDocumentParameter aParameter = parameters[i];
+			String value = request.getParameter(aParameter.getUrlName());
+			if (value != null) {
+				if (parameterValues.length() > 0) {
+					parameterValues.append("&");
+				}
+				parameterValues.append(aParameter.getUrlName() + "=" + value);
+			}
 		}
 	}
+	%>
+	<spagobi:execution 
+			spagobiContext="http://localhost:8080/SpagoBI/"
+			userId="<%= userId %>" 
+	        documentId="<%= documentId.toString() %>"
+	        iframeStyle="height:500px; width:100%" 
+	        executionRole="<%= role %>"
+	        parametersStr="<%= parameterValues.toString() %>"
+	        displayToolbar="<%= Boolean.TRUE %>"
+	        displaySliders="<%= Boolean.TRUE %>" />
+
+	<a href="documentsList.jsp">Back to documents list</a>
+	<%
+} else {
+	response.sendRedirect("login.jsp");
 }
 %>
-<spagobi:execution 
-		spagobiContext="http://localhost:8080/SpagoBI/"
-		userId="<%= userId %>" 
-        documentId="<%= documentId.toString() %>"
-        iframeStyle="height:500px; width:100%" 
-        executionRole="<%= role %>"
-        parametersMap="<%= parameterValues %>"
-        displayToolbar="<%= Boolean.TRUE %>"
-        displaySliders="<%= Boolean.TRUE %>" />
-
-<a href="documentsList.jsp">Back to documents list</a>
-
 </body>
 </html>

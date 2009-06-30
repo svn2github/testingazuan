@@ -61,6 +61,7 @@ if (user != null && password != null) {
 	<%
 	// gets all visible documents list
 	DocumentsServiceProxy proxy = new DocumentsServiceProxy(user, password);
+	proxy.setEndpoint("http://localhost:8080/SpagoBI/sdk/DocumentsService");
 	SDKDocument[] documents = proxy.getDocumentsAsList(null, null, null);
 	for (int i = 0; i < documents.length; i++) {
 		SDKDocument aDoc = documents[i];

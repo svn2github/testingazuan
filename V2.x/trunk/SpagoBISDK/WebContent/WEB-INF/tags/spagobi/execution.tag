@@ -40,8 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%
 StringBuffer iframeUrl = new StringBuffer();
 iframeUrl.append(spagobiContext + "/servlet/AdapterHTTP?NEW_SESSION=true");
-iframeUrl.append("&PAGE=ExecuteBIObjectPage");
-iframeUrl.append("&" + SpagoBIConstants.MODALITY + "=" + SpagoBIConstants.SINGLE_OBJECT_EXECUTION_MODALITY);
+iframeUrl.append("&ACTION_NAME=EXECUTE_DOCUMENT_ACTION");
 iframeUrl.append("&" + SsoServiceInterface.USER_ID + "=" + userId);
 
 if (documentId == null && documentLabel == null) {

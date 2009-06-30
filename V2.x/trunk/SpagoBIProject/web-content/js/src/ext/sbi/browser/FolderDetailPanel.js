@@ -421,7 +421,7 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
     , performActionOnDocument: function(docRecord, action) {
     	if(this.fireEvent('beforeperformactionondocument', this, docRecord, action) !== false){
     		if(action === 'delete') {
-    			alert(docRecord.id + '; ' + this.folderId);
+    			//alert(docRecord.id + '; ' + this.folderId);
     			this.deleteDocument(docRecord.id);
     		}
     	}

@@ -298,7 +298,8 @@
     <ant dir="../SpagoBIWekaEngine/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIXmlSecurityProvider/ant" target="svn.checkout"/>
     <ant dir="../SpagoBILiferaySecurityProvider/ant" target="svn.checkout"/>    
-    <ant dir="../SpagoBILdapSecurityProvider/ant" target="svn.checkout"/>       
+    <ant dir="../SpagoBILdapSecurityProvider/ant" target="svn.checkout"/>  
+    <ant dir="../SpagoBIDatabaseScripts" target="svn.checkout"/>           
   </target>
   
   <target name="javadoc" >
@@ -329,7 +330,17 @@
         <ant dir="../SpagoBIQbeEngine/ant" target="package"/> 
         <ant dir="../SpagoBITalendEngine/ant" target="package"/> 
         <ant dir="../SpagoBIWekaEngine/ant" target="package"/> 
-                                                                                                        
+        <ant dir="../SpagoBIDatabaseScripts" target="package"/>  
+        
+                                                                                                     
   </target>
-    
+ 
+ <target name="package.all.src" depends="clean.all">
+ <mkdir dir="../../../dist" />
+   <zip destfile="../../../dist/SpagoBI-src-${project.version}_${project.date}.zip"
+        excludes="**/*.svn"  basedir="../../../">
+
+  </zip> 
+  </target>
+     
 </project>

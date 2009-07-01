@@ -15,7 +15,7 @@ Create table SBI_AUDIT (
 	ID Integer NOT NULL with default next value for  SBI_AUDIT_SEQ,
 	USERNAME Varchar(40) NOT NULL,
 	USERGROUP Varchar(100),
-	DOC_REF Integer NOT NULL,
+	DOC_REF Integer,
 	DOC_ID Integer,
 	DOC_LABEL Varchar(20) NOT NULL,
 	DOC_NAME Varchar(40) NOT NULL,
@@ -27,7 +27,7 @@ Create table SBI_AUDIT (
 	SUBOBJ_NAME Varchar(50),
 	SUBOBJ_OWNER Varchar(50),
 	SUBOBJ_ISPUBLIC Smallint,
-	ENGINE_REF Integer NOT NULL,
+	ENGINE_REF Integer,
 	ENGINE_ID Integer,
 	ENGINE_LABEL Varchar(40) NOT NULL,
 	ENGINE_NAME Varchar(40) NOT NULL,
@@ -595,7 +595,7 @@ Create table SBI_KPI (
 	ID_KPI_PARENT Integer,
 	NAME Varchar(400) NOT NULL,
 	DOCUMENT_LABEL Varchar(40),
-	CODE Varchar(40),
+	CODE Varchar(40) NOT NULL,
 	METRIC Varchar(1000),
 	DESCRIPTION Varchar(1000),
 	WEIGHT Float,
@@ -686,7 +686,7 @@ Create table SBI_KPI_PERIODICITY (
 	CHRON_STRING Varchar(20),
 	START_DATE TIMESTAMP,
 UNIQUE(NAME),	
-Primary Key (id_kpi_periodicity)
+Primary Key (ID_KPI_PERIODICITY)
 ) ;\p\g
 
 CREATE SEQUENCE SBI_KPI_INSTANCE_SEQ;\p\g
@@ -732,7 +732,7 @@ Create table SBI_KPI_MODEL_INST (
 	KPI_MODEL_ID Integer,
 	ID_KPI_INSTANCE Integer,
 	NAME Varchar(400),
-	LABEL Varchar(100),	
+	LABEL Varchar(100) NOT NULL,	
 	DESCRIPTION Varchar(1000),
 	START_DATE Date,
 	END_DATE Date,

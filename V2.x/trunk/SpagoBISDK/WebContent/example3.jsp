@@ -50,9 +50,9 @@ The form points to documentsList.jsp.
 		
 		execTest3 = function() {
 		    Sbi.sdk.api.injectDocument({
-				documentLabel: 'EmployeeList'
+				documentLabel: 'RPT_WAREHOUSE_PROF'
 				, executionRole: '/spagobi/user'
-				, parameters: {department_id: 2}
+				, parameters: {warehouse_id: 19}
 				, displayToolbar: false
 				, displaySliders: false
 				, target: 'targetDiv'

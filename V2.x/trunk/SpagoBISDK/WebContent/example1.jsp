@@ -50,8 +50,9 @@ The form points to documentsList.jsp.
 		
 		execTest1 = function() {
 		    var url = Sbi.sdk.api.getDocumentUrl({
-				documentLabel: 'Department'
+				documentLabel: 'RPT_WAREHOUSE_PROF'
 				, executionRole: '/spagobi/user'
+				, parameters: {warehouse_id: 19}
 				, displayToolbar: false
 				, displaySliders: false
 				//, height: '500px'

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+
+Name: SpagoBIJPivotEngine.war
+Implementation-Title: SpagoBIJPivotEngine
+Implementation-Version: 2.2.0 (Included Mondrian: 3.0.4.11371)
+
+

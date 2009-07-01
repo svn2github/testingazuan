@@ -1,0 +1,92 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: you@qooxdoo.org\n"
+"POT-Creation-Date: 2007-10-18 14:00+0100\n"
+"PO-Revision-Date: 2008-12-15 15:32+0100\n"
+"Last-Translator: \n"
+"Language-Team: Team <yourteam@qooxdoo.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: spagobi/app/Chiron.js:159
+msgid "Resources"
+msgstr "Ressourcen"
+
+#: spagobi/app/Chiron.js:167
+msgid "Catalogues"
+msgstr "Kataloge"
+
+#: spagobi/app/Chiron.js:174
+msgid "Behavioural Model"
+msgstr "Verhaltens Modell"
+
+#: spagobi/app/Chiron.js:181
+msgid "Analytical Model"
+msgstr "Analytische Model"
+
+#: spagobi/app/Chiron.js:188
+msgid "Admin Distribution List"
+msgstr "Admin-Verteilerliste"
+
+#: spagobi/app/Chiron.js:195
+msgid "Functionality"
+msgstr "Funktionalität"
+
+#: spagobi/app/Chiron.js:202
+msgid "Events"
+msgstr "Veranstaltungen"
+
+#: spagobi/app/Chiron.js:209
+msgid "Tools"
+msgstr "Werkzeuge"
+
+#: spagobi/app/Chiron.js:216
+msgid "Hot Links"
+msgstr "Hot Links"
+
+#: spagobi/app/view/Article.js:133
+msgid "read more ..."
+msgstr ""
+
+#: spagobi/app/view/Tree.js:27
+msgid "News feeds"
+msgstr ""
+
+#: spagobi/ui/ToolBar.js:96
+msgid "English"
+msgstr "Englisch"
+
+#: spagobi/ui/ToolBar.js:97
+msgid "German"
+msgstr "Deutsch"
+
+#: spagobi/ui/ToolBar.js:98
+msgid "French"
+msgstr "Französisch"
+
+#: spagobi/ui/ToolBar.js:99
+msgid "Turkish"
+msgstr "Türkisch"
+
+#: spagobi/ui/ToolBar.js:100
+msgid "Italian"
+msgstr "Italienisch"
+
+#: spagobi/ui/ToolBar.js:101
+msgid "Spanish"
+msgstr "Spanisch"
+
+#: spagobi/ui/ToolBar.js:102
+msgid "Swedish"
+msgstr "Schwedisch "
+
+#: spagobi/ui/ToolBar.js:103
+msgid "Russian"
+msgstr "Russisch"
+
+#: spagobi/ui/ToolBar.js:146
+msgid "Help"
+msgstr "Hilfe"

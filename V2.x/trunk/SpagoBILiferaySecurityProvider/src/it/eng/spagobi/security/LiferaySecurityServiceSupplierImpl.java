@@ -30,9 +30,7 @@ import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.xml.rpc.ServiceException;
 

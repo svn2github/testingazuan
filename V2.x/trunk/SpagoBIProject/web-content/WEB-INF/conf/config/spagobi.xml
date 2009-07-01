@@ -100,6 +100,7 @@
 		</PORTAL-SECURITY-CLASS>
         <USER-PROFILE-FACTORY-CLASS className="it.eng.spagobi.security.LiferaySecurityServiceSupplierImpl">
         </USER-PROFILE-FACTORY-CLASS>
+        <WS_SERVICE url="localhost:8080/tunnel-web/secure/axis/"  username="adminionoi" password="adminionoi"/>
         <ROLE-NAME-PATTERN-FILTER>/spagobi/.*</ROLE-NAME-PATTERN-FILTER>
 		<ROLE-TYPE-PATTERNS>
                 	<ADMIN-PATTERN>/spagobi/admin</ADMIN-PATTERN>

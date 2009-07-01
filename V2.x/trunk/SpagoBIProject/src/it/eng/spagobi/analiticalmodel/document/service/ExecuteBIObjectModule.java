@@ -1770,13 +1770,16 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		logger.debug("IN");
 		// get object from session
 		ExecutionInstance instance = getExecutionInstance();
+		//Integer id =(Integer) request.getAttribute("id");
+		
 		// built the url for the content recovering
 		String content = (request.getAttribute("content") == null) ? ""
 				: (String) request.getAttribute("content");
 		content = content.replace("%26", "&");
 		content = content.replace("%3D", "=");
 		// get the current user profile
-		instance.setParameterValues(content, false);
+		instance.applyViewpoint( content, false);
+		//instance.setParameterValues(content, false);
 		// check parameters values 
 		List errors = instance.getParametersErrors();
 		// add errors into error handler
@@ -1818,8 +1821,8 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 		String allParametersValues = vp.getVpValueParams();
 		allParametersValues = allParametersValues.replace("%26", "&");
 		allParametersValues = allParametersValues.replace("%3D", "=");
-
-		instance.setParameterValues(allParametersValues, false);
+		instance.applyViewpoint( allParametersValues, false);
+		//instance.setParameterValues(allParametersValues, false);
 		// check parameters values 
 		List errors = instance.getParametersErrors();
 		// add errors into error handler

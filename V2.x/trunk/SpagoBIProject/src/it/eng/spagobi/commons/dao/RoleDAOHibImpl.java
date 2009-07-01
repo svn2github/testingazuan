@@ -37,6 +37,7 @@ import it.eng.spagobi.commons.metadata.SbiDomains;
 import it.eng.spagobi.commons.metadata.SbiEventRole;
 import it.eng.spagobi.commons.metadata.SbiExtRoles;
 import it.eng.spagobi.events.metadata.SbiEventsLog;
+import it.eng.spagobi.kpi.config.metadata.SbiKpiValue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -51,6 +52,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
 
 /**
  * Defines the Hibernate implementations for all DAO methods,
@@ -159,9 +161,9 @@ public class RoleDAOHibImpl extends AbstractHibernateDAO implements IRoleDAO {
 		try {
 			aSession = getSession();
 			tx = aSession.beginTransaction();
-
-			Query hibQuery = aSession.createQuery(" from SbiExtRoles");
-			List hibList = hibQuery.list();
+			Criteria finder = aSession.createCriteria(SbiExtRoles.class);
+			finder.addOrder(Order.asc("name"));
+			List hibList = finder.list();
 
 			tx.commit();
 

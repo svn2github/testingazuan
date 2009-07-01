@@ -34,22 +34,46 @@ The form points to documentsList.jsp.
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Login</title>
-	<style>
-	body, p { font-family:Tahoma; font-size:10pt; padding-left:30; }
-	pre { font-size:8pt; }
-	</style>
+	
+	<script type="text/javascript" src="js/sbisdk-all-production.js"></script>
+	<!--  script type="text/javascript" src="http://localhost:8080/SpagoBI/js/src/sdk/sbisdk-all-production.js"></script -->
+
+	<script type="text/javascript">
+
+		Sbi.sdk.services.setBaseUrl({
+	        protocol: 'http'     
+	        , host: 'localhost'
+	        , port: '8080'
+	        , contextPath: 'SpagoBI'
+	        , controllerPath: 'servlet/AdapterHTTP'  
+	    });
+		
+		execTest4 = function() {
+		    Sbi.sdk.api.injectDocument({
+				documentLabel: 'Department'
+				, executionRole: '/spagobi/user'
+				, displayToolbar: false
+				, displaySliders: false
+				, target: 'targetDiv'
+				, iframe: {
+					style: 'border: 0px;'
+				}
+				, useExtUI: true
+			});
+		};
+
+	</script>
 </head>
-</head>
+
+
 <body>
-<h2>Welcome to SpagoBI SDK demo</h2>
-<br/>
-<span><b>Login with biadmin/biadmin</b></span>
-<form action="documentsList.jsp" method="post">
-Name: <input type="text" name="user" size="30"/><br/>
-Password: <input type="password" name="password" size="30"/><br/>
-<input type="submit" value="Login" />
-</form>
+<h2>Example 4 : injectDocument into existing div using ExtJs UI</h2>
+<hr>
+<div height="500px" width="100%" id='targetDiv'></div>
+<hr>
+
+<script type="text/javascript">
+	execTest4();
+</script>
 </body>
 </html>

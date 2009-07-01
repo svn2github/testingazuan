@@ -195,7 +195,7 @@ String getUrl(String baseUrl, Map mapPars) {
 
 
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/adapter/ext/ext-base.js")%>"></script>
-<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/ext-all.js")%>"></script>
+<script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/lib/ext-2.0.1/ext-all-debug.js")%>"></script>
 <%-- Ext js overrides --%>
 <script type="text/javascript" src="<%=urlBuilder.getResourceLink(request, "js/src/ext/sbi/overrides/overrides.js")%>"></script>
 

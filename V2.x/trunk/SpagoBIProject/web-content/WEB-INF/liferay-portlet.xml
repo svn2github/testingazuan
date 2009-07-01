@@ -2,7 +2,8 @@
 <!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 4.1.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_4_1_0.dtd">
 
 <liferay-portlet-app>
-<portlet>
+
+	<portlet>
 		<portlet-name>SBIBehavioralModels</portlet-name>
 		<instanceable>true</instanceable>
 	</portlet>
@@ -49,5 +50,9 @@
 	<portlet>
 		<portlet-name>DocumentsBrowser</portlet-name>
 		<instanceable>true</instanceable>
-	</portlet>	
+	</portlet>
+	<portlet>
+		<portlet-name>DocumentExecution</portlet-name>
+		<instanceable>true</instanceable>
+	</portlet>
 </liferay-portlet-app>

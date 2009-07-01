@@ -22,25 +22,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.security;
 
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.services.security.bo.SpagoBIUserProfile;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
+
+import javax.xml.rpc.ServiceException;
 
 import org.apache.log4j.Logger;
 
-import com.liferay.portal.PortalException;
-import com.liferay.portal.SystemException;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.RoleServiceUtil;
-import com.liferay.portal.service.UserServiceUtil;
+import com.liferay.client.soap.portal.model.RoleSoap;
+import com.liferay.client.soap.portal.model.UserSoap;
+import com.liferay.client.soap.portal.service.http.RoleServiceSoap;
+import com.liferay.client.soap.portal.service.http.RoleServiceSoapServiceLocator;
+import com.liferay.client.soap.portal.service.http.UserServiceSoap;
+import com.liferay.client.soap.portal.service.http.UserServiceSoapServiceLocator;
 
 /**
  * 
  * @author Angelo Bernabei (angelo.bernabei@eng.it)
- * @author Sven Werlen (sven.werlen@savoirfairelinux.com)
  */
 public class LiferaySecurityServiceSupplierImpl implements ISecurityServiceSupplier {
 
@@ -58,12 +65,17 @@ public class LiferaySecurityServiceSupplierImpl implements ISecurityServiceSuppl
 	 */
 
 	public SpagoBIUserProfile createUserProfile(String userId) {
+		logger.debug("IN,userId="+userId);
 		SpagoBIUserProfile profile = new SpagoBIUserProfile();
 		profile.setUniqueIdentifier(userId);
 		profile.setUserId(userId);
 
 		try {
-			User user = UserServiceUtil.getUserById(Integer.parseInt(userId));
+		  
+		  UserServiceSoapServiceLocator uService = new UserServiceSoapServiceLocator();
+		  UserServiceSoap userService = uService.getPortal_UserService(_getURL("Portal_UserService"));
+		  UserSoap user = userService.getUserById(Integer.parseInt(userId));   
+
 			if (user != null) {
 				// user attributes
 				HashMap<String, String> userAttributes = new HashMap<String, String>();
@@ -80,13 +92,14 @@ public class LiferaySecurityServiceSupplierImpl implements ISecurityServiceSuppl
 				profile.setAttributes(userAttributes);
 
 				// user roles
-				List<com.liferay.portal.model.Role> roles = RoleServiceUtil.getUserRoles(user.getUserId());
-				String[] roleNames = new String[roles.size()];
+				RoleServiceSoapServiceLocator rService = new RoleServiceSoapServiceLocator();
+				RoleServiceSoap roleService = rService.getPortal_RoleService(_getURL("Portal_RoleService"));
+				RoleSoap[] roles = roleService.getUserRoles(Integer.parseInt(userId));
+				String[] roleNames = new String[roles.length];
 				if (roles != null) {
-					Iterator<com.liferay.portal.model.Role> iter = roles.iterator();
 					int i = 0;
-					while (iter.hasNext()) {
-						com.liferay.portal.model.Role role = iter.next();
+					while (i<roles.length) {
+					    RoleSoap role=roles[i];
 						logger.debug("ruolo.getName()="+ role.getName());
 						logger.debug("ruolo.getDescription()="+ role.getDescription());
 						logger.debug("ruolo.getRoleId()=" + role.getRoleId());
@@ -99,11 +112,19 @@ public class LiferaySecurityServiceSupplierImpl implements ISecurityServiceSuppl
 				profile.setRoles(roleNames);
 			}
 
-		} catch (SystemException e) {
-			logger.error( "SystemException", e);
-		} catch (PortalException e) {
-			logger.error("PortalException", e);
-		}
+		} 
+
+		catch (RemoteException e) {
+    logger.error("PortalException", e);
+    } 
+		catch (ServiceException e) {
+    logger.error("PortalException", e);
+    } 
+		catch (MalformedURLException e) {
+    logger.error("PortalException", e);
+    }finally{
+    	logger.debug("OUT");
+    }
 		
 		return profile;
 	}
@@ -124,7 +145,24 @@ public class LiferaySecurityServiceSupplierImpl implements ISecurityServiceSuppl
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param serviceName
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	private URL _getURL(String serviceName) throws MalformedURLException {
 
+		SourceBean wsSB = (SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.WS_SERVICE");
+
+		String adminUser=(String)wsSB.getAttribute("username");
+		String psw=(String)wsSB.getAttribute("password");
+		String url=(String)wsSB.getAttribute("url");
+
+	    url = "http://" + adminUser + ":" + psw + "@"+url + serviceName;
+	    logger.debug("URL="+url);
+	    return new URL(url);
+	}
 	
 
 

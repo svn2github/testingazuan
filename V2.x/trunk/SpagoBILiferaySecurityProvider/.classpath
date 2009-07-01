@@ -7,5 +7,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/SpagoBIUtils"/>
 	<classpathentry kind="lib" path="lib/portal-kernel.jar"/>
 	<classpathentry kind="lib" path="lib/portal-service.jar"/>
+	<classpathentry kind="lib" path="lib/portal-client.jar"/>
+	<classpathentry kind="lib" path="lib/jaxrpc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

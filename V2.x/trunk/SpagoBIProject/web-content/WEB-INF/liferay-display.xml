@@ -3,17 +3,19 @@
 
 <display>
 	<category name="SpagoBI">
-		<portlet id="SBIBehavioralModels" />
-		<portlet id="SBIAdminDistributionList" />
-		<portlet id="SBIDistributionList" />
-		<portlet id="SBIAnaliticalModels" />
-		<portlet id="SBICatalolgues" />
-		<portlet id="SbiEvents" />
-		<portlet id="SbiTools" />
-		<portlet id="SbiResources" />
-		<portlet id="SBIFunctionality" />
-		<portlet id="SbiHotLink" />
-		<portlet id="KPIConfiguration" />
-		<portlet id="DocumentsBrowser" />		
+		<portlet id="SBIBehavioralModels"></portlet>
+		<portlet id="SBIAdminDistributionList"></portlet>
+		<portlet id="SBIDistributionList"></portlet>
+		<portlet id="SBIAnaliticalModels"></portlet>
+		<portlet id="SBICatalolgues"></portlet>
+		<portlet id="SbiTools"></portlet>
+		<portlet id="SbiProfileAttributes"></portlet>
+		<portlet id="SbiEvents"></portlet>
+		<portlet id="SbiResources"></portlet>
+		<portlet id="SBIFunctionality"></portlet>
+		<portlet id="SbiHotLink"></portlet>
+		<portlet id="KPIConfiguration"></portlet>
+		<portlet id="DocumentsBrowser"></portlet>
+		<portlet id="DocumentExecution"></portlet>
 	</category>
 </display>

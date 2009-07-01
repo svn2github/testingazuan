@@ -46,15 +46,8 @@
                war="file:${dist}/SpagoBI/SpagoBI.war"/>  
     <start url="${manager.url}" username="${username}" password="${password}" path="/SpagoBI"/>
     -->
-    <!-- deletes any previuos sbi.security.* -->
-    <delete>
-      <fileset dir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" includes="**/sbi.security.*.jar"/>
-    </delete>
-    <!-- copies the newly created jar file -->
-    <copy file="../../../SpagoBIExoSecurityProvider/dist/sbi.security.exo-${project.version}.jar" 
-        todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" overwrite="true" />
-    <copy file="../../../SpagoBIXMLSecurityProvider/dist/sbi.security.xml-${project.version}.jar" 
-        todir="${tomcat.home}/webapps/SpagoBI/WEB-INF/lib" overwrite="true" />
+
+
      
   </target>
 
@@ -231,37 +224,38 @@
   </target>
 
    <target name="clean.all" >
-    	<delete dir="../../../dist"/>
+  <delete dir="../../../dist"/>
 	<delete dir="../../../QbeCore/ant-build"/>
+	<delete dir="../../../QbeCore/dist"/>  	
 	<delete dir="../../../SpagoBIBirtReportEngine/ant-build"/>
+	<delete dir="../../../SpagoBIBirtReportEngine/dist"/>  	
 	<delete dir="../../../SpagoBIExoSecurityProvider/ant-build"/>
+	<delete dir="../../../SpagoBIExoSecurityProvider/dist"/>  	
 	<delete dir="../../../SpagoBILiferaySecurityProvider/ant-build"/>
+	<delete dir="../../../SpagoBILiferaySecurityProvider/dist"/>  	
 	<delete dir="../../../SpagoBIXMLSecurityProvider/ant-build"/> 
-	<delete dir="../../../SpagoBILdapSecurityProvider/ant-build"/>    	
-	<delete dir="../../../SpagoBIGeoReportEngine/ant-build"/>
-  <delete dir="../../../SpagoBIJasperReportReportEngine/ant-build"/>
+	<delete dir="../../../SpagoBIXMLSecurityProvider/dist"/>    	
+	<delete dir="../../../SpagoBILdapSecurityProvider/ant-build"/>    
+  <delete dir="../../../SpagoBILdapSecurityProvider/dist"/>    	  	
+	<delete dir="../../../SpagoBIGeoEngine/ant-build"/>
+	<delete dir="../../../SpagoBIGeoEngine/dist"/>  	
+  <delete dir="../../../SpagoBIJasperReportEngine/ant-build"/>
+  <delete dir="../../../SpagoBIJasperReportEngine/dist"/>    
   <delete dir="../../../SpagoBIJPaloEngine/ant-build"/>
+  <delete dir="../../../SpagoBIJPaloEngine/dist"/>    
   <delete dir="../../../SpagoBIJPivotEngine/ant-build"/>
+  <delete dir="../../../SpagoBIJPivotEngine/dist"/>    
   <delete dir="../../../SpagoBIQbeEngine/ant-build"/>
+  <delete dir="../../../SpagoBIQbeEngine/dist"/>    
   <delete dir="../../../SpagoBITalendEngine/ant-build"/>
+  <delete dir="../../../SpagoBITalendEngine/dist"/>    
   <delete dir="../../../SpagoBIProject/ant-build"/>
+  <delete dir="../../../SpagoBIProject/dist"/>    
   <delete dir="../../../SpagoBIUtils/ant-build"/>
+  <delete dir="../../../SpagoBIUtils/dist"/>    
   <delete dir="../../../SpagoBIWekaEngine/ant-build"/>
-	<delete dir="../../../QbeCore/dist"/>
-	<delete dir="../../../SpagoBIBirtReportEngine/dist"/>
-	<delete dir="../../../SpagoBIExoSecurityProvider/dist"/>
-	<delete dir="../../../SpagoBILiferaySecurityProvider/dist"/>
-	<delete dir="../../../SpagoBIXMLSecurityProvider/dist"/>  
-  	<delete dir="../../../SpagoBIldapSecurityProvider/dist"/>  	
-	<delete dir="../../../SpagoBIGeoReportEngine/dist"/>
-  <delete dir="../../../SpagoBIJasperReportReportEngine/dist"/>
-  <delete dir="../../../SpagoBIJPaloEngine/dist"/>
-  <delete dir="../../../SpagoBIJPivotEngine/dist"/>
-  <delete dir="../../../SpagoBIQbeEngine/dist"/>
-  <delete dir="../../../SpagoBITalendEngine/dist"/>
-  <delete dir="../../../SpagoBIProject/dist"/>
-  <delete dir="../../../SpagoBIUtils/dist"/>
   <delete dir="../../../SpagoBIWekaEngine/dist"/>	
+
    </target>
    
   <target name="copy.ss" >

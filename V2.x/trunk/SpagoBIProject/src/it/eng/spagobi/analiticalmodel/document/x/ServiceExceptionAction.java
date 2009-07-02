@@ -21,6 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
+import it.eng.spago.error.EMFAbstractError;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spagobi.utilities.exceptions.CannotWriteErrorsToClient;
+
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -35,8 +42,25 @@ public class ServiceExceptionAction extends AbstractSpagoBIAction {
     
 	public void doService()  {
 		logger.debug("IN");
-		writeErrorsBackToClient();
-		logger.debug("OUT");
+		try {
+			Collection<EMFAbstractError> errors = getErrorHandler().getErrors();
+			Iterator it = errors.iterator();
+			// if there is a CannotWriteErrorsToClient exception, CANNOT SEND ERRORS TO CLIENT
+			while (it.hasNext()) {
+				EMFAbstractError error = (EMFAbstractError) it.next();
+				if (error instanceof EMFInternalError) {
+					EMFInternalError internalError = (EMFInternalError) error;
+					Exception e = internalError.getNativeException();
+					if(e instanceof CannotWriteErrorsToClient) {
+						logger.error(e);
+						return;
+					}
+				}
+			}
+			writeErrorsBackToClient();
+		} finally {
+			logger.debug("OUT");
+		}
 	}
 
 }

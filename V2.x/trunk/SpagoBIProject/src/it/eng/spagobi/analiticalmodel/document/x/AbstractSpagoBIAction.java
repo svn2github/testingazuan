@@ -21,11 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
-import java.util.Locale;
-
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
@@ -36,9 +35,19 @@ import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.IBeanContainer;
 import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
 import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.exceptions.CannotWriteErrorsToClient;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
+import it.eng.spagobi.utilities.service.JSONFailure;
 import it.eng.spagobi.utilities.themes.ThemesManager;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Locale;
+
+import org.apache.log4j.Logger;
+import org.json.JSONException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -46,6 +55,8 @@ import it.eng.spagobi.utilities.themes.ThemesManager;
 public abstract class AbstractSpagoBIAction extends AbstractBaseHttpAction {
 	
 	public static final String SERVICE_NAME = "SPAGOBI_SERVICE";
+	
+	private static transient Logger logger = Logger.getLogger(AbstractSpagoBIAction.class);
 	
 	private CoreContextManager contextManager;
 	
@@ -67,6 +78,18 @@ public abstract class AbstractSpagoBIAction extends AbstractBaseHttpAction {
 			handleException(t);
 		};
 	}	
+	
+	protected void writeErrorsBackToClient() {
+		logger.debug("IN");
+		Collection<EMFAbstractError> errors = getErrorHandler().getErrors();
+		try {
+			writeBackToClient( new JSONFailure(errors) );
+		} catch (Throwable t) {
+			logger.error(t);
+			throw new CannotWriteErrorsToClient(SERVICE_NAME, "Cannot write errors to client", t);
+		}
+		logger.debug("OUT");
+	}
 	
 	public abstract void doService();
     

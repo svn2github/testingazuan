@@ -5,7 +5,17 @@ Create UNIQUE Index label_unique  ON SBI_ALARM (LABEL )  ;\p\g
 
 Create UNIQUE Index name_unique  ON SBI_ALARM_CONTACT (NAME )  ;\p\g
 
-Create UNIQUE Index code_unique  ON SBI_KPI (code )  ;\p\g
+ALTER TABLE SBI_AUDIT ALTER COLUMN DOC_REF Integer;\p\g
+ALTER TABLE SBI_AUDIT ALTER COLUMN ENGINE_REF Integer;\p\g
+Create Index IDX_SBI_AUDIT_1  ON SBI_AUDIT (DOC_REF )  ;\p\g
+Create Index IDX_SBI_AUDIT_2  ON SBI_AUDIT (ENGINE_REF )  ;\p\g
+
+
+ALTER TABLE SBI_KPI_MODEL_INST ALTER COLUMN label VARCHAR(100) NOT NULL;\p\g
+Create UNIQUE Index label_modinst_unique  ON SBI_KPI_MODEL_INST (LABEL)  ;\p\g
+
+ALTER TABLE SBI_KPI ALTER COLUMN code VARCHAR(40) NOT NULL;\p\g
+Create UNIQUE Index code_unique  ON SBI_KPI (CODE)  ;\p\g
 
 Create UNIQUE Index unique_kpi_model_cd  ON SBI_KPI_MODEL (KPI_MODEL_CD )  ;\p\g
 

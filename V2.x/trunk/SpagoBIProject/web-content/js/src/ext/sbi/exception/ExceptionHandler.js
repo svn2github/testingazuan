@@ -81,8 +81,8 @@ Sbi.exception.ExceptionHandler = function(){
 			        			} else if (anError.message !== undefined && anError.message !== '') {
 			        				errMessage += anError.message;
 			        			}
-			        			if (count < content.errors.lenght - 1) {
-			        				errMessage += '\n';
+			        			if (count < content.errors.length - 1) {
+			        				errMessage += '<br/>';
 			        			}
         					}
         				}

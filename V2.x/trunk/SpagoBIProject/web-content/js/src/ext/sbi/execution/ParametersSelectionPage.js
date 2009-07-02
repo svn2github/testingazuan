@@ -50,9 +50,9 @@ Ext.ns("Sbi.execution");
 Sbi.execution.ParametersSelectionPage = function(config) {
 	
 	var c = Ext.apply({
-		columnNo: 3
-		, labelAlign: 'left'
-		, maskOnRender: false
+		//columnNo: 3
+		//, labelAlign: 'left'
+		//maskOnRender: false
 	}, config || {});
 	
 	this.maskOnRender = c.maskOnRender;

@@ -49,10 +49,19 @@ Ext.ns("Sbi.execution");
 
 Sbi.execution.ParametersPanel = function(config) {
 	
-	var c = Ext.apply({
+	var settings = {
 		columnNo: 3
+		, columnWidth: 350
 		, labelAlign: 'left'
-	}, config || {});
+		, fieldWidth: 200	
+		, maskOnRender: false
+	};
+	if(Sbi.settings && Sbi.settings.execution && Sbi.settings.execution.parametersPanel) {
+		settings = Sbi.settings.execution.parametersPanel;
+	}
+	
+	var c = Ext.apply(settings, config || {});
+	this.baseConfig = c;
 	
 	
 	this.parametersPreference = undefined;
@@ -73,12 +82,11 @@ Sbi.execution.ParametersPanel = function(config) {
 	});
 	
 	//var cw = 1/c.columnNo;
-	var w = (350 * c.columnNo) + 40;
+	var w = (c.columnWidth * c.columnNo) + 40;
 	var columnsBaseConfig = [];
 	for(var i = 0; i < c.columnNo; i++) {		
 		columnsBaseConfig[i] = {
-			//columnWidth: cw,
-			width: 350,
+			width: c.columnWidth,
             layout: 'form',
             border: false,
             bodyStyle:'padding:5px 5px 5px 5px'
@@ -119,6 +127,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
     
     , fields: null
     , columns: null
+    , baseConfig: null
     
     
    
@@ -352,14 +361,14 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		
 	}
 	
-	, createField: function( executionInstance, p ) {
+	, createField: function( executionInstance, p, c ) {
 		var field;
 		
 		//alert(p.id + ' - ' + p.selectionType + ' - ' + !p.mandatory);
 		var baseConfig = {
 	       fieldLabel: p.label
 		   , name : p.id
-		   , width: 200
+		   , width: this.baseConfig.fieldWidth
 		   , allowBlank: !p.mandatory
 		};
 		

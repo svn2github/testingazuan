@@ -62,16 +62,26 @@ Sbi.commons.ExceptionHandler = function(){
 		
         handleFailure : function(response, options) {
         	
-        	var errMessage = 'Generic error'
+        	var errMessage = ''
         	if(response !== undefined) {
         		
         		if(response.responseText !== undefined) {
         			var content = Ext.util.JSON.decode( response.responseText );
-        			if(content.cause !== undefined) {
-        				errMessage = content.cause;
-        			} 
+        			if (content.errors !== undefined) {
+    					for (var count = 0; count < content.errors.length; count++) {
+    						var anError = content.errors[count];
+		        			if (anError.localizedMessage !== undefined && anError.localizedMessage !== '') {
+		        				errMessage += anError.localizedMessage;
+		        			} else if (anError.message !== undefined && anError.message !== '') {
+		        				errMessage += anError.message;
+		        			}
+		        			if (count < content.errors.length - 1) {
+		        				errMessage += '<br/>';
+		        			}
+    					}
+    				}
         		} else {
-        			errMessage = Sbi.commons.toStr(response);
+        			errMessage = 'Generic error';
         		}
         	}
         	

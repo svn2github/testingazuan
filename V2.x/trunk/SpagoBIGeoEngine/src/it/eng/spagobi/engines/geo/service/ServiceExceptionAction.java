@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -60,6 +61,9 @@ public class ServiceExceptionAction  extends AbstractGeoEngineAction {
 					} catch (IOException ioe) {
 						String message = "Impossible to write back the responce to the client";
 						throw new SpagoBIEngineServiceException(getActionName(), message, e);
+					} catch (JSONException je) {
+						String message = "Error while serializing error into JSON object";
+						throw new SpagoBIEngineServiceException(getActionName(), message, je);
 					}
 				}
 			}

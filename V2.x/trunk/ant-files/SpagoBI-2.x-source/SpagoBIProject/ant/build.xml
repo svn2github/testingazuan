@@ -231,6 +231,7 @@
 			<concat destfile="${build}/${webapp_name}/js/src/ext/sbi-all-debug.js" append="true">
 			    <filelist  dir="${build}/${webapp_name}/js">
 			    
+			    	<file name="./src/ext/sbi/commons/Settings.js"/>
 			    	 <file name="./src/ext/sbi/locale/LocaleUtils.js"/>
 			    	 
 			    	 <file name="./src/ext/sbi/exception/ExceptionHandler.js"/>

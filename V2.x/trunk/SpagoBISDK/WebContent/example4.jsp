@@ -41,7 +41,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		    Sbi.sdk.api.injectDocument({
 				documentLabel: 'RPT_WAREHOUSE_PROF'
 				, executionRole: '/spagobi/user'
-				, parameters: {warehouse_id: 19}
+				, parameters: {'PARAMETERS': 'warehouse_id=19'}
 				, displayToolbar: false
 				, displaySliders: false
 				, target: 'targetDiv'
@@ -72,7 +72,7 @@ example4Function = function() {
 	Sbi.sdk.api.injectDocument({
 		documentLabel: 'RPT_WAREHOUSE_PROF'
 		, executionRole: '/spagobi/user'
-		, parameters: {warehouse_id: 19}
+		, parameters: {'PARAMETERS': 'warehouse_id=19'}
 		, displayToolbar: false
 		, displaySliders: false
 		, target: 'targetDiv'

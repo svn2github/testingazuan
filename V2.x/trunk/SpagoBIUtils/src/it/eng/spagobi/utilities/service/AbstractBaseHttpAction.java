@@ -255,21 +255,6 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 		
 	}
 	
-	protected void writeErrorsBackToClient() {
-		logger.debug("IN");
-		Collection<EMFAbstractError> errors = getErrorHandler().getErrors();
-		try {
-			writeBackToClient( new JSONFailure(errors) );
-		} catch (IOException ioe) {
-			String message = "Impossible to write back the responce to the client";
-			throw new SpagoBIEngineServiceException(getActionName(), message, ioe);
-		} catch (JSONException e) {
-			String message = "Error while serializing errors into JSON objects";
-			throw new SpagoBIEngineServiceException(getActionName(), message, e);
-		}
-		logger.debug("OUT");
-	}
-	
 	// =================================================================================================
 	// SESSION utility methods
 	// =================================================================================================

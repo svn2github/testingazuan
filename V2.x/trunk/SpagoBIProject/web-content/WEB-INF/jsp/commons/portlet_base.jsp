@@ -30,7 +30,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%--
 The following directive catches exceptions thrown by jsps, must be commented in development environment
 --%>
-<%@page errorPage="/themes/sbi_default/html/error.html"%>
+<%@page errorPage="/WEB-INF/jsp/commons/genericError.jsp"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.WebUrlBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.urls.PortletUrlBuilder"%>
 <%@page import="it.eng.spagobi.commons.utilities.messages.MessageBuilder"%>
@@ -202,6 +202,19 @@ String getUrl(String baseUrl, Map mapPars) {
 <script type="text/javascript">
     Ext.BLANK_IMAGE_URL = '<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/resources/images/default/s.gif")%>';
 
+	Ext.Ajax.defaultHeaders = {
+			'Powered-By': 'Ext'
+	};
+
+    // general SpagoBI configuration
+    Ext.ns("Sbi.config");
+    Sbi.config = function () {
+        return {
+       		// login url, used when session is expired
+        	loginUrl: '<%= GeneralUtilities.getSpagoBiContext() %>'
+        };
+    }();
+    
     // javascript-side user profile object
     Ext.ns("Sbi.user");
     Sbi.user.userId = '<%= StringEscapeUtils.escapeJavaScript(userId) %>';

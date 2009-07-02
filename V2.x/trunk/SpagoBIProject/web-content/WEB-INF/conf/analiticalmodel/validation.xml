@@ -106,7 +106,7 @@
 	
 	<!-- service for new Ext-based interface -->
 	<SERVICE name="SAVE_VIEWPOINT_ACTION" type="ACTION">
-		<VALIDATION blocking="true" validators=""> <!-- at the moment the validation is blocking -->
+		<VALIDATION blocking="false" validators="">
 			<CONDITIONS/>
 			<FIELDS>
 				<FIELD name="name">

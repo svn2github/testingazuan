@@ -543,8 +543,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								<!--  	</a> -->	
 								</td>
 								<td width="15%" align="left">							
-									<input class='portlet-form-input-field' type="text"	 id="slider_1_1_value" readonly style="width:30px;"/>
-									<input style="<%=datasetMap.getFilterStyle()%>" class='portlet-form-input-field' type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/>
+									<!-- <input class='portlet-form-input-field' type="hidden"	 id="slider_1_1_value" readonly style="width:30px;"/>  -->
+									<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"/>
+						<!--  			<input style="<%=datasetMap.getFilterStyle()%>" class='portlet-form-input-field' type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/> -->
 								</td>					
 								
 							</tr>
@@ -862,7 +863,9 @@ var checkableSeries = new Array();
 					document.getElementById('ext-gen8').style.top='10px';
 				}	
 					
-					document.getElementById('slider_1_1_value').value=value;
+					//document.getElementById('slider_1_1_value').value=value;
+					document.getElementById('slider_1_1_value').innerHTML =value;
+					
 					//$('slider_1_1_value').innerHTML =value;
 		})
 

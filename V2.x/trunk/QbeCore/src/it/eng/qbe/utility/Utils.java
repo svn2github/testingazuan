@@ -20,33 +20,25 @@
  **/
 package it.eng.qbe.utility;
 
-import it.eng.qbe.datasource.IHibernateDataSource;
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.io.IDataMartModelRetriever;
-import it.eng.qbe.query.ISelectField;
-import it.eng.qbe.wizard.EntityClass;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.security.IEngUserProfile;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.dom4j.Document;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
-
 import sun.misc.BASE64Encoder;
+
+import it.eng.qbe.datasource.IHibernateDataSource;
+import it.eng.qbe.log.Logger;
+import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.io.IDataMartModelRetriever;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
 
 
 // TODO: Auto-generated Javadoc
@@ -87,17 +79,7 @@ public class Utils {
 		}
 	}
 	
-	/*
-	public static Properties getLabelProperties(DataMartModel dm, ApplicationContainer application) {
-		
-		return dm.getLabelProperties();
 	
-	}
-	*/
-	
-	
-	
-
 	/**
 	 * Update the QBE_LAST_UPDATE_TIMESTAMP in session container.
 	 * 
@@ -109,69 +91,6 @@ public class Utils {
 			reqContainer.getSessionContainer().setAttribute("QBE_LAST_UPDATE_TIMESTAMP", str);
 	}
 		
-	/*
-	public static String getReportServletContextAddress(){
-		String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
-		//		 Retrieve Locale
-		String path = null;
-		if (qbeMode.equalsIgnoreCase("WEB")){
-			path = "..";
-		}else{
-			PortletRequest portletRequest = it.eng.spago.util.PortletUtilities.getPortletRequest();
-			Logger.debug(Utils.class, 
-					"getReportServletContextAddress portlet request obtained: " + portletRequest);
-			path ="http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath(); 
-			Logger.debug(Utils.class, 
-					"getReportServletContextAddress using context path: " + path);
-		}
-		
-		return path;
-		//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
-	}
-	
-	public static String getAbsoluteReportServletContext(RequestContainer requestContainer){
-		String qbeMode = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MODE.mode");
-		//		 Retrieve Locale
-		String path = null;
-		if (qbeMode.equalsIgnoreCase("WEB")){
-			String contextPath = (String)requestContainer.getAttribute("HTTP_REQUEST_CONTEXT_PATH");
-			path = "http://"+requestContainer.getAttribute("host")+ contextPath;
-		}else{
-			PortletRequest portletRequest = it.eng.spago.util.PortletUtilities.getPortletRequest();
-			Logger.debug(Utils.class, 
-					"getReportServletContextAddress portlet request obtained: " + portletRequest);
-			path ="http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() + portletRequest.getContextPath(); 
-			Logger.debug(Utils.class, 
-					"getReportServletContextAddress using context path: " + path);
-		}
-		
-		return path;
-		//return "http://"+portletRequest.getServerName()+ ":"+portletRequest.getServerPort() +"/spagobi"; 
-	}
-	
-	
-	
-	public static List getAllJndiDS(){				
-		List listResult = new ArrayList();
-		try{
-			Context ctx = new InitialContext();
-			NamingEnumeration list = ctx.listBindings("java://comp/env/jdbc");
-			
-			while (list.hasMore()){
-				NameClassPair item = (NameClassPair)list.next();
-				String cl = item.getClassName();
-				String name = item.getName();
-				System.out.println(cl+" - "+name);
-				listResult.add("jdbc/"+name);
-			}
-		 }catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return listResult;
-	}
-	*/
-
 	
 	/**
 	 * Hash m d5.
@@ -221,325 +140,16 @@ public class Utils {
 		}
 	}
    
-	/*
-	public static ISingleDataMartWizardObject getWizardObject(SessionContainer sessionContainer){
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)sessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
-		String qbeQueryMode = (String)sessionContainer.getAttribute(WizardConstants.QUERY_MODE);
 
-		if (qbeQueryMode != null && qbeQueryMode.equalsIgnoreCase(WizardConstants.SUBQUERY_MODE)){
-			   String subQueryField = (String)sessionContainer.getAttribute(WizardConstants.SUBQUERY_FIELD);
-			   //ISingleDataMartWizardObject newWizObject =  aWizardObject.getSubQueryOnField(subQueryField);
-			   ISingleDataMartWizardObject newWizObject =  (ISingleDataMartWizardObject)aWizardObject.getQuery().getSelectedSubquery();
-			   return newWizObject;
-		}
-		
-		return aWizardObject;
-	}
-	*/
-	
-	/*
-	public static ISingleDataMartWizardObject getMainWizardObject(SessionContainer sessionContainer){
-		ISingleDataMartWizardObject aWizardObject = (ISingleDataMartWizardObject)sessionContainer.getAttribute(WizardConstants.SINGLE_DATA_MART_WIZARD);
-		
-		return aWizardObject;
-	}
-	
-	public static boolean isSubQueryModeActive(SessionContainer sessionContainer){
-		
-		String qbeQueryMode = (String)sessionContainer.getAttribute(WizardConstants.QUERY_MODE);
 
-		if (qbeQueryMode != null && qbeQueryMode.equalsIgnoreCase(WizardConstants.SUBQUERY_MODE)){
-			return true;
-		}else{
-			return false;
-		}		
-	}
-	*/
-	
-	/**
-	 * Estrae dal file formula.xml solo i campi calcolati relativi alle entita' che
-	 * ho estratto nella query
-	 * 
-	 * @param cFieldId the c field id
-	 * @param formulaFile the formula file
-	 * 
-	 * @return the calculated field
-	 * 
-	 * @throws Exception the exception
-	 */
-	/*
-	public static List getCalculatedFields(ISingleDataMartWizardObject aWizardObject, DataMartModel dmModel) throws Exception{
-		SAXReader saxReader = null;
-		Document formulaFileDocument = null;
-		File f =  null;
-		try{
-			
-		String enableScript = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-ENABLE-SCRIPT.enablescript");
-		
-		List calcuatedFields = new ArrayList();
-		if ((enableScript != null) && (enableScript.equalsIgnoreCase("true"))){
-			f = dmModel.getFormulaFile();
-			if (!f.exists()){
-				return new ArrayList();
-			}
-			saxReader = new SAXReader();
-			formulaFileDocument = saxReader.read(f);
-			
-			
-			Iterator it = aWizardObject.getEntityClasses().iterator();
-			EntityClass ec = null;
-			String ecName = null;
-			String xPath = null;
-			Node domNode = null;
-			CalculatedField cfield = null;
-			while(it.hasNext()){
-				ec =(EntityClass) it.next();
-				ecName = ec.getClassName(); 
-				xPath = "/FORMULAS/FORMULA[@onEntity = '"+ecName+"' and @mode='auto']";
-				
-				List nodeList = formulaFileDocument.selectNodes(xPath);
-				
-				for (Iterator it2 = nodeList.iterator(); it2.hasNext();){
-					domNode = (Node)it2.next();
-					cfield = new CalculatedField();
-					cfield.setEntityName(domNode.valueOf("@onEntity"));
-					cfield.setId(domNode.valueOf("@id"));
-					cfield.setFldLabel(domNode.valueOf("@resultingFieldName"));
-					cfield.setScript(domNode.valueOf("@script"));
-					cfield.setMappings(domNode.valueOf("@mappings"));
-					cfield.setClassNameInQuery(cfield.getEntityName());
-					cfield.setFldCompleteNameInQuery(cfield.getEntityName() + "." + cfield.getId());
-					cfield.setInExport(domNode.valueOf("@inExport"));
-					calcuatedFields.add(cfield);
-				}
-			}
-			
-		}
-		return calcuatedFields;
-		}catch (Exception e) {
-			e.printStackTrace();
-			return new ArrayList();
-		}finally{
-			f = null;
-			saxReader = null;
-			formulaFileDocument = null;
-		}		
-	}
-	*/
+
 	
 	
-	public static CalculatedField getCalculatedField(String cFieldId, File formulaFile) throws Exception{
-		File f = null;
-		SAXReader saxReader = null;
-		Document formulaFileDocument = null;
-		try{
-			if (!formulaFile.exists()){
-				return null;
-			}
-			saxReader = new SAXReader();
-			formulaFileDocument = saxReader.read(formulaFile);
-			String xPath = "/FORMULAS/FORMULA[@id = '"+cFieldId+"']";
-			
-			Node cFieldNode =  formulaFileDocument.selectSingleNode(xPath);
-			CalculatedField cfield = new CalculatedField();
-			cfield.setId(cFieldNode.valueOf("@id"));
-			cfield.setEntityName(cFieldNode.valueOf("@onEntity"));
-			cfield.setFldLabel(cFieldNode.valueOf("@resultingFieldName"));
-			cfield.setScript(cFieldNode.valueOf("@script"));
-			cfield.setMappings(cFieldNode.valueOf("@mappings"));
-			cfield.setInExport(cFieldNode.valueOf("@inExport"));
-			return cfield;
-		}catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}finally{
-			formulaFile = null;
-			saxReader = null;
-			formulaFileDocument = null;
-		}
-	}
-	
-	/*
-	public static List getCalculatedFields(String entitiesList, File formulaFile) throws Exception{
-		SAXReader saxReader = null;
-		Document formulaFileDocument = null;
-		File f = null;
-		try{
-		String enableScript = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-ENABLE-SCRIPT.enablescript");
-		
-		List calcuatedFields = new ArrayList();
-		if ((enableScript != null) && (enableScript.equalsIgnoreCase("true"))){
-			f = formulaFile;
-			if (!f.exists()){
-				return new ArrayList();
-			}
-			saxReader = new SAXReader();
-			formulaFileDocument = saxReader.read(f);
-			
-			
-			String[] entitiesName = entitiesList.split(";");
-			String ecName = null;
-			String xPath = null;
-			Node domNode = null;
-			CalculatedField cfield = null;
-			for (int i=0; i < entitiesName.length; i++){
-				
-				ecName = entitiesName[i];
-				xPath = "/FORMULAS/FORMULA[@onEntity = '"+ecName+"' and @mode='auto']";
-				
-				List nodeList = formulaFileDocument.selectNodes(xPath);
-				
-				for (Iterator it2 = nodeList.iterator(); it2.hasNext();){
-					domNode = (Node)it2.next();
-					cfield = new CalculatedField();
-					cfield.setId(domNode.valueOf("@id"));
-					cfield.setEntityName(domNode.valueOf("@onEntity"));
-					cfield.setFldLabel(domNode.valueOf("@resultingFieldName"));
-					cfield.setScript(domNode.valueOf("@script"));
-					cfield.setMappings(domNode.valueOf("@mappings"));
-					cfield.setInExport(domNode.valueOf("@inExport"));
-					cfield.setClassNameInQuery(cfield.getEntityName());
-					cfield.setFldCompleteNameInQuery(cfield.getEntityName() + "." + cfield.getId());
-					calcuatedFields.add(cfield);
-				}
-			}
-			
-		}
-		return calcuatedFields;
-		}catch (Exception e) {
-			e.printStackTrace();
-			return new ArrayList();
-		}finally{
-			f = null;
-			saxReader = null;
-			formulaFileDocument = null;
-		}
-		
-	}
-	*/
-	
-	/*
-	public static List getManualCalculatedFieldsForEntity(String ecName, DataMartModel datamartModel) throws Exception{
-		SAXReader saxReader = null;
-		Document formulaFileDocument = null;
-		File f = null;
-		try{
-		String enableScript = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-ENABLE-SCRIPT.enablescript");
-		
-		List calcuatedFields = new ArrayList();
-		if ((enableScript != null) && (enableScript.equalsIgnoreCase("true"))){
-			
-			f = datamartModel.getFormulaFile();
-			if (!f.exists()){
-				return new ArrayList();
-			}
-			saxReader = new SAXReader();
-			formulaFileDocument = saxReader.read(f);
-			
-			
-	
-			String xPath = null;
-			Node domNode = null;
-			CalculatedField cfield = null;
-			
-				
-				
-				xPath = "/FORMULAS/FORMULA[@onEntity = '"+ecName+"' and @mode='manual']";
-				
-				List nodeList = formulaFileDocument.selectNodes(xPath);
-				
-				for (Iterator it2 = nodeList.iterator(); it2.hasNext();){
-					domNode = (Node)it2.next();
-					cfield = new CalculatedField();
-					cfield.setId(domNode.valueOf("@id"));
-					cfield.setEntityName(domNode.valueOf("@onEntity"));
-					cfield.setFldLabel(domNode.valueOf("@resultingFieldName"));
-					cfield.setScript(domNode.valueOf("@script"));
-					cfield.setMappings(domNode.valueOf("@mappings"));
-					cfield.setMappings(domNode.valueOf("@inExport"));
-					calcuatedFields.add(cfield);
-				}
-			
-			
-		}
-		return calcuatedFields;
-		}catch (Exception e) {
-			e.printStackTrace();
-			return new ArrayList();
-		}finally{
-			f = null;
-			saxReader = null;
-			formulaFileDocument = null;
-		}
-		
-	}
-	
-	*/
-	
-	/*
-	public static Integer findPositionOf(IQuery query, String completeName){
-		if (query.getSelectClause() != null){
-			List l = query.getSelectClause().getSelectFields();
-			ISelectField selField = null;
-			String selFieldcompleteName = null;
-			for (int i=0; i < l.size(); i++){
-				selField = (ISelectField)l.get(i);
-				selFieldcompleteName = selField.getFieldCompleteName();
-				if ((selFieldcompleteName != null) && (selFieldcompleteName.equals(completeName))){
-					return new Integer(i);
-				}
-			}
-		}
-		
-		return new Integer(-1);
-	}
-	*/
 	
 	
-	/**
-	 * Gets the ordered field list.
-	 * 
-	 * @param wizObject the wiz object
-	 * 
-	 * @return the ordered field list
-	 */
-	public static String getOrderedFieldList(ISingleDataMartWizardObject wizObject){
-		StringBuffer sb = new StringBuffer();
-		if (!wizObject.getQuery().isEmpty()){
-			
-			for (Iterator it = wizObject.getQuery().getSelectFieldsIterator(); it.hasNext();){
-				sb.append(((ISelectField)it.next()).getFieldCompleteName());
-				if (it.hasNext())
-					sb.append(";");
-			}
-		}
-		
-		
-		return sb.toString();
-	}
 	
-	/**
-	 * Gets the selected entities as string.
-	 * 
-	 * @param aWizardObject the a wizard object
-	 * 
-	 * @return the selected entities as string
-	 * 
-	 * @throws Exception the exception
-	 */
-	public static String getSelectedEntitiesAsString(ISingleDataMartWizardObject aWizardObject) throws Exception{
-		Iterator it = aWizardObject.getQuery().getEntityClassesIterator();
-		EntityClass ec = null;
-		StringBuffer sb = new StringBuffer();
-		while (it.hasNext()){
-			ec = (EntityClass)it.next();
-			sb.append(ec.getClassName());
-			if (it.hasNext()){
-				sb.append(";");
-			}
-		}
-		return sb.toString();
-	}
+	
+
 	
 	/**
 	 * As java class identifier.

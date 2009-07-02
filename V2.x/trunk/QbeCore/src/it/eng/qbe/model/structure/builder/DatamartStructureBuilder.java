@@ -31,7 +31,6 @@ import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.persister.entity.SingleTableEntityPersister;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
 import org.hibernate.type.ManyToOneType;
@@ -95,7 +94,7 @@ public class DatamartStructureBuilder {
 						, datamartName );
 			}
 			
-			
+			/*
 			Map x = getDataSource().getSessionFactory(datamartName).getAllClassMetadata();
 			for (Iterator it = x.values().iterator(); it.hasNext(); ) {
 				SingleTableEntityPersister y = (SingleTableEntityPersister)it.next();
@@ -106,6 +105,7 @@ public class DatamartStructureBuilder {
 					y.getPropertyColumnNames(j)[0]: ""));
 				}
 			}
+			*/
 			
 			classMetadata = sf.getAllClassMetadata();
 			for(Iterator it = classMetadata.keySet().iterator(); it.hasNext(); ) {

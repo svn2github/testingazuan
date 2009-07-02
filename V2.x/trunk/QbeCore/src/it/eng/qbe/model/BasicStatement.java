@@ -21,11 +21,9 @@
 package it.eng.qbe.model;
 
 import it.eng.qbe.newquery.Query;
-import it.eng.qbe.query.IQuery;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -39,7 +37,7 @@ public abstract class  BasicStatement implements IStatement{
 	IDataMartModel dataMartModel;
 	
 	/** The query. */
-	IQuery query;
+	Query query;
 	
 	/** The parameters. */
 	Map parameters;
@@ -71,7 +69,7 @@ public abstract class  BasicStatement implements IStatement{
 	 * @param dataMartModel the data mart model
 	 * @param query the query
 	 */
-	protected BasicStatement(IDataMartModel dataMartModel, IQuery query) {
+	protected BasicStatement(IDataMartModel dataMartModel, Query query) {
 		this.dataMartModel = dataMartModel;
 		this.query = query;
 	}
@@ -101,14 +99,14 @@ public abstract class  BasicStatement implements IStatement{
 	/* (non-Javadoc)
 	 * @see it.eng.qbe.model.IStatement#getQuery()
 	 */
-	public IQuery getQuery() {
+	public Query getQuery() {
 		return query;
 	}
 	
 	/* (non-Javadoc)
 	 * @see it.eng.qbe.model.IStatement#setQuery(it.eng.qbe.query.IQuery)
 	 */
-	public void setQuery(IQuery query) {
+	public void setQuery(Query query) {
 		this.query = query;
 		this.queryString = null;
 	}

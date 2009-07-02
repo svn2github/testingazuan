@@ -20,37 +20,10 @@
  **/
 package it.eng.qbe.model;
 
-import it.eng.qbe.bo.DatamartProperties;
-import it.eng.qbe.bo.Formula;
-import it.eng.qbe.conf.QbeCoreSettings;
-import it.eng.qbe.datasource.BasicHibernateDataSource;
-import it.eng.qbe.datasource.IDataSource;
-import it.eng.qbe.datasource.IHibernateDataSource;
-import it.eng.qbe.export.Field;
-import it.eng.qbe.export.SQLFieldsReader;
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
-import it.eng.qbe.model.io.IQueryPersister;
-import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.qbe.model.structure.builder.BasicDataMartStructureBuilder;
-import it.eng.qbe.model.views.ViewBuilder;
-import it.eng.qbe.newexport.HqlToSqlQueryRewriter;
-import it.eng.qbe.newquery.Query;
-import it.eng.qbe.newquery.SelectField;
-import it.eng.qbe.query.IQuery;
-import it.eng.qbe.utility.IDBSpaceChecker;
-import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.spagobi.utilities.sql.SqlUtils;
-
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -58,7 +31,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Vector;
 
 import org.apache.tools.ant.Project;
@@ -69,6 +41,29 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
+
+import it.eng.qbe.bo.DatamartProperties;
+import it.eng.qbe.conf.QbeCoreSettings;
+import it.eng.qbe.datasource.BasicHibernateDataSource;
+import it.eng.qbe.datasource.IDataSource;
+import it.eng.qbe.datasource.IHibernateDataSource;
+import it.eng.qbe.log.Logger;
+import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
+import it.eng.qbe.model.io.IQueryPersister;
+import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.model.structure.DataMartModelStructure;
+import it.eng.qbe.model.structure.builder.BasicDataMartStructureBuilder;
+import it.eng.qbe.model.views.ViewBuilder;
+import it.eng.qbe.newexport.Field;
+import it.eng.qbe.newexport.HqlToSqlQueryRewriter;
+import it.eng.qbe.newexport.SQLFieldsReader;
+import it.eng.qbe.newquery.Query;
+import it.eng.qbe.newquery.SelectField;
+import it.eng.qbe.utility.IDBSpaceChecker;
+import it.eng.qbe.utility.Utils;
+import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.spagobi.utilities.sql.SqlUtils;
 
 
 // TODO: Auto-generated Javadoc
@@ -132,14 +127,6 @@ public class DataMartModel implements IDataMartModel {
 		return  dataSource.getProperties();
 	}
 	
-	/**
-	 * Gets the formula.
-	 * 
-	 * @return the formula
-	 */
-	public Formula getFormula() {
-		return dataSource.getFormula();
-	}
 	
 	
 	
@@ -156,7 +143,7 @@ public class DataMartModel implements IDataMartModel {
 		
 		if ( !query.isEmpty() ){
 			
-			XIStatement xstatement = createXStatement( query );
+			IStatement xstatement = createStatement( query );
 			String hqlQuery = xstatement.getQueryString();
 			Session session = getDataSource().getSessionFactory().openSession();	
 			HqlToSqlQueryRewriter queryRewriter = new HqlToSqlQueryRewriter( session );
@@ -634,8 +621,7 @@ public class DataMartModel implements IDataMartModel {
 	 * 
 	 * @param dastaMartModelStructure the new data mart model structure
 	 */
-	public void setDataMartModelStructure(
-			DataMartModelStructure dastaMartModelStructure) {
+	public void setDataMartModelStructure(DataMartModelStructure dastaMartModelStructure) {
 		this.dataMartModelStructure = dastaMartModelStructure;
 	}
 
@@ -658,36 +644,16 @@ public class DataMartModel implements IDataMartModel {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IDataMartModel#createStatement()
-	 */
-	public IStatement createStatement() {
-		return new HQLStatement(this);
-	}
 	
-	public XIStatement createXStatement() {
-		return new XHQLStatement(this);
-	}
-
-
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IDataMartModel#createStatement(it.eng.qbe.query.IQuery)
-	 */
-	public IStatement createStatement(IQuery query) {
+	
+	public IStatement createStatement(Query query) {
 		return new HQLStatement(this, query);
 	}
-	
-	public XIStatement createXStatement(Query query) {
-		return new XHQLStatement(this, query);
-	}
 
 
 
 
 
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IDataMartModel#getDataMartModelAccessModality()
-	 */
 	public DataMartModelAccessModality getDataMartModelAccessModality() {
 		return dataMartModelAccessModality;
 	}
@@ -695,10 +661,6 @@ public class DataMartModel implements IDataMartModel {
 
 
 
-
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IDataMartModel#setDataMartModelAccessModality(it.eng.qbe.model.accessmodality.DataMartModelAccessModality)
-	 */
 	public void setDataMartModelAccessModality(
 			DataMartModelAccessModality dataMartModelAccessModality) {
 		this.dataMartModelAccessModality = dataMartModelAccessModality;

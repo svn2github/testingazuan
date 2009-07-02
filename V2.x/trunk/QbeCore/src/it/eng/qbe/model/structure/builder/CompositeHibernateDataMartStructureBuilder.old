@@ -231,7 +231,7 @@ public class CompositeHibernateDataMartStructureBuilder {
 			RelationField relationField = (RelationField)it.next();
 			if (relationField.getClassName().equalsIgnoreCase(dataMartEntity.getName()) || recursionLevel > 5){
 				// ciclo
-				System.out.println(relationField.getClassName() + " - " + dataMartEntity.getName() + " - " + recursionLevel);
+				//System.out.println(relationField.getClassName() + " - " + dataMartEntity.getName() + " - " + recursionLevel);
 			} else {
 				addSubEntity(dataMartEntity, relationField.getClassName(), relationField.getRelationOnColumnName(), relationField.getFieldName(), recursionLevel+1);
 			}

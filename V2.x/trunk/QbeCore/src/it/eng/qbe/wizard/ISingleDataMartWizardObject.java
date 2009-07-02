@@ -20,13 +20,13 @@
  **/
 package it.eng.qbe.wizard;
 
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.query.IQuery;
-import it.eng.spago.base.SourceBean;
-
 import java.io.Serializable;
 import java.util.List;
+
+import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.IDataMartModel;
+import it.eng.qbe.newquery.Query;
+import it.eng.spago.base.SourceBean;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -242,7 +242,7 @@ public interface ISingleDataMartWizardObject extends Serializable {
 	 * 
 	 * @return the query
 	 */
-	IQuery getQuery();
+	Query getQuery();
 	////////////////////////////
 	// IQuery
 	///////////////////////////

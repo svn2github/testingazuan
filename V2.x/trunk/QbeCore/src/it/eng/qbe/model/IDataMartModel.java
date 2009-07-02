@@ -20,15 +20,13 @@
  **/
 package it.eng.qbe.model;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.newquery.Query;
-import it.eng.qbe.query.IQuery;
-
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Properties;
 
 
 // TODO: Auto-generated Javadoc
@@ -46,7 +44,7 @@ public interface IDataMartModel extends Serializable {
 	 * 
 	 * @return the i statement
 	 */
-	public IStatement createStatement();
+	//public IStatement createStatement();
 	
 	/**
 	 * Creates the statement.
@@ -55,9 +53,7 @@ public interface IDataMartModel extends Serializable {
 	 * 
 	 * @return the i statement
 	 */
-	public IStatement createStatement(IQuery query);
-	
-	public XIStatement createXStatement(Query query);
+	public IStatement createStatement(Query query);
 	
 	/**
 	 * Gets the data mart model structure.

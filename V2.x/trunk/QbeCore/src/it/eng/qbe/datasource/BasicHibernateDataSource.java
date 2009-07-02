@@ -20,16 +20,17 @@
  **/
 package it.eng.qbe.datasource;
 
-import it.eng.qbe.dao.DAOFactory;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import it.eng.qbe.dao.DAOFactory;
 
 
 /**
@@ -55,6 +56,9 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 	
 	/** The already added view. */
 	private List alreadyAddedView = null;
+	
+	/** Logger component. */
+    private static transient Logger logger = Logger.getLogger(BasicHibernateDataSource.class);
 	
 	
 	/**
@@ -90,8 +94,6 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		setDatamartName(datamartName);		
 		setDatamartNames(datamartNames);
 		setConnection(connection);	
-		
-		setFormula( DAOFactory.getFormulaDAO().loadFormula(getDatamartName()) );
 		
 		setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( datamartName ) );
 		
@@ -159,7 +161,12 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		
 		addViews();
 		
-		sessionFactory = configuration.buildSessionFactory();	
+		try {
+			sessionFactory = configuration.buildSessionFactory();
+			logger.info("Hibernate session factory built succesfully");
+		} catch(Throwable t) {
+			logger.info("Hibernate session factory built with some errors");
+		}
 	}
 	
 	/**

@@ -20,13 +20,6 @@
  **/
 package it.eng.qbe.datasource;
 
-import it.eng.qbe.bo.Formula;
-import it.eng.qbe.conf.QbeCoreSettings;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.io.IDataMartModelRetriever;
-import it.eng.spago.base.ApplicationContainer;
-import it.eng.spagobi.utilities.DynamicClassLoader;
-
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -39,6 +32,12 @@ import org.apache.log4j.Logger;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Table;
+
+import it.eng.qbe.conf.QbeCoreSettings;
+import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.io.IDataMartModelRetriever;
+import it.eng.spago.base.ApplicationContainer;
+import it.eng.spagobi.utilities.DynamicClassLoader;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -57,9 +56,6 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 	
 	/** The connection. */
 	private DBConnection connection = null;
-	
-	/** The formula. */
-	private Formula formula = null;	
 	
 	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(AbstractHibernateDataSource.class);
@@ -354,21 +350,5 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 			}
 		}
 		
-	}
-
-
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.datasource.IHibernateDataSource#getFormula()
-	 */
-	public Formula getFormula() {
-		return formula;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.datasource.IHibernateDataSource#setFormula(it.eng.qbe.bo.Formula)
-	 */
-	public void setFormula(Formula formula) {
-		this.formula = formula;
 	}
 }

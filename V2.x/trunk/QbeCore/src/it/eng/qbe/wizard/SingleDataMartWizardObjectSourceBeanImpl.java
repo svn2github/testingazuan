@@ -21,15 +21,6 @@
 package it.eng.qbe.wizard;
 
 
-import it.eng.qbe.export.HqlToSqlQueryRewriter;
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.model.IStatement;
-import it.eng.qbe.query.IQuery;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -38,6 +29,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
+
+import it.eng.qbe.log.Logger;
+import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.IDataMartModel;
+import it.eng.qbe.model.IStatement;
+import it.eng.qbe.newexport.HqlToSqlQueryRewriter;
+import it.eng.qbe.newquery.Query;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -82,7 +82,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 	
 	
 	/** The query. */
-	private it.eng.qbe.query.Query query = null;
+	private it.eng.qbe.newquery.Query query = null;
 	
 	/**
 	 * Instantiates a new single data mart wizard object source bean impl.
@@ -92,7 +92,7 @@ public class SingleDataMartWizardObjectSourceBeanImpl implements ISingleDataMart
 		//this.entityClasses = new ArrayList();
 		//this.subqueryMap = new HashMap();
 		//this.mapFieldIdSubQUeryId = new HashMap();
-		query = new it.eng.qbe.query.Query();
+		query = new it.eng.qbe.newquery.Query();
 	
 	}
 	
@@ -688,7 +688,7 @@ public boolean isUseExpertedVersion() {
 	/* (non-Javadoc)
 	 * @see it.eng.qbe.wizard.ISingleDataMartWizardObject#getQuery()
 	 */
-	public IQuery getQuery() {
+	public Query getQuery() {
 		return query;
 	}
 	

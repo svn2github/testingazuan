@@ -20,18 +20,17 @@
  **/
 package it.eng.qbe.datasource;
 
-import it.eng.qbe.dao.DAOFactory;
-import it.eng.qbe.log.Logger;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import it.eng.qbe.dao.DAOFactory;
+import it.eng.qbe.log.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -95,8 +94,7 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		setDblinkMap(dblinkMap);
 		
 		setConnection(connection);
-		
-		setFormula( DAOFactory.getFormulaDAO().loadFormula( datamartName ) );		
+			
 		setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( datamartName ) );
 		
 		this.alreadyAddedView = new ArrayList();		

@@ -20,12 +20,6 @@
  **/
 package it.eng.qbe.model.io;
 
-import it.eng.qbe.conf.QbeCoreSettings;
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.utility.FileUtils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
@@ -38,6 +32,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import it.eng.qbe.conf.QbeCoreSettings;
+import it.eng.qbe.log.Logger;
+import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.utility.FileUtils;
+import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -95,7 +95,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 		
 		String qbeDataMartDir = FileUtils.getQbeDataMartDir(baseDir);
 		
-		String key = wizObject.getQuery().getQueryId();
+		String key = "q-" + wizObject.getQuery().hashCode();
 		String fileName = null;
 		
 		String publicDmDir = qbeDataMartDir +System.getProperty("file.separator")+  dm.getName();

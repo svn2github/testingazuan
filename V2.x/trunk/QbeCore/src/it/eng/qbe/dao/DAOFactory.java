@@ -20,9 +20,9 @@
  **/
 package it.eng.qbe.dao;
 
-import it.eng.qbe.conf.QbeCoreSettings;
-
 import java.io.File;
+
+import it.eng.qbe.conf.QbeCoreSettings;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -32,15 +32,6 @@ import java.io.File;
  */
 public class DAOFactory {
 	
-	/**
-	 * Gets the formula dao.
-	 * 
-	 * @return the formula dao
-	 */
-	public static FormulaDAO getFormulaDAO() {
-		File datamartsDir = QbeCoreSettings.getInstance().getQbeDataMartDir();
-		return new FormulaDAOFilesystemImpl(datamartsDir);
-	}
 	
 	/**
 	 * Gets the datamart jar file dao.

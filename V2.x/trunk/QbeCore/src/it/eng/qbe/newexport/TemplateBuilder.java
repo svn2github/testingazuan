@@ -20,16 +20,6 @@
  **/
 package it.eng.qbe.newexport;
 
-import it.eng.qbe.bo.Formula;
-import it.eng.qbe.export.SQLFieldsReader;
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
-import it.eng.qbe.utility.CalculatedField;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
-
 import java.beans.XMLDecoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -39,11 +29,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+import it.eng.qbe.log.Logger;
+import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
+import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 
 // TODO: Auto-generated Javadoc
 /**

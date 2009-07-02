@@ -20,12 +20,10 @@
  **/
 package it.eng.qbe.datasource;
 
-import it.eng.qbe.bo.DatamartLabels;
-import it.eng.qbe.dao.DAOFactory;
-
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+
+import it.eng.qbe.dao.DAOFactory;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -86,7 +84,6 @@ public class DataSourceFactory {
 		
 		dataSource.setDblinkMap(dblinkMap);		
 		
-		dataSource.setFormula( DAOFactory.getFormulaDAO().loadFormula( datamartName ) );		
 		dataSource.setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( datamartName ) );
 		//dataSource.setLabels( DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartName) );
 	}

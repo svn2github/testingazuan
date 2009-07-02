@@ -20,8 +20,6 @@
  **/
 package it.eng.qbe.datasource;
 
-import it.eng.qbe.bo.Formula;
-
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -77,20 +75,6 @@ public interface IHibernateDataSource extends IDataSource {
 	 */
 	SessionFactory getSessionFactory(String dmName);
 
-	/**
-	 * Gets the formula.
-	 * 
-	 * @return the formula
-	 */
-	Formula getFormula();
-	
-	/**
-	 * Sets the formula.
-	 * 
-	 * @param formula the new formula
-	 */
-	void setFormula(Formula formula);
-		
 	
 	/**
 	 * Refresh datamart views.

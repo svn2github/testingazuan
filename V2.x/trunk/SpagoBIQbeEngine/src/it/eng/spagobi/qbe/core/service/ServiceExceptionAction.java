@@ -23,9 +23,7 @@ package it.eng.spagobi.qbe.core.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFInternalError;
-import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.service.JSONFailure;
 
@@ -33,6 +31,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
 
 /**
  * The Class ServiceExceptionAction.
@@ -63,6 +62,9 @@ public class ServiceExceptionAction extends AbstractQbeEngineAction {
 					} catch (IOException ioe) {
 						String message = "Impossible to write back the responce to the client";
 						throw new SpagoBIEngineServiceException(getActionName(), message, e);
+					} catch (JSONException je) {
+						String message = "Error while serializing error into JSON object";
+						throw new SpagoBIEngineServiceException(getActionName(), message, je);
 					}
 				}
 			}

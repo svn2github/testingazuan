@@ -26,6 +26,7 @@ import java.util.Locale;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
@@ -53,6 +54,11 @@ public abstract class AbstractSpagoBIAction extends AbstractBaseHttpAction {
     } 
 	
 	public void service(SourceBean request, SourceBean response) throws SpagoBIServiceException {
+		EMFErrorHandler errorHandler = this.getErrorHandler();
+		if (!errorHandler.isOK()) {
+			writeErrorsBackToClient();
+			return;
+		}
 		setSpagoBIRequestContainer( request );
 		setSpagoBIResponseContainer( response );
 		try {
@@ -139,5 +145,9 @@ public abstract class AbstractSpagoBIAction extends AbstractBaseHttpAction {
     	// rethrows the wrapped exception (it will be trapped)
     	
     	SpagoBIServiceExceptionHandler.getInstance().getWrappedException(SERVICE_NAME, t);
+    }
+    
+    protected void checkError() {
+    	
     }
 }

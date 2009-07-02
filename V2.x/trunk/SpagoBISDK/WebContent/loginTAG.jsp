@@ -43,9 +43,9 @@ The form points to documentsList.jsp.
 </head>
 </head>
 <body>
-<h2>Welcome to SpagoBI SDK - TAG library demo</h2>
+<h2>Welcome to SpagoBI SDK - Web Services / TAG library demo</h2>
 <br/>
-<span><b>Login with biadmin/biadmin</b></span>
+<span><b>Login with biuser/biuser</b></span>
 <form action="documentsList.jsp" method="post">
 Name: <input type="text" name="user" size="30"/><br/>
 Password: <input type="password" name="password" size="30"/><br/>

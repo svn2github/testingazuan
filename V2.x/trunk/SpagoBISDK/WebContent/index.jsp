@@ -38,7 +38,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <b>Examples:</b>
 <p>
 <ul>
-<li><a href="loginTAG.jsp">tag library example</a>
+<li><a href="loginTAG.jsp">web-services / tag library example</a>
 <li><a href="loginJS.jsp">javascript API example</a>
 </ul>
 

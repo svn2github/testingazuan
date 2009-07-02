@@ -206,7 +206,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	        },
 	        
 	        tbar:this.exportTBar,
-	        bbar: this.pagingTBar   
+	        bbar: this.pagingTBar
 	    });   
 	}
 
@@ -218,7 +218,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	}
 	
 	, onDataStoreLoadException: function(response, options) {
-		it.eng.spagobi.engines.qbe.exceptionhandler.module.handleFailure(response, options);
+		Sbi.exception.ExceptionHandler.handleFailure(response, options);
 	}
 
 });

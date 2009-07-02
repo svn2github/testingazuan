@@ -51,8 +51,9 @@ Sbi.exception.ExceptionHandler = function(){
 	// do NOT access DOM from here; elements don't exist yet
  
     // private variables
- 
-    // public space
+	var loginUrl = Sbi.config.loginUrl;
+
+	// public space
 	return {
 	
 		init : function() {
@@ -62,20 +63,32 @@ Sbi.exception.ExceptionHandler = function(){
 		
         handleFailure : function(response, options) {
         	
-        	var errMessage = 'Generic error'
+        	var errMessage = ''
         	if(response !== undefined) {
         		
         		if(response.responseText !== undefined) {
         			var content = Ext.util.JSON.decode( response.responseText );
-        			if (content.localizedMessage !== undefined && content.localizedMessage !== '') {
-        				errMessage = content.localizedMessage;
-        			} else if (content.message !== undefined && content.message !== '') {
-        				errMessage = content.message;
-        			} else if(content.cause !== undefined) {
-        				errMessage = content.cause;
-        			} 
+        			if (content.errors !== undefined) {
+        				if (content.errors[0].message === 'session-expired') {
+        					// session expired
+        		        	Sbi.exception.ExceptionHandler.redirectToLoginUrl();
+        		        	return;
+        				} else {
+        					for (var count = 0; count < content.errors.length; count++) {
+        						var anError = content.errors[count];
+			        			if (anError.localizedMessage !== undefined && anError.localizedMessage !== '') {
+			        				errMessage += anError.localizedMessage;
+			        			} else if (anError.message !== undefined && anError.message !== '') {
+			        				errMessage += anError.message;
+			        			}
+			        			if (count < content.errors.lenght - 1) {
+			        				errMessage += '\n';
+			        			}
+        					}
+        				}
+        			}
         		} else {
-        			errMessage = 'errore';
+        			errMessage = 'Generic error';
         		}
         	}
         	
@@ -107,6 +120,28 @@ Sbi.exception.ExceptionHandler = function(){
            		, icon: Ext.MessageBox. WARNING
            		, modal: false
        		});
+        },
+        
+        redirectToLoginUrl: function() {
+        	var sessionExpiredSpagoBIJSFound = false;
+        	try {
+        		var currentWindow = window;
+        		var parentWindow = parent;
+        		while (parentWindow != currentWindow) {
+        			if (parentWindow.sessionExpiredSpagoBIJS) {
+        				parentWindow.location = loginUrl;
+        				sessionExpiredSpagoBIJSFound = true;
+        				break;
+        			} else {
+        				currentWindow = parentWindow;
+        				parentWindow = currentWindow.parent;
+        			}
+        		}
+        	} catch (err) {}
+        	
+        	if (!sessionExpiredSpagoBIJSFound) {
+        		window.location = loginUrl;
+        	}
         }
 
 	};

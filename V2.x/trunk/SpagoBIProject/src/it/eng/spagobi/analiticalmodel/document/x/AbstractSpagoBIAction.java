@@ -35,19 +35,16 @@ import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.container.IBeanContainer;
 import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
 import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
-import it.eng.spagobi.utilities.exceptions.CannotWriteErrorsToClient;
+import it.eng.spagobi.utilities.exceptions.CannotWriteErrorsToClientException;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
 import it.eng.spagobi.utilities.service.JSONFailure;
 import it.eng.spagobi.utilities.themes.ThemesManager;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
-import org.json.JSONException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -86,7 +83,7 @@ public abstract class AbstractSpagoBIAction extends AbstractBaseHttpAction {
 			writeBackToClient( new JSONFailure(errors) );
 		} catch (Throwable t) {
 			logger.error(t);
-			throw new CannotWriteErrorsToClient(SERVICE_NAME, "Cannot write errors to client", t);
+			throw new CannotWriteErrorsToClientException(SERVICE_NAME, "Cannot write errors to client", t);
 		}
 		logger.debug("OUT");
 	}

@@ -23,7 +23,7 @@ package it.eng.spagobi.analiticalmodel.document.x;
 
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFInternalError;
-import it.eng.spagobi.utilities.exceptions.CannotWriteErrorsToClient;
+import it.eng.spagobi.utilities.exceptions.CannotWriteErrorsToClientException;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -51,7 +51,7 @@ public class ServiceExceptionAction extends AbstractSpagoBIAction {
 				if (error instanceof EMFInternalError) {
 					EMFInternalError internalError = (EMFInternalError) error;
 					Exception e = internalError.getNativeException();
-					if(e instanceof CannotWriteErrorsToClient) {
+					if(e instanceof CannotWriteErrorsToClientException) {
 						logger.error(e);
 						return;
 					}

@@ -156,10 +156,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			, exporters: <%= (obj != null && exportersJSArray!=null && !exportersJSArray.equals("")) ? exportersJSArray : "undefined" %>
 			};
 
-	var parameters = <%= parameters != null ? ("'" + parameters.replaceAll("'", "\'") + "'") : "undefined" %>;
-	var subobject = <%= subobjectName != null ? ("'" + subobjectName.replaceAll("'", "\'") + "'") : "undefined" %>;
-	var snapshotName = <%= snapshotName != null ? ("'" + snapshotName.replaceAll("'", "\'") + "'") : "undefined" %>;
-	var snapshotHistoryNumber = <%= snapshotHistoryNumber != null ? snapshotHistoryNumber : "0" %>;
+	var parameters = <%= (parameters != null  && !parameters.trim().equals("")) ? ("'" + parameters.replaceAll("'", "\'") + "'") : "undefined" %>;
+	var subobject = <%= (subobjectName != null && !subobjectName.trim().equals("")) ? ("'" + subobjectName.replaceAll("'", "\'") + "'") : "undefined" %>;
+	var snapshotName = <%= (snapshotName != null && !snapshotName.trim().equals("")) ? ("'" + snapshotName.replaceAll("'", "\'") + "'") : "undefined" %>;
+	var snapshotHistoryNumber = <%= (snapshotHistoryNumber != null && !snapshotHistoryNumber.trim().equals("")) ? snapshotHistoryNumber : "0" %>;
 	var snaphost = {'name': snapshotName, 'historyNumber': snapshotHistoryNumber};
 	var shortcutsHidden = <%= shortcutsHidden %>;
 	var toolbarHidden = <%= toolbarHidden %>;

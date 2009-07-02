@@ -70,6 +70,32 @@ The form points to documentsList.jsp.
 <body>
 <h2>Example 4 : injectDocument into existing div using ExtJs UI</h2>
 <hr>
+<b>Description:</b> Use <i>injectDocument</i> function to inject into an existing div an html string that contains the definition of an iframe 
+pointing to the execution service. The html string is generated internally using <i>getDocumentHtml</i> function. In this example 
+differently from the previous the new execution module, fully based on ajax technology, is invoked.
+
+<p>
+<b>Code: </b>
+<p>
+<BLOCKQUOTE>
+<PRE>
+example4Function = function() {
+	Sbi.sdk.api.injectDocument({
+		documentLabel: 'RPT_WAREHOUSE_PROF'
+		, executionRole: '/spagobi/user'
+		, parameters: {warehouse_id: 19}
+		, displayToolbar: false
+		, displaySliders: false
+		, target: 'targetDiv'
+		, iframe: {
+			style: 'border: 0px;'
+		}
+		, useExtUI: true
+	});
+};
+</PRE>
+</BLOCKQUOTE>
+<hr>
 <div height="500px" width="100%" id='targetDiv'></div>
 <hr>
 

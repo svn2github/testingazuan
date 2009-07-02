@@ -70,6 +70,31 @@ The form points to documentsList.jsp.
 <body>
 <h2>Example 3 : injectDocument into existing div</h2>
 <hr>
+<b>Description:</b> Use <i>injectDocument</i> function to inject into an existing div an html string that contains the definition of an iframe 
+	pointing to the execution service. The html string is generated internally using <i>getDocumentHtml</i> function.
+<p>
+<b>Code: </b>
+<p>
+<BLOCKQUOTE>
+<PRE>
+example3Function = function() {
+	Sbi.sdk.api.injectDocument({
+		documentLabel: 'RPT_WAREHOUSE_PROF'
+		, executionRole: '/spagobi/user'
+		, parameters: {warehouse_id: 19}
+		, displayToolbar: false
+		, displaySliders: false
+		, target: 'targetDiv'
+		, height: '500px'
+		, width: '800px'
+		, iframe: {
+			style: 'border: 0px;'
+		}
+	});
+};
+</PRE>
+</BLOCKQUOTE>
+<hr>
 <div height="300px" width="100%" id='targetDiv'></div>
 <hr>
 

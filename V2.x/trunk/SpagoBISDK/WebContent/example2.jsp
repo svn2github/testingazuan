@@ -70,6 +70,31 @@ The form points to documentsList.jsp.
 <body>
 <h2>Example 2 : getDocumentHtml</h2>
 <hr>
+<b>Description: </b> Use <i>getDocumentHtml</i> function to get an html string that contains the definition of an iframe 
+	pointing to the execution service. The src property of the iframe is internally populated using <i>getDocumentUrl</i> function.
+<p>
+<b>Code: </b>
+<p>
+<BLOCKQUOTE>
+<PRE>
+example2Function = function() {
+	var html = Sbi.sdk.api.getDocumentHtml({
+		documentLabel: 'RPT_WAREHOUSE_PROF'
+		, executionRole: '/spagobi/user'
+		, parameters: {warehouse_id: 19}
+		, displayToolbar: false
+		, displaySliders: false
+		, iframe: {
+			height: '500px'
+		    , width: '100%'
+			, style: 'border: 0px;'
+		}
+	});
+	document.getElementById('targetDiv').innerHTML = html;
+};
+</PRE>
+</BLOCKQUOTE>
+<hr>
 <div height="300px" width="800px" id='targetDiv'></div>
 <hr>
 

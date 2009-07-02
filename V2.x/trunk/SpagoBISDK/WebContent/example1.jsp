@@ -55,8 +55,6 @@ The form points to documentsList.jsp.
 				, parameters: {warehouse_id: 19}
 				, displayToolbar: false
 				, displaySliders: false
-				//, height: '500px'
-				//, width: '800px'
 				, iframe: {
 					style: 'border: 0px;'
 				}
@@ -69,6 +67,30 @@ The form points to documentsList.jsp.
 
 <body>
 <h2>Example 1 : getDocumentUrl</h2>
+<hr>
+<b>Description: </b> Use <i>getDocumentUrl</i> function to create the invocation url used to call execution service asking for a 
+specific execution (i.e. document + execution role + parameters) 
+<p>
+<b>Code: </b>
+<p>
+<BLOCKQUOTE>
+<PRE>
+example1Function = function() {
+	var url = Sbi.sdk.api.getDocumentUrl({
+		documentLabel: 'RPT_WAREHOUSE_PROF'
+		, executionRole: '/spagobi/user'
+		, parameters: {warehouse_id: 19}
+		, displayToolbar: false
+		, displaySliders: false
+		, iframe: {
+			style: 'border: 0px;'
+		}
+	});
+
+	document.getElementById('execiframe').src = url;
+};
+</PRE>
+</BLOCKQUOTE>
 <hr>
 <iframe id="execiframe" src='' height="400px" width="100%"></iframe>
 <hr>

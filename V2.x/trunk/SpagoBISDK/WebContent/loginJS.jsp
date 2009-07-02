@@ -46,6 +46,9 @@ The form points to documentsList.jsp.
 
 	<script type="text/javascript">
 
+		/*
+		 *  setup some basic informations in order to invoke SpagoBI server's services
+		 */
 		Sbi.sdk.services.setBaseUrl({
 	        protocol: 'http'     
 	        , host: 'localhost'
@@ -53,13 +56,21 @@ The form points to documentsList.jsp.
 	        , contextPath: 'SpagoBI'
 	        , controllerPath: 'servlet/AdapterHTTP'  
 	    });
+
 		
 		doLogin = function() {
 			var userEl = document.getElementById('user');
 			var passwordEl = document.getElementById('password');
 			var user = userEl.value;
 			var password = passwordEl.value;
-    
+
+		    /*
+		    * the callback invoked uppon request termination
+		    *
+			* @param result the server response
+			* @param args parameters sent to the server with the original request
+			* @param seccess true if the service has been executed by the server in a succesfull way
+		    */ 
 		    var cb = function(result, args, success) {
 		        
 				if(success === true) {
@@ -67,18 +78,18 @@ The form points to documentsList.jsp.
 					var examplesEl =  document.getElementById('examples');
 					authenticationEl.style.display = "none";
 					examplesEl.style.display = "inline";
-					
-
-					//this.execTest1();
-			        //this.execTest2();
-				    //this.execTest3();
-				    //this.execTest4();
-				    //this.execTest5();
 				} else {
 					alert('ERROR: Wrong username or password');
 				}
 		    };
 
+		   /*
+		    * authentication function
+		    *
+			* @param params the list of parameters to pass to the authentication servics (i.e. user & password)
+			* @param callback the callback definition (i.e. fn: the function to call; scope: the scope of invocation; 
+			*        args: parameters to append to the callback invocation)
+		    */ 
 		    Sbi.sdk.api.authenticate({ 
 				params: {
 					user: user
@@ -111,13 +122,29 @@ Password: <input type="password" id="password" name="password" size="30" value="
 
 <div id="examples" style="display:none">
 <b>Examples</b>
-<ul>
-<li> <a target="_blank" href="example1.jsp">Example 1 : getDocumentUrl</a>
-<li> <a target="_blank" href="example2.jsp">Example 2 : getDocumentHtml</a>
-<li> <a target="_blank" href="example3.jsp">Example 3 : injectDocument into existing div</a>
-<li> <a target="_blank" href="example4.jsp">Example 4 : injectDocument into existing div using ExtJs UI</a>
-<li> <a target="_blank" href="example5.jsp">Example 5 : injectDocument into non-existing div</a>
-</ul>
+<dl>
+	<dt> <a target="_blank" href="example1.jsp">Example 1 : getDocumentUrl</a>
+	<dd> Use <i>getDocumentUrl</i> function to create the invocation url used to call execution service asking for a 
+	specific execution (i.e. document + execution role + parameters) 
+	<p>
+	<dt> <a target="_blank" href="example2.jsp">Example 2 : getDocumentHtml</a>
+	<dd> Use <i>getDocumentHtml</i> function to get an html string that contains the definition of an iframe 
+	pointing to the execution service. <br>The src property of the iframe is internally populated using <i>getDocumentUrl</i> function.
+	<p>
+	<dt> <a target="_blank" href="example3.jsp">Example 3 : injectDocument into existing div</a>
+	<dd>  Use <i>injectDocument</i> function to inject into an existing div an html string that contains the definition of an iframe 
+	pointing to the execution service. <br>The html string is generated internally using <i>getDocumentHtml</i> function.
+	<p>
+	<dt> <a target="_blank" href="example4.jsp">Example 4 : injectDocument into existing div using ExtJs UI</a>
+	<dd>  Use <i>injectDocument</i> function to inject into an existing div an html string that contains the definition of an iframe 
+	pointing to the execution service. <br>The html string is generated internally using <i>getDocumentHtml</i> function. In this example 
+	differently from the previous the new execution module, fully based on ajax technology, is invoked.
+	<p>
+	<dt> <a target="_blank" href="example5.jsp">Example 5 : injectDocument into non-existing div</a>
+	<dd>  Use <i>injectDocument</i> function to inject into a div an html string that contains the definition of an iframe 
+	pointing to the execution service. <br>In this example the specified target div does not exist so it is created on the fly by the function
+	
+</dl>
 </div>
 
 

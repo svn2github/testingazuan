@@ -26,7 +26,7 @@ import java.util.Map;
 import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.qbe.newquery.Query;
+import it.eng.qbe.query.Query;
 
 
 // TODO: Auto-generated Javadoc

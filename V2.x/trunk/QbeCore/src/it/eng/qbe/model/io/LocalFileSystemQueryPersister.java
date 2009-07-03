@@ -36,8 +36,8 @@ import java.util.List;
 import it.eng.qbe.conf.QbeCoreSettings;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.newquery.Query;
-import it.eng.qbe.newquery.QueryMeta;
+import it.eng.qbe.query.Query;
+import it.eng.qbe.query.QueryMeta;
 import it.eng.qbe.utility.FileUtils;
 
 // TODO: Auto-generated Javadoc

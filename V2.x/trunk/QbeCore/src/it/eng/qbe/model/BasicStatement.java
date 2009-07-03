@@ -23,7 +23,7 @@ package it.eng.qbe.model;
 import java.io.IOException;
 import java.util.Map;
 
-import it.eng.qbe.newquery.Query;
+import it.eng.qbe.query.Query;
 
 // TODO: Auto-generated Javadoc
 /**

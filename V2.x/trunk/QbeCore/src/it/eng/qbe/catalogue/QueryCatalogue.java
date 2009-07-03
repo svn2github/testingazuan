@@ -23,8 +23,8 @@ package it.eng.qbe.catalogue;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.eng.qbe.newquery.Query;
-import it.eng.qbe.newquery.QueryMeta;
+import it.eng.qbe.query.Query;
+import it.eng.qbe.query.QueryMeta;
 
 
 

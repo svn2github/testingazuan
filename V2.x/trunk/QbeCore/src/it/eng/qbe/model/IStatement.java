@@ -20,7 +20,7 @@
  **/
 package it.eng.qbe.model;
 
-import it.eng.qbe.newquery.Query;
+import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
 
 import java.io.IOException;

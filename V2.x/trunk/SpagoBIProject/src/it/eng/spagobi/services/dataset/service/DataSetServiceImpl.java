@@ -69,7 +69,7 @@ public class DataSetServiceImpl extends AbstractServiceImpl  implements DataSetS
     
     public SpagoBiDataSet getDataSetByLabel(String token,String user,String label){
     	logger.debug("IN");
-    	Monitor monitor = MonitorFactory.start("spagobi.service.dataset.getDataSet");
+    	Monitor monitor = MonitorFactory.start("spagobi.service.dataset.getDataSetByLabel");
     	try {
     	    validateTicket(token, user);
     	    return supplier.getDataSetByLabel(label);

@@ -46,6 +46,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import sun.misc.BASE64Encoder;
 
 public class ContentServiceImplSupplier {
@@ -163,6 +166,7 @@ public class ContentServiceImplSupplier {
 	private boolean checkParametersErrors(IEngUserProfile profile, Integer biobjectId, String roleName, Map parameters) {
     	logger.debug("IN: user = [" + profile.getUserUniqueIdentifier() + "], biobjectid = [" + biobjectId + "], " +
     			"roleName = [" + roleName + "], parameters = [" + parameters + "]");
+    	Monitor monitor =MonitorFactory.start("spagobi.service.ContentSupplier.checkParametersErrors");
 		try {
 			ExecutionInstance instance = new ExecutionInstance(profile, "", "", biobjectId, roleName, "", true, true);
 			instance.refreshParametersValues(parameters, true);
@@ -177,6 +181,7 @@ public class ContentServiceImplSupplier {
 			return false;
 		} finally {
 		    logger.debug("OUT");
+		    monitor.stop();
 		}
     }
     
@@ -196,7 +201,8 @@ public class ContentServiceImplSupplier {
      */
     private void checkRequestCorrectness(String user, BIObject biobj, HashMap parameters) throws SecurityException, EMFInternalError, EMFUserError {
     	logger.debug("IN: user = [" + user + "], biobjectid = [" + biobj + "], parameters = [" + parameters + "]");
-		try {
+    	Monitor monitor =MonitorFactory.start("spagobi.service.ContentSupplier.checkRequestCorrectness");
+    	try {
 			if (biobj == null) {
 				logger.error("No document specified");
 				return;
@@ -210,16 +216,7 @@ public class ContentServiceImplSupplier {
 	    		logger.error("An error occurred while creating the profile of user [" + user + "]");
 	    		throw new SecurityException("An error occurred while creating the profile of user [" + user + "]", e);
 		    }		    
-		    /*
-		    ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
-		    try {
-	      		SpagoBIUserProfile userProfile = supplier.createUserProfile(user);
-	      		profile = new UserProfile(userProfile);
-		    } catch (Exception e) {
-	    		logger.error("An error occurred while creating the profile of user [" + user + "]");
-	    		throw new SecurityException("An error occurred while creating the profile of user [" + user + "]", e);
-		    }
-		    */
+
 		    // Check if the user can execute the document
 		    boolean canSee = ObjectsAccessVerifier.canSee(biobj, profile);
 		    if (!canSee) {
@@ -287,6 +284,7 @@ public class ContentServiceImplSupplier {
 	    	}
 		} finally {
 		    logger.debug("OUT");
+		    monitor.stop();
 		}
     }
     

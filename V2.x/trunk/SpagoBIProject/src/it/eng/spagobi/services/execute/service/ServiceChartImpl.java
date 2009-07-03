@@ -44,6 +44,9 @@ import org.apache.log4j.Logger;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 /**
  * @author Angelo Bernabei
  *         angelo.bernabei@eng.it
@@ -59,7 +62,7 @@ public class ServiceChartImpl {
 	public byte[] executeChart(String token,String userId,String label,HashMap parameters){
 
 		logger.debug("IN");
-
+		Monitor monitor =MonitorFactory.start("spagobi.service.execute.executeChart");
 		logger.debug("Getting profile");
 		
 		byte[] returnImage=null;
@@ -207,6 +210,7 @@ public class ServiceChartImpl {
 				} catch (IOException e) {
 					logger.error("Error while closing stream",e);
 				}
+				monitor.stop();
 			}
 			//out.flush();
 		}

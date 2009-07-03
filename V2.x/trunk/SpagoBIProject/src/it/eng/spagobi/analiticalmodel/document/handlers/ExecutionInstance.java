@@ -72,6 +72,9 @@ import org.json.JSONObject;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 /**
  * This class represents a document execution instance.
  * This contains the following attributes:
@@ -162,6 +165,7 @@ public class ExecutionInstance {
 
 	private void initBIParameters() {
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.ExecutionInstance.initBIParameters");
 		List tmpBIObjectParameters = object.getBiObjectParameters();
 		Iterator it = tmpBIObjectParameters.iterator();
 		BIObjectParameter aBIObjectParameter = null;
@@ -195,6 +199,7 @@ public class ExecutionInstance {
 				}
 			}
 		}
+		monitor.stop();
 		logger.debug("OUT");
 	}
 

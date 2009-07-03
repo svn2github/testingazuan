@@ -78,7 +78,7 @@ public class MapCatalogueImpl extends AbstractServiceImpl {
 
     //read the template of svg file from the db and create a content object
     public Content readMap(String token,String user,String mapName){
-    	Monitor monitor =MonitorFactory.start("spagobi.service.content.readTemplate");
+    	Monitor monitor =MonitorFactory.start("spagobi.service.content.readMap");
         logger.debug("IN");
         logger.debug("mapName = " +mapName);
         Content content = new Content();

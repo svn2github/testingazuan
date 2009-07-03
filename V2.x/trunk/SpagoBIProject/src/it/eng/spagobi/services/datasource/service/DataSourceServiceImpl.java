@@ -83,7 +83,7 @@ public class DataSourceServiceImpl extends AbstractServiceImpl implements DataSo
      */    
     public SpagoBiDataSource getDataSourceByLabel(String token,String user,String label){
 	logger.debug("IN");
-	Monitor monitor =MonitorFactory.start("spagobi.service.datasource.getDataSource");
+	Monitor monitor =MonitorFactory.start("spagobi.service.datasource.getDataSourceByLabel");
 	try {
 	    validateTicket(token, user);
 	    return supplier.getDataSourceByLabel(label);

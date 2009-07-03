@@ -194,7 +194,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		//if(sbi.getSubtype().equalsIgnoreCase("simplebar") || sbi.getSubtype().equalsIgnoreCase("linkableBar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar_group")){
 		if(sbi.getSubtype().equalsIgnoreCase("simplebar") || sbi.getSubtype().equalsIgnoreCase("linkableBar") || sbi.getSubtype().equalsIgnoreCase("stacked_bar")){
 			// returns a new datasets map filtered
-			copyDatasets=datasetMap.filteringSimpleBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
+			copyDatasets=datasetMap.filteringSimpleBarChart(sbModuleResponse,request,(BarCharts)sbi,sbiMode,docComposition);
 			filterCatGroup=((BarCharts)sbi).isFilterCatGroups();
 		}
 		else if(sbi.getSubtype().equalsIgnoreCase("overlaid_barline") || sbi.getSubtype().equalsIgnoreCase("overlaid_stackedbarline")){
@@ -475,122 +475,135 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	}
 	
 %>
-<!-- Begin drawing the page -->
-<br>
-<table align="left">
-	<tr>
-		<td>
-		<table align="center" width="80%">
 
-			<% 
-		    // No slider needed
-		if(!showSlider){
+ <!-- START The form for filter if it isto filter categories or series -->
+ <%
+ //sets the URL
+ if(sbiMode.equalsIgnoreCase("WEB") || docComposition){
+		refreshUrlPars.put("OBJECT_ID",documentid);
+	}
+ else{
+		refreshUrlSerie=refreshUrl;
+	}
 	
-		    %>
-			<tr>
-			   <td>
-				<div align="center">
-					<img id="image" src="<%=urlPng%>" BORDER="0" alt="" USEMAP="#chart" />
-				</div>
-			   </td>
-			</tr>
-			<%}
-		else{   /////////////////////// Beginslider creation //////////////////////////
-			maxSlider=datasetMap.getCatsnum().toString();
-			minSlider="1";
-		%>
+ 	refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent())); //aaa
+	for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
+		{
+			String name = (String) iterator.next();
+			String value=(refreshUrlPars.get(name)).toString();
+			%> 	
+				<input type="hidden" name="<%=name%>" value="<%=value%>" /> 
+			<% } 
+
+
+ 
+ if(showSlider || filterSeries==true) {%>
+			<form id='serieform' name="serie" action="<%=refreshUrl%>" method="POST"> 
+				<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE" /> 
+			<%} %>
+
+  <!-- Begin drawing the page -->
+ <br>
+	<table align="left">
+		<tr>
+			<td>
+				<table align="center" width="80%">
+
+					<% 
+					// DRAW THE IMAGE
+				    // ***************** No slider needed *********************
+					if(!showSlider){
+		    		%>
+					<tr>
+					   <td>
+							<div align="center">
+								<img id="image" src="<%=urlPng%>" BORDER="0" alt="" USEMAP="#chart" />
+							</div>
+			   		   </td>
+					</tr>
+					<%}
+					else{   
+						//  ****************** Begin slider creation ***************************
+						maxSlider=datasetMap.getCatsnum().toString();
+						minSlider="1"; %>
 			
-		<script type="text/javascript" language="JAVASCRIPT">
-		<!--
-			arrayCats=new Array(<%=datasetMap.getCatsnum().intValue()%>);
-			-->
-		</script>
+						<script type="text/javascript" language="JAVASCRIPT">
+						<!--
+							arrayCats=new Array(<%=datasetMap.getCatsnum().intValue()%>);
+						-->
+						</script>
 
-		<%
-		for (Iterator iterator = datasetMap.getCategories().keySet().iterator(); iterator.hasNext();){  
-			Integer key=(Integer)iterator.next();
-			String name=(String)datasetMap.getCategories().get(key);
-		%>
+						<%   // Fill javascript array containing alla categories
+						for (Iterator iterator = datasetMap.getCategories().keySet().iterator(); iterator.hasNext();){  
+								Integer key=(Integer)iterator.next();
+								String name=(String)datasetMap.getCategories().get(key);
+							%>
+								<script type="text/javascript" language="JAVASCRIPT">
+								<!--
+									arrayCats[<%=key%>]='<%=name%>';
+								-->
+								</script>
+							<%} %>
 
-		<script type="text/javascript" language="JAVASCRIPT">
-		<!--
-			arrayCats[<%=key%>]='<%=name%>';
-		-->
-		</script>
-		<%} %>
-
-			<%-- ORIG
-			<td width="75%" align="center">
-				<span class='portlet-form-field-label'> 
-					<a href="javascript:void(0)" onClick="document.location.href=getAllActionUrl();"> View all </a>
-						<%=datasetMap.getCatTitle()%> or select from 
-				</span> 
-				<span class='portlet-form-field-label' id="slider_1_1_value" width="10%" align="right">
-				</span> 
-				<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();"> 
-					<span id="slider1"></span> 
-				</a>
-			</td> --%>
-			<%if(sbi.getPositionSlider().equalsIgnoreCase("top")){ %>
-				<tr>
-					<td>		
-						<table id="slider" align="center">  
+						<% // ******************** DRAW SLIDER : TOP CASE
+						if(sbi.getPositionSlider().equalsIgnoreCase("top")){ %>
 							<tr>
-								<td width="15%">&nbsp;</td>														
-								<td width="5%" align="center">							
-								<!-- 	<a href="javascript:void(0)" onClick="document.location.href=getActionUrl();">   -->
-										<span id="slider1"></span> 
-								<!--  	</a> -->	
+								<td>		
+									<table id="slider" align="center">  
+										<tr>
+											<td width="15%">&nbsp;</td>														
+											<td width="5%" align="center">		
+												<!-- SLIDER -->					
+												<span id="slider1"></span> 
+											</td>
+											<td width="15%" align="left">							
+												<!-- <input class='portlet-form-input-field' type="hidden"	 id="slider_1_1_value" readonly style="width:30px;"/>  -->
+												<!-- BOX FOR SLIDER VALUE -->
+												<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"/>
+												<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
+												<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>
+												<input style="<%=datasetMap.getFilterStyle()%>" class="portlet-form-input-field" type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 
+												<!--  <input style="<%=datasetMap.getFilterStyle()%>" class='portlet-form-input-field' type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/> -->
+										    </td>					
+										</tr>
+									 </table> 
 								</td>
-								<td width="15%" align="left">							
-									<!-- <input class='portlet-form-input-field' type="hidden"	 id="slider_1_1_value" readonly style="width:30px;"/>  -->
-									<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"/>
-						<!--  			<input style="<%=datasetMap.getFilterStyle()%>" class='portlet-form-input-field' type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/> -->
-								</td>					
-								
 							</tr>
-						 </table> 
-					</td>
-				</tr>
-			<%}	%>	
-			<tr>
-				<td align="center">
-					<div>
-						<img id="image" src="<%=urlPng%>" BORDER=0 alt="" USEMAP="#chart" />
-					</div>
-				</td>
-		    </tr>
-		    <%if(sbi.getPositionSlider().equalsIgnoreCase("bottom")){ %>
-				<tr>
-					<td>		
-						<table id="slider" align="center">  
-							<tr>
-								<td width="15%">&nbsp;</td>														
-								<td width="5%" align="center">							
-								<!-- 	<a href="#" onClick="document.location.href=getActionUrl();">  -->
-										<span  id="slider1"></span> 
-									<!-- 	</a>	-->
-								</td>
-								<td width="15%" align="left">							
-									<input class='portlet-form-input-field' type="text"	 id="slider_1_1_value" readonly style="width:30px;"/>
-									<input style="<%=datasetMap.getFilterStyle()%>" type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/>
-								</td>					
-								
-							</tr>
-						 </table> 
-					</td>
-				</tr>
-			<%}	%>	
+						<%}%>	
+					<tr>
+						<!-- THE CHART UNDER SLIDER -->
+						<td align="center">
+							<div>
+								<img id="image" src="<%=urlPng%>" BORDER=0 alt="" USEMAP="#chart" />
+							</div>
+						</td>
+		    		</tr>
+		    		<% //***************** DRAW SLIDER: BOTTOM CASE ****************************
+		    		if(sbi.getPositionSlider().equalsIgnoreCase("bottom")){ %>
+						<tr>
+							<td>		
+								<table id="slider" align="center">  
+									<tr>
+										<td width="15%">&nbsp;</td>														
+										<td width="5%" align="center">							
+											<span  id="slider1"></span> 
+										</td>
+										<td width="15%" align="left">							
+										<!-- 	<input class='portlet-form-input-field' type="text"	 id="slider_1_1_value" readonly style="width:30px;"/>
+											<input style="<%=datasetMap.getFilterStyle()%>" type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/> -->
+												<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"/>										
+										</td>					
+									</tr>
+						 		</table> 
+							</td>
+						</tr>
+					<%}	%>	
 		  <!-- </table>  -->
 
-		<% 
-		}
-		/////////////////////// End slider creation ////////////////////////// 
-		%>
-	 </td>
-   </tr>
-
-
+			<% } /////////////////////// End slider creation ////////////////////////// 
+			%>
+		 </td>
+   	</tr>
 
 	<% 	 
 
@@ -600,15 +613,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	seriesNames=new Vector();
 	catGroupsNames=new Vector();
 	if(filterSeries || filterCatGroup){
-			//sets the URL
-			if(sbiMode.equalsIgnoreCase("WEB") || docComposition)
-			{
-				refreshUrlPars.put("OBJECT_ID",documentid);
-			}
-			else
-			{
-				refreshUrlSerie=refreshUrl;
-			}
 			%>
 	<tr>
 		<td>
@@ -616,18 +620,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 		<table id="filterSeriesOrCatGroups" align="left">
 			<!-- START FORM  -->
-			<form id='serieform' name="serie" action="<%=refreshUrl%>"
-				method="POST">
-				<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE" /> 
-				<% 	
-				//refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent()));
-					for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
-						{
-							String name = (String) iterator.next();
-							String value=(refreshUrlPars.get(name)).toString();
-						%> 	
-						<input type="hidden" name="<%=name%>" value="<%=value%>" /> 
-						<%}%> 
+		<!--  	<form id='serieform' name="serie" action="<%=refreshUrl%>" 
+				method="POST"> -->
 						
 						<!--  ROW FOR SELECT THE SERIES--> <%
 	 
@@ -711,16 +705,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   </td>
 			</tr>
 			<%} //close filter cat group case%>
-		</form>
+
+		</table> <!-- Close table id="filterSeriesOrCatGroups" -->
+
+	 <%if(showSlider || filterSeries==true) {%>
 		<!--CLOSE FORM  -->
-<!-- 
-		</div>
-		</td>
-		</tr>
- -->		
-	</table>
-		<!-- </div>--></td>
-	</tr>
+		</form>
+	<%}%>
+	
+	</td>
+  </tr>
 
 </table>
 <% 
@@ -861,6 +855,9 @@ var checkableSeries = new Array();
 
 			if(document.getElementById('ext-gen8')!=undefined){
 					document.getElementById('ext-gen8').style.top='10px';
+				}	
+			if(document.getElementById('ext-gen27')!=undefined){
+					document.getElementById('ext-gen27').style.top='10px';
 				}	
 					
 					//document.getElementById('slider_1_1_value').value=value;

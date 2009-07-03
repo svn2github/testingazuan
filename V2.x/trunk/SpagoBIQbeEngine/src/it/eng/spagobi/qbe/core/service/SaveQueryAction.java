@@ -27,7 +27,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 
-import it.eng.qbe.newquery.Query;
+import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;

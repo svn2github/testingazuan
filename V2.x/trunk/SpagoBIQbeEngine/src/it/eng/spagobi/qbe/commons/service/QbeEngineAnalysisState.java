@@ -24,7 +24,7 @@ package it.eng.spagobi.qbe.commons.service;
 import org.json.JSONException;
 
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.newquery.Query;
+import it.eng.qbe.query.Query;
 import it.eng.spagobi.qbe.core.service.QueryEncoder;
 import it.eng.spagobi.utilities.engines.EngineAnalysisState;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;

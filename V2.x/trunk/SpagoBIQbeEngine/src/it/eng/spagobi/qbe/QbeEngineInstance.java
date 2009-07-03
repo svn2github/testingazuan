@@ -29,7 +29,7 @@ import it.eng.qbe.conf.QbeTemplate;
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.newquery.Query;
+import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceManager;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;

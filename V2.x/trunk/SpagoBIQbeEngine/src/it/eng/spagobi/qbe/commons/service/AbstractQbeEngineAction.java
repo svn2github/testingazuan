@@ -23,7 +23,7 @@ package it.eng.spagobi.qbe.commons.service;
 import org.apache.log4j.Logger;
 
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.newquery.Query;
+import it.eng.qbe.query.Query;
 import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;

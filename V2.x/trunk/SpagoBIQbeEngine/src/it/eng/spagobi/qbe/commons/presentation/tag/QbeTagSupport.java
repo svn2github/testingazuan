@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.newquery.Query;
+import it.eng.qbe.query.Query;
 import it.eng.spagobi.container.ContextManager;
 import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
 import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;

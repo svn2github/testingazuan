@@ -30,7 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import it.eng.qbe.model.IStatement;
-import it.eng.qbe.newquery.SelectField;
+import it.eng.qbe.query.SelectField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.QbeEngineConfig;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;

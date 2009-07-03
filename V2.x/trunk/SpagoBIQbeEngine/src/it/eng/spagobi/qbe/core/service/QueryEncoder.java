@@ -30,10 +30,10 @@ import org.json.JSONObject;
 
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.newquery.ExpressionNode;
-import it.eng.qbe.newquery.Query;
-import it.eng.qbe.newquery.SelectField;
-import it.eng.qbe.newquery.WhereField;
+import it.eng.qbe.query.ExpressionNode;
+import it.eng.qbe.query.Query;
+import it.eng.qbe.query.SelectField;
+import it.eng.qbe.query.WhereField;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
 

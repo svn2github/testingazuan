@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 
-import it.eng.qbe.newquery.Query;
+import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;

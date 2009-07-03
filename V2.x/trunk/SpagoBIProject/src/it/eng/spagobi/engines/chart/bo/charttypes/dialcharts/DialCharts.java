@@ -223,8 +223,8 @@ public class DialCharts extends ChartImpl {
 
 				setLower(Double.valueOf(lower).doubleValue());
 				setUpper(Double.valueOf(upper).doubleValue());
-				setMultichart((multichart.equals("true")?true:false));
-				setLegend(legend.equals("true")?true:false);
+				setMultichart((multichart.equalsIgnoreCase("true")?true:false));
+				setLegend(legend.equalsIgnoreCase("true")?true:false);
 				setOrientationMultichart(orientation);
 			}
 			

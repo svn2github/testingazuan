@@ -38,15 +38,15 @@ public class AbstractDriver {
         logger.debug("IN");
         ConfigSingleton config = ConfigSingleton.getInstance();
         SourceBean configSB = (SourceBean) config.getAttribute("SPAGOBI_SSO.ACTIVE");
-	String active = (String) configSB.getCharacters();
-	String userId=(String)profile.getUserUniqueIdentifier();
-	if (active != null && active.equals("true") && !((UserProfile)profile).isSchedulerUser(userId)){
-	    logger.debug("I don't put the UserId information in the URL");
-	}else {
-	    if (((UserProfile) profile).getUserUniqueIdentifier() != null) {
-		pars.put(SsoServiceInterface.USER_ID, ((UserProfile) profile).getUserUniqueIdentifier()); 
-	    }
-	}
+		String active = (String) configSB.getCharacters();
+		String userId=(String)profile.getUserUniqueIdentifier();
+		if (active != null && active.equalsIgnoreCase("true") && !((UserProfile)profile).isSchedulerUser(userId)){
+		    logger.debug("I don't put the UserId information in the URL");
+		}else {
+		    if (((UserProfile) profile).getUserUniqueIdentifier() != null) {
+			pars.put(SsoServiceInterface.USER_ID, ((UserProfile) profile).getUserUniqueIdentifier()); 
+		    }
+		}
 	    
         
         logger.debug("Add parameter: "+SsoServiceInterface.USER_ID+" / " + ((UserProfile) profile).getUserUniqueIdentifier());

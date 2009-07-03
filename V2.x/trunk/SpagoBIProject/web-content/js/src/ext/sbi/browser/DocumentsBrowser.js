@@ -104,7 +104,24 @@ Sbi.browser.DocumentsBrowser = function(config) {
 		 , items: [this.mainTab]
 	});
 	
-	
+	this.centerContainerPanel.on(
+			'tabchange',
+			function () {
+				// if browser is IE, force document execution iframe refresh: it is a workaround that let cross navigation work properly
+				if (Ext.isIE) {
+					var anActiveTab = this.centerContainerPanel.getActiveTab();
+					if (anActiveTab.activeDocument !== undefined) {
+						try {
+							var documentPage = anActiveTab.activeDocument.documentExecutionPage;
+							if (documentPage.isVisible()) {
+								documentPage.miframe.getFrame().setSrc(null);
+							}
+						} catch (e) {alert(e);}
+					}
+				}
+			},
+			this
+	);
 	
 	
 	config.baseLayout = config.baseLayout || {}; 	
@@ -211,7 +228,6 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 			title: r.name
 			, closable: true
 		});
-		
 		
 		this.centerContainerPanel.add(executionPanel).show();
 		

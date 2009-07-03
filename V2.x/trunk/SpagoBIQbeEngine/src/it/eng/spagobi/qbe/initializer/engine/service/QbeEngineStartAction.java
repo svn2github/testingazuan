@@ -20,6 +20,8 @@
  **/
 package it.eng.spagobi.qbe.initializer.engine.service;
 
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.QbeEngine;
 import it.eng.spagobi.qbe.QbeEngineInstance;
@@ -28,8 +30,6 @@ import it.eng.spagobi.qbe.core.service.QueryEncoder;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-
-import org.apache.log4j.Logger;
 
 
 /**

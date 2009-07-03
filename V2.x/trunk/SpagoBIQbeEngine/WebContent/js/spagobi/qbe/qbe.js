@@ -57,10 +57,10 @@ it.eng.spagobi.engines.qbe.app = function() {
             it.eng.spagobi.engines.qbe.locale.module.applyLocale();
            
             tabs[1] = new Sbi.widgets.DataStorePanel();
-            tabs[0] = getQueryBuilderPanel(query, tabs[1]);
-            //tabs[1] = getQueryResultsPanel();
-           
-            //alert('debug1');      
+            //tabs[0] = getQueryBuilderPanel(query, tabs[1]);
+            tabs[0] = new Sbi.qbe.QueryBuilderPanel({query: query});
+         
+            var QueryBuilderPanel = tabs[0];
             
             // Main (Tabbed) Panel            
             tabPanel = new Ext.TabPanel({
@@ -82,8 +82,8 @@ it.eng.spagobi.engines.qbe.app = function() {
            	// Setup Drop Targets
   	        // ------------------------------------------------------------------
   	
-  			var selectGrid = it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.grid;
-  			var filterGrid = it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.grid;
+  			var selectGrid = QueryBuilderPanel.selectGridPanel.grid;
+  			var filterGrid = QueryBuilderPanel.filterGridPanel.grid;
   	
   	  		// ------------------------------------------------------------------
   			var selectGridDropTargetEl =  selectGrid.getView().el.dom.childNodes[0].childNodes[1];
@@ -131,25 +131,25 @@ it.eng.spagobi.engines.qbe.app = function() {
         			node = ddSource.dragData.node;             
 
 			        if(node.attributes.field && node.attributes.type == 'field') {
-			        	var record = new it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.Record({
+			        	var record = new QueryBuilderPanel.selectGridPanel.Record({
 			        		id: ddSource.dragData.node.id , 
 			            	entity: ddSource.dragData.node.attributes.entity , 
 			            	field: ddSource.dragData.node.attributes.field  
 			          	});
 			        
-			          	it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.addRow(record, rowIndex);
+			        	QueryBuilderPanel.selectGridPanel.addRow(record, rowIndex);
 			          	
 			        } else if(node.attributes.attributes.type == 'entity'){
 	        			
 	        			for(var i = 0; i < node.attributes.children.length; i++) {
 	        				if(node.attributes.children[i].attributes.type != 'field') continue;
 	        				
-	        				var record = new it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.Record({
+	        				var record = new QueryBuilderPanel.filterGridPanel.Record({
 		          				id: node.attributes.children[i].id , 
 		            			entity: node.attributes.children[i].attributes.entity , 
 		            			field: node.attributes.children[i].attributes.field  
 		          			});
-		          			it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.addRow(record, rowIndex);
+	        				QueryBuilderPanel.selectGridPanel.addRow(record, rowIndex);
 	        			}
 			        
 			        } else {
@@ -261,24 +261,24 @@ it.eng.spagobi.engines.qbe.app = function() {
 	        				row.data['operand'] = ddSource.dragData.node.id;
 	        				filterGrid.store.fireEvent('datachanged', filterGrid.store) ;
 	        			} else {
-		          			var record = new it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.Record({
+		          			var record = new QueryBuilderPanel.filterGridPanel.Record({
 		          				id: ddSource.dragData.node.id , 
 		            			entity: ddSource.dragData.node.attributes.entity , 
 		            			field: ddSource.dragData.node.attributes.field  
 		          			});
-		          			it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.addRow(record, rowIndex);
+		          			QueryBuilderPanel.filterGridPanel.addRow(record, rowIndex);
 	        			}
 	        		} else if(node.attributes.attributes.type == 'entity'){
 	        			
 	        			for(var i = 0; i < node.attributes.children.length; i++) {
 	        				if(node.attributes.children[i].attributes.type != 'field') continue;
 	        				
-	        				var record = new it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.Record({
+	        				var record = new QueryBuilderPanel.filterGridPanel.Record({
 		          				id: node.attributes.children[i].id , 
 		            			entity: node.attributes.children[i].attributes.entity , 
 		            			field: node.attributes.children[i].attributes.field  
 		          			});
-		          			it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.addRow(record, rowIndex);
+	        				QueryBuilderPanel.filterGridPanel.addRow(record, rowIndex);
 	        			}
 	        		} else {
 	        			alert("Error: unknown node type");
@@ -318,7 +318,7 @@ it.eng.spagobi.engines.qbe.app = function() {
 		           
 		        		for (i = 0; i < rows.length; i++) {
 		          			if(!this.copy) {
-		               			it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.addRow( rows[i], rowIndex );
+		          				QueryBuilderPanel.filterGridPanel.addRow( rows[i], rowIndex );
 		          			}
 		        		}     
 		        

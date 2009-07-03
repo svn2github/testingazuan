@@ -44,42 +44,62 @@
   * - name (mail)
   */
 
-Ext.ns("Sbi.xxx");
+Ext.ns("Sbi.qbe");
 
-Sbi.xxx.Xxxx = function(config) {
+Sbi.qbe.QbePanel = function(config) {
 	
 	var c = Ext.apply({
 		// set default values here
 	}, config || {});
 	
-	this.services = new Array();
-	var params = {};
-	this.services['loadDataStore'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'EXEC_QUERY_ACTION'
-		, baseParams: params
+	this.addEvents();
+		
+	this.queryEditorPanel = new Sbi.qbe.QueryBuilderPanel(c);
+	this.queryResultPanel = new Sbi.widgets.DataStorePanel(c);
+	
+	
+	this.tabs = new Ext.TabPanel({
+		//renderTo: Ext.getBody(),
+  		activeTab: 0,
+  		items: [this.queryEditorPanel, this.queryResultPanel] 
 	});
 	
-	this.addEvents();
+	this.queryEditorPanel.on('execute', function(editorPanel, query){
+		this.tabs.activate(this.queryResultPanel);
+		this.queryResultPanel.execQuery();
+	}, this);
 	
-	this.initThis();
-	this.initThat();
 	
 	c = Ext.apply(c, {
-		title: 'Results',  
 		layout: 'fit',
-		items: [this.grid]
+		autoScroll: true, 
+  		margins:'0 4 4 0',
+  		items: [this.tabs] 
 	})
 	
 	// constructor
-    Sbi.xxx.Xxxx.superclass.constructor.call(this, c);
-    
-    this.addEvents();
+    Sbi.qbe.QbePanel.superclass.constructor.call(this, c);
+
+	
+	
 };
 
-Ext.extend(Sbi.xxx.Xxxx, Ext.util.Observable, {
+Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
     
     services: null
+    , queryResultPanel: null
+    , queryEditorPanel: null
+    , tabs: null
+    , query: null
    
    
     // public methods
+    
+    , setQuery: function(q) {
+    	query = q;
+    }
+    
+  
+    
+    // private methods
 });

@@ -19,9 +19,14 @@
  * 
  **/
 package it.eng.spagobi.qbe.core.service;
+       
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.qbe.tree.ExtJsQbeTreeBuilder;
 import it.eng.spagobi.qbe.tree.filter.IQbeTreeEntityFilter;
@@ -31,18 +36,9 @@ import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityFieldFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderEntityFilter;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONSuccess;
-
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
 
 /**
  * 
@@ -74,7 +70,7 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 			
 			
 			datamartName = getAttributeAsString(DATAMART_NAME); 		
-			logger.debug(DATAMART_NAME + ": " + datamartName);
+			logger.debug("Parameter [" + DATAMART_NAME + "] is equals to [" + datamartName + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			Assert.assertNotNull(datamartName, "Input parameter [" + DATAMART_NAME + "] cannot be null in oder to execute " + this.getActionName() + " service");		

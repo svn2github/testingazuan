@@ -44,11 +44,6 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="DANIELA_ACTION" 
-			class="it.eng.spagobi.qbe.core.service.DanielaAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
+
 </ACTIONS>
 

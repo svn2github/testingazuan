@@ -20,10 +20,10 @@
  **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
-import it.eng.spagobi.qbe.QbeEngineConfig;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+
+import it.eng.spagobi.qbe.QbeEngineConfig;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -47,7 +47,6 @@ public class PageTag extends QbeTagSupport {
 		getSessionContainer();
 		getLocale();
 		getDatamartModel();
-		getDatamartWizard();
 		getQuery();
 		isStandaloneModality();
 		isWebModality();

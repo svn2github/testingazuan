@@ -46,8 +46,7 @@
 
 Ext.ns("Sbi.qbe");
 
-Sbi.qbe.TreePanel = function(config) {
-	
+Sbi.qbe.DataMartStructurePanel = function(config) {
 	var c = Ext.apply({
 		// set default values here
 	}, config || {});
@@ -59,20 +58,27 @@ Sbi.qbe.TreePanel = function(config) {
 		, baseParams: params
 	});
 	
+	this.addEvents('click');
+	
 	this.initTree(c);
 	
 	Ext.apply(c, {
-		layout: 'fit'
+		title:'Datamart 1'
+		, layout: 'fit'
+		, border:false
+		, autoScroll: true
+		, containerScroll: true
 		, items: [this.tree]
 	});
 	
+	
 	// constructor
-	Sbi.qbe.TreePanel.superclass.constructor.call(this, c);
+	Sbi.qbe.DataMartStructurePanel.superclass.constructor.call(this, c);
     
-    this.addEvents();
+    
 };
 
-Ext.extend(Sbi.qbe.TreePanel, Ext.Panel, {
+Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
     
 	services: null
 	, treeLoader: null
@@ -85,17 +91,20 @@ Ext.extend(Sbi.qbe.TreePanel, Ext.Panel, {
 		this.treeLoader.load(this.rootNode, function(){});
 	}
 
+	/*
 	, selectNode: function(node) {
+		this.fireEvent('click', this, node);
 		if(node.attributes.field && node.attributes.type == 'field') {
-		    var record = new it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.Record({
+		    var record = new QueryBuilderPanel.selectGridPanel.Record({
 		    	 id: node.id,
 		         entity: node.attributes.entity , 
 		         field: node.attributes.field  
 		      });
 		      
-		    it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.addRow(record); 
+		    QueryBuilderPanel.selectGridPanel.addRow(record); 
 		 }
 	}
+	*/
 	
 	// private methods
 	
@@ -115,13 +124,16 @@ Ext.extend(Sbi.qbe.TreePanel, Ext.Panel, {
 		
 		this.tree = new Ext.tree.TreePanel({
 	        collapsible: true,
+	        
 	        enableDD: true,
+	        ddGroup: 'gridDDGroup',
 	        dropConfig: {
 				isValidDropPoint : function(n, pt, dd, e, data){
 					return false;
 				}      
 	      	},
-	      	ddGroup			 : 'gridDDGroup',
+	      	
+	      	
 	        animCollapse     : true,
 	        collapseFirst	 : false,
 	        border           : false,
@@ -130,11 +142,12 @@ Ext.extend(Sbi.qbe.TreePanel, Ext.Panel, {
 	        animate          : false,
 	        trackMouseOver 	 : true,
 	        useArrows 		 : true,
-	        loader           : this.treeLoader
+	        loader           : this.treeLoader,
+	        root 			 : this.rootNode
 	    });	
 		
-		this.tree.setRootNode(this.rootNode);
+		//this.tree.setRootNode(this.rootNode);
 		
-		this.tree.on('click', this.selectNode, this);
+		this.tree.on('click', function(node) {this.fireEvent('click', this, node);}, this);
 	}
 });

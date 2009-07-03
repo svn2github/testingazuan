@@ -21,16 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe;
 
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import it.eng.qbe.conf.QbeTemplate;
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.newquery.Query;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
-import it.eng.qbe.wizard.SingleDataMartWizardObjectSourceBeanImpl;
 import it.eng.spago.base.SourceBean;
-
-import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceManager;
 import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.QbeEngineAnalysisState;
@@ -38,11 +38,6 @@ import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.utilities.engines.AbstractEngineInstance;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.IEngineAnalysisState;
-
-import java.util.Arrays;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -54,7 +49,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	boolean standaloneMode;
 	
 	DataMartModel datamartModel;	
-	ISingleDataMartWizardObject datamartWizard;	
+	//QueryCatalogue datamartWizard;	
 	Query query;
 	
 	
@@ -99,8 +94,6 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		datamartModel.setName(datamartModel.getDataSource().getDatamartName());
 		datamartModel.setDescription(datamartModel.getDataSource().getDatamartName());
 		
-		datamartWizard = new SingleDataMartWizardObjectSourceBeanImpl();
-				
 		validate();
 		
 		logger.debug("OUT");
@@ -147,7 +140,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	}
 
 	public void setAnalysisState(String analysisState) {
-		datamartWizard = datamartModel.getQuery(analysisState);		
+		query = datamartModel.getQuery(analysisState);		
 	}
 
 	public DataMartModel getDatamartModel() {
@@ -158,13 +151,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		this.datamartModel = datamartModel;
 	}
 
-	public ISingleDataMartWizardObject getDatamartWizard() {
-		return datamartWizard;
-	}
-
-	public void setDatamartWizard(ISingleDataMartWizardObject datamartWizard) {
-		this.datamartWizard = datamartWizard;
-	}
+	
 
 	public Query getQuery() {
 		return query;

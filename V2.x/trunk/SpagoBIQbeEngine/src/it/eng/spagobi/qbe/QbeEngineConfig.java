@@ -20,10 +20,13 @@
  **/
 package it.eng.spagobi.qbe;
 
+import java.io.File;
+import java.util.Locale;
+
+import org.apache.log4j.Logger;
+
 import it.eng.qbe.datasource.DataSourceCache;
-import it.eng.qbe.locale.IQbeMessageHelper;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
-import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.qbe.model.io.LocalFileSystemDataMartModelRetriever;
 import it.eng.qbe.naming.NamingStrategy;
 import it.eng.spago.base.SourceBean;
@@ -36,13 +39,6 @@ import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.file.FileUtils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.log4j.Logger;
 
 
 
@@ -79,8 +75,7 @@ public class QbeEngineConfig {
 	/** The locale. */
 	private Locale locale = null;
 	
-	/** The config. */
-	private SourceBean config = null;	
+	//private SourceBean config = null;	
 	
 	/**
 	 * Instantiates a new qbe engine conf.
@@ -90,7 +85,7 @@ public class QbeEngineConfig {
 		setEngineConfig( EnginConf.getInstance() );
 		
 		// deprecated
-		config = ConfigSingleton.getInstance();	
+		//config = ConfigSingleton.getInstance();	
 	}
 	
 	public SourceBean getConfigSourceBean() {

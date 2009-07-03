@@ -58,6 +58,12 @@ Sbi.widgets.DataStorePanel = function(config) {
 		serviceName: 'EXEC_QUERY_ACTION'
 		, baseParams: params
 	});
+	this.services['exportDataStore'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'EXPORT_RESULT_ACTION'
+		, baseParams: params
+	});
+	
+	
 	
 	this.initStore();
 	this.initPanel();
@@ -90,30 +96,45 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	}
 
 	, exportResultToCsv: function() {
-		exportResult('text/csv');
+		this.exportResult('text/csv');
 	}
 
 	, exportResultToRtf: function() {
-		exportResult('application/rtf');
+		this.exportResult('application/rtf');
 	}
 
 	, exportResultToXls: function() {
-		exportResult('application/vnd.ms-excel');
+		this.exportResult('application/vnd.ms-excel');
 	}
 
 	, exportResultToPdf: function() {
-		exportResult('application/pdf');
+		this.exportResult('application/pdf');
 	}
 
 	, exportResultToJrxml: function() {
-		exportResult('text/jrxml');
+		this.exportResult('text/jrxml');
 	}
 
 	, exportResult: function(mimeType) {
-		var form = document.getElementById('form');
-		form.action = exportServiceUrl + '&MIME_TYPE=' + mimeType +'&RESPONSE_TYPE=RESPONSE_TYPE_ATTACHMENT';
+		
+		var form = document.getElementById('export-form');
+		if(!form) {
+			alert('form is undefined');
+			var dh = Ext.DomHelper;
+			form = dh.append(Ext.getBody(), {
+			    id: 'export-form'
+			    , tag: 'form'
+			    , method: 'post'
+			    , cls: 'export-form'
+			});
+			alert('form creato');
+		}
+		
+		form.action = this.services['exportDataStore'] + '&MIME_TYPE=' + mimeType +'&RESPONSE_TYPE=RESPONSE_TYPE_ATTACHMENT';
+		alert('form.action: ' + form.action);
 		form.submit();
 	}
+  
 
 	
 	// private methods

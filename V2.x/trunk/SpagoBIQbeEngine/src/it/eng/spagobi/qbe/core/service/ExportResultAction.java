@@ -20,7 +20,19 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
-import it.eng.qbe.model.XIStatement;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+
+import it.eng.qbe.model.IStatement;
 import it.eng.qbe.newexport.Field;
 import it.eng.qbe.newexport.HqlToSqlQueryRewriter;
 import it.eng.qbe.newexport.ReportRunner;
@@ -29,27 +41,11 @@ import it.eng.qbe.newexport.TemplateBuilder;
 import it.eng.qbe.newquery.SelectField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.mime.MimeUtils;
-
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 
 
@@ -77,7 +73,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 		boolean writeBackResponseInline = false;
 		String mimeType = null;
 		String fileExtension = null;
-		XIStatement statement = null;
+		IStatement statement = null;
 		Session session = null;	
 		Connection connection = null;
 		HqlToSqlQueryRewriter queryRewriter = null;
@@ -115,7 +111,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			fileExtension = MimeUtils.getFileExtension( mimeType );
 			writeBackResponseInline = RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType);
 			
-			statement = getEngineInstance().getDatamartModel().createXStatement( getEngineInstance().getQuery() );		
+			statement = getEngineInstance().getDatamartModel().createStatement( getEngineInstance().getQuery() );		
 			//logger.debug("Parametric query: [" + statement.getQueryString() + "]");
 			
 			statement.setParameters( getEnv() );

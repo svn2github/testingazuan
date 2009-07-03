@@ -275,21 +275,6 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 		              }
 		            });
 		    
-		    /*
-		    var filterFunctionsData = [];
-		    for(i = 0; i < this.filterFunctions.length; i++) {
-		    	filterFunctionsData[i] = [
-		    		this.filterFunctions[i],
-		    		this.labels.filterFuncNames[i],
-		    		this.labels.filterFuncDescriptions[i]
-		    	];
-		    } 
-		    
-		    var filterFunctionsStore = new Ext.data.SimpleStore({
-		        fields: ['funzione', 'nome', 'descrizione'],
-		        data : filterFunctionsData 
-		    });
-		    */
 		    
 		    var boperatorRenderer = function(val){
         	 return '<span style="color:green;">' + val + '</span>';  
@@ -487,32 +472,7 @@ it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app = function() {
 	  		return str;
 	  	},
 	  	
-	  	/*
-	  	 String str = "";
-		
-		String type = filterExp.getType();
-		if("NODE_OP".equalsIgnoreCase( type )) {
-			for(int i = 0; i < filterExp.getChildNodes().size(); i++) {
-				ExpressionNode child = (ExpressionNode)filterExp.getChildNodes().get(i);
-				String childStr = getFilterExpAsString(child);
-				if("NODE_OP".equalsIgnoreCase( child.getType() )) {
-					childStr = "(" + childStr + ")";
-				}
-				str += (i==0?"": " " + filterExp.getValue());
-				str += " " + childStr;
-			}
-		} else {
-			str += filterExp.getValue();
-		}
-		
-		return str;
-	  	 */
-		
-		/**
-		 * Add a new row to the filter grid. 
-		 *
-		 * config: a filterGridComponent.Record object used as initial configuration for the added record. 
-		 */
+	  
 		addRow : function(config, i) {
 		  var fname = 'filter' + (++idCount);
 		  var newRow = {

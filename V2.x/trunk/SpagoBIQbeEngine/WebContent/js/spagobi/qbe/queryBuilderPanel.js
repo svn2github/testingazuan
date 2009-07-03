@@ -3,14 +3,21 @@
   * by Andrea Gioia
   */
 
+var QueryBuilderPanel = {
+		tree: null
+		, selectGridPanel: null
+};
 
 
  
 var getQueryBuilderPanel = function(query, dataStorePanel) {
 
-            var menuTree1 = it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel();                
-            //var menuTree2 = it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel();    
-       
+            
+			//var menuTree1 = it.eng.spagobi.engines.qbe.querybuilder.treePanel.getFoodmartTreePanel();  
+            
+			QueryBuilderPanel.tree = new Sbi.qbe.DataMartStructurePanel();
+            
+            
             this.dataStorePanel = dataStorePanel;
     
             var treesPanel = new Ext.Panel({
@@ -21,21 +28,7 @@ var getQueryBuilderPanel = function(query, dataStorePanel) {
                 layoutConfig:{
                   animate:true
                 },
-                items: [{
-                  id:'block1',
-                  autoScroll       : true,
-        		  containerScroll  : true,
-                  title:'Datamart 1',
-                  items: [menuTree1],
-                  border:false
-                }/*,{
-                  id:'block2',
-                  autoScroll       : true,
-        		  containerScroll  : true,
-                  title:'Datamart 2',
-                  items: [menuTree2],
-                  border:false
-                }*/]
+                items: [QueryBuilderPanel.tree]
               });
     
               var queryBuilderWESTPanel = new Ext.Panel({
@@ -81,10 +74,11 @@ var getQueryBuilderPanel = function(query, dataStorePanel) {
               });
               
               
-              it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.init(query);
-             
-              it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.init(query);
-             
+              //it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.init(query);
+              QueryBuilderPanel.filterGridPanel = new Sbi.qbe.FilterGridPanel({query: query});
+              
+              //it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.init(query);
+              QueryBuilderPanel.selectGridPanel = new Sbi.qbe.SelectGridPanel({query: query});
                                
               var queryBuilderCENTERPanel = new Ext.Panel({
                   id:'CENTERPanel',
@@ -141,7 +135,7 @@ var getQueryBuilderPanel = function(query, dataStorePanel) {
                       // refresh logic
                     }
                   }],
-                  items: [it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.grid, it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.grid]
+                  items: [ QueryBuilderPanel.selectGridPanel, QueryBuilderPanel.filterGridPanel]
               });
         
         
@@ -173,7 +167,7 @@ var getQueryBuilderPanel = function(query, dataStorePanel) {
         };
     
         
-       
+       // ------------------------------------------------
        var viewName = new Ext.form.TextField({
 				id:'viewName',
 				name:'viewName',
@@ -238,9 +232,9 @@ var getQueryBuilderPanel = function(query, dataStorePanel) {
         	var qDescription = queryDescription.getValue();
         	var qScope = queryScope.getValue();
         	
-        	var qRecords = it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.getRowsAsJSONParams();
-	        var qFilters = it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getRowsAsJSONParams();
-	        var qFilterExp = it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getFiltersExpressionAsJSON();
+        	var qRecords =  QueryBuilderPanel.selectGridPanel.getRowsAsJSONParams();
+	        var qFilters = QueryBuilderPanel.filterGridPanel.getRowsAsJSONParams();
+	        var qFilterExp = QueryBuilderPanel.filterGridPanel.getFiltersExpressionAsJSON();
 	        
 	        var url = it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('SAVE_QUERY_ACTION');
 	        url += '&queryName=' + qName;
@@ -270,6 +264,7 @@ var getQueryBuilderPanel = function(query, dataStorePanel) {
 				failure: it.eng.spagobi.engines.qbe.exceptionhandler.module.handleFailure					
 			});   
         };
+     // ------------------------------------------------
         
         var handleSaveView = function() {
         	showDialog2();
@@ -278,9 +273,9 @@ var getQueryBuilderPanel = function(query, dataStorePanel) {
         var handleCreateView = function() {
         	var vName = viewName.getValue();
         	
-        	var qRecords = it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.getRowsAsJSONParams();
-	        var qFilters = it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getRowsAsJSONParams();
-	        var qFilterExp = it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getFiltersExpressionAsJSON();
+        	var qRecords = QueryBuilderPanel.selectGridPanel.getRowsAsJSONParams();
+	        var qFilters = QueryBuilderPanel.filterGridPanel.getRowsAsJSONParams();
+	        var qFilterExp = QueryBuilderPanel.filterGridPanel.getFiltersExpressionAsJSON();
 	        
 	        
 	        var url = it.eng.spagobi.engines.qbe.serviceregistry.module.getServiceUrl('CREATE_VIEW_ACTION');
@@ -298,7 +293,7 @@ var getQueryBuilderPanel = function(query, dataStorePanel) {
         
         var refreshTreeAndExit = function() {
         	win2.hide();
-        	it.eng.spagobi.engines.qbe.querybuilder.treePanel.refresh();
+        	QueryBuilderPanel.tree.load();
         }
         
         var formPanel = new Ext.form.FormPanel({
@@ -372,12 +367,11 @@ var getQueryBuilderPanel = function(query, dataStorePanel) {
         var getParams = function() {
         	
         	var queryStr = '{';
-        	queryStr += 'fields : ' + it.eng.spagobi.engines.qbe.querybuilder.selectGrid.app.getRowsAsJSONParams() + ',';
-        	queryStr += 'filters : ' + it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getRowsAsJSONParams() + ',';
-        	queryStr += 'expression: ' +  it.eng.spagobi.engines.qbe.querybuilder.filterGrid.app.getFiltersExpressionAsJSON();
+        	queryStr += 'fields : ' + QueryBuilderPanel.selectGridPanel.getRowsAsJSONParams() + ',';
+        	queryStr += 'filters : ' + QueryBuilderPanel.filterGridPanel.getRowsAsJSONParams() + ',';
+        	queryStr += 'expression: ' +  QueryBuilderPanel.filterGridPanel.getFiltersExpressionAsJSON();
         	queryStr += '}';
         	
-        	//alert('>>> ' + queryStr);
         	
         	var params = {
         		query: queryStr 

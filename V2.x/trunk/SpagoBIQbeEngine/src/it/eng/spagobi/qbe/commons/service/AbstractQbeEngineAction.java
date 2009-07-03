@@ -20,15 +20,14 @@
  **/
 package it.eng.spagobi.qbe.commons.service;
 
+import org.apache.log4j.Logger;
+
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.query.IQuery;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.qbe.newquery.Query;
 import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
-
-import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -78,40 +77,21 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 	}
 	
 	/**
-	 * Gets the datamart wizard.
-	 * 
-	 * @return the datamart wizard
-	 */
-	public ISingleDataMartWizardObject getDatamartWizard() {
-		QbeEngineInstance qbeEngineInstance  = null;
-    	qbeEngineInstance = getEngineInstance();
-    	if(qbeEngineInstance == null) {
-    		return null;
-    	}
-    	return qbeEngineInstance.getDatamartWizard();
-	}
-
-	/**
-	 * Sets the datamart wizard.
-	 * 
-	 * @param datamartWizard the new datamart wizard
-	 */
-	public void setDatamartWizard(ISingleDataMartWizardObject datamartWizard) {
-		QbeEngineInstance qbeEngineInstance  = null;
-    	qbeEngineInstance = getEngineInstance();
-    	if(qbeEngineInstance == null) {
-    		return;
-    	}
-    	qbeEngineInstance.setDatamartWizard(datamartWizard);
-	}	
+	 
+	
 	
 	/**
 	 * Gets the query.
 	 * 
 	 * @return the query
 	 */
-	public IQuery getQuery() {
-		return getDatamartWizard().getQuery();
+	public Query getQuery() {
+		QbeEngineInstance qbeEngineInstance  = null;
+    	qbeEngineInstance = getEngineInstance();
+    	if(qbeEngineInstance == null) {
+    		return null;
+    	}
+    	return qbeEngineInstance.getQuery();
 	}
 	
 	

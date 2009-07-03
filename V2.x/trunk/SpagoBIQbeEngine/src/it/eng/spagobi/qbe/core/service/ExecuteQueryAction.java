@@ -20,30 +20,24 @@
  **/
 package it.eng.spagobi.qbe.core.service;
 
-import it.eng.qbe.model.XIStatement;
-import it.eng.qbe.newquery.SelectField;
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.qbe.QbeEngineConfig;
-import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
-import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
-
-import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.service.JSONSuccess;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import it.eng.qbe.model.IStatement;
+import it.eng.qbe.newquery.SelectField;
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.qbe.QbeEngineConfig;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
+import it.eng.spagobi.utilities.service.JSONSuccess;
 
 
 /**
@@ -55,8 +49,6 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	public static final String LIMIT = "limit";
 	public static final String START = "start";
 	
-	/** The Constant MAX_RESULT. */
-	//public static final int MAX_RESULT = 14000;
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(ExecuteQueryAction.class);
@@ -64,7 +56,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	
 	public void service(SourceBean request, SourceBean response)  {				
 				
-		XIStatement statement = null;
+		IStatement statement = null;
 		Integer limit = null;
 		Integer start = null;
 		Integer maxSize = null;
@@ -79,26 +71,27 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		
 			super.service(request, response);		
 			
-			limit = getAttributeAsInteger( LIMIT );
-			logger.debug(LIMIT + ": " + limit);
 			start = getAttributeAsInteger( START );	
-			logger.debug(START + ": " + start);
+			logger.debug("Parameter [" + START + "] is equals to [" + start + "]");
+			
+			limit = getAttributeAsInteger( LIMIT );
+			logger.debug("Parameter [" + LIMIT + "] is equals to [" + limit + "]");
+						
 			maxSize = QbeEngineConfig.getInstance().getResultLimit();			
-			logger.debug("max results: " + (maxSize != null? maxSize: "none") );
+			logger.debug("Configuration setting  [" + "QBE.QBE-SQL-RESULT-LIMIT.value" + "] is equals to [" + (maxSize != null? maxSize: "none") + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
 			Assert.assertTrue(getEngineInstance().getQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
 			
-			statement = getDatamartModel().createXStatement( getEngineInstance().getQuery() );	
-			//logger.debug("Parametric query: [" + statement.getQueryString() + "]");
+			statement = getDatamartModel().createStatement( getEngineInstance().getQuery() );	
 			statement.setParameters( getEnv() );
 			logger.debug("Executable query: [" + statement.getQueryString() + "]");
 			
 			try {
 				logger.debug("Executing query ...");
 				queryResponseSourceBean = statement.executeWithPagination(start, limit, (maxSize == null? -1: maxSize.intValue()));
-				Assert.assertNotNull(queryResponseSourceBean, "The the sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
+				Assert.assertNotNull(queryResponseSourceBean, "The sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
 			} catch (Exception e) {
 				logger.debug("Query execution aborted because of an internal exceptian");
 				SpagoBIEngineServiceException exception;
@@ -136,10 +129,10 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		} catch(Throwable t) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
-			// no resources need to be released
+			logger.debug("OUT");
 		}	
 		
-		logger.debug("OUT");
+		
 	}
 	
 	private JSONObject buildGridDataFeed(List results, int resultNumber) throws JSONException {

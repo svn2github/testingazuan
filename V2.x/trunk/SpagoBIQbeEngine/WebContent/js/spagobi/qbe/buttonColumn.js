@@ -10,6 +10,7 @@ Ext.grid.CheckColumn = function(config){
   Ext.grid.CheckColumn.prototype = {
     init : function(grid){
         this.grid = grid;
+        //alert(this.header + ': ' + this.grid);
         this.grid.on('render', function(){
             var view = this.grid.getView();
             view.mainBody.on('mousedown', this.onMouseDown, this);
@@ -42,6 +43,7 @@ Ext.grid.CheckColumn = function(config){
   Ext.grid.ButtonColumn.prototype = {
     init : function(grid){
         this.grid = grid;
+        //alert(this.header + ': ' + this.grid);
         this.grid.on('render', function(){
             var view = this.grid.getView();
             view.mainBody.on('click', this.onClick, this);

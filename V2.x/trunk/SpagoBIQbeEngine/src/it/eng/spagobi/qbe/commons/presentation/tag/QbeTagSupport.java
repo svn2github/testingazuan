@@ -20,23 +20,21 @@
  **/
 package it.eng.spagobi.qbe.commons.presentation.tag;
 
+import java.util.Locale;
+import java.util.Map;
+
 import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.query.IQuery;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
+import it.eng.qbe.newquery.Query;
 import it.eng.spagobi.container.ContextManager;
 import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
 import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
 import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
 import it.eng.spagobi.qbe.QbeEngineConfig;
 import it.eng.spagobi.qbe.QbeEngineInstance;
-import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
 import it.eng.spagobi.qbe.commons.urlgenerator.PortletQbeUrlGenerator;
 import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
 import it.eng.spagobi.utilities.engines.EngineConstants;
-
-import java.util.Locale;
-import java.util.Map;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -109,41 +107,24 @@ public class QbeTagSupport extends BaseTagSupport {
 		return (DataMartModel)pageContext.getAttribute("datamartModel");   
 	}
 	
-	/**
-	 * Gets the datamart wizard.
-	 * 
-	 * @return the datamart wizard
-	 */
-	protected ISingleDataMartWizardObject getDatamartWizard() {
-		if(pageContext == null) {
-			return null;
-		}
-		
-		if(pageContext.getAttribute("datamartWizard") == null) {
-			pageContext.setAttribute("datamartWizard", getEngineInstance().getDatamartWizard() );
-		}
-		return (ISingleDataMartWizardObject)pageContext.getAttribute("datamartWizard");
-	}
+	
 	
 	/**
 	 * Gets the query.
 	 * 
 	 * @return the query
 	 */
-	protected IQuery getQuery() {
+	protected Query getQuery() {
 		if(pageContext == null) {
 			return null;
 		}
 		
-		ISingleDataMartWizardObject datamartWizard = null;
-		
 		if(pageContext.getAttribute("query") == null) {
-			datamartWizard =  (ISingleDataMartWizardObject) getEngineInstance().getDatamartWizard();
-			if(datamartWizard !=  null) {
-				pageContext.setAttribute("query", datamartWizard.getQuery() );
+			if(getEngineInstance().getQuery() !=  null) {
+				pageContext.setAttribute("query", getEngineInstance().getQuery() );
 			}
 		}
-		return (IQuery)pageContext.getAttribute("query");
+		return (Query)pageContext.getAttribute("query");
 	}
 	
 	

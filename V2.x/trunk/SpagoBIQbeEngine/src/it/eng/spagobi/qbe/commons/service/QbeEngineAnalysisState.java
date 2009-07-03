@@ -21,17 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.service;
 
+import org.json.JSONException;
+
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.newquery.Query;
 import it.eng.spagobi.qbe.core.service.QueryEncoder;
 import it.eng.spagobi.utilities.engines.EngineAnalysisState;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-
-import org.json.JSONException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

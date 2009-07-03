@@ -208,9 +208,11 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 			var el = this.documentsStack.pop();
 			this.remove(el);
 			el.destroy();
-			//alert('destroy: ' + el.document.label);
-			
-		}		
+		}
+		// if browser is IE, force document execution iframe refresh: it is a workaround that let cross navigation work properly
+		if (Ext.isIE) {
+			this.activeDocument.documentExecutionPage.miframe.getFrame().setSrc(null);
+		}
 	}
 	
 	

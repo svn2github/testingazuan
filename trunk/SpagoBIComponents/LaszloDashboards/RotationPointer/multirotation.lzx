@@ -243,7 +243,7 @@
 						 ,text:""
 						 ,y:centerY-(radius+(serieTitleSize*2))});
 		}
-		else{		 
+		else{		 <!-- ORIG
 			new lz.ulink(this,
 						{name:"titleSerie" 
 						 ,href:linkUrl
@@ -254,6 +254,22 @@
 						 ,color:serieTitleColor
 						 ,text:""
 						 ,fontstyle:"bold"});
+						  -->
+						  Debug.write("prima di creazione di lz text");
+						  <![CDATA[
+						 new LzText(this,
+						{name:"titleSerie"
+						 ,multiline:true
+						 ,font:serieTitleFont
+						 ,fontsize:serieTitleSize 
+						 ,fgcolor:serieTitleColor
+						 ,fontstyle:"bold"
+						 ,text: ""
+						 //,text:"<a href='http://www.google.com' target='_self' ><u>ciccia</u></a>"						
+						 ,y:centerY-(radius+(serieTitleSize*2))
+						 });						 
+						 ]]>
+						
 		}
 			
 		<!--  setting arcs -->
@@ -602,14 +618,14 @@
 					   		 var valuePar = canvas.display.getValuePar("valueAttributeName"+(i+1)+"");
 					       	 var rotation = rotationresponse.getNodeAttribute(valuePar);
 					       	 canvas.display.changeRotation(rotation, i);  	
+						     var newX = centerX - (serieName.length*3);
 						      	 	      	 	
-				      	 	// updating titleSerie 
-					      	 var newX = centerX - (serieName.length*3);
-					      	 canvas.display.titleSerie.setAttribute("text",serieName);	 
-					      	 canvas.display.titleSerie.setAttribute("x", newX); 
-					      	
-					      	 //  updating linkurl
-					      	 if (linkUrl != undefined && linkUrl != ""){
+						     if (linkUrl == undefined || linkUrl == ""){
+					      	 	// updating titleSerie 				      	 	
+						       	 canvas.display.titleSerie.setAttribute("text",serieName);	 						      
+						    }
+					      	else{
+					      	 //  updating linkurl					      	
 					      	 	if (linkUrl.indexOf("$F{") > -1){
 					      	 		var lastFieldIdx = 0;
 					      	 		var tmpUrl = linkUrl;	
@@ -627,9 +643,15 @@
 						      	 		else	    
 						      	 			lastFieldIdx = -1;	     	 						      	 
 						      	 	}
-					      	 		canvas.display.titleSerie.setAttribute("href", linkUrl); 
+						      	 	linkUrl = "<a href=\"" + linkUrl + "\" target=\"_self\">";
+									linkUrl +=  "<u>"+serieName+"</u></a>"
+																									
+									// orig: canvas.display.titleSerie.setAttribute("href", linkUrl);										      	 	
+					      	 		canvas.display.titleSerie.setAttribute("text",linkUrl);	 
+					      	 		//canvas.display.titleSerie.setAttribute("onclick", lz.Browser.loadURL(linkUrl,'_self'));	
 					      	 	} 
 					      	 }
+					      	 canvas.display.titleSerie.setAttribute("x", newX); 
 						 }
 					}				 
 		  		}

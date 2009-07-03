@@ -20,10 +20,10 @@
  **/
 package it.eng.qbe.model;
 
-import it.eng.qbe.newquery.Query;
-
 import java.io.IOException;
 import java.util.Map;
+
+import it.eng.qbe.newquery.Query;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -64,7 +64,7 @@ public abstract class  BasicStatement implements IStatement{
 	}
 	
 	/**
-	 * Instantiates a new basic statement.
+	 * Create a new statement from query bound to the specific datamart-model
 	 * 
 	 * @param dataMartModel the data mart model
 	 * @param query the query
@@ -74,44 +74,44 @@ public abstract class  BasicStatement implements IStatement{
 		this.query = query;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#getQueryString()
-	 */
-	public String getQueryString() {
-		if(queryString == null) {
-			try {
-				queryString = getQueryString(query, parameters);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return queryString;
-	}	
-	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#getDataMartModel()
-	 */
 	public IDataMartModel getDataMartModel() {
 		return dataMartModel;
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#getQuery()
-	 */
 	public Query getQuery() {
 		return query;
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#setQuery(it.eng.qbe.query.IQuery)
-	 */
 	public void setQuery(Query query) {
 		this.query = query;
 		this.queryString = null;
 	}
 	
+	public Map getParameters() {
+		return parameters;
+	}
+
+	
+	public void setParameters(Map parameters) {
+		this.parameters = parameters;
+	}	
+	
 	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IStatement#getOffset()
+	 */
+	public int getOffset() {
+		return offset;
+	}
+
+	/* (non-Javadoc)
+	 * @see it.eng.qbe.model.IStatement#setOffset(int)
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see it.eng.qbe.model.IStatement#getFetchSize()
 	 */
 	public int getFetchSize() {
@@ -138,35 +138,17 @@ public abstract class  BasicStatement implements IStatement{
 	public void setMaxResults(int maxResults) {
 		this.maxResults = maxResults;
 	}
+	
+	public String getQueryString() {
+		if(queryString == null) {
+			try {
+				queryString = getQueryString(query, parameters);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return queryString;
+	}	
 
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#getOffset()
-	 */
-	public int getOffset() {
-		return offset;
-	}
-
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#setOffset(int)
-	 */
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
-
-	/**
-	 * Gets the parameters.
-	 * 
-	 * @return the parameters
-	 */
-	public Map getParameters() {
-		return parameters;
-	}
-
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#setParameters(java.util.Properties)
-	 */
-	public void setParameters(Map parameters) {
-		this.parameters = parameters;
-	}
 
 }

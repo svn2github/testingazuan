@@ -55,6 +55,15 @@ public class Query {
 		whereFieldMap = new HashMap();
 	}
 	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	
 	public boolean isEmpty() {
 		for(int i = 0; i < selectFields.size(); i++) {
 			SelectField field = (SelectField)selectFields.get(i);

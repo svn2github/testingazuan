@@ -36,8 +36,9 @@ import java.util.List;
 import it.eng.qbe.conf.QbeCoreSettings;
 import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.newquery.Query;
+import it.eng.qbe.newquery.QueryMeta;
 import it.eng.qbe.utility.FileUtils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -60,7 +61,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 	 * @param wizObject the wiz object
 	 * @param fileName the file name
 	 */
-	protected void persistToFile(DataMartModel dm, ISingleDataMartWizardObject wizObject, String fileName) {
+	protected void persistToFile(DataMartModel dm, Query query, String fileName) {
 
 		try {
 			File f = new File(fileName);
@@ -69,7 +70,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 			}
 		    XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(
 		        new FileOutputStream(fileName)));
-		    encoder.writeObject(wizObject);
+		    encoder.writeObject(query);
 		    encoder.close();
 		} catch (IOException e) {
 			Logger.error(LocalFileSystemQueryPersister.class, e);
@@ -80,8 +81,8 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 	/* (non-Javadoc)
 	 * @see it.eng.qbe.model.io.IQueryPersister#persist(it.eng.qbe.model.DataMartModel, it.eng.qbe.wizard.ISingleDataMartWizardObject)
 	 */
-	public void persist(DataMartModel dm, ISingleDataMartWizardObject wizObject) {		
-		persist((File)null, dm, wizObject);
+	public void persist(DataMartModel dm, Query query, QueryMeta meta) {		
+		persist((File)null, dm, query, meta);
 	}
 	
 	/**
@@ -91,16 +92,16 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 	 * @param dm the dm
 	 * @param wizObject the wiz object
 	 */
-	public void persist(File baseDir, DataMartModel dm, ISingleDataMartWizardObject wizObject) {
+	public void persist(File baseDir, DataMartModel dm, Query query, QueryMeta meta) {
 		
 		String qbeDataMartDir = FileUtils.getQbeDataMartDir(baseDir);
 		
-		String key = "q-" + wizObject.getQuery().hashCode();
+		String key = "q-" + query.hashCode();
 		String fileName = null;
 		
 		String publicDmDir = qbeDataMartDir +System.getProperty("file.separator")+  dm.getName();
-		String privateDmDir = publicDmDir + System.getProperty("file.separator") + wizObject.getOwner();
-		if (wizObject.getVisibility() == false){
+		String privateDmDir = publicDmDir + System.getProperty("file.separator") + meta.getOwner();
+		if ("PRIVATE".equalsIgnoreCase( meta.getScope() )){
 			File f = new File(privateDmDir);
 			if (!f.exists()){
 				f.mkdirs();
@@ -115,47 +116,11 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 		}
 		
 		
-		persistToFile(dm, wizObject, fileName);
+		persistToFile(dm, query, fileName);
 	}
 	
-	// Just to implement the parent interface and avoid comipaltion errorss
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.io.IQueryPersister#load(it.eng.qbe.model.DataMartModel, java.lang.String)
-	 */
-	public ISingleDataMartWizardObject load(DataMartModel dm, String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	/*
-	public ISingleDataMartWizardObject load(DataMartModel dm, String key) {
-		return load((File)null, dm, key);
-	}
-	
-	public ISingleDataMartWizardObject load(File baseDir, DataMartModel dm, String key) {
 
-    	RequestContainer requestCont = RequestContainer.getRequestContainer();
-        IEngUserProfile userProfile =(IEngUserProfile)requestCont.getSessionContainer().getPermanentContainer().getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-        //SpagoBIInfo spagoBIInfo =(SpagoBIInfo)requestCont.getSessionContainer().getAttribute("spagobi");
-    	
-        
-        String qbeDataMartDir = FileUtils.getQbeDataMartDir(baseDir);
-		//qbeDataMartDir = (String)it.eng.spago.configuration.ConfigSingleton.getInstance().getAttribute("QBE.QBE-MART_DIR.dir");
-		
-        String fileName = qbeDataMartDir +System.getProperty("file.separator")+  dm.getName() + System.getProperty("file.separator") + key+ ".qbe";
-        
-        ISingleDataMartWizardObject wiz = loadFromFile(new File(fileName));
-        if (wiz == null && userProfile != null){
-        	fileName = qbeDataMartDir + System.getProperty("file.separator")+  dm.getName() + System.getProperty("file.separator") + userProfile.getUserUniqueIdentifier() + System.getProperty("file.separator") + key+ ".qbe";
-        	wiz = loadFromFile(new File(fileName));
-        }
-        
-        if (wiz == null && spagoBIInfo != null){
-        	fileName = qbeDataMartDir + System.getProperty("file.separator")+  dm.getName() + System.getProperty("file.separator") + spagoBIInfo.getUser() + System.getProperty("file.separator") + key+ ".qbe";
-        	wiz = loadFromFile(new File(fileName));
-        }
-        return wiz;
-	}
-	*/
+
     
     /**
 	 * Load from file.
@@ -164,13 +129,13 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 	 * 
 	 * @return the i single data mart wizard object
 	 */
-	protected ISingleDataMartWizardObject loadFromFile(File f) {
+	protected Query loadFromFile(File f) {
         try {
             XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(
                 new FileInputStream(f)));
         
             
-            ISingleDataMartWizardObject o = (ISingleDataMartWizardObject)decoder.readObject();
+            Query o = (Query)decoder.readObject();
             decoder.close();
             return o;
         } catch (FileNotFoundException e) {
@@ -199,7 +164,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
        
        
    	
-   	ISingleDataMartWizardObject query = null;
+   	Query query = null;
    	List queries = new ArrayList();
    	File f = null;
        boolean isDir = dir.isDirectory();
@@ -250,6 +215,11 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
     
     	return loadFirstLevelQuery(privateTargetDir.getAbsolutePath());
     }
+
+	public Query load(DataMartModel dm, String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 

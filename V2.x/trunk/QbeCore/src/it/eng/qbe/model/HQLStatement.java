@@ -425,70 +425,7 @@ public class HQLStatement extends BasicStatement {
 			buffer.append( buildUserProvidedWhereClause(query.getWhereClauseStructure(), query, entityAliases) );
 		}
 		
-		/*
-		List whereFields = getWhereFields(query);
-		
-		if(whereFields != null && whereFields.size() > 0) {		
-			buffer.append("WHERE");
-			
-			Iterator it = whereFields.iterator();
-			while( it.hasNext() ) {
-				
-				WhereField whereField = (WhereField)it.next();
-				
-				String leftHandValue = null;
-				DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(whereField.getUniqueName());
-				DataMartEntity entity = datamartField.getParent().getRoot(); 
-				String queryName = datamartField.getQueryName();
-				if(!entityAliases.containsKey(entity.getUniqueName())) {
-					entityAliases.put(entity.getUniqueName(), "t_" + entityAliases.keySet().size());
-				}
-				String entityAlias = (String)entityAliases.get( entity.getUniqueName() );				
-				leftHandValue = entityAlias + "." + queryName;
-				
-				
-				String rightHandValue = null;
-				
-				if("Field Content".equalsIgnoreCase( whereField.getOperandType() ) ) {
-					datamartField = getDataMartModel().getDataMartModelStructure().getField( whereField.getOperand().toString() );
-					entity = datamartField.getParent().getRoot(); 
-					queryName = datamartField.getQueryName();
-					if(!entityAliases.containsKey(entity.getUniqueName())) {
-						entityAliases.put(entity.getUniqueName(), "t_" + entityAliases.keySet().size());
-					}
-					entityAlias = (String)entityAliases.get( entity.getUniqueName() );
-					rightHandValue = entityAlias + "." + queryName;
-				} else if("Static Value".equalsIgnoreCase( whereField.getOperandType() ) ) {
-					rightHandValue = whereField.getOperand().toString();
-					
-					if(datamartField.getType().equalsIgnoreCase("String")) {
-						rightHandValue = "'" + rightHandValue + "'";
-					}
-				} else if("Subquery".equalsIgnoreCase( whereField.getOperandType() ) ) {
-					
-				} else {
-					
-				}
-				
-				
-				
-				
-				IConditionalOperator conditionalOperator = null;
-				conditionalOperator = (IConditionalOperator)conditionalOperators.get( whereField.getOperator() );
-				Assert.assertNotNull(conditionalOperator, "Unsopported operator " + whereField.getOperator() + " used in query definition");
-				
-				
-				buffer.append(" " + conditionalOperator.apply(leftHandValue, rightHandValue) );
-				
-				if( it.hasNext() ) {
-					buffer.append(" AND");
-				}
-			}
-			
-		}
-		*/
-		
-		/////////////////////////////////////////////////////////////////////////
+
 		DataMartModelStructure dataMartModelStructure = dataMartModel.getDataMartModelStructure();
 		DataMartModelAccessModality dataMartModelAccessModality = dataMartModel.getDataMartModelAccessModality();
 		
@@ -649,35 +586,6 @@ public class HQLStatement extends BasicStatement {
 		}
 		
 		return buffer.toString().trim();
-		
-		/*
-		StringBuffer buffer = new StringBuffer();
-		List orderByFields = query.getOrderByFields();
-		
-		if(orderByFields == null ||orderByFields.size() == 0) {
-			return "";
-		}
-		
-		Iterator it = orderByFields.iterator();
-		while( it.hasNext() ) {
-			OrderByField orderByField = (OrderByField)it.next();
-			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(orderByField.getUniqueName());
-			DataMartEntity entity = datamartField.getParent().getRoot(); 
-			String queryName = datamartField.getQueryName();
-			if(!entityAliases.containsKey(entity.getUniqueName())) {
-				entityAliases.put(entity.getUniqueName(), "t_" + entityAliases.keySet().size());
-			}
-			String entityAlias = (String)entityAliases.get( entity.getUniqueName() );
-			String fieldName = entityAlias + "." + queryName;
-			
-			buffer.append(" " + fieldName + " " + (orderByField.isAscendingOrder()?"ASC": "DESC") );
-			if( it.hasNext() ) {
-				buffer.append(",");
-			}
-		}
-		
-		return buffer.toString().trim();
-		*/
 	}
 	
 	
@@ -723,53 +631,28 @@ public class HQLStatement extends BasicStatement {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#execute(int, int)
-	 */
 	public SourceBean execute(int offset, int fetchSize) throws Exception {
 		return execute(query, parameters, offset, fetchSize, maxResults);
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#execute(int)
-	 */
+	
 	public SourceBean execute(int offset) throws Exception {
 		return execute(query, parameters, offset, fetchSize, maxResults);
 	}
 
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#execute()
-	 */
+	
 	public SourceBean execute() throws Exception {
 		return execute(query, parameters, offset, fetchSize, maxResults);
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#execute(it.eng.qbe.query.IQuery, java.util.Properties, int, int, int)
-	 */
+	
 	public SourceBean execute(Query query, Map parameters, int offset, int fetchSize, int maxResults) throws Exception {
 		Session session = null;
 		try{		
 			session = dataMartModel.getDataSource().getSessionFactory().openSession();
 			
 			String queryString = getQueryString(query, parameters);	
-			System.out.println("NEW: " + queryString);
-				
+			
 			org.hibernate.Query hibernateQuery = session.createQuery(queryString);			
 			
 			// check for overflow
@@ -811,16 +694,12 @@ public class HQLStatement extends BasicStatement {
 		return execute(query, parameters, offset, fetchSize, maxResults);
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#executeWithPagination(int, int)
-	 */
+	
 	public SourceBean executeWithPagination(int pageNumber, int pageSize) throws Exception {
 		return executeWithPagination(query, parameters, pageNumber, pageSize, maxResults);
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#executeWithPagination(it.eng.qbe.query.IQuery, java.util.Properties, int, int, int)
-	 */
+	
 	public SourceBean executeWithPagination(Query query, Map parameters, int pageNumber, int pageSize, int maxResults) throws Exception {
 		SourceBean resultSetSB = execute(query, parameters, pageNumber * pageSize, pageSize, maxResults);
 		

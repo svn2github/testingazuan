@@ -18,50 +18,46 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.qbe.model.io;
+package it.eng.qbe.catalogue;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.newquery.Query;
 import it.eng.qbe.newquery.QueryMeta;
 
+
+
 // TODO: Auto-generated Javadoc
 /**
- * The Interface IQueryPersister.
- * 
- * @author Andrea Zoppello
- * 
- * This is the interface for classes that implements
- * logig to load and persist query on a persistent store than can be, JSR 170 repository, Database,
- * File System and so on
+ * The Class SingleDataMartWizardObjectSourceBeanImpl.
  */
-public interface IQueryPersister {
-
-	/**
-	 * Persist.
-	 * 
-	 * @param dm the dm
-	 * @param wizObject the wiz object
-	 */
-	public void persist(DataMartModel dm, Query wizObject, QueryMeta meta);
+public class QueryCatalogue {
 	
-	/**
-	 * Load all queries.
-	 * 
-	 * @param dm the dm
-	 * 
-	 * @return all the query for datamart dm
-	 */
-	public List loadAllQueries(DataMartModel dm);
+	Map queries;
+	Map meta;
 	
-	/**
-	 * Load.
-	 * 
-	 * @param dm the dm
-	 * @param key the key
-	 * 
-	 * @return the query of the datamart identified by key
-	 */
-	public Query load(DataMartModel dm, String key);
+	long counter;
+	
+	public QueryCatalogue() {
+		this.queries = new HashMap();
+		this.meta = new HashMap();
+		this.counter = 0;
+	}
+	
+	public String addQuery(Query query, QueryMeta meta) {
+		String id = "id" + (++counter);
+		query.setId(id);
+		this.queries.put( query.getId(), query);
+		this.meta.put( query.getId(), meta);
+		return id;
+	}
+	
+	public Query getQuery(String id) {
+		return (Query)this.queries.get(id);
+	}
+	
+	public QueryMeta getQueryMeta(String id) {
+		return (QueryMeta)this.meta.get(id);
+	}
 }

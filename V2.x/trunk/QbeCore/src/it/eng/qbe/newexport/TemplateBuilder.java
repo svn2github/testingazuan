@@ -20,8 +20,6 @@
  **/
 package it.eng.qbe.newexport;
 
-import java.beans.XMLDecoder;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,9 +30,6 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Vector;
 
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 
@@ -586,39 +581,5 @@ public class TemplateBuilder {
 	
 
 	
-	/**
-	 * Deserialize query object.
-	 * 
-	 * @param savedQueryObjectID the saved query object id
-	 * 
-	 * @return the i single data mart wizard object
-	 */
-	private ISingleDataMartWizardObject deserializeQueryObject(String savedQueryObjectID){        
-        String fileName = null; //formulaFile.getParent() + System.getProperty("file.separator") + savedQueryObjectID+ ".qbe";
-        File f = null;
-        FileInputStream fis = null; 
-        
-        try {
-            f = new File(fileName);
-            fis = new FileInputStream(f);
-        	XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(fis));
-        
-            
-            ISingleDataMartWizardObject o = (ISingleDataMartWizardObject)decoder.readObject();
-            decoder.close();
-            
-            return o;
-        } catch (FileNotFoundException e) {
-    		Logger.error(LocalFileSystemQueryPersister.class, e);
-    		return null;
-        }finally{
-        	try{
-        		fis.close();
-        	}catch (Exception e) {
-				
-			}
-        	f.delete();
-        }
-       
-	}
+	
 }

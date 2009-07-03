@@ -59,10 +59,10 @@ import it.eng.qbe.newexport.Field;
 import it.eng.qbe.newexport.HqlToSqlQueryRewriter;
 import it.eng.qbe.newexport.SQLFieldsReader;
 import it.eng.qbe.newquery.Query;
+import it.eng.qbe.newquery.QueryMeta;
 import it.eng.qbe.newquery.SelectField;
 import it.eng.qbe.utility.IDBSpaceChecker;
 import it.eng.qbe.utility.Utils;
-import it.eng.qbe.wizard.ISingleDataMartWizardObject;
 import it.eng.spagobi.utilities.sql.SqlUtils;
 
 
@@ -471,9 +471,9 @@ public class DataMartModel implements IDataMartModel {
 	 * 
 	 * @param wizObj the wiz obj
 	 */
-	public void persistQueryAction(ISingleDataMartWizardObject wizObj){
+	public void persistQueryAction(Query query, QueryMeta meta){
 		try{
-			QbeCoreSettings.getInstance().getQueryPersister().persist(this, wizObj);
+			QbeCoreSettings.getInstance().getQueryPersister().persist(this, query, meta);
 		}catch (Exception e) {
 			Logger.error(DataMartModel.class, e);
 		}
@@ -522,8 +522,8 @@ public class DataMartModel implements IDataMartModel {
 	 * 
 	 * @return ISingleDataMartWizardObject the object representing the query
 	 */
-	public ISingleDataMartWizardObject getQuery(String queryId){
-		ISingleDataMartWizardObject  query= null;
+	public Query getQuery(String queryId){
+		Query  query= null;
 		try{
 			query = QbeCoreSettings.getInstance().getQueryPersister().load(this, queryId);
 		}catch (Exception e) {

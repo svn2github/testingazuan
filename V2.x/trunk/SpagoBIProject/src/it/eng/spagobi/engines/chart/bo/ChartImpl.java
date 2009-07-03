@@ -100,6 +100,7 @@ public class ChartImpl implements IChart {
 	
 	protected boolean filter=true;
 	protected boolean slider=true;
+	protected boolean sliderStartFromEnd=false;
 	protected String positionSlider;
 	protected StyleLabel styleTitle;
 	protected StyleLabel styleSubTitle;
@@ -322,7 +323,13 @@ public class ChartImpl implements IChart {
 				if(sli.equalsIgnoreCase("false"))
 					slider=false;
 			}
-			
+
+			sliderStartFromEnd=false;
+			if(dataParameters.get("slider_start_from_end")!=null && !(((String)dataParameters.get("slider_start_from_end")).equalsIgnoreCase("") )){	
+				String sli=(String)dataParameters.get("slider_start_from_end");
+				if(sli.equalsIgnoreCase("true"))
+					sliderStartFromEnd=true;
+			}
 			
 			positionSlider="top";
 			if(dataParameters.get("position_slider")!=null && !(((String)dataParameters.get("position_slider")).equalsIgnoreCase("") )){	
@@ -988,6 +995,16 @@ public class ChartImpl implements IChart {
 		}
 		return;
 	}
+
+	public boolean isSliderStartFromEnd() {
+		return sliderStartFromEnd;
+	}
+
+	public void setSliderStartFromEnd(boolean sliderStartFromEnd) {
+		this.sliderStartFromEnd = sliderStartFromEnd;
+	}
+	
+	
 	
 	
 	

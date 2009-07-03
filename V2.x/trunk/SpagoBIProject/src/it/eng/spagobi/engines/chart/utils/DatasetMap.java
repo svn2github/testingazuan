@@ -1,6 +1,7 @@
 package it.eng.spagobi.engines.chart.utils;
 
 
+import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup;
 import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts;
@@ -53,10 +54,19 @@ public class DatasetMap {
 		datasets.put(key, dataset);
 	}
 
+	/**
+	 * 
+	 * @param aServiceResponse: This is the service response, check it's not null, if it has requested parameters they win against request ones, cause means that chart has been re-executed
+	 * @param request
+	 * @param sbi
+	 * @param sbiMode
+	 * @param docComposition
+	 * @return
+	 */
 
-
-	public DatasetMap filteringSimpleBarChart(HttpServletRequest request, BarCharts sbi, String sbiMode, boolean docComposition){
+	public DatasetMap filteringSimpleBarChart(SourceBean aServiceResponse,HttpServletRequest request, BarCharts sbi, String sbiMode, boolean docComposition){
 		logger.debug("IN");
+
 		DefaultCategoryDataset dataset=(DefaultCategoryDataset)datasets.get("1");
 		Dataset copyDataset=null;
 		DatasetMap newDatasetMap=null;
@@ -83,17 +93,38 @@ public class DatasetMap {
 			catTitle=sbi.getCategoryLabel();
 			serTitle=sbi.getValueLabel();
 
-			// if slider specifies a category than set view from that point
-			if(request.getParameter("category")!=null){
-				String catS=(String)request.getParameter("category");
-				logger.debug("category specified by slider "+catS);
+			// Check first on serviceResponse
+			// if slider specifies a category than set view from that point; but if categoryAll is present wins over slider 
+			//Should consider starting point when startFromEnd is true
+
+
+			if(aServiceResponse!=null && aServiceResponse.getAttribute("category")!=null){ // lastChange
+				String catS=(String)aServiceResponse.getAttribute("category");
+				logger.debug("category specified in module response by slider "+catS);
 				Double catD=Double.valueOf(catS);
 				categoryCurrent=catD.intValue();
 			}
-			else{ //else set view from first category
-				logger.debug("no particulary category specified by slider");
-				categoryCurrent=1;
+			else if(request.getParameter("categoryAll")!=null){  // lastChange
+				logger.debug("All categories have to be shown");
+				categoryCurrent=0;			
 			}
+			else if(request.getParameter("category")!=null){
+				String catS=(String)request.getParameter("category");
+				logger.debug("category specified in request by slider "+catS);
+				Double catD=Double.valueOf(catS);
+				categoryCurrent=catD.intValue();
+			}
+			else{ //else set view from first category or fromlast if starFromEnd is tru
+				logger.debug("no particulary category specified by slider: startFromEnd option is "+sbi.isSliderStartFromEnd());
+				if(sbi.isSliderStartFromEnd()==true){
+					// Category current is: number categories - categories to visualize + 1
+					categoryCurrent=sbi.getCategoriesNumber()-(numberCatVisualization!=null ? numberCatVisualization.intValue() : 1) +1 ;
+				}
+				else{
+					categoryCurrent=1;
+				}
+			}
+
 			valueSlider=(new Integer(categoryCurrent)).toString();
 			HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
 
@@ -176,7 +207,7 @@ public class DatasetMap {
 				logger.debug("slider is to be drawn");
 				makeSlider=true;	    	
 			}
-			
+
 			//gets the filter's style
 			filterStyle=sbi.getFilterStyle();
 
@@ -272,7 +303,11 @@ public class DatasetMap {
 			serTitle=sbi.getValueLabel();
 
 			// if slider specifies a category than set view from that point
-			if(request.getParameter("category")!=null){
+			if(request.getParameter("categoryAll")!=null){
+				logger.debug("All categories have to be shown");
+				categoryCurrent=0;			
+			}
+			else if(request.getParameter("category")!=null){
 				String catS=(String)request.getParameter("category");
 				Double catD=Double.valueOf(catS);
 				categoryCurrent=catD.intValue();
@@ -328,7 +363,7 @@ public class DatasetMap {
 
 
 		}
-		
+
 		logger.debug("OUT");
 		return newDatasetMap;
 
@@ -457,7 +492,11 @@ public class DatasetMap {
 		serTitle=sbi.getValueLabel();
 
 		// if slider specifies a category than set view from that point
-		if(request.getParameter("category")!=null){
+		if(request.getParameter("categoryAll")!=null){
+			logger.debug("All categories have to be shown");
+			categoryCurrent=0;			
+		}		
+		else if(request.getParameter("category")!=null){
 			String catS=(String)request.getParameter("category");
 			Double catD=Double.valueOf(catS);
 			categoryCurrent=catD.intValue();
@@ -504,7 +543,7 @@ public class DatasetMap {
 		if(sbi.isFilterCategories()==true && (catsnum.intValue())>numberCatVisualization.intValue()){
 			makeSlider=true;	    	
 		}
-		
+
 		//gets the filter's style
 		filterStyle=sbi.getFilterStyle();
 

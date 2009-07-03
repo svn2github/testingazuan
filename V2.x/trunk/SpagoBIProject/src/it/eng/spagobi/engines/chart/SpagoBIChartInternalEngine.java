@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-**/
+ **/
 package it.eng.spagobi.engines.chart;
 
 
@@ -113,7 +113,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 		if(lang!=null && country!=null){
 			locale=new Locale(lang,country,"");
 		}
-		
+
 		logger.debug("got parameters userId="+userId+" and documentId="+documentId.toString());
 
 		//		**************get the template*****************
@@ -159,10 +159,10 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			try{
 				logger.debug("Getting Data Set ID");
 				if(obj.getDataSetId()!=null){
-				    data=obj.getDataSetId().toString();
+					data=obj.getDataSetId().toString();
 				} else {
-				    logger.error("Data Set not defined");
-				    throw new Exception("Data Set not defined");				    
+					logger.error("Data Set not defined");
+					throw new Exception("Data Set not defined");				    
 				}
 			}catch (Exception e) {
 				logger.error("Error while getting the dataset");
@@ -172,7 +172,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			}
 
 			HashMap parametersMap=null;
-			
+
 			//Search if the chart has parameters
 			List parametersList=obj.getBiObjectParameters();
 			logger.debug("Check for BIparameters and relative values");
@@ -202,10 +202,10 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				}	
 
 			} // end looking for parameters
-			
-			
-			
-			
+
+
+
+
 			try{
 				logger.debug("create the chart");
 				// set the right chart type
@@ -218,7 +218,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				// configure the chart with template parameters
 				sbi.configureChart(content);
 				sbi.setLocalizedTitle(locale);
-				
+
 				boolean linkable=sbi.isLinkable();
 				if(linkable){
 					logger.debug("Linkable chart, search in request for serieurlname or categoryurlname");
@@ -229,50 +229,50 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 					boolean linkableBar=false;
 					if(sbi instanceof LinkableBar)linkableBar=true;
 					else linkableBar=false;
-					
-					
+
+
 					//check is these parameters are in request, if not take them from template, if not use series and category by default
-					
+
 					if(linkableBar){
-					if(serviceRequest.getAttribute("serieurlname")!=null){
-						serieurlname=(String)serviceRequest.getAttribute("serieurlname");
-						((LinkableBar)sbi).setSerieUrlname(serieurlname);
+						if(serviceRequest.getAttribute("serieurlname")!=null){
+							serieurlname=(String)serviceRequest.getAttribute("serieurlname");
+							((LinkableBar)sbi).setSerieUrlname(serieurlname);
+						}
 					}
-					}
-					
+
 					//category is defined both for pie and bar linkable charts
 					if(serviceRequest.getAttribute("categoryurlname")!=null){
 						categoryurlname=(String)serviceRequest.getAttribute("categoryurlname");
-					
+
 						((ILinkableChart)sbi).setCategoryUrlName(categoryurlname);
-												
+
 					}
-					
-					
+
+
 					//check if there are other parameters from the drill parameters whose value is in the request; elsewhere take them from template
 					logger.debug("Linkable chart: search in the request for other parameters");
 					HashMap drillParameters=new HashMap();
 					if(((ILinkableChart)sbi).getDrillParameter()!= null){
-					
-					drillParameters=(HashMap)((ILinkableChart)sbi).getDrillParameter().clone();
-					
-					for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
-						String name = (String) iterator.next();
-						if(serviceRequest.getAttribute(name)!=null){
-							String value=(String)serviceRequest.getAttribute(name);
-							((ILinkableChart)sbi).getDrillParameter().remove(name);
-							((ILinkableChart)sbi).getDrillParameter().put(name, value);
+
+						drillParameters=(HashMap)((ILinkableChart)sbi).getDrillParameter().clone();
+
+						for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+							String name = (String) iterator.next();
+							if(serviceRequest.getAttribute(name)!=null){
+								String value=(String)serviceRequest.getAttribute(name);
+								((ILinkableChart)sbi).getDrillParameter().remove(name);
+								((ILinkableChart)sbi).getDrillParameter().put(name, value);
+
+							}
 
 						}
-
-					}
 					}
 
 				}
 
 
 
-			
+
 			}
 			catch (Exception e) {
 				logger.error("Error while creating the chart");
@@ -312,7 +312,7 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 					response.setAttribute("serie",serie);
 				}
 			}
-			
+
 			if(serviceRequest.getAttribute("cat_group")!=null)
 			{
 				List catGroups=(List)serviceRequest.getAttributeAsList("cat_group");
@@ -321,27 +321,35 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 					response.setAttribute("cat_group",catGroup);
 				}
 			}
-			
-			if(serviceRequest.getAttribute("category")!=null)
+
+			// If categoryAll check is checked it overwrites previous informations about slider
+			if(serviceRequest.getAttribute("categoryAll")!=null){
+				response.setAttribute("category","0");
+			}
+			else if(serviceRequest.getAttribute("category")!=null)
 			{
 				Object catO=serviceRequest.getAttribute("category");
 				category="";
 				try{
-				category=(String)catO;
+
+					category=(String)catO;
 				}
 				catch (Exception e) {
 					Integer catI=(Integer)catO;
 					category=catI.toString();
 				}
-				
-				
+				// if category is 0 but categoryAll is not defined means that categoryAll has just been de-selected, so put category to 1
+				if(category.equals("0"))
+				{
+					category="1";
+				}
 				response.setAttribute("category",category);
 			}
 
-			
-			
-			
-			
+
+
+
+
 			try{
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");

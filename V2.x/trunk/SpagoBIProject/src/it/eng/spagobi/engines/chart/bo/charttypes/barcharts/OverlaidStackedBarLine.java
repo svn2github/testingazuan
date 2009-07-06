@@ -2,6 +2,8 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
@@ -15,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
@@ -30,7 +33,7 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.TextAnchor;
 
-public class OverlaidStackedBarLine extends BarCharts {
+public class OverlaidStackedBarLine extends LinkableBar {
 
 
 	HashMap seriesDraw=null;
@@ -42,6 +45,7 @@ public class OverlaidStackedBarLine extends BarCharts {
 
 	boolean secondAxis=false;
 	String secondAxisLabel=null;
+	private static transient Logger logger=Logger.getLogger(OverlaidStackedBarLine.class);
 
 	public DatasetMap calculateValue() throws Exception {
 
@@ -326,6 +330,25 @@ public class OverlaidStackedBarLine extends BarCharts {
 				}
 			}
 
+			//defines url for drill
+			boolean document_composition=false;
+			if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
+
+			logger.debug("Calling Url Generation");
+
+			MyCategoryUrlGenerator mycatUrl=null;
+			if(super.rootUrl!=null){
+				logger.debug("Set MycatUrl");
+				mycatUrl=new MyCategoryUrlGenerator(super.rootUrl);
+
+				mycatUrl.setDocument_composition(document_composition);
+				mycatUrl.setCategoryUrlLabel(super.categoryUrlName);
+				mycatUrl.setSerieUrlLabel(super.serieUrlname);
+			}
+			if(mycatUrl!=null){
+				barRenderer.setItemURLGenerator(mycatUrl);
+			}
+			
 			plot.setDataset(1,datasetBar);
 			plot.setRenderer(1,barRenderer);
 

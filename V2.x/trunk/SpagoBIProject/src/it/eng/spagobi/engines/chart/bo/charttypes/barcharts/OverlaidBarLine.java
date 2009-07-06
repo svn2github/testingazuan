@@ -2,6 +2,8 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
@@ -32,7 +34,7 @@ import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.TextAnchor;
 
-public class OverlaidBarLine extends BarCharts {
+public class OverlaidBarLine extends LinkableBar {
 
 
 	HashMap seriesDraw=null;
@@ -40,6 +42,7 @@ public class OverlaidBarLine extends BarCharts {
 	HashMap seriesCaptions=null;
 	boolean additionalLabels=false;
 	HashMap catSerLabels=null;
+
 
 	boolean useBars=false;
 	boolean useLines=false;
@@ -304,14 +307,11 @@ public class OverlaidBarLine extends BarCharts {
 			}
 
 		}
-
-
+		
 		logger.debug("OUT");
 
 
 	}
-
-
 
 
 
@@ -395,7 +395,6 @@ public class OverlaidBarLine extends BarCharts {
 
 			}
 			
-			
 			if(showValueLabels){
 				barRenderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
 				barRenderer2.setBaseItemLabelsVisible(true);
@@ -425,9 +424,11 @@ public class OverlaidBarLine extends BarCharts {
 
 			}
 
-
+		
 			if(colorMap!=null){
+				int idx = -1;
 				for (Iterator iterator = datasetBarFirstAxis.getRowKeys().iterator(); iterator.hasNext();) {
+					idx++;
 					String serName = (String) iterator.next();
 					String labelName = "";
 					int index=-1;
@@ -446,6 +447,7 @@ public class OverlaidBarLine extends BarCharts {
 					}	
 				}
 				for (Iterator iterator = datasetBarSecondAxis.getRowKeys().iterator(); iterator.hasNext();) {
+					idx++;
 					String serName = (String) iterator.next();
 					String labelName = "";
 					int index=-1;
@@ -453,7 +455,7 @@ public class OverlaidBarLine extends BarCharts {
 					if (seriesCaptions != null && seriesCaptions.size()>0){
 						labelName = serName;
 						serName = (String)seriesCaptions.get(serName);
-						index=datasetBarFirstAxis.getRowIndex(labelName);
+						index=datasetBarSecondAxis.getRowIndex(labelName);
 					}
 					else
 						index=datasetBarSecondAxis.getRowIndex(serName);
@@ -461,17 +463,43 @@ public class OverlaidBarLine extends BarCharts {
 					Color color=(Color)colorMap.get(serName);
 					if(color!=null){
 						barRenderer2.setSeriesPaint(index, color);
+						/* test con un renderer
+						if (idx > index){
+							index = idx+1;
+						}
+						
+						barRenderer.setSeriesPaint(index, color);*/
 					}	
 				}				
 			}
 
 
+			//defines url for drill
+			boolean document_composition=false;
+			if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
+
+			logger.debug("Calling Url Generation");
+
+			MyCategoryUrlGenerator mycatUrl=null;
+			if(super.rootUrl!=null){
+				logger.debug("Set MycatUrl");
+				mycatUrl=new MyCategoryUrlGenerator(super.rootUrl);
+
+				mycatUrl.setDocument_composition(document_composition);
+				mycatUrl.setCategoryUrlLabel(super.categoryUrlName);
+				mycatUrl.setSerieUrlLabel(super.serieUrlname);
+			}
+			if(mycatUrl!=null){
+				barRenderer.setItemURLGenerator(mycatUrl);
+				barRenderer2.setItemURLGenerator(mycatUrl);
+			}
+			
 			plot.setDataset(2,datasetBarFirstAxis);
 			plot.setDataset(3,datasetBarSecondAxis);
 
 			plot.setRenderer(2,barRenderer);
 			plot.setRenderer(3,barRenderer2);
-
+			
 		}
 
 		if(useLines){
@@ -592,7 +620,6 @@ public class OverlaidBarLine extends BarCharts {
 		}
 
 
-
 		//plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
 		plot.getDomainAxis().setCategoryLabelPositions(
 				CategoryLabelPositions.UP_45);
@@ -626,207 +653,4 @@ public class OverlaidBarLine extends BarCharts {
 		}
 		return res;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//	public JFreeChart createChart(DatasetMap datasets) {
-
-
-//	// create the first renderer...
-
-
-//	CategoryPlot plot = new CategoryPlot();
-
-	
-
-//	NumberAxis rangeAxis = new NumberAxis(getValueLabel());
-//	rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
-//	rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
-//	rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
-//	rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
-//	rangeAxis.setUpperMargin(0.10);
-//	plot.setRangeAxis(rangeAxis);
-
-//	CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
-//	domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-//	domainAxis.setLabelPaint(styleYaxesLabels.getColor());
-//	domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-//	domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
-//	domainAxis.setUpperMargin(0.10);
-//	plot.setDomainAxis(domainAxis);
-
-//	plot.setOrientation(PlotOrientation.VERTICAL);
-//	plot.setRangeGridlinesVisible(true);
-//	plot.setDomainGridlinesVisible(true);
-
-//	DefaultCategoryDataset datasetBar=(DefaultCategoryDataset)datasets.getDatasets().get("bar");
-
-
-//	//I create one bar renderer and one line
-//	MyStandardCategoryItemLabelGenerator generator=null;
-
-//	// value labels and additional values are mutually exclusive
-//	if(showValueLabels==true)additionalLabels=false;
-
-//	if(additionalLabels){
-//	generator = new MyStandardCategoryItemLabelGenerator(catSerLabels,"{1}", NumberFormat.getInstance());
-//	}
-
-//	if(useBars){
-
-//	CategoryItemRenderer barRenderer = new BarRenderer();
-
-//	if(showValueLabels){
-//	barRenderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-//	barRenderer.setBaseItemLabelsVisible(true);
-//	barRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
-//	barRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
-
-//	barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-//	ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-
-//	barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-//	ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-
-//	}
-//	else if(additionalLabels){
-//	barRenderer.setBaseItemLabelGenerator(generator);
-//	double orient=(-Math.PI / 2.0);
-//	if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
-//	orient=0.0;
-//	}
-
-//	barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-//	ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-//	orient));
-//	barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-//	ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-//	orient));
-
-//	}
-
-
-//	if(colorMap!=null){
-//	for (Iterator iterator = datasetBar.getRowKeys().iterator(); iterator.hasNext();) {
-//	String serName = (String) iterator.next();
-//	String labelName = "";
-//	int index=-1;
-
-//	if (seriesCaptions != null && seriesCaptions.size()>0){
-//	labelName = serName;
-//	serName = (String)seriesCaptions.get(serName);
-//	index=datasetBar.getRowIndex(labelName);
-//	}
-//	else
-//	index=datasetBar.getRowIndex(serName);
-
-//	Color color=(Color)colorMap.get(serName);
-//	if(color!=null){
-//	barRenderer.setSeriesPaint(index, color);
-//	}	
-//	}
-//	}
-
-
-//	plot.setDataset(1,datasetBar);
-//	plot.setRenderer(1,barRenderer);
-
-//	}
-
-//	if(useLines){
-
-//	LineAndShapeRenderer lineRenderer = new LineAndShapeRenderer();
-//	//lineRenderer.setShapesFilled(false);
-//	lineRenderer.setShapesFilled(true);
-
-
-
-//	if(showValueLabels){
-//	lineRenderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-//	lineRenderer.setBaseItemLabelsVisible(true);
-//	lineRenderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.ITALIC, styleValueLabels.getSize()));
-//	lineRenderer.setBaseItemLabelPaint(styleValueLabels.getColor());
-
-//	lineRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-//	ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_RIGHT));
-
-//	lineRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-//	ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_RIGHT));
-
-//	}	
-//	else if(additionalLabels){
-//	lineRenderer.setBaseItemLabelGenerator(generator);
-//	lineRenderer.setBaseItemLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
-//	lineRenderer.setBaseItemLabelPaint(defaultLabelsStyle.getColor());
-//	lineRenderer.setBaseItemLabelsVisible(true);
-//	}
-
-//	DefaultCategoryDataset datasetLine=(DefaultCategoryDataset)datasets.getDatasets().get("line");
-
-
-//	if(colorMap!=null){
-//	for (Iterator iterator = datasetLine.getRowKeys().iterator(); iterator.hasNext();) {
-//	String serName = (String) iterator.next();
-//	String labelName = "";
-//	int index=-1;
-
-//	if (seriesCaptions != null && seriesCaptions.size()>0){
-//	labelName = serName;
-//	serName = (String)seriesCaptions.get(serName);
-//	index=datasetLine.getRowIndex(labelName);
-//	}
-//	else
-//	index=datasetLine.getRowIndex(serName);
-
-//	Color color=(Color)colorMap.get(serName);
-//	if(color!=null){
-//	lineRenderer.setSeriesPaint(index, color);
-//	}	
-//	}
-//	}
-//	plot.setDataset(0,datasetLine);
-//	plot.setRenderer(0,lineRenderer);
-//	}
-
-
-//	if(secondAxis){
-//	NumberAxis na=new NumberAxis(secondAxisLabel);
-//	na.setUpperMargin(0.10);
-//	plot.setRangeAxis(1,na);
-//	plot.mapDatasetToRangeAxis(0, 1);
-//	}
-
-
-
-//	//plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
-//	plot.getDomainAxis().setCategoryLabelPositions(
-//	CategoryLabelPositions.UP_45);
-//	JFreeChart chart = new JFreeChart(plot);
-//	TextTitle title = setStyleTitle(name, styleTitle);
-//	chart.setTitle(title);
-//	if(subName!= null && !subName.equals("")){
-//	TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
-//	chart.addSubtitle(subTitle);
-//	}
-//	chart.setBackgroundPaint(Color.white);
-//	return chart;
-
-
-
-//	}
-
-
 }

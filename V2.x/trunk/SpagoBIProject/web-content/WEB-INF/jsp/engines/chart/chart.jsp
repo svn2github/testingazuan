@@ -73,7 +73,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		crossNavigationParameters.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "TRUE");
 		crossNavigationUrl = urlBuilder.getUrl(request, crossNavigationParameters);%>
 		
-		<form id="crossNavigationForm<%= uuid %>" method="post" action="<%= crossNavigationUrl %>" style="display:none;">
+		<%@page import="it.eng.spagobi.engines.chart.bo.charttypes.boxcharts.BoxCharts"%>
+<form id="crossNavigationForm<%= uuid %>" method="post" action="<%= crossNavigationUrl %>" style="display:none;">
 		    <input type="hidden" id="targetDocumentLabel<%= uuid %>" name="<%= ObjectsTreeConstants.OBJECT_LABEL %>" value="" />  
 			<input type="hidden" id="targetDocumentParameters<%= uuid %>" name="<%= ObjectsTreeConstants.PARAMETERS %>" value="" />
 		</form>
@@ -130,7 +131,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	boolean filterCatGroup=false;
 	boolean filterSeries=false;
+	boolean filterSeriesButtons=false;	
 	boolean filterCategories=false;
+	boolean changeCatNumber=false;
 	
 	Vector seriesNames=null;
 	Vector catGroupsNames=null;
@@ -196,6 +199,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			// returns a new datasets map filtered
 			copyDatasets=datasetMap.filteringSimpleBarChart(sbModuleResponse,request,(BarCharts)sbi,sbiMode,docComposition);
 			filterCatGroup=((BarCharts)sbi).isFilterCatGroups();
+			changeCatNumber=true;
 		}
 		else if(sbi.getSubtype().equalsIgnoreCase("overlaid_barline") || sbi.getSubtype().equalsIgnoreCase("overlaid_stackedbarline")){
 			copyDatasets=datasetMap.filteringMultiDatasetBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
@@ -433,13 +437,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				String serieS=(String)iterator.next();
 				refreshUrlCategory=refreshUrlCategory+"&serie="+serieS;
 			}	
-		} 
+		}
+			// add to refreshUrlCategory the parameter n_visualization if present 
+		if(changeCatNumber){
+			refreshUrlCategory=refreshUrlCategory+"&n_visualization="+(((BarCharts)sbi).getNumberCatVisualization());
+			}
+			
 		Vector tmpVec = datasetMap.getSelectedCatGroups();
 		//if(datasetMap.getSelectedCatGroups().contains("allgroups")){
 		if(tmpVec != null){
 			if (tmpVec.contains("allgroups")){
 		
-				refreshUrlCategory=refreshUrl+"&cat_group=allgroups";
+				refreshUrlCategory=refreshUrlCategory+"&cat_group=allgroups";
 			}
 			else{
 				refreshUrlCategory=refreshUrl;
@@ -454,6 +463,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	if(sbi.isFilter() && (sbi.getType().equalsIgnoreCase("BARCHART") || sbi.getType().equalsIgnoreCase("CLUSTERCHART"))){
 	if(sbi instanceof BarCharts){
 		if(((BarCharts)sbi).isFilterSeries()==true)filterSeries=true;
+		if(((BarCharts)sbi).isFilterSeriesButtons()==true)filterSeriesButtons=true;
+		
 	}
 	//else
 		//if(sbi instanceof ClusterCharts){
@@ -486,7 +497,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		refreshUrlSerie=refreshUrl;
 	}
 	
- 	refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent())); //aaa
+ 	refreshUrlPars.put("category",new Integer(datasetMap.getCategoryCurrent())); 
 	for(Iterator iterator = refreshUrlPars.keySet().iterator(); iterator.hasNext();)
 		{
 			String name = (String) iterator.next();
@@ -500,6 +511,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  if(showSlider || filterSeries==true) {%>
 			<form id='serieform' name="serie" action="<%=refreshUrl%>" method="POST"> 
 				<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE" /> 
+				<input type="hidden" name="category" value="<%=datasetMap.getCategoryCurrent()%>" /> 
 			<%} %>
 
   <!-- Begin drawing the page -->
@@ -555,16 +567,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 											<td width="5%" align="center">		
 												<!-- SLIDER -->					
 												<span id="slider1"></span> 
-											</td>
+											</td>	
 											<td width="15%" align="left">							
-												<!-- <input class='portlet-form-input-field' type="hidden"	 id="slider_1_1_value" readonly style="width:30px;"/>  -->
 												<!-- BOX FOR SLIDER VALUE -->
-												<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"/>
-												<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
-												<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>
-												<input style="<%=datasetMap.getFilterStyle()%>" class="portlet-form-input-field" type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 
-												<!--  <input style="<%=datasetMap.getFilterStyle()%>" class='portlet-form-input-field' type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/> -->
-										    </td>					
+												<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"></p> 
+													<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
+													<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>
+															<div class='div_detail_form' id='selectAllCatsLabel' style="float: left;">
+																<input style="<%=datasetMap.getFilterStyle()%>" class="portlet-form-input-field" type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 
+																<span class='portlet-form-field-label' >
+																	<spagobi:message key = "sbi.chartEngine.selectAllCats" />
+																</span>
+															</div>
+			   								</td>					
 										</tr>
 									 </table> 
 								</td>
@@ -589,10 +604,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 											<span  id="slider1"></span> 
 										</td>
 										<td width="15%" align="left">							
-										<!-- 	<input class='portlet-form-input-field' type="text"	 id="slider_1_1_value" readonly style="width:30px;"/>
-											<input style="<%=datasetMap.getFilterStyle()%>" type="submit" value="All" onClick="document.location.href=getAllActionUrl();"/> -->
-												<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"/>										
-										</td>					
+											<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"/>										
+												<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
+												<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>
+														<div class='div_detail_form' id='selectAllCatsLabel' style="float: left;">
+													   <input style="<%=datasetMap.getFilterStyle()%>" class="portlet-form-input-field" type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 
+															<span class='portlet-form-field-label'>
+																<spagobi:message key = "sbi.chartEngine.selectAllCats" />
+															</span>
+														</div>
+			   							</td>															
 									</tr>
 						 		</table> 
 							</td>
@@ -604,6 +625,54 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			%>
 		 </td>
    	</tr>
+
+<!-- I add the input to select dynamically the number of cats visualizations -->
+	<%
+	if(datasetMap.isDynamicNVisualization()==true){
+%>
+			 <tr> <!-- Line of dynamic categories number to visualize -->
+			 <td>
+			 <table align="center">
+			 <tr>
+			 	<td width="15%" />
+			 	<td align="center" width="15%">
+					<div class='div_detail_form' align="center" style="float: left;">
+							<script type="text/javascript">
+							<!-- //This is a function to check that only numbers can be inserted
+									function onlyNumbers(vnt)
+									{
+									var tasto,carattereTasto;
+									//Modello ad eventi IE	
+									if (window.event)  tasto = window.event.keyCode;
+									else
+										if (vnt) //Modello ad eventi NN
+											tasto = vnt.which;
+										else
+											return true;
+										carattereTasto = String.fromCharCode(tasto);
+									// verifica tasti particolari tipo canc, invio, ...
+									if ((tasto==null) || (tasto==0) || (tasto==8) ||(tasto==9) || (tasto==13) || (tasto==27) ) return true;
+									else if ((("0123456789").indexOf(carattereTasto) > -1))
+										{ window.status = ""; return true; }
+									else {window.status = "Il campo accetta solo numeri"; return false; }
+								}
+							-->
+						</script>
+						<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="3" maxlength="3" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 
+						<span class='portlet-form-field-label'>
+							<spagobi:message key = "sbi.chartEngine.numCatsView" />: 
+						</span>	
+					</div>
+				</td>		   
+			 	<td width="15%" />
+			  </tr>
+			  </table>
+			  </td>
+			</tr>  	
+	<%	
+	}
+%>
+
 
 	<% 	 
 
@@ -617,17 +686,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	<tr>
 		<td>
 
-
 		<table id="filterSeriesOrCatGroups" align="left">
-			<!-- START FORM  -->
-		<!--  	<form id='serieform' name="serie" action="<%=refreshUrl%>" 
-				method="POST"> -->
-						
 						<!--  ROW FOR SELECT THE SERIES--> <%
 	 
 	                if(filterSeries==true){ %>
 			              <tr>
-				             <td>
+				             <td width="100%">
 				              <div align="center" class='div_detail_form'>
 				                <%				
 		                           String tlab=((datasetMap.getSerTitle()!=null && !datasetMap.getSerTitle().equalsIgnoreCase("")) ? datasetMap.getSerTitle() : "series");
@@ -645,17 +709,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 												<input id="serie_<%=ser%>" name="serie" value="<%=ser%>" type="checkbox" /> 
 												<span style="<%=datasetMap.getFilterStyle()%>"><%=ser%></span> <% } 
 		 									}%>  
+		 								<%if(filterSeriesButtons==true){ // if drawing select all/ unselect all buttons%>	
 		 								<a onclick="enableSerie()" title="check all series" alt='<spagobi:message key = "SBIDev.paramUse.checkAllFreeRoles" />'>
 											 <img src='<%=urlBuilder.getResourceLinkByTheme(request, "/img/expertok.gif", currTheme)%>' />
 										</a> 
 										<a onclick="disableSerie()" title="uncheck all series" alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
 											<img src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>' />
 										</a> 
-										<%
+										<%} // CLOSE if drawing
 									} 
-								if(filterCatGroup==false){ %> 
-								   <input style="<%=datasetMap.getFilterStyle()%>" type="submit" value="Apply" />
-								<%} %>
+%>
 							</div>
 						</td>
 					</tr>
@@ -665,6 +728,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<!--  ROW FOR SELECT THE CATS GROUPS-->
 			<%
 			if(filterCatGroup==true){  	// filter cat group
+				if(((BarCharts)sbi).getCatGroupNames()!=null && !((BarCharts)sbi).getCatGroupNames().isEmpty()) {    // case there is at least one cat group
 			%>
 				<input type="hidden" name="<%=LightNavigationManager.LIGHT_NAVIGATOR_DISABLED%>" value="TRUE" />
 			<% 	
@@ -681,7 +745,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 <div align="center" class='div_detail_form'>
 				 <%     	
 				  // for each possible category group
-					if(((BarCharts)sbi).getCatGroupNames()!=null){	
 						for (Iterator iterator = ((BarCharts)sbi).getCatGroupNames().iterator(); iterator.hasNext();) {
 							String group = (String) iterator.next(); 
 							catGroupsNames.add(group);
@@ -699,16 +762,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<span style="<%=datasetMap.getFilterStyle()%>"><%=group%></span> 
 							<%} 
 		 				}
-					}%> 
-				   <input type="submit" value="Apply" />
+					%> 
 				  </div>
 			   </td>
 			</tr>
-			<%} //close filter cat group case%>
+			
+			<%
+					} // close check that exists cat group names
+				} //close filter cat group case%>
+
 
 		</table> <!-- Close table id="filterSeriesOrCatGroups" -->
-
-	 <%if(showSlider || filterSeries==true) {%>
+	
+	
+	 <%if(showSlider==true || filterSeries==true || filterCatGroup==true) {%>
+			 <tr>
+			   <td>
+				 <div align="center" class='div_detail_form'>
+				   <input type="submit" value="Apply" />
+				</div>
+			   </td>
+			 </tr>  	
 		<!--CLOSE FORM  -->
 		</form>
 	<%}%>
@@ -859,7 +933,8 @@ var checkableSeries = new Array();
 			if(document.getElementById('ext-gen27')!=undefined){
 					document.getElementById('ext-gen27').style.top='10px';
 				}	
-					
+
+					document.getElementById('selectAllCatsLabel').style.display = 'none';
 					//document.getElementById('slider_1_1_value').value=value;
 					document.getElementById('slider_1_1_value').innerHTML =value;
 					

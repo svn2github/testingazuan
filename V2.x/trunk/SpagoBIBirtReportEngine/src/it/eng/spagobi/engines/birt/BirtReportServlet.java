@@ -5,8 +5,11 @@
  */
 package it.eng.spagobi.engines.birt;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionDefinitionException;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionParameterNotValidException;
 import it.eng.spagobi.engines.birt.utilities.ParameterConverter;
@@ -63,6 +66,7 @@ import org.eclipse.birt.report.utility.BirtUtility;
 import org.eclipse.birt.report.utility.ParameterAccessor;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
+import org.xml.sax.InputSource;
 
 
 
@@ -232,6 +236,8 @@ public class BirtReportServlet extends HttpServlet {
 
 		if (template.getFileName().indexOf(".zip") > -1) {
 			flgTemplateStandard = "false";
+		}else{
+			flgTemplateStandard = "true";
 		}
 		
 		SpagoBIAccessUtils util = new SpagoBIAccessUtils();
@@ -276,6 +282,27 @@ public class BirtReportServlet extends HttpServlet {
 				this.birtReportEngine.getConfig().setResourcePath(resourcePath);
 			}
 			
+		}else{
+			
+			SourceBean engineConfig=null;
+			if (getClass().getResource("/engine-config.xml")!=null){
+				InputSource source=new InputSource(getClass().getResourceAsStream("/engine-config.xml"));
+				try {
+					engineConfig = SourceBean.fromXMLStream(source);
+				} catch (SourceBeanException e) {
+					logger.error("SourceBean exception for engine config",e);
+					e.printStackTrace();
+				}   
+			}
+			
+			SourceBean sb = (SourceBean)engineConfig.getAttribute("RESOURCE_PATH_JNDI_NAME");
+			String path = (String) sb.getCharacters();
+			String resPath= SpagoBIUtilities.readJndiResource(path);			
+			resPath+="/birt_messages/";
+
+			if(resPath!=null){
+				this.birtReportEngine.getConfig().setResourcePath(resPath);
+			}
 		}
 		
 		

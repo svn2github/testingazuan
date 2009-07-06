@@ -5,13 +5,18 @@
  */
 package it.eng.spagobi.engines.birt;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.engines.birt.utilities.Utils;
+import it.eng.spagobi.utilities.ResourceClassLoader;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.PropertyResourceBundle;
 import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
@@ -27,6 +32,7 @@ import org.eclipse.birt.report.engine.api.EngineConstants;
 import org.eclipse.birt.report.engine.api.IReportEngine;
 import org.eclipse.birt.report.engine.api.IReportEngineFactory;
 import org.eclipse.birt.report.utility.ParameterAccessor;
+import org.xml.sax.InputSource;
 
 public class BirtEngine {
 
@@ -37,6 +43,8 @@ public class BirtEngine {
     private final static String configFile = "BirtLogConfig.properties";
 
     protected static Logger logger = Logger.getLogger(BirtEngine.class);
+    
+    protected final static String engineConfigFile = "engine-config.xml";
 
     /**
      * Inits the birt config.
@@ -92,8 +100,9 @@ public class BirtEngine {
 	    IPlatformContext context = new PlatformServletContext(sc);
 	    config.setPlatformContext(context);
 
-	    ParameterAccessor.initParameters(sc);
-	    config.setResourcePath(ParameterAccessor.getResourceFolder(request));
+			
+	   // ParameterAccessor.initParameters(sc);
+	    //config.setResourcePath(ParameterAccessor.getResourceFolder(request));
 	    // Prepare ScriptLib location
 	    String scriptLibDir = ParameterAccessor.scriptLibDir;
 	    ArrayList jarFileList = new ArrayList();

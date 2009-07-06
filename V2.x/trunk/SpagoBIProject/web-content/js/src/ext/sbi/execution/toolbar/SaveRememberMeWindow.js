@@ -157,8 +157,6 @@ Ext.extend(Sbi.execution.toolbar.SaveRememberMeWindow, Ext.Window, {
 		      		} else {
 		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 		      		}
-	  	  		} else { 
-	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot save Remember Me', 'Service Error');
 	  	  		}
 	        },
 	        scope: this,

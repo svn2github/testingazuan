@@ -59,6 +59,7 @@ public class BarCharts extends ChartImpl {
 	String valueLabel="";
 	Integer numberCatVisualization=null;
 	Integer numberSerVisualization=null;
+	boolean dynamicNumberCatVisualization=false;
 	HashMap colorMap=null;  // keeps user selected colors// serie position - color
 	HashMap seriesNumber=null; //track serie name with number position (to preserve color)
 	HashMap seriesCaptions=null;
@@ -79,6 +80,9 @@ public class BarCharts extends ChartImpl {
 	boolean filterSeries=true;
 	boolean filterCategories=true;
 	String filterStyle="";
+	
+	// Enable if true/Disable if false select all and unselect all buttons on filter series form
+	boolean filterSeriesButtons=true;
 
 	boolean showValueLabels=false;
 	
@@ -346,6 +350,14 @@ public class BarCharts extends ChartImpl {
 			numberCatVisualization=new Integer(1);
 		}
 		
+		dynamicNumberCatVisualization=false;
+		if(confParameters.get("dynamic_n_visualization")!=null){		
+			String dynamicS=(String)confParameters.get("dynamic_n_visualization");
+			if(dynamicS.equalsIgnoreCase("true"))dynamicNumberCatVisualization=true;
+		}
+		
+		
+		
 		if(confParameters.get("n_ser_visualization")!=null){		
 			String nu=(String)confParameters.get("n_ser_visualization");
 			numberSerVisualization=Integer.valueOf(nu);
@@ -375,6 +387,11 @@ public class BarCharts extends ChartImpl {
 		else
 		{
 			filterSeries=true;
+		}
+		
+		if(confParameters.get("filter_series_buttons")!=null){		
+			String filterSeriesS=(String)confParameters.get("filter_series_buttons");
+			if(filterSeriesS.equalsIgnoreCase("false"))filterSeriesButtons=false;
 		}
 		
 		if(confParameters.get("filter_categories")!=null){		
@@ -941,6 +958,27 @@ public class BarCharts extends ChartImpl {
 	 */
 	public void setNumberSerVisualization(Integer numberSerVisualization) {
 		this.numberSerVisualization = numberSerVisualization;
+	}
+
+
+	public boolean isDynamicNumberCatVisualization() {
+		return dynamicNumberCatVisualization;
+	}
+
+
+	public void setDynamicNumberCatVisualization(
+			boolean dynamicNumberCatVisualization) {
+		this.dynamicNumberCatVisualization = dynamicNumberCatVisualization;
+	}
+
+
+	public boolean isFilterSeriesButtons() {
+		return filterSeriesButtons;
+	}
+
+
+	public void setFilterSeriesButtons(boolean filterSeriesButtons) {
+		this.filterSeriesButtons = filterSeriesButtons;
 	}
 
 

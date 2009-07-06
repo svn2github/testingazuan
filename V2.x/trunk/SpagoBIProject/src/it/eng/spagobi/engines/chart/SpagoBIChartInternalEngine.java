@@ -346,7 +346,12 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				response.setAttribute("category",category);
 			}
 
-
+			// if dinamically changed the number categories visualization
+			if(serviceRequest.getAttribute("n_visualization")!=null){
+				Object nVis=(Object)serviceRequest.getAttribute("n_visualization");
+				response.setAttribute("n_visualization",nVis);
+			}
+			
 
 
 

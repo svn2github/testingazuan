@@ -42,6 +42,7 @@ public class DatasetMap {
 	Vector selectedCatGroups;
 	boolean makeSlider=false;
 	String filterStyle = "";
+	boolean dynamicNVisualization=false;
 
 	private static transient org.apache.log4j.Logger logger=Logger.getLogger(DatasetMap.class);
 
@@ -70,6 +71,7 @@ public class DatasetMap {
 		DefaultCategoryDataset dataset=(DefaultCategoryDataset)datasets.get("1");
 		Dataset copyDataset=null;
 		DatasetMap newDatasetMap=null;
+		boolean notDisappearSlider=false;   // if n_visualization>=number total categories do not make slider disappear
 		try {
 			copyDataset = (DefaultCategoryDataset)dataset.clone();
 		} catch (CloneNotSupportedException e) {
@@ -87,6 +89,17 @@ public class DatasetMap {
 
 			categories=(HashMap)((BarCharts)sbi).getCategories();
 			catsnum=new Integer(sbi.getCategoriesNumber());
+
+			//See if numberCatVisualization has to be updated
+			if(aServiceResponse.getAttribute("n_visualization")!=null){
+				String nVis=(String)aServiceResponse.getAttribute("n_visualization");
+				Integer catD=Integer.valueOf(nVis);
+				if(catD.equals(0))catD=new Integer(catsnum);
+				sbi.setNumberCatVisualization(catD);
+				if(catD>=catsnum)notDisappearSlider=true;
+			}
+			
+			
 			numberCatVisualization=sbi.getNumberCatVisualization();
 			numberSerVisualization=sbi.getNumberSerVisualization();
 
@@ -207,6 +220,10 @@ public class DatasetMap {
 				logger.debug("slider is to be drawn");
 				makeSlider=true;	    	
 			}
+			else if(sbi.isFilterCategories()==true && notDisappearSlider==true){
+				logger.debug("slider is to be drawn");
+				makeSlider=true;	    	
+			}
 
 			//gets the filter's style
 			filterStyle=sbi.getFilterStyle();
@@ -218,6 +235,9 @@ public class DatasetMap {
 		catch (Exception e) {
 			logger.error("Error while filtering simple Chart ",e);
 		}
+
+		// set if is dynamic Categories selection
+		dynamicNVisualization=sbi.isDynamicNumberCatVisualization();		
 
 		logger.debug("OUT");
 		return newDatasetMap;
@@ -700,5 +720,15 @@ public class DatasetMap {
 	public void setFilterStyle(String filterStyle) {
 		this.filterStyle = filterStyle;
 	}
+
+	public boolean isDynamicNVisualization() {
+		return dynamicNVisualization;
+	}
+
+	public void setDynamicNVisualization(boolean dynamicNVisualization) {
+		this.dynamicNVisualization = dynamicNVisualization;
+	}
+
+
 
 }

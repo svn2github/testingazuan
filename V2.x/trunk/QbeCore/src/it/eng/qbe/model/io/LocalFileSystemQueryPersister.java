@@ -33,8 +33,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import it.eng.qbe.conf.QbeCoreSettings;
-import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.QueryMeta;
@@ -51,6 +52,9 @@ import it.eng.qbe.utility.FileUtils;
  */
 public class LocalFileSystemQueryPersister implements IQueryPersister {
 
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(LocalFileSystemQueryPersister.class);
+	
 	
 
 	
@@ -73,7 +77,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
 		    encoder.writeObject(query);
 		    encoder.close();
 		} catch (IOException e) {
-			Logger.error(LocalFileSystemQueryPersister.class, e);
+			logger.error(LocalFileSystemQueryPersister.class, e);
 		}
 		
 	}
@@ -139,7 +143,7 @@ public class LocalFileSystemQueryPersister implements IQueryPersister {
             decoder.close();
             return o;
         } catch (FileNotFoundException e) {
-    		Logger.error(LocalFileSystemQueryPersister.class, e);
+    		logger.error("impossible to load file from xml", e);
     		return null;
         }
     }

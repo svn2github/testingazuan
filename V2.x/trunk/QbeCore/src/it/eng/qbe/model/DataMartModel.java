@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Jar;
 import org.apache.tools.ant.taskdefs.Javac;
@@ -50,7 +51,6 @@ import it.eng.qbe.datasource.IHibernateDataSource;
 import it.eng.qbe.export.Field;
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.export.SQLFieldsReader;
-import it.eng.qbe.log.Logger;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
@@ -93,7 +93,8 @@ public class DataMartModel implements IDataMartModel {
 	/** The data mart properties. */
 	private Map dataMartProperties = null;
 	
-	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(DataMartModel.class);
 	
 	
 	
@@ -459,7 +460,7 @@ public class DataMartModel implements IDataMartModel {
 				return false;
 			}
 		}else{
-			Logger.debug(this.getClass(), " check of the space disabled...");
+			logger.debug(" check of the space disabled...");
 			return true;
 		}
 	}
@@ -475,7 +476,7 @@ public class DataMartModel implements IDataMartModel {
 		try{
 			QbeCoreSettings.getInstance().getQueryPersister().persist(this, query, meta);
 		}catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
+			logger.error("impossible to persist query", e);
 		}
 	}
 	
@@ -489,7 +490,7 @@ public class DataMartModel implements IDataMartModel {
 		try{
 			l = QbeCoreSettings.getInstance().getQueryPersister().loadAllQueries(this);
 		}catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
+			logger.error("impossible to load queries", e);
 		}
 		return l;
 	}
@@ -510,7 +511,7 @@ public class DataMartModel implements IDataMartModel {
 				l = localFileSystemQueryPersister.getPrivateQueriesFor(this, userIdentifier);
 			}
 		}catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
+			logger.error("Impossible to execute getPrivateQueriesFor", e);
 		}
 		return l;
 	}
@@ -527,7 +528,7 @@ public class DataMartModel implements IDataMartModel {
 		try{
 			query = QbeCoreSettings.getInstance().getQueryPersister().load(this, queryId);
 		}catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
+			logger.error("Impossible to load query", e);
 		}
 		return query;
 	}

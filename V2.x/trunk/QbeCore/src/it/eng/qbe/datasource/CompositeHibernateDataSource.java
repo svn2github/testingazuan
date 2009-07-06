@@ -26,11 +26,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import it.eng.qbe.dao.DAOFactory;
-import it.eng.qbe.log.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -44,23 +44,16 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	
 	
 		
-	/** The class loader extended. */
+	/** memebers */
 	private boolean classLoaderExtended = false;	
-	
-	/** The already added view. */
-	private List alreadyAddedView = null;
-		
-	/** The configuration map. */
+	private List alreadyAddedView = null;	
 	private Map configurationMap = new HashMap();	
-	
-	/** The session factory map. */
 	private Map sessionFactoryMap = new HashMap();	
-	
-	/** The composite configuration. */
-	private Configuration compositeConfiguration = null;
-	
-	/** The composite session factory. */
+	private Configuration compositeConfiguration = null;	
 	private SessionFactory compositeSessionFactory = null;
+	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(CompositeHibernateDataSource.class);
 	
 	
 	/**
@@ -187,7 +180,7 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 	 * Inits the hibernate.
 	 */
 	private void initHibernate(){
-		Logger.debug(this.getClass(), "initSessionFactories: start method initSessionFactories");
+		logger.debug("IN");
 				
 		compositeConfiguration = buildEmptyConfiguration();
 		

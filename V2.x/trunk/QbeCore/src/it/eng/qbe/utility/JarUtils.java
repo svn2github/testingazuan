@@ -22,8 +22,6 @@ package it.eng.qbe.utility;
 
 
 
-import it.eng.qbe.log.Logger;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +32,8 @@ import java.util.Enumeration;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+import org.apache.log4j.Logger;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class JarUtils.
@@ -42,6 +42,8 @@ import java.util.zip.ZipEntry;
  */
 public class JarUtils {
 	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(JarUtils.class);
 		
 	/**
 	 * Gets the file name.
@@ -92,7 +94,7 @@ public class JarUtils {
 				
 				
 				String fileName = getFileName(ze.getName());
-				Logger.debug(JarUtils.class, " Find file ["+ fileName + "] in jar File");
+				logger.debug(" Find file ["+ fileName + "] in jar File");
 				if ( fileName.equalsIgnoreCase(resourceName) ) {
 					//log.info( "Found mapping document in jar: " + ze.getName() );
 					try {

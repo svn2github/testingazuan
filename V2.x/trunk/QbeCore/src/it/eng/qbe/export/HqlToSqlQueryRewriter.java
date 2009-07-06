@@ -20,13 +20,12 @@
  **/
 package it.eng.qbe.export;
 
-import it.eng.qbe.log.Logger;
-
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -45,6 +44,10 @@ public class HqlToSqlQueryRewriter {
 	/** The session. */
 	private Session session;
 	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(HqlToSqlQueryRewriter.class);
+	
+	
 	/**
 	 * Instantiates a new hql to sql query rewriter.
 	 * 
@@ -59,7 +62,7 @@ public class HqlToSqlQueryRewriter {
 	 */
 	public String rewrite(String query) {
 		String sqlQuery = null;		
-		Logger.debug(this.getClass(), "rewrite: HQL query to convert: " + query);		
+		logger.debug("rewrite: HQL query to convert: " + query);		
 		
 		
 		Query hibQuery = session.createQuery(query);
@@ -112,7 +115,7 @@ public class HqlToSqlQueryRewriter {
 		trans.compile(new HashMap(), false);
 		sqlQuery = trans.getSQLString();
 		
-		Logger.debug(this.getClass(), "rewrite: generated SQL query: " + sqlQuery);		
+		logger.debug("rewrite: generated SQL query: " + sqlQuery);		
 		System.out.println("generated SQL query: " + sqlQuery);
 	
 		return sqlQuery;

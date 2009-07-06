@@ -21,14 +21,6 @@
 package it.eng.qbe.model.accessmodality;
 
 
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.Filter;
-import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.model.structure.DataMartField;
-import it.eng.qbe.utility.StringUtils;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,7 +31,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
+
+import it.eng.qbe.model.Filter;
+import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.utility.StringUtils;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -79,6 +79,12 @@ public class DataMartModelAccessModality {
 	/** The Constant TAG_FILTER. */
 	private static final String TAG_FILTER = "FILTER";
 	
+	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(DataMartModelAccessModality.class);
+	
+	
+	
 	/**
 	 * Instantiates a new data mart model access modality.
 	 */
@@ -95,12 +101,10 @@ public class DataMartModelAccessModality {
 					new InputSource(new FileInputStream(file)));
 			entityAccessModalityMap = buildEntityAccessModalityMap(modalitySB);
 		} catch (SourceBeanException e) {
-			Logger.error(DataMartModelAccessModality.class, 
-					"Impossible to parse access modality properties from file " + file.toString() 
+			logger.error("Impossible to parse access modality properties from file " + file.toString() 
 					+ ": \n" + e.toString());
 		} catch (FileNotFoundException e) {
-			Logger.error(DataMartModelAccessModality.class, 
-					"Impossible to load access modality properties from file " + file.toString() 
+			logger.error("Impossible to load access modality properties from file " + file.toString() 
 					+ ": \n" + e.toString());
 		}
 	}
@@ -118,11 +122,11 @@ public class DataMartModelAccessModality {
 			modalitySB = getModalitySBByName(modalitiesSB, modalityName);
 			entityAccessModalityMap = buildEntityAccessModalityMap(modalitySB);
 		} catch (SourceBeanException e) {
-			Logger.error(DataMartModelAccessModality.class, 
+			logger.error(
 					"Impossible to parse access modality properties from file " + file.toString() 
 					+ ": \n" + e.toString());
 		} catch (FileNotFoundException e) {
-			Logger.error(DataMartModelAccessModality.class, 
+			logger.error( 
 					"Impossible to load access modality properties from file " + file.toString() 
 					+ ": \n" + e.toString());
 		}

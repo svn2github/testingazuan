@@ -28,11 +28,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
+
 import sun.misc.BASE64Encoder;
 
 import it.eng.qbe.datasource.IHibernateDataSource;
-import it.eng.qbe.log.Logger;
-import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -47,6 +47,9 @@ import it.eng.spago.security.IEngUserProfile;
  */
 public class Utils {
 
+	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(Utils.class);
 	
 	
 	/**
@@ -74,7 +77,7 @@ public class Utils {
 			IDataMartModelRetriever dataMartModelRetriever = getDataMartModelRetriever();
 			return dataMartModelRetriever.getViewJarFiles(dataSource.getName());
 		}catch (Exception e) {
-			Logger.error(DataMartModel.class, e);
+			logger.error("Impossible to get views jar file", e);
 			return null;
 		}
 	}
@@ -87,7 +90,7 @@ public class Utils {
 	 */
 	public static void updateLastUpdateTimeStamp(RequestContainer reqContainer){
 			String str = String.valueOf(System.currentTimeMillis());
-			Logger.debug(Utils.class,"Last Update Timestamp ["+str+"]");
+			logger.debug("Last Update Timestamp ["+str+"]");
 			reqContainer.getSessionContainer().setAttribute("QBE_LAST_UPDATE_TIMESTAMP", str);
 	}
 		

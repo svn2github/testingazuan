@@ -20,10 +20,10 @@
  **/
 package it.eng.qbe.utility;
 
-import it.eng.qbe.log.Logger;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.ScrollableResults;
@@ -57,6 +57,11 @@ public class HibernatePage {
 	/** The total results. */
 	private int totalResults = 0;
 
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(HibernatePage.class);
+	
+	
+	
 	/**
 	 * Construct a new Page. Page numbers are zero-based, so the first page is
 	 * page 0.
@@ -83,8 +88,7 @@ public class HibernatePage {
 					pageSize + 1).list();
 		} catch (HibernateException e) {
             e.printStackTrace();
-            Logger.error(HibernatePage.class,
-					"Failed to get paginated results: " + e.getMessage());
+            logger.error("Failed to get paginated results: " + e.getMessage());
             throw e;
 		}
 
@@ -165,8 +169,7 @@ public class HibernatePage {
 			getScrollableResults().last();
 			totalResults = getScrollableResults().getRowNumber();
 		} catch (HibernateException e) {
-			Logger.error(HibernatePage.class, 
-						 "Failed to get last row number from scollable results: "
+			logger.error( "Failed to get last row number from scollable results: "
 						  + e.getMessage());
 		}
 		return totalResults;

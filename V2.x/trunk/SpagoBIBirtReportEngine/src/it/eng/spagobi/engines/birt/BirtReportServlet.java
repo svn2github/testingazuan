@@ -15,19 +15,27 @@ import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
+import it.eng.spagobi.utilities.DynamicClassLoader;
 import it.eng.spagobi.utilities.ParametersDecoder;
+import it.eng.spagobi.utilities.SpagoBIAccessUtils;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -53,6 +61,10 @@ import org.eclipse.birt.report.engine.api.PDFRenderOption;
 import org.eclipse.birt.report.model.api.ReportDesignHandle;
 import org.eclipse.birt.report.utility.BirtUtility;
 import org.eclipse.birt.report.utility.ParameterAccessor;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
+
+
 
 import sun.misc.BASE64Decoder;
 
@@ -67,6 +79,9 @@ public class BirtReportServlet extends HttpServlet {
 	private IReportEngine birtReportEngine = null;
 	protected static Logger logger = Logger.getLogger(BirtReportServlet.class);
 	private static String CONNECTION_NAME = "connectionName";
+	public static final String JS_EXT_ZIP = ".zip";
+	public static final String JS_FILE_ZIP = "JS_File";
+	private String flgTemplateStandard = "true";
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
@@ -188,7 +203,7 @@ public class BirtReportServlet extends HttpServlet {
 
 	}
 
-	private InputStream getTemplateContent(HttpServletRequest servletRequest) throws IOException {
+	private InputStream getTemplateContent(HttpServletRequest servletRequest,ServletContext servletContext) throws IOException {
 		logger.debug("IN");
 		HttpSession session = servletRequest.getSession();
 		IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -203,14 +218,67 @@ public class BirtReportServlet extends HttpServlet {
 		HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters(servletRequest);
 		Content template = contentProxy.readTemplate(documentId,requestParameters);
 		logger.debug("Read the template=" + template.getFileName());
+		
 		InputStream is = null;
+		byte[] templateContent = null;
 		try {
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
-			byte[] templateContent = bASE64Decoder.decodeBuffer(template.getContent());
+			templateContent = bASE64Decoder.decodeBuffer(template.getContent());
 			is = new java.io.ByteArrayInputStream(templateContent);
 		}catch (Throwable t){
 			logger.warn("Error on decompile",t); 
 		}
+		
+
+		if (template.getFileName().indexOf(".zip") > -1) {
+			flgTemplateStandard = "false";
+		}
+		
+		SpagoBIAccessUtils util = new SpagoBIAccessUtils();
+		UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+		UUID uuid_local = uuidGen.generateTimeBasedUUID();
+		String executionId = uuid_local.toString();
+		executionId = executionId.replaceAll("-", "");
+		boolean propertiesLoaded=false;
+		if (flgTemplateStandard.equalsIgnoreCase("false")) {
+			logger.debug("The template is a .ZIP file");
+			File fileZip = new File(getJRTempDir(servletContext,executionId), JS_FILE_ZIP + JS_EXT_ZIP);
+			FileOutputStream foZip = new FileOutputStream(fileZip);
+			foZip.write(templateContent);
+			foZip.close();
+			util.unzip(fileZip, getJRTempDir(servletContext, executionId));
+			JarFile zipFile = new JarFile(fileZip);
+			Enumeration totalZipEntries = zipFile.entries();
+			File jarFile = null;
+			while (totalZipEntries.hasMoreElements()) {
+				ZipEntry entry = (ZipEntry) totalZipEntries.nextElement();
+				if (entry.getName().endsWith(".jar")) {
+					jarFile = new File(getJRTempDirName(servletContext,executionId)+ entry.getName());
+					// set classloader with jar
+					ClassLoader previous = Thread.currentThread().getContextClassLoader();
+					DynamicClassLoader dcl = new DynamicClassLoader(jarFile, previous);
+					Thread.currentThread().setContextClassLoader(dcl);
+				}
+				else if (entry.getName().endsWith(".rptdesign")) {
+					// set InputStream with report
+					File birtFile = new File(getJRTempDirName(servletContext, executionId)+ entry.getName());
+					InputStream isBirt = new FileInputStream(birtFile);
+					byte[] templateRptDesign = new byte[0];
+					templateRptDesign = util.getByteArrayFromInputStream(isBirt);
+					is = new java.io.ByteArrayInputStream(templateRptDesign);
+				}
+				if (entry.getName().endsWith(".properties")) {
+					propertiesLoaded=true;
+				}					
+			}
+			String resourcePath = getJRTempDirName(servletContext,executionId);
+			if(resourcePath!=null){
+				this.birtReportEngine.getConfig().setResourcePath(resourcePath);
+			}
+			
+		}
+		
+		
 		logger.debug("OUT");
 		return is;
 	}
@@ -260,6 +328,26 @@ public class BirtReportServlet extends HttpServlet {
 		return toReturn;
 	}
 
+	private String getJRTempDirName(ServletContext servletContext, String executionId) {	
+		logger.debug("IN");
+		String jrTempDir = servletContext.getRealPath("tmpdir") + System.getProperty("file.separator") +
+		"reports" +  System.getProperty("file.separator") +
+		"JS_dir_" + executionId + System.getProperty("file.separator");
+		logger.debug("OUT");
+		return jrTempDir;		
+	}
+	
+	private File getJRTempDir(ServletContext servletContext, String executionId) {
+		logger.debug("IN");
+		File jrTempDir = null;		
+
+		String jrTempDirStr = getJRTempDirName(servletContext, executionId);
+		jrTempDir = new File(jrTempDirStr.substring(0, jrTempDirStr.length()-1));
+		jrTempDir.mkdirs();
+		logger.debug("OUT");
+		return jrTempDir;		
+	}
+	
 	/**
 	 * 
 	 * @param documentId
@@ -301,7 +389,7 @@ public class BirtReportServlet extends HttpServlet {
 		ServletContext servletContext = getServletContext();
 		this.birtReportEngine = BirtEngine.getBirtEngine(request, servletContext);
 		IReportRunnable design = null;
-		InputStream is = getTemplateContent(request);
+		InputStream is = getTemplateContent(request,servletContext);
 		logger.debug( "runReport(): template document retrieved.");
 		// Open the report design
 		design = birtReportEngine.openReportDesign(is);

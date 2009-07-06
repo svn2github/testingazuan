@@ -104,25 +104,28 @@ Sbi.browser.DocumentsBrowser = function(config) {
 		 , items: [this.mainTab]
 	});
 	
-	this.centerContainerPanel.on(
-			'tabchange',
-			function () {
-				// if browser is IE, force document execution iframe refresh: it is a workaround that let cross navigation work properly
-				if (Ext.isIE) {
+	// if browser is IE, re-inject parent.execCrossNavigation function in order to solve parent variable conflict that occurs when 
+	// more iframes are built and the same function in injected: it is a workaround that let cross navigation work properly
+	if (Ext.isIE) {
+		this.centerContainerPanel.on(
+				'tabchange',
+				function () {
 					var anActiveTab = this.centerContainerPanel.getActiveTab();
 					if (anActiveTab.activeDocument !== undefined) {
 						try {
 							var documentPage = anActiveTab.activeDocument.documentExecutionPage;
 							if (documentPage.isVisible()) {
-								documentPage.miframe.getFrame().setSrc(null);
+								var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
+												"	sendMessage({'label': l, parameters: p, windowName: d},'crossnavigation');" +
+												"};";
+								documentPage.miframe.iframe.execScript(scriptFn, true);
 							}
 						} catch (e) {alert(e);}
 					}
 				}
-			},
-			this
-	);
-	
+				, this
+		);
+	}
 	
 	config.baseLayout = config.baseLayout || {}; 	
 	var c = Ext.apply({}, config.baseLayout, {

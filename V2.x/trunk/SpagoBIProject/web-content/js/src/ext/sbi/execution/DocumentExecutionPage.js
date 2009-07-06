@@ -614,11 +614,9 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    });
 		this.miframe.on('documentloaded', function() {
 			this.miframe.iframe.execScript("parent = document;", true);
-			//this.miframe.iframe.execScript("this.uiType = 'ext'; alert(uiType); alert(execCrossNavigation);");
 			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
 							"	sendMessage({'label': l, parameters: p, windowName: d},'crossnavigation');" +
 							"};";
-			//this.miframe.iframe.execScript("parent.execCrossNavigation = function(d,l,p) {alert('LABEL: ' + l + '; PARAMETERS: '+ p);}");
 			this.miframe.iframe.execScript(scriptFn, true);
 			this.miframe.iframe.execScript("uiType = 'ext';", true);
 			

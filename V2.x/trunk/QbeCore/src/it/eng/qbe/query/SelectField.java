@@ -24,8 +24,6 @@ package it.eng.qbe.query;
 import java.util.HashMap;
 import java.util.Map;
 
-import it.eng.qbe.model.structure.DataMartField;
-
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
@@ -43,7 +41,9 @@ public class SelectField {
 	public static String SUM = "SUM";
 	public static String AVG = "AVG";
 	public static String MAX = "MAX";
-	public static String MIN = "MIN";	
+	public static String MIN = "MIN";
+	public static String COUNT = "COUNT";
+	public static String DISTINCT = "DISTINCT";
 	static {
 		aggregationFunctions = new HashMap();
 		aggregationFunctions.put(NONE, new IAggregationFunction() {
@@ -74,6 +74,12 @@ public class SelectField {
 			public String getName() {return MIN;}
 			public String apply(String fieldName) {
 				return "MIN(" + fieldName + ")";
+			}
+		});
+		aggregationFunctions.put(COUNT, new IAggregationFunction() {
+			public String getName() {return COUNT;}
+			public String apply(String fieldName) {
+				return "COUNT(" + fieldName + ")";
 			}
 		});
 	}

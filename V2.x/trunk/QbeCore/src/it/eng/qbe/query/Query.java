@@ -23,6 +23,7 @@ package it.eng.qbe.query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,26 +33,16 @@ import java.util.Map;
  */
 public class Query {
 	String id;
-	String aliasPrefix;
 	
 	List selectFields;	
 	List whereClause;
-	List orderByClause;
-	List groupByClause;	
 	
 	ExpressionNode whereClauseStructure;
 	Map whereFieldMap;
 	
-	
-	
-		
-	
 	public Query() {
-		selectFields = new ArrayList();
-		
+		selectFields = new ArrayList();		
 		whereClause = new ArrayList();
-		orderByClause = new ArrayList();
-		groupByClause = new ArrayList();
 		whereFieldMap = new HashMap();
 	}
 	
@@ -90,14 +81,6 @@ public class Query {
 		return (WhereField)whereFieldMap.get(fname.trim());
 	}
 	
-	public void addGroupByField(String fieldUniqueName) {
-		groupByClause.add( new GroupByField(fieldUniqueName) );
-	}
-	
-	public void addOrderByField(String fieldUniqueName, boolean isAscendingOrder) {
-		orderByClause.add( new OrderByField(fieldUniqueName, isAscendingOrder) );
-	}
-	
 	public List getSelectFields() {
 		return selectFields;
 	}
@@ -105,19 +88,35 @@ public class Query {
 	public List getWhereFields() {
 		return whereClause;
 	}
+
 	
-	public void addGroupByFiled(GroupByField field) {
-		groupByClause.add(field);
-	}
-
+	
 	public List getOrderByFields() {
-		return orderByClause;
+		List orderByFields = new ArrayList();
+		Iterator it = this.getSelectFields().iterator();
+		while( it.hasNext() ) {
+			SelectField selectField = (SelectField)it.next();
+			if(selectField.isOrderByField()) {
+				orderByFields.add(selectField);
+			}
+		}
+		return orderByFields;
 	}
-
+	
+	
 	public List getGroupByFields() {
-		return groupByClause;
+		List groupByFields = new ArrayList();
+		Iterator it = this.getSelectFields().iterator();
+		while( it.hasNext() ) {
+			SelectField selectField = (SelectField)it.next();
+			if(selectField.isGroupByField()) {
+				groupByFields.add(selectField);
+			}
+		}
+		return groupByFields;
 	}
-
+	
+	
 	public ExpressionNode getWhereClauseStructure() {
 		return whereClauseStructure;
 	}

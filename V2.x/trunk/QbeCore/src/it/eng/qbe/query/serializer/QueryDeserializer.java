@@ -2,7 +2,7 @@
 
 SpagoBI - The Business Intelligence Free Platform
 
-Copyright (C) 2005 Engineering Ingegneria Informatica S.p.A.
+Copyright (C) 2005-2009 Engineering Ingegneria Informatica S.p.A.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -19,45 +19,15 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.query;
+package it.eng.qbe.query.serializer;
 
-import java.util.HashMap;
-import java.util.Map;
+import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.query.Query;
 
-import it.eng.qbe.model.structure.DataMartField;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
- *
  */
-public class OrderByField {
-	private String uniqueName;
-	private boolean ascendingOrder;
-	
-	public OrderByField(String uniqueName, boolean ascendingOrder) {
-		setUniqueName( uniqueName );
-		setAscendingOrder( ascendingOrder );
-	}
-
-	
-
-	public boolean isAscendingOrder() {
-		return ascendingOrder;
-	}
-
-	public void setAscendingOrder(boolean ascendingOrder) {
-		this.ascendingOrder = ascendingOrder;
-	}
-
-
-
-	public String getUniqueName() {
-		return uniqueName;
-	}
-
-
-
-	public void setUniqueName(String uniqueName) {
-		this.uniqueName = uniqueName;
-	}
+public interface QueryDeserializer {
+	public Query deserialize(Object o, DataMartModel m) throws SerializationException;
 }

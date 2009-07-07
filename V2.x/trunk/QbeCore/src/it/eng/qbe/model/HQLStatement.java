@@ -36,7 +36,6 @@ import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.query.ExpressionNode;
-import it.eng.qbe.query.GroupByField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.SelectField;
 import it.eng.qbe.query.WhereField;
@@ -521,7 +520,7 @@ public class HQLStatement extends BasicStatement {
 		
 		Iterator it = groupByFields.iterator();
 		while( it.hasNext() ) {
-			GroupByField groupByField = (GroupByField)it.next();
+			SelectField groupByField = (SelectField)it.next();
 			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(groupByField.getUniqueName());
 			DataMartEntity entity = datamartField.getParent().getRoot(); 
 			String queryName = datamartField.getQueryName();
@@ -539,7 +538,6 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString().trim();
 	}
 	
-	// TODO move this into query class
 	private List getOrderByFields(Query query) {
 		List orderByFields = new ArrayList();
 		Iterator it = query.getSelectFields().iterator();

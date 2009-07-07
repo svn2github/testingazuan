@@ -202,13 +202,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			changeCatNumber=true;
 		}
 		else if(sbi.getSubtype().equalsIgnoreCase("overlaid_barline") || sbi.getSubtype().equalsIgnoreCase("overlaid_stackedbarline")){
-			copyDatasets=datasetMap.filteringMultiDatasetBarChart(request,(BarCharts)sbi,sbiMode,docComposition);
+			copyDatasets=datasetMap.filteringMultiDatasetBarChart(sbModuleResponse,request,(BarCharts)sbi,sbiMode,docComposition);
+			changeCatNumber=true;
 		}
 		else if(sbi.getSubtype().equalsIgnoreCase("simplecluster")){
 			copyDatasets=datasetMap.filteringClusterChart(request,(ClusterCharts)sbi,sbiMode,docComposition);
 		}
 		else if(sbi.getSubtype().equalsIgnoreCase("stacked_bar_group")){
 			copyDatasets=datasetMap.filteringGroupedBarChart(sbModuleResponse,request,(StackedBarGroup)sbi,sbiMode,docComposition);
+			changeCatNumber=true;
 		}
 	}
 	else {copyDatasets=datasetMap;}

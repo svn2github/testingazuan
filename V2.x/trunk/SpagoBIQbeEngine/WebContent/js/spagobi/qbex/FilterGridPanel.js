@@ -211,6 +211,19 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		  }
 	}
 	
+	, getFilters : function() {
+		var filters = [];
+		for(i = 0; i <  this.grid.store.getCount(); i++) {
+			var record =  this.grid.store.getAt(i);
+			var filter = Ext.apply({}, record.data);
+			filter.operand = filter.otype === 'Static Value'? filter.odesc: filter.operand;
+			filters.push(filter);
+		}
+		
+		return filters;
+	}
+	
+	
 	, getRowsAsJSONParams : function() {
 				var jsonStr = '[';
 				for(i = 0; i <  this.grid.store.getCount(); i++) {
@@ -250,6 +263,13 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		}
 		it.eng.spagobi.engines.qbe.filterwizard.setExpression(exp);
 		
+	}
+	
+	, getFiltersExpression : function() {	
+		if(!this.isWizardExpression()) {
+			this.syncWizardExpressionWithGrid();
+		}
+		return it.eng.spagobi.engines.qbe.filterwizard.getExpressionAsObject();
 	}
 	
 	, getFiltersExpressionAsJSON : function() {	

@@ -453,6 +453,28 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
         },
         
         
+        getExpressionAsObject: function(tree) {
+            var o = {};
+            
+            if(getExpression().trim() =="") return '{}';
+            if(!tree) tree = getExpStructureTree();          
+           
+            o = Ext.apply(o, tree || {});
+            
+            var types = ['UNDEF', 'NODE_OP', 'NODE_CONST']; 
+  		  	var values = ['UNDEF', 'AND', 'OR', 'GROUP'];
+  		  	
+  		  	o.type = types[o.type];
+  		    o.values = types[o.values];
+            if(o.childNodes && o.childNodes.length > 0) {             
+              for(var i = 0; i < o.childNodes.length; i++) {
+            	  o.childNodes[i] = this.getExpressionAsObject(o.childNodes[i]);
+              }           
+            }   
+            
+            return o;        
+        },
+        
         getExpressionAsJSON: function(tree) {
           var s = "";
           

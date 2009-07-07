@@ -23,9 +23,10 @@ package it.eng.spagobi.qbe.core.service;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.json.JSONException;
 
 import it.eng.qbe.query.Query;
+import it.eng.qbe.query.serializer.QuerySerializerFactory;
+import it.eng.qbe.query.serializer.SerializationException;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -64,9 +65,9 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 			Assert.assertNotNull(jsonEncodedQuery, "Input parameter [" + QUERY + "] cannot be null in oder to execute " + this.getActionName() + " service");
 			
 			
-			try {
-				query = QueryEncoder.decode( jsonEncodedQuery, getEngineInstance().getDatamartModel() );
-			} catch (JSONException e) {
+			try {				
+				query = QuerySerializerFactory.getDeserializer("application/json").deserialize(jsonEncodedQuery, getEngineInstance().getDatamartModel());
+			} catch (SerializationException e) {
 				String message = "Impossible to syncronize the query with the server. Query passed by the client is malformed";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}

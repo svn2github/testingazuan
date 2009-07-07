@@ -254,17 +254,27 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		var qDescription = queryDescription.getValue();
 		var qScope = queryScope.getValue();
 		
-		var qRecords =  this.selectGridPanel.getRowsAsJSONParams();
-	    var qFilters = this.filterGridPanel.getRowsAsJSONParams();
-	    var qFilterExp = this.filterGridPanel.getFiltersExpressionAsJSON();
+		//var qFields = this.selectGridPanel.getFields();
+		//var qFilters = this.selectGridPanel.getFilters();
+		//var qFilterExp = getFiltersExpression();
+		
+		var queryStr = '{';
+    	queryStr += 'fields : ' + this.selectGridPanel.getRowsAsJSONParams() + ',';
+    	queryStr += 'filters : ' + this.filterGridPanel.getRowsAsJSONParams() + ',';
+    	queryStr += 'expression: ' +  this.filterGridPanel.getFiltersExpressionAsJSON();
+    	queryStr += '}';
+		//var qRecords =  this.selectGridPanel.getRowsAsJSONParams();
+	    //var qFilters = this.filterGridPanel.getRowsAsJSONParams();
+	    //var qFilterExp = this.filterGridPanel.getFiltersExpressionAsJSON();
 	    
 	    var url = this.services['saveQuery'];
 	    url += '&queryName=' + meta.name;
 	    url += '&queryDescription=' + meta.description;
 	    url += '&queryScope=' + meta.scope;
-	    url += '&queryRecords=' + query.fields;
-	    url += '&queryFilters=' + query.filters;
-	    url += '&queryFilterExp=' + query.filterExpression;
+	    url += '&query=' +queryStr;
+	    //url += '&queryRecords=' + query.fields;
+	    //url += '&queryFilters=' + query.filters;
+	    //url += '&queryFilterExp=' + query.filterExpression;
 	    
 	    Ext.Ajax.request({
 			url:  url,

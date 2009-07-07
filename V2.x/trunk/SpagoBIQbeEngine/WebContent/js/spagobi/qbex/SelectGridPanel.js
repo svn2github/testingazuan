@@ -153,6 +153,16 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
     	}
 	}
 	
+	, getFields: function() {
+		var fields = [];
+		for(i = 0; i < this.store.getCount(); i++) {
+			var record = this.store.getAt(i);
+			var field = Ext.apply({}, record.data);
+			fields.push(field);
+		}
+		
+		return fields;
+	}
 	
 	, getRowsAsJSONParams: function() {
 		var jsonStr = '[';

@@ -93,12 +93,15 @@ public class QueryEncoder {
 				DataMartField field = datamartModel.getDataMartModelStructure().getField(fieldUniqueName);
 				Assert.assertNotNull(field, "Inpossible to retrive from datamart-structure a fild named " + fieldUniqueName + ". Please check select clause in  query: " + queryFields);
 				query.addSelectFiled(field.getUniqueName(), funct, alias, visible, group.equalsIgnoreCase("true"), order);
+				
+				/*
 				if(group.equalsIgnoreCase("true")) {
 					query.addGroupByField(field.getUniqueName());
 				}
 				if(order != null && (order.equalsIgnoreCase("ASC") || order.equalsIgnoreCase("DESC")) ) {
 					query.addOrderByField(fieldUniqueName, order.equalsIgnoreCase("ASC"));
 				}
+				*/
 			}	
 		}
 	}

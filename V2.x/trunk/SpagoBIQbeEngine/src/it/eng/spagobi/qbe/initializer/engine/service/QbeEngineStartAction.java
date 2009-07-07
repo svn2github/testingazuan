@@ -21,12 +21,13 @@
 package it.eng.spagobi.qbe.initializer.engine.service;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
+import it.eng.qbe.query.serializer.QuerySerializerFactory;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.QbeEngine;
 import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.qbe.commons.service.QbeEngineAnalysisState;
-import it.eng.spagobi.qbe.core.service.QueryEncoder;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
@@ -41,6 +42,8 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	
 	// INPUT PARAMETERS
 	
+	// OUTPUT PARAMETERS
+	public static final String QUERY = "query";
 	
 	// SESSION PARAMETRES	
 	public static final String ENGINE_INSTANCE = EngineConstants.ENGINE_INSTANCE;
@@ -52,14 +55,13 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	
     public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
     	QbeEngineInstance qbeEngineInstance = null;
+    	JSONObject queryJSON;
     	
     	logger.debug("IN");
        
     	try {
 			super.service(serviceRequest, serviceResponse);
-			
-			
-			
+						
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
@@ -76,16 +78,18 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 				analysisState.load( getAnalysisStateRowData() );
 				qbeEngineInstance.setAnalysisState( analysisState );
 			}
+			
+			queryJSON = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(qbeEngineInstance.getQuery(), qbeEngineInstance.getDatamartModel());
 				
 			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);	
-			setAttribute("query", QueryEncoder.encode(qbeEngineInstance.getQuery(), qbeEngineInstance.getDatamartModel()));
+			setAttribute(QUERY, queryJSON.toString());
 			
 		} catch (Throwable e) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), qbeEngineInstance, e);
 		} finally {
-			// no resources need to be released
+			logger.debug("OUT");
 		}		
 
-		logger.debug("OUT");
+		
 	}    
 }

@@ -21,11 +21,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.service;
 
-import org.json.JSONException;
-
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.Query;
-import it.eng.spagobi.qbe.core.service.QueryEncoder;
+import it.eng.qbe.query.serializer.QuerySerializerFactory;
+import it.eng.qbe.query.serializer.SerializationException;
 import it.eng.spagobi.utilities.engines.EngineAnalysisState;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
@@ -51,8 +50,9 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 		str = new String( rowData );
 		Query query = null;
 		try {
-			query = QueryEncoder.decode( str, getDatamartModel() );
-		} catch (JSONException e) {
+			query = QuerySerializerFactory.getDeserializer("application/json").deserialize(str, getDatamartModel());
+			//query = QueryEncoder.decode( str, getDatamartModel() );
+		} catch (SerializationException e) {
 			throw new SpagoBIEngineException("Impossible to load analysis state from row-data", e);
 		}
 		setProperty( QUERY, query );
@@ -62,8 +62,9 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 		String rowData = null;
 				
 		try {
-			rowData = QueryEncoder.encode( getQuery(), getDatamartModel() );
-		} catch (JSONException e) {
+			rowData = (String)QuerySerializerFactory.getSerializer("application/json").serialize(getQuery(), getDatamartModel());
+			//rowData = QueryEncoder.encode( getQuery(), getDatamartModel() );
+		} catch (SerializationException e) {
 			throw new SpagoBIEngineException("Impossible to store analysis state from query object", e);
 		}
 		

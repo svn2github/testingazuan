@@ -25,9 +25,10 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
-import org.json.JSONException;
 
 import it.eng.qbe.query.Query;
+import it.eng.qbe.query.serializer.QuerySerializerFactory;
+import it.eng.qbe.query.serializer.SerializationException;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
@@ -50,9 +51,10 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 	public static final String QUERY_NAME = "queryName";	
 	public static final String QUERY_DESCRIPTION = "queryDescription";
 	public static final String QUERY_SCOPE = "queryScope";
-	public static final String QUERY_RECORDS = "queryRecords";
-	public static final String QUERY_FILTERS = "queryFilters";
-	public static final String QUERY_FILTEREXP = "queryFilterExp";
+	//public static final String QUERY_RECORDS = "queryRecords";
+	//public static final String QUERY_FILTERS = "queryFilters";
+	//public static final String QUERY_FILTEREXP = "queryFilterExp";
+	public static final String QUERY = "query";
 	
 
 	/** Logger component. */
@@ -64,9 +66,10 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 		String queryName = null;		
 		String  queryDescritpion  = null;		
 		String  queryScope  = null;
-		String queryRecords = null;
-		String queryFilters = null;
-		String queryFilterExp = null;
+		String jsonEncodedQuery = null;
+		//String queryRecords = null;
+		//String queryFilters = null;
+		//String queryFilterExp = null;
 		EngineAnalysisMetadata analysisMetadata = null;
 		String result = null;
 		
@@ -98,19 +101,23 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			logger.debug(QUERY_DESCRIPTION + ": " + queryDescritpion);
 			queryScope  = getAttributeAsString(QUERY_SCOPE);
 			logger.debug(QUERY_SCOPE + ": " + queryScope);
+			jsonEncodedQuery  = getAttributeAsString(QUERY);
+			logger.debug(QUERY + ": " + jsonEncodedQuery);
+			/*
 			queryRecords = getAttributeAsString(QUERY_RECORDS);
 			logger.debug(QUERY_RECORDS + ": " + queryRecords);
 			queryFilters = getAttributeAsString(QUERY_FILTERS);
 			logger.debug(QUERY_FILTERS + ": " + queryFilters);
 			queryFilterExp = getAttributeAsString(QUERY_FILTEREXP);
 			logger.debug(QUERY_FILTEREXP + ": " + queryFilterExp);
-			
+			*/
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			Assert.assertTrue(!StringUtilities.isEmpty(queryName), "Input parameter [" + QUERY_NAME + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
 			Assert.assertTrue(!StringUtilities.isEmpty(queryDescritpion), "Input parameter [" + QUERY_DESCRIPTION + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
 			Assert.assertTrue(!StringUtilities.isEmpty(queryScope), "Input parameter [" + QUERY_SCOPE + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtilities.isEmpty(queryRecords), "Input parameter [" + QUERY_RECORDS + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtilities.isEmpty(queryFilters), "Input parameter [" + QUERY_FILTERS + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			Assert.assertTrue(!StringUtilities.isEmpty(jsonEncodedQuery), "Input parameter [" + QUERY + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			//Assert.assertTrue(!StringUtilities.isEmpty(queryRecords), "Input parameter [" + QUERY_RECORDS + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			//Assert.assertTrue(!StringUtilities.isEmpty(queryFilters), "Input parameter [" + QUERY_FILTERS + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
 		
 			analysisMetadata = getEngineInstance().getAnalysisMetadata();
 			analysisMetadata.setName( queryName );
@@ -126,8 +133,9 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			
 			Query query = null;
 			try {
-				query = QueryEncoder.decode(queryRecords, queryFilters, queryFilterExp, getDatamartModel());
-			} catch (JSONException e) {
+				query = QuerySerializerFactory.getDeserializer("application/json").deserialize(jsonEncodedQuery, getEngineInstance().getDatamartModel());
+				//query = QueryEncoder.decode(queryRecords, queryFilters, queryFilterExp, getDatamartModel());
+			} catch (SerializationException e) {
 				String message = "Impossible to decode query string comming from client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
@@ -151,9 +159,9 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 		} catch(Throwable t) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
-			// no resources need to be released
+			logger.debug("OUT");
 		}
 		
-		logger.debug("OUT");
+		
 	}
 }

@@ -20,7 +20,8 @@
  **/
 package it.eng.spagobi.qbe.initializer.application.service;
 
-import it.eng.qbe.log.Logger;
+import org.apache.log4j.Logger;
+
 import it.eng.qbe.model.DataMartModel;
 import it.eng.spago.base.ApplicationContainer;
 import it.eng.spago.base.SourceBean;
@@ -39,6 +40,10 @@ import it.eng.spago.dispatching.action.AbstractAction;
  */
 public class RecoverClassLoaderAction extends AbstractAction {
 	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(RecoverClassLoaderAction.class);
+		
+    
 	/**
 	 * Service.
 	 * 
@@ -52,7 +57,7 @@ public class RecoverClassLoaderAction extends AbstractAction {
 		try{
 			DataMartModel dm = (DataMartModel)getRequestContainer().getSessionContainer().getAttribute("dataMartModel");
 			ClassLoader toRecoverClassLoader = (ClassLoader)ApplicationContainer.getInstance().getAttribute("CURRENT_THREAD_CONTEXT_LOADER"); 
-			Logger.debug(RecoverClassLoaderAction.class, "Recovering ClassLoader " + toRecoverClassLoader.toString());
+			logger.debug("Recovering ClassLoader " + toRecoverClassLoader.toString());
 			if ( toRecoverClassLoader != null){
 				Thread.currentThread().setContextClassLoader(toRecoverClassLoader);
 			}

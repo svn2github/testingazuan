@@ -217,6 +217,8 @@
 		Debug.write("viewTitle: " + viewTitle );
 		if (viewTitle != undefined &amp;&amp; viewTitle == "true"){
 			var titleX = centerX - (titleText.length*3.5);
+			var titleY = centerY-(radius+(titleSize*4));
+			if (10 &lt; titleY) titleY = 10;
 			new LzText(this,
 						{name:"title"
 						 ,text:titleText
@@ -225,7 +227,7 @@
 						 ,fgcolor:titleColor
 						 ,fontstyle:"bold"
 						 ,selectable:false
-						 ,y:centerY-(radius+(titleSize*4))
+						 ,y:titleY
 						 ,x:titleX
 						 });
 		}
@@ -707,7 +709,7 @@
  			this.setAttribute("width", radius*2);
  			this.setAttribute("height", 100); 
 			this.setX(centerX-radius);
-			this.setY(centerY+5);
+			this.setY(centerY+10);
 			
 			var legIt = new lz.legendItem(this,{name:"legend"+idx});
 			legIt.drawItem(lineName,color);	

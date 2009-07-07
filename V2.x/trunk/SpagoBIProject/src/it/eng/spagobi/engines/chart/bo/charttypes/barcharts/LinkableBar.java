@@ -69,7 +69,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
-		
+
 		if(confParameters.get("orientation")!=null){	
 			String orientation=(String)confParameters.get("orientation");
 			if(orientation.equalsIgnoreCase("vertical")){
@@ -81,7 +81,7 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 				horizontalView=true;
 			}
 		}
-		
+
 		SourceBean drillSB = (SourceBean)content.getAttribute("DRILL");
 		if(drillSB==null){
 			drillSB = (SourceBean)content.getAttribute("CONF.DRILL");
@@ -173,9 +173,9 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		{
 			plot.setOrientation(PlotOrientation.HORIZONTAL);
 		}
-		
+
 		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
-		
+
 		// set the background color for the chart...
 		chart.setBackgroundPaint(color);
 
@@ -257,9 +257,9 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 				CategoryLabelPositions.createUpRotationLabelPositions(
 						Math.PI / 6.0));
 		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-        domainAxis.setLabelPaint(styleYaxesLabels.getColor());
-        domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
-        domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setLabelPaint(styleYaxesLabels.getColor());
+		domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
+		domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
 
 		logger.debug("OUT");
 		return chart;
@@ -276,17 +276,20 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	 * @return the document_ parameters
 	 */
 
-	public String getDocument_Parameters(HashMap drillParameters) {
+	public String getDocument_Parameters(HashMap drillParameters) { 
+		logger.debug("IN");
 		String document_parameter="";
-		for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
-			String name = (String) iterator.next();
-			String value=(String)drillParameters.get(name);
-			if(name!=null && !name.equals("") && value!=null && !value.equals("")){
-				document_parameter+="%26"+name+"%3D"+value;
-				//document_parameter+="&"+name+"="+value;
+		if(drillParameters!=null){
+			for (Iterator iterator = drillParameters.keySet().iterator(); iterator.hasNext();) {
+				String name = (String) iterator.next();
+				String value=(String)drillParameters.get(name);
+				if(name!=null && !name.equals("") && value!=null && !value.equals("")){
+					document_parameter+="%26"+name+"%3D"+value;
+					//document_parameter+="&"+name+"="+value;
+				}
 			}
-
-		}
+		} 
+		logger.debug("OUT");
 		return document_parameter;
 	}
 

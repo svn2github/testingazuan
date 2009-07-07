@@ -273,9 +273,10 @@ public class DatasetMap {
 
 
 
-	public DatasetMap filteringMultiDatasetBarChart(HttpServletRequest request, BarCharts sbi, String sbiMode, boolean docComposition){
+	public DatasetMap filteringMultiDatasetBarChart(SourceBean aServiceResponse,HttpServletRequest request, BarCharts sbi, String sbiMode, boolean docComposition){
 		logger.debug("IN");
 		DatasetMap newDatasetMap=new DatasetMap();
+		boolean notDisappearSlider=false;   // if n_visualization>=number total categories do not make slider disappear
 
 		series=new TreeSet();
 
@@ -316,6 +317,16 @@ public class DatasetMap {
 
 			categories=(HashMap)((BarCharts)sbi).getCategories();
 			catsnum=new Integer(sbi.getCategoriesNumber());
+			
+			//See if numberCatVisualization has to be updated
+			if(aServiceResponse.getAttribute("n_visualization")!=null){
+				String nVis=(String)aServiceResponse.getAttribute("n_visualization");
+				Integer catD=Integer.valueOf(nVis);
+				if(catD.equals(0))catD=new Integer(catsnum);
+				sbi.setNumberCatVisualization(catD);
+				if(catD>=catsnum)notDisappearSlider=true;
+			}
+			
 			numberCatVisualization=sbi.getNumberCatVisualization();
 			numberSerVisualization=sbi.getNumberSerVisualization();
 
@@ -323,24 +334,40 @@ public class DatasetMap {
 			serTitle=sbi.getValueLabel();
 
 			// if slider specifies a category than set view from that point
-			if(request.getParameter("categoryAll")!=null){
+			if(aServiceResponse!=null && aServiceResponse.getAttribute("category")!=null){ // lastChange
+				String catS=(String)aServiceResponse.getAttribute("category");
+				logger.debug("category specified in module response by slider "+catS);
+				Double catD=Double.valueOf(catS);
+				categoryCurrent=catD.intValue();
+			} 
+			else if(request.getParameter("categoryAll")!=null){
 				logger.debug("All categories have to be shown");
 				categoryCurrent=0;			
 			}
 			else if(request.getParameter("category")!=null){
 				String catS=(String)request.getParameter("category");
+				logger.debug("category specified in request by slider "+catS);
 				Double catD=Double.valueOf(catS);
 				categoryCurrent=catD.intValue();
 			}
 			else{ //else set view from first category
-				categoryCurrent=1;
+				logger.debug("no particulary category specified by slider: startFromEnd option is "+sbi.isSliderStartFromEnd());
+				if(sbi.isSliderStartFromEnd()==true){
+					// Category current is: number categories - categories to visualize + 1
+					categoryCurrent=sbi.getCategoriesNumber()-(numberCatVisualization!=null ? numberCatVisualization.intValue() : 1) +1 ;
+				}
+				else{
+					categoryCurrent=1;
+				}
 			}
+
 			valueSlider=(new Integer(categoryCurrent)).toString();
 			HashMap cats=(HashMap)((BarCharts)sbi).getCategories();
 
 
 			if(categoryCurrent!=0){
 				categoryCurrentName=(String)cats.get(new Integer(categoryCurrent));
+				logger.debug("current category "+categoryCurrentName);
 				copyDataset=(DefaultCategoryDataset)sbi.filterDataset(copyDataset,categories,categoryCurrent,numberCatVisualization.intValue());				
 			}
 			else{
@@ -372,17 +399,24 @@ public class DatasetMap {
 			}
 			// consider if drawing the slider
 			if((catsnum.intValue())>numberCatVisualization.intValue()){
+				logger.debug("slider is to be drawn");
 				makeSlider=true;	    	
 			}
+			else if(sbi.isFilterCategories()==true && notDisappearSlider==true){
+				logger.debug("slider is to be drawn");
+				makeSlider=true;	    	
+			}
+			
 
+			
 			//gets the filter's style
 			filterStyle=sbi.getFilterStyle();
 
 			newDatasetMap.getDatasets().put(key, copyDataset);
 
-
-
 		}
+		
+		dynamicNVisualization=sbi.isDynamicNumberCatVisualization();		
 
 		logger.debug("OUT");
 		return newDatasetMap;

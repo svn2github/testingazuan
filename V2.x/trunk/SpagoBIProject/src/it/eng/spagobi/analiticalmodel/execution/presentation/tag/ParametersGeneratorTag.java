@@ -644,7 +644,7 @@ public class ParametersGeneratorTag extends TagSupport {
 	}
 
 	private void createHiddenInput(StringBuffer htmlStream, String id, String name, String value) {
-		htmlStream.append("<input type='hidden' name='" + name + "' id='" + id + requestIdentity + "' value='" + value
+		htmlStream.append("<input type='hidden' name='" + name + "' id='" + id + requestIdentity + "' value='" + StringEscapeUtils.escapeHtml(value)
 				+ "' />\n");
 	}
 

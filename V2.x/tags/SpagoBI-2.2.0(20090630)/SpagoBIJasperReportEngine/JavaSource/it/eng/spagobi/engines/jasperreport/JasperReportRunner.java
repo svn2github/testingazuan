@@ -260,6 +260,8 @@ public class JasperReportRunner {
 				logger.debug("Internazionalization in "+language);
 				locale=new Locale(language,country,"");
 
+				parameters.put("REPORT_LOCALE", locale);
+				
 				ResourceBundle rs=null;
 
 
@@ -287,9 +289,6 @@ public class JasperReportRunner {
 					    logger.error("could not find properties message");
 				    }
 				    parameters.put("REPORT_RESOURCE_BUNDLE", rs);
-				}
-				else{
-					parameters.put("REPORT_LOCALE", locale);
 				}
 			}
 

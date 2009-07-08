@@ -40,6 +40,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 /**
  * Contains some methods to control user exec/dev/test rights.
  * 
@@ -143,7 +146,7 @@ public class ObjectsAccessVerifier {
      * @return
      */
     public static boolean canDev(String state, List folders, IEngUserProfile profile) {
-    	
+    	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.canDev");
     	logger.debug("IN.state=" + state);
     	boolean canDev = false;
 		if(isAbleToExec(state, profile)) {
@@ -154,14 +157,17 @@ public class ObjectsAccessVerifier {
 				canDev = canDevInternal(folder, profile);
 				if (canDev){
 					logger.debug("OUT.return true");
+					monitor.stop();
 					return true;
 				}
 			}
 			logger.debug("OUT.return false");
+			monitor.stop();
 			return false;
 			
 		} else{
 			logger.debug("OUT.return false");
+			monitor.stop();
 			return false;
 		}
     }
@@ -174,7 +180,7 @@ public class ObjectsAccessVerifier {
      * @return
      */
     public static boolean canTest(String state, List folders, IEngUserProfile profile) {
-    	
+    	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.canTest");
     	logger.debug("IN.state=" + state);
     	boolean canTest = false;
 		if(isAbleToExec(state, profile)) {
@@ -185,14 +191,17 @@ public class ObjectsAccessVerifier {
 				canTest = canTestInternal(folder, profile);
 				if (canTest){
 					logger.debug("OUT.return true");
+					monitor.stop();
 					return true;
 				}
 			}
 			logger.debug("OUT.return false");
+			monitor.stop();
 			return false;
 			
 		} else{
 			logger.debug("OUT.return false");
+			monitor.stop();
 			return false;
 		}
     }
@@ -226,9 +235,11 @@ public class ObjectsAccessVerifier {
     }
     
     public static boolean isAbleToExec(String state, IEngUserProfile profile) {
+    	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.isAbleToExec");
     	logger.debug("IN.state=" + state);
     	if (state.equals("REL")) {
     		logger.debug("OUT.return true");
+    		monitor.stop();
     		return true;
     	}
     	else if (state.equals("DEV")) {
@@ -241,8 +252,7 @@ public class ObjectsAccessVerifier {
 					return false;
 				}
 			} catch (EMFInternalError e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
         }
     	else if (state.equals("TEST")) {
@@ -255,11 +265,11 @@ public class ObjectsAccessVerifier {
 					return false;
 				}
 			} catch (EMFInternalError e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(e);
 			}
     	}	
     	logger.debug("OUT");
+    	monitor.stop();
     	return false;
     }
 
@@ -293,21 +303,25 @@ public class ObjectsAccessVerifier {
      * @return A boolean control value
      */
     public static boolean canDevBIObject(Integer biObjectID, IEngUserProfile profile) {
+    	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.canDevBIObject(Integer biObjectID, IEngUserProfile profile)");
     	boolean toReturn = false;
     	try {
     		logger.debug("IN: obj id = [" + biObjectID + "]; user id = [" + ((UserProfile) profile).getUserId() + "]");
     		// if user is administrator, he can develop, no need to make any query to database
 			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
 				logger.debug("User [" + ((UserProfile) profile).getUserId() + "] is administrator. He can develop every document");
+				monitor.stop();
 				return true;
 			}
 			BIObject obj = DAOFactory.getBIObjectDAO().loadBIObjectById(biObjectID);
 			toReturn = canDevBIObject(obj, profile);
 		} catch (Exception e) {
 		    logger.error(e);
+		    monitor.stop();
 		    return false;
 		}
     	logger.debug("OUT: returning " + toReturn);
+    	monitor.stop();
     	return toReturn;
     }
     
@@ -320,17 +334,20 @@ public class ObjectsAccessVerifier {
      * @return A boolean control value
      */
     public static boolean canDevBIObject(BIObject obj, IEngUserProfile profile) {
+    	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.canDevBIObject(BIObject obj, IEngUserProfile profile)");
     	boolean toReturn = false;
     	try {
     		logger.debug("IN: obj label = [" + obj.getLabel() + "]; user id = [" + ((UserProfile) profile).getUserId() + "]");
     		// if user is administrator, he can develop, no need to make any query to database
 			if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
 				logger.debug("User [" + ((UserProfile) profile).getUserId() + "] is administrator. He can develop every document");
+				monitor.stop();
 				return true;
 			}
 			// if user is not an administrator and document is not in DEV state, document cannot be developed
 			if (!"DEV".equals(obj.getStateCode())) {
 				logger.debug("User [" + ((UserProfile) profile).getUserId() + "] is not an administrator and document is not in DEV state, so it cannot be developed");
+				monitor.stop();
 				return true;
 			}
 			// if user is not an administrator and document is in DEV state, we must see if he has development permission
@@ -347,9 +364,11 @@ public class ObjectsAccessVerifier {
 	    	}
 		} catch (Exception e) {
 		    logger.error("Error while loading BIObject", e);
+		    monitor.stop();
 		    return false;
 		}
     	logger.debug("OUT: returning " + toReturn);
+    	monitor.stop();
     	return toReturn;
     }
     
@@ -411,14 +430,17 @@ public class ObjectsAccessVerifier {
      * @return A boolean control value
      */
     public static boolean canExec(Integer folderId, IEngUserProfile profile) {
+    	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.canExec");
 	logger.debug("IN");
 	LowFunctionality folder = null;
 	try {
 	    folder = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(folderId, false);
 	} catch (Exception e) {
 	    logger.error("Exception in loadLowFunctionalityByID", e);
+
 	    return false;
 	} finally {
+		monitor.stop();
 	    logger.debug("OUT");
 	}
 	return canExecInternal(folder, profile);
@@ -436,12 +458,14 @@ public class ObjectsAccessVerifier {
      */
     private static boolean canExecInternal(LowFunctionality folder, IEngUserProfile profile) {
 	logger.debug("IN");
+	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.canExecInternal");
 	Collection roles = null;
 	try {
 	    roles = profile.getRoles();
 	} catch (EMFInternalError emfie) {
 	    logger.error("EMFInternalError in profile.getRoles");
 	    logger.debug("OUT.return false");
+	    monitor.stop();
 	    return false;
 	}
 
@@ -458,10 +482,12 @@ public class ObjectsAccessVerifier {
 	    roleName = (String) iterRoles.next();
 	    if (execRoleNames.contains(roleName)) {
 		logger.debug("OUT.return true");
+		monitor.stop();
 		return true;
 	    }
 	}
 	logger.debug("OUT.return false");
+	monitor.stop();
 	return false;
 
     }
@@ -477,12 +503,14 @@ public class ObjectsAccessVerifier {
      * @return A boolean control value
      */
     private static boolean canTestInternal(LowFunctionality folder, IEngUserProfile profile) {
+    	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.canTestInternal");
 	logger.debug("IN");
 	Collection roles = null;
 	try {
 	    roles = profile.getRoles();
 	} catch (EMFInternalError emfie) {
 	    logger.error("EMFInternalError in profile.getRoles", emfie);
+	    monitor.stop();
 	    return false;
 	}
 
@@ -499,10 +527,12 @@ public class ObjectsAccessVerifier {
 	    roleName = (String) iterRoles.next();
 	    if (testRoleNames.contains(roleName)) {
 		logger.debug("OUT. return true");
+		monitor.stop();
 		return true;
 	    }
 	}
 	logger.debug("OUT. return false");
+	monitor.stop();
 	return false;
 
     }
@@ -612,12 +642,14 @@ public class ObjectsAccessVerifier {
      */
     private static boolean canDevInternal(Integer folderId, IEngUserProfile profile) {
 	logger.debug("IN");
+	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.canDevInternal");
 	Collection roles = null;
 	try {
 	    roles = profile.getRoles();
 	} catch (EMFInternalError emfie) {
 	    logger.error("EMFInternalError in profile.getRoles", emfie);
 	    logger.debug("OUT. return false");
+	    monitor.stop();
 	    return false;
 	}
 
@@ -627,6 +659,7 @@ public class ObjectsAccessVerifier {
 	} catch (Exception e) {
 	    logger.error("EMFInternalError in loadLowFunctionalityByID", e);
 	    logger.debug("OUT. return false");
+	    monitor.stop();
 	    return false;
 	}
 	Role[] devRoles = funct.getDevRoles();
@@ -643,10 +676,12 @@ public class ObjectsAccessVerifier {
 	    if (devRoleNames.contains(roleName)) {
 
 		logger.debug("OUT. return true");
+		monitor.stop();
 		return true;
 	    }
 	}
 	logger.debug("OUT. return false");
+	monitor.stop();
 	return false;
 
     }
@@ -671,21 +706,29 @@ public class ObjectsAccessVerifier {
      */
     public static boolean canSee(BIObject obj, IEngUserProfile profile) throws EMFInternalError {
 	logger.debug("IN");
+	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.canSee(BIObject obj, IEngUserProfile profile)");
 	boolean canSee = false;
 	if (obj == null){
 	    logger.warn("BIObject in input is null!!");
+	    monitor.stop();
 	    throw new EMFInternalError(EMFErrorSeverity.ERROR, "BIObject in input is null!!");
 	}
 	if (profile == null){
 	    logger.warn("User profile in input is null!!");
+	    monitor.stop();
 	    throw new EMFInternalError(EMFErrorSeverity.ERROR, "User profile in input is null!!");
 	}
 	String state = obj.getStateCode();
-	if ("SUSP".equalsIgnoreCase(state))
-	    return false;
+	if ("SUSP".equalsIgnoreCase(state)) {
+		monitor.stop();
+		return false;
+	}
+		
+	    
 	List foldersId = obj.getFunctionalities();
 	if (foldersId == null || foldersId.size() == 0){
 	    logger.warn("BIObject does not belong to any functionality!!");
+	    monitor.stop();
 	    throw new EMFInternalError(EMFErrorSeverity.ERROR, "BIObject does not belong to any functionality!!");
 	}
 	Iterator foldersIdIt = foldersId.iterator();
@@ -715,6 +758,7 @@ public class ObjectsAccessVerifier {
 	    	break;
 	    }
 	}
+	monitor.stop();
 	logger.debug("OUT.canSee=" + canSee);
 	return canSee;
     }
@@ -742,6 +786,7 @@ public class ObjectsAccessVerifier {
      */
     public static boolean canSee(LowFunctionality lowFunctionality, IEngUserProfile profile) throws EMFInternalError {
     	boolean canSee = false;
+    	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.canSee(LowFunctionality lowFunctionality, IEngUserProfile profile)");
     	logger.debug("IN: lowFunctionality path = [" + lowFunctionality.getPath() + "]; userId = [" + ((UserProfile) profile).getUserId() + "]");
     	// if it is root folder, anybody can see it
     	if (lowFunctionality.getParentId() == null) {
@@ -762,6 +807,7 @@ public class ObjectsAccessVerifier {
 			}
 		}
     	logger.debug("OUT.canSee=" + canSee);
+    	monitor.stop();
     	return canSee;
     }
     
@@ -774,11 +820,14 @@ public class ObjectsAccessVerifier {
      * @throws EMFInternalError 
      */
     public static boolean checkProfileVisibility(BIObject obj, IEngUserProfile profile) throws EMFInternalError {
+    	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.checkProfileVisibility");
+    	
     	logger.debug("IN: obj label is [" + obj.getLabel() + "]; user is [" + ((UserProfile)profile).getUserId().toString() + "]");
     	boolean toReturn = true;
     	String profVisibility = obj.getProfiledVisibility();
     	if (profVisibility == null || profVisibility.trim().equals("")) {
     		logger.debug("Biobject with label [" + obj.getLabel() + "] has no profile visibility contraints.");
+    		monitor.stop();
     		return true;
     	}
     	logger.debug("Biobject with label [" + obj.getLabel() + "] has profile visibility contraints = [" + profVisibility + "]");
@@ -831,6 +880,7 @@ public class ObjectsAccessVerifier {
     		}
     	}
     	logger.debug("OUT.canSee=" + toReturn);
+    	monitor.stop();
     	return toReturn;
     }
     
@@ -843,6 +893,7 @@ public class ObjectsAccessVerifier {
      * @throws EMFInternalError 
      */
     public static List getCorrectRolesForExecution(Integer objectId , IEngUserProfile profile) throws EMFInternalError, EMFUserError {
+    	Monitor monitor =MonitorFactory.start("spagobi.core.ObjectAccessVerifier.getCorrectRolesForExecution");
     	logger.debug("IN");
 		List correctRoles = null;
 		if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)
@@ -854,6 +905,7 @@ public class ObjectsAccessVerifier {
 			correctRoles = DAOFactory.getBIObjectDAO()
 					.getCorrectRolesForExecution(objectId);
 		logger.debug("OUT");
+		monitor.stop();
 		return correctRoles;
     }
 }

@@ -250,7 +250,7 @@ Ext.onReady(function(){
 			Map params = new HashMap();
 			params.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 			params.put(ObjectsTreeConstants.OBJECT_ID, hotlink.getObjId().toString());
-			params.put(ObjectsTreeConstants.PARAMETERS, hotlink.getParameters() != null ? hotlink.getParameters() : "");
+			params.put(ObjectsTreeConstants.PARAMETERS, hotlink.getParameters() != null ? StringEscapeUtils.escapeHtml(hotlink.getParameters()) : "");
 			params.put(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
 			String subObjName = hotlink.getSubObjName();
 			if (subObjName != null) {
@@ -323,7 +323,7 @@ Ext.onReady(function(){
 			Map params = new HashMap();
 			params.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
 			params.put(ObjectsTreeConstants.OBJECT_ID, hotlink.getObjId().toString());
-			params.put(ObjectsTreeConstants.PARAMETERS, hotlink.getParameters() != null ? hotlink.getParameters() : "");
+			params.put(ObjectsTreeConstants.PARAMETERS, hotlink.getParameters() != null ? StringEscapeUtils.escapeHtml(hotlink.getParameters()) : "");
 			params.put(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
 			String subObjName = hotlink.getSubObjName();
 			if (subObjName != null) {

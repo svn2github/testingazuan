@@ -8,4 +8,4 @@ Sbi.settings.execution = {
 			, fieldWidth: 200	
 			, maskOnRender: false
 		}
-} 
+}; 

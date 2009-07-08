@@ -62,18 +62,23 @@ Sbi.exception.ExceptionHandler = function(){
 		
         handleFailure : function(response, options) {
         	
-        	var errMessage = 'Generic error'
-        	if(response !== undefined) {
-        		
+        	var errMessage = null;
+        	if(response !== undefined) {        		
         		if(response.responseText !== undefined) {
         			var content = Ext.util.JSON.decode( response.responseText );
-        			if(content.cause !== undefined) {
-        				errMessage = content.cause;
+        			if(content.errors !== undefined && content.errors.length > 0) {
+        				errMessage = '';
+        				for(var i = 0; i < content.errors.length; i++) {
+        					errMessage += content.errors[i].message + '<br>'
+        				}
         			} 
-        		} else {
-        			errMessage = 'errore';
-        		}
+        		} 
+        		if(errMessage === null)	errMessage = 'An unspecified error occurred on the server side';
+        	} else {
+        		errMessage = 'Request has been aborted due to a timeout trigger';
         	}
+        		
+        	errMessage = errMessage || 'An error occurred while processing the server error response';
         	
         	Sbi.exception.ExceptionHandler.showErrorMessage(errMessage, 'Service Error');
        	

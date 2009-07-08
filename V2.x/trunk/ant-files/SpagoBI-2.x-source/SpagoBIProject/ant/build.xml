@@ -126,10 +126,38 @@
       <delete file="${build}/${webapp_name}/WEB-INF/lib/xercesImpl-2.6.2.jar" />
       <delete file="${build}/${webapp_name}/WEB-INF/lib/xml-apis-2.0.2.jar" /> 
       <delete file="${build}/${webapp_name}/WEB-INF/lib/bsh-1.3.0.jar" />                 
-      <copy file="${liferay.security.dir}/dist/sbi.security.liferay-2.2.0.jar" todir="${build}/${webapp_name}/WEB-INF/lib" overwrite="true" />  
-      <mkdir dir="${build}/${webapp_name}/WEB-INF/conf/spago" />
-
       
+      <replace file="${build}/${webapp_name}/WEB-INF/web.xml">
+			   <replacetoken><![CDATA[<!-- START-LIFERAY]]></replacetoken>      
+			   <replacevalue><![CDATA[<!-- START-LIFERAY -->]]></replacevalue>		
+      </replace>
+      <replace file="${build}/${webapp_name}/WEB-INF/web.xml">
+      	 <replacetoken><![CDATA[END-LIFERAY -->]]></replacetoken>
+			   <replacevalue><![CDATA[<!-- END-LIFERAY -->]]></replacevalue>		
+      </replace>  
+      
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+			   <replacetoken><![CDATA[<!-- START-XML -->]]></replacetoken>      
+			   <replacevalue><![CDATA[<!-- START-XML]]></replacevalue>		
+      </replace>
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+      	 <replacetoken><![CDATA[<!-- STOP-XML -->]]></replacetoken>
+			   <replacevalue><![CDATA[STOP-XML -->]]></replacevalue>		
+      </replace> 
+      
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+			   <replacetoken><![CDATA[<!-- START-LIFERAY]]></replacetoken>      
+			   <replacevalue><![CDATA[<!-- START-LIFERAY -->]]></replacevalue>		
+      </replace>
+      <replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi.xml">
+      	 <replacetoken><![CDATA[END-LIFERAY -->]]></replacetoken>
+			   <replacevalue><![CDATA[<!-- END-LIFERAY -->]]></replacevalue>		
+      </replace>      
+                          
+  </target>
+  
+ <target name="liferay.tomcat">  
+ 
       <replace file="${build}/${webapp_name}/WEB-INF/web.xml">
 			   <replacetoken><![CDATA[<!-- START-LIFERAY]]></replacetoken>      
 			   <replacevalue><![CDATA[<!-- START-LIFERAY -->]]></replacevalue>		
@@ -274,7 +302,6 @@
 			    	 <file name="./lib/ext-2.0.1/ux/grid/Ext.grid.ButtonColumn.js"/>
 			    	 <file name="./src/ext/sbi/decorator/ComponentBuddy.js"/>
 
-					   <file name="./src/ext/sbi/execution/toolbar/ExecutionToolbar.js"/>
 			    	 <file name="./src/ext/sbi/execution/toolbar/SendToWindow.js"/>
 			    	 <file name="./src/ext/sbi/execution/toolbar/NotesWindow.js"/>
 			    	 <file name="./src/ext/sbi/execution/toolbar/MetadataWindow.js"/>

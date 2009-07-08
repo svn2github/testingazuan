@@ -20,7 +20,6 @@
  **/
 package it.eng.qbe.model;
 
-import java.io.IOException;
 import java.util.Map;
 
 import it.eng.qbe.query.Query;
@@ -141,11 +140,7 @@ public abstract class  BasicStatement implements IStatement{
 	
 	public String getQueryString() {
 		if(queryString == null) {
-			try {
-				queryString = getQueryString(query, parameters);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			queryString = getQueryString();
 		}
 		return queryString;
 	}	

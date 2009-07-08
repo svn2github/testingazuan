@@ -116,8 +116,7 @@ public class HqlToSqlQueryRewriter {
 		sqlQuery = trans.getSQLString();
 		
 		logger.debug("rewrite: generated SQL query: " + sqlQuery);		
-		System.out.println("generated SQL query: " + sqlQuery);
-	
+		
 		return sqlQuery;
 	}
 	

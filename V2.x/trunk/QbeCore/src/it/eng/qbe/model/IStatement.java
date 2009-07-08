@@ -20,12 +20,10 @@
  **/
 package it.eng.qbe.model;
 
+import java.util.Map;
+
 import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.Properties;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -35,180 +33,28 @@ import java.util.Properties;
  */
 public interface IStatement {
 	
-	/**
-	 * Sets the query.
-	 * 
-	 * @param query the new query
-	 */
-	public void setQuery(Query query);
-	
-	/**
-	 * Gets the query.
-	 * 
-	 * @return the query
-	 */
-	public Query getQuery();
-	
-	/**
-	 * Gets the query string.
-	 * 
-	 * @return the query string
-	 */
-	public String getQueryString();
-	
-	/**
-	 * Gets the query string.
-	 * 
-	 * @param query the query
-	 * @param parameters the parameters
-	 * 
-	 * @return the query string
-	 * 
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	public String getQueryString(Query query, Map parameters) throws IOException;
-	
-	/**
-	 * Gets the data mart model.
-	 * 
-	 * @return the data mart model
-	 */
 	public IDataMartModel getDataMartModel();
 	
-	/**
-	 * Gets the fetch size.
-	 * 
-	 * @return the fetch size
-	 */
-	public int getFetchSize();
+	public void setQuery(Query query);	
+	public Query getQuery();
+		
+	public void prepare();		
+	public String getQueryString();
 	
-	/**
-	 * Sets the fetch size.
-	 * 
-	 * @param fetchSize the new fetch size
-	 */
-	public void setFetchSize(int fetchSize);
-	
-	/**
-	 * Gets the max results.
-	 * 
-	 * @return the max results
-	 */
-	public int getMaxResults();
-	
-	/**
-	 * Sets the max results.
-	 * 
-	 * @param maxResults the new max results
-	 */
+	public int getOffset();
+	public void setOffset(int offset);
+	public int getFetchSize();	
+	public void setFetchSize(int fetchSize);	
+	public int getMaxResults();	
 	public void setMaxResults(int maxResults);
 	
-	/**
-	 * Gets the offset.
-	 * 
-	 * @return the offset
-	 */
-	public int getOffset();
 	
-	/**
-	 * Sets the offset.
-	 * 
-	 * @param offset the new offset
-	 */
-	public void setOffset(int offset);
-	
-	/**
-	 * Sets the parameters.
-	 * 
-	 * @param parameters the new parameters
-	 */
 	public void setParameters(Map parameters);
-	
-	/**
-	 * Execute.
-	 * 
-	 * @return the source bean
-	 * 
-	 * @throws Exception the exception
-	 */
 	public SourceBean execute() throws Exception ;
 	
-	/**
-	 * Execute.
-	 * 
-	 * @param offset the offset
-	 * 
-	 * @return the source bean
-	 * 
-	 * @throws Exception the exception
-	 */
+
 	public SourceBean execute(int offset) throws Exception;
-	
-	/**
-	 * Execute.
-	 * 
-	 * @param offset the offset
-	 * @param fetchSize the fetch size
-	 * 
-	 * @return the source bean
-	 * 
-	 * @throws Exception the exception
-	 */
 	public SourceBean execute(int offset, int fetchSize) throws Exception;		
-	
-	/**
-	 * Execute.
-	 * 
-	 * @param query the query
-	 * @param parameters the parameters
-	 * @param offset the offset
-	 * @param fetchSize the fetch size
-	 * @param maxResults the max results
-	 * 
-	 * @return the source bean
-	 * 
-	 * @throws Exception the exception
-	 */
-	public SourceBean execute(Query query, Map parameters, int offset, int fetchSize, int maxResults) throws Exception;
-	
-	/**
-	 * Execute with pagination.
-	 * 
-	 * @param pageNumber the page number
-	 * @param pageSize the page size
-	 * 
-	 * @return the source bean
-	 * 
-	 * @throws Exception the exception
-	 */
-	public SourceBean executeWithPagination(int pageNumber, int pageSize) throws Exception;	
-	
-	/**
-	 * Execute with pagination.
-	 * 
-	 * @param query the query
-	 * @param parameters the parameters
-	 * @param pageNumber the page number
-	 * @param pageSize the page size
-	 * @param maxResults the max results
-	 * 
-	 * @return the source bean
-	 * 
-	 * @throws Exception the exception
-	 */
-	public SourceBean executeWithPagination(Query query, Map parameters,  int pageNumber, int pageSize, int maxResults) throws Exception;
-	
-	/**
-	 * Execute with pagination.
-	 * 
-	 * @param offset the offset
-	 * @param fetchSize the fetch size
-	 * @param maxResults the max results
-	 * 
-	 * @return the source bean
-	 * 
-	 * @throws Exception the exception
-	 */
-	public SourceBean executeWithPagination(int offset, int fetchSize, int maxResults) throws Exception;
+	public SourceBean execute(int offset, int fetchSize, int maxResults) throws Exception;
 	
 }

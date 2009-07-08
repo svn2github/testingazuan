@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.hibernate.Session;
 
+import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
@@ -42,12 +43,25 @@ import it.eng.qbe.query.WhereField;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 /**
  * The Class HQLStatement.
  */
 public class HQLStatement extends BasicStatement {
 	
+	private String countQueryString;
+	
+	private String getCountQueryString() {
+		return countQueryString;
+	}
+
+
+	private void setCountQueryString(String countQueryString) {
+		this.countQueryString = countQueryString;
+	}
+
+
 	public static interface IConditionalOperator {	
 		String apply(String leftHandValue, String rightHandValue);
 	}
@@ -323,22 +337,6 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString().trim();
 	}
 	
-	/*
-	private List getWhereFields(Query query) {
-		List whereFields = new ArrayList();
-		Iterator it = query.getWhereFields().iterator();
-		while( it.hasNext() ) {
-			WhereField whereField = (WhereField)it.next();
-			if( "LEFT JOIN ON".equalsIgnoreCase( whereField.getOperator() ) 
-					|| "RIGHT JOIN ON".equalsIgnoreCase( whereField.getOperator() ) ) {
-				continue;
-			}
-			whereFields.add(whereField);
-		}
-		return whereFields;
-	}
-	*/
-	
 	private String buildUserProvidedWhereField(WhereField whereField, Query query, Map entityAliases) {
 		String leftHandValue = null;
 		DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(whereField.getUniqueName());
@@ -549,6 +547,7 @@ public class HQLStatement extends BasicStatement {
 		}
 		return orderByFields;
 	}
+	
 	private String buildOrderByClause(Query query, Map entityAliases) {
 		StringBuffer buffer;
 		Iterator it;
@@ -586,17 +585,7 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString().trim();
 	}
 	
-	
-	public String getQueryString(Query query) {		
-		try {
-			return getQueryString(query, parameters);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-		
-	public String getQueryString(Query query, Map parameters) throws IOException {		
+	public void prepare() {
 		String queryStr;
 		String selectClause;
 		String whereClause;
@@ -616,53 +605,92 @@ public class HQLStatement extends BasicStatement {
 		orderByClause = buildOrderByClause(query, entityAliases);
 		fromClause = buildFromClause(entityAliases);
 		
-		queryStr = selectClause + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause;
-		queryStr = (parameters != null)
-						? StringUtils.replaceParameters(queryStr.trim(), "P", parameters)
-						: queryStr;
+		// prepare query string
+		queryStr = selectClause + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause;		
+		if(parameters != null) {
+			try {
+				queryStr = StringUtils.replaceParameters(queryStr.trim(), "P", parameters);
+			} catch (IOException e) {
+				throw new SpagoBIRuntimeException("Impossible to set parameters in query", e);
+			}
+			
+		}				
+		this.queryString = queryStr;
 		
-		return queryStr;
+		// prepare count query string
+		queryStr = "select count(*)" + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause;		
+		if(parameters != null) {
+			try {
+				queryStr = StringUtils.replaceParameters(queryStr.trim(), "P", parameters);
+			} catch (IOException e) {
+				throw new SpagoBIRuntimeException("Impossible to set parameters in query", e);
+			}
+			
+		}				
+		this.countQueryString = queryStr;
+	}
+		
+	public String getQueryString() {		
+		if(this.queryString == null) {
+			this.prepare();
+		}
+		
+		return this.queryString;
 	}
 	
-	
-	
-	
-	
-	
-	public SourceBean execute(int offset, int fetchSize) throws Exception {
-		return execute(query, parameters, offset, fetchSize, maxResults);
-	}
-	
-	
-	public SourceBean execute(int offset) throws Exception {
-		return execute(query, parameters, offset, fetchSize, maxResults);
-	}
-
+	public String getSqlQueryString() {	
+		String sqlQuery = null;
+		Session session = null;
+		HqlToSqlQueryRewriter queryRewriter;
+		try {
+			session = dataMartModel.getDataSource().getSessionFactory().openSession();
+			queryRewriter = new HqlToSqlQueryRewriter(session);
+			sqlQuery = queryRewriter.rewrite( getQueryString() );
+		} finally {
+			if (session != null && session.isOpen()) session.close();
+		}
+		
+		return sqlQuery;		
+	}	
 	
 	public SourceBean execute() throws Exception {
-		return execute(query, parameters, offset, fetchSize, maxResults);
+		return execute(offset, fetchSize, maxResults);
 	}
 	
+	public SourceBean execute(int offset) throws Exception {
+		return execute(offset, fetchSize, maxResults);
+	}
 	
-	public SourceBean execute(Query query, Map parameters, int offset, int fetchSize, int maxResults) throws Exception {
+	public SourceBean execute(int offset, int fetchSize) throws Exception {
+		return execute(offset, fetchSize, maxResults);
+	}
+	
+	public SourceBean execute(int offset, int fetchSize, int maxResults) throws Exception {
 		Session session = null;
+		org.hibernate.Query hibernateQuery;
+		org.hibernate.Query hibernateCountQuery;
+		int resultNumber;
+		boolean overflow;
+		
 		try{		
 			session = dataMartModel.getDataSource().getSessionFactory().openSession();
 			
-			String queryString = getQueryString(query, parameters);	
-			
-			org.hibernate.Query hibernateQuery = session.createQuery(queryString);			
-			
 			// check for overflow
-			if(maxResults >= 0) hibernateQuery.setMaxResults(maxResults);
-			int resultNumber = hibernateQuery.list().size();
-			boolean overflow = (resultNumber == maxResults);
-						
-			// get query results
-			hibernateQuery.setFirstResult(offset < 0 ? 0 : offset);
-			//if(fetchSize >= 0 && fetchSize < resultNumber) {
-				hibernateQuery.setMaxResults(fetchSize);			
-			//}
+			hibernateCountQuery = session.createQuery( getCountQueryString() );
+			resultNumber = ( (Integer) hibernateCountQuery.iterate().next() ).intValue();
+			overflow = (resultNumber >= maxResults);
+			
+			
+			// execute query
+			hibernateQuery = session.createQuery( getQueryString() );			
+			
+			offset = offset < 0 ? 0 : offset;
+			if(maxResults > 0) {
+				fetchSize = (fetchSize > 0)? Math.min(fetchSize, maxResults): maxResults;
+			}
+			
+			hibernateQuery.setFirstResult(offset);
+			if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
 			List result = hibernateQuery.list();
 				
 			// build the source bean that holds the resultset				
@@ -685,51 +713,8 @@ public class HQLStatement extends BasicStatement {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.IStatement#executeWithPagination(int, int, int)
-	 */
-	public SourceBean executeWithPagination(int offset, int fetchSize, int maxResults) throws Exception {
-		return execute(query, parameters, offset, fetchSize, maxResults);
-	}
 	
-	
-	public SourceBean executeWithPagination(int pageNumber, int pageSize) throws Exception {
-		return executeWithPagination(query, parameters, pageNumber, pageSize, maxResults);
-	}
-	
-	
-	public SourceBean executeWithPagination(Query query, Map parameters, int pageNumber, int pageSize, int maxResults) throws Exception {
-		SourceBean resultSetSB = execute(query, parameters, pageNumber * pageSize, pageSize, maxResults);
-		
-		Session session = null;
-		try{		
-			session = dataMartModel.getDataSource().getSessionFactory().openSession();
-			
-			Integer resultNumber = (Integer)resultSetSB.getAttribute("resultNumber");
-			
-			int pagesNumber = 1;
-			if(pageSize > 0) {
-				pagesNumber = (resultNumber.intValue() / pageSize) + ( ((resultNumber.intValue() % pageSize) != 0)? 1: 0);
-			}
-			
-			boolean hasNextPage = false;
-			if(pageSize > 0) hasNextPage = resultNumber.intValue() > ((pageNumber+1) * pageSize);
-			
-			boolean hasPrevPage = (pageNumber > 0);
-			
-			 
-			
-			resultSetSB.setAttribute("currentPage", new Integer(pageNumber));
-			resultSetSB.setAttribute("pagesNumber", new Integer(pagesNumber));
-			resultSetSB.setAttribute("hasNextPage", new Boolean(hasNextPage));
-			resultSetSB.setAttribute("hasPreviousPage", new Boolean(hasPrevPage));			
-			
-			session.close();
-						
-			return resultSetSB;
-		}finally {
-			if (session != null && session.isOpen())
-			session.close();
-		}
+	public String toString() {
+		return this.getQueryString();
 	}
 }

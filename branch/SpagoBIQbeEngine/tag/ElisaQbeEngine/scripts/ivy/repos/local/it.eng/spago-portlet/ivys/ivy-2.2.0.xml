@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0">
+	<info organisation="it.eng"
+		module="spago-portlet"
+		revision="2.2.0"
+		status="release">
+		
+	</info>
+	
+	<publications>
+		<artifact name="spago-portlet" type="jar" ext="jar"/>
+	</publications>
+	
+	<dependencies>
+		<dependency org="it.eng" name="spago-core" rev="2.2.0"/>  
+	</dependencies>
+</ivy-module>

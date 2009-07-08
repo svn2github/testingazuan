@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0">
+	<info organisation="it.eng"
+		module="spago-core"
+		revision="2.2.0"
+		status="release">
+		
+	</info>
+	
+	<publications>
+		<artifact name="spago-core" type="jar" ext="jar"/>
+	</publications>
+</ivy-module>

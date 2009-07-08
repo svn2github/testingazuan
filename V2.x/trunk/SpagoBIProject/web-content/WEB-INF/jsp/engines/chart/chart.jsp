@@ -201,7 +201,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			filterCatGroup=((BarCharts)sbi).isFilterCatGroups();
 			changeCatNumber=true;
 		}
-		else if(sbi.getSubtype().equalsIgnoreCase("overlaid_barline") || sbi.getSubtype().equalsIgnoreCase("overlaid_stackedbarline")){
+		else if(sbi.getSubtype().equalsIgnoreCase("overlaid_barline") || sbi.getSubtype().equalsIgnoreCase("overlaid_stackedbarline") || sbi.getSubtype().equalsIgnoreCase("combined_category_bar")){
 			copyDatasets=datasetMap.filteringMultiDatasetBarChart(sbModuleResponse,request,(BarCharts)sbi,sbiMode,docComposition);
 			changeCatNumber=true;
 		}
@@ -601,11 +601,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<td>		
 								<table id="slider" align="center">  
 									<tr>
-										<td width="15%">&nbsp;</td>														
+										<td width="25%" align="left" >&nbsp;</td>														
 										<td width="5%" align="center">							
 											<span  id="slider1"></span> 
 										</td>
-										<td width="15%" align="left">							
+										<td width="3%" align="center">							
 											<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"/>										
 												<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
 												<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>
@@ -616,11 +616,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 															</span>
 														</div>
 			   							</td>															
+										<!-- I add the input to select dynamically the number of cats visualizations -->
+										<%
+										if(datasetMap.isDynamicNVisualization()==true){
+										%>
+						 				<td align="center" width="3%">
+											<div class='div_detail_form' align="center" style="float: left;">
+											<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="3" maxlength="3" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 
+											<span class='portlet-form-field-label'>
+													<spagobi:message key = "sbi.chartEngine.numCatsView" />: 
+											</span>	
+											</div>
+										</td>		   
+										<%}%>
+										<td width="20%" align="right"></td>
 									</tr>
-						 		</table> 
-							</td>
-						</tr>
-					<%}	%>	
+								</table>		
+	   			  			</td>
+	   			  		</tr>	
+				<%}	%>	
 		  <!-- </table>  -->
 
 			<% } /////////////////////// End slider creation ////////////////////////// 
@@ -628,17 +642,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		 </td>
    	</tr>
 
-<!-- I add the input to select dynamically the number of cats visualizations -->
-	<%
-	if(datasetMap.isDynamicNVisualization()==true){
-%>
-			 <tr> <!-- Line of dynamic categories number to visualize -->
-			 <td>
-			 <table align="center">
-			 <tr>
-			 	<td width="15%" />
-			 	<td align="center" width="15%">
-					<div class='div_detail_form' align="center" style="float: left;">
+
 							<script type="text/javascript">
 							<!-- //This is a function to check that only numbers can be inserted
 									function onlyNumbers(vnt)
@@ -660,20 +664,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								}
 							-->
 						</script>
-						<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="3" maxlength="3" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 
-						<span class='portlet-form-field-label'>
-							<spagobi:message key = "sbi.chartEngine.numCatsView" />: 
-						</span>	
-					</div>
-				</td>		   
-			 	<td width="15%" />
-			  </tr>
-			  </table>
-			  </td>
-			</tr>  	
-	<%	
-	}
-%>
 
 
 	<% 	 

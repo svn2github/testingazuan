@@ -565,12 +565,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								<td>		
 									<table id="slider" align="center">  
 										<tr>
-											<td width="15%">&nbsp;</td>														
+											<td width="25%" align="left">&nbsp;</td>														
 											<td width="5%" align="center">		
 												<!-- SLIDER -->					
 												<span id="slider1"></span> 
 											</td>	
-											<td width="15%" align="left">							
+											<td width="3%" align="left">							
 												<!-- BOX FOR SLIDER VALUE -->
 												<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"></p> 
 													<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
@@ -582,8 +582,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 																</span>
 															</div>
 			   								</td>					
-										</tr>
-									 </table> 
+										<!-- I add the input to select dynamically the number of cats visualizations -->
+										<%
+										if(datasetMap.isDynamicNVisualization()==true){
+										%>
+						 				<td align="center" width="3%">
+											<div class='div_detail_form' align="center" style="float: left;">
+											<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="3" maxlength="3" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 
+											<span class='portlet-form-field-label'>
+													<spagobi:message key = "sbi.chartEngine.numCatsView" />: 
+											</span>	
+											</div>
+										</td>		   
+										<%}%>
+										<td width="20%" align="right"></td>
+
+									 </tr>
+								   </table> 
 								</td>
 							</tr>
 						<%}%>	

@@ -538,7 +538,7 @@ if (toolbarIsVisible) {
 					if (itTemp.hasNext()) ValuePar += ";";
 				}
 				
-				urlMasterPar += UrlPar+"="+ValuePar;
+				urlMasterPar += UrlPar+"="+StringEscapeUtils.escapeHtml(ValuePar);
 				if (itMaster.hasNext()) urlMasterPar += "&";
 			}
 		}
@@ -687,7 +687,7 @@ if (toolbarIsVisible) {
 			documentParametersStr = documentParametersStr.substring(0, documentParametersStr.length() - 4);
 		}
 		%>
-		url += "&parameters=<%= documentParametersStr %>";
+		url += "&parameters=<%= StringEscapeUtils.escapeHtml(documentParametersStr) %>";
 		<%
 		if (subObj != null) {
 			%>

@@ -41,6 +41,9 @@ import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
 import org.apache.log4j.Logger;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 /**
  * @author Antonella Giachino (antonella.giachino@eng.it)
  *
@@ -65,7 +68,7 @@ public class SpagoBIDocumentCompositionInternalEngine implements InternalEngineI
 			SourceBean response) throws EMFUserError {
 		
 		logger.debug("IN");
-
+		Monitor monitor =MonitorFactory.start("spagobi.engines.SpagoBIDocumentCompositionInternalEngine.execute");
 		if (obj == null) {
 			logger.error("The input object is null");
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
@@ -115,6 +118,8 @@ public class SpagoBIDocumentCompositionInternalEngine implements InternalEngineI
 		} catch (Exception e) {
 			logger.error("Cannot exec the composite document", e);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, "100", messageBundle);
+		}finally{
+			monitor.stop();
 		}
 	}
 

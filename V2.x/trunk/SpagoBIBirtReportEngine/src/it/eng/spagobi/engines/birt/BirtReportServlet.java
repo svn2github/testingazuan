@@ -116,7 +116,8 @@ public class BirtReportServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
 		String documentId = (String) request.getParameter("document");
-		String userId = (String) ((UserProfile)profile).getUserId();
+		//String userId = (String) ((UserProfile)profile).getUserId();
+		String userId = (String) profile.getUserUniqueIdentifier();
 
 		logger.debug("userId=" + userId);
 		logger.debug("documentId=" + documentId);

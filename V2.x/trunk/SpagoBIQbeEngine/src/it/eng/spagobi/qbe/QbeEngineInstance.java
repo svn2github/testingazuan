@@ -29,6 +29,7 @@ import it.eng.qbe.conf.QbeTemplate;
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.IStatement;
 import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceManager;
@@ -46,14 +47,15 @@ import it.eng.spagobi.utilities.engines.IEngineAnalysisState;
 public class QbeEngineInstance extends AbstractEngineInstance {
 	
 	Map functionalities;	
-	boolean standaloneMode;
-	
+	boolean standaloneMode;	
 	DataMartModel datamartModel;	
+	
+	
+	Query query;	
+	// executable version of the query. cached here for performance reasons (i.e. avoid query recompilation over resultset paging)
+	IStatement statment;
 	//QueryCatalogue datamartWizard;	
-	Query query;
-	
-	
-	
+
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(QbeEngineInstance.class);
 	
@@ -117,11 +119,6 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		setQuery( qbeEngineAnalysisState.getQuery() );
 	}
 	
-	
-	
-	
-	
-	
 
 	public Map getFunctionalities() {
 		return functionalities;
@@ -149,9 +146,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 
 	public void setDatamartModel(DataMartModel datamartModel) {
 		this.datamartModel = datamartModel;
-	}
-
-	
+	}	
 
 	public Query getQuery() {
 		return query;
@@ -159,5 +154,14 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 
 	public void setQuery(Query query) {
 		this.query = query;
+		this.statment = getDatamartModel().createStatement( getQuery() );
+	}
+	
+	public IStatement getStatment() {
+		return statment;
+	}
+
+	public void setStatment(IStatement statment) {
+		this.statment = statment;
 	}
 }

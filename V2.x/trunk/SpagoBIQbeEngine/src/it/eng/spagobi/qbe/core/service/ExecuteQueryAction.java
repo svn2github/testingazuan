@@ -29,12 +29,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import it.eng.qbe.model.HQLStatement;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.query.SelectField;
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.qbe.QbeEngineConfig;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -52,6 +55,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(ExecuteQueryAction.class);
+    public static transient Logger auditlogger = Logger.getLogger("audit.query");
     
 	
 	public void service(SourceBean request, SourceBean response)  {				
@@ -84,13 +88,21 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
 			Assert.assertTrue(getEngineInstance().getQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
 			
-			statement = getDatamartModel().createStatement( getEngineInstance().getQuery() );	
+			statement = getEngineInstance().getStatment();	
 			statement.setParameters( getEnv() );
-			logger.debug("Executable query: [" + statement.getQueryString() + "]");
+			
+			String hqlQuery = statement.getQueryString();
+			String sqlQuery = ((HQLStatement)statement).getSqlQueryString();
+			logger.debug("Executable query (HQL): [" +  hqlQuery+ "]");
+			logger.debug("Executable query (SQL): [" + sqlQuery + "]");
+			UserProfile userProfile = (UserProfile)getEnv().get(EngineConstants.ENV_USER_PROFILE);
+			auditlogger.info("[" + userProfile.getUserId() + "]:: HQL: " + hqlQuery);
+			auditlogger.info("[" + userProfile.getUserId() + "]:: SQL: " + sqlQuery);
+			
 			
 			try {
 				logger.debug("Executing query ...");
-				queryResponseSourceBean = statement.executeWithPagination(start, limit, (maxSize == null? -1: maxSize.intValue()));
+				queryResponseSourceBean = statement.execute(start, limit, (maxSize == null? -1: maxSize.intValue()));
 				Assert.assertNotNull(queryResponseSourceBean, "The sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
 			} catch (Exception e) {
 				logger.debug("Query execution aborted because of an internal exceptian");
@@ -155,7 +167,6 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		
 		int recNo = 0;
 		while (it.hasNext()){
-			logger.debug("Reading result.");	
 			o = it.next();
 			
 		    if (!(o instanceof Object[])){

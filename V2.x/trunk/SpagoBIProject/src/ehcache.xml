@@ -18,4 +18,14 @@
         overflowToDisk="false"
         />
 
+    <cache name="sbi_parameters"
+        maxElementsInMemory="20"
+        eternal="false"
+        overflowToDisk="true"
+        timeToIdleSeconds="120"
+        timeToLiveSeconds="120" 
+        diskPersistent="false"
+        diskExpiryThreadIntervalSeconds="120"
+        />
+   
 </ehcache>

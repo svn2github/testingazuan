@@ -54,6 +54,8 @@ import it.eng.spagobi.engines.drivers.IEngineDriver;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.cache.CacheInterface;
+import it.eng.spagobi.utilities.cache.CacheSingleton;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 
 import java.util.ArrayList;
@@ -179,9 +181,21 @@ public class ExecutionInstance {
 					try {
 						String lovResult = aBIObjectParameter.getLovResult();
 						if(lovResult == null) {
+							String userID=(String)((UserProfile)this.userProfile).getUserId();
+							logger.info("userID="+userID);
+							CacheInterface cache=CacheSingleton.getInstance();
 							String lovprov = paruse.getLovProvider();
 							ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovprov);
-							lovResult = lovDetail.getLovResult(this.userProfile);
+							if (lovprov!=null && cache.isPresent(userID+lovprov)){
+								// lov provider is present, so read the DATA in cache
+								lovResult= (String)cache.get(userID+lovprov);
+								logger.info("Use cache for read the LOV DATA");
+							}else {
+								lovResult = lovDetail.getLovResult(this.userProfile);
+								// insert the data in cache
+								if (lovprov!=null && lovResult!=null) cache.put(userID+lovprov, lovResult);								
+							}
+
 							LovResultHandler lovResultHandler = new LovResultHandler(lovResult);
 							aBIObjectParameter.setLovResult(lovResult);
 							// if the lov is single value and the parameter value is not set, the parameter value 
@@ -438,12 +452,14 @@ public class ExecutionInstance {
 
 	public void refreshParametersValues(Map parametersMap, boolean transientMode) {
 		logger.debug("IN");
+		Monitor monitor =MonitorFactory.start("spagobi.ExecutionInstance.refreshParametersValues");
 		List biparams = object.getBiObjectParameters();
 		Iterator iterParams = biparams.iterator();
 		while (iterParams.hasNext()) {
 			BIObjectParameter biparam = (BIObjectParameter) iterParams.next();
 			refreshParameter(biparam, parametersMap, transientMode);
 		}
+		monitor.stop();
 		logger.debug("OUT");
 	}
 

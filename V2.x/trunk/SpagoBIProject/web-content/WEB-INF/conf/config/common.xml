@@ -4,7 +4,7 @@
 		xsl_reload="FALSE" 
 		navigator_enabled="FALSE" 
 		startup_console="FALSE" 
-		monitor_enabled="TRUE">
+		monitor_enabled="FALSE">
         <!-- espresso in minuti -->
 	<PARAM role_val_period="50" />
 </COMMON>

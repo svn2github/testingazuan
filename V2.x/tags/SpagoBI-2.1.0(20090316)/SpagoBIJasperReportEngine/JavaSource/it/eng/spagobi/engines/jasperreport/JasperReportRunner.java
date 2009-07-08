@@ -233,7 +233,7 @@ public class JasperReportRunner {
 				String country=(String)parameters.get("SBI_COUNTRY");
 				logger.debug("Internazionalization in "+language);
 				locale=new Locale(language,country,"");
-				//parameters.put("REPORT_LOCALE", locale);
+				parameters.put("REPORT_LOCALE", locale);
 				ResourceBundle rs=PropertyResourceBundle.getBundle("messages",locale);
 				parameters.put("REPORT_RESOURCE_BUNDLE", rs);
 

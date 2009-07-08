@@ -66,6 +66,7 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 		documentHtml = '';
 		documentHtml += '<iframe';
 		documentHtml += ' id = "' + config.iframe.id + '" ';
+		documentHtml += ' name = "' + config.iframe.id + '" ';
 		documentHtml += ' src = "' + serviceUrl + '" ';
 		if(config.iframe.style !== undefined) documentHtml += ' style = "' + config.iframe.style + '" ';
 		if(config.iframe.width !== undefined) documentHtml += ' width = "' + config.iframe.width + '" ';

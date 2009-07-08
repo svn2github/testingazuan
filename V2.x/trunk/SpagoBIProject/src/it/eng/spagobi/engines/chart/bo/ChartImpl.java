@@ -29,6 +29,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.chart.bo.charttypes.XYCharts.BlockChart;
+import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.CombinedCategoryBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.LinkableBar;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.OverlaidBarLine;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.OverlaidStackedBarLine;
@@ -435,6 +436,9 @@ public class ChartImpl implements IChart {
 			}	
 			else if(subtype.equalsIgnoreCase("overlaid_stackedbarline")){
 				sbi=new OverlaidStackedBarLine();
+			}
+			else if(subtype.equalsIgnoreCase("combined_category_bar")){
+				sbi=new CombinedCategoryBar();
 			}	
 		}
 

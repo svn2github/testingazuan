@@ -254,7 +254,7 @@
 			<delete file="${build}/${webapp_name}/js/src/ext/sbi-all-debug.js"/>
 			<delete file="${build}/${webapp_name}/js/src/ext/sbi-all.js"/>
 		</target>
-		
+  
 		<target name="create-debug" depends="delete-debug">
 			<concat destfile="${build}/${webapp_name}/js/src/ext/sbi-all-debug.js" append="true">
 			    <filelist  dir="${build}/${webapp_name}/js">

@@ -1,3 +1,4 @@
+
 /**
  * SpagoBI - The Business Intelligence Free Platform
  *
@@ -284,7 +285,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     }
     
     , applySelection: function() {
-    	this.resetSelection();
+    	//this.resetSelection();
     	
     	if(this.grid) {    		    		
 			var selectedRecs = [];
@@ -313,6 +314,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
     
 	, onLookUp: function() {
 		this.clean();
+		this.resetSelection();
 		
 		this.win.show(this);
 		var p = Ext.apply({}, this.params, {

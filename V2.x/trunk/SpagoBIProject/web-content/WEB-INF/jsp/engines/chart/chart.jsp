@@ -565,7 +565,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								<td>		
 									<table id="slider" align="center">  
 										<tr>
-											<td width="25%" align="left">&nbsp;</td>														
+											<td width="20%" align="left">&nbsp;</td>														
+										<!-- I add the input to select dynamically the number of cats visualizations -->
+										<%
+										if(datasetMap.isDynamicNVisualization()==true){
+										%>
+						 				<td align="center" width="3%">
+											<div class='div_detail_form' align="center" style="float: left;">
+											<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="3" maxlength="3" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 
+											<span class='portlet-form-field-label'>
+													<spagobi:message key = "sbi.chartEngine.numCatsView" />: 
+											</span>	
+											</div>
+										</td>		   
+										<%}%>
 											<td width="5%" align="center">		
 												<!-- SLIDER -->					
 												<span id="slider1"></span> 
@@ -582,19 +595,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 																</span>
 															</div>
 			   								</td>					
-										<!-- I add the input to select dynamically the number of cats visualizations -->
-										<%
-										if(datasetMap.isDynamicNVisualization()==true){
-										%>
-						 				<td align="center" width="3%">
-											<div class='div_detail_form' align="center" style="float: left;">
-											<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="3" maxlength="3" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 
-											<span class='portlet-form-field-label'>
-													<spagobi:message key = "sbi.chartEngine.numCatsView" />: 
-											</span>	
-											</div>
-										</td>		   
-										<%}%>
 										<td width="20%" align="right"></td>
 
 									 </tr>
@@ -616,7 +616,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<td>		
 								<table id="slider" align="center">  
 									<tr>
-										<td width="25%" align="left" >&nbsp;</td>														
+										<td width="20%" align="left" >&nbsp;</td>														
+										<!-- I add the input to select dynamically the number of cats visualizations -->
+										<%
+										if(datasetMap.isDynamicNVisualization()==true){
+										%>
+						 				<td align="center" width="3%">
+											<div class='div_detail_form' align="center" style="float: left;">
+											<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="3" maxlength="3" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 
+											<span class='portlet-form-field-label'>
+													<spagobi:message key = "sbi.chartEngine.numCatsView" />: 
+											</span>	
+											</div>
+										</td>		   
+										<%}%>
 										<td width="5%" align="center">							
 											<span  id="slider1"></span> 
 										</td>
@@ -631,19 +644,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 															</span>
 														</div>
 			   							</td>															
-										<!-- I add the input to select dynamically the number of cats visualizations -->
-										<%
-										if(datasetMap.isDynamicNVisualization()==true){
-										%>
-						 				<td align="center" width="3%">
-											<div class='div_detail_form' align="center" style="float: left;">
-											<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="3" maxlength="3" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 
-											<span class='portlet-form-field-label'>
-													<spagobi:message key = "sbi.chartEngine.numCatsView" />: 
-											</span>	
-											</div>
-										</td>		   
-										<%}%>
 										<td width="20%" align="right"></td>
 									</tr>
 								</table>		
@@ -685,7 +685,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// form to limit the series if it is a barchart
-	
+	boolean applyDrawed=false;
 	seriesNames=new Vector();
 	catGroupsNames=new Vector();
 	if(filterSeries || filterCatGroup){
@@ -723,9 +723,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										<a onclick="disableSerie()" title="uncheck all series" alt='<spagobi:message key = "SBIDev.paramUse.uncheckAllFreeRoles" />'>
 											<img src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/erase.png", currTheme)%>' />
 										</a> 
-										<%} // CLOSE if drawing
-									} 
-%>
+										<%} // CLOSE if drawing SELECT UNSELECT BUTTONS
+								applyDrawed=true;
+										%>
+				   <input type="submit" value="Apply" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>"/>
+								<% 
+								   } 
+									%>
 							</div>
 						</td>
 					</tr>
@@ -769,6 +773,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<span style="<%=datasetMap.getFilterStyle()%>"><%=group%></span> 
 							<%} 
 		 				}
+							if(applyDrawed==false){
+								applyDrawed=true; %>
+				   <input type="submit" value="Apply" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>"/>
+								<% 
+							}
 					%> 
 				  </div>
 			   </td>
@@ -782,11 +791,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		</table> <!-- Close table id="filterSeriesOrCatGroups" -->
 	
 	
-	 <%if(showSlider==true || filterSeries==true || filterCatGroup==true) {%>
+	 <%if((showSlider==true || filterSeries==true || filterCatGroup==true) && applyDrawed==false) {%>
 			 <tr>
 			   <td>
 				 <div align="center" class='div_detail_form'>
-				   <input type="submit" value="Apply" />
+				   <input type="submit" value="Apply" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>"/>
 				</div>
 			   </td>
 			 </tr>  	

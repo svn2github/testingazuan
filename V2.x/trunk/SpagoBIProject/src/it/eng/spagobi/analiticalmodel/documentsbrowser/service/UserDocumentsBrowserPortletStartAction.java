@@ -25,15 +25,13 @@ package it.eng.spagobi.analiticalmodel.documentsbrowser.service;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.commons.services.PortletLoginAction;
-import it.eng.spagobi.commons.utilities.ChannelUtilities;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
-import it.eng.spagobi.utilities.exceptions.SpagoBIException;
-
-
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.services.PortletLoginAction;
+import it.eng.spagobi.commons.utilities.PortletUtilities;
+import it.eng.spagobi.utilities.exceptions.SpagoBIException;
 
 /**
  * @author Antonella Giachino (antonella.giachino@eng.it)
@@ -50,28 +48,39 @@ public class UserDocumentsBrowserPortletStartAction extends PortletLoginAction {
 
 	public void service(SourceBean request, SourceBean response) throws Exception {
 		
+		String labelSubTreeNode = null;
+		String height = null;
+		String channelType;
+		
 		logger.debug("IN");
 		
 		try {
 			super.service(request, response);
 			
+			channelType = getRequestContainer().getChannelType();
 			
-			String labelSubTreeNode = null;
-			String height = null;
+			logger.info("[DAJS]:: channelType: " + channelType);
 			
-			String channelType = getRequestContainer().getChannelType();			
 			if( PORTLET.equalsIgnoreCase(channelType) ) {
+				logger.info("[DAJS]:: mode: " + PORTLET);
 				PortletRequest portReq = PortletUtilities.getPortletRequest();
+				logger.info("[DAJS]:: portReq: " + portReq);
 				PortletPreferences prefs = portReq.getPreferences();
+				logger.info("[DAJS]:: prefs: " + prefs);
 				labelSubTreeNode = (String)prefs.getValue(LABEL_SUBTREE_NODE, "");
+				logger.info("[DAJS]:: labelSubTreeNode: " + labelSubTreeNode);
 				height = (String)prefs.getValue(HEIGHT, "600");
+				logger.info("[DAJS]:: height: " + height);
 				if (labelSubTreeNode != null && !labelSubTreeNode.trim().equals("")) {
 					response.setAttribute("labelSubTreeNode", labelSubTreeNode);
+					logger.info("[DAJS]:: attribute [labelSubTreeNode] set equals to " + labelSubTreeNode);
 				}
 				if (height != null && !height.trim().equals("")) {
 					response.setAttribute("height", height);
+					logger.info("[DAJS]:: attribute [height] set equals to " + height);
 				}				
 			} else {
+				logger.info("[DAJS]:: mode: " + channelType);
 				DocumentsBrowserConfig config = DocumentsBrowserConfig.getInstance();
 				JSONObject jsonObj  = config.toJSON();
 				// read value from db
@@ -81,6 +90,7 @@ public class UserDocumentsBrowserPortletStartAction extends PortletLoginAction {
 			}			
 			
 		} catch (Throwable t) {
+			logger.error("[DAJS]:: error", t);
 			throw new SpagoBIException("An unexpected error occured while executing UserDocumentsBrowserPortletStartAction", t);
 		} finally {
 			logger.debug("OUT");

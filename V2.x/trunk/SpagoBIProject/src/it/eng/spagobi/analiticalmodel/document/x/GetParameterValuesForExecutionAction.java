@@ -157,7 +157,7 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 							}
 							
 							selectedParameterValues.put( key, nv );
-						} else if(v instanceof String) {
+					} else if(v instanceof String) {
 							selectedParameterValues.put( key, (String)v );
 						} else {
 							Assert.assertUnreachable("attributes of PARAMETERS JSONObject can be only JSONArray or String");

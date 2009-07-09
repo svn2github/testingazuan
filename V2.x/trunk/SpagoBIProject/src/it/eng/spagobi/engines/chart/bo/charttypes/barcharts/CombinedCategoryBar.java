@@ -32,6 +32,7 @@ import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.CombinedDomainCategoryPlot;
+import org.jfree.chart.plot.DatasetRenderingOrder;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
@@ -48,13 +49,10 @@ public class CombinedCategoryBar extends LinkableBar {
 	HashMap seriesCaptions=null;
 	boolean additionalLabels=false;
 	HashMap catSerLabels=null;
-
-
+	boolean useLinesRenderers=false; // just one to make code shorter in creation of the chart
 	//boolean secondAxis=false; this kind of chart must always have second axis
 	String secondAxisLabel=null;
 
-	boolean firstAxisLine=false;
-	boolean secondAxisLine=false;
 
 	private static transient Logger logger=Logger.getLogger(CombinedCategoryBar.class);
 
@@ -79,9 +77,11 @@ public class CombinedCategoryBar extends LinkableBar {
 
 		categoriesNumber=0;
 
-		// Two datasets, one for first axis named 1, one for second axis named 2
-		datasetMap.getDatasets().put("1", new DefaultCategoryDataset());
-		datasetMap.getDatasets().put("2", new DefaultCategoryDataset());
+		// 4 datasets, 2 for first axis named 1, 2 for second axis named 2
+		datasetMap.getDatasets().put("1-bar", new DefaultCategoryDataset());
+		datasetMap.getDatasets().put("1-line", new DefaultCategoryDataset());
+		datasetMap.getDatasets().put("2-bar", new DefaultCategoryDataset());
+		datasetMap.getDatasets().put("2-line", new DefaultCategoryDataset());
 
 
 		boolean first=true;
@@ -159,19 +159,46 @@ public class CombinedCategoryBar extends LinkableBar {
 						labelS = nameS;	
 
 
-					// Fill DATASET: Check if has to be filled dataset 1 or dataset 2
-					if(!isHiddenSerie(nameS)){ 
-						if(!seriesNames.contains(nameS))
-							seriesNames.add(nameS);
-						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){ // 2 axis
-							if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+					// Fill DATASET: Check if has to be filled dataset 1 or dataset 2, to bar or lines
+					// LINE CASE
+					if(!isHiddenSerie(nameS) && seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line")){
+						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
+						// SET THE AXIS
+						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
+							useLinesRenderers=true;
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
 						}
-						else{ 																												// 1 axis	
-							if(!seriesNames.contains(nameS))seriesNames.add(nameS);							
-							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						else{ 
+							useLinesRenderers=true;
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						}
+
+					}
+					else if(!isHiddenSerie(nameS)){// BAR CASE
+						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
+						// if to draw mapped to first axis
+						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
+							if(!seriesNames.contains(nameS))seriesNames.add(nameS);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						}
+						else{ // if to draw as a bar
+							if(!seriesNames.contains(nameS))seriesNames.add(nameS);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
 						}
 					}
+
+//					if(!isHiddenSerie(nameS)){ 
+//					if(!seriesNames.contains(nameS))
+//					seriesNames.add(nameS);
+//					if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){ // 2 axis
+//					if(!seriesNames.contains(nameS))seriesNames.add(nameS);
+//					((DefaultCategoryDataset)(datasetMap.getDatasets().get("2"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+//					}
+//					else{ 																												// 1 axis	
+//					if(!seriesNames.contains(nameS))seriesNames.add(nameS);							
+//					((DefaultCategoryDataset)(datasetMap.getDatasets().get("1"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+//					}
+//					}
 
 					// if there is an additional label are 
 					if(additionalValues.get(nameS)!=null){
@@ -223,17 +250,36 @@ public class CombinedCategoryBar extends LinkableBar {
 			additionalLabels=false;
 		}
 
-		// by default first and second axis uses bar, can have lines by specifing parameters
-		// <parameter name="first_axis_shape" value"line"/>
-		// <parameter name="second_axis_shape" value"line"/>
+		// In template: <SERIES_DRAW serie1='line' serie2='bar< />
 
-		if(confParameters.get("first_axis_shape")!=null && ((String)confParameters.get("first_axis_shape")).equalsIgnoreCase("line")){	
-			firstAxisLine=true;
+		SourceBean draws = (SourceBean)content.getAttribute("SERIES_DRAW");
+		if(draws==null){
+			draws = (SourceBean)content.getAttribute("CONF.SERIES_DRAW");
+		}
+		seriesDraw=new LinkedHashMap();
+		if(draws!=null){
+
+			List atts=draws.getContainedAttributes();
+			String serieName="";
+			String serieDraw="";
+			// Run all the series specified in template and check if they are bar or line, by default will be bar; if not specified but present will be bar
+			for (Iterator iterator = atts.iterator(); iterator.hasNext();) {
+				SourceBeanAttribute object = (SourceBeanAttribute) iterator.next();
+				serieName=new String(object.getKey());
+				serieDraw=new String((String)object.getValue());
+
+				if(serieDraw.equalsIgnoreCase("line")){
+					seriesDraw.put(serieName, "line");
+				}
+				else{
+					seriesDraw.put(serieName, "bar");					
+				}
+
+			}		
+
 		}
 
-		if(confParameters.get("second_axis_shape")!=null && ((String)confParameters.get("second_axis_shape")).equalsIgnoreCase("line")){	
-			secondAxisLine=true;
-		}
+
 
 		if(confParameters.get("second_axis_label")!=null){	
 			secondAxisLabel=(String)confParameters.get("second_axis_label");
@@ -285,16 +331,22 @@ public class CombinedCategoryBar extends LinkableBar {
 		logger.debug("IN");
 
 		// recover the datasets
-		DefaultCategoryDataset datasetBarFirstAxis=(DefaultCategoryDataset)datasets.getDatasets().get("1");
-		DefaultCategoryDataset datasetBarSecondAxis=(DefaultCategoryDataset)datasets.getDatasets().get("2");
+		DefaultCategoryDataset datasetBarFirstAxis=(DefaultCategoryDataset)datasets.getDatasets().get("1-bar");
+		DefaultCategoryDataset datasetBarSecondAxis=(DefaultCategoryDataset)datasets.getDatasets().get("2-bar");
+		DefaultCategoryDataset datasetLineFirstAxis=(DefaultCategoryDataset)datasets.getDatasets().get("1-line");
+		DefaultCategoryDataset datasetLineSecondAxis=(DefaultCategoryDataset)datasets.getDatasets().get("2-line");
 
 		// create the two subplots
 		CategoryPlot subPlot1 = new CategoryPlot();
 		CategoryPlot subPlot2 = new CategoryPlot();
 		CombinedDomainCategoryPlot plot = new CombinedDomainCategoryPlot();
 
-		subPlot1.setDataset(datasetBarFirstAxis);
-		subPlot2.setDataset(datasetBarSecondAxis);
+		subPlot1.setDataset(0,datasetBarFirstAxis);
+		subPlot2.setDataset(0,datasetBarSecondAxis);
+
+		subPlot1.setDataset(1,datasetLineFirstAxis);
+		subPlot2.setDataset(1,datasetLineSecondAxis);
+
 		
 		// Range Axis 1
 		NumberAxis rangeAxis = new NumberAxis(getValueLabel());
@@ -340,80 +392,98 @@ public class CombinedCategoryBar extends LinkableBar {
 		}
 
 //		Create Renderers!
-		CategoryItemRenderer renderer1=null;
-		CategoryItemRenderer renderer2=null;
-		
-		if(firstAxisLine==true) renderer1 = new LineAndShapeRenderer(); 
-		else renderer1 = new BarRenderer();	
+		CategoryItemRenderer barRenderer1=new BarRenderer();
+		CategoryItemRenderer barRenderer2=new BarRenderer();
+		LineAndShapeRenderer lineRenderer1=(useLinesRenderers==true) ? new LineAndShapeRenderer() : null;
+		LineAndShapeRenderer lineRenderer2=(useLinesRenderers==true) ? new LineAndShapeRenderer() : null;
 
-		if(secondAxisLine==true) renderer2 = new LineAndShapeRenderer(); 
-		else renderer2 = new BarRenderer();	
-		
-		subPlot1.setRenderer(renderer1);
-		subPlot2.setRenderer(renderer2);
+		subPlot1.setRenderer(0,barRenderer1);
+		subPlot2.setRenderer(0,barRenderer2);
 
+		if(useLinesRenderers==true){
+			subPlot1.setRenderer(1,lineRenderer1);
+			subPlot2.setRenderer(1,lineRenderer2);
+		}
+
+		subPlot1.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
+		subPlot2.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
+
+		// COnfigure renderers: I do in extensive way so will be easier to add customization in the future
 
 		// Values or addition Labels for first BAR Renderer
 		if(showValueLabels){
-			renderer1.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-			renderer1.setBaseItemLabelsVisible(true);
-			renderer1.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
-			renderer1.setBaseItemLabelPaint(styleValueLabels.getColor());
+			barRenderer1.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+			barRenderer1.setBaseItemLabelsVisible(true);
+			barRenderer1.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+			barRenderer1.setBaseItemLabelPaint(styleValueLabels.getColor());
 
-			renderer1.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+			barRenderer1.setBasePositiveItemLabelPosition(new ItemLabelPosition(
 					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
 
-			renderer1.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+			barRenderer1.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
+					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+			barRenderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+			barRenderer2.setBaseItemLabelsVisible(true);
+			barRenderer2.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+			barRenderer2.setBaseItemLabelPaint(styleValueLabels.getColor());
+
+			barRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+
+			barRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
 					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
 
 		}
 		else if(additionalLabels){
-			renderer1.setBaseItemLabelGenerator(generator);
+			barRenderer1.setBaseItemLabelGenerator(generator);
+			barRenderer2.setBaseItemLabelGenerator(generator);
+
 			double orient=(-Math.PI / 2.0);
 			if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
 				orient=0.0;
 			}
 
-			renderer1.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-					ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-					orient));
-			renderer1.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-					ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-					orient));
+			barRenderer1.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, orient));
+			barRenderer1.setBaseNegativeItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, orient));
+			barRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, orient));
+			barRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, orient));
 
 		}
 
-		// Values or addition Labels for second BAR Renderer
-		if(showValueLabels){
-			renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-			renderer2.setBaseItemLabelsVisible(true);
-			renderer2.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
-			renderer2.setBaseItemLabelPaint(styleValueLabels.getColor());
+		// Values or addition Labels for line Renderers if requested
+		if(useLinesRenderers==true){
+			if(showValueLabels){
+				lineRenderer1.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+				lineRenderer1.setBaseItemLabelsVisible(true);
+				lineRenderer1.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+				lineRenderer1.setBaseItemLabelPaint(styleValueLabels.getColor());
+				lineRenderer1.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+				lineRenderer1.setBaseNegativeItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+				lineRenderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+				lineRenderer2.setBaseItemLabelsVisible(true);
+				lineRenderer2.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+				lineRenderer2.setBaseItemLabelPaint(styleValueLabels.getColor());
+				lineRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
+				lineRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
 
-			renderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-
-			renderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-
-		}
-		else if(additionalLabels){
-			renderer2.setBaseItemLabelGenerator(generator);
-			double orient=(-Math.PI / 2.0);
-			if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
-				orient=0.0;
 			}
+			else if(additionalLabels){
+				lineRenderer1.setBaseItemLabelGenerator(generator);
+				lineRenderer2.setBaseItemLabelGenerator(generator);
+				double orient=(-Math.PI / 2.0);
+				if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
+					orient=0.0;
+				}
+				lineRenderer1.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, orient));
+				lineRenderer1.setBaseNegativeItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, orient));
+				lineRenderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, orient));
+				lineRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, orient));
 
-			renderer2.setBasePositiveItemLabelPosition(new ItemLabelPosition(
-					ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-					orient));
-			renderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
-					ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
-					orient));
-
+			}
 		}
 
-		// Second Dataset Colors!
+		// Bar Dataset Colors!
 		if(colorMap!=null){
 			int idx = -1;
 			for (Iterator iterator = datasetBarFirstAxis.getRowKeys().iterator(); iterator.hasNext();) {
@@ -432,9 +502,10 @@ public class CombinedCategoryBar extends LinkableBar {
 
 				Color color=(Color)colorMap.get(serName);
 				if(color!=null){
-					renderer1.setSeriesPaint(index, color);
+					barRenderer1.setSeriesPaint(index, color);
 				}	
 			}
+
 			for (Iterator iterator = datasetBarSecondAxis.getRowKeys().iterator(); iterator.hasNext();) {
 				idx++;
 				String serName = (String) iterator.next();
@@ -451,71 +522,113 @@ public class CombinedCategoryBar extends LinkableBar {
 
 				Color color=(Color)colorMap.get(serName);
 				if(color!=null){
-					renderer2.setSeriesPaint(index, color);
-					/* test con un renderer
-						if (idx > index){
-							index = idx+1;
-						}
-
-						barRenderer.setSeriesPaint(index, color);*/
+					barRenderer2.setSeriesPaint(index, color);
 				}	
 			}				
 		}
 
 
-		//defines url for drill
-		boolean document_composition=false;
-		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
 
-		logger.debug("Calling Url Generation");
 
-//		
-//		MyCategoryUrlGenerator mycatUrl=null;
-//		if(super.rootUrl!=null){
+		// LINE Dataset Colors!
+		if(useLinesRenderers==true){
+			if(colorMap!=null){
+				int idx = -1;
+				for (Iterator iterator = datasetLineFirstAxis.getRowKeys().iterator(); iterator.hasNext();) {
+					idx++;
+					String serName = (String) iterator.next();
+					String labelName = "";
+					int index=-1;
+
+					if (seriesCaptions != null && seriesCaptions.size()>0){
+						labelName = serName;
+						serName = (String)seriesCaptions.get(serName);
+						index=datasetLineFirstAxis.getRowIndex(labelName);
+					}
+					else
+						index=datasetLineFirstAxis.getRowIndex(serName);
+
+					Color color=(Color)colorMap.get(serName);
+					if(color!=null){
+						lineRenderer1.setSeriesPaint(index, color);
+					}	
+				}
+
+				for (Iterator iterator = datasetLineSecondAxis.getRowKeys().iterator(); iterator.hasNext();) {
+					idx++;
+					String serName = (String) iterator.next();
+					String labelName = "";
+					int index=-1;
+
+					if (seriesCaptions != null && seriesCaptions.size()>0){
+						labelName = serName;
+						serName = (String)seriesCaptions.get(serName);
+						index=datasetLineSecondAxis.getRowIndex(labelName);
+					}
+					else
+						index=datasetLineSecondAxis.getRowIndex(serName);
+
+					Color color=(Color)colorMap.get(serName);
+					if(color!=null){
+						lineRenderer2.setSeriesPaint(index, color);
+					}	
+				}				
+			}
+		}
+
+
+			//defines url for drill
+			boolean document_composition=false;
+			if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
+
+			logger.debug("Calling Url Generation");
+
+
+//			MyCategoryUrlGenerator mycatUrl=null;
+//			if(super.rootUrl!=null){
 //			logger.debug("Set MycatUrl");
 //			mycatUrl=new MyCategoryUrlGenerator(super.rootUrl);
-//
+
 //			mycatUrl.setDocument_composition(document_composition);
 //			mycatUrl.setCategoryUrlLabel(super.categoryUrlName);
 //			mycatUrl.setSerieUrlLabel(super.serieUrlname);
-//		}
-//		if(mycatUrl!=null){
+//			}
+//			if(mycatUrl!=null){
 //			renderer1.setItemURLGenerator(mycatUrl);
 //			renderer2.setItemURLGenerator(mycatUrl);
-//		}
+//			}
 
+			
+			plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.UP_45);
 
-		//plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
-		plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.UP_45);
-		
-		JFreeChart chart = new JFreeChart(plot);
-		TextTitle title = setStyleTitle(name, styleTitle);
-		chart.setTitle(title);
-		if(subName!= null && !subName.equals("")){
-			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
-			chart.addSubtitle(subTitle);
-		}
-		chart.setBackgroundPaint(Color.white);
-
-		logger.debug("OUT");
-
-		return chart;
-
-
-
-	}
-
-
-
-	private boolean isHiddenSerie(String serName){
-		boolean res = false;
-
-		for (int i=0; i < hiddenSeries.size(); i++){
-			if (((String)hiddenSeries.get(i)).equalsIgnoreCase(serName)){
-				res = true;
-				break;
+			JFreeChart chart = new JFreeChart(plot);
+			TextTitle title = setStyleTitle(name, styleTitle);
+			chart.setTitle(title);
+			if(subName!= null && !subName.equals("")){
+				TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+				chart.addSubtitle(subTitle);
 			}
+			chart.setBackgroundPaint(Color.white);
+
+			logger.debug("OUT");
+
+			return chart;
+
+
+
 		}
-		return res;
+
+
+
+		private boolean isHiddenSerie(String serName){
+			boolean res = false;
+
+			for (int i=0; i < hiddenSeries.size(); i++){
+				if (((String)hiddenSeries.get(i)).equalsIgnoreCase(serName)){
+					res = true;
+					break;
+				}
+			}
+			return res;
+		}
 	}
-}

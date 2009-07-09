@@ -220,7 +220,11 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			iconCls: 'icon-refresh' 
 			, tooltip: LN('sbi.execution.executionpage.toolbar.refresh')
 		    , scope: this
-		    , handler : this.refreshExecution			
+		    , handler : function() {
+					this.southPanel.collapse();
+					this.northPanel.collapse();
+					this.refreshExecution();
+			}			
 		}));
 		
 		this.toolbar.addButton(new Ext.Toolbar.Button({

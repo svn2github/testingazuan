@@ -169,7 +169,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			      					this.fireEvent('loadurlfailure', content.errors);
 			      				} else {
 			      					this.miframe.getFrame().setSrc( content.url );
-			      					this.add(this.miframe);
+			      					//this.add(this.miframe);
 			      				}
 			      			} 
 			      		} else {
@@ -577,9 +577,10 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			region:'center'
 	        , frameConfig : {
 				// setting an initial iframe height in IE, to fix resize problem
-				autoCreate : Ext.isIE ? {style: 'height:300'} : { },
+				autoCreate : Ext.isIE ? {style: 'height:500'} : { },
 				disableMessaging : false
 	        }
+			, defaultSrc: 'about:blank'
 	        , loadMask  : true
 	        //, fitToParent: true  // not valid in a layout
 	        , disableMessaging :false
@@ -612,6 +613,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	            }
 	        }
 	    });
+		
 		this.miframe.on('documentloaded', function() {
 			this.miframe.iframe.execScript("parent = document;", true);
 			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +

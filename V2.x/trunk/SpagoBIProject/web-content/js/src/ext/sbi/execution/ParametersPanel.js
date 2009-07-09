@@ -325,24 +325,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		
 		if(parameters.length == 0) {
 			this.fireEvent('readyforexecution', this);
-		} else 
-		/*if (this.parametersPreference) {
-			var readyForExecution = true;
-			var preferenceState = Ext.urlDecode(this.parametersPreference);
-			this.setFormState(preferenceState);
-			var o = this.getFormState();
-			for(p in o) {
-				if(o[p] !== preferenceState[p] && this.fields[p].isTransient === false) {
-					readyForExecution = false;
-					break;
-				}
-			}
-			if(readyForExecution === true) {
-				this.fireEvent('readyforexecution', this);
-			}
-		} else 
-		*/
-		{
+		} else 	{
 			var readyForExecution = true;
 			var o = this.getFormState();
 			for(p in o) {
@@ -386,6 +369,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 				PARAMETER_ID: p.id
 				, MODE: 'simple'
 			});
+			delete baseParams.PARAMETERS;
 			
 			var store = this.createStore();
 			store.baseParams  = baseParams;
@@ -426,6 +410,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 				PARAMETER_ID: p.id
 				, MODE: 'complete'
 			}, executionInstance);
+			delete params.PARAMETERS;
 			
 			var store = this.createStore();
 			store.on('beforeload', function(store, o) {

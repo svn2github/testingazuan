@@ -420,6 +420,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	   copyRequestParametersIntoEnv(env, getSpagoBIRequestContainer());
 	   env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
 	   env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
+	   env.put(EngineConstants.ENV_USER_PROFILE, getUserProfile());
 	   env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, getContentServiceProxy());
 	   env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );
 	   env.put(EngineConstants.ENV_LOCALE, getLocale()); 

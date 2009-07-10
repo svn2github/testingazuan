@@ -3,15 +3,13 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryToolTipGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.File;
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,13 +18,10 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
-import org.jfree.chart.ChartRenderingInfo;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
@@ -50,9 +45,15 @@ public class CombinedCategoryBar extends LinkableBar {
 	boolean additionalLabels=false;
 	HashMap catSerLabels=null;
 	boolean useLinesRenderers=false; // just one to make code shorter in creation of the chart
-	//boolean secondAxis=false; this kind of chart must always have second axis
 	String secondAxisLabel=null;
+	Vector lineNoShapeSeries1=null;
+	Vector lineNoShapeSeries2=null;
 
+	boolean freeToolTips=false;   //automatically set
+
+	// maps the element with the tooltip information. tip_element or freetip_element
+	HashMap<String, String> seriesTooltip=null; 
+	HashMap<String, String> categoriesTooltip=null; 
 
 	private static transient Logger logger=Logger.getLogger(CombinedCategoryBar.class);
 
@@ -83,6 +84,10 @@ public class CombinedCategoryBar extends LinkableBar {
 		datasetMap.getDatasets().put("2-bar", new DefaultCategoryDataset());
 		datasetMap.getDatasets().put("2-line", new DefaultCategoryDataset());
 
+		lineNoShapeSeries1=new Vector<String>();
+		lineNoShapeSeries2=new Vector<String>();
+		categoriesTooltip=new HashMap<String, String>();
+		seriesTooltip=new HashMap<String, String>();
 
 		boolean first=true;
 		//categories.put(new Integer(0), "All Categories");
@@ -114,7 +119,7 @@ public class CombinedCategoryBar extends LinkableBar {
 			for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 				numColumn ++;
 				SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
-
+				// In order to have tootltip for category they must be defined after x
 				nameP=new String(object.getKey());
 				value=new String((String)object.getValue());
 				if(nameP.equalsIgnoreCase("x"))       								// category name
@@ -129,7 +134,24 @@ public class CombinedCategoryBar extends LinkableBar {
 							String ind=nameP.substring(4);							
 							additionalValues.put(ind, value);
 						}
+					} // must be after x definition
+					else if(nameP.startsWith("TIP_x")){       // additional information
+						if(enableToolTips){
+							categoriesTooltip.put(nameP+"_"+catValue, value);
+						}
 					}
+					
+					else if(nameP.startsWith("TIP_")){       // additional information
+						if(enableToolTips){
+							seriesTooltip.put(nameP, value);
+						}
+					}
+					else if(nameP.startsWith("FREETIP_x")){       // additional information
+						if(enableToolTips){
+							freeToolTips=true; //help the search later in MyCategoryToolTipGenerator
+							categoriesTooltip.put(nameP+"_"+catValue, value);
+						}
+					}					
 					else{
 						if(seriesLabelsMap!=null){									// a serie
 							String serieLabel = (String)seriesLabelsMap.get(nameP);
@@ -139,7 +161,6 @@ public class CombinedCategoryBar extends LinkableBar {
 						else
 							series.put(nameP, value);
 					}
-
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
 				}
 			}
@@ -161,15 +182,25 @@ public class CombinedCategoryBar extends LinkableBar {
 
 					// Fill DATASET: Check if has to be filled dataset 1 or dataset 2, to bar or lines
 					// LINE CASE
-					if(!isHiddenSerie(nameS) && seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line")){
+					if(!isHiddenSerie(nameS) && seriesDraw.get(nameS)!=null && 
+							(
+									((String)seriesDraw.get(nameS)).equalsIgnoreCase("line") || ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line_no_shapes") 
+							)
+					){
 						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
 						// SET THE AXIS
 						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
 							useLinesRenderers=true;
+							if(((String)seriesDraw.get(nameS)).equalsIgnoreCase("line_no_shapes") && !lineNoShapeSeries2.contains(nameS)){
+								lineNoShapeSeries2.add(nameS);
+							}
 							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
 						}
 						else{ 
 							useLinesRenderers=true;
+							if(((String)seriesDraw.get(nameS)).equalsIgnoreCase("line_no_shapes") && !lineNoShapeSeries1.contains(nameS)){
+								lineNoShapeSeries1.add(nameS);
+							}
 							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
 						}
 
@@ -250,6 +281,20 @@ public class CombinedCategoryBar extends LinkableBar {
 			additionalLabels=false;
 		}
 
+		if(confParameters.get("add_labels")!=null){
+			String additional=(String)confParameters.get("add_labels");
+			if(additional.equalsIgnoreCase("true")){
+				additionalLabels=true;
+				catSerLabels=new LinkedHashMap();
+			}
+			else additionalLabels=false;
+		}
+		else
+		{
+			additionalLabels=false;
+		}
+
+
 		// In template: <SERIES_DRAW serie1='line' serie2='bar< />
 
 		SourceBean draws = (SourceBean)content.getAttribute("SERIES_DRAW");
@@ -270,6 +315,9 @@ public class CombinedCategoryBar extends LinkableBar {
 
 				if(serieDraw.equalsIgnoreCase("line")){
 					seriesDraw.put(serieName, "line");
+				}
+				else if(serieDraw.equalsIgnoreCase("line_no_shapes")){
+					seriesDraw.put(serieName, "line_no_shapes");
 				}
 				else{
 					seriesDraw.put(serieName, "bar");					
@@ -347,7 +395,7 @@ public class CombinedCategoryBar extends LinkableBar {
 		subPlot1.setDataset(1,datasetLineFirstAxis);
 		subPlot2.setDataset(1,datasetLineSecondAxis);
 
-		
+
 		// Range Axis 1
 		NumberAxis rangeAxis = new NumberAxis(getValueLabel());
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
@@ -403,6 +451,30 @@ public class CombinedCategoryBar extends LinkableBar {
 		if(useLinesRenderers==true){
 			subPlot1.setRenderer(1,lineRenderer1);
 			subPlot2.setRenderer(1,lineRenderer2);
+
+			// no shapes for line_no_shapes  series
+			for (Iterator iterator = lineNoShapeSeries1.iterator(); iterator.hasNext();) {
+				String ser = (String) iterator.next();
+				int index=datasetLineFirstAxis.getRowIndex(ser);
+				if(index!=-1){
+					lineRenderer1.setSeriesShapesVisible(index, false);
+				}
+			}
+			for (Iterator iterator = lineNoShapeSeries2.iterator(); iterator.hasNext();) {
+				String ser = (String) iterator.next();
+				int index=datasetLineSecondAxis.getRowIndex(ser);
+				if(index!=-1){
+					lineRenderer2.setSeriesShapesVisible(index, false);
+				}
+			}
+
+		}
+
+		// add tooltip if enabled
+		if(enableToolTips){
+			MyCategoryToolTipGenerator generatorToolTip=new MyCategoryToolTipGenerator(freeToolTips, seriesTooltip, categoriesTooltip);
+			barRenderer1.setToolTipGenerator(generatorToolTip);
+			barRenderer2.setToolTipGenerator(generatorToolTip);
 		}
 
 		subPlot1.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
@@ -577,58 +649,58 @@ public class CombinedCategoryBar extends LinkableBar {
 		}
 
 
-			//defines url for drill
-			boolean document_composition=false;
-			if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
+		//defines url for drill
+		boolean document_composition=false;
+		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
 
-			logger.debug("Calling Url Generation");
-
-
-//			MyCategoryUrlGenerator mycatUrl=null;
-//			if(super.rootUrl!=null){
-//			logger.debug("Set MycatUrl");
-//			mycatUrl=new MyCategoryUrlGenerator(super.rootUrl);
-
-//			mycatUrl.setDocument_composition(document_composition);
-//			mycatUrl.setCategoryUrlLabel(super.categoryUrlName);
-//			mycatUrl.setSerieUrlLabel(super.serieUrlname);
-//			}
-//			if(mycatUrl!=null){
-//			renderer1.setItemURLGenerator(mycatUrl);
-//			renderer2.setItemURLGenerator(mycatUrl);
-//			}
-
-			
-			plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.UP_45);
-
-			JFreeChart chart = new JFreeChart(plot);
-			TextTitle title = setStyleTitle(name, styleTitle);
-			chart.setTitle(title);
-			if(subName!= null && !subName.equals("")){
-				TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
-				chart.addSubtitle(subTitle);
-			}
-			chart.setBackgroundPaint(Color.white);
-
-			logger.debug("OUT");
-
-			return chart;
+		logger.debug("Calling Url Generation");
 
 
+//		MyCategoryUrlGenerator mycatUrl=null;
+//		if(super.rootUrl!=null){
+//		logger.debug("Set MycatUrl");
+//		mycatUrl=new MyCategoryUrlGenerator(super.rootUrl);
 
+//		mycatUrl.setDocument_composition(document_composition);
+//		mycatUrl.setCategoryUrlLabel(super.categoryUrlName);
+//		mycatUrl.setSerieUrlLabel(super.serieUrlname);
+//		}
+//		if(mycatUrl!=null){
+//		renderer1.setItemURLGenerator(mycatUrl);
+//		renderer2.setItemURLGenerator(mycatUrl);
+//		}
+
+
+		plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+
+		JFreeChart chart = new JFreeChart(plot);
+		TextTitle title = setStyleTitle(name, styleTitle);
+		chart.setTitle(title);
+		if(subName!= null && !subName.equals("")){
+			TextTitle subTitle =setStyleTitle(subName, styleSubTitle);
+			chart.addSubtitle(subTitle);
 		}
+		chart.setBackgroundPaint(Color.white);
+
+		logger.debug("OUT");
+
+		return chart;
 
 
 
-		private boolean isHiddenSerie(String serName){
-			boolean res = false;
-
-			for (int i=0; i < hiddenSeries.size(); i++){
-				if (((String)hiddenSeries.get(i)).equalsIgnoreCase(serName)){
-					res = true;
-					break;
-				}
-			}
-			return res;
-		}
 	}
+
+
+
+	private boolean isHiddenSerie(String serName){
+		boolean res = false;
+
+		for (int i=0; i < hiddenSeries.size(); i++){
+			if (((String)hiddenSeries.get(i)).equalsIgnoreCase(serName)){
+				res = true;
+				break;
+			}
+		}
+		return res;
+	}
+}

@@ -60,6 +60,10 @@ public class BarCharts extends ChartImpl {
 	Integer numberCatVisualization=null;
 	Integer numberSerVisualization=null;
 	boolean dynamicNumberCatVisualization=false;
+
+	// <PARAMETER name="enable_tooltips" value="true" />
+	boolean enableToolTips=false;	
+	
 	HashMap colorMap=null;  // keeps user selected colors// serie position - color
 	HashMap seriesNumber=null; //track serie name with number position (to preserve color)
 	HashMap seriesCaptions=null;
@@ -415,7 +419,10 @@ public class BarCharts extends ChartImpl {
 			showValueLabels=false;
 			}
 		
-		
+		if(confParameters.get("enable_tooltips")!=null){		
+			String enableTooltipsS=(String)confParameters.get("enable_tooltips");
+			if(enableTooltipsS.equalsIgnoreCase("true"))enableToolTips=true;
+		}
 		
 		//reading series colors if present
 		SourceBean colors = (SourceBean)content.getAttribute("SERIES_COLORS");

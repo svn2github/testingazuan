@@ -4,6 +4,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryToolTipGenerator;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
@@ -140,7 +141,7 @@ public class CombinedCategoryBar extends LinkableBar {
 							categoriesTooltip.put(nameP+"_"+catValue, value);
 						}
 					}
-					
+
 					else if(nameP.startsWith("TIP_")){       // additional information
 						if(enableToolTips){
 							seriesTooltip.put(nameP, value);
@@ -656,19 +657,24 @@ public class CombinedCategoryBar extends LinkableBar {
 		logger.debug("Calling Url Generation");
 
 
-//		MyCategoryUrlGenerator mycatUrl=null;
-//		if(super.rootUrl!=null){
-//		logger.debug("Set MycatUrl");
-//		mycatUrl=new MyCategoryUrlGenerator(super.rootUrl);
+		MyCategoryUrlGenerator mycatUrl=null;
+		if(super.rootUrl!=null){
+			logger.debug("Set MycatUrl");
+			mycatUrl=new MyCategoryUrlGenerator(super.rootUrl);
 
-//		mycatUrl.setDocument_composition(document_composition);
-//		mycatUrl.setCategoryUrlLabel(super.categoryUrlName);
-//		mycatUrl.setSerieUrlLabel(super.serieUrlname);
-//		}
-//		if(mycatUrl!=null){
-//		renderer1.setItemURLGenerator(mycatUrl);
-//		renderer2.setItemURLGenerator(mycatUrl);
-//		}
+			mycatUrl.setDocument_composition(document_composition);
+			mycatUrl.setCategoryUrlLabel(super.categoryUrlName);
+			mycatUrl.setSerieUrlLabel(super.serieUrlname);
+		}
+		if(mycatUrl!=null){
+			barRenderer1.setItemURLGenerator(mycatUrl);
+			barRenderer2.setItemURLGenerator(mycatUrl);
+		if(useLinesRenderers){
+			lineRenderer1.setItemURLGenerator(mycatUrl);
+			lineRenderer2.setItemURLGenerator(mycatUrl);			
+		}
+			
+		}
 
 
 		plot.getDomainAxis().setCategoryLabelPositions(CategoryLabelPositions.UP_45);

@@ -48,6 +48,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 		JSONArray recordsJOSN;
 		JSONArray filtersJSON;
 		JSONObject filterExpJOSN;
+		boolean distinctClauseEnabled = false;
 		
 		Assert.assertNotNull(query, "Query cannot be null");
 		Assert.assertNotNull(datamartModel, "DataMartModel cannot be null");
@@ -56,11 +57,13 @@ public class QueryJSONSerializer implements QuerySerializer {
 			
 			
 			recordsJOSN = serializeFields(query, datamartModel);			
-			filtersJSON = serializeFilters(query, datamartModel);					
+			filtersJSON = serializeFilters(query, datamartModel);
+			distinctClauseEnabled = query.isDistinctClauseEnabled();
 			filterExpJOSN = encodeFilterExp( query.getWhereClauseStructure() );
 			
 			result = new JSONObject();
 			result.put(SerializationConstants.FIELDS, recordsJOSN);
+			result.put(SerializationConstants.DISTINCT, distinctClauseEnabled);
 			result.put(SerializationConstants.FILTERS, filtersJSON);
 			result.put(SerializationConstants.EXPRESSION, filterExpJOSN);
 		} catch (Throwable t) {

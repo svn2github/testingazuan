@@ -99,6 +99,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	, cm: null
 	, plgins: null
 	, toolbar: null
+	, distinctCheckBox: null
 	, grid: null
 	, dropTarget: null
 	
@@ -133,6 +134,11 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
   			var field = query.fields[i];
   			var record = new this.Record(field);
   			this.store.add(record); 
+  		}
+  		if (query.distinct === true) {
+  			this.distinctCheckBox.setValue(true);
+  		} else {
+  			this.distinctCheckBox.setValue(false);
   		}
   	}
   	
@@ -369,12 +375,19 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	}
 	
 	, initToolbar: function(config) {
+		this.distinctCheckBox = new Ext.form.Checkbox({
+			checked: false,
+			boxLabel: LN('sbi.qbe.selectgridpanel.buttons.text.distinct')
+		});
+		
 		this.toolbar = new Ext.Toolbar({
-			items: [{
+			items: [
+			  this.distinctCheckBox,'-',
+			  {
 	            text: LN('sbi.qbe.selectgridpanel.buttons.text.add'),
 	            tooltip: LN('sbi.qbe.selectgridpanel.buttons.tt.add'),
 	            iconCls:'option'
-	        },'-',{
+	          },'-',{
 	            text: LN('sbi.qbe.selectgridpanel.buttons.text.hide'),
 	            tooltip: LN('sbi.qbe.selectgridpanel.buttons.tt.hide'),
 	            enableToggle: true,
@@ -385,7 +398,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
  						scope: this
  					}
 	            }
-	        },'-',{
+	          },'-',{
 	            text: LN('sbi.qbe.selectgridpanel.buttons.text.deleteall'),
 	            tooltip: LN('sbi.qbe.selectgridpanel.buttons.tt.deleteall'),
 	            iconCls:'remove',

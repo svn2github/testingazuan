@@ -45,6 +45,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		Query query;
 		JSONObject queryJSON = null;
 		JSONArray fieldsJSON = null;
+		boolean distinctClauseEnabled = false;
 		JSONArray filtersJSON = null;
 		JSONObject expressionJSON = null;
 		
@@ -68,6 +69,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			
 			try {
 				fieldsJSON = queryJSON.getJSONArray( SerializationConstants.FIELDS );
+				distinctClauseEnabled = queryJSON.getBoolean( SerializationConstants.DISTINCT );
 				filtersJSON = queryJSON.getJSONArray( SerializationConstants.FILTERS );
 				expressionJSON = queryJSON.getJSONObject( SerializationConstants.EXPRESSION );
 			} catch (JSONException e) {
@@ -77,6 +79,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			deserializeFields(fieldsJSON, datamartModel, query);
 			deserializeFilters(filtersJSON, datamartModel, query);
 			deserializeExpression(expressionJSON, datamartModel, query);
+			query.setDistinctClauseEnabled(distinctClauseEnabled);
 		} finally {
 			logger.debug("OUT");
 		}

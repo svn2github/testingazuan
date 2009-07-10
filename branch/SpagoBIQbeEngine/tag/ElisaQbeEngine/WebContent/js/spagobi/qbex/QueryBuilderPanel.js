@@ -237,9 +237,9 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     , getQuery: function() {
 		var query = {};
 		query.fileds =  this.selectGridPanel.getRowsAsJSONParams();
+		query.distinct = this.selectGridPanel.distinctCheckBox.getValue();
 		query.filters = this.filterGridPanel.getRowsAsJSONParams();
 		query.filterExpression = this.filterGridPanel.getFiltersExpressionAsJSON();
-		
 		return query;
 	}
    
@@ -250,9 +250,9 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     }
 
 	, saveQuery: function(meta) {
-		var qName = queryName.getValue();
-		var qDescription = queryDescription.getValue();
-		var qScope = queryScope.getValue();
+		var qName = meta.name;
+		var qDescription = meta.description;
+		var qScope = meta.scope;
 		
 		//var qFields = this.selectGridPanel.getFields();
 		//var qFilters = this.selectGridPanel.getFilters();
@@ -261,6 +261,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		var queryStr = '{';
     	queryStr += 'fields : ' + this.selectGridPanel.getRowsAsJSONParams() + ',';
     	queryStr += 'filters : ' + this.filterGridPanel.getRowsAsJSONParams() + ',';
+    	queryStr += 'distinct : ' + this.selectGridPanel.distinctCheckBox.getValue() + ',';
     	queryStr += 'expression: ' +  this.filterGridPanel.getFiltersExpressionAsJSON();
     	queryStr += '}';
 		//var qRecords =  this.selectGridPanel.getRowsAsJSONParams();
@@ -341,6 +342,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     	
     	var queryStr = '{';
     	queryStr += 'fields : ' + this.selectGridPanel.getRowsAsJSONParams() + ',';
+    	queryStr += 'distinct : ' + this.selectGridPanel.distinctCheckBox.getValue() + ',';
     	queryStr += 'filters : ' + this.filterGridPanel.getRowsAsJSONParams() + ',';
     	queryStr += 'expression: ' +  this.filterGridPanel.getFiltersExpressionAsJSON();
     	queryStr += '}';

@@ -82,3 +82,4 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.tt.delete'] = 'Delete selected f
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.deleteall'] = 'Delete All';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.tt.deleteall'] = 'Delete all selected fields';
 
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.distinct'] = 'Apply distinct clause';

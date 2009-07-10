@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.service;
 
+import org.json.JSONObject;
+
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.QuerySerializerFactory;
@@ -59,11 +61,12 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 	}
 
 	public byte[] store() throws SpagoBIEngineException {
-		String rowData = null;
-				
+		JSONObject result = null;
+		String rowData = null;		
 		try {
-			rowData = (String)QuerySerializerFactory.getSerializer("application/json").serialize(getQuery(), getDatamartModel());
+			result = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(getQuery(), getDatamartModel());
 			//rowData = QueryEncoder.encode( getQuery(), getDatamartModel() );
+			rowData = result.toString();
 		} catch (SerializationException e) {
 			throw new SpagoBIEngineException("Impossible to store analysis state from query object", e);
 		}

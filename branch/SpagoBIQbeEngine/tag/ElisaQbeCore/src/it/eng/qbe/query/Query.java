@@ -34,6 +34,8 @@ import java.util.Map;
 public class Query {
 	String id;
 	
+	boolean distinctClauseEnabled;
+	
 	List selectFields;	
 	List whereClause;
 	
@@ -89,7 +91,13 @@ public class Query {
 		return whereClause;
 	}
 
+	public boolean isDistinctClauseEnabled() {
+		return distinctClauseEnabled;
+	}
 	
+	public void setDistinctClauseEnabled(boolean distinctClauseEnabled) {
+		this.distinctClauseEnabled = distinctClauseEnabled;
+	}
 	
 	public List getOrderByFields() {
 		List orderByFields = new ArrayList();

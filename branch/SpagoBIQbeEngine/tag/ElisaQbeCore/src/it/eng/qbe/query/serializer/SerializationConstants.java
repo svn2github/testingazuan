@@ -35,6 +35,8 @@ public class SerializationConstants {
 	public static final String FIELD_AGGREGATION_FUNCTION = "funct";
 	public static final String FIELD_VISIBLE = "visible";
 	
+	public static final String DISTINCT = "distinct";
+	
 	public static final String FILTERS = "filters";
 	public static final String FILTER_ID = "id";
 	public static final String FILTER_NAME = "fname";

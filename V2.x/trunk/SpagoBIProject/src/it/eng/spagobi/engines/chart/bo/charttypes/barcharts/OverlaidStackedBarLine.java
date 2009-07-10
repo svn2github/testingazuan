@@ -3,6 +3,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryToolTipGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
@@ -45,12 +46,20 @@ public class OverlaidStackedBarLine extends LinkableBar {
 
 	boolean secondAxis=false;
 	String secondAxisLabel=null;
+	boolean freeToolTips=false;   //automatically set
+
+	// maps the element with the tooltip information. tip_element or freetip_element
+	HashMap<String, String> seriesTooltip=null; 
+	HashMap<String, String> categoriesTooltip=null; 
+
 	private static transient Logger logger=Logger.getLogger(OverlaidStackedBarLine.class);
 
 	public DatasetMap calculateValue() throws Exception {
 
 		seriesNames=new Vector();
 		seriesCaptions=new LinkedHashMap();
+		categoriesTooltip=new HashMap<String, String>();
+		seriesTooltip=new HashMap<String, String>();
 		// I must identify different series
 
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
@@ -118,6 +127,24 @@ public class OverlaidStackedBarLine extends LinkableBar {
 							additionalValues.put(ind, value);
 						}
 					}
+					// must be after x definition
+					else if(nameP.toUpperCase().startsWith("TIP_X")){       // additional information
+						if(enableToolTips){
+							categoriesTooltip.put(nameP+"_"+catValue, value);
+						}
+					}
+
+					else if(nameP.toUpperCase().startsWith("TIP_")){       // additional information
+						if(enableToolTips){
+							seriesTooltip.put(nameP, value);
+						}
+					}
+					else if(nameP.toUpperCase().startsWith("FREETIP_X")){       // additional information
+						if(enableToolTips){
+							freeToolTips=true; //help the search later in MyCategoryToolTipGenerator
+							categoriesTooltip.put(nameP+"_"+catValue, value);
+						}
+					}					
 					else{						
 						if(seriesLabelsMap!=null){
 							if((this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()) &&
@@ -329,7 +356,12 @@ public class OverlaidStackedBarLine extends LinkableBar {
 					}	
 				}
 			}
-
+			// add tooltip if enabled
+			if(enableToolTips){
+				MyCategoryToolTipGenerator generatorToolTip=new MyCategoryToolTipGenerator(freeToolTips, seriesTooltip, categoriesTooltip, seriesCaptions);
+				barRenderer.setToolTipGenerator(generatorToolTip);
+			}
+			
 			//defines url for drill
 			boolean document_composition=false;
 			if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
@@ -367,7 +399,10 @@ public class OverlaidStackedBarLine extends LinkableBar {
 
 			DefaultCategoryDataset datasetLine=(DefaultCategoryDataset)datasets.getDatasets().get("line");
 
-
+			if(enableToolTips){
+				MyCategoryToolTipGenerator generatorToolTip=new MyCategoryToolTipGenerator(freeToolTips, seriesTooltip, categoriesTooltip, seriesCaptions);
+				lineRenderer.setToolTipGenerator(generatorToolTip);				
+			}
 
 			if(colorMap!=null){
 				for (Iterator iterator = datasetLine.getRowKeys().iterator(); iterator.hasNext();) {

@@ -3,6 +3,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryToolTipGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
@@ -25,6 +26,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
@@ -48,6 +50,12 @@ public class OverlaidBarLine extends LinkableBar {
 	boolean useLines=false;
 	boolean secondAxis=false;
 	String secondAxisLabel=null;
+	boolean freeToolTips=false;   //automatically set
+
+	// maps the element with the tooltip information. tip_element or freetip_element
+	HashMap<String, String> seriesTooltip=null; 
+	HashMap<String, String> categoriesTooltip=null; 
+
 	private static transient Logger logger=Logger.getLogger(OverlaidBarLine.class);
 
 
@@ -56,6 +64,8 @@ public class OverlaidBarLine extends LinkableBar {
 
 		seriesNames=new Vector();
 		seriesCaptions=new LinkedHashMap();
+		categoriesTooltip=new HashMap<String, String>();
+		seriesTooltip=new HashMap<String, String>();
 
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 		categories=new HashMap();
@@ -129,6 +139,24 @@ public class OverlaidBarLine extends LinkableBar {
 							additionalValues.put(ind, value);
 						}
 					}
+					// must be after x definition
+					else if(nameP.toUpperCase().startsWith("TIP_X")){       // additional information
+						if(enableToolTips){
+							categoriesTooltip.put(nameP+"_"+catValue, value);
+						}
+					}
+
+					else if(nameP.toUpperCase().startsWith("TIP_")){       // additional information
+						if(enableToolTips){
+							seriesTooltip.put(nameP, value);
+						}
+					}
+					else if(nameP.toUpperCase().startsWith("FREETIP_X")){       // additional information
+						if(enableToolTips){
+							freeToolTips=true; //help the search later in MyCategoryToolTipGenerator
+							categoriesTooltip.put(nameP+"_"+catValue, value);
+						}
+					}					
 					else{
 						if(seriesLabelsMap!=null){
 							String serieLabel = (String)seriesLabelsMap.get(nameP);
@@ -377,9 +405,9 @@ public class OverlaidBarLine extends LinkableBar {
 
 				barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
 						ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-
 			}
 			else if(additionalLabels){
+				barRenderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
 				barRenderer.setBaseItemLabelGenerator(generator);
 				double orient=(-Math.PI / 2.0);
 				if(styleValueLabels.getOrientation().equalsIgnoreCase("horizontal")){
@@ -392,8 +420,11 @@ public class OverlaidBarLine extends LinkableBar {
 				barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
 						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
 						orient));
-
+				barRenderer.setBaseItemLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
+				barRenderer.setBaseItemLabelPaint(defaultLabelsStyle.getColor());
+				barRenderer.setBaseItemLabelsVisible(true);
 			}
+			
 			
 			if(showValueLabels){
 				barRenderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
@@ -421,6 +452,11 @@ public class OverlaidBarLine extends LinkableBar {
 				barRenderer2.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
 						ItemLabelAnchor.CENTER, TextAnchor.CENTER, TextAnchor.CENTER, 
 						orient));
+				
+				
+				barRenderer2.setBaseItemLabelFont(new Font(defaultLabelsStyle.getFontName(), Font.PLAIN, defaultLabelsStyle.getSize()));
+				barRenderer2.setBaseItemLabelPaint(defaultLabelsStyle.getColor());
+				barRenderer2.setBaseItemLabelsVisible(true);
 
 			}
 
@@ -472,8 +508,12 @@ public class OverlaidBarLine extends LinkableBar {
 					}	
 				}				
 			}
-
-
+			// add tooltip if enabled
+			if(enableToolTips){
+				MyCategoryToolTipGenerator generatorToolTip=new MyCategoryToolTipGenerator(freeToolTips, seriesTooltip, categoriesTooltip, seriesCaptions);
+				barRenderer.setToolTipGenerator(generatorToolTip);
+				barRenderer2.setToolTipGenerator(generatorToolTip);
+			}
 			//defines url for drill
 			boolean document_composition=false;
 			if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
@@ -489,7 +529,7 @@ public class OverlaidBarLine extends LinkableBar {
 				mycatUrl.setCategoryUrlLabel(super.categoryUrlName);
 				mycatUrl.setSerieUrlLabel(super.serieUrlname);
 			}
-			if(mycatUrl!=null){
+			if(mycatUrl!=null && (!mycatUrl.getCategoryUrlLabel().equals("") || !mycatUrl.getSerieUrlLabel().equals(""))){
 				barRenderer.setItemURLGenerator(mycatUrl);
 				barRenderer2.setItemURLGenerator(mycatUrl);
 			}
@@ -511,7 +551,11 @@ public class OverlaidBarLine extends LinkableBar {
 			lineRenderer.setShapesFilled(true);
 			lineRenderer2.setShapesFilled(true);
 
-
+			if(enableToolTips){
+				MyCategoryToolTipGenerator generatorToolTip=new MyCategoryToolTipGenerator(freeToolTips, seriesTooltip, categoriesTooltip, seriesCaptions);
+				lineRenderer.setToolTipGenerator(generatorToolTip);
+				lineRenderer2.setToolTipGenerator(generatorToolTip);				
+			}
 
 			if(showValueLabels){
 				lineRenderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
@@ -631,6 +675,7 @@ public class OverlaidBarLine extends LinkableBar {
 			chart.addSubtitle(subTitle);
 		}
 		chart.setBackgroundPaint(Color.white);
+		
 
 		logger.debug("OUT");
 

@@ -604,7 +604,7 @@ public class BarCharts extends ChartImpl {
 					size = defaultLabelsStyle.getSize();
 				}
 				
-				styleValueLabels=new StyleLabel(fontS,size,color);
+				styleValueLabels=new StyleLabel(fontS,size,color,orientationS);
 
 			}
 			catch (Exception e) {

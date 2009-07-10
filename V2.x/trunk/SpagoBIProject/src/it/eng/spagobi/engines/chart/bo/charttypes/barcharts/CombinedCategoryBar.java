@@ -42,6 +42,7 @@ public class CombinedCategoryBar extends LinkableBar {
 
 	HashMap seriesDraw=null;
 	HashMap seriesScale=null;
+	// Maps the serie Label with the reale Serie name
 	HashMap seriesCaptions=null;
 	boolean additionalLabels=false;
 	HashMap catSerLabels=null;
@@ -130,34 +131,35 @@ public class CombinedCategoryBar extends LinkableBar {
 					categories.put(new Integer(categoriesNumber),value);
 				}
 				else {
-					if(nameP.startsWith("add_") || nameP.startsWith("ADD_")){       // additional information
+					if(nameP.toUpperCase().startsWith("ADD_")){       // additional information
 						if(additionalLabels){
 							String ind=nameP.substring(4);							
 							additionalValues.put(ind, value);
 						}
 					} // must be after x definition
-					else if(nameP.startsWith("TIP_x")){       // additional information
+					else if((nameP.toUpperCase()).startsWith("TIP_X")){       // additional information
 						if(enableToolTips){
-							categoriesTooltip.put(nameP+"_"+catValue, value);
+							categoriesTooltip.put(nameP.toUpperCase()+"_"+catValue, value);
 						}
 					}
 
-					else if(nameP.startsWith("TIP_")){       // additional information
+					else if(nameP.toUpperCase().startsWith("TIP_")){       // additional information
 						if(enableToolTips){
-							seriesTooltip.put(nameP, value);
+							seriesTooltip.put(nameP.toUpperCase(), value);
 						}
 					}
-					else if(nameP.startsWith("FREETIP_x")){       // additional information
+					else if(nameP.toUpperCase().startsWith("FREETIP_X")){       // additional information
 						if(enableToolTips){
 							freeToolTips=true; //help the search later in MyCategoryToolTipGenerator
-							categoriesTooltip.put(nameP+"_"+catValue, value);
+							categoriesTooltip.put(nameP.toUpperCase()+"_"+catValue, value);
 						}
 					}					
 					else{
 						if(seriesLabelsMap!=null){									// a serie
 							String serieLabel = (String)seriesLabelsMap.get(nameP);
 							series.put(serieLabel, value);
-							seriesCaptions.put(serieLabel, nameP);
+							seriesCaptions.put(serieLabel, nameP);							
+							
 						}
 						else
 							series.put(nameP, value);
@@ -176,6 +178,7 @@ public class CombinedCategoryBar extends LinkableBar {
 					if(seriesLabelsMap != null && (seriesCaptions != null && seriesCaptions.size()>0)){
 						nameS = (String)(seriesCaptions.get(nameS));
 						labelS = (String)seriesLabelsMap.get(nameS);
+						if(labelS==null)labelS=nameS;
 					}
 					else
 						labelS = nameS;	
@@ -473,9 +476,13 @@ public class CombinedCategoryBar extends LinkableBar {
 
 		// add tooltip if enabled
 		if(enableToolTips){
-			MyCategoryToolTipGenerator generatorToolTip=new MyCategoryToolTipGenerator(freeToolTips, seriesTooltip, categoriesTooltip);
+			MyCategoryToolTipGenerator generatorToolTip=new MyCategoryToolTipGenerator(freeToolTips, seriesTooltip, categoriesTooltip, seriesCaptions);
 			barRenderer1.setToolTipGenerator(generatorToolTip);
 			barRenderer2.setToolTipGenerator(generatorToolTip);
+			if(useLinesRenderers){
+				lineRenderer1.setToolTipGenerator(generatorToolTip);
+				lineRenderer2.setToolTipGenerator(generatorToolTip);				
+			}
 		}
 
 		subPlot1.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);

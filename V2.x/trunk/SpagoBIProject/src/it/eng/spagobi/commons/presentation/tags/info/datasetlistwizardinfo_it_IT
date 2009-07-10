@@ -1,7 +1,7 @@
 <div style='width:600px;font-size:10px;font-family:verdana;' >
 Nello script o nella query del dataset possono essere inseriti parametri o attributi, a valore singolo o multivalore: <br/>
 La sintassi per il parametro, che deve essere prima inserito nella form, è <b>$P{nome_parametro}</b>.
-La sintassi per l'attributo di profilo è invece <b>$P{nome_attributo}</b> 
+La sintassi per l'attributo di profilo è invece <b>${nome_attributo}</b> 
 <br/><br/>
 Per quanto riguarda gli attributi di profilo multi-valore il comportamento è differente nel caso si stia definendo una query SQL o uno script:<br/>
 Nel caso della query un attributo valorizzato nel file authorization.xml come {,{1,2,3}} viene risolto come 1,2,3. <br/>

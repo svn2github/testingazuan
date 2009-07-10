@@ -1,7 +1,7 @@
 <div style='width:600px;font-size:10px;font-family:verdana;' >
 In dataset query or script user can insert parameters or profile attributes, both single and multivalue.<br/>
 Syntax to insert a parameter, that must be first defined in the table form below the detail page, is <b>$P{parameter_name}</b>.
-Syntax to insert profile attribute is instead <b>$P{attribute_name}</b> 
+Syntax to insert profile attribute is instead <b>${attribute_name}</b> 
 <br/><br/>
 For what concern multi-value attributes the behaviour is different if the user is defining a query or a script.<br/>
 In the case of query the attribute wich value is, for example, written in  authorization.xml file as {,{1,2,3}}, will be solved as 1,2,3. <br/>

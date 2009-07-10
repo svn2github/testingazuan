@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
@@ -50,18 +51,6 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
  */
 public class HQLStatement extends BasicStatement {
 	
-	private String countQueryString;
-	
-	private String getCountQueryString() {
-		return countQueryString;
-	}
-
-
-	private void setCountQueryString(String countQueryString) {
-		this.countQueryString = countQueryString;
-	}
-
-
 	public static interface IConditionalOperator {	
 		String apply(String leftHandValue, String rightHandValue);
 	}
@@ -229,6 +218,10 @@ public class HQLStatement extends BasicStatement {
 		}
 		
 		buffer.append("SELECT");
+		
+		if (query.isDistinctClauseEnabled()) {
+			buffer.append(" DISTINCT");
+		}
 		
 		Iterator it = selectFields.iterator();
 		while( it.hasNext() ) {
@@ -616,18 +609,6 @@ public class HQLStatement extends BasicStatement {
 			
 		}				
 		this.queryString = queryStr;
-		
-		// prepare count query string
-		queryStr = "select count(*)" + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause;		
-		if(parameters != null) {
-			try {
-				queryStr = StringUtils.replaceParameters(queryStr.trim(), "P", parameters);
-			} catch (IOException e) {
-				throw new SpagoBIRuntimeException("Impossible to set parameters in query", e);
-			}
-			
-		}				
-		this.countQueryString = queryStr;
 	}
 		
 	public String getQueryString() {		
@@ -668,21 +649,19 @@ public class HQLStatement extends BasicStatement {
 	public SourceBean execute(int offset, int fetchSize, int maxResults) throws Exception {
 		Session session = null;
 		org.hibernate.Query hibernateQuery;
-		org.hibernate.Query hibernateCountQuery;
 		int resultNumber;
 		boolean overflow;
 		
 		try{		
 			session = dataMartModel.getDataSource().getSessionFactory().openSession();
 			
-			// check for overflow
-			hibernateCountQuery = session.createQuery( getCountQueryString() );
-			resultNumber = ( (Integer) hibernateCountQuery.iterate().next() ).intValue();
-			overflow = (resultNumber >= maxResults);
-			
-			
 			// execute query
-			hibernateQuery = session.createQuery( getQueryString() );			
+			hibernateQuery = session.createQuery( getQueryString() );	
+			ScrollableResults scrollableResults = hibernateQuery.scroll();
+			scrollableResults.last();
+			resultNumber = scrollableResults.getRowNumber();
+			overflow = (resultNumber >= maxResults);
+				
 			
 			offset = offset < 0 ? 0 : offset;
 			if(maxResults > 0) {

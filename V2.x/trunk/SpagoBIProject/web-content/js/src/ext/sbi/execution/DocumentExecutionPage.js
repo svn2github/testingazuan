@@ -88,18 +88,21 @@ Sbi.execution.DocumentExecutionPage = function(config) {
     this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
     this.shortcutsPanel.on('viewpointexecutionrequest', function(v) {
     	this.southPanel.collapse();
+    	this.northPanel.collapse();
     	this.parametersPanel.applyViewPoint(v);
 		this.refreshExecution();
     }, this);
     
     this.shortcutsPanel.on('subobjectexecutionrequest', function (subObjectId) {
     	this.southPanel.collapse();
+    	this.northPanel.collapse();
 		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
 		this.synchronize(this.executionInstance);
 	}, this);
 	
     this.shortcutsPanel.on('snapshotexcutionrequest', function (snapshotId) {
     	this.southPanel.collapse();
+    	this.northPanel.collapse();
 		this.executionInstance.SBI_SNAPSHOT_ID = snapshotId;
 		this.synchronize(this.executionInstance);
 	}, this);

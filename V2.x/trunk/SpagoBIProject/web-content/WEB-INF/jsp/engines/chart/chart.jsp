@@ -561,46 +561,43 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 						<% // ******************** DRAW SLIDER : TOP CASE
 						if(sbi.getPositionSlider().equalsIgnoreCase("top")){ %>
-							<tr>
-								<td>		
-									<table id="slider" align="center">  
-										<tr>
-											<td width="20%" align="left">&nbsp;</td>														
-										<!-- I add the input to select dynamically the number of cats visualizations -->
-										<%
-										if(datasetMap.isDynamicNVisualization()==true){
-										%>
-						 				<td align="center" width="3%">
-											<div class='div_detail_form' align="center" style="float: left;">
-											<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="3" maxlength="3" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 
-											<span class='portlet-form-field-label'>
-													<spagobi:message key = "sbi.chartEngine.numCatsView" />: 
-											</span>	
-											</div>
-										</td>		   
-										<%}%>
-											<td width="5%" align="center">		
-												<!-- SLIDER -->					
-												<span id="slider1"></span> 
-											</td>	
-											<td width="3%" align="left">							
-												<!-- BOX FOR SLIDER VALUE -->
-												<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"></p> 
-													<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
-													<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>
-															<div class='div_detail_form' id='selectAllCatsLabel' style="float: left;">
-																<input style="<%=datasetMap.getFilterStyle()%>" class="portlet-form-input-field" type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 
-																<span class='portlet-form-field-label' >
-																	<spagobi:message key = "sbi.chartEngine.selectAllCats" />
-																</span>
-															</div>
-			   								</td>					
-										<td width="20%" align="right"></td>
-
-									 </tr>
-								   </table> 
-								</td>
-							</tr>
+						<tr>
+							<td>		
+    								<table id="slider" align="center">  
+    									<tr>
+    										<td width="<%=(docComposition)?"3%":"20%"%>" align="left" >&nbsp;</td>														
+    										<!-- I add the input to select dynamically the number of cats visualizations -->
+    										<%
+    										if(datasetMap.isDynamicNVisualization()==true){
+    										%>
+    						 				<td align="center" width="<%=(docComposition)?"20%":"3%"%>" title='<spagobi:message key = "sbi.chartEngine.tipNumCatsView" />'>
+    											<div class='div_detail_form' align="center" style="float: right; <%=datasetMap.getFilterStyle()%>">
+    												<span style="<%=datasetMap.getFilterStyle()%> ">
+    													<spagobi:message key = "sbi.chartEngine.numCatsView" />
+    												</span>	
+    												<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="1" maxlength="3" style="margin-right:10pt; <%=datasetMap.getFilterStyle()%>" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 								
+    											</div>
+    										</td>		   
+    										<%}%>
+    										<td width="5%" align="center">							
+    											<span  id="slider1"></span> 
+    										</td>
+    										<td align="center" width="<%=(docComposition)?"20%":"3%"%>%" title='<spagobi:message key = "sbi.chartEngine.tipSelectAllCats"/>' style="margin-left:10pt; <%=datasetMap.getFilterStyle()%>">							
+    											  <p id="slider_1_1_value" style="<%=datasetMap.getFilterStyle()%>"/>										
+    												<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
+    												<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>														
+    														<div id='selectAllCatsLabel'>  													
+    													   		<input type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 			
+                                    <span style="<%=datasetMap.getFilterStyle()%> " >
+      																<spagobi:message key = "sbi.chartEngine.selectAllCats" />
+      														</span>												
+    														</div>
+    			   							</td>															
+    										<td width="<%=(docComposition)?"3%":"20%"%>" align="right"></td>
+    									</tr>
+    								</table>		
+	   			  			</td>
+	   			  		</tr>	
 						<%}%>	
 					<tr>
 						<!-- THE CHART UNDER SLIDER -->
@@ -616,35 +613,35 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							<td>		
 								<table id="slider" align="center">  
 									<tr>
-										<td width="20%" align="left" >&nbsp;</td>														
+										<td width="<%=(docComposition)?"3%":"20%"%>" align="left" >&nbsp;</td>														
 										<!-- I add the input to select dynamically the number of cats visualizations -->
 										<%
 										if(datasetMap.isDynamicNVisualization()==true){
 										%>
-						 				<td align="center" width="3%">
-											<div class='div_detail_form' align="center" style="float: left;">
-											<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="3" maxlength="3" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 
-											<span class='portlet-form-field-label'>
-													<spagobi:message key = "sbi.chartEngine.numCatsView" />: 
-											</span>	
+						 				<td align="center" width="<%=(docComposition)?"20%":"3%"%>" title='<spagobi:message key = "sbi.chartEngine.tipNumCatsView" />'>
+											<div class='div_detail_form' align="center" style="float: right; <%=datasetMap.getFilterStyle()%>">
+												<span style="<%=datasetMap.getFilterStyle()%> ">
+													<spagobi:message key = "sbi.chartEngine.numCatsView" />
+												</span>	
+												<input id="n_visualization<%=uuidO%>" type="text" name="n_visualization" size="1" maxlength="3" style="margin-right:10pt; <%=datasetMap.getFilterStyle()%>" class="portlet-form-input-field" value="<%=datasetMap.getNumberCatVisualization()%>" onkeypress=" return onlyNumbers(event)"/> 								
 											</div>
 										</td>		   
 										<%}%>
 										<td width="5%" align="center">							
 											<span  id="slider1"></span> 
 										</td>
-										<td width="3%" align="center">							
-											<p id="slider_1_1_value" style="vertical-align: top; font-size: small; font-weight: normal;"/>										
+										<td align="center" width="<%=(docComposition)?"20%":"3%"%>%" title='<spagobi:message key = "sbi.chartEngine.tipSelectAllCats"/>' style="margin-left:10pt; <%=datasetMap.getFilterStyle()%>">							
+											  <p id="slider_1_1_value" style="<%=datasetMap.getFilterStyle()%>"/>										
 												<!-- CHECK  BOX FOR ALL CATS SELECTION-->	
-												<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>
-														<div class='div_detail_form' id='selectAllCatsLabel' style="float: left;">
-													   <input style="<%=datasetMap.getFilterStyle()%>" class="portlet-form-input-field" type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 
-															<span class='portlet-form-field-label'>
-																<spagobi:message key = "sbi.chartEngine.selectAllCats" />
-															</span>
+												<%String checkedAllCats=datasetMap.getCategoryCurrent()==0 ? "checked='checked'" : ""; %>														
+														<div id='selectAllCatsLabel'>  													
+													   		<input type="checkbox" value="0" name="categoryAll" <%=checkedAllCats%> /> 			
+                                <span style="<%=datasetMap.getFilterStyle()%> " >
+  																<spagobi:message key = "sbi.chartEngine.selectAllCats" />
+  														</span>												
 														</div>
 			   							</td>															
-										<td width="20%" align="right"></td>
+										<td width="<%=(docComposition)?"3%":"20%"%>" align="right"></td>
 									</tr>
 								</table>		
 	   			  			</td>
@@ -698,7 +695,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	 
 	                if(filterSeries==true){ %>
 			              <tr>
-				             <td width="100%">
+				             <td width="98%">
 				              <div align="center" class='div_detail_form'>
 				                <%				
 		                           String tlab=((datasetMap.getSerTitle()!=null && !datasetMap.getSerTitle().equalsIgnoreCase("")) ? datasetMap.getSerTitle() : "series");

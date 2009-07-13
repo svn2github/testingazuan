@@ -871,6 +871,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	// if we are in document composition case then call BObjectExecutePage
 		var variable="&category=";
 		var value=getValue();
+		if(parseInt(value)<1){
+			value="1";
+		}
 		var second=variable+value;
 		var url="<%=refreshUrlCategory%>";
 		var finalUrl=url+second;
@@ -937,13 +940,17 @@ var checkableSeries = new Array();
 	
 		Test.slideZone1.getSlider('start1_1').on('drag',
 				function() {
+					if(parseInt(this.value)<1) {				
+					return;
+					}
 					value= arrayCats[parseInt(this.value)];
+					//alert(value);
 					//orig document.getElementById('slider_1_1_value').innerHTML=value;
 
-			if(document.getElementById('ext-gen8')!=undefined){
+				if(document.getElementById('ext-gen8')!=undefined){
 					document.getElementById('ext-gen8').style.top='10px';
 				}	
-			if(document.getElementById('ext-gen27')!=undefined){
+				if(document.getElementById('ext-gen27')!=undefined){
 					document.getElementById('ext-gen27').style.top='10px';
 				}	
 

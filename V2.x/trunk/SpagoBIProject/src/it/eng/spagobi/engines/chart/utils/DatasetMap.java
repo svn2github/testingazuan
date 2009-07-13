@@ -377,6 +377,7 @@ public class DatasetMap {
 			}
 			else{
 				categoryCurrentName="All";
+				valueSlider="1";
 			}
 
 			// Check if particular series has been chosen
@@ -623,6 +624,7 @@ public class DatasetMap {
 		}
 		else{
 			categoryCurrentName="All";
+			valueSlider="1";
 		}
 
 		// Check if particular series has been chosen

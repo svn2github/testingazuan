@@ -208,10 +208,13 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 			this.startExecution();
 		}
 		if(this.prevActivePageNumber == this.PARAMETER_SELECTION_PAGE_NUMBER && this.activePageNumber == this.EXECUTION_PAGE_NUMBER) {
+			this.documentExecutionPage.southPanel.collapse();
+			this.documentExecutionPage.northPanel.collapse();
 			this.loadUrlForExecution();
 		}
 		if(this.prevActivePageNumber == this.EXECUTION_PAGE_NUMBER && this.activePageNumber == this.EXECUTION_PAGE_NUMBER) { // todo: handle refresh properly
 			this.documentExecutionPage.southPanel.collapse();
+			this.documentExecutionPage.northPanel.collapse();
 			this.loadUrlForExecution();
 		}
 		

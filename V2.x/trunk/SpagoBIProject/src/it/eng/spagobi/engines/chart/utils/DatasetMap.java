@@ -5,13 +5,16 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts;
 import it.eng.spagobi.engines.chart.bo.charttypes.barcharts.StackedBarGroup;
 import it.eng.spagobi.engines.chart.bo.charttypes.clusterchart.ClusterCharts;
-import it.eng.spagobi.kpi.utils.BasicTemplateBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,7 +27,7 @@ public class DatasetMap {
 
 	HashMap datasets;
 
-	TreeSet series;
+	Set<String> series;
 	Integer seriesNumber;
 	HashMap categories;
 	HashMap subCategories;
@@ -98,8 +101,8 @@ public class DatasetMap {
 				sbi.setNumberCatVisualization(catD);
 				if(catD>=catsnum)notDisappearSlider=true;
 			}
-			
-			
+
+
 			numberCatVisualization=sbi.getNumberCatVisualization();
 			numberSerVisualization=sbi.getNumberSerVisualization();
 
@@ -278,7 +281,8 @@ public class DatasetMap {
 		DatasetMap newDatasetMap=new DatasetMap();
 		boolean notDisappearSlider=false;   // if n_visualization>=number total categories do not make slider disappear
 
-		series=new TreeSet();
+		series=new LinkedHashSet<String>();
+		//series=new TreeSet<String>();
 
 
 		for (Iterator iterator = datasets.keySet().iterator(); iterator.hasNext();) {
@@ -297,7 +301,8 @@ public class DatasetMap {
 
 			// all series present in the dataset
 			// add found series if the number is less then the max number of visualization
-			int contSer = 0;		
+			int contSer = 0;
+
 			for (Iterator iterator2 = (((DefaultCategoryDataset)dataset).getRowKeys()).iterator(); iterator2.hasNext();) {
 				if (this.getNumberSerVisualization() > 0 && contSer < this.getNumberSerVisualization()){
 					String serie = (String) iterator2.next();
@@ -317,7 +322,7 @@ public class DatasetMap {
 
 			categories=(HashMap)((BarCharts)sbi).getCategories();
 			catsnum=new Integer(sbi.getCategoriesNumber());
-			
+
 			//See if numberCatVisualization has to be updated
 			if(aServiceResponse.getAttribute("n_visualization")!=null){
 				String nVis=(String)aServiceResponse.getAttribute("n_visualization");
@@ -326,7 +331,7 @@ public class DatasetMap {
 				sbi.setNumberCatVisualization(catD);
 				if(catD>=catsnum)notDisappearSlider=true;
 			}
-			
+
 			numberCatVisualization=sbi.getNumberCatVisualization();
 			numberSerVisualization=sbi.getNumberSerVisualization();
 
@@ -406,17 +411,37 @@ public class DatasetMap {
 				logger.debug("slider is to be drawn");
 				makeSlider=true;	    	
 			}
-			
 
-			
+
+
 			//gets the filter's style
 			filterStyle=sbi.getFilterStyle();
 
 			newDatasetMap.getDatasets().put(key, copyDataset);
 
 		}
-		
+
 		dynamicNVisualization=sbi.isDynamicNumberCatVisualization();		
+
+		// if seriesOrder is defined re-define the order!
+		if(((BarCharts)sbi).getSeriesOrder()!=null){
+			LinkedHashSet<String> newOrderedSet=new LinkedHashSet<String>();
+			LinkedHashSet<String> seriesTemp=new LinkedHashSet<String>(series);
+			ArrayList<String> order=((BarCharts)sbi).getSeriesOrder();
+			for (Iterator iterator = order.iterator(); iterator.hasNext();) {
+				String element = (String) iterator.next();
+				if(seriesTemp.contains(element)){
+					newOrderedSet.add(element);
+				}
+			}
+			for (Iterator iterator = seriesTemp.iterator(); iterator.hasNext();) {
+				String element2 = (String) iterator.next();
+				if(!newOrderedSet.contains(element2)){
+					newOrderedSet.add(element2);
+				}
+			}
+			series=newOrderedSet;
+		}
 
 		logger.debug("OUT");
 		return newDatasetMap;
@@ -500,7 +525,7 @@ public class DatasetMap {
 		DefaultCategoryDataset dataset=(DefaultCategoryDataset)datasets.get("1");
 		Dataset copyDataset=null;
 		boolean notDisappearSlider=false;   // if n_visualization>=number total categories do not make slider disappear
-				
+
 		try {
 			copyDataset = (DefaultCategoryDataset)dataset.clone();
 		} catch (CloneNotSupportedException e) {
@@ -537,7 +562,7 @@ public class DatasetMap {
 
 		categories=(HashMap)((BarCharts)sbi).getCategories();
 		catsnum=new Integer(sbi.getRealCatNumber());
-		
+
 		//See if numberCatVisualization has to be updated
 		if(aServiceResponse.getAttribute("n_visualization")!=null){
 			String nVis=(String)aServiceResponse.getAttribute("n_visualization");
@@ -546,8 +571,8 @@ public class DatasetMap {
 			sbi.setNumberCatVisualization(catD);
 			if(catD>=catsnum)notDisappearSlider=true;
 		}
-		
-		
+
+
 		numberCatVisualization=sbi.getNumberCatVisualization();
 		numberSerVisualization=sbi.getNumberSerVisualization(); 
 
@@ -558,9 +583,9 @@ public class DatasetMap {
 		subcatTitle = sbi.getSubCategoryLabel();
 		serTitle=sbi.getValueLabel();
 
-		
+
 		// if slider specifies a category than set view from that point
-		
+
 		if(aServiceResponse!=null && aServiceResponse.getAttribute("category")!=null){ // lastChange
 			String catS=(String)aServiceResponse.getAttribute("category");
 			logger.debug("category specified in module response by slider "+catS);
@@ -639,11 +664,11 @@ public class DatasetMap {
 
 		DatasetMap newDatasetMap=this.copyDatasetMap(copyDataset);
 
-		
+
 		// set if is dynamic Categories selection
 		dynamicNVisualization=sbi.isDynamicNumberCatVisualization();		
 
-		
+
 		logger.debug("OUT");
 
 		return newDatasetMap;
@@ -660,11 +685,13 @@ public class DatasetMap {
 	}
 
 
-	public TreeSet getSeries() {
+
+
+	public Set<String> getSeries() {
 		return series;
 	}
 
-	public void setSeries(TreeSet series) {
+	public void setSeries(Set<String> series) {
 		this.series = series;
 	}
 

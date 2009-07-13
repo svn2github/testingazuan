@@ -12,6 +12,7 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import java.awt.Color;
 import java.awt.Font;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -20,6 +21,8 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
@@ -90,6 +93,7 @@ public class CombinedCategoryBar extends LinkableBar {
 		lineNoShapeSeries2=new Vector<String>();
 		categoriesTooltip=new HashMap<String, String>();
 		seriesTooltip=new HashMap<String, String>();
+		seriesOrder=new ArrayList<String>();
 
 		boolean first=true;
 		//categories.put(new Integer(0), "All Categories");
@@ -158,11 +162,18 @@ public class CombinedCategoryBar extends LinkableBar {
 						if(seriesLabelsMap!=null){									// a serie
 							String serieLabel = (String)seriesLabelsMap.get(nameP);
 							series.put(serieLabel, value);
+							if(!seriesOrder.contains(serieLabel)){
+								seriesOrder.add(serieLabel);
+							}
 							seriesCaptions.put(serieLabel, nameP);							
-							
+
 						}
-						else
+						else {
 							series.put(nameP, value);
+							if(!seriesOrder.contains(nameP)){
+								seriesOrder.add(nameP);
+							}
+						}
 					}
 					// for now I make like if addition value is checked he seek for an attribute with name with value+name_serie
 				}
@@ -187,10 +198,9 @@ public class CombinedCategoryBar extends LinkableBar {
 					// Fill DATASET: Check if has to be filled dataset 1 or dataset 2, to bar or lines
 					// LINE CASE
 					if(!isHiddenSerie(nameS) && seriesDraw.get(nameS)!=null && 
-							(
-									((String)seriesDraw.get(nameS)).equalsIgnoreCase("line") || ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line_no_shapes") 
-							)
-					){
+							(((String)seriesDraw.get(nameS)).equalsIgnoreCase("line") || ((String)seriesDraw.get(nameS)).equalsIgnoreCase("line_no_shapes"))
+					)
+					{
 						if(!seriesNames.contains(nameS))seriesNames.add(nameS);
 						// SET THE AXIS
 						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
@@ -459,14 +469,20 @@ public class CombinedCategoryBar extends LinkableBar {
 			// no shapes for line_no_shapes  series
 			for (Iterator iterator = lineNoShapeSeries1.iterator(); iterator.hasNext();) {
 				String ser = (String) iterator.next();
-				int index=datasetLineFirstAxis.getRowIndex(ser);
+				// if there iS a abel associated search for that
+				String label=(String)seriesLabelsMap.get(ser);
+				if(label==null)label=ser;
+				int index=datasetLineFirstAxis.getRowIndex(label);
 				if(index!=-1){
 					lineRenderer1.setSeriesShapesVisible(index, false);
 				}
 			}
 			for (Iterator iterator = lineNoShapeSeries2.iterator(); iterator.hasNext();) {
 				String ser = (String) iterator.next();
-				int index=datasetLineSecondAxis.getRowIndex(ser);
+				// if there iS a abel associated search for that
+				String label=(String)seriesLabelsMap.get(ser);
+				if(label==null)label=ser;
+				int index=datasetLineSecondAxis.getRowIndex(label);
 				if(index!=-1){
 					lineRenderer2.setSeriesShapesVisible(index, false);
 				}
@@ -676,11 +692,11 @@ public class CombinedCategoryBar extends LinkableBar {
 		if(mycatUrl!=null){
 			barRenderer1.setItemURLGenerator(mycatUrl);
 			barRenderer2.setItemURLGenerator(mycatUrl);
-		if(useLinesRenderers){
-			lineRenderer1.setItemURLGenerator(mycatUrl);
-			lineRenderer2.setItemURLGenerator(mycatUrl);			
-		}
-			
+			if(useLinesRenderers){
+				lineRenderer1.setItemURLGenerator(mycatUrl);
+				lineRenderer2.setItemURLGenerator(mycatUrl);			
+			}
+
 		}
 
 
@@ -694,6 +710,35 @@ public class CombinedCategoryBar extends LinkableBar {
 			chart.addSubtitle(subTitle);
 		}
 		chart.setBackgroundPaint(Color.white);
+
+//		I want to re order the legend
+		LegendItemCollection legends=plot.getLegendItems();
+		// legend Temp 
+		HashMap<String, LegendItem> legendTemp=new HashMap<String, LegendItem>();
+		Vector<String> alreadyInserted=new Vector<String>();
+		for (int i = 0; i<legends.getItemCount(); i++) {
+			LegendItem item=legends.get(i);
+			String label=item.getLabel();
+			legendTemp.put(label, item);
+		}
+		LegendItemCollection newLegend=new LegendItemCollection();
+		// force the order of the ones specified
+		for (Iterator iterator = seriesOrder.iterator(); iterator.hasNext();) {
+			String serie = (String) iterator.next();
+			if(legendTemp.keySet().contains(serie)){
+				newLegend.add(legendTemp.get(serie));
+				alreadyInserted.add(serie);
+			}
+		}
+		// check that there are no serie not specified, otherwise add them
+		for (Iterator iterator = legendTemp.keySet().iterator(); iterator.hasNext();) {
+			String serie = (String) iterator.next();
+			if(!alreadyInserted.contains(serie)){
+				newLegend.add(legendTemp.get(serie));
+			}
+		}
+
+		plot.setFixedLegendItems(newLegend);
 
 		logger.debug("OUT");
 

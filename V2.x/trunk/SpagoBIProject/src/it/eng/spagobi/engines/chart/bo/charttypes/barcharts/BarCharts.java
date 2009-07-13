@@ -33,6 +33,7 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -75,6 +76,9 @@ public class BarCharts extends ChartImpl {
 	Vector seriesNames=null;
 	Vector hiddenSeries=null;
 
+	// keep the order of the series in the datase
+	ArrayList<String> seriesOrder=null;
+	
 	StyleLabel styleXaxesLabels;
 	StyleLabel styleYaxesLabels;
 	StyleLabel styleValueLabels;
@@ -986,6 +990,16 @@ public class BarCharts extends ChartImpl {
 
 	public void setFilterSeriesButtons(boolean filterSeriesButtons) {
 		this.filterSeriesButtons = filterSeriesButtons;
+	}
+
+
+	public ArrayList<String> getSeriesOrder() {
+		return seriesOrder;
+	}
+
+
+	public void setSeriesOrder(ArrayList<String> seriesOrder) {
+		this.seriesOrder = seriesOrder;
 	}
 
 

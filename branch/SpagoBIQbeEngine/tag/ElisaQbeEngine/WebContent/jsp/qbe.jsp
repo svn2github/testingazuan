@@ -3,9 +3,11 @@
 
 <%@page import="it.eng.spago.configuration.*"%>
 <%@page import="it.eng.spago.base.*"%>
+<%@page import="it.eng.spagobi.qbe.QbeEngineConfig"%>
 
 <%@ taglib uri="/WEB-INF/tlds/commons/qctl.tld" prefix="qbe" %>
 <%@ taglib uri="/WEB-INF/tlds/jstl-1.1.2/c.tld" prefix="c" %>
+
 
 
 
@@ -79,10 +81,18 @@
     
     <script type="text/javascript">  
       <%
-      	String query = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("query");
+      String query = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("query");
+      
+      // settings for max records number limit
+      Integer maxRecords = QbeEngineConfig.getInstance().getResultLimit();
+      boolean isBlocking = QbeEngineConfig.getInstance().isMaxResultLimitBlocking();
       %>
       
 		Sbi.config = {};
+
+		Sbi.config.queryLimit = {};
+		Sbi.config.queryLimit.maxRecords = <%= maxRecords != null ? maxRecords.intValue() : "undefined" %>;
+		Sbi.config.queryLimit.isBlocking = <%= isBlocking %>;
   	
 		var url = {
 	    	host: '<%= request.getServerName()%>'

@@ -64,6 +64,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		Integer limit = null;
 		Integer start = null;
 		Integer maxSize = null;
+		boolean isMaxResultsLimitBlocking = false;
 		SourceBean queryResponseSourceBean = null;		
 		List results = null;
 		Integer resultNumber = null;
@@ -83,6 +84,8 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 						
 			maxSize = QbeEngineConfig.getInstance().getResultLimit();			
 			logger.debug("Configuration setting  [" + "QBE.QBE-SQL-RESULT-LIMIT.value" + "] is equals to [" + (maxSize != null? maxSize: "none") + "]");
+			isMaxResultsLimitBlocking = QbeEngineConfig.getInstance().isMaxResultLimitBlocking();
+			logger.debug("Configuration setting  [" + "QBE.QBE-SQL-RESULT-LIMIT.isBlocking" + "] is equals to [" + isMaxResultsLimitBlocking + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
@@ -102,7 +105,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			
 			try {
 				logger.debug("Executing query ...");
-				queryResponseSourceBean = statement.execute(start, limit, (maxSize == null? -1: maxSize.intValue()));
+				queryResponseSourceBean = statement.execute(start, limit, (maxSize == null? -1: maxSize.intValue()), isMaxResultsLimitBlocking);
 				Assert.assertNotNull(queryResponseSourceBean, "The sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
 			} catch (Exception e) {
 				logger.debug("Query execution aborted because of an internal exceptian");
@@ -128,6 +131,12 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			resultNumber = (Integer)queryResponseSourceBean.getAttribute("resultNumber");
 			Assert.assertNotNull(resultNumber, "The the attribute [resultNumber] of the sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
 			logger.debug("Total records: " + resultNumber);			
+			
+			boolean overflow = resultNumber >= maxSize;
+			if (overflow) {
+				logger.warn("Query results number [" + resultNumber + "] exceeds max result limit that is [" + maxSize + "]");
+				auditlogger.info("[" + userProfile.getUserId() + "]:: max result limit [" + maxSize + "] exceeded with SQL: " + sqlQuery);
+			}
 			
 			gridDataFeed = buildGridDataFeed(results, resultNumber.intValue());	
 			

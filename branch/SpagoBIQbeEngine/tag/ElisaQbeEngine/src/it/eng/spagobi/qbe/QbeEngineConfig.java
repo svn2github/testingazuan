@@ -163,7 +163,7 @@ public class QbeEngineConfig {
 	
 	// utils 
 	
-	private String getProperty(String propertName) {
+	public String getProperty(String propertName) {
 		String propertyValue = null;		
 		SourceBean sourceBeanConf;
 		
@@ -224,6 +224,13 @@ public class QbeEngineConfig {
 			}
 		}
 		return resultLimit;
+	}
+	
+	public boolean isMaxResultLimitBlocking() {
+		boolean isBlocking = false;
+		String isBlockingStr = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.isBlocking");
+		isBlocking = Boolean.parseBoolean(isBlockingStr);
+		return isBlocking;
 	}
 	
 	/**

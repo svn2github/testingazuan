@@ -140,13 +140,18 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	// private methods
 	
 	, initStore: function() {
+		
+		this.proxy = new Ext.data.HttpProxy({
+	           url: this.services['loadDataStore']
+	           , timeout : 300000
+	           //, success: this.onDataStoreLoaded
+	   		   , failure: this.onDataStoreLoadException
+	    });
+		
+		//this.proxy.getConnection().on('requestcomplete', this.onDataStoreLoaded, this);
+
 		this.store = new Ext.data.Store({
-	        proxy: new Ext.data.HttpProxy({
-	           url: this.services['loadDataStore'],
-	           timeout : 300000,
-	           success: this.onDataStoreLoaded,
-	   		   failure: this.onDataStoreLoadException	           
-	        }),
+	        proxy: this.proxy,
 	        reader: new Ext.data.JsonReader(),
 	        remoteSort: true
 	    });
@@ -155,6 +160,8 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		   meta.fields[0] = new Ext.grid.RowNumberer();
 		   this.grid.getColumnModel().setConfig(meta.fields);
 		}, this);
+		
+		this.store.on('load', this.onDataStoreLoaded, this);
 	}
 
 	, initPanel: function() {
@@ -202,6 +209,8 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 			]
 		});
 		
+		this.warningMessageItem = new Ext.Toolbar.TextItem('<font color="red">Max records number limit [' + Sbi.config.queryLimit.maxRecords + '] exceeded!!</font>');
+		
 		this.pagingTBar = new Ext.PagingToolbar({
             pageSize: 25,
             store: this.store,
@@ -209,6 +218,13 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
             displayMsg: 'Displaying topics {0} - {1} of {2}',
             emptyMsg: "No topics to display"
         });
+		this.pagingTBar.on('render', function() {
+			this.pagingTBar.addItem(this.warningMessageItem);
+			this.warningMessageItem.setVisible(false);
+		}, this);
+		
+		
+		//this.warningMessageItem.setVisible(false);
 		
 		// create the Grid
 	    this.grid = new Ext.grid.GridPanel({
@@ -231,11 +247,21 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	    });   
 	}
 
-	, onDataStoreLoaded: function(response) {
-		 var o = Ext.util.JSON.decode( response.responseText );
-       	 if(o.results == 0) {
+	, onDataStoreLoaded: function(store) {
+		 var recordsNumber = store.getTotalCount();
+       	 if(recordsNumber == 0) {
        		alert("Query returns no data.");
-       	 }           
+       	 }
+       	 if (Sbi.config.queryLimit.maxRecords !== undefined && recordsNumber > Sbi.config.queryLimit.maxRecords) {
+       		if (Sbi.config.queryLimit.isBlocking) {
+       			Sbi.exception.ExceptionHandler.showErrorMessage('Max records number limit [' + Sbi.config.queryLimit.maxRecords + '] exceeded!!', 'ERROR');
+       		} else {
+       			this.warningMessageItem.show();
+       			//Sbi.exception.ExceptionHandler.showWarningMessage('Max records number limit [' + Sbi.config.queryLimit.maxRecords + '] exceeded!!', 'WARNING');
+       		}
+       	 } else {
+       		this.warningMessageItem.hide();
+       	 }
 	}
 	
 	, onDataStoreLoadException: function(response, options) {

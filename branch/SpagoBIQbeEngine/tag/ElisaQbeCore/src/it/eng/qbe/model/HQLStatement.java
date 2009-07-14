@@ -647,6 +647,10 @@ public class HQLStatement extends BasicStatement {
 	}
 	
 	public SourceBean execute(int offset, int fetchSize, int maxResults) throws Exception {
+		return execute(offset, fetchSize, maxResults, isBlocking);
+	}
+	
+	public SourceBean execute(int offset, int fetchSize, int maxResults, boolean isMaxResultsLimitBlocking) throws Exception {
 		Session session = null;
 		org.hibernate.Query hibernateQuery;
 		int resultNumber;
@@ -661,17 +665,22 @@ public class HQLStatement extends BasicStatement {
 			scrollableResults.last();
 			resultNumber = scrollableResults.getRowNumber();
 			overflow = (resultNumber >= maxResults);
-				
 			
-			offset = offset < 0 ? 0 : offset;
-			if(maxResults > 0) {
-				fetchSize = (fetchSize > 0)? Math.min(fetchSize, maxResults): maxResults;
-			}
+			List result = null;
 			
-			hibernateQuery.setFirstResult(offset);
-			if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
-			List result = hibernateQuery.list();
+			if (overflow && isMaxResultsLimitBlocking) {
+				// does not execute query
+				result = new ArrayList();
+			} else {
+				offset = offset < 0 ? 0 : offset;
+				if(maxResults > 0) {
+					fetchSize = (fetchSize > 0)? Math.min(fetchSize, maxResults): maxResults;
+				}
 				
+				hibernateQuery.setFirstResult(offset);
+				if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
+				result = hibernateQuery.list();
+			}	
 			// build the source bean that holds the resultset				
 			SourceBean resultSetSB = new SourceBean("QUERY_RESPONSE_SOURCE_BEAN");
 			resultSetSB.setAttribute("query", queryString);

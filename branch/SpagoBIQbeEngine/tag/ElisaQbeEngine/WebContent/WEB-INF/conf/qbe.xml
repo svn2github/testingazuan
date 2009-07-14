@@ -19,7 +19,9 @@
 		checkerClass="it.eng.qbe.utility.SimpleSpaceChecker" 
 		failIfSpaceLess="25"/>
 	
-	<QBE-SQL-RESULT-LIMIT value="none"/>
+	<!-- QBE-SQL-RESULT-LIMIT value="none" isBlocking="false"/ -->
+	<!-- QBE-SQL-RESULT-LIMIT value="10000" isBlocking="true"/ -->
+	<QBE-SQL-RESULT-LIMIT value="10000" isBlocking="false"/>
 	
 	<GEO-ENGINE-URL value="http://localhost:8080/SpagoBIGeoEngine"/>
 	

@@ -56,5 +56,6 @@ public interface IStatement {
 	public SourceBean execute(int offset) throws Exception;
 	public SourceBean execute(int offset, int fetchSize) throws Exception;		
 	public SourceBean execute(int offset, int fetchSize, int maxResults) throws Exception;
+	public SourceBean execute(int offset, int fetchSize, int maxResults, boolean isMaxResultsLimitBlocking) throws Exception;
 	
 }

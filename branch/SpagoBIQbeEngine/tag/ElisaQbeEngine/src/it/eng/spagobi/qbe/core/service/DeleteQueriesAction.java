@@ -21,31 +21,35 @@
 package it.eng.spagobi.qbe.core.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.QueryMeta;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.service.JSONSuccess;
+import it.eng.spagobi.utilities.service.JSONAcknowledge;
 
 
 /**
- * The Class ExecuteQueryAction.
+ * Remove queries whose ids has been passed as argument to the service from the catalogue. 
+ * 
+ * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public class DeleteQueriesAction extends AbstractQbeEngineAction {	
 	
-	public static final String SERVICE_NAME = "ADD_QUERY_ACTION";
+	public static final String SERVICE_NAME = "DELETE_QUERIES_ACTION";
 	public String getActionName(){return SERVICE_NAME;}
 	
 	
 	// INPUT PARAMETERS
-	public static final String QUERY_NAME = "name";
+	public static final String QUERY_IDS = "queries";
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(DeleteQueriesAction.class);
@@ -54,29 +58,41 @@ public class DeleteQueriesAction extends AbstractQbeEngineAction {
 	
 	public void service(SourceBean request, SourceBean response)  {				
 				
-		String name;
-		Query query;
-		QueryMeta meta;
-					
+		JSONArray ids;
+		Iterator it;
+			
 		logger.debug("IN");
 		
 		try {
 		
 			super.service(request, response);		
 			
-			name = getAttributeAsString( QUERY_NAME );
-			logger.debug("Parameter [" + QUERY_NAME + "] is equals to [" + name + "]");
+			ids = getAttributeAsJSONArray( QUERY_IDS );
+			logger.debug("Parameter [" + QUERY_IDS + "] is equals to [" + ids + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			
-			query = new Query();
-			meta = new QueryMeta( name );
-			//getEngineInstance().getQueryCatalogue().addQuery(query, meta);
 			
-			JSONObject result = new JSONObject();
-			result.put("queryId", query.getId());
+			if(ids != null && ids.length() > 0) {
+				List list = new ArrayList();
+				for(int i = 0; i < ids.length(); i++) {
+					list.add(ids.getString(i));
+				}
+				it = list.iterator();
+			} else {
+				it = getEngineInstance().getQueryCatalogue().getIds().iterator();
+			}
+			
+			while(it.hasNext()) {
+				String id = (String)it.next();
+				// leave query definition inside the while in order to release to gc the removed query asap			
+				Query query = getEngineInstance().getQueryCatalogue().removeQuery(id);
+				Assert.assertNotNull(query, "A query with id equals to [" + id + "] does not exist in teh catalogue");
+				logger.debug("Qury with id equals to [" + QUERY_IDS + "] has been removed succesfully from the catalogue]");
+			}
+			
 			try {
-				writeBackToClient( new JSONSuccess(result) );
+				writeBackToClient( new JSONAcknowledge() );
 			} catch (IOException e) {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
@@ -87,7 +103,6 @@ public class DeleteQueriesAction extends AbstractQbeEngineAction {
 		} finally {
 			logger.debug("OUT");
 		}	
-		
 		
 	}
 

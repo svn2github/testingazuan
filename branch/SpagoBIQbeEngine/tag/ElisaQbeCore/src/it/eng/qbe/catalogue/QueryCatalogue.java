@@ -21,6 +21,7 @@
 package it.eng.qbe.catalogue;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -91,7 +92,7 @@ public class QueryCatalogue {
 	}
 
 	public Set getIds() {
-		return queries.keySet();
+		return new HashSet(queries.keySet());
 	}
 
 	public Query removeQuery(String id) {

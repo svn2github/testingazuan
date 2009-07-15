@@ -4,6 +4,12 @@
     <!--  DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.model.io.LocalFileSystemDataMartModelRetriever"/ -->
     <QUERY-PERSISTER className="it.eng.qbe.model.io.LocalFileSystemQueryPersister"/>
    
+	<!--
+	QUERY-VALIDATION configuration is applied when saving a query as a subobject:
+	- if enabled=true, query is validated before saving
+	- if isBlocking=true (and enabled=true), incorrect queries cannot be saved
+	-->
+	<QUERY-VALIDATION enabled="true" isBlocking="false" />
 	 
 	<!--  QBE-MODE mode="WEB" page-size="20"/ -->
 	

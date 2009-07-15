@@ -220,10 +220,32 @@ public class QbeEngineConfig {
 			try {
 				resultLimit = new Integer(resultLimitStr);
 			} catch(Throwable t) {
-				t.printStackTrace();
+				logger.error(t);
 			}
 		}
 		return resultLimit;
+	}
+	
+	/**
+	 * Returns true if the query must be validated before saving, false otherwise
+	 * @return true if the query must be validated before saving, false otherwise
+	 */
+	public boolean isQueryValidationEnabled() {
+		boolean isEnabled = false;
+		String isEnabledStr = (String)ConfigSingleton.getInstance().getAttribute("QBE.QUERY-VALIDATION.enabled");
+		isEnabled = Boolean.parseBoolean(isEnabledStr);
+		return isEnabled;
+	}
+	
+	/**
+	 * Returns true if query validation before saving is blocking (i.e. incorrect queries cannot be saved), false otherwise
+	 * @return true if query validation before saving is blocking (i.e. incorrect queries cannot be saved), false otherwise
+	 */
+	public boolean isQueryValidationBlocking() {
+		boolean isBlocking = false;
+		String isBlockingStr = (String)ConfigSingleton.getInstance().getAttribute("QBE.QUERY-VALIDATION.isBlocking");
+		isBlocking = Boolean.parseBoolean(isBlockingStr);
+		return isBlocking;
 	}
 	
 	public boolean isMaxResultLimitBlocking() {

@@ -82,17 +82,22 @@
     <script type="text/javascript">  
       <%
       String query = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("query");
-      
+      QbeEngineConfig qbeEngineConfig = QbeEngineConfig.getInstance();
       // settings for max records number limit
-      Integer maxRecords = QbeEngineConfig.getInstance().getResultLimit();
-      boolean isBlocking = QbeEngineConfig.getInstance().isMaxResultLimitBlocking();
+      Integer resultLimit = qbeEngineConfig.getResultLimit();
+      boolean isMaxResultLimitBlocking = qbeEngineConfig.isMaxResultLimitBlocking();
+      boolean isQueryValidationEnabled = qbeEngineConfig.isQueryValidationEnabled();
+      boolean isQueryValidationBlocking = qbeEngineConfig.isQueryValidationBlocking();
       %>
       
 		Sbi.config = {};
 
 		Sbi.config.queryLimit = {};
-		Sbi.config.queryLimit.maxRecords = <%= maxRecords != null ? maxRecords.intValue() : "undefined" %>;
-		Sbi.config.queryLimit.isBlocking = <%= isBlocking %>;
+		Sbi.config.queryLimit.maxRecords = <%= resultLimit != null ? resultLimit.intValue() : "undefined" %>;
+		Sbi.config.queryLimit.isBlocking = <%= isMaxResultLimitBlocking %>;
+		Sbi.config.queryValidation = {};
+		Sbi.config.queryValidation.isEnabled = <%= isQueryValidationEnabled %>;
+		Sbi.config.queryValidation.isBlocking = <%= isQueryValidationBlocking %>;
   	
 		var url = {
 	    	host: '<%= request.getServerName()%>'

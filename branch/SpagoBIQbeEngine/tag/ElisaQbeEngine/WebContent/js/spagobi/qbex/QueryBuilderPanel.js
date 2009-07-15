@@ -62,6 +62,10 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 		serviceName: 'SAVE_QUERY_ACTION'
 		, baseParams: params
 	});
+	this.services['validateQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'VALIDATE_QUERY_ACTION'
+		, baseParams: params
+	});
 	this.services['saveView'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'CREATE_VIEW_ACTION'
 		, baseParams: params
@@ -157,7 +161,47 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
         tools:[{
           id:'save',
           qtip:'Save query as subobject',
-          handler: this.showSaveQueryWindow,
+          handler: function(event, toolEl, panel){
+        	// if validation is enabled, validate query before saving
+        	if (Sbi.config.queryValidation.isEnabled) {
+        		// synchronize query first
+            	Ext.Ajax.request({
+				    url: this.services['synchronizeQuery'],
+				    success: function(response, options) {
+            			// then validate query
+    	        		Ext.Ajax.request({
+	    	        		url: this.services['validateQuery'],
+	    	        		success: function(response, options) {
+	            				 var result = Ext.util.JSON.decode( response.responseText );
+	            		       	 if (result !== undefined && result !== null && result.validationResult !== undefined) {
+	            		       		if (result.validationResult) {
+	            		       			// validation was successful
+	            		       			this.showSaveQueryWindow();
+	            		       		} else {
+	            		       			// validation failed, check if validation is blocking
+	            		       			if (Sbi.config.queryValidation.isBlocking) {
+	            		       				Sbi.exception.ExceptionHandler.showErrorMessage('Cannot save query since it is incorrect!', 'ERROR');
+	            		       			} else {
+	            		       				this.showSaveQueryWarning();
+	            		       			}
+	            		       		}
+	            		       	 } else {
+	            		       		alert("An error occurred while validating query");
+	            		       	 }
+	    	        		},
+	    	        		scope: this,
+	    	        		failure: Sbi.exception.ExceptionHandler.handleFailure,
+	    	        		params: this.getParams
+	    	        	});
+	       			},
+	       			scope: this,
+				    failure: Sbi.exception.ExceptionHandler.handleFailure,					
+				    params: this.getParams
+				});
+        	} else {
+        		this.showSaveQueryWindow();
+        	}
+          },
           scope: this
         }, {
           id:'saveView',
@@ -314,7 +358,13 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
        	
 	}
     
-
+	, showSaveQueryWarning: function() {
+		Ext.Msg.confirm('WARNING','The query is incorrect; do you want to save it anyway?', function(btn) {
+			if (btn == 'yes') {
+				this.showSaveQueryWindow();
+			}
+		}, this);
+	}
 
 	, showSaveQueryWindow: function(){
 	    if(this.saveQueryWindow === null) {

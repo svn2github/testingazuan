@@ -144,12 +144,9 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		this.proxy = new Ext.data.HttpProxy({
 	           url: this.services['loadDataStore']
 	           , timeout : 300000
-	           //, success: this.onDataStoreLoaded
 	   		   , failure: this.onDataStoreLoadException
 	    });
 		
-		//this.proxy.getConnection().on('requestcomplete', this.onDataStoreLoaded, this);
-
 		this.store = new Ext.data.Store({
 	        proxy: this.proxy,
 	        reader: new Ext.data.JsonReader(),
@@ -257,7 +254,6 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
        			Sbi.exception.ExceptionHandler.showErrorMessage('Max records number limit [' + Sbi.config.queryLimit.maxRecords + '] exceeded!!', 'ERROR');
        		} else {
        			this.warningMessageItem.show();
-       			//Sbi.exception.ExceptionHandler.showWarningMessage('Max records number limit [' + Sbi.config.queryLimit.maxRecords + '] exceeded!!', 'WARNING');
        		}
        	 } else {
        		this.warningMessageItem.hide();

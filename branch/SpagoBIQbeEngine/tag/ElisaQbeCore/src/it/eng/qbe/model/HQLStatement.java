@@ -43,7 +43,6 @@ import it.eng.qbe.query.SelectField;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
@@ -665,6 +664,7 @@ public class HQLStatement extends BasicStatement {
 			ScrollableResults scrollableResults = hibernateQuery.scroll();
 			scrollableResults.last();
 			resultNumber = scrollableResults.getRowNumber();
+			resultNumber = resultNumber < 0? 0: resultNumber;
 			overflow = (resultNumber >= maxResults);
 			
 			List result = null;

@@ -170,10 +170,11 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     		   	params: {queries: Ext.util.JSON.encode(p)},
     		
     		   	success: function(response, options) {
-    		   		var q = options.params.queries;
+    		   		var q = Ext.util.JSON.decode( options.params.queries );
     		   		for(var i = 0; i < q.length; i++) {
     		   			var node = this.tree.getNodeById(q[i]);
-    		   			this.rootNode.removeChild(node);
+    		   			node.remove();
+    		   			//this.rootNode.removeChild(node);
     		   		}
        			},
        			failure: Sbi.exception.ExceptionHandler.handleFailure,

@@ -80,7 +80,7 @@
 	<!-- New OO GUI -->
 	
 	
-	
+	<qbe:url type="resource" var="BLANK_IMAGE_URL" ref="../js/lib/ext-2.0.1/resources/images/default/s.gif"/>
 	
 	
     
@@ -95,6 +95,8 @@
       boolean isQueryValidationEnabled = qbeEngineConfig.isQueryValidationEnabled();
       boolean isQueryValidationBlocking = qbeEngineConfig.isQueryValidationBlocking();
       %>
+
+      	Ext.BLANK_IMAGE_URL = '${BLANK_IMAGE_URL}';
       
 		Sbi.config = {};
 

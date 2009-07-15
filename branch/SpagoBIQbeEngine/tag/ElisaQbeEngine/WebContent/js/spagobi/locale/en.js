@@ -2,6 +2,26 @@ Ext.ns("Sbi.locale");
 Sbi.locale.ln = Sbi.locale.ln || new Array();
 
 
+//===================================================================
+//DATASTORE PANEL
+//===================================================================
+Sbi.locale.ln['sbi.qbe.datastorepanel.title'] = 'Results';
+
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.displaymsg'] = 'Displaying {0} - {1} of {2}';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.emptymsg'] = 'No data to display';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.emptywarningmsg'] = 'Query returns no data';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.beforeoverflow'] = 'Max records number limit';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.afteroverflow'] = 'exceeded';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.beforepagetext'] = 'Page';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.afterpagetext'] = 'of {0}';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.firsttext'] = 'First Page';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.prevtext'] = 'Previous Page';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.nexttext'] = 'Next Page';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.lasttext'] = 'Next Page';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.refreshtext'] = 'Refresh';
+
+Sbi.locale.ln['sbi.qbe.datastorepanel.button.tt.exportto'] = 'Export to';
+
 
 
 //===================================================================

@@ -41,7 +41,7 @@
   * 
   * Authors
   * 
-  * - name (mail)
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
 Ext.ns("Sbi.widgets");
@@ -69,7 +69,7 @@ Sbi.widgets.DataStorePanel = function(config) {
 	this.initPanel();
 	
 	c = Ext.apply(c, {
-		title: 'Results',  
+		title: LN('sbi.qbe.datastorepanel.title'),  
 		layout: 'fit',
 		items: [this.grid]
 	})
@@ -121,7 +121,6 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		
 		var form = document.getElementById('export-form');
 		if(!form) {
-			alert('form is undefined');
 			var dh = Ext.DomHelper;
 			form = dh.append(Ext.getBody(), {
 			    id: 'export-form'
@@ -129,11 +128,9 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 			    , method: 'post'
 			    , cls: 'export-form'
 			});
-			alert('form creato');
 		}
 		
 		form.action = this.services['exportDataStore'] + '&MIME_TYPE=' + mimeType +'&RESPONSE_TYPE=RESPONSE_TYPE_ATTACHMENT';
-		alert('form.action: ' + form.action);
 		form.submit();
 	}
   
@@ -161,6 +158,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		}, this);
 		
 		this.store.on('load', this.onDataStoreLoaded, this);
+		
 	}
 
 	, initPanel: function() {
@@ -176,31 +174,31 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		this.exportTBar = new Ext.Toolbar({
 			items: [
 			    new Ext.Toolbar.Button({
-		            tooltip:'Export in pdf',
+		            tooltip: LN('sbi.qbe.datastorepanel.button.tt.exportto') + ' pdf',
 		            iconCls:'pdf',
 		            handler: this.exportResultToPdf,
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
-		            tooltip:'Export in rtf',
+		            tooltip:LN('sbi.qbe.datastorepanel.button.tt.exportto') + ' rtf',
 		            iconCls:'rtf',
 		            handler: this.exportResultToRtf,
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
-		            tooltip:'Export in xls',
+		            tooltip:LN('sbi.qbe.datastorepanel.button.tt.exportto') + ' xls',
 		            iconCls:'xls',
 		            handler: this.exportResultToXls,
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
-		            tooltip:'Export in csv',
+		            tooltip:LN('sbi.qbe.datastorepanel.button.tt.exportto') + ' csv',
 		            iconCls:'csv',
 		            handler: this.exportResultToCsv,
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
-		            tooltip:'Export in jrxml',
+		            tooltip:LN('sbi.qbe.datastorepanel.button.tt.exportto') + ' jrxml',
 		            iconCls:'jrxml',
 		            handler: this.exportResultToJrxml,
 		            scope: this
@@ -208,22 +206,31 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 			]
 		});
 		
-		this.warningMessageItem = new Ext.Toolbar.TextItem('<font color="red">Max records number limit [' + Sbi.config.queryLimit.maxRecords + '] exceeded!!</font>');
+		this.warningMessageItem = new Ext.Toolbar.TextItem('<font color="red">' 
+				+ LN('sbi.qbe.datastorepanel.grid.beforeoverflow') 
+				+ ' [' + Sbi.config.queryLimit.maxRecords + '] '
+				+ LN('sbi.qbe.datastorepanel.grid.afteroverflow') 
+				+ '</font>');
+		
 		
 		this.pagingTBar = new Ext.PagingToolbar({
             pageSize: 25,
             store: this.store,
             displayInfo: true,
-            displayMsg: 'Displaying topics {0} - {1} of {2}',
-            emptyMsg: "No topics to display"
+            displayMsg: LN('sbi.qbe.datastorepanel.grid.displaymsg'),
+            emptyMsg: LN('sbi.qbe.datastorepanel.grid.emptymsg'),
+            beforePageText: LN('sbi.qbe.datastorepanel.grid.beforepagetext'),
+            afterPageText: LN('sbi.qbe.datastorepanel.grid.afterpagetext'),
+            firstText: LN('sbi.qbe.datastorepanel.grid.firsttext'),
+            prevText: LN('sbi.qbe.datastorepanel.grid.prevtext'),
+            nextText: LN('sbi.qbe.datastorepanel.grid.nexttext'),
+            lastText: LN('sbi.qbe.datastorepanel.grid.lasttext'),
+            refreshText: LN('sbi.qbe.datastorepanel.grid.refreshtext')
         });
 		this.pagingTBar.on('render', function() {
 			this.pagingTBar.addItem(this.warningMessageItem);
 			this.warningMessageItem.setVisible(false);
 		}, this);
-		
-		
-		//this.warningMessageItem.setVisible(false);
 		
 		// create the Grid
 	    this.grid = new Ext.grid.GridPanel({
@@ -248,14 +255,12 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 
 	, onDataStoreLoaded: function(store) {
 		 var recordsNumber = store.getTotalCount();
-       	 /* if query returned to records, the 'load' event isn't fired by the store
-		 if(recordsNumber == 0) {
-       		alert("Query returns no data.");
+       	 if(recordsNumber == 0) {
+       		alert(LN('sbi.qbe.datastorepanel.grid.emptywarningmsg'));
        	 }
-       	 */
        	 if (Sbi.config.queryLimit.maxRecords !== undefined && recordsNumber > Sbi.config.queryLimit.maxRecords) {
        		if (Sbi.config.queryLimit.isBlocking) {
-       			Sbi.exception.ExceptionHandler.showErrorMessage('Max records number limit [' + Sbi.config.queryLimit.maxRecords + '] exceeded!!', 'ERROR');
+       			Sbi.exception.ExceptionHandler.showErrorMessage(this.warningMessageItem, 'ERROR');
        		} else {
        			this.warningMessageItem.show();
        		}
@@ -265,6 +270,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	}
 	
 	, onDataStoreLoadException: function(response, options) {
+		alert('jim belushi');
 		Sbi.exception.ExceptionHandler.handleFailure(response, options);
 	}
 

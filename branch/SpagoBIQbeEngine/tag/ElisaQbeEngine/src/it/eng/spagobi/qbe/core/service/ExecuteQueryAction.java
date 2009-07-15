@@ -194,6 +194,17 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		gridDataFeed.put("results", resultNumber);
 		gridDataFeed.put("rows", rows);
 		
+		if(results.size() == 0) {
+			fields = new JSONArray();
+			fields.put("recNo");
+			JSONObject f = new JSONObject();
+			f.put("header", "Data");
+			f.put("name", "data");						
+			f.put("dataIndex", "data");
+			fields.put(f);					
+			metadata.put("fields", fields);
+		} 
+		
 		int recNo = 0;
 		while (it.hasNext()){
 			o = it.next();

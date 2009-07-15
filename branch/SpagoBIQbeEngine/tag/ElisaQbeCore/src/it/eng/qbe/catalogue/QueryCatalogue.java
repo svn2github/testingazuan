@@ -93,4 +93,8 @@ public class QueryCatalogue {
 	public Set getIds() {
 		return queries.keySet();
 	}
+
+	public Query removeQuery(String id) {
+		return (Query)queries.remove(id);		
+	}
 }

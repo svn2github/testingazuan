@@ -248,9 +248,11 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 
 	, onDataStoreLoaded: function(store) {
 		 var recordsNumber = store.getTotalCount();
-       	 if(recordsNumber == 0) {
+       	 /* if query returned to records, the 'load' event isn't fired by the store
+		 if(recordsNumber == 0) {
        		alert("Query returns no data.");
        	 }
+       	 */
        	 if (Sbi.config.queryLimit.maxRecords !== undefined && recordsNumber > Sbi.config.queryLimit.maxRecords) {
        		if (Sbi.config.queryLimit.isBlocking) {
        			Sbi.exception.ExceptionHandler.showErrorMessage('Max records number limit [' + Sbi.config.queryLimit.maxRecords + '] exceeded!!', 'ERROR');

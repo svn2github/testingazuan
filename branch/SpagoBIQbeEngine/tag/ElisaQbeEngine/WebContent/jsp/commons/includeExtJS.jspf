@@ -11,3 +11,6 @@
 
 <qbe:url type="resource" var="ExtThemeCSS" ref="../js/lib/ext-2.0.1/resources/css/xtheme-gray.css"/>
 <link id="theme" rel="styleSheet" href ="${ExtThemeCSS}" type="text/css" />
+
+<qbe:url type="resource" var="OverridesCSS" ref="../js/spagobi/overrides/overrides.css"/>
+<link id="theme" rel="styleSheet" href ="${OverridesCSS}" type="text/css" />

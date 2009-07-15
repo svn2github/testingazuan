@@ -21,7 +21,6 @@
 package it.eng.spagobi.qbe.core.service;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -37,41 +36,35 @@ import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.service.JSONSuccess;
+import it.eng.spagobi.utilities.service.JSONAcknowledge;
 
 
 /**
- * Return items contained into the catalogue. An item is composed by query, meta and all the properties 
- * needed to use it as TreeNode on the client side
+ * Commit all the modifications made to the catalogue on the client side
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class GetCatalogueAction extends AbstractQbeEngineAction {	
+public class SetCatalogueAction extends AbstractQbeEngineAction {
 	
-	public static final String SERVICE_NAME = "GET_CATALOGUE_ACTION";
+	public static final String SERVICE_NAME = "SET_CATALOGUE_ACTION";
 	public String getActionName(){return SERVICE_NAME;}
 	
-	
 	// INPUT PARAMETERS
-	// none
+	public static final String CATALOGUE = "catalogue";
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(GetCatalogueAction.class);
-   
+    public static transient Logger logger = Logger.getLogger(SetCatalogueAction.class);
     
 	
 	public void service(SourceBean request, SourceBean response)  {				
 		
-		JSONArray result;
-		Iterator it;
-		String id;
-		Query query;
-		QueryMeta meta;
-		
+		String jsonEncodedCatalogue = null;
+		JSONArray items;
+		JSONObject itemJSON;
 		JSONObject queryJSON;
 		JSONObject metaJSON;
-		
-		JSONObject nodeJSON;
+		Query query;
+		QueryMeta meta;
 		
 		logger.debug("IN");
 		
@@ -79,73 +72,60 @@ public class GetCatalogueAction extends AbstractQbeEngineAction {
 		
 			super.service(request, response);		
 			
-			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
+			jsonEncodedCatalogue = getAttributeAsString( CATALOGUE );			
+			logger.debug(CATALOGUE + " = [" + jsonEncodedCatalogue + "]");
 			
-			result = new JSONArray();
-			it = getEngineInstance().getQueryCatalogue().getIds().iterator();
-			while(it.hasNext()) {
-				id = (String)it.next();
-				query = getEngineInstance().getQueryCatalogue().getQuery(id);
-				meta = getEngineInstance().getQueryCatalogue().getQueryMeta(id);
+			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
+			Assert.assertNotNull(jsonEncodedCatalogue, "Input parameter [" + CATALOGUE + "] cannot be null in oder to execute " + this.getActionName() + " service");
+			
+			
+			try {		
+				items = new JSONArray( jsonEncodedCatalogue );
+				for(int i = 0; i < items.length(); i++) {					
+					itemJSON = items.getJSONObject(i);
+					queryJSON = itemJSON.getJSONObject("query");
+					metaJSON = itemJSON.getJSONObject("meta");
+					
+					query = deserializeQuery(queryJSON);
+					meta = deserializeMeta(metaJSON);
+					
+					getEngineInstance().getQueryCatalogue().refreshQuery(query, meta);
+					getEngineInstance().resetActiveQuery();
+				}				
 				
-				try {					
-					queryJSON = serializeQuery(query);
-					metaJSON = serializeMeta(meta);
-					nodeJSON = createNode(metaJSON, queryJSON);
-				} catch (Throwable e) {
-					throw new SpagoBIEngineServiceException(getActionName(), "An error occurred while serializig query wiyh id equals to [" + id +"]", e);
-				}
-				
-				result.put(nodeJSON);
+			} catch (SerializationException e) {
+				String message = "Impossible to syncronize the query with the server. Query passed by the client is malformed";
+				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
 			
 			try {
-				writeBackToClient( new JSONSuccess(result) );
+				writeBackToClient( new JSONAcknowledge() );
 			} catch (IOException e) {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
-			
+		
 		} catch(Throwable t) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
 			logger.debug("OUT");
-		}	
+		}
 		
 		
-	}
-	
-	// @TODO create a general purpose serializer not dependant on the datamartModel
-	private JSONObject serializeQuery(Query query) throws SerializationException {
-		return (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(query, getEngineInstance().getDatamartModel());
 	}
 
-	private JSONObject serializeMeta(QueryMeta meta) throws JSONException {
-		JSONObject metaJSON;
-		
-		metaJSON = new JSONObject();
-		metaJSON.put("id", meta.getId());
-		metaJSON.put("name", meta.getName());
-		return metaJSON;
+
+	private QueryMeta deserializeMeta(JSONObject metaJSON) throws JSONException {
+		QueryMeta meta = new QueryMeta();
+		meta.setId( metaJSON.getString("id") );
+		meta.setName( metaJSON.getString("name") );
+		return null;
 	}
-	
-	private JSONObject createNode(JSONObject meta, JSONObject query) throws JSONException {
-		JSONObject nodeJSON;
-		JSONObject nodeAttributes;
-		
-		nodeJSON = new JSONObject();
-		nodeJSON.put("id", meta.getString("id"));
-		nodeJSON.put("text", meta.getString("name"));
-		nodeJSON.put("leaf", true);	
-		
-		nodeAttributes = new JSONObject();
-		nodeAttributes.put("iconCls", "icon-query");
-		nodeAttributes.put("meta", meta);
-		nodeAttributes.put("query", query);
-		
-		nodeJSON.put("attributes", nodeAttributes);
-		
-		return nodeJSON;
+
+
+	private Query deserializeQuery(JSONObject queryJSON) throws SerializationException, JSONException {
+		queryJSON.put("expression", queryJSON.get("filterExpression"));
+		return QuerySerializerFactory.getDeserializer("application/json").deserialize(queryJSON.toString(), getEngineInstance().getDatamartModel());
 	}
 
 }

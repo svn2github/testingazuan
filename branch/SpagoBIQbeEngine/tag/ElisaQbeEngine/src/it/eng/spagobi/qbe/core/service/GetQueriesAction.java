@@ -42,7 +42,7 @@ import it.eng.spagobi.utilities.service.JSONSuccess;
 /**
  * Return queries searching them by id into the catalogue. If for a given id does not
  * exist any query in the catalogue an exception is thrown. If no particular id is specified 
- * all query in the catalogu will be returned.
+ * all query in the catalogue will be returned.
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */

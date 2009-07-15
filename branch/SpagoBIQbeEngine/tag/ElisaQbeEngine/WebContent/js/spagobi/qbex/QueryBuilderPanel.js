@@ -54,8 +54,8 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 	
 	this.services = new Array();
 	var params = {};
-	this.services['synchronizeQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'REFRESH_QUERY_ACTION'
+	this.services['setCatalogue'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SET_CATALOGUE_ACTION'
 		, baseParams: params
 	});
 	this.services['saveQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
@@ -169,13 +169,12 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		
 		this.applyChanges();
 		
-		alert('committing catalogue');
 		var params = {
 				catalogue: Ext.util.JSON.encode(this.queryCataloguePanel.getQueries())
 		};
 		
 		Ext.Ajax.request({
-		    url: this.services['synchronizeQuery'],
+		    url: this.services['setCatalogue'],
 		    success: handleSuccessFn,
    			scope: this,
 		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
@@ -525,7 +524,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		          qtip:'Delete query',
 		          // hidden:true,
 		          handler: function(event, toolEl, panel){
-		        	//this.queryCataloguePanel.addQuery();
+		        	this.queryCataloguePanel.deleteSelectedQuery();
 		          }, 
 		          scope: this
 		        }, {

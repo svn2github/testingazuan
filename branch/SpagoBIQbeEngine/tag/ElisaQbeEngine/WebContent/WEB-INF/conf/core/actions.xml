@@ -16,10 +16,35 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="REFRESH_QUERY_ACTION" 
-			class="it.eng.spagobi.qbe.core.service.RefreshQueryAction"  
+	<ACTION name="SET_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.SetCatalogueAction"  
 			scope="REQUEST">
 			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="ADD_QUERY_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.AddQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="DELETE_QUERIES_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.DeleteQueriesAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	
+	
+	
+	
+	
+	<ACTION name="GET_QUERIES_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.GetQueriesAction"  
+			scope="REQUEST">			
 		<CONFIG></CONFIG>
 	</ACTION>
 	
@@ -37,19 +62,9 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="ADD_QUERY_ACTION" 
-			class="it.eng.spagobi.qbe.core.service.AddQueryAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
 	
-	<ACTION name="GET_QUERIES_ACTION" 
-			class="it.eng.spagobi.qbe.core.service.GetQueriesAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
+	
+	
 	
 	<ACTION name="VALIDATE_QUERY_ACTION" 
 			class="it.eng.spagobi.qbe.core.service.ValidateQueryAction"  

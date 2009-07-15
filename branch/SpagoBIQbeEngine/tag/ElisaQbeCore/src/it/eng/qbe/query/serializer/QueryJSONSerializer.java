@@ -181,6 +181,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 				filterJSON.put(SerializationConstants.FILTER_OPEARND_DESCRIPTION, filter.getOperandDesc());			
 				filterJSON.put(SerializationConstants.FILTER_OPEARND_TYPE, filter.getOperandType());
 				filterJSON.put(SerializationConstants.FILTER_BOOLEAN_CONNETOR, filter.getBoperator());
+				filterJSON.put(SerializationConstants.FILTER_IS_FREE, filter.isFree());
 			} catch(JSONException e) {
 				throw new SerializationException("An error occurred while serializing filter on field: " + fieldUniqueName, e);
 			}

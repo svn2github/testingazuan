@@ -17,6 +17,7 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.entity'] = 'Entity';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.field'] = 'Field';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.operator'] = 'Operator';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.value'] = 'Operand';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.isfree'] = 'Is free';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.type'] = 'Operand Type';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.boperator'] = 'Bol.Connector';
 

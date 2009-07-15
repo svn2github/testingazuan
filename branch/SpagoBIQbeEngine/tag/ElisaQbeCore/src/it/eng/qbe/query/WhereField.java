@@ -39,6 +39,7 @@ public class WhereField {
 	private String operandType;
 	private String operandDesc;
 	private String boperator;
+	private boolean isFree;
 	
 	public static final String EQUALS_TO = "EQUALS TO";
 	public static final String NOT_EQUALS_TO = "NOT EQUALS TO";
@@ -62,7 +63,7 @@ public class WhereField {
 	
 	
 	public WhereField(String fname, String fdesc, 
-			String uniqueName, String operator, Object operand, String type, String desc, String boperator) {
+			String uniqueName, String operator, Object operand, String type, String desc, String boperator, boolean isFree) {
 		
 		setUniqueName(uniqueName);
 		setOperator( operator );
@@ -72,6 +73,7 @@ public class WhereField {
 		setFname(fname);
 		setFdesc(fdesc);
 		setBoperator(boperator);
+		setIsFree(isFree);
 	}
 	
 	public WhereField(String fname, String fdesc,  String uniqueName, String operator, String boperator) {
@@ -82,6 +84,7 @@ public class WhereField {
 		setFname(fname);
 		setFdesc(fdesc);
 		setBoperator(boperator);
+		setIsFree(false);
 	}
 	
 	
@@ -148,5 +151,13 @@ public class WhereField {
 
 	public void setBoperator(String boperator) {
 		this.boperator = boperator;
+	}
+	
+	public boolean isFree() {
+		return isFree;
+	}
+
+	public void setIsFree(boolean isFree) {
+		this.isFree = isFree;
 	}
 }

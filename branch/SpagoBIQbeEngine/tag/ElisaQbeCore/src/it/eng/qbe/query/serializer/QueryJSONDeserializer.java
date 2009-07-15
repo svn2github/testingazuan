@@ -149,6 +149,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		String fieldUniqueName;
 		String operator;
 		String operand;
+		boolean isFree;
 		String operandDesc;
 		String operandType;
 		String boperator;
@@ -171,6 +172,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 				
 				operator = filterJSON.getString(SerializationConstants.FILTER_OPEARTOR);
 				operand = filterJSON.getString(SerializationConstants.FILTER_OPEARND);
+				isFree = filterJSON.getBoolean(SerializationConstants.FILTER_IS_FREE);
 				operandDesc = filterJSON.getString(SerializationConstants.FILTER_OPEARND_DESCRIPTION);
 				operandType = filterJSON.getString(SerializationConstants.FILTER_OPEARND_TYPE);
 				boperator = filterJSON.getString(SerializationConstants.FILTER_BOOLEAN_CONNETOR);
@@ -183,7 +185,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			Assert.assertTrue(!"NONE".equalsIgnoreCase(operator), "Undefined operator NONE for filter: " + filterJSON.toString());
 					
 		    
-			query.addWhereFiled(fname, fdesc,field.getUniqueName(), operator, operand, operandType, operandDesc, boperator);
+			query.addWhereFiled(fname, fdesc,field.getUniqueName(), operator, operand, operandType, operandDesc, boperator, isFree);
 		}	
 	}
 	

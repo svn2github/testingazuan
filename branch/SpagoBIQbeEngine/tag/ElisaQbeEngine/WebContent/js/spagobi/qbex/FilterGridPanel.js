@@ -186,7 +186,8 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				jsonStr += 	'"operand"  : "' + tmpRec.data['odesc']  + '",';
 			} else {
 				jsonStr += 	'"operand"  : "' + tmpRec.data['operand']  + '",';
-			}						
+			}
+			jsonStr += 	'"isfree"  : ' + tmpRec.data['isfree']  + ',';
 			jsonStr += 	'"otype"  : "' + tmpRec.data['otype']  + '",';
 			jsonStr += 	'"odesc"  : "' + tmpRec.data['odesc']  + '",';
 			jsonStr += 	'"boperator"  : "' + tmpRec.data['boperator']  + '"';
@@ -262,7 +263,29 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
   			this.grid.store.add(record); 
 		  }
 	}
+		
+	, getFreeFilters : function() {
+		var filters = [];
+		for(i = 0; i <  this.grid.store.getCount(); i++) {
+			var record =  this.grid.store.getAt(i);
+			var filter = Ext.apply({}, record.data);
+			if (filter.isfree) {
+				filters.push(filter);
+			}
+		}
+		
+		return filters;
+	}
 	
+    , updateFreeFilters: function(formState) {
+    	for (var filterName in formState) {
+    		var index = this.grid.store.find('fname', filterName);
+    		if (index != -1) {
+    			var aRecord = this.grid.store.getAt(index);
+    			aRecord.set('odesc', formState[filterName]);
+    		}
+    	}
+    }
 	
 	
 	
@@ -342,6 +365,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	           {name: 'field'},
 	           {name: 'operator'},
 	           {name: 'operand'},
+	           {name: 'isfree'},
 	           {name: 'otype'},	           
 	           {name: 'odesc'},
 	           {name: 'boperator'},    
@@ -357,6 +381,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	      {name: 'field', type: 'string'},
 	      {name: 'operator', type: 'string'},
 	      {name: 'operand', type: 'auto'},
+	      {name: 'isfree', type: 'bool'},
 	      {name: 'otype', type: 'string'},
 	      {name: 'odesc', type: 'string'},
 	      {name: 'boperator', type: 'string'},
@@ -405,6 +430,11 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
      				}
 		         }
 		    });
+		    
+		    var isFreeCheckColumn = new Ext.grid.CheckColumn({
+			       header: LN('sbi.qbe.filtergridpanel.headers.isfree'),
+			       dataIndex: 'isfree'
+			});
 		    
 		    var filterOptColumnEditor = new Ext.form.ComboBox({
 	           	  tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
@@ -456,7 +486,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		           //width: 75,
 		           
 		           editor: valueColumnEditor               		           
-		        },{
+		        },
+		        isFreeCheckColumn,
+		        {
 		           header: LN('sbi.qbe.filtergridpanel.headers.type'),
 		           dataIndex: 'otype'
 		           //width: 75
@@ -475,7 +507,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    
 		    this.cm.defaultSortable = true;
 		    
-		    this.plgins = [delButtonColumn];
+		    this.plgins = [delButtonColumn, isFreeCheckColumn];
 	}
 
 	, initToolbar: function(config) {

@@ -182,11 +182,39 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		    params: params
 		});                      	
 	}
-   
+
+    , checkFreeFilters: function() {
+    	var freeFilters = this.filterGridPanel.getFreeFilters();
+	    if (freeFilters.length > 0) {
+	    	var freeConditionsWindow = new Sbi.qbe.FreeConditionsWindow({freeFilters: freeFilters});
+	    	freeConditionsWindow.on('apply', function (formState) {
+	    		this.filterGridPanel.updateFreeFilters(formState);
+	    		this.executeQuery();
+	    	}, this);
+	    	freeConditionsWindow.show();
+	    } else {
+	    	this.executeQuery();
+	    }
+    }
+    
     // public methods
     , executeQuery: function() {
-    	var q = this.getQuery();
-    	this.fireEvent('execute', this, q);
+    	this.commitQueryCatalogue(function() {
+			this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQuery());
+		});
+    	/*
+	    Ext.Ajax.request({
+		    url: this.services['synchronizeQuery'],
+		    success: function(response, options) {
+	        	this.commitQueryCatalogue(function() {
+					this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQuery());
+	   			});
+   			},
+   			scope: this,
+		    failure: Sbi.exception.ExceptionHandler.handleFailure,					
+		    params: this.getParams
+		});
+		*/
     }
 
 	, saveQuery: function(meta) {
@@ -443,24 +471,15 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        },{
 	          id:'gear',
 	          qtip:'Execute query',
-	          handler: function(event, toolEl, panel){
-	        	this.commitQueryCatalogue(function() {
-	        		alert('catalogue committed');
-    				this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQuery());
-       			});
-	        	
-	        	/*
-	        	Ext.Ajax.request({
-					    url: this.services['synchronizeQuery'],
-					    success: function(response, options) {
-	        				this.fireEvent('execute', this, this.getQuery());
-		       			},
-		       			scope: this,
-					    failure: Sbi.exception.ExceptionHandler.handleFailure,					
-					    params: this.getParams
-					});
-					*/                      
-	          },
+	          handler: this.checkFreeFilters,
+			          /*
+			          function(event, toolEl, panel){
+			        	this.commitQueryCatalogue(function() {
+			        		alert('catalogue committed');
+		    				this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQuery());
+		       			});
+			          },
+			          */
 	          scope: this
 	        },{
 	          id:'search',

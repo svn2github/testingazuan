@@ -68,6 +68,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			query  = new Query();	
 			
 			try {
+				query.setId(queryJSON.getString(SerializationConstants.ID));
 				fieldsJSON = queryJSON.getJSONArray( SerializationConstants.FIELDS );
 				distinctClauseEnabled = queryJSON.getBoolean( SerializationConstants.DISTINCT );
 				filtersJSON = queryJSON.getJSONArray( SerializationConstants.FILTERS );
@@ -166,7 +167,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			
 			try {
 				fname = filterJSON.getString(SerializationConstants.FILTER_NAME);
-				fdesc =  filterJSON.getString( SerializationConstants.FILTER_DESCRIPTION);
+				fdesc =  filterJSON.getString( SerializationConstants.FILTER_NAME);
 				
 				operator = filterJSON.getString(SerializationConstants.FILTER_OPEARTOR);
 				operand = filterJSON.getString(SerializationConstants.FILTER_OPEARND);

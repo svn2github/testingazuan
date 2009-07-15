@@ -22,9 +22,11 @@ package it.eng.qbe.catalogue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.QueryMeta;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 
 
@@ -45,10 +47,37 @@ public class QueryCatalogue {
 		this.counter = 0;
 	}
 	
-	public String addQuery(Query query, QueryMeta meta) {
+	public String addQuery(Query query) {
+		return this.addQuery(query, null);
+	}
+	
+	public void refreshQuery(Query query, QueryMeta meta) {
+		Assert.assertNotNull(query, "Impossibble refresh query. Input parameters query cannot be null");
+		Assert.assertNotNull(query.getId(), "Impossibble refresh query. Query id cannot be null");
+		Assert.assertNotNull(getQuery(query.getId()), "Impossibble refresh query. A query with id [" + query.getId() + "] does not exist in the catalog");
+		if(meta != null) {
+			Assert.assertTrue(query.getId().equals(meta.getId()), "Impossibble refresh query. The query id [" + query.getId() + "] does not match with the meta id [" + meta.getId()+ "]");
+			this.meta.put(meta.getId(), meta);
+		}
+		this.queries.put( query.getId(), query);
+		
+		
+	}
+	
+	private String addQuery(Query query, QueryMeta meta) {
 		String id = "id" + (++counter);
 		query.setId(id);
 		this.queries.put( query.getId(), query);
+		
+		if(meta == null) {
+			meta = new QueryMeta();
+			meta.setId( query.getId() );
+		}
+		
+		if(meta.getName() == null) {
+			meta.setName( "query-" + query.getId() );
+		}
+		
 		this.meta.put( query.getId(), meta);
 		return id;
 	}
@@ -59,5 +88,9 @@ public class QueryCatalogue {
 	
 	public QueryMeta getQueryMeta(String id) {
 		return (QueryMeta)this.meta.get(id);
+	}
+
+	public Set getIds() {
+		return queries.keySet();
 	}
 }

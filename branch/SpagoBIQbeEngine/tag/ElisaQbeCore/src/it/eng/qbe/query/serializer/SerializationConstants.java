@@ -25,6 +25,9 @@ package it.eng.qbe.query.serializer;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public class SerializationConstants {
+	
+	public static final String ID = "id";
+	
 	public static final String FIELDS = "fields";
 	public static final String FIELD_ID = "id";
 	public static final String FIELD_ENTITY = "entity";
@@ -48,7 +51,7 @@ public class SerializationConstants {
 	public static final String FILTER_OPEARND_DESCRIPTION = "odesc";
 	public static final String FILTER_OPEARND_TYPE = "otype";
 	public static final String FILTER_BOOLEAN_CONNETOR = "boperator";
-	
+
 	public static final String EXPRESSION = "expression";
 	public static final String EXPRESSION_TYPE = "type";
 	public static final String EXPRESSION_VALUE = "value";

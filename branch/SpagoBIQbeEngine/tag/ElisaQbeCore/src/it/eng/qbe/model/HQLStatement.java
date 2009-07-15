@@ -43,6 +43,7 @@ import it.eng.qbe.query.SelectField;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
@@ -608,7 +609,7 @@ public class HQLStatement extends BasicStatement {
 			}
 			
 		}				
-		this.queryString = queryStr;
+		this.queryString = queryStr;			
 	}
 		
 	public String getQueryString() {		

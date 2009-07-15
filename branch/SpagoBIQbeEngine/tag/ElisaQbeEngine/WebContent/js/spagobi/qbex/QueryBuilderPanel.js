@@ -190,8 +190,7 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 	            		       	 }
 	    	        		},
 	    	        		scope: this,
-	    	        		failure: Sbi.exception.ExceptionHandler.handleFailure,
-	    	        		params: this.getParams
+	    	        		failure: Sbi.exception.ExceptionHandler.handleFailure
 	    	        	});
 	       			},
 	       			scope: this,

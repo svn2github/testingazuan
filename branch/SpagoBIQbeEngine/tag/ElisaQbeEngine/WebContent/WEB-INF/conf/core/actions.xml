@@ -9,15 +9,22 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="EXEC_QUERY_ACTION" 
-			class="it.eng.spagobi.qbe.core.service.ExecuteQueryAction"  
+	<ACTION name="GET_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.GetCatalogueAction"  
 			scope="REQUEST">
-			
+		
 		<CONFIG></CONFIG>
 	</ACTION>
 	
 	<ACTION name="REFRESH_QUERY_ACTION" 
 			class="it.eng.spagobi.qbe.core.service.RefreshQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SELECT_QUERY_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.SelectQueryAction"  
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
@@ -30,8 +37,29 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="ADD_QUERY_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.AddQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_QUERIES_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.GetQueriesAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 	<ACTION name="VALIDATE_QUERY_ACTION" 
 			class="it.eng.spagobi.qbe.core.service.ValidateQueryAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="EXEC_QUERY_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.ExecuteQueryAction"  
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import it.eng.qbe.catalogue.QueryCatalogue;
 import it.eng.qbe.conf.QbeTemplate;
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.IDataSource;
@@ -51,10 +52,18 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	DataMartModel datamartModel;	
 	
 	
-	Query query;	
+	QueryCatalogue queryCatalogue;
+	
+
+	String activeQueryId;
+	
+	//Query query;	
+	
+	
+	
+
 	// executable version of the query. cached here for performance reasons (i.e. avoid query recompilation over resultset paging)
 	IStatement statment;
-	//QueryCatalogue datamartWizard;	
 
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(QbeEngineInstance.class);
@@ -71,7 +80,8 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		
 		functionalities = template.getFunctionalities();
 		standaloneMode = false;		
-		query = new Query();
+		queryCatalogue = new QueryCatalogue();
+		
 				
 		it.eng.spagobi.tools.datasource.bo.IDataSource dataSrc = (it.eng.spagobi.tools.datasource.bo.IDataSource)env.get( EngineConstants.ENV_DATASOURCE );
 		SpagoBiDataSource ds = dataSrc.toSpagoBiDataSource();
@@ -95,6 +105,8 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		}
 		datamartModel.setName(datamartModel.getDataSource().getDatamartName());
 		datamartModel.setDescription(datamartModel.getDataSource().getDatamartName());
+	
+		setActiveQuery(new Query());
 		
 		validate();
 		
@@ -108,7 +120,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	public IEngineAnalysisState getAnalysisState() {
 		QbeEngineAnalysisState analysisState = null;
 		analysisState= new QbeEngineAnalysisState( datamartModel );
-		analysisState.setQuery( query );
+		analysisState.setQuery( getActiveQuery() );
 		return analysisState;
 	}
 	
@@ -116,7 +128,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		QbeEngineAnalysisState qbeEngineAnalysisState = null;
 		
 		qbeEngineAnalysisState = (QbeEngineAnalysisState)analysisState;
-		setQuery( qbeEngineAnalysisState.getQuery() );
+		setActiveQuery( qbeEngineAnalysisState.getQuery() );
 	}
 	
 
@@ -137,7 +149,8 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	}
 
 	public void setAnalysisState(String analysisState) {
-		query = datamartModel.getQuery(analysisState);		
+		Query query = datamartModel.getQuery(analysisState);	
+		setActiveQuery(query);
 	}
 
 	public DataMartModel getDatamartModel() {
@@ -147,14 +160,51 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	public void setDatamartModel(DataMartModel datamartModel) {
 		this.datamartModel = datamartModel;
 	}	
-
-	public Query getQuery() {
-		return query;
+	
+	
+	public QueryCatalogue getQueryCatalogue() {
+		return queryCatalogue;
 	}
 
-	public void setQuery(Query query) {
-		this.query = query;
-		this.statment = getDatamartModel().createStatement( getQuery() );
+	public void setQueryCatalogue(QueryCatalogue queryCatalogue) {
+		this.queryCatalogue = queryCatalogue;
+	}
+	
+	private String getActiveQueryId() {
+		return activeQueryId;
+	}
+
+	private void setActiveQueryId(String activeQueryId) {
+		this.activeQueryId = activeQueryId;
+	}
+	
+	public Query getActiveQuery() {
+		return getQueryCatalogue().getQuery( getActiveQueryId() );
+	}
+
+	public void setActiveQuery(Query query) {
+		if(query.getId() == null) {
+			getQueryCatalogue().addQuery(query);
+		}
+
+		setActiveQueryId(query.getId());
+		
+		this.statment = getDatamartModel().createStatement( query );
+	}
+	
+	public void setActiveQuery(String queryId) {
+		Query query;
+		
+		query = getQueryCatalogue().getQuery( queryId );
+		if(query != null) {
+			setActiveQueryId(query.getId());
+			this.statment = getDatamartModel().createStatement( query );
+		}
+	}
+	
+	public void resetActiveQuery() {
+		setActiveQueryId(null);
+		setStatment(null);
 	}
 	
 	public IStatement getStatment() {

@@ -1,5 +1,5 @@
 /* =============================================================================
-* Fix a proble in the loader related to async loading
+* Fix a problem in the loader related to async loading
 ============================================================================= */
 Ext.override(Ext.tree.TreeLoader, {
     createNode : function(attr){

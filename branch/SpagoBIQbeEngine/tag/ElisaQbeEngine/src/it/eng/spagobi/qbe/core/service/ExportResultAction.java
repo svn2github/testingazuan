@@ -98,8 +98,8 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			logger.debug(RESPONSE_TYPE + ": " + responseType);
 					
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
-			Assert.assertTrue(getEngineInstance().getQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
+			Assert.assertNotNull(getEngineInstance().getActiveQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
+			Assert.assertTrue(getEngineInstance().getActiveQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
 					
 			Assert.assertNotNull(mimeType, "Input parameter [" + MIME_TYPE + "] cannot be null in oder to execute " + this.getActionName() + " service");		
 			Assert.assertTrue( MimeUtils.isValidMimeType( mimeType ) == true, "[" + mimeType + "] is not a valid value for " + MIME_TYPE + " parameter");
@@ -111,7 +111,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			fileExtension = MimeUtils.getFileExtension( mimeType );
 			writeBackResponseInline = RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType);
 			
-			statement = getEngineInstance().getDatamartModel().createStatement( getEngineInstance().getQuery() );		
+			statement = getEngineInstance().getDatamartModel().createStatement( getEngineInstance().getActiveQuery() );		
 			//logger.debug("Parametric query: [" + statement.getQueryString() + "]");
 			
 			statement.setParameters( getEnv() );
@@ -133,7 +133,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			}
 			logger.debug("Fields extracted succesfully");
 			
-			Assert.assertTrue(getEngineInstance().getQuery().getSelectFields().size() == extractedFields.size(), 
+			Assert.assertTrue(getEngineInstance().getActiveQuery().getSelectFields().size() == extractedFields.size(), 
 					"The number of fields extracted from query resultset cannot be different from the number of fields specified into the query select clause");
 			
 			decorateExtractedFields( extractedFields );
@@ -206,7 +206,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 
 
 	private void decorateExtractedFields(List extractedFields) {
-		List selectedFields = getEngineInstance().getQuery().getSelectFields();
+		List selectedFields = getEngineInstance().getActiveQuery().getSelectFields();
 		Iterator selectedFieldsIterator = selectedFields.iterator();
 		Iterator extractedFieldsIterator =  extractedFields.iterator();
 		while( extractedFieldsIterator.hasNext() ) {

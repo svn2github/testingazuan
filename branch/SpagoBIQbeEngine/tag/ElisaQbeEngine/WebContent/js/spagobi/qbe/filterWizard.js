@@ -20,6 +20,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
   
   // true only after the first time the window get rendered (used for lazy initialization)
   var active = false;
+  
   // used if someone want to set the expression before the first visualization
   var expression = undefined;
    
@@ -76,7 +77,6 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
   });
     
   var log = function(msg, isError) {
-    //alert(logPanel.body.dom.innerHTML );
     var date = new Date();
     var str = date.getHours()+":"+date.getMinutes() +":"+ date.getSeconds();
      
@@ -324,11 +324,13 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
   };
   
   var setExpression = function(exp, refresh, logger) {
-  	if(active) {
+	  if(active) {
   		editor.reset();
   		if(exp.trim() == "") {return;}
-        editor.insertAtCursor(exp) ;        
-        if(refresh) refreshExpStructureTreePanel(logger);
+        editor.insertAtCursor(exp) ;
+        if(refresh === true) {
+        	refreshExpStructureTreePanel(logger);
+        }
   	} else {
   		expression = exp;
   	}
@@ -436,12 +438,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
         },
         
         setExpression: function(exp) {
-        	/*
-          editor.reset();
-          editor.insertAtCursor(exp) ; 
-          refreshExpStructureTreePanel();
-          */
-          setExpression(exp);
+          setExpression(exp, true);
         },
         
         getExpression: function() {
@@ -456,19 +453,18 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
         getExpressionAsObject: function(tree) {
             var o = {};
             
-            if(getExpression().trim() =="") return '{}';
+            if(getExpression().trim() =="") return o;
             if(!tree) tree = getExpStructureTree();          
            
-            o = Ext.apply(o, tree || {});
-            
             var types = ['UNDEF', 'NODE_OP', 'NODE_CONST']; 
   		  	var values = ['UNDEF', 'AND', 'OR', 'GROUP'];
   		  	
-  		  	o.type = types[o.type];
-  		    o.values = types[o.values];
-            if(o.childNodes && o.childNodes.length > 0) {             
-              for(var i = 0; i < o.childNodes.length; i++) {
-            	  o.childNodes[i] = this.getExpressionAsObject(o.childNodes[i]);
+  		  	o.type = types[tree.attributes.type];
+  		    o.value = (tree.attributes.type==1? values[tree.attributes.value]: tree.attributes.value);
+  		    o.childNodes = [];
+            if(tree.childNodes && tree.childNodes.length > 0) {             
+              for(var i = 0; i < tree.childNodes.length; i++) {
+            	  o.childNodes.push( this.getExpressionAsObject(tree.childNodes[i]) );
               }           
             }   
             

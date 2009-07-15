@@ -91,7 +91,9 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
    
     // public methods
 	
-	, execQuery:  function() {  
+	, execQuery:  function(query) {  
+		alert("[" + query.id + "]");
+		this.store.baseParams = {id: query.id};
 		this.store.load({params: {start: 0, limit: 25 }});
 	}
 

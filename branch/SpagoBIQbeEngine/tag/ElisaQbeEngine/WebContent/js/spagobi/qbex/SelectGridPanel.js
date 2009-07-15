@@ -130,11 +130,8 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	// public methods
 	
 	, loadSavedData: function(query) {
-  		for(var i = 0; i < query.fields.length; i++) {
-  			var field = query.fields[i];
-  			var record = new this.Record(field);
-  			this.store.add(record); 
-  		}
+  		this.setFields(query.fields);
+  		
   		if (query.distinct === true) {
   			this.distinctCheckBox.setValue(true);
   		} else {
@@ -160,11 +157,25 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
     	}
 	}
 	
+	, deleteFields: function() {
+		this.grid.store.removeAll();
+	}
+	
+	, setFields: function(fields) {
+		this.deleteFields();
+		for(var i = 0; i < fields.length; i++) {
+  			var field = fields[i];
+  			var record = new this.Record(field);
+  			this.store.add(record); 
+  		}
+	}
+	
 	, getFields: function() {
 		var fields = [];
 		for(i = 0; i < this.store.getCount(); i++) {
 			var record = this.store.getAt(i);
 			var field = Ext.apply({}, record.data);
+			field.group = field.group || false;
 			fields.push(field);
 		}
 		
@@ -190,10 +201,6 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		jsonStr += ']';
 		
 		return jsonStr;
-	}
-	
-	, deleteGrid: function() {
-		this.grid.store.removeAll();
 	}
 	
 	, hideNonVisibleRows: function(button, pressed) {
@@ -404,7 +411,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	            iconCls:'remove',
 	            listeners: {
 	            	'click': {
- 						fn: this.deleteGrid,
+ 						fn: this.deleteFields,
  						scope: this
  					}
 	            }

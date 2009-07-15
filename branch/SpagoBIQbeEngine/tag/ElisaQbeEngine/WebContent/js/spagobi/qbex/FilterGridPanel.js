@@ -41,7 +41,7 @@
   * 
   * Authors
   * 
-  * - name (mail)
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
 Ext.ns("Sbi.qbe");
@@ -148,21 +148,73 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 
 
 	// public methods
+
+	, deleteFilters : function() {
+		this.grid.store.removeAll();
+	}
+
     
 	, loadSavedData : function(query) {
-  		for(var i = 0; i < query.filters.length; i++) {
-  			var filter = query.filters[i];
+		this.setFilters(query.filters);
+		this.setFiltersExpression(query.expression);	
+  	}
+	
+	, getFilters : function() {
+		var filters = [];
+		for(i = 0; i <  this.grid.store.getCount(); i++) {
+			var record =  this.grid.store.getAt(i);
+			var filter = Ext.apply({}, record.data);
+			filter.operand = filter.otype === 'Static Value'? filter.odesc: filter.operand;
+			filters.push(filter);
+		}
+		
+		return filters;
+	}
+	
+	, getRowsAsJSONParams : function() {
+		var jsonStr = '[';
+		for(i = 0; i <  this.grid.store.getCount(); i++) {
+			var tmpRec =  this.grid.store.getAt(i);
+			if(i != 0) jsonStr += ',';
+			jsonStr += '{';
+			jsonStr += 	'"fname" : "' + tmpRec.data['fname'] + '",';	
+			jsonStr += 	'"id" : "' + tmpRec.data['id'] + '",';	
+			jsonStr += 	'"entity" : "' + tmpRec.data['entity'] + '",';	
+			jsonStr += 	'"field"  : "' + tmpRec.data['field']  + '",';	
+			jsonStr += 	'"operator"  : "' + tmpRec.data['operator']  + '",';
+			if(tmpRec.data['otype'] == "Static Value") {
+				jsonStr += 	'"operand"  : "' + tmpRec.data['odesc']  + '",';
+			} else {
+				jsonStr += 	'"operand"  : "' + tmpRec.data['operand']  + '",';
+			}						
+			jsonStr += 	'"otype"  : "' + tmpRec.data['otype']  + '",';
+			jsonStr += 	'"odesc"  : "' + tmpRec.data['odesc']  + '",';
+			jsonStr += 	'"boperator"  : "' + tmpRec.data['boperator']  + '"';
+			
+			jsonStr += '}';	
+		}
+		jsonStr += ']';
+		
+		return jsonStr;
+	}
+	
+	, setFilters: function(filters) {
+		this.deleteFilters();
+		for(var i = 0; i < filters.length; i++) {
+  			var filter = filters[i];
   			var record = new this.Record(filter);
   			this.store.add(record); 
   		}
-  		
-  		if(query.expression) {
-  			var expStr = this.loadSavedExpression(query.expression);
-  			it.eng.spagobi.engines.qbe.filterwizard.setExpression( expStr ); 
-  			this.setWizardExpression(true); // togle oce fixed
-  		}
-  		
-  	}
+	}
+	
+	, setFiltersExpression: function(expression) {
+		if(expression !== undefined) {
+			var expStr = this.loadSavedExpression(expression);
+			it.eng.spagobi.engines.qbe.filterwizard.setExpression( expStr, true ); 
+			this.setWizardExpression(true);
+		}
+	}
+	
   	
   	, loadSavedExpression : function(expression) {
   		var str = "";
@@ -211,45 +263,8 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		  }
 	}
 	
-	, getFilters : function() {
-		var filters = [];
-		for(i = 0; i <  this.grid.store.getCount(); i++) {
-			var record =  this.grid.store.getAt(i);
-			var filter = Ext.apply({}, record.data);
-			filter.operand = filter.otype === 'Static Value'? filter.odesc: filter.operand;
-			filters.push(filter);
-		}
-		
-		return filters;
-	}
 	
 	
-	, getRowsAsJSONParams : function() {
-				var jsonStr = '[';
-				for(i = 0; i <  this.grid.store.getCount(); i++) {
-					var tmpRec =  this.grid.store.getAt(i);
-					if(i != 0) jsonStr += ',';
-					jsonStr += '{';
-					jsonStr += 	'"fname" : "' + tmpRec.data['fname'] + '",';	
-					jsonStr += 	'"id" : "' + tmpRec.data['id'] + '",';	
-					jsonStr += 	'"entity" : "' + tmpRec.data['entity'] + '",';	
-					jsonStr += 	'"field"  : "' + tmpRec.data['field']  + '",';	
-					jsonStr += 	'"operator"  : "' + tmpRec.data['operator']  + '",';
-					if(tmpRec.data['otype'] == "Static Value") {
-						jsonStr += 	'"operand"  : "' + tmpRec.data['odesc']  + '",';
-					} else {
-						jsonStr += 	'"operand"  : "' + tmpRec.data['operand']  + '",';
-					}						
-					jsonStr += 	'"otype"  : "' + tmpRec.data['otype']  + '",';
-					jsonStr += 	'"odesc"  : "' + tmpRec.data['odesc']  + '",';
-					jsonStr += 	'"boperator"  : "' + tmpRec.data['boperator']  + '"';
-					
-					jsonStr += '}';	
-				}
-				jsonStr += ']';
-				
-				return jsonStr;
-	}
 	
 	, syncWizardExpressionWithGrid: function() {
 		var exp = '';
@@ -261,7 +276,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				exp += '$F{' + tmpRec.data['fname'] + '}';
 			}
 		}
-		it.eng.spagobi.engines.qbe.filterwizard.setExpression(exp);
+		it.eng.spagobi.engines.qbe.filterwizard.setExpression(exp, true);
 		
 	}
 	
@@ -315,11 +330,8 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		return this.wizardExpression;
 	}
 	
-	, deleteGrid : function() {
-		this.grid.store.removeAll();
-	}
 	
-    // private methods
+    // -- private methods ----------------------------------------------------------------------------------------
 
 	, initStore: function(config) {
 		this.store = new Ext.data.SimpleStore({
@@ -475,7 +487,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				    iconCls:'remove',
 				    listeners: {
 				    	'click': {
-			    			fn: this.deleteGrid,
+			    			fn: this.deleteFilters,
 			    			scope: this
 			    		}
 				    }

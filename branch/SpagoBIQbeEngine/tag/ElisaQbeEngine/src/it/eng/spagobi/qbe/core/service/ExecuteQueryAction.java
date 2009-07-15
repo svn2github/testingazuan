@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import it.eng.qbe.model.HQLStatement;
 import it.eng.qbe.model.IStatement;
+import it.eng.qbe.query.Query;
 import it.eng.qbe.query.SelectField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -51,6 +52,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	// INPUT PARAMETERS
 	public static final String LIMIT = "limit";
 	public static final String START = "start";
+	public static final String QUERY_ID = "id";
 	
 	
 	/** Logger component. */
@@ -60,11 +62,17 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	
 	public void service(SourceBean request, SourceBean response)  {				
 				
-		IStatement statement = null;
+		
+		String queryId = null;
 		Integer limit = null;
 		Integer start = null;
 		Integer maxSize = null;
 		boolean isMaxResultsLimitBlocking = false;
+		
+		
+		Query query = null;
+		IStatement statement = null;
+		
 		SourceBean queryResponseSourceBean = null;		
 		List results = null;
 		Integer resultNumber = null;
@@ -75,6 +83,9 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		try {
 		
 			super.service(request, response);		
+			
+			queryId = getAttributeAsString( QUERY_ID );
+			logger.debug("Parameter [" + QUERY_ID + "] is equals to [" + queryId + "]");
 			
 			start = getAttributeAsInteger( START );	
 			logger.debug("Parameter [" + START + "] is equals to [" + start + "]");
@@ -88,8 +99,19 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			logger.debug("Configuration setting  [" + "QBE.QBE-SQL-RESULT-LIMIT.isBlocking" + "] is equals to [" + isMaxResultsLimitBlocking + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
-			Assert.assertTrue(getEngineInstance().getQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
+			Assert.assertNotNull(queryId, "Parameter [" + QUERY_ID + "] cannot be null in oder to execute " + this.getActionName() + " service");
+			
+			query = getEngineInstance().getQueryCatalogue().getQuery(queryId);
+			Assert.assertNotNull(query, "Query object with id [" + queryId + "] does not exist in the catalogue");
+			
+			if(getEngineInstance().getActiveQuery() != null && getEngineInstance().getActiveQuery().getId().equals(queryId)) {
+				logger.debug("Query with id [" + queryId + "] is the current active query. Previous generated statment will be reused");
+				query = getEngineInstance().getActiveQuery();
+			} else {
+				logger.debug("Query with id [" + queryId + "] is not the current active query. A new statment will be generated");
+				getEngineInstance().setActiveQuery(query);
+				
+			}
 			
 			statement = getEngineInstance().getStatment();	
 			statement.setParameters( getEnv() );
@@ -111,12 +133,10 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 				logger.debug("Query execution aborted because of an internal exceptian");
 				SpagoBIEngineServiceException exception;
 				String message;
-				String query;
 				
-				query = statement.getQueryString();
-				message = "An error occurred in " + getActionName() + " service while executing query: [" +  query + "]";				
+				message = "An error occurred in " + getActionName() + " service while executing query: [" +  statement.getQueryString() + "]";				
 				exception = new SpagoBIEngineServiceException(getActionName(), message, e);
-				exception.addHint("Check if the query is properly formed: [" + query + "]");
+				exception.addHint("Check if the query is properly formed: [" + statement.getQueryString() + "]");
 				exception.addHint("Check connection configuration");
 				exception.addHint("Check the qbe jar file");
 				
@@ -189,7 +209,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 				fields = new JSONArray();
 				fields.put("recNo");
 				// Giro le intestazioni di colonne
-				Iterator fieldsIterator = getEngineInstance().getQuery().getSelectFields().iterator();
+				Iterator fieldsIterator = getEngineInstance().getActiveQuery().getSelectFields().iterator();
 				for (int j=0; j < row.length; j++){ 
 					JSONObject field = new JSONObject();
 					SelectField f = (SelectField)fieldsIterator.next();

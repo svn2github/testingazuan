@@ -120,8 +120,8 @@ public class QbeTagSupport extends BaseTagSupport {
 		}
 		
 		if(pageContext.getAttribute("query") == null) {
-			if(getEngineInstance().getQuery() !=  null) {
-				pageContext.setAttribute("query", getEngineInstance().getQuery() );
+			if(getEngineInstance().getActiveQuery() !=  null) {
+				pageContext.setAttribute("query", getEngineInstance().getActiveQuery() );
 			}
 		}
 		return (Query)pageContext.getAttribute("query");

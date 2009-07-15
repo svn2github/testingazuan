@@ -23,65 +23,72 @@ package it.eng.spagobi.qbe.core.service;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import it.eng.qbe.query.Query;
+import it.eng.qbe.query.QueryMeta;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.service.JSONAcknowledge;
+import it.eng.spagobi.utilities.service.JSONSuccess;
+
 
 /**
- * The Class CreateViewAction.
- * 
- * @author Andrea Gioia
+ * The Class ExecuteQueryAction.
  */
-public class CreateViewAction extends AbstractQbeEngineAction {
+public class DeleteQueriesAction extends AbstractQbeEngineAction {	
+	
+	public static final String SERVICE_NAME = "ADD_QUERY_ACTION";
+	public String getActionName(){return SERVICE_NAME;}
+	
 	
 	// INPUT PARAMETERS
-	public static final String VIEW_NAME = "viewName";	
-	public static final String QUERY = "query";
+	public static final String QUERY_NAME = "name";
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(CreateViewAction.class);
+    public static transient Logger logger = Logger.getLogger(DeleteQueriesAction.class);
+   
     
 	
-    
 	public void service(SourceBean request, SourceBean response)  {				
-		
-		String viewName = null;
-		String jsonEncodedQuery = null;
-		Query query = null;
-		
+				
+		String name;
+		Query query;
+		QueryMeta meta;
+					
 		logger.debug("IN");
 		
 		try {
 		
 			super.service(request, response);		
-		
-			viewName = getAttributeAsString(VIEW_NAME);
-			logger.debug(VIEW_NAME + " = [" + viewName + "]");
+			
+			name = getAttributeAsString( QUERY_NAME );
+			logger.debug("Parameter [" + QUERY_NAME + "] is equals to [" + name + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertNotNull(getEngineInstance().getActiveQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
-			Assert.assertTrue(getEngineInstance().getActiveQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
-			Assert.assertNotNull(viewName, "Input parameter [" + VIEW_NAME + "] cannot be null in oder to execute " + this.getActionName() + " service");
 			
-			getEngineInstance().getDatamartModel().addView(viewName, getEngineInstance().getActiveQuery());
+			query = new Query();
+			meta = new QueryMeta( name );
+			//getEngineInstance().getQueryCatalogue().addQuery(query, meta);
 			
+			JSONObject result = new JSONObject();
+			result.put("queryId", query.getId());
 			try {
-				writeBackToClient( new JSONAcknowledge() );
+				writeBackToClient( new JSONSuccess(result) );
 			} catch (IOException e) {
-				throw new SpagoBIEngineException("Impossible to write back the responce to the client", e);
+				String message = "Impossible to write back the responce to the client";
+				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
 			
 		} catch(Throwable t) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
-			// no resources need to be released
+			logger.debug("OUT");
 		}	
 		
-		logger.debug("OUT");
+		
 	}
+
 }

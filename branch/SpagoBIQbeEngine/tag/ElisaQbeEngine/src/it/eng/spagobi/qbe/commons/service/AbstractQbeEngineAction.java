@@ -91,7 +91,7 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
     	if(qbeEngineInstance == null) {
     		return null;
     	}
-    	return qbeEngineInstance.getQuery();
+    	return qbeEngineInstance.getActiveQuery();
 	}
 	
 	

@@ -41,7 +41,7 @@
   * 
   * Authors
   * 
-  * - name (mail)
+  * - Andrea Gioia (adrea.gioia@eng.it)
   */
 
 Ext.ns("Sbi.qbe");

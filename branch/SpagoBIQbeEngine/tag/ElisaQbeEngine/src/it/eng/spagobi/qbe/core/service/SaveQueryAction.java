@@ -140,10 +140,11 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
 			
-			Query queryBkp = getEngineInstance().getQuery();
-			getEngineInstance().setQuery(query);
+			Query queryBkp = getEngineInstance().getActiveQuery();
+			query.setId( queryBkp.getId() );
+			getEngineInstance().setActiveQuery(query);
 			result = saveAnalysisState();
-			getEngineInstance().setQuery(queryBkp);
+			getEngineInstance().setActiveQuery(queryBkp);
 			
 			if(!result.trim().toLowerCase().startsWith("ok")) {
 				throw new SpagoBIEngineServiceException(getActionName(), result);

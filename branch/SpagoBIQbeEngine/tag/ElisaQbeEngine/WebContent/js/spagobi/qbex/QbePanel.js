@@ -41,7 +41,7 @@
   * 
   * Authors
   * 
-  * - name (mail)
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
 Ext.ns("Sbi.qbe");
@@ -59,14 +59,15 @@ Sbi.qbe.QbePanel = function(config) {
 	
 	
 	this.tabs = new Ext.TabPanel({
-		//renderTo: Ext.getBody(),
+		border: false,
   		activeTab: 0,
   		items: [this.queryEditorPanel, this.queryResultPanel] 
 	});
 	
 	this.queryEditorPanel.on('execute', function(editorPanel, query){
+		alert('execution time baby');
 		this.tabs.activate(this.queryResultPanel);
-		this.queryResultPanel.execQuery();
+		this.queryResultPanel.execQuery(query);
 	}, this);
 	
 	

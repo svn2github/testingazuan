@@ -51,6 +51,9 @@
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/DataMartStructurePanel.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/QueryCataloguePanel.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/SelectGridDropTarget.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	

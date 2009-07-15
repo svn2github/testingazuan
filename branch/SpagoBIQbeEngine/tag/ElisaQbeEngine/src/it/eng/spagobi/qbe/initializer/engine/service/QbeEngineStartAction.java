@@ -79,7 +79,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 				qbeEngineInstance.setAnalysisState( analysisState );
 			}
 			
-			queryJSON = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(qbeEngineInstance.getQuery(), qbeEngineInstance.getDatamartModel());
+			queryJSON = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(qbeEngineInstance.getActiveQuery(), qbeEngineInstance.getDatamartModel());
 				
 			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);	
 			setAttribute(QUERY, queryJSON.toString());

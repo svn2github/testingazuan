@@ -69,11 +69,13 @@ Sbi.qbe.SelectGridPanel = function(config) {
 	this.initGridListeners(c);
 	
 	c = Ext.apply(c, {
-		border: false, 
+		border: true, 
 		layout: 'fit',
-		width: 1000,
+		autoWidth: true,
+		width: 'auto',
+		//width: 1000,
 		items: [this.grid]
-	})
+	});
 	
 	// constructor
 	Sbi.qbe.SelectGridPanel.superclass.constructor.call(this, c);
@@ -439,13 +441,14 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		        style:'padding:10px',
 		        iconCls:'icon-grid',
 		        collapsible:true,
+		        layout: 'fit',
 		        viewConfig: {
 		            forceFit:true
 		        },		
 		        
 		        enableDragDrop:true,
-     			ddGroup: 'gridDDGroup'		                
-		    });  
+     			ddGroup: 'gridDDGroup'	
+		    });
 		 	this.grid.type = this.type;
 	}
 	

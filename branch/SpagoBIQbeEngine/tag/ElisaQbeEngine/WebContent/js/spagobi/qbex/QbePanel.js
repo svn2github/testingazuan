@@ -76,7 +76,7 @@ Sbi.qbe.QbePanel = function(config) {
 		autoScroll: true, 
   		margins:'0 4 4 0',
   		items: [this.tabs] 
-	})
+	});
 	
 	// constructor
     Sbi.qbe.QbePanel.superclass.constructor.call(this, c);

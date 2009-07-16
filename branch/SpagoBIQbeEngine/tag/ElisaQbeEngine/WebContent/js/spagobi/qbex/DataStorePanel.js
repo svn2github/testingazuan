@@ -72,7 +72,7 @@ Sbi.widgets.DataStorePanel = function(config) {
 		title: LN('sbi.qbe.datastorepanel.title'),  
 		layout: 'fit',
 		items: [this.grid]
-	})
+	});
 	
 	// constructor
 	Sbi.widgets.DataStorePanel.superclass.constructor.call(this, c);

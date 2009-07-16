@@ -126,7 +126,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     	var query = {};
     	
     	if(asObject) {
-    		var selectedQuery = this.queryCataloguePanel.getSelectedQuery()
+    		var selectedQuery = this.queryCataloguePanel.getSelectedQuery();
     		if(selectedQuery)query.id = selectedQuery.id;
     		query.fields = this.selectGridPanel.getFields();
     		query.distinct = this.selectGridPanel.distinctCheckBox.getValue();
@@ -201,19 +201,6 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     	this.commitQueryCatalogue(function() {
 			this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQuery());
 		});
-    	/*
-	    Ext.Ajax.request({
-		    url: this.services['synchronizeQuery'],
-		    success: function(response, options) {
-	        	this.commitQueryCatalogue(function() {
-					this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQuery());
-	   			});
-   			},
-   			scope: this,
-		    failure: Sbi.exception.ExceptionHandler.handleFailure,					
-		    params: this.getParams
-		});
-		*/
     }
 
 	, saveQuery: function(meta) {
@@ -283,7 +270,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    	this.saveQueryWindow = new Sbi.widgets.SaveWindow({
 	    		title: 'Save query ...'
 	    	});
-	    	this.saveQueryWindow.on('save', function(win, formState){this.saveQuery(formState)}, this);
+	    	this.saveQueryWindow.on('save', function(win, formState){this.saveQuery(formState);}, this);
 		}
 	    this.saveQueryWindow.show();
 	}
@@ -295,7 +282,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    		, descriptionFieldVisible: false
 	    		, scopeFieldVisible: false
 	    	});
-			this.saveViewWindow.on('save', function(win, formState){this.saveView(formState)}, this);
+			this.saveViewWindow.on('save', function(win, formState){this.saveView(formState);}, this);
 		}
 		this.saveViewWindow.show();
 	}
@@ -347,7 +334,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        margins: '5 5 5 5',
 	        layout:'fit',
 	        collapsible: true,
-	        collapseMode: 'mini',
+	        //collapseMode: 'mini',
 	        collapseFirst: false,
 	        
 	        tools:[{
@@ -399,14 +386,14 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	, initCenterRegionPanel: function(c) {
 		this.selectGridPanel = new Sbi.qbe.SelectGridPanel(c);
 	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(c);
-	    	    
+	    
 	    this.centerRegionPanel = new Ext.Panel({ 
 	        
 	    	title:'Query Editor',
 	        region:'center',
 	        autoScroll: true,
 			containerScroll: true,
-			
+			layout: 'fit',
 	        margins: '5 5 5 5',
 	        tools:[{
           id:'save',
@@ -497,6 +484,16 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        
 	        items: [this.selectGridPanel, this.filterGridPanel]
 	    });
+	    /*
+	     * work-around for filters grid resizing, since it is not automatically resized
+	     * TODO: fix this problem with an Ext override
+	    */ 
+	    this.selectGridPanel.grid.on('resize', function (component, adjWidth, adjHeight, rawWidth, rawHeight) {
+	    	if (this.filterGridPanel.grid.rendered) {
+	    		var previousSize = this.filterGridPanel.grid.getSize();
+		    	this.filterGridPanel.grid.setSize(adjWidth, previousSize.height);
+	    	}
+	    }, this);
 	    
 	    this.selectGridPanel.on('filter', function(panel, record) {
 	    	this.filterGridPanel.addRow(record);
@@ -507,7 +504,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	
 	, initEastRegionPanel: function(c) {
 		
-		this.queryCataloguePanel = new Sbi.qbe.QueryCataloguePanel({margins: '0 5 0 0',});
+		this.queryCataloguePanel = new Sbi.qbe.QueryCataloguePanel({margins: '0 5 0 0'});
 		
 		this.eastRegionPanel = new Ext.Panel({
 	        title:'Query Catalogue',
@@ -516,7 +513,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        margins: '5 5 5 5',
 	        layout:'fit',
 	        collapsible: true,
-	        collapseMode: 'mini',
+	        //collapseMode: 'mini',
 	        collapseFirst: false,
 	        tools:[
 		        {

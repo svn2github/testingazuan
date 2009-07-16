@@ -71,11 +71,13 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	this.initGridListeners(c);
 	
 	c = Ext.apply(c, {
-		border: false,
+		border: true,
 		layout: 'fit',
-		width: 1000,
+		autoWidth: true,
+		width: 'auto',
+		//width: 1000,
 		items: [this.grid]
-	})
+	});
 	
 	// constructor
     Sbi.qbe.FilterGridPanel.superclass.constructor.call(this, c);
@@ -551,10 +553,10 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	        clicksToEdit:2,	        
 	        style:'padding:10px',
 	        frame: true,
-	        region:'center',
 	        height: 300,
 	        border:true,  
 	        collapsible:true,
+	        layout: 'fit',
 	        viewConfig: {
 	            forceFit:true
 	        },
@@ -562,7 +564,6 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
     		ddGroup: 'gridDDGroup',
 	        iconCls:'icon-grid'        
 	    });
-	    
 	    this.grid.type = this.type;
 	}
 	

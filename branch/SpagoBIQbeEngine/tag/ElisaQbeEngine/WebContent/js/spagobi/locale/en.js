@@ -37,7 +37,7 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.entity'] = 'Entity';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.field'] = 'Field';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.operator'] = 'Operator';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.value'] = 'Operand';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.isfree'] = 'Is free';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.isfree'] = 'Is for Prompt';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.type'] = 'Operand Type';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.boperator'] = 'Bol.Connector';
 
@@ -104,3 +104,10 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.deleteall'] = 'Delete All';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.tt.deleteall'] = 'Delete all selected fields';
 
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.distinct'] = 'Apply distinct clause';
+
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.title'] = 'Fill free conditions';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.apply'] = 'Apply';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.cancel'] = 'Cancel';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restoredefaults'] = 'Restore defaults';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults'] = 'Save as defaults';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restorelast'] = 'Restore last';

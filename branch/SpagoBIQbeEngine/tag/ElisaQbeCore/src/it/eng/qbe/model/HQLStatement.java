@@ -354,7 +354,13 @@ public class HQLStatement extends BasicStatement {
 			entityAlias = (String)entityAliases.get( entity.getUniqueName() );
 			rightHandValue = entityAlias + "." + queryName;
 		} else if("Static Value".equalsIgnoreCase( whereField.getOperandType() ) ) {
-			rightHandValue = whereField.getOperand().toString();
+			
+			if (whereField.isFree()) {
+				// get last value first (the last value edited by the user)
+				rightHandValue = whereField.getLastValue();
+			} else {
+				rightHandValue = whereField.getOperand().toString();
+			}
 			
 			if(datamartField.getType().equalsIgnoreCase("String")) {
 				if( !( whereField.IN.equalsIgnoreCase( whereField.getOperator() ) 

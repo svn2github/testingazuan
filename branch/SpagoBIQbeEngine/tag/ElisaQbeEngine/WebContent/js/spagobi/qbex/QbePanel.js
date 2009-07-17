@@ -65,7 +65,7 @@ Sbi.qbe.QbePanel = function(config) {
 	});
 	
 	this.queryEditorPanel.on('execute', function(editorPanel, query){
-		alert('execution time baby');
+		//alert('execution time baby');
 		this.tabs.activate(this.queryResultPanel);
 		this.queryResultPanel.execQuery(query);
 	}, this);

@@ -49,6 +49,8 @@ public class SerializationConstants {
 	public static final String FILTER_OPEARTOR = "operator";
 	public static final String FILTER_OPEARND = "operand";
 	public static final String FILTER_IS_FREE = "isfree";
+	public static final String FILTER_DEFAULT_VALUE = "defaultvalue";
+	public static final String FILTER_LAST_VALUE = "lastvalue";
 	public static final String FILTER_OPEARND_DESCRIPTION = "odesc";
 	public static final String FILTER_OPEARND_TYPE = "otype";
 	public static final String FILTER_BOOLEAN_CONNETOR = "boperator";

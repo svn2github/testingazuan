@@ -21,10 +21,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.query;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import it.eng.qbe.model.structure.DataMartField;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -40,6 +36,8 @@ public class WhereField {
 	private String operandDesc;
 	private String boperator;
 	private boolean isFree;
+	private String defaultValue;
+	private String lastValue;
 	
 	public static final String EQUALS_TO = "EQUALS TO";
 	public static final String NOT_EQUALS_TO = "NOT EQUALS TO";
@@ -63,7 +61,7 @@ public class WhereField {
 	
 	
 	public WhereField(String fname, String fdesc, 
-			String uniqueName, String operator, Object operand, String type, String desc, String boperator, boolean isFree) {
+			String uniqueName, String operator, Object operand, String type, String desc, String boperator, boolean isFree, String defaultValue, String lastValue) {
 		
 		setUniqueName(uniqueName);
 		setOperator( operator );
@@ -74,6 +72,8 @@ public class WhereField {
 		setFdesc(fdesc);
 		setBoperator(boperator);
 		setIsFree(isFree);
+		setDefaultValue(defaultValue);
+		setLastValue(lastValue);
 	}
 	
 	public WhereField(String fname, String fdesc,  String uniqueName, String operator, String boperator) {
@@ -85,6 +85,8 @@ public class WhereField {
 		setFdesc(fdesc);
 		setBoperator(boperator);
 		setIsFree(false);
+		setDefaultValue(null);
+		setLastValue(null);
 	}
 	
 	
@@ -159,5 +161,21 @@ public class WhereField {
 
 	public void setIsFree(boolean isFree) {
 		this.isFree = isFree;
+	}
+	
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+
+	public String getLastValue() {
+		return lastValue;
+	}
+
+	public void setLastValue(String lastValue) {
+		this.lastValue = lastValue;
 	}
 }

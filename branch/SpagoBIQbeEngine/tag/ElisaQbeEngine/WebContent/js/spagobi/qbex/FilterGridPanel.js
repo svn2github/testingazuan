@@ -252,7 +252,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		  	operand: '',
 		    otype: 'Static Value',		    
 		    odesc: '',
-		    boperator:'AND'
+		    boperator:'AND',
+		    defaultvalue: null,
+		    lastvalue: null,
 		  };
 		  
 		  Ext.apply(newRow, config.data);
@@ -280,18 +282,26 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		return filters;
 	}
 	
-    , updateFreeFilters: function(formState) {
+    , setFreeFiltersLastValues: function(formState) {
     	for (var filterName in formState) {
     		var index = this.grid.store.find('fname', filterName);
     		if (index != -1) {
     			var aRecord = this.grid.store.getAt(index);
-    			aRecord.set('odesc', formState[filterName]);
+    			aRecord.set('lastvalue', formState[filterName]);
     		}
     	}
     }
 	
-	
-	
+    , setFreeFiltersDefaultValues: function(formState) {
+    	for (var filterName in formState) {
+    		var index = this.grid.store.find('fname', filterName);
+    		if (index != -1) {
+    			var aRecord = this.grid.store.getAt(index);
+    			aRecord.set('defaultvalue', formState[filterName]);
+    		}
+    	}
+    }
+    
 	, syncWizardExpressionWithGrid: function() {
 		var exp = '';
 		for(i = 0; i <  this.grid.store.getCount(); i++) {
@@ -372,7 +382,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	           {name: 'otype'},	           
 	           {name: 'odesc'},
 	           {name: 'boperator'},    
-	           {name: 'del'}          
+	           {name: 'del'},
+	           {name: 'defaultvalue'},
+	           {name: 'lastvalue'}
 	        ]
 		});
 		
@@ -388,7 +400,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	      {name: 'otype', type: 'string'},
 	      {name: 'odesc', type: 'string'},
 	      {name: 'boperator', type: 'string'},
-	      {name: 'del', type: 'bool'}
+	      {name: 'del', type: 'bool'},
+	      {name: 'defaultvalue', type: 'string'},
+	      {name: 'lastvalue', type: 'string'}
 	    ]);
 	}
 	

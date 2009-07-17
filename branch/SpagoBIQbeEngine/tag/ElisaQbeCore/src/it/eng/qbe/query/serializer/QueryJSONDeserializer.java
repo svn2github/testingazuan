@@ -153,6 +153,8 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		String operandDesc;
 		String operandType;
 		String boperator;
+		String defaultValue;
+		String lastValue;
 		
 		
 		for(int i = 0; i < filtersJOSN.length(); i++) {
@@ -176,6 +178,8 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 				operandDesc = filterJSON.getString(SerializationConstants.FILTER_OPEARND_DESCRIPTION);
 				operandType = filterJSON.getString(SerializationConstants.FILTER_OPEARND_TYPE);
 				boperator = filterJSON.getString(SerializationConstants.FILTER_BOOLEAN_CONNETOR);
+				defaultValue = filterJSON.getString(SerializationConstants.FILTER_DEFAULT_VALUE);
+				lastValue = filterJSON.getString(SerializationConstants.FILTER_LAST_VALUE);
 			} catch (JSONException e) {
 				throw new SerializationException("An error occurred while deserializing where clause:: " + filtersJOSN.toString(), e);
 			}
@@ -185,7 +189,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			Assert.assertTrue(!"NONE".equalsIgnoreCase(operator), "Undefined operator NONE for filter: " + filterJSON.toString());
 					
 		    
-			query.addWhereFiled(fname, fdesc,field.getUniqueName(), operator, operand, operandType, operandDesc, boperator, isFree);
+			query.addWhereFiled(fname, fdesc,field.getUniqueName(), operator, operand, operandType, operandDesc, boperator, isFree, defaultValue, lastValue);
 		}	
 	}
 	

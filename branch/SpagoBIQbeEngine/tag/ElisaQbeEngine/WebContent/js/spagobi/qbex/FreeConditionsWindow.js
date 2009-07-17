@@ -24,16 +24,19 @@ Ext.ns("Sbi.qbe");
 Sbi.qbe.FreeConditionsWindow = function(config) {	
 	
 	var c = Ext.apply({}, config || {}, {
-		title: 'Fill free conditions'
-		, width: 500
+		title: LN('sbi.qbe.freeconditionswindow.title')
+		, width: 550
 		, height: 250
 		, hasBuddy: false
 	});
 	
 	Ext.apply(this, c);
-		
-	this.initFormPanel(c);
 	
+	this.freeFilters = config.freeFilters;
+	this.initDefaultValues();
+	this.initLastValues();
+	
+	this.initFormPanel();
 	
 	// constructor
 	Sbi.qbe.FreeConditionsWindow.superclass.constructor.call(this, {
@@ -52,7 +55,7 @@ Sbi.qbe.FreeConditionsWindow = function(config) {
     	});
 	}
 	
-	this.addEvents('apply');    
+	this.addEvents('apply', 'saveDefaults');    
 };
 
 Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
@@ -61,7 +64,8 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 	, hasBuddy: null
     , buddy: null
     , formItems: null
-   
+    , defaultvalues: null
+    , lastvalues: null
    
     // public methods
 	,getFormState : function() {      
@@ -75,46 +79,127 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
       	return formState;
     }
 
+	, setFormState: function (formState) {
+	  	for (var i = 0; i < this.formItems.length; i++) {
+	  		var aFormItem = this.formItems[i];
+	  		if (formState[aFormItem.getName()] !== undefined && formState[aFormItem.getName()] !== null) {
+	  			aFormItem.setValue(formState[aFormItem.getName()]);
+	  		}
+	  	}
+	}
+	
+	, restoreDefaults: function () {
+		if (this.defaultvalues != null) {
+			this.setFormState(this.defaultvalues);
+		}
+	}
+	
+	, restoreLast: function () {
+		if (this.lastvalues != null) {
+			this.setFormState(this.lastvalues);
+		}
+	}
+
 	//private methods
-	, initFormPanel: function(config) {
+	, initDefaultValues: function () {
+		this.defaultvalues = null;
+		for (var i = 0; i < this.freeFilters.length; i++) {
+			var aFilter = this.freeFilters[i];
+			if (aFilter.defaultvalue !== null) {
+				if (this.defaultvalues == null) {
+					this.defaultvalues = {};
+				}
+				this.defaultvalues[aFilter.fname] = aFilter.defaultvalue;
+			}
+		}
+	}
+	
+	, initLastValues: function () {
+		this.lastvalues = null;
+		for (var i = 0; i < this.freeFilters.length; i++) {
+			var aFilter = this.freeFilters[i];
+			if (aFilter.lastvalue !== null) {
+				if (this.lastvalues == null) {
+					this.lastvalues = {};
+				}
+				this.lastvalues[aFilter.fname] = aFilter.lastvalue;
+			}
+		}
+	}
+	
+	, initFormPanel: function() {
 		
 		this.formItems = [];
 		
-		var freeFilters = config.freeFilters;
-		
-		for (var i = 0; i < freeFilters.length; i++) {
-			var aFilter = freeFilters[i];
+		for (var i = 0; i < this.freeFilters.length; i++) {
+			var aFilter = this.freeFilters[i];
 	    	var aField = new Ext.form.TextField({
 	    		name: aFilter.fname,
 	    		allowBlank:true, 
 	    		inputType:'text',
 	    		maxLength:200,
-	    		width:250,
-	    		fieldLabel: aFilter.fname,
-	    		value: aFilter.odesc
+	    		width:200,
+	    		fieldLabel: aFilter.fname + ' [' + aFilter.entity + ': ' + aFilter.field + ']',
+	    		labelStyle: 'width:250',
+	    		value: (aFilter.defaultvalue !== null) ? aFilter.defaultvalue : ''
 	    	});
 	    	this.formItems.push(aField);
 		}
     	
+		var buttons = this.initButtons();
+		
     	this.formPanel = new Ext.form.FormPanel({
     		frame:true,
     	    bodyStyle:'padding:5px 5px 0',
     	    buttonAlign : 'center',
     	    items: this.formItems,
-    	    buttons: [{
-    			text: 'Apply',
-    		    handler: function(){
-    	    		this.fireEvent('apply', this.getFormState());
-                	this.close();
-            	}
-            	, scope: this
-    	    },{
-    		    text: 'Cancel',
-    		    handler: function(){
-                	this.close();
-            	}
-            	, scope: this
-    		}]
+    	    buttons: buttons
     	 });
     }
+	
+	, initButtons: function () {
+		var buttons = [];
+		buttons.push({
+			text: LN('sbi.qbe.freeconditionswindow.buttons.text.apply'),
+		    handler: function(){
+	    		this.fireEvent('apply', this.getFormState());
+            	this.close();
+        	}
+        	, scope: this
+	    });
+		
+		buttons.push({
+			text: LN('sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults'),
+		    handler: function(){
+    			this.fireEvent('saveDefaults', this.getFormState());
+    		}
+        	, scope: this
+	    });
+		
+		if (this.defaultvalues !== null) {
+			buttons.push({
+				text: LN('sbi.qbe.freeconditionswindow.buttons.text.restoredefaults'),
+			    handler: this.restoreDefaults
+	        	, scope: this
+		    });
+		}
+		
+		if (this.lastvalues !== null) {
+			buttons.push({
+				text: LN('sbi.qbe.freeconditionswindow.buttons.text.restorelast'),
+			    handler: this.restoreLast
+	        	, scope: this
+		    });
+		}
+		
+		buttons.push({
+		    text: LN('sbi.qbe.freeconditionswindow.buttons.text.cancel'),
+		    handler: function(){
+            	this.close();
+        	}
+        	, scope: this
+		});
+		
+		return buttons;
+	}
 });

@@ -185,10 +185,15 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     , checkFreeFilters: function() {
     	var freeFilters = this.filterGridPanel.getFreeFilters();
 	    if (freeFilters.length > 0) {
-	    	var freeConditionsWindow = new Sbi.qbe.FreeConditionsWindow({freeFilters: freeFilters});
+	    	var freeConditionsWindow = new Sbi.qbe.FreeConditionsWindow({
+	    		freeFilters: freeFilters
+	    	});
 	    	freeConditionsWindow.on('apply', function (formState) {
-	    		this.filterGridPanel.updateFreeFilters(formState);
+	    		this.filterGridPanel.setFreeFiltersLastValues(formState);
 	    		this.executeQuery();
+	    	}, this);
+	    	freeConditionsWindow.on('savedefaults', function (formState) {
+	    		this.filterGridPanel.setFreeFiltersDefaultValues(formState);
 	    	}, this);
 	    	freeConditionsWindow.show();
 	    } else {

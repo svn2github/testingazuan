@@ -73,8 +73,8 @@ public class Query {
 	public void addWhereFiled(String fname, String fdesc, 
 			String fieldUniqueName, String operator, 
 			Object operand, String operandType, String operandDesc,
-			String boperator, boolean isFree) {
-		WhereField whereField = new WhereField(fname, fieldUniqueName, fieldUniqueName, operator, operand, operandType, operandDesc, boperator, isFree);
+			String boperator, boolean isFree, String defaultValue, String lastValue) {
+		WhereField whereField = new WhereField(fname, fieldUniqueName, fieldUniqueName, operator, operand, operandType, operandDesc, boperator, isFree, defaultValue, lastValue);
 		whereClause.add( whereField );
 		whereFieldMap.put("$F{" + fname + "}", whereField);
 	}

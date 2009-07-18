@@ -109,6 +109,40 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 					var node = new Ext.tree.TreeNode(content);
 					node.attributes = content.attributes;
 					this.rootNode.appendChild( node );
+					this.tree.getSelectionModel().select(node);
+					
+					var te = this.treeEditor;
+					var edit = function(){
+	                    te.editNode = node;
+	                    te.startEdit(node.ui.textNode);
+	                };
+					setTimeout(edit, 10);
+				} else {
+			      		Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+			    }     					
+   			},
+   			failure: Sbi.exception.ExceptionHandler.handleFailure,
+   			scope: this
+		});	   
+    }
+    
+    , insertQuery: function() {   	
+    	Ext.Ajax.request({
+		   	url: this.services['addQuery'],
+		   	success: function(response, options) {
+    			if(response !== undefined && response.responseText !== undefined) {
+					var content = Ext.util.JSON.decode( response.responseText );
+					var node = new Ext.tree.TreeNode(content);
+					node.attributes = content.attributes;
+					var selectedNode = this.tree.getSelectionModel().getSelectedNode();
+					selectedNode.leaf = false;					
+					if(selectedNode) {
+						selectedNode.appendChild( node );
+						selectedNode.expand();
+					}
+					else this.rootNode.appendChild( node );
+					
+					node.select();					
 				} else {
 			      		Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
 			    }     					
@@ -161,7 +195,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     			} else if(typeof query === 'object') {
     				p.push( query.id );
     			} else {
-    				alert('Invalid type [' + (typeof query) + ']for object query in function [deleteQueries]');
+    				alert('Invalid type [' + (typeof query) + '] for object query in function [deleteQueries]');
     			}
     		}
     		
@@ -250,6 +284,13 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	        loader           : this.treeLoader,
 	        root 			 : this.rootNode
 	    });	
+		
+		// add an inline editor for the nodes
+	    this.treeEditor = new Ext.tree.TreeEditor(this.tree, {/* fieldconfig here */ }, {
+	        allowBlank:false,
+	        blankText:'A name is required',
+	        selectOnFocus:true
+	    });
 		
 		this.tree.getSelectionModel().on('beforeselect', this.onSelect, this);
 		this.treeLoader.on('load', this.onLoad, this);

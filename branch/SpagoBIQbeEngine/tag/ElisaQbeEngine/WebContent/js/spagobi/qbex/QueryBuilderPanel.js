@@ -537,7 +537,15 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		        	this.queryCataloguePanel.addQuery();
 		          },
 		          scope: this
-		        }
+		        }, {
+			          id:'plus',
+			          qtip:'Insert query',
+			          // hidden:true,
+			          handler: function(event, toolEl, panel){
+			        	this.queryCataloguePanel.insertQuery();
+			          },
+			          scope: this
+			   }
 		    ],
 	        items: [this.queryCataloguePanel]
 	    });

@@ -57,6 +57,12 @@ Sbi.qbe.QueryCataloguePanel = function(config) {
 		serviceName: 'GET_CATALOGUE_ACTION'
 		, baseParams: params
 	});
+	
+	this.services['setCatalogue'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SET_CATALOGUE_ACTION'
+		, baseParams: params
+	});
+	
 	this.services['addQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'ADD_QUERY_ACTION'
 		, baseParams: params
@@ -99,8 +105,213 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	, load: function() {
 		this.treeLoader.load(this.rootNode, function(){});
 	}
+     
+	
+	, setQuery: function(queryItemId, query) {
+		var oldQuery;
+		var item = this.getQueryItemById(queryItemId);
+		if(item) {
+			oldQuery = item.query;
+			item.query = query;
+		}
+		
+		return oldQuery;
+	}
+	
+	, getQuery: function(queryItemId) {
+		var item = this.getQueryItemById(queryItemId);
+		return item? item.query : undefined;
+	}
+	
+	, setMeta: function(queryItemId, meta) {
+		var oldMeta;
+		var item = this.getQueryItemById(queryItemId);
+		if(item) {
+			oldMeta = item.meta;
+			item.meta = meta;
+		}
+		
+		return oldMeta;
+	}
+	
+	
+	, getMeta: function(queryItemId, meta) {
+		var item = this.getQueryItemById(queryItemId);
+		return item? item.meta : undefined;
+	}
 
+
+	, getQueryItems: function() {
+		var queryItems = [];
+    	if( this.rootNode.childNodes && this.rootNode.childNodes.length > 0 ) {
+			for(var i = 0; i < this.rootNode.childNodes.length; i++) {
+				queryItems.push( this.getQueryItemById(this.rootNode.childNodes[i].id) );
+			}
+		}
+    	
+    	return queryItems;
+	}
+
+	, getQueryItemById: function(queryId) {
+		var queryItem;
+		var queryNode = this.tree.getNodeById(queryId);
+		
+		if(queryNode) {
+			
+			queryItem = queryNode.attributes;
+			queryItem.suqueries = [];
+			if( this.queryNode.childNodes && this.queryNode.childNodes.length > 0 ) {
+				for(var i = 0; i < this.queryNode.childNodes.length; i++) {
+					var subquery = this.getQueryItemById( this.queryNode.childNodes[i].id );
+					queryItems.suqueries.push( subquery );
+				}
+			}
+		}
+		
+		return queryItem;
+	}
+	
+	, getSelectedQueryItem: function() {
+		var queryNode = this.tree.getSelectionModel().getSelectedNode();
+		return queryNode? queryNode.attributes: undefined;
+	}
+
+	, addQueryItem: function(queryItem) {
+		this.insertQueryItem(this.rootNode.id, queryItem);
+	}
+
+	, insertQueryItem: function(parentQueryItem, queryItem) {
+		var nodeId = (typeof parentQueryItem === 'string')? parentQueryItem: parentQueryItem.meta.id;
+		var parentQueryNode = this.tree.getNodeById(nodeId);
+		 
+		if(!queryItem) {
+			this.createQueryNode(this.insertQueryNode.createDelegate(this, [parentQueryNode], 0), this);
+		} else {
+			 var queryNode = {
+			    id: queryItem.meta.id
+			   	, text: queryItem.meta.id
+			   	, leaf: true
+			   	, attributes: {
+			 		query: queryItem.query
+			 		, meta: queryItem.meta
+			 		, iconCls: 'icon-query'
+			    }
+			 };
+			 this.insertQueryNode(parentQueryNode, queryNode);			 
+		}
+	}
+	
+	, deleteQueryItems: function(queries) {
+		this.deleteQueryNodes(queries);
+	}
+	
+	
+	, commit: function(callback, scope) {
+		var params = {
+				catalogue: Ext.util.JSON.encode(this.getQueryItems())
+		};
+		
+		Ext.Ajax.request({
+		    url: this.services['setCatalogue'],
+		    success: callback,
+		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
+		    scope: scope,
+		    params: params
+		});   
+	}
+	
+	
+	// private 
+	
+	, addQueryNode: function(queryNode) {
+		this.insertQueryNode(this.rootNode, queryNode);
+	}
+	
+	, insertQueryNode: function(parentQueryNode, queryNode) {
+		if(!queryNode) {
+			this.createQueryNode(this.insertQueryNode.createDelegate(this, [parentQueryNode], 0), this);
+		} else {			
+			parentQueryNode.leaf = false;					
+			parentQueryNode.appendChild( queryNode );
+			parentQueryNode.expand();
+			queryNode.select();		
+			
+			var te = this.treeEditor;
+			var edit = function(){
+                te.editNode = queryNode;
+                te.startEdit(queryNode.ui.textNode);
+            };
+			setTimeout(edit, 10);
+		}
+	}
+	
+	, createQueryNode: function(callback, scope) {
+		Ext.Ajax.request({
+		   	url: this.services['addQuery'],
+		   	success: function(response, options) {
+    			if(response !== undefined && response.responseText !== undefined) {
+					var content = Ext.util.JSON.decode( response.responseText );
+					var queryNode = new Ext.tree.TreeNode(content);
+					queryNode.attributes = content.attributes;
+					callback.call(scope, queryNode);
+				} else {
+			      	Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+			    }     					
+   			},
+   			failure: Sbi.exception.ExceptionHandler.handleFailure,
+   			scope: this
+		});	   
+	}
+	
+	, deleteQueryNodes: function(queries, callback, scope) {
+		var p;
+    	if(queries) {
+    		if( !(queries instanceof Array) ) {
+    			queries = [queries];
+    		}
+    		
+    		for(var i = 0, p = []; i < queries.length; i++) {
+    			var query = queries[i];
+    			if(typeof query === 'string') {
+    				p.push( query );
+    			} else if(typeof query === 'object') {
+    				p.push( query.id || query.meta.id );
+    			} else {
+    				alert('Invalid type [' + (typeof query) + '] for object query in function [deleteQueries]');
+    			}
+    		}
+    		
+			Ext.Ajax.request({
+			   	url: this.services['deleteQueries'],
+			   	params: {queries: Ext.util.JSON.encode(p)},
+			
+			   	success: function(response, options) {
+			   		var q = Ext.util.JSON.decode( options.params.queries );
+			   		for(var i = 0; i < q.length; i++) {
+			   			var node = this.tree.getNodeById(q[i]);
+			   			node.remove();
+			   		}
+			   		
+			   		if(callback) callback.call(scope, q);
+	   			},
+	   			failure: Sbi.exception.ExceptionHandler.handleFailure,
+	   			scope: this
+			});	
+    	}
+	}
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
     , addQuery: function() {   	
+    	
     	Ext.Ajax.request({
 		   	url: this.services['addQuery'],
 		   	success: function(response, options) {
@@ -123,10 +334,15 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
    			},
    			failure: Sbi.exception.ExceptionHandler.handleFailure,
    			scope: this
-		});	   
+		});	  
+		
+    	
+    	this.addQueryItem();
     }
-    
+    */
+	/*
     , insertQuery: function() {   	
+    	
     	Ext.Ajax.request({
 		   	url: this.services['addQuery'],
 		   	success: function(response, options) {
@@ -149,10 +365,12 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
    			},
    			failure: Sbi.exception.ExceptionHandler.handleFailure,
    			scope: this
-		});	   
+		});
+		  
+    	this.insertQueryNode(this.tree.getSelectionModel().getSelectedNode() || this.rootNode);
     }
     
-    
+    */	 
     
     , getQueries: function() {
     	var items = [];
@@ -165,11 +383,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     	return items;
     }
     
-    , getSelectedQuery: function() {
-    	var selectedNode;    	
-    	selectedNode = this.tree.getSelectionModel().getSelectedNode();
-    	return selectedNode && selectedNode.attributes? selectedNode.attributes.query : undefined;
-    }
+ 
     
     , synchronizeSelectedQuery: function(query) {
     	var selectedNode;    	
@@ -177,10 +391,8 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     	if(selectedNode) selectedNode.attributes.query = query;
     }
     
-    , deleteSelectedQuery: function(queries) {
-    	this.deleteQueries( this.getSelectedQuery() );
-    }
     
+    /*
     , deleteQueries: function(queries) {
     	var p;
     	if(queries) {
@@ -216,7 +428,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     		});	
     	}
     }
-
+	*/
 	
 	// private methods
 	

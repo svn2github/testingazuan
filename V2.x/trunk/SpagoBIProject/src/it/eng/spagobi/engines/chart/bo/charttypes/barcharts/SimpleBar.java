@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.FilterZeroStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
@@ -36,6 +37,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
@@ -131,13 +133,28 @@ public class SimpleBar extends BarCharts{
 
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setUpperMargin(0.10);
+		if(rangeIntegerValues==true){
+			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+			}
+		else rangeAxis.setStandardTickUnits(NumberAxis.createStandardTickUnits());
 
+		if(rangeAxisLocation != null) {
+			if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_LEFT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_LEFT);
+			} else if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_RIGHT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_RIGHT);
+			}else if(rangeAxisLocation.equalsIgnoreCase("TOP_OR_RIGHT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_RIGHT);
+			} else if(rangeAxisLocation.equalsIgnoreCase("TOP_OR_LEFT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_LEFT);
+			}
+		}
+		
 		// disable bar outlines...
 		BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
@@ -146,8 +163,13 @@ public class SimpleBar extends BarCharts{
 		CategorySeriesLabelGenerator generator = new StandardCategorySeriesLabelGenerator("{0}");
 		renderer.setLegendItemLabelGenerator(generator);
 
+		if(maxBarWidth!=null){
+			renderer.setMaximumBarWidth(maxBarWidth.doubleValue());
+		}
+		
 		if(showValueLabels){
 			renderer.setBaseItemLabelsVisible(true);
+			renderer.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());			
 			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 		}

@@ -8,6 +8,12 @@ import org.apache.log4j.Logger;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.data.category.CategoryDataset;
 
+/**
+ * 
+ * @author gavardi
+ * This class is used to generate additiona label over bars
+ *
+ */
 
 public class MyStandardCategoryItemLabelGenerator extends StandardCategoryItemLabelGenerator {
 
@@ -26,8 +32,8 @@ public class MyStandardCategoryItemLabelGenerator extends StandardCategoryItemLa
 		catSerLabel=catSerMap;
 	}
 
-	
-	
+
+
 
 	public MyStandardCategoryItemLabelGenerator(HashMap catSerMap,String labelFormat,
 			DateFormat formatter) {
@@ -46,7 +52,7 @@ public class MyStandardCategoryItemLabelGenerator extends StandardCategoryItemLa
 		catSerLabel=catSerMap;	}
 
 	public String generateLabel(CategoryDataset dataset, int row, int column) {
-logger.debug("IN");
+		logger.debug("IN");
 		String category=(String)dataset.getColumnKey(column);
 		String serie=(String)dataset.getRowKey(row);
 

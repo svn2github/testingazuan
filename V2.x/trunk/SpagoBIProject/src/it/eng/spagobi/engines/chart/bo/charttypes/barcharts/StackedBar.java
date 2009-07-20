@@ -27,6 +27,7 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.FilterZeroStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
@@ -46,6 +47,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
@@ -417,6 +419,11 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		*/
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
 
+		if(maxBarWidth!=null){
+			renderer.setMaximumBarWidth(maxBarWidth.doubleValue());
+		}
+
+		
 		boolean document_composition=false;
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
 
@@ -464,10 +471,27 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		else
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
+		if(rangeIntegerValues==true){
+			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
+			}
+		
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
+
+		if(rangeAxisLocation != null) {
+			if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_LEFT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_LEFT);
+			} else if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_RIGHT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_RIGHT);
+			}else if(rangeAxisLocation.equalsIgnoreCase("TOP_OR_RIGHT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_RIGHT);
+			} else if(rangeAxisLocation.equalsIgnoreCase("TOP_OR_LEFT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_LEFT);
+			}
+		}
+		
 		renderer.setDrawBarOutline(false);
 
 		logger.debug("Set series color");
@@ -502,7 +526,7 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		logger.debug("Are there value labels "+showValueLabels);
 		
 		if(showValueLabels){
-        	renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+        	renderer.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());
         	renderer.setBaseItemLabelsVisible(true);
         	renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
         	renderer.setBaseItemLabelPaint(styleValueLabels.getColor());

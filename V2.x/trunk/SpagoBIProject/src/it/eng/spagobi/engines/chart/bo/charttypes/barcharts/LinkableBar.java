@@ -26,6 +26,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.engines.chart.bo.charttypes.ILinkableChart;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.FilterZeroStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
@@ -37,6 +38,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
@@ -145,12 +147,28 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 		CategoryAxis categoryAxis = new CategoryAxis(categoryLabel);
 		ValueAxis valueAxis = new NumberAxis(valueLabel);
+		if(rangeIntegerValues==true){
+			valueAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
+			}
+
 		org.jfree.chart.renderer.category.BarRenderer renderer = new org.jfree.chart.renderer.category.BarRenderer();
-
+		
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
-		renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
-		renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+//		renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+//		renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
 
+		if(showValueLabels){
+			renderer.setBaseItemLabelsVisible(true);
+			renderer.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());			
+			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
+			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
+		}		
+		
+		
+		if(maxBarWidth!=null){
+			renderer.setMaximumBarWidth(maxBarWidth.doubleValue());
+		}
+		
 		boolean document_composition=false;
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
 
@@ -207,6 +225,19 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 
+		
+		if(rangeAxisLocation != null) {
+			if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_LEFT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_LEFT);
+			} else if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_RIGHT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_RIGHT);
+			}else if(rangeAxisLocation.equalsIgnoreCase("TOP_OR_RIGHT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_RIGHT);
+			} else if(rangeAxisLocation.equalsIgnoreCase("TOP_OR_LEFT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_LEFT);
+			}
+		}
+		
 		// disable bar outlines...
 		//BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);

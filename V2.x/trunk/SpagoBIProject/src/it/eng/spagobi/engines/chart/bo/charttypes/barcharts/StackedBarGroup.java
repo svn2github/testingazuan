@@ -26,6 +26,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.FilterZeroStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
@@ -46,6 +47,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.SubCategoryAxis;
 import org.jfree.chart.labels.ItemLabelAnchor;
@@ -434,9 +436,13 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		if (percentageValue)
 			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", new DecimalFormat("#,##.#%")));
 		else
-			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+			renderer.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());
 		renderer.setToolTipGenerator(new StandardCategoryToolTipGenerator());
 
+		if(maxBarWidth!=null){
+			renderer.setMaximumBarWidth(maxBarWidth.doubleValue());
+		}
+		
 		boolean document_composition=false;
 		if(mode.equalsIgnoreCase(SpagoBIConstants.DOCUMENT_COMPOSITION))document_composition=true;
 
@@ -464,11 +470,24 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
+		if(rangeIntegerValues==true){
+			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
+			}
+		if(rangeAxisLocation != null) {
+			if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_LEFT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_LEFT);
+			} else if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_RIGHT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_RIGHT);
+			}else if(rangeAxisLocation.equalsIgnoreCase("TOP_OR_RIGHT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_RIGHT);
+			} else if(rangeAxisLocation.equalsIgnoreCase("TOP_OR_LEFT")) {
+				plot.setRangeAxisLocation(0, AxisLocation.TOP_OR_LEFT);
+			}
+		}
 
 
 		int seriesN=dataset.getRowCount();

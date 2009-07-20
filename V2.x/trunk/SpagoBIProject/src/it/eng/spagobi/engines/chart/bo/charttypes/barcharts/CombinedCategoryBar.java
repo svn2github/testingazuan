@@ -3,6 +3,7 @@ package it.eng.spagobi.engines.chart.bo.charttypes.barcharts;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.FilterZeroStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryToolTipGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyCategoryUrlGenerator;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
@@ -28,7 +29,6 @@ import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.CombinedDomainCategoryPlot;
 import org.jfree.chart.plot.DatasetRenderingOrder;
@@ -418,6 +418,9 @@ public class CombinedCategoryBar extends LinkableBar {
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setUpperMargin(0.10);
 		subPlot1.setRangeAxis(rangeAxis);
+		if(rangeIntegerValues==true){
+			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
+		}
 
 		// Range Axis 2
 		NumberAxis rangeAxis2 = new NumberAxis(secondAxisLabel);
@@ -427,6 +430,9 @@ public class CombinedCategoryBar extends LinkableBar {
 		rangeAxis2.setTickLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis2.setUpperMargin(0.10);
 		subPlot2.setRangeAxis(rangeAxis2);
+		if(rangeIntegerValues==true){
+			rangeAxis2.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
+		}
 
 		// Category Axis
 		CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
@@ -470,7 +476,10 @@ public class CombinedCategoryBar extends LinkableBar {
 			for (Iterator iterator = lineNoShapeSeries1.iterator(); iterator.hasNext();) {
 				String ser = (String) iterator.next();
 				// if there iS a abel associated search for that
-				String label=(String)seriesLabelsMap.get(ser);
+				String label=null;
+				if(seriesLabelsMap!=null){
+					label=(String)seriesLabelsMap.get(ser);
+				}
 				if(label==null)label=ser;
 				int index=datasetLineFirstAxis.getRowIndex(label);
 				if(index!=-1){
@@ -480,7 +489,11 @@ public class CombinedCategoryBar extends LinkableBar {
 			for (Iterator iterator = lineNoShapeSeries2.iterator(); iterator.hasNext();) {
 				String ser = (String) iterator.next();
 				// if there iS a abel associated search for that
-				String label=(String)seriesLabelsMap.get(ser);
+
+				String label=null;
+				if(seriesLabelsMap!=null){
+					label=(String)seriesLabelsMap.get(ser);
+				}
 				if(label==null)label=ser;
 				int index=datasetLineSecondAxis.getRowIndex(label);
 				if(index!=-1){
@@ -506,9 +519,15 @@ public class CombinedCategoryBar extends LinkableBar {
 
 		// COnfigure renderers: I do in extensive way so will be easier to add customization in the future
 
+		if(maxBarWidth!=null){
+			((BarRenderer)barRenderer1).setMaximumBarWidth(maxBarWidth.doubleValue());
+			((BarRenderer)barRenderer2).setMaximumBarWidth(maxBarWidth.doubleValue());
+		}
+
+
 		// Values or addition Labels for first BAR Renderer
 		if(showValueLabels){
-			barRenderer1.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+			barRenderer1.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());
 			barRenderer1.setBaseItemLabelsVisible(true);
 			barRenderer1.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 			barRenderer1.setBaseItemLabelPaint(styleValueLabels.getColor());
@@ -519,7 +538,7 @@ public class CombinedCategoryBar extends LinkableBar {
 			barRenderer1.setBaseNegativeItemLabelPosition(new ItemLabelPosition(
 					ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
 
-			barRenderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+			barRenderer2.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());
 			barRenderer2.setBaseItemLabelsVisible(true);
 			barRenderer2.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 			barRenderer2.setBaseItemLabelPaint(styleValueLabels.getColor());
@@ -550,13 +569,13 @@ public class CombinedCategoryBar extends LinkableBar {
 		// Values or addition Labels for line Renderers if requested
 		if(useLinesRenderers==true){
 			if(showValueLabels){
-				lineRenderer1.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+				lineRenderer1.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());
 				lineRenderer1.setBaseItemLabelsVisible(true);
 				lineRenderer1.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 				lineRenderer1.setBaseItemLabelPaint(styleValueLabels.getColor());
 				lineRenderer1.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
 				lineRenderer1.setBaseNegativeItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-				lineRenderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+				lineRenderer2.setBaseItemLabelGenerator(new FilterZeroStandardCategoryItemLabelGenerator());
 				lineRenderer2.setBaseItemLabelsVisible(true);
 				lineRenderer2.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 				lineRenderer2.setBaseItemLabelPaint(styleValueLabels.getColor());

@@ -62,9 +62,11 @@ public class BarCharts extends ChartImpl {
 	Integer numberSerVisualization=null;
 	boolean dynamicNumberCatVisualization=false;
 
+	boolean rangeIntegerValues=false;
+
 	// <PARAMETER name="enable_tooltips" value="true" />
 	boolean enableToolTips=false;	
-	
+
 	HashMap colorMap=null;  // keeps user selected colors// serie position - color
 	HashMap seriesNumber=null; //track serie name with number position (to preserve color)
 	HashMap seriesCaptions=null;
@@ -78,26 +80,68 @@ public class BarCharts extends ChartImpl {
 
 	// keep the order of the series in the datase
 	ArrayList<String> seriesOrder=null;
-	
+
 	StyleLabel styleXaxesLabels;
 	StyleLabel styleYaxesLabels;
 	StyleLabel styleValueLabels;
-	
+
 	// three booleans that read from template if has to be filter series, cats groups and categories with slider
 	boolean filterCatGroups=true;
 	boolean filterSeries=true;
 	boolean filterCategories=true;
 	String filterStyle="";
-	
+
+	// store if specified the maximum bar width
+	Double maxBarWidth=null;
+
 	// Enable if true/Disable if false select all and unselect all buttons on filter series form
 	boolean filterSeriesButtons=true;
 
 	boolean showValueLabels=false;
-	
+
 	HashMap catGroups=null; // only if filterCatGroups is set to true, trace cat_name /cat_group_name
 	Vector currentCatGroups=null;
 	Vector catGroupNames=null;
 
+	String rangeAxisLocation=null;
+
+	// Parameters
+
+	/** Label for category Axis */
+	public static final String CATEGORY_LABEL = "category_label";
+	/** Label for value Axis */
+	public static final String VALUE_LABEL = "value_label";
+	/** Number of categories visualization (both) */
+	public static final String N_CAT_VISUALIZATION = "n_cat_visualization";
+	public static final String N_VISUALIZATION = "n_visualization";
+	/** If true enable dynamic choice of numbers of categories to view*/
+	public static final String DYNAMIC_N_VISUALIZATION = "dynamic_n_visualization";
+	/** Number of series visualization*/
+	public static final String N_SER_VISUALIZATION = "n_ser_visualization";
+	/** If true enables filtering of cat  Groups*/
+	public static final String FILTER_CAT_GROUPS = "filter_cat_groups";
+	/** If true enables filtering of series*/
+	public static final String FILTER_SERIES = "filter_series";
+	/** If true shows select all and deselect all buttons from serie filters*/
+	public static final String FILTER_SERIES_BUTTONS = "filter_series_buttons";
+	/** If true enables filtering of categories*/
+	public static final String FILTER_CATEGORIES = "filter_categories";
+	/** If true show value labels*/
+	public static final String SHOW_VALUE_LABLES = "show_value_labels";
+	/** If true enables tooltips*/
+	public static final String ENABLE_TOOLTIPS = "enable_tooltips";
+	/** the maximum bar width, which is specified as a percentage of the available space for all bars 
+	 * For Example setting to 0.05 will ensure that the bars never exceed five per cent of the lenght of the axis
+	 * */
+	public static final String MAXIMUM_BAR_WIDTH = "maximum_bar_width";
+	/** Range Integer; If this string equals true on the range axis only int values appear
+	 * Possible Values: TRUE or FALSE (the same as null), Default is False*/
+	public static final String RANGE_INTEGER_VALUES = "range_integer_values";
+
+	/** the location of the range axis. 
+	 * Possibe values:  BOTTOM_OR_LEFT, BOTTOM_OR_RIGHT, TOP_OR_RIGHT, TOP_OR_LEFT 
+	 * This parameter is avalaible only for those charts with one single axis*/
+	public static final String RANGE_AXIS_LOCATION = "range_axis_location";
 
 
 
@@ -130,8 +174,8 @@ public class BarCharts extends ChartImpl {
 		if(filterCatGroups==true){
 			catGroups=new HashMap();
 		}
-		
-		
+
+
 		boolean first=true;
 
 		// run all dataset rows
@@ -157,7 +201,7 @@ public class BarCharts extends ChartImpl {
 
 			String name="";
 			String value="";
-			
+
 
 
 			int contSer = 0;
@@ -167,7 +211,7 @@ public class BarCharts extends ChartImpl {
 
 				name=new String(object.getKey());
 				value=new String((String)object.getValue());
-				
+
 				// the one targeted x is the category name
 				if(name.equalsIgnoreCase("x"))
 				{
@@ -179,9 +223,9 @@ public class BarCharts extends ChartImpl {
 					cat_group_name=value;
 				}
 				else if (this.getNumberSerVisualization().intValue() > 0 && contSer < this.getNumberSerVisualization().intValue()){
-						// map containing the series
-						series.put(name, value);
-						contSer++;
+					// map containing the series
+					series.put(name, value);
+					contSer++;
 				}
 				else if(seriesLabelsMap!=null){
 					String serieLabel = (String)seriesLabelsMap.get(name);
@@ -192,16 +236,16 @@ public class BarCharts extends ChartImpl {
 				}
 				else
 					series.put(name, value);
-			
+
 			}
 			// if a category group was found add it
 			if(!cat_group_name.equalsIgnoreCase("") && !catValue.equalsIgnoreCase("") && catGroups!=null)
 			{	
 				catGroups.put(catValue, cat_group_name);
 				if(!(catGroupNames.contains(cat_group_name))){
-				catGroupNames.add(cat_group_name);}
+					catGroupNames.add(cat_group_name);}
 			}
-			
+
 			// add series to dataset only if not hidden
 			for (Iterator iterator3 = series.keySet().iterator(); iterator3.hasNext();) {
 				String nameS = (String) iterator3.next();
@@ -213,7 +257,7 @@ public class BarCharts extends ChartImpl {
 					}
 					else
 						labelS = nameS;
-					
+
 					String valueS=(String)series.get(labelS);
 					if(labelS!=null && valueS!=null && !valueS.equals("null") && !valueS.equals("")){
 						//orig dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
@@ -237,8 +281,8 @@ public class BarCharts extends ChartImpl {
 				setSubTitleParameter("");
 			}
 		}
-			
-		
+
+
 		logger.debug("OUT");
 		DatasetMap datasets=new DatasetMap();
 		datasets.addDataset("1",dataset);
@@ -322,16 +366,16 @@ public class BarCharts extends ChartImpl {
 			categoryLabel="";
 		}
 
-		if(confParameters.get("value_label")!=null){	
-			valueLabel=(String)confParameters.get("value_label");
+		if(confParameters.get(VALUE_LABEL)!=null){	
+			valueLabel=(String)confParameters.get(VALUE_LABEL);
 			String tmpValueLabel = valueLabel;
 			while (!tmpValueLabel.equals("")){
 				if (tmpValueLabel.indexOf("$P{") >= 0){
 					String parName = tmpValueLabel.substring(tmpValueLabel.indexOf("$P{")+3, tmpValueLabel.indexOf("}"));
-					
+
 					String parValue = (parametersObject.get(parName)==null)?"":(String)parametersObject.get(parName);
 					parValue = parValue.replaceAll("\'", "");
-					
+
 					if(parValue.equals("%")) parValue = "";
 					int pos = tmpValueLabel.indexOf("$P{"+parName+"}") + (parName.length()+4);
 					valueLabel = valueLabel.replace("$P{" + parName + "}", parValue);
@@ -348,47 +392,47 @@ public class BarCharts extends ChartImpl {
 			setValueLabel("");
 		}
 
-		if(confParameters.get("n_cat_visualization")!=null || confParameters.get("n_visualization")!=null){		
-			String nu=(String)confParameters.get("n_visualization");
-			if (nu == null) nu = (String)confParameters.get("n_cat_visualization");
+		if(confParameters.get(N_CAT_VISUALIZATION)!=null || confParameters.get(N_VISUALIZATION)!=null){		
+			String nu=(String)confParameters.get(N_VISUALIZATION);
+			if (nu == null) nu = (String)confParameters.get(N_CAT_VISUALIZATION);
 			numberCatVisualization=Integer.valueOf(nu);
 		}
 		else
 		{
 			numberCatVisualization=new Integer(1);
 		}
-		
+
 		dynamicNumberCatVisualization=false;
-		if(confParameters.get("dynamic_n_visualization")!=null){		
-			String dynamicS=(String)confParameters.get("dynamic_n_visualization");
+		if(confParameters.get(DYNAMIC_N_VISUALIZATION)!=null){		
+			String dynamicS=(String)confParameters.get(DYNAMIC_N_VISUALIZATION);
 			if(dynamicS.equalsIgnoreCase("true"))dynamicNumberCatVisualization=true;
 		}
-		
-		
-		
-		if(confParameters.get("n_ser_visualization")!=null){		
-			String nu=(String)confParameters.get("n_ser_visualization");
+
+
+
+		if(confParameters.get(N_SER_VISUALIZATION)!=null){		
+			String nu=(String)confParameters.get(N_SER_VISUALIZATION);
 			numberSerVisualization=Integer.valueOf(nu);
 		}
 		else
 		{
 			numberSerVisualization=new Integer(0);
 		}
-		
-		
-		
-		if(confParameters.get("filter_cat_groups")!=null){		
-			String filterCatGroupsS=(String)confParameters.get("filter_cat_groups");
+
+
+
+		if(confParameters.get(FILTER_CAT_GROUPS)!=null){		
+			String filterCatGroupsS=(String)confParameters.get(FILTER_CAT_GROUPS);
 			if(filterCatGroupsS.equalsIgnoreCase("false"))filterCatGroups=false;
 			else filterCatGroups=true;
 		}
 		else
 		{
 			filterCatGroups=true;
-			}
-		
-		if(confParameters.get("filter_series")!=null){		
-			String filterSeriesS=(String)confParameters.get("filter_series");
+		}
+
+		if(confParameters.get(FILTER_SERIES)!=null){		
+			String filterSeriesS=(String)confParameters.get(FILTER_SERIES);
 			if(filterSeriesS.equalsIgnoreCase("false"))filterSeries=false;
 			else filterSeries=true;
 		}
@@ -396,14 +440,14 @@ public class BarCharts extends ChartImpl {
 		{
 			filterSeries=true;
 		}
-		
-		if(confParameters.get("filter_series_buttons")!=null){		
-			String filterSeriesS=(String)confParameters.get("filter_series_buttons");
+
+		if(confParameters.get(FILTER_SERIES_BUTTONS)!=null){		
+			String filterSeriesS=(String)confParameters.get(FILTER_SERIES_BUTTONS);
 			if(filterSeriesS.equalsIgnoreCase("false"))filterSeriesButtons=false;
 		}
-		
-		if(confParameters.get("filter_categories")!=null){		
-			String filterCategoriesS=(String)confParameters.get("filter_categories");
+
+		if(confParameters.get(FILTER_CATEGORIES)!=null){		
+			String filterCategoriesS=(String)confParameters.get(FILTER_CATEGORIES);
 			if(filterCategoriesS.equalsIgnoreCase("false"))filterCategories=false;
 			else filterCategories=true;
 		}
@@ -411,23 +455,44 @@ public class BarCharts extends ChartImpl {
 		{
 			filterCategories=true;
 		}
-		
 
-		if(confParameters.get("show_value_labels")!=null){		
-			String valueLabelsS=(String)confParameters.get("show_value_labels");
-			if(valueLabelsS.equalsIgnoreCase("false"))showValueLabels=false;
-			else showValueLabels=true;
+		if(confParameters.get(SHOW_VALUE_LABLES)!=null){		
+			String valueLabelsS=(String)confParameters.get(SHOW_VALUE_LABLES);
+			if(valueLabelsS.equalsIgnoreCase("true"))showValueLabels=true;
 		}
-		else
-		{
-			showValueLabels=false;
-			}
-		
-		if(confParameters.get("enable_tooltips")!=null){		
-			String enableTooltipsS=(String)confParameters.get("enable_tooltips");
+
+		if(confParameters.get(ENABLE_TOOLTIPS)!=null){		
+			String enableTooltipsS=(String)confParameters.get(ENABLE_TOOLTIPS);
 			if(enableTooltipsS.equalsIgnoreCase("true"))enableToolTips=true;
 		}
-		
+
+		if(confParameters.get(MAXIMUM_BAR_WIDTH)!=null){		
+			String maxBarWidthS=(String)confParameters.get(MAXIMUM_BAR_WIDTH);
+			try{
+				maxBarWidth=Double.valueOf(maxBarWidthS);
+			}
+			catch (NumberFormatException e) {
+				logger.error("error in defining parameter "+MAXIMUM_BAR_WIDTH+": should be a double, it will be ignored",e);
+			}
+		}
+
+		if(confParameters.get(RANGE_INTEGER_VALUES)!=null){		
+			String rangeIntegerValuesS=(String)confParameters.get(RANGE_INTEGER_VALUES);
+			if(rangeIntegerValuesS.equalsIgnoreCase("true"))rangeIntegerValues=true;
+		}
+
+
+		if(confParameters.get(RANGE_AXIS_LOCATION)!=null){		
+			//BOTTOM_OR_LEFT, BOTTOM_OR_RIGHT, TOP_OR_RIGHT, TOP_OR_LEFT
+			String axisLocation=(String)confParameters.get(RANGE_AXIS_LOCATION);
+			if(axisLocation.equalsIgnoreCase("BOTTOM_OR_LEFT") || axisLocation.equalsIgnoreCase("BOTTOM_OR_RIGHT") || axisLocation.equalsIgnoreCase("TOP_OR_LEFT") || axisLocation.equalsIgnoreCase("TOP_OR_RIGHT")){
+				rangeAxisLocation=axisLocation;
+			}
+			else{
+				logger.warn("Range Axis location specified: "+axisLocation+" not a valid value.");
+			}
+		}
+
 		//reading series colors if present
 		SourceBean colors = (SourceBean)content.getAttribute("SERIES_COLORS");
 		if(colors==null){
@@ -478,7 +543,7 @@ public class BarCharts extends ChartImpl {
 					if (styleLabel.equalsIgnoreCase("font")) styleLabel = "font-family";
 					else if (styleLabel.equalsIgnoreCase("size")) styleLabel = "font-size";
 					else if (styleLabel.equalsIgnoreCase("color")) styleLabel = "color";
-						
+
 					filterStyle += styleLabel +":"+StyleValue+";"; 
 				}
 			}		
@@ -501,7 +566,7 @@ public class BarCharts extends ChartImpl {
 		}
 
 		// check if there is some info about additional labels style
-		
+
 		SourceBean styleXaxisLabelsSB = (SourceBean)content.getAttribute("STYLE_X_AXIS_LABELS");
 		if(styleXaxisLabelsSB!=null){
 
@@ -529,7 +594,7 @@ public class BarCharts extends ChartImpl {
 				}else{
 					size = defaultLabelsStyle.getSize();
 				}
-				
+
 				styleXaxesLabels=new StyleLabel(fontS,size,color);
 
 			}
@@ -540,7 +605,7 @@ public class BarCharts extends ChartImpl {
 		}else{
 			styleXaxesLabels = defaultLabelsStyle;
 		}
-		
+
 		SourceBean styleYaxisLabelsSB = (SourceBean)content.getAttribute("STYLE_Y_AXIS_LABELS");
 		if(styleYaxisLabelsSB!=null){
 
@@ -554,7 +619,7 @@ public class BarCharts extends ChartImpl {
 			if(orientationS==null){
 				orientationS = "horizontal";
 			}
-			
+
 			try{
 				Color color= Color.BLACK;
 				if(colorS!=null){
@@ -568,7 +633,7 @@ public class BarCharts extends ChartImpl {
 				}else{
 					size = defaultLabelsStyle.getSize();
 				}
-				
+
 				styleYaxesLabels=new StyleLabel(fontS,size,color);
 
 			}
@@ -579,7 +644,7 @@ public class BarCharts extends ChartImpl {
 		}else{
 			styleYaxesLabels = defaultLabelsStyle;
 		}
-		
+
 		SourceBean styleValueLabelsSB = (SourceBean)content.getAttribute("STYLE_VALUE_LABELS");
 		if(styleValueLabelsSB!=null){
 
@@ -607,7 +672,7 @@ public class BarCharts extends ChartImpl {
 				}else{
 					size = defaultLabelsStyle.getSize();
 				}
-				
+
 				styleValueLabels=new StyleLabel(fontS,size,color,orientationS);
 
 			}
@@ -733,7 +798,7 @@ public class BarCharts extends ChartImpl {
 
 		//List rowKeys=new Vector(catDataset.getRowKeys());
 		List colKeys=new Vector(catDataset.getColumnKeys());
-		
+
 		for (Iterator iterator = colKeys.iterator(); iterator.hasNext();) {
 			String col = (String) iterator.next();
 			// iterate on cols, get their group and see if it has to be kept
@@ -749,8 +814,8 @@ public class BarCharts extends ChartImpl {
 
 	}
 
-	
-	
+
+
 
 
 	/**

@@ -27,6 +27,7 @@ import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.renderer.category.StackedBarRenderer;
@@ -290,6 +291,9 @@ public class OverlaidStackedBarLine extends LinkableBar {
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 		plot.setRangeAxis(rangeAxis);
+		if(rangeIntegerValues==true){
+			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
+			}
 		
 		CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
 		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
@@ -316,7 +320,10 @@ public class OverlaidStackedBarLine extends LinkableBar {
 		if(useBars){
 			CategoryItemRenderer barRenderer = new StackedBarRenderer();
 
-
+			if(maxBarWidth!=null){
+				((BarRenderer)barRenderer).setMaximumBarWidth(maxBarWidth.doubleValue());
+			}
+			
 			if(additionalLabels){
 				barRenderer.setBaseItemLabelGenerator(generator);
 				double orient=(-Math.PI / 2.0);
@@ -436,6 +443,9 @@ public class OverlaidStackedBarLine extends LinkableBar {
 			na.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 			na.setTickLabelPaint(styleXaxesLabels.getColor());
 			na.setUpperMargin(0.10);
+			if(rangeIntegerValues==true){
+				na.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
+				}
 			plot.setRangeAxis(1,na);
 			plot.mapDatasetToRangeAxis(0, 1);
 		}

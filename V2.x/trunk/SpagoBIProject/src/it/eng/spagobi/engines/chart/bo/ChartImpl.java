@@ -48,6 +48,8 @@ import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.LinkablePie;
 import it.eng.spagobi.engines.chart.bo.charttypes.piecharts.SimplePie;
 import it.eng.spagobi.engines.chart.bo.charttypes.scattercharts.MarkerScatter;
 import it.eng.spagobi.engines.chart.bo.charttypes.scattercharts.SimpleScatter;
+import it.eng.spagobi.engines.chart.bo.charttypes.targetcharts.SparkLine;
+import it.eng.spagobi.engines.chart.bo.charttypes.targetcharts.WinLose;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.chart.utils.StyleLabel;
 
@@ -112,8 +114,93 @@ public class ChartImpl implements IChart {
 	protected String orientationMultichart="";
 
 	
+	// REGISTER CHART TYPES and SUB TYPES
+	
+	public static final String DIAL_CHART = "DIALCHART";
+	public static final String speedometer = "speedometer";
+	public static final String speedometerMultiValue = "speedometerMultiValue";
+	public static final String simpledial = "simpledial";
+	public static final String thermomether = "thermomether";
+	public static final String meter = "meter";
+	public static final String bullet = "bullet";
 
+	public static final String PIECHART = "PIECHART";
+	public static final String simplepie = "simplepie";
+	public static final String linkablepie = "linkablepie";
+	
+	public static final String BARCHART = "BARCHART";
+	public static final String simplebar = "simplebar";
+	public static final String linkablebar = "linkablebar";
+	public static final String overlaid_barline = "overlaid_barline";
+	public static final String stacked_bar = "stacked_bar";
+	public static final String stacked_bar_group = "stacked_bar_group";
+	public static final String overlaid_stackedbarline= "overlaid_stackedbarline";
+	public static final String combined_category_bar= "combined_category_bar";
 
+	public static final String BOXCHART = "BOXCHART";
+	public static final String simplebox = "simplebox";
+	
+	public static final String CLUSTERCHART = "CLUSTERCHART";
+	public static final String simplecluster = "simplecluster";
+
+	public static final String XYCHART = "XYCHART";
+	public static final String blockchart = "blockchart";
+
+	public static final String SCATTERCHART = "SCATTERCHART";
+	public static final String simplescatter = "simplescatter";
+	public static final String markerscatter = "markerscatter";
+
+	public static final String TARGETCHART = "TARGETCHART";
+	public static final String sparkline = "spark_line";
+	public static final String winlose = "win_lose";
+
+	
+	
+// Register Parameters
+	/** Nameof the chart., can be parametrized */
+	public static final String NAME = "name";
+	/** tag for style title */
+	public static final String STYLE_TITLE = "STYLE_TITLE";
+	/** tag for style subTitle */
+	public static final String STYLE_SUBTITLE = "STYLE_SUBTITLE";
+	/** tag for style default labels */
+	public static final String STYLE_LABELS_DEFAULT = "STYLE_LABELS_DEFAULT";
+	/** parameters for style tags */
+	public static final String NAME_STYLE = "name";
+	public static final String FONT_STYLE = "font";
+	public static final String SIZE_STYLE = "size";
+	public static final String COLOR_STYLE = "color";
+	public static final String ORIENTATION_STYLE = "orientation";
+	/** title dimension */
+	public static final String TITLE_DIMENSION = "title_dimension";
+		/** title dimension */
+	public static final String COLORS_BACKGROUND = "COLORS.background";
+	/** dimensions of chart */
+	public static final String DIMENSION_WIDTH = "DIMENSION.width";
+	public static final String DIMENSION_HEIGHT = "DIMENSION.height";
+	/** dataset for configuration */
+	public static final String  CONF_DATASET = "confdataset";
+
+	/** Parameter in the tag CONF*/
+/**  TAG CONF */
+	public static final String CONF = "CONF";
+	/** if true draw legend */
+	public static final String LEGEND = "legend";
+	/** legend position; bottom, top, left, right*/
+	public static final String LEGEND_POSITION = "legend_position";
+	/** if true view filter*/
+	public static final String VIEW_FILTER = "view_filter";
+	/** if true view slider*/
+	public static final String VIEW_SLIDER = "view_slider";
+	/** if true the slider starts from last n categories*/
+	public static final String SLIDER_START_FROM_END = "slider_start_from_end";
+	/** top or bottom, where to put slider*/
+	public static final String POSITION_SLIDER = "position_slider";
+
+	// Outside of CONF
+	/** Labels for series, should be put outside CONF*/
+	public static final String SERIES_LABELS = "SERIES_LABELS";
+	
 	
 	/**
 	 * configureChart reads the content of the template and sets the chart parameters.
@@ -124,8 +211,8 @@ public class ChartImpl implements IChart {
 		logger.debug("IN");
 		// common part for all charts
 		//setting the title with parameter values if is necessary
-		if(content.getAttribute("name")!=null) {
-			String titleChart = (String)content.getAttribute("name");
+		if(content.getAttribute(NAME)!=null) {
+			String titleChart = (String)content.getAttribute(NAME);
 			String tmpTitle = titleChart;
 			while (!tmpTitle.equals("")){
 				if (tmpTitle.indexOf("$P{") >= 0){
@@ -146,12 +233,12 @@ public class ChartImpl implements IChart {
 		}
 		else setName("");
 
-		SourceBean styleTitleSB = (SourceBean)content.getAttribute("STYLE_TITLE");
+		SourceBean styleTitleSB = (SourceBean)content.getAttribute(STYLE_TITLE);
 		if(styleTitleSB!=null){
 
-			String fontS = (String)content.getAttribute("STYLE_TITLE.font");
-			String sizeS = (String)content.getAttribute("STYLE_TITLE.size");
-			String colorS = (String)content.getAttribute("STYLE_TITLE.color");
+			String fontS = (String)styleTitleSB.getAttribute(FONT_STYLE);
+			String sizeS = (String)styleTitleSB.getAttribute(SIZE_STYLE);
+			String colorS = (String)styleTitleSB.getAttribute(COLOR_STYLE);
 
 
 			try{
@@ -166,10 +253,10 @@ public class ChartImpl implements IChart {
 
 		}
 		
-		SourceBean styleSubTitleSB = (SourceBean)content.getAttribute("STYLE_SUBTITLE");
+		SourceBean styleSubTitleSB = (SourceBean)content.getAttribute(STYLE_SUBTITLE);
 		if(styleSubTitleSB!=null){
 
-			String subTitle = (String)content.getAttribute("STYLE_SUBTITLE.name");
+			String subTitle = (String)styleSubTitleSB.getAttribute(NAME_STYLE);
 			if(subTitle!=null) {
 				String tmpSubTitle = subTitle;
 				while (!tmpSubTitle.equals("")){
@@ -189,9 +276,9 @@ public class ChartImpl implements IChart {
 			}
 			else setSubName("");
 			
-			String fontS = (String)content.getAttribute("STYLE_SUBTITLE.font");
-			String sizeS = (String)content.getAttribute("STYLE_SUBTITLE.size");
-			String colorS = (String)content.getAttribute("STYLE_SUBTITLE.color");
+			String fontS = (String)styleSubTitleSB.getAttribute(FONT_STYLE);
+			String sizeS = (String)styleSubTitleSB.getAttribute(SIZE_STYLE);
+			String colorS = (String)styleSubTitleSB.getAttribute(COLOR_STYLE);
 
 
 			try{
@@ -205,22 +292,22 @@ public class ChartImpl implements IChart {
 
 		}
 
-		SourceBean styleLabelsSB = (SourceBean)content.getAttribute("STYLE_LABELS_DEFAULT");
+		SourceBean styleLabelsSB = (SourceBean)content.getAttribute(STYLE_LABELS_DEFAULT);
 		if(styleLabelsSB!=null){
 
-			String fontS = (String)content.getAttribute("STYLE_LABELS_DEFAULT.font");
+			String fontS = (String)styleLabelsSB.getAttribute(FONT_STYLE);
 			if(fontS==null){
 				fontS = "Arial";
 			}
-			String sizeS = (String)content.getAttribute("STYLE_LABELS_DEFAULT.size");
+			String sizeS = (String)styleLabelsSB.getAttribute(SIZE_STYLE);
 			if(sizeS==null){
 				sizeS = "12";
 			}
-			String colorS = (String)content.getAttribute("STYLE_LABELS_DEFAULT.color");
+			String colorS = (String)styleLabelsSB.getAttribute(COLOR_STYLE);
 			if(colorS==null){
 				colorS = "#000000";
 			}
-			String orientationS = (String)content.getAttribute("STYLE_LABELS_DEFAULT.orientation");
+			String orientationS = (String)styleLabelsSB.getAttribute(ORIENTATION_STYLE);
 			if(orientationS==null){
 				orientationS = "horizontal";
 			}
@@ -241,13 +328,13 @@ public class ChartImpl implements IChart {
 
 		if(content.getAttribute("title_dimension")!=null) 
 		{
-			String titleD=((String)content.getAttribute("title_dimension"));
+			String titleD=((String)content.getAttribute(TITLE_DIMENSION));
 			titleDimension=Integer.valueOf(titleD).intValue();
 		}
 		else setTitleDimension(18);
 
 
-		String colS = (String)content.getAttribute("COLORS.background");
+		String colS = (String)content.getAttribute(COLORS_BACKGROUND);
 		if(colS!=null) 
 		{
 			Color col=new Color(Integer.decode(colS).intValue());
@@ -261,8 +348,8 @@ public class ChartImpl implements IChart {
 			setColor(Color.white);
 		}
 
-		String widthS = (String)content.getAttribute("DIMENSION.width");
-		String heightS = (String)content.getAttribute("DIMENSION.height");
+		String widthS = (String)content.getAttribute(DIMENSION_WIDTH);
+		String heightS = (String)content.getAttribute(DIMENSION_HEIGHT);
 		if(widthS==null || heightS==null){
 			logger.warn("Width or height non defined, use default ones");
 			widthS="400";
@@ -277,7 +364,7 @@ public class ChartImpl implements IChart {
 
 		try{					
 			Map dataParameters = new HashMap();
-			SourceBean dataSB = (SourceBean)content.getAttribute("CONF");
+			SourceBean dataSB = (SourceBean)content.getAttribute(CONF);
 			List dataAttrsList = dataSB.getContainedSourceBeanAttributes();
 			Iterator dataAttrsIter = dataAttrsList.iterator();
 			while(dataAttrsIter.hasNext()) {
@@ -289,8 +376,8 @@ public class ChartImpl implements IChart {
 			}
 
 
-			if(dataParameters.get("confdataset")!=null && !(((String)dataParameters.get("confdataset")).equalsIgnoreCase("") )){	
-				confDataset=(String)dataParameters.get("confdataset");
+			if(dataParameters.get(CONF_DATASET)!=null && !(((String)dataParameters.get(CONF_DATASET)).equalsIgnoreCase("") )){	
+				confDataset=(String)dataParameters.get(CONF_DATASET);
 				isLovConfDefined=true;
 			}
 			else {
@@ -298,49 +385,50 @@ public class ChartImpl implements IChart {
 			}
 
 			legend=true;
-			if(dataParameters.get("legend")!=null && !(((String)dataParameters.get("legend")).equalsIgnoreCase("") )){	
-				String leg=(String)dataParameters.get("legend");
+			if(dataParameters.get(LEGEND)!=null && !(((String)dataParameters.get(LEGEND)).equalsIgnoreCase("") )){	
+				String leg=(String)dataParameters.get(LEGEND);
 				if(leg.equalsIgnoreCase("false"))
 					legend=false;
 			}
 
 			legendPosition="bottom";
-			if(dataParameters.get("legend_position")!=null && !(((String)dataParameters.get("legend_position")).equalsIgnoreCase("") )){	
-				String leg=(String)dataParameters.get("legend_position");
+			if(dataParameters.get(LEGEND_POSITION)!=null && !(((String)dataParameters.get(LEGEND_POSITION)).equalsIgnoreCase("") )){	
+				String leg=(String)dataParameters.get(LEGEND_POSITION);
 				if(leg.equalsIgnoreCase("bottom") || leg.equalsIgnoreCase("left") || leg.equalsIgnoreCase("right") || leg.equalsIgnoreCase("up"))
 					legendPosition=leg;
 			}
 			
 			filter=true;
-			if(dataParameters.get("view_filter")!=null && !(((String)dataParameters.get("view_filter")).equalsIgnoreCase("") )){	
-				String fil=(String)dataParameters.get("view_filter");
+			if(dataParameters.get(VIEW_FILTER)!=null && !(((String)dataParameters.get(VIEW_FILTER)).equalsIgnoreCase("") )){	
+				String fil=(String)dataParameters.get(VIEW_FILTER);
 				if(fil.equalsIgnoreCase("false"))
 					filter=false;
 			}
 
 			slider=true;
-			if(dataParameters.get("view_slider")!=null && !(((String)dataParameters.get("view_slider")).equalsIgnoreCase("") )){	
-				String sli=(String)dataParameters.get("view_slider");
+			if(dataParameters.get(VIEW_SLIDER)!=null && !(((String)dataParameters.get(VIEW_SLIDER)).equalsIgnoreCase("") )){	
+				String sli=(String)dataParameters.get(VIEW_SLIDER);
 				if(sli.equalsIgnoreCase("false"))
 					slider=false;
 			}
 
 			sliderStartFromEnd=false;
-			if(dataParameters.get("slider_start_from_end")!=null && !(((String)dataParameters.get("slider_start_from_end")).equalsIgnoreCase("") )){	
-				String sli=(String)dataParameters.get("slider_start_from_end");
+			if(dataParameters.get(SLIDER_START_FROM_END)!=null && !(((String)dataParameters.get(SLIDER_START_FROM_END)).equalsIgnoreCase("") )){	
+				String sli=(String)dataParameters.get(SLIDER_START_FROM_END);
 				if(sli.equalsIgnoreCase("true"))
 					sliderStartFromEnd=true;
 			}
 			
 			positionSlider="top";
-			if(dataParameters.get("position_slider")!=null && !(((String)dataParameters.get("position_slider")).equalsIgnoreCase("") )){	
-				positionSlider=(String)dataParameters.get("position_slider");
+			if(dataParameters.get(POSITION_SLIDER)!=null && !(((String)dataParameters.get(POSITION_SLIDER)).equalsIgnoreCase("") )){	
+				positionSlider=(String)dataParameters.get(POSITION_SLIDER);
 			}
 			
 			//reading series orders if present
-			SourceBean sbSerieLabels = (SourceBean)content.getAttribute("SERIES_LABELS");
+			SourceBean sbSerieLabels = (SourceBean)content.getAttribute(SERIES_LABELS);
+			// back compatibility
 			if(sbSerieLabels==null){
-				sbSerieLabels = (SourceBean)content.getAttribute("CONF.SERIES_LABELS");
+				sbSerieLabels = (SourceBean)sbSerieLabels.getAttribute("CONF.SERIES_LABELS");
 			}
 			if(sbSerieLabels!=null){
 				seriesLabelsMap=new LinkedHashMap();
@@ -389,85 +477,93 @@ public class ChartImpl implements IChart {
 
 	public static ChartImpl createChart(String type,String subtype){
 		ChartImpl sbi=null;
-		if(type.equals("DIALCHART")){
-			if(subtype.equalsIgnoreCase("speedometer")){
+		if(type.equals(DIAL_CHART)){
+			if(subtype.equalsIgnoreCase(speedometer)){
 				sbi=new SBISpeedometer();
 			}
-			if(subtype.equalsIgnoreCase("speedometerMultiValue")){
+			if(subtype.equalsIgnoreCase(speedometerMultiValue)){
 				sbi=new SpeedometerMultiValue();
 			}
-			else if(subtype.equalsIgnoreCase("simpledial")){
+			else if(subtype.equalsIgnoreCase(simpledial)){
 				sbi= new SimpleDial();
 			}
-			else if(subtype.equalsIgnoreCase("thermomether")){
+			else if(subtype.equalsIgnoreCase(thermomether)){
 				sbi= new Thermometer();
 			}
-			else if(subtype.equalsIgnoreCase("meter")){
+			else if(subtype.equalsIgnoreCase(meter)){
 				sbi= new Meter();
 			}
-			else if(subtype.equalsIgnoreCase("bullet")){
+			else if(subtype.equalsIgnoreCase(bullet)){
 				sbi= new BulletGraph();
 			}
 		}
-		if(type.equals("PIECHART")){
-			if(subtype.equalsIgnoreCase("simplepie")){
+		else if(type.equals(PIECHART)){
+			if(subtype.equalsIgnoreCase(simplepie)){
 				sbi=new SimplePie();
 			}
-			if(subtype.equalsIgnoreCase("linkablepie")){
+			if(subtype.equalsIgnoreCase(linkablepie)){
 				sbi=new LinkablePie();
 			}			
 		}
 
-		if(type.equals("BARCHART")){
-			if(subtype.equalsIgnoreCase("simplebar")){
+		else if(type.equals(BARCHART)){
+			if(subtype.equalsIgnoreCase(simplebar)){
 				sbi=new SimpleBar();
 			}
-			else if(subtype.equalsIgnoreCase("linkablebar")){
+			else if(subtype.equalsIgnoreCase(linkablebar)){
 				sbi=new LinkableBar();
 			}
-			else if(subtype.equalsIgnoreCase("overlaid_barline")){
+			else if(subtype.equalsIgnoreCase(overlaid_barline)){
 				sbi=new OverlaidBarLine();
 			}		
-			else if(subtype.equalsIgnoreCase("stacked_bar")){
+			else if(subtype.equalsIgnoreCase(stacked_bar)){
 				sbi=new StackedBar();
 			}		
-			else if(subtype.equalsIgnoreCase("stacked_bar_group")){
+			else if(subtype.equalsIgnoreCase(stacked_bar_group)){
 				sbi=new StackedBarGroup();
 			}	
-			else if(subtype.equalsIgnoreCase("overlaid_stackedbarline")){
+			else if(subtype.equalsIgnoreCase(overlaid_stackedbarline)){
 				sbi=new OverlaidStackedBarLine();
 			}
-			else if(subtype.equalsIgnoreCase("combined_category_bar")){
+			else if(subtype.equalsIgnoreCase(combined_category_bar)){
 				sbi=new CombinedCategoryBar();
 			}	
 		}
 
-		if(type.equals("BOXCHART")){
-			if(subtype.equalsIgnoreCase("simplebox")){
+		else if(type.equals(BOXCHART)){
+			if(subtype.equalsIgnoreCase(simplebox)){
 				sbi=new SimpleBox();
 			}
 		}
 
-		if(type.equals("CLUSTERCHART")){
-			if(subtype.equalsIgnoreCase("simplecluster")){
+		else if(type.equals(CLUSTERCHART)){
+			if(subtype.equalsIgnoreCase(simplecluster)){
 				sbi=new SimpleCluster();
 			}
 		}
 		
-		if(type.equals("XYCHART")){
-			if(subtype.equalsIgnoreCase("blockchart")){
+		else if(type.equals(XYCHART)){
+			if(subtype.equalsIgnoreCase(blockchart)){
 				sbi=new BlockChart();
 			}
 		}
 		
-		if(type.equals("SCATTERCHART")){
-			if(subtype.equalsIgnoreCase("simplescatter")){
+		else if(type.equals(SCATTERCHART)){
+			if(subtype.equalsIgnoreCase(simplescatter)){
 				sbi=new SimpleScatter();
 			}
-			if(subtype.equalsIgnoreCase("markerscatter")){
+			if(subtype.equalsIgnoreCase(markerscatter)){
 				sbi=new MarkerScatter();
 			}
 		}
+		else if(type.equals(TARGETCHART)){
+			if(subtype.equalsIgnoreCase(sparkline)){
+				sbi=new SparkLine();
+			}
+			if(subtype.equalsIgnoreCase(winlose)){
+				sbi=new WinLose();
+			}
+		}		
 
 
 		return sbi;

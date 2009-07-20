@@ -166,7 +166,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		for(i = 0; i <  this.grid.store.getCount(); i++) {
 			var record =  this.grid.store.getAt(i);
 			var filter = Ext.apply({}, record.data);
-			filter.operand = filter.otype === 'Static Value'? filter.odesc: filter.operand;
+			filter.operand = (filter.otype === 'Static Value')? filter.odesc: filter.operand;
 			filter.isfree = filter.isfree || false;
 			filters.push(filter);
 		}

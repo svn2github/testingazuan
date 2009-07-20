@@ -87,8 +87,6 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
 			rowIndex = undefined;
 		}  
 		
-		alert(rowIndex);
-
 		var sourceObject;
       	if(ddSource.tree) {
         	this.notifyDropFromTree(ddSource, e, data, rowIndex);

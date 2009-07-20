@@ -270,7 +270,6 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	}
 	
 	, onDataStoreLoadException: function(response, options) {
-		alert('jim belushi');
 		Sbi.exception.ExceptionHandler.handleFailure(response, options);
 	}
 

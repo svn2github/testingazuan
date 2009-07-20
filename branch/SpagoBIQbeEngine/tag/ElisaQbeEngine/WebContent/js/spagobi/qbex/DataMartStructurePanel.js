@@ -84,6 +84,7 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 	, treeLoader: null
 	, rootNode: null
 	, tree: null
+	, type: 'datamartstructuretree'
 	
 	// public methods
 	
@@ -146,7 +147,7 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 	        root 			 : this.rootNode
 	    });	
 		
-		//this.tree.setRootNode(this.rootNode);
+		this.tree.type = this.type;
 		
 		this.tree.on('click', function(node) {this.fireEvent('click', this, node);}, this);
 	}

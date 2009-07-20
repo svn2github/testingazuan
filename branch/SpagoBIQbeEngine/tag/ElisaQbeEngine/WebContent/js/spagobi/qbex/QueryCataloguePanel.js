@@ -100,6 +100,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	, treeLoader: null
 	, rootNode: null
 	, tree: null
+	, type: 'querycataloguetree'
 	
 	// public methods
 	
@@ -534,12 +535,17 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	        enableDD: true,	        
 	        ddGroup: 'gridDDGroup',
 	        dropConfig: {
+				ddGroup: 'gridDDGroup',
+				// avoid in tree drop
 				isValidDropPoint : function(n, pt, dd, e, data){
 					return false;
 				}      
 	      	},
 	      	
 	      	dragConfig: {
+	      		// if dragConfig in set the ddGroup is taken from there and not from the tree
+	      		// so if not defined there the defaut one will be used : 'treeDD'
+	      		ddGroup: 'gridDDGroup', 
 	      		onInitDrag : function(e){
 		            var data = this.dragData;
 		            // when start a new drag we do not want to select the dragged node
@@ -571,6 +577,14 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	        loader           : this.treeLoader,
 	        root 			 : this.rootNode
 	    });	
+		
+		this.tree.type = this.type;
+		
+		/*
+		this.tree.on('startdrag', function(tree, node, e) {
+			alert(tree.dragZone.ddGroup);
+		}, this);
+		*/
 		
 		// add an inline editor for the nodes
 	    this.treeEditor = new Ext.tree.TreeEditor(this.tree, {/* fieldconfig here */ }, {

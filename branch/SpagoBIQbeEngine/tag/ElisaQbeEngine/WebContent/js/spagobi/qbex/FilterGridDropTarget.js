@@ -70,7 +70,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
     , targetElement: null
    
     , notifyDrop : function(ddSource, e, data){
-    
+    	
 		// the row index and the column number on whitch the tree node has been dropped on
 		var rowIndex;
 		var colIndex;
@@ -89,10 +89,14 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 				colIndex = undefined;
 		} 
 	
+	    
+	    
 	  	var sourceObject;
-	  	if(ddSource.tree) {
-	    	this.notifyDropFromTree(ddSource, e, data, rowIndex, colIndex);
-	  	} else if(ddSource.grid &&  ddSource.grid.type === 'selectgrid') {
+	  	if(ddSource.tree && ddSource.tree.type ===  'datamartstructuretree') {
+	    	this.notifyDropFromDatamartStructureTree(ddSource, e, data, rowIndex, colIndex);
+	  	} else if(ddSource.tree && ddSource.tree.type ===  'querycataloguetree') {
+	    	this.notifyDropFromQueryCatalogueTree(ddSource, e, data, rowIndex, colIndex);		
+		} else if(ddSource.grid &&  ddSource.grid.type === 'selectgrid') {
 	    	this.notifyDropFromSelectGrid(ddSource, e, data, rowIndex, colIndex);
 	  	} else if(ddSource.grid &&  ddSource.grid.type === 'filtergrid') {
 	    	this.notifyDropFromFilterGrid(ddSource, e, data, rowIndex, colIndex);
@@ -100,8 +104,32 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 	    	alert('Source object: unknown');
 	  	}        
 	}
+	
+	, notifyDropFromQueryCatalogueTree: function(ddSource, e, data, rowIndex, colIndex) {
 
-	, notifyDropFromTree: function(ddSource, e, data, rowIndex, colIndex) {
+
+		var node;
+		
+		node = ddSource.dragData.node;        
+	
+		if(colIndex === 5) {
+			alert('Ok, that\'s right!');
+			var store = this.targetGrid.store;
+			var row = store.getAt(rowIndex);
+			row.data['otype'] = 'Subquery';
+			row.data['odesc'] = node.attributes.query.name;
+			row.data['operand'] = node.id;
+			this.targetGrid.store.fireEvent('datachanged', this.targetGrid.store) ;
+		} else {
+			Ext.Msg.show({
+				   title:'Drop target not allowed',
+				   msg: 'Subqueries can be dropped only on the "operand" column of an existing filter',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.WARNING
+			});
+		}
+	}
+	, notifyDropFromDatamartStructureTree: function(ddSource, e, data, rowIndex, colIndex) {
 		//alert('Source object: tree');
 	
 		// the node dragged from tree to grid

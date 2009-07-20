@@ -96,6 +96,7 @@ Sbi.qbe.QueryCataloguePanel = function(config) {
 Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     
 	services: null
+	, treeSelectionModel: null
 	, treeLoader: null
 	, rootNode: null
 	, tree: null
@@ -105,8 +106,33 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	, load: function() {
 		this.treeLoader.load(this.rootNode, function(){});
 	}
+
+	, commit: function(callback, scope) {
+		var params = {
+				catalogue: Ext.util.JSON.encode(this.getQueries())
+		};
+		
+		Ext.Ajax.request({
+		    url: this.services['setCatalogue'],
+		    success: callback,
+		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
+		    scope: scope,
+		    params: params
+		});   
+	}
      
+	, addQuery: function(query) {
+		var queryItem;
+		if(query) queryItem = {query: query};
+		this.addQueryItem(queryItem);
+	}
 	
+	, insertQuery: function(parentQuery) {
+		var parentQueryItem;
+		if(parentQuery) parentQueryItem = {query: parentQuery};
+		this.insertQueryItem(parentQueryItem);
+	}
+
 	, setQuery: function(queryItemId, query) {
 		var oldQuery;
 		var item = this.getQueryItemById(queryItemId);
@@ -118,29 +144,48 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		return oldQuery;
 	}
 	
-	, getQuery: function(queryItemId) {
-		var item = this.getQueryItemById(queryItemId);
-		return item? item.query : undefined;
+	, getQueries: function() {
+		var queries = [];
+    	if( this.rootNode.childNodes && this.rootNode.childNodes.length > 0 ) {
+			for(var i = 0; i < this.rootNode.childNodes.length; i++) {
+				queries.push( this.getQueryById(this.rootNode.childNodes[i].id) );
+			}
+		}
+    	
+    	return queries;
 	}
 	
-	, setMeta: function(queryItemId, meta) {
-		var oldMeta;
-		var item = this.getQueryItemById(queryItemId);
-		if(item) {
-			oldMeta = item.meta;
-			item.meta = meta;
+	, getQueryById: function(queryId) {
+		var query;
+		var queryNode = this.tree.getNodeById(queryId);
+		
+		if(queryNode) {
+			
+			query = queryNode.attributes.query;
+			query.subqueries = [];
+			if( queryNode.childNodes && queryNode.childNodes.length > 0 ) {
+				for(var i = 0; i < queryNode.childNodes.length; i++) {
+					var subquery = this.getQueryById( queryNode.childNodes[i].id );
+					query.subqueries.push( subquery );
+				}
+			}
 		}
 		
-		return oldMeta;
+		return query;
+	}
+	
+	, getSelectedQuery: function() {
+		var queryItem = this.getSelectedQueryItem();
+		return queryItem? queryItem.query: undefined;
+	}
+	
+	, deleteQueries: function(queries) {
+		this.deleteQueryItems(queries);
 	}
 	
 	
-	, getMeta: function(queryItemId, meta) {
-		var item = this.getQueryItemById(queryItemId);
-		return item? item.meta : undefined;
-	}
-
-
+	// PRIVATE:  item level
+	
 	, getQueryItems: function() {
 		var queryItems = [];
     	if( this.rootNode.childNodes && this.rootNode.childNodes.length > 0 ) {
@@ -159,11 +204,11 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		if(queryNode) {
 			
 			queryItem = queryNode.attributes;
-			queryItem.suqueries = [];
-			if( this.queryNode.childNodes && this.queryNode.childNodes.length > 0 ) {
-				for(var i = 0; i < this.queryNode.childNodes.length; i++) {
-					var subquery = this.getQueryItemById( this.queryNode.childNodes[i].id );
-					queryItems.suqueries.push( subquery );
+			queryItem.subqueries = [];
+			if( queryNode.childNodes && queryNode.childNodes.length > 0 ) {
+				for(var i = 0; i < queryNode.childNodes.length; i++) {
+					var subquery = this.getQueryItemById( queryNode.childNodes[i].id );
+					queryItem.subqueries.push( subquery );
 				}
 			}
 		}
@@ -175,25 +220,27 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		var queryNode = this.tree.getSelectionModel().getSelectedNode();
 		return queryNode? queryNode.attributes: undefined;
 	}
-
+	
 	, addQueryItem: function(queryItem) {
 		this.insertQueryItem(this.rootNode.id, queryItem);
 	}
+	
+	
 
 	, insertQueryItem: function(parentQueryItem, queryItem) {
-		var nodeId = (typeof parentQueryItem === 'string')? parentQueryItem: parentQueryItem.meta.id;
+		var nodeId = (typeof parentQueryItem === 'string')? parentQueryItem: parentQueryItem.query.id;
 		var parentQueryNode = this.tree.getNodeById(nodeId);
 		 
 		if(!queryItem) {
 			this.createQueryNode(this.insertQueryNode.createDelegate(this, [parentQueryNode], 0), this);
 		} else {
+			alert(queryItem.toSource());
 			 var queryNode = {
-			    id: queryItem.meta.id
-			   	, text: queryItem.meta.id
+			    id: queryItem.query.id
+			   	, text: queryItem.query.id
 			   	, leaf: true
 			   	, attributes: {
 			 		query: queryItem.query
-			 		, meta: queryItem.meta
 			 		, iconCls: 'icon-query'
 			    }
 			 };
@@ -206,22 +253,8 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	}
 	
 	
-	, commit: function(callback, scope) {
-		var params = {
-				catalogue: Ext.util.JSON.encode(this.getQueryItems())
-		};
-		
-		Ext.Ajax.request({
-		    url: this.services['setCatalogue'],
-		    success: callback,
-		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
-		    scope: scope,
-		    params: params
-		});   
-	}
 	
-	
-	// private 
+	// PRIVATE:  node level
 	
 	, addQueryNode: function(queryNode) {
 		this.insertQueryNode(this.rootNode, queryNode);
@@ -275,7 +308,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     			if(typeof query === 'string') {
     				p.push( query );
     			} else if(typeof query === 'object') {
-    				p.push( query.id || query.meta.id );
+    				p.push( query.id || query.query.id );
     			} else {
     				alert('Invalid type [' + (typeof query) + '] for object query in function [deleteQueries]');
     			}
@@ -370,7 +403,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     	this.insertQueryNode(this.tree.getSelectionModel().getSelectedNode() || this.rootNode);
     }
     
-    */	 
+    	 
     
     , getQueries: function() {
     	var items = [];
@@ -390,7 +423,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     	selectedNode = this.tree.getSelectionModel().getSelectedNode();
     	if(selectedNode) selectedNode.attributes.query = query;
     }
-    
+    */
     
     /*
     , deleteQueries: function(queries) {
@@ -437,11 +470,9 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		this.treeLoader = new Ext.tree.TreeLoader({
 	        dataUrl: this.services['getCatalogue']
 	    });
-		
-		/*
+		// redefine createnode function in order to disable node expansion on dblclick
 		this.treeLoader.createNode = function(attr){
-	        
-			// apply baseAttrs, nice idea Corey!
+	        // apply baseAttrs, nice idea Corey!
 	        if(this.baseAttrs){
 	            Ext.applyIf(attr, this.baseAttrs);
 	        }
@@ -460,11 +491,36 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	        	resultNode = new Ext.tree.AsyncTreeNode(attr);
 	        }
 	        
+	        resultNode.getUI().onDblClick = function(e){
+	            e.preventDefault();
+	            if(this.disabled){
+	                return;
+	            }
+	            if(this.checkbox){
+	                this.toggleCheck();
+	            }
+	            /*
+	            if(!this.animating && this.node.hasChildNodes()){
+	                this.node.toggle();
+	            }
+	            */
+	            this.fireEvent("dblclick", this.node, e);
+	        };
+	        
 	        return resultNode;
-	    }
-	    */
+	    };
 		
-		
+		this.treeSelectionModel = new Ext.tree.DefaultSelectionModel({
+			init : function(tree){
+		        this.tree = tree;
+		        tree.on("dblclick", this.onNodeDbClick, this);
+	    	},
+	    
+	    	onNodeDbClick : function(node, e){
+	    		this.select(node);
+	    	}
+		});
+				
 		this.rootNode = new Ext.tree.AsyncTreeNode({
 	        text		: 'Queries',
 	        iconCls		: 'database',
@@ -475,15 +531,33 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		this.tree = new Ext.tree.TreePanel({
 	        collapsible: true,
 	        
-	        enableDD: false,
-	        /*
+	        enableDD: true,	        
 	        ddGroup: 'gridDDGroup',
 	        dropConfig: {
 				isValidDropPoint : function(n, pt, dd, e, data){
 					return false;
 				}      
 	      	},
-	      	*/
+	      	
+	      	dragConfig: {
+	      		onInitDrag : function(e){
+		            var data = this.dragData;
+		            // when start a new drag we do not want to select the dragged node
+		            //this.tree.getSelectionModel().select(data.node);
+		            this.tree.eventModel.disable();
+		            this.proxy.update("");
+		            data.node.ui.appendDDGhost(this.proxy.ghost.dom);
+		            this.tree.fireEvent("startdrag", this.tree, data.node, e);
+	      		}
+	      		
+	      		, beforeInvalidDrop : function(e, id){
+	      	        // when a drop fails we do not want to select the dragged node
+	      	        //var sm = this.tree.getSelectionModel();
+	      	        //sm.clearSelections();
+	      	        //sm.select(this.dragData.node);
+	      	    }
+	      	}, 
+	      	
 	      	
 	        animCollapse     : true,
 	        collapseFirst	 : false,
@@ -493,6 +567,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	        animate          : false,
 	        trackMouseOver 	 : true,
 	        useArrows 		 : true,
+	        selModel		 : this.treeSelectionModel,
 	        loader           : this.treeLoader,
 	        root 			 : this.rootNode
 	    });	
@@ -503,6 +578,9 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	        blankText:'A name is required',
 	        selectOnFocus:true
 	    });
+	    // we do not want editing to start after node clicking
+	    this.treeEditor.beforeNodeClick = Ext.emptyFn;
+
 		
 		this.tree.getSelectionModel().on('beforeselect', this.onSelect, this);
 		this.treeLoader.on('load', this.onLoad, this);

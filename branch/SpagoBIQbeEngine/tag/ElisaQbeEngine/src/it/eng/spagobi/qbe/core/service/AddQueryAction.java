@@ -77,12 +77,12 @@ public class AddQueryAction extends AbstractQbeEngineAction {
 			
 			query = new Query();
 			getEngineInstance().getQueryCatalogue().addQuery(query);
-			meta = getEngineInstance().getQueryCatalogue().getQueryMeta( query.getId() );
-			//meta.setName(name);
+			//meta = getEngineInstance().getQueryCatalogue().getQueryMeta( query.getId() );
 			
 			queryJSON = serializeQuery(query);
-			metaJSON = serializeMeta(meta);
-			nodeJSON = createNode(metaJSON, queryJSON);
+			//metaJSON = serializeMeta(meta);
+			//nodeJSON = createNode(metaJSON, queryJSON);
+			nodeJSON = createNode(queryJSON);
 			
 			try {
 				writeBackToClient( new JSONSuccess(nodeJSON) );
@@ -112,18 +112,18 @@ public class AddQueryAction extends AbstractQbeEngineAction {
 		return metaJSON;
 	}
 	
-	private JSONObject createNode(JSONObject meta, JSONObject query) throws JSONException {
+	private JSONObject createNode(/*JSONObject meta,*/ JSONObject query) throws JSONException {
 		JSONObject nodeJSON;
 		JSONObject nodeAttributes;
 		
 		nodeJSON = new JSONObject();
-		nodeJSON.put("id", meta.getString("id"));
-		nodeJSON.put("text", meta.getString("name"));
+		nodeJSON.put("id", query.getString("id"));
+		nodeJSON.put("text", query.getString("name"));
 		nodeJSON.put("leaf", true);	
 		
 		nodeAttributes = new JSONObject();
 		nodeAttributes.put("iconCls", "icon-query");
-		nodeAttributes.put("meta", meta);
+		//nodeAttributes.put("meta", meta);
 		nodeAttributes.put("query", query);
 		
 		nodeJSON.put("attributes", nodeAttributes);

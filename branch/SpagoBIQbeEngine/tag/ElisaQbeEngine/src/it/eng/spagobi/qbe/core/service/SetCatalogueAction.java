@@ -59,7 +59,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 	public void service(SourceBean request, SourceBean response)  {				
 		
 		String jsonEncodedCatalogue = null;
-		JSONArray items;
+		JSONArray queries;
 		JSONObject itemJSON;
 		JSONObject queryJSON;
 		JSONObject metaJSON;
@@ -80,16 +80,12 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 			
 			
 			try {		
-				items = new JSONArray( jsonEncodedCatalogue );
-				for(int i = 0; i < items.length(); i++) {					
-					itemJSON = items.getJSONObject(i);
-					queryJSON = itemJSON.getJSONObject("query");
-					metaJSON = itemJSON.getJSONObject("meta");
-					
+				queries = new JSONArray( jsonEncodedCatalogue );
+				for(int i = 0; i < queries.length(); i++) {					
+					queryJSON = queries.getJSONObject(i);
 					query = deserializeQuery(queryJSON);
-					meta = deserializeMeta(metaJSON);
 					
-					getEngineInstance().getQueryCatalogue().refreshQuery(query, meta);
+					getEngineInstance().getQueryCatalogue().addQuery(query);
 					getEngineInstance().resetActiveQuery();
 				}				
 				
@@ -124,7 +120,7 @@ public class SetCatalogueAction extends AbstractQbeEngineAction {
 
 
 	private Query deserializeQuery(JSONObject queryJSON) throws SerializationException, JSONException {
-		queryJSON.put("expression", queryJSON.get("filterExpression"));
+		//queryJSON.put("expression", queryJSON.get("filterExpression"));
 		return QuerySerializerFactory.getDeserializer("application/json").deserialize(queryJSON.toString(), getEngineInstance().getDatamartModel());
 	}
 

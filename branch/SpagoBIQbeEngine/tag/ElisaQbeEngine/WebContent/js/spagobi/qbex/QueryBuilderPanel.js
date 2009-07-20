@@ -115,8 +115,8 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		this.selectGridPanel.distinctCheckBox.setValue(query.distinct);
 		this.filterGridPanel.setFilters(query.filters);
 		
-		this.filterGridPanel.setFiltersExpression(query.filterExpression);
-		if(query.filterExpression && query.filterExpression.fromWizard === true) {
+		this.filterGridPanel.setFiltersExpression(query.expression);
+		if(query.expression && query.expression.fromWizard === true) {
 			this.filterGridPanel.setWizardExpression(true);		
 		} else {
 			this.filterGridPanel.setWizardExpression(false);	
@@ -128,19 +128,23 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     	var query = {};
     	
     	if(asObject) {
-    		var selectedQueryItem = this.queryCataloguePanel.getSelectedQueryItem();
-    		if(selectedQueryItem)query.id = selectedQueryItem.meta.id;
+    		var selectedQuery = this.queryCataloguePanel.getSelectedQuery();
+    		if(selectedQuery){
+    			query.id = selectedQuery.id;
+    			query.name = selectedQuery.name;
+    			query.description = selectedQuery.description;
+    		}
     		query.fields = this.selectGridPanel.getFields();
     		query.distinct = this.selectGridPanel.distinctCheckBox.getValue();
     		query.filters = this.filterGridPanel.getFilters();
-    		query.filterExpression = this.filterGridPanel.getFiltersExpression();
-    		query.filterExpression.fromWizard = this.filterGridPanel.isWizardExpression();
+    		query.expression = this.filterGridPanel.getFiltersExpression();
+    		query.expression.fromWizard = this.filterGridPanel.isWizardExpression();
     	} else {		
     		alert("get query as string is deprecated");
 			query.fileds =  this.selectGridPanel.getRowsAsJSONParams();
 			query.distinct = this.selectGridPanel.distinctCheckBox.getValue();
 			query.filters = this.filterGridPanel.getRowsAsJSONParams();
-			query.filterExpression = this.filterGridPanel.getFiltersExpressionAsJSON();
+			query.expression = this.filterGridPanel.getFiltersExpressionAsJSON();
     	}
 		return query;
 	}
@@ -150,9 +154,9 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	 * apply all performed changes to the selected query 
 	 */
 	, applyChanges: function() {
-		var queryItem = this.queryCataloguePanel.getSelectedQueryItem();
-		if(queryItem) {
-			this.queryCataloguePanel.setQuery(queryItem.meta.id, this.getQuery(true) );
+		var query = this.queryCataloguePanel.getSelectedQuery();
+		if(query) {
+			this.queryCataloguePanel.setQuery(query.id, this.getQuery(true) );
 		}
 	}
 	
@@ -160,8 +164,8 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	 * undo all performed changes reverting to the previous status of the selected query 
 	 */
 	, resetChanges: function() {
-		var q = this.queryCataloguePanel.getSelectedQueryItem();
-		this.setQuery(q.query);
+		var query = this.queryCataloguePanel.getSelectedQuery();
+		this.setQuery(query);
 	}
 	
 	/**
@@ -193,7 +197,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     , executeQuery: function() {
     	this.applyChanges();
     	this.queryCataloguePanel.commit(function() {
-			this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQueryItem().query);
+			this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQuery());
 		}, this);
     	
     	/*
@@ -542,8 +546,8 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		          qtip:'Delete query',
 		          // hidden:true,
 		          handler: function(event, toolEl, panel){
-		        	var q = this.queryCataloguePanel.getSelectedQueryItem();
-		        	this.queryCataloguePanel.deleteQueryItems(q);
+		        	var q = this.queryCataloguePanel.getSelectedQuery();
+		        	this.queryCataloguePanel.deleteQueries(q);
 		          }, 
 		          scope: this
 		        }, {
@@ -551,7 +555,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		          qtip:'Add query',
 		          // hidden:true,
 		          handler: function(event, toolEl, panel){
-		        	this.queryCataloguePanel.addQueryItem();
+		        	this.queryCataloguePanel.addQuery();
 		          },
 		          scope: this
 		        }, {
@@ -559,8 +563,8 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			          qtip:'Insert query',
 			          // hidden:true,
 			          handler: function(event, toolEl, panel){
-		        		var q = this.queryCataloguePanel.getSelectedQueryItem();
-			        	this.queryCataloguePanel.insertQueryItem(q);
+		        		var q = this.queryCataloguePanel.getSelectedQuery();
+			        	this.queryCataloguePanel.insertQuery(q);
 			          },
 			          scope: this
 			   }

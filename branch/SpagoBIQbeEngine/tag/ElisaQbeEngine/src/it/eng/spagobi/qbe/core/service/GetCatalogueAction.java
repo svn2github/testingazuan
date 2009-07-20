@@ -66,7 +66,7 @@ public class GetCatalogueAction extends AbstractQbeEngineAction {
 		Iterator it;
 		String id;
 		Query query;
-		QueryMeta meta;
+		//QueryMeta meta;
 		
 		JSONObject queryJSON;
 		JSONObject metaJSON;
@@ -86,12 +86,13 @@ public class GetCatalogueAction extends AbstractQbeEngineAction {
 			while(it.hasNext()) {
 				id = (String)it.next();
 				query = getEngineInstance().getQueryCatalogue().getQuery(id);
-				meta = getEngineInstance().getQueryCatalogue().getQueryMeta(id);
+				//meta = getEngineInstance().getQueryCatalogue().getQueryMeta(id);
 				
 				try {					
 					queryJSON = serializeQuery(query);
-					metaJSON = serializeMeta(meta);
-					nodeJSON = createNode(metaJSON, queryJSON);
+					//metaJSON = serializeMeta(meta);
+					//nodeJSON = createNode(metaJSON, queryJSON);
+					nodeJSON = createNode(/*metaJSON,*/ queryJSON);
 				} catch (Throwable e) {
 					throw new SpagoBIEngineServiceException(getActionName(), "An error occurred while serializig query wiyh id equals to [" + id +"]", e);
 				}
@@ -129,18 +130,18 @@ public class GetCatalogueAction extends AbstractQbeEngineAction {
 		return metaJSON;
 	}
 	
-	private JSONObject createNode(JSONObject meta, JSONObject query) throws JSONException {
+	private JSONObject createNode(/*JSONObject meta, */JSONObject query) throws JSONException {
 		JSONObject nodeJSON;
 		JSONObject nodeAttributes;
 		
 		nodeJSON = new JSONObject();
-		nodeJSON.put("id", meta.getString("id"));
-		nodeJSON.put("text", meta.getString("name"));
+		nodeJSON.put("id", query.getString("id"));
+		nodeJSON.put("text", query.getString("name"));
 		nodeJSON.put("leaf", true);	
 		
 		nodeAttributes = new JSONObject();
 		nodeAttributes.put("iconCls", "icon-query");
-		nodeAttributes.put("meta", meta);
+		//nodeAttributes.put("meta", meta);
 		nodeAttributes.put("query", query);
 		
 		nodeJSON.put("attributes", nodeAttributes);

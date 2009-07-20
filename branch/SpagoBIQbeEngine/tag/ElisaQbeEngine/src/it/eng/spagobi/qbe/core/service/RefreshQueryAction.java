@@ -79,12 +79,12 @@ public class RefreshQueryAction extends AbstractQbeEngineAction {
 				for(int i = 0; i < items.length(); i++) {					
 					itemJSON = items.getJSONObject(i);
 					queryJSON = itemJSON.getJSONObject("query");
-					metaJSON = itemJSON.getJSONObject("meta");
+					//metaJSON = itemJSON.getJSONObject("meta");
 					
 					query = deserializeQuery(queryJSON);
-					meta = deserializeMeta(metaJSON);
+					//meta = deserializeMeta(metaJSON);
 					
-					getEngineInstance().getQueryCatalogue().refreshQuery(query, meta);
+					getEngineInstance().getQueryCatalogue().addQuery(query);
 					getEngineInstance().resetActiveQuery();
 				}				
 				

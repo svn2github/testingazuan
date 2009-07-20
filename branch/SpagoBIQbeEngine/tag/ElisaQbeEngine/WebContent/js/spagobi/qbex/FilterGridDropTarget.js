@@ -41,7 +41,7 @@
   * 
   * Authors
   * 
-  * - name (mail)
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
 Ext.ns("Sbi.qbe");
@@ -112,12 +112,12 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 	
 		if(node.attributes.field && node.attributes.type == 'field') {
 			if(colIndex === 5) {
-				var store = filterGrid.getStore();
+				var store = this.targetGrid.store;
 				var row = store.getAt(rowIndex);
 				row.data['otype'] = 'Field Content';
 				row.data['odesc'] = ddSource.dragData.node.attributes.entity + ' / ' + ddSource.dragData.node.attributes.field;
 				row.data['operand'] = ddSource.dragData.node.id;
-				this.targetGrid.store.fireEvent('datachanged', filterGrid.store) ;
+				this.targetGrid.store.fireEvent('datachanged', this.targetGrid.store) ;
 			} else {
 	  			var record = new this.targetPanel.Record({
 	  				id: ddSource.dragData.node.id , 
@@ -163,7 +163,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 			row.data['otype'] = 'Field Content';
 			row.data['odesc'] = rows[0].data['entity'] + ' / ' + rows[0].data['field'];
 			row.data['operand'] = rows[0].data['id'];
-			this.targetGrid.store.fireEvent('datachanged', filterGrid.store) ;
+			this.targetGrid.store.fireEvent('datachanged', this.targetGrid.store) ;
 		} else {
 			rows = rows.sort(function(r1, r2) {
 	      		var row1 = ddDs.getById(r1.id);

@@ -528,9 +528,9 @@ public class BarCharts extends ChartImpl {
 		}
 
 		//reading filter style if present
-		SourceBean sbSerieStyle = (SourceBean)content.getAttribute("STYLE_FILTER");
+		SourceBean sbSerieStyle = (SourceBean)content.getAttribute("STYLE_SLIDER_AREA");
 		if(sbSerieStyle==null){
-			sbSerieStyle = (SourceBean)content.getAttribute("CONF.STYLE_FILTER");
+			sbSerieStyle = (SourceBean)content.getAttribute("CONF.STYLE_SLIDER_AREA");
 		}
 		if(sbSerieStyle!=null){
 			List atts=sbSerieStyle.getContainedAttributes();

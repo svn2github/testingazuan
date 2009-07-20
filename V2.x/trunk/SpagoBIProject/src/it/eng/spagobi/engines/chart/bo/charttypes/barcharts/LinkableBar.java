@@ -291,7 +291,9 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		domainAxis.setLabelPaint(styleYaxesLabels.getColor());
 		domainAxis.setTickLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
 		domainAxis.setTickLabelPaint(styleYaxesLabels.getColor());
-
+		
+		if(legend==true) drawLegend(chart);
+		
 		logger.debug("OUT");
 		return chart;
 

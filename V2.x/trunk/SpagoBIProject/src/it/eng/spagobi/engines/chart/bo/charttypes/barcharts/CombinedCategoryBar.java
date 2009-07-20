@@ -759,6 +759,7 @@ public class CombinedCategoryBar extends LinkableBar {
 
 		plot.setFixedLegendItems(newLegend);
 
+		if(legend==true) drawLegend(chart);
 		logger.debug("OUT");
 
 		return chart;

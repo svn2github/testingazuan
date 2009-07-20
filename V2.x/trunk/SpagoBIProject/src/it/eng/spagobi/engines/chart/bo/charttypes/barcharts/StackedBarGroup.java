@@ -567,6 +567,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 				CategoryLabelPositions.createUpRotationLabelPositions(
 						Math.PI / 6.0));
 		*/
+		if(legend==true) drawLegend(chart);
 		logger.debug("OUT");
 		return chart;
 

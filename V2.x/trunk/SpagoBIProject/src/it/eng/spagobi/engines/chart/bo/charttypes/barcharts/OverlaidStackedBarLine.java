@@ -465,6 +465,8 @@ public class OverlaidStackedBarLine extends LinkableBar {
 		}
 
 		chart.setBackgroundPaint(Color.white);
+		
+		if(legend==true) drawLegend(chart);
 		return chart;
 
 

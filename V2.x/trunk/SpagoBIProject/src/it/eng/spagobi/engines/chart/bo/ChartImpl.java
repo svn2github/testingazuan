@@ -108,6 +108,7 @@ public class ChartImpl implements IChart {
 	protected StyleLabel styleTitle;
 	protected StyleLabel styleSubTitle;
 	protected StyleLabel defaultLabelsStyle;
+	protected StyleLabel styleLegend;	
 	protected HashMap seriesLabelsMap = null;
 	
 	protected boolean multichart=false;
@@ -188,6 +189,8 @@ public class ChartImpl implements IChart {
 	public static final String LEGEND = "legend";
 	/** legend position; bottom, top, left, right*/
 	public static final String LEGEND_POSITION = "legend_position";
+	/** legend style; font, sizem color*/
+	public static final String LEGEND_STYLE = "STYLE_LEGEND";
 	/** if true view filter*/
 	public static final String VIEW_FILTER = "view_filter";
 	/** if true view slider*/
@@ -442,6 +445,26 @@ public class ChartImpl implements IChart {
 						seriesLabelsMap.put(serieName, serieLabel); 
 					}
 				}		
+			}
+			
+			SourceBean styleLegendSB = (SourceBean)content.getAttribute(LEGEND_STYLE);
+			if(styleLegendSB!=null){
+
+				String fontS = (String)styleLegendSB.getAttribute(FONT_STYLE);
+				String sizeS = (String)styleLegendSB.getAttribute(SIZE_STYLE);
+				String colorS = (String)styleLegendSB.getAttribute(COLOR_STYLE);
+
+
+				try{
+					Color color=Color.decode(colorS);
+					int size=Integer.valueOf(sizeS).intValue();
+					styleLegend=new StyleLabel(fontS,size,color);
+					
+				}
+				catch (Exception e) {
+					logger.error("Wrong style Legend settings, use default");
+				}
+
 			}
 			
 			
@@ -1062,6 +1085,8 @@ public class ChartImpl implements IChart {
 
 
 	public void drawLegend(JFreeChart chart){
+		//remove ipotetical other legend
+		chart.removeLegend();
 		BlockContainer wrapper = new BlockContainer(new BorderArrangement());
 		wrapper.setFrame(new BlockBorder(1.0, 1.0, 1.0, 1.0));
 
@@ -1072,7 +1097,9 @@ public class ChartImpl implements IChart {
 
 		LegendTitle legend = new LegendTitle(chart.getPlot());
 		BlockContainer items = legend.getItemContainer();
-		items.setPadding(2, 10, 5, 2);
+		legend.setItemFont(new Font(styleLegend.getFontName(), Font.BOLD, styleLegend.getSize()));
+		
+		items.setPadding(2, 5, 5, 2);
 		wrapper.add(items);
 		legend.setWrapper(wrapper);
 

@@ -32,6 +32,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.TextAnchor;
@@ -728,6 +729,7 @@ public class OverlaidBarLine extends LinkableBar {
 		plot.getDomainAxis().setCategoryLabelPositions(
 				CategoryLabelPositions.UP_45);
 		JFreeChart chart = new JFreeChart(plot);
+		
 		TextTitle title = setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
 		if(subName!= null && !subName.equals("")){
@@ -735,7 +737,8 @@ public class OverlaidBarLine extends LinkableBar {
 			chart.addSubtitle(subTitle);
 		}
 		chart.setBackgroundPaint(Color.white);
-
+		
+		if(legend==true) drawLegend(chart);
 
 		logger.debug("OUT");
 

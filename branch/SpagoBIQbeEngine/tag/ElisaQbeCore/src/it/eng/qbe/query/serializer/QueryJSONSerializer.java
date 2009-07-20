@@ -48,7 +48,11 @@ public class QueryJSONSerializer implements QuerySerializer {
 		JSONArray recordsJOSN;
 		JSONArray filtersJSON;
 		JSONObject filterExpJOSN;
-		boolean distinctClauseEnabled = false;
+		boolean distinctClauseEnabled = false;		
+		JSONArray subqueriesJSON;
+		JSONObject subqueryJSON;
+		Iterator subqueriesIterator;
+		Query subquery;
 		
 		Assert.assertNotNull(query, "Query cannot be null");
 		Assert.assertNotNull(query.getId(), "Query id cannot be null");
@@ -62,12 +66,26 @@ public class QueryJSONSerializer implements QuerySerializer {
 			distinctClauseEnabled = query.isDistinctClauseEnabled();
 			filterExpJOSN = encodeFilterExp( query.getWhereClauseStructure() );
 			
+			subqueriesJSON = new JSONArray();
+			subqueriesIterator = query.getSubqueryIds().iterator();		
+			while(subqueriesIterator.hasNext()) {
+				String id = (String)subqueriesIterator.next();
+				subquery = query.getSubquery(id);
+				subqueryJSON = (JSONObject)serialize(subquery, datamartModel);
+				subqueriesJSON.put(subqueryJSON);
+			} 
+			
+			
 			result = new JSONObject();
 			result.put(SerializationConstants.ID, query.getId());
+			result.put(SerializationConstants.NAME, query.getName());
+			result.put(SerializationConstants.DESCRIPTION, query.getDescription());
 			result.put(SerializationConstants.FIELDS, recordsJOSN);
 			result.put(SerializationConstants.DISTINCT, distinctClauseEnabled);
 			result.put(SerializationConstants.FILTERS, filtersJSON);
 			result.put(SerializationConstants.EXPRESSION, filterExpJOSN);
+			
+			result.put(SerializationConstants.SUBQUERIES, subqueriesJSON);
 		} catch (Throwable t) {
 			throw new SerializationException("An error occurred while serializing object: " + query, t);
 		} finally {

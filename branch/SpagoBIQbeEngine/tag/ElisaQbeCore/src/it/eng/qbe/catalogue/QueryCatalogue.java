@@ -22,16 +22,13 @@ package it.eng.qbe.catalogue;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.QueryMeta;
-import it.eng.spagobi.utilities.assertion.Assert;
 
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class SingleDataMartWizardObjectSourceBeanImpl.
  */
@@ -48,10 +45,79 @@ public class QueryCatalogue {
 		this.counter = 0;
 	}
 	
-	public String addQuery(Query query) {
-		return this.addQuery(query, null);
+	public Set getIds() {
+		return new HashSet(queries.keySet());
 	}
 	
+	public boolean containsQuery(String id) {
+		return this.queries.containsKey(id);
+	}
+	
+	public Query getQuery(String id) {
+		return (Query)this.queries.get(id);
+	}
+	
+	public String addQuery(Query query) {
+		Iterator subqueriesIterator;
+		Query subquery;
+		
+		if(query.getId() == null) {
+			query.setId( "id" + (++counter) );
+		}
+		
+		if(query.getName() == null) {
+			query.setName( "query-" + query.getId() );
+		}
+		
+		if(query.getDescription() == null) {
+			query.setDescription( "query-" + query.getId() );
+		}
+		queries.put( query.getId(), query);
+		
+		// recursively add (or update) all subqueries to the catalogue
+		subqueriesIterator = query.getSubqueryIds().iterator();		
+		while(subqueriesIterator.hasNext()) {
+			String id = (String)subqueriesIterator.next();
+			subquery = query.getSubquery(id);
+			addQuery(subquery);
+		}
+		
+		return query.getId();
+	}
+	
+	public Query removeQuery(String id) {
+		Query query;
+		Query parentQuery;
+		Iterator subqueriesIterator;
+		Query subquery;
+		
+		query = (Query)queries.remove(id);			
+		removeSubqueries(query);
+		
+		if(query.hasParentQuery()) {
+			parentQuery = query.getParentQuery();
+			parentQuery.removeSubquery(query.getId());
+		}
+		
+		return query;
+	}
+	
+	private void removeSubqueries(Query query) {
+		Iterator subqueriesIterator;
+		Query subquery;
+		
+		// recursively remove all subqueries from the catalogue
+		subqueriesIterator = query.getSubqueryIds().iterator();		
+		while(subqueriesIterator.hasNext()) {
+			String id = (String)subqueriesIterator.next();
+			subquery = query.getSubquery(id);
+			queries.remove(subquery.getId());
+			removeSubqueries(subquery);
+		}
+	}
+	
+	
+	/*
 	public void refreshQuery(Query query, QueryMeta meta) {
 		Assert.assertNotNull(query, "Impossibble refresh query. Input parameters query cannot be null");
 		Assert.assertNotNull(query.getId(), "Impossibble refresh query. Query id cannot be null");
@@ -64,6 +130,7 @@ public class QueryCatalogue {
 		
 		
 	}
+	
 	
 	private String addQuery(Query query, QueryMeta meta) {
 		String id = "id" + (++counter);
@@ -82,20 +149,6 @@ public class QueryCatalogue {
 		this.meta.put( query.getId(), meta);
 		return id;
 	}
+	*/
 	
-	public Query getQuery(String id) {
-		return (Query)this.queries.get(id);
-	}
-	
-	public QueryMeta getQueryMeta(String id) {
-		return (QueryMeta)this.meta.get(id);
-	}
-
-	public Set getIds() {
-		return new HashSet(queries.keySet());
-	}
-
-	public Query removeQuery(String id) {
-		return (Query)queries.remove(id);		
-	}
 }

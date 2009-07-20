@@ -27,6 +27,8 @@ package it.eng.qbe.query.serializer;
 public class SerializationConstants {
 	
 	public static final String ID = "id";
+	public static final String NAME = "name";
+	public static final String DESCRIPTION = "description";
 	
 	public static final String FIELDS = "fields";
 	public static final String FIELD_ID = "id";
@@ -59,4 +61,6 @@ public class SerializationConstants {
 	public static final String EXPRESSION_TYPE = "type";
 	public static final String EXPRESSION_VALUE = "value";
 	public static final String EXPRESSION_CHILDREN = "childNodes";
+	
+	public static final String SUBQUERIES = "subqueries";
 }

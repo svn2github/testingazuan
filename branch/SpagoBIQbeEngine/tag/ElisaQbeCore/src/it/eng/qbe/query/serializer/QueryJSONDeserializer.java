@@ -48,31 +48,42 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		boolean distinctClauseEnabled = false;
 		JSONArray filtersJSON = null;
 		JSONObject expressionJSON = null;
+		JSONArray subqueriesJSON = null;
+		Query subquery;
 		
 		logger.debug("IN");
 		
 		try {
 			Assert.assertNotNull(o, "Object to be deserialized cannot be null");
-			Assert.assertTrue(o instanceof String, "Object to be deserialized must be string");
+			//Assert.assertTrue(o instanceof String, "Object to be deserialized must be string");
 			
-			logger.debug("Deserializing string [" + (String)o + "]");
-			
-			
-			try {
-				queryJSON = new JSONObject( (String)o );
-			} catch(Throwable t) {
-				logger.debug("Object to be deserialized must be string encoding a JSON object");
-				throw new SerializationException("An error occurred while deserializing query: " + (String)o, t);
+			if(o instanceof String) {
+				logger.debug("Deserializing string [" + (String)o + "]");
+				try {
+					queryJSON = new JSONObject( (String)o );
+				} catch(Throwable t) {
+					logger.debug("Object to be deserialized must be string encoding a JSON object");
+					throw new SerializationException("An error occurred while deserializing query: " + (String)o, t);
+				}
+			} else if(o instanceof JSONObject) {
+				queryJSON = (JSONObject)o;
+			} else {
+				Assert.assertUnreachable("Object to be deserialized must be of type string or of type JSONObject, not of type [" + o.getClass().getName() + "]");
 			}
 			
 			query  = new Query();	
 			
 			try {
 				query.setId(queryJSON.getString(SerializationConstants.ID));
-				fieldsJSON = queryJSON.getJSONArray( SerializationConstants.FIELDS );
+				query.setName(queryJSON.getString(SerializationConstants.NAME));
+				query.setDescription(queryJSON.getString(SerializationConstants.DESCRIPTION));
 				distinctClauseEnabled = queryJSON.getBoolean( SerializationConstants.DISTINCT );
+				
+				fieldsJSON = queryJSON.getJSONArray( SerializationConstants.FIELDS );				
 				filtersJSON = queryJSON.getJSONArray( SerializationConstants.FILTERS );
 				expressionJSON = queryJSON.getJSONObject( SerializationConstants.EXPRESSION );
+				
+				subqueriesJSON = queryJSON.getJSONArray( SerializationConstants.SUBQUERIES );
 			} catch (JSONException e) {
 				throw new SerializationException("An error occurred while deserializing query: " + queryJSON.toString(), e);
 			}
@@ -81,6 +92,16 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			deserializeFilters(filtersJSON, datamartModel, query);
 			deserializeExpression(expressionJSON, datamartModel, query);
 			query.setDistinctClauseEnabled(distinctClauseEnabled);
+			
+			for(int i = 0; i < subqueriesJSON.length(); i++) {
+				try {
+					subquery = deserialize(subqueriesJSON.get(i), datamartModel);
+				} catch (JSONException e) {
+					throw new SerializationException("An error occurred while deserializing subquery number [" + (i+1) + "]: " + subqueriesJSON.toString(), e);
+				}
+				
+				query.addSubquery(subquery);
+			}
 		} finally {
 			logger.debug("OUT");
 		}

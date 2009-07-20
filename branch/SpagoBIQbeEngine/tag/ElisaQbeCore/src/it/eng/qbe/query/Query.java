@@ -23,9 +23,11 @@ package it.eng.qbe.query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -33,6 +35,8 @@ import java.util.Map;
  */
 public class Query {
 	String id;
+	String name;
+	String description;
 	
 	boolean distinctClauseEnabled;
 	
@@ -42,10 +46,14 @@ public class Query {
 	ExpressionNode whereClauseStructure;
 	Map whereFieldMap;
 	
+	Query parentQuery;
+	Map subqueries;
+	
 	public Query() {
 		selectFields = new ArrayList();		
 		whereClause = new ArrayList();
 		whereFieldMap = new HashMap();
+		subqueries  = new HashMap();
 	}
 	
 	public String getId() {
@@ -54,6 +62,22 @@ public class Query {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	
@@ -132,6 +156,40 @@ public class Query {
 	public void setWhereClauseStructure(ExpressionNode whereClauseStructure) {
 		this.whereClauseStructure = whereClauseStructure;
 	}
+
+	
+	public Query getParentQuery() {
+		return parentQuery;
+	}
+
+	public void setParentQuery(Query parentQuery) {
+		this.parentQuery = parentQuery;
+	}
+	
+	public boolean hasParentQuery() {
+		return getParentQuery() == null;
+	}
+	
+	public void addSubquery(Query subquery) {
+		subqueries.put(subquery.getId(), subquery);
+		subquery.setParentQuery(this);
+	}
+	
+	public Query getSubquery(String id) {
+		return (Query)subqueries.get(id);
+	}
+	
+	public Set getSubqueryIds() {
+		return new HashSet(subqueries.keySet());
+	}
+	
+	public Query removeSubquery(String id) {
+		Query subquery = (Query)subqueries.remove(id);
+		if(subquery != null) subquery.setParentQuery(null);
+		return subquery;
+	}
+
+	
 	
 
 }

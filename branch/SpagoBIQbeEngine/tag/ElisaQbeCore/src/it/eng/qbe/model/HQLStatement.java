@@ -379,7 +379,12 @@ public class HQLStatement extends BasicStatement {
 				}
 			}
 		} else if("Subquery".equalsIgnoreCase( whereField.getOperandType() ) ) {
-			Assert.assertUnreachable("Filter of type subquery are not still supported.");
+			//Assert.assertUnreachable("Filter of type subquery are not still supported.");
+			String subqueryId = (String)whereField.getOperand();
+			Query subquery = query.getSubquery( subqueryId );
+			Assert.assertNotNull(subquery, "Query [" + subqueryId + "] is not a subquery of query [" + query.getId() +"]");
+			rightHandValue = compose(subquery);	
+			rightHandValue = "( " + rightHandValue + ")";
 		} else {
 			Assert.assertUnreachable("Unrecognized filter type: " + whereField.getOperandType());
 		}		
@@ -584,7 +589,12 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString().trim();
 	}
 	
-	public void prepare() {
+	
+	/*
+	 * internally used to generate the parametric statement string. Shared by the prepare method and the buildWhereClause methdo in order
+	 * to recursively generate subquery statement string to be embedded in the parent query.
+	 */
+	private String compose(Query query) {
 		String queryStr;
 		String selectClause;
 		String whereClause;
@@ -604,8 +614,16 @@ public class HQLStatement extends BasicStatement {
 		orderByClause = buildOrderByClause(query, entityAliases);
 		fromClause = buildFromClause(entityAliases);
 		
+		queryStr = selectClause + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause;	
+		
+		return queryStr;
+	}
+	
+	public void prepare() {
+		String queryStr;
+		
 		// prepare query string
-		queryStr = selectClause + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause;		
+		queryStr = compose(query);		
 		if(parameters != null) {
 			try {
 				queryStr = StringUtils.replaceParameters(queryStr.trim(), "P", parameters);

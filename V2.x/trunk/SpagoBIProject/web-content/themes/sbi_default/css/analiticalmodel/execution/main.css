@@ -67,6 +67,10 @@
 	background-image: url('../../../img/rating16.png') !important;
 }
 
+.icon-expand {
+	background-image: url('../../../img/expand16x18.png') !important;
+}
+
 .icon-print {
 	background-image: url('../../../img/printer16.png') !important;
 }
@@ -107,4 +111,28 @@
     padding:1px 3px;
     background:#DFE8F6;
     border:1px solid #B5B8C8;
+}
+
+.icon-it {
+	background-image: url('../../../img/it_IT.gif') !important;
+}
+
+.icon-en {
+	background-image: url('../../../img/en_US.gif') !important;
+}
+
+.icon-fr {
+	background-image: url('../../../img/fr_FR.gif') !important;
+}
+
+.icon-es {
+	background-image: url('../../../img/es_ES.gif') !important;
+}
+
+.icon-exit {
+	background-image: url('../../../img/wapp/exit16.png') !important;
+}
+
+.icon-info {
+	background-image: url('../../../img/question.gif') !important;
 }

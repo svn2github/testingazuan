@@ -1021,6 +1021,8 @@ if(document.getElementById('refreshimage<%= uuidO %>')){
 document.getElementById('divLoadingMessage<%= uuidO %>').style.display = 'none';
 </script>
 
+<%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>
+
 
 
 

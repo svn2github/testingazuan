@@ -202,6 +202,7 @@ String getUrl(String baseUrl, Map mapPars) {
 <script type="text/javascript">
     Ext.BLANK_IMAGE_URL = '<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/resources/images/default/s.gif")%>';
 
+
 	Ext.Ajax.defaultHeaders = {
 			'Powered-By': 'Ext'
 	};
@@ -218,6 +219,11 @@ String getUrl(String baseUrl, Map mapPars) {
     // javascript-side user profile object
     Ext.ns("Sbi.user");
     Sbi.user.userId = '<%= StringEscapeUtils.escapeJavaScript(userId) %>';
+    Sbi.user.uniqueId = '<%= StringEscapeUtils.escapeJavaScript(userUniqueIdentifier) %>';
+    Sbi.config.currTheme = '<%= currTheme %>';
+    Sbi.config.curr_country = '<%= curr_country %>';
+    Sbi.config.curr_language = '<%= curr_language%>';
+    Sbi.config.contextName = '<%= GeneralUtilities.getSpagoBiContext() %>';
 	<%
 	StringBuffer buffer = new StringBuffer("[");
 	if (userProfile != null && userProfile.getFunctionalities() != null && !userProfile.getFunctionalities().isEmpty()) {

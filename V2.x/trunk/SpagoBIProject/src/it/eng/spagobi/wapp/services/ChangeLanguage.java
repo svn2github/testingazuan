@@ -125,7 +125,7 @@ public class ChangeLanguage extends AbstractHttpAction{
 		MenuUtilities.getMenuItems(serviceRequest, serviceResponse, profile);
 		
 		serviceResponse.setAttribute("MENU_MODE", "ALL_TOP");
-		serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
+		serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
 		logger.debug("OUT");
 	}
 

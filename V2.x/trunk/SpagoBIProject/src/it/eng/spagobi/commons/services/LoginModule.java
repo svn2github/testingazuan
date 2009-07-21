@@ -47,6 +47,7 @@ import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
 import it.eng.spagobi.wapp.services.ChangeTheme;
 import it.eng.spagobi.wapp.util.MenuUtilities;
 
+import java.util.Collection;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -155,7 +156,7 @@ public class LoginModule extends AbstractHttpModule {
 	    			errorHandler.addError(emfu); 		    	
 	    			return;
 	            }
-	           
+	          
 	            // put user profile into session
 	            permSess.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
 	    		// updates locale information on permanent container for Spago messages mechanism
@@ -184,7 +185,20 @@ public class LoginModule extends AbstractHttpModule {
 		if(userId.equals("chiron")) {
 			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "chiron");
 		} else {
-			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
+			Collection functionalities = profile.getFunctionalities();
+			boolean docAdmin = false;
+			boolean docDev = false;
+			boolean docTest = false;
+			if (functionalities!=null && !functionalities.isEmpty()){
+				docAdmin = functionalities.contains("DocumentAdministration")|| functionalities.contains("DocumentAdminManagement");
+			 	docDev = functionalities.contains("DocumentDevManagement");
+			 	docTest = functionalities.contains("DocumentTestManagement");
+			}
+			if(docAdmin||docDev||docTest){
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
+			}else{
+				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
+			}
 		}
 		
 		logger.debug("OUT");		

@@ -449,6 +449,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 
 	// define the spago paginator and list object
 	PaginatorIFace paginator = new GenericPaginator();
+	paginator.setPageSize(40);
 	ListIFace list = new GenericList();
 
 
@@ -506,6 +507,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 //		count++;
 	    }
 	}
+	
 	//in case it is a check list, sets all values in one page
 	// if(isChecklist) paginator.setPageSize(rowSize*10);
 	

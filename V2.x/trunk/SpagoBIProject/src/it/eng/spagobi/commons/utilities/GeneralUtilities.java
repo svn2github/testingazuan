@@ -70,7 +70,6 @@ public class GeneralUtilities extends SpagoBIUtilities{
     public static final int MAX_DEFAULT_TEMPLATE_SIZE = 5242880;
     public static String SPAGOBI_HOST = null;    
     
-
     /**
      * Substitutes the substrings with sintax "${code,bundle}" or "${code}" (in
      * the second case bundle is assumed to be the default value "messages")

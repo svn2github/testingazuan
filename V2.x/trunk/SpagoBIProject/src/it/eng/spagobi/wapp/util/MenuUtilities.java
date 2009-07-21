@@ -75,7 +75,20 @@ public class MenuUtilities {
 		}
 	}
 	
-	
+	public static List filterListForUser(List menuList,IEngUserProfile userProfile){
+		List filteredMenuList = new ArrayList();
+		
+		if(menuList!=null && !menuList.isEmpty()){
+			for (int i=0; i<menuList.size(); i++){
+					Menu menuElem = (Menu)menuList.get(i);
+					boolean canView=MenuAccessVerifier.canView(menuElem,userProfile);
+					if(canView){
+						filteredMenuList.add(menuElem);
+					}
+			}		
+		}
+		return filteredMenuList;
+	}
 	
 	/**
 	 * Gets the elements of menu relative by the user logged. It reaches the role from the request and 

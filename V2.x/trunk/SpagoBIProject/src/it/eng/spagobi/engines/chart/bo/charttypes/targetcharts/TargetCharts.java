@@ -27,8 +27,8 @@ import org.jfree.data.time.TimeSeriesDataItem;
 public class TargetCharts extends ChartImpl {
 
 	private static transient Logger logger=Logger.getLogger(TargetCharts.class);
-	public static double WIN = 0.5;
-	public static double LOSE = -0.5;
+	public double WIN = 0.5;
+	public double LOSE = -0.5;
 
 	public boolean useTargets=true;
 	public HashMap<Double, String> thresholds=null;

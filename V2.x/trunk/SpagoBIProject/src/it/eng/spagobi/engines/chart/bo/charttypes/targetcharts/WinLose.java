@@ -40,7 +40,9 @@ public class WinLose extends TargetCharts{
 	Vector<Double> baselines=null;
 
 	Vector<String> nullValues=null;
-
+	double barHeight=0.5;
+	/** sets the height of bars */
+	public static final String BAR_HEIGHT = "bar_height";
 
 
 	@Override
@@ -120,6 +122,21 @@ public class WinLose extends TargetCharts{
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
+	
+		if(confParameters.get(BAR_HEIGHT)!=null){		
+			String bh=(String)confParameters.get(BAR_HEIGHT);
+			barHeight=Double.valueOf(bh).doubleValue();
+			WIN=barHeight;
+			LOSE=-barHeight;
+
+		}
+		else
+		{
+			barHeight=0.5;
+		}
+		
+
+		
 		logger.debug("OUT");
 	}
 
@@ -167,7 +184,7 @@ public class WinLose extends TargetCharts{
 
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis(); 
 		rangeAxis.setVisible(false); 
-		rangeAxis.setRange(new Range(-0.8, 0.8)); 
+		rangeAxis.setRange(new Range(-(barHeight+0.3 ), (barHeight+0.3))); 
 
 		// customize renderer 
 		MyBarRendererThresholdPaint renderer=new MyBarRendererThresholdPaint(useTargets, thresholds, thresholdColors, dataset, timeSeries, nullValues, color);

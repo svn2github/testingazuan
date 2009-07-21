@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.services.LoginModule"%>
 <%@page import="it.eng.spagobi.wapp.util.MenuUtilities"%>
 <%@page import="it.eng.spagobi.chiron.serializer.MenuListJSONSerializer"%>
+<%@page import="it.eng.spagobi.chiron.serializer.MenuThemesListJSONSerializer"%>
 <%@page import="it.eng.spagobi.wapp.services.DetailMenuModule"%>
 <%@page import="it.eng.spagobi.wapp.bo.Menu"%>
 <%@page import="org.json.JSONObject"%>
@@ -82,7 +83,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script>
 sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
 var activesso = false;
+var jsonMenuThemesList;
+var drawSelectTheme = false;
 var logoutUrl = '';
+var themesIcon;
+var themesViewName;
 </script>
 
 <!-- I want to execute if there is an homepage, only for user!-->
@@ -135,6 +140,36 @@ var logoutUrl = '';
 	logoutUrl = "<%= ((SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.SECURITY_LOGOUT_URL")).getCharacters() %>";
 	</script>
 <% }%>
+
+<%
+String themesIcon="";
+String themeI="img/theme.png";
+if(ThemesManager.resourceExists(currTheme,themeI)){
+	themesIcon=contextName+"/themes/"+currTheme+"/"+themeI;
+}
+else
+{
+	themesIcon=contextName+"/themes/sbi_default/"+themeI;
+}
+
+//recover all themes
+	List themes=spagoconfig.getAttributeAsList("SPAGOBI.THEMES.THEME");
+	boolean drawSelectTheme=ThemesManager.drawSelectTheme(themes);
+	
+	//keep track of current theme view name
+	String currThemeView="";
+	
+	if(drawSelectTheme){
+		MenuThemesListJSONSerializer m2 = new MenuThemesListJSONSerializer();
+		JSONObject jsonMenuThemesList = (JSONObject)m2.serialize(themes,locale);
+	%>
+	<script type="text/javascript">
+	drawSelectTheme = true;
+	themesIcon = '<%=themesIcon%>';
+	themesViewName = '<%=currViewThemeName%>';
+	jsonMenuThemesList = <%=jsonMenuThemesList%>;
+	</script>
+ 	<%} // end if(draw_select_combo)%>
 
 <script type="text/javascript">
     
@@ -202,11 +237,11 @@ var logoutUrl = '';
       Ext.QuickTips.init();              
       var menuList = <%=jsonMenuList%>;
       var firstUrl =  <%=firstUrlToCall%>;
-      northFrame = new Sbi.home.Banner({bannerMenu: menuList});
+      northFrame = new Sbi.home.Banner({bannerMenu: menuList,themesMenu: jsonMenuThemesList});
       centerFrame = new  Ext.ux.ManagedIframePanel({
       					region: 'center'
       					,xtype: 'panel'
-						,frameConfig:{autoCreate:{id: 'iframeDoc', name:'iframeDoc'},
+						,frameConfig:{autoCreate:{id: 'iframeDoc', name:'iframeDoc', style: 'height:500'},
 	        					disableMessaging :false}
 		                ,defaultSrc : firstUrl
 		                ,border		: false 
@@ -215,24 +250,30 @@ var logoutUrl = '';
 						,scrolling  : 'auto'	
 						, disableMessaging :false
 						,listeners: {'message:collapse2':  {
-				        		fn: function(srcFrame, message) {					        		
+				        		fn: function(srcFrame, message) {	
+				        								        		
+					        		/*if (Ext.isIE) {
+										centerFrame.on('resize', 
+	  										function() {
+	  											//alert('ciao');
+	  											centerFrame.getFrame().dom.style.height = centerFrame.getSize().height - 6;
+	  											},
+	  										this);
+									}*/
+				        				        		
 					        		if(northFrame.collapsed && southFrame.collapsed){
 					        			northFrame.expand(false);
 					        			southFrame.expand(false);
 					        		}else{
 					        			northFrame.collapse(false);
 					        			southFrame.collapse(false);
-					        			if (Ext.isIE) {
-											var aFrame = centerFrame.getFrame();
-											alert(aFrame.dom.style.height);
-											alert(centerFrame.height);
-											aFrame.dom.style.height = centerFrame.height - 6;
-										}
+					        			
 					        		}
+
 						        }
 	        					, scope: this}}
 						
-	        			});
+	  });
 
       southFrame = new Sbi.home.Footer({});
       var viewport = new Ext.Viewport({

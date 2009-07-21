@@ -241,7 +241,7 @@ else
       centerFrame = new  Ext.ux.ManagedIframePanel({
       					region: 'center'
       					,xtype: 'panel'
-						,frameConfig:{autoCreate:{id: 'iframeDoc', name:'iframeDoc', style: 'height:500'},
+						,frameConfig:{autoCreate:{id: 'iframeDoc', name:'iframeDoc'},
 	        					disableMessaging :false}
 		                ,defaultSrc : firstUrl
 		                ,border		: false 

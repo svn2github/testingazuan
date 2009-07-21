@@ -43,6 +43,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.chiron.serializer.MenuListJSONSerializer;"%>
 <script type="text/javascript" src="/SpagoBI/js/src/ext/sbi/overrides/overrides.js"></script>
 	
+<script type="text/javascript" src="<%=linkSbijs%>"></script>
+<script type="text/javascript" src="<%=linkProto%>"></script>
+<script type="text/javascript" src="<%=linkProtoWin%>"></script>
+<script type="text/javascript" src="<%=linkProtoEff%>"></script>
+<link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css" />
+<link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css" />
+
+
 <%  
 	//TODO usare curr_language curr_country locale e ricordarsi di passare il current theme
 
@@ -68,6 +76,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	viewTrackPath=true;	
 	}
 %>
+<link href="<%=contextName%>/js/lib/ext-2.0.1/resources/css/ext-all-SpagoBI-web.css"
+	rel="stylesheet" type="text/css" />
+	
+<script>
+sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
+var activesso = false;
+var logoutUrl = '';
+</script>
 
 <!-- I want to execute if there is an homepage, only for user!-->
 <%
@@ -103,7 +119,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			firstUrlToCall = "''";
 		}
 	}
-  	%>
+	
+	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
+	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
+	String active = (String) validateSB.getCharacters();
+	if (active == null || active.equalsIgnoreCase("false")) { %>
+	<script type="text/javascript">
+	activesso = false;
+	logoutUrl =  Sbi.config.contextName+"/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&LIGHT_NAVIGATOR_DISABLED=TRUE";
+	</script>
+
+<% } else { %>
+	<script type="text/javascript">
+	activesso = true;
+	logoutUrl = "<%= ((SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.SECURITY_LOGOUT_URL")).getCharacters() %>";
+	</script>
+<% }%>
 
 <script type="text/javascript">
     
@@ -111,9 +142,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     var centerFrame;
     var southFrame;
     
-   function execCrossNavigation(windowName, label, parameters) {
-		centerFrame.getFrame().contentWindow.execCrossNavigation(windowName, label, parameters);
-	}
+    var browserWidth = 1024;
+		
+		if (Ext.isIE) {
+	      	browserWidth = document.body.clientWidth;
+	  	} else {
+	     	browserWidth = document.documentElement.clientWidth;
+  		}
      	
     function execDirectDoc(btn){
 		var url = "";
@@ -180,16 +215,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 						,scrolling  : 'auto'	
 						, disableMessaging :false
 						,listeners: {'message:collapse2':  {
-				        		fn: function(srcFrame, message) {
-					        		
+				        		fn: function(srcFrame, message) {					        		
 					        		if(northFrame.collapsed && southFrame.collapsed){
-					        			
 					        			northFrame.expand(false);
 					        			southFrame.expand(false);
 					        		}else{
-					        			
 					        			northFrame.collapse(false);
 					        			southFrame.collapse(false);
+					        			if (Ext.isIE) {
+											var aFrame = centerFrame.getFrame();
+											alert(aFrame.dom.style.height);
+											alert(centerFrame.height);
+											aFrame.dom.style.height = centerFrame.height - 6;
+										}
 					        		}
 						        }
 	        					, scope: this}}

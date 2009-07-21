@@ -69,13 +69,13 @@ Sbi.home.Banner = function(config) {
 						, bodyStyle:'padding:0px 0px 0px 0px'
 				}));*/
 				
-		itemsForBanner.push({height:20, bbar : this.tbx ,border		: false });
+		itemsForBanner.push({ bbar : this.tbx ,border		: false , autoHeight: true,layout:'fit'});
 		
        	if(this.useToolbar2){	
-       		itemsForBanner.push({height:20,  bbar : this.tbx2, margins:'0 0 0 0'});
+       		itemsForBanner.push({ bbar : this.tbx2, margins:'0 0 0 0', autoHeight: true});
        	}
         if(this.useToolbar3){	
-       		itemsForBanner.push({height:20,  bbar : this.tbx3});
+       		itemsForBanner.push({ bbar : this.tbx3, autoHeight: true});
        	}
 		
 		var c = Ext.apply({}, config, {
@@ -112,6 +112,10 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	 useToolbar3: false,
 	 
 	 languages: null,
+	 
+	 themes: null,
+	 
+	 tbThemesButton: null,
 	    
 	 tbInfoButton: null,	
 		        
@@ -120,6 +124,8 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	 tbWelcomeText: null,	
 	 
 	 menuArray: null,
+	 
+	 menuThemesArray: null,
 	 
 	// ---------------------------------------------------------------------------
     // public methods
@@ -240,6 +246,34 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	 			}
 	 		}
 	 		
+	 		var menuThemesList = config.themesMenu;
+	 		if(drawSelectTheme && menuThemesList){
+	 			this.menuThemesArray = [];
+	 			for(var i = 0; i < menuThemesList.items.length; i++) {
+					this.menuThemesArray.push(
+					new Ext.menu.Item({
+					 	id: menuThemesList.items[i].id,
+ 						text: menuThemesList.items[i].text,
+						href: menuThemesList.items[i].href				
+ 						})
+					);
+	 			}
+	 			
+	 			this.themes = new Ext.menu.Menu({ 
+ 								id: 'themes', 
+			 					items: this.menuThemesArray
+			 					});
+			 	this.themes.addListener('mouseexit', function(item) {item.hide();});
+			 	
+			 	this.tbThemesButton = new Ext.Toolbar.Button({
+			 		text: themesViewName,
+			 		icon: themesIcon,
+			 		cls: 'x-btn-text-icon bmenu',
+			 		menu: this.themes,
+			 		scope: this
+		 		});	
+	 		}
+	 		
 	 		this.languages = new Ext.menu.Menu({ 
  			id: 'languages', 
 			 items: [ 
@@ -294,7 +328,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 			 		cls: 'x-btn-text-icon bmenu',
 			 		menu: this.languages,
 			 		scope: this
-		 		});	
+		 		});			 		
 		
 		 this.tbWelcomeText = new Ext.Toolbar.TextItem({
 					text: LN('sbi.home.Welcome')+'<b>'+ Sbi.user.uniqueId+'<b>'
@@ -317,6 +351,9 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		var lenghtUserName = Sbi.user.uniqueId.length+10;
 	    var lenghtUserNameInPixel = lenghtUserName*5;
 	    var menulenght = lenghtUserNameInPixel + 140;
+	    if(drawSelectTheme){
+	   		 menulenght = menulenght + 100;
+	    }
 	    var menuArrayIterator2 = this.menuArray.length;
 	    var menuArrayIterator3 = this.menuArray.length;
        	
@@ -363,6 +400,10 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		    this.tbx.addFill();    
 		 	this.tbx.add(this.tbWelcomeText);
 			this.tbx.addSeparator();
+			if(drawSelectTheme){
+				this.tbx.add(this.tbThemesButton);
+				this.tbx.addSeparator();
+			}
 			this.tbx.add(this.tbLanguagesButton);
 	 	    this.tbx.addButton(this.tbInfoButton);
 			this.tbx.add(this.tbExitButton);

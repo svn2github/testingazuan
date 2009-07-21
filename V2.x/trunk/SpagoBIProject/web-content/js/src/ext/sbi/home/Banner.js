@@ -51,12 +51,13 @@ Sbi.home.Banner = function(config) {
 		this.initButtons(config);
 		this.initToolbar();
 		
-		var c = Ext.apply({}, config, {
-			region: 'north',
-	        xtype: 'panel',
-	        margins:'0 0 0 0',
-	         bodyStyle:'padding:0px 0px 0px 0px',
-	        items: [new  Ext.ux.ManagedIframePanel({
+		var itemsForBanner = [];
+		
+		itemsForBanner.push({
+	            html: '<div style="overflow:hidden; width:100%;background-image:url(\'/SpagoBI/themes/sbi_default/img/wapp/spagobiMiddle.png\'); background-repeat: repeat-x;background-position:bottom;" ><div style="float:left"><img src="/SpagoBI/themes/sbi_default/img/wapp/spagobiLeft.png" /></div><div style="float:right"><img src="/SpagoBI/themes/sbi_default/img/wapp/spagobiRight.png" /></div></div>'
+	        });
+		//TODO: tenere questo pannello per modificare il banner in futuro
+		/*itemsForBanner.push(new  Ext.ux.ManagedIframePanel({
 						frameConfig:{autoCreate:{id: 'iframeBanner', name:'iframeBanner',style: 'height:95; margins:0px 0px 0px 0px;',scrolling  : 'no' ,border: false ,layout: 'fit'	}}
 		                ,defaultSrc : Sbi.config.contextName+'/themes/'+Sbi.config.currTheme+'/html/banner.html'
 		                ,border		: false 
@@ -64,13 +65,25 @@ Sbi.home.Banner = function(config) {
 		                ,loadMask   : true
 						,collapseMode: 'mini'
 						,scrolling  : 'no'	
-						 , margins:'0 0 0 0'
+						, margins:'0 0 0 0'
 						, bodyStyle:'padding:0px 0px 0px 0px'
-				}),
-	        	{
-            	 height: 15,
-           		 bbar : this.tbx
-       		 }],
+				}));*/
+				
+		itemsForBanner.push({height:20, bbar : this.tbx ,border		: false });
+		
+       	if(this.useToolbar2){	
+       		itemsForBanner.push({height:20,  bbar : this.tbx2, margins:'0 0 0 0'});
+       	}
+        if(this.useToolbar3){	
+       		itemsForBanner.push({height:20,  bbar : this.tbx3});
+       	}
+		
+		var c = Ext.apply({}, config, {
+			region: 'north',
+	        xtype: 'panel',
+	        margins:'0 0 0 0',
+	        bodyStyle:'padding:0px 0px 0px 0px',
+	        items: itemsForBanner,
 	        border: false,
 	        scrolling  : 'no',	
 			collapseMode: 'mini',
@@ -89,6 +102,14 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
     // object's members
 	// ---------------------------------------------------------------------------
 	 tbx:null ,  
+	 
+	 tbx2:null ,  
+	 
+	 useToolbar2: false,
+	 
+	 tbx3:null ,  
+	 
+	 useToolbar3: false,
 	 
 	 languages: null,
 	    
@@ -284,14 +305,59 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		this.tbx = new Ext.Toolbar({
 			items: ['']
 		});
+		
+		this.tbx2 = new Ext.Toolbar({
+			items: ['']
+		});
+		
+		this.tbx3 = new Ext.Toolbar({
+			items: ['']
+		});
 
+		var lenghtUserName = Sbi.user.uniqueId.length+10;
+	    var lenghtUserNameInPixel = lenghtUserName*5;
+	    var menulenght = lenghtUserNameInPixel + 140;
+	    var menuArrayIterator2 = this.menuArray.length;
+	    var menuArrayIterator3 = this.menuArray.length;
+       	
+       	for(var i = 0; i < this.menuArray.length; i++) {
+				    var tempMenuLength = this.menuArray[i].text.length*8;
+				    if(!tempMenuLength){
+				    	tempMenuLength = 30;
+				    }
+					if(menulenght+tempMenuLength<browserWidth){
+						menulenght = menulenght+tempMenuLength;
+					}else{
+						menulenght = 0;
+						this.useToolbar2 = true;
+						menuArrayIterator2 = i;
+						break;
+					}
+		}
+		
+		if(this.useToolbar2){
+			for(var i = menuArrayIterator2; i < this.menuArray.length; i++) {
+						    var tempMenuLength = this.menuArray[i].text.length*8;
+						    if(!tempMenuLength){
+						    	tempMenuLength = 30;
+						    }
+							if(menulenght+tempMenuLength<browserWidth){
+								menulenght = menulenght+tempMenuLength;
+							}else{
+								menulenght = 0;
+								this.useToolbar3 = true;
+								menuArrayIterator3 = i;
+								break;
+							}
+			}
+		}
+	
 		this.tbx.on('render', function() {
 
-			if(this.menuArray){
-				
-				for(var i = 0; i < this.menuArray.length; i++) {
-					this.tbx.addButton(this.menuArray[i]);
-					this.tbx.addSeparator();
+			if(this.menuArray){		
+				for(var i = 0; i < menuArrayIterator2; i++) {
+						this.tbx.addButton(this.menuArray[i]);
+						this.tbx.addSeparator();
 				}
 			}				
 		    this.tbx.addFill();    
@@ -302,6 +368,32 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 			this.tbx.add(this.tbExitButton);
 
 		}, this);
+
+		if(this.useToolbar2){
+		
+			this.tbx2.on('render', function() {
+				if(this.menuArray){				
+					for(var i = menuArrayIterator2; i < menuArrayIterator3; i++) {
+							this.tbx2.addButton(this.menuArray[i]);
+							this.tbx2.addSeparator();
+					}
+				}	
+				this.tbx2.addFill();    			
+			}, this);
+		}
+		
+		if(this.useToolbar3){      		 
+			this.tbx3.on('render', function() {	
+				if(this.menuArray){					
+					for(var i = menuArrayIterator3; i < this.menuArray.length; i++) {
+							this.tbx3.addButton(this.menuArray[i]);
+							this.tbx3.addSeparator();
+					}
+				}	
+				this.tbx3.addFill();    				
+			}, this);
+		}		
+		
 	  },	
 	 
 	  info: function(){
@@ -324,6 +416,6 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	  },
 	
 	  logout: function() {
-			window.location = Sbi.config.contextName+"/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&LIGHT_NAVIGATOR_DISABLED=TRUE";
+			window.location =logoutUrl;
 	   }
 });

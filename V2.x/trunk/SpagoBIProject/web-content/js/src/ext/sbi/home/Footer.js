@@ -48,13 +48,13 @@ Ext.ns("Sbi.home");
 
 Sbi.home.Footer = function(config) {
 	
-		var c = Ext.apply({}, config,  {
-			region: 'south',
-	        xtype: 'panel',
-	      
-	       
-	        items: [
-	        	new  Ext.ux.ManagedIframePanel({
+		var itemsForFooter = [];
+		
+		itemsForFooter.push({
+	            html: '<div style="overflow:hidden; width:100%;background-image:url(\'/SpagoBI/themes/sbi_default/img/wapp/spagobiFooter.png\');background-position:center; background-repeat: repeat-x;color:#FFFFFF; margin:0px 0px 0px 0px; font-size:10px; padding:0px 0px 0px 0px;text-align:center" >Copyright &copy; 2005-2009 Engineering s.p.a.</div>'
+	            });
+	    //TODO: tenere questo pannello per modificare il footer in futuro
+	    /*itemsForFooter.push(new  Ext.ux.ManagedIframePanel({
 						frameConfig:{autoCreate:{id: 'iframeFooter', name:'iframeFooter', style: 'height:30; margins:0px 0px 0px 0px;',scrolling : 'no' ,border: false,layout: 'fit'}}
 		                ,defaultSrc : Sbi.config.contextName+'/themes/'+Sbi.config.currTheme+'/html/footer.html'
 		                ,border		: false 
@@ -65,7 +65,12 @@ Sbi.home.Footer = function(config) {
 						,scrolling  : 'no'	
 						 , margins:'0 0 0 0'
 						, bodyStyle:'padding:0px 0px 0px 0px'
-				})],
+				}));*/
+	
+		var c = Ext.apply({}, config,  {
+			region: 'south',
+	        xtype: 'panel',
+	        items: itemsForFooter,
 	        border: false,
 			collapseMode: 'mini',
 	        autoHeight: true

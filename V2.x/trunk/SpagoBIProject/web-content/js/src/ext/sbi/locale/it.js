@@ -156,3 +156,9 @@ Sbi.locale.ln['sbi.execution.JpgExport'] = 'JPG';
 Sbi.locale.ln['sbi.execution.XmlExport'] = 'XML';
 Sbi.locale.ln['sbi.execution.pptExport'] = 'PPT';
 Sbi.locale.ln['sbi.execution.txtExport'] = 'TXT';
+
+Sbi.locale.ln['sbi.execution.executionpage.toolbar.expand'] = 'Espandi/Riduci';
+
+Sbi.locale.ln['sbi.home.Welcome'] = 'Benvenuto: ';
+Sbi.locale.ln['sbi.home.Exit'] = 'Esci';
+Sbi.locale.ln['sbi.home.Info'] = 'Informazioni su SpagoBI';

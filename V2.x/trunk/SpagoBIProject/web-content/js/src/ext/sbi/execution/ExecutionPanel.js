@@ -69,6 +69,10 @@ Sbi.execution.ExecutionPanel = function(config) {
 	this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
 	//this.activeDocument.tb.on('beforeinit', this.setBreadcrumbs, this);	
 	this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
+	this.activeDocument.documentExecutionPage.on('collapse3', function() {try{sendMessage({}, 'collapse2'); }
+																		  catch(e){alert(e+e.description);}
+																									}, this);
+	
 	/*
 	this.activeDocument.parametersSelectionPage.parametersPanel.on('beforesynchronize', function(){
 		this.doLayout();

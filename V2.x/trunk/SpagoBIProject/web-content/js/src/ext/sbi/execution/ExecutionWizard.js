@@ -150,7 +150,7 @@ Sbi.execution.ExecutionWizard = function(config) {
 		 this.roleSelectionPage
 		 , this.parametersSelectionPage
 		 , this.documentExecutionPage
-		 , this.errorPage
+		 , this.errorPage 
 		]		        
 	});
 	

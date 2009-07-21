@@ -31,6 +31,71 @@
 	
 	Ext.override(Ext.Component, {hideMode: 'offsets'});
 	
+	Ext.override(Ext.menu.Menu, {
+	  render : function(){
+	    if(this.el){
+	      return;
+	    }
+	    var el = this.el = this.createEl();
+	    
+	    if(!this.keyNav){
+	      this.keyNav = new Ext.menu.MenuNav(this);
+	    }
+	    if(this.plain){
+	      el.addClass("x-menu-plain");
+	    }
+	    if(this.cls){
+	      el.addClass(this.cls);
+	    }
+	    // generic focus element
+	    this.focusEl = el.createChild({
+	      tag: "a", cls: "x-menu-focus", href: "#", onclick: "return false;", tabIndex:"-1"
+	    });
+	    var ul = el.createChild({tag: "ul", cls: "x-menu-list"});
+	    ul.on("click", this.onClick, this);
+	    ul.on("mouseover", this.onMouseOver, this);
+	    ul.on("mouseout", this.onMouseOut, this);
+	    if (!this.topmenu) {
+	      this.addEvents("mouseenter", "mouseexit");
+	      this.mouseout = null;
+	    }
+	    el.on("mouseover", function(e, t){
+	      if(this.topmenu){
+	        clearTimeout(this.topmenu.mouseout);
+	        this.topmenu.mouseout=null;
+	      }else if (this.mouseout == null) this.fireEvent("mouseenter", this, e, t);
+	      else {
+	        clearTimeout(this.mouseout);
+	        this.mouseout = null;
+	      }
+	    }, this);
+	    el.on("mouseout", function(e, t){
+	      if (this.topmenu) {
+	        this.topmenu.mouseout = (function(){
+	          this.topmenu.mouseout = null;
+	          this.topmenu.fireEvent("mouseexit", this.topmenu, e, t);
+	        }).defer(100, this);
+	      } else {
+	        this.mouseout = (function(){
+	          this.mouseout = null;
+	          this.fireEvent("mouseexit", this, e, t);
+	        }).defer(100, this);
+	      }
+	    }, this);
+	    el.on("mouseup", function(e, t){
+	      e.stopEvent();
+	    });
+	    this.items.each(function(item){
+	      var li = document.createElement("li");
+	      li.className = "x-menu-list-item";
+	      ul.dom.appendChild(li);
+	      if(item.menu)item.menu.topmenu=this.topmenu||this;
+	      item.render(li, this);
+	    }, this);
+	    this.ul = ul;
+	    this.autoWidth();
+	  }
+	});
 
 	Ext.override(Ext.form.ComboBox, {
     	

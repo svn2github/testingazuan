@@ -150,6 +150,16 @@
     <mkdir dir="${tomcat.home}/webapps/SpagoBIWekaEngine" />
     <unzip src="../../../SpagoBIWekaEngine/dist/SpagoBIWekaEngine.war" dest="${tomcat.home}/webapps/SpagoBIWekaEngine" />
   </target>
+	
+	<target name="create.SpagoBIJPXMLAEngine.war" depends="create.sbi.utils.jar">
+	    <ant dir="../SpagoBIJPXMLAEngine/ant" />
+	  </target>
+	  <target name="deploy.SpagoBIJPXMLAEngine.war" depends="create.sbi.utils.jar,create.SpagoBIJPXMLAEngine.war">
+	  <delete dir="${tomcat.home}/work/Catalina/localhost/SpagoBIJPXMLAEngine" />
+	    <delete dir="${tomcat.home}/webapps/SpagoBIJPXMLAEngine" />
+	    <mkdir dir="${tomcat.home}/webapps/SpagoBIJPXMLAEngine" />
+	    <unzip src="../../../SpagoBIJPXMLAEngine/dist/SpagoBIJPXMLAEngine.war" dest="${tomcat.home}/webapps/SpagoBIJPXMLAEngine" />
+	</target>
   
   <target name="create.all" depends="clean.all">
     <!--  
@@ -207,7 +217,9 @@
     <copy file="../../../SpagoBIQbeEngine/dist/SpagoBIQbeEngine.war" 
         todir="../../../dist" overwrite="true" />        
     
-    
+  	<antcall target="create.SpagoBIJPXMLAEngine.war" />
+  	    <copy file="../../../SpagoBIJPXMLAEngine/dist/SpagoBIJPXMLAEngine.war" 
+  	        todir="../../../dist" overwrite="true" /> 
 
   </target>
 
@@ -221,6 +233,7 @@
     <antcall target="deploy.SpagoBIQbeEngine.war" />
     <antcall target="deploy.SpagoBITalendEngine.war" />
     <antcall target="deploy.SpagoBIWekaEngine.war" />
+  	<antcall target="deploy.SpagoBIJPXMLAEngine.war" />
   </target>
 
    <target name="clean.all" >
@@ -255,6 +268,8 @@
   <delete dir="../../../SpagoBIUtils/dist"/>    
   <delete dir="../../../SpagoBIWekaEngine/ant-build"/>
   <delete dir="../../../SpagoBIWekaEngine/dist"/>	
+  <delete dir="../../../SpagoBIJPXMLAEngine/ant-build"/>
+  <delete dir="../../../SpagoBIJPXMLAEngine/dist"/>	
 
    </target>
    
@@ -290,10 +305,11 @@
     <ant dir="../SpagoBITalendEngine/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIUtils/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIWekaEngine/ant" target="svn.checkout"/>
+  	<ant dir="../SpagoBIJPXMLAEngine/ant" target="svn.checkout"/>
     <ant dir="../SpagoBIXmlSecurityProvider/ant" target="svn.checkout"/>
     <ant dir="../SpagoBILiferaySecurityProvider/ant" target="svn.checkout"/>    
     <ant dir="../SpagoBILdapSecurityProvider/ant" target="svn.checkout"/>  
-    <ant dir="../SpagoBIDatabaseScripts" target="svn.checkout"/>           
+    <ant dir="../SpagoBIDatabaseScripts" target="svn.checkout"/>         
   </target>
   
   <target name="javadoc" >
@@ -311,7 +327,8 @@
     <ant dir="../SpagoBIWekaEngine/ant" target="javadoc"/>
     <ant dir="../SpagoBIXmlSecurityProvider/ant" target="javadoc"/>
     <ant dir="../SpagoBILiferaySecurityProvider/ant" target="javadoc"/>    
-    <ant dir="../SpagoBILdapSecurityProvider/ant" target="javadoc"/>       
+    <ant dir="../SpagoBILdapSecurityProvider/ant" target="javadoc"/>  
+    <ant dir="../SpagoBIJPXMLAEngine/ant" target="javadoc"/>
   </target>
 
   <target name="package.all" >
@@ -325,7 +342,7 @@
         <ant dir="../SpagoBITalendEngine/ant" target="package"/> 
         <ant dir="../SpagoBIWekaEngine/ant" target="package"/> 
         <ant dir="../SpagoBIDatabaseScripts" target="package"/>  
-        
+  		<ant dir="../SpagoBIJPXMLAEngine/ant" target="package"/> 
                                                                                                      
   </target>
  

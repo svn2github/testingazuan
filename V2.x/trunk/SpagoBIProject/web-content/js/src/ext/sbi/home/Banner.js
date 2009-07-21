@@ -57,19 +57,22 @@ Sbi.home.Banner = function(config) {
 	        margins:'0 0 0 0',
 	         bodyStyle:'padding:0px 0px 0px 0px',
 	        items: [new  Ext.ux.ManagedIframePanel({
-						frameConfig:{autoCreate:{id: 'iframeBanner', name:'iframeBanner',style: 'height:95',scrolling  : 'no' ,border: false ,layout: 'fit'	}}
+						frameConfig:{autoCreate:{id: 'iframeBanner', name:'iframeBanner',style: 'height:95; margins:0px 0px 0px 0px;',scrolling  : 'no' ,border: false ,layout: 'fit'	}}
 		                ,defaultSrc : Sbi.config.contextName+'/themes/'+Sbi.config.currTheme+'/html/banner.html'
 		                ,border		: false 
 		                ,height: 95
 		                ,loadMask   : true
 						,collapseMode: 'mini'
 						,scrolling  : 'no'	
+						 , margins:'0 0 0 0'
+						, bodyStyle:'padding:0px 0px 0px 0px'
 				}),
 	        	{
-            	 //height: 7,
+            	 height: 15,
            		 bbar : this.tbx
        		 }],
 	        border: false,
+	        scrolling  : 'no',	
 			collapseMode: 'mini',
 	        autoHeight: true
 		});   

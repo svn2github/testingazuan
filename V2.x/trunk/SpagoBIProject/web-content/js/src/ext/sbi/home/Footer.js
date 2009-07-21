@@ -64,7 +64,7 @@ Sbi.home.Footer = function(config) {
 						,collapseMode: 'mini'
 						,scrolling  : 'no'	
 						 , margins:'0 0 0 0'
-						, bodyStyle:'padding:0px 0px 0px 0px',
+						, bodyStyle:'padding:0px 0px 0px 0px'
 				})],
 	        border: false,
 			collapseMode: 'mini',

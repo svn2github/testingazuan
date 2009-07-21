@@ -178,6 +178,8 @@ String getUrl(String baseUrl, Map mapPars) {
 	String currTheme=ThemesManager.getCurrentTheme(aRequestContainer);
 	if(currTheme==null)currTheme=ThemesManager.getDefaultTheme();
 	
+	String currViewThemeName = ThemesManager.getCurrentThemeName(currTheme);
+	
 	%>
 
 

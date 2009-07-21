@@ -69,20 +69,18 @@ Sbi.home.Banner = function(config) {
 						, bodyStyle:'padding:0px 0px 0px 0px'
 				}));*/
 				
-		itemsForBanner.push({ bbar : this.tbx ,border		: false , autoHeight: true,layout:'fit'});
+		itemsForBanner.push(this.tbx);
 		
        	if(this.useToolbar2){	
-       		itemsForBanner.push({ bbar : this.tbx2, margins:'0 0 0 0', autoHeight: true});
+       		itemsForBanner.push(this.tbx2);
        	}
         if(this.useToolbar3){	
-       		itemsForBanner.push({ bbar : this.tbx3, autoHeight: true});
+       		itemsForBanner.push(this.tbx3);
        	}
 		
 		var c = Ext.apply({}, config, {
 			region: 'north',
-	        xtype: 'panel',
 	        margins:'0 0 0 0',
-	        bodyStyle:'padding:0px 0px 0px 0px',
 	        items: itemsForBanner,
 	        border: false,
 	        scrolling  : 'no',	

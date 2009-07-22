@@ -167,7 +167,7 @@ public class Query {
 	}
 	
 	public boolean hasParentQuery() {
-		return getParentQuery() == null;
+		return getParentQuery() != null;
 	}
 	
 	public void addSubquery(Query subquery) {

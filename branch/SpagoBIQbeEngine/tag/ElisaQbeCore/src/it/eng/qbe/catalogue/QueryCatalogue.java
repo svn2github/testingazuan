@@ -45,6 +45,19 @@ public class QueryCatalogue {
 		this.counter = 0;
 	}
 	
+	/*
+	 * Externalize the id creation strategy is little bit to mutch for the moment. 
+	 * If you want to modify this method keep in mind by the way that it have a dependence with 
+	 * the statment class.Infact the id is used as a prefix to all entity aliases so it must not
+	 * broke the valid alias sintax (avoid spaces and special char) 
+	 * 
+	 * @todo id generation must be consistent also across different execution. Add an initial offset
+	 * to setup properly the counter in order to not override preloaded queries.
+	 */
+	public String getNextValidId() {
+		return "q_" + (++counter);
+	}
+	
 	public Set getIds() {
 		return new HashSet(queries.keySet());
 	}
@@ -62,7 +75,7 @@ public class QueryCatalogue {
 		Query subquery;
 		
 		if(query.getId() == null) {
-			query.setId( "id" + (++counter) );
+			query.setId( getNextValidId() );
 		}
 		
 		if(query.getName() == null) {
@@ -115,40 +128,5 @@ public class QueryCatalogue {
 			removeSubqueries(subquery);
 		}
 	}
-	
-	
-	/*
-	public void refreshQuery(Query query, QueryMeta meta) {
-		Assert.assertNotNull(query, "Impossibble refresh query. Input parameters query cannot be null");
-		Assert.assertNotNull(query.getId(), "Impossibble refresh query. Query id cannot be null");
-		Assert.assertNotNull(getQuery(query.getId()), "Impossibble refresh query. A query with id [" + query.getId() + "] does not exist in the catalog");
-		if(meta != null) {
-			Assert.assertTrue(query.getId().equals(meta.getId()), "Impossibble refresh query. The query id [" + query.getId() + "] does not match with the meta id [" + meta.getId()+ "]");
-			this.meta.put(meta.getId(), meta);
-		}
-		this.queries.put( query.getId(), query);
-		
-		
-	}
-	
-	
-	private String addQuery(Query query, QueryMeta meta) {
-		String id = "id" + (++counter);
-		query.setId(id);
-		this.queries.put( query.getId(), query);
-		
-		if(meta == null) {
-			meta = new QueryMeta();
-			meta.setId( query.getId() );
-		}
-		
-		if(meta.getName() == null) {
-			meta.setName( "query-" + query.getId() );
-		}
-		
-		this.meta.put( query.getId(), meta);
-		return id;
-	}
-	*/
 	
 }

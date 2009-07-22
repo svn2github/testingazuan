@@ -339,10 +339,10 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		});
 
 		var lenghtUserName = Sbi.user.userId.length+10;
-	    var lenghtUserNameInPixel = lenghtUserName*5;
-	    var menulenght = lenghtUserNameInPixel + 140;
+	    var lenghtUserNameInPixel = lenghtUserName*10;
+	    var menulenght = lenghtUserNameInPixel + 170;
 	    if(drawSelectTheme){
-	   		 menulenght = menulenght + 100;
+	   		 menulenght = menulenght + 150;
 	    }
 	    var menuArrayIterator2 = this.menuArray.length;
 	    var menuArrayIterator3 = this.menuArray.length;

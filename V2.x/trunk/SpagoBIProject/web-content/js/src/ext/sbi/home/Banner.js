@@ -412,7 +412,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 				if(this.menuArray){		
 					//adding all menus of the second toolbar		
 					for(var i = menuArrayIterator2; i < menuArrayIterator3; i++) {
-							this.tbx2.addButton(this.menuArray[i]);
+							this.tbx2.add(this.menuArray[i]);
 							this.tbx2.addSeparator();
 					}
 				}	
@@ -425,7 +425,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 				if(this.menuArray){		
 					//adding all menus of the third toolbar			
 					for(var i = menuArrayIterator3; i < this.menuArray.length; i++) {
-							this.tbx3.addButton(this.menuArray[i]);
+							this.tbx3.add(this.menuArray[i]);
 							this.tbx3.addSeparator();
 					}
 				}	

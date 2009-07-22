@@ -147,6 +147,7 @@ String getUrl(String baseUrl, Map mapPars) {
 	String curr_language=(String)permanentSession.getAttribute(SpagoBIConstants.AF_LANGUAGE);
 	String curr_country=(String)permanentSession.getAttribute(SpagoBIConstants.AF_COUNTRY);
 	Locale locale = null;
+	
 
 	if(curr_language!=null && curr_country!=null && !curr_language.equals("") && !curr_country.equals("")){
 		locale=new Locale(curr_language, curr_country, "");
@@ -225,6 +226,7 @@ String getUrl(String baseUrl, Map mapPars) {
     Sbi.config.currTheme = '<%= currTheme %>';
     Sbi.config.curr_country = '<%= curr_country %>';
     Sbi.config.curr_language = '<%= curr_language%>';
+    Sbi.user.modeweb = <%= sbiMode.equals("WEB")? "true" : "false"%>;
     Sbi.config.contextName = '<%= GeneralUtilities.getSpagoBiContext() %>';
 	<%
 	StringBuffer buffer = new StringBuffer("[");

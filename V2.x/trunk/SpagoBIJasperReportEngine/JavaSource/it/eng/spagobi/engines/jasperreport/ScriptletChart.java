@@ -86,6 +86,7 @@ public class ScriptletChart extends JRDefaultScriptlet {
 					logger.debug("Processing variable "+varName);					
 					JRFillVariable variable=(JRFillVariable)allVariables.get(varName);
 					if(variable.getValue()!=null){
+						chartParameters=new HashMap();
 //						the realVarName is the name of the target variable!
 						String areaValue=varName.substring(9);
 						// call a utility function that parse the variable, in the form var1=val1;var2=val2

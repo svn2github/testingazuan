@@ -349,7 +349,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
        	
        	//if at the end menuArrayIterator2 doesn't change, all menus can fit in only one toolbar
        	for(var i = 0; i < this.menuArray.length; i++) {
-				    var tempMenuLength = this.menuArray[i].text.length*8;
+				    var tempMenuLength = this.menuArray[i].text.length*9;
 				    if(!tempMenuLength){
 				    	tempMenuLength = 30;
 				    }
@@ -367,7 +367,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		//if at the end menuArrayIterator3 doesn't change, all menus can fit in first and second toolbar
 		if(this.useToolbar2){
 			for(var i = menuArrayIterator2; i < this.menuArray.length; i++) {
-						    var tempMenuLength = this.menuArray[i].text.length*8;
+						    var tempMenuLength = this.menuArray[i].text.length*9;
 						    if(!tempMenuLength){
 						    	tempMenuLength = 30;
 						    }

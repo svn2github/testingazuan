@@ -52,6 +52,7 @@ public class ScriptletChart extends JRDefaultScriptlet {
 
 	private static transient Logger logger=Logger.getLogger(ScriptletChart.class);
 
+	public static final String CHART_LABEL="chart_label"; 
 
 	public void afterReportInit() throws JRScriptletException {
 
@@ -75,33 +76,33 @@ public class ScriptletChart extends JRDefaultScriptlet {
 			// Get all defined variables wich start with prefix sbichart,
 			// each is an image to fill
 			Map allVariables = this.variablesMap;
+
 			if(allVariables==null)allVariables=new HashMap();
+
 			logger.debug("Running all variables");
 			for (Iterator iterator = allVariables.keySet().iterator(); iterator.hasNext();) {
 				String varName = (String) iterator.next();
-				logger.debug("Processing variable "+varName);
 				if(varName.startsWith("sbichart_")){
+					logger.debug("Processing variable "+varName);					
 					JRFillVariable variable=(JRFillVariable)allVariables.get(varName);
 					if(variable.getValue()!=null){
 //						the realVarName is the name of the target variable!
 						String areaValue=varName.substring(9);
-						String chartLabel="";
-						String chartArea="";						
 						// call a utility function that parse the variable, in the form var1=val1;var2=val2
 						String varVal=(String)variable.getValue();
+						// Value is defined as chart_label=label;par1=val1;par2=val2;
 						Map nameValuePars=parseVariable(varVal);
 
-						// check if there are the main parameters defined: they are, 
+						// check if there is the main parameters defined:
 						// chart_label : indicating the label of the chart that has to be called.
-						// chart_area
-						if(nameValuePars.get("chart_label")!=null){
-							String labelValue=(String) nameValuePars.get("chart_label");
+						if(nameValuePars.get(CHART_LABEL)!=null){
+							String labelValue=(String) nameValuePars.get(CHART_LABEL);
 							logger.debug("execute chart with lable "+labelValue);
 
 							// Set other parameters
 							for (Iterator iterator2 = nameValuePars.keySet().iterator(); iterator2.hasNext();) {
 								String namePar = (String) iterator2.next();
-								if(!namePar.equalsIgnoreCase("chart_label")){
+								if(!namePar.equalsIgnoreCase(CHART_LABEL)){
 									Object value=nameValuePars.get(namePar);
 									chartParameters.put(namePar, value);
 								}
@@ -125,7 +126,7 @@ public class ScriptletChart extends JRDefaultScriptlet {
 							is.close();
 						}
 						else{
-							logger.warn("chart_label not specified");							
+							logger.error("chart_label not specified");							
 						}
 					}
 					else{

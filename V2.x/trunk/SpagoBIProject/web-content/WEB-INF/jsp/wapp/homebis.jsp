@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.json.JSONObject"%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
- 	<%@ include file="/WEB-INF/jsp/commons/importSbiJS.jspf"%>
+<%@ include file="/WEB-INF/jsp/commons/importSbiJS.jspf"%>
 
 <%-- START CHECK USER PROFILE EXISTENCE
 	This Ajax call is usefull to find out if a user profile object is in session, i.e. if a user has logged in.
@@ -53,8 +53,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 <%  
-	//TODO usare curr_language curr_country locale e ricordarsi di passare il current theme
-
 	String contextName = ChannelUtilities.getSpagoBIContextName(request);
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("LoginModule"); 
 
@@ -252,23 +250,13 @@ else
 						, fitToParent: true  	
 						, disableMessaging :false
 						,listeners: {'message:collapse2':  {
-				        		fn: function(srcFrame, message) {	
-				        				        		
-					        		if (Ext.isIE) {
-										centerFrame.on('resize', 
-	  										function() {
-	  											centerFrame.getFrame().dom.style.height = centerFrame.getSize().height;
-	  											},
-	  										this);
-									}
-				        				        		
+				        		fn: function(srcFrame, message) {					        				        			        		
 					        		if(northFrame.collapsed && southFrame.collapsed){
 					        			northFrame.expand(false);
 					        			southFrame.expand(false);
 					        		}else{
 					        			northFrame.collapse(false);
-					        			southFrame.collapse(false);
-					        			
+					        			southFrame.collapse(false);		
 					        		}
 						        }
 	        					, scope: this}}

@@ -53,7 +53,6 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 		// no defaults
 	}, config || {});
 	
-	alert(config.modeweb);
 	// check mandatory values
 	// ...
 		
@@ -231,7 +230,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			}			
 		}));
 
-		if(Sbi.user.modeweb){
+		if(Sbi.user.ismodeweb){
 			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-expand' 
 				, tooltip: LN('sbi.execution.executionpage.toolbar.expand')

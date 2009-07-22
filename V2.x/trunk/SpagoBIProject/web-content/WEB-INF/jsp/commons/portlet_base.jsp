@@ -215,19 +215,18 @@ String getUrl(String baseUrl, Map mapPars) {
     Sbi.config = function () {
         return {
        		// login url, used when session is expired
-        	loginUrl: '<%= GeneralUtilities.getSpagoBiContext() %>'
+        	loginUrl: '<%= GeneralUtilities.getSpagoBiContext() %>',
+        	currTheme: '<%= currTheme %>',
+        	curr_country: '<%= curr_country %>',
+        	curr_language: '<%= curr_language%>',
+        	contextName: '<%= GeneralUtilities.getSpagoBiContext() %>'
         };
     }();
-    
+
     // javascript-side user profile object
     Ext.ns("Sbi.user");
     Sbi.user.userId = '<%= StringEscapeUtils.escapeJavaScript(userId) %>';
-    Sbi.user.uniqueId = '<%= StringEscapeUtils.escapeJavaScript(userUniqueIdentifier) %>';
-    Sbi.config.currTheme = '<%= currTheme %>';
-    Sbi.config.curr_country = '<%= curr_country %>';
-    Sbi.config.curr_language = '<%= curr_language%>';
-    Sbi.user.modeweb = <%= sbiMode.equals("WEB")? "true" : "false"%>;
-    Sbi.config.contextName = '<%= GeneralUtilities.getSpagoBiContext() %>';
+    Sbi.user.ismodeweb = <%= sbiMode.equals("WEB")? "true" : "false"%>;
 	<%
 	StringBuffer buffer = new StringBuffer("[");
 	if (userProfile != null && userProfile.getFunctionalities() != null && !userProfile.getFunctionalities().isEmpty()) {

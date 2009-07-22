@@ -140,58 +140,38 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	getItems: function(menu){
 	 		var toReturn = [];
 	 		var hasIt= this.hasItems(menu);
-	 		if(hasIt){
-	 		
+	 		if(hasIt){	
 	 				for(var i = 0; i < menu.items.length; i++) {
 	 				var hasIt2= this.hasItems(menu.items[i]);
 		 				if(hasIt2){
 		 				 var tempIt = this.getItems(menu.items[i]);
 		 				 toReturn.push(    
-       
-       
                           new Ext.menu.Item({
                               id: menu.items[i].id,
-                              group: 'group_2',
-							//listeners: {'mouseexit': function(item) {item.hide();}},
-											menu:{
-												listeners: {'mouseexit': function(item) {item.hide();}},
-				        						items: tempIt
-				        					},
-				        					text: menu.items[i].text,
-						 					icon: menu.items[i].icon,
-											href: menu.items[i].href                
-                           
-                         	 })                        
-                              
-             
-										/*{
-											id: menu.items[i].id,
-											//listeners: {'mouseexit': function(item) {item.hide();}},
-											menu:{
-												listeners: {'mouseexit': function(item) {item.hide();}},
-				        						items: tempIt
-				        					},
-				        					text: menu.items[i].text,
-						 					icon: menu.items[i].icon,
-											href: menu.items[i].href
-										}*/
-								)
+                              //group: 'group_2',
+							  menu:{
+									listeners: {'mouseexit': function(item) {item.hide();}},
+				        			items: tempIt
+				        		   },
+				        	  text: menu.items[i].text,
+						 	  icon: menu.items[i].icon,
+							  href: menu.items[i].href                       
+                         	 }) 
+						  )
 		 				}else{
 		 				 toReturn.push(
-										new Ext.menu.Item({
-											id: menu.items[i].id,
-											group: 'group_3',
-											//listeners: {'mouseexit': function(item) {item.hide();}},
-				        					text: menu.items[i].text,
-						 					icon: menu.items[i].icon,
-											href: menu.items[i].href
-										})
-								)
+						   new Ext.menu.Item({
+								id: menu.items[i].id,
+								//group: 'group_3',
+				        		text: menu.items[i].text,
+						 		icon: menu.items[i].icon,
+								href: menu.items[i].href
+							})
+						  )
 		 				}
 					}
 			}	
-	 		return toReturn;
-	 		
+	 		return toReturn;	
 	 },
 	 
 	 getMenu: function(menu){
@@ -202,17 +182,13 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 							id: menu.id,
 					        text: menu.text,
 							path: menu.path,	
-							   
 	            			menu: new Ext.menu.Menu({
 	            				id: menu.id,
 								listeners: {'mouseexit': function(item) {item.hide();}},
 								items: this.getItems(menu)
-								
 								}),
 							handler:  function() {eval(menu.href);} ,
-	            			//listeners: {'mouseexit': function(item) {item.hide();}},
 	            			icon:  menu.icon,
-	            			//scope: this,
 					        cls: 'x-btn-menubutton x-btn-text-icon bmenu '
 					        })
 	 		}else{
@@ -329,7 +305,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		 		});			 		
 		
 		 this.tbWelcomeText = new Ext.Toolbar.TextItem({
-					text: LN('sbi.home.Welcome')+'<b>'+ Sbi.user.uniqueId+'<b>&nbsp;&nbsp;&nbsp;'
+					text: LN('sbi.home.Welcome')+'<b>'+ Sbi.user.userId+'<b>&nbsp;&nbsp;&nbsp;'
 				});
 	 },
 	 	
@@ -346,7 +322,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 			items: ['']
 		});
 
-		var lenghtUserName = Sbi.user.uniqueId.length+10;
+		var lenghtUserName = Sbi.user.userId.length+10;
 	    var lenghtUserNameInPixel = lenghtUserName*5;
 	    var menulenght = lenghtUserNameInPixel + 140;
 	    if(drawSelectTheme){
@@ -391,7 +367,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 
 			if(this.menuArray){		
 				for(var i = 0; i < menuArrayIterator2; i++) {
-						this.tbx.addButton(this.menuArray[i]);
+						this.tbx.add(this.menuArray[i]);
 						this.tbx.addSeparator();
 				}
 			}				

@@ -45,17 +45,27 @@ public class MenuListJSONSerializer implements Serializer {
 	public static final String PATH = "path";
 	public static final String CLS = "cls";
 	public static final String ICON = "icon";
-	public static final String GROUP = "group";
 	public static final String HREF = "href";
-	public static final String TYPE = "type";
 	public static final String ITEMS ="items";
-	public static final String css = "x-btn-menubutton x-btn-text-icon bmenu";
 	public String contextName = "";
 	public String defaultThemePath="/themes/sbi_default";
 
 	public Object serialize(Object o, Locale locale) throws SerializationException {
 		JSONObject  result = null;
-
+		/*The result is an object of type:
+		  {"items":
+			[{
+				"text":"Primo menu",
+				"path":"Primo menu",
+				"name":"menu0",
+				"href":"javascript:execDirectUrl('/SpagoBI/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID=11', 'Primo menu > adsasdsa' )",
+				"icon":"/SpagoBI/themes/sbi_default/img/wapp/static_page.png",
+				"id":"basicMenu_0",
+				"items":...
+			 },...
+			]
+		  }
+		 */
 		contextName = GeneralUtilities.getSpagoBiContext();
 		if( !(o instanceof List) ) {
 			throw new SerializationException("MenuListJSONSerializer is unable to serialize object of type: " + o.getClass().getName());
@@ -84,13 +94,10 @@ public class MenuListJSONSerializer implements Serializer {
 						
 						if(menuElem.getObjId()!=null){
 							temp.put(HREF, "execDirectUrl('"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+menuElem.getMenuId()+"', '"+path+"' )");
-							//temp.put(TYPE,"execDirectDoc");
 						}else if(menuElem.getStaticPage()!=null){
 							temp.put(HREF, "execDirectUrl('"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+menuElem.getMenuId()+"', '"+path+"' )");
-							//temp.put(TYPE,"readHtmlFile");
 						}else if(menuElem.getFunctionality()!=null){
 							temp.put(HREF, "execDirectUrl('"+DetailMenuModule.findFunctionalityUrl(menuElem, contextName)+"', '"+path+"')");
-							//temp.put(TYPE,"getFunctionality");
 						}
 											
 						if (menuElem.getHasChildren()){		
@@ -109,7 +116,6 @@ public class MenuListJSONSerializer implements Serializer {
 		} finally {
 			
 		}
-		//System.out.println(result);
 		return result;
 	}
 	
@@ -129,16 +135,12 @@ public class MenuListJSONSerializer implements Serializer {
 	        if(childElem.isViewIcons() && !icon.equalsIgnoreCase("")){ 
 	           temp2.put(ICON, contextName+defaultThemePath+icon);
 	        }
-			//temp2.put(GROUP, "group_"+level);
 			if(childElem.getObjId()!=null){
 				temp2.put(HREF, "javascript:execDirectUrl('"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=MENU_BEFORE_EXEC&MENU_ID="+childElem.getMenuId()+"', '"+path+"' )");
-				//temp2.put(TYPE,"execDirectDoc");
 			}else if(childElem.getStaticPage()!=null){
 				temp2.put(HREF, "javascript:execDirectUrl('"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+childElem.getMenuId()+"', '"+path+"' )");
-				//temp2.put(TYPE,"readHtmlFile");
 			}else if(childElem.getFunctionality()!=null){
 				temp2.put(HREF, "javascript:execDirectUrl('"+DetailMenuModule.findFunctionalityUrl(childElem, contextName)+"', '"+path+"')");
-				//temp2.put(TYPE,"getFunctionality");
 			}
 			if (childElem.getHasChildren()){
 				level ++;

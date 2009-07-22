@@ -68,13 +68,16 @@ Sbi.home.Banner = function(config) {
 						, margins:'0 0 0 0'
 						, bodyStyle:'padding:0px 0px 0px 0px'
 				}));*/
-				
+		
+		//add first menu toolbar		
 		itemsForBanner.push(this.tbx);
 		
        	if(this.useToolbar2){	
+       		//add second menu toolbar
        		itemsForBanner.push(this.tbx2);
        	}
         if(this.useToolbar3){	
+        	//add third menu toolbar
        		itemsForBanner.push(this.tbx3);
        	}
 		
@@ -86,12 +89,9 @@ Sbi.home.Banner = function(config) {
 	        scrolling  : 'no',	
 			collapseMode: 'mini',
 	        autoHeight: true
-		});   
-		
+		});   	
       
-		Sbi.home.Banner.superclass.constructor.call(this, c);
-    	
-	
+		Sbi.home.Banner.superclass.constructor.call(this, c);	
 };
 
 Ext.extend(Sbi.home.Banner, Ext.Panel, {
@@ -99,36 +99,39 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	// ---------------------------------------------------------------------------
     // object's members
 	// ---------------------------------------------------------------------------
+	
+	//main toolbar
 	 tbx:null ,  
-	 
+	//eventual second toolbar
 	 tbx2:null ,  
-	 
+	//boolean for weather the second toolbar is used or not
 	 useToolbar2: false,
-	 
+	//eventual third toolbar
 	 tbx3:null ,  
-	 
+	//boolean for weather the third toolbar is used or not 
 	 useToolbar3: false,
-	 
+	//languages menu
 	 languages: null,
-	 
+	//themes menu 
 	 themes: null,
-	 
+	//themes menu button
 	 tbThemesButton: null,
-	    
+	//info menu button   
 	 tbInfoButton: null,	
-		        
+	//languages menu button	        
 	 tbLanguagesButton: null,	
-	 
+	//toolbar welcome text
 	 tbWelcomeText: null,	
-	 
+	//array containing all user menus
 	 menuArray: null,
-	 
+	//array containing all possible themes (>1) 
 	 menuThemesArray: null,
 	 
 	// ---------------------------------------------------------------------------
     // public methods
 	// ---------------------------------------------------------------------------
 	
+	//Verifies if the menu has subitems
 	hasItems: function(menu){
 		var toReturn = false;
 		if(menu.items){toReturn = true;}
@@ -137,6 +140,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		return toReturn;
 	},
 	
+	//returns a menu with its items (recursive method)
 	getItems: function(menu){
 	 		var toReturn = [];
 	 		var hasIt= this.hasItems(menu);
@@ -144,11 +148,11 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	 				for(var i = 0; i < menu.items.length; i++) {
 	 				var hasIt2= this.hasItems(menu.items[i]);
 		 				if(hasIt2){
+		 				//in case menu has items
 		 				 var tempIt = this.getItems(menu.items[i]);
 		 				 toReturn.push(    
                           new Ext.menu.Item({
                               id: menu.items[i].id,
-                              //group: 'group_2',
 							  menu:{
 									listeners: {'mouseexit': function(item) {item.hide();}},
 				        			items: tempIt
@@ -159,10 +163,10 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
                          	 }) 
 						  )
 		 				}else{
+		 				//in case menu doesn't have items
 		 				 toReturn.push(
 						   new Ext.menu.Item({
 								id: menu.items[i].id,
-								//group: 'group_3',
 				        		text: menu.items[i].text,
 						 		icon: menu.items[i].icon,
 								href: menu.items[i].href
@@ -174,10 +178,12 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	 		return toReturn;	
 	 },
 	 
+	 //returns a menuButton with its Menu and MenuItems
 	 getMenu: function(menu){
 	 	var toReturn ;
 	 	var hasIt= this.hasItems(menu);
 	 		if (hasIt){
+	 		    //in case menu Button has items
 	 			toReturn = new Ext.Toolbar.MenuButton({
 							id: menu.id,
 					        text: menu.text,
@@ -192,6 +198,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 					        cls: 'x-btn-menubutton x-btn-text-icon bmenu '
 					        })
 	 		}else{
+	 			//in case menu Button doesn't have items
 	 			toReturn = new Ext.Toolbar.Button({
 							id: menu.id,
 					        text: menu.text,
@@ -205,14 +212,17 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	 	return toReturn;
 	 },
 	 
+	 //returns the language url to be called in the language menu
 	 getLanguageUrl: function(config){
 	   var languageUrl = "javascript:execUrl('"+Sbi.config.contextName+"/servlet/AdapterHTTP?ACTION_NAME=CHANGE_LANGUAGE&LANGUAGE_ID="+config.language+"&COUNTRY_ID="+config.country+"')";
 	   return languageUrl;
 	 },
 	
+	//initializes all menu Buttons
 	 initButtons: function(config){
 	 		var menus = config.bannerMenu;
 	 		
+	 		//user menus initialization
 	 		if(menus){
 	 			this.menuArray = [];
 	 			for(var i = 0; i < menus.items.length; i++) {
@@ -220,6 +230,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	 			}
 	 		}
 	 		
+	 		//themes menus initialization
 	 		var menuThemesList = config.themesMenu;
 	 		if(drawSelectTheme && menuThemesList){
 	 			this.menuThemesArray = [];
@@ -248,6 +259,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		 		});	
 	 		}
 	 		
+	 		//languages menus initialization
 	 		this.languages = new Ext.menu.Menu({ 
  			id: 'languages', 
 			 items: [ 
@@ -279,6 +291,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	 		});
 	 	this.languages.addListener('mouseexit', function(item) {item.hide();});	
  	    
+ 	    //exit button initialization
  		this.tbExitButton = new Ext.Toolbar.Button({
 	            id: '5',
 	            text:  LN('sbi.home.Exit'),
@@ -288,6 +301,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	            scope: this
 	        })  ;
 	    
+	    //info button initialization
 	    this.tbInfoButton = new Ext.Toolbar.Button({
 		            id: '',
 		            iconCls: 'icon-info',
@@ -295,7 +309,8 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		            handler: this.info,
 		            scope: this
 		        })	;	
-		        
+		 
+		//languages button initialization       
 		this.tbLanguagesButton = new Ext.Toolbar.Button({
 			 		text: '',
 			 		iconCls:'icon-it',
@@ -303,12 +318,13 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 			 		menu: this.languages,
 			 		scope: this
 		 		});			 		
-		
+		//Welcome Text initialization
 		 this.tbWelcomeText = new Ext.Toolbar.TextItem({
 					text: LN('sbi.home.Welcome')+'<b>'+ Sbi.user.userId+'<b>&nbsp;&nbsp;&nbsp;'
 				});
 	 },
 	 	
+	 //initialization of all toolbars
 	 initToolbar: function(){
 		this.tbx = new Ext.Toolbar({
 			items: ['']
@@ -331,6 +347,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	    var menuArrayIterator2 = this.menuArray.length;
 	    var menuArrayIterator3 = this.menuArray.length;
        	
+       	//if at the end menuArrayIterator2 doesn't change, all menus can fit in only one toolbar
        	for(var i = 0; i < this.menuArray.length; i++) {
 				    var tempMenuLength = this.menuArray[i].text.length*8;
 				    if(!tempMenuLength){
@@ -339,6 +356,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 					if(menulenght+tempMenuLength<browserWidth){
 						menulenght = menulenght+tempMenuLength;
 					}else{
+					//will use a second toolbar
 						menulenght = 0;
 						this.useToolbar2 = true;
 						menuArrayIterator2 = i;
@@ -346,6 +364,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 					}
 		}
 		
+		//if at the end menuArrayIterator3 doesn't change, all menus can fit in first and second toolbar
 		if(this.useToolbar2){
 			for(var i = menuArrayIterator2; i < this.menuArray.length; i++) {
 						    var tempMenuLength = this.menuArray[i].text.length*8;
@@ -355,6 +374,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 							if(menulenght+tempMenuLength<browserWidth){
 								menulenght = menulenght+tempMenuLength;
 							}else{
+							//will use a third toolbar
 								menulenght = 0;
 								this.useToolbar3 = true;
 								menuArrayIterator3 = i;
@@ -364,14 +384,16 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		}
 	
 		this.tbx.on('render', function() {
-
+			//adding all menus of the first toolbar
 			if(this.menuArray){		
 				for(var i = 0; i < menuArrayIterator2; i++) {
 						this.tbx.add(this.menuArray[i]);
 						this.tbx.addSeparator();
 				}
 			}				
-		    this.tbx.addFill();    
+		    this.tbx.addFill();   
+		    
+		    //all the menus concerning languages, themes, exit,welcome are always added in the first toolbar
 		 	this.tbx.add(this.tbWelcomeText);
 			this.tbx.addSeparator();
 			if(drawSelectTheme){
@@ -387,7 +409,8 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		if(this.useToolbar2){
 		
 			this.tbx2.on('render', function() {
-				if(this.menuArray){				
+				if(this.menuArray){		
+					//adding all menus of the second toolbar		
 					for(var i = menuArrayIterator2; i < menuArrayIterator3; i++) {
 							this.tbx2.addButton(this.menuArray[i]);
 							this.tbx2.addSeparator();
@@ -399,7 +422,8 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		
 		if(this.useToolbar3){      		 
 			this.tbx3.on('render', function() {	
-				if(this.menuArray){					
+				if(this.menuArray){		
+					//adding all menus of the third toolbar			
 					for(var i = menuArrayIterator3; i < this.menuArray.length; i++) {
 							this.tbx3.addButton(this.menuArray[i]);
 							this.tbx3.addSeparator();
@@ -412,7 +436,6 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	  },	
 	 
 	  info: function(){
-		
 		var win_info_1;
 		if(!win_info_1){
 			win_info_1= new Ext.Window({
@@ -431,6 +454,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 	  },
 	
 	  logout: function() {
+	  		//logouturl taken by the homepage
 			window.location =logoutUrl;
 	   }
 });

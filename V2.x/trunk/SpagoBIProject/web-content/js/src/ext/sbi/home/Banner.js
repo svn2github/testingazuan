@@ -329,7 +329,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		 		});			 		
 		
 		 this.tbWelcomeText = new Ext.Toolbar.TextItem({
-					text: LN('sbi.home.Welcome')+'<b>'+ Sbi.user.uniqueId+'<b>'
+					text: LN('sbi.home.Welcome')+'<b>'+ Sbi.user.uniqueId+'<b>&nbsp;&nbsp;&nbsp;'
 				});
 	 },
 	 	

@@ -18,6 +18,9 @@
 			<USER userID="biuser_a" password="biuser" month="04" name="SpagoBI User" email="spagobi@eng.it" ente="ENTE_1" family="Food"/>
             <USER userID="biuser_b" password="biuser" month="05" name="SpagoBI User" email="spagobi@eng.it" ente="ENTE_2" family="Drink"/>
 			<USER userID="chiron" password="chiron" />
+			<USER userID="prod_drink" password="prod_drink" family="Drink" />
+			<USER userID="prod_food" password="prod_food" family="Food" />
+			<USER userID="prod_nc" password="prod_nc" family="Non-Consumable" />
 		</USERS>
 		<ROLES>
 			<ROLE roleName="/spagobi/dev" description="/spagobi/dev" />
@@ -40,6 +43,9 @@
 			<BEHAVIOUR userID="bidev" roleName="/spagobi/dev" />
 			<BEHAVIOUR userID="bimodel" roleName="/spagobi/modeladmin" />
 			<BEHAVIOUR userID="chiron" roleName="/spagobi/admin" />
+			<BEHAVIOUR userID="prod_drink" roleName="/spagobi/user" />
+			<BEHAVIOUR userID="prod_food" roleName="/spagobi/user" />
+			<BEHAVIOUR userID="prod_nc" roleName="/spagobi/user" />
 		</BEHAVIOURS>
 	</RELATIONS>
 </AUTHORIZATIONS>

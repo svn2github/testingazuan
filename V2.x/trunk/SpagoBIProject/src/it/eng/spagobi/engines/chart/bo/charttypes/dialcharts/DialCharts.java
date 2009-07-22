@@ -55,9 +55,25 @@ public class DialCharts extends ChartImpl {
 	StyleLabel labelsValueStyle;
 	Map confParameters;
 	SourceBean sbRow;
+
+	// *************************** PARAMETERS ***************************
+	/** Style for tick labels*/
+	public static final String STYLE_TICK_LABELS = "STYLE_TICK_LABELS";
+	/** Style for value labels*/
+	public static final String STYLE_VALUE_LABEL = "STYLE_VALUE_LABEL";
+	/** Upper bound*/
+	public static final String UPPER = "upper";
+	/** Lower Bound*/
+	public static final String LOWER = "lower";
+	/** multichart*/
+	public static final String MULTICHART = "multichart";
+	/** orientation multichart: can be horiontal o vertical*/
+	public static final String ORIENTATION_MULTICHART = "orientation_multichart";
+	/** if to draw the legend*/
+	public static final String LEGEND = "legend";
+
+
 	
-
-
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#createChart(java.lang.String, org.jfree.data.general.Dataset)
 	 */
@@ -77,15 +93,15 @@ public class DialCharts extends ChartImpl {
 		try{
 			// check if there is some info about additional labels style
 
-			SourceBean styleTickLabelsSB = (SourceBean)content.getAttribute("STYLE_TICK_LABELS");
+			SourceBean styleTickLabelsSB = (SourceBean)content.getAttribute(STYLE_TICK_LABELS);
 			if(styleTickLabelsSB!=null){
 
-				String fontS = (String)content.getAttribute("STYLE_TICK_LABELS.font");
+				String fontS = (String)styleTickLabelsSB.getAttribute(FONT_STYLE);
 				if(fontS==null){
 					fontS = defaultLabelsStyle.getFontName();
 				}
-				String sizeS = (String)content.getAttribute("STYLE_TICK_LABELS.size");
-				String colorS = (String)content.getAttribute("STYLE_TICK_LABELS.color");
+				String sizeS = (String)styleTickLabelsSB.getAttribute(SIZE_STYLE);
+				String colorS = (String)styleTickLabelsSB.getAttribute(COLOR_STYLE);
 
 				try{
 					Color color= Color.BLACK;
@@ -112,15 +128,15 @@ public class DialCharts extends ChartImpl {
 				labelsTickStyle = defaultLabelsStyle;
 			}
 			
-			SourceBean styleValueLabelsSB = (SourceBean)content.getAttribute("STYLE_VALUE_LABEL");
+			SourceBean styleValueLabelsSB = (SourceBean)content.getAttribute(STYLE_VALUE_LABEL);
 			if(styleValueLabelsSB!=null){
 
-				String fontS = (String)content.getAttribute("STYLE_VALUE_LABEL.font");
+				String fontS = (String)styleValueLabelsSB.getAttribute(FONT_STYLE);
 				if(fontS==null){
 					fontS = defaultLabelsStyle.getFontName();
 				}
-				String sizeS = (String)content.getAttribute("STYLE_VALUE_LABEL.size");
-				String colorS = (String)content.getAttribute("STYLE_VALUE_LABEL.color");
+				String sizeS = (String)styleValueLabelsSB.getAttribute(SIZE_STYLE);
+				String colorS = (String)styleValueLabelsSB.getAttribute(COLOR_STYLE);
 				
 				try{
 					Color color= Color.BLACK;
@@ -160,16 +176,16 @@ public class DialCharts extends ChartImpl {
 					String valueParam = (String)param.getAttribute("value");
 					confParameters.put(nameParam, valueParam);
 				}	
-				if(confParameters.get("lower")!=null){	
-					String lower=(String)confParameters.get("lower");
+				if(confParameters.get(LOWER)!=null){	
+					String lower=(String)confParameters.get(LOWER);
 					setLower(Double.valueOf(lower).doubleValue());
 				}
 				else {
 					logger.error("lower bound not defined");
 					throw new Exception("lower bound not defined");
 				}
-				if(confParameters.get("upper")!=null){	
-					String upper=(String)confParameters.get("upper");
+				if(confParameters.get(UPPER)!=null){	
+					String upper=(String)confParameters.get(UPPER);
 					setUpper(Double.valueOf(upper).doubleValue());
 				}
 				else {
@@ -178,15 +194,15 @@ public class DialCharts extends ChartImpl {
 				}
 				
 				multichart=false;
-				if(confParameters.get("multichart")!=null && !(((String)confParameters.get("multichart")).equalsIgnoreCase("") )){	
-					String multiple=(String)confParameters.get("multichart");
+				if(confParameters.get("multichart")!=null && !(((String)confParameters.get(MULTICHART)).equalsIgnoreCase("") )){	
+					String multiple=(String)confParameters.get(MULTICHART);
 					if(multiple.equalsIgnoreCase("true"))
 						setMultichart(true);
 				}
 				
 				orientationMultichart="horizontal";
-				if(confParameters.get("orientation_multichart")!=null && !(((String)confParameters.get("orientation_multichart")).equalsIgnoreCase("") )){	
-					String ori=(String)confParameters.get("orientation_multichart");
+				if(confParameters.get(ORIENTATION_MULTICHART)!=null && !(((String)confParameters.get(ORIENTATION_MULTICHART)).equalsIgnoreCase("") )){	
+					String ori=(String)confParameters.get(ORIENTATION_MULTICHART);
 					if(ori.equalsIgnoreCase("horizontal") || ori.equalsIgnoreCase("vertical") )
 						setOrientationMultichart(ori);
 				}
@@ -210,11 +226,11 @@ public class DialCharts extends ChartImpl {
 				}
 
 				sbRow=(SourceBean)sourceBeanResult.getAttribute("ROW");
-				String lower=(String)sbRow.getAttribute("lower");
-				String upper=(String)sbRow.getAttribute("upper");
-				String legend=(String)sbRow.getAttribute("legend");
-				String multichart=(String)sbRow.getAttribute("multichart");
-				String orientation=(String)sbRow.getAttribute("orientation_multichart");
+				String lower=(String)sbRow.getAttribute(LOWER);
+				String upper=(String)sbRow.getAttribute(UPPER);
+				String legend=(String)sbRow.getAttribute(LEGEND);
+				String multichart=(String)sbRow.getAttribute(MULTICHART);
+				String orientation=(String)sbRow.getAttribute(ORIENTATION_MULTICHART);
 
 				if(lower==null || upper==null){
 					logger.error("error in reading configuration lov");

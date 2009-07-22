@@ -1,6 +1,7 @@
 package it.eng.spagobi.engines.chart.bo.charttypes.targetcharts;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.TargetThreshold;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.BasicStroke;
@@ -203,8 +204,11 @@ public class SparkLine extends TargetCharts{
 		int num = 3;
 		for (Iterator iterator = thresholds.keySet().iterator(); iterator.hasNext();) {
 			Double thres = (Double) iterator.next();
-			Color color=thresholdColors.get(thres.toString());
-			if(color==null)color=Color.WHITE;
+			TargetThreshold targThres=thresholds.get(thres);
+			Color color=Color.WHITE;
+			if(targThres!=null && targThres.getColor()!=null){
+				color=targThres.getColor();
+			}
 			addMarker(num++, thres.doubleValue(), color, 0.5f, plot);
 		}
 
@@ -448,13 +452,15 @@ public class SparkLine extends TargetCharts{
 		// ******* Get the color *************
 		Color colorToReturn=null;
 		if(thresholdGiveColor==null){ //bottom case
-			colorToReturn=thresholdColors.get("bottom");
-			if(colorToReturn==null){
-				colorToReturn=Color.RED;
-			}
+			if(bottomThreshold!=null && bottomThreshold.getColor()!=null)
+				colorToReturn=bottomThreshold.getColor();
+			else 
+				colorToReturn=Color.GREEN;
+
 		}
 		else{
-			colorToReturn=thresholdColors.get(thresholdGiveColor.toString());	
+			TargetThreshold currThreshold=thresholds.get(thresholdGiveColor);
+			colorToReturn=currThreshold.getColor();
 			if(colorToReturn==null){
 				colorToReturn=Color.BLACK;
 			}

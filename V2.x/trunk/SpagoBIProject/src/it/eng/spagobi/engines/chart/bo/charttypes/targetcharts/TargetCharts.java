@@ -6,6 +6,7 @@ import it.eng.spagobi.engines.chart.bo.ChartImpl;
 import it.eng.spagobi.engines.chart.utils.DataSetAccessFunctions;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.chart.utils.StyleLabel;
+import it.eng.spagobi.engines.chart.bo.charttypes.utils.TargetThreshold;
 
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -15,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.LegendItem;
@@ -31,9 +33,11 @@ public class TargetCharts extends ChartImpl {
 	public double LOSE = -0.5;
 
 	public boolean useTargets=true;
-	public HashMap<Double, String> thresholds=null;
+	//public HashMap<Double, String> thresholds=new HashMap<Double, String>();
+	public HashMap<Double, TargetThreshold> thresholds=new HashMap<Double, TargetThreshold>();
+	public TargetThreshold bottomThreshold=null;
 	// if it is a target the color is referring to what exceed , if its a baseline to what is under
-	public HashMap<String, Color> thresholdColors=null;
+	//public HashMap<String, Color> thresholdColors=new HashMap<String, Color>();
 	public Double mainThreshold=null;
 	Map confParameters=null;
 
@@ -49,7 +53,7 @@ public class TargetCharts extends ChartImpl {
 
 	Double wlt_mode=new Double(0.0);
 
-	
+
 	// ************ PARAMETERS TO SET IN TEMPLATE *************
 	/* 	<TARGETS>
   			<TARGET name='target1' value='3.0' color='#00FF00' main='false'/>
@@ -59,7 +63,7 @@ public class TargetCharts extends ChartImpl {
 	public static final String TARGETS = "TARGETS";
 	public static final String BASELINES = "BASELINES";
 
-	
+
 	/** the maximum bar width, which is specified as a percentage of the available space for all bars 
 	 * For Example setting to 0.05 will ensure that the bars never exceed five per cent of the lenght of the axis
 	 * */
@@ -73,7 +77,7 @@ public class TargetCharts extends ChartImpl {
 	public static final String YEAR_DS = "year";
 	public static final String MONTH_DS = "month";
 	public static final String VALUE_DS = "value";
-	
+
 
 	public DatasetMap calculateValue() throws Exception {
 		logger.debug("IN");
@@ -169,69 +173,121 @@ public class TargetCharts extends ChartImpl {
 			confParameters.put(nameParam, valueParam);
 		}
 
-		/* <TARGETS>
-		 *  <TARGET name='first' value='5' main='true'>
-		 *  </TARGETS>
-		 */
-
-		List thresAttrsList=null;	
-		SourceBean thresholdsSB = (SourceBean)content.getAttribute(TARGETS);
-		if(thresholdsSB==null){
-			thresholdsSB = (SourceBean)content.getAttribute(BASELINES);
-			if(thresholdsSB==null)return;
+		//check if targets or baselines are defined as parameters, if not then search for them in template
+		boolean targets=false;
+		boolean baselines=false;
+		boolean parameterThresholdDefined=false;
+		Vector<String> targetNames=new Vector<String>();
+		Vector<String> baselinesNames=new Vector<String>();
+		for (Iterator iterator = parametersObject.keySet().iterator(); iterator.hasNext();) {
+			String name = (String) iterator.next();
+			Object value=parametersObject.get(name);
+			if(name.startsWith("target") && !value.toString().equalsIgnoreCase("[]")){
+				targets=true;
+				targetNames.add(name);
+			}
+			if(name.startsWith("baseline") && !value.toString().equalsIgnoreCase("[]")){ // if targets are used baseline will be ignored
+				baselines=true;
+				baselinesNames.add(name);
+			}
+		}
+		if(targets==true){   // Case Target Found on parameters
+			useTargets=true;			
+			for (Iterator iterator = targetNames.iterator(); iterator.hasNext();) {
+				String targetName = (String) iterator.next();
+				String valueToParse=(String)parametersObject.get(targetName);
+				TargetThreshold targThres=new TargetThreshold(valueToParse);
+				if(targThres.getName().equalsIgnoreCase("bottom"))bottomThreshold=targThres;
+				else{
+					thresholds.put(targThres.getValue(), targThres);
+					if(targThres.isMain()==true)mainThreshold=targThres.getValue();
+				}
+			}
+			if(bottomThreshold==null) bottomThreshold=new TargetThreshold("bottom",null, Color.BLACK,false);		
+		}
+		else if(baselines==true){ // Case Baselines found on parameters
 			useTargets=false;
-		}
+			for (Iterator iterator = baselinesNames.iterator(); iterator.hasNext();) {
+				String targetName = (String) iterator.next();
+				String valueToParse=(String)parametersObject.get(targetName);
+				TargetThreshold targThres=new TargetThreshold(valueToParse);
+				if(targThres.getName().equalsIgnoreCase("bottom"))bottomThreshold=targThres;
+				else{
+					thresholds.put(targThres.getValue(), targThres);
+					if(targThres.isMain()==true)mainThreshold=targThres.getValue();
+				}
+			}
+		if(bottomThreshold==null) bottomThreshold=new TargetThreshold("bottom",null, Color.BLACK,false);
 
-		if(thresholdsSB!=null){
-			thresAttrsList = thresholdsSB.getContainedSourceBeanAttributes();
 		}
-		if(thresAttrsList==null || thresAttrsList.isEmpty()){ 
-			logger.error("targets or baselines not defined; error ");
-			return;
-		}
-		else{
-			thresholds=new HashMap<Double, String>();
-			thresholdColors=new HashMap<String, Color>();			
-			Iterator targetsAttrsIter = thresAttrsList.iterator();
-			while(targetsAttrsIter.hasNext()) {
-				SourceBeanAttribute paramSBA = (SourceBeanAttribute)targetsAttrsIter.next();
-				SourceBean param = (SourceBean)paramSBA.getValue();
-				String name= (String)param.getAttribute("name");
-				String value= (String)param.getAttribute("value");
-				String main= (String)param.getAttribute("main");
-				String colorS = (String)param.getAttribute("color");
-				if(value!=null){
-					if(!value.equalsIgnoreCase("top") && !value.equalsIgnoreCase("bottom")){
-						Double valueD=null;
-						try{
-							valueD=Double.valueOf(value);
-						}
-						catch (NumberFormatException e) {
-							logger.error("Error in converting threshold double", e);
-							return;
-						}
-						thresholds.put(valueD, name);
-						if(main!=null && main.equalsIgnoreCase("true")){
-							mainThreshold=valueD;
-						}
-					}
+		else {                       // Case targets or baselines defined in template
+			/* <TARGETS>
+			 *  <TARGET name='first' value='5' main='true'>
+			 *  </TARGETS>
+			 */
+			List thresAttrsList=null;	
+			SourceBean thresholdsSB = (SourceBean)content.getAttribute(TARGETS);
+			if(thresholdsSB==null){
+				thresholdsSB = (SourceBean)content.getAttribute(BASELINES);
+				if(thresholdsSB==null)return;
+				useTargets=false;
+			}
+
+			if(thresholdsSB!=null){
+				thresAttrsList = thresholdsSB.getContainedSourceBeanAttributes();
+			}
+			if(thresAttrsList==null || thresAttrsList.isEmpty()){ 
+				logger.error("targets or baselines not defined; error ");
+				return;
+			}
+			else{
+				thresholds=new HashMap<Double, TargetThreshold>();
+				//thresholdColors=new HashMap<String, Color>();			
+				Iterator targetsAttrsIter = thresAttrsList.iterator();
+				while(targetsAttrsIter.hasNext()) {
+					SourceBeanAttribute paramSBA = (SourceBeanAttribute)targetsAttrsIter.next();
+					SourceBean param = (SourceBean)paramSBA.getValue();
+					String name= (String)param.getAttribute("name");
+					String value= (String)param.getAttribute("value");
+					String main= (String)param.getAttribute("main");
+					String colorS = (String)param.getAttribute("color");
+					Color colorC=Color.BLACK;
+					boolean isMain=(main!=null && main.equalsIgnoreCase("true")) ? true : false;
 					if(colorS!=null){
 						try{
-							Color colorC=Color.decode(colorS);
-							thresholdColors.put(value, colorC); // can be a double or top or bottom
+							colorC=Color.decode(colorS);
 						}
 						catch (Exception e) {
 							logger.error("error in color defined, put BLACK as default"); 
-							thresholdColors.put(value.toString(), Color.BLACK);
+						}
+					}
 
+					if(value!=null){
+						if(value.equalsIgnoreCase("bottom")){
+							bottomThreshold=new TargetThreshold("bottom",null, colorC,false);
+						}
+						else if(!value.equalsIgnoreCase("bottom")){
+							Double valueD=null;
+							try{
+								valueD=Double.valueOf(value);
+							}
+							catch (NumberFormatException e) {
+								logger.error("Error in converting threshold double", e);
+								return;
+							}
+
+							thresholds.put(valueD, new TargetThreshold(name,valueD,colorC,isMain));
+							if(isMain==true){
+								mainThreshold=valueD;
+							}
 						}
 
 
 					}
-
 				}
-			}
+			} // Template definition
 		}
+
 
 
 		if(confParameters.get(WLT_MODE)!=null){		
@@ -301,9 +357,14 @@ public class TargetCharts extends ChartImpl {
 
 		for (Iterator iterator = thresholds.keySet().iterator(); iterator.hasNext();) {
 			Double thres = (Double) iterator.next();
-			String thresholdName= thresholds.get(thres)!=null ? thresholds.get(thres) : thres.toString();
-			Color color=thresholdColors.get(thres.toString());
-			if(color==null)color=Color.WHITE;
+			TargetThreshold thresTarg=thresholds.get(thres);
+			String thresholdName= thresTarg!=null ? thresTarg.getName() : "";
+
+			Color color=Color.BLACK;
+
+			if(thresTarg.getColor()!=null){
+				color=thresTarg.getColor();		
+			}
 			// could add bottom only if used
 			LegendItem item=new LegendItem(thresholdName, thresholdName, thresholdName,thresholdName, new Rectangle(10,10),color);
 			collection.add(item);

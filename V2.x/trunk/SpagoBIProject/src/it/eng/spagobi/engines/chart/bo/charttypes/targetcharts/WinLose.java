@@ -187,7 +187,7 @@ public class WinLose extends TargetCharts{
 		rangeAxis.setRange(new Range(-(barHeight+0.3 ), (barHeight+0.3))); 
 
 		// customize renderer 
-		MyBarRendererThresholdPaint renderer=new MyBarRendererThresholdPaint(useTargets, thresholds, thresholdColors, dataset, timeSeries, nullValues, color);
+		MyBarRendererThresholdPaint renderer=new MyBarRendererThresholdPaint(useTargets, thresholds, dataset, timeSeries, nullValues,bottomThreshold, color );
 
 		if(wlt_mode.doubleValue() == 0) {
 			renderer.setBaseItemLabelsVisible(Boolean.FALSE, true);

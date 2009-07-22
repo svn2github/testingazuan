@@ -29,26 +29,25 @@ import org.jfree.data.time.TimeSeriesDataItem;
 public class MyBarRendererThresholdPaint extends BarRenderer {
 
 	boolean useTargets=true;
-	HashMap<Double, String> thresholds=null;
-	HashMap<String, Color> thresholdColors=null;
+	HashMap<Double, TargetThreshold> thresholds=null;
 	DefaultCategoryDataset dataset=null;
 	TimeSeries timeSeries=null;
 	Vector<String> nullValues=null;
 	Color background=Color.WHITE;
+	TargetThreshold bottomThreshold=null;
 	private static transient Logger logger=Logger.getLogger(MyBarRendererThresholdPaint.class);
 
 
 	public MyBarRendererThresholdPaint(boolean useTargets,
-			HashMap<Double, String> thresholds,
-			HashMap<String, Color> thresholdColors,
+			HashMap<Double, TargetThreshold> thresholds,
 			DefaultCategoryDataset dataset, 
 			TimeSeries timeSeries,
 			Vector<String> nullValues,
+			TargetThreshold bottomThreshold,
 			Color background) {
 		super();
 		this.useTargets = useTargets;
 		this.thresholds = thresholds;
-		this.thresholdColors = thresholdColors;
 		this.dataset = dataset;
 		this.timeSeries = timeSeries;
 		this.nullValues=nullValues;
@@ -117,13 +116,16 @@ public class MyBarRendererThresholdPaint extends BarRenderer {
 		// ******* Get the color *************
 		Color colorToReturn=null;
 		if(thresholdGiveColor==null){ //bottom case
-			colorToReturn=thresholdColors.get("bottom");
+			if(bottomThreshold!=null && bottomThreshold.getColor()!=null){
+				colorToReturn=bottomThreshold.getColor();				
+			}
 			if(colorToReturn==null){
-				colorToReturn=Color.RED;
+				colorToReturn=Color.BLACK;
 			}
 		}
 		else{
-			colorToReturn=thresholdColors.get(thresholdGiveColor.toString());	
+			if(thresholds.get(thresholdGiveColor)!=null && thresholds.get(thresholdGiveColor).getColor()!=null)
+			colorToReturn=thresholds.get(thresholdGiveColor).getColor();
 			if(colorToReturn==null){
 				colorToReturn=Color.BLACK;
 			}

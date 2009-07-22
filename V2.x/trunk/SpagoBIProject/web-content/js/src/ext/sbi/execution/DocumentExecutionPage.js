@@ -645,6 +645,14 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			}
 
 		}, this);
+		
+		this.miframe.on('resize', function() {
+			if (Ext.isIE) {
+				var aFrame = this.miframe.getFrame();
+				aFrame.dom.style.height = this.miframe.getSize().height - 6;
+			}
+
+		}, this);
 	}
 	
 	, initSouthPanel: function( config ) {

@@ -63,6 +63,21 @@ public class ThemesManager {
 		return toRet;	
 	}
 
+	public static String getCurrentThemeName(String  currTheme){
+		ConfigSingleton spagoconfig = ConfigSingleton.getInstance(); 
+		String toRet=null;
+		it.eng.spago.base.SourceBean themeSB = (SourceBean)spagoconfig.getFilteredSourceBeanAttribute("SPAGOBI.THEMES.THEME", 
+				"name", currTheme);	
+		if(themeSB!=null){
+			toRet = (String)themeSB.getAttribute("view_name");
+		}
+		else 
+		{
+			toRet="default";
+		}
+		return toRet;	
+	}
+	
 
 	public static String getCurrentTheme(RequestContainer reqCont){
 		SessionContainer sessCont = reqCont.getSessionContainer();

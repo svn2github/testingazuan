@@ -241,25 +241,26 @@ else
       centerFrame = new  Ext.ux.ManagedIframePanel({
       					region: 'center'
       					,xtype: 'panel'
-						,frameConfig:{autoCreate:{id: 'iframeDoc', name:'iframeDoc'},
+						,frameConfig:{
+						        autoCreate:{id: 'iframeDoc', name:'iframeDoc'},
 	        					disableMessaging :false}
 		                ,defaultSrc : firstUrl
 		                ,border		: false 
-		                ,height : 500
 						,collapseMode: 'mini'
-						,scrolling  : 'auto'	
+						,loadMask  : true
+						,scrolling  : 'auto'
+						, fitToParent: true  	
 						, disableMessaging :false
 						,listeners: {'message:collapse2':  {
 				        		fn: function(srcFrame, message) {	
-				        								        		
-					        		/*if (Ext.isIE) {
+				        				        		
+					        		if (Ext.isIE) {
 										centerFrame.on('resize', 
 	  										function() {
-	  											//alert('ciao');
-	  											centerFrame.getFrame().dom.style.height = centerFrame.getSize().height - 6;
+	  											centerFrame.getFrame().dom.style.height = centerFrame.getSize().height;
 	  											},
 	  										this);
-									}*/
+									}
 				        				        		
 					        		if(northFrame.collapsed && southFrame.collapsed){
 					        			northFrame.expand(false);
@@ -269,11 +270,18 @@ else
 					        			southFrame.collapse(false);
 					        			
 					        		}
-
 						        }
 	        					, scope: this}}
 						
 	  });
+	  
+	  if (Ext.isIE) {
+						centerFrame.on('resize', 
+	  					function() {
+	  					centerFrame.getFrame().dom.style.height = centerFrame.getSize().height;
+	  					},
+	  				this);
+	}
 
       southFrame = new Sbi.home.Footer({});
       var viewport = new Ext.Viewport({

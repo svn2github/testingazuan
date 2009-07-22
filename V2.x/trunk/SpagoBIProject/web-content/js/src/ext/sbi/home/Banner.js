@@ -313,7 +313,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		//languages button initialization       
 		this.tbLanguagesButton = new Ext.Toolbar.Button({
 			 		text: '',
-			 		iconCls:'icon-it',
+			 		iconCls:'icon-'+Sbi.config.curr_language,
 			 		cls: 'x-btn-text-icon bmenu',
 			 		menu: this.languages,
 			 		scope: this

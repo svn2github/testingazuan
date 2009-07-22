@@ -95,7 +95,15 @@ public class DocumentsJSONSerializer implements Serializer {
 			result.put(ENCRYPT, obj.getEncrypt());
 			result.put(VISIBLE, obj.getVisible());
 			result.put(PROFILEDVISIBILITY, obj.getProfiledVisibility());
-			result.put(ENGINE, obj.getEngine().getDescription());
+			// engine property MUST be not null because it is iproperly used for the moment
+			// by the extjs template class to discriminate between folders and document
+			if(obj.getEngine().getDescription() != null) {
+				result.put(ENGINE, obj.getEngine().getDescription());
+			} else if(obj.getEngine().getName() != null) {
+				result.put(ENGINE, obj.getEngine().getName());
+			} else {
+				result.put(ENGINE, obj.getEngine().getId());
+			}
 			result.put(DATASOURCE, obj.getDataSourceId());
 			result.put(DATASET, obj.getDataSetId());
 			result.put(UUID, obj.getUuid());

@@ -48,8 +48,15 @@ Ext.ns("Sbi.qbe");
 
 Sbi.qbe.DataMartStructurePanel = function(config) {
 	var c = Ext.apply({
-		// set default values here
+		title: 'Datamart 1'
+		, rootNodeText: 'Datamart'
+		, ddGroup: 'gridDDGroup'
+		, type: 'datamartstructuretree'
+		, preloadTree: true
+		, baseParams: {}
 	}, config || {});
+	
+	Ext.apply(this, c);
 	
 	this.services = new Array();
 	var params = {};
@@ -58,12 +65,12 @@ Sbi.qbe.DataMartStructurePanel = function(config) {
 		, baseParams: params
 	});
 	
-	this.addEvents('click');
+	this.addEvents('load', 'click');
 	
 	this.initTree(c);
 	
 	Ext.apply(c, {
-		title:'Datamart 1'
+		title: this.title
 		, layout: 'fit'
 		, border:false
 		, autoScroll: true
@@ -83,51 +90,55 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 	services: null
 	, treeLoader: null
 	, rootNode: null
+	, preloadTree: true
 	, tree: null
-	, type: 'datamartstructuretree'
+	, type: null
 	
 	// public methods
 	
-	, load: function() {
-		this.treeLoader.load(this.rootNode, function(){});
+	, load: function(params) {
+		if(params) {
+			this.treeLoader.baseParams = params;
+		}
+		this.tree.setRootNode(this.createRootNode());
 	}
 
-	/*
-	, selectNode: function(node) {
-		this.fireEvent('click', this, node);
-		if(node.attributes.field && node.attributes.type == 'field') {
-		    var record = new QueryBuilderPanel.selectGridPanel.Record({
-		    	 id: node.id,
-		         entity: node.attributes.entity , 
-		         field: node.attributes.field  
-		      });
-		      
-		    QueryBuilderPanel.selectGridPanel.addRow(record); 
-		 }
+	, expandAll: function() {
+		this.tree.expandAll();
 	}
-	*/
+	
+	, collapseAll: function() {
+		this.tree.collapseAll();
+	}
 	
 	// private methods
 	
-	, initTree: function(config) {
-		
-		this.treeLoader = new Ext.tree.TreeLoader({
-	        baseParams:{DATAMART_NAME: 'xxx'},
-	        dataUrl: this.services['loadTree']
-	    });
-		
-		this.rootNode = new Ext.tree.AsyncTreeNode({
-	        text		: 'Datamart',
+	, createRootNode: function() {		
+		var node = new Ext.tree.AsyncTreeNode({
+	        text		: this.rootNodeText,
 	        iconCls		: 'database',
 	        expanded	: true,
 	        draggable	: false
 	    });
+		return node;
+	}
+	
+	, initTree: function(config) {
+		
+		this.treeLoader = new Ext.tree.TreeLoader({
+	        baseParams: this.baseParams || {},
+	        dataUrl: this.services['loadTree']
+	    });
+		this.treeLoader.on('load', this.oonLoad, this);
+		this.treeLoader.on('loadexception', this.oonLoadException, this);
+		
+		this.rootNode = this.createRootNode();
 		
 		this.tree = new Ext.tree.TreePanel({
 	        collapsible: true,
 	        
 	        enableDD: true,
-	        ddGroup: 'gridDDGroup',
+	        ddGroup: this.ddGroup,
 	        dropConfig: {
 				isValidDropPoint : function(n, pt, dd, e, data){
 					return false;
@@ -144,11 +155,24 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 	        trackMouseOver 	 : true,
 	        useArrows 		 : true,
 	        loader           : this.treeLoader,
+	        preloadTree		 : this.preloadTree,
 	        root 			 : this.rootNode
 	    });	
 		
 		this.tree.type = this.type;
 		
 		this.tree.on('click', function(node) {this.fireEvent('click', this, node);}, this);
+	}
+	
+	
+	
+	, oonLoad: function(treeLoader, node, response) {
+		this.rootNode = this.tree.root;
+		this.fireEvent('load', this, treeLoader, node, response);
+	}
+	
+	, oonLoadException: function(treeLoader, node, response) {
+		alert('error: ' + treeLoader.baseParams.toSource());
+		Sbi.exception.ExceptionHandler.handleFailure(response, treeLoader.baseParams || {});
 	}
 });

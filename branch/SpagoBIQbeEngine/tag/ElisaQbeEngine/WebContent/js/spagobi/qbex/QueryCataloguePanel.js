@@ -175,10 +175,23 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		return query;
 	}
 	
+	, getParentQuery: function(queryId) {
+		var query = null;
+		var queryNode = this.tree.getNodeById(queryId);
+		if(queryNode) {
+			var parentQueryNode = queryNode.parentNode;
+			if(parentQueryNode && parentQueryNode.id !== this.rootNode.id) {
+				query = this.getQueryById(parentQueryNode.id);
+			}
+		}
+		return query;
+	}
+	
 	, getSelectedQuery: function() {
 		var queryItem = this.getSelectedQueryItem();
 		return queryItem? queryItem.query: undefined;
 	}
+	
 	
 	, deleteQueries: function(queries) {
 		this.deleteQueryItems(queries);

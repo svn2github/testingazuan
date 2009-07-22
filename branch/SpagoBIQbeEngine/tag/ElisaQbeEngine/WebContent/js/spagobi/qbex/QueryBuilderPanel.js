@@ -111,6 +111,11 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
    
     
     , setQuery: function(query) {
+		var parentQuery = this.queryCataloguePanel.getParentQuery(query.id);
+		//this.filterGridPanel.enableValueWizard = (parentQuery !== null);
+		this.filterGridPanel.query = query;
+		this.filterGridPanel.parentQuery = parentQuery;
+		
 		this.selectGridPanel.setFields(query.fields);
 		this.selectGridPanel.distinctCheckBox.setValue(query.distinct);
 		this.filterGridPanel.setFilters(query.filters);
@@ -167,31 +172,6 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		var query = this.queryCataloguePanel.getSelectedQuery();
 		this.setQuery(query);
 	}
-	
-	/**
-	 * synchronize queries contained into the client side representation of the catalogue with
-	 * its server side representation
-	 
-	, commitQueryCatalogue: function(handleSuccessFn) {
-		handleSuccessFn = handleSuccessFn || function(response, options) {
-			alert('Catalogue synchronized succefully with the server');
-		};
-		
-		this.applyChanges();
-		
-		var params = {
-				catalogue: Ext.util.JSON.encode(this.queryCataloguePanel.getQueries())
-		};
-		
-		Ext.Ajax.request({
-		    url: this.services['setCatalogue'],
-		    success: handleSuccessFn,
-   			scope: this,
-		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
-		    params: params
-		});                      	
-	}
-	*/
 
 	  // public methods
     , executeQuery: function() {
@@ -362,34 +342,38 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        //collapseMode: 'mini',
 	        collapseFirst: false,
 	        
-	        tools:[{
+	        tools:[{	// todo: marge pin and unpin button in one single togglebutton
 	          id:'pin',
 	          qtip:'Expand all',
 	          // hidden:true,
 	          handler: function(event, toolEl, panel){
-	            // refresh logic
+	        	this.dataMartStructurePanel.expandAll();
 	          }
+	          , scope: this
 	        }, {
 	          id:'unpin',
 	          qtip:'Collapse all',
 	          // hidden:true,
 	          handler: function(event, toolEl, panel){
-	            // refresh logic
+	        	this.dataMartStructurePanel.collapseAll();
 	          }
+	          , scope: this
 	        }, {
 	          id:'gear',
 	          qtip:'Flat view',
 	          // hidden:true,
 	          handler: function(event, toolEl, panel){
-	            // refresh logic
+	        	Sbi.qbe.commons.unimplementedFunction();
 	          }
+	          , scope: this
 	        }, {
 	          id:'plus',
 	          qtip:'Add calulated field',
 	          // hidden:true,
 	          handler: function(event, toolEl, panel){
-	            // refresh logic
+	        	Sbi.qbe.commons.unimplementedFunction();
 	          }
+	          , scope: this
 	        }],
 	        
 	        items:[this.qbeStructurePanel]
@@ -483,14 +467,6 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	          id:'gear',
 	          qtip:'Execute query',
 	          handler: this.checkFreeFilters,
-			          /*
-			          function(event, toolEl, panel){
-			        	this.commitQueryCatalogue(function() {
-			        		alert('catalogue committed');
-		    				this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQuery());
-		       			});
-			          },
-			          */
 	          scope: this
 	        },{
 	          id:'search',
@@ -577,13 +553,12 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			// save changes applied to old query before to move to the new selected one
 			this.applyChanges(); 
 			this.setQuery( newquery );
-			
-			/*
-			if(oldnode) {
-				oldnode.attributes.query = this.getQuery(true);
-			}
-			this.setQuery( newnode.attributes.query );
-			*/
+			// required in order to be sure to have all query stored at the server side while
+			// joining a subquery to a parent query selected entity
+			this.queryCataloguePanel.commit(function() {
+				// do nothings after commit for the moment
+				// todo: implement hidingMask in order to block edinting while commiting
+			}, this);
 		}, this);
 	}
 		

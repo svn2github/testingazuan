@@ -45,6 +45,9 @@
 	<qbe:url type="resource" var="src" ref="../js/spagobi/locale/en.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/commons/commons.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/DataStorePanel.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
@@ -58,6 +61,9 @@
 	<script type="text/javascript" src='${src}'/></script>
 	
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/SelectGridPanel.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/OperandChooserWindow.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/FilterGridDropTarget.js"/>

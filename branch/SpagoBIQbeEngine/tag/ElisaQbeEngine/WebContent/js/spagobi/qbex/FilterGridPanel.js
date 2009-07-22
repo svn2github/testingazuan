@@ -97,6 +97,10 @@ Sbi.qbe.FilterGridPanel = function(config) {
 Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
     
 	services: null
+	
+	, parentQuery: null
+	, query: null
+	
 	, store: null
 	, Record: null
 	, sm: null
@@ -471,9 +475,34 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    var nameColumnEditor = new Ext.form.TextField({
 	             allowBlank: false							               
 	        });
-		    var valueColumnEditor = new Ext.form.TextField({
+		    
+		    
+		    var parentFieldEditor = new Ext.form.TriggerField({
+	             allowBlank: true
+	             , triggerClass: 'x-form-search-trigger'
+
+		    });
+		    parentFieldEditor.onTriggerClick = this.onOpenValueEditor.createDelegate(this);
+		   
+		    var textEditor = new Ext.form.TextField({
 	             allowBlank: true
 		    });
+		    		    
+		    
+		    this.valueColumnEditors = {
+		    		parentFieldEditor: new Ext.grid.GridEditor(parentFieldEditor)		    		
+		    		, textEditor: new Ext.grid.GridEditor(textEditor)
+		    }
+		    
+		    /*
+		    this.valueColumnEditor = new Ext.form.TriggerField({
+	             allowBlank: true
+	             , triggerClass: 'x-form-search-trigger'
+
+		    });
+		    */
+		    
+		    
 		    
 		    this.cm = new Ext.grid.ColumnModel([
 		        new Ext.grid.RowNumberer(),
@@ -502,7 +531,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		           dataIndex: 'odesc',
 		           //width: 75,
 		           
-		           editor: valueColumnEditor               		           
+		           editor: textEditor            		           
 		        },
 		        isFreeCheckColumn,
 		        {
@@ -613,8 +642,56 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	      }      
 	    }, this);
 	    
+	    this.grid.on('beforeedit', this.onBeforeEdit, this);
+	    
 	    this.grid.store.on('remove', function(e){
 	    	this.setWizardExpression(false);
 	    }, this);
+	}
+	
+	, onBeforeEdit: function(e) {
+		/*
+		 	grid - This grid
+			record - The record being edited
+			field - The field name being edited
+			value - The value for the field being edited.
+			row - The grid row index
+			column - The grid column index
+			cancel - Set this to true to cancel the edit or return false from your handler.
+		 */
+		this.activeEditingContext = Ext.apply({}, e);
+		
+		var col = this.activeEditingContext.column;
+		var row = this.activeEditingContext.row;
+		if(col == 5) {
+			var editor;
+			if(this.parentQuery !== null) {
+				editor = this.valueColumnEditors.parentFieldEditor;
+			} else {
+				editor = this.valueColumnEditors.textEditor;
+			}
+				
+			this.grid.colModel.setEditor(col,editor);
+		}			
+	}
+	
+	, onOpenValueEditor: function(e) {
+		if(this.operandChooserWindow === undefined) {
+			this.operandChooserWindow = new Sbi.qbe.OperandChooserWindow();
+			this.operandChooserWindow.on('applyselection', function(win, node) {
+				var r = this.activeEditingContext.record;
+				r.data['otype'] = 'Parent Field Content';
+				r.data['odesc'] = this.parentQuery.id  + ' / ' +  node.attributes.entity + ' / ' + node.attributes.field;
+				r.data['operand'] = this.parentQuery.id + ' ' + node.id;
+				this.store.fireEvent('datachanged', this.store) ;
+				this.activeEditingContext = null;
+			}, this);
+			this.operandChooserWindow.on('applyselection', function(win, node) {
+				this.activeEditingContext = null;
+			}, this);
+		}
+		this.grid.stopEditing();
+		this.operandChooserWindow.setParentQuery(this.parentQuery);
+		this.operandChooserWindow.show();
 	}
 });

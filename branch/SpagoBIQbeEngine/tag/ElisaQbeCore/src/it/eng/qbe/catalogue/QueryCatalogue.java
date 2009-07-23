@@ -55,7 +55,7 @@ public class QueryCatalogue {
 	 * to setup properly the counter in order to not override preloaded queries.
 	 */
 	public String getNextValidId() {
-		return "q_" + (++counter);
+		return "q" + (++counter);
 	}
 	
 	public Set getIds() {
@@ -127,6 +127,26 @@ public class QueryCatalogue {
 			queries.remove(subquery.getId());
 			removeSubqueries(subquery);
 		}
+	}
+
+	public Set getAllQueries(boolean includeSubqueries) {
+		Set results = null;
+		
+		if(includeSubqueries) {
+			results = queries.entrySet();
+		} else {
+			results = new HashSet();
+			Iterator it = queries.keySet().iterator();
+			while(it.hasNext()) {
+				String queryId = (String)it.next();
+				Query query = (Query)queries.get(queryId);
+				if(!query.hasParentQuery()) {
+					results.add(query);
+				}
+			}
+		}
+		
+		return results;
 	}
 	
 }

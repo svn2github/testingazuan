@@ -63,6 +63,16 @@ Sbi.qbe.QueryCataloguePanel = function(config) {
 		, baseParams: params
 	});
 	
+	this.services['saveCatalogue'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SAVE_CATALOGUE_ACTION'
+		, baseParams: params
+	});
+	
+	this.services['validateCatalogue'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'VALIDATE_CATALOGUE_ACTION'
+		, baseParams: params
+	});
+	
 	this.services['addQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'ADD_QUERY_ACTION'
 		, baseParams: params
@@ -121,6 +131,43 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		    params: params
 		});   
 	}
+	
+	, validate: function(callback, scope) {
+		var params = {};
+		Ext.Ajax.request({
+		    url: this.services['validateCatalogue'],
+		    success: callback,
+		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
+		    scope: scope,
+		    params: params
+		});   
+	}
+	
+	, save: function(meta, callback, scope) {
+		var params = Ext.apply({}, meta);
+		alert('catalogue: ' + params.toSource());
+		var doSave = function() {
+			alert('doSave: ' + params.toSource());
+			Ext.Ajax.request({
+			    url: this.services['saveCatalogue'],
+			    success: callback,
+			    failure: Sbi.exception.ExceptionHandler.handleFailure,	
+			    scope: scope,
+			    params: params
+			});  
+		};
+		
+		this.commit(function() {
+			if(Sbi.config.queryValidation.isEnabled) {
+				this.validate(doSave, this);
+			} else {
+				doSave();
+			}
+			
+		}, this);		
+	}
+	
+	
      
 	, addQuery: function(query) {
 		var queryItem;

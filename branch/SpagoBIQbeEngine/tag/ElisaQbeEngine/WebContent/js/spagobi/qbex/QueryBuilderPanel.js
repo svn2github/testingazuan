@@ -173,51 +173,61 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		this.setQuery(query);
 	}
 
-	  // public methods
+	// public methods
     , executeQuery: function() {
     	this.applyChanges();
     	this.queryCataloguePanel.commit(function() {
 			this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQuery());
 		}, this);
-    	
-    	/*
-    	this.commitQueryCatalogue(function() {
-			this.fireEvent('execute', this, this.queryCataloguePanel.getSelectedQueryItem().query);
-		});
-		*/
-    }
-	
-    , checkFreeFilters: function() {
-    	var freeFilters = this.filterGridPanel.getFreeFilters();
-	    if (freeFilters.length > 0) {
-	    	var freeConditionsWindow = new Sbi.qbe.FreeConditionsWindow({
-	    		freeFilters: freeFilters
-	    	});
-	    	freeConditionsWindow.on('apply', function (formState) {
-	    		this.filterGridPanel.setFreeFiltersLastValues(formState);
-	    		this.executeQuery();
-	    	}, this);
-	    	freeConditionsWindow.on('savedefaults', function (formState) {
-	    		this.filterGridPanel.setFreeFiltersDefaultValues(formState);
-	    	}, this);
-	    	freeConditionsWindow.show();
-	    } else {
-	    	this.executeQuery();
-	    }
     }
     
-  
-
+    , showSaveQueryWindow: function(){
+	    if(this.saveQueryWindow === null) {
+	    	this.saveQueryWindow = new Sbi.widgets.SaveWindow({
+	    		title: 'Save query ...'
+	    	});
+	    	this.saveQueryWindow.on('save', function(win, formState){this.saveQuery(formState);}, this);
+		}
+	    this.saveQueryWindow.show();
+	}
+    
+    , saveQuery: function(meta) {
+    	alert('saveQuery: ' + meta.toSource());
+    	this.applyChanges();
+    	this.queryCataloguePanel.save(meta, function() {
+    		// for old gui
+    		try {
+				parent.loadSubObject(window.name, content.text.substr(5));
+			} catch (ex) {}
+			// for new gui
+			try {
+				sendMessage("Subobject saved!!!!","subobjectsaved");
+			} catch (ex) {}
+			
+			Ext.Msg.show({
+				   title:'Query saved',
+				   msg: 'Query saved succesfully',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.INFO
+			});
+		}, this);
+    }
+    
+    /*
 	, saveQuery: function(meta) {
 		var qName = meta.name;
 		var qDescription = meta.description;
 		var qScope = meta.scope;
+		
+		
+		
 		var queryStr = '{';
     	queryStr += 'fields : ' + this.selectGridPanel.getRowsAsJSONParams() + ',';
     	queryStr += 'filters : ' + this.filterGridPanel.getRowsAsJSONParams() + ',';
     	queryStr += 'distinct : ' + this.selectGridPanel.distinctCheckBox.getValue() + ',';
     	queryStr += 'expression: ' +  this.filterGridPanel.getFiltersExpressionAsJSON();
     	queryStr += '}';
+    	
 		
 	    var url = this.services['saveQuery'];
 	    url += '&queryName=' + meta.name;
@@ -244,6 +254,31 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			failure: Sbi.exception.ExceptionHandler.handleFailure					
 		});   
 	}
+	*/
+	
+    
+    
+	, checkFreeFilters: function() {
+    	var freeFilters = this.filterGridPanel.getFreeFilters();
+	    if (freeFilters.length > 0) {
+	    	var freeConditionsWindow = new Sbi.qbe.FreeConditionsWindow({
+	    		freeFilters: freeFilters
+	    	});
+	    	freeConditionsWindow.on('apply', function (formState) {
+	    		this.filterGridPanel.setFreeFiltersLastValues(formState);
+	    		this.executeQuery();
+	    	}, this);
+	    	freeConditionsWindow.on('savedefaults', function (formState) {
+	    		this.filterGridPanel.setFreeFiltersDefaultValues(formState);
+	    	}, this);
+	    	freeConditionsWindow.show();
+	    } else {
+	    	this.executeQuery();
+	    }
+    }
+	
+	
+	
 	
 	, saveView: function(meta) {
 		var url = this.services['saveView'];			
@@ -270,15 +305,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		}, this);
 	}
 
-	, showSaveQueryWindow: function(){
-	    if(this.saveQueryWindow === null) {
-	    	this.saveQueryWindow = new Sbi.widgets.SaveWindow({
-	    		title: 'Save query ...'
-	    	});
-	    	this.saveQueryWindow.on('save', function(win, formState){this.saveQuery(formState);}, this);
-		}
-	    this.saveQueryWindow.show();
-	}
+	
 	
 	, showSaveViewWindow: function() {
 		if(this.saveViewWindow === null) {
@@ -409,7 +436,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
           qtip:'Save query as subobject',
           handler: function(event, toolEl, panel){
         	// if validation is enabled, validate query before saving
-        	if (Sbi.config.queryValidation.isEnabled) {
+        	if (false /* Sbi.config.queryValidation.isEnabled */) {
         		// synchronize query first
             	Ext.Ajax.request({
 				    url: this.services['synchronizeQuery'],

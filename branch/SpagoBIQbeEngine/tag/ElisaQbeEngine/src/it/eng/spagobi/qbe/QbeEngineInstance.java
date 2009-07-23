@@ -81,6 +81,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		functionalities = template.getFunctionalities();
 		standaloneMode = false;		
 		queryCatalogue = new QueryCatalogue();
+		queryCatalogue.addQuery(new Query());
 		
 				
 		it.eng.spagobi.tools.datasource.bo.IDataSource dataSrc = (it.eng.spagobi.tools.datasource.bo.IDataSource)env.get( EngineConstants.ENV_DATASOURCE );
@@ -106,7 +107,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		datamartModel.setName(datamartModel.getDataSource().getDatamartName());
 		datamartModel.setDescription(datamartModel.getDataSource().getDatamartName());
 	
-		setActiveQuery(new Query());
+		
 		
 		validate();
 		
@@ -120,7 +121,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	public IEngineAnalysisState getAnalysisState() {
 		QbeEngineAnalysisState analysisState = null;
 		analysisState= new QbeEngineAnalysisState( datamartModel );
-		analysisState.setQuery( getActiveQuery() );
+		analysisState.setCatalogue( this.getQueryCatalogue() );
 		return analysisState;
 	}
 	
@@ -128,7 +129,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		QbeEngineAnalysisState qbeEngineAnalysisState = null;
 		
 		qbeEngineAnalysisState = (QbeEngineAnalysisState)analysisState;
-		setActiveQuery( qbeEngineAnalysisState.getQuery() );
+		setQueryCatalogue( qbeEngineAnalysisState.getCatalogue() );
 	}
 	
 
@@ -183,12 +184,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 	}
 
 	public void setActiveQuery(Query query) {
-		if(query.getId() == null) {
-			getQueryCatalogue().addQuery(query);
-		}
-
 		setActiveQueryId(query.getId());
-		
 		this.statment = getDatamartModel().createStatement( query );
 	}
 	

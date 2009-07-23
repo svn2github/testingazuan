@@ -47,10 +47,10 @@ Sbi.qbe.commons = function(){
 		unimplementedFunction: function(fnName) {
 			var msg = fnName? 
 				'Sorry, the functionality [' + fnName + '] has not been implemented yet':
-				'Sorry, this functionality has not yet been implemented yet';
+				'Sorry, this functionality has not been implemented yet';
 				
 			Ext.Msg.show({
-				   title:'Unimplemented function',
+				   title:'Unimplemented functionality',
 				   msg: msg,
 				   buttons: Ext.Msg.OK,
 				   icon: Ext.MessageBox.INFO

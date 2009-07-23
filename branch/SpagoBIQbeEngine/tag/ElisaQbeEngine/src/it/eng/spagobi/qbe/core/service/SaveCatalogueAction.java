@@ -26,36 +26,33 @@ import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
-import it.eng.qbe.query.Query;
-import it.eng.qbe.query.serializer.QuerySerializerFactory;
-import it.eng.qbe.query.serializer.SerializationException;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFAbstractError;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFErrorSeverity;
-import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineAnalysisMetadata;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
-import it.eng.spagobi.utilities.service.JSONSuccess;
+import it.eng.spagobi.utilities.service.JSONAcknowledge;
 
 /**
- * This action is responsible to Persist the current working query represented by
- * the object ISingleDataMartWizardObject in session.
+ * This action is responsible to persist the queries contained into the catalogue
  */
-public class SaveQueryAction extends AbstractQbeEngineAction {
+public class SaveCatalogueAction extends AbstractQbeEngineAction {
+	
+	public static final String SERVICE_NAME = "SAVE_CATALOGUE_ACTION";
+	public String getActionName(){return SERVICE_NAME;}
 	
 	// INPUT PARAMETERS
-	public static final String QUERY_NAME = "queryName";	
-	public static final String QUERY_DESCRIPTION = "queryDescription";
-	public static final String QUERY_SCOPE = "queryScope";
-	public static final String QUERY = "query";
+	public static final String CATALOGUE_NAME = "name";	
+	public static final String CATALOGUE_DESCRIPTION = "description";
+	public static final String CATALOGUE_SCOPE = "scope";
 	
 
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(SaveQueryAction.class);
+    public static transient Logger logger = Logger.getLogger(SaveCatalogueAction.class);
     
 	
 	public void service(SourceBean request, SourceBean response) {
@@ -63,9 +60,7 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 		String queryName = null;		
 		String  queryDescritpion  = null;		
 		String  queryScope  = null;
-		String jsonEncodedQuery = null;
 		EngineAnalysisMetadata analysisMetadata = null;
-		String result = null;
 		
 		logger.debug("IN");
 		
@@ -77,20 +72,12 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			// service implementation
 			validateInput();
 			
-			queryName = getAttributeAsString(QUERY_NAME);		
-			logger.debug(QUERY_NAME + ": " + queryName);
-			queryDescritpion  = getAttributeAsString(QUERY_DESCRIPTION);
-			logger.debug(QUERY_DESCRIPTION + ": " + queryDescritpion);
-			queryScope  = getAttributeAsString(QUERY_SCOPE);
-			logger.debug(QUERY_SCOPE + ": " + queryScope);
-			jsonEncodedQuery  = getAttributeAsString(QUERY);
-			logger.debug(QUERY + ": " + jsonEncodedQuery);
-			
-			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertTrue(!StringUtilities.isEmpty(queryName), "Input parameter [" + QUERY_NAME + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtilities.isEmpty(queryDescritpion), "Input parameter [" + QUERY_DESCRIPTION + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtilities.isEmpty(queryScope), "Input parameter [" + QUERY_SCOPE + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			Assert.assertTrue(!StringUtilities.isEmpty(jsonEncodedQuery), "Input parameter [" + QUERY + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
+			queryName = getAttributeAsString(CATALOGUE_NAME);		
+			logger.debug(CATALOGUE_NAME + ": " + queryName);
+			queryDescritpion  = getAttributeAsString(CATALOGUE_DESCRIPTION);
+			logger.debug(CATALOGUE_DESCRIPTION + ": " + queryDescritpion);
+			queryScope  = getAttributeAsString(CATALOGUE_SCOPE);
+			logger.debug(CATALOGUE_SCOPE + ": " + queryScope);
 			
 			analysisMetadata = getEngineInstance().getAnalysisMetadata();
 			analysisMetadata.setName( queryName );
@@ -101,30 +88,16 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			} else if( EngineAnalysisMetadata.PRIVATE_SCOPE.equalsIgnoreCase( queryScope ) ) {
 				analysisMetadata.setScope( EngineAnalysisMetadata.PRIVATE_SCOPE );
 			} else {
-				Assert.assertUnreachable("Value [" + queryScope + "] is not valid for the input parameter " + QUERY_SCOPE);
+				Assert.assertUnreachable("Value [" + queryScope + "] is not valid for the input parameter " + CATALOGUE_SCOPE);
 			}
 			
-			Query query = null;
-			try {
-				query = QuerySerializerFactory.getDeserializer("application/json").deserialize(jsonEncodedQuery, getEngineInstance().getDatamartModel());
-				//query = QueryEncoder.decode(queryRecords, queryFilters, queryFilterExp, getDatamartModel());
-			} catch (SerializationException e) {
-				String message = "Impossible to decode query string comming from client";
-				throw new SpagoBIEngineServiceException(getActionName(), message, e);
-			}
-			
-			Query queryBkp = getEngineInstance().getActiveQuery();
-			query.setId( queryBkp.getId() );
-			getEngineInstance().setActiveQuery(query);
-			result = saveAnalysisState();
-			getEngineInstance().setActiveQuery(queryBkp);
-			
+			String result = saveAnalysisState();
 			if(!result.trim().toLowerCase().startsWith("ok")) {
 				throw new SpagoBIEngineServiceException(getActionName(), result);
 			}
 			
 			try {
-				writeBackToClient( new JSONSuccess( result ) );
+				writeBackToClient( new JSONAcknowledge() );
 			} catch (IOException e) {
 				String message = "Impossible to write back the responce to the client";
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);

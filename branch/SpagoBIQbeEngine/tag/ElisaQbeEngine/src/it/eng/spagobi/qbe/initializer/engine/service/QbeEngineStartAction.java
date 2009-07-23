@@ -21,9 +21,7 @@
 package it.eng.spagobi.qbe.initializer.engine.service;
 
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 
-import it.eng.qbe.query.serializer.QuerySerializerFactory;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.QbeEngine;
 import it.eng.spagobi.qbe.QbeEngineInstance;
@@ -55,7 +53,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	
     public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
     	QbeEngineInstance qbeEngineInstance = null;
-    	JSONObject queryJSON;
+    	//JSONObject queryJSON;
     	
     	logger.debug("IN");
        
@@ -79,10 +77,10 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 				qbeEngineInstance.setAnalysisState( analysisState );
 			}
 			
-			queryJSON = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(qbeEngineInstance.getActiveQuery(), qbeEngineInstance.getDatamartModel());
+			//queryJSON = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(qbeEngineInstance.getActiveQuery(), qbeEngineInstance.getDatamartModel());
 				
 			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);	
-			setAttribute(QUERY, queryJSON.toString());
+			//setAttribute(QUERY, queryJSON.toString());
 			
 		} catch (Throwable e) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), qbeEngineInstance, e);

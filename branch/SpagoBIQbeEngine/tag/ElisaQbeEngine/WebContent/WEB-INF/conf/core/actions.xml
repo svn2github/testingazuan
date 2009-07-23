@@ -23,6 +23,20 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="VALIDATE_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.ValidateCatalogueAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="SAVE_CATALOGUE_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.SaveCatalogueAction"  
+			scope="REQUEST">
+			
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 	<ACTION name="ADD_QUERY_ACTION" 
 			class="it.eng.spagobi.qbe.core.service.AddQueryAction"  
 			scope="REQUEST">
@@ -40,7 +54,7 @@
 	
 	
 	
-	
+	<!-- 
 	
 	<ACTION name="GET_QUERIES_ACTION" 
 			class="it.eng.spagobi.qbe.core.service.GetQueriesAction"  
@@ -60,10 +74,7 @@
 			scope="REQUEST">
 			
 		<CONFIG></CONFIG>
-	</ACTION>
-	
-	
-	
+	</ACTION>	
 	
 	
 	<ACTION name="VALIDATE_QUERY_ACTION" 
@@ -72,6 +83,8 @@
 			
 		<CONFIG></CONFIG>
 	</ACTION>
+	
+	-->
 	
 	<ACTION name="EXEC_QUERY_ACTION" 
 			class="it.eng.spagobi.qbe.core.service.ExecuteQueryAction"  

@@ -93,7 +93,7 @@
     
     <script type="text/javascript">  
       <%
-      String query = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("query");
+      //String query = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("query");
       QbeEngineConfig qbeEngineConfig = QbeEngineConfig.getInstance();
       // settings for max records number limit
       Integer resultLimit = qbeEngineConfig.getResultLimit();
@@ -132,8 +132,7 @@
 	    });
 
       	var qbeConfig = {};
-      	qbeConfig.query = <%= query %>;
-      	
+      
         Ext.onReady(function(){
         	Ext.QuickTips.init();              
         	//var qbe = new Sbi.qbe.QueryBuilderPanel() ;//Sbi.qbe.QbePanel(qbeConfig);

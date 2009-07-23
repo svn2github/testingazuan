@@ -723,7 +723,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 										<%} // CLOSE if drawing SELECT UNSELECT BUTTONS
 								applyDrawed=true;
 										%>
-				   <input type="submit" value="Apply" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>"/>
+				   <input type="submit" value="<spagobi:message key = "sbi.chartEngine.apply" />" width="30em" height="20em" style="<%=datasetMap.getFilterStyle()%>"/>
 								<% 
 								   } 
 									%>

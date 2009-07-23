@@ -34,8 +34,8 @@ else if (active != null && active.equalsIgnoreCase("true")) {
 	
 %>
 
-<iframe id='invalidSessionJasper'
-                 name='invalidSessionJasper'
+<iframe id='invalidSession'
+                 name='invalidSession'
                  src='<%=urlLogout %>'
                  height='0'
                  width='0'
@@ -50,25 +50,41 @@ else if (active != null && active.equalsIgnoreCase("true")) {
                  frameborder='0' >
 </iframe>  
 
-<iframe id='invalidSessionJasper'
-                 name='invalidSessionJasper'
+<iframe id='invalidSessionJPivot'
+                 name='invalidSessionJPivot'
                  src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIJPivotEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >
 </iframe>  
 
-<iframe id='invalidSessionJasper'
-                 name='invalidSessionJasper'
+<iframe id='invalidSessionQbe'
+                 name='invalidSessionQbe'
                  src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIQbeEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >
 </iframe>  
 
-<iframe id='invalidSessionJasper'
-                 name='invalidSessionJasper'
+<iframe id='invalidSessionGeo'
+                 name='invalidSessionGeo'
                  src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIGeoEngine/invalidateSession.jsp'
+                 height='0'
+                 width='0'
+                 frameborder='0' >
+</iframe>  
+
+<iframe id='invalidSessionBirt'
+                 name='invalidSessionBirt'
+                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBIBirtReportEngine/invalidateSession.jsp'
+                 height='0'
+                 width='0'
+                 frameborder='0' >
+</iframe>  
+
+<iframe id='invalidSessionTalend'
+                 name='invalidSessionTalend'
+                 src='<%=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext()%>/SpagoBITalendEngine/invalidateSession.jsp'
                  height='0'
                  width='0'
                  frameborder='0' >

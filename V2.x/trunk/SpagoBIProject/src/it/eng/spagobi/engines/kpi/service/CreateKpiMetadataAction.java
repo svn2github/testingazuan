@@ -30,6 +30,8 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 		String kpiBeginDate = (String)serviceRequest.getAttribute("KPI_BEGIN_DATE");
 		String kpiEndDate = (String)serviceRequest.getAttribute("KPI_END_DATE");
 		String kpiTarget = (String)serviceRequest.getAttribute("KPI_TARGET");
+		String kpiValue = (String)serviceRequest.getAttribute("KPI_VALUE");
+		String kpiWeight = (String)serviceRequest.getAttribute("KPI_WEIGHT");
 		String kpiValueDescr = (String)serviceRequest.getAttribute("KPI_VALUE_DESCR");
 		String kpiModelInstanceId = (String)serviceRequest.getAttribute("KPI_MODEL_INST_ID");
 		
@@ -107,6 +109,16 @@ public class CreateKpiMetadataAction extends AbstractHttpAction{
 			serviceResponse.setAttribute("KPI_TARGET", kpiTarget);
 		}else{
 			serviceResponse.setAttribute("KPI_TARGET", "");
+		}
+		if (kpiValue!=null){
+			serviceResponse.setAttribute("KPI_VALUE", kpiValue);
+		}else{
+			serviceResponse.setAttribute("KPI_VALUE", "");
+		}
+		if (kpiWeight!=null){
+			serviceResponse.setAttribute("KPI_WEIGHT", kpiWeight);
+		}else{
+			serviceResponse.setAttribute("KPI_WEIGHT", "");
 		}
 		if (kpiValueDescr!=null){
 			serviceResponse.setAttribute("KPI_VALUE_DESCR", kpiValueDescr);

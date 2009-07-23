@@ -118,6 +118,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected boolean register_par_setted = false;//true if register_values is setted by SpagoBIparameter and so is more important than the template value
 
 	protected boolean show_axis = false;//true if the range axis on the bullet chart has to be shown
+	
+	protected boolean weighted_values = false;//true if values visualized have to be weighted
 
 	protected HashMap confMap;// HashMap with all the config parameters
 
@@ -462,6 +464,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				response.setAttribute("display_weight", display_weight);
 				response.setAttribute("closed_tree", closed_tree);
 				response.setAttribute("show_axis", show_axis);
+				response.setAttribute("weighted_values", weighted_values);
 				if (name != null) {
 					response.setAttribute("title", name);
 					response.setAttribute("styleTitle", styleTitle);
@@ -1584,6 +1587,15 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					show_axis = true;
 			}
 			this.confMap.put("show_axis", show_axis);
+			
+			weighted_values = false;
+			if (dataParameters.get("weighted_values") != null
+					&& !(((String) dataParameters.get("weighted_values")).equalsIgnoreCase(""))) {
+				String fil = (String) dataParameters.get("weighted_values");
+				if (fil.equalsIgnoreCase("true"))
+					weighted_values = true;
+			}
+			this.confMap.put("weighted_values", weighted_values);
 
 		} catch (Exception e) {
 			logger.error("error in reading template parameters");

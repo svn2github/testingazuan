@@ -151,7 +151,6 @@ public class KpiExporter {
 			//JRExporter exporter = ExporterFactory.getExporter(outputType);	
 			// Set the PDF exporter
 			exporter = (JRExporter)Class.forName("net.sf.jasperreports.engine.export.JRPdfExporter").newInstance();
-			String mimeType = "application/pdf";
 
 			if(exporter == null) exporter = new JRPdfExporter(); 	
 

@@ -95,7 +95,7 @@ public class KpiResourceBlock {
 	}	
 	
 	
-	public StringBuffer makeTree(ExecutionInstance instanceO,String userId,HttpServletRequest httpReq, Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight,Boolean show_axis ){
+	public StringBuffer makeTree(ExecutionInstance instanceO,String userId,HttpServletRequest httpReq, Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight,Boolean show_axis, Boolean weighted_values ){
 		logger.debug("IN");
 		StringBuffer _htmlStream = new StringBuffer();	
 		String id = "";
@@ -118,7 +118,7 @@ public class KpiResourceBlock {
 			id = "node1";
 		}
 		
-		addItemForTree(id,instanceO,userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
+		addItemForTree(id,instanceO,userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis,weighted_values);
 		logger.debug("Started Kpi tree with the root");
 
 			_htmlStream.append("</TBODY>\n");
@@ -133,7 +133,7 @@ public class KpiResourceBlock {
 		return _htmlStream;
 	}
 	
-	private StringBuffer addItemForTree(String id,ExecutionInstance instanceO,String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight, Boolean show_axis) {
+	private StringBuffer addItemForTree(String id,ExecutionInstance instanceO,String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight, Boolean show_axis,Boolean weighted_values) {
 		
 		logger.debug("IN");
 		logger.debug("*********************");
@@ -186,6 +186,9 @@ public class KpiResourceBlock {
 				logger.debug("Kpi value :"+lo);
 				weight = kpiVal.getWeight();
 				logger.debug("Kpi weight :"+weight);
+				if(weighted_values){
+					lo =new Float(val*weight);
+				}
 			}	
 		}
 		Color semaphorColor = line.getSemaphorColor();
@@ -241,6 +244,8 @@ public class KpiResourceBlock {
 				execUrlParMap.put("KPI_BEGIN_DATE",kpiVal.getBeginDate() !=null ? kpiVal.getBeginDate().toString():"");
 				execUrlParMap.put("KPI_END_DATE",kpiVal.getEndDate() !=null ? kpiVal.getEndDate().toString():"");
 				execUrlParMap.put("KPI_INST_ID", kpiVal.getKpiInstanceId()!=null ? kpiVal.getKpiInstanceId().toString():"");
+				execUrlParMap.put("KPI_VALUE",kpiVal.getValue()!=null ? kpiVal.getValue():"");
+				execUrlParMap.put("KPI_WEIGHT",kpiVal.getWeight()!=null ? kpiVal.getWeight().toString():"");
 				execUrlParMap.put("KPI_TARGET",kpiVal.getTarget()!=null ? kpiVal.getTarget().toString():"");
 			}		
 			execUrlParMap.put("KPI_MODEL_INST_ID",line.getModelInstanceNodeId()!=null ? line.getModelInstanceNodeId().toString():"");
@@ -492,9 +497,9 @@ public class KpiResourceBlock {
 			   KpiLine l = (KpiLine)childIt.next();
 			   String idTemp = id+"_child"+children.indexOf(l);
 			   if (evenLine){			   
-				   addItemForTree(idTemp,instanceO,userId,recursionLev,false,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
+				   addItemForTree(idTemp,instanceO,userId,recursionLev,false,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis,weighted_values);
 			   }else{
-				   addItemForTree(idTemp,instanceO,userId,recursionLev,true,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis);
+				   addItemForTree(idTemp,instanceO,userId,recursionLev,true,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis,weighted_values);
 			   }  
 		   }
 	   } 

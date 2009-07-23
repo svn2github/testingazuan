@@ -179,6 +179,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		Boolean display_semaphore = (Boolean)sbModuleResponse.getAttribute("display_semaphore");
 		Boolean display_weight = (Boolean)sbModuleResponse.getAttribute("display_weight");
 		Boolean show_axis = (Boolean)sbModuleResponse.getAttribute("show_axis");
+		Boolean weighted_values = (Boolean)sbModuleResponse.getAttribute("weighted_values");
 		List kpiRBlocks =(List)sbModuleResponse.getAttribute("kpiRBlocks");
 		StringBuffer _htmlStream = new StringBuffer();
 		if(!kpiRBlocks.isEmpty()){
@@ -189,7 +190,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				if(block.getR()!=null){
 					resources.add( block.getR());
 				}
-				_htmlStream.append(block.makeTree(instanceO, userId,request,display_bullet_chart, display_alarm, display_semaphore,display_weight,show_axis ));
+				_htmlStream.append(block.makeTree(instanceO, userId,request,display_bullet_chart, display_alarm, display_semaphore,display_weight,show_axis,weighted_values ));
 				
 			}
 			

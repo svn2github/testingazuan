@@ -55,6 +55,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String modelInstName = (String)aServiceResponse.getAttribute("MODEL_INST_NAME");
 	String modelInstanceDescr = (String)aServiceResponse.getAttribute("MODEL_INST_DESCR");
 	String kpiInterpretation = (String)aServiceResponse.getAttribute("KPI_INTERPRETATION");
+	String kpiValue = (String)aServiceResponse.getAttribute("KPI_VALUE");
+	String kpiWeight = (String)aServiceResponse.getAttribute("KPI_WEIGHT");
+	String kpiWeightedValue = "";
+	if (kpiValue!=null && !kpiValue.equals("") && kpiWeight!=null && !kpiWeight.equals("")){
+			Double val = new Double(kpiValue);
+			Double weight =  new Double(kpiWeight);
+			kpiWeightedValue =new Float(val*weight).toString();
+	}
 
 %>
 
@@ -114,7 +122,7 @@ Ext.onReady(function(){
 	<!-- TABLE GENERAL DATA -->		
 	
 	<table style="width:100%;margin-top:1px" >
-		<!-- DOC NAME -->
+		<!-- KPI NAME -->
 		<tr>
 		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiName" />		
 			</td>				
@@ -122,7 +130,7 @@ Ext.onReady(function(){
 			</td>
 		</tr>	
 		
-		<!-- DOC DESCR -->
+		<!-- KPI CODE -->
 		<tr>
 		    <td class="portlet-section-header" width="140" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiCode" />		
 			</td>				
@@ -135,7 +143,7 @@ Ext.onReady(function(){
 </div>		
 <div id="description" class="div_background_no_img" style="padding-top:5px;padding-left:5px;">
 	
-	<!-- TABLE GENERAL DATA -->		
+	<!-- KPI INTERPRETATION -->		
 	
 	<table style="width:100%;margin-top:1px" >
 		<!-- DOC NAME -->
@@ -152,7 +160,7 @@ Ext.onReady(function(){
 	<!-- TABLE GENERAL DATA -->		
 	
 	<table style="width:100%;margin-top:1px" >
-		<!-- DOC NAME -->
+		<!-- MODEL INSTANCE NAME -->
 		<tr>
 		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.modelInstanceName" />		
 			</td>				
@@ -160,7 +168,7 @@ Ext.onReady(function(){
 			</td>
 		</tr>	
 		
-		<!-- DOC DESCR -->
+		<!-- MODEL INSTANCE DESCR -->
 		<tr>
 		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.modelInstanceDescr" />		
 			</td>				
@@ -176,7 +184,7 @@ Ext.onReady(function(){
 <div id="technicalData" class="div_background_no_img" style="padding-top:5px;padding-left:5px;">	
 	<!-- TABLE TECHNICAL DATA -->		
 	<table style="width:100%;margin-top:1px">
-		<!-- DOC ID -->
+		<!-- KPI BEGIN DATE -->
 		<tr>
 		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiBegDate" />		
 			</td>				
@@ -184,7 +192,7 @@ Ext.onReady(function(){
 			</td>
 		</tr>	
 		
-		<!-- DOC LABEL -->
+		<!-- KPI END DATE -->
 		<tr>
 		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiEndDate" />		
 			</td>				
@@ -192,7 +200,32 @@ Ext.onReady(function(){
 			</td>
 		</tr>
 		
-		<!-- DOC TYPE -->
+		<!-- KPI Value -->
+		<tr>
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiValue" />		
+			</td>				
+			<td colspan="2" class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiValue%>
+			</td>
+		</tr>
+		
+		<!-- KPI Weighted Value -->
+		<tr>
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiWeight" />		
+			</td>				
+			<td colspan="2" class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiWeight%>
+			</td>
+		</tr>
+		
+		<!-- KPI Weight -->
+		<tr>
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiWeightedValue" />		
+			</td>				
+			<td colspan="2" class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiWeightedValue%>
+			</td>
+		</tr>
+		
+		
+		<!-- KPI VALUE DESCR -->
 		<tr>
 		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiValueDesc" />		
 			</td>				
@@ -200,7 +233,7 @@ Ext.onReady(function(){
 			</td>
 		</tr>
 		
-		<!-- ENGINE -->
+		<!-- KPI TARGET -->
 		<tr>
 		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiValueTarget" />		
 			</td>				
@@ -231,7 +264,7 @@ Ext.onReady(function(){
 				String type = t.getThresholdType();
 				String label = "Threshold " + type+ " "+ t.getLabel();
 				%>
-		<!-- LANGUAGE -->
+		<!-- THRESHOLDS -->
 		 <tr>
 		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><%=label%>	
 			</td>				

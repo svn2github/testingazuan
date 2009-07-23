@@ -616,6 +616,14 @@ IMG {
 	text-align: center;
 }
 
+.kpi_note_section    {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 10pt;
+	font-weight: normal;
+	color: black;
+	text-align: left;
+}
+
 .toggleKPI{
       padding-left:10px;
       background-image: url(/SpagoBI/themes/sbi_default/img/down16.gif);

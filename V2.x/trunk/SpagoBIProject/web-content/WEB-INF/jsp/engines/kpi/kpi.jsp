@@ -180,6 +180,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		Boolean display_weight = (Boolean)sbModuleResponse.getAttribute("display_weight");
 		Boolean show_axis = (Boolean)sbModuleResponse.getAttribute("show_axis");
 		Boolean weighted_values = (Boolean)sbModuleResponse.getAttribute("weighted_values");
+		
 		List kpiRBlocks =(List)sbModuleResponse.getAttribute("kpiRBlocks");
 		StringBuffer _htmlStream = new StringBuffer();
 		if(!kpiRBlocks.isEmpty()){
@@ -273,7 +274,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			}	
 				%>
 			 <%=resDiv%>
+			
 			<p>
+			 
+			<% if(weighted_values){%>
+				<div class="kpi_note_section">Valori Pesati</div>
+		    <% } %>
 			<br>
 			   <%=_htmlStream%> 
 			<br>

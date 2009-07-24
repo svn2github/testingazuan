@@ -85,7 +85,19 @@ public class MondrianModelFactory {
       testDataSource(cfg.getDataSource());
     }
     sb.append(";Catalog=").append(cfg.getSchemaUrl());
-
+    /* risultato: 'provider=Mondrian;DataSource=java:comp/env/jdbc/foodmart;
+     * 				Catalog="file:D:/Progetti/DEMO_SPAGOBI_20/Resources/Olap/FoodMart_RoleDSP.xml"Drink;
+     * 				DynamicSchemaProcessor=it.eng.spagobi.jpivotaddins.roles.SpagoBIFilterDynamicSchemaProcessor;UseSchemaPool=true;
+     * 				family=Drink'
+     * */
+     /*
+    try {
+    	sb.append(";Catalog=").append(cfg.getSchemaUrl()+profile.getUserAttribute("family"));
+    } catch (EMFInternalError e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    */
     if (cfg.getDynLocale() != null)
       sb.append(";Locale=").append(cfg.getDynLocale());
 
@@ -96,15 +108,16 @@ public class MondrianModelFactory {
     if (cfg.getDataSourceChangeListener() != null) {
         sb.append(";dataSourceChangeListener=").append(cfg.getDataSourceChangeListener());
     }
-//    sb.append(";DynamicSchemaProcessor=it.eng.spagobi.jpivotaddins.roles.SpagoBIFilterDynamicSchemaProcessor");
-//    // cache control: if filtering by user profile attributes with queries inside schema definition, UseSchemaPool must be false
-//    sb.append(";UseSchemaPool=false");
-//    try {
-//		sb.append(";family=" + profile.getUserAttribute("family"));
-//	} catch (EMFInternalError e) {
-//		// TODO Auto-generated catch block
-//		e.printStackTrace();
-//	}
+    sb.append(";DynamicSchemaProcessor=it.eng.spagobi.jpivotaddins.roles.SpagoBIFilterDynamicSchemaProcessor");
+    // cache control: if filtering by user profile attributes with queries inside schema definition, UseSchemaPool must be false
+    //orig: sb.append(";UseSchemaPool=true");
+    sb.append(";UseSchemaPool=true;UseContentChecksum=true"); 
+    try {
+		sb.append(";family=" + profile.getUserAttribute("family"));
+	} catch (EMFInternalError e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
     
     // sb.append(";Role=California manager");
     return sb.toString();

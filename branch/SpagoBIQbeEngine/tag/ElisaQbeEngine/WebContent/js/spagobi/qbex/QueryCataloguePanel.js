@@ -394,136 +394,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     	}
 	}
 		
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-    , addQuery: function() {   	
-    	
-    	Ext.Ajax.request({
-		   	url: this.services['addQuery'],
-		   	success: function(response, options) {
-    			if(response !== undefined && response.responseText !== undefined) {
-					var content = Ext.util.JSON.decode( response.responseText );
-					var node = new Ext.tree.TreeNode(content);
-					node.attributes = content.attributes;
-					this.rootNode.appendChild( node );
-					this.tree.getSelectionModel().select(node);
-					
-					var te = this.treeEditor;
-					var edit = function(){
-	                    te.editNode = node;
-	                    te.startEdit(node.ui.textNode);
-	                };
-					setTimeout(edit, 10);
-				} else {
-			      		Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-			    }     					
-   			},
-   			failure: Sbi.exception.ExceptionHandler.handleFailure,
-   			scope: this
-		});	  
-		
-    	
-    	this.addQueryItem();
-    }
-    */
-	/*
-    , insertQuery: function() {   	
-    	
-    	Ext.Ajax.request({
-		   	url: this.services['addQuery'],
-		   	success: function(response, options) {
-    			if(response !== undefined && response.responseText !== undefined) {
-					var content = Ext.util.JSON.decode( response.responseText );
-					var node = new Ext.tree.TreeNode(content);
-					node.attributes = content.attributes;
-					var selectedNode = this.tree.getSelectionModel().getSelectedNode();
-					selectedNode.leaf = false;					
-					if(selectedNode) {
-						selectedNode.appendChild( node );
-						selectedNode.expand();
-					}
-					else this.rootNode.appendChild( node );
-					
-					node.select();					
-				} else {
-			      		Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-			    }     					
-   			},
-   			failure: Sbi.exception.ExceptionHandler.handleFailure,
-   			scope: this
-		});
-		  
-    	this.insertQueryNode(this.tree.getSelectionModel().getSelectedNode() || this.rootNode);
-    }
-    
-    	 
-    
-    , getQueries: function() {
-    	var items = [];
-    	if( this.rootNode.childNodes && this.rootNode.childNodes.length > 0 ) {
-			for(var i = 0; i < this.rootNode.childNodes.length; i++) {
-				items.push(this.rootNode.childNodes[i].attributes);
-			}
-		}
-    	
-    	return items;
-    }
-    
- 
-    
-    , synchronizeSelectedQuery: function(query) {
-    	var selectedNode;    	
-    	selectedNode = this.tree.getSelectionModel().getSelectedNode();
-    	if(selectedNode) selectedNode.attributes.query = query;
-    }
-    */
-    
-    /*
-    , deleteQueries: function(queries) {
-    	var p;
-    	if(queries) {
-    		if( !(queries instanceof Array) ) {
-    			queries = [queries];
-    		}
-    		
-    		for(var i = 0, p = []; i < queries.length; i++) {
-    			var query = queries[i];
-    			if(typeof query === 'string') {
-    				p.push( query );
-    			} else if(typeof query === 'object') {
-    				p.push( query.id );
-    			} else {
-    				alert('Invalid type [' + (typeof query) + '] for object query in function [deleteQueries]');
-    			}
-    		}
-    		
-    		Ext.Ajax.request({
-    		   	url: this.services['deleteQueries'],
-    		   	params: {queries: Ext.util.JSON.encode(p)},
-    		
-    		   	success: function(response, options) {
-    		   		var q = Ext.util.JSON.decode( options.params.queries );
-    		   		for(var i = 0; i < q.length; i++) {
-    		   			var node = this.tree.getNodeById(q[i]);
-    		   			node.remove();
-    		   			//this.rootNode.removeChild(node);
-    		   		}
-       			},
-       			failure: Sbi.exception.ExceptionHandler.handleFailure,
-       			scope: this
-    		});	
-    	}
-    }
-	*/
-	
+
 	// private methods
 	
 	, initTree: function(config) {
@@ -545,7 +416,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	        }
 	        
 	        var resultNode;
-	        if(attr.leaf) {
+	        if(true /*attr.leaf*/) {
 	        	resultNode = new Ext.tree.TreeNode(attr);
 	        	resultNode.attributes = attr.attributes;
 	        } else {
@@ -670,6 +541,8 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	
 	, onSelect: function(sm, newnode, oldnode) {
 		var allowSelection = true;
+		
+		alert('onSelect: ' + newnode.attributes.query.id);
 		
 		if(newnode.id !== this.rootNode.id) {
 			var oldquery = oldnode?  oldnode.attributes.query: undefined;

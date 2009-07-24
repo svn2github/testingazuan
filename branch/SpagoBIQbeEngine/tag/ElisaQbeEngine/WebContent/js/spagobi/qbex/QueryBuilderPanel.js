@@ -111,6 +111,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
    
     
     , setQuery: function(query) {
+		alert('setQuery: ' + query.id);
 		var parentQuery = this.queryCataloguePanel.getParentQuery(query.id);
 		//this.filterGridPanel.enableValueWizard = (parentQuery !== null);
 		this.filterGridPanel.query = query;

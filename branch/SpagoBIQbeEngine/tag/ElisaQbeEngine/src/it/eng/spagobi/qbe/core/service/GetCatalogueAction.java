@@ -82,19 +82,15 @@ public class GetCatalogueAction extends AbstractQbeEngineAction {
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			
 			result = new JSONArray();
-			it = getEngineInstance().getQueryCatalogue().getIds().iterator();
+			it = getEngineInstance().getQueryCatalogue().getAllQueries(false).iterator();
 			while(it.hasNext()) {
-				id = (String)it.next();
-				query = getEngineInstance().getQueryCatalogue().getQuery(id);
-				//meta = getEngineInstance().getQueryCatalogue().getQueryMeta(id);
+				query = (Query)it.next();
 				
 				try {					
 					queryJSON = serializeQuery(query);
-					//metaJSON = serializeMeta(meta);
-					//nodeJSON = createNode(metaJSON, queryJSON);
-					nodeJSON = createNode(/*metaJSON,*/ queryJSON);
+					nodeJSON = createNode(queryJSON);
 				} catch (Throwable e) {
-					throw new SpagoBIEngineServiceException(getActionName(), "An error occurred while serializig query wiyh id equals to [" + id +"]", e);
+					throw new SpagoBIEngineServiceException(getActionName(), "An error occurred while serializig query wiyh id equals to [" + query.getId() +"]", e);
 				}
 				
 				result.put(nodeJSON);
@@ -130,22 +126,36 @@ public class GetCatalogueAction extends AbstractQbeEngineAction {
 		return metaJSON;
 	}
 	
-	private JSONObject createNode(/*JSONObject meta, */JSONObject query) throws JSONException {
+	private JSONObject createNode(JSONObject query) throws JSONException {
 		JSONObject nodeJSON;
 		JSONObject nodeAttributes;
+		JSONArray subqueries;
+		JSONObject childNodeJSON;
+		JSONArray childNodesJSON;
 		
 		nodeJSON = new JSONObject();
 		nodeJSON.put("id", query.getString("id"));
 		nodeJSON.put("text", query.getString("name"));
-		nodeJSON.put("leaf", true);	
 		
 		nodeAttributes = new JSONObject();
 		nodeAttributes.put("iconCls", "icon-query");
-		//nodeAttributes.put("meta", meta);
 		nodeAttributes.put("query", query);
 		
 		nodeJSON.put("attributes", nodeAttributes);
 		
+		subqueries = query.getJSONArray("subqueries");
+		if(subqueries.length() > 0) {
+			nodeJSON.put("leaf", false);	
+			childNodesJSON = new JSONArray();
+			for(int i = 0; i < subqueries.length(); i++) {
+				childNodeJSON = createNode( subqueries.getJSONObject(i) );
+				childNodesJSON.put(childNodeJSON);
+			}
+			nodeJSON.put("children", childNodesJSON);
+		} else {
+			nodeJSON.put("leaf", true);	
+		}
+	
 		return nodeJSON;
 	}
 

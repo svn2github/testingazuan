@@ -199,6 +199,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			// put in session the KpiResourceBlock
 			if(kpiRBlocks!=null){
 			session.setAttribute("KPI_BLOCK",kpiRBlocks);
+			session.setAttribute("TITLE",title);
+			session.setAttribute("SUBTITLE",subTitle);
 			}
 			
 			

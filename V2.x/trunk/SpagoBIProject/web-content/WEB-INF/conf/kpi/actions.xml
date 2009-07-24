@@ -8,4 +8,8 @@
     scope="REQUEST">
     <CONFIG></CONFIG>
   </ACTION>  
+  <ACTION name="EXPORT_XML" class="it.eng.spagobi.kpi.service.KpiXmlExporterAction"
+    scope="REQUEST">
+    <CONFIG></CONFIG>
+  </ACTION>  
 </ACTIONS>

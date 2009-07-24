@@ -824,8 +824,7 @@ public class BasicTemplateBuilder  {
 					logger.debug("add resource band for resource "+res.getName());
 					SourceBean textValue1=(SourceBean)bandName.getAttribute("text");
 					textValue1.setCharacters("RESOURCE: "+res.getName());
-					/*bandDetailReport.setAttribute(bandRes);
-					bandDetailReport.setAttribute(bandName);*/
+
 					sourceBeansToAdd.add(bandRes);
 					sourceBeansToAdd.add(bandName);
 					actualHeight+=resourceBandHeight;
@@ -841,15 +840,7 @@ public class BasicTemplateBuilder  {
 				sourceBeansToAdd.add(modelColHeader);
 				sourceBeansToAdd.add(kpiColHeader);
 				sourceBeansToAdd.add(weightColHeader);
-				sourceBeansToAdd.add(kthreshColHeader);
-				
-				/*
-				bandDetailReport.setAttribute(columnHeadBand);
-				bandDetailReport.setAttribute(modelColHeader);
-				bandDetailReport.setAttribute(kpiColHeader);
-				bandDetailReport.setAttribute(weightColHeader);
-				bandDetailReport.setAttribute(kthreshColHeader);*/
-				
+				sourceBeansToAdd.add(kthreshColHeader);			
 				
 				actualHeight+=columnHeaderHeight;
 				
@@ -887,14 +878,6 @@ public class BasicTemplateBuilder  {
 			}
 			actualHeight+=valueHeight;
 
-			/*bandDetailReport.setAttribute(semaphor1);
-			bandDetailReport.setAttribute(textCodeName);
-			bandDetailReport.setAttribute(textValue);
-			bandDetailReport.setAttribute(textWeight);
-			bandDetailReport.setAttribute(image1);
-			bandDetailReport.setAttribute(threshCode);
-			bandDetailReport.setAttribute(threshValue);*/
-			
 			sourceBeansToAdd.add(semaphor1);
 			sourceBeansToAdd.add(textCodeName);
 			sourceBeansToAdd.add(textValue);
@@ -903,10 +886,8 @@ public class BasicTemplateBuilder  {
 			sourceBeansToAdd.add(threshCode);
 			sourceBeansToAdd.add(threshValue);
 			if(evenLevel){
-				//bandDetailReport.setAttribute(evenLine);
 				sourceBeansToAdd.add(evenLine);
 			}else{
-				//bandDetailReport.setAttribute(oddLine);
 				sourceBeansToAdd.add(oddLine);
 			}	
 			//}
@@ -1122,7 +1103,6 @@ public class BasicTemplateBuilder  {
 		logger.debug("IN");
 		List sourceBeansToAdd = new ArrayList();
 			try{//Draws the Threshold Band and Title
-				//if (actualHeight+separatorModelsHeight+columnHeaderHeight+10<maxSubTemplateHeight){
 				actualHeight+=separatorModelsHeight;
 				SourceBean thresholdBand1=new SourceBean(thresholdBand);  
 				SourceBean thresholdTitle1=new SourceBean(thresholdTitle); 
@@ -1130,13 +1110,10 @@ public class BasicTemplateBuilder  {
 				thresholdBand1.setAttribute("reportElement.y",actualHeight.toString());
 				thresholdTitle1.setAttribute("reportElement.y",actualHeight.toString());	
 				
-				/*bandDetailReport.setAttribute(thresholdBand1);
-				bandDetailReport.setAttribute(thresholdTitle1);*/
 				sourceBeansToAdd.add(thresholdBand1);
 				sourceBeansToAdd.add(thresholdTitle1);
 				
 				actualHeight+=columnHeaderHeight;
-				//}
 			}	
 			catch (Exception e) {
 				logger.error("Error in setting the resource band");
@@ -1151,7 +1128,6 @@ public class BasicTemplateBuilder  {
 		List sourceBeansToAdd = new ArrayList();
 		if (t!=null){
 			try {
-			//if (actualHeight+separatorHeight+10<maxSubTemplateHeight){
 			actualHeight+=separatorHeight;	
 			Integer yValue=actualHeight;
 			Integer xValue = thresholdFieldWidth;
@@ -1166,7 +1142,6 @@ public class BasicTemplateBuilder  {
 			SourceBean threshCode2=(SourceBean)thresholdTextCode1.getAttribute("text");
 			threshCode2.setCharacters(codeTh);
 			
-			//bandDetailReport.setAttribute(thresholdTextCode1);
 			sourceBeansToAdd.add(thresholdTextCode1);
 			List semaphoreValue = newThresholdLine(t, bandDetailReport);
 			sourceBeansToAdd.addAll(semaphoreValue);		
@@ -1174,9 +1149,8 @@ public class BasicTemplateBuilder  {
 			//Adds a separator line
 			SourceBean thresholdLineSeparator1=new SourceBean(thresholdLineSeparator); 
 			thresholdLineSeparator1.setAttribute("reportElement.y",new Integer(yValue.intValue()+16).toString());
-			//bandDetailReport.setAttribute(thresholdLineSeparator1);	
 			sourceBeansToAdd.add(thresholdLineSeparator1);
-			//}
+			
 			} catch (SourceBeanException e) {
 				logger.error("SourceBeanException", e);
 				e.printStackTrace();
@@ -1229,8 +1203,6 @@ public class BasicTemplateBuilder  {
 						SourceBean threshValue2=(SourceBean)thresholdTextValue1.getAttribute("text");
 						threshValue2.setCharacters(valueTh);
 						
-						/*bandDetailReport.setAttribute(semaphor1);	
-						bandDetailReport.setAttribute(thresholdTextValue1);	*/
 						sourceBeansToAdd.add(semaphor1);
 						sourceBeansToAdd.add(thresholdTextValue1);
 					}

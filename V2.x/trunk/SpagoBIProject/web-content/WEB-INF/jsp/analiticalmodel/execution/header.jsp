@@ -363,11 +363,14 @@ if (toolbarIsVisible) {
 						 if(domain!=null){
 							 String value_cd=domain.getValueCd();
 							 String urlExporter=null;	
+							 String urlXmlExporter = null;
 	
 				
 								if (obj.getBiObjectTypeCode().equals("KPI")){ 
 									urlExporter=GeneralUtilities.getSpagoBIProfileBaseUrl(userId);
 									urlExporter+="&ACTION_NAME=EXPORT_PDF&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE&"+SpagoBIConstants.OBJECT_ID+"="+obj.getId();
+									urlXmlExporter=GeneralUtilities.getSpagoBIProfileBaseUrl(userId);
+									urlXmlExporter+="&ACTION_NAME=EXPORT_XML&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE&"+SpagoBIConstants.OBJECT_ID+"="+obj.getId();
 								}
 								else if (obj.getBiObjectTypeCode().equals("REPORT")){ 
 									HashMap clonePars=new HashMap();
@@ -423,13 +426,13 @@ if (toolbarIsVisible) {
 									<% 
 								}else if(value_cd!=null && value_cd.equals("XML")){
 									%>
-									<!--  <li>	
-								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+									 <li>	
+								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlXmlExporter%>" target="_blank">
 											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.XmlExport" />'
 												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/xml16.png", currTheme)%>'
-												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
+												alt='<spagobi:message key = "sbi.execution.XmlExport" />' />
 										</a>	    
-									</li>-->
+									</li>
 									<% 
 								}else if(value_cd!=null && value_cd.equals("TXT")){
 									%>

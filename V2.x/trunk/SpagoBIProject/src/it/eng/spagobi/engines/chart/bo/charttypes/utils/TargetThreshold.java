@@ -15,17 +15,19 @@ public class TargetThreshold {
 	java.awt.Color color=null;
 	boolean main=false;	
 	boolean isTarget=false;
+	boolean	visible=true;
 
 	private static transient Logger logger=Logger.getLogger(TargetThreshold.class);
 
 
 
-	public TargetThreshold(String name, Double value, Color color, boolean main) {
+	public TargetThreshold(String name, Double value, Color color, boolean main, boolean visible) {
 		super();
 		this.name = name;
 		this.value = value;
 		this.color = color;
 		this.main = main;
+		this.visible=visible;
 	}
 
 	/**
@@ -35,7 +37,7 @@ public class TargetThreshold {
 	public TargetThreshold(String parameterValue) {
 		logger.debug("IN");
 		String parameterValueNoBrackets=parameterValue.substring(1, parameterValue.length()-1);
-		
+
 		StringTokenizer tokenizer=new StringTokenizer(parameterValueNoBrackets,",");
 		while(tokenizer.hasMoreTokens()){
 			String token=tokenizer.nextToken();
@@ -72,8 +74,17 @@ public class TargetThreshold {
 					isMain=true;
 				}
 				this.main=isMain;
-
 			}
+			// visible can be false and true or 0 and !=0
+			else if(namePar.equalsIgnoreCase("visible")){
+				boolean isVisible=true;
+				if(valuePar.equalsIgnoreCase("false") || valuePar.equalsIgnoreCase("0") || valuePar.equalsIgnoreCase("0.0")){
+					isVisible=false;
+				}
+
+				this.visible=isVisible;
+			}			
+
 		}
 	}
 
@@ -108,6 +119,14 @@ public class TargetThreshold {
 	}
 	public void setTarget(boolean isTarget) {
 		this.isTarget = isTarget;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 

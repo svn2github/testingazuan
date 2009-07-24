@@ -52,6 +52,7 @@ public class MyBarRendererThresholdPaint extends BarRenderer {
 		this.timeSeries = timeSeries;
 		this.nullValues=nullValues;
 		this.background=background;
+		this.bottomThreshold=bottomThreshold;
 	}
 
 

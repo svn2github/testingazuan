@@ -63,32 +63,37 @@ public class SparkLine extends TargetCharts{
 		}
 
 		TimeSeriesCollection dataset = new TimeSeriesCollection(); 
-		int itemCount = timeSeries.getItemCount();		
-		// this is the main time series, to be linked with Line and shape
-		dataset.addSeries(timeSeries);
+		if(datasets!=null && yearsDefined.isEmpty()){
+			logger.warn("no rows found with dataset");
+		}
+		else{
 
-		// Check if defining target and baseline
-		Double mainTarget=null;
-		Double mainBaseline=null;
-		if(useTargets)mainTarget=mainThreshold;
-		else mainBaseline=mainThreshold;
+			int itemCount = timeSeries.getItemCount();		
+			// this is the main time series, to be linked with Line and shape
+			dataset.addSeries(timeSeries);
 
-		// run all the years defined
-		lastIndexMonth = 1;
-		for (Iterator iterator = yearsDefined.iterator(); iterator.hasNext();) {
-			String currentYearS = (String) iterator.next();
-			int currentYear=Integer.valueOf(currentYearS).intValue();
-			// get the last in l
-			for(int i = 1; i < 13; i++) {
-				TimeSeriesDataItem item = timeSeries.getDataItem(new Month(i, currentYear));
-				if(item == null || item.getValue() == null) {
-					//timeSeries.addOrUpdate(new Month(i, currentYear), null);
-				} else {
-					lastIndexMonth = i;
+			// Check if defining target and baseline
+			Double mainTarget=null;
+			Double mainBaseline=null;
+			if(useTargets)mainTarget=mainThreshold;
+			else mainBaseline=mainThreshold;
+
+			// run all the years defined
+			lastIndexMonth = 1;
+			for (Iterator iterator = yearsDefined.iterator(); iterator.hasNext();) {
+				String currentYearS = (String) iterator.next();
+				int currentYear=Integer.valueOf(currentYearS).intValue();
+				// get the last in l
+				for(int i = 1; i < 13; i++) {
+					TimeSeriesDataItem item = timeSeries.getDataItem(new Month(i, currentYear));
+					if(item == null || item.getValue() == null) {
+						//timeSeries.addOrUpdate(new Month(i, currentYear), null);
+					} else {
+						lastIndexMonth = i;
+					}
 				}
 			}
 		}
-
 		datasets.addDataset("1",dataset);
 
 		logger.debug("OUT");
@@ -209,7 +214,9 @@ public class SparkLine extends TargetCharts{
 			if(targThres!=null && targThres.getColor()!=null){
 				color=targThres.getColor();
 			}
-			addMarker(num++, thres.doubleValue(), color, 0.5f, plot);
+			if(targThres.isVisible()){
+				addMarker(num++, thres.doubleValue(), color, 0.5f, plot);
+			}
 		}
 
 
@@ -408,62 +415,69 @@ public class SparkLine extends TargetCharts{
 
 	public Paint getLastPointColor(){
 		logger.debug("IN");
-		final int last = lastIndexMonth;
-		TimeSeriesDataItem item = timeSeries.getDataItem(new Month(last, Integer.valueOf(lastYear).intValue()));			
-		if(item==null || item.getValue()==null){
-			return Color.WHITE;	
-		}
-		Double currentValue=(Double)item.getValue();
-		// get the color of the last element
-		TreeSet<Double> orderedThresholds=new TreeSet<Double>(thresholds.keySet());
-		Double thresholdGiveColor=null;		
-		// if dealing with targets, begin from first target and go to on till the current value is major
-		if(useTargets){
-			boolean stop=false;
-			for (Iterator iterator = orderedThresholds.iterator(); iterator.hasNext() && stop==false;) {
-				Double currentThres = (Double) iterator.next();
-				if(currentValue>=currentThres){
-					thresholdGiveColor=currentThres;
-				}
-				else{
-					stop=true;
-				}
-			}
-			//previous threshold is the right threshold that has been passed, if it is null means that we are in the bottom case
-		}
-		else if(!useTargets){ 
-			// if dealing with baseline, begin from first baseline and go to the last; 
-			// opposite case than targets, it gets the next baseline
-			boolean stop=false;
-			for (Iterator iterator = orderedThresholds.iterator(); iterator.hasNext() && stop==false;) {
-				Double currentThres = (Double) iterator.next();
-				if(currentValue>currentThres){
-				}
-				else{
-					stop=true;
-					thresholdGiveColor=currentThres;
-				}
-			}
-			if(stop==false) { // means that current value was > than last baselines, so we are in the bottom case
-				thresholdGiveColor=null;
-			}
-		}
-
-		// ******* Get the color *************
 		Color colorToReturn=null;
-		if(thresholdGiveColor==null){ //bottom case
-			if(bottomThreshold!=null && bottomThreshold.getColor()!=null)
-				colorToReturn=bottomThreshold.getColor();
-			else 
-				colorToReturn=Color.GREEN;
 
-		}
-		else{
-			TargetThreshold currThreshold=thresholds.get(thresholdGiveColor);
-			colorToReturn=currThreshold.getColor();
-			if(colorToReturn==null){
-				colorToReturn=Color.BLACK;
+		try{
+			final int last = lastIndexMonth;
+			TimeSeriesDataItem item = timeSeries.getDataItem(new Month(last, Integer.valueOf(lastYear).intValue()));			
+			if(item==null || item.getValue()==null){
+				return Color.WHITE;	
 			}
+			Double currentValue=(Double)item.getValue();
+			// get the color of the last element
+			TreeSet<Double> orderedThresholds=new TreeSet<Double>(thresholds.keySet());
+			Double thresholdGiveColor=null;		
+			// if dealing with targets, begin from first target and go to on till the current value is major
+			if(useTargets){
+				boolean stop=false;
+				for (Iterator iterator = orderedThresholds.iterator(); iterator.hasNext() && stop==false;) {
+					Double currentThres = (Double) iterator.next();
+					if(currentValue>=currentThres){
+						thresholdGiveColor=currentThres;
+					}
+					else{
+						stop=true;
+					}
+				}
+				//previous threshold is the right threshold that has been passed, if it is null means that we are in the bottom case
+			}
+			else if(!useTargets){ 
+				// if dealing with baseline, begin from first baseline and go to the last; 
+				// opposite case than targets, it gets the next baseline
+				boolean stop=false;
+				for (Iterator iterator = orderedThresholds.iterator(); iterator.hasNext() && stop==false;) {
+					Double currentThres = (Double) iterator.next();
+					if(currentValue>currentThres){
+					}
+					else{
+						stop=true;
+						thresholdGiveColor=currentThres;
+					}
+				}
+				if(stop==false) { // means that current value was > than last baselines, so we are in the bottom case
+					thresholdGiveColor=null;
+				}
+			}
+
+			// ******* Get the color *************
+			if(thresholdGiveColor==null){ //bottom case
+				if(bottomThreshold!=null && bottomThreshold.getColor()!=null)
+					colorToReturn=bottomThreshold.getColor();
+				else 
+					colorToReturn=Color.GREEN;
+
+			}
+			else{
+				TargetThreshold currThreshold=thresholds.get(thresholdGiveColor);
+				colorToReturn=currThreshold.getColor();
+				if(colorToReturn==null){
+					colorToReturn=Color.BLACK;
+				}
+			}
+		}
+		catch (Exception e) {
+			logger.error("Exception while deifning last ponter color: set default green",e); 
+			return Color.GREEN;
 		}
 		logger.debug("OUT");
 		return colorToReturn;

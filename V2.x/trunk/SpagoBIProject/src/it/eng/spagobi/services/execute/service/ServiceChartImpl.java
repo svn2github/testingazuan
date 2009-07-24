@@ -145,9 +145,8 @@ public class ServiceChartImpl {
 			} catch (EMFUserError e1) {
 				logger.error("Error in retrieving parameters", e1);
 				return "".getBytes();			}
-
+			parametersMap=new HashMap();
 			if(parametersList!=null && !parametersList.isEmpty()){
-				parametersMap=new HashMap();
 				for (Iterator iterator = parametersList.iterator(); iterator.hasNext();) {
 					BIObjectParameter par= (BIObjectParameter) iterator.next();
 					String url=par.getParameterUrlName();
@@ -157,10 +156,18 @@ public class ServiceChartImpl {
 					if(value!=null){
 						parametersMap.put(url, value);
 					}
-
 				}	
-
 			}
+			
+			// if there are other parameters (like targets or baseline) that do not belong to the BiObject pass those anyway, extend this behaviour if necessary
+			for (Iterator iterator = parameters.keySet().iterator(); iterator.hasNext();) {
+				String namePar = (String) iterator.next();
+				if(namePar.startsWith("target") || namePar.startsWith("baseline")){
+					Object value=parameters.get(namePar);
+					parametersMap.put(namePar, value);
+				}
+			}
+			
 
 			logger.debug("Creating the chart");
 

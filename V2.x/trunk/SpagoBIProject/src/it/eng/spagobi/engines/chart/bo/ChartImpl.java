@@ -431,7 +431,7 @@ public class ChartImpl implements IChart {
 			SourceBean sbSerieLabels = (SourceBean)content.getAttribute(SERIES_LABELS);
 			// back compatibility
 			if(sbSerieLabels==null){
-				sbSerieLabels = (SourceBean)sbSerieLabels.getAttribute("CONF.SERIES_LABELS");
+				sbSerieLabels = (SourceBean)content.getAttribute("CONF.SERIES_LABELS");
 			}
 			if(sbSerieLabels!=null){
 				seriesLabelsMap=new LinkedHashMap();
@@ -470,7 +470,8 @@ public class ChartImpl implements IChart {
 			
 		}
 		catch (Exception e) {
-			logger.error("error in reading data source parameters");
+			logger.error(e.getCause()+" "+e.getStackTrace());
+			logger.error("many error in reading data source parameters",e);
 		}
 
 

@@ -98,6 +98,7 @@ public class TargetCharts extends ChartImpl {
 		List listAtts=sbRows.getAttributeAsList("ROW");
 		try {
 			boolean firstTurn=true;
+			
 			for (Iterator iterator = listAtts.iterator(); iterator.hasNext();) {
 
 				SourceBean category = (SourceBean) iterator.next();
@@ -146,7 +147,13 @@ public class TargetCharts extends ChartImpl {
 			return null;
 		}
 
+		if(yearsDefined.isEmpty()){
+			logger.warn("dataset returned no rows");
+			return new DatasetMap();
+		}
+		
 		// Set the first and the last periods
+
 		TimeSeriesDataItem item1=timeSeries.getDataItem(0);
 		firstMonth=(Month)item1.getPeriod();
 		TimeSeriesDataItem item2=timeSeries.getDataItem(timeSeries.getItemCount()-1);
@@ -174,6 +181,7 @@ public class TargetCharts extends ChartImpl {
 		}
 
 		//check if targets or baselines are defined as parameters, if not then search for them in template
+		//**************************** PARAMETERES TARGET OR BASELINES DEFINITION **********************
 		boolean targets=false;
 		boolean baselines=false;
 		boolean parameterThresholdDefined=false;
@@ -191,6 +199,7 @@ public class TargetCharts extends ChartImpl {
 				baselinesNames.add(name);
 			}
 		}
+
 		if(targets==true){   // Case Target Found on parameters
 			useTargets=true;			
 			for (Iterator iterator = targetNames.iterator(); iterator.hasNext();) {
@@ -199,11 +208,13 @@ public class TargetCharts extends ChartImpl {
 				TargetThreshold targThres=new TargetThreshold(valueToParse);
 				if(targThres.getName().equalsIgnoreCase("bottom"))bottomThreshold=targThres;
 				else{
-					thresholds.put(targThres.getValue(), targThres);
-					if(targThres.isMain()==true)mainThreshold=targThres.getValue();
+					if(targThres.isVisible()){
+						thresholds.put(targThres.getValue(), targThres);
+						if(targThres.isMain()==true)mainThreshold=targThres.getValue();
+					}
 				}
 			}
-			if(bottomThreshold==null) bottomThreshold=new TargetThreshold("bottom",null, Color.BLACK,false);		
+			if(bottomThreshold==null) bottomThreshold=new TargetThreshold("bottom",null, Color.BLACK,false, true);		
 		}
 		else if(baselines==true){ // Case Baselines found on parameters
 			useTargets=false;
@@ -213,13 +224,16 @@ public class TargetCharts extends ChartImpl {
 				TargetThreshold targThres=new TargetThreshold(valueToParse);
 				if(targThres.getName().equalsIgnoreCase("bottom"))bottomThreshold=targThres;
 				else{
-					thresholds.put(targThres.getValue(), targThres);
-					if(targThres.isMain()==true)mainThreshold=targThres.getValue();
+					if(targThres.isVisible()){
+						thresholds.put(targThres.getValue(), targThres);
+						if(targThres.isMain()==true)mainThreshold=targThres.getValue();
+					}
 				}
 			}
-		if(bottomThreshold==null) bottomThreshold=new TargetThreshold("bottom",null, Color.BLACK,false);
+			if(bottomThreshold==null) bottomThreshold=new TargetThreshold("bottom",null, Color.BLACK,false, true);
 
 		}
+		//**************************** TEMPLATE TARGET OR BASELINES DEFINITION **********************
 		else {                       // Case targets or baselines defined in template
 			/* <TARGETS>
 			 *  <TARGET name='first' value='5' main='true'>
@@ -251,6 +265,8 @@ public class TargetCharts extends ChartImpl {
 					String value= (String)param.getAttribute("value");
 					String main= (String)param.getAttribute("main");
 					String colorS = (String)param.getAttribute("color");
+					String visibleS = (String)param.getAttribute("visible");
+
 					Color colorC=Color.BLACK;
 					boolean isMain=(main!=null && main.equalsIgnoreCase("true")) ? true : false;
 					if(colorS!=null){
@@ -261,10 +277,12 @@ public class TargetCharts extends ChartImpl {
 							logger.error("error in color defined, put BLACK as default"); 
 						}
 					}
+					boolean isVisible=(visibleS!=null && (visibleS.equalsIgnoreCase("false") || visibleS.equalsIgnoreCase("0") || visibleS.equalsIgnoreCase("0.0"))) ? false : true;
 
+					// The value of the threshold is bottom or a double value
 					if(value!=null){
-						if(value.equalsIgnoreCase("bottom")){
-							bottomThreshold=new TargetThreshold("bottom",null, colorC,false);
+						if(value.equalsIgnoreCase("bottom")){ //if definin bottom case
+							bottomThreshold=new TargetThreshold("bottom",null, colorC,false,true);
 						}
 						else if(!value.equalsIgnoreCase("bottom")){
 							Double valueD=null;
@@ -275,10 +293,11 @@ public class TargetCharts extends ChartImpl {
 								logger.error("Error in converting threshold double", e);
 								return;
 							}
-
-							thresholds.put(valueD, new TargetThreshold(name,valueD,colorC,isMain));
-							if(isMain==true){
-								mainThreshold=valueD;
+							if(isVisible==true){
+								thresholds.put(valueD, new TargetThreshold(name,valueD,colorC,isMain, isVisible));
+								if(isMain==true){
+									mainThreshold=valueD;
+								}
 							}
 						}
 

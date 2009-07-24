@@ -57,57 +57,69 @@ public class WinLose extends TargetCharts{
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset(); 		
 		datasets.addDataset("1",dataset);
 
+		if(datasets!=null && yearsDefined.isEmpty()){
+			logger.warn("no rows found with dataset");
+		}
+		else{
 
-		// Check if defining target and baseline
-		Double mainTarget=null;
-		Double mainBaseline=null;
-		if(useTargets)mainTarget=mainThreshold;
-		else mainBaseline=mainThreshold;
-		nullValues=new Vector<String>();
+			// Check if defining target and baseline
+			Double mainTarget=null;
+			Double mainBaseline=null;
+			if(mainThreshold==null){
+				logger.error("No main target or baseline defined, not possible to draw the chart");
+			}
+			else{
+				if(useTargets)mainTarget=mainThreshold;
+				else mainBaseline=mainThreshold;
+				nullValues=new Vector<String>();
 
-		// run all the years defined
-		for (Iterator iterator = yearsDefined.iterator(); iterator.hasNext();) {
-			String currentYearS = (String) iterator.next();
-			int currentYear=Integer.valueOf(currentYearS).intValue();
-			boolean stop=false;
-			for(int i = 1; i < 13 && stop==false; i++) {
-				Month currentMonth=new Month(i,currentYear);
-				// if it is the first year and th ecurrent month is previous than the first month
-				if(currentYearS.equalsIgnoreCase(yearsDefined.first()) && i<firstMonth.getMonth()){
-					// continue
-				}
-				else{
-					TimeSeriesDataItem item = timeSeries.getDataItem(currentMonth);
-					if(item != null && item.getValue() != null) {
-						double v = item.getValue().doubleValue();
-						double result = 0;
-						if(mainTarget != null) {
-							result = (v >= mainTarget.doubleValue())?WIN:LOSE;
-						} else {
-							result = (v > mainBaseline.doubleValue())?LOSE:WIN;
-						}
-
-						dataset.addValue(result, timeSeries.getKey(), "" + i+"-"+currentYear);   
-
-					} else {
-						if(wlt_mode.doubleValue() == 5){
-							dataset.addValue(0.001, timeSeries.getKey(), "" + i+"-"+currentYear); 
-							nullValues.add("" + i+"-"+currentYear);
+				// run all the years defined
+				for (Iterator iterator = yearsDefined.iterator(); iterator.hasNext();) {
+					String currentYearS = (String) iterator.next();
+					int currentYear=Integer.valueOf(currentYearS).intValue();
+					boolean stop=false;
+					for(int i = 1; i < 13 && stop==false; i++) {
+						Month currentMonth=new Month(i,currentYear);
+						// if it is the first year and th ecurrent month is previous than the first month
+						if(currentYearS.equalsIgnoreCase(yearsDefined.first()) && i<firstMonth.getMonth()){
+							// continue
 						}
 						else{
-							dataset.addValue(0.0, timeSeries.getKey(), "" + i+"-"+currentYear); 							
-						}
-					}
-					// if it is last year and current month is after the last month stop 
-					if(currentYearS.equalsIgnoreCase(lastYear) && i>=lastMonth.getMonth()){
-						stop=true;
+							TimeSeriesDataItem item = timeSeries.getDataItem(currentMonth);
+							if(item != null && item.getValue() != null) {
+								double v = item.getValue().doubleValue();
+								double result = 0;
+								if(mainTarget != null) {
+									result = (v >= mainTarget.doubleValue())?WIN:LOSE;
+								} else if(mainBaseline != null) {
+									result = (v > mainBaseline.doubleValue())?LOSE:WIN;
+								}
+								else{
+									logger.warn("could not find a threshold");
+								}
+
+								dataset.addValue(result, timeSeries.getKey(), "" + i+"-"+currentYear);   
+
+							} else {
+								if(wlt_mode.doubleValue() == 5){
+									dataset.addValue(0.001, timeSeries.getKey(), "" + i+"-"+currentYear); 
+									nullValues.add("" + i+"-"+currentYear);
+								}
+								else{
+									dataset.addValue(0.0, timeSeries.getKey(), "" + i+"-"+currentYear); 							
+								}
+							}
+							// if it is last year and current month is after the last month stop 
+							if(currentYearS.equalsIgnoreCase(lastYear) && i>=lastMonth.getMonth()){
+								stop=true;
+							}
+
+						} 
 					}
 
-				} 
+				}
 			}
-
 		}
-
 		logger.debug("OUT");
 		return datasets;
 	}
@@ -122,7 +134,7 @@ public class WinLose extends TargetCharts{
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
-	
+
 		if(confParameters.get(BAR_HEIGHT)!=null){		
 			String bh=(String)confParameters.get(BAR_HEIGHT);
 			barHeight=Double.valueOf(bh).doubleValue();
@@ -134,9 +146,9 @@ public class WinLose extends TargetCharts{
 		{
 			barHeight=0.5;
 		}
-		
 
-		
+
+
 		logger.debug("OUT");
 	}
 
@@ -236,6 +248,7 @@ public class WinLose extends TargetCharts{
 		plot.setRenderer(renderer);
 
 		logger.debug("OUT");
+		if(mainThreshold==null)return null;
 		return chart;
 
 

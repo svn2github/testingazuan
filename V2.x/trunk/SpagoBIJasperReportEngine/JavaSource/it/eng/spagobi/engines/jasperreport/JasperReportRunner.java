@@ -195,8 +195,8 @@ public class JasperReportRunner {
 			if (template.getFileName().indexOf(".zip") > -1) {
 				flgTemplateStandard = "false";
 			}
-			
-			
+
+
 			/* Dynamic template management: if the template is a zip file it is opened and every class are added to 
 			 * the classpath
 			 * 
@@ -261,12 +261,12 @@ public class JasperReportRunner {
 				locale=new Locale(language,country,"");
 
 				parameters.put("REPORT_LOCALE", locale);
-				
+
 				ResourceBundle rs=null;
 
 
 				if(propertiesLoaded==false){
-					
+
 					//if properties file are not loaded by template load them from resources
 					SourceBean config=null;
 					if (getClass().getResource("/engine-config.xml")!=null){
@@ -277,18 +277,18 @@ public class JasperReportRunner {
 					String path = (String) sb.getCharacters();
 					String resPath= SpagoBIUtilities.readJndiResource(path);			
 					resPath+="/jasper_messages/";
-					
+
 					ClassLoader previous = Thread.currentThread().getContextClassLoader();
 					ResourceClassLoader dcl = new ResourceClassLoader(resPath,previous);
 					//Thread.currentThread().setContextClassLoader(dcl);
-				    try{	
-					    //rs=PropertyResourceBundle.getBundle("messages",locale, Thread.currentThread().getContextClassLoader());
-				    	rs=PropertyResourceBundle.getBundle("messages",locale, dcl);
-				    }
-				    catch (Exception e) {
-					    logger.error("could not find properties message");
-				    }
-				    parameters.put("REPORT_RESOURCE_BUNDLE", rs);
+					try{	
+						//rs=PropertyResourceBundle.getBundle("messages",locale, Thread.currentThread().getContextClassLoader());
+						rs=PropertyResourceBundle.getBundle("messages",locale, dcl);
+					}
+					catch (Exception e) {
+						logger.error("could not find properties message");
+					}
+					parameters.put("REPORT_RESOURCE_BUNDLE", rs);
 				}
 			}
 
@@ -784,7 +784,12 @@ public class JasperReportRunner {
 			JRParameter aReportParameter = reportParameters[i];
 			String paramName = aReportParameter.getName();
 			logger.debug("Examining parameter with name [" + paramName + "] ...");
-			String paramValueString = (String) parameters.get(paramName);
+
+			String paramValueString = null;
+
+			if(parameters.get(paramName) instanceof String ){	
+				paramValueString=(String) parameters.get(paramName);
+			}
 			if (paramValueString == null) {
 				logger.debug("No value found for parameter with name [" + paramName + "]");
 				continue;

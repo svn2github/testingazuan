@@ -28,6 +28,7 @@ package it.eng.spagobi.engines.jasperreport;
 import it.eng.spagobi.services.proxy.DocumentExecuteServiceProxy;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,6 +54,7 @@ public class ScriptletChart extends JRDefaultScriptlet {
 	private static transient Logger logger=Logger.getLogger(ScriptletChart.class);
 
 	public static final String CHART_LABEL="chart_label"; 
+	public static int iii=1;
 
 	public void afterReportInit() throws JRScriptletException {
 
@@ -116,6 +118,17 @@ public class ScriptletChart extends JRDefaultScriptlet {
 
 							InputStream is=new ByteArrayInputStream(image);
 
+//							FileOutputStream fos=new FileOutputStream("C:/provaSperiamo"+(new Integer(iii)).toString()+".png");
+//							int avalaible = is.available();   
+//							iii++;
+//							for(int i=0; i<avalaible; i++) {
+//							fos.write(is.read()); 
+//							}
+
+
+//							fos.close();
+
+
 							logger.debug("Input Stream filled, Setting variable");
 							if(variablesMap.keySet().contains(areaValue)){
 								this.setVariableValue(areaValue, is);
@@ -124,7 +137,7 @@ public class ScriptletChart extends JRDefaultScriptlet {
 								logger.error("variable where to set image chart "+areaValue+ " not defined");
 							}
 
-							is.close();
+							//is.close();
 						}
 						else{
 							logger.error("chart_label not specified");							
@@ -150,15 +163,23 @@ public class ScriptletChart extends JRDefaultScriptlet {
 	 */
 
 	protected Map parseVariable(String varValue){
+		logger.debug("IN");
 		HashMap toReturn=new HashMap<String, String>();
-		StringTokenizer tokenizer=new StringTokenizer(varValue,";");
-		while(tokenizer.hasMoreTokens()){
-			String token=tokenizer.nextToken();
-			int indexEqual=token.indexOf("=");
-			String namePar=token.substring(0,indexEqual);
-			String valuePar=token.substring(indexEqual+1);
-			toReturn.put(namePar, valuePar);
+		try{
+			StringTokenizer tokenizer=new StringTokenizer(varValue,";");
+			while(tokenizer.hasMoreTokens()){
+				String token=tokenizer.nextToken();
+				int indexEqual=token.indexOf("=");
+				String namePar=token.substring(0,indexEqual);
+				String valuePar=token.substring(indexEqual+1);
+				toReturn.put(namePar, valuePar);
+			}
 		}
+		catch (Exception e) {
+			logger.error("Error in target definition (should be target_x[att: val, att2: val])", e);
+			return new HashMap<String, String>();
+		}
+		logger.debug("OUT");
 		return toReturn;
 	}
 

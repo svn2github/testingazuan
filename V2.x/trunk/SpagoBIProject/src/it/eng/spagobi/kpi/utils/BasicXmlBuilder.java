@@ -135,7 +135,7 @@ public class BasicXmlBuilder  {
 		
 		String finalTemplate = docKpiBlockS.toXML(false, false);
 
-		System.out.println(finalTemplate);
+		//System.out.println(finalTemplate);
 		logger.debug("OUT");
 		return finalTemplate;
 	}

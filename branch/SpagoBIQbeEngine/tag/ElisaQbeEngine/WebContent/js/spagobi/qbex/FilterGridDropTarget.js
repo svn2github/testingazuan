@@ -113,7 +113,6 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 		node = ddSource.dragData.node;        
 	
 		if(colIndex === 5) {
-			alert('Ok, that\'s right!');
 			var store = this.targetGrid.store;
 			var row = store.getAt(rowIndex);
 			row.data['otype'] = 'Subquery';

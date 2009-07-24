@@ -145,13 +145,15 @@ public class GetCatalogueAction extends AbstractQbeEngineAction {
 		
 		subqueries = query.getJSONArray("subqueries");
 		if(subqueries.length() > 0) {
-			nodeJSON.put("leaf", false);	
+			//nodeJSON.put("leaf", false);	
 			childNodesJSON = new JSONArray();
 			for(int i = 0; i < subqueries.length(); i++) {
 				childNodeJSON = createNode( subqueries.getJSONObject(i) );
 				childNodesJSON.put(childNodeJSON);
 			}
 			nodeJSON.put("children", childNodesJSON);
+			//query.put("subqueries", new JSONArray());
+			//nodeAttributes.put("children", childNodesJSON);
 		} else {
 			nodeJSON.put("leaf", true);	
 		}

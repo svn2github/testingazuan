@@ -145,9 +145,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	
 	, save: function(meta, callback, scope) {
 		var params = Ext.apply({}, meta);
-		alert('catalogue: ' + params.toSource());
 		var doSave = function() {
-			alert('doSave: ' + params.toSource());
 			Ext.Ajax.request({
 			    url: this.services['saveCatalogue'],
 			    success: callback,
@@ -209,7 +207,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		
 		if(queryNode) {
 			
-			query = queryNode.attributes.query;
+			query = queryNode.props.query;
 			query.subqueries = [];
 			if( queryNode.childNodes && queryNode.childNodes.length > 0 ) {
 				for(var i = 0; i < queryNode.childNodes.length; i++) {
@@ -264,7 +262,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		
 		if(queryNode) {
 			
-			queryItem = queryNode.attributes;
+			queryItem = queryNode.props;
 			queryItem.subqueries = [];
 			if( queryNode.childNodes && queryNode.childNodes.length > 0 ) {
 				for(var i = 0; i < queryNode.childNodes.length; i++) {
@@ -279,7 +277,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	
 	, getSelectedQueryItem: function() {
 		var queryNode = this.tree.getSelectionModel().getSelectedNode();
-		return queryNode? queryNode.attributes: undefined;
+		return queryNode? queryNode.props: undefined;
 	}
 	
 	, addQueryItem: function(queryItem) {
@@ -295,12 +293,11 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 		if(!queryItem) {
 			this.createQueryNode(this.insertQueryNode.createDelegate(this, [parentQueryNode], 0), this);
 		} else {
-			alert(queryItem.toSource());
 			 var queryNode = {
 			    id: queryItem.query.id
 			   	, text: queryItem.query.id
 			   	, leaf: true
-			   	, attributes: {
+			   	, props: {
 			 		query: queryItem.query
 			 		, iconCls: 'icon-query'
 			    }
@@ -346,7 +343,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
     			if(response !== undefined && response.responseText !== undefined) {
 					var content = Ext.util.JSON.decode( response.responseText );
 					var queryNode = new Ext.tree.TreeNode(content);
-					queryNode.attributes = content.attributes;
+					queryNode.props = content.attributes;
 					callback.call(scope, queryNode);
 				} else {
 			      	Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
@@ -415,12 +412,15 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	           attr.uiProvider = this.uiProviders[attr.uiProvider] || eval(attr.uiProvider);
 	        }
 	        
+	     
 	        var resultNode;
-	        if(true /*attr.leaf*/) {
+	        if(attr.leaf) {
 	        	resultNode = new Ext.tree.TreeNode(attr);
-	        	resultNode.attributes = attr.attributes;
+	        	resultNode.props = attr.attributes;
 	        } else {
 	        	resultNode = new Ext.tree.AsyncTreeNode(attr);
+	        	resultNode.props = attr.attributes;
+	        	//resultNode.attributes = attr.attributes;
 	        }
 	        
 	        resultNode.getUI().onDblClick = function(e){
@@ -431,16 +431,14 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	            if(this.checkbox){
 	                this.toggleCheck();
 	            }
-	            /*
-	            if(!this.animating && this.node.hasChildNodes()){
-	                this.node.toggle();
-	            }
-	            */
+	            
 	            this.fireEvent("dblclick", this.node, e);
 	        };
 	        
 	        return resultNode;
 	    };
+	    
+	   
 		
 		this.treeSelectionModel = new Ext.tree.DefaultSelectionModel({
 			init : function(tree){
@@ -542,11 +540,11 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	, onSelect: function(sm, newnode, oldnode) {
 		var allowSelection = true;
 		
-		alert('onSelect: ' + newnode.attributes.query.id);
+		//alert('onselect: ' + newnode.toSource());
 		
 		if(newnode.id !== this.rootNode.id) {
-			var oldquery = oldnode?  oldnode.attributes.query: undefined;
-			var b = this.fireEvent('beforeselect', this, newnode.attributes.query, oldquery);
+			var oldquery = oldnode?  oldnode.props.query: undefined;
+			var b = this.fireEvent('beforeselect', this, newnode.props.query, oldquery);
 			if(b === false) allowSelection = b;
 		} else {
 			allowSelection = false;

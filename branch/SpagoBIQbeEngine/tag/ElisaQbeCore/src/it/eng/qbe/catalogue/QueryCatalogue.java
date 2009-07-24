@@ -25,8 +25,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
 
 import it.eng.qbe.query.Query;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 
 /**
@@ -35,27 +39,49 @@ import it.eng.qbe.query.Query;
 public class QueryCatalogue {
 	
 	Map queries;
-	Map meta;
 	
-	long counter;
+	private long counter;
 	
-	public QueryCatalogue() {
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(QueryCatalogue.class);
+	
+    
+    public QueryCatalogue() {
+		this(0);
+	}
+    
+	public QueryCatalogue(long counterOffset) {
 		this.queries = new HashMap();
-		this.meta = new HashMap();
-		this.counter = 0;
+		this.counter = counterOffset;
+		logger.debug("Query's id counter has been initialized to [" + this.counter + "]");
 	}
 	
 	/*
 	 * Externalize the id creation strategy is little bit to mutch for the moment. 
 	 * If you want to modify this method keep in mind by the way that it have a dependence with 
-	 * the statment class.Infact the id is used as a prefix to all entity aliases so it must not
-	 * broke the valid alias sintax (avoid spaces and special char) 
+	 * the statement class.Infact the id is used as a prefix to all entitiy aliases so it must not
+	 * broke the valid alias syntax (avoid spaces and special char) 
 	 * 
 	 * @todo id generation must be consistent also across different execution. Add an initial offset
 	 * to setup properly the counter in order to not override preloaded queries.
 	 */
 	public String getNextValidId() {
-		return "q" + (++counter);
+		counter += 1;
+		logger.debug("Query's id counter has been incremented. Counter is now equals to [" + counter + "]");
+		return "q" + (counter);
+	}
+	
+	public boolean isValidId(String id) {
+		return Pattern.matches("q[0-9]+", id);
+	}
+	
+	private void updateCounter(String id) {
+		String queryIdNumPart = id.substring(1);
+		long queryIdNum = Long.parseLong( queryIdNumPart );
+		if(counter < queryIdNum) {
+			counter = queryIdNum;
+			logger.debug("Catalogue id internal counter has benn updated to [" + counter + "]");
+		}
 	}
 	
 	public Set getIds() {
@@ -74,25 +100,57 @@ public class QueryCatalogue {
 		Iterator subqueriesIterator;
 		Query subquery;
 		
-		if(query.getId() == null) {
-			query.setId( getNextValidId() );
-		}
+		logger.debug("IN");
 		
-		if(query.getName() == null) {
-			query.setName( "query-" + query.getId() );
-		}
+		Assert.assertNotNull(query, "Is not possible to add a null query to the catalogue");
 		
-		if(query.getDescription() == null) {
-			query.setDescription( "query-" + query.getId() );
-		}
-		queries.put( query.getId(), query);
+		try {
 		
-		// recursively add (or update) all subqueries to the catalogue
-		subqueriesIterator = query.getSubqueryIds().iterator();		
-		while(subqueriesIterator.hasNext()) {
-			String id = (String)subqueriesIterator.next();
-			subquery = query.getSubquery(id);
-			addQuery(subquery);
+			if(query.getId() == null) {
+				logger.debug("Query has not yet a valid id. A new id will be automaticcaly generated");
+				query.setId( getNextValidId() );
+				Assert.assertTrue(!queries.containsKey(query.getId()), "The new valid id generated is alredy present into the catalogue");
+			} else {
+				Assert.assertTrue(isValidId( query.getId() ), "Impossible to add query. Id [" + query.getId() + "] is not valid");
+			}
+			
+			logger.debug("Query id is [" + query.getId() + "]");
+			
+			if(query.getName() == null) {
+				logger.debug("Query has not yet a valid name. A new name will be automaticcaly generated");
+				query.setName( "query-" + query.getId() );
+			}
+			logger.debug("Query name is [" + query.getName() + "]");
+			
+			if(query.getDescription() == null) {
+				logger.debug("Query has not yet a valid name. A new name will be automaticcaly generated");
+				query.setDescription( "query-" + query.getId() );
+			}
+			logger.debug("Query description is [" + query.getDescription() + "]");
+			
+			if(queries.containsKey(query.getId())){
+				logger.debug("A query with id  equals to [" + query.getId() + "] already exist into the catalogue. The added one will update it");
+			} else {
+				logger.debug("A query with id  equals to [" + query.getId() + "] daoes not exist already the catalogue. It will be added");
+			}
+			
+			queries.put( query.getId(), query);
+			logger.debug("Query [" + query.getId() + "] added succesfully to the catalogue. Queries in the catalogue are now [" + queries.keySet().size() + "]");
+			updateCounter(query.getId());
+			
+			// recursively add (or update) all subqueries to the catalogue
+			logger.debug("Recursively adding all subqueries of query [" + query.getId() + "] to the catalogue ...");	
+			logger.debug("Query [" + query.getId() + "] have [" + query.getSubqueryIds().size() + "] subqueries");	
+			subqueriesIterator = query.getSubqueryIds().iterator();		
+			while(subqueriesIterator.hasNext()) {
+				String id = (String)subqueriesIterator.next();
+				subquery = query.getSubquery(id);
+				logger.debug("Adding subquery [" + subquery.getId() + "] of query [" + query.getId() + "]");	
+				addQuery(subquery);
+				logger.debug("Subquery [" + subquery.getId() + "] of query [" + query.getId() + "] has been added succesfully");
+			}
+		} finally {
+			logger.debug("OUT");
 		}
 		
 		return query.getId();

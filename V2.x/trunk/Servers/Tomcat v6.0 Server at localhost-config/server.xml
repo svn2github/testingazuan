@@ -41,12 +41,20 @@
     <Environment name="spagobi_service_url" type="java.lang.String" value="http://localhost:8080/SpagoBI"/>    
     <Environment name="spagobi_host_url" type="java.lang.String" value="http://localhost:8080"/>  
  
-         <Resource auth="Container" factory="de.myfoo.commonj.work.FooWorkManagerFactory" maxThreads="5" name="wm/SpagoWorkManager" type="commonj.work.WorkManager"/>
-             
-        <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="jdbc/spagobi" password="root" type="javax.sql.DataSource" url="jdbc:mysql://localhost/spagobi" username="root"/>
-          
-        <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="jdbc/foodmart" password="root" type="javax.sql.DataSource" url="jdbc:mysql://localhost/foodmart" username="root"/>          
+    <Resource auth="Container" factory="de.myfoo.commonj.work.FooWorkManagerFactory" maxThreads="5" 
+          name="wm/SpagoWorkManager" type="commonj.work.WorkManager"/>
       
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" 
+          maxActive="20" maxIdle="10" maxWait="-1" name="jdbc/foodmart" 
+          password="root" type="javax.sql.DataSource" 
+          url="jdbc:mysql://localhost/foodmart" username="root"/>          
+
+    <Resource name="jdbc/spagobi" auth="Container"
+          type="javax.sql.DataSource" driverClassName="com.mysql.jdbc.Driver"
+          url="jdbc:mysql://localhost/spagobi"
+          username="root" password="root" maxActive="20" maxIdle="10"
+          maxWait="-1"/>  
+                
   </GlobalNamingResources>
 
   <!-- A "Service" is a collection of one or more "Connectors" that share
@@ -70,7 +78,7 @@
          APR (HTTP/AJP) Connector: /docs/apr.html
          Define a non-SSL HTTP/1.1 Connector on port 8080
     -->
-    <Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443"/>
+    <Connector URIEncoding="UTF-8" connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443"/>
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
@@ -141,32 +149,7 @@
                prefix="localhost_access_log." suffix=".txt" pattern="common" resolveHosts="false"/>
         -->
 
-      	<Context debug="0" docBase="SpagoBIJasperReportEngine" path="/SpagoBIJasperReportEngine" privileged="true" reloadable="false">
-		<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
-		<ResourceLink global="jdbc/foodmart" name="jdbc/foodmart" type="javax.sql.DataSource"/>
-		<ResourceLink global="jdbc/spagobi" name="jdbc/spagobi" type="javax.sql.DataSource"/>
-            <ResourceLink global="spagobi_resource_path" name="spagobi_resource_path" type="java.lang.String"/>
-            <ResourceLink global="spagobi_sso_class" name="spagobi_sso_class" type="java.lang.String"/>
-            <ResourceLink global="spagobi_service_url" name="spagobi_service_url" type="java.lang.String"/>
-	</Context>
-
-   	<Context debug="0" docBase="SpagoBIJPivotEngine" path="/SpagoBIJPivotEngine" privileged="true" reloadable="false">
-		<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
-		<ResourceLink global="jdbc/foodmart" name="jdbc/foodmart" type="javax.sql.DataSource"/>
-		<ResourceLink global="jdbc/spagobi" name="jdbc/spagobi" type="javax.sql.DataSource"/>
-            <ResourceLink global="spagobi_resource_path" name="spagobi_resource_path" type="java.lang.String"/>
-            <ResourceLink global="spagobi_sso_class" name="spagobi_sso_class" type="java.lang.String"/>
-            <ResourceLink global="spagobi_service_url" name="spagobi_service_url" type="java.lang.String"/>
-	</Context>
-
-        <Context debug="0" docBase="SpagoBI" path="/SpagoBI" privileged="true" reloadable="true">
-        	<Manager className="org.apache.catalina.session.PersistentManager" saveOnRestart="false"/>
-        	<ResourceLink global="jdbc/spagobi" name="jdbc/spagobi" type="javax.sql.DataSource"/>
-        	<ResourceLink global="jdbc/foodmart" name="jdbc/foodmart" type="javax.sql.DataSource"/>
-            <ResourceLink global="spagobi_resource_path" name="spagobi_resource_path" type="java.lang.String"/>
-            <ResourceLink global="spagobi_sso_class" name="spagobi_sso_class" type="java.lang.String"/>
-            <ResourceLink global="spagobi_host_url" name="spagobi_host_url" type="java.lang.String"/>
-     	</Context>
+  
    </Host>
     </Engine>
   </Service>

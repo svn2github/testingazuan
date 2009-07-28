@@ -77,8 +77,13 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 				query.setId(queryJSON.getString(SerializationConstants.ID));
 				query.setName(queryJSON.getString(SerializationConstants.NAME));
 				query.setDescription(queryJSON.getString(SerializationConstants.DESCRIPTION));
-				distinctClauseEnabled = queryJSON.getBoolean( SerializationConstants.DISTINCT );
-				
+				query.setDistinctClauseEnabled(queryJSON.getBoolean( SerializationConstants.DISTINCT ));
+				// TODO: move this in AnalysisStateLoader class
+				try {
+					query.setNestedExpression(queryJSON.getBoolean( SerializationConstants.IS_NESTED_EXPRESSION ));
+				} catch(Exception e) {
+					query.setNestedExpression(false);
+				}
 				fieldsJSON = queryJSON.getJSONArray( SerializationConstants.FIELDS );				
 				filtersJSON = queryJSON.getJSONArray( SerializationConstants.FILTERS );
 				expressionJSON = queryJSON.getJSONObject( SerializationConstants.EXPRESSION );
@@ -91,7 +96,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			deserializeFields(fieldsJSON, datamartModel, query);
 			deserializeFilters(filtersJSON, datamartModel, query);
 			deserializeExpression(expressionJSON, datamartModel, query);
-			query.setDistinctClauseEnabled(distinctClauseEnabled);
+			
 			
 			for(int i = 0; i < subqueriesJSON.length(); i++) {
 				try {

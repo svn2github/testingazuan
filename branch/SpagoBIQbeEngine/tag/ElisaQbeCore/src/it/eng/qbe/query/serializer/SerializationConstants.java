@@ -41,6 +41,7 @@ public class SerializationConstants {
 	public static final String FIELD_VISIBLE = "visible";
 	
 	public static final String DISTINCT = "distinct";
+	public static final String IS_NESTED_EXPRESSION = "isNestedExpression";
 	
 	public static final String FILTERS = "filters";
 	public static final String FILTER_ID = "id";
@@ -63,4 +64,5 @@ public class SerializationConstants {
 	public static final String EXPRESSION_CHILDREN = "childNodes";
 	
 	public static final String SUBQUERIES = "subqueries";
+	
 }

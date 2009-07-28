@@ -44,6 +44,8 @@ public class Query {
 	List whereClause;
 	
 	ExpressionNode whereClauseStructure;
+	boolean nestedExpression;
+
 	Map whereFieldMap;
 	
 	Query parentQuery;
@@ -156,7 +158,18 @@ public class Query {
 	public void setWhereClauseStructure(ExpressionNode whereClauseStructure) {
 		this.whereClauseStructure = whereClauseStructure;
 	}
+	
+	/*
+	 * true iff it is an expression built using the client side expression wizard
+	 */
+	public boolean isNestedExpression() {
+		return nestedExpression;
+	}
 
+	public void setNestedExpression(boolean nestedExpression) {
+		this.nestedExpression = nestedExpression;
+	}
+	
 	
 	public Query getParentQuery() {
 		return parentQuery;

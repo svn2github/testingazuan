@@ -152,8 +152,7 @@ public class DatamartStructureBuilder {
 				// prune recursion tree 
 			} else {
 				addSubEntity(dataMartEntity, 
-						subentity.getType(),
-						subentity.getRole(),
+						subentity,
 						recursionLevel+1);
 			}
 		}
@@ -168,15 +167,14 @@ public class DatamartStructureBuilder {
 	 * @param recursionLevel the recursion level
 	 */
 	private void addSubEntity (DataMartEntity parentEntity,
-			String entityType, 			
-			String role,
+			DataMartEntity subEntity, 			
 			int recursionLevel){
 
 		DataMartEntity dataMartEntity;				
 
 		
-		String entityName = getEntityNameFromEntityType(entityType);		
-		dataMartEntity = parentEntity.addSubEntity(entityName, role, entityType);
+		//String entityName = getEntityNameFromEntityType(entityType);		
+		dataMartEntity = parentEntity.addSubEntity(subEntity.getName(), subEntity.getRole(), subEntity.getType());
 		
 		
 		addKeyFields(dataMartEntity);			
@@ -327,7 +325,8 @@ public class DatamartStructureBuilder {
 		 		propertyName = propertyNames[i];	
 		 		
 		 		
-		 		String entityName = getEntityNameFromEntityType(entityType);
+		 		//String entityName = getEntityNameFromEntityType(entityType);
+		 		String entityName = propertyName;
 		 		DataMartEntity subentity = new DataMartEntity(entityName, null, columnName, entityType, dataMartEntity.getStructure());		
 		 		subEntities.add(subentity);	
 		 		

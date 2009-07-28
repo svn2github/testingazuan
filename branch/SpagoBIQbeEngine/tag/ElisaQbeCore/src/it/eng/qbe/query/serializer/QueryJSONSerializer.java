@@ -63,7 +63,6 @@ public class QueryJSONSerializer implements QuerySerializer {
 			
 			recordsJOSN = serializeFields(query, datamartModel);			
 			filtersJSON = serializeFilters(query, datamartModel);
-			distinctClauseEnabled = query.isDistinctClauseEnabled();
 			filterExpJOSN = encodeFilterExp( query.getWhereClauseStructure() );
 			
 			subqueriesJSON = new JSONArray();
@@ -80,8 +79,11 @@ public class QueryJSONSerializer implements QuerySerializer {
 			result.put(SerializationConstants.ID, query.getId());
 			result.put(SerializationConstants.NAME, query.getName());
 			result.put(SerializationConstants.DESCRIPTION, query.getDescription());
+			result.put(SerializationConstants.DISTINCT, query.isDistinctClauseEnabled());
+			result.put(SerializationConstants.IS_NESTED_EXPRESSION, query.isNestedExpression());
+			
 			result.put(SerializationConstants.FIELDS, recordsJOSN);
-			result.put(SerializationConstants.DISTINCT, distinctClauseEnabled);
+			
 			result.put(SerializationConstants.FILTERS, filtersJSON);
 			result.put(SerializationConstants.EXPRESSION, filterExpJOSN);
 			

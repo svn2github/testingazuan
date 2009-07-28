@@ -24,6 +24,7 @@ package it.eng.spagobi.qbe.commons.service;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +47,11 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 	public static final String CATALOGUE = "CATALOGUE";
 	public static final String DATAMART_MODEL = "DATAMART_MODEL";
 	
-	public static final String CURRENT_VERSION = "1";
+	public static final String CURRENT_VERSION = "2";
+	
+	/** Logger component. */
+    private static transient Logger logger = Logger.getLogger(QbeEngineAnalysisState.class);
+	
 	
 	
 	public QbeEngineAnalysisState( DataMartModel datamartModel ) {
@@ -59,30 +64,46 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 		JSONObject catalogueJSON = null;
 		JSONObject rowDataJSON = null;
 		String encodingFormatVersion;
-				
-		str = new String( rowData );
+		
+		logger.debug("IN");
+
 		try {
+			str = new String( rowData );
+			logger.debug("loading analysis state from row data [" + rowData + "] ...");
+			
 			rowDataJSON = new JSONObject(str);
 			try {
 				encodingFormatVersion = rowDataJSON.getString("version");
 			} catch (JSONException e) {
 				encodingFormatVersion = "0";
 			}
+			
+			logger.debug("Row data encoding version  [" + encodingFormatVersion + "]");
+			
+			
+			
 			if(encodingFormatVersion.equalsIgnoreCase(CURRENT_VERSION)) {				
-					catalogueJSON = rowDataJSON.getJSONObject("catalogue");
+				catalogueJSON = rowDataJSON;
 			} else {
+				logger.warn("Row data encoding version [" + encodingFormatVersion + "] does not match with the current version used by the engine [" + CURRENT_VERSION + "] ");
+				logger.debug("Converting from encoding version [" + encodingFormatVersion + "] to encoding version [" + CURRENT_VERSION + "]....");
 				IQbeEngineAnalysisStateLoader analysisStateLoader;
 				analysisStateLoader = QbeEngineAnalysisStateLoaderFactory.getInstance().getLoader(encodingFormatVersion);
 				if(analysisStateLoader == null) {
 					throw new SpagoBIEngineException("Unable to load data stored in format [" + encodingFormatVersion + "] ");
 				}
 				catalogueJSON = (JSONObject)analysisStateLoader.load(str);
+				logger.debug("Encoding conversion has been executed succesfully");
 			}
+			
+			catalogueJSON = catalogueJSON.getJSONObject("catalogue");
+			setProperty( CATALOGUE,  catalogueJSON);
+			logger.debug("analysis state loaded succsfully from row data");
 		} catch (JSONException e) {
 			throw new SpagoBIEngineException("Impossible to load analysis state from raw data", e);
+		} finally {
+			logger.debug("OUT");
 		}
-
-		setProperty( CATALOGUE, catalogueJSON );
 	}
 
 	public byte[] store() throws SpagoBIEngineException {
@@ -123,7 +144,7 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 				catalogue.addQuery(query);
 			}
 		} catch (Throwable e) {
-			throw new SpagoBIEngineRuntimeException("Impossible to deserialize analyziz state", e);
+			throw new SpagoBIEngineRuntimeException("Impossible to deserialize analysis state", e);
 		}
 		
 		return catalogue;

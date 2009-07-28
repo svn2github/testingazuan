@@ -33,7 +33,10 @@ public class QbeEngineAnalysisStateLoaderFactory {
 	
 	static {
 		loaderRegistry = new HashMap();
-		loaderRegistry.put("0", new VersionZeroQbeEngineAnalysisStateLoader());
+		loaderRegistry.put("1", new Version1QbeEngineAnalysisStateLoader());
+		loaderRegistry.put("0", new Version1QbeEngineAnalysisStateLoader(
+				new Version0QbeEngineAnalysisStateLoader()
+		));
 	}
 	
 	private static QbeEngineAnalysisStateLoaderFactory instance;

@@ -36,6 +36,7 @@ import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityEntityFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityFieldFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderEntityFilter;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderFieldFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeQueryEntityFilter;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
@@ -83,8 +84,6 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 			logger.debug("Filtering entities list ...");			
 			entityFilter = new QbeTreeAccessModalityEntityFilter();
 			logger.debug("Apply entity filter [" + entityFilter.getClass().getName() + "]");
-			entityFilter = new QbeTreeOrderEntityFilter(entityFilter, getLocale() );
-			logger.debug("Apply entity filter [" + entityFilter.getClass().getName() + "]");
 			if(queryId != null) {
 				logger.debug("Filtering on query [" + queryId + "] selectd entities");
 				query = getEngineInstance().getQueryCatalogue().getQuery(queryId);
@@ -92,18 +91,19 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 					entityFilter = new QbeTreeQueryEntityFilter(entityFilter, query);
 				}
 			}
+			entityFilter = new QbeTreeOrderEntityFilter(entityFilter);
+			logger.debug("Apply field filter [" + entityFilter.getClass().getName() + "]");
+			//entityFilter = new QbeTreeOrderEntityByLabelFilter(entityFilter, getLocale() );
+			//logger.debug("Apply entity filter [" + entityFilter.getClass().getName() + "]");
 			
 			logger.debug("Filtering fields list ...");	
 			fieldFilter = new QbeTreeAccessModalityFieldFilter();
 			logger.debug("Apply field filter [" + fieldFilter.getClass().getName() + "]");
+			fieldFilter = new QbeTreeOrderFieldFilter(fieldFilter);
+			logger.debug("Apply field filter [" + fieldFilter.getClass().getName() + "]");
 			
 			treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
 			
-			/*
-			entityFilter = new QbeTreeOrderEntityFilter(new QbeTreeAccessModalityEntityFilter(), getLocale() );
-			fieldFilter = new QbeTreeAccessModalityFieldFilter();		   	
-		   	treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
-		   	*/
 			
 			qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	   	
 		   	trees = qbeBuilder.getQbeTrees(getDatamartModel(), getLocale());			

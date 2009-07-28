@@ -62,9 +62,7 @@ Sbi.widgets.DataStorePanel = function(config) {
 		serviceName: 'EXPORT_RESULT_ACTION'
 		, baseParams: params
 	});
-	
-	
-	
+		
 	this.initStore();
 	this.initPanel();
 	
@@ -97,28 +95,8 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		this.store.load({params: {start: 0, limit: 25 }});
 	}
 
-	, exportResultToCsv: function() {
-		this.exportResult('text/csv');
-	}
-
-	, exportResultToRtf: function() {
-		this.exportResult('application/rtf');
-	}
-
-	, exportResultToXls: function() {
-		this.exportResult('application/vnd.ms-excel');
-	}
-
-	, exportResultToPdf: function() {
-		this.exportResult('application/pdf');
-	}
-
-	, exportResultToJrxml: function() {
-		this.exportResult('text/jrxml');
-	}
 
 	, exportResult: function(mimeType) {
-		
 		var form = document.getElementById('export-form');
 		if(!form) {
 			var dh = Ext.DomHelper;
@@ -176,31 +154,31 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 			    new Ext.Toolbar.Button({
 		            tooltip: LN('sbi.qbe.datastorepanel.button.tt.exportto') + ' pdf',
 		            iconCls:'pdf',
-		            handler: this.exportResultToPdf,
+		            handler: this.exportResult.createDelegate(this, ['application/pdf']),
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
 		            tooltip:LN('sbi.qbe.datastorepanel.button.tt.exportto') + ' rtf',
 		            iconCls:'rtf',
-		            handler: this.exportResultToRtf,
+		            handler: this.exportResult.createDelegate(this, ['application/rtf']),
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
 		            tooltip:LN('sbi.qbe.datastorepanel.button.tt.exportto') + ' xls',
 		            iconCls:'xls',
-		            handler: this.exportResultToXls,
+		            handler: this.exportResult.createDelegate(this, ['application/vnd.ms-excel']),
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
 		            tooltip:LN('sbi.qbe.datastorepanel.button.tt.exportto') + ' csv',
 		            iconCls:'csv',
-		            handler: this.exportResultToCsv,
+		            handler: this.exportResult.createDelegate(this, ['text/csv']),
 		            scope: this
 			    }),
 			    new Ext.Toolbar.Button({
 		            tooltip:LN('sbi.qbe.datastorepanel.button.tt.exportto') + ' jrxml',
 		            iconCls:'jrxml',
-		            handler: this.exportResultToJrxml,
+		            handler: this.exportResult.createDelegate(this, ['text/jrxml']),
 		            scope: this
 			    })
 			]
@@ -256,11 +234,17 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	, onDataStoreLoaded: function(store) {
 		 var recordsNumber = store.getTotalCount();
        	 if(recordsNumber == 0) {
-       		alert(LN('sbi.qbe.datastorepanel.grid.emptywarningmsg'));
+       		Ext.Msg.show({
+				   title: LN('sbi.qbe.messagewin.info.title'),
+				   msg: LN('sbi.qbe.datastorepanel.grid.emptywarningmsg'),
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.INFO
+			});
        	 }
+       	 
        	 if (Sbi.config.queryLimit.maxRecords !== undefined && recordsNumber > Sbi.config.queryLimit.maxRecords) {
        		if (Sbi.config.queryLimit.isBlocking) {
-       			Sbi.exception.ExceptionHandler.showErrorMessage(this.warningMessageItem, 'ERROR');
+       			Sbi.exception.ExceptionHandler.showErrorMessage(this.warningMessageItem, LN('sbi.qbe.messagewin.error.title'));
        		} else {
        			this.warningMessageItem.show();
        		}

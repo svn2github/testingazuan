@@ -26,20 +26,29 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.eng.qbe.catalogue.QueryCatalogue;
-import it.eng.qbe.query.serializer.SerializationConstants;
-import it.eng.spagobi.qbe.initializer.engine.service.QbeEngineStartAction;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class VersionZeroQbeEngineAnalysisStateLoader implements IQbeEngineAnalysisStateLoader{
+public class Version0QbeEngineAnalysisStateLoader extends AbstractQbeEngineAnalysisStateLoader{
 
-	/** Logger component. */
-    private static transient Logger logger = Logger.getLogger(QbeEngineStartAction.class);
-	
+	public final static String FROM_VERSION = "0";
+    public final static String TO_VERSION = "1";
     
-	public Object load(String rowData) {
+	/** Logger component. */
+    private static transient Logger logger = Logger.getLogger(Version0QbeEngineAnalysisStateLoader.class);
+	
+    public Version0QbeEngineAnalysisStateLoader() {
+    	super();
+    }
+    
+    public Version0QbeEngineAnalysisStateLoader(IQbeEngineAnalysisStateLoader loader) {
+    	super(loader);
+    }
+    
+	public JSONObject convert(JSONObject data) {
+		JSONObject resultJSON;
 		JSONObject catalogueJSON;
 		JSONArray queriesJSON;
 		JSONObject queryJSON;
@@ -48,36 +57,43 @@ public class VersionZeroQbeEngineAnalysisStateLoader implements IQbeEngineAnalys
 		// just to create well formed id for loaded queries
 		QueryCatalogue catalogue;
 		
+		logger.debug("IN");
+		
+		resultJSON = new JSONObject();
 		catalogueJSON = new JSONObject();
 		queriesJSON = new JSONArray();
 		try {
-			queryJSON = new JSONObject(rowData);
+			logger.debug( "Converting from encoding version [" + FROM_VERSION + "] to encoding version [" + TO_VERSION + "] ..." );
+			
+			queryJSON = data;
 			// fix query encoding ...
 			catalogue = new QueryCatalogue();
 			String queryId = catalogue.getNextValidId();
-			queryJSON.put( SerializationConstants.ID,  queryId);
-			queryJSON.put( SerializationConstants.NAME, "query_" + queryId );
-			queryJSON.put( SerializationConstants.DESCRIPTION, "query_" + queryId );
-			queryJSON.put( SerializationConstants.DISTINCT, false );
-			queryJSON.put( SerializationConstants.SUBQUERIES, new JSONArray() );
+			queryJSON.put( "id",  queryId);
+			queryJSON.put( "name", "query_" + queryId );
+			queryJSON.put("description", "query_" + queryId );
+			queryJSON.put( "distinct", false );
+			queryJSON.put( "subqueries", new JSONArray() );
 			
-			filtersJSON = queryJSON.getJSONArray(SerializationConstants.FILTERS);
+			filtersJSON = queryJSON.getJSONArray("filters");
 			for(int i = 0; i < filtersJSON.length(); i++) {
 				filterJSON = filtersJSON.getJSONObject(i);
-				filterJSON.put(SerializationConstants.FILTER_IS_FREE, false);
-				filterJSON.put(SerializationConstants.FILTER_DEFAULT_VALUE, "");
-				filterJSON.put(SerializationConstants.FILTER_LAST_VALUE, "");
+				filterJSON.put("isfree", false);
+				filterJSON.put("defaultvalue", "");
+				filterJSON.put("lastvalue", "");
 			}
-			
-			
-			
+						
 			queriesJSON.put(queryJSON);
 			catalogueJSON.put("queries", queriesJSON);
+			resultJSON.put("catalogue", catalogueJSON);
+			logger.debug( "Conversion from encoding version [" + FROM_VERSION + "] to encoding version [" + TO_VERSION + "] terminated succesfully" );
 		}catch(Throwable t) {
-			throw new SpagoBIEngineRuntimeException("Impossible to load from rowData [" + rowData + "]", t);
+			throw new SpagoBIEngineRuntimeException("Impossible to load from rowData [" + data + "]", t);
+		} finally {
+			logger.debug("OUT");
 		}
 		
-		return catalogueJSON;
+		return resultJSON;
 	}
 
 }

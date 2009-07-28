@@ -54,11 +54,7 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	}, config || {});
 	
 	this.services = new Array();
-	var params = {};
-	this.services['loadDataStore'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'EXEC_QUERY_ACTION'
-		, baseParams: params
-	});
+	
 	
 	//this.addEvents();
 	
@@ -120,38 +116,37 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, booleanOptStore: new Ext.data.SimpleStore({
         fields: ['funzione', 'nome', 'descrizione'],
         data : [
-                ['AND', 'AND', 'Connect this filter and the next one using the boolean operator AND'],
-                ['OR', 'OR', 'Connect this filter and the next one using the boolean operator OR']
+                ['AND', LN('sbi.qbe.filtergridpanel.boperators.name.and'), LN('sbi.qbe.filtergridpanel.boperators.desc.and')],
+                ['OR', LN('sbi.qbe.filtergridpanel.boperators.name.or'), LN('sbi.qbe.filtergridpanel.boperators.desc.or')]
         ]
     })
 
 	, filterOptStore: new Ext.data.SimpleStore({
 	    fields: ['funzione', 'nome', 'descrizione'],
 	    data : [
-	            ['NONE', 'none', 'no filter applayed'],
-	            ['EQUALS TO', 'equals to',  'true iff the field\'s value is equal to filter\'s value'],
-	            ['NOT EQUALS TO', 'not equals to',  'true iff the field\'s value is not equal to filter\'s value'],
-	            ['GREATER THAN', 'greater than',  'true iff the field\'s value is greater than filter\'s value'],
-	            ['EQUALS OR GREATER THAN', 'equals or greater than',  'true iff the field\'s value is equal or greater than filter\'s value'],
-	            ['LESS THAN', 'less than',  'true iff the field\'s value is less than filter\'s value'],
-	            ['EQUALS OR LESS THAN', 'equals or less than',  'true iff the field\'s value is equal or less than filter\'s value'],
-	            ['STARTS WITH', 'starts with',  'true iff the field\'s value starts with filter\'s value'],
-	            ['NOT STARTS WITH', 'not starts with',  'true iff the field\'s value doesn\'t start with filter\'s value'],
-	            ['ENDS WITH', 'ends with',  'true iff the field\'s value ends with filter\'s value'],
-	            ['NOT ENDS WITH', 'not ends with',  'true iff the field\'s value doesn\'t end with filter\'s value'],
-	            ['CONTAINS', 'contains',  'true iff the field\'s value contains filter\'s value'],
-	            ['NOT CONTAINS', 'not contains',  'true iff the field\'s value doesn\'t contain filter\'s value'],
+	            ['NONE', LN('sbi.qbe.filtergridpanel.foperators.name.none'), LN()],
+	            ['EQUALS TO', LN('sbi.qbe.filtergridpanel.foperators.name.eq'),  LN('sbi.qbe.filtergridpanel.foperators.desc.eq')],
+	            ['NOT EQUALS TO', LN('sbi.qbe.filtergridpanel.foperators.name.noteq'),  LN('sbi.qbe.filtergridpanel.foperators.desc.noteq')],
+	            ['GREATER THAN', LN('sbi.qbe.filtergridpanel.foperators.name.gt'),  LN('sbi.qbe.filtergridpanel.foperators.desc.gt')],
+	            ['EQUALS OR GREATER THAN', LN('sbi.qbe.filtergridpanel.foperators.name.eqgt'),  LN('sbi.qbe.filtergridpanel.foperators.desc.eqgt')],
+	            ['LESS THAN', LN('sbi.qbe.filtergridpanel.foperators.name.lt'),  LN('sbi.qbe.filtergridpanel.foperators.desc.lt')],
+	            ['EQUALS OR LESS THAN', LN('sbi.qbe.filtergridpanel.foperators.name.eqlt'),  LN('sbi.qbe.filtergridpanel.foperators.desc.eqlt')],
+	            ['STARTS WITH', LN('sbi.qbe.filtergridpanel.foperators.name.starts'),  LN('sbi.qbe.filtergridpanel.foperators.desc.starts')],
+	            ['NOT STARTS WITH', LN('sbi.qbe.filtergridpanel.foperators.name.notstarts'),  LN('sbi.qbe.filtergridpanel.foperators.desc.notstarts')],
+	            ['ENDS WITH', LN('sbi.qbe.filtergridpanel.foperators.name.ends'),  LN('sbi.qbe.filtergridpanel.foperators.desc.ends')],
+	            ['NOT ENDS WITH', LN('sbi.qbe.filtergridpanel.foperators.name.notends'),  LN('sbi.qbe.filtergridpanel.foperators.desc.notends')],
+	            ['CONTAINS', LN('sbi.qbe.filtergridpanel.foperators.name.contains'),  LN('sbi.qbe.filtergridpanel.foperators.desc.contains')],
+	            ['NOT CONTAINS', LN('sbi.qbe.filtergridpanel.foperators.name.notcontains'),  LN('sbi.qbe.filtergridpanel.foperators.desc.notcontains')],
 	            
-	            ['BETWEEN', 'between',  'true iff the field\'s value is between the range specified in the filter value'],
-	            ['NOT BETWEEN', 'not between',  'true iff the field\'s value is not between the range specified in the filter value'],
-	            ['IN', 'in',  'true iff the field\'s value is equal to one of the values specified in the filter value'],
-	            ['NOT IN', 'not in',  'true iff the field\'s value is not equal to any of the values specified in the filter value'],
+	            ['BETWEEN', LN('sbi.qbe.filtergridpanel.foperators.name.between'),  LN('sbi.qbe.filtergridpanel.foperators.desc.between')],
+	            ['NOT BETWEEN', LN('sbi.qbe.filtergridpanel.foperators.name.notbetween'),  LN('sbi.qbe.filtergridpanel.foperators.desc.notbetween')],
+	            ['IN', LN('sbi.qbe.filtergridpanel.foperators.name.in'),  LN('sbi.qbe.filtergridpanel.foperators.desc.in')],
+	            ['NOT IN', LN('sbi.qbe.filtergridpanel.foperators.name.notin'),  LN('sbi.qbe.filtergridpanel.foperators.desc.notin')],
 	            
-	            ['NOT NULL', 'not null',  'true iff the field\'s value is not null'],
-	            ['IS NULL', 'is null',  'true iff the field\'s value is null']
+	            ['NOT NULL', LN('sbi.qbe.filtergridpanel.foperators.name.notnull'),  LN('sbi.qbe.filtergridpanel.foperators.desc.notnull')],
+	            ['IS NULL', LN('sbi.qbe.filtergridpanel.foperators.name.isnull'),  LN('sbi.qbe.filtergridpanel.foperators.desc.isnull')]
 	    ]
 	})
-
 
 	// public methods
 
@@ -178,6 +173,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		return filters;
 	}
 	
+	/*
 	, getRowsAsJSONParams : function() {
 		var jsonStr = '[';
 		for(i = 0; i <  this.grid.store.getCount(); i++) {
@@ -205,6 +201,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		
 		return jsonStr;
 	}
+	*/
 	
 	, setFilters: function(filters) {
 		this.deleteFilters();
@@ -417,15 +414,17 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, initColumnModel: function(config) {
 			
 			var delButtonColumn = new Ext.grid.ButtonColumn({
-		       header: LN('sbi.qbe.filtergridpanel.headers.delete'),
-		       dataIndex: 'del',
-		       imgSrc: '../img/querybuilder/delete.gif',
-		       clickHandler:function(e, t){
+		       header: LN('sbi.qbe.filtergridpanel.headers.delete')
+		       , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
+		       , dataIndex: 'del'
+		       , imgSrc: '../img/querybuilder/delete.gif'
+		       , clickHandler:function(e, t){
 		          var index = this.grid.getView().findRowIndex(t);
 		          var record = this.grid.store.getAt(index);
 		          this.grid.store.remove(record);
 		       }
-		       //width: 55
+			   , hideable: true
+		       , hidden: true
 		    });
 		    
 		    
@@ -435,13 +434,13 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		        displayField:'funzione',
 		        valueField: 'funzione',
 		        allowBlank: false,
-		        editable: false,
-		        typeAhead: true,
+		        editable: true,
+		        typeAhead: true, // True to populate and autoselect the remainder of the text being typed after a configurable delay
 		        mode: 'local',
+		        forceSelection: true, // True to restrict the selected value to one of the values in the list
 		        triggerAction: 'all',
-		        emptyText:'Select operator...',
-		        selectOnFocus:true,
-		        autocomplete: 'off',
+		        emptyText: LN('sbi.qbe.filtergridpanel.boperators.editor.emptymsg'),
+		        selectOnFocus:true, //True to select any existing text in the field immediately on focus
 		        listeners: {
 		        	'change': {
      					fn: function(){
@@ -453,8 +452,11 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    });
 		    
 		    var isFreeCheckColumn = new Ext.grid.CheckColumn({
-			       header: LN('sbi.qbe.filtergridpanel.headers.isfree'),
-			       dataIndex: 'isfree'
+			       header: LN('sbi.qbe.filtergridpanel.headers.isfree')
+			       , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
+			       , dataIndex: 'isfree'
+			       , hideable: true
+				   , hidden: false
 			});
 		    
 		    var filterOptColumnEditor = new Ext.form.ComboBox({
@@ -462,14 +464,15 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	           	  store: this.filterOptStore, 
 	           	  displayField:'funzione',
 	              valueField: 'funzione',
+	              maxHeight: 200,
 	              allowBlank: true,
-	              editable: false,
-	              typeAhead: true,
+	              editable: true,
+	              typeAhead: true, // True to populate and autoselect the remainder of the text being typed after a configurable delay
 	              mode: 'local',
+	              forceSelection: true, // True to restrict the selected value to one of the values in the list
 	              triggerAction: 'all',
-	              emptyText:'Select function...',
-	              autocomplete: 'off',
-	              selectOnFocus:true
+	              emptyText: LN('sbi.qbe.filtergridpanel.foperators.editor.emptymsg'),
+	              selectOnFocus: true //True to select any existing text in the field immediately on focus
 	        });
 		    
 		    var nameColumnEditor = new Ext.form.TextField({
@@ -494,58 +497,66 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    		, textEditor: new Ext.grid.GridEditor(textEditor)
 		    }
 		    
-		    /*
-		    this.valueColumnEditor = new Ext.form.TriggerField({
-	             allowBlank: true
-	             , triggerClass: 'x-form-search-trigger'
-
-		    });
-		    */
-		    
-		    
-		    
 		    this.cm = new Ext.grid.ColumnModel([
 		        new Ext.grid.RowNumberer(),
 		        {
-		           header: LN('sbi.qbe.filtergridpanel.headers.name'),
-		           dataIndex: 'fname',
-		           //width: 75,		           
-		           editor: nameColumnEditor
-		           
+		           header: LN('sbi.qbe.filtergridpanel.headers.name')
+		           , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
+		           , dataIndex: 'fname'       
+		           , editor: nameColumnEditor
+		           , hideable: true
+		           , hidden: false		 
+		           , sortable: false
 		        },{
-		           header: LN('sbi.qbe.filtergridpanel.headers.entity'),
-		           dataIndex: 'entity'
-		           //width: 75
+		           header: LN('sbi.qbe.filtergridpanel.headers.entity')
+		           , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
+		           , dataIndex: 'entity'
+		           , hideable: true
+		           , hidden: false
+		           , sortable: false
 		        },{
-		           header: LN('sbi.qbe.filtergridpanel.headers.field'),
-		           dataIndex: 'field'
-		           //width: 75
+		           header: LN('sbi.qbe.filtergridpanel.headers.field')
+		           , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
+		           , dataIndex: 'field'
+		           , hideable: false
+		           , hidden: false	
+		           , sortable: false
 		        }, {
-		           header: LN('sbi.qbe.filtergridpanel.headers.operator'),
-		           dataIndex: 'operator',
-		           //width: 75		           
-		           autocomplete: 'off',
-		           editor: filterOptColumnEditor
+		           header: LN('sbi.qbe.filtergridpanel.headers.operator')
+		           , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
+		           , dataIndex: 'operator'     
+		           , editor: filterOptColumnEditor
+		           , hideable: false
+		           , hidden: false	
+		           , sortable: false
 		        },{
-		           header: LN('sbi.qbe.filtergridpanel.headers.value'),
-		           dataIndex: 'odesc',
-		           //width: 75,
-		           
-		           editor: textEditor            		           
+		           header: LN('sbi.qbe.filtergridpanel.headers.value')
+		           , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
+		           , dataIndex: 'odesc'
+		           , editor: textEditor 
+		           , hideable: false
+		           , hidden: false	
+		           , sortable: false
 		        },
 		        isFreeCheckColumn,
 		        {
-		           header: LN('sbi.qbe.filtergridpanel.headers.type'),
-		           dataIndex: 'otype'
-		           //width: 75
+		           header: LN('sbi.qbe.filtergridpanel.headers.type')
+		           , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
+		           , dataIndex: 'otype'
+		           , hideable: true
+		           , hidden: false	
+		           , sortable: false
 		        }, {
-		           header: LN('sbi.qbe.filtergridpanel.headers.boperator'),
-		           dataIndex: 'boperator',
-		           //width: 75,
-		           editor: booleanOptColumnEditor,
-		           renderer: function(val){
+		           header: LN('sbi.qbe.filtergridpanel.headers.boperator')
+		           , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
+		           , dataIndex: 'boperator'
+		           , editor: booleanOptColumnEditor
+		           , renderer: function(val){
 		        		return '<span style="color:green;">' + val + '</span>';  
 			       }
+		           , hideable: true
+		           , hidden: false	
+		           , sortable: false
 		           
 		        },
 		        delButtonColumn
@@ -579,6 +590,18 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			    			scope: this
 			    		}
 				    }
+				} , {
+				  	text: 'Debug',
+				    tooltip: 'Remove before release',
+				    iconCls:'option',
+				    listeners: {
+				      	'click': {
+							fn: function() {
+								alert('filters: ' + this.getFilters().toSource() + '\n\nexpression: '+ this.getFiltersExpression().toSource() + '\n\nuseExpression: ' + this.isWizardExpression());
+							},
+			    			scope: this
+			    		}
+				    }
 				} 
 			]
 		});
@@ -593,7 +616,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	        sm : this.sm,
 	        tbar: this.toolbar,
 	        plugins: this.plgins,
-	        clicksToEdit:2,	        
+	        clicksToEdit:1,	        
 	        style:'padding:10px',
 	        frame: true,
 	        height: 300,

@@ -122,7 +122,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		this.filterGridPanel.setFilters(query.filters);
 		
 		this.filterGridPanel.setFiltersExpression(query.expression);
-		if(query.expression && query.expression.fromWizard === true) {
+		if(query.isNestedExpression && query.isNestedExpression === true) {
 			this.filterGridPanel.setWizardExpression(true);		
 		} else {
 			this.filterGridPanel.setWizardExpression(false);	
@@ -144,7 +144,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     		query.distinct = this.selectGridPanel.distinctCheckBox.getValue();
     		query.filters = this.filterGridPanel.getFilters();
     		query.expression = this.filterGridPanel.getFiltersExpression();
-    		query.expression.fromWizard = this.filterGridPanel.isWizardExpression();
+    		query.isNestedExpression = this.filterGridPanel.isWizardExpression();
     	} else {		
     		alert("get query as string is deprecated");
 			query.fileds =  this.selectGridPanel.getRowsAsJSONParams();

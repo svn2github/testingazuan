@@ -40,6 +40,7 @@ import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
 
 /**
@@ -89,13 +90,13 @@ public class ExtJsQbeTreeBuilder  {
 	private String geEntityLabel(DataMartEntity entity) {
 		String label;
 		label = getDatamartLabels().getLabel(entity);
-		return label==null? entity.getName(): label;
+		return StringUtilities.isEmpty(label)? entity.getName(): label;
 	}
 	
 	private String geFieldLabel(DataMartField field) {
 		String label;
 		label = getDatamartLabels().getLabel(field);
-		return label==null? field.getName(): label;
+		return StringUtilities.isEmpty(label)? field.getName(): label;
 	}
 
 	/**

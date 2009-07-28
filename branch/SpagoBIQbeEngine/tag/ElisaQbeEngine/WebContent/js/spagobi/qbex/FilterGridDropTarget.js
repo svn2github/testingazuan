@@ -116,7 +116,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 			var store = this.targetGrid.store;
 			var row = store.getAt(rowIndex);
 			row.data['otype'] = 'Subquery';
-			row.data['odesc'] = node.attributes.query.name;
+			row.data['odesc'] = node.props.query.name;
 			row.data['operand'] = node.id;
 			this.targetGrid.store.fireEvent('datachanged', this.targetGrid.store) ;
 		} else {

@@ -3,6 +3,15 @@ Sbi.locale.ln = Sbi.locale.ln || new Array();
 
 
 //===================================================================
+// MESSAGE WINDOW
+//===================================================================
+Sbi.locale.ln['sbi.qbe.messagewin.warning.title'] = 'Warning message';
+Sbi.locale.ln['sbi.qbe.messagewin.error.title'] = 'Error message';
+Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Info message';
+
+
+
+//===================================================================
 //DATASTORE PANEL
 //===================================================================
 Sbi.locale.ln['sbi.qbe.datastorepanel.title'] = 'Results';
@@ -30,7 +39,6 @@ Sbi.locale.ln['sbi.qbe.datastorepanel.button.tt.exportto'] = 'Export to';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.title'] = 'Filters';
 
 //column headers
-
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.delete'] = 'Delete';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.name'] = 'Filter Name';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.entity'] = 'Entity';
@@ -40,6 +48,65 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.value'] = 'Operand';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.isfree'] = 'Is for Prompt';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.type'] = 'Operand Type';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.boperator'] = 'Bol.Connector';
+
+//column tooltip
+Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.notdef'] = 'Help tooltip not defined yet';
+
+//boolean operators
+Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.name.and'] = 'AND';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.name.or'] = 'OR';
+
+Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.desc.and'] = 'Connect this filter and the next one using the boolean operator AND';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.desc.or'] = 'Connect this filter and the next one using the boolean operator OR';
+
+Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.editor.emptymsg'] = 'Select an operator...';
+
+
+//filter operators
+
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.none'] = 'none';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.eq'] = 'equals to';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.noteq'] = 'not equals to';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.gt'] = 'greater than';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.eqgt'] = 'equals or greater than';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.lt'] = 'less than';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.eqlt'] = 'equals or less than';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.starts'] = 'starts with';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notstarts'] = 'not starts with';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.ends'] = 'ends with';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notends'] = 'not ends with';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.contains'] = 'contains';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notcontains'] = 'not contains';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.between'] = 'between';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notbetween'] = 'not between';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.in'] = 'in';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notin'] = 'not in';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notnull'] = 'not null';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.isnull'] = 'is null';
+
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.none'] = 'no filter applayed';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.eq'] = 'true iff the field\'s value is equal to filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.noteq'] = 'true iff the field\'s value is not equal to filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.gt'] = 'true iff the field\'s value is greater than filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.eqgt'] = 'true iff the field\'s value is equal or greater than filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.lt'] = 'true iff the field\'s value is less than filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.eqlt'] = 'true iff the field\'s value starts with filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.starts'] = 'true iff the field\'s value is equal or less than filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notstarts'] = 'true iff the field\'s value doesn\'t start with filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.ends'] = 'true iff the field\'s value ends with filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notends'] = 'true iff the field\'s value doesn\'t end with filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.contains'] = 'true iff the field\'s value contains filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notcontains'] = 'true iff the field\'s value doesn\'t contain filter\'s value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.between'] = 'true iff the field\'s value is between the range specified in the filter value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notbetween'] = 'true iff the field\'s value is not between the range specified in the filter value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.in'] = 'true iff the field\'s value is equal to one of the values specified in the filter value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notin'] = 'true iff the field\'s value is not equal to any of the values specified in the filter value';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notnull'] = 'true iff the field\'s value is not null';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.isnull'] = 'true iff the field\'s value is null';
+
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.editor.emptymsg'] = 'Select an operator...';
+
+
 
 // ===================================================================
 //	SELECT GRID

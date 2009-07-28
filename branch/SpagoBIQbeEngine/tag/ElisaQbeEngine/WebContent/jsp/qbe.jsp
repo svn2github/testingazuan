@@ -88,7 +88,9 @@
 	
 	<qbe:url type="resource" var="BLANK_IMAGE_URL" ref="../js/lib/ext-2.0.1/resources/images/default/s.gif"/>
 	
-	
+	<script type="text/javascript">
+	Ext.Ajax.timeout = 300000;
+	</script>
     
     
     <script type="text/javascript">  

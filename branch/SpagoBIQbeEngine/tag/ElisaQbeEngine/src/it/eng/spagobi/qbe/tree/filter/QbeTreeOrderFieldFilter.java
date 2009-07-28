@@ -26,14 +26,14 @@ import java.util.List;
 
 import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.model.IDataMartModel;
-import it.eng.qbe.model.structure.DataMartEntity;
+import it.eng.qbe.model.structure.DataMartField;
 
 /**
  * The Class QbeTreeAccessModalityFieldFilter.
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter {
+public class QbeTreeOrderFieldFilter extends ComposableQbeTreeFieldFilter {
 	
 	
 	/** The parent filter. */
@@ -42,7 +42,7 @@ public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter {
 	/**
 	 * Instantiates a new qbe tree access modality field filter.
 	 */
-	public QbeTreeOrderEntityFilter() {
+	public QbeTreeOrderFieldFilter() {
 		parentFilter = null;
 	}
 	
@@ -51,7 +51,7 @@ public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter {
 	 * 
 	 * @param parentFilter the parent filter
 	 */
-	public QbeTreeOrderEntityFilter(IQbeTreeEntityFilter parentFilter) {
+	public QbeTreeOrderFieldFilter(IQbeTreeFieldFilter parentFilter) {
 		setParentFilter(parentFilter);
 	}
 	
@@ -63,12 +63,12 @@ public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter {
 		
 		Collections.sort(fields, new Comparator() {
 		    public int compare(Object o1, Object o2) {
-		    	DataMartEntity f1, f2;
+		    	DataMartField f1, f2;
 		    	String p1, p2;
 		    	int i1, i2;
 		    	
-		    	f1 = (DataMartEntity)o1;
-		    	f2 = (DataMartEntity)o2;
+		    	f1 = (DataMartField)o1;
+		    	f2 = (DataMartField)o2;
 		    	
 		    	p1 = properties.getProperty(f1, "position");
 		    	p2 = properties.getProperty(f2, "position");

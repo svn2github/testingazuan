@@ -172,7 +172,6 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 	}
 	
 	, oonLoadException: function(treeLoader, node, response) {
-		alert('error: ' + treeLoader.baseParams.toSource());
 		Sbi.exception.ExceptionHandler.handleFailure(response, treeLoader.baseParams || {});
 	}
 });

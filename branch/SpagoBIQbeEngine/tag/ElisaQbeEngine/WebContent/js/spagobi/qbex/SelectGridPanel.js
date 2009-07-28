@@ -53,11 +53,6 @@ Sbi.qbe.SelectGridPanel = function(config) {
 	}, config || {});
 	
 	this.services = new Array();
-	var params = {};
-	this.services['loadDataStore'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'EXEC_QUERY_ACTION'
-		, baseParams: params
-	});
 	
 	this.addEvents('filter');
 	

@@ -613,8 +613,18 @@ public class ExecuteBIDocumentJob implements Job {
 				throw new Exception("Mail profile configuration not found");
 			}
 			String smtphost = (String)mailProfSB.getAttribute("smtphost");
+		    String smtpport = (String) mailProfSB.getAttribute("smtpport");
+		    int smptPort=25;
+		    
 			if( (smtphost==null) || smtphost.trim().equals(""))
 				throw new Exception("Smtp host not configured");
+			if( (smtpport==null) || smtpport.trim().equals("")){
+				throw new Exception("Smtp host not configured");
+			}else{
+				smptPort=Integer.parseInt(smtpport);
+			}
+				
+		    
 			String from = (String)mailProfSB.getAttribute("from");
 			if( (from==null) || from.trim().equals(""))
 				from = "spagobi.scheduler@eng.it";
@@ -641,6 +651,8 @@ public class ExecuteBIDocumentJob implements Job {
 			//Set the host smtp address
 			Properties props = new Properties();
 			props.put("mail.smtp.host", smtphost);
+			props.put("mail.smtp.port", smptPort);
+			
 			props.put("mail.smtp.auth", "true");
 			// create autheticator object
 			Authenticator auth = new SMTPAuthenticator(user, pass);

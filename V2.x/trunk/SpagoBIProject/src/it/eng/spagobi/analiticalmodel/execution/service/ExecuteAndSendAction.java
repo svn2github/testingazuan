@@ -198,8 +198,15 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 		throw new Exception("Mail profile configuration not found");
 	    }
 	    String smtphost = (String) mailProfSB.getAttribute("smtphost");
+	    String smtpport = (String) mailProfSB.getAttribute("smtpport");
+	    int smptPort=25;
 	    
 	    if ((smtphost == null) || smtphost.trim().equals("")) throw new Exception("Smtp host not configured");
+	    if ((smtpport == null) || smtpport.trim().equals("")) {
+	    	throw new Exception("Smtp PORT not configured");
+	    }else{
+	    	smptPort=Integer.parseInt(smtpport);
+	    }
 	    if ((from == null) || from.trim().equals("")) from = (String) mailProfSB.getAttribute("from");
 	    if(login == null || login.trim().equals(""))login = (String) mailProfSB.getAttribute("user");
 	    if(pass == null || pass.trim().equals(""))pass = (String) mailProfSB.getAttribute("password");
@@ -210,6 +217,7 @@ public class ExecuteAndSendAction extends AbstractHttpAction {
 	    // Set the host smtp address
 	    Properties props = new Properties();
 	    props.put("mail.smtp.host", smtphost);
+	    props.put("mail.smtp.port", smptPort);
 	    props.put("mail.smtp.auth", "true");
 	    // create autheticator object
 	    Authenticator auth = new SMTPAuthenticator(login, pass);

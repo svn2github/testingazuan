@@ -4,18 +4,21 @@
 	<PROFILES>
 		<PROFILE name="scheduler" 
 		         smtphost="mail.eng.it" 
+		         smtpport="25"
 		         from="spagobi@eng.it" 
 		         user="" 
 		         password=""/>
 		         
 		<PROFILE name="user" 
 		         smtphost="mail.eng.it" 
+		         smtpport="25"
 		         from="spagobi@eng.it" 
 		         user="" 
 		         password=""/>  
 		         
 		<PROFILE name="kpi_alarm" 
 		         smtphost="mail.eng.it" 
+		         smtpport="25"
 		         from="spagobi@eng.it" 
 		         user="****" 
 		         password="****"/>   

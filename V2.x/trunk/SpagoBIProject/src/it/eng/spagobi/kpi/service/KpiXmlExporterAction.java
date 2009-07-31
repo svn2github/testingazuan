@@ -1,28 +1,17 @@
 package it.eng.spagobi.kpi.service;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spago.dispatching.service.DefaultRequestContext;
-import it.eng.spago.error.EMFErrorHandler;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.exporters.KpiExporter;
-import it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
-import it.eng.spagobi.kpi.utils.BasicXmlBuilder;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,29 +63,22 @@ public class KpiXmlExporterAction extends AbstractHttpAction {
 			String userId=null;
 			Object userIdO=serviceRequest.getAttribute("user_id");	
 			if(userIdO!=null)userId=userIdO.toString();
-
-			BasicXmlBuilder basic=new BasicXmlBuilder(docName,title,subtitle);
-			String template = basic.buildTemplate(listKpiBlocks);
-
-			String dirS = System.getProperty("java.io.tmpdir");
-			File dir = new File(dirS);
-			dir.mkdirs();
-
-			tmpFile = File.createTempFile("tempXmlExport", ".xml" , dir);
-			FileOutputStream stream = new FileOutputStream(tmpFile);
-			stream.write(template.getBytes());
-			stream.flush();
-			stream.close();
-			BufferedInputStream in = new BufferedInputStream(new FileInputStream(tmpFile));
-			HttpServletResponse response = getHttpResponse();
 			
+			it.eng.spagobi.engines.exporters.KpiExporter exporter=new KpiExporter();
+			tmpFile=exporter.getKpiExportXML(listKpiBlocks, document, userId);
+
 			String outputType = "XML";
 
 			String mimeType = "text/xml";
 
+			logger.debug("Report exported succesfully");
+
+			HttpServletResponse response = getHttpResponse();
 			response.setContentType(mimeType);							
 			response.setHeader("Content-Disposition", "filename=\"report." + outputType + "\";");
-			
+			response.setContentLength((int) tmpFile.length());
+
+			BufferedInputStream in = new BufferedInputStream(new FileInputStream(tmpFile));
 			int b = -1;
 			while ((b = in.read()) != -1) {
 				response.getOutputStream().write(b);
@@ -104,7 +86,6 @@ public class KpiXmlExporterAction extends AbstractHttpAction {
 			response.getOutputStream().flush();
 			in.close();
 			logger.debug("OUT");
-
 
 		} catch(Throwable e) {
 			logger.error("An exception has occured", e);

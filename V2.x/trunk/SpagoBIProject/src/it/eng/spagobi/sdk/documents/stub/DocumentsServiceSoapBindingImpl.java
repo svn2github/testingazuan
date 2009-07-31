@@ -51,9 +51,9 @@ public class DocumentsServiceSoapBindingImpl implements it.eng.spagobi.sdk.docum
 		return impl.saveNewDocument(in0, in1, in2);
 	}
 
-	public it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent executeDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[] in1, java.lang.String in2) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException {
+	public it.eng.spagobi.sdk.documents.bo.SDKExecutedDocumentContent executeDocument(it.eng.spagobi.sdk.documents.bo.SDKDocument in0, it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter[] in1, java.lang.String in2, java.lang.String in3) throws java.rmi.RemoteException, it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException, it.eng.spagobi.sdk.exceptions.NotAllowedOperationException {
 		DocumentsServiceImpl impl = new DocumentsServiceImpl();
-		return impl.executeDocument(in0, in1,in2);
+		return impl.executeDocument(in0, in1,in2, in3);
 	}
 
 }

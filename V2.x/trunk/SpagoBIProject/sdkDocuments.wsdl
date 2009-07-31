@@ -203,6 +203,8 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       <wsdl:part name="in2" type="soapenc:string"/>
 
+      <wsdl:part name="in3" type="soapenc:string"/>
+
    </wsdl:message>
 
    <wsdl:message name="getDocumentsAsListRequest">
@@ -387,7 +389,7 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
-      <wsdl:operation name="executeDocument" parameterOrder="in0 in1 in2">
+      <wsdl:operation name="executeDocument" parameterOrder="in0 in1 in2 in3">
 
          <wsdl:input message="impl:executeDocumentRequest" name="executeDocumentRequest"/>
 

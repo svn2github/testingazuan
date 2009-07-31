@@ -1,11 +1,16 @@
 package it.eng.spagobi.engines.exporters;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.HibernateUtil;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.kpi.utils.BasicTemplateBuilder;
+import it.eng.spagobi.kpi.utils.BasicXmlBuilder;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.StringBufferInputStream;
@@ -16,6 +21,9 @@ import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -180,6 +188,53 @@ public class KpiExporter {
 
 		}
 
+	}
+	
+	public File getKpiExportXML(List<KpiResourceBlock> kpiBlocks, BIObject obj, String userId) throws Exception{
+		File tmpFile=null;
+		logger.debug("IN");
+
+		try{
+			
+			// recover BiObject Name
+			Object idObject=obj.getId();
+			if(idObject==null){
+				logger.error("Document id not found");
+			}
+
+			Integer id=Integer.valueOf(idObject.toString());
+			BIObject document=DAOFactory.getBIObjectDAO().loadBIObjectById(id);
+			String docName=document.getName();
+
+			//Recover user Id
+			HashedMap parameters=new HashedMap();
+
+			BasicXmlBuilder basic=new BasicXmlBuilder(docName);
+			String template = basic.buildTemplate(kpiBlocks);
+
+			String dirS = System.getProperty("java.io.tmpdir");
+			File dir = new File(dirS);
+			dir.mkdirs();
+
+			tmpFile = File.createTempFile("tempXmlExport", ".xml" , dir);
+			FileOutputStream stream = new FileOutputStream(tmpFile);
+			stream.write(template.getBytes());
+			stream.flush();
+			stream.close();
+			BufferedInputStream in = new BufferedInputStream(new FileInputStream(tmpFile));
+
+			in.close();
+			logger.debug("OUT");
+			return tmpFile;
+
+		} catch(Throwable e) {
+			logger.error("An exception has occured", e);
+			throw new Exception(e);
+		} finally {
+
+			//tmpFile.delete();
+
+		}
 	}
 }
 

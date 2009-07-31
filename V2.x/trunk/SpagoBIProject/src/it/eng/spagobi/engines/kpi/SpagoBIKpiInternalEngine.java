@@ -434,6 +434,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				block.setParMap(this.parametersObject);
 				KpiLine line = getBlock(mI.getModelInstanceNodeId(), null);
 				block.setRoot(line);
+				block.setTitle(name);
+				block.setSubtitle(subName);
 				logger.debug("Setted the tree Root.");
 				kpiRBlocks.add(block);
 

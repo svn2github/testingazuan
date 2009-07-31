@@ -107,6 +107,11 @@ public class BasicXmlBuilder  {
 		this.documentTitle = documentTitle;
 		this.documentSubTitle = documentSubTitle;
 	}
+	
+	public BasicXmlBuilder(String documentName ) {
+		super();
+		this.documentName = documentName;
+	}
 
 
 	/* Build the template
@@ -143,6 +148,9 @@ public class BasicXmlBuilder  {
 	public void createXml(List resources){
 		logger.debug("IN");
 		
+		KpiResourceBlock tempBlock = (KpiResourceBlock)resources.get(0);
+		this.documentTitle = tempBlock.getTitle();
+		this.documentSubTitle = tempBlock.getSubtitle();
 		createTitle();
 		createSubtitle();
 		

@@ -34,7 +34,6 @@ import it.eng.spago.security.IEngUserProfile;
 import it.eng.spago.validation.EMFValidationError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
-import it.eng.spagobi.analiticalmodel.document.dao.IBIObjectDAO;
 import it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
@@ -407,7 +406,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 	}
 
 
-	private SDKExecutedDocumentContent executeKpi(SDKDocument document, BIObject biobj, String userId){
+	private SDKExecutedDocumentContent executeKpi(SDKDocument document, BIObject biobj, String userId,String ouputType){
 		logger.debug("IN");
 		SDKExecutedDocumentContent toReturn=null;
 		SourceBean request = null;
@@ -466,7 +465,6 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		// result of the Kpi
 		List<KpiResourceBlock> blocksList=null;
 		try {
-			// TODO per ora chiamo il metodo preciso
 			blocksList=((SpagoBIKpiInternalEngine)internalEngine).executeCode(reqContainer, biobj, resp, userId);
 			if(blocksList==null){
 				logger.error("No result returned by kpi execution");
@@ -484,12 +482,22 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		}
 
 		File tmpFile=null;
-
+		String mimeType = "application/pdf";
+		logger.debug("setting object to return of type SDKExecuteDocumentContent");
+		toReturn=new SDKExecutedDocumentContent();
 		// call exporter!
 		try{
 			KpiExporter exporter=new KpiExporter();
-			logger.debug("call PDF Exporter");
-			tmpFile=exporter.getKpiReportPDF(blocksList, biobj, userId);
+			if(ouputType.equals("PDF")){
+				logger.debug("call PDF Exporter");
+				tmpFile=exporter.getKpiReportPDF(blocksList, biobj, userId);
+				toReturn.setFileName(biobj.getLabel()+".pdf");
+			}else if (ouputType.equals("XML")){
+				mimeType = "text/xml";
+				logger.debug("call XML Exporter");
+				tmpFile=exporter.getKpiExportXML(blocksList, biobj, userId);
+				toReturn.setFileName(biobj.getLabel()+".xml");
+			}
 		}
 		catch (Exception e) {
 			logger.error("error while exporting",e);
@@ -504,27 +512,14 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		}
 
 		try{
-			logger.debug("setting object to return of type SDKExecuteDocumentContent");
-			toReturn=new SDKExecutedDocumentContent();
-			String mimeType = "application/pdf";
-			FileDataSource mods = new FileDataSource(tmpFile);
-
-//			DataHandler dataHandler=new DataHandler(mods);
-//
-//			toReturn.setContent(dataHandler);
-			toReturn.setFileName(biobj.getLabel()+".pdf");
+			FileDataSource mods = new FileDataSource(tmpFile);		
 			toReturn.setFileType(mimeType);
 			DataHandler dhSource = new DataHandler(mods);
 			toReturn.setContent(dhSource);
-
-
 		}
 
 		finally{
 			logger.debug("deleting file Tmp");
-//			if(tmpFile!=null){
-//				tmpFile.delete();
-//			}
 			logger.debug("file Tmp deleted");
 		}
 		logger.debug("OUT");
@@ -572,9 +567,10 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 	 * @param: roleName : name of the role
 	 */
 
-	public SDKExecutedDocumentContent executeDocument(SDKDocument document, SDKDocumentParameter[] parameters, String roleName)
+	public SDKExecutedDocumentContent executeDocument(SDKDocument document, SDKDocumentParameter[] parameters, String roleName, String outputType)
 	throws NonExecutableDocumentException, NotAllowedOperationException,MissingParameterValue,InvalidParameterValue {
 		logger.debug("IN");
+		String output = (outputType != null && !outputType.equals("")) ? outputType : "PDF";
 		SDKExecutedDocumentContent toReturn = null;
 
 		IEngUserProfile profile = null;
@@ -640,7 +636,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		try {
 
 			if(document.getType().equalsIgnoreCase("KPI")){  // CASE KPI
-				toReturn=executeKpi(document, instance.getBIObject(), (String)profile.getUserUniqueIdentifier());
+				toReturn=executeKpi(document, instance.getBIObject(), (String)profile.getUserUniqueIdentifier(),output);
 			}else if(document.getType().equalsIgnoreCase("REPORT")){  // CASE REPORT
 				Engine engine=instance.getBIObject().getEngine();
 				String engineLabel=engine.getLabel();

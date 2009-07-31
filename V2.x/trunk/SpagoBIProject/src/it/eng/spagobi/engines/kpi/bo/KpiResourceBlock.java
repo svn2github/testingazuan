@@ -47,6 +47,8 @@ public class KpiResourceBlock {
 	Resource r = null;
 	KpiLine root = null;
 	Date d = null;
+	String title = "";
+	String subtitle = "";
 	protected HashMap parMap;
 	protected String currTheme="";
 	protected RequestContainer requestContainer = null;
@@ -548,6 +550,22 @@ public class KpiResourceBlock {
 			toReturn = orderChildren(toReturn,temp);
 		}
 		return toReturn;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getSubtitle() {
+		return subtitle;
+	}
+
+	public void setSubtitle(String subtitle) {
+		this.subtitle = subtitle;
 	}
 
 	

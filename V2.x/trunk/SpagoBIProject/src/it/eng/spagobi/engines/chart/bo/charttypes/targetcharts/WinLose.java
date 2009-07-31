@@ -6,6 +6,7 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.BasicStroke;
 import java.awt.Font;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -196,7 +197,7 @@ public class WinLose extends TargetCharts{
 
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis(); 
 		rangeAxis.setVisible(false); 
-		rangeAxis.setRange(new Range(-(barHeight+0.3 ), (barHeight+0.3))); 
+		rangeAxis.setRange(new Range(-(barHeight+0.2 ), (barHeight+0.2))); 
 
 		// customize renderer 
 		MyBarRendererThresholdPaint renderer=new MyBarRendererThresholdPaint(useTargets, thresholds, dataset, timeSeries, nullValues,bottomThreshold, color );
@@ -207,7 +208,7 @@ public class WinLose extends TargetCharts{
 			renderer.setBaseItemLabelsVisible(Boolean.TRUE, true);
 			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
-			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator() {
+			renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", new DecimalFormat("0.#")) {
 				public String generateLabel(CategoryDataset dataset, int row, int column) {
 					if(dataset.getValue(row, column) == null || dataset.getValue(row, column).doubleValue() == 0) return "";
 					String columnKey=(String)dataset.getColumnKey(column);

@@ -10,6 +10,7 @@ import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -199,7 +200,7 @@ public class SparkLine extends TargetCharts{
 			if(thres.doubleValue()<lb) lb=thres.doubleValue();
 		}
 
-		plot.getRangeAxis().setRange(new Range(Math.min(lb, min-2), Math.max(ub,max+2)));
+		plot.getRangeAxis().setRange(new Range(Math.min(lb, min-2), Math.max(ub,max+2)+2));
 
 
 		addMarker(1, avg, Color.GRAY, 0.8f, plot);
@@ -222,6 +223,7 @@ public class SparkLine extends TargetCharts{
 
 		ValueAxis domainAxis = plot.getDomainAxis(); 
 		domainAxis.setVisible(false); 
+		domainAxis.setUpperMargin(0.2);
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis(); 
 		rangeAxis.setVisible(false); 
 
@@ -262,7 +264,7 @@ public class SparkLine extends TargetCharts{
 			renderer.setBaseItemLabelsVisible(Boolean.TRUE, true);
 			renderer.setBaseItemLabelFont(new Font(styleValueLabels.getFontName(), Font.PLAIN, styleValueLabels.getSize()));
 			renderer.setBaseItemLabelPaint(styleValueLabels.getColor());
-			renderer.setBaseItemLabelGenerator(new StandardXYItemLabelGenerator() {
+			renderer.setBaseItemLabelGenerator(new StandardXYItemLabelGenerator("{2}", new DecimalFormat("0.###"),new DecimalFormat("0.###")) {
 				public String generateLabel(CategoryDataset dataset, int row, int column) {
 					if(dataset.getValue(row, column) == null || dataset.getValue(row, column).doubleValue() == 0) return "";
 					String columnKey=(String)dataset.getColumnKey(column);
@@ -328,7 +330,7 @@ public class SparkLine extends TargetCharts{
 		avg = avg/(double)count;
 
 
-		plot.getRangeAxis().setRange(new Range(min-2, max+2));
+		//plot.getRangeAxis().setRange(new Range(min-2, max+2));
 
 		addMarker(1, avg, colorAverage, 0.8f, plot);
 		logger.debug("OUT");

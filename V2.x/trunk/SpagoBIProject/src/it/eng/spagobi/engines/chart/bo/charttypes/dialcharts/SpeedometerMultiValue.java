@@ -78,6 +78,19 @@ public class SpeedometerMultiValue extends DialCharts{
 	Vector 	valuesNames = null; //list values names
 	LegendItemCollection legendItems = null;
 
+	
+	/** Tag to color values*/
+	public static final String VALUES_COLORS = "VALUES_COLORS";
+	
+	
+	/** CONF PARAMETERS: */
+	public static final String MINOR_TICK = "minor_tick";
+	public static final String ORIENTATION = "orientation";
+	public static final String INCREMENT = "increment";
+	public static final String DIALTEXTUSE = "dialtextuse"; // true or false
+	public static final String DIALTEXT = "dialtext";
+	
+	
 	/**
 	 * Instantiates a new sBI speedometer.
 	 */
@@ -103,32 +116,32 @@ public class SpeedometerMultiValue extends DialCharts{
 
 		if(!isLovConfDefined){
 			logger.debug("Configuration set in template");
-			if(confParameters.get("increment")!=null){	
-				String increment=(String)confParameters.get("increment");
+			if(confParameters.get(INCREMENT)!=null){	
+				String increment=(String)confParameters.get(INCREMENT);
 				setIncrement(Double.valueOf(increment).doubleValue());
 			}
 			else {
 				logger.error("increment not defined");
 				return;
 			}
-			if(confParameters.get("minor_tick")!=null){	
-				String minorTickCount=(String)confParameters.get("minor_tick");
+			if(confParameters.get(MINOR_TICK)!=null){	
+				String minorTickCount=(String)confParameters.get(MINOR_TICK);
 				setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
 			}
 			else {
 				setMinorTickCount(10);
 			}
 			
-			if(confParameters.get("dialtextuse")!=null){	
-				String dialtextusetemp=(String)confParameters.get("dialtextuse");
+			if(confParameters.get(DIALTEXTUSE)!=null){	
+				String dialtextusetemp=(String)confParameters.get(DIALTEXTUSE);
 				if(dialtextusetemp.equalsIgnoreCase("true")){
 					dialtextuse = true;
 				}
 				else dialtextuse = false;
 			}
 			
-			if(dialtextuse && confParameters.get("dialtext")!=null){
-				dialtext=(String)confParameters.get("dialtext");
+			if(dialtextuse && confParameters.get(DIALTEXT)!=null){
+				dialtext=(String)confParameters.get(DIALTEXT);
 			}
 
 
@@ -153,9 +166,9 @@ public class SpeedometerMultiValue extends DialCharts{
 				while(intervalsAttrsIter.hasNext()) {
 					SourceBeanAttribute paramSBA = (SourceBeanAttribute)intervalsAttrsIter.next();
 					SourceBean param = (SourceBean)paramSBA.getValue();
-					String min= (String)param.getAttribute("min");
-					String max= (String)param.getAttribute("max");
-					String col= (String)param.getAttribute("color");
+					String min= (String)param.getAttribute(MIN_INTERVAL);
+					String max= (String)param.getAttribute(MAX_INTERVAL);
+					String col= (String)param.getAttribute(COLOR_INTERVAL);
 
 					KpiInterval interval=new KpiInterval();
 					interval.setMin(Double.valueOf(min).doubleValue());
@@ -173,7 +186,7 @@ public class SpeedometerMultiValue extends DialCharts{
 			}
 			
 			//reading values colors if present
-			SourceBean colors = (SourceBean)content.getAttribute("VALUES_COLORS");
+			SourceBean colors = (SourceBean)content.getAttribute(VALUES_COLORS);
 			if(colors!=null){
 				colorMap=new HashMap();
 				List atts=colors.getContainedAttributes();
@@ -198,7 +211,7 @@ public class SpeedometerMultiValue extends DialCharts{
 			setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
 
 		
-			String intervalsNumber=(String)sbRow.getAttribute("intervals_number");
+			String intervalsNumber=(String)sbRow.getAttribute(INTERVALS_NUMBER);
 			if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
 				KpiInterval interval=new KpiInterval();
 				interval.setMin(getLower());

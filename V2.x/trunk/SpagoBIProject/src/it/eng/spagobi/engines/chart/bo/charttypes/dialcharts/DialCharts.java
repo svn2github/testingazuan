@@ -72,7 +72,16 @@ public class DialCharts extends ChartImpl {
 	/** if to draw the legend*/
 	public static final String LEGEND = "legend";
 
+	/** Tag to define INTERVAL and attributes (not used by all dial charts*/
+	public static final String INTERVAL = "INTERVAL";
+	public static final String LABEL_INTERVAL = "label";
+	public static final String MIN_INTERVAL = "min";
+	public static final String MAX_INTERVAL = "max";
+	public static final String COLOR_INTERVAL = "color";
+	public static final String INTERVALS_NUMBER = "intervals_number";
 
+
+	
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.ChartImpl#createChart(java.lang.String, org.jfree.data.general.Dataset)

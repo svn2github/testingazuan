@@ -35,6 +35,9 @@ public class BulletGraph  extends DialCharts{
 	Vector intervals;
 	Double target;
 	
+	// Parameters
+
+	
 	public BulletGraph() {
 		super();
 		intervals=new Vector();
@@ -51,15 +54,15 @@ public class BulletGraph  extends DialCharts{
 		if(confSB==null){
 			confSB = (SourceBean)content.getAttribute("CONF.INTERVALS");
 		}
-		List confAttrsList = confSB.getAttributeAsList("INTERVAL");
+		List confAttrsList = confSB.getAttributeAsList(INTERVAL);
 		if (!confAttrsList.isEmpty()){
 			Iterator it = confAttrsList.iterator();
 			while(it.hasNext()){
 				SourceBean param = (SourceBean)it.next();
 				KpiInterval interval=new KpiInterval();
-				String min=(String)param.getAttribute("min");
-				String max=(String)param.getAttribute("max");
-				String col=(String)param.getAttribute("color");
+				String min=(String)param.getAttribute(MIN_INTERVAL);
+				String max=(String)param.getAttribute(MAX_INTERVAL);
+				String col=(String)param.getAttribute(COLOR_INTERVAL);
 				interval.setMin(Double.valueOf(min).doubleValue());
 				interval.setMax(Double.valueOf(max).doubleValue());
 				Color color=new Color(Integer.decode(col).intValue());

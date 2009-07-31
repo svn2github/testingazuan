@@ -107,9 +107,9 @@ public class Meter extends DialCharts{
 					String label="";
 					if(param.getAttribute("label")!=null)
 						label=(String)param.getAttribute("label");
-					String min= (String)param.getAttribute("min");
-					String max= (String)param.getAttribute("max");
-					String col= (String)param.getAttribute("color");
+					String min= (String)param.getAttribute(MIN_INTERVAL);
+					String max= (String)param.getAttribute(MAX_INTERVAL);
+					String col= (String)param.getAttribute(COLOR_INTERVAL);
 
 					KpiInterval interval=new KpiInterval();
 					interval.setLabel(label);
@@ -128,7 +128,7 @@ public class Meter extends DialCharts{
 		}
 		else{
 			logger.info("Configuration parameters set in LOV");
-			String intervalsNumber=(String)sbRow.getAttribute("intervals_number");
+			String intervalsNumber=(String)sbRow.getAttribute(INTERVALS_NUMBER);
 			if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
 				logger.warn("intervals not correctly defined, use default settings");
 				KpiInterval interval=new KpiInterval();

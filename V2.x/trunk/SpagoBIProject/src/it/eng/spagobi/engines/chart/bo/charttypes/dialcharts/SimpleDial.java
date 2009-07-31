@@ -80,10 +80,10 @@ public class SimpleDial extends DialCharts{
 	public static final String CHANGE_VIEW_LABEL1="Set Vertical View";
 	public static final String CHANGE_VIEW_LABEL2="Set Horizontal View";
 
-
-
-
-
+	/** CONF PARAMETERS: */
+	public static final String MINOR_TICK = "minor_tick";
+	public static final String ORIENTATION = "orientation";
+	public static final String INCREMENT = "increment";
 
 
 	/**
@@ -110,23 +110,23 @@ public class SimpleDial extends DialCharts{
 
 
 		if(!isLovConfDefined){
-			if(confParameters.get("increment")!=null){	
-				String increment=(String)confParameters.get("increment");
+			if(confParameters.get(INCREMENT)!=null){	
+				String increment=(String)confParameters.get(INCREMENT);
 				setIncrement(Double.valueOf(increment).doubleValue());
 			}
 			else {
 				logger.error("increment not defined");
 			}
-			if(confParameters.get("minor_tick")!=null){	
-				String minorTickCount=(String)confParameters.get("minor_tick");
+			if(confParameters.get(MINOR_TICK)!=null){	
+				String minorTickCount=(String)confParameters.get(MINOR_TICK);
 				setMinorTickCount(Integer.valueOf(minorTickCount).intValue());
 			}
 			else {
 				setMinorTickCount(10);
 			}
 
-			if(confParameters.get("orientation")!=null){	
-				String orientation=(String)confParameters.get("orientation");
+			if(confParameters.get(ORIENTATION)!=null){	
+				String orientation=(String)confParameters.get(ORIENTATION);
 				if(orientation.equalsIgnoreCase("vertical")){
 					horizontalViewConfigured=true;
 					horizontalView=false;
@@ -162,9 +162,9 @@ public class SimpleDial extends DialCharts{
 				while(intervalsAttrsIter.hasNext()) {
 					SourceBeanAttribute paramSBA = (SourceBeanAttribute)intervalsAttrsIter.next();
 					SourceBean param = (SourceBean)paramSBA.getValue();
-					String min= (String)param.getAttribute("min");
-					String max= (String)param.getAttribute("max");
-					String col= (String)param.getAttribute("color");
+					String min= (String)param.getAttribute(MIN_INTERVAL);
+					String max= (String)param.getAttribute(MAX_INTERVAL);
+					String col= (String)param.getAttribute(COLOR_INTERVAL);
 
 					KpiInterval interval=new KpiInterval();
 					interval.setMin(Double.valueOf(min).doubleValue());
@@ -183,12 +183,12 @@ public class SimpleDial extends DialCharts{
 		}
 
 		else{
-			String increment=(String)sbRow.getAttribute("increment");
-			String minorTickCount=(String)sbRow.getAttribute("minor_tick");
+			String increment=(String)sbRow.getAttribute(INCREMENT);
+			String minorTickCount=(String)sbRow.getAttribute(MINOR_TICK);
 
 			String orientation="";
-			if(sbRow.getAttribute("orientation")!=null){
-				orientation=(String)sbRow.getAttribute("orientation");
+			if(sbRow.getAttribute(ORIENTATION)!=null){
+				orientation=(String)sbRow.getAttribute(ORIENTATION);
 				if(orientation.equalsIgnoreCase("vertical")){
 					horizontalView=false;
 					horizontalViewConfigured=true;
@@ -205,7 +205,7 @@ public class SimpleDial extends DialCharts{
 
 
 
-			String intervalsNumber=(String)sbRow.getAttribute("intervals_number");
+			String intervalsNumber=(String)sbRow.getAttribute(INTERVALS_NUMBER);
 			if(intervalsNumber==null || intervalsNumber.equals("") || intervalsNumber.equals("0")){ // if intervals are not specified
 				/*KpiInterval interval=new KpiInterval();
 			interval.setMin(getLower());

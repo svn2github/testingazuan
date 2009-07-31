@@ -63,6 +63,18 @@ public class Thermometer extends DialCharts{
 	private	Vector intervals=null;
 	private String units="";
 
+	/** CONF PARAMETERS: */
+	public static final String UNIT = "unit";
+
+	/** POSSIBLE VALUES TO SET FOR UNIT PARAMETER: */
+	public static final String FAHRENHEIT = "FAHRENHEIT";
+	public static final String CELCIUS = "CELCIUS";
+	public static final String KELVIN = "KELVIN";
+
+	/** VALUES TO SET LABEL FOR SUBRANGES */
+	public static final String NORMAL = "NORMAL";
+	public static final String WARNING = "WARNING";
+	public static final String CRITICAL = "CRITICAL";
 
 
 	/**
@@ -112,9 +124,9 @@ public class Thermometer extends DialCharts{
 		plot.setRange(lower, upper);
 
 
-		if(units.equalsIgnoreCase("FAHRENHEIT"))plot.setUnits(ThermometerPlot.UNITS_FAHRENHEIT);	
-		else if(units.equalsIgnoreCase("CELCIUS")) plot.setUnits(ThermometerPlot.UNITS_CELCIUS);	
-		else if(units.equalsIgnoreCase("KELVIN")) plot.setUnits(ThermometerPlot.UNITS_KELVIN);	
+		if(units.equalsIgnoreCase(FAHRENHEIT))plot.setUnits(ThermometerPlot.UNITS_FAHRENHEIT);	
+		else if(units.equalsIgnoreCase(CELCIUS)) plot.setUnits(ThermometerPlot.UNITS_CELCIUS);	
+		else if(units.equalsIgnoreCase(KELVIN)) plot.setUnits(ThermometerPlot.UNITS_KELVIN);	
 		else plot.setUnits(ThermometerPlot.UNITS_NONE);
 
 
@@ -122,9 +134,9 @@ public class Thermometer extends DialCharts{
 		for (Iterator iterator = intervals.iterator(); iterator.hasNext();){
 			KpiInterval subrange = (KpiInterval) iterator.next();
 			int range=0;
-			if(subrange.getLabel().equalsIgnoreCase("NORMAL"))range=(ThermometerPlot.NORMAL);
-			else if(subrange.getLabel().equalsIgnoreCase("WARNING"))range=(ThermometerPlot.WARNING);
-			else if(subrange.getLabel().equalsIgnoreCase("CRITICAL"))range=(ThermometerPlot.CRITICAL);
+			if(subrange.getLabel().equalsIgnoreCase(NORMAL))range=(ThermometerPlot.NORMAL);
+			else if(subrange.getLabel().equalsIgnoreCase(WARNING))range=(ThermometerPlot.WARNING);
+			else if(subrange.getLabel().equalsIgnoreCase(CRITICAL))range=(ThermometerPlot.CRITICAL);
 
 			plot.setSubrange(range, subrange.getMin(), subrange.getMax());
 			if(subrange.getColor()!=null){
@@ -156,8 +168,8 @@ public class Thermometer extends DialCharts{
 
 		if(!isLovConfDefined){
 
-			if(confParameters.get("unit")!=null){	
-				String unit=(String)confParameters.get("unit");
+			if(confParameters.get(UNIT)!=null){	
+				String unit=(String)confParameters.get(UNIT);
 				setUnits(unit);
 			}
 			else
@@ -182,10 +194,10 @@ public class Thermometer extends DialCharts{
 				while(subrangesAttrsIter.hasNext()) {
 					SourceBeanAttribute paramSBA = (SourceBeanAttribute)subrangesAttrsIter.next();
 					SourceBean param = (SourceBean)paramSBA.getValue();
-					String range= (String)param.getAttribute("label");
-					String min= (String)param.getAttribute("min");
-					String max= (String)param.getAttribute("max");
-					String col= (String)param.getAttribute("color");
+					String range= (String)param.getAttribute(LABEL_INTERVAL);
+					String min= (String)param.getAttribute(MIN_INTERVAL);
+					String max= (String)param.getAttribute(MAX_INTERVAL);
+					String col= (String)param.getAttribute(COLOR_INTERVAL);
 
 					KpiInterval subrange=new KpiInterval();
 
@@ -205,7 +217,7 @@ public class Thermometer extends DialCharts{
 		}
 		else{
 
-			String unit=(String)sbRow.getAttribute("unit");
+			String unit=(String)sbRow.getAttribute(UNIT);
 			if(unit!=null)
 				setUnits(unit);
 			else

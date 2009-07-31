@@ -222,9 +222,17 @@ public class DataMartModelAccessModality {
 	}
 
 	
-	public boolean isEntityAccessible(DataMartEntity entity) {		
+	public boolean isEntityAccessible(DataMartEntity entity) {	
+		
+		// ERROR: accessibility of entities is type based: ignore the role
+		/*
 		if(entityAccessModalityMap != null && entityAccessModalityMap.containsKey( entity.getUniqueType() )) {
 			EntityAccessModalitty entityAccessModalitty = (EntityAccessModalitty)entityAccessModalityMap.get( entity.getUniqueType() );
+			return entityAccessModalitty.isAccessible();
+		}
+		*/
+		if(entityAccessModalityMap != null && entityAccessModalityMap.containsKey( entity.getType() )) {
+			EntityAccessModalitty entityAccessModalitty = (EntityAccessModalitty)entityAccessModalityMap.get( entity.getType() );
 			return entityAccessModalitty.isAccessible();
 		}
 		return true;

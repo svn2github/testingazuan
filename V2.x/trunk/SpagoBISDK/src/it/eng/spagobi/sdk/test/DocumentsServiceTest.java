@@ -64,7 +64,7 @@ public class DocumentsServiceTest extends TestCase {
 			SDKDocumentParameter[] array={par};
 						
 			
-			SDKExecutedDocumentContent cont=	proxy.executeDocument(doc, array, "/spagobi/admin");
+			SDKExecutedDocumentContent cont=	proxy.executeDocument(doc, array, "/spagobi/admin","PDF");
 
 			DataHandler dh=cont.getContent();
 			InputStream is=dh.getInputStream();

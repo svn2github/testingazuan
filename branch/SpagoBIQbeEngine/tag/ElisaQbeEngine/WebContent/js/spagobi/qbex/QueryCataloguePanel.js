@@ -530,8 +530,8 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	}
 	
 	, onLoad: function(loader, node, response) {
-		node.expand();
-		
+		node.expandChildNodes();
+		     
 		if( node.childNodes && node.childNodes.length > 0 ) {
 			this.tree.getSelectionModel().select( node.childNodes[0] );
 		}

@@ -81,7 +81,7 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 	this.initEastRegionPanel(c);
 		
 	c = Ext.apply(c, {
-      	title: 'Query',
+      	title: LN('sbi.qbe.queryeditor.title'),
       	layout: 'border',
       	frame: false, 
       	border: false,
@@ -360,7 +360,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    });
 		
 		this.westRegionPanel = new Ext.Panel({
-	        title:'Schema',
+	        title:LN('sbi.qbe.queryeditor.westregion.title'),
 	        region:'west',
 	        width:250,
 	        margins: '5 5 5 5',
@@ -369,9 +369,9 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        //collapseMode: 'mini',
 	        collapseFirst: false,
 	        
-	        tools:[{	// todo: marge pin and unpin button in one single togglebutton
+	        tools:[{	// todo: marge pin and unpin button in one single toggle-button
 	          id:'pin',
-	          qtip:'Expand all',
+	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.expand'),
 	          // hidden:true,
 	          handler: function(event, toolEl, panel){
 	        	this.dataMartStructurePanel.expandAll();
@@ -379,7 +379,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	          , scope: this
 	        }, {
 	          id:'unpin',
-	          qtip:'Collapse all',
+	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.collapse'),
 	          // hidden:true,
 	          handler: function(event, toolEl, panel){
 	        	this.dataMartStructurePanel.collapseAll();
@@ -387,7 +387,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	          , scope: this
 	        }, {
 	          id:'gear',
-	          qtip:'Flat view',
+	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.flat'), 
 	          // hidden:true,
 	          handler: function(event, toolEl, panel){
 	        	Sbi.qbe.commons.unimplementedFunction();
@@ -395,7 +395,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	          , scope: this
 	        }, {
 	          id:'plus',
-	          qtip:'Add calulated field',
+	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.addcalculated'),
 	          // hidden:true,
 	          handler: function(event, toolEl, panel){
 	        	Sbi.qbe.commons.unimplementedFunction();
@@ -424,60 +424,20 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(c);
 	    
 	    this.centerRegionPanel = new Ext.Panel({ 
-	        
-	    	title:'Query Editor',
+	    	title: LN('sbi.qbe.queryeditor.centerregion.title'),
 	        region:'center',
 	        autoScroll: true,
 			containerScroll: true,
 			layout: 'fit',
 	        margins: '5 5 5 5',
 	        tools:[{
-          id:'save',
-          qtip:'Save query as subobject',
-          handler: function(event, toolEl, panel){
-        	// if validation is enabled, validate query before saving
-        	if (false /* Sbi.config.queryValidation.isEnabled */) {
-        		// synchronize query first
-            	Ext.Ajax.request({
-				    url: this.services['synchronizeQuery'],
-				    success: function(response, options) {
-            			// then validate query
-    	        		Ext.Ajax.request({
-	    	        		url: this.services['validateQuery'],
-	    	        		success: function(response, options) {
-	            				 var result = Ext.util.JSON.decode( response.responseText );
-	            		       	 if (result !== undefined && result !== null && result.validationResult !== undefined) {
-	            		       		if (result.validationResult) {
-	            		       			// validation was successful
-	            		       			this.showSaveQueryWindow();
-	            		       		} else {
-	            		       			// validation failed, check if validation is blocking
-	            		       			if (Sbi.config.queryValidation.isBlocking) {
-	            		       				Sbi.exception.ExceptionHandler.showErrorMessage('Cannot save query since it is incorrect!', 'ERROR');
-	            		       			} else {
-	            		       				this.showSaveQueryWarning();
-	            		       			}
-	            		       		}
-	            		       	 } else {
-	            		       		alert("An error occurred while validating query");
-	            		       	 }
-	    	        		},
-	    	        		scope: this,
-	    	        		failure: Sbi.exception.ExceptionHandler.handleFailure
-	    	        	});
-	       			},
-	       			scope: this,
-				    failure: Sbi.exception.ExceptionHandler.handleFailure,					
-				    params: this.getParams
-				});
-        	} else {
-        		this.showSaveQueryWindow();
-        	}
-          },
-          scope: this
-        }, {
+	        	id:'save',
+	        	qtip: LN('sbi.qbe.queryeditor.centerregion.tools.save'),
+	        	handler: this.showSaveQueryWindow,
+	        	scope: this
+	        }, {
 	          id:'saveView',
-	          qtip:'Save query as view',
+	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.view'),
 	          handler: function(event, toolEl, panel){
 	        	Ext.Ajax.request({
 					   	url: this.services['synchronyzeQuery'],
@@ -492,19 +452,19 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	            scope: this 
 	        },{
 	          id:'gear',
-	          qtip:'Execute query',
+	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.execute'),
 	          handler: this.checkFreeFilters,
 	          scope: this
 	        },{
 	          id:'search',
-	          qtip:'Validate query',
+	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.validate'),
 	          // hidden:true,
 	          handler: function(event, toolEl, panel){
 	            // refresh logic
 	          }
 	        }, {
 	          id:'help',
-	          qtip:'Help me please',
+	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.help'),
 	          handler: function(event, toolEl, panel){
 	            // refresh logic
 	          }
@@ -535,7 +495,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		this.queryCataloguePanel = new Sbi.qbe.QueryCataloguePanel({margins: '0 5 0 0'});
 		
 		this.eastRegionPanel = new Ext.Panel({
-	        title:'Query Catalogue',
+	        title: LN('sbi.qbe.queryeditor.eastregion.title'),
 	        region:'east',
 	        width:250,
 	        margins: '5 5 5 5',
@@ -546,7 +506,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        tools:[
 		        {
 		          id:'delete',
-		          qtip:'Delete query',
+		          qtip: LN('sbi.qbe.queryeditor.eastregion.tools.delete'),
 		          // hidden:true,
 		          handler: function(event, toolEl, panel){
 		        	var q = this.queryCataloguePanel.getSelectedQuery();
@@ -555,21 +515,21 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		          scope: this
 		        }, {
 		          id:'plus',
-		          qtip:'Add query',
+		          qtip:LN('sbi.qbe.queryeditor.eastregion.tools.add'),
 		          // hidden:true,
 		          handler: function(event, toolEl, panel){
 		        	this.queryCataloguePanel.addQuery();
 		          },
 		          scope: this
 		        }, {
-			          id:'plus',
-			          qtip:'Insert query',
-			          // hidden:true,
-			          handler: function(event, toolEl, panel){
-		        		var q = this.queryCataloguePanel.getSelectedQuery();
-			        	this.queryCataloguePanel.insertQuery(q);
-			          },
-			          scope: this
+			      id:'plus',
+			      qtip:LN('sbi.qbe.queryeditor.eastregion.tools.insert'),
+			      // hidden:true,
+			      handler: function(event, toolEl, panel){
+		        	var q = this.queryCataloguePanel.getSelectedQuery();
+			        this.queryCataloguePanel.insertQuery(q);
+			      },
+			      scope: this
 			   }
 		    ],
 	        items: [this.queryCataloguePanel]

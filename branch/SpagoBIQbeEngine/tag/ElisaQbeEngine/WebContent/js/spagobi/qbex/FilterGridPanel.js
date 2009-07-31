@@ -78,12 +78,14 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	// constructor
     Sbi.qbe.FilterGridPanel.superclass.constructor.call(this, c);
 	
+    /*
 	this.on('show', function(){
 		if(this.dropTarget === null) {
-			//this.dropTarget = new Sbi.qbe.FilterGridDropTarget(this);
+			this.dropTarget = new Sbi.qbe.FilterGridDropTarget(this);
 		}
 	}, this) ;
-	
+	*/
+    
     if(c.query && c.query.filters && c.query.filters.length > 0){
     	this.loadSavedData(c.query);
     }
@@ -172,36 +174,6 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		
 		return filters;
 	}
-	
-	/*
-	, getRowsAsJSONParams : function() {
-		var jsonStr = '[';
-		for(i = 0; i <  this.grid.store.getCount(); i++) {
-			var tmpRec =  this.grid.store.getAt(i);
-			if(i != 0) jsonStr += ',';
-			jsonStr += '{';
-			jsonStr += 	'"fname" : "' + tmpRec.data['fname'] + '",';	
-			jsonStr += 	'"id" : "' + tmpRec.data['id'] + '",';	
-			jsonStr += 	'"entity" : "' + tmpRec.data['entity'] + '",';	
-			jsonStr += 	'"field"  : "' + tmpRec.data['field']  + '",';	
-			jsonStr += 	'"operator"  : "' + tmpRec.data['operator']  + '",';
-			if(tmpRec.data['otype'] == "Static Value") {
-				jsonStr += 	'"operand"  : "' + tmpRec.data['odesc']  + '",';
-			} else {
-				jsonStr += 	'"operand"  : "' + tmpRec.data['operand']  + '",';
-			}
-			jsonStr += 	'"isfree"  : ' + tmpRec.data['isfree']  + ',';
-			jsonStr += 	'"otype"  : "' + tmpRec.data['otype']  + '",';
-			jsonStr += 	'"odesc"  : "' + tmpRec.data['odesc']  + '",';
-			jsonStr += 	'"boperator"  : "' + tmpRec.data['boperator']  + '"';
-			
-			jsonStr += '}';	
-		}
-		jsonStr += ']';
-		
-		return jsonStr;
-	}
-	*/
 	
 	, setFilters: function(filters) {
 		this.deleteFilters();
@@ -490,8 +462,18 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    var textEditor = new Ext.form.TextField({
 	             allowBlank: true
 		    });
-		    		    
 		    
+		    textEditor.on('change', function(){
+		    	alert("This is the change you can believe in");
+		    	if(this.activeEditingContext) {
+		    		alert("do it");
+		    		var r = this.activeEditingContext.record;
+					r.data['otype'] = 'Static Value';
+					this.store.fireEvent('datachanged', this.store) ;
+		    	}
+		    	
+		    }, this);
+		    		
 		    this.valueColumnEditors = {
 		    		parentFieldEditor: new Ext.grid.GridEditor(parentFieldEditor)		    		
 		    		, textEditor: new Ext.grid.GridEditor(textEditor)
@@ -571,8 +553,8 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.toolbar = new Ext.Toolbar({
 			items: [
 				{
-					text: 'Delete',
-				    tooltip: 'Delete selected filter',
+					text: LN('sbi.qbe.filtergridpanel.buttons.text.delete'),
+				    tooltip: LN('sbi.qbe.filtergridpanel.buttons.tt.delete'),
 				    iconCls:'remove',
 				    listeners: {
 				    	'click': {
@@ -581,8 +563,8 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			    		}
 				    }
 				}, {
-				  	text: 'Exp Wizard',
-				    tooltip: 'Exp Wizard',
+					text: LN('sbi.qbe.filtergridpanel.buttons.text.wizard'),
+				    tooltip: LN('sbi.qbe.filtergridpanel.buttons.tt.wizard'),
 				    iconCls:'option',
 				    listeners: {
 				      	'click': {
@@ -590,7 +572,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			    			scope: this
 			    		}
 				    }
-				} , {
+				} /*, {
 				  	text: 'Debug',
 				    tooltip: 'Remove before release',
 				    iconCls:'option',
@@ -602,7 +584,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			    			scope: this
 			    		}
 				    }
-				} 
+				} */
 			]
 		});
 	}

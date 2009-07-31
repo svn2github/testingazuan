@@ -41,8 +41,9 @@ public class LabelsConverter {
 	
 	/**
 	 * @param args
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		//Properties labelsIn;
 		//Properties labelsOut;
 		File inputFile;
@@ -69,6 +70,7 @@ public class LabelsConverter {
 			log("Inpit file [" + inputFile.getName() + "] not found");
 		}	
 		
+		writer = null;
 		try {
 			writer = new FileWriter(outputFile);
 			
@@ -95,6 +97,15 @@ public class LabelsConverter {
 		} catch (IOException e) {
 			log("An error occurred while converting file [" + inputFile.getName() + "]");
 			e.printStackTrace();
+		} finally {
+			if(writer != null) {
+			writer.flush();
+			writer.close();
+			}
+			if(reader != null) {
+				reader.close();
+			}
+			
 		}
 	
 		
@@ -116,6 +127,9 @@ public class LabelsConverter {
 		} else if(key.endsWith(".type")) {
 			key = key.substring(0, key.length()-5);
 			property = "type";
+		} else if(key.endsWith(".position")) {
+			key = key.substring(0, key.length()-9);
+			property = "position";
 		}
 		
 		chunks = key.split("/");

@@ -78,7 +78,7 @@ public class ValidateCatalogueAction extends AbstractQbeEngineAction {
 				logger.debug("Validating query (SQL): [" + sqlQueryStr + "]");
 				
 				try {
-					statement.execute(0, 1, 1, true);
+					//statement.execute(0, 1, 1, true);
 					logger.debug("Query [" + query.getName() + "] validated sucesfully");
 				} catch (Throwable t) {
 					logger.debug("Query [" + query.getName() + "] is not valid");

@@ -50,10 +50,10 @@ import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
  */
 public class ExtJsQbeTreeBuilder  {	
 	
-	/** The qbe tree filter. */
+	
 	private QbeTreeFilter qbeTreeFilter;
 	
-	/** The datamart model. */
+	
 	private IDataMartModel datamartModel;	
 	
 	private Locale locale;

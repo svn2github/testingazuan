@@ -20,6 +20,8 @@
  **/
 package it.eng.spagobi.qbe.initializer.engine.service;
 
+import java.util.Locale;
+
 import org.apache.log4j.Logger;
 
 import it.eng.spago.base.SourceBean;
@@ -41,7 +43,8 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	// INPUT PARAMETERS
 	
 	// OUTPUT PARAMETERS
-	public static final String QUERY = "query";
+	public static final String LANGUAGE = "LANGUAGE";
+	public static final String COUNTRY = "COUNTRY";
 	
 	// SESSION PARAMETRES	
 	public static final String ENGINE_INSTANCE = EngineConstants.ENGINE_INSTANCE;
@@ -53,7 +56,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	
     public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
     	QbeEngineInstance qbeEngineInstance = null;
-    	//JSONObject queryJSON;
+    	Locale locale;
     	
     	logger.debug("IN");
        
@@ -77,10 +80,12 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 				qbeEngineInstance.setAnalysisState( analysisState );
 			}
 			
-			//queryJSON = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(qbeEngineInstance.getActiveQuery(), qbeEngineInstance.getDatamartModel());
-				
-			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);	
-			//setAttribute(QUERY, queryJSON.toString());
+			locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
+			
+			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);			
+			setAttribute(LANGUAGE, locale.getLanguage());
+			setAttribute(COUNTRY, locale.getCountry());
+			
 			
 		} catch (Throwable e) {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), qbeEngineInstance, e);

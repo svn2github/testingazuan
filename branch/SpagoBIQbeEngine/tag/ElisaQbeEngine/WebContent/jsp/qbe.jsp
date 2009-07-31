@@ -15,7 +15,11 @@
 <qbe:page>
 
 	<%@include file="commons/includeExtJS.jspf" %>
-   	
+	
+	<%
+      String language = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("LANGUAGE");
+	%>
+	
 	<qbe:url type="resource" var="href" ref="../css/qbe.css"/>
 	<link rel="styleSheet" href ="${href}" type="text/css" />
 	
@@ -42,9 +46,8 @@
 	<qbe:url type="resource" var="src" ref="../js/spagobi/locale/LocaleUtils.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
-	<qbe:url type="resource" var="src" ref="../js/spagobi/locale/en.js"/>
-	<script type="text/javascript" src='${src}'/></script>
-	
+	<script type="text/javascript" src='../js/spagobi/locale/<%=language%>.js'></script>
+		
 	<qbe:url type="resource" var="src" ref="../js/spagobi/commons/commons.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	

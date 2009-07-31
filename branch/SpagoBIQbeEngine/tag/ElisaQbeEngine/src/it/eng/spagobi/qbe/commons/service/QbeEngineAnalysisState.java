@@ -69,7 +69,7 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 
 		try {
 			str = new String( rowData );
-			logger.debug("loading analysis state from row data [" + rowData + "] ...");
+			logger.debug("loading analysis state from row data [" + str + "] ...");
 			
 			rowDataJSON = new JSONObject(str);
 			try {

@@ -276,67 +276,79 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	, initColumnModel: function(config) {
 		// check-columns
 	    var visibleCheckColumn = new Ext.grid.CheckColumn({
-	       header: LN('sbi.qbe.selectgridpanel.headers.visible'),
-	       dataIndex: 'visible'
-	       //width: 55
+	       header: LN('sbi.qbe.selectgridpanel.headers.visible')
+	       , dataIndex: 'visible'
+	       , hideable: true
+		   , hidden: false	
+		   , sortable: false
 	    });
 	    
 	    var groupCheckColumn = new Ext.grid.CheckColumn({
-	       header:  LN('sbi.qbe.selectgridpanel.headers.group'),
-	       dataIndex: 'group'
-	       //width: 55
+	       header:  LN('sbi.qbe.selectgridpanel.headers.group')
+	       , dataIndex: 'group'
+	       , hideable: true
+		   , hidden: false	
+		   , sortable: false
 	    });
 	    
 	    // button-columns
 	    var delButtonColumn = new Ext.grid.ButtonColumn({
-	       header:  LN('sbi.qbe.selectgridpanel.headers.delete'),
-	       dataIndex: 'delete',
-	       imgSrc: '../img/querybuilder/delete.gif',
-	       clickHandler:function(e, t){
+	       header:  LN('sbi.qbe.selectgridpanel.headers.delete')
+	       , dataIndex: 'delete'
+	       , imgSrc: '../img/querybuilder/delete.gif'
+	       , clickHandler:function(e, t){
 	          var index = this.grid.getView().findRowIndex(t);
 	          var record = this.grid.store.getAt(index);
 	          this.grid.store.remove(record);
 	       }
-	       //width: 55
+	       , hideable: true
+	       , hidden: true	
+	       , sortable: false
 	     });
 	     
 	    var filterButtonColumn = new Ext.grid.ButtonColumn({
-		   header:  LN('sbi.qbe.selectgridpanel.headers.filter'),
-		   dataIndex: 'filter',
-		   imgSrc: '../img/querybuilder/filter.png',
+		   header:  LN('sbi.qbe.selectgridpanel.headers.filter')
+		   , dataIndex: 'filter'
+		   , imgSrc: '../img/querybuilder/filter.png'
 		      
-		   clickHandler:function(e, t){
+		   , clickHandler:function(e, t){
 		          var index = this.grid.getView().findRowIndex(t);
 		          var record = this.grid.store.getAt(index);
 		          this.grid.fireEvent('actionrequest', this, 'filter', record);
 		   }
-		      
-		   //width: 55
+	       , hideable: true
+	       , hidden: false	
+	       , sortable: false
 		});
 		
 	    this.cm = new Ext.grid.ColumnModel([
 		     new Ext.grid.RowNumberer(),
 		     {
-		    	 header: LN('sbi.qbe.selectgridpanel.headers.entity'),
-		    	 dataIndex: 'entity'
-		    	 //width: 75
+		    	 header: LN('sbi.qbe.selectgridpanel.headers.entity')
+		    	 , dataIndex: 'entity'
+		    	 , hideable: true
+			     , hidden: false	
+			     , sortable: false
 		     }, {
-		    	 id:'field',
-		         header: LN('sbi.qbe.selectgridpanel.headers.field'),
-		         dataIndex: 'field'
-		         //width: 75
+		    	 id:'field'
+		         , header: LN('sbi.qbe.selectgridpanel.headers.field')
+		         , dataIndex: 'field'
+		         , hideable: true
+				 , hidden: false	
+				 , sortable: false
 		     }, {
-		         header: LN('sbi.qbe.selectgridpanel.headers.alias'),
-		         dataIndex: 'alias',
-		         //width: 75
-		         editor: new Ext.form.TextField({
+		         header: LN('sbi.qbe.selectgridpanel.headers.alias')
+		         , dataIndex: 'alias'
+		         , editor: new Ext.form.TextField({
 		        	 allowBlank: true
 		         })
+			     , hideable: true
+			     , hidden: false	
+			     , sortable: false
 		     }, {
-		    	 header: LN('sbi.qbe.selectgridpanel.headers.function'),
-		         dataIndex: 'funct',
-		         //width: 75
-		         editor: new Ext.form.ComboBox({
+		    	 header: LN('sbi.qbe.selectgridpanel.headers.function')
+		         , dataIndex: 'funct'
+		         , editor: new Ext.form.ComboBox({
 			         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
 			         allowBlank: true,
 			         editable:false,
@@ -350,11 +362,13 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 			         emptyText: LN('sbi.qbe.selectgridpanel.aggfunc.editor.emptymsg'),
 			         selectOnFocus:true
 		         })
+			     , hideable: true
+			     , hidden: false	
+			     , sortable: false
 		     }, {
-		    	 header: LN('sbi.qbe.selectgridpanel.headers.order'),
-		         dataIndex: 'order',
-		         //width: 75
-		         editor: new Ext.form.ComboBox({
+		    	 header: LN('sbi.qbe.selectgridpanel.headers.order')
+		         , dataIndex: 'order'
+		         , editor: new Ext.form.ComboBox({
 			         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{type}</div></tpl>',	
 			         allowBlank: true,
 			         editable:false,
@@ -368,6 +382,9 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 			         emptyText: LN('sbi.qbe.selectgridpanel.sortfunc.editor.emptymsg'),
 			         selectOnFocus:true
 		         })
+			     , hideable: true
+			     , hidden: false	
+			     , sortable: false
 		     },
 		     groupCheckColumn, 
 		     visibleCheckColumn,
@@ -420,14 +437,13 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		
 	     // create the Grid
 		 this.grid = new Ext.grid.EditorGridPanel({
-			 //id: 'select-grid',
 			    title: LN('sbi.qbe.selectgridpanel.title'),   
 			 	store: this.store,
 		        cm: this.cm,  
 		        sm : this.sm,
 		        tbar: this.toolbar,
 		        
-		        clicksToEdit:2,
+		        clicksToEdit:1,
 		        plugins: this.plgins,
 		        		        
 		        height: 350,

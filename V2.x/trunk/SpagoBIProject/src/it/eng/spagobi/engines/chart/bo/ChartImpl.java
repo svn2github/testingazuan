@@ -464,7 +464,6 @@ public class ChartImpl implements IChart {
 				catch (Exception e) {
 					logger.error("Wrong style Legend settings, use default");
 				}
-
 			}
 			
 			
@@ -1098,7 +1097,9 @@ public class ChartImpl implements IChart {
 
 		LegendTitle legend = new LegendTitle(chart.getPlot());
 		BlockContainer items = legend.getItemContainer();
-		legend.setItemFont(new Font(styleLegend.getFontName(), Font.BOLD, styleLegend.getSize()));
+		if(styleLegend!=null && styleLegend.getFont()!=null){
+			legend.setItemFont(new Font(styleLegend.getFontName(), Font.BOLD, styleLegend.getSize()));
+		}
 		
 		items.setPadding(2, 5, 5, 2);
 		wrapper.add(items);

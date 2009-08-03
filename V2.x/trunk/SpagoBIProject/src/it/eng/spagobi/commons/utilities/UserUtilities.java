@@ -23,6 +23,7 @@ package it.eng.spagobi.commons.utilities;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.functionalitytree.bo.UserFunctionality;
 import it.eng.spagobi.analiticalmodel.functionalitytree.dao.ILowFunctionalityDAO;
@@ -53,6 +54,27 @@ public class UserUtilities {
 
     static Logger logger = Logger.getLogger(UserUtilities.class);
 
+    public static String getSchema(){
+ 
+    	RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+    	SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
+    	SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
+
+    	IEngUserProfile userProfile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+    	
+    	if (userProfile!=null){
+    		try {
+				return (String) userProfile.getUserAttribute("ente");
+			} catch (EMFInternalError e) {
+				logger.error("User profile is NULL!!!!");
+			}
+    	}else {
+    		logger.warn("User profile is NULL!!!!");
+    	}
+return null;
+    }
+    
+    
     /**
      * Gets the user profile.
      * 

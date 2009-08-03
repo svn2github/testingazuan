@@ -50,10 +50,12 @@ public class DataSourceUtilities {
 	public Connection getConnection(String dsLabel) {
 		Connection connection =  null;
 		//calls implementation for gets data source object
+		String schema=UserUtilities.getSchema();
+		logger.debug("Schema:"+ schema);
 		DataSourceSupplier supplierDS = new DataSourceSupplier();		
 		SpagoBiDataSource ds = supplierDS.getDataSourceByLabel(dsLabel);
 		try {
-			connection = ds.readConnection();
+			connection = ds.readConnection(schema);
 		} catch (NamingException e) {
 			logger.error("JNDI error", e);
 		} catch (SQLException e) {

@@ -101,6 +101,8 @@ public class DataSourceSupplier {
 	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
 	    sbds.setHibDialectClass(doDialect.getValueCd());
 	    sbds.setHibDialectName(doDialect.getValueName());
+	    sbds.setMultiSchema(ds.getMultiSchema());
+	    sbds.setSchemaAttribute(ds.getSchemaAttribute());
 
 	} catch (Exception e) {
 	    logger.error("The data source is not correctly returned", e);
@@ -135,6 +137,8 @@ public class DataSourceSupplier {
 	    sbds.setUser(ds.getUser());
 	    sbds.setPassword(ds.getPwd());
 	    sbds.setDriver(ds.getDriver());
+	    sbds.setMultiSchema(ds.getMultiSchema());
+	    sbds.setSchemaAttribute(ds.getSchemaAttribute());
 	    
 	  //gets dialect informations
 	    IDomainDAO domaindao = DAOFactory.getDomainDAO();
@@ -180,6 +184,8 @@ public class DataSourceSupplier {
 	    Domain doDialect = domaindao.loadDomainById(ds.getDialectId());
 	    sbds.setHibDialectClass(doDialect.getValueCd());
 	    sbds.setHibDialectName(doDialect.getValueName());
+	    sbds.setMultiSchema(ds.getMultiSchema());
+	    sbds.setSchemaAttribute(ds.getSchemaAttribute());
 	    
 		tmpList.add(sbds);
 	    }

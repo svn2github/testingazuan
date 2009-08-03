@@ -152,7 +152,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		} else {
 			session.delAttribute(SpagoBIConstants.USER_PROFILE_FOR_TEST);
 		}
-
+		dataSet.setUserProfile(profile);
 		
 		errorHandler=getErrorHandler();
 		if(!errorHandler.isOK()){
@@ -172,7 +172,7 @@ public class ListTestDataSetModule extends AbstractBasicListModule  {
 		Object par=(Object)session.getAttribute(DetailDataSetModule.PARAMETERS_FILLED);
 		HashMap parametersFilled=(HashMap)par;
 		
-		dataSet.setUserProfile(profile);
+		
 		dataSet.setParamsMap(parametersFilled);		
 		try{
 		dataSet.loadData();

@@ -35,7 +35,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
   <context-param>
     <param-name>connectString</param-name>
   <!-- <param-value>Provider=mondrian;Jdbc=jdbc:odbc:MondrianFoodMart;Catalog=/WEB-INF/queries/FoodMart.xml;JdbcDrivers=sun.jdbc.odbc.JdbcOdbcDriver;RoleXX='California manager';</param-value> -->  
-  		<param-value>Provider=mondrian;Jdbc=jdbc:mysql://localhost/foodmartmondrian?user=root&#38;password=admin;Catalog=/WEB-INF/schema/FoodMart.xml;JdbcDrivers=com.mysql.jdbc.Driver;</param-value>
+  		<param-value>Provider=mondrian;Jdbc=jdbc:mysql://localhost/foodmartmondrian?user=root&#38;password=admin;Catalog=/WEB-INF/schema/FoodMart.xml;JdbcDrivers=com.mysql.jdbc.Driver;Catalog=/WEB-INF/queries/FoodMart.xml</param-value>
   </context-param>
 
   <!-- optional
@@ -182,7 +182,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
     <servlet-class>mondrian.web.servlet.MDXQueryServlet</servlet-class>
     <init-param>
       <param-name>connectString</param-name>
-      <param-value>Provider=mondrian;Jdbc=jdbc:mysql://localhost/foodmartmondrian?user=root&#38;password=admin;Catalog=/WEB-INF/schema/FoodMart.xml;JdbcDrivers=com.mysql.jdbc.Driver;</param-value>
+      <param-value>Provider=mondrian;Jdbc=jdbc:mysql://localhost/foodmartmondrian?user=root&#38;password=admin;Catalog=/WEB-INF/schema/FoodMart.xml;JdbcDrivers=com.mysql.jdbc.Driver;Catalog=/WEB-INF/queries/FoodMart.xml</param-value>
     </init-param>
   </servlet>
 

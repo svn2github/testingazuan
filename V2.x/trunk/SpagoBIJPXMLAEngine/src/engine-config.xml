@@ -6,7 +6,7 @@
     		
 		<CONNECTION name="FoodmartXMLA" 
 					type="xmla"
-					xmlaServerUrl="http://localhost:9090/mondrian/xmla"/>
+					xmlaServerUrl="http://localhost:38080/mondrian/xmla"/>
 		
 	</CONNECTIONS-CONFIGURATION>
 	

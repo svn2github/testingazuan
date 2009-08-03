@@ -102,7 +102,7 @@ public class TemplateBean implements Serializable {
 		if (query != null) {
 			String xmlString = "<olap>\n"; //****************************//
 			if(connectionType.equalsIgnoreCase("xmla")) {
-				xmlString += "	<cube name='" + schema + "' />\n";
+				xmlString += "	<cube reference='" + schema + "' name='" + schema + "' />\n";
 			} else {
 				xmlString += "	<cube reference='" + catalogUri + "' />\n";
 			}

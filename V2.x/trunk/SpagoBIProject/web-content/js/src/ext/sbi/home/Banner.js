@@ -54,21 +54,9 @@ Sbi.home.Banner = function(config) {
 		var itemsForBanner = [];
 		
 		itemsForBanner.push({
-	            html: '<div style="overflow:hidden; width:100%;background-image:url(\'/SpagoBI/themes/sbi_default/img/wapp/spagobiMiddle.png\'); background-repeat: repeat-x;background-position:bottom;" ><div style="float:left"><img src="/SpagoBI/themes/sbi_default/img/wapp/spagobiLeft.png" /></div><div style="float:right"><img src="/SpagoBI/themes/sbi_default/img/wapp/spagobiRight.png" /></div></div>'
-	        });
-		//TODO: tenere questo pannello per modificare il banner in futuro
-		/*itemsForBanner.push(new  Ext.ux.ManagedIframePanel({
-						frameConfig:{autoCreate:{id: 'iframeBanner', name:'iframeBanner',style: 'height:95; margins:0px 0px 0px 0px;',scrolling  : 'no' ,border: false ,layout: 'fit'	}}
-		                ,defaultSrc : Sbi.config.contextName+'/themes/'+Sbi.config.currTheme+'/html/banner.html'
-		                ,border		: false 
-		                ,height: 95
-		                ,loadMask   : true
-						,collapseMode: 'mini'
-						,scrolling  : 'no'	
-						, margins:'0 0 0 0'
-						, bodyStyle:'padding:0px 0px 0px 0px'
-				}));*/
-		
+		        contentEl: 'Banner'
+	            });
+
 		//add first menu toolbar		
 		itemsForBanner.push(this.tbx);
 		

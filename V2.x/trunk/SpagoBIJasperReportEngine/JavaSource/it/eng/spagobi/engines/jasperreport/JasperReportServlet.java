@@ -5,6 +5,7 @@
  */
 package it.eng.spagobi.engines.jasperreport;
 
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
@@ -127,7 +128,7 @@ public class JasperReportServlet extends HttpServlet {
 	logger.debug("GetConnection...");
 	JasperReportRunner jasperReportRunner = new JasperReportRunner(session);
 	logger.debug("GetConnection...");
-	Connection con = getConnection(requestConnectionName,session,(String)profile.getUserUniqueIdentifier(),documentId);
+	Connection con = getConnection(requestConnectionName,session,profile,documentId);
 
 	if (con == null) {
 	    logger.error("Cannot obtain" + " connection for engine ["
@@ -231,14 +232,24 @@ public class JasperReportServlet extends HttpServlet {
      * 
      * @return the database connection
      */
-    private Connection getConnection(String requestConnectionName,HttpSession session,String userId,String documentId) {
+    private Connection getConnection(String requestConnectionName,HttpSession session,IEngUserProfile profile,String documentId) {
 	logger.debug("IN.documentId:"+documentId);
-	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
+	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy((String)profile.getUserUniqueIdentifier(),session);
 	IDataSource ds =null;
 	if (requestConnectionName!=null){
 	    ds = proxyDS.getDataSourceByLabel(requestConnectionName);
 	}else{
 	    ds = proxyDS.getDataSource(documentId);
+	}
+	
+	String schema=null;
+	try {
+		if (ds.checkIsMultiSchema()){
+			String attrname=ds.getSchemaAttribute();
+			if (attrname!=null) schema = (String)profile.getUserAttribute(attrname);
+		}
+	} catch (EMFInternalError e) {
+		logger.error("Cannot retrive ENTE", e);
 	}
 
 	if (ds==null) {
@@ -249,7 +260,7 @@ public class JasperReportServlet extends HttpServlet {
 	Connection conn = null;
 	
 	try {
-		conn = ds.toSpagoBiDataSource().readConnection();
+		conn = ds.toSpagoBiDataSource().readConnection(schema);
 	} catch (Exception e) {
 		logger.error("Cannot retrive connection", e);
 	} 

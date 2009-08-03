@@ -388,6 +388,8 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 		ds.setDialectId(hibDataSource.getDialect().getValueId());
 		ds.setEngines(hibDataSource.getSbiEngineses());
 		ds.setObjects(hibDataSource.getSbiObjectses());
+		ds.setSchemaAttribute(hibDataSource.getSchemaAttribute());
+		ds.setMultiSchema(hibDataSource.getMultiSchema());
 		
 		return ds;
 	}

@@ -58,15 +58,37 @@ public class SbiDataSource implements java.io.Serializable {
     private Set sbiObjectses;
     
     private Set sbiEngineses;
+    
+    private String schemaAttribute=null;
+    
+    private Boolean multiSchema=null;
 
 	
 
 	// Constructors
 
+
+
 	/**
 	 * default constructor.
 	 */
 	public SbiDataSource() {
+	}
+
+	public String getSchemaAttribute() {
+		return schemaAttribute;
+	}
+
+	public void setSchemaAttribute(String schemaAttribute) {
+		this.schemaAttribute = schemaAttribute;
+	}
+
+	public Boolean getMultiSchema() {
+		return multiSchema;
+	}
+
+	public void setMultiSchema(Boolean multiSchema) {
+		this.multiSchema = multiSchema;
 	}
 
 	/**

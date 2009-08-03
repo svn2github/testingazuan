@@ -31,6 +31,12 @@
         <property name="driver" type="string">
             <column name="DRIVER" />
         </property>
+        <property name="schemaAttribute" type="string">
+            <column name="ATTR_SCHEMA" />
+        </property>
+        <property name="multiSchema" type="boolean">
+            <column name="MULTI_SCHEMA" />
+        </property>        
         <set name="sbiObjectses" inverse="true">
             <key>
                 <column name="DATA_SOURCE_ID" />

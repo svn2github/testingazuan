@@ -157,10 +157,25 @@ LICENSE: see LICENSE.txt file
 		// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG		
 		if(ds != null  && ds.getJndi() != null && !ds.getJndi().equals("")) {
 			String resName = ds.getJndi();
+			if (ds.checkIsMultiSchema()){
+				String schema=null;
+				try {
+						String attrname=ds.getSchemaAttribute();
+						IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+						if (attrname!=null) schema = (String)profile.getUserAttribute(attrname);
+						if (schema==null) logger.error("Cannot retrive ENTE");
+						else resName=resName+schema;
+				} catch (Exception e) {
+					logger.error("Cannot retrive ENTE", e);
+				}
+			}
+			
+			
 			//resName = resName.replaceAll("java:comp/env/","");
 		%>
 			
-			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
+			
+<%@page import="it.eng.spago.security.IEngUserProfile"%><jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 				<%=query%>
 				
 				<%

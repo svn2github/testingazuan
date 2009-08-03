@@ -34,6 +34,7 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
 <%@page import="it.eng.spagobi.services.common.EnginConf" %>
 <%@page import="org.apache.log4j.Logger"%>
+<%@page import="it.eng.spagobi.security.*" %>
 
 
 <html>
@@ -255,7 +256,18 @@ if (selectedSchema != null) {
 			else {
 					// execute initial query
 					String resName =(ds.getJndi()==null)?"":ds.getJndi();
-					
+					if (ds.checkIsMultiSchema()){
+						String schema=null;
+						try {
+								String attrname=ds.getSchemaAttribute();
+								IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+								if (attrname!=null) schema = (String)profile.getUserAttribute(attrname);
+								if (schema==null) logger.error("Cannot retrive ENTE");
+								else resName=resName+schema;
+						} catch (Exception e) {
+							logger.error("Cannot retrive ENTE", e);
+						}
+					}					
 					// adjust reference
 					if (!catalogUri.startsWith("file:")) {
 						catalogUri = "file:" + catalogUri;

@@ -32,6 +32,7 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
 <%@page import="it.eng.spagobi.services.common.EnginConf" %>
 <%@page import="org.apache.log4j.Logger" %>
+<%@page import="it.eng.spagobi.security.*" %>
 
 <html>
 <head>
@@ -180,6 +181,18 @@ if (schemas == null) {
 			}
 			
 			String resName = datasource.getJndi();
+			if (datasource.checkIsMultiSchema()){
+				String schemaDS=null;
+				try {
+						String attrname=datasource.getSchemaAttribute();
+						IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+						if (attrname!=null) schemaDS = (String)profile.getUserAttribute(attrname);
+						if (schemaDS==null) logger.error("Cannot retrive ENTE");
+						else resName=resName+schemaDS;
+				} catch (Exception e) {
+					logger.error("Cannot retrive ENTE", e);
+				}
+			}	
 			if (resName != null && !resName.equals("")) {
 				//resName = resName.replace("java:comp/env/","");
 			    String connectionStr = "Provider=mondrian;"+resName+";Catalog="+catalogUri+";";

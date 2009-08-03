@@ -51,7 +51,8 @@ public class DataSourceFactory {
 		dataSource.setUser( dataSourceConfig.getUser() );
 		dataSource.setHibDialectClass( dataSourceConfig.getHibDialectClass());
 		dataSource.setHibDialectName( dataSourceConfig.getHibDialectName());
-				
+		dataSource.setMultiSchema(dataSourceConfig.getMultiSchema());
+		dataSource.setSchemaAttribute(dataSourceConfig.getSchemaAttribute());
 		return dataSource;
 	}
 }

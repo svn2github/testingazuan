@@ -7,6 +7,7 @@
 
 package it.eng.spagobi.services.datasource.bo;
 
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -35,30 +36,16 @@ public class SpagoBiDataSource  implements java.io.Serializable {
 
     private int id;
 
-    public SpagoBiDataSource() {
-    }
+    private java.lang.Boolean multiSchema;
 
-    public SpagoBiDataSource(
-           java.lang.String driver,
-           java.lang.String jndiName,
-           java.lang.String password,
-           java.lang.String url,
-           java.lang.String user,
-           java.lang.String label,
-           java.lang.String hibDialectClass,
-           java.lang.String hibDialectName,
-           int id) {
-           this.driver = driver;
-           this.jndiName = jndiName;
-           this.password = password;
-           this.url = url;
-           this.user = user;
-           this.label = label;
-           this.hibDialectClass = hibDialectClass;
-           this.hibDialectName = hibDialectName;
-           this.id = id;
-    }
+    private java.lang.String schemaAttribute;
 
+
+    private boolean checkIsMultiSchema() {
+    	return multiSchema != null 
+    			&& multiSchema.booleanValue();
+    }   
+    
     /**
      * Check is jndi.
      * 
@@ -78,11 +65,11 @@ public class SpagoBiDataSource  implements java.io.Serializable {
      * @throws SQLException the SQL exception
      * @throws ClassNotFoundException the class not found exception
      */
-    public Connection readConnection() throws NamingException, SQLException, ClassNotFoundException {
+    public Connection readConnection(String schema) throws NamingException, SQLException, ClassNotFoundException {
     	Connection connection = null;
     	 
-    	if( checkIsJndi() ) {
-    		connection = readJndiConnection();
+    	if( checkIsJndi()  ) {
+    		connection = readJndiConnection(schema);
     	} else {    		
     		connection = readDirectConnection();
     	}
@@ -100,12 +87,17 @@ public class SpagoBiDataSource  implements java.io.Serializable {
      * @throws NamingException 
      * @throws SQLException 
      */
-    private Connection readJndiConnection() throws NamingException, SQLException {
+    private Connection readJndiConnection(String schema) throws NamingException, SQLException {
 		Connection connection = null;
 		
 		Context ctx;
 		ctx = new InitialContext();
-		DataSource ds = (DataSource) ctx.lookup( getJndiName() );
+		DataSource ds=null;
+		if (checkIsMultiSchema()){
+			ds= (DataSource) ctx.lookup( getJndiName()+schema );
+		}else{
+		    ds= (DataSource) ctx.lookup( getJndiName() );
+		}
 		connection = ds.getConnection();
 		
 		return connection;
@@ -131,6 +123,35 @@ public class SpagoBiDataSource  implements java.io.Serializable {
     
     
     
+    public SpagoBiDataSource() {
+    }
+
+    public SpagoBiDataSource(
+           java.lang.String driver,
+           java.lang.String jndiName,
+           java.lang.String password,
+           java.lang.String url,
+           java.lang.String user,
+           java.lang.String label,
+           java.lang.String hibDialectClass,
+           java.lang.String hibDialectName,
+           int id,
+           java.lang.Boolean multiSchema,
+           java.lang.String schemaAttribute) {
+           this.driver = driver;
+           this.jndiName = jndiName;
+           this.password = password;
+           this.url = url;
+           this.user = user;
+           this.label = label;
+           this.hibDialectClass = hibDialectClass;
+           this.hibDialectName = hibDialectName;
+           this.id = id;
+           this.multiSchema = multiSchema;
+           this.schemaAttribute = schemaAttribute;
+    }
+
+
     /**
      * Gets the driver value for this SpagoBiDataSource.
      * 
@@ -310,6 +331,46 @@ public class SpagoBiDataSource  implements java.io.Serializable {
         this.id = id;
     }
 
+
+    /**
+     * Gets the multiSchema value for this SpagoBiDataSource.
+     * 
+     * @return multiSchema
+     */
+    public java.lang.Boolean getMultiSchema() {
+        return multiSchema;
+    }
+
+
+    /**
+     * Sets the multiSchema value for this SpagoBiDataSource.
+     * 
+     * @param multiSchema
+     */
+    public void setMultiSchema(java.lang.Boolean multiSchema) {
+        this.multiSchema = multiSchema;
+    }
+
+
+    /**
+     * Gets the schemaAttribute value for this SpagoBiDataSource.
+     * 
+     * @return schemaAttribute
+     */
+    public java.lang.String getSchemaAttribute() {
+        return schemaAttribute;
+    }
+
+
+    /**
+     * Sets the schemaAttribute value for this SpagoBiDataSource.
+     * 
+     * @param schemaAttribute
+     */
+    public void setSchemaAttribute(java.lang.String schemaAttribute) {
+        this.schemaAttribute = schemaAttribute;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof SpagoBiDataSource)) return false;
@@ -346,7 +407,13 @@ public class SpagoBiDataSource  implements java.io.Serializable {
             ((this.hibDialectName==null && other.getHibDialectName()==null) || 
              (this.hibDialectName!=null &&
               this.hibDialectName.equals(other.getHibDialectName()))) &&
-            this.id == other.getId();
+            this.id == other.getId() &&
+            ((this.multiSchema==null && other.getMultiSchema()==null) || 
+             (this.multiSchema!=null &&
+              this.multiSchema.equals(other.getMultiSchema()))) &&
+            ((this.schemaAttribute==null && other.getSchemaAttribute()==null) || 
+             (this.schemaAttribute!=null &&
+              this.schemaAttribute.equals(other.getSchemaAttribute())));
         __equalsCalc = null;
         return _equals;
     }
@@ -383,6 +450,12 @@ public class SpagoBiDataSource  implements java.io.Serializable {
             _hashCode += getHibDialectName().hashCode();
         }
         _hashCode += getId();
+        if (getMultiSchema() != null) {
+            _hashCode += getMultiSchema().hashCode();
+        }
+        if (getSchemaAttribute() != null) {
+            _hashCode += getSchemaAttribute().hashCode();
+        }
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -446,6 +519,18 @@ public class SpagoBiDataSource  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("", "id"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("multiSchema");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "multiSchema"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "boolean"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("schemaAttribute");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "schemaAttribute"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
 

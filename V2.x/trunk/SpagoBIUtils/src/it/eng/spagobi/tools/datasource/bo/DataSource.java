@@ -56,6 +56,26 @@ public class DataSource implements Serializable, IDataSource {
 	private String hibDialectName;
 	private Set engines = null;
 	private Set objects = null;
+    private String schemaAttribute=null;
+	private Boolean multiSchema=null;
+	
+    public String getSchemaAttribute() {
+		return schemaAttribute;
+	}
+
+	public void setSchemaAttribute(String schemaAttribute) {
+		this.schemaAttribute = schemaAttribute;
+	}
+
+	public Boolean getMultiSchema() {
+		return multiSchema;
+	}
+
+	public void setMultiSchema(Boolean multiSchema) {
+		this.multiSchema = multiSchema;
+	}
+
+	
 	
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#toSpagoBiDataSource()
@@ -73,8 +93,16 @@ public class DataSource implements Serializable, IDataSource {
 		sbd.setUser(user);
 		sbd.setHibDialectClass(hibDialectClass);
 		sbd.setHibDialectName(hibDialectName);
+		sbd.setMultiSchema(multiSchema);
+		sbd.setSchemaAttribute(schemaAttribute);
 		return sbd;
 	}
+
+	
+	public boolean checkIsMultiSchema() {
+    	return getMultiSchema() != null 
+    			&& getMultiSchema().booleanValue();
+    }
 	
 	/**
 	 * Check is jndi.
@@ -194,7 +222,7 @@ public class DataSource implements Serializable, IDataSource {
 	 * @see it.eng.spagobi.tools.datasource.bo.IDataSource#getJndi()
 	 */
 	public String getJndi() {
-		return jndi;
+			return jndi;		
 	}
 	
 	/* (non-Javadoc)

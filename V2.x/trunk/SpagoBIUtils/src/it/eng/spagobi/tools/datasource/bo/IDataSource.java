@@ -12,9 +12,16 @@ public interface IDataSource {
 
 	public abstract SpagoBiDataSource toSpagoBiDataSource();
 
-	
+	public boolean checkIsMultiSchema();
 	public boolean checkIsJndi();
-	
+
+    public String getSchemaAttribute();
+
+	public void setSchemaAttribute(String schemaAttribute);
+
+	public Boolean getMultiSchema();
+
+	public void setMultiSchema(Boolean multiSchema);
     /**
      * Gets the connection.
      * 

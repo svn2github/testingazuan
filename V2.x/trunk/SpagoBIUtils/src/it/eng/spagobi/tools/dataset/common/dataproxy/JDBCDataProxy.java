@@ -46,6 +46,7 @@ public class JDBCDataProxy extends AbstractDataProxy {
 	
 	IDataSource dataSource;
 	String statement;
+	String schema=null;
 	
 	private static transient Logger logger = Logger.getLogger(JDBCDataProxy.class);
 	
@@ -54,6 +55,14 @@ public class JDBCDataProxy extends AbstractDataProxy {
 		
 	}
 			
+	public String getSchema() {
+		return schema;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+
 	public JDBCDataProxy(IDataSource dataSource, String statement) {
 		setDataSource(dataSource);
 		setStatement(statement);
@@ -81,7 +90,7 @@ public class JDBCDataProxy extends AbstractDataProxy {
 		SQLCommand sqlCommand = null;
 		DataResult dataResult = null;
 		try {
-			Connection conn = dataSource.toSpagoBiDataSource().readConnection(); 
+			Connection conn = dataSource.toSpagoBiDataSource().readConnection(schema); 
 			dataConnection = getDataConnection(conn);
 			sqlCommand = dataConnection.createSelectCommand( statement );
 			dataResult = sqlCommand.execute();

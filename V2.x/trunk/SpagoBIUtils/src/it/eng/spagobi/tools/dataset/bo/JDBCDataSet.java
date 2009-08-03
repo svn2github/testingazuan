@@ -24,7 +24,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.dataset.bo;
 
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.dataset.bo.SpagoBiDataSet;
 import it.eng.spagobi.tools.dataset.common.behaviour.QuerableBehaviour;
 import it.eng.spagobi.tools.dataset.common.dataproxy.IDataProxy;
@@ -68,19 +70,40 @@ public class JDBCDataSet extends ConfigurableDataSet {
 		setDataReader( new JDBCDataReader() );
 		
 		try{
-		setDataSource( DataSourceFactory.getDataSource( dataSetConfig.getDataSource() ) );
+			setDataSource( DataSourceFactory.getDataSource( dataSetConfig.getDataSource() ) );
 		}
 		catch (Exception e) {
 			EMFUserError userError = new EMFUserError(EMFErrorSeverity.ERROR, 9212);
 			logger.debug("missing right exstension");
 			throw userError;
 		}
-		
+	
 		setQuery( dataSetConfig.getQuery() );
 		
 		addBehaviour( new QuerableBehaviour(this) );
 	}
     
+    
+    
+    /**
+     * Redefined for set schema name
+     * 
+     */
+	public void setUserProfile(IEngUserProfile userProfile)  {
+		this.userProfile = userProfile;
+		if (getDataSource().checkIsMultiSchema()){
+			String schema=null;
+			try {
+				schema = (String)userProfile.getUserAttribute(getDataSource().getSchemaAttribute());
+				((JDBCDataProxy)dataProxy).setSchema(schema);
+				logger.debug("Set UP Schema="+schema);
+			} catch (EMFInternalError e) {
+				logger.error("Error reading schema name in user profile");	
+			}	
+		}
+	}
+	
+
 	
 	public SpagoBiDataSet toSpagoBiDataSet() {
 		SpagoBiDataSet sbd;

@@ -27,7 +27,7 @@ import it.eng.spago.base.SourceBean;
 
 import org.apache.log4j.Logger;
 
-public class LoginPublisher extends GenericPublisher {
+public class ChangeLanguagePublisher extends GenericPublisher {
 
     static Logger logger = Logger.getLogger(LoginPublisher.class);
 
@@ -42,8 +42,7 @@ public class LoginPublisher extends GenericPublisher {
 
 	SourceBean serviceResp = responseContainer.getServiceResponse();
 	// get the response of the module
-	SourceBean moduleResponse = (SourceBean) serviceResp.getAttribute("LoginModule");
-	String publisherName = getPublisherName(requestContainer, responseContainer, moduleResponse);
+	String publisherName = (String) serviceResp.getAttribute("PUBLISHER_NAME");
 
 	/*
 	 * if(!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) { return new
@@ -53,7 +52,7 @@ public class LoginPublisher extends GenericPublisher {
 	    logger.debug("OUT.publisherName=" + publisherName);
 	    return publisherName;
 	} else {
-	    logger.debug("OUT.publisherName=changeLanguage");
+	    logger.debug("OUT.publisherName=login");
 	    return new String("login");
 	}
     }

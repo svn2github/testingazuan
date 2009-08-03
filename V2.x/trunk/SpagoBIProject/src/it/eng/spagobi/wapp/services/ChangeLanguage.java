@@ -33,6 +33,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.wapp.util.MenuUtilities;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -125,7 +126,21 @@ public class ChangeLanguage extends AbstractHttpAction{
 		MenuUtilities.getMenuItems(serviceRequest, serviceResponse, profile);
 		
 		serviceResponse.setAttribute("MENU_MODE", "ALL_TOP");
-		serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
+		Collection functionalities = profile.getFunctionalities();
+		boolean docAdmin = false;
+		boolean docDev = false;
+		boolean docTest = false;
+		if (functionalities!=null && !functionalities.isEmpty()){
+			docAdmin = functionalities.contains("DocumentAdministration")|| functionalities.contains("DocumentAdminManagement");
+		 	docDev = functionalities.contains("DocumentDevManagement");
+		 	docTest = functionalities.contains("DocumentTestManagement");
+		}
+		if(docAdmin||docDev||docTest){
+			serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
+		}else{
+			serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
+		}
+		
 		logger.debug("OUT");
 	}
 

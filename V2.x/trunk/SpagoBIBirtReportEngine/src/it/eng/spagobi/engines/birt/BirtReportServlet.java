@@ -7,6 +7,7 @@ package it.eng.spagobi.engines.birt;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
@@ -382,7 +383,7 @@ public class BirtReportServlet extends HttpServlet {
 	 * @return jndi connection
 	 * @throws ConnectionDefinitionException
 	 */
-	private SpagoBiDataSource findDataSource(HttpSession session, String userId, String documentId,String requestConnectionName)
+	private IDataSource findDataSource(HttpSession session, String userId, String documentId,String requestConnectionName)
 	throws ConnectionDefinitionException {
 		logger.debug("IN");
 		if (documentId == null) {
@@ -402,7 +403,7 @@ public class BirtReportServlet extends HttpServlet {
 			return null;
 		}	
 		logger.debug("OUT");
-		return ds.toSpagoBiDataSource();
+		return ds;
 	}
 
 	protected void runReport(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -442,16 +443,31 @@ public class BirtReportServlet extends HttpServlet {
 
 		String requestConnectionName = (String) request.getParameter(CONNECTION_NAME);
 		logger.debug("requestConnectionName:" + requestConnectionName);
-		SpagoBiDataSource sbds = findDataSource(request.getSession(), userId, documentId,requestConnectionName);
-		if (sbds != null) {
+		IDataSource ds = findDataSource(request.getSession(), userId, documentId,requestConnectionName);
+		if (ds != null) {
 			logger.debug("DataSource founded.");
-			if (sbds.getJndiName() != null && sbds.getJndiName() != "") {
-				reportParams.put("connectionName", sbds.getJndiName());
+		
+			if (ds.checkIsJndi() ) {
+				
+				if (ds.checkIsMultiSchema()){
+					String schema=null;
+					try {
+							String attrname=ds.getSchemaAttribute();
+							if (attrname!=null) schema = (String)profile.getUserAttribute(attrname);						
+					} catch (EMFInternalError e) {
+						logger.error("Cannot retrive ENTE", e);
+					}
+					reportParams.put("connectionName", ds.getJndi()+schema);
+				}else{
+					reportParams.put("connectionName", ds.getJndi());
+				}
+
+				
 			} else {
-				reportParams.put("driver", sbds.getDriver());
-				reportParams.put("url", sbds.getUrl());
-				reportParams.put("user", sbds.getUser());
-				reportParams.put("pwd", (sbds.getPassword().equals("")) ? " " : sbds.getPassword());
+				reportParams.put("driver", ds.getDriver());
+				reportParams.put("url", ds.getUrlConnection());
+				reportParams.put("user", ds.getUser());
+				reportParams.put("pwd", (ds.getPwd().equals("")) ? " " : ds.getPwd());
 
 			}
 		}

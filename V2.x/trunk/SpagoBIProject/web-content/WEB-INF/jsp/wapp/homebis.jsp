@@ -168,7 +168,32 @@ else
 	jsonMenuThemesList = <%=jsonMenuThemesList%>;
 	</script>
  	<%} // end if(draw_select_combo)%>
+<% 
+String url="";
+if(ThemesManager.resourceExists(currTheme,"/html/banner.html")){
+	url = "/themes/"+currTheme+"/html/banner.html";	
+}
+else {
+	url = "/themes/sbi_default/html/banner.html";	
+}
 
+%>
+<div id='Banner' >
+	<jsp:include page='<%=url%>' />
+</div>
+
+<% 
+String url2="";
+if(ThemesManager.resourceExists(currTheme,"/html/footer.html")){
+	url2 = "/themes/"+currTheme+"/html/footer.html";	
+}
+else {
+	url2 = "/themes/sbi_default/html/footer.html";	
+}
+%>
+<div id='Footer' >
+	<jsp:include page='<%=url2%>' />
+</div>
 <script type="text/javascript">
     
     var northFrame;

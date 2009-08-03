@@ -24,6 +24,7 @@ package it.eng.spagobi.tools.datasource.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.commons.utilities.UserUtilities;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -69,7 +70,8 @@ public class TestConnectionAction extends AbstractHttpAction {
 		try {
 			if (isjndi.equals("true")){
 				    ctx = new InitialContext();
-				    DataSource ds = (DataSource) ctx.lookup(jndi);
+				    String schema=UserUtilities.getSchema();
+				    DataSource ds = (DataSource) ctx.lookup(jndi+schema);
 				    connection = ds.getConnection();
 			}else if (isjndi.equals("false")){			
 				    Class.forName(driver);

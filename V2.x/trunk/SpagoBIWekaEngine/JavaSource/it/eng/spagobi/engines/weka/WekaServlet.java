@@ -6,6 +6,7 @@
 package it.eng.spagobi.engines.weka;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
@@ -344,9 +345,21 @@ public class WekaServlet extends HttpServlet {
 	logger.debug("IN.documentId:"+documentId);
 	DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(userId,session);
 	IDataSource ds = proxyDS.getDataSource(documentId);
+	
+	IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	String schema=null;
+	try {
+		if (ds.checkIsMultiSchema()){
+			String attrname=ds.getSchemaAttribute();
+			if (attrname!=null) schema = (String)profile.getUserAttribute(attrname);
+		}
+	} catch (EMFInternalError e) {
+		logger.error("Cannot retrive ENTE", e);
+	}
+	
 	Connection conn = null;
 	try {
-		conn =  ds.toSpagoBiDataSource().readConnection();
+		conn =  ds.toSpagoBiDataSource().readConnection(schema);
 	} catch (Exception e) {
 		logger.error("Impossible to retrive connection", e);
 	} 

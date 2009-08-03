@@ -115,10 +115,16 @@
   <input name="{@id}" title="{@title}" type="image" src="{$context}/{$imgpath}/drill-through.gif" border="0" width="9" height="9"/>
 </xsl:template>
 
+<!-- start SpagoBI cross-navigation: added for SpagoBI cross-navigation mechanism support -->
+<xsl:template match="cross-navigation">
+  <input name="{@id}" title="{@title}" type="image" src="{$context}/{$imgpath}/cross-navigation.gif" border="0" width="9" height="9"/>
+</xsl:template>
+<!-- end SpagoBI cross-navigation -->
 
 <xsl:template match="cell">
   <td nowrap="nowrap" class="cell-{@style}">
     <xsl:apply-templates select="drill-through"/>
+    <xsl:apply-templates select="cross-navigation"/>
     <xsl:call-template name="render-label">
       <xsl:with-param name="label">
         <xsl:value-of select="@value"/>

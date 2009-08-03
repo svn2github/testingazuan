@@ -112,6 +112,7 @@ try {
 <wcf:form id="mdxedit01" xmlUri="/WEB-INF/jpivot/table/mdxedit.xml" model="#{query01}" visible="false"/>
 <wcf:form id="sortform01" xmlUri="/WEB-INF/jpivot/table/sortform.xml" model="#{table01}" visible="false"/>
 <wcf:form id="saveAnalysis01" xmlUri="/WEB-INF/jpivot/table/saveAnalysisTable.xml" model="#{save01}" visible="false"/>
+<wcf:table id="query01.crossnavigationtable" visible="false" selmode="none" editable="false" sortable="false" pagable="false"/>
 
 <jp:print id="print01"/>
 <wcf:form id="printform01" xmlUri="/WEB-INF/jpivot/print/printpropertiesform.xml" model="#{print01}" visible="false"/>
@@ -145,7 +146,13 @@ try {
   <wcf:scriptbutton model="#{table01.extensions.drillPosition.enabled}" tooltip="toolb.navi.position" radioGroup="navi" id="drillPosition" img="navi-position"/>
   <wcf:scriptbutton model="#{table01.extensions.drillReplace.enabled}"	 tooltip="toolb.navi.replace" radioGroup="navi" id="drillReplace"  img="navi-replace"/>
   <wcf:scriptbutton model="#{table01.extensions.drillThrough.enabled}"  tooltip="toolb.navi.drillthru" id="drillThrough01"  img="navi-through"/>
-  <wcf:scriptbutton model="#{table01.extensions.qbeDrillThrough.enabled}"  tooltip="toolb.navi.qbedrillthru" id="qbeDrillThrough01"  img="qbe"/>
+  <%
+  if (session.getAttribute("cross_navigation_config") != null) {
+	%>
+	<wcf:scriptbutton model="#{table01.extensions.crossNavigation.enabled}"  tooltip="toolb.navi.crossNavigation" id="crossNavigation01"  img="cross-navigation"/>  
+	<%
+  }
+  %>
   <wcf:separator/>
   <wcf:scriptbutton id="chartButton01" tooltip="toolb.chart" img="chart" model="#{chart01.visible}"/>
   <wcf:scriptbutton id="chartPropertiesButton01" tooltip="toolb.chart.config" img="chart-config" model="#{chartform01.visible}"/>
@@ -256,6 +263,9 @@ Slicer:
 
 <!-- drill through table -->
 <wcf:render ref="query01.drillthroughtable" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
+
+<!-- cross navigation table -->
+<wcf:render ref="query01.crossnavigationtable" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
 
 <!-- render chart -->
 <wcf:render ref="chart01" xslUri="/WEB-INF/jpivot/chart/chart.xsl" xslCache="true"/>

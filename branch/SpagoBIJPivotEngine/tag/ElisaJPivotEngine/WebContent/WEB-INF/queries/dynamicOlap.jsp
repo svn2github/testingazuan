@@ -28,6 +28,7 @@ LICENSE: see LICENSE.txt file
 <%@ page import="it.eng.spagobi.utilities.ParametersDecoder"%>
 <%@ page import="it.eng.spagobi.commons.utilities.StringUtilities"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
+<%@page import="it.eng.spagobi.jpivotaddins.crossnavigation.SpagoBICrossNavigationConfig"%>
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
@@ -125,7 +126,11 @@ LICENSE: see LICENSE.txt file
 			SAXReader readerConfigFile = new SAXReader();
 			Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
 			List schemas = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/SCHEMAS/SCHEMA");
-			
+			Node crossNavigation = document.selectSingleNode("//olap/CROSS_NAVIGATION");
+			if (crossNavigation != null) {
+				SpagoBICrossNavigationConfig cninfo = new SpagoBICrossNavigationConfig(crossNavigation);
+				session.setAttribute("cross_navigation_config", cninfo);
+			}
 			
 			Iterator it = schemas.iterator();
 			Node selectedSchemaNode = null;
@@ -163,6 +168,7 @@ LICENSE: see LICENSE.txt file
 			String resName = ds.getJndi();
 			//resName = resName.replaceAll("java:comp/env/","");
 		%>
+			
 			
 			
 			

@@ -12,15 +12,17 @@
  */
 package com.tonbeller.jpivot.table.navi;
 
+import it.eng.spagobi.jpivotaddins.crossnavigation.SpagoBICrossNavigationConfig;
+
 import javax.servlet.http.HttpSession;
 
 import org.w3c.dom.Element;
 
 import com.tonbeller.jpivot.core.ModelChangeEvent;
 import com.tonbeller.jpivot.core.ModelChangeListener;
+import com.tonbeller.jpivot.mondrian.SpagoBICrossNavigation;
 import com.tonbeller.jpivot.olap.model.Cell;
 import com.tonbeller.jpivot.olap.model.OlapModel;
-import com.tonbeller.jpivot.olap.navi.DrillThrough;
 import com.tonbeller.jpivot.table.CellBuilder;
 import com.tonbeller.jpivot.table.CellBuilderDecorator;
 import com.tonbeller.jpivot.table.TableComponent;
@@ -30,20 +32,25 @@ import com.tonbeller.wcf.controller.Dispatcher;
 import com.tonbeller.wcf.controller.DispatcherSupport;
 import com.tonbeller.wcf.controller.RequestContext;
 import com.tonbeller.wcf.controller.RequestListener;
-import com.tonbeller.wcf.table.*;
+import com.tonbeller.wcf.table.EditableTableComponent;
+import com.tonbeller.wcf.table.EmptyTableModel;
+import com.tonbeller.wcf.table.ITableComponent;
+import com.tonbeller.wcf.table.TableColumn;
+import com.tonbeller.wcf.table.TableModel;
+import com.tonbeller.wcf.table.TableModelDecorator;
 import com.tonbeller.wcf.utils.DomUtils;
 
 
-public class QbeDrillThroughUI extends TableComponentExtensionSupport implements ModelChangeListener {
+public class SpagoBICrossNavigationUI extends TableComponentExtensionSupport implements ModelChangeListener {
 
   boolean available;
   boolean renderActions;
   Dispatcher dispatcher = new DispatcherSupport();
-  DrillThrough extension;
+  SpagoBICrossNavigation extension;
 
   TableModelDecorator tableModel = new TableModelDecorator(EmptyTableModel.instance());
 
-  public static final String ID = "qbeDrillThrough";
+  public static final String ID = "crossNavigation";
   public String getId() {
     return ID;
   }
@@ -89,73 +96,55 @@ public class QbeDrillThroughUI extends TableComponentExtensionSupport implements
         return parent;
 
       String id = DomUtils.randomId();
-      if (canDrillThrough(cell) && (!cell.isNull())) {
-        // add a drill through child node to cell element
-        Element elem = table.insert("drill-through", parent);
-        elem.setAttribute("id", id);
-        elem.setAttribute("title", "Show source data");
-        dispatcher.addRequestListener(id, null, new DrillThroughHandler(cell));
-      } else {
-        // dont add anything
-      }
+      // add a drill through child node to cell element
+      Element elem = table.insert("cross-navigation", parent);
+      elem.setAttribute("id", id);
+      elem.setAttribute("title", "Cross navigation");
+      dispatcher.addRequestListener(id, null, new CrossNavigationHandler(cell));
 
       return parent;
     }
   }
 
-  class DrillThroughHandler implements RequestListener {
+  class CrossNavigationHandler implements RequestListener {
     Cell cell;
-    DrillThroughHandler(Cell cell) {
+    CrossNavigationHandler(Cell cell) {
       this.cell = cell;
     }
     public void request(RequestContext context) throws Exception {
-      if (canDrillThrough(cell)) {
-    	  System.out.println("hai cliccato sulla cella " + cell.getFormattedValue());
-    	  context.getResponse().sendRedirect("http://www.google.com");
-    	  
-//        HttpSession session = context.getSession();
-//        final String drillTableRef = table.getOlapModel().getID() + ".drillthroughtable";
-//        ITableComponent tc =
-//          (ITableComponent) session.getAttribute(drillTableRef);
-//        // get a new drill through table model
-//        TableModel tm = drillThrough(cell);
-//        tc.setModel(tm);
-//        tc.setVisible(true);
-//        TableColumn[] tableColumns = null;
-//        if (tc instanceof EditableTableComponent) {
-//          tableColumns =
-//              ((EditableTableComponent) tc).getTableComp().getTableColumns();
-//        } else if (tc instanceof com.tonbeller.wcf.table.TableComponent) {
-//          tableColumns = ((com.tonbeller.wcf.table.TableComponent) tc).getTableColumns();
-//        }
-//        if (tableColumns != null) {
-//          for (int i = 0; i < tableColumns.length; i++) {
-//            TableColumn tableColumn = tableColumns[i];
-//            tableColumn.setHidden(false);
-//          }
-//        }
-      }
+        HttpSession session = context.getSession();
+        SpagoBICrossNavigationConfig cninfo = (SpagoBICrossNavigationConfig) session.getAttribute("cross_navigation_config");
+        final String drillTableRef = table.getOlapModel().getID() + ".crossnavigationtable";
+        ITableComponent tc =
+          (ITableComponent) session.getAttribute(drillTableRef);
+        // get a new drill through table model
+        TableModel tm = crossNavigation(cninfo);
+        tc.setModel(tm);
+        tc.setVisible(true);
+        TableColumn[] tableColumns = null;
+        if (tc instanceof EditableTableComponent) {
+          tableColumns =
+              ((EditableTableComponent) tc).getTableComp().getTableColumns();
+        } else if (tc instanceof com.tonbeller.wcf.table.TableComponent) {
+          tableColumns = ((com.tonbeller.wcf.table.TableComponent) tc).getTableColumns();
+        }
+        if (tableColumns != null) {
+          for (int i = 0; i < tableColumns.length; i++) {
+            TableColumn tableColumn = tableColumns[i];
+            tableColumn.setHidden(false);
+          }
+        }
     }
+	private TableModel crossNavigation(SpagoBICrossNavigationConfig cninfo) {
+		return extension.crossNavigation((Cell) cell.getRootDecoree(), cninfo);
+	}
   }
 
   /** @return true if extension is available */
   protected boolean initializeExtension() {
     OlapModel om = table.getOlapModel();
-    extension = (DrillThrough) om.getExtension(DrillThrough.ID);
+    extension = (SpagoBICrossNavigation) om.getExtension(SpagoBICrossNavigation.ID);
     return extension != null;
-  }
-
-  protected boolean canDrillThrough(Cell cell) {
-    return extension.canDrillThrough((Cell) cell.getRootDecoree());
-  }
-
-  /**
-   * returns a DrillThroughTableModel object for the drill through
-   * @param cell
-   * @return
-   */
-  protected TableModel drillThrough(Cell cell) {
-    return extension.drillThrough((Cell) cell.getRootDecoree());
   }
 
   public boolean isAvailable() {

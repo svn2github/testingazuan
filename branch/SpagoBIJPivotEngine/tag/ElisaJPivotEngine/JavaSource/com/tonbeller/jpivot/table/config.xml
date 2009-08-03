@@ -15,6 +15,6 @@
   <extension class="com.tonbeller.jpivot.table.navi.AxisStyleUI"/>
   <extension class="com.tonbeller.jpivot.table.navi.MdxQueryUI"/>
   <extension enabled="false" class="com.tonbeller.jpivot.table.navi.DrillThroughUI"/>
-  <extension enabled="false" class="com.tonbeller.jpivot.table.navi.QbeDrillThroughUI"/>
+  <extension enabled="false" class="com.tonbeller.jpivot.table.navi.SpagoBICrossNavigationUI"/>
   <extension class="com.tonbeller.jpivot.excel.ExcelTableExtension"/>
 </table>

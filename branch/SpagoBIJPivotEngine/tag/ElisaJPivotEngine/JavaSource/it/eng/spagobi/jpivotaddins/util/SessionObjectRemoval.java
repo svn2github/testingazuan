@@ -143,6 +143,10 @@ public class SessionObjectRemoval {
 		if (session.getAttribute("dimension_access_rules") != null) {
 			session.removeAttribute("dimension_access_rules");
 		}
+		
+		if (session.getAttribute("cross_navigation_config") != null) {
+			session.removeAttribute("cross_navigation_config");
+		}
 	}
 	
 }

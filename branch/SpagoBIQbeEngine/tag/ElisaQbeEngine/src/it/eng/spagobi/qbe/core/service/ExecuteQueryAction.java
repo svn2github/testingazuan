@@ -152,7 +152,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			Assert.assertNotNull(resultNumber, "The the attribute [resultNumber] of the sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
 			logger.debug("Total records: " + resultNumber);			
 			
-			boolean overflow = resultNumber >= maxSize;
+			boolean overflow = maxSize != null && resultNumber >= maxSize;
 			if (overflow) {
 				logger.warn("Query results number [" + resultNumber + "] exceeds max result limit that is [" + maxSize + "]");
 				auditlogger.info("[" + userProfile.getUserId() + "]:: max result limit [" + maxSize + "] exceeded with SQL: " + sqlQuery);

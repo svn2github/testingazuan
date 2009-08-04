@@ -41,13 +41,14 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
-
+<%@page import="it.eng.spagobi.jpivotaddins.crossnavigation.SpagoBICrossNavigationConfig"%>
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib uri="http://www.tonbeller.com/wcf" prefix="wcf" %>
 <%@ taglib uri="http://spagobi.eng.it/" prefix="spagobi" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %> 
     
+
 
 <html>
 <head>
@@ -147,7 +148,7 @@ try {
   <wcf:scriptbutton model="#{table01.extensions.drillReplace.enabled}"	 tooltip="toolb.navi.replace" radioGroup="navi" id="drillReplace"  img="navi-replace"/>
   <wcf:scriptbutton model="#{table01.extensions.drillThrough.enabled}"  tooltip="toolb.navi.drillthru" id="drillThrough01"  img="navi-through"/>
   <%
-  if (session.getAttribute("cross_navigation_config") != null) {
+  if (session.getAttribute(SpagoBICrossNavigationConfig.ID) != null) {
 	%>
 	<wcf:scriptbutton model="#{table01.extensions.crossNavigation.enabled}"  tooltip="toolb.navi.crossNavigation" id="crossNavigation01"  img="cross-navigation"/>  
 	<%

@@ -1,7 +1,14 @@
-/**
- * 
- * LICENSE: see LICENSE.html file
- * 
+/*
+ * ====================================================================
+ * This software is subject to the terms of the Common Public License
+ * Agreement, available at the following URL:
+ *   http://www.opensource.org/licenses/cpl.html .
+ * Copyright (C) 2003-2004 TONBELLER AG.
+ * All Rights Reserved.
+ * You must accept the terms of that agreement to use this software.
+ * ====================================================================
+ *
+ *
  */
 package com.tonbeller.jpivot.mondrian;
 
@@ -12,6 +19,13 @@ import com.tonbeller.wcf.table.AbstractTableModel;
 import com.tonbeller.wcf.table.DefaultTableRow;
 import com.tonbeller.wcf.table.TableRow;
 
+/**
+ * This class is the cross navigation table model, i.e. the model of the table displaying available choices for cross navigation
+ * from current OLAP document to another SpagoBI document.
+ * 
+ * @author Zerbetto Davide (davide.zerbetto@eng.it)
+ *
+ */
 public class SpagoBICrossNavigationTableModel extends AbstractTableModel {
 
 	private SpagoBICrossNavigationConfig config = null;
@@ -25,17 +39,20 @@ public class SpagoBICrossNavigationTableModel extends AbstractTableModel {
 	}
 	
 	public int getColumnCount() {
-		return 2;
+		return 3;
 	}
 
 	public String getColumnTitle(int columnIndex) {
 		String columnTitle = null;
 		switch (columnIndex) {
 			case 0: 
-				columnTitle = "Document label";
+				columnTitle = "Document";
 				break;
 			case 1:
-				columnTitle = "Customized view label";
+				columnTitle = "Customized view";
+				break;
+			case 2:
+				columnTitle = "Description";
 				break;
 		}
 		return columnTitle;

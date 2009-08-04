@@ -129,7 +129,7 @@ LICENSE: see LICENSE.txt file
 			Node crossNavigation = document.selectSingleNode("//olap/CROSS_NAVIGATION");
 			if (crossNavigation != null) {
 				SpagoBICrossNavigationConfig cninfo = new SpagoBICrossNavigationConfig(crossNavigation);
-				session.setAttribute("cross_navigation_config", cninfo);
+				session.setAttribute(SpagoBICrossNavigationConfig.ID, cninfo);
 			}
 			
 			Iterator it = schemas.iterator();

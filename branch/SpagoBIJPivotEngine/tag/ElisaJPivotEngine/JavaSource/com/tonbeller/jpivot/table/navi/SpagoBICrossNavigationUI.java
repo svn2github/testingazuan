@@ -40,7 +40,18 @@ import com.tonbeller.wcf.table.TableModel;
 import com.tonbeller.wcf.table.TableModelDecorator;
 import com.tonbeller.wcf.utils.DomUtils;
 
-
+/**
+ * This class is an extension to JPivot table UI: it must be declared as
+ * <code>&lt;extension enabled="false" class="com.tonbeller.jpivot.table.navi.SpagoBICrossNavigationUI""/&gt;</code>
+ * in file com.tonbeller.jpivot.table.config.xml to take effect.
+ * When cross navigation functionality is enabled, an image on each cell is displayed: this image is obtained adding a 
+ * <code>cross-navigation</code> Element in the xml table representation (see also SpagoBIJPivotEngine/WEB-INF/jpivot/table/mdxtable.xsl
+ * for the XSLT trasformation of <code>cross-navigation</code> Element); its handler retrieves the <code>SpagoBICrossNavigationConfig</code> 
+ * object from session, builds the cross navigation table model and set the cross navigation table visible.
+ * 
+ * @author Zerbetto Davide (davide.zerbetto@eng.it)
+ *
+ */
 public class SpagoBICrossNavigationUI extends TableComponentExtensionSupport implements ModelChangeListener {
 
   boolean available;
@@ -113,10 +124,10 @@ public class SpagoBICrossNavigationUI extends TableComponentExtensionSupport imp
     }
     public void request(RequestContext context) throws Exception {
         HttpSession session = context.getSession();
-        SpagoBICrossNavigationConfig cninfo = (SpagoBICrossNavigationConfig) session.getAttribute("cross_navigation_config");
-        final String drillTableRef = table.getOlapModel().getID() + ".crossnavigationtable";
+        SpagoBICrossNavigationConfig cninfo = (SpagoBICrossNavigationConfig) session.getAttribute(SpagoBICrossNavigationConfig.ID);
+        final String crossNavigationTableRef = table.getOlapModel().getID() + ".crossnavigationtable";
         ITableComponent tc =
-          (ITableComponent) session.getAttribute(drillTableRef);
+          (ITableComponent) session.getAttribute(crossNavigationTableRef);
         // get a new drill through table model
         TableModel tm = crossNavigation(cninfo);
         tc.setModel(tm);
@@ -135,8 +146,8 @@ public class SpagoBICrossNavigationUI extends TableComponentExtensionSupport imp
           }
         }
     }
-	private TableModel crossNavigation(SpagoBICrossNavigationConfig cninfo) {
-		return extension.crossNavigation((Cell) cell.getRootDecoree(), cninfo);
+	private TableModel crossNavigation(SpagoBICrossNavigationConfig config) {
+		return extension.crossNavigation((Cell) cell.getRootDecoree(), config);
 	}
   }
 

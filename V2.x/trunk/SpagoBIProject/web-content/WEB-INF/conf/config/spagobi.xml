@@ -6,6 +6,11 @@
 <SPAGOBI-MODE mode="WEB"/>
 <!-- END-WEB  -->
 
+	<HOME>
+		<BANNER view="true" /> 
+		<FOOTER view="true" /> 
+	</HOME>
+
 <!-- START-PORTLET 
 	<SPAGOBI-MODE mode="PORTLET"/>
   END-PORTLET  -->	

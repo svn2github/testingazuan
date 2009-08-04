@@ -34,20 +34,30 @@ import com.tonbeller.wcf.table.DefaultCell;
 /**
  * An instance of this class contains information for cross navigation choices, retrieved by SpagoBI OLAP document template.
  * An example of this configuration could be:<br/>
- * &lt;olap&gt;<br/>
- * 	....
- *  &lt;CROSS_NAVIGATION&gt<br/>
- * 	 &lt;TARGET_DOCUMENT label="OTHER" clickable="false" &gt<br/>
- *   	 &lt;TARGET_CUSTOMIZED_VIEW label="ONE" description="click here to go to customized view ONE of document OTHER" /&gt<br/>
- *   	 &lt;TARGET_CUSTOMIZED_VIEW label="TWO" description="click here to go to customized view TWO of document OTHER" /&gt<br/>
- *   	 &lt;TARGET_CUSTOMIZED_VIEW label="THREE" description="click here to go to customized view THREE of document OTHER" /&gt<br/>
- * 	 &lt;/TARGET_DOCUMENT&gt<br/>
- * 	 &lt;PARAMETERS&gt<br/>
- * 	   &lt;PARAMETER name="family" scope="relative" dimension="Product" hierarchy="[Product]" level="[Product].[Product Family]" /&gt<br/>
- * 	   &lt;PARAMETER name="city" scope="relative" dimension="Region" hierarchy="[Region]" level="[Region].[Sales City]" /&gt<br/>
- * 	 &lt;/PARAMETERS&gt<br/>
- * 	&lt;/CROSS_NAVIGATION&gt<br/>
- * &lt;/olap&gt<br/>
+ * 	&lt;CROSS_NAVIGATION&gt;<br/>
+ * 	 &lt;TARGET_DOCUMENT label="QBE_DATAMART" name="Qbe Datamart" clickable="false" description="Go to Qbe Datamart"&gt;<br/>
+ *    	 &lt;TARGET_CUSTOMIZED_VIEW label="Query1" name="Query1" description="Go to Query1 of Qbe Datamart" /&gt;<br/>
+ *    	 &lt;PARAMETERS&gt;<br/>
+ *    	   &lt;PARAMETER name="family" scope="relative" dimension="Product" hierarchy="[Product]" level="[Product].[Product Family]" /&gt;<br/>
+ *    	   &lt;PARAMETER name="city" scope="relative" dimension="Region" hierarchy="[Region]" level="[Region].[Sales City]" /&gt;<br/>
+ *    	 &lt;/PARAMETERS&gt;<br/>
+ * 	 &lt;/TARGET_DOCUMENT&gt;<br/>
+ * 	 &lt;TARGET_DOCUMENT label="INVENTORY" name="Inventory" clickable="true" description="Go to Inventory analysis"&gt;<br/>
+ *    	 &lt;TARGET_CUSTOMIZED_VIEW label="Query1" name="Inventory analysis 1" description="Go to Inventory analysis 1" /&gt;<br/>
+ *    	 &lt;TARGET_CUSTOMIZED_VIEW label="Query2" name="Inventory analysis 3" description="Go to Inventory analysis 2" /&gt;<br/>
+ *    	 &lt;TARGET_CUSTOMIZED_VIEW label="Query3" name="Inventory analysis 2" description="Go to Inventory analysis 3" /&gt;<br/>
+ *    	 &lt;PARAMETERS&gt;<br/>
+ *    	   &lt;PARAMETER name="family" scope="relative" dimension="Product" hierarchy="[Product]" level="[Product].[Product Family]" /&gt;<br/>
+ *    	   &lt;PARAMETER name="city" scope="relative" dimension="Region" hierarchy="[Region]" level="[Region].[Sales City]" /&gt;<br/>
+ *    	 &lt;/PARAMETERS&gt;<br/>
+ * 	 &lt;/TARGET_DOCUMENT&gt;<br/>
+ * 	 &lt;TARGET_DOCUMENT label="CITY_DETAIL" name="City Detail" clickable="true" description="Go to City Detail"&gt;<br/>
+ *    	 &lt;PARAMETERS&gt;<br/>
+ *    	   &lt;PARAMETER name="outputType" scope="absolute" value="PDF" /&gt;<br/>
+ *    	   &lt;PARAMETER name="city" scope="relative" dimension="Region" hierarchy="[Region]" level="[Region].[Sales City]" /&gt;<br/>
+ *    	 &lt;/PARAMETERS&gt;<br/>
+ * 	 &lt;/TARGET_DOCUMENT&gt;<br/>
+ * 	&lt;/CROSS_NAVIGATION&gt;<br/>
  * 
  * @author Zerbetto Davide (davide.zerbetto@eng.it)
  *

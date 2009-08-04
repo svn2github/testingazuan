@@ -291,6 +291,8 @@ public class DetailDataSourceModule extends AbstractModule {
 			ds.setUser("");
 			ds.setPwd("");
 			ds.setDriver("");
+			ds.setMultiSchema(false);
+			ds.setSchemaAttribute("");
 			response.setAttribute("dsObj", ds);
 			IDomainDAO domaindao = DAOFactory.getDomainDAO();
 			List dialects = domaindao.loadListDomainsByType("DIALECT_HIB");
@@ -316,6 +318,12 @@ public class DetailDataSourceModule extends AbstractModule {
 		String user = (String)serviceRequest.getAttribute("USER");
 		String pwd = (String)serviceRequest.getAttribute("PWD");
 		String driver = (String)serviceRequest.getAttribute("DRIVER");
+		String schemaAttr = (String)serviceRequest.getAttribute("ATTRSCHEMA");
+		String multiSchema = (String)serviceRequest.getAttribute("MULTISCHEMA");
+		Boolean isMultiSchema = false;
+		if(multiSchema!=null && multiSchema.equals("YES")){
+			isMultiSchema = true;
+		}
 		
 		ds.setDsId(id.intValue());
 		ds.setDialectId(dialectId);
@@ -326,6 +334,8 @@ public class DetailDataSourceModule extends AbstractModule {
 		ds.setUser(user);
 		ds.setPwd(pwd);
 		ds.setDriver(driver);
+		ds.setSchemaAttribute(schemaAttr);
+		ds.setMultiSchema(isMultiSchema);
 				
 		return ds;
 	}

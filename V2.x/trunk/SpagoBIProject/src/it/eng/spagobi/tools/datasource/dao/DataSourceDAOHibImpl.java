@@ -252,6 +252,8 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			hibDataSource.setUser(aDataSource.getUser());
 			hibDataSource.setPwd(aDataSource.getPwd());
 			hibDataSource.setDriver(aDataSource.getDriver());
+			hibDataSource.setMultiSchema(aDataSource.getMultiSchema());
+			hibDataSource.setSchemaAttribute(aDataSource.getSchemaAttribute());
 			tx.commit();
 		} catch (HibernateException he) {
 			logger.error("Error while modifing the data source with id " + ((aDataSource == null)?"":String.valueOf(aDataSource.getDsId())), he);
@@ -310,6 +312,8 @@ public class DataSourceDAOHibImpl extends AbstractHibernateDAO implements IDataS
 			hibDataSource.setUser(aDataSource.getUser());
 			hibDataSource.setPwd(aDataSource.getPwd());
 			hibDataSource.setDriver(aDataSource.getDriver());
+			hibDataSource.setMultiSchema(aDataSource.getMultiSchema());
+			hibDataSource.setSchemaAttribute(aDataSource.getSchemaAttribute());
 			aSession.save(hibDataSource);
 			tx.commit();
 		} catch (HibernateException he) {

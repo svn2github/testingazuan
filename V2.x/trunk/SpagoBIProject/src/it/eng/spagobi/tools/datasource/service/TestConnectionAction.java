@@ -64,13 +64,22 @@ public class TestConnectionAction extends AbstractHttpAction {
 		String user = (String) serviceRequest.getAttribute("user");
 		String pwd = (String) serviceRequest.getAttribute("pwd");
 		String driver = (String) serviceRequest.getAttribute("driver");
+		String multischema = (String) serviceRequest.getAttribute("multischema");
+		Boolean isMultischema = false;
+		if(multischema!=null && !multischema.equals("") && multischema.equalsIgnoreCase("true")){
+			isMultischema = true;
+		}
+		String schemaattr = (String) serviceRequest.getAttribute("schemaattr");
 		
 		Connection connection = null;
 		Context ctx;
 		try {
 			if (isjndi.equals("true")){
 				    ctx = new InitialContext();
-				    String schema=UserUtilities.getSchema();
+				    String schema="";
+				    if(isMultischema){
+				    	schema=UserUtilities.getSchema();
+				    }
 				    DataSource ds = (DataSource) ctx.lookup(jndi+schema);
 				    connection = ds.getConnection();
 			}else if (isjndi.equals("false")){			

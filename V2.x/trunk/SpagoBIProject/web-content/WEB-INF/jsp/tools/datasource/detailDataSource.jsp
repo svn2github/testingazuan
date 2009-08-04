@@ -157,7 +157,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<input class='portlet-form-input-field' type="text" name="DESCR" 
 				   size="50" value="<%= StringEscapeUtils.escapeHtml(desc) %>" maxlength="160" />
 		</div>
-			
+		
 		<div class='div_detail_label'>
 				<span class='portlet-form-field-label'>
 					<spagobi:message key = "SBISet.ListDS.columnDialect" />
@@ -187,7 +187,47 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
       		%>
       		</select>
 		</div> 
-			
+		
+		<div class='div_detail_label'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBISet.ListDS.columnMultiSchema" />
+				</span>
+		</div>
+		
+		<div class='div_detail_form'>
+		<%
+			   Boolean isMultischema = ds.checkIsMultiSchema();
+			   if(isMultischema==null) {
+				   isMultischema = false;
+			   }
+		%>
+
+			   <input type="radio" name="MULTISCHEMA" value="YES" <% if(isMultischema) { out.println(" checked='checked' "); } %> >
+					<span class="portlet-font"><spagobi:message key = "SBISet.ListDS.YES" /></span>
+			   </input>
+			   <input type="radio" name="MULTISCHEMA" value="NO" <% if(!isMultischema) { out.println(" checked='checked' "); } %> >
+					<span class="portlet-font"><spagobi:message key = "SBISet.ListDS.NO" /></span>
+			   </input>
+		</div>
+	
+		
+		<div class='div_detail_label'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBISet.ListDS.columnAttrSchema" />
+				</span>
+		</div>
+		
+		<div class='div_detail_form'>
+		<%
+			   String attrschema = ds.getSchemaAttribute();
+			   if((attrschema==null) || (attrschema.equalsIgnoreCase("null"))  ) {
+				   attrschema = "";
+			   }
+		%>
+			<input class='portlet-form-input-field' type="text" name="ATTRSCHEMA" style='width:250px;' 
+				   size="45" value="<%= StringEscapeUtils.escapeHtml(attrschema) %>" maxlength="45" />
+		</div>
+		<br>		
 			
     	<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
@@ -320,6 +360,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var user = document.dsForm.USER.value;
 	var pwd = document.dsForm.PWD.value;
 	var driver = document.dsForm.DRIVER.value;
+	var attrschema = document.dsForm.ATTRSCHEMA.value;
 
 	
 	if ((label != '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getLabel()))%>')
@@ -329,6 +370,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		|| ( url != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getUrlConnection()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getUrlConnection()))%>')
 		|| ( user != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getUser()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getUser()))%>')
 		|| ( pwd != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getPwd()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getPwd()))%>')
+		|| ( attrschema != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getSchemaAttribute()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getSchemaAttribute()))%>')		
 		|| ( driver != '<%=(StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getDriver()))==null)?"":StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(ds.getDriver()))%>')) {
 			
 		bFormModified = 'true';
@@ -385,6 +427,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			var user = document.dsForm.USER.value;
 			var pwd = document.dsForm.PWD.value;
 			var driver = document.dsForm.DRIVER.value;
+			var multichema = document.dsForm.MULTISCHEMA[0].checked;
+			var attrschema = document.dsForm.ATTRSCHEMA.value;
+			
 		if ( isjndi ){	
 		  if ( !jndi ){	
 			Ext.MessageBox.show({
@@ -423,7 +468,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		urll="<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId) + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE"%>";
 		urll += "&ACTION_NAME=TEST_CONN";
 		
-			urll += "&isjndi="+isjndi+"&jndi="+jndi+"&urlc="+urlc+"&user="+user+"&pwd="+pwd+"&driver="+driver  ;
+			urll += "&isjndi="+isjndi+"&jndi="+jndi+"&urlc="+urlc+"&user="+user+"&pwd="+pwd+"&driver="+driver+"&multischema="+multichema+"&schemaattr="+attrschema  ;
 		
 		 Ext.Ajax.request({
  				 url: urll,

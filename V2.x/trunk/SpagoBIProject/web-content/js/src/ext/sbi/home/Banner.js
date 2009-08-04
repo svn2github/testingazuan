@@ -53,9 +53,11 @@ Sbi.home.Banner = function(config) {
 		
 		var itemsForBanner = [];
 		
-		itemsForBanner.push({
-		        contentEl: 'Banner'
-	            });
+		if(showBanner){
+			itemsForBanner.push({
+			        contentEl: 'Banner'
+		            });
+	    }
 
 		//add first menu toolbar		
 		itemsForBanner.push(this.tbx);

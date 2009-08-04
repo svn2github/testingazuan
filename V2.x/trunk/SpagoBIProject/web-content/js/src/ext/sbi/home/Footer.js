@@ -50,9 +50,11 @@ Sbi.home.Footer = function(config) {
 	
 		var itemsForFooter = [];
 		
+		if(showFooter){
 		itemsForFooter.push({
 				contentEl: 'Footer'
 	             });
+	    }
 	
 		var c = Ext.apply({}, config,  {
 			region: 'south',

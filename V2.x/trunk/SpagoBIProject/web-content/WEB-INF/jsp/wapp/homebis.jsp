@@ -140,6 +140,22 @@ var themesViewName;
 <% }%>
 
 <%
+// BANNER AND FOOTER CONFIGURATION
+SourceBean b = (SourceBean)spagoconfig.getAttribute("SPAGOBI.HOME.BANNER");
+String banner = (String)b.getAttribute("view");
+Boolean showbanner = true;
+if (banner!=null && !banner.equals("") && banner.equalsIgnoreCase("false")){
+	showbanner = false;
+}
+SourceBean f = (SourceBean)spagoconfig.getAttribute("SPAGOBI.HOME.FOOTER");
+String footer =(String) f.getAttribute("view");
+Boolean showfooter = true;
+if (footer!=null && !footer.equals("") && footer.equalsIgnoreCase("false")){
+	showfooter = false;
+}
+
+
+
 String themesIcon="";
 String themeI="img/theme.png";
 if(ThemesManager.resourceExists(currTheme,themeI)){
@@ -177,10 +193,11 @@ else {
 	url = "/themes/sbi_default/html/banner.html";	
 }
 
-%>
+if(showbanner){%>
 <div id='Banner' >
 	<jsp:include page='<%=url%>' />
 </div>
+<%} %>
 
 <% 
 String url2="";
@@ -190,15 +207,20 @@ if(ThemesManager.resourceExists(currTheme,"/html/footer.html")){
 else {
 	url2 = "/themes/sbi_default/html/footer.html";	
 }
-%>
+
+if(showfooter){%>
 <div id='Footer' >
 	<jsp:include page='<%=url2%>' />
 </div>
+<% } %>
+
 <script type="text/javascript">
     
     var northFrame;
     var centerFrame;
     var southFrame;
+    var showBanner = <%=showbanner%>;
+    var showFooter = <%=showfooter%>;  
     
     var browserWidth = 1024;
 		
@@ -275,13 +297,25 @@ else {
 						, fitToParent: true  	
 						, disableMessaging :false
 						,listeners: {'message:collapse2':  {
-				        		fn: function(srcFrame, message) {					        				        			        		
-					        		if(northFrame.collapsed && southFrame.collapsed){
-					        			northFrame.expand(false);
-					        			southFrame.expand(false);
+				        		fn: function(srcFrame, message) {	
+				        			if(showFooter){				        				        			        		
+						        		if(northFrame.collapsed && southFrame.collapsed){
+						        			northFrame.expand(false);
+						        			southFrame.expand(false);
+						        			
+						        		}else{
+						        			northFrame.collapse(false);
+						        			southFrame.collapse(false);		
+						        			
+						        		}
 					        		}else{
-					        			northFrame.collapse(false);
-					        			southFrame.collapse(false);		
+					        			if(northFrame.collapsed){
+						        			northFrame.expand(false);
+						        			
+						        		}else{
+						        			northFrame.collapse(false);
+						        			
+						        		}
 					        		}
 						        }
 	        					, scope: this}}
@@ -295,12 +329,21 @@ else {
 	  					},
 	  				this);
 	}
-
+	
+	var viewport;
+	if(showFooter){
       southFrame = new Sbi.home.Footer({});
-      var viewport = new Ext.Viewport({
+      viewport = new Ext.Viewport({
 	    layout: 'border',
 	    items: [northFrame, centerFrame, southFrame]
 	    });	  
+	  }else{
+	    viewport = new Ext.Viewport({
+	    layout: 'border',
+	    items: [northFrame, centerFrame]
+	    });	  
+	  }
+	    
 	  viewport.render();
     });
     

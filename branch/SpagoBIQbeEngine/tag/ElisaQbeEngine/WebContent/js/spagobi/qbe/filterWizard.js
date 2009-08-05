@@ -85,7 +85,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
       msg = "<font color='red'>" + msg + "</font>";
     }
     logPanel.body.update(logPanel.body.dom.innerHTML + '<p>' + msg);
-  }
+  };
     
     
     
@@ -334,7 +334,7 @@ it.eng.spagobi.engines.qbe.filterwizard = function() {
   	} else {
   		expression = exp;
   	}
-  }
+  };
   
   
    

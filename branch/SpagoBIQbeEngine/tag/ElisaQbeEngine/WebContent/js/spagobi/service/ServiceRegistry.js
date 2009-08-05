@@ -85,7 +85,7 @@ Ext.extend(Sbi.service.ServiceRegistry, Ext.util.Observable, {
         params = Ext.apply({}, s.baseParams || {}, this.baseParams);
                 
         serviceUrl = this.getBaseUrlStr(s);
-        serviceUrl += '?'
+        serviceUrl += '?';
         serviceUrl += (serviceType === 'action')? 'ACTION_NAME': 'PAGE';
         serviceUrl += '=';
         serviceUrl += s.serviceName;

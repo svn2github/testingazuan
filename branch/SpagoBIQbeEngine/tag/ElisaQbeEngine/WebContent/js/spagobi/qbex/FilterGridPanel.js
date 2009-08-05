@@ -227,7 +227,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    odesc: '',
 		    boperator:'AND',
 		    defaultvalue: null,
-		    lastvalue: null,
+		    lastvalue: null
 		  };
 		  
 		  Ext.apply(newRow, config.data);
@@ -464,9 +464,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    });
 		    
 		    textEditor.on('change', function(){
-		    	alert("This is the change you can believe in");
+		    	//alert("This is the change you can believe in");
 		    	if(this.activeEditingContext) {
-		    		alert("do it");
+		    		//alert("do it");
 		    		var r = this.activeEditingContext.record;
 					r.data['otype'] = 'Static Value';
 					this.store.fireEvent('datachanged', this.store) ;

@@ -78,7 +78,10 @@ public class UserDocumentsBrowserPortletStartAction extends PortletLoginAction {
 				if (height != null && !height.trim().equals("")) {
 					response.setAttribute("height", height);
 					logger.info("[DAJS]:: attribute [height] set equals to " + height);
-				}				
+				}else{
+					response.setAttribute("height", "600");
+					logger.info("[DAJS]:: attribute [height] set equals to 600");
+				}
 			} else {
 				logger.info("[DAJS]:: mode: " + channelType);
 				DocumentsBrowserConfig config = DocumentsBrowserConfig.getInstance();

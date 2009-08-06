@@ -103,7 +103,9 @@
       <delete file="${build}/${webapp_name}/WEB-INF/lib/portlet-api-1.0.jar" />                 
                           
   </target>
-  
+ <target name="liferay.tomcat">                            
+  </target>
+    
 	<target name="create.war" depends="init,copy.artifacts" >
 	
 	<antcall target="${specific.ant.task}" />

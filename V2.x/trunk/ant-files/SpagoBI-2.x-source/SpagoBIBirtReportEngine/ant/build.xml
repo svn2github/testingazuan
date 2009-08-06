@@ -106,6 +106,9 @@
                           
   </target>
   
+ <target name="liferay.tomcat">                            
+  </target> 
+   
 	<target name="create.war" depends="init,copy.artifacts" >
 	
 		<antcall target="${specific.ant.task}" />

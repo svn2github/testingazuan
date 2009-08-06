@@ -93,7 +93,29 @@
             <copy file="${web.dir}/COPYING" todir="${dist}" overwrite="true" />
   </target>
 
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--   ATTIVITA' SPECIFICHE PER APPLICATION SERVER                                  -->
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+  
+  <target name="tomcat">  
+               
+  </target>
+    
+  <target name="liferay.jboss">  
+      <delete file="${build}/${webapp_name}/WEB-INF/lib/dom4j-1.6.jar" />
+      <delete file="${build}/${webapp_name}/WEB-INF/lib/xercesImpl-2.6.2.jar" />
+      <delete file="${build}/${webapp_name}/WEB-INF/lib/xml-apis-2.0.2.jar" /> 
+      <delete file="${build}/${webapp_name}/WEB-INF/lib/portlet-api-1.0.jar" />                 
+                          
+  </target>
+  
+ <target name="liferay.tomcat">                            
+  </target>
+  
 	<target name="create.war" depends="init,copy.artifacts" >
+	
+	<antcall target="${specific.ant.task}" />
+	
 	      <mkdir dir="${dist}"/>
 	      <delete file="${dist}/${war_name}" />
 	      <war warfile="${dist}/${war_name}" 

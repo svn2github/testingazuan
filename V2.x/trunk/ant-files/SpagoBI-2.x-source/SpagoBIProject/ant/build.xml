@@ -122,6 +122,10 @@
   </target>
     
   <target name="liferay.jboss">  
+  
+      <copy file="${liferay.security.dir}/lib/portal-client.jar" 
+        todir="${web.dir}/WEB-INF/lib" overwrite="true" /> 
+        
       <delete file="${build}/${webapp_name}/WEB-INF/lib/dom4j-1.6.1.jar" />
       <delete file="${build}/${webapp_name}/WEB-INF/lib/xercesImpl-2.6.2.jar" />
       <delete file="${build}/${webapp_name}/WEB-INF/lib/xml-apis-2.0.2.jar" /> 
@@ -157,7 +161,10 @@
   </target>
   
  <target name="liferay.tomcat">  
- 
+
+      <copy file="${liferay.security.dir}/lib/portal-client.jar" 
+        todir="${web.dir}/WEB-INF/lib" overwrite="true" /> 
+         
       <replace file="${build}/${webapp_name}/WEB-INF/web.xml">
 			   <replacetoken><![CDATA[<!-- START-LIFERAY]]></replacetoken>      
 			   <replacevalue><![CDATA[<!-- START-LIFERAY -->]]></replacevalue>		

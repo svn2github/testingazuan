@@ -554,7 +554,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
         	
         	<preference> 
         		<name>HEIGHT</name>
-        		<value></value>
+        		<value>600</value>
         	</preference>
         	
       </portlet-preferences>
@@ -615,7 +615,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd http:
 		</preference>
 		<preference> 
 			<name>HEIGHT</name>
-			<value></value>
+			<value>600</value>
 		</preference>
 		<preference> 
 			<name>TOOLBAR_VISIBLE</name>

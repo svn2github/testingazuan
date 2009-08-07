@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="lib/mail-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/axis-ant.jar"/>
 	<classpathentry kind="lib" path="lib/ehcache-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/cas-client-core-3.1.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

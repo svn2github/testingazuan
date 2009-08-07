@@ -25,6 +25,7 @@ import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.DAOFactory;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -34,7 +35,7 @@ import org.apache.log4j.Logger;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class DossierPresentation {
+public class DossierPresentation implements Serializable{
 
 	static private Logger logger = Logger.getLogger(DossierPresentation.class);
 	

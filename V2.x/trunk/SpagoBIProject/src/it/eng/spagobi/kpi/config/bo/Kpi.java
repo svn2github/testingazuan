@@ -3,10 +3,11 @@ package it.eng.spagobi.kpi.config.bo;
 import it.eng.spagobi.kpi.threshold.bo.Threshold;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Kpi {
+public class Kpi implements Serializable{
 
 	Integer kpiId = null;
 	String kpiName = null;

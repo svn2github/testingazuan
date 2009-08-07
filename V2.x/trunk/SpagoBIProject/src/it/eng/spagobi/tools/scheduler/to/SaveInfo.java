@@ -21,10 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.tools.scheduler.to;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaveInfo {
+public class SaveInfo implements Serializable{
 
 	private boolean saveAsSnapshot = false;
 	private boolean saveAsDocument = false;

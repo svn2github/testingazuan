@@ -23,6 +23,7 @@ package it.eng.spagobi.engines.dossier.bo;
 
 import it.eng.spago.base.SourceBean;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +35,7 @@ import java.util.Set;
  * Store the information about single document configuration
  *
  */
-public class ConfiguredBIDocument {
+public class ConfiguredBIDocument implements Serializable{
 
 //	private Integer id = null;
 	private String name = "";

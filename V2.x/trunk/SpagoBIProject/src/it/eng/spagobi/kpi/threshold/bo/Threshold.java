@@ -1,9 +1,10 @@
 package it.eng.spagobi.kpi.threshold.bo;
 
+import java.io.Serializable;
 import java.util.List;
 
 
-public class Threshold {
+public class Threshold implements Serializable{
 	
 	Integer id = null;
 	String name = null;//all thresholds referred to the same kpi will have this Name equal

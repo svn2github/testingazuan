@@ -21,11 +21,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.bo;
 
+import java.io.Serializable;
+
 /**
  * @author Gioia
  *
  */
-public class Subreport {
+public class Subreport implements Serializable{
 	private Integer  master_rpt_id;
 	private Integer  sub_rpt_id;
 	

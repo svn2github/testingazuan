@@ -21,6 +21,7 @@ import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ import org.jfree.chart.entity.StandardEntityCollection;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 
-public class KpiResourceBlock {
+public class KpiResourceBlock implements Serializable{
 	
 	private static transient Logger logger = Logger.getLogger(KpiResourceBlock.class);
 	Resource r = null;

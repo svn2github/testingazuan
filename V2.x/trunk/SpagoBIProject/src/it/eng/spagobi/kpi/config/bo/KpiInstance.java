@@ -1,8 +1,9 @@
 package it.eng.spagobi.kpi.config.bo;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class KpiInstance {
+public class KpiInstance implements Serializable{
 	
 	Integer kpiInstanceId = null;
 	

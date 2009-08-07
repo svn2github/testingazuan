@@ -20,11 +20,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
 package it.eng.spagobi.tools.distributionlist.bo;
+
+import java.io.Serializable;
+
 /**
 * @author Chiarelli Chiara (chiara.chiarelli@eng.it)
 */
 
-public class Email {
+public class Email implements Serializable{
 	
 	private String userId = null ;
 	private String email = null ;

@@ -3,6 +3,8 @@
  */
 package it.eng.spagobi.kpi.alarm.bo;
 
+import java.io.Serializable;
+
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarm;
 import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmEvent;
 
@@ -10,7 +12,7 @@ import it.eng.spagobi.kpi.alarm.metadata.SbiAlarmEvent;
  * @author Enrico Cesaretti
  *         e.cesaretti@xaltia.it
  */
-public class AlertSendingItem {
+public class AlertSendingItem implements Serializable{
 
     private SbiAlarm sbiAlarm;
     private SbiAlarmEvent sbiAlarmEvent;

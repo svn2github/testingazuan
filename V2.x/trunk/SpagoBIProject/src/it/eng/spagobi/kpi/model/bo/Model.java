@@ -1,9 +1,10 @@
 package it.eng.spagobi.kpi.model.bo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Model {
+public class Model implements Serializable{
 	
 	private Integer id = null;// id of ModelNode (KPI_MODEL_ID)
 	private Integer parentId = null; //the parent id of the tree made of ModelNodes, representing the model

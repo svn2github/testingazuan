@@ -2,10 +2,11 @@ package it.eng.spagobi.kpi.model.bo;
 
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModelInstanceNode {
+public class ModelInstanceNode implements Serializable{
 	
 	Boolean isRoot = null;
 	String name = null;

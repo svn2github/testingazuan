@@ -1,6 +1,8 @@
 package it.eng.spagobi.kpi.model.bo;
 
-public class ModelAttribute {
+import java.io.Serializable;
+
+public class ModelAttribute implements Serializable{
 	
 	private Integer id = null;// SBI_MODEL_ATTR_ID
 	private String name = null;// SBI_KPI_MODEL_ATTR Name

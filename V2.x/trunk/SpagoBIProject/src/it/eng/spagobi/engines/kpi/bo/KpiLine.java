@@ -4,10 +4,11 @@ import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KpiLine {
+public class KpiLine implements Serializable{
 	
 	Integer modelInstanceNodeId = null;
 	String modelNodeName = null;

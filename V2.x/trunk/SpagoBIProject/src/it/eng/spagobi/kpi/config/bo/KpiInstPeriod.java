@@ -1,6 +1,8 @@
 package it.eng.spagobi.kpi.config.bo;
 
-public class KpiInstPeriod {
+import java.io.Serializable;
+
+public class KpiInstPeriod implements Serializable{
 
 	Integer id;
 	Integer kpiInstId;

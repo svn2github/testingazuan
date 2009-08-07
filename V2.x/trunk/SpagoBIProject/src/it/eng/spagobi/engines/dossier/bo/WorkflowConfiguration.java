@@ -21,7 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.dossier.bo;
 
-public class WorkflowConfiguration {
+import java.io.Serializable;
+
+public class WorkflowConfiguration implements Serializable{
 
 	private String nameWorkflowPackage = "";
 	private String nameWorkflowProcess = "";

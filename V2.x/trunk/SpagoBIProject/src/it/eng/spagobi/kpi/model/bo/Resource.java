@@ -1,6 +1,8 @@
 package it.eng.spagobi.kpi.model.bo;
 
-public class Resource {
+import java.io.Serializable;
+
+public class Resource implements Serializable{
 	
 	Integer id = null;
 	String name = null;

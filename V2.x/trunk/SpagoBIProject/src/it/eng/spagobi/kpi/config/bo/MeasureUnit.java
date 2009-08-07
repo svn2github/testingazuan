@@ -1,6 +1,8 @@
 package it.eng.spagobi.kpi.config.bo;
 
-public class MeasureUnit {
+import java.io.Serializable;
+
+public class MeasureUnit implements Serializable{
 
 	Integer id=null;
 	String name=null;

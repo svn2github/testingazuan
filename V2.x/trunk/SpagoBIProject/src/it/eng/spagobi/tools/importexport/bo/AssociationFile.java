@@ -25,10 +25,11 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 
 import java.io.FileInputStream;
+import java.io.Serializable;
 
 import org.apache.log4j.Logger;
 
-public class AssociationFile {
+public class AssociationFile implements Serializable{
 
 	private String id = "";
 	private String name = "";

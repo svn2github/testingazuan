@@ -2,10 +2,11 @@ package it.eng.spagobi.kpi.model.bo;
 
 import it.eng.spagobi.kpi.config.bo.KpiInstance;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class ModelInstance {
+public class ModelInstance implements Serializable{
 	
 	private Integer id = null;
 	private Model model = null;//Model to which this instance refers

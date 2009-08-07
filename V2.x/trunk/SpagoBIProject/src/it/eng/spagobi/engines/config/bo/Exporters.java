@@ -22,7 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 package it.eng.spagobi.engines.config.bo;
 
-public class Exporters {
+import java.io.Serializable;
+
+public class Exporters implements Serializable{
 
 
 		Integer domainId;

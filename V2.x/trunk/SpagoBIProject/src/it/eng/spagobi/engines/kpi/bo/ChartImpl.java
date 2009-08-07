@@ -36,6 +36,7 @@ import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +56,7 @@ import org.jfree.ui.VerticalAlignment;
  * 
  */
 
-public class ChartImpl {
+public class ChartImpl implements Serializable{
 	
 	private static transient Logger logger=Logger.getLogger(ChartImpl.class);
 	

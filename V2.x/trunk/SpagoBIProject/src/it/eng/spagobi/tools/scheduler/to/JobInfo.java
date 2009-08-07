@@ -23,12 +23,13 @@ package it.eng.spagobi.tools.scheduler.to;
 
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 
-public class JobInfo {
+public class JobInfo implements Serializable{
 
 	private String jobName = "";
 	private String jobGroupName = "";

@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.hotlink.rememberme.bo;
 
+import java.io.Serializable;
+
 
 /**
  * This class is a bean that contains all information needed to build a hot link:
@@ -29,7 +31,7 @@ package it.eng.spagobi.hotlink.rememberme.bo;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class HotLink {
+public class HotLink implements Serializable{
 
 	protected Integer objId;
 	protected String documentLabel;

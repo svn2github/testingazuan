@@ -1,9 +1,10 @@
 package it.eng.spagobi.kpi.threshold.bo;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.List;
 
-public class ThresholdValue  {
+public class ThresholdValue  implements Serializable{
 	
 	Integer id=null;
 	Integer thresholdId = null;

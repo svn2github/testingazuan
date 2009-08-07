@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.dossier.bo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -28,7 +29,7 @@ import java.util.Date;
  * @author Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class DossierBinaryContentsTemp {
+public class DossierBinaryContentsTemp implements Serializable{
 
     private Integer binId;
     private Integer dossierPartsTempId;

@@ -34,7 +34,7 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
 <%@page import="it.eng.spagobi.services.common.EnginConf" %>
 <%@page import="org.apache.log4j.Logger"%>
-<%@page import="it.eng.spagobi.security.*" %>
+<%@page import="it.eng.spago.security.*" %>
 
 
 <html>

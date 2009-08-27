@@ -7,4 +7,6 @@
 <EXPORTER domain="PDF" engine="BirtEngine" defaultValue="true"/>
 <EXPORTER domain="XLS" engine="BirtEngine" defaultValue="false"/>
 <EXPORTER domain="JPG" engine="BirtEngine" defaultValue="false"/>
+<EXPORTER domain="PDF" engine="JPivotEngine" defaultValue="false"/>
+<EXPORTER domain="XLS" engine="JPivotEngine" defaultValue="true"/>
 </EXPORTERS>

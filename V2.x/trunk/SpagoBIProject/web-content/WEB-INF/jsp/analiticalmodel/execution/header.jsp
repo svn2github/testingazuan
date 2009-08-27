@@ -364,6 +364,7 @@ if (toolbarIsVisible) {
 							 String value_cd=domain.getValueCd();
 							 String urlExporter=null;	
 							 String urlXmlExporter = null;
+							 String urlXslExporter = null;
 	
 				
 								if (obj.getBiObjectTypeCode().equals("KPI")){ 
@@ -383,11 +384,27 @@ if (toolbarIsVisible) {
 									//overrides if already present
 									clonePars.put("outputType",value_cd);
 									urlExporter= getUrl(obj.getEngine().getUrl(), clonePars);
+									urlXslExporter = urlExporter;
+								}
+								else if (obj.getBiObjectTypeCode().equals("OLAP")){ 
+									HashMap clonePars=new HashMap();	
+									String baseUrl = obj.getEngine().getUrl();
+								    baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/')+1) + "Print";
+									//defines PDF url
+									clonePars.put("cube","01");
+									clonePars.put("type","1");
+									urlExporter= getUrl(baseUrl, clonePars);
+									clonePars.clear();	
+									//defines XLS url
+									clonePars.put("cube","01");
+									clonePars.put("type","0");
+									urlXslExporter= getUrl(baseUrl, clonePars);
+									
 								}
 								if(value_cd!=null && value_cd.equals("XLS")){
 									%>
 									<li>	
-								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlExporter%>" target="_blank">
+								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlXslExporter%>" target="_blank">
 											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.XlsExport" />'
 												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/xls.gif", currTheme)%>'
 												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />

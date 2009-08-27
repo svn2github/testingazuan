@@ -418,7 +418,54 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 						            , cls: 'x-btn-menubutton x-btn-text-icon bmenu '
 						        })					    				        				
 					);	
-			}
+			}else if( executionInstance.document.typeCode == 'OLAP') {
+				var menuItems = new Array();
+				
+				for(i=0;i<executionInstance.document.exporters.length ;i++){
+					
+					if (executionInstance.document.exporters[i]=='PDF'){
+					menuItems.push(	new Ext.menu.Item({
+			                            id:  Ext.id()
+			                            , text: LN('sbi.execution.PdfExport')
+			                            , group: 'group_2'
+			                            , iconCls: 'icon-pdf' 
+								     	, scope: this
+								        , width: 15
+								    	, handler : function() { this.exportOlapExecution('PDF'); }
+										, href: ''   
+			                        })	 
+			                       ); 
+					}else if(executionInstance.document.exporters[i]=='XLS'){
+					menuItems.push(   new Ext.menu.Item({
+			                            id:  Ext.id()
+			                            , text: LN('sbi.execution.XlsExport')
+			                            , group: 'group_2'
+			                            , iconCls: 'icon-xls' 
+								     	, scope: this
+										 , width: 15
+								    	, handler : function() { this.exportOlapExecution('XLS'); }
+										, href: ''   
+			                        })	
+			                        ); 
+					}
+			    }   
+				var menu0 = new Ext.menu.Menu({
+				id: 'basicMenu_0',
+				items: menuItems    
+				});	
+				
+				this.toolbar.add(
+							new Ext.Toolbar.MenuButton({
+								id: Ext.id()
+					            , tooltip: 'Exporters'
+								, path: 'Exporters'	
+								, iconCls: 'icon-export' 	
+					            , menu: menu0
+					            , width: 15
+					            , cls: 'x-btn-menubutton x-btn-text-icon bmenu '
+					        })					    				        				
+				);	
+		}
 		}
 	}
 
@@ -541,6 +588,24 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    parurl.outputType = exportType;
 	    parurl = Ext.urlEncode(parurl);
 	    var endUrl = baseUrl +parurl;
+		window.open(endUrl,'name','height=750,width=1000');
+	}
+	
+	,exportOlapExecution: function (exportType) {
+		var mf = this.miframe;
+		var frame = mf.getFrame();
+	    var docurl = frame.getDocumentURI();
+	    var baseUrl = docurl.substring(0,docurl.indexOf('?')+1);   
+	    if (baseUrl=="") baseUrl = docurl;
+	    baseUrl = baseUrl.substring(0,baseUrl.lastIndexOf('/')+1) + "Print?";
+	 
+	    var docurlPar = "cube=01&type=";
+	    if (exportType == "PDF") {docurlPar += "1";}
+	    else if (exportType == "XLS"){ docurlPar += "0"};
+	   
+	    var endUrl = baseUrl + docurlPar;
+	    //alert ("endUrl: " + endUrl);
+	    
 		window.open(endUrl,'name','height=750,width=1000');
 	}
 

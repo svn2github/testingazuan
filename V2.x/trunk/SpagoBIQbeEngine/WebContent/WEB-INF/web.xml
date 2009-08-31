@@ -11,7 +11,7 @@
 	<!--  ============================================================================ -->
 	<!--  FILTERS								 									   -->
 	<!--  ============================================================================ -->
-	<!-- 
+<!--  	
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
   <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
@@ -52,7 +52,7 @@
   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
   <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
 </filter>
- -->
+-->
 	
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
@@ -65,31 +65,32 @@
 	<!--  FILTER MAPPINGS						 									   -->
 	<!--  ============================================================================ -->
 
-<!-- 
+ <!-- 
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/servlet/AdapterHTTP/*</url-pattern>
   </filter-mapping> 
     	
    <filter-mapping>
     <filter-name>CAS Validation Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/servlet/AdapterHTTP/*</url-pattern>
   </filter-mapping> 
    	
 
    <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/servlet/AdapterHTTP/*</url-pattern>
   </filter-mapping> 
+  
 	<filter-mapping>
 		<filter-name>CAS Validation Filter</filter-name>
 		<url-pattern>/proxyCallback</url-pattern>	
 	</filter-mapping>
- -->
-	
+
+	 -->
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/servlet/AdapterHTTP/*</url-pattern>
 	</filter-mapping>
 	
 
@@ -118,10 +119,6 @@
         <servlet-class>it.eng.qbe.services.ReportServlet</servlet-class>
     </servlet>
 
-    <servlet>
-        <servlet-name>SpagoBIDrillServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.utilities.callbacks.drill.SpagoBIDrillServlet</servlet-class>
-    </servlet>
     
     <servlet>
 		<servlet-name>EngineTestServlet</servlet-name>
@@ -130,24 +127,12 @@
 		</servlet-class>
 	</servlet>
     
-    <servlet>
-  		<servlet-name>ProxyTicketReceptor</servlet-name> 
-  		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
-		<init-param>
-  			<param-name>edu.yale.its.tp.cas.proxyUrl</param-name> 
-  			<param-value>https://localhost:8443/exo-cas-2/proxy</param-value> 
-  		</init-param>
-  	</servlet>
     
     
     <!--  ============================================================================ -->
 	<!--  SERVLET MAPPINGS						 									   -->
 	<!--  ============================================================================ -->
 
-	<servlet-mapping>
-        <servlet-name>SpagoBIDrillServlet</servlet-name>
-        <url-pattern>/SpagoBIDrillServlet</url-pattern>
-    </servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>AdapterHTTP</servlet-name>
@@ -159,10 +144,6 @@
         <url-pattern>/ReportServlet</url-pattern>
     </servlet-mapping>
     
-    <servlet-mapping>
-  		<servlet-name>ProxyTicketReceptor</servlet-name> 
-  		<url-pattern>/proxyReceptor</url-pattern> 
-  	</servlet-mapping> 
     
     <servlet-mapping>
 		<servlet-name>EngineTestServlet</servlet-name>

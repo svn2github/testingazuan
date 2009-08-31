@@ -114,6 +114,7 @@ public class ChartImpl implements IChart {
 	protected boolean multichart=false;
 	protected String orientationMultichart="";
 
+	protected Locale locale=Locale.ITALIAN;
 	
 	// REGISTER CHART TYPES and SUB TYPES
 	
@@ -1116,7 +1117,7 @@ public class ChartImpl implements IChart {
 		
 		}
 
-	public void setLocalizedTitle(Locale locale) {
+	public void setLocalizedTitle() {
 		if(name!=null){
 		IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		String toSet=msgBuilder.getUserMessage(name, SpagoBIConstants.DEFAULT_USER_BUNDLE, locale);
@@ -1131,6 +1132,14 @@ public class ChartImpl implements IChart {
 
 	public void setSliderStartFromEnd(boolean sliderStartFromEnd) {
 		this.sliderStartFromEnd = sliderStartFromEnd;
+	}
+
+	public Locale getLocale() {
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 	
 	

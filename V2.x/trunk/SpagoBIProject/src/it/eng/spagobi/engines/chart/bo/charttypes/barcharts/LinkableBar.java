@@ -32,6 +32,7 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -194,9 +195,6 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 
 		JFreeChart chart = new JFreeChart(name, JFreeChart.DEFAULT_TITLE_FONT, plot, legend);
 
-		// set the background color for the chart...
-		chart.setBackgroundPaint(color);
-
 		TextTitle title =setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
 		if(subName!= null && !subName.equals("")){
@@ -217,6 +215,8 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		plot.setDomainGridlinesVisible(true);
 		plot.setRangeGridlinePaint(Color.white);
 
+        NumberFormat nf = NumberFormat.getNumberInstance(locale);
+		
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -224,7 +224,9 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
+        rangeAxis.setNumberFormatOverride(nf);
 
+		
 		
 		if(rangeAxisLocation != null) {
 			if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_LEFT")) {

@@ -372,6 +372,7 @@ public class OverlaidBarLine extends LinkableBar {
 
 		CategoryPlot plot = new CategoryPlot();
 
+        NumberFormat nf = NumberFormat.getNumberInstance(locale);
 
 		NumberAxis rangeAxis = new NumberAxis(getValueLabel());
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
@@ -383,7 +384,7 @@ public class OverlaidBarLine extends LinkableBar {
 		if(rangeIntegerValues==true){
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
 		}
-
+        rangeAxis.setNumberFormatOverride(nf);
 
 		CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
 		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
@@ -713,6 +714,7 @@ public class OverlaidBarLine extends LinkableBar {
 			na.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 			na.setTickLabelPaint(styleXaxesLabels.getColor());
 			na.setUpperMargin(0.10);
+	        na.setNumberFormatOverride(nf);			
 			plot.setRangeAxis(1,na);
 			plot.mapDatasetToRangeAxis(0, 0);
 			plot.mapDatasetToRangeAxis(2, 0);

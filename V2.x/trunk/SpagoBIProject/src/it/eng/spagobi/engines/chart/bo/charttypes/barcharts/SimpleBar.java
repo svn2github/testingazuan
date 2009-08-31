@@ -31,6 +31,7 @@ import it.eng.spagobi.engines.chart.utils.DatasetMap;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Vector;
 
@@ -130,7 +131,8 @@ public class SimpleBar extends BarCharts{
 		plot.setDomainGridlinesVisible(true);
 		plot.setRangeGridlinePaint(Color.white);
 
-
+        NumberFormat nf = NumberFormat.getNumberInstance(locale);
+		
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
@@ -138,6 +140,8 @@ public class SimpleBar extends BarCharts{
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setUpperMargin(0.10);
+        rangeAxis.setNumberFormatOverride(nf);
+		
 		if(rangeIntegerValues==true){
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 			}

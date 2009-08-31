@@ -221,7 +221,7 @@ public interface IChart {
 	
 	public int getTitleDimension();
 	
-	public void setLocalizedTitle(Locale locale);
+	public void setLocalizedTitle();
 	
 	
 }

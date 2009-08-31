@@ -409,7 +409,10 @@ public class CombinedCategoryBar extends LinkableBar {
 		subPlot1.setDataset(1,datasetLineFirstAxis);
 		subPlot2.setDataset(1,datasetLineSecondAxis);
 
+		// localize numbers on y axis
+        NumberFormat nf = (NumberFormat) NumberFormat.getNumberInstance(locale);
 
+		
 		// Range Axis 1
 		NumberAxis rangeAxis = new NumberAxis(getValueLabel());
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
@@ -417,6 +420,7 @@ public class CombinedCategoryBar extends LinkableBar {
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setUpperMargin(0.10);
+        rangeAxis.setNumberFormatOverride(nf);
 		subPlot1.setRangeAxis(rangeAxis);
 		if(rangeIntegerValues==true){
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
@@ -429,6 +433,7 @@ public class CombinedCategoryBar extends LinkableBar {
 		rangeAxis2.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis2.setTickLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis2.setUpperMargin(0.10);
+        rangeAxis2.setNumberFormatOverride(nf);		
 		subPlot2.setRangeAxis(rangeAxis2);
 		if(rangeIntegerValues==true){
 			rangeAxis2.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	

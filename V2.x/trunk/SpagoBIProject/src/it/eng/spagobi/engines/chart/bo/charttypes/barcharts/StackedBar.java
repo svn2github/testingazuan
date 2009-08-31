@@ -465,6 +465,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		logger.debug("Axis creation");
 		// set the range axis to display integers only...
 		
+        NumberFormat nf = NumberFormat.getNumberInstance(locale);
+		
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		if(makePercentage)
 			rangeAxis.setNumberFormatOverride(NumberFormat.getPercentInstance());
@@ -479,7 +481,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
-
+        rangeAxis.setNumberFormatOverride(nf);
+		
 		if(rangeAxisLocation != null) {
 			if(rangeAxisLocation.equalsIgnoreCase("BOTTOM_OR_LEFT")) {
 				plot.setRangeAxisLocation(0, AxisLocation.BOTTOM_OR_LEFT);

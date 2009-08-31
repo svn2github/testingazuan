@@ -467,6 +467,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		// set the background color for the chart...
 		chart.setBackgroundPaint(color);
 
+        NumberFormat nf = NumberFormat.getNumberInstance(locale);
 
 		// set the range axis to display integers only...
 		NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
@@ -474,6 +475,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
+        rangeAxis.setNumberFormatOverride(nf);
 		if(rangeIntegerValues==true){
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
 			}

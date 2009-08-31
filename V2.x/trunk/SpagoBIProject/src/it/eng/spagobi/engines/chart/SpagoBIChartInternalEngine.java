@@ -214,10 +214,11 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 				sbi.setType(type);
 				sbi.setSubtype(subtype);
 				sbi.setData(data);
+				sbi.setLocale(locale);
 				sbi.setParametersObject(parametersMap);
 				// configure the chart with template parameters
 				sbi.configureChart(content);
-				sbi.setLocalizedTitle(locale);
+				sbi.setLocalizedTitle();
 
 				boolean linkable=sbi.isLinkable();
 				if(linkable){

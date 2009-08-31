@@ -284,12 +284,14 @@ public class OverlaidStackedBarLine extends LinkableBar {
 
 
 		CategoryPlot plot = new CategoryPlot();
-
+        NumberFormat nf = NumberFormat.getNumberInstance(locale);
+		
 		NumberAxis rangeAxis = new NumberAxis(getValueLabel());
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setLabelPaint(styleXaxesLabels.getColor());
 		rangeAxis.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 		rangeAxis.setTickLabelPaint(styleXaxesLabels.getColor());
+        rangeAxis.setNumberFormatOverride(nf);		
 		plot.setRangeAxis(rangeAxis);
 		if(rangeIntegerValues==true){
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
@@ -446,6 +448,7 @@ public class OverlaidStackedBarLine extends LinkableBar {
 			if(rangeIntegerValues==true){
 				na.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
 				}
+	        na.setNumberFormatOverride(nf);			
 			plot.setRangeAxis(1,na);
 			plot.mapDatasetToRangeAxis(0, 1);
 		}

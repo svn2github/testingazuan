@@ -118,28 +118,29 @@
 			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
 		</filter-class>
 	</filter>
-<!--  
+<!-- 
   <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/JPivotServlet/*</url-pattern>
   </filter-mapping> 
     	
    <filter-mapping>
     <filter-name>CAS Validation Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/JPivotServlet/*</url-pattern>
   </filter-mapping> 
    	
 
    <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/JPivotServlet/*</url-pattern>
   </filter-mapping> 
+  
 	<filter-mapping>
 		<filter-name>CAS Validation Filter</filter-name>
 		<url-pattern>/proxyCallback</url-pattern>	
 	</filter-mapping>
- -->
 
+ -->
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<url-pattern>/JPivotServlet/*</url-pattern>
@@ -255,12 +256,6 @@
 		</servlet-class>
 	</servlet>
 
-	<servlet>
-		<servlet-name>ReadTicketServlet</servlet-name>
-		<servlet-class>
-			it.eng.spagobi.utilities.callbacks.ticket.ReadTicketServlet
-		</servlet-class>
-	</servlet>
 	
 	<servlet>
 		<servlet-name>EngineTestServlet</servlet-name>
@@ -269,10 +264,6 @@
 		</servlet-class>
 	</servlet>
 
-	<servlet-mapping>
-		<servlet-name>ReadTicketServlet</servlet-name>
-		<url-pattern>/ReadTicket</url-pattern>
-	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>ProxyTicketReceptor</servlet-name>

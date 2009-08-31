@@ -104,7 +104,8 @@ public final class SecurityServiceProxy extends AbstractServiceProxy{
     	userProfile = null;
 		try {
             SpagoBIUserProfile user = lookUp().getUserProfile(readTicket(), userId);
-            userProfile = new UserProfile(user);
+            if (user!=null) userProfile = new UserProfile(user);
+            else logger.error("Error occured while retrieving user profile of user [" + userId + "] from service [" + SERVICE_NAME + "] at endpoint [" + serviceUrl + "]. user is null!");
         } catch (Throwable e) {
             logger.error("Error occured while retrieving user profile of user [" + userId + "] from service [" + SERVICE_NAME + "] at endpoint [" + serviceUrl + "]");
             throw new SecurityException("Error occured while retrieving user profile of user [" + userId + "] from service [" + SERVICE_NAME + "] at endpoint [" + serviceUrl + "]", e);

@@ -226,16 +226,6 @@
 	-->
 	
 	<servlet>
-  		<servlet-name>ProxyTicketReceptor</servlet-name> 
-  		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
-		<init-param>
-  			<param-name>edu.yale.its.tp.cas.proxyUrl</param-name> 
-  			<param-value>https://localhost:8443/exo-cas-2/proxy</param-value> 
-  		</init-param>
-  </servlet>
-
-
-	<servlet>
         <servlet-name>BirtReportServlet</servlet-name>
         <servlet-class>it.eng.spagobi.engines.birt.BirtReportServlet</servlet-class>
     </servlet>
@@ -262,10 +252,6 @@
 		</servlet-class>
 	</servlet>
 
- 	<servlet-mapping>
-  		<servlet-name>ProxyTicketReceptor</servlet-name> 
-  		<url-pattern>/proxyReceptor</url-pattern> 
-  	</servlet-mapping> 
 
     <servlet-mapping>
         <servlet-name>ReadTicketServlet</servlet-name>

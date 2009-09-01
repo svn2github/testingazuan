@@ -18,6 +18,8 @@
 				 it.eng.spagobi.jpivotaddins.engines.jpivotxmla.conf.EngineXMLAConf,
 				 it.eng.spagobi.jpivotaddins.engines.jpivotxmla.connection.*,
 				 it.eng.spagobi.jpivotaddins.bean.SaveAnalysisBean,
+				 it.eng.spagobi.tools.datasource.bo.*,
+				 it.eng.spagobi.services.proxy.DataSourceServiceProxy,
 				 com.tonbeller.wcf.form.FormComponent,
 				 java.io.InputStream,
 				 mondrian.olap.*" %>
@@ -34,6 +36,7 @@
 <%@page import="com.tonbeller.jpivot.mondrian.MondrianDimension"%>
 <%@page import="com.tonbeller.jpivot.mondrian.MondrianHierarchy"%>
 <%@page import="it.eng.spagobi.services.proxy.ContentServiceProxy"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="it.eng.spagobi.services.content.bo.Content"%>
 
 
@@ -45,6 +48,13 @@
 %>
 
 <%
+
+	IEngUserProfile userProfile = (IEngUserProfile)session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	String userUniqueIdentifier="";
+
+	if (userProfile!=null){
+		userUniqueIdentifier=(String)userProfile.getUserUniqueIdentifier();
+	}
 	Logger logger = Logger.getLogger("it.eng.spagobi.jpivotaddins.engines.jpivotxmla");
 
 	List parameters = null;
@@ -83,8 +93,19 @@
 			// the possible values of the visibility are (Private/Public)
 			analysisBean.setAnalysisVisibility(visSO);
 			
-			// get content from cms
-			String subobjdata64Coded = request.getParameter("subobjectdata");
+			//calls service for gets data source object		
+			String requestConnectionName = (String) request.getParameter(CONNECTION_NAME);
+			DataSourceServiceProxy proxyDS = new DataSourceServiceProxy(user,session);
+			IDataSource ds = null;
+			if (requestConnectionName != null) {
+			    ds =proxyDS.getDataSourceByLabel(requestConnectionName);
+			} else {
+			    ds =proxyDS.getDataSource(documentId);
+			}
+			ContentServiceProxy proxy=new ContentServiceProxy(userUniqueIdentifier,session);
+			String subObjectId = request.getParameter("subobjectId");
+			Content subObject=proxy.readSubObjectContent(subObjectId);
+			String subobjdata64Coded = subObject.getContent();
 			BASE64Decoder bASE64Decoder = new BASE64Decoder();
 			byte[] subobjBytes = bASE64Decoder.decodeBuffer(subobjdata64Coded);
 			is = new java.io.ByteArrayInputStream(subobjBytes);
@@ -95,11 +116,16 @@
 				isr.close();
 				query = analysis.getMdxQuery();
 				nameConnection = analysis.getConnectionName();
-				reference = analysis.getCatalogUri();
 				name = analysis.getCatalog();
+				//sets the datasource of document
+				if (ds != null)	nameConnection = ds.getLabel();
+				//nameConnection = analysis.getConnectionName();
+				reference = analysis.getCatalogUri();
+				logger.debug("Reference: " + reference);
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
+		
 		} else {
 			// normal execution (no subObject)	
 			

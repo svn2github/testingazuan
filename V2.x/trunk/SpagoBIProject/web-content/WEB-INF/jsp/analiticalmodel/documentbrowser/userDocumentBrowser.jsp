@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 <%@ page language="java" 
 	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+	<%@page import="it.eng.spagobi.commons.utilities.ChannelUtilities"%>
    
    	
    <% if ( "WEB".equalsIgnoreCase(sbiMode) ) { %>
@@ -73,10 +74,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     
     </script>
  <% } else { 
+	 String labelSubTreeNode = null;
+	 
+	 labelSubTreeNode = ChannelUtilities.getPreferenceValue(aRequestContainer, "PATH_SUBTREE", "");
 	 
 	 String url =GeneralUtilities.getSpagoBIProfileBaseUrl(userUniqueIdentifier)+  "&ACTION_NAME=DOCUMENT_USER_BROWSER_START_PORTLET_ACTION";
-	 url += "&SBI_EXECUTION_ID=" + request.getParameter("SBI_EXECUTION_ID");
-	 url += "&LABEL_SUBTREE_NODE=" + aServiceResponse.getAttribute("labelSubTreeNode");
+	 url += "&SBI_EXECUTION_ID=" + request.getParameter("SBI_EXECUTION_ID");	 
+	 if (labelSubTreeNode != null && !labelSubTreeNode.trim().equals("")) url += "&LABEL_SUBTREE_NODE=" + labelSubTreeNode;
 	 url += "&LANGUAGE=" + locale.getLanguage();
 	 url += "&COUNTRY=" + locale.getCountry();
 	 %>
@@ -87,7 +91,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  		src='<%= url %>'
  		frameBorder = 0
  		width=100%
- 		height=<%= aServiceResponse.getAttribute("height") %>
+ 		height=<%= ChannelUtilities.getPreferenceValue(aRequestContainer, "HEIGHT", "600") %>
  	/>
 
  

@@ -27,6 +27,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package it.eng.spagobi.commons.services;
 
+import java.security.Principal;
+import java.util.Locale;
+
+import javax.portlet.PortletRequest;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
@@ -38,13 +45,6 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.PortletUtilities;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
-
-import java.security.Principal;
-import java.util.Locale;
-
-import javax.portlet.PortletRequest;
-
-import org.apache.log4j.Logger;
 
 /**
  * This class reads user from portal and traces information for this connected

@@ -111,6 +111,13 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			MessageBuilder m = new MessageBuilder();
 			Locale locale = m.getLocale(httpRequest);
 			JSONArray documentsJSON = (JSONArray)SerializerFactory.getSerializer("application/json").serialize( objects ,locale);
+			JSONObject showmetadataAction = new JSONObject();
+			showmetadataAction.put("name", "showmetadata");
+			showmetadataAction.put("description", "Show Metadata");
+			for(int i = 0; i < documentsJSON.length(); i++) {
+				JSONObject documentJSON = documentsJSON.getJSONObject(i);
+				documentJSON.getJSONArray("actions").put(showmetadataAction);
+			}
 			if(isHome) {
 				JSONObject deleteAction = new JSONObject();
 				deleteAction.put("name", "delete");

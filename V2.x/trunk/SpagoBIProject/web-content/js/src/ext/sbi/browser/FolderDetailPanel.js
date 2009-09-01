@@ -48,7 +48,6 @@ Sbi.browser.FolderDetailPanel = function(config) {
 		, baseParams: params
 	});
 	
-	
   
 	
 	
@@ -417,12 +416,20 @@ Ext.extend(Sbi.browser.FolderDetailPanel, Ext.Panel, {
        });
     }
     
+     , showDocumentMetadata: function(docId) {
+        this.win_metadata = new Sbi.execution.toolbar.MetadataWindow({'OBJECT_ID': docId});
+		this.win_metadata.show();
+    }
+    
     
     , performActionOnDocument: function(docRecord, action) {
     	if(this.fireEvent('beforeperformactionondocument', this, docRecord, action) !== false){
     		if(action === 'delete') {
     			//alert(docRecord.id + '; ' + this.folderId);
     			this.deleteDocument(docRecord.id);
+    		}else if(action === 'showmetadata') {
+    			//alert(docRecord.id + '; ' + this.folderId);
+    			this.showDocumentMetadata(docRecord.id);
     		}
     	}
     }

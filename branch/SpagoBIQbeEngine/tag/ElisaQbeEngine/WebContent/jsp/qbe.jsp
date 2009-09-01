@@ -112,7 +112,7 @@
 		Sbi.config = {};
 
 		Sbi.config.queryLimit = {};
-		Sbi.config.queryLimit.maxRecords = <%= resultLimit != null ? resultLimit.intValue() : "undefined" %>;
+		Sbi.config.queryLimit.maxRecords = <%= resultLimit != null ? "" + resultLimit.intValue() : "undefined" %>;
 		Sbi.config.queryLimit.isBlocking = <%= isMaxResultLimitBlocking %>;
 		Sbi.config.queryValidation = {};
 		Sbi.config.queryValidation.isEnabled = <%= isQueryValidationEnabled %>;

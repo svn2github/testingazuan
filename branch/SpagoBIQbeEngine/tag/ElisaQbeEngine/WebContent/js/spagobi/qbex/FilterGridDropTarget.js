@@ -151,7 +151,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 	    			entity: ddSource.dragData.node.attributes.entity , 
 	    			field: ddSource.dragData.node.attributes.field  
 	  			});
-	  			this.targetPanel.addRow(record, rowIndex);
+	  			this.targetPanel.insertFilter(record, rowIndex);
 			}
 		} else if(node.attributes.attributes.type == 'entity'){
 			
@@ -163,7 +163,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 	    			entity: node.attributes.children[i].attributes.entity , 
 	    			field: node.attributes.children[i].attributes.field  
 	  			});
-				this.targetPanel.addRow(record, rowIndex);
+				this.targetPanel.insertFilter(record, rowIndex);
 			}
 		} else {
 			alert("Error: unknown node type");
@@ -203,7 +203,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 	   
 			for (i = 0; i < rows.length; i++) {
 	  			if(!this.copy) {
-	  				this.targetPanel.addRow( rows[i], rowIndex );
+	  				this.targetPanel.insertFilter( rows[i], rowIndex );
 	  			}
 			}     
 	

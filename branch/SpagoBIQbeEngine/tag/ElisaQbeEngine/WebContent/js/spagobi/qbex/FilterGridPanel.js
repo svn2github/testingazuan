@@ -78,14 +78,6 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	// constructor
     Sbi.qbe.FilterGridPanel.superclass.constructor.call(this, c);
 	
-    /*
-	this.on('show', function(){
-		if(this.dropTarget === null) {
-			this.dropTarget = new Sbi.qbe.FilterGridDropTarget(this);
-		}
-	}, this) ;
-	*/
-    
     if(c.query && c.query.filters && c.query.filters.length > 0){
     	this.loadSavedData(c.query);
     }
@@ -151,16 +143,95 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	})
 
 	// public methods
+	
+	, createFilter: function() {
+		var filter;
+		var filterName;
+		
+		filter = new Object();
+		filterName = 'filter' + (++this.idCount);
+		
+		filter = Ext.apply(filter, {
+		  	fname: filterName, 
+		  	id: '', 
+		  	entity: '',
+		  	field: '',
+		  	operator:'',
+		  	operand: '',
+		    otype: 'Static Value',		    
+		    odesc: '',
+		    boperator:'AND',
+		    defaultvalue: null,
+		    lastvalue: null,
+		});
+		
+		return filter;
+	}
+
+	, addFilter : function(filter) {
+		filter = filter || {};
+		filter = Ext.apply(this.createFilter(), filter);
+		var record = new this.Record( filter );
+		this.grid.store.add(record); 
+	}
+	
+	, insertFilter: function(filter, i) {
+		if(i != undefined) {
+			filter = filter || {};
+			filter = Ext.apply(this.createFilter(), filter);
+			alert(filter.toSource());
+			var record = new this.Record( filter );
+			this.grid.store.insert(i, record); 
+		} else {
+			this.addFilter(filter);
+		}
+	}
+	
+	
+	
+	
+	, addRow : function(config, i) {
+		  alert("Method [addRow] in [FilterGridPanel] is deprecated - " + i);  
+		  this.insertFilter(config, i);
+		  /*
+		  var fname = 'filter' + (++this.idCount);
+		  var newRow = {
+		  	fname: fname, 
+		  	id: '', 
+		  	entity: '',
+		  	field: '',
+		  	operator:'',
+		  	operand: '',
+		    otype: 'Static Value',		    
+		    odesc: '',
+		    boperator:'AND',
+		    defaultvalue: null,
+		    lastvalue: null,
+		  };
+		  
+		  Ext.apply(newRow, config.data);
+		  
+		  
+		  var record = new this.Record(newRow);
+	 
+		  if(i != undefined) {
+			this.grid.store.insert(i, record); 
+		  } else {
+			this.grid.store.add(record); 
+		  }
+		  */
+	}
 
 	, deleteFilters : function() {
 		this.grid.store.removeAll();
 	}
 
-    
+    /*
 	, loadSavedData : function(query) {
 		this.setFilters(query.filters);
 		this.setFiltersExpression(query.expression);	
   	}
+  	*/
 	
 	, getFilters : function() {
 		var filters = [];
@@ -179,10 +250,17 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.deleteFilters();
 		for(var i = 0; i < filters.length; i++) {
   			var filter = filters[i];
+  			this.addFilter(filter);
+  			/*
   			var record = new this.Record(filter);
   			this.store.add(record); 
+  			*/
   		}
 	}
+	
+	
+	
+	
 	
 	, setFiltersExpression: function(expression) {
 		if(expression !== undefined) {
@@ -214,6 +292,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
   	}
   	
   
+	/* modifica di davide
 	, addRow : function(config, i) {
 		  var fname = 'filter' + (++this.idCount);
 		  var newRow = {
@@ -241,6 +320,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
   			this.grid.store.add(record); 
 		  }
 	}
+    */
 		
 	, getFreeFilters : function() {
 		var filters = [];
@@ -343,6 +423,29 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
     // -- private methods ----------------------------------------------------------------------------------------
 
 	, initStore: function(config) {
+		
+		this.Record = Ext.data.Record.create([
+		   {name: 'fname', type: 'string'},
+		   {name: 'id', type: 'string'},
+		   {name: 'entity', type: 'string'},
+		   {name: 'field', type: 'string'},
+		   {name: 'operator', type: 'string'},
+		   {name: 'operand', type: 'auto'},
+		   {name: 'isfree', type: 'bool'},
+		   {name: 'otype', type: 'string'},
+		   {name: 'odesc', type: 'string'},
+		   {name: 'boperator', type: 'string'},
+		   {name: 'del', type: 'bool'},
+		   {name: 'defaultvalue', type: 'string'},
+		   {name: 'lastvalue', type: 'string'}
+		]);
+		
+		this.store = new Ext.data.SimpleStore({
+			reader: new Ext.data.ArrayReader({}, this.Record)
+			, fields: [] // just to keep SimpleStore constructor happy (fields are taken from record)
+		});
+		
+		/*
 		this.store = new Ext.data.SimpleStore({
 	        fields: [
 	           {name: 'fname'},
@@ -377,6 +480,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	      {name: 'defaultvalue', type: 'string'},
 	      {name: 'lastvalue', type: 'string'}
 	    ]);
+	    */
 	}
 	
 	, initSelectionModel: function(config) {

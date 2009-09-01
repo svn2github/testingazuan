@@ -24,6 +24,7 @@ package it.eng.spagobi.container;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -113,6 +114,12 @@ public abstract class AbstractContainer implements IContainer {
 		assertNotNull(key, "Input paramater [key] cannot be null");
 		if( isNull(key) ) return null;
 		return ObjectUtils.toJSONObject( get(key) );
+	}
+	
+	public JSONArray toJSONArray(String key) {
+		assertNotNull(key, "Input paramater [key] cannot be null");
+		if( isNull(key) ) return null;
+		return ObjectUtils.toJSONArray( get(key) );
 	}
 	
 	

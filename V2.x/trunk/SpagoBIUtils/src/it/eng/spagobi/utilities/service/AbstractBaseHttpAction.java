@@ -32,32 +32,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.service;
 
-import it.eng.spago.base.SessionContainer;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spago.error.EMFAbstractError;
-import it.eng.spagobi.container.IBeanContainer;
-import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
-import it.eng.spagobi.container.SpagoBIRequestContainer;
-import it.eng.spagobi.container.SpagoBIResponseContainer;
-import it.eng.spagobi.container.SpagoBISessionContainer;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
-import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spagobi.container.IBeanContainer;
+import it.eng.spagobi.container.SpagoBIHttpSessionContainer;
+import it.eng.spagobi.container.SpagoBIRequestContainer;
+import it.eng.spagobi.container.SpagoBIResponseContainer;
+import it.eng.spagobi.container.SpagoBISessionContainer;
 
 
 /**
@@ -136,6 +131,10 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 	
 	public JSONObject getAttributeAsJSONObject(String attrName) {
 		return getSpagoBIRequestContainer().toJSONObject( attrName );
+	}	
+	
+	public JSONArray getAttributeAsJSONArray(String attrName) {
+		return getSpagoBIRequestContainer().toJSONArray( attrName );
 	}	
 	
 	

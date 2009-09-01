@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.utilities.engines;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,29 +30,25 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import sun.misc.BASE64Decoder;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
-import it.eng.spagobi.container.ContextManager;
-import it.eng.spagobi.container.IBeanContainer;
-import it.eng.spagobi.container.IContainer;
-import it.eng.spagobi.container.SpagoBIContainerFactory;
-import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
-import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.services.proxy.DataSetServiceProxy;
+import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.services.proxy.EventServiceProxy;
+import it.eng.spagobi.tools.dataset.bo.IDataSet;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.apache.log4j.Logger;
-
-import sun.misc.BASE64Decoder;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -72,6 +67,11 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	private ContentServiceProxy contentProxy;
 	private AuditServiceProxy auditProxy;
 	private EventServiceProxy eventProxy;
+	private DataSourceServiceProxy datasourceProxy;
+    private DataSetServiceProxy datasetProxy;
+    
+    IDataSource dataSource;
+    IDataSet dataSet;
 	
 	private Map env;
 	
@@ -187,6 +187,22 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 			
 			return templateSB;
 		}
+	 
+	    public IDataSource getDataSource() {
+	    	if(dataSource == null) {
+	    		dataSource = getDataSourceServiceProxy().getDataSource( getDocumentId() );
+	    	}
+			
+			return dataSource;
+	    }
+	    
+	    public IDataSet getDataSet() {
+	    	if(dataSet == null) {
+	    		dataSet = getDataSetServiceProxy().getDataSet( getDocumentId() );
+	    	}
+			
+			return dataSet;    	
+	    }
 	    
 	    public Locale getLocale() {
 	    	String language;
@@ -262,7 +278,23 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	  	   }	   
 	  	    
 	  	   return eventProxy;
-	     }
+	    }
+	    
+	    public DataSourceServiceProxy getDataSourceServiceProxy() {
+	 	   if(datasourceProxy == null) {
+	 		   datasourceProxy = new DataSourceServiceProxy( getUserIdentifier() , getHttpSession() );
+	 	   }	   
+	 	    
+	 	   return datasourceProxy;
+	    }
+	    
+	    public DataSetServiceProxy getDataSetServiceProxy() {
+	 	   if(datasetProxy == null) {
+	 		   datasetProxy = new DataSetServiceProxy(getUserIdentifier() , getHttpSession());
+	 	   }	   
+	 	    
+	 	   return datasetProxy;
+	    }
 	    
 	    
 	    

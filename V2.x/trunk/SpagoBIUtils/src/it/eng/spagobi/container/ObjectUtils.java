@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -154,6 +155,23 @@ public class ObjectUtils {
 			logger.warn("Impossible to convert input object " + o 
 					+ " whose value is " + toString(o)
 					+ " to JSONObject", e);
+		}
+		
+		return toReturn;	
+	}
+	
+	public static JSONArray toJSONArray(Object o) {
+		JSONArray toReturn;
+		
+		assertNotNull(o, "Input object cannot be null");
+		
+		toReturn = null;
+		try {
+			toReturn = new JSONArray( toString(o) );
+		} catch (Exception e) {
+			logger.warn("Impossible to convert input object " + o 
+					+ " whose value is " + toString(o)
+					+ " to JSONArray", e);
 		}
 		
 		return toReturn;	

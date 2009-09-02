@@ -77,6 +77,18 @@ Sbi.execution.DocumentExecutionPage = function(config) {
 		serviceName: 'EXPORT_PDF'
 		, baseParams: params
 	});
+	
+	this.services['toChartPdf'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'EXPORT_CHART_PDF'
+		, baseParams: params
+	});
+	
+	this.services['toChartJpg'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'EXPORT_CHART_JPG'
+		, baseParams: params
+	});
+
+	
 	// add events
     this.addEvents('beforetoolbarinit', 'beforesynchronize', 'moveprevrequest', 'loadurlfailure', 'crossnavigation', 'beforerefresh','collapse3');
     
@@ -419,53 +431,62 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 						        })					    				        				
 					);	
 			}else if( executionInstance.document.typeCode == 'OLAP') {
-				var menuItems = new Array();
-				
-				for(i=0;i<executionInstance.document.exporters.length ;i++){
+					var menuItems = new Array();
 					
-					if (executionInstance.document.exporters[i]=='PDF'){
-					menuItems.push(	new Ext.menu.Item({
-			                            id:  Ext.id()
-			                            , text: LN('sbi.execution.PdfExport')
-			                            , group: 'group_2'
-			                            , iconCls: 'icon-pdf' 
-								     	, scope: this
-								        , width: 15
-								    	, handler : function() { this.exportOlapExecution('PDF'); }
-										, href: ''   
-			                        })	 
-			                       ); 
-					}else if(executionInstance.document.exporters[i]=='XLS'){
-					menuItems.push(   new Ext.menu.Item({
-			                            id:  Ext.id()
-			                            , text: LN('sbi.execution.XlsExport')
-			                            , group: 'group_2'
-			                            , iconCls: 'icon-xls' 
-								     	, scope: this
-										 , width: 15
-								    	, handler : function() { this.exportOlapExecution('XLS'); }
-										, href: ''   
-			                        })	
-			                        ); 
-					}
-			    }   
-				var menu0 = new Ext.menu.Menu({
-				id: 'basicMenu_0',
-				items: menuItems    
-				});	
-				
-				this.toolbar.add(
-							new Ext.Toolbar.MenuButton({
-								id: Ext.id()
-					            , tooltip: 'Exporters'
-								, path: 'Exporters'	
-								, iconCls: 'icon-export' 	
-					            , menu: menu0
-					            , width: 15
-					            , cls: 'x-btn-menubutton x-btn-text-icon bmenu '
-					        })					    				        				
-				);	
-		}
+					for(i=0;i<executionInstance.document.exporters.length ;i++){
+						
+						if (executionInstance.document.exporters[i]=='PDF'){
+						menuItems.push(	new Ext.menu.Item({
+				                            id:  Ext.id()
+				                            , text: LN('sbi.execution.PdfExport')
+				                            , group: 'group_2'
+				                            , iconCls: 'icon-pdf' 
+									     	, scope: this
+									        , width: 15
+									    	, handler : function() { this.exportOlapExecution('PDF'); }
+											, href: ''   
+				                        })	 
+				                       ); 
+						}else if(executionInstance.document.exporters[i]=='XLS'){
+						menuItems.push(   new Ext.menu.Item({
+				                            id:  Ext.id()
+				                            , text: LN('sbi.execution.XlsExport')
+				                            , group: 'group_2'
+				                            , iconCls: 'icon-xls' 
+									     	, scope: this
+											 , width: 15
+									    	, handler : function() { this.exportOlapExecution('XLS'); }
+											, href: ''   
+				                        })	
+				                        ); 
+						}
+				    }   
+					var menu0 = new Ext.menu.Menu({
+					id: 'basicMenu_0',
+					items: menuItems    
+					});	
+					
+					this.toolbar.add(
+								new Ext.Toolbar.MenuButton({
+									id: Ext.id()
+						            , tooltip: 'Exporters'
+									, path: 'Exporters'	
+									, iconCls: 'icon-export' 	
+						            , menu: menu0
+						            , width: 15
+						            , cls: 'x-btn-menubutton x-btn-text-icon bmenu '
+						        })					    				        				
+					);	
+			}
+			else if ( executionInstance.document.typeCode == 'DASH') {
+				this.toolbar.addButton(new Ext.Toolbar.Button({
+					iconCls: 'icon-pdf' 
+					, tooltip: LN('sbi.execution.PdfExport')
+			     	, scope: this
+			    	, handler :  function() { this.exportChartExecution('PDF'); }
+					, href: ''  
+				}));
+			}	
 		}
 	}
 
@@ -574,7 +595,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		var urlExporter = this.services['toPdf'] + '&OBJECT_ID=' + this.executionInstance.OBJECT_ID;
 		//alert(urlExporter);
 		window.open(urlExporter,'name','height=750,width=1000');
-	}
+	}		
 	
 	,exportReportExecution: function (exportType) {
 		var mf = this.miframe;
@@ -607,6 +628,16 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    //alert ("endUrl: " + endUrl);
 	    
 		window.open(endUrl,'name','height=750,width=1000');
+	}
+	
+	, exportChartExecution: function (exportType) {		
+		var urlExporter = "";
+	    
+		if (exportType == "PDF")  {
+			urlExporter = this.services['toChartPdf'] + '&OBJECT_ID=' + this.executionInstance.OBJECT_ID ;
+			urlExporter+= '&SBI_EXECUTION_ID=' + this.executionInstance.SBI_EXECUTION_ID + "&outputType=PDF";
+		}
+		window.open(urlExporter,'name','height=750,width=1000');
 	}
 
 	

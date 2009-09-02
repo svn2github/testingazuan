@@ -50,13 +50,25 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="org.jfree.data.general.DefaultValueDataset"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 
+<%@page import="it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy"%>
+<%@page import="it.eng.spagobi.container.strategy.IContextRetrieverStrategy"%>
+<%@page import="it.eng.spago.dispatching.action.AbstractHttpAction"%>
+<%@page import="it.eng.spagobi.container.SpagoBIRequestContainer"%>
+<%@page import="it.eng.spagobi.container.ContextManager"%>
+<%@page import="it.eng.spagobi.container.SpagoBIHttpSessionContainer"%>
+
+
 <%
 	boolean docComposition=false;
 	SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
 	Integer executionAuditId_chart = null;
-	ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+	
+  	ExecutionInstance instanceO = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+  
 	String execContext = instanceO.getExecutionModality();
 	String crossNavigationUrl = "";
+	//getting sbi_execution_id for new user interface
+	String sbiExecutionID = (String)sbModuleResponse.getAttribute("SBI_EXECUTION_ID");
    	// if in document composition case do not include header.jsp
    	   	
    	
@@ -91,12 +103,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 	<%   }
    		else // in document composition case doesn't call header so set Object and uuid
-			   {
-	   				docComposition=true;
-	   				ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
-	   				AuditManager auditManager = AuditManager.getInstance();
-	   				executionAuditId_chart = auditManager.insertAudit(instance.getBIObject(), null, userProfile, instance.getExecutionRole(), instance.getExecutionModality());	   				
-			   }
+	   {
+  				docComposition=true;
+  				ExecutionInstance instance = contextManager.getExecutionInstance(ExecutionInstance.class.getName());
+  				AuditManager auditManager = AuditManager.getInstance();
+  				executionAuditId_chart = auditManager.insertAudit(instance.getBIObject(), null, userProfile, instance.getExecutionRole(), instance.getExecutionModality());	   				
+	   }
    	
 	BIObject objO = instanceO.getBIObject();
 	String uuidO=instanceO.getExecutionId();
@@ -323,7 +335,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				chart = sbi.createChart(tmpDatasetMap);
 			
 				//Create the temporary file
-				String executionId = uuidO;
+				String executionId = (sbiExecutionID != null)?sbiExecutionID:uuidO;
 				executionId = executionId.replaceAll("-", "");
 	
 				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
@@ -370,6 +382,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 					<div align="center">
 						<img id="image" src="<%=urlPng%>" BORDER="0" alt="" USEMAP="#chart" />
 					</div>
+					<input type="hidden" name="orientation" value="<%=sbi.getOrientationMultichart()%>" /> 
 				<%if (sbi.getOrientationMultichart().equalsIgnoreCase("horizontal")){ %>
 				</td>
 				<%} %>
@@ -389,7 +402,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		chart = sbi.createChart(copyDatasets);
 
 		//Create the temporary file
-		String executionId = uuidO;
+		String executionId = (sbiExecutionID != null)?sbiExecutionID:uuidO;
 		executionId = executionId.replaceAll("-", "");
 
 		ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());

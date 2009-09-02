@@ -364,7 +364,8 @@ if (toolbarIsVisible) {
 							 String value_cd=domain.getValueCd();
 							 String urlExporter=null;	
 							 String urlXmlExporter = null;
-							 String urlXslExporter = null;
+							 String urlXlsExporter = null;
+							 String urlJpgExporter = null;
 	
 				
 								if (obj.getBiObjectTypeCode().equals("KPI")){ 
@@ -384,7 +385,8 @@ if (toolbarIsVisible) {
 									//overrides if already present
 									clonePars.put("outputType",value_cd);
 									urlExporter= getUrl(obj.getEngine().getUrl(), clonePars);
-									urlXslExporter = urlExporter;
+									urlXlsExporter = urlExporter;
+									urlJpgExporter = urlExporter;
 								}
 								else if (obj.getBiObjectTypeCode().equals("OLAP")){ 
 									HashMap clonePars=new HashMap();	
@@ -398,13 +400,18 @@ if (toolbarIsVisible) {
 									//defines XLS url
 									clonePars.put("cube","01");
 									clonePars.put("type","0");
-									urlXslExporter= getUrl(baseUrl, clonePars);
+									urlXlsExporter= getUrl(baseUrl, clonePars);
 									
 								}
+								else if (obj.getBiObjectTypeCode().equals("DASH")){ 
+									urlExporter=GeneralUtilities.getSpagoBIProfileBaseUrl(userId);									
+									urlExporter+="&ACTION_NAME=EXPORT_CHART_PDF&"+LightNavigationManager.LIGHT_NAVIGATOR_DISABLED+"=TRUE&"+SpagoBIConstants.OBJECT_ID+"="+obj.getId()+"&outputType=PDF&uuid="+uuid;
+								}
+								
 								if(value_cd!=null && value_cd.equals("XLS")){
 									%>
 									<li>	
-								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlXslExporter%>" target="_blank">
+								    	<a id="export_pdf_report<%=uuid%>" href="<%=urlXlsExporter%>" target="_blank">
 											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.XlsExport" />'
 												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/xls.gif", currTheme)%>'
 												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
@@ -428,7 +435,7 @@ if (toolbarIsVisible) {
 											<img width="22px" height="22px" title='<spagobi:message key = "sbi.execution.JpgExport" />'
 												src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/jpg16.png", currTheme)%>'
 												alt='<spagobi:message key = "sbi.execution.PdfExport" />' />
-										</a>	    
+										</a>	     
 									</li>
 									<% 
 								}else if(value_cd!=null && value_cd.equals("CSV")){

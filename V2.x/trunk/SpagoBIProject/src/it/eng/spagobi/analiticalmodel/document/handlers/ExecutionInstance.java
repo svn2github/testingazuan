@@ -942,6 +942,7 @@ public class ExecutionInstance {
 			buffer.append("&" + SpagoBIConstants.ROLE + "=" + executionRole);
 			buffer.append("&" + SpagoBIConstants.RUN_ANYWAY + "=TRUE" );
 			buffer.append("&" + SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS + "=TRUE" );
+			buffer.append("&SBI_EXECUTION_ID=" + this.executionId); //adds constants if it works!!
 
 			// identity string for context
 			UUIDGenerator uuidGen  = UUIDGenerator.getInstance();

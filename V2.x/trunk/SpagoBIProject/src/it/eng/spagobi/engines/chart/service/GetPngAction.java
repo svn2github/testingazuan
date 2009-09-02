@@ -35,6 +35,7 @@ package it.eng.spagobi.engines.chart.service;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spagobi.engines.exporters.ChartExporter;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.io.File;
@@ -52,6 +53,7 @@ import org.apache.log4j.Logger;
 public class GetPngAction extends AbstractHttpAction {
 
 	private static transient Logger logger=Logger.getLogger(GetPngAction.class);
+	private static String PARAM_OUTPUT_FORMAT="outputType";
 
 	/* (non-Javadoc)
 	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
@@ -86,9 +88,22 @@ public class GetPngAction extends AbstractHttpAction {
 			throw new Exception("errors in error handler!");
 		}
 
+		String outputType = (serviceRequest.getAttribute(PARAM_OUTPUT_FORMAT)==null)?"JPG":(String)serviceRequest.getAttribute(PARAM_OUTPUT_FORMAT);	
+		String mimeType = "";
+		//ChartExporter exporter = new ChartExporter();
+		if ("PDF".equalsIgnoreCase(outputType)){
+			//tmpFile=exporter.getChartPDF(profile, document);
+			mimeType = "application/pdf";
+		}
+		else if ("JPG".equalsIgnoreCase(outputType)){
+			//tmpFile=exporter.getChartJPG(document);
+			mimeType = "image/gif";
+		}
+		
 		HttpServletResponse response = getHttpResponse();
 		ServletOutputStream out = response.getOutputStream();
-		response.setContentType("image/gif");
+	//	response.setContentType("image/gif");
+		response.setContentType(mimeType);
 		
 		// Set Cache for print images
 		java.text.SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");	    
@@ -120,13 +135,14 @@ public class GetPngAction extends AbstractHttpAction {
 		out.close();
 
 		// RIMUOVO FISICAMENTE IL FILE DAL REPOSITORY
+		/*
 		File fileToDelete = new File(path);
 		if( fileToDelete.delete() ){ 
 			logger.debug("File deleted");	
 		}else{ 
 			logger.error("File not correctle deleted");
 		} 
-		
+		*/
 	    // AUDIT UPDATE
 		if(auditId!=null){
 	    auditManager.updateAudit(auditId, null, new Long(System.currentTimeMillis()), "EXECUTION_PERFORMED", null,

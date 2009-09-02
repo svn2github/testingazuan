@@ -359,7 +359,8 @@ public class SpagoBIChartInternalEngine implements InternalEngineIFace {
 			try{
 				//chart = sbi.createChart(title,dataset);
 				logger.debug("successfull chart creation");
-
+				String executionId =(String) serviceRequest.getAttribute("SBI_EXECUTION_ID");
+				if (executionId != null) response.setAttribute("SBI_EXECUTION_ID",executionId);
 				response.setAttribute("datasets",datasets);
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR,obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "CHARTKPI");

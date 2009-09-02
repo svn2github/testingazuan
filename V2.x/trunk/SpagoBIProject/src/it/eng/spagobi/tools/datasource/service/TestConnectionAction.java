@@ -76,11 +76,7 @@ public class TestConnectionAction extends AbstractHttpAction {
 		try {
 			if (isjndi.equals("true")){
 				    ctx = new InitialContext();
-				    String schema="";
-				    if(isMultischema){
-				    	schema=UserUtilities.getSchema();
-				    }
-				    DataSource ds = (DataSource) ctx.lookup(jndi+schema);
+				    DataSource ds = (DataSource) ctx.lookup(jndi+schemaattr);
 				    connection = ds.getConnection();
 			}else if (isjndi.equals("false")){			
 				    Class.forName(driver);

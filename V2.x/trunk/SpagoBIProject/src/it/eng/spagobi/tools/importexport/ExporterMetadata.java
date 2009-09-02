@@ -216,6 +216,8 @@ public class ExporterMetadata {
 			hibDS.setUrl_connection(ds.getUrlConnection());
 			hibDS.setUser(ds.getUser());
 			hibDS.setDialect(dialect);
+			hibDS.setSchemaAttribute(ds.getSchemaAttribute());
+			hibDS.setMultiSchema(ds.getMultiSchema());		
 
 			// va aggiunto il legame con gli engine e il doc ????
 

@@ -275,6 +275,8 @@ public class ImportUtilities {
 		newDS.setPwd(ds.getPwd());
 		newDS.setUrl_connection(ds.getUrl_connection());
 		newDS.setUser(ds.getUser());
+		newDS.setMultiSchema(ds.getMultiSchema());
+		newDS.setSchemaAttribute(ds.getSchemaAttribute());
 		logger.debug("OUT");
 		return newDS;
 	}	
@@ -295,6 +297,8 @@ public class ImportUtilities {
 			existingDatasource.setPwd(dataSource.getPwd());
 			existingDatasource.setUrl_connection(dataSource.getUrl_connection());
 			existingDatasource.setUser(dataSource.getUser());
+			existingDatasource.setMultiSchema(dataSource.getMultiSchema());
+			existingDatasource.setSchemaAttribute(dataSource.getSchemaAttribute());
 		} finally {
 			logger.debug("OUT");
 		}

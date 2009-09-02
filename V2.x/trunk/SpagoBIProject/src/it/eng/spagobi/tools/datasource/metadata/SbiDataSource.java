@@ -115,7 +115,8 @@ public class SbiDataSource implements java.io.Serializable {
 	 * @param sbiObjectses the sbi objectses
 	 * @param sbiEngineses the sbi engineses
 	 */
-	public SbiDataSource(int dsId, String descr, SbiDomains dialect, String label, String jndi, String url_connection, String user, String pwd, String driver,  Set sbiObjectses, Set sbiEngineses) {
+	public SbiDataSource(int dsId, String descr, SbiDomains dialect, String label, String jndi, String url_connection, String user, 
+			String pwd, String driver,  Set sbiObjectses, Set sbiEngineses, Boolean multiSchema, String schemaAttribute) {
 		this.dsId = dsId;		
 		this.dialect = dialect;
 		this.descr = descr;
@@ -127,6 +128,8 @@ public class SbiDataSource implements java.io.Serializable {
 		this.driver = driver;
 		this.sbiObjectses = sbiObjectses;
 	    this.sbiEngineses = sbiEngineses;
+	    this.schemaAttribute = schemaAttribute;
+	    this.multiSchema = multiSchema;
 	}
 
 	/**

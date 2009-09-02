@@ -212,7 +212,7 @@ if (viewpointsList == null || viewpointsList.size() == 0) {
 	    viewVPUrl = urlBuilder.getUrl(request, viewVPUrlPars);
 
         ConfigSingleton conf = ConfigSingleton.getInstance();
-		String format=GeneralUtilities.getLocaleDateFormat(permSess);
+		String format=GeneralUtilities.getLocaleDateFormat(permSess)+" hh:mm:ss";
         String date = StringUtils.dateToString(creationDateVP, format);
         %>
 				<tr class='portlet-font'>

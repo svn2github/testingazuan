@@ -171,7 +171,7 @@ if (snapshotsList == null || snapshotsList.size() == 0) {
 		nameSnap = snap.getName();
 		descrSnap = snap.getDescription();
 		creationDate = snap.getDateCreation();
-		String format=GeneralUtilities.getLocaleDateFormat(permSess);
+		String format=GeneralUtilities.getLocaleDateFormat(permSess)+" hh:mm:ss";
     	String dateValue = StringUtils.dateToString(creationDate, format);
   
 		

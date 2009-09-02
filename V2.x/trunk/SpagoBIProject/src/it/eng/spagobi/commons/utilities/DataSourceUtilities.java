@@ -54,10 +54,13 @@ public class DataSourceUtilities {
 	public Connection getConnection(RequestContainer requestContainer,String dsLabel) {
 		Connection connection =  null;
 		//calls implementation for gets data source object
-		String schema=UserUtilities.getSchema(requestContainer);
-		logger.debug("Schema:"+ schema);
+		
 		DataSourceSupplier supplierDS = new DataSourceSupplier();		
 		SpagoBiDataSource ds = supplierDS.getDataSourceByLabel(dsLabel);
+		logger.debug("Schema Attributes:"+ ds.getSchemaAttribute());
+		String schema=UserUtilities.getSchema(ds.getSchemaAttribute(),requestContainer);
+		logger.debug("Schema:"+ schema);
+		
 		try {
 			connection = ds.readConnection(schema);
 		} catch (NamingException e) {
@@ -80,10 +83,14 @@ public class DataSourceUtilities {
 	public Connection getConnection(IEngUserProfile profile,String dsLabel) {
 		Connection connection =  null;
 		//calls implementation for gets data source object
-		String schema=UserUtilities.getSchema(profile);
-		logger.debug("Schema:"+ schema);
+		
+		
 		DataSourceSupplier supplierDS = new DataSourceSupplier();		
 		SpagoBiDataSource ds = supplierDS.getDataSourceByLabel(dsLabel);
+		logger.debug("Schema Attribute:"+ ds.getSchemaAttribute());
+		
+		String schema=UserUtilities.getSchema(ds.getSchemaAttribute(),profile);
+		logger.debug("Schema:"+ schema);
 		try {
 			connection = ds.readConnection(schema);
 		} catch (NamingException e) {

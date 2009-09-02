@@ -601,7 +601,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<%
       		} else {
       	%>
-			<br/>
+			<br>
 			<div class='div_form_container' >
 				<div class='div_form_margin'>
 			
@@ -633,7 +633,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    	<div style="float:left;width:500px;margin-bottom:30px;">
 
 				    		<spagobi:message key = "scheduler.parameterValuesStrategyQuestion"  bundle="component_scheduler_messages"/>
-				    		<br/>
+				    		<br>
+				    		<div style="height: 2px" >&nbsp;</div>
 						  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_strategy"%>'
 										id='<%="par_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_strategy"%>'
 										onChange="<%="change_"+biobj.getId()+"_"+index+"_"+biobjpar.getParameterUrlName()+"_strategy(this.selectedIndex);"%>">
@@ -652,6 +653,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 									</option>
 								<% } %>
 							</select>
+							
+							
+								
 							
 							<script>
 							function <%="change_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_strategy"%>(index) {
@@ -673,40 +677,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							}
 							</script>
 							
-							<br/>
+							
 							
 				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_fixedValues"%>'
 				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_fixedValues"%>'
 				    				style="margin-top:10px;display:<%= strategy == null ? "block" : "none" %>" >
-				    				
-					    		<input class='portlet-form-input-field' 
-							  	       id="<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>"
-							  	       name="<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>" 
-							  	       type="text" value="<%=StringEscapeUtils.escapeHtml(concatenatedValue)%>" size="50" autocomplete="off" />
-							  	&nbsp;&nbsp;&nbsp;
-							  	<%
+				    			<div style="height: 2px" >&nbsp;</div>
+							
+							<%
 							  		List roles = biobjdao.getCorrectRolesForExecution(biobj.getId(), userProfile);
 							  		if(roles.size()>0) {
 							  	%>
-							  	<a style='text-decoration:none;' href="javascript:getLovList('<%=biobj.getId()%>', '<%=biobjpar.getParID()%>', '<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>')">
-							  		<img title='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' 
-	      				 				src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme)%>' 
-	      				 				alt='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' />
-							  	</a>
-							  	<br/>
-							  	
-							  	<div>
-							  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'
-											id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'>
-									<option value='false'><spagobi:message key = "scheduler.doNotIterateOnParameterValues"  bundle="component_scheduler_messages"/></option>
-									<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
-										<spagobi:message key = "scheduler.iterateOnParameterValues"  bundle="component_scheduler_messages"/>
-									</option>
-								</select>
-								</div>
-								
-							  	<br/>
-								(<spagobi:message key = "scheduler.usingrole"  bundle="component_scheduler_messages"/> 
+							  	(<spagobi:message key = "scheduler.usingrole"  bundle="component_scheduler_messages"/> 
 								&nbsp;
 								<select name='role_par_<%=biobj.getId()%>_<%=index%>_<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>'
 										id='role_par_<%=biobj.getId()%>_<%=index%>_<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>' >
@@ -723,6 +705,36 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 								<%
 						  		} // if(roles.size()>0)
 								%>
+								<br>
+							<div style="height: 2px" >&nbsp;</div>
+								
+				    				
+					    		<input class='portlet-form-input-field' 
+							  	       id="<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>"
+							  	       name="<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>" 
+							  	       type="text" value="<%=StringEscapeUtils.escapeHtml(concatenatedValue)%>" size="50" autocomplete="off" />
+							  	&nbsp;&nbsp;&nbsp;
+							  	
+							  	
+							  	<a style='text-decoration:none;' href="javascript:getLovList('<%=biobj.getId()%>', '<%=biobjpar.getParID()%>', '<%=StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())%>')">
+							  		<img title='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' 
+	      				 				src='<%= urlBuilder.getResourceLinkByTheme(request, "/img/detail.gif", currTheme)%>' 
+	      				 				alt='<spagobi:message key = "scheduler.fillparameter"  bundle="component_scheduler_messages"/>' />
+							  	</a>
+							  	<br>
+							  	<br>
+							  	
+							  	<div>
+							  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'
+											id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'>
+									<option value='false'><spagobi:message key = "scheduler.doNotIterateOnParameterValues"  bundle="component_scheduler_messages"/></option>
+									<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
+										<spagobi:message key = "scheduler.iterateOnParameterValues"  bundle="component_scheduler_messages"/>
+									</option>
+								</select>
+								</div>
+								
+								
 				    		</div>
 				    		
 				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_loadAtRuntime"%>'

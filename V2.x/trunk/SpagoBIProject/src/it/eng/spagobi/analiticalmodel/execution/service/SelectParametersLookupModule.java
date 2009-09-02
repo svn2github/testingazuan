@@ -902,7 +902,7 @@ public class SelectParametersLookupModule extends AbstractBasicListModule {
 	DataResult dataResult = null;
 	try {
 	    DataSourceUtilities dsUtil = new DataSourceUtilities();
-	    Connection conn = dsUtil.getConnection(datasource);
+	    Connection conn = dsUtil.getConnection(requestContainer,datasource);
 	    dataConnection = dsUtil.getDataConnection(conn);
 	    sqlCommand = dataConnection.createSelectCommand(statement);
 	    dataResult = sqlCommand.execute();

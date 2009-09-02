@@ -54,9 +54,7 @@ public class UserUtilities {
 
     static Logger logger = Logger.getLogger(UserUtilities.class);
 
-    public static String getSchema(){
- 
-    	RequestContainer aRequestContainer = RequestContainer.getRequestContainer();
+    public static String getSchema(RequestContainer aRequestContainer){
     	SessionContainer aSessionContainer = aRequestContainer.getSessionContainer();
     	SessionContainer permanentSession = aSessionContainer.getPermanentContainer();
 
@@ -71,8 +69,22 @@ public class UserUtilities {
     	}else {
     		logger.warn("User profile is NULL!!!!");
     	}
-return null;
+    	return null;
     }
+    
+    public static String getSchema(IEngUserProfile userProfile){
+    	if (userProfile!=null){
+    		try {
+				return (String) userProfile.getUserAttribute("ente");
+			} catch (EMFInternalError e) {
+				logger.error("User profile is NULL!!!!");
+			}
+    	}else {
+    		logger.warn("User profile is NULL!!!!");
+    	}
+    	return null;
+    }
+    
     
     
     /**

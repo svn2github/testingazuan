@@ -21,10 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.commons.utilities;
 
+import it.eng.spago.base.RequestContainer;
 import it.eng.spago.dbaccess.sql.DataConnection;
 import it.eng.spago.dbaccess.sql.mappers.SQLMapper;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.datasource.service.DataSourceSupplier;
 
@@ -46,11 +48,13 @@ public class DataSourceUtilities {
 	 * @param dsLabel the ds label
 	 * 
 	 * @return the database connection
+	 * 
+	 * N.B. You MUST use this method only when RequestContainer is OK.
 	 */
-	public Connection getConnection(String dsLabel) {
+	public Connection getConnection(RequestContainer requestContainer,String dsLabel) {
 		Connection connection =  null;
 		//calls implementation for gets data source object
-		String schema=UserUtilities.getSchema();
+		String schema=UserUtilities.getSchema(requestContainer);
 		logger.debug("Schema:"+ schema);
 		DataSourceSupplier supplierDS = new DataSourceSupplier();		
 		SpagoBiDataSource ds = supplierDS.getDataSourceByLabel(dsLabel);
@@ -67,6 +71,31 @@ public class DataSourceUtilities {
 		return connection;
 	}
 	
+	/**
+	 * use this method in service implementation. If RequestContainer isn't correct.
+	 * @param profile
+	 * @param dsLabel
+	 * @return
+	 */
+	public Connection getConnection(IEngUserProfile profile,String dsLabel) {
+		Connection connection =  null;
+		//calls implementation for gets data source object
+		String schema=UserUtilities.getSchema(profile);
+		logger.debug("Schema:"+ schema);
+		DataSourceSupplier supplierDS = new DataSourceSupplier();		
+		SpagoBiDataSource ds = supplierDS.getDataSourceByLabel(dsLabel);
+		try {
+			connection = ds.readConnection(schema);
+		} catch (NamingException e) {
+			logger.error("JNDI error", e);
+		} catch (SQLException e) {
+			logger.error("Cannot retrive connection", e);
+		} catch (ClassNotFoundException e) {
+			logger.error("Driver not found", e);
+		}
+		
+		return connection;
+	}	
 	/**
 	 * Creates a ago DataConnection object starting from a sql connection.
 	 * 

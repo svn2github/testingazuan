@@ -6,6 +6,11 @@
  	<CONFIG/>
  </ACTION>
  
+ <ACTION name="EXPORT_CHART_PDF" class="it.eng.spagobi.engines.chart.service.ChartExporterAction"
+    scope="REQUEST">
+    <CONFIG></CONFIG>
+  </ACTION>  
+
   <!-- <ACTION name="CREATE_CHART" class="it.eng.spagobi.engines.chart.service.CreateChart" scope="REQUEST">
  	<CONFIG/>
  </ACTION>-->

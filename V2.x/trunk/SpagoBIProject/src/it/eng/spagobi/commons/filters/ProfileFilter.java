@@ -95,6 +95,7 @@ public class ProfileFilter implements Filter {
 		    } else {
 			// in case the profile is different, creates a new one
 			// and overwrites the existing
+		    	/*
 			if (!((UserProfile) profile).getUserUniqueIdentifier().toString().equals(userId)) {
 			    logger.debug("Different user profile found in session, creating a new one and replacing in session....");
 			    profile = GeneralUtilities.createNewUserProfile(userId);
@@ -103,6 +104,8 @@ public class ProfileFilter implements Filter {
 			    logger.debug("User profile object for user [" + userId
 				    + "] already existing in session, ok");
 			}
+			
+			*/
 		    }
 		}
 	    }

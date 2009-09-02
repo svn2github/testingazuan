@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.behaviouralmodel.lov.bo;
 
+import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dbaccess.Utils;
@@ -168,7 +169,7 @@ public class QueryDetail  implements ILovDetail  {
 	public String getLovResult(IEngUserProfile profile) throws Exception {
 		String statement = getQueryDefinition();
 		statement = StringUtilities.substituteProfileAttributesInString(statement, profile);
-		String result = getLovResult(statement);
+		String result = getLovResult(profile,statement);
 		return result;
 	}
 	
@@ -179,11 +180,11 @@ public class QueryDetail  implements ILovDetail  {
 	 * @throws Exception	
 	 */
 	
-	private String getLovResult(String statement) throws Exception {
+	private String getLovResult(IEngUserProfile profile,String statement) throws Exception {
 		String resStr = null;
 		//gets connection
 		DataSourceUtilities dsUtil = new DataSourceUtilities();
-		Connection conn = dsUtil.getConnection(dataSource); 
+		Connection conn = dsUtil.getConnection(profile,dataSource); 
 		DataConnection dataConnection = dsUtil.getDataConnection(conn);
 		SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
 		DataResult dataResult = sqlCommand.execute();

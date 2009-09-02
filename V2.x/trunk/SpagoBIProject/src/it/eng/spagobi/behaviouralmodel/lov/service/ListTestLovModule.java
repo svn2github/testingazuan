@@ -274,7 +274,7 @@ public class ListTestLovModule extends AbstractBasicListModule {
 			*/
 			//gets connection
 			DataSourceUtilities dsUtil = new DataSourceUtilities();
-			Connection conn = dsUtil.getConnection(datasource); 
+			Connection conn = dsUtil.getConnection(requestContainer,datasource); 
 			dataConnection = dsUtil.getDataConnection(conn);
 
 			sqlCommand = dataConnection.createSelectCommand(statement);

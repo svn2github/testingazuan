@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 --%>
 
 <%@ include file="/WEB-INF/jsp/commons/portlet_base.jsp"%>
+<%@page import="it.eng.spagobi.services.common.SsoServiceInterface"%>
 
 <% 
 SourceBean sbModuleResponse = (SourceBean) aServiceResponse.getAttribute("ExecuteBIObjectModule");
@@ -45,7 +46,7 @@ BIObject biObj = instanceO.getBIObject();
 
 // get the url for document retrieval
 String officeDocUrl = GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl();
-officeDocUrl += "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&userId=" + userUniqueIdentifier + "&documentId=" + biObj.getId().toString() + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
+officeDocUrl += "?ACTION_NAME=GET_OFFICE_DOC&NEW_SESSION=TRUE&"+SsoServiceInterface.USER_ID+"=" + userUniqueIdentifier + "&documentId=" + biObj.getId().toString() + "&" + LightNavigationManager.LIGHT_NAVIGATOR_DISABLED + "=TRUE";
 // adding parameters for AUDIT updating
 if (executionAuditId_office != null) {
 	officeDocUrl += "&" + AuditManager.AUDIT_ID + "=" + executionAuditId_office.toString();

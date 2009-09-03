@@ -28,7 +28,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				 java.util.Iterator,
 				 it.eng.spagobi.engines.config.bo.Engine,			
 				 it.eng.spago.base.SourceBean,	
-				 it.eng.spagobi.monitoring.metadata.SbiAudit,		
+				 it.eng.spagobi.monitoring.metadata.SbiAudit,
+				 java.util.Collection,		
 				 java.util.Date"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.dao.IObjTemplateDAO"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate"%>
@@ -129,6 +130,20 @@ Ext.onReady(function(){
     });
 });
 </script>
+
+<% 
+Collection functionalities = userProfile.getFunctionalities();
+boolean docAdmin = false;
+boolean docDev = false;
+boolean docTest = false;
+if (functionalities!=null && !functionalities.isEmpty()){
+	docAdmin = functionalities.contains("DocumentAdministration")|| functionalities.contains("DocumentAdminManagement");
+ 	docDev = functionalities.contains("DocumentDevManagement");
+ 	docTest = functionalities.contains("DocumentTestManagement");
+}
+if(docAdmin||docDev||docTest){
+	// Technical Data is shown only if the user is a technical user
+%>
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
@@ -140,6 +155,8 @@ Ext.onReady(function(){
     });
 });
 </script>
+<% } %>
+
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
@@ -219,7 +236,10 @@ Ext.onReady(function(){
 	</table> 
 </div>		
 
-
+<%
+if(docAdmin||docDev||docTest){
+	// Technical Data is shown only if the user is a technical user
+%>
 <div id="technicalData" class="div_background_no_img" style="padding-top:5px;padding-left:5px;">	
 	<!-- TABLE TECHNICAL DATA -->		
 	<table style="width:100%;margin-top:1px">
@@ -347,6 +367,7 @@ Ext.onReady(function(){
 	<spagobi:error/>
 	</table> 
 </div>  
+<% } %>
 
 <div id="businessQuestions" class="div_background_no_img" style="padding-top:5px;padding-left:5px;">
 	

@@ -155,7 +155,7 @@ public class SpagoBICrossNavigationConfig {
 	
 	private String getCrossNavigationUrl(TargetObject targetObject, TargetSubObject targetSubObject, Cell cell, MondrianModel model) {
 		logger.debug("IN");
-		StringBuffer buffer = new StringBuffer("javascript:alert('" + targetObject.label + "' + '");
+		StringBuffer buffer = new StringBuffer("javascript:parent.execCrossNavigation(this.name, '" + targetObject.label + "', '");
 		String query = model.getCurrentMdx();
 		Connection monConnection = model.getConnection();
 	    Query monQuery = monConnection.parseQuery(query);
@@ -177,7 +177,7 @@ public class SpagoBICrossNavigationConfig {
     		buffer.deleteCharAt(buffer.length() - 1);
     	}
     	if (targetSubObject != null) {
-    		buffer.append("' + '" + targetSubObject.label + "');");
+    		buffer.append("', '" + targetSubObject.label + "');");
     	} else {
     		buffer.append("');");
     	}

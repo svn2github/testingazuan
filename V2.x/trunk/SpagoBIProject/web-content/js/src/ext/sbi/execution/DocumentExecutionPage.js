@@ -109,7 +109,10 @@ Sbi.execution.DocumentExecutionPage = function(config) {
     	this.southPanel.collapse();
     	this.northPanel.collapse();
 		this.executionInstance.SBI_SUBOBJECT_ID = subObjectId;
-		this.synchronize(this.executionInstance);
+		var formState = this.parametersPanel.getFormState();
+		var formStateStr = Sbi.commons.JSON.encode( formState );
+		this.executionInstance.PARAMETERS = formStateStr;
+		this.synchronize(this.executionInstance, false);
 	}, this);
 	
     this.shortcutsPanel.on('snapshotexcutionrequest', function (snapshotId) {
@@ -713,6 +716,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	                		document: {'label': message.data.label}
 	            			, preferences: {
 	                			parameters: message.data.parameters
+	                			, subobject: message.data.subobject
 	                		}
 	            	    };
 	                	// workaround for document composition with a svg map on IE: when clicking on the map, this message is thrown
@@ -730,8 +734,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		
 		this.miframe.on('documentloaded', function() {
 			this.miframe.iframe.execScript("parent = document;", true);
-			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
-							"	sendMessage({'label': l, parameters: p, windowName: d},'crossnavigation');" +
+			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p,s) {" +
+							"	sendMessage({'label': l, parameters: p, windowName: d, subobject: s},'crossnavigation');" +
 							"};";
 			this.miframe.iframe.execScript(scriptFn, true);
 			this.miframe.iframe.execScript("uiType = 'ext';", true);

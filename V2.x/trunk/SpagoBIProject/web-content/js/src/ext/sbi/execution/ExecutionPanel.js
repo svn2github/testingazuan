@@ -216,8 +216,8 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		// if browser is IE, re-inject parent.execCrossNavigation function in order to solve parent variable conflict that occurs when 
 		// more iframes are built and the same function in injected: it is a workaround that let cross navigation work properly
 		if (Ext.isIE) {
-			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
-							"	sendMessage({'label': l, parameters: p, windowName: d},'crossnavigation');" +
+			var scriptFn = 	"parent.execCrossNavigation = function(d,l,p,s) {" +
+							"	sendMessage({'label': l, parameters: p, windowName: d, subobject: s},'crossnavigation');" +
 							"};";
 			this.activeDocument.documentExecutionPage.miframe.iframe.execScript(scriptFn, true);
 		}

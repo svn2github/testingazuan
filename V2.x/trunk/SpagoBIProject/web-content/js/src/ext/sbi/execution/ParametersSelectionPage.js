@@ -58,7 +58,8 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	this.maskOnRender = c.maskOnRender;
 	
 	// variables for preferences and for shortcuts/parameters panel synchronization
-	this.isParameterPanelReady = false;
+	this.isParameterPanelReady = false; // parameters panel has been loaded
+	this.isParameterPanelReadyForExecution = false; // parameters panel has been loaded and there are no parameters to be filled
 	this.isSubobjectPanelReady = false;
 	this.preferenceSubobjectId = null;
 	this.isSnapshotPanelReady = false;
@@ -137,17 +138,17 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	
 	
 	this.parametersPanel.on('beforesynchronize', function(){if(this.loadingMask) this.loadingMask.show();}, this);
-	this.parametersPanel.on('synchronize', function(){if(this.loadingMask) this.loadingMask.hide();}, this);
-	/*
-	this.parametersPanel.on('readyforexecution', function(){
-		this.executionInstance.isPossibleToComeBackToParametersPage = false;
-		this.fireEvent('movenextrequest', this);
-	}, this);
-	*/
-	this.parametersPanel.on('readyforexecution', function(){
-		this.isParameterPanelReady = true;
-		this.startExecutionAutomatically();
-	}, this);
+	this.parametersPanel.on('synchronize', 
+		function(panel, readyForExecution, parametersPreference) {
+			if(this.loadingMask) this.loadingMask.hide();
+			this.isParameterPanelReady = true;
+			if (readyForExecution) {
+				this.isParameterPanelReadyForExecution = true;
+				this.startExecutionAutomatically();
+			}
+		}
+	, this);
+
 	this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
 	this.shortcutsPanel.on('viewpointexecutionrequest', this.onExecuteViewpoint, this);
 	this.shortcutsPanel.on('subobjectexecutionrequest', this.onExecuteSubobject, this);
@@ -347,9 +348,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	}
 	
 	, startExecutionAutomatically: function() {
-		// must wait subobjects panel and snapshots panel have been loaded
-		// For parameters instead, we cannot wait: the 'readyforexecution' may not be fired
-		if (this.isSubobjectPanelReady === false || this.isSnapshotPanelReady === false) {
+		// must wait parameters/subobjects/snapshots panels have been loaded
+		if (this.isSubobjectPanelReady === false || this.isSnapshotPanelReady === false || this.isParameterPanelReady === false) {
 			return;
 		}
 		
@@ -366,7 +366,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 			return;
 		}
 		// parameters form follows: if there are no parameters to be filled, start main document execution
-		if (this.isParameterPanelReady == true) {
+		if (this.isParameterPanelReadyForExecution == true) {
 			this.executionInstance.isPossibleToComeBackToParametersPage = false;
 			this.fireEvent('movenextrequest', this);
 		}

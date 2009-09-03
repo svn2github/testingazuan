@@ -116,7 +116,7 @@ Sbi.execution.ParametersPanel = function(config) {
 		this.columns[i] = columnContainer.items.get(i);
 	}
 	
-    this.addEvents('beforesynchronize', 'synchronize', 'readyforexecution');	
+    this.addEvents('beforesynchronize', 'synchronize');	
 };
 
 Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
@@ -323,24 +323,21 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			
 		}
 		
+		var isReadyForExecution = true;
 		if(parameters.length == 0) {
-			this.fireEvent('readyforexecution', this);
+			isReadyForExecution = true;
 		} else 	{
-			var readyForExecution = true;
 			var o = this.getFormState();
 			for(p in o) {
 				// must check is this.fields[p] is undefined because form state contains also parameters' descriptions
 				if(this.fields[p] != undefined && this.fields[p].isTransient === false) {
-					readyForExecution = false;
+					isReadyForExecution = false;
 					break;
 				}
 			}
-			if(readyForExecution === true) {
-				this.fireEvent('readyforexecution', this);
-			}
 		}
 		
-		this.fireEvent('synchronize', this, readyForExecution, this.parametersPreference);
+		this.fireEvent('synchronize', this, isReadyForExecution, this.parametersPreference);
 		
 	}
 	

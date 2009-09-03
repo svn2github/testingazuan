@@ -135,47 +135,76 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 		try {
 			// we are not executing a snapshot, so delete snapshot if existing
 			executionInstance.setSnapshot(null);
-			ISubObjectDAO dao = null;
-			try {
-				dao = DAOFactory.getSubObjectDAO();
-			} catch (EMFUserError e) {
-				logger.error("Error while istantiating DAO", e);
-				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot access database", e);
-			}
-
-			SubObject subObject = null;
-			try {
-				subObject = dao.getSubObject(subObjectId);
-			} catch (EMFUserError e) {
-				logger.error("SubObject with id = " + subObjectId + " not found", e);
-				throw new SpagoBIServiceException(SERVICE_NAME, "Customized view not found", e);
-			}
-
-			Locale locale=this.getLocale();
 			
-			BIObject obj = executionInstance.getBIObject();
-			if (obj.getId().equals(subObject.getBiobjId())) {
-				boolean canExecuteSubObject = false;
-				if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
-					canExecuteSubObject = true;
-				} else {
-					if (subObject.getIsPublic() || subObject.getOwner().equals(userProfile.getUserId().toString())) {
-						canExecuteSubObject = true;
-					}
+			Locale locale = this.getLocale();
+			
+			List errors = null;
+			if (executionInstance.getBIObject().getBiObjectTypeCode().equalsIgnoreCase("DATAMART")) {
+				// parameters are applied to datamarts' subobjects, so you must validate them
+				JSONObject executionInstanceJSON = this.getAttributeAsJSONObject( PARAMETERS );
+				executionInstance.refreshParametersValues(executionInstanceJSON, false);
+				try {
+					errors = executionInstance.getParametersErrors();
+				} catch (Exception e) {
+					throw new SpagoBIServiceException(SERVICE_NAME, "Cannot evaluate errors on parameters validation", e);
 				}
-				if (canExecuteSubObject) {
-					executionInstance.setSubObject(subObject);
-					String url = executionInstance.getSubObjectUrl(locale);
-					try {
-						response.put("url", url);
-					} catch (JSONException e) {
-						throw new SpagoBIServiceException("Cannot serialize the url [" + url + "] to the client", e);
-					}
-				} else {
-					throw new SpagoBIServiceException(SERVICE_NAME, "User cannot execute required customized view");
+			}
+
+			if ( errors != null && errors.size() > 0) {
+				// there are errors on parameters validation, send errors' descriptions to the client
+				JSONArray errorsArray = new JSONArray();
+				Iterator errorsIt = errors.iterator();
+				while (errorsIt.hasNext()) {
+					EMFUserError error = (EMFUserError) errorsIt.next();
+					errorsArray.put(error.getDescription());
+				}
+				try {
+					response.put("errors", errorsArray);
+				} catch (JSONException e) {
+					throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize errors to the client", e);
 				}
 			} else {
-				throw new SpagoBIServiceException(SERVICE_NAME, "Required subobject is not relevant to current document");
+			
+				ISubObjectDAO dao = null;
+				try {
+					dao = DAOFactory.getSubObjectDAO();
+				} catch (EMFUserError e) {
+					logger.error("Error while istantiating DAO", e);
+					throw new SpagoBIServiceException(SERVICE_NAME, "Cannot access database", e);
+				}
+	
+				SubObject subObject = null;
+				try {
+					subObject = dao.getSubObject(subObjectId);
+				} catch (EMFUserError e) {
+					logger.error("SubObject with id = " + subObjectId + " not found", e);
+					throw new SpagoBIServiceException(SERVICE_NAME, "Customized view not found", e);
+				}
+				
+				BIObject obj = executionInstance.getBIObject();
+				if (obj.getId().equals(subObject.getBiobjId())) {
+					boolean canExecuteSubObject = false;
+					if (userProfile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)) {
+						canExecuteSubObject = true;
+					} else {
+						if (subObject.getIsPublic() || subObject.getOwner().equals(userProfile.getUserId().toString())) {
+							canExecuteSubObject = true;
+						}
+					}
+					if (canExecuteSubObject) {
+						executionInstance.setSubObject(subObject);
+						String url = executionInstance.getSubObjectUrl(locale);
+						try {
+							response.put("url", url);
+						} catch (JSONException e) {
+							throw new SpagoBIServiceException("Cannot serialize the url [" + url + "] to the client", e);
+						}
+					} else {
+						throw new SpagoBIServiceException(SERVICE_NAME, "User cannot execute required customized view");
+					}
+				} else {
+					throw new SpagoBIServiceException(SERVICE_NAME, "Required subobject is not relevant to current document");
+				}
 			}
 		} catch (EMFInternalError e) {
 			throw new SpagoBIServiceException(SERVICE_NAME, "An internal error has occured", e);

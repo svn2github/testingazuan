@@ -115,8 +115,8 @@ Sbi.browser.DocumentsBrowser = function(config) {
 						try {
 							var documentPage = anActiveTab.activeDocument.documentExecutionPage;
 							if (documentPage.isVisible()) {
-								var scriptFn = 	"parent.execCrossNavigation = function(d,l,p) {" +
-												"	sendMessage({'label': l, parameters: p, windowName: d},'crossnavigation');" +
+								var scriptFn = 	"parent.execCrossNavigation = function(d,l,p,s) {" +
+												"	sendMessage({'label': l, parameters: p, windowName: d, subobject: s},'crossnavigation');" +
 												"};";
 								documentPage.miframe.iframe.execScript(scriptFn, true);
 							}

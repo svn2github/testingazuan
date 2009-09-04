@@ -51,7 +51,7 @@ Sbi.geo.app = function() {
                 layout: 'fit',
                 
                 tools:[
-                {
+                /*{
                     id:'plus',
                     qtip:'Export as image',
                     handler: function(event, toolEl, panel){
@@ -59,6 +59,7 @@ Sbi.geo.app = function() {
                     	var form = document.getElementById('form');
 						form.action = Sbi.geo.app.serviceRegistry.getServiceUrl('DRAW_MAP_ACTION');
 						form.action += '&' + Ext.urlEncode({outputFormat:'jpeg', inline:false});
+						alert(form.action);
 						form.submit(); 
                      
                      /*
@@ -70,9 +71,9 @@ Sbi.geo.app = function() {
 						, failure: Sbi.commons.ExceptionHandler					
 						, params: {outputFormat:'jpeg', inline:false}
                     });
-                    */
+                    
                     }
-                }, {
+                },*/ {
                     id:'save',
                     handler: function(event, toolEl, panel){
                       if(this.saveAnalysisWin === undefined) {

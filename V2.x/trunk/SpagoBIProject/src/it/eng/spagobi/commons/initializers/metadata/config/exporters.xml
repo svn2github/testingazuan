@@ -10,4 +10,9 @@
 <EXPORTER domain="PDF" engine="JPivotEngine" defaultValue="false"/>
 <EXPORTER domain="XLS" engine="JPivotEngine" defaultValue="true"/>
 <EXPORTER domain="PDF" engine="ChartEngine" defaultValue="true"/>
+<EXPORTER domain="PDF" engine="Qbe" defaultValue="true"/>
+<EXPORTER domain="XLS" engine="Qbe" defaultValue="false"/>
+<EXPORTER domain="CSV" engine="Qbe" defaultValue="false"/>
+<EXPORTER domain="RTF" engine="Qbe" defaultValue="false"/>
+<EXPORTER domain="JRXML" engine="Qbe" defaultValue="false"/>
 </EXPORTERS>

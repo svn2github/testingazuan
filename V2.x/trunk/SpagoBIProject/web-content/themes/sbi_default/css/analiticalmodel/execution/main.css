@@ -103,6 +103,15 @@
 	background-image: url('../../../img/jpg16.png') !important;
 }
 
+.icon-rtf {
+     background-image:url('../../../img/rtf.gif') !important;
+}
+
+.icon-jrxml {
+     background-image:url('../../../img/jrxml.gif') !important;
+}
+
+
 .icon-export {
 	background-image: url('../../../img/Export.gif') !important;
 }

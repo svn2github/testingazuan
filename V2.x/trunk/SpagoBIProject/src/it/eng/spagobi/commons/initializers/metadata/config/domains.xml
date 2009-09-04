@@ -86,6 +86,8 @@
 <DOMAIN valueCd="TXT" valueNm="TXT" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
 <DOMAIN valueCd="JPG" valueNm="JPG" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
 <DOMAIN valueCd="PPT" valueNm="PPT" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
+<DOMAIN valueCd="RTF" valueNm="RTF" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
+<DOMAIN valueCd="JRXML" valueNm="JRXML" domainCd="EXPORT_TYPE" domainNm="Exporters type" valueDs="Export type"/>
 <DOMAIN valueCd="Basic" valueNm="Basic" domainCd="KPI_TYPE" domainNm="Kpi Type" valueDs=""/>
 <DOMAIN valueCd="Derived" valueNm="Derived" domainCd="KPI_TYPE" domainNm="Kpi Type" valueDs=""/>
 <DOMAIN valueCd="Nominal scale" valueNm="Nominal scale" domainCd="METRIC_SCALE_TYPE" domainNm="Metric Scale Type" valueDs=""/>

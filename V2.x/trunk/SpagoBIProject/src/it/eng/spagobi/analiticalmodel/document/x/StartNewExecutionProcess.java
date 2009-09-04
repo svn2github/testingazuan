@@ -40,6 +40,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.container.CoreContextManager;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
@@ -132,13 +133,21 @@ public class StartNewExecutionProcess extends AbstractSpagoBIAction {
 		
 			
 			// so far so good: everything has been validated successfully. Let's create a new ExecutionInstance.
-			instance = createExecutionInstance(obj.getId(), executionRole);
+			//instance = createExecutionInstance(obj.getId(), executionRole);
 			
 			UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
 			UUID uuidObj = uuidGen.generateTimeBasedUUID();
 			String executionContextId = uuidObj.toString();
 			executionContextId = executionContextId.replaceAll("-", "");
+			
+			CoreContextManager ccm = createContext( executionContextId );
+			   // so far so good: everything has been validated successfully. Let's create a new ExecutionInstance.
+			instance = createExecutionInstance(obj.getId(), executionRole, executionContextId);
+			   
 			createContext( executionContextId ).set(ExecutionInstance.class.getName(), instance);
+			
+
+			   
 			
 			
 			//instance.refreshParametersValues(getSpagoBIRequestContainer().getRequest(), true);
@@ -168,7 +177,7 @@ public class StartNewExecutionProcess extends AbstractSpagoBIAction {
 		}
 	}
 	
-	private ExecutionInstance createExecutionInstance(Integer biobjectId, String aRoleName) {
+	private ExecutionInstance createExecutionInstance(Integer biobjectId, String aRoleName, String execId) {
 		String executionFlowId = getAttributeAsString("EXECUTION_FLOW_ID");
 		Boolean displayToolbar = getAttributeAsBoolean(SpagoBIConstants.TOOLBAR_VISIBLE, true);
 		Boolean displaySlider = getAttributeAsBoolean(SpagoBIConstants.SLIDERS_VISIBLE, true);
@@ -187,7 +196,7 @@ public class StartNewExecutionProcess extends AbstractSpagoBIAction {
 		// create new execution instance
 		ExecutionInstance instance = null;
 		try {
-			instance = new ExecutionInstance(getUserProfile(), executionFlowId, executionId, biobjectId, aRoleName, modality, 
+			instance = new ExecutionInstance(getUserProfile(), executionFlowId, execId, biobjectId, aRoleName, modality, 
 					displayToolbar.booleanValue(), displaySlider.booleanValue());
 		} catch (Exception e) {
 			logger.error(e);

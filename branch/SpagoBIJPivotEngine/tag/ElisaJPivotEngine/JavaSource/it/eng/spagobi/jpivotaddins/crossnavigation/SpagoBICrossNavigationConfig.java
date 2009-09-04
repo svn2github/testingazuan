@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 import org.dom4j.Node;
 
 import com.tonbeller.jpivot.mondrian.MondrianModel;
-import com.tonbeller.wcf.table.DefaultCell;
 
 /**
  * An instance of this class contains information for cross navigation choices, retrieved by SpagoBI OLAP document template.
@@ -92,13 +91,13 @@ public class SpagoBICrossNavigationConfig {
 		return toReturn;
 	}
 
-	public Object[] getChoice(int rowIndex, Cell cell, MondrianModel model) {
+	public String[] getChoice(int rowIndex, Cell cell, MondrianModel model) {
 		logger.debug("IN");
-		Object[] toReturn = new Object[2];
+		String[] toReturn = new String[2];
 		Target target = targets.get(rowIndex);
 		String url = getCrossNavigationUrl(target, cell, model);
-		toReturn[0] = new DefaultCell(url, target.title);
-		toReturn[1] = target.description;
+		toReturn[0] = target.title;
+		toReturn[1] = url;
 		logger.debug("OUT: returning [" + toReturn + "]");
 		return toReturn;
 	}

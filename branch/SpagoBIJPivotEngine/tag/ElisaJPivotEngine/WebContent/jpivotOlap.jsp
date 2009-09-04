@@ -59,6 +59,10 @@ The following directive catches exceptions thrown by jsps, must be commented in 
   <link rel="stylesheet" type="text/css" href="wcf/form/xform.css">
   <link rel="stylesheet" type="text/css" href="wcf/table/xtable.css">
   <link rel="stylesheet" type="text/css" href="wcf/tree/xtree.css">
+  
+  <!-- javascript and css files for context menu (used for cross navigation) -->
+  <script type="text/javascript" src="contextMenu/contextMenu.js"></script>
+  <link rel="stylesheet" type="text/css" href="contextMenu/contextMenu.css">
 </head>
 <body bgcolor="white" lang="en">
 
@@ -113,7 +117,6 @@ try {
 <wcf:form id="mdxedit01" xmlUri="/WEB-INF/jpivot/table/mdxedit.xml" model="#{query01}" visible="false"/>
 <wcf:form id="sortform01" xmlUri="/WEB-INF/jpivot/table/sortform.xml" model="#{table01}" visible="false"/>
 <wcf:form id="saveAnalysis01" xmlUri="/WEB-INF/jpivot/table/saveAnalysisTable.xml" model="#{save01}" visible="false"/>
-<wcf:table id="query01.crossnavigationtable" visible="false" selmode="none" editable="false" sortable="false" pagable="false"/>
 
 <jp:print id="print01"/>
 <wcf:form id="printform01" xmlUri="/WEB-INF/jpivot/print/printpropertiesform.xml" model="#{print01}" visible="false"/>
@@ -264,9 +267,6 @@ Slicer:
 
 <!-- drill through table -->
 <wcf:render ref="query01.drillthroughtable" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
-
-<!-- cross navigation table -->
-<wcf:render ref="query01.crossnavigationtable" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
 
 <!-- render chart -->
 <wcf:render ref="chart01" xslUri="/WEB-INF/jpivot/chart/chart.xsl" xslCache="true"/>

@@ -117,7 +117,26 @@
 
 <!-- start SpagoBI cross-navigation: added for SpagoBI cross-navigation mechanism support -->
 <xsl:template match="cross-navigation">
-  <input name="{@id}" title="{@title}" type="image" src="{$context}/{$imgpath}/cross-navigation.gif" border="0" width="9" height="9"/>
+  <a href="javascript:void(0);" onclick="showMenu(event, 'contextmenu_{@id}');" >
+	<img title="{@title}" src="{$context}/{$imgpath}/cross-navigation.gif" border="0" width="9" height="9"/>
+  </a>
+  <!-- 
+  <xsl:variable name="contextMenuId">contextmenu_<xsl:value-of select="@id"></xsl:value-of></xsl:variable>
+  -->
+  <div id='contextmenu_{@id}' class='contextMenu' onmouseout='hideMenu(event, "contextmenu_{@id}");'>
+  	<xsl:for-each select="cross-navigation-target">
+	  <div onmouseout="this.style.backgroundColor='white'"  
+		   onmouseover="this.style.backgroundColor='#eaf1f9'" >
+		 <!-- 
+		 <a class="dtreemenulink" href="{@url}" onclick='hideMenu(event, "{$contextMenuId}'>
+		 -->
+		 <a class="contextMenuLink" href="{@url}">
+		  <xsl:value-of select="@title"></xsl:value-of>
+		 </a>
+	  </div>
+	</xsl:for-each>
+  </div>
+  
 </xsl:template>
 <!-- end SpagoBI cross-navigation -->
 

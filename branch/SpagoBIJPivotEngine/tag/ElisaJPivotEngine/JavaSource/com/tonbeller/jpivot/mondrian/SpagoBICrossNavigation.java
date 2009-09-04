@@ -12,29 +12,21 @@
  */
 package com.tonbeller.jpivot.mondrian;
 
-import org.apache.log4j.Logger;
-
-import it.eng.spagobi.jpivotaddins.crossnavigation.SpagoBICrossNavigationConfig;
-
 import com.tonbeller.jpivot.core.ExtensionSupport;
-import com.tonbeller.jpivot.core.Model;
-import com.tonbeller.jpivot.olap.model.Cell;
-import com.tonbeller.wcf.table.TableModel;
 
 /**
  * This class is an extension to JPivot MondrianModel: it must be declared as
  * <code>&lt;extension id="crossNavigation" class="com.tonbeller.jpivot.mondrian.SpagoBICrossNavigation"/&gt;</code>
  * in file com.tonbeller.jpivot.mondrian.config.xml to take effect.
- * When user clicks on a cell, the cross navigation table is built according to the TableModel returned by 
- * <code>crossNavigation(Cell cell, SpagoBICrossNavigationConfig config)</code> method.
+ * When user clicks on a cell, the cross navigation context menu is built according to the
+ * <code>SpagoBICrossNavigationConfig</code> object in user session.
  * 
  * @author Zerbetto Davide (davide.zerbetto@eng.it)
+ * @see com.tonbeller.jpivot.table.navi.SpagoBICrossNavigationUI
  *
  */
 public class SpagoBICrossNavigation extends ExtensionSupport {
 
-  private static transient Logger logger = Logger.getLogger(SpagoBICrossNavigationConfig.class);
-	
   public static final String ID = "crossNavigation";
 	
   /**
@@ -44,6 +36,7 @@ public class SpagoBICrossNavigation extends ExtensionSupport {
 	  super.setId(ID);
   }
 
+  /*
   public TableModel crossNavigation(Cell cell,
 		SpagoBICrossNavigationConfig config) {
 	  logger.debug("IN");
@@ -58,5 +51,6 @@ public class SpagoBICrossNavigation extends ExtensionSupport {
 	  logger.debug("OUT");
 	  return dtm;
   }
+  */
   
 }

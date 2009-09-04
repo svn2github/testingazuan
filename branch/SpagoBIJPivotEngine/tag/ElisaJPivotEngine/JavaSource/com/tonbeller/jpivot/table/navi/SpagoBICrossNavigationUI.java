@@ -20,6 +20,8 @@ import org.w3c.dom.Element;
 
 import com.tonbeller.jpivot.core.ModelChangeEvent;
 import com.tonbeller.jpivot.core.ModelChangeListener;
+import com.tonbeller.jpivot.mondrian.MondrianCell;
+import com.tonbeller.jpivot.mondrian.MondrianModel;
 import com.tonbeller.jpivot.mondrian.SpagoBICrossNavigation;
 import com.tonbeller.jpivot.olap.model.Cell;
 import com.tonbeller.jpivot.olap.model.OlapModel;
@@ -31,11 +33,7 @@ import com.tonbeller.wcf.component.RendererParameters;
 import com.tonbeller.wcf.controller.Dispatcher;
 import com.tonbeller.wcf.controller.DispatcherSupport;
 import com.tonbeller.wcf.controller.RequestContext;
-import com.tonbeller.wcf.controller.RequestListener;
-import com.tonbeller.wcf.table.EditableTableComponent;
 import com.tonbeller.wcf.table.EmptyTableModel;
-import com.tonbeller.wcf.table.ITableComponent;
-import com.tonbeller.wcf.table.TableColumn;
 import com.tonbeller.wcf.table.TableModel;
 import com.tonbeller.wcf.table.TableModelDecorator;
 import com.tonbeller.wcf.utils.DomUtils;
@@ -46,8 +44,8 @@ import com.tonbeller.wcf.utils.DomUtils;
  * in file com.tonbeller.jpivot.table.config.xml to take effect.
  * When cross navigation functionality is enabled, an image on each cell is displayed: this image is obtained adding a 
  * <code>cross-navigation</code> Element in the xml table representation (see also SpagoBIJPivotEngine/WEB-INF/jpivot/table/mdxtable.xsl
- * for the XSLT trasformation of <code>cross-navigation</code> Element); its handler retrieves the <code>SpagoBICrossNavigationConfig</code> 
- * object from session, builds the cross navigation table model and set the cross navigation table visible.
+ * for the XSLT trasformation of <code>cross-navigation</code> Element). The image has an 'onclick' javascript function that 
+ * shows a context menu for the available cross-navigation targets.
  * 
  * @author Zerbetto Davide (davide.zerbetto@eng.it)
  *
@@ -79,10 +77,10 @@ public class SpagoBICrossNavigationUI extends TableComponentExtensionSupport imp
 
     // extend the controller
     table.getDispatcher().addRequestListener(null, null, dispatcher);
-
-    // add some decorators via table.get/setRenderer
-    CellBuilder cb = table.getCellBuilder();
-    DomDecorator cr = new DomDecorator(table.getCellBuilder());
+    
+    HttpSession session = context.getSession();
+    SpagoBICrossNavigationConfig cninfo = (SpagoBICrossNavigationConfig) session.getAttribute(SpagoBICrossNavigationConfig.ID);
+    DomDecorator cr = new DomDecorator(table.getCellBuilder(), cninfo);
     table.setCellBuilder(cr);
 
   }
@@ -96,8 +94,11 @@ public class SpagoBICrossNavigationUI extends TableComponentExtensionSupport imp
 
   class DomDecorator extends CellBuilderDecorator {
 
-    DomDecorator(CellBuilder delegate) {
+	private SpagoBICrossNavigationConfig cninfo = null;
+	  
+    DomDecorator(CellBuilder delegate, SpagoBICrossNavigationConfig cninfo) {
       super(delegate);
+      this.cninfo = cninfo;
     }
 
     public Element build(Cell cell, boolean even) {
@@ -108,15 +109,24 @@ public class SpagoBICrossNavigationUI extends TableComponentExtensionSupport imp
 
       String id = DomUtils.randomId();
       // add a drill through child node to cell element
-      Element elem = table.insert("cross-navigation", parent);
-      elem.setAttribute("id", id);
-      elem.setAttribute("title", "Cross navigation");
-      dispatcher.addRequestListener(id, null, new CrossNavigationHandler(cell));
+      Element cnElem = table.insert("cross-navigation", parent);
+      cnElem.setAttribute("id", id);
+      cnElem.setAttribute("title", "Cross navigation");
 
+      int choices = cninfo.getChoicesNumber();
+      for (int i = 0; i < choices; i++) {
+    	  Element targetElement = table.insert("cross-navigation-target", cnElem);
+    	  mondrian.olap.Cell mondrianCell = ((MondrianCell) cell.getRootDecoree()).getMonCell();
+    	  MondrianModel mondrianModel = (MondrianModel) extension.getModel();
+    	  String[] choice = cninfo.getChoice(i, mondrianCell, mondrianModel);
+    	  targetElement.setAttribute("title", choice[0]);
+    	  targetElement.setAttribute("url", choice[1]);
+      }
       return parent;
     }
   }
 
+  /*
   class CrossNavigationHandler implements RequestListener {
     Cell cell;
     CrossNavigationHandler(Cell cell) {
@@ -150,6 +160,7 @@ public class SpagoBICrossNavigationUI extends TableComponentExtensionSupport imp
 		return extension.crossNavigation((Cell) cell.getRootDecoree(), config);
 	}
   }
+  */
 
   /** @return true if extension is available */
   protected boolean initializeExtension() {

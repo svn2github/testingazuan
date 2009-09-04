@@ -39,19 +39,16 @@ public class SpagoBICrossNavigationTableModel extends AbstractTableModel {
 	}
 	
 	public int getColumnCount() {
-		return 3;
+		return 2;
 	}
 
 	public String getColumnTitle(int columnIndex) {
 		String columnTitle = null;
 		switch (columnIndex) {
-			case 0: 
-				columnTitle = "Document";
+			case 0:
+				columnTitle = "Target";
 				break;
 			case 1:
-				columnTitle = "Customized view";
-				break;
-			case 2:
 				columnTitle = "Description";
 				break;
 		}

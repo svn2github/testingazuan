@@ -96,6 +96,15 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			logger.debug(MIME_TYPE + ": " + mimeType);		
 			responseType = getAttributeAsString( RESPONSE_TYPE );
 			logger.debug(RESPONSE_TYPE + ": " + responseType);
+			
+			if(getEngineInstance().getQuery().isEmpty()){
+				templateContent = "Error: If no query has been executed, nothing can be exported!!! Write a query, execute it and try again!";
+				try {				
+					writeBackToClient(templateContent);
+				} catch (IOException e) {
+					throw new SpagoBIEngineException("Impossible to write back the responce to the client", e);
+				}
+			}else{
 					
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
@@ -145,6 +154,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			
 			templateBuilder = new TemplateBuilder(sqlQuery, extractedFields, params);
 			templateContent = templateBuilder.buildTemplate();
+			
 			if( !"text/jrxml".equalsIgnoreCase( mimeType ) ) {
 				try {
 					reportFile = File.createTempFile("report", ".rpt");
@@ -174,13 +184,14 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 					throw new SpagoBIEngineException("Impossible to write back the responce to the client", e);
 				}
 			}
+			}
 		} catch (Throwable t) {			
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
 			
 			try {
 				// closing session will close also all connection created into this section
-				session.close();
+				if(session!=null)session.close();
 			} catch (Exception e) {
 				logger.warn("Impossible to close the connection used to execute the report in " + getActionName() + " service", e);
 			}

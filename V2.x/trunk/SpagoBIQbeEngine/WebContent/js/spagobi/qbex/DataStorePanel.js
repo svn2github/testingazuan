@@ -166,7 +166,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 				width: 75
 			}
 		]);
-		
+		/*
 		this.exportTBar = new Ext.Toolbar({
 			items: [
 			    new Ext.Toolbar.Button({
@@ -200,7 +200,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		            scope: this
 			    })
 			]
-		});
+		}); */
 		
 		this.pagingTBar = new Ext.PagingToolbar({
             pageSize: 25,
@@ -226,7 +226,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	            showPreview:true
 	        },
 	        
-	        tbar:this.exportTBar,
+	        // tbar:this.exportTBar,
 	        bbar: this.pagingTBar
 	    });   
 	}

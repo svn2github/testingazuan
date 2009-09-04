@@ -144,8 +144,8 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 			this.isParameterPanelReady = true;
 			if (readyForExecution) {
 				this.isParameterPanelReadyForExecution = true;
-				this.startExecutionAutomatically();
 			}
+			this.checkAutomaticStart();
 		}
 	, this);
 
@@ -157,13 +157,13 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	this.shortcutsPanel.subobjectsPanel.on('ready', function(preferenceSubobjectId){
 		this.isSubobjectPanelReady = true;
 		this.preferenceSubobjectId = preferenceSubobjectId;
-		this.startExecutionAutomatically();
+		this.checkAutomaticStart();
 	}, this);
 	
 	this.shortcutsPanel.snapshotsPanel.on('ready', function(preferenceSnapshotId){
 		this.isSnapshotPanelReady = true;
 		this.preferenceSnapshotId = preferenceSnapshotId;
-		this.startExecutionAutomatically();
+		this.checkAutomaticStart();
 	}, this);
 	
 	// constructor
@@ -347,7 +347,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 		return this.shortcutsPanel;
 	}
 	
-	, startExecutionAutomatically: function() {
+	, checkAutomaticStart: function() {
+		
 		// must wait parameters/subobjects/snapshots panels have been loaded
 		if (this.isSubobjectPanelReady === false || this.isSnapshotPanelReady === false || this.isParameterPanelReady === false) {
 			return;
@@ -355,8 +356,11 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 		
 		// subobject preference wins: if a subobject preference is specified, subobject is executed
 		if (this.preferenceSubobjectId != null) {
-			this.executionInstance.isPossibleToComeBackToParametersPage = false;
-			this.onExecuteSubobject(this.preferenceSubobjectId);
+			// if document is datamart type and there are some parameters to be filled, subobject execution cannot start automatically
+			if (this.executionInstance.document.typeCode != 'DATAMART' || this.isParameterPanelReadyForExecution === true) {
+				this.executionInstance.isPossibleToComeBackToParametersPage = false;
+				this.onExecuteSubobject(this.preferenceSubobjectId);
+			}
 			return;
 		}
 		// snapshot preference follows: if a snapshot preference is specified, snapshot is executed

@@ -91,8 +91,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import sun.rmi.runtime.NewThreadAction;
-
 public class ImportUtilities {
 
 	static private Logger logger = Logger.getLogger(ImportUtilities.class);
@@ -211,6 +209,7 @@ public class ImportUtilities {
 		newRole.setIsAbleToSeeSubobjects(role.getIsAbleToSeeSubobjects());
 		newRole.setIsAbleToSeeViewpoints(role.getIsAbleToSeeViewpoints());
 		newRole.setIsAbleToSendMail(role.getIsAbleToSendMail());
+		newRole.setIsAbleToBuildQbeQuery(role.getIsAbleToBuildQbeQuery());
 		logger.debug("OUT");
 		return newRole;
 	}

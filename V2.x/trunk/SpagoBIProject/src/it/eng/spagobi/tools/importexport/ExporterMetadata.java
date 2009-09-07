@@ -1144,6 +1144,7 @@ public class ExporterMetadata {
 			hibRole.setIsAbleToSeeSubobjects(new Boolean(role.isAbleToSeeSubobjects()));
 			hibRole.setIsAbleToSeeViewpoints(new Boolean(role.isAbleToSeeViewpoints()));
 			hibRole.setIsAbleToSendMail(new Boolean(role.isAbleToSendMail()));
+			hibRole.setIsAbleToBuildQbeQuery(role.isAbleToBuildQbeQuery());
 			session.save(hibRole);
 			tx.commit();
 		} catch (Exception e) {

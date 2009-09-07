@@ -63,6 +63,7 @@ public class TransformerFrom2_2_0To2_3_0 implements ITransformer {
 		try {
 			conn = TransformersUtilities.getConnectionToDatabase(pathImpTmpFolder, archiveName);
 			fixDataSource(conn);
+			fixExtRole(conn);
 			conn.commit();
 		} catch (Exception e) {
 			logger.error("Error while changing database", e);	
@@ -95,6 +96,22 @@ public class TransformerFrom2_2_0To2_3_0 implements ITransformer {
 		sql =  "ALTER TABLE SBI_DATA_SOURCE ADD COLUMN ATTR_SCHEMA VARCHAR(45) DEFAULT NULL";
 		stmt.execute(sql);
 		sql =  "UPDATE SBI_DATA_SOURCE SET ATTR_SCHEMA = NULL ";
+		stmt.executeUpdate(sql);
+		logger.debug("OUT");
+	}
+	
+	/*
+	 * Adjust ExtRoles Table
+	 * 
+	 * @param conn The jdbc connection to export database
+	 * @throws Exception
+	 */
+	private void fixExtRole(Connection conn) throws Exception {
+		logger.debug("IN");
+		Statement stmt = conn.createStatement();
+		String sql =  "ALTER TABLE SBI_EXT_ROLES ADD COLUMN BUILD_QBE_QUERY BOOLEAN DEFAULT TRUE";
+		stmt.execute(sql);
+		sql =  "UPDATE SBI_EXT_ROLES SET BUILD_QBE_QUERY=TRUE";
 		stmt.executeUpdate(sql);
 		logger.debug("OUT");
 	}

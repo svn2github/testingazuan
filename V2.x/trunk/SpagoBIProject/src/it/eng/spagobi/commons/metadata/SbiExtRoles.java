@@ -49,6 +49,7 @@ public class SbiExtRoles  implements java.io.Serializable {
      private Boolean isAbleToSaveIntoPersonalFolder;
      private Boolean isAbleToSaveRememberMe;
      private Boolean isAbleToSeeMetadata;
+     private Boolean isAbleToBuildQbeQuery;
      private Set sbiFuncRoles;
      private Set sbiParuseDets;
 
@@ -371,7 +372,13 @@ public class SbiExtRoles  implements java.io.Serializable {
 	public void setIsAbleToSaveSubobjects(Boolean isAbleToSaveSubobjects) {
 		this.isAbleToSaveSubobjects = isAbleToSaveSubobjects;
 	}
+	
+    public Boolean getIsAbleToBuildQbeQuery() {
+		return isAbleToBuildQbeQuery;
+	}
 
-
+	public void setIsAbleToBuildQbeQuery(Boolean isAbleToBuildQbeQuery) {
+		this.isAbleToBuildQbeQuery = isAbleToBuildQbeQuery;
+	}
 
 }

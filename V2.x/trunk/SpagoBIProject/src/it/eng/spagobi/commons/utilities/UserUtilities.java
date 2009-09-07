@@ -287,6 +287,9 @@ public class UserUtilities {
 			if (virtualRole.isAbleToSeeMetadata()) {
 				roleFunctionalities.add(SpagoBIConstants.SEE_METADATA_FUNCTIONALITY);
 			}
+			if (virtualRole.isAbleToBuildQbeQuery()) {
+				roleFunctionalities.add(SpagoBIConstants.BUILD_QBE_QUERIES_FUNCTIONALITY);
+			}
 			
 			if (!roleFunctionalities.isEmpty()) {
 				List<String> roleTypeFunctionalities = Arrays.asList(functionalities);
@@ -317,6 +320,7 @@ public class UserUtilities {
 		virtualRole.setIsAbleToSeeNotes(false);
 		virtualRole.setIsAbleToSaveRememberMe(false);
 		virtualRole.setIsAbleToSaveIntoPersonalFolder(false);
+		virtualRole.setIsAbleToBuildQbeQuery(false);
 		if (roles != null) {
 			for (int i = 0; i < roles.length; i++) {
 				String roleName = roles[i];
@@ -358,6 +362,10 @@ public class UserUtilities {
 					if (anotherRole.isAbleToSaveIntoPersonalFolder()) {
 						logger.debug("User has role " + roleName + " that is able to save into personal folder.");
 						virtualRole.setIsAbleToSaveIntoPersonalFolder(true);
+					}
+					if (anotherRole.isAbleToBuildQbeQuery()) {
+						logger.debug("User has role " + roleName + " that is able to build QBE queries.");
+						virtualRole.setIsAbleToBuildQbeQuery(true);
 					}
 				}
 			}

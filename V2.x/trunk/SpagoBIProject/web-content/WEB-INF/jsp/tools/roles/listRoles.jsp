@@ -153,7 +153,9 @@ Ext.onReady(function(){
     		 <%= role.isAbleToSaveSubobjects() %>, <%= role.isAbleToSeeSubobjects() %>, <%= role.isAbleToSeeSnapshots() %>,
     		 <%= role.isAbleToSeeViewpoints() %>, <%= role.isAbleToSeeNotes() %>, <%= role.isAbleToSeeMetadata() %>, 
     		 <%= role.isAbleToSendMail() %>, <%= role.isAbleToSaveRememberMe() %>, 
-    		 <%= role.isAbleToSaveIntoPersonalFolder() %>,'<a href="<%=deleteUrl%>"><img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.gif", currTheme)%>" /></a>']<%= it.hasNext() ? "," : "" %><%
+    		 <%= role.isAbleToSaveIntoPersonalFolder() %>,
+    		 <%= role.isAbleToBuildQbeQuery() %>,
+    		 '<a href="<%=deleteUrl%>"><img src="<%=urlBuilder.getResourceLinkByTheme(request, "/img/erase.gif", currTheme)%>" /></a>']<%= it.hasNext() ? "," : "" %><%
     	}
     	%>
     ];
@@ -176,6 +178,7 @@ Ext.onReady(function(){
            {name: 'SendMail'},
            {name: 'RememberMe'},
            {name: 'PersonalFolder'},
+           {name: 'BuildQbeQuery'},
            {name: 'DeleteUrl'}
         ]
     });
@@ -256,6 +259,12 @@ Ext.onReady(function(){
 		dataIndex: 'PersonalFolder',
 		align: 'center'
 	});
+	var buildQbeQueryColumn = new Ext.grid.CheckColumn({
+		header: '<spagobi:message key="SBISet.ListRoles.columnBuildQbeQuery" />',
+		tooltip: '<spagobi:message key="SBISet.ListRoles.columnBuildQbeQueryTooltip" />',
+		dataIndex: 'BuildQbeQuery',
+		align: 'center'
+	});
 
 	var cm = new Ext.grid.ColumnModel([
         {
@@ -288,6 +297,7 @@ Ext.onReady(function(){
         sendMailColumn,
         rememberMeColumn,
         personalFolderColumn,
+        buildQbeQueryColumn,
         {
            header: '<spagobi:message key="SBISet.ListRoles.deleteCaption" />',
            dataIndex: 'DeleteUrl',
@@ -299,7 +309,7 @@ Ext.onReady(function(){
     var grid = new Ext.grid.EditorGridPanel({
     	cm: cm,
         store: store,
-		plugins: [saveSubObjectsColumn, subObjectsColumn, snapshotsColumn, viewpointsColumn, notesColumn, metadataColumn, sendMailColumn, rememberMeColumn, personalFolderColumn],
+		plugins: [saveSubObjectsColumn, subObjectsColumn, snapshotsColumn, viewpointsColumn, notesColumn, metadataColumn, sendMailColumn, rememberMeColumn, personalFolderColumn, buildQbeQueryColumn],
 		viewConfig: {
         	forceFit: true
 		},
@@ -315,7 +325,7 @@ Ext.onReady(function(){
 function saveRoles() {
 	var modifiedRecords = store.getModifiedRecords();
 	var url = '<%=GeneralUtilities.getSpagoBIProfileBaseUrl(userId)%>';
-	url += '&ACTION_NAME=MODIFY_ROLES_ACTION&FIELDS_ORDER=Type,SaveSubojects,Subojects,Snapshots,Viewpoints,Notes,Metadata,SendMail,RememberMe,PersonalFolder';
+	url += '&ACTION_NAME=MODIFY_ROLES_ACTION&FIELDS_ORDER=Type,SaveSubojects,Subojects,Snapshots,Viewpoints,Notes,Metadata,SendMail,RememberMe,PersonalFolder,BuildQbeQuery';
 	var modifiedRoles = '';
 	//for (key in modifiedRecords) {
 	//	if (key == 'set' || key == 'get' || key == 'getKeys') continue;
@@ -327,7 +337,7 @@ function saveRoles() {
 		roleType = getRoleTypeCode(roleType);
 		modifiedRoles += '' + roleId + ':' + roleType + ',' + record.get('SaveSubojects') + ',' + record.get('Subojects') + ',' +  record.get('Snapshots') + ',' 
 			+ record.get('Viewpoints') + ',' + record.get('Notes') + ',' + record.get('Metadata') + ',' 
-			+ record.get('SendMail') + ',' + record.get('RememberMe') + ',' + record.get('PersonalFolder') + ';';
+			+ record.get('SendMail') + ',' + record.get('RememberMe') + ',' + record.get('PersonalFolder') + ',' + record.get('BuildQbeQuery') + ';';
 	}
 	if (modifiedRoles == '') {
 		alert('No modifications found on page');

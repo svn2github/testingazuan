@@ -48,6 +48,7 @@ public class Role  implements Serializable  {
     private boolean isAbleToSaveIntoPersonalFolder;
     private boolean isAbleToSaveRememberMe;
     private boolean isAbleToSeeMetadata;
+    private boolean isAbleToBuildQbeQuery;
 
 	/**
 	 * Checks if is able to save subobjects.
@@ -210,6 +211,24 @@ public class Role  implements Serializable  {
 	 */
 	public void setIsAbleToSeeMetadata(boolean isAbleToSeeMetadata) {
 		this.isAbleToSeeMetadata = isAbleToSeeMetadata;
+	}
+	
+	/**
+	 * Checks if role is able to build and modify QBE queries.
+	 * 
+	 * @return true, if role is able to build and modify QBE queries
+	 */
+    public Boolean isAbleToBuildQbeQuery() {
+		return isAbleToBuildQbeQuery;
+	}
+
+	/**
+	 * Sets if role is able to build and modify QBE queries.
+	 * 
+	 * @param isAbleToBuildQbeQuery
+	 */
+	public void setIsAbleToBuildQbeQuery(Boolean isAbleToBuildQbeQuery) {
+		this.isAbleToBuildQbeQuery = isAbleToBuildQbeQuery;
 	}
 	
 	/**

@@ -55,6 +55,9 @@
         <property name="isAbleToSeeMetadata" type="boolean">
             <column name="see_metadata" />
         </property>
+        <property name="isAbleToBuildQbeQuery" type="boolean">
+            <column name="build_qbe_query" />
+        </property>
         <set name="sbiFuncRoles" inverse="true">
             <key>
                 <column name="ROLE_ID" not-null="true" />

@@ -384,7 +384,15 @@ ALTER TABLE sbi_functions ALTER code TYPE character varying(40);
 
 ALTER TABLE sbi_data_source ALTER url_connection TYPE character varying(500);
 ALTER TABLE sbi_data_source ALTER COLUMN url_connection SET DEFAULT NULL;
+
+-- ##################################################################################################
+-- 	From 2.2 
+-- ##################################################################################################
 - angelo
 -31/07/09
 ALTER TABLE sbi_data_source ADD COLUMN MULTI_SCHEMA TINYINT(1) NOT NULL DEFAULT '0';
 ALTER TABLE sbi_data_source ADD COLUMN ATTR_SCHEMA VARCHAR(45) DEFAULT NULL;
+
+- davide
+-07/09/09
+ALTER TABLE SBI_EXT_ROLES ADD COLUMN BUILD_QBE_QUERY BOOLEAN DEFAULT TRUE;

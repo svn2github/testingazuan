@@ -246,6 +246,7 @@ Create table SBI_EXT_ROLES (
 	SAVE_REMEMBER_ME Number(38,0) Default 1,
 	SEE_METADATA Number(38,0) Default 1,
 	SAVE_SUBOBJECTS Number(38,0) Default 1,
+	BUILD_QBE_QUERY Number(38,0) Default 1,
 primary key ("EXT_ROLE_ID") 
 ) 
 /

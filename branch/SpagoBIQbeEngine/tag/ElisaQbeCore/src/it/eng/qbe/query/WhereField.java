@@ -27,17 +27,18 @@ package it.eng.qbe.query;
  *
  */
 public class WhereField {
-	private String fname;
-	private String fdesc;
-	private String uniqueName;
-	private String operator;
-	private Object operand;
-	private String operandType;
-	private String operandDesc;
-	private String boperator;
-	private boolean isFree;
-	private String defaultValue;
-	private String lastValue;
+	
+	private String name;
+	private String description;
+	
+	private boolean promptable;
+	
+	private Operand leftOperand;
+	private String operator;	
+	private Operand rightOperand;
+	
+	private String booleanConnector;
+
 	
 	public static final String EQUALS_TO = "EQUALS TO";
 	public static final String NOT_EQUALS_TO = "NOT EQUALS TO";
@@ -60,122 +61,125 @@ public class WhereField {
 	
 	
 	
-	public WhereField(String fname, String fdesc, 
-			String uniqueName, String operator, Object operand, String type, String desc, String boperator, boolean isFree, String defaultValue, String lastValue) {
+	public WhereField(String name, String description, boolean promptable,
+			Operand leftOperand, String operator, Operand rightOperand,
+			String booleanConnector) {
 		
-		setUniqueName(uniqueName);
-		setOperator( operator );
-		setOperand( operand );
-		setOperandType(type);
-		setOperandDesc(desc);
-		setFname(fname);
-		setFdesc(fdesc);
-		setBoperator(boperator);
-		setIsFree(isFree);
-		setDefaultValue(defaultValue);
-		setLastValue(lastValue);
-	}
-	
-	public WhereField(String fname, String fdesc,  String uniqueName, String operator, String boperator) {
-		setUniqueName(uniqueName);
-		setOperator( operator );
-		setOperand( null );
-		setOperandType( null );
-		setFname(fname);
-		setFdesc(fdesc);
-		setBoperator(boperator);
-		setIsFree(false);
-		setDefaultValue(null);
-		setLastValue(null);
+		setName(name);
+		setDescription(description);
+		setPromptable(promptable);
+		setLeftOperand(leftOperand);
+		setOperator(operator);
+		setRightOperand(rightOperand);
+		setBooleanConnector(booleanConnector);
 	}
 	
 	
-
-	public Object getOperand() {
-		return operand;
+	public String getName() {
+		return name;
 	}
 
-	public void setOperand(Object operand) {
-		this.operand = operand;
+
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getUniqueName() {
-		return uniqueName;
+
+
+	public String getDescription() {
+		return description;
 	}
 
-	public void setUniqueName(String uniqueName) {
-		this.uniqueName = uniqueName;
+
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public String getOperandType() {
-		return operandType;
+
+
+	public boolean isPromptable() {
+		return promptable;
 	}
 
-	public void setOperandType(String operandType) {
-		this.operandType = operandType;
+
+
+	public void setPromptable(boolean promptable) {
+		this.promptable = promptable;
 	}
+
+
+
+	public Operand getLeftOperand() {
+		return leftOperand;
+	}
+
+
+
+	public void setLeftOperand(Operand leftOperand) {
+		this.leftOperand = leftOperand;
+	}
+
+
 
 	public String getOperator() {
 		return operator;
 	}
 
+
+
 	public void setOperator(String operator) {
 		this.operator = operator;
 	}
 
-	public String getOperandDesc() {
-		return operandDesc;
+
+
+	public Operand getRightOperand() {
+		return rightOperand;
 	}
 
-	public void setOperandDesc(String operandDesc) {
-		this.operandDesc = operandDesc;
+
+
+	public void setRightOperand(Operand rightOperand) {
+		this.rightOperand = rightOperand;
 	}
 
-	public String getFname() {
-		return fname;
+
+
+	public String getBooleanConnector() {
+		return booleanConnector;
 	}
 
-	public void setFname(String fname) {
-		this.fname = fname;
+
+
+	public void setBooleanConnector(String booleanConnector) {
+		this.booleanConnector = booleanConnector;
 	}
 
-	public String getFdesc() {
-		return fdesc;
-	}
 
-	public void setFdesc(String fdesc) {
-		this.fdesc = fdesc;
-	}
 
-	public String getBoperator() {
-		return boperator;
-	}
-
-	public void setBoperator(String boperator) {
-		this.boperator = boperator;
+	public static class Operand {
+		public String value;
+		public String description;
+		public String type;
+		public String defaulttValue;
+		public String lastValue;
+		
+		public Operand(String value,
+				String description,
+				String type,
+				String defaulttValue,
+				String lastValue) {
+			this.value = value;
+			this.description = description;
+			this.type = type;
+			this.defaulttValue = defaulttValue;
+			this.lastValue = lastValue;
+		}
 	}
 	
-	public boolean isFree() {
-		return isFree;
-	}
-
-	public void setIsFree(boolean isFree) {
-		this.isFree = isFree;
-	}
 	
-	public String getDefaultValue() {
-		return defaultValue;
-	}
-
-	public void setDefaultValue(String defaultValue) {
-		this.defaultValue = defaultValue;
-	}
-
-	public String getLastValue() {
-		return lastValue;
-	}
-
-	public void setLastValue(String lastValue) {
-		this.lastValue = lastValue;
-	}
+	
+	
 }

@@ -35,7 +35,9 @@ public class SelectField {
 	private boolean groupByField;
 	private String orderType;
 	private boolean visible;
-	
+	private boolean include;
+
+
 	public static Map aggregationFunctions;
 	public static String NONE = "NONE";
 	public static String SUM = "SUM";
@@ -86,7 +88,7 @@ public class SelectField {
 	
 
 	
-	public SelectField(String uniqueName, String function, String alias, boolean visible,
+	public SelectField(String uniqueName, String function, String alias, boolean include, boolean visible,
 			boolean groupByField, String orderType ) {
 		this.uniqueName = uniqueName;
 		this.alias = alias;
@@ -94,6 +96,7 @@ public class SelectField {
 			function = NONE;
 		}
 		this.function = (IAggregationFunction)aggregationFunctions.get(function);
+		setInclude( include );
 		setVisible( visible );
 		this.setGroupByField(groupByField);
 		this.setOrderType(orderType);
@@ -168,5 +171,14 @@ public class SelectField {
 
 	public void setOrderType(String orderType) {
 		this.orderType = orderType;
+	}
+	
+	public boolean isIncluded() {
+		return include;
+	}
+
+
+	public void setInclude(boolean include) {
+		this.include = include;
 	}
 }

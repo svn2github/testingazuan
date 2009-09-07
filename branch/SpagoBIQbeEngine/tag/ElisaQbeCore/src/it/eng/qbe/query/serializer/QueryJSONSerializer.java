@@ -146,6 +146,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 				fieldJSON.put(SerializationConstants.FIELD_ORDER, field.getOrderType());
 				fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, field.getFunction().getName());
 				fieldJSON.put(SerializationConstants.FIELD_VISIBLE, field.isVisible());
+				fieldJSON.put(SerializationConstants.FIELD_INCLUDE, field.isIncluded());
 			} catch(JSONException e) {
 				throw new SerializationException("An error occurred while serializing field: " + fieldUniqueName, e);
 			}
@@ -173,6 +174,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 		
 		List filters;
 		WhereField filter;
+		WhereField.Operand operand;
 		JSONObject filterJSON;
 		DataMartField datamartFilter;
 		String fieldUniqueName;
@@ -185,28 +187,33 @@ public class QueryJSONSerializer implements QuerySerializer {
 		it = filters.iterator();
 		while( it.hasNext() ) {
 			filter = (WhereField)it.next();
-			fieldUniqueName = filter.getUniqueName();
-			datamartFilter = datamartModel.getDataMartModelStructure().getField( fieldUniqueName );
-			Assert.assertNotNull(datamartFilter, "A filed named [" + fieldUniqueName + "] does not exist in the datamart model");
 			
 			filterJSON = new JSONObject();
 			try {
-				filterJSON.put(SerializationConstants.FILTER_ID, fieldUniqueName);
-				filterJSON.put(SerializationConstants.FILTER_NAME, filter.getFname());
-				filterJSON.put(SerializationConstants.FILTER_DESCRIPTION, filter.getFdesc());
-				filterJSON.put(SerializationConstants.FILTER_ENTITY, datamartFilter.getParent().getName());
-				filterJSON.put(SerializationConstants.FILTER_FIELD, datamartFilter.getName());
+				filterJSON.put(SerializationConstants.FILTER_ID, filter.getName());
+				filterJSON.put(SerializationConstants.FILTER_DESCRIPTION, filter.getDescription());
+				filterJSON.put(SerializationConstants.FILTER_PROMPTABLE, filter.isPromptable());
+				
+				operand = filter.getLeftOperand();
+				filterJSON.put(SerializationConstants.FILTER_LO_VALUE, operand.value);
+				filterJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
+				filterJSON.put(SerializationConstants.FILTER_LO_TYPE, operand.type);
+				filterJSON.put(SerializationConstants.FILTER_LO_DEFAULT_VALUE, operand.defaulttValue);
+				filterJSON.put(SerializationConstants.FILTER_LO_LAST_VALUE, operand.lastValue);
+				
 				filterJSON.put(SerializationConstants.FILTER_OPEARTOR, filter.getOperator());
-				filterJSON.put(SerializationConstants.FILTER_OPEARND, filter.getOperand().toString());
-				filterJSON.put(SerializationConstants.FILTER_OPEARND_DESCRIPTION, filter.getOperandDesc());			
-				filterJSON.put(SerializationConstants.FILTER_OPEARND_TYPE, filter.getOperandType());
-				filterJSON.put(SerializationConstants.FILTER_BOOLEAN_CONNETOR, filter.getBoperator());
-				filterJSON.put(SerializationConstants.FILTER_IS_FREE, filter.isFree());
-				filterJSON.put(SerializationConstants.FILTER_DEFAULT_VALUE, filter.getDefaultValue());
-				filterJSON.put(SerializationConstants.FILTER_LAST_VALUE, filter.getLastValue());
+				
+				operand = filter.getRightOperand();
+				filterJSON.put(SerializationConstants.FILTER_RO_VALUE, operand.value);
+				filterJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
+				filterJSON.put(SerializationConstants.FILTER_RO_TYPE, operand.type);
+				filterJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, operand.defaulttValue);
+				filterJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, operand.lastValue);
+				
+				filterJSON.put(SerializationConstants.FILTER_BOOLEAN_CONNETOR, filter.getBooleanConnector());
 				
 			} catch(JSONException e) {
-				throw new SerializationException("An error occurred while serializing filter on field: " + fieldUniqueName, e);
+				throw new SerializationException("An error occurred while serializing filter: " + filter.getName(), e);
 			}
 			filtersJOSN.put(filterJSON);
 		}

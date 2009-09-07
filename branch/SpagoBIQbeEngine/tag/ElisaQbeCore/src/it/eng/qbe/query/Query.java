@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import it.eng.qbe.query.WhereField.Operand;
+
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
@@ -91,22 +93,35 @@ public class Query {
 		return true;
 	}
 	
-	public void addSelectFiled(String fieldUniqueName, String function, String fieldAlias, boolean visible,
+	public void addSelectFiled(String fieldUniqueName, String function, String fieldAlias, boolean include, boolean visible,
 			boolean groupByField, String orderType) {
-		selectFields.add( new SelectField(fieldUniqueName, function, fieldAlias, visible, groupByField, orderType) );
+		selectFields.add( new SelectField(fieldUniqueName, function, fieldAlias, include, visible, groupByField, orderType) );
 	}
 	
-	public void addWhereFiled(String fname, String fdesc, 
-			String fieldUniqueName, String operator, 
-			Object operand, String operandType, String operandDesc,
-			String boperator, boolean isFree, String defaultValue, String lastValue) {
-		WhereField whereField = new WhereField(fname, fieldUniqueName, fieldUniqueName, operator, operand, operandType, operandDesc, boperator, isFree, defaultValue, lastValue);
+	public void addWhereFiled(String name, String description, boolean promptable,
+			Operand leftOperand, String operator, Operand rightOperand,
+			String booleanConnector) {
+		
+		WhereField whereField = new WhereField(name, description, promptable,  leftOperand, operator, rightOperand, booleanConnector);
+		
 		whereClause.add( whereField );
-		whereFieldMap.put("$F{" + fname + "}", whereField);
+		whereFieldMap.put("$F{" + name + "}", whereField);
 	}
 	
 	public WhereField getWhereFieldByName(String fname) {
 		return (WhereField)whereFieldMap.get(fname.trim());
+	}
+	
+	public List getIncludedSelectFields() {
+		List includedSelectFields = new ArrayList();
+		Iterator it = this.getSelectFields().iterator();
+		while( it.hasNext() ) {
+			SelectField selectField = (SelectField)it.next();
+			if(selectField.isIncluded()) {
+				includedSelectFields.add(selectField);
+			}
+		}
+		return includedSelectFields;
 	}
 	
 	public List getSelectFields() {

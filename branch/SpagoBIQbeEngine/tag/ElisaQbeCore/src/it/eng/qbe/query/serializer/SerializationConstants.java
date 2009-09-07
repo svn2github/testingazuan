@@ -29,7 +29,7 @@ public class SerializationConstants {
 	public static final String ID = "id";
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
-	
+		
 	public static final String FIELDS = "fields";
 	public static final String FIELD_ID = "id";
 	public static final String FIELD_ENTITY = "entity";
@@ -39,24 +39,30 @@ public class SerializationConstants {
 	public static final String FIELD_ORDER = "order";
 	public static final String FIELD_AGGREGATION_FUNCTION = "funct";
 	public static final String FIELD_VISIBLE = "visible";
+	public static final String FIELD_INCLUDE = "include";
 	
 	public static final String DISTINCT = "distinct";
 	public static final String IS_NESTED_EXPRESSION = "isNestedExpression";
 	
 	public static final String FILTERS = "filters";
-	public static final String FILTER_ID = "id";
-	public static final String FILTER_NAME = "fname";
-	public static final String FILTER_DESCRIPTION = "fdesc";
-	public static final String FILTER_ENTITY = "entity";
-	public static final String FILTER_FIELD = "field";
+	
+	public static final String FILTER_ID = "filterId";	
+	public static final String FILTER_DESCRIPTION = "filterDescripion";
+	public static final String FILTER_PROMPTABLE = "promptable";	
+	public static final String FILTER_LO_VALUE = "leftOperandValue";
+	public static final String FILTER_LO_DESCRIPTION = "leftOperandDescription";
+	public static final String FILTER_LO_TYPE = "leftOperandType";
+	public static final String FILTER_LO_DEFAULT_VALUE = "leftOperandDefaultValue";
+	public static final String FILTER_LO_LAST_VALUE = "leftOperandLastValue";
 	public static final String FILTER_OPEARTOR = "operator";
-	public static final String FILTER_OPEARND = "operand";
-	public static final String FILTER_IS_FREE = "isfree";
-	public static final String FILTER_DEFAULT_VALUE = "defaultvalue";
-	public static final String FILTER_LAST_VALUE = "lastvalue";
-	public static final String FILTER_OPEARND_DESCRIPTION = "odesc";
-	public static final String FILTER_OPEARND_TYPE = "otype";
-	public static final String FILTER_BOOLEAN_CONNETOR = "boperator";
+	public static final String FILTER_RO_VALUE = "rightOperandValue";
+	public static final String FILTER_RO_DESCRIPTION = "rightOperandDescription";
+	public static final String FILTER_RO_TYPE = "rightOperandType";
+	public static final String FILTER_RO_DEFAULT_VALUE = "rightOperandDefaultValue";
+	public static final String FILTER_RO_LAST_VALUE = "rightOperandLastValue";
+	public static final String FILTER_BOOLEAN_CONNETOR = "booleanConnector";
+
+	
 
 	public static final String EXPRESSION = "expression";
 	public static final String EXPRESSION_TYPE = "type";
@@ -64,5 +70,7 @@ public class SerializationConstants {
 	public static final String EXPRESSION_CHILDREN = "childNodes";
 	
 	public static final String SUBQUERIES = "subqueries";
+	
+	
 	
 }

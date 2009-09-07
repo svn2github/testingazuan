@@ -20,13 +20,19 @@
  **/
 package it.eng.spagobi.engines.geo.service;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import com.lowagie.text.Document;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.PdfWriter;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
@@ -104,19 +110,70 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			totalTimePerFormatMonitor = MonitorFactory.start("GeoEngine.drawMapAction." + outputFormat + "totalTime");
 			
 						
+			if(outputFormat.equalsIgnoreCase(GeoEngineConstants.PDF)){
+				maptmpfile = getGeoEngineInstance().renderMap( GeoEngineConstants.JPEG );
+				
+			}else{
+				maptmpfile = getGeoEngineInstance().renderMap( outputFormat );
+			}
 			
-			maptmpfile = getGeoEngineInstance().renderMap( outputFormat );
 			responseFileName = "map.svg";
 			
 			IStreamEncoder encoder = null;
+			File tmpFile = null;
 			if(outputFormat.equalsIgnoreCase(GeoEngineConstants.JPEG)) {
 				encoder = new SVGMapConverter();
 				responseFileName =  "map.jpeg";
+			}else if(outputFormat.equalsIgnoreCase(GeoEngineConstants.PDF)){
+				
+				encoder = new SVGMapConverter();
+				BufferedInputStream bis = null;
+				
+				String dirS = System.getProperty("java.io.tmpdir");
+				File imageFile = null;
+				bis = new BufferedInputStream( new FileInputStream(maptmpfile) );
+				try {
+					int contentLength = 0;
+					int b = -1;
+					String contentFileName = "tempJPEGExport";
+					freezeHttpResponse();
+										
+					File dir = new File(dirS);
+					imageFile = File.createTempFile("tempJPEGExport", ".jpeg" , dir);
+					FileOutputStream stream = new FileOutputStream(imageFile);
+					
+					encoder.encode(bis,stream);
+					
+					stream.flush();
+					stream.close();		
+					
+					File dirF = new File(dirS);
+				    tmpFile = File.createTempFile("tempPDFExport", ".pdf", dirF);
+				    Document pdfDocument = new Document();
+				    PdfWriter docWriter = PdfWriter.getInstance(pdfDocument, new FileOutputStream(tmpFile));
+				    pdfDocument.open();
+				    Image jpg = Image.getInstance(imageFile.getPath());
+				    jpg.setRotation(new Double(Math.PI/2).floatValue());
+				    jpg.scaleAbsolute(770, 520);
+				    pdfDocument.add(jpg);
+				    pdfDocument.close();
+				    docWriter.close();
+				    maptmpfile = tmpFile;
+					
+				} finally {
+					bis.close();
+					if(imageFile!=null)imageFile.delete();
+				}		
+
+				responseFileName =  "map.pdf";
+				encoder = null;
+				
 			}
 			
 			try {
 				flushingResponseTotalTimeMonitor = MonitorFactory.start("GeoEngine.drawMapAction.flushResponse.totalTime");
 				writeBackToClient(maptmpfile, encoder, inlineResponse, responseFileName, getContentType(outputFormat));
+				
 			} catch(IOException e) {
 				logger.error("error while flushing output", e);
 				getAuditServiceProxy().notifyServiceErrorEvent( "Error while flushing output" );
@@ -126,6 +183,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			getAuditServiceProxy().notifyServiceEndEvent( );
 			
 			maptmpfile.delete();	
+			if(tmpFile!=null)tmpFile.delete();
 			
 		} catch (Throwable t) {
 			errorHitsMonitor = MonitorFactory.start("GeoEngine.errorHits");
@@ -140,10 +198,6 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 		
 		logger.debug("OUT");
 	}
-	
-	
-	
-	
 	
 	
 	/**

@@ -585,13 +585,66 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 						);	
 					}
 			}	else if ( executionInstance.document.typeCode == 'MAP') {
+			
+					var menuItems = new Array();
+					
+					for(i=0;i<executionInstance.document.exporters.length ;i++){
+						
+						if (executionInstance.document.exporters[i]=='PDF'){
+						menuItems.push(	new Ext.menu.Item({
+				                            id:  Ext.id()
+				                            , text: LN('sbi.execution.PdfExport')
+				                            , group: 'group_2'
+				                            , iconCls: 'icon-pdf' 
+									     	, scope: this
+									        , width: 15
+									    	, handler : function() { this.exportGeoExecution('pdf'); }
+											, href: ''   
+				                        })	 
+				                       ); 
+						}else if(executionInstance.document.exporters[i]=='JPG'){
+						menuItems.push(   new Ext.menu.Item({
+				                            id: Ext.id()
+				                            , text: LN('sbi.execution.JpgExport')
+				                            , group: 'group_2'
+				                            , iconCls: 'icon-jpg' 
+									     	, scope: this
+									     , width: 15
+									    	, handler : function() { this.exportGeoExecution('jpeg'); }
+											, href: ''   
+				                        })	
+				                        ); 
+						}
+			
+			  		}   
+					var menu0 = new Ext.menu.Menu({
+						id: 'basicMenu_0',
+						items: menuItems    
+					});	
+					
+					if(executionInstance.document.exporters.length > 0){
+						this.toolbar.add(
+									new Ext.Toolbar.MenuButton({
+										id: Ext.id()
+							            , tooltip: 'Exporters'
+										, path: 'Exporters'	
+										, iconCls: 'icon-export' 	
+							            , menu: menu0
+							            , width: 15
+							            , cls: 'x-btn-menubutton x-btn-text-icon bmenu '
+							        })					    				        				
+						);	
+					}
+			
+			
+			/*
 				this.toolbar.addButton(new Ext.Toolbar.Button({
 					iconCls: 'icon-jpg' 
 					, tooltip: LN('sbi.execution.JpgExport')
 			     	, scope: this
 			    	, handler :  function() { this.exportGeoExecution('jpeg'); }
 					, href: ''  
-				}));
+				}));*/
 			}	
 		}
 	}
@@ -768,8 +821,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    var baseUrl = docurl.substring(0,docurl.indexOf('?')+1);   
 	    if (baseUrl=="") baseUrl = docurl;
 	 
-	    var docurlPar = "ACTION_NAME=DRAW_MAP_ACTION&SBI_EXECUTION_ID="+this.executionInstance.SBI_EXECUTION_ID+"&user_id=-1&outputFormat=jpeg&inline=false";
-	   
+	    //var docurlPar = "ACTION_NAME=DRAW_MAP_ACTION&SBI_EXECUTION_ID="+this.executionInstance.SBI_EXECUTION_ID+"&user_id=-1&outputFormat=jpeg&inline=false";
+	    var docurlPar = "ACTION_NAME=DRAW_MAP_ACTION&SBI_EXECUTION_ID="+this.executionInstance.SBI_EXECUTION_ID+"&user_id=-1&outputFormat="+exportType+"&inline=false";
 	    var endUrl = baseUrl + docurlPar;
 	   // alert ("endUrl: " + endUrl);
 	    

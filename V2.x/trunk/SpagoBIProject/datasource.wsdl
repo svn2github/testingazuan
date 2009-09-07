@@ -17,6 +17,8 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
      <element name="hibDialectClass" nillable="true" type="soapenc:string"/>
      <element name="hibDialectName" nillable="true" type="soapenc:string"/>
      <element name="id" type="xsd:int"/>
+     <element name="multiSchema" nillable="true" type="soapenc:boolean"/>
+     <element name="schemaAttribute" nillable="true" type="soapenc:string"/>
     </sequence>
    </complexType>
   </schema>
@@ -33,13 +35,11 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   </schema>
  </wsdl:types>
 
-   <wsdl:message name="getDataSourceByLabelRequest">
+   <wsdl:message name="getAllDataSourceRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
 
       <wsdl:part name="in1" type="soapenc:string"/>
-
-      <wsdl:part name="in2" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -49,15 +49,19 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getAllDataSourceResponse">
-
-      <wsdl:part name="getAllDataSourceReturn" type="impl:ArrayOf_tns2_SpagoBiDataSource"/>
-
-   </wsdl:message>
-
    <wsdl:message name="getDataSourceResponse">
 
       <wsdl:part name="getDataSourceReturn" type="tns2:SpagoBiDataSource"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDataSourceByLabelRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:string"/>
 
    </wsdl:message>
 
@@ -71,11 +75,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="getAllDataSourceRequest">
+   <wsdl:message name="getAllDataSourceResponse">
 
-      <wsdl:part name="in0" type="soapenc:string"/>
-
-      <wsdl:part name="in1" type="soapenc:string"/>
+      <wsdl:part name="getAllDataSourceReturn" type="impl:ArrayOf_tns2_SpagoBiDataSource"/>
 
    </wsdl:message>
 

@@ -3,13 +3,13 @@
 <!--WSDL created by Apache Axis version: 1.4
 Built on Apr 22, 2006 (06:55:48 PDT)-->
 
-   <wsdl:message name="connectRequest">
-
-   </wsdl:message>
-
    <wsdl:message name="connectResponse">
 
       <wsdl:part name="connectReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="connectRequest">
 
    </wsdl:message>
 

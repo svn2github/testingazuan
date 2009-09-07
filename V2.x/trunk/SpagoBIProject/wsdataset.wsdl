@@ -19,12 +19,6 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   </schema>
  </wsdl:types>
 
-   <wsdl:message name="readDataSetResponse">
-
-      <wsdl:part name="readDataSetReturn" type="soapenc:string"/>
-
-   </wsdl:message>
-
    <wsdl:message name="readDataSetRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
@@ -32,6 +26,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
       <wsdl:part name="in1" type="apachesoap:Map"/>
 
       <wsdl:part name="in2" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="readDataSetResponse">
+
+      <wsdl:part name="readDataSetReturn" type="soapenc:string"/>
 
    </wsdl:message>
 

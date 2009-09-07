@@ -3,12 +3,6 @@
 <!--WSDL created by Apache Axis version: 1.4
 Built on Apr 22, 2006 (06:55:48 PDT)-->
 
-   <wsdl:message name="fireEventResponse">
-
-      <wsdl:part name="fireEventReturn" type="soapenc:string"/>
-
-   </wsdl:message>
-
    <wsdl:message name="fireEventRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
@@ -22,6 +16,12 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
       <wsdl:part name="in4" type="soapenc:string"/>
 
       <wsdl:part name="in5" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="fireEventResponse">
+
+      <wsdl:part name="fireEventReturn" type="soapenc:string"/>
 
    </wsdl:message>
 

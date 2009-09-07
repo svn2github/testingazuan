@@ -34,14 +34,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
   </schema>
   <schema targetNamespace="http://exceptions.sdk.spagobi.eng.it" xmlns="http://www.w3.org/2001/XMLSchema">
-   <import namespace="urn:spagobisdkengines"/>
    <import namespace="http://bo.engines.sdk.spagobi.eng.it"/>
+   <import namespace="urn:spagobisdkengines"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="NotAllowedOperationException">
     <sequence/>
    </complexType>
   </schema>
  </wsdl:types>
+
+   <wsdl:message name="getEnginesRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="NotAllowedOperationException">
+
+      <wsdl:part name="fault" type="tns3:NotAllowedOperationException"/>
+
+   </wsdl:message>
 
    <wsdl:message name="getEnginesResponse">
 
@@ -55,19 +65,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="NotAllowedOperationException">
-
-      <wsdl:part name="fault" type="tns3:NotAllowedOperationException"/>
-
-   </wsdl:message>
-
    <wsdl:message name="getEngineRequest">
 
       <wsdl:part name="in0" type="soapenc:int"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getEnginesRequest">
 
    </wsdl:message>
 

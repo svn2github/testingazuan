@@ -5,8 +5,8 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
  <wsdl:types>
   <schema targetNamespace="urn:spagobisdkdatasets" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://xml.apache.org/xml-soap"/>
-   <import namespace="http://exceptions.sdk.spagobi.eng.it"/>
    <import namespace="http://bo.datasets.sdk.spagobi.eng.it"/>
+   <import namespace="http://exceptions.sdk.spagobi.eng.it"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="ArrayOf_soapenc_string">
     <complexContent>
@@ -87,8 +87,8 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   </schema>
   <schema targetNamespace="http://exceptions.sdk.spagobi.eng.it" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://xml.apache.org/xml-soap"/>
-   <import namespace="urn:spagobisdkdatasets"/>
    <import namespace="http://bo.datasets.sdk.spagobi.eng.it"/>
+   <import namespace="urn:spagobisdkdatasets"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="NotAllowedOperationException">
     <sequence/>
@@ -108,9 +108,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
    </complexType>
   </schema>
   <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://bo.datasets.sdk.spagobi.eng.it"/>
    <import namespace="http://exceptions.sdk.spagobi.eng.it"/>
    <import namespace="urn:spagobisdkdatasets"/>
-   <import namespace="http://bo.datasets.sdk.spagobi.eng.it"/>
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
    <complexType name="mapItem">
     <sequence>
@@ -126,15 +126,37 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
   </schema>
  </wsdl:types>
 
-   <wsdl:message name="InvalidParameterValue">
+   <wsdl:message name="NotAllowedOperationException">
 
-      <wsdl:part name="fault" type="tns3:InvalidParameterValue"/>
+      <wsdl:part name="fault" type="tns3:NotAllowedOperationException"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDataSetResponse">
+
+      <wsdl:part name="getDataSetReturn" type="tns2:SDKDataSet"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="MissingParameterValue">
+
+      <wsdl:part name="fault" type="tns3:MissingParameterValue"/>
 
    </wsdl:message>
 
    <wsdl:message name="getDataSetRequest">
 
       <wsdl:part name="in0" type="soapenc:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDataSetsResponse">
+
+      <wsdl:part name="getDataSetsReturn" type="impl:ArrayOf_tns2_SDKDataSet"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getDataSetsRequest">
 
    </wsdl:message>
 
@@ -150,31 +172,9 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
-   <wsdl:message name="MissingParameterValue">
+   <wsdl:message name="InvalidParameterValue">
 
-      <wsdl:part name="fault" type="tns3:MissingParameterValue"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getDataSetsResponse">
-
-      <wsdl:part name="getDataSetsReturn" type="impl:ArrayOf_tns2_SDKDataSet"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getDataSetResponse">
-
-      <wsdl:part name="getDataSetReturn" type="tns2:SDKDataSet"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="getDataSetsRequest">
-
-   </wsdl:message>
-
-   <wsdl:message name="NotAllowedOperationException">
-
-      <wsdl:part name="fault" type="tns3:NotAllowedOperationException"/>
+      <wsdl:part name="fault" type="tns3:InvalidParameterValue"/>
 
    </wsdl:message>
 

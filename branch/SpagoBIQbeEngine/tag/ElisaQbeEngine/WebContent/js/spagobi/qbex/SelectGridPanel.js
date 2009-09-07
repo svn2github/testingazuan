@@ -144,7 +144,8 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	       id: config.data['id'], 
 	       entity: config.data['entity'], 
 	       field: config.data['field'],
-	       visible: true 
+	       'include': true, 
+	       visible: true
 	    });
     
     	if(i != undefined) {
@@ -192,6 +193,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 			jsonStr += 	'"group"  : "' + tmpRec.data['group']  + '",';
 			jsonStr += 	'"order"  : "' + tmpRec.data['order']  + '",';
 			jsonStr += 	'"funct"  : "' + tmpRec.data['funct']  + '",';
+			jsonStr += 	'"include" : ' + tmpRec.data['include'] + '';	
 			jsonStr += 	'"visible" : ' + tmpRec.data['visible'] + '';	
 			jsonStr += '}';	
 		}
@@ -249,6 +251,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	           {name: 'alias'},
 	           {name: 'order'},
 	           {name: 'group'},
+	           {name: 'include'},
 	           {name: 'visible'},
 	           {name: 'del'}          
 	        ]
@@ -262,6 +265,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		      {name: 'alias', type: 'string'},
 		      {name: 'order', type: 'string'},
 		      {name: 'group', type: 'string'},
+		      {name: 'include', type: 'bool'},
 		      {name: 'visible', type: 'bool'},
 		      {name: 'filter', type: 'string'},
 		      {name: 'del', type: 'string'}
@@ -280,6 +284,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	       , dataIndex: 'visible'
 	       , hideable: true
 		   , hidden: false	
+		   , width: 50
 		   , sortable: false
 	    });
 	    
@@ -288,8 +293,18 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	       , dataIndex: 'group'
 	       , hideable: true
 		   , hidden: false	
+		   , width: 50
 		   , sortable: false
 	    });
+	    
+	    var includeCheckColumn = new Ext.grid.CheckColumn({
+		       header:  LN('sbi.qbe.selectgridpanel.headers.include')
+		       , dataIndex: 'include'
+		       , hideable: true
+			   , hidden: false	
+			   , width: 50
+			   , sortable: false
+		});
 	    
 	    // button-columns
 	    var delButtonColumn = new Ext.grid.ButtonColumn({
@@ -303,6 +318,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	       }
 	       , hideable: true
 	       , hidden: true	
+	       , width: 50
 	       , sortable: false
 	     });
 	     
@@ -318,6 +334,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		   }
 	       , hideable: true
 	       , hidden: false	
+	       , width: 50
 	       , sortable: false
 		});
 		
@@ -363,7 +380,8 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 			         selectOnFocus:true
 		         })
 			     , hideable: true
-			     , hidden: false	
+			     , hidden: false
+			     , width: 50
 			     , sortable: false
 		     }, {
 		    	 header: LN('sbi.qbe.selectgridpanel.headers.order')
@@ -384,15 +402,17 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		         })
 			     , hideable: true
 			     , hidden: false	
+			     , width: 50
 			     , sortable: false
 		     },
 		     groupCheckColumn, 
+		     includeCheckColumn,
 		     visibleCheckColumn,
 		     filterButtonColumn,
 		     delButtonColumn
 	     ]);	
 	    
-	    this.plgins = [visibleCheckColumn, groupCheckColumn, delButtonColumn, filterButtonColumn];
+	    this.plgins = [visibleCheckColumn, includeCheckColumn, groupCheckColumn, delButtonColumn, filterButtonColumn];
 	}
 	
 	, initToolbar: function(config) {

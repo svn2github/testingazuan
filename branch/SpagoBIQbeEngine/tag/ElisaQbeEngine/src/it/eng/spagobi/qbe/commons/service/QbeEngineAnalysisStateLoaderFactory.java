@@ -33,9 +33,14 @@ public class QbeEngineAnalysisStateLoaderFactory {
 	
 	static {
 		loaderRegistry = new HashMap();
-		loaderRegistry.put("1", new Version1QbeEngineAnalysisStateLoader());
-		loaderRegistry.put("0", new Version1QbeEngineAnalysisStateLoader(
-				new Version0QbeEngineAnalysisStateLoader()
+		loaderRegistry.put("2", new Version2QbeEngineAnalysisStateLoader());
+		loaderRegistry.put("1", new Version2QbeEngineAnalysisStateLoader(
+				new Version1QbeEngineAnalysisStateLoader()
+		));
+		loaderRegistry.put("0", new Version2QbeEngineAnalysisStateLoader(
+				new Version1QbeEngineAnalysisStateLoader(
+						new Version0QbeEngineAnalysisStateLoader()
+				)
 		));
 	}
 	

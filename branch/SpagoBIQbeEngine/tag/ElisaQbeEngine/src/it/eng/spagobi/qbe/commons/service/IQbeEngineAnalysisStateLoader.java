@@ -27,6 +27,6 @@ import org.json.JSONObject;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public interface IQbeEngineAnalysisStateLoader {
-	Object load(String rowData);
+	JSONObject load(String rowData);
 	JSONObject convert(JSONObject data);
 }

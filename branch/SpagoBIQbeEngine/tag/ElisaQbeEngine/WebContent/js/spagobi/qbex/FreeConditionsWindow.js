@@ -105,11 +105,11 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 		this.defaultvalues = null;
 		for (var i = 0; i < this.freeFilters.length; i++) {
 			var aFilter = this.freeFilters[i];
-			if (aFilter.defaultvalue !== null) {
+			if (aFilter.rightOperandDefaultValue !== null) {
 				if (this.defaultvalues == null) {
 					this.defaultvalues = {};
 				}
-				this.defaultvalues[aFilter.fname] = aFilter.defaultvalue;
+				this.defaultvalues[aFilter.filterId] = aFilter.rightOperandDefaultValue;
 			}
 		}
 	}
@@ -122,7 +122,7 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 				if (this.lastvalues == null) {
 					this.lastvalues = {};
 				}
-				this.lastvalues[aFilter.fname] = aFilter.lastvalue;
+				this.lastvalues[aFilter.filterId] = aFilter.rightOperandLastValue;
 			}
 		}
 	}
@@ -134,14 +134,14 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 		for (var i = 0; i < this.freeFilters.length; i++) {
 			var aFilter = this.freeFilters[i];
 	    	var aField = new Ext.form.TextField({
-	    		name: aFilter.fname,
+	    		name: aFilter.filterId,
 	    		allowBlank:true, 
 	    		inputType:'text',
 	    		maxLength:200,
 	    		width:200,
-	    		fieldLabel: aFilter.fname + ' [' + aFilter.entity + ': ' + aFilter.field + ']',
+	    		fieldLabel: aFilter.filterId + ' [' + aFilter.leftOperandDescription + ']',
 	    		labelStyle: 'width:250',
-	    		value: (aFilter.defaultvalue !== null) ? aFilter.defaultvalue : ''
+	    		value: (aFilter.rightOperandDefaultValue !== null) ? aFilter.rightOperandDefaultValue : ''
 	    	});
 	    	this.formItems.push(aField);
 		}

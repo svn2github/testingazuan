@@ -71,7 +71,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
    
     , notifyDrop : function(ddSource, e, data){
     	
-		// the row index and the column number on whitch the tree node has been dropped on
+		// the row index and the column number on witch the tree node has been dropped on
 		var rowIndex;
 		var colIndex;
 
@@ -105,127 +105,198 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 	  	}        
 	}
 	
+	//=====================================================================================
+	// from CATALOGUE
+	// ====================================================================================
 	, notifyDropFromQueryCatalogueTree: function(ddSource, e, data, rowIndex, colIndex) {
 
-
+		var filter;
 		var node;
+		var dropColDataIndex;
 		
-		node = ddSource.dragData.node;        
+		node = ddSource.dragData.node; 
+		if(colIndex) {
+			dropColDataIndex = this.targetGrid.getColumnModel().getDataIndex( colIndex );
+		}
 	
-		if(colIndex === 5) {
-			var store = this.targetGrid.store;
-			var row = store.getAt(rowIndex);
-			row.data['otype'] = 'Subquery';
-			row.data['odesc'] = node.props.query.name;
-			row.data['operand'] = node.id;
-			this.targetGrid.store.fireEvent('datachanged', this.targetGrid.store) ;
+		if(dropColDataIndex === 'rightOperandDescription') {
+			filter = {
+				rightOperandValue: node.id
+				, rightOperandDescription: node.props.query.name
+				, rightOperandType: 'Subquery'
+			};
+			this.targetPanel.modifyFilter(filter, rowIndex);
+		} else if(dropColDataIndex === 'leftOperandDescription') {
+			filter = {
+				leftOperandValue: node.id
+				, leftOperandDescription: node.props.query.name
+				, leftOperandType: 'Subquery'
+			};
+			this.targetPanel.modifyFilter(filter, rowIndex);
 		} else {
 			Ext.Msg.show({
 				   title:'Drop target not allowed',
-				   msg: 'Subqueries can be dropped only on the "operand" column of an existing filter',
+				   msg: 'Subqueries can be dropped only on the "operand" columns of an existing filter',
 				   buttons: Ext.Msg.OK,
 				   icon: Ext.MessageBox.WARNING
 			});
 		}
 	}
+	
+	
+	// =====================================================================================
+	// from TREE
+	// =====================================================================================
+	
 	, notifyDropFromDatamartStructureTree: function(ddSource, e, data, rowIndex, colIndex) {
-		//alert('Source object: tree');
-	
-		// the node dragged from tree to grid
-		var node;
-	
+		var node;				// the node dragged from tree to grid
+		var dropColDataIndex;	// the dataIndex of the column on which the node has been dropped. 
+								// It is undefined if the node is not drop on an existing row (rowIndex == colIndex == undefined)
+		var filter;				// configuration object to be passed to addFilter or insertFilter function of the grid (it not a record object)
+		
 		node = ddSource.dragData.node;        
+		
+		if(colIndex) {
+			dropColDataIndex = this.targetGrid.getColumnModel().getDataIndex( colIndex );
+		}
 	
-	
-		if(node.attributes.field && node.attributes.type == 'field') {
-			if(colIndex === 5) {
-				var store = this.targetGrid.store;
-				var row = store.getAt(rowIndex);
-				row.data['otype'] = 'Field Content';
-				row.data['odesc'] = ddSource.dragData.node.attributes.entity + ' / ' + ddSource.dragData.node.attributes.field;
-				row.data['operand'] = ddSource.dragData.node.id;
-				this.targetGrid.store.fireEvent('datachanged', this.targetGrid.store) ;
+		if(node.attributes.field && node.attributes.type == 'field') {			
+			if(dropColDataIndex === 'rightOperandDescription') {			
+				filter = {
+					rightOperandValue: node.id
+					, rightOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
+					, rightOperandType: 'Field Content'
+				};
+				this.targetPanel.modifyFilter(filter, rowIndex);
+			}else if(dropColDataIndex === 'leftOperandDescription') {			
+				filter = {
+					leftOperandValue: node.id
+					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
+					, leftOperandType: 'Field Content'
+				};
+				this.targetPanel.modifyFilter(filter, rowIndex);
 			} else {
-	  			var record = new this.targetPanel.Record({
-	  				id: ddSource.dragData.node.id , 
-	    			entity: ddSource.dragData.node.attributes.entity , 
-	    			field: ddSource.dragData.node.attributes.field  
-	  			});
-	  			this.targetPanel.insertFilter(record, rowIndex);
+				filter = {
+					leftOperandValue: node.id
+					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
+					, leftOperandType: 'Field Content'
+				};
+	  			this.targetPanel.insertFilter(filter, rowIndex);
 			}
 		} else if(node.attributes.attributes.type == 'entity'){
 			
 			for(var i = 0; i < node.attributes.children.length; i++) {
 				if(node.attributes.children[i].attributes.type != 'field') continue;
+				filter = {
+					leftOperandValue: node.attributes.children[i].id
+					, leftOperandDescription: node.attributes.children[i].attributes.entity + ' : ' + node.attributes.children[i].attributes.field 
+					, leftOperandType: 'Field Content'
+				};
 				
-				var record = new this.targetPanel.Record({
-	  				id: node.attributes.children[i].id , 
-	    			entity: node.attributes.children[i].attributes.entity , 
-	    			field: node.attributes.children[i].attributes.field  
-	  			});
-				this.targetPanel.insertFilter(record, rowIndex);
+				this.targetPanel.insertFilter(filter, rowIndex);
 			}
 		} else {
-			alert("Error: unknown node type");
+			Ext.Msg.show({
+				   title:'Drop target not allowed',
+				   msg: 'Node of type [' + node.attributes.attributes.type + '] cannot be dropped here',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.ERROR
+			});
 		}
 	
 		this.targetGrid.getView().refresh();
 	}
 
+	//=====================================================================================
+	// from SELECT GRID
+	// ====================================================================================
 	, notifyDropFromSelectGrid: function(ddSource, e, data, rowIndex, colIndex) {
-		//alert('Source object: select-grid');
-		var sm = this.targetGrid.getSelectionModel();
-		var ds = this.targetGrid.getStore();
-		var ddDs = this.targetGrid.getStore();;
-		var rows = sm.getSelections();
 	
+		var sm = this.targetGrid.getSelectionModel();
+		var store = this.targetGrid.getStore();
+		//var ddDs = this.targetGrid.getStore();;
+		var rows = sm.getSelections();
+		
+		var dropColDataIndex;		
+		var filter;				
+		if(colIndex) {
+			dropColDataIndex = this.targetGrid.getColumnModel().getDataIndex( colIndex );
+		}
 		
 		var rows = ddSource.dragData.selections;  
-		if(colIndex === 5) {
+		if(dropColDataIndex === 'leftOperandDescription' || dropColDataIndex === 'rightOperandDescription') {	
 			if(rows.length > 1 ) {
-				alert('Error: impossible to use as value into a filter a collection of fields');
-			}
-			var store = this.targetGrid.getStore();
-			var row = store.getAt(rowIndex);
-			row.data['otype'] = 'Field Content';
-			row.data['odesc'] = rows[0].data['entity'] + ' / ' + rows[0].data['field'];
-			row.data['operand'] = rows[0].data['id'];
-			this.targetGrid.store.fireEvent('datachanged', this.targetGrid.store) ;
-		} else {
-			rows = rows.sort(function(r1, r2) {
-	      		var row1 = ddDs.getById(r1.id);
-	      		var row2 = ddDs.getById(r2.id);
-	      		return ddDs.indexOf(r2) - ddDs.indexOf(r1);
+				Ext.Msg.show({
+					   title:'Wrong dragged source',
+					   msg: 'Impossible to use as value into a filter a collection of fields',
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.ERROR
 				});
+				return;
+			}
+		
+			if(dropColDataIndex === 'leftOperandDescription') {
+				filter = {
+						leftOperandValue: rows[0].data.id
+						, leftOperandDescription: rows[0].data.entity + ' : ' + rows[0].data.field 
+						, leftOperandType: 'Field Content'
+				};
+			} else {
+				filter = {
+						rightOperandValue: rows[0].data.id
+						, rightOperandDescription: rows[0].data.entity + ' : ' + rows[0].data.field 
+						, rightOperandType: 'Field Content'
+				};
+			}
+			
+			this.targetPanel.modifyFilter(filter, rowIndex);
+		} else {
+			rows = rows.sort(
+				function(r1, r2) {
+					var row1 = store.getById(r1.id);
+					var row2 = store.getById(r2.id);
+					return store.indexOf(r2) - store.indexOf(r1);
+				}
+			);
+			
 			if(rowIndex == undefined) {
 	  			rows = rows.reverse();
 			}
 	   
 			for (i = 0; i < rows.length; i++) {
 	  			if(!this.copy) {
-	  				this.targetPanel.insertFilter( rows[i], rowIndex );
+	  				filter = {
+							leftOperandValue: rows[i].data.id
+							, leftOperandDescription: rows[i].data.entity + ' : ' + rows[i].data.field 
+							, leftOperandType: 'Field Content'
+					};
+	  				this.targetPanel.insertFilter( filter, rowIndex );
 	  			}
 			}     
 	
-			this.targetGrid.getView().refresh();
+			//this.targetGrid.getView().refresh();
 		}
 	}
-
+	
+	//=====================================================================================
+	// from FILTER GRID (self)
+	// ====================================================================================
 	, notifyDropFromFilterGrid: function(ddSource, e, data,rowIndex, colIndex) {
-		//alert('Source object: filter-grid');
+		
 		var sm= this.targetGrid.getSelectionModel();
 		var ds = this.targetGrid.getStore();
 		var rows = sm.getSelections();
 
-		//alert("B:" + rowIndex); 
-
-		rows = rows.sort(function(r1, r2) {
-  		var row1 = ds.getById(r1.id);
-  		var row2 = ds.getById(r2.id);
-  		return ds.indexOf(r2) - ds.indexOf(r1);
-		});
+		rows = rows.sort(
+				function(r1, r2) {
+					var row1 = ds.getById(r1.id);
+					var row2 = ds.getById(r2.id);
+					return ds.indexOf(r2) - ds.indexOf(r1);
+				}
+		);
+		
 		if(rowIndex == undefined) {
-		rows = rows.reverse();
+			rows = rows.reverse();
 		}
 
 		for (i = 0; i < rows.length; i++) {

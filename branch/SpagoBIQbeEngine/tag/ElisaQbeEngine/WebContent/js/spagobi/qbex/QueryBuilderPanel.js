@@ -259,17 +259,17 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     
     
 	, checkFreeFilters: function() {
-    	var freeFilters = this.filterGridPanel.getFreeFilters();
+    	var freeFilters = this.filterGridPanel.getPromptableFilters();
 	    if (freeFilters.length > 0) {
 	    	var freeConditionsWindow = new Sbi.qbe.FreeConditionsWindow({
 	    		freeFilters: freeFilters
 	    	});
 	    	freeConditionsWindow.on('apply', function (formState) {
-	    		this.filterGridPanel.setFreeFiltersLastValues(formState);
+	    		this.filterGridPanel.setPromptableFiltersLastValues(formState);
 	    		this.executeQuery();
 	    	}, this);
 	    	freeConditionsWindow.on('savedefaults', function (formState) {
-	    		this.filterGridPanel.setFreeFiltersDefaultValues(formState);
+	    		this.filterGridPanel.setPromptableFiltersDefaultValues(formState);
 	    	}, this);
 	    	freeConditionsWindow.show();
 	    } else {
@@ -484,7 +484,12 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    }, this);
 	    
 	    this.selectGridPanel.on('filter', function(panel, record) {
-	    	this.filterGridPanel.addRow(record);
+	    	filter = {
+	    		leftOperandValue: record.data.id
+				, leftOperandDescription: record.data.entity + ' : ' + record.data.field 
+				, leftOperandType: 'Field Content'
+			};
+	    	this.filterGridPanel.addFilter(filter);
 	    }, this);
 	}
 	

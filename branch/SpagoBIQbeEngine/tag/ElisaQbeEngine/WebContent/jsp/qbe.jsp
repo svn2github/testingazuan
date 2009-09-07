@@ -105,6 +105,7 @@
       boolean isMaxResultLimitBlocking = qbeEngineConfig.isMaxResultLimitBlocking();
       boolean isQueryValidationEnabled = qbeEngineConfig.isQueryValidationEnabled();
       boolean isQueryValidationBlocking = qbeEngineConfig.isQueryValidationBlocking();
+      
       %>
 
       	Ext.BLANK_IMAGE_URL = '${BLANK_IMAGE_URL}';

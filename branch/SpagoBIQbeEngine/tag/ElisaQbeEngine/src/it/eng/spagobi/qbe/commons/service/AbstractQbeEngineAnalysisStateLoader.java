@@ -38,12 +38,11 @@ public abstract class AbstractQbeEngineAnalysisStateLoader implements IQbeEngine
 		setPreviousLoader(loader);
 	}
 	
-	public Object load(String rowData) {
+	public JSONObject load(String rowData) {
 		JSONObject result;
 		
 		try {
-			result = new JSONObject(rowData);		
-			result = previousLoader != null? previousLoader.convert(result): result;
+			result = previousLoader != null? (JSONObject)previousLoader.load(rowData): new JSONObject(rowData);
 			result = this.convert(result);
 		}catch(Throwable t) {
 			throw new SpagoBIEngineRuntimeException("Impossible to load from rowData [" + rowData + "]", t);

@@ -57,6 +57,17 @@ Sbi.qbe.commons = function(){
 			});
 		}
 	
+	    , deprectadeFunction: function(fnClass, fnName) {
+			var msg = fnName + ' in class ' + fnClass + 'is deprecated';
+				
+			Ext.Msg.show({
+				   title:'Deprecated functionality',
+				   msg: msg,
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.ERROR
+			});
+		}
+	
 		
 		, log: function(severity, message) {
 			this.unimplementedFunction('Sbi.qbe.commons.log');

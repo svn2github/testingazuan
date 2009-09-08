@@ -15,13 +15,14 @@ package com.tonbeller.jpivot.tags;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.jpivotaddins.roles.SpagoBIMondrianRole;
 
+
 import java.io.IOException;
 import java.net.URL;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
-import mondrian.olap.CacheControl;
+
 
 import org.xml.sax.SAXException;
 
@@ -88,9 +89,13 @@ public class MondrianOlapModelTag extends OlapModelTag {
 
     HttpSession session = context.getRequest().getSession();
     IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-    MondrianModel mm = MondrianModelFactory.instance(url, cfg, profile);
+    
+    String filers=(String)session.getAttribute("filters");
+    
+    MondrianModel mm = MondrianModelFactory.instance(filers,url, cfg, profile);
+    
     //MondrianModel mm = MondrianModelFactory.instance(url, cfg);
-    //mm.setRole(new SpagoBIMondrianRole(profile));
+    mm.setRole(new SpagoBIMondrianRole(filers,profile));
     OlapModel om = (OlapModel) mm.getTopDecorator();
     om.setLocale(context.getLocale());
     om.setServletContext(context.getSession().getServletContext());

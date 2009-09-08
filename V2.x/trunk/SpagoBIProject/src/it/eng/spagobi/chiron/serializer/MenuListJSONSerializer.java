@@ -84,11 +84,21 @@ public class MenuListJSONSerializer implements Serializer {
 						temp.put(NAME, "menu"+i);
 						temp.put(ID, menuElem.getMenuId());
 						MessageBuilder msgBuild=new MessageBuilder();
-						String text = msgBuild.getUserMessage(menuElem.getName(),null, locale);
+						String text = "";
+						if (!menuElem.isAdminsMenu() || !menuElem.getName().startsWith("#"))
+							text = msgBuild.getUserMessage(menuElem.getName(),null, locale);
+						else{							
+							if (menuElem.getName().startsWith("#")){				
+								String titleCode = menuElem.getName().substring(1);									
+								text = msgBuild.getMessage(titleCode, locale);								
+							} else {
+								text = menuElem.getName();
+							}
+						}
 						temp.put(TEXT, text);
 						temp.put(PATH, path);
 						String icon=DetailMenuModule.assignImage(menuElem);
-				        if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){ 
+				        if(menuElem.isViewIcons() && !icon.equalsIgnoreCase("")){ 				        	
 				           temp.put(ICON, contextName+defaultThemePath+icon);
 				        }
 						
@@ -98,6 +108,12 @@ public class MenuListJSONSerializer implements Serializer {
 							temp.put(HREF, "execDirectUrl('"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+menuElem.getMenuId()+"', '"+path+"' )");
 						}else if(menuElem.getFunctionality()!=null){
 							temp.put(HREF, "execDirectUrl('"+DetailMenuModule.findFunctionalityUrl(menuElem, contextName)+"', '"+path+"')");
+						}else if (menuElem.isAdminsMenu() && menuElem.getUrl()!=null){							
+							String url = "javascript:execDirectUrl('"+ menuElem.getUrl()+"'";
+							url = url.replace("${SPAGOBI_CONTEXT}",contextName);
+							url = url.replace("${SPAGO_ADAPTER_HTTP}", GeneralUtilities.getSpagoAdapterHttpUrl());		
+							path = path.replace("#","");
+							temp.put(HREF, url+", '"+path+"')");
 						}
 											
 						if (menuElem.getHasChildren()){		
@@ -127,7 +143,18 @@ public class MenuListJSONSerializer implements Serializer {
 
 			temp2.put(ID, new Double(Math.random()).toString());
 			MessageBuilder msgBuild=new MessageBuilder();
-			String text = msgBuild.getUserMessage(childElem.getName(),null, locale);
+			String text = "";
+			if (!childElem.isAdminsMenu() || !childElem.getName().startsWith("#"))
+				text = msgBuild.getUserMessage(childElem.getName(),null, locale);
+			else{							
+				if (childElem.getName().startsWith("#")){				
+					String titleCode = childElem.getName().substring(1);									
+					text = msgBuild.getMessage(titleCode, locale);								
+				} else {
+					text = childElem.getName();
+				}
+			}
+			//String text = msgBuild.getUserMessage(childElem.getName(),null, locale);
 			temp2.put(TEXT, text);
 			String path=MenuUtilities.getMenuPath(childElem);
 			temp2.put(PATH, path);
@@ -141,6 +168,12 @@ public class MenuListJSONSerializer implements Serializer {
 				temp2.put(HREF, "javascript:execDirectUrl('"+contextName+"/servlet/AdapterHTTP?ACTION_NAME=READ_HTML_FILE&MENU_ID="+childElem.getMenuId()+"', '"+path+"' )");
 			}else if(childElem.getFunctionality()!=null){
 				temp2.put(HREF, "javascript:execDirectUrl('"+DetailMenuModule.findFunctionalityUrl(childElem, contextName)+"', '"+path+"')");
+			}else if(childElem.isAdminsMenu() && childElem.getUrl()!=null){				
+				String url = "javascript:execDirectUrl('"+ childElem.getUrl()+"'";
+				url = url.replace("${SPAGOBI_CONTEXT}",contextName);
+				url = url.replace("${SPAGO_ADAPTER_HTTP}", GeneralUtilities.getSpagoAdapterHttpUrl());		
+				path = path.replace("#","");
+				temp2.put(HREF, url+", '"+path+"')");
 			}
 			if (childElem.getHasChildren()){
 				level ++;

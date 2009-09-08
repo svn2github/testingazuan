@@ -111,6 +111,12 @@ if (schemas == null) {
 
 			SAXReader reader = new SAXReader();
 			Document document = reader.read(is);
+			
+		    // Read data access information and put it in session...
+		    String filters= document.selectSingleNode("//olap/DATA-ACCESS").getStringValue();
+		    session.setAttribute("filters",filters);
+		    
+		    
 			String mdxQuery = null;
 			String queryWithParameters = document.selectSingleNode("//olap/MDXquery").getStringValue();
 			// loads parameters

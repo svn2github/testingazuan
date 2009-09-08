@@ -194,11 +194,7 @@ public class LoginModule extends AbstractHttpModule {
 			 	docDev = functionalities.contains("DocumentDevManagement");
 			 	docTest = functionalities.contains("DocumentTestManagement");
 			}
-			if(docAdmin||docDev||docTest){
-				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
-			}else{
-				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
-			}
+			response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
 		}
 		
 		logger.debug("OUT");		

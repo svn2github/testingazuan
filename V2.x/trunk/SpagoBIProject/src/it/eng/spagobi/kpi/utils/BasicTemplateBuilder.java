@@ -788,7 +788,7 @@ public class BasicTemplateBuilder  {
 		logger.debug("IN");
 
 		try {
-			tCont.setAttribute("pageHeight",maxFirstSubTemplateHeight);
+			tCont.setAttribute("pageHeight",maxSubTemplateHeight);
 			bandDetailReport.setAttribute("height", (actualHeight));
 			bandSummaryReport.setAttribute("height", new Integer(7));
 		} catch (SourceBeanException e) {

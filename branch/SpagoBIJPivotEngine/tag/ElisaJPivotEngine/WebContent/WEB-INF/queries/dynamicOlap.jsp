@@ -116,7 +116,15 @@ LICENSE: see LICENSE.txt file
 //			byte[] template = bASE64Decoder.decodeBuffer(templateBase64Coded);
 			//is = new java.io.ByteArrayInputStream(template);
 			org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
-		    document = reader.read(is);		    
+		    document = reader.read(is);	
+		    
+		    // Read data access information and put it in session...
+		    Node  filtersData=document.selectSingleNode("//olap/DATA-ACCESS");
+		    String filters=filtersData.asXML();
+		    if (filters!=null && filters.length()>1){
+		    	session.setAttribute("filters",filters);
+		    }
+		    
 		    //nameConnection = request.getParameter("connectionName");
 		    if (ds != null)	nameConnection = ds.getLabel();
 			query = document.selectSingleNode("//olap/MDXquery").getStringValue();

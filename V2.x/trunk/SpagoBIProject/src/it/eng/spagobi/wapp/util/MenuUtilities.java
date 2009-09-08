@@ -25,7 +25,9 @@ package it.eng.spagobi.wapp.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -33,13 +35,19 @@ import org.apache.log4j.Logger;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorSeverity;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
+import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.util.JavaScript;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.commons.constants.AdmintoolsConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.services.LoginModule;
+import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
+import it.eng.spagobi.utilities.themes.ThemesManager;
 import it.eng.spagobi.wapp.bo.Menu;
 
 public class MenuUtilities {
@@ -58,7 +66,9 @@ public class MenuUtilities {
     public static final String MENU_MODE = "MENU_MODE";
     public static final String MENU_EXTRA = "MENU_EXTRA";
     public static final String LIST_MENU = "LIST_MENU";
-	
+
+    protected static IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+	protected static Locale locale=null;
 	
 	public static String getMenuPath(Menu menu) {
 		try{
@@ -81,7 +91,11 @@ public class MenuUtilities {
 		if(menuList!=null && !menuList.isEmpty()){
 			for (int i=0; i<menuList.size(); i++){
 					Menu menuElem = (Menu)menuList.get(i);
-					boolean canView=MenuAccessVerifier.canView(menuElem,userProfile);
+					boolean canView = false;
+					if (menuElem.getCode() ==null)
+						 canView=MenuAccessVerifier.canView(menuElem,userProfile);
+					else
+						canView = true; //technical menu voice is ever visible if it's present
 					if(canView){
 						filteredMenuList.add(menuElem);
 					}
@@ -104,37 +118,53 @@ public class MenuUtilities {
 			List lstFinalMenu = new ArrayList();
 			// get config
 			SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
-
-			//if the user is a final user, the menu is created and putted into the response with other informations like the type of layout,
-			//otherwise don't, administrators, developers, testers, behavioral model administrators have they own pre-configured menu
-			if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
-					&& !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
-					&& !profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
-					&& !profile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT)){  // for behavioral model administrators
-				Collection lstRolesForUser = profile.getRoles();
-				logger.debug("** Roles for user: " + lstRolesForUser.size());
-				Object[] arrRoles = lstRolesForUser.toArray();
-				for (int i=0; i< arrRoles.length; i++){
-					logger.debug("*** arrRoles[i]): " + arrRoles[i]);
-					Role role = (Role)DAOFactory.getRoleDAO().loadByName((String)arrRoles[i]);
-					if (role != null){
-						List lstMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
-						if (lstMenuItems == null)
-							logger.debug("Not found menu items for Role " + (String)arrRoles[i] );
-						else {
-							for(int j=0; j<lstMenuItems.size(); j++){
-								Menu tmpObj = (Menu)lstMenuItems.get(j);
-								if (!containsMenu(lstFinalMenu, tmpObj)){						
-									lstFinalMenu.add((Menu)lstMenuItems.get(j));	
-								}
+			boolean technicalMenuLoaded = false;
+		
+			Collection lstRolesForUser = profile.getRoles();
+			logger.debug("** Roles for user: " + lstRolesForUser.size());
+			Object[] arrRoles = lstRolesForUser.toArray();
+			Integer levelItem = 1;			
+			for (int i=0; i< arrRoles.length; i++){
+				logger.debug("*** arrRoles[i]): " + arrRoles[i]);
+				Role role = (Role)DAOFactory.getRoleDAO().loadByName((String)arrRoles[i]);
+				if (role != null){												
+					List lstAdminMenuItems = new  ArrayList();
+					if (!technicalMenuLoaded && (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
+							|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
+							|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_TEST)  // for testers
+							|| profile.isAbleToExecuteAction(SpagoBIConstants.PARAMETER_MANAGEMENT))){ 
+						//list technical user menu
+						technicalMenuLoaded = true;						
+						List firstLevelItems = ConfigSingleton.getInstance().getAttributeAsList("TECHNICAL_USER_MENU.ITEM");
+						Iterator it = firstLevelItems.iterator();
+						while (it.hasNext()) {
+							SourceBean itemSB = (SourceBean) it.next();
+							if (isAbleToSeeItem(itemSB, profile)) {
+								lstAdminMenuItems.add(getAdminItem(itemSB, levelItem, profile));
+								levelItem++;
+							}
+						}						
+						lstFinalMenu = lstAdminMenuItems;
+					}
+					
+					//list final user menu
+					List lstUserMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
+					if (lstUserMenuItems == null)
+						logger.debug("Not found menu items for User Role " + (String)arrRoles[i] );
+					else {
+						for(int j=0; j<lstUserMenuItems.size(); j++){
+							Menu tmpObj = (Menu)lstUserMenuItems.get(j);
+							if (!containsMenu(lstFinalMenu, tmpObj)){						
+								lstFinalMenu.add((Menu)lstUserMenuItems.get(j));	
 							}
 						}
-					}
-					else
-						logger.debug("Role " + (String)arrRoles[i] + " not found on db");
+					}						
 				}
-				response.setAttribute(LIST_MENU, lstFinalMenu);
-			}	
+				else
+					logger.debug("Role " + (String)arrRoles[i] + " not found on db");
+			}
+			response.setAttribute(LIST_MENU, lstFinalMenu);
+		
 			logger.debug("List Menu Size " + lstFinalMenu.size());
 			//String menuMode = (configSingleton.getAttribute("SPAGOBI.MENU.mode")==null)?DEFAULT_LAYOUT_MODE:(String)configSingleton.getAttribute("SPAGOBI.MENU.mode");
 			//response.setAttribute(MENU_MODE, menuMode);
@@ -149,12 +179,124 @@ public class MenuUtilities {
 	}
 	
 	/**
+	 * This method checks if the single item is visible from the technical user
+	 * @param itemSB the single item
+	 * @param profile the profile
+	 * @return boolean value
+	 * @throws EMFInternalError
+	 */
+	private static boolean isAbleToSeeItem(SourceBean itemSB, IEngUserProfile profile) throws EMFInternalError {
+		String functionality = (String) itemSB.getAttribute("functionality");
+		if (functionality == null) {
+			return isAbleToSeeContainedItems(itemSB, profile);
+		} else {
+			return profile.isAbleToExecuteAction(functionality);
+		}
+	}
+	
+	/**
+	 * This method checks if the single item has other sub-items visible from the technical user
+	 * @param itemSB the master item
+	 * @param profile the profile
+	 * @return boolean value
+	 * @throws EMFInternalError
+	 */
+	private static  boolean isAbleToSeeContainedItems(SourceBean itemSB, IEngUserProfile profile) throws EMFInternalError {
+		List subItems = itemSB.getAttributeAsList("ITEM");
+		if (subItems == null || subItems.isEmpty()) return false;
+		Iterator it = subItems.iterator();
+		while (it.hasNext()) {
+			SourceBean subItem = (SourceBean) it.next();
+			String functionality = (String) subItem.getAttribute("functionality");
+			if (profile.isAbleToExecuteAction(functionality)) return true;
+		}
+		return false;
+	}
+	
+	
+	
+	/**
+	 * This method return a Menu type element with the technical user item (the item is created in memory, it isn't on db)
+	 * @param itemSB the technical item to add
+	 * @param father
+	 * @return
+	 */
+	private static Menu getAdminItem(SourceBean itemSB, Integer progStart, IEngUserProfile profile){
+		Menu node = new Menu();
+		try{
+			Integer menuId = new Integer(progStart*1000);					
+			
+			String functionality = (String) itemSB.getAttribute("functionality");
+			String code = (String) itemSB.getAttribute("code");
+			String titleCode = (String) itemSB.getAttribute("title");
+			String iconUrl = (String) itemSB.getAttribute("iconUrl");
+			String url = (String) itemSB.getAttribute("url");
+			
+			node.setMenuId(menuId);			
+			node.setCode(code);		
+			node.setParentId(null);
+			node.setProg(progStart);
+			node.setName(titleCode);
+			node.setLevel(new Integer(1));
+			node.setDescr(titleCode);
+			node.setUrl(url);
+			node.setViewIcons(true);
+			node.setIconPath(iconUrl);
+			node.setAdminsMenu(true);
+	
+			if (functionality == null) {
+				//father node
+				List subItems = itemSB.getAttributeAsList("ITEM");	
+				Iterator it = subItems.iterator();
+				if (subItems == null || subItems.isEmpty())
+					node.setHasChildren(false);
+				else{
+					node.setHasChildren(true);			
+					List lstChildren = new ArrayList();
+					while (it.hasNext()) {
+						//defines children
+						SourceBean subItem = (SourceBean) it.next();
+						if (isAbleToSeeItem(subItem, profile)) {
+							functionality = (String) subItem.getAttribute("functionality");
+							code = (String) subItem.getAttribute("code");
+							titleCode = (String) subItem.getAttribute("title");
+							iconUrl = (String) subItem.getAttribute("iconUrl");
+							url = (String) subItem.getAttribute("url");
+							
+							Menu subNode = new Menu();
+							subNode.setMenuId(menuId++);
+							subNode.setCode(code);									
+							subNode.setParentId(progStart*1000);
+							subNode.setName(titleCode);
+							subNode.setProg(progStart);
+							subNode.setLevel(new Integer(2));
+							subNode.setDescr(titleCode);							
+							subNode.setUrl(url);
+							subNode.setViewIcons(true);
+							subNode.setIconPath(iconUrl);	
+							subNode.setAdminsMenu(true);
+							lstChildren.add(subNode);
+						}
+					}
+					node.setLstChildren(lstChildren);
+				}
+			
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			logger.debug("OUT");
+		}
+		return node;
+	}
+	
+	/**
 	 * Check if the menu element in input is already presents into the list
 	 * @param lst the list to check
 	 * @param menu the element to check
 	 * @return true if the element is already presents, false otherwise
 	 */
-	private static boolean containsMenu(List lst, Menu menu){
+	public static boolean containsMenu(List lst, Menu menu){
 		if (lst == null)
 			return false;
 		

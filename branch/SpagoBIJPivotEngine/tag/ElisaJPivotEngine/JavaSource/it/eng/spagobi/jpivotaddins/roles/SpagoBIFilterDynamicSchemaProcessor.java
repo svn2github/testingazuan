@@ -11,7 +11,7 @@ public class SpagoBIFilterDynamicSchemaProcessor extends
 	protected String filter(String schemaUrl, Util.PropertyList connectInfo, InputStream stream) throws Exception {
 		
 		String originalSchema = super.filter(schemaUrl, connectInfo, stream);
-		String modifiedSchema = originalSchema.replaceAll("\\$\\{family\\}", connectInfo.get("family"));
+		String modifiedSchema = originalSchema.replaceAll("\\$\\{filter\\}", connectInfo.get("filter"));
 		return modifiedSchema;
     }
 	

@@ -16,7 +16,11 @@ package it.eng.spagobi.jpivotaddins.roles;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 
+import java.io.InputStream;
 import java.util.*;
+
+import org.dom4j.DocumentException;
+
 import mondrian.olap.*;
 
 /**
@@ -30,38 +34,59 @@ import mondrian.olap.*;
 public class SpagoBIMondrianRole implements Role {
 
 	private IEngUserProfile profile = null;
+	// Filtered dimension
+	private Set<String> filters=null;
     /**
      * Creates a role with no permissions.
      * @param profile 
      */
-    public SpagoBIMondrianRole(IEngUserProfile profile) {
+    public SpagoBIMondrianRole(String filersStr,IEngUserProfile profile) {
     	this.profile = profile;
+    	this.filters=new HashSet<String>();
+    	if (filersStr!=null){
+	    	try {
+	    		InputStream is = new java.io.ByteArrayInputStream(filersStr.getBytes());
+	    		org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
+	    		org.dom4j.Document document;	
+				document = reader.read(is);
+				List dimensions = document.selectNodes("//DATA-ACCESS/FILTERED-DIMENSIONS/DIMENSION");
+				Iterator it = dimensions.iterator();
+				while (it.hasNext()) {
+					org.dom4j.Node aDimension = (org.dom4j.Node) it.next();
+					String aDimensionName = aDimension.valueOf("@name");
+					filters.add(aDimensionName);
+				}
+	
+	    	
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+    	}
+    	
     }
+    
 
     public Access getAccess(Schema schema) {
         return Access.ALL;
     }
 
     public Access getAccess(Cube cube) {
-    	if (cube.getName().equalsIgnoreCase("Products")) {
-    		return Access.CUSTOM;
-    	}
         return Access.ALL;
     }
 
     public Access getAccess(Dimension dimension) {
     	// Never invoked
-    	if (dimension.getName().equalsIgnoreCase("Customers")) {
-    		return Access.NONE;
-    	}
-    	if (dimension.getName().equalsIgnoreCase("Product")) {
+    	String name=dimension.getName();
+    	if (filters.contains(name)) {
     		return Access.CUSTOM;
     	}
         return Access.ALL;
     }
 
     public Access getAccess(Hierarchy hierarchy) {
-    	if (hierarchy.getName().equalsIgnoreCase("Product")) {
+    	String name=hierarchy.getDimension().getName();
+    	if (filters.contains(name)) {
     		return Access.CUSTOM;
     	}
     	return Access.ALL;
@@ -116,8 +141,9 @@ public class SpagoBIMondrianRole implements Role {
 		
 		public SpagoBIHierarchyAccess (Hierarchy hierarchy) {
 			this.hierarchy = hierarchy;
-			if (hierarchy.getName().equals("Product")) {
-	        	this.access = Access.CUSTOM;
+	    	String name=hierarchy.getDimension().getName();
+	    	if (filters.contains(name)) {
+	    		this.access = Access.CUSTOM;
 			} else {
 				this.access = Access.ALL;
 			}
@@ -256,9 +282,6 @@ public class SpagoBIMondrianRole implements Role {
 //	    }
 	
 	    public int getTopLevelDepth() {
-	    	if (hierarchy.getName().equals("Product")) {
-	    		return 0;
-	    	}
 	        return 0;
 	    }
 	
@@ -270,7 +293,8 @@ public class SpagoBIMondrianRole implements Role {
 	    }
 	
 	    public RollupPolicy getRollupPolicy() {
-	    	if (hierarchy.getName().equals("Product")) {
+	    	String name=hierarchy.getDimension().getName();
+	    	if (filters.contains(name)) {	    	
 	    		return RollupPolicy.PARTIAL;
 	    	}
 	    	return RollupPolicy.FULL;

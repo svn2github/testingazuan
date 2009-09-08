@@ -30,7 +30,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Iterator"%>
 
-<%@ taglib uri="/WEB-INF/tlds/spagobiwa.tld" prefix="spagobiwa" %>
 
 <%
 	SourceBean moduleResponse = (SourceBean)aServiceResponse.getAttribute("ViewBuilderModule"); 

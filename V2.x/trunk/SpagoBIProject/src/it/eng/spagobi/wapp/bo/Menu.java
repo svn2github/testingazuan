@@ -57,9 +57,12 @@ public class Menu  implements Serializable  {
     private boolean hideToolbar=false;
     private boolean hideSliders=false;
     private String staticPage;
+    private String code;
+    private String url;
+    private String iconPath;
+    private boolean isAdminsMenu=false;
 
-    
-	/**
+    	/**
 	 * Gets the lst children.
 	 * 
 	 * @return the lst children
@@ -131,6 +134,20 @@ public class Menu  implements Serializable  {
 		this.name = name;
 	}
 	
+	/**
+	 * @return the isAdminsMenu
+	 */
+	public boolean isAdminsMenu() {
+		return isAdminsMenu;
+	}
+
+	/**
+	 * @param isAdminsMenu the isAdminsMenu to set
+	 */
+	public void setAdminsMenu(boolean isAdminsMenu) {
+		this.isAdminsMenu = isAdminsMenu;
+	}
+
 	/**
 	 * Gets the descr.
 	 * 
@@ -319,7 +336,48 @@ public class Menu  implements Serializable  {
 		this.initialPath = initialPath;
 	}
 
-	
+
+	/**
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
+
+	/**
+	 * @param code the code to set
+	 */
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	/**
+	 * @return the url
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+	/**
+	 * @param url the url to set
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	/**
+	 * @return the iconPath
+	 */
+	public String getIconPath() {
+		return iconPath;
+	}
+
+	/**
+	 * @param iconPath the iconPath to set
+	 */
+	public void setIconPath(String iconPath) {
+		this.iconPath = iconPath;
+	}	
 	
 	
 }

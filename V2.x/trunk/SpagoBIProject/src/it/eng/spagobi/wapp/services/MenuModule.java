@@ -110,7 +110,7 @@ public class MenuModule extends AbstractHttpModule {
 	    return;
 	}
 	// fill response attributes
-	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
+	response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
 	logger.debug("OUT");
     }
 

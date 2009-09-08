@@ -135,12 +135,8 @@ public class ChangeLanguage extends AbstractHttpAction{
 		 	docDev = functionalities.contains("DocumentDevManagement");
 		 	docTest = functionalities.contains("DocumentTestManagement");
 		}
-		if(docAdmin||docDev||docTest){
-			serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "home");
-		}else{
-			serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
-		}
 		
+		serviceResponse.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "userhome");
 		logger.debug("OUT");
 	}
 

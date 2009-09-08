@@ -571,8 +571,15 @@ public class DetailMenuModule extends AbstractModule {
 			if (config != null) {
 				String iconUrl = (String) config.getAttribute("iconUrl");
 				iconUrl = iconUrl.replaceAll("\\$\\{SPAGOBI_CONTEXT\\}", "");
+				iconUrl = iconUrl.replaceAll("\\$\\{THEME\\}", "");
 				return iconUrl;
 			} else return "";
+		}else if (menu.getIconPath() != null){
+			String iconUrl = menu.getIconPath();
+			iconUrl = iconUrl.replaceAll("\\$\\{SPAGOBI_CONTEXT\\}", "");
+			iconUrl = iconUrl.replaceAll("/themes/", "");
+			iconUrl = iconUrl.replaceAll("\\$\\{THEME\\}", "");
+			return iconUrl;
 		}
 		else
 			return "";

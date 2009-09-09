@@ -22,11 +22,14 @@ public class SbiKpiValue  implements java.io.Serializable {
      private Date beginDt;
      private Date endDt;
      private String description;
+     private String xmlData; 
 
 
     // Constructors
 
-    /** default constructor */
+   
+
+	/** default constructor */
     public SbiKpiValue() {
     }
 
@@ -38,7 +41,7 @@ public class SbiKpiValue  implements java.io.Serializable {
     }
     
     /** full constructor */
-    public SbiKpiValue(Integer idKpiInstanceValue, SbiKpiInstance sbiKpiInstance, SbiResources sbiResources, String value, Date beginDt, Date endDt, String description) {
+    public SbiKpiValue(Integer idKpiInstanceValue, SbiKpiInstance sbiKpiInstance, SbiResources sbiResources, String value, Date beginDt, Date endDt, String description, String xmlData) {
         this.idKpiInstanceValue = idKpiInstanceValue;
         this.sbiKpiInstance = sbiKpiInstance;
         this.sbiResources = sbiResources;
@@ -46,6 +49,7 @@ public class SbiKpiValue  implements java.io.Serializable {
         this.beginDt = beginDt;
         this.endDt = endDt;
         this.description = description;
+        this.xmlData = xmlData;
     }
     
 
@@ -107,5 +111,13 @@ public class SbiKpiValue  implements java.io.Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    public String getXmlData() {
+		return xmlData;
+	}
+
+	public void setXmlData(String xmlData) {
+		this.xmlData = xmlData;
+	}
 
 }

@@ -28,5 +28,8 @@
         <property name="description" type="string">
             <column name="DESCRIPTION" length="100" />
         </property>
+        <property name="xmlData" type="string">
+            <column name="XML_DATA" />
+        </property>
     </class>
 </hibernate-mapping>

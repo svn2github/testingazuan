@@ -12,6 +12,7 @@ public class KpiValue implements Cloneable{
 	Integer kpiValueId = null;
 	String value = null;	
 	String valueDescr = null;
+	String valueXml = null;
 	List thresholdValues = null;
 	Double weight = null;
 	Double target = null;
@@ -137,6 +138,7 @@ public class KpiValue implements Cloneable{
 		 toReturn.setValue(value);
 		 toReturn.setKpiValueId(kpiValueId);
 		 toReturn.setValueDescr(valueDescr);
+		 toReturn.setValueXml(valueXml);
 		 toReturn.setWeight(weight);
 		 return toReturn;
 	}
@@ -147,6 +149,14 @@ public class KpiValue implements Cloneable{
 
 	public void setKpiValueId(Integer kpiValueId) {
 		this.kpiValueId = kpiValueId;
+	}
+
+	public String getValueXml() {
+		return valueXml;
+	}
+
+	public void setValueXml(String valueXml) {
+		this.valueXml = valueXml;
 	}
 
 }

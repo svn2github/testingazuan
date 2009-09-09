@@ -692,7 +692,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 											String fieldValue = f.getValue().toString();
 											valTemp.setValue(fieldValue);
 											logger.debug("Setted the kpiValue value:"+fieldValue);
-										}    
+										}  
+										else if(fieldName.equalsIgnoreCase("XML_DATA")){
+
+											String xmlData = f.getValue().toString();
+											valTemp.setValueXml(xmlData);
+											logger.debug("Setted the kpiValue xmlData:"+xmlData);
+										}   
 										else if(fieldName.equalsIgnoreCase(RESOURCE)){
 
 											String fieldValue = f.getValue().toString();
@@ -712,7 +718,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 							logger.debug("New value calculated");
 							if(register_values && valTemp.getR().getName()!=null){
 								// Insert new Value into the DB
-								DAOFactory.getKpiDAO().insertKpiValue(valTemp);
+								Integer kpiValueId =DAOFactory.getKpiDAO().insertKpiValue(valTemp);
+								kVal.setKpiValueId(kpiValueId);
 								logger.info("New value inserted in the DB. Resource="+valTemp.getR().getName()+" KpiInstanceId="+valTemp.getKpiInstanceId());
 
 
@@ -1031,7 +1038,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 										String fieldValue = f.getValue().toString();
 										valTemp.setValue(fieldValue);
 										logger.debug("Setted the kpiValue value:"+fieldValue);
-									}    
+									}   
+									else if(fieldName.equalsIgnoreCase("XML_DATA")){
+
+										String xmlData = f.getValue().toString();
+										valTemp.setValueXml(xmlData);
+										logger.debug("Setted the kpiValue xmlData:"+xmlData);
+									}   
 									else if(fieldName.equalsIgnoreCase(RESOURCE)){
 
 										String fieldValue = f.getValue().toString();
@@ -1101,7 +1114,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 										String fieldValue = f.getValue().toString();
 										kVal.setValue(fieldValue);
 										logger.debug("Setted the kpiValue value:"+fieldValue);
-									}    			
+									}    		
+									else if(fieldName.equalsIgnoreCase("XML_DATA")){
+
+										String xmlData = f.getValue().toString();
+										kVal.setValueXml(xmlData);
+										logger.debug("Setted the kpiValue xmlData:"+xmlData);
+									}   
 								}
 							}
 						}

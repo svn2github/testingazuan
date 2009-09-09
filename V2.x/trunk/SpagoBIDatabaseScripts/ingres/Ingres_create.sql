@@ -726,6 +726,7 @@ Create table SBI_KPI_VALUE (
 	BEGIN_DT Date,
 	END_DT Date,
 	DESCRIPTION Varchar(100),
+	XML_DATA Long nvarchar,
 Primary Key (id_kpi_instance_value)
 ) ;\p\g
 CREATE SEQUENCE SBI_KPI_MODEL_INST_SEQ;\p\g

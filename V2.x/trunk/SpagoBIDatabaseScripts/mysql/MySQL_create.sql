@@ -812,6 +812,7 @@ Create table `SBI_KPI_VALUE` (
 	`BEGIN_DT` Datetime,
 	`END_DT` Datetime,
 	`DESCRIPTION` Varchar(100),
+	`XML_DATA` TEXT,
 	UNIQUE (`id_kpi_instance_value`),
  Primary Key (`id_kpi_instance_value`)) ENGINE = InnoDB;
 

@@ -621,6 +621,7 @@ Create table SBI_KPI_VALUE (
 	END_DT Timestamp(6),
 	RESOURCE_ID Number(38,0),
 	DESCRIPTION Varchar2 (100),
+	XML_DATA CLOB,
 primary key ("ID_KPI_INSTANCE_VALUE") 
 ) 
 /

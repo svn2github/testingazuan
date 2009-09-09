@@ -99,10 +99,22 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			logger.debug("Configuration setting  [" + "QBE.QBE-SQL-RESULT-LIMIT.isBlocking" + "] is equals to [" + isMaxResultsLimitBlocking + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertNotNull(queryId, "Parameter [" + QUERY_ID + "] cannot be null in oder to execute " + this.getActionName() + " service");
 			
-			query = getEngineInstance().getQueryCatalogue().getQuery(queryId);
-			Assert.assertNotNull(query, "Query object with id [" + queryId + "] does not exist in the catalogue");
+			//Assert.assertNotNull(queryId, "Parameter [" + QUERY_ID + "] cannot be null in oder to execute " + this.getActionName() + " service");
+			
+			if (queryId != null) {
+				// retrieving query specified by id on request
+				query = getEngineInstance().getQueryCatalogue().getQuery(queryId);
+				Assert.assertNotNull(query, "Query object with id [" + queryId + "] does not exist in the catalogue");
+			} else if (getEngineInstance().getActiveQuery() != null) {
+				// retrieving current active query
+				logger.debug("Query identifier not specified in request: executing current active query");
+				query = getEngineInstance().getActiveQuery();
+			} else {
+				// retrieving first query from catalog
+				logger.debug("Query identifier not specified in request: executing first query returned by the catalogue");
+				query = getEngineInstance().getQueryCatalogue().getFirstQuery();
+			}
 			
 			if(getEngineInstance().getActiveQuery() != null && getEngineInstance().getActiveQuery().getId().equals(queryId)) {
 				logger.debug("Query with id [" + queryId + "] is the current active query. Previous generated statment will be reused");

@@ -1128,7 +1128,7 @@ public class HQLStatement extends BasicStatement {
 			hibernateQuery = session.createQuery( getQueryString() );	
 			ScrollableResults scrollableResults = hibernateQuery.scroll();
 			scrollableResults.last();
-			resultNumber = scrollableResults.getRowNumber();
+			resultNumber = scrollableResults.getRowNumber() + 1; // Hibernate ScrollableResults row number starts with 0
 			resultNumber = resultNumber < 0? 0: resultNumber;
 			overflow = (resultNumber >= maxResults);
 			

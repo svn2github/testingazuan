@@ -206,5 +206,11 @@ public class QueryCatalogue {
 		
 		return results;
 	}
+
+	public Query getFirstQuery() {
+		String queryId = (String) queries.keySet().iterator().next();
+		Query query = (Query) queries.get(queryId);
+		return query;
+	}
 	
 }

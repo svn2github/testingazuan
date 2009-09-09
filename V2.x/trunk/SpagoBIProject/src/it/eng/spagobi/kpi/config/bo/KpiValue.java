@@ -9,6 +9,7 @@ import java.util.List;
 public class KpiValue implements Cloneable{
 	
 	Integer kpiInstanceId = null;
+	Integer kpiValueId = null;
 	String value = null;	
 	String valueDescr = null;
 	List thresholdValues = null;
@@ -134,9 +135,18 @@ public class KpiValue implements Cloneable{
 		 toReturn.setTarget(target);
 		 toReturn.setThresholdValues(thresholdValues);
 		 toReturn.setValue(value);
+		 toReturn.setKpiValueId(kpiValueId);
 		 toReturn.setValueDescr(valueDescr);
 		 toReturn.setWeight(weight);
 		 return toReturn;
+	}
+
+	public Integer getKpiValueId() {
+		return kpiValueId;
+	}
+
+	public void setKpiValueId(Integer kpiValueId) {
+		this.kpiValueId = kpiValueId;
 	}
 
 }

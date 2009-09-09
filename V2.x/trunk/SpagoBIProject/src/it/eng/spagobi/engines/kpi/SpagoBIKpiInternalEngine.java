@@ -1051,7 +1051,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						logger.debug("New value calculated");
 						if(register_values && valTemp.getR().getName()!=null){
 							// Insert new Value into the DB
-							DAOFactory.getKpiDAO().insertKpiValue(valTemp);
+							Integer kpiValueId =DAOFactory.getKpiDAO().insertKpiValue(valTemp);
+							kVal.setKpiValueId(kpiValueId);
 							logger.info("New value inserted in the DB. Resource="+valTemp.getR().getName()+" KpiInstanceId="+valTemp.getKpiInstanceId());
 
 
@@ -1108,7 +1109,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					logger.debug("New value calculated");
 					if(register_values){
 						// Insert new Value into the DB
-						DAOFactory.getKpiDAO().insertKpiValue(kVal);
+						Integer kpiValueId =DAOFactory.getKpiDAO().insertKpiValue(kVal);
+						kVal.setKpiValueId(kpiValueId);
 						logger.debug("New value inserted in the DB");
 					}			
 					// Checks if the value is alarming (out of a certain range)
@@ -1122,7 +1124,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				logger.warn("The Data Set doesn't return any value!!!!!");
 				if(register_values){
 					// Insert new Value into the DB
-					DAOFactory.getKpiDAO().insertKpiValue(kVal);
+					Integer kpiValueId =DAOFactory.getKpiDAO().insertKpiValue(kVal);
+					kVal.setKpiValueId(kpiValueId);
 					logger.debug("New value inserted in the DB");
 				}		
 				DAOFactory.getAlarmDAO().isAlarmingValue(kVal);

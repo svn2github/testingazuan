@@ -413,10 +413,11 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 
 
-	public void insertKpiValue(KpiValue value) throws EMFUserError {
+	public Integer insertKpiValue(KpiValue value) throws EMFUserError {
 		logger.debug("IN");
 		Session aSession = null;
 		Transaction tx = null;
+		Integer kpiValueId = null;
 
 		try {
 			aSession = getSession();
@@ -463,9 +464,9 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 			hibKpiValue.setSbiKpiInstance(sbiKpiInstance);
 			logger.debug("Kpi Instance setted");
 
-			aSession.save(hibKpiValue);
+			kpiValueId = (Integer)aSession.save(hibKpiValue);
 			tx.commit();
-
+			return kpiValueId;
 		} catch (HibernateException he) {
 			logger.error(
 					"Error while inserting the KpiValue related to the KpiInstance with id "
@@ -484,7 +485,6 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 				logger.debug("OUT");
 			}
 		}
-		logger.debug("OUT");
 
 	}
 
@@ -624,6 +624,7 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 		logger.debug("IN");
 		KpiValue toReturn = new KpiValue();
 
+		toReturn.setKpiValueId(value.getIdKpiInstanceValue());
 		Date beginDate = value.getBeginDt();
 		logger
 		.debug("SbiKpiValue begin date: "

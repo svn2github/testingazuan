@@ -428,12 +428,15 @@ public class BasicTemplateBuilder  {
 	final Integer columnHeaderHeight=new Integer(14);
 //	height of the column header band
 	final Integer thresholdFieldWidth=new Integer(92);
+	
+	final Integer thresholdSemaphoreWidth=new Integer(10);
 //	height of the column header band
 	final Integer thresholdFieldSeparatorWidth=new Integer(10);
 //	height of the column header band
 	Integer maxFirstSubTemplateHeight=new Integer(745);
 	final Integer maxSubTemplateHeight=new Integer(760);
 	final Integer subreportHeight = new Integer(8);
+	final Integer maxSubTemplateWIdtht=new Integer(530);
 
 	int countSubreports = 0;
 	
@@ -600,6 +603,7 @@ public class BasicTemplateBuilder  {
 						}
 					}
 				}else{
+					
 					//Add last subreport to the List
 					increaseHeight(subTemplateBaseContent);
 					subreports.add(subTemplateBaseContent);
@@ -628,7 +632,7 @@ public class BasicTemplateBuilder  {
 					
 					if (actualHeight+separatorHeight+valueHeight+10<maxFirstSubTemplateHeight){
 						KpiLine lineRoot=thisBlock.getRoot();
-						List sourceBeansToAdd2 = newLine(lineRoot, 0,true,bandDetailReport);
+						List sourceBeansToAdd2 = newLine(lineRoot, 0,true);
 						if (sourceBeansToAdd2!=null && !sourceBeansToAdd2.isEmpty()){
 						Iterator it = sourceBeansToAdd2.iterator();
 							while(it.hasNext()){
@@ -651,7 +655,7 @@ public class BasicTemplateBuilder  {
 						bandSummaryReport=(SourceBean)subSummarySB.getAttribute("BAND");	
 						//NEW SUBREPORT
 						KpiLine lineRoot=thisBlock.getRoot();
-						List sourceBeansToAdd2 = newLine(lineRoot, 0,true,bandDetailReport);
+						List sourceBeansToAdd2 = newLine(lineRoot, 0,true);
 						if (sourceBeansToAdd2!=null && !sourceBeansToAdd2.isEmpty()){
 						Iterator it = sourceBeansToAdd2.iterator();
 							while(it.hasNext()){
@@ -711,6 +715,7 @@ public class BasicTemplateBuilder  {
 							}	
 						}
 					}else{
+						
 						//Add last subreport to the List
 						increaseHeight(subTemplateBaseContent);
 						subreports.add(subTemplateBaseContent);
@@ -747,9 +752,7 @@ public class BasicTemplateBuilder  {
 	
 	public SourceBean createNewSubReport(int numOfSubreport){
 		logger.debug("IN");
-		/*if(numOfSubreport>=1){
-			maxFirstSubTemplateHeight = maxSubTemplateHeight;
-		}*/
+
 		SourceBean subTemplateBaseContent =null;
 		// Create Source Bean of template of subtemplate
 		String subTemplateStr = getTemplateSubTemplate();
@@ -807,7 +810,7 @@ public class BasicTemplateBuilder  {
 		List sourceBeansToAdd = new ArrayList();
 		Resource res=block.getR();
 			
-			try{//if (actualHeight+separatorModelsHeight+resourceBandHeight+10<maxSubTemplateHeight){
+			try{
 				actualHeight+=separatorModelsHeight;
 
 				SourceBean bandRes=new SourceBean(resourceBand);
@@ -843,8 +846,7 @@ public class BasicTemplateBuilder  {
 				sourceBeansToAdd.add(kthreshColHeader);			
 				
 				actualHeight+=columnHeaderHeight;
-				
-				//}
+
 			}
 			catch (Exception e) {
 				logger.error("Error in setting the resource band",e);
@@ -856,11 +858,10 @@ public class BasicTemplateBuilder  {
 	}
 
 
-	public List newLine(KpiLine kpiLine, int level,Boolean evenLevel, SourceBean bandDetailReport){
+	public List newLine(KpiLine kpiLine, int level,Boolean evenLevel){
 		logger.debug("IN");
 		List sourceBeansToAdd = new ArrayList();
 		try {
-			//if (actualHeight+separatorHeight+valueHeight+10<maxSubTemplateHeight){
 			actualHeight+=separatorHeight;
 			SourceBean textCodeName=new SourceBean(staticTextName);   // code - name
 			SourceBean textValue=new SourceBean(staticTextNumber);  //value number
@@ -890,7 +891,6 @@ public class BasicTemplateBuilder  {
 			}else{
 				sourceBeansToAdd.add(oddLine);
 			}	
-			//}
 			
 		} catch (SourceBeanException e) {
 			logger.error("error while adding a line");
@@ -903,11 +903,17 @@ public class BasicTemplateBuilder  {
 			
 		if(children!=null){
 			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
-				KpiLine kpiLineChild = (KpiLine) iterator.next();
+				KpiLine kpiLineChild = (KpiLine) iterator.next();	
 				
-					
+				Iterator it3 = sourceBeansToAdd.iterator();
+				while(it3.hasNext()){
+					SourceBean toAdd = (SourceBean)it3.next();
+					bandDetailReport.setAttribute(toAdd);
+				}	
+				sourceBeansToAdd = new ArrayList();	
+				
 					if (actualHeight+10<maxFirstSubTemplateHeight){
-						List sourceBeansToAdd2 = newLine(kpiLineChild, level+1,!evenLevel,bandDetailReport);
+						List sourceBeansToAdd2 = newLine(kpiLineChild, level+1,!evenLevel);
 						if (sourceBeansToAdd2!=null && !sourceBeansToAdd2.isEmpty()){
 						Iterator it = sourceBeansToAdd2.iterator();
 							while(it.hasNext()){
@@ -916,6 +922,7 @@ public class BasicTemplateBuilder  {
 							}	
 						}
 					}else{
+								
 						//Add last subreport to the List
 						increaseHeight(subTemplateBaseContent);
 						subreports.add(subTemplateBaseContent);
@@ -929,11 +936,11 @@ public class BasicTemplateBuilder  {
 						subSummarySB=(SourceBean)subTemplateBaseContent.getAttribute("summary");
 						bandSummaryReport=(SourceBean)subSummarySB.getAttribute("BAND");	
 						//NEW SUBREPORT
-						List sourceBeansToAdd2 = newLine(kpiLineChild, level+1,!evenLevel,bandDetailReport);
+						List sourceBeansToAdd2 = newLine(kpiLineChild, level+1,!evenLevel);
 						if (sourceBeansToAdd2!=null && !sourceBeansToAdd2.isEmpty()){
-						Iterator it = sourceBeansToAdd2.iterator();
-							while(it.hasNext()){
-								SourceBean toAdd = (SourceBean)it.next();
+						Iterator it2 = sourceBeansToAdd2.iterator();
+							while(it2.hasNext()){
+								SourceBean toAdd = (SourceBean)it2.next();
 								bandDetailReport.setAttribute(toAdd);
 							}	
 						}
@@ -951,7 +958,7 @@ public class BasicTemplateBuilder  {
 
 
 	protected List orderChildren(List ordered, List notordered) {
-		//Arrays.fill s = children ;
+
 		List toReturn = ordered;
 		List temp = new ArrayList();
 		KpiLine l = null;
@@ -1130,7 +1137,6 @@ public class BasicTemplateBuilder  {
 			try {
 			actualHeight+=separatorHeight;	
 			Integer yValue=actualHeight;
-			Integer xValue = thresholdFieldWidth;
 			//Draws the Threshold Code
 			SourceBean thresholdTextCode1 = new SourceBean(thresholdTextCode);
 			
@@ -1176,35 +1182,41 @@ public class BasicTemplateBuilder  {
 						SourceBean thresholdTextValue1=new SourceBean(thresholdTextValue);
 						
 						//Semaphore Threshold creation
+						
 						xValue = xValue + thresholdFieldWidth;
 						
-						String colorSemaphor = val.getColourString();
-						semaphor1.setAttribute("reportElement.x", xValue.toString());
-						semaphor1.setAttribute("reportElement.y", new Integer(yValue.intValue()+2).toString());
-						if(colorSemaphor!=null){
-							semaphor1.setAttribute("reportElement.forecolor",  "#000000");
-							semaphor1.setAttribute("reportElement.backcolor", colorSemaphor);
-						}else{
-							semaphor1.setAttribute("reportElement.forecolor", "#FFFFFF");
-							semaphor1.setAttribute("reportElement.backcolor", "#FFFFFF");
+						if(xValue +thresholdSemaphoreWidth + thresholdFieldWidth>=maxSubTemplateWIdtht){	
+							xValue = new Integer(5) + thresholdFieldWidth;
+							actualHeight+=valueHeight;
+							yValue = actualHeight;
 						}
+							String colorSemaphor = val.getColourString();
+							semaphor1.setAttribute("reportElement.x", xValue.toString());
+							semaphor1.setAttribute("reportElement.y", new Integer(yValue.intValue()+2).toString());
+							if(colorSemaphor!=null){
+								semaphor1.setAttribute("reportElement.forecolor",  "#000000");
+								semaphor1.setAttribute("reportElement.backcolor", colorSemaphor);
+							}else{
+								semaphor1.setAttribute("reportElement.forecolor", "#FFFFFF");
+								semaphor1.setAttribute("reportElement.backcolor", "#FFFFFF");
+							}
+							sourceBeansToAdd.add(semaphor1);
 						
-						//Threshold Value Creation
-						xValue = xValue + thresholdFieldSeparatorWidth;
-						
-						String labelTh=val.getLabel() != null ? val.getLabel() : "";
-						String min = val.getMinValue()!= null ? val.getMinValue().toString() : "";
-						String max = val.getMaxValue()!= null ?  val.getMaxValue().toString() : "";
-						String valueTh = "Value: "+min+"-"+max+" "+labelTh;
-						if(valueTh.length()>25)valueTh = valueTh.substring(0, 24);
-
-						thresholdTextValue1.setAttribute("reportElement.x", xValue.toString());
-						thresholdTextValue1.setAttribute("reportElement.y", yValue.toString());
-						SourceBean threshValue2=(SourceBean)thresholdTextValue1.getAttribute("text");
-						threshValue2.setCharacters(valueTh);
-						
-						sourceBeansToAdd.add(semaphor1);
-						sourceBeansToAdd.add(thresholdTextValue1);
+							xValue = xValue + thresholdFieldSeparatorWidth;	
+												
+							//Threshold Value Creation	
+							String labelTh=val.getLabel() != null ? val.getLabel() : "";
+							String min = val.getMinValue()!= null ? val.getMinValue().toString() : "";
+							String max = val.getMaxValue()!= null ?  val.getMaxValue().toString() : "";
+							String valueTh = "Value: "+min+"-"+max+" "+labelTh;
+							if(valueTh.length()>25)valueTh = valueTh.substring(0, 24);
+	
+							thresholdTextValue1.setAttribute("reportElement.x", xValue.toString());
+							thresholdTextValue1.setAttribute("reportElement.y", yValue.toString());
+							SourceBean threshValue2=(SourceBean)thresholdTextValue1.getAttribute("text");
+							threshValue2.setCharacters(valueTh);
+							
+							sourceBeansToAdd.add(thresholdTextValue1);
 					}
 				}
 			}
@@ -1313,8 +1325,6 @@ public class BasicTemplateBuilder  {
 		StringBuffer buffer = new StringBuffer();
 		logger.debug("IN");
 		try{
-			// Used to test
-			//File file = new File("D:/progetti/spagobi/eclipse2/SpagoBIProject/src/it/eng/spagobi/kpi/utils/templateKpi.jrxml");
 
 			String rootPath=ConfigSingleton.getRootPath();
 			logger.debug("rootPath: "+rootPath!=null ? rootPath : "");
@@ -1368,8 +1378,6 @@ public class BasicTemplateBuilder  {
 		StringBuffer buffer = new StringBuffer();
 		logger.debug("IN");
 		try{
-			// Used to test
-			//File file = new File("D:/progetti/spagobi/eclipse2/SpagoBIProject/src/it/eng/spagobi/kpi/utils/templateKpi.jrxml");
 
 			String rootPath=ConfigSingleton.getRootPath();
 			logger.debug("rootPath: "+rootPath!=null ? rootPath : "");
@@ -1433,54 +1441,5 @@ public class BasicTemplateBuilder  {
 		logger.debug("OUT");
 		return template;
 	}
-
-
-//	/**
-//	* Fill calculated fields.
-//	* 
-//	* @param savedQueryObjectID the saved query object id
-//	*/
-//	public void fillCalculatedFields(String savedQueryObjectID) {
-
-//	}
-
-//	/**
-//	* Deserialize query object.
-//	* 
-//	* @param savedQueryObjectID the saved query object id
-//	* 
-//	* @return the i single data mart wizard object
-//	*/
-//	private Object deserializeQueryObject(String savedQueryObjectID){        
-//	String fileName = null; //formulaFile.getParent() + System.getProperty("file.separator") + savedQueryObjectID+ ".qbe";
-//	File f = null;
-//	FileInputStream fis = null; 
-
-//	try {
-//	f = new File(fileName);
-//	fis = new FileInputStream(f);
-//	XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(fis));
-
-
-//	Object o = (Object)decoder.readObject();
-//	decoder.close();
-
-//	return o;
-//	} catch (FileNotFoundException e) {
-//	//Logger.error(LocalFileSystemQueryPersister.class, e);
-//	return null;
-//	}finally{
-//	try{
-//	fis.close();
-//	}catch (Exception e) {
-
-//	}
-//	f.delete();
-//	}
-
-//	}
-
-
-
 
 }

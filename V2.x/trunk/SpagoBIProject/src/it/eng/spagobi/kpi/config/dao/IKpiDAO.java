@@ -20,7 +20,7 @@ public interface IKpiDAO {
 	 * @param KpiValue to insert 
 	 * @throws EMFUserError If an Exception occurred
 	 */	
-	public void insertKpiValue(KpiValue value) throws EMFUserError;
+	public Integer insertKpiValue(KpiValue value) throws EMFUserError;
 
 	/**
 	 * Returns the ModelInstance of the referred label

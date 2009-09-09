@@ -436,6 +436,7 @@ public class KpiResourceBlock implements Serializable{
 				parameters +="EXECUTION_FLOW_ID="+executionFlowId;
 				//execUrlParMap.put("SOURCE_EXECUTION_ID", uuidPrincip);
 				parameters +="&SOURCE_EXECUTION_ID="+uuidPrincip;
+				parameters +="&KPI_VALUE_ID="+(kpiVal.getKpiValueId()!=null? kpiVal.getKpiValueId().toString():"-1");
 				//execUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
 				//execUrlParMap.put(ObjectsTreeConstants.MODALITY,execMod );
 				

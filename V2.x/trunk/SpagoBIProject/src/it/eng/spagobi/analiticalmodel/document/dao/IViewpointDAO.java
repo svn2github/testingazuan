@@ -84,17 +84,18 @@ public interface IViewpointDAO {
 	
 	/**
 	 * Loads all detail information for a viewpoint identified by its
-	 * <code>name</code>. All these information are stored into a
+	 * <code>name</code> and relevant document identifier. All these information are stored into a
 	 * <code>Viewpoint</code> object, which is
 	 * returned.
 	 * 
 	 * @param name The name for the viewpoint to load
+	 * @param name The id of the document
 	 * 
 	 * @return A <code>Viewpoint</code> object containing all loaded information
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public Viewpoint loadViewpointByName(String name) throws EMFUserError;
+	public Viewpoint loadViewpointByNameAndBIObjectId(String name, Integer biobjectId) throws EMFUserError;
 
 	
 	/**

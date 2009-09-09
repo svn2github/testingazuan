@@ -204,9 +204,10 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 	}
 
 	/**
-	 * Load viewpoint by name.
+	 * Load viewpoint by name and document identifier.
 	 * 
-	 * @param name the name
+	 * @param name the name of the viewpoint
+	 * @param name The id of the document
 	 * 
 	 * @return the viewpoint
 	 * 
@@ -214,7 +215,7 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 	 * 
 	 * @see it.eng.spagobi.analiticalmodel.document.dao.IViewpointDAO#loadViewpointByName(java.lang.String)
 	 */
-	public Viewpoint loadViewpointByName(String name) throws EMFUserError {
+	public Viewpoint loadViewpointByNameAndBIObjectId(String name, Integer biobjectId) throws EMFUserError {
 		Viewpoint toReturn = null;
 		Session aSession = null;
 		Transaction tx = null;
@@ -223,13 +224,13 @@ public class ViewpointDAOHimpl extends AbstractHibernateDAO implements IViewpoin
 			aSession = getSession();
 			tx = aSession.beginTransaction();
 			
-			Criterion labelCriterrion = Expression.eq("vpName",
-					name);
-			Criteria criteria = aSession.createCriteria(SbiViewpoints.class);
-			criteria.add(labelCriterrion);	
-			SbiViewpoints hibViewpoint = (SbiViewpoints)criteria.uniqueResult();
-			if (hibViewpoint == null) return null;
+			String hql = "from SbiViewpoints vp where vp.sbiObject.biobjId = ? and vp.vpName = ?" ;
+			Query hqlQuery = aSession.createQuery(hql);
+			hqlQuery.setInteger(0, biobjectId.intValue());
+			hqlQuery.setString(1, name);
 			
+			SbiViewpoints hibViewpoint = (SbiViewpoints)hqlQuery.uniqueResult();
+			if (hibViewpoint == null) return null;
 			toReturn = toViewpoint(hibViewpoint);
 			tx.commit();
 			

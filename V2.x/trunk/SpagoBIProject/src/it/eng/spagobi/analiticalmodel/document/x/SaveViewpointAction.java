@@ -142,7 +142,7 @@ public class SaveViewpointAction extends AbstractSpagoBIAction {
 			
 			try {
 				viewpointDAO = DAOFactory.getViewpointDAO();
-				viewpoint = viewpointDAO.loadViewpointByName(viewpointName);
+				viewpoint = viewpointDAO.loadViewpointByNameAndBIObjectId(viewpointName, biobjectId);
 				if (viewpoint != null) throw new SpagoBIServiceException(SERVICE_NAME, "A viewpoint with the name [" + viewpointName + "] alredy exist");
 				//Assert.assertTrue(viewpoint == null, "A viewpoint with the name [" + viewpointName + "] alredy exist");
 			} catch (EMFUserError e) {

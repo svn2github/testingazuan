@@ -1681,7 +1681,7 @@ public class ExecuteBIObjectModule extends AbstractHttpModule {
 
 		IViewpointDAO biViewpointDAO = DAOFactory.getViewpointDAO();
 		// check if a viewpoint with the same name yet exists
-		Viewpoint tmpVP = biViewpointDAO.loadViewpointByName(nameVP);
+		Viewpoint tmpVP = biViewpointDAO.loadViewpointByNameAndBIObjectId(nameVP, obj.getId());
 		if (tmpVP != null) {
 			errorHandler.addError(new EMFUserError(EMFErrorSeverity.ERROR,
 					6002, null));

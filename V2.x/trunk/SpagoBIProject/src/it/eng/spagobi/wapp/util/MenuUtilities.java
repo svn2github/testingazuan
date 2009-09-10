@@ -120,26 +120,9 @@ public class MenuUtilities {
 			SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
 			boolean technicalMenuLoaded = false;
 			
-			/*boolean hasUserRole = false;
-	        List userRoles = new ArrayList();
-	        List lstRoles = DAOFactory.getRoleDAO().loadAllRoles();*/
 	        Collection lstRolesForUser = profile.getRoles();
 			logger.debug("** Roles for user: " + lstRolesForUser.size());
-			/*
-	        for(int i = 0; i < lstRoles.size(); i++)
-	        {
-	            if(((Role)lstRoles.get(i)).getRoleTypeCD().equalsIgnoreCase("USER"))			          
-	                userRoles.add(((Role)lstRoles.get(i)).getName());			            
-	        }
-	     
-	        for(int i = 0; i < userRoles.size(); i++)
-	        {
-	            if(!lstRolesForUser.contains(userRoles.get(i)))	            
-	                continue;	            
-	            hasUserRole = true;
-	            break;
-	        }
-				*/	
+			
 			Object[] arrRoles = lstRolesForUser.toArray();
 			Integer levelItem = 1;			
 			for (int i=0; i< arrRoles.length; i++){

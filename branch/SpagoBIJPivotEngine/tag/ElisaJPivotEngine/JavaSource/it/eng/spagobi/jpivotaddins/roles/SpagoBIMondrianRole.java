@@ -19,7 +19,10 @@ import it.eng.spago.security.IEngUserProfile;
 import java.io.InputStream;
 import java.util.*;
 
+import org.apache.log4j.Logger;
 import org.dom4j.DocumentException;
+
+import com.tonbeller.jpivot.tags.MondrianModelFactory;
 
 import mondrian.olap.*;
 
@@ -33,9 +36,13 @@ import mondrian.olap.*;
  */
 public class SpagoBIMondrianRole implements Role {
 
+	  private static Logger logger = Logger.getLogger(SpagoBIMondrianRole.class);
+	  
 	private IEngUserProfile profile = null;
 	// Filtered dimension
 	private Set<String> filters=null;
+	
+	private boolean allDimension=false;
     /**
      * Creates a role with no permissions.
      * @param profile 
@@ -49,18 +56,27 @@ public class SpagoBIMondrianRole implements Role {
 	    		org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
 	    		org.dom4j.Document document;	
 				document = reader.read(is);
+				
+				org.dom4j.Node attribute = document.selectSingleNode("//DATA-ACCESS/FILTERED-DIMENSIONS");
+				String filterAll = attribute.valueOf("@filterAll");
+				if (filterAll!=null && filterAll.equalsIgnoreCase("true")){
+					allDimension=true;
+					logger.debug("ALL dimension will be filtered");
+				}
 				List dimensions = document.selectNodes("//DATA-ACCESS/FILTERED-DIMENSIONS/DIMENSION");
-				Iterator it = dimensions.iterator();
-				while (it.hasNext()) {
-					org.dom4j.Node aDimension = (org.dom4j.Node) it.next();
-					String aDimensionName = aDimension.valueOf("@name");
-					filters.add(aDimensionName);
+				if (dimensions!=null){
+					Iterator it = dimensions.iterator();
+					while (it.hasNext()) {
+						org.dom4j.Node aDimension = (org.dom4j.Node) it.next();
+						String aDimensionName = aDimension.valueOf("@name");
+						filters.add(aDimensionName);
+						logger.debug("ADD dimension to filtered SET");
+					}
 				}
 	
 	    	
 			} catch (DocumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("DocumentException, reading template");
 			}	
     	}
     	
@@ -78,7 +94,8 @@ public class SpagoBIMondrianRole implements Role {
     public Access getAccess(Dimension dimension) {
     	// Never invoked
     	String name=dimension.getName();
-    	if (filters.contains(name)) {
+    	if (allDimension || filters.contains(name)) {
+    		logger.debug("Filtering this dimension:"+name);
     		return Access.CUSTOM;
     	}
         return Access.ALL;
@@ -86,7 +103,8 @@ public class SpagoBIMondrianRole implements Role {
 
     public Access getAccess(Hierarchy hierarchy) {
     	String name=hierarchy.getDimension().getName();
-    	if (filters.contains(name)) {
+    	if (allDimension || filters.contains(name)) {
+    		logger.debug("Filtering this dimension:"+name);
     		return Access.CUSTOM;
     	}
     	return Access.ALL;
@@ -142,7 +160,8 @@ public class SpagoBIMondrianRole implements Role {
 		public SpagoBIHierarchyAccess (Hierarchy hierarchy) {
 			this.hierarchy = hierarchy;
 	    	String name=hierarchy.getDimension().getName();
-	    	if (filters.contains(name)) {
+	    	if (allDimension || filters.contains(name)) {
+	    		logger.debug("Filtering this dimension:"+name);
 	    		this.access = Access.CUSTOM;
 			} else {
 				this.access = Access.ALL;
@@ -168,133 +187,21 @@ public class SpagoBIMondrianRole implements Role {
 	            return this.access;
 	        }
 	        return Access.ALL;
-	        
-//	        try {
-//	        	Access toReturn = Access.NONE;
-//	        	// if level is higher than top level or lower than bottom level, no access
-//	        	if (member.getLevel().getDepth() < getTopLevelDepth()) {
-//		            // no access
-//	        		toReturn = Access.NONE;
-//		        } else if (member.getLevel().getDepth() > getBottomLevelDepth()) {
-//		            // no access
-//		        	toReturn = Access.NONE;
-//		        } else {
-//		        	if (member.isAll()) {
-//		        		toReturn = Access.ALL;
-//		        	} else {
-//			        	String uniqueName = member.getUniqueName();
-//						if (uniqueName.startsWith("[Product].[All Products].[" + profile.getUserAttribute("family").toString() + "]")) {
-//							toReturn = Access.ALL;
-//						} else {
-//							toReturn = Access.NONE;
-//						}
-//		        	}
-//		        }
-//	        	
-//				System.out.println("getAccess: returning " + toReturn + " for member " + member);
-//				return toReturn;
-//			} catch (EMFInternalError e) {
-//				e.printStackTrace();
-//				return Access.NONE;
-//			}
-
+	
 	    }
-		
-//	    public Access getAccess(Member member) {
-//	        if (this.access != Access.CUSTOM) {
-//	            return this.access;
-//	        }
-//	        try {
-//	        	String uniqueName = member.getUniqueName();
-//				if (uniqueName.equals("[Product].[" + profile.getUserAttribute("family").toString() + "]")) {
-//					if (!memberGrants.containsKey(member)) {
-//						memberGrants.put(member, Access.ALL);
-//					}
-//				}
-//			} catch (EMFInternalError e) {
-//				e.printStackTrace();
-//			}
-//	        /*
-//	        if (member.getUniqueName().equals("[Product].[All Products].[Drink]")) {
-//	        	if (!memberGrants.containsKey(member)) {
-//	        		memberGrants.put(member, Access.NONE);
-//	        	}
-//	        }
-//	        if (member.getUniqueName().equals("[Product].[All Products].[Food]")) {
-//	        	if (!memberGrants.containsKey(member)) {
-//	        		memberGrants.put(member, Access.ALL);
-//	        	}
-//	        }
-//	        */
-//	        if (member.getLevel().getDepth() < getTopLevelDepth()) {
-//	            // no access
-//	            return Access.NONE;
-//	        } else if (member.getLevel().getDepth() > getBottomLevelDepth()) {
-//	            // no access
-//	            return Access.NONE;
-//	        } else {
-//	            // Check whether there is an explicit grant for the member or
-//	            // an ancestor.
-//	            for (Member m = member; m != null; m = m.getParentMember()) {
-//	                final Access memberAccess = memberGrants.get(m);
-//	                if (memberAccess == null) {
-//	                    continue;
-//	                }
-//	                if (memberAccess == Access.CUSTOM &&
-//	                        m != member) {
-//	                    // If member's ancestor has custom access, that
-//	                    // means that member has no access.
-//	                    return Access.NONE;
-//	                }
-//	                return memberAccess;
-//	            }
-//	            // If there is no inherited access, check for implicit access.
-//	            // A member is implicitly visible if one of its descendants is
-//	            // visible.
-//	            for (Map.Entry<Member, Access> entry : memberGrants.entrySet()) {
-//	                final Member grantedMember = entry.getKey();
-//	                switch (entry.getValue()) {
-//	                case NONE:
-//	                    continue;
-//	                }
-//	                for (Member m = grantedMember; m != null; m = m.getParentMember()) {
-//	                    if (m == member) {
-//	                        return Access.CUSTOM;
-//	                    }
-//	                    if (m != grantedMember && memberGrants.get(m) != null) {
-//	                        break;
-//	                    }
-//	                }
-//	            }
-//	            return Access.NONE;
-//	        }
-//	    	/*
-//	    	if (member.getUniqueName().equals("[Product].[All Products]")) return Access.CUSTOM;
-//	    	if (member.getUniqueName().equals("[Product].[All Products].[Drink]")) return Access.NONE;
-//	    	if (member.getUniqueName().equals("[Product].[All Products].[Food]")) return Access.ALL;
-//	//    	Level level = member.getLevel();
-//	//    	int depth = level.getDepth();
-//	//    	if (depth < this.getTopLevelDepth() || depth > this.getBottomLevelDepth()) {
-//	//    		return Access.NONE;
-//	//    	}
-//	        return Access.ALL;
-//	        */
-//	    }
 	
 	    public int getTopLevelDepth() {
 	        return 0;
 	    }
 	
 	    public int getBottomLevelDepth() {
-//	    	if (hierarchy.getName().equals("Product")) {
-//	    		return 2;
-//	    	}
 	        return hierarchy.getLevels().length - 1;
 	    }
 	
 	    public RollupPolicy getRollupPolicy() {
 	    	String name=hierarchy.getDimension().getName();
-	    	if (filters.contains(name)) {	    	
+	    	if (allDimension || filters.contains(name)) {
+	    		logger.debug("Filtering this dimension:"+name);
 	    		return RollupPolicy.PARTIAL;
 	    	}
 	    	return RollupPolicy.FULL;
@@ -312,34 +219,6 @@ public class SpagoBIMondrianRole implements Role {
 	    	}
 			System.out.println("hasInaccessibleDescendants: returning " + toReturn + " for member " + member);
         	return toReturn;
-//        	try {
-//        		boolean toReturn = false;
-//        		if (member == null) toReturn = false;
-//        		else {
-//			    	// if level is higher than top level or lower than bottom level, no access
-//		        	if (member.getLevel().getDepth() < getTopLevelDepth()) {
-//		        		toReturn = true;
-//			        } else if (member.getLevel().getDepth() > getBottomLevelDepth()) {
-//			        	toReturn = false;
-//			        } else {
-//			        	if (member.isAll()) {
-//			        		toReturn = true;
-//			        	} else {
-//				        	String uniqueName = member.getUniqueName();
-//							if (uniqueName.startsWith("[Product].[All Products].[" + profile.getUserAttribute("family").toString() + "]")) {
-//								toReturn = false;
-//							} else {
-//								toReturn = true;
-//							}
-//			        	}
-//			        }
-//        		}
-//				System.out.println("hasInaccessibleDescendants: returning " + toReturn + " for member " + member);
-//	        	return toReturn;
-//			} catch (EMFInternalError e) {
-//				e.printStackTrace();
-//				return true;
-//			}
 	    }
 	    
 	}
@@ -347,4 +226,3 @@ public class SpagoBIMondrianRole implements Role {
 
 }
 
-// End RoleImpl.java

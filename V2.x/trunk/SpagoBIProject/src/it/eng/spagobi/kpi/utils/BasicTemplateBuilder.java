@@ -1293,12 +1293,17 @@ public class BasicTemplateBuilder  {
 		nameResolution.put("LINE", "line");
 		nameResolution.put("REPORTELEMENT", "reportElement");
 		nameResolution.put("GRAPHICELEMENT", "graphicElement");
+		nameResolution.put("reportELEMENT", "reportElement");
+		nameResolution.put("graphicELEMENT", "graphicElement");
 		nameResolution.put("TEXTFIELD", "textField");
+		nameResolution.put("textFIELD", "textField");
 		nameResolution.put("BOX", "box");
 		nameResolution.put("TEXTELEMENT", "textElement");
 		nameResolution.put("textELEMENT", "textElement");
 		nameResolution.put("FONT", "font");
 		nameResolution.put("TEXTFIELDEXPRESSION", "textFieldExpression");
+		nameResolution.put("textFIELDEXPRESSION", "textFieldExpression");
+		nameResolution.put("textFieldEXPRESSION", "textFieldExpression");
 		nameResolution.put("PAGEHEADER", "pageHeader");
 		nameResolution.put("COULMNHEADER", "columnHeader");
 		nameResolution.put("DETAIL", "detail");
@@ -1306,6 +1311,7 @@ public class BasicTemplateBuilder  {
 		nameResolution.put("PAGEFOOTER", "pageFooter");
 		nameResolution.put("SUMMARY", "summary");
 		nameResolution.put("STATICTEXT", "staticText");
+		nameResolution.put("STATICText", "staticText");
 		nameResolution.put("TEXT", "text");
 		nameResolution.put("IMAGE", "image");	
 		nameResolution.put("RECTANGLE", "rectangle");

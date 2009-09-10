@@ -33,6 +33,7 @@ import it.eng.qbe.model.HQLStatement;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.SelectField;
+import it.eng.qbe.query.WhereField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.qbe.QbeEngineConfig;
@@ -99,22 +100,11 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			logger.debug("Configuration setting  [" + "QBE.QBE-SQL-RESULT-LIMIT.isBlocking" + "] is equals to [" + isMaxResultsLimitBlocking + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
+			Assert.assertNotNull(queryId, "Parameter [" + QUERY_ID + "] cannot be null in oder to execute " + this.getActionName() + " service");
 			
-			//Assert.assertNotNull(queryId, "Parameter [" + QUERY_ID + "] cannot be null in oder to execute " + this.getActionName() + " service");
-			
-			if (queryId != null) {
-				// retrieving query specified by id on request
-				query = getEngineInstance().getQueryCatalogue().getQuery(queryId);
-				Assert.assertNotNull(query, "Query object with id [" + queryId + "] does not exist in the catalogue");
-			} else if (getEngineInstance().getActiveQuery() != null) {
-				// retrieving current active query
-				logger.debug("Query identifier not specified in request: executing current active query");
-				query = getEngineInstance().getActiveQuery();
-			} else {
-				// retrieving first query from catalog
-				logger.debug("Query identifier not specified in request: executing first query returned by the catalogue");
-				query = getEngineInstance().getQueryCatalogue().getFirstQuery();
-			}
+			// retrieving query specified by id on request
+			query = getEngineInstance().getQueryCatalogue().getQuery(queryId);
+			Assert.assertNotNull(query, "Query object with id [" + queryId + "] does not exist in the catalogue");
 			
 			if(getEngineInstance().getActiveQuery() != null && getEngineInstance().getActiveQuery().getId().equals(queryId)) {
 				logger.debug("Query with id [" + queryId + "] is the current active query. Previous generated statment will be reused");
@@ -124,6 +114,8 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 				getEngineInstance().setActiveQuery(query);
 				
 			}
+			// promptable filters values may come with request (read-only user modality)
+			updatePromptableFiltersValue(query);
 			
 			statement = getEngineInstance().getStatment();	
 			statement.setParameters( getEnv() );
@@ -188,6 +180,24 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		
 	}
 	
+	private void updatePromptableFiltersValue(Query query) {
+		logger.debug("IN");
+		List whereFields = query.getWhereFields();
+		if (whereFields != null && whereFields.size() > 0) {
+			Iterator it = whereFields.iterator();
+			WhereField whereField = (WhereField) it.next();
+			if (whereField.isPromptable()) {
+				// getting filter value on request
+				String promptValue = this.getAttributeAsString(whereField.getName());
+				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + whereField.getName() + "].");
+				if (promptValue != null) {
+					whereField.getRightOperand().lastValue = promptValue;
+				}
+			}
+		}
+		logger.debug("OUT");
+	}
+
 	private JSONObject buildGridDataFeed(List results, int resultNumber) throws JSONException {
 		JSONObject gridDataFeed = new JSONObject();
 		

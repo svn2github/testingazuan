@@ -52,29 +52,38 @@ Sbi.qbe.QbePanel = function(config) {
 		// set default values here
 	}, config || {});
 	
+	this.services = new Array();
+	var params = {};
+	this.services['getFirstQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_FIRST_QUERY_ACTION'
+		, baseParams: params
+	});
+	
 	this.addEvents();
 	
+	this.queryEditorPanel = null;
 	this.queryResultPanel = new Sbi.widgets.DataStorePanel(c);
 	
-	this.items = null;
-	this.queryEditorPanel = null;
-	
+	var items = null;
 	if (Sbi.user.isPowerUser === true) {
+		// if user is a power user, instantiate and show also the QueryBuilderPanel
 		this.queryEditorPanel = new Sbi.qbe.QueryBuilderPanel(c);
-		this.items = [this.queryEditorPanel, this.queryResultPanel];
+		items = [this.queryEditorPanel, this.queryResultPanel];
 	} else {
-		this.items = [this.queryResultPanel];
+		// if user is a read-only user, do not instantiate and show the QueryBuilderPanel
+		// and execute first query on catalog
+		items = [this.queryResultPanel];
+		this.loadFirstQuery();
 	}
 	
 	this.tabs = new Ext.TabPanel({
 		border: false,
-  		activeTab: 0,//(Sbi.user.isPowerUser === false) ? 1 : 0,
-  		items: this.items
+  		activeTab: 0,
+  		items: items
 	});
 	
 	if (this.queryEditorPanel != null) {
 		this.queryEditorPanel.on('execute', function(editorPanel, query){
-			//alert('execution time baby');
 			this.tabs.activate(this.queryResultPanel);
 			this.queryResultPanel.execQuery(query);
 		}, this);
@@ -89,21 +98,6 @@ Sbi.qbe.QbePanel = function(config) {
 	
 	// constructor
     Sbi.qbe.QbePanel.superclass.constructor.call(this, c);
-
-    // the this.loadingMask object is a work-around: when user in not a power user,
-    // query is executed immediately but the loading mask is not shown, maybe because the body of the 
-    // grid of the queryResultPanel is empty
-    this.loadingMask = new Ext.LoadMask(Ext.getBody(), {msg:"Loading..."});
-    this.hideLoadingMask = function () {
-    	this.loadingMask.hide();
-    	this.queryResultPanel.store.un('load', this.hideLoadingMask, this);
-    }
-    
-	if (Sbi.user.isPowerUser === false) {
-		this.loadingMask.show();
-		this.queryResultPanel.store.on('load', this.hideLoadingMask, this);
-		this.queryResultPanel.execQuery(null);
-	}
     
 };
 
@@ -122,7 +116,55 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
     	query = q;
     }
     
-  
+
     
     // private methods
+	, loadFirstQuery: function() {
+		Ext.Ajax.request({
+	        url: this.services['getFirstQuery'],
+	        params: {},
+	        success : function(response, opts) {
+  	  			try {
+  	  				var firstQuery = Ext.util.JSON.decode( response.responseText );
+  	  				this.executeQuery(firstQuery);
+  	  			} catch (err) {
+  	  				Sbi.exception.ExceptionHandler.handleFailure();
+  	  			}
+	        },
+	        scope: this,
+			failure: Sbi.exception.ExceptionHandler.handleFailure      
+		});
+	}
+	
+	, executeQuery: function(query) {
+    	var freeFilters = this.getPromptableFilters(query);
+	    if (freeFilters.length > 0) {
+	    	var freeConditionsWindow = new Sbi.qbe.FreeConditionsWindow({
+	    		freeFilters: freeFilters
+	    	});
+	    	freeConditionsWindow.on('apply', function (formState) {
+	    		this.queryResultPanel.execQuery(query, formState);
+	    	}, this);
+	    	freeConditionsWindow.on('savedefaults', function (formState) {
+	    		//this.queryEditorPanel.filterGridPanel.setPromptableFiltersDefaultValues(formState);
+	    	}, this);
+	    	freeConditionsWindow.show();
+	    } else {
+	    	this.queryResultPanel.execQuery(query);
+	    }
+	}
+	
+  	, getPromptableFilters : function(query) {
+		var filters = [];
+		if (query.filters != null && query.filters.length > 0) {
+			for(i = 0; i < query.filters.length; i++) {
+				var filter =  query.filters[i];
+				if (filter.promptable) {
+					filters.push(filter);
+				}
+			}
+		}
+		return filters;
+	}
+  	
 });

@@ -168,13 +168,15 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
         	, scope: this
 	    });
 		
-		buttons.push({
-			text: LN('sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults'),
-		    handler: function(){
-    			this.fireEvent('saveDefaults', this.getFormState());
-    		}
-        	, scope: this
-	    });
+		if (Sbi.user.isPowerUser === true) {
+			buttons.push({
+				text: LN('sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults'),
+			    handler: function(){
+	    			this.fireEvent('saveDefaults', this.getFormState());
+	    		}
+	        	, scope: this
+		    });
+		}
 		
 		if (this.defaultvalues !== null) {
 			buttons.push({
@@ -184,21 +186,25 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 		    });
 		}
 		
-		if (this.lastvalues !== null) {
-			buttons.push({
-				text: LN('sbi.qbe.freeconditionswindow.buttons.text.restorelast'),
-			    handler: this.restoreLast
-	        	, scope: this
-		    });
+		if (Sbi.user.isPowerUser === true) {
+			if (this.lastvalues !== null) {
+				buttons.push({
+					text: LN('sbi.qbe.freeconditionswindow.buttons.text.restorelast'),
+				    handler: this.restoreLast
+		        	, scope: this
+			    });
+			}
 		}
 		
-		buttons.push({
-		    text: LN('sbi.qbe.freeconditionswindow.buttons.text.cancel'),
-		    handler: function(){
-            	this.close();
-        	}
-        	, scope: this
-		});
+		if (Sbi.user.isPowerUser === true) {
+			buttons.push({
+			    text: LN('sbi.qbe.freeconditionswindow.buttons.text.cancel'),
+			    handler: function(){
+	            	this.close();
+	        	}
+	        	, scope: this
+			});
+		}
 		
 		return buttons;
 	}

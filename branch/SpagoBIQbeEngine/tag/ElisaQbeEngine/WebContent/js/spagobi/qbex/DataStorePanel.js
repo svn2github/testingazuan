@@ -89,10 +89,11 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
    
     // public methods
 	
-	, execQuery:  function(query) {  
+	, execQuery:  function(query, freeFiltersForm) {  
 		this.store.removeAll();
-		this.store.baseParams = query != null ? {id: query.id} : {};
-		this.store.load({params: {start: 0, limit: 25 }});
+		this.store.baseParams = {id: query.id};
+		var requestParameters = Ext.apply({start: 0, limit: 25 }, freeFiltersForm || {});
+		this.store.load({params: requestParameters});
 	}
 
 

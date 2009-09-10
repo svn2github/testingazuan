@@ -107,6 +107,11 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="GET_FIRST_QUERY_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.GetFirstQueryAction"  
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
 
 </ACTIONS>
 

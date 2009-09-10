@@ -48,6 +48,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartRenderingInfo;
@@ -448,7 +450,8 @@ public class BasicTemplateBuilder  {
 	Integer detailMasterHeight=new Integer(0);
 
 	// Map for the name resolution of upper case tag names
-	HashMap<String, String> nameResolution=new HashMap<String, String>();
+	//Map nameResolution=new Map<String>();
+	List nameResolution=new ArrayList();
 
 	List resources;
 	InputSource inputSource;
@@ -540,9 +543,10 @@ public class BasicTemplateBuilder  {
 		List subreports = createSubreports(resources);
 		
 		finalTemplate=templateBaseContent.toXML(false, false);
-		for (Iterator iterator = nameResolution.keySet().iterator(); iterator.hasNext();) {
-			String toReplace = (String) iterator.next();
-			String replaceWith=nameResolution.get(toReplace);
+		for (Iterator iterator = nameResolution.iterator(); iterator.hasNext();) {
+			NameRes nameR = (NameRes) iterator.next();
+			String toReplace = nameR.getToSubstitute();
+			String replaceWith=nameR.getCorrectString();
 			finalTemplate=finalTemplate.replaceAll("<"+toReplace, "<"+replaceWith);
 			finalTemplate=finalTemplate.replaceAll("</"+toReplace, "</"+replaceWith);		
 		}
@@ -555,9 +559,10 @@ public class BasicTemplateBuilder  {
 			while(suit.hasNext()){
 				SourceBean subTemplateContent = (SourceBean)suit.next();
 				String subTemplate = subTemplateContent.toXML(false);
-				for (Iterator iterator = nameResolution.keySet().iterator(); iterator.hasNext();) {
-					String toReplace = (String) iterator.next();
-					String replaceWith=nameResolution.get(toReplace);
+				for (Iterator iterator = nameResolution.iterator(); iterator.hasNext();) {
+					NameRes nameR = (NameRes) iterator.next();
+					String toReplace = nameR.getToSubstitute();
+					String replaceWith=nameR.getCorrectString();
 					subTemplate=subTemplate.replaceAll("<"+toReplace, "<"+replaceWith);
 					subTemplate=subTemplate.replaceAll("</"+toReplace, "</"+replaceWith);
 				}
@@ -1262,65 +1267,83 @@ public class BasicTemplateBuilder  {
 //		image
 //		imageExpression
 		
-		nameResolution.put("QUERYSTRING", "queryString");
-		nameResolution.put("TOPPEN", "topPen");
-		nameResolution.put("BOTTOMPEN", "bottomPen");
-		nameResolution.put("LEFTPEN", "leftPen");
-		nameResolution.put("RIGHTPEN", "rightPen");
-		nameResolution.put("GROUPEXPRESSION", "groupExpression");
-		nameResolution.put("groupEXPRESSION", "groupExpression");
-		nameResolution.put("GROUPHEADER", "groupHeader");
-		nameResolution.put("GROUPFOOTER", "groupFooter");
-		nameResolution.put("groupHEADER", "groupHeader");
-		nameResolution.put("groupFOOTER", "groupFooter");
-		nameResolution.put("GROUP", "group");
-		nameResolution.put("IMAGEEXPRESSION", "imageExpression");
-		nameResolution.put("imageEXPRESSION", "imageExpression");
-		nameResolution.put("SUBREPORT", "subreport");
-		nameResolution.put("SUBREPORTEXPRESSION", "subreportExpression");
-		nameResolution.put("subreportEXPRESSION", "subreportExpression");
-		nameResolution.put("CONNECTIONEXPRESSION", "connectionExpression");
-		nameResolution.put("connectionEXPRESSION", "connectionExpression");
-		nameResolution.put("JASPERREPORT", "jasperReport");
-		nameResolution.put("IMPORT", "import");
-		nameResolution.put("PROPERTY", "property");
-		nameResolution.put("QUERYSTRING", "queryString");
-		nameResolution.put("FIELD", "field");
-		nameResolution.put("VARIABLE", "variable");
-		nameResolution.put("BACKGROUND", "background");
-		nameResolution.put("BAND", "band");
-		nameResolution.put("TITLE", "title");
-		nameResolution.put("LINE", "line");
-		nameResolution.put("REPORTELEMENT", "reportElement");
-		nameResolution.put("GRAPHICELEMENT", "graphicElement");
-		nameResolution.put("reportELEMENT", "reportElement");
-		nameResolution.put("graphicELEMENT", "graphicElement");
-		nameResolution.put("TEXTFIELD", "textField");
-		nameResolution.put("textFIELD", "textField");
-		nameResolution.put("BOX", "box");
-		nameResolution.put("TEXTELEMENT", "textElement");
-		nameResolution.put("textELEMENT", "textElement");
-		nameResolution.put("FONT", "font");
-		nameResolution.put("TEXTFIELDEXPRESSION", "textFieldExpression");
-		nameResolution.put("textFIELDEXPRESSION", "textFieldExpression");
-		nameResolution.put("textFieldEXPRESSION", "textFieldExpression");
-		nameResolution.put("PAGEHEADER", "pageHeader");
-		nameResolution.put("COULMNHEADER", "columnHeader");
-		nameResolution.put("DETAIL", "detail");
-		nameResolution.put("COLUMNFOOTER", "columnFooter");
-		nameResolution.put("PAGEFOOTER", "pageFooter");
-		nameResolution.put("SUMMARY", "summary");
-		nameResolution.put("STATICTEXT", "staticText");
-		nameResolution.put("STATICText", "staticText");
-		nameResolution.put("TEXT", "text");
-		nameResolution.put("IMAGE", "image");	
-		nameResolution.put("RECTANGLE", "rectangle");
-		nameResolution.put("INITIALVALUEEXPRESSION", "initialValueExpression");
-		nameResolution.put("COLUMNHEADER", "columnHeader");
+		nameResolution.add(new NameRes("QUERYSTRING", "queryString"));
+		nameResolution.add(new NameRes("TOPPEN", "topPen"));
+		nameResolution.add(new NameRes("BOTTOMPEN", "bottomPen"));
+		nameResolution.add(new NameRes("LEFTPEN", "leftPen"));
+		nameResolution.add(new NameRes("RIGHTPEN", "rightPen"));
+		nameResolution.add(new NameRes("GROUPEXPRESSION", "groupExpression"));
+		nameResolution.add(new NameRes("groupEXPRESSION", "groupExpression"));
+		nameResolution.add(new NameRes("GROUPHEADER", "groupHeader"));
+		nameResolution.add(new NameRes("GROUPFOOTER", "groupFooter"));
+		nameResolution.add(new NameRes("groupHEADER", "groupHeader"));
+		nameResolution.add(new NameRes("groupFOOTER", "groupFooter"));
+		nameResolution.add(new NameRes("GROUP", "group"));
+		nameResolution.add(new NameRes("IMAGEEXPRESSION", "imageExpression"));
+		nameResolution.add(new NameRes("imageEXPRESSION", "imageExpression"));
+		nameResolution.add(new NameRes("SUBREPORT", "subreport"));
+		nameResolution.add(new NameRes("SUBREPORTEXPRESSION", "subreportExpression"));
+		nameResolution.add(new NameRes("subreportEXPRESSION", "subreportExpression"));
+		nameResolution.add(new NameRes("CONNECTIONEXPRESSION", "connectionExpression"));
+		nameResolution.add(new NameRes("connectionEXPRESSION", "connectionExpression"));
+		nameResolution.add(new NameRes("JASPERREPORT", "jasperReport"));
+		nameResolution.add(new NameRes("IMPORT", "import"));
+		nameResolution.add(new NameRes("PROPERTY", "property"));
+		nameResolution.add(new NameRes("QUERYSTRING", "queryString"));
+		nameResolution.add(new NameRes("FIELD", "field"));
+		nameResolution.add(new NameRes("VARIABLE", "variable"));
+		nameResolution.add(new NameRes("BACKGROUND", "background"));
+		nameResolution.add(new NameRes("BAND", "band"));
+		nameResolution.add(new NameRes("TITLE", "title"));
+		nameResolution.add(new NameRes("LINE", "line"));
+		nameResolution.add(new NameRes("REPORTELEMENT", "reportElement"));
+		nameResolution.add(new NameRes("GRAPHICELEMENT", "graphicElement"));
+		nameResolution.add(new NameRes("reportELEMENT", "reportElement"));
+		nameResolution.add(new NameRes("graphicELEMENT", "graphicElement"));
+		nameResolution.add(new NameRes("TEXTFIELD", "textField"));
+		nameResolution.add(new NameRes("textFIELD", "textField"));
+		nameResolution.add(new NameRes("BOX", "box"));
+		nameResolution.add(new NameRes("TEXTELEMENT", "textElement"));
+		nameResolution.add(new NameRes("textELEMENT", "textElement"));
+		nameResolution.add(new NameRes("FONT", "font"));
+		nameResolution.add(new NameRes("TEXTFIELDEXPRESSION", "textFieldExpression"));
+		nameResolution.add(new NameRes("textFIELDEXPRESSION", "textFieldExpression"));
+		nameResolution.add(new NameRes("textFieldEXPRESSION", "textFieldExpression"));
+		nameResolution.add(new NameRes("PAGEHEADER", "pageHeader"));
+		nameResolution.add(new NameRes("COULMNHEADER", "columnHeader"));
+		nameResolution.add(new NameRes("DETAIL", "detail"));
+		nameResolution.add(new NameRes("COLUMNFOOTER", "columnFooter"));
+		nameResolution.add(new NameRes("PAGEFOOTER", "pageFooter"));
+		nameResolution.add(new NameRes("SUMMARY", "summary"));
+		nameResolution.add(new NameRes("STATICTEXT", "staticText"));
+		nameResolution.add(new NameRes("STATICText", "staticText"));
+		nameResolution.add(new NameRes("TEXT", "text"));
+		nameResolution.add(new NameRes("IMAGE", "image"));	
+		nameResolution.add(new NameRes("RECTANGLE", "rectangle"));
+		nameResolution.add(new NameRes("INITIALVALUEEXPRESSION", "initialValueExpression"));
+		nameResolution.add(new NameRes("COLUMNHEADER", "columnHeader"));
 	}
 
+	
 
-
+	private class NameRes
+	{
+		private String toSubstitute ;
+		private String correctString;
+		
+		private NameRes(String a, String b){
+			toSubstitute=a;
+			correctString=b;
+		}
+		
+		private String getToSubstitute(){
+			return toSubstitute;
+		}
+		
+		private String getCorrectString(){
+			return correctString;
+		}
+	}
 
 	/**
 	 * Gets the template template.

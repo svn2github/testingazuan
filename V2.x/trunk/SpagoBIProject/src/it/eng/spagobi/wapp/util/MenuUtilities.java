@@ -120,12 +120,12 @@ public class MenuUtilities {
 			SourceBean configSingleton = (SourceBean)ConfigSingleton.getInstance();
 			boolean technicalMenuLoaded = false;
 			
-			boolean hasUserRole = false;
+			/*boolean hasUserRole = false;
 	        List userRoles = new ArrayList();
-	        List lstRoles = DAOFactory.getRoleDAO().loadAllRoles();
+	        List lstRoles = DAOFactory.getRoleDAO().loadAllRoles();*/
 	        Collection lstRolesForUser = profile.getRoles();
 			logger.debug("** Roles for user: " + lstRolesForUser.size());
-			
+			/*
 	        for(int i = 0; i < lstRoles.size(); i++)
 	        {
 	            if(((Role)lstRoles.get(i)).getRoleTypeCD().equalsIgnoreCase("USER"))			          
@@ -139,7 +139,7 @@ public class MenuUtilities {
 	            hasUserRole = true;
 	            break;
 	        }
-					
+				*/	
 			Object[] arrRoles = lstRolesForUser.toArray();
 			Integer levelItem = 1;			
 			for (int i=0; i< arrRoles.length; i++){
@@ -166,21 +166,18 @@ public class MenuUtilities {
 					}
 			        
 
-			        if(hasUserRole)
-			        {
-			        	//list final user menu
-						List lstUserMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
-						if (lstUserMenuItems == null)
-							logger.debug("Not found menu items for User Role " + (String)arrRoles[i] );
-						else {
-							for(int j=0; j<lstUserMenuItems.size(); j++){
-								Menu tmpObj = (Menu)lstUserMenuItems.get(j);
-								if (!containsMenu(lstFinalMenu, tmpObj)){						
-									lstFinalMenu.add((Menu)lstUserMenuItems.get(j));	
-								}
+		        	//list final user menu
+					List lstUserMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
+					if (lstUserMenuItems == null)
+						logger.debug("Not found menu items for User Role " + (String)arrRoles[i] );
+					else {
+						for(int j=0; j<lstUserMenuItems.size(); j++){
+							Menu tmpObj = (Menu)lstUserMenuItems.get(j);
+							if (!containsMenu(lstFinalMenu, tmpObj)){						
+								lstFinalMenu.add((Menu)lstUserMenuItems.get(j));	
 							}
 						}
-			        }										
+					}									
 				}
 				else
 					logger.debug("Role " + (String)arrRoles[i] + " not found on db");

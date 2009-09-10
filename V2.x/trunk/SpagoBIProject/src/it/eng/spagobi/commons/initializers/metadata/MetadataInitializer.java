@@ -267,23 +267,23 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			SbiEngines hibEngine = findEngine(aSession, engineLabel);
 			if (hibEngine == null) {
 				logger.error("Could not find engine with label [" + engineLabel + "] for exporter");
-				return;
+			}else{
+
+				String defaultValue=((String) anExporterSB.getAttribute("defaultValue"));
+	
+				SbiExporters anExporter=new SbiExporters();
+				SbiExportersId exporterId=new SbiExportersId(hibEngine.getEngineId(), hibDomain.getValueId());
+				anExporter.setId(exporterId);
+				anExporter.setSbiDomains(hibDomain);
+				anExporter.setSbiEngines(hibEngine);
+	
+				Boolean value=defaultValue!=null ? Boolean.valueOf(defaultValue) : Boolean.FALSE;
+				anExporter.setDefaultValue(value.booleanValue());
+	
+				logger.debug("Inserting Exporter for engine "+hibEngine.getLabel());
+	
+				aSession.save(anExporter);
 			}
-
-			String defaultValue=((String) anExporterSB.getAttribute("defaultValue"));
-
-			SbiExporters anExporter=new SbiExporters();
-			SbiExportersId exporterId=new SbiExportersId(hibEngine.getEngineId(), hibDomain.getValueId());
-			anExporter.setId(exporterId);
-			anExporter.setSbiDomains(hibDomain);
-			anExporter.setSbiEngines(hibEngine);
-
-			Boolean value=defaultValue!=null ? Boolean.valueOf(defaultValue) : Boolean.FALSE;
-			anExporter.setDefaultValue(value.booleanValue());
-
-			logger.debug("Inserting Exporter for engine "+hibEngine.getLabel());
-
-			aSession.save(anExporter);
 		}
 		logger.debug("OUT");
 	}

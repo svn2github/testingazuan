@@ -120,9 +120,11 @@ LICENSE: see LICENSE.txt file
 		    
 		    // Read data access information and put it in session...
 		    Node  filtersData=document.selectSingleNode("//olap/DATA-ACCESS");
-		    String filters=filtersData.asXML();
-		    if (filters!=null && filters.length()>1){
-		    	session.setAttribute("filters",filters);
+		    if (filtersData != null) {
+		    	String filters=filtersData.asXML();
+			    if (filters!=null && filters.length()>1){
+			    	session.setAttribute("filters",filters);
+			    }
 		    }
 		    
 		    //nameConnection = request.getParameter("connectionName");

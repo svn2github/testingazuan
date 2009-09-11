@@ -402,7 +402,10 @@ public class BasicXmlBuilder  {
 						kpivalue.setAttribute("enddate",value.getEndDate()!=null?value.getEndDate().toString():"");
 						kpivalue.setAttribute("description",value.getValueDescr()!=null?value.getValueDescr():"");
 						kpivalue.setAttribute("target",value.getTarget()!=null?value.getTarget().toString():"");	
-						
+						if(value.getValueXml()!=null){
+							SourceBean xml = SourceBean.fromXMLString(value.getValueXml());
+							kpivalue.setAttribute(xml);
+						}
 						//kpivalue.setAttribute("thresholdid",kpiInterpretation!=null?kpiInterpretation:"");	
 
 				}

@@ -65,6 +65,8 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 	String serieUrlname="";
 	boolean horizontalView=false; //false is vertical, true is horizontal
 	boolean horizontalViewConfigured=false;
+	/** Orientation of the chart: horizontal, vertical */
+	public static final String ORIENTATION = "orientation";
 
 	private static transient Logger logger=Logger.getLogger(LinkableBar.class);
 
@@ -73,8 +75,8 @@ public class LinkableBar extends BarCharts implements ILinkableChart {
 		logger.debug("IN");
 		super.configureChart(content);
 
-		if(confParameters.get("orientation")!=null){	
-			String orientation=(String)confParameters.get("orientation");
+		if(confParameters.get(ORIENTATION)!=null){	
+			String orientation=(String)confParameters.get(ORIENTATION);
 			if(orientation.equalsIgnoreCase("vertical")){
 				horizontalViewConfigured=true;
 				horizontalView=false;

@@ -186,6 +186,16 @@ public class OverlaidBarLine extends LinkableBar {
 				String nameS = (String) iterator3.next();
 				String labelS = "";
 				String valueS=(String)series.get(nameS);
+
+				Double valueD=null;
+				try{
+					valueD=Double.valueOf(valueS);
+				}
+				catch (Exception e) {
+					logger.warn("error in double conversion, put default to null");
+					valueD=null;
+				}
+
 				if(!hiddenSeries.contains(nameS)){
 					if(seriesLabelsMap != null && (seriesCaptions != null && seriesCaptions.size()>0)){
 						nameS = (String)(seriesCaptions.get(nameS));
@@ -208,13 +218,13 @@ public class OverlaidBarLine extends LinkableBar {
 							if(((String)seriesDraw.get(nameS)).equalsIgnoreCase("line_no_shapes") && !lineNoShapeSeries2.contains(nameS)){
 								lineNoShapeSeries2.add(nameS);
 							}							
-							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-line"))).addValue(valueD!=null ? valueD.doubleValue() : null, labelS, catValue);
 						}
 						else{
 							if(((String)seriesDraw.get(nameS)).equalsIgnoreCase("line_no_shapes") && !lineNoShapeSeries1.contains(nameS)){
 								lineNoShapeSeries1.add(nameS);
 							}							
-							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-line"))).addValue(valueD!=null ? valueD.doubleValue() : null, labelS, catValue);
 						}
 
 					}
@@ -224,11 +234,11 @@ public class OverlaidBarLine extends LinkableBar {
 						// if to draw mapped to first axis
 						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
 							if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-bar"))).addValue(valueD!=null ? valueD.doubleValue() : null, labelS, catValue);
 						}
 						else{ // if to draw as a bar
 							if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-bar"))).addValue(valueD!=null ? valueD.doubleValue() : null, labelS, catValue);
 						}
 					}
 
@@ -372,7 +382,7 @@ public class OverlaidBarLine extends LinkableBar {
 
 		CategoryPlot plot = new CategoryPlot();
 
-        NumberFormat nf = NumberFormat.getNumberInstance(locale);
+		NumberFormat nf = NumberFormat.getNumberInstance(locale);
 
 		NumberAxis rangeAxis = new NumberAxis(getValueLabel());
 		rangeAxis.setLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
@@ -384,7 +394,7 @@ public class OverlaidBarLine extends LinkableBar {
 		if(rangeIntegerValues==true){
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());	
 		}
-        rangeAxis.setNumberFormatOverride(nf);
+		rangeAxis.setNumberFormatOverride(nf);
 
 		CategoryAxis domainAxis = new CategoryAxis(getCategoryLabel());
 		domainAxis.setLabelFont(new Font(styleYaxesLabels.getFontName(), Font.PLAIN, styleYaxesLabels.getSize()));
@@ -714,7 +724,7 @@ public class OverlaidBarLine extends LinkableBar {
 			na.setTickLabelFont(new Font(styleXaxesLabels.getFontName(), Font.PLAIN, styleXaxesLabels.getSize()));
 			na.setTickLabelPaint(styleXaxesLabels.getColor());
 			na.setUpperMargin(0.10);
-	        na.setNumberFormatOverride(nf);			
+			na.setNumberFormatOverride(nf);			
 			plot.setRangeAxis(1,na);
 			plot.mapDatasetToRangeAxis(0, 0);
 			plot.mapDatasetToRangeAxis(2, 0);
@@ -731,7 +741,7 @@ public class OverlaidBarLine extends LinkableBar {
 		plot.getDomainAxis().setCategoryLabelPositions(
 				CategoryLabelPositions.UP_45);
 		JFreeChart chart = new JFreeChart(plot);
-		
+
 		TextTitle title = setStyleTitle(name, styleTitle);
 		chart.setTitle(title);
 		if(subName!= null && !subName.equals("")){
@@ -739,7 +749,7 @@ public class OverlaidBarLine extends LinkableBar {
 			chart.addSubtitle(subTitle);
 		}
 		chart.setBackgroundPaint(Color.white);
-		
+
 		if(legend==true) drawLegend(chart);
 
 		logger.debug("OUT");

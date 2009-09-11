@@ -98,6 +98,16 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 	private static transient Logger logger=Logger.getLogger(StackedBarGroup.class);
 
 
+	/** subcategory_label*/
+	public static final String SUBCATEGORY_LABEL = "subcategory_label";
+	/** If draw additional labels */
+	public static final String ADD_LABELS = "add_labels";
+	/** Number of series for group*/
+	public static final String N_SERIE_FOR_GROUP = "n_serie_for_group";
+	/** number of groups */
+	public static final String N_GROUPS = "n_groups";
+	/** percentage value */
+	public static final String PERCENTAGE_VALUE = "percentage_value";
 
 
 
@@ -202,9 +212,18 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 				String nameS = (String) iterator3.next();
 				if(!hiddenSeries.contains(nameS)){
 					String valueS=(String)myseries.get(nameS);
+					Double valueD=null;
+					try{
+						valueD=Double.valueOf(valueS);
+					}
+					catch (Exception e) {
+						logger.warn("error in double conversion, put default to null");
+						valueD=null;
+					}
+					
 					String subcat = (String)subCategoryNames.get(realSubCatNumber-1);
 					//dataset.addValue(Double.valueOf(valueS).doubleValue(), value, catValue);
-					dataset.addValue(Double.valueOf(valueS).doubleValue(), subcat, catValue);
+					dataset.addValue(valueD!=null ? valueD.doubleValue() : null, subcat, catValue);
 				//	System.out.println("dataset.addValue("+Double.valueOf(valueS).doubleValue()+ ", '"+subcat+"'"+",'"+catValue+"');");
 					if(!seriesNames.contains(nameS)){ 
 						seriesNames.add(nameS);
@@ -235,16 +254,16 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 		logger.debug("IN");
 		super.configureChart(content);
 
-		if(confParameters.get("subcategory_label")!=null){	
-			subCategoryLabel=(String)confParameters.get("subcategory_label");
+		if(confParameters.get(SUBCATEGORY_LABEL)!=null){	
+			subCategoryLabel=(String)confParameters.get(SUBCATEGORY_LABEL);
 		}
 		else
 		{
 			subCategoryLabel="";
 		}
 		
-		if(confParameters.get("add_labels")!=null){	
-			String additional=(String)confParameters.get("add_labels");
+		if(confParameters.get(ADD_LABELS)!=null){	
+			String additional=(String)confParameters.get(ADD_LABELS);
 			if(additional.equalsIgnoreCase("true")){
 				additionalLabels=true;
 				catSerLabels=new LinkedHashMap();

@@ -66,6 +66,9 @@ public class SimpleBar extends BarCharts{
 	public static final String CHANGE_VIEW_LABEL2="Set Horizontal View";
 	private static transient Logger logger=Logger.getLogger(SimpleBar.class);
 
+	/** Orientation of the chart: horizontal, vertical */
+	public static final String ORIENTATION = "orientation";
+
 
 	/* (non-Javadoc)
 	 * @see it.eng.spagobi.engines.chart.bo.charttypes.barcharts.BarCharts#configureChart(it.eng.spago.base.SourceBean)
@@ -73,8 +76,8 @@ public class SimpleBar extends BarCharts{
 	public void configureChart(SourceBean content) {
 		logger.debug("IN");
 		super.configureChart(content);
-		if(confParameters.get("orientation")!=null){	
-			String orientation=(String)confParameters.get("orientation");
+		if(confParameters.get(ORIENTATION)!=null){	
+			String orientation=(String)confParameters.get(ORIENTATION);
 			if(orientation.equalsIgnoreCase("vertical")){
 				horizontalViewConfigured=true;
 				horizontalView=false;

@@ -185,6 +185,16 @@ public class CombinedCategoryBar extends LinkableBar {
 				String nameS = (String) iterator3.next();
 				String labelS = "";
 				String valueS=(String)series.get(nameS);
+				Double valueD=null;
+				try{
+					valueD=Double.valueOf(valueS);
+				}
+				catch (Exception e) {
+					logger.warn("error in double conversion, put default to null");
+					valueD=null;
+				}
+
+				
 				if(!hiddenSeries.contains(nameS)){
 					if(seriesLabelsMap != null && (seriesCaptions != null && seriesCaptions.size()>0)){
 						nameS = (String)(seriesCaptions.get(nameS));
@@ -208,14 +218,14 @@ public class CombinedCategoryBar extends LinkableBar {
 							if(((String)seriesDraw.get(nameS)).equalsIgnoreCase("line_no_shapes") && !lineNoShapeSeries2.contains(nameS)){
 								lineNoShapeSeries2.add(nameS);
 							}
-							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-line"))).addValue(valueD!=null ? valueD.doubleValue() : null, labelS, catValue);
 						}
 						else{ 
 							useLinesRenderers=true;
 							if(((String)seriesDraw.get(nameS)).equalsIgnoreCase("line_no_shapes") && !lineNoShapeSeries1.contains(nameS)){
 								lineNoShapeSeries1.add(nameS);
 							}
-							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-line"))).addValue(valueD!=null ? valueD.doubleValue() : null, labelS, catValue);
 						}
 
 					}
@@ -224,11 +234,11 @@ public class CombinedCategoryBar extends LinkableBar {
 						// if to draw mapped to first axis
 						if(seriesScale != null && seriesScale.get(nameS)!=null && ((String)seriesScale.get(nameS)).equalsIgnoreCase("2")){
 							if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("2-bar"))).addValue(valueD!=null ? valueD.doubleValue() : null, labelS, catValue);
 						}
 						else{ // if to draw as a bar
 							if(!seriesNames.contains(nameS))seriesNames.add(nameS);
-							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-bar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+							((DefaultCategoryDataset)(datasetMap.getDatasets().get("1-bar"))).addValue(valueD!=null ? valueD.doubleValue() : null, labelS, catValue);
 						}
 					}
 

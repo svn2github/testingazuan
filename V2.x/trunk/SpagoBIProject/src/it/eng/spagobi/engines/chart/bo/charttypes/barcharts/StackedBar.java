@@ -88,8 +88,17 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 	private static transient Logger logger=Logger.getLogger(StackedBar.class);
 
 
+	/** If adding the cumulative serie */
+	public static final String CUMULATIVE = "cumulative";
+	/** If draw additional labels */
+	public static final String ADD_LABELS = "add_labels";
+	/** If adding the cumulative serie */
+	public static final String MAKE_PERCENTAGE = "make_percentage";
+	/** if percentage value */
+	public static final String PERCENTAGE_VALUE = "percentage_value";
 
 
+	
 
 	/**
 	 * Override this functions from BarCharts beacuse I want the hidden serie to be the first!
@@ -214,8 +223,17 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 				String nameS = (String) iterator3.next();
 				if(!hiddenSeries.contains(nameS)){
 					String valueS=((String)series.get(nameS)).equalsIgnoreCase("null")?"0":(String)series.get(nameS);
-					dataset.addValue(Double.valueOf(valueS).doubleValue(), nameS, catValue);
-					cumulativeValue+=Double.valueOf(valueS).doubleValue();
+					Double valueD=null;
+					try{
+						valueD=Double.valueOf(valueS);
+					}
+					catch (Exception e) {
+						logger.warn("error in double conversion, put default to null");
+						valueD=null;
+					}
+					
+					dataset.addValue(valueD!=null ? valueD.doubleValue() : null, nameS, catValue);
+					cumulativeValue+=valueD!=null ? valueD.doubleValue() : 0.0;
 					if(!seriesNames.contains(nameS)){
 						seriesNames.add(nameS);
 					}
@@ -257,8 +275,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 		super.configureChart(content);
 
 
-		if(confParameters.get("cumulative")!=null){	
-			String orientation=(String)confParameters.get("cumulative");
+		if(confParameters.get(CUMULATIVE)!=null){	
+			String orientation=(String)confParameters.get(CUMULATIVE);
 			if(orientation.equalsIgnoreCase("true")){
 				cumulative=true;
 			}
@@ -267,8 +285,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			}
 		}
 
-		if(confParameters.get("add_labels")!=null){	
-			String additional=(String)confParameters.get("add_labels");
+		if(confParameters.get(ADD_LABELS)!=null){	
+			String additional=(String)confParameters.get(ADD_LABELS);
 			if(additional.equalsIgnoreCase("true")){
 				additionalLabels=true;
 				catSerLabels=new HashMap();
@@ -280,8 +298,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			additionalLabels=false;
 		}
 
-		if(confParameters.get("make_percentage")!=null){	
-			String perc=(String)confParameters.get("make_percentage");
+		if(confParameters.get(MAKE_PERCENTAGE)!=null){	
+			String perc=(String)confParameters.get(MAKE_PERCENTAGE);
 			if(perc.equalsIgnoreCase("true")){
 				makePercentage=true;
 			}
@@ -292,8 +310,8 @@ public class StackedBar extends BarCharts implements ILinkableChart {
 			makePercentage=false;
 		}
 		
-		if(confParameters.get("percentage_value")!=null){	
-			String perc=(String)confParameters.get("percentage_value");
+		if(confParameters.get(PERCENTAGE_VALUE)!=null){	
+			String perc=(String)confParameters.get(PERCENTAGE_VALUE);
 			if(perc.equalsIgnoreCase("true")){
 				percentageValue=true;
 			}

@@ -51,41 +51,6 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	
-	
-	
-	<!-- 
-	
-	<ACTION name="GET_QUERIES_ACTION" 
-			class="it.eng.spagobi.qbe.core.service.GetQueriesAction"  
-			scope="REQUEST">			
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	<ACTION name="SELECT_QUERY_ACTION" 
-			class="it.eng.spagobi.qbe.core.service.SelectQueryAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	<ACTION name="SAVE_QUERY_ACTION" 
-			class="it.eng.spagobi.qbe.core.service.SaveQueryAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>	
-	
-	
-	<ACTION name="VALIDATE_QUERY_ACTION" 
-			class="it.eng.spagobi.qbe.core.service.ValidateQueryAction"  
-			scope="REQUEST">
-			
-		<CONFIG></CONFIG>
-	</ACTION>
-	
-	-->
-	
 	<ACTION name="EXEC_QUERY_ACTION" 
 			class="it.eng.spagobi.qbe.core.service.ExecuteQueryAction"  
 			scope="REQUEST">

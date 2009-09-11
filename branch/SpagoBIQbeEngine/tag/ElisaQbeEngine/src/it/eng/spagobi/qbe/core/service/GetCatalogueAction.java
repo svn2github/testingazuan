@@ -114,7 +114,7 @@ public class GetCatalogueAction extends AbstractQbeEngineAction {
 	
 	// @TODO create a general purpose serializer not dependant on the datamartModel
 	private JSONObject serializeQuery(Query query) throws SerializationException {
-		return (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(query, getEngineInstance().getDatamartModel());
+		return (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(query, getEngineInstance().getDatamartModel(), getLocale());
 	}
 
 	private JSONObject serializeMeta(QueryMeta meta) throws JSONException {

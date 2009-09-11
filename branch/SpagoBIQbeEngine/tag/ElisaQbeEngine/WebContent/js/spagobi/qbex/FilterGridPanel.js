@@ -196,7 +196,8 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, modifyFilter: function(filter, i) {
 		if(i != undefined) {			
 			var record = this.store.getAt( i );
-			Ext.apply(record.data, filter || {});			
+			Ext.apply(record.data, filter || {});	
+			record = this.store.getAt( i );
 			this.store.fireEvent('datachanged', this.store) ;
 		}
 	}
@@ -686,7 +687,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				    iconCls:'add',
 				    listeners: {
 				    	'click': {
-							fn: this.addFilter,
+							fn: function() {this.addFilter();},
 							scope: this
 						}
 				    }

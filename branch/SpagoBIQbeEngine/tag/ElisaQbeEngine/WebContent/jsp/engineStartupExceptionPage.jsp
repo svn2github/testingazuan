@@ -1,11 +1,5 @@
-<!--
-/**
- *	LICENSE: see COPYING file
-**/
--->
-
 <%@ page language="java"
-		 import="it.eng.spago.error.*,java.util.*,it.eng.spagobi.engines.geo.commons.excpetion.*"
+		 import="it.eng.spago.error.*,java.util.*, it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException"
 		 extends="it.eng.spago.dispatching.httpchannel.AbstractHttpJspPage"
 		 contentType="text/html; charset=ISO-8859-1"
 		 pageEncoding="ISO-8859-1"
@@ -19,13 +13,14 @@
 	EMFErrorHandler errorHandler = getErrorHandler(request);
 	Iterator it = errorHandler.getErrors().iterator();
 	EMFInternalError error = (EMFInternalError)it.next();	
-	Exception exception = error.getNativeException();
+	Throwable exception = error.getNativeException();
 	String description="no description available";
 	List hints = null;
-	if(exception instanceof GeoEngineException) {
-		GeoEngineException geoException = (GeoEngineException)exception;
-		description = geoException.getDescription();
-		hints = geoException.getHints();
+	
+	if(exception instanceof SpagoBIEngineStartupException) {
+		SpagoBIEngineStartupException engineException = (SpagoBIEngineStartupException)exception;
+		description = engineException.getDescription() != null? engineException.getDescription(): description;
+		hints = engineException.getHints();
 	}
 %>
 

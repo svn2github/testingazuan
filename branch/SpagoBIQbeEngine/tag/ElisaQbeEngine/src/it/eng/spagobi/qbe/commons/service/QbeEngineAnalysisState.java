@@ -141,6 +141,7 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 			for(int i = 0; i < queriesJSON.length(); i++) {
 				queryJSON = queriesJSON.getJSONObject(i);
 				query = QuerySerializerFactory.getDeserializer("application/json").deserialize(queryJSON, getDatamartModel());
+								
 				catalogue.addQuery(query);
 			}
 		} catch (Throwable e) {
@@ -165,7 +166,7 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 			Iterator it = queries.iterator();
 			while(it.hasNext()) {
 				query = (Query)it.next();
-				queryJSON =  (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(query, getDatamartModel());
+				queryJSON =  (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(query, getDatamartModel(), null);
 				queriesJSON.put( queryJSON );
 			}
 			

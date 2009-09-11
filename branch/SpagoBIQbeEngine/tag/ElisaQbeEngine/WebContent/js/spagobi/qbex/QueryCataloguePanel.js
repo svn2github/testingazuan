@@ -119,6 +119,7 @@ Ext.extend(Sbi.qbe.QueryCataloguePanel, Ext.Panel, {
 	}
 
 	, commit: function(callback, scope) {
+		
 		var params = {
 				catalogue: Ext.util.JSON.encode(this.getQueries())
 		};

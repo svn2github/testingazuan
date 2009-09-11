@@ -8,4 +8,9 @@
 	<ACTION name="SERVICE_EXCEPTION_ACTION" class="it.eng.spagobi.qbe.core.service.ServiceExceptionAction" scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
+	
+	<ACTION name="ENGINE_STARTUP_EXCEPTION_ACTION" class="it.eng.spagobi.qbe.core.service.EngineStartupExceptionAction" scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 </ACTIONS>

@@ -30,7 +30,7 @@ import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.qbe.commons.service.QbeEngineAnalysisState;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
 
 
 /**
@@ -52,8 +52,9 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	
 	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(QbeEngineStartAction.class);
-	
-	
+    
+    public static final String ENGINE_NAME = "SpagoBIQbeEngine";
+		
     public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
     	QbeEngineInstance qbeEngineInstance = null;
     	Locale locale;
@@ -61,8 +62,11 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
     	logger.debug("IN");
        
     	try {
+    		setEngineName(ENGINE_NAME);
 			super.service(serviceRequest, serviceResponse);
-						
+			
+			
+			
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
@@ -88,7 +92,26 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			
 			
 		} catch (Throwable e) {
-			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), qbeEngineInstance, e);
+			SpagoBIEngineStartupException serviceException = null;
+			String engineName = "SpagoBIQbeEngine";
+			
+			if(e instanceof SpagoBIEngineStartupException) {
+				serviceException = (SpagoBIEngineStartupException)e;
+			} else {
+				Throwable rootException = e;
+				while(rootException.getCause() != null) {
+					rootException = rootException.getCause();
+				}
+				String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+				String message = "An unpredicted error occurred while executing " + engineName + " service."
+								 + "\nThe root cause of the error is: " + str;
+				
+				serviceException = new SpagoBIEngineStartupException(engineName, message, e);
+			}
+			
+			throw serviceException;
+			
+			//throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), qbeEngineInstance, e);
 		} finally {
 			logger.debug("OUT");
 		}		

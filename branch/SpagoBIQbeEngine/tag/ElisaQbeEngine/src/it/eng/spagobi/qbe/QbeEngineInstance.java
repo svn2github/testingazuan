@@ -129,7 +129,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		QbeEngineAnalysisState qbeEngineAnalysisState = null;
 		
 		qbeEngineAnalysisState = (QbeEngineAnalysisState)analysisState;
-		setQueryCatalogue( qbeEngineAnalysisState.getCatalogue() );
+		setQueryCatalogue( qbeEngineAnalysisState.getCatalogue(  ) );
 	}
 	
 

@@ -78,10 +78,10 @@ public class SpagoBIEngineServiceExceptionHandler {
 		} else {
 			// otherwise an unpredicted exception has been raised. 	
 			
-			// This is the last line of defense against exceptions. Bytheway all exceptions that are catched 
+			// This is the last line of defense against exceptions. By the way all exceptions that are caught 
 			// only here for the first time can be considered as bugs in the exception handling mechanism. When
-			// such an exception is raised the code in the service should be fixed in order to catch it before and add some meaningfull
-			// informations on what have caused it.
+			// such an exception is raised the code in the service should be fixed in order to catch it before and 
+			// add some meaningful informations on what have caused it.
 			Throwable rootException = e;
 			while(rootException.getCause() != null) {
 				rootException = rootException.getCause();

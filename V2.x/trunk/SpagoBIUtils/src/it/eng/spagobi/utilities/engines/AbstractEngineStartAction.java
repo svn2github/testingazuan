@@ -47,7 +47,6 @@ import sun.misc.BASE64Decoder;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.container.ContextManager;
@@ -72,6 +71,8 @@ import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
  */
 public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	
+	private String engineName;
+
 	private ContextManager conetxtManager;
 	
 	private String userId;
@@ -123,6 +124,16 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 		setSpagoBIRequestContainer(request);
 		setSpagoBIResponseContainer(response);				
 	}
+	
+	public String getEngineName() {
+		return engineName;
+	}
+
+
+	public void setEngineName(String engineName) {
+		this.engineName = engineName;
+	}
+	
 	
 	// all accesses to session into the engine's scope refer to HttpSession and not to Spago's SessionContainer
 	
@@ -179,11 +190,22 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
      * @return the audit id
      */
     public String getAuditId() {    	
-    	if(auditId == null) {
-    		auditId = getHttpRequest().getParameter( AUDIT_ID );
-    	}
-    	return auditId;
+    			
+    	logger.debug("IN");	
+    	
+    	try {	    
+    		if(auditId == null) {
+        		auditId = getHttpRequest().getParameter( AUDIT_ID );
+        	}
+    		
+    		if(auditId == null) {
+	    		throw new SpagoBIEngineStartupException(getEngineName(), "Impossible to retrive audit id");
+	    	}
+    	} finally {
+			logger.debug("OUT");	
+		}
 		
+		return auditId;
     }
     
     /**
@@ -194,18 +216,32 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     public String getDocumentId() {
     	String documentIdInSection = null;
     
-    	if(documentId == null) {
-	    	documentIdInSection = getAttributeFromSessionAsString( DOCUMENT_ID );
-	    	logger.debug("documentId in Session:" + documentIdInSection);
-	    	
-	    	if( requestContainsAttribute( DOCUMENT_ID ) ) {
-	    		documentId = getAttributeAsString( DOCUMENT_ID );
-	    	} else {
-	    		documentId = documentIdInSection;
-	    		logger.debug("documentId has been taken from session");
-	    	}
-    	}
+    	logger.debug("IN");	
     	
+    	try {	    
+	    	if(documentId == null) {
+		    	documentIdInSection = getAttributeFromSessionAsString( DOCUMENT_ID );
+		    	logger.debug("documentId in Session:" + documentIdInSection);
+		    	
+		    	if( requestContainsAttribute( DOCUMENT_ID ) ) {
+		    		documentId = getAttributeAsString( DOCUMENT_ID );
+		    	} else {
+		    		documentId = documentIdInSection;
+		    		logger.debug("documentId has been taken from session");
+		    	}
+	    	}
+	    	
+	    	if(documentId == null) {
+	    		SpagoBIEngineStartupException e = new SpagoBIEngineStartupException(getEngineName(), "Impossible to retrive document id");
+	    		e.setDescription("The engine is unable to retrive the id of the document to execute from request");
+	    		e.addHint("Check on SpagoBI Server if the analytical document you want to execute have a valid template associated. Maybe you have saved the analytical document without " +
+	    				"uploading a valid template file");
+	    		throw e;
+	    	}
+    	} finally {
+			logger.debug("OUT");	
+		}
+		
     	return documentId;   	
     }
     
@@ -215,9 +251,39 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
      * @return the template
      */
     public SourceBean getTemplate() {
-    	if(template == null) {
-    		template = getTemplate( getUserId(), getDocumentId() );
-    	}
+    	String userId;
+    	String documentId;
+    	
+    	logger.debug("IN");	
+    	
+    	try {	    	
+    		
+    		if(template == null) {
+    			
+	    		// get document id
+	    		documentId = null;
+	    		try {
+	    			documentId = getDocumentId();
+	    		} catch (Throwable t) {
+	    			throw new SpagoBIEngineStartupException(getEngineName(), "Impossible to retrive document template because an exception occured while retriving the user id. Please check neasted exception for more details", t);
+	    		}
+	    		Assert.assertNotNull(documentId, "[documentId] cannot be null in order to retrive document template");
+	    		
+	    		// get user id
+	    		userId = null;
+	    		try {
+	    			userId = getUserId();
+	    		} catch (Throwable t) {
+	    			throw new SpagoBIEngineStartupException(getEngineName(), "Impossible to retrive template for document [" + documentId + "] because an exception occured while retriving the user id. Please check neasted exception for more details", t);
+	    		}
+	    		Assert.assertNotNull(userId, "[userId] cannot be null in order to retrive the template of document [" + documentId + "]");
+	    			
+    		
+	    		template = getTemplate( userId, documentId );
+	    	}
+    	} finally {
+			logger.debug("OUT");	
+		}
     	return template;
     }
     
@@ -225,26 +291,38 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 		SourceBean templateSB = null;
 		Content template = null;
 		String templateContent = null;
+		HashMap requestParameters;
 		
+		Assert.assertNotNull(userId, "Input parameter [userId] of method [getTemplate] cannot be null");
+		Assert.assertNotNull(documentId, "Input parameter [documentId] of method [getTemplate] cannot be null");
+			
 		contentProxy = getContentServiceProxy();
-		HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters(this.getHttpRequest());
+		if(contentProxy == null) {
+			throw new SpagoBIEngineStartupException("SpagoBIQbeEngine", 
+					"Impossible to instatiate proxy class [" + ContentServiceProxy.class.getName() + "] " +
+					"in order to retrive the template of document [" + documentId + "]");
+		}
+			
+			
+		requestParameters = ParametersDecoder.getDecodedRequestParameters(this.getHttpRequest());
 		template = contentProxy.readTemplate(documentId, requestParameters);
-		logger.debug("Read the template."+ template.getFileName());	
-		
-		
+				
 		try {
 			templateContent = new String( DECODER.decodeBuffer(template.getContent()) );
 			templateSB = SourceBean.fromXMLString(templateContent);
 			logger.debug("Read the template."+ template.getFileName());	
 		} catch (IOException e) {
-			logger.error("Impossible to get content from template\n" + e);
-			e.printStackTrace();
+			SpagoBIEngineStartupException engineException = new SpagoBIEngineStartupException(getEngineName(), "Impossible to get template's content", e);
+			engineException.setDescription("Impossible to get template's content:  " + e.getMessage());
+			engineException.addHint("Check the document's template");
 		} catch (SourceBeanException e) {
-			logger.error("Impossible to decode template's content\n" + e);
-			e.printStackTrace();
+			SpagoBIEngineStartupException engineException = new SpagoBIEngineStartupException(getEngineName(), "Impossible to parse template's content", e);
+			engineException.setDescription("Impossible to parse template's content:  " + e.getMessage());
+			engineException.addHint("Check if the document's template is a well formed xml file");
+			throw engineException;
+	    	
 		}		
-		
-		
+				
 		return templateSB;
 	}
     

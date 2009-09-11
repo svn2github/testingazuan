@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.query.serializer;
 
+import java.util.Locale;
+
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.Query;
 
@@ -29,5 +31,5 @@ import it.eng.qbe.query.Query;
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
 public interface QuerySerializer {
-	public Object serialize(Query q, DataMartModel m) throws SerializationException;
+	public Object serialize(Query q, DataMartModel m, Locale locale) throws SerializationException;
 }

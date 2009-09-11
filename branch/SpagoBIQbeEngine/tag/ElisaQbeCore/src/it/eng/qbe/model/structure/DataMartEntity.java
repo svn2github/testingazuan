@@ -274,7 +274,7 @@ public class DataMartEntity implements IDataMartItem {
 				
 		String subEntityPath = "";
 		if(getParent() != null) {
-			subEntityPath = getName() +  "(" + role + ")";
+			subEntityPath = getName() +  "(" + getRole() + ")";
 			if(!getPath().equalsIgnoreCase("")) {
 				subEntityPath = getPath() + "." + subEntityPath;
 			}
@@ -414,7 +414,7 @@ public class DataMartEntity implements IDataMartItem {
 		String line = name.toUpperCase() + "(id="+id
 			+";path="+path
 			+";parent:" + (parent==null?"NULL": parent.getName())
-			+";role="+role;
+			+";role="+ role;
 		
 		
 		buffer.append(line + "\n");
@@ -501,7 +501,7 @@ public class DataMartEntity implements IDataMartItem {
 	 * @return the role
 	 */
 	public String getRole() {
-		return role;
+		return role!= null? role.toLowerCase(): null;
 	}
 
 

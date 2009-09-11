@@ -81,9 +81,11 @@ public class StringUtils {
 		Iterator it = params.iterator();
 		while(it.hasNext()) {
 			String parameterName = (String)it.next();
-			if(!parameters.containsKey(parameterName)) throw new IOException("No value for the parameter: " + parameterName);
+			if(!parameters.containsKey(parameterName)) {
+				throw new IOException("No value for the parameter: " + parameterName);
+			}
 			String parameterValue = parameters.get(parameterName)== null?null:parameters.get(parameterName).toString();
-			result = filterCondition.replaceAll(parameterTypeIdentifier + "\\{" + parameterName + "\\}", parameterValue);
+			result = result.replaceAll(parameterTypeIdentifier + "\\{" + parameterName + "\\}", parameterValue);
 		}		
 		
 		return result;

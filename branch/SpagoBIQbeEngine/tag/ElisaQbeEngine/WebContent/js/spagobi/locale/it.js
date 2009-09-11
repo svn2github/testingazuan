@@ -204,7 +204,7 @@ Sbi.locale.ln['sbi.qbe.freeconditionswindow.title'] = 'Fill free conditions';
 Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.apply'] = 'Apply';
 Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.cancel'] = 'Cancel';
 Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restoredefaults'] = 'Restore defaults';
-Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults'] = 'Save as defaults';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults'] = 'Set as defaults';
 Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restorelast'] = 'Restore last';
 
 //===================================================================

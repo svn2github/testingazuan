@@ -258,6 +258,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	
     
     
+    /*
 	, checkFreeFilters: function() {
     	var freeFilters = this.filterGridPanel.getPromptableFilters();
 	    if (freeFilters.length > 0) {
@@ -276,8 +277,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    	this.executeQuery();
 	    }
     }
-	
-	
+    */
 	
 	
 	, saveView: function(meta) {
@@ -453,7 +453,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        },{
 	          id:'gear',
 	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.execute'),
-	          handler: this.checkFreeFilters,
+	          handler: this.executeQuery,
 	          scope: this
 	        },{
 	          id:'search',

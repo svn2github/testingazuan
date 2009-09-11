@@ -78,10 +78,6 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	// constructor
     Sbi.qbe.FilterGridPanel.superclass.constructor.call(this, c);
 	
-    if(c.query && c.query.filters && c.query.filters.length > 0){
-    	this.loadSavedData(c.query);
-    }
-    
 };
 
 Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
@@ -266,6 +262,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
   		return str;
   	}
   	
+  	/*
   	, getPromptableFilters : function() {
 		var filters = [];
 		for(i = 0; i <  this.grid.store.getCount(); i++) {
@@ -278,6 +275,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		
 		return filters;
 	}
+  	*/
   	
   	, setPromptableFiltersLastValues: function(formState) {
     	for (var filterName in formState) {
@@ -299,10 +297,12 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
     	}
     }
   	
+  	/*
 	, getFreeFilters : function() {
 		Sbi.qbe.commons.deprectadeFunction('FilterGridPanel', 'getFreeFilters');
 		return this.getPromptableFilters();
 	}
+	*/
 	
     , setFreeFiltersLastValues: function(formState) {
     	Sbi.qbe.commons.deprectadeFunction('FilterGridPanel', 'setFreeFiltersLastValues');

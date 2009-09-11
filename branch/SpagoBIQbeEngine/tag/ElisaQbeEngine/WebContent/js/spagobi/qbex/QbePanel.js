@@ -84,8 +84,7 @@ Sbi.qbe.QbePanel = function(config) {
 	
 	if (this.queryEditorPanel != null) {
 		this.queryEditorPanel.on('execute', function(editorPanel, query){
-			this.tabs.activate(this.queryResultPanel);
-			this.queryResultPanel.execQuery(query);
+			this.checkPromptableFilters(query);
 		}, this);
 	}
 	
@@ -126,7 +125,7 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 	        success : function(response, opts) {
   	  			try {
   	  				var firstQuery = Ext.util.JSON.decode( response.responseText );
-  	  				this.executeQuery(firstQuery);
+  	  				this.checkPromptableFilters(firstQuery);
   	  			} catch (err) {
   	  				Sbi.exception.ExceptionHandler.handleFailure();
   	  			}
@@ -136,22 +135,35 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 		});
 	}
 	
-	, executeQuery: function(query) {
+	// check if there are some promptable filters before starting query execution
+	, checkPromptableFilters: function(query) {
     	var freeFilters = this.getPromptableFilters(query);
 	    if (freeFilters.length > 0) {
 	    	var freeConditionsWindow = new Sbi.qbe.FreeConditionsWindow({
 	    		freeFilters: freeFilters
 	    	});
 	    	freeConditionsWindow.on('apply', function (formState) {
-	    		this.queryResultPanel.execQuery(query, formState);
+	    		// make last values persistent on filter grid panel
+	    		if (this.queryEditorPanel != null) {
+	    			this.queryEditorPanel.filterGridPanel.setPromptableFiltersLastValues(formState);
+	    		}
+	    		this.executeQuery(query, formState);
 	    	}, this);
 	    	freeConditionsWindow.on('savedefaults', function (formState) {
-	    		//this.queryEditorPanel.filterGridPanel.setPromptableFiltersDefaultValues(formState);
+	    		// make default values persistent on filter grid panel
+	    		if (this.queryEditorPanel != null) {
+	    			this.queryEditorPanel.filterGridPanel.setPromptableFiltersDefaultValues(formState);
+	    		}
 	    	}, this);
 	    	freeConditionsWindow.show();
 	    } else {
-	    	this.queryResultPanel.execQuery(query);
+	    	this.executeQuery(query);
 	    }
+	}
+	
+	, executeQuery: function(query, promptableFilters) {
+		this.tabs.activate(this.queryResultPanel);
+		this.queryResultPanel.execQuery(query, promptableFilters);
 	}
 	
   	, getPromptableFilters : function(query) {

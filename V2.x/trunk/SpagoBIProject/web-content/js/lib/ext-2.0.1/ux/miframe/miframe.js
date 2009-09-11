@@ -43,12 +43,8 @@
  * </code></pre>
  *
  * <br>
- * Release: 1.2.6 (6/30/2009)
- *     Fix: domready detection, assert document focus on IE onload, loadMask handling.
- *   Added: submitAsTarget method.
- * Release: 1.2.5 (6/12/2009)
+ * Release: 1.2.5 (5/16/2009)
  *     Fix: X-frame messaging: needed mixin function (apply) for frames without Ext loaded into them. (thx: livinphp)
- *   Added: domReadyRetries cfg option
  * Release: 1.2.4 (4/29/2009)
  *     Add: Support for Ext 3.0, resize event
  * Release: 1.2.3 (1/11/2009)
@@ -107,16 +103,15 @@
                 };
             }
         }();
-
-
+  
+    
     var EV = Ext.lib.Event;
     var MIM;
-    var MASK_TARGET = 'x-frame-mask-target';
     /**
    * @class Ext.ux.ManagedIFrame
    * @extends Ext.Element
    * @extends Ext.util.Observable
-   * @version:  1.2.5 (6/12/2009)
+   * @version:  1.2.4 (4/29/2009)
    * @license <a href="http://www.gnu.org/licenses/lgpl.html">LGPL 3.0</a>
    * @author: Doug Hendricks. Forum ID: <a href="http://extjs.com/forum/member.php?u=8730">hendricd</a>
    * @donate <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -350,6 +345,7 @@
             disableMessaging : config.disableMessaging === true,
             loadMask : !!config.loadMask ? Ext.apply({
                         msg : 'Loading..',
+                        msgCls : 'x-mask-loading',
                         maskEl : null,
                         hideOnReady : false,
                         disabled : false
@@ -363,8 +359,8 @@
 
 
         if(el.loadMask ){
-           el.loadMask.maskEl || (el.loadMask.maskEl = el.parent('.'+MASK_TARGET) || el.parent());
-           el.loadMask.maskEl.addClass(MASK_TARGET);
+           el.loadMask.maskEl ||
+           ( el.loadMask.maskEl = el.parent('.x-managed-iframe-mask') || el.parent().addClass('x-managed-iframe-mask'));
         }
 
 
@@ -421,17 +417,6 @@
           */
         disableMessaging :  true,
 
-         /**
-          * Maximum number of domready event detection retries for IE.  IE does not provide
-          * a native DOM event to signal when the frames DOM may be manipulated, so a polling process
-          * is used to determine when the documents BODY is available. <p> Certain documents may not contain
-          * a BODY tag:  eg. MHT(rfc/822), XML, or other non-HTML content. Detection polling will stop after this number of 2ms retries
-          * or when the documentloaded event is raised.</p>
-          * @cfg {Integer} domReadyRetries
-          * @default 7500 (* 2ms = 15 seconds)
-          */
-        domReadyRetries   :  7500,
-
         /**
          * @cfg {String} resetUrl Frame document reset string for use with the {@link #Ext.ux.ManagedIFrame-reset} method.
          * Defaults:<p> For IE on SSL domains - the current value of Ext.SSL_SECURE_URL<p> "about:blank" for all others.
@@ -480,18 +465,22 @@
             this._windowContext = null;
             this._unHook();
             this._frameAction = this.frameInit = this._domReady = false;
+
             this.showMask();
 
-            var s = this._targetURI = typeof src == 'function' ? src() || '' : src;
-            try {
-                this._frameAction = true; // signal listening now
-                this._callBack = typeof callback == 'function' ? callback.createDelegate(scope) : null;
-                this.dom.src = s;
-                this.frameInit = true; // control initial event chatter
-                this.checkDOM();
-            } catch (ex) {
-                this.fireEvent('exception', this, ex);
-            }
+            (function() {
+                var s = this._targetURI = typeof src == 'function' ? src() || '' : src;
+                try {
+                    this._frameAction = true; // signal listening now
+                    this._callBack = typeof callback == 'function' ? callback.createDelegate(scope) : null;
+                    this.dom.src = s;
+                    this.frameInit = true; // control initial event chatter
+                    this.checkDOM();
+                } catch (ex) {
+                    this.fireEvent('exception', this, ex);
+                }
+
+             }).defer(10, this);
 
             if (discardUrl !== true) {
                 this.src = src;
@@ -535,17 +524,20 @@
 
             this.showMask();
 
-            var s = this._targetURI = typeof src == 'function' ? src()
-                    || '' : src;
-            try {
-                this._frameAction = true; // signal listening now
-                this._callBack = typeof callback == 'function' ? callback.createDelegate(scope) : null;
-                this.getWindow().location.replace(s);
-                this.frameInit = true; // control initial event chatter
-                this.checkDOM();
-            } catch (ex) {
-                this.fireEvent('exception', this, ex);
-            }
+            (function() {
+                var s = this._targetURI = typeof src == 'function' ? src()
+                        || '' : src;
+                try {
+                    this._frameAction = true; // signal listening now
+                    this._callBack = typeof callback == 'function' ? callback.createDelegate(scope) : null;
+                    this.getWindow().location.replace(s);
+                    this.frameInit = true; // control initial event chatter
+                    this.checkDOM();
+                } catch (ex) {
+                    this.fireEvent('exception', this, ex);
+                }
+
+            }).defer(10, this);
 
             if (discardUrl !== true) {
                 this.src = src;
@@ -635,18 +627,19 @@
                 this._unHook();
                 this._windowContext = this.src = null;
                 this._targetURI = location.href;
-                this.src = null;
+
                 this.frameInit = true; // control initial event chatter
                 this.showMask();
 
+                (function() {
+                    this._callBack = typeof callback == 'function' ? callback.createDelegate(scope) : null;
+                    doc.open();
+                    this._frameAction = true;
+                    doc.write(content);
+                    doc.close();
 
-                this._callBack = typeof callback == 'function' ? callback.createDelegate(scope) : null;
-                doc.open();
-                this._frameAction = true;
-                doc.write(content);
-                doc.close();
-
-                this.checkDOM();
+                    this.checkDOM();
+                 }).defer(10, this);
 
             } else {
                 this.hideMask(true);
@@ -894,21 +887,21 @@
 
             if (this._hooked){
                 if( h && (elcache = h.elCache)) {
-
-                    for (var id in elcache) {
-                        var el = elcache[id];
-
-                        if (el.removeAllListeners) {
-                            el.removeAllListeners();
-                        }
-                        delete elcache[id];
-                    }
-                    if (h.docEl) {
-                        h.docEl.removeAllListeners();
-                        h.docEl = null;
-                        delete h.docEl;
-                    }
-
+            
+	                for (var id in elcache) {
+	                    var el = elcache[id];
+	
+	                    if (el.removeAllListeners) {
+	                        el.removeAllListeners();
+	                    }
+	                    delete elcache[id];
+	                }
+	                if (h.docEl) {
+	                    h.docEl.removeAllListeners();
+	                    h.docEl = null;
+	                    delete h.docEl;
+	                }
+                    
                 }
                 var w;
                 if(this._frameProxy && (w = this.getWindow())){
@@ -917,12 +910,10 @@
                     removeListener(w, 'resize', this._frameProxy);
                     removeListener(w, 'unload', this._frameProxy);
                 }
-
             }
-            this._hooked = this._domReady = this._domFired = this._frameAction = false;
-            MIM._flyweights = {};
-            this.CSS = this.CSS ? this.CSS.destroy() : null;
 
+            this.CSS = this.CSS ? this.CSS.destroy() : null;
+            this._hooked = this._domReady = this._domFired = this._frameAction = false;
 
         },
         // Private execScript sandbox and messaging interface
@@ -964,19 +955,18 @@
 
                 }
 
-            } catch (ex) { console.warn(ex);
+            } catch (ex) {
             }
 
-            return (this._hooked = this.domWritable());
+            return this.domWritable();
 
         },
         /**
          * dispatch a message to the embedded frame-window context
          * @name sendMessage
          * @methodOf Ext.ux.ManagedIFrame
-         * @param {Mixed} message The message payload
-         * @param {String} tag Optional reference tag
-         * @param {String} origin Optional domain designation of the sender (defaults
+         * @param {Mixed} message The message payload @param {String} tag Optional reference tag @param
+         * {String} origin Optional domain designation of the sender (defaults
          * to document.domain).
          */
         sendMessage : function(message, tag, origin) {
@@ -1227,147 +1217,50 @@
             }
         },
 
-         /**
-         * Puts a mask over the FRAME to disable user interaction. Requires core.css.
-         * @param {String} msg (optional) A message to display in the mask
-         * @param {String} msgCls (optional) A css class to apply to the msg element
-         * @param {String} maskCls (optional) A css class to apply to the mask element
-         * @return {Element} The mask element
-         */
-        mask : function(msg, msgCls, maskCls){
-            this._mask && this.unmask();
-            var p = this.parent('.'+MASK_TARGET) || this.parent();
-            if(p.getStyle("position") == "static" &&
-                !p.select('iframe,frame,object,embed').elements.length){
-                    p.addClass("x-masked-relative");
-            }
-
-            p.addClass("x-masked");
-
-            this._mask = Ext.DomHelper.append(p, {cls: maskCls || "ext-el-mask"} , true);
-            this._mask.setDisplayed(true);
-            this._mask._agent = p;
-
-            if(typeof msg == 'string'){
-                 this._maskMsg = Ext.DomHelper.append(p, {cls: msgCls || 'ext-el-mask-msg x-mask-loading' , style: {visibility:'hidden'}, cn:{tag:'div', html:msg}}, true);
-                 this._maskMsg.setVisibilityMode(Ext.Element.VISIBILITY);
-                 (function(){
-                   this._mask &&
-                    this._maskMsg &&
-                      this._maskMsg.setVisible(true).center(p);
-                  }).defer(5,this);
-            }
-            if(Ext.isIE && !(Ext.isIE7 && Ext.isStrict) && this.getStyle('height') == 'auto'){ // ie will not expand full height automatically
-                this._mask.setSize(undefined, this._mask.getHeight());
-            }
-            return this._mask;
-        },
-
-        /**
-         * Removes a previously applied mask.
-         */
-        unmask : function(){
-
-            var a;
-            if(this._mask){
-                (a = this._mask._agent) && a.removeClass(["x-masked-relative","x-masked"]);
-                if(this._maskMsg){
-                    this._maskMsg.remove();
-                    delete this._maskMsg;
-                }
-                this._mask.remove();
-                delete this._mask;
-            }
-         },
-
         /**
          * Forcefully show the defined loadMask
          * @param {String} msg Mask text to display during the mask operation, defaults to previous defined
          * loadMask config value.
          * @param {String} msgCls The CSS class to apply to the loading message element (defaults to "x-mask-loading")
-         * @param {String} maskCls The CSS class to apply to the mask element
+         * @param {Boolean} forced True to show the mask regardless of document
+         * ready/loaded state.
          */
-        showMask : function(msg, msgCls, maskCls) {
+
+        showMask : function(msg, msgCls, forced) {
             var lmask = this.loadMask;
-            if (lmask && !lmask.disabled && !this._mask){
-                this.mask(msg || lmask.msg, msgCls || lmask.msgCls, maskCls || lmask.maskCls);
+
+            if (lmask && !lmask.disabled) {
+                lmask.masker
+                        || (lmask.masker = Ext.get(lmask.maskEl
+                                || this.dom.parentNode || this.wrap({
+                                            tag : 'div',
+                                            style : {
+                                                position : 'static'
+                                            }
+                                        })));
+                (function   () {
+                    //this.masker.repaint();
+                    this._vis = !!this.masker.mask(msg || this.msg, msgCls
+                                    || this.msgCls);
+                }).defer(lmask.delay || 10, lmask)
+
             }
         },
-
         /**
-         * Hide the defined loadMask
-         * @param {Boolean} forced True to hide the mask regardless of document ready/loaded state.
+         * Forcefully hide the defined loadMask @param {Boolean} forced True to
+         * hide the mask regardless of document ready/loaded state.
          */
+
         hideMask : function(forced) {
             var tlm = this.loadMask;
-            if (tlm && !!this._mask){
+
+            if (tlm && !tlm.disabled && tlm.masker) {
                 if (forced || (tlm.hideOnReady && this._domReady)) {
-                    this.unmask();
+                    tlm.masker.unmask();
+                    tlm._vis = false;
+
                 }
             }
-        },
-
-        /**
-         * Loads the frame Element with the response from a form submit to the
-         * specified URL with the ManagedIframe.Element as it's submit target.
-         *
-         * @param {Object} submitCfg A config object containing any of the following options:
-         * <pre><code>
-         *      mifPanel.submitAsTarget({
-         *         form : formPanel.form,  //optional Ext.FormPanel, Ext form element, or HTMLFormElement
-         *         url: &quot;your-url.php&quot;,
-         *         params: {param1: &quot;foo&quot;, param2: &quot;bar&quot;}, // or a URL encoded string
-         *         callback: yourFunction,  //optional, called with the signature (frame, responseContent)
-         *         scope: yourObject, // optional scope for the callback
-         *         method: 'POST', //optional form.action (default:'POST')
-         *         encoding : "multipart/form-data" //optional, default = HTMLForm default
-         *      });
-         *
-         * </code></pre>
-         *
-         */
-        submitAsTarget : function(submitCfg){ //form, url, params, callback, scope){
-            var opt = submitCfg || {}, D = document;
-            //this.reset();
-            var form = opt.form || Ext.DomHelper.append(D.body, { tag: 'form', cls : 'x-hidden'});
-            form = Ext.getDom(form.form || form);
-
-            form.target = this.dom.name;
-            form.method = opt.method || 'POST';
-            opt.encoding && (form.enctype = form.encoding = String(opt.encoding));
-            opt.url && (form.action = opt.url);
-
-            var hiddens, hd;
-            if(opt.params){ // add any additional dynamic params
-                hiddens = [];
-                var ps = typeof opt.params == 'string'? Ext.urlDecode(params, false): opt.params;
-                for(var k in ps){
-                    if(ps.hasOwnProperty(k)){
-                        hd = D.createElement('input');
-                        hd.type = 'hidden';
-                        hd.name = k;
-                        hd.value = ps[k];
-                        form.appendChild(hd);
-                        hiddens.push(hd);
-                    }
-                }
-            }
-            this._callBack = typeof opt.callback == 'function' ? opt.callback.createDelegate(opt.scope) : null;
-
-            this._frameAction = this.frameInit = true;
-            this._targetURI = location.href;
-            this.showMask();
-
-            //slight delay for masking
-            (function(){
-                form.submit();
-                // remove dynamic inputs
-                hiddens && Ext.each(hiddens, Ext.removeNode, Ext);
-
-                //Remove if dynamically generated.
-                Ext.fly(form,'_dynaForm').hasClass('x-hidden') && Ext.removeNode(form);
-                this.hideMask(true);
-            }).defer(100, this);
         },
 
         /**
@@ -1379,64 +1272,57 @@
 
         loadHandler : function(e, target) {
 
-
+            
             target || (target = {});
             var rstatus = (e && typeof e.type !== 'undefined' ? e.type: this.dom.readyState);
-
+            //console.log('hanlder ',rstatus,this.frameInit , this._frameAction , this.eventsFollowFrameLinks);
             if (!this.frameInit || (!this._frameAction && !this.eventsFollowFrameLinks)) {
-               return;
+                return;
             }
-
             switch (rstatus) {
 
                 case 'domready' : // MIF
-                    var M;
-                    try{ M = this.getWindow() ? this.getWindow().hostMIF : null; }catch(access){}
+                    if (this._domReady) { return; }
+                    this._domReady = true;
 
-                    if(this._frameAction && !M){
-                        // Only raise if sandBox injection succeeded (same origin)
-                        this.frameInit && this._renderHook() && this.fireEvent.defer(1,this,["domready", this]);
-                        this._domFired = this._hooked;
-
+                    if ((this._frameAction || this.eventsFollowFrameLinks) 
+                            && this.getDocumentURI() != 'about:blank'
+                            && (this._hooked = this._renderHook())) {
+                                // Only raise if sandBox injection succeeded (same origin)
+                        this._domFired = true;
+                        this.fireEvent("domready", this);
                     }
-
                 case 'domfail' : // MIF
                     this._domReady = true;
                     this.hideMask();
+
                     break;
-
                 case 'load' : // Gecko, Opera, IE
-
                 case 'complete' :
 
-
-                    if (!this._domFired ) { // one last try for slow DOMS.
+                    if (!this._domReady) { // one last try for slow DOMS.
                         this.loadHandler({
                                     type : 'domready',
                                     id : this.id
                                 }, this.dom);
                     }
-
-                    //Restore IE's shared document context to the frame when 'load' fires.
-                    Ext.isIE && this.getWindow() && this.getWindow().focus();
-
+                    this.hideMask(true);
                     if (this._frameAction || this.eventsFollowFrameLinks) {
-
-                        // not going to wait for the event chain, as it's not cancellable anyhow.
+                        // not going to wait for the event chain, as it's not
+                        // cancellable anyhow.
                         this.fireEvent.defer(1, this, ["documentloaded", this]);
-                        // setSrc and update method (async) callbacks are called ASAP.
+                        // setSrc and update method (async) callbacks are called
+                                            // ASAP.
                         if (this._callBack) {
                             this._callBack.defer(1, null, [this]);
                         }
-
                     }
-                    this._frameAction = this.frameInit = false;
+                    this._frameAction = this._frameInit = false;
 
                     if (this.eventsFollowFrameLinks) { // reset for link
                                                         // tracking
                         this._domFired = this._domReady = false;
                     }
-                    this.hideMask(true);
 
                     break;
                 default :
@@ -1455,9 +1341,7 @@
             if (Ext.isOpera || Ext.isGecko || !this._frameAction) { return; }
             // initialise the counter
             var n = 0, manager = this, domReady = false,
-                b, l, d,
-                max = this.domReadyRetries,
-                polling = false,
+                b, l, d, max = 300, polling = false,
                 startLocation = (this.getDocument() || {location : {}}).location.href;
 
             (function() { // DOM polling for IE and others
@@ -1698,7 +1582,7 @@
     /**
      * @class Ext.ux.panel.ManagedIFrame
      * @extends Ext.Panel
-     * @version: 1.2.5 (6/12/2009)
+     * @version: 1.2.4 (4/29/2009)
      * @license <a href="http://www.gnu.org/licenses/lgpl.html">LGPL 3.0</a>
      * @author: Doug Hendricks. Forum ID: <a
      * href="http://extjs.com/forum/member.php?u=8730">hendricd</a> Copyright
@@ -2030,7 +1914,8 @@
                     //resolve possible maskEl by Element name eg. 'body', 'bwrap', 'actionEl'
                     var mEl;
                     if(mEl = this.loadMask.maskEl){
-                        (this[mEl] || mEl || this.body).addClass(MASK_TARGET);
+                        this.loadMask.maskEl = this[mEl] || mEl || this.body;
+                        this.loadMask.maskEl.addClass('x-managed-iframe-mask');
                     }
 
                     this.loadMask = Ext.apply({
@@ -2127,7 +2012,7 @@
             }
         },
         /**
-        * @private
+        * @private 
         */
         filterOptRe: /^(?:scope|delay|buffer|single|stopEvent|preventDefault|stopPropagation|normalized|args|delegate)$/,
 
@@ -2446,14 +2331,17 @@
             // to be called under the scope of the managing MIF
             eventProxy : function(e) {
 
-                if (!e) return;
+                if (!e)
+                    return;
                 e = Ext.EventObject.setEvent(e);
                 var be = e.browserEvent || e;
 
                 // same-domain unloads should clear ElCache for use with the
                 // next document rendering
-                (e.type == 'unload') && this._unHook();
-
+                if (e.type == 'unload') {
+                    this._unHook();
+                }
+                
                 if (!be['eventPhase']
                         || (be['eventPhase'] == (be['AT_TARGET'] || 2))) {
                     return this.fireEvent(e.type, e);
@@ -2468,7 +2356,6 @@
                 if (document.addEventListener) {
                       window.removeEventListener("DOMFrameContentLoaded", this.readyHandler, true);
                 }
-                delete this._flyweights;
 
             },
 
@@ -2617,7 +2504,7 @@
     /**
      * @class Ext.ux.portlet.ManagedIFrame
      * @extends Ext.ux.panel.ManagedIframe
-     * @version: 1.2.5 (6/12/2009)
+     * @version: 1.2.4 (4/29/2009) 
      * @license <a
      * href="http://www.gnu.org/licenses/lgpl.html">LGPL 3.0</a> @author: Doug
      * Hendricks. Forum ID: <a
@@ -2719,11 +2606,7 @@
         var CSS = Ext.util.CSS, rules = [];
 
         CSS.getRule('.x-managed-iframe')|| (rules.push('.x-managed-iframe {height:100%;width:100%;overflow:auto;position:relative;}'));
-        CSS.getRule('.'+MASK_TARGET)||
-            (rules.push('.'+MASK_TARGET+'{position:relative;zoom:1;}',
-                        '.'+MASK_TARGET+' .ext-el-mask-msg{z-index:101!important;} '
-
-            ));
+        CSS.getRule('.x-managed-iframe-mask')|| (rules.push('.x-managed-iframe-mask{position:relative;zoom:1;}'));
         if (!CSS.getRule('.x-frame-shim')) {
             rules.push('.x-frame-shim {z-index:8500;position:absolute;top:0px;left:0px;background:transparent!important;overflow:hidden;display:none;}');
             rules.push('.x-frame-shim-on{width:100%;height:100%;display:block;zoom:1;}');

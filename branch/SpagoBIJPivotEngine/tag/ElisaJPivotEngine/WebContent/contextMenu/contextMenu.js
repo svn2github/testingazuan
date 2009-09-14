@@ -21,6 +21,11 @@ function hideMenu(event, divId) {
 	}
 }	
 
+function forceHideMenu(divId) {
+	var divM = document.getElementById(divId);
+	divM.style.display = 'none';
+}
+
 function showMenu(event, divId) {
   var divM = document.getElementById(divId);
 	var theTop;

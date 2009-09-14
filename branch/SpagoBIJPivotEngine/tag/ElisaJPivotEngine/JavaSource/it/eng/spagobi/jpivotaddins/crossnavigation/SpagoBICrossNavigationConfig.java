@@ -104,7 +104,7 @@ public class SpagoBICrossNavigationConfig {
 	
 	private String getCrossNavigationUrl(Target target, Cell cell, MondrianModel model) {
 		logger.debug("IN");
-		StringBuffer buffer = new StringBuffer("javascript:parent.execCrossNavigation(this.name, '" + target.documentLabel + "', '");
+		StringBuffer buffer = new StringBuffer("parent.execCrossNavigation(this.name, '" + target.documentLabel + "', '");
 		String query = model.getCurrentMdx();
 		Connection monConnection = model.getConnection();
 	    Query monQuery = monConnection.parseQuery(query);

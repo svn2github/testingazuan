@@ -117,20 +117,15 @@
 
 <!-- start SpagoBI cross-navigation: added for SpagoBI cross-navigation mechanism support -->
 <xsl:template match="cross-navigation">
-  <a href="javascript:void(0);" onclick="showMenu(event, 'contextmenu_{@id}');" >
+  <xsl:variable name="contextMenuId">contextmenu_<xsl:value-of select="@id"></xsl:value-of></xsl:variable>
+  <a href="javascript:void(0);" onclick="showMenu(event, '{$contextMenuId}');" >
 	<img title="{@title}" src="{$context}/{$imgpath}/cross-navigation.gif" border="0" width="9" height="9"/>
   </a>
-  <!-- 
-  <xsl:variable name="contextMenuId">contextmenu_<xsl:value-of select="@id"></xsl:value-of></xsl:variable>
-  -->
-  <div id='contextmenu_{@id}' class='contextMenu' onmouseout='hideMenu(event, "contextmenu_{@id}");'>
+  <div id='{$contextMenuId}' class='contextMenu' onmouseout='hideMenu(event, "{$contextMenuId}");'>
   	<xsl:for-each select="cross-navigation-target">
 	  <div onmouseout="this.style.backgroundColor='white'"  
 		   onmouseover="this.style.backgroundColor='#eaf1f9'" >
-		 <!-- 
-		 <a class="dtreemenulink" href="{@url}" onclick='hideMenu(event, "{$contextMenuId}'>
-		 -->
-		 <a class="contextMenuLink" href="{@url}">
+		 <a class="contextMenuLink" href="javascript:void(0);" onclick="forceHideMenu('{$contextMenuId}');{@crossNavigationJSFunction}">
 		  <xsl:value-of select="@title"></xsl:value-of>
 		 </a>
 	  </div>

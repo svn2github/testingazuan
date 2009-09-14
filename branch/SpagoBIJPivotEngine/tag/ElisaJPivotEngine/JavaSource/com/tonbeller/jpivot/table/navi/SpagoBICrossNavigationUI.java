@@ -120,7 +120,7 @@ public class SpagoBICrossNavigationUI extends TableComponentExtensionSupport imp
     	  MondrianModel mondrianModel = (MondrianModel) extension.getModel();
     	  String[] choice = cninfo.getChoice(i, mondrianCell, mondrianModel);
     	  targetElement.setAttribute("title", choice[0]);
-    	  targetElement.setAttribute("url", choice[1]);
+    	  targetElement.setAttribute("crossNavigationJSFunction", choice[1]);
       }
       return parent;
     }

@@ -60,9 +60,13 @@ Sbi.execution.ParametersPanel = function(config) {
 		settings = Sbi.settings.execution.parametersPanel;
 	}
 	
-	var c = Ext.apply(settings, config || {});
-	this.baseConfig = c;
+	// create a new variable and store settings into this new variable
+	var temp = {};
+	temp = Ext.apply(temp, settings);
 	
+	// merge settings and input configuration
+	var c = Ext.apply(temp, config || {});
+	this.baseConfig = c;
 	
 	this.parametersPreference = undefined;
 	if (c.parameters) {

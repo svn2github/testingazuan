@@ -95,7 +95,7 @@ public class MondrianOlapModelTag extends OlapModelTag {
     MondrianModel mm = MondrianModelFactory.instance(filers,url, cfg, profile);
     
     //MondrianModel mm = MondrianModelFactory.instance(url, cfg);
-    mm.setRole(new SpagoBIMondrianRole(filers,profile));
+    //mm.setRole(new SpagoBIMondrianRole(filers,profile));
     OlapModel om = (OlapModel) mm.getTopDecorator();
     om.setLocale(context.getLocale());
     om.setServletContext(context.getSession().getServletContext());

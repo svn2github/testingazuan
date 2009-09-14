@@ -208,8 +208,8 @@ public class QueryCatalogue {
 	}
 
 	public Query getFirstQuery() {
-		String queryId = (String) queries.keySet().iterator().next();
-		Query query = (Query) queries.get(queryId);
+		//String queryId = (String) queries.keySet().iterator().next();
+		Query query = (Query) getAllQueries(false).iterator().next();
 		return query;
 	}
 	

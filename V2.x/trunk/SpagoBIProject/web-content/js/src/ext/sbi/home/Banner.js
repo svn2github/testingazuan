@@ -78,7 +78,8 @@ Sbi.home.Banner = function(config) {
 	        border: false,
 	        scrolling  : 'no',	
 			collapseMode: 'mini',
-	        autoHeight: true
+	        autoHeight: true,
+		forceLayout: true
 		});   	
       
 		Sbi.home.Banner.superclass.constructor.call(this, c);	

@@ -194,7 +194,7 @@ else {
 }
 
 if(showbanner){%>
-<div id='Banner' >
+<div id='Banner'>
 	<jsp:include page='<%=url%>' />
 </div>
 <%} %>
@@ -335,16 +335,21 @@ if(showfooter){%>
       southFrame = new Sbi.home.Footer({});
       viewport = new Ext.Viewport({
 	    layout: 'border',
-	    items: [northFrame, centerFrame, southFrame]
+	    items: [northFrame, centerFrame, southFrame],
+	    forceLayout: true,
+	    autoHeight: true
 	    });	  
 	  }else{
 	    viewport = new Ext.Viewport({
 	    layout: 'border',
-	    items: [northFrame, centerFrame]
+	    items: [northFrame, centerFrame],
+	    forceLayout: true,
+	    autoHeight: true
 	    });	  
 	  }
-	    
+	  
 	  viewport.render();
+	  viewport.doLayout(true,true);
     });
     
 

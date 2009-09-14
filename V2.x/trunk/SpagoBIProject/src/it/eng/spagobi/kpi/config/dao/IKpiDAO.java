@@ -14,6 +14,8 @@ import java.util.List;
 
 public interface IKpiDAO {
 	
+	
+	public String loadKPIValueXml(Integer kpiValueId)throws EMFUserError ;
 	/**
 	 * Inserts a new KPI Value with its date, value period and thresholds
 	 * 

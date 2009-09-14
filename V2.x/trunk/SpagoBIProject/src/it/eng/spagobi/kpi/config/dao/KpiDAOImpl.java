@@ -47,6 +47,38 @@ public class KpiDAOImpl extends AbstractHibernateDAO implements IKpiDAO {
 
 	static private Logger logger = Logger.getLogger(KpiDAOImpl.class);
 
+	public String loadKPIValueXml(Integer kpiValueId)
+	throws EMFUserError {
+		logger.debug("IN");
+		String xmlToReturn = "";
+		Session aSession = null;
+		Transaction tx = null;
+
+		try {
+			aSession = getSession();
+			tx = aSession.beginTransaction();
+			SbiKpiValue hibSbiKpiValue = (SbiKpiValue) aSession.load(SbiKpiValue.class, kpiValueId);
+			xmlToReturn = hibSbiKpiValue.getXmlData();
+
+		} catch (HibernateException he) {
+			logger.error("Error while loading the KpiValue with id "
+					+ ((kpiValueId == null) ? "" : kpiValueId.toString()), he);
+
+			if (tx != null)
+				tx.rollback();
+
+			throw new EMFUserError(EMFErrorSeverity.ERROR, 10112);
+
+		} finally {
+			if (aSession != null) {
+				if (aSession.isOpen())
+					aSession.close();
+				logger.debug("OUT");
+			}
+		}
+		logger.debug("OUT");
+		return xmlToReturn;
+	}
 
 	public Kpi loadKpiDefinitionById(Integer id) throws EMFUserError {
 		logger.debug("IN");

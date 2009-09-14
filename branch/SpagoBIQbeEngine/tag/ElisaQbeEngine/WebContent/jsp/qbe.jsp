@@ -4,9 +4,13 @@
 <%@page import="it.eng.spago.configuration.*"%>
 <%@page import="it.eng.spago.base.*"%>
 <%@page import="it.eng.spagobi.qbe.QbeEngineConfig"%>
+<%@page import="it.eng.spagobi.qbe.QbeEngineInstance"%>
+<%@page import="it.eng.spagobi.utilities.engines.EngineConstants"%>
+
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
+<%@page import="java.util.Locale"%>
 
 <%@ taglib uri="/WEB-INF/tlds/commons/qctl.tld" prefix="qbe" %>
 <%@ taglib uri="/WEB-INF/tlds/jstl-1.1.2/c.tld" prefix="c" %>
@@ -18,9 +22,23 @@
 	<%@include file="commons/includeExtJS.jspf" %>
 	
 	<%
-	String language = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("LANGUAGE");
-	UserProfile profile = (UserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-	boolean isPowerUser = profile.getFunctionalities().contains(SpagoBIConstants.BUILD_QBE_QUERIES_FUNCTIONALITY);
+	QbeEngineInstance qbeEngineInstance;
+	UserProfile profile;
+	Locale locale;
+	String isFromCross;
+	boolean isPowerUser;
+	
+	qbeEngineInstance = (QbeEngineInstance)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("ENGINE_INSTANCE");
+	
+	profile = (UserProfile)qbeEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE);
+	locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
+	
+	isFromCross = (String)qbeEngineInstance.getEnv().get("isFromCross");
+	isPowerUser = profile.getFunctionalities().contains(SpagoBIConstants.BUILD_QBE_QUERIES_FUNCTIONALITY);
+	
+	//String language = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("LANGUAGE");
+	//UserProfile profile = (UserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+	//boolean isPowerUser = profile.getFunctionalities().contains(SpagoBIConstants.BUILD_QBE_QUERIES_FUNCTIONALITY);
 	%>
 	
 	<qbe:url type="resource" var="href" ref="../css/qbe.css"/>
@@ -49,7 +67,7 @@
 	<qbe:url type="resource" var="src" ref="../js/spagobi/locale/LocaleUtils.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
-	<script type="text/javascript" src='../js/spagobi/locale/<%=language%>.js'></script>
+	<script type="text/javascript" src='../js/spagobi/locale/<%=locale.getLanguage()%>.js'></script>
 		
 	<qbe:url type="resource" var="src" ref="../js/spagobi/commons/commons.js"/>
 	<script type="text/javascript" src='${src}'/></script>
@@ -141,10 +159,12 @@
 	    });
 
       	var qbeConfig = {};
+      	qbeConfig.isFromCross = <%= isFromCross %>;
 
         // javascript-side user profile object
         Ext.ns("Sbi.user");
         Sbi.user.isPowerUser = <%= isPowerUser %>;
+        
         
         Ext.onReady(function(){
         	Ext.QuickTips.init();              

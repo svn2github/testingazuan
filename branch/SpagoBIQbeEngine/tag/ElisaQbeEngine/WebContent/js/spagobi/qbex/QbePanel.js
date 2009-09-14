@@ -78,7 +78,7 @@ Sbi.qbe.QbePanel = function(config) {
 	
 	this.tabs = new Ext.TabPanel({
 		border: false,
-  		activeTab: 0,
+  		activeTab: config.isFromCross?1:0,
   		items: items
 	});
 	
@@ -98,6 +98,10 @@ Sbi.qbe.QbePanel = function(config) {
 	// constructor
     Sbi.qbe.QbePanel.superclass.constructor.call(this, c);
     
+    //alert('isFromCross: ' + config.isFromCross);
+    if(config.isFromCross) {
+    	this.loadFirstQuery();
+    }
 };
 
 Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {

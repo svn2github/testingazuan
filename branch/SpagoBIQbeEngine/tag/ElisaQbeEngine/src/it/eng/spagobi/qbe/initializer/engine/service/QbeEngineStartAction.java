@@ -86,7 +86,9 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			
 			locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
 			
-			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);			
+			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);		
+			setAttribute(ENGINE_INSTANCE, qbeEngineInstance);
+			
 			setAttribute(LANGUAGE, locale.getLanguage());
 			setAttribute(COUNTRY, locale.getCountry());
 			

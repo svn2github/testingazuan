@@ -128,7 +128,20 @@ public class MenuUtilities {
 			for (int i=0; i< arrRoles.length; i++){
 				logger.debug("*** arrRoles[i]): " + arrRoles[i]);
 				Role role = (Role)DAOFactory.getRoleDAO().loadByName((String)arrRoles[i]);
-				if (role != null){												
+				if (role != null){	
+					//list final user menu
+					List lstUserMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
+					if (lstUserMenuItems == null)
+						logger.debug("Not found menu items for User Role " + (String)arrRoles[i] );
+					else {
+						for(int j=0; j<lstUserMenuItems.size(); j++){
+							Menu tmpObj = (Menu)lstUserMenuItems.get(j);
+							if (!containsMenu(lstFinalMenu, tmpObj)){						
+								lstFinalMenu.add((Menu)lstUserMenuItems.get(j));	
+							}
+						}
+					}
+					
 					List lstAdminMenuItems = new  ArrayList();
 					if (!technicalMenuLoaded && (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN)  // for administrators
 							|| profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)  // for developers
@@ -141,26 +154,13 @@ public class MenuUtilities {
 						while (it.hasNext()) {
 							SourceBean itemSB = (SourceBean) it.next();
 							if (isAbleToSeeItem(itemSB, profile)) {
-								lstAdminMenuItems.add(getAdminItem(itemSB, levelItem, profile));
+								//lstAdminMenuItems.add(getAdminItem(itemSB, levelItem, profile));
+								lstFinalMenu.add(getAdminItem(itemSB, levelItem, profile));
 								levelItem++;
 							}
 						}						
-						lstFinalMenu = lstAdminMenuItems;
-					}
-			        
-
-		        	//list final user menu
-					List lstUserMenuItems  = DAOFactory.getMenuRolesDAO().loadMenuByRoleId(role.getId());
-					if (lstUserMenuItems == null)
-						logger.debug("Not found menu items for User Role " + (String)arrRoles[i] );
-					else {
-						for(int j=0; j<lstUserMenuItems.size(); j++){
-							Menu tmpObj = (Menu)lstUserMenuItems.get(j);
-							if (!containsMenu(lstFinalMenu, tmpObj)){						
-								lstFinalMenu.add((Menu)lstUserMenuItems.get(j));	
-							}
-						}
-					}									
+						//lstFinalMenu = lstAdminMenuItems;
+					}			      		        										
 				}
 				else
 					logger.debug("Role " + (String)arrRoles[i] + " not found on db");

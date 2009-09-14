@@ -148,7 +148,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 	, executeCrossNavigation: function( config ) {
 		var prevActiveDoc = this.activeDocument;
 		
-		this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences} );
+		this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences, isFromCross: true} );
 		this.documentsStack.push( this.activeDocument );
 		
 		this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);

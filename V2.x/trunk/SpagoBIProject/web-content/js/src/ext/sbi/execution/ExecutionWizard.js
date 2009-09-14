@@ -73,6 +73,8 @@ Sbi.execution.ExecutionWizard = function(config) {
 	});
 	
 	this.addEvents('executionfailure', 'beforetoolbarinit');
+	
+	this.isFromCross = config.isFromCross || false;
 	 
 	// propagate preferences to role selection page
 	var roleSelectionPageConfig = Ext.applyIf(config.preferences, config.roleSelectionPage); 
@@ -117,30 +119,6 @@ Sbi.execution.ExecutionWizard = function(config) {
 		this.fireEvent('beforetoolbarinit', toolbar);
 	}, this);
 	
-	
-	
-	/*
-	this.tb = new Sbi.execution.toolbar.ExecutionToolbar({initialPage: 0});
-    this.tb.addListener('backbuttonclick', this.moveToPreviousPage, this);
-    this.tb.addListener('rolesformsubmit', this.moveToNextPage, this);
-    
-    this.tb.addListener('parametersformsubmit', this.moveToNextPage, this);
-    this.parametersSelectionPage.parametersPanel.on('readyforexecution', this.moveToNextPage, this);
-    this.tb.addListener('clearparametersbuttonclick', this.parametersSelectionPage.clearParametersForm, this.parametersSelectionPage);
-    this.tb.addListener('saveviewpointbuttonclick', this.parametersSelectionPage.saveParametersFormStateAsViewpoint, this.parametersSelectionPage);
-    
-    this.tb.addListener('refreshbuttonclick', this.onRefreshButtonClicked, this);
-    this.tb.addListener('sendmailbuttonclick', this.onSendMailButtonClicked, this);
-    this.tb.addListener('saveintopersonalfolderbuttonclick', this.onSaveIntoPersonalFolderButtonClicked, this);
-    this.tb.addListener('saveremembermebuttonclick', this.onSaveRememberMeButtonClicked, this);
-    this.tb.addListener('notesbuttonclick', this.onNotesButtonClicked, this);
-    this.tb.addListener('metadatabuttonclick', this.onMetadataButtonClicked, this);
-    this.tb.addListener('ratingbuttonclick', this.onRatingButtonClicked, this);
-    this.tb.addListener('printbuttonclick', this.onPrintButtonClicked, this);
-    */
-    
-    
-    
 	var c = Ext.apply({}, config, {
 		layout:'card',
 		hideMode: !Ext.isIE ? 'nosize' : 'display',
@@ -160,15 +138,8 @@ Sbi.execution.ExecutionWizard = function(config) {
     this.roleSelectionPage.addListener('synchronize', this.onRolesForExecutionLoaded, this);
     this.roleSelectionPage.addListener('synchronizeexception', this.onRolesForExecutionLoadException, this);
     
-    //this.parametersSelectionPage.shortcutsPanel.addListener('viewpointexecutionrequest', this.onViewpointExecutionRequest, this);
-    //this.parametersSelectionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
-    //this.parametersSelectionPage.shortcutsPanel.addListener('snapshotexcutionrequest', this.onSnapshotExecutionRequest, this);
-    
-    
     this.documentExecutionPage.addListener('beforerefresh', function(){ this.prevActivePageNumber = this.EXECUTION_PAGE_NUMBER; }, this);
     this.documentExecutionPage.addListener('loadurlfailure', this.onLoadUrlFailure, this);
-    //this.documentExecutionPage.shortcutsPanel.addListener('subobjectexecutionrequest', this.onSubobjectExecutionRequest, this);
-    //this.documentExecutionPage.shortcutsPanel.addListener('snapshotexcutionrequest', this.onSnapshotExecutionRequest, this);
     
     if(config.document) {
     	this.execute( config.document );
@@ -180,9 +151,11 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
     
 	services: null
     , executionInstance: null
+    , isFromCross: null
     
     , prevActivePageNumber: null
     , activePageNumber: null
+    
     , roleSelectionPage: null
     , parametersSelectionPage: null
     , documentExecutionPage: null 
@@ -250,6 +223,7 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 		if(doc.id) this.executionInstance.OBJECT_ID = doc.id;
 		if(doc.label) this.executionInstance.OBJECT_LABEL = doc.label;
 		this.executionInstance.document = doc;
+		this.executionInstance.isFromCross = this.isFromCross;
 		
 		this.loadRolesForExecution();
 	}

@@ -21,6 +21,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
@@ -32,18 +42,9 @@ import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
 import it.eng.spagobi.utilities.service.JSONSuccess;
-
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Zerbetto Davide
@@ -54,23 +55,31 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 
 	public static final String SBI_SUBOBJECT_ID = "SBI_SUBOBJECT_ID";
 	public static final String SBI_SNAPSHOT_ID = "SBI_SNAPSHOT_ID";
+	public static final String IS_FROM_CROSS = "isFromCross";
+	
 	public static final String PARAMETERS = "PARAMETERS";
 
 	// logger component
 	private static Logger logger = Logger.getLogger(GetUrlForExecutionAction.class);
 
-	protected ExecutionInstance executionInstance = null;
-	protected UserProfile userProfile = null;
-
 	public void doService() {
+		Integer subObjectId;
+		Integer snapshotId;
+		boolean isFromCross;
+		JSONObject response;
+		
 		logger.debug("IN");
 		try {
-			// retrieving execution instance from session, no need to check if user is able to execute the current document
-			executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
-			userProfile = (UserProfile) this.getUserProfile();
-			Integer subObjectId = this.getAttributeAsInteger( SBI_SUBOBJECT_ID );
-			Integer snapshotId = this.getAttributeAsInteger( SBI_SNAPSHOT_ID );
-			JSONObject response = null;
+			subObjectId = this.getAttributeAsInteger( SBI_SUBOBJECT_ID );
+			logger.debug("Parameter [" + SBI_SUBOBJECT_ID + "] is equals to [" + subObjectId + "]");
+			
+			snapshotId = this.getAttributeAsInteger( SBI_SNAPSHOT_ID );
+			logger.debug("Parameter [" + SBI_SNAPSHOT_ID + "] is equals to [" + snapshotId + "]");
+			
+			isFromCross = this.getAttributeAsBoolean( IS_FROM_CROSS );
+			logger.debug("Parameter [" + IS_FROM_CROSS + "] is equals to [" + isFromCross + "]");
+			
+			response = null;
 			if (snapshotId != null) {
 				response = handleSnapshotExecution(snapshotId);
 			} else if (subObjectId != null) {
@@ -78,6 +87,15 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 			} else {
 				response = handleNormalExecution();
 			}
+			
+			Assert.assertNotNull(response, "An internal error occurred while generating service response. Service response cannot be null");
+			
+			try {
+				response.put("url", response.get("url") + "&isFromCross=" + (isFromCross==true?"true":"false"));
+			} catch (JSONException e) {
+				throw new SpagoBIServiceException("Cannot serialize the url [" + response + "] to the client", e);
+			}
+						
 			try {
 				writeBackToClient( new JSONSuccess( response ) );
 			} catch (IOException e) {
@@ -89,32 +107,48 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 	}
 
 	private JSONObject handleSnapshotExecution(Integer snapshotId) {
+		
+		JSONObject response= null;
+		
+		ISnapshotDAO dao;
+		Snapshot snapshot;
+		BIObject obj;
+		String url;
+		ExecutionInstance executionInstance;
+		
 		logger.debug("IN");
-		JSONObject response = new JSONObject();
+		
 		try {
+			executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
+			Assert.assertNotNull(executionInstance, "Execution instance cannot be null in order to properly generate execution url");
+			
+			
 			// we are not executing a subobject, so delete subobject if existing
 			executionInstance.setSubObject(null);
-			ISnapshotDAO dao = null;
 			
+			dao = null;
 			try {
 				dao = DAOFactory.getSnapshotDAO();
 			} catch (EMFUserError e) {
 				logger.error("Error while istantiating DAO", e);
 				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot access database", e);
 			}
+			Assert.assertNotNull(dao, "An internal error occurred while istantiating DAO. DAO cannot be null.");
 
-			Snapshot snapshot = null;
+			snapshot = null;
 			try {
 				snapshot = dao.loadSnapshot(snapshotId);
 			} catch (EMFUserError e) {
 				logger.error("Snapshot with id = " + snapshotId + " not found", e);
 				throw new SpagoBIServiceException(SERVICE_NAME, "Scheduled execution not found", e);
 			}
+			Assert.assertNotNull(dao, "An internal error occurred while loading snapshot [" + snapshotId + "]. Snapshot cannot be null.");
 			
-			BIObject obj = executionInstance.getBIObject();
+			obj = executionInstance.getBIObject();
 			if (obj.getId().equals(snapshot.getBiobjId())) {
 				executionInstance.setSnapshot(snapshot);
-				String url = executionInstance.getSnapshotUrl();
+				url = executionInstance.getSnapshotUrl();
+				response = new JSONObject();
 				try {
 					response.put("url", url);
 				} catch (JSONException e) {
@@ -126,13 +160,22 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 		} finally {
 			logger.debug("OUT");
 		}
+		
 		return response;
 	}
 
 	protected JSONObject handleSubObjectExecution(Integer subObjectId) {
+		ExecutionInstance executionInstance;
+		UserProfile userProfile;
+		
 		logger.debug("IN");
 		JSONObject response = new JSONObject();
 		try {
+			executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
+			Assert.assertNotNull(executionInstance, "Execution instance cannot be null in order to properly generate execution url");
+			
+			userProfile = (UserProfile) this.getUserProfile();
+			
 			// we are not executing a snapshot, so delete snapshot if existing
 			executionInstance.setSnapshot(null);
 			
@@ -215,9 +258,15 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 	}
 
 	protected JSONObject handleNormalExecution() {
+		ExecutionInstance executionInstance;
+		
+		
 		logger.debug("IN");
 		JSONObject response = new JSONObject();
 		try {
+			executionInstance = getContext().getExecutionInstance( ExecutionInstance.class.getName() );
+			Assert.assertNotNull(executionInstance, "Execution instance cannot be null in order to properly generate execution url");
+			
 			// we are not executing a subobject or a snapshot, so delete subobject/snapshot if existing
 			executionInstance.setSubObject(null);
 			executionInstance.setSnapshot(null);

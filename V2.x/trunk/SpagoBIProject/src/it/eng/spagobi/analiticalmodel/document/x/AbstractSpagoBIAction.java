@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
+import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
@@ -69,6 +70,15 @@ public abstract class AbstractSpagoBIAction extends AbstractBaseHttpAction {
 		}
 		setSpagoBIRequestContainer( request );
 		setSpagoBIResponseContainer( response );
+		// setting language and country info for Spago framework
+		String language = this.getAttributeAsString("SBI_LANGUAGE");
+		String country = this.getAttributeAsString("SBI_COUNTRY");
+		if (language != null && !language.trim().equals("")) {
+			this.getSessionContainer().getPermanentContainer().setAttribute(Constants.USER_LANGUAGE, language);
+			if (country != null && !country.trim().equals("")) {
+				this.getSessionContainer().getPermanentContainer().setAttribute(Constants.USER_COUNTRY, country);
+			}
+		}
 		try {
 			this.doService();
 		} catch (Throwable t) {

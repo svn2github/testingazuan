@@ -21,10 +21,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.analiticalmodel.document.x;
 
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.chiron.serializer.SerializationException;
 import it.eng.spagobi.chiron.serializer.SerializerFactory;
-import it.eng.spagobi.commons.dao.DAOFactory;
+import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ObjectsAccessVerifier;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
@@ -42,7 +46,7 @@ import org.json.JSONObject;
 /**
  * @author Zerbetto Davide
  */
-public class GetDocumentInfoAction extends AbstractSpagoBIAction {
+public class GetDocumentInfoAction extends ExecuteDocumentAction {
 	
 	public static final String SERVICE_NAME = "GET_DOCUMENT_INFO_ACTION";
 	
@@ -53,49 +57,55 @@ public class GetDocumentInfoAction extends AbstractSpagoBIAction {
 		logger.debug("IN");
 		
 		try {
-			String label = this.getAttributeAsString("label");
-			BIObject obj = null;
-			boolean found = false;
-			boolean canSee = false;
-			try {
-				obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(label);
-				found = obj != null;
-				if (obj != null) {
-					canSee = ObjectsAccessVerifier.canSee(obj, this.getUserProfile());
-				}
-			} catch (Exception e) {
-				logger.error("Error while recovering info about document with label [" + label + "]", e);
-				throw new SpagoBIServiceException(SERVICE_NAME, "Error while recovering info about document with label [" + label + "]", e);
+			BIObject obj = getRequiredBIObject();
+			boolean documentFound = false;
+			boolean canSeeDocument = false;
+			UserProfile profile = (UserProfile) getUserProfile();
+			documentFound = obj != null;
+			if (obj != null) {
+				canSeeDocument = ObjectsAccessVerifier.canSee(obj, profile);
 			}
 			HttpServletRequest httpRequest = getHttpRequest();
 			MessageBuilder m = new MessageBuilder();
 			Locale locale = m.getLocale(httpRequest);
-			try {
-				JSONObject result = new JSONObject();
-				if (!found) {
-					result.put("found", false);
+			JSONObject result = new JSONObject();
+			if (!documentFound) {
+				result.put("documentFound", false);
+			} else {
+				result.put("documentFound", true);
+				if (!canSeeDocument) {
+					result.put("canSeeDocument", false);
 				} else {
-					result.put("found", true);
-					if (!canSee) {
-						result.put("canSee", false);
-					} else {
-						JSONObject document = (JSONObject) SerializerFactory.getSerializer("application/json").serialize( obj ,locale);
-						result.put("document", document);
-						result.put("canSee", true);
+					JSONObject document = (JSONObject) SerializerFactory.getSerializer("application/json").serialize( obj ,locale);
+					result.put("document", document);
+					result.put("canSeeDocument", true);						
+					SubObject subObject = getRequiredSubObject(obj);
+					if (subObject != null) {
+						if (profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) || 
+								(subObject.getIsPublic().booleanValue() || subObject.getOwner().equals(profile.getUserId()))) {
+							JSONObject subObjectJSON = (JSONObject) SerializerFactory.getSerializer("application/json").serialize( subObject ,locale);
+							result.put("subobject", subObjectJSON);
+						} else {
+							logger.warn("User cannot see subobject [" + subObject.getName() + "] of document with label [" + obj.getLabel() + "].");
+							result.put("canSeeSubobject", false);
+						}
 					}
 				}
-				writeBackToClient( new JSONSuccess( result ) );
-			} catch (IOException e) {
-				throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to write back the responce to the client", e);
-			} catch (SerializationException e) {
-				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize objects", e);
-			} catch (JSONException e) {
-				throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize objects into a JSON object", e);
 			}
-
+			writeBackToClient( new JSONSuccess( result ) );
+		} catch (IOException e) {
+			throw new SpagoBIServiceException(SERVICE_NAME, "Impossible to write back the responce to the client", e);
+		} catch (SerializationException e) {
+			throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize objects", e);
+		} catch (JSONException e) {
+			throw new SpagoBIServiceException(SERVICE_NAME, "Cannot serialize objects into a JSON object", e);
+		} catch (EMFInternalError e) {
+			throw new SpagoBIServiceException(SERVICE_NAME, "Service internal error", e);
+		} catch (EMFUserError e) {
+			throw new SpagoBIServiceException(SERVICE_NAME, "Service internal error", e);
 		} finally {
 			logger.debug("OUT");
 		}
 	}
-
+	
 }

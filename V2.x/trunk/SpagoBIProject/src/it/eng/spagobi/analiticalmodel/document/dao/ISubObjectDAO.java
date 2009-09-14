@@ -92,4 +92,16 @@ public interface ISubObjectDAO {
 	 * @throws EMFUserError the EMF user error
 	 */
 	public List getPublicSubObjects(Integer idBIObj) throws EMFUserError;
+	
+	/**
+	 * Gets the subobject specified by its name and document id in input
+	 * 
+	 * @param name the name of the subobject
+	 * @param idBIObj the id of the biobject parent
+	 * 
+	 * @return the required subobject SubObject
+	 * 
+	 * @throws EMFUserError the EMF user error
+	 */
+	public SubObject getSubObjectByNameAndBIObjectId(String name, Integer idBIObj) throws EMFUserError;
 }

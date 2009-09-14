@@ -37,6 +37,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.engines.config.metadata.SbiExporters"%>
 <%@page import="it.eng.spagobi.engines.config.bo.Exporters"%>
 <%@page import="java.util.List"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.bo.SubObject"%>
 
 <%! private static transient Logger logger = Logger.getLogger(ExecuteDocumentAction.class);%>
 
@@ -44,7 +45,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	<%@ include file="/WEB-INF/jsp/commons/importSbiJS.jspf"%>
 	
-    <script type="text/javascript">
+    
+	<script type="text/javascript">
     Ext.BLANK_IMAGE_URL = '<%=urlBuilder.getResourceLink(request, "/js/lib/ext-2.0.1/resources/images/default/s.gif")%>';
     
     Sbi.config = {};
@@ -78,28 +80,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     });
 
     <%
-    Integer objId = null;
-    String objIdStr = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.OBJECT_ID);
-    logger.debug("Document id in request is [" + objIdStr + "]");
-    if (objIdStr != null && !objIdStr.trim().equals("")) {
-	    try {
-	    	objId = new Integer(objIdStr);
-	    } catch (Exception e) {
-	    	logger.error(e);
-	    }
-    }
-    String objLabel = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.OBJECT_LABEL);
-    logger.debug("Document label in request is [" + objLabel + "]");
-    BIObject obj = null;
-    try {
-    	if (objId != null) {
-    		obj = DAOFactory.getBIObjectDAO().loadBIObjectById(objId);
-    	} else if (objLabel != null) {
-    		obj = DAOFactory.getBIObjectDAO().loadBIObjectByLabel(objLabel);
-    	}
-    } catch (Exception e) {
-    	logger.error(e);
-    }
+    BIObject obj = (BIObject) aServiceResponse.getAttribute(SpagoBIConstants.OBJECT);
+	SubObject subObject = (SubObject) aServiceResponse.getAttribute(SpagoBIConstants.SUBOBJECT);
     String parameters = (String) aServiceRequest.getAttribute(ObjectsTreeConstants.PARAMETERS);
     logger.debug("Document parameters in request are [" + parameters + "]");
     String subobjectName = (String) aServiceRequest.getAttribute(SpagoBIConstants.SUBOBJECT_NAME);
@@ -114,8 +96,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
     String shortcutsVisible = (String) aServiceRequest.getAttribute(SpagoBIConstants.SLIDERS_VISIBLE);
     boolean shortcutsHidden = shortcutsVisible == null ? false : !Boolean.parseBoolean(shortcutsVisible);
     
-    Integer engineId=null;
-	Engine engineObj=obj.getEngine();
+    Integer engineId = null;
+	Engine engineObj = (obj == null) ? null : obj.getEngine();
 	String exportersJSArray = "";
 	if(engineObj!=null){
 	
@@ -156,7 +138,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			};
 
 	var parameters = <%= (parameters != null  && !parameters.trim().equals("")) ? ("'" + parameters.replaceAll("'", "\'") + "'") : "undefined" %>;
-	var subobject = <%= (subobjectName != null && !subobjectName.trim().equals("")) ? ("'" + subobjectName.replaceAll("'", "\'") + "'") : "undefined" %>;
+	<% if (subObject != null) { %>
+	var subobject = {id: <%= subObject.getId() %>, 'name': '<%= subObject.getName().replaceAll("'", "\'") %>'};
+	<% } else { %>
+	var subobject = undefined;
+	<% } %>
 	var snapshotName = <%= (snapshotName != null && !snapshotName.trim().equals("")) ? ("'" + snapshotName.replaceAll("'", "\'") + "'") : "undefined" %>;
 	var snapshotHistoryNumber = <%= (snapshotHistoryNumber != null && !snapshotHistoryNumber.trim().equals("")) ? snapshotHistoryNumber : "0" %>;
 	var snaphost = {'name': snapshotName, 'historyNumber': snapshotHistoryNumber};

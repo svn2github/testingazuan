@@ -63,9 +63,9 @@ Sbi.execution.SubobjectsPanel = function(config) {
 		serviceName: 'DELETE_SUBOBJECTS_ACTION'
 		, baseParams: params
 	});
-	this.subobjectPreference = c.subobject;
+	//this.subobjectPreference = c.subobject;
 	this.executionInstance = null;
-	this.selectedSubObjectId = null;
+	//this.selectedSubObjectId = null;
 	
     this.subObjectsStore = new Ext.data.JsonStore({
         root: 'results'
@@ -159,7 +159,7 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 	, subObjectsStore: null
 	, sm: null
 	, executionInstance: null
-	, selectedSubObjectId: null
+	//, selectedSubObjectId: null
 	   
     // public methods
 	
@@ -167,16 +167,15 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		
 		this.executionInstance = executionInstance;
 		if (this.isHidden === false) {
-			this.subObjectsStore.load({params: executionInstance});
-			// when subobjects are loaded, must check if there a preference for a subobject execution
 			this.subObjectsStore.on(
 				'load', 
-				this.checkPreferences,
+				function() {this.fireEvent('ready');},
 				this
 			);
+			this.subObjectsStore.load({params: executionInstance});
 		} else {
 			// must fire 'ready' event to inform that the panel is ready (see ParametersSelectionPage.js)
-			this.fireEvent('ready', null);
+			this.fireEvent('ready');
 		}
 		
 	}
@@ -234,6 +233,7 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
     	this.fireEvent('executionrequest', subObjectId);
     }
 	
+	/*
 	, checkPreferences: function () {
 		var subObjectId = null;
 		if (this.subobjectPreference !== undefined) {
@@ -258,5 +258,6 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 		// tells that the subobjects panel has been loaded and (eventually) the subobject specified by the preferences
 		this.fireEvent('ready', subObjectId);
 	}
+	*/
 	
 });

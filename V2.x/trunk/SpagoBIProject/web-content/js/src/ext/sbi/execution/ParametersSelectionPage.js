@@ -61,7 +61,7 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	this.isParameterPanelReady = false; // parameters panel has been loaded
 	this.isParameterPanelReadyForExecution = false; // parameters panel has been loaded and there are no parameters to be filled
 	this.isSubobjectPanelReady = false;
-	this.preferenceSubobjectId = null;
+	this.preferenceSubobjectId = (c.subobject !== undefined && c.subobject.id !== undefined) ? c.subobject.id : null;
 	this.isSnapshotPanelReady = false;
 	this.preferenceSnapshotId = null;
 	
@@ -154,9 +154,11 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	this.shortcutsPanel.on('subobjectexecutionrequest', this.onExecuteSubobject, this);
 	this.shortcutsPanel.on('snapshotexcutionrequest', this.onExecuteSnapshot, this);
 	
-	this.shortcutsPanel.subobjectsPanel.on('ready', function(preferenceSubobjectId){
+	this.shortcutsPanel.subobjectsPanel.on('ready', function(){
 		this.isSubobjectPanelReady = true;
-		this.preferenceSubobjectId = preferenceSubobjectId;
+		//if (preferenceSubobjectId !== undefined && preferenceSubobjectId != null) {
+		//	this.preferenceSubobjectId = preferenceSubobjectId;
+		//}
 		this.checkAutomaticStart();
 	}, this);
 	
@@ -246,15 +248,29 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 				}
 			}));
 		}
-		
-		this.toolbar.addSeparator();
-		
-		this.toolbar.addButton(new Ext.Toolbar.Button({
-			iconCls: 'icon-execute'
-			, tooltip: LN('sbi.execution.parametersselection.toolbar.next')
-			, scope: this
-			, handler : function() {this.fireEvent('movenextrequest');}
-		}));
+
+		// if document is QBE datamart and user is a Read-only user, he cannot execute main document, but only saved queries.
+		// If there is a subobject preference, the execution button starts the subobject execution
+		if (
+				executionInstance.document.typeCode != 'DATAMART' || 
+				(
+					Sbi.user.functionalities.contains('BuildQbeQueriesFunctionality') || 
+					(this.preferenceSubobjectId !== undefined && this.preferenceSubobjectId !== null)
+				)
+			) {
+			this.toolbar.addSeparator();
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-execute'
+				, tooltip: LN('sbi.execution.parametersselection.toolbar.next')
+				, scope: this
+				, handler : function() {
+					if (this.preferenceSubobjectId !== undefined && this.preferenceSubobjectId !== null) {
+						this.executionInstance.SBI_SUBOBJECT_ID = this.preferenceSubobjectId;
+					}
+					this.fireEvent('movenextrequest');
+				}
+			}));
+		}
 	}
 
 	, clearParametersForm: function() {

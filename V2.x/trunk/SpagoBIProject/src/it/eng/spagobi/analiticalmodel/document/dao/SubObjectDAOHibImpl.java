@@ -279,6 +279,20 @@ public class SubObjectDAOHibImpl extends AbstractHibernateDAO implements ISubObj
 		return subobj;
 	}
 
-	
+	public SubObject getSubObjectByNameAndBIObjectId(String subobjectName, Integer idBIObj) throws EMFUserError {
+		SubObject subObject = null;
+		List subObjects = this.getSubObjects(idBIObj);
+		if (subObjects != null && subObjects.size() > 0) {
+			Iterator it = subObjects.iterator();
+			while (it.hasNext()) {
+				SubObject temp = (SubObject) it.next();
+				if (temp.getName().equalsIgnoreCase(subobjectName)) {
+					subObject = temp;
+					break;
+				}
+			}
+		}
+		return subObject;
+	}
 
 }

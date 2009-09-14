@@ -652,6 +652,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 
 	, refreshExecution: function() {
 		
+		/*
 		var mustSynchronize = false;
 		if (this.executionInstance.SBI_SUBOBJECT_ID !== undefined) {
 			delete this.executionInstance.SBI_SUBOBJECT_ID;
@@ -667,6 +668,19 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		
 		if(this.fireEvent('beforerefresh', this, this.executionInstance, formState) !== false){
 			if(mustSynchronize || formStateStr !== this.executionInstance.PARAMETERS) { // todo: if(parametersPanel.isDirty())		
+				this.executionInstance.PARAMETERS = formStateStr;
+				this.synchronize( this.executionInstance, false );
+			} else {
+				this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
+			}
+		}
+		*/
+		
+		var formState = this.parametersPanel.getFormState();
+		var formStateStr = Sbi.commons.JSON.encode( formState );
+		
+		if(this.fireEvent('beforerefresh', this, this.executionInstance, formState) !== false){
+			if(formStateStr !== this.executionInstance.PARAMETERS) { // todo: if(parametersPanel.isDirty())		
 				this.executionInstance.PARAMETERS = formStateStr;
 				this.synchronize( this.executionInstance, false );
 			} else {
@@ -902,7 +916,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	                		document: {'label': message.data.label}
 	            			, preferences: {
 	                			parameters: message.data.parameters
-	                			, subobject: message.data.subobject
+	                			, subobject: {'name': message.data.subobject}
 	                		}
 	            	    };
 	                	// workaround for document composition with a svg map on IE: when clicking on the map, this message is thrown

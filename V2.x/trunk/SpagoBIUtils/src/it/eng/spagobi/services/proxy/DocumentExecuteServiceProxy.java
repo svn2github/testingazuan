@@ -79,4 +79,22 @@ public class DocumentExecuteServiceProxy extends AbstractServiceProxy{
 	}
 	return null;	
     }
+    
+      
+    public java.lang.String getKpiValueXML(java.lang.Integer kpiValueID) {
+    	logger.debug("IN.kpiValueID="+kpiValueID);
+    	if (kpiValueID==null){
+    	    logger.error("kpiValueID is NULL");
+    	    return null;
+    	}	
+    	try {
+        return lookUp().getKpiValueXML(readTicket(), userId, kpiValueID);
+    	} catch (Exception e) {
+    	    logger.error("Error during Service LookUp",e);
+    	}finally{
+    	    logger.debug("OUT");
+    	}
+    	return null;
+      }
+    
 }

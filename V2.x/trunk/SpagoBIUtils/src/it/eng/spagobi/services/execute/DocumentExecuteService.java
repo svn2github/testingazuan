@@ -38,5 +38,14 @@ public interface DocumentExecuteService {
      * @return
      */
     byte[] executeChart(String token,String user,String document,HashMap parameters);
+    
+    /**
+     *  Returns the XML DATA of the Kpi value with id kpiValueID
+     * @param token
+     * @param user
+     * @param kpiValueID
+     * @return
+     */
+    String getKpiValueXML(String token, String user,Integer kpiValueID);
 
 }

@@ -288,7 +288,7 @@ if(showfooter){%>
 						,frameConfig:{
 						        autoCreate:{id: 'iframeDoc', name:'iframeDoc'},
 	        					disableMessaging :false}
-		                ,defaultSrc : 'about:blank'
+		                ,defaultSrc : 'about:blank' // see comment below for miframe-1.2.5
 		                ,border		: false 
 						,collapseMode: 'mini'
 						,loadMask  : true
@@ -321,6 +321,11 @@ if(showfooter){%>
     					}
 						
 	  });
+	  
+	  // this setTimeout is a workaround for miframe-1.2.5: 
+	  // when setting the iframe url with defaultSrc, the 'sendMessage' method isn't injected into the iframe, therephore the Expand
+	  // button does not work.
+	  // TODO: remove this instruction and use defaultSrc when updating miframe library
 	  setTimeout("centerFrame.getFrame().setSrc('" + firstUrl + "');", 500);
 	  
 	  if (Ext.isIE) {

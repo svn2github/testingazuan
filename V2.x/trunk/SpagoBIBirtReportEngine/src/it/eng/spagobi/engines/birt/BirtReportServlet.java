@@ -7,6 +7,7 @@ package it.eng.spagobi.engines.birt;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -14,6 +15,9 @@ import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionDefinitionException;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionParameterNotValidException;
 import it.eng.spagobi.engines.birt.utilities.ParameterConverter;
+import it.eng.spagobi.services.common.EnginConf;
+import it.eng.spagobi.services.common.SsoServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.content.bo.Content;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
@@ -423,6 +427,14 @@ public class BirtReportServlet extends HttpServlet {
 		// Open the report design
 		design = birtReportEngine.openReportDesign(is);
 
+		
+		SsoServiceInterface proxyService = SsoServiceFactory.createProxyService();
+		String token = proxyService.readTicket(session);
+		
+		String kpiUrl = EnginConf.getInstance().getSpagoBiServerUrl()+"/test2.jsp?SECURITY_TOKEN="+token+"&USERID="+userId;
+		//String kpiUrl = EnginConf.getInstance().getSpagoBiServerUrl()+"/testXml.jsp?"+"USERID="+userId;
+		
+		
 		Locale locale = null;
 		String language=request.getParameter("SBI_LANGUAGE");
 		String country=request.getParameter("SBI_COUNTRY");
@@ -472,6 +484,8 @@ public class BirtReportServlet extends HttpServlet {
 			}
 		}
 
+		reportParams.put("KpiDSXmlUrl", kpiUrl);
+		
 		task.setParameterValues(reportParams);
 		task.validateParameters();
 

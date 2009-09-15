@@ -149,6 +149,16 @@ public class OverlaidStackedBarLine extends BarCharts {
 				String nameS = (String) iterator3.next();
 				String labelS = "";
 				String valueS=(String)series.get(nameS);
+				
+        Double valueD=null;
+				try{
+					valueD=Double.valueOf(valueS);
+				}
+				catch (Exception e) {
+					valueD=null;
+				}
+
+				
 				if(!hiddenSeries.contains(nameS)){
 					if(seriesLabelsMap != null && (seriesCaptions != null && seriesCaptions.size()>0)){
 						nameS = (String)(seriesCaptions.get(nameS));
@@ -160,11 +170,11 @@ public class OverlaidStackedBarLine extends BarCharts {
 					// if to draw as a line
 					if(seriesDraw.get(nameS)!=null && ((String)seriesDraw.get(nameS.toUpperCase())).equalsIgnoreCase("line")){
 						if(!seriesNames.contains(nameS.toUpperCase()))seriesNames.add(nameS.toUpperCase());
-						((DefaultCategoryDataset)(datasetMap.getDatasets().get("line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						((DefaultCategoryDataset)(datasetMap.getDatasets().get("line"))).addValue(valueD!=null ? valueD.doubleValue() : null, labelS, catValue);
 					}
 					else{ // if to draw as a bar
 						if(!seriesNames.contains(nameS.toUpperCase()))seriesNames.add(nameS.toUpperCase());
-						((DefaultCategoryDataset)(datasetMap.getDatasets().get("stackedbar"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
+						((DefaultCategoryDataset)(datasetMap.getDatasets().get("stackedbar"))).addValue(valueD!=null ? valueD.doubleValue() : null, labelS, catValue);
 
 					}
 					// if there is an additional label are 

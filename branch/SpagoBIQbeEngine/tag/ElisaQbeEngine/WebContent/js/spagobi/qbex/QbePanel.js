@@ -52,7 +52,7 @@ Sbi.qbe.QbePanel = function(config) {
 		// set default values here
 	}, config || {});
 	
-	//config.isFromCross = true;
+	config.isFromCross = true;
 	
 	this.services = new Array();
 	var params = {};
@@ -94,11 +94,11 @@ Sbi.qbe.QbePanel = function(config) {
 					anActiveTab.centerRegionPanel.doLayout();
 			}
 			
-			if(anActiveTab.selectGridPanel.dropTarget === null) {
+			if(anActiveTab.selectGridPanel != null && anActiveTab.selectGridPanel.dropTarget === null) {
 				anActiveTab.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(anActiveTab.selectGridPanel);
 			}
 			
-			if(anActiveTab.filterGridPanel.dropTarget === null) {
+			if(anActiveTab.filterGridPanel != null && anActiveTab.filterGridPanel.dropTarget === null) {
 				anActiveTab.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(anActiveTab.filterGridPanel);
 			}
 		}, this);

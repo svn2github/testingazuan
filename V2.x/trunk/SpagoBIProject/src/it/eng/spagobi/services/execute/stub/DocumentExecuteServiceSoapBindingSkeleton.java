@@ -2,7 +2,7 @@
  * DocumentExecuteServiceSoapBindingSkeleton.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis 1.3 Oct 05, 2005 (05:23:37 EDT) WSDL2Java emitter.
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
  */
 
 package it.eng.spagobi.services.execute.stub;
@@ -45,6 +45,20 @@ public class DocumentExecuteServiceSoapBindingSkeleton implements it.eng.spagobi
             _myOperations.put("executeChart", new java.util.ArrayList());
         }
         ((java.util.List)_myOperations.get("executeChart")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in0"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in1"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"), java.lang.String.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "in2"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "int"), java.lang.Integer.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getKpiValueXML", _params, new javax.xml.namespace.QName("", "getKpiValueXMLReturn"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://schemas.xmlsoap.org/soap/encoding/", "string"));
+        _oper.setElementQName(new javax.xml.namespace.QName("urn:spagobiexecute", "getKpiValueXML"));
+        _oper.setSoapAction("");
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getKpiValueXML") == null) {
+            _myOperations.put("getKpiValueXML", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getKpiValueXML")).add(_oper);
     }
 
     public DocumentExecuteServiceSoapBindingSkeleton() {
@@ -57,6 +71,12 @@ public class DocumentExecuteServiceSoapBindingSkeleton implements it.eng.spagobi
     public byte[] executeChart(java.lang.String in0, java.lang.String in1, java.lang.String in2, java.util.HashMap in3) throws java.rmi.RemoteException
     {
         byte[] ret = impl.executeChart(in0, in1, in2, in3);
+        return ret;
+    }
+
+    public java.lang.String getKpiValueXML(java.lang.String in0, java.lang.String in1, java.lang.Integer in2) throws java.rmi.RemoteException
+    {
+        java.lang.String ret = impl.getKpiValueXML(in0, in1, in2);
         return ret;
     }
 

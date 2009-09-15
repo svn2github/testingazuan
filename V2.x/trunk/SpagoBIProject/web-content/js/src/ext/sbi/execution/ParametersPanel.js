@@ -173,7 +173,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 				this.fields[fieldName].setValue( fieldValue );
 				var fieldDescription = fieldName + '_field_visible_description';
 				var rawValue = state[fieldDescription];
-				if (rawValue !== undefined && rawValue != null) {
+				if (rawValue !== undefined && rawValue != null && this.fields[fieldName].rendered === true) {
 					this.fields[fieldName].setRawValue( rawValue );
 				}
 			}

@@ -86,6 +86,14 @@ Sbi.qbe.QbePanel = function(config) {
 		this.queryEditorPanel.on('execute', function(editorPanel, query){
 			this.checkPromptableFilters(query);
 		}, this);
+		this.tabs.on('tabchange', 
+				function () {
+					var anActiveTab = this.tabs.getActiveTab();
+					if (anActiveTab.centerRegionPanel !== undefined) {
+						anActiveTab.centerRegionPanel.doLayout();
+					}
+				}, 
+				this);
 	}
 	
 	c = Ext.apply(c, {

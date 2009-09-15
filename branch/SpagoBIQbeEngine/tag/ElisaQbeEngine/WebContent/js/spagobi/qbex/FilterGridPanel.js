@@ -78,6 +78,13 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	// constructor
     Sbi.qbe.FilterGridPanel.superclass.constructor.call(this, c);
 	
+    /*
+    this.on('render', function(){
+		if(this.dropTarget === null) {
+			this.dropTarget = new Sbi.qbe.FilterGridDropTarget(this);
+		}
+	}, this) ;
+	*/
 };
 
 Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {

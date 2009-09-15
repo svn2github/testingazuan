@@ -74,13 +74,13 @@ Sbi.qbe.SelectGridPanel = function(config) {
 	
 	// constructor
 	Sbi.qbe.SelectGridPanel.superclass.constructor.call(this, c);
-	
-	this.on('show', function(){
+	/*
+	this.on('render', function(){
 		if(this.dropTarget === null) {
-			//this.dropTarget = new Sbi.qbe.SelectGridDropTarget(this);
+			this.dropTarget = new Sbi.qbe.SelectGridDropTarget(this);
 		}
 	}, this) ;
-	
+	*/
 	if(c.query && c.query.fields && c.query.fields.length > 0){
     	this.loadSavedData(c.query);
     }

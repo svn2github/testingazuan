@@ -52,6 +52,8 @@ Sbi.qbe.QbePanel = function(config) {
 		// set default values here
 	}, config || {});
 	
+	//config.isFromCross = true;
+	
 	this.services = new Array();
 	var params = {};
 	this.services['getFirstQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
@@ -86,14 +88,20 @@ Sbi.qbe.QbePanel = function(config) {
 		this.queryEditorPanel.on('execute', function(editorPanel, query){
 			this.checkPromptableFilters(query);
 		}, this);
-		this.tabs.on('tabchange', 
-				function () {
-					var anActiveTab = this.tabs.getActiveTab();
-					if (anActiveTab.centerRegionPanel !== undefined) {
-						anActiveTab.centerRegionPanel.doLayout();
-					}
-				}, 
-				this);
+		this.tabs.on('tabchange', function () {
+			var anActiveTab = this.tabs.getActiveTab();
+			if (anActiveTab.centerRegionPanel !== undefined) {
+					anActiveTab.centerRegionPanel.doLayout();
+			}
+			
+			if(anActiveTab.selectGridPanel.dropTarget === null) {
+				anActiveTab.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(anActiveTab.selectGridPanel);
+			}
+			
+			if(anActiveTab.filterGridPanel.dropTarget === null) {
+				anActiveTab.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(anActiveTab.filterGridPanel);
+			}
+		}, this);
 	}
 	
 	c = Ext.apply(c, {

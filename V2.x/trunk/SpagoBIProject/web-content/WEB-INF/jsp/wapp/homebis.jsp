@@ -276,7 +276,6 @@ if(showfooter){%>
 		document.location.href=url;
 		return;
 	}
-	
 
 	Ext.onReady(function(){
       Ext.QuickTips.init();              
@@ -289,7 +288,7 @@ if(showfooter){%>
 						,frameConfig:{
 						        autoCreate:{id: 'iframeDoc', name:'iframeDoc'},
 	        					disableMessaging :false}
-		                ,defaultSrc : firstUrl
+		                ,defaultSrc : 'about:blank'
 		                ,border		: false 
 						,collapseMode: 'mini'
 						,loadMask  : true
@@ -318,9 +317,11 @@ if(showfooter){%>
 						        		}
 					        		}
 						        }
-	        					, scope: this}}
+	        					, scope: this}
+    					}
 						
 	  });
+	  setTimeout("centerFrame.getFrame().setSrc('" + firstUrl + "');", 500);
 	  
 	  if (Ext.isIE) {
 						centerFrame.on('resize', 

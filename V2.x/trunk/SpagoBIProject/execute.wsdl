@@ -25,6 +25,22 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
    </wsdl:message>
 
+   <wsdl:message name="getKpiValueXMLResponse">
+
+      <wsdl:part name="getKpiValueXMLReturn" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="getKpiValueXMLRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+      <wsdl:part name="in2" type="soapenc:int"/>
+
+   </wsdl:message>
+
    <wsdl:message name="executeChartRequest">
 
       <wsdl:part name="in0" type="soapenc:string"/>
@@ -47,6 +63,14 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
 
       </wsdl:operation>
 
+      <wsdl:operation name="getKpiValueXML" parameterOrder="in0 in1 in2">
+
+         <wsdl:input message="impl:getKpiValueXMLRequest" name="getKpiValueXMLRequest"/>
+
+         <wsdl:output message="impl:getKpiValueXMLResponse" name="getKpiValueXMLResponse"/>
+
+      </wsdl:operation>
+
    </wsdl:portType>
 
    <wsdl:binding name="DocumentExecuteServiceSoapBinding" type="impl:DocumentExecuteService">
@@ -64,6 +88,24 @@ Built on Apr 22, 2006 (06:55:48 PDT)-->
          </wsdl:input>
 
          <wsdl:output name="executeChartResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobiexecute" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getKpiValueXML">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getKpiValueXMLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobiexecute" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getKpiValueXMLResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:spagobiexecute" use="encoded"/>
 

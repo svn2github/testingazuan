@@ -41,7 +41,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	N.B.  TODO con il CAS da problemi perchè non valida il ticket ...
 	--%>
-<%@page import="it.eng.spagobi.chiron.serializer.MenuListJSONSerializer;"%>
+<%@page import="it.eng.spagobi.chiron.serializer.MenuListJSONSerializer"%>
 <script type="text/javascript" src="/SpagoBI/js/src/ext/sbi/overrides/overrides.js"></script>
 	
 <script type="text/javascript" src="<%=linkSbijs%>"></script>
@@ -50,6 +50,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript" src="<%=linkProtoEff%>"></script>
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css" />
 <link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css" />
+	
+<script type="text/javascript">
+	Ext.onReady(function(){
+		Ext.Ajax.request({
+			url: '<%= request.getContextPath() + GeneralUtilities.getSpagoAdapterHttpUrl() %>?ACTION_NAME=CHECK_USER_PROFILE_EXISTENCE&LIGHT_NAVIGATOR_DISABLED=true',
+			method: 'get',
+			params: '',
+			success: function (result, request) {
+				response = result.responseText || "";
+				if (response == '' || response == 'userProfileNotFound') {
+					window.location.href="<%= request.getContextPath() %>";
+				}
+			},
+			failure: somethingWentWrongWhileCheckingUserProfileExistence,
+			disableCaching: true
+		});
+	});
+	
+	function somethingWentWrongWhileCheckingUserProfileExistence() {}
+	</script>
+<%-- END CHECK USER PROFILE EXISTENCE --%>
 
 
 <%  
@@ -75,6 +96,23 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	viewTrackPath=true;	
 	}
 %>
+
+<%-- Javascript object useful for session expired management (see also sessionExpired.jsp) --%>
+<script>
+sessionExpiredSpagoBIJS = 'sessionExpiredSpagoBIJS';
+</script>
+<%-- End javascript object useful for session expired management (see also sessionExpired.jsp) --%>
+
+<%-- Javascript function for document composition cross navigation (workaround for ie)
+On ie svg plugin, the parent variable seems to return top window, so this function here calls the execCrossNavigation at the correct level
+--%>
+<script>
+function execCrossNavigation(windowName, label, parameters) {
+	document.getElementById('iframeDoc').contentWindow.execCrossNavigation(windowName, label, parameters);
+}
+</script>
+<%-- End javascript function for document composition cross navigation (workaround for ie) --%>
+
 <link href="<%=contextName%>/js/lib/ext-2.0.1/resources/css/ext-all-SpagoBI-web.css"
 	rel="stylesheet" type="text/css" />
 	

@@ -271,6 +271,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 </select>
 </div>
 </div>
+<div class="div_detail_area_forms" style="width:670;">
+<div class='div_detail_label'><span
+	class='portlet-form-field-label'> <spagobi:message
+	key="sbi.kpi.label.create.children" bundle="<%=messageBundle%>" /> </span></div>
+<div class='div_detail_form'>
+<input type="checkbox" name="CREATE_CHILDREN" />
+</div>
+</div>
 <%
 	}
 %>

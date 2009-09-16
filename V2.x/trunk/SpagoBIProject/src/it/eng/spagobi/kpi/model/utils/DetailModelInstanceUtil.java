@@ -191,11 +191,50 @@ public class DetailModelInstanceUtil {
 		// insert the new model
 		Integer modelInstanceId = DAOFactory.getModelInstanceDAO()
 				.insertModelInstance(toCreate);
+		
+		String createChildren = (String) serviceRequest.getAttribute("CREATE_CHILDREN");
+		// children..
+		if(createChildren != null){
+			Model modelWithChildren = DAOFactory.getModelDAO().loadModelWithChildrenById(model.getId());
+			List children = modelWithChildren.getChildrenNodes();
+			if (children != null){
+				for (Object object : children) {
+					createModelInstanceChildren((Model)object, modelInstanceId);
+				}
+			}
+		}
 		serviceResponse.setAttribute("ID", modelInstanceId);
 		serviceResponse.setAttribute("MESSAGE", SpagoBIConstants.DETAIL_SELECT);
 		selectModelInstance(modelInstanceId, serviceResponse);
 
 	}
+	
+	private static void createModelInstanceChildren(Model model, Integer parentId) throws EMFUserError{
+		Integer id = createModelInstanceFromModel(model, parentId);
+		List modelChildren = model.getChildrenNodes();
+		if(modelChildren != null){
+			for (Object object : modelChildren) {
+				Model child = (Model) object;
+				createModelInstanceChildren(child, id);
+			}
+		}
+	}
+	
+	private static Integer createModelInstanceFromModel(Model model, Integer parentId) throws EMFUserError{
+		ModelInstance toCreate = new ModelInstance();
+		Integer modelInstanceId = null;
+		if(model != null){
+			toCreate.setName(model.getName());
+			toCreate.setDescription(model.getDescription());
+			toCreate.setLabel(java.util.UUID.randomUUID().toString());
+			toCreate.setParentId(parentId);
+			toCreate.setModel(model);
+			modelInstanceId = DAOFactory.getModelInstanceDAO().insertModelInstance(toCreate);
+		}
+		//Debug..
+		return modelInstanceId;
+	}
+	
 
 	public static List getCandidateModelChildren(Integer parentId) {
 		List candidateModelChildren = null;

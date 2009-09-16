@@ -171,9 +171,9 @@
         	//var qbe = new Sbi.qbe.QueryBuilderPanel() ;//Sbi.qbe.QbePanel(qbeConfig);
         	var qbe = new Sbi.qbe.QbePanel(qbeConfig);
         	var viewport = new Ext.Viewport(qbe);  
-        	<%if (isPowerUser) {%>
-        	//qbe.queryEditorPanel.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(qbe.queryEditorPanel.selectGridPanel); 
-        	//qbe.queryEditorPanel.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(qbe.queryEditorPanel.filterGridPanel);
+        	<%if (isPowerUser && isFromCross.equalsIgnoreCase("false")) {%>
+        		qbe.queryEditorPanel.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(qbe.queryEditorPanel.selectGridPanel); 
+        		qbe.queryEditorPanel.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(qbe.queryEditorPanel.filterGridPanel);
         	<%}%>
       	});
     </script>

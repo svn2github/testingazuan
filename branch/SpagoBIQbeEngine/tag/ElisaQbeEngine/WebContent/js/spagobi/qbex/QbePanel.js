@@ -52,7 +52,7 @@ Sbi.qbe.QbePanel = function(config) {
 		// set default values here
 	}, config || {});
 	
-	config.isFromCross = true;
+	//config.isFromCross = true;
 	
 	this.services = new Array();
 	var params = {};

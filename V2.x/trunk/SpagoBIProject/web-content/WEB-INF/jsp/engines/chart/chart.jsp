@@ -835,31 +835,41 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 		<%   if(sbi.isChangeableView() && !docComposition){
-	    		// for each possible parameter to change creates a checkbox
-	    		for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
-	    			String par = (String) iterator.next(); %>
-		<td align="right">
-		<div class='div_detail_form'><span
-			class='portlet-form-field-label'> <%=sbi.getChangeViewParameterLabel(par,0)%>
-		</span></div>
-		</td>
-		<td align="left">
-		<form name="<%=par%>" action="<%=refreshUrl%>" method="POST">
-		<%if(sbi.getChangeViewParameter(par)){ %> <input type="radio"
-			name="<%=par%>" value="false" onclick="this.form.submit()"
-			align="left" /><%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
-		<input type="radio" name="<%=par%>" value="true" checked
-			onclick="this.form.submit()" align="left" /><%=sbi.getChangeViewParameterLabel(par,2)%>
-		<%}
-	    		  		else {%> <input type="radio" name="<%=par%>" value="false"
-			checked onclick="this.form.submit()" align="left" /> <%=sbi.getChangeViewParameterLabel(par,1)%><BR>
-		<input type="radio" name="<%=par%>" value="true"
-			onclick="this.form.submit()" align="left" /> <%=sbi.getChangeViewParameterLabel(par,2)%>
-		<%} %>
-		</form>
-		</td>
-		<%} // close for on cheangeable pars
-	  				}%>
+  	    		// for each possible parameter to change creates a checkbox
+  	    		for (Iterator iterator = changePars.iterator(); iterator.hasNext();) {
+  	    			String par = (String) iterator.next(); %>
+        	   	<td align="right">
+        		    <div class='div_detail_form' >
+                  <span class='portlet-form-field-label'  > <%=sbi.getChangeViewParameterLabel(par,0)%></span>
+                </div>
+          		</td>
+          		<td align="left">
+              <form name="<%=par%>" action="<%=refreshUrl%>" method="POST">
+              		<%if(sbi.getChangeViewParameter(par)){ %> 
+                       <input type="radio"  	name="<%=par%>" value="false" onclick="this.form.submit()" />
+                       <span style="<%=datasetMap.getFilterStyle()%> " >
+                          <%=sbi.getChangeViewParameterLabel(par,1)%> <BR>
+                      </span>	
+                  		<input type="radio" name="<%=par%>" value="true" checked onclick="this.form.submit()"  />
+                      <span style="<%=datasetMap.getFilterStyle()%> " >
+                        <%=sbi.getChangeViewParameterLabel(par,2)%>
+                      </span>	 
+              		<%}
+              	  else {%>               	 
+                      <input type="radio" name="<%=par%>"  value="false"  checked onclick="this.form.submit()"/> 
+                      <span style="<%=datasetMap.getFilterStyle()%> " >
+                        <%=sbi.getChangeViewParameterLabel(par,1)%><BR>
+                      </span>
+                  		<input type="radio" name="<%=par%>" value="true" onclick="this.form.submit()"  /> 
+                      <span style="<%=datasetMap.getFilterStyle()%> " >
+                        <%=sbi.getChangeViewParameterLabel(par,2)%>
+                      </span>
+                  <%} %>
+
+            		</form>
+        		</td>
+        		<%} // close for on cheangeable pars
+	  		}%>
 	</tr>
 </table>
 </div>

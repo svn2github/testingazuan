@@ -38,64 +38,11 @@ public class SelectField {
 	private boolean include;
 
 
-	public static Map aggregationFunctions;
-	public static String NONE = "NONE";
-	public static String SUM = "SUM";
-	public static String AVG = "AVG";
-	public static String MAX = "MAX";
-	public static String MIN = "MIN";
-	public static String COUNT = "COUNT";
-	public static String DISTINCT = "DISTINCT";
-	static {
-		aggregationFunctions = new HashMap();
-		aggregationFunctions.put(NONE, new IAggregationFunction() {
-			public String getName() {return NONE;}
-			public String apply(String fieldName) {
-				return fieldName;
-			}
-		});
-		aggregationFunctions.put(SUM, new IAggregationFunction() {
-			public String getName() {return SUM;}
-			public String apply(String fieldName) {
-				return "SUM(" + fieldName + ")";
-			}
-		});
-		aggregationFunctions.put(AVG, new IAggregationFunction() {
-			public String getName() {return AVG;}
-			public String apply(String fieldName) {
-				return "AVG(" + fieldName + ")";
-			}
-		});
-		aggregationFunctions.put(MAX, new IAggregationFunction() {
-			public String getName() {return MAX;}
-			public String apply(String fieldName) {
-				return "MAX(" + fieldName + ")";
-			}
-		});
-		aggregationFunctions.put(MIN, new IAggregationFunction() {
-			public String getName() {return MIN;}
-			public String apply(String fieldName) {
-				return "MIN(" + fieldName + ")";
-			}
-		});
-		aggregationFunctions.put(COUNT, new IAggregationFunction() {
-			public String getName() {return COUNT;}
-			public String apply(String fieldName) {
-				return "COUNT(" + fieldName + ")";
-			}
-		});
-	}
-	
-
-	
 	public SelectField(String uniqueName, String function, String alias, boolean include, boolean visible,
 			boolean groupByField, String orderType ) {
 		this.uniqueName = uniqueName;
 		this.alias = alias;
-		if(function == null || !aggregationFunctions.containsKey( function )) {
-			function = NONE;
-		}
-		this.function = (IAggregationFunction)aggregationFunctions.get(function);
+		this.function = AggregationFunctions.get(function);
 		setInclude( include );
 		setVisible( visible );
 		this.setGroupByField(groupByField);
@@ -117,11 +64,6 @@ public class SelectField {
 
 	public void setFunction(IAggregationFunction function) {
 		this.function = function;
-	}	
-	
-	public static interface IAggregationFunction {	
-		String getName();
-		String apply(String fieldName);
 	}
 
 	public String getUniqueName() {

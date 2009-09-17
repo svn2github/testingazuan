@@ -133,13 +133,21 @@ Ext.extend(Sbi.qbe.FreeConditionsWindow, Ext.Window, {
 		
 		for (var i = 0; i < this.freeFilters.length; i++) {
 			var aFilter = this.freeFilters[i];
+			var fieldLabel = '';
+			if (aFilter.leftOperandAggregator !== undefined && aFilter.leftOperandAggregator !== null 
+					&& aFilter.leftOperandAggregator != '' && aFilter.leftOperandAggregator != 'NONE') {
+				fieldLabel = aFilter.filterId + ' [' + aFilter.leftOperandAggregator + '(' + aFilter.leftOperandDescription + ')]';
+			} else {
+				fieldLabel = aFilter.filterId + ' [' + aFilter.leftOperandDescription + ']';
+			}
+				
 	    	var aField = new Ext.form.TextField({
 	    		name: aFilter.filterId,
 	    		allowBlank:true, 
 	    		inputType:'text',
 	    		maxLength:200,
 	    		width:200,
-	    		fieldLabel: aFilter.filterId + ' [' + aFilter.leftOperandDescription + ']',
+	    		fieldLabel: fieldLabel,
 	    		labelStyle: 'width:250',
 	    		value: (aFilter.rightOperandDefaultValue !== null) ? aFilter.rightOperandDefaultValue : ''
 	    	});

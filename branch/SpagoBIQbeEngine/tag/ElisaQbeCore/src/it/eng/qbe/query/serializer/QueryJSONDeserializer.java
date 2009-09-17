@@ -28,7 +28,10 @@ import org.json.JSONObject;
 
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.query.AggregationFunctions;
 import it.eng.qbe.query.ExpressionNode;
+import it.eng.qbe.query.HavingField;
+import it.eng.qbe.query.IAggregationFunction;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.spagobi.commons.utilities.StringUtilities;
@@ -48,6 +51,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		JSONArray fieldsJSON = null;
 		boolean distinctClauseEnabled = false;
 		JSONArray filtersJSON = null;
+		JSONArray havingsJSON = null;
 		JSONObject expressionJSON = null;
 		JSONArray subqueriesJSON = null;
 		Query subquery;
@@ -88,7 +92,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 				fieldsJSON = queryJSON.getJSONArray( SerializationConstants.FIELDS );				
 				filtersJSON = queryJSON.getJSONArray( SerializationConstants.FILTERS );
 				expressionJSON = queryJSON.getJSONObject( SerializationConstants.EXPRESSION );
-				
+				havingsJSON = queryJSON.getJSONArray( SerializationConstants.HAVINGS );
 				subqueriesJSON = queryJSON.getJSONArray( SerializationConstants.SUBQUERIES );
 			} catch (JSONException e) {
 				throw new SerializationException("An error occurred while deserializing query: " + queryJSON.toString(), e);
@@ -97,6 +101,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			deserializeFields(fieldsJSON, datamartModel, query);
 			deserializeFilters(filtersJSON, datamartModel, query);
 			deserializeExpression(expressionJSON, datamartModel, query);
+			deserializeHavings(havingsJSON, datamartModel, query);
 			
 			
 			for(int i = 0; i < subqueriesJSON.length(); i++) {
@@ -225,7 +230,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 					Assert.assertTrue(!"NONE".equalsIgnoreCase(operator), "Undefined operator NONE for filter: " + filterJSON.toString());
 							
 				    
-					query.addWhereFiled(filterId, filterDescription, promptable, leftOperand, operator, rightOperand, booleanConnector);
+					query.addWhereField(filterId, filterDescription, promptable, leftOperand, operator, rightOperand, booleanConnector);
 					
 				} catch (JSONException e) {
 					throw new SerializationException("An error occurred while filter [" + filtersJOSN.toString() + "] of query [" + query.getId() + "]", e);
@@ -242,6 +247,85 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 			
 	}
 	
+	private void deserializeHavings(JSONArray havingsJOSN, DataMartModel datamartModel, Query query) throws SerializationException {
+		
+		JSONObject havingJSON;
+		DataMartField field;
+				
+		String filterId;
+		String filterDescription;
+		boolean promptable;
+
+		String operandValue;
+		String operandDescription;
+		String operandType;
+		String operandFunction;
+		String operandLasDefaulttValue;
+		String operandLastValue;
+		HavingField.Operand leftOperand;
+		HavingField.Operand rightOperand;
+		String operator;
+		String booleanConnector;
+		IAggregationFunction function;
+		
+		logger.debug("IN");
+		
+		try {
+		
+			
+			logger.debug("Query [" + query.getId() + "] have [" + havingsJOSN.length() + "] to deserialize");
+			for(int i = 0; i < havingsJOSN.length(); i++) {
+				
+				try {
+					havingJSON = havingsJOSN.getJSONObject(i);
+					filterId = havingJSON.getString(SerializationConstants.FILTER_ID);
+					filterDescription = havingJSON.getString(SerializationConstants.FILTER_DESCRIPTION);
+					promptable = havingJSON.getBoolean(SerializationConstants.FILTER_PROMPTABLE);
+					
+					operandValue = havingJSON.getString(SerializationConstants.FILTER_LO_VALUE);
+					operandDescription = havingJSON.getString(SerializationConstants.FILTER_LO_DESCRIPTION);
+					operandType = havingJSON.getString(SerializationConstants.FILTER_LO_TYPE);
+					operandLasDefaulttValue = havingJSON.getString(SerializationConstants.FILTER_LO_DEFAULT_VALUE);
+					operandLastValue = havingJSON.getString(SerializationConstants.FILTER_LO_LAST_VALUE);
+					operandFunction = havingJSON.getString(SerializationConstants.FILTER_LO_FUNCTION);
+					function = AggregationFunctions.get(operandFunction);
+					leftOperand = new HavingField.Operand(operandValue, operandDescription, operandType, 
+							operandLasDefaulttValue, operandLastValue, function);
+					
+					operator = havingJSON.getString(SerializationConstants.FILTER_OPEARTOR);
+					
+					operandValue = havingJSON.getString(SerializationConstants.FILTER_RO_VALUE);
+					operandDescription = havingJSON.getString(SerializationConstants.FILTER_RO_DESCRIPTION);
+					operandType = havingJSON.getString(SerializationConstants.FILTER_RO_TYPE);
+					operandLasDefaulttValue = havingJSON.getString(SerializationConstants.FILTER_RO_DEFAULT_VALUE);
+					operandLastValue = havingJSON.getString(SerializationConstants.FILTER_RO_LAST_VALUE);
+					operandFunction = havingJSON.getString(SerializationConstants.FILTER_RO_FUNCTION);
+					function = AggregationFunctions.get(operandFunction);
+					rightOperand = new HavingField.Operand(operandValue, operandDescription, operandType,
+							operandLasDefaulttValue, operandLastValue, function);
+					
+					booleanConnector = havingJSON.getString(SerializationConstants.FILTER_BOOLEAN_CONNETOR);
+					
+					Assert.assertTrue(!StringUtilities.isEmpty(operator), "Undefined operator for filter: " + havingJSON.toString());
+					Assert.assertTrue(!"NONE".equalsIgnoreCase(operator), "Undefined operator NONE for filter: " + havingJSON.toString());
+							
+				    
+					query.addHavingField(filterId, filterDescription, promptable, leftOperand, operator, rightOperand, booleanConnector);
+					
+				} catch (JSONException e) {
+					throw new SerializationException("An error occurred while filter [" + havingsJOSN.toString() + "] of query [" + query.getId() + "]", e);
+				}
+				
+		
+				
+			}
+		} catch(Throwable t) {
+			throw new SerializationException("An error occurred while deserializing filters of query [" + query.getId() +"]", t);
+		} finally {
+			logger.debug("OUT");
+		}
+			
+	}
 	
 	/*
 	private void deserializeFilters(JSONArray filtersJOSN, DataMartModel datamartModel, Query query) throws SerializationException {

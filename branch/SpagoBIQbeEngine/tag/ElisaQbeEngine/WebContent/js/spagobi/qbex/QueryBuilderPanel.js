@@ -105,6 +105,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     , dataMartStructurePanel: null
     , selectGridPanel: null
     , filterGridPanel: null
+    , havingGridPanel: null
     
     , saveQueryWindow: null
     , saveViewWindow: null
@@ -128,6 +129,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			this.filterGridPanel.setWizardExpression(false);	
 		}
 		
+		this.havingGridPanel.setFilters(query.havings);
 	}
     
     , getQuery: function(asObject) {
@@ -145,6 +147,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     		query.filters = this.filterGridPanel.getFilters();
     		query.expression = this.filterGridPanel.getFiltersExpression();
     		query.isNestedExpression = this.filterGridPanel.isWizardExpression();
+    		query.havings = this.havingGridPanel.getFilters();
     	} else {		
     		//alert("get query as string is deprecated");
 			query.fileds =  this.selectGridPanel.getRowsAsJSONParams();
@@ -422,6 +425,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	, initCenterRegionPanel: function(c) {
 		this.selectGridPanel = new Sbi.qbe.SelectGridPanel(c);
 	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(c);
+	    this.havingGridPanel = new Sbi.qbe.HavingGridPanel(c);
 	    
 	    this.centerRegionPanel = new Ext.Panel({ 
 	    	title: LN('sbi.qbe.queryeditor.centerregion.title'),
@@ -470,16 +474,20 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	          }
 	        }],
 	        
-	        items: [this.selectGridPanel, this.filterGridPanel]
+	        items: [this.selectGridPanel, this.filterGridPanel, this.havingGridPanel]
 	    });
 	    /*
-	     * work-around for filters grid resizing, since it is not automatically resized
+	     * work-around for filters grids (where clause and having clause) resizing, since they are not automatically resized
 	     * TODO: fix this problem with an Ext override
 	    */ 
 	    this.selectGridPanel.grid.on('resize', function (component, adjWidth, adjHeight, rawWidth, rawHeight) {
 	    	if (this.filterGridPanel.grid.rendered) {
 	    		var previousSize = this.filterGridPanel.grid.getSize();
 		    	this.filterGridPanel.grid.setSize(adjWidth, previousSize.height);
+	    	}
+	    	if (this.havingGridPanel.grid.rendered) {
+	    		var previousSize = this.havingGridPanel.grid.getSize();
+		    	this.havingGridPanel.grid.setSize(adjWidth, previousSize.height);
 	    	}
 	    }, this);
 	    
@@ -490,6 +498,16 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 				, leftOperandType: 'Field Content'
 			};
 	    	this.filterGridPanel.addFilter(filter);
+	    }, this);
+	    
+	    this.selectGridPanel.on('having', function(panel, record) {
+	    	filter = {
+	    		leftOperandValue: record.data.id
+				, leftOperandDescription: record.data.entity + ' : ' + record.data.field 
+				, leftOperandType: 'Field Content'
+				, leftOperandAggregator: record.data.funct
+			};
+	    	this.havingGridPanel.addFilter(filter);
 	    }, this);
 	}
 	

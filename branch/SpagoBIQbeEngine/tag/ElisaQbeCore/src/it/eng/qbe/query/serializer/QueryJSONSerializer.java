@@ -34,6 +34,7 @@ import it.eng.qbe.cache.QbeCacheManager;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.query.ExpressionNode;
+import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.SelectField;
 import it.eng.qbe.query.WhereField;
@@ -51,6 +52,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 		
 		JSONArray recordsJOSN;
 		JSONArray filtersJSON;
+		JSONArray havingsJSON;
 		JSONObject filterExpJOSN;
 		boolean distinctClauseEnabled = false;		
 		JSONArray subqueriesJSON;
@@ -68,6 +70,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 			recordsJOSN = serializeFields(query, datamartModel, locale);			
 			filtersJSON = serializeFilters(query, datamartModel, locale);
 			filterExpJOSN = encodeFilterExp( query.getWhereClauseStructure() );
+			havingsJSON = serializeHavings(query, datamartModel, locale);
 			
 			subqueriesJSON = new JSONArray();
 			subqueriesIterator = query.getSubqueryIds().iterator();		
@@ -90,6 +93,8 @@ public class QueryJSONSerializer implements QuerySerializer {
 			
 			result.put(SerializationConstants.FILTERS, filtersJSON);
 			result.put(SerializationConstants.EXPRESSION, filterExpJOSN);
+			
+			result.put(SerializationConstants.HAVINGS, havingsJSON);
 			
 			result.put(SerializationConstants.SUBQUERIES, subqueriesJSON);
 		} catch (Throwable t) {
@@ -307,6 +312,108 @@ public class QueryJSONSerializer implements QuerySerializer {
 		return filtersJOSN;
 	}
 	
+	private JSONArray serializeHavings(Query query, DataMartModel datamartModel, Locale locale) throws SerializationException {
+		JSONArray havingsJSON = new JSONArray();
+		
+		List havings;
+		HavingField filter;
+		HavingField.Operand operand;
+		JSONObject havingJSON;
+		DataMartField datamartFilter;
+		String fieldUniqueName;
+		Iterator it;
+		DatamartLabels datamartLabels;
+		DataMartField datamartField;
+		
+		havings = query.getHavingFields();
+		Assert.assertNotNull(havings, "Filters cannot be null");
+		
+		datamartLabels = null;
+		if(locale != null) {
+			datamartLabels =  QbeCacheManager.getInstance().getLabels( datamartModel , locale );
+		}
+		
+		it = havings.iterator();
+		while( it.hasNext() ) {
+			filter = (HavingField)it.next();
+			
+			havingJSON = new JSONObject();
+			try {
+				havingJSON.put(SerializationConstants.FILTER_ID, filter.getName());
+				havingJSON.put(SerializationConstants.FILTER_DESCRIPTION, filter.getDescription());
+				havingJSON.put(SerializationConstants.FILTER_PROMPTABLE, filter.isPromptable());
+				
+				operand = filter.getLeftOperand();
+				havingJSON.put(SerializationConstants.FILTER_LO_VALUE, operand.value);
+				if(operand.type.equalsIgnoreCase("Field Content")) {
+					datamartField = datamartModel.getDataMartModelStructure().getField( operand.value );
+					
+					String labelF, labelE;
+					labelE = null;
+					if(datamartLabels != null) {
+						labelE = datamartLabels.getLabel( datamartField.getParent() );
+					}
+					labelE = StringUtilities.isEmpty(labelE)? datamartField.getParent().getName(): labelE;
+					
+					
+					labelF = null;
+					if(datamartLabels != null) {
+						labelF = datamartLabels.getLabel( datamartField );
+					}
+					labelF = StringUtilities.isEmpty(labelF)? datamartField.getName(): labelF;
+					
+					havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, labelE  + " : " + labelF );
+				} else {
+					havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
+				}
+				
+				
+				
+				havingJSON.put(SerializationConstants.FILTER_LO_TYPE, operand.type);
+				havingJSON.put(SerializationConstants.FILTER_LO_FUNCTION, operand.function.getName());
+				havingJSON.put(SerializationConstants.FILTER_LO_DEFAULT_VALUE, operand.defaulttValue);
+				havingJSON.put(SerializationConstants.FILTER_LO_LAST_VALUE, operand.lastValue);
+				
+				havingJSON.put(SerializationConstants.FILTER_OPEARTOR, filter.getOperator());
+				
+				operand = filter.getRightOperand();
+				havingJSON.put(SerializationConstants.FILTER_RO_VALUE, operand.value);
+				if(operand.type.equalsIgnoreCase("Field Content")) {
+					datamartField = datamartModel.getDataMartModelStructure().getField( operand.value );
+					
+					String labelF, labelE;
+					labelE = null;
+					if(datamartLabels != null) {
+						labelE = datamartLabels.getLabel( datamartField.getParent() );
+					}
+					labelE = StringUtilities.isEmpty(labelE)? datamartField.getParent().getName(): labelE;
+					
+					
+					labelF = null;
+					if(datamartLabels != null) {
+						labelF = datamartLabels.getLabel( datamartField );
+					}
+					labelF = StringUtilities.isEmpty(labelF)? datamartField.getName(): labelF;
+					
+					havingJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, labelE  + " : " + labelF );
+				} else {
+					havingJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
+				}
+				havingJSON.put(SerializationConstants.FILTER_RO_TYPE, operand.type);
+				havingJSON.put(SerializationConstants.FILTER_RO_FUNCTION, operand.function.getName());
+				havingJSON.put(SerializationConstants.FILTER_RO_DEFAULT_VALUE, operand.defaulttValue);
+				havingJSON.put(SerializationConstants.FILTER_RO_LAST_VALUE, operand.lastValue);
+				
+				havingJSON.put(SerializationConstants.FILTER_BOOLEAN_CONNETOR, filter.getBooleanConnector());
+				
+			} catch(JSONException e) {
+				throw new SerializationException("An error occurred while serializing filter: " + filter.getName(), e);
+			}
+			havingsJSON.put(havingJSON);
+		}
+		
+		return havingsJSON;
+	}
 		
 	private JSONObject encodeFilterExp(ExpressionNode filterExp) throws SerializationException {
 		JSONObject exp = new JSONObject();

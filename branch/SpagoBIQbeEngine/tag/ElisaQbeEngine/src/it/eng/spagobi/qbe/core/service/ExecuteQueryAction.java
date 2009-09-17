@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import it.eng.qbe.model.HQLStatement;
 import it.eng.qbe.model.IStatement;
+import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.SelectField;
 import it.eng.qbe.query.WhereField;
@@ -183,15 +184,28 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	private void updatePromptableFiltersValue(Query query) {
 		logger.debug("IN");
 		List whereFields = query.getWhereFields();
-		if (whereFields != null && whereFields.size() > 0) {
-			Iterator it = whereFields.iterator();
-			WhereField whereField = (WhereField) it.next();
+		Iterator whereFieldsIt = whereFields.iterator();
+		while (whereFieldsIt.hasNext()) {
+			WhereField whereField = (WhereField) whereFieldsIt.next();
 			if (whereField.isPromptable()) {
 				// getting filter value on request
 				String promptValue = this.getAttributeAsString(whereField.getName());
 				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + whereField.getName() + "].");
 				if (promptValue != null) {
 					whereField.getRightOperand().lastValue = promptValue;
+				}
+			}
+		}
+		List havingFields = query.getHavingFields();
+		Iterator havingFieldsIt = havingFields.iterator();
+		while (havingFieldsIt.hasNext()) {
+			HavingField havingField = (HavingField) havingFieldsIt.next();
+			if (havingField.isPromptable()) {
+				// getting filter value on request
+				String promptValue = this.getAttributeAsString(havingField.getName());
+				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + havingField.getName() + "].");
+				if (promptValue != null) {
+					havingField.getRightOperand().lastValue = promptValue;
 				}
 			}
 		}

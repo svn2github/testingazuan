@@ -102,6 +102,10 @@ Sbi.qbe.QbePanel = function(config) {
 				if(anActiveTab.filterGridPanel != null && anActiveTab.filterGridPanel.dropTarget === null) {
 					anActiveTab.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(anActiveTab.filterGridPanel);
 				}
+				
+				if(anActiveTab.havingGridPanel != null && anActiveTab.havingGridPanel.dropTarget === null) {
+					anActiveTab.havingGridPanel.dropTarget = new Sbi.qbe.HavingGridDropTarget(anActiveTab.havingGridPanel);
+				}
 			}
 		}, this);
 	}
@@ -168,6 +172,7 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 	    		// make last values persistent on filter grid panel
 	    		if (this.queryEditorPanel != null) {
 	    			this.queryEditorPanel.filterGridPanel.setPromptableFiltersLastValues(formState);
+	    			this.queryEditorPanel.havingGridPanel.setPromptableFiltersLastValues(formState);
 	    		}
 	    		this.executeQuery(query, formState);
 	    	}, this);
@@ -175,6 +180,7 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 	    		// make default values persistent on filter grid panel
 	    		if (this.queryEditorPanel != null) {
 	    			this.queryEditorPanel.filterGridPanel.setPromptableFiltersDefaultValues(formState);
+	    			this.queryEditorPanel.havingGridPanel.setPromptableFiltersDefaultValues(formState);
 	    		}
 	    	}, this);
 	    	freeConditionsWindow.show();
@@ -193,6 +199,14 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
 		if (query.filters != null && query.filters.length > 0) {
 			for(i = 0; i < query.filters.length; i++) {
 				var filter =  query.filters[i];
+				if (filter.promptable) {
+					filters.push(filter);
+				}
+			}
+		}
+		if (query.havings != null && query.havings.length > 0) {
+			for(i = 0; i < query.havings.length; i++) {
+				var filter = query.havings[i];
 				if (filter.promptable) {
 					filters.push(filter);
 				}

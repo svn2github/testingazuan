@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.qbe");
 
-Sbi.qbe.FilterGridPanel = function(config) {
+Sbi.qbe.HavingGridPanel = function(config) {
 	
 	
 	var c = Ext.apply({
@@ -55,7 +55,7 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	
 	this.services = new Array();
 	
-	this.filterIdPrefix = 'filter';
+	this.filterIdPrefix = 'having';
 	
 	this.idCount = 0;
 	this.initStore(c);
@@ -75,18 +75,11 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	});
 	
 	// constructor
-    Sbi.qbe.FilterGridPanel.superclass.constructor.call(this, c);
+    Sbi.qbe.HavingGridPanel.superclass.constructor.call(this, c);
 	
-    /*
-    this.on('render', function(){
-		if(this.dropTarget === null) {
-			this.dropTarget = new Sbi.qbe.FilterGridDropTarget(this);
-		}
-	}, this) ;
-	*/
 };
 
-Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
+Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
     
 	services: null
 	
@@ -104,11 +97,34 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, idCount: null
 	, dropTarget: null
 	
-	, type: 'filtergrid'
+	, type: 'havinggrid'
 	
 
 	// static members
-	
+	, leftOperandAggregationFunctionsStore:  new Ext.data.SimpleStore({
+		 fields: ['funzione', 'nome', 'descrizione'],
+	     data : [
+	        ['NONE', LN('sbi.qbe.selectgridpanel.aggfunc.name.none'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.none')],
+	        ['SUM', LN('sbi.qbe.selectgridpanel.aggfunc.name.sum'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.sum')],
+	        ['AVG', LN('sbi.qbe.selectgridpanel.aggfunc.name.avg'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.avg')],
+	        ['MAX', LN('sbi.qbe.selectgridpanel.aggfunc.name.max'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.max')],
+	        ['MIN', LN('sbi.qbe.selectgridpanel.aggfunc.name.min'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.min')],
+	        ['COUNT', LN('sbi.qbe.selectgridpanel.aggfunc.name.count'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.count')]
+	     ] 
+	})
+
+	, rightOperandAggregationFunctionsStore:  new Ext.data.SimpleStore({
+		fields: ['funzione', 'nome', 'descrizione'],
+	    data : [
+	       ['NONE', LN('sbi.qbe.selectgridpanel.aggfunc.name.none'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.none')],
+	       ['SUM', LN('sbi.qbe.selectgridpanel.aggfunc.name.sum'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.sum')],
+	       ['AVG', LN('sbi.qbe.selectgridpanel.aggfunc.name.avg'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.avg')],
+	       ['MAX', LN('sbi.qbe.selectgridpanel.aggfunc.name.max'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.max')],
+	       ['MIN', LN('sbi.qbe.selectgridpanel.aggfunc.name.min'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.min')],
+	       ['COUNT', LN('sbi.qbe.selectgridpanel.aggfunc.name.count'), LN('sbi.qbe.selectgridpanel.aggfunc.desc.count')]
+	    ] 
+	})
+		
 	, booleanOptStore: new Ext.data.SimpleStore({
         fields: ['funzione', 'nome', 'descrizione'],
         data : [
@@ -159,6 +175,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			
 			, promptable: false
 			
+			, leftOperandAggregator: ''
 			, leftOperandValue: ''
 			, leftOperandDescription: ''
 			, leftOperandType: 'Static Value'
@@ -167,6 +184,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			
 			, operator: ''
 				
+			, rightOperandAggregator: ''
 			, rightOperandValue: ''
 			, rightOperandDescription: ''
 			, rightOperandType: 'Static Value'
@@ -207,12 +225,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			this.store.fireEvent('datachanged', this.store) ;
 		}
 	}
-		
-	, addRow : function(config, i) {
-		Sbi.qbe.commons.unimplementedFunction('FilterGridPanel', 'addRow');
-		this.insertFilter(config, i);
-	}
-
+	
 	, deleteFilters : function() {
 		this.grid.store.removeAll();
 	}
@@ -257,6 +270,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.idCount = max;
 	}
 	
+	/*
 	, setFiltersExpression: function(expression) {
 		if(expression !== undefined) {
 			var expStr = this.loadSavedExpression(expression);
@@ -284,20 +298,6 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
   		
   		return str;
   	}
-  	
-  	/*
-  	, getPromptableFilters : function() {
-		var filters = [];
-		for(i = 0; i <  this.grid.store.getCount(); i++) {
-			var record =  this.grid.store.getAt(i);
-			var filter = Ext.apply({}, record.data);
-			if (filter.promptable) {
-				filters.push(filter);
-			}
-		}
-		
-		return filters;
-	}
   	*/
   	
   	, setPromptableFiltersLastValues: function(formState) {
@@ -311,32 +311,18 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
     }
   	
   	, setPromptableFiltersDefaultValues: function(formState) {
+  		alert(formState.toSource());
     	for (var filterName in formState) {
     		var index = this.grid.store.find('filterId', filterName);
+    		alert(index);
     		if (index != -1) {
     			var record = this.grid.store.getAt(index);
     			record.set('rightOperandDefaultValue', formState[filterName]);
     		}
     	}
     }
-  	
-  	/*
-	, getFreeFilters : function() {
-		Sbi.qbe.commons.deprectadeFunction('FilterGridPanel', 'getFreeFilters');
-		return this.getPromptableFilters();
-	}
-	*/
-	
-    , setFreeFiltersLastValues: function(formState) {
-    	Sbi.qbe.commons.deprectadeFunction('FilterGridPanel', 'setFreeFiltersLastValues');
-    	this.setPromptableFiltersLastValues(formState);
-    }
-	
-    , setFreeFiltersDefaultValues: function(formState) {
-    	Sbi.qbe.commons.deprectadeFunction('FilterGridPanel', 'setFreeFiltersDefaultValues');
-    	this.setPromptableFiltersDefaultValues(formState);
-    }
     
+  	/*
 	, syncWizardExpressionWithGrid: function() {
 		var exp = '';
 		var store = this.grid.store;
@@ -402,7 +388,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, isWizardExpression: function() {
 		return this.wizardExpression;
 	}
-	
+	*/
 	
     // -- private methods ----------------------------------------------------------------------------------------
 
@@ -414,6 +400,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		   
 		   {name: 'promptable', type: 'bool'},
 		   
+		   {name: 'leftOperandAggregator', type: 'string'},
 		   {name: 'leftOperandValue', type: 'auto'}, // id (field unique name)
 		   {name: 'leftOperandDescription', type: 'string'}, // entity(entity label) + field(field label)
 		   {name: 'leftOperandType', type: 'string'}, // NEW
@@ -422,6 +409,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		   
 		   {name: 'operator', type: 'string'},
 		   
+		   {name: 'rightOperandAggregator', type: 'string'},
 		   {name: 'rightOperandValue', type: 'auto'}, // operand
 		   {name: 'rightOperandDescription', type: 'string'}, // odesc
 		   {name: 'rightOperandType', type: 'string'}, // otype
@@ -527,8 +515,37 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	              selectOnFocus: true //True to select any existing text in the field immediately on focus
 	        });
 		    
-		   
+		    var leftOperandAggregatorEditor = new Ext.form.ComboBox({
+		         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
+		         allowBlank: true,
+		         editable:false,
+		         store: this.leftOperandAggregationFunctionsStore,
+		         displayField:'funzione',
+		         valueField:'funzione',
+		         typeAhead: true,
+		         mode: 'local',
+		         triggerAction: 'all',
+		         autocomplete: 'off',
+		         emptyText: LN('sbi.qbe.selectgridpanel.aggfunc.editor.emptymsg'),
+		         selectOnFocus:true
+	        });
 		    
+		    var rightOperandAggregatorEditor = new Ext.form.ComboBox({
+		         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
+		         allowBlank: true,
+		         editable:false,
+		         store: this.rightOperandAggregationFunctionsStore,
+		         displayField:'funzione',
+		         valueField:'funzione',
+		         typeAhead: true,
+		         mode: 'local',
+		         triggerAction: 'all',
+		         autocomplete: 'off',
+		         emptyText: LN('sbi.qbe.selectgridpanel.aggfunc.editor.emptymsg'),
+		         selectOnFocus:true
+	        });
+		   
+		    /*
 		    var parentFieldEditor = new Ext.form.TriggerField({
 	             allowBlank: true
 	             , triggerClass: 'x-form-search-trigger'
@@ -544,7 +561,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    		}
 		    	}		    	
 		    }, this);
-		    
+		    */
 		    
 		    var textEditor = new Ext.form.TextField({
 	             allowBlank: true
@@ -561,8 +578,8 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    }, this);
 		    		
 		    this.valueColumnEditors = {
-		    		parentFieldEditor: new Ext.grid.GridEditor(parentFieldEditor)		    		
-		    		, textEditor: new Ext.grid.GridEditor(textEditor)
+		    		//parentFieldEditor: new Ext.grid.GridEditor(parentFieldEditor),		    		
+		    		textEditor: new Ext.grid.GridEditor(textEditor)
 		    }
 		    
 			
@@ -576,6 +593,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		           , hideable: true
 		           , hidden: false		 
 		           , sortable: false
+		           , width: 70
 		        }, {
 			       header: LN('sbi.qbe.filtergridpanel.headers.desc')
 			       , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.desc')
@@ -597,6 +615,14 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				    , sortable: false
 				}, */
 			    {
+				    header: LN('sbi.qbe.selectgridpanel.headers.function')
+				    , dataIndex: 'leftOperandAggregator'       
+				    , editor: leftOperandAggregatorEditor
+				    , hideable: true
+				    , hidden: false		 
+				    , sortable: false
+				    , width: 60
+				}, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.lodesc')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.lodesc')
 				    , dataIndex: 'leftOperandDescription'       
@@ -647,6 +673,14 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				    , sortable: false
 				}, */
 			    {
+				    header: LN('sbi.qbe.selectgridpanel.headers.function')
+				    , dataIndex: 'rightOperandAggregator'       
+				    , editor: rightOperandAggregatorEditor
+				    , hideable: true
+				    , hidden: false		 
+				    , sortable: false
+				    , width: 60
+				}, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.rodesc')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.rodesc')
 				    , dataIndex: 'rightOperandDescription'       
@@ -723,29 +757,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			    			scope: this
 			    		}
 				    }
-				}, {
-					text: LN('sbi.qbe.filtergridpanel.buttons.text.wizard'),
-				    tooltip: LN('sbi.qbe.filtergridpanel.buttons.tt.wizard'),
-				    iconCls:'option',
-				    listeners: {
-				      	'click': {
-							fn: this.showWizard,
-			    			scope: this
-			    		}
-				    }
-				} /*, {
-				  	text: 'Debug',
-				    tooltip: 'Remove before release',
-				    iconCls:'option',
-				    listeners: {
-				      	'click': {
-							fn: function() {
-								alert('filters: ' + this.getFilters().toSource() + '\n\nexpression: '+ this.getFiltersExpression().toSource() + '\n\nuseExpression: ' + this.isWizardExpression());
-							},
-			    			scope: this
-			    		}
-				    }
-				} */
+				}
 			]
 		});
 	}
@@ -753,7 +765,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, initGrid: function(config) {
 		 // create the Grid
 	    this.grid = new Ext.grid.EditorGridPanel({
-	    	title: LN('sbi.qbe.filtergridpanel.title'),   
+	    	title: LN('sbi.qbe.havinggridpanel.title'),   
 	        store: this.store,
 	        cm: this.cm,
 	        sm : this.sm,
@@ -810,9 +822,11 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	    
 	    this.grid.on('beforeedit', this.onBeforeEdit, this);
 	    
+	    /*
 	    this.grid.store.on('remove', function(e){
 	    	this.setWizardExpression(false);
 	    }, this);
+	    */
 	}
 	
 	, onBeforeEdit: function(e) {
@@ -832,17 +846,20 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.activeEditingContext.dataIndex = dataIndex;
 		
 		if(dataIndex === 'leftOperandDescription' || dataIndex === 'rightOperandDescription') {
+			var editor = this.valueColumnEditors.textEditor;
+			/*
 			var editor;
 			if(this.parentQuery !== null) {
 				editor = this.valueColumnEditors.parentFieldEditor;
 			} else {
 				editor = this.valueColumnEditors.textEditor;
 			}
-				
+			*/
 			this.grid.colModel.setEditor(col,editor);
 		}			
 	}
 	
+	/*
 	, onOpenValueEditor: function(e) {
 		if(this.operandChooserWindow === undefined) {
 			this.operandChooserWindow = new Sbi.qbe.OperandChooserWindow();
@@ -876,4 +893,5 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.operandChooserWindow.setParentQuery(this.parentQuery);
 		this.operandChooserWindow.show();
 	}
+	*/
 });

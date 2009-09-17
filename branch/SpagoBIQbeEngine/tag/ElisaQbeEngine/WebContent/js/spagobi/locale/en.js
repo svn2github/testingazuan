@@ -59,7 +59,7 @@ Sbi.locale.ln['sbi.qbe.datastorepanel.button.tt.exportto'] = 'Export to';
 //===================================================================
 //FILTER GRID
 //===================================================================
-Sbi.locale.ln['sbi.qbe.filtergridpanel.title'] = 'Filters';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.title'] = 'Where clause';
 
 //column headers
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.name'] = 'Filter Name';
@@ -178,6 +178,7 @@ Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.visible'] = 'Visible';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.include'] = 'Include';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.group'] = 'Group';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.filter'] = 'Filter';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.having'] = 'Having';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.entity'] = 'Entity';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.alias'] = 'Alias';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.order'] = 'Order';
@@ -244,3 +245,8 @@ Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restorelast'] = 'Restor
 //QUERY CATALOGUE PANEL
 //===================================================================
 Sbi.locale.ln['sbi.qbe.cataloguepanel.title'] = 'Query Catalogue';
+
+//===================================================================
+//HAVING CLAUSE PANEL
+//===================================================================
+Sbi.locale.ln['sbi.qbe.havinggridpanel.title'] = 'Having clause';

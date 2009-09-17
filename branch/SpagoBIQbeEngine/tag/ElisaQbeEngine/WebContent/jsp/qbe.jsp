@@ -96,6 +96,12 @@
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/FilterGridPanel.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/HavingGridPanel.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/HavingGridDropTarget.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/SaveWindow.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
@@ -174,6 +180,7 @@
         	<%if (isPowerUser && isFromCross.equalsIgnoreCase("false")) {%>
         		qbe.queryEditorPanel.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(qbe.queryEditorPanel.selectGridPanel); 
         		qbe.queryEditorPanel.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(qbe.queryEditorPanel.filterGridPanel);
+        		qbe.queryEditorPanel.havingGridPanel.dropTarget = new Sbi.qbe.HavingGridDropTarget(qbe.queryEditorPanel.havingGridPanel);
         	<%}%>
       	});
     </script>

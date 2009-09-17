@@ -54,7 +54,7 @@ Sbi.qbe.SelectGridPanel = function(config) {
 	
 	this.services = new Array();
 	
-	this.addEvents('filter');
+	this.addEvents('filter', 'having');
 	
 	this.initStore(c);
 	this.initSelectionModel(c);
@@ -268,6 +268,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		      {name: 'include', type: 'bool'},
 		      {name: 'visible', type: 'bool'},
 		      {name: 'filter', type: 'string'},
+		      {name: 'having', type: 'string'},
 		      {name: 'del', type: 'string'}
 		]); 
 	}
@@ -336,6 +337,22 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	       , hidden: false	
 	       , width: 50
 	       , sortable: false
+		});
+	    
+	    var havingButtonColumn = new Ext.grid.ButtonColumn({
+			   header:  LN('sbi.qbe.selectgridpanel.headers.having')
+			   , dataIndex: 'having'
+			   , imgSrc: '../img/querybuilder/filter.png'
+			      
+			   , clickHandler:function(e, t){
+			          var index = this.grid.getView().findRowIndex(t);
+			          var record = this.grid.store.getAt(index);
+			          this.grid.fireEvent('actionrequest', this, 'having', record);
+			   }
+		       , hideable: true
+		       , hidden: false	
+		       , width: 50
+		       , sortable: false
 		});
 		
 	    this.cm = new Ext.grid.ColumnModel([
@@ -409,10 +426,11 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		     includeCheckColumn,
 		     visibleCheckColumn,
 		     filterButtonColumn,
+		     havingButtonColumn,
 		     delButtonColumn
 	     ]);	
 	    
-	    this.plgins = [visibleCheckColumn, includeCheckColumn, groupCheckColumn, delButtonColumn, filterButtonColumn];
+	    this.plgins = [visibleCheckColumn, includeCheckColumn, groupCheckColumn, delButtonColumn, filterButtonColumn, havingButtonColumn];
 	}
 	
 	, initToolbar: function(config) {
@@ -488,6 +506,9 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		this.grid.on("actionrequest", function(grid, action, record){
 			if(action === 'filter') {
 				this.fireEvent('filter', this, record);
+			}
+			if(action === 'having') {
+				this.fireEvent('having', this, record);
 			}
 		}, this);
 		

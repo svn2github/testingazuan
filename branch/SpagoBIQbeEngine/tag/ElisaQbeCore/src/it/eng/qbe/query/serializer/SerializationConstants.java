@@ -45,6 +45,7 @@ public class SerializationConstants {
 	public static final String IS_NESTED_EXPRESSION = "isNestedExpression";
 	
 	public static final String FILTERS = "filters";
+	public static final String HAVINGS = "havings";
 	
 	public static final String FILTER_ID = "filterId";	
 	public static final String FILTER_DESCRIPTION = "filterDescripion";
@@ -52,12 +53,14 @@ public class SerializationConstants {
 	public static final String FILTER_LO_VALUE = "leftOperandValue";
 	public static final String FILTER_LO_DESCRIPTION = "leftOperandDescription";
 	public static final String FILTER_LO_TYPE = "leftOperandType";
+	public static final String FILTER_LO_FUNCTION = "leftOperandAggregator";
 	public static final String FILTER_LO_DEFAULT_VALUE = "leftOperandDefaultValue";
 	public static final String FILTER_LO_LAST_VALUE = "leftOperandLastValue";
 	public static final String FILTER_OPEARTOR = "operator";
 	public static final String FILTER_RO_VALUE = "rightOperandValue";
 	public static final String FILTER_RO_DESCRIPTION = "rightOperandDescription";
 	public static final String FILTER_RO_TYPE = "rightOperandType";
+	public static final String FILTER_RO_FUNCTION = "rightOperandAggregator";
 	public static final String FILTER_RO_DEFAULT_VALUE = "rightOperandDefaultValue";
 	public static final String FILTER_RO_LAST_VALUE = "rightOperandLastValue";
 	public static final String FILTER_BOOLEAN_CONNETOR = "booleanConnector";

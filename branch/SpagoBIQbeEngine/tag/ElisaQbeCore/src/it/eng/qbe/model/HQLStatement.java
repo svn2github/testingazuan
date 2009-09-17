@@ -39,7 +39,11 @@ import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
+import it.eng.qbe.query.CriteriaConstants;
 import it.eng.qbe.query.ExpressionNode;
+import it.eng.qbe.query.HavingField;
+import it.eng.qbe.query.IAggregationFunction;
+import it.eng.qbe.query.Operand;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.SelectField;
 import it.eng.qbe.query.WhereField;
@@ -65,50 +69,50 @@ public class HQLStatement extends BasicStatement {
 	
 	static {
 		conditionalOperators = new HashMap();
-		conditionalOperators.put(WhereField.EQUALS_TO, new IConditionalOperator() {
-			public String getName() {return WhereField.EQUALS_TO;}
+		conditionalOperators.put(CriteriaConstants.EQUALS_TO, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.EQUALS_TO;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + "=" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_EQUALS_TO, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_EQUALS_TO;}
+		conditionalOperators.put(CriteriaConstants.NOT_EQUALS_TO, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_EQUALS_TO;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + "!=" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.GREATER_THAN, new IConditionalOperator() {
-			public String getName() {return WhereField.GREATER_THAN;}
+		conditionalOperators.put(CriteriaConstants.GREATER_THAN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.GREATER_THAN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + ">" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.EQUALS_OR_GREATER_THAN, new IConditionalOperator() {
-			public String getName() {return WhereField.EQUALS_OR_GREATER_THAN;}
+		conditionalOperators.put(CriteriaConstants.EQUALS_OR_GREATER_THAN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.EQUALS_OR_GREATER_THAN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + ">=" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.LESS_THAN, new IConditionalOperator() {
-			public String getName() {return WhereField.LESS_THAN;}
+		conditionalOperators.put(CriteriaConstants.LESS_THAN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.LESS_THAN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + "<" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.EQUALS_OR_LESS_THAN, new IConditionalOperator() {
-			public String getName() {return WhereField.EQUALS_OR_LESS_THAN;}
+		conditionalOperators.put(CriteriaConstants.EQUALS_OR_LESS_THAN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.EQUALS_OR_LESS_THAN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + "<=" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.STARTS_WITH, new IConditionalOperator() {
-			public String getName() {return WhereField.STARTS_WITH;}
+		conditionalOperators.put(CriteriaConstants.STARTS_WITH, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.STARTS_WITH;}
 			public String apply(String leftHandValue, String rightHandValue) {	
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				rightHandValue = rightHandValue.trim();
@@ -117,8 +121,8 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " like '" + rightHandValue + "'";
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_STARTS_WITH, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_STARTS_WITH;}
+		conditionalOperators.put(CriteriaConstants.NOT_STARTS_WITH, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_STARTS_WITH;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				rightHandValue = rightHandValue.trim();
@@ -127,8 +131,8 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " not like '" + rightHandValue + "'";
 			}
 		});
-		conditionalOperators.put(WhereField.ENDS_WITH, new IConditionalOperator() {
-			public String getName() {return WhereField.ENDS_WITH;}
+		conditionalOperators.put(CriteriaConstants.ENDS_WITH, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.ENDS_WITH;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				rightHandValue = rightHandValue.trim();
@@ -137,8 +141,8 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " like '" + rightHandValue + "'";
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_ENDS_WITH, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_ENDS_WITH;}
+		conditionalOperators.put(CriteriaConstants.NOT_ENDS_WITH, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_ENDS_WITH;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				rightHandValue = rightHandValue.trim();
@@ -147,8 +151,8 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " not like '" + rightHandValue + "'";
 			}
 		});		
-		conditionalOperators.put(WhereField.CONTAINS, new IConditionalOperator() {
-			public String getName() {return WhereField.CONTAINS;}
+		conditionalOperators.put(CriteriaConstants.CONTAINS, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.CONTAINS;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				rightHandValue = rightHandValue.trim();
@@ -157,21 +161,21 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " like '" + rightHandValue + "'";
 			}
 		});
-		conditionalOperators.put(WhereField.IS_NULL, new IConditionalOperator() {
-			public String getName() {return WhereField.IS_NULL;}
+		conditionalOperators.put(CriteriaConstants.IS_NULL, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.IS_NULL;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				return leftHandValue + " IS NULL";
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_NULL, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_NULL;}
+		conditionalOperators.put(CriteriaConstants.NOT_NULL, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_NULL;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				return leftHandValue + " IS NOT NULL";
 			}
 		});
 		
-		conditionalOperators.put(WhereField.BETWEEN, new IConditionalOperator() {
-			public String getName() {return WhereField.BETWEEN;}
+		conditionalOperators.put(CriteriaConstants.BETWEEN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.BETWEEN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertTrue(rightHandValue.contains(","), "When  BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
 				String[] bounds = rightHandValue.split(",");
@@ -179,8 +183,8 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " BETWEEN " + bounds[0] + " AND " + bounds[1];
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_BETWEEN, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_BETWEEN;}
+		conditionalOperators.put(CriteriaConstants.NOT_BETWEEN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_BETWEEN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertTrue(rightHandValue.contains(","), "When  NOT BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
 				String[] bounds = rightHandValue.split(",");
@@ -189,14 +193,14 @@ public class HQLStatement extends BasicStatement {
 			}
 		});
 		
-		conditionalOperators.put(WhereField.IN, new IConditionalOperator() {
-			public String getName() {return WhereField.IN;}
+		conditionalOperators.put(CriteriaConstants.IN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.IN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				return leftHandValue + " IN (" +  rightHandValue + ")";
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_IN, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_IN;}
+		conditionalOperators.put(CriteriaConstants.NOT_IN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_IN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				return leftHandValue + " NOT IN (" +  rightHandValue + ")";
 			}
@@ -349,7 +353,7 @@ public class HQLStatement extends BasicStatement {
 	public static final String OPERAND_TYPE_PARENT_FIELD = "Parent Field Content";
 	
 	
-	private String buildWhereFiledStaticOperand(WhereField.Operand operand) {
+	private String buildStaticOperand(Operand operand) {
 		String operandElement;
 		
 		logger.debug("IN");
@@ -363,7 +367,7 @@ public class HQLStatement extends BasicStatement {
 		return operandElement;
 	}
 	
-	private String buildWhereFiledFieldOperand(WhereField.Operand operand, Query query, Map entityAliasesMaps) {
+	private String buildFieldOperand(Operand operand, Query query, Map entityAliasesMaps) {
 		String operandElement;
 		DataMartField datamartField;
 		DataMartEntity rootEntity;
@@ -396,7 +400,13 @@ public class HQLStatement extends BasicStatement {
 			rootEntityAlias = (String)targetQueryEntityAliasesMap.get( rootEntity.getUniqueName() );
 			logger.debug("where field root entity alias [" + rootEntityAlias + "]");
 			
-			operandElement = rootEntityAlias + "." + queryName;
+			if (operand instanceof HavingField.Operand) {
+				HavingField.Operand havingFieldOperand = (HavingField.Operand) operand;
+				IAggregationFunction function = havingFieldOperand.function;
+				operandElement = function.apply(rootEntityAlias + "." + queryName);
+			} else {
+				operandElement = rootEntityAlias + "." + queryName;
+			}
 			logger.debug("where element operand value [" + operandElement + "]");
 		} finally {
 			logger.debug("OUT");
@@ -405,7 +415,7 @@ public class HQLStatement extends BasicStatement {
 		return operandElement;
 	}
 	
-	private String buildWhereFiledParentFieldOperand(WhereField.Operand operand, Query query, Map entityAliasesMaps) {
+	private String buildParentFieldOperand(Operand operand, Query query, Map entityAliasesMaps) {
 		String operandElement;
 		
 		String[] chunks;
@@ -465,7 +475,7 @@ public class HQLStatement extends BasicStatement {
 		return operandElement;
 	}
 	
-	private String buildWhereFiledQueryOperand(WhereField.Operand operand) {
+	private String buildQueryOperand(Operand operand) {
 		String operandElement;
 		
 		logger.debug("IN");
@@ -488,7 +498,7 @@ public class HQLStatement extends BasicStatement {
 		return operandElement;
 	}
 	
-	private String buildWhereFieldOperand(WhereField.Operand operand, Query query, Map entityAliasesMaps) {
+	private String buildOperand(Operand operand, Query query, Map entityAliasesMaps) {
 		String operandElement;
 		
 		logger.debug("IN");
@@ -498,13 +508,13 @@ public class HQLStatement extends BasicStatement {
 			operandElement = "";
 			
 			if(OPERAND_TYPE_STATIC.equalsIgnoreCase(operand.type)) {
-				operandElement = buildWhereFiledStaticOperand(operand);
+				operandElement = buildStaticOperand(operand);
 			} else if (OPERAND_TYPE_SUBQUERY.equalsIgnoreCase(operand.type)) {
-				operandElement = buildWhereFiledQueryOperand(operand);
+				operandElement = buildQueryOperand(operand);
 			} else if (OPERAND_TYPE_FIELD.equalsIgnoreCase(operand.type)) {
-				operandElement = buildWhereFiledFieldOperand(operand, query, entityAliasesMaps);
+				operandElement = buildFieldOperand(operand, query, entityAliasesMaps);
 			} else if (OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(operand.type)) {
-				operandElement = buildWhereFiledParentFieldOperand(operand, query, entityAliasesMaps);
+				operandElement = buildParentFieldOperand(operand, query, entityAliasesMaps);
 			} else {
 				Assert.assertUnreachable("Invalid operand type [" + operand.type+ "]");
 			}
@@ -514,7 +524,7 @@ public class HQLStatement extends BasicStatement {
 		return operandElement;
 	}
 	
-	private String getTypeBoundedWhereFieldStaticOperand(WhereField.Operand leadOperand, String operator, String operandValueToBound) {
+	private String getTypeBoundedStaticOperand(Operand leadOperand, String operator, String operandValueToBound) {
 		String boundedValue = operandValueToBound;
 
 		if (OPERAND_TYPE_FIELD.equalsIgnoreCase(leadOperand.type) 
@@ -523,11 +533,11 @@ public class HQLStatement extends BasicStatement {
 			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(leadOperand.value);
 			
 			if(datamartField.getType().equalsIgnoreCase("String") || datamartField.getType().equalsIgnoreCase("character")) {
-				if( !( WhereField.IN.equalsIgnoreCase( operator ) 
-						|| WhereField.IN.equalsIgnoreCase( operator )
-						|| WhereField.NOT_IN.equalsIgnoreCase( operator )
-						|| WhereField.BETWEEN.equalsIgnoreCase( operator )
-						|| WhereField.NOT_BETWEEN.equalsIgnoreCase( operator ) 
+				if( !( CriteriaConstants.IN.equalsIgnoreCase( operator ) 
+						|| CriteriaConstants.IN.equalsIgnoreCase( operator )
+						|| CriteriaConstants.NOT_IN.equalsIgnoreCase( operator )
+						|| CriteriaConstants.BETWEEN.equalsIgnoreCase( operator )
+						|| CriteriaConstants.NOT_BETWEEN.equalsIgnoreCase( operator ) 
 				)) {
 					boundedValue = "'" + operandValueToBound + "'";
 				} else {
@@ -556,22 +566,22 @@ public class HQLStatement extends BasicStatement {
 			conditionalOperator = (IConditionalOperator)conditionalOperators.get( whereField.getOperator() );
 			Assert.assertNotNull(conditionalOperator, "Unsopported operator " + whereField.getOperator() + " used in query definition");
 			
-			leftOperandElement = buildWhereFieldOperand(whereField.getLeftOperand(), query, entityAliasesMaps);
+			leftOperandElement = buildOperand(whereField.getLeftOperand(), query, entityAliasesMaps);
 			
 			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getRightOperand().type) 
 					&& whereField.isPromptable()) {
 				// get last value first (the last value edited by the user)
 				rightOperandElement = whereField.getRightOperand().lastValue;
 			} else {
-				rightOperandElement = buildWhereFieldOperand(whereField.getRightOperand(), query, entityAliasesMaps);
+				rightOperandElement = buildOperand(whereField.getRightOperand(), query, entityAliasesMaps);
 			}
 			
 			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getLeftOperand().type) )  {
-				leftOperandElement= getTypeBoundedWhereFieldStaticOperand(whereField.getRightOperand(), whereField.getOperator(), leftOperandElement);
+				leftOperandElement= getTypeBoundedStaticOperand(whereField.getRightOperand(), whereField.getOperator(), leftOperandElement);
 			}
 			
 			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getRightOperand().type) )  {
-				rightOperandElement= getTypeBoundedWhereFieldStaticOperand(whereField.getLeftOperand(), whereField.getOperator(), rightOperandElement);
+				rightOperandElement= getTypeBoundedStaticOperand(whereField.getLeftOperand(), whereField.getOperator(), rightOperandElement);
 			}
 			
 			whereClauseElement = conditionalOperator.apply(leftOperandElement, rightOperandElement);
@@ -792,6 +802,67 @@ public class HQLStatement extends BasicStatement {
 		
 		return str;
 	}
+	
+	private String buildHavingClause(Query query, Map entityAliasesMaps) {
+		
+		StringBuffer buffer = new StringBuffer();
+		
+		if( query.getHavingFields().size() > 0) {
+			buffer.append("HAVING ");
+			Iterator it = query.getHavingFields().iterator();
+			while (it.hasNext()) {
+				HavingField field = (HavingField) it.next();
+				buffer.append( buildHavingClauseElement(field, query, entityAliasesMaps) );
+				if (it.hasNext()) {
+					buffer.append(" " + field.getBooleanConnector() + " ");
+				}
+			}
+		}
+		
+		return buffer.toString().trim();
+	}
+	
+	private String buildHavingClauseElement(HavingField havingField, Query query, Map entityAliasesMaps) {
+		
+		String havingClauseElement;
+		String leftOperandElement;
+		String rightOperandElement;
+				
+		logger.debug("IN");
+		
+		try {
+			IConditionalOperator conditionalOperator = null;
+			conditionalOperator = (IConditionalOperator)conditionalOperators.get( havingField.getOperator() );
+			Assert.assertNotNull(conditionalOperator, "Unsopported operator " + havingField.getOperator() + " used in query definition");
+			
+			leftOperandElement = buildOperand(havingField.getLeftOperand(), query, entityAliasesMaps);
+			
+			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(havingField.getRightOperand().type) 
+					&& havingField.isPromptable()) {
+				// get last value first (the last value edited by the user)
+				rightOperandElement = havingField.getRightOperand().lastValue;
+			} else {
+				rightOperandElement = buildOperand(havingField.getRightOperand(), query, entityAliasesMaps);
+			}
+			
+			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(havingField.getLeftOperand().type) )  {
+				leftOperandElement= getTypeBoundedStaticOperand(havingField.getRightOperand(), havingField.getOperator(), leftOperandElement);
+			}
+			
+			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(havingField.getRightOperand().type) )  {
+				rightOperandElement= getTypeBoundedStaticOperand(havingField.getLeftOperand(), havingField.getOperator(), rightOperandElement);
+			}
+			
+			havingClauseElement = conditionalOperator.apply(leftOperandElement, rightOperandElement);
+			logger.debug("Having clause element value [" + havingClauseElement + "]");
+		} finally {
+			logger.debug("OUT");
+		}
+		
+		
+		return  havingClauseElement;
+	}
+	
 	
 	private String buildWhereClause(Query query, Map entityAliasesMaps) {
 	
@@ -1020,6 +1091,7 @@ public class HQLStatement extends BasicStatement {
 		String groupByClause;
 		String orderByClause;
 		String fromClause;
+		String havingClause;
 		
 		Assert.assertNotNull(query, "Input parameter 'query' cannot be null");
 		Assert.assertTrue(!query.isEmpty(), "Input query cannot be empty (i.e. with no selected fields)");
@@ -1032,8 +1104,9 @@ public class HQLStatement extends BasicStatement {
 		groupByClause = buildGroupByClause(query, entityAliasesMaps);
 		orderByClause = buildOrderByClause(query, entityAliasesMaps);
 		fromClause = buildFromClause(query, entityAliasesMaps);
+		havingClause = buildHavingClause(query, entityAliasesMaps);
 		
-		queryStr = selectClause + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause;
+		queryStr = selectClause + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause + " " + havingClause;
 		
 		Set subqueryIds;
 		try {

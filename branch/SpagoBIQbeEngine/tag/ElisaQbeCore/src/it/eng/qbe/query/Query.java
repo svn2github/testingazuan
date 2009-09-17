@@ -44,11 +44,13 @@ public class Query {
 	
 	List selectFields;	
 	List whereClause;
+	List havingClause;
 	
 	ExpressionNode whereClauseStructure;
 	boolean nestedExpression;
 
 	Map whereFieldMap;
+	Map havingFieldMap;
 	
 	Query parentQuery;
 	Map subqueries;
@@ -56,7 +58,9 @@ public class Query {
 	public Query() {
 		selectFields = new ArrayList();		
 		whereClause = new ArrayList();
+		havingClause = new ArrayList();
 		whereFieldMap = new HashMap();
+		havingFieldMap = new HashMap();
 		subqueries  = new HashMap();
 	}
 	
@@ -98,7 +102,7 @@ public class Query {
 		selectFields.add( new SelectField(fieldUniqueName, function, fieldAlias, include, visible, groupByField, orderType) );
 	}
 	
-	public void addWhereFiled(String name, String description, boolean promptable,
+	public void addWhereField(String name, String description, boolean promptable,
 			Operand leftOperand, String operator, Operand rightOperand,
 			String booleanConnector) {
 		
@@ -108,8 +112,22 @@ public class Query {
 		whereFieldMap.put("$F{" + name + "}", whereField);
 	}
 	
+	public void addHavingField(String name, String description, boolean promptable, 
+			it.eng.qbe.query.HavingField.Operand leftOperand, String operator, it.eng.qbe.query.HavingField.Operand rightOperand,
+			String booleanConnector) {
+		
+		HavingField havingField = new HavingField(name, description, promptable, leftOperand, operator, rightOperand, booleanConnector);
+		
+		havingClause.add( havingField );
+		havingFieldMap.put("$F{" + name + "}", havingField);
+	}
+	
 	public WhereField getWhereFieldByName(String fname) {
 		return (WhereField)whereFieldMap.get(fname.trim());
+	}
+	
+	public HavingField getHavingFieldByName(String fname) {
+		return (HavingField)havingFieldMap.get(fname.trim());
 	}
 	
 	public List getIncludedSelectFields() {
@@ -130,6 +148,10 @@ public class Query {
 	
 	public List getWhereFields() {
 		return whereClause;
+	}
+	
+	public List getHavingFields() {
+		return havingClause;
 	}
 
 	public boolean isDistinctClauseEnabled() {

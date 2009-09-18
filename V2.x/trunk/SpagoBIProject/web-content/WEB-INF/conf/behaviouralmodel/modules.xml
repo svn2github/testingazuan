@@ -7,7 +7,7 @@
     </MODULE>
   
  	<MODULE class="it.eng.spagobi.behaviouralmodel.analyticaldriver.service.ListLookupParametersModule" name="ListLookupParametersModule">
-	    <CONFIG pool="spagobi" rows="20" title="SBIDev.ListParam.ListLookupParameters.title" >
+	    <CONFIG pool="spagobi" rows="30" title="SBIDev.ListParam.ListLookupParameters.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_PARAMETERS_LIST">
 	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
@@ -69,7 +69,7 @@
     </MODULE>  	   
     
 	<MODULE class="it.eng.spagobi.behaviouralmodel.analyticaldriver.service.ListParametersModule" name="ListParametersModule">
-	    <CONFIG pool="spagobi" rows="20" title="SBIDev.ListParam.title" >
+	    <CONFIG pool="spagobi" rows="30" title="SBIDev.ListParam.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_LIST_PARAMETERS">
 	        	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
@@ -127,7 +127,7 @@
   	
   	
 <MODULE class="it.eng.spagobi.behaviouralmodel.check.service.CheckLinksModule" name="CheckLinksModule">
-		<CONFIG pool="spagobi" rows="20" title="Check-List ">  		
+		<CONFIG pool="spagobi" rows="30" title="Check-List ">  		
       		<KEYS>
       			<OBJECT key='OBJ_ID'/>
       			<SUBJECT key='SUBJECT_ID'/>
@@ -182,7 +182,7 @@
     </MODULE>   
     
 	<MODULE class="it.eng.spagobi.behaviouralmodel.check.service.ListChecksModule" name="ListModalitiesChecksModule" >
-	    <CONFIG pool="spagobi" rows="20" title="SBIDev.ListConfConst.title">
+	    <CONFIG pool="spagobi" rows="30" title="SBIDev.ListConfConst.title">
       <QUERIES>
         <SELECT_QUERY statement="SELECT_LIST_MODALITIES_CHECKS">
          	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
@@ -232,7 +232,7 @@
   	</MODULE>
   	
 	<MODULE class="it.eng.spagobi.behaviouralmodel.check.service.ListPredefinedChecksModule" name="ListPredefinedChecksModule">
-	    <CONFIG pool="spagobi" rows="20" title="SBIDev.ListPredConst.title">
+	    <CONFIG pool="spagobi" rows="30" title="SBIDev.ListPredConst.title">
       <QUERIES>
         <SELECT_QUERY statement="SELECT_PREDEFINED_CHECKS">
         	<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
@@ -264,7 +264,7 @@
     </MODULE>
     
 	<MODULE class="it.eng.spagobi.behaviouralmodel.lov.service.ListLookupLovModule" name="ListLookupLovModule">
-	    <CONFIG pool="spagobi" rows="20" title="SBIDev.ListParamUse.ListLookupLov.title" >
+	    <CONFIG pool="spagobi" rows="30" title="SBIDev.ListParamUse.ListLookupLov.title" >
 	      <QUERIES>
 	        <SELECT_QUERY statement="SELECT_LIST_MODALITIES_VALUE">
 				<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>
@@ -328,7 +328,7 @@
 	-->
 
 	<MODULE class="it.eng.spagobi.behaviouralmodel.lov.service.ListLovsModule" name="ListLovsModule">	    
-	    <CONFIG pool="spagobi" rows="20" title="SBIDev.predLovList.title">
+	    <CONFIG pool="spagobi" rows="30" title="SBIDev.predLovList.title">
       <QUERIES>
         	<SELECT_QUERY statement="SELECT_LIST_MODALITIES_VALUE">
         		<ORDER_BY  scope="SERVICE_REQUEST" type="RELATIVE" value="FIELD_ORDER"/>

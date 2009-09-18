@@ -93,12 +93,22 @@ public class ExtJsQbeTreeBuilder  {
 		return StringUtilities.isEmpty(label)? entity.getName(): label;
 	}
 	
+	private String geEntityTooltip(DataMartEntity entity) {
+		String tooltip = getDatamartLabels().getTooltip(entity);
+		return tooltip != null ? tooltip : "";
+	}
+	
 	private String geFieldLabel(DataMartField field) {
 		String label;
 		label = getDatamartLabels().getLabel(field);
 		return StringUtilities.isEmpty(label)? field.getName(): label;
 	}
 
+	private String geFieldTooltip(DataMartField field) {
+		String tooltip = getDatamartLabels().getTooltip(field);
+		return tooltip != null ? tooltip : "";
+	}
+	
 	/**
 	 * Builds the qbe tree list.
 	 * 
@@ -205,9 +215,11 @@ public class ExtJsQbeTreeBuilder  {
 		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();	
 		String iconCls = datamartProperties.getEntityIconClass( entity );			
 		String label = geEntityLabel( entity );
+		String tooltip = geEntityTooltip( entity );
 		
 		writer.println("\n\n####################################################");
 		writer.println( entity.getUniqueName().replaceAll(":", "/") + "=");
+		writer.println( entity.getUniqueName().replaceAll(":", "/") + ".tooltip=");
 		
 			
 		JSONArray childrenNodes = getFieldNodes(entity, recursionLevel);
@@ -217,12 +229,12 @@ public class ExtJsQbeTreeBuilder  {
 			entityNode.put("id", entity.getUniqueName());
 			entityNode.put("text", label );
 			entityNode.put("iconCls", iconCls);
+			entityNode.put("qtip", tooltip );
 			
 			JSONObject nodeAttributes = new JSONObject();
 			nodeAttributes.put("iconCls", iconCls);
 			nodeAttributes.put("type", "entity");
 			entityNode.put("attributes", nodeAttributes);
-			
 			entityNode.put("children", childrenNodes);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -290,10 +302,12 @@ public class ExtJsQbeTreeBuilder  {
 		
 		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();
 		String iconCls = datamartProperties.getFieldIconClass( field );		
-		String fieldLabel = geFieldLabel( field );		
+		String fieldLabel = geFieldLabel( field );
+		String fieldTooltip = geFieldTooltip( field );
 		String entityLabel = geEntityLabel( parentEntity );
 		
 		writer.println( field.getUniqueName().replaceAll(":", "/") + "=");
+		writer.println( field.getUniqueName().replaceAll(":", "/") + ".tooltip=");
 		
 		JSONObject fieldNode = new JSONObject();
 		try {
@@ -305,6 +319,7 @@ public class ExtJsQbeTreeBuilder  {
 			nodeAttributes.put("iconCls", iconCls);
 			nodeAttributes.put("type", "field");
 			nodeAttributes.put("entity", entityLabel);
+			nodeAttributes.put("qtip", fieldTooltip);
 			nodeAttributes.put("field", fieldLabel);
 			fieldNode.put("attributes", nodeAttributes);
 		} catch (JSONException e) {

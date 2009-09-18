@@ -597,6 +597,9 @@ IModelInstanceDAO {
 
 	private SbiKpiInstance setSbiKpiInstanceFromModelInstance(Session aSession,
 			ModelInstance value, SbiKpiInstance sbiKpiInstance) {
+		if (sbiKpiInstance == null){
+			sbiKpiInstance = new SbiKpiInstance();
+		}
 		if (value.getKpiInstance().getKpi() != null) {
 			sbiKpiInstance.setSbiKpi((SbiKpi) aSession.load(SbiKpi.class, value
 					.getKpiInstance().getKpi()));

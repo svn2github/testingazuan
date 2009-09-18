@@ -88,9 +88,11 @@ public class DataSourceUtilities {
 		DataSourceSupplier supplierDS = new DataSourceSupplier();		
 		SpagoBiDataSource ds = supplierDS.getDataSourceByLabel(dsLabel);
 		logger.debug("Schema Attribute:"+ ds.getSchemaAttribute());
-		
-		String schema=UserUtilities.getSchema(ds.getSchemaAttribute(),profile);
-		logger.debug("Schema:"+ schema);
+		String schema=null;
+		if (profile!=null){
+			schema=UserUtilities.getSchema(ds.getSchemaAttribute(),profile);
+			logger.debug("Schema:"+ schema);
+		}
 		try {
 			connection = ds.readConnection(schema);
 		} catch (NamingException e) {

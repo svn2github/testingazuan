@@ -56,14 +56,22 @@ public class XmlSecurityServiceSupplierImpl implements ISecurityServiceSupplier 
     public SpagoBIUserProfile createUserProfile(String userId) {
 	logger.debug("IN - userId: " + userId);
 
+	// get config
+	SourceBean configSingleton = (SourceBean) ConfigSingleton.getInstance();
+	// check if user is defined
+	List userPwdsSB = configSingleton.getFilteredSourceBeanAttributeAsList("AUTHORIZATIONS.ENTITIES.USERS.USER",
+			"userID", userId);
+	if (userPwdsSB == null || userPwdsSB.size() == 0) {
+	    logger.error("UserName [" + userId + "] not found!!");
+	    return null;
+	}
+	
 	SpagoBIUserProfile profile = new SpagoBIUserProfile();
 	profile.setUniqueIdentifier(userId);
 	profile.setUserId(userId);
 
 	// get user name
 	String userName = userId;
-	// get config
-	SourceBean configSingleton = (SourceBean) ConfigSingleton.getInstance();
 	// get roles of the user
 	List rolesSB = configSingleton.getFilteredSourceBeanAttributeAsList(
 		"AUTHORIZATIONS.RELATIONS.BEHAVIOURS.BEHAVIOUR", "userID", userName);

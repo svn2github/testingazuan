@@ -32,6 +32,12 @@ Sbi.sdk.apply(Sbi.sdk.services, {
             name: 'EXECUTE_DOCUMENT_ACTION', 
             baseParams: {NEW_SESSION: 'TRUE', IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS: 'true'}
         };
+        
+        this.services.executedataset = {
+            type: 'ACTION', 
+            name: 'EXECUTE_DATASET_ACTION', 
+            baseParams: {NEW_SESSION: 'TRUE'}
+        };
     }
     
     , setBaseUrl: function(u) {

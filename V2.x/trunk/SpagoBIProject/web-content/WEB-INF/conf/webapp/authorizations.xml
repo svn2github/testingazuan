@@ -26,6 +26,7 @@
 			<ROLE roleName="/spagobi/dev" description="/spagobi/dev" />
 			<ROLE roleName="/spagobi/test" description="/spagobi/test" />
 			<ROLE roleName="/spagobi/user" description="/spagobi/user" />
+			<ROLE roleName="/spagobi/userb" description="/spagobi/userb" />
 			<ROLE roleName="/spagobi/admin" description="/spagobi/admin" />
 			<ROLE roleName="/spagobi/modeladmin" description="/spagobi/modeladmin" />
 		</ROLES>
@@ -36,6 +37,7 @@
 	<RELATIONS>
 		<BEHAVIOURS>
 			<BEHAVIOUR userID="biuser" roleName="/spagobi/user" />
+			<BEHAVIOUR userID="biuser" roleName="/spagobi/userb" />
 			<BEHAVIOUR userID="biuser_a" roleName="/spagobi/user" />
 			<BEHAVIOUR userID="biuser_b" roleName="/spagobi/user" />
 			<BEHAVIOUR userID="bitest" roleName="/spagobi/test" />

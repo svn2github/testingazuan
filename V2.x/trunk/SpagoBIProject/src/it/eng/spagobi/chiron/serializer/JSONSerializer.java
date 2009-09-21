@@ -38,6 +38,7 @@ import it.eng.spagobi.analiticalmodel.functionalitytree.bo.LowFunctionality;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.Role;
 import it.eng.spagobi.engines.config.bo.Engine;
+import it.eng.spagobi.tools.dataset.common.datastore.DataStore;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -56,6 +57,7 @@ public class JSONSerializer implements Serializer {
 		mappings.put( SubObject.class, new SubObjectsJSONSerializer() );
 		mappings.put( Viewpoint.class, new ViewpointJSONSerializer() );
 		mappings.put( Snapshot.class, new SnapshotJSONSerializer() );
+		mappings.put( DataStore.class, new DataStoreJSONSerializer() );
 		
 		
 		mappings.put( GetParametersForExecutionAction.ParameterForExecution.class, new ParameterForExecutionJSONSerializer() );

@@ -24,6 +24,11 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 		Sbi.sdk.jsonp.asyncRequest(serviceUrl, config.callback.fn, config.callback.scope, config.callback.args);
     }
 
+	, executeDataSet: function (config) {	    
+		var serviceUrl = Sbi.sdk.services.getServiceUrl('executedataset', config.params);
+		Sbi.sdk.jsonp.asyncRequest(serviceUrl, config.callback.fn, config.callback.scope, config.callback.args);
+    }
+
 	, getDocumentUrl: function( config ) {
 		var documentUrl = null;
 		

@@ -431,7 +431,7 @@ public class BirtReportServlet extends HttpServlet {
 		SsoServiceInterface proxyService = SsoServiceFactory.createProxyService();
 		String token = proxyService.readTicket(session);
 		
-		String kpiUrl = EnginConf.getInstance().getSpagoBiServerUrl()+"/test2.jsp?SECURITY_TOKEN="+token+"&USERID="+userId;
+		String kpiUrl = EnginConf.getInstance().getSpagoBiServerUrl()+"/publicjsp/kpiValueXml.jsp?SECURITY_TOKEN="+token+"&USERID="+userId;
 		//String kpiUrl = EnginConf.getInstance().getSpagoBiServerUrl()+"/testXml.jsp?"+"USERID="+userId;
 		
 		

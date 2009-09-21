@@ -60,11 +60,7 @@ Sbi.execution.ShortcutsPanel = function(config) {
 	          animate:true
 	    },
 	    border: false,
-	    items: [		        
-	        this.viewpointsPanel
-	      , this.subobjectsPanel
-	      , this.snapshotsPanel		      
-	    ]
+	    items: this.getSortedPanels()
 	});
 	
 	// constructor
@@ -113,4 +109,22 @@ Ext.extend(Sbi.execution.ShortcutsPanel, Ext.Panel, {
 	, synchronizeSnapshots: function( executionInstance ) {
 		this.snapshotsPanel.synchronize( executionInstance );
 	}
+	
+	, getSortedPanels: function() {
+		var toReturn = new Array();
+		if(Sbi.settings && Sbi.settings.execution && Sbi.settings.execution.shortcutsPanel && Sbi.settings.execution.shortcutsPanel.panelsOrder) {
+			var viewpointsPosition = Sbi.settings.execution.shortcutsPanel.panelsOrder.viewpoints - 1;
+			var subobjectsPosition = Sbi.settings.execution.shortcutsPanel.panelsOrder.subobjects - 1;
+			var snapshotsPosition = Sbi.settings.execution.shortcutsPanel.panelsOrder.snapshots - 1;
+			toReturn[viewpointsPosition] = this.viewpointsPanel;
+			toReturn[subobjectsPosition] = this.subobjectsPanel;
+			toReturn[snapshotsPosition] = this.snapshotsPanel;
+		} else {
+			toReturn[0] = this.viewpointsPanel;
+			toReturn[1] = this.subobjectsPanel;
+			toReturn[2] = this.snapshotsPanel;
+		}
+		return toReturn;
+	}
+	
 });

@@ -8,4 +8,11 @@ Sbi.settings.execution = {
 			, fieldWidth: 200	
 			, maskOnRender: false
 		}
+		, shortcutsPanel: {
+			panelsOrder: {
+				subobjects: 1
+				, viewpoints: 2
+				, snapshots: 3
+			}
+		}
 }; 

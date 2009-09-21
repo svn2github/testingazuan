@@ -205,6 +205,16 @@
       background-position:center center;
 	  background-repeat:no-repeat; 
     }
+    
+    .list-view .item-control-panel .action-showmetadata {
+      width:16px;
+      height:15px;
+      margin:2 2 2 2;
+      float:right;
+      background-image: url('../../../img/analiticalmodel/browser/metadata.png');
+      background-position:center center;
+	  background-repeat:no-repeat; 
+    }
    
     .list-view .group-item .item-desc p {
         color:#777;

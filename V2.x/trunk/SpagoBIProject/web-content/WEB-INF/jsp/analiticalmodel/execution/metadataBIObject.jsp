@@ -122,7 +122,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
-        title: 'General Data',
+        title: '<spagobi:message key = "metadata.generalData" />',
         collapsible:true,
         collapsed : false,
         renderTo: 'container1',
@@ -147,7 +147,7 @@ if(docAdmin||docDev||docTest){
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
-        title: 'Technical Data',
+        title: '<spagobi:message key = "metadata.tecData" />',
         collapsible:true,
         collapsed : true,
         renderTo: 'container2',
@@ -156,11 +156,11 @@ Ext.onReady(function(){
 });
 </script>
 <% } %>
-
+<!-- 
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
-        title: 'Business Questions',
+        title: '<spagobi:message key = "metadata.bq" />',
         collapsible:true,
         collapsed : true,
         renderTo: 'container3',
@@ -171,14 +171,14 @@ Ext.onReady(function(){
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
-        title: 'Categories',
+        title: '<spagobi:message key = "metadata.categories" />',
         collapsible:true,
         collapsed : true,
         renderTo: 'container4',
         contentEl : 'categories'
     });
 });
-</script>
+</script> -->
 		<div id="container1"> </div>	
 
 		<div id="container2"> </div>	
@@ -368,12 +368,12 @@ if(docAdmin||docDev||docTest){
 	</table> 
 </div>  
 <% } %>
-
+<!--  
 <div id="businessQuestions" class="div_background_no_img" style="padding-top:5px;padding-left:5px;">
 	
-	<!-- TABLE BUSINESS QUESTIONS -->		
+	<!-- TABLE BUSINESS QUESTIONS 	
 	<table style="width:100%;margin-top:1px" >
-		<!-- Business Questions -->
+		
 		<tr>
 		    <td class="portlet-section-header" width="110" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key ="metadata.docBusinessQ" />		
 			</td>				
@@ -384,11 +384,11 @@ if(docAdmin||docDev||docTest){
 	</table> 
 </div> 		
 
-<div id="categories" class="div_background_no_img" style="padding-top:5px;padding-left:5px;">
+<div id="categories" class="div_background_no_img" style="padding-top:5px;padding-left:5px;"> -->
 	
-	<!-- TABLE CATEGORIES -->		
-	<table style="width:100%;margin-top:1px" >
-		<!-- Keywords -->
+	<!-- TABLE CATEGORIES 		
+<!--  	<table style="width:100%;margin-top:1px" >
+		<!-- Keywords 
 		<tr>
 		    <td class="portlet-section-header" width="60" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docKeyword" />		
 			</td>				
@@ -396,7 +396,7 @@ if(docAdmin||docDev||docTest){
 			</td>
 		</tr>	
 		
-		<!-- Folders in which it's published -->
+		<!-- Folders in which it's published 
 		<tr>
 		    <td class="portlet-section-header" width="60" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "metadata.docFolder" />		
 			</td>				
@@ -405,7 +405,7 @@ if(docAdmin||docDev||docTest){
 		</tr>
 	<spagobi:error/>
 	</table> 
-</div> 	
+</div> 	-->
 	
 
 <%@ include file="/WEB-INF/jsp/commons/footer.jsp"%>

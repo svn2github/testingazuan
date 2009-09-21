@@ -70,7 +70,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
-        title: 'KPI Overview',
+        title: '<spagobi:message key = "metadata.kpiOverview" />',
         collapsible:true,
         collapsed : false,
         renderTo: 'container1',
@@ -81,7 +81,7 @@ Ext.onReady(function(){
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
-        title: 'KPI Description',
+        title: '<spagobi:message key = "metadata.kpiDescription" />',
         collapsible:true,
         collapsed : true,
         renderTo: 'container2',
@@ -92,7 +92,7 @@ Ext.onReady(function(){
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
-        title: 'Model Instance',
+        title: '<spagobi:message key = "metadata.modelInstance" />',
         collapsible:true,
         collapsed : true,
         renderTo: 'container3',
@@ -103,7 +103,7 @@ Ext.onReady(function(){
 <script>
 Ext.onReady(function(){
     var p = new Ext.Panel({
-        title: 'Technical Data',
+        title: '<spagobi:message key = "metadata.tecData" />',
         collapsible:true,
         collapsed : true,
         renderTo: 'container4',

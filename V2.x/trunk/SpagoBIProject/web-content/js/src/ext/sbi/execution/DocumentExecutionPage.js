@@ -966,6 +966,10 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 								||
 								this.shortcutsHiddenPreference;
 		
+		var southPanelHeight = 
+			(Sbi.settings && Sbi.settings.execution && Sbi.settings.execution.shortcutsPanel && Sbi.settings.execution.shortcutsPanel.height) 
+			? Sbi.settings.execution.shortcutsPanel.height : 280;
+		
 		this.southPanel = new Ext.Panel({
 			region:'south'
 			, border: false
@@ -977,7 +981,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 			, collapseMode: 'mini'
 			, split: true
 			, autoScroll: true
-			, height: 280
+			, height: southPanelHeight
 			, layout: 'fit'
 			, items: [this.shortcutsPanel]
 			, hidden: shortcutsHidden

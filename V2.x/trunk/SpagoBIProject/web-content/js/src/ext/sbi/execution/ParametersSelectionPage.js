@@ -100,6 +100,10 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 							||
 							this.shortcutsHiddenPreference;
 	
+	var southPanelHeight = 
+		(Sbi.settings && Sbi.settings.execution && Sbi.settings.execution.shortcutsPanel && Sbi.settings.execution.shortcutsPanel.height) 
+		? Sbi.settings.execution.shortcutsPanel.height : 280;
+	
 	this.southPanel = new Ext.Panel({
 		region:'south'
 			, border: false
@@ -111,7 +115,7 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 			, collapseMode: 'mini'
 			, split: true
 			, autoScroll: true
-			, height: 280
+			, height: southPanelHeight
 			, layout: 'fit'
 			, items: [this.shortcutsPanel]
 			, hidden: shortcutsHidden

@@ -14,6 +14,6 @@ Sbi.settings.execution = {
 				, viewpoints: 2
 				, snapshots: 3
 			}
-			, height: 180
+			, height: 280
 		}
 }; 

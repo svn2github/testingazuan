@@ -230,11 +230,11 @@ Ext.extend(Sbi.browser.DocumentsBrowser, Ext.Panel, {
 		var executionPanel = new Sbi.execution.ExecutionPanel({
 			title: r.name
 			, closable: true
-		});
+		}, r);
 		
 		this.centerContainerPanel.add(executionPanel).show();
 		
-		executionPanel.execute(r);
+		executionPanel.execute();
 	}
 	
 	, onFolderClick: function(panel, r) {

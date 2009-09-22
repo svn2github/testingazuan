@@ -46,7 +46,10 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.ExecutionPanel = function(config) {
+Sbi.execution.ExecutionPanel = function(config, doc) {
+	
+	// the document to be executed (passed to this constructor for initialization: execution starts with execute() method)
+	this.document = doc;
 	
 	// declare exploited services
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
@@ -63,7 +66,7 @@ Sbi.execution.ExecutionPanel = function(config) {
 	if(config.title !== undefined) delete config.title;
 	if(config.closable !== undefined) delete config.closable;
 	
-	this.activeDocument = new Sbi.execution.ExecutionWizard( config );
+	this.activeDocument = new Sbi.execution.ExecutionWizard( config, doc );
 	this.documentsStack.push( this.activeDocument );
 	
 	this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
@@ -112,8 +115,8 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 	documentsStack: null
 	, activeDocument: null
 	
-	, execute : function( doc ) {
-		this.activeDocument.execute( doc );
+	, execute : function() {
+		this.activeDocument.execute();
 	}
 
 	, loadCrossNavigationTargetDocument: function( config ) {
@@ -158,7 +161,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 	, executeCrossNavigation: function( config ) {
 		var prevActiveDoc = this.activeDocument;
 		
-		this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences, isFromCross: true} );
+		this.activeDocument = new Sbi.execution.ExecutionWizard( {preferences: config.preferences, isFromCross: true}, config.document );
 		this.documentsStack.push( this.activeDocument );
 		
 		this.activeDocument.on('beforetoolbarinit', this.setBreadcrumbs, this);
@@ -170,7 +173,7 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		this.doLayout();
 		this.getLayout().setActiveItem(this.documentsStack.length -1);
 		
-		this.activeDocument.execute(config.document);
+		this.activeDocument.execute();
 	}
 	
 	, setBreadcrumbs: function(tb) {
@@ -232,10 +235,5 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 			this.activeDocument.documentExecutionPage.miframe.iframe.execScript(scriptFn, true);
 		}
 	}
-	
-	
-	
-	
-	
-	
+
 });

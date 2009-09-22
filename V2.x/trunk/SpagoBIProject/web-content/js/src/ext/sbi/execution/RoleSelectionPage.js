@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.RoleSelectionPage = function(config) {
+Sbi.execution.RoleSelectionPage = function(config, doc) {
 	
 	// apply defaults values
 	config = Ext.apply({

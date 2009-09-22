@@ -150,7 +150,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	var toolbarHidden = <%= toolbarHidden %>;
 	
     var config = {
-    	preferences: {
+    	document: object
+    	, preferences: {
 			parameters: parameters
 			, subobject: subobject
 			, snapshot: snaphost
@@ -161,7 +162,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	Ext.onReady(function(){
 		Ext.QuickTips.init();
-		var executionPanel = new Sbi.execution.ExecutionPanel(config);
+		var executionPanel = new Sbi.execution.ExecutionPanel(config, object);
 		var viewport = new Ext.Viewport({
 			layout: 'border'
 			, items: [
@@ -173,7 +174,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			]
 
 		});
-		executionPanel.execute(object);
+		executionPanel.execute();
 	});
     
     </script>

@@ -86,6 +86,14 @@ Sbi.locale.ln['sbi.execution.parametersselection.toolbar.back']  = 'Change selec
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.clear']  = 'Reset parameters form';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.save']  = 'Enregistres parametres form state comme viewpoint';
 Sbi.locale.ln['sbi.execution.parametersselection.toolbar.next']  = 'Executer le document';
+Sbi.locale.ln['sbi.execution.parametersselection.message.page2.fillFormAndExecute']  = 'Fill the form below and click on the top-right button to execute the document';
+Sbi.locale.ln['sbi.execution.parametersselection.message.page2.execute']  = 'Click on the top-right button to execute the document';
+Sbi.locale.ln['sbi.execution.parametersselection.message.page2.qbe.powerUserMessageWithoutParameters']  = 'Click on the top-right button to execute the main document or double-click on a saved query from the list below';
+Sbi.locale.ln['sbi.execution.parametersselection.message.page2.qbe.powerUserMessageWithParameters']  = 'Fill the form below, then click on the top-right button to execute the main document or double-click on a saved query from the list below';
+Sbi.locale.ln['sbi.execution.parametersselection.message.page2.qbe.readOnlyUserMessageWithoutParameters']  = 'You cannot execute the main document; double-click on a saved query from the list below';
+Sbi.locale.ln['sbi.execution.parametersselection.message.page2.qbe.readOnlyUserMessageWithParameters']  = 'You cannot execute the main document; fill the form below and double-click on a saved query from the list below';
+Sbi.locale.ln['sbi.execution.parametersselection.message.page3.fillFormAndRefresh']  = 'Fill the form below and click on the refresh button on the toolbar to re-execute the document';
+Sbi.locale.ln['sbi.execution.parametersselection.message.page3.refresh']  = 'Click on the refresh button on the toolbar to re-execute the document';
 
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.back'] = 'Retourner à la page de selection des parameters';
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.refresh'] = 'Refreshir l\'execution du document';

@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.SnapshotsPanel = function(config) {
+Sbi.execution.SnapshotsPanel = function(config, doc) {
 	
 	var c = Ext.apply({
 		// defaults

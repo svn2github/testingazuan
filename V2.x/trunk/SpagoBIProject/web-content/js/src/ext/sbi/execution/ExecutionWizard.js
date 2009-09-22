@@ -46,8 +46,9 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.ExecutionWizard = function(config) {
+Sbi.execution.ExecutionWizard = function(config, doc) {
 	
+	this.document = doc;
 	
 	// always declare exploited services first!
 	var params = {LIGHT_NAVIGATOR_DISABLED: 'TRUE', SBI_EXECUTION_ID: null};
@@ -77,22 +78,22 @@ Sbi.execution.ExecutionWizard = function(config) {
 	this.isFromCross = config.isFromCross || false;
 	 
 	// propagate preferences to role selection page
-	var roleSelectionPageConfig = Ext.applyIf(config.preferences, config.roleSelectionPage); 
-	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage(roleSelectionPageConfig);
+	var roleSelectionPageConfig = Ext.applyIf({}, config.preferences);
+	this.roleSelectionPage = new Sbi.execution.RoleSelectionPage(roleSelectionPageConfig, doc);
 	this.roleSelectionPage.maskOnRender = true;
 	
 	// propagate preferences to parameters selection page
-	var parametersSelectionPageConfig = Ext.applyIf(config.preferences, config.parametersSelectionPage); 
-	this.parametersSelectionPage =  new Sbi.execution.ParametersSelectionPage(parametersSelectionPageConfig || {});
+	var parametersSelectionPageConfig = Ext.applyIf({}, config.preferences);
+	this.parametersSelectionPage =  new Sbi.execution.ParametersSelectionPage(parametersSelectionPageConfig || {}, doc);
 	this.parametersSelectionPage.maskOnRender = true;
 	
-	var documentExecutionPageConfig = Ext.applyIf(config.preferences, config.documentExecutionPage); 
+	var documentExecutionPageConfig = Ext.applyIf({}, config.preferences);
 	// preferences for shortcuts ARE NOT PROPAGATED to execution page (since panels on ShortcutPanel are instantiated twice, this may generate conflicts)
 	if (documentExecutionPageConfig !== undefined) {
 		delete documentExecutionPageConfig.subobject;
 		delete documentExecutionPageConfig.snapshot;
 	}
-	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(documentExecutionPageConfig || {});
+	this.documentExecutionPage = new Sbi.execution.DocumentExecutionPage(documentExecutionPageConfig || {}, doc);
 	this.documentExecutionPage.maskOnRender = true;
 	
 	this.errorPage = new Ext.Panel({
@@ -141,9 +142,11 @@ Sbi.execution.ExecutionWizard = function(config) {
     this.documentExecutionPage.addListener('beforerefresh', function(){ this.prevActivePageNumber = this.EXECUTION_PAGE_NUMBER; }, this);
     this.documentExecutionPage.addListener('loadurlfailure', this.onLoadUrlFailure, this);
     
+    /*
     if(config.document) {
     	this.execute( config.document );
     }
+    */
     	
 };
 
@@ -211,18 +214,16 @@ Ext.extend(Sbi.execution.ExecutionWizard, Ext.Panel, {
 	}
     
     // execution
-    , execute : function( doc ) {
+    , execute : function() {
     	this.roleSelectionPage.loadingMask.show();
-		if(!doc || (!doc.id && !doc.label) ) {
+		if(!this.document || (!this.document.id && !this.document.label) ) {
 			Sbi.exception.ExceptionHandler.showErrorMessage(LN('sbi.execution.error.nodocid'), 'Intenal Error');
 		}
 		
-		this.document = doc;
-		
 		this.executionInstance = {}
-		if(doc.id) this.executionInstance.OBJECT_ID = doc.id;
-		if(doc.label) this.executionInstance.OBJECT_LABEL = doc.label;
-		this.executionInstance.document = doc;
+		if(this.document.id) this.executionInstance.OBJECT_ID = this.document.id;
+		if(this.document.label) this.executionInstance.OBJECT_LABEL = this.document.label;
+		this.executionInstance.document = this.document;
 		this.executionInstance.isFromCross = this.isFromCross;
 		
 		this.loadRolesForExecution();

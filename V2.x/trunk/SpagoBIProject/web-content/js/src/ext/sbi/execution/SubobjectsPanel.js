@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.SubobjectsPanel = function(config) {
+Sbi.execution.SubobjectsPanel = function(config, doc) {
 	
 	var c = Ext.apply({
 		// defaults
@@ -93,7 +93,46 @@ Sbi.execution.SubobjectsPanel = function(config) {
 	       }
 	});
     
-    this.sm = new Ext.grid.CheckboxSelectionModel();
+    var isUserAbleToDeleteSubObjects = 
+    	Sbi.user.functionalities.contains('SaveSubobjectFunctionality') &&
+    	(doc.typeCode != 'DATAMART' || Sbi.user.functionalities.contains('BuildQbeQueriesFunctionality'));
+    
+    var columns = [
+       {id: "id", header: "Id", sortable: true, dataIndex: 'id',  hidden: true}
+       , {header: LN('sbi.execution.subobjects.name'), sortable: true, dataIndex: 'name'}
+       , {header: LN('sbi.execution.subobjects.description'), sortable: true, dataIndex: 'description'}
+       , {header: LN('sbi.execution.subobjects.owner'), sortable: true, dataIndex: 'owner'}
+       , {header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
+       , {header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
+       , {
+       	header: LN('sbi.execution.subobjects.visibility')
+       	, sortable: true
+       	, dataIndex: 'visibility'
+       	, renderer: function(val) {
+       		return val? LN('sbi.execution.subobjects.visibility.public'): LN('sbi.execution.subobjects.visibility.private')
+       	}
+       }
+       , this.executeColumn
+    ];
+    
+    var tbar = undefined;
+    
+    if (isUserAbleToDeleteSubObjects) {
+    	this.sm = new Ext.grid.CheckboxSelectionModel();
+    	columns.push(this.sm);
+    	tbar = [
+		    '->'
+		    , {
+		 	   text: LN('sbi.execution.subobjects.deleteSelected')
+		 	   , tooltip: LN('sbi.execution.subobjects.deleteSelectedTooltip')
+		 	   , iconCls:'icon-remove'
+		 	   , scope: this
+		 	   , handler : this.deleteSelectedSubObjects
+		    }
+    	];
+    } else {
+    	this.sm = new Ext.grid.RowSelectionModel({singleSelect:false});
+    }
     
     this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
     
@@ -103,39 +142,13 @@ Sbi.execution.SubobjectsPanel = function(config) {
     
 	c = Ext.apply({}, c, {
         store: this.subObjectsStore
-        , columns: [
-            {id: "id", header: "Id", sortable: true, dataIndex: 'id',  hidden: true}
-            , {header: LN('sbi.execution.subobjects.name'), sortable: true, dataIndex: 'name'}
-            , {header: LN('sbi.execution.subobjects.description'), sortable: true, dataIndex: 'description'}
-            , {header: LN('sbi.execution.subobjects.owner'), sortable: true, dataIndex: 'owner'}
-            , {header: LN('sbi.execution.subobjects.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
-            , {header: LN('sbi.execution.subobjects.lastModificationDate'), sortable: true, dataIndex: 'lastModificationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
-            , {
-            	header: LN('sbi.execution.subobjects.visibility')
-            	, sortable: true
-            	, dataIndex: 'visibility'
-            	, renderer: function(val) {
-            		return val? LN('sbi.execution.subobjects.visibility.public'): LN('sbi.execution.subobjects.visibility.private')
-            	}
-            }
-            , this.executeColumn
-            , this.sm
-        ]
+        , columns: columns
         , plugins: this.executeColumn
 		, viewConfig: {
         	forceFit: true
         	, emptyText: LN('sbi.execution.subobjects.emptyText')
 		}
-        , tbar:[
-           '->'
-           , {
-        	   text: LN('sbi.execution.subobjects.deleteSelected')
-        	   , tooltip: LN('sbi.execution.subobjects.deleteSelectedTooltip')
-        	   , iconCls:'icon-remove'
-        	   , scope: this
-        	   , handler : this.deleteSelectedSubObjects
-           	}
-        ]
+        , tbar: tbar
         , collapsible: false
         , title: LN('sbi.execution.subobjects.title')
         , autoScroll: true
@@ -194,28 +207,24 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
 				ids[count] = aRecord.get('id');
 			}
 			var idsJoined = ids.join(',');
-	
+			
 			Ext.Ajax.request({
 		        url: this.services['deleteSubObjectsService'],
 		        params: {'SBI_EXECUTION_ID': this.executionInstance.SBI_EXECUTION_ID, 'id': idsJoined},
-		        callback : function(options , success, response) {
-		  	  		if(success) {
-			      		if (response && response.responseText !== undefined) {
-			      			var content = Ext.util.JSON.decode( response.responseText );
-			      			if (content !== undefined && content.result == 'OK') {
-				  	  			// removes the subobjects from the store
-				  	  			for (var count = 0; count < recordsSelected.length; count++) {
-				  	  				this.subObjectsStore.remove(recordsSelected[count]);
-				  	  			}
-			      			} else {
-				      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting customized views', 'Service Error');
-				      		}
-			      		} else {
+		        success : function(response, options) {
+		      		if (response && response.responseText !== undefined) {
+		      			var content = Ext.util.JSON.decode( response.responseText );
+		      			if (content !== undefined && content.result == 'OK') {
+			  	  			// removes the subobjects from the store
+			  	  			for (var count = 0; count < recordsSelected.length; count++) {
+			  	  				this.subObjectsStore.remove(recordsSelected[count]);
+			  	  			}
+		      			} else {
 			      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting customized views', 'Service Error');
 			      		}
-		  	  		} else {
-		  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Cannot detele customized views', 'Service Error');
-		  	  		}
+		      		} else {
+		      			Sbi.exception.ExceptionHandler.showErrorMessage('Error while deleting customized views', 'Service Error');
+		      		}
 		        },
 		        scope: this,
 				failure: Sbi.exception.ExceptionHandler.handleFailure      
@@ -232,32 +241,5 @@ Ext.extend(Sbi.execution.SubobjectsPanel, Ext.grid.GridPanel, {
     	var subObjectId = selectedRecord.get('id');
     	this.fireEvent('executionrequest', subObjectId);
     }
-	
-	/*
-	, checkPreferences: function () {
-		var subObjectId = null;
-		if (this.subobjectPreference !== undefined) {
-			// get the required subobject from the store
-			var index = this.subObjectsStore.find('name', this.subobjectPreference);
-			if (index != -1) {
-				var record = this.subObjectsStore.getAt(index);
-				subObjectId = record.get('id');
-		    	//this.fireEvent('executionrequest', subObjectId);
-			} else {
-				Sbi.exception.ExceptionHandler.showErrorMessage('Customized view \'' + this.subobjectPreference + '\' not found', 'Configuration Error');
-			}
-			// reset preference variable
-			delete this.subobjectPreference;
-		}
-		// remove the listener
-		this.subObjectsStore.un(
-				'load', 
-				this.checkPreferences,
-				this
-		);
-		// tells that the subobjects panel has been loaded and (eventually) the subobject specified by the preferences
-		this.fireEvent('ready', subObjectId);
-	}
-	*/
 	
 });

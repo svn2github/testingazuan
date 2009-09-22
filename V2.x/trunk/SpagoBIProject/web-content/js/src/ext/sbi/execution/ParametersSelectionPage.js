@@ -47,7 +47,7 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.ParametersSelectionPage = function(config) {
+Sbi.execution.ParametersSelectionPage = function(config, doc) {
 	
 	var c = Ext.apply({
 		//columnNo: 3
@@ -77,7 +77,7 @@ Sbi.execution.ParametersSelectionPage = function(config) {
 	
     this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
     
-	this.init(c);
+	this.init(c, doc);
 	
 	this.centerPanel = new Ext.Panel({
 		region:'center'
@@ -333,10 +333,10 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	// private methods
 	// ----------------------------------------------------------------------------------------
 	
-	, init: function( config ) {
+	, init: function( config, doc) {
 		this.initToolbar(config);
 		this.initParametersPanel(config);
-		this.initShortcutsPanel(config);
+		this.initShortcutsPanel(config, doc);
 	}
 	
 	, initToolbar: function( config ) {
@@ -346,6 +346,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 	}
 	
 	, initParametersPanel: function( config ) {
+		Ext.apply(config, {pageNumber: 2}); // this let the ParametersPanel know that it is on parameters selection page
 		this.parametersPanel = new Sbi.execution.ParametersPanel(config);
 		this.parametersPanel.on('synchronize', function() {
 			if(this.shortcutsPanelSynchronizationPending === false) {
@@ -356,8 +357,8 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 		return this.parametersPanel;
 	}
 	
-	, initShortcutsPanel: function( config ) {
-		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
+	, initShortcutsPanel: function( config, doc ) {
+		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config, doc);
 		this.shortcutsPanel.on('synchronize', function() {
 			if(this.parametersPanelSynchronizationPending === false) {
 				this.fireEvent('synchronize', this);

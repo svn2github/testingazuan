@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.execution");
 
-Sbi.execution.DocumentExecutionPage = function(config) {
+Sbi.execution.DocumentExecutionPage = function(config, doc) {
 	
 	// apply defaults values
 	config = Ext.apply({
@@ -100,7 +100,7 @@ Sbi.execution.DocumentExecutionPage = function(config) {
     this.toolbarHiddenPreference = config.toolbarHidden!== undefined ? config.toolbarHidden : false;
 	this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
     
-    this.init(config);    
+    this.init(config, doc);    
     
     this.shortcutsPanel.on('applyviewpoint', this.parametersPanel.applyViewPoint, this.parametersPanel);
     this.shortcutsPanel.on('viewpointexecutionrequest', function(v) {
@@ -848,11 +848,11 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	// private methods
 	// ----------------------------------------------------------------------------------------
 	
-	, init: function( config ) {
+	, init: function( config, doc ) {
 		this.initToolbar(config);
 		this.initNorthPanel(config);
 		this.initCenterPanel(config);
-		this.initSouthPanel(config);
+		this.initSouthPanel(config, doc);
 	}
 	
 	, initToolbar: function( config ) {
@@ -870,6 +870,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	}
 	
 	, initNorthPanel: function( config ) {
+		Ext.apply(config, {pageNumber: 3}); // this let the ParametersPanel know that it is on execution page
 		this.parametersPanel = new Sbi.execution.ParametersPanel(config);
 		
 		this.northPanel = new Ext.Panel({
@@ -957,8 +958,8 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		}, this);
 	}
 	
-	, initSouthPanel: function( config ) {
-		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config);
+	, initSouthPanel: function( config, doc ) {
+		this.shortcutsPanel = new Sbi.execution.ShortcutsPanel(config, doc);
 		
 		var shortcutsHidden = (!Sbi.user.functionalities.contains('SeeViewpointsFunctionality') 
 								&& !Sbi.user.functionalities.contains('SeeSnapshotsFunctionality') 

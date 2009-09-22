@@ -86,7 +86,7 @@ Sbi.execution.ParametersPanel = function(config) {
 	});
 	
 	//var cw = 1/c.columnNo;
-	var w = (c.columnWidth * c.columnNo) + 40;
+	this.formWidth = (c.columnWidth * c.columnNo) + 40;
 	var columnsBaseConfig = [];
 	for(var i = 0; i < c.columnNo; i++) {		
 		columnsBaseConfig[i] = {
@@ -96,16 +96,15 @@ Sbi.execution.ParametersPanel = function(config) {
             bodyStyle:'padding:5px 5px 5px 5px'
 		}
 	}
-	
 
 	c = Ext.apply({}, c, {
 		labelAlign: c.labelAlign,
         border: false,
-        bodyStyle:'padding:10px 0px 10px 10px',
+        //bodyStyle:'padding:10px 0px 10px 10px',
         autoScroll: true,
         items: [{
             layout:'column',
-            width: w, 
+            width: this.formWidth, 
             border: false,
             items: columnsBaseConfig
         }]
@@ -262,11 +261,8 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			}
 		}
 		
-		
-		if(parameters.length == 0) {
-			Ext.DomHelper.append(this.body, '<div class="x-grid-empty">' + LN('sbi.execution.parametersselection.noParametersToBeFilled') + '</div>');
-		} else {
-			var thereAreParametersToBeFilled = false;
+		var thereAreParametersToBeFilled = false;
+		if(parameters.length > 0) {
 			var o = this.getFormState();
 			for(p in o) {
 				// must check is this.fields[p] is undefined because form state contains also parameters' descriptions
@@ -275,10 +271,31 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 					break;
 				}
 			}
-			if(thereAreParametersToBeFilled !== true) {
-				Ext.DomHelper.append(this.body, '<div class="x-grid-empty">' + LN('sbi.execution.parametersselection.noParametersToBeFilled') + '</div>');
-			}
 		}
+		
+		if(thereAreParametersToBeFilled !== true) {
+			Ext.DomHelper.append(this.body, '<div class="x-grid-empty">' + LN('sbi.execution.parametersselection.noParametersToBeFilled') + '</div>');
+		}
+		
+		// Help message on Parameters Panel.
+		// work-around: since the panel toolbar may be to short, the message is injected with Ext.DomHelper.insertFirst on the body of
+		// the panel, but a function for width calculation is necessary (this function does not work on page 3 when executing in
+		// document browser with tree structure initially opened, since containerWidth is 0).
+		// TODO: try to remove the on resize method and the width calculation
+		var containerWidth = this.getInnerWidth();
+		this.widthDiscrepancy = Ext.isIE ? 1 : 5;
+		var initialWidth = containerWidth > this.formWidth ? containerWidth - this.widthDiscrepancy: this.formWidth;
+		var message = this.getHelpMessage(executionInstance, thereAreParametersToBeFilled);
+		this.messageElement = Ext.DomHelper.insertFirst(this.body, 
+				'<div style="font-size: 11px; font-family: tahoma,verdana,helvetica; margin-bottom: 10px; ' 
+				+ (containerWidth === 0 ? '' : 'width: ' + initialWidth + 'px;') + '"'  
+				+ ' class="x-panel-tbar x-panel-tbar-noheader x-toolbar x-panel-tbar-noborder x-btn-text x-item-disabled">'
+				+ message
+				+ '</div>');
+		this.on('resize', function() {
+			var containerWidth = this.getInnerWidth();
+			this.messageElement.style.width = containerWidth > this.formWidth ? containerWidth - this.widthDiscrepancy: this.formWidth;
+		}, this);
 		
 		this.doLayout();
 		
@@ -473,6 +490,51 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		
 		return store;
 		
+	}
+	
+	, getHelpMessage: function(executionInstance, thereAreParametersToBeFilled) {
+		if (this.baseConfig.pageNumber === 2) {
+			return this.getHelpMessageForPage2(executionInstance, thereAreParametersToBeFilled);
+		} else {
+			return this.getHelpMessageForPage3(executionInstance, thereAreParametersToBeFilled);
+		}
+	}
+	
+	, getHelpMessageForPage2: function(executionInstance, thereAreParametersToBeFilled) {
+		var toReturn = null;
+		var doc = executionInstance.document;
+		if (doc.typeCode == 'DATAMART' && this.baseConfig.subobject == undefined) {
+			if (Sbi.user.functionalities.contains('BuildQbeQueriesFunctionality')) {
+				if (!thereAreParametersToBeFilled) {
+					toReturn = LN('sbi.execution.parametersselection.message.page2.qbe.powerUserMessageWithoutParameters');
+				} else {
+					toReturn = LN('sbi.execution.parametersselection.message.page2.qbe.powerUserMessageWithParameters');
+				}
+			} else {
+				if (!thereAreParametersToBeFilled) {
+					toReturn = LN('sbi.execution.parametersselection.message.page2.qbe.readOnlyUserMessageWithoutParameters');
+				} else {
+					toReturn = LN('sbi.execution.parametersselection.message.page2.qbe.readOnlyUserMessageWithParameters');
+				}
+			}
+		} else {
+			if (!thereAreParametersToBeFilled) {
+				toReturn = LN('sbi.execution.parametersselection.message.page2.execute');
+			} else {
+				toReturn = LN('sbi.execution.parametersselection.message.page2.fillFormAndExecute');
+			}
+		}
+		return toReturn;
+	}
+	
+	, getHelpMessageForPage3: function(executionInstance, thereAreParametersToBeFilled) {
+		var toReturn = null;
+		if (!thereAreParametersToBeFilled) {
+			toReturn = LN('sbi.execution.parametersselection.message.page3.refresh');
+		} else {
+			toReturn = LN('sbi.execution.parametersselection.message.page3.fillFormAndRefresh');
+		}
+		return toReturn;
 	}
 	
 });

@@ -83,18 +83,12 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 			if (snapshotId != null) {
 				response = handleSnapshotExecution(snapshotId);
 			} else if (subObjectId != null) {
-				response = handleSubObjectExecution(subObjectId);
+				response = handleSubObjectExecution(subObjectId, isFromCross);
 			} else {
-				response = handleNormalExecution();
+				response = handleNormalExecution(isFromCross);
 			}
 			
 			Assert.assertNotNull(response, "An internal error occurred while generating service response. Service response cannot be null");
-			
-			try {
-				response.put("url", response.get("url") + "&isFromCross=" + (isFromCross==true?"true":"false"));
-			} catch (JSONException e) {
-				throw new SpagoBIServiceException("Cannot serialize the url [" + response + "] to the client", e);
-			}
 						
 			try {
 				writeBackToClient( new JSONSuccess( response ) );
@@ -164,7 +158,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 		return response;
 	}
 
-	protected JSONObject handleSubObjectExecution(Integer subObjectId) {
+	protected JSONObject handleSubObjectExecution(Integer subObjectId, boolean isFromCross) {
 		ExecutionInstance executionInstance;
 		UserProfile userProfile;
 		
@@ -237,6 +231,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 					if (canExecuteSubObject) {
 						executionInstance.setSubObject(subObject);
 						String url = executionInstance.getSubObjectUrl(locale);
+						url += "&isFromCross=" + (isFromCross == true ? "true" : "false");
 						try {
 							response.put("url", url);
 						} catch (JSONException e) {
@@ -257,7 +252,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 		return response;
 	}
 
-	protected JSONObject handleNormalExecution() {
+	protected JSONObject handleNormalExecution(boolean isFromCross) {
 		ExecutionInstance executionInstance;
 		
 		
@@ -297,7 +292,7 @@ public class GetUrlForExecutionAction extends AbstractSpagoBIAction {
 			} else {
 				// there are no errors, we can proceed, so calculate the execution url and send it back to the client
 				String url = executionInstance.getExecutionUrl(locale);
-
+				url += "&isFromCross=" + (isFromCross == true ? "true" : "false");
 				try {
 					response.put("url", url);
 				} catch (JSONException e) {

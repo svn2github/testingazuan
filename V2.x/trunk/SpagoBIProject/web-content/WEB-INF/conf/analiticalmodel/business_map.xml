@@ -41,6 +41,7 @@
 		<MAP_PAGE_MODULE pageName="MYFOLDERMANAGEMENTPAGE" moduleName="TreeObjectsModule" businessProcess="DocumentUserManagement" />
 		<MAP_PAGE_MODULE pageName="DetailFunctionalityPage" moduleName="DetailFunctionalityModule" businessProcess="FunctionalitiesManagement" />
 		<MAP_PAGE_MODULE pageName="UpdateBIObjectStatePage" moduleName="UpdateBIObjectStateModule" businessProcess="DocumentManagement" />
+		<MAP_PAGE_MODULE pageName="UpdateBIObjectStatePage" moduleName="UpdateBIObjectStateModule" businessProcess="DocumentTestManagement" />
 		<MAP_PAGE_MODULE pageName="ExecutionWorkspacePage" moduleName="PortletLoginModule" businessProcess="DocumentUserManagement" />
 		<MAP_PAGE_MODULE pageName="ExecutionWorkspacePage" moduleName="ExecutionWorkspaceModule" businessProcess="DocumentUserManagement" />
 		<MAP_PAGE_MODULE pageName="DetailBIObjectPage" moduleName="DetailBIObjectModule" businessProcess="DocumentManagement" />

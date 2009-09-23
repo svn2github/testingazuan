@@ -282,20 +282,22 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		// the panel, but a function for width calculation is necessary (this function does not work on page 3 when executing in
 		// document browser with tree structure initially opened, since containerWidth is 0).
 		// TODO: try to remove the on resize method and the width calculation
-		var containerWidth = this.getInnerWidth();
-		this.widthDiscrepancy = Ext.isIE ? 1 : 5;
-		var initialWidth = containerWidth > this.formWidth ? containerWidth - this.widthDiscrepancy: this.formWidth;
-		var message = this.getHelpMessage(executionInstance, thereAreParametersToBeFilled);
-		this.messageElement = Ext.DomHelper.insertFirst(this.body, 
-				'<div style="font-size: 11px; font-family: tahoma,verdana,helvetica; margin-bottom: 10px; ' 
-				+ (containerWidth === 0 ? '' : 'width: ' + initialWidth + 'px;') + '"'  
-				+ ' class="x-panel-tbar x-panel-tbar-noheader x-toolbar x-panel-tbar-noborder x-btn-text x-item-disabled">'
-				+ message
-				+ '</div>');
-		this.on('resize', function() {
+		if (this.messageElement == undefined) {
 			var containerWidth = this.getInnerWidth();
-			this.messageElement.style.width = containerWidth > this.formWidth ? containerWidth - this.widthDiscrepancy: this.formWidth;
-		}, this);
+			this.widthDiscrepancy = Ext.isIE ? 1 : 5;
+			var initialWidth = containerWidth > this.formWidth ? containerWidth - this.widthDiscrepancy: this.formWidth;
+			var message = this.getHelpMessage(executionInstance, thereAreParametersToBeFilled);
+			this.messageElement = Ext.DomHelper.insertFirst(this.body, 
+					'<div style="font-size: 11px; font-family: tahoma,verdana,helvetica; margin-bottom: 10px; ' 
+					+ (containerWidth === 0 ? '' : 'width: ' + initialWidth + 'px;') + '"'  
+					+ ' class="x-panel-tbar x-panel-tbar-noheader x-toolbar x-panel-tbar-noborder x-btn-text x-item-disabled">'
+					+ message
+					+ '</div>');
+			this.on('resize', function() {
+				var containerWidth = this.getInnerWidth();
+				this.messageElement.style.width = containerWidth > this.formWidth ? containerWidth - this.widthDiscrepancy: this.formWidth;
+			}, this);
+		}
 		
 		this.doLayout();
 		

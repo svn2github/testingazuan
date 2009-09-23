@@ -420,6 +420,21 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			    this.selectGridPanel.addRow(record); 
 			 }
 	    }, this);
+		
+		/*
+		 * work-around: when executing the following operations:
+		 * 1. collapsing west region panel
+		 * 2. expanding and collapsing SpagoBI parameters panel
+		 * 3. executing query
+		 * 4. coming back to query builder panel
+		 * 5. expanding west region panel
+		 * then the datamart structure tree was not displayed.
+		 * This work-around forces the layout recalculation when west region panel is expanded
+		 * TODO: try to remove it when upgrading Ext library
+		 */
+		this.westRegionPanel.on('expand', function() {
+			this.westRegionPanel.doLayout();
+		}, this);
 	}
 	
 	, initCenterRegionPanel: function(c) {

@@ -723,19 +723,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 							  	</a>
 							  	<br>
 							  	<br>
+							  
 							  	
-							  	<div>
-							  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'
-											id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'>
-									<option value='false'><spagobi:message key = "scheduler.doNotIterateOnParameterValues"  bundle="component_scheduler_messages"/></option>
-									<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
-										<spagobi:message key = "scheduler.iterateOnParameterValues"  bundle="component_scheduler_messages"/>
-									</option>
-								</select>
-								</div>
+							</div>	
 								
-								
-				    		</div>
+				    		
 				    		
 				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_loadAtRuntime"%>'
 				    				id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_loadAtRuntime"%>'
@@ -758,6 +750,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 											}
 										%>
 									</select>
+									
+								
 				    		</div>
 				    		
 				    		<div name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_useFormula"%>'
@@ -790,6 +784,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				    		</div>
 				    	
 				    	
+							  	<div>
+							  	<select name='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'
+											id='<%="par_"+biobj.getId()+"_"+index+"_"+StringEscapeUtils.escapeHtml(biobjpar.getParameterUrlName())+"_Iterative"%>'>
+									<option value='false'><spagobi:message key = "scheduler.doNotIterateOnParameterValues"  bundle="component_scheduler_messages"/></option>
+									<option value='true' <%= biobjpar.isIterative() ? "selected='selected'" : "" %>>
+										<spagobi:message key = "scheduler.iterateOnParameterValues"  bundle="component_scheduler_messages"/>
+									</option>
+								</select>
+								</div>
 				    	
 				    	
 						</div>

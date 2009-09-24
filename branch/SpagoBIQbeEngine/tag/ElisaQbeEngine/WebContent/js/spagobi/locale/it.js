@@ -5,9 +5,9 @@ Sbi.locale.ln = Sbi.locale.ln || new Array();
 //===================================================================
 // MESSAGE WINDOW
 //===================================================================
-Sbi.locale.ln['sbi.qbe.messagewin.warning.title'] = 'Warning message';
-Sbi.locale.ln['sbi.qbe.messagewin.error.title'] = 'Error message';
-Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Info message';
+Sbi.locale.ln['sbi.qbe.messagewin.warning.title'] = 'Warning';
+Sbi.locale.ln['sbi.qbe.messagewin.error.title'] = 'Messaggio di Errore';
+Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Informazione';
 
 
 
@@ -16,204 +16,204 @@ Sbi.locale.ln['sbi.qbe.messagewin.info.title'] = 'Info message';
 //===================================================================
 Sbi.locale.ln['sbi.qbe.queryeditor.title'] = 'Query';
 Sbi.locale.ln['sbi.qbe.queryeditor.westregion.title'] = 'Schema';
-Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.expand'] = 'Expand all'; 
-Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.collapse'] = 'Collapse all'; 
+Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.expand'] = 'Espandi tutto'; 
+Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.collapse'] = 'Collassa tutto'; 
 Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.flat'] = 'Flat view'; 
-Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.addcalculated'] = 'Add calulated field'; 
+Sbi.locale.ln['sbi.qbe.queryeditor.westregion.tools.addcalculated'] = 'Aggiungi campo calcolato'; 
 
-Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.title'] = 'Query Editor';
-Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.save'] = 'Save query as subobject';
-Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.view'] = 'Save query as view';
-Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.execute'] = 'Execute query';
-Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.validate'] = 'Validate query';
+Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.title'] = 'Editor delle query';
+Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.save'] = 'Salva come vista customizzata';
+Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.view'] = 'Salva come vista database';
+Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.execute'] = 'Esegui la query';
+Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.validate'] = 'Valida la  query';
 Sbi.locale.ln['sbi.qbe.queryeditor.centerregion.tools.help'] = 'Help me please';
 
-Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.title'] = 'Query Catalogue';
-Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.delete'] = 'Delete query';
-Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.add'] = 'Add query';
-Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.insert'] = 'Insert query';
+Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.title'] = 'Catalogo delle query';
+Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.delete'] = 'Cancella';
+Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.add'] = 'Aggiungi query';
+Sbi.locale.ln['sbi.qbe.queryeditor.eastregion.tools.insert'] = 'Aggiungi query secondaria';
 
 
 //===================================================================
 //DATASTORE PANEL
 //===================================================================
-Sbi.locale.ln['sbi.qbe.datastorepanel.title'] = 'Results';
+Sbi.locale.ln['sbi.qbe.datastorepanel.title'] = 'Risultati';
 
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.displaymsg'] = 'Displaying {0} - {1} of {2}';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.emptymsg'] = 'No data to display';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.emptywarningmsg'] = 'Query returns no data';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.beforeoverflow'] = 'Max records number limit';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.afteroverflow'] = 'exceeded';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.beforepagetext'] = 'Page';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.afterpagetext'] = 'of {0}';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.firsttext'] = 'First Page';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.prevtext'] = 'Previous Page';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.nexttext'] = 'Next Page';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.lasttext'] = 'Next Page';
-Sbi.locale.ln['sbi.qbe.datastorepanel.grid.refreshtext'] = 'Refresh';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.displaymsg'] = 'Visualizza {0} - {1} of {2}';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.emptymsg'] = 'Nessun risultato';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.emptywarningmsg'] = 'La query non ha restituito valori';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.beforeoverflow'] = 'Soglia massima del numero di record';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.afteroverflow'] = 'superata';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.beforepagetext'] = 'Pagina';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.afterpagetext'] = 'di {0}';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.firsttext'] = 'Prima Pagina';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.prevtext'] = 'Pagina precedente';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.nexttext'] = 'Pagina successiva';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.lasttext'] = 'Pagina successiva';
+Sbi.locale.ln['sbi.qbe.datastorepanel.grid.refreshtext'] = 'Aggiorna';
 
-Sbi.locale.ln['sbi.qbe.datastorepanel.button.tt.exportto'] = 'Export to';
+Sbi.locale.ln['sbi.qbe.datastorepanel.button.tt.exportto'] = 'Esporta a';
 
 
 
 //===================================================================
 //FILTER GRID
 //===================================================================
-Sbi.locale.ln['sbi.qbe.filtergridpanel.title'] = 'Where clause';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.title'] = 'Filtri';
 
 //column headers
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.delete'] = 'Delete';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.name'] = 'Filter Name';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.entity'] = 'Entity';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.field'] = 'Field';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.operator'] = 'Operator';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.value'] = 'Operand';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.isfree'] = 'Is for Prompt';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.type'] = 'Operand Type';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.boperator'] = 'Bol.Connector';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.delete'] = 'Elimina';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.name'] = 'Nome';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.entity'] = 'Entita\'';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.field'] = 'Campo';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.operator'] = 'Operatore';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.value'] = 'Operando';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.isfree'] = 'Campo a richiesta';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.type'] = 'Tipo Operando';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.boperator'] = 'Connettore';
 
 //column tooltip
-Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.notdef'] = 'Help tooltip not defined yet';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.notdef'] = 'Help tooltip non ancora definito';
 
 //boolean operators
 Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.name.and'] = 'AND';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.name.or'] = 'OR';
 
-Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.desc.and'] = 'Connect this filter and the next one using the boolean operator AND';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.desc.or'] = 'Connect this filter and the next one using the boolean operator OR';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.desc.and'] = 'Collega questo filtro al successivo usando l\'operatore AND';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.desc.or'] = 'Collega questo filtro al successivo usando l\'operatore OR';
 
-Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.editor.emptymsg'] = 'Select an operator...';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.boperators.editor.emptymsg'] = 'Seleziona un operatore...';
 
 
 //filter operators
 
 Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.none'] = 'none';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.eq'] = 'equals to';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.noteq'] = 'not equals to';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.gt'] = 'greater than';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.eqgt'] = 'equals or greater than';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.lt'] = 'less than';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.eqlt'] = 'equals or less than';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.starts'] = 'starts with';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notstarts'] = 'not starts with';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.ends'] = 'ends with';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notends'] = 'not ends with';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.contains'] = 'contains';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notcontains'] = 'not contains';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.between'] = 'between';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notbetween'] = 'not between';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.eq'] = 'uguale a';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.noteq'] = 'non uguale a';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.gt'] = 'maggiore di';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.eqgt'] = 'maggiore o uguale a';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.lt'] = 'minore di';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.eqlt'] = 'minore o uguale di';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.starts'] = 'inizia con';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notstarts'] = 'non inizia con';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.ends'] = 'finisce con';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notends'] = 'non finisce con';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.contains'] = 'contiene';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notcontains'] = 'non contiene';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.between'] = 'compreso tra';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notbetween'] = 'non compreso tra';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.in'] = 'in';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notin'] = 'not in';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notnull'] = 'not null';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.isnull'] = 'is null';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notin'] = 'non in';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.notnull'] = 'non nullo';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.name.isnull'] = 'nullo';
 
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.none'] = 'no filter applayed';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.eq'] = 'true iff the field\'s value is equal to filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.noteq'] = 'true iff the field\'s value is not equal to filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.gt'] = 'true iff the field\'s value is greater than filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.eqgt'] = 'true iff the field\'s value is equal or greater than filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.lt'] = 'true iff the field\'s value is less than filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.eqlt'] = 'true iff the field\'s value starts with filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.starts'] = 'true iff the field\'s value is equal or less than filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notstarts'] = 'true iff the field\'s value doesn\'t start with filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.ends'] = 'true iff the field\'s value ends with filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notends'] = 'true iff the field\'s value doesn\'t end with filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.contains'] = 'true iff the field\'s value contains filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notcontains'] = 'true iff the field\'s value doesn\'t contain filter\'s value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.between'] = 'true iff the field\'s value is between the range specified in the filter value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notbetween'] = 'true iff the field\'s value is not between the range specified in the filter value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.in'] = 'true iff the field\'s value is equal to one of the values specified in the filter value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notin'] = 'true iff the field\'s value is not equal to any of the values specified in the filter value';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notnull'] = 'true iff the field\'s value is not null';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.isnull'] = 'true iff the field\'s value is null';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.none'] = 'nessun filtro applicato';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.eq'] = 'verificato se il valore del campo e\' uguale al valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.noteq'] = 'verificato se il valore del campo non e\' diverso dal valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.gt'] = 'verificato se il valore del campo e\' maggiore del valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.eqgt'] = 'verificato se il valore del campo e\' maggiore o uguale al valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.lt'] = 'verificato se il valore del campo e\' minore del valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.eqlt'] = 'verificato se il valore del campo inizia con il valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.starts'] = 'verificato se il valore del campo e\' minore o uguale al valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notstarts'] = 'verificato se il valore del campo non inizia con il valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.ends'] = 'verificato se il valore del campo termina con il valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notends'] = 'verificato se il valore del campo non termina con il valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.contains'] = 'verificato se il valore del campo contiene il valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notcontains'] = 'verificato se il valore del campo non contiene il valore del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.between'] = 'verificato se il valore del campo e\' compreso nell\'intervallo specificato';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notbetween'] = 'verificato se il valore del campo non e\' compreso nell\'intervallo specificato';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.in'] = 'verificato se il valore del campo e\' uguale ad uno dei valori del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notin'] = 'verificato se il valore del campo non e\' uguale a nessuno dei valori del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.notnull'] = 'verificato se il valore del campo e\' nullo';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.isnull'] = 'verificato se il valore del campo non e\' nullo';
 
-Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.editor.emptymsg'] = 'Select an operator...';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.editor.emptymsg'] = 'Seleziona un operatore...';
 
 //buttons 
-Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.delete'] = 'Delete';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.delete'] = 'Delete All';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.delete'] = 'Elimina';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.delete'] = 'Elimina tutto';
 
-Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.wizard'] = 'Exp Wizard';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.wizard'] = 'Exp Wizard';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.wizard'] = 'Espressioni';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.wizard'] = 'Espressioni';
 
 // ===================================================================
 //	SELECT GRID
 // ===================================================================
-Sbi.locale.ln['sbi.qbe.selectgridpanel.title'] = 'Select Fields';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.title'] = 'Seleziona Campo';
 
 // column headers
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.visible'] = 'Visible';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.group'] = 'Group';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.filter'] = 'Filter';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.having'] = 'Having';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.entity'] = 'Entity';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.visible'] = 'Visibile';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.group'] = 'Raggruppa';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.filter'] = 'Filtri';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.entity'] = 'Entita\'';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.alias'] = 'Alias';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.order'] = 'Order';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.group'] = 'Group';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.function'] = 'Function';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.field'] = 'Field';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.delete'] = 'Delete';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.order'] = 'Ordinamento';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.group'] = 'Raggruppa';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.function'] = 'Funzione';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.field'] = 'Campo';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.delete'] = 'Elimina';
 
 //aggregation functions
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.none'] = 'none';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.sum'] = 'sum';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.avg'] = 'averege';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.max'] = 'maximum';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.min'] = 'minimum';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.count'] = 'count';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.none'] = 'nessuno';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.sum'] = 'somma';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.avg'] = 'media';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.max'] = 'massimo';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.min'] = 'minimo';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.name.count'] = 'conteggio';
 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.none'] = 'No aggregation function applied';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.sum'] = 'Return the sum of all values in group';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.avg'] = 'Return the average of all values in group';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.max'] = 'Return the max of all values in group';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.min'] = 'Return the min of all values in group';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.count'] = 'Return the count of all values in group';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.none'] = 'Nessuna modalita\' d\'aggregazione attivata';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.sum'] = 'Restituisce la somma dei valori nel gruppo';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.avg'] = 'Restituisce la media dei valori nel gruppo';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.max'] = 'Restituisce il massimo dei valori nel gruppo';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.min'] = 'Restituisce il minimo dei valori nel gruppo';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.desc.count'] = 'Restituisce il conteggio dei valori nel gruppo';
 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.editor.emptymsg'] = 'Select a function...';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.aggfunc.editor.emptymsg'] = 'Seleziona una funzione...';
 
 
 // sorting functions
-Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.name.none'] = 'none';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.name.asc'] = 'ascending';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.name.desc'] = 'descending';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.name.none'] = 'nessuna';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.name.asc'] = 'ascendente';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.name.desc'] = 'discendenti';
 
 Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.desc.none'] = 'No ordering applied to the given colunm';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.desc.asc'] = 'Order values of the given column in asecnding way';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.desc.desc'] = 'Order values of the given column in descending way';
 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.editor.emptymsg'] = 'Select ordering direction...';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.sortfunc.editor.emptymsg'] = 'Seleziona la modalita\' d\'ordinamento...';
 
 //buttons 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.hide'] = 'Hide non-visible';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.hide'] = 'Hide all non visible fields';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.hide'] = 'Nascondi i campi non-visibili';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.hide'] = 'Nascondi tutti i campi non-visibili';
 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.group'] = 'Group by entity';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.group'] = 'Group fileds by parent entity';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.group'] = 'Raggruppa per entita\'';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.group'] = 'Raggruppa per entita\' padre';
 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.add'] = 'Add calculated';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.add'] = 'Aggiungi campo calcolato';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.add'] = 'Add an ad-hoc calculated field (i.e. valid only for this query)';
 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.delete'] = 'Delete';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.delete'] = 'Delete selected filed';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.delete'] = 'Elimina';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.delete'] = 'Elimina campi selezionati';
 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.deleteall'] = 'Delete All';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.deleteall'] = 'Delete all selected fields';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.deleteall'] = 'Elimina tutto';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.tt.deleteall'] = 'Elimina tutti i campi selezionati';
 
-Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.distinct'] = 'Apply distinct clause';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.buttons.text.distinct'] = 'Valori distinti';
 
-Sbi.locale.ln['sbi.qbe.freeconditionswindow.title'] = 'Fill free conditions';
-Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.apply'] = 'Apply';
-Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.cancel'] = 'Cancel';
-Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restoredefaults'] = 'Restore defaults';
-Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults'] = 'Set as defaults';
-Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restorelast'] = 'Restore last';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.title'] = 'Inserisci condizioni ...';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.apply'] = 'Attiva';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.cancel'] = 'Elimina';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restoredefaults'] = 'Riprista valori pedefiniti';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.saveasdefaults'] = 'Sala come predefinito';
+Sbi.locale.ln['sbi.qbe.freeconditionswindow.buttons.text.restorelast'] = 'Ripristina precedente';
 
 //===================================================================
 //QUERY CATALOGUE PANEL
 //===================================================================
-Sbi.locale.ln['sbi.qbe.cataloguepanel.title'] = 'Query Catalogue';
+Sbi.locale.ln['sbi.qbe.cataloguepanel.title'] = 'Catalogo delle query';
+
 
 //===================================================================
 //HAVING CLAUSE PANEL
 //===================================================================
-Sbi.locale.ln['sbi.qbe.havinggridpanel.title'] = 'Having clause';
+Sbi.locale.ln['sbi.qbe.havinggridpanel.title'] = 'Clausola Having';

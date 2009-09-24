@@ -60,7 +60,7 @@ public class MessageBuilder
         catch(Exception e)
         {
             message = "";
-            logger.error((new StringBuilder("Error while recovering text of the resource name ")).append(resourceName).toString(), e);
+            logger.warn((new StringBuilder("Error while recovering text of the resource name ")).append(resourceName).toString(), e);
         }
         logger.debug((new StringBuilder("OUT-message:")).append(message).toString());
         return message;
@@ -187,21 +187,21 @@ public class MessageBuilder
     {
         String bundleKey = (new StringBuilder(String.valueOf(bundle))).append("_").append(userLocale.getLanguage()).append(userLocale.getCountry()).toString();
         ResourceBundle messages = null;
-        logger.error((new StringBuilder("bundleKey ")).append(bundleKey).toString());
+        logger.debug((new StringBuilder("bundleKey ")).append(bundleKey).toString());
         try
         {
             messages = ResourceBundle.getBundle(bundle, userLocale);
         }
         catch(MissingResourceException ex)
         {
-            logger.error((new StringBuilder("Impossible to locate message boundle for locale ")).append(userLocale).toString(), ex);
+            logger.debug((new StringBuilder("Impossible to locate message boundle for locale ")).append(userLocale).toString(), ex);
         }
         if(messages == null)
         {
-            logger.error("Unreachable block (messages == null)");
+            logger.warn("Unreachable block (messages == null)");
             return null;
         }
-        logger.error((new StringBuilder("boundle locale ")).append(messages.getLocale()).toString());
+        logger.debug((new StringBuilder("boundle locale ")).append(messages.getLocale()).toString());
     
         if(messages.getKeys() != null)
         {
@@ -224,7 +224,7 @@ public class MessageBuilder
         }
         catch(Exception ex)
         {
-            logger.error((new StringBuilder("Impossible to find valid message for key: ")).append(code).toString(), ex);
+            logger.warn((new StringBuilder("Impossible to find valid message for key: ")).append(code).toString(), ex);
         }
         logger.debug((new StringBuilder("message: ")).append(message).toString());
         return message;
@@ -377,7 +377,7 @@ public class MessageBuilder
 					}
 					return false;
 				} else {
-					logger.error("Invalid configuration.");
+					logger.warn("Invalid configuration.");
 					return false;
 				}
 			}

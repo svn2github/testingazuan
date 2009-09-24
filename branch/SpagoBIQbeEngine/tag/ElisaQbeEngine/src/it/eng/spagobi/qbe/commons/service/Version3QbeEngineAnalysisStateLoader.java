@@ -86,6 +86,7 @@ public class Version3QbeEngineAnalysisStateLoader extends AbstractQbeEngineAnaly
 	private void convertQuery(JSONObject queryJSON) {
 		JSONArray havingsJSON;
 		String queryId = null;
+		JSONArray subqueriesJSON;
 		
 		logger.debug("IN");
 		
@@ -99,6 +100,14 @@ public class Version3QbeEngineAnalysisStateLoader extends AbstractQbeEngineAnaly
 			havingsJSON = new JSONArray();
 			queryJSON.put(SerializationConstants.HAVINGS, havingsJSON);
 			logger.debug( "Empty having clause filters array added");
+			
+			// convert subqueries
+			subqueriesJSON = queryJSON.getJSONArray( "subqueries" );
+			logger.debug( "Query [" + queryId + "] have [" + subqueriesJSON.length() + "] subqueries to convert");
+			for(int j = 0; j < subqueriesJSON.length(); j++) {
+				logger.debug( "Converting subquery [" + (j+1)+ "] of query [" + queryId + "] ...");
+				convertQuery( subqueriesJSON.getJSONObject(j) );
+			}
 			
 			logger.debug( "Query [" + queryId + "] converted succesfully");
 		}catch(Throwable t) {

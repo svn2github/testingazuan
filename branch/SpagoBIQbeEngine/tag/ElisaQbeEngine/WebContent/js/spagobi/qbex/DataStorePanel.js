@@ -227,7 +227,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	            showPreview:true
 	        },
 	        
-	        tbar:this.exportTBar,
+	        //tbar:this.exportTBar,
 	        bbar: this.pagingTBar
 	    });   
 	}

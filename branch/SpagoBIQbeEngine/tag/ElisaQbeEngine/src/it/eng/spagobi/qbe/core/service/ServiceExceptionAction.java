@@ -21,17 +21,17 @@
 package it.eng.spagobi.qbe.core.service;
 
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.error.EMFInternalError;
-import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
-import it.eng.spagobi.utilities.service.JSONFailure;
-
 import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
+
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
+import it.eng.spagobi.utilities.service.JSONFailure;
 
 /**
  * The Class ServiceExceptionAction.
@@ -66,9 +66,10 @@ public class ServiceExceptionAction extends AbstractQbeEngineAction {
 						String message = "Error while serializing error into JSON object";
 						throw new SpagoBIEngineServiceException(getActionName(), message, je);
 					}
+				} else {
+					logger.error("Unespected exception:" +  e);		
 				}
 			}
-			
 		}
 	}
 

@@ -22,14 +22,17 @@ package it.eng.spagobi.qbe.core.service;
 
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
+import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.service.JSONFailure;
 
@@ -46,30 +49,50 @@ public class ServiceExceptionAction extends AbstractQbeEngineAction {
    
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse)  {
 		
+		EMFErrorHandler errorHandler;
+		Collection errors ;
+		Iterator it;
 		
-		Iterator it = getErrorHandler().getErrors().iterator();
-		while(it.hasNext()) {
-			Object o = it.next();
-			if(o instanceof EMFInternalError) {
-				EMFInternalError error = (EMFInternalError)o;
-				Exception e = error.getNativeException();
-				if(e instanceof SpagoBIEngineServiceException) {
-					SpagoBIEngineServiceException serviceError = (SpagoBIEngineServiceException)e;
-					logError(serviceError);
-					
-					try {
-						writeBackToClient( new JSONFailure( serviceError ) );
-					} catch (IOException ioe) {
-						String message = "Impossible to write back the responce to the client";
-						throw new SpagoBIEngineServiceException(getActionName(), message, e);
-					} catch (JSONException je) {
-						String message = "Error while serializing error into JSON object";
-						throw new SpagoBIEngineServiceException(getActionName(), message, je);
+		logger.debug("IN");
+		try {
+		
+			errorHandler = getErrorHandler();
+			Assert.assertNotNull(errorHandler, "error handler cannot be null");
+			
+			errors = errorHandler.getErrors();
+			logger.debug("error handler contains [" + errors.size() + "] error/s");
+			
+			it = errors.iterator();
+			while(it.hasNext()) {
+				Object o = it.next();
+				logger.debug("Error type [" + o.getClass().getName()+ "]");
+				if(o instanceof EMFInternalError) {
+					EMFInternalError error = (EMFInternalError)o;
+					Exception e = error.getNativeException();
+					if(e instanceof SpagoBIEngineServiceException) {
+						SpagoBIEngineServiceException serviceError = (SpagoBIEngineServiceException)e;
+						logError(serviceError);
+						
+						try {
+							writeBackToClient( new JSONFailure( serviceError ) );
+						} catch (IOException ioe) {
+							String message = "Impossible to write back the responce to the client";
+							throw new SpagoBIEngineServiceException(getActionName(), message, e);
+						} catch (JSONException je) {
+							String message = "Error while serializing error into JSON object";
+							throw new SpagoBIEngineServiceException(getActionName(), message, je);
+						}
+					} else {
+						logger.error("Unespected exception",e);		
 					}
 				} else {
-					logger.error("Unespected exception:" +  e);		
+					logger.error(o.toString());
 				}
-			}
+			} 
+		} catch(Throwable t) {
+			logger.error("An error occurred while handling a previously thrown Exception");
+		} finally {
+			logger.debug("OUT");
 		}
 	}
 

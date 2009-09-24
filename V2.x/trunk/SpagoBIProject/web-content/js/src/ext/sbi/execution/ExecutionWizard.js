@@ -83,7 +83,7 @@ Sbi.execution.ExecutionWizard = function(config, doc) {
 	this.roleSelectionPage.maskOnRender = true;
 	
 	// propagate preferences to parameters selection page
-	var parametersSelectionPageConfig = Ext.applyIf({}, config.preferences);
+	var parametersSelectionPageConfig = Ext.applyIf({isFromCross: this.isFromCross}, config.preferences);
 	this.parametersSelectionPage =  new Sbi.execution.ParametersSelectionPage(parametersSelectionPageConfig || {}, doc);
 	this.parametersSelectionPage.maskOnRender = true;
 	

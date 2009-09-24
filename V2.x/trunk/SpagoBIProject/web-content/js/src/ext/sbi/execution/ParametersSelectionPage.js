@@ -55,6 +55,8 @@ Sbi.execution.ParametersSelectionPage = function(config, doc) {
 		//maskOnRender: false
 	}, config || {});
 	
+	this.isFromCross = config.isFromCross || false;
+
 	this.maskOnRender = c.maskOnRender;
 	
 	// variables for preferences and for shortcuts/parameters panel synchronization
@@ -242,7 +244,7 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 			}
 		}));
 		
-		if (Sbi.user.functionalities.contains('SeeViewpointsFunctionality')) {
+		if (Sbi.user.functionalities.contains('SeeViewpointsFunctionality') && !this.isFromCross) {
 			this.toolbar.addButton(new Ext.Toolbar.Button({
 				iconCls: 'icon-save'
 				, tooltip: LN('sbi.execution.parametersselection.toolbar.save')

@@ -182,22 +182,28 @@ public class QueryDetail  implements ILovDetail  {
 	
 	private String getLovResult(IEngUserProfile profile,String statement) throws Exception {
 		String resStr = null;
-		//gets connection
-		DataSourceUtilities dsUtil = new DataSourceUtilities();
-		Connection conn = dsUtil.getConnection(profile,dataSource); 
-		DataConnection dataConnection = dsUtil.getDataConnection(conn);
-		SQLCommand sqlCommand = dataConnection.createSelectCommand(statement);
-		DataResult dataResult = sqlCommand.execute();
-                ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
-		SourceBean result = scrollableDataResult.getSourceBean();
-		resStr = result.toXML(false);
-		resStr = resStr.trim();
-		if(resStr.startsWith("<?")) {
-			resStr = resStr.substring(2);
-			int indFirstTag = resStr.indexOf("<");
-			resStr = resStr.substring(indFirstTag);
+		DataConnection dataConnection = null;
+		SQLCommand sqlCommand = null;
+		DataResult dataResult = null;
+		try {
+			//gets connection
+			DataSourceUtilities dsUtil = new DataSourceUtilities();
+			Connection conn = dsUtil.getConnection(profile,dataSource); 
+			dataConnection = dsUtil.getDataConnection(conn);
+			sqlCommand = dataConnection.createSelectCommand(statement);
+			dataResult = sqlCommand.execute();
+	        ScrollableDataResult scrollableDataResult = (ScrollableDataResult) dataResult.getDataObject();
+			SourceBean result = scrollableDataResult.getSourceBean();
+			resStr = result.toXML(false);
+			resStr = resStr.trim();
+			if(resStr.startsWith("<?")) {
+				resStr = resStr.substring(2);
+				int indFirstTag = resStr.indexOf("<");
+				resStr = resStr.substring(indFirstTag);
+			}
+		} finally {
+			Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 		}
-		Utils.releaseResources(dataConnection, sqlCommand, dataResult);
 		return resStr;
 	}
    

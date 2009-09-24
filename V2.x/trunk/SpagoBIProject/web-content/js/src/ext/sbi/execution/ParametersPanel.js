@@ -288,7 +288,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			var initialWidth = containerWidth > this.formWidth ? containerWidth - this.widthDiscrepancy: this.formWidth;
 			var message = this.getHelpMessage(executionInstance, thereAreParametersToBeFilled);
 			this.messageElement = Ext.DomHelper.insertFirst(this.body, 
-					'<div style="font-size: 11px; font-family: tahoma,verdana,helvetica; margin-bottom: 10px; ' 
+					'<div style="font-size: 12px; font-family: tahoma,verdana,helvetica; margin-bottom: 14px; color: rgb(24, 18, 241);' 
 					+ (containerWidth === 0 ? '' : 'width: ' + initialWidth + 'px;') + '"'  
 					+ ' class="x-panel-tbar x-panel-tbar-noheader x-toolbar x-panel-tbar-noborder x-btn-text x-item-disabled">'
 					+ message

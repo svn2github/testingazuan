@@ -30,6 +30,7 @@ import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
+import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.dao.DAOFactory;
 
 import java.util.List;
@@ -99,9 +100,13 @@ public class UpdateBIObjectStateModule extends AbstractModule {
 	    		if (obj!= null){
 	    			String state = obj.getStateCode();
 	    			if (state!= null && state.equals("DEV")){
+	    				Domain dTemp = DAOFactory.getDomainDAO().loadDomainByCodeAndValue("STATE", "TEST");
 	    				obj.setStateCode("TEST");
+	    				obj.setStateID(dTemp.getValueId());
 	    			}else if (state!= null && state.equals("TEST")){
+	    				Domain dTemp = DAOFactory.getDomainDAO().loadDomainByCodeAndValue("STATE", "REL");
 	    				obj.setStateCode("REL");
+	    				obj.setStateID(dTemp.getValueId());
 	    			}
 	    			DAOFactory.getBIObjectDAO().modifyBIObject(obj);
 	    		}
@@ -133,9 +138,13 @@ public class UpdateBIObjectStateModule extends AbstractModule {
 	    		if (obj!= null){
 	    			String state = obj.getStateCode();
 	    			if (state!= null && state.equals("REL")){
+	    				Domain dTemp = DAOFactory.getDomainDAO().loadDomainByCodeAndValue("STATE", "TEST");
 	    				obj.setStateCode("TEST");
+	    				obj.setStateID(dTemp.getValueId());
 	    			}else if (state!= null && state.equals("TEST")){
+	    				Domain dTemp = DAOFactory.getDomainDAO().loadDomainByCodeAndValue("STATE", "DEV");
 	    				obj.setStateCode("DEV");
+	    				obj.setStateID(dTemp.getValueId());
 	    			}
 	    			DAOFactory.getBIObjectDAO().modifyBIObject(obj);
 	    		}

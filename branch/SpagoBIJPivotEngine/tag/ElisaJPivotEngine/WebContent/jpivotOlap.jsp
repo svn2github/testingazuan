@@ -110,46 +110,205 @@ try {
   %>
   <jsp:forward page="/index.jsp"/>
 </c:if>
+<%
+	Boolean buttonCubeVisibleB = true;
+	Boolean buttonMDXVisibleB = true;
+	Boolean buttonOrderVisibleB = true;
+	Boolean buttonFatherMembVisibleB = true;
+	Boolean buttonHideSpansVisibleB = true;
+	Boolean buttonShowPropertiesVisibleB = true;
+	Boolean buttonHideEmptyVisibleB = true;
+	Boolean buttonShiftAxisVisibleB = true;
+	Boolean buttonDrillMemberVisibleB = true;
+	Boolean buttonDrillPositionVisibleB = true;
+	Boolean buttonDrillReplaceVisibleB = true;
+	Boolean buttonDrillThroughVisibleB = true;
+	Boolean buttonShowChartVisibleB = true;
+	Boolean buttonConfigureChartVisibleB = true;
+	Boolean buttonConfigurePrintVisibleB = true;
+	Boolean buttonFlushCacheVisibleB = true;
+	Boolean buttonSaveAnalysisVisibleB = true;
 
+	if(session.getAttribute("buttonCubeVisibleB") != null ) {
+		if (session.getAttribute("buttonCubeVisibleB").equals(new Boolean(false))){
+			buttonCubeVisibleB = false;
+		}
+		session.removeAttribute("buttonCubeVisibleB");
+	}
+	if(session.getAttribute("buttonMDXVisibleB") != null ){
+		if(session.getAttribute("buttonMDXVisibleB").equals(new Boolean(false))){
+			buttonMDXVisibleB = false;
+		}
+		session.removeAttribute("buttonMDXVisibleB");
+	}
+	if(session.getAttribute("buttonOrderVisibleB") != null ){
+		if( session.getAttribute("buttonOrderVisibleB").equals(new Boolean(false))){
+			buttonOrderVisibleB = false;
+		}
+		session.removeAttribute("buttonOrderVisibleB");
+	}
+	if(session.getAttribute("buttonFatherMembVisibleB") != null ){
+		if( session.getAttribute("buttonFatherMembVisibleB").equals(new Boolean(false))){
+			buttonFatherMembVisibleB = false;
+		}
+		session.removeAttribute("buttonFatherMembVisibleB");
+	}
+	if(session.getAttribute("buttonHideSpansVisibleB") != null ){
+		if( session.getAttribute("buttonHideSpansVisibleB").equals(new Boolean(false))){
+			buttonHideSpansVisibleB = false;
+		}
+		session.removeAttribute("buttonHideSpansVisibleB");
+	}
+	if(session.getAttribute("buttonShowPropertiesVisibleB") != null ){
+		if( session.getAttribute("buttonShowPropertiesVisibleB").equals(new Boolean(false))){
+			buttonShowPropertiesVisibleB = false;
+		}
+		session.removeAttribute("buttonShowPropertiesVisibleB");
+	}
+	if(session.getAttribute("buttonHideEmptyVisibleB") != null ){
+		if( session.getAttribute("buttonHideEmptyVisibleB").equals(new Boolean(false))){
+			buttonHideEmptyVisibleB = false;
+		}
+		session.removeAttribute("buttonHideEmptyVisibleB");
+	}
+	if(session.getAttribute("buttonShiftAxisVisibleB") != null ){
+		if( session.getAttribute("buttonShiftAxisVisibleB").equals(new Boolean(false))){
+			buttonShiftAxisVisibleB = false;
+		}
+		session.removeAttribute("buttonShiftAxisVisibleB");
+	}
+	if(session.getAttribute("buttonDrillMemberVisibleB") != null ){
+		if( session.getAttribute("buttonDrillMemberVisibleB").equals(new Boolean(false))){
+			buttonDrillMemberVisibleB = false;
+		}
+		session.removeAttribute("buttonDrillMemberVisibleB");
+	}
+	if(session.getAttribute("buttonDrillPositionVisibleB") != null ){
+		if( session.getAttribute("buttonDrillPositionVisibleB").equals(new Boolean(false))){
+			buttonDrillPositionVisibleB = false;
+		}
+		session.removeAttribute("buttonDrillPositionVisibleB");
+	}
+	if(session.getAttribute("buttonDrillReplaceVisibleB") != null ){
+		if( session.getAttribute("buttonDrillReplaceVisibleB").equals(new Boolean(false))){
+			buttonDrillReplaceVisibleB = false;
+		}
+		session.removeAttribute("buttonDrillReplaceVisibleB");
+	}
+	if(session.getAttribute("buttonDrillThroughVisibleB") != null ){
+		if( session.getAttribute("buttonDrillThroughVisibleB").equals(new Boolean(false))){
+			buttonDrillThroughVisibleB = false;
+		}
+		session.removeAttribute("buttonDrillThroughVisibleB");
+	}
+	if(session.getAttribute("buttonShowChartVisibleB") != null ){
+		if(session.getAttribute("buttonShowChartVisibleB").equals(new Boolean(false))){
+			buttonShowChartVisibleB = false;
+		}
+		session.removeAttribute("buttonShowChartVisibleB");
+	}
+	if(session.getAttribute("buttonConfigureChartVisibleB") != null ){
+		if( session.getAttribute("buttonConfigureChartVisibleB").equals(new Boolean(false))){
+			buttonConfigureChartVisibleB = false;
+		}
+		session.removeAttribute("buttonConfigureChartVisibleB");
+	}
+	if(session.getAttribute("buttonConfigurePrintVisibleB") != null ){
+		if( session.getAttribute("buttonConfigurePrintVisibleB").equals(new Boolean(false))){
+			buttonConfigurePrintVisibleB = false;
+		}
+		session.removeAttribute("buttonConfigurePrintVisibleB");
+	}
+	if(session.getAttribute("buttonFlushCacheVisibleB") != null ){
+		if( session.getAttribute("buttonFlushCacheVisibleB").equals(new Boolean(false))){
+			buttonFlushCacheVisibleB = false;
+		}
+		session.removeAttribute("buttonFlushCacheVisibleB");
+	}
+	if(session.getAttribute("buttonSaveAnalysisVisibleB") != null ){
+		if( session.getAttribute("buttonSaveAnalysisVisibleB").equals(new Boolean(false))){
+			buttonSaveAnalysisVisibleB = false;
+		}
+		session.removeAttribute("buttonSaveAnalysisVisibleB");
+	}
+	
+%>
 <%-- define table, navigator and forms --%>
 <jp:table id="table01" query="#{query01}"/>
 <jp:navigator id="navi01" query="#{query01}" visible="false"/>
+
 <wcf:form id="mdxedit01" xmlUri="/WEB-INF/jpivot/table/mdxedit.xml" model="#{query01}" visible="false"/>
 <wcf:form id="sortform01" xmlUri="/WEB-INF/jpivot/table/sortform.xml" model="#{table01}" visible="false"/>
 <wcf:form id="saveAnalysis01" xmlUri="/WEB-INF/jpivot/table/saveAnalysisTable.xml" model="#{save01}" visible="false"/>
-
 <jp:print id="print01"/>
 <wcf:form id="printform01" xmlUri="/WEB-INF/jpivot/print/printpropertiesform.xml" model="#{print01}" visible="false"/>
-
 <jp:chart id="chart01" query="#{query01}" visible="false"/>
 <wcf:form id="chartform01" xmlUri="/WEB-INF/jpivot/chart/chartpropertiesform.xml" model="#{chart01}" visible="false"/>
+
 <wcf:table id="query01.drillthroughtable" visible="false" selmode="none" editable="true"/>
 
 <h2><c:out value="${title01}"/></h2>
 
 <%-- define a toolbar --%>
 <wcf:toolbar id="toolbar01" bundle="com.tonbeller.jpivot.toolbar.resources">
-  <wcf:scriptbutton id="cubeNaviButton" tooltip="toolb.cube" img="cube" model="#{navi01.visible}"/>
-  <wcf:scriptbutton id="mdxEditButton" tooltip="toolb.mdx.edit" img="mdx-edit" model="#{mdxedit01.visible}"/>
-  <wcf:scriptbutton id="sortConfigButton" tooltip="toolb.table.config" img="sort-asc" model="#{sortform01.visible}"/>
+  <% if(buttonCubeVisibleB){%>
+  	<wcf:scriptbutton id="cubeNaviButton" tooltip="toolb.cube" img="cube" model="#{navi01.visible}"/>
+  <% } %>
+  
+  <% if(buttonMDXVisibleB){%>
+	<wcf:scriptbutton id="mdxEditButton" tooltip="toolb.mdx.edit" img="mdx-edit" model="#{mdxedit01.visible}"/>
+  <% } %>
+
+  <% if(buttonOrderVisibleB){%>
+  	<wcf:scriptbutton id="sortConfigButton" tooltip="toolb.table.config" img="sort-asc" model="#{sortform01.visible}"/>
+  <% } %>
+  
   <%
   if (profile.getFunctionalities().contains("SaveSubobjectFunctionality")) {
   %>
-  <wcf:scriptbutton id="saveAnalysis" tooltip="toolb.save" img="save" model="#{saveAnalysis01.visible}"/>
+	  <% if(buttonSaveAnalysisVisibleB){%>
+	  <wcf:scriptbutton id="saveAnalysis" tooltip="toolb.save" img="save" model="#{saveAnalysis01.visible}"/>
+	  <% } %>
   <%
   }
   %>
   <wcf:separator/>
-  <wcf:scriptbutton id="levelStyle" tooltip="toolb.level.style" img="level-style" model="#{table01.extensions.axisStyle.levelStyle}"/>
-  <wcf:scriptbutton id="hideSpans" tooltip="toolb.hide.spans" img="hide-spans" model="#{table01.extensions.axisStyle.hideSpans}"/>
-  <wcf:scriptbutton id="propertiesButton" tooltip="toolb.properties"  img="properties" model="#{table01.rowAxisBuilder.axisConfig.propertyConfig.showProperties}"/>
-  <wcf:scriptbutton id="nonEmpty" tooltip="toolb.non.empty" img="non-empty" model="#{table01.extensions.nonEmpty.buttonPressed}"/>
-  <wcf:scriptbutton id="swapAxes" tooltip="toolb.swap.axes"  img="swap-axes" model="#{table01.extensions.swapAxes.buttonPressed}"/>
+  <% if(buttonFatherMembVisibleB){%>
+  	<wcf:scriptbutton id="levelStyle" tooltip="toolb.level.style" img="level-style" model="#{table01.extensions.axisStyle.levelStyle}"/>
+  <% } %>
+  
+  <% if(buttonHideSpansVisibleB){%>
+  	<wcf:scriptbutton id="hideSpans" tooltip="toolb.hide.spans" img="hide-spans" model="#{table01.extensions.axisStyle.hideSpans}"/>
+  <% } %>
+  
+  <% if(buttonShowPropertiesVisibleB){%>
+  	<wcf:scriptbutton id="propertiesButton" tooltip="toolb.properties"  img="properties" model="#{table01.rowAxisBuilder.axisConfig.propertyConfig.showProperties}"/>
+  <% } %>
+  
+  <% if(buttonHideEmptyVisibleB){%>
+  	<wcf:scriptbutton id="nonEmpty" tooltip="toolb.non.empty" img="non-empty" model="#{table01.extensions.nonEmpty.buttonPressed}"/>
+  <% } %>
+  
+  <% if(buttonShiftAxisVisibleB){%>
+  	<wcf:scriptbutton id="swapAxes" tooltip="toolb.swap.axes"  img="swap-axes" model="#{table01.extensions.swapAxes.buttonPressed}"/>
+  <% } %>
+  
   <wcf:separator/>
-  <wcf:scriptbutton model="#{table01.extensions.drillMember.enabled}"	 tooltip="toolb.navi.member" radioGroup="navi" id="drillMember"   img="navi-member"/>
-  <wcf:scriptbutton model="#{table01.extensions.drillPosition.enabled}" tooltip="toolb.navi.position" radioGroup="navi" id="drillPosition" img="navi-position"/>
-  <wcf:scriptbutton model="#{table01.extensions.drillReplace.enabled}"	 tooltip="toolb.navi.replace" radioGroup="navi" id="drillReplace"  img="navi-replace"/>
-  <wcf:scriptbutton model="#{table01.extensions.drillThrough.enabled}"  tooltip="toolb.navi.drillthru" id="drillThrough01"  img="navi-through"/>
+  <% if(buttonDrillMemberVisibleB){%>
+  	<wcf:scriptbutton model="#{table01.extensions.drillMember.enabled}"	 tooltip="toolb.navi.member" radioGroup="navi" id="drillMember"   img="navi-member"/>
+  <% } %>
+  
+  <% if(buttonDrillPositionVisibleB){%>
+  	<wcf:scriptbutton model="#{table01.extensions.drillPosition.enabled}" tooltip="toolb.navi.position" radioGroup="navi" id="drillPosition" img="navi-position"/>
+  <% } %>
+  
+  <% if(buttonDrillReplaceVisibleB){%>
+  	<wcf:scriptbutton model="#{table01.extensions.drillReplace.enabled}"	 tooltip="toolb.navi.replace" radioGroup="navi" id="drillReplace"  img="navi-replace"/>
+  <% } %>
+  
+  <% if(buttonDrillThroughVisibleB){%>
+  	<wcf:scriptbutton model="#{table01.extensions.drillThrough.enabled}"  tooltip="toolb.navi.drillthru" id="drillThrough01"  img="navi-through"/>
+  <% } %>
   <%
   if (session.getAttribute(SpagoBICrossNavigationConfig.ID) != null) {
 	%>
@@ -158,16 +317,24 @@ try {
   }
   %>
   <wcf:separator/>
-  <wcf:scriptbutton id="chartButton01" tooltip="toolb.chart" img="chart" model="#{chart01.visible}"/>
-  <wcf:scriptbutton id="chartPropertiesButton01" tooltip="toolb.chart.config" img="chart-config" model="#{chartform01.visible}"/>
+   <% if(buttonShowChartVisibleB){%>
+  		<wcf:scriptbutton id="chartButton01" tooltip="toolb.chart" img="chart" model="#{chart01.visible}"/>
+   <% } %>
+   <% if(buttonConfigureChartVisibleB){%>
+  		<wcf:scriptbutton id="chartPropertiesButton01" tooltip="toolb.chart.config" img="chart-config" model="#{chartform01.visible}"/>
+   <% } %>
   <wcf:separator/>
-  <wcf:scriptbutton id="printPropertiesButton01" tooltip="toolb.print.config" img="print-config" model="#{printform01.visible}"/>
+   <% if(buttonConfigurePrintVisibleB){%>
+  		<wcf:scriptbutton id="printPropertiesButton01" tooltip="toolb.print.config" img="print-config" model="#{printform01.visible}"/>
+   <% } %>
   <%--
   <wcf:imgbutton id="printpdf" tooltip="toolb.print" img="print" href="./Print?cube=01&type=1"/>
   <wcf:imgbutton id="printxls" tooltip="toolb.excel" img="excel" href="./Print?cube=01&type=0"/>
   --%>
   <wcf:separator/>
-  <wcf:imgbutton id="flushCache" tooltip="toolb.cache.flush" img="reload" href="./FlushCacheServlet"/>
+   <% if(buttonFlushCacheVisibleB){%>
+  	<wcf:imgbutton id="flushCache" tooltip="toolb.cache.flush" img="reload" href="./FlushCacheServlet"/>
+   <% } %>
 </wcf:toolbar>
 
 <%-- render toolbar --%>
@@ -252,7 +419,9 @@ if (message != null && !message.trim().equals("")) {
 </c:if>
 
 <%-- sort properties --%>
+<c:if test="${sortform01.visible}">
 <wcf:render ref="sortform01" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>
+</c:if>
 
 <%-- chart properties --%>
 <wcf:render ref="chartform01" xslUri="/WEB-INF/wcf/wcf.xsl" xslCache="true"/>

@@ -94,6 +94,13 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
         	this.notifyDropFromSelectGrid(ddSource, e, data, rowIndex);
       	} else if(ddSource.grid &&  ddSource.grid.type === 'filtergrid') {
         	this.notifyDropFromFilterGrid(ddSource, e, data);
+      	} else if(ddSource.grid &&  ddSource.grid.type === 'documentparametersgrid') {
+			Ext.Msg.show({
+				   title:'Drop target not allowed',
+				   msg: 'Document parameters cannot be dropped here!',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.WARNING
+			});
       	} else {
         	alert('Source object: unknown');
       	}        

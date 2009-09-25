@@ -530,14 +530,15 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	
 	, initEastRegionPanel: function(c) {
 		
-		this.queryCataloguePanel = new Sbi.qbe.QueryCataloguePanel({margins: '0 5 0 0'});
+		this.queryCataloguePanel = new Sbi.qbe.QueryCataloguePanel({margins: '0 5 0 0', region: 'center'});
+		this.documentParametersGridPanel = new Sbi.qbe.DocumentParametersGridPanel({margins: '0 0 0 0', region: 'south'});
 		
 		this.eastRegionPanel = new Ext.Panel({
 	        title: LN('sbi.qbe.queryeditor.eastregion.title'),
 	        region:'east',
 	        width:250,
 	        margins: '5 5 5 5',
-	        layout:'fit',
+	        layout:'border',
 	        collapsible: true,
 	        //collapseMode: 'mini',
 	        collapseFirst: false,
@@ -570,7 +571,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			      scope: this
 			   }
 		    ],
-	        items: [this.queryCataloguePanel]
+	        items: [this.queryCataloguePanel, this.documentParametersGridPanel]
 	    });
 		
 		

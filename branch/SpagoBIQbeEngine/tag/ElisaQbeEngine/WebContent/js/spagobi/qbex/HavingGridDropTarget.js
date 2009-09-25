@@ -100,6 +100,8 @@ Ext.extend(Sbi.qbe.HavingGridDropTarget, Ext.dd.DropTarget, {
 	    	this.notifyDropFromSelectGrid(ddSource, e, data, rowIndex, colIndex);
 	  	} else if(ddSource.grid &&  ddSource.grid.type === 'havinggrid') {
 	    	this.notifyDropFromHavingGrid(ddSource, e, data, rowIndex, colIndex);
+      	} else if(ddSource.grid &&  ddSource.grid.type === 'documentparametersgrid') {
+      		this.notifyDropFromDocumentParametersGrid(ddSource, e, data, rowIndex, colIndex);
 	  	} else {
 	    	alert('Source object: unknown');
 	  	}        
@@ -143,6 +145,56 @@ Ext.extend(Sbi.qbe.HavingGridDropTarget, Ext.dd.DropTarget, {
 		}
 	}
 	
+	//=====================================================================================
+	// from DOCUMENT PARAMETERS GRID
+	// ====================================================================================
+	, notifyDropFromDocumentParametersGrid: function(ddSource, e, data, rowIndex, colIndex) {
+
+		var filter;
+		var node;
+		var dropColDataIndex;
+		
+		node = ddSource.dragData.node; 
+		if (colIndex) {
+			dropColDataIndex = this.targetGrid.getColumnModel().getDataIndex( colIndex );
+		}
+	
+		var rows = ddSource.dragData.selections;  
+		if(rows.length > 1 ) {
+			Ext.Msg.show({
+				   title:'Wrong dragged source',
+				   msg: 'Cannot drop a collection of parameters',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.ERROR
+			});
+			return;
+		}
+		
+		if (dropColDataIndex === 'rightOperandDescription') {
+			filter = {
+				rightOperandValue: 'P{' + rows[0].data.id + '}'
+				, rightOperandDescription: 'P{' + rows[0].data.id + '}'
+				, rightOperandType: 'Static Value'
+				, rightOperandAggregator: 'NONE'
+			};
+			this.targetPanel.modifyFilter(filter, rowIndex);
+		} else if (dropColDataIndex === 'leftOperandDescription') {
+			filter = {
+				leftOperandValue: 'P{' + rows[0].data.id + '}'
+				, leftOperandDescription: 'P{' + rows[0].data.id + '}'
+				, leftOperandType: 'Static Value'
+				, leftOperandAggregator: 'NONE'
+			};
+			this.targetPanel.modifyFilter(filter, rowIndex);
+		} else {
+			Ext.Msg.show({
+				   title:'Drop target not allowed',
+				   msg: 'Parameters can be dropped only on the "operand" columns of an existing filter',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.WARNING
+			});
+		}
+	}
 	
 	// =====================================================================================
 	// from TREE

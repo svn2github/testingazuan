@@ -113,6 +113,9 @@
 	
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/FreeConditionsWindow.js"/>
 	<script type="text/javascript" src='${src}'/></script>
+	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/DocumentParametersGridPanel.js"/>
+	<script type="text/javascript" src='${src}'/></script>
 	<!-- New OO GUI -->
 	
 	
@@ -161,6 +164,11 @@
 
 	    Sbi.config.serviceRegistry = new Sbi.service.ServiceRegistry({
 	    	baseUrl: url
+	        , baseParams: params
+	    });
+
+	    Sbi.config.remoteServiceRegistry = new Sbi.service.ServiceRegistry({
+	    	baseUrl: 'http://localhost:8080/SpagoBI/servlet/AdapterHTTP'
 	        , baseParams: params
 	    });
 

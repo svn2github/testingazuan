@@ -168,7 +168,7 @@
 	    });
 
 	    Sbi.config.remoteServiceRegistry = new Sbi.service.ServiceRegistry({
-	    	baseUrl: 'http://localhost:8080/SpagoBI/servlet/AdapterHTTP'
+	    	baseUrl: '<%= request.getParameter(SpagoBIConstants.SBI_HOST) + request.getParameter(SpagoBIConstants.SBI_CONTEXT) %>'
 	        , baseParams: params
 	    });
 

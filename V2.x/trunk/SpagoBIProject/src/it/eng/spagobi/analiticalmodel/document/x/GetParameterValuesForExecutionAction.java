@@ -62,7 +62,6 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
 import it.eng.spagobi.chiron.serializer.JSONStoreFeedTransformer;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
-import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.exceptions.SpagoBIServiceException;
@@ -295,7 +294,7 @@ public class GetParameterValuesForExecutionAction  extends AbstractSpagoBIAction
 					} else {
 						String value = (String) row.getAttribute(valueColumn);
 						String description = (String) row.getAttribute(descriptionColumn);					
-						valueJSON.put("value", GeneralUtilities.substituteQuotesIntoString(value));
+						valueJSON.put("value", value);
 						valueJSON.put("label", description);
 						valueJSON.put("description", description);	
 					}					

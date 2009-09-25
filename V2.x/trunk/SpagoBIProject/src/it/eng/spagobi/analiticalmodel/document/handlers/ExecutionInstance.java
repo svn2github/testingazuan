@@ -40,6 +40,7 @@ import it.eng.spagobi.behaviouralmodel.lov.bo.ILovDetail;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovDetailFactory;
 import it.eng.spagobi.behaviouralmodel.lov.bo.LovResultHandler;
 import it.eng.spagobi.behaviouralmodel.lov.bo.ModalitiesValue;
+import it.eng.spagobi.behaviouralmodel.lov.bo.QueryDetail;
 import it.eng.spagobi.commons.bo.Domain;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
@@ -173,6 +174,7 @@ public class ExecutionInstance {
 		BIObjectParameter aBIObjectParameter = null;
 		while (it.hasNext()){
 			aBIObjectParameter = (BIObjectParameter) it.next();
+			logger.debug("Parameter Label:"+aBIObjectParameter.getLabel());
 			// check if the script return an unique value and preload it
 			Parameter par = aBIObjectParameter.getParameter();
 			if(par != null) {
@@ -182,16 +184,18 @@ public class ExecutionInstance {
 						String lovResult = aBIObjectParameter.getLovResult();
 						if(lovResult == null) {
 							String userID=(String)((UserProfile)this.userProfile).getUserId();
-							logger.info("userID="+userID);
 							CacheInterface cache=CacheSingleton.getInstance();
 							String lovprov = paruse.getLovProvider();
+							logger.info("userID="+userID);
+							logger.info("lovprov="+lovprov);
 							ILovDetail lovDetail = LovDetailFactory.getLovFromXML(lovprov);
-							if (lovprov!=null && cache.isPresent(userID+lovprov)){
+							if (lovprov!=null && cache.isPresent(userID+lovprov) && (lovDetail instanceof QueryDetail)){
 								// lov provider is present, so read the DATA in cache
 								lovResult= (String)cache.get(userID+lovprov);
-								logger.info("Use cache for read the LOV DATA");
+								logger.info("Use cache for read the LOV DATA:"+lovResult);
 							}else {
 								lovResult = lovDetail.getLovResult(this.userProfile);
+								logger.info("Read the LOV DATA:"+lovResult);
 								// insert the data in cache
 								if (lovprov!=null && lovResult!=null) cache.put(userID+lovprov, lovResult);								
 							}
@@ -586,7 +590,7 @@ public class ExecutionInstance {
 		List checks = biparameter.getParameter().getChecks();
 		String label = biparameter.getLabel();
 		if (checks == null || checks.size() == 0) {
-			logger.debug("No checks associated for biparameter [" + label + "].");
+			logger.debug("OUT. No checks associated for biparameter [" + label + "].");
 			return toReturn;
 		} else {
 			Iterator it = checks.iterator();

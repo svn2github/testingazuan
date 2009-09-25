@@ -81,6 +81,7 @@ public class QueryDetail  implements ILovDetail  {
 	 * @throws SourceBeanException the source bean exception
 	 */
 	public void loadFromXML (String dataDefinition) throws SourceBeanException {
+		logger.debug("IN");
 		dataDefinition.trim();
 		if(dataDefinition.indexOf("<STMT>")!=-1) {
 			int startInd = dataDefinition.indexOf("<STMT>");
@@ -137,6 +138,7 @@ public class QueryDetail  implements ILovDetail  {
 			invisColNames = Arrays.asList(invisColArr);
 		}
 		setInvisibleColumnNames(invisColNames);
+		logger.debug("OUT");
 	}
 	
 	/**
@@ -167,9 +169,11 @@ public class QueryDetail  implements ILovDetail  {
 	 * @throws Exception the exception
 	 */
 	public String getLovResult(IEngUserProfile profile) throws Exception {
+		logger.debug("IN");
 		String statement = getQueryDefinition();
 		statement = StringUtilities.substituteProfileAttributesInString(statement, profile);
 		String result = getLovResult(profile,statement);
+		logger.debug("OUT.result="+result);
 		return result;
 	}
 	

@@ -167,7 +167,7 @@ public class UserUtilities {
 	    }
     }
     public static IEngUserProfile getUserProfile(String userId) throws Exception {
-    	logger.debug("IN");
+    	logger.debug("IN.userId="+userId);
 	
 	    ISecurityServiceSupplier supplier = SecurityServiceSupplierFactory.createISecurityServiceSupplier();
 	    try {

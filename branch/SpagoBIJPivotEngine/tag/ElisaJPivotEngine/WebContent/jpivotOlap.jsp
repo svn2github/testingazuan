@@ -50,6 +50,7 @@ The following directive catches exceptions thrown by jsps, must be commented in 
     
 
 
+<%@page import="it.eng.spagobi.jpivotaddins.bean.ToolbarBean"%>
 <html>
 <head>
   <title>JPivot Page</title>
@@ -111,125 +112,10 @@ try {
   <jsp:forward page="/index.jsp"/>
 </c:if>
 <%
-	Boolean buttonCubeVisibleB = true;
-	Boolean buttonMDXVisibleB = true;
-	Boolean buttonOrderVisibleB = true;
-	Boolean buttonFatherMembVisibleB = true;
-	Boolean buttonHideSpansVisibleB = true;
-	Boolean buttonShowPropertiesVisibleB = true;
-	Boolean buttonHideEmptyVisibleB = true;
-	Boolean buttonShiftAxisVisibleB = true;
-	Boolean buttonDrillMemberVisibleB = true;
-	Boolean buttonDrillPositionVisibleB = true;
-	Boolean buttonDrillReplaceVisibleB = true;
-	Boolean buttonDrillThroughVisibleB = true;
-	Boolean buttonShowChartVisibleB = true;
-	Boolean buttonConfigureChartVisibleB = true;
-	Boolean buttonConfigurePrintVisibleB = true;
-	Boolean buttonFlushCacheVisibleB = true;
-	Boolean buttonSaveAnalysisVisibleB = true;
-
-	if(session.getAttribute("buttonCubeVisibleB") != null ) {
-		if (session.getAttribute("buttonCubeVisibleB").equals(new Boolean(false))){
-			buttonCubeVisibleB = false;
-		}
-		session.removeAttribute("buttonCubeVisibleB");
-	}
-	if(session.getAttribute("buttonMDXVisibleB") != null ){
-		if(session.getAttribute("buttonMDXVisibleB").equals(new Boolean(false))){
-			buttonMDXVisibleB = false;
-		}
-		session.removeAttribute("buttonMDXVisibleB");
-	}
-	if(session.getAttribute("buttonOrderVisibleB") != null ){
-		if( session.getAttribute("buttonOrderVisibleB").equals(new Boolean(false))){
-			buttonOrderVisibleB = false;
-		}
-		session.removeAttribute("buttonOrderVisibleB");
-	}
-	if(session.getAttribute("buttonFatherMembVisibleB") != null ){
-		if( session.getAttribute("buttonFatherMembVisibleB").equals(new Boolean(false))){
-			buttonFatherMembVisibleB = false;
-		}
-		session.removeAttribute("buttonFatherMembVisibleB");
-	}
-	if(session.getAttribute("buttonHideSpansVisibleB") != null ){
-		if( session.getAttribute("buttonHideSpansVisibleB").equals(new Boolean(false))){
-			buttonHideSpansVisibleB = false;
-		}
-		session.removeAttribute("buttonHideSpansVisibleB");
-	}
-	if(session.getAttribute("buttonShowPropertiesVisibleB") != null ){
-		if( session.getAttribute("buttonShowPropertiesVisibleB").equals(new Boolean(false))){
-			buttonShowPropertiesVisibleB = false;
-		}
-		session.removeAttribute("buttonShowPropertiesVisibleB");
-	}
-	if(session.getAttribute("buttonHideEmptyVisibleB") != null ){
-		if( session.getAttribute("buttonHideEmptyVisibleB").equals(new Boolean(false))){
-			buttonHideEmptyVisibleB = false;
-		}
-		session.removeAttribute("buttonHideEmptyVisibleB");
-	}
-	if(session.getAttribute("buttonShiftAxisVisibleB") != null ){
-		if( session.getAttribute("buttonShiftAxisVisibleB").equals(new Boolean(false))){
-			buttonShiftAxisVisibleB = false;
-		}
-		session.removeAttribute("buttonShiftAxisVisibleB");
-	}
-	if(session.getAttribute("buttonDrillMemberVisibleB") != null ){
-		if( session.getAttribute("buttonDrillMemberVisibleB").equals(new Boolean(false))){
-			buttonDrillMemberVisibleB = false;
-		}
-		session.removeAttribute("buttonDrillMemberVisibleB");
-	}
-	if(session.getAttribute("buttonDrillPositionVisibleB") != null ){
-		if( session.getAttribute("buttonDrillPositionVisibleB").equals(new Boolean(false))){
-			buttonDrillPositionVisibleB = false;
-		}
-		session.removeAttribute("buttonDrillPositionVisibleB");
-	}
-	if(session.getAttribute("buttonDrillReplaceVisibleB") != null ){
-		if( session.getAttribute("buttonDrillReplaceVisibleB").equals(new Boolean(false))){
-			buttonDrillReplaceVisibleB = false;
-		}
-		session.removeAttribute("buttonDrillReplaceVisibleB");
-	}
-	if(session.getAttribute("buttonDrillThroughVisibleB") != null ){
-		if( session.getAttribute("buttonDrillThroughVisibleB").equals(new Boolean(false))){
-			buttonDrillThroughVisibleB = false;
-		}
-		session.removeAttribute("buttonDrillThroughVisibleB");
-	}
-	if(session.getAttribute("buttonShowChartVisibleB") != null ){
-		if(session.getAttribute("buttonShowChartVisibleB").equals(new Boolean(false))){
-			buttonShowChartVisibleB = false;
-		}
-		session.removeAttribute("buttonShowChartVisibleB");
-	}
-	if(session.getAttribute("buttonConfigureChartVisibleB") != null ){
-		if( session.getAttribute("buttonConfigureChartVisibleB").equals(new Boolean(false))){
-			buttonConfigureChartVisibleB = false;
-		}
-		session.removeAttribute("buttonConfigureChartVisibleB");
-	}
-	if(session.getAttribute("buttonConfigurePrintVisibleB") != null ){
-		if( session.getAttribute("buttonConfigurePrintVisibleB").equals(new Boolean(false))){
-			buttonConfigurePrintVisibleB = false;
-		}
-		session.removeAttribute("buttonConfigurePrintVisibleB");
-	}
-	if(session.getAttribute("buttonFlushCacheVisibleB") != null ){
-		if( session.getAttribute("buttonFlushCacheVisibleB").equals(new Boolean(false))){
-			buttonFlushCacheVisibleB = false;
-		}
-		session.removeAttribute("buttonFlushCacheVisibleB");
-	}
-	if(session.getAttribute("buttonSaveAnalysisVisibleB") != null ){
-		if( session.getAttribute("buttonSaveAnalysisVisibleB").equals(new Boolean(false))){
-			buttonSaveAnalysisVisibleB = false;
-		}
-		session.removeAttribute("buttonSaveAnalysisVisibleB");
+	ToolbarBean tb= new ToolbarBean();
+	if(session.getAttribute("toolbarButtonsVisibility")!=null){
+		tb =(ToolbarBean) session.getAttribute("toolbarButtonsVisibility");
+		session.removeAttribute("toolbarButtonsVisibility");
 	}
 	
 %>
@@ -251,62 +137,62 @@ try {
 
 <%-- define a toolbar --%>
 <wcf:toolbar id="toolbar01" bundle="com.tonbeller.jpivot.toolbar.resources">
-  <% if(buttonCubeVisibleB){%>
+  <% if(tb.getButtonCubeVisibleB()){%>
   	<wcf:scriptbutton id="cubeNaviButton" tooltip="toolb.cube" img="cube" model="#{navi01.visible}"/>
   <% } %>
   
-  <% if(buttonMDXVisibleB){%>
+  <% if(tb.getButtonMDXVisibleB()){%>
 	<wcf:scriptbutton id="mdxEditButton" tooltip="toolb.mdx.edit" img="mdx-edit" model="#{mdxedit01.visible}"/>
   <% } %>
 
-  <% if(buttonOrderVisibleB){%>
+  <% if(tb.getButtonOrderVisibleB()){%>
   	<wcf:scriptbutton id="sortConfigButton" tooltip="toolb.table.config" img="sort-asc" model="#{sortform01.visible}"/>
   <% } %>
   
   <%
   if (profile.getFunctionalities().contains("SaveSubobjectFunctionality")) {
   %>
-	  <% if(buttonSaveAnalysisVisibleB){%>
+	  <% if(tb.getButtonSaveAnalysisVisibleB()){%>
 	  <wcf:scriptbutton id="saveAnalysis" tooltip="toolb.save" img="save" model="#{saveAnalysis01.visible}"/>
 	  <% } %>
   <%
   }
   %>
   <wcf:separator/>
-  <% if(buttonFatherMembVisibleB){%>
+  <% if(tb.getButtonFatherMembVisibleB()){%>
   	<wcf:scriptbutton id="levelStyle" tooltip="toolb.level.style" img="level-style" model="#{table01.extensions.axisStyle.levelStyle}"/>
   <% } %>
   
-  <% if(buttonHideSpansVisibleB){%>
+  <% if(tb.getButtonHideSpansVisibleB()){%>
   	<wcf:scriptbutton id="hideSpans" tooltip="toolb.hide.spans" img="hide-spans" model="#{table01.extensions.axisStyle.hideSpans}"/>
   <% } %>
   
-  <% if(buttonShowPropertiesVisibleB){%>
+  <% if(tb.getButtonShowPropertiesVisibleB()){%>
   	<wcf:scriptbutton id="propertiesButton" tooltip="toolb.properties"  img="properties" model="#{table01.rowAxisBuilder.axisConfig.propertyConfig.showProperties}"/>
   <% } %>
   
-  <% if(buttonHideEmptyVisibleB){%>
+  <% if(tb.getButtonHideEmptyVisibleB()){%>
   	<wcf:scriptbutton id="nonEmpty" tooltip="toolb.non.empty" img="non-empty" model="#{table01.extensions.nonEmpty.buttonPressed}"/>
   <% } %>
   
-  <% if(buttonShiftAxisVisibleB){%>
+  <% if(tb.getButtonShiftAxisVisibleB()){%>
   	<wcf:scriptbutton id="swapAxes" tooltip="toolb.swap.axes"  img="swap-axes" model="#{table01.extensions.swapAxes.buttonPressed}"/>
   <% } %>
   
   <wcf:separator/>
-  <% if(buttonDrillMemberVisibleB){%>
+  <% if(tb.getButtonDrillMemberVisibleB()){%>
   	<wcf:scriptbutton model="#{table01.extensions.drillMember.enabled}"	 tooltip="toolb.navi.member" radioGroup="navi" id="drillMember"   img="navi-member"/>
   <% } %>
   
-  <% if(buttonDrillPositionVisibleB){%>
+  <% if(tb.getButtonDrillPositionVisibleB()){%>
   	<wcf:scriptbutton model="#{table01.extensions.drillPosition.enabled}" tooltip="toolb.navi.position" radioGroup="navi" id="drillPosition" img="navi-position"/>
   <% } %>
   
-  <% if(buttonDrillReplaceVisibleB){%>
+  <% if(tb.getButtonDrillReplaceVisibleB()){%>
   	<wcf:scriptbutton model="#{table01.extensions.drillReplace.enabled}"	 tooltip="toolb.navi.replace" radioGroup="navi" id="drillReplace"  img="navi-replace"/>
   <% } %>
   
-  <% if(buttonDrillThroughVisibleB){%>
+  <% if(tb.getButtonDrillThroughVisibleB()){%>
   	<wcf:scriptbutton model="#{table01.extensions.drillThrough.enabled}"  tooltip="toolb.navi.drillthru" id="drillThrough01"  img="navi-through"/>
   <% } %>
   <%
@@ -317,14 +203,14 @@ try {
   }
   %>
   <wcf:separator/>
-   <% if(buttonShowChartVisibleB){%>
+   <% if(tb.getButtonShowChartVisibleB()){%>
   		<wcf:scriptbutton id="chartButton01" tooltip="toolb.chart" img="chart" model="#{chart01.visible}"/>
    <% } %>
-   <% if(buttonConfigureChartVisibleB){%>
+   <% if(tb.getButtonConfigureChartVisibleB()){%>
   		<wcf:scriptbutton id="chartPropertiesButton01" tooltip="toolb.chart.config" img="chart-config" model="#{chartform01.visible}"/>
    <% } %>
   <wcf:separator/>
-   <% if(buttonConfigurePrintVisibleB){%>
+   <% if(tb.getButtonConfigurePrintVisibleB()){%>
   		<wcf:scriptbutton id="printPropertiesButton01" tooltip="toolb.print.config" img="print-config" model="#{printform01.visible}"/>
    <% } %>
   <%--
@@ -332,7 +218,7 @@ try {
   <wcf:imgbutton id="printxls" tooltip="toolb.excel" img="excel" href="./Print?cube=01&type=0"/>
   --%>
   <wcf:separator/>
-   <% if(buttonFlushCacheVisibleB){%>
+   <% if(tb.getButtonFlushCacheVisibleB()){%>
   	<wcf:imgbutton id="flushCache" tooltip="toolb.cache.flush" img="reload" href="./FlushCacheServlet"/>
    <% } %>
 </wcf:toolbar>

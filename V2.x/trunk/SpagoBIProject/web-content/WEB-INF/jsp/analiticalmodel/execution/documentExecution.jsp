@@ -132,18 +132,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 	var object = {id: <%= obj != null ? obj.getId() : "undefined" %>
 			, label: <%= obj != null ? ("'" + obj.getLabel() + "'") : "undefined" %>
-			, name: <%= obj != null ? ("'" + obj.getName().replaceAll("'", "\'") + "'") : "undefined" %>
+			, name: <%= obj != null ? ("'" + obj.getName().replace("'", "\\\'") + "'") : "undefined" %>
 			, typeCode: <%= obj != null ? ("'" + obj.getBiObjectTypeCode() + "'") : "undefined" %>
 			, exporters: <%= (obj != null && exportersJSArray!=null && !exportersJSArray.equals("")) ? exportersJSArray : "undefined" %>
 			};
 
-	var parameters = <%= (parameters != null  && !parameters.trim().equals("")) ? ("'" + parameters.replaceAll("'", "\'") + "'") : "undefined" %>;
+	var parameters = <%= (parameters != null  && !parameters.trim().equals("")) ? ("'" + parameters.replace("'", "\\\'") + "'") : "undefined" %>;
 	<% if (subObject != null) { %>
-	var subobject = {id: <%= subObject.getId() %>, 'name': '<%= subObject.getName().replaceAll("'", "\'") %>'};
+	var subobject = {id: <%= subObject.getId() %>, 'name': '<%= subObject.getName().replace("'", "\\\'") %>'};
 	<% } else { %>
 	var subobject = undefined;
 	<% } %>
-	var snapshotName = <%= (snapshotName != null && !snapshotName.trim().equals("")) ? ("'" + snapshotName.replaceAll("'", "\'") + "'") : "undefined" %>;
+	var snapshotName = <%= (snapshotName != null && !snapshotName.trim().equals("")) ? ("'" + snapshotName.replace("'", "\\\'") + "'") : "undefined" %>;
 	var snapshotHistoryNumber = <%= (snapshotHistoryNumber != null && !snapshotHistoryNumber.trim().equals("")) ? snapshotHistoryNumber : "0" %>;
 	var snaphost = {'name': snapshotName, 'historyNumber': snapshotHistoryNumber};
 	var shortcutsHidden = <%= shortcutsHidden %>;

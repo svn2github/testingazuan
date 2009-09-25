@@ -35,6 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.commons.constants.ObjectsTreeConstants"%>
 <%@page import="it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
+<%@page import="it.eng.spagobi.analiticalmodel.document.x.ExecuteDocumentAction"%>
 
 <%
 List rememberMeList = null;
@@ -59,6 +60,7 @@ if (rememberMe != null) {
 }
 
 %>
+
 
 <table class='header-table-portlet-section'>		
 	<tr class='header-row-portlet-section'>
@@ -94,7 +96,7 @@ Ext.onReady(function(){
 		while (rememberMeListIt.hasNext()) {
 			RememberMe rm = (RememberMe) rememberMeListIt.next();
 			Map params = new HashMap();
-			params.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			params.put("ACTION_NAME", ExecuteDocumentAction.SERVICE_NAME);
 			params.put(ObjectsTreeConstants.OBJECT_ID, rm.getObjId().toString());
 			String parameters = rm.getParameters() != null ? rm.getParameters() : "";
 			params.put(ObjectsTreeConstants.PARAMETERS, parameters);
@@ -248,9 +250,9 @@ Ext.onReady(function(){
 		while (mostPopularListIt.hasNext()) {
 			HotLink hotlink = (HotLink) mostPopularListIt.next();
 			Map params = new HashMap();
-			params.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			params.put("ACTION_NAME", ExecuteDocumentAction.SERVICE_NAME);
 			params.put(ObjectsTreeConstants.OBJECT_ID, hotlink.getObjId().toString());
-			params.put(ObjectsTreeConstants.PARAMETERS, hotlink.getParameters() != null ? StringEscapeUtils.escapeHtml(hotlink.getParameters()) : "");
+			params.put(ObjectsTreeConstants.PARAMETERS, hotlink.getParameters() != null ? StringEscapeUtils.escapeJavaScript(hotlink.getParameters()) : "");
 			params.put(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
 			String subObjName = hotlink.getSubObjName();
 			if (subObjName != null) {
@@ -321,9 +323,9 @@ Ext.onReady(function(){
 		while (myRecentlyUsedListIt.hasNext()) {
 			HotLink hotlink = (HotLink) myRecentlyUsedListIt.next();
 			Map params = new HashMap();
-			params.put("PAGE", ExecuteBIObjectModule.MODULE_PAGE);
+			params.put("ACTION_NAME", ExecuteDocumentAction.SERVICE_NAME);
 			params.put(ObjectsTreeConstants.OBJECT_ID, hotlink.getObjId().toString());
-			params.put(ObjectsTreeConstants.PARAMETERS, hotlink.getParameters() != null ? StringEscapeUtils.escapeHtml(hotlink.getParameters()) : "");
+			params.put(ObjectsTreeConstants.PARAMETERS, hotlink.getParameters() != null ? StringEscapeUtils.escapeJavaScript(hotlink.getParameters()) : "");
 			params.put(SpagoBIConstants.IGNORE_SUBOBJECTS_VIEWPOINTS_SNAPSHOTS, "true");
 			String subObjName = hotlink.getSubObjName();
 			if (subObjName != null) {

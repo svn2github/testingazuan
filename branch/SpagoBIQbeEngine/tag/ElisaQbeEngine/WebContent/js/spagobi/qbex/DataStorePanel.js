@@ -120,7 +120,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	// ---------------------------------------------------------------------------------------------------
 	
 	, renderHtml: function(value, meta, record, row, col, store){
-		alert(Ext.util.Format.htmlDecode(value));
+		//alert(Ext.util.Format.htmlDecode(value));
 		return Ext.util.Format.htmlDecode(value);
 	}
 	

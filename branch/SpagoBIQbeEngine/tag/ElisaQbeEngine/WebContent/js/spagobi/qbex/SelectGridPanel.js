@@ -696,18 +696,13 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		
 		this.grid.on("rowdblclick", function(grid,  rowIndex, e){
 	    	var row;
-	    	alert('in the zune');
-	    	alert(rowIndex);
 	       	var record = grid.getStore().getAt( rowIndex );
 	       	alert(record);
 	       	if(record.data.type === this.CALCULATED_FIELD) {
-	       		alert('IN');
 	       		if(this.calculatedFieldWizard === null) {
 			    	this.initCalculatedFieldWizard();
 				}
-	       		alert('IN2');
 	       		this.calculatedFieldWizard.setTargetRecord(record);
-	       		alert('IN3');
 			    this.calculatedFieldWizard.show();
 	       	}
 	     }, this);

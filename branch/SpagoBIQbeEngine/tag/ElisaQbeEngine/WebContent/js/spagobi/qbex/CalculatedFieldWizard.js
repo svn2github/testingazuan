@@ -127,15 +127,10 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	, setTargetRecord: function(record) {
 		this.targetRecord = record;
 		if(this.targetRecord) {
-			alert("1")
 			this.inputFields.alias.setValue( record.data.alias );
-			alert("2")
 			this.inputFields.type.setValue( record.data.id.type );
-			alert("3")
 			this.expressionEditor.reset();
-			alert("4")
 			this.expressionEditor.insertAtCursor( record.data.id.expression );
-			alert("5")
 		} else {
 			this.inputFields.alias.reset();
 			this.inputFields.type.reset();

@@ -411,13 +411,14 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		
 		this.dataMartStructurePanel.on('click', function(panel, node) {
 	    	if(node.attributes.field && node.attributes.type == 'field') {
-			    var record = new this.selectGridPanel.Record({
+			    var field = {
 			    	 id: node.id,
-			         entity: node.attributes.entity , 
-			         field: node.attributes.field  
-			      });
+			         entity: node.attributes.entity, 
+			         field: node.attributes.field,
+			         alias: node.attributes.field  
+			      };
 			      
-			    this.selectGridPanel.addRow(record); 
+			    this.selectGridPanel.addField(field); 
 			 }
 	    }, this);
 		
@@ -542,6 +543,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        collapsible: true,
 	        //collapseMode: 'mini',
 	        collapseFirst: false,
+	        collapsed: true,
 	        tools:[
 		        {
 		          id:'delete',

@@ -764,7 +764,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	        frame: true,
 	        height: 300,
 	        border:true,  
-	        collapsible:true,
+	        collapsible:false,
 	        layout: 'fit',
 	        viewConfig: {
 	            forceFit:true

@@ -21,32 +21,23 @@
 package it.eng.spagobi.qbe.core.service;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
-import it.eng.qbe.model.DataStoreJSONSerializer;
 import it.eng.qbe.model.HQLStatement;
 import it.eng.qbe.model.IStatement;
-import it.eng.qbe.model.QbeDataSet;
 import it.eng.qbe.query.DataMartSelectField;
-import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.WhereField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.qbe.QbeEngineConfig;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
@@ -57,7 +48,7 @@ import it.eng.spagobi.utilities.service.JSONSuccess;
 /**
  * The Class ExecuteQueryAction.
  */
-public class ExecuteQueryAction extends AbstractQbeEngineAction {	
+public class CopyOfExecuteQueryAction extends AbstractQbeEngineAction {	
 	
 	// INPUT PARAMETERS
 	public static final String LIMIT = "limit";
@@ -66,7 +57,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	
 	
 	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(ExecuteQueryAction.class);
+    public static transient Logger logger = Logger.getLogger(CopyOfExecuteQueryAction.class);
     public static transient Logger auditlogger = Logger.getLogger("audit.query");
     
 	
@@ -78,26 +69,21 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 		Integer start = null;
 		Integer maxSize = null;
 		boolean isMaxResultsLimitBlocking = false;
-		IDataStore dataStore = null;
-		QbeDataSet dataSet = null;
-		DataStoreJSONSerializer serializer;
+		
 		
 		Query query = null;
 		IStatement statement = null;
 		
+		SourceBean queryResponseSourceBean = null;		
+		List results = null;
 		Integer resultNumber = null;
 		JSONObject gridDataFeed = new JSONObject();
-		
-		Monitor totalTimeMonitor = null;
-		Monitor errorHitsMonitor = null;
 					
 		logger.debug("IN");
 		
 		try {
 		
-			super.service(request, response);	
-			
-			totalTimeMonitor = MonitorFactory.start("QbeEngine.executeQueryAction.totalTime");
+			super.service(request, response);		
 			
 			queryId = getAttributeAsString( QUERY_ID );
 			logger.debug("Parameter [" + QUERY_ID + "] is equals to [" + queryId + "]");
@@ -145,23 +131,8 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			
 			try {
 				logger.debug("Executing query ...");
-				dataSet = new QbeDataSet(statement);
-				dataSet.setAbortOnOverflow(isMaxResultsLimitBlocking);
-				
-				Map userAttributes = new HashMap();
-				UserProfile profile = (UserProfile)this.getEnv().get(EngineConstants.ENV_USER_PROFILE);
-				Iterator it = profile.getUserAttributeNames().iterator();
-				while(it.hasNext()) {
-					String attributeName = (String)it.next();
-					Object attributeValue = profile.getUserAttribute(attributeName);
-					userAttributes.put(attributeName, attributeValue);
-				}
-				dataSet.addBinding("attributes", userAttributes);
-				dataSet.addBinding("parameters", this.getEnv());
-				dataSet.loadData(start, limit, (maxSize == null? -1: maxSize.intValue()));
-				
-				dataStore = dataSet.getDataStore();
-				Assert.assertNotNull(dataStore, "The dataStore returned by loadData method of the class [" + dataSet.getClass().getName()+ "] cannot be null");
+				queryResponseSourceBean = statement.execute(start, limit, (maxSize == null? -1: maxSize.intValue()), isMaxResultsLimitBlocking);
+				Assert.assertNotNull(queryResponseSourceBean, "The sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
 			} catch (Exception e) {
 				logger.debug("Query execution aborted because of an internal exceptian");
 				SpagoBIEngineServiceException exception;
@@ -177,10 +148,13 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			}
 			logger.debug("Query executed succesfully");
 			
-			resultNumber = (Integer)dataStore.getMetaData().getProperty("resultNumber");
-			Assert.assertNotNull(resultNumber, "property [resultNumber] of the dataStore returned by loadData method of the class [" + dataSet.getClass().getName()+ "] cannot be null");
-			logger.debug("Total records: " + resultNumber);			
+			results = (List)queryResponseSourceBean.getAttribute("list");
+			Assert.assertNotNull(results, "The the attribute [list] of the sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
+			logger.debug("Fetched records: " + results.size());
 			
+			resultNumber = (Integer)queryResponseSourceBean.getAttribute("resultNumber");
+			Assert.assertNotNull(resultNumber, "The the attribute [resultNumber] of the sourcebean returned by method executeWithPagination of the class it.eng.qbe.model.XIStatement cannot be null");
+			logger.debug("Total records: " + resultNumber);			
 			
 			boolean overflow = maxSize != null && resultNumber >= maxSize;
 			if (overflow) {
@@ -188,11 +162,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 				auditlogger.info("[" + userProfile.getUserId() + "]:: max result limit [" + maxSize + "] exceeded with SQL: " + sqlQuery);
 			}
 			
-			//gridDataFeed = buildGridDataFeed(results, resultNumber.intValue());	
-			
-			serializer = new DataStoreJSONSerializer();
-			gridDataFeed = (JSONObject)serializer.serialize(dataStore);
-			logger.debug("Response object: " + gridDataFeed.toString(3));
+			gridDataFeed = buildGridDataFeed(results, resultNumber.intValue());	
 			
 			try {
 				writeBackToClient( new JSONSuccess(gridDataFeed) );
@@ -202,11 +172,8 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			}
 			
 		} catch(Throwable t) {
-			errorHitsMonitor = MonitorFactory.start("QbeEngine.errorHits");
-			errorHitsMonitor.stop();
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
-			if(totalTimeMonitor != null) totalTimeMonitor.stop();
 			logger.debug("OUT");
 		}	
 		
@@ -216,28 +183,15 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 	private void updatePromptableFiltersValue(Query query) {
 		logger.debug("IN");
 		List whereFields = query.getWhereFields();
-		Iterator whereFieldsIt = whereFields.iterator();
-		while (whereFieldsIt.hasNext()) {
-			WhereField whereField = (WhereField) whereFieldsIt.next();
+		if (whereFields != null && whereFields.size() > 0) {
+			Iterator it = whereFields.iterator();
+			WhereField whereField = (WhereField) it.next();
 			if (whereField.isPromptable()) {
 				// getting filter value on request
 				String promptValue = this.getAttributeAsString(whereField.getName());
 				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + whereField.getName() + "].");
 				if (promptValue != null) {
 					whereField.getRightOperand().lastValue = promptValue;
-				}
-			}
-		}
-		List havingFields = query.getHavingFields();
-		Iterator havingFieldsIt = havingFields.iterator();
-		while (havingFieldsIt.hasNext()) {
-			HavingField havingField = (HavingField) havingFieldsIt.next();
-			if (havingField.isPromptable()) {
-				// getting filter value on request
-				String promptValue = this.getAttributeAsString(havingField.getName());
-				logger.debug("Read prompt value [" + promptValue + "] for promptable filter [" + havingField.getName() + "].");
-				if (promptValue != null) {
-					havingField.getRightOperand().lastValue = promptValue;
 				}
 			}
 		}

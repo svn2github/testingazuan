@@ -54,6 +54,17 @@ Sbi.qbe.SelectGridPanel = function(config) {
 	
 	this.services = new Array();
 	
+	this.services['getParameters'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_PARAMETERS_ACTION'
+		, baseParams: {}
+	});
+	
+	this.services['getAttributes'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_ATTRIBUTES_ACTION'
+		, baseParams: {}
+	});
+		
+	
 	this.addEvents('filter', 'having');
 	
 	this.initStore(c);
@@ -99,6 +110,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	, distinctCheckBox: null
 	, grid: null
 	, dropTarget: null
+	, calculatedFieldWizard : null
 	
 	, type: 'selectgrid'
 	
@@ -124,6 +136,9 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		] 
 	})
 	
+	, DATAMART_FIELD: 'datamartField'
+	, CALCULATED_FIELD: 'calculatedField'
+
 	// public methods
 	
 	, loadSavedData: function(query) {
@@ -136,7 +151,61 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
   		}
   	}
   	
-	, addRow: function(config, i) {		    
+	, createField: function() {
+		var field;
+		
+		field = new Object();		
+		field = Ext.apply(field, {
+			id: '', 
+			alias: '', 
+			type: this.DATAMART_FIELD,
+			
+			entity: '', 
+			field: '',
+			
+			funct: '',
+			group: '',
+			order: '',
+			
+			
+			'include': true, 
+			visible: true
+		});
+			      
+		return field;
+	}
+
+	, addField : function(field) {
+		field = field || {};
+		field = Ext.apply(this.createField(), field || {});
+		var record = new this.Record( field );
+		this.grid.store.add(record); 
+	}
+	
+	, insertField: function(field, i) {
+		if(i != undefined) {
+			field = field || {};
+			field = Ext.apply(this.createField(), field || {});
+			var record = new this.Record( field );
+			this.grid.store.insert(i, record); 
+		} else {
+			this.addField(field);
+		}
+	}
+	
+	, modifyField: function(field, i) {
+		if(i != undefined) {			
+			var record = this.store.getAt( i );
+			Ext.apply(record.data, field || {});	
+			record = this.store.getAt( i );
+			this.store.fireEvent('datachanged', this.store) ;
+		}
+	}
+
+	, addRow: function(config, i) {	
+	   Sbi.qbe.commons.deprectadeFunction('SelectGridPanel', 'addRow');
+	   this.insertField(config, i);
+	   /*
 	   var record = new this.Record({
 	       funct: '',
 	       order: '',
@@ -153,6 +222,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
     	} else {
       		this.store.add(record); 
     	}
+    	*/
 	}
 	
 	, deleteFields: function() {
@@ -181,6 +251,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	}
 	
 	, getRowsAsJSONParams: function() {
+		Sbi.qbe.commons.deprectadeFunction('SelectGridPanel', 'getRowsAsJSONParams');
 		var jsonStr = '[';
 		for(i = 0; i < this.store.getCount(); i++) {
 			var tmpRec = this.store.getAt(i);
@@ -245,28 +316,39 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		this.store =  new Ext.data.SimpleStore({
 	        fields: [
 	           {name: 'id'},
-	           {name: 'funct'},
-	           {name: 'field'},
-	           {name: 'entity'},
 	           {name: 'alias'},
-	           {name: 'order'},
+	           {name: 'type'},
+	           
+	           {name: 'entity'},
+	           {name: 'field'},
+	           
+	           {name: 'funct'},	 
 	           {name: 'group'},
+	           {name: 'order'},
+	           
 	           {name: 'include'},
 	           {name: 'visible'},
+	           
+	           {name: 'filter'},
 	           {name: 'del'}          
 	        ]
 		});
 		
 		this.Record = Ext.data.Record.create([
 		      {name: 'id', type: 'string'},
-		      {name: 'funct', type: 'string'},
-		      {name: 'field', type: 'string'},
-		      {name: 'entity', type: 'string'},
 		      {name: 'alias', type: 'string'},
-		      {name: 'order', type: 'string'},
+		      {name: 'type', type: 'string'},
+		      
+		      {name: 'entity', type: 'string'},
+		      {name: 'field', type: 'string'},
+		     
+		      {name: 'funct', type: 'string'},
 		      {name: 'group', type: 'string'},
+		      {name: 'order', type: 'string'},
+		      
 		      {name: 'include', type: 'bool'},
 		      {name: 'visible', type: 'bool'},
+		      
 		      {name: 'filter', type: 'string'},
 		      {name: 'having', type: 'string'},
 		      {name: 'del', type: 'string'}
@@ -433,6 +515,94 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	    this.plgins = [visibleCheckColumn, includeCheckColumn, groupCheckColumn, delButtonColumn, filterButtonColumn, havingButtonColumn];
 	}
 	
+	, initCalculatedFieldWizard: function() {
+		
+		var records = this.store.queryBy( function(record) {
+			return record.data.include === true;
+		});
+		
+		var fields = new Array();
+		records.each(function(r) {
+			var field = {
+				text: r.data.alias, 
+				qtip: r.data.entity + ' : ' + r.data.field, 
+				type: 'field', 
+				value: 'fields[\'' + r.data.alias + '\']'
+			};	
+			fields.push(field);
+		});
+		
+		var parametersLoader = new Ext.tree.TreeLoader({
+	        baseParams: {},
+	        dataUrl: this.services['getParameters']
+	    });
+		
+		var attributesLoader = new Ext.tree.TreeLoader({
+	        baseParams: {},
+	        dataUrl: this.services['getAttributes']
+	    });
+		
+		var crossFn = Ext.util.Format.htmlEncode("String label = 'bestByRegion';") + '<br>' + 
+			Ext.util.Format.htmlEncode("String text= fields['salesRegion'];") + '<br>' + 
+			Ext.util.Format.htmlEncode("String params= 'region=5';") + '<br>' + 
+			Ext.util.Format.htmlEncode("String subobject;") + '<p>' + 
+			Ext.util.Format.htmlEncode("String result = '';") + '<p>' + 
+			Ext.util.Format.htmlEncode("result +='<a href=\"#\" onclick=\"javascript:sendMessage({';") + '<br>' + 
+			Ext.util.Format.htmlEncode("result +='\\'label\\':\\'' + label + '\\'';") + '<br>' + 
+			Ext.util.Format.htmlEncode("result +=', parameters:\\'' + params + '\\'';") + '<br>' + 
+			Ext.util.Format.htmlEncode("result +=', windowName: this.name';") + '<br>' + 
+			Ext.util.Format.htmlEncode("if(subobject != null) result +=', subobject:\\'' + subobject +'\\'';") + '<br>' + 
+			Ext.util.Format.htmlEncode("result += '},\\'crossnavigation\\')\"';") + '<br>' + 
+			Ext.util.Format.htmlEncode("result += '>' + text + '</a>';") + '<p>' + 
+			Ext.util.Format.htmlEncode("return result;");
+		
+		var functions = [
+		    {
+			    text: 'link'
+			    , qtip: 'create a link to external web page'
+			    , type: 'function'
+			    , value: Ext.util.Format.htmlEncode('\'<a href="${URL}">\' + ${LABEL} + \'</a>\'')
+		    }, {
+			    text: 'image' , 
+			    qtip: 'include an external image'
+			    , type: 'function'
+			    , value: Ext.util.Format.htmlEncode('\'<img src="${URL}"></img>\'')
+		    }, {
+			    text: 'cross-navigation'
+			    , qtip: 'create a cross navigation link'
+			    , type: 'function'
+			    , value: crossFn
+		    }
+		];
+		
+		
+		//this.treeLoader.on('load', this.oonLoad, this);
+		//this.treeLoader.on('loadexception', this.oonLoadException, this);
+		
+		this.calculatedFieldWizard = new Sbi.qbe.CalculatedFieldWizard({
+    		title: 'Calculated Field Wizard',
+    		expItems: [
+    		    {name:'fields', text: 'Fileds'}, 
+    		    {name:'parameters', text: 'Parameters', loader: parametersLoader}, 
+    		    {name:'attributes', text: 'Attributes', loader: attributesLoader},
+    		    {name:'functions', text: 'Functions'}
+    		],
+    		fields: fields,
+    		functions: functions
+    	});
+		
+    	this.calculatedFieldWizard.on('apply', function(win, formState, targetRecord){
+    		var field = {id: formState, alias: formState.alias, type: this.CALCULATED_FIELD};
+    		if(targetRecord) {
+    			Ext.apply(targetRecord.data, field);	
+    			this.store.fireEvent('datachanged', this.store) ;
+    		} else {
+    			this.addField({id: formState, alias: formState.alias, type: this.CALCULATED_FIELD});
+    		}
+    		//alert(formState.toSource());
+    	}, this);
+	}
+	
 	, initToolbar: function(config) {
 		this.distinctCheckBox = new Ext.form.Checkbox({
 			checked: false,
@@ -445,7 +615,19 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 			  {
 	            text: LN('sbi.qbe.selectgridpanel.buttons.text.add'),
 	            tooltip: LN('sbi.qbe.selectgridpanel.buttons.tt.add'),
-	            iconCls:'option'
+	            iconCls:'option',
+	            listeners: {
+				  'click': {
+					fn: function() { 
+				  		if(this.calculatedFieldWizard === null) {
+					    	this.initCalculatedFieldWizard();
+						}
+				  		this.calculatedFieldWizard.setTargetRecord(null);
+					    this.calculatedFieldWizard.show();
+			  		},
+					scope: this
+				   }
+	            }
 	          },'-',{
 	            text: LN('sbi.qbe.selectgridpanel.buttons.text.hide'),
 	            tooltip: LN('sbi.qbe.selectgridpanel.buttons.tt.hide'),
@@ -489,7 +671,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		        border:true,  
 		        style:'padding:10px',
 		        iconCls:'icon-grid',
-		        collapsible:true,
+		        collapsible:false,
 		        layout: 'fit',
 		        viewConfig: {
 		            forceFit:true
@@ -511,6 +693,25 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 				this.fireEvent('having', this, record);
 			}
 		}, this);
+		
+		this.grid.on("rowdblclick", function(grid,  rowIndex, e){
+	    	var row;
+	    	alert('in the zune');
+	    	alert(rowIndex);
+	       	var record = grid.getStore().getAt( rowIndex );
+	       	alert(record);
+	       	if(record.data.type === this.CALCULATED_FIELD) {
+	       		alert('IN');
+	       		if(this.calculatedFieldWizard === null) {
+			    	this.initCalculatedFieldWizard();
+				}
+	       		alert('IN2');
+	       		this.calculatedFieldWizard.setTargetRecord(record);
+	       		alert('IN3');
+			    this.calculatedFieldWizard.show();
+	       	}
+	     }, this);
+		
 		
 		this.grid.on("mouseover", function(e, t){
 	    	var row;

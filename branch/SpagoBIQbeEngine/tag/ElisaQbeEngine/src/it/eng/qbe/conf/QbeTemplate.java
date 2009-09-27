@@ -20,15 +20,18 @@
  **/
 package it.eng.qbe.conf;
 
-import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import org.apache.log4j.Logger;
+
+import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
+import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -38,99 +41,152 @@ import java.util.Properties;
  */
 public class QbeTemplate {
 	
-	/** The template. */
-	private SourceBean template = null;
 	
-	/** The composite. */
-	private boolean composite = false;
+	private SourceBean template;	
+	private boolean composite;	
+	private Map dblinkMap;	
+	private List datamartNames;
+	private Map functionalities;		
+	private DataMartModelAccessModality datamartModelAccessModality;
+	private String dialect;
+
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(QbeTemplate.class);
 	
-	/** The dblink map. */
-	private Map dblinkMap = null;
 	
-	/** The datamart names. */
-	private List datamartNames = null;
-	
-	/** The functionalities. */
-	private Map functionalities = null;	
-	
-	/** The datamart model access modality. */
-	private DataMartModelAccessModality datamartModelAccessModality = null;
-	
-	/** The dialect. */
-	private String dialect = null;
-	
-	/**
-	 * Instantiates a new qbe template.
-	 * 
-	 * @param template the template
-	 */
 	public QbeTemplate(SourceBean template) {
+		Assert.assertNotNull(template, "Template parameter cannot be null");
 		setTemplate(template);
 		parse();
 	}
 	
-	/**
-	 * Parses the.
-	 */
+	
+	public static String TAG_ROOT_COMPOSITE = "COMPOSITE-QBE";
+	public static String TAG_ROOT_NORMAL = "QBE";
+	public static String TAG_DATAMART = "DATAMART";
+	public static String PROP_DATAMART_NAME = "name";
+	public static String PROP_DATAMART_DBLINK = "dblink";
+	public static String TAG_MODALITY = "MODALITY";
+	public static String TAG_MODALITY_TABLE = "TABLE";
+	public static String TAG_FUNCTIONALITIES = "FUNCTIONALITIES";
+	
 	public void parse() {
-		setComposite( template.getName().equalsIgnoreCase("COMPOSITE-QBE") );
-				
-		dblinkMap = new HashMap();
-		List modalities = new ArrayList();
+		String templateName;
+		SourceBean datamartSB;
+		String dmName;
+		SourceBean modalitySB;
+		List modalities;
+		SourceBean compositeModalitySB;
+		SourceBean functionalitiesSB;
 		
-		if(isComposite()) {
-			List dmNames = new ArrayList();
-			List qbeList = template.getAttributeAsList("QBE");
-			for(int i = 0; i < qbeList.size(); i++) {
-				SourceBean qbeSB = (SourceBean)qbeList.get(i);
-									
-				SourceBean datamartSB = (SourceBean)qbeSB.getAttribute("DATAMART");
-				String dmName = (String)datamartSB.getAttribute("name");
-				dmNames.add(dmName);
-				String dblink = (String)datamartSB.getAttribute("dblink");
-				if(dblink != null) dblinkMap.put(dmName, dblink);
-				
-				SourceBean modalitySB = (SourceBean)qbeSB.getAttribute("MODALITY");
-				modalities.add(modalitySB);					
-			}			
-			datamartNames = dmNames;
-		} else {
-			SourceBean datamartSB = (SourceBean)template.getAttribute("DATAMART");
-			String dmName = (String)datamartSB.getAttribute("name");
-			datamartNames = new ArrayList();
-			datamartNames.add(dmName);
-			SourceBean modalitySB = (SourceBean)template.getAttribute("MODALITY");
-			modalities.add(modalitySB);
-		}
-		
-		
-		SourceBean compositeModalitySB = null;
 		try {
-			compositeModalitySB = new SourceBean("MODALITY");
-			if(modalities != null) {
-				for(int i = 0; i < modalities.size(); i++) {
-					SourceBean modalitySB = (SourceBean)modalities.get(i);
-					if(modalitySB != null) {				
-						List tables = modalitySB.getAttributeAsList("TABLE");
-						for(int j = 0; j < tables.size(); j++) {
-							SourceBean tableSB = (SourceBean)tables.get(j);
-							compositeModalitySB.setAttribute(tableSB);
+			templateName = template.getName();
+			logger.debug("Parsing template [" + templateName + "] ...");
+			Assert.assertNotNull(templateName, "Root tag cannot be not be null");
+			
+			
+			if(!TAG_ROOT_COMPOSITE.equalsIgnoreCase(templateName)
+					&& !TAG_ROOT_NORMAL.equalsIgnoreCase(templateName)){
+				/*
+				throw new QbeTemplateParseException("Malformed template structure: template root tag cannot be equals to [" + templateName +"]. " +
+						"It must be equal to [" + TAG_ROOT_NORMAL + "] or [" + TAG_ROOT_COMPOSITE + "]");
+				*/
+				QbeTemplateParseException e = new QbeTemplateParseException("Malformed template structure");
+				e.setDescription("template root tag cannot be equals to [" + templateName +"]. " +
+						"It must be equal to [" + TAG_ROOT_NORMAL + "] or [" + TAG_ROOT_COMPOSITE + "]");
+				e.addHint("Check document template in document details page");
+				throw e;
+			}
+			
+			setComposite( TAG_ROOT_COMPOSITE.equalsIgnoreCase(templateName) );
+			
+			datamartNames = new ArrayList();
+			dblinkMap = new HashMap();
+			modalities  = new ArrayList();
+			dmName = null;
+			
+			if(isComposite()) {
+				List qbeList;
+				SourceBean qbeSB;
+				String dblink;
+				
+				logger.debug("The QBE described in the template is of type COMPOSITE");
+								
+				qbeList = template.getAttributeAsList(TAG_ROOT_NORMAL);
+				for(int i = 0; i < qbeList.size(); i++) {
+					qbeSB = (SourceBean)qbeList.get(i);
+					
+					// DATAMART block
+					if(template.containsAttribute(TAG_DATAMART)) {
+						datamartSB = (SourceBean)qbeSB.getAttribute(TAG_DATAMART);	
+						dmName = (String)datamartSB.getAttribute(PROP_DATAMART_NAME);
+						Assert.assertTrue(!StringUtilities.isEmpty(dmName), "Attribute [" + PROP_DATAMART_NAME +"] in tag [" + TAG_DATAMART + "] must be properly defined");
+						
+						datamartNames.add(dmName);					
+						dblink = (String)datamartSB.getAttribute(PROP_DATAMART_DBLINK);
+						if(dblink != null) {
+							dblinkMap.put(dmName, dblink);
 						}
+					} else {
+						Assert.assertUnreachable("Missing compolsury tag [" + TAG_DATAMART + "]");
 					}
 					
+					// MODALITY block
+					if(template.containsAttribute(TAG_MODALITY)) {
+						modalitySB = (SourceBean)qbeSB.getAttribute(TAG_MODALITY);
+						modalities.add(modalitySB);		
+					} else {
+						logger.debug("Qbe template associated to datamart [" + dmName + "] does not contain tag [" + TAG_MODALITY +"] so it will be not profiled");
+					}
+				}			
+			} else {
+				logger.debug("The QBE described in the template is of type STANDARD");
+				
+				// DATAMART block
+				if(template.containsAttribute(TAG_DATAMART)) {
+					datamartSB = (SourceBean)template.getAttribute(TAG_DATAMART);
+					dmName = (String)datamartSB.getAttribute(PROP_DATAMART_NAME);
+					Assert.assertTrue(!StringUtilities.isEmpty(dmName), "Attribute [" + PROP_DATAMART_NAME +"] in tag [" + TAG_DATAMART + "] must be properly defined");
+					
+					datamartNames.add(dmName);
+				} else {
+					Assert.assertUnreachable("Missing compolsury tag [" + TAG_DATAMART + "]");
+				}
+				
+				// MODALITY block
+				if(template.containsAttribute(TAG_MODALITY)) {
+					modalitySB = (SourceBean)template.getAttribute(TAG_MODALITY);
+					modalities.add(modalitySB);
+				} else {
+					logger.debug("Qbe template does not contain tag [" + TAG_MODALITY +"] so it will be not profiled");
+				}
+				
+			}
+			
+			compositeModalitySB = new SourceBean(TAG_MODALITY);
+			
+			for(int i = 0; i < modalities.size(); i++) {
+				modalitySB = (SourceBean)modalities.get(i);
+				List tables = modalitySB.getAttributeAsList(TAG_MODALITY_TABLE);
+				for(int j = 0; j < tables.size(); j++) {
+					SourceBean tableSB = (SourceBean)tables.get(j);
+					compositeModalitySB.setAttribute(tableSB);
 				}
 			}
-		} catch (SourceBeanException e) {			
-			e.printStackTrace();
-		}
-		if(compositeModalitySB != null && compositeModalitySB.getAttribute("TABLE") != null) { 
-			datamartModelAccessModality = new DataMartModelAccessModality(compositeModalitySB);
-		}
+					
+			if(compositeModalitySB != null && compositeModalitySB.getAttribute(TAG_MODALITY_TABLE) != null) { 
+				datamartModelAccessModality = new DataMartModelAccessModality(compositeModalitySB);
+			}
 		
-		
-		
-		SourceBean functionalitiesSB = (SourceBean)template.getAttribute("FUNCTIONALITIES");
-		parseFunctionalities(functionalitiesSB);
+			functionalitiesSB = (SourceBean)template.getAttribute(TAG_FUNCTIONALITIES);
+			parseFunctionalities(functionalitiesSB);
+			
+			logger.debug("Templete parsed succesfully");
+		} catch(Throwable t) {
+			throw new QbeTemplateParseException("Impossible to parse tempate [" + template.toString()+ "]", t);
+		} finally {
+			logger.debug("OUT");
+		}		
 	}
 	
 	/**

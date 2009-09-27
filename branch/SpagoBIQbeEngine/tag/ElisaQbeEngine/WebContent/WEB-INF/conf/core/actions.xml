@@ -9,6 +9,20 @@
 		<CONFIG></CONFIG>
 	</ACTION>
 	
+	<ACTION name="GET_PARAMETERS_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.GetParametersAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<ACTION name="GET_ATTRIBUTES_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.GetAttributesAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 	<ACTION name="GET_CATALOGUE_ACTION" 
 			class="it.eng.spagobi.qbe.core.service.GetCatalogueAction"  
 			scope="REQUEST">

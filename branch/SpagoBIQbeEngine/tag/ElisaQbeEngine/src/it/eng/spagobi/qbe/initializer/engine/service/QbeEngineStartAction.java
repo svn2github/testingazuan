@@ -24,6 +24,7 @@ import java.util.Locale;
 
 import org.apache.log4j.Logger;
 
+import it.eng.qbe.conf.QbeTemplateParseException;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.QbeEngine;
 import it.eng.spagobi.qbe.QbeEngineInstance;
@@ -57,7 +58,9 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 		
     public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
     	QbeEngineInstance qbeEngineInstance = null;
+    	QbeEngineAnalysisState analysisState;
     	Locale locale;
+    	
     	
     	logger.debug("IN");
        
@@ -65,23 +68,65 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
     		setEngineName(ENGINE_NAME);
 			super.service(serviceRequest, serviceResponse);
 			
-			
-			
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
 			logger.debug("Template: " + getTemplate());
 						
-			getAuditServiceProxy().notifyServiceStartEvent();
-					
-			qbeEngineInstance = QbeEngine.createInstance( getTemplate(), getEnv() );
+			if(getAuditServiceProxy() != null) {
+				logger.debug("Audit enabled: [TRUE]");
+				getAuditServiceProxy().notifyServiceStartEvent();
+			} else {
+				logger.debug("Audit enabled: [FALSE]");
+			}
+			
+			logger.debug("Creating engine instance ...");
+			try {
+				qbeEngineInstance = QbeEngine.createInstance( getTemplate(), getEnv() );
+			} catch(Throwable t) {
+				SpagoBIEngineStartupException serviceException;
+				String msg = "Impossible to create engine instance for document [" + getDocumentId() + "].";
+				Throwable rootException = t;
+				while(rootException.getCause() != null) {
+					rootException = rootException.getCause();
+				}
+				String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+				msg += "\nThe root cause of the error is: " + str;
+				serviceException = new SpagoBIEngineStartupException(ENGINE_NAME, msg, t);
+				
+				if(rootException instanceof QbeTemplateParseException) {
+					QbeTemplateParseException e = (QbeTemplateParseException)rootException;
+					serviceException.setDescription( e.getDescription());
+					serviceException.setHints( e.getHints() );
+				} 
+				
+				throw serviceException;
+			}
+			logger.debug("Engine instance succesfully created");
+			
 			qbeEngineInstance.setStandaloneMode( false );
 			
 			qbeEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
 			if( getAnalysisStateRowData() != null ) {
-				QbeEngineAnalysisState analysisState = new QbeEngineAnalysisState( qbeEngineInstance.getDatamartModel() );
-				analysisState.load( getAnalysisStateRowData() );
-				qbeEngineInstance.setAnalysisState( analysisState );
+				logger.debug("Loading subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "] ...");
+				try {
+					analysisState = new QbeEngineAnalysisState( qbeEngineInstance.getDatamartModel() );
+					analysisState.load( getAnalysisStateRowData() );
+					qbeEngineInstance.setAnalysisState( analysisState );
+				} catch(Throwable t) {
+					SpagoBIEngineStartupException serviceException;
+					String msg = "Impossible load subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "].";
+					Throwable rootException = t;
+					while(rootException.getCause() != null) {
+						rootException = rootException.getCause();
+					}
+					String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+					msg += "\nThe root cause of the error is: " + str;
+					serviceException = new SpagoBIEngineStartupException(ENGINE_NAME, msg, t);
+					
+					throw serviceException;
+				}
+				logger.debug("Subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "] succesfully loaded");
 			}
 			
 			locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);

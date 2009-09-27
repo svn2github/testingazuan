@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.Query;
 import it.eng.spagobi.qbe.QbeEngineInstance;
-import it.eng.spagobi.qbe.commons.constants.QbeConstants;
 import it.eng.spagobi.utilities.engines.AbstractEngineAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 
@@ -45,14 +44,6 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
     	return (QbeEngineInstance)getAttributeFromSession( EngineConstants.ENGINE_INSTANCE );
     }
     
-	
-
-	
-	/**
-	 * Gets the datamart model.
-	 * 
-	 * @return the datamart model
-	 */
 	public DataMartModel getDatamartModel() {
 		QbeEngineInstance qbeEngineInstance  = null;
     	qbeEngineInstance = getEngineInstance();
@@ -62,11 +53,6 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
     	return qbeEngineInstance.getDatamartModel();
 	}
 
-	/**
-	 * Sets the datamart model.
-	 * 
-	 * @param datamartModel the new datamart model
-	 */
 	public void setDatamartModel(DataMartModel datamartModel) {
 		QbeEngineInstance qbeEngineInstance  = null;
     	qbeEngineInstance = getEngineInstance();
@@ -76,15 +62,7 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
     	qbeEngineInstance.setDatamartModel(datamartModel);
 	}
 	
-	/**
-	 
 	
-	
-	/**
-	 * Gets the query.
-	 * 
-	 * @return the query
-	 */
 	public Query getQuery() {
 		QbeEngineInstance qbeEngineInstance  = null;
     	qbeEngineInstance = getEngineInstance();
@@ -95,11 +73,7 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
 	}
 	
 	
-	/**
-	 * Sets the standalone mode active.
-	 * 
-	 * @param standaloneMode the new standalone mode active
-	 */
+	
 	public void setStandaloneModeActive(boolean standaloneMode) {
 		QbeEngineInstance qbeEngineInstance  = null;
     	qbeEngineInstance = getEngineInstance();
@@ -109,11 +83,6 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
     	qbeEngineInstance.setStandaloneMode(standaloneMode);
 	}
 	
-	/**
-	 * Checks if is standalone modality.
-	 * 
-	 * @return true, if is standalone modality
-	 */
 	public boolean isStandaloneModality() {
 		QbeEngineInstance qbeEngineInstance  = null;
     	qbeEngineInstance = getEngineInstance();
@@ -121,70 +90,6 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
     		return false;
     	}
     	return qbeEngineInstance.isStandaloneMode();
-	}
-	
-	
-	
-	
-	
-	/**
-	 * Update last update time stamp.
-	 */
-	public void updateLastUpdateTimeStamp(){
-		String str = String.valueOf(System.currentTimeMillis());
-		logger.debug("Last Update Timestamp [" + str + "]");
-		setAttributeInSession(QbeConstants.LAST_UPDATE_TIMESTAMP, str);
-	}
-
-	/**
-	 * Sets the subquery mode active.
-	 * 
-	 * @param subqueryMode the new subquery mode active
-	 */
-	public void setSubqueryModeActive(boolean subqueryMode) {
-		if(subqueryMode) {
-			setAttributeInSession(QbeConstants.QUERY_MODE, QbeConstants.SUBQUERY_MODE);
-		} else {
-			delAttributeFromSession(QbeConstants.QUERY_MODE);
-		}
-		
-		//getQuery().setSubqueryModeActive(subqueryMode);
-		//getActiveQuery().setSubqueryModeActive(subqueryMode);
-	}
-	
-	/**
-	 * Checks if is subquery mode active.
-	 * 
-	 * @return true, if is subquery mode active
-	 */
-	public boolean isSubqueryModeActive() {
-		String qbeQueryMode = (String)getAttributeFromSession(QbeConstants.QUERY_MODE);
-		return (qbeQueryMode != null && qbeQueryMode.equalsIgnoreCase(QbeConstants.SUBQUERY_MODE));
-	}	
-	
-	/**
-	 * Gets the subquery field.
-	 * 
-	 * @return the subquery field
-	 */
-	public String getSubqueryField() {
-		return  (String)getAttributeFromSession(QbeConstants.SUBQUERY_FIELD);
-	}
-
-	/**
-	 * Sets the subquery field.
-	 * 
-	 * @param field the new subquery field
-	 */
-	public void setSubqueryField(String field) {
-		setAttributeInSession(QbeConstants.SUBQUERY_FIELD, field);
-	}
-	
-	/**
-	 * Del subquery field.
-	 */
-	public void delSubqueryField() {
-		delAttributeFromSession(QbeConstants.SUBQUERY_FIELD);
 	}
 	
 	

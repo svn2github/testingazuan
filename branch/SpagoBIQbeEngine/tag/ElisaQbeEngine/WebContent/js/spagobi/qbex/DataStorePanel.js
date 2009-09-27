@@ -87,7 +87,9 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	, pageNumber: null
    
    
+	// ---------------------------------------------------------------------------------------------------
     // public methods
+	// ---------------------------------------------------------------------------------------------------
 	
 	, execQuery:  function(query, freeFiltersForm) {  
 		this.store.removeAll();
@@ -112,10 +114,15 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		form.action = this.services['exportDataStore'] + '&MIME_TYPE=' + mimeType +'&RESPONSE_TYPE=RESPONSE_TYPE_ATTACHMENT';
 		form.submit();
 	}
-  
-
-	
+  	
+	// ---------------------------------------------------------------------------------------------------
 	// private methods
+	// ---------------------------------------------------------------------------------------------------
+	
+	, renderHtml: function(value, meta, record, row, col, store){
+		alert(Ext.util.Format.htmlDecode(value));
+		return Ext.util.Format.htmlDecode(value);
+	}
 	
 	, initStore: function() {
 		
@@ -132,6 +139,12 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	    });
 		
 		this.store.on('metachange', function( store, meta ) {
+		   
+		   for(var i = 0; i < meta.fields.length; i++) {
+			   if(meta.fields[i].renderer && meta.fields[i].renderer === 'html') {
+				   meta.fields[i].renderer = this.renderHtml;
+			   }			   
+		   }
 		   meta.fields[0] = new Ext.grid.RowNumberer();
 		   this.grid.getColumnModel().setConfig(meta.fields);
 		}, this);
@@ -222,7 +235,8 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	        collapsible:true,
 	        loadMask: true,
 	        viewConfig: {
-	            forceFit:true,
+	            forceFit:false,
+	            autoFill: true,
 	            enableRowBody:true,
 	            showPreview:true
 	        },

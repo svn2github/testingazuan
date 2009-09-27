@@ -114,8 +114,12 @@
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/FreeConditionsWindow.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/CalculatedFieldWizard.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/DocumentParametersGridPanel.js"/>
 	<script type="text/javascript" src='${src}'/></script>
+	
 	<!-- New OO GUI -->
 	
 	

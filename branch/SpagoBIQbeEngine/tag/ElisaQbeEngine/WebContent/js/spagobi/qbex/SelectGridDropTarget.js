@@ -89,7 +89,7 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
 		
 		var sourceObject;
       	if(ddSource.tree) {
-        	this.notifyDropFromTree(ddSource, e, data, rowIndex);
+        	this.notifyDropFromDatamartStructureTree(ddSource, e, data, rowIndex);
       	} else if(ddSource.grid &&  ddSource.grid.type === 'selectgrid') {
         	this.notifyDropFromSelectGrid(ddSource, e, data, rowIndex);
       	} else if(ddSource.grid &&  ddSource.grid.type === 'filtergrid') {
@@ -106,41 +106,58 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
       	}        
 	}
 
-	, notifyDropFromTree: function(ddSource, e, data, rowIndex) {
+	// =====================================================================================
+	// from TREE
+	// =====================================================================================
+	, notifyDropFromDatamartStructureTree: function(ddSource, e, data, rowIndex) {
 		//alert('Source object: tree');
 
-        // the node dragged from tree to grid
-        var node;        
+       
+        var node;  // the node dragged from tree to grid
+        var field;        
+        
 		node = ddSource.dragData.node;             
 
         if(node.attributes.field && node.attributes.type == 'field') {
-        	var record = new this.targetPanel.Record({
+        	
+        	field = {
         		id: ddSource.dragData.node.id , 
             	entity: ddSource.dragData.node.attributes.entity , 
-            	field: ddSource.dragData.node.attributes.field  
-          	});
+            	field: ddSource.dragData.node.attributes.field,
+            	alias: ddSource.dragData.node.attributes.field  
+          	};
         
-        	this.targetPanel.addRow(record, rowIndex);
+        	this.targetPanel.addField(field, rowIndex);
           	
         } else if(node.attributes.attributes.type == 'entity'){
 			
 			for(var i = 0; i < node.attributes.children.length; i++) {
 				if(node.attributes.children[i].attributes.type != 'field') continue;
-				var record = new this.targetPanel.Record({
+				field = {
       				id: node.attributes.children[i].id , 
         			entity: node.attributes.children[i].attributes.entity , 
-        			field: node.attributes.children[i].attributes.field  
-      			});				
-				this.targetPanel.addRow(record, rowIndex);
+        			field: node.attributes.children[i].attributes.field,
+                	alias: node.attributes.children[i].attributes.field   
+        			
+      			};				
+				this.targetPanel.addField(field, rowIndex);
 			}
-        
+			
         } else {
-        	alert("Error: unknown node type");
+        	Ext.Msg.show({
+				   title:'Drop target not allowed',
+				   msg: 'Node of type [' + node.attributes.attributes.type + '] cannot be dropped here',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.ERROR
+			});
         }
 
         this.targetGrid.getView().refresh();
-	} // notifyDropFromTree
+	} 
 
+	//=====================================================================================
+	// from SELECT GRID (self)
+	// ====================================================================================
     , notifyDropFromSelectGrid: function(ddSource, e, data, rowIndex) {
     	//alert('Source object: select-grid');
         var sm = this.targetGrid.getSelectionModel();

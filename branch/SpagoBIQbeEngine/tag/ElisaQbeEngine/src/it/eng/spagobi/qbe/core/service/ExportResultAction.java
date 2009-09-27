@@ -38,7 +38,7 @@ import it.eng.qbe.export.ReportRunner;
 import it.eng.qbe.export.SQLFieldsReader;
 import it.eng.qbe.export.TemplateBuilder;
 import it.eng.qbe.model.IStatement;
-import it.eng.qbe.query.SelectField;
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
@@ -133,7 +133,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			}
 			logger.debug("Fields extracted succesfully");
 			
-			Assert.assertTrue(getEngineInstance().getActiveQuery().getSelectFields().size() == extractedFields.size(), 
+			Assert.assertTrue(getEngineInstance().getActiveQuery().getDataMartSelectFields(true).size() == extractedFields.size(), 
 					"The number of fields extracted from query resultset cannot be different from the number of fields specified into the query select clause");
 			
 			decorateExtractedFields( extractedFields );
@@ -206,12 +206,12 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 
 
 	private void decorateExtractedFields(List extractedFields) {
-		List selectedFields = getEngineInstance().getActiveQuery().getSelectFields();
+		List selectedFields = getEngineInstance().getActiveQuery().getDataMartSelectFields(true);
 		Iterator selectedFieldsIterator = selectedFields.iterator();
 		Iterator extractedFieldsIterator =  extractedFields.iterator();
 		while( extractedFieldsIterator.hasNext() ) {
 			Field exctractedField = (Field)extractedFieldsIterator.next();
-			SelectField selectedField = (SelectField)selectedFieldsIterator.next();
+			DataMartSelectField selectedField = (DataMartSelectField)selectedFieldsIterator.next();
 			exctractedField.setAlias( selectedField.getAlias() );
 			exctractedField.setVisible( selectedField.isVisible() );
 		}

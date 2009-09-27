@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import it.eng.qbe.query.WhereField.Operand;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -90,17 +91,21 @@ public class Query {
 
 	
 	public boolean isEmpty() {
-		for(int i = 0; i < selectFields.size(); i++) {
-			SelectField field = (SelectField)selectFields.get(i);
-			if(field.isVisible()) return false;
-		}
-		return true;
+		List fields;
+		fields = getDataMartSelectFields(true);
+		Assert.assertNotNull(fields, "getDataMartSelectFields method cannot return a null value");
+		return (fields.size() == 0);
 	}
 	
 	public void addSelectFiled(String fieldUniqueName, String function, String fieldAlias, boolean include, boolean visible,
 			boolean groupByField, String orderType) {
-		selectFields.add( new SelectField(fieldUniqueName, function, fieldAlias, include, visible, groupByField, orderType) );
+		selectFields.add( new DataMartSelectField(fieldUniqueName, function, fieldAlias, include, visible, groupByField, orderType) );
 	}
+	
+	public void addCalculatedFiled(String fieldAlias, String expression, String type, boolean included, boolean visible) {
+		selectFields.add( new CalculatedSelectField(fieldAlias, expression, type, included, visible) );
+	}
+
 	
 	public void addWhereField(String name, String description, boolean promptable,
 			Operand leftOperand, String operator, Operand rightOperand,
@@ -130,20 +135,75 @@ public class Query {
 		return (HavingField)havingFieldMap.get(fname.trim());
 	}
 	
+
+	
+	public List getSelectFields(boolean onlyIncluded) {
+		List fields;
+		if(onlyIncluded == false) {
+			fields = new ArrayList(selectFields);
+		} else {
+			fields = new ArrayList();
+			Iterator it = selectFields.iterator();
+			while(it.hasNext()) {
+				ISelectField field = (ISelectField)it.next();
+				if(field.isIncluded()) {
+					fields.add(field);
+				}
+			}
+		}
+		return fields;
+	}
+	
+	/*
 	public List getIncludedSelectFields() {
 		List includedSelectFields = new ArrayList();
 		Iterator it = this.getSelectFields().iterator();
 		while( it.hasNext() ) {
-			SelectField selectField = (SelectField)it.next();
+			DataMartSelectField selectField = (DataMartSelectField)it.next();
 			if(selectField.isIncluded()) {
 				includedSelectFields.add(selectField);
 			}
 		}
 		return includedSelectFields;
 	}
+	*/
 	
-	public List getSelectFields() {
-		return selectFields;
+	public List getDataMartSelectFields(boolean onlyIncluded) {
+		List dataMartSelectFields;
+		Iterator it;
+		ISelectField field;
+		
+		dataMartSelectFields = new ArrayList();
+		it = getSelectFields(false).iterator();
+		while(it.hasNext()) {
+			field = (ISelectField)it.next();
+			if(field.isDataMartField()) {
+				if( onlyIncluded == false || (onlyIncluded == true && field.isIncluded()) ) {
+					dataMartSelectFields.add(field);
+				}				
+			}
+		}
+		
+		return dataMartSelectFields;
+	}
+	
+	public List getCalculatedSelectFields(boolean onlyIncluded) {
+		List calculatedSelectFields;
+		Iterator it;
+		ISelectField field;
+		
+		calculatedSelectFields = new ArrayList();
+		it = getSelectFields(false).iterator();
+		while(it.hasNext()) {
+			field = (ISelectField)it.next();
+			if(!field.isDataMartField()) {
+				if( onlyIncluded == false || (onlyIncluded == true && field.isIncluded()) ) {
+					calculatedSelectFields.add(field);
+				}
+			}
+		}
+		
+		return calculatedSelectFields;
 	}
 	
 	public List getWhereFields() {
@@ -164,9 +224,9 @@ public class Query {
 	
 	public List getOrderByFields() {
 		List orderByFields = new ArrayList();
-		Iterator it = this.getSelectFields().iterator();
+		Iterator it = this.getDataMartSelectFields(false).iterator();
 		while( it.hasNext() ) {
-			SelectField selectField = (SelectField)it.next();
+			DataMartSelectField selectField = (DataMartSelectField)it.next();
 			if(selectField.isOrderByField()) {
 				orderByFields.add(selectField);
 			}
@@ -177,9 +237,9 @@ public class Query {
 	
 	public List getGroupByFields() {
 		List groupByFields = new ArrayList();
-		Iterator it = this.getSelectFields().iterator();
+		Iterator it = this.getDataMartSelectFields(false).iterator();
 		while( it.hasNext() ) {
-			SelectField selectField = (SelectField)it.next();
+			DataMartSelectField selectField = (DataMartSelectField)it.next();
 			if(selectField.isGroupByField()) {
 				groupByFields.add(selectField);
 			}

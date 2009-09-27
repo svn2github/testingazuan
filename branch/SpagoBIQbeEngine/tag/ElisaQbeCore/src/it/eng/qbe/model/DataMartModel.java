@@ -58,9 +58,9 @@ import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.model.structure.builder.BasicDataMartStructureBuilder;
 import it.eng.qbe.model.views.ViewBuilder;
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.QueryMeta;
-import it.eng.qbe.query.SelectField;
 import it.eng.qbe.utility.IDBSpaceChecker;
 import it.eng.qbe.utility.Utils;
 import it.eng.spagobi.utilities.sql.SqlUtils;
@@ -201,12 +201,12 @@ public class DataMartModel implements IDataMartModel {
 					List columnAliases = new ArrayList();
 					List columnHibernateTypes = new ArrayList();
 					
-					Iterator queryFileds = query.getSelectFields().iterator();
+					Iterator queryFileds = query.getDataMartSelectFields(true).iterator();
 					
 					Vector columns = sqlFieldsReader.readFields();
 					int i = 0;
 					while(queryFileds.hasNext()) {
-						SelectField field = (SelectField)queryFileds.next();
+						DataMartSelectField field = (DataMartSelectField)queryFileds.next();
 						Field column = (Field)columns.get(i++);
 						
 						

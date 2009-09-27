@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,10 +34,12 @@ import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.cache.QbeCacheManager;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.query.CalculatedSelectField;
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.HavingField;
+import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.SelectField;
 import it.eng.qbe.query.WhereField;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
@@ -46,7 +49,10 @@ import it.eng.spagobi.utilities.assertion.Assert;
  */
 public class QueryJSONSerializer implements QuerySerializer {
 
-		
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(QueryJSONSerializer.class);
+    
+    
 	public Object serialize(Query query, DataMartModel datamartModel, Locale locale) throws SerializationException {
 		JSONObject  result = null;
 		
@@ -123,66 +129,97 @@ public class QueryJSONSerializer implements QuerySerializer {
 		JSONArray result;
 		
 		List fields;
-		SelectField field;
+		ISelectField field;
 		String fieldUniqueName;
 		DataMartField datamartField;
 		JSONObject fieldJSON;
 		Iterator it;
 		DatamartLabels datamartLabels;
+		String label;
 		
-		datamartLabels = null;
-		if(locale != null) {
-			datamartLabels =  QbeCacheManager.getInstance().getLabels( datamartModel , locale );
-		}
+		logger.debug("IN");
 		
-		fields = query.getSelectFields();
-		Assert.assertNotNull(fields, "Fields cannot be null");
-		
-		result = new JSONArray();
-		it = fields.iterator();
-		while( it.hasNext() ) {
-			field = (SelectField)it.next();
-			fieldUniqueName = field.getUniqueName();
-			datamartField = datamartModel.getDataMartModelStructure().getField( fieldUniqueName );
-			Assert.assertNotNull(datamartField, "A filed named [" + fieldUniqueName + "] does not exist in the datamart model");
-						
-			
-			
-			fieldJSON = new JSONObject();
-			try {
-				fieldJSON.put(SerializationConstants.FIELD_ID, datamartField.getUniqueName());
-				
-				
-				String label;
-				label = null;
-				if(datamartLabels != null) {
-					label = datamartLabels.getLabel( datamartField.getParent() );
-				}
-				label = StringUtilities.isEmpty(label)? datamartField.getParent().getName(): label;
-				fieldJSON.put(SerializationConstants.FIELD_ENTITY, label);
-				
-				label = null;
-				if(datamartLabels != null) {
-					label = datamartLabels.getLabel( datamartField );
-				}
-				label = StringUtilities.isEmpty(label)? datamartField.getName(): label;
-				fieldJSON.put(SerializationConstants.FIELD_NAME, label);
-				
-				fieldJSON.put(SerializationConstants.FIELD_ALIAS, field.getAlias());
-				if( field.isGroupByField() ) {
-					fieldJSON.put(SerializationConstants.FIELD_GROUP, "true");
-				} else {
-					fieldJSON.put(SerializationConstants.FIELD_GROUP, "");
-				}
-				fieldJSON.put(SerializationConstants.FIELD_ORDER, field.getOrderType());
-				fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, field.getFunction().getName());
-				fieldJSON.put(SerializationConstants.FIELD_VISIBLE, field.isVisible());
-				fieldJSON.put(SerializationConstants.FIELD_INCLUDE, field.isIncluded());
-			} catch(JSONException e) {
-				throw new SerializationException("An error occurred while serializing field: " + fieldUniqueName, e);
+		try {
+			datamartLabels = null;
+			if(locale != null) {
+				datamartLabels =  QbeCacheManager.getInstance().getLabels( datamartModel , locale );
 			}
 			
-			result.put(fieldJSON);
+			fields = query.getSelectFields(false);
+			Assert.assertNotNull(fields, "Fields cannot be null");
+			logger.debug("Query [" + query.getId() + "] have [" + fields.size() + "] field/s to serialize");
+			
+			result = new JSONArray();
+			it = fields.iterator();
+			while( it.hasNext() ) {
+				field = (ISelectField)it.next();
+				logger.debug("Serializing filed [" + field.getAlias() + "]");
+				try {
+					fieldJSON = new JSONObject();
+					
+					fieldJSON.put(SerializationConstants.FIELD_ALIAS, field.getAlias());
+					
+					fieldJSON.put(SerializationConstants.FIELD_VISIBLE, field.isVisible());
+					fieldJSON.put(SerializationConstants.FIELD_INCLUDE, field.isIncluded());					
+					
+					if(field.isDataMartField()) {
+						DataMartSelectField dataMartSelectField = (DataMartSelectField)field;
+						
+						fieldJSON.put(SerializationConstants.FIELD_TYPE, field.DATAMART_FIELD);
+						
+						fieldUniqueName = dataMartSelectField.getUniqueName();
+						datamartField = datamartModel.getDataMartModelStructure().getField( fieldUniqueName );
+						Assert.assertNotNull(datamartField, "A filed named [" + fieldUniqueName + "] does not exist in the datamart model");
+						
+						fieldJSON.put(SerializationConstants.FIELD_ID, datamartField.getUniqueName());
+												
+						// localize entity name
+						label = null;
+						if(datamartLabels != null) {
+							label = datamartLabels.getLabel( datamartField.getParent() );
+						}
+						label = StringUtilities.isEmpty(label)? datamartField.getParent().getName(): label;
+						fieldJSON.put(SerializationConstants.FIELD_ENTITY, label);
+						
+						// localize field name
+						label = null;
+						if(datamartLabels != null) {
+							label = datamartLabels.getLabel( datamartField );
+						}
+						label = StringUtilities.isEmpty(label)? datamartField.getName(): label;
+						fieldJSON.put(SerializationConstants.FIELD_NAME, label);
+						
+						
+						if( dataMartSelectField.isGroupByField() ) {
+							fieldJSON.put(SerializationConstants.FIELD_GROUP, "true");
+						} else {
+							fieldJSON.put(SerializationConstants.FIELD_GROUP, "");
+						}
+						fieldJSON.put(SerializationConstants.FIELD_ORDER, dataMartSelectField.getOrderType());
+						fieldJSON.put(SerializationConstants.FIELD_AGGREGATION_FUNCTION, dataMartSelectField.getFunction().getName());
+						
+					} else {
+						CalculatedSelectField calculatedSelectField = (CalculatedSelectField)field;
+						
+						fieldJSON.put(SerializationConstants.FIELD_TYPE, field.CALCULATED_FIELD);
+						
+						JSONObject fieldClaculationDescriptor = new JSONObject();
+						fieldClaculationDescriptor.put(SerializationConstants.FIELD_TYPE, calculatedSelectField.getType());
+						fieldClaculationDescriptor.put(SerializationConstants.FIELD_EXPRESSION, calculatedSelectField.getExpression());
+						fieldJSON.put(SerializationConstants.FIELD_ID, fieldClaculationDescriptor);
+						
+					}
+				} catch(Throwable t) {
+					throw new SerializationException("An error occurred while serializing field: " + field.getAlias(), t);
+				}
+				logger.debug("Filed [" + field.getAlias() + "] serialized succesfully: [" + fieldJSON.toString() + "]");
+				result.put(fieldJSON);
+			}
+			
+		}catch (Throwable t) {
+			throw new SerializationException("An error occurred while serializing select clause of query: " + query.getId(), t);
+		} finally {
+			logger.debug("OUT");
 		}
 		
 		return result;

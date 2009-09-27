@@ -32,6 +32,7 @@ public class SerializationConstants {
 		
 	public static final String FIELDS = "fields";
 	public static final String FIELD_ID = "id";
+	public static final String FIELD_TYPE = "type";	
 	public static final String FIELD_ENTITY = "entity";
 	public static final String FIELD_NAME = "field";
 	public static final String FIELD_ALIAS = "alias";
@@ -40,6 +41,8 @@ public class SerializationConstants {
 	public static final String FIELD_AGGREGATION_FUNCTION = "funct";
 	public static final String FIELD_VISIBLE = "visible";
 	public static final String FIELD_INCLUDE = "include";
+	public static final String FIELD_INITIAL_VALUE = "initialValue";
+	public static final String FIELD_EXPRESSION = "expression";
 	
 	public static final String DISTINCT = "distinct";
 	public static final String IS_NESTED_EXPRESSION = "isNestedExpression";

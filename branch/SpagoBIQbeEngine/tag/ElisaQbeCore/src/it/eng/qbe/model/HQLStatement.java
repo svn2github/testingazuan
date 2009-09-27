@@ -40,12 +40,12 @@ import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.qbe.query.CriteriaConstants;
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ExpressionNode;
 import it.eng.qbe.query.HavingField;
 import it.eng.qbe.query.IAggregationFunction;
 import it.eng.qbe.query.Operand;
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.SelectField;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spago.base.SourceBean;
@@ -237,7 +237,7 @@ public class HQLStatement extends BasicStatement {
 	private String buildSelectClause(Query query, Map entityAliasesMaps) {
 		StringBuffer buffer;
 		List selectFields;
-		SelectField selectField;
+		DataMartSelectField selectField;
 		DataMartEntity rootEntity;
 		DataMartField datamartField;
 		String queryName;
@@ -248,7 +248,7 @@ public class HQLStatement extends BasicStatement {
 		logger.debug("IN");
 		buffer = new StringBuffer();
 		try {
-			selectFields = query.getIncludedSelectFields();
+			selectFields = query.getDataMartSelectFields(true);
 			if(selectFields == null ||selectFields.size() == 0) {
 				return "";
 			}
@@ -262,7 +262,7 @@ public class HQLStatement extends BasicStatement {
 			
 			Iterator it = selectFields.iterator();
 			while( it.hasNext() ) {
-				selectField = (SelectField)it.next();
+				selectField = (DataMartSelectField)it.next();
 				
 				logger.debug("select field unique name [" + selectField.getUniqueName() + "]");
 				
@@ -973,7 +973,7 @@ public class HQLStatement extends BasicStatement {
 		
 		Iterator it = groupByFields.iterator();
 		while( it.hasNext() ) {
-			SelectField groupByField = (SelectField)it.next();
+			DataMartSelectField groupByField = (DataMartSelectField)it.next();
 			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(groupByField.getUniqueName());
 			DataMartEntity entity = datamartField.getParent().getRoot(); 
 			String queryName = datamartField.getQueryName();
@@ -993,9 +993,9 @@ public class HQLStatement extends BasicStatement {
 	
 	private List getOrderByFields(Query query) {
 		List orderByFields = new ArrayList();
-		Iterator it = query.getSelectFields().iterator();
+		Iterator it = query.getDataMartSelectFields(false).iterator();
 		while( it.hasNext() ) {
-			SelectField selectField = (SelectField)it.next();
+			DataMartSelectField selectField = (DataMartSelectField)it.next();
 			if(selectField.isOrderByField()) {
 				orderByFields.add(selectField);
 			}
@@ -1006,7 +1006,7 @@ public class HQLStatement extends BasicStatement {
 	private String buildOrderByClause(Query query, Map entityAliasesMaps) {
 		StringBuffer buffer;
 		Iterator it;
-		SelectField selectField;
+		DataMartSelectField selectField;
 		
 		it = getOrderByFields(query).iterator();		
 		if(!it.hasNext()) {
@@ -1019,7 +1019,7 @@ public class HQLStatement extends BasicStatement {
 		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
 					
 		while( it.hasNext() ) {
-			selectField = (SelectField)it.next();
+			selectField = (DataMartSelectField)it.next();
 			
 			Assert.assertTrue(selectField.isOrderByField(), "Field [" + selectField.getUniqueName() +"] is not an orderBy filed");
 			

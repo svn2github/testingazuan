@@ -21,43 +21,32 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.query;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  *
  */
-public class SelectField {
+public class DataMartSelectField extends AbstractSelectField {
+	
 	private String uniqueName;
-	private String alias;
 	private IAggregationFunction function;
 	private boolean groupByField;
 	private String orderType;
-	private boolean visible;
-	private boolean include;
+	
 
 
-	public SelectField(String uniqueName, String function, String alias, boolean include, boolean visible,
-			boolean groupByField, String orderType ) {
-		this.uniqueName = uniqueName;
-		this.alias = alias;
-		this.function = AggregationFunctions.get(function);
-		setInclude( include );
-		setVisible( visible );
-		this.setGroupByField(groupByField);
-		this.setOrderType(orderType);
+	public DataMartSelectField(String uniqueName, String function, String alias, boolean include, boolean visible,
+		boolean groupByField, String orderType ) {
+		
+		super(alias, ISelectField.DATAMART_FIELD, include, visible);
+				
+		setUniqueName(uniqueName);
+		setFunction( AggregationFunctions.get(function) );		
+		setGroupByField(groupByField);
+		setOrderType(orderType);
 	}
 
 	
-	public String getAlias() {
-		return alias;
-	}
-
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}	
-
 	public IAggregationFunction getFunction() {
 		return function;
 	}
@@ -74,17 +63,6 @@ public class SelectField {
 		this.uniqueName = uniqueName;
 	}
 
-
-	public boolean isVisible() {
-		return visible;
-	}
-
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
-
 	public boolean isGroupByField() {
 		return groupByField;
 	}
@@ -93,7 +71,6 @@ public class SelectField {
 	public void setGroupByField(boolean groupByField) {
 		this.groupByField = groupByField;
 	}
-
 
 	public boolean isOrderByField() {
 		return "ASC".equalsIgnoreCase( getOrderType() )
@@ -113,14 +90,5 @@ public class SelectField {
 
 	public void setOrderType(String orderType) {
 		this.orderType = orderType;
-	}
-	
-	public boolean isIncluded() {
-		return include;
-	}
-
-
-	public void setInclude(boolean include) {
-		this.include = include;
 	}
 }

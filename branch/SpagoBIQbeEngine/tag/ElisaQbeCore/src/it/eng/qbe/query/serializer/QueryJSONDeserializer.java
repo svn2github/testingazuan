@@ -60,7 +60,6 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		
 		try {
 			Assert.assertNotNull(o, "Object to be deserialized cannot be null");
-			//Assert.assertTrue(o instanceof String, "Object to be deserialized must be string");
 			
 			if(o instanceof String) {
 				logger.debug("Deserializing string [" + (String)o + "]");
@@ -123,55 +122,70 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 	private void deserializeFields(JSONArray fieldsJSON, DataMartModel datamartModel, Query query) throws SerializationException {
 		JSONObject fieldJSON;
 		DataMartField field;
-		String fieldUniqueName;
 		String alias;
+		String fieldType;
+		
+		String fieldUniqueName;		
 		String group;
 		String order;
 		String funct;
+		
+		JSONObject fieldClaculationDescriptor;
+		String type;
+		String expression;
+		
 		boolean visible;
-		boolean include;
+		boolean included;
 		
+		logger.debug("IN");
 		
-		for(int i = 0; i < fieldsJSON.length(); i++) {
+		try {
 			
-			try {
-				fieldJSON = fieldsJSON.getJSONObject(i);
-				
-				fieldUniqueName = fieldJSON.getString(SerializationConstants.FIELD_ID);
-				Assert.assertNotNull(fieldUniqueName, "Field name connot be null");
-				
-				field = datamartModel.getDataMartModelStructure().getField(fieldUniqueName);
-				Assert.assertNotNull(field, "Inpossible to retrive from datamart-structure a fild named " + fieldUniqueName + ". Please check select clause: " + fieldsJSON.toString());
-			} catch (JSONException e) {
-				throw new SerializationException("An error occurred while deserializing select clause:: " + fieldsJSON.toString(), e);
-			}	
-
-			try {
-				alias = fieldJSON.getString(SerializationConstants.FIELD_ALIAS);
-				if(StringUtilities.isEmpty(alias)) alias = "Column_" + (i+1);
-				
-				group = fieldJSON.getString(SerializationConstants.FIELD_GROUP);
-				order = fieldJSON.getString(SerializationConstants.FIELD_ORDER);
-				funct = fieldJSON.getString(SerializationConstants.FIELD_AGGREGATION_FUNCTION);
-				visible = fieldJSON.getBoolean(SerializationConstants.FIELD_VISIBLE);
-				include = fieldJSON.getBoolean(SerializationConstants.FIELD_INCLUDE);
-				
-				query.addSelectFiled(field.getUniqueName(), funct, alias, include, visible, group.equalsIgnoreCase("true"), order);
-				
-				/*
-				if(group.equalsIgnoreCase("true")) {
-					query.addGroupByField(field.getUniqueName());
+			logger.debug("Query [" + query.getId() + "] have [" + fieldsJSON.length() + "] to deserialize");			
+			for(int i = 0; i < fieldsJSON.length(); i++) {		
+				try {
+					fieldJSON = fieldsJSON.getJSONObject(i);
+					
+					alias = fieldJSON.getString(SerializationConstants.FIELD_ALIAS);					
+					fieldType = fieldJSON.getString(SerializationConstants.FIELD_TYPE);
+					logger.debug("Deserializing field [" + alias + "] of type [" + fieldType + "]...");
+					
+					included = fieldJSON.getBoolean(SerializationConstants.FIELD_INCLUDE);
+					visible = fieldJSON.getBoolean(SerializationConstants.FIELD_VISIBLE);
+					
+					if("datamartField".equalsIgnoreCase(fieldType)) {
+						fieldUniqueName = fieldJSON.getString(SerializationConstants.FIELD_ID);
+						Assert.assertNotNull(fieldUniqueName, "Field name connot be null");
+					
+						field = datamartModel.getDataMartModelStructure().getField(fieldUniqueName);
+						Assert.assertNotNull(field, "Inpossible to retrive from datamart-structure a fild named " + fieldUniqueName + ". Please check select clause: " + fieldsJSON.toString());
+						if(StringUtilities.isEmpty(alias)) alias = "Column_" + (i+1);
+						
+						group = fieldJSON.getString(SerializationConstants.FIELD_GROUP);
+						order = fieldJSON.getString(SerializationConstants.FIELD_ORDER);
+						funct = fieldJSON.getString(SerializationConstants.FIELD_AGGREGATION_FUNCTION);
+							
+						query.addSelectFiled(field.getUniqueName(), funct, alias, included, visible, group.equalsIgnoreCase("true"), order);	
+					} else if ("calculatedField".equalsIgnoreCase(fieldType)) {
+						
+						fieldClaculationDescriptor = fieldJSON.getJSONObject(SerializationConstants.FIELD_ID);
+						type = fieldClaculationDescriptor.getString(SerializationConstants.FIELD_TYPE);
+						expression = fieldClaculationDescriptor.getString(SerializationConstants.FIELD_EXPRESSION);
+						
+						query.addCalculatedFiled(alias, expression, type, included, visible);
+					} else {
+						Assert.assertUnreachable("Type [" + fieldType + "] of field [" + alias + "] is not valid");
+					}
+					
+					logger.debug("Field [" + alias + "] succefully deserialized");
+				} catch (Throwable t) {
+					throw new SerializationException("An error occurred while deserializing field [" + fieldsJSON.toString() + "] of query [" + query.getId() + "]", t);
 				}
-				
-				
-				if(order != null && (order.equalsIgnoreCase("ASC") || order.equalsIgnoreCase("DESC")) ) {
-					query.addOrderByField(fieldUniqueName, order.equalsIgnoreCase("ASC"));
-				}
-				*/
-			} catch (JSONException e) {
-				throw new SerializationException("An error occurred while deserializing select clause: " + fieldsJSON.toString(), e);
-			}									
-		}
+			}
+		} catch (Throwable t) {
+			throw new SerializationException("An error occurred while deserializing select clause: " + fieldsJSON.toString(), t);
+		}									
+		
 	}
 	
 	
@@ -196,9 +210,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 		
 		logger.debug("IN");
 		
-		try {
-		
-			
+		try {					
 			logger.debug("Query [" + query.getId() + "] have [" + filtersJOSN.length() + "] to deserialize");
 			for(int i = 0; i < filtersJOSN.length(); i++) {
 				
@@ -234,13 +246,10 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 					
 				} catch (JSONException e) {
 					throw new SerializationException("An error occurred while filter [" + filtersJOSN.toString() + "] of query [" + query.getId() + "]", e);
-				}
-				
-		
-				
+				}			
 			}
 		} catch(Throwable t) {
-			throw new SerializationException("An error occurred while deserializing filters of query [" + query.getId() +"]", t);
+			throw new SerializationException("An error occurred while deserializing field of query [" + query.getId() +"]", t);
 		} finally {
 			logger.debug("OUT");
 		}
@@ -313,7 +322,7 @@ public class QueryJSONDeserializer implements QueryDeserializer {
 					query.addHavingField(filterId, filterDescription, promptable, leftOperand, operator, rightOperand, booleanConnector);
 					
 				} catch (JSONException e) {
-					throw new SerializationException("An error occurred while filter [" + havingsJOSN.toString() + "] of query [" + query.getId() + "]", e);
+					throw new SerializationException("An error occurred while deserializing filter [" + havingsJOSN.toString() + "] of query [" + query.getId() + "]", e);
 				}
 				
 		

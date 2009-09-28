@@ -53,6 +53,12 @@ LICENSE: see LICENSE.html file
 </head>
 <body bgcolor=white lang="en">
 
+<!-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
+<script type="text/javascript">
+	document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
+</script>
+<!-- END SCRIPT FOR DOMAIN DEFINITION -->
+
 <%
 
 

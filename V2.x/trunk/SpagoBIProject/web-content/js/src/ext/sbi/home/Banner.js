@@ -311,7 +311,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 		 		});			 		
 		//Welcome Text initialization
 		 this.tbWelcomeText = new Ext.Toolbar.TextItem({
-					text: LN('sbi.home.Welcome')+'<b>'+ Sbi.user.userId+'<b>&nbsp;&nbsp;&nbsp;'
+					text: LN('sbi.home.Welcome')+'<b>'+ Sbi.user.userName+'<b>&nbsp;&nbsp;&nbsp;'
 				});
 	 },
 	 	
@@ -329,7 +329,7 @@ Ext.extend(Sbi.home.Banner, Ext.Panel, {
 			items: ['']
 		});
 
-		var lenghtUserName = Sbi.user.userId.length+10;
+		var lenghtUserName = Sbi.user.userName.length+10;
 	    var lenghtUserNameInPixel = lenghtUserName*10;
 	    var menulenght = lenghtUserNameInPixel + 170;
 	    if(drawSelectTheme){

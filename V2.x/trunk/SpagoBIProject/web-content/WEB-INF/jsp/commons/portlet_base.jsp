@@ -60,7 +60,7 @@ String getUrl(String baseUrl, Map mapPars) {
     buffer.append(baseUrl.indexOf("?") == -1 ? "?" : "&");
 	if (mapPars != null && !mapPars.isEmpty()) {
 		java.util.Set keys = mapPars.keySet();
-		Iterator iterKeys = keys.iterator();
+		Iterator iterKeys = keys.iterator(); 
 		while (iterKeys.hasNext()) {
 		  	String key = iterKeys.next().toString();
 		  	String value = mapPars.get(key).toString();
@@ -169,10 +169,12 @@ String getUrl(String baseUrl, Map mapPars) {
 	
 	String userUniqueIdentifier="";
 	String userId="";
+	String userName="";
 	//if (userProfile!=null) userId=(String)userProfile.getUserUniqueIdentifier();
 	if (userProfile!=null){
 		userId=(String)((UserProfile)userProfile).getUserId();
 		userUniqueIdentifier=(String)userProfile.getUserUniqueIdentifier();
+		userName=(String)((UserProfile)userProfile).getUserName();
 	}
 	
 	// Set Theme
@@ -226,6 +228,7 @@ String getUrl(String baseUrl, Map mapPars) {
     // javascript-side user profile object
     Ext.ns("Sbi.user");
     Sbi.user.userId = '<%= StringEscapeUtils.escapeJavaScript(userId) %>';
+    Sbi.user.userName = '<%= StringEscapeUtils.escapeJavaScript(userName) %>';    
     Sbi.user.ismodeweb = <%= sbiMode.equals("WEB")? "true" : "false"%>;
 	<%
 	StringBuffer buffer = new StringBuffer("[");

@@ -41,6 +41,7 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
+<%@page import="it.eng.spagobi.services.common.EnginConf"%>
 
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>

@@ -40,7 +40,7 @@
     <Environment name="spagobi_sso_class" type="java.lang.String" value="it.eng.spagobi.services.common.FakeSsoService"/>
     <Environment name="spagobi_service_url" type="java.lang.String" value="http://localhost:8080/SpagoBI"/>    
     <Environment name="spagobi_host_url" type="java.lang.String" value="http://localhost:8080"/>
-    <Environment name="spagobi_domain" type="java.lang.String" value="http://localhost:8080"/>
+    <Environment name="spagobi_domain" type="java.lang.String" value="localhost"/>
  
     <Resource auth="Container" factory="de.myfoo.commonj.work.FooWorkManagerFactory" maxThreads="5" 
           name="wm/SpagoWorkManager" type="commonj.work.WorkManager"/>

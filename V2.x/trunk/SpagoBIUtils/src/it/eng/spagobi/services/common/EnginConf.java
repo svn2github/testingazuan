@@ -41,6 +41,7 @@ public class EnginConf {
 	private String resourcePath = null;
 	private String spagoBiServerUrl = null;
 	private String spagoBiSsoClass = null;
+	private String spagoBiDomain = null;
 	
 
 
@@ -68,6 +69,7 @@ public class EnginConf {
 				setResourcePath();
 				setSpagoBiServerUrl();
 				setSpagoBiSsoClass();
+				setSpagoBiDomain();
 			}else logger.debug("Impossible to load configuration for report engine");
 		} catch (SourceBeanException e) {
 			logger.error("Impossible to load configuration for report engine", e);
@@ -132,6 +134,20 @@ public class EnginConf {
 
 		logger.debug("OUT");
 
+	}
+	
+	public String getSpagoBiDomain() {
+		return spagoBiDomain;
+	}
+	
+	private void setSpagoBiDomain() {
+		logger.debug("IN");
+		SourceBean sb = (SourceBean) config.getAttribute("SPAGOBI_DOMAIN_JNDI_NAME");
+		String domain = (String) sb.getCharacters();
+		if (domain!=null && domain.length()>0){
+			spagoBiDomain = SpagoBIUtilities.readJndiResource(domain);	
+		}
+		logger.debug("OUT");
 	}
 	
 	public String getSpagoBiSsoClass() {

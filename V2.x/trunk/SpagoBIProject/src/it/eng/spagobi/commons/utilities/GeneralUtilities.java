@@ -68,7 +68,8 @@ public class GeneralUtilities extends SpagoBIUtilities{
     private static transient Logger logger = Logger.getLogger(GeneralUtilities.class);
     
     public static final int MAX_DEFAULT_TEMPLATE_SIZE = 5242880;
-    public static String SPAGOBI_HOST = null;    
+    private static String SPAGOBI_HOST = null; 
+    private static String SPAGOBI_DOMAIN = null;
     
     /**
      * Substitutes the substrings with sintax "${code,bundle}" or "${code}" (in
@@ -342,6 +343,29 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT:" + SPAGOBI_HOST);
 		return SPAGOBI_HOST;
 	}  
+	
+	public static String getSpagoBiDomain() {
+		logger.debug("IN");
+		if (SPAGOBI_DOMAIN == null) {
+			try {
+				logger.debug("Trying to recover SpagoBI domain from ConfigSingleton");
+				ConfigSingleton spagoConfig = ConfigSingleton.getInstance();
+				SourceBean sbTmp = (SourceBean) spagoConfig.getAttribute("SPAGOBI.SPAGOBI_DOMAIN_JNDI_NAME");
+				if (sbTmp != null) {
+					String jndi = sbTmp.getCharacters();
+					SPAGOBI_DOMAIN = readJndiResource(jndi);
+				}
+				if (SPAGOBI_DOMAIN == null) {
+					logger.debug("SPAGOBI_DOMAIN not set, using the default value ");
+					SPAGOBI_DOMAIN = "http://localhost:8080";
+				}
+			} catch (Exception e) {
+				logger.error("Error while recovering getSpagoBiHost", e);
+			}
+		}
+		logger.debug("OUT:" + SPAGOBI_DOMAIN);
+		return SPAGOBI_DOMAIN;
+	}
 	
 	
 	

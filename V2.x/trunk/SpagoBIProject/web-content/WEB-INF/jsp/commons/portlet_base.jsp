@@ -74,11 +74,11 @@ String getUrl(String baseUrl, Map mapPars) {
 }
 %>
 
-<!-- SCRIPT FOR DOMAIN DEFINITION 
+<!-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
 <script type="text/javascript">
-	document.domain='engilab.ewebpd.eng.it';
+	document.domain='<%= GeneralUtilities.getSpagoBiDomain() %>';
 </script>
--->
+<!-- END SCRIPT FOR DOMAIN DEFINITION -->
 
 <!-- GET SPAGO OBJECTS  -->
 <%

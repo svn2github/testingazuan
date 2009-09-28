@@ -42,15 +42,16 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@page import="it.eng.spagobi.jpivotaddins.crossnavigation.SpagoBICrossNavigationConfig"%>
+<%@page import="it.eng.spagobi.jpivotaddins.bean.ToolbarBean"%>
+<%@page import="it.eng.spagobi.services.common.EnginConf"%>
 
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib uri="http://www.tonbeller.com/wcf" prefix="wcf" %>
 <%@ taglib uri="http://spagobi.eng.it/" prefix="spagobi" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %> 
-    
 
 
-<%@page import="it.eng.spagobi.jpivotaddins.bean.ToolbarBean"%>
+
 <html>
 <head>
   <title>JPivot Page</title>
@@ -66,6 +67,12 @@ The following directive catches exceptions thrown by jsps, must be commented in 
   <link rel="stylesheet" type="text/css" href="contextMenu/contextMenu.css">
 </head>
 <body bgcolor="white" lang="en">
+
+<!-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
+<script type="text/javascript">
+	document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
+</script>
+<!-- END SCRIPT FOR DOMAIN DEFINITION -->
 
 <%
 Logger logger = Logger.getLogger(this.getClass());

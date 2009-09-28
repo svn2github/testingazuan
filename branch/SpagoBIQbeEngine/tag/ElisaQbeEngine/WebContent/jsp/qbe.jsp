@@ -11,13 +11,22 @@
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
 <%@page import="it.eng.spagobi.commons.constants.SpagoBIConstants"%>
 <%@page import="java.util.Locale"%>
+<%@page import="it.eng.spagobi.services.common.EnginConf"%>
+<%@page import="java.util.Map"%>
 
 <%@ taglib uri="/WEB-INF/tlds/commons/qctl.tld" prefix="qbe" %>
 <%@ taglib uri="/WEB-INF/tlds/jstl-1.1.2/c.tld" prefix="c" %>
 
 
 
-<%@page import="java.util.Map"%><qbe:page>
+
+<qbe:page>
+
+	<!-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
+	<script type="text/javascript">
+		document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
+	</script>
+	<!-- END SCRIPT FOR DOMAIN DEFINITION -->
 
 	<%@include file="commons/includeExtJS.jspf" %>
 	
@@ -171,9 +180,19 @@
 	        , baseParams: params
 	    });
 
+	    <%
+	    String spagobiServerHost = request.getParameter(SpagoBIConstants.SBI_HOST);
+	    String spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
+	    String spagobiSpagoController = request.getParameter(SpagoBIConstants.SBI_SPAGO_CONTROLLER);
+	    %>
+		var remoteUrl = {
+			completeUrl: '<%= spagobiServerHost + spagobiContext + spagobiSpagoController %>'
+		};
+	    
 	    Sbi.config.remoteServiceRegistry = new Sbi.service.ServiceRegistry({
-	    	baseUrl: '<%= request.getParameter(SpagoBIConstants.SBI_HOST) + request.getParameter(SpagoBIConstants.SBI_CONTEXT) %>'
+	    	baseUrl: remoteUrl
 	        , baseParams: params
+	        , defaultAbsolute: true
 	    });
 
       	var qbeConfig = {};

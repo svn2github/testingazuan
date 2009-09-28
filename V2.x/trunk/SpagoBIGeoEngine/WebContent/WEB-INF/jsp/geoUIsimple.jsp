@@ -32,7 +32,13 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <qbe:page>
 
 	<qbe:page-content>
-			
+
+  	<!-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
+  	<script type="text/javascript">
+  		document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
+  	</script>
+  	<!-- END SCRIPT FOR DOMAIN DEFINITION -->
+
 		<iframe id="iframe_1"
 			        name="iframe_1"
 			        src='AdapterHTTP?ACTION_NAME=DRAW_MAP_ACTION&SBI_EXECUTION_ID=<%= request.getParameter("SBI_EXECUTION_ID")%>'

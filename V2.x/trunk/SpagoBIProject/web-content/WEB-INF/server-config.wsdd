@@ -116,7 +116,7 @@
   <parameter name="wsdlServiceElement" value="DocumentExecuteServiceService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobiexecute"/>
   <parameter name="wsdlPortType" value="DocumentExecuteService"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="schemaUnqualified" value="http://xml.apache.org/xml-soap"/>
  </service>
  <service name="DataSourceService" provider="java:RPC">
@@ -215,7 +215,7 @@
   <parameter name="wsdlServiceElement" value="DocumentsServiceService"/>
   <parameter name="wsdlTargetNamespace" value="urn:spagobisdkdocuments"/>
   <parameter name="wsdlPortType" value="DocumentsService"/>
-  <parameter name="scope" value="Session"/>
+  <parameter name="scope" value="Application"/>
   <parameter name="schemaUnqualified" value="http://exceptions.sdk.spagobi.eng.it,http://xml.apache.org/xml-soap,http://bo.documents.sdk.spagobi.eng.it,urn:spagobisdkdocuments"/>
   <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns29:InvalidParameterValue" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.exceptions.InvalidParameterValue" xmlns:ns29="http://exceptions.sdk.spagobi.eng.it"/>
   <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" qname="ns30:NonExecutableDocumentException" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:it.eng.spagobi.sdk.exceptions.NonExecutableDocumentException" xmlns:ns30="http://exceptions.sdk.spagobi.eng.it"/>

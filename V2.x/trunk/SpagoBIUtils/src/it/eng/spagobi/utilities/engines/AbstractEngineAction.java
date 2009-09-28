@@ -32,20 +32,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.utilities.engines;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.container.ContextManager;
 import it.eng.spagobi.container.IBeanContainer;
 import it.eng.spagobi.container.strategy.ExecutionContextRetrieverStrategy;
 import it.eng.spagobi.container.strategy.IContextRetrieverStrategy;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
-import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.service.AbstractBaseHttpAction;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -105,34 +104,6 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 		return getEngineInstance().getEnv();
 	}
 	
-	public String xsaveAnalysisState() throws SpagoBIEngineException {
-		IEngineInstance engineInstance = null;
-		String documentId = null;
-		EngineAnalysisMetadata analysisMetadata = null;
-		IEngineAnalysisState analysisState = null;
-		ContentServiceProxy  contentServiceProxy = null;
-		String serviceResponse= null;	
-		
-		engineInstance = getEngineInstance();
-		analysisMetadata = engineInstance.getAnalysisMetadata();
-		analysisState = engineInstance.getAnalysisState();
-		
-		Assert.assertNotNull(getEnv(),"ENV cannot be null in order to save the analysis state");
-		Assert.assertNotNull(getEnv().get( EngineConstants.ENV_CONTENT_SERVICE_PROXY ),"ENV property " + EngineConstants.ENV_CONTENT_SERVICE_PROXY + " cannot be null in order to save the analysis state");
-		Assert.assertNotNull(getEnv().get( EngineConstants.ENV_DOCUMENT_ID ),"ENV property " + EngineConstants.ENV_DOCUMENT_ID + " cannot be null in order to save the analysis state");
-				
-		contentServiceProxy = (ContentServiceProxy)getEnv().get( EngineConstants.ENV_CONTENT_SERVICE_PROXY );		
-		documentId = (String)getEnv().get( EngineConstants.ENV_DOCUMENT_ID );
-		
-		serviceResponse = contentServiceProxy.saveSubObject(documentId, 
-				analysisMetadata.getName(),
-				analysisMetadata.getDescription(), 
-				PUBLIC_SCOPE.equalsIgnoreCase(analysisMetadata.getScope())? "true": "false", 
-				new String(analysisState.store()) );
-		
-		return serviceResponse;
-	}
-	
 	
 	public String saveAnalysisState() throws SpagoBIEngineException {
 		IEngineInstance engineInstance = null;
@@ -178,7 +149,7 @@ public class AbstractEngineAction extends AbstractBaseHttpAction {
 	public Locale getLocale() {
 		return  (Locale)getEnv().get(EngineConstants.ENV_LOCALE);
 	}
-
+	
 	/**
 	 * Sets the qbe engine locale.
 	 * 

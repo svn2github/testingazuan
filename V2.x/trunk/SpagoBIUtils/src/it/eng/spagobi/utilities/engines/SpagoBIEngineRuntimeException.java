@@ -103,6 +103,10 @@ public class SpagoBIEngineRuntimeException extends RuntimeException {
 		this.description = description;
 	}
 
+	public void setHints(List hints) {
+		this.hints = hints;
+	}
+	
 	public List getHints() {
 		if(hints == null) {
 			hints = new ArrayList();

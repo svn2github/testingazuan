@@ -83,7 +83,7 @@ public abstract class AbstractEngineStartServlet extends AbstractBaseServlet {
     	logger.debug("User Id: " + servletIOManager.getUserId());
 		logger.debug("Audit Id: " + servletIOManager.getAuditId());
 		logger.debug("Document Id: " + servletIOManager.getDocumentId());
-		logger.debug("Template: " + servletIOManager.getTemplate());
+		logger.debug("Template: " + servletIOManager.getTemplateAsSourceBean());
 				
     }
 

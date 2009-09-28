@@ -197,10 +197,6 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     		if(auditId == null) {
         		auditId = getHttpRequest().getParameter( AUDIT_ID );
         	}
-    		
-    		if(auditId == null) {
-	    		throw new SpagoBIEngineStartupException(getEngineName(), "Impossible to retrive audit id");
-	    	}
     	} finally {
 			logger.debug("OUT");	
 		}
@@ -523,7 +519,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
    }
    
    public AuditServiceProxy getAuditServiceProxy() {
-	   if(auditProxy == null) {
+	   if(auditProxy == null && getAuditId() != null) {
 		   auditProxy = new AuditServiceProxy(getAuditId(), getUserIdentifier(), getHttpSession());
 	   }	   
 	    

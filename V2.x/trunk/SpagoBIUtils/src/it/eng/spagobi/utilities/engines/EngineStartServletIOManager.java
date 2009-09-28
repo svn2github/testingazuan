@@ -49,6 +49,7 @@ import it.eng.spagobi.services.proxy.EventServiceProxy;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.ParametersDecoder;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -62,7 +63,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	private String documentId;
 	private Locale locale;
 	
-	private SourceBean template;
+	private Content template;
 	
 	private ContentServiceProxy contentProxy;
 	private AuditServiceProxy auditProxy;
@@ -149,44 +150,69 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	   	return auditId;		
 	 }
 	    
-	    /**
-	     * Gets the template.
-	     * 
-	     * @return the template
-	     */
-	    public SourceBean getTemplate() {
-	    	if(template == null) {
-	    		template = getTemplate( getUserId(), getDocumentId() );
-	    	}
-	    	return template;
-	    }
-	    
-	    private SourceBean getTemplate(String userId, String documentId) {
-	    	SourceBean templateSB = null;
-			Content template = null;
-			String templateContent = null;
-			
-			contentProxy = getContentServiceProxy();
-			HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters( getRequestContainer() );
-			template = contentProxy.readTemplate(documentId, requestParameters);
-			logger.debug("Read the template."+ template.getFileName());	
-			
-			
-			try {
-				templateContent = new String( DECODER.decodeBuffer(template.getContent()) );
-				templateSB = SourceBean.fromXMLString(templateContent);
-				logger.debug("Read the template."+ template.getFileName());	
-			} catch (IOException e) {
-				logger.error("Impossible to get content from template\n" + e);
-				e.printStackTrace();
-			} catch (SourceBeanException e) {
+	 
+	 
+	  public SourceBean getTemplateAsSourceBean() {
+		  SourceBean templateSB = null;
+		  try {
+			  SourceBean.fromXMLString(getTemplateAsString());
+		  } catch (SourceBeanException e) {
 				logger.error("Impossible to decode template's content\n" + e);
-				e.printStackTrace();
-			}		
+				throw new SpagoBIRuntimeException("Impossible to decode template's content [" + template.getFileName() + "]", e);
+				
+		  }		
+		  
+		  return templateSB;
+	  }
+	   
+	  
+	  public String getTemplateAsString() {
+		  return new String(getTemplate());
+	  }
+	  
+	  public byte[] getTemplate() {			
+		  	if(template == null) {
+		  		contentProxy = getContentServiceProxy();
+				HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters( getRequestContainer() );
+				template = contentProxy.readTemplate(documentId, requestParameters);
+				logger.debug("Read the template ["+ template.getFileName() + " ]");	
+		  	}
+		  
+			byte[] templateContent = null;
+			try {
+				templateContent = DECODER.decodeBuffer(template.getContent());
+			} catch (IOException e) {
+				throw new SpagoBIRuntimeException("Impossible to get content from template [" + template.getFileName() + "]", e);
+			}
+			return templateContent;
+	}
+	  
+	private SourceBean getTemplateX(String userId, String documentId) {
+	   	SourceBean templateSB = null;
+		Content template = null;
+		String templateContent = null;
+			
+		contentProxy = getContentServiceProxy();
+		HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters( getRequestContainer() );
+		template = contentProxy.readTemplate(documentId, requestParameters);
+		logger.debug("Read the template."+ template.getFileName());	
 			
 			
-			return templateSB;
-		}
+		try {
+			templateContent = new String( DECODER.decodeBuffer(template.getContent()) );
+			templateSB = SourceBean.fromXMLString(templateContent);
+			logger.debug("Read the template."+ template.getFileName());	
+		} catch (IOException e) {
+			logger.error("Impossible to get content from template\n" + e);
+			e.printStackTrace();
+		} catch (SourceBeanException e) {
+			logger.error("Impossible to decode template's content\n" + e);
+			e.printStackTrace();
+		}		
+			
+			
+		return templateSB;
+	}
 	 
 	    public IDataSource getDataSource() {
 	    	if(dataSource == null) {
@@ -265,7 +291,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	    }
 	    
 	    public AuditServiceProxy getAuditServiceProxy() {
-	 	   if(auditProxy == null) {
+	 	   if(auditProxy == null && getAuditId() != null) {
 	 		   auditProxy = new AuditServiceProxy(getAuditId(), getUserIdentifier(), getHttpSession());
 	 	   }	   
 	 	    
@@ -303,7 +329,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 		 	   env = new HashMap();
 		 	   
 		 	   copyRequestParametersIntoEnv(env);
-		 	   //env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
+		 	   env.put(EngineConstants.ENV_DATASOURCE, getDataSource());
 		 	   env.put(EngineConstants.ENV_DOCUMENT_ID, getDocumentId());
 		 	   env.put(EngineConstants.ENV_CONTENT_SERVICE_PROXY, getContentServiceProxy());
 		 	   env.put(EngineConstants.ENV_AUDIT_SERVICE_PROXY, getAuditServiceProxy() );

@@ -141,7 +141,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<div style="float:left;width:10%;">
 			  <center>
 				<a href="javascript:submitExportForm();">
-						<img src= '<%=urlBuilder.getResourceLinkByTheme(request, "/img/tools/importexport/importexport32.gif", currTheme) %>'
+						<img src= '<%=urlBuilder.getResourceLinkByTheme(request, "/img/tools/importexport/export32.png", currTheme) %>'
 							title='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' 
 							alt='<spagobi:message key = "SBISet.export" bundle="component_impexp_messages"/>' />
 				</a>

@@ -68,7 +68,7 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 	// request parameters
 	public static String DOCUMENT_ID = ObjectsTreeConstants.OBJECT_ID;
 	public static String DOCUMENT_LABEL = ObjectsTreeConstants.OBJECT_LABEL;
-	
+	public static String CALLBACK = "callback";
 	// logger component
 	private static Logger logger = Logger.getLogger(GetParameterValuesForExecutionAction.class);
 	
@@ -106,8 +106,11 @@ public class GetParametersForExecutionAction  extends AbstractSpagoBIAction {
 			e.printStackTrace();
 		}
 		
+		String callback = getAttributeAsString( CALLBACK );
+		logger.debug("Parameter [" + CALLBACK + "] is equals to [" + callback + "]");
+		
 		try {
-			writeBackToClient( new JSONSuccess( parametersJSON ) );
+			writeBackToClient( new JSONSuccess( parametersJSON, callback )  );
 		} catch (IOException e) {
 			throw new SpagoBIServiceException("Impossible to write back the responce to the client", e);
 		}

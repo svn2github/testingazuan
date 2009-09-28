@@ -60,11 +60,19 @@ Sbi.qbe.DocumentParametersGridPanel = function(config) {
 		, baseParams: params
 	});
 
-	this.store = new Ext.data.JsonStore({
-        fields: ['id', 'label', 'type']
-        , url: this.services['getDocumentParameters']
-    });
- 	this.store.load({params: params});
+	
+	this.store = new Ext.data.Store({
+        autoLoad:true,
+        proxy: new Ext.data.ScriptTagProxy({
+	        url: this.services['getDocumentParameters'],
+	        method: 'GET'
+	    }),
+	    reader: new Ext.data.JsonReader({}, [
+	            {name:'id'},
+	            {name:'label'},
+	            {name:'type'}
+	        ])
+	});
 	
  	this.sm = new Ext.grid.RowSelectionModel({singleSelect:true});
  	
@@ -73,7 +81,7 @@ Sbi.qbe.DocumentParametersGridPanel = function(config) {
         , border: false
         , columns: [
             {header: LN('sbi.qbe.documentparametersgridpanel.headers.label'), sortable: true, dataIndex: 'label'}
-            , {header: LN('sbi.qbe.documentparametersgridpanel.headers.urlname'), sortable: true, dataIndex: 'id'} 
+            //, {header: LN('sbi.qbe.documentparametersgridpanel.headers.urlname'), sortable: true, dataIndex: 'id'} 
         ]
 		, viewConfig: {
         	forceFit: true

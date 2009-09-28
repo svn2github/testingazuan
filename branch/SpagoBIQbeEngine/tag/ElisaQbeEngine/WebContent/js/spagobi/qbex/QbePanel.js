@@ -91,14 +91,17 @@ Sbi.qbe.QbePanel = function(config) {
 		this.tabs.on('tabchange', function () {
 			var anActiveTab = this.tabs.getActiveTab();
 			/*
-			 * work-around: forcing the layout recalculation on west/center region panels on tab change
+			 * work-around: forcing the layout recalculation on west/center/est region panels on tab change
 			 * TODO: try to remove it when upgrading Ext library
 			 */
 			if (anActiveTab.centerRegionPanel !== undefined) {
-					anActiveTab.centerRegionPanel.doLayout();
+				anActiveTab.centerRegionPanel.doLayout();
 			}
 			if (anActiveTab.westRegionPanel !== undefined) {
 				anActiveTab.westRegionPanel.doLayout();
+			}
+			if (anActiveTab.eastRegionPanel !== undefined) {
+				anActiveTab.eastRegionPanel.doLayout();
 			}
 			
 			if(config.isFromCross) {

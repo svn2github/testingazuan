@@ -172,15 +172,15 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 		
 		if (dropColDataIndex === 'rightOperandDescription') {
 			filter = {
-				rightOperandValue: 'P{' + rows[0].data.id + '}'
-				, rightOperandDescription: 'P{' + rows[0].data.id + '}'
+				rightOperandValue: (rows[0].data.type == 'NUMBER') ? rows[0].data.id : 'P{' + rows[0].data.id + '}'
+				, rightOperandDescription: rows[0].data.label
 				, rightOperandType: 'Static Value'
 			};
 			this.targetPanel.modifyFilter(filter, rowIndex);
 		} else if (dropColDataIndex === 'leftOperandDescription') {
 			filter = {
-				leftOperandValue: 'P{' + rows[0].data.id + '}'
-				, leftOperandDescription: 'P{' + rows[0].data.id + '}'
+				leftOperandValue: (rows[0].data.type == 'NUMBER') ? rows[0].data.id : 'P{' + rows[0].data.id + '}'
+				, leftOperandDescription: rows[0].data.label
 				, leftOperandType: 'Static Value'
 			};
 			this.targetPanel.modifyFilter(filter, rowIndex);

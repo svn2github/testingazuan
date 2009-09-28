@@ -89,7 +89,7 @@ Sbi.qbe.DocumentParametersGridPanel = function(config) {
         , sm : this.sm
         , enableDragDrop: true
         , ddGroup: 'gridDDGroup'
-        , height: 300
+        , height: 180
  	});
  	this.grid.type = this.type;
  	
@@ -100,7 +100,7 @@ Sbi.qbe.DocumentParametersGridPanel = function(config) {
         	forceFit: true
 		}
         , collapsible: false
-        , height: 300
+        , height: 180
         , items: [this.grid]
 	});
 	

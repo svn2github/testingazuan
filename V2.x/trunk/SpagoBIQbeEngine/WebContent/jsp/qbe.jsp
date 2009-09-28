@@ -12,6 +12,12 @@
 
 <qbe:page>
 
+  <!-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
+  <script type="text/javascript">
+  	document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
+  </script>
+  <!-- END SCRIPT FOR DOMAIN DEFINITION -->
+
 	<%@include file="commons/includeExtJS.jspf" %>
    	
 	<qbe:url type="resource" var="href" ref="../css/qbe.css"/>

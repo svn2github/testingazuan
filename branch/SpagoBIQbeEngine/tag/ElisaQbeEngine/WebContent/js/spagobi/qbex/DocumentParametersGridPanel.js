@@ -81,7 +81,6 @@ Sbi.qbe.DocumentParametersGridPanel = function(config) {
         , border: false
         , columns: [
             {header: LN('sbi.qbe.documentparametersgridpanel.headers.label'), sortable: true, dataIndex: 'label'}
-            //, {header: LN('sbi.qbe.documentparametersgridpanel.headers.urlname'), sortable: true, dataIndex: 'id'} 
         ]
 		, viewConfig: {
         	forceFit: true

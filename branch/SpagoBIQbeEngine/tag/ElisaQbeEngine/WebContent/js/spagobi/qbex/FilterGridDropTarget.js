@@ -173,14 +173,14 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 		if (dropColDataIndex === 'rightOperandDescription') {
 			filter = {
 				rightOperandValue: (rows[0].data.type == 'NUMBER') ? rows[0].data.id : 'P{' + rows[0].data.id + '}'
-				, rightOperandDescription: rows[0].data.label
+				, rightOperandDescription: LN('sbi.qbe.documentparametersgridpanel.parameterreference') + ' [' + rows[0].data.label + ']'
 				, rightOperandType: 'Static Value'
 			};
 			this.targetPanel.modifyFilter(filter, rowIndex);
 		} else if (dropColDataIndex === 'leftOperandDescription') {
 			filter = {
 				leftOperandValue: (rows[0].data.type == 'NUMBER') ? rows[0].data.id : 'P{' + rows[0].data.id + '}'
-				, leftOperandDescription: rows[0].data.label
+				, leftOperandDescription: LN('sbi.qbe.documentparametersgridpanel.parameterreference') + ' [' + rows[0].data.label + ']'
 				, leftOperandType: 'Static Value'
 			};
 			this.targetPanel.modifyFilter(filter, rowIndex);

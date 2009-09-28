@@ -257,4 +257,4 @@ Sbi.locale.ln['sbi.qbe.havinggridpanel.title'] = 'Having clause';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.title'] = 'Document parameters';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.emptytext'] = 'This document has no parameters';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.headers.label'] = 'Title';
-Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.headers.urlname'] = 'Url name';
+Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.parameterreference'] = 'Parameter';

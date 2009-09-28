@@ -22,20 +22,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.engines.jpalo;
 
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
 import it.eng.spagobi.utilities.engines.EngineStartServletIOManager;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
-
-import java.io.IOException;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
-import org.dom4j.DocumentException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -73,7 +67,7 @@ public class JPaloEngineStartServlet extends AbstractEngineStartServlet {
 		
 			super.doService( servletIOManager );
 		
-			template = new JPaloEngineTemplate( servletIOManager.getTemplate() );			
+			template = new JPaloEngineTemplate( servletIOManager.getTemplateAsSourceBean() );			
     	
 	    	jpaloUrl = PALO_BASE_URL;	    	
 			jpaloUrl += "?server=" + template.getDatabaseName();

@@ -26,6 +26,8 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 <%@ page language="java" 
 	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 
+<%@page import="it.eng.spagobi.services.common.EnginConf"%>
+
 <%@ taglib uri="/WEB-INF/tlds/commons/qctl.tld" prefix="qbe" %>
 <%@ taglib uri="/WEB-INF/tlds/jstl-1.1.2/c.tld" prefix="c" %>
 

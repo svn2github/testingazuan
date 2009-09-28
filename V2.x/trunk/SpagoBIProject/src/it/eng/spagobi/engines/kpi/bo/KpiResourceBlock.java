@@ -443,7 +443,7 @@ public class KpiResourceBlock implements Serializable{
 				
 				if (r!=null){
 					//execUrlParMap.put(r.getColumn_name(), r.getName());
-					parameters +="&"+r.getColumn_name()+"="+r.getName();
+					parameters +="&ParKpiResource="+r.getName();
 				}
 				SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
 				String format = (String) formatSB.getAttribute("format");

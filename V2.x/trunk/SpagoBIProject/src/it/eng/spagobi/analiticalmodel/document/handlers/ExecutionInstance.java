@@ -800,6 +800,7 @@ public class ExecutionInstance {
 			// adding "system" parameters
 			mapPars.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
 			mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
+			mapPars.put(SpagoBIConstants.SBI_SPAGO_CONTROLLER, GeneralUtilities.getSpagoAdapterHttpUrl());
 			mapPars.put("SBI_EXECUTION_ID", this.executionId);
 			mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
 			Integer auditId = createAuditId();
@@ -916,6 +917,7 @@ public class ExecutionInstance {
 			// adding "system" parameters
 			mapPars.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
 			mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
+			mapPars.put(SpagoBIConstants.SBI_SPAGO_CONTROLLER, GeneralUtilities.getSpagoAdapterHttpUrl());
 			mapPars.put("SBI_EXECUTION_ID", this.executionId);
 			mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
 			Integer auditId = createAuditId();

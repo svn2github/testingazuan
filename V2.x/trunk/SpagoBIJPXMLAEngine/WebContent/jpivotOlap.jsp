@@ -40,6 +40,8 @@ LICENSE: see LICENSE.html file
 <%@page import="it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils"%>
 <%@page import="org.apache.log4j.Logger"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>
+<%@page import="it.eng.spagobi.services.common.EnginConf"%>
+
 <html>
 <head>
   <title>SpagoBI JPivot/XMLA Engine</title>

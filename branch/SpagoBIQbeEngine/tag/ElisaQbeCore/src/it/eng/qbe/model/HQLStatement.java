@@ -534,17 +534,26 @@ public class HQLStatement extends BasicStatement {
 			
 			if(datamartField.getType().equalsIgnoreCase("String") || datamartField.getType().equalsIgnoreCase("character")) {
 				if( !( CriteriaConstants.IN.equalsIgnoreCase( operator ) 
-						|| CriteriaConstants.IN.equalsIgnoreCase( operator )
 						|| CriteriaConstants.NOT_IN.equalsIgnoreCase( operator )
 						|| CriteriaConstants.BETWEEN.equalsIgnoreCase( operator )
 						|| CriteriaConstants.NOT_BETWEEN.equalsIgnoreCase( operator ) 
 				)) {
-					boundedValue = "'" + operandValueToBound + "'";
+					// if the value is already surrounded by quotes, does not add quotes
+					if (operandValueToBound.startsWith("'") && operandValueToBound.endsWith("'")) {
+						boundedValue = operandValueToBound ;
+					} else {
+						boundedValue = "'" + operandValueToBound + "'";
+					}
 				} else {
 					String[] items = operandValueToBound.split(",");
 					boundedValue = "";
 					for(int i = 0; i < items.length; i++) {
-						boundedValue += (i==0?"":",") + "'" + items[i] + "'";
+						// if the value is already surrounded by quotes, does not add quotes
+						if (items[i].startsWith("'") && items[i].endsWith("'")) {
+							boundedValue += (i==0?"":",") + items[i];
+						} else {
+							boundedValue += (i==0?"":",") + "'" + items[i] + "'";
+						}
 					}					
 				}
 			}

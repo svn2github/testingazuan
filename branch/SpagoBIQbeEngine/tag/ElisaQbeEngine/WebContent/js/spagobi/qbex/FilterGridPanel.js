@@ -55,6 +55,8 @@ Sbi.qbe.FilterGridPanel = function(config) {
 	
 	this.services = new Array();
 	
+	this.documentParametersStore = c.documentParametersStore;
+	
 	this.filterIdPrefix = 'filter';
 	
 	this.idCount = 0;
@@ -184,6 +186,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	, addFilter : function(filter) {
 		filter = filter || {};
 		filter = Ext.apply(this.createFilter(), filter || {});
+		filter = this.documentParametersStore.modifyFilter(filter);
 		var record = new this.Record( filter );
 		this.grid.store.add(record); 
 	}

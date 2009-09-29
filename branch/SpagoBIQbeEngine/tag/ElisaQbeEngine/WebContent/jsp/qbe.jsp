@@ -129,6 +129,9 @@
 	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/DocumentParametersGridPanel.js"/>
 	<script type="text/javascript" src='${src}'/></script>
 	
+	<qbe:url type="resource" var="src" ref="../js/spagobi/qbex/DocumentParametersStore.js"/>
+	<script type="text/javascript" src='${src}'/></script>
+	
 	<!-- New OO GUI -->
 	
 	
@@ -204,15 +207,21 @@
         
         
         Ext.onReady(function(){
-        	Ext.QuickTips.init();              
-        	//var qbe = new Sbi.qbe.QueryBuilderPanel() ;//Sbi.qbe.QbePanel(qbeConfig);
-        	var qbe = new Sbi.qbe.QbePanel(qbeConfig);
-        	var viewport = new Ext.Viewport(qbe);  
-        	<%if (isPowerUser && isFromCross.equalsIgnoreCase("false")) {%>
-        		qbe.queryEditorPanel.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(qbe.queryEditorPanel.selectGridPanel); 
-        		qbe.queryEditorPanel.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(qbe.queryEditorPanel.filterGridPanel);
-        		qbe.queryEditorPanel.havingGridPanel.dropTarget = new Sbi.qbe.HavingGridDropTarget(qbe.queryEditorPanel.havingGridPanel);
-        	<%}%>
+        	Ext.QuickTips.init();   
+
+        	var parametersStore = new Sbi.qbe.DocumentParametersStore({});
+        	parametersStore.on('load', function(store, parametersRecords) {
+        		qbeConfig.documentParametersStore = store;
+            	var qbe = new Sbi.qbe.QbePanel(qbeConfig);
+            	var viewport = new Ext.Viewport(qbe);  
+            	<%if (isPowerUser && isFromCross.equalsIgnoreCase("false")) {%>
+            		qbe.queryEditorPanel.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(qbe.queryEditorPanel.selectGridPanel); 
+            		qbe.queryEditorPanel.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(qbe.queryEditorPanel.filterGridPanel);
+            		qbe.queryEditorPanel.havingGridPanel.dropTarget = new Sbi.qbe.HavingGridDropTarget(qbe.queryEditorPanel.havingGridPanel);
+            	<%}%>
+            }, this);
+        	parametersStore.load({});
+
       	});
     </script>
 	

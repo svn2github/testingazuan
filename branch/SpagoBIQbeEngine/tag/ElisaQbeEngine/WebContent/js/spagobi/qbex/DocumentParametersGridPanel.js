@@ -46,11 +46,12 @@
 
 Ext.ns("Sbi.qbe");
 
-Sbi.qbe.DocumentParametersGridPanel = function(config) {
+Sbi.qbe.DocumentParametersGridPanel = function(config, store) {
 	var c = Ext.apply({
 		// set default values here
 	}, config || {});
 	
+	/*
 	this.services = new Array();
 	
 	var params = {};
@@ -73,8 +74,11 @@ Sbi.qbe.DocumentParametersGridPanel = function(config) {
 	            {name:'type'}
 	        ])
 	});
+	*/
 	
- 	this.sm = new Ext.grid.RowSelectionModel({singleSelect:true});
+	this.store = store;
+ 	
+	this.sm = new Ext.grid.RowSelectionModel({singleSelect:true});
  	
  	this.grid = new Ext.grid.GridPanel({
         store: this.store

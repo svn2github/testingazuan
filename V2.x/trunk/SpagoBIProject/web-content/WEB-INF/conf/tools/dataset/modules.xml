@@ -14,6 +14,7 @@
 	        <COLUMN label="SBISet.ListDataSet.columnLabel" name="LABEL" />	        
 	        <COLUMN label="SBISet.ListDataSet.columnName" name="NAME" />	        
 	        <COLUMN label="SBISet.ListDataSet.columnDescr" name="DESCR" />
+	        <COLUMN label="SBISet.ListDataSet.columnType" name="TYPE" />
 	        <COLUMN label="SBISet.ListDataSet.columnNum" name="NUM_BIOBJECTS"/>
 	      </COLUMNS>
 	      <CAPTIONS>

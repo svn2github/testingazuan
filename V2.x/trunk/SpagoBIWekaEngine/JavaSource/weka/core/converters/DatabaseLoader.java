@@ -400,7 +400,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
 		try {
 			m_DataBaseConnection = new DatabaseConnection();
 			m_DataBaseConnection.setConnection(connection);
-			m_DataBaseConnection.setDatabaseURL("");
 		} catch (Exception ex) {
 			printException(ex);
 		}
@@ -1308,6 +1307,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   public static void main(String [] options) {
     
       DatabaseLoader atf;
+      String a = "";
       try {
 	atf = new DatabaseLoader();
         atf.setOptions(options);

@@ -118,7 +118,7 @@ public class WekaEngineInstance  extends Thread {
 		
 		Connection conn = null;
 		try {
-			getDataSource().getConnection();
+			conn = getDataSource().getConnection();
 		} catch (Throwable t) {
 			throw new SpagoBIRuntimeException("Impossible to get connection", t);
 		} 

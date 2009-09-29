@@ -8,10 +8,12 @@ package it.eng.spagobi.engines.weka;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.utilities.ParametersDecoder;
 import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartServlet;
@@ -51,19 +53,19 @@ public class WekaServlet extends AbstractEngineStartServlet {
 		String template = servletIOManager.getTemplateAsString();
 				
 		String message = null;
-		
-
 				
 		try {
 			
 			engineInstance = WekaEngine.createInstance(template, env);
 			engineInstance.start();
-			message = (String) params.get(PROCESS_ACTIVATED_MSG);
+			message = servletIOManager.getLocalizedMessage("weka.correct.execution");
+			//message = (String) params.get(PROCESS_ACTIVATED_MSG);
 			logger.info(":service: Return the default waiting message");
 
 		} catch (Exception e) {
 			logger.error(":service: error while process startup", e);
-			message = (String) params.get(PROCESS_NOT_ACTIVATED_MSG);
+			//message = (String) params.get(PROCESS_NOT_ACTIVATED_MSG);
+			message = servletIOManager.getLocalizedMessage("an.unpredicted.error.occured");
 		}
 
 		StringBuffer buffer = new StringBuffer();

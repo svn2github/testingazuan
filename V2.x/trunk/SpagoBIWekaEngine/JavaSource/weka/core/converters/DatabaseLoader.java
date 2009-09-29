@@ -17,6 +17,7 @@ import weka.core.Instances;
 import weka.core.FastVector;
 import weka.core.Attribute;
 import weka.core.OptionHandler;
+import weka.core.RevisionUtils;
 import weka.core.Utils;
 import weka.core.Option;
 import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
@@ -24,6 +25,7 @@ import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Enumeration;
@@ -168,6 +170,14 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
 
   
+  /**
+   * Returns the revision string.
+   * 
+   * @return		the revision
+   */
+  public String getRevision() {
+    return RevisionUtils.extract("$Revision: 1.16 $");
+  }
 
   /**
    * Resets the Loader ready to read a new data set.
@@ -390,6 +400,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
 		try {
 			m_DataBaseConnection = new DatabaseConnection();
 			m_DataBaseConnection.setConnection(connection);
+			m_DataBaseConnection.setDatabaseURL("");
 		} catch (Exception ex) {
 			printException(ex);
 		}
@@ -1106,21 +1117,21 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   }
 
   /**
-   * Read the data set incrementally---get the next instance in the data
+   * Read the data set incrementally---get the next instance in the data 
    * set or returns null if there are no
-   * more instances to get. If the structure hasn't yet been
+   * more instances to get. If the structure hasn't yet been 
    * determined by a call to getStructure then method does so before
    * returning the next instance in the data set.
-   * 
+   *
+   * @param structure the dataset header information, will get updated in 
+   * case of string or relational attributes
    * @return the next instance in the data set as an Instance object or null
    * if there are no more instances to be read
-   * 
-   * @throws IOException Signals that an I/O exception has occurred.
-   * 
-   * @exception IOException if there is an error during parsing
+   * @throws IOException if there is an error during parsing
    */
-  public Instance getNextInstance() throws IOException {
+  public Instance getNextInstance(Instances structure) throws IOException {
 
+    m_structure = structure;
       
     if (m_DataBaseConnection == null) 
       throw new IOException("No source database has been specified"); 
@@ -1129,10 +1140,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
     }
     //pseudoInremental: Load all instances into main memory in batch mode and give them incrementally to user
     if(m_pseudoIncremental){
-        if (m_structure == null){
-            setRetrieval(NONE);  
-            getStructure();
-        }
         setRetrieval(INCREMENTAL);
         if(m_datasetPseudoInc.numInstances() > 0){
             Instance current = m_datasetPseudoInc.instance(0);
@@ -1149,9 +1156,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
     try{
         if(!m_DataBaseConnection.isConnected())
             connectToDatabase();
-        //if no header determined yet, do it
-        if(m_structure == null)
-            m_structure = getStructure();
         //if no key columns specified by user, try to detect automatically
         if(m_firstTime && m_orderBy.size() == 0){
             if(!checkForKey())
@@ -1272,6 +1276,15 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
     }
   }
   
+  /**
+   * Returns the database password
+   *
+   * @return the database password
+   */
+  public String getPassword() {
+    return m_DataBaseConnection.getPassword();
+  }
+  
   /**Prints an exception
    * @param ex the exception to print
    */  
@@ -1288,9 +1301,8 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
       
   }
 
-  /**
-   * Main method.
-   * 
+
+  /** Main method.
    * @param options the options
    */
   public static void main(String [] options) {
@@ -1299,14 +1311,15 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
       try {
 	atf = new DatabaseLoader();
         atf.setOptions(options);
-        atf.setSource();
+        atf.setSource(atf.getUrl(), atf.getUser(), atf.getPassword());
         if(!atf.m_inc)
             System.out.println(atf.getDataSet());
         else{
-            System.out.println(atf.getStructure());
+            Instances structure = atf.getStructure();
+            System.out.println(structure);
             Instance temp;
             do {
-            temp = atf.getNextInstance();
+            temp = atf.getNextInstance(structure);
             if (temp != null) {
                 System.out.println(temp);
             }
@@ -1316,7 +1329,6 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
 	e.printStackTrace();
         System.out.println("\n"+e.getMessage());
       }
-    
   }
   
   

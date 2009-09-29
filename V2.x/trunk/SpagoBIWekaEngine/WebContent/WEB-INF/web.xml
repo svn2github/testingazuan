@@ -52,7 +52,7 @@
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>it.eng.spagobi.utilities.filters.SpagoBIAccessFilter</filter-class>
-	</filter>
+	</filter> 
 	
 	<!--
    <filter-mapping>
@@ -76,7 +76,7 @@
 	</filter-mapping>
 	-->
 	
-	<filter-mapping>
+    <filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>
     	<url-pattern>/WekaServlet/*</url-pattern>
 	</filter-mapping>

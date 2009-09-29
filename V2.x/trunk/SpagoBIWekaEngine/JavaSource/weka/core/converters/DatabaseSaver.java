@@ -32,6 +32,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Option;
 import weka.core.OptionHandler;
+import weka.core.RevisionUtils;
 import weka.core.Utils;
 
 /**
@@ -147,7 +148,15 @@ public class DatabaseSaver extends AbstractSaver implements BatchConverter,
 		}
 	}
 	
-	
+	  
+	  /**
+	   * Returns the revision string.
+	   * 
+	   * @return		the revision
+	   */
+	  public String getRevision() {
+	    return RevisionUtils.extract("$Revision: 5240 $");
+	  }
 
 	/** reads the property file */
 	static {

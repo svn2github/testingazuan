@@ -532,7 +532,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			   }
 		%>
 			<input class='portlet-form-input-field' type="text" name="JCLASSNAME" id="JCLASSNAME"
-				   size="100" value="<%=StringEscapeUtils.escapeHtml(javaClassName)%>" maxlength="50" <%=disableJClass%> />
+				   size="100" value="<%=StringEscapeUtils.escapeHtml(javaClassName)%>" maxlength="100" <%=disableJClass%> />
 	   </div>
 	   </div>
 	   

@@ -689,6 +689,7 @@ public class DatabaseSaver
   }
   
 	private void prepareStructure() throws Exception {
+		logger.debug("IN");
 		Instances structure = getInstances();
 		if (m_tabName || m_tableName.equals(""))
 			m_tableName = structure.relationName();
@@ -703,6 +704,7 @@ public class DatabaseSaver
 		switch (dbWriteMode) {
 		case DROP_INSERT:
 			try {
+				logger.debug("DROP_INSERT Mode");
 				m_DataBaseConnection.execute("DROP TABLE " + m_tableName);
 			} catch(Exception e) {
 				logger.error("Table cannot be dropped.");
@@ -711,6 +713,7 @@ public class DatabaseSaver
 			break;
 		case DELETE_INSERT:
 			if (!m_DataBaseConnection.tableExists(m_tableName)) {
+				logger.debug("DELETE_INSERT Mode");
 				writeStructure();
 				break;
 			}
@@ -734,12 +737,14 @@ public class DatabaseSaver
 				writeStructure();
 			break;
 		}
+		logger.debug("OUT");
 	}
 	
 	private String columnNamesStr = "";
 	private String[] columnNames = null;
 	
 	private void setColumnNamesStr() throws Exception {
+		logger.debug("IN");
 		Instances structure = getInstances();
 		
 		if (structure.numAttributes() == 0)
@@ -777,6 +782,7 @@ public class DatabaseSaver
 			columnNamesStr += ", " + versionColumnName;	
 		}
 		columnNamesStr += ")";
+		logger.debug("OUT");
 	}
 	
   /**

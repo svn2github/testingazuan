@@ -410,7 +410,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	 		return newParValue;
 	 	}
 	 	
-	 	protected String getLocalizedMessage(String msg) {
+	 	public String getLocalizedMessage(String msg) {
 			if(msg == null) return "";
 			return EngineMessageBundle.getMessage(msg, getLocale());
 		}

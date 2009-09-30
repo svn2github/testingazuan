@@ -798,24 +798,7 @@ public class ExecutionInstance {
 			// get the map of the parameters
 			Map mapPars = aEngineDriver.getParameterMap(object, this.subObject, userProfile, executionRole);
 			// adding "system" parameters
-			mapPars.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
-			mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
-			mapPars.put(SpagoBIConstants.SBI_SPAGO_CONTROLLER, GeneralUtilities.getSpagoAdapterHttpUrl());
-			mapPars.put("SBI_EXECUTION_ID", this.executionId);
-			mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
-			Integer auditId = createAuditId();
-			if (auditId != null) {
-				mapPars.put(AuditManager.AUDIT_ID, auditId);
-			}
-			
-			if(locale!=null){
-				if(locale.getLanguage()!=null){
-					mapPars.put(SpagoBIConstants.SBI_LANGUAGE, locale.getLanguage());				
-				}
-				if(locale.getCountry()!=null){
-					mapPars.put(SpagoBIConstants.SBI_COUNTRY,locale.getCountry());
-				}
-			}
+			addSystemParametersForExternalEngines(mapPars, locale);
 			
 			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
 		} else {
@@ -878,17 +861,7 @@ public class ExecutionInstance {
 		object.setBiObjectParameters(listPars);
 		logger.debug("OUT");
 	}
-
-
-
-
-
-
-
-
-
-
-
+	
 
 	public String getExecutionUrl(Locale locale) {
 		logger.debug("IN");
@@ -915,24 +888,7 @@ public class ExecutionInstance {
 			// get the map of the parameters
 			Map mapPars = aEngineDriver.getParameterMap(object, userProfile, executionRole);
 			// adding "system" parameters
-			mapPars.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
-			mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
-			mapPars.put(SpagoBIConstants.SBI_SPAGO_CONTROLLER, GeneralUtilities.getSpagoAdapterHttpUrl());
-			mapPars.put("SBI_EXECUTION_ID", this.executionId);
-			mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
-			Integer auditId = createAuditId();
-			if (auditId != null) {
-				mapPars.put(AuditManager.AUDIT_ID, auditId);
-			}
-
-			if(locale!=null){
-				if(locale.getLanguage()!=null){
-					mapPars.put(SpagoBIConstants.SBI_LANGUAGE, locale.getLanguage());				
-				}
-				if(locale.getCountry()!=null){
-					mapPars.put(SpagoBIConstants.SBI_COUNTRY,locale.getCountry());
-				}
-			}
+			addSystemParametersForExternalEngines(mapPars, locale);
 
 			url = GeneralUtilities.getUrl(engine.getUrl(), mapPars);
 
@@ -985,6 +941,26 @@ public class ExecutionInstance {
 
 		logger.debug("OUT: returning url = [" + url + "]");
 		return url;
+	}
+
+	private void addSystemParametersForExternalEngines(Map mapPars, Locale locale) {
+		mapPars.put(SpagoBIConstants.SBI_CONTEXT, GeneralUtilities.getSpagoBiContext());
+		mapPars.put(SpagoBIConstants.SBI_HOST, GeneralUtilities.getSpagoBiHost());
+		mapPars.put(SpagoBIConstants.SBI_SPAGO_CONTROLLER, GeneralUtilities.getSpagoAdapterHttpUrl());
+		mapPars.put("SBI_EXECUTION_ID", this.executionId);
+		mapPars.put(SpagoBIConstants.EXECUTION_ROLE, this.getExecutionRole());
+		Integer auditId = createAuditId();
+		if (auditId != null) {
+			mapPars.put(AuditManager.AUDIT_ID, auditId);
+		}
+		if (locale != null ){
+			if(locale.getLanguage()!=null){
+				mapPars.put(SpagoBIConstants.SBI_LANGUAGE, locale.getLanguage());				
+			}
+			if(locale.getCountry()!=null){
+				mapPars.put(SpagoBIConstants.SBI_COUNTRY,locale.getCountry());
+			}
+		}
 	}
 
 	/**

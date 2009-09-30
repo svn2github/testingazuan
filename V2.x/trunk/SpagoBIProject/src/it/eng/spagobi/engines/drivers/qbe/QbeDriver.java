@@ -21,17 +21,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.engines.drivers.qbe;
 
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.SubObject;
 import it.eng.spagobi.behaviouralmodel.analyticaldriver.bo.BIObjectParameter;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.ParameterValuesEncoder;
-import it.eng.spagobi.commons.utilities.PortletUtilities;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.drivers.AbstractDriver;
 import it.eng.spagobi.engines.drivers.EngineURL;
 import it.eng.spagobi.engines.drivers.IEngineDriver;
@@ -39,10 +41,13 @@ import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 
@@ -78,7 +83,7 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
 		} 
 		
 		map = applySecurity(map, profile);
-		map = applyLocale(map);
+		map = addDocumentParametersInfo((BIObject) biobject, map);
 		map = applyService(map);
 		logger.debug("OUT");
 		return map;
@@ -123,19 +128,48 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
 		
 		
 		map = applySecurity(map, profile);
-		map = applyLocale(map);
+		map = addDocumentParametersInfo((BIObject)object, map);
 		map = applyService(map);
-		
+		map.put("isFromCross", "false");
 		logger.debug("OUT");		
 		
 		return map;
 		
 	}
 	
-	
-	
-	     
-    /**
+	/**
+	 * Adds a system parameter contaning info about document parameters (url name, label, type)
+	 * @param biobject The BIObject under execution
+	 * @param map The parameters map
+	 * @return the modified map with the new parameter
+	 */
+    private Map addDocumentParametersInfo(BIObject biobject, Map map) {
+    	logger.debug("IN");
+    	JSONArray parametersJSON = new JSONArray();
+    	try {
+	    	Locale locale = getLocale();
+			List parameters = biobject.getBiObjectParameters();
+			if (parameters != null && parameters.size() > 0) {
+				Iterator iter = parameters.iterator();
+				while (iter.hasNext()) {
+					BIObjectParameter biparam = (BIObjectParameter) iter.next();
+					JSONObject jsonParam = new JSONObject();
+					jsonParam.put("id", biparam.getParameterUrlName());
+					IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+					jsonParam.put("label", msgBuilder.getUserMessage(biparam.getLabel(), SpagoBIConstants.DEFAULT_USER_BUNDLE, locale));
+					jsonParam.put("type", biparam.getParameter().getType());
+					parametersJSON.put(jsonParam);
+				}
+			}
+    	} catch (Exception e) {
+    		logger.error("Error while adding document parameters info", e);
+    	}
+    	map.put("SBI_DOCUMENT_PARAMETERS", parametersJSON.toString());
+    	logger.debug("OUT");
+		return map;
+	}
+
+	/**
      * Starting from a BIObject extracts from it the map of the paramaeters for the
      * execution call
      * @param biobj BIObject to execute
@@ -253,42 +287,23 @@ public class QbeDriver extends AbstractDriver implements IEngineDriver {
 		return pars;
 	}
 	
-    private Map applyLocale(Map map) {
+    private Locale getLocale() {
     	logger.debug("IN");
-    	
-		ConfigSingleton config = ConfigSingleton.getInstance();
-		Locale portalLocale = null;
 		try {
-			portalLocale =  PortletUtilities.getPortalLocale();
-			logger.debug("Portal locale: " + portalLocale);
+			Locale locale = null;
+			RequestContainer requestContainer = RequestContainer.getRequestContainer();
+			SessionContainer permanentSession = requestContainer.getSessionContainer().getPermanentContainer();
+			String language = (String) permanentSession.getAttribute(SpagoBIConstants.AF_LANGUAGE);
+			String country = (String) permanentSession.getAttribute(SpagoBIConstants.AF_COUNTRY);
+			logger.debug("Language retrieved: [" + language + "]; country retrieved: [" + country + "]");
+			locale = new Locale(language, country);
+			return locale;
 		} catch (Exception e) {
-		    logger.warn("Error while getting portal locale.");
-		    portalLocale = MessageBuilder.getBrowserLocaleFromSpago();
-		    logger.debug("Spago locale: " + portalLocale);
-		}
-		
-		SourceBean languageSB = null;
-		if(portalLocale != null && portalLocale.getLanguage() != null) {
-			languageSB = (SourceBean)config.getFilteredSourceBeanAttribute("SPAGOBI.LANGUAGE_SUPPORTED.LANGUAGE", 
-					"language", portalLocale.getLanguage());
-		}
-		
-		if(languageSB != null) {
-			map.put("country", (String)languageSB.getAttribute("country"));
-			map.put("language", (String)languageSB.getAttribute("language"));
-			logger.debug("Added parameter: country/" + (String)languageSB.getAttribute("country"));
-			logger.debug("Added parameter: language/" + (String)languageSB.getAttribute("language"));
-		} else {
-			logger.warn("Language " + portalLocale.getLanguage() + " is not supported by SpagoBI");
-			logger.warn("Portal locale will be replaced with the default lacale (country: US; language: en).");
-			map.put("country", "US");
-			map.put("language", "en");
-			logger.debug("Added parameter: country/US");
-			logger.debug("Added parameter: language/en");
-		}			
-		
-		logger.debug("OUT");
-		return map;
+		    logger.error("Error while getting locale; using default one", e);
+		    return MessageBuilder.getDefaultLocale();
+		} finally  {
+			logger.debug("OUT");
+		}	
 	}
 }
 

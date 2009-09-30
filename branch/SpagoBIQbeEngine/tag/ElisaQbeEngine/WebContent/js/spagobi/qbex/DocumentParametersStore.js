@@ -46,7 +46,7 @@
 
 Ext.ns("Sbi.qbe");
 
-Sbi.qbe.DocumentParametersStore = function(config) {
+Sbi.qbe.DocumentParametersStore = function(config, data) {
 	
 	var c = Ext.apply({
 		// set default values here
@@ -56,6 +56,7 @@ Sbi.qbe.DocumentParametersStore = function(config) {
 	
 	var params = {};
 	
+	/*
 	this.services['getDocumentParameters'] = Sbi.config.remoteServiceRegistry.getServiceUrl({
 		serviceName: 'GET_PARAMETERS_FOR_EXECUTION_ACTION'
 		, baseParams: params
@@ -73,6 +74,15 @@ Sbi.qbe.DocumentParametersStore = function(config) {
             {name:'type'}
 	    ])
 	});
+	*/
+	
+	c = Ext.apply({}, c, {
+	    reader: new Ext.data.JsonReader({id: 'id'}, [
+             {name:'id'},
+             {name:'label'},
+             {name:'type'}
+ 	    ])
+	});
 	
 	// constructor
 	Sbi.qbe.DocumentParametersStore.superclass.constructor.call(this, c);
@@ -80,7 +90,7 @@ Sbi.qbe.DocumentParametersStore = function(config) {
 };
 
 Ext.extend(Sbi.qbe.DocumentParametersStore, Ext.data.Store, {
-    
+  
 	services: null
 	
 	// if a parameter reference is recognized into leftOperandValue or rightOperandValue columns, their description are updated to :

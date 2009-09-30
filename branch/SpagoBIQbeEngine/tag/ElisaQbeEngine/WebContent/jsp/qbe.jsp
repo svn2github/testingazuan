@@ -43,6 +43,9 @@
 	locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
 	
 	isFromCross = (String)qbeEngineInstance.getEnv().get("isFromCross");
+	if (isFromCross == null) {
+		isFromCross = "false";
+	}
 	isPowerUser = profile.getFunctionalities().contains(SpagoBIConstants.BUILD_QBE_QUERIES_FUNCTIONALITY);
 	
 	//String language = (String)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("LANGUAGE");
@@ -204,24 +207,23 @@
         // javascript-side user profile object
         Ext.ns("Sbi.user");
         Sbi.user.isPowerUser = <%= isPowerUser %>;
-        
-        
+
         Ext.onReady(function(){
         	Ext.QuickTips.init();   
 
         	var parametersStore = new Sbi.qbe.DocumentParametersStore({});
-        	parametersStore.on('load', function(store, parametersRecords) {
-        		qbeConfig.documentParametersStore = store;
-            	var qbe = new Sbi.qbe.QbePanel(qbeConfig);
-            	var viewport = new Ext.Viewport(qbe);  
-            	<%if (isPowerUser && isFromCross.equalsIgnoreCase("false")) {%>
-            		qbe.queryEditorPanel.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(qbe.queryEditorPanel.selectGridPanel); 
-            		qbe.queryEditorPanel.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(qbe.queryEditorPanel.filterGridPanel);
-            		qbe.queryEditorPanel.havingGridPanel.dropTarget = new Sbi.qbe.HavingGridDropTarget(qbe.queryEditorPanel.havingGridPanel);
-            	<%}%>
-            }, this);
-        	parametersStore.load({});
-
+        	var parametersInfo = <%= request.getParameter("SBI_DOCUMENT_PARAMETERS") %>;
+        	parametersStore.loadData(parametersInfo);
+        	
+       		qbeConfig.documentParametersStore = parametersStore;
+           	var qbe = new Sbi.qbe.QbePanel(qbeConfig);
+           	var viewport = new Ext.Viewport(qbe);  
+           	<%if (isPowerUser && isFromCross.equalsIgnoreCase("false")) {%>
+           		qbe.queryEditorPanel.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(qbe.queryEditorPanel.selectGridPanel); 
+           		qbe.queryEditorPanel.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(qbe.queryEditorPanel.filterGridPanel);
+           		qbe.queryEditorPanel.havingGridPanel.dropTarget = new Sbi.qbe.HavingGridDropTarget(qbe.queryEditorPanel.havingGridPanel);
+           	<%}%>
+           	
       	});
     </script>
 	

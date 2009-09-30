@@ -773,7 +773,9 @@ public class DatabaseSaver
 			if(i != 0) columnNamesStr += ", ";
 			columnNamesStr += columnNames[i];
 		}
-		if(versioning) columnNamesStr += ", " + versionColumnName;
+		if(versioning) {
+			columnNamesStr += ", " + versionColumnName;	
+		}
 		columnNamesStr += ")";
 	}
 	
@@ -842,26 +844,30 @@ public class DatabaseSaver
   private void updateInstance(Instance inst) throws Exception {
 
 		StringBuffer select = new StringBuffer();
-		StringBuffer where = new StringBuffer();
+		String where = new String();
 		select.append("SELECT * FROM ");
 		select.append(m_tableName);
-		where.append(" WHERE ");
+		where += " WHERE ";
 		for(int i = 0; i < columnNames.length; i++) {
 			if(isKeyColumnName(columnNames[i])) {
-				if(i!=0) where.append(" AND");
-				where.append(" " + columnNames[i]);
-				where.append(" = ");
+				if(i!=0) where += " AND";
+				where += " " + columnNames[i];
+				where  += " = ";
 				if ((inst.attribute(i)).isNumeric())
-					where.append(inst.value(i));
+					where += inst.value(i);
 				else {
 					String stringInsert = "'" + inst.stringValue(i) + "'";
 					stringInsert = stringInsert.replaceAll("''", "'");
-					where.append(stringInsert);
+					where  += stringInsert;
 				}
 			}
 		}
 		if(versioning && isKeyColumnName(versionColumnName)){
-			where.append(" AND " + versionColumnName + " = '" + version + "'");
+			if(where.equalsIgnoreCase(" WHERE ")){
+				where  += " " + versionColumnName + " = '" + version + "'";
+			}else{
+				where  += " AND " + versionColumnName + " = '" + version + "'";
+			}
 		}
 
 		if(!m_DataBaseConnection.fastExecute(select.toString() + where.toString())) {

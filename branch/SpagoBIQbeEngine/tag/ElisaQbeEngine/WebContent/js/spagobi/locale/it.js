@@ -71,18 +71,16 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.value'] = 'Operando';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.isfree'] = 'Campo a richiesta';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.type'] = 'Tipo Operando';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.boperator'] = 'Connettore';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.desc'] = 'Desc. filtro';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.lodesc'] = 'Operando sinistro';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.rodesc'] = 'Operando destro';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.lotype'] = 'Tipo operando sinistro';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.rotype'] = 'Tipo operando destro';
-
-
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.desc'] = 'Descrizione filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.lotype'] = 'Tipo espressione sinistra';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.rotype'] = 'Tipo espressione destra';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.lodesc'] = 'Descrizione elemento';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.headers.rodesc'] = 'Descrizione elemento';
 //column tooltip
 Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.notdef'] = 'Help tooltip non ancora definito';
 
-Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.name'] = 'Nome univoco del filtro';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.desc'] = 'Descrizione del filtro';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.name'] = 'Nome univoco della condizione';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.desc'] = 'Descrizione della condizione';
 
 Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.loval'] = 'Valore dell\'operando di sinistra';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.lodesc'] = 'Operando di sinistra';
@@ -90,7 +88,7 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.lotype'] = 'Tipo dell\'operando d
 Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.lodef'] = 'Valore di default dell\'operando di sinistra';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.lolast'] = 'Ultimo valore dell\'operando di sinistra';
 
-Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.operator'] = 'Operatore';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.operator'] = 'Operator';
 
 Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.roval'] = 'Valore dell\'operando di destra';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.tooltip.rodesc'] = 'Operando di destra';
@@ -153,26 +151,24 @@ Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.desc.isnull'] = 'verificato se
 Sbi.locale.ln['sbi.qbe.filtergridpanel.foperators.editor.emptymsg'] = 'Seleziona un operatore...';
 
 //buttons 
-Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.add'] = 'Nuovo';
-Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.add'] = 'Crea un nuovo filtro vuoto';
-
 Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.delete'] = 'Elimina';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.delete'] = 'Elimina tutto';
 
 Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.wizard'] = 'Espressioni';
 Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.wizard'] = 'Espressioni';
-
+Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.text.add'] = 'Nuova condizione';
+Sbi.locale.ln['sbi.qbe.filtergridpanel.buttons.tt.add'] = 'Crea una nuova condizione';
 // ===================================================================
 //	SELECT GRID
 // ===================================================================
 Sbi.locale.ln['sbi.qbe.selectgridpanel.title'] = 'Seleziona Campo';
 
 // column headers
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.include'] = 'Includi';
+Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.having'] = 'Condizione su raggruppamento';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.visible'] = 'Visibile';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.group'] = 'Raggruppa';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.include'] = 'Includi';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.filter'] = 'Filtri';
-Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.having'] = 'Having';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.entity'] = 'Entita\'';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.alias'] = 'Alias';
 Sbi.locale.ln['sbi.qbe.selectgridpanel.headers.order'] = 'Ordinamento';
@@ -244,7 +240,9 @@ Sbi.locale.ln['sbi.qbe.cataloguepanel.title'] = 'Catalogo delle query';
 //===================================================================
 //HAVING CLAUSE PANEL
 //===================================================================
-Sbi.locale.ln['sbi.qbe.havinggridpanel.title'] = 'Clausola Having';
+Sbi.locale.ln['sbi.qbe.havinggridpanel.title'] = 'Condizioni di raggruppamento';
+
+Sbi.locale.ln['sbi.qbe.operandchooserwindow.title'] = 'Selezione operando da query padre';
 
 
 //===================================================================

@@ -154,12 +154,12 @@ public class ConfigurationEditor {
 			String title="PARAMETERS SPECIFIC FOR "+model.getSubType().toUpperCase()+" SUBTYPE";
 			//add some text for title 
 			for(int i=title.length();i<110;i++){
-//				if(i%2==0){
-					title+=" ";
-//				}
-//				else{
-//					title=" "+title;
-//				}
+				//				if(i%2==0){
+				title+=" ";
+				//				}
+				//				else{
+				//					title=" "+title;
+				//				}
 			}
 			specificConfGroup.setText(title);
 
@@ -167,6 +167,8 @@ public class ConfigurationEditor {
 			//specificConfGroup.pack();
 			specificConfGroup.setVisible(true);
 			sectionClientConf.redraw();
+			sectionClientConf.pack();
+			sectionConf.pack();		
 		}
 
 

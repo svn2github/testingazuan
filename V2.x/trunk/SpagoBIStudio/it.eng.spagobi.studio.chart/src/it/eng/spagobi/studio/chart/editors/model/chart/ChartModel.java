@@ -62,7 +62,7 @@ public class ChartModel {
 
 	protected String configFilePath;
 	protected Document configDocument;
-	protected final Document thisDocument;
+	protected Document thisDocument;
 
 
 	// ********* Configuration Parameters ***********
@@ -1329,6 +1329,11 @@ public class ChartModel {
 		return thisDocument;
 	}
 
+	public void setThisDocument(Document d) {
+		thisDocument=d;
+	}
+
+	
 	public boolean isSeriesScalesPersonalization() {
 		return seriesScalesPersonalization;
 	}

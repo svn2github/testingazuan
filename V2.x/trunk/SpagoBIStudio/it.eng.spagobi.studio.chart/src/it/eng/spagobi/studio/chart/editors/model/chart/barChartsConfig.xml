@@ -10,7 +10,7 @@
 				type='INTEGER' defaultValue='400'/>
 		</DIMENSIONS>
 		<COLORS name='background' description='Background color' type='COLOR' defaultValue='#FFFFFF' tooltip='set the background color'/>
-		<STYLES type='COMBO'>
+		<STYLES>
 			<STYLE name="STYLE_LABELS_DEFAULT" description='' tooltip='choose a default style for labels'>  <!-- Style means font, size, column, name, color, orientation -->
 				<STYLE_INFO name="font" description="" type="COMBO"
 					values="helvetica,ARIAL,times_new_roman" defaultValue='ARIAL'/>

@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.eclipse.core.resources.IFile;
@@ -85,10 +86,22 @@ public final class ChartEditor extends EditorPart {
 			byte[] bytes = newContent.getBytes();
 			bais = new ByteArrayInputStream(bytes);
 			file.setContents(bais, IFile.FORCE, null);
+
+			// reload the this document for the model!
+			InputStream thisIs = null;
+			thisIs = file.getContents();
+			SAXReader reader = new SAXReader();
+			Document thisDocument = reader.read(thisIs);
+			model.setThisDocument(thisDocument);
+		
 		} catch (CoreException e) {
 			SpagoBILogger.errorLog("Error while Saving Chart Template File",e);
 			e.printStackTrace();
-		} finally { 
+		}	catch (DocumentException e) {
+			SpagoBILogger.errorLog("Error while reloading current template",e);
+			e.printStackTrace();
+		}
+		finally { 
 			if (bais != null)
 				try {
 					bais.close();
@@ -98,6 +111,9 @@ public final class ChartEditor extends EditorPart {
 				}
 		}
 		setIsDirty(false);
+		
+
+		
 	}
 
 	public void doSaveAs() {
@@ -171,8 +187,8 @@ public final class ChartEditor extends EditorPart {
 		movie.setText(model.getType());
 
 		sectionInformation.setClient(sectionClientInformation);
-
-
+		sectionInformation.pack();
+		sectionClientInformation.pack();
 
 		// ++++++++++++++  Chart dimension settings section ++++++++++++++ 
 		SpagoBILogger.infoLog("Creating the dimension informations section");

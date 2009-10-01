@@ -351,7 +351,7 @@ public class DatabaseConnection implements Serializable {
 	 * if an error occurs
 	 */
 	public void connectToDatabase() throws Exception {
-
+		logger.debug("IN");
 		if (connectionMenagedByExternalPool)
 			return;
 
@@ -371,6 +371,7 @@ public class DatabaseConnection implements Serializable {
 		} else {
 			connection.setAutoCommit(false);
 		}
+		logger.debug("OUT");
 	}
 
 	/**
@@ -382,7 +383,7 @@ public class DatabaseConnection implements Serializable {
 	 * if an error occurs
 	 */
 	public void disconnectFromDatabase() throws Exception {
-
+		logger.debug("IN");
 		if (connectionMenagedByExternalPool)
 			return;
 		if (m_Debug) {
@@ -392,6 +393,7 @@ public class DatabaseConnection implements Serializable {
 			connection.close();
 			connection = null;
 		}
+		logger.debug("OUT");
 	}
 
 	/**
@@ -585,7 +587,9 @@ public class DatabaseConnection implements Serializable {
 	 * @param connection the new connection
 	 */
 	public void setConnection(Connection connection) {
+		logger.debug("IN");
 		this.connection = connection;
 		setConnectionMenagedByExternalPool(true);
+		logger.debug("OUT");
 	}
 }

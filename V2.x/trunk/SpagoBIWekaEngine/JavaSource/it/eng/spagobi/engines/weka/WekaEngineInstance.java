@@ -76,6 +76,7 @@ public class WekaEngineInstance  extends Thread {
 	}
 	
 	public void run() {
+		logger.debug("IN");
 		logger.info(":service: Runner thread started succesfully");
 			
 		
@@ -104,7 +105,7 @@ public class WekaEngineInstance  extends Thread {
 		
 		Map startEventParams = new HashMap();				
 		startEventParams.put(EventServiceProxy.EVENT_TYPE, EventServiceProxy.DOCUMENT_EXECUTION_START);
-		startEventParams.put("document", env.get("document"));
+		startEventParams.put("document", env.get("DOCUMENT_ID"));
 		
 		String startEventId = null;
 		try {
@@ -140,13 +141,13 @@ public class WekaEngineInstance  extends Thread {
 		
 		Map endEventParams = new HashMap();				
 		endEventParams.put(EventServiceProxy.EVENT_TYPE, EventServiceProxy.DOCUMENT_EXECUTION_END);
-		endEventParams.put("document", env.get("document"));
+		endEventParams.put("document", env.get("DOCUMENT_ID"));
 		endEventParams.put(EventServiceProxy.START_EVENT_ID, startEventId);
 		
 		String endExecutionEventDescription = "";
 		
 		WekaKFRunner kfRunner = new WekaKFRunner(incon, outcon);
-		
+		logger.debug("WekaKFRunner Instanciated");
 		logger.debug(":service:Start parsing file: " + file);
 		try {
 			kfRunner.loadKFTemplate(file);

@@ -182,6 +182,7 @@ public class WekaKFRunner {
 	}	
 	
 	public void loadKFTemplate(File template) throws Exception {
+		logger.debug("IN");
 		reset();
 		XMLBeans xml = new XMLBeans(null, beanContextSupport); 
 		Vector v     = (Vector) xml.read(template);
@@ -226,12 +227,14 @@ public class WekaKFRunner {
 		
 		BeanInstance.setBeanInstances(beans, null);
 		BeanConnection.setConnections(connections);
+		logger.debug("OUT");
 	}
 	
 	/**
 	 *  Setup Loader filling missing parameter values	 *
 	 */
-	public void setupLoaders() {		
+	public void setupLoaders() {	
+		logger.debug("IN");
 		for(int i = 0; i < loaders.size(); i++) {
 			Loader loader = (Loader)loaders.get(i);						
 			String className = loader.getLoader().getClass().getName();
@@ -260,12 +263,14 @@ public class WekaKFRunner {
 				// setup operation goes here				
 			}		
 		}
+		logger.debug("OUT");
 	}
 	
 	/**
 	 *  Setup Saver filling missing parameter values	 *
 	 */
 	public void setupSavers() {
+		logger.debug("IN");
 		for(int i = 0; i < savers.size(); i++) {
 			Saver saver = (Saver)savers.get(i);
 			
@@ -301,6 +306,7 @@ public class WekaKFRunner {
 				// setup operation goes here			
 			}
 		}
+		logger.debug("OUT");
 	}
 		
 	public void run() {
@@ -308,6 +314,7 @@ public class WekaKFRunner {
 	}
 	
 	public void run(boolean forceSetup, boolean forceBlocking) {
+		logger.debug("IN");
 		if(forceSetup) {
 			log("Configuring loaders & savers ...");
 			setupLoaders();
@@ -327,6 +334,7 @@ public class WekaKFRunner {
 				saver.waitUntilFinish();			
 			}	
 		}
+		logger.debug("OUT");
 	}
 
 

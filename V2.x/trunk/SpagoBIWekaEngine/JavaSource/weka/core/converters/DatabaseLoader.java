@@ -12,26 +12,31 @@
 
 package weka.core.converters;
 
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.FastVector;
-import weka.core.Attribute;
-import weka.core.OptionHandler;
-import weka.core.RevisionUtils;
-import weka.core.Utils;
-import weka.core.Option;
 import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.Enumeration;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Option;
+import weka.core.OptionHandler;
+import weka.core.RevisionUtils;
+import weka.core.Utils;
 
 
 /**
@@ -185,7 +190,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @throws Exception if an error occurs while disconnecting from the database
    */
   public void reset() throws Exception{
-
+	logger.debug("IN");
     resetStructure();
     if(m_DataBaseConnection != null && m_DataBaseConnection.isConnected())
         m_DataBaseConnection.disconnectFromDatabase();
@@ -193,6 +198,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
     m_orderBy = new FastVector();
     //    m_query = "Select * from Results0";
     m_inc = false;
+    logger.debug("OUT");
     
   }
   
@@ -379,7 +385,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @param password the password
    */  
   public void setSource(String url, String userName, String password){
-  
+	  logger.debug("IN");
       try{
         m_DataBaseConnection = new DatabaseConnection();
         m_DataBaseConnection.setDatabaseURL(url);
@@ -388,6 +394,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
       } catch(Exception ex) {
             printException(ex);
       }    
+      logger.debug("OUT");
   }
   
   /**
@@ -396,13 +403,14 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @param connection the connection
    */
 	public void setSource(Connection connection) {
-
+		logger.debug("IN");
 		try {
 			m_DataBaseConnection = new DatabaseConnection();
 			m_DataBaseConnection.setConnection(connection);
 		} catch (Exception ex) {
 			printException(ex);
 		}
+		logger.debug("OUT");
 	}
   
   /**
@@ -411,13 +419,14 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @param url the database url
    */  
   public void setSource(String url){
-  
+	  logger.debug("IN");
       try{
         m_DataBaseConnection = new DatabaseConnection();
         m_DataBaseConnection.setDatabaseURL(url);
       } catch(Exception ex) {
             printException(ex);
-       }    
+       }   
+      logger.debug("OUT");
   }
   
   /**
@@ -426,21 +435,26 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @throws Exception the exception
    */  
   public void setSource() throws Exception{
-  
-        m_DataBaseConnection = new DatabaseConnection();
+	  logger.debug("IN");
+      m_DataBaseConnection = new DatabaseConnection();
+      logger.debug("OUT");
   }
   
   /**
    * Opens a connection to the database.
    */
   public void connectToDatabase() {
-   
+	  logger.debug("IN");
       try{
         if(!m_DataBaseConnection.isConnected()){
+        	logger.debug("Was not Connected");
             m_DataBaseConnection.connectToDatabase();
+            logger.debug("Now is connected");
         }
+        logger.debug("OUT");
       } catch(Exception ex) {
-	printException(ex);
+    	  logger.error(ex);
+    	  printException(ex);
        }    
   }
   
@@ -605,7 +619,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @exception IOException if an error occurs
    */
   public Instances getStructure() throws IOException {
-
+	logger.debug("IN");
     if (m_DataBaseConnection == null) {
       throw new IOException("No source database has been specified");
     }
@@ -758,6 +772,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
         ex.printStackTrace();
 	printException(ex);
     } 
+    logger.debug("OUT");
     return m_oldStructure;
     
   }
@@ -774,7 +789,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @exception IOException if there is no source or parsing fails
    */
   public Instances getDataSet() throws IOException {
-
+	logger.debug("IN");
     if (m_DataBaseConnection == null) {
       throw new IOException("No source database has been specified");
     }
@@ -994,6 +1009,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
             }
         }
     }
+    logger.debug("OUT");
     return result;
   }
   
@@ -1003,7 +1019,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @return an instance read from the database
    */  
   private Instance readInstance(ResultSet rs) throws Exception{
-  
+	  logger.debug("IN");
       FastVector instances = new FastVector();
       ResultSetMetaData md = rs.getMetaData();
       int numAttributes = md.getColumnCount();
@@ -1111,6 +1127,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
         inst = m_structure.instance(0);
         m_structure.delete(0);
        }
+       logger.debug("OUT");
        return inst;
        
   }
@@ -1129,7 +1146,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @throws IOException if there is an error during parsing
    */
   public Instance getNextInstance(Instances structure) throws IOException {
-
+	  logger.debug("IN");
     m_structure = structure;
       
     if (m_DataBaseConnection == null) 
@@ -1181,9 +1198,11 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
             resetStructure();
             return null;
         }
+        
     }catch(Exception ex) {
         printException(ex);
     }
+    logger.debug("OUT");
     return null;
   }
   

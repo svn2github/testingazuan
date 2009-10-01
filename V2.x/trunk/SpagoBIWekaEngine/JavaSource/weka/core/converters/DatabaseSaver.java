@@ -28,12 +28,10 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import java.text.SimpleDateFormat;
 
 import org.apache.log4j.Logger;
 
@@ -527,7 +525,7 @@ public class DatabaseSaver
    * @param password the password
    */  
   public void setDestination(String url, String userName, String password){
-  
+	  logger.debug("IN");
       try{
         m_DataBaseConnection = new DatabaseConnection();
         m_DataBaseConnection.setDatabaseURL(url);
@@ -536,6 +534,7 @@ public class DatabaseSaver
       } catch(Exception ex) {
             printException(ex);
       }    
+      logger.debug("OUT");
   }
   
   /** 
@@ -544,7 +543,7 @@ public class DatabaseSaver
    * @param url the database url
    */  
   public void setDestination(String url){
-  
+	  logger.debug("IN");
       try{
         m_DataBaseConnection = new DatabaseConnection();
         m_DataBaseConnection.setDatabaseURL(url);
@@ -553,11 +552,12 @@ public class DatabaseSaver
       } catch(Exception ex) {
             printException(ex);
        }    
+      logger.debug("OUT");
   }
   
   /** Sets the database url using the DatabaseUtils file. */  
   public void setDestination(){
-  
+	  logger.debug("IN");
       try{
         m_DataBaseConnection = new DatabaseConnection();
         m_DataBaseConnection.setUsername(m_Username);
@@ -565,6 +565,7 @@ public class DatabaseSaver
       } catch(Exception ex) {
             printException(ex);
        }    
+      logger.debug("OUT");
   }
   
 	/**
@@ -573,13 +574,14 @@ public class DatabaseSaver
 	 * @param connection the connection
 	 */
 	public void setDestination(Connection connection) {
-
+		logger.debug("IN");
 		try {
 			m_DataBaseConnection = new DatabaseConnection();
 			m_DataBaseConnection.setConnection(connection);
 		} catch (Exception ex) {
 			printException(ex);
 		}
+		logger.debug("OUT");
 	}
 
   /** 
@@ -612,13 +614,14 @@ public class DatabaseSaver
    *
    */
   public void connectToDatabase() {
-   
+	  logger.debug("IN");
       try{
         if(!m_DataBaseConnection.isConnected())
             m_DataBaseConnection.connectToDatabase();
       } catch(Exception ex) {
 	printException(ex);
-       }    
+       } 
+      logger.debug("OUT");
   }
   
   /** 
@@ -627,7 +630,7 @@ public class DatabaseSaver
    * @throws Exception if something goes wrong
    */
   private void writeStructure() throws Exception{
-  
+	  logger.debug("IN");
       StringBuffer query = new StringBuffer();
       Instances structure = getInstances();
       query.append("CREATE TABLE ");
@@ -680,12 +683,14 @@ public class DatabaseSaver
 		}
       
       query.append(" )");
+      logger.debug(query);
       //System.out.println(query.toString());
       m_DataBaseConnection.execute(query.toString());
       m_DataBaseConnection.disconnectFromDatabase();
       if(!m_DataBaseConnection.tableExists(m_tableName)){
           throw new IOException("Table cannot be built.");
       }
+      logger.debug("OUT");
   }
   
 	private void prepareStructure() throws Exception {
@@ -792,7 +797,7 @@ public class DatabaseSaver
    * @throws Exception if something goes wrong
    */
   private void writeInstance(Instance inst) throws Exception{
-  
+	  logger.debug("IN");
       StringBuffer insert = new StringBuffer();
       insert.append("INSERT INTO ");
       insert.append(m_tableName);
@@ -823,7 +828,7 @@ public class DatabaseSaver
   	  if(versioning)
 		insert.append(", '" + version + "'");
       insert.append(" )");
-      
+      logger.debug(insert);
       //System.out.println(insert.toString());
       if (m_DataBaseConnection.fastExecute(insert.toString())) {
         throw new IOException("Tuple cannot be inserted.");
@@ -831,6 +836,7 @@ public class DatabaseSaver
       else {
 	m_DataBaseConnection.disconnectFromDatabase();
       }
+      logger.debug("OUT");
   }
  
 	/**
@@ -848,7 +854,7 @@ public class DatabaseSaver
 	}
   
   private void updateInstance(Instance inst) throws Exception {
-
+	    logger.debug("IN");
 		StringBuffer select = new StringBuffer();
 		String where = new String();
 		select.append("SELECT * FROM ");
@@ -875,8 +881,9 @@ public class DatabaseSaver
 				where  += " AND " + versionColumnName + " = '" + version + "'";
 			}
 		}
-
-		if(!m_DataBaseConnection.fastExecute(select.toString() + where.toString())) {
+		logger.debug(select.toString());
+		logger.debug(where);
+		if(!m_DataBaseConnection.fastExecute(select.toString() + where)) {
 			writeInstance(inst);
 			return;
 		}
@@ -898,8 +905,9 @@ public class DatabaseSaver
 				update.append(stringInsert);
 			}
 		}
-
+		logger.debug(update);
 		m_DataBaseConnection.fastExecute(update.toString() + where.toString());	
+		logger.debug("OUT");
 	}
 
   
@@ -967,7 +975,7 @@ public class DatabaseSaver
    * @throws IOException throws IOException
    */
   public void writeBatch() throws IOException {
-  
+	  logger.debug("IN");
       Instances instances = getInstances();
       try {
 			setColumnNamesStr();
@@ -1003,7 +1011,8 @@ public class DatabaseSaver
           m_count = 1;
       } catch(Exception ex) {
             printException(ex);
-       }    
+       }   
+      logger.debug("OUT");
   }
 
   /**

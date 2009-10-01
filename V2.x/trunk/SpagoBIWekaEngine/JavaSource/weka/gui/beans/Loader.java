@@ -31,7 +31,7 @@ import weka.core.Utils;
 import weka.core.converters.ArffLoader;
 import weka.core.converters.DatabaseLoader;
 import weka.core.converters.FileSourcedConverter;
-import weka.gui.Logger;
+
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -46,6 +46,8 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import org.apache.log4j.Logger;
+import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
 
 /**
  * Loads data sets using weka.core.converter classes
@@ -79,6 +81,7 @@ public class Loader
    */
   protected String m_globalInfo;
 
+  
   /**
    * Thread for doing IO in
    */
@@ -109,6 +112,7 @@ public class Loader
    * Logging
    */
   protected transient Logger m_log;
+  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
   
   /**
    * The environment variables.
@@ -128,6 +132,7 @@ public class Loader
     }
 
     public void run() {
+    	logger.debug("IN");
       try {
 	m_visual.setAnimated();
 //        m_visual.setText("Loading...");
@@ -157,7 +162,7 @@ public class Loader
 	  msg += "Loading...";
 	}
 	if (m_log != null) {
-	  m_log.statusMessage(msg);
+	  logger.debug(msg);
 	}
 
 	if (instanceGeneration) {
@@ -173,9 +178,9 @@ public class Loader
 	    notifyStructureAvailable(structure);
 	  } catch (IOException e) {
 	    if (m_log != null) {
-	      m_log.statusMessage(statusMessagePrefix()
+	    	 logger.error(statusMessagePrefix()
 	          +"ERROR (See log for details");
-	      m_log.logMessage("[Loader] " + statusMessagePrefix()
+	    	 logger.error("[Loader] " + statusMessagePrefix()
 	          + " " + e.getMessage());
 	    }
 	    e.printStackTrace();
@@ -184,9 +189,9 @@ public class Loader
 	    nextInstance = m_Loader.getNextInstance(structure);
 	  } catch (IOException e) {
 	    if (m_log != null) {
-	      m_log.statusMessage(statusMessagePrefix()
+	    	 logger.error(statusMessagePrefix()
 	          +"ERROR (See log for details");
-	      m_log.logMessage("[Loader] " + statusMessagePrefix()
+	    	 logger.error("[Loader] " + statusMessagePrefix()
 	          + " " + e.getMessage());
 	    }
 	    e.printStackTrace();
@@ -220,7 +225,7 @@ public class Loader
             if (z % 10000 == 0) {
 //              m_visual.setText("" + z + " instances...");
               if (m_log != null) {
-                m_log.statusMessage(statusMessagePrefix() 
+                logger.debug(statusMessagePrefix() 
                     + "Loaded " + z + " instances");
               }
             }
@@ -232,7 +237,7 @@ public class Loader
 	  m_dataSet = m_Loader.getDataSet();
 	  m_visual.setStatic();
 	  if (m_log != null) {
-	    m_log.logMessage("[Loader] " + statusMessagePrefix() 
+	   logger.debug("[Loader] " + statusMessagePrefix() 
 	        + " loaded " + m_dataSet.relationName());
 	  }
 //	  m_visual.setText(m_dataSet.relationName());
@@ -240,16 +245,16 @@ public class Loader
 	}
       } catch (Exception ex) {
         if (m_log != null) {
-          m_log.statusMessage(statusMessagePrefix()
+        	 logger.error(statusMessagePrefix()
               +"ERROR (See log for details");
-          m_log.logMessage("[Loader] " + statusMessagePrefix()
+        	 logger.error("[Loader] " + statusMessagePrefix()
               + " " + ex.getMessage());
         }
 	ex.printStackTrace();
       } finally {
         if (Thread.currentThread().isInterrupted()) {
           if (m_log != null) {
-            m_log.logMessage("[Loader] " + statusMessagePrefix() 
+        	  logger.debug("[Loader] " + statusMessagePrefix() 
                 + " loading interrupted!");
           }
         }
@@ -260,7 +265,7 @@ public class Loader
         m_state = IDLE;
         m_stopped = false;
         if (m_log != null) {
-          m_log.statusMessage(statusMessagePrefix() + "Finished.");
+          logger.debug(statusMessagePrefix() + "Finished.");
         }
         block(false);
       }
@@ -793,5 +798,10 @@ public class Loader
     // set a default environment to use
     m_env = Environment.getSystemWide();
   }
+
+  public void setLog(weka.gui.Logger logger) {
+	// TODO Auto-generated method stub
+	
+	}
 }
 

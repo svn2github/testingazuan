@@ -243,7 +243,7 @@ public class Loader
 	  m_visual.setStatic();
 	  if (logger != null) {
 	   logger.debug("[Loader] " + statusMessagePrefix() 
-	        + " loaded " + m_dataSet.relationName());
+	        + " loaded " );
 	  }
 //	  m_visual.setText(m_dataSet.relationName());
 	  logger.debug("Start notification");

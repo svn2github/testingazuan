@@ -416,8 +416,7 @@ public class ChartEditorComponents {
 	 */
 
 	public void createSeriesPersonalizationSection(final ChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
-		seriesPersonalizationEditor=new SeriesPersonalizationEditor(formToolkit, scrolledForm);
-		seriesPersonalizationEditor.createSeriesPersonalizationForm(model,editor,formToolkit, scrolledForm);
+		seriesPersonalizationEditor=new SeriesPersonalizationEditor(editor, model, formToolkit, scrolledForm);
 	}
 
 

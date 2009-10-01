@@ -46,8 +46,6 @@ public class SeriesPersonalizationEditor {
 	Section sectionSeries=null;
 	Composite sectionClientSeries=null;
 
-	final Group newSeriesGroup;
-	final Group personalGroup;
 
 	final Label newSerLabel;
 	final Text newSerLabelText;
@@ -63,82 +61,15 @@ public class SeriesPersonalizationEditor {
 	final Text newSerName; 
 	// Field for personalization
 
-	public SeriesPersonalizationEditor(FormToolkit toolkit, final ScrolledForm form) {
+	public SeriesPersonalizationEditor(final ChartEditor editor, final ChartModel model,FormToolkit toolkit, final ScrolledForm form) {
 
 		sectionSeries = toolkit.createSection(form.getBody(), 
 				Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
 		sectionClientSeries=toolkit.createComposite(sectionSeries);
+		sectionSeries.setText("Series Labels parameters");
+		sectionSeries.setDescription("Set all the drill parameteres");
 
-		newSeriesGroup=new Group(sectionClientSeries, SWT.NULL);
-		newSeriesGroup.setText("---------- ADD SERIE ----------");
-		GridLayout gridLayout=new GridLayout();
-		gridLayout.numColumns=2;
-		newSeriesGroup.setLayout(gridLayout);
-
-		Label newNameLabel = new Label(newSeriesGroup, SWT.NULL); 
-		newNameLabel.setText("Serie Name: ");
-		newNameLabel.setToolTipText("New serie's name");
-		newNameLabel.pack();		
-		newSerName = new Text(newSeriesGroup, SWT.BORDER);
-		newSerName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		newSerName.pack();
-
-
-		// group where appear the list and the list for serie personalization
-		personalGroup=new Group(sectionClientSeries, SWT.NULL);
-		personalGroup.setText("-------------- SERIE PERSONALIZATION --------------");
-		GridLayout gridLayoutView = new GridLayout();
-		gridLayoutView.numColumns = 3;
-		personalGroup.setLayout(gridLayoutView);
-		GridData gridDataView = new GridData(GridData.FILL_BOTH);
-		personalGroup.setLayoutData(gridDataView);
-
-		parsList = new List (personalGroup, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
-		parsList.setToolTipText("Inserted series");
-
-		newSerLabel=new Label(personalGroup, SWT.NULL); ;
-
-		newSerLabelText=new Text(personalGroup, SWT.BORDER);;
-		newSerLabelText.setToolTipText("Serie Label");
-
-		newColorLabel=new Label(personalGroup, SWT.NULL);
-
-		innerSection = toolkit.createComposite(personalGroup);
-		colorLabel = new Label(innerSection, SWT.BORDER);
-		colorButton = new Button(innerSection, SWT.PUSH);
-		colorButton.setToolTipText("Color of the serie");
-
-		drawLabel=new Label(personalGroup, SWT.NULL);
-		//		Label sl1=new Label(personalGroup, SWT.NULL);
-		//		sl1.setText("");
-		//		Label sl2=new Label(personalGroup, SWT.NULL);
-		//		sl2.setText("");
-		comboDraw=new Combo(personalGroup,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
-		newColorLabel.setToolTipText("Set the drawing shape; can be bar, line or line without shape on the category point");
-		scaleLabel=new Label(personalGroup, SWT.NULL);
-		comboScale=new Combo(personalGroup,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
-		comboScale.setToolTipText("Map the serie to the first or to the second scale");
-
-	}
-
-
-
-
-
-
-
-
-
-	/** Draw the section for drill parameters
-	 * 
-	 * @param editor
-	 * @param toolkit
-	 * @param form
-	 */
-
-
-	public void createSeriesPersonalizationForm(final ChartModel model, final ChartEditor editor, FormToolkit toolkit, final ScrolledForm form){
-
+		//********* Main Section ******************
 		TableWrapData td = new TableWrapData(TableWrapData.FILL);
 		sectionSeries.setLayoutData(td);
 		sectionSeries.addExpansionListener(new ExpansionAdapter() {
@@ -146,71 +77,63 @@ public class SeriesPersonalizationEditor {
 				form.reflow(true);
 			}
 		});
-		sectionSeries.setText("Series Labels parameters");
-		sectionSeries.setDescription("Set all the drill parameteres");
 
+		// ********** Main Layout ***************
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
 		sectionClientSeries.setLayout(gl);
 
-
-
-		newSerName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		newSerName.pack();
-
-		//Image image = sectionClientSeries.getDisplay().getSystemImage(SWT.ICON_QUESTION);
-		Image imageAdd = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_OBJ_ELEMENT);
-		Button buttonAdd = new Button(newSeriesGroup, SWT.PUSH);
-		buttonAdd.setImage(imageAdd);
+		//Image imageAdd = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_OBJ_ELEMENT);
+		Button buttonAdd = new Button(sectionClientSeries, SWT.PUSH);
+		buttonAdd.setText("Add");
+		//buttonAdd.setImage(imageAdd);
+		buttonAdd.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 		buttonAdd.setToolTipText("Add serie");
 		buttonAdd.pack();
 
-		//		GridData gridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
-		//		gridData.verticalSpan = 4;
-		//		gridData.verticalAlignment=SWT.CENTER;
-		//		parsList.setSize(500, 1000);
-		//		parsList.setLayoutData(gridData);
+		final Button buttonRem = new Button(sectionClientSeries, SWT.PUSH);
+		buttonRem.setToolTipText("Remove");
+		//		Image imageRem = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
+		buttonRem.setText("Cancel");
+		buttonRem.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+		buttonRem.setToolTipText("Remove serie");
+		//		buttonRem.setImage(imageRem);
+		buttonRem.pack();
 
+
+		// ********** List (or table)***************
+		parsList = new List (sectionClientSeries, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+		parsList.setToolTipText("Inserted series");
 		GridData g=new GridData(GridData.FILL_BOTH);
-		g.verticalSpan=4;
+		g.verticalSpan=3;
+		g.horizontalSpan=2;
 		parsList.setLayoutData(g);
-
+		// Fill the list
 		if(model.getSeriesPersonalizationHashMap()!=null){
 			for (Iterator iterator = model.getSeriesPersonalizationHashMap().keySet().iterator(); iterator.hasNext();) {
 				String parName = (String) iterator.next();
 				parsList.add(parName);
 			}			
-		} //close if map is not null
+		} 
 		parsList.redraw();
 
-		// Add Button Listener
-		Listener addListener = new Listener() {
-			public void handleEvent(Event event) {
-				String nameToAdd=newSerName.getText();
-				//parsMap=model.getSeriesPersonalizationHashMap();
-				if(nameToAdd==null || nameToAdd.equalsIgnoreCase("")){
-					SpagoBILogger.warningLog("Specify a name for serie");
-					MessageDialog.openWarning(newSeriesGroup.getShell(), "Warning", "Specify a name for serie");
-				}
-				else if(model.getSeriesPersonalizationHashMap().keySet().contains(nameToAdd)){
-					SpagoBILogger.warningLog("Name already present for Serie");
-					MessageDialog.openWarning(newSeriesGroup.getShell(), "Warning", "Name already present");					
-				}
-				else {					
-					parsList.add(nameToAdd);
-					model.getSeriesPersonalizationHashMap().put(nameToAdd, new SeriePersonalization(nameToAdd));
-				}
+		//******************	Serie NAME *********************
+		Label newNameLabel = new Label(sectionClientSeries, SWT.NULL); 
+		newNameLabel.setText("Serie Name: ");
+		newNameLabel.setToolTipText("New serie's name");
+		newNameLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		//newNameLabel.pack();		
+		newSerName = new Text(sectionClientSeries, SWT.BORDER);
+		newSerName.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		newSerName.setEnabled(true);
 
-			}
-		};
-		buttonAdd.addListener(SWT.Selection, addListener);
-		buttonAdd.pack();
 
-		// Under the list there are two field, one to put label one for color, a button to modify and one to remove
-
+		newSerLabel=new Label(sectionClientSeries, SWT.NULL); ;
 		newSerLabel.setText("    Label Serie: ");		
 		newSerLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		newSerLabel.pack();
+		newSerLabelText=new Text(sectionClientSeries, SWT.BORDER);;
+		newSerLabelText.setToolTipText("Serie Label");
 		newSerLabelText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		newSerLabelText.pack();
 		newSerLabelText.addModifyListener(new ModifyListener() {
@@ -231,13 +154,22 @@ public class SeriesPersonalizationEditor {
 		newSerLabel.setEnabled(false);
 		newSerLabelText.setEnabled(false);
 
+
+
+
+		newColorLabel=new Label(sectionClientSeries, SWT.NULL);
+
+		innerSection = toolkit.createComposite(sectionClientSeries);
+		colorLabel = new Label(innerSection, SWT.BORDER);
+		colorButton = new Button(innerSection, SWT.PUSH);
+		colorButton.setToolTipText("Color of the serie");
 		newColorLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		newColorLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		newColorLabel.setText("    Color serie: ");
 		newColorLabel.setEnabled(false);
 		newColorLabel.pack();
 
-		final Color color = new org.eclipse.swt.graphics.Color(personalGroup.getDisplay(), new RGB(255,255,255));
+		final Color color = new org.eclipse.swt.graphics.Color(sectionClientSeries.getDisplay(), new RGB(255,255,255));
 		GridLayout colorGd = new GridLayout();
 		colorGd.numColumns = 2;
 		colorGd.marginHeight = 0;
@@ -246,7 +178,7 @@ public class SeriesPersonalizationEditor {
 		colorLabel.setText("          ");
 		colorLabel.setBackground(color);
 		colorButton.setText("Color...");
-		final Shell parentShell = personalGroup.getShell();
+		final Shell parentShell = sectionClientSeries.getShell();
 		colorButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				final Shell centerShell = new Shell(parentShell, SWT.NO_TRIM);
@@ -282,15 +214,19 @@ public class SeriesPersonalizationEditor {
 		colorLabel.setEnabled(false);
 		colorButton.setEnabled(false);
 
+
+
+
+		drawLabel=new Label(sectionClientSeries, SWT.NULL);
 		drawLabel.setText("    Draw style: ");		
 		drawLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		drawLabel.pack();
 
+		comboDraw=new Combo(sectionClientSeries,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
 		comboDraw.add("bar");
 		comboDraw.add("line");
 		comboDraw.add("line_no_shape");
 		comboDraw.select(0);
-		comboDraw.setEnabled(false);
 		comboDraw.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		comboDraw.pack();
 		comboDraw.addModifyListener(new ModifyListener() {
@@ -307,17 +243,20 @@ public class SeriesPersonalizationEditor {
 				}
 			}
 		});
-
+		drawLabel.setEnabled(false);
+		comboDraw.setEnabled(false);
 		comboDraw.pack();
 
+
+		newColorLabel.setToolTipText("Set the drawing shape; can be bar, line or line without shape on the category point");
+		scaleLabel=new Label(sectionClientSeries, SWT.NULL);
 		scaleLabel.setText("  Map to scale: ");		
 		scaleLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-		scaleLabel.pack();
-
+		comboScale=new Combo(sectionClientSeries,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
+		comboScale.setToolTipText("Map the serie to the first or to the second scale");
 		comboScale.add("1");
 		comboScale.add("2");
 		comboScale.select(0);
-		comboScale.setEnabled(false);
 		comboScale.pack();
 		comboScale.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		comboScale.addModifyListener(new ModifyListener() {
@@ -333,19 +272,35 @@ public class SeriesPersonalizationEditor {
 				}
 			}
 		});
-
+		comboScale.setEnabled(false);
+		scaleLabel.setEnabled(false);
+		scaleLabel.pack();
 		comboScale.pack();
 
+		// Add Button Listener
+		Listener addListener = new Listener() {
+			public void handleEvent(Event event) {
+				String nameToAdd=newSerName.getText();
+				//parsMap=model.getSeriesPersonalizationHashMap();
+				if(nameToAdd==null || nameToAdd.equalsIgnoreCase("")){
+					SpagoBILogger.warningLog("Specify a name for serie");
+					MessageDialog.openWarning(sectionClientSeries.getShell(), "Warning", "Specify a name for serie");
+				}
+				else if(model.getSeriesPersonalizationHashMap().keySet().contains(nameToAdd)){
+					SpagoBILogger.warningLog("Name already present for Serie");
+					MessageDialog.openWarning(sectionClientSeries.getShell(), "Warning", "Name already present");					
+				}
+				else {					
+					parsList.add(nameToAdd);
+					model.getSeriesPersonalizationHashMap().put(nameToAdd, new SeriePersonalization(nameToAdd));
+				}
+
+			}
+		};
+		buttonAdd.addListener(SWT.Selection, addListener);
+		buttonAdd.pack();
 
 
-
-		final Button buttonRem = new Button(personalGroup, SWT.PUSH);
-		buttonRem.setToolTipText("Remove");
-		Image imageRem = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
-		buttonRem.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-		buttonRem.setToolTipText("Remove serie");
-		buttonRem.setImage(imageRem);
-		buttonRem.pack();
 
 
 		// Add listener that show details of parameter selected
@@ -355,7 +310,7 @@ public class SeriesPersonalizationEditor {
 				int selection = parsList.getSelectionIndex();
 				String parNameSelected=parsList.getItem(selection);
 				// put the default value
-
+				newSerName.setText(parNameSelected);
 				SeriePersonalization seriePers=model.getSeriesPersonalizationHashMap().get(parNameSelected);
 				newSerLabelText.setText(seriePers.getLabel()!=null ? seriePers.getLabel() : "");
 				String draw=seriePers.getDraw();
@@ -423,10 +378,16 @@ public class SeriesPersonalizationEditor {
 		};
 		buttonRem.addListener(SWT.Selection, cancelListener);
 		buttonRem.setEnabled(false);
-		newSeriesGroup.pack();		
-		personalGroup.pack();
+		sectionClientSeries.pack();
 		sectionSeries.setClient(sectionClientSeries);
+
+
+
 	}
+
+
+
+
 
 
 

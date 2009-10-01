@@ -546,7 +546,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        collapsible: true,
 	        //collapseMode: 'mini',
 	        collapseFirst: false,
-	        collapsed: true,
+	        collapsed: false,
 	        tools:[
 		        {
 		          id:'delete',

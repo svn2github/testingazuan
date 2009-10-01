@@ -93,18 +93,16 @@ Sbi.qbe.DocumentParametersGridPanel = function(config, store) {
         , sm : this.sm
         , enableDragDrop: true
         , ddGroup: 'gridDDGroup'
-        //, height: 120
+        , height: 155
+        //, autoScroll: true
+        , layout: 'fit'
  	});
  	this.grid.type = this.type;
  	
 	c = Ext.apply({}, c, {
 		title: LN('sbi.qbe.documentparametersgridpanel.title')
         , border: false
-        , autoScroll: true
-		, containerScroll: true
-		, viewConfig: {
-        	forceFit: true
-		}
+        //, autoScroll: true
         , collapsible: false
         , height: 180
         , items: [this.grid]

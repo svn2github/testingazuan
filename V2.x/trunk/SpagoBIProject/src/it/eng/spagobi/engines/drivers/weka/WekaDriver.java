@@ -123,8 +123,8 @@ public class WekaDriver extends AbstractDriver implements IEngineDriver {
 
 		 
 		pars.put("document", biobj.getId().toString());
-    	pars.put("processActivatedMsg", GeneralUtilities.replaceInternationalizedMessages("${weka.execution.processActivatedMsg}"));
-    	pars.put("processNotActivatedMsg", GeneralUtilities.replaceInternationalizedMessages("${weka.execution.processNotActivatedMsg}"));
+    	//pars.put("processActivatedMsg", GeneralUtilities.replaceInternationalizedMessages("${weka.execution.processActivatedMsg}"));
+    	//pars.put("processNotActivatedMsg", GeneralUtilities.replaceInternationalizedMessages("${weka.execution.processNotActivatedMsg}"));
         Map biobjParameters = findBIParameters(biobj);
         pars.putAll(biobjParameters);
         logger.debug("OUT");

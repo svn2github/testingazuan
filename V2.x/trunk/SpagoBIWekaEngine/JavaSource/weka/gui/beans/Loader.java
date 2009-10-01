@@ -111,7 +111,7 @@ public class Loader
   /**
    * Logging
    */
-  protected transient Logger m_log;
+
   private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
   
   /**
@@ -153,6 +153,7 @@ public class Loader
 	// Set environment variables
 	if (m_Loader instanceof EnvironmentHandler && m_env != null) {
 	  ((EnvironmentHandler)m_Loader).setEnvironment(m_env);
+	  logger.debug("Setted Environment");
 	}
 	
 	String msg = statusMessagePrefix();
@@ -161,7 +162,7 @@ public class Loader
 	} else {
 	  msg += "Loading...";
 	}
-	if (m_log != null) {
+	if (logger != null) {
 	  logger.debug(msg);
 	}
 
@@ -177,7 +178,7 @@ public class Loader
 	    structure = m_Loader.getStructure();
 	    notifyStructureAvailable(structure);
 	  } catch (IOException e) {
-	    if (m_log != null) {
+	    if (logger != null) {
 	    	 logger.error(statusMessagePrefix()
 	          +"ERROR (See log for details");
 	    	 logger.error("[Loader] " + statusMessagePrefix()
@@ -188,7 +189,7 @@ public class Loader
 	  try {
 	    nextInstance = m_Loader.getNextInstance(structure);
 	  } catch (IOException e) {
-	    if (m_log != null) {
+	    if (logger != null) {
 	    	 logger.error(statusMessagePrefix()
 	          +"ERROR (See log for details");
 	    	 logger.error("[Loader] " + statusMessagePrefix()
@@ -224,7 +225,7 @@ public class Loader
 	    z++;
             if (z % 10000 == 0) {
 //              m_visual.setText("" + z + " instances...");
-              if (m_log != null) {
+              if (logger != null) {
                 logger.debug(statusMessagePrefix() 
                     + "Loaded " + z + " instances");
               }
@@ -236,7 +237,7 @@ public class Loader
         //  m_Loader.reset();
 	  m_dataSet = m_Loader.getDataSet();
 	  m_visual.setStatic();
-	  if (m_log != null) {
+	  if (logger != null) {
 	   logger.debug("[Loader] " + statusMessagePrefix() 
 	        + " loaded " + m_dataSet.relationName());
 	  }
@@ -244,7 +245,7 @@ public class Loader
 	  notifyDataSetLoaded(new DataSetEvent(m_DP, m_dataSet));
 	}
       } catch (Exception ex) {
-        if (m_log != null) {
+        if (logger != null) {
         	 logger.error(statusMessagePrefix()
               +"ERROR (See log for details");
         	 logger.error("[Loader] " + statusMessagePrefix()
@@ -253,7 +254,7 @@ public class Loader
 	ex.printStackTrace();
       } finally {
         if (Thread.currentThread().isInterrupted()) {
-          if (m_log != null) {
+          if (logger != null) {
         	  logger.debug("[Loader] " + statusMessagePrefix() 
                 + " loading interrupted!");
           }
@@ -264,7 +265,7 @@ public class Loader
 	m_visual.setStatic();
         m_state = IDLE;
         m_stopped = false;
-        if (m_log != null) {
+        if (logger != null) {
           logger.debug(statusMessagePrefix() + "Finished.");
         }
         block(false);
@@ -703,7 +704,7 @@ public class Loader
    * @param logger a <code>weka.gui.Logger</code> value
    */
   public void setLog(Logger logger) {
-    m_log = logger;
+	  logger = logger;
   }
   
   /**

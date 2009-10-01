@@ -490,7 +490,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
    * @return true, if a key could have been detected, false otherwise
    */  
   private boolean checkForKey() throws Exception {
-  
+	  logger.debug("IN");
       String query = m_query;
       
       query = query.replaceAll(" +"," ");
@@ -523,7 +523,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
       }
       if(m_orderBy.size() != 0)
           return true;
-      
+      logger.debug("OUT");
       return false;
   }
   
@@ -624,6 +624,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
       throw new IOException("No source database has been specified");
     }
     connectToDatabase();
+    logger.debug("Connected To Database");
   pseudo:
       try{
     if(m_pseudoIncremental && m_structure == null){
@@ -632,6 +633,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
         }
         setRetrieval(NONE);  
         m_datasetPseudoInc = getDataSet();
+        logger.debug("Dataset Retrieved");
         m_structure = new Instances(m_datasetPseudoInc,0);
         setRetrieval(NONE);
         return m_structure;
@@ -645,6 +647,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
         while (!rightChoice){
             try{
                 if (m_DataBaseConnection.execute(limitQuery(m_query,0,choice)) == false) {
+                	logger.error("Query didn't produce results");
                     throw new IOException("Query didn't produce results");
                 }
                 m_choice = choice;
@@ -656,10 +659,12 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
                     m_pseudoIncremental = true;
                     break pseudo;
                 }
+                logger.error("Sql exception",ex);
             }
         }
         String end = endOfQuery(false);
         ResultSet rs = m_DataBaseConnection.getResultSet();
+        logger.debug("ResultSet Retrieved");
         ResultSetMetaData md = rs.getMetaData();
         rs.close();
         int numAttributes = md.getColumnCount();

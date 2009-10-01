@@ -257,4 +257,3 @@ Sbi.locale.ln['sbi.qbe.havinggridpanel.title'] = 'Having clause';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.title'] = 'Document\'s analytical drivers';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.emptytext'] = 'This document has no analytical drivers';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.headers.label'] = 'Title';
-Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.parameterreference'] = 'Driver';

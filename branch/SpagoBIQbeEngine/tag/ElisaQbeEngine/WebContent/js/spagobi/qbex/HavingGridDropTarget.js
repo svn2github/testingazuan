@@ -173,7 +173,7 @@ Ext.extend(Sbi.qbe.HavingGridDropTarget, Ext.dd.DropTarget, {
 		if (dropColDataIndex === 'rightOperandDescription') {
 			filter = {
 				rightOperandValue: (rows[0].data.type == 'NUMBER') ? rows[0].data.id : 'P{' + rows[0].data.id + '}'
-				, rightOperandDescription: LN('sbi.qbe.documentparametersgridpanel.parameterreference') + ' [' + rows[0].data.label + ']'
+				, rightOperandDescription: '[' + rows[0].data.label + ']'
 				, rightOperandType: 'Static Value'
 				, rightOperandAggregator: 'NONE'
 			};
@@ -182,7 +182,7 @@ Ext.extend(Sbi.qbe.HavingGridDropTarget, Ext.dd.DropTarget, {
 			
 			filter = {
 				leftOperandValue: (rows[0].data.type == 'NUMBER') ? rows[0].data.id : 'P{' + rows[0].data.id + '}'
-				, leftOperandDescription: LN('sbi.qbe.documentparametersgridpanel.parameterreference') + ' [' + rows[0].data.label + ']'
+				, leftOperandDescription: '[' + rows[0].data.label + ']'
 				, leftOperandType: 'Static Value'
 				, leftOperandAggregator: 'NONE'
 			};

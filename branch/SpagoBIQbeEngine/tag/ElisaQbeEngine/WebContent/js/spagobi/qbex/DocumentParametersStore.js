@@ -100,14 +100,14 @@ Ext.extend(Sbi.qbe.DocumentParametersStore, Ext.data.Store, {
 		if (parameterUrlName !== null) {
 			var parameterRecord = this.getParameterRecord(parameterUrlName);
 			if (parameterRecord !== undefined) {
-				filter.leftOperandDescription = LN('sbi.qbe.documentparametersgridpanel.parameterreference') + ' [' + parameterRecord.data.label + ']'
+				filter.leftOperandDescription = '[' + parameterRecord.data.label + ']'
 			}
 		}
 		parameterUrlName = this.getReferencedParameter(filter.rightOperandValue);
 		if (parameterUrlName !== null) {
 			var parameterRecord = this.getParameterRecord(parameterUrlName);
 			if (parameterRecord !== undefined) {
-				filter.rightOperandDescription = LN('sbi.qbe.documentparametersgridpanel.parameterreference') + ' [' + parameterRecord.data.label + ']'
+				filter.rightOperandDescription = '[' + parameterRecord.data.label + ']'
 			}
 		}
 		return filter;

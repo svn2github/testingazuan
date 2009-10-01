@@ -337,6 +337,17 @@ public class SeriesPersonalizationEditor {
 		comboScale.pack();
 
 
+
+
+		final Button buttonRem = new Button(personalGroup, SWT.PUSH);
+		buttonRem.setToolTipText("Remove");
+		Image imageRem = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
+		buttonRem.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		buttonRem.setToolTipText("Remove serie");
+		buttonRem.setImage(imageRem);
+		buttonRem.pack();
+
+
 		// Add listener that show details of parameter selected
 		parsList.addListener (SWT.Selection, new Listener () {
 			public void handleEvent (Event e) {
@@ -379,19 +390,9 @@ public class SeriesPersonalizationEditor {
 				scaleLabel.setEnabled(true);
 				comboScale.setEnabled(true);
 				newColorLabel.setEnabled(true);
+				buttonRem.setEnabled(true);
 			}	
 		});
-
-
-
-		Button buttonRem = new Button(personalGroup, SWT.PUSH);
-		buttonRem.setToolTipText("Remove");
-		Image imageRem = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
-		buttonRem.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-		buttonRem.setToolTipText("Remove serie");
-		buttonRem.setImage(imageRem);
-		buttonRem.pack();
-
 
 
 		// Add Button Listener
@@ -416,11 +417,12 @@ public class SeriesPersonalizationEditor {
 				newColorLabel.setEnabled(false);
 				// remove from SWT list
 				parsList.remove(namePar);
+				buttonRem.setEnabled(false);
 				//				parsList.pack();			
 			}
 		};
 		buttonRem.addListener(SWT.Selection, cancelListener);
-
+		buttonRem.setEnabled(false);
 		newSeriesGroup.pack();		
 		personalGroup.pack();
 		sectionSeries.setClient(sectionClientSeries);

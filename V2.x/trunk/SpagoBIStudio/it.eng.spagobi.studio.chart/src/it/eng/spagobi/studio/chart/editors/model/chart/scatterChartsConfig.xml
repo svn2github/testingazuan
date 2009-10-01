@@ -87,6 +87,5 @@
 		templatePath='it/eng/spagobi/studio/chart/resources/chart/simplescatter.xml'>
 		<CONF>
 		</CONF>
-		<SERIES_COLORS />
 	</SCATTERCHART>
 </SCATTERCHARTS>

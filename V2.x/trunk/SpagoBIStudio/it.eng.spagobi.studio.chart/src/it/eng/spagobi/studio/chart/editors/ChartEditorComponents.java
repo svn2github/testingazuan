@@ -3,6 +3,7 @@ package it.eng.spagobi.studio.chart.editors;
 import it.eng.spagobi.studio.chart.editors.model.chart.ChartModel;
 import it.eng.spagobi.studio.chart.editors.model.chart.DialChartModel;
 import it.eng.spagobi.studio.chart.editors.model.chart.LinkableChartModel;
+import it.eng.spagobi.studio.chart.editors.model.chart.ScatterChartModel;
 import it.eng.spagobi.studio.chart.editors.model.chart.XYChartModel;
 import it.eng.spagobi.studio.chart.utils.Style;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
@@ -45,6 +46,7 @@ public class ChartEditorComponents {
 	SeriesPersonalizationEditor seriesPersonalizationEditor=null;
 	IntervalsInformationEditor intervalsInformationEditor=null;
 	YZRangesEditor yzRangesEditor=null;
+	ScatterRangeMarkerEditor scatterRangeMarkerEditor=null;
 
 
 	//HashMap<String, Group> subTypeGroup=new HashMap<String, Group>();
@@ -427,12 +429,17 @@ public class ChartEditorComponents {
 	 * @param scrolledForm
 	 */
 
-	public void createIntervalsInformationsSection(final ChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
-		intervalsInformationEditor=new IntervalsInformationEditor((DialChartModel) model, formToolkit, scrolledForm,editor);
+	public void createIntervalsInformationsSection(final DialChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
+		intervalsInformationEditor=new IntervalsInformationEditor(model, formToolkit, scrolledForm,editor);
 	}
 
-	public void createYZRangesSection(final ChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
-		yzRangesEditor=new YZRangesEditor((XYChartModel) model, formToolkit, scrolledForm,editor);
+	public void createScatterRangeMarkerSection(final ScatterChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
+		scatterRangeMarkerEditor=new ScatterRangeMarkerEditor(model, formToolkit, scrolledForm,editor);
+	}
+
+	
+	public void createYZRangesSection(final XYChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
+		yzRangesEditor=new YZRangesEditor(model, formToolkit, scrolledForm,editor);
 	}
 
 
@@ -495,6 +502,21 @@ public class ChartEditorComponents {
 
 	public void setYzRangesEditor(YZRangesEditor yzRangesEditor) {
 		this.yzRangesEditor = yzRangesEditor;
+	}
+
+
+
+
+	public ScatterRangeMarkerEditor getScatterRangeMarkerEditor() {
+		return scatterRangeMarkerEditor;
+	}
+
+
+
+
+	public void setScatterRangeMarkerEditor(
+			ScatterRangeMarkerEditor scatterRangeMarkerEditor) {
+		this.scatterRangeMarkerEditor = scatterRangeMarkerEditor;
 	}
 
 

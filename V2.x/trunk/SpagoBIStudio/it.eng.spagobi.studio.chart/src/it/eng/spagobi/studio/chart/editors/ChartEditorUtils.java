@@ -610,4 +610,10 @@ public class ChartEditorUtils {
 		}
 		return r;
 	}
+
+	public static void addBlanckSpace(Composite composite){
+		Label spaceLabel=new Label(composite,SWT.NULL);
+		spaceLabel.setText("");
+	}
+
 }

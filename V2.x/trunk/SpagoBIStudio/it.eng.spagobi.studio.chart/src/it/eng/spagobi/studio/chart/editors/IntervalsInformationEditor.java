@@ -97,7 +97,7 @@ public class IntervalsInformationEditor {
 
 		intervalsList = new List (sectionClientIntervals, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
 		intervalsList.setToolTipText("intervals added");
-		GridData gridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
+		GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
 		gridData.verticalSpan = 4;
 		gridData.verticalAlignment=SWT.CENTER;
 		intervalsList.setSize(500, 1000);

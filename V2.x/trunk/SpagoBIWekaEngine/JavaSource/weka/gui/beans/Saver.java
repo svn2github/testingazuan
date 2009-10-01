@@ -90,10 +90,14 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
     }
 
     public void run() {
+    	logger.debug("IN");
     	try {
         m_visual.setAnimated();
+        logger.debug("Setted Animated");
         m_Saver.setInstances(m_dataSet);
+        logger.debug("Setted Dataset");
         m_Saver.writeBatch();
+        logger.debug("Batch Written");
 	
       } catch (Exception ex) {
     	  logger.error("SaveBatchThread.run", ex);
@@ -102,6 +106,7 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
         status = TERMINATED;
         m_visual.setStatic();
       }
+      logger.debug("OUT");
     }
   }
   

@@ -254,7 +254,7 @@ Sbi.locale.ln['sbi.qbe.havinggridpanel.title'] = 'Having clause';
 //===================================================================
 //DOCUMENT PARAMETERS PANEL
 //===================================================================
-Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.title'] = 'Document parameters';
-Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.emptytext'] = 'This document has no parameters';
+Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.title'] = 'Document\'s analytical drivers';
+Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.emptytext'] = 'This document has no analytical drivers';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.headers.label'] = 'Title';
-Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.parameterreference'] = 'Parameter';
+Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.parameterreference'] = 'Driver';

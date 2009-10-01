@@ -237,14 +237,18 @@ public class Loader
 //	  m_visual.setText(structure.relationName());
 	} else {
         //  m_Loader.reset();
+	  logger.debug("Entered in else");
 	  m_dataSet = m_Loader.getDataSet();
+	  logger.debug("Dataset Retrieved");
 	  m_visual.setStatic();
 	  if (logger != null) {
 	   logger.debug("[Loader] " + statusMessagePrefix() 
 	        + " loaded " + m_dataSet.relationName());
 	  }
 //	  m_visual.setText(m_dataSet.relationName());
+	  logger.debug("Start notification");
 	  notifyDataSetLoaded(new DataSetEvent(m_DP, m_dataSet));
+	  logger.debug("End notification");
 	}
       } catch (Exception ex) {
         if (logger != null) {
@@ -261,18 +265,24 @@ public class Loader
                 + " loading interrupted!");
           }
         }
+       
 	m_ioThread = null;
 	//	m_visual.setText("Finished");
 	//	m_visual.setIcon(m_inactive.getVisual());
+	 logger.debug("Go Set Static");
 	m_visual.setStatic();
         m_state = IDLE;
         m_stopped = false;
         if (logger != null) {
           logger.debug(statusMessagePrefix() + "Finished.");
+          logger.debug("This is the statusMessagePrefix: "+statusMessagePrefix());
         }
+        logger.debug("No block");
         block(false);
+        logger.debug("Block False");
       }
-    }
+      logger.debug("OUT");
+    }   
   }
 
   /**

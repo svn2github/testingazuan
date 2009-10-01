@@ -175,7 +175,9 @@ public class Loader
 	  try {
           //  m_Loader.reset();
             //	    System.err.println("NOTIFYING STRUCTURE AVAIL");
+		  logger.debug("Before retrieving the structure");
 	    structure = m_Loader.getStructure();
+	    logger.debug("After retrieving the structure");
 	    notifyStructureAvailable(structure);
 	  } catch (IOException e) {
 	    if (logger != null) {

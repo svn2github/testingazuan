@@ -138,7 +138,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   /** Properties associated with the database connection */
   protected static Properties PROPERTIES;
 
-  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+  private static transient Logger logger = Logger.getLogger(DatabaseLoader.class);
   
   /** reads the property file */
   static {

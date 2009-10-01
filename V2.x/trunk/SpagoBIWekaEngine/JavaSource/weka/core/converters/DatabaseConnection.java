@@ -100,7 +100,7 @@ public class DatabaseConnection implements Serializable {
 
 	public static final int DATE = 8;
 
-	private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+	private static transient Logger logger = Logger.getLogger(DatabaseConnection.class);
 	
 	/*
 	 * Load the database drivers -- the properties files only get consulted when

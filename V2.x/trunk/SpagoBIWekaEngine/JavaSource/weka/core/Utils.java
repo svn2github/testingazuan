@@ -40,7 +40,7 @@ public final class Utils {
   /** The small deviation allowed in double comparisons */
   public static double SMALL = 1e-6;
 
-  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+  private static transient Logger logger = Logger.getLogger(Utils.class);
   
   /**
    * Reads properties that inherit from three locations. Properties

@@ -80,7 +80,7 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
   public static final int EXECUTING = 1;
   public static final int TERMINATED = 2;
 
-  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+  private static transient Logger logger = Logger.getLogger(Saver.class);
   
   private class SaveBatchThread extends Thread {
     private DataSink m_DS;

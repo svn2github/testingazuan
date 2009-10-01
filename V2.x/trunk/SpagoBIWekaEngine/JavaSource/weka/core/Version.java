@@ -40,7 +40,7 @@ public class Version implements Comparable {
   /** the revision */
   public static int REVISION = 3;
 
-  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+  private static transient Logger logger = Logger.getLogger(Version.class);
   
   static {
     try {

@@ -92,7 +92,7 @@ public class DatabaseSaver
   extends AbstractSaver 
   implements BatchConverter, IncrementalConverter, DatabaseConverter, OptionHandler {
   
-  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+  private static transient Logger logger = Logger.getLogger(DatabaseSaver.class);
 
   /** for serialization. */
   static final long serialVersionUID = 863971733782624956L;

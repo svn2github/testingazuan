@@ -112,7 +112,7 @@ public class Loader
    * Logging
    */
 
-  private static transient Logger logger = Logger.getLogger(FilterConfigurator.class);
+  private static transient Logger logger = Logger.getLogger(Loader.class);
   
   /**
    * The environment variables.

@@ -32,7 +32,7 @@ import org.hibernate.cfg.Configuration;
 
 import it.eng.qbe.dao.DAOFactory;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CompositeHibernateDataSource.
  * 

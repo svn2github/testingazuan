@@ -26,25 +26,59 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class DataMartModelStructure.
- * 
  * @author Andrea Gioia
  */
 public class DataMartModelStructure {
 	
-	/** The id. */
+	
 	long id = 0;
 	
-	/** The root entities. */
 	Map rootEntities;
 	
-	/** The fields. */
-	Map fields;
+	Map fields; // uniqueName -> field
 	
-	/** The entities. */
+	Map cfields; // entity uniqueName -> fields' list
+	
+	public Map getCalculatedFields() {
+		return cfields;
+	}
+	
+	public List getCalculatedFieldsByEntity(String entityName) {
+		return (List)cfields.get(entityName);
+	}
+
+	public void setCalculatedFields(Map calculatedFields) {
+		this.cfields = calculatedFields;
+	}
+	
+	public void addCalculatedField(String entityName, DataMartCalculatedField calculatedFiled) {
+		List cfiledsOnTargetEntity;
+		if(!cfields.containsKey(entityName)) {
+			cfields.put(entityName, new ArrayList());
+		}
+		cfiledsOnTargetEntity = (List)cfields.get(entityName);		
+		cfiledsOnTargetEntity.add(calculatedFiled);
+	}
+	
+	public void removeCalculatedFiield(String entityName, DataMartCalculatedField calculatedFiled) {
+		List cfiledsOnTargetEntity;
+		
+		cfiledsOnTargetEntity = (List)cfields.get(entityName);	
+		if(cfiledsOnTargetEntity != null) {
+			cfiledsOnTargetEntity.remove(calculatedFiled);
+		}
+	}
+	
+
+
+
+
+
+
 	Map entities;
+	
+	
 	
 	/**
 	 * Instantiates a new data mart model structure.
@@ -52,6 +86,7 @@ public class DataMartModelStructure {
 	public DataMartModelStructure() {
 		rootEntities = new HashMap();
 		fields = new HashMap();
+		cfields = new  HashMap();
 		entities = new HashMap();
 	}
 	

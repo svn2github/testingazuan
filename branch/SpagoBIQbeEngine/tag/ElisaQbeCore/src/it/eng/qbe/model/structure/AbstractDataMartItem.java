@@ -19,59 +19,52 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.query;
+package it.eng.qbe.model.structure;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public abstract class AbstractSelectField implements ISelectField {
-	private String alias;
-	private String type;
-	private boolean visible;
-	private boolean included;
+public abstract class AbstractDataMartItem implements IDataMartItem {
 	
-	public AbstractSelectField(String alias, String type, boolean included, boolean visible) {
-		setAlias(alias);
-		setType(type);
-		setIncluded( included );
-		setVisible( visible );
-	}
+	private DataMartModelStructure structure;
+	private DataMartEntity parent;	
 	
-	public String getAlias() {
-		return alias;
-	}
+	private long id;	
+	private String name;
 	
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
 	
-	public String getType() {
-		return type;
-	}
 	
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	public boolean isDataMartField() {
-		return this.DATAMART_FIELD.equalsIgnoreCase(type);
-	}
-	
-	public boolean isVisible() {
-		return visible;
+	public DataMartModelStructure getStructure() {
+		return structure;
 	}
 
-	public void setVisible(boolean visible) {
-		this.visible = visible;
+	protected void setStructure(DataMartModelStructure structure) {
+		this.structure = structure;
 	}
-
-	public boolean isIncluded() {
-		return included;
+	
+	public DataMartEntity getParent() {
+		return parent;
 	}
-
-	public void setIncluded(boolean included) {
-		this.included = included;
+	
+	public void setParent(DataMartEntity parent) {
+		this.parent = parent;
 	}
-
+	
+	public long getId() {
+		return id;
+	}
+	
+	protected void setId(long id) {
+		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	
 }

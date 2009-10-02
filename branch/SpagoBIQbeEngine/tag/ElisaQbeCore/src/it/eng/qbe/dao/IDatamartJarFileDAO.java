@@ -28,7 +28,7 @@ import it.eng.qbe.bo.DatamartJarFile;
  * 
  * @author Andrea Gioia
  */
-public interface DatamartJarFileDAO {
+public interface IDatamartJarFileDAO {
 	
 	/**
 	 * Load datamart jar file.

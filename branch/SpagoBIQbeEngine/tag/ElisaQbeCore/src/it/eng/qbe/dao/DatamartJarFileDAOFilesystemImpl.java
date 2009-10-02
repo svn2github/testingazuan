@@ -20,33 +20,23 @@
  **/
 package it.eng.qbe.dao;
 
-import it.eng.qbe.bo.DatamartJarFile;
-
 import java.io.File;
 
-// TODO: Auto-generated Javadoc
+import it.eng.qbe.bo.DatamartJarFile;
+
 /**
- * The Class DatamartJarFileDAOFilesystemImpl.
- * 
  * @author Andrea Gioia
  */
-public class DatamartJarFileDAOFilesystemImpl implements DatamartJarFileDAO {
+public class DatamartJarFileDAOFilesystemImpl implements IDatamartJarFileDAO {
 
-	/** The datamarts dir. */
+	
 	private File datamartsDir;
 	
-	/**
-	 * Instantiates a new datamart jar file dao filesystem impl.
-	 * 
-	 * @param datamartsDir the datamarts dir
-	 */
+	
 	public DatamartJarFileDAOFilesystemImpl(File datamartsDir) {
 		this.setDatamartsDir(datamartsDir);
 	}
 	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.dao.DatamartJarFileDAO#loadDatamartJarFile(java.lang.String)
-	 */
 	public DatamartJarFile loadDatamartJarFile(String datamartName) {
 		DatamartJarFile jarFile = null;
 		File targetDatamartDir = null;
@@ -62,29 +52,16 @@ public class DatamartJarFileDAOFilesystemImpl implements DatamartJarFileDAO {
 		return jarFile;
 	}
 
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.dao.DatamartJarFileDAO#saveDatamartJarFile(java.lang.String, it.eng.qbe.bo.DatamartJarFile)
-	 */
 	public void saveDatamartJarFile(String datamartName, DatamartJarFile jarFile) {
 		
 	}
 	
-	
 
-	/**
-	 * Gets the datamarts dir.
-	 * 
-	 * @return the datamarts dir
-	 */
 	private File getDatamartsDir() {
 		return datamartsDir;
 	}
 
-	/**
-	 * Sets the datamarts dir.
-	 * 
-	 * @param datamartsDir the new datamarts dir
-	 */
+
 	private void setDatamartsDir(File datamartsDir) {
 		this.datamartsDir = datamartsDir;
 	}

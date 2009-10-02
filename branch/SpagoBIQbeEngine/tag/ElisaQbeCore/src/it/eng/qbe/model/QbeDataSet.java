@@ -36,6 +36,7 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
 import it.eng.qbe.query.CalculatedSelectField;
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ISelectField;
 import it.eng.qbe.query.Query;
 import it.eng.spago.error.EMFInternalError;
@@ -138,6 +139,7 @@ public class QbeDataSet extends AbstractDataSet {
 			if(queryFiled.isDataMartField()) {
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(false));
 				dataStoreFieldMeta.setType(Object.class);
+				dataStoreFieldMeta.setProperty("uniqueName", ((DataMartSelectField)queryFiled).getUniqueName());
 			} else {
 				CalculatedSelectField claculatedQueryField = (CalculatedSelectField)queryFiled;
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(true));	
@@ -226,14 +228,19 @@ public class QbeDataSet extends AbstractDataSet {
 			}
 			
 			// ... then runtime bindings
-			Map fields = new HashMap();
+			Map qFields = new HashMap();
+			Map dmFields = new HashMap();
 			Object[] columns = new Object[dataStoreMeta.getFieldCount()];
 			for(int j = 0; j < dataStoreMeta.getFieldCount(); j++) {
-				fields.put(dataStoreMeta.getFieldName(j), record.getFieldAt(j).getValue());
+				qFields.put(dataStoreMeta.getFieldName(j), record.getFieldAt(j).getValue());
+				dmFields.put(dataStoreMeta.getFieldMeta(j).getProperty("uniqueName"), record.getFieldAt(j).getValue());
 				columns[j] = record.getFieldAt(j).getValue();
 			}
-			groovyScriptEngine.put("fields", fields);
-			groovyScriptEngine.put("columns", columns);
+			
+			groovyScriptEngine.put("qFields", qFields); // key = alias
+			groovyScriptEngine.put("dmFields", dmFields); // key = id
+			groovyScriptEngine.put("fields", qFields); // default key = alias
+			groovyScriptEngine.put("columns", columns); // key = col-index
 			
 			// show time
 			Object calculatedValue = null;

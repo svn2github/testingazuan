@@ -56,7 +56,7 @@ import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.qbe.model.structure.builder.BasicDataMartStructureBuilder;
+import it.eng.qbe.model.structure.builder.DataMartStructureBuilderFactory;
 import it.eng.qbe.model.views.ViewBuilder;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.Query;
@@ -96,34 +96,21 @@ public class DataMartModel implements IDataMartModel {
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(DataMartModel.class);
 	
-	
-	
-	/**
-	 * Instantiates a new data mart model.
-	 * 
-	 * @param dataSource the data source
-	 */
+
 	public DataMartModel(IDataSource dataSource){
 		this.dataSource = (IHibernateDataSource)dataSource;
 		this.name = getDataSource().getDatamartName();
 		this.description = getDataSource().getDatamartName();
 		this.label = getDataSource().getDatamartName();
 		
-		this.dataMartModelStructure = BasicDataMartStructureBuilder.buildDataMartStructure(dataSource);		
+		this.dataMartModelStructure = DataMartStructureBuilderFactory.getDataMartStructureBuilder(dataSource).build();		
 	
 		this.dataMartModelAccessModality = new DataMartModelAccessModality();
 		
 		this.dataMartProperties = new HashMap();		
 	}
 	
-	
-	
-	
-	/**
-	 * Gets the properties.
-	 * 
-	 * @return the properties
-	 */
+
 	public DatamartProperties getProperties() {
 		return  dataSource.getProperties();
 	}
@@ -261,7 +248,7 @@ public class DataMartModel implements IDataMartModel {
 			
 			getDataSource().refreshSharedView(name);
 			getDataSource().getSessionFactory();
-			setDataMartModelStructure( BasicDataMartStructureBuilder.buildDataMartStructure( getDataSource() ) );
+			setDataMartModelStructure( DataMartStructureBuilderFactory.getDataMartStructureBuilder( getDataSource() ).build() );
 		}	
 		
 	}

@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  * 
  * @author Andrea Gioia
  */
-public class DatamartLabelsDAOFilesystemImpl implements DatamartLabelsDAO {
+public class DatamartLabelsDAOFilesystemImpl implements IDatamartLabelsDAO {
 	
 
 	/** Logger component. */

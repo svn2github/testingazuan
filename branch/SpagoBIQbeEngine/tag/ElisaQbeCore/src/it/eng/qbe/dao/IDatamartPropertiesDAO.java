@@ -20,34 +20,30 @@
  **/
 package it.eng.qbe.dao;
 
-import it.eng.qbe.bo.DatamartLabels;
-
-import java.util.Locale;
+import it.eng.qbe.bo.DatamartProperties;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface DatamartLabelsDAO.
+ * The Interface DatamartPropertiesDAO.
  * 
  * @author Andrea Gioia
  */
-public interface DatamartLabelsDAO {
+public interface IDatamartPropertiesDAO {
 	
 	/**
-	 * Load datamart labels.
+	 * Load datamart properties.
 	 * 
 	 * @param datamartName the datamart name
 	 * 
-	 * @return the datamart labels
+	 * @return the datamart properties
 	 */
-	DatamartLabels loadDatamartLabels(String datamartName);
+	DatamartProperties loadDatamartProperties(String datamartName);
 	
 	/**
-	 * Load datamart labels.
+	 * Save datamart properties.
 	 * 
 	 * @param datamartName the datamart name
-	 * @param locale the locale
-	 * 
-	 * @return the datamart labels
+	 * @param datamartProperties the datamart properties
 	 */
-	DatamartLabels loadDatamartLabels(String datamartName, Locale locale);
+	void saveDatamartProperties(String datamartName, DatamartProperties datamartProperties);
 }

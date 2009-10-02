@@ -30,54 +30,22 @@ import java.util.Map;
 
 import it.eng.spagobi.commons.utilities.StringUtilities;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class DataMartEntity.
- * 
  * @author Andrea Gioia
  */
-public class DataMartEntity implements IDataMartItem {
+public class DataMartEntity extends AbstractDataMartItem {
 	
-	/** The id. */
-	long id;
+	private DataMartEntity root;	
 	
-	/** The name. */
-	String name;			// ProductClass
+	private String path;		
+	private String role;	
+	private String type;	
 	
-	/** The path. */
-	String path;			// Product(product_id)
-	
-	/** The role. */
-	String role;			// product_class_id
-	
-	/** The type. */
-	String type;			// it.foodmart.ProductClass
-	
-	/** The parent. */
-	DataMartEntity parent;	
-	
-	/** The root. */
-	DataMartEntity root;	
-	
-	/** The structure. */
-	DataMartModelStructure structure;
-			
-	/** The fields. */
-	Map fields;	
-	
-	/** The sub entities. */
-	Map subEntities;
+	private Map fields;	
+	private Map calculatedFields;	
+	private Map subEntities;
 	
 		
-	/**
-	 * Instantiates a new data mart entity.
-	 * 
-	 * @param name the name
-	 * @param path the path
-	 * @param role the role
-	 * @param type the type
-	 * @param structure the structure
-	 */
 	public DataMartEntity(String name, String path, String role, String type,
 			DataMartModelStructure structure) {
 		
@@ -89,16 +57,12 @@ public class DataMartEntity implements IDataMartItem {
 		setRole( role );
 		setType( type );
 		
-		this.parent = null;
+		setParent(null);
 		this.fields = new HashMap();
+		this.calculatedFields = new HashMap();
 		this.subEntities = new HashMap();
 	}
 	
-	/**
-	 * Gets the unique name.
-	 * 
-	 * @return the unique name
-	 */
 	public String getUniqueName() {
 		String uniqueName = "";
 			
@@ -118,10 +82,6 @@ public class DataMartEntity implements IDataMartItem {
 	}
 
 	
-	/**
-	 * 
-	 * @return the unique type - i.e. type + role (if any). Ex. it.eng.spagobi.Promotion(promotion_id)
-	 */
 	public String getUniqueType() {
 		String entityType = getType();
 		if ( !StringUtilities.isEmpty( getRole() ) ) {
@@ -130,24 +90,13 @@ public class DataMartEntity implements IDataMartItem {
 		return entityType;
 	}
 	
-	/**
-	 * Adds the field.
-	 * 
-	 * @param field the field
-	 */
+	
 	private void addField(DataMartField field) {
 		fields.put(field.getUniqueName(), field);
 		getStructure().addField(field);
 	}
 	
-	/**
-	 * Adds the field.
-	 * 
-	 * @param fieldName the field name
-	 * @param isKey the is key
-	 * 
-	 * @return the data mart field
-	 */
+	
 	private DataMartField addField(String fieldName, boolean isKey) {
 		
 		DataMartField field = new DataMartField(fieldName, this);
@@ -156,45 +105,44 @@ public class DataMartEntity implements IDataMartItem {
 		return field;
 	}
 	
-	/**
-	 * Adds the normal field.
-	 * 
-	 * @param fieldName the field name
-	 * 
-	 * @return the data mart field
-	 */
+	
 	public DataMartField addNormalField(String fieldName) {
 		return addField(fieldName, false);
 	}
 	
-	/**
-	 * Adds the key field.
-	 * 
-	 * @param fieldName the field name
-	 * 
-	 * @return the data mart field
-	 */
+	
 	public DataMartField addKeyField(String fieldName) {		
 		return addField(fieldName, true);
 	}
 	
 	
-	/**
-	 * Gets the field.
-	 * 
-	 * @param fieldName the field name
-	 * 
-	 * @return the field
-	 */
+	
 	public DataMartField getField(String fieldName) {
 		return (DataMartField)fields.get(fieldName);
 	}
 	
-	/**
-	 * Gets the all fields.
-	 * 
-	 * @return the all fields
-	 */
+	public void addCalculatedField(DataMartCalculatedField calculatedField) {
+		// bound field to structure
+		calculatedField.setId(getStructure().getNextId());
+		calculatedField.setStructure(getStructure());
+		calculatedField.setParent(this);
+		// append field to entity
+		calculatedFields.put(calculatedField.getUniqueName(), calculatedField);
+		
+		// append field to structure level facade
+		//getStructure().addCalculatedField(field);
+	}	
+	
+	public List getCalculatedFields() {
+		List list = new ArrayList();
+		String key = null;
+		for(Iterator it = calculatedFields.keySet().iterator(); it.hasNext(); ) {
+			key = (String)it.next();
+			list.add(calculatedFields.get(key));			
+		}
+		return list;
+	}	
+	
 	public List getAllFields() {
 		List list = new ArrayList();
 		String key = null;
@@ -205,13 +153,7 @@ public class DataMartEntity implements IDataMartItem {
 		return list;
 	}	
 	
-	/**
-	 * Gets the fields by type.
-	 * 
-	 * @param isKey the is key
-	 * 
-	 * @return the fields by type
-	 */
+	
 	private List getFieldsByType(boolean isKey) {
 		List list = new ArrayList();
 		String key = null;
@@ -225,51 +167,26 @@ public class DataMartEntity implements IDataMartItem {
 		return list;
 	}
 	
-	/**
-	 * Gets the key fields.
-	 * 
-	 * @return the key fields
-	 */
+	
 	public List getKeyFields() {
 		return getFieldsByType(true);
 	}
 	
-	/**
-	 * Gets the key field iterator.
-	 * 
-	 * @return the key field iterator
-	 */
+	
 	public Iterator getKeyFieldIterator() {
 		return getKeyFields().iterator();
 	}
 	
-	/**
-	 * Gets the normal fields.
-	 * 
-	 * @return the normal fields
-	 */
+	
 	public List getNormalFields() {
 		return getFieldsByType(false);
 	}
 	
-	/**
-	 * Gets the normal field iterator.
-	 * 
-	 * @return the normal field iterator
-	 */
+	
 	public Iterator getNormalFieldIterator() {
 		return getNormalFields().iterator();
 	}	
 	
-	/**
-	 * Adds the sub entity.
-	 * 
-	 * @param subEntityName the sub entity name
-	 * @param subEntityRole the sub entity role
-	 * @param subEntityType the sub entity type
-	 * 
-	 * @return the data mart entity
-	 */
 	public DataMartEntity addSubEntity(String subEntityName, String subEntityRole, String subEntityType) {
 				
 		String subEntityPath = "";
@@ -280,39 +197,25 @@ public class DataMartEntity implements IDataMartItem {
 			}
 		}
 		
-		DataMartEntity subEntity = new DataMartEntity(subEntityName, subEntityPath, subEntityRole, subEntityType, structure);
+		DataMartEntity subEntity = new DataMartEntity(subEntityName, subEntityPath, subEntityRole, subEntityType, getStructure());
 		subEntity.setParent(this);
 		
 		addSubEntity(subEntity);
 		return subEntity;
 	}
 	
-	/**
-	 * Adds the sub entity.
-	 * 
-	 * @param entity the entity
-	 */
+	
 	private void addSubEntity(DataMartEntity entity) {
 		subEntities.put(entity.getUniqueName(), entity);
 		getStructure().addEntity(entity);
 	}
 	
-	/**
-	 * Gets the sub entity.
-	 * 
-	 * @param entityUniqueName the entity unique name
-	 * 
-	 * @return the sub entity
-	 */
+	
 	public DataMartEntity getSubEntity(String entityUniqueName) {
 		return (DataMartEntity)subEntities.get(entityUniqueName);
 	}
 	
-	/**
-	 * Gets the sub entities.
-	 * 
-	 * @return the sub entities
-	 */
+	
 	public List getSubEntities() {
 		List list = new ArrayList();
 		String key = null;
@@ -323,20 +226,6 @@ public class DataMartEntity implements IDataMartItem {
 		return list;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/**
-	 * Gets the all sub entities.
-	 * 
-	 * @return the all sub entities
-	 */
 	public List getAllSubEntities() {
 		List list = new ArrayList();
 		String key = null;
@@ -349,13 +238,7 @@ public class DataMartEntity implements IDataMartItem {
 		return list;
 	}
 	
-	/**
-	 * Gets the all sub entities.
-	 * 
-	 * @param entityName the entity name
-	 * 
-	 * @return the all sub entities
-	 */
+	
 	public List getAllSubEntities(String entityName) {
 		List list = new ArrayList();
 		String key = null;
@@ -371,14 +254,6 @@ public class DataMartEntity implements IDataMartItem {
 		return list;
 	}
 	
-	/**
-	 * Gets the all field occurences on sub entity.
-	 * 
-	 * @param entityName the entity name
-	 * @param fieldName the field name
-	 * 
-	 * @return the all field occurences on sub entity
-	 */
 	public List getAllFieldOccurencesOnSubEntity(String entityName, String fieldName) {
 		List list = new ArrayList();
 		List entities = getAllSubEntities(entityName);
@@ -396,24 +271,13 @@ public class DataMartEntity implements IDataMartItem {
 		return list;
 	}
 
-	/**
-	 * Gets the name.
-	 * 
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		
-		String line = name.toUpperCase() + "(id="+id
+		String line = getName().toUpperCase() + "(id="+getId()
 			+";path="+path
-			+";parent:" + (parent==null?"NULL": parent.getName())
+			+";parent:" + (getParent()==null?"NULL": getParent().getName())
 			+";role="+ role;
 		
 		
@@ -433,147 +297,31 @@ public class DataMartEntity implements IDataMartItem {
 		return buffer.toString();
 	}
 
-	/**
-	 * Gets the structure.
-	 * 
-	 * @return the structure
-	 */
-	public DataMartModelStructure getStructure() {
-		return structure;
-	}
-
-	/**
-	 * Sets the structure.
-	 * 
-	 * @param structure the new structure
-	 */
-	protected void setStructure(DataMartModelStructure structure) {
-		this.structure = structure;
-	}
-
-
-	/**
-	 * Gets the parent.
-	 * 
-	 * @return the parent
-	 */
-	public DataMartEntity getParent() {
-		return parent;
-	}
-
-
-	/**
-	 * Sets the parent.
-	 * 
-	 * @param parent the new parent
-	 */
-	public void setParent(DataMartEntity parent) {
-		this.parent = parent;
-	}
-
-
-
-	/**
-	 * Gets the path.
-	 * 
-	 * @return the path
-	 */
+	
 	public String getPath() {
 		return path;
 	}
 
-
-
-	/**
-	 * Sets the path.
-	 * 
-	 * @param path the new path
-	 */
 	public void setPath(String path) {
 		this.path = path;
 	}
 
-
-
-	/**
-	 * Gets the role.
-	 * 
-	 * @return the role
-	 */
 	public String getRole() {
 		return role!= null? role.toLowerCase(): null;
 	}
-
-
-
-	/**
-	 * Sets the role.
-	 * 
-	 * @param role the new role
-	 */
+	
 	public void setRole(String role) {
 		this.role = role;
 	}
 
-
-
-	/**
-	 * Gets the type.
-	 * 
-	 * @return the type
-	 */
 	public String getType() {
 		return type;
 	}
 
-
-
-	/**
-	 * Sets the type.
-	 * 
-	 * @param type the new type
-	 */
 	public void setType(String type) {
 		this.type = type;
 	}
 
-
-
-	/**
-	 * Sets the name.
-	 * 
-	 * @param name the new name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
-
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public long getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id the new id
-	 */
-	private void setId(long id) {
-		this.id = id;
-	}
-
-
-	/**
-	 * Gets the root.
-	 * 
-	 * @return the root
-	 */
 	public DataMartEntity getRoot() {
 		if(root == null) {
 			root = this;
@@ -585,17 +333,9 @@ public class DataMartEntity implements IDataMartItem {
 		return root;
 	}
 
-
-	/**
-	 * Sets the root.
-	 * 
-	 * @param root the new root
-	 */
 	public void setRoot(DataMartEntity root) {
 		this.root = root;
 	}
-	
-	
 
 	
 }

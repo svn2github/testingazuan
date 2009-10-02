@@ -24,50 +24,35 @@ import java.io.File;
 
 import it.eng.qbe.conf.QbeCoreSettings;
 
-// TODO: Auto-generated Javadoc
+
 /**
- * The Class DAOFactory.
- * 
  * @author Andrea Gioia
  */
 public class DAOFactory {
 	
-	
-	/**
-	 * Gets the datamart jar file dao.
-	 * 
-	 * @return the datamart jar file dao
-	 */
-	public static DatamartJarFileDAO getDatamartJarFileDAO() {
+	public static IDatamartJarFileDAO getDatamartJarFileDAO() {
 		File datamartsDir = QbeCoreSettings.getInstance().getQbeDataMartDir();
 		return new DatamartJarFileDAOFilesystemImpl(datamartsDir);
 	}
 	
-	/**
-	 * Gets the view jar file dao.
-	 * 
-	 * @return the view jar file dao
-	 */
-	public static ViewJarFileDAO getViewJarFileDAO() {
+
+	public static IViewJarFileDAO getViewJarFileDAO() {
 		File datamartsDir = QbeCoreSettings.getInstance().getQbeDataMartDir();
 		return new ViewJarFileDAOFilesystemImpl(datamartsDir);
 	}
 	
-	/**
-	 * Gets the datamart properties dao.
-	 * 
-	 * @return the datamart properties dao
-	 */
-	public static DatamartPropertiesDAO getDatamartPropertiesDAO() {
+	public static IDatamartPropertiesDAO getDatamartPropertiesDAO() {
 		return new DatamartPropertiesDAOFilesystemImpl();
 	}
 	
-	/**
-	 * Gets the datamart labels dao.
-	 * 
-	 * @return the datamart labels dao
-	 */
-	public static DatamartLabelsDAO getDatamartLabelsDAO() {
+	public static IDatamartLabelsDAO getDatamartLabelsDAO() {
 		return new DatamartLabelsDAOFilesystemImpl();
 	}
+	
+	public static ICalculatedFieldsDAO getCalculatedFieldsDAO() {
+		File datamartsDir = QbeCoreSettings.getInstance().getQbeDataMartDir();
+		return new CalculatedFieldsDAOFilesystemImpl(datamartsDir);
+	}
+	
+	
 }

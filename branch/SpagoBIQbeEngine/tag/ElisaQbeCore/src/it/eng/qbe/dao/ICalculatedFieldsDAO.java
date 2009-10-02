@@ -20,43 +20,15 @@
  **/
 package it.eng.qbe.dao;
 
-import it.eng.qbe.bo.ViewJarFile;
-
 import java.util.List;
+import java.util.Map;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Interface ViewJarFileDAO.
- * 
  * @author Andrea Gioia
  */
-public interface ViewJarFileDAO {
+public interface ICalculatedFieldsDAO {	
 	
-	/**
-	 * Load view jar file.
-	 * 
-	 * @param datamartName the datamart name
-	 * @param viewName the view name
-	 * 
-	 * @return the view jar file
-	 */
-	ViewJarFile loadViewJarFile(String datamartName, String viewName);
-	
-	/**
-	 * Load view jar files.
-	 * 
-	 * @param datamartName the datamart name
-	 * 
-	 * @return the list
-	 */
-	List loadViewJarFiles(String datamartName);	
-	
-	/**
-	 * Load view names.
-	 * 
-	 * @param datamartName the datamart name
-	 * 
-	 * @return the list
-	 */
-	List loadViewNames(String datamartName);
+	Map loadCalculatedFields(String datamartName);
+		
+	List saveCalculatedFields(String datamartName);
 }

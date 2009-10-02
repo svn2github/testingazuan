@@ -1158,10 +1158,10 @@ public class ChartModel {
 		// CREATE THE SERIES PERSONALIZATION PARAMETER: At the beginning set invisible
 		//components.getSeriesPersonalizationEditor().eraseComposite();
 		SpagoBILogger.infoLog("Series personalization section");
+		boolean isSerieLabel=isSeriesPersonalization(subType);
 		components.createSeriesPersonalizationSection(this,editor, toolkit, form);		
 		components.getSeriesPersonalizationEditor().setVisible(false);
 
-		boolean isSerieLabel=isSeriesPersonalization(subType);
 		if(isSerieLabel==true){
 			components.getSeriesPersonalizationEditor().setVisible(true);
 			SpagoBILogger.infoLog("Enable only allowed series personalization");

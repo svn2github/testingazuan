@@ -132,110 +132,96 @@ public class Loader
 
     public void run() {
     	logger.debug("IN");
-      try {
-	m_visual.setAnimated();
-//        m_visual.setText("Loading...");
-        
-	boolean instanceGeneration = true;
-	// determine if we are going to produce data set or instance events
-	/*	for (int i = 0; i < m_listeners.size(); i++) {
-	  if (m_listeners.elementAt(i) instanceof DataSourceListener) {
-	    instanceGeneration = false;
-	    break;
-	  }
-	  } */
-	if (m_dataSetEventTargets > 0) {
-	  instanceGeneration = false;
-          m_state = BATCH_LOADING;
-	}
+    	try {
+    		m_visual.setAnimated();
+      
+    		boolean instanceGeneration = true;
 	
-	// Set environment variables
-	if (m_Loader instanceof EnvironmentHandler && m_env != null) {
-	  ((EnvironmentHandler)m_Loader).setEnvironment(m_env);
-	  logger.debug("Setted Environment");
-	}
+    		if (m_dataSetEventTargets > 0) {
+    			instanceGeneration = false;
+    			m_state = BATCH_LOADING;
+    		}
 	
-	String msg = statusMessagePrefix();
-	if (m_Loader instanceof FileSourcedConverter) {
-	  msg += "Loading " + ((FileSourcedConverter)m_Loader).retrieveFile().getName();
-	} else {
-	  msg += "Loading...";
-	}
-	if (logger != null) {
-	  logger.debug(msg);
-	}
+			// Set environment variables
+			if (m_Loader instanceof EnvironmentHandler && m_env != null) {
+			  ((EnvironmentHandler)m_Loader).setEnvironment(m_env);
+			  logger.debug("Setted Environment");
+			}
+	
+			String msg = statusMessagePrefix();
+			if (m_Loader instanceof FileSourcedConverter) {
+			  msg += "Loading " + ((FileSourcedConverter)m_Loader).retrieveFile().getName();
+			} else {
+			  msg += "Loading...";
+			}
+			if (logger != null) {
+			  logger.debug(msg);
+			}
 
-	if (instanceGeneration) {
-          m_state = INCREMENTAL_LOADING;
-	  //	  boolean start = true;
-	  Instance nextInstance = null;
-	  // load and pass on the structure first
-	  Instances structure = null;
-	  try {
-          //  m_Loader.reset();
-            //	    System.err.println("NOTIFYING STRUCTURE AVAIL");
-		  logger.debug("Before retrieving the structure");
-	    structure = m_Loader.getStructure();
-	    logger.debug("After retrieving the structure");
-	    notifyStructureAvailable(structure);
-	  } catch (IOException e) {
-	    if (logger != null) {
-	    	 logger.error(statusMessagePrefix()
-	          +"ERROR (See log for details");
-	    	 logger.error("[Loader] " + statusMessagePrefix()
-	          + " " + e.getMessage());
-	    }
-	    e.printStackTrace();
-	  }
-	  try {
-	    nextInstance = m_Loader.getNextInstance(structure);
-	  } catch (IOException e) {
-	    if (logger != null) {
-	    	 logger.error(statusMessagePrefix()
-	          +"ERROR (See log for details");
-	    	 logger.error("[Loader] " + statusMessagePrefix()
-	          + " " + e.getMessage());
-	    }
-	    e.printStackTrace();
-	  }
-	  int z = 0;
-	  while (nextInstance != null) {
-	    if (m_stopped) {
-	      break;
-	    }
-	    nextInstance.setDataset(structure);
-	    //	    format.add(nextInstance);
-	    /*	    InstanceEvent ie = (start)
-	      ? new InstanceEvent(m_DP, nextInstance, 
-				  InstanceEvent.FORMAT_AVAILABLE)
-		: new InstanceEvent(m_DP, nextInstance, 
-		InstanceEvent.INSTANCE_AVAILABLE); */
-	    //	    if (start) {
-	    //	      m_ie.setStatus(InstanceEvent.FORMAT_AVAILABLE);
-	      //	    } else {
-	    m_ie.setStatus(InstanceEvent.INSTANCE_AVAILABLE);
-	      //	    }
-	    m_ie.setInstance(nextInstance);
-	    //	    start = false;
-	    //	    System.err.println(z);
-	    nextInstance = m_Loader.getNextInstance(structure);
-	    if (nextInstance == null) {
-	      m_ie.setStatus(InstanceEvent.BATCH_FINISHED);
-	    }
-	    notifyInstanceLoaded(m_ie);
-	    z++;
-            if (z % 10000 == 0) {
-//              m_visual.setText("" + z + " instances...");
-              if (logger != null) {
-                logger.debug(statusMessagePrefix() 
-                    + "Loaded " + z + " instances");
-              }
-            }
-	  }
-	  m_visual.setStatic();
-//	  m_visual.setText(structure.relationName());
+			if (instanceGeneration) {
+				m_state = INCREMENTAL_LOADING;
+	 	
+				Instance nextInstance = null;
+				// load and pass on the structure first
+				Instances structure = null;
+				try {
+        
+					logger.debug("Before retrieving the structure");
+					structure = m_Loader.getStructure();
+					logger.debug("After retrieving the structure");
+					notifyStructureAvailable(structure);
+				} catch (IOException e) {
+					if (logger != null) {
+						logger.error(statusMessagePrefix()
+								+"ERROR (See log for details");
+						logger.error("[Loader] " + statusMessagePrefix()
+								+ " " + e.getMessage());
+					}
+					e.printStackTrace();
+				}
+				
+				try {
+					nextInstance = m_Loader.getNextInstance(structure);
+				} catch (IOException e) {
+				    if (logger != null) {
+				    	 logger.error(statusMessagePrefix()
+				          +"ERROR (See log for details");
+				    	 logger.error("[Loader] " + statusMessagePrefix()
+				          + " " + e.getMessage());
+				    }
+				    e.printStackTrace();
+				}
+				  int z = 0;
+				  while (nextInstance != null) {
+				    if (m_stopped) {
+				      break;
+				    }
+				    nextInstance.setDataset(structure);
+				  
+				    m_ie.setStatus(InstanceEvent.INSTANCE_AVAILABLE);
+				      //	    }
+				    m_ie.setInstance(nextInstance);
+				   
+				    nextInstance = m_Loader.getNextInstance(structure);
+				    if (nextInstance == null) {
+				      m_ie.setStatus(InstanceEvent.BATCH_FINISHED);
+				    }
+				    notifyInstanceLoaded(m_ie);
+				    z++;
+			            if (z % 10000 == 0) {
+			//              m_visual.setText("" + z + " instances...");
+			              if (logger != null) {
+			                logger.debug(statusMessagePrefix() 
+			                    + "Loaded " + z + " instances");
+			              }
+			            }
+				  }
+				  m_visual.setStatic();
+			//	  m_visual.setText(structure.relationName());
+				  
+				  
 	} else {
-        //  m_Loader.reset();
+       
 	  logger.debug("Entered in else");
 	  m_dataSet = m_Loader.getDataSet();
 	  logger.debug("Dataset Retrieved");

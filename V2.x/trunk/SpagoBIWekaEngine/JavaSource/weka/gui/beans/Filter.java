@@ -505,13 +505,15 @@ public class Filter
 	    logger.debug("IN");
 		try {
 		  if (m_trainingSet != null) {
-			  logger.debug("m_trainingSet not null");
+			logger.debug("m_trainingSet not null");
+			logger.debug("m_visual "+(m_visual!=null ? m_visual.toString():"null"));
 		    m_visual.setAnimated();
+		    logger.debug("m_visual setted animated");
 //		    m_visual.setText("Filtering training data...");
 		    if (logger != null) {
-		      logger.debug(debugPrefix() 
-		          + "Filtering training data");
+		      logger.debug("Filtering training data");
 		    }
+		    logger.debug("Start setting inputFormat");
 		    m_Filter.setInputFormat(m_trainingSet);
 		    logger.debug("Start using Filter");
 		    Instances filteredData = 

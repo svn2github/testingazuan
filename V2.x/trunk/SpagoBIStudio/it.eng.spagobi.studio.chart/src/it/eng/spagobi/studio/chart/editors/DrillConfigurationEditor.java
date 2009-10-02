@@ -1,31 +1,24 @@
 package it.eng.spagobi.studio.chart.editors;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import it.eng.spagobi.studio.chart.editors.model.chart.ChartModel;
 import it.eng.spagobi.studio.chart.editors.model.chart.LinkableChartModel;
 import it.eng.spagobi.studio.chart.editors.model.chart.Parameter;
 import it.eng.spagobi.studio.chart.utils.DrillConfiguration;
 import it.eng.spagobi.studio.chart.utils.DrillParameters;
+import it.eng.spagobi.studio.chart.utils.SeriePersonalization;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
-import org.eclipse.jface.dialogs.ErrorDialog;
+import java.security.KeyRep.Type;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -33,7 +26,9 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -51,7 +46,6 @@ public class DrillConfigurationEditor {
 
 	// texts of url and common pars
 	final Group group;
-	final Group groupView;
 
 	final Text serValueText;
 	final Text catValueText;
@@ -60,8 +54,13 @@ public class DrillConfigurationEditor {
 	final Text newParName;
 	final Text newParVal;
 	final Combo newComboType;
-	final List parsList;
-	final Label parameterDetail;
+
+	final Table parsTable;
+
+	public static final int NAME=0;
+	public static final int VALUE=1;
+	public static final int TYPE=2;
+
 
 	/**
 	 * Constructor of the drillConfiguration Editor
@@ -70,77 +69,12 @@ public class DrillConfigurationEditor {
 	 * @param form
 	 */
 
-	public DrillConfigurationEditor(FormToolkit toolkit, final ScrolledForm form) {
+	public DrillConfigurationEditor(final LinkableChartModel model,
+			final ChartEditor editor, FormToolkit toolkit, final ScrolledForm form) {
 		SpagoBILogger.infoLog("Constructor of drill configuration editor");
 		sectionDrill = toolkit.createSection(form.getBody(),
 				Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE);
 		setSectionClientDrill(toolkit.createComposite(sectionDrill));
-		// URL PAR
-		Label urlLabel = new Label(sectionClientDrill, SWT.NULL);
-		urlLabel.setText("			Document Label:");
-		urlLabel.pack();
-		urlValueText = new Text(sectionClientDrill, SWT.BORDER);
-		urlValueText.setToolTipText("The label of the document to drill in");
-
-		// CAT PAR
-		Label catLabel = new Label(sectionClientDrill, SWT.NULL);
-		catLabel.setText("			Category Url Name:");
-		catLabel.pack();
-		catValueText = new Text(sectionClientDrill, SWT.BORDER);
-		catValueText.setToolTipText("the name with wich the category you choose will be passed to the drill document");
-		// SER PAR
-		Label serLabel = new Label(sectionClientDrill, SWT.NULL);
-		serLabel.setText("			Serie Url Name:");
-		serLabel.pack();
-		serValueText = new Text(sectionClientDrill, SWT.BORDER);
-		serValueText.setToolTipText("the name with wich the serie you choose will be passed to the drill document");
-
-		group = new Group(sectionClientDrill, SWT.NULL);
-		groupView = new Group(sectionClientDrill, SWT.NULL);
-
-		Label newNameLabel = new Label(group, SWT.NULL);
-		newNameLabel.setText("Parameter Name: ");
-		// newNameLabel.setLocation(5,5);
-		newNameLabel.pack();
-		newParName = new Text(group, SWT.BORDER);
-		newParName.setToolTipText("name of a parameter to pass");		
-
-		Label newValLabel = new Label(group, SWT.NULL);
-		newValLabel.setText("Parameter Value: ");
-		newValLabel.pack();
-		newParVal = new Text(group, SWT.BORDER);
-		newParVal.setToolTipText("value of a parameter to pass");		
-
-		Label newTypeLabel = new Label(group, SWT.NULL);
-		newTypeLabel.setText("Parameter Type: ");
-		newTypeLabel.pack();
-
-		newComboType = new Combo(group, SWT.NULL);
-		newComboType.setToolTipText("Type of the parameter to pass: ABSOLUTE means that take the specified value, RELATIVE means that search in request for the value");				
-
-		parsList = new List(groupView, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL );
-
-		GridData g=new GridData(GridData.FILL_BOTH);
-		g.horizontalSpan=2;
-		parsList.setLayoutData(g);
-
-		parameterDetail=new Label(groupView, SWT.NULL);;
-
-	}
-
-	/**
-	 * Draw the section for drill parameters
-	 * 
-	 * @param editor
-	 * @param toolkit
-	 * @param form
-	 */
-
-	// public void createDrillInformationsForm(final ChartModel model, final
-	// ChartEditor editor, FormToolkit toolkit, final ScrolledForm form){
-	public void createDrillInformationsForm(final LinkableChartModel model,
-			final ChartEditor editor, FormToolkit toolkit,
-			final ScrolledForm form) {
 		SpagoBILogger.infoLog("Create the drill informations form");
 		TableWrapData td = new TableWrapData(TableWrapData.FILL);
 		sectionDrill.setLayoutData(td);
@@ -157,6 +91,13 @@ public class DrillConfigurationEditor {
 		gl.numColumns = 2;
 		sectionClientDrill.setLayout(gl);
 
+
+		// URL PAR
+		Label urlLabel = new Label(sectionClientDrill, SWT.NULL);
+		urlLabel.setText("			Document Label:");
+		urlLabel.pack();
+		urlValueText = new Text(sectionClientDrill, SWT.BORDER);
+		urlValueText.setToolTipText("The label of the document to drill in");
 		if (model.getDrillConfiguration().getUrl() != null) {
 			urlValueText.setText(model.getDrillConfiguration().getUrl());
 		}
@@ -172,6 +113,14 @@ public class DrillConfigurationEditor {
 		});
 		urlValueText.pack();
 
+
+
+		// CAT PAR
+		Label catLabel = new Label(sectionClientDrill, SWT.NULL);
+		catLabel.setText("			Category Url Name:");
+		catLabel.pack();
+		catValueText = new Text(sectionClientDrill, SWT.BORDER);
+		catValueText.setToolTipText("the name with wich the category you choose will be passed to the drill document");
 		if (model.getDrillConfiguration().getCategoryUrlName() != null) {
 			catValueText.setText(model.getDrillConfiguration()
 					.getCategoryUrlName());
@@ -189,6 +138,13 @@ public class DrillConfigurationEditor {
 		});
 		catValueText.pack();
 
+
+		// SER PAR
+		Label serLabel = new Label(sectionClientDrill, SWT.NULL);
+		serLabel.setText("			Serie Url Name:");
+		serLabel.pack();
+		serValueText = new Text(sectionClientDrill, SWT.BORDER);
+		serValueText.setToolTipText("the name with wich the serie you choose will be passed to the drill document");
 		if (model.getDrillConfiguration().getSeriesUrlName() != null) {
 			serValueText.setText(model.getDrillConfiguration()
 					.getSeriesUrlName());
@@ -204,11 +160,236 @@ public class DrillConfigurationEditor {
 			}
 		});
 		serValueText.pack();
-		createDrillParametersForm(model, editor, toolkit, form,
-				sectionClientDrill);
+
+
+
+
+		group = new Group(sectionClientDrill, SWT.NULL);
+
+
+		group.setText("---------- ADD PARAMETER ----------");
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 2;
+		group.setLayout(gridLayout);		
+		GridData gridDataView = new GridData(GridData.FILL_BOTH);
+		group.setLayoutData(gridDataView);
+
+		final Button buttonAdd = new Button(group, SWT.PUSH);
+		buttonAdd.setToolTipText("Add the parameter");		
+		buttonAdd.setText("Add");
+		buttonAdd.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		buttonAdd.pack();
+
+		final Button buttonCancel = new Button(group, SWT.PUSH);
+		buttonCancel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		buttonCancel.setText("Cancel");
+		buttonCancel.setToolTipText("Erase Parameter");
+		buttonCancel.pack();
+		buttonCancel.setEnabled(false);
+
+
+		//		GridData gridData = new GridData(GridData.VERTICAL_ALIGN_END);
+		//		gridData.horizontalSpan = 2;
+		//		gridData.horizontalAlignment = GridData.FILL;
+		//		group.setLayoutData(gridData);
+
+		parsTable = new Table (group, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
+		parsTable.setLinesVisible (true);
+		parsTable.setHeaderVisible (true);
+		GridData g=new GridData(GridData.FILL_BOTH);
+		g.horizontalSpan=2;
+		g.verticalSpan=2;
+		g.grabExcessHorizontalSpace=true;
+		g.grabExcessVerticalSpace=true;
+		g.heightHint = 200;
+		g.widthHint = 400;
+		parsTable.setLayoutData(g);
+		parsTable.setToolTipText("Parameters to pass");
+
+		String[] titles = {"             Name             ", "           Value           ", "               Type               "};
+		for (int i=0; i<titles.length; i++) {
+			TableColumn column = new TableColumn (parsTable, SWT.NONE);
+			column.setText (titles [i]);
+		}
+		if(model.getDrillConfiguration().getDrillParameters()!=null){
+			for (Iterator iterator = model.getDrillConfiguration().getDrillParameters().keySet().iterator(); iterator.hasNext();) {
+				String parName = (String) iterator.next();
+				DrillParameters drillPar=model.getDrillConfiguration().getDrillParameters().get(parName);
+				TableItem item = new TableItem (parsTable, SWT.NONE);
+				item.setText(NAME, parName);
+				if(drillPar.getValue()!=null){
+					item.setText(VALUE,drillPar.getValue());
+				}
+				if(drillPar.getType()!=null){
+					item.setText(TYPE,drillPar.getType());
+				}
+			}
+			for (int i=0; i<titles.length; i++) {
+				parsTable.getColumn (i).pack ();
+			}	
+
+		} 
+
+		parsTable.redraw();
+		//parsTable.pack();
+
+
+		Label newNameLabel = new Label(group, SWT.NULL);
+		newNameLabel.setText("Parameter Name: ");
+		newNameLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));		
+		newNameLabel.pack();
+		newParName = new Text(group, SWT.BORDER);
+		newParName.setToolTipText("name of a parameter to pass");		
+		newParName.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		// newParName.setLocation(5,50);
+		newParName.pack();
+
+
+
+		Label newValLabel = new Label(group, SWT.NULL);
+		newValLabel.setText("Parameter Value: ");
+		newValLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));		
+		newValLabel.pack();
+		newParVal = new Text(group, SWT.BORDER);
+		newParVal.setToolTipText("value of a parameter to pass");		
+		newParVal.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		newParVal.pack();
+		newParVal.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				String val = newParVal.getText();
+				int selection = parsTable.getSelectionIndex();
+				if(selection!=-1){
+					TableItem tableItem=parsTable.getItem(selection);
+					String parName=tableItem.getText(NAME);
+					DrillParameters drillPar=model.getDrillConfiguration().getDrillParameters().get(parName);
+					if(drillPar!=null){drillPar.setValue(val);
+					tableItem.setText(VALUE, val);
+					}
+				}
+			}
+		});
+		
+
+
+		Label newTypeLabel = new Label(group, SWT.NULL);
+		newTypeLabel.setText("Parameter Type: ");
+		newTypeLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));				
+		newTypeLabel.pack();
+
+		newComboType = new Combo(group, SWT.NULL);
+		newComboType.setToolTipText("Type of the parameter to pass: ABSOLUTE means that take the specified value, RELATIVE means that search in request for the value");				
+		newComboType.add("RELATIVE");
+		newComboType.add("ABSOLUTE");
+		newParVal.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		newComboType.select(0);
+		newComboType.pack();
+
+		newComboType.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				String comboText = newComboType.getText();
+				int selection = parsTable.getSelectionIndex();
+				if(selection!=-1){
+					TableItem item=parsTable.getItem(selection);
+					String parNameSelected=item.getText(NAME);
+					DrillParameters drillPar=model.getDrillConfiguration().getDrillParameters().get(parNameSelected);
+					if(parNameSelected!=null){
+						drillPar.setType(comboText);
+						item.setText(TYPE,comboText);
+					}
+				}
+			}
+		});
+
+
+
+
+
+
+
+		// Add listener that show details of parameter selected
+		parsTable.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				int selection = parsTable.getSelectionIndex();
+				TableItem item=parsTable.getItem(selection);
+				String parNameSelected = item.getText(NAME);
+				DrillParameters drillPar = model.getDrillConfiguration().getDrillParameters().get(parNameSelected);
+				newParName.setText(drillPar.getName());
+				newParVal.setText(drillPar.getValue()!=null ? drillPar.getValue() : "");
+				int indexOf=newComboType.indexOf(drillPar.getType());
+				newComboType.select(indexOf);
+
+				buttonCancel.setEnabled(true);
+			}
+		});
+
+
+		// Add Button Listener
+		Listener addListener = new Listener() {
+			public void handleEvent(Event event) {
+				String nameToAdd = newParName.getText();
+				String valueToAdd = newParVal.getText();
+				Map<String, DrillParameters> mapDrillPars = model.getDrillConfiguration().getDrillParameters();
+				//if not already present
+				if(nameToAdd==null || nameToAdd.equalsIgnoreCase("")){
+					SpagoBILogger.warningLog("Error in inserting parameter, no name specified");
+					MessageDialog.openWarning(group.getShell(), "Warning", "Specify a parameter name");
+				}
+				else if(mapDrillPars.keySet().contains(nameToAdd)){
+					SpagoBILogger.warningLog("Error in inserting parameter, already present or with no name");
+					MessageDialog.openWarning(group.getShell(), "Warning", "Parameter name already present");
+				}
+				else {
+					String valueValToAdd = newParVal.getText();
+					valueValToAdd=valueValToAdd!=null ? valueValToAdd : "";
+					String typeToAdd = newComboType.getItem(newComboType.getSelectionIndex());
+					TableItem item = new TableItem (parsTable, SWT.NONE);
+					item.setText (NAME, nameToAdd);
+					item.setText (VALUE, valueValToAdd);
+					item.setText (TYPE, typeToAdd);
+
+					DrillParameters par = new DrillParameters(nameToAdd,
+							valueToAdd, typeToAdd);
+					par.setValue(valueValToAdd);
+					mapDrillPars.put(nameToAdd, par);
+					// erase insert fields
+					newParName.setText("");
+					newParVal.setText("");
+					buttonCancel.setEnabled(false);
+
+				}
+
+			}
+		};
+		buttonAdd.addListener(SWT.Selection, addListener);
+
+
+		// Add Button Listener
+		Listener cancelListener = new Listener() {
+			public void handleEvent(Event event) {
+
+				int index = parsTable.getSelectionIndex();
+				TableItem item=parsTable.getItem(index);
+				String namePar=item.getText(NAME);
+				// remove from java list
+				if (model.getDrillConfiguration().getDrillParameters()
+						.containsKey(namePar)) {
+					model.getDrillConfiguration().getDrillParameters().remove(
+							namePar);
+				}
+				parsTable.remove(index);
+
+				buttonCancel.setEnabled(false);
+
+			}
+		};
+		buttonCancel.addListener(SWT.Selection, cancelListener);
+
+
 		sectionDrill.setClient(sectionClientDrill);
 
+
 	}
+
 
 	public Composite getSectionClientDrill() {
 		return sectionClientDrill;
@@ -226,176 +407,6 @@ public class DrillConfigurationEditor {
 		this.sectionDrill = sectionDrill;
 	}
 
-	public void createDrillParametersForm(final LinkableChartModel model,
-			final ChartEditor editor, FormToolkit toolkit,
-			final ScrolledForm form, Composite sectionClientDrill) {
-
-		// First group with new parameter texts
-		group.setText("---------- ADD PARAMETER ----------");
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
-		group.setLayout(gridLayout);
-
-		//		GridData gridData = new GridData(GridData.VERTICAL_ALIGN_END);
-		//		gridData.horizontalSpan = 2;
-		//		gridData.horizontalAlignment = GridData.FILL;
-		//		group.setLayoutData(gridData);
-
-		newParName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		// newParName.setLocation(5,50);
-		newParName.pack();
-
-		newParVal.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		newParVal.pack();
-
-		newComboType.add("RELATIVE");
-		newComboType.add("ABSOLUTE");
-		newComboType.select(0);
-		newComboType.pack();
-
-		Image image = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_OBJ_ELEMENT);
-		Button buttonAdd = new Button(group, SWT.PUSH);
-		buttonAdd.setImage(image);
-		buttonAdd.setToolTipText("Add the parameter");		
-		buttonAdd.pack();
-		group.pack();
-		// buttonAdd.setText("Add");
-
-		// Group to view parameters
-		groupView.setText("---------- DRILL PARAMETERS LIST ----------");
-
-		GridLayout gridLayoutView = new GridLayout();
-		gridLayoutView.numColumns = 2;
-		groupView.setLayout(gridLayoutView);
-		GridData gridDataView = new GridData(GridData.FILL_BOTH);
-		groupView.setLayoutData(gridDataView);
-
-
-		// Fill parameters
-
-		if (model.getDrillConfiguration().getDrillParameters() != null) {
-			for (Iterator iterator = model.getDrillConfiguration()
-					.getDrillParameters().keySet().iterator(); iterator
-					.hasNext();) {
-				String parName = (String) iterator.next();
-				// DrillParameters par=parsMap.get(parName);
-				parsList.add(parName);
-			}
-
-		}
-		parsList.setToolTipText("parameters to pass");
-		parsList.redraw();
-		// close if map is not null
-
-
-		// add the labels for detail
-		parameterDetail.setText("ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
-		parameterDetail.setVisible(false);
-
-		Image imageRem = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
-		Button buttonCancel = new Button(groupView, SWT.PUSH);
-		buttonCancel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-		buttonCancel.setToolTipText("Erase Parameter");
-		buttonCancel.setImage(imageRem);
-		//buttonCancel.pack();
-
-
-		// Add listener that show details of parameter selected
-		parsList.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
-				int selection = parsList.getSelectionIndex();
-				// get ParSelected
-				String parNameSelected = parsList.getItem(selection);
-				DrillParameters drillPar = model.getDrillConfiguration().getDrillParameters().get(parNameSelected);
-				String detail="Parameter "+drillPar.getName()+" ";
-				detail+="is of type "+drillPar.getType()+" ";
-				if(drillPar.getValue()!=null && !drillPar.getValue().equalsIgnoreCase("")){
-					detail+="with value "+drillPar.getValue();
-				}
-				else{
-					detail+="has no value specified";					
-				}
-				parameterDetail.setText(detail);
-				parameterDetail.redraw();
-				parameterDetail.setVisible(true);
-
-				//				parNameLabel.setVisible(true);
-				//				parNameVal.setText(drillPar.getName() != null ? drillPar
-				//						.getName() : "");
-				//				parNameVal.setVisible(true);
-				//				parNameVal.pack();
-				//				parValueLabel.setVisible(true);
-				//				parValueVal.setText(drillPar.getValue() != null ? drillPar
-				//						.getValue() : "");
-				//				parValueVal.setVisible(true);
-				//				parValueVal.pack();
-				//				parTypeLabel.setVisible(true);
-				//				parTypeVal.setText(Integer.valueOf(drillPar.getType())
-				//						.toString());
-				//				parTypeVal.setVisible(true);
-				//				parTypeVal.pack();
-
-				// groupView.pack();
-
-			}
-		});
-
-		// Add Button Listener
-		Listener addListener = new Listener() {
-			public void handleEvent(Event event) {
-				String nameToAdd = newParName.getText();
-				String valueToAdd = newParVal.getText();
-				Map<String, DrillParameters> mapDrillPars = model.getDrillConfiguration().getDrillParameters();
-				//if not already present
-				if(nameToAdd==null || nameToAdd.equalsIgnoreCase("")){
-					SpagoBILogger.warningLog("Error in inserting parameter, no name specified");
-					MessageDialog.openWarning(groupView.getShell(), "Warning", "Specify a parameter name");
-				}
-				else if(mapDrillPars.keySet().contains(nameToAdd)){
-					SpagoBILogger.warningLog("Error in inserting parameter, already present or with no name");
-					MessageDialog.openWarning(groupView.getShell(), "Warning", "Parameter name already present");
-				}
-				else {
-					String typeToAdd = newComboType.getItem(newComboType
-							.getSelectionIndex());
-					parsList.add(nameToAdd);
-
-					DrillParameters par = new DrillParameters(nameToAdd,
-							valueToAdd, typeToAdd);
-					mapDrillPars.put(nameToAdd, par);
-					// erase insert fields
-					newParName.setText("");
-					newParVal.setText("");
-				}
-
-			}
-		};
-		buttonAdd.addListener(SWT.Selection, addListener);
-
-		// Add Button Listener
-		Listener cancelListener = new Listener() {
-			public void handleEvent(Event event) {
-
-				int index = parsList.getSelectionIndex();
-				String namePar = parsList.getItem(index);
-				// remove from java list
-				if (model.getDrillConfiguration().getDrillParameters()
-						.containsKey(namePar)) {
-					model.getDrillConfiguration().getDrillParameters().remove(
-							namePar);
-				}
-				// remove from SWT list
-				parsList.remove(namePar);
-				parameterDetail.setText("ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
-				parameterDetail.setVisible(false);
-				// parsList.pack();
-			}
-		};
-		buttonCancel.addListener(SWT.Selection, cancelListener);
-
-		// groupView.pack();
-
-	}
 
 	public void setVisible(boolean visible) {
 		sectionDrill.setVisible(visible);
@@ -429,7 +440,7 @@ public class DrillConfigurationEditor {
 		newParName.setText("");
 		newParVal.setText("");
 		newComboType.select(0);
-		parsList.removeAll();
+		parsTable.removeAll();
 	}
 
 	public void refillFieldsDrillConfiguration(
@@ -445,14 +456,21 @@ public class DrillConfigurationEditor {
 						.getCategoryUrlName() : "");
 				serValueText.setText(drill.getSeriesUrlName() != null ? drill
 						.getSeriesUrlName() : "");
+
 				if (drill.getDrillParameters() != null) {
 					for (Iterator iterator = drill.getDrillParameters()
 							.keySet().iterator(); iterator.hasNext();) {
 						String parName = (String) iterator.next();
-						parsList.add(parName);
+						DrillParameters par=drill.getDrillParameters().get(parName);
+						TableItem tI=new TableItem(parsTable, SWT.NONE);
+
+						tI.setText(NAME, par.getName());
+						tI.setText(VALUE,par.getValue()!=null ? par.getValue():"");
+						tI.setText(TYPE,par.getType()!=null ?  par.getType(): newComboType.getItem(newComboType.getSelectionIndex()));
+
 					}
 				}
-				parsList.redraw();
+				parsTable.redraw();
 
 			}
 		}

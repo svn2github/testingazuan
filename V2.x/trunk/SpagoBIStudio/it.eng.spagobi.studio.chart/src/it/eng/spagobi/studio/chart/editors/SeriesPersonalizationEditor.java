@@ -107,8 +107,8 @@ public class SeriesPersonalizationEditor {
 		parsTable.setLinesVisible (true);
 		parsTable.setHeaderVisible (true);
 		GridData g=new GridData(GridData.FILL_BOTH);
-		g.verticalSpan=2;
-		//g.horizontalSpan=2;
+		//g.verticalSpan=2;
+		g.horizontalSpan=2;
 		parsTable.setLayoutData(g);
 
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -366,11 +366,11 @@ public class SeriesPersonalizationEditor {
 				}
 				else {					
 					TableItem item = new TableItem (parsTable, SWT.NONE);
-					item.setText (0, nameToAdd);
-					item.setText (1, "");
-					item.setText (2, "");
-					item.setText (3, "");
-					item.setText (4, "");
+					item.setText (NAME, nameToAdd);
+					item.setText (COLOR, "");
+					item.setText (LABEL, "");
+					item.setText (DRAW, "");
+					item.setText (SCALE, "");
 
 					model.getSeriesPersonalizationHashMap().put(nameToAdd, new SeriePersonalization(nameToAdd));
 				}

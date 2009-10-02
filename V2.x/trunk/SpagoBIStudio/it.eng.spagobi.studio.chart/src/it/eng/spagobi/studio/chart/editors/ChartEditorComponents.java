@@ -402,8 +402,7 @@ public class ChartEditorComponents {
 	 */
 
 	public void createDrillConfigurationSection(final LinkableChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
-		drillConfigurationEditor=new DrillConfigurationEditor(formToolkit, scrolledForm);
-		drillConfigurationEditor.createDrillInformationsForm(model,editor,formToolkit, scrolledForm);
+		drillConfigurationEditor=new DrillConfigurationEditor(model,editor,formToolkit, scrolledForm);
 	}
 
 

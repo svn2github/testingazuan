@@ -57,7 +57,7 @@ public class WekaKFRunner {
 	
 	private static final String DEFAULT_DB_URL = "jdbc:mysql://localhost/foodmart";
 	private static final String DEFAULT_DB_USER = "root";
-	private static final String DEFAULT_DB_PASSWORD = "admin";
+	private static final String DEFAULT_DB_PASSWORD = "xxx";
 	/*
 	private static final String DEFAULT_DB_URL = "jdbc:dbname://localhost/foodmart";
 	private static final String DEFAULT_DB_USER = "root";

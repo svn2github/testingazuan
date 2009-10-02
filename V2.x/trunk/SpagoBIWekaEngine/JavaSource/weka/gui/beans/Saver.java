@@ -139,7 +139,9 @@ public class Saver extends AbstractDataSink implements WekaWrapper {
 	  logger.debug("Status begin: "+status);
 	  while(status != TERMINATED) {
 		  try {
+			    logger.debug("Status Prima di Sleep: "+status);
 		        Thread.currentThread().sleep(1000);
+		        logger.debug("Status Dopo di Sleep: "+status);
 		  } catch (InterruptedException e) {
 			  logger.debug(e);
 			  e.printStackTrace();

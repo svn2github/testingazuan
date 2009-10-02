@@ -22,17 +22,6 @@
 
 package weka.gui.beans;
 
-import weka.core.Environment;
-import weka.core.EnvironmentHandler;
-import weka.core.Instance;
-import weka.core.Instances;
-import weka.core.OptionHandler;
-import weka.core.Utils;
-import weka.core.converters.ArffLoader;
-import weka.core.converters.DatabaseLoader;
-import weka.core.converters.FileSourcedConverter;
-
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,8 +35,18 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.swing.JButton;
+
 import org.apache.log4j.Logger;
-import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
+
+import weka.core.Environment;
+import weka.core.EnvironmentHandler;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.OptionHandler;
+import weka.core.Utils;
+import weka.core.converters.ArffLoader;
+import weka.core.converters.DatabaseLoader;
+import weka.core.converters.FileSourcedConverter;
 
 /**
  * Loads data sets using weka.core.converter classes
@@ -439,17 +438,22 @@ public class Loader
    * @param e a <code>DataSetEvent</code> value
    */
   protected void notifyDataSetLoaded(DataSetEvent e) {
+	logger.debug("IN");
     Vector l;
     synchronized (this) {
       l = (Vector)m_listeners.clone();
+      logger.debug("Cloned listener");
     }
     
     if (l.size() > 0) {
+    	 logger.debug("size >0");
       for(int i = 0; i < l.size(); i++) {
+    	  logger.debug("Start for cycle");
 	((DataSourceListener)l.elementAt(i)).acceptDataSet(e);
       }
       m_dataSet = null;
     }
+    logger.debug("OUT");
   }
 
   /**

@@ -810,6 +810,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
     if (m_DataBaseConnection.execute(m_query) == false) 
       throw new Exception("Query didn't produce results");
     ResultSet rs = m_DataBaseConnection.getResultSet();
+    logger.debug("RS: "+(rs!=null ? rs.toString(): "null"));
     ResultSetMetaData md = rs.getMetaData();
     // Determine structure of the instances
     int numAttributes = md.getColumnCount();
@@ -822,6 +823,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
       case STRING :
         ResultSet rs1;
         String columnName = md.getColumnName(i);
+        logger.debug("Column Name: "+(columnName!=null ? columnName : "null"));
         if(m_DataBaseConnection.getUpperCase())
             columnName = columnName.toUpperCase();
         String end = endOfQuery(false);

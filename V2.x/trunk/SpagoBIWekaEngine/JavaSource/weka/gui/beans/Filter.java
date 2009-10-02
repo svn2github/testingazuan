@@ -505,6 +505,7 @@ public class Filter
 	    logger.debug("IN");
 		try {
 		  if (m_trainingSet != null) {
+			  logger.debug("m_trainingSet not null");
 		    m_visual.setAnimated();
 //		    m_visual.setText("Filtering training data...");
 		    if (logger != null) {
@@ -513,12 +514,15 @@ public class Filter
 		          + m_trainingSet.relationName() + ")");
 		    }
 		    m_Filter.setInputFormat(m_trainingSet);
+		    logger.debug("Start using Filter");
 		    Instances filteredData = 
 		      weka.filters.Filter.useFilter(m_trainingSet, m_Filter);
+		    logger.debug("Finished using Filter");
 //		    m_visual.setText(oldText);
 		    m_visual.setStatic();
 		    EventObject ne;
 		    if (e instanceof TrainingSetEvent) {
+		    	logger.debug("TrainingSetEvent");
 		      ne = new TrainingSetEvent(weka.gui.beans.Filter.this, 
 						filteredData);
 		      ((TrainingSetEvent)ne).m_setNumber =
@@ -526,16 +530,20 @@ public class Filter
 		      ((TrainingSetEvent)ne).m_maxSetNumber = 
 			((TrainingSetEvent)e).m_maxSetNumber;
 		    } else {
+		    	logger.debug("Not TrainingSetEvent");
 		      ne = new DataSetEvent(weka.gui.beans.Filter.this,
 					    filteredData);
 		    }
-
+		    logger.debug("Start Notifying Listeners");
 		    notifyDataOrTrainingListeners(ne);
+		    logger.debug("End Notifying Listeners");
+		  }else{
+			  logger.debug("m_trainingSet not null");
 		  }
 		} catch (Exception ex) {
 		  Filter.this.stop(); // stop all processing
 		  ex.printStackTrace();
-		  logger.debug(ex);
+		  logger.error(ex);
                   if (logger != null) {
                     logger.debug("[Filter] " + debugPrefix() 
                         + ex.getMessage());

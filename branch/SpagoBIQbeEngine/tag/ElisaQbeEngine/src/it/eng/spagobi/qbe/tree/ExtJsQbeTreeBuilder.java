@@ -37,6 +37,7 @@ import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.cache.QbeCacheManager;
 import it.eng.qbe.model.IDataMartModel;
+import it.eng.qbe.model.structure.DataMartCalculatedField;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.spago.configuration.ConfigSingleton;
@@ -283,6 +284,19 @@ public class ExtJsQbeTreeBuilder  {
 			}
 		}
 		
+		// add calculated fields
+		List calculatedFields = entity.getCalculatedFields();
+		normalFields = qbeTreeFilter.filterFields(getDatamartModel(), normalFields);
+		
+		Iterator calculatedFieldIterator = calculatedFields.iterator();
+		while (calculatedFieldIterator.hasNext() ) {
+			DataMartCalculatedField field = (DataMartCalculatedField)calculatedFieldIterator.next();
+			JSONObject jsObject = getCalculatedFieldNode(entity, field);
+			if(jsObject != null) {
+				children.put( jsObject );
+			}
+		}
+		
 		// add subentities
 		JSONArray subentities = getSubEntitiesNodes(entity, children, recursionLevel);
 		
@@ -327,6 +341,47 @@ public class ExtJsQbeTreeBuilder  {
 			e.printStackTrace();
 		}
 		
+		return fieldNode;
+	}
+	
+	public  JSONObject getCalculatedFieldNode(DataMartEntity parentEntity,
+			 DataMartCalculatedField field) {
+
+		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();
+		String iconCls = "calculation";;//datamartProperties.getFieldIconClass( field );		
+		String fieldLabel = geFieldLabel( field );
+		String fieldTooltip = geFieldTooltip( field );
+		String entityLabel = geEntityLabel( parentEntity );
+		
+		writer.println( field.getUniqueName().replaceAll(":", "/") + "=");
+		writer.println( field.getUniqueName().replaceAll(":", "/") + ".tooltip=");
+		
+		JSONObject fieldNode = new JSONObject();
+		try {
+			fieldNode.put("id", field.getUniqueName());
+			fieldNode.put("text", fieldLabel);
+			fieldNode.put("leaf", true);
+			
+			
+			JSONObject nodeAttributes = new JSONObject();
+			nodeAttributes.put("iconCls", iconCls);
+			nodeAttributes.put("type", "calculatedField");
+			nodeAttributes.put("entity", entityLabel);
+			nodeAttributes.put("qtip", fieldTooltip);
+			nodeAttributes.put("field", fieldLabel);
+			
+			JSONObject formState = new JSONObject();
+			formState.put("alias", field.getName());
+			formState.put("type", field.getType());
+			formState.put("expression", field.getExpression());
+			nodeAttributes.put("formState", formState);
+			
+			fieldNode.put("attributes", nodeAttributes);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return fieldNode;
 	}
 	

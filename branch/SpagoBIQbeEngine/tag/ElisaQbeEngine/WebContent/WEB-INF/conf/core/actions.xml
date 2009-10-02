@@ -2,6 +2,13 @@
 
 <ACTIONS>
 
+	<ACTION name="VALIDATE_EXPRESSION_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.ValidateExpressionAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 	<ACTION name="GET_TREE_ACTION" 
 			class="it.eng.spagobi.qbe.core.service.GetTreeAction"  
 			scope="REQUEST">

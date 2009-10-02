@@ -408,7 +408,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	    var filterButtonColumn = new Ext.grid.ButtonColumn({
 		   header:  LN('sbi.qbe.selectgridpanel.headers.filter')
 		   , dataIndex: 'filter'
-		   , imgSrc: '../img/querybuilder/filter.png'
+		   , imgSrc: '../img/querybuilder/filter.gif'
 		      
 		   , clickHandler:function(e, t){
 		          var index = this.grid.getView().findRowIndex(t);
@@ -424,7 +424,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	    var havingButtonColumn = new Ext.grid.ButtonColumn({
 			   header:  LN('sbi.qbe.selectgridpanel.headers.having')
 			   , dataIndex: 'having'
-			   , imgSrc: '../img/querybuilder/filter.png'
+			   , imgSrc: '../img/querybuilder/filter.gif'
 			      
 			   , clickHandler:function(e, t){
 			          var index = this.grid.getView().findRowIndex(t);
@@ -515,22 +515,11 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	    this.plgins = [visibleCheckColumn, includeCheckColumn, groupCheckColumn, delButtonColumn, filterButtonColumn, havingButtonColumn];
 	}
 	
+	
+	
 	, initCalculatedFieldWizard: function() {
 		
-		var records = this.store.queryBy( function(record) {
-			return record.data.include === true;
-		});
-		
 		var fields = new Array();
-		records.each(function(r) {
-			var field = {
-				text: r.data.alias, 
-				qtip: r.data.entity + ' : ' + r.data.field, 
-				type: 'field', 
-				value: 'fields[\'' + r.data.alias + '\']'
-			};	
-			fields.push(field);
-		});
 		
 		var parametersLoader = new Ext.tree.TreeLoader({
 	        baseParams: {},
@@ -581,14 +570,19 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		
 		this.calculatedFieldWizard = new Sbi.qbe.CalculatedFieldWizard({
     		title: 'Calculated Field Wizard',
-    		expItems: [
-    		    {name:'fields', text: 'Fileds'}, 
+    		expItemGroups: [
+    		    {name:'fields', text: 'Fields'}, 
     		    {name:'parameters', text: 'Parameters', loader: parametersLoader}, 
     		    {name:'attributes', text: 'Attributes', loader: attributesLoader},
     		    {name:'functions', text: 'Functions'}
     		],
     		fields: fields,
-    		functions: functions
+    		functions: functions,
+    		validationService: {
+				serviceName: 'VALIDATE_EXPRESSION_ACTION'
+				, baseParams: {contextType: 'query'}
+				, params: null
+			}
     	});
 		
     	this.calculatedFieldWizard.on('apply', function(win, formState, targetRecord){
@@ -599,8 +593,37 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
     		} else {
     			this.addField({id: formState, alias: formState.alias, type: this.CALCULATED_FIELD});
     		}
-    		//alert(formState.toSource());
     	}, this);
+	}
+	
+	, addCalculatedField: function(targetRecord) {
+		
+		
+		if(this.calculatedFieldWizard === null) {
+			this.initCalculatedFieldWizard();
+		}
+		
+		var records = this.store.queryBy( function(record) {
+			return record.data.include === true;
+		});
+		
+		var fields = new Array();
+		records.each(function(r) {
+			var field = {
+				uniqueName: r.data.id,
+				alias: r.data.alias,
+				text: r.data.alias, 
+				qtip: r.data.entity + ' : ' + r.data.field, 
+				type: 'field', 
+				value: 'fields[\'' + r.data.alias + '\']'
+			};	
+			fields.push(field);
+		});					
+		this.calculatedFieldWizard.validationService.params = {fields: Ext.util.JSON.encode(fields)};
+		this.calculatedFieldWizard.setExpItems('fields', fields);
+		this.calculatedFieldWizard.setTargetRecord(targetRecord);
+		
+		this.calculatedFieldWizard.show();
 	}
 	
 	, initToolbar: function(config) {
@@ -618,13 +641,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	            iconCls:'option',
 	            listeners: {
 				  'click': {
-					fn: function() { 
-				  		if(this.calculatedFieldWizard === null) {
-					    	this.initCalculatedFieldWizard();
-						}
-				  		this.calculatedFieldWizard.setTargetRecord(null);
-					    this.calculatedFieldWizard.show();
-			  		},
+					fn: function(){this.addCalculatedField(null);},
 					scope: this
 				   }
 	            }
@@ -697,13 +714,8 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		this.grid.on("rowdblclick", function(grid,  rowIndex, e){
 	    	var row;
 	       	var record = grid.getStore().getAt( rowIndex );
-	       	alert(record);
 	       	if(record.data.type === this.CALCULATED_FIELD) {
-	       		if(this.calculatedFieldWizard === null) {
-			    	this.initCalculatedFieldWizard();
-				}
-	       		this.calculatedFieldWizard.setTargetRecord(record);
-			    this.calculatedFieldWizard.show();
+	       		this.addCalculatedField(record);
 	       	}
 	     }, this);
 		

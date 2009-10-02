@@ -55,7 +55,7 @@ Sbi.qbe.CalculatedFieldWizard = function(config) {
 	    buttons: [{
 			text: 'Save',
 		    handler: function(){
-	    		this.fireEvent('apply', this, this.getFormState(), this.targetRecord);
+	    		this.fireEvent('apply', this, this.getFormState(), this.target);
             	this.hide();
             	//alert(sendMessage || 'sendMessage not defined');
         	}
@@ -93,20 +93,53 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
     , expItemsTreeRootNode: null
 	, expItemsTree: null
 	, expItemsPanel: null
-	, expItems: null
-	
-	, baseExpression: ' '
+		
+	, baseExpression: 'pippo'
 	, expressionEditor: null
 	, expressionEditorPanel: null
 	
 	, inputFields: null
 	
-	, targetRecord: null
+	, target: null
+	
+	, validationService:  null
 	
 
     // --------------------------------------------------------------------------------------------
     // public methods
     // --------------------------------------------------------------------------------------------
+	
+	, getExpression: function() {
+		//alert('getExpression');
+		var expression;
+		if(this.expressionEditor) {
+	  		expression = this.expressionEditor.getValue();
+	  		expression = Ext.util.Format.stripTags( expression );
+	  		//expression = Ext.util.Format.htmlEncode(expression);
+	  		expression = expression.replace(/&nbsp;/g," ");
+	  		expression = expression.replace(/&gt;/g,">");
+	  		expression = expression.replace(/&lt;/g,"<");
+	  	}
+		
+		return expression;
+	}
+
+	, setExpression: function(expression) {
+		//alert('setExpression');
+		if(this.expressionEditor) {
+			this.expressionEditor.reset();
+			//expresion = Ext.util.Format.htmlEncode(expresion);
+			expression = expression.replace(/ /g,"&nbsp;");
+	  		expression = expression.replace(/</g,"&lt;");
+	  		expression = expression.replace(/>/g,"&gt;");
+	  		if(this.expressionEditor.initialized) {
+	  			this.expressionEditor.insertAtCursor( expression );
+	  		} else {
+	  			this.baseExpression = expression;
+	  		}
+		}
+	}
+	
 	, getFormState : function() {      
     	
       	var formState = {};
@@ -116,27 +149,75 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
       	}
       	
       	if(this.expressionEditor) {
-      		formState.expression = this.expressionEditor.getValue();
-      		formState.expression = Ext.util.Format.stripTags( formState.expression );
-      		formState.expression = formState.expression.replace(/&nbsp;/g," ");
+      		formState.expression = this.getExpression();
       	}
       	
       	return formState;
     }
 	
+	
+	
 	, setTargetRecord: function(record) {
-		this.targetRecord = record;
-		if(this.targetRecord) {
+		this.target = record;
+		if(this.target) {
 			this.inputFields.alias.setValue( record.data.alias );
 			this.inputFields.type.setValue( record.data.id.type );
-			this.expressionEditor.reset();
-			this.expressionEditor.insertAtCursor( record.data.id.expression );
+			this.setExpression( record.data.id.expression );
 		} else {
 			this.inputFields.alias.reset();
 			this.inputFields.type.reset();
 			this.expressionEditor.reset();
-			//this.expressionEditor.insertAtCursor( ' ' );
 		}
+	}
+	
+	, setTargetNode: function(node) {
+		this.target = node;
+		if(this.target) {
+			var alias;
+			var nodeType;
+			
+			alias =  node.text || node.attributes.text;
+			nodeType = node.attributes.type || node.attributes.attributes.type;
+			if(nodeType === 'entity') {
+				this.inputFields.alias.reset();
+				this.inputFields.type.reset();
+				this.expressionEditor.reset();
+			} else if(nodeType === 'field') {
+				Sbi.qbe.commons.unimplementedFunction('handle [field] target');
+			}
+		} 	
+	}
+
+	, validate: function() {
+		
+		var serviceUrl;
+		var params;
+		if(typeof this.validationService === 'object') {
+			serviceUrl = Sbi.config.serviceRegistry.getServiceUrl(this.validationService);
+			params = this.validationService.params || {};
+		} else {
+			serviceUrl = this.validationService;
+			params = {};
+		}
+		
+		params.expression = this.getExpression();
+		
+		Ext.Ajax.request({
+		    url: serviceUrl,
+		    success: this.onValidationSuccess,
+		    failure: Sbi.exception.ExceptionHandler.handleFailure,	
+		    scope: this,
+		    params: params
+		});   
+		
+	}
+	
+	, onValidationSuccess: function(response) {
+		alert("Ok it's valid");
+	}
+	
+	, onValidationFailure: function(response) {
+		
 	}
 	
 	
@@ -242,28 +323,47 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	
 	
 	// items tree
+	
+	, expItemGroups: null
+	, groupRootNodes: null
+	
+	, setExpItems: function(itemGroupName, items) {
+		var groupRootNode = this.groupRootNodes[itemGroupName];
+		var oldChildren = new Array();
+		groupRootNode.eachChild(function(n){
+			oldChildren.push(n);
+		}, this);
+		
+		for(var j = 0, t = oldChildren.length; j < t; j++) {
+			groupRootNode.removeChild(oldChildren[j]);
+		}
+		
+		this[itemGroupName] = items;
+		for(var j = 0, t = items.length; j < t; j++) {
+			var node = new Ext.tree.TreeNode(items[j]);
+			Ext.apply(node.attributes, items[j]);
+			groupRootNode.appendChild( node );
+		}
+	}
+
 	, initExpItemsPanel: function(c) {
 		this.expItemsTreeRootNode = new Ext.tree.TreeNode({text:'Exp. Items', iconCls:'database',expanded:true});
 		
-		if(this.expItems) {
-			this.groupRootNodes = new Array(this.expItems.length);
-			for(var i = 0, l = this.expItems.length; i < l; i++) {
-				if(this.expItems[i].loader === undefined) {
-					this.groupRootNodes[i] = new Ext.tree.TreeNode(Ext.apply({}, {leaf: false}, this.expItems[i]));
+		if(this.expItemGroups) {
+			this.groupRootNodes = new Object();
+			for(var i = 0, l = this.expItemGroups.length; i < l; i++) {
+				var groupName = this.expItemGroups[i].name;
+				if(this.expItemGroups[i].loader === undefined) {
+					this.groupRootNodes[groupName] = new Ext.tree.TreeNode(Ext.apply({}, {leaf: false}, this.expItemGroups[i]));
 				} else {
-					this.groupRootNodes[i] = new Ext.tree.AsyncTreeNode(Ext.apply({}, {leaf: false}, this.expItems[i]));
+					this.groupRootNodes[groupName] = new Ext.tree.AsyncTreeNode(Ext.apply({}, {leaf: false}, this.expItemGroups[i]));
 				}
-				var itemsGroup = this[this.expItems[i].name];
-				if(itemsGroup != null) {
-					for(var j = 0, t = itemsGroup.length; j < t; j++) {
-						var node = new Ext.tree.TreeNode(itemsGroup[j]);
-						Ext.apply(node.attributes, itemsGroup[j]);
-						this.groupRootNodes[i].appendChild( node );
-					}
+				this.expItemsTreeRootNode.appendChild( this.groupRootNodes[groupName] );
+				
+				if(this[groupName] != null) {
+					this.setExpItems(groupName, this[groupName]);
 				}
 			}
-			
-			this.expItemsTreeRootNode.appendChild(this.groupRootNodes);
 		}
 		
 	    this.expItemsTree = new Ext.tree.TreePanel({
@@ -308,8 +408,22 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 		    tooltip:'Clear all selected fields',
 		    iconCls:'remove'
 		});
-		buttons.clear.addListener('click', function(){this.expressionEditor.clear();}, this);
+		buttons.clear.addListener('click', function(){this.expressionEditor.reset();}, this);
 		
+		buttons.debug = new Ext.Toolbar.Button({
+		    text:'Debug',
+		    tooltip:'Shows expression string as passed to the server',
+		    iconCls:'option'
+		});
+		buttons.debug.addListener('click', function(){alert(this.getExpression());}, this);
+		
+		buttons.validate = new Ext.Toolbar.Button({
+		    text:'Validate',
+		    tooltip:'Syntatic validation of the expression',
+		    iconCls:'option'
+		});
+		buttons.validate.addListener('click', function(){this.validate();}, this);
+
 		this.expressionEditor = new Ext.form.HtmlEditor({
     		name:'expression',
     	    frame: true,
@@ -327,16 +441,18 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
     	    	'render': function(editor){
     	          var tb = editor.getToolbar();
     	          tb.add(buttons.clear);
+    	          tb.add(buttons.debug);
+    	          tb.add(buttons.validate);
     	        },
     	        'activate': function(){
-    	          active = true;
+    	          //active = true;
     	        },
     	        'initialize': {
     	        	fn: function(){
-	    	          init = true;
-	    	          this.onFirstFocus();
-	    	          this.insertAtCursor(' ') ; 
-	    	        } // , scope: this
+	    	          //init = true;
+	    	          this.expressionEditor.onFirstFocus();
+	    	          this.expressionEditor.insertAtCursor(this.baseExpression) ; 
+	    	        } , scope: this
     	        },
     	        'beforesync': function(){
     	          // do nothings
@@ -372,3 +488,23 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 		 });
     }
 });
+
+//--------------------------------------------------------------------------------------------
+// static methods
+// --------------------------------------------------------------------------------------------
+Sbi.qbe.CalculatedFieldWizard.getUsedItemSeeds = function(itemGroupName, expression) {
+	 var pattern = new RegExp(/dmFields\['[^\']+'\]/g);
+     var patternSeed = new RegExp(/'.*'/);
+     var token = null;
+     var seeds = new Array();
+     while( (token = pattern.exec(expression)) != null) {
+         token = patternSeed.exec(token); 
+         token = new String(token);
+         token = token.substring(1, token.length - 1);
+         seeds.push(token);
+     } 
+     return seeds;
+}
+
+
+

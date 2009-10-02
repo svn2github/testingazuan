@@ -192,7 +192,7 @@ public class ExecuteQueryAction extends AbstractQbeEngineAction {
 			
 			serializer = new DataStoreJSONSerializer();
 			gridDataFeed = (JSONObject)serializer.serialize(dataStore);
-			logger.debug("Response object: " + gridDataFeed.toString(3));
+			//logger.debug("Response object: " + gridDataFeed.toString(3));
 			
 			try {
 				writeBackToClient( new JSONSuccess(gridDataFeed) );

@@ -54,12 +54,7 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 	
 	this.services = new Array();
 	var params = {};
-	/*
-	this.services['setCatalogue'] = Sbi.config.serviceRegistry.getServiceUrl({
-		serviceName: 'SET_CATALOGUE_ACTION'
-		, baseParams: params
-	});
-	*/
+	
 	this.services['saveQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'SAVE_QUERY_ACTION'
 		, baseParams: params
@@ -177,7 +172,10 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		this.setQuery(query);
 	}
 
+	// --------------------------------------------------------------------------------
 	// public methods
+	// --------------------------------------------------------------------------------
+	
     , executeQuery: function() {
     	this.applyChanges();
     	this.queryCataloguePanel.commit(function() {
@@ -216,73 +214,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		}, this);
     }
     
-    /*
-	, saveQuery: function(meta) {
-		var qName = meta.name;
-		var qDescription = meta.description;
-		var qScope = meta.scope;
-		
-		
-		
-		var queryStr = '{';
-    	queryStr += 'fields : ' + this.selectGridPanel.getRowsAsJSONParams() + ',';
-    	queryStr += 'filters : ' + this.filterGridPanel.getRowsAsJSONParams() + ',';
-    	queryStr += 'distinct : ' + this.selectGridPanel.distinctCheckBox.getValue() + ',';
-    	queryStr += 'expression: ' +  this.filterGridPanel.getFiltersExpressionAsJSON();
-    	queryStr += '}';
-    	
-		
-	    var url = this.services['saveQuery'];
-	    url += '&queryName=' + meta.name;
-	    url += '&queryDescription=' + meta.description;
-	    url += '&queryScope=' + meta.scope;
-	    url += '&query=' +queryStr;
-	    
-	    Ext.Ajax.request({
-			url:  url,
-			success: function(response, options) {
-				var content;
-				
-				content = Ext.util.JSON.decode( response.responseText );
-				content.text = content.text || "";
-				if (content.text.match('OK - ')) {
-					try {
-						parent.loadSubObject(window.name, content.text.substr(5));
-					} catch (ex) {}
-					try {
-						sendMessage("Subobject saved!!!!","subobjectsaved");
-					} catch (ex) {}
-				}
-			},
-			failure: Sbi.exception.ExceptionHandler.handleFailure					
-		});   
-	}
-	*/
-	
-    
-    
-    /*
-	, checkFreeFilters: function() {
-    	var freeFilters = this.filterGridPanel.getPromptableFilters();
-	    if (freeFilters.length > 0) {
-	    	var freeConditionsWindow = new Sbi.qbe.FreeConditionsWindow({
-	    		freeFilters: freeFilters
-	    	});
-	    	freeConditionsWindow.on('apply', function (formState) {
-	    		this.filterGridPanel.setPromptableFiltersLastValues(formState);
-	    		this.executeQuery();
-	    	}, this);
-	    	freeConditionsWindow.on('savedefaults', function (formState) {
-	    		this.filterGridPanel.setPromptableFiltersDefaultValues(formState);
-	    	}, this);
-	    	freeConditionsWindow.show();
-	    } else {
-	    	this.executeQuery();
-	    }
-    }
-    */
-	
-	
+   	
 	, saveView: function(meta) {
 		var url = this.services['saveView'];			
 	    url += '&viewName=' + meta.name;
@@ -326,7 +258,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	
 	
 	, getParams: function() {
-    	
+		Sbi.qbe.commons.deprectadeFunction('getParams', 'QueryBuilderPanel.js')
     	var queryStr = '{';
     	queryStr += 'fields : ' + this.selectGridPanel.getRowsAsJSONParams() + ',';
     	queryStr += 'distinct : ' + this.selectGridPanel.distinctCheckBox.getValue() + ',';
@@ -342,7 +274,9 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     	return params;
     }
 	
-	// -- private methods --------------------------------------------------------------------
+	// --------------------------------------------------------------------------------
+	// 	private methods
+	// --------------------------------------------------------------------------------
 	
 	, init: function(c) {
 		this.initWestRegionPanel(c);
@@ -388,7 +322,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        	this.dataMartStructurePanel.collapseAll();
 	          }
 	          , scope: this
-	        }, {
+	        }, /*{
 	          id:'gear',
 	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.flat'), 
 	          // hidden:true,
@@ -396,12 +330,12 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        	Sbi.qbe.commons.unimplementedFunction();
 	          }
 	          , scope: this
-	        }, {
+	        }, */ {
 	          id:'plus',
 	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.addcalculated'),
 	          // hidden:true,
 	          handler: function(event, toolEl, panel){
-	        	Sbi.qbe.commons.unimplementedFunction();
+	        	this.dataMartStructurePanel.addCalculatedField();
 	          }
 	          , scope: this
 	        }],
@@ -410,16 +344,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	    });
 		
 		this.dataMartStructurePanel.on('click', function(panel, node) {
-	    	if(node.attributes.field && node.attributes.type == 'field') {
-			    var field = {
-			    	 id: node.id,
-			         entity: node.attributes.entity, 
-			         field: node.attributes.field,
-			         alias: node.attributes.field  
-			      };
-			      
-			    this.selectGridPanel.addField(field); 
-			 }
+			this.addNodeToSelectGrid(node);
 	    }, this);
 		
 		/*
@@ -591,6 +516,50 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 				// todo: implement hidingMask in order to block edinting while commiting
 			}, this);
 		}, this);
+	}
+	
+	
+	, addNodeToSelectGrid: function(node, recordBaseConfig) {
+		if(node.attributes) {
+    		if(node.attributes.type == 'field') {
+			    
+    			var field = {
+			    	id: node.id,
+			    	type: this.selectGridPanel.DATAMART_FIELD,
+			    	entity: node.attributes.entity, 
+			    	field: node.attributes.field,
+			    	alias: node.attributes.field  
+			    };				    	
+			    this.selectGridPanel.addField(field);
+			    
+    		} else if(node.attributes.type == 'calculatedField') {	
+ 	    		var field = {
+ 	    			id: node.attributes.formState,
+ 	    			type: this.selectGridPanel.CALCULATED_FIELD,
+ 	    			entity: node.parentNode.text, 
+			    	field: node.text,
+ 			        alias: node.text
+ 			    };
+ 	    		this.selectGridPanel.addField(field);
+ 	    		
+
+ 	    		var seeds =  Sbi.qbe.CalculatedFieldWizard.getUsedItemSeeds('dmFields', node.attributes.formState.expression);
+ 	    		for(var i = 0; i < seeds.length; i++) {
+ 	    			var n = node.parentNode.findChildBy(function(childNode) {
+ 	    				return childNode.id === seeds[i];
+ 	    			});
+ 	    			
+ 	    			if(n) {
+ 	    				this.dataMartStructurePanel.fireEvent('click', this.dataMartStructurePanel, n);
+ 	    			} else {
+ 	    				alert('node  [' + seeds + '] not contained in entity [' + node.parentNode.text + ']');
+ 	    			}
+ 	    			
+ 	    			
+ 	    		}
+ 	    		
+    		}
+		 }
 	}
 		
 });

@@ -77,7 +77,7 @@ public class StringUtilities {
 	 */
 	public static String substituteProfileAttributesInString(String statement, IEngUserProfile profile,
 			int profileAttributeStartIndex) throws Exception {
-		logger.debug("IN");
+		logger.debug("IN.statement="+statement);
 		int profileAttributeEndIndex = statement.indexOf("}",profileAttributeStartIndex);
 		if (profileAttributeEndIndex == -1)
 			throw new Exception("Not closed profile attribute: '}' expected.");

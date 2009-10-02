@@ -510,8 +510,7 @@ public class Filter
 //		    m_visual.setText("Filtering training data...");
 		    if (logger != null) {
 		      logger.debug(debugPrefix() 
-		          + "Filtering training data ("
-		          + m_trainingSet.relationName() + ")");
+		          + "Filtering training data");
 		    }
 		    m_Filter.setInputFormat(m_trainingSet);
 		    logger.debug("Start using Filter");

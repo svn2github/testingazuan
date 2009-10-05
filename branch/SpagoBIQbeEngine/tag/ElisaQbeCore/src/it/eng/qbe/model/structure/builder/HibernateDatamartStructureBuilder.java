@@ -122,7 +122,7 @@ public class HibernateDatamartStructureBuilder implements IDataMartStructureBuil
 		List calculatedFileds;
 		DataMartCalculatedField calculatedField;
 		
-		calculatedFileds = (List)dataMartEntity.getStructure().getCalculatedFields().get(dataMartEntity.getUniqueName());
+		calculatedFileds = dataMartEntity.getStructure().getCalculatedFieldsByEntity(dataMartEntity.getUniqueName());
 		if(calculatedFileds != null) {
 			for(int i = 0; i < calculatedFileds.size(); i++) {
 				calculatedField = (DataMartCalculatedField)calculatedFileds.get(i);

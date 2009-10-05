@@ -126,12 +126,23 @@ public class DataMartEntity extends AbstractDataMartItem {
 		calculatedField.setId(getStructure().getNextId());
 		calculatedField.setStructure(getStructure());
 		calculatedField.setParent(this);
+		
 		// append field to entity
 		calculatedFields.put(calculatedField.getUniqueName(), calculatedField);
 		
 		// append field to structure level facade
-		//getStructure().addCalculatedField(field);
+		getStructure().addCalculatedField(getUniqueName(), calculatedField);
 	}	
+	
+	public void deleteCalculatedField(String fieldName) {
+		DataMartCalculatedField calculatedField;
+		
+		calculatedField = (DataMartCalculatedField)calculatedFields.remove(fieldName);
+		if(calculatedField != null) {
+			getStructure().removeCalculatedFiield(calculatedField.getParent().getUniqueName(), calculatedField);
+		}
+		
+	}
 	
 	public List getCalculatedFields() {
 		List list = new ArrayList();

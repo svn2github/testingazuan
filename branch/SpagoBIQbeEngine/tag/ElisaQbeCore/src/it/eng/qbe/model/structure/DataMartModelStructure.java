@@ -45,7 +45,14 @@ public class DataMartModelStructure {
 	}
 	
 	public List getCalculatedFieldsByEntity(String entityName) {
-		return (List)cfields.get(entityName);
+		List result;
+		
+		result = new ArrayList();
+		if(cfields.containsKey(entityName)) {
+			result.addAll( (List)cfields.get(entityName) );
+		}
+		
+		return result;
 	}
 
 	public void setCalculatedFields(Map calculatedFields) {

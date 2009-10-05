@@ -48,38 +48,46 @@ Ext.ns("Sbi.qbe");
 
 Sbi.qbe.QueryBuilderPanel = function(config) {
 	
-	var c = Ext.apply({
-		// set default values here
-	}, config || {});
+	var defaultSettings = {
+		title: LN('sbi.qbe.queryeditor.title'),
+		frame: false, 
+		border: false
+  	};
+	if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.queryBuilderPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.queryBuilderPanel);
+	}
 	
-	this.services = new Array();
-	var params = {};
+	var c = Ext.apply(defaultSettings, config || {});
 	
-	this.services['saveQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
+	Ext.apply(this, c);
+	
+		
+	this.services = this.services || new Array();	
+	this.services['saveQuery'] = this.services['saveQuery'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'SAVE_QUERY_ACTION'
-		, baseParams: params
+		, baseParams: new Object()
 	});
-	this.services['validateQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
+	this.services['validateQuery'] = this.services['validateQuery'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'VALIDATE_QUERY_ACTION'
-		, baseParams: params
+		, baseParams: new Object()
 	});
-	this.services['saveView'] = Sbi.config.serviceRegistry.getServiceUrl({
+	this.services['saveView'] = this.services['saveView'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'CREATE_VIEW_ACTION'
+		, baseParams: new Object()
+	});
+	this.services['saveTree'] = this.services['saveTree'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'SAVE_TREE_ACTION'
 		, baseParams: params
 	});
-	
-	
+		
 	this.addEvents('execute');
 		
-	this.initWestRegionPanel(c);
-	this.initCenterRegionPanel(c);
-	this.initEastRegionPanel(c);
+	this.initWestRegionPanel(c.westConfig || {});
+	this.initCenterRegionPanel(c.centerConfig || {});
+	this.initEastRegionPanel(c.eastConfig || {});
 		
-	c = Ext.apply(c, {
-      	title: LN('sbi.qbe.queryeditor.title'),
-      	layout: 'border',
-      	frame: false, 
-      	border: false,
+	c = Ext.apply(c, {      	
+      	layout: 'border',      	
       	items: [this.westRegionPanel, this.centerRegionPanel, this.eastRegionPanel]
 	});
 
@@ -105,11 +113,14 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
     , saveQueryWindow: null
     , saveViewWindow: null
    
+    // --------------------------------------------------------------------------------
+	// public methods
+	// --------------------------------------------------------------------------------
+	
     
     , setQuery: function(query) {
 		
 		var parentQuery = this.queryCataloguePanel.getParentQuery(query.id);
-		//this.filterGridPanel.enableValueWizard = (parentQuery !== null);
 		this.filterGridPanel.query = query;
 		this.filterGridPanel.parentQuery = parentQuery;
 		
@@ -172,10 +183,6 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		this.setQuery(query);
 	}
 
-	// --------------------------------------------------------------------------------
-	// public methods
-	// --------------------------------------------------------------------------------
-	
     , executeQuery: function() {
     	this.applyChanges();
     	this.queryCataloguePanel.commit(function() {
@@ -254,26 +261,6 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		this.saveViewWindow.show();
 	}
 	
-	
-	
-	
-	, getParams: function() {
-		Sbi.qbe.commons.deprectadeFunction('getParams', 'QueryBuilderPanel.js')
-    	var queryStr = '{';
-    	queryStr += 'fields : ' + this.selectGridPanel.getRowsAsJSONParams() + ',';
-    	queryStr += 'distinct : ' + this.selectGridPanel.distinctCheckBox.getValue() + ',';
-    	queryStr += 'filters : ' + this.filterGridPanel.getRowsAsJSONParams() + ',';
-    	queryStr += 'expression: ' +  this.filterGridPanel.getFiltersExpressionAsJSON();
-    	queryStr += '}';
-    	
-    	
-    	var params = {
-    		query: queryStr 
-    	};        	
-    	
-    	return params;
-    }
-	
 	// --------------------------------------------------------------------------------
 	// 	private methods
 	// --------------------------------------------------------------------------------
@@ -284,7 +271,28 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	
 	, initWestRegionPanel: function(c) {
 		
+		c.actions = new Array();
+		c.actions.push({
+			text: 'Add to SELECT clause',
+			handler: this.onAddNodeToSelect,
+			scope: this,
+			iconCls: 'option'
+		});
+		c.actions.push({
+			text: 'Add to WHERE clause',
+			handler: this.onAddNodeToWhere,
+			scope: this,
+			iconCls: 'option'
+		});
+		c.actions.push({
+			text: 'Add to HAVING clause',
+			handler: this.onAddNodeToHaving,
+			scope: this,
+			iconCls: 'option'
+		});
+		
 		this.dataMartStructurePanel = new Sbi.qbe.DataMartStructurePanel(c);
+		
 		this.qbeStructurePanel = new Ext.Panel({
 	        id:'treepanel',
 	        collapsible: true,
@@ -338,13 +346,32 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        	this.dataMartStructurePanel.addCalculatedField();
 	          }
 	          , scope: this
-	        }],
+	        }, {
+			  id:'save',
+			  qtip: LN('save'),
+			  // hidden:true,
+			  handler: function(event, toolEl, panel){
+	        	Ext.Ajax.request({
+					url:  this.services['saveTree'],
+					callback: function(success, response, options) {
+	       				if(success) {
+	       					alert('saved');
+	       				}
+	       			},
+	       			scope: this,
+					failure: Sbi.exception.ExceptionHandler.handleFailure		
+	        	});  
+			  }
+			  , scope: this
+		    }],
 	        
 	        items:[this.qbeStructurePanel]
 	    });
 		
-		this.dataMartStructurePanel.on('click', function(panel, node) {
-			this.addNodeToSelectGrid(node);
+		
+		
+		this.dataMartStructurePanel.on('addnodetoselect', function(panel, node) {
+			this.onAddNodeToSelect(node);
 	    }, this);
 		
 		/*
@@ -364,6 +391,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	}
 	
 	, initCenterRegionPanel: function(c) {
+		c.documentParametersStore = this.documentParametersStore;
 		this.selectGridPanel = new Sbi.qbe.SelectGridPanel(c);
 	    this.filterGridPanel = new Sbi.qbe.FilterGridPanel(c);
 	    this.havingGridPanel = new Sbi.qbe.HavingGridPanel(c);
@@ -459,7 +487,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		this.queryCataloguePanel = new Sbi.qbe.QueryCataloguePanel({margins: '0 5 0 0', region: 'center'});
 		this.documentParametersGridPanel = new Sbi.qbe.DocumentParametersGridPanel(
 				{margins: '0 0 0 0', region: 'south'}
-				, c.documentParametersStore
+				, this.documentParametersStore
 		);
 		
 		this.eastRegionPanel = new Ext.Panel({
@@ -519,20 +547,31 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	}
 	
 	
-	, addNodeToSelectGrid: function(node, recordBaseConfig) {
+	// -- handler methods ---------------------------------------------------------------
+	
+	, onAddNodeToSelect: function(node, recordBaseConfig) {
+		var field;
+		var nodeType;
+		
 		if(node.attributes) {
-    		if(node.attributes.type == 'field') {
+			recordBaseConfig = recordBaseConfig || {};
+			nodeType = node.attributes.type || node.attributes.attributes.type;
+			
+    		if(nodeType == 'field') {
 			    
-    			var field = {
+    			field = {
 			    	id: node.id,
 			    	type: this.selectGridPanel.DATAMART_FIELD,
 			    	entity: node.attributes.entity, 
 			    	field: node.attributes.field,
 			    	alias: node.attributes.field  
 			    };				    	
-			    this.selectGridPanel.addField(field);
 			    
-    		} else if(node.attributes.type == 'calculatedField') {	
+    			Ext.apply(field, recordBaseConfig);
+    			
+    			this.selectGridPanel.addField(field);
+			    		    
+    		} else if(nodeType == 'calculatedField') {	
  	    		var field = {
  	    			id: node.attributes.formState,
  	    			type: this.selectGridPanel.CALCULATED_FIELD,
@@ -540,6 +579,9 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 			    	field: node.text,
  			        alias: node.text
  			    };
+ 	    		
+ 	    		Ext.apply(field, recordBaseConfig);
+ 	    		
  	    		this.selectGridPanel.addField(field);
  	    		
 
@@ -550,7 +592,8 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
  	    			});
  	    			
  	    			if(n) {
- 	    				this.dataMartStructurePanel.fireEvent('click', this.dataMartStructurePanel, n);
+ 	    				this.onAddNodeToSelect(n, {visible:false});
+ 	    				//this.dataMartStructurePanel.fireEvent('click', this.dataMartStructurePanel, n);
  	    			} else {
  	    				alert('node  [' + seeds + '] not contained in entity [' + node.parentNode.text + ']');
  	    			}
@@ -558,8 +601,128 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
  	    			
  	    		}
  	    		
+    		} else if(nodeType == 'entity'){
+    			for(var i = 0; i < node.attributes.children.length; i++) {
+    				if(node.attributes.children[i].attributes.type != 'field'
+    					&& node.attributes.children[i].attributes.type != 'calculatedField') continue;
+    				field = {
+          				id: node.attributes.children[i].id , 
+            			entity: node.attributes.children[i].attributes.entity , 
+            			field: node.attributes.children[i].attributes.field,
+                    	alias: node.attributes.children[i].attributes.field   
+            			
+          			};				
+    				this.selectGridPanel.addField(field);
+    			}
+    		} else {
+    			Ext.Msg.show({
+					   title:'Invalid operation',
+					   msg: 'Node of type [' + nodeType + '] cannot be added to select table',
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.ERROR
+				});
     		}
 		 }
 	}
+	
+	, onAddNodeToWhere: function(node, recordBaseConfig) {
+		var filter;
+		var nodeType;
+		
+		if(node.attributes) {
+			recordBaseConfig = recordBaseConfig || {};
+			nodeType = node.attributes.type || node.attributes.attributes.type;
+			
+    		if(nodeType == 'field') {
+				filter = {
+					leftOperandValue: node.id
+					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
+					, leftOperandType: 'Field Content'
+				};
+		  		this.filterGridPanel.addFilter(filter);
+			
+			} else if(nodeType == 'entity'){
+				
+				for(var i = 0; i < node.attributes.children.length; i++) {
+					if(node.attributes.children[i].attributes.type != 'field') continue;
+					filter = {
+						leftOperandValue: node.attributes.children[i].id
+						, leftOperandDescription: node.attributes.children[i].attributes.entity + ' : ' + node.attributes.children[i].attributes.field 
+						, leftOperandType: 'Field Content'
+					};
+					
+					this.filterGridPanel.addFilter(filter);
+				}
+				
+			} else {
+				Ext.Msg.show({
+					   title:'Invalid operation',
+					   msg: 'Node of type [' + nodeType + '] cannot be added to filters table',
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.ERROR
+				});
+			}
+		}
+	} 
+	
+	, onAddNodeToHaving: function(node, recordBaseConfig) {
+		var filter;
+		var nodeType;
+		
+		if(node.attributes) {
+			recordBaseConfig = recordBaseConfig || {};
+			nodeType = node.attributes.type || node.attributes.attributes.type;
+			
+    		if(nodeType == 'field') {
+				filter = {
+					leftOperandValue: node.id
+					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
+					, leftOperandType: 'Field Content'
+				};
+		  		this.havingGridPanel.addFilter(filter);
+			
+			} else if(nodeType == 'entity'){
+				
+				for(var i = 0; i < node.attributes.children.length; i++) {
+					if(node.attributes.children[i].attributes.type != 'field') continue;
+					filter = {
+						leftOperandValue: node.attributes.children[i].id
+						, leftOperandDescription: node.attributes.children[i].attributes.entity + ' : ' + node.attributes.children[i].attributes.field 
+						, leftOperandType: 'Field Content'
+					};
+					
+					this.havingGridPanel.addFilter(filter);
+				}
+				
+			} else {
+				Ext.Msg.show({
+					   title:'Invalid operation',
+					   msg: 'Node of type [' + nodeType + '] cannot be added to having table',
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.ERROR
+				});
+			}
+		}
+	} 
+	
+	// --------------------------------------------------------------------------------
+	// deprecated methods
+	// --------------------------------------------------------------------------------
+	, getParams: function() {
+		Sbi.qbe.commons.deprectadeFunction('getParams', 'QueryBuilderPanel.js')
+    	var queryStr = '{';
+    	queryStr += 'fields : ' + this.selectGridPanel.getRowsAsJSONParams() + ',';
+    	queryStr += 'distinct : ' + this.selectGridPanel.distinctCheckBox.getValue() + ',';
+    	queryStr += 'filters : ' + this.filterGridPanel.getRowsAsJSONParams() + ',';
+    	queryStr += 'expression: ' +  this.filterGridPanel.getFiltersExpressionAsJSON();
+    	queryStr += '}';
+    	
+    	
+    	var params = {
+    		query: queryStr 
+    	};        	
+    	
+    	return params;
+    }
 		
 });

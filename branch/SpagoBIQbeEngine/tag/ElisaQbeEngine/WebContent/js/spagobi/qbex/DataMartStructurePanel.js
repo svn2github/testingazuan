@@ -47,48 +47,67 @@
 Ext.ns("Sbi.qbe");
 
 Sbi.qbe.DataMartStructurePanel = function(config) {
-	var c = Ext.apply({
+	
+	var defaultSettings = {
 		title: 'Datamart 1'
+		, border:false
+		, autoScroll: true
+		, containerScroll: true
 		, rootNodeText: 'Datamart'
 		, ddGroup: 'gridDDGroup'
 		, type: 'datamartstructuretree'
 		, preloadTree: true
 		, baseParams: {}
-	}, config || {});
+  	};
+	if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.dataMartStructurePanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.dataMartStructurePanel);
+	}
 	
+	var c = Ext.apply(defaultSettings, config || {});	
 	Ext.apply(this, c);
 	
-	this.services = new Array();
-	var params = {};
 	
-	this.services['loadTree'] = Sbi.config.serviceRegistry.getServiceUrl({
+	
+	this.services = this.services || new Array();	
+	this.services['loadTree'] = this.services['loadTree'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'GET_TREE_ACTION'
-		, baseParams: params
+		, baseParams: new Object()
 	});
 
-	this.services['getParameters'] = Sbi.config.serviceRegistry.getServiceUrl({
+	this.services['getParameters'] = this.services['getParameters'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'GET_PARAMETERS_ACTION'
 		, baseParams: params
 	});
 	
-	this.services['getAttributes'] = Sbi.config.serviceRegistry.getServiceUrl({
+	this.services['getAttributes'] = this.services['getAttributes'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'GET_ATTRIBUTES_ACTION'
 		, baseParams: params
 	});
 	
-	this.addEvents('load', 'click');
-	
-	this.initTree(c);
-	
-	Ext.apply(c, {
-		title: this.title
-		, layout: 'fit'
-		, border:false
-		, autoScroll: true
-		, containerScroll: true
-		, items: [this.tree]
+	this.services['addCalculatedField'] = this.services['addCalculatedField'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'ADD_CALCULATED_FIELD_ACTION'
+		, baseParams: params
 	});
 	
+	this.services['modifyCalculatedField'] = this.services['modifyCalculatedField'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'MODIFY_CALCULATED_FIELD_ACTION'
+		, baseParams: params
+	});
+	
+	this.services['deleteCalculatedField'] = this.services['deleteCalculatedField'] || Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'DELETE_CALCULATED_FIELD_ACTION'
+		, baseParams: params
+	});
+	
+	
+	this.addEvents('load', 'addnodetoselect');
+	
+	this.initTree(c.treeConfig || {});
+	
+	Ext.apply(c, {
+		layout: 'fit'
+		, items: [this.tree]
+	});	
 	
 	// constructor
 	Sbi.qbe.DataMartStructurePanel.superclass.constructor.call(this, c);
@@ -105,6 +124,7 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 	, tree: null
 	, type: null
 	, calculatedFieldWizard : null
+	, menu: null
 	
 	// --------------------------------------------------------------------------------
 	// public methods
@@ -125,13 +145,55 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 		this.tree.collapseAll();
 	}
 	
-	, addCalculatedField: function() {
+	, editField: function(fieldNode) {
+		var nodeType;
+		nodeType = fieldNode.attributes.type || fieldNode.attributes.attributes.type;
+		if(nodeType == 'calculatedField') {
+			
+			if(this.calculatedFieldWizard === null) {
+				this.initCalculatedFieldWizard();
+			}
+			
+			var parentEtityNode = fieldNode.parentNode;
+			var fields = new Array();
+			for(var i = 0; i < parentEtityNode.attributes.children.length; i++) {
+				var child = parentEtityNode.attributes.children[i];
+				var childType = child.attributes.type || child.attributes.attributes.type;
+				if(childType === 'field') {
+					var field = {
+						uniqueName: child.id,
+						alias: child.text,
+						text: child.attributes.field, 
+						qtip: child.attributes.entity + ' : ' + child.attributes.field, 
+						type: 'field', 
+						value: 'dmFields[\'' + child.id + '\']'
+					};	
+					fields.push(field);
+				}
+			}
+			this.calculatedFieldWizard.validationService.params = {fields: Ext.util.JSON.encode(fields)};
+		
+			this.calculatedFieldWizard.setExpItems('fields', fields);
+			
+			this.calculatedFieldWizard.setTargetNode(fieldNode);
+			this.calculatedFieldWizard.show();
+		} else {
+			Ext.Msg.show({
+				   title:'Invalid operation',
+				   msg: 'Node of type [' + nodeType + '] cannot be edited',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.ERROR
+			});
+		}
+	}
+	
+	, addCalculatedField: function(enitydNode) {
 		var selectNode;
 		
 		if(this.calculatedFieldWizard === null) {
 			this.initCalculatedFieldWizard();
 		}
-		selectNode = this.tree.getSelectionModel().getSelectedNode();
+		selectNode = enitydNode || this.tree.getSelectionModel().getSelectedNode();
 		var type = selectNode.attributes.type || selectNode.attributes.attributes.type;
 		var text = selectNode.text || selectNode.attributes.text;
 		if(type === 'entity') {
@@ -213,7 +275,8 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 		
 		this.tree.type = this.type;
 		
-		this.tree.on('click', function(node) {this.fireEvent('click', this, node);}, this);
+		this.tree.on('click', function(node) {this.fireEvent('addnodetoselect', this, node);}, this);
+		this.tree.on('contextmenu', this.onContextMenu, this);
 	}
 	
 	, initCalculatedFieldWizard: function() {
@@ -286,24 +349,139 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 
     	this.calculatedFieldWizard.on('apply', function(win, formState, targetNode){
     		
-      		//formState.type = 'calculatedField';
-    		var node = new Ext.tree.TreeNode({
-    			text: formState.alias,
-    			leaf: true,
-    			type: 'calculatedField',
-    			formState: formState, 
-    			iconCls: 'calculation'
-    		});
-			//Ext.apply(node.attributes, formState);
+    		var nodeType;
+    		nodeType = targetNode.attributes.type || targetNode.attributes.attributes.type;
     		
-			if (!targetNode.isExpanded()) {
-    			targetNode.expand(false, true, function() {targetNode.appendChild( node );});
-    		} else {
-    			targetNode.appendChild( node );
+    		var entityId = (nodeType == 'calculatedField')? targetNode.parentNode.id: targetNode.id;
+    		var f = {
+    			alias: formState.alias
+    			, type: formState.type
+    			, calculationDescriptor: formState
+    		};
+    		var params = {
+    			entityId: entityId,
+    			field: Ext.util.JSON.encode(f)
     		}
+    		
+    		alert(this.services['addCalculatedField']);
+    		alert(params.toSource());
+    		Ext.Ajax.request({
+				url:  this.services['addCalculatedField'],
+				success: function(response, options) {
+       				alert('saved');
+       			},
+       			scope: this,
+				failure: Sbi.exception.ExceptionHandler.handleFailure,	
+				params: params
+        	}); 
+    		alert('eccomi');
+    		
+    		
+    		if(nodeType == 'calculatedField') {
+    			targetNode.text = formState.alias;
+    			targetNode.attributes.formState = formState;
+    		} else if (nodeType == 'entity') {
+    			var node = new Ext.tree.TreeNode({
+        			text: formState.alias,
+        			leaf: true,
+        			type: 'calculatedField',
+        			formState: formState, 
+        			iconCls: 'calculation'
+        		});
+    			
+    			if (!targetNode.isExpanded()) {
+        			targetNode.expand(false, true, function() {targetNode.appendChild( node );});
+        		} else {
+        			targetNode.appendChild( node );
+        		}
+    		} else {
+    			Ext.Msg.show({
+					   title:'Invalid operation',
+					   msg: 'Node of type [' + nodeType + '] cannot be modified',
+					   buttons: Ext.Msg.OK,
+					   icon: Ext.MessageBox.ERROR
+				});
+    		}
+    			
+    		
     		
     	}, this);
 	}
+	
+	, initMenu: function() {
+		 this.menu = new Ext.menu.Menu({
+             id:'feeds-ctx',
+             items: [
+             // ACID operations on nodes
+             '-',{
+            	 text:'Edit',
+                 iconCls:'option',
+                 handler:function(){
+	         	 	this.editField(this.ctxNode);
+	             },
+                 scope: this
+             },{
+            	 text:'Remove',
+                 //iconCls:'add',
+                 handler:  function() {
+	            	 this.ctxNode.ui.removeClass('x-node-ctx');
+	                 //this.removeFeed(this.ctxNode.attributes.url);
+	            	 alert(this.ctxNode.text);
+	            	 this.ctxNode = null;
+                 },
+                 scope: this
+             }]
+         });
+		 
+		 for(var i = 0; i < this.actions.length; i++) {
+			
+			 var item = new Ext.menu.Item({
+				 text: this.actions[i].text,
+	             iconCls: this.actions[i].iconCls,
+	             handler:  this.executeAction.createDelegate(this, [i]),
+	             scope: this
+			 });
+			 //item.action = this.actions[i];
+			 this.menu.insert(i, item);
+		 }
+		 
+		 
+		 
+         this.menu.on('hide', function(){
+             if(this.ctxNode){
+                 this.ctxNode.ui.removeClass('x-node-ctx');
+                 this.ctxNode = null;
+             }
+         }, this);
+	}
+	
+	, executeAction: function(actionIndex) {
+		this.actions[actionIndex].handler.call(this.actions[actionIndex].scope, this.ctxNode);
+	}
+	
+	, onContextMenu : function(node, e){
+        if(this.menu == null){ // create context menu on first right click
+        	this.initMenu();
+        }
+        
+        if(this.ctxNode){
+            this.ctxNode.ui.removeClass('x-node-ctx');
+            this.ctxNode = null;
+        }
+        
+        this.ctxNode = node;
+        this.ctxNode.ui.addClass('x-node-ctx');
+        this.menu.showAt(e.getXY());
+        
+        /*
+        if(node.isLeaf()){
+            this.ctxNode = node;
+            this.ctxNode.ui.addClass('x-node-ctx');
+            this.menu.items.get('load').setDisabled(node.isSelected());
+            this.menu.showAt(e.getXY());
+        }
+        */
+    }
 	
 	, oonLoad: function(treeLoader, node, response) {
 		this.rootNode = this.tree.root;

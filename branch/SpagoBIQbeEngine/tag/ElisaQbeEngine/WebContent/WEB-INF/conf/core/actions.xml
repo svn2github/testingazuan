@@ -2,6 +2,32 @@
 
 <ACTIONS>
 
+	<ACTION name="SAVE_TREE_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.SaveTreeAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+
+	<ACTION name="ADD_CALCULATED_FIELD_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.AddCalculatedFieldAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	<ACTION name="MODIFY_CALCULATED_FIELD_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.AddCalculatedFieldAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	<ACTION name="DELETE_CALCULATED_FIELD_ACTION" 
+			class="it.eng.spagobi.qbe.core.service.DeleteCalculatedFieldAction"  
+			scope="REQUEST">
+		
+		<CONFIG></CONFIG>
+	</ACTION>
+	
 	<ACTION name="VALIDATE_EXPRESSION_ACTION" 
 			class="it.eng.spagobi.qbe.core.service.ValidateExpressionAction"  
 			scope="REQUEST">

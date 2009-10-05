@@ -52,8 +52,6 @@ Sbi.qbe.QbePanel = function(config) {
 		// set default values here
 	}, config || {});
 	
-	//config.isFromCross = true;
-	
 	this.services = new Array();
 	var params = {};
 	this.services['getFirstQuery'] = Sbi.config.serviceRegistry.getServiceUrl({

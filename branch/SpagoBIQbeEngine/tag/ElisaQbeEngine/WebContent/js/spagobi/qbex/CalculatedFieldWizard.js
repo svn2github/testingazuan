@@ -184,7 +184,13 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 				this.expressionEditor.reset();
 			} else if(nodeType === 'field') {
 				Sbi.qbe.commons.unimplementedFunction('handle [field] target');
-			}
+			} else if(nodeType === 'calculatedField') {
+				this.inputFields.alias.setValue( node.attributes.formState.alias );
+				this.inputFields.type.setValue( node.attributes.formState.type );
+				this.setExpression( node.attributes.formState.expression );
+			} else if(nodeType === 'field') {
+				alert('Impossible to edit node of type [' + nodeType +']');
+			} 
 		} 	
 	}
 

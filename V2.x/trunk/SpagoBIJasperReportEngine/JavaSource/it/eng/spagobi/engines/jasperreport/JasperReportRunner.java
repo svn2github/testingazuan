@@ -65,6 +65,7 @@ import net.sf.jasperreports.engine.export.JRGraphics2DExporterParameter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRRtfExporter;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRTextExporterParameter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
@@ -354,6 +355,10 @@ public class JasperReportRunner {
 				servletResponse.setContentType(mimeType);
 				//if(exporter == null) exporter = new JRXlsExporter();
 				if(exporter == null) exporter = new JExcelApiExporter();
+			} else if (outputType.equalsIgnoreCase("rtf")) {
+				if(mimeType == null) mimeType = "application/rtf";
+				servletResponse.setContentType(mimeType);
+				if(exporter == null) exporter = new JRRtfExporter();
 			} else if (outputType.equalsIgnoreCase("xml")) {
 				if(mimeType == null) mimeType = "text/xml";
 				servletResponse.setContentType(mimeType);

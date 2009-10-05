@@ -64,9 +64,9 @@
 			<SECTION name="slider">
 				<PARAMETER name='view_slider' description='Choose if view slider'
 					type='BOOLEAN' defaultValue='true' tooltip='Choose if view slider'/>
-				<PARAMETER name='position_slider' description='position of the slider'
+				<PARAMETER name='position_slider' description='Position of the slider'
 					type='COMBO' values='top,bottom' defaultValue='top' tooltip='Select position of the slider'/>
-				<PARAMETER name='slider_start_from_end' description='Slider start from end?'
+				<PARAMETER name='slider_start_from_end' description='Slider start from end'
 					type='BOOLEAN' defaultValue='true' tooltip='Choose if slider start from final position'/>
 			</SECTION>
 			<SECTION name="filter">
@@ -81,10 +81,10 @@
 				<PARAMETER name='n_cat_visualization' description='Number of categories to view'
 					type='INTEGER' defaultValue='5' tooltip='Number of categories to view'/>
 				<PARAMETER name='dynamic_n_visualization'
-					description='Dynamically change number of categories to view' type='BOOLEAN' defaultValue='false'/>
+					description='Dynamically change number of categories to view' type='BOOLEAN' defaultValue='false' tooltip='set if change dinamically number of categories to view'/>
 				<PARAMETER name='n_ser_visualization' 
-					description='Dynamically change number of series to view' type='INTEGER' defaultValue='5'
-					tooltip='set if change dinamically the number of series to view' />
+					description='Number of series to view' type='INTEGER' defaultValue='5'
+					tooltip='Set the number of series to view' />
 			</SECTION>
 			<SECTION name='legend'>
 				<PARAMETER name='legend' description='draw legend?'
@@ -97,10 +97,10 @@
 					type='STRING' defaultValue='cat_label' tooltip='Name of category label'/>
 				<PARAMETER name='value_label' description='Name of value label'
 					type='STRING' defaultValue='val_label' tooltip='Name of value label'/>
-				<PARAMETER name='maximum_bar_width' description='Maximum bar width'
-					type='FLOAT' defaultValue='5.01' tooltip='Percentage of maximum bar width'/>
+				<PARAMETER name='maximum_bar_width' description='Maximum bar width (percentage of the avalaible space for all bars)'
+					type='FLOAT' defaultValue='5.01' tooltip='The maximum bar width, which is specified as a percentage of the available space for all bars'/>
 				<PARAMETER name='range_integer_values' description='Only integer values on value axis'
-					type='BOOLEAN' defaultValue='true' tooltip='Choose if view only Integer on y axis'/>
+					type='BOOLEAN' defaultValue='true' tooltip='Choose if view only integer values on y axis'/>
 				<PARAMETER name='range_axis_location' description='Location of the value axis'
 					type='COMBO' values='BOTTOM_OR_LEFT, BOTTOM_OR_RIGHT, TOP_OR_RIGHT, TOP_OR_LEFT' defaultValue='BOTTOM_OR_LEFT'
 					tooltip='Location of the value axis'/>
@@ -149,11 +149,11 @@
 		templatePath='it/eng/spagobi/studio/chart/resources/chart/stacked_bar.xml'>
 		<CONF>
 			<SECTION>
-				<PARAMETER name='Cumulative' description='Cumulative'
+				<PARAMETER name='Cumulative' description='Add cumulative serie'
 					type='BOOLEAN' defaultValue='false' tooltip='add the cumulative serie in the chart'/>
 				<PARAMETER name='make_percentage' description='Make percentage'
 					type='BOOLEAN' defaultValue='false'/>
-				<PARAMETER name='percentage_value' description='Percentage Values'
+				<PARAMETER name='percentage_value' description='Show percentage values'
 					type='BOOLEAN' defaultValue='false' tooltip='show percentage values'/>
 				<PARAMETER name='add_labels' description='Add Labels'
 					type='BOOLEAN' defaultValue='true' tooltip='add labels'/>
@@ -179,7 +179,7 @@
 					type='STRING' defaultValue='subCat_Label' tooltip='Label for subcategory'/>
 				<PARAMETER name='add_labels' description='Add Labels'
 					type='BOOLEAN' defaultValue='true' tooltip='add labels'/>
-				<PARAMETER name='percentage_value' description='Percentage Values'
+				<PARAMETER name='percentage_value' description='show percentage values'
 					type='BOOLEAN' defaultValue='true' tooltip='show percentage values'/>
 				<PARAMETER name='n_groups' description='Number of groups'
 					type='INTEGER' defaultValue='3' tooltip='Number of groups'/>
@@ -194,7 +194,7 @@
 		templatePath='it/eng/spagobi/studio/chart/resources/chart/overlaid_barline.xml'>
 		<CONF>
 			<SECTION>
-				<PARAMETER name='second_axis_label' description='second_axis_label'
+				<PARAMETER name='second_axis_label' description='Enable the second axis and choose its label'
 					type='STRING' defaultValue='second axis label' tooltip='Activate the second axis and set the label'/>
 				<PARAMETER name='add_labels' description='Add Labels'
 					type='BOOLEAN' defaultValue='true' tooltip='add labels'/>

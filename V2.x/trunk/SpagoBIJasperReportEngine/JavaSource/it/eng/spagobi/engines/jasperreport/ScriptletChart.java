@@ -54,6 +54,7 @@ public class ScriptletChart extends JRDefaultScriptlet {
 	private static transient Logger logger=Logger.getLogger(ScriptletChart.class);
 
 	public static final String CHART_LABEL="chart_label"; 
+	public static final String CHART_IMAGE="chart_image"; 
 	public static int iii=1;
 
 	public void afterReportInit() throws JRScriptletException {
@@ -79,75 +80,105 @@ public class ScriptletChart extends JRDefaultScriptlet {
 			// each is an image to fill
 			Map allVariables = this.variablesMap;
 
+			boolean oldModeRetrievingChart=false;
+
 			if(allVariables==null)allVariables=new HashMap();
 
-			logger.debug("Running all variables");
+
+			// First search for the chart_label variable, if present switch to "old mode"
+
 			for (Iterator iterator = allVariables.keySet().iterator(); iterator.hasNext();) {
 				String varName = (String) iterator.next();
-				if(varName.startsWith("sbichart_")){
-					logger.debug("Processing variable "+varName);					
-					JRFillVariable variable=(JRFillVariable)allVariables.get(varName);
-					if(variable.getValue()!=null){
-						chartParameters=new HashMap();
-//						the realVarName is the name of the target variable!
-						String areaValue=varName.substring(9);
-						// call a utility function that parse the variable, in the form var1=val1;var2=val2
-						String varVal=(String)variable.getValue();
-						// Value is defined as chart_label=label;par1=val1;par2=val2;
-						Map nameValuePars=parseVariable(varVal);
-
-						// check if there is the main parameters defined:
-						// chart_label : indicating the label of the chart that has to be called.
-						if(nameValuePars.get(CHART_LABEL)!=null){
-							String labelValue=(String) nameValuePars.get(CHART_LABEL);
-							logger.debug("execute chart with lable "+labelValue);
-
-							// Set other parameters
-							for (Iterator iterator2 = nameValuePars.keySet().iterator(); iterator2.hasNext();) {
-								String namePar = (String) iterator2.next();
-								if(!namePar.equalsIgnoreCase(CHART_LABEL)){
-									Object value=nameValuePars.get(namePar);
-									chartParameters.put(namePar, value);
-								}
-							}
-
-							DocumentExecuteServiceProxy proxy=new DocumentExecuteServiceProxy(userId,session);
-							logger.debug("Calling Service");
-							byte[] image=proxy.executeChart(labelValue, chartParameters);
-							logger.debug("Back from Service");
-
-							InputStream is=new ByteArrayInputStream(image);
-
-//							FileOutputStream fos=new FileOutputStream("C:/provaSperiamo"+(new Integer(iii)).toString()+".png");
-//							int avalaible = is.available();   
-//							iii++;
-//							for(int i=0; i<avalaible; i++) {
-//							fos.write(is.read()); 
-//							}
+				if(varName.equalsIgnoreCase(CHART_LABEL)){
+					oldModeRetrievingChart=true;
+					logger.debug("old mode for retrieving chart, getting label from CHART LABEL variable and inserting in CHART_IMAGE variable");
+				}
+			}
 
 
-//							fos.close();
+			logger.debug("Running all variables");
+			boolean done=false;
+			for (Iterator iterator = allVariables.keySet().iterator(); iterator.hasNext() && done==false;) {
+				String varName = (String) iterator.next();
+				if(oldModeRetrievingChart==true){
+					if(varName.equalsIgnoreCase(CHART_LABEL)){
+						JRFillVariable labelValueO = (JRFillVariable) allVariables.get(CHART_LABEL);
+						String labelValue = null;
+						labelValue=(String)labelValueO.getValue();
+						logger.debug("execute chart with lable "+labelValue);
+						DocumentExecuteServiceProxy proxy=new DocumentExecuteServiceProxy(userId,session);
+						logger.debug("Calling Service");
+						byte[] image=proxy.executeChart(labelValue, chartParameters);
+						logger.debug("Back from Service");
 
+						InputStream is=new ByteArrayInputStream(image);
 
-							logger.debug("Input Stream filled, Setting variable");
-							if(variablesMap.keySet().contains(areaValue)){
-								this.setVariableValue(areaValue, is);
-							}
-							else{
-								logger.error("variable where to set image chart "+areaValue+ " not defined");
-							}
-
-							//is.close();
+						logger.debug("Input Stream filled, Setting variable");
+						if(allVariables.keySet().contains(CHART_IMAGE)){
+							this.setVariableValue(CHART_IMAGE, is);
 						}
 						else{
-							logger.error("chart_label not specified");							
+							logger.error("variable where to set image chart "+CHART_IMAGE+ " not defined");
+							return;
 						}
-					}
-					else{
-						logger.warn("no value associated to the sbichart_ variable");
+						done=true;
 					}
 				}
+				else if(oldModeRetrievingChart==false){
+					if(varName.startsWith("sbichart_")){
+						logger.debug("Processing variable "+varName);					
+						JRFillVariable variable=(JRFillVariable)allVariables.get(varName);
+						if(variable.getValue()!=null){
+							chartParameters=new HashMap();
+//							the realVarName is the name of the target variable!
+							String areaValue=varName.substring(9);
+							// call a utility function that parse the variable, in the form var1=val1;var2=val2
+							String varVal=(String)variable.getValue();
+							// Value is defined as chart_label=label;par1=val1;par2=val2;
+							Map nameValuePars=parseVariable(varVal);
 
+							// check if there is the main parameters defined:
+							// chart_label : indicating the label of the chart that has to be called.
+							if(nameValuePars.get(CHART_LABEL)!=null){
+								String labelValue=(String) nameValuePars.get(CHART_LABEL);
+								logger.debug("execute chart with lable "+labelValue);
+
+								// Set other parameters
+								for (Iterator iterator2 = nameValuePars.keySet().iterator(); iterator2.hasNext();) {
+									String namePar = (String) iterator2.next();
+									if(!namePar.equalsIgnoreCase(CHART_LABEL)){
+										Object value=nameValuePars.get(namePar);
+										chartParameters.put(namePar, value);
+									}
+								}
+
+								DocumentExecuteServiceProxy proxy=new DocumentExecuteServiceProxy(userId,session);
+								logger.debug("Calling Service");
+								byte[] image=proxy.executeChart(labelValue, chartParameters);
+								logger.debug("Back from Service");
+
+								InputStream is=new ByteArrayInputStream(image);
+
+								logger.debug("Input Stream filled, Setting variable");
+								if(variablesMap.keySet().contains(areaValue)){
+									this.setVariableValue(areaValue, is);
+								}
+								else{
+									logger.error("variable where to set image chart "+areaValue+ " not defined");
+								}
+
+								//is.close();
+							}
+							else{
+								logger.error("chart_label not specified");							
+							}
+						}
+						else{
+							logger.warn("no value associated to the sbichart_ variable");
+						}
+					}
+
+				}
 			}
 
 			logger.debug("OUT");

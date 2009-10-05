@@ -21,10 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  **/
 package it.eng.spagobi.tools.scheduler.jobs;
 
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFErrorHandler;
 import it.eng.spago.security.IEngUserProfile;
+import it.eng.spago.util.StringUtils;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.analiticalmodel.document.bo.ObjTemplate;
 import it.eng.spagobi.analiticalmodel.document.bo.Snapshot;
@@ -144,17 +146,21 @@ public class ExecuteBIDocumentJob implements Job {
 					dataSet.loadData();
 					dataStore = dataSet.getDataStore();
 				}
-
+				Map tempParMap = new HashMap();
 				BIObjectParametersIterator objectParametersIterator = new BIObjectParametersIterator(biobj.getBiObjectParameters());
 				while (objectParametersIterator.hasNext()) {
 					List parameters = (List) objectParametersIterator.next();
 					biobj.setBiObjectParameters(parameters);
+					
 
 					StringBuffer toBeAppendedToName = new StringBuffer();
 					StringBuffer toBeAppendedToDescription = new StringBuffer(" [");
 					Iterator parametersIt = parameters.iterator();
 					while (parametersIt.hasNext()) {
+						
 						BIObjectParameter aParameter = (BIObjectParameter) parametersIt.next();
+						
+						tempParMap.put(aParameter.getParameterUrlName(), aParameter.getParameterValuesAsString());
 						if (aParameter.isIterative()) {
 							toBeAppendedToName.append("_" + aParameter.getParameterValuesAsString());
 							toBeAppendedToDescription.append(aParameter.getLabel() + ":" + aParameter.getParameterValuesAsString() + "; ");
@@ -172,7 +178,7 @@ public class ExecuteBIDocumentJob implements Job {
 					// appending the current date
 					Date date = new Date();
 					SimpleDateFormat sdf = new SimpleDateFormat();
-					sdf.applyPattern("ddMMyyyy");
+					sdf.applyPattern("dd:MM:yyyy");
 					String dateStr = sdf.format(date);
 					toBeAppendedToName.append("_" + dateStr);
 
@@ -233,7 +239,7 @@ public class ExecuteBIDocumentJob implements Job {
 						}
 
 						if(sInfo.isSendMail()) {
-							sendMail(sInfo, biobj, response, retCT, fileextension, dataStore, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
+							sendMail(sInfo, biobj, tempParMap, response, retCT, fileextension, dataStore, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
 						}
 						if(sInfo.isSendToDl()) {
 							sendToDl(sInfo, biobj, response, retCT, fileextension, toBeAppendedToName.toString(), toBeAppendedToDescription.toString());
@@ -604,7 +610,7 @@ public class ExecuteBIDocumentJob implements Job {
 
 
 
-	private void sendMail(SaveInfo sInfo, BIObject biobj, byte[] response, String retCT, String fileExt, IDataStore dataStore, String toBeAppendedToName, String toBeAppendedToDescription) {
+	private void sendMail(SaveInfo sInfo, BIObject biobj,Map parMap, byte[] response, String retCT, String fileExt, IDataStore dataStore, String toBeAppendedToName, String toBeAppendedToDescription) {
 		logger.debug("IN");
 		try{
 			ConfigSingleton config = ConfigSingleton.getInstance();
@@ -639,6 +645,7 @@ public class ExecuteBIDocumentJob implements Job {
 				throw new Exception("No recipient address found");
 			}
 			String mailSubj = sInfo.getMailSubj();
+			mailSubj = StringUtilities.substituteParametersInString(mailSubj, parMap, null, false);
 
 			String mailTxt = sInfo.getMailTxt();
 
@@ -677,6 +684,7 @@ public class ExecuteBIDocumentJob implements Job {
 			// create the second message part
 			MimeBodyPart mbp2 = new MimeBodyPart();
 			// attach the file to the message
+
 			SchedulerDataSource sds = new SchedulerDataSource(response, retCT, biobj.getName() + toBeAppendedToName + fileExt);
 			mbp2.setDataHandler(new DataHandler(sds));
 			mbp2.setFileName(sds.getName());

@@ -138,7 +138,7 @@ public class XYChartModel extends ChartModel {
 		super.initializeEditor(editor, components, toolkit, form);
 		//fillIntervalsInformation(type, thisDocument, templateDocument);
 
-		components.createYZRangesSection(this, editor, toolkit, form);
+		components.createYZRangesSection(this, toolkit, form);
 		components.getYzRangesEditor().setVisible(true);
 
 	}

@@ -22,6 +22,7 @@ public class Style {
 	protected RGB color;
 	protected String orientation;
 	protected String tooltip;
+	protected String description;
 
 	protected static final String FONT="font";
 	protected static final String COLOR="color";
@@ -155,6 +156,12 @@ public class Style {
 	}
 	public void setHasOrientation(boolean hasOrientation) {
 		this.hasOrientation = hasOrientation;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 

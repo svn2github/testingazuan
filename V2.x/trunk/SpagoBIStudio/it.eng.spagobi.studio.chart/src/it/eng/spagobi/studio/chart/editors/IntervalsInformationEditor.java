@@ -1,41 +1,32 @@
 package it.eng.spagobi.studio.chart.editors;
 
-import it.eng.spagobi.studio.chart.editors.model.chart.ChartModel;
 import it.eng.spagobi.studio.chart.editors.model.chart.DialChartModel;
-import it.eng.spagobi.studio.chart.utils.DrillParameters;
 import it.eng.spagobi.studio.chart.utils.Interval;
-import it.eng.spagobi.studio.chart.utils.SeriePersonalization;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Vector;
 
-import org.dom4j.Document;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.ColorDialog;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -49,8 +40,9 @@ public class IntervalsInformationEditor {
 	Composite sectionClientIntervals=null;
 
 
+
 	final Button newIntervalButton;
-	final List intervalsList; 
+	final Table intervalsTable; 
 	final Label intervalLabelLabel;
 	final Text intervalLabelText;
 	final Label intervalMinLabel;
@@ -62,7 +54,15 @@ public class IntervalsInformationEditor {
 	final Button intervalColorButton;	
 	final Button buttonRem;	
 
-	public IntervalsInformationEditor(final DialChartModel dialModel, FormToolkit toolkit, final ScrolledForm form, final ChartEditor editor) {
+
+	public static final int ORDER=0;
+	public static final int LABEL=1;
+	public static final int MIN=2;
+	public static final int MAX=3;
+	public static final int COLOR=4;
+
+
+	public IntervalsInformationEditor(final DialChartModel dialModel, FormToolkit toolkit, final ScrolledForm form) {
 
 		sectionIntervals= toolkit.createSection(form.getBody(), 
 				Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
@@ -75,53 +75,130 @@ public class IntervalsInformationEditor {
 				form.reflow(true);
 			}
 		});
+
+		boolean isThermomether=dialModel.getSubType().equalsIgnoreCase("thermomether") ? true : false;
+
+
 		sectionIntervals.setText("Series Intervals");
 		sectionIntervals.setDescription("Set all the intervals ");
 
 		GridLayout gridLayout=new GridLayout();
-		gridLayout.numColumns=3;
+		gridLayout.numColumns=2;
 		sectionClientIntervals.setLayout(gridLayout);
 
 
-		Image imageAdd = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_OBJ_ELEMENT);
 		newIntervalButton=new Button(sectionClientIntervals, SWT.PUSH);
 		newIntervalButton.setText("Add");
+		newIntervalButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		newIntervalButton.setToolTipText("Add new Interval");
-		newIntervalButton.setImage(imageAdd);
 
-		Label spaceLabel=new Label(sectionClientIntervals, SWT.NULL);
-		spaceLabel.setText("");
-		Label spaceLabel2=new Label(sectionClientIntervals, SWT.NULL);
-		spaceLabel2.setText("");
+		buttonRem = new Button(sectionClientIntervals, SWT.PUSH);
+		buttonRem.setToolTipText("Remove (can remove only the last inserted)");
+		buttonRem.setText("Cancel");
+		buttonRem.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		buttonRem.setEnabled(false);
+		buttonRem.pack();
 
 
-		intervalsList = new List (sectionClientIntervals, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
-		intervalsList.setToolTipText("intervals added");
-		GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
-		gridData.verticalSpan = 4;
-		gridData.verticalAlignment=SWT.CENTER;
-		intervalsList.setSize(500, 1000);
-		intervalsList.setLayoutData(gridData);
+
+		intervalsTable = new Table (sectionClientIntervals, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
+		intervalsTable.setLinesVisible (true);
+		intervalsTable.setHeaderVisible (true);
+		GridData g=new GridData(GridData.FILL_BOTH);
+		g.horizontalSpan=2;
+		g.verticalSpan=2;
+		g.grabExcessHorizontalSpace=true;
+		g.grabExcessVerticalSpace=true;
+		g.heightHint = 150;
+		g.widthHint = 400;
+		intervalsTable.setLayoutData(g);
+		intervalsTable.setToolTipText("intervals added");
+
+		String[] titles = {"Order", "     Name    ", "  Min  ","  Max  ","  Color  "};
+		for (int i=0; i<titles.length; i++) {
+			TableColumn column = new TableColumn (intervalsTable, SWT.NONE);
+			column.setText (titles [i]);
+			column.setWidth(100);
+		}
+
+
 		int i=0;
 		if(dialModel.getIntervals()!=null){
 			for (Iterator iterator = dialModel.getIntervals().iterator(); iterator.hasNext();) {
 				Interval interval = (Interval) iterator.next();
-				intervalsList.add(Integer.valueOf(i).toString());
+				TableItem item = new TableItem (intervalsTable, SWT.NONE);
+				item.setText(ORDER, Integer.valueOf(i).toString());
+				item.setText(LABEL, interval.getLabel()!=null ? interval.getLabel() : "");
+				item.setText(MIN, interval.getMin()!=null ? interval.getMin().toString() : "");
+				item.setText(MAX, interval.getMax()!=null ? interval.getMax().toString() : "");
+				item.setText(COLOR, interval.getColor()!=null ? ChartEditor.convertRGBToHexadecimal(interval.getColor()) : "");
+				if(interval.getColor()!=null){
+					Color color=new Color(item.getDisplay(),interval.getColor());
+					item.setBackground(COLOR, color);
+				}
 				i++;
 			}			
 		} //close if map is not null
-		intervalsList.redraw();
+		intervalsTable.redraw();
 
 		// Add Button Listener
 		Listener addListener = new Listener() {
 			public void handleEvent(Event event) {
+				dialModel.getEditor().setIsDirty(true);				
 				// Add a new Interval: put it in kiew
 				int size=dialModel.getIntervals().size();
-				intervalsList.add((new Integer(size)).toString(),size);
-				Interval interval=new Interval();
-				dialModel.getIntervals().add(size,interval);
+				String label=intervalLabelText.getText()!=null ? intervalLabelText.getText() : "";
+				String min=intervalMinText.getText()!=null ? intervalMinText.getText() : "";
+				String max=intervalMaxText.getText()!=null ? intervalMaxText.getText() : "";
+
+				// if it is a thermofmether special case for LABELS
+				boolean isThermomether=dialModel.getSubType().equalsIgnoreCase(DialChartModel.THERMOMETHER) ? true : false;
+				if(isThermomether){
+					int sizeD=dialModel.getIntervals().size();
+					if(sizeD==0)label="normal";
+					else if(sizeD==1)label="warning";
+					else if(sizeD==2)label="critical";
+				}
+
+				if(isThermomether && dialModel.getIntervals().size()==3){
+					MessageDialog.openWarning(intervalsTable.getShell(), "Warning", "A thermomether cannot have more than three intervals");
+				}
+				else{
+					Interval interval=new Interval();
+					interval.setLabel(label);
+
+					try{
+						double newMin = intervalMinText.getSelection()/ Math.pow(10, intervalMinText.getDigits());									
+						interval.setMin(Double.valueOf(newMin));
+					}
+					catch (Exception e) {
+					}
+					try{
+						double newMax = intervalMaxText.getSelection()/ Math.pow(10, intervalMaxText.getDigits());									
+						interval.setMax(Double.valueOf(newMax));
+					}
+					catch (Exception e) {
+					}
+
+					TableItem item=new TableItem(intervalsTable, SWT.NONE);
+					RGB rgb=null;
+					if(intervalColorLabel.getBackground().getRGB()!=null){
+						rgb=intervalColorLabel.getBackground().getRGB();
+						Color color=new Color(item.getDisplay(),rgb);
+						item.setBackground(COLOR,color);
+						item.setText(COLOR,ChartEditor.convertRGBToHexadecimal(rgb));
+
+					}
+					if(rgb!=null)	interval.setColor(rgb);
+					item.setText(ORDER, (new Integer(size)).toString());
+					item.setText(LABEL, label);
+					item.setText(MIN, min);
+					item.setText(MAX, max);
+					dialModel.getIntervals().add(size,interval);
+				}
 			}
 		};
+
 		newIntervalButton.addListener(SWT.Selection, addListener);
 
 		intervalLabelLabel=new Label(sectionClientIntervals,SWT.NULL);
@@ -132,20 +209,27 @@ public class IntervalsInformationEditor {
 
 		intervalLabelText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
+				dialModel.getEditor().setIsDirty(true);				
 				String newLabel = intervalLabelText.getText();
-				int selection = intervalsList.getSelectionIndex();
+				int selection = intervalsTable.getSelectionIndex();
 				if(selection!=-1){
+					TableItem item=intervalsTable.getItem(selection);
 					Interval intervalSelected=dialModel.getIntervals().get(selection);
-
-					if(intervalSelected!=null && newLabel!=null)
-					{intervalSelected.setLabel(newLabel);
+					if(newLabel!=null){
+						if(intervalSelected!=null)
+						{
+							intervalSelected.setLabel(newLabel);
+						}
+						item.setText(LABEL,newLabel);
 					}
+
 				}
 			}
 		});
-
-		intervalLabelLabel.setEnabled(false);
-		intervalLabelText.setEnabled(false);
+		if(isThermomether){
+			intervalLabelText.setVisible(false);
+			intervalLabelLabel.setVisible(false);
+		}
 
 
 		intervalMinLabel=new Label(sectionClientIntervals,SWT.NULL);
@@ -156,12 +240,12 @@ public class IntervalsInformationEditor {
 		intervalMinText.setMinimum(-1000000);
 		intervalMinText.setDigits(1);
 		intervalMinText.setSelection(00);
-		
+
 		//intervalMinText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		intervalMinText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				if(editor!=null) editor.setIsDirty(true);
+				dialModel.getEditor().setIsDirty(true);
 				double newMin = intervalMinText.getSelection()/ Math.pow(10, intervalMinText.getDigits());
 				Double newMinD=null;
 				try{
@@ -170,19 +254,20 @@ public class IntervalsInformationEditor {
 				catch (Exception e) {
 					newMinD=new Double(0.0);
 				}
-				int selection = intervalsList.getSelectionIndex();
+				int selection = intervalsTable.getSelectionIndex();
 				if(selection!=-1){
+					TableItem item=intervalsTable.getItem(selection);
 					Interval intervalSelected=dialModel.getIntervals().get(selection);
 					if(intervalSelected!=null)
 					{
-						intervalSelected.setMin(Double.valueOf(newMin));
+						intervalSelected.setMin(newMinD);
+						item.setText(MIN, newMinD.toString());
 					}
+
 				}
 			}
 		});
 
-		intervalMinLabel.setEnabled(false);
-		intervalMinText.setEnabled(false);
 
 
 		intervalMaxLabel=new Label(sectionClientIntervals,SWT.NULL);
@@ -194,10 +279,10 @@ public class IntervalsInformationEditor {
 		intervalMaxText.setMinimum(-1000000);
 		intervalMaxText.setDigits(1);
 		intervalMaxText.setSelection(00);
-		
+
 		intervalMaxText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				if(editor!=null) editor.setIsDirty(true);
+				dialModel.getEditor().setIsDirty(true);
 				double newMax = intervalMaxText.getSelection()/ Math.pow(10, intervalMaxText.getDigits());
 				Double newMaxD=null;
 				try{
@@ -206,20 +291,21 @@ public class IntervalsInformationEditor {
 				catch (Exception e) {
 					newMaxD=new Double(0.0);
 				}
-				int selection = intervalsList.getSelectionIndex();
+				int selection = intervalsTable.getSelectionIndex();
 				if(selection!=-1){
+					TableItem item=intervalsTable.getItem(selection);
 					Interval intervalSelected=dialModel.getIntervals().get(selection);
 					if(intervalSelected!=null)
 					{
-						intervalSelected.setMax(Double.valueOf(newMax));
+						intervalSelected.setMax(newMaxD);
+						item.setText(MAX, newMaxD.toString());
 					}
+
 				}
 			}
 		});
 
 
-		intervalMaxLabel.setEnabled(false);
-		intervalMaxText.setEnabled(false);
 
 		innerSection = toolkit.createComposite(sectionClientIntervals);
 
@@ -240,6 +326,7 @@ public class IntervalsInformationEditor {
 		final Shell parentShell = sectionClientIntervals.getShell();
 		intervalColorButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
+				dialModel.getEditor().setIsDirty(true);
 				final Shell centerShell = new Shell(parentShell, SWT.NO_TRIM);
 				centerShell.setLocation(
 						(parentShell.getSize().x - ChartEditor.COLORDIALOG_WIDTH) / 2,
@@ -256,42 +343,40 @@ public class IntervalsInformationEditor {
 					color.dispose();
 					Color newColor = new Color(parentShell.getDisplay(), rgb);
 					intervalColorLabel.setBackground(newColor);
-					if(editor!=null) editor.setIsDirty(true);
 					String newHexadecimal = ChartEditor.convertRGBToHexadecimal(rgb);
-					int selection = intervalsList.getSelectionIndex();
+					int selection = intervalsTable.getSelectionIndex();
 					//get ParSelected
 					if(selection!=-1){
+						TableItem item=intervalsTable.getItem(selection);
+						item.setBackground(COLOR,new Color(item.getDisplay(),ChartEditor.convertHexadecimalToRGB(newHexadecimal)));
+						item.setText(COLOR,newHexadecimal);
+
 						Interval interval=dialModel.getIntervals().get(selection);
-						interval.setColor(ChartEditor.convertHexadecimalToRGB(newHexadecimal));						}
+						interval.setColor(ChartEditor.convertHexadecimalToRGB(newHexadecimal));						
+						intervalsTable.redraw();
+					}
+
 				}
 				//centerShell.pack();
 				centerShell.dispose();
 			}
 
 		});			
-		intervalColorLabel.setEnabled(false);
-		intervalColorButton.setEnabled(false);
 
-		Image imageRem = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
-		buttonRem = new Button(sectionClientIntervals, SWT.PUSH);
-		buttonRem.setToolTipText("Remove (can remove only the last inserted)");
-		buttonRem.setImage(imageRem);
-		buttonRem.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-		buttonRem.setEnabled(false);
-		buttonRem.pack();
 
 		// Add listener that show details of parameter selected
-		intervalsList.addListener (SWT.Selection, new Listener () {
+		intervalsTable.addListener (SWT.Selection, new Listener () {
 			public void handleEvent (Event e) {
 				// get par selected
-				int selection = intervalsList.getSelectionIndex();
+				int selection = intervalsTable.getSelectionIndex();
 				if(selection!=-1){
+					TableItem item=intervalsTable.getItem(selection);
 					Interval intervalSelected=dialModel.getIntervals().get(selection);
 					// put the default value
 
 					String label=intervalSelected.getLabel()!=null ? intervalSelected.getLabel() : "";
 					intervalLabelText.setText(label);
-					
+
 					String min;
 					if(intervalSelected.getMin()!=null){
 						min=intervalSelected.getMin().toString();						
@@ -312,8 +397,8 @@ public class IntervalsInformationEditor {
 					}
 
 					intervalMinText.setSelection(minI);
-					
-					
+
+
 					String max;
 					if(intervalSelected.getMax()!=null){
 						max=intervalSelected.getMax().toString();						
@@ -335,7 +420,7 @@ public class IntervalsInformationEditor {
 
 					intervalMaxText.setSelection(maxI);
 
-					
+
 					if(intervalSelected.getColor()!=null){
 						Color newColor = new Color(parentShell.getDisplay(), intervalSelected.getColor());
 						intervalColorLabel.setBackground(newColor);
@@ -346,14 +431,6 @@ public class IntervalsInformationEditor {
 					}
 
 
-					intervalColorButton.setEnabled(true);
-					intervalColorLabel.setEnabled(true);
-					intervalLabelLabel.setEnabled(true);
-					intervalLabelText.setEnabled(true);
-					intervalMaxLabel.setEnabled(true);
-					intervalMaxText.setEnabled(true);
-					intervalMinText.setEnabled(true);
-					intervalMinLabel.setEnabled(true);
 				}
 				if(selection==dialModel.getIntervals().size()-1){
 					buttonRem.setEnabled(true);
@@ -369,24 +446,17 @@ public class IntervalsInformationEditor {
 		// Add Button Listener
 		Listener cancelListener = new Listener() {
 			public void handleEvent(Event event) {
-				int index=intervalsList.getSelectionIndex();
+				dialModel.getEditor().setIsDirty(true);
+				int index=intervalsTable.getSelectionIndex();
 				if(index!=-1 && index==dialModel.getIntervals().size()-1){
+					TableItem item=intervalsTable.getItem(index);
 					//can erase only the last
 					dialModel.getIntervals().remove(index);
-					intervalsList.remove(index);
+					intervalsTable.remove(index);
 					intervalLabelText.setText("");
 					intervalMinText.setSelection(00);
 					intervalMaxText.setSelection(00);
 					intervalColorLabel.setBackground(null);
-					intervalsList.remove(index);
-					intervalColorButton.setEnabled(false);
-					intervalColorLabel.setEnabled(false);
-					intervalLabelLabel.setEnabled(false);
-					intervalLabelText.setEnabled(false);
-					intervalMaxLabel.setEnabled(false);
-					intervalMaxText.setEnabled(false);
-					intervalMinText.setEnabled(false);
-					intervalMinLabel.setEnabled(false);
 					buttonRem.setEnabled(false);
 				}
 			}
@@ -420,7 +490,8 @@ public class IntervalsInformationEditor {
 
 
 	public void eraseComposite(){
-		intervalsList.removeAll();
+		intervalsTable.removeAll();
+		intervalsTable.redraw();
 		intervalColorLabel.setBackground(null);
 		intervalLabelText.setText("");
 		intervalMaxText.setSelection(00);
@@ -428,14 +499,32 @@ public class IntervalsInformationEditor {
 		buttonRem.setEnabled(false);
 	}
 
-	public void refillFieldsSeriesPersonalization(final DialChartModel dialmodel, final ChartEditor editor, FormToolkit toolkit, final ScrolledForm form){
+	public void refillFieldsIntervalsInformation(final DialChartModel dialmodel, final ChartEditor editor, FormToolkit toolkit, final ScrolledForm form){
+		final boolean isThermomether=dialmodel.getSubType().equalsIgnoreCase("thermomether") ? true : false;
+
 		if(dialmodel.getIntervals()!=null){
 			for (int j = 0; j < dialmodel.getIntervals().size(); j++) {
-				Interval inter= (Interval) dialmodel.getIntervals().get(j);
-				intervalsList.add(new Integer(j).toString());				
+				Interval interval= (Interval) dialmodel.getIntervals().get(j);
+				TableItem item=intervalsTable.getItem(j);
+				item.setText(ORDER, Integer.valueOf(j).toString());
+				item.setText(LABEL, interval.getLabel()!=null ? interval.getLabel() : "");
+				item.setText(MIN, interval.getMin()!=null ? interval.getMin().toString() : "");
+				item.setText(MAX, interval.getMax()!=null ? interval.getMax().toString() : "");
+				item.setText(COLOR, interval.getColor()!=null ? ChartEditor.convertRGBToHexadecimal(interval.getColor()) : "");
+				if(interval.getColor()!=null){
+					Color color=new Color(item.getDisplay(),interval.getColor());
+					item.setBackground(COLOR, color);
+				}
 			}
-			
-			intervalsList.redraw();
+			if(isThermomether){
+				intervalLabelText.setVisible(false);
+				intervalLabelLabel.setVisible(false);
+			}
+			else{
+				intervalLabelText.setVisible(true);
+				intervalLabelLabel.setVisible(true);
+			}
+			intervalsTable.redraw();
 		}
 	}
 

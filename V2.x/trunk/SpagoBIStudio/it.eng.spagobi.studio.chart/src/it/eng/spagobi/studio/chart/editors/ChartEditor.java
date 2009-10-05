@@ -129,6 +129,7 @@ public final class ChartEditor extends EditorPart {
 			// Create the model of the chart that will store informations
 			model = ChartModelFactory.createChartModel(file);
 			components=new ChartEditorComponents();
+			model.setEditor(this);
 		} catch (Exception e) {
 			SpagoBILogger.errorLog("Error during Editor Initialization",e);
 			e.printStackTrace();
@@ -443,7 +444,7 @@ public final class ChartEditor extends EditorPart {
 			col=java.awt.Color.decode(hexadecimal);
 		}
 		catch (Exception e) {
-			col=java.awt.Color.red;
+			col=java.awt.Color.WHITE;
 		}
 		int red=col.getRed();
 		int blue=col.getBlue();

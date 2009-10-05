@@ -22,6 +22,8 @@ public class DialChartModel extends ChartModel {
 
 	Vector<Interval> intervals;
 
+	public final static String THERMOMETHER="thermomether";
+
 	public void eraseSpecificParameters() {
 		intervals=new Vector<Interval>();
 		super.eraseSpecificParameters();
@@ -114,8 +116,8 @@ public class DialChartModel extends ChartModel {
 		super.refreshEditor(editor, components, toolkit, form);
 		SpagoBILogger.infoLog("Erase fields of editor");
 		components.getIntervalsInformationEditor().eraseComposite();
-		fillIntervalsInformation(type, thisDocument);
-		components.getIntervalsInformationEditor().refillFieldsSeriesPersonalization(this,editor, toolkit, form);							
+		//fillIntervalsInformation(type, thisDocument);
+		components.getIntervalsInformationEditor().refillFieldsIntervalsInformation(this,editor, toolkit, form);							
 		components.getIntervalsInformationEditor().setVisible(true);
 	}
 

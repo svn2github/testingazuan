@@ -1,20 +1,11 @@
 package it.eng.spagobi.studio.chart.editors;
 
-import it.eng.spagobi.studio.chart.editors.model.chart.ChartModel;
-import it.eng.spagobi.studio.chart.editors.model.chart.DialChartModel;
 import it.eng.spagobi.studio.chart.editors.model.chart.XYChartModel;
-import it.eng.spagobi.studio.chart.utils.DrillParameters;
-import it.eng.spagobi.studio.chart.utils.Interval;
-import it.eng.spagobi.studio.chart.utils.SeriePersonalization;
 import it.eng.spagobi.studio.chart.utils.ZRanges;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Vector;
 
-import org.dom4j.Document;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -24,12 +15,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.ColorDialog;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
@@ -38,6 +27,9 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -58,17 +50,17 @@ public class YZRangesEditor {
 	final Text newYRangeText;
 	final Button newYRangeButton;
 	final Button cancelYRangeButton;	
-	final List yRangesList;
+	final Table yRangesTable;
 
 	final Group zRangesGroup;
 	final Label newZRangeLabel;
 	final Text newZRangeText;
 	final Button newZRangeButton;
 	final Button cancelZRangeButton;	
-	final List zRangesList;
+	final Table zRangesTable;
 
-	final Label zRangeLabelLabel;
-	final Text zRangeLabelText;
+	//final Label zRangeLabelLabel;
+	//	final Text zRangeLabelText;
 
 	final Label zRangeValueLowLabel;
 	final Spinner zRangeValueLowText;
@@ -78,7 +70,12 @@ public class YZRangesEditor {
 	final Label zRangeColorLabel;
 	final Button zRangeColorButton;	
 
-	public YZRangesEditor(final XYChartModel xyModel, FormToolkit toolkit, final ScrolledForm form, final ChartEditor editor) {
+	static final int LABEL=0;
+	static final int VALUE_LOW=1;
+	static final int VALUE_HIGH=2;
+	static final int COLOR=3;
+
+	public YZRangesEditor(final XYChartModel xyModel, FormToolkit toolkit, final ScrolledForm form) {
 
 		sectionYZRanges= toolkit.createSection(form.getBody(), 
 				Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
@@ -99,56 +96,69 @@ public class YZRangesEditor {
 		sectionClientYZRanges.setLayout(gridLayout);
 
 
-
 		yRangesGroup = new Group(sectionClientYZRanges, SWT.NULL);
-		yRangesGroup.setText("-------------------- ADD Y RANGE --------------------");
-		yRangesGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+		yRangesGroup.setText("---------------------------------- ADD Y RANGES ----------------------------------");
+		yRangesGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 		GridLayout gridLayoutG=new GridLayout();
-		gridLayoutG.numColumns=3;
+		gridLayoutG.numColumns=2;
 		yRangesGroup.setLayout(gridLayoutG);
-		//		GridData gd=new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		//		gd.horizontalSpan=2;
-		//		yRangesGroup.setLayoutData(gd);
 
-		newYRangeLabel = new Label(yRangesGroup, SWT.NULL); 
-		newYRangeLabel.setText("Y Range Name: ");
-		//newYRangeLabel.pack();		
+		newYRangeButton=new Button(yRangesGroup, SWT.PUSH);
+		newYRangeButton.setText("Add");
+		newYRangeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		newYRangeButton.setToolTipText("Add new Y Range");
 
-		newYRangeText = new Text(yRangesGroup, SWT.BORDER);
-		newYRangeText.setToolTipText("New Y Range name");
-		newYRangeText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
-		//newYRangeText.pack();
+		cancelYRangeButton=new Button(yRangesGroup, SWT.PUSH);
+		cancelYRangeButton.setText("Cancel");
+		cancelYRangeButton.setToolTipText("Cancel selected Y Range");
+		cancelYRangeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		cancelYRangeButton.setEnabled(false);
 
+		yRangesTable = new Table (yRangesGroup, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
+		yRangesTable.setToolTipText("Y Ranges added");
+		yRangesTable.setLinesVisible (true);
+		yRangesTable.setHeaderVisible (true);
+		GridData g=new GridData(GridData.FILL_BOTH);
+		g.horizontalSpan=2;
+		g.verticalSpan=2;
+		g.grabExcessHorizontalSpace=true;
+		g.grabExcessVerticalSpace=true;
+		g.heightHint = 150;
+		g.widthHint = 300;
+		yRangesTable.setLayoutData(g);
+		yRangesTable.setToolTipText("intervals added");
 
-		yRangesList = new List (yRangesGroup, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
-		yRangesList.setToolTipText("Y Ranges added");
+		TableColumn column = new TableColumn (yRangesTable, SWT.NONE);
+		column.setText ("                             Label                        ");
+		column.setWidth(300);
 
-		GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL, GridData.CENTER, true, false);
-		gridData.verticalSpan = 3;
-		gridData.verticalAlignment=SWT.CENTER;
-		//intervalsList.setSize(500, 1000);
-		yRangesList.setLayoutData(gridData);
 		if(xyModel.getYRanges()!=null){
 			for (Iterator iterator = xyModel.getYRanges().iterator(); iterator.hasNext();) {
 				String yRangeLabel = (String) iterator.next();
-				yRangesList.add(yRangeLabel);
+				TableItem item=new TableItem(yRangesTable, SWT.NULL);
+				item.setText(LABEL, yRangeLabel);
 			}			
 		} //close if map is not null
-		yRangesList.redraw();
+		yRangesTable.redraw();
 
 
 
-		Image imageAdd = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_OBJ_ELEMENT);
-		newYRangeButton=new Button(yRangesGroup, SWT.PUSH);
-		newYRangeButton.setText("Add");
-		newYRangeButton.setToolTipText("Add new Y Range");
-		newYRangeButton.setImage(imageAdd);
+		newYRangeLabel = new Label(yRangesGroup, SWT.NULL); 
+		newYRangeLabel.setText("Y Range Name: ");
+
+		newYRangeText = new Text(yRangesGroup, SWT.BORDER);
+		newYRangeText.setToolTipText("New Y Range name");
+		newYRangeText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+		//newYRangeText.pack();
+
+
 
 
 
 		// Add Button Listener
 		Listener addListener = new Listener() {
 			public void handleEvent(Event event) {
+				xyModel.getEditor().setIsDirty(true);				
 				String newRange=newYRangeText.getText();
 				if(newRange==null || newRange.equalsIgnoreCase("") ){
 					SpagoBILogger.warningLog("Specify a name for Y Range");
@@ -160,7 +170,8 @@ public class YZRangesEditor {
 				}
 				else
 				{
-					yRangesList.add(newRange);
+					TableItem item=new TableItem(yRangesTable,SWT.NULL);
+					item.setText(LABEL,newRange);
 					xyModel.getYRanges().add(newRange);
 				}
 			}
@@ -171,26 +182,20 @@ public class YZRangesEditor {
 
 		// Start the y range form
 
-		Image imageRem = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
-		cancelYRangeButton=new Button(yRangesGroup, SWT.PUSH);
-		cancelYRangeButton.setText("Cancel");
-		cancelYRangeButton.setToolTipText("Cancel selected Y Range");
-		cancelYRangeButton.setImage(imageRem);
-		cancelYRangeButton.setEnabled(false);
-
-
 		Listener cancelListener = new Listener() {
 			public void handleEvent(Event event) {
-				int index=yRangesList.getSelectionIndex();
+				xyModel.getEditor().setIsDirty(true);				
+				int index=yRangesTable.getSelectionIndex();
 				if(index!=-1){
-					String nameY=yRangesList.getItem(index);
+					TableItem item=yRangesTable.getItem(index);
+					String nameY=item.getText(LABEL);
 					//remove from java list 
 					if(xyModel.getYRanges().contains(nameY)){
 						xyModel.getYRanges().remove(nameY);
 					}
 					cancelYRangeButton.setEnabled(false);
-					yRangesList.remove(nameY);
-					yRangesList.redraw();
+					yRangesTable.remove(index);
+					yRangesTable.redraw();
 				}			
 			}
 		};
@@ -204,37 +209,83 @@ public class YZRangesEditor {
 
 		zRangesGroup = new Group(sectionClientYZRanges, SWT.NULL);
 		zRangesGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
-		zRangesGroup.setText("------------------------------ ADD Z RANGE ----------------------------------------");
+		zRangesGroup.setText("------------------------------ ADD Z RANGES ----------------------------------------");
 		GridLayout gridLayoutZ=new GridLayout();
-		gridLayoutZ.numColumns=5;
+		gridLayoutZ.numColumns=2;
 		zRangesGroup.setLayout(gridLayoutZ);
 		GridData gdZ=new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 		gdZ.horizontalSpan=2;
 		zRangesGroup.setLayoutData(gdZ);
 
-		newZRangeLabel = new Label(zRangesGroup, SWT.NULL); 
-		newZRangeLabel.setText("Z Range Name: ");
-		newZRangeLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-		//newZRangeLabel.pack();		
-		newZRangeText = new Text(zRangesGroup, SWT.BORDER);
-		newZRangeText.setToolTipText("New Z Range name");
-		
-		GridData t=new GridData(GridData.FILL_HORIZONTAL);
-		t.horizontalSpan=3;
-		newZRangeText.setLayoutData(t);
-//		newZRangeText.pack();
 
-		Image imageAddZ = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_OBJ_ELEMENT);
 		newZRangeButton=new Button(zRangesGroup, SWT.PUSH);
 		newZRangeButton.setText("Add");
 		newZRangeButton.setToolTipText("Add new Z Range");
-		newZRangeButton.setImage(imageAddZ);
+		newZRangeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		cancelZRangeButton=new Button(zRangesGroup, SWT.PUSH);
+		cancelZRangeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		cancelZRangeButton.setToolTipText("Cancel selected Z Range");
+		cancelZRangeButton.setText("Cancel");
+		cancelZRangeButton.setEnabled(false);
+		cancelZRangeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+
+
+
+		zRangesTable = new Table (zRangesGroup, SWT.SINGLE | SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
+		zRangesTable.setLinesVisible (true);
+		zRangesTable.setHeaderVisible (true);
+		GridData gg=new GridData(GridData.FILL_BOTH);
+		gg.horizontalSpan=2;
+		gg.verticalSpan=2;
+		gg.grabExcessHorizontalSpace=true;
+		gg.grabExcessVerticalSpace=true;
+		gg.heightHint = 150;
+		gg.widthHint = 400;
+		zRangesTable.setLayoutData(gg);
+		zRangesTable.setToolTipText("intervals added");
+
+		String[] titles1 = {"     Label    ", "  Value Low  ","  Value High  ","  Color  "};
+		for (int i=0; i<titles1.length; i++) {
+			TableColumn column1 = new TableColumn (zRangesTable, SWT.NONE);
+			column1.setText (titles1 [i]);
+			column1.setWidth(100);
+		}
+
+		if(xyModel.getZRanges()!=null){
+			for (Iterator iterator = xyModel.getZRanges().keySet().iterator(); iterator.hasNext();) {
+				String zLabel = (String) iterator.next();
+				ZRanges zRan=xyModel.getZRanges().get(zLabel);
+				TableItem item=new TableItem(zRangesTable, SWT.NONE);
+				item.setText(LABEL, zRan.getLabel());
+				item.setText(VALUE_LOW, zRan.getValueLow()!=null ? zRan.getValueLow().toString() : "");
+				item.setText(VALUE_HIGH, zRan.getValueHigh()!=null ? zRan.getValueHigh().toString() : "");
+				item.setText(COLOR, zRan.getColor()!=null ? ChartEditor.convertRGBToHexadecimal(zRan.getColor()) : "");
+				if(zRan.getColor()!=null){
+					Color col=new Color(item.getDisplay(),zRan.getColor());
+					item.setBackground(COLOR, col);
+				}
+
+			}			
+		} //close if map is not null
+		zRangesTable.redraw();
+
+
+
+		newZRangeLabel = new Label(zRangesGroup, SWT.NULL); 
+		newZRangeLabel.setText("Z Range Name: ");
+		newZRangeText = new Text(zRangesGroup, SWT.BORDER);
+		newZRangeText.setToolTipText("New Z Range name");
+
+		newZRangeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		//		newZRangeText.pack();
+
 
 
 
 		// Add Button Listener
 		Listener addListenerZ = new Listener() {
 			public void handleEvent(Event event) {
+				xyModel.getEditor().setIsDirty(true);				
 				String newRange=newZRangeText.getText();
 				if(newRange==null || newRange.equalsIgnoreCase(""))
 				{
@@ -247,9 +298,46 @@ public class YZRangesEditor {
 				}
 				else
 				{
-					zRangesList.add(newRange);
+					TableItem item=new TableItem(zRangesTable,SWT.NULL);
+					String labelS=newZRangeText.getText()!=null ? newZRangeText.getText() : "";
+					String valueLowS=zRangeValueLowText.getText()!=null ? zRangeValueLowText.getText() : "";
+					String valueHighS=zRangeValueHighText.getText()!=null ? zRangeValueHighText.getText() : "";
+					String colorS=zRangeColorLabel.getText()!=null ? zRangeColorLabel.getText() : "";
+
+					item.setText(LABEL, labelS);
+					item.setText(VALUE_LOW, valueLowS);
+					item.setText(VALUE_HIGH, valueHighS);
+
 					ZRanges zR=new ZRanges();
-					zR.setLabel(newRange);
+
+					RGB rgb=null;
+					if(zRangeColorLabel.getBackground().getRGB()!=null){
+						rgb=zRangeColorLabel.getBackground().getRGB();
+						Color color=new Color(item.getDisplay(),rgb);
+						item.setBackground(COLOR,color);
+						item.setText(COLOR,ChartEditor.convertRGBToHexadecimal(rgb));
+
+					}
+					zR.setLabel(labelS);
+
+					try{
+						double newMin = zRangeValueLowText.getSelection()/ Math.pow(10, zRangeValueLowText.getDigits());				
+						Double dub=Double.valueOf(newMin);
+						zR.setValueLow(dub);
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+					try{
+						double newMax = zRangeValueHighText.getSelection()/ Math.pow(10, zRangeValueHighText.getDigits());				
+						zR.setValueHigh(newMax);
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+					if(rgb!=null)	zR.setColor(rgb);
+
+
 					xyModel.getZRanges().put(newRange,zR);
 				}
 			}
@@ -264,29 +352,29 @@ public class YZRangesEditor {
 
 
 
-		zRangeLabelLabel=new Label(zRangesGroup,SWT.NULL);
-		zRangeLabelLabel.setText("Label: ");
-		zRangeLabelLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));		
-		zRangeLabelText=new Text(zRangesGroup, SWT.BORDER);;
-		zRangeLabelText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		zRangeLabelText.setEnabled(false);
-
-		zRangeLabelText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent event) {
-				String newLabel = zRangeLabelText.getText();
-				int selection = zRangesList.getSelectionIndex();
-				if(selection!=-1){
-					String item=zRangesList.getItem(selection);
-					ZRanges zRangeSelected=xyModel.getZRanges().get(item);
-					if(zRangeSelected!=null && newLabel!=null && !newLabel.equals(""))
-					{zRangeSelected.setLabel(newLabel);
-					}
-				}
-			}
-		});
-
-		zRangeLabelLabel.setEnabled(false);
-		zRangeLabelText.setEnabled(false);
+		//		zRangeLabelLabel=new Label(zRangesGroup,SWT.NULL);
+		//		zRangeLabelLabel.setText("Label: ");
+		//		zRangeLabelLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));		
+		//		zRangeLabelText=new Text(zRangesGroup, SWT.BORDER);;
+		//		zRangeLabelText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		//		zRangeLabelText.setEnabled(false);
+		//
+		//		zRangeLabelText.addModifyListener(new ModifyListener() {
+		//			public void modifyText(ModifyEvent event) {
+		//				String newLabel = zRangeLabelText.getText();
+		//				int selection = zRangesList.getSelectionIndex();
+		//				if(selection!=-1){
+		//					String item=zRangesList.getItem(selection);
+		//					ZRanges zRangeSelected=xyModel.getZRanges().get(item);
+		//					if(zRangeSelected!=null && newLabel!=null && !newLabel.equals(""))
+		//					{zRangeSelected.setLabel(newLabel);
+		//					}
+		//				}
+		//			}
+		//		});
+		//
+		//		zRangeLabelLabel.setEnabled(false);
+		//		zRangeLabelText.setEnabled(false);
 
 		innerSection = toolkit.createComposite(zRangesGroup);
 
@@ -301,13 +389,14 @@ public class YZRangesEditor {
 		colorGd.marginHeight = 0;
 		colorGd.marginBottom = 0;
 		innerSection.setLayout(colorGd);
-		zRangeColorLabel.setText("          ");
+		zRangeColorLabel.setText("	   ");
 		zRangeColorLabel.setBackground(color);
 		zRangeColorButton.setText("Color...");
 		zRangeColorButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));				
 		final Shell parentShell = zRangesGroup.getShell();
 		zRangeColorButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
+				xyModel.getEditor().setIsDirty(true);				
 				final Shell centerShell = new Shell(parentShell, SWT.NO_TRIM);
 				centerShell.setLocation(
 						(parentShell.getSize().x - ChartEditor.COLORDIALOG_WIDTH) / 2,
@@ -324,15 +413,17 @@ public class YZRangesEditor {
 					color.dispose();
 					Color newColor = new Color(parentShell.getDisplay(), rgb);
 					zRangeColorLabel.setBackground(newColor);
-					if(editor!=null) editor.setIsDirty(true);
 					String newHexadecimal = ChartEditor.convertRGBToHexadecimal(rgb);
 
-					int selection = zRangesList.getSelectionIndex();
+					int selection = zRangesTable.getSelectionIndex();
 					if(selection!=-1){
-						String item=zRangesList.getItem(selection);
-						ZRanges zRangeSelected=xyModel.getZRanges().get(item);
+						TableItem itemT=zRangesTable.getItem(selection);
+						String itemName=itemT.getText(LABEL);
+						ZRanges zRangeSelected=xyModel.getZRanges().get(itemName);
 						if(zRangeSelected!=null && newColor!=null )
 						{
+							itemT.setBackground(COLOR, new Color(itemT.getDisplay(),ChartEditor.convertHexadecimalToRGB(newHexadecimal)));
+							itemT.setText(COLOR,newHexadecimal);
 							zRangeSelected.setColor(ChartEditor.convertHexadecimalToRGB(newHexadecimal));
 						}
 					}
@@ -344,25 +435,8 @@ public class YZRangesEditor {
 			}
 
 		});			
-		zRangeColorLabel.setEnabled(false);
-		zRangeColorButton.setEnabled(false);
 
 
-
-		zRangesList = new List (zRangesGroup, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
-		//GridData gridDataZZ = new GridData(GridData.FILL, GridData.CENTER, true, false);
-		GridData gridDataZZ = new GridData(GridData.FILL_BOTH);
-		gridDataZZ.verticalSpan = 3;
-		//gridDataZZ.verticalAlignment=SWT.CENTER;
-		yRangesList.setLayoutData(gridDataZZ);
-		if(xyModel.getZRanges()!=null){
-			for (Iterator iterator = xyModel.getZRanges().keySet().iterator(); iterator.hasNext();) {
-				String zLabel = (String) iterator.next();
-				//ZRanges zRan=xyModel.getZRanges().get(zLabel);
-				zRangesList.add(zLabel);
-			}			
-		} //close if map is not null
-		zRangesList.redraw();
 
 
 		//		Label sl=new Label(zRangesGroup, SWT.NULL);
@@ -380,7 +454,7 @@ public class YZRangesEditor {
 		//styleSizeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		zRangeValueLowText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				if(editor!=null) editor.setIsDirty(true);
+				xyModel.getEditor().setIsDirty(true);				
 				double newMin = zRangeValueLowText.getSelection()/ Math.pow(10, zRangeValueLowText.getDigits());
 
 				Double newMinD=null;
@@ -391,12 +465,15 @@ public class YZRangesEditor {
 					newMinD=new Double(0.0);
 				}
 				// get the zRange
-				int index=zRangesList.getSelectionIndex();
+				int index=zRangesTable.getSelectionIndex();
 				if(index!=-1){
-					String selectedName=zRangesList.getItem(index);
+					TableItem item=zRangesTable.getItem(index);
+					ZRanges zRan=xyModel.getZRanges().get(item.getText(LABEL));
+					String selectedName=zRan.getLabel();
 					ZRanges zR=xyModel.getZRanges().get(selectedName);
 					if(zR!=null && newMinD!=null){
 						zR.setValueLow(newMinD);
+						item.setText(VALUE_LOW,newMinD.toString());
 					}
 				}
 			}
@@ -415,7 +492,7 @@ public class YZRangesEditor {
 		//styleSizeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		zRangeValueHighText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				if(editor!=null) editor.setIsDirty(true);
+				xyModel.getEditor().setIsDirty(true);				
 				//double newMax = zRangeValueHighText.getSelection();
 				double newMax = zRangeValueHighText.getSelection()/ Math.pow(10, zRangeValueHighText.getDigits());
 				Double newMaxD=null;
@@ -426,60 +503,38 @@ public class YZRangesEditor {
 					newMaxD=new Double(0.0);
 				}
 				// get the zRange
-				int index=zRangesList.getSelectionIndex();
+				int index=zRangesTable.getSelectionIndex();
 				if(index!=-1){
-					String selectedName=zRangesList.getItem(index);
-					ZRanges zR=xyModel.getZRanges().get(selectedName);
-					if(zR!=null && newMaxD!=null){
+					TableItem item=zRangesTable.getItem(index);
+					ZRanges zRan=xyModel.getZRanges().get(item.getText(LABEL));
+					if(zRan!=null && newMaxD!=null){
+						String selectedName=zRan.getLabel();
+						ZRanges zR=xyModel.getZRanges().get(selectedName);
 						zR.setValueHigh(newMaxD);
+						item.setText(VALUE_HIGH,newMaxD.toString());
 					}
 				}
 			}
 		});
 
-		zRangeValueHighLabel.setEnabled(false);
-		zRangeValueHighText.setEnabled(false);
-		zRangeValueLowLabel.setEnabled(false);
-		zRangeValueLowText.setEnabled(false);
-
-		sl=new Label(zRangesGroup, SWT.NULL);
-		sl.setText("");
-		sl=new Label(zRangesGroup, SWT.NULL);
-		sl.setText("");
-		sl=new Label(zRangesGroup, SWT.NULL);
-		sl.setText("");
-		sl=new Label(zRangesGroup, SWT.NULL);
-		sl.setText("");
-		sl=new Label(zRangesGroup, SWT.NULL);
-		sl.setText("");
 
 
-		//		Label zRangeColorLabelLabel=new Label(zRangesGroup, SWT.NULL);
-		//		zRangeColorLabelLabel.setText("Color: ");
-		//		zRangeColorLabelLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));		
-
-
-
-		Image imageRemZ = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_TOOL_DELETE);
-		cancelZRangeButton=new Button(zRangesGroup, SWT.PUSH);
-		cancelZRangeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-		cancelZRangeButton.setToolTipText("Cancel selected Z Range");
-		cancelZRangeButton.setImage(imageRemZ);
-		cancelZRangeButton.setEnabled(false);
 
 		Listener cancelListenerZ = new Listener() {
 			public void handleEvent(Event event) {
-				int index=zRangesList.getSelectionIndex();
+				xyModel.getEditor().setIsDirty(true);				
+				int index=zRangesTable.getSelectionIndex();
 				if(index!=-1){
-					String nameZ=zRangesList.getItem(index);
+					TableItem item=zRangesTable.getItem(index);
+					String label= item.getText(LABEL);
 					//remove from java list 
-					if(xyModel.getZRanges().keySet().contains(nameZ)){
-						xyModel.getZRanges().remove(nameZ);
+					if(xyModel.getZRanges().keySet().contains(label)){
+						xyModel.getZRanges().remove(label);
 					}
 					cancelZRangeButton.setEnabled(false);
-					zRangesList.remove(nameZ);
-					zRangesList.redraw();
-					zRangeLabelText.setText("");
+					zRangesTable.remove(index);
+					zRangesTable.redraw();
+					//zRangeLabelText.setText("");
 					zRangeColorLabel.setBackground(null);
 					zRangeValueLowText.setSelection(0);
 					zRangeValueHighText.setSelection(0);
@@ -491,12 +546,11 @@ public class YZRangesEditor {
 
 
 
-		yRangesList.addListener (SWT.Selection, new Listener () {
+		yRangesTable.addListener (SWT.Selection, new Listener () {
 			public void handleEvent (Event e) {
 				// get par selected
-				int selection = yRangesList.getSelectionIndex();
+				int selection = yRangesTable.getSelectionIndex();
 				if(selection!=-1){
-					String item=yRangesList.getItem(selection);
 					cancelYRangeButton.setEnabled(true);
 
 				}
@@ -505,18 +559,20 @@ public class YZRangesEditor {
 
 
 
-		zRangesList.addListener (SWT.Selection, new Listener () {
+		zRangesTable.addListener (SWT.Selection, new Listener () {
 			public void handleEvent(Event e) {
+				xyModel.getEditor().setIsDirty(true);				
 				// get par selected
-				int selection = zRangesList.getSelectionIndex();
+				int selection = zRangesTable.getSelectionIndex();
 				if(selection!=-1){
-					String item=zRangesList.getItem(selection);
-					if(item!=null && xyModel.getZRanges().keySet().contains(item)){
-						ZRanges zRangeSelected=xyModel.getZRanges().get(item);
+					TableItem item=zRangesTable.getItem(selection);
+					String itemName=item.getText(LABEL); 
+					if(itemName!=null && xyModel.getZRanges().keySet().contains(itemName)){
+						ZRanges zRangeSelected=xyModel.getZRanges().get(itemName);
 						// put the default value
 
 						String label=zRangeSelected.getLabel()!=null ? zRangeSelected.getLabel() : "";
-						zRangeLabelText.setText(label);
+						newZRangeText.setText(label);
 
 						String min;
 						if(zRangeSelected.getValueLow()!=null){
@@ -573,8 +629,6 @@ public class YZRangesEditor {
 
 						zRangeColorButton.setEnabled(true);
 						zRangeColorLabel.setEnabled(true);
-						zRangeLabelLabel.setEnabled(true);
-						zRangeLabelLabel.setEnabled(true);
 						//zRangeLabelText.setEnabled(true);
 						zRangeValueHighLabel.setEnabled(true);
 						zRangeValueHighText.setEnabled(true);
@@ -619,9 +673,9 @@ public class YZRangesEditor {
 
 
 	public void eraseComposite(){
-		yRangesList.removeAll();
-		zRangesList.removeAll();
-		zRangeLabelText.setText("");
+		yRangesTable.removeAll();
+		zRangesTable.removeAll();
+		newZRangeText.setText("");
 		zRangeValueHighText.setSelection(00);
 		zRangeValueLowText.setSelection(00);
 		zRangeColorLabel.setBackground(null);
@@ -633,20 +687,84 @@ public class YZRangesEditor {
 		if(xyModel.getYRanges()!=null){
 			for (int j = 0; j < xyModel.getYRanges().size(); j++) {
 				String yR= (String) xyModel.getYRanges().get(j);
-				yRangesList.add(yR);			
+				TableItem item=new TableItem(yRangesTable,SWT.NULL);
+				item.setText(yR);
 			}
-			yRangesList.redraw();
+			yRangesTable.redraw();
 		}
 
 		if(xyModel.getZRanges()!=null){
 			for (Iterator iterator = xyModel.getZRanges().keySet().iterator(); iterator.hasNext();) {
-				String zRangeLabel = (String) iterator.next();
-				ZRanges zR=xyModel.getZRanges().get(zRangeLabel);
-				zRangesList.add(zRangeLabel);
-			}
+				String name = (String) iterator.next();
+				ZRanges zRan=xyModel.getZRanges().get(name);
 
-			zRangesList.redraw();
+				newZRangeText.setText(zRan.getLabel() != null ? zRan.getLabel(): "");
+
+				TableItem item=new TableItem(zRangesTable,	SWT.NULL);
+				if(zRan.getLabel()!=null)item.setText(LABEL,zRan.getLabel());	
+				if(zRan.getValueLow()!=null)item.setText(VALUE_LOW,zRan.getValueLow().toString());	
+				if(zRan.getValueHigh()!=null)item.setText(VALUE_HIGH,zRan.getValueHigh().toString());	
+				RGB rgb=null;
+				if(zRangeColorLabel.getBackground().getRGB()!=null){
+					rgb=zRangeColorLabel.getBackground().getRGB();
+					Color color=new Color(item.getDisplay(),rgb);
+					item.setBackground(COLOR,color);
+					item.setText(COLOR,ChartEditor.convertRGBToHexadecimal(rgb));
+
+				}
+
+
+				String min;
+				if(zRan.getValueLow()!=null){
+					min=zRan.getValueLow().toString();						
+				}
+				else{
+					min="";
+				}
+				int indexPoint=min.indexOf('.');
+				if(indexPoint!=-1){
+					min=ChartEditorUtils.removeChar(min, '.');
+				}
+				Integer minI=null;
+				try{
+					minI=Integer.valueOf(min);	
+				}
+				catch (Exception e2) {
+					minI=Integer.valueOf(00);
+				}
+
+				zRangeValueLowText.setSelection(minI);
+
+
+
+				String max;
+				if(zRan.getValueHigh()!=null){
+					max=zRan.getValueHigh().toString();						
+				}
+				else{
+					max="";
+				}
+				int indexPoint1=max.indexOf('.');
+				if(indexPoint1!=-1){
+					max=ChartEditorUtils.removeChar(max, '.');
+				}
+				Integer maxI=null;
+				try{
+					maxI=Integer.valueOf(max);	
+				}
+				catch (Exception e2) {
+					maxI=Integer.valueOf(00);
+				}
+
+				zRangeValueHighText.setSelection(maxI);
+
+
+				zRangesTable.redraw();
+
+			}		
+
 		}
+
 
 	}
 

@@ -64,6 +64,8 @@ public class ChartModel {
 	protected Document configDocument;
 	protected Document thisDocument;
 
+	protected ChartEditor editor;
+
 
 	// ********* Configuration Parameters ***********
 	//protected HashMap<String, Object> confParametersValues=new HashMap<String, Object>();
@@ -445,6 +447,11 @@ public class ChartModel {
 			Style toInsert=new Style();
 			String nameStyle=styleEl.valueOf("@name");
 			toInsert.setName(nameStyle);
+			String descriptionStyle=styleEl.valueOf("@description");
+			if(descriptionStyle==null || descriptionStyle.equalsIgnoreCase("")){
+				descriptionStyle=nameStyle;
+			}
+			toInsert.setDescription(descriptionStyle);
 
 			String tooltipStyle=styleEl.valueOf("@tooltip");			
 			toInsert.setTooltip(tooltipStyle);
@@ -543,7 +550,7 @@ public class ChartModel {
 					toInsert.setSize(intt);
 				}
 			}
-			
+
 			styleParametersEditors.put(toInsert.getName(), toInsert);
 		}
 
@@ -1159,7 +1166,7 @@ public class ChartModel {
 		//components.getSeriesPersonalizationEditor().eraseComposite();
 		SpagoBILogger.infoLog("Series personalization section");
 		boolean isSerieLabel=isSeriesPersonalization(subType);
-		components.createSeriesPersonalizationSection(this,editor, toolkit, form);		
+		components.createSeriesPersonalizationSection(this,toolkit, form);		
 		components.getSeriesPersonalizationEditor().setVisible(false);
 
 		if(isSerieLabel==true){
@@ -1333,7 +1340,7 @@ public class ChartModel {
 		thisDocument=d;
 	}
 
-	
+
 	public boolean isSeriesScalesPersonalization() {
 		return seriesScalesPersonalization;
 	}
@@ -1365,6 +1372,15 @@ public class ChartModel {
 	public RGB getBackgroundColor() {
 		return backgroundColor;
 	}
+
+	public ChartEditor getEditor() {
+		return editor;
+	}
+
+	public void setEditor(ChartEditor editor) {
+		this.editor = editor;
+	}
+
 
 
 

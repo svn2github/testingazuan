@@ -2,26 +2,12 @@ package it.eng.spagobi.studio.chart.editors.model.chart;
 
 import it.eng.spagobi.studio.chart.editors.ChartEditor;
 import it.eng.spagobi.studio.chart.editors.ChartEditorComponents;
-import it.eng.spagobi.studio.chart.editors.ChartEditorUtils;
 import it.eng.spagobi.studio.chart.utils.DrillConfiguration;
-import it.eng.spagobi.studio.chart.utils.Style;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
-import java.awt.Color;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
 import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
-import org.dom4j.tree.DefaultAttribute;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
@@ -96,7 +82,7 @@ public class BarChartModel extends LinkableChartModel {
 		// CREATE THE Drill CONFIGURATION PARAMETER: At the beginning set invisible
 		//components.getDrillConfigurationEditor().eraseComposite();
 		SpagoBILogger.infoLog("Drill configuration section");
-		components.createDrillConfigurationSection(this,editor, toolkit, form);		
+		components.createDrillConfigurationSection(this, toolkit, form);		
 		components.getDrillConfigurationEditor().setVisible(false);
 
 		

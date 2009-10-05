@@ -36,7 +36,7 @@ public class ScatterChartModel extends ChartModel {
 			ScrolledForm form) throws Exception {
 		// TODO Auto-generated method stub
 		super.initializeEditor(editor, components, toolkit, form);
-		components.createScatterRangeMarkerSection(this, editor, toolkit, form);
+		components.createScatterRangeMarkerSection(this, toolkit, form);
 		components.getScatterRangeMarkerEditor().setVisible(true);
 
 	}

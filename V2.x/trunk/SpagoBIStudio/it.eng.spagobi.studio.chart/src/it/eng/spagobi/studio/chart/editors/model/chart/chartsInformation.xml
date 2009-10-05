@@ -6,12 +6,12 @@
 	</CHART>
 	<CHART type='PieChart' defaultSubType='simplepie' imagePath='it/eng/spagobi/studio/chart/resources/images/piechart.PNG' configPath='it/eng/spagobi/studio/chart/editors/model/chart/pieChartsConfig.xml' templatePath='it/eng/spagobi/studio/chart/resources/chart/simplepie.xml' >
 	</CHART>
-	<CHART type='ClusterChart' defaultSubType='simplecluster' imagePath='C:/Documents and Settings/gavardi/Desktop/barchart.PNG' configPath='it/eng/spagobi/studio/chart/editors/model/chart/clusterChartsConfig.xml' templatePath='it/eng/spagobi/studio/chart/resources/chart/simplecluster.xml' >
+	<CHART type='ClusterChart' defaultSubType='simplecluster' imagePath='it/eng/spagobi/studio/chart/resources/images/clusterchart.PNG' configPath='it/eng/spagobi/studio/chart/editors/model/chart/clusterChartsConfig.xml' templatePath='it/eng/spagobi/studio/chart/resources/chart/simplecluster.xml' >
 	</CHART>
-	<CHART type='BoxChart' defaultSubType='simplebox' imagePath='C:/Documents and Settings/gavardi/Desktop/clusterchart.PNG' configPath='it/eng/spagobi/studio/chart/editors/model/chart/boxChartsConfig.xml' templatePath='it/eng/spagobi/studio/chart/resources/chart/simplebox.xml' >
+	<CHART type='BoxChart' defaultSubType='simplebox' imagePath='it/eng/spagobi/studio/chart/resources/images/boxchart.PNG' configPath='it/eng/spagobi/studio/chart/editors/model/chart/boxChartsConfig.xml' templatePath='it/eng/spagobi/studio/chart/resources/chart/simplebox.xml' >
 	</CHART>
-	<CHART type='XYChart' defaultSubType='blockchart' imagePath='C:/Documents and Settings/gavardi/Desktop/clusterchart.PNG' configPath='it/eng/spagobi/studio/chart/editors/model/chart/xyChartsConfig.xml' templatePath='it/eng/spagobi/studio/chart/resources/chart/blockchart.xml' >
+	<CHART type='XYChart' defaultSubType='blockchart' imagePath='it/eng/spagobi/studio/chart/resources/images/xychart.PNG' configPath='it/eng/spagobi/studio/chart/editors/model/chart/xyChartsConfig.xml' templatePath='it/eng/spagobi/studio/chart/resources/chart/blockchart.xml' >
 	</CHART>
-	<CHART type='ScatterChart' defaultSubType='simplescatter' imagePath='C:/Documents and Settings/gavardi/Desktop/clusterchart.PNG' configPath='it/eng/spagobi/studio/chart/editors/model/chart/scatterChartsConfig.xml' templatePath='it/eng/spagobi/studio/chart/resources/chart/simplescatter.xml' >
+	<CHART type='ScatterChart' defaultSubType='simplescatter' imagePath='it/eng/spagobi/studio/chart/resources/images/scatterchart.PNG' configPath='it/eng/spagobi/studio/chart/editors/model/chart/scatterChartsConfig.xml' templatePath='it/eng/spagobi/studio/chart/resources/chart/simplescatter.xml' >
 	</CHART>
 </CHARTS>

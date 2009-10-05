@@ -93,7 +93,7 @@ public class ConfigurationEditor {
 					String parName = (String) iterator.next();
 					SpagoBILogger.infoLog("Parameter "+parName);
 					final Parameter aParameter=model.getConfParametersEditor().get(parName);
-					ChartEditorUtils.drawParameter(editor, sectionClientConf, aParameter, toolkit);					
+					ChartEditorUtils.drawParameter(model, sectionClientConf, aParameter, toolkit);					
 
 				}
 			}
@@ -147,7 +147,7 @@ public class ConfigurationEditor {
 				for (Iterator iterator = parsInSection.iterator(); iterator.hasNext();) {
 					String parName = (String) iterator.next();
 					final Parameter aParameter=model.getConfSpecificParametersEditor().get(parName);
-					ChartEditorUtils.drawSpecificParameter(editor, specificConfGroup, aParameter, toolkit,i);					
+					ChartEditorUtils.drawSpecificParameter(model, specificConfGroup, aParameter, toolkit,i);					
 					i++;
 				}
 			}

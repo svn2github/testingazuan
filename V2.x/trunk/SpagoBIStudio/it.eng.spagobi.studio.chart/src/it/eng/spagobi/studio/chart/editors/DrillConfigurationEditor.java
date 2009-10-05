@@ -1,13 +1,10 @@
 package it.eng.spagobi.studio.chart.editors;
 
 import it.eng.spagobi.studio.chart.editors.model.chart.LinkableChartModel;
-import it.eng.spagobi.studio.chart.editors.model.chart.Parameter;
 import it.eng.spagobi.studio.chart.utils.DrillConfiguration;
 import it.eng.spagobi.studio.chart.utils.DrillParameters;
-import it.eng.spagobi.studio.chart.utils.SeriePersonalization;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
-import java.security.KeyRep.Type;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -15,7 +12,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -24,14 +20,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -69,8 +62,7 @@ public class DrillConfigurationEditor {
 	 * @param form
 	 */
 
-	public DrillConfigurationEditor(final LinkableChartModel model,
-			final ChartEditor editor, FormToolkit toolkit, final ScrolledForm form) {
+	public DrillConfigurationEditor(final LinkableChartModel model, FormToolkit toolkit, final ScrolledForm form) {
 		SpagoBILogger.infoLog("Constructor of drill configuration editor");
 		sectionDrill = toolkit.createSection(form.getBody(),
 				Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE);
@@ -104,8 +96,7 @@ public class DrillConfigurationEditor {
 		urlValueText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		urlValueText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				if (editor != null)
-					editor.setIsDirty(true);
+				model.getEditor().setIsDirty(true);
 				String parameterValueStr = urlValueText.getText();
 				// model.getDrillConfiguration().setUrl(parameterValueStr);
 				model.getDrillConfiguration().setUrl(parameterValueStr);
@@ -128,8 +119,7 @@ public class DrillConfigurationEditor {
 		catValueText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		catValueText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				if (editor != null)
-					editor.setIsDirty(true);
+				model.getEditor().setIsDirty(true);
 				String parameterValueStr = catValueText.getText();
 				// model.getDrillConfiguration().setCategoryUrlName(parameterValueStr);
 				model.getDrillConfiguration().setCategoryUrlName(
@@ -152,8 +142,7 @@ public class DrillConfigurationEditor {
 		serValueText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		serValueText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				if (editor != null)
-					editor.setIsDirty(true);
+				model.getEditor().setIsDirty(true);
 				String parameterValueStr = serValueText.getText();
 				model.getDrillConfiguration().setSeriesUrlName(
 						parameterValueStr);
@@ -256,6 +245,7 @@ public class DrillConfigurationEditor {
 		newParVal.pack();
 		newParVal.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
+				model.getEditor().setIsDirty(true);
 				String val = newParVal.getText();
 				int selection = parsTable.getSelectionIndex();
 				if(selection!=-1){
@@ -286,6 +276,7 @@ public class DrillConfigurationEditor {
 
 		newComboType.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
+				model.getEditor().setIsDirty(true);
 				String comboText = newComboType.getText();
 				int selection = parsTable.getSelectionIndex();
 				if(selection!=-1){
@@ -309,6 +300,7 @@ public class DrillConfigurationEditor {
 		// Add listener that show details of parameter selected
 		parsTable.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
+				model.getEditor().setIsDirty(true);
 				int selection = parsTable.getSelectionIndex();
 				TableItem item=parsTable.getItem(selection);
 				String parNameSelected = item.getText(NAME);
@@ -326,6 +318,7 @@ public class DrillConfigurationEditor {
 		// Add Button Listener
 		Listener addListener = new Listener() {
 			public void handleEvent(Event event) {
+				model.getEditor().setIsDirty(true);
 				String nameToAdd = newParName.getText();
 				String valueToAdd = newParVal.getText();
 				Map<String, DrillParameters> mapDrillPars = model.getDrillConfiguration().getDrillParameters();
@@ -366,7 +359,7 @@ public class DrillConfigurationEditor {
 		// Add Button Listener
 		Listener cancelListener = new Listener() {
 			public void handleEvent(Event event) {
-
+				model.getEditor().setIsDirty(true);
 				int index = parsTable.getSelectionIndex();
 				TableItem item=parsTable.getItem(index);
 				String namePar=item.getText(NAME);

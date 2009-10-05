@@ -47,38 +47,6 @@ public class ChartEditorUtils {
 	 * @throws Exception
 	 */
 
-	//	public static String getChartTemplatePath(String chartType, String subType) throws Exception {
-	//
-	//
-	//		String toReturn = null;
-	//		if(subType!=null){
-	//			String chartConfigPath=getChartConfigPath(chartType);
-	//			InputStream is = getInputStreamFromResource(chartConfigPath);
-	//			Document configDocument = new SAXReader().read(is);
-	//			Node part=configDocument.selectSingleNode("//"+chartType.toUpperCase()+"S"+"/"+chartType.toUpperCase()+"[@name='"+subType+"']");
-	//			ChartEditorUtils.print("", part);
-	//			String path=part.valueOf("@templatePath");
-	//			toReturn=path;
-	//		}
-	//		else{
-	//			InputStream is = getInputStreamFromResource(ChartModel.CHART_INFO_FILE);
-	//			Document document = new SAXReader().read(is);
-	//			List charts = document.selectNodes("//CHARTS/CHART");
-	//			if (charts == null || charts.size() == 0) throw new Exception("No charts configured");
-	//			for (int i = 0; i < charts.size(); i++) {
-	//				Node chart = (Node) charts.get(i);
-	//				String type = chart.valueOf("@type");
-	//				if (chartType.equalsIgnoreCase(type)) {
-	//					ChartEditorUtils.print("CHART", chart);
-	//					String templatePath = chart.valueOf("@templatePath");
-	//					toReturn = templatePath;
-	//					break;
-	//				}
-	//			}
-	//		}
-	//		return toReturn;
-	//	}
-
 
 	public static String getDefaultSubtype(String chartType) throws Exception {
 		String toReturn = null;
@@ -148,7 +116,7 @@ public class ChartEditorUtils {
 
 
 
-	static public void drawParameter(final ChartEditor editor, Composite section, final Parameter aParameter, FormToolkit toolkit){
+	static public void drawParameter(final ChartModel model, Composite section, final Parameter aParameter, FormToolkit toolkit){
 		SpagoBILogger.infoLog("Draw Parameter "+aParameter.getName());
 		Label parameterDescriptionLabel = new Label(section, SWT.NULL);
 		parameterDescriptionLabel.setText(aParameter.getDescription() + ":");
@@ -201,7 +169,7 @@ public class ChartEditorUtils {
 						color.dispose();
 						Color newColor = new Color(parentShell.getDisplay(), rgb);
 						colorLabel.setBackground(newColor);
-						if(editor!=null) editor.setIsDirty(true);
+						model.getEditor().setIsDirty(true);
 						String newHexadecimal = ChartEditor.convertRGBToHexadecimal(rgb);
 						aParameter.setValue(newHexadecimal);
 					}
@@ -219,7 +187,7 @@ public class ChartEditorUtils {
 			}
 			check.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent event) {
-					if(editor!=null) editor.setIsDirty(true);
+					model.getEditor().setIsDirty(true);
 					aParameter.setValue(Boolean.toString(check.getSelection()));
 				}
 			});
@@ -240,7 +208,7 @@ public class ChartEditorUtils {
 			parIntegerSpinner.addModifyListener(new ModifyListener() {
 
 				public void modifyText(ModifyEvent event) {
-					if(editor!=null) editor.setIsDirty(true);
+					model.getEditor().setIsDirty(true);
 					int parameterValue = parIntegerSpinner.getSelection();
 					// check it is a number 
 					aParameter.setValue(new Integer(parameterValue));
@@ -269,7 +237,7 @@ public class ChartEditorUtils {
 			//parFloatSpinner.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			parFloatSpinner.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent event) {
-					if(editor!=null) editor.setIsDirty(true);
+					model.getEditor().setIsDirty(true);
 					//int parameterValue = parFloatSpinner.getSelection();
 					double parameterValue  = parFloatSpinner.getSelection()/ Math.pow(10, parFloatSpinner.getDigits());
 					// check it is a number 
@@ -303,7 +271,7 @@ public class ChartEditorUtils {
 				combo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 				combo.addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent event) {
-						if(editor!=null) editor.setIsDirty(true);
+						model.getEditor().setIsDirty(true);
 						String parameterValueStr = combo.getText();
 						aParameter.setValue(parameterValueStr);
 					}
@@ -320,7 +288,7 @@ public class ChartEditorUtils {
 				parameterValueText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 				parameterValueText.addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent event) {
-						if(editor!=null) editor.setIsDirty(true);
+						model.getEditor().setIsDirty(true);
 						String parameterValueStr = parameterValueText.getText();
 						System.out.println("modificato parametro "+aParameter.getName());
 						aParameter.setValue(parameterValueStr);
@@ -340,7 +308,7 @@ public class ChartEditorUtils {
 		parameterValueText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		parameterValueText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				if(editor!=null) editor.setIsDirty(true);
+				model.getEditor().setIsDirty(true);
 				String parameterValueStr = parameterValueText.getText();
 				System.out.println("modificato parametro "+aParameter.getName());
 				aParameter.setValue(parameterValueStr);
@@ -353,7 +321,7 @@ public class ChartEditorUtils {
 	}
 
 
-	/** Creates the form for common specific parameters
+	/** Creates the form for specific parameters
 	 * 
 	 * @param model
 	 * @param editor
@@ -361,7 +329,7 @@ public class ChartEditorUtils {
 	 * @param form
 	 */
 
-	static public void drawSpecificParameter(final ChartEditor editor, Composite section, final Parameter aParameter, FormToolkit toolkit, int order){
+	static public void drawSpecificParameter(final ChartModel model, Composite section, final Parameter aParameter, FormToolkit toolkit, int order){
 		SpagoBILogger.infoLog("Draw Parameter "+aParameter.getName());
 		Label parameterDescriptionLabel = new Label(section, SWT.NULL);
 		parameterDescriptionLabel.setText(aParameter.getDescription() + ":");
@@ -402,6 +370,7 @@ public class ChartEditorUtils {
 			final Shell parentShell = section.getShell();
 			button.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent event) {
+					model.getEditor().setIsDirty(true);									
 					final Shell centerShell = new Shell(parentShell, SWT.NO_TRIM);
 					centerShell.setLocation(
 							(parentShell.getSize().x - ChartEditor.COLORDIALOG_WIDTH) / 2,
@@ -417,7 +386,7 @@ public class ChartEditorUtils {
 						color.dispose();
 						Color newColor = new Color(parentShell.getDisplay(), rgb);
 						colorLabel.setBackground(newColor);
-						if(editor!=null) editor.setIsDirty(true);
+						model.getEditor().setIsDirty(true);
 						String newHexadecimal = ChartEditor.convertRGBToHexadecimal(rgb);
 						aParameter.setValue(newHexadecimal);
 					}
@@ -435,7 +404,7 @@ public class ChartEditorUtils {
 			}			
 			check.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent event) {
-					if(editor!=null) editor.setIsDirty(true);
+					model.getEditor().setIsDirty(true);
 					boolean sel=check.getSelection();
 					String s=Boolean.valueOf(sel).toString();
 					aParameter.setValue(s);
@@ -460,7 +429,7 @@ public class ChartEditorUtils {
 			parIntegerSpinner.addModifyListener(new ModifyListener() {
 
 				public void modifyText(ModifyEvent event) {
-					if(editor!=null) editor.setIsDirty(true);
+					model.getEditor().setIsDirty(true);
 					int parameterValue = parIntegerSpinner.getSelection();
 					// check it is a number 
 					aParameter.setValue(new Integer(parameterValue));
@@ -487,7 +456,7 @@ public class ChartEditorUtils {
 			//parFloatSpinner.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			parFloatSpinner.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent event) {
-					if(editor!=null) editor.setIsDirty(true);
+					model.getEditor().setIsDirty(true);
 					//int parameterValue = parFloatSpinner.getSelection();
 					double parameterValue  = parFloatSpinner.getSelection()/ Math.pow(10, parFloatSpinner.getDigits());
 					// check it is a number 
@@ -520,7 +489,7 @@ public class ChartEditorUtils {
 				combo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 				combo.addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent event) {
-						if(editor!=null) editor.setIsDirty(true);
+						model.getEditor().setIsDirty(true);
 						String parameterValueStr = combo.getText();
 						aParameter.setValue(parameterValueStr);
 					}
@@ -540,7 +509,7 @@ public class ChartEditorUtils {
 				parameterValueText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 				parameterValueText.addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent event) {
-						if(editor!=null) editor.setIsDirty(true);
+						model.getEditor().setIsDirty(true);
 						String parameterValueStr = parameterValueText.getText();
 						aParameter.setValue(parameterValueStr);
 					}
@@ -560,7 +529,7 @@ public class ChartEditorUtils {
 		parameterValueText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		parameterValueText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				if(editor!=null) editor.setIsDirty(true);
+				model.getEditor().setIsDirty(true);
 				String parameterValueStr = parameterValueText.getText();
 				aParameter.setValue(parameterValueStr);
 			}

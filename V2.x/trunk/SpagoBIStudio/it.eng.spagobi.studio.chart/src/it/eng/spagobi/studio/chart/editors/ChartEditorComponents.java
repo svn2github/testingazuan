@@ -49,73 +49,10 @@ public class ChartEditorComponents {
 	ScatterRangeMarkerEditor scatterRangeMarkerEditor=null;
 
 
-	//HashMap<String, Group> subTypeGroup=new HashMap<String, Group>();
-
-
 
 	public ChartEditorComponents() {
 		super();
 	}
-
-
-
-
-	//	public boolean currentGroupSelection(String subType, Composite section){
-	//
-	//		boolean groupAlreadyPresent=false;
-	//		Group group=null;
-	//		if(!subTypeGroup.containsKey(model.getSubType())){
-	//			group=new Group(section, SWT.NULL);
-	//			group.setText(model.getSubType());
-	//			group.setToolTipText(model.getSubType());
-	//			group.setVisible(false);
-	//			group.pack();
-	//			subTypeGroup.put(model.getSubType(), group);
-	//
-	//		}
-	//		else if(subTypeGroup.get(model.getSubType())!=null){
-	//			group=new Group(section, SWT.NULL);
-	//			group.setVisible(false);
-	//			group.pack();
-	//			subTypeGroup.put(model.getSubType(), group);
-	//		}
-	//		else{
-	//			group=subTypeGroup.get(model.getSubType());		
-	//			groupAlreadyPresent=true;
-	//		}
-	//
-	//		// disable all others
-	//		for (Iterator iterator = subTypeGroup.keySet().iterator(); iterator.hasNext();) {
-	//			String subTypeC = (String) iterator.next();
-	//			Group g=subTypeGroup.get(subTypeC);
-	//			if(!subTypeC.equalsIgnoreCase(subType)){
-	//				g.setVisible(false);
-	//				//				Control[] children=g.getChildren();
-	//				//				for (int i = 0; i < children.length; i++) {
-	//				//					children[i].setVisible(false);
-	//				//					children[i].dispose();					
-	//				//				}
-	//				g.dispose();
-	//
-	//
-	//			}
-	//			else{
-	//				g.setVisible(true);
-	//				g.redraw();
-	//			}
-	//		}
-	//
-	//
-	//
-	//		return groupAlreadyPresent;
-	//	}
-
-
-
-
-
-
-
 
 
 
@@ -138,7 +75,7 @@ public class ChartEditorComponents {
 			SpagoBILogger.infoLog("Style parameter "+styleName);			
 			final Style style=model.getStyleParametersEditors().get(styleName);
 			Label styleLabel = new Label(section, SWT.BORDER_DOT);
-			styleLabel.setText(style.getName());
+			styleLabel.setText(style.getDescription());
 			styleLabel.setForeground(new Color(section.getDisplay(),0,0,255));
 			if(style.getTooltip()!=null){
 				styleLabel.setToolTipText(style.getTooltip());
@@ -401,8 +338,8 @@ public class ChartEditorComponents {
 	 * @param scrolledForm
 	 */
 
-	public void createDrillConfigurationSection(final LinkableChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
-		drillConfigurationEditor=new DrillConfigurationEditor(model,editor,formToolkit, scrolledForm);
+	public void createDrillConfigurationSection(final LinkableChartModel model, FormToolkit formToolkit, final ScrolledForm scrolledForm){
+		drillConfigurationEditor=new DrillConfigurationEditor(model,formToolkit, scrolledForm);
 	}
 
 
@@ -414,8 +351,8 @@ public class ChartEditorComponents {
 	 * @param scrolledForm
 	 */
 
-	public void createSeriesPersonalizationSection(final ChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
-		seriesPersonalizationEditor=new SeriesPersonalizationEditor(editor, model, formToolkit, scrolledForm);
+	public void createSeriesPersonalizationSection(final ChartModel model, FormToolkit formToolkit, final ScrolledForm scrolledForm){
+		seriesPersonalizationEditor=new SeriesPersonalizationEditor(model, formToolkit, scrolledForm);
 	}
 
 
@@ -428,16 +365,16 @@ public class ChartEditorComponents {
 	 */
 
 	public void createIntervalsInformationsSection(final DialChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
-		intervalsInformationEditor=new IntervalsInformationEditor(model, formToolkit, scrolledForm,editor);
+		intervalsInformationEditor=new IntervalsInformationEditor(model, formToolkit, scrolledForm);
 	}
 
-	public void createScatterRangeMarkerSection(final ScatterChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
-		scatterRangeMarkerEditor=new ScatterRangeMarkerEditor(model, formToolkit, scrolledForm,editor);
+	public void createScatterRangeMarkerSection(final ScatterChartModel model, FormToolkit formToolkit, final ScrolledForm scrolledForm){
+		scatterRangeMarkerEditor=new ScatterRangeMarkerEditor(model, formToolkit, scrolledForm);
 	}
 
 	
-	public void createYZRangesSection(final XYChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
-		yzRangesEditor=new YZRangesEditor(model, formToolkit, scrolledForm,editor);
+	public void createYZRangesSection(final XYChartModel model, FormToolkit formToolkit, final ScrolledForm scrolledForm){
+		yzRangesEditor=new YZRangesEditor(model, formToolkit, scrolledForm);
 	}
 
 

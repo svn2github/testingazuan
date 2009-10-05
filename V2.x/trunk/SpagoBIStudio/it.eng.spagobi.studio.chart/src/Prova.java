@@ -1,59 +1,64 @@
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
+/*******************************************************************************
+ * Copyright (c) 2000, 2004 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/*
+ * Table example snippet: create a table (columns, headers, lines)
+ *
+ * For a list of all SWT example snippets see
+ * http://www.eclipse.org/swt/snippets/
+ */
+import org.eclipse.swt.*;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 public class Prova {
 
-  static int pageNum = -1;
+public static void main (String [] args) {
+	Display display = new Display ();
+	Shell shell = new Shell (display);
+	shell.setLayout(new GridLayout());
+	Table table = new Table (shell, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+	table.setLinesVisible (true);
+	table.setHeaderVisible (true);
+	GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+	data.heightHint = 200;
+	data.widthHint = 200;
+	
+	table.setLayoutData(data);
+	String[] titles = {" ", "     C    ", "!", "Description", "Resource", "In Folder", "Location", "Birillo"};
+	for (int i=0; i<titles.length; i++) {
+		TableColumn column = new TableColumn (table, SWT.NONE);
+		column.setWidth(100);
+		column.setText (titles [i]);
+	}	
 
-  public static void main(String[] args) {
-    Display display = new Display();
-    Shell shell = new Shell(display);
-    shell.setBounds(10, 10, 300, 200);
-    // create the composite that the pages will share
-    final Composite contentPanel = new Composite(shell, SWT.BORDER);
-    contentPanel.setBounds(100, 10, 190, 90);
-    final StackLayout layout = new StackLayout();
-    contentPanel.setLayout(layout);
-
-    // create the first page's content
-    final Composite page0 = new Composite(contentPanel, SWT.NONE);
-    page0.setLayout(new RowLayout());
-    Label label = new Label(page0, SWT.NONE);
-    label.setText("Label on page 1");
-    label.pack();
-
-    // create the second page's content
-    final Composite page1 = new Composite(contentPanel, SWT.NONE);
-    page1.setLayout(new RowLayout());
-    Button button = new Button(page1, SWT.NONE);
-    button.setText("Button on page 2");
-    button.pack();
-
-    // create the button that will switch between the pages
-    Button pageButton = new Button(shell, SWT.PUSH);
-    pageButton.setText("Push");
-    pageButton.setBounds(10, 10, 80, 25);
-    pageButton.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event event) {
-        pageNum = ++pageNum % 2;
-        layout.topControl = pageNum == 0 ? page0 : page1;
-        contentPanel.layout();
-      }
-    });
-
-    shell.open();
-    while (!shell.isDisposed()) {
-      if (!display.readAndDispatch())
-        display.sleep();
-    }
-    display.dispose();
-  }
+//	int count = 128;
+/*	for (int i=0; i<count; i++) {
+		TableItem item = new TableItem (table, SWT.NONE);
+		item.setText (0, "x");
+		item.setText (1, "y");
+		item.setText (2, "!");
+		item.setText (3, "this stuff behaves the way I expect");
+		item.setText (4, "almost everywhere");
+		item.setText (5, "some.folder");
+		item.setText (6, "line " + i + " in nowhere");
+	}
+	for (int i=0; i<titles.length; i++) {
+		table.getColumn (i).pack ();
+	}*/	
+	shell.pack ();
+	shell.open ();
+	while (!shell.isDisposed ()) {
+		if (!display.readAndDispatch ()) display.sleep ();
+	}
+	display.dispose ();
 }
+} 

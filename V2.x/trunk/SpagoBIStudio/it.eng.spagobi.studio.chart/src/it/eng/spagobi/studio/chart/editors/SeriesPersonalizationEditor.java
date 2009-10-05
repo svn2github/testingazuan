@@ -63,13 +63,11 @@ public class SeriesPersonalizationEditor {
 	public final static int DRAW=3;
 	public final static int SCALE=4;	
 
-	public SeriesPersonalizationEditor(final ChartEditor editor, final ChartModel model,FormToolkit toolkit, final ScrolledForm form) {
+	public SeriesPersonalizationEditor(final ChartModel model,FormToolkit toolkit, final ScrolledForm form) {
 
 		sectionSeries = toolkit.createSection(form.getBody(), 
 				Section.DESCRIPTION|Section.TITLE_BAR|Section.TWISTIE);
 		sectionClientSeries=toolkit.createComposite(sectionSeries);
-		sectionSeries.setText("Series Labels parameters");
-		sectionSeries.setDescription("Set all the drill parameteres");
 
 		//********* Main Section ******************
 		TableWrapData td = new TableWrapData(TableWrapData.FILL);
@@ -79,7 +77,11 @@ public class SeriesPersonalizationEditor {
 				form.reflow(true);
 			}
 		});
+		sectionSeries.setText("Series Labels parameters");
+		sectionSeries.setDescription("Set all the drill parameteres");
 
+		
+		
 		// ********** Main Layout ***************
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 1;
@@ -115,24 +117,24 @@ public class SeriesPersonalizationEditor {
 		data.heightHint = 150;
 		data.widthHint=500;
 		parsTable.setLayoutData(data);
-//		TableColumn column1 = new TableColumn (parsTable, SWT.NONE);
-//		column1.setText ("Serie Name");
-//		column1.setWidth(300);
-//		TableColumn column2 = new TableColumn (parsTable, SWT.NONE);
-//		column2.setText ("Color");
-//		column2.setWidth(400);
-//		TableColumn column3 = new TableColumn (parsTable, SWT.NONE);
-//		column3.setText ("Label");
-//		column3.setWidth(500);
-//		TableColumn column4 = new TableColumn (parsTable, SWT.NONE);
-//		column4.setText ("Draw Style");
-//		column4.setWidth(400);
-//		TableColumn column5 = new TableColumn (parsTable, SWT.NONE);
-//		column5.setText ("Scale");
-//		column5.setWidth(100);
-		
-		
-		String[] titles = {"         Serie Name         ", "       Color       ", "           Label           ", "       Draw Style       ", "   Scale   "};
+		//		TableColumn column1 = new TableColumn (parsTable, SWT.NONE);
+		//		column1.setText ("Serie Name");
+		//		column1.setWidth(300);
+		//		TableColumn column2 = new TableColumn (parsTable, SWT.NONE);
+		//		column2.setText ("Color");
+		//		column2.setWidth(400);
+		//		TableColumn column3 = new TableColumn (parsTable, SWT.NONE);
+		//		column3.setText ("Label");
+		//		column3.setWidth(500);
+		//		TableColumn column4 = new TableColumn (parsTable, SWT.NONE);
+		//		column4.setText ("Draw Style");
+		//		column4.setWidth(400);
+		//		TableColumn column5 = new TableColumn (parsTable, SWT.NONE);
+		//		column5.setText ("Scale");
+		//		column5.setWidth(100);
+
+
+		String[] titles = {"       Serie Name       ", "     Color     ", "         Label         ", "     Draw Style      ", " Scale "};
 		for (int i=0; i<titles.length; i++) {
 			TableColumn column = new TableColumn (parsTable, SWT.NONE);
 			column.setText (titles [i]);
@@ -206,6 +208,7 @@ public class SeriesPersonalizationEditor {
 		newSerLabelText.pack();
 		newSerLabelText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
+				model.getEditor().setIsDirty(true);				
 				String newLabel = newSerLabelText.getText();
 				int selection = parsTable.getSelectionIndex();
 				String parNameSelected=null;
@@ -219,8 +222,8 @@ public class SeriesPersonalizationEditor {
 				}
 			}
 		});
-		newSerLabel.setEnabled(false);
-		newSerLabelText.setEnabled(false);
+		//		newSerLabel.setEnabled(false);
+		//		newSerLabelText.setEnabled(false);
 
 
 
@@ -234,7 +237,7 @@ public class SeriesPersonalizationEditor {
 		newColorLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		newColorLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		newColorLabel.setText("    Color serie: ");
-		newColorLabel.setEnabled(false);
+		//		newColorLabel.setEnabled(false);
 		newColorLabel.pack();
 
 		final Color color = new org.eclipse.swt.graphics.Color(group.getDisplay(), new RGB(255,255,255));
@@ -265,7 +268,6 @@ public class SeriesPersonalizationEditor {
 					color.dispose();
 					Color newColor = new Color(parentShell.getDisplay(), rgb);
 					colorLabel.setBackground(newColor);
-					if(editor!=null) editor.setIsDirty(true);
 					String newHexadecimal = ChartEditor.convertRGBToHexadecimal(rgb);
 					int selection = parsTable.getSelectionIndex();
 					//get ParSelected
@@ -281,8 +283,8 @@ public class SeriesPersonalizationEditor {
 				}
 			}
 		});			
-		colorLabel.setEnabled(false);
-		colorButton.setEnabled(false);
+		//		colorLabel.setEnabled(false);
+		//		colorButton.setEnabled(false);
 
 
 
@@ -301,6 +303,7 @@ public class SeriesPersonalizationEditor {
 		comboDraw.pack();
 		comboDraw.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
+				model.getEditor().setIsDirty(true);				
 				String comboText = comboDraw.getText();
 				int selection = parsTable.getSelectionIndex();
 				if(selection!=-1){
@@ -315,8 +318,8 @@ public class SeriesPersonalizationEditor {
 				}
 			}
 		});
-		drawLabel.setEnabled(false);
-		comboDraw.setEnabled(false);
+		//		drawLabel.setEnabled(false);
+		//		comboDraw.setEnabled(false);
 		comboDraw.pack();
 
 
@@ -333,6 +336,7 @@ public class SeriesPersonalizationEditor {
 		comboScale.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		comboScale.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
+				model.getEditor().setIsDirty(true);				
 				String comboText = comboScale.getText();
 				int selection = parsTable.getSelectionIndex();
 				if(selection!=-1){
@@ -346,14 +350,15 @@ public class SeriesPersonalizationEditor {
 				}
 			}
 		});
-		comboScale.setEnabled(false);
-		scaleLabel.setEnabled(false);
+		//		comboScale.setEnabled(false);
+		//		scaleLabel.setEnabled(false);
 		scaleLabel.pack();
 		comboScale.pack();
 
 		// Add Button Listener
 		Listener addListener = new Listener() {
 			public void handleEvent(Event event) {
+				model.getEditor().setIsDirty(true);
 				String nameToAdd=newSerName.getText();
 				//parsMap=model.getSeriesPersonalizationHashMap();
 				if(nameToAdd==null || nameToAdd.equalsIgnoreCase("")){
@@ -365,14 +370,42 @@ public class SeriesPersonalizationEditor {
 					MessageDialog.openWarning(group.getShell(), "Warning", "Name already present");					
 				}
 				else {					
+					SeriePersonalization serPers=new SeriePersonalization(nameToAdd);
 					TableItem item = new TableItem (parsTable, SWT.NONE);
 					item.setText (NAME, nameToAdd);
-					item.setText (COLOR, "");
-					item.setText (LABEL, "");
-					item.setText (DRAW, "");
-					item.setText (SCALE, "");
 
-					model.getSeriesPersonalizationHashMap().put(nameToAdd, new SeriePersonalization(nameToAdd));
+
+					if(model.isSeriesLabelPersonalization()){
+						if(newSerLabel.getText()!=null){
+							serPers.setLabel(newSerLabel.getText());
+							item.setText (LABEL, newSerLabel.getText());
+						}
+					}
+
+					if(model.isSeriesDrawPersonalization()){
+						String text=comboDraw.getText();
+						serPers.setDraw(text);
+						item.setText (DRAW, text);
+
+					}
+
+					if(model.isSeriesScalesPersonalization()){
+						String text=comboScale.getText();
+						serPers.setScale(Integer.valueOf(text));
+						item.setText (SCALE, text);
+
+					}
+					if(model.isSeriesColorPersonalization()){
+						RGB rgb=colorLabel.getBackground().getRGB();
+						String text=ChartEditor.convertRGBToHexadecimal(rgb);
+						serPers.setColor(rgb);
+						item.setText (COLOR, text);
+						item.setBackground(COLOR,new Color(item.getDisplay(),rgb));						
+
+					}
+
+
+					model.getSeriesPersonalizationHashMap().put(nameToAdd, serPers);
 				}
 
 			}
@@ -384,6 +417,7 @@ public class SeriesPersonalizationEditor {
 		// Add listener that show details of parameter selected
 		parsTable.addListener (SWT.Selection, new Listener () {
 			public void handleEvent (Event e) {
+				model.getEditor().setIsDirty(true);				
 				// get par selected
 				int selection = parsTable.getSelectionIndex();
 				TableItem itemSelected=parsTable.getItem(selection);
@@ -495,6 +529,7 @@ public class SeriesPersonalizationEditor {
 		// Add Button Listener
 		Listener cancelListener = new Listener() {
 			public void handleEvent(Event event) {
+				model.getEditor().setIsDirty(true);			
 				int index=parsTable.getSelectionIndex();
 				TableItem item=parsTable.getItem(index);
 				String namePar=item.getText(NAME);
@@ -505,15 +540,14 @@ public class SeriesPersonalizationEditor {
 				if(model.getSeriesPersonalizationHashMap().containsKey(namePar)){
 					model.getSeriesPersonalizationHashMap().remove(namePar);
 				}
-				colorLabel.setEnabled(false);
-				colorButton.setEnabled(false);
-				newSerLabel.setEnabled(false);
-				newSerLabelText.setEnabled(false);
-				drawLabel.setEnabled(false);
-				comboDraw.setEnabled(false);
-				comboScale.setEnabled(false);
-				newColorLabel.setEnabled(false);
-				// remove from SWT list
+				//				colorLabel.setEnabled(false);
+				//				colorButton.setEnabled(false);
+				//				newSerLabel.setEnabled(false);
+				//				newSerLabelText.setEnabled(false);
+				//				drawLabel.setEnabled(false);
+				//				comboDraw.setEnabled(false);
+				//				comboScale.setEnabled(false);
+				//				newColorLabel.setEnabled(false);
 				parsTable.remove(index);
 				buttonRem.setEnabled(false);
 				//				parsList.pack();			

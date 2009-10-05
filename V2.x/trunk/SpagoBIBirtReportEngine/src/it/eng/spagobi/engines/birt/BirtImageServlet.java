@@ -139,7 +139,7 @@ public class BirtImageServlet extends HttpServlet {
 				String namePar = (String) iterator.next();
 				if(!namePar.equalsIgnoreCase(CHART_LABEL)){
 					String[] value=(String[])parametersMap.get(namePar);
-					chartParameters.put(namePar, value);
+					chartParameters.put(namePar, value[0]);
 				}
 			}		
 	

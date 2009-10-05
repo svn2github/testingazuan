@@ -93,7 +93,7 @@ public class JobRunService extends AbstractEngineStartServlet {
 				
 			super.doService(servletIOManager);
 				
-			job = new Job( servletIOManager.getTemplate() );			
+			job = new Job( servletIOManager.getTemplateAsSourceBean());			
 			runtimeRepository = TalendEngine.getRuntimeRepository();
 			
 			try {

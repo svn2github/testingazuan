@@ -45,17 +45,20 @@
 			</STYLE>
 		</STYLES>
 		<CONF>
-			<SECTION name='others'>
+			<SECTION name='bounds'>
 				<PARAMETER name='upper' description='upper bound' type='FLOAT' tooltip='set the upper bound' defaultValue='100.0'/>
 				<PARAMETER name='lower' description='lower bound' type='FLOAT' tooltip='set the lower bound' defaultValue='0.0'/>
+			</SECTION>
+			<SECTION name='legend'>
 				<PARAMETER name='legend' description='Legend' type='BOOLEAN' tooltip='draw legend?' defaultValue='true'/>
 				<PARAMETER name="legend_position" description='Legend Position' type='COMBO'
-					values='top,left,right,bottom' tooltip='position of the legend' defaultValue='bottom'/>
+					values='top,left,right,bottom' tooltip='position of the legend' defaultValue='bottom'/>			
+			</SECTION>			
+			<SECTION name='multichart'>
 				<PARAMETER name='multichart' description='Multichart' type='BOOLEAN' tooltip='Is multichart?' defaultValue='false'/>
 				<PARAMETER name="orientation_multichart" description='Multichart Orientation' type='COMBO'
-					values='vertical,horizontal' tooltip='Multichart orientation' defaultValue='vertical'/>
-
-			</SECTION>
+					values='vertical,horizontal' tooltip='Multichart orientation' defaultValue='vertical'/>			
+			</SECTION>			
 		</CONF>
 	</DIALCHART>
 	<DIALCHART name='simpledial'

@@ -76,7 +76,7 @@
 					type='BOOLEAN' defaultValue='true' tooltip='Choose if Filter categories groups'/>
 				<PARAMETER name='filter_series' description='Filter series'
 					type='BOOLEAN' defaultValue='true' tooltip='Choose if filter series'/>
-				<PARAMETER name='filter_series_buttons' description='Show filter series buttons'
+				<PARAMETER name='filter_series_buttons' description='Show filter series buttons (if filter series selected)'
 					type='BOOLEAN' defaultValue='true' tooltip='Show filter series buttons (if select serie)'/>
 				<PARAMETER name='n_cat_visualization' description='Number of categories to view'
 					type='INTEGER' defaultValue='5' tooltip='Number of categories to view'/>
@@ -85,8 +85,6 @@
 				<PARAMETER name='n_ser_visualization' 
 					description='Dynamically change number of series to view' type='INTEGER' defaultValue='5'
 					tooltip='set if change dinamically the number of series to view' />
-				<PARAMETER name='view_filter' description='Choose if view filter'
-					type='BOOLEAN' defaultValue='true' tooltip='Choose if view filter'/>
 			</SECTION>
 			<SECTION name='legend'>
 				<PARAMETER name='legend' description='draw legend?'
@@ -103,7 +101,7 @@
 					type='FLOAT' defaultValue='5.01' tooltip='Percentage of maximum bar width'/>
 				<PARAMETER name='range_integer_values' description='Only integer values on value axis'
 					type='BOOLEAN' defaultValue='true' tooltip='Choose if view only Integer on y axis'/>
-				<PARAMETER name='range_axis_location' description='Location for value axis'
+				<PARAMETER name='range_axis_location' description='Location of the value axis'
 					type='COMBO' values='BOTTOM_OR_LEFT, BOTTOM_OR_RIGHT, TOP_OR_RIGHT, TOP_OR_LEFT' defaultValue='BOTTOM_OR_LEFT'
 					tooltip='Location of the value axis'/>
 				<PARAMETER name='show_value_labels' description='Show value Labels'
@@ -177,15 +175,15 @@
 		templatePath='it/eng/spagobi/studio/chart/resources/chart/stacked_bar_group.xml'>
 		<CONF>
 			<SECTION>
-				<PARAMETER name='subcategory_label' description='Label for subcategory'
+				<PARAMETER name='subcategory_label' description='Label for subcategories'
 					type='STRING' defaultValue='subCat_Label' tooltip='Label for subcategory'/>
 				<PARAMETER name='add_labels' description='Add Labels'
 					type='BOOLEAN' defaultValue='true' tooltip='add labels'/>
 				<PARAMETER name='percentage_value' description='Percentage Values'
 					type='BOOLEAN' defaultValue='true' tooltip='show percentage values'/>
 				<PARAMETER name='n_groups' description='Number of groups'
-					type='INTEGER' defaultValue='3' tooltip='NUmber of groups'/>
-				<PARAMETER name='n_serie_for_group' description='n_serie_for_group'
+					type='INTEGER' defaultValue='3' tooltip='Number of groups'/>
+				<PARAMETER name='n_serie_for_group' description='Number of series for each group'
 					type='INTEGER' defaultValue='5' tooltip='Number of series for each group'/>
 			</SECTION>
 		</CONF>

@@ -83,6 +83,7 @@ import weka.core.Capabilities.Capability;
  * <pre> -i &lt;input file name&gt;
  *  Input file in arff format that should be saved in database.</pre>
  * 
+ * WARNING:This class was taken from the weka_src.jar and modified in order to put some logs and to make possible the connection to the DB through SpagoBI
  <!-- options-end -->
  *
  * @author Stefan Mutter (mutter@cs.waikato.ac.nz)

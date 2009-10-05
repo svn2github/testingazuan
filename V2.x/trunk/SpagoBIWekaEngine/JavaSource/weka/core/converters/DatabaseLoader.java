@@ -63,6 +63,8 @@ import weka.core.Utils;
  *
  * -I <br>
  * Sets incremental loading
+ * 
+ * WARNING:This class was taken from the weka_src.jar and modified in order to put some logs and to make possible the connection to the DB through SpagoBI
  *
  * @author Stefan Mutter (mutter@cs.waikato.ac.nz)
  * @version $Revision: 1.3 $

@@ -50,6 +50,7 @@ import weka.core.converters.FileSourcedConverter;
 
 /**
  * Loads data sets using weka.core.converter classes
+ * WARNING: This class was taken from the weka_src.jar and modified in order to put some more logs 
  *
  * @author <a href="mailto:mhall@cs.waikato.ac.nz">Mark Hall</a>
  * @version $Revision: 5081 $

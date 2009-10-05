@@ -22,6 +22,7 @@ import weka.core.converters.DatabaseSaver;
 
 /**
  * Saves data sets using weka.core.converter classes
+ * WARNING: This class was taken from the weka_src.jar and modified in order to put some more logs 
  *
  * @author <a href="mailto:mutter@cs.waikato.ac.nz">Stefan Mutter</a>
  * @version $Revision: 1.2 $

@@ -31,6 +31,7 @@ import weka.core.Utils;
 
 /**
  * Connects to a database.
+ *  WARNING:This class was taken from the weka_src.jar and modified in order to put some logs and to make possible the connection to the DB through SpagoBI
  * 
  * @author Len Trigg (trigg@cs.waikato.ac.nz)
  * @author Stefan Mutter (mutter@cs.waikato.ac.nz)

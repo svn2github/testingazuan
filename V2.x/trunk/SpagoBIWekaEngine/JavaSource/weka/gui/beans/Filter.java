@@ -539,7 +539,7 @@ public class Filter
 		    notifyDataOrTrainingListeners(ne);
 		    logger.debug("End Notifying Listeners");
 		  }else{
-			  logger.debug("m_trainingSet not null");
+			  logger.debug("m_trainingSet null");
 		  }
 		} catch (Exception ex) {
 		  Filter.this.stop(); // stop all processing

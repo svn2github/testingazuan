@@ -12,27 +12,22 @@
 
 package weka.core.converters;
 
-import weka.core.Utils;
-import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
-
-import java.util.Properties;
-import java.util.Vector;
-import java.util.StringTokenizer;
 import java.io.Serializable;
-import java.io.FileInputStream;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.Types;
-import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.ResultSetMetaData;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
+
+import weka.core.Utils;
 
 /**
  * Connects to a database.
@@ -149,9 +144,12 @@ public class DatabaseConnection implements Serializable {
 		m_DatabaseURL = PROPERTIES.getProperty("jdbcURL",
 				"jdbc:idb=experiments.prp");
 		String uctn = PROPERTIES.getProperty("checkUpperCaseNames");
+		logger.debug("propertiy [checkUpperCaseNames] is equal to [" + uctn +"]");
 		if (uctn.equals("true")) {
+			logger.debug("set propertiy [checkUpperCaseNames] to TRUE");
 			m_checkForUpperCaseNames = true;
 		} else {
+			logger.debug("set propertiy [checkUpperCaseNames] to FALSE");
 			m_checkForUpperCaseNames = false;
 		}
 		uctn = PROPERTIES.getProperty("setAutoCommit");

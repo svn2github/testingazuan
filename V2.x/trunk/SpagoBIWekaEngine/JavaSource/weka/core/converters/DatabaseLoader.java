@@ -12,8 +12,6 @@
 
 package weka.core.converters;
 
-import it.eng.spagobi.engines.weka.configurators.FilterConfigurator;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -227,6 +225,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   public void setQuery(String q) {
     q = q.replaceAll("[fF][rR][oO][mM]","FROM");
     q = q.replaceFirst("[sS][eE][lL][eE][cC][tT]","SELECT");  
+    logger.debug("Set query [" + q + "]");
     m_query = q;
   }
 
@@ -476,8 +475,11 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
           table = m_query.substring(beginIndex,endIndex);
       else
           table = m_query.substring(beginIndex);
-      if(m_DataBaseConnection.getUpperCase())
+      logger.debug("table [" + table + "]");
+      if(m_DataBaseConnection.getUpperCase()) {
+    	  logger.debug("convert table names to uppercase");
           table = table.toUpperCase();
+      }
       return table;
   }
   
@@ -796,9 +798,11 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
   public Instances getDataSet() throws IOException {
 	logger.debug("IN");
     if (m_DataBaseConnection == null) {
+      logger.error("No source database has been specified");
       throw new IOException("No source database has been specified");
     }
     if (getRetrieval() == INCREMENTAL) {
+    	logger.error("Cannot mix getting Instances in both incremental and batch modes");
       throw new IOException("Cannot mix getting Instances in both incremental and batch modes");
     }
     setRetrieval(BATCH);
@@ -807,8 +811,10 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
     
     Instances result = null;
     try{
-    if (m_DataBaseConnection.execute(m_query) == false) 
-      throw new Exception("Query didn't produce results");
+    if (m_DataBaseConnection.execute(m_query) == false) {
+    	logger.error("Query didn't produce results");
+    	throw new Exception("Query didn't produce results");
+    }
     ResultSet rs = m_DataBaseConnection.getResultSet();
     logger.debug("RS: "+(rs!=null ? rs.toString(): "null"));
     ResultSetMetaData md = rs.getMetaData();
@@ -830,6 +836,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
         m_nominalIndexes[i - 1] = new Hashtable();
         m_nominalStrings[i - 1] = new FastVector();
         if(m_DataBaseConnection.execute("SELECT DISTINCT ( "+columnName+" ) FROM "+ end) == false){
+        	logger.error("Nominal values cannot be retrieved");
             throw new Exception("Nominal values cannot be retrieved");
         }
         rs1 = m_DataBaseConnection.getResultSet();
@@ -1004,6 +1011,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
     m_structure = new Instances(result,0);
     }
     catch(Exception ex) {
+    	logger.error(ex);
 	printException(ex);
         StringBuffer text = new StringBuffer();
         if(m_query.equals("Select * from Results0")){
@@ -1016,7 +1024,7 @@ public class DatabaseLoader extends AbstractLoader implements BatchConverter, In
             }
         }
     }
-    logger.debug("OUT");
+    logger.debug("OUT: " + result);
     return result;
   }
   

@@ -209,7 +209,6 @@ public class Loader
 				    notifyInstanceLoaded(m_ie);
 				    z++;
 			            if (z % 10000 == 0) {
-			//              m_visual.setText("" + z + " instances...");
 			              if (logger != null) {
 			                logger.debug(statusMessagePrefix() 
 			                    + "Loaded " + z + " instances");
@@ -356,6 +355,7 @@ public class Loader
   }
   
   protected void newFileSelected() {
+	  logger.debug("IN");
     if(! (m_Loader instanceof DatabaseLoader)) {
       // try to load structure (if possible) and notify any listeners
       try {
@@ -364,8 +364,11 @@ public class Loader
         System.out.println("[Loader] Notifying listeners of instance structure avail.");
         notifyStructureAvailable(m_dataFormat);
       }catch (Exception ex) {
+    	  ex.printStackTrace();
       }
     }
+    
+    logger.debug("OUT");
   }
 
   /**
@@ -409,13 +412,20 @@ public class Loader
    * @param structure an <code>Instances</code> value
    */
   protected void notifyStructureAvailable(Instances structure) {
-    if (m_dataSetEventTargets > 0 && structure != null) {
+    
+	logger.debug("IN");  
+	logger.debug("Structure [" + structure + "]");  
+	if (m_dataSetEventTargets > 0 && structure != null) {
+	  logger.debug("dataset event targets");
       DataSetEvent dse = new DataSetEvent(this, structure);
+      logger.debug("Structure [" + dse.getDataSet() + "]");
       notifyDataSetLoaded(dse);
     } else if (m_instanceEventTargets > 0 && structure != null) {
+      logger.debug("instance event targets");
       m_ie.setStructure(structure);
       notifyInstanceLoaded(m_ie);
     }
+	logger.debug("OUT");
   }
 
   /**
@@ -432,7 +442,6 @@ public class Loader
     }
     
     if (l.size() > 0) {
-    	 logger.debug("size >0");
       for(int i = 0; i < l.size(); i++) {
     	  logger.debug("Start for cycle");
 	((DataSourceListener)l.elementAt(i)).acceptDataSet(e);
@@ -597,7 +606,8 @@ public class Loader
    * @param dsl a <code>DataSourceListener</code> value
    */
   public synchronized void addDataSourceListener(DataSourceListener dsl) {
-    super.addDataSourceListener(dsl);
+    logger.debug("IN");
+	super.addDataSourceListener(dsl);
     m_dataSetEventTargets ++;
     // pass on any current instance format
     try{
@@ -607,8 +617,10 @@ public class Loader
         m_dbSet = false;
       }
     }catch(Exception ex){
+    	ex.printStackTrace();
     }
     notifyStructureAvailable(m_dataFormat);
+    logger.debug("IN");
   }
   
   /**
@@ -627,6 +639,7 @@ public class Loader
    * @param dsl a <code>InstanceListener</code> value
    */
   public synchronized void addInstanceListener(InstanceListener dsl) {
+	  logger.debug("IN");
     super.addInstanceListener(dsl);
     m_instanceEventTargets ++;
     try{
@@ -636,9 +649,12 @@ public class Loader
         m_dbSet = false;
       }
     }catch(Exception ex){
+    	ex.printStackTrace();
     }
     // pass on any current instance format      
     notifyStructureAvailable(m_dataFormat);
+    
+    logger.debug("OUT");
   }
   
   /**

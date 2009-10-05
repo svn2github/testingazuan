@@ -7,10 +7,9 @@ package it.eng.spagobi.engines.birt;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionDefinitionException;
 import it.eng.spagobi.engines.birt.exceptions.ConnectionParameterNotValidException;
@@ -19,7 +18,6 @@ import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.content.bo.Content;
-import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.services.proxy.ContentServiceProxy;
 import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
@@ -55,7 +53,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.eclipse.birt.report.IBirtConstants;
-import org.eclipse.birt.report.engine.api.EngineConfig;
 import org.eclipse.birt.report.engine.api.HTMLActionHandler;
 import org.eclipse.birt.report.engine.api.HTMLRenderOption;
 import org.eclipse.birt.report.engine.api.HTMLServerImageHandler;
@@ -66,14 +63,10 @@ import org.eclipse.birt.report.engine.api.IReportRunnable;
 import org.eclipse.birt.report.engine.api.IRunAndRenderTask;
 import org.eclipse.birt.report.engine.api.IScalarParameterDefn;
 import org.eclipse.birt.report.engine.api.PDFRenderOption;
-import org.eclipse.birt.report.model.api.ReportDesignHandle;
 import org.eclipse.birt.report.utility.BirtUtility;
-import org.eclipse.birt.report.utility.ParameterAccessor;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
 import org.xml.sax.InputSource;
-
-
 
 import sun.misc.BASE64Decoder;
 
@@ -90,7 +83,9 @@ public class BirtReportServlet extends HttpServlet {
 	private static String CONNECTION_NAME = "connectionName";
 	public static final String JS_EXT_ZIP = ".zip";
 	public static final String JS_FILE_ZIP = "JS_File";
+	public static final String RTF_FORMAT = "RTF";
 	private String flgTemplateStandard = "true";
+	Map reportParams = null;
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
@@ -197,7 +192,8 @@ public class BirtReportServlet extends HttpServlet {
 		logger.debug("IN");
 		String imageDirectory = servletContext.getRealPath("/report/images");
 		String contextPath = servletRequest.getContextPath();
-		String imageBaseUrl = "/BirtImageServlet?imagePath=" + "/report/images" + "&" + "imageID=";
+		//String imageBaseUrl = "/BirtImageServlet?params="+reportParams+"&imagePath=/report/images&imageID=";
+		String imageBaseUrl = "/BirtImageServlet?imagePath=/report/images&imageID=";
 
 		// Register new image handler
 		HTMLRenderOption renderOption = new HTMLRenderOption();
@@ -212,6 +208,7 @@ public class BirtReportServlet extends HttpServlet {
 		return renderOption;
 
 	}
+	
 
 	private InputStream getTemplateContent(HttpServletRequest servletRequest,ServletContext servletContext) throws IOException {
 		logger.debug("IN");
@@ -340,6 +337,9 @@ public class BirtReportServlet extends HttpServlet {
 				logger.debug(this.getClass().getName() + "findReportParams() The report parameter " + paramName
 						+ " has no values set.");
 				continue;
+				//logger.debug(this.getClass().getName() + "findReportParams() The report parameter " + paramName
+				//		+ " has no values set. Gets default value.");
+				//paramValueString = param.getDefaultValue();
 			}
 
 			int paramType = param.getDataType();
@@ -360,7 +360,8 @@ public class BirtReportServlet extends HttpServlet {
 		logger.debug("OUT");
 		return toReturn;
 	}
-
+	
+	
 	private String getJRTempDirName(ServletContext servletContext, String executionId) {	
 		logger.debug("IN");
 		String jrTempDir = servletContext.getRealPath("tmpdir") + System.getProperty("file.separator") +
@@ -426,7 +427,7 @@ public class BirtReportServlet extends HttpServlet {
 		logger.debug( "runReport(): template document retrieved.");
 		// Open the report design
 		design = birtReportEngine.openReportDesign(is);
-
+		
 		
 		SsoServiceInterface proxyService = SsoServiceFactory.createProxyService();
 		String token = proxyService.readTicket(session);
@@ -451,7 +452,7 @@ public class BirtReportServlet extends HttpServlet {
 		task.setLocale(locale);
 		logger.debug( "runReport(): RunAndRenderTask created successfully.");
 		// Set parameters for the report
-		Map reportParams = findReportParams(request, design);
+		reportParams = findReportParams(request, design);
 
 		String requestConnectionName = (String) request.getParameter(CONNECTION_NAME);
 		logger.debug("requestConnectionName:" + requestConnectionName);
@@ -486,34 +487,51 @@ public class BirtReportServlet extends HttpServlet {
 
 		reportParams.put("KpiDSXmlUrl", kpiUrl);
 		
+		//gets static resources with SBI_RESOURCE_PATH system's parameter
+		String resourcePath=EnginConf.getInstance().getResourcePath()+"/img/";
+		String entity=(String)reportParams.get(SpagoBIConstants.SBI_ENTITY);
+		// IF exist an ENTITY  parameter concat to resourcePath
+		if (entity!=null && entity.length()>0){
+			resourcePath=resourcePath.concat(entity+"/");
+		}
+		logger.debug("SetUp resourcePath:"+resourcePath);
+		reportParams.put("SBI_RESOURCE_PATH", resourcePath);
+		
+		
+		
 		task.setParameterValues(reportParams);
 		task.validateParameters();
 
-		String outputFormat = request.getParameter("outputType");
+		String outputFormat = request.getParameter("outputType");		
 		logger.debug("outputType -- [" + outputFormat + "]");
-
-
 
 		String templateFileName = request.getParameter("template_file_name");
 		logger.debug("templateFileName -- [" + templateFileName + "]");
 		if (templateFileName == null || templateFileName.trim().equals(""))
 			templateFileName = "report";
-		IRenderOption renderOption = null;
+		IRenderOption renderOption = null; 
 
 		if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.PDF_RENDER_FORMAT)) {
 			renderOption = new PDFRenderOption();
 			renderOption.setOutputFormat(IBirtConstants.PDF_RENDER_FORMAT);
+			//renderOption.setSupportedImageFormats("JPG;jpg;PNG;png;BMP;bmp;SVG;svg;GIF;gif");
 			response.setContentType("application/pdf");
-			response.setHeader("Content-disposition", "inline; filename=" + templateFileName + ".pdf");
+			response.setHeader("Content-disposition", "inline; filename=" + templateFileName + ".pdf");			
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.HTML_RENDER_FORMAT)) {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat(IBirtConstants.HTML_RENDER_FORMAT);
-		} else if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.DOC_RENDER_FORMAT)) {
+		/*} else if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.DOC_RENDER_FORMAT)) {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat(IBirtConstants.DOC_RENDER_FORMAT);
 			// renderOption.setOutputFileName(templateFileName + ".doc");
 			response.setContentType("application/msword");
 			response.setHeader("Content-disposition", "inline; filename=" + templateFileName + ".doc");
+		*/
+		}else if (outputFormat != null && outputFormat.equalsIgnoreCase(RTF_FORMAT)) {
+				renderOption = prepareHtmlRenderOption(servletContext, request);
+				renderOption.setOutputFormat(RTF_FORMAT);
+				response.setContentType("application/rtf");
+				response.setHeader("Content-disposition", "inline; filename=" + templateFileName + ".rtf");
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("xls")) {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat("xls");
@@ -541,7 +559,11 @@ public class BirtReportServlet extends HttpServlet {
 		task.setAppContext(context);
 		renderOption.setOutputStream((OutputStream) response.getOutputStream());
 		task.setRenderOption(renderOption);
-		task.run();
+		try{
+			task.run();
+		}catch(Exception e){
+			logger.error("Error while running the report: " + e);
+		}
 		task.close();
 		logger.debug("OUT");
 

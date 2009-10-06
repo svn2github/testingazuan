@@ -82,10 +82,10 @@ public class SpagoBIAccessFilter implements Filter {
     	throws IOException, ServletException {
 	
     	String auditId;
-    	String userId;
+    	String userId=null;
     	String documentId;
     	String executionId;
-    	
+    	IEngUserProfile profile = null;
     	String requestUrl;
     	
     	logger.debug("IN");
@@ -113,9 +113,7 @@ public class SpagoBIAccessFilter implements Filter {
 				HttpServletRequest httpRequest = (HttpServletRequest) request;
 				requestUrl = httpRequest.getRequestURL().toString();
 				logger.info("requestUrl: " + requestUrl);
-				
-				userId = getUserWithSSO(httpRequest);
-				
+						
 				ioManager.initConetxtManager();			    
 		
 				ioManager.setInSession(DOCUMENT_ID_PARAM_NAME, documentId);
@@ -130,15 +128,19 @@ public class SpagoBIAccessFilter implements Filter {
 					if (passTicket != null && passTicket.equalsIgnoreCase(EnginConf.getInstance().getPass())) {
 					    // if a request is coming from SpagoBI context
 					    isBackend = true;
+					    profile=UserProfile.createSchedulerUserProfile();
 					    ioManager.setInSession(IS_BACKEND_ATTR_NAME, "true");
 					    ioManager.contextManager.set(IS_BACKEND_ATTR_NAME, "true");
+			    		ioManager.setInSession(IEngUserProfile.ENG_USER_PROFILE, new UserProfile("scheduler"));
+			    		ioManager.contextManager.set(IEngUserProfile.ENG_USER_PROFILE, new UserProfile("scheduler"));					    
 					    logger.info("IS a backEnd Request ...");
 					} else {
 					    logger.warn("PassTicked is NULL in BackEnd call");
 					    throw new ServletException();
 					}
+			    }else {
+			    	userId = getUserWithSSO(httpRequest);
 			    }
-		
 
 			    String spagobiContext = request.getParameter(SpagoBIConstants.SBI_CONTEXT);
 			    String spagoUrl = request.getParameter(SpagoBIConstants.SBI_HOST);
@@ -157,13 +159,10 @@ public class SpagoBIAccessFilter implements Filter {
 			    } else {
 			    	logger.warn("spagoUrl is null.");
 			    }
-		
-			    IEngUserProfile profile = null;
-			    if(userId != null) {
-			    	if( userId.equals("scheduler") ) {
-			    		ioManager.setInSession(IEngUserProfile.ENG_USER_PROFILE, new UserProfile("scheduler"));
-			    		ioManager.contextManager.set(IEngUserProfile.ENG_USER_PROFILE, new UserProfile("scheduler"));
-			    	} else {
+				
+			
+			    
+			    if(!isBackend && userId != null) {
 			    		try {
 			    			// this is not correct. profile in session can come also from a concurrent execution 
 						    profile = (IEngUserProfile) ioManager.getFromSession(IEngUserProfile.ENG_USER_PROFILE);
@@ -184,7 +183,6 @@ public class SpagoBIAccessFilter implements Filter {
 						    logger.error("SecurityException while reeding user profile", e);
 						    throw new ServletException("Message: " + e.getMessage() + "; Cause: " + (e.getCause()!=null?e.getCause().getMessage(): "none"));
 						}
-			    	}
 			    }
 			    
 			    

@@ -99,7 +99,7 @@ public class HibernateDatamartStructureBuilder implements IDataMartStructureBuil
 			classMetadata = sf.getAllClassMetadata();
 			for(Iterator it = classMetadata.keySet().iterator(); it.hasNext(); ) {
 				String entityType = (String)it.next();			
-				addEntity(dataMartStructure, entityType);		
+				addEntity(dataMartStructure, datamartName, entityType);		
 			}
 		}
 		
@@ -107,10 +107,10 @@ public class HibernateDatamartStructureBuilder implements IDataMartStructureBuil
 		return dataMartStructure;
 	}
 
-	private void addEntity (DataMartModelStructure dataMartStructure, String entityType){
+	private void addEntity (DataMartModelStructure dataMartStructure, String datamartName, String entityType){
 
 		String entityName = getEntityNameFromEntityType(entityType);		
-		DataMartEntity dataMartEntity = dataMartStructure.addRootEntity(entityName, null, null, entityType);
+		DataMartEntity dataMartEntity = dataMartStructure.addRootEntity(datamartName, entityName, null, null, entityType);
 				
 		addKeyFields(dataMartEntity);		
 		List subEntities = addNormalFields(dataMartEntity);	

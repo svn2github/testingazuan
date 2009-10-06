@@ -23,13 +23,18 @@ package it.eng.qbe.datasource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.Mappings;
+import org.hibernate.engine.Mapping;
+import org.hibernate.mapping.PersistentClass;
 
+import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.dao.DAOFactory;
 
 
@@ -87,10 +92,20 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		setDblinkMap(dblinkMap);
 		
 		setConnection(connection);
-			
-		setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( datamartName ) );
 		
+		setProperties();
+
 		this.alreadyAddedView = new ArrayList();		
+	}
+	
+	private void setProperties() {
+		DatamartProperties properties = new DatamartProperties();
+		Iterator it = datamartNames.iterator();
+		while (it.hasNext()) {
+			String aDatamartName = (String) it.next();
+			properties.addDatamartProperties(DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( aDatamartName ));
+		}
+		setProperties( properties );
 	}
 	
 	/**
@@ -231,7 +246,7 @@ public class CompositeHibernateDataSource extends AbstractHibernateDataSource  {
 		try {
 			compositeConfiguration.addJar(jarFile);
 		} catch (Throwable t) {
-			t.printStackTrace();
+			throw new RuntimeException("Cannot add datamart", t);
 		}
 		
 		addViews(dmName);

@@ -40,6 +40,7 @@ import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartCalculatedField;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
+import it.eng.qbe.query.serializer.QueryJSONSerializer;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
@@ -78,6 +79,7 @@ public class ExtJsQbeTreeBuilder  {
 	 * @param locale can be null. In that case label.properties will be loaded (if exists)
 	 * @return
 	 */
+	/*
 	public List getQbeTrees(IDataMartModel datamartModel, Locale locale)  {			
 		setDatamartModel(datamartModel);
 		setLocale(locale);
@@ -86,6 +88,17 @@ public class ExtJsQbeTreeBuilder  {
 			setDatamartLabels( new DatamartLabels() );
 		}
 		return buildQbeTreeList();
+	}
+	*/
+	
+	public JSONArray getQbeTree(IDataMartModel datamartModel, Locale locale, String datamartName)  {			
+		setDatamartModel(datamartModel);
+		setLocale(locale);
+		setDatamartLabels( QbeCacheManager.getInstance().getLabels( getDatamartModel() , getLocale() ) );
+		if( getDatamartLabels() == null) {
+			setDatamartLabels( new DatamartLabels() );
+		}
+		return buildQbeTree(datamartName);
 	}
 	
 	private String geEntityLabel(DataMartEntity entity) {
@@ -115,6 +128,7 @@ public class ExtJsQbeTreeBuilder  {
 	 * 
 	 * @return the list
 	 */
+	/*
 	private List buildQbeTreeList()  {	
 		List list = new ArrayList();
 		
@@ -125,19 +139,9 @@ public class ExtJsQbeTreeBuilder  {
 			list.add(tree);
 			
 		}	
-		
-		/*
-		targetDatamartName = "Views";
-		name = baseName + "_" + dmNames.size();
-		if(getHibernateSession() != null && getClassNames().size() > 0) {
-			String treeScript = buildQbeTree();
-			treeScripts.put(targetDatamartName, treeScript);
-		}	
-		*/	
-		
-		
 		return list;
 	}
+	 */
 	
 	public PrintWriter writer;
 	
@@ -216,6 +220,7 @@ public class ExtJsQbeTreeBuilder  {
 		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();	
 		String iconCls = datamartProperties.getEntityIconClass( entity );			
 		String label = geEntityLabel( entity );
+		String londDescription = QueryJSONSerializer.getEntityLongDescription( entity , getDatamartLabels());
 		String tooltip = geEntityTooltip( entity );
 		
 		writer.println("\n\n####################################################");
@@ -235,6 +240,7 @@ public class ExtJsQbeTreeBuilder  {
 			JSONObject nodeAttributes = new JSONObject();
 			nodeAttributes.put("iconCls", iconCls);
 			nodeAttributes.put("type", "entity");
+			nodeAttributes.put("londDescription", londDescription);
 			entityNode.put("attributes", nodeAttributes);
 			entityNode.put("children", childrenNodes);
 		} catch (JSONException e) {
@@ -317,6 +323,7 @@ public class ExtJsQbeTreeBuilder  {
 		DatamartProperties datamartProperties = datamartModel.getDataSource().getProperties();
 		String iconCls = datamartProperties.getFieldIconClass( field );		
 		String fieldLabel = geFieldLabel( field );
+		String longDescription = QueryJSONSerializer.getFieldLongDescription( field, getDatamartLabels() );
 		String fieldTooltip = geFieldTooltip( field );
 		String entityLabel = geEntityLabel( parentEntity );
 		
@@ -335,6 +342,7 @@ public class ExtJsQbeTreeBuilder  {
 			nodeAttributes.put("entity", entityLabel);
 			nodeAttributes.put("qtip", fieldTooltip);
 			nodeAttributes.put("field", fieldLabel);
+			nodeAttributes.put("longDescription", longDescription);
 			fieldNode.put("attributes", nodeAttributes);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

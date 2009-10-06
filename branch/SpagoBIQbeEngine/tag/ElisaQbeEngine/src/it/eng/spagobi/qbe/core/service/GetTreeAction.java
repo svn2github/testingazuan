@@ -21,6 +21,7 @@
 package it.eng.spagobi.qbe.core.service;
        
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -51,6 +52,7 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 
 	// INPUT PARAMETERS
 	public static final String QUERY_ID = "parentQueryId";
+	public static final String DATAMART_NAME = "datamartName";
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(GetTreeAction.class);
@@ -60,6 +62,7 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 		
 		
 		String queryId = null;
+		String datamartName = null;
 		Query query = null;
 		
 		IQbeTreeEntityFilter entityFilter = null;
@@ -67,7 +70,6 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 		QbeTreeFilter treeFilter = null;
 		
 		ExtJsQbeTreeBuilder qbeBuilder = null;
-		List trees = null;
 		JSONArray nodes = null;
 		
 		logger.debug("IN");
@@ -105,9 +107,24 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 			treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
 			
 			
-			qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	   	
-		   	trees = qbeBuilder.getQbeTrees(getDatamartModel(), getLocale());			
-		   	nodes = (JSONArray)trees.get(0);		
+			qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	 
+			
+			datamartName = getAttributeAsString(DATAMART_NAME);
+			if (datamartName != null) {
+				nodes = qbeBuilder.getQbeTree(getDatamartModel(), getLocale(), datamartName);			
+			} else {
+				nodes = new JSONArray();
+				List datamartsNames = getEngineInstance().getDatamartModel().getDataSource().getDatamartNames();
+				Iterator it = datamartsNames.iterator();
+				while (it.hasNext()) {
+					String aDatamartName = (String) it.next();
+					JSONArray temp = qbeBuilder.getQbeTree(getDatamartModel(), getLocale(), aDatamartName);
+					for (int i = 0; i < temp.length(); i++) {
+						Object object = temp.get(i);
+						nodes.put(object);
+					}
+				}
+			}
 			
 			try {
 				writeBackToClient( new JSONSuccess(nodes) );

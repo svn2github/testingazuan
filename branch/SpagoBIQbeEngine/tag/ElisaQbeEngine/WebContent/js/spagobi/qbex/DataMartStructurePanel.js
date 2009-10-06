@@ -59,19 +59,19 @@ Sbi.qbe.DataMartStructurePanel = function(config) {
 		, preloadTree: true
 		, baseParams: {}
   	};
-	if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.dataMartStructurePanel) {
+	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.dataMartStructurePanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.dataMartStructurePanel);
 	}
 	
 	var c = Ext.apply(defaultSettings, config || {});	
 	Ext.apply(this, c);
 	
-	
+	var params = c.title !== undefined ? {'datamartName': c.title} : {};
 	
 	this.services = this.services || new Array();	
 	this.services['loadTree'] = this.services['loadTree'] || Sbi.config.serviceRegistry.getServiceUrl({
 		serviceName: 'GET_TREE_ACTION'
-		, baseParams: new Object()
+		, baseParams: params
 	});
 
 	this.services['getParameters'] = this.services['getParameters'] || Sbi.config.serviceRegistry.getServiceUrl({

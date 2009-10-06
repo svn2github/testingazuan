@@ -110,4 +110,10 @@ public class DatamartLabels {
 	private void setProperties(Properties properties) {
 		this.properties = properties;
 	}
+	
+	public void addDatamartLabels(DatamartLabels labels) {
+		if (labels != null && labels.properties != null && !labels.properties.isEmpty()) {
+			this.properties.putAll(labels.properties);
+		}
+	}
 }

@@ -125,6 +125,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 			filter = {
 				rightOperandValue: node.id
 				, rightOperandDescription: node.props.query.name
+				, rightOperandLongDescription: 'Subquery ' + node.props.query.name
 				, rightOperandType: 'Subquery'
 			};
 			this.targetPanel.modifyFilter(filter, rowIndex);
@@ -132,6 +133,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 			filter = {
 				leftOperandValue: node.id
 				, leftOperandDescription: node.props.query.name
+				, leftOperandLongDescription: 'Subquery ' + node.props.query.name
 				, leftOperandType: 'Subquery'
 			};
 			this.targetPanel.modifyFilter(filter, rowIndex);
@@ -175,6 +177,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 				rightOperandValue: (rows[0].data.type == 'NUMBER') ? rows[0].data.id : 'P{' + rows[0].data.id + '}'
 				, rightOperandDescription: '[' + rows[0].data.label + ']'
 				, rightOperandType: 'Static Value'
+				, rightOperandLongDescription: LN('sbi.qbe.documentparametersgridpanel.parameterreference') + ' [' + rows[0].data.label + ']'
 			};
 			this.targetPanel.modifyFilter(filter, rowIndex);
 		} else if (dropColDataIndex === 'leftOperandDescription') {
@@ -182,6 +185,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 				leftOperandValue: (rows[0].data.type == 'NUMBER') ? rows[0].data.id : 'P{' + rows[0].data.id + '}'
 				, leftOperandDescription: '[' + rows[0].data.label + ']'
 				, leftOperandType: 'Static Value'
+				, leftOperandLongDescription: LN('sbi.qbe.documentparametersgridpanel.parameterreference') + ' [' + rows[0].data.label + ']'
 			};
 			this.targetPanel.modifyFilter(filter, rowIndex);
 		} else {
@@ -216,6 +220,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 					rightOperandValue: node.id
 					, rightOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
 					, rightOperandType: 'Field Content'
+					, rightOperandLongDescription: node.attributes.longDescription
 				};
 				this.targetPanel.modifyFilter(filter, rowIndex);
 			}else if(dropColDataIndex === 'leftOperandDescription') {			
@@ -223,6 +228,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 					leftOperandValue: node.id
 					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
 					, leftOperandType: 'Field Content'
+					, leftOperandLongDescription: node.attributes.longDescription
 				};
 				this.targetPanel.modifyFilter(filter, rowIndex);
 			} else {
@@ -230,6 +236,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 					leftOperandValue: node.id
 					, leftOperandDescription: node.attributes.entity + ' : ' + node.attributes.field 
 					, leftOperandType: 'Field Content'
+					, leftOperandLongDescription: node.attributes.longDescription
 				};
 	  			this.targetPanel.insertFilter(filter, rowIndex);
 			}
@@ -241,6 +248,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 					leftOperandValue: node.attributes.children[i].id
 					, leftOperandDescription: node.attributes.children[i].attributes.entity + ' : ' + node.attributes.children[i].attributes.field 
 					, leftOperandType: 'Field Content'
+					, leftOperandLongDescription: node.attributes.children[i].attributes.longDescription
 				};
 				
 				this.targetPanel.insertFilter(filter, rowIndex);
@@ -290,12 +298,14 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 						leftOperandValue: rows[0].data.id
 						, leftOperandDescription: rows[0].data.entity + ' : ' + rows[0].data.field 
 						, leftOperandType: 'Field Content'
+						, leftOperandLongDescription: rows[0].data.longDescription
 				};
 			} else {
 				filter = {
 						rightOperandValue: rows[0].data.id
 						, rightOperandDescription: rows[0].data.entity + ' : ' + rows[0].data.field 
 						, rightOperandType: 'Field Content'
+						, rightOperandLongDescription: rows[0].data.longDescription
 				};
 			}
 			
@@ -319,6 +329,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 							leftOperandValue: rows[i].data.id
 							, leftOperandDescription: rows[i].data.entity + ' : ' + rows[i].data.field 
 							, leftOperandType: 'Field Content'
+							, leftOperandLongDescription: rows[i].data.longDescription
 					};
 	  				this.targetPanel.insertFilter( filter, rowIndex );
 	  			}

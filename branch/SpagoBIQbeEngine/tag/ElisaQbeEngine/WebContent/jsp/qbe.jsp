@@ -14,6 +14,8 @@
 <%@page import="java.util.Locale"%>
 <%@page import="it.eng.spagobi.services.common.EnginConf"%>
 <%@page import="java.util.Map"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Iterator"%>
 
 <%
 	QbeEngineInstance qbeEngineInstance;
@@ -30,7 +32,7 @@
 	String spagobiSpagoController;
 	
 	qbeEngineInstance = (QbeEngineInstance)ResponseContainerAccess.getResponseContainer(request).getServiceResponse().getAttribute("ENGINE_INSTANCE");
-	
+	List datamartNames = qbeEngineInstance.getDatamartModel().getDataSource().getDatamartNames();
 	profile = (UserProfile)qbeEngineInstance.getEnv().get(EngineConstants.ENV_USER_PROFILE);
 	locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
 	
@@ -62,7 +64,7 @@
 		
 		<!-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
 		<script type="text/javascript">
-		//document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
+		document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
 		</script>
 		<!-- END SCRIPT FOR DOMAIN DEFINITION -->
 	
@@ -110,6 +112,20 @@
 	
 	      	var qbeConfig = {};
 	      	qbeConfig.isFromCross = <%= isFromCross %>;
+	      	<%
+	      	StringBuffer datamartNamesBuffer = new StringBuffer("[");
+	      	Iterator it = datamartNames.iterator();
+	      	while (it.hasNext()) {
+	      		String datamartName = (String) it.next();
+	      		datamartNamesBuffer.append("'" + datamartName + "'");
+	      		if (it.hasNext()) {
+	      			datamartNamesBuffer.append(",");
+	      		}
+	      	}
+	      	datamartNamesBuffer.append("]");
+	      	%>
+	      	qbeConfig.westConfig = {};
+	      	qbeConfig.westConfig.datamartsName = <%= datamartNamesBuffer.toString() %>;
 	
 	        // javascript-side user profile object
 	        Ext.ns("Sbi.user");
@@ -119,7 +135,7 @@
 	        	Ext.QuickTips.init();   
 	
 	        	var parametersStore = new Sbi.qbe.DocumentParametersStore({});
-	        	var parametersInfo = <%= request.getParameter("SBI_DOCUMENT_PARAMETERS") %>;
+	        	var parametersInfo = <%= request.getParameter("SBI_DOCUMENT_PARAMETERS") != null ? request.getParameter("SBI_DOCUMENT_PARAMETERS") : "[{}]" %>;
 	        	parametersStore.loadData(parametersInfo);
 	        	
 	       		qbeConfig.documentParametersStore = parametersStore;

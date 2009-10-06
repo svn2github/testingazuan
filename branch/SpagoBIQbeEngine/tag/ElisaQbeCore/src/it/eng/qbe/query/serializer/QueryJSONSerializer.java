@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import it.eng.qbe.bo.DatamartLabels;
 import it.eng.qbe.cache.QbeCacheManager;
 import it.eng.qbe.model.DataMartModel;
+import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.query.CalculatedSelectField;
 import it.eng.qbe.query.DataMartSelectField;
@@ -135,7 +136,7 @@ public class QueryJSONSerializer implements QuerySerializer {
 		JSONObject fieldJSON;
 		Iterator it;
 		DatamartLabels datamartLabels;
-		String label;
+		String label, longDescription;
 		
 		logger.debug("IN");
 		
@@ -188,7 +189,8 @@ public class QueryJSONSerializer implements QuerySerializer {
 						}
 						label = StringUtilities.isEmpty(label)? datamartField.getName(): label;
 						fieldJSON.put(SerializationConstants.FIELD_NAME, label);
-						
+						longDescription = getFieldLongDescription(datamartField, datamartLabels);
+						fieldJSON.put(SerializationConstants.FIELD_LONG_DESCRIPTION, longDescription);
 						
 						if( dataMartSelectField.isGroupByField() ) {
 							fieldJSON.put(SerializationConstants.FIELD_GROUP, "true");
@@ -224,6 +226,28 @@ public class QueryJSONSerializer implements QuerySerializer {
 		
 		return result;
 	}	
+	
+	public static String getFieldLongDescription(DataMartField field, DatamartLabels datamartLabels) {
+		String label = field.getName();
+		if (datamartLabels != null) {
+			label = datamartLabels.getLabel(field);
+		}
+		String extendedLabel = StringUtilities.isEmpty(label)? field.getName(): label;
+		DataMartEntity parent = field.getParent();
+		if (parent == null) return extendedLabel;
+		else return getEntityLongDescription(parent, datamartLabels) + " : " + extendedLabel;
+	}
+	
+	public static String getEntityLongDescription(DataMartEntity entity, DatamartLabels datamartLabels) {
+		String label = entity.getName();
+		if (datamartLabels != null) {
+			label = datamartLabels.getLabel(entity);
+		}
+		String extendedLabel = StringUtilities.isEmpty(label)? entity.getName(): label;
+		DataMartEntity parent = entity.getParent();
+		if (parent == null) return extendedLabel;
+		else return getEntityLongDescription(parent, datamartLabels) + " / " + extendedLabel;
+	}
 	
 	/*
 	 
@@ -299,6 +323,14 @@ public class QueryJSONSerializer implements QuerySerializer {
 					labelF = StringUtilities.isEmpty(labelF)? datamartField.getName(): labelF;
 					
 					filterJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, labelE  + " : " + labelF );
+					
+					String loLongDescription = getFieldLongDescription(datamartField, datamartLabels);
+					filterJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, loLongDescription);
+				} else if(operand.type.equalsIgnoreCase("Subquery")) {
+					String loLongDescription = "Subquery " + operand.description;
+					filterJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, loLongDescription);
+					
+					filterJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
 				} else {
 					filterJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
 				}
@@ -331,6 +363,14 @@ public class QueryJSONSerializer implements QuerySerializer {
 					labelF = StringUtilities.isEmpty(labelF)? datamartField.getName(): labelF;
 					
 					filterJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, labelE  + " : " + labelF );
+					
+					String roLongDescription = getFieldLongDescription(datamartField, datamartLabels);
+					filterJSON.put(SerializationConstants.FILTER_RO_LONG_DESCRIPTION, roLongDescription);
+				} else if(operand.type.equalsIgnoreCase("Subquery")) {
+					String roLongDescription = "Subquery " + operand.description;
+					filterJSON.put(SerializationConstants.FILTER_RO_LONG_DESCRIPTION, roLongDescription);
+					
+					filterJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
 				} else {
 					filterJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
 				}
@@ -400,6 +440,14 @@ public class QueryJSONSerializer implements QuerySerializer {
 					labelF = StringUtilities.isEmpty(labelF)? datamartField.getName(): labelF;
 					
 					havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, labelE  + " : " + labelF );
+					
+					String loLongDescription = getFieldLongDescription(datamartField, datamartLabels);
+					havingJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, loLongDescription);
+				} else if(operand.type.equalsIgnoreCase("Subquery")) {
+					String loLongDescription = "Subquery " + operand.description;
+					havingJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, loLongDescription);
+					
+					havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
 				} else {
 					havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
 				}
@@ -433,6 +481,14 @@ public class QueryJSONSerializer implements QuerySerializer {
 					labelF = StringUtilities.isEmpty(labelF)? datamartField.getName(): labelF;
 					
 					havingJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, labelE  + " : " + labelF );
+					
+					String roLongDescription = getFieldLongDescription(datamartField, datamartLabels);
+					havingJSON.put(SerializationConstants.FILTER_RO_LONG_DESCRIPTION, roLongDescription);
+				} else if(operand.type.equalsIgnoreCase("Subquery")) {
+					String roLongDescription = "Subquery " + operand.description;
+					havingJSON.put(SerializationConstants.FILTER_RO_LONG_DESCRIPTION, roLongDescription);
+					
+					havingJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
 				} else {
 					havingJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
 				}

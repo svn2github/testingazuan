@@ -74,7 +74,11 @@ public class DatamartProperties {
 		qbeProperties = dm.getDataMartProperties();
 	}
 	
-	
+	public void addDatamartProperties(DatamartProperties datamartProperties) {
+		if (datamartProperties != null && datamartProperties.qbeProperties != null && !datamartProperties.qbeProperties.isEmpty()) {
+			qbeProperties.putAll(datamartProperties.qbeProperties);
+		}
+	}
 	
 	private String getEntityUniqueNameInFile( DataMartEntity entity ) {
 		return entity.getUniqueName().replaceAll(":", "/");

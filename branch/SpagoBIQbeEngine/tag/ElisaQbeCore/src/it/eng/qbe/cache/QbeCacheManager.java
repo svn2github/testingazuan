@@ -28,6 +28,8 @@ import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IDataMartModel;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -60,9 +62,16 @@ public class QbeCacheManager {
 		
 		labels = cache.getLabels(datamartModel, locale);
 		if(labels == null) {
-			labels = DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartModel.getName(), locale);
-			if(locale != null && labels == null) {
-				labels = DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartModel.getName(), null);
+			labels = new DatamartLabels();
+			List datamartsName = datamartModel.getDataSource().getDatamartNames();
+			Iterator it = datamartsName.iterator();
+			while (it.hasNext()) {
+				String datamartName = (String) it.next();
+				DatamartLabels aDatamartLabels = DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartName, locale);
+				if(locale != null && labels == null) {
+					aDatamartLabels = DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartName, null);
+				}
+				labels.addDatamartLabels(aDatamartLabels);
 			}
 		}
 		

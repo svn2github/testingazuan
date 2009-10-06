@@ -46,10 +46,10 @@ import it.eng.spagobi.utilities.DynamicClassLoader;
 public abstract class AbstractHibernateDataSource extends AbstractDataSource implements IHibernateDataSource {
 
 	/** The datamart name. */
-	private String datamartName = null;
+	protected String datamartName = null;
 	
 	/** The datamart names. */
-	private List datamartNames = null;
+	protected List datamartNames = null;
 	
 	/** The dblink map. */
 	private Map dblinkMap = null;

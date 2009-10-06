@@ -320,6 +320,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	           {name: 'type'},
 	           
 	           {name: 'entity'},
+	           {name: 'longDescription'},
 	           {name: 'field'},
 	           
 	           {name: 'funct'},	 
@@ -340,6 +341,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		      {name: 'type', type: 'string'},
 		      
 		      {name: 'entity', type: 'string'},
+		      {name: 'longDescription', type: 'string'},
 		      {name: 'field', type: 'string'},
 		     
 		      {name: 'funct', type: 'string'},
@@ -452,6 +454,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		         , hideable: true
 				 , hidden: false	
 				 , sortable: false
+				 , renderer: this.getCellTooltip
 		     }, {
 		         header: LN('sbi.qbe.selectgridpanel.headers.alias')
 		         , dataIndex: 'alias'
@@ -751,4 +754,13 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	    	this.updateGroupByColumn();
 	    }, this); 
 	}
+	
+	, getCellTooltip: function (value, cell, record) {
+	 	var tooltipString = record.data.longDescription;
+	 	if (tooltipString !== undefined && tooltipString != null) {
+	 		cell.attr = ' ext:qtip="'  + tooltipString + '"';
+	 	}
+	 	return value;
+	}
+	
 });

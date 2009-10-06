@@ -117,7 +117,7 @@ public class QbeTemplate {
 					qbeSB = (SourceBean)qbeList.get(i);
 					
 					// DATAMART block
-					if(template.containsAttribute(TAG_DATAMART)) {
+					if(qbeSB.containsAttribute(TAG_DATAMART)) {
 						datamartSB = (SourceBean)qbeSB.getAttribute(TAG_DATAMART);	
 						dmName = (String)datamartSB.getAttribute(PROP_DATAMART_NAME);
 						Assert.assertTrue(!StringUtilities.isEmpty(dmName), "Attribute [" + PROP_DATAMART_NAME +"] in tag [" + TAG_DATAMART + "] must be properly defined");
@@ -132,7 +132,7 @@ public class QbeTemplate {
 					}
 					
 					// MODALITY block
-					if(template.containsAttribute(TAG_MODALITY)) {
+					if(qbeSB.containsAttribute(TAG_MODALITY)) {
 						modalitySB = (SourceBean)qbeSB.getAttribute(TAG_MODALITY);
 						modalities.add(modalitySB);		
 					} else {

@@ -178,6 +178,7 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 			, leftOperandAggregator: ''
 			, leftOperandValue: ''
 			, leftOperandDescription: ''
+			, leftOperandLongDescription: null
 			, leftOperandType: 'Static Value'
 			, leftOperandDefaultValue: null
 			, leftOperandLastValue: null
@@ -187,6 +188,7 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 			, rightOperandAggregator: ''
 			, rightOperandValue: ''
 			, rightOperandDescription: ''
+			, rightOperandLongDescription: null
 			, rightOperandType: 'Static Value'
 			, rightOperandDefaultValue: null
 			, rightOperandLastValue: null
@@ -404,6 +406,7 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 		   {name: 'leftOperandAggregator', type: 'string'},
 		   {name: 'leftOperandValue', type: 'auto'}, // id (field unique name)
 		   {name: 'leftOperandDescription', type: 'string'}, // entity(entity label) + field(field label)
+		   {name: 'leftOperandLongDescription', type: 'string'}, // entity(entity label) / ... / entity(entity label) + field(field label)
 		   {name: 'leftOperandType', type: 'string'}, // NEW
 		   {name: 'leftOperandDefaultValue', type: 'string'}, // RESERVED FOR FUTURE USE
 		   {name: 'leftOperandLastValue', type: 'string'}, // RESERVED FOR FUTURE USE
@@ -413,6 +416,7 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 		   {name: 'rightOperandAggregator', type: 'string'},
 		   {name: 'rightOperandValue', type: 'auto'}, // operand
 		   {name: 'rightOperandDescription', type: 'string'}, // odesc
+		   {name: 'rightOperandLongDescription', type: 'string'}, // entity(entity label) / ... / entity(entity label) + field(field label)
 		   {name: 'rightOperandType', type: 'string'}, // otype
 		   {name: 'rightOperandDefaultValue', type: 'string'}, // defaultvalue
 		   {name: 'rightOperandLastValue', type: 'string'}, // lastvalue
@@ -631,6 +635,7 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 				    , hideable: false
 				    , hidden: false		 
 				    , sortable: false
+				    , renderer: this.getLeftOperandTooltip
 				}, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.lotype')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.lotype')
@@ -689,6 +694,7 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 				    , hideable: false
 				    , hidden: false	
 				    , sortable: false
+				    , renderer: this.getRightOperandTooltip
 				}, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.rotype')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.rotype')
@@ -895,4 +901,21 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 		this.operandChooserWindow.show();
 	}
 	*/
+	
+	, getLeftOperandTooltip: function (value, metadata, record) {
+	 	var tooltipString = record.data.leftOperandLongDescription;
+	 	if (tooltipString !== undefined && tooltipString != null) {
+	 		metadata.attr = ' ext:qtip="'  + tooltipString + '"';
+	 	}
+	 	return value;
+	}
+	
+	, getRightOperandTooltip: function (value, metadata, record) {
+	 	var tooltipString = record.data.rightOperandLongDescription;
+	 	if (tooltipString !== undefined && tooltipString != null) {
+	 		metadata.attr = ' ext:qtip="'  + tooltipString + '"';
+	 	}
+	 	return value;
+	}
+	
 });

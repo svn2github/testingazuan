@@ -163,6 +163,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			
 			, leftOperandValue: ''
 			, leftOperandDescription: ''
+			, leftOperandLongDescription: null
 			, leftOperandType: 'Static Value'
 			, leftOperandDefaultValue: null
 			, leftOperandLastValue: null
@@ -171,6 +172,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				
 			, rightOperandValue: ''
 			, rightOperandDescription: ''
+			, rightOperandLongDescription: null
 			, rightOperandType: 'Static Value'
 			, rightOperandDefaultValue: null
 			, rightOperandLastValue: null
@@ -419,6 +421,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		   
 		   {name: 'leftOperandValue', type: 'auto'}, // id (field unique name)
 		   {name: 'leftOperandDescription', type: 'string'}, // entity(entity label) + field(field label)
+		   {name: 'leftOperandLongDescription', type: 'string'}, // entity(entity label) / ... / entity(entity label) + field(field label)
 		   {name: 'leftOperandType', type: 'string'}, // NEW
 		   {name: 'leftOperandDefaultValue', type: 'string'}, // RESERVED FOR FUTURE USE
 		   {name: 'leftOperandLastValue', type: 'string'}, // RESERVED FOR FUTURE USE
@@ -427,6 +430,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		   
 		   {name: 'rightOperandValue', type: 'auto'}, // operand
 		   {name: 'rightOperandDescription', type: 'string'}, // odesc
+		   {name: 'rightOperandLongDescription', type: 'string'}, // entity(entity label) / ... / entity(entity label) + field(field label)
 		   {name: 'rightOperandType', type: 'string'}, // otype
 		   {name: 'rightOperandDefaultValue', type: 'string'}, // defaultvalue
 		   {name: 'rightOperandLastValue', type: 'string'}, // lastvalue
@@ -541,9 +545,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    parentFieldEditor.on('change', function(f, newValue, oldValue){
 		    	if(this.activeEditingContext) {
 		    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
-		    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value'}, this.activeEditingContext.row);
+		    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value', leftOperandLongDescription: null}, this.activeEditingContext.row);
 		    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
-		    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value'}, this.activeEditingContext.row);
+		    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
 		    		}
 		    	}		    	
 		    }, this);
@@ -556,9 +560,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    textEditor.on('change', function(f, newValue, oldValue){
 		    	if(this.activeEditingContext) {
 		    		if(this.activeEditingContext.dataIndex === 'leftOperandDescription') {
-		    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value'}, this.activeEditingContext.row);
+		    			this.modifyFilter({leftOperandValue: newValue, leftOperandType: 'Static Value', leftOperandLongDescription: null}, this.activeEditingContext.row);
 		    		} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
-		    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value'}, this.activeEditingContext.row);
+		    			this.modifyFilter({rightOperandValue: newValue, rightOperandType: 'Static Value', rightOperandLongDescription: null}, this.activeEditingContext.row);
 		    		}
 		    	}		    	
 		    }, this);
@@ -607,6 +611,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				    , hideable: false
 				    , hidden: false		 
 				    , sortable: false
+				    , renderer: this.getLeftOperandTooltip
 				}, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.lotype')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.lotype')
@@ -657,6 +662,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 				    , hideable: false
 				    , hidden: false	
 				    , sortable: false
+				    , renderer: this.getRightOperandTooltip
 				}, {
 				    header: LN('sbi.qbe.filtergridpanel.headers.rotype')
 				    , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.rotype')
@@ -857,6 +863,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 						leftOperandType: 'Parent Field Content'
 						, leftOperandDescription: this.parentQuery.id  + ' : ' +  node.attributes.entity + ' : ' + node.attributes.field
 						, leftOperandValue: this.parentQuery.id + ' ' + node.id
+						, leftOperandLongDescription: 'Query ' + this.parentQuery.id + ', ' + node.attributes.longDescription
 					}
 					this.modifyFilter(filter, this.activeEditingContext.row);
 				} else if(this.activeEditingContext.dataIndex === 'rightOperandDescription') {
@@ -864,6 +871,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 						rightOperandType: 'Parent Field Content'
 						, rightOperandDescription: this.parentQuery.id  + ' : ' +  node.attributes.entity + ' : ' + node.attributes.field
 						, rightOperandValue: this.parentQuery.id + ' ' + node.id
+						, rightOperandLongDescription: 'Query ' + this.parentQuery.id + ', ' + node.attributes.longDescription
 					}
 					this.modifyFilter(filter, this.activeEditingContext.row);
 				}
@@ -879,4 +887,21 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		this.operandChooserWindow.setParentQuery(this.parentQuery);
 		this.operandChooserWindow.show();
 	}
+	
+	, getLeftOperandTooltip: function (value, metadata, record) {
+	 	var tooltipString = record.data.leftOperandLongDescription;
+	 	if (tooltipString !== undefined && tooltipString != null) {
+	 		metadata.attr = ' ext:qtip="'  + tooltipString + '"';
+	 	}
+	 	return value;
+	}
+	
+	, getRightOperandTooltip: function (value, metadata, record) {
+	 	var tooltipString = record.data.rightOperandLongDescription;
+	 	if (tooltipString !== undefined && tooltipString != null) {
+	 		metadata.attr = ' ext:qtip="'  + tooltipString + '"';
+	 	}
+	 	return value;
+	}
+	
 });

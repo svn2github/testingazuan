@@ -142,7 +142,7 @@ Ext.extend(Sbi.qbe.OperandChooserWindow, Ext.Window, {
     	this.treePanel.on('load', function() {
     		this.treePanel.tree.root.loaded = true;
     		this.reloadOnShow = false;
-    		this.treePanel.expandAll();
+    		//this.treePanel.expandAll();
     	}, this);
     }
     

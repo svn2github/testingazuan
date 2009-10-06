@@ -20,9 +20,11 @@
  **/
 package it.eng.qbe.datasource;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.dao.DAOFactory;
 
 // TODO: Auto-generated Javadoc
@@ -84,8 +86,18 @@ public class DataSourceFactory {
 		
 		dataSource.setDblinkMap(dblinkMap);		
 		
-		dataSource.setProperties( DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( datamartName ) );
+		dataSource.setProperties( getProperties(datamartNames) );
 		//dataSource.setLabels( DAOFactory.getDatamartLabelsDAO().loadDatamartLabels(datamartName) );
+	}
+	
+	private static DatamartProperties getProperties(List datamartNames) {
+		DatamartProperties properties = new DatamartProperties();
+		Iterator it = datamartNames.iterator();
+		while (it.hasNext()) {
+			String aDatamartName = (String) it.next();
+			properties.addDatamartProperties(DAOFactory.getDatamartPropertiesDAO().loadDatamartProperties( aDatamartName ));
+		}
+		return properties;
 	}
 	
 }

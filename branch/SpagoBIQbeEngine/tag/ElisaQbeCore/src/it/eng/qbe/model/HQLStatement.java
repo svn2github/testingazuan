@@ -1082,7 +1082,8 @@ public class HQLStatement extends BasicStatement {
 		entityUniqueNamesIterator = entityAliases.keySet().iterator();
 		while(entityUniqueNamesIterator.hasNext()) {
 			entityUniqueName = (String)entityUniqueNamesIterator.next();
-			entity = getDataMartModel().getDataMartModelStructure().getRootEntity( entityUniqueName );
+			//entity = getDataMartModel().getDataMartModelStructure().getRootEntity( entityUniqueName );
+			entity = getDataMartModel().getDataMartModelStructure().getEntity( entityUniqueName );
 			selectedEntities.add(entity);
 		}
 		

@@ -124,7 +124,8 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
         		id: ddSource.dragData.node.id , 
             	entity: ddSource.dragData.node.attributes.entity , 
             	field: ddSource.dragData.node.attributes.field,
-            	alias: ddSource.dragData.node.attributes.field  
+            	alias: ddSource.dragData.node.attributes.field,
+            	longDescription: ddSource.dragData.node.attributes.longDescription
           	};
         
         	this.targetPanel.addField(field, rowIndex);
@@ -137,8 +138,8 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
       				id: node.attributes.children[i].id , 
         			entity: node.attributes.children[i].attributes.entity , 
         			field: node.attributes.children[i].attributes.field,
-                	alias: node.attributes.children[i].attributes.field   
-        			
+                	alias: node.attributes.children[i].attributes.field,
+                	longDescription: node.attributes.children[i].attributes.longDescription
       			};				
 				this.targetPanel.addField(field, rowIndex);
 			}

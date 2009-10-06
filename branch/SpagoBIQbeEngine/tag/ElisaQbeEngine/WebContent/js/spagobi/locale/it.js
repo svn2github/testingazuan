@@ -251,3 +251,4 @@ Sbi.locale.ln['sbi.qbe.operandchooserwindow.title'] = 'Selezione operando da que
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.title'] = 'Driver analitici del documento';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.emptytext'] = 'Questo documento non ha driver analitici';
 Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.headers.label'] = 'Intestazione';
+Sbi.locale.ln['sbi.qbe.documentparametersgridpanel.parameterreference'] = 'Driver analitico';

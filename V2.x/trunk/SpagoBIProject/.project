@@ -6,6 +6,7 @@
 		<project>SpagoBIXMLSecurityProvider</project>
 		<project>SpagoBIUtils</project>
 		<project>SpagoBILdapSecurityProvider</project>
+		<project>SpagoBIElisaSecurityProvider</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

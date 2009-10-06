@@ -109,11 +109,30 @@
                           
   </target>
 
-  
-	<target name="create.war" depends="init,copy.artifacts" >
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--   ATTIVITA' SPECIFICHE PER LA GESTIONE DEL SSI                          -->
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->	
 	
-		<antcall target="${specific.ant.task}" />
-		
+  <target name="sso.cas"  >
+
+			<replace file="${build}/${webapp_name}/WEB-INF/web.xml">
+				 <replacetoken><![CDATA[<!-- START-CAS]]></replacetoken>      
+				 <replacevalue><![CDATA[<!-- START-CAS -->]]></replacevalue>		
+			</replace>
+			<replace file="${build}/${webapp_name}/WEB-INF/web.xml">
+				 <replacetoken><![CDATA[END-CAS -->]]></replacetoken>      
+				 <replacevalue><![CDATA[<!-- END-CAS -->]]></replacevalue>		
+			</replace>
+			
+	</target>
+	
+  <target name="sso.no_sso"  >
+	</target>	
+    
+	<target name="create.war" depends="init,copy.artifacts" >
+	      <antcall target="${sso}" />
+		    <antcall target="${specific.ant.task}" />
+
 	      <mkdir dir="${dist}"/>
 	      <delete file="${dist}/${war_name}" />
 	      <war warfile="${dist}/${war_name}" 

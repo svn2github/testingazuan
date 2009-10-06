@@ -103,7 +103,8 @@ public class SpagoBIAccessFilter implements Filter {
 			executionId = (String)request.getParameter(EXECUTION_ID);
 			logger.debug("Filter executionId from request::" + executionId);
 			
-		   
+			userId = request.getParameter( SsoServiceInterface.USER_ID );
+			logger.debug("Filter userId from request::" + userId);		   
 		   
 			
 			if (request instanceof HttpServletRequest) {
@@ -131,8 +132,11 @@ public class SpagoBIAccessFilter implements Filter {
 					    profile=UserProfile.createSchedulerUserProfile();
 					    ioManager.setInSession(IS_BACKEND_ATTR_NAME, "true");
 					    ioManager.contextManager.set(IS_BACKEND_ATTR_NAME, "true");
-			    		ioManager.setInSession(IEngUserProfile.ENG_USER_PROFILE, new UserProfile("scheduler"));
-			    		ioManager.contextManager.set(IEngUserProfile.ENG_USER_PROFILE, new UserProfile("scheduler"));					    
+					    if (userId!=null && UserProfile.isSchedulerUser(userId)){
+			    		ioManager.setInSession(IEngUserProfile.ENG_USER_PROFILE, UserProfile.createSchedulerUserProfile());
+			    		ioManager.contextManager.set(IEngUserProfile.ENG_USER_PROFILE, UserProfile.createSchedulerUserProfile());
+			    		logger.info("IS a Scheduler Request ...");
+					    }else
 					    logger.info("IS a backEnd Request ...");
 					} else {
 					    logger.warn("PassTicked is NULL in BackEnd call");

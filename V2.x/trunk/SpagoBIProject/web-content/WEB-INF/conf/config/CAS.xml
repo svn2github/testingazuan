@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <CAS_SSO>
 	 <VALIDATE-USER>
-	 	<URL>https://localhost:8443/cas</URL>
-	 	<SERVICE>https://localhost:8443/SpagoBI/proxyCallback</SERVICE>
+	 	<URL>https://athos.engilab.ewebpd.eng.it:1447/cas</URL>
+	 	<SERVICE>https://athos.engilab.ewebpd.eng.it:1447/SpagoBI/proxyCallback</SERVICE>
 	 </VALIDATE-USER>	 
 </CAS_SSO>

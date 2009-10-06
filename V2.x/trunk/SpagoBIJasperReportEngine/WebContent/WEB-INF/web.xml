@@ -6,7 +6,7 @@
 		portal. 
 	</description>
 
- <!--
+ <!--  
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
   <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
@@ -47,15 +47,15 @@
   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
   <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
 </filter>
--->
 
+-->
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>
 			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
 		</filter-class>
 	</filter>
-<!-- 
+<!--  
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
     <url-pattern>/JasperReportServlet/*</url-pattern>
@@ -71,30 +71,23 @@
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
     <url-pattern>/JasperReportServlet/*</url-pattern>
   </filter-mapping> 
+  
 	<filter-mapping>
 		<filter-name>CAS Validation Filter</filter-name>
 		<url-pattern>/proxyCallback</url-pattern>	
 	</filter-mapping>
 -->
+
+
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<url-pattern>/JasperReportServlet/*</url-pattern>
 	</filter-mapping>
+	
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<url-pattern>/JasperReportServletBackEnd/*</url-pattern>
 	</filter-mapping>	
-
-	
-    
-	<servlet>
-  		<servlet-name>ProxyTicketReceptor</servlet-name> 
-  		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
-		<init-param>
-  			<param-name>edu.yale.its.tp.cas.proxyUrl</param-name> 
-  			<param-value>https://localhost:8443/exo-cas-2/proxy</param-value> 
-  		</init-param>
-  </servlet>
 
 
 	<servlet>
@@ -123,13 +116,7 @@
 		<servlet-class>
 			it.eng.spagobi.utilities.engines.EngineTestServlet
 		</servlet-class>
-	</servlet>
-
- 	<servlet-mapping>
-  		<servlet-name>ProxyTicketReceptor</servlet-name> 
-  		<url-pattern>/proxyReceptor</url-pattern> 
-  	</servlet-mapping> 
-
+	</servlet>	
 
 	<servlet-mapping>
 		<servlet-name>JasperReportServlet</servlet-name>

@@ -21,13 +21,13 @@
 package it.eng.spagobi.qbe.core.service;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
+import it.eng.qbe.dao.DAOFactory;
+import it.eng.qbe.dao.ICalculatedFieldsDAO;
 import it.eng.qbe.model.structure.DataMartCalculatedField;
 import it.eng.qbe.query.serializer.SerializationConstants;
 import it.eng.spago.base.SourceBean;
@@ -56,6 +56,8 @@ public class SaveTreeAction extends AbstractQbeEngineAction {
 	
 	public void service(SourceBean request, SourceBean response)  {				
 		
+		ICalculatedFieldsDAO calculatedFieldsDAO;
+		String dataMartName;
 		Map calculatedFields;
 				
 		logger.debug("IN");
@@ -65,17 +67,22 @@ public class SaveTreeAction extends AbstractQbeEngineAction {
 			super.service(request, response);		
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
+						
+			calculatedFieldsDAO = DAOFactory.getCalculatedFieldsDAO();
+			Assert.assertNotNull(calculatedFieldsDAO, "Impossible to retrive a valid instance of CalculatedFieldsDAO");
+			
+			
+			dataMartName = getDatamartModel().getName();
+			logger.debug("DataMart name [" + dataMartName +"]");
+			Assert.assertNotNull(dataMartName, "Datamart name cannot be null in order to execute " + this.getActionName() + " service");
+			
 			
 			calculatedFields = getDatamartModel().getDataMartModelStructure().getCalculatedFields();
-			Iterator it = calculatedFields.keySet().iterator();
-			while(it.hasNext()) {
-				String entityName = (String)it.next();
-				List fields = (List)calculatedFields.get(entityName);
-				for(int i = 0; i < fields.size(); i++) {
-					DataMartCalculatedField field = (DataMartCalculatedField)fields.get(i);
-					System.out.println(field.getUniqueName());
-				}
-			}
+			Assert.assertNotNull(calculatedFields, "Calculated field map cannot be null in order to execute " + this.getActionName() + " service");
+			
+			logger.debug("Saving calculated fields...");
+			calculatedFieldsDAO.saveCalculatedFields(getDatamartModel().getName(), calculatedFields);
+			logger.debug("Calculated fileds saved succesfully");
 			
 			try {
 				writeBackToClient( new JSONAcknowledge() );

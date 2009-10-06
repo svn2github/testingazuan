@@ -336,14 +336,49 @@
 
 	</target>
 	
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--   ATTIVITA' SPECIFICHE PER LA GESTIONE DEL SSI                          -->
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->	
 	
+  <target name="sso.cas"  >
+			<replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi_SSO.xml">
+				 <replacetoken><![CDATA[<!-- START-CAS]]></replacetoken>      
+				 <replacevalue><![CDATA[<!-- START-CAS -->]]></replacevalue>		
+			</replace>
+			<replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi_SSO.xml">
+				 <replacetoken><![CDATA[END-CAS -->]]></replacetoken>      
+				 <replacevalue><![CDATA[<!-- END-CAS -->]]></replacevalue>		
+			</replace>
+			
+			<replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi_SSO.xml">
+				 <replacetoken><![CDATA[<!-- START-NO-CAS -->]]></replacetoken>      
+				 <replacevalue><![CDATA[<!-- START-NO-CAS]]></replacevalue>		
+			</replace>
+			<replace file="${build}/${webapp_name}/WEB-INF/conf/config/spagobi_SSO.xml">
+				 <replacetoken><![CDATA[<!-- END-NO-CAS -->]]></replacetoken>      
+				 <replacevalue><![CDATA[END-NO-CAS -->]]></replacevalue>		
+			</replace>      			
+
+			<replace file="${build}/${webapp_name}/WEB-INF/web.xml">
+				 <replacetoken><![CDATA[<!-- START-CAS]]></replacetoken>      
+				 <replacevalue><![CDATA[<!-- START-CAS -->]]></replacevalue>		
+			</replace>
+			<replace file="${build}/${webapp_name}/WEB-INF/web.xml">
+				 <replacetoken><![CDATA[END-CAS -->]]></replacetoken>      
+				 <replacevalue><![CDATA[<!-- END-CAS -->]]></replacevalue>		
+			</replace>
+			
+	</target>
 	
-	
+  <target name="sso.no_sso"  >
+	</target>	
+  	
   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
   <!--   CREAZIONE WAR                                                                -->
   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->  
 	<target name="create.war" depends="init,copy.artifacts" >
-
+        
+        <antcall target="${sso}" />
         <antcall target="${specific.ant.task}" />
         <antcall target="${modality}" />
         <antcall target="${ext.deploy}" />

@@ -37,6 +37,7 @@ import it.eng.spagobi.engines.config.metadata.SbiExportersId;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -75,7 +76,8 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 				logger.info("Domains table is empty. Starting populating domains...");
 				writeDomains(aSession);
 			} else {
-				logger.debug("Domains table is already populated");
+				logger.debug("Domains table is already populated, only missing domains will be populated");
+				writeMissingDomains(aSession);				
 			}
 
 			hql = "from SbiEngines";
@@ -192,6 +194,92 @@ public class MetadataInitializer extends AbstractHibernateDAO implements Initial
 			logger.debug("Inserting Domain with valueCd = [" + aDomainSB.getAttribute("valueCd") + "], domainCd = [" + aDomainSB.getAttribute("domainCd") + "] ...");
 			aSession.save(aDomain);
 		}
+		logger.debug("OUT");
+	}
+	
+	private void writeMissingDomains(Session aSession) throws Exception {
+		logger.debug("IN");
+		SourceBean domainsSB = getConfiguration("it/eng/spagobi/commons/initializers/metadata/config/domains.xml");
+		if (domainsSB == null) {
+			throw new Exception("Domains configuration file not found!!!");
+		}
+		List domainsList = domainsSB.getAttributeAsList("DOMAIN");
+		if (domainsList == null || domainsList.isEmpty()) {
+			throw new Exception("No predefined domains found!!!");
+		}
+		
+		List alreadyExamined = new ArrayList();
+		Iterator it = domainsList.iterator();
+		while (it.hasNext()) {
+			SourceBean aDomainSB = (SourceBean) it.next();
+			if(!alreadyExamined.contains(aDomainSB)){
+				
+			String domainCd = (String) aDomainSB.getAttribute("domainCd");
+			if (domainCd == null || domainCd.equals("")) {
+				logger.error("No predefined domains code found!!!");
+				throw new Exception("No predefined domains code found!!!");
+			}
+			//Retrieving all the domains in the DB with the specified domain Code
+			logger.debug("Retrieving all the domains in the DB with the specified domain Code");
+			String hql = "from SbiDomains where domainCd = '"+domainCd+"'";
+			Query hqlQuery = aSession.createQuery(hql);
+			List result = hqlQuery.list();
+			
+			logger.debug("Retrieving all the domains in the XML file with the specified domain Code");
+			//Retrieving all the domains in the XML file with the specified domain Code
+			List domainsXmlList = domainsSB.getFilteredSourceBeanAttributeAsList("DOMAIN", "domainCd", domainCd);
+			
+			logger.debug("Retrieving all the domains in the XML file with the specified domain Code");
+			//Checking if the domains in the DB are less than the ones in the xml file
+			if(result.size() < domainsXmlList.size()){
+				//Less domains in the DB than in the XML file, will add new ones
+				logger.debug("Less domains in the DB than in the XML file, will add new ones");
+				addMissingDomains(aSession,result,domainsXmlList);
+			}
+			//Removing form the list of XML domains the ones already checked
+			logger.debug("Adding to the list of XML domains already checked");
+			alreadyExamined.addAll(domainsXmlList);
+			}
+		}
+		logger.debug("OUT");
+	}
+	
+	private void addMissingDomains(Session aSession, List dbDomains, List xmlDomains){
+		logger.debug("IN");
+		
+		Iterator it2 = xmlDomains.iterator();
+		while(it2.hasNext()){
+			boolean existsInDb = false;
+			SourceBean aDomainSB = (SourceBean) it2.next();
+			String valueCdXml = (String) aDomainSB.getAttribute("valueCd");
+			logger.debug("Retrieved valueCd of XML Domain: "+valueCdXml);
+			
+			Iterator it = dbDomains.iterator();
+			while (it.hasNext()) {
+				SbiDomains d = (SbiDomains)it.next();
+				String valueCd = d.getValueCd();
+				logger.debug("Retrieved valueCd of DB Domain: "+valueCd);
+				
+				if(valueCdXml.equalsIgnoreCase(valueCd)){
+					existsInDb = true;
+					logger.debug("Domain already exists in the DB");
+					break;
+				}				
+			}	
+			if(!existsInDb){
+				logger.debug("Domain doesn't exist in the DB");
+				SbiDomains aDomain = new SbiDomains();
+				aDomain.setDomainCd((String) aDomainSB.getAttribute("domainCd"));
+				aDomain.setDomainNm((String) aDomainSB.getAttribute("domainNm"));
+				aDomain.setValueCd((String) aDomainSB.getAttribute("valueCd"));
+				aDomain.setValueNm((String) aDomainSB.getAttribute("valueNm"));
+				aDomain.setValueDs((String) aDomainSB.getAttribute("valueDs"));
+				logger.debug("New Domain ready to be iserted in the DB");
+				logger.debug("Inserting Domain with valueCd = [" + aDomainSB.getAttribute("valueCd") + "], domainCd = [" + aDomainSB.getAttribute("domainCd") + "] ...");
+				aSession.save(aDomain);
+				logger.debug("New Domain iserted in the DB");
+			}
+		}		
 		logger.debug("OUT");
 	}
 

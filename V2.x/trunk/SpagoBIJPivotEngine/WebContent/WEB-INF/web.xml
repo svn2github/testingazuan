@@ -141,6 +141,7 @@
 	</filter-mapping>
 
  -->
+
 	<filter-mapping>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<url-pattern>/JPivotServlet/*</url-pattern>

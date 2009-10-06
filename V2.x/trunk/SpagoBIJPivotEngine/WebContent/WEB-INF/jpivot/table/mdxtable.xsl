@@ -115,10 +115,30 @@
   <input name="{@id}" title="{@title}" type="image" src="{$context}/{$imgpath}/drill-through.gif" border="0" width="9" height="9"/>
 </xsl:template>
 
+<!-- start SpagoBI cross-navigation: added for SpagoBI cross-navigation mechanism support -->
+<xsl:template match="cross-navigation">
+  <xsl:variable name="contextMenuId">contextmenu_<xsl:value-of select="@id"></xsl:value-of></xsl:variable>
+  <a href="javascript:void(0);" onclick="showMenu(event, '{$contextMenuId}');" >
+	<img title="{@title}" src="{$context}/{$imgpath}/cross-navigation.gif" border="0" width="9" height="9"/>
+  </a>
+  <div id='{$contextMenuId}' class='contextMenu' onmouseout='hideMenu(event, "{$contextMenuId}");'>
+  	<xsl:for-each select="cross-navigation-target">
+	  <div onmouseout="this.style.backgroundColor='white'"  
+		   onmouseover="this.style.backgroundColor='#eaf1f9'" >
+		 <a class="contextMenuLink" href="javascript:void(0);" onclick="forceHideMenu('{$contextMenuId}');{@crossNavigationJSFunction}">
+		  <xsl:value-of select="@title"></xsl:value-of>
+		 </a>
+	  </div>
+	</xsl:for-each>
+  </div>
+  
+</xsl:template>
+<!-- end SpagoBI cross-navigation -->
 
 <xsl:template match="cell">
   <td nowrap="nowrap" class="cell-{@style}">
     <xsl:apply-templates select="drill-through"/>
+    <xsl:apply-templates select="cross-navigation"/>
     <xsl:call-template name="render-label">
       <xsl:with-param name="label">
         <xsl:value-of select="@value"/>

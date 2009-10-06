@@ -176,27 +176,28 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			SbiDomains relStateDomain = (SbiDomains)criteria.uniqueResult();
 			Criterion nameEqrolenameCri = null;
 			Role[] roles = userfunct.getExecRoles();
-			
-			for(int i=0; i<roles.length; i++) {
-				Role role = roles[i];
-				if (role!=null) {
-					logger.debug("Role Name="+role.getName());
-					nameEqrolenameCri = Expression.eq("name", role.getName());
+			if(roles!=null){
+				for(int i=0; i<roles.length; i++) {
+					Role role = roles[i];
+					if (role!=null) {
+						logger.debug("Role Name="+role.getName());
+						nameEqrolenameCri = Expression.eq("name", role.getName());
+					}
+					else logger.debug("Role IS NULL");
+					
+					criteria = aSession.createCriteria(SbiExtRoles.class);
+					criteria.add(nameEqrolenameCri);
+					SbiExtRoles hibRole = (SbiExtRoles)criteria.uniqueResult();
+					SbiFuncRoleId sbifuncroleid = new SbiFuncRoleId();
+					sbifuncroleid.setFunction(hibFunct);
+					sbifuncroleid.setState(relStateDomain);
+					sbifuncroleid.setRole(hibRole);
+					SbiFuncRole sbifuncrole = new SbiFuncRole();
+					sbifuncrole.setId(sbifuncroleid);
+					sbifuncrole.setStateCd(relStateDomain.getValueCd());
+					aSession.save(sbifuncrole);
+					functRoleToSave.add(sbifuncrole);
 				}
-				else logger.debug("Role IS NULL");
-				
-				criteria = aSession.createCriteria(SbiExtRoles.class);
-				criteria.add(nameEqrolenameCri);
-				SbiExtRoles hibRole = (SbiExtRoles)criteria.uniqueResult();
-				SbiFuncRoleId sbifuncroleid = new SbiFuncRoleId();
-				sbifuncroleid.setFunction(hibFunct);
-				sbifuncroleid.setState(relStateDomain);
-				sbifuncroleid.setRole(hibRole);
-				SbiFuncRole sbifuncrole = new SbiFuncRole();
-				sbifuncrole.setId(sbifuncroleid);
-				sbifuncrole.setStateCd(relStateDomain.getValueCd());
-				aSession.save(sbifuncrole);
-				functRoleToSave.add(sbifuncrole);
 			}
 			hibFunct.setSbiFuncRoles(functRoleToSave);
 			
@@ -1335,16 +1336,20 @@ public class LowFunctionalityDAOHibImpl extends AbstractHibernateDAO implements 
 			//maintains functionalities that have the same user's role
 			while (it.hasNext()) {
 				SbiFunctions tmpFunc = (SbiFunctions) it.next();
-				Object[] tmpRole = tmpFunc.getSbiFuncRoles().toArray();
-				for (int j=0; j <rolesIds.size(); j++){
-					Integer principalRole = ((SbiExtRoles)rolesIds.get(j)).getExtRoleId();
-					for (int i=0; i<tmpRole.length;i++){
-						SbiFuncRole role = (SbiFuncRole) tmpRole[i]; 
-						Integer localRoleId = ((SbiFuncRoleId)role.getId()).getRole().getExtRoleId();
-						if (localRoleId != null && localRoleId.compareTo(principalRole) == 0){
-							if (!existFunction(realResult, tmpFunc)){
-								realResult.add(toLowFunctionality(tmpFunc, recoverBIObjects));
-								break;
+				if(tmpFunc.getFunctTypeCd().equalsIgnoreCase("USER_FUNCT")){
+					realResult.add(toLowFunctionality(tmpFunc, recoverBIObjects));
+				}else{
+					Object[] tmpRole = tmpFunc.getSbiFuncRoles().toArray();
+					for (int j=0; j <rolesIds.size(); j++){
+						Integer principalRole = ((SbiExtRoles)rolesIds.get(j)).getExtRoleId();
+						for (int i=0; i<tmpRole.length;i++){
+							SbiFuncRole role = (SbiFuncRole) tmpRole[i]; 
+							Integer localRoleId = ((SbiFuncRoleId)role.getId()).getRole().getExtRoleId();
+							if (localRoleId != null && localRoleId.compareTo(principalRole) == 0){
+								if (!existFunction(realResult, tmpFunc)){
+									realResult.add(toLowFunctionality(tmpFunc, recoverBIObjects));
+									break;
+								}
 							}
 						}
 					}

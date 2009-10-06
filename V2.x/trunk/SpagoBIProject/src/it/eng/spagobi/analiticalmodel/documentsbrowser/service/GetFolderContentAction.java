@@ -98,7 +98,7 @@ public class GetFolderContentAction extends AbstractBaseHttpAction{
 			//getting children documents
 			//LowFunctionality lowFunct = DAOFactory.getLowFunctionalityDAO().loadLowFunctionalityByID(functID, true);
 			//objects = lowFunct.getBiObjects();
-			List tmpObjects = DAOFactory.getBIObjectDAO().loadBIObjects(Integer.valueOf(functID), profile);
+			List tmpObjects = DAOFactory.getBIObjectDAO().loadBIObjects(Integer.valueOf(functID), profile,isHome);
 			objects = new ArrayList();
 			if(tmpObjects != null) {
                 for(Iterator it = tmpObjects.iterator(); it.hasNext();) {

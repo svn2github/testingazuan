@@ -926,16 +926,19 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 			while (itObjFunc.hasNext()) {
 				SbiObjFunc aSbiObjFunc = (SbiObjFunc) itObjFunc.next();
 				SbiFunctions aSbiFunctions = aSbiObjFunc.getId().getSbiFunctions();
-				String rolesHql = "select distinct roles.name from " +
-					"SbiExtRoles as roles, SbiFuncRole as funcRole " + 
-					"where roles.extRoleId = funcRole.id.role.extRoleId and " +
-					"	   funcRole.id.function.functId = " + aSbiFunctions.getFunctId() + " and " +
-					"	   funcRole.id.state.valueCd = '" + objectState + "' ";
-				Query rolesHqlQuery = aSession.createQuery(rolesHql);
-				// get the list of roles that can see the document (in REL or TEST state) in that functionality
-				List rolesNames = new ArrayList();
-				rolesNames = rolesHqlQuery.list();
-				allRolesWithPermission.addAll(rolesNames);
+				String funcTypeCd = aSbiFunctions.getFunctTypeCd();
+				if(!funcTypeCd.equalsIgnoreCase("USER_FUNCT")){
+					String rolesHql = "select distinct roles.name from " +
+						"SbiExtRoles as roles, SbiFuncRole as funcRole " + 
+						"where roles.extRoleId = funcRole.id.role.extRoleId and " +
+						"	   funcRole.id.function.functId = " + aSbiFunctions.getFunctId() + " and " +
+						"	   funcRole.id.state.valueCd = '" + objectState + "' ";
+					Query rolesHqlQuery = aSession.createQuery(rolesHql);
+					// get the list of roles that can see the document (in REL or TEST state) in that functionality
+					List rolesNames = new ArrayList();
+					rolesNames = rolesHqlQuery.list();
+					allRolesWithPermission.addAll(rolesNames);
+				}
 			}
 			
 			// userRolesWithPermission will store the filtered roles with permissions on folders containing the required document
@@ -1640,7 +1643,7 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	 * @return
 	 * @throws EMFUserError
 	 */
-	public List loadBIObjects(Integer folderID, IEngUserProfile profile) throws EMFUserError {
+	public List loadBIObjects(Integer folderID, IEngUserProfile profile, boolean isPersonalFolder) throws EMFUserError {
 	logger.debug("IN");
 	Session aSession = null;
 	Transaction tx = null;
@@ -1648,43 +1651,62 @@ public class BIObjectDAOHibImpl extends AbstractHibernateDAO implements
 	try {
 		aSession = getSession();
 		tx = aSession.beginTransaction();
-
-		Collection roles = null;
-		try {
-			RequestContainer reqCont = RequestContainer.getRequestContainer();
-			if(profile != null)
-				roles  = ((UserProfile)profile).getRoles();
-			
-		} catch (Exception e) {
-			logger.error("Error while recovering user profile", e);
-		}
- 
-		
 		StringBuffer buffer = new StringBuffer();
-		if (folderID != null && roles != null && roles.size() > 0 ) {
-			buffer.append("select o from SbiObjects o, SbiObjFunc sof, SbiFunctions f,  SbiFuncRole fr " +
-				"where sof.id.sbiFunctions.functId = f.functId and o.biobjId = sof.id.sbiObjects.biobjId  " +
-				" and fr.id.role.extRoleId IN (select extRoleId from SbiExtRoles e  where  e.name in (:ROLES)) " +
-				" and fr.id.function.functId = f.functId and fr.id.state.valueId = o.state " + 
-				" and f.functId = :FOLDER_ID  " );
+		Collection roles = null;
+		
+		if(!isPersonalFolder){
 			
-			if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) &&
-				!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
-				buffer.append(" and o.visible = 1" ); //only visible objetcs (1 means true)
+			try {
+				RequestContainer reqCont = RequestContainer.getRequestContainer();
+				if(profile != null)
+					roles  = ((UserProfile)profile).getRoles();
+				
+			} catch (Exception e) {
+				logger.error("Error while recovering user profile", e);
 			}
-			buffer.append(" order by o.name"); 
-		} else {
-			buffer.append("select objects from SbiObjects as objects ");
+	
+			if (folderID != null && roles != null && roles.size() > 0 ) {
+				buffer.append("select o from SbiObjects o, SbiObjFunc sof, SbiFunctions f,  SbiFuncRole fr " +
+					"where sof.id.sbiFunctions.functId = f.functId and o.biobjId = sof.id.sbiObjects.biobjId  " +
+					" and fr.id.role.extRoleId IN (select extRoleId from SbiExtRoles e  where  e.name in (:ROLES)) " +
+					" and fr.id.function.functId = f.functId and fr.id.state.valueId = o.state " + 
+					" and f.functId = :FOLDER_ID  " );
+				
+				if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) &&
+					!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
+					buffer.append(" and o.visible = 1" ); //only visible objetcs (1 means true)
+				}
+				buffer.append(" order by o.name"); 
+			} else {
+				buffer.append("select objects from SbiObjects as objects ");
+			}		
+		}else{
+			if (folderID != null ){
+				buffer.append("select o from SbiObjects o, SbiObjFunc sof, SbiFunctions f " +
+						"where sof.id.sbiFunctions.functId = f.functId and o.biobjId = sof.id.sbiObjects.biobjId  " +
+						" and f.functId = :FOLDER_ID  " );
+					
+					if (!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_ADMIN) &&
+						!profile.isAbleToExecuteAction(SpagoBIConstants.DOCUMENT_MANAGEMENT_DEV)){
+						buffer.append(" and o.visible = 1" ); //only visible objetcs (1 means true)
+					}
+					buffer.append(" order by o.name"); 
+			}
 		}
 		
 		String hql = buffer.toString();
 		Query query = aSession.createQuery(hql);
 
-		if (folderID != null && roles != null && roles.size() > 0 ) {
-			query.setInteger("FOLDER_ID", folderID.intValue());
-			query.setParameterList("ROLES", roles);
-		}
-		
+		if(!isPersonalFolder){
+			if (folderID != null && roles != null && roles.size() > 0 ) {
+				query.setInteger("FOLDER_ID", folderID.intValue());
+				query.setParameterList("ROLES", roles);
+			}
+		}else{
+			if (folderID != null ){
+				query.setInteger("FOLDER_ID", folderID.intValue());
+			}
+		}		
 		
 		List hibList = query.list();
 		Iterator it = hibList.iterator();

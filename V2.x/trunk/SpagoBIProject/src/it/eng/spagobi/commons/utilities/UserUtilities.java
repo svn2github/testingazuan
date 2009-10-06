@@ -238,7 +238,7 @@ public class UserUtilities {
 	    userFunct.setDescription("User Functionality Root");
 	    userFunct.setName(username);
 	    userFunct.setPath("/" + username);
-	    userFunct.setExecRoles(rolesArr);
+	    //userFunct.setExecRoles(rolesArr);
 	    ILowFunctionalityDAO functdao = DAOFactory.getLowFunctionalityDAO();
 	    functdao.insertUserFunctionality(userFunct);
 	} catch (Exception e) {

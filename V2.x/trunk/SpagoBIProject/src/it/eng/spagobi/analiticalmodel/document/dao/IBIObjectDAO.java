@@ -334,7 +334,7 @@ public interface IBIObjectDAO {
 	 * 
 	 * @throws EMFUserError If an Exception occurred
 	 */
-	public List loadBIObjects(Integer folderID, IEngUserProfile profile)	throws EMFUserError;
+	public List loadBIObjects(Integer folderID, IEngUserProfile profile, boolean isPersonalFolder)	throws EMFUserError;
 	
 	/**
 	 * Search objects with the features specified.

@@ -272,7 +272,7 @@ public class DocumentsServiceImpl extends AbstractSDKService implements Document
 		logger.debug("IN");
 		IEngUserProfile profile = getUserProfile();
 		// loading contained documents
-		List containedBIObjects = DAOFactory.getBIObjectDAO().loadBIObjects(parentFunctionality.getId(), profile);
+		List containedBIObjects = DAOFactory.getBIObjectDAO().loadBIObjects(parentFunctionality.getId(), profile, false);
 		List visibleDocumentsList = new ArrayList();
 		if (containedBIObjects != null && containedBIObjects.size() > 0) {
 			for (Iterator it = containedBIObjects.iterator(); it.hasNext();) {

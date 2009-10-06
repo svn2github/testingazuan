@@ -331,6 +331,16 @@ public class QueryJSONSerializer implements QuerySerializer {
 					filterJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, loLongDescription);
 					
 					filterJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
+				} else if(operand.type.equalsIgnoreCase("Parent Field Content")) {
+					String[] chunks = operand.value.split(" ");
+					String parentQueryId = chunks[0];
+					String fieldName = chunks[1];
+					datamartField = datamartModel.getDataMartModelStructure().getField( fieldName );
+					String datamartFieldLongDescription = getFieldLongDescription(datamartField, datamartLabels);
+					String loLongDescription = "Query " + parentQueryId + ", " + datamartFieldLongDescription;
+					filterJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, loLongDescription);
+					
+					filterJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
 				} else {
 					filterJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
 				}
@@ -369,6 +379,16 @@ public class QueryJSONSerializer implements QuerySerializer {
 				} else if(operand.type.equalsIgnoreCase("Subquery")) {
 					String roLongDescription = "Subquery " + operand.description;
 					filterJSON.put(SerializationConstants.FILTER_RO_LONG_DESCRIPTION, roLongDescription);
+					
+					filterJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
+				} else if(operand.type.equalsIgnoreCase("Parent Field Content")) {
+					String[] chunks = operand.value.split(" ");
+					String parentQueryId = chunks[0];
+					String fieldName = chunks[1];
+					datamartField = datamartModel.getDataMartModelStructure().getField( fieldName );
+					String datamartFieldLongDescription = getFieldLongDescription(datamartField, datamartLabels);
+					String loLongDescription = "Query " + parentQueryId + ", " + datamartFieldLongDescription;
+					filterJSON.put(SerializationConstants.FILTER_RO_LONG_DESCRIPTION, loLongDescription);
 					
 					filterJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
 				} else {
@@ -448,6 +468,16 @@ public class QueryJSONSerializer implements QuerySerializer {
 					havingJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, loLongDescription);
 					
 					havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
+				} else if(operand.type.equalsIgnoreCase("Parent Field Content")) {
+					String[] chunks = operand.value.split(" ");
+					String parentQueryId = chunks[0];
+					String fieldName = chunks[1];
+					datamartField = datamartModel.getDataMartModelStructure().getField( fieldName );
+					String datamartFieldLongDescription = getFieldLongDescription(datamartField, datamartLabels);
+					String loLongDescription = "Query " + parentQueryId + ", " + datamartFieldLongDescription;
+					havingJSON.put(SerializationConstants.FILTER_LO_LONG_DESCRIPTION, loLongDescription);
+					
+					havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
 				} else {
 					havingJSON.put(SerializationConstants.FILTER_LO_DESCRIPTION, operand.description);
 				}
@@ -487,6 +517,16 @@ public class QueryJSONSerializer implements QuerySerializer {
 				} else if(operand.type.equalsIgnoreCase("Subquery")) {
 					String roLongDescription = "Subquery " + operand.description;
 					havingJSON.put(SerializationConstants.FILTER_RO_LONG_DESCRIPTION, roLongDescription);
+					
+					havingJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
+				} else if(operand.type.equalsIgnoreCase("Parent Field Content")) {
+					String[] chunks = operand.value.split(" ");
+					String parentQueryId = chunks[0];
+					String fieldName = chunks[1];
+					datamartField = datamartModel.getDataMartModelStructure().getField( fieldName );
+					String datamartFieldLongDescription = getFieldLongDescription(datamartField, datamartLabels);
+					String loLongDescription = "Query " + parentQueryId + ", " + datamartFieldLongDescription;
+					havingJSON.put(SerializationConstants.FILTER_RO_LONG_DESCRIPTION, loLongDescription);
 					
 					havingJSON.put(SerializationConstants.FILTER_RO_DESCRIPTION, operand.description);
 				} else {

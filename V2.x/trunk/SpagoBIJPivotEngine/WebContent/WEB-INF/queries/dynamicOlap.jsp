@@ -26,6 +26,9 @@ LICENSE: see LICENSE.txt file
 				 it.eng.spagobi.services.common.EnginConf"%>
 
 <%@ page import="it.eng.spagobi.utilities.ParametersDecoder"%>
+<%@ page import="it.eng.spagobi.commons.utilities.StringUtilities"%>
+<%@page import="it.eng.spago.security.IEngUserProfile"%>
+<%@page import="it.eng.spagobi.jpivotaddins.crossnavigation.SpagoBICrossNavigationConfig"%>
 <%@ taglib uri="http://www.tonbeller.com/jpivot" prefix="jp" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
@@ -113,7 +116,17 @@ LICENSE: see LICENSE.txt file
 //			byte[] template = bASE64Decoder.decodeBuffer(templateBase64Coded);
 			//is = new java.io.ByteArrayInputStream(template);
 			org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
-		    document = reader.read(is);		    
+		    document = reader.read(is);	
+		    
+		    // Read data access information and put it in session...
+		    Node  filtersData=document.selectSingleNode("//olap/DATA-ACCESS");
+		    if (filtersData != null) {
+		    	String filters=filtersData.asXML();
+			    if (filters!=null && filters.length()>1){
+			    	session.setAttribute("filters",filters);
+			    }
+		    }
+		    
 		    //nameConnection = request.getParameter("connectionName");
 		    if (ds != null)	nameConnection = ds.getLabel();
 			query = document.selectSingleNode("//olap/MDXquery").getStringValue();
@@ -123,7 +136,11 @@ LICENSE: see LICENSE.txt file
 			SAXReader readerConfigFile = new SAXReader();
 			Document documentConfigFile = readerConfigFile.read(getClass().getResourceAsStream("/engine-config.xml"));
 			List schemas = documentConfigFile.selectNodes("//ENGINE-CONFIGURATION/SCHEMAS/SCHEMA");
-			
+			Node crossNavigation = document.selectSingleNode("//olap/CROSS_NAVIGATION");
+			if (crossNavigation != null) {
+				SpagoBICrossNavigationConfig cninfo = new SpagoBICrossNavigationConfig(crossNavigation);
+				session.setAttribute(SpagoBICrossNavigationConfig.ID, cninfo);
+			}
 			
 			Iterator it = schemas.iterator();
 			Node selectedSchemaNode = null;
@@ -143,6 +160,11 @@ LICENSE: see LICENSE.txt file
 			analysis.setCatalogUri(reference);
 			session.setAttribute("analysisBean",analysis);
 			
+			//Check for Toolbar Configuration
+			ToolbarBean tb = new ToolbarBean();
+			tb.setValuesFromTemplate(document);
+			session.setAttribute("toolbarButtonsVisibility",tb);
+			
 		}
 		
 		// adjust reference
@@ -153,6 +175,8 @@ LICENSE: see LICENSE.txt file
 
 		// SUBSTITUTE QUERY PARAMETERS
 		query = ParameterUtilities.substituteQueryParameters(query, parameters, request);
+		IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		query = StringUtilities.substituteProfileAttributesInString(query, profile);
 				
 		// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG		
 		if(ds != null  && ds.getJndi() != null && !ds.getJndi().equals("")) {
@@ -175,7 +199,9 @@ LICENSE: see LICENSE.txt file
 		%>
 			
 			
-<%@page import="it.eng.spago.security.IEngUserProfile"%><jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
+			
+			
+			<jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 				<%=query%>
 				
 				<%
@@ -208,6 +234,7 @@ LICENSE: see LICENSE.txt file
 			</jp:mondrianQuery>
 		<%	
 		} else {
+			logger.debug("Using Direct Connection:");
 		%>
 			 <jp:mondrianQuery id="query01" jdbcDriver="<%=ds.getDriver()%>" jdbcUrl="<%=ds.getUrlConnection()%>" 
 			                   jdbcUser="<%=ds.getUser()%>" jdbcPassword="<%=ds.getPwd()%>" catalogUri="<%=reference%>" >
@@ -254,7 +281,7 @@ LICENSE: see LICENSE.txt file
 			<%
 		}
 	
-		
+		/* 
 		// CHECK IF THERE ARE DATA ACCESS FILTER AND IN CASE SET THE MONDRIAN ROLE
 		OlapModel olapModel = (OlapModel) session.getAttribute("query01");
 		String dimensionAccessRules = (String)session.getAttribute("dimension_access_rules");
@@ -262,7 +289,7 @@ LICENSE: see LICENSE.txt file
 		DataSecurityManager dsm = new DataSecurityManager(olapModel, dimensionAccessRules, query);
 		dsm.setMondrianRole();
 		//FilteringUtilities.setMondrianRole(olapModel, dimensionAccessRules, query);
-		
+		*/
 		
 		
 	} catch (Exception e){

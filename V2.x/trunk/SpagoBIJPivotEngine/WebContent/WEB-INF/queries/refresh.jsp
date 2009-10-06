@@ -55,9 +55,8 @@ try {
 		}		
 		//resName = resName.replace("java:comp/env/","");
 		%>
-		
-<%@page import="it.eng.spagobi.tools.datasource.bo.IDataSource"%>
-<%@page import="it.eng.spago.security.IEngUserProfile"%><jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
+<%@page import="it.eng.spago.security.IEngUserProfile"%>		
+<%@page import="it.eng.spagobi.tools.datasource.bo.IDataSource"%><jp:mondrianQuery id="query01" dataSource="<%=resName%>"  catalogUri="<%=reference%>">
 			<%=query%>
 		</jp:mondrianQuery>
 	<%	

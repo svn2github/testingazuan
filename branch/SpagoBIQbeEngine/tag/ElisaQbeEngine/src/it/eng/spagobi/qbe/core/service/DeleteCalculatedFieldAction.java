@@ -76,6 +76,7 @@ public class DeleteCalculatedFieldAction extends AbstractQbeEngineAction {
 			DataMartCalculatedField calculatedField = deserialize(fieldJSON);
 			
 			DataMartEntity parentEntity = getDatamartModel().getDataMartModelStructure().getEntity(parentEntityUniqueName);
+			calculatedField.setParent(parentEntity);
 			parentEntity.deleteCalculatedField(calculatedField.getUniqueName());
 			
 			try {

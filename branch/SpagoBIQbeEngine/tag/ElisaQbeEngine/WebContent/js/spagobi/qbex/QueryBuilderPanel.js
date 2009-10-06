@@ -364,7 +364,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        	Sbi.qbe.commons.unimplementedFunction();
 	          }
 	          , scope: this
-	        }, */ {
+	        },  {
 	          id:'plus',
 	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.addcalculated'),
 	          // hidden:true,
@@ -372,7 +372,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        	this.currentDataMartStructurePanel.addCalculatedField();
 	          }
 	          , scope: this
-	        }, {
+	        },*/ {
 			  id:'save',
 			  qtip: LN('save'),
 			  // hidden:true,

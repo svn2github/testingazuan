@@ -115,10 +115,12 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
        
         var node;  // the node dragged from tree to grid
         var field;        
+        var nodeType;
         
-		node = ddSource.dragData.node;             
+		node = ddSource.dragData.node; 				
+		nodeType = node.attributes.type || node.attributes.attributes.type;
 
-        if(node.attributes.field && node.attributes.type == 'field') {
+        if(nodeType == 'field') {
         	
         	field = {
         		id: ddSource.dragData.node.id , 
@@ -129,8 +131,37 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
           	};
         
         	this.targetPanel.addField(field, rowIndex);
-          	
-        } else if(node.attributes.attributes.type == 'entity'){
+        	
+        } else if(nodeType == 'calculatedField'){
+        	
+        	field = {
+            	id: ddSource.dragData.node.id , 
+                entity: ddSource.dragData.node.attributes.entity , 
+                field: ddSource.dragData.node.attributes.field,
+                alias: ddSource.dragData.node.attributes.field  
+             };
+            
+            this.targetPanel.addField(field, rowIndex);
+            
+            // TODO: drop also all  the correlated fields. Snippet from method onAddNodeToSelect of QueryBuilderPanel
+            /*
+            var seeds =  Sbi.qbe.CalculatedFieldWizard.getUsedItemSeeds('dmFields', node.attributes.formState.expression);
+ 	    		for(var i = 0; i < seeds.length; i++) {
+ 	    			var n = node.parentNode.findChildBy(function(childNode) {
+ 	    				return childNode.id === seeds[i];
+ 	    			});
+ 	    			
+ 	    			if(n) {
+ 	    				this.onAddNodeToSelect(n, {visible:false});
+ 	    				//this.dataMartStructurePanel.fireEvent('click', this.dataMartStructurePanel, n);
+ 	    			} else {
+ 	    				alert('node  [' + seeds + '] not contained in entity [' + node.parentNode.text + ']');
+ 	    			}
+ 	    			
+ 	    			
+ 	    		}
+             */
+        } else if(nodeType == 'entity'){
 			
 			for(var i = 0; i < node.attributes.children.length; i++) {
 				if(node.attributes.children[i].attributes.type != 'field') continue;
@@ -147,7 +178,7 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
         } else {
         	Ext.Msg.show({
 				   title:'Drop target not allowed',
-				   msg: 'Node of type [' + node.attributes.attributes.type + '] cannot be dropped here',
+				   msg: 'Node of type [' + nodeType + '] cannot be dropped here',
 				   buttons: Ext.Msg.OK,
 				   icon: Ext.MessageBox.ERROR
 			});

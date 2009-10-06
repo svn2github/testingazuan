@@ -145,6 +145,47 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 		this.tree.collapseAll();
 	}
 	
+	, removeCalculatedField:  function(fieldNode) {
+		var nodeType;
+		nodeType = fieldNode.attributes.type || fieldNode.attributes.attributes.type;
+		if(nodeType === 'calculatedField') {
+			
+			var entityId = fieldNode.parentNode.id;
+    		var f = {
+    			alias: fieldNode.attributes.formState.alias
+    			, type: fieldNode.attributes.formState.type
+    			, calculationDescriptor: fieldNode.attributes.formState
+    		};
+    		
+    		var params = {
+    			entityId: entityId,
+    			nodeId: fieldNode.id,
+    			field: Ext.util.JSON.encode(f)
+    		}
+    		
+			Ext.Ajax.request({
+				url:  this.services['deleteCalculatedField'],
+				success: function(response, options, a) {
+					var node = this.tree.getNodeById(options.params.nodeId);
+					node.unselect();
+		            Ext.fly(node.ui.elNode).ghost('l', {
+		                callback: node.remove, scope: node, duration: .4
+		            });
+       			},
+       			scope: this,
+				failure: Sbi.exception.ExceptionHandler.handleFailure,	
+				params: params
+        	}); 
+		} else {
+			Ext.Msg.show({
+				   title:'Invalid operation',
+				   msg: 'Node of type [' + nodeType + '] cannot be deleted',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.ERROR
+			});
+		}
+	}
+	
 	, editField: function(fieldNode) {
 		var nodeType;
 		nodeType = fieldNode.attributes.type || fieldNode.attributes.attributes.type;
@@ -187,19 +228,22 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 		}
 	}
 	
-	, addCalculatedField: function(enitydNode) {
+	, addCalculatedField: function(entityNode) {
 		var selectNode;
 		
-		if(this.calculatedFieldWizard === null) {
-			this.initCalculatedFieldWizard();
-		}
-		selectNode = enitydNode || this.tree.getSelectionModel().getSelectedNode();
-		var type = selectNode.attributes.type || selectNode.attributes.attributes.type;
-		var text = selectNode.text || selectNode.attributes.text;
+		if(!entityNode) return;
+		var type = entityNode.attributes.type || entityNode.attributes.attributes.type;
+		var text = entityNode.text || entityNode.attributes.text;
+		
 		if(type === 'entity') {
+			
+			if(this.calculatedFieldWizard === null) {
+				this.initCalculatedFieldWizard();
+			}
+			
 			var fields = new Array();
-			for(var i = 0; i < selectNode.attributes.children.length; i++) {
-				var child = selectNode.attributes.children[i];
+			for(var i = 0; i < entityNode.attributes.children.length; i++) {
+				var child = entityNode.attributes.children[i];
 				var childType = child.attributes.type || child.attributes.attributes.type;
 				if(childType === 'field') {
 					var field = {
@@ -216,11 +260,21 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 			this.calculatedFieldWizard.validationService.params = {fields: Ext.util.JSON.encode(fields)};
 		
 			this.calculatedFieldWizard.setExpItems('fields', fields);
-		}
 		
-		this.calculatedFieldWizard.setTargetNode(selectNode);
+			this.calculatedFieldWizard.setTargetNode(entityNode);
+			
+			this.calculatedFieldWizard.show();
 		
-		this.calculatedFieldWizard.show();
+		} else {
+			Ext.Msg.show({
+				   title:'Invalid operation',
+				   msg: 'Impossible to add calculated field to a node of type [' + nodeType + ']',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.ERROR
+			});		
+		}	
+		
+		
 	}
 	
 	// --------------------------------------------------------------------------------
@@ -275,7 +329,12 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 		
 		this.tree.type = this.type;
 		
-		this.tree.on('click', function(node) {this.fireEvent('addnodetoselect', this, node);}, this);
+		this.tree.on('click', function(node) {
+			var nodeType = node.attributes.type || node.attributes.attributes.type;
+			if(nodeType !== 'entity') {
+				this.fireEvent('addnodetoselect', this, node);
+			}
+		}, this);
 		this.tree.on('contextmenu', this.onContextMenu, this);
 	}
 	
@@ -363,18 +422,15 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
     			field: Ext.util.JSON.encode(f)
     		}
     		
-    		alert(this.services['addCalculatedField']);
-    		alert(params.toSource());
     		Ext.Ajax.request({
 				url:  this.services['addCalculatedField'],
 				success: function(response, options) {
-       				alert('saved');
+       				//alert('saved');
        			},
        			scope: this,
 				failure: Sbi.exception.ExceptionHandler.handleFailure,	
 				params: params
         	}); 
-    		alert('eccomi');
     		
     		
     		if(nodeType == 'calculatedField') {
@@ -414,21 +470,27 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
              items: [
              // ACID operations on nodes
              '-',{
-            	 text:'Edit',
-                 iconCls:'option',
+            	 text:'Add Calculated Field',
+                 iconCls:'add',
                  handler:function(){
-	         	 	this.editField(this.ctxNode);
+            	   	this.addCalculatedField(this.ctxNode);	         	 	
 	             },
                  scope: this
              },{
-            	 text:'Remove',
-                 //iconCls:'add',
+            	 text:'Remove Calculated Field',
+                 iconCls:'remove',
                  handler:  function() {
 	            	 this.ctxNode.ui.removeClass('x-node-ctx');
-	                 //this.removeFeed(this.ctxNode.attributes.url);
-	            	 alert(this.ctxNode.text);
+	            	 this.removeCalculatedField(this.ctxNode);
 	            	 this.ctxNode = null;
                  },
+                 scope: this
+             },{
+            	 text:'Edit Field',
+                 iconCls:'edit',
+                 handler:function(){
+	         	 	this.editField(this.ctxNode);
+	             },
                  scope: this
              }]
          });

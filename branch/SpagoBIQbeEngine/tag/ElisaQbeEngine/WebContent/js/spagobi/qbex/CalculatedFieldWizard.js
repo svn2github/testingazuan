@@ -94,7 +94,7 @@ Ext.extend(Sbi.qbe.CalculatedFieldWizard, Ext.Window, {
 	, expItemsTree: null
 	, expItemsPanel: null
 		
-	, baseExpression: 'pippo'
+	, baseExpression: ' '
 	, expressionEditor: null
 	, expressionEditorPanel: null
 	

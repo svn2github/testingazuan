@@ -204,17 +204,19 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 	
 	, notifyDropFromDatamartStructureTree: function(ddSource, e, data, rowIndex, colIndex) {
 		var node;				// the node dragged from tree to grid
+		var nodeType;
 		var dropColDataIndex;	// the dataIndex of the column on which the node has been dropped. 
 								// It is undefined if the node is not drop on an existing row (rowIndex == colIndex == undefined)
 		var filter;				// configuration object to be passed to addFilter or insertFilter function of the grid (it not a record object)
 		
-		node = ddSource.dragData.node;        
+		node = ddSource.dragData.node;     
+		nodeType = node.attributes.type || node.attributes.attributes.type;
 		
 		if(colIndex) {
 			dropColDataIndex = this.targetGrid.getColumnModel().getDataIndex( colIndex );
 		}
 	
-		if(node.attributes.field && node.attributes.type == 'field') {			
+		if(nodeType == 'field') {			
 			if(dropColDataIndex === 'rightOperandDescription') {			
 				filter = {
 					rightOperandValue: node.id
@@ -240,7 +242,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 				};
 	  			this.targetPanel.insertFilter(filter, rowIndex);
 			}
-		} else if(node.attributes.attributes.type == 'entity'){
+		} else if(nodeType == 'entity'){
 			
 			for(var i = 0; i < node.attributes.children.length; i++) {
 				if(node.attributes.children[i].attributes.type != 'field') continue;
@@ -256,7 +258,7 @@ Ext.extend(Sbi.qbe.FilterGridDropTarget, Ext.dd.DropTarget, {
 		} else {
 			Ext.Msg.show({
 				   title:'Drop target not allowed',
-				   msg: 'Node of type [' + node.attributes.attributes.type + '] cannot be dropped here',
+				   msg: 'Node of type [' + nodeType + '] cannot be dropped here',
 				   buttons: Ext.Msg.OK,
 				   icon: Ext.MessageBox.ERROR
 			});

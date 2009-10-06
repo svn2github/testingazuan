@@ -17,4 +17,5 @@
   <extension id="setParameter" class="com.tonbeller.jpivot.mondrian.MondrianSetParameter"/>
   <extension id="expressionParser" class="com.tonbeller.jpivot.mondrian.MondrianExpressionParser"/>
   <extension id="sqlAccess" class="com.tonbeller.jpivot.mondrian.MondrianSqlAccess"/>
+  <extension id="crossNavigation" class="com.tonbeller.jpivot.mondrian.SpagoBICrossNavigation"/>
 </model>

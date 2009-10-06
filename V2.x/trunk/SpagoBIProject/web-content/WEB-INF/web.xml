@@ -6,7 +6,7 @@
 	</description>
 
 
-<!-- CAS 
+<!-- START-CAS 
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
   <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
@@ -45,7 +45,7 @@
   <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
 </filter>
   
-CAS -->   
+END-CAS -->   
     
   	<!-- This filter tries to create the user profile object before AdapterHTTP servlet execution -->
  	<filter>
@@ -53,7 +53,7 @@ CAS -->
 		<filter-class>it.eng.spagobi.commons.filters.ProfileFilter</filter-class>
 	</filter>
   	
-<!-- CAS  	
+<!-- START-CAS  	
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
     <url-pattern>/servlet/*</url-pattern>
@@ -68,7 +68,7 @@ CAS -->
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
     <url-pattern>/servlet/*</url-pattern>
   </filter-mapping>  
-CAS -->
+END-CAS --> 
 
 	<filter-mapping>
 		<filter-name>ProfileFilter</filter-name>

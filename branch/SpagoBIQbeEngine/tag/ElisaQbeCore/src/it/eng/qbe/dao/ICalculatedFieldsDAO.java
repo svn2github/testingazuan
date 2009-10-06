@@ -20,7 +20,6 @@
  **/
 package it.eng.qbe.dao;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,5 +29,5 @@ public interface ICalculatedFieldsDAO {
 	
 	Map loadCalculatedFields(String datamartName);
 		
-	List saveCalculatedFields(String datamartName);
+	void saveCalculatedFields(String datamartName, Map calculatedFields);
 }

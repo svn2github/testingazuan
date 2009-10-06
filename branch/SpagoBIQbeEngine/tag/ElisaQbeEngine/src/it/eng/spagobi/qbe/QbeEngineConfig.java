@@ -33,9 +33,6 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceCache;
 import it.eng.spagobi.qbe.commons.naming.QbeNamingStrategy;
-import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
-import it.eng.spagobi.qbe.commons.urlgenerator.PortletQbeUrlGenerator;
-import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.file.FileUtils;
@@ -197,20 +194,7 @@ public class QbeEngineConfig {
 	
 	
 	
-	
-	
-	
-	public IQbeUrlGenerator getUrlGenerator() {
-		IQbeUrlGenerator urlGenerator = null;
-		if( isWebModalityActive() ) {
-			urlGenerator = new WebQbeUrlGenerator();
-		} else {
-			urlGenerator = new PortletQbeUrlGenerator();
-		}
-		return urlGenerator;
-	}
 
-	
 	public Integer getResultLimit() {
 		Integer resultLimit = null;
 		String resultLimitStr = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");

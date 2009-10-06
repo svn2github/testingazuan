@@ -32,7 +32,6 @@ LICENSE: see LICENSE.txt file
 <%@page import="it.eng.spagobi.tools.datasource.bo.*"%>
 <%@page import="it.eng.spagobi.services.common.EnginConf" %>
 <%@page import="org.apache.log4j.Logger" %>
-<%@page import="it.eng.spago.security.*" %>
 
 <html>
 <head>
@@ -112,6 +111,12 @@ if (schemas == null) {
 
 			SAXReader reader = new SAXReader();
 			Document document = reader.read(is);
+			
+		    // Read data access information and put it in session...
+		    String filters= document.selectSingleNode("//olap/DATA-ACCESS").getStringValue();
+		    session.setAttribute("filters",filters);
+		    
+		    
 			String mdxQuery = null;
 			String queryWithParameters = document.selectSingleNode("//olap/MDXquery").getStringValue();
 			// loads parameters
@@ -181,18 +186,6 @@ if (schemas == null) {
 			}
 			
 			String resName = datasource.getJndi();
-			if (datasource.checkIsMultiSchema()){
-				String schemaDS=null;
-				try {
-						String attrname=datasource.getSchemaAttribute();
-						IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-						if (attrname!=null) schemaDS = (String)profile.getUserAttribute(attrname);
-						if (schemaDS==null) logger.error("Cannot retrive ENTE");
-						else resName=resName+schemaDS;
-				} catch (Exception e) {
-					logger.error("Cannot retrive ENTE", e);
-				}
-			}	
 			if (resName != null && !resName.equals("")) {
 				//resName = resName.replace("java:comp/env/","");
 			    String connectionStr = "Provider=mondrian;"+resName+";Catalog="+catalogUri+";";

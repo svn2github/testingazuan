@@ -65,7 +65,7 @@ public class JPivotServlet extends HttpServlet {
 	    logger.debug("forward == null, then set forward = jpivotOlap.jsp");
 	    forward = "jpivotOlap.jsp";
 	}
-
+	
 	try {
 	    request.getRequestDispatcher(forward).forward(request, response);
 	} catch (ServletException e) {

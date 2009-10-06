@@ -5,6 +5,8 @@
  */
 package it.eng.spagobi.jpivotaddins.util;
 
+import it.eng.spagobi.jpivotaddins.crossnavigation.SpagoBICrossNavigationConfig;
+
 import javax.servlet.http.HttpSession;
 
 public class SessionObjectRemoval {
@@ -142,6 +144,14 @@ public class SessionObjectRemoval {
 		
 		if (session.getAttribute("dimension_access_rules") != null) {
 			session.removeAttribute("dimension_access_rules");
+		}
+		
+		if (session.getAttribute(SpagoBICrossNavigationConfig.ID) != null) {
+			session.removeAttribute(SpagoBICrossNavigationConfig.ID);
+		}
+		
+		if (session.getAttribute("query01.crossnavigationtable") != null) {
+			session.removeAttribute("query01.crossnavigationtable");
 		}
 	}
 	

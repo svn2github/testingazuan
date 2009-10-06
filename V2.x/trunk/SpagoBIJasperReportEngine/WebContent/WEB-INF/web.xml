@@ -6,7 +6,7 @@
 		portal. 
 	</description>
 
- <!--  
+<!-- START-CAS  
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
   <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
@@ -48,14 +48,16 @@
   <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
 </filter>
 
--->
+END-CAS -->
+
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
 		<filter-class>
 			it.eng.spagobi.utilities.filters.SpagoBIAccessFilter
 		</filter-class>
 	</filter>
-<!--  
+	
+<!-- START-CAS  
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
     <url-pattern>/JasperReportServlet/*</url-pattern>
@@ -76,7 +78,7 @@
 		<filter-name>CAS Validation Filter</filter-name>
 		<url-pattern>/proxyCallback</url-pattern>	
 	</filter-mapping>
--->
+END-CAS -->
 
 
 	<filter-mapping>

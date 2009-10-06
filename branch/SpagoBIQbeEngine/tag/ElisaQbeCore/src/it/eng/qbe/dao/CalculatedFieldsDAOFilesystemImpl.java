@@ -193,7 +193,7 @@ public class CalculatedFieldsDAOFilesystemImpl implements ICalculatedFieldsDAO {
 		            	.addAttribute( FIELD_TAG_ENTIY_ATTR, entityName )
 		            	.addAttribute( FIELD_TAG_NAME_ATTR, field.getName() )
 		            	.addAttribute( FIELD_TAG_TYPE_ATTR, field.getType() )
-		            	.addText( field.getExpression() );
+		            	.addCDATA( field.getExpression() );
 				}
 			}
 			
@@ -323,8 +323,11 @@ public class CalculatedFieldsDAOFilesystemImpl implements ICalculatedFieldsDAO {
 			Assert.assertNotNull(out, "Output stream cannot be null");
 					
 			format = OutputFormat.createPrettyPrint();
+			format.setEncoding("ISO-8859-1");
+			format.setIndent("    ");
 			writer = new XMLWriter(out , format );
 	        try {
+	        	
 				writer.write( document );
 				writer.flush();
 			} catch (IOException e) {

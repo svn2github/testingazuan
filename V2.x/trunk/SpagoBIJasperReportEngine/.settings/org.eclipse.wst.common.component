@@ -6,7 +6,10 @@
 <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/SpagoBIUtils/SpagoBIUtils">
 <dependency-type>uses</dependency-type>
 </dependent-module>
-        <property name="context-root" value="SpagoBIJasperReportEngine"/>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/SpagoBIElisaSecurityProvider/SpagoBIElisaSecurityProvider">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="java-output-path" value="build/classes"/>
+        <property name="context-root" value="SpagoBIJasperReportEngine"/>
     </wb-module>
 </project-modules>

@@ -2,6 +2,8 @@ package it.eng.spagobi.engines.kpi.bo.charttypes.trendcharts;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
+import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.chart.bo.charttypes.utils.MyStandardCategoryItemLabelGenerator;
 import it.eng.spagobi.engines.chart.utils.DatasetMap;
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
@@ -96,7 +98,8 @@ public class LineChart extends ChartImpl{
 			}
 
 			String nameS = "KPI_VALUE";
-			String labelS = "kpi Values";
+			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+			String labelS = msgBuilder.getMessage("sbi.kpi.labels");
 			String valueS=(String)series.get(nameS);
 			if (valueS!=null){
 			((DefaultCategoryDataset)(datasetMap.getDatasets().get("line"))).addValue(Double.valueOf(valueS).doubleValue(), labelS, catValue);
@@ -111,9 +114,9 @@ public class LineChart extends ChartImpl{
 		
 		logger.debug("IN");
 		CategoryPlot plot = new CategoryPlot();
-
-		
-		NumberAxis rangeAxis = new NumberAxis("Kpi Values");
+		IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
+		String rangeAxisName = msgBuilder.getMessage("sbi.kpi.rangeAxisName");
+		NumberAxis rangeAxis = new NumberAxis(rangeAxisName);
 		rangeAxis.setLabelFont(new Font("Arial", Font.PLAIN, 12 ));
 		Color colorLabel= Color.decode("#000000");
 		rangeAxis.setLabelPaint(colorLabel);

@@ -32,6 +32,7 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.apache.log4j.Logger;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
@@ -63,6 +64,10 @@ public class QbeDataSet extends AbstractDataSet {
 	private IDataStore dataStore;
 	private boolean abortOnOverflow;	
 	private Map bindings;
+	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(QbeDataSet.class);
+    
 	
 	public QbeDataSet(IStatement statement) {
 		setStatement(statement);
@@ -138,11 +143,14 @@ public class QbeDataSet extends AbstractDataSet {
 			dataStoreFieldMeta.setName( queryFiled.getAlias() );
 			if(queryFiled.isDataMartField()) {
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(false));
-				dataStoreFieldMeta.setType(Object.class);
 				dataStoreFieldMeta.setProperty("uniqueName", ((DataMartSelectField)queryFiled).getUniqueName());
+				dataStoreFieldMeta.setType(Object.class);
+				
 			} else {
 				CalculatedSelectField claculatedQueryField = (CalculatedSelectField)queryFiled;
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(true));	
+				// fixme also calculated field must have uniquename for uniformity
+				dataStoreFieldMeta.setProperty("uniqueName", claculatedQueryField.getAlias());
 				DataSetVariable variable = new DataSetVariable(claculatedQueryField.getAlias(), claculatedQueryField.getType(), claculatedQueryField.getExpression());
 				dataStoreFieldMeta.setProperty("variable", variable);	
 				dataStoreFieldMeta.setType( variable.getTypeClass() );	
@@ -252,6 +260,7 @@ public class QbeDataSet extends AbstractDataSet {
 			    ex.printStackTrace();
 			}	
 			
+			//logger.debug("Field [" + fieldMeta.getName()+ "] is equals to [" + calculatedValue + "]");
 			variable.setValue(calculatedValue);
 			
 			record.getFieldAt(dataStoreMeta.getFieldIndex(fieldMeta.getName())).setValue(variable.getValue());

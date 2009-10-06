@@ -116,8 +116,17 @@ public class DataStoreJSONSerializer {
 				recordJSON = new JSONObject();
 				recordJSON.put("id", ++recNo);
 				
-				for(int i = 0; i < metadata.getJSONArray("fields").length()-1; i++) {
-					field = record.getFieldAt(i);
+				for(int i = 0; i < dataStore.getMetaData().getFieldCount(); i++) {
+					IFieldMetaData fieldMetaData = dataStore.getMetaData().getFieldMeta(i);
+					
+					propertyRawValue = fieldMetaData.getProperty("visible");
+					if(propertyRawValue != null 
+							&& (propertyRawValue instanceof Boolean) 
+							&& ((Boolean)propertyRawValue).booleanValue() == false) {
+						continue;
+					}
+										
+					field = record.getFieldAt( dataStore.getMetaData().getFieldIndex( fieldMetaData.getName() ) );
 					recordJSON.put("column-" + (i+1), field.getValue()==null? "": field.getValue().toString());
 				}
 				

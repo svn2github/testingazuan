@@ -64,7 +64,17 @@ public class DataMartModelStructure {
 		if(!cfields.containsKey(entityName)) {
 			cfields.put(entityName, new ArrayList());
 		}
-		cfiledsOnTargetEntity = (List)cfields.get(entityName);		
+		cfiledsOnTargetEntity = (List)cfields.get(entityName);	
+		List toRemove = new ArrayList();
+		for(int i = 0; i < cfiledsOnTargetEntity.size(); i++) {
+			DataMartCalculatedField f = (DataMartCalculatedField)cfiledsOnTargetEntity.get(i);
+			if(f.getName().equals(calculatedFiled.getName())) {
+				toRemove.add(f);
+			}
+		}
+		for(int i = 0; i < toRemove.size(); i++) {
+			cfiledsOnTargetEntity.remove(toRemove.get(i));
+		}
 		cfiledsOnTargetEntity.add(calculatedFiled);
 	}
 	

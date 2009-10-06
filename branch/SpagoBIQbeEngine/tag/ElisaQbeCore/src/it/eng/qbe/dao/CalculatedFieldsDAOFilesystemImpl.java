@@ -167,7 +167,7 @@ public class CalculatedFieldsDAOFilesystemImpl implements ICalculatedFieldsDAO {
 			Assert.assertNotNull(calculatedFieldsFile, "Destination file cannot be null");
 			logger.debug("Calculated fields will be saved on file [" + calculatedFieldsFile + "]");
 			
-			if( calculatedFieldsFile.getParentFile().exists() ) {
+			if( !calculatedFieldsFile.getParentFile().exists() ) {
 				DAOException e = new DAOException("Destination file folder [" + calculatedFieldsFile.getPath()+ "] does not exist");
 				e.addHint("Check if [" + calculatedFieldsFile.getPath()+ "] folder exist on your server filesystem. If not create it.");
 				throw e;

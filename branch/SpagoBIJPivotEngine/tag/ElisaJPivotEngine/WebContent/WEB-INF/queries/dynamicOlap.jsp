@@ -181,6 +181,7 @@ LICENSE: see LICENSE.txt file
 		// BASED ON CONNECTION TYPE WRITE THE RIGHT MONDRIAN QUERY TAG		
 		if(ds != null  && ds.getJndi() != null && !ds.getJndi().equals("")) {
 			String resName = ds.getJndi();
+			logger.debug("Using Connection:"+resName);
 			//resName = resName.replaceAll("java:comp/env/","");
 		%>
 			
@@ -220,6 +221,7 @@ LICENSE: see LICENSE.txt file
 			</jp:mondrianQuery>
 		<%	
 		} else {
+			logger.debug("Using Direct Connection:");
 		%>
 			 <jp:mondrianQuery id="query01" jdbcDriver="<%=ds.getDriver()%>" jdbcUrl="<%=ds.getUrlConnection()%>" 
 			                   jdbcUser="<%=ds.getUser()%>" jdbcPassword="<%=ds.getPwd()%>" catalogUri="<%=reference%>" >

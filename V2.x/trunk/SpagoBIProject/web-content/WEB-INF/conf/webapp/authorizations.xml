@@ -21,6 +21,7 @@
 			<USER userID="prod_drink" password="prod_drink" family="Drink" />
 			<USER userID="prod_food" password="prod_food" family="Food" />
 			<USER userID="prod_nc" password="prod_nc" family="Non-Consumable" />
+			<USER userID="ANALISTA_ENTE_A" password="ANALISTA_ENTE_A" family="Non-Consumable" />
 		</USERS>
 		<ROLES>
 			<ROLE roleName="/spagobi/dev" description="/spagobi/dev" />
@@ -29,6 +30,8 @@
 			<ROLE roleName="/spagobi/userb" description="/spagobi/userb" />
 			<ROLE roleName="/spagobi/admin" description="/spagobi/admin" />
 			<ROLE roleName="/spagobi/modeladmin" description="/spagobi/modeladmin" />
+			<ROLE roleName="/spagobi/op_reva" description="/spagobi/op_reva" />
+			<ROLE roleName="/spagobi/an_reva" description="/spagobi/an_reva" />			
 		</ROLES>
 		<FUNCTIONALITIES></FUNCTIONALITIES>
 		<RESOURCES></RESOURCES>
@@ -48,6 +51,7 @@
 			<BEHAVIOUR userID="prod_drink" roleName="/spagobi/user" />
 			<BEHAVIOUR userID="prod_food" roleName="/spagobi/user" />
 			<BEHAVIOUR userID="prod_nc" roleName="/spagobi/user" />
+			<BEHAVIOUR userID="ANALISTA_ENTE_A" roleName="/spagobi/an_reva" />
 		</BEHAVIOURS>
 	</RELATIONS>
 </AUTHORIZATIONS>

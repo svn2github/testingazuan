@@ -7,18 +7,59 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-	<head>
-	    <title>CAS &#8211; Central Authentication Service</title>
-	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	    <style type="text/css" media="screen">@import 'css/cas.css'/**/;</style>
-	    <!--[if gte IE 6]><style type="text/css" media="screen">@import 'css/ie_cas.css';</style><![endif]-->
-	    <script type="text/javascript" src="js/common_rosters.js"></script>
-	    <link rel="icon" href="<%= request.getContextPath() %>/favicon.ico" type="image/x-icon" />
-	</head>
+<head>
+    <meta name="generator" content="HTML Tidy for Windows (vers 1 June 2005), see www.w3.org" />
+    <title>SpagoBI Login</title>
+    <style>
+      body {
+	       padding: 0;
+	       margin: 0;
+      }
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-	<body id="cas" onload="init();">
-	    <div id="header">
-	        <h1 id="app-name">Central Authentication Service (CAS)</h1>
-	    </div>
+    <script language="javascript" type="text/javascript">
+    //<![CDATA[
+    function login(){
+      var lgn = document.getElementById('lgn');
+      var pwd = document.getElementById('pwd');
+      document.getElementById('msgMandatory').style.display='none';
+      document.getElementById('message').style.display='none';
+      if(lgn.value=="" || pwd.value=="") {
+         displayMsgMandatory();
+      }else {
+        document.getElementById('login-form').submit();
+    //    setTimeout('displaybis()',1000);
+      }
+    } 
+    function displayMsgMandatory(){
+      document.getElementById('msgMandatory').style.display='inline';
+    }
+    
+    function displaybis(){
+      document.getElementById('message').style.display='inline';
+    }
+    
+    function cleanMessage(){
+      document.getElementById('message').style.display='none';
+    }
+    //]]>
+    </script>
 
-	    <div id="content">
+</head>
+
+	<body id="cas" onload="init()">
+  
+  <div id="background" style="width:100%;height:100%;background-image:url(./images/wapp/background.jpg);background-repeat:no-repeat;background-position: top left;"> 
+      <div id="backgroundlogo" style="width:100%;height:100%;background-image:url(./images/wapp/backgroundlogo.jpg);background-repeat:no-repeat;background-position: bottom right;"> 
+        <div id="header" style="width:100%;height:70px;">
+            <div id="logotitle" style="height:57px;background-image:url(./images/wapp/titlelogo.gif);background-repeat:no-repeat;background-position: top left;"> 
+            </div>
+            <div id="menubar" style="width:100%;height:20px;border-top:1px solid gray;border-bottom:1px solid gray;background-image:url(./images/wapp/backgroundMenuBar.jpg);background-repeat:repeat-x;"> 
+            </div>
+        </div>
+
+	    <div id="content" style="width:100%;">
+	      
+	    	<div style="background-color:white;width:400px;height:200px;border:1px solid gray;margin-top:130px;margin-left:50px;" >
+            <!--<h3><spring:message code="screen.welcome.instructions" /></h3>-->

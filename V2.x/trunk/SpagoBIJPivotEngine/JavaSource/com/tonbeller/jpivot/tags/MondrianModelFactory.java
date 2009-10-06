@@ -12,7 +12,11 @@
  */
 package com.tonbeller.jpivot.tags;
 
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -21,6 +25,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.dom4j.DocumentException;
 import org.xml.sax.SAXException;
 
 import com.tonbeller.jpivot.core.ModelFactory;
@@ -39,7 +44,7 @@ public class MondrianModelFactory {
   private MondrianModelFactory() {
   }
 
-  static String makeConnectString(Config cfg) {
+  static String makeConnectString(String filers,Config cfg, IEngUserProfile profile) {
 
     // for an external datasource, we do not need JdbcUrl *and* data source
 
@@ -82,7 +87,19 @@ public class MondrianModelFactory {
       testDataSource(cfg.getDataSource());
     }
     sb.append(";Catalog=").append(cfg.getSchemaUrl());
-
+    /* risultato: 'provider=Mondrian;DataSource=java:comp/env/jdbc/foodmart;
+     * 				Catalog="file:D:/Progetti/DEMO_SPAGOBI_20/Resources/Olap/FoodMart_RoleDSP.xml"Drink;
+     * 				DynamicSchemaProcessor=it.eng.spagobi.jpivotaddins.roles.SpagoBIFilterDynamicSchemaProcessor;UseSchemaPool=true;
+     * 				family=Drink'
+     * */
+     /*
+    try {
+    	sb.append(";Catalog=").append(cfg.getSchemaUrl()+profile.getUserAttribute("family"));
+    } catch (EMFInternalError e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    */
     if (cfg.getDynLocale() != null)
       sb.append(";Locale=").append(cfg.getDynLocale());
 
@@ -92,6 +109,25 @@ public class MondrianModelFactory {
     }
     if (cfg.getDataSourceChangeListener() != null) {
         sb.append(";dataSourceChangeListener=").append(cfg.getDataSourceChangeListener());
+    }
+    sb.append(";DynamicSchemaProcessor=it.eng.spagobi.jpivotaddins.roles.SpagoBIFilterDynamicSchemaProcessor");
+    // cache control: if filtering by user profile attributes with queries inside schema definition, UseSchemaPool must be false
+    //orig: sb.append(";UseSchemaPool=true");
+    sb.append(";UseSchemaPool=true;UseContentChecksum=true"); 
+    if (filers!=null){
+    	logger.debug("Data Access is ACTIVE!!!");
+	    try {
+	    	InputStream is = new java.io.ByteArrayInputStream(filers.getBytes());
+	    	org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
+	    	org.dom4j.Document document = reader.read(is);	
+	    	org.dom4j.Node attribute = document.selectSingleNode("//DATA-ACCESS/ATTRIBUTE");
+	    	String attributeName = attribute.valueOf("@name");
+			sb.append(";filter=" + profile.getUserAttribute(attributeName));
+		} catch (EMFInternalError e) {
+			logger.error("",e);
+		} catch (DocumentException e) {
+			logger.error("",e);
+		}
     }
     // sb.append(";Role=California manager");
     return sb.toString();
@@ -126,17 +162,17 @@ public class MondrianModelFactory {
 
   public static MondrianModel instance(Config cfg) throws SAXException, IOException {
     URL url = MondrianModel.class.getResource("config.xml");
-    return instance(url, cfg);
+    return instance(null,url, cfg, null);
   }
 
-  public static MondrianModel instance(URL url, Config cfg) throws SAXException, IOException {
+  public static MondrianModel instance(String filers,URL url, Config cfg, IEngUserProfile profile) throws SAXException, IOException {
     if (logger.isInfoEnabled()) {
       logger.info(cfg.toString());
-      logger.info("ConnectString=" + makeConnectString(cfg));
+      logger.info("ConnectString=" + makeConnectString(filers,cfg, profile));
     }
     MondrianModel mm = (MondrianModel) ModelFactory.instance(url);
     mm.setMdxQuery(cfg.getMdxQuery());
-    mm.setConnectString(makeConnectString(cfg));
+    mm.setConnectString(makeConnectString(filers,cfg, profile));
     mm.setJdbcDriver(cfg.getJdbcDriver());
     mm.setDynresolver(cfg.getDynResolver());
     mm.setDynLocale(cfg.getDynLocale());    

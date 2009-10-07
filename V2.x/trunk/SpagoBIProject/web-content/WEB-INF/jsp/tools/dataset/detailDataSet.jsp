@@ -262,6 +262,84 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<input class='portlet-form-input-field' type="text" name="DESCR" 
 				   size="50" value="<%= StringEscapeUtils.escapeHtml(desc) %>" maxlength="160" />
 		</div>
+			   <!-- transformation type combo -->
+	 
+	   <div class='div_detail_label'>
+				<span class='portlet-form-field-label'>
+					<spagobi:message key = "SBISet.ListDataSet.transformer" />
+				</span>
+		</div>
+	   <div class='div_detail_form'>
+      		<select class='portlet-form-input-field' style='width:250px;' name="TRANSFORMERNAME" id="TRANSFORMERNAME" onchange="javascript:EnableTransformerDiv(this.value)">
+				<option value="">&nbsp;</option>
+				
+			<% String hideTrasnformer="style=\"display: none;\""; 
+			if (ds.getTransformerId()!=null) hideTrasnformer="style=\"display: inline;\"";
+			if (listTransformerType != null){
+				Iterator iterTransformer= listTransformerType.iterator();
+			   
+      			while(iterTransformer.hasNext()) {
+      				Domain transformer = (Domain)iterTransformer.next();
+      				Integer objTransformer = ds.getTransformerId();
+      				Integer currTransformer = transformer.getValueId();
+                    boolean isTransformer = false;
+      		    	if(objTransformer != null && objTransformer.intValue() == currTransformer.intValue()){
+      		    		isTransformer = true;   
+      		    	}
+      		%>
+      			<option value="<%=transformer.getValueCd()%>"  <%if(isTransformer) out.print(" selected='selected' ");  %>><%=StringEscapeUtils.escapeHtml(transformer.getTranslatedValueName(locale))%></option>
+      		<% 	
+      			}
+			}
+      		%>
+      		</select>
+		</div> 
+		<div class='div_detail_form' id='transformer_pivot' <%=hideTrasnformer%>>
+			<%  
+				   String pivotColumnName = ds.getPivotColumnName();
+				   if((pivotColumnName==null) || (pivotColumnName.equalsIgnoreCase(""))  ) {
+					   pivotColumnName = "";
+				   }	
+				   String pivotRowName  = ds.getPivotRowName();
+				   if((pivotRowName==null) || (pivotRowName.equalsIgnoreCase(""))  ) {
+					   pivotRowName = "";
+				   }	
+				   String pivotColumnValue  = ds.getPivotColumnValue();
+				   if((pivotColumnValue==null) || (pivotColumnValue.equalsIgnoreCase(""))  ) {
+					   pivotColumnValue = "";
+				   }
+				   boolean pivotNumRows  = ds.isNumRows();
+				   String strChecked = "";  
+				   if(!pivotNumRows ) {
+					   strChecked ="";
+				   }
+				   else{
+					   strChecked ="checked='checked'";
+				   }
+			%>
+				<span class='portlet-form-field-label'>	
+					<spagobi:message key = "SBISet.ListDataSet.pivotColumn" />
+				</span>
+				<input class='portlet-form-input-field' type="text" name="PIVOTCOLUMNNAME" 
+					   size="25" value="<%= StringEscapeUtils.escapeHtml(pivotColumnName) %>" maxlength="50" />
+			    <span class='portlet-form-field-label'>	
+					<spagobi:message key = "SBISet.ListDataSet.pivotRow" />
+				</span>
+				<input class='portlet-form-input-field' type="text" name="PIVOTROWNAME" 
+					   size="25" value="<%= StringEscapeUtils.escapeHtml(pivotRowName) %>" maxlength="50" />
+			   <span class='portlet-form-field-label'>	
+					<spagobi:message key = "SBISet.ListDataSet.pivotValue" />
+				</span>
+				<input class='portlet-form-input-field' type="text" name="PIVOTCOLUMNVALUE" 
+					   size="25" value="<%= StringEscapeUtils.escapeHtml(pivotColumnValue) %>" maxlength="50" />
+				<span class='portlet-form-field-label'>	
+					<spagobi:message key = "SBISet.ListDataSet.numRows" />
+				</span>
+				<input class='portlet-form-input-field' name="PIVOTNUMROWS" value="true" 
+					   type="checkbox" <%=strChecked%> />
+					
+		</div>
+		
 					
 					<%	
 			if(message.equalsIgnoreCase("DETAIL_SELECT") || message.equalsIgnoreCase("DETAIL_MOD")){ 
@@ -284,7 +362,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			     
 
 		%>
-			   	<input type="hidden"name="typeDataSet" value="<%=mess%>"/>
+			   	<input type="hidden" name="typeDataSet" value="<%=mess%>"/>
 			   	
 			   	<div class='div_detail_label'>
 					<span class='portlet-form-field-label'>
@@ -298,6 +376,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			<%}
 			else
 				{%>
+				<br>
+				<br>
    	<div class='div_detail_label'>
 			<span class='portlet-form-field-label'>
 				<spagobi:message key = "SBISet.ListDS.TypeDs" />
@@ -536,82 +616,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	   </div>
 	   </div>
 	   
-	   <!-- transformation type combo -->
-	 
-	   <div class='div_detail_label'>
-				<span class='portlet-form-field-label'>
-					<spagobi:message key = "SBISet.ListDataSet.transformer" />
-				</span>
-		</div>
-	   <div class='div_detail_form'>
-      		<select class='portlet-form-input-field' style='width:250px;' name="TRANSFORMERNAME" id="TRANSFORMERNAME" onchange="javascript:EnableTransformerDiv(this.value)">
-				<option value="">&nbsp;</option>
-				
-			<% String hideTrasnformer="style=\"display: none;\""; 
-			if (ds.getTransformerId()!=null) hideTrasnformer="style=\"display: inline;\"";
-			if (listTransformerType != null){
-				Iterator iterTransformer= listTransformerType.iterator();
-			   
-      			while(iterTransformer.hasNext()) {
-      				Domain transformer = (Domain)iterTransformer.next();
-      				Integer objTransformer = ds.getTransformerId();
-      				Integer currTransformer = transformer.getValueId();
-                    boolean isTransformer = false;
-      		    	if(objTransformer != null && objTransformer.intValue() == currTransformer.intValue()){
-      		    		isTransformer = true;   
-      		    	}
-      		%>
-      			<option value="<%=transformer.getValueCd()%>"  <%if(isTransformer) out.print(" selected='selected' ");  %>><%=StringEscapeUtils.escapeHtml(transformer.getTranslatedValueName(locale))%></option>
-      		<% 	
-      			}
-			}
-      		%>
-      		</select>
-		</div> 
-		<div class='div_detail_form' id='transformer_pivot' <%=hideTrasnformer%>>
-			<%  
-				   String pivotColumnName = ds.getPivotColumnName();
-				   if((pivotColumnName==null) || (pivotColumnName.equalsIgnoreCase(""))  ) {
-					   pivotColumnName = "";
-				   }	
-				   String pivotRowName  = ds.getPivotRowName();
-				   if((pivotRowName==null) || (pivotRowName.equalsIgnoreCase(""))  ) {
-					   pivotRowName = "";
-				   }	
-				   String pivotColumnValue  = ds.getPivotColumnValue();
-				   if((pivotColumnValue==null) || (pivotColumnValue.equalsIgnoreCase(""))  ) {
-					   pivotColumnValue = "";
-				   }
-				   boolean pivotNumRows  = ds.isNumRows();
-				   String strChecked = "";  
-				   if(!pivotNumRows ) {
-					   strChecked ="";
-				   }
-				   else{
-					   strChecked ="checked='checked'";
-				   }
-			%>
-				<span class='portlet-form-field-label'>	
-					<spagobi:message key = "SBISet.ListDataSet.pivotColumn" />
-				</span>
-				<input class='portlet-form-input-field' type="text" name="PIVOTCOLUMNNAME" 
-					   size="25" value="<%= StringEscapeUtils.escapeHtml(pivotColumnName) %>" maxlength="50" />
-			    <span class='portlet-form-field-label'>	
-					<spagobi:message key = "SBISet.ListDataSet.pivotRow" />
-				</span>
-				<input class='portlet-form-input-field' type="text" name="PIVOTROWNAME" 
-					   size="25" value="<%= StringEscapeUtils.escapeHtml(pivotRowName) %>" maxlength="50" />
-			   <span class='portlet-form-field-label'>	
-					<spagobi:message key = "SBISet.ListDataSet.pivotValue" />
-				</span>
-				<input class='portlet-form-input-field' type="text" name="PIVOTCOLUMNVALUE" 
-					   size="25" value="<%= StringEscapeUtils.escapeHtml(pivotColumnValue) %>" maxlength="50" />
-				<span class='portlet-form-field-label'>	
-					<spagobi:message key = "SBISet.ListDataSet.numRows" />
-				</span>
-				<input class='portlet-form-input-field' name="PIVOTNUMROWS" value="true" 
-					   type="checkbox" <%=strChecked%> />
-		</div>
+
 	</td><!-- CLOSE COLUMN WITH DATA FORM  -->
 	
 			<!-- START DIV FIX LIST WIZARD --> 

@@ -42,6 +42,7 @@ import java.security.Principal;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
@@ -66,13 +67,12 @@ public class PortletLoginModule extends AbstractModule {
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
 	        logger.debug("IN");
-		PortletRequest portletRequest = PortletUtilities.getPortletRequest(); 
-		Principal principal = portletRequest.getUserPrincipal();	
+		
+		IEngUserProfile profile = UserUtilities.getUserProfile();
 		String userName;
-		if(principal != null) {
-			userName = principal.getName();
-		} else {
-			logger.debug("Principal not found on request. Looking for a default user configuration.... ");
+		
+		if (profile == null) {
+			logger.debug("Principal profile not found on request. Looking for a default user configuration.... ");
 			SourceBean defatulUserSB = (SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.SECURITY.DEFAULT_USER");
 			if(defatulUserSB != null) {
 				userName = defatulUserSB.getCharacters();
@@ -82,10 +82,7 @@ public class PortletLoginModule extends AbstractModule {
 				throw new Exception("Cannot identify user");
 			}
 		}		
-		IEngUserProfile profile = UserUtilities.getUserProfile(userName);
-		
-		
-		
+
 		logger.debug("userProfile created " + profile);
 		logger.debug("Attributes name of the user profile: "+ profile.getUserAttributeNames());
 		logger.debug("Functionalities of the user profile: "+ profile.getFunctionalities());

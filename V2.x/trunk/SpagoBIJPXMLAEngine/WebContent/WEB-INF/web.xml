@@ -45,17 +45,17 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
   </context-param>
   -->
 
-<!-- 
+<!-- START-CAS 	 
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
   <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
   <init-param>
     <param-name>casServerLoginUrl</param-name>
-    <param-value>https://localhost:8443/cas/login</param-value>
+    <param-value>https://athos.engilab.ewebpd.eng.it:1447/cas/login</param-value>
   </init-param>
   <init-param>
     <param-name>serverName</param-name>
-    <param-value>localhost:8443</param-value>
+    <param-value>athos.engilab.ewebpd.eng.it:1447</param-value>
   </init-param>    
 </filter>
 
@@ -64,30 +64,27 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
   <filter-class>org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter</filter-class>
   <init-param>
     <param-name>casServerUrlPrefix</param-name>
-    <param-value>https://localhost:8443/cas</param-value>
+    <param-value>https://athos.engilab.ewebpd.eng.it:1447/cas</param-value>
   </init-param>
   <init-param>
     <param-name>serverName</param-name>
-    <param-value>https://localhost:8443</param-value>
+    <param-value>https://athos.engilab.ewebpd.eng.it:1447</param-value>
   </init-param>
   <init-param>
     <param-name>proxyReceptorUrl</param-name>
     <param-value>/proxyCallback</param-value>
   </init-param> 
-
-		<init-param>
-			<param-name>proxyCallbackUrl</param-name>
-			<param-value>https://localhost:8443/SpagoBIJPXMLAEngine/proxyCallback</param-value>
-		</init-param>  
-
+  <init-param>
+		<param-name>proxyCallbackUrl</param-name>
+		<param-value>https://athos.engilab.ewebpd.eng.it:1447/SpagoBIJPXMLAEngine/proxyCallback</param-value>
+  </init-param>  
 </filter>
 
 <filter>
   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
   <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
 </filter>
-
- -->
+END-CAS -->
 
 
   <filter>
@@ -132,7 +129,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
     <url-pattern>/JPivotServlet/*</url-pattern>
   </filter-mapping>
 
-<!--  
+<!-- START-CAS  
   <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
     <url-pattern>/*</url-pattern>
@@ -142,8 +139,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
     <filter-name>CAS Validation Filter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping> 
-   	
-
    <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
     <url-pattern>/*</url-pattern>
@@ -152,7 +147,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
 		<filter-name>CAS Validation Filter</filter-name>
 		<url-pattern>/proxyCallback</url-pattern>	
 	</filter-mapping>
- -->
+END-CAS -->
 
   <filter-mapping>
     <filter-name>JPivotController</filter-name>
@@ -177,20 +172,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
   <listener>
     <listener-class>com.tonbeller.tbutils.res.ResourcesFactoryContextListener</listener-class>
   </listener>
-
-	<servlet>
-		<servlet-name>ProxyTicketReceptor</servlet-name>
-		<servlet-class>
-			edu.yale.its.tp.cas.proxy.ProxyTicketReceptor
-		</servlet-class>
-		<init-param>
-			<param-name>edu.yale.its.tp.cas.proxyUrl</param-name>
-			<param-value>
-				https://localhost:8443/exo-cas-2/proxy
-			</param-value>
-		</init-param>
-	</servlet>
-
+  
   <servlet>
     <servlet-name>MDXQueryServlet</servlet-name>
     <servlet-class>mondrian.web.servlet.MDXQueryServlet</servlet-class>
@@ -265,10 +247,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j
 		<servlet-name>ReadTicketServlet</servlet-name>
 		<url-pattern>/ReadTicket</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ProxyTicketReceptor</servlet-name>
-		<url-pattern>/proxyReceptor</url-pattern>
-	</servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>FlushCacheServlet</servlet-name>
 		<url-pattern>/FlushCacheServlet</url-pattern>

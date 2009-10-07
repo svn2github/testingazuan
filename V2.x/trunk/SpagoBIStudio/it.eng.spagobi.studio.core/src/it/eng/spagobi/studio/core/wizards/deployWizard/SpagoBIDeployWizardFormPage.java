@@ -384,7 +384,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 			return "DASH";
 		}
 		else if(extension.equalsIgnoreCase("sbichart")){
-			return "CHART";
+			return "DASH";
 		}
 		else if(extension.equalsIgnoreCase("jrxml")){
 			return "REPORT";

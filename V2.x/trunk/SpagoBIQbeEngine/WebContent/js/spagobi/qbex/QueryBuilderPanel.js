@@ -56,7 +56,11 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 		enableTreeToolbar: true,
 		enableTreeTbSaveBtn: true,
 		enableTreeTbPinBtn: true,
-		enableTreeTbUnpinBtn: true
+		enableTreeTbUnpinBtn: true,
+		enableQueryTbExecute: true,
+		enableQueryTbSave: true,
+		enableQueryTbSaveView: false,
+		enableQueryTbValidate: false
   	};
 	if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.queryBuilderPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.queryBuilderPanel);
@@ -420,12 +424,13 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        tools:[{
 	        	id:'save',
 	        	qtip: LN('sbi.qbe.queryeditor.centerregion.tools.save'),
+	        	hidden: (this.enableQueryTbSave == false),
 	        	handler: this.showSaveQueryWindow,
 	        	scope: this
 	        }, {
 	          id:'saveView',
 	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.view'),
-	          hidden:true,
+	          hidden: (this.enableQueryTbSaveView == false),
 	          handler: function(event, toolEl, panel){
 	        	Ext.Ajax.request({
 					   	url: this.services['synchronyzeQuery'],
@@ -441,19 +446,13 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        },{
 	          id:'gear',
 	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.execute'),
+	          hidden: (this.enableQueryTbExecute == false),
 	          handler: this.executeQuery,
 	          scope: this
 	        },{
 	          id:'search',
 	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.validate'),
-	          hidden:true,
-	          handler: function(event, toolEl, panel){
-	            // refresh logic
-	          }
-	        }, {
-	          id:'help',
-	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.help'),
-	          hidden:true,
+	          hidden: (this.enableQueryTbValidate == false),
 	          handler: function(event, toolEl, panel){
 	            // refresh logic
 	          }

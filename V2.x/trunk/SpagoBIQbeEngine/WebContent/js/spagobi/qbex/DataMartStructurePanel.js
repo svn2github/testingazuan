@@ -58,7 +58,7 @@ Sbi.qbe.DataMartStructurePanel = function(config) {
 		, type: 'datamartstructuretree'
 		, preloadTree: true
 		, baseParams: {}
-		, enableTreeContextMenu: true
+		, enableTreeContextMenu: false
   	};
 	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.dataMartStructurePanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.dataMartStructurePanel);

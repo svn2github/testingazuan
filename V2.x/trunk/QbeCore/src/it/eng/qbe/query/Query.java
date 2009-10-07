@@ -23,9 +23,14 @@ package it.eng.qbe.query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import it.eng.qbe.query.WhereField.Operand;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -33,17 +38,31 @@ import java.util.Map;
  */
 public class Query {
 	String id;
+	String name;
+	String description;
+	
+	boolean distinctClauseEnabled;
 	
 	List selectFields;	
 	List whereClause;
+	List havingClause;
 	
 	ExpressionNode whereClauseStructure;
+	boolean nestedExpression;
+
 	Map whereFieldMap;
+	Map havingFieldMap;
+	
+	Query parentQuery;
+	Map subqueries;
 	
 	public Query() {
 		selectFields = new ArrayList();		
 		whereClause = new ArrayList();
+		havingClause = new ArrayList();
 		whereFieldMap = new HashMap();
+		havingFieldMap = new HashMap();
+		subqueries  = new HashMap();
 	}
 	
 	public String getId() {
@@ -53,49 +72,161 @@ public class Query {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	
 	public boolean isEmpty() {
-		for(int i = 0; i < selectFields.size(); i++) {
-			SelectField field = (SelectField)selectFields.get(i);
-			if(field.isVisible()) return false;
-		}
-		return true;
+		List fields;
+		fields = getDataMartSelectFields(true);
+		Assert.assertNotNull(fields, "getDataMartSelectFields method cannot return a null value");
+		return (fields.size() == 0);
 	}
 	
-	public void addSelectFiled(String fieldUniqueName, String function, String fieldAlias, boolean visible,
+	public void addSelectFiled(String fieldUniqueName, String function, String fieldAlias, boolean include, boolean visible,
 			boolean groupByField, String orderType) {
-		selectFields.add( new SelectField(fieldUniqueName, function, fieldAlias, visible, groupByField, orderType) );
+		selectFields.add( new DataMartSelectField(fieldUniqueName, function, fieldAlias, include, visible, groupByField, orderType) );
 	}
 	
-	public void addWhereFiled(String fname, String fdesc, 
-			String fieldUniqueName, String operator, 
-			Object operand, String operandType, String operandDesc,
-			String boperator) {
-		WhereField whereField = new WhereField(fname, fieldUniqueName, fieldUniqueName, operator, operand, operandType, operandDesc, boperator);
+	public void addCalculatedFiled(String fieldAlias, String expression, String type, boolean included, boolean visible) {
+		selectFields.add( new CalculatedSelectField(fieldAlias, expression, type, included, visible) );
+	}
+
+	
+	public void addWhereField(String name, String description, boolean promptable,
+			Operand leftOperand, String operator, Operand rightOperand,
+			String booleanConnector) {
+		
+		WhereField whereField = new WhereField(name, description, promptable,  leftOperand, operator, rightOperand, booleanConnector);
+		
 		whereClause.add( whereField );
-		whereFieldMap.put("$F{" + fname + "}", whereField);
+		whereFieldMap.put("$F{" + name + "}", whereField);
+	}
+	
+	public void addHavingField(String name, String description, boolean promptable, 
+			it.eng.qbe.query.HavingField.Operand leftOperand, String operator, it.eng.qbe.query.HavingField.Operand rightOperand,
+			String booleanConnector) {
+		
+		HavingField havingField = new HavingField(name, description, promptable, leftOperand, operator, rightOperand, booleanConnector);
+		
+		havingClause.add( havingField );
+		havingFieldMap.put("$F{" + name + "}", havingField);
 	}
 	
 	public WhereField getWhereFieldByName(String fname) {
 		return (WhereField)whereFieldMap.get(fname.trim());
 	}
 	
-	public List getSelectFields() {
-		return selectFields;
+	public HavingField getHavingFieldByName(String fname) {
+		return (HavingField)havingFieldMap.get(fname.trim());
+	}
+	
+
+	
+	public List getSelectFields(boolean onlyIncluded) {
+		List fields;
+		if(onlyIncluded == false) {
+			fields = new ArrayList(selectFields);
+		} else {
+			fields = new ArrayList();
+			Iterator it = selectFields.iterator();
+			while(it.hasNext()) {
+				ISelectField field = (ISelectField)it.next();
+				if(field.isIncluded()) {
+					fields.add(field);
+				}
+			}
+		}
+		return fields;
+	}
+	
+	/*
+	public List getIncludedSelectFields() {
+		List includedSelectFields = new ArrayList();
+		Iterator it = this.getSelectFields().iterator();
+		while( it.hasNext() ) {
+			DataMartSelectField selectField = (DataMartSelectField)it.next();
+			if(selectField.isIncluded()) {
+				includedSelectFields.add(selectField);
+			}
+		}
+		return includedSelectFields;
+	}
+	*/
+	
+	public List getDataMartSelectFields(boolean onlyIncluded) {
+		List dataMartSelectFields;
+		Iterator it;
+		ISelectField field;
+		
+		dataMartSelectFields = new ArrayList();
+		it = getSelectFields(false).iterator();
+		while(it.hasNext()) {
+			field = (ISelectField)it.next();
+			if(field.isDataMartField()) {
+				if( onlyIncluded == false || (onlyIncluded == true && field.isIncluded()) ) {
+					dataMartSelectFields.add(field);
+				}				
+			}
+		}
+		
+		return dataMartSelectFields;
+	}
+	
+	public List getCalculatedSelectFields(boolean onlyIncluded) {
+		List calculatedSelectFields;
+		Iterator it;
+		ISelectField field;
+		
+		calculatedSelectFields = new ArrayList();
+		it = getSelectFields(false).iterator();
+		while(it.hasNext()) {
+			field = (ISelectField)it.next();
+			if(!field.isDataMartField()) {
+				if( onlyIncluded == false || (onlyIncluded == true && field.isIncluded()) ) {
+					calculatedSelectFields.add(field);
+				}
+			}
+		}
+		
+		return calculatedSelectFields;
 	}
 	
 	public List getWhereFields() {
 		return whereClause;
 	}
-
 	
+	public List getHavingFields() {
+		return havingClause;
+	}
+
+	public boolean isDistinctClauseEnabled() {
+		return distinctClauseEnabled;
+	}
+	
+	public void setDistinctClauseEnabled(boolean distinctClauseEnabled) {
+		this.distinctClauseEnabled = distinctClauseEnabled;
+	}
 	
 	public List getOrderByFields() {
 		List orderByFields = new ArrayList();
-		Iterator it = this.getSelectFields().iterator();
+		Iterator it = this.getDataMartSelectFields(false).iterator();
 		while( it.hasNext() ) {
-			SelectField selectField = (SelectField)it.next();
+			DataMartSelectField selectField = (DataMartSelectField)it.next();
 			if(selectField.isOrderByField()) {
 				orderByFields.add(selectField);
 			}
@@ -106,9 +237,9 @@ public class Query {
 	
 	public List getGroupByFields() {
 		List groupByFields = new ArrayList();
-		Iterator it = this.getSelectFields().iterator();
+		Iterator it = this.getDataMartSelectFields(false).iterator();
 		while( it.hasNext() ) {
-			SelectField selectField = (SelectField)it.next();
+			DataMartSelectField selectField = (DataMartSelectField)it.next();
 			if(selectField.isGroupByField()) {
 				groupByFields.add(selectField);
 			}
@@ -124,6 +255,51 @@ public class Query {
 	public void setWhereClauseStructure(ExpressionNode whereClauseStructure) {
 		this.whereClauseStructure = whereClauseStructure;
 	}
+	
+	/*
+	 * true iff it is an expression built using the client side expression wizard
+	 */
+	public boolean isNestedExpression() {
+		return nestedExpression;
+	}
+
+	public void setNestedExpression(boolean nestedExpression) {
+		this.nestedExpression = nestedExpression;
+	}
+	
+	
+	public Query getParentQuery() {
+		return parentQuery;
+	}
+
+	public void setParentQuery(Query parentQuery) {
+		this.parentQuery = parentQuery;
+	}
+	
+	public boolean hasParentQuery() {
+		return getParentQuery() != null;
+	}
+	
+	public void addSubquery(Query subquery) {
+		subqueries.put(subquery.getId(), subquery);
+		subquery.setParentQuery(this);
+	}
+	
+	public Query getSubquery(String id) {
+		return (Query)subqueries.get(id);
+	}
+	
+	public Set getSubqueryIds() {
+		return new HashSet(subqueries.keySet());
+	}
+	
+	public Query removeSubquery(String id) {
+		Query subquery = (Query)subqueries.remove(id);
+		if(subquery != null) subquery.setParentQuery(null);
+		return subquery;
+	}
+
+	
 	
 
 }

@@ -30,32 +30,16 @@ import java.io.File;
  */
 public class JarFile {
 	
-	/** The file. */
 	File file = null;
 	
-	/**
-	 * Instantiates a new jar file.
-	 * 
-	 * @param file the file
-	 */
 	public JarFile(File file) {
 		setFile(file);
 	}
 
-	/**
-	 * Gets the file.
-	 * 
-	 * @return the file
-	 */
 	public File getFile() {
 		return file;
 	}
 
-	/**
-	 * Sets the file.
-	 * 
-	 * @param file the new file
-	 */
 	private void setFile(File file) {
 		this.file = file;
 	}

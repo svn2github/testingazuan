@@ -19,17 +19,25 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.query.serializer;
-
-import java.util.Locale;
-
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.query.Query;
-
+package it.eng.qbe.query;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public interface QuerySerializer {
-	public Object serialize(Query q, DataMartModel m, Locale locale) throws SerializationException;
+public interface ISelectField {
+	public final static String DATAMART_FIELD = "datamartField";
+	public final static String CALCULATED_FIELD = "calculatedField";
+	
+	String getAlias();	
+	void setAlias(String alias);
+	
+	String getType();	
+	void setType(String type);	
+	boolean isDataMartField();
+	
+	boolean isVisible() ;
+	void setVisible(boolean visible);
+
+	boolean isIncluded();
+	void setIncluded(boolean include) ;
 }

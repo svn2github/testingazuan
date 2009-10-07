@@ -23,12 +23,15 @@ package it.eng.qbe.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
@@ -36,9 +39,13 @@ import it.eng.qbe.model.accessmodality.DataMartModelAccessModality;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
+import it.eng.qbe.query.CriteriaConstants;
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.ExpressionNode;
+import it.eng.qbe.query.HavingField;
+import it.eng.qbe.query.IAggregationFunction;
+import it.eng.qbe.query.Operand;
 import it.eng.qbe.query.Query;
-import it.eng.qbe.query.SelectField;
 import it.eng.qbe.query.WhereField;
 import it.eng.qbe.utility.StringUtils;
 import it.eng.spago.base.SourceBean;
@@ -50,18 +57,11 @@ import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
  */
 public class HQLStatement extends BasicStatement {
 	
-	private String countQueryString;
 	
-	private String getCountQueryString() {
-		return countQueryString;
-	}
-
-
-	private void setCountQueryString(String countQueryString) {
-		this.countQueryString = countQueryString;
-	}
-
-
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(HQLStatement.class);
+	
+    
 	public static interface IConditionalOperator {	
 		String apply(String leftHandValue, String rightHandValue);
 	}
@@ -69,50 +69,50 @@ public class HQLStatement extends BasicStatement {
 	
 	static {
 		conditionalOperators = new HashMap();
-		conditionalOperators.put(WhereField.EQUALS_TO, new IConditionalOperator() {
-			public String getName() {return WhereField.EQUALS_TO;}
+		conditionalOperators.put(CriteriaConstants.EQUALS_TO, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.EQUALS_TO;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + "=" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_EQUALS_TO, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_EQUALS_TO;}
+		conditionalOperators.put(CriteriaConstants.NOT_EQUALS_TO, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_EQUALS_TO;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + "!=" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.GREATER_THAN, new IConditionalOperator() {
-			public String getName() {return WhereField.GREATER_THAN;}
+		conditionalOperators.put(CriteriaConstants.GREATER_THAN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.GREATER_THAN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + ">" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.EQUALS_OR_GREATER_THAN, new IConditionalOperator() {
-			public String getName() {return WhereField.EQUALS_OR_GREATER_THAN;}
+		conditionalOperators.put(CriteriaConstants.EQUALS_OR_GREATER_THAN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.EQUALS_OR_GREATER_THAN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + ">=" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.LESS_THAN, new IConditionalOperator() {
-			public String getName() {return WhereField.LESS_THAN;}
+		conditionalOperators.put(CriteriaConstants.LESS_THAN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.LESS_THAN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + "<" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.EQUALS_OR_LESS_THAN, new IConditionalOperator() {
-			public String getName() {return WhereField.EQUALS_OR_LESS_THAN;}
+		conditionalOperators.put(CriteriaConstants.EQUALS_OR_LESS_THAN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.EQUALS_OR_LESS_THAN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				return leftHandValue + "<=" + rightHandValue;
 			}
 		});
-		conditionalOperators.put(WhereField.STARTS_WITH, new IConditionalOperator() {
-			public String getName() {return WhereField.STARTS_WITH;}
+		conditionalOperators.put(CriteriaConstants.STARTS_WITH, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.STARTS_WITH;}
 			public String apply(String leftHandValue, String rightHandValue) {	
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				rightHandValue = rightHandValue.trim();
@@ -121,8 +121,8 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " like '" + rightHandValue + "'";
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_STARTS_WITH, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_STARTS_WITH;}
+		conditionalOperators.put(CriteriaConstants.NOT_STARTS_WITH, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_STARTS_WITH;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				rightHandValue = rightHandValue.trim();
@@ -131,8 +131,8 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " not like '" + rightHandValue + "'";
 			}
 		});
-		conditionalOperators.put(WhereField.ENDS_WITH, new IConditionalOperator() {
-			public String getName() {return WhereField.ENDS_WITH;}
+		conditionalOperators.put(CriteriaConstants.ENDS_WITH, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.ENDS_WITH;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				rightHandValue = rightHandValue.trim();
@@ -141,8 +141,8 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " like '" + rightHandValue + "'";
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_ENDS_WITH, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_ENDS_WITH;}
+		conditionalOperators.put(CriteriaConstants.NOT_ENDS_WITH, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_ENDS_WITH;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				rightHandValue = rightHandValue.trim();
@@ -151,8 +151,8 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " not like '" + rightHandValue + "'";
 			}
 		});		
-		conditionalOperators.put(WhereField.CONTAINS, new IConditionalOperator() {
-			public String getName() {return WhereField.CONTAINS;}
+		conditionalOperators.put(CriteriaConstants.CONTAINS, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.CONTAINS;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertNotNull(rightHandValue, "Operand cannot be null when the operator is " + getName());
 				rightHandValue = rightHandValue.trim();
@@ -161,21 +161,21 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " like '" + rightHandValue + "'";
 			}
 		});
-		conditionalOperators.put(WhereField.IS_NULL, new IConditionalOperator() {
-			public String getName() {return WhereField.IS_NULL;}
+		conditionalOperators.put(CriteriaConstants.IS_NULL, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.IS_NULL;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				return leftHandValue + " IS NULL";
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_NULL, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_NULL;}
+		conditionalOperators.put(CriteriaConstants.NOT_NULL, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_NULL;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				return leftHandValue + " IS NOT NULL";
 			}
 		});
 		
-		conditionalOperators.put(WhereField.BETWEEN, new IConditionalOperator() {
-			public String getName() {return WhereField.BETWEEN;}
+		conditionalOperators.put(CriteriaConstants.BETWEEN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.BETWEEN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertTrue(rightHandValue.contains(","), "When  BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
 				String[] bounds = rightHandValue.split(",");
@@ -183,8 +183,8 @@ public class HQLStatement extends BasicStatement {
 				return leftHandValue + " BETWEEN " + bounds[0] + " AND " + bounds[1];
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_BETWEEN, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_BETWEEN;}
+		conditionalOperators.put(CriteriaConstants.NOT_BETWEEN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_BETWEEN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				Assert.assertTrue(rightHandValue.contains(","), "When  NOT BEETWEEN operator is used the operand have to be specified in the following form: minVal,MaxVal");
 				String[] bounds = rightHandValue.split(",");
@@ -193,14 +193,14 @@ public class HQLStatement extends BasicStatement {
 			}
 		});
 		
-		conditionalOperators.put(WhereField.IN, new IConditionalOperator() {
-			public String getName() {return WhereField.IN;}
+		conditionalOperators.put(CriteriaConstants.IN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.IN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				return leftHandValue + " IN (" +  rightHandValue + ")";
 			}
 		});
-		conditionalOperators.put(WhereField.NOT_IN, new IConditionalOperator() {
-			public String getName() {return WhereField.NOT_IN;}
+		conditionalOperators.put(CriteriaConstants.NOT_IN, new IConditionalOperator() {
+			public String getName() {return CriteriaConstants.NOT_IN;}
 			public String apply(String leftHandValue, String rightHandValue) {
 				return leftHandValue + " NOT IN (" +  rightHandValue + ")";
 			}
@@ -217,190 +217,587 @@ public class HQLStatement extends BasicStatement {
 		super(dataMartModel, query);
 	}
 	
-
-
+	public static final String DISTINCT = "DISTINCT";
+	public static final String SELECT = "SELECT";
+	public static final String FROM = "FROM";
 	
-	private String buildSelectClause(Query query, Map entityAliases) {
-		StringBuffer buffer = new StringBuffer();
-		List selectFields = query.getSelectFields();
-		
-		if(selectFields == null ||selectFields.size() == 0) {
-			return "";
+	
+	private String getNextAlias(Map entityAliasesMaps) {
+		int aliasesCount = 0;
+		Iterator it = entityAliasesMaps.keySet().iterator();
+		while(it.hasNext()) {
+			String key = (String)it.next();
+			Map entityAliases = (Map)entityAliasesMaps.get(key);
+			aliasesCount += entityAliases.keySet().size();
 		}
 		
-		buffer.append("SELECT");
+		return "t_" + aliasesCount;
+	}
+	
+	private String buildSelectClause(Query query, Map entityAliasesMaps) {
+		StringBuffer buffer;
+		List selectFields;
+		DataMartSelectField selectField;
+		DataMartEntity rootEntity;
+		DataMartField datamartField;
+		String queryName;
+		String rootEntityAlias;
+		String selectClauseElement; // rootEntityAlias.queryName
+		Map entityAliases;
 		
-		Iterator it = selectFields.iterator();
-		while( it.hasNext() ) {
-			SelectField selectField = (SelectField)it.next();
-			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(selectField.getUniqueName());
-			DataMartEntity entity = datamartField.getParent().getRoot(); 
-			String queryName = datamartField.getQueryName();
-			if(!entityAliases.containsKey(entity.getUniqueName())) {
-				entityAliases.put(entity.getUniqueName(), "t_" + entityAliases.keySet().size());
+		logger.debug("IN");
+		buffer = new StringBuffer();
+		try {
+			selectFields = query.getDataMartSelectFields(true);
+			if(selectFields == null ||selectFields.size() == 0) {
+				return "";
 			}
-			String entityAlias = (String)entityAliases.get( entity.getUniqueName() );
-			String fieldName = entityAlias + "." + queryName;
-			buffer.append(" " + selectField.getFunction().apply(fieldName));
-			if( it.hasNext() ) {
-				buffer.append(",");
+			
+			entityAliases = (Map)entityAliasesMaps.get(query.getId());
+						
+			buffer.append(SELECT);		
+			if (query.isDistinctClauseEnabled()) {
+				buffer.append(" " + DISTINCT);
 			}
+			
+			Iterator it = selectFields.iterator();
+			while( it.hasNext() ) {
+				selectField = (DataMartSelectField)it.next();
+				
+				logger.debug("select field unique name [" + selectField.getUniqueName() + "]");
+				
+				datamartField = getDataMartModel().getDataMartModelStructure().getField(selectField.getUniqueName());
+				queryName = datamartField.getQueryName();
+				logger.debug("select field query name [" + queryName + "]");
+				
+				rootEntity = datamartField.getParent().getRoot(); 		
+				logger.debug("select field root entity unique name [" + rootEntity.getUniqueName() + "]");
+				
+				rootEntityAlias = (String)entityAliases.get(rootEntity.getUniqueName());
+				if(rootEntityAlias == null) {
+					rootEntityAlias = getNextAlias(entityAliasesMaps);
+					entityAliases.put(rootEntity.getUniqueName(), rootEntityAlias);
+				}
+				logger.debug("select field root entity alias [" + rootEntityAlias + "]");
+				
+				
+				selectClauseElement = rootEntityAlias + "." + queryName;
+				logger.debug("select clause element before aggregation [" + selectClauseElement + "]");
+				
+				selectClauseElement = selectField.getFunction().apply(selectClauseElement);
+				logger.debug("select clause element after aggregation [" + selectClauseElement + "]");
+				
+				buffer.append(" " + selectClauseElement);
+				if( it.hasNext() ) {
+					buffer.append(",");
+				}
+				logger.debug("select clause element succesfully added to select clause");
+			}
+		} finally {
+			logger.debug("OUT");
 		}
 		
 		return buffer.toString().trim();
 	}
 	
-	private List getJoinFields(Query query) {
-		List joinFields = new ArrayList();
-		Iterator it = query.getWhereFields().iterator();
-		while( it.hasNext() ) {
-			WhereField whereField = (WhereField)it.next();
-			if( "LEFT JOIN ON".equalsIgnoreCase( whereField.getOperator() ) 
-					|| "RIGHT JOIN ON".equalsIgnoreCase( whereField.getOperator() ) ) {
-				joinFields.add(whereField);
+	
+	private String buildFromClause(Query query, Map entityAliasesMaps) {
+		StringBuffer buffer;
+		
+		
+		logger.debug("IN");
+		buffer = new StringBuffer();
+		try {
+			Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
+			
+			
+			if(entityAliases == null || entityAliases.keySet().size() == 0) {
+				return "";
 			}
 			
-		}
-		return joinFields;
-	}
-	private String buildFromClause(Map entityAliases) {
-		StringBuffer buffer = new StringBuffer();
-		
-		if(entityAliases == null || entityAliases.keySet().size() == 0) {
-			return "";
-		}
-		
-		buffer.append(" FROM ");
-		
-		Iterator joins = getJoinFields(query).iterator();
-		int n = 0;
-		while(joins.hasNext()) {
-			WhereField joinField = (WhereField)joins.next();
-			
-			WhereField whereField;
-			DataMartField datamartField;
-			DataMartEntity lentity;
-			DataMartEntity rentity;
-			String queryName;
-			String lentityAlias;
-			String rentityAlias;
+			buffer.append(" " + FROM + " ");
 			
 			
-			String leftHandValue = null;
-			datamartField = getDataMartModel().getDataMartModelStructure().getField(joinField.getUniqueName());
-			lentity = datamartField.getParent().getRoot(); 
-			queryName = datamartField.getQueryName();
-			if(!entityAliases.containsKey(lentity.getUniqueName())) {
-				lentityAlias = "t_" + entityAliases.keySet().size() + (n++);
-			} else {
-				lentityAlias = (String)entityAliases.get( lentity.getUniqueName() );	
-				entityAliases.remove( lentity.getUniqueName() );
-			}			
-			leftHandValue = lentityAlias + "." + queryName;
+			// outer join are not supported by hibernate 
+			// so this method is expected to return always an empty string
+			//buffer.append( buildJoinClause(query, entityAliases) );
 			
-			String rightHandValue = null;
-			datamartField = getDataMartModel().getDataMartModelStructure().getField( joinField.getOperand().toString() );
-			rentity = datamartField.getParent().getRoot(); 
-			queryName = datamartField.getQueryName();
-			if(!entityAliases.containsKey(rentity.getUniqueName())) {
-				rentityAlias = "t_" + entityAliases.keySet().size() + (n++);
-			} else {
-				rentityAlias = (String)entityAliases.get( rentity.getUniqueName() );	
-				entityAliases.remove( rentity.getUniqueName() );
-			}		
-			rightHandValue = rentityAlias + "." + queryName;
-			
-			buffer.append(lentity.getType() + " " + lentityAlias  
-							+ " LEFT OUTER JOIN " 
-							+ rentity.getType() + " " + rentityAlias  
-							+ " ON "
-							+ leftHandValue + " = " + rightHandValue);
-			
-			if(joins.hasNext() || entityAliases.keySet().iterator().hasNext()) {
-				buffer.append(", ");
+			Iterator it = entityAliases.keySet().iterator();
+			while( it.hasNext() ) {
+				String entityUniqueName = (String)it.next();
+				logger.debug("entity [" + entityUniqueName +"]");
+				
+				String entityAlias = (String)entityAliases.get(entityUniqueName);
+				logger.debug("entity alias [" + entityAlias +"]");
+				
+				DataMartEntity datamartEntity =  getDataMartModel().getDataMartModelStructure().getEntity(entityUniqueName);
+				String whereClauseElement = datamartEntity.getType() + " " + entityAlias;
+				logger.debug("where clause element [" + whereClauseElement +"]");
+				
+				buffer.append(" " + whereClauseElement);
+				if( it.hasNext() ) {
+					buffer.append(",");
+				}
 			}
-			
-		}
-		
-		Iterator it = entityAliases.keySet().iterator();
-		while( it.hasNext() ) {
-			String entityUniqueName = (String)it.next();
-			String entityAlias = (String)entityAliases.get(entityUniqueName);
-			DataMartEntity datamartEntity =  getDataMartModel().getDataMartModelStructure().getEntity(entityUniqueName);
-			
-			buffer.append(" " + datamartEntity.getType() + " " + entityAlias);
-			if( it.hasNext() ) {
-				buffer.append(",");
-			}
+		} finally {
+			logger.debug("OUT");
 		}
 		
 		return buffer.toString().trim();
 	}
 	
-	private String buildUserProvidedWhereField(WhereField whereField, Query query, Map entityAliases) {
-		String leftHandValue = null;
-		DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(whereField.getUniqueName());
-		DataMartEntity entity = datamartField.getParent().getRoot(); 
-		String queryName = datamartField.getQueryName();
-		if(!entityAliases.containsKey(entity.getUniqueName())) {
-			entityAliases.put(entity.getUniqueName(), "t_" + entityAliases.keySet().size());
-		}
-		String entityAlias = (String)entityAliases.get( entity.getUniqueName() );				
-		leftHandValue = entityAlias + "." + queryName;
+	
+	public static final String OPERAND_TYPE_STATIC = "Static Value";
+	public static final String OPERAND_TYPE_SUBQUERY = "Subquery";
+	public static final String OPERAND_TYPE_FIELD = "Field Content";
+	public static final String OPERAND_TYPE_PARENT_FIELD = "Parent Field Content";
+	
+	
+	private String buildStaticOperand(Operand operand) {
+		String operandElement;
 		
+		logger.debug("IN");
 		
-		String rightHandValue = null;
+		try {
+			operandElement = operand.value;			
+		} finally {
+			logger.debug("OUT");
+		}		
 		
-		if("Field Content".equalsIgnoreCase( whereField.getOperandType() ) ) {
-			datamartField = getDataMartModel().getDataMartModelStructure().getField( whereField.getOperand().toString() );
-			entity = datamartField.getParent().getRoot(); 
-			queryName = datamartField.getQueryName();
-			if(!entityAliases.containsKey(entity.getUniqueName())) {
-				entityAliases.put(entity.getUniqueName(), "t_" + entityAliases.keySet().size());
-			}
-			entityAlias = (String)entityAliases.get( entity.getUniqueName() );
-			rightHandValue = entityAlias + "." + queryName;
-		} else if("Static Value".equalsIgnoreCase( whereField.getOperandType() ) ) {
-			rightHandValue = whereField.getOperand().toString();
+		return operandElement;
+	}
+	
+	private String buildFieldOperand(Operand operand, Query query, Map entityAliasesMaps) {
+		String operandElement;
+		DataMartField datamartField;
+		DataMartEntity rootEntity;
+		String queryName;
+		String rootEntityAlias;
+		Map targetQueryEntityAliasesMap;
+		
+		logger.debug("IN");
+		
+		try {
 			
-			if(datamartField.getType().equalsIgnoreCase("String")) {
-				if( !( whereField.IN.equalsIgnoreCase( whereField.getOperator() ) 
-						|| whereField.IN.equalsIgnoreCase( whereField.getOperator() )
-						|| whereField.NOT_IN.equalsIgnoreCase( whereField.getOperator() )
-						|| whereField.BETWEEN.equalsIgnoreCase( whereField.getOperator() )
-						|| whereField.NOT_BETWEEN.equalsIgnoreCase( whereField.getOperator() ) 
+			targetQueryEntityAliasesMap = (Map)entityAliasesMaps.get(query.getId());
+			Assert.assertNotNull(targetQueryEntityAliasesMap, "Entity aliases map for query [" + query.getId() + "] cannot be null in order to execute method [buildUserProvidedWhereField]");
+			
+			
+			datamartField = getDataMartModel().getDataMartModelStructure().getField( operand.value );
+			Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + operand.value + "]");
+			queryName = datamartField.getQueryName();
+			logger.debug("where field query name [" + queryName + "]");
+			
+			rootEntity = datamartField.getParent().getRoot(); 
+			logger.debug("where field root entity unique name [" + rootEntity.getUniqueName() + "]");
+			
+			if(!targetQueryEntityAliasesMap.containsKey(rootEntity.getUniqueName())) {
+				logger.debug("Entity [" + rootEntity.getUniqueName() + "] require a new alias");
+				rootEntityAlias = getNextAlias(entityAliasesMaps);
+				logger.debug("A new alias has been generated [" + rootEntityAlias + "]");				
+				targetQueryEntityAliasesMap.put(rootEntity.getUniqueName(), rootEntityAlias);
+			}
+			rootEntityAlias = (String)targetQueryEntityAliasesMap.get( rootEntity.getUniqueName() );
+			logger.debug("where field root entity alias [" + rootEntityAlias + "]");
+			
+			if (operand instanceof HavingField.Operand) {
+				HavingField.Operand havingFieldOperand = (HavingField.Operand) operand;
+				IAggregationFunction function = havingFieldOperand.function;
+				operandElement = function.apply(rootEntityAlias + "." + queryName);
+			} else {
+				operandElement = rootEntityAlias + "." + queryName;
+			}
+			logger.debug("where element operand value [" + operandElement + "]");
+		} finally {
+			logger.debug("OUT");
+		}		
+		
+		return operandElement;
+	}
+	
+	private String buildParentFieldOperand(Operand operand, Query query, Map entityAliasesMaps) {
+		String operandElement;
+		
+		String[] chunks;
+		String parentQueryId;
+		String fieldName;
+		DataMartField datamartField;
+		DataMartEntity rootEntity;
+		String queryName;
+		String rootEntityAlias;
+		
+		
+		logger.debug("IN");
+		
+		try {
+			
+			// it comes directly from the client side GUI. It is a composition of the parent query id and filed name, 
+			// separated by a space
+			logger.debug("operand  is equals to [" + operand.value + "]");
+			
+			chunks = operand.value.split(" ");
+			Assert.assertTrue(chunks.length >= 2, "Operand [" + chunks.toString() + "]does not contains enougth informations in order to resolve the reference to parent field");
+			
+			parentQueryId = chunks[0];
+			logger.debug("where right-hand field belonging query [" + parentQueryId + "]");
+			fieldName = chunks[1];
+			logger.debug("where right-hand field unique name [" + fieldName + "]");
+
+			datamartField = getDataMartModel().getDataMartModelStructure().getField( fieldName );
+			Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + fieldName + "]");
+			
+			queryName = datamartField.getQueryName();
+			logger.debug("where right-hand field query name [" + queryName + "]");
+			
+			rootEntity = datamartField.getParent().getRoot();
+			logger.debug("where right-hand field root entity unique name [" + rootEntity.getUniqueName() + "]");
+			
+			Map parentEntityAliases = (Map)entityAliasesMaps.get(parentQueryId);
+			if(parentEntityAliases != null) {
+				if(!parentEntityAliases.containsKey(rootEntity.getUniqueName())) {
+					Assert.assertUnreachable("Filter of subquery [" + query.getId() + "] refers to a non " +
+							"existing parent query [" + parentQueryId + "] entity [" + rootEntity.getUniqueName() + "]");
+				}
+				rootEntityAlias = (String)parentEntityAliases.get( rootEntity.getUniqueName() );
+			} else {
+				rootEntityAlias = "unresoved_alias";
+				logger.warn("Impossible to get aliases map for parent query [" + parentQueryId +"]. Probably the parent query ha not been compiled yet");					
+				logger.warn("Query [" + query.getId() +"] refers entities of its parent query [" + parentQueryId +"] so the generated statement wont be executable until the parent query will be compiled");					
+			}
+			logger.debug("where right-hand field root entity alias [" + rootEntityAlias + "]");
+			
+			operandElement = rootEntityAlias + "." + queryName;
+			logger.debug("where element right-hand field value [" + operandElement + "]");
+		} finally {
+			logger.debug("OUT");
+		}		
+		
+		return operandElement;
+	}
+	
+	private String buildQueryOperand(Operand operand) {
+		String operandElement;
+		
+		logger.debug("IN");
+		
+		try {
+			String subqueryId;
+			
+			logger.debug("where element right-hand field type [" + OPERAND_TYPE_SUBQUERY + "]");
+			
+			subqueryId = operand.value;
+			logger.debug("Referenced subquery [" + subqueryId + "]");
+			
+			operandElement = "Q{" + subqueryId + "}";
+			operandElement = "( " + operandElement + ")";
+			logger.debug("where element right-hand field value [" + operandElement + "]");	
+		} finally {
+			logger.debug("OUT");
+		}		
+		
+		return operandElement;
+	}
+	
+	private String buildOperand(Operand operand, Query query, Map entityAliasesMaps) {
+		String operandElement;
+		
+		logger.debug("IN");
+		
+		try {
+			Assert.assertNotNull(operand, "Input parameter [operand] cannot be null in order to execute method [buildUserProvidedWhereField]");
+			operandElement = "";
+			
+			if(OPERAND_TYPE_STATIC.equalsIgnoreCase(operand.type)) {
+				operandElement = buildStaticOperand(operand);
+			} else if (OPERAND_TYPE_SUBQUERY.equalsIgnoreCase(operand.type)) {
+				operandElement = buildQueryOperand(operand);
+			} else if (OPERAND_TYPE_FIELD.equalsIgnoreCase(operand.type)) {
+				operandElement = buildFieldOperand(operand, query, entityAliasesMaps);
+			} else if (OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(operand.type)) {
+				operandElement = buildParentFieldOperand(operand, query, entityAliasesMaps);
+			} else {
+				Assert.assertUnreachable("Invalid operand type [" + operand.type+ "]");
+			}
+		} finally {
+			logger.debug("OUT");
+		}		
+		return operandElement;
+	}
+	
+	private String getTypeBoundedStaticOperand(Operand leadOperand, String operator, String operandValueToBound) {
+		String boundedValue = operandValueToBound;
+
+		if (OPERAND_TYPE_FIELD.equalsIgnoreCase(leadOperand.type) 
+						|| OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase(leadOperand.type)) {
+			
+			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(leadOperand.value);
+			
+			if(datamartField.getType().equalsIgnoreCase("String") || datamartField.getType().equalsIgnoreCase("character")) {
+				if( !( CriteriaConstants.IN.equalsIgnoreCase( operator ) 
+						|| CriteriaConstants.NOT_IN.equalsIgnoreCase( operator )
+						|| CriteriaConstants.BETWEEN.equalsIgnoreCase( operator )
+						|| CriteriaConstants.NOT_BETWEEN.equalsIgnoreCase( operator ) 
 				)) {
-					rightHandValue = "'" + rightHandValue + "'";
+					// if the value is already surrounded by quotes, does not add quotes
+					if (operandValueToBound.startsWith("'") && operandValueToBound.endsWith("'")) {
+						boundedValue = operandValueToBound ;
+					} else {
+						boundedValue = "'" + operandValueToBound + "'";
+					}
 				} else {
-					String[] items = rightHandValue.split(",");
-					rightHandValue = "";
+					String[] items = operandValueToBound.split(",");
+					boundedValue = "";
 					for(int i = 0; i < items.length; i++) {
-						rightHandValue += (i==0?"":",") + "'" + items[i] + "'";
+						// if the value is already surrounded by quotes, does not add quotes
+						if (items[i].startsWith("'") && items[i].endsWith("'")) {
+							boundedValue += (i==0?"":",") + items[i];
+						} else {
+							boundedValue += (i==0?"":",") + "'" + items[i] + "'";
+						}
 					}					
 				}
 			}
-		} else if("Subquery".equalsIgnoreCase( whereField.getOperandType() ) ) {
-			Assert.assertUnreachable("Filter of type subquery are not still supported.");
-		} else {
-			Assert.assertUnreachable("Unrecognized filter type: " + whereField.getOperandType());
-		}		
+		}
 		
-		IConditionalOperator conditionalOperator = null;
-		conditionalOperator = (IConditionalOperator)conditionalOperators.get( whereField.getOperator() );
-		Assert.assertNotNull(conditionalOperator, "Unsopported operator " + whereField.getOperator() + " used in query definition");
-		
-		
-		return conditionalOperator.apply(leftHandValue, rightHandValue) ;
+		return boundedValue;
 	}
 	
-	private String buildUserProvidedWhereClause(ExpressionNode filterExp, Query query, Map entityAliases) {
+	private String buildUserProvidedWhereField(WhereField whereField, Query query, Map entityAliasesMaps) {
+		
+		String whereClauseElement;
+		String leftOperandElement;
+		String rightOperandElement;
+				
+		logger.debug("IN");
+		
+		try {
+			IConditionalOperator conditionalOperator = null;
+			conditionalOperator = (IConditionalOperator)conditionalOperators.get( whereField.getOperator() );
+			Assert.assertNotNull(conditionalOperator, "Unsopported operator " + whereField.getOperator() + " used in query definition");
+			
+			leftOperandElement = buildOperand(whereField.getLeftOperand(), query, entityAliasesMaps);
+			
+			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getRightOperand().type) 
+					&& whereField.isPromptable()) {
+				// get last value first (the last value edited by the user)
+				rightOperandElement = whereField.getRightOperand().lastValue;
+			} else {
+				rightOperandElement = buildOperand(whereField.getRightOperand(), query, entityAliasesMaps);
+			}
+			
+			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getLeftOperand().type) )  {
+				leftOperandElement= getTypeBoundedStaticOperand(whereField.getRightOperand(), whereField.getOperator(), leftOperandElement);
+			}
+			
+			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(whereField.getRightOperand().type) )  {
+				rightOperandElement= getTypeBoundedStaticOperand(whereField.getLeftOperand(), whereField.getOperator(), rightOperandElement);
+			}
+			
+			whereClauseElement = conditionalOperator.apply(leftOperandElement, rightOperandElement);
+			logger.debug("where element value [" + whereClauseElement + "]");
+		} finally {
+			logger.debug("OUT");
+		}
+		
+		
+		return  whereClauseElement;
+	}
+	/*
+	private String buildUserProvidedWhereField(WhereField whereField, Query query, Map entityAliasesMaps) {
+		
+		String whereClauseElement;
+		Map targetQueryEntityAliasesMap;
+		String leftHandValue;
+		String rightHandValue;
+		DataMartField datamartField;
+		DataMartEntity rootEntity;
+		String queryName;
+		String rootEntityAlias;
+		
+		
+		logger.debug("IN");
+		
+		try {
+			whereClauseElement = "";
+			leftHandValue = "";
+			rightHandValue = "";
+		
+			targetQueryEntityAliasesMap = (Map)entityAliasesMaps.get(query.getId());
+			Assert.assertNotNull(targetQueryEntityAliasesMap, "Entity aliasses map for query [" + query.getId() + "] cannot be null in order to execute method [buildUserProvidedWhereField]");
+			
+			
+			// build left-hand value
+			logger.debug("processing where element left-hand field value ...");
+			
+			logger.debug("where left-hand field unique name [" + whereField.getUniqueName() + "]");
+			
+			datamartField = getDataMartModel().getDataMartModelStructure().getField(whereField.getUniqueName());
+			Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + whereField.getOperand().toString() + "]");
+			queryName = datamartField.getQueryName();
+			logger.debug("where left-hand field query name [" + queryName + "]");
+			
+			rootEntity = datamartField.getParent().getRoot(); 
+			logger.debug("where left-hand field root entity unique name [" + rootEntity.getUniqueName() + "]");
+			
+			if(!targetQueryEntityAliasesMap.containsKey(rootEntity.getUniqueName())) {
+				logger.debug("Entity [" + rootEntity.getUniqueName() + "] require a new alias");
+				rootEntityAlias = getNextAlias(entityAliasesMaps);
+				logger.debug("A new alias has been generated [" + rootEntityAlias + "]");				
+				targetQueryEntityAliasesMap.put(rootEntity.getUniqueName(), rootEntityAlias);
+			}
+			rootEntityAlias = (String)targetQueryEntityAliasesMap.get( rootEntity.getUniqueName() );		
+			logger.debug("where left-hand field root entity alias [" + rootEntityAlias + "]");
+			
+			leftHandValue = rootEntityAlias + "." + queryName;
+			logger.debug("where element left-hand field value [" + leftHandValue + "]");
+			
+			
+			// build right-hand value
+			logger.debug("processing where element right-hand field value ...");
+			
+			if(OPERAND_TYPE_FIELD.equalsIgnoreCase( whereField.getOperandType() ) ) {
+				logger.debug("where element right-hand field type [" + OPERAND_TYPE_FIELD + "]");
+				
+				logger.debug("where right-hand field unique name [" + whereField.getOperand().toString() + "]");
+				
+				datamartField = getDataMartModel().getDataMartModelStructure().getField( whereField.getOperand().toString() );
+				Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + whereField.getOperand().toString() + "]");
+				queryName = datamartField.getQueryName();
+				logger.debug("where right-hand field query name [" + queryName + "]");
+				
+				rootEntity = datamartField.getParent().getRoot(); 
+				logger.debug("where right-hand field root entity unique name [" + rootEntity.getUniqueName() + "]");
+				
+				if(!targetQueryEntityAliasesMap.containsKey(rootEntity.getUniqueName())) {
+					logger.debug("Entity [" + rootEntity.getUniqueName() + "] require a new alias");
+					rootEntityAlias = getNextAlias(entityAliasesMaps);
+					logger.debug("A new alias has been generated [" + rootEntityAlias + "]");				
+					targetQueryEntityAliasesMap.put(rootEntity.getUniqueName(), rootEntityAlias);
+				}
+				rootEntityAlias = (String)targetQueryEntityAliasesMap.get( rootEntity.getUniqueName() );
+				logger.debug("where right-hand field root entity alias [" + rootEntityAlias + "]");
+				
+				rightHandValue = rootEntityAlias + "." + queryName;
+				logger.debug("where element right-hand field value [" + rightHandValue + "]");
+				
+			} else if(OPERAND_TYPE_PARENT_FIELD.equalsIgnoreCase( whereField.getOperandType() ) ) {
+				String operand;
+				String[] chunks;
+				String parentQueryId;
+				String fieldName;
+				
+				logger.debug("where element right-hand field type [" + OPERAND_TYPE_FIELD + "]");
+				
+				// it comes directly from the client side GUI. It is a composition of the parent query id and filed name, 
+				// separated by a space
+				operand = whereField.getOperand().toString();
+				logger.debug("operand  is equals to [" + operand + "]");
+				
+				chunks = operand.split(" ");
+				Assert.assertTrue(chunks.length >= 2, "Operand [" + chunks.toString() + "]does not contains enougth informations in order to resolve the reference to parent field");
+				
+				parentQueryId = chunks[0];
+				logger.debug("where right-hand field belonging query [" + parentQueryId + "]");
+				fieldName = chunks[1];
+				logger.debug("where right-hand field unique name [" + fieldName + "]");
+	
+				datamartField = getDataMartModel().getDataMartModelStructure().getField( fieldName );
+				Assert.assertNotNull(datamartField, "DataMart does not cantain a field named [" + fieldName + "]");
+				
+				queryName = datamartField.getQueryName();
+				logger.debug("where right-hand field query name [" + queryName + "]");
+				
+				rootEntity = datamartField.getParent().getRoot();
+				logger.debug("where right-hand field root entity unique name [" + rootEntity.getUniqueName() + "]");
+				
+				Map parentEntityAliases = (Map)entityAliasesMaps.get(parentQueryId);
+				if(parentEntityAliases != null) {
+					if(!parentEntityAliases.containsKey(rootEntity.getUniqueName())) {
+						Assert.assertUnreachable("Filter [" + whereField.getUniqueName() + "] of subquery [" + query.getId() + "] refers to a non " +
+								"existing parent query [" + parentQueryId+ "] entity [" + rootEntity.getUniqueName() + "]");
+					}
+					rootEntityAlias = (String)parentEntityAliases.get( rootEntity.getUniqueName() );
+				} else {
+					rootEntityAlias = "unresoved_alias";
+					logger.warn("Impossible to get aliases map for parent query [" + parentQueryId +"]. Probably the parent query ha not been compiled yet");					
+					logger.warn("Query [" + query.getId() +"] refers entities of its parent query [" + parentQueryId +"] so the generated statement wont be executable until the parent query will be compiled");					
+				}
+				logger.debug("where right-hand field root entity alias [" + rootEntityAlias + "]");
+				
+				rightHandValue = rootEntityAlias + "." + queryName;
+				logger.debug("where element right-hand field value [" + rightHandValue + "]");
+				
+			} else if(OPERAND_TYPE_STATIC.equalsIgnoreCase( whereField.getOperandType() ) ) {
+				
+				logger.debug("where element right-hand field type [" + OPERAND_TYPE_STATIC + "]");
+				
+				if (whereField.isFree()) {
+					// get last value first (the last value edited by the user)
+					rightHandValue = whereField.getLastValue();
+				} else {
+					rightHandValue = whereField.getOperand().toString();
+				}
+				
+				logger.debug("where right-hand field value [" + rightHandValue + "]");
+				
+				logger.debug("where right-hand field type [" + datamartField.getType() + "]");
+				
+				if(datamartField.getType().equalsIgnoreCase("String")) {
+					if( !( whereField.IN.equalsIgnoreCase( whereField.getOperator() ) 
+							|| whereField.IN.equalsIgnoreCase( whereField.getOperator() )
+							|| whereField.NOT_IN.equalsIgnoreCase( whereField.getOperator() )
+							|| whereField.BETWEEN.equalsIgnoreCase( whereField.getOperator() )
+							|| whereField.NOT_BETWEEN.equalsIgnoreCase( whereField.getOperator() ) 
+					)) {
+						rightHandValue = "'" + rightHandValue + "'";
+					} else {
+						String[] items = rightHandValue.split(",");
+						rightHandValue = "";
+						for(int i = 0; i < items.length; i++) {
+							rightHandValue += (i==0?"":",") + "'" + items[i] + "'";
+						}					
+					}
+				}
+				logger.debug("where element right-hand field value [" + rightHandValue + "]");
+			} else if(OPERAND_TYPE_SUBQUERY.equalsIgnoreCase( whereField.getOperandType() ) ) {
+				String subqueryId;
+				
+				logger.debug("where element right-hand field type [" + OPERAND_TYPE_SUBQUERY + "]");
+				
+				subqueryId = (String)whereField.getOperand();
+				logger.debug("Referenced subquery [" + subqueryId + "]");
+				
+				rightHandValue = "Q{" + subqueryId + "}";
+				rightHandValue = "( " + rightHandValue + ")";
+				logger.debug("where element right-hand field value [" + rightHandValue + "]");
+			} else {
+				Assert.assertUnreachable("Unrecognized filter type: " + whereField.getOperandType());
+			}		
+			
+			IConditionalOperator conditionalOperator = null;
+			conditionalOperator = (IConditionalOperator)conditionalOperators.get( whereField.getOperator() );
+			Assert.assertNotNull(conditionalOperator, "Unsopported operator " + whereField.getOperator() + " used in query definition");
+			
+			
+			whereClauseElement = conditionalOperator.apply(leftHandValue, rightHandValue);
+			logger.debug("where element value [" + whereClauseElement + "]");
+		} finally {
+			logger.debug("OUT");
+		}
+		
+		
+		return  whereClauseElement;
+	}
+	*/
+	
+	private String buildUserProvidedWhereClause(ExpressionNode filterExp, Query query, Map entityAliasesMaps) {
 		String str = "";
 		
 		String type = filterExp.getType();
 		if("NODE_OP".equalsIgnoreCase( type )) {
 			for(int i = 0; i < filterExp.getChildNodes().size(); i++) {
 				ExpressionNode child = (ExpressionNode)filterExp.getChildNodes().get(i);
-				String childStr = buildUserProvidedWhereClause(child, query, entityAliases);
+				String childStr = buildUserProvidedWhereClause(child, query, entityAliasesMaps);
 				if("NODE_OP".equalsIgnoreCase( child.getType() )) {
 					childStr = "(" + childStr + ")";
 				}
@@ -409,17 +806,82 @@ public class HQLStatement extends BasicStatement {
 			}
 		} else {
 			WhereField whereField = query.getWhereFieldByName( filterExp.getValue() );
-			str += buildUserProvidedWhereField(whereField, query, entityAliases);
+			str += buildUserProvidedWhereField(whereField, query, entityAliasesMaps);
 		}
 		
 		return str;
 	}
 	
-	private String buildWhereClause(Query query, Map entityAliases) {
+	private String buildHavingClause(Query query, Map entityAliasesMaps) {
+		
 		StringBuffer buffer = new StringBuffer();
+		
+		if( query.getHavingFields().size() > 0) {
+			buffer.append("HAVING ");
+			Iterator it = query.getHavingFields().iterator();
+			while (it.hasNext()) {
+				HavingField field = (HavingField) it.next();
+				buffer.append( buildHavingClauseElement(field, query, entityAliasesMaps) );
+				if (it.hasNext()) {
+					buffer.append(" " + field.getBooleanConnector() + " ");
+				}
+			}
+		}
+		
+		return buffer.toString().trim();
+	}
+	
+	private String buildHavingClauseElement(HavingField havingField, Query query, Map entityAliasesMaps) {
+		
+		String havingClauseElement;
+		String leftOperandElement;
+		String rightOperandElement;
+				
+		logger.debug("IN");
+		
+		try {
+			IConditionalOperator conditionalOperator = null;
+			conditionalOperator = (IConditionalOperator)conditionalOperators.get( havingField.getOperator() );
+			Assert.assertNotNull(conditionalOperator, "Unsopported operator " + havingField.getOperator() + " used in query definition");
+			
+			leftOperandElement = buildOperand(havingField.getLeftOperand(), query, entityAliasesMaps);
+			
+			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(havingField.getRightOperand().type) 
+					&& havingField.isPromptable()) {
+				// get last value first (the last value edited by the user)
+				rightOperandElement = havingField.getRightOperand().lastValue;
+			} else {
+				rightOperandElement = buildOperand(havingField.getRightOperand(), query, entityAliasesMaps);
+			}
+			
+			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(havingField.getLeftOperand().type) )  {
+				leftOperandElement= getTypeBoundedStaticOperand(havingField.getRightOperand(), havingField.getOperator(), leftOperandElement);
+			}
+			
+			if (OPERAND_TYPE_STATIC.equalsIgnoreCase(havingField.getRightOperand().type) )  {
+				rightOperandElement= getTypeBoundedStaticOperand(havingField.getLeftOperand(), havingField.getOperator(), rightOperandElement);
+			}
+			
+			havingClauseElement = conditionalOperator.apply(leftOperandElement, rightOperandElement);
+			logger.debug("Having clause element value [" + havingClauseElement + "]");
+		} finally {
+			logger.debug("OUT");
+		}
+		
+		
+		return  havingClauseElement;
+	}
+	
+	
+	private String buildWhereClause(Query query, Map entityAliasesMaps) {
+	
+		StringBuffer buffer = new StringBuffer();
+		
+		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
+		
 		if( query.getWhereClauseStructure() != null) {
 			buffer.append("WHERE ");
-			buffer.append( buildUserProvidedWhereClause(query.getWhereClauseStructure(), query, entityAliases) );
+			buffer.append( buildUserProvidedWhereClause(query.getWhereClauseStructure(), query, entityAliasesMaps) );
 		}
 		
 
@@ -506,7 +968,7 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString().trim();
 	}
 	
-	private String buildGroupByClause(Query query, Map entityAliases) {
+	private String buildGroupByClause(Query query, Map entityAliasesMaps) {
 		StringBuffer buffer = new StringBuffer();
 		List groupByFields = query.getGroupByFields();
 		
@@ -516,14 +978,16 @@ public class HQLStatement extends BasicStatement {
 		
 		buffer.append("GROUP BY");
 		
+		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
+		
 		Iterator it = groupByFields.iterator();
 		while( it.hasNext() ) {
-			SelectField groupByField = (SelectField)it.next();
+			DataMartSelectField groupByField = (DataMartSelectField)it.next();
 			DataMartField datamartField = getDataMartModel().getDataMartModelStructure().getField(groupByField.getUniqueName());
 			DataMartEntity entity = datamartField.getParent().getRoot(); 
 			String queryName = datamartField.getQueryName();
 			if(!entityAliases.containsKey(entity.getUniqueName())) {
-				entityAliases.put(entity.getUniqueName(), "t_" + entityAliases.keySet().size());
+				entityAliases.put(entity.getUniqueName(), getNextAlias(entityAliasesMaps));
 			}
 			String entityAlias = (String)entityAliases.get( entity.getUniqueName() );
 			String fieldName = entityAlias + "." +queryName;
@@ -538,9 +1002,9 @@ public class HQLStatement extends BasicStatement {
 	
 	private List getOrderByFields(Query query) {
 		List orderByFields = new ArrayList();
-		Iterator it = query.getSelectFields().iterator();
+		Iterator it = query.getDataMartSelectFields(false).iterator();
 		while( it.hasNext() ) {
-			SelectField selectField = (SelectField)it.next();
+			DataMartSelectField selectField = (DataMartSelectField)it.next();
 			if(selectField.isOrderByField()) {
 				orderByFields.add(selectField);
 			}
@@ -548,10 +1012,10 @@ public class HQLStatement extends BasicStatement {
 		return orderByFields;
 	}
 	
-	private String buildOrderByClause(Query query, Map entityAliases) {
+	private String buildOrderByClause(Query query, Map entityAliasesMaps) {
 		StringBuffer buffer;
 		Iterator it;
-		SelectField selectField;
+		DataMartSelectField selectField;
 		
 		it = getOrderByFields(query).iterator();		
 		if(!it.hasNext()) {
@@ -560,9 +1024,11 @@ public class HQLStatement extends BasicStatement {
 		
 		buffer = new StringBuffer();	
 		buffer.append("ORDER BY");
+		
+		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
 					
 		while( it.hasNext() ) {
-			selectField = (SelectField)it.next();
+			selectField = (DataMartSelectField)it.next();
 			
 			Assert.assertTrue(selectField.isOrderByField(), "Field [" + selectField.getUniqueName() +"] is not an orderBy filed");
 			
@@ -570,7 +1036,7 @@ public class HQLStatement extends BasicStatement {
 			DataMartEntity entity = datamartField.getParent().getRoot(); 
 			String queryName = datamartField.getQueryName();
 			if(!entityAliases.containsKey(entity.getUniqueName())) {
-				entityAliases.put(entity.getUniqueName(), "t_" + entityAliases.keySet().size());
+				entityAliases.put(entity.getUniqueName(), getNextAlias(entityAliasesMaps));
 			}
 			String entityAlias = (String)entityAliases.get( entity.getUniqueName() );
 			String fieldName = entityAlias + "." + queryName;
@@ -585,28 +1051,103 @@ public class HQLStatement extends BasicStatement {
 		return buffer.toString().trim();
 	}
 	
-	public void prepare() {
+	
+	public Set getSelectedEntities() {
+		Set selectedEntities;
+		Map entityAliasesMaps;
+		Iterator entityUniqueNamesIterator;
+		String entityUniqueName;
+		DataMartEntity entity;
+		
+		
+		Assert.assertNotNull(query, "Input parameter 'query' cannot be null");
+		Assert.assertTrue(!query.isEmpty(), "Input query cannot be empty (i.e. with no selected fields)");
+		
+		selectedEntities = new HashSet();
+		
+		// one map of entity aliases for each queries (master query + subqueries)
+		// each map is indexed by the query id
+		entityAliasesMaps = new HashMap();
+		
+		// let's start with the query at hand
+		entityAliasesMaps.put(query.getId(), new HashMap());
+		
+		buildSelectClause(query, entityAliasesMaps);
+		buildWhereClause(query, entityAliasesMaps);
+		buildGroupByClause(query, entityAliasesMaps);
+		buildOrderByClause(query, entityAliasesMaps);
+		buildFromClause(query, entityAliasesMaps);
+		
+		Map entityAliases = (Map)entityAliasesMaps.get(query.getId());
+		entityUniqueNamesIterator = entityAliases.keySet().iterator();
+		while(entityUniqueNamesIterator.hasNext()) {
+			entityUniqueName = (String)entityUniqueNamesIterator.next();
+			//entity = getDataMartModel().getDataMartModelStructure().getRootEntity( entityUniqueName );
+			entity = getDataMartModel().getDataMartModelStructure().getEntity( entityUniqueName );
+			selectedEntities.add(entity);
+		}
+		
+		return selectedEntities;
+	}
+	
+	/*
+	 * internally used to generate the parametric statement string. Shared by the prepare method and the buildWhereClause method in order
+	 * to recursively generate subquery statement string to be embedded in the parent query.
+	 */
+	private String compose(Query query, Map entityAliasesMaps) {
 		String queryStr;
 		String selectClause;
 		String whereClause;
 		String groupByClause;
 		String orderByClause;
 		String fromClause;
-		Map entityAliases;
+		String havingClause;
 		
 		Assert.assertNotNull(query, "Input parameter 'query' cannot be null");
 		Assert.assertTrue(!query.isEmpty(), "Input query cannot be empty (i.e. with no selected fields)");
+				
+		// let's start with the query at hand
+		entityAliasesMaps.put(query.getId(), new HashMap());
 		
-		entityAliases = new HashMap();
+		selectClause = buildSelectClause(query, entityAliasesMaps);
+		whereClause = buildWhereClause(query, entityAliasesMaps);
+		groupByClause = buildGroupByClause(query, entityAliasesMaps);
+		orderByClause = buildOrderByClause(query, entityAliasesMaps);
+		fromClause = buildFromClause(query, entityAliasesMaps);
+		havingClause = buildHavingClause(query, entityAliasesMaps);
 		
-		selectClause = buildSelectClause(query, entityAliases);
-		whereClause = buildWhereClause(query, entityAliases);
-		groupByClause = buildGroupByClause(query, entityAliases);
-		orderByClause = buildOrderByClause(query, entityAliases);
-		fromClause = buildFromClause(entityAliases);
+		queryStr = selectClause + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause + " " + havingClause;
 		
-		// prepare query string
-		queryStr = selectClause + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause;		
+		Set subqueryIds;
+		try {
+			subqueryIds = StringUtils.getParameters(queryStr, "Q");
+		} catch (IOException e) {
+			throw new SpagoBIRuntimeException("Impossible to set parameters in query", e);
+		}
+		
+		Iterator it = subqueryIds.iterator();
+		while(it.hasNext()) {
+			String id = (String)it.next();
+			Query subquery = query.getSubquery(id);
+			
+			String subqueryStr = compose(subquery, entityAliasesMaps);
+			queryStr = queryStr.replaceAll("Q\\{" + subquery.getId() + "\\}", subqueryStr);
+		} 
+		
+		return queryStr;
+	}
+	
+	public void prepare() {
+		String queryStr;
+		
+		// one map of entity aliases for each queries (master query + subqueries)
+		// each map is indexed by the query id
+		Map entityAliasesMaps = new HashMap();
+		
+		queryStr = compose(query, entityAliasesMaps);	
+		
+		
+		
 		if(parameters != null) {
 			try {
 				queryStr = StringUtils.replaceParameters(queryStr.trim(), "P", parameters);
@@ -615,19 +1156,7 @@ public class HQLStatement extends BasicStatement {
 			}
 			
 		}				
-		this.queryString = queryStr;
-		
-		// prepare count query string
-		queryStr = "select count(*)" + " " + fromClause + " " + whereClause + " " +  groupByClause + " " + orderByClause;		
-		if(parameters != null) {
-			try {
-				queryStr = StringUtils.replaceParameters(queryStr.trim(), "P", parameters);
-			} catch (IOException e) {
-				throw new SpagoBIRuntimeException("Impossible to set parameters in query", e);
-			}
-			
-		}				
-		this.countQueryString = queryStr;
+		this.queryString = queryStr;			
 	}
 		
 	public String getQueryString() {		
@@ -666,33 +1195,41 @@ public class HQLStatement extends BasicStatement {
 	}
 	
 	public SourceBean execute(int offset, int fetchSize, int maxResults) throws Exception {
+		return execute(offset, fetchSize, maxResults, isBlocking);
+	}
+	
+	public SourceBean execute(int offset, int fetchSize, int maxResults, boolean isMaxResultsLimitBlocking) throws Exception {
 		Session session = null;
 		org.hibernate.Query hibernateQuery;
-		org.hibernate.Query hibernateCountQuery;
 		int resultNumber;
 		boolean overflow;
 		
 		try{		
 			session = dataMartModel.getDataSource().getSessionFactory().openSession();
 			
-			// check for overflow
-			hibernateCountQuery = session.createQuery( getCountQueryString() );
-			resultNumber = ( (Integer) hibernateCountQuery.iterate().next() ).intValue();
+			// execute query
+			hibernateQuery = session.createQuery( getQueryString() );	
+			ScrollableResults scrollableResults = hibernateQuery.scroll();
+			scrollableResults.last();
+			resultNumber = scrollableResults.getRowNumber() + 1; // Hibernate ScrollableResults row number starts with 0
+			resultNumber = resultNumber < 0? 0: resultNumber;
 			overflow = (resultNumber >= maxResults);
 			
+			List result = null;
 			
-			// execute query
-			hibernateQuery = session.createQuery( getQueryString() );			
-			
-			offset = offset < 0 ? 0 : offset;
-			if(maxResults > 0) {
-				fetchSize = (fetchSize > 0)? Math.min(fetchSize, maxResults): maxResults;
-			}
-			
-			hibernateQuery.setFirstResult(offset);
-			if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
-			List result = hibernateQuery.list();
+			if (overflow && isMaxResultsLimitBlocking) {
+				// does not execute query
+				result = new ArrayList();
+			} else {
+				offset = offset < 0 ? 0 : offset;
+				if(maxResults > 0) {
+					fetchSize = (fetchSize > 0)? Math.min(fetchSize, maxResults): maxResults;
+				}
 				
+				hibernateQuery.setFirstResult(offset);
+				if(fetchSize > 0) hibernateQuery.setMaxResults(fetchSize);			
+				result = hibernateQuery.list();
+			}	
 			// build the source bean that holds the resultset				
 			SourceBean resultSetSB = new SourceBean("QUERY_RESPONSE_SOURCE_BEAN");
 			resultSetSB.setAttribute("query", queryString);

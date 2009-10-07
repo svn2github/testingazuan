@@ -21,6 +21,7 @@
 package it.eng.qbe.model;
 
 import java.util.Map;
+import java.util.Set;
 
 import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
@@ -37,7 +38,21 @@ public interface IStatement {
 	
 	public void setQuery(Query query);	
 	public Query getQuery();
-		
+	
+	/*
+	 *  the number of the selected entities depends on the statement type and not on the abstract query
+	 *  
+	 *  For example the following is the same query expressed in SQL and HQL ...
+	 *  
+	 *  ->	select f.unit_sales, p.brand_name from fact_sales f, product p where f.id_product = p.id_product
+	 *  
+	 *  -> select f.unit_sales, f.product.brand_name from sales f
+	 *  
+	 *  the first (SQL) have two selected entities the latter only 1
+	 *  
+	 */
+	public Set getSelectedEntities();
+	
 	public void prepare();		
 	public String getQueryString();
 	
@@ -56,5 +71,8 @@ public interface IStatement {
 	public SourceBean execute(int offset) throws Exception;
 	public SourceBean execute(int offset, int fetchSize) throws Exception;		
 	public SourceBean execute(int offset, int fetchSize, int maxResults) throws Exception;
+	public SourceBean execute(int offset, int fetchSize, int maxResults, boolean isMaxResultsLimitBlocking) throws Exception;
+
+	
 	
 }

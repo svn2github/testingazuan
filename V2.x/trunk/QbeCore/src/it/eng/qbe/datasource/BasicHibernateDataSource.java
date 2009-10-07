@@ -161,12 +161,17 @@ public class BasicHibernateDataSource extends AbstractHibernateDataSource  {
 		
 		addViews();
 		
+		
+		sessionFactory = configuration.buildSessionFactory();
+		
+		/*
 		try {
 			sessionFactory = configuration.buildSessionFactory();
 			logger.info("Hibernate session factory built succesfully");
 		} catch(Throwable t) {
 			logger.info("Hibernate session factory built with some errors");
 		}
+		*/
 	}
 	
 	/**

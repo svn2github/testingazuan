@@ -19,17 +19,47 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.query.serializer;
-
-import java.util.Locale;
-
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.query.Query;
-
+package it.eng.qbe.query;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public interface QuerySerializer {
-	public Object serialize(Query q, DataMartModel m, Locale locale) throws SerializationException;
+public class CalculatedSelectField extends AbstractSelectField {
+	
+	private String expression;
+	private String type;
+	private Object initialValue;
+	private int resetType;
+	private int incrementType;
+	
+	public CalculatedSelectField(String alias, String expression, String type, boolean included, boolean visible) {
+		super(alias, ISelectField.CALCULATED_FIELD, included, visible);
+		this.expression = expression;
+		this.type = type;
+	}
+	
+	public String getExpression() {
+		return expression;
+	}
+
+	public void setExpression(String expression) {
+		this.expression = expression;
+	}
+
+/*	
+	public Object getInitialValue() {
+		return initialValue;
+	}
+
+	public void setInitialValue(Object initialValue) {
+		this.initialValue = initialValue;
+	}
+*/	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

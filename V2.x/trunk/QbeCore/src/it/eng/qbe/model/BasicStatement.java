@@ -47,6 +47,9 @@ public abstract class  BasicStatement implements IStatement{
 	/** The max results. */
 	int maxResults;
 	
+	/** If it is true (i.e. the maxResults limit is exceeded) then query execution should be stopped */
+	boolean isBlocking;
+
 	/** The fetch size. */
 	int fetchSize;
 	
@@ -136,6 +139,14 @@ public abstract class  BasicStatement implements IStatement{
 	 */
 	public void setMaxResults(int maxResults) {
 		this.maxResults = maxResults;
+	}
+	
+	public boolean isMaxResultsLimitBlocking() {
+		return isBlocking;
+	}
+
+	public void setIsMaxResultsLimitBlocking(boolean isBlocking) {
+		this.isBlocking = isBlocking;
 	}
 	
 	public String getQueryString() {

@@ -18,17 +18,36 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.qbe.bo;
+package it.eng.qbe.dao;
 
-import java.io.File;
+import it.eng.qbe.bo.DatamartLabels;
 
-/** 
+import java.util.Locale;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface DatamartLabelsDAO.
+ * 
  * @author Andrea Gioia
  */
-public class DatamartJarFile extends JarFile {
-
-	public DatamartJarFile(File file) {
-		super(file);
-	} 
-
+public interface IDatamartLabelsDAO {
+	
+	/**
+	 * Load datamart labels.
+	 * 
+	 * @param datamartName the datamart name
+	 * 
+	 * @return the datamart labels
+	 */
+	DatamartLabels loadDatamartLabels(String datamartName);
+	
+	/**
+	 * Load datamart labels.
+	 * 
+	 * @param datamartName the datamart name
+	 * @param locale the locale
+	 * 
+	 * @return the datamart labels
+	 */
+	DatamartLabels loadDatamartLabels(String datamartName, Locale locale);
 }

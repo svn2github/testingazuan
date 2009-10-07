@@ -26,25 +26,76 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class DataMartModelStructure.
- * 
  * @author Andrea Gioia
  */
 public class DataMartModelStructure {
 	
-	/** The id. */
+	
 	long id = 0;
 	
-	/** The root entities. */
 	Map rootEntities;
 	
-	/** The fields. */
-	Map fields;
+	Map fields; // uniqueName -> field
 	
-	/** The entities. */
+	Map cfields; // entity uniqueName -> fields' list
+	
+	public Map getCalculatedFields() {
+		return cfields;
+	}
+	
+	public List getCalculatedFieldsByEntity(String entityName) {
+		List result;
+		
+		result = new ArrayList();
+		if(cfields.containsKey(entityName)) {
+			result.addAll( (List)cfields.get(entityName) );
+		}
+		
+		return result;
+	}
+
+	public void setCalculatedFields(Map calculatedFields) {
+		this.cfields = calculatedFields;
+	}
+	
+	public void addCalculatedField(String entityName, DataMartCalculatedField calculatedFiled) {
+		List cfiledsOnTargetEntity;
+		if(!cfields.containsKey(entityName)) {
+			cfields.put(entityName, new ArrayList());
+		}
+		cfiledsOnTargetEntity = (List)cfields.get(entityName);	
+		List toRemove = new ArrayList();
+		for(int i = 0; i < cfiledsOnTargetEntity.size(); i++) {
+			DataMartCalculatedField f = (DataMartCalculatedField)cfiledsOnTargetEntity.get(i);
+			if(f.getName().equals(calculatedFiled.getName())) {
+				toRemove.add(f);
+			}
+		}
+		for(int i = 0; i < toRemove.size(); i++) {
+			cfiledsOnTargetEntity.remove(toRemove.get(i));
+		}
+		cfiledsOnTargetEntity.add(calculatedFiled);
+	}
+	
+	public void removeCalculatedFiield(String entityName, DataMartCalculatedField calculatedFiled) {
+		List cfiledsOnTargetEntity;
+		
+		cfiledsOnTargetEntity = (List)cfields.get(entityName);	
+		if(cfiledsOnTargetEntity != null) {
+			cfiledsOnTargetEntity.remove(calculatedFiled);
+		}
+	}
+	
+
+
+
+
+
+
 	Map entities;
+	
+	
 	
 	/**
 	 * Instantiates a new data mart model structure.
@@ -52,6 +103,7 @@ public class DataMartModelStructure {
 	public DataMartModelStructure() {
 		rootEntities = new HashMap();
 		fields = new HashMap();
+		cfields = new  HashMap();
 		entities = new HashMap();
 	}
 	
@@ -65,9 +117,9 @@ public class DataMartModelStructure {
 	 * 
 	 * @return the data mart entity
 	 */
-	public DataMartEntity addRootEntity(String name, String path, String role, String type) {
+	public DataMartEntity addRootEntity(String datamartName, String name, String path, String role, String type) {
 		DataMartEntity entity = new DataMartEntity(name, path, role, type, this);
-		addRootEntity(entity);
+		addRootEntity(datamartName, entity);
 		return entity;
 	}
 	
@@ -76,8 +128,13 @@ public class DataMartModelStructure {
 	 * 
 	 * @param entity the entity
 	 */
-	private void addRootEntity(DataMartEntity entity) {
-		rootEntities.put(entity.getUniqueName(), entity);
+	private void addRootEntity(String datamartName, DataMartEntity entity) {
+		HashMap datamartRootEntities = (HashMap) rootEntities.get(datamartName);
+		if (datamartRootEntities == null) {
+			datamartRootEntities = new HashMap();
+			rootEntities.put(datamartName, datamartRootEntities);
+		}
+		datamartRootEntities.put(entity.getUniqueName(), entity);
 		addEntity(entity);
 	}
 	
@@ -89,8 +146,9 @@ public class DataMartModelStructure {
 	 * 
 	 * @return the root entity
 	 */
-	public DataMartEntity getRootEntity(String entityName) {
-		return (DataMartEntity)rootEntities.get(entityName);
+	public DataMartEntity getRootEntity(String datamartName, String entityName) {
+		HashMap datamartRootEntities = (HashMap) rootEntities.get(datamartName);
+		return datamartRootEntities == null ? null : (DataMartEntity)datamartRootEntities.get(entityName);
 	}
 	
 	/**
@@ -113,12 +171,15 @@ public class DataMartModelStructure {
 	 */
 	public List getRootEntities(String datamartName) {
 		List list = new ArrayList();
-		Iterator it = rootEntities.keySet().iterator();
-		while(it.hasNext()) {
-			String entityName = (String)it.next();
-			// TODO replace with this ...
-			//list.add( entities.get(entityName).getCopy() );
-			list.add( rootEntities.get(entityName) );
+		HashMap datamartRootEntities = (HashMap) rootEntities.get(datamartName);
+		if (datamartRootEntities != null) {
+			Iterator it = datamartRootEntities.keySet().iterator();
+			while(it.hasNext()) {
+				String entityName = (String)it.next();
+				// TODO replace with this ...
+				//list.add( entities.get(entityName).getCopy() );
+				list.add( datamartRootEntities.get(entityName) );
+			}
 		}
 		return list;
 	}	
@@ -185,6 +246,7 @@ public class DataMartModelStructure {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	/*
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		String key = null;
@@ -198,5 +260,6 @@ public class DataMartModelStructure {
 				buffer.append(o.toString() + "\n");
 		}
 		return buffer.toString();
-	}	 
+	}
+	*/ 
 }

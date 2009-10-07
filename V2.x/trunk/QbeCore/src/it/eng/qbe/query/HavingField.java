@@ -21,12 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.query;
 
-
 /**
- * @author Andrea Gioia (andrea.gioia@eng.it)
+ * @author Davide Zerbetto (davide.zerbetto@eng.it)
  *
  */
-public class WhereField {
+public class HavingField {
 	
 	private String name;
 	private String description;
@@ -34,13 +33,34 @@ public class WhereField {
 	private boolean promptable;
 	
 	private Operand leftOperand;
-	private String operator;	
+	private String operator;
 	private Operand rightOperand;
 	
 	private String booleanConnector;
 
 	
-	public WhereField(String name, String description, boolean promptable,
+	public static final String EQUALS_TO = "EQUALS TO";
+	public static final String NOT_EQUALS_TO = "NOT EQUALS TO";
+	public static final String GREATER_THAN = "GREATER THAN";
+	public static final String EQUALS_OR_GREATER_THAN = "EQUALS OR GREATER THAN";
+	public static final String LESS_THAN = "LESS THAN";
+	public static final String EQUALS_OR_LESS_THAN = "EQUALS OR LESS THAN";
+	public static final String STARTS_WITH = "STARTS WITH";
+	public static final String NOT_STARTS_WITH = "NOT STARTS WITH";
+	public static final String ENDS_WITH = "ENDS WITH";	
+	public static final String NOT_ENDS_WITH = "NOT ENDS WITH";	
+	public static final String NOT_NULL = "NOT NULL";	
+	public static final String IS_NULL = "IS NULL";	
+	public static final String CONTAINS = "CONTAINS";	
+	public static final String NOT_CONTAINS = "NOT CONTAINS";	
+	public static final String BETWEEN = "BETWEEN";	
+	public static final String NOT_BETWEEN = "NOT BETWEEN";	
+	public static final String IN = "IN";	
+	public static final String NOT_IN = "NOT IN";	
+	
+	
+	
+	public HavingField(String name, String description, boolean promptable,
 			Operand leftOperand, String operator, Operand rightOperand,
 			String booleanConnector) {
 		
@@ -139,10 +159,13 @@ public class WhereField {
 
 
 	public static class Operand extends it.eng.qbe.query.Operand {
-
+		
+		public IAggregationFunction function;
+		
 		public Operand(String value, String description, String type,
-				String defaulttValue, String lastValue) {
+				String defaulttValue, String lastValue, IAggregationFunction function) {
 			super(value, description, type, defaulttValue, lastValue);
+			this.function = function;
 		}
 	}
 	

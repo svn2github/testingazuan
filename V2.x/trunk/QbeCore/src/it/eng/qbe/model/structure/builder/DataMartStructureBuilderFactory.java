@@ -22,47 +22,26 @@ package it.eng.qbe.model.structure.builder;
 
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.datasource.IHibernateDataSource;
-import it.eng.qbe.model.structure.DataMartModelStructure;
 
-// TODO: Auto-generated Javadoc
+
 /**
- * The Class BasicDataMartStructureBuilder.
- * 
  * @author Andrea Gioia
  */
-public class BasicDataMartStructureBuilder implements IDataMartStructureBuilder{
+public class DataMartStructureBuilderFactory {
 	
-	/**
-	 * Builds the data mart structure.
-	 * 
-	 * @param dataSource the data source
-	 * 
-	 * @return the data mart model structure
-	 */
-	public static DataMartModelStructure buildDataMartStructure(IDataSource dataSource) {
+	public static IDataMartStructureBuilder getDataMartStructureBuilder(IDataSource dataSource) {
+		IDataMartStructureBuilder builder;
+		
+		builder = null;
 		
 		if(dataSource.getType() == IDataSource.HIBERNATE_DS_TYPE
 				|| dataSource.getType() == IDataSource.COMPOSITE_HIBERNATE_DS_TYPE) {
-			DatamartStructureBuilder builder = 
-				new DatamartStructureBuilder((IHibernateDataSource)dataSource);
-			return builder.build();
+			builder = new HibernateDatamartStructureBuilder((IHibernateDataSource)dataSource);
 		} else {
-			
+			throw new RuntimeException("Impossible to load dtamart structure from a datasource of type [" + dataSource.getType() + "]");
 		}
 		
-		/*
-		if(dataSource.getType() == IDataSource.HIBERNATE_DS_TYPE) {
-			HibernateDataMartStructureBuilder builder = 
-				new HibernateDataMartStructureBuilder((IHibernateDataSource)dataSource);
-			return builder.build();
-		} else if (dataSource.getType() == IDataSource.COMPOSITE_HIBERNATE_DS_TYPE) {
-			CompositeHibernateDataMartStructureBuilder builder = 
-				new CompositeHibernateDataMartStructureBuilder((IHibernateDataSource)dataSource);
-			return builder.build();
-		} else {
-			// log somethings here
-		}	
-		*/	
-		return null;		
+		
+		return builder;		
 	}
 }

@@ -82,6 +82,25 @@ public class DatamartLabels {
 		return StringUtilities.isNull( label )? null: label.trim();
 	}
 	
+	public String getTooltip(Object datamartItem) {
+		String tooltip;
+		String itemUniqueNameInFile;
+		
+		if(properties == null) {
+			return null;
+		}
+		
+		if( datamartItem instanceof DataMartEntity ) {
+			itemUniqueNameInFile = getItemUniqueNameInFile( (DataMartEntity)datamartItem );
+		} else if( datamartItem instanceof DataMartField ) {
+			itemUniqueNameInFile = getItemUniqueNameInFile( (DataMartField)datamartItem );
+		} else {
+			// fail fast
+			throw new IllegalArgumentException("[datamartItem] is an instance of class " + datamartItem.getClass().getName() + ".[datamartItem] can be only an instance of class DataMartEntity or of class DataMartField");
+		}
+		tooltip = (String)properties.get( itemUniqueNameInFile + ".tooltip");		
+		return StringUtilities.isNull( tooltip )? null: tooltip.trim();
+	}
 	
 	
 	private Properties getProperties() {
@@ -90,5 +109,11 @@ public class DatamartLabels {
 
 	private void setProperties(Properties properties) {
 		this.properties = properties;
+	}
+	
+	public void addDatamartLabels(DatamartLabels labels) {
+		if (labels != null && labels.properties != null && !labels.properties.isEmpty()) {
+			this.properties.putAll(labels.properties);
+		}
 	}
 }

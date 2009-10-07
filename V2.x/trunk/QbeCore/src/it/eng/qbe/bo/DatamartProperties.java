@@ -20,14 +20,13 @@
  **/
 package it.eng.qbe.bo;
 
+import java.util.Map;
+import java.util.Properties;
+
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.spagobi.commons.utilities.StringUtilities;
-
-
-import java.util.Map;
-import java.util.Properties;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -75,7 +74,11 @@ public class DatamartProperties {
 		qbeProperties = dm.getDataMartProperties();
 	}
 	
-	
+	public void addDatamartProperties(DatamartProperties datamartProperties) {
+		if (datamartProperties != null && datamartProperties.qbeProperties != null && !datamartProperties.qbeProperties.isEmpty()) {
+			qbeProperties.putAll(datamartProperties.qbeProperties);
+		}
+	}
 	
 	private String getEntityUniqueNameInFile( DataMartEntity entity ) {
 		return entity.getUniqueName().replaceAll(":", "/");
@@ -93,7 +96,7 @@ public class DatamartProperties {
 		return getFieldUniqueNameInFile( field ) + "." + propertyName.trim();
 	}
 	
-	private String getProperty(Object datamartItem, String propertyName) {
+	public String getProperty(Object datamartItem, String propertyName) {
 		String propertyValue;
 		String propertyUniqueNameInFile;
 		

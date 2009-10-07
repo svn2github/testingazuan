@@ -35,6 +35,11 @@ public class QueryMeta {
 	String owner;
 	Properties properties;
 	
+	public QueryMeta(String name) {
+		setName(name);
+		properties = new Properties();
+	}
+	
 	public QueryMeta() {
 		properties = new Properties();
 	}

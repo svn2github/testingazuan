@@ -18,17 +18,36 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.qbe.bo;
+package it.eng.qbe.model.structure;
 
-import java.io.File;
-
-/** 
+/**
  * @author Andrea Gioia
  */
-public class DatamartJarFile extends JarFile {
+public class DataMartCalculatedField extends DataMartField {
+	
+	String expression;
+	
+	public DataMartCalculatedField(String name, String type, String expression) {
+		setName(name);
+		setType(type);
+		setExpression(expression);
+	}
+	
+	public DataMartCalculatedField(String name, DataMartEntity parent, String type, String expression) {
+		super(name, parent);
+		setType(type);
+		setExpression(expression);
+	}
+	
+	public String getExpression() {
+		return expression;
+	}
 
-	public DatamartJarFile(File file) {
-		super(file);
-	} 
-
+	public void setExpression(String expression) {
+		this.expression = expression;
+	}	
+	
+	public boolean isBoundToDataMart() {
+		return getStructure() != null && getParent() != null;
+	}
 }

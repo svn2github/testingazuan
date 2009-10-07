@@ -38,7 +38,7 @@ import java.util.zip.ZipEntry;
  * @author Andrea Gioia
  */
 public class DatamartPropertiesDAOFilesystemImpl implements
-		DatamartPropertiesDAO {
+		IDatamartPropertiesDAO {
 	
 	
 	/* (non-Javadoc)

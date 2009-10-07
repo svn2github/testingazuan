@@ -56,11 +56,11 @@ import it.eng.qbe.model.io.IQueryPersister;
 import it.eng.qbe.model.io.LocalFileSystemQueryPersister;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
-import it.eng.qbe.model.structure.builder.BasicDataMartStructureBuilder;
+import it.eng.qbe.model.structure.builder.DataMartStructureBuilderFactory;
 import it.eng.qbe.model.views.ViewBuilder;
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.QueryMeta;
-import it.eng.qbe.query.SelectField;
 import it.eng.qbe.utility.IDBSpaceChecker;
 import it.eng.qbe.utility.Utils;
 import it.eng.spagobi.utilities.sql.SqlUtils;
@@ -96,34 +96,21 @@ public class DataMartModel implements IDataMartModel {
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(DataMartModel.class);
 	
-	
-	
-	/**
-	 * Instantiates a new data mart model.
-	 * 
-	 * @param dataSource the data source
-	 */
+
 	public DataMartModel(IDataSource dataSource){
 		this.dataSource = (IHibernateDataSource)dataSource;
 		this.name = getDataSource().getDatamartName();
 		this.description = getDataSource().getDatamartName();
 		this.label = getDataSource().getDatamartName();
 		
-		this.dataMartModelStructure = BasicDataMartStructureBuilder.buildDataMartStructure(dataSource);		
+		this.dataMartModelStructure = DataMartStructureBuilderFactory.getDataMartStructureBuilder(dataSource).build();		
 	
 		this.dataMartModelAccessModality = new DataMartModelAccessModality();
 		
 		this.dataMartProperties = new HashMap();		
 	}
 	
-	
-	
-	
-	/**
-	 * Gets the properties.
-	 * 
-	 * @return the properties
-	 */
+
 	public DatamartProperties getProperties() {
 		return  dataSource.getProperties();
 	}
@@ -201,12 +188,12 @@ public class DataMartModel implements IDataMartModel {
 					List columnAliases = new ArrayList();
 					List columnHibernateTypes = new ArrayList();
 					
-					Iterator queryFileds = query.getSelectFields().iterator();
+					Iterator queryFileds = query.getDataMartSelectFields(true).iterator();
 					
 					Vector columns = sqlFieldsReader.readFields();
 					int i = 0;
 					while(queryFileds.hasNext()) {
-						SelectField field = (SelectField)queryFileds.next();
+						DataMartSelectField field = (DataMartSelectField)queryFileds.next();
 						Field column = (Field)columns.get(i++);
 						
 						
@@ -261,7 +248,7 @@ public class DataMartModel implements IDataMartModel {
 			
 			getDataSource().refreshSharedView(name);
 			getDataSource().getSessionFactory();
-			setDataMartModelStructure( BasicDataMartStructureBuilder.buildDataMartStructure( getDataSource() ) );
+			setDataMartModelStructure( DataMartStructureBuilderFactory.getDataMartStructureBuilder( getDataSource() ).build() );
 		}	
 		
 	}

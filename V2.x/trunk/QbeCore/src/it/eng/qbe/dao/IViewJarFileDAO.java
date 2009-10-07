@@ -20,30 +20,43 @@
  **/
 package it.eng.qbe.dao;
 
-import it.eng.qbe.bo.DatamartProperties;
+import it.eng.qbe.bo.ViewJarFile;
+
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Interface DatamartPropertiesDAO.
+ * The Interface ViewJarFileDAO.
  * 
  * @author Andrea Gioia
  */
-public interface DatamartPropertiesDAO {
+public interface IViewJarFileDAO {
 	
 	/**
-	 * Load datamart properties.
+	 * Load view jar file.
+	 * 
+	 * @param datamartName the datamart name
+	 * @param viewName the view name
+	 * 
+	 * @return the view jar file
+	 */
+	ViewJarFile loadViewJarFile(String datamartName, String viewName);
+	
+	/**
+	 * Load view jar files.
 	 * 
 	 * @param datamartName the datamart name
 	 * 
-	 * @return the datamart properties
+	 * @return the list
 	 */
-	DatamartProperties loadDatamartProperties(String datamartName);
+	List loadViewJarFiles(String datamartName);	
 	
 	/**
-	 * Save datamart properties.
+	 * Load view names.
 	 * 
 	 * @param datamartName the datamart name
-	 * @param datamartProperties the datamart properties
+	 * 
+	 * @return the list
 	 */
-	void saveDatamartProperties(String datamartName, DatamartProperties datamartProperties);
+	List loadViewNames(String datamartName);
 }

@@ -19,17 +19,52 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.query.serializer;
-
-import java.util.Locale;
-
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.query.Query;
-
+package it.eng.qbe.model.structure;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public interface QuerySerializer {
-	public Object serialize(Query q, DataMartModel m, Locale locale) throws SerializationException;
+public abstract class AbstractDataMartItem implements IDataMartItem {
+	
+	private DataMartModelStructure structure;
+	private DataMartEntity parent;	
+	
+	private long id;	
+	private String name;
+	
+	
+	
+	public DataMartModelStructure getStructure() {
+		return structure;
+	}
+
+	protected void setStructure(DataMartModelStructure structure) {
+		this.structure = structure;
+	}
+	
+	public DataMartEntity getParent() {
+		return parent;
+	}
+	
+	public void setParent(DataMartEntity parent) {
+		this.parent = parent;
+	}
+	
+	public long getId() {
+		return id;
+	}
+	
+	protected void setId(long id) {
+		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 }

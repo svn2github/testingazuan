@@ -19,17 +19,25 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.qbe.query.serializer;
+package it.eng.qbe.dao;
 
-import java.util.Locale;
-
-import it.eng.qbe.model.DataMartModel;
-import it.eng.qbe.query.Query;
-
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public interface QuerySerializer {
-	public Object serialize(Query q, DataMartModel m, Locale locale) throws SerializationException;
+public class DAOException extends SpagoBIRuntimeException {
+
+	public DAOException(String message) {
+		super(message);
+	}
+	
+	public DAOException(String message, Throwable ex) {
+	    super(message, ex);
+	}
+	 
+	public DAOException(Throwable ex) {
+		super(ex);
+	}
+	
 }

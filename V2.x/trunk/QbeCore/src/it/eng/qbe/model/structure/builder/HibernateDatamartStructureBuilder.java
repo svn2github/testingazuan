@@ -36,44 +36,30 @@ import org.hibernate.type.ComponentType;
 import org.hibernate.type.ManyToOneType;
 import org.hibernate.type.Type;
 
+import it.eng.qbe.dao.DAOFactory;
 import it.eng.qbe.datasource.IHibernateDataSource;
+import it.eng.qbe.model.structure.DataMartCalculatedField;
 import it.eng.qbe.model.structure.DataMartEntity;
 import it.eng.qbe.model.structure.DataMartField;
 import it.eng.qbe.model.structure.DataMartModelStructure;
 import it.eng.spagobi.utilities.assertion.Assert;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class DatamartStructureBuilder.
- * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  * 
  * TODO this class will replace others builder classes. Once done, rename it HibernateDatamartStructure
  */
-public class DatamartStructureBuilder {
+public class HibernateDatamartStructureBuilder implements IDataMartStructureBuilder {
 	
-	/** The data source. */
 	private IHibernateDataSource dataSource;	
-	
-	
-	/**
-	 * Instantiates a new datamart structure builder.
-	 * 
-	 * @param dataSource the data source
-	 */
-	public DatamartStructureBuilder(IHibernateDataSource dataSource) {
+
+	public HibernateDatamartStructureBuilder(IHibernateDataSource dataSource) {
 		if(dataSource== null) {
 			throw new IllegalArgumentException("DataSource parameter cannot be null");
 		}
 		setDataSource( dataSource );
 	}
 	
-			
-	/**
-	 * Builds the.
-	 * 
-	 * @return the data mart model structure
-	 */
 	public DataMartModelStructure build() {
 		
 		DataMartModelStructure dataMartStructure;
@@ -107,10 +93,13 @@ public class DatamartStructureBuilder {
 			}
 			*/
 			
+			Map calculatedFields = DAOFactory.getCalculatedFieldsDAO().loadCalculatedFields(datamartName);
+			dataMartStructure.setCalculatedFields(calculatedFields);
+			
 			classMetadata = sf.getAllClassMetadata();
 			for(Iterator it = classMetadata.keySet().iterator(); it.hasNext(); ) {
 				String entityType = (String)it.next();			
-				addEntity(dataMartStructure, entityType);		
+				addEntity(dataMartStructure, datamartName, entityType);		
 			}
 		}
 		
@@ -118,29 +107,30 @@ public class DatamartStructureBuilder {
 		return dataMartStructure;
 	}
 
-	/**
-	 * Adds the entity.
-	 * 
-	 * @param dataMartStructure the data mart structure
-	 * @param entityType the entity type
-	 */
-	private void addEntity (DataMartModelStructure dataMartStructure, String entityType){
+	private void addEntity (DataMartModelStructure dataMartStructure, String datamartName, String entityType){
 
 		String entityName = getEntityNameFromEntityType(entityType);		
-		DataMartEntity dataMartEntity = dataMartStructure.addRootEntity(entityName, null, null, entityType);
+		DataMartEntity dataMartEntity = dataMartStructure.addRootEntity(datamartName, entityName, null, null, entityType);
 				
 		addKeyFields(dataMartEntity);		
-		List subEntities = addNormalFields(dataMartEntity);			
+		List subEntities = addNormalFields(dataMartEntity);	
+		addCalculatedFields(dataMartEntity);
 		addSubEntities(dataMartEntity, subEntities, 0);
 	}
 	
-	/**
-	 * Adds the sub entities.
-	 * 
-	 * @param dataMartEntity the data mart entity
-	 * @param subEntities the sub entities
-	 * @param recursionLevel the recursion level
-	 */
+	private void addCalculatedFields(DataMartEntity dataMartEntity) {
+		List calculatedFileds;
+		DataMartCalculatedField calculatedField;
+		
+		calculatedFileds = dataMartEntity.getStructure().getCalculatedFieldsByEntity(dataMartEntity.getUniqueName());
+		if(calculatedFileds != null) {
+			for(int i = 0; i < calculatedFileds.size(); i++) {
+				calculatedField = (DataMartCalculatedField)calculatedFileds.get(i);
+				dataMartEntity.addCalculatedField(calculatedField);
+			}
+		}
+	}
+
 	private void addSubEntities(DataMartEntity dataMartEntity, List subEntities, int recursionLevel) {
 		
 		Iterator it = subEntities.iterator();
@@ -152,43 +142,29 @@ public class DatamartStructureBuilder {
 				// prune recursion tree 
 			} else {
 				addSubEntity(dataMartEntity, 
-						subentity.getType(),
-						subentity.getRole(),
+						subentity,
 						recursionLevel+1);
 			}
 		}
 	}
 	
-	/**
-	 * Adds the sub entity.
-	 * 
-	 * @param parentEntity the parent entity
-	 * @param entityType the entity type
-	 * @param role the role
-	 * @param recursionLevel the recursion level
-	 */
 	private void addSubEntity (DataMartEntity parentEntity,
-			String entityType, 			
-			String role,
+			DataMartEntity subEntity, 			
 			int recursionLevel){
 
 		DataMartEntity dataMartEntity;				
 
 		
-		String entityName = getEntityNameFromEntityType(entityType);		
-		dataMartEntity = parentEntity.addSubEntity(entityName, role, entityType);
+		//String entityName = getEntityNameFromEntityType(entityType);		
+		dataMartEntity = parentEntity.addSubEntity(subEntity.getName(), subEntity.getRole(), subEntity.getType());
 		
 		
 		addKeyFields(dataMartEntity);			
-		List subEntities = addNormalFields(dataMartEntity);			
+		List subEntities = addNormalFields(dataMartEntity);		
+		addCalculatedFields(dataMartEntity);
 		addSubEntities(dataMartEntity, subEntities, recursionLevel);
 	}
 	
-	/**
-	 * Adds the key fields.
-	 * 
-	 * @param dataMartEntity the data mart entity
-	 */
 	private void addKeyFields(DataMartEntity dataMartEntity) {
 		
 		PersistentClass classMapping;
@@ -279,14 +255,6 @@ public class DatamartStructureBuilder {
 		}
 	}
 	
-	
-	/**
-	 * Adds the normal fields.
-	 * 
-	 * @param dataMartEntity the data mart entity
-	 * 
-	 * @return the list
-	 */
 	public List addNormalFields(DataMartEntity dataMartEntity) {
 		
 		ClassMetadata classMetadata;
@@ -327,7 +295,8 @@ public class DatamartStructureBuilder {
 		 		propertyName = propertyNames[i];	
 		 		
 		 		
-		 		String entityName = getEntityNameFromEntityType(entityType);
+		 		//String entityName = getEntityNameFromEntityType(entityType);
+		 		String entityName = propertyName;
 		 		DataMartEntity subentity = new DataMartEntity(entityName, null, columnName, entityType, dataMartEntity.getStructure());		
 		 		subEntities.add(subentity);	
 		 		
@@ -348,11 +317,7 @@ public class DatamartStructureBuilder {
 			 		precision = column.getPrecision();
 			 	}
 		 		
-			 	/*
-				if (dataMartEntity.getPath() != null){
-					propertyName = dataMartEntity.getPath() + "." + propertyNames[i];
-				}
-				*/
+			 
 					
 				DataMartField datamartField = dataMartEntity.addNormalField(propertyName);
 				datamartField.setType(type);
@@ -365,14 +330,6 @@ public class DatamartStructureBuilder {
 		return subEntities;
 	}
 	
-	
-	/**
-	 * Gets the entity name from entity type.
-	 * 
-	 * @param entityType the entity type
-	 * 
-	 * @return the entity name from entity type
-	 */
 	private String getEntityNameFromEntityType(String entityType) {
 		String entityName = entityType;
 		entityName = (entityName.lastIndexOf('.') > 0 ?
@@ -382,21 +339,10 @@ public class DatamartStructureBuilder {
 		return entityName;
 	}
 
-	/**
-	 * Gets the data source.
-	 * 
-	 * @return the data source
-	 */
 	protected IHibernateDataSource getDataSource() {
 		return dataSource;
 	}
 
-
-	/**
-	 * Sets the data source.
-	 * 
-	 * @param dataSource the new data source
-	 */
 	protected void setDataSource(IHibernateDataSource dataSource) {
 		this.dataSource = dataSource;
 	}

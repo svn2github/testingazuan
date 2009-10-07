@@ -33,7 +33,7 @@ import java.util.List;
  * 
  * @author Andrea Gioia
  */
-public class ViewJarFileDAOFilesystemImpl implements ViewJarFileDAO {
+public class ViewJarFileDAOFilesystemImpl implements IViewJarFileDAO {
 
 	/** The views dir. */
 	private File viewsDir;

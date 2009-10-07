@@ -27,4 +27,14 @@ package it.eng.qbe.model.structure;
  */
 public interface IDataMartItem {
 	
+	DataMartModelStructure getStructure();
+	
+	DataMartEntity getParent();
+	void setParent(DataMartEntity parent);
+	
+	long getId();
+	String getUniqueName();
+	
+	String getName();
+	void setName(String name);
 }

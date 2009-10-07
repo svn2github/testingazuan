@@ -135,8 +135,8 @@
   </target>	
 	
 	<target name="create.war" depends="init,copy.artifacts" >
-	
-	<antcall target="${specific.ant.task}" />
+		<antcall target="${sso}" />
+		<antcall target="${specific.ant.task}" />
 	
 	      <mkdir dir="${dist}"/>
 	      <delete file="${dist}/${war_name}" />

@@ -33,9 +33,6 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.qbe.commons.datasource.QbeDataSourceCache;
 import it.eng.spagobi.qbe.commons.naming.QbeNamingStrategy;
-import it.eng.spagobi.qbe.commons.urlgenerator.IQbeUrlGenerator;
-import it.eng.spagobi.qbe.commons.urlgenerator.PortletQbeUrlGenerator;
-import it.eng.spagobi.qbe.commons.urlgenerator.WebQbeUrlGenerator;
 import it.eng.spagobi.services.common.EnginConf;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.file.FileUtils;
@@ -163,7 +160,7 @@ public class QbeEngineConfig {
 	
 	// utils 
 	
-	private String getProperty(String propertName) {
+	public String getProperty(String propertName) {
 		String propertyValue = null;		
 		SourceBean sourceBeanConf;
 		
@@ -197,20 +194,7 @@ public class QbeEngineConfig {
 	
 	
 	
-	
-	
-	
-	public IQbeUrlGenerator getUrlGenerator() {
-		IQbeUrlGenerator urlGenerator = null;
-		if( isWebModalityActive() ) {
-			urlGenerator = new WebQbeUrlGenerator();
-		} else {
-			urlGenerator = new PortletQbeUrlGenerator();
-		}
-		return urlGenerator;
-	}
 
-	
 	public Integer getResultLimit() {
 		Integer resultLimit = null;
 		String resultLimitStr = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.value");
@@ -220,10 +204,39 @@ public class QbeEngineConfig {
 			try {
 				resultLimit = new Integer(resultLimitStr);
 			} catch(Throwable t) {
-				t.printStackTrace();
+				logger.error(t);
 			}
 		}
 		return resultLimit;
+	}
+	
+	/**
+	 * Returns true if the query must be validated before saving, false otherwise
+	 * @return true if the query must be validated before saving, false otherwise
+	 */
+	public boolean isQueryValidationEnabled() {
+		boolean isEnabled = false;
+		String isEnabledStr = (String)ConfigSingleton.getInstance().getAttribute("QBE.QUERY-VALIDATION.enabled");
+		isEnabled = Boolean.parseBoolean(isEnabledStr);
+		return isEnabled;
+	}
+	
+	/**
+	 * Returns true if query validation before saving is blocking (i.e. incorrect queries cannot be saved), false otherwise
+	 * @return true if query validation before saving is blocking (i.e. incorrect queries cannot be saved), false otherwise
+	 */
+	public boolean isQueryValidationBlocking() {
+		boolean isBlocking = false;
+		String isBlockingStr = (String)ConfigSingleton.getInstance().getAttribute("QBE.QUERY-VALIDATION.isBlocking");
+		isBlocking = Boolean.parseBoolean(isBlockingStr);
+		return isBlocking;
+	}
+	
+	public boolean isMaxResultLimitBlocking() {
+		boolean isBlocking = false;
+		String isBlockingStr = (String)ConfigSingleton.getInstance().getAttribute("QBE.QBE-SQL-RESULT-LIMIT.isBlocking");
+		isBlocking = Boolean.parseBoolean(isBlockingStr);
+		return isBlocking;
 	}
 	
 	/**

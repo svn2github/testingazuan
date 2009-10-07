@@ -2,4 +2,7 @@
 <ERRORS>
 	<ERROR class="UNDEFINED" trap_name="serviceError"/>
 	<ERROR class="it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException" trap_name="serviceError" CATEGORY="serviceError"/>
+	<ERROR class="it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException" trap_name="startupError" CATEGORY="startupError"/>
+
+
 </ERRORS>

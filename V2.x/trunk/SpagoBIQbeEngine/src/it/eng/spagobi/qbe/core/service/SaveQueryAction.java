@@ -51,9 +51,6 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 	public static final String QUERY_NAME = "queryName";	
 	public static final String QUERY_DESCRIPTION = "queryDescription";
 	public static final String QUERY_SCOPE = "queryScope";
-	//public static final String QUERY_RECORDS = "queryRecords";
-	//public static final String QUERY_FILTERS = "queryFilters";
-	//public static final String QUERY_FILTEREXP = "queryFilterExp";
 	public static final String QUERY = "query";
 	
 
@@ -67,33 +64,18 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 		String  queryDescritpion  = null;		
 		String  queryScope  = null;
 		String jsonEncodedQuery = null;
-		//String queryRecords = null;
-		//String queryFilters = null;
-		//String queryFilterExp = null;
 		EngineAnalysisMetadata analysisMetadata = null;
 		String result = null;
 		
 		logger.debug("IN");
 		
-		//freezeHttpResponse();
-		//HttpServletResponse httResponse = getHttpResponse();
-		
-		
 		try {
+			super.service(request, response);	
 			
-			EMFErrorHandler errorHandler = getErrorHandler();
-			if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
-				Collection errors = errorHandler.getErrors();
-				Iterator it = errors.iterator();
-				while (it.hasNext()) {
-					EMFAbstractError error = (EMFAbstractError) it.next();
-					if (error.getSeverity().equals(EMFErrorSeverity.ERROR)) {
-						throw new SpagoBIEngineServiceException(getActionName(), error.getMessage(), null);
-					}
-				}
-			}
-			
-			super.service(request, response);			
+			// validate input that cames from the clien side according to rules spicified in validation.xml
+			// todo: move this activity in the parent abstract class and hide input validation from actual
+			// service implementation
+			validateInput();
 			
 			queryName = getAttributeAsString(QUERY_NAME);		
 			logger.debug(QUERY_NAME + ": " + queryName);
@@ -103,22 +85,13 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			logger.debug(QUERY_SCOPE + ": " + queryScope);
 			jsonEncodedQuery  = getAttributeAsString(QUERY);
 			logger.debug(QUERY + ": " + jsonEncodedQuery);
-			/*
-			queryRecords = getAttributeAsString(QUERY_RECORDS);
-			logger.debug(QUERY_RECORDS + ": " + queryRecords);
-			queryFilters = getAttributeAsString(QUERY_FILTERS);
-			logger.debug(QUERY_FILTERS + ": " + queryFilters);
-			queryFilterExp = getAttributeAsString(QUERY_FILTEREXP);
-			logger.debug(QUERY_FILTEREXP + ": " + queryFilterExp);
-			*/
+			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
 			Assert.assertTrue(!StringUtilities.isEmpty(queryName), "Input parameter [" + QUERY_NAME + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
 			Assert.assertTrue(!StringUtilities.isEmpty(queryDescritpion), "Input parameter [" + QUERY_DESCRIPTION + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
 			Assert.assertTrue(!StringUtilities.isEmpty(queryScope), "Input parameter [" + QUERY_SCOPE + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
 			Assert.assertTrue(!StringUtilities.isEmpty(jsonEncodedQuery), "Input parameter [" + QUERY + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			//Assert.assertTrue(!StringUtilities.isEmpty(queryRecords), "Input parameter [" + QUERY_RECORDS + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-			//Assert.assertTrue(!StringUtilities.isEmpty(queryFilters), "Input parameter [" + QUERY_FILTERS + "] cannot be null or empty in oder to execute " + this.getActionName() + " service");		
-		
+			
 			analysisMetadata = getEngineInstance().getAnalysisMetadata();
 			analysisMetadata.setName( queryName );
 			analysisMetadata.setDescription( queryDescritpion );
@@ -140,10 +113,11 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 				throw new SpagoBIEngineServiceException(getActionName(), message, e);
 			}
 			
-			Query queryBkp = getEngineInstance().getQuery();
-			getEngineInstance().setQuery(query);
+			Query queryBkp = getEngineInstance().getActiveQuery();
+			query.setId( queryBkp.getId() );
+			getEngineInstance().setActiveQuery(query);
 			result = saveAnalysisState();
-			getEngineInstance().setQuery(queryBkp);
+			getEngineInstance().setActiveQuery(queryBkp);
 			
 			if(!result.trim().toLowerCase().startsWith("ok")) {
 				throw new SpagoBIEngineServiceException(getActionName(), result);
@@ -160,8 +134,20 @@ public class SaveQueryAction extends AbstractQbeEngineAction {
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
 			logger.debug("OUT");
+		}		
+	}
+	
+	public void validateInput() {
+		EMFErrorHandler errorHandler = getErrorHandler();
+		if (!errorHandler.isOKBySeverity(EMFErrorSeverity.ERROR)) {
+			Collection errors = errorHandler.getErrors();
+			Iterator it = errors.iterator();
+			while (it.hasNext()) {
+				EMFAbstractError error = (EMFAbstractError) it.next();
+				if (error.getSeverity().equals(EMFErrorSeverity.ERROR)) {
+					throw new SpagoBIEngineServiceException(getActionName(), error.getMessage(), null);
+				}
+			}
 		}
-		
-		
 	}
 }

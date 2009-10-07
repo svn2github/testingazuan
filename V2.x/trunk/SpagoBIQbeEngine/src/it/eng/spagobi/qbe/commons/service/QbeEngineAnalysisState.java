@@ -21,12 +21,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.spagobi.qbe.commons.service;
 
+import java.util.Iterator;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import it.eng.qbe.catalogue.QueryCatalogue;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.query.Query;
 import it.eng.qbe.query.serializer.QuerySerializerFactory;
-import it.eng.qbe.query.serializer.SerializationException;
 import it.eng.spagobi.utilities.engines.EngineAnalysisState;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -35,8 +44,14 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 public class QbeEngineAnalysisState  extends EngineAnalysisState {
 	
 	// property name
-	public static final String QUERY = "QUERY";
+	public static final String CATALOGUE = "CATALOGUE";
 	public static final String DATAMART_MODEL = "DATAMART_MODEL";
+	
+	public static final String CURRENT_VERSION = "5";
+	
+	/** Logger component. */
+    private static transient Logger logger = Logger.getLogger(QbeEngineAnalysisState.class);
+	
 	
 	
 	public QbeEngineAnalysisState( DataMartModel datamartModel ) {
@@ -46,37 +61,121 @@ public class QbeEngineAnalysisState  extends EngineAnalysisState {
 
 	public void load(byte[] rowData) throws SpagoBIEngineException {
 		String str = null;
-			
-		str = new String( rowData );
-		Query query = null;
+		JSONObject catalogueJSON = null;
+		JSONObject rowDataJSON = null;
+		String encodingFormatVersion;
+		
+		logger.debug("IN");
+
 		try {
-			query = QuerySerializerFactory.getDeserializer("application/json").deserialize(str, getDatamartModel());
-			//query = QueryEncoder.decode( str, getDatamartModel() );
-		} catch (SerializationException e) {
-			throw new SpagoBIEngineException("Impossible to load analysis state from row-data", e);
+			str = new String( rowData );
+			logger.debug("loading analysis state from row data [" + str + "] ...");
+			
+			rowDataJSON = new JSONObject(str);
+			try {
+				encodingFormatVersion = rowDataJSON.getString("version");
+			} catch (JSONException e) {
+				encodingFormatVersion = "0";
+			}
+			
+			logger.debug("Row data encoding version  [" + encodingFormatVersion + "]");
+			
+			
+			
+			if(encodingFormatVersion.equalsIgnoreCase(CURRENT_VERSION)) {				
+				catalogueJSON = rowDataJSON;
+			} else {
+				logger.warn("Row data encoding version [" + encodingFormatVersion + "] does not match with the current version used by the engine [" + CURRENT_VERSION + "] ");
+				logger.debug("Converting from encoding version [" + encodingFormatVersion + "] to encoding version [" + CURRENT_VERSION + "]....");
+				IQbeEngineAnalysisStateLoader analysisStateLoader;
+				analysisStateLoader = QbeEngineAnalysisStateLoaderFactory.getInstance().getLoader(encodingFormatVersion);
+				if(analysisStateLoader == null) {
+					throw new SpagoBIEngineException("Unable to load data stored in format [" + encodingFormatVersion + "] ");
+				}
+				catalogueJSON = (JSONObject)analysisStateLoader.load(str);
+				logger.debug("Encoding conversion has been executed succesfully");
+			}
+			
+			catalogueJSON = catalogueJSON.getJSONObject("catalogue");
+			setProperty( CATALOGUE,  catalogueJSON);
+			logger.debug("analysis state loaded succsfully from row data");
+		} catch (JSONException e) {
+			throw new SpagoBIEngineException("Impossible to load analysis state from raw data", e);
+		} finally {
+			logger.debug("OUT");
 		}
-		setProperty( QUERY, query );
 	}
 
 	public byte[] store() throws SpagoBIEngineException {
-		String rowData = null;
+		JSONObject catalogueJSON = null;
+		JSONObject rowDataJSON = null;
+		String rowData = null;	
+		
+		catalogueJSON = (JSONObject)getProperty( CATALOGUE );
 				
 		try {
-			rowData = (String)QuerySerializerFactory.getSerializer("application/json").serialize(getQuery(), getDatamartModel());
-			//rowData = QueryEncoder.encode( getQuery(), getDatamartModel() );
-		} catch (SerializationException e) {
-			throw new SpagoBIEngineException("Impossible to store analysis state from query object", e);
+			rowDataJSON = new JSONObject();
+			rowDataJSON.put("version", CURRENT_VERSION);
+			rowDataJSON.put("catalogue", catalogueJSON);
+			
+			rowData = rowDataJSON.toString();
+		} catch (Throwable e) {
+			throw new SpagoBIEngineException("Impossible to store analysis state from catalogue object", e);
 		}
 		
 		return rowData.getBytes();
 	}
 
-	public Query getQuery() {
-		return (Query)getProperty( QUERY );
+	public QueryCatalogue getCatalogue() {
+		QueryCatalogue catalogue;
+		JSONObject catalogueJSON;
+		JSONArray queriesJSON;
+		JSONObject queryJSON;
+		Query query;
+		
+		catalogue = new QueryCatalogue();
+		catalogueJSON = (JSONObject)getProperty( CATALOGUE );
+		try {
+			queriesJSON = catalogueJSON.getJSONArray("queries");
+		
+			for(int i = 0; i < queriesJSON.length(); i++) {
+				queryJSON = queriesJSON.getJSONObject(i);
+				query = QuerySerializerFactory.getDeserializer("application/json").deserialize(queryJSON, getDatamartModel());
+								
+				catalogue.addQuery(query);
+			}
+		} catch (Throwable e) {
+			throw new SpagoBIEngineRuntimeException("Impossible to deserialize analysis state", e);
+		}
+		
+		return catalogue;
 	}
 
-	public void setQuery(Query query) {
-		setProperty( QUERY, query );
+	public void setCatalogue(QueryCatalogue catalogue) {
+		Set queries;
+		Query query;
+		JSONObject queryJSON;
+		JSONArray queriesJSON;
+		JSONObject catalogueJSON;
+		
+		catalogueJSON = new JSONObject();
+		queriesJSON = new JSONArray();
+		
+		try {
+			queries = catalogue.getAllQueries(false);
+			Iterator it = queries.iterator();
+			while(it.hasNext()) {
+				query = (Query)it.next();
+				queryJSON =  (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(query, getDatamartModel(), null);
+				queriesJSON.put( queryJSON );
+			}
+			
+			catalogueJSON.put("queries", queriesJSON);
+		} catch (Throwable e) {
+			throw new SpagoBIEngineRuntimeException("Impossible to deserialize analyziz state", e);
+		}
+		
+		setProperty( CATALOGUE, catalogueJSON );
 	}
 
 	public DataMartModel getDatamartModel() {

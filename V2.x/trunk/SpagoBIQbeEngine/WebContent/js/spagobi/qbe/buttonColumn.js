@@ -64,7 +64,7 @@ Ext.grid.CheckColumn = function(config){
     clickHandler:function(e, t){
       var index = this.grid.getView().findRowIndex(t);
       var record = this.grid.store.getAt(index);
-      alert('index: ' + index + '; column-value: ' + record.data[this.dataIndex]);
+      //alert('index: ' + index + '; column-value: ' + record.data[this.dataIndex]);
     },
 
     renderer : function(v, p, record){

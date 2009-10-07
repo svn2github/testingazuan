@@ -20,17 +20,18 @@
  **/
 package it.eng.spagobi.qbe.initializer.engine.service;
 
-import org.apache.log4j.Logger;
-import org.json.JSONObject;
+import java.util.Locale;
 
-import it.eng.qbe.query.serializer.QuerySerializerFactory;
+import org.apache.log4j.Logger;
+
+import it.eng.qbe.conf.QbeTemplateParseException;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.QbeEngine;
 import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.qbe.commons.service.QbeEngineAnalysisState;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
 
 
 /**
@@ -43,7 +44,8 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	// INPUT PARAMETERS
 	
 	// OUTPUT PARAMETERS
-	public static final String QUERY = "query";
+	public static final String LANGUAGE = "LANGUAGE";
+	public static final String COUNTRY = "COUNTRY";
 	
 	// SESSION PARAMETRES	
 	public static final String ENGINE_INSTANCE = EngineConstants.ENGINE_INSTANCE;
@@ -51,41 +53,112 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	
 	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(QbeEngineStartAction.class);
-	
-	
+    
+    public static final String ENGINE_NAME = "SpagoBIQbeEngine";
+		
     public void service(SourceBean serviceRequest, SourceBean serviceResponse) {
     	QbeEngineInstance qbeEngineInstance = null;
-    	JSONObject queryJSON;
+    	QbeEngineAnalysisState analysisState;
+    	Locale locale;
+    	
     	
     	logger.debug("IN");
        
     	try {
+    		setEngineName(ENGINE_NAME);
 			super.service(serviceRequest, serviceResponse);
-						
+			
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
 			logger.debug("Template: " + getTemplate());
 						
-			getAuditServiceProxy().notifyServiceStartEvent();
-					
-			qbeEngineInstance = QbeEngine.createInstance( getTemplate(), getEnv() );
+			if(getAuditServiceProxy() != null) {
+				logger.debug("Audit enabled: [TRUE]");
+				getAuditServiceProxy().notifyServiceStartEvent();
+			} else {
+				logger.debug("Audit enabled: [FALSE]");
+			}
+			
+			logger.debug("Creating engine instance ...");
+			try {
+				qbeEngineInstance = QbeEngine.createInstance( getTemplate(), getEnv() );
+			} catch(Throwable t) {
+				SpagoBIEngineStartupException serviceException;
+				String msg = "Impossible to create engine instance for document [" + getDocumentId() + "].";
+				Throwable rootException = t;
+				while(rootException.getCause() != null) {
+					rootException = rootException.getCause();
+				}
+				String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+				msg += "\nThe root cause of the error is: " + str;
+				serviceException = new SpagoBIEngineStartupException(ENGINE_NAME, msg, t);
+				
+				if(rootException instanceof QbeTemplateParseException) {
+					QbeTemplateParseException e = (QbeTemplateParseException)rootException;
+					serviceException.setDescription( e.getDescription());
+					serviceException.setHints( e.getHints() );
+				} 
+				
+				throw serviceException;
+			}
+			logger.debug("Engine instance succesfully created");
+			
 			qbeEngineInstance.setStandaloneMode( false );
 			
 			qbeEngineInstance.setAnalysisMetadata( getAnalysisMetadata() );
 			if( getAnalysisStateRowData() != null ) {
-				QbeEngineAnalysisState analysisState = new QbeEngineAnalysisState( qbeEngineInstance.getDatamartModel() );
-				analysisState.load( getAnalysisStateRowData() );
-				qbeEngineInstance.setAnalysisState( analysisState );
+				logger.debug("Loading subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "] ...");
+				try {
+					analysisState = new QbeEngineAnalysisState( qbeEngineInstance.getDatamartModel() );
+					analysisState.load( getAnalysisStateRowData() );
+					qbeEngineInstance.setAnalysisState( analysisState );
+				} catch(Throwable t) {
+					SpagoBIEngineStartupException serviceException;
+					String msg = "Impossible load subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "].";
+					Throwable rootException = t;
+					while(rootException.getCause() != null) {
+						rootException = rootException.getCause();
+					}
+					String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+					msg += "\nThe root cause of the error is: " + str;
+					serviceException = new SpagoBIEngineStartupException(ENGINE_NAME, msg, t);
+					
+					throw serviceException;
+				}
+				logger.debug("Subobject [" + qbeEngineInstance.getAnalysisMetadata().getName() + "] succesfully loaded");
 			}
 			
-			queryJSON = (JSONObject)QuerySerializerFactory.getSerializer("application/json").serialize(qbeEngineInstance.getQuery(), qbeEngineInstance.getDatamartModel());
-				
-			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);	
-			setAttribute(QUERY, queryJSON.toString());
+			locale = (Locale)qbeEngineInstance.getEnv().get(EngineConstants.ENV_LOCALE);
+			
+			setAttributeInSession( ENGINE_INSTANCE, qbeEngineInstance);		
+			setAttribute(ENGINE_INSTANCE, qbeEngineInstance);
+			
+			setAttribute(LANGUAGE, locale.getLanguage());
+			setAttribute(COUNTRY, locale.getCountry());
+			
 			
 		} catch (Throwable e) {
-			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), qbeEngineInstance, e);
+			SpagoBIEngineStartupException serviceException = null;
+			String engineName = "SpagoBIQbeEngine";
+			
+			if(e instanceof SpagoBIEngineStartupException) {
+				serviceException = (SpagoBIEngineStartupException)e;
+			} else {
+				Throwable rootException = e;
+				while(rootException.getCause() != null) {
+					rootException = rootException.getCause();
+				}
+				String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+				String message = "An unpredicted error occurred while executing " + engineName + " service."
+								 + "\nThe root cause of the error is: " + str;
+				
+				serviceException = new SpagoBIEngineStartupException(engineName, message, e);
+			}
+			
+			throw serviceException;
+			
+			//throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), qbeEngineInstance, e);
 		} finally {
 			logger.debug("OUT");
 		}		

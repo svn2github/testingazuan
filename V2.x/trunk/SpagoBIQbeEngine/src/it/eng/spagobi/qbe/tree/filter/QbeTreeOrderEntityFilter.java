@@ -20,232 +20,76 @@
  **/
 package it.eng.spagobi.qbe.tree.filter;
 
-import it.eng.qbe.bo.DatamartLabels;
-import it.eng.qbe.cache.QbeCacheManager;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-// TODO: Auto-generated Javadoc
 /**
- * The Class QbeTreeOrderEntityFilter.
+ * The Class QbeTreeAccessModalityFieldFilter.
  * 
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter{
-
-	private Locale locale;
+public class QbeTreeOrderEntityFilter extends ComposableQbeTreeEntityFilter {
+	
+	
+	/** The parent filter. */
+	private IQbeTreeFieldFilter parentFilter;
 	
 	/**
-	 * Instantiates a new qbe tree order entity filter.
+	 * Instantiates a new qbe tree access modality field filter.
 	 */
 	public QbeTreeOrderEntityFilter() {
-		super();
-	}
-	
-	public QbeTreeOrderEntityFilter(IQbeTreeEntityFilter parentFilter, Locale locale) {
-		super(parentFilter);
-		this.setLocale( locale );
-	}
-	
-	/* (non-Javadoc)
-	 * @see it.eng.spagobi.qbe.tree.filter.ComposableQbeTreeEntityFilter#filter(it.eng.qbe.model.IDataMartModel, java.util.List)
-	 */
-	public List filter(IDataMartModel datamartModel, List entities) {
-		List list = null;
-		
-		ComparableEntitiesList comparableEntities = new ComparableEntitiesList(datamartModel, locale);
-		comparableEntities.addEntities( entities );
-		list = comparableEntities.getEntitiesOrderedByLabel();
-		
-		return list;
+		parentFilter = null;
 	}
 	
 	/**
-	 * The Class ComparableEntitiesList.
+	 * Instantiates a new qbe tree access modality field filter.
+	 * 
+	 * @param parentFilter the parent filter
 	 */
-	private class ComparableEntitiesList {
-
-		/** The list. */
-		private List list;
-		
-		/** The datamart model. */
-		private IDataMartModel datamartModel;
-		private DatamartLabels datamartLabels;
-		
-		/**
-		 * Instantiates a new comparable entities list.
-		 * 
-		 * @param datamartModel the datamart model
-		 */
-		ComparableEntitiesList(IDataMartModel datamartModel, Locale locale) {
-			
-			list = new ArrayList();
-			this.datamartModel = datamartModel;
-			setDatamartLabels( QbeCacheManager.getInstance().getLabels( datamartModel , locale ) );
-			if( getDatamartLabels() == null) {
-				setDatamartLabels( new DatamartLabels() );
-			}
-		}
-		
-		/**
-		 * Adds the entity.
-		 * 
-		 * @param entity the entity
-		 */
-		void addEntity(DataMartEntity entity) {
-			String label = geEntityLabel( entity );	
-			EntityWrapper field = new EntityWrapper(label, entity);
-			list.add(field);
-		}
-		
-		private String geEntityLabel(DataMartEntity entity) {
-			String label;
-			label = getDatamartLabels().getLabel(entity);
-			return label==null? entity.getName(): label;
-		}
-		
-		
-		
-		/**
-		 * Adds the entities.
-		 * 
-		 * @param entities the entities
-		 */
-		void addEntities(Set entities) {
-			if (entities != null && entities.size() > 0) {
-				Iterator it = entities.iterator();
-				while (it.hasNext()) {
-					DataMartEntity relation = (DataMartEntity) it.next();
-					addEntity(relation);
-				}
-			}
-		}
-		
-		/**
-		 * Adds the entities.
-		 * 
-		 * @param relations the relations
-		 */
-		void addEntities(List relations) {
-			if (relations != null && relations.size() > 0) {
-				Iterator it = relations.iterator();
-				while (it.hasNext()) {
-					DataMartEntity entity = (DataMartEntity) it.next();
-					addEntity(entity);
-				}
-			}
-		}
-		
-		/**
-		 * Gets the entities ordered by label.
-		 * 
-		 * @return the entities ordered by label
-		 */
-		List getEntitiesOrderedByLabel () {
-			Collections.sort(list);
-			List toReturn = new ArrayList();
-			Iterator it = list.iterator();
-			while (it.hasNext()) {
-				EntityWrapper field = (EntityWrapper) it.next();
-				toReturn.add(field.getEntity());
-			}
-			return toReturn;
-		}
-
-		private DatamartLabels getDatamartLabels() {
-			return datamartLabels;
-		}
-
-		private void setDatamartLabels(DatamartLabels datamartLabels) {
-			this.datamartLabels = datamartLabels;
-		}
-		
+	public QbeTreeOrderEntityFilter(IQbeTreeEntityFilter parentFilter) {
+		setParentFilter(parentFilter);
 	}
 	
 	
-	/**
-	 * The Class EntityWrapper.
-	 */
-	private class EntityWrapper implements Comparable {
+	public List filter(IDataMartModel datamartModel, List fields) {
 		
-		/** The entity. */
-		private DataMartEntity entity;
+		final DatamartProperties properties = datamartModel.getDataSource().getProperties();
+				
 		
-		/** The label. */
-		private String label;
+		Collections.sort(fields, new Comparator() {
+		    public int compare(Object o1, Object o2) {
+		    	DataMartEntity f1, f2;
+		    	String p1, p2;
+		    	int i1, i2;
+		    	
+		    	f1 = (DataMartEntity)o1;
+		    	f2 = (DataMartEntity)o2;
+		    	
+		    	p1 = properties.getProperty(f1, "position");
+		    	p2 = properties.getProperty(f2, "position");
+		    	
+		    	try {
+		    		i1 = Integer.parseInt(p1);
+		    	} catch(Throwable t) {
+		    		i1 = Integer.MAX_VALUE;
+		    	}
+		    	
+		    	try {
+		    		i2 = Integer.parseInt(p2);
+		    	} catch(Throwable t) {
+		    		i2 = Integer.MAX_VALUE;
+		    	}
+		    	
+		        return (i1 < i2 ? -1 :
+		                (i1 == i2 ? 0 : 1));
+		    }
+		});
 		
-		/**
-		 * Instantiates a new entity wrapper.
-		 * 
-		 * @param label the label
-		 * @param entity the entity
-		 */
-		EntityWrapper (String label, DataMartEntity entity) {
-			this.entity = entity;
-			this.label = label;
-		}
-		
-		/* (non-Javadoc)
-		 * @see java.lang.Comparable#compareTo(java.lang.Object)
-		 */
-		public int compareTo(Object o) {
-			if (o == null) throw new NullPointerException();
-			if (!(o instanceof EntityWrapper)) throw new ClassCastException();
-			EntityWrapper anotherEntity = (EntityWrapper) o;
-			return this.getLabel().compareTo(anotherEntity.getLabel());
-		}
-		
-		/**
-		 * Gets the entity.
-		 * 
-		 * @return the entity
-		 */
-		public DataMartEntity getEntity() {
-			return entity;
-		}
-		
-		/**
-		 * Sets the entity.
-		 * 
-		 * @param entity the new entity
-		 */
-		public void setEntity(DataMartEntity entity) {
-			this.entity = entity;
-		}
-		
-		/**
-		 * Gets the label.
-		 * 
-		 * @return the label
-		 */
-		public String getLabel() {
-			return label;
-		}
-		
-		/**
-		 * Sets the label.
-		 * 
-		 * @param label the new label
-		 */
-		public void setLabel(String label) {
-			this.label = label;
-		}
-		
-	}
-
-
-	public Locale getLocale() {
-		return locale;
-	}
-
-	public void setLocale(Locale locale) {
-		this.locale = locale;
+		return fields;
 	}
 }

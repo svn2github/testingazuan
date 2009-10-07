@@ -21,11 +21,13 @@
 package it.eng.spagobi.qbe.core.service;
        
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 
+import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.qbe.tree.ExtJsQbeTreeBuilder;
@@ -35,6 +37,8 @@ import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityEntityFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeAccessModalityFieldFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeFilter;
 import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderEntityFilter;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeOrderFieldFilter;
+import it.eng.spagobi.qbe.tree.filter.QbeTreeQueryEntityFilter;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
@@ -47,7 +51,8 @@ import it.eng.spagobi.utilities.service.JSONSuccess;
 public class GetTreeAction extends AbstractQbeEngineAction {
 
 	// INPUT PARAMETERS
-	public static final String DATAMART_NAME = "DATAMART_NAME";
+	public static final String QUERY_ID = "parentQueryId";
+	public static final String DATAMART_NAME = "datamartName";
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(GetTreeAction.class);
@@ -55,12 +60,16 @@ public class GetTreeAction extends AbstractQbeEngineAction {
     
 	public void service(SourceBean request, SourceBean response) {
 		
+		
+		String queryId = null;
 		String datamartName = null;
+		Query query = null;
+		
 		IQbeTreeEntityFilter entityFilter = null;
 		IQbeTreeFieldFilter fieldFilter = null;
 		QbeTreeFilter treeFilter = null;
+		
 		ExtJsQbeTreeBuilder qbeBuilder = null;
-		List trees = null;
 		JSONArray nodes = null;
 		
 		logger.debug("IN");
@@ -69,20 +78,53 @@ public class GetTreeAction extends AbstractQbeEngineAction {
 			super.service(request, response);	
 			
 			
-			datamartName = getAttributeAsString(DATAMART_NAME); 		
-			logger.debug("Parameter [" + DATAMART_NAME + "] is equals to [" + datamartName + "]");
+			queryId = getAttributeAsString(QUERY_ID); 		
+			logger.debug("Parameter [" + QUERY_ID + "] is equals to [" + queryId + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertNotNull(datamartName, "Input parameter [" + DATAMART_NAME + "] cannot be null in oder to execute " + this.getActionName() + " service");		
-					
+				
+			logger.debug("Filtering entities list ...");			
+			entityFilter = new QbeTreeAccessModalityEntityFilter();
+			logger.debug("Apply entity filter [" + entityFilter.getClass().getName() + "]");
+			if(queryId != null) {
+				logger.debug("Filtering on query [" + queryId + "] selectd entities");
+				query = getEngineInstance().getQueryCatalogue().getQuery(queryId);
+				if(query != null){
+					entityFilter = new QbeTreeQueryEntityFilter(entityFilter, query);
+				}
+			}
+			entityFilter = new QbeTreeOrderEntityFilter(entityFilter);
+			logger.debug("Apply field filter [" + entityFilter.getClass().getName() + "]");
+			//entityFilter = new QbeTreeOrderEntityByLabelFilter(entityFilter, getLocale() );
+			//logger.debug("Apply entity filter [" + entityFilter.getClass().getName() + "]");
 			
-			entityFilter = new QbeTreeOrderEntityFilter(new QbeTreeAccessModalityEntityFilter(), getLocale() );
-			fieldFilter = new QbeTreeAccessModalityFieldFilter();		   	
-		   	treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
-		   	
-			qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	   	
-		   	trees = qbeBuilder.getQbeTrees(getDatamartModel(), getLocale());			
-		   	nodes = (JSONArray)trees.get(0);		
+			logger.debug("Filtering fields list ...");	
+			fieldFilter = new QbeTreeAccessModalityFieldFilter();
+			logger.debug("Apply field filter [" + fieldFilter.getClass().getName() + "]");
+			fieldFilter = new QbeTreeOrderFieldFilter(fieldFilter);
+			logger.debug("Apply field filter [" + fieldFilter.getClass().getName() + "]");
+			
+			treeFilter = new  QbeTreeFilter(entityFilter, fieldFilter);
+			
+			
+			qbeBuilder = new ExtJsQbeTreeBuilder(treeFilter);	 
+			
+			datamartName = getAttributeAsString(DATAMART_NAME);
+			if (datamartName != null) {
+				nodes = qbeBuilder.getQbeTree(getDatamartModel(), getLocale(), datamartName);			
+			} else {
+				nodes = new JSONArray();
+				List datamartsNames = getEngineInstance().getDatamartModel().getDataSource().getDatamartNames();
+				Iterator it = datamartsNames.iterator();
+				while (it.hasNext()) {
+					String aDatamartName = (String) it.next();
+					JSONArray temp = qbeBuilder.getQbeTree(getDatamartModel(), getLocale(), aDatamartName);
+					for (int i = 0; i < temp.length(); i++) {
+						Object object = temp.get(i);
+						nodes.put(object);
+					}
+				}
+			}
 			
 			try {
 				writeBackToClient( new JSONSuccess(nodes) );

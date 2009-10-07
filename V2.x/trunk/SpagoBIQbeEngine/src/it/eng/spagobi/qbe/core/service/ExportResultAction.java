@@ -38,7 +38,7 @@ import it.eng.qbe.export.ReportRunner;
 import it.eng.qbe.export.SQLFieldsReader;
 import it.eng.qbe.export.TemplateBuilder;
 import it.eng.qbe.model.IStatement;
-import it.eng.qbe.query.SelectField;
+import it.eng.qbe.query.DataMartSelectField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
@@ -96,19 +96,10 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			logger.debug(MIME_TYPE + ": " + mimeType);		
 			responseType = getAttributeAsString( RESPONSE_TYPE );
 			logger.debug(RESPONSE_TYPE + ": " + responseType);
-			
-			if(getEngineInstance().getQuery().isEmpty()){
-				templateContent = "Error: If no query has been executed, nothing can be exported!!! Write a query, execute it and try again!";
-				try {				
-					writeBackToClient(templateContent);
-				} catch (IOException e) {
-					throw new SpagoBIEngineException("Impossible to write back the responce to the client", e);
-				}
-			}else{
 					
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
-			Assert.assertTrue(getEngineInstance().getQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
+			Assert.assertNotNull(getEngineInstance().getActiveQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
+			Assert.assertTrue(getEngineInstance().getActiveQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
 					
 			Assert.assertNotNull(mimeType, "Input parameter [" + MIME_TYPE + "] cannot be null in oder to execute " + this.getActionName() + " service");		
 			Assert.assertTrue( MimeUtils.isValidMimeType( mimeType ) == true, "[" + mimeType + "] is not a valid value for " + MIME_TYPE + " parameter");
@@ -120,7 +111,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			fileExtension = MimeUtils.getFileExtension( mimeType );
 			writeBackResponseInline = RESPONSE_TYPE_INLINE.equalsIgnoreCase(responseType);
 			
-			statement = getEngineInstance().getDatamartModel().createStatement( getEngineInstance().getQuery() );		
+			statement = getEngineInstance().getDatamartModel().createStatement( getEngineInstance().getActiveQuery() );		
 			//logger.debug("Parametric query: [" + statement.getQueryString() + "]");
 			
 			statement.setParameters( getEnv() );
@@ -142,7 +133,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			}
 			logger.debug("Fields extracted succesfully");
 			
-			Assert.assertTrue(getEngineInstance().getQuery().getSelectFields().size() == extractedFields.size(), 
+			Assert.assertTrue(getEngineInstance().getActiveQuery().getDataMartSelectFields(true).size() == extractedFields.size(), 
 					"The number of fields extracted from query resultset cannot be different from the number of fields specified into the query select clause");
 			
 			decorateExtractedFields( extractedFields );
@@ -154,7 +145,6 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			
 			templateBuilder = new TemplateBuilder(sqlQuery, extractedFields, params);
 			templateContent = templateBuilder.buildTemplate();
-			
 			if( !"text/jrxml".equalsIgnoreCase( mimeType ) ) {
 				try {
 					reportFile = File.createTempFile("report", ".rpt");
@@ -184,14 +174,13 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 					throw new SpagoBIEngineException("Impossible to write back the responce to the client", e);
 				}
 			}
-			}
 		} catch (Throwable t) {			
 			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
 		} finally {
 			
 			try {
 				// closing session will close also all connection created into this section
-				if(session!=null)session.close();
+				session.close();
 			} catch (Exception e) {
 				logger.warn("Impossible to close the connection used to execute the report in " + getActionName() + " service", e);
 			}
@@ -217,12 +206,12 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 
 
 	private void decorateExtractedFields(List extractedFields) {
-		List selectedFields = getEngineInstance().getQuery().getSelectFields();
+		List selectedFields = getEngineInstance().getActiveQuery().getDataMartSelectFields(true);
 		Iterator selectedFieldsIterator = selectedFields.iterator();
 		Iterator extractedFieldsIterator =  extractedFields.iterator();
 		while( extractedFieldsIterator.hasNext() ) {
 			Field exctractedField = (Field)extractedFieldsIterator.next();
-			SelectField selectedField = (SelectField)selectedFieldsIterator.next();
+			DataMartSelectField selectedField = (DataMartSelectField)selectedFieldsIterator.next();
 			exctractedField.setAlias( selectedField.getAlias() );
 			exctractedField.setVisible( selectedField.isVisible() );
 		}

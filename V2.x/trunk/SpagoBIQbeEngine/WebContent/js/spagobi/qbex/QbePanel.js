@@ -41,7 +41,7 @@
   * 
   * Authors
   * 
-  * - name (mail)
+  * - Andrea Gioia (andrea.gioia@eng.it)
   */
 
 Ext.ns("Sbi.qbe");
@@ -52,36 +52,86 @@ Sbi.qbe.QbePanel = function(config) {
 		// set default values here
 	}, config || {});
 	
-	this.addEvents();
-		
-	this.queryEditorPanel = new Sbi.qbe.QueryBuilderPanel(c);
-	this.queryResultPanel = new Sbi.widgets.DataStorePanel(c);
-	
-	
-	this.tabs = new Ext.TabPanel({
-		//renderTo: Ext.getBody(),
-  		activeTab: 0,
-  		items: [this.queryEditorPanel, this.queryResultPanel] 
+	this.services = new Array();
+	var params = {};
+	this.services['getFirstQuery'] = Sbi.config.serviceRegistry.getServiceUrl({
+		serviceName: 'GET_FIRST_QUERY_ACTION'
+		, baseParams: params
 	});
 	
-	this.queryEditorPanel.on('execute', function(editorPanel, query){
-		this.tabs.activate(this.queryResultPanel);
-		this.queryResultPanel.execQuery();
-	}, this);
+	this.addEvents();
 	
+	this.queryEditorPanel = null;
+	this.queryResultPanel = new Sbi.widgets.DataStorePanel(c);
+	
+	var items = null;
+	if (Sbi.user.isPowerUser === true) {
+		// if user is a power user, instantiate and show also the QueryBuilderPanel
+		this.queryEditorPanel = new Sbi.qbe.QueryBuilderPanel(c);
+		items = [this.queryEditorPanel, this.queryResultPanel];
+	} else {
+		// if user is a read-only user, do not instantiate and show the QueryBuilderPanel
+		// and execute first query on catalog
+		items = [this.queryResultPanel];
+		this.loadFirstQuery();
+	}
+	
+	this.tabs = new Ext.TabPanel({
+		border: false,
+  		activeTab: config.isFromCross?1:0,
+  		items: items
+	});
+	
+	if (this.queryEditorPanel != null) {
+		this.queryEditorPanel.on('execute', function(editorPanel, query){
+			this.checkPromptableFilters(query);
+		}, this);
+		this.tabs.on('tabchange', function () {
+			var anActiveTab = this.tabs.getActiveTab();
+			/*
+			 * work-around: forcing the layout recalculation on west/center/est region panels on tab change
+			 * TODO: try to remove it when upgrading Ext library
+			 */
+			if (anActiveTab.centerRegionPanel !== undefined) {
+				anActiveTab.centerRegionPanel.doLayout();
+			}
+			if (anActiveTab.westRegionPanel !== undefined) {
+				anActiveTab.westRegionPanel.doLayout();
+			}
+			if (anActiveTab.eastRegionPanel !== undefined) {
+				anActiveTab.eastRegionPanel.doLayout();
+			}
+			
+			if(config.isFromCross) {
+				if(anActiveTab.selectGridPanel != null && anActiveTab.selectGridPanel.dropTarget === null) {
+					anActiveTab.selectGridPanel.dropTarget = new Sbi.qbe.SelectGridDropTarget(anActiveTab.selectGridPanel);
+				}
+				
+				if(anActiveTab.filterGridPanel != null && anActiveTab.filterGridPanel.dropTarget === null) {
+					anActiveTab.filterGridPanel.dropTarget = new Sbi.qbe.FilterGridDropTarget(anActiveTab.filterGridPanel);
+				}
+				
+				if(anActiveTab.havingGridPanel != null && anActiveTab.havingGridPanel.dropTarget === null) {
+					anActiveTab.havingGridPanel.dropTarget = new Sbi.qbe.HavingGridDropTarget(anActiveTab.havingGridPanel);
+				}
+			}
+		}, this);
+	}
 	
 	c = Ext.apply(c, {
 		layout: 'fit',
 		autoScroll: true, 
   		margins:'0 4 4 0',
   		items: [this.tabs] 
-	})
+	});
 	
 	// constructor
     Sbi.qbe.QbePanel.superclass.constructor.call(this, c);
-
-	
-	
+    
+    //alert('isFromCross: ' + config.isFromCross);
+    if(config.isFromCross) {
+    	this.loadFirstQuery();
+    }
 };
 
 Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
@@ -99,7 +149,78 @@ Ext.extend(Sbi.qbe.QbePanel, Ext.Panel, {
     	query = q;
     }
     
-  
+
     
     // private methods
+	, loadFirstQuery: function() {
+		Ext.Ajax.request({
+	        url: this.services['getFirstQuery'],
+	        params: {},
+	        success : function(response, opts) {
+  	  			try {
+  	  				var firstQuery = Ext.util.JSON.decode( response.responseText );
+  	  				this.checkPromptableFilters(firstQuery);
+  	  			} catch (err) {
+  	  				Sbi.exception.ExceptionHandler.handleFailure();
+  	  			}
+	        },
+	        scope: this,
+			failure: Sbi.exception.ExceptionHandler.handleFailure      
+		});
+	}
+	
+	// check if there are some promptable filters before starting query execution
+	, checkPromptableFilters: function(query) {
+    	var freeFilters = this.getPromptableFilters(query);
+	    if (freeFilters.length > 0) {
+	    	var freeConditionsWindow = new Sbi.qbe.FreeConditionsWindow({
+	    		freeFilters: freeFilters
+	    	});
+	    	freeConditionsWindow.on('apply', function (formState) {
+	    		// make last values persistent on filter grid panel
+	    		if (this.queryEditorPanel != null) {
+	    			this.queryEditorPanel.filterGridPanel.setPromptableFiltersLastValues(formState);
+	    			this.queryEditorPanel.havingGridPanel.setPromptableFiltersLastValues(formState);
+	    		}
+	    		this.executeQuery(query, formState);
+	    	}, this);
+	    	freeConditionsWindow.on('savedefaults', function (formState) {
+	    		// make default values persistent on filter grid panel
+	    		if (this.queryEditorPanel != null) {
+	    			this.queryEditorPanel.filterGridPanel.setPromptableFiltersDefaultValues(formState);
+	    			this.queryEditorPanel.havingGridPanel.setPromptableFiltersDefaultValues(formState);
+	    		}
+	    	}, this);
+	    	freeConditionsWindow.show();
+	    } else {
+	    	this.executeQuery(query);
+	    }
+	}
+	
+	, executeQuery: function(query, promptableFilters) {
+		this.tabs.activate(this.queryResultPanel);
+		this.queryResultPanel.execQuery(query, promptableFilters);
+	}
+	
+  	, getPromptableFilters : function(query) {
+		var filters = [];
+		if (query.filters != null && query.filters.length > 0) {
+			for(i = 0; i < query.filters.length; i++) {
+				var filter =  query.filters[i];
+				if (filter.promptable) {
+					filters.push(filter);
+				}
+			}
+		}
+		if (query.havings != null && query.havings.length > 0) {
+			for(i = 0; i < query.havings.length; i++) {
+				var filter = query.havings[i];
+				if (filter.promptable) {
+					filters.push(filter);
+				}
+			}
+		}
+		return filters;
+	}
+  	
 });

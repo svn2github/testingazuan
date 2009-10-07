@@ -64,11 +64,11 @@ public class CreateViewAction extends AbstractQbeEngineAction {
 			logger.debug(VIEW_NAME + " = [" + viewName + "]");
 			
 			Assert.assertNotNull(getEngineInstance(), "It's not possible to execute " + this.getActionName() + " service before having properly created an instance of EngineInstance class");
-			Assert.assertNotNull(getEngineInstance().getQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
-			Assert.assertTrue(getEngineInstance().getQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
+			Assert.assertNotNull(getEngineInstance().getActiveQuery(), "Query object cannot be null in oder to execute " + this.getActionName() + " service");
+			Assert.assertTrue(getEngineInstance().getActiveQuery().isEmpty() == false, "Query object cannot be empty in oder to execute " + this.getActionName() + " service");
 			Assert.assertNotNull(viewName, "Input parameter [" + VIEW_NAME + "] cannot be null in oder to execute " + this.getActionName() + " service");
 			
-			getEngineInstance().getDatamartModel().addView(viewName, getEngineInstance().getQuery());
+			getEngineInstance().getDatamartModel().addView(viewName, getEngineInstance().getActiveQuery());
 			
 			try {
 				writeBackToClient( new JSONAcknowledge() );

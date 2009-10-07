@@ -2,7 +2,7 @@
 <PRESENTATION>	
 	<MAPPING business_type="ACTION" business_name="PUBLISH_ACTION" publisher_name="DYNAMIC_FORWARD_PUBLISHER"/>
 	
-	<!--  
-	<MAPPING business_type="ACTION" business_name="SERVICE_EXCEPTION_ACTION" publisher_name="SERVICE_EXCEPTION_ACTION_PUBLISHER"/>		
-	-->
+	 
+	<MAPPING business_type="ACTION" business_name="ENGINE_STARTUP_EXCEPTION_ACTION" publisher_name="ENGINE_STARTUP_EXCEPTION_ACTION_PUBLISHER"/>		
+	
 </PRESENTATION>

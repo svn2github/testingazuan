@@ -43,7 +43,6 @@ Sbi.service.ServiceRegistry = function(config) {
 	
 	this.baseParams = Ext.apply({}, config.baseParams || {}, {
 		SBI_EXECUTION_ID: -1
-	    , user_id: -1 
 	});
 	
 	this.defaultAbsolute = config.defaultAbsolute !== undefined?  config.defaultAbsolute: false; 
@@ -85,7 +84,7 @@ Ext.extend(Sbi.service.ServiceRegistry, Ext.util.Observable, {
         params = Ext.apply({}, s.baseParams || {}, this.baseParams);
                 
         serviceUrl = this.getBaseUrlStr(s);
-        serviceUrl += '?'
+        serviceUrl += '?';
         serviceUrl += (serviceType === 'action')? 'ACTION_NAME': 'PAGE';
         serviceUrl += '=';
         serviceUrl += s.serviceName;
@@ -101,16 +100,19 @@ Ext.extend(Sbi.service.ServiceRegistry, Ext.util.Observable, {
     
     , getBaseUrlStr: function(s) {
     	var baseUrlStr;
-    	
-    	var isAbsolute = s.isAbsolute || this.defaultAbsolute;
-    	var url = Ext.apply({}, s.baseUrl || {}, this.baseUrl);
-    	
-    	if(isAbsolute) {
-    		baseUrlStr = url.protocol + '://' + url.host + ":" + url.port + '/' + url.contextPath + '/' + url.controllerPath;
+
+    	if (this.baseUrl.completeUrl !== undefined) {
+    		baseUrlStr = this.baseUrl.completeUrl;
     	} else {
-    		baseUrlStr = '/' + url.contextPath+ '/' + url.controllerPath;
+        	var isAbsolute = s.isAbsolute || this.defaultAbsolute;
+        	var url = Ext.apply({}, s.baseUrl || {}, this.baseUrl);
+        	
+        	if(isAbsolute) {
+        		baseUrlStr = url.protocol + '://' + url.host + ":" + url.port + '/' + url.contextPath + '/' + url.controllerPath;
+        	} else {
+        		baseUrlStr = '/' + url.contextPath+ '/' + url.controllerPath;
+        	}
     	}
-    	
     	return  baseUrlStr;
     }
 });

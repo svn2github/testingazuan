@@ -87,55 +87,109 @@ Ext.extend(Sbi.qbe.SelectGridDropTarget, Ext.dd.DropTarget, {
 			rowIndex = undefined;
 		}  
 		
-		alert(rowIndex);
-
 		var sourceObject;
       	if(ddSource.tree) {
-        	this.notifyDropFromTree(ddSource, e, data, rowIndex);
+        	this.notifyDropFromDatamartStructureTree(ddSource, e, data, rowIndex);
       	} else if(ddSource.grid &&  ddSource.grid.type === 'selectgrid') {
         	this.notifyDropFromSelectGrid(ddSource, e, data, rowIndex);
       	} else if(ddSource.grid &&  ddSource.grid.type === 'filtergrid') {
         	this.notifyDropFromFilterGrid(ddSource, e, data);
+      	} else if(ddSource.grid &&  ddSource.grid.type === 'documentparametersgrid') {
+			Ext.Msg.show({
+				   title:'Drop target not allowed',
+				   msg: 'Document parameters cannot be dropped here!',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.WARNING
+			});
       	} else {
         	alert('Source object: unknown');
       	}        
 	}
 
-	, notifyDropFromTree: function(ddSource, e, data, rowIndex) {
+	// =====================================================================================
+	// from TREE
+	// =====================================================================================
+	, notifyDropFromDatamartStructureTree: function(ddSource, e, data, rowIndex) {
 		//alert('Source object: tree');
 
-        // the node dragged from tree to grid
-        var node;        
-		node = ddSource.dragData.node;             
+       
+        var node;  // the node dragged from tree to grid
+        var field;        
+        var nodeType;
+        
+		node = ddSource.dragData.node; 				
+		nodeType = node.attributes.type || node.attributes.attributes.type;
 
-        if(node.attributes.field && node.attributes.type == 'field') {
-        	var record = new this.targetPanel.Record({
+        if(nodeType == 'field') {
+        	
+        	field = {
         		id: ddSource.dragData.node.id , 
             	entity: ddSource.dragData.node.attributes.entity , 
-            	field: ddSource.dragData.node.attributes.field  
-          	});
+            	field: ddSource.dragData.node.attributes.field,
+            	alias: ddSource.dragData.node.attributes.field,
+            	longDescription: ddSource.dragData.node.attributes.longDescription
+          	};
         
-        	this.targetPanel.addRow(record, rowIndex);
-          	
-        } else if(node.attributes.attributes.type == 'entity'){
+        	this.targetPanel.addField(field, rowIndex);
+        	
+        } else if(nodeType == 'calculatedField'){
+        	
+        	field = {
+            	id: ddSource.dragData.node.id , 
+                entity: ddSource.dragData.node.attributes.entity , 
+                field: ddSource.dragData.node.attributes.field,
+                alias: ddSource.dragData.node.attributes.field  
+             };
+            
+            this.targetPanel.addField(field, rowIndex);
+            
+            // TODO: drop also all  the correlated fields. Snippet from method onAddNodeToSelect of QueryBuilderPanel
+            /*
+            var seeds =  Sbi.qbe.CalculatedFieldWizard.getUsedItemSeeds('dmFields', node.attributes.formState.expression);
+ 	    		for(var i = 0; i < seeds.length; i++) {
+ 	    			var n = node.parentNode.findChildBy(function(childNode) {
+ 	    				return childNode.id === seeds[i];
+ 	    			});
+ 	    			
+ 	    			if(n) {
+ 	    				this.onAddNodeToSelect(n, {visible:false});
+ 	    				//this.dataMartStructurePanel.fireEvent('click', this.dataMartStructurePanel, n);
+ 	    			} else {
+ 	    				alert('node  [' + seeds + '] not contained in entity [' + node.parentNode.text + ']');
+ 	    			}
+ 	    			
+ 	    			
+ 	    		}
+             */
+        } else if(nodeType == 'entity'){
 			
 			for(var i = 0; i < node.attributes.children.length; i++) {
 				if(node.attributes.children[i].attributes.type != 'field') continue;
-				var record = new this.targetPanel.Record({
+				field = {
       				id: node.attributes.children[i].id , 
         			entity: node.attributes.children[i].attributes.entity , 
-        			field: node.attributes.children[i].attributes.field  
-      			});				
-				this.targetPanel.addRow(record, rowIndex);
+        			field: node.attributes.children[i].attributes.field,
+                	alias: node.attributes.children[i].attributes.field,
+                	longDescription: node.attributes.children[i].attributes.longDescription
+      			};				
+				this.targetPanel.addField(field, rowIndex);
 			}
-        
+			
         } else {
-        	alert("Error: unknown node type");
+        	Ext.Msg.show({
+				   title:'Drop target not allowed',
+				   msg: 'Node of type [' + nodeType + '] cannot be dropped here',
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.ERROR
+			});
         }
 
         this.targetGrid.getView().refresh();
-	} // notifyDropFromTree
+	} 
 
+	//=====================================================================================
+	// from SELECT GRID (self)
+	// ====================================================================================
     , notifyDropFromSelectGrid: function(ddSource, e, data, rowIndex) {
     	//alert('Source object: select-grid');
         var sm = this.targetGrid.getSelectionModel();

@@ -69,7 +69,7 @@ Sbi.exception.ExceptionHandler = function(){
         			if(content.errors !== undefined && content.errors.length > 0) {
         				errMessage = '';
         				for(var i = 0; i < content.errors.length; i++) {
-        					errMessage += content.errors[i].message + '<br>'
+        					errMessage += content.errors[i].message + '<br>';
         				}
         			} 
         		} 

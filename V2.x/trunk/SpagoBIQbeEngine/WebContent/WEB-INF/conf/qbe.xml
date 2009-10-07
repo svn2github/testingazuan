@@ -4,6 +4,12 @@
     <!--  DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.model.io.LocalFileSystemDataMartModelRetriever"/ -->
     <QUERY-PERSISTER className="it.eng.qbe.model.io.LocalFileSystemQueryPersister"/>
    
+	<!--
+	QUERY-VALIDATION configuration is applied when saving a query as a subobject:
+	- if enabled=true, query is validated before saving
+	- if isBlocking=true (and enabled=true), incorrect queries cannot be saved
+	-->
+	<QUERY-VALIDATION enabled="true" isBlocking="false" />
 	 
 	<!--  QBE-MODE mode="WEB" page-size="20"/ -->
 	
@@ -19,7 +25,9 @@
 		checkerClass="it.eng.qbe.utility.SimpleSpaceChecker" 
 		failIfSpaceLess="25"/>
 	
-	<QBE-SQL-RESULT-LIMIT value="none"/>
+	<!-- QBE-SQL-RESULT-LIMIT value="none" isBlocking="false"/ -->
+	<!-- QBE-SQL-RESULT-LIMIT value="10000" isBlocking="true"/ -->
+	<QBE-SQL-RESULT-LIMIT value="10000" isBlocking="false"/>
 	
 	<GEO-ENGINE-URL value="http://localhost:8080/SpagoBIGeoEngine"/>
 	

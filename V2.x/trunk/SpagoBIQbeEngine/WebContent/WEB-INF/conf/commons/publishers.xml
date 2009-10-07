@@ -16,20 +16,16 @@
     	</RENDERING>
 	</PUBLISHER>  	
 
-
-
-	
   	
   	
-  	<!--  
-  	<PUBLISHER name="SERVICE_EXCEPTION_ACTION_PUBLISHER">
+  	<PUBLISHER name="ENGINE_STARTUP_EXCEPTION_ACTION_PUBLISHER">
 		<RENDERING channel="HTTP" type="JSP" mode="FORWARD">
 			<RESOURCES>
-				<ITEM prog="0" resource="/jsp/serviceError.jsp" />
+				<ITEM prog="0" resource="/jsp/engineStartupExceptionPage.jsp" />
 			</RESOURCES>
 		</RENDERING>
 	</PUBLISHER>
-	-->
+	
   	
   	
 </PUBLISHERS>

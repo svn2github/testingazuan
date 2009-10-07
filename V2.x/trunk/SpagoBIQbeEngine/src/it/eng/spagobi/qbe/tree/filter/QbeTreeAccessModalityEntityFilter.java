@@ -20,13 +20,12 @@
  **/
 package it.eng.spagobi.qbe.tree.filter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.eng.qbe.bo.DatamartProperties;
 import it.eng.qbe.model.IDataMartModel;
 import it.eng.qbe.model.structure.DataMartEntity;
-import it.eng.qbe.utility.QbeProperties;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The Class QbeTreeAccessModalityEntityFilter.

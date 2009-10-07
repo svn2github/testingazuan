@@ -1,5 +1,52 @@
 /* =============================================================================
-* Fix a proble in the loader related to async loading
+* Bug Fix: It is not possible to see the column hide menu when the sortable property
+* is set to false
+* See:
+* - http://extjs.com/forum/showthread.php?p=124583
+* - http://extjs.com/forum/showthread.php?t=17379
+============================================================================= */
+Ext.override(Ext.grid.ColumnModel, {
+  isMenuDisabled : function(col) {
+    return !!this.config[col].menuDisabled;
+  }
+}); 
+
+Ext.override(Ext.grid.GridView, {
+  // private
+  handleHdOver : function(e, t) {
+    var hd = this.findHeaderCell(t);
+    if (hd && !this.headersDisabled) {
+      this.activeHd = hd;
+      this.activeHdIndex = this.getCellIndex(hd);
+      var fly = this.fly(hd);
+      this.activeHdRegion = fly.getRegion();
+      if (!this.cm.isMenuDisabled(this.activeHdIndex)) {
+        fly.addClass("x-grid3-hd-over");
+        this.activeHdBtn = fly.child('.x-grid3-hd-btn');
+        if (this.activeHdBtn) {
+          this.activeHdBtn.dom.style.height = (hd.firstChild.offsetHeight-1)+'px';
+        }
+      }
+    }
+  }
+});
+
+
+/* =============================================================================
+* Not so sure this override is still so useful. BTW it copies attributes passed by
+* the server into node attributes property of the node if the node is a leaf. If the node is not
+* a leaf attribute are handled normally (i.e. they are copied in attributes property
+* of the attributes subobject of the node). This mean that in order to access to attributes
+* passed in by the server you have to do like this node.attributes if the node is a leaf
+* an like this node.attributes.attributes if the node is not a leaf. This is good in
+* general because you do not want to access to attributes on a non leaf node. But
+* if this is not the case this difference i n handling node's attributes is boaring and 
+* error prone. The obvious fix of applying the same patch also to non leaf node does
+* not work unfortunately because in the case of AsyncNode the attributes property of
+* the node is used internally in order to handle asynchronous loading and/or asynchronous
+* rendering. The best solution to apply in the near future is to move all attribute passed in by 
+* the server into a nod first level property named differently (ex. props) both in the case
+* of leaf and non-leaf nodes (Andrea Gioia)
 ============================================================================= */
 Ext.override(Ext.tree.TreeLoader, {
     createNode : function(attr){
@@ -18,7 +65,6 @@ Ext.override(Ext.tree.TreeLoader, {
         if(attr.leaf) {
         	resultNode = new Ext.tree.TreeNode(attr);
         	resultNode.attributes = attr.attributes;
-        	//alert(attr.attributes.field);
         } else {
         	resultNode = new Ext.tree.AsyncTreeNode(attr);
         }
@@ -362,12 +408,12 @@ new Ext.tree.TreePanel({
         }
     },
 
-    setRootNode: function(node) {
-//      Already had one; destroy it.
-        if (this.root) {
+    setRootNode: function(node, load) {
+    	//      Already had one; destroy it.    	
+    	if (this.root) {
             this.root.destroy();
         }
-
+    	
         if(!node.render){ // attributes passed
             node = this.loader.createNode(node);
         }

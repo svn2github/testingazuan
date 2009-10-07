@@ -13,7 +13,8 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/qbe/parser.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/filterWizard.js'/></script>
 <script type="text/javascript" src='../js/spagobi/qbe/buttonColumn.js'/></script>
-	
+		
+<script type="text/javascript" src='../js/spagobi/commons/Settings.js'/></script>	
 <script type="text/javascript" src='../js/spagobi/overrides/overrides.js'/></script>
 <script type="text/javascript" src='../js/spagobi/exception/ExceptionHandler.js'/></script>
 <script type="text/javascript" src='../js/spagobi/service/ServiceRegistry.js'/></script>

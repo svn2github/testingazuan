@@ -51,7 +51,12 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 	var defaultSettings = {
 		title: LN('sbi.qbe.queryeditor.title'),
 		frame: false, 
-		border: false
+		border: false,
+		enableTreeContextMenu: true,
+		enableTreeToolbar: true,
+		enableTreeTbSaveBtn: true,
+		enableTreeTbPinBtn: true,
+		enableTreeTbUnpinBtn: true
   	};
 	if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.queryBuilderPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.queryBuilderPanel);
@@ -337,13 +342,12 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        margins: '5 5 5 5',
 	        layout:'fit',
 	        collapsible: true,
-	        //collapseMode: 'mini',
 	        collapseFirst: false,
 	        
 	        tools:[{	// todo: marge pin and unpin button in one single toggle-button
 	          id:'pin',
 	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.expand'),
-	          // hidden:true,
+	          hidden: (!this.enableTreeToolbar || !this.enableTreeTbPinBtn),
 	          handler: function(event, toolEl, panel){
 	        	this.currentDataMartStructurePanel.expandAll();
 	          }
@@ -351,31 +355,15 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        }, {
 	          id:'unpin',
 	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.collapse'),
-	          // hidden:true,
+	          hidden: (!this.enableTreeToolbar || !this.enableTreeTbUnpinBtn),
 	          handler: function(event, toolEl, panel){
 	        	this.currentDataMartStructurePanel.collapseAll();
 	          }
 	          , scope: this
-	        }, /*{
-	          id:'gear',
-	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.flat'), 
-	          // hidden:true,
-	          handler: function(event, toolEl, panel){
-	        	Sbi.qbe.commons.unimplementedFunction();
-	          }
-	          , scope: this
-	        },  {
-	          id:'plus',
-	          qtip: LN('sbi.qbe.queryeditor.westregion.tools.addcalculated'),
-	          // hidden:true,
-	          handler: function(event, toolEl, panel){
-	        	this.currentDataMartStructurePanel.addCalculatedField();
-	          }
-	          , scope: this
-	        },*/ {
+	        }, {
 			  id:'save',
 			  qtip: LN('save'),
-			  // hidden:true,
+			  hidden: (!this.enableTreeToolbar || !this.enableTreeTbSaveBtn),
 			  handler: function(event, toolEl, panel){
 	        	Ext.Ajax.request({
 					url:  this.services['saveTree'],
@@ -437,6 +425,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        }, {
 	          id:'saveView',
 	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.view'),
+	          hidden:true,
 	          handler: function(event, toolEl, panel){
 	        	Ext.Ajax.request({
 					   	url: this.services['synchronyzeQuery'],
@@ -457,13 +446,14 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        },{
 	          id:'search',
 	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.validate'),
-	          // hidden:true,
+	          hidden:true,
 	          handler: function(event, toolEl, panel){
 	            // refresh logic
 	          }
 	        }, {
 	          id:'help',
 	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.help'),
+	          hidden:true,
 	          handler: function(event, toolEl, panel){
 	            // refresh logic
 	          }

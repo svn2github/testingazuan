@@ -58,6 +58,7 @@ Sbi.qbe.DataMartStructurePanel = function(config) {
 		, type: 'datamartstructuretree'
 		, preloadTree: true
 		, baseParams: {}
+		, enableTreeContextMenu: true
   	};
 	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.dataMartStructurePanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.dataMartStructurePanel);
@@ -335,7 +336,9 @@ Ext.extend(Sbi.qbe.DataMartStructurePanel, Ext.Panel, {
 				this.fireEvent('addnodetoselect', this, node);
 			}
 		}, this);
-		this.tree.on('contextmenu', this.onContextMenu, this);
+		if(this.enableTreeContextMenu) {
+			this.tree.on('contextmenu', this.onContextMenu, this);
+		}
 	}
 	
 	, initCalculatedFieldWizard: function() {

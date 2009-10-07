@@ -48,9 +48,21 @@ Ext.ns("Sbi.qbe");
 
 Sbi.qbe.SelectGridPanel = function(config) {
 	
-	var c = Ext.apply({
-		// set default values here
-	}, config || {});
+	alert(config.toSource());
+	
+	var defaultSettings = {
+		border: true
+		, enableToolbar: true
+		, enableTbAddCalculatedBtn: true
+	};
+	
+	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.selectGridPanel) {
+		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.selectGridPanel);
+	}
+	
+	var c = Ext.apply(defaultSettings, config || {});	
+	Ext.apply(this, c);
+	
 	
 	this.services = new Array();
 	
@@ -74,24 +86,17 @@ Sbi.qbe.SelectGridPanel = function(config) {
 	this.initGrid(c);
 	this.initGridListeners(c);
 	
-	c = Ext.apply(c, {
-		border: true, 
-		layout: 'fit',
-		autoWidth: Ext.isIE ? false : true,
-		width: Ext.isIE ? undefined : 'auto',
-		//width: 1000,
-		items: [this.grid]
-	});
+	
+	Ext.apply(c, {
+		layout: 'fit'
+		,autoWidth: Ext.isIE ? false : true
+		, width: Ext.isIE ? undefined : 'auto'
+		, items: [this.tree]
+	});	
 	
 	// constructor
 	Sbi.qbe.SelectGridPanel.superclass.constructor.call(this, c);
-	/*
-	this.on('render', function(){
-		if(this.dropTarget === null) {
-			this.dropTarget = new Sbi.qbe.SelectGridDropTarget(this);
-		}
-	}, this) ;
-	*/
+	
 	if(c.query && c.query.fields && c.query.fields.length > 0){
     	this.loadSavedData(c.query);
     }
@@ -205,24 +210,6 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 	, addRow: function(config, i) {	
 	   Sbi.qbe.commons.deprectadeFunction('SelectGridPanel', 'addRow');
 	   this.insertField(config, i);
-	   /*
-	   var record = new this.Record({
-	       funct: '',
-	       order: '',
-	       alias: config.data['field'], 
-	       id: config.data['id'], 
-	       entity: config.data['entity'], 
-	       field: config.data['field'],
-	       'include': true, 
-	       visible: true
-	    });
-    
-    	if(i != undefined) {
-      		this.store.insert(i, record); 
-    	} else {
-      		this.store.add(record); 
-    	}
-    	*/
 	}
 	
 	, deleteFields: function() {
@@ -638,17 +625,18 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		this.toolbar = new Ext.Toolbar({
 			items: [
 			  this.distinctCheckBox,'-',
-			  /*{
+			  {
 	            text: LN('sbi.qbe.selectgridpanel.buttons.text.add'),
 	            tooltip: LN('sbi.qbe.selectgridpanel.buttons.tt.add'),
 	            iconCls:'option',
+	            hidden: (this.enableTbAddCalculatedBtn === false),
 	            listeners: {
 				  'click': {
 					fn: function(){this.addCalculatedField(null);},
 					scope: this
 				   }
 	            }
-	          },'-',*/{
+	          },'-',{
 	            text: LN('sbi.qbe.selectgridpanel.buttons.text.hide'),
 	            tooltip: LN('sbi.qbe.selectgridpanel.buttons.tt.hide'),
 	            enableToggle: true,

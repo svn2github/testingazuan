@@ -1,49 +1,87 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <jsp:directive.include file="includes/top.jsp" />
 			<form:form method="post" id="fm1" cssClass="fm-v clearfix" commandName="${commandName}" htmlEscape="true">
+			     <input type="hidden" name="lt" value="${flowExecutionKey}" />
+           <input type="hidden" name="_eventId" value="submit" />
 			    <form:errors path="*" cssClass="errors" id="status" element="div" />
-			         <div id="msgMandatory" style="display:none">
+			         <div id="msgMandatory" style='display:none;color:red;font-size:11pt;'>
                      Login and password fields are mandatory!<br />
                      <br />
-			          </div>
-			          <div id="logouser" style="height:57px;background-image:url(./images/wapp/loginUser64.png);background-repeat:no-repeat;background-position: top left;"/>
+			          </div> 	          
+			          <table valign="middle" align="center">
+		        			<tr>
+		        				<td width = "100px">
+		        				   <img src="./images/wapp/loginUser64.png"/>
+		        				</td>
+		        				<td>
+		        				    <br/> 
+		        				    <table>
+		        				    	<tr>    		        				    	
+  		        				    		<td width="150px">    		        				    		 
+  		        								  <label for="username"><spring:message code="screen.welcome.label.netid" /></label>
+  		        							 </td>
+    		        							<td width="30px">&nbsp;</td>
+    		        							<td>
+    		        								<c:if test="${not empty sessionScope.openIdLocalId}">
+                      						<strong>${sessionScope.openIdLocalId}</strong>
+                      						<input type="hidden" id="username" name="username" value="${sessionScope.openIdLocalId}" />
+                    						</c:if>
+                    						<br/>
+                    						<c:if test="${empty sessionScope.openIdLocalId}">
+                      						<spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
+                      						<form:input cssClass="required" cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="off" htmlEscape="true" />
+                    						</c:if>
+    		        							</td>	        		        					
+		        						</tr>
+		        						<tr>
+  		        				    	<td width="150px">
+  		        							   <label for="password"><spring:message code="screen.welcome.label.password" /></label>
+  		        							</td>
+  		        							<td width="30px">&nbsp;</td>
+  		        							<td>
+  		        								<spring:message code="screen.welcome.label.password.accesskey" var="passwordAccessKey" />
+          						        <form:password cssClass="required" cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
+  		        							</td>	      		        					
+		        						</tr>
+		        					</table>			        					
+		        				</td>  
+                     						
+		        				<td>
+		        					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		        					<input name="submit"  src="./images/wapp/next32.png" value="<spring:message code="screen.welcome.button.login" />" type="image" />
+		        				</td>      		        		
+		        			</tr>    		        		    		
+		        		</table>
+		        		<!--
+                <div class="row">
+                    <label for="username"><spring:message code="screen.welcome.label.netid" /></label>
+      						<c:if test="${not empty sessionScope.openIdLocalId}">
+          						<strong>${sessionScope.openIdLocalId}</strong>
+          						<input type="hidden" id="username" name="username" value="${sessionScope.openIdLocalId}" />
+      						</c:if>
+      						<br/>
+      						<c:if test="${empty sessionScope.openIdLocalId}">
+        						<spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
+        						<form:input cssClass="required" cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="off" htmlEscape="true" />
+      						</c:if>
+                </div>
                 
-			           <br/><br/><br/>
-			          <div class="box" id="login">
-                    <div class="row">
-                        <label for="username"><spring:message code="screen.welcome.label.netid" /></label>
-          						<c:if test="${not empty sessionScope.openIdLocalId}">
-              						<strong>${sessionScope.openIdLocalId}</strong>
-              						<input type="hidden" id="username" name="username" value="${sessionScope.openIdLocalId}" />
-          						</c:if>
-          						<br/>
-          						<c:if test="${empty sessionScope.openIdLocalId}">
-            						<spring:message code="screen.welcome.label.netid.accesskey" var="userNameAccessKey" />
-            						<form:input cssClass="required" cssErrorClass="error" id="username" size="25" tabindex="1" accesskey="${userNameAccessKey}" path="username" autocomplete="false" htmlEscape="true" />
-          						</c:if>
-                    </div>
-                    
-                    <div class="row">
-                        <label for="password"><spring:message code="screen.welcome.label.password" /></label>
-                        <BR/>
-            						<%--
-            						NOTE: Certain browsers will offer the option of caching passwords for a user.  There is a non-standard attribute,
-            						"autocomplete" that when set to "off" will tell certain browsers not to prompt to cache credentials.  For more
-            						information, see the following web page:
-            						http://www.geocities.com/technofundo/tech/web/ie_autocomplete.html
-            						--%>
-            						<spring:message code="screen.welcome.label.password.accesskey" var="passwordAccessKey" />
-            						<form:password cssClass="required" cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
-                    </div>
+                <div class="row">
+                    <label for="password"><spring:message code="screen.welcome.label.password" /></label>
                     <BR/>
-    
-                    <div class="row btn-row">
-            						<input type="hidden" name="lt" value="${flowExecutionKey}" />
-            						<input type="hidden" name="_eventId" value="submit" />
-    
-                        <input class="btn-submit" name="submit" accesskey="l" value="<spring:message code="screen.welcome.button.login" />" tabindex="4" type="submit" />
-                        <input class="btn-reset" name="reset" accesskey="c" value="<spring:message code="screen.welcome.button.clear" />" tabindex="5" type="reset" />
-                    </div>
-              </div> 
+        						<spring:message code="screen.welcome.label.password.accesskey" var="passwordAccessKey" />
+        						<form:password cssClass="required" cssErrorClass="error" id="password" size="25" tabindex="2" path="password"  accesskey="${passwordAccessKey}" htmlEscape="true" autocomplete="off" />
+                </div>
+                <BR/>
+
+                <div class="row btn-row">
+        						<input type="hidden" name="lt" value="${flowExecutionKey}" />
+        						<input type="hidden" name="_eventId" value="submit" />
+
+                    <input class="btn-submit" name="submit" accesskey="l" value="<spring:message code="screen.welcome.button.login" />" tabindex="4" type="submit" />
+                    <input class="btn-reset" name="reset" accesskey="c" value="<spring:message code="screen.welcome.button.clear" />" tabindex="5" type="reset" />
+                </div>
+                -->
+             
         	</form:form>
 <jsp:directive.include file="includes/bottom.jsp" />

@@ -48,8 +48,8 @@
 
 </head>
 
-	<body id="cas" onload="init()">
-  
+	<!--<body id="cas" onload="init()">-->
+  <body id="cas" >
   <div id="background" style="width:100%;height:100%;background-image:url(./images/wapp/background.jpg);background-repeat:no-repeat;background-position: top left;"> 
       <div id="backgroundlogo" style="width:100%;height:100%;background-image:url(./images/wapp/backgroundlogo.jpg);background-repeat:no-repeat;background-position: bottom right;"> 
         <div id="header" style="width:100%;height:70px;">
@@ -61,5 +61,5 @@
 
 	    <div id="content" style="width:100%;">
 	      
-	    	<div style="background-color:white;width:400px;height:200px;border:1px solid gray;margin-top:130px;margin-left:50px;" >
+	    	<div style="background-color:white;width:500px;height:150px;border:1px solid gray;margin-top:130px;margin-left:50px;" >
             <!--<h3><spring:message code="screen.welcome.instructions" /></h3>-->

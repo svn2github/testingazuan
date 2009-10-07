@@ -24,9 +24,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 public class Configuration {
-	
+
 	protected Parameter[] parameters;
-	
+
 	public Configuration(String movie, Document configurationDocument) {
 		try {
 			parameters = getConfigurationParametersForMovie(movie, configurationDocument);
@@ -75,7 +75,7 @@ public class Configuration {
 			}
 		}
 	}
-	
+
 	public Parameter[] getConfigurationParametersForMovie(String dashboardMovie, Document document) throws Exception {
 		Parameter[] toReturn = null;
 		List dashboards = document.selectNodes("//DASHBOARDS/DASHBOARD");
@@ -104,7 +104,7 @@ public class Configuration {
 		}
 		return toReturn;
 	}
-	
+
 	public void createForm(final DashboardEditor editor, Composite section, FormToolkit toolkit) {
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
@@ -124,38 +124,38 @@ public class Configuration {
 				colorGd.marginBottom = 0;
 				innerSection.setLayout(colorGd);
 				final Label colorLabel = new Label(innerSection, SWT.BORDER);
-			    colorLabel.setText("          ");
-			    String hexadecimal = aParameter.getValue();
-			    RGB rgb = DashboardEditor.convertHexadecimalToRGB(hexadecimal);
-			    final Color color = new Color(section.getDisplay(), rgb);
-			    colorLabel.setBackground(color);
-			    Button button = new Button(innerSection, SWT.PUSH);
-			    button.setText("Color...");
-			    final Shell parentShell = section.getShell();
-			    button.addSelectionListener(new SelectionAdapter() {
-			    	public void widgetSelected(SelectionEvent event) {
-			            final Shell centerShell = new Shell(parentShell, SWT.NO_TRIM);
-			            centerShell.setLocation(
-			                (parentShell.getSize().x - DashboardEditor.COLORDIALOG_WIDTH) / 2,
-			                (parentShell.getSize().y - DashboardEditor.COLORDIALOG_HEIGHT) / 2);
-			            ColorDialog colorDg = new ColorDialog(centerShell,
-			                SWT.APPLICATION_MODAL);
-			            colorDg.setRGB(colorLabel.getBackground().getRGB());
-			            //colorDg.setText("Choose a color");
-			            RGB rgb = colorDg.open();
-			    		if (rgb != null) {
-			    			// Dispose the old color, create the
-			    			// new one, and set into the label
-			    			color.dispose();
-			    			Color newColor = new Color(parentShell.getDisplay(), rgb);
-			    			colorLabel.setBackground(newColor);
-			    			editor.setIsDirty(true);
-			    			String newHexadecimal = DashboardEditor.convertRGBToHexadecimal(rgb);
-			    			aParameter.setValue(newHexadecimal);
-				    	}
-			            centerShell.dispose();
-				    }
-			    });
+				colorLabel.setText("          ");
+				String hexadecimal = aParameter.getValue();
+				RGB rgb = DashboardEditor.convertHexadecimalToRGB(hexadecimal);
+				final Color color = new Color(section.getDisplay(), rgb);
+				colorLabel.setBackground(color);
+				Button button = new Button(innerSection, SWT.PUSH);
+				button.setText("Color...");
+				final Shell parentShell = section.getShell();
+				button.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						final Shell centerShell = new Shell(parentShell, SWT.NO_TRIM);
+						centerShell.setLocation(
+								(parentShell.getSize().x - DashboardEditor.COLORDIALOG_WIDTH) / 2,
+								(parentShell.getSize().y - DashboardEditor.COLORDIALOG_HEIGHT) / 2);
+						ColorDialog colorDg = new ColorDialog(centerShell,
+								SWT.APPLICATION_MODAL);
+						colorDg.setRGB(colorLabel.getBackground().getRGB());
+						//colorDg.setText("Choose a color");
+						RGB rgb = colorDg.open();
+						if (rgb != null) {
+							// Dispose the old color, create the
+							// new one, and set into the label
+							color.dispose();
+							Color newColor = new Color(parentShell.getDisplay(), rgb);
+							colorLabel.setBackground(newColor);
+							editor.setIsDirty(true);
+							String newHexadecimal = DashboardEditor.convertRGBToHexadecimal(rgb);
+							aParameter.setValue(newHexadecimal);
+						}
+						centerShell.dispose();
+					}
+				});
 				break;
 			case Parameter.BOOLEAN_TYPE:
 				final Button check = toolkit.createButton(section, "", SWT.CHECK);
@@ -169,19 +169,19 @@ public class Configuration {
 				break;
 			default:
 				final Text parameterValueText = new Text(section, SWT.BORDER);
-				parameterValueText.setText(aParameter.getValue());
-				parameterValueText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-				parameterValueText.addModifyListener(new ModifyListener() {
-					public void modifyText(ModifyEvent event) {
-						editor.setIsDirty(true);
-						String parameterValueStr = parameterValueText.getText();
-						aParameter.setValue(parameterValueStr);
-					}
-				});
+			parameterValueText.setText(aParameter.getValue());
+			parameterValueText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			parameterValueText.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent event) {
+					editor.setIsDirty(true);
+					String parameterValueStr = parameterValueText.getText();
+					aParameter.setValue(parameterValueStr);
+				}
+			});
 			}
 		}
 	}
-	
+
 	public String toXML() {
 		String toReturn = 
 			"    <CONF>\n";

@@ -251,15 +251,42 @@ public class DashboardEditor extends EditorPart {
 		firePropertyChange(PROP_DIRTY);
 	}
 	
-	public static RGB convertHexadecimalToRGB(String hexadecimal) {
-	    String redHexadecimal = hexadecimal.substring(2, 4);
-	    String greenHexadecimal = hexadecimal.substring(4, 6);
-	    String blueHexadecimal = hexadecimal.substring(6, 8);
-	    int red = Integer.parseInt(redHexadecimal, 16);
-	    int green = Integer.parseInt(greenHexadecimal, 16);
-	    int blue = Integer.parseInt(blueHexadecimal, 16);
-	    return new RGB(red, green, blue);
+//	public static RGB convertHexadecimalToRGB(String hexadecimal) {
+//	
+//		
+//		
+//		String redHexadecimal = hexadecimal.substring(2, 4);
+//	    String greenHexadecimal = hexadecimal.substring(4, 6);
+//	    String blueHexadecimal = hexadecimal.substring(6, 8);
+//	    int red = Integer.parseInt(redHexadecimal, 16);
+//	    int green = Integer.parseInt(greenHexadecimal, 16);
+//	    int blue = Integer.parseInt(blueHexadecimal, 16);
+//	    return new RGB(red, green, blue);
+//
+//	
+//	}
+
+	
+	
+	
+	public static RGB convertHexadecimalToRGB(String hexadecimal) throws NumberFormatException{
+		java.awt.Color col=null;
+		try{
+			col=java.awt.Color.decode(hexadecimal);
+		}
+		catch (Exception e) {
+			col=java.awt.Color.WHITE;
+		}
+		int red=col.getRed();
+		int blue=col.getBlue();
+		int green=col.getGreen();
+
+		return new RGB(red, green, blue);
 	}
+	
+	
+	
+	
 	
 	public static String convertRGBToHexadecimal(RGB rgb) {
 	    int red = rgb.red;

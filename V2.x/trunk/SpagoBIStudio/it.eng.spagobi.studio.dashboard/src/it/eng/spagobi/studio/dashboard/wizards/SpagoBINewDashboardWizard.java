@@ -42,6 +42,8 @@ public class SpagoBINewDashboardWizard extends Wizard implements INewWizard {
 	// the workbench instance
 	protected IWorkbench workbench;
 
+	
+	
 	public boolean performFinish() {
 		// get the name of the dashboard from the form
 		SpagoBILogger.infoLog("Starting dashboard wizard");

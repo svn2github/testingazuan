@@ -16,17 +16,17 @@
 	<!--  ============================================================================ -->
 	<!--  FILTERS								 									   -->
 	<!--  ============================================================================ -->		
-	<!-- 	
+<!-- START-CAS 	
 <filter>
   <filter-name>CAS Authentication Filter</filter-name>
   <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
   <init-param>
     <param-name>casServerLoginUrl</param-name>
-    <param-value>https://localhost:8443/cas/login</param-value>
+    <param-value>https://athos.engilab.ewebpd.eng.it:1447/cas/login</param-value>
   </init-param>
   <init-param>
     <param-name>serverName</param-name>
-    <param-value>localhost:8443</param-value>
+    <param-value>athos.engilab.ewebpd.eng.it:1447</param-value>
   </init-param>    
 </filter>
 
@@ -35,29 +35,27 @@
   <filter-class>org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter</filter-class>
   <init-param>
     <param-name>casServerUrlPrefix</param-name>
-    <param-value>https://localhost:8443/cas</param-value>
+    <param-value>https://athos.engilab.ewebpd.eng.it:1447/cas</param-value>
   </init-param>
   <init-param>
     <param-name>serverName</param-name>
-    <param-value>https://localhost:8443</param-value>
+    <param-value>https://athos.engilab.ewebpd.eng.it:1447</param-value>
   </init-param>
   <init-param>
     <param-name>proxyReceptorUrl</param-name>
     <param-value>/proxyCallback</param-value>
   </init-param> 
-
-		<init-param>
-			<param-name>proxyCallbackUrl</param-name>
-			<param-value>https://localhost:8443/SpagoBITalendEngine/proxyCallback</param-value>
-		</init-param>  
-
+  <init-param>
+		<param-name>proxyCallbackUrl</param-name>
+		<param-value>https://athos.engilab.ewebpd.eng.it:1447/SpagoBITalendEngine/proxyCallback</param-value>
+  </init-param>  
 </filter>
 
 <filter>
   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
   <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
 </filter>
- 	-->	
+END-CAS -->
  	
 	<filter>
 		<filter-name>SpagoBIAccessFilter</filter-name>
@@ -67,7 +65,7 @@
 	<!--  ============================================================================ -->
 	<!--  FILTER MAPPINGS						 									   -->
 	<!--  ============================================================================ -->
-	<!--	
+<!-- START-CAS 	
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
     <url-pattern>/*</url-pattern>
@@ -77,17 +75,17 @@
     <filter-name>CAS Validation Filter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping> 
-   	
-
-   <filter-mapping>
+  
+  <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping> 
-	<filter-mapping>
+  
+  <filter-mapping>
 		<filter-name>CAS Validation Filter</filter-name>
 		<url-pattern>/proxyCallback</url-pattern>	
-	</filter-mapping>
- 	-->		
+  </filter-mapping>
+END-CAS -->
 	
 	<filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>
@@ -114,15 +112,6 @@
 	<!--  SERVLETS								 									   -->
 	<!--  ============================================================================ -->
 	<servlet>
-  		<servlet-name>ProxyTicketReceptor</servlet-name> 
-  		<servlet-class>edu.yale.its.tp.cas.proxy.ProxyTicketReceptor</servlet-class> 
-		<init-param>
-  			<param-name>edu.yale.its.tp.cas.proxyUrl</param-name> 
-  			<param-value>https://localhost:8443/exo-cas-2/proxy</param-value> 
-  		</init-param>
-  	</servlet>
-  
-	<servlet>
 		<servlet-name>JobRunService</servlet-name>
 		<servlet-class>it.eng.spagobi.engines.talend.services.JobRunService</servlet-class>
 	</servlet>
@@ -147,10 +136,6 @@
 	<!--  ============================================================================ -->
 	<!--  SERVLET MAPPINGS						 									   -->
 	<!--  ============================================================================ -->
- 	<servlet-mapping>
-  		<servlet-name>ProxyTicketReceptor</servlet-name> 
-  		<url-pattern>/proxyReceptor</url-pattern> 
-  	</servlet-mapping> 
   		
 	<servlet-mapping>
 		<servlet-name>EngineInfoService</servlet-name>

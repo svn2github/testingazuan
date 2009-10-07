@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"  ?>
+<?xml version="1.0" encoding="ISO-8859-1"  ?>
 <!-- Created with Qbe - Free inquery and adhoc reporting tool of SpagoBI Platform -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
@@ -19,7 +19,7 @@
 		 isSummaryNewPage="false"
 		 ${pagination}>
 	<property name="ireport.scriptlethandling" value="0" />
-	<property name="ireport.encoding" value="UTF-8" />
+	<property name="ireport.encoding" value="ISO-8859-1" />
 	<import value="java.util.*" />
 	<import value="net.sf.jasperreports.engine.*" />
 	<import value="net.sf.jasperreports.engine.data.*" />

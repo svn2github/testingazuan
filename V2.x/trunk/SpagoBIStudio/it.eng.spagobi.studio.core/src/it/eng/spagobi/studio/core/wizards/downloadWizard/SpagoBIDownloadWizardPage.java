@@ -89,131 +89,139 @@ public class SpagoBIDownloadWizardPage extends WizardPage {
 					MessageDialog.openError(getShell(), "No comunication with server", "Error in comunication with SpagoBi Server; check its definition and check if the service is avalaible");	
 					return;
 				}
-					monitor.done();
+				monitor.done();
 				if (monitor.isCanceled())
-				SpagoBILogger.errorLog("Operation not ended",new InterruptedException("The long running operation was cancelled"));
-				}
-				};	
-
-				ProgressMonitorDialog dialog=new ProgressMonitorDialog(getShell());		
-				try {
-				dialog.run(true, true, op);
-				} catch (InvocationTargetException e1) {
-				e1.printStackTrace();
-				} catch (InterruptedException e1) {
-				e1.printStackTrace();
-				}	
-				dialog.close();
-
-
-				SdkFunctionalityTreeGenerator treeGenerator=new SdkFunctionalityTreeGenerator();			
-				tree=treeGenerator.generateTree(container, functionality);
-
-				tree.addListener(SWT.Selection, new Listener() {
-					public void handleEvent(Event event) {
-						//check if page is complete
-						boolean complete=isPageComplete();
-						if(complete){
-							setPageComplete(true);
-						}
-						else{
-							setPageComplete(false);	        	
-						}
-					}
-				});
-
-				initialize();
-				setControl(container);
+					SpagoBILogger.errorLog("Operation not ended",new InterruptedException("The long running operation was cancelled"));
 			}
+		};	
+
+		ProgressMonitorDialog dialog=new ProgressMonitorDialog(getShell());		
+		try {
+			dialog.run(true, true, op);
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}	
+		dialog.close();
 
 
+		SdkFunctionalityTreeGenerator treeGenerator=new SdkFunctionalityTreeGenerator();			
 
-			/**
-			 * Tests if the current workbench selection is a suitable container to use.
-			 */
-
-			private void initialize() {
-				if (selection != null && selection.isEmpty() == false
-						&& selection instanceof IStructuredSelection) {
-					IStructuredSelection ssel = (IStructuredSelection) selection;
-					if (ssel.size() > 1)
-						return;
-					Object obj = ssel.getFirstElement();
-					if (obj instanceof IResource) {
-						IContainer container;
-						if (obj instanceof IContainer)
-							container = (IContainer) obj;
-						else
-							container = ((IResource) obj).getParent();
-
-
-					}
-				}
-			}
-
-			/**
-			 * Uses the standard container selection dialog to choose the new value for
-			 * the container field.
-			 */
-
-			private void handleBrowse() {
-				ContainerSelectionDialog dialog = new ContainerSelectionDialog(
-						getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
-				"Select new file container");
-				if (dialog.open() == ContainerSelectionDialog.OK) {
-					Object[] result = dialog.getResult();
-					if (result.length == 1) {
-						//containerText.setText(((Path) result[0]).toString());
-					}
-				}
-			}
-
-			/**
-			 * Ensures that both text fields are set.
-			 */
-
-
-			private void updateStatus(String message) {
-				setErrorMessage(message);
-				setPageComplete(message == null);
-			}
-
-			public Tree getTree() {
-				return tree;
-			}
-
-			public void setTree(Tree tree) {
-				this.tree = tree;
-			}
-
-
-
-			public boolean isPageComplete() {
-				boolean isComplete=false;
-				if(tree!=null){
-					TreeItem[] treeItems=tree.getSelection();
-					if(treeItems!=null && treeItems.length==1){
-						TreeItem treeItem=treeItems[0];
-						Object data=treeItem.getData();
-						if(data!=null && data instanceof SDKDocument){
-							isComplete=true;
-						}
-					}
-				}
-
-				return isComplete;
-			}
-
-
-
-
-
-
-			//	public String getContainerName() {
-			//		return containerText.getText();
-			//	}
-
-			//	public String getFileName() {
-			//		return fileText.getText();
-			//	}
+		try{
+			tree=treeGenerator.generateTree(container, functionality);
 		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("Error while generating tree", e);
+			MessageDialog.openError(getShell(), "Error in generating the tree, control your DB", "Error in generating the tree, control your DB");	
+			e.printStackTrace();	
+		}
+
+		tree.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				//check if page is complete
+				boolean complete=isPageComplete();
+				if(complete){
+					setPageComplete(true);
+				}
+				else{
+					setPageComplete(false);	        	
+				}
+			}
+		});
+
+		initialize();
+		setControl(container);
+	}
+
+
+
+	/**
+	 * Tests if the current workbench selection is a suitable container to use.
+	 */
+
+	private void initialize() {
+		if (selection != null && selection.isEmpty() == false
+				&& selection instanceof IStructuredSelection) {
+			IStructuredSelection ssel = (IStructuredSelection) selection;
+			if (ssel.size() > 1)
+				return;
+			Object obj = ssel.getFirstElement();
+			if (obj instanceof IResource) {
+				IContainer container;
+				if (obj instanceof IContainer)
+					container = (IContainer) obj;
+				else
+					container = ((IResource) obj).getParent();
+
+
+			}
+		}
+	}
+
+	/**
+	 * Uses the standard container selection dialog to choose the new value for
+	 * the container field.
+	 */
+
+	private void handleBrowse() {
+		ContainerSelectionDialog dialog = new ContainerSelectionDialog(
+				getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
+		"Select new file container");
+		if (dialog.open() == ContainerSelectionDialog.OK) {
+			Object[] result = dialog.getResult();
+			if (result.length == 1) {
+				//containerText.setText(((Path) result[0]).toString());
+			}
+		}
+	}
+
+	/**
+	 * Ensures that both text fields are set.
+	 */
+
+
+	private void updateStatus(String message) {
+		setErrorMessage(message);
+		setPageComplete(message == null);
+	}
+
+	public Tree getTree() {
+		return tree;
+	}
+
+	public void setTree(Tree tree) {
+		this.tree = tree;
+	}
+
+
+
+	public boolean isPageComplete() {
+		boolean isComplete=false;
+		if(tree!=null){
+			TreeItem[] treeItems=tree.getSelection();
+			if(treeItems!=null && treeItems.length==1){
+				TreeItem treeItem=treeItems[0];
+				Object data=treeItem.getData();
+				if(data!=null && data instanceof SDKDocument){
+					isComplete=true;
+				}
+			}
+		}
+
+		return isComplete;
+	}
+
+
+
+
+
+
+	//	public String getContainerName() {
+	//		return containerText.getText();
+	//	}
+
+	//	public String getFileName() {
+	//		return fileText.getText();
+	//	}
+}

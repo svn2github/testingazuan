@@ -12,6 +12,7 @@ import it.eng.spagobi.studio.core.util.SdkSelectFolderTreeGenerator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.internal.resources.File;
@@ -111,6 +112,8 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 					enginesList=engineService.getEngines();
 					datasetList=datasetService.getDataSets();
 					functionality=docService.getDocumentsAsTree(null);			
+					String ciao= functionality.getId().toString()+" "+functionality.getName()+" label: "+functionality.getName();
+					System.out.println(ciao);
 				}
 				catch (Exception e) {
 					SpagoBILogger.errorLog("No comunication with SpagoBI server", e);
@@ -379,6 +382,9 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		String extension=fileName.substring(indexPoint+1);
 		if(extension.equalsIgnoreCase("sbidash")){
 			return "DASH";
+		}
+		else if(extension.equalsIgnoreCase("sbichart")){
+			return "CHART";
 		}
 		else if(extension.equalsIgnoreCase("jrxml")){
 			return "REPORT";

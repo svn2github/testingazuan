@@ -20,11 +20,8 @@
  **/
 package it.eng.qbe.export;
 
-import it.businesslogic.ireport.export.JRTxtExporter;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.HashMap;
@@ -42,11 +39,12 @@ import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporterParameter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.JRXmlExporter;
 import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
 
 import org.apache.log4j.Logger;
+
+import it.businesslogic.ireport.export.JRTxtExporter;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -76,9 +74,8 @@ public class ReportRunner {
 	 */
 	public void run(String templateContent, File reportFile, String outputType, Connection conn) throws Exception {
 		
-		InputStream is = new ByteArrayInputStream( templateContent.getBytes() );
+		InputStream is = new ByteArrayInputStream( templateContent.getBytes("ISO-8859-1") );
 		
-		//InputStream is = new FileInputStream(templateFile);
 		JasperReport report  = JasperCompileManager.compileReport(is);
 		
 		HashMap params = new HashMap();

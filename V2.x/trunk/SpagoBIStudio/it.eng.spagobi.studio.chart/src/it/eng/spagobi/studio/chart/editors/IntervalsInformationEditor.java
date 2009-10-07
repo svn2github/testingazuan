@@ -34,6 +34,14 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 
+
+/**
+ * 
+ * @author gavardi
+ *
+ *	Thios class has method for the Interval Informations form creation
+ */
+
 public class IntervalsInformationEditor {
 
 	Section sectionIntervals=null;

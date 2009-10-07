@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -36,6 +35,14 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
+
+
+/**
+ * 
+ * @author gavardi
+ *
+ *	Thios class has method for the serie personalizations form creation, can change (if enabled) colors, labels, drawing style and scale
+ */
 
 public class SeriesPersonalizationEditor {
 
@@ -80,8 +87,8 @@ public class SeriesPersonalizationEditor {
 		sectionSeries.setText("Series Labels parameters");
 		sectionSeries.setDescription("Set all the drill parameteres");
 
-		
-		
+
+
 		// ********** Main Layout ***************
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 1;
@@ -277,6 +284,7 @@ public class SeriesPersonalizationEditor {
 					if(seriePers!=null){
 						seriePers.setColor(ChartEditor.convertHexadecimalToRGB(newHexadecimal));
 						tableItem.setText(COLOR, newHexadecimal);
+						tableItem.setBackground(COLOR, new Color(tableItem.getDisplay(),ChartEditor.convertHexadecimalToRGB(newHexadecimal)));
 					}
 					//centerShell.pack();
 					centerShell.dispose();

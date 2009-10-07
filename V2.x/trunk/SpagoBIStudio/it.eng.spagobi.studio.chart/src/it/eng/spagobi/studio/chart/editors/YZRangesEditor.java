@@ -40,6 +40,13 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 
+/**
+ * 
+ * @author gavardi
+ *
+ *	Thios class has method for the Y Z Ranges parameters form creation
+ */
+
 public class YZRangesEditor {
 
 	Section sectionYZRanges=null;

@@ -10,9 +10,7 @@ import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
 import java.util.Iterator;
 import java.util.Set;
-import java.util.StringTokenizer;
 
-import org.dom4j.Node;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -31,6 +29,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+
+/**
+ * 
+ * @author gavardi
+ *
+ *	This class contains the element present in the editor (common for each chart type, 
+ *	its fields let the creation for style parameters, configuration parameters, serie personalization parameters forms
+ *
+ */
 
 public class ChartEditorComponents {
 
@@ -57,10 +64,13 @@ public class ChartEditorComponents {
 
 
 
-	/** Create Style parameters form
-	 * 
-	 */
-
+/** Create Style parameters form
+ * 
+ * @param model
+ * @param editor
+ * @param section
+ * @param toolkit
+ */
 
 	public void createStyleParametersForm(final ChartModel model, final ChartEditor editor, final Composite section, FormToolkit toolkit){
 		SpagoBILogger.infoLog("Start Style parameters form creation");
@@ -240,33 +250,6 @@ public class ChartEditorComponents {
 				sl.setText("");
 			}
 
-			// If enabled set Legend Position
-//			if(model.isLegendPositionStyle()){
-//				Label label=new Label(section, SWT.NULL);
-//				label.setText("Legend Position");
-//				final Combo comboLP = new Combo(section,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
-//				Node node=model.getConfigDocument().selectSingleNode("//"+model.getType().toUpperCase()+"S/"+model.getType().toUpperCase()+"/PARAMETER[@name='LEGEND_POSITION']");
-//				String values=node.valueOf("@values");
-//				StringTokenizer st=new StringTokenizer(values,",");
-//				while(st.hasMoreTokens()){
-//					String val=st.nextToken();
-//					comboLP.add(val);
-//				}
-//				String actualLP=model.getLegendPositionValue();
-//				if(actualLP==null)actualLP="";
-//				int index1=combo.indexOf(actualLP);
-//				if(index1!=-1) combo.select(index1);
-//				else combo.select(0);
-//				combo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//				combo.addModifyListener(new ModifyListener() {
-//					public void modifyText(ModifyEvent event) {
-//						String newOrientation = combo.getText();
-//						style.setOrientation(newOrientation);
-//						if(editor!=null)editor.setIsDirty(true);
-//					}
-//				});
-
-
 			}
 
 		}
@@ -367,10 +350,24 @@ public class ChartEditorComponents {
 	public void createIntervalsInformationsSection(final DialChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
 		intervalsInformationEditor=new IntervalsInformationEditor(model, formToolkit, scrolledForm);
 	}
+	
+	/** Calls the creation for range marker section form
+	 * 
+	 * @param model
+	 * @param formToolkit
+	 * @param scrolledForm
+	 */
 
 	public void createScatterRangeMarkerSection(final ScatterChartModel model, FormToolkit formToolkit, final ScrolledForm scrolledForm){
 		scatterRangeMarkerEditor=new ScatterRangeMarkerEditor(model, formToolkit, scrolledForm);
 	}
+	
+	/** Calls the creation for Y Z Range form
+	 * 
+	 * @param model
+	 * @param formToolkit
+	 * @param scrolledForm
+	 */
 
 	
 	public void createYZRangesSection(final XYChartModel model, FormToolkit formToolkit, final ScrolledForm scrolledForm){
@@ -378,6 +375,7 @@ public class ChartEditorComponents {
 	}
 
 
+	
 	public DrillConfigurationEditor getDrillConfigurationEditor() {
 		return drillConfigurationEditor;
 	}

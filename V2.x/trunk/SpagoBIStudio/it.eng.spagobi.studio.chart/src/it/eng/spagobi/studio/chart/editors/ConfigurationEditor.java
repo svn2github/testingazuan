@@ -5,7 +5,6 @@ import it.eng.spagobi.studio.chart.editors.model.chart.Parameter;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import org.eclipse.swt.SWT;
@@ -15,13 +14,19 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
+
+/**
+ * 
+ * @author gavardi
+ *
+ *	This class has method for the configuration parameters form creation
+ */
 
 public class ConfigurationEditor {
 

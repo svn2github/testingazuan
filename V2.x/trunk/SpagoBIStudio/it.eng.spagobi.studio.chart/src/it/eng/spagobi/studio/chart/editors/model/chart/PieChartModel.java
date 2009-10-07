@@ -48,7 +48,7 @@ public class PieChartModel extends LinkableChartModel {
 		// CREATE THE Drill CONFIGURATION PARAMETER: At the beginning set invisible
 		//components.getDrillConfigurationEditor().eraseComposite();
 		SpagoBILogger.infoLog("Drill configuration section");
-		components.createDrillConfigurationSection(this,editor, toolkit, form);		
+		components.createDrillConfigurationSection(this,toolkit, form);		
 		components.getDrillConfigurationEditor().setVisible(false);
 
 		

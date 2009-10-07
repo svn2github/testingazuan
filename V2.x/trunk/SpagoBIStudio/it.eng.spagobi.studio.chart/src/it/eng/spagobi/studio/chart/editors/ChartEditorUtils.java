@@ -68,6 +68,13 @@ public class ChartEditorUtils {
 	}
 
 
+	/** Get the configuration file path for the selected type
+	 * 
+	 * @param chartType
+	 * @return
+	 * @throws Exception
+	 */
+	
 	public static String getChartConfigPath(String chartType) throws Exception {
 		String toReturn = null;
 		InputStream is = getInputStreamFromResource(ChartModel.CHART_INFO_FILE);
@@ -87,6 +94,12 @@ public class ChartEditorUtils {
 	}
 
 
+	/** Get the chart image path for the selected type
+	 * 
+	 * @param imageType
+	 * @return
+	 * @throws Exception
+	 */
 
 	public static String getChartImagePath(String imageType) throws Exception {
 		String toReturn = null;
@@ -106,6 +119,13 @@ public class ChartEditorUtils {
 		return toReturn;
 	}
 
+	
+	/** Get input stream from a resource
+	 * 
+	 * @param resourcePath
+	 * @return
+	 * @throws IOException
+	 */
 
 	public static InputStream getInputStreamFromResource(String resourcePath) throws IOException {
 		Bundle b = Platform.getBundle(Activator.PLUGIN_ID);
@@ -115,6 +135,14 @@ public class ChartEditorUtils {
 	}
 
 
+	
+	/**	Draw a configuration parameter
+	 * 
+	 * @param model
+	 * @param section
+	 * @param aParameter
+	 * @param toolkit
+	 */
 
 	static public void drawParameter(final ChartModel model, Composite section, final Parameter aParameter, FormToolkit toolkit){
 		SpagoBILogger.infoLog("Draw Parameter "+aParameter.getName());
@@ -321,7 +349,7 @@ public class ChartEditorUtils {
 	}
 
 
-	/** Creates the form for specific parameters
+	/** Draw a specific configuration parameter
 	 * 
 	 * @param model
 	 * @param editor

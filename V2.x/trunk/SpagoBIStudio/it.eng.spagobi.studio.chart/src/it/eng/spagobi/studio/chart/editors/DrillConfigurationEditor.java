@@ -32,6 +32,14 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 
+
+/**
+ * 
+ * @author gavardi
+ *
+ *	Thios class has method for the Drilling configuration parameters form creation (for linkable charts)
+ */
+
 public class DrillConfigurationEditor {
 
 	Section sectionDrill = null;

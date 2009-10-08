@@ -22,8 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 package it.eng.spagobi.tools.datasource.service;
 
 
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
+import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 
 import java.sql.Connection;
@@ -69,14 +72,23 @@ public class TestConnectionAction extends AbstractHttpAction {
 		if(multischema!=null && !multischema.equals("") && multischema.equalsIgnoreCase("true")){
 			isMultischema = true;
 		}
+		RequestContainer requestContainer = this.getRequestContainer();	
+		SessionContainer session = requestContainer.getSessionContainer();
+		SessionContainer permanentSession = session.getPermanentContainer();
+		IEngUserProfile profile = (IEngUserProfile)permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+		logger.debug("user profile:"+ profile);
 		String schemaattr = (String) serviceRequest.getAttribute("schemaattr");
+		logger.debug("User Attribute:"+ schemaattr);
+		
+		String schema=(String)profile.getUserAttribute(schemaattr);
+		logger.debug("schema:"+ schema);
 		
 		Connection connection = null;
 		Context ctx;
 		try {
 			if (isjndi.equals("true")){
 				    ctx = new InitialContext();
-				    DataSource ds = (DataSource) ctx.lookup(jndi+schemaattr);
+				    DataSource ds = (DataSource) ctx.lookup(jndi+schema);
 				    connection = ds.getConnection();
 			}else if (isjndi.equals("false")){			
 				    Class.forName(driver);

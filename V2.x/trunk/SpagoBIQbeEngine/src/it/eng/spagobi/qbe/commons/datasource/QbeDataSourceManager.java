@@ -31,7 +31,7 @@ import it.eng.qbe.datasource.DataSourceFactory;
 import it.eng.qbe.datasource.DataSourceManager;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.naming.NamingStrategy;
-import it.eng.spagobi.qbe.QbeEngineConfig;
+import it.eng.spagobi.engines.qbe.QbeEngineConfig;
 
 // TODO: Auto-generated Javadoc
 /**

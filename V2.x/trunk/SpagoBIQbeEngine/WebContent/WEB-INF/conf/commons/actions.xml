@@ -5,11 +5,11 @@
 		<CONFIG></CONFIG>
 	</ACTION>	
 	
-	<ACTION name="SERVICE_EXCEPTION_ACTION" class="it.eng.spagobi.qbe.core.service.ServiceExceptionAction" scope="REQUEST">
+	<ACTION name="SERVICE_EXCEPTION_ACTION" class="it.eng.spagobi.engines.qbe.services.ServiceExceptionAction" scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="ENGINE_STARTUP_EXCEPTION_ACTION" class="it.eng.spagobi.qbe.core.service.EngineStartupExceptionAction" scope="REQUEST">
+	<ACTION name="ENGINE_STARTUP_EXCEPTION_ACTION" class="it.eng.spagobi.engines.qbe.services.EngineStartupExceptionAction" scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
 	

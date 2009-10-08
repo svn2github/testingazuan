@@ -57,10 +57,13 @@ Sbi.qbe.QueryBuilderPanel = function(config) {
 		enableTreeTbSaveBtn: true,
 		enableTreeTbPinBtn: true,
 		enableTreeTbUnpinBtn: true,
-		enableQueryTbExecute: true,
-		enableQueryTbSave: true,
-		enableQueryTbSaveView: false,
-		enableQueryTbValidate: false
+		enableQueryTbExecuteBtn: true,
+		enableQueryTbSaveBtn: true,
+		enableQueryTbSaveViewBtn: false,
+		enableQueryTbValidateBtn: false,
+		enableCatalogueTbDeleteBtn: true,
+		enableCatalogueTbAddBtn: true,
+		enableCatalogueTbInsertBtn: false
   	};
 	if(Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.queryBuilderPanel) {
 		defaultSettings = Ext.apply(defaultSettings, Sbi.settings.qbe.queryBuilderPanel);
@@ -424,13 +427,13 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        tools:[{
 	        	id:'save',
 	        	qtip: LN('sbi.qbe.queryeditor.centerregion.tools.save'),
-	        	hidden: (this.enableQueryTbSave == false),
+	        	hidden: (this.enableQueryTbSaveBtn == false),
 	        	handler: this.showSaveQueryWindow,
 	        	scope: this
 	        }, {
 	          id:'saveView',
 	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.view'),
-	          hidden: (this.enableQueryTbSaveView == false),
+	          hidden: (this.enableQueryTbSaveViewBtn == false),
 	          handler: function(event, toolEl, panel){
 	        	Ext.Ajax.request({
 					   	url: this.services['synchronyzeQuery'],
@@ -446,13 +449,13 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 	        },{
 	          id:'gear',
 	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.execute'),
-	          hidden: (this.enableQueryTbExecute == false),
+	          hidden: (this.enableQueryTbExecuteBtn == false),
 	          handler: this.executeQuery,
 	          scope: this
 	        },{
 	          id:'search',
 	          qtip: LN('sbi.qbe.queryeditor.centerregion.tools.validate'),
-	          hidden: (this.enableQueryTbValidate == false),
+	          hidden: (this.enableQueryTbValidateBtn == false),
 	          handler: function(event, toolEl, panel){
 	            // refresh logic
 	          }
@@ -521,7 +524,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		        {
 		          id:'delete',
 		          qtip: LN('sbi.qbe.queryeditor.eastregion.tools.delete'),
-		          // hidden:true,
+		          hidden: (this.enableCatalogueTbDeleteBtn == false),
 		          handler: function(event, toolEl, panel){
 		        	var q = this.queryCataloguePanel.getSelectedQuery();
 		        	this.queryCataloguePanel.deleteQueries(q);
@@ -530,7 +533,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		        }, {
 		          id:'plus',
 		          qtip:LN('sbi.qbe.queryeditor.eastregion.tools.add'),
-		          // hidden:true,
+		          hidden: (this.enableCatalogueTbAddBtn == false),
 		          handler: function(event, toolEl, panel){
 		        	this.queryCataloguePanel.addQuery();
 		          },
@@ -538,7 +541,7 @@ Ext.extend(Sbi.qbe.QueryBuilderPanel, Ext.Panel, {
 		        }, {
 			      id:'plus',
 			      qtip:LN('sbi.qbe.queryeditor.eastregion.tools.insert'),
-			      // hidden:true,
+			      hidden: (this.enableCatalogueTbInsertBtn == false),
 			      handler: function(event, toolEl, panel){
 		        	var q = this.queryCataloguePanel.getSelectedQuery();
 			        this.queryCataloguePanel.insertQuery(q);

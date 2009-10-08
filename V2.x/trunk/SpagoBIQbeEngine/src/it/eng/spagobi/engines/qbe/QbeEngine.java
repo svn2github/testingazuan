@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
 import it.eng.qbe.conf.QbeCoreSettings;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.qbe.commons.exception.QbeEngineException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)

@@ -30,7 +30,6 @@ import org.json.JSONArray;
 
 import it.eng.qbe.query.Query;
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.qbe.commons.service.AbstractQbeEngineAction;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;

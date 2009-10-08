@@ -5,8 +5,8 @@
 
 <%@page import="it.eng.spago.configuration.*"%>
 <%@page import="it.eng.spago.base.*"%>
-<%@page import="it.eng.spagobi.qbe.QbeEngineConfig"%>
-<%@page import="it.eng.spagobi.qbe.QbeEngineInstance"%>
+<%@page import="it.eng.spagobi.engines.qbe.QbeEngineConfig"%>
+<%@page import="it.eng.spagobi.engines.qbe.QbeEngineInstance"%>
 <%@page import="it.eng.spagobi.utilities.engines.EngineConstants"%>
 <%@page import="it.eng.spagobi.commons.bo.UserProfile"%>
 <%@page import="it.eng.spago.security.IEngUserProfile"%>

@@ -474,7 +474,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		       header: LN('sbi.qbe.filtergridpanel.headers.delete')
 		       , tooltip: LN('sbi.qbe.filtergridpanel.tooltip.notdef')
 		       , dataIndex: 'deleteButton'
-		       , imgSrc: '../img/querybuilder/delete.gif'
+		       , imgSrc: '../img/actions/delete.gif'
 		       , clickHandler:function(e, t){
 		          var index = this.grid.getView().findRowIndex(t);
 		          var record = this.grid.store.getAt(index);

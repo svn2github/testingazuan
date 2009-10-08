@@ -462,7 +462,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		    Ext.apply({
 		       header:  LN('sbi.qbe.selectgridpanel.headers.delete')
 		       , dataIndex: 'delete'
-		       , imgSrc: '../img/querybuilder/delete.gif'
+		       , imgSrc: '../img/actions/delete.gif'
 		       , clickHandler:function(e, t){
 		          var index = this.grid.getView().findRowIndex(t);
 		          var record = this.grid.store.getAt(index);
@@ -479,7 +479,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		    Ext.apply({
 			   header:  LN('sbi.qbe.selectgridpanel.headers.filter')
 			   , dataIndex: 'filter'
-			   , imgSrc: '../img/querybuilder/filter.gif'
+			   , imgSrc: '../img/actions/filter.gif'
 			      
 			   , clickHandler:function(e, t){
 			          var index = this.grid.getView().findRowIndex(t);
@@ -497,7 +497,7 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		    Ext.apply({
 			   header:  LN('sbi.qbe.selectgridpanel.headers.having')
 			   , dataIndex: 'having'
-			   , imgSrc: '../img/querybuilder/filter.gif'
+			   , imgSrc: '../img/actions/filter.gif'
 			      
 			   , clickHandler:function(e, t){
 			          var index = this.grid.getView().findRowIndex(t);

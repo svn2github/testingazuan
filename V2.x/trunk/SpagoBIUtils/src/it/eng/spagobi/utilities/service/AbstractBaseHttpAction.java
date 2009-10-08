@@ -243,7 +243,7 @@ public abstract class AbstractBaseHttpAction extends AbstractHttpAction {
 			byte[] buf = new byte[1024];
 			while((b = in.read(buf)) != -1) {
 				getHttpResponse().getOutputStream().write(buf, 0, b);
-				contentLength+=1024;
+				contentLength+=b;
 			}	
 			getHttpResponse().setContentLength( contentLength );
 		} else {

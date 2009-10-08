@@ -185,7 +185,7 @@ LICENSE: see LICENSE.txt file
 				String schema=null;
 				try {
 						String attrname=ds.getSchemaAttribute();
-						IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+						
 						if (attrname!=null) schema = (String)profile.getUserAttribute(attrname);
 						if (schema==null) logger.error("Cannot retrive ENTE");
 						else resName=resName+schema;

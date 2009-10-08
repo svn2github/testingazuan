@@ -369,7 +369,19 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 						    	, handler : function() { this.exportReportExecution('RTF'); }
 								, href: ''   
 	                        })	
-	                        ); 
+	                        );
+						}else if(executionInstance.document.exporters[i]=='DOC'){
+							menuItems.push(   new Ext.menu.Item({
+	                            id:  Ext.id()
+	                            , text: LN('sbi.execution.docExport')
+	                            , group: 'group_2'
+	                            , iconCls: 'icon-rtf' 
+						     	, scope: this
+								 , width: 15
+						    	, handler : function() { this.exportReportExecution('DOC'); }
+								, href: ''   
+	                        })	
+	                        );
 						}else if(executionInstance.document.exporters[i]=='CSV'){
 							menuItems.push(   new Ext.menu.Item({
 				                            id:  Ext.id()

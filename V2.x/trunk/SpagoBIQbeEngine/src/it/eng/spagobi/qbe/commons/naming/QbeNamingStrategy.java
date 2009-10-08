@@ -20,10 +20,10 @@
  **/
 package it.eng.spagobi.qbe.commons.naming;
 
+import java.util.List;
+
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.naming.NamingStrategy;
-
-import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**

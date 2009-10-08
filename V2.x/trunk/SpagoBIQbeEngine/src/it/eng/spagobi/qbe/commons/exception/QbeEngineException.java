@@ -24,9 +24,6 @@ package it.eng.spagobi.qbe.commons.exception;
 import it.eng.spagobi.qbe.QbeEngineInstance;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * The Class QbeEngineException.
  */

@@ -20,14 +20,14 @@
  **/
 package it.eng.qbe.geo.configuration;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanAttribute;
 import it.eng.spago.tracing.TracerSingleton;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 
 // TODO: Auto-generated Javadoc
 /**

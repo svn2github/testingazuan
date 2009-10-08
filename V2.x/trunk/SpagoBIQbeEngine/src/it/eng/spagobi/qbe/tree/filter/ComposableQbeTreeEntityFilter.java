@@ -20,9 +20,9 @@
  **/
 package it.eng.spagobi.qbe.tree.filter;
 
-import it.eng.qbe.model.IDataMartModel;
-
 import java.util.List;
+
+import it.eng.qbe.model.IDataMartModel;
 
 // TODO: Auto-generated Javadoc
 /**

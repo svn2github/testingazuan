@@ -21,96 +21,112 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 /*******************************************************************************************************
-*
-*	Start Basic settings
-*
-********************************************************************************************************/
-.icon-grid {
-	background-image:url(../img/querybuilder/grid.png) !important;
-}
-    
-    
+ * Actions
+ ********************************************************************************************************/
         
 .add {
-    background-image:url(../img/querybuilder/add.gif) !important;
-}
-
-.option {
-	background-image:url(../img/querybuilder/plugin.gif) !important;
+    background-image:url(../img/actions/add.gif) !important;
 }
 
 .remove {
-	background-image:url(../img/querybuilder/delete.gif) !important;
+	background-image:url(../img/actions/delete.gif) !important;
 }
 
+.option {
+	background-image:url(../img/actions/option.gif) !important;
+}
+
+/*
 .save {
     background-image:url(../img/querybuilder/save.gif) !important;
 }
+
 
 .wizard {
     background-image:url(../img/querybuilder/wizard.gif) !important;
 }
 
+*/
 
+
+/*******************************************************************************************************
+ * Datamart Structure
+ ********************************************************************************************************/
+  
 .calculation {
-	 background-image:url(../img/querybuilder/calculation.gif) !important;
+	 background-image:url(../img/datamartstructure/calculation.gif) !important;
 }
 
 .measure {
-	 background-image:url(../img/querybuilder/measure.gif) !important;
+	 background-image:url(../img/datamartstructure/measure.gif) !important;
 }
 
 .attribute {
-	 background-image:url(../img/querybuilder/attribute.gif) !important;
+	 background-image:url(../img/datamartstructure/attribute.gif) !important;
 }
 
 .cube {
-	 background-image:url(../img/querybuilder/cube.gif) !important;
+	 background-image:url(../img/datamartstructure/cube.gif) !important;
 }
 
 .database {
-	 background-image:url(../img/querybuilder/database.png) !important;
+	 background-image:url(../img/datamartstructure/database.png) !important;
 }
 
 .dimension {
-	 background-image:url(../img/querybuilder/dimension.gif) !important;
+	 background-image:url(../img/datamartstructure/dimension.gif) !important;
 }
 
 .view {
-	 background-image:url(../img/querybuilder/view.png) !important;
+	 background-image:url(../img/datamartstructure/view.png) !important;
 }
 
+
+/*******************************************************************************************************
+ * Filter expression wizard
+ ********************************************************************************************************/
+  
 .operand {
-	 background-image:url(../img/querybuilder/measure.gif) !important;
+	 background-image:url(../img/datamartstructure/measure.gif) !important;
 }
 
 .operator {
-	 background-image:url(../img/querybuilder/attribute.gif) !important;
+	 background-image:url(../img/datamartstructure/attribute.gif) !important;
 }
 
-
-
-
+/*******************************************************************************************************
+ * Mime types
+ ********************************************************************************************************/
+  
 
 .pdf {
-     background-image:url(../img/querybuilder/pdf.gif) !important;
+     background-image:url(../img/mimetypes/pdf.gif) !important;
 }
 
 .rtf {
-     background-image:url(../img/querybuilder/rtf.gif) !important;
+     background-image:url(../img/mimetypes/rtf.gif) !important;
 }
 .xls {
-     background-image:url(../img/querybuilder/xls.gif) !important;
+     background-image:url(../img/mimetypes/xls.gif) !important;
 }
 
 .csv {
-     background-image:url(../img/querybuilder/csv.gif) !important;
+     background-image:url(../img/mimetypes/csv.gif) !important;
 }
 
 .jrxml {
-     background-image:url(../img/querybuilder/jrxml.gif) !important;
+     background-image:url(../img/mimetypes/jrxml.gif) !important;
 }
 
+
+
+
+
+
+
+.icon-grid {
+	background-image:url(../img/grid.png) !important;
+}
 
 .x-node-ctx {
     background:#eee !important;

@@ -520,13 +520,12 @@ public class BirtReportServlet extends HttpServlet {
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.HTML_RENDER_FORMAT)) {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat(IBirtConstants.HTML_RENDER_FORMAT);
-		/*} else if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.DOC_RENDER_FORMAT)) {
+		} else if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.DOC_RENDER_FORMAT)) {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat(IBirtConstants.DOC_RENDER_FORMAT);
 			// renderOption.setOutputFileName(templateFileName + ".doc");
 			response.setContentType("application/msword");
 			response.setHeader("Content-disposition", "inline; filename=" + templateFileName + ".doc");
-		*/
 		}else if (outputFormat != null && outputFormat.equalsIgnoreCase(RTF_FORMAT)) {
 				renderOption = prepareHtmlRenderOption(servletContext, request);
 				renderOption.setOutputFormat(RTF_FORMAT);

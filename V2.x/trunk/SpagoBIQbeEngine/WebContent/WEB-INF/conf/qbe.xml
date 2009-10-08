@@ -1,36 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <QBE>
-	
-    <!--  DATA-MART-MODEL-RETRIEVER className="it.eng.qbe.model.io.LocalFileSystemDataMartModelRetriever"/ -->
-    <QUERY-PERSISTER className="it.eng.qbe.model.io.LocalFileSystemQueryPersister"/>
-   
+
 	<!--
 	QUERY-VALIDATION configuration is applied when saving a query as a subobject:
-	- if enabled=true, query is validated before saving
-	- if isBlocking=true (and enabled=true), incorrect queries cannot be saved
+	 - if enabled=true, query is validated before saving
+	 - if isBlocking=true (and enabled=true), incorrect queries cannot be saved
 	-->
 	<QUERY-VALIDATION enabled="true" isBlocking="false" />
 	 
-	<!--  QBE-MODE mode="WEB" page-size="20"/ -->
-	
-	<!--   QBE-MART_DIR dir="tmp/datamarts"/ -->
 	
 	<QBE-ENABLE-SCRIPT enablescript="true" calculateFieldPosition="BEFORE_COLUMNS" /> 
-	<QBE-SCRIPT-DIR dir="tmp/groovy"/> 
-	
-	<QBE-MSG-HELPER className="it.eng.qbe.locale.QbeWebMessageHelper"/>
 	
 	<QBE-CHECK-SPACE-BEFORE-CREATEVIEW 
 		check="false" 
 		checkerClass="it.eng.qbe.utility.SimpleSpaceChecker" 
 		failIfSpaceLess="25"/>
 	
+	
 	<!-- QBE-SQL-RESULT-LIMIT value="none" isBlocking="false"/ -->
 	<!-- QBE-SQL-RESULT-LIMIT value="10000" isBlocking="true"/ -->
 	<QBE-SQL-RESULT-LIMIT value="10000" isBlocking="false"/>
-	
-	<GEO-ENGINE-URL value="http://localhost:8080/SpagoBIGeoEngine"/>
-	
+		
 	<TEMPLATE-BUILDER>
 		
 		<!--  

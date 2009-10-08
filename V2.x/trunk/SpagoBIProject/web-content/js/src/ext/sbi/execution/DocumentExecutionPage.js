@@ -854,6 +854,13 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    
 		window.open(endUrl,'name','height=750,width=1000');
 	}
+	, refreshSecExec: function(seconds) {
+		alert('Entrato nella funzione di refresh');
+		alert(this.miframe);
+		alert(this.miframe.getFrame());
+		this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
+		this.refreshSecExec.defer(seconds*1000, this,seconds);
+	}
 
 	
 	// ----------------------------------------------------------------------------------------
@@ -863,7 +870,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	, init: function( config, doc ) {
 		this.initToolbar(config);
 		this.initNorthPanel(config);
-		this.initCenterPanel(config);
+		this.initCenterPanel(config, doc);
 		this.initSouthPanel(config, doc);
 	}
 	
@@ -902,7 +909,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 		});
 	}
 	
-	, initCenterPanel: function( config ) {
+	, initCenterPanel: function( config, doc ) {
 		this.miframe = new Ext.ux.ManagedIframePanel({
 			region:'center'
 	        , frameConfig : {
@@ -944,6 +951,15 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	            }
 	        }
 	    });
+		
+		if(doc.refreshSeconds){
+			this.refr = function(seconds) {
+						this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
+						this.refr.defer(seconds*1000, this,[seconds]);
+					}
+			this.refr.defer(doc.refreshSeconds*1000, this,[doc.refreshSeconds]);
+		}
+		
 		
 		this.miframe.on('documentloaded', function() {
 			this.miframe.iframe.execScript("parent = document;", true);

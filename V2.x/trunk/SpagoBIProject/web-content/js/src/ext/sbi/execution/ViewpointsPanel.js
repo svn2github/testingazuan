@@ -120,7 +120,7 @@ Sbi.execution.ViewpointsPanel = function(config, doc) {
         , columns: [
               {header: LN('sbi.execution.viewpoints.name'), sortable: true, dataIndex: 'name'}
             , {header: LN('sbi.execution.viewpoints.description'), sortable: true, dataIndex: 'description'}
-            , {header: LN('sbi.execution.viewpoints.owner'), sortable: true, dataIndex: 'owner'}
+            , {header: LN('sbi.execution.viewpoints.owner'), sortable: true,dataIndex: 'owner'}
             , {header: LN('sbi.execution.viewpoints.scope'), sortable: true, dataIndex: 'scope'}
             , {header: LN('sbi.execution.viewpoints.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
             , this.applyColumn
@@ -142,6 +142,7 @@ Sbi.execution.ViewpointsPanel = function(config, doc) {
         	   , handler : this.deleteSelectedSubObjects
            	}
         ]
+        , forceFit: true
         , collapsible: false
         , title: LN('sbi.execution.viewpoints.title')
         , autoScroll: true

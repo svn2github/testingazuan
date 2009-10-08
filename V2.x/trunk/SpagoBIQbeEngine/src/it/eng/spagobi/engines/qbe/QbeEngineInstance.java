@@ -26,7 +26,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import it.eng.qbe.catalogue.QueryCatalogue;
-import it.eng.qbe.conf.QbeTemplate;
 import it.eng.qbe.datasource.DBConnection;
 import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.DataMartModel;

@@ -70,29 +70,24 @@ END-CAS -->
 <!-- START-CAS 
   <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
-    <url-pattern>/SpagoBIGeoEngine/*</url-pattern>
+    <url-pattern>/servlet/AdapterHTTP/*</url-pattern>
   </filter-mapping> 
     	
    <filter-mapping>
     <filter-name>CAS Validation Filter</filter-name>
-    <url-pattern>/SpagoBIGeoEngine/*</url-pattern>
+    <url-pattern>/servlet/AdapterHTTP/*</url-pattern>
   </filter-mapping> 
    	
 
    <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
-    <url-pattern>/SpagoBIGeoEngine/*</url-pattern>
+    <url-pattern>/servlet/AdapterHTTP/*</url-pattern>
   </filter-mapping> 
-  
-  <filter-mapping>
-		<filter-name>CAS Validation Filter</filter-name>
-		<url-pattern>/proxyCallback</url-pattern>	
-  </filter-mapping>
 END-CAS -->
 
 	<filter-mapping>
     	<filter-name>SpagoBIAccessFilter</filter-name>
-    	<url-pattern>/servlet/AdapterHTTP</url-pattern>
+    	<url-pattern>/servlet/AdapterHTTP/*</url-pattern>
 	</filter-mapping>
 	
 	<!--  ============================================================================ -->
@@ -113,11 +108,7 @@ END-CAS -->
 		<servlet-class>it.eng.spago.dispatching.httpchannel.AdapterHTTP</servlet-class>
 	</servlet>
 
-    <servlet>
-        <servlet-name>SpagoBIDrillServlet</servlet-name>
-        <servlet-class>it.eng.spagobi.utilities.callbacks.drill.SpagoBIDrillServlet</servlet-class>
-    </servlet>
-    
+   
     <servlet>
 		<servlet-name>EngineTestServlet</servlet-name>
 		<servlet-class>
@@ -132,13 +123,9 @@ END-CAS -->
   	
 	<servlet-mapping>
 		<servlet-name>AdapterHTTP</servlet-name>
-		<url-pattern>/servlet/AdapterHTTP</url-pattern>
+		<url-pattern>/servlet/AdapterHTTP/*</url-pattern>
 	</servlet-mapping>
-	
-	<servlet-mapping>
-        <servlet-name>SpagoBIDrillServlet</servlet-name>
-        <url-pattern>/SpagoBIDrillServlet</url-pattern>
-    </servlet-mapping>
+
     
     <servlet-mapping>
 		<servlet-name>EngineTestServlet</servlet-name>

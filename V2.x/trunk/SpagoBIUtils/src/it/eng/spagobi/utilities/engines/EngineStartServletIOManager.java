@@ -155,7 +155,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	  public SourceBean getTemplateAsSourceBean() {
 		  SourceBean templateSB = null;
 		  try {
-			  SourceBean.fromXMLString(getTemplateAsString());
+			  templateSB=SourceBean.fromXMLString(getTemplateAsString());
 		  } catch (SourceBeanException e) {
 				logger.error("Impossible to decode template's content\n" + e);
 				throw new SpagoBIRuntimeException("Impossible to decode template's content [" + template.getFileName() + "]", e);

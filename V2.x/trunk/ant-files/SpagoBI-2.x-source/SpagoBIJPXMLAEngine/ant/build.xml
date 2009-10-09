@@ -193,6 +193,7 @@
   </target>	
 	
 	<target name="create.war" depends="init,copy.artifacts">
+		<antcall target="${sso}" />
 		<antcall target="${specific.ant.task}" />
 
 		<mkdir dir="${dist}" />

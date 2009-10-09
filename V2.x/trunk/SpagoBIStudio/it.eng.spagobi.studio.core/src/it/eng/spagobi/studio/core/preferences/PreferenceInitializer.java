@@ -21,6 +21,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.SPABOGI_USER_NAME, "biadmin");
 		store.setDefault(PreferenceConstants.SPABOGI_USER_PASSWORD,
 				"biadmin");
+		store.setDefault(PreferenceConstants.IREPORT_EXEC_FILE,
+		"C:/Programmi/JasperSoft/iReport-3.0.0/iReport.exe");
+
 	}
 
 }

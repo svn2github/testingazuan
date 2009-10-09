@@ -11,4 +11,6 @@ public class PreferenceConstants {
 
 	public static final String SPABOGI_USER_PASSWORD = "spagobiUserPasswordPreference";
 	
+	public static final String IREPORT_EXEC_FILE = "iReportExecFile";
+	
 }

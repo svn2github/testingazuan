@@ -8,6 +8,7 @@ import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
+import it.eng.spagobi.studio.core.util.BiObjectUtilities;
 import it.eng.spagobi.studio.core.util.SdkSelectFolderTreeGenerator;
 
 import java.lang.reflect.InvocationTargetException;
@@ -29,6 +30,7 @@ import org.eclipse.jface.wizard.ProgressMonitorPart;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -143,7 +145,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		FillLayout fl2=new FillLayout();
 		fl2.type=SWT.HORIZONTAL;
 		parent.setLayout(fl2);
-
 		Composite left=new Composite(parent,SWT.BORDER);
 		Composite right =  new Composite(parent, SWT.BORDER);
 
@@ -159,7 +160,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 
 		new Label(left, SWT.NONE).setText("Label:");				
 		labelText = new Text(left, SWT.BORDER);
-
+		labelText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 		labelText.addListener(SWT.KeyDown, new Listener() {
 			public void handleEvent(Event event) {
 				//check if page is complete
@@ -176,7 +177,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 
 		new Label(left, SWT.NONE).setText("Name:");				
 		nameText = new Text(left, SWT.BORDER);
-
+		nameText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 		nameText.addListener(SWT.KeyDown, new Listener() {
 			public void handleEvent(Event event) {
 				//check if page is complete
@@ -192,12 +193,12 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 
 		new Label(left, SWT.NONE).setText("Description:");				
 		descriptionText = new Text(left, SWT.BORDER);
-
+		descriptionText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 
 		Object objSel = selection.toList().get(0);
 		File fileSelected=(File)objSel;
 
-		typeLabel=getTypeFromExtension(fileSelected.getName());
+		typeLabel=BiObjectUtilities.getTypeFromExtension(fileSelected.getName());
 
 		if(typeLabel==null){
 			SpagoBILogger.errorLog("File "+fileSelected.getName()+" has unknown exstension", null);
@@ -210,6 +211,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 
 		new Label(left, SWT.NONE).setText("Engines");
 		engineCombo = new Combo(left, SWT.NONE | SWT.READ_ONLY);
+		engineCombo.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 
 		engineLabelIdMap=new HashMap<String, Integer>();
 		for (SDKEngine engine : enginesList) {
@@ -234,6 +236,7 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 		// Select State
 		new Label(left, SWT.NONE).setText("State");
 		stateCombo = new Combo(left, SWT.NONE | SWT.READ_ONLY);
+		stateCombo.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 		stateCombo.add("REL");
 		stateCombo.add("DEV");
 		stateCombo.add("TEST");
@@ -374,29 +377,6 @@ public class SpagoBIDeployWizardFormPage extends WizardPage {
 	}
 
 
-	private String getTypeFromExtension(String fileName){
-
-		int indexPoint=fileName.indexOf('.');
-		if(indexPoint==-1) return null;
-
-		String extension=fileName.substring(indexPoint+1);
-		if(extension.equalsIgnoreCase("sbidash")){
-			return "DASH";
-		}
-		else if(extension.equalsIgnoreCase("sbichart")){
-			return "DASH";
-		}
-		else if(extension.equalsIgnoreCase("jrxml")){
-			return "REPORT";
-		}
-		//TODO, remove
-		else if(extension.equalsIgnoreCase("xml")){
-			return "REPORT";
-		}
-		else return null;
-
-
-	}
 
 	public Text getLabelText() {
 		return labelText;

@@ -35,7 +35,7 @@ import com.lowagie.text.Image;
 import com.lowagie.text.pdf.PdfWriter;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapConverter;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
@@ -94,7 +94,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			inlineResponse = getAttributeAsBoolean( INLINE_RESPONSE, true );		
 			logger.debug("Parameter [" + INLINE_RESPONSE + "] is equal to [" + inlineResponse + "]");
 			
-			getAuditServiceProxy().notifyServiceStartEvent();
+			if(getAuditServiceProxy() != null) getAuditServiceProxy().notifyServiceStartEvent();
 			
 			if(outputFormat == null) {
 				logger.info("Parameter [" + outputFormat + "] not specified into request");
@@ -176,11 +176,11 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 				
 			} catch(IOException e) {
 				logger.error("error while flushing output", e);
-				getAuditServiceProxy().notifyServiceErrorEvent( "Error while flushing output" );
+				if(getAuditServiceProxy() != null) getAuditServiceProxy().notifyServiceErrorEvent( "Error while flushing output" );
 				throw new SpagoBIEngineServiceException(getActionName(), "Error while flushing output", e);
 			}
 			
-			getAuditServiceProxy().notifyServiceEndEvent( );
+			if(getAuditServiceProxy() != null) getAuditServiceProxy().notifyServiceEndEvent( );
 			
 			maptmpfile.delete();	
 			if(tmpFile!=null)tmpFile.delete();

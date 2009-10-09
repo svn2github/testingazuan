@@ -20,7 +20,7 @@
  **/
 package it.eng.spagobi.engines.geo.component;
 
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineException;
 
 import java.util.Map;
 

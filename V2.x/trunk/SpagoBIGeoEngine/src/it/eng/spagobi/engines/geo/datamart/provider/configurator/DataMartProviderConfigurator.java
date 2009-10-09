@@ -22,8 +22,8 @@ package it.eng.spagobi.engines.geo.datamart.provider.configurator;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
+import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.DataMartProvider;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.datasource.bo.DataSource;

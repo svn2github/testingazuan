@@ -22,7 +22,7 @@ package it.eng.spagobi.engines.geo.map.renderer.configurator;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.map.renderer.InteractiveMapRenderer;
 import it.eng.spagobi.engines.geo.map.renderer.ILabelProducer;
 

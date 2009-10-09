@@ -21,8 +21,8 @@
 package it.eng.spagobi.engines.geo.datamart.provider;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.IGeoEngineComponent;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineException;
+import it.eng.spagobi.engines.geo.component.IGeoEngineComponent;
 import it.eng.spagobi.engines.geo.dataset.DataMart;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;
 

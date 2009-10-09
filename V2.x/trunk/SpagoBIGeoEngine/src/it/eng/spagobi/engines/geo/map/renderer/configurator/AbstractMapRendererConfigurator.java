@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
 import it.eng.spagobi.commons.utilities.StringUtilities;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.map.renderer.AbstractMapRenderer;
 import it.eng.spagobi.engines.geo.map.renderer.GuiSettings;
 import it.eng.spagobi.engines.geo.map.renderer.ILabelProducer;

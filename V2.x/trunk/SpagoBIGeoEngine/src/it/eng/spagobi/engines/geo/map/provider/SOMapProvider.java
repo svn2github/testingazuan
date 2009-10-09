@@ -21,7 +21,7 @@
 package it.eng.spagobi.engines.geo.map.provider;
 
 import it.eng.spagobi.engines.geo.GeoEngineConfig;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.map.provider.configurator.SOMapProviderConfigurator;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapLoader;
 import it.eng.spagobi.services.content.bo.Content;

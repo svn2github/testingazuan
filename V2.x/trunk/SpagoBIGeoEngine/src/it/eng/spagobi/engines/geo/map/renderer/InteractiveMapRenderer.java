@@ -52,8 +52,8 @@ import com.jamonapi.MonitorFactory;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
-import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
+import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.dataset.DataMart;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
@@ -68,13 +68,11 @@ import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 /**
- * The Class InteractiveMapRenderer.
- * 
  * @author Andrea Gioia
  */
 public class InteractiveMapRenderer extends AbstractMapRenderer {
 
-	/** The close link. */
+	
 	private boolean closeLink = false;
 
 	
@@ -82,9 +80,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
     public static transient Logger logger = Logger.getLogger(InteractiveMapRenderer.class);
 	
 	
-	/**
-	 * Instantiates a new interactive map renderer.
-	 */
+	
 	public InteractiveMapRenderer() {
 		super();
 	}

@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.error.EMFUserError;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.configurator.DataMartProviderConfigurator;
 import it.eng.spagobi.engines.geo.dataset.DataMart;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;

@@ -20,8 +20,8 @@
  **/
 package it.eng.spagobi.engines.geo.map.provider;
 
-import it.eng.spagobi.engines.geo.AbstractGeoEngineComponent;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineException;
+import it.eng.spagobi.engines.geo.component.AbstractGeoEngineComponent;
 import it.eng.spagobi.engines.geo.map.provider.configurator.AbstractMapProviderConfigurator;
 
 import java.util.List;

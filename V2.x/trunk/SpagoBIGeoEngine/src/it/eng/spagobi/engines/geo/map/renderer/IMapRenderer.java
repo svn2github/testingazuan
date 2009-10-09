@@ -20,8 +20,8 @@
  **/
 package it.eng.spagobi.engines.geo.map.renderer;
 
-import it.eng.spagobi.engines.geo.IGeoEngineComponent;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineException;
+import it.eng.spagobi.engines.geo.component.IGeoEngineComponent;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 

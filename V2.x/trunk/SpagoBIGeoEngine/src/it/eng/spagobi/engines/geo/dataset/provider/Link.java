@@ -20,16 +20,17 @@
  **/
 package it.eng.spagobi.engines.geo.dataset.provider;
 
-import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
-import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
-import it.eng.spagobi.tools.dataset.common.datastore.IField;
-import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
+import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -44,6 +45,9 @@ public class Link {
 	
 	/** The Constant DEFAULT_BASE_URL. */
 	public static final String DEFAULT_BASE_URL = "javascript:void(0)";
+	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(Link.class);
 	
 	/**
 	 * Instantiates a new link.
@@ -284,7 +288,9 @@ public class Link {
     		link = "javascript:parent.execCrossNavigation('" + execIframeId + "', '" + targetDocLabel + "' , '" + parametersStr + "');";
     		
     	} catch (Exception e) {
+    		logger.error("Impossible to stringify link: ", e);
     		link = "javascript:void(0)";
+    		
     	}
     	return link;
 	}

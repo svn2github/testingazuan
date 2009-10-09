@@ -21,8 +21,8 @@
 package it.eng.spagobi.engines.geo.component;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.commons.constants.GeoEngineConstants;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
+import it.eng.spagobi.engines.geo.GeoEngineConstants;
+import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 import it.eng.spagobi.engines.geo.map.renderer.IMapRenderer;

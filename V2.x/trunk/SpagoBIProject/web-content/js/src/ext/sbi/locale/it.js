@@ -157,6 +157,10 @@ Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Salva';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Note salvate correttamente';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Errore nel salvataggio delle note: sono state modificate da un altro utente. Riapri questa finestra e ritenta!';
 
+Sbi.locale.ln['sbi.lookup.Confirm'] = 'Conferma';
+Sbi.locale.ln['sbi.lookup.Annulla'] = 'Annulla';
+Sbi.locale.ln['sbi.lookup.Select']= 'Selezionare Valore ...';
+
 Sbi.locale.ln['sbi.execution.PdfExport'] = 'PDF';
 Sbi.locale.ln['sbi.execution.XlsExport'] = 'XLS';
 Sbi.locale.ln['sbi.execution.CsvExport'] = 'CSV';

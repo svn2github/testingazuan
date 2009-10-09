@@ -167,6 +167,10 @@ Sbi.locale.ln['sbi.execution.notes.savenotes'] = 'Guardar';
 Sbi.locale.ln['sbi.execution.notes.notedSaved'] = 'Notes saved correctly';
 Sbi.locale.ln['sbi.execution.notes.notesConflict'] = 'Error while saving notes: notes have been modified by another user while you were modifing them. Please reopen this window and try again!';
 
+Sbi.locale.ln['sbi.lookup.Confirm'] = 'Confirm';
+Sbi.locale.ln['sbi.lookup.Annulla'] = 'Cancel';
+Sbi.locale.ln['sbi.lookup.Select']= 'Select Value ...';
+
 Sbi.locale.ln['sbi.execution.PdfExport'] = 'PDF';
 Sbi.locale.ln['sbi.execution.XlsExport'] = 'XLS';
 Sbi.locale.ln['sbi.execution.CsvExport'] = 'CSV';

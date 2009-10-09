@@ -546,11 +546,11 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		    	 header: LN('sbi.qbe.selectgridpanel.headers.function')
 		         , dataIndex: 'funct'
 		         , editor: new Ext.form.ComboBox({
-			         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
+			         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
 			         allowBlank: true,
 			         editable:false,
 			         store: this.aggregationFunctionsStore,
-			         displayField:'funzione',
+			         displayField:'nome',
 			         valueField:'funzione',
 			         typeAhead: true,
 			         mode: 'local',
@@ -569,11 +569,11 @@ Ext.extend(Sbi.qbe.SelectGridPanel, Ext.Panel, {
 		    	 header: LN('sbi.qbe.selectgridpanel.headers.order')
 		         , dataIndex: 'order'
 		         , editor: new Ext.form.ComboBox({
-			         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{type}</div></tpl>',	
+			         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
 			         allowBlank: true,
 			         editable:false,
 			         store: this.orderingTypesStore,
-			         displayField:'type',
+			         displayField:'nome',
 			         valueField:'type',
 			         typeAhead: true,
 			         mode: 'local',

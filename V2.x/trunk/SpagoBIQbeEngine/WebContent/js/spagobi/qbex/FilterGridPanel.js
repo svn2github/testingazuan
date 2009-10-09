@@ -440,23 +440,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		   {name: 'deleteButton', type: 'bool'}
 		]);
 		   
-		/*
-		this.Record = Ext.data.Record.create([
-		   {name: 'fname', type: 'string'},
-		   {name: 'id', type: 'string'},
-		   {name: 'entity', type: 'string'},
-		   {name: 'field', type: 'string'},
-		   {name: 'operator', type: 'string'},
-		   {name: 'operand', type: 'auto'},
-		   {name: 'isfree', type: 'bool'},
-		   {name: 'otype', type: 'string'},
-		   {name: 'odesc', type: 'string'},
-		   {name: 'boperator', type: 'string'},
-		   {name: 'del', type: 'bool'},
-		   {name: 'defaultvalue', type: 'string'},
-		   {name: 'lastvalue', type: 'string'}
-		]);
-		*/
+		
 		
 		this.store = new Ext.data.SimpleStore({
 			reader: new Ext.data.ArrayReader({}, this.Record)
@@ -487,9 +471,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 		    
 		    
 		    var booleanOptColumnEditor = new Ext.form.ComboBox({
-		    	tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
+		    	tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
 		        store: this.booleanOptStore, 
-		        displayField:'funzione',
+		        displayField:'nome',
 		        valueField: 'funzione',
 		        allowBlank: false,
 		        editable: true,
@@ -508,6 +492,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
      				}
 		         }
 		    });
+		   
 		    
 		    var isFreeCheckColumn = new Ext.grid.CheckColumn({
 			       header: LN('sbi.qbe.filtergridpanel.headers.isfree')
@@ -519,9 +504,9 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 			});
 		    
 		    var filterOptColumnEditor = new Ext.form.ComboBox({
-	           	  tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
+	           	  tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
 	           	  store: this.filterOptStore, 
-	           	  displayField:'funzione',
+	           	  displayField:'nome',
 	              valueField: 'funzione',
 	              maxHeight: 200,
 	              allowBlank: true,
@@ -533,6 +518,25 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	              emptyText: LN('sbi.qbe.filtergridpanel.foperators.editor.emptymsg'),
 	              selectOnFocus: true //True to select any existing text in the field immediately on focus
 	        });
+		    
+		    filterOptColumnEditor.setValue = function(v){
+		        var text = v;
+		        if(this.valueField){
+		            var r = this.findRecord(this.valueField, v);
+		            if(r){
+		                text = r.data[this.displayField];
+		            }else if(this.valueNotFoundText !== undefined){
+		                text = this.valueNotFoundText;
+		            }
+		        }
+		        this.lastSelectionText = text;
+		        if(this.hiddenField){
+		            this.hiddenField.value = v;
+		        }
+		        alert(text);
+		        Ext.form.ComboBox.superclass.setValue.call(this, text);
+		        this.value = v;
+		    };
 		    
 		   
 		    

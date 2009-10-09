@@ -109,7 +109,7 @@ Ext.extend(Sbi.widgets.SaveWindow, Ext.Window, {
 	    		name:'description',
 	    		allowBlank:false, 
 	    		inputType:'text',
-	    		maxLength:50,
+	    		maxLength:95,
 	    		width:250,
 	    		fieldLabel:'Description' 
 	    	});

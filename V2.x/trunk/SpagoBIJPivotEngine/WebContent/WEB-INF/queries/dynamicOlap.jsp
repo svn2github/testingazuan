@@ -281,7 +281,7 @@ LICENSE: see LICENSE.txt file
 			<%
 		}
 	
-		/* 
+		/* */
 		// CHECK IF THERE ARE DATA ACCESS FILTER AND IN CASE SET THE MONDRIAN ROLE
 		OlapModel olapModel = (OlapModel) session.getAttribute("query01");
 		String dimensionAccessRules = (String)session.getAttribute("dimension_access_rules");
@@ -289,7 +289,7 @@ LICENSE: see LICENSE.txt file
 		DataSecurityManager dsm = new DataSecurityManager(olapModel, dimensionAccessRules, query);
 		dsm.setMondrianRole();
 		//FilteringUtilities.setMondrianRole(olapModel, dimensionAccessRules, query);
-		*/
+		
 		
 		
 	} catch (Exception e){

@@ -121,8 +121,16 @@ public class MondrianModelFactory {
 	    	org.dom4j.io.SAXReader reader = new org.dom4j.io.SAXReader();
 	    	org.dom4j.Document document = reader.read(is);	
 	    	org.dom4j.Node attribute = document.selectSingleNode("//DATA-ACCESS/ATTRIBUTE");
-	    	String attributeName = attribute.valueOf("@name");
-			sb.append(";filter=" + profile.getUserAttribute(attributeName));
+	    	if (attribute != null) {
+		    	String attributeName = attribute.valueOf("@name");
+		    	if (attributeName != null) {
+		    		sb.append(";filter=" + profile.getUserAttribute(attributeName));
+		    	} else {
+		    		logger.warn("Filter attribute name not found!!");
+		    	}
+	    	} else {
+	    		logger.warn("//DATA-ACCESS/ATTRIBUTE not found!!");
+	    	}
 		} catch (EMFInternalError e) {
 			logger.error("",e);
 		} catch (DocumentException e) {

@@ -1090,10 +1090,12 @@ public class BasicTemplateBuilder  {
 					ChartUtilities.saveChartAsPNG(file1, chart, 130, 11, info);
 				} catch (IOException e) {
 					e.printStackTrace();
+					logger.error("Error in saving chart",e);
 				}
 				String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 				"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&path="+path_param+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
 				urlPng = "new java.net.URL(\""+urlPng+"\")";
+				logger.debug("Image url: "+urlPng);
 				
 				image1.setAttribute("reportElement.y", yValue.toString());
 				SourceBean imageValue=(SourceBean)image1.getAttribute("imageExpression");

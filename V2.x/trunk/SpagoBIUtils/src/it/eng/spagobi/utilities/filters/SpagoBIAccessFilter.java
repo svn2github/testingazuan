@@ -173,10 +173,14 @@ public class SpagoBIAccessFilter implements Filter {
 						    if (profile == null || !profile.getUserUniqueIdentifier().toString().equals(userId)) {
 								SecurityServiceProxy proxy = new SecurityServiceProxy(userId, ioManager.getSession());
 								profile = proxy.getUserProfile();
+								if (profile!=null){
 								ioManager.setInSession(IEngUserProfile.ENG_USER_PROFILE, profile);
 								ioManager.setInSession("userId", profile.getUserUniqueIdentifier());
 								ioManager.contextManager.set(IEngUserProfile.ENG_USER_PROFILE, profile);
 								ioManager.contextManager.set("userId", profile.getUserUniqueIdentifier());
+								}else {
+									logger.error("ERROR WHILE GETTING USER PROFILE!!!!!!!!!!!");
+								}
 						    } else {
 						    	logger.debug("Found user profile in session");
 						    	// replicate anyway the profile in this execution context. Even if the profile can come from

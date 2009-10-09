@@ -1086,6 +1086,7 @@ public class BasicTemplateBuilder  {
 				String dir=System.getProperty("java.io.tmpdir");
 				String path=dir+"/"+requestIdentity+".png";
 				java.io.File file1 = new java.io.File(path);
+				logger.debug("Where is the image: "+path);
 				try {
 					ChartUtilities.saveChartAsPNG(file1, chart, 130, 11, info);
 				} catch (IOException e) {

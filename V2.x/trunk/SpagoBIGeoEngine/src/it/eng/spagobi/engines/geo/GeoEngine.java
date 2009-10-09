@@ -21,7 +21,6 @@
 package it.eng.spagobi.engines.geo;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.commons.excpetion.GeoEngineException;
 
 import java.util.Map;
 

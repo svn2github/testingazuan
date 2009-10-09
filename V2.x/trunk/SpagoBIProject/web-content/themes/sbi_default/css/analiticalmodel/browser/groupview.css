@@ -63,6 +63,12 @@
         background-image:url('../../../img/analiticalmodel/browser/document_idashboard.png')!important;
     }
     
+    .group-view .document-item-icon .ETL-icon {
+    	width:96px;
+        height:96px;
+        background-image:url('../../../img/analiticalmodel/browser/document_etl.png')!important;
+    }
+    
     .group-view .document-item-icon .DATA_MINING-icon {
     	width:96px;
         height:96px;

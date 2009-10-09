@@ -36,7 +36,6 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.GeoEngineConstants;
-import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapConverter;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;

@@ -21,7 +21,6 @@
 package it.eng.spagobi.engines.geo;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.engines.geo.component.GeoEngineComponentFactory;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.dataset.provider.Hierarchy;

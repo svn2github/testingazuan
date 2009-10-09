@@ -33,11 +33,11 @@ import com.jamonapi.MonitorFactory;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.GeoEngine;
+import it.eng.spagobi.engines.geo.GeoEngineAnalysisState;
 import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.GeoEngineInstance;
 import it.eng.spagobi.engines.geo.commons.presentation.DynamicPublisher;
-import it.eng.spagobi.engines.geo.commons.service.GeoEngineAnalysisState;
 import it.eng.spagobi.tools.dataset.bo.IDataSet;
 import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;

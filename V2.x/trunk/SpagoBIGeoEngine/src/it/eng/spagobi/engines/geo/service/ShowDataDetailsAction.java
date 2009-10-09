@@ -23,7 +23,6 @@ package it.eng.spagobi.engines.geo.service;
 import org.apache.log4j.Logger;
 
 import it.eng.spago.base.SourceBean;
-import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;

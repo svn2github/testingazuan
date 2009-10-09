@@ -23,7 +23,6 @@ package it.eng.spagobi.engines.geo.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFInternalError;
-import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 import it.eng.spagobi.utilities.service.JSONFailure;
 

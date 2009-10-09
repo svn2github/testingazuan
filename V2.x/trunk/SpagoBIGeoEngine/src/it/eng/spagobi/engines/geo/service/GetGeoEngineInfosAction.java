@@ -23,7 +23,6 @@ package it.eng.spagobi.engines.geo.service;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.GeoEngine;
-import it.eng.spagobi.engines.geo.commons.service.AbstractGeoEngineAction;
 
 
 import org.apache.log4j.Logger;

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <MASTER>
 
-	<CONFIGURATOR path="/WEB-INF/conf/geo.xml" />
-	
 	<!-- start GEO COMMONS -->
 	<CONFIGURATOR path="/WEB-INF/conf/commons/data_access.xml" />
 	<CONFIGURATOR path="/WEB-INF/conf/commons/actions.xml" />

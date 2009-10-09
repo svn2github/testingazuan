@@ -685,10 +685,8 @@ onload="init(evt);">
 					targetNode = child.firstChild;
 				}
 				
-				//alert(targetNode + ' - ' + targetNode.nodeName)
-				//if (targetNode.nodeName == "path" || targetNode.nodeName == "line") {
-        //if(!(targetNode instanceof Text)) {
-        if (targetNode.nodeName != "#text") {
+				
+        if (targetNode.nodeName != "#text" && targetNode.nodeName != "#comment") {
 					var kpiAttrib = parseFloat(targetNode.getAttributeNS(attribNS,myMapApp.curKpi));
 			
 			
@@ -865,7 +863,7 @@ onload="init(evt);">
 			</symbol>
 			
 			<!-- Symbol for Dragging if zoomed in far -->
-			<symbol fill="none" id="myDragCrossSymbol" preserveAspectRatio="xMidYMid meet" stroke="darkblue" stroke-width="2000" overflow="visible" pointer-events="none">
+			<symbol fill="none" id="myDragCrossSymbol" preserveAspectRatio="xMidYMid meet" stroke="darkblue" overflow="visible" pointer-events="none">
 				<line y2="0" x1="-7000" x2="-2500" y1="0"/>
 				<line y2="0" x1="7000" x2="2500" y1="0"/>
 				<line y2="-7800" x1="0" x2="0" y1="-3300"/>
@@ -910,7 +908,7 @@ onload="init(evt);">
 				<g id="mainMapGroup">
 		
 			
-				<g stroke-linecap="round" onmouseover="showData(evt)" fill="white" stroke-linejoin="round" onmouseout="showData(evt)" id="eventCatcher" stroke-width="2000">
+				<g stroke-linecap="round" onmouseover="showData(evt)" fill="white" stroke-linejoin="round" onmouseout="showData(evt)" id="eventCatcher">
 				
 				<g id="targetMap">
 				
@@ -977,7 +975,7 @@ onload="init(evt);">
                 cursor="crosshair" viewBox="-2471570.4 -1631093.7 4844781 3030131.8" height="150" xmlns="http://www.w3.org/2000/svg" x="10" y="8">
   							
   								<use stroke-linecap="round" fill="white" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mainMapGroup" 
-                       stroke-linejoin="round" xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" stroke-width="2419.9" pointer-events="none"/>
+                       stroke-linejoin="round" xlink:type="simple" xlink:actuate="onLoad" xlink:show="embed" pointer-events="none"/>
   							
   								<use x="-2471570.4" y="-1631093.7" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#myDragCrossSymbol" xlink:type="simple" visibility="hidden" xlink:actuate="onLoad" xlink:show="embed"/>
   								

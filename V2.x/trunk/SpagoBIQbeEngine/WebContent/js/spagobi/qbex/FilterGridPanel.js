@@ -519,24 +519,6 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 	              selectOnFocus: true //True to select any existing text in the field immediately on focus
 	        });
 		    
-		    filterOptColumnEditor.setValue = function(v){
-		        var text = v;
-		        if(this.valueField){
-		            var r = this.findRecord(this.valueField, v);
-		            if(r){
-		                text = r.data[this.displayField];
-		            }else if(this.valueNotFoundText !== undefined){
-		                text = this.valueNotFoundText;
-		            }
-		        }
-		        this.lastSelectionText = text;
-		        if(this.hiddenField){
-		            this.hiddenField.value = v;
-		        }
-		        alert(text);
-		        Ext.form.ComboBox.superclass.setValue.call(this, text);
-		        this.value = v;
-		    };
 		    
 		   
 		    

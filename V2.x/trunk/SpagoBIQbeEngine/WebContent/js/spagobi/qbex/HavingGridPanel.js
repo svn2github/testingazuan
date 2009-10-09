@@ -473,9 +473,9 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 		    
 		    
 		    var booleanOptColumnEditor = new Ext.form.ComboBox({
-		    	tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
+		    	tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
 		        store: this.booleanOptStore, 
-		        displayField:'funzione',
+		        displayField:'nome',
 		        valueField: 'funzione',
 		        allowBlank: false,
 		        editable: true,
@@ -505,9 +505,9 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 			});
 		    
 		    var filterOptColumnEditor = new Ext.form.ComboBox({
-	           	  tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
+	           	  tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
 	           	  store: this.filterOptStore, 
-	           	  displayField:'funzione',
+	           	  displayField:'nome',
 	              valueField: 'funzione',
 	              maxHeight: 200,
 	              allowBlank: true,
@@ -521,11 +521,11 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 	        });
 		    
 		    var leftOperandAggregatorEditor = new Ext.form.ComboBox({
-		         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
+		         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
 		         allowBlank: true,
 		         editable:false,
 		         store: this.leftOperandAggregationFunctionsStore,
-		         displayField:'funzione',
+		         displayField:'nome',
 		         valueField:'funzione',
 		         typeAhead: true,
 		         mode: 'local',
@@ -536,11 +536,11 @@ Ext.extend(Sbi.qbe.HavingGridPanel, Ext.Panel, {
 	        });
 		    
 		    var rightOperandAggregatorEditor = new Ext.form.ComboBox({
-		         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{funzione}</div></tpl>',	
+		         tpl: '<tpl for="."><div ext:qtip="{nome}: {descrizione}" class="x-combo-list-item">{nome}</div></tpl>',	
 		         allowBlank: true,
 		         editable:false,
 		         store: this.rightOperandAggregationFunctionsStore,
-		         displayField:'funzione',
+		         displayField:'nome',
 		         valueField:'funzione',
 		         typeAhead: true,
 		         mode: 'local',

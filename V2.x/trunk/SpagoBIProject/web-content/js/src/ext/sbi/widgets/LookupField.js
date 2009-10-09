@@ -199,7 +199,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 	        items:[
 	               '->'
 	               , {
-	            	   text: 'Annulla'
+	            	   text: LN('sbi.lookup.Annulla')
 	            	   , listeners: {
 		           			'click': {
 		                  		fn: this.onCancel,
@@ -207,7 +207,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		                	} 
 	               		}
 	               } , {
-	            	   text: 'Conferma'
+	            	   text: LN('sbi.lookup.Confirm')
 	            	   , listeners: {
 		           			'click': {
 		                  		fn: this.onOk,
@@ -243,7 +243,7 @@ Ext.extend(Sbi.widgets.LookupField, Ext.form.TriggerField, {
 		});
 		
 		this.win = new Ext.Window({
-			title: 'Select value ...',   
+			title: LN('sbi.lookup.Select') ,   
             layout      : 'fit',
             width       : 580,
             height      : 300,

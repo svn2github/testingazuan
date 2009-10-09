@@ -24,4 +24,13 @@
             <!-- menubarPath="it.eng.spagobi.studio.core.main.menu/SpagoBI" -->
       </viewerContribution>
    </extension>
+ <extension point = "org.eclipse.ui.editors">
+   <editor
+       id="org.eclipse.ui.IReport"
+       name="IReport Editor"
+       extensions="jrxml"
+       launcher="it.eng.spagobi.studio.jasper.editors.JasperEditor"
+       icon="icons/objecticon_JASPER.png">
+   </editor>
+ </extension>
 </plugin>

@@ -499,6 +499,23 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		return format;
 	}
 	
+	public static String getServerTimeStampFormat(){
+		logger.debug("IN");
+		SourceBean formatSB=null; 
+		// if a particular language is specified take the corrisponding date-format
+		formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.TIMESTAMP-FORMAT"));
+		String format="dd/MM/yyyy hh:mm:ss";
+		if(formatSB!=null){
+			format = (String) formatSB.getAttribute("format");
+			logger.debug("server date format set to "+format);
+		}
+		else{
+			logger.error("could not find server date format, set default to "+format);			
+		}
+		logger.debug("OUT");
+		return format;
+	}
+	
 	public static String getServerDateFormatExtJs(){
 		logger.debug("IN");
 		SourceBean formatSB=null; 
@@ -538,6 +555,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT: max size = " + toReturn);
 		return toReturn;
 	}
+	
 	public static String getSpagoBiContext() {
 		logger.debug("IN");
 		String path = "";

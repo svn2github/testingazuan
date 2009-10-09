@@ -985,14 +985,14 @@ function saveDocument(goBack) {
 		      		if(longDesc==null) {
 		      			longDesc = "";
 		      		}
-		      		longDesc = GeneralUtilities.replace(longDesc,"'","\\'");
+		      		//longDesc = GeneralUtilities.replace(longDesc,"'","\\'");
 
 		      		String objective = obj.getObjectve();
 		      		if(objective==null) {
 		      			objective = "";
 		      			
 		      		}
-		      		objective = GeneralUtilities.replace(objective,"'","\\'");
+		      		//objective = GeneralUtilities.replace(objective,"'","\\'");
 		      %>
 		      		
 		      		
@@ -1093,14 +1093,14 @@ Ext.onReady(function(){
         bodyStyle:'padding:5px 5px 0',
         width: 550,
         height: 100,
-        value: '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(longDesc))%>',
+        value: '<%=StringEscapeUtils.escapeJavaScript(longDesc)%>',
         renderTo: 'containerLongDescr',
             id:'longDescription'            
     });   
     
     var top1 = new Ext.form.HtmlEditor({
         frame: true,
-        value: '<%=StringEscapeUtils.escapeJavaScript(StringEscapeUtils.escapeHtml(objective))%>',
+        value: '<%=StringEscapeUtils.escapeJavaScript(objective)%>',
         bodyStyle:'padding:5px 5px 0',
         width: 550,
         height: 100,

@@ -550,6 +550,7 @@ public class BirtReportServlet extends HttpServlet {
 			response.setHeader("Content-disposition", "inline; filename=" + templateFileName + ".ps");
 		} else {
 			logger.debug(" Output format parameter not set or not valid. Using default output format: HTML.");
+			outputFormat = IBirtConstants.HTML_RENDER_FORMAT;
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat(IBirtConstants.HTML_RENDER_FORMAT);
 		}
@@ -558,14 +559,92 @@ public class BirtReportServlet extends HttpServlet {
 		task.setAppContext(context);
 		renderOption.setOutputStream((OutputStream) response.getOutputStream());
 		task.setRenderOption(renderOption);
-		try{
+		
+		// setting HTML header if output format is HTML: this is necessary in order to inject the document.domain directive
+		// commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext ManagedIFrame library) library
+		/*
+		if (outputFormat.equalsIgnoreCase(IBirtConstants.HTML_RENDER_FORMAT)) {
+			((HTMLRenderOption) renderOption).setEmbeddable(true);
+			injectHTMLHeader(response);
+		}
+		*/
+		
+		try {
 			task.run();
-		}catch(Exception e){
+		} catch(Exception e) {
 			logger.error("Error while running the report: " + e);
 		}
 		task.close();
+		
+		// commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext ManagedIFrame library) library
+		/*
+		if (outputFormat.equalsIgnoreCase(IBirtConstants.HTML_RENDER_FORMAT)) {
+			injectHTMLFooter(response);
+		}
+		*/
+		
 		logger.debug("OUT");
 
 	}
+	
+	/**
+	 * This method injects the HTML header into the report HTML output.
+	 * This is necessary in order to inject the document.domain javascript directive
+	 */
+	/* commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext ManagedIFrame library) library
+	protected void injectHTMLHeader(HttpServletResponse response) throws IOException {
+		logger.debug("IN");
+		String header = null;
+		try {
+			SourceBean config = EnginConf.getInstance().getConfig();
+			SourceBean htmlHeaderSb = (SourceBean) config.getAttribute("HTML_HEADER");
+			header = htmlHeaderSb.getCharacters();
+			if (header == null || header.trim().equals("")) {
+				throw new Exception("HTML_HEADER not configured");
+			}
+			header = header.replaceAll("\\$\\{SBI_DOMAIN\\}", EnginConf.getInstance().getSpagoBiDomain());
+		} catch (Exception e) {
+			logger.error("Error while retrieving HTML_HEADER from engine configuration.", e);
+			logger.info("Using default HTML header", e);
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+			buffer.append("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></meta>");
+			buffer.append("  <script type=\"text/javascript\">");
+			buffer.append("    document.domain='" + EnginConf.getInstance().getSpagoBiDomain() + "';");
+			buffer.append("  </script>");
+			buffer.append("</head><body>");
+			header = buffer.toString();
+		}
+		response.getOutputStream().write(header.getBytes());
+		logger.debug("OUT");
+	}
+	*/
+	
+	/**
+	 * This method injects the HTML footer into the report HTML output.
+	 * See injectHTMLHeader method
+	 */
+	/* commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext ManagedIFrame library) library
+	protected void injectHTMLFooter(HttpServletResponse response) throws IOException {
+		logger.debug("IN");
+		String footer = null;
+		try {
+			SourceBean config = EnginConf.getInstance().getConfig();
+			SourceBean htmlHeaderSb = (SourceBean) config.getAttribute("HTML_FOOTER");
+			footer = htmlHeaderSb.getCharacters();
+			if (footer == null || footer.trim().equals("")) {
+				throw new Exception("HTML_FOOTER not configured");
+			}
+		} catch (Exception e) {
+			logger.error("Error while retrieving HTML_FOOTER from engine configuration.", e);
+			logger.info("Using default HTML footer", e);
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("</body></html>");
+			footer = buffer.toString();
+		}
+		response.getOutputStream().write(footer.getBytes());
+		logger.debug("OUT");
+	}
+	*/
 
 }

@@ -13,7 +13,7 @@
 	<!--  THE JNDI RESOURCE NAME FOR RETRIVE THE RESOURCE PATH -->
 	<RESOURCE_PATH_JNDI_NAME>java://comp/env/spagobi_resource_path</RESOURCE_PATH_JNDI_NAME>
 	<!--  THE JNDI NAME FOR SPAGOBI DOMAIN -->
-	<SPAGOBI_DOMAIN_JNDI_NAME>java://comp/env/spagobi_domain</SPAGOBI_DOMAIN_JNDI_NAME>	
+	<!-- SPAGOBI_DOMAIN_JNDI_NAME>java://comp/env/spagobi_domain</SPAGOBI_DOMAIN_JNDI_NAME-->	
 	<SecurityServiceProxy_URL>/services/SecurityService</SecurityServiceProxy_URL>
 	<SchedulerServiceProxy_URL>/services/SchedulerService</SchedulerServiceProxy_URL>
 	<EventServiceProxy_URL>/services/EventService</EventServiceProxy_URL>
@@ -21,7 +21,6 @@
 	<AuditServiceProxy_URL>/services/AuditService</AuditServiceProxy_URL>
 	<DataSourceServiceProxy_URL>/services/DataSourceService</DataSourceServiceProxy_URL>
 	<DocumentExecuteServiceProxy_URL>/services/DocumentExecuteService</DocumentExecuteServiceProxy_URL>
-	<DataSetServiceProxy_URL>/services/DataSetService</DataSetServiceProxy_URL>	
-		
+	<DataSetServiceProxy_URL>/services/DataSetService</DataSetServiceProxy_URL>
 
 </ENGINE-CONFIGURATION>

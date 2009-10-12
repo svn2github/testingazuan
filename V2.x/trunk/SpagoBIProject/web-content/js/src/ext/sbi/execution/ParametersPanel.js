@@ -333,7 +333,7 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 		
 
 		for(var p in this.fields) {
-		
+		//patch: event changed from 'change' to 'valid' in order to make work the parameters correlation
 			this.fields[p].on('valid', function(f, newVal, oldVal) {
 				if(f.dependants !== undefined) {
 				

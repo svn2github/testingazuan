@@ -68,11 +68,11 @@ The following directive catches exceptions thrown by jsps, must be commented in 
 </head>
 <body bgcolor="white" lang="en">
 
-<!-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
+<%-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
 <script type="text/javascript">
 	document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
 </script>
-<!-- END SCRIPT FOR DOMAIN DEFINITION -->
+<!-- END SCRIPT FOR DOMAIN DEFINITION --%>
 
 <%
 Logger logger = Logger.getLogger(this.getClass());

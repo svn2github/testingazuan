@@ -13,8 +13,8 @@ Sbi.settings.qbe = {
 			enableQueryTbValidateBtn: false,
 			
 			enableCatalogueTbDeleteBtn: true,
-			enableCatalogueTbAddBtn: true,
-			enableCatalogueTbInsertBtn: false
+			enableCatalogueTbAddBtn: false,
+			enableCatalogueTbInsertBtn: true
 		}
 
 		, dataMartStructurePanel: {

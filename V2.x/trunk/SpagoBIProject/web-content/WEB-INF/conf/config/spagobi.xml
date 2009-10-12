@@ -193,7 +193,7 @@ END-LIFERAY -->
      <RESOURCE_PATH_JNDI_NAME>java://comp/env/spagobi_resource_path</RESOURCE_PATH_JNDI_NAME>
      
      <!--  THE JNDI NAME FOR SPAGOBI DOMAIN -->
-	 <SPAGOBI_DOMAIN_JNDI_NAME>java://comp/env/spagobi_domain</SPAGOBI_DOMAIN_JNDI_NAME>	
+	 <!--SPAGOBI_DOMAIN_JNDI_NAME>java://comp/env/spagobi_domain</SPAGOBI_DOMAIN_JNDI_NAME-->	
  	 
  	 <SPAGO_ADAPTERHTTP_URL>/servlet/AdapterHTTP</SPAGO_ADAPTERHTTP_URL>
 	

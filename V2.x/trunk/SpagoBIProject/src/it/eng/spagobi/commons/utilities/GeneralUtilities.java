@@ -344,6 +344,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		return SPAGOBI_HOST;
 	}  
 	
+	/*
 	public static String getSpagoBiDomain() {
 		logger.debug("IN");
 		if (SPAGOBI_DOMAIN == null) {
@@ -366,6 +367,7 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		logger.debug("OUT:" + SPAGOBI_DOMAIN);
 		return SPAGOBI_DOMAIN;
 	}
+	*/
 	
 	
 	

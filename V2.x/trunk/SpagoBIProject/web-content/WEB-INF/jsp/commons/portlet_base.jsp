@@ -74,11 +74,12 @@ String getUrl(String baseUrl, Map mapPars) {
 }
 %>
 
-<!-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
+<%-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
+commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext ManagedIFrame library) library
 <script type="text/javascript">
 	document.domain='<%= GeneralUtilities.getSpagoBiDomain() %>';
 </script>
-<!-- END SCRIPT FOR DOMAIN DEFINITION -->
+<!-- END SCRIPT FOR DOMAIN DEFINITION --%>
 
 <!-- GET SPAGO OBJECTS  -->
 <%

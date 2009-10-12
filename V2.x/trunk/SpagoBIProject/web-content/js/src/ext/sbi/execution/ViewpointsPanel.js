@@ -66,7 +66,7 @@ Sbi.execution.ViewpointsPanel = function(config, doc) {
         root: 'results'
         , idProperty: 'name'
         , fields: ['name', 'owner', 'description', 'scope', 
-                   {name:'creationDate', type:'date', dateFormat: Sbi.config.clientServerDateFormat}, 
+                   {name:'creationDate', type:'date', dateFormat: Sbi.config.clientServerTimestampFormat}, 
                    'parameters'
                    ]
 		, url: this.services['getViewpointsService']
@@ -114,15 +114,15 @@ Sbi.execution.ViewpointsPanel = function(config, doc) {
 	this.isHidden = !Sbi.user.functionalities.contains('SeeViewpointsFunctionality')
 	        		||
     				this.shortcutsHiddenPreference;
-   
+
 	var c = Ext.apply({}, config, {
         store: this.store
         , columns: [
-              {header: LN('sbi.execution.viewpoints.name'), sortable: true, dataIndex: 'name'}
-            , {header: LN('sbi.execution.viewpoints.description'), sortable: true, dataIndex: 'description'}
-            , {header: LN('sbi.execution.viewpoints.owner'), sortable: true,dataIndex: 'owner'}
-            , {header: LN('sbi.execution.viewpoints.scope'), sortable: true, dataIndex: 'scope'}
-            , {header: LN('sbi.execution.viewpoints.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
+              {header: LN('sbi.execution.viewpoints.name'), sortable: true, width: 50, dataIndex: 'name'}
+            , {header: LN('sbi.execution.viewpoints.description'), sortable: true, width: 50, dataIndex: 'description'}
+            , {header: LN('sbi.execution.viewpoints.owner'), sortable: true, width: 50,dataIndex: 'owner'}
+            , {header: LN('sbi.execution.viewpoints.scope'), sortable: true, width: 50, dataIndex: 'scope'}
+            , {header: LN('sbi.execution.viewpoints.creationDate'), sortable: true, width: 50, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
             , this.applyColumn
             , this.execColumn
             , sm
@@ -142,12 +142,12 @@ Sbi.execution.ViewpointsPanel = function(config, doc) {
         	   , handler : this.deleteSelectedSubObjects
            	}
         ]
-        , forceFit: true
         , collapsible: false
         , title: LN('sbi.execution.viewpoints.title')
         , autoScroll: true
         , sm : sm
         , height: 200
+        , width:260
         , hidden: this.isHidden
 	});   
 	

@@ -71,7 +71,7 @@ Sbi.execution.SnapshotsPanel = function(config, doc) {
     this.snapshotsStore = new Ext.data.JsonStore({
         root: 'results'
         , idProperty: 'id'
-        , fields: ['id', 'name', 'description', {name:'creationDate', type:'date', dateFormat: Sbi.config.clientServerDateFormat}]
+        , fields: ['id', 'name', 'description', {name:'creationDate', type:'date', dateFormat: Sbi.config.clientServerTimestampFormat}]
 		, url: this.services['getSnapshotsService']
     });
     
@@ -113,14 +113,14 @@ Sbi.execution.SnapshotsPanel = function(config, doc) {
     this.isHidden = !Sbi.user.functionalities.contains('SeeSnapshotsFunctionality')
     				||
     				this.shortcutsHiddenPreference;
-    
+    				
 	c = Ext.apply({}, c, {
         store: this.snapshotsStore
         , columns: [
-            {id: "id", header: "Id", sortable: true, dataIndex: 'id',  hidden: true}
-            , {header: LN('sbi.execution.snapshots.name'), sortable: true, dataIndex: 'name'}
-            , {header: LN('sbi.execution.snapshots.description'), sortable: true, dataIndex: 'description'}
-            , {header: LN('sbi.execution.snapshots.creationDate'), sortable: true, dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
+            {id: "id", header: "Id", sortable: true, width: 50, dataIndex: 'id',  hidden: true}
+            , {header: LN('sbi.execution.snapshots.name'), sortable: true,  width: 50, dataIndex: 'name'}
+            , {header: LN('sbi.execution.snapshots.description'), sortable: true,  width: 50, dataIndex: 'description'}
+            , {header: LN('sbi.execution.snapshots.creationDate'), sortable: true,  width: 50,dataIndex: 'creationDate', renderer: Ext.util.Format.dateRenderer(Sbi.config.localizedDateFormat)} 
             , this.executeColumn
             , this.sm
         ]

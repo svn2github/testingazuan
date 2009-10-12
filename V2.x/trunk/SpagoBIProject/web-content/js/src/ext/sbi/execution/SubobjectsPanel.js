@@ -71,8 +71,8 @@ Sbi.execution.SubobjectsPanel = function(config, doc) {
         root: 'results'
         , idProperty: 'id'
         , fields: ['id', 'name', 'description', 'owner', 
-                   {name:'creationDate', type:'date', dateFormat: Sbi.config.clientServerDateFormat}, 
-                   {name:'lastModificationDate', type:'date', dateFormat: Sbi.config.clientServerDateFormat}, 
+                   {name:'creationDate', type:'date', dateFormat: Sbi.config.clientServerTimestampFormat}, 
+                   {name:'lastModificationDate', type:'date', dateFormat: Sbi.config.clientServerTimestampFormat}, 
                    'visibility']
 		, url: this.services['getSubObjectsService']
     }); 

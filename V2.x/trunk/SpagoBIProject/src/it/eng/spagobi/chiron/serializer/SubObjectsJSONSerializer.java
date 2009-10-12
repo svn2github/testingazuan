@@ -53,7 +53,7 @@ public class SubObjectsJSONSerializer implements Serializer {
 		try {
 			// dates are sent to the client using a fixed format, the one returned by GeneralUtilities.getServerDateFormat()
 			SimpleDateFormat dateFormat =  new SimpleDateFormat();
-			dateFormat.applyPattern(GeneralUtilities.getServerDateFormat());
+			dateFormat.applyPattern(GeneralUtilities.getServerTimeStampFormat());
 			
 			SubObject subObject = (SubObject) o;
 			result = new JSONObject();

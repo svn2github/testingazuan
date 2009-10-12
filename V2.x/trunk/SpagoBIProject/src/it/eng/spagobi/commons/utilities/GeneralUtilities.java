@@ -533,6 +533,23 @@ public class GeneralUtilities extends SpagoBIUtilities{
 		return format;
 	}
 	
+	public static String getServerTimestampFormatExtJs(){
+		logger.debug("IN");
+		SourceBean formatSB=null; 
+		// if a particular language is specified take the corrisponding date-format
+		formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("SPAGOBI.TIMESTAMP-FORMAT"));
+		String format="d/m/Y H:i:s";
+		if(formatSB!=null){
+			format = (String) formatSB.getAttribute("extJsFormat");
+			logger.debug("server date format for ExtJs set to "+format);
+		}
+		else{
+			logger.error("could not find server date format, set default to "+format);			
+		}
+		logger.debug("OUT");
+		return format;
+	}
+	
 	public static int getTemplateMaxSize() {
 		logger.debug("IN");
 		int toReturn = MAX_DEFAULT_TEMPLATE_SIZE;

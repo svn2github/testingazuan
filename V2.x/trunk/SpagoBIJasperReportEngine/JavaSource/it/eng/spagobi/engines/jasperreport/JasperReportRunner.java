@@ -350,7 +350,7 @@ public class JasperReportRunner {
 				//exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image.jsp?mapname="+mapName+"&image=");
 				exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "JRImageServlet?mapname="+mapName+"&image=");
 				
-				/* commented by Davide Zerbetto: there are problems with MIF (Ext ManagedIFrame library) library
+				/* commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext ManagedIFrame library) library
 				// setting HTML header: this is necessary in order to inject the document.domain directive
 				String head = getHTMLHeader();
 				exporter.setParameter(JRHtmlExporterParameter.HTML_HEADER, head);

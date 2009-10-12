@@ -964,7 +964,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	        }
 	    });
 		
-		if(doc.refreshSeconds){
+		if(doc.refreshSeconds !== undefined && doc.refreshSeconds > 0){
 			this.refr = function(seconds) {
 						this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
 						this.refr.defer(seconds*1000, this,[seconds]);

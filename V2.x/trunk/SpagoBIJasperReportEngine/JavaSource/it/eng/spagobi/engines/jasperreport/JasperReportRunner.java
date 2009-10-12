@@ -345,11 +345,16 @@ public class JasperReportRunner {
 				// define the map structure for report images
 				HashMap m_imagesMap = new HashMap();
 				String mapName = uuid_local.toString();
-
 				servletRequest.getSession().setAttribute(mapName, m_imagesMap);
 				exporter.setParameter(JRHtmlExporterParameter.IMAGES_MAP ,m_imagesMap);		    	
 				//exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "image.jsp?mapname="+mapName+"&image=");
 				exporter.setParameter(JRHtmlExporterParameter.IMAGES_URI, "JRImageServlet?mapname="+mapName+"&image=");
+				
+				/* commented by Davide Zerbetto: there are problems with MIF (Ext ManagedIFrame library) library
+				// setting HTML header: this is necessary in order to inject the document.domain directive
+				String head = getHTMLHeader();
+				exporter.setParameter(JRHtmlExporterParameter.HTML_HEADER, head);
+				*/
 			} else if (outputType.equalsIgnoreCase("xls")) {
 				if(mimeType == null) mimeType = "application/vnd.ms-excel";
 				servletResponse.setContentType(mimeType);
@@ -420,7 +425,47 @@ public class JasperReportRunner {
 
 	}
 
-
+	/**
+	 * This method builds the html header string to be injected on report HTML output.
+	 * This is necessary in order to inject the document.domain javascript directive
+	 * @return the HTML head tag as a string
+	 */
+	/* commented by Davide Zerbetto: there are problems with MIF (Ext ManagedIFrame library) library
+	protected String getHTMLHeader() {
+		logger.debug("IN");
+		String header = null;
+		try {
+			SourceBean config = EnginConf.getInstance().getConfig();
+			SourceBean htmlHeaderSb = (SourceBean) config.getAttribute("HTML_HEADER");
+			header = htmlHeaderSb.getCharacters();
+			if (header == null || header.trim().equals("")) {
+				throw new Exception("HTML_HEADER not configured");
+			}
+			header = header.replaceAll("\\$\\{SBI_DOMAIN\\}", EnginConf.getInstance().getSpagoBiDomain());
+		} catch (Exception e) {
+			logger.error("Error while retrieving HTML_HEADER from engine configuration.", e);
+			logger.info("Using default HTML header", e);
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("<html>");
+			buffer.append("<head>");
+			buffer.append("<title></title>");
+			buffer.append("  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>");
+			buffer.append("  <style type=\"text/css\">");
+			buffer.append("    a {text-decoration: none}");
+			buffer.append("  </style>");
+			buffer.append("  <script type=\"text/javascript\">");
+			buffer.append("    document.domain='" + EnginConf.getInstance().getSpagoBiDomain() + "';");
+			buffer.append("  </script>");
+			buffer.append("</head>");
+			buffer.append("<body text=\"#000000\" link=\"#000000\" alink=\"#000000\" vlink=\"#000000\">");
+			buffer.append("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">");
+			buffer.append("<tr><td width=\"50%\">&nbsp;</td><td align=\"center\">");
+			header = buffer.toString();
+		}
+		logger.debug("OUT");
+		return header;
+	}
+	*/
 
 	/////////////////////////////////////////
 	// UTILITY METHODS

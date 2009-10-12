@@ -331,12 +331,16 @@ Ext.extend(Sbi.execution.ParametersPanel, Ext.FormPanel, {
 			}			
 		}
 		
-		
+
 		for(var p in this.fields) {
-			this.fields[p].on('change', function(f, newVal, oldVal) {
+		
+			this.fields[p].on('valid', function(f, newVal, oldVal) {
 				if(f.dependants !== undefined) {
+				
 					for(var i = 0; i < f.dependants.length; i++) {
+
 						var field = this.fields[ f.dependants[i] ];
+
 						if(field.initialConf.selectionType === 'COMBOBOX'){ 
 							field.store.load();
 						}

@@ -866,10 +866,6 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    
 		window.open(endUrl,'name','height=750,width=1000');
 	}
-	, refreshSecExec: function(seconds) {
-		this.miframe.getFrame().setSrc( null ); // refresh the iframe with the latest url
-		this.refreshSecExec.defer(seconds*1000, this,seconds);
-	}
 
 	
 	// ----------------------------------------------------------------------------------------

@@ -20,18 +20,18 @@
  **/
 package it.eng.spagobi.engines.geo.component;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
 import it.eng.spagobi.engines.geo.map.provider.IMapProvider;
 import it.eng.spagobi.engines.geo.map.renderer.IMapRenderer;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -72,12 +72,16 @@ public class GeoEngineComponentFactory {
 			logger.error("Impossible to instatiate component of type: " + geoEngineComponentClassName);
 			throw new GeoEngineException("Impossible to instatiate component of type: " + geoEngineComponentClassName, e);
 		} catch (ClassNotFoundException e) {
+			GeoEngineException geoException;
 			logger.error("Impossible to instatiate component of type: " + geoEngineComponentClassName);
 			String description = "Impossible to instatiate component of type: " + geoEngineComponentClassName;
 			List hints = new ArrayList();
 			hints.add("Check if the class name is wrong or mispelled");
 			hints.add("Check if the class is on the class path");
-			throw new GeoEngineException("Impossible to instatiate component", description, hints, e);
+			geoException =  new GeoEngineException("Impossible to instatiate component", e);
+			geoException.setDescription(description);
+			geoException.setHints(hints);
+			throw geoException;
 		}
 		
 		logger.debug("Component " + geoEngineComponentClassName + " created succesfully");

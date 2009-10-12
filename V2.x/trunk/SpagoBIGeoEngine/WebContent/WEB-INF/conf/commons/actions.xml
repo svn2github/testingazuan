@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ACTIONS>
-
-	<ACTION name="SERVICE_EXCEPTION_ACTION" 
-			class="it.eng.spagobi.engines.geo.service.ServiceExceptionAction" 
+	
+	<ACTION name="SERVICE_EXCEPTION_TRAP_ACTION" 
+			class="it.eng.spagobi.engines.geo.service.ServiceExceptionTrapAction" 
 			scope="REQUEST">
 		<CONFIG></CONFIG>
-	</ACTION>    
+	</ACTION>   
     
+    <ACTION name="DRAW_MAP_SERVICE_EXCEPTION_TRAP_ACTION" 
+			class="it.eng.spagobi.engines.geo.service.DrawMapServiceExceptionTrapAction" 
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>  
 </ACTIONS>

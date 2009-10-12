@@ -37,8 +37,6 @@ import com.lowagie.text.pdf.PdfWriter;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapConverter;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
-import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.service.IStreamEncoder;
 
 
@@ -176,7 +174,7 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			} catch(IOException e) {
 				logger.error("error while flushing output", e);
 				if(getAuditServiceProxy() != null) getAuditServiceProxy().notifyServiceErrorEvent( "Error while flushing output" );
-				throw new SpagoBIEngineServiceException(getActionName(), "Error while flushing output", e);
+				throw new DrawMapServiceException(getActionName(), "Error while flushing output", e);
 			}
 			
 			if(getAuditServiceProxy() != null) getAuditServiceProxy().notifyServiceEndEvent( );
@@ -187,7 +185,17 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 		} catch (Throwable t) {
 			errorHitsMonitor = MonitorFactory.start("GeoEngine.errorHits");
 			errorHitsMonitor.stop();
-			throw SpagoBIEngineServiceExceptionHandler.getInstance().getWrappedException(getActionName(), getEngineInstance(), t);
+			if(t instanceof DrawMapServiceException) throw (DrawMapServiceException)t;
+			
+			Throwable rootException = t;
+			while(rootException.getCause() != null) {
+				rootException = rootException.getCause();
+			}
+			String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+			String message = "An unpredicted error occurred while executing " + getActionName() + " service."
+							 + "\nThe root cause of the error is: " + str;
+			
+			throw new DrawMapServiceException(getActionName(), message, t);
 		} finally {
 			if(flushingResponseTotalTimeMonitor != null) flushingResponseTotalTimeMonitor.stop();
 			if(totalTimePerFormatMonitor != null) totalTimePerFormatMonitor.stop();

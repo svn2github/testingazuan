@@ -52,6 +52,7 @@ import com.jamonapi.MonitorFactory;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.GeoEngineException;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
@@ -66,6 +67,7 @@ import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
 import it.eng.spagobi.tools.dataset.common.datastore.IFieldMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
+import it.eng.spagobi.utilities.assertion.Assert;
 
 /**
  * @author Andrea Gioia
@@ -164,9 +166,12 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 			loadMasterMapTotalTimeMonitor = MonitorFactory.start("GeoEngine.drawMapAction.renderMap.loadMasterMap");
 			masterMap = SVGMapLoader.loadMapAsDocument(getMasterMapFile(true));
 		} catch (IOException e) {
+			GeoEngineException geoException;
 			logger.error("Impossible to load map from file: " + getMasterMapFile(true));
 			String description = "Impossible to load map from file: " + getMasterMapFile(true);
-			throw new GeoEngineException("Impossible to render map", description, e);
+			geoException = new GeoEngineException("Impossible to render map", e);
+			geoException.setDescription(description);
+			throw  geoException;
 		} finally {
 			if(loadMasterMapTotalTimeMonitor != null) loadMasterMapTotalTimeMonitor.stop();
 		}
@@ -243,9 +248,12 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 			    String execId = (String)this.getEnv().get("SBI_EXECUTION_ID");
 			    conf.put("execId", execId);
 			} catch (JSONException e1) {
+				GeoEngineException geoException;
 				logger.error("Impossible to create sbi.geo.conf", e1);
 				String description = "Impossible to create sbi.geo.conf";
-				throw new GeoEngineException("Impossible to create sbi.geo.conf", description, e1);
+				geoException = new GeoEngineException("Impossible to create sbi.geo.conf", e1);
+				geoException.setDescription(description);
+				throw  geoException;
 			}
 			
 		    scriptText.setNodeValue( "sbi = {};\n sbi.geo = {};\n sbi.geo.conf = " + conf.toString() );
@@ -254,22 +262,31 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 			try {
 				tmpMap = getTempFile();
 			} catch (IOException e) {
+				GeoEngineException geoException;
 				logger.error("Impossible to create a temporary file", e);
 				String description = "Impossible to create a temporary file";
-				throw new GeoEngineException("Impossible to render map", description, e);
+				geoException = new GeoEngineException("Impossible to render map", e);
+				geoException.setDescription(description);
+				throw  geoException;
 			}				
 			try {
 				SVGMapSaver.saveMap(masterMap, tmpMap);
 			} catch (FileNotFoundException e) {
+				GeoEngineException geoException;
 				logger.error("Impossible to save map on temporary file " + tmpMap, e);
 				String str = e.getMessage()!=null?e.getMessage():e.getClass().getName();
 				String description = "Impossible to save map on temporary file " + tmpMap + ". Root cause: " + str;
-				throw new GeoEngineException("Impossible to render map", description, e);
+				geoException = new GeoEngineException("Impossible to render map", e);
+				geoException.setDescription(description);
+				throw  geoException;
 			} catch (TransformerException e) {
+				GeoEngineException geoException;
 				logger.error("Impossible to save map on temporary file " + tmpMap, e);
 				String str = e.getMessage()!=null?e.getMessage():e.getClass().getName();
 				String description = "Impossible to save map on temporary file " + tmpMap + ". Root cause: " + str;
-				throw new GeoEngineException("Impossible to render map", description, e);
+				geoException = new GeoEngineException("Impossible to render map",  e);
+				geoException.setDescription(description);
+				throw  geoException;
 			}
 		} finally {
 			if(margeAndDecorateMapTotalTimeMonitor != null) margeAndDecorateMapTotalTimeMonitor.stop();
@@ -303,9 +320,12 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		try {
 			masterMap = SVGMapLoader.loadMapAsDocument(getMasterMapFile(false));
 		} catch (IOException e) {
+			GeoEngineException geoException;
 			logger.error("Impossible to load map from file: " + getMasterMapFile(true));
 			String description = "Impossible to load map from file: " + getMasterMapFile(true);
-			throw new GeoEngineException("Impossible to render map", description, e);
+			geoException =  new GeoEngineException("Impossible to render map", e);
+			geoException.setDescription(description);
+			throw  geoException;
 		}
 		
 		decorateMap(masterMap, targetMap, datamart);
@@ -319,22 +339,31 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		try {
 			tmpMap = getTempFile();
 		} catch (IOException e) {
+			GeoEngineException geoException;
 			logger.error("Impossible to create a temporary file", e);
 			String description = "Impossible to create a temporary file";
-			throw new GeoEngineException("Impossible to render map", description, e);
+			geoException = new GeoEngineException("Impossible to render map", e);
+			geoException.setDescription(description);
+			throw  geoException;
 		}				
 		try {
 			SVGMapSaver.saveMap(masterMap, tmpMap);
 		} catch (FileNotFoundException e) {
+			GeoEngineException geoException;
 			logger.error("Impossible to save map on temporary file " + tmpMap, e);
 			String str = e.getMessage()!=null?e.getMessage():e.getClass().getName();
 			String description = "Impossible to save map on temporary file " + tmpMap + ". Root cause: " + str;
-			throw new GeoEngineException("Impossible to render map", description, e);
+			geoException = new GeoEngineException("Impossible to render map", e);
+			geoException.setDescription(description);
+			throw  geoException;
 		} catch (TransformerException e) {
+			GeoEngineException geoException;
 			logger.error("Impossible to save map on temporary file " + tmpMap, e);
 			String str = e.getMessage()!=null?e.getMessage():e.getClass().getName();
 			String description = "Impossible to save map on temporary file " + tmpMap + ". Root cause: " + str;
-			throw new GeoEngineException("Impossible to render map", description, e);
+			geoException = new GeoEngineException("Impossible to render map", e);
+			geoException.setDescription(description);
+			throw  geoException;
 		}
 		
 		return tmpMap;
@@ -1117,12 +1146,7 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 		}
 	}
 	
-	/**
-	 * Import scipt.
-	 * 
-	 * @param map the map
-	 * @param scriptName the script name
-	 */
+	
 	private void importScipt(SVGDocument map, String scriptName) {
 		Element script = map.createElement("script");
 	    script.setAttribute("type", "text/ecmascript");
@@ -1133,23 +1157,53 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    importsBlock.appendChild(lf);
 	}
 	
-	/**
-	 * Sets the main map dimension.
-	 * 
-	 * @param masterMap the master map
-	 * @param targetMap the target map
-	 */
+	
 	public void setMainMapDimension(SVGDocument masterMap, SVGDocument targetMap) {
-		String viewBox = targetMap.getRootElement().getAttribute("viewBox");
-		String[] chunks = viewBox.split(" ");
-		double width = Double.parseDouble(chunks[2]);
-		double heigth = Double.parseDouble(chunks[3]);
-		double mainMapHeight = 1100 *(heigth/width);
-		Element mainMapBlock = masterMap.getElementById("mainMap");
-		mainMapBlock.setAttribute("viewBox", viewBox);
-		//masterMap.getRootElement().setAttribute("viewBox", "0 0 1100 " + mainMapHeight);
-		masterMap.getRootElement().setAttribute("viewBox", 0 + " " + 0 + " 1100 " + mainMapHeight);
+		String viewBox;
+		String[] chunks;
+		double width;
+		double heigth;
+		double mainMapHeight;
+		Element mainMapBlock;
 		
+		logger.debug("IN");
+		
+		try {
+			Assert.assertNotNull(masterMap, "Input parameter [masterMap] cannot be null");
+			Assert.assertNotNull(targetMap, "Input parameter [targetMap] cannot be null");
+			
+			viewBox = null;
+			try {
+				viewBox = targetMap.getRootElement().getAttribute("viewBox");
+			} catch(Throwable t) {
+				MapRenderingException e = new MapRenderingException("Impossible to read attribute [viewBox] from target map's root node");
+				e.addHint("add to the map svg main tag an the attribute viewbox with the following value: " +
+						"0 0 W D (where W and H are respectively your map width and height)");
+				throw new MapRenderingException("Impossible to read attribute [viewBox] from target map's root node");
+			}
+			if(StringUtilities.isEmpty(viewBox)) {
+				MapRenderingException e = new MapRenderingException("Impossible to read attribute [viewBox] from target map's root node");
+				e.addHint("add to the map svg main tag an the attribute viewbox with the following value: " +
+						"0 0 W D (where W and H are respectively your map width and height)");
+				throw new MapRenderingException("Impossible to read attribute [viewBox] from target map's root node");
+			}
+			logger.debug("Target map vieBox is equal to [" + viewBox + "]");
+			chunks = viewBox.trim().split(" ");
+			Assert.assertTrue(chunks.length ==  4, "Attribute [viewBox] of  target ma is malformed: expected format is [x y width height]");
+			
+			width = Double.parseDouble(chunks[2]);
+			heigth = Double.parseDouble(chunks[3]);
+			mainMapHeight = 1100 *(heigth/width);
+			
+			mainMapBlock = masterMap.getElementById("mainMap");
+			mainMapBlock.setAttribute("viewBox", viewBox);
+			masterMap.getRootElement().setAttribute("viewBox", 0 + " " + 0 + " 1100 " + mainMapHeight);
+		} catch(Throwable t) {
+			if(t instanceof GeoEngineException) throw (GeoEngineException)t;
+			throw new GeoEngineException("An unpredicted error occurred while setting up main map viewbox attribute");
+		} finally {
+			logger.debug("OUT");
+		}
 	}
 	
 	/**

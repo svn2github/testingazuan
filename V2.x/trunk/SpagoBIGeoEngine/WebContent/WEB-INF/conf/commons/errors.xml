@@ -2,4 +2,5 @@
 <ERRORS>
 	<ERROR class="UNDEFINED" trap_name="serviceError"/>
 	<ERROR class="it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException" trap_name="serviceError" CATEGORY="serviceError"/>
+	<ERROR class="it.eng.spagobi.engines.geo.service.DrawMapServiceException" trap_name="drawMapServiceError" CATEGORY="drawMapServiceError"/>
 </ERRORS>

@@ -21,132 +21,21 @@
 
 package it.eng.spagobi.engines.geo;
 
-import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 
-import java.util.ArrayList;
-import java.util.List;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class GeoEngineException.
- */
-public class GeoEngineException extends SpagoBIEngineException {
+public class GeoEngineException extends SpagoBIEngineRuntimeException {
     
-	/** The hints. */
-	List hints;
+	public GeoEngineException(String message) {
+	   	super(message);
+	}
 	
-	/** The description. */
-	String description;
+	public GeoEngineException(String message, Throwable ex) {
+	  	super(message, ex);
+	}
 	
-	
-	/**
-	 * Builds a <code>GeoEngineException</code>.
-	 * 
-	 * @param message Text of the exception
-	 */
-    public GeoEngineException(String message) {
-    	super(message);
+	public GeoEngineException(Throwable ex) {
+		super(ex);
     }
-	
-    /**
-     * Builds a <code>GeoEngineException</code>.
-     * 
-     * @param message Text of the exception
-     * @param ex previous Throwable object
-     */
-    public GeoEngineException(String message, Throwable ex) {
-    	super(message, ex);
-    }
-    
-    /**
-     * Instantiates a new geo engine exception.
-     * 
-     * @param message the message
-     * @param description the description
-     * @param hints the hints
-     * @param ex the ex
-     */
-    public GeoEngineException(String message, String description, List hints, Throwable ex ) {
-    	super(message, ex);
-    	this.hints = hints;
-    	this.description = description;
-    }
-
-	/**
-	 * Instantiates a new geo engine exception.
-	 * 
-	 * @param message the message
-	 * @param description the description
-	 */
-	public GeoEngineException(String message, String description) {
-		super(message);
-		this.hints = new ArrayList();
-		this.hints.add("Sorry, there are no hints available right now on how to fix this problem");
-    	this.description = description;
-	}
-	
-	/**
-	 * Instantiates a new geo engine exception.
-	 * 
-	 * @param message the message
-	 * @param description the description
-	 * @param hints the hints
-	 */
-	public GeoEngineException(String message, String description, List hints) {
-		super(message);
-		this.hints = hints;
-    	this.description = description;
-	}
-
-	/**
-	 * Instantiates a new geo engine exception.
-	 * 
-	 * @param message the message
-	 * @param description the description
-	 * @param ex the ex
-	 */
-	public GeoEngineException(String message, String description, Throwable ex ) {
-    	super(message, ex);
-    	this.hints = new ArrayList();
-		this.hints.add("Sorry, there are no hints available right now on how to fix this problem");
-    	this.description = description;
-    }
-
-	/**
-	 * Gets the hints.
-	 * 
-	 * @return the hints
-	 */
-	public List getHints() {
-		return hints;
-	}
-
-	/**
-	 * Sets the hints.
-	 * 
-	 * @param hints the new hints
-	 */
-	public void setHints(List hints) {
-		this.hints = hints;
-	}
-
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * Sets the description.
-	 * 
-	 * @param description the new description
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 }
 

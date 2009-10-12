@@ -20,6 +20,14 @@
  **/
 package it.eng.spagobi.engines.geo;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.component.GeoEngineComponentFactory;
 import it.eng.spagobi.engines.geo.datamart.provider.IDataMartProvider;
@@ -29,14 +37,6 @@ import it.eng.spagobi.engines.geo.map.renderer.IMapRenderer;
 import it.eng.spagobi.engines.geo.map.renderer.Layer;
 import it.eng.spagobi.utilities.engines.AbstractEngineInstance;
 import it.eng.spagobi.utilities.engines.IEngineAnalysisState;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -89,7 +89,7 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 	 * 
 	 * @throws GeoEngineException the geo engine exception
 	 */
-	protected GeoEngineInstance(SourceBean template, Map env) throws GeoEngineException {
+	protected GeoEngineInstance(SourceBean template, Map env) {
 		super( env );
 		
 		logger.debug("IN");
@@ -112,34 +112,45 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 	 * 
 	 * @throws GeoEngineException the geo engine exception
 	 */
-	public void validate() throws GeoEngineException {
+	public void validate() {
 		String selectedHierarchyName = getDataMartProvider().getSelectedHierarchyName();
 		if(selectedHierarchyName == null) {
+			GeoEngineException geoException;
 			logger.error("Select hierarchy name is not defined");
 			String description = "Select hierarchy name is not defined";
-			throw new GeoEngineException("Configuration error", description);
+			geoException =  new GeoEngineException("Configuration error");
+			geoException.setDescription(description);
+			throw geoException;
 		}
 		
 		Hierarchy selectedHierarchy = getDataMartProvider().getHierarchy(selectedHierarchyName);
 		if(selectedHierarchy == null) {
+			GeoEngineException geoException;
 			logger.error("Selected hierarchy [" + selectedHierarchyName + "] does not exist");
 			String description = "Selected hierarchy [" + selectedHierarchyName + "] does not exist";
 			List hints = new ArrayList();
 			hints.add("Check if hierarchy name is correct");
 			hints.add("Check if a hierarchy named " + selectedHierarchyName +"  has been defined. Defined hierarachy are: " 
 					+ Arrays.toString( getDataMartProvider().getHierarchyNames().toArray()) );
-			throw new GeoEngineException("Configuration error", description, hints);
+			geoException =  new GeoEngineException("Configuration error");
+			geoException.setDescription(description);
+			geoException.setHints(hints);
+			throw geoException;
 		}
 		
 		String selectedLevelName = getDataMartProvider().getSelectedLevelName();
 		if(selectedLevelName == null) {
+			GeoEngineException geoException;
 			logger.error("Select level name is not defined");
 			String description = "Select level name is not defined";
-			throw new GeoEngineException("Configuration error", description);
+			geoException =  new GeoEngineException("Configuration error");
+			geoException.setDescription(description);
+			throw geoException;
 		}
 		
 		Hierarchy.Level selectedLevel = selectedHierarchy.getLevel(selectedLevelName);
 		if(selectedLevel == null) {
+			GeoEngineException geoException;
 			logger.error("Selected level [" + selectedHierarchyName + "] does not exist in selected hierarchy [" + selectedHierarchyName + "]");
 			String description = "Selected level [" + selectedHierarchyName + "] does not exist in selected hierarchy [" + selectedHierarchyName + "]";
 			List hints = new ArrayList();
@@ -147,7 +158,10 @@ public class GeoEngineInstance extends AbstractEngineInstance {
 			hints.add("Check if a level named " + selectedLevelName +"  is defined into hierarachy " + selectedHierarchyName + ". " +
 					"Defined level are: " 
 					+ Arrays.toString( selectedHierarchy.getLevelNames().toArray()) );
-			throw new GeoEngineException("Configuration error", description, hints);
+			geoException =  new GeoEngineException("Configuration error");
+			geoException.setDescription(description);
+			geoException.setHints(hints);
+			throw geoException;
 		}
 		
 	}

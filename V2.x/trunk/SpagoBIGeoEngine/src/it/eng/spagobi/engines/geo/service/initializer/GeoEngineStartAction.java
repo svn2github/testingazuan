@@ -158,7 +158,7 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			setAttributeInSession(GEO_ENGINE_INSTANCE, geoEngineInstance);					
 		} catch (Exception e) {
 			if(e instanceof GeoEngineException) throw (GeoEngineException)e;
-			
+			GeoEngineException geoException;
 			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";
 			Throwable rootException = e;
 			while(rootException.getCause() != null) rootException = rootException.getCause();
@@ -166,7 +166,10 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			description += "<br>The root cause of the error is: " + str;
 			List hints = new ArrayList();
 			hints.add("Sorry, there are no hints available right now on how to fix this problem");
-			throw new GeoEngineException("Service error", description, hints, e);
+			geoException =  new GeoEngineException("Service error", e);
+			geoException.setHints(hints);
+			geoException.setDescription(description);
+			throw geoException;
 		} finally {
 			if(hitsByExecutionContext != null) hitsByExecutionContext.stop();
 			if(hitsByDocumentId != null) hitsByDocumentId.stop();

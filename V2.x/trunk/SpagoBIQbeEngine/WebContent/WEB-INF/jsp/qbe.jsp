@@ -62,11 +62,11 @@
 		<%@include file="commons/includeExtJS.jspf" %>
 		<%@include file="commons/includeSbiQbeJS.jspf"%>
 		
-		<!-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
+		<%-- START SCRIPT FOR DOMAIN DEFINITION (MUST BE EQUAL BETWEEN SPAGOBI AND EXTERNAL ENGINES) -->
 		<script type="text/javascript">
 		document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
 		</script>
-		<!-- END SCRIPT FOR DOMAIN DEFINITION -->
+		<!-- END SCRIPT FOR DOMAIN DEFINITION --%>
 	
 	</head>
 	

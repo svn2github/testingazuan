@@ -64,13 +64,13 @@ public class ChartEditorComponents {
 
 
 
-/** Create Style parameters form
- * 
- * @param model
- * @param editor
- * @param section
- * @param toolkit
- */
+	/** Create Style parameters form
+	 * 
+	 * @param model
+	 * @param editor
+	 * @param section
+	 * @param toolkit
+	 */
 
 	public void createStyleParametersForm(final ChartModel model, final ChartEditor editor, final Composite section, FormToolkit toolkit){
 		SpagoBILogger.infoLog("Start Style parameters form creation");
@@ -98,36 +98,6 @@ public class ChartEditorComponents {
 			spaceLabel1.setText("");
 
 			// Draw Parameters form
-
-			if(style.isHasFont()){
-				Label fontLabel = new Label(section, SWT.NULL);
-				fontLabel.setText("			Font:");
-				fontLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-				//fontLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-				final Combo styleFontCombo = new Combo(section,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
-				styleFontCombo.add("Helvetica");
-				styleFontCombo.add("Times_New_Roman");
-				styleFontCombo.add("Arial");
-				int index2=styleFontCombo.indexOf(style.getFont()!=null ? style.getFont() : "");
-				if(index2!=-1) styleFontCombo.select(index2);
-				else	styleFontCombo.select(0);
-				//styleFontCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-				styleFontCombo.addModifyListener(new ModifyListener() {
-					public void modifyText(ModifyEvent event) {
-						String newFont = styleFontCombo.getText();
-						style.setFont(newFont);
-						if(editor!=null)editor.setIsDirty(true);
-					}
-				});
-			}
-			else{
-				Label sl=new Label(section,SWT.NULL);
-				sl.setText("");
-				sl=new Label(section,SWT.NULL);
-				sl.setText("");
-			}
-
 			if(style.isHasSize()){
 				Label sizeLabel = new Label(section, SWT.NULL);
 				sizeLabel.setText("		Size:");
@@ -163,24 +133,26 @@ public class ChartEditorComponents {
 				sl.setText("");
 			}
 
-			if(style.isHasOrientation()){
-				Label orientationLabel = new Label(section, SWT.NULL);
-				orientationLabel.setText("			Orientation:");
-				orientationLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 
-				final Combo combo = new Combo(section,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
-				boolean selected=false;
-				combo.add(Style.HORIZONTAL);
-				combo.add(Style.VERTICAL);
 
-				int index=combo.indexOf(style.getOrientation()!=null ? style.getOrientation().toUpperCase() : "");
-				if(index!=-1) combo.select(index);
-				else index=0;
-				//combo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-				combo.addModifyListener(new ModifyListener() {
+			if(style.isHasFont()){
+				Label fontLabel = new Label(section, SWT.NULL);
+				fontLabel.setText("			Font:");
+				fontLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+				//fontLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+				final Combo styleFontCombo = new Combo(section,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
+				styleFontCombo.add("Helvetica");
+				styleFontCombo.add("Times_New_Roman");
+				styleFontCombo.add("Arial");
+				int index2=styleFontCombo.indexOf(style.getFont()!=null ? style.getFont() : "");
+				if(index2!=-1) styleFontCombo.select(index2);
+				else	styleFontCombo.select(0);
+				//styleFontCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				styleFontCombo.addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent event) {
-						String newOrientation = combo.getText();
-						style.setOrientation(newOrientation);
+						String newFont = styleFontCombo.getText();
+						style.setFont(newFont);
 						if(editor!=null)editor.setIsDirty(true);
 					}
 				});
@@ -249,11 +221,43 @@ public class ChartEditorComponents {
 				sl=new Label(section,SWT.NULL);
 				sl.setText("");
 			}
+			
+			
 
+			if(style.isHasOrientation()){
+				Label orientationLabel = new Label(section, SWT.NULL);
+				orientationLabel.setText("			Orientation:");
+				orientationLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+
+				final Combo combo = new Combo(section,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
+				boolean selected=false;
+				combo.add(Style.HORIZONTAL);
+				combo.add(Style.VERTICAL);
+
+				int index=combo.indexOf(style.getOrientation()!=null ? style.getOrientation().toUpperCase() : "");
+				if(index!=-1) combo.select(index);
+				else index=0;
+				//combo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				combo.addModifyListener(new ModifyListener() {
+					public void modifyText(ModifyEvent event) {
+						String newOrientation = combo.getText();
+						style.setOrientation(newOrientation);
+						if(editor!=null)editor.setIsDirty(true);
+					}
+				});
+			}
+			else{
+				Label sl=new Label(section,SWT.NULL);
+				sl.setText("");
+				sl=new Label(section,SWT.NULL);
+				sl.setText("");
 			}
 
+
 		}
-	
+
+	}
+
 
 
 
@@ -350,7 +354,7 @@ public class ChartEditorComponents {
 	public void createIntervalsInformationsSection(final DialChartModel model, ChartEditor editor, FormToolkit formToolkit, final ScrolledForm scrolledForm){
 		intervalsInformationEditor=new IntervalsInformationEditor(model, formToolkit, scrolledForm);
 	}
-	
+
 	/** Calls the creation for range marker section form
 	 * 
 	 * @param model
@@ -361,7 +365,7 @@ public class ChartEditorComponents {
 	public void createScatterRangeMarkerSection(final ScatterChartModel model, FormToolkit formToolkit, final ScrolledForm scrolledForm){
 		scatterRangeMarkerEditor=new ScatterRangeMarkerEditor(model, formToolkit, scrolledForm);
 	}
-	
+
 	/** Calls the creation for Y Z Range form
 	 * 
 	 * @param model
@@ -369,13 +373,13 @@ public class ChartEditorComponents {
 	 * @param scrolledForm
 	 */
 
-	
+
 	public void createYZRangesSection(final XYChartModel model, FormToolkit formToolkit, final ScrolledForm scrolledForm){
 		yzRangesEditor=new YZRangesEditor(model, formToolkit, scrolledForm);
 	}
 
 
-	
+
 	public DrillConfigurationEditor getDrillConfigurationEditor() {
 		return drillConfigurationEditor;
 	}

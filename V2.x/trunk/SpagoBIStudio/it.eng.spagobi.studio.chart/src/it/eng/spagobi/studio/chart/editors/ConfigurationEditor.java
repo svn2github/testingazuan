@@ -64,7 +64,6 @@ public class ConfigurationEditor {
 
 		TableWrapData td = new TableWrapData(TableWrapData.FILL);
 
-		td = new TableWrapData(TableWrapData.FILL);
 		td.rowspan = 3;
 		sectionConf.setLayoutData(td);
 		sectionConf.addExpansionListener(new ExpansionAdapter() {
@@ -104,6 +103,10 @@ public class ConfigurationEditor {
 			}
 		}
 		sectionConf.setClient(sectionClientConf);
+		sectionConf.setExpanded(true);
+		sectionConf.setExpanded(false);
+		sectionClientConf.pack();
+		sectionConf.pack();
 	}
 
 

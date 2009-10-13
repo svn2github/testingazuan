@@ -143,7 +143,7 @@ public final class ChartEditor extends EditorPart {
 		final FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		final ScrolledForm form = toolkit.createScrolledForm(parent);
 		TableWrapLayout layout = new TableWrapLayout();
-		layout.numColumns = 2;
+		layout.numColumns = 1;
 		layout.horizontalSpacing = 20;
 		layout.verticalSpacing = 10;
 		layout.topMargin = 20;
@@ -253,13 +253,6 @@ public final class ChartEditor extends EditorPart {
 
 
 
-
-		// ++++++++++++++ Chart Conf Settings ++++++++++++++ 
-		SpagoBILogger.infoLog("Creating Common configuration informations section");
-		components.setConfigurationEditor(new ConfigurationEditor(toolkit,form));
-		components.createConfigurationSection(model,null, toolkit, form);
-
-
 		// ++++++++++++++ Chart Style Settings ++++++++++++++ 
 		SpagoBILogger.infoLog("Creating style informations section");
 		final Section sectionStyle = toolkit.createSection(form.getBody(), 
@@ -279,6 +272,12 @@ public final class ChartEditor extends EditorPart {
 		components.createStyleParametersForm(model,this, sectionClientStyle, toolkit);
 		sectionStyle.setClient(sectionClientStyle);
 
+
+
+		// ++++++++++++++ Chart Conf Settings ++++++++++++++ 
+		SpagoBILogger.infoLog("Creating Common configuration informations section");
+		components.setConfigurationEditor(new ConfigurationEditor(toolkit,form));
+		components.createConfigurationSection(model,null, toolkit, form);
 
 
 

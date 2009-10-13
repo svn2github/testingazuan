@@ -97,7 +97,7 @@
 					type='STRING' defaultValue='cat_label' tooltip='Name of category label'/>
 				<PARAMETER name='value_label' description='Name of value label'
 					type='STRING' defaultValue='val_label' tooltip='Name of value label'/>
-				<PARAMETER name='maximum_bar_width' description='Maximum bar width (percentage of the avalaible space for all bars)'
+				<PARAMETER name='maximum_bar_width' description='Maximum bar width'
 					type='FLOAT' defaultValue='5.01' tooltip='The maximum bar width, which is specified as a percentage of the available space for all bars'/>
 				<PARAMETER name='range_integer_values' description='Only integer values on value axis'
 					type='BOOLEAN' defaultValue='true' tooltip='Choose if view only integer values on y axis'/>

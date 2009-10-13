@@ -91,7 +91,7 @@ public class SeriesPersonalizationEditor {
 
 		// ********** Main Layout ***************
 		GridLayout gl = new GridLayout();
-		gl.numColumns = 1;
+		gl.numColumns = 2;
 		sectionClientSeries.setLayout(gl);
 
 		//Image imageAdd = PlatformUI.getWorkbench( ).getSharedImages( ).getImage( ISharedImages.IMG_OBJ_ELEMENT);
@@ -117,13 +117,16 @@ public class SeriesPersonalizationEditor {
 		parsTable.setHeaderVisible (true);
 		GridData g=new GridData(GridData.FILL_BOTH);
 		//g.verticalSpan=2;
-		g.horizontalSpan=2;
+		g.horizontalSpan=2	;
 		parsTable.setLayoutData(g);
 
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.heightHint = 150;
 		data.widthHint=500;
 		parsTable.setLayoutData(data);
+
+		ChartEditorUtils.addBlanckSpace(sectionClientSeries);
+
 		//		TableColumn column1 = new TableColumn (parsTable, SWT.NONE);
 		//		column1.setText ("Serie Name");
 		//		column1.setWidth(300);
@@ -191,27 +194,30 @@ public class SeriesPersonalizationEditor {
 		//******************	Serie NAME *********************
 
 		final Group group=new Group(sectionClientSeries, SWT.NULL);
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
 		GridLayout g2 = new GridLayout();
-		gl.numColumns = 2;
+		g2.numColumns =4 ;
 		group.setLayout(g2);
-
+		
 		Label newNameLabel = new Label(group, SWT.NULL); 
-		newNameLabel.setText("Serie Name: ");
+		newNameLabel.setText("    Serie Name: ");
 		newNameLabel.setToolTipText("New serie's name");
-		newNameLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		//newNameLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		//newNameLabel.pack();		
 		newSerName = new Text(group, SWT.BORDER);
-		newSerName.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		newSerName.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 		newSerName.setEnabled(true);
 
 
 		newSerLabel=new Label(group, SWT.NULL); ;
-		newSerLabel.setText("Label Serie: ");		
-		newSerLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		newSerLabel.setText("                         Label Serie: ");		
+		//newSerLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		newSerLabel.pack();
 		newSerLabelText=new Text(group, SWT.BORDER);;
 		newSerLabelText.setToolTipText("Serie Label");
-		newSerLabelText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		//newSerLabelText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		newSerLabelText.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 		newSerLabelText.pack();
 		newSerLabelText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
@@ -241,8 +247,7 @@ public class SeriesPersonalizationEditor {
 		colorLabel = new Label(innerSection, SWT.BORDER);
 		colorButton = new Button(innerSection, SWT.PUSH);
 		colorButton.setToolTipText("Color of the serie");
-		newColorLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
-		newColorLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		//newColorLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		newColorLabel.setText("    Color serie: ");
 		//		newColorLabel.setEnabled(false);
 		newColorLabel.pack();
@@ -298,8 +303,8 @@ public class SeriesPersonalizationEditor {
 
 
 		drawLabel=new Label(group, SWT.NULL);
-		drawLabel.setText("    Draw style: ");		
-		drawLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		drawLabel.setText("                         Draw style: ");		
+		//drawLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		drawLabel.pack();
 
 		comboDraw=new Combo(group,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
@@ -307,7 +312,7 @@ public class SeriesPersonalizationEditor {
 		comboDraw.add("line");
 		comboDraw.add("line_no_shape");
 		comboDraw.select(0);
-		comboDraw.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		//comboDraw.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		comboDraw.pack();
 		comboDraw.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
@@ -333,15 +338,15 @@ public class SeriesPersonalizationEditor {
 
 		newColorLabel.setToolTipText("Set the drawing shape; can be bar, line or line without shape on the category point");
 		scaleLabel=new Label(group, SWT.NULL);
-		scaleLabel.setText("  Map to scale: ");		
-		scaleLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		scaleLabel.setText("    Map to scale: ");		
+		//scaleLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		comboScale=new Combo(group,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
 		comboScale.setToolTipText("Map the serie to the first or to the second scale");
 		comboScale.add("1");
 		comboScale.add("2");
 		comboScale.select(0);
 		comboScale.pack();
-		comboScale.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
+		//comboScale.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 		comboScale.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
 				model.getEditor().setIsDirty(true);				

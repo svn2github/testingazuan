@@ -79,17 +79,25 @@ public class SpagoBIEngineRuntimeException extends RuntimeException {
     	super(ex);
     }
     
-    public String getRootCause() {
-		String rootCause;		
-		Throwable rootException;
+    public Throwable getRootException() {
+    	Throwable rootException;
 		
 		rootException = this;
 		while(rootException.getCause() != null) {
 			rootException = rootException.getCause();
 		}
 		
+		return rootException;
+    }
+    
+    public String getRootCause() {
+		String rootCause;		
+		Throwable rootException;
+		
+		rootException = getRootException();
+		
 		rootCause = rootException.getMessage()!=null
-			? rootException.getClass().getName() + ": " + rootException.getMessage()
+			? rootException.getMessage()
 			: rootException.getClass().getName();
 		
 		return rootCause;

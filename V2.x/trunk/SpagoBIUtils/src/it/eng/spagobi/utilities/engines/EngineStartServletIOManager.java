@@ -155,7 +155,7 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 	  public SourceBean getTemplateAsSourceBean() {
 		  SourceBean templateSB = null;
 		  try {
-			  templateSB=SourceBean.fromXMLString(getTemplateAsString());
+			  templateSB = SourceBean.fromXMLString(getTemplateAsString());
 		  } catch (SourceBeanException e) {
 				logger.error("Impossible to decode template's content\n" + e);
 				throw new SpagoBIRuntimeException("Impossible to decode template's content [" + template.getFileName() + "]", e);
@@ -170,21 +170,24 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 		  return new String(getTemplate());
 	  }
 	  
-	  public byte[] getTemplate() {			
-		  	if(template == null) {
+	  public byte[] getTemplate() {	
+		  byte[] templateContent = null;
+		  
+		  if(template == null) {
 		  		contentProxy = getContentServiceProxy();
 				HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters( getRequestContainer() );
 				template = contentProxy.readTemplate(documentId, requestParameters);
-				logger.debug("Read the template ["+ template.getFileName() + " ]");	
-		  	}
+				logger.debug("Read the template ["+ template.getFileName() + "]");	
+		  }
 		  
-			byte[] templateContent = null;
-			try {
-				templateContent = DECODER.decodeBuffer(template.getContent());
-			} catch (IOException e) {
-				throw new SpagoBIRuntimeException("Impossible to get content from template [" + template.getFileName() + "]", e);
-			}
-			return templateContent;
+		  
+		  try {
+			  templateContent = DECODER.decodeBuffer(template.getContent());
+		  } catch (IOException e) {
+			  throw new SpagoBIRuntimeException("Impossible to get content from template [" + template.getFileName() + "]", e);
+		  }
+		
+		  return templateContent;
 	}
 	  
 	private SourceBean getTemplateX(String userId, String documentId) {

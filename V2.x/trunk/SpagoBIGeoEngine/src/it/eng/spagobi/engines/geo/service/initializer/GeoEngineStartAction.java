@@ -21,9 +21,7 @@
 package it.eng.spagobi.engines.geo.service.initializer;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -43,6 +41,7 @@ import it.eng.spagobi.tools.datasource.bo.IDataSource;
 import it.eng.spagobi.utilities.callbacks.mapcatalogue.MapCatalogueAccessUtils;
 import it.eng.spagobi.utilities.engines.AbstractEngineStartAction;
 import it.eng.spagobi.utilities.engines.EngineConstants;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
 
 
 /**
@@ -72,6 +71,8 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 	
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(GeoEngineStartAction.class);
+    
+    public static final String ENGINE_NAME = "SpagoBIGeoEngine";
 	
 
 	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws GeoEngineException {
@@ -95,7 +96,10 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 		logger.debug("IN");		
 		
 		try {
+			setEngineName(ENGINE_NAME);
 			super.service(serviceRequest, serviceResponse);
+			
+			//if(true) throw new SpagoBIEngineStartupException(getEngineName(), "Test exception");
 						
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
@@ -157,19 +161,23 @@ public class GeoEngineStartAction extends AbstractEngineStartAction {
 			String id = getAttributeAsString("SBI_EXECUTION_ID");
 			setAttributeInSession(GEO_ENGINE_INSTANCE, geoEngineInstance);					
 		} catch (Exception e) {
-			if(e instanceof GeoEngineException) throw (GeoEngineException)e;
-			GeoEngineException geoException;
-			String description = "An unpredicted error occurred while executing " + getActionName() + " service.";
-			Throwable rootException = e;
-			while(rootException.getCause() != null) rootException = rootException.getCause();
-			String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
-			description += "<br>The root cause of the error is: " + str;
-			List hints = new ArrayList();
-			hints.add("Sorry, there are no hints available right now on how to fix this problem");
-			geoException =  new GeoEngineException("Service error", e);
-			geoException.setHints(hints);
-			geoException.setDescription(description);
-			throw geoException;
+			SpagoBIEngineStartupException serviceException = null;
+						
+			if(e instanceof SpagoBIEngineStartupException) {
+				serviceException = (SpagoBIEngineStartupException)e;
+			} else {
+				Throwable rootException = e;
+				while(rootException.getCause() != null) {
+					rootException = rootException.getCause();
+				}
+				String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+				String message = "An unpredicted error occurred while executing " + getEngineName() + " service."
+								 + "\nThe root cause of the error is: " + str;
+				
+				serviceException = new SpagoBIEngineStartupException(getEngineName(), message, e);
+			}
+			
+			throw serviceException;
 		} finally {
 			if(hitsByExecutionContext != null) hitsByExecutionContext.stop();
 			if(hitsByDocumentId != null) hitsByDocumentId.stop();

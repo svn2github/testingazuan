@@ -37,6 +37,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.geo.GeoEngineConstants;
 import it.eng.spagobi.engines.geo.map.utils.SVGMapConverter;
+import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
 import it.eng.spagobi.utilities.service.IStreamEncoder;
 
 
@@ -106,12 +107,16 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 			
 			totalTimePerFormatMonitor = MonitorFactory.start("GeoEngine.drawMapAction." + outputFormat + "totalTime");
 			
-						
-			if(outputFormat.equalsIgnoreCase(GeoEngineConstants.PDF)){
-				maptmpfile = getGeoEngineInstance().renderMap( GeoEngineConstants.JPEG );
-				
-			}else{
-				maptmpfile = getGeoEngineInstance().renderMap( outputFormat );
+			
+			try {
+				if(outputFormat.equalsIgnoreCase(GeoEngineConstants.PDF)){
+					maptmpfile = getGeoEngineInstance().renderMap( GeoEngineConstants.JPEG );
+					
+				}else{
+					maptmpfile = getGeoEngineInstance().renderMap( outputFormat );
+				}
+			} catch (Throwable t) {
+				 throw new DrawMapServiceException(getActionName(), "Impossible to render map", t);
 			}
 			
 			responseFileName = "map.svg";
@@ -185,17 +190,21 @@ public class DrawMapAction extends AbstractGeoEngineAction {
 		} catch (Throwable t) {
 			errorHitsMonitor = MonitorFactory.start("GeoEngine.errorHits");
 			errorHitsMonitor.stop();
-			if(t instanceof DrawMapServiceException) throw (DrawMapServiceException)t;
-			
-			Throwable rootException = t;
-			while(rootException.getCause() != null) {
-				rootException = rootException.getCause();
+			DrawMapServiceException wrappedException;
+			if(t instanceof DrawMapServiceException) {
+				wrappedException = (DrawMapServiceException)t;
+			} else {
+				wrappedException = new DrawMapServiceException(getActionName(), "An unpredicted error occurred while executing " + getActionName() + " service", t);
 			}
-			String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
-			String message = "An unpredicted error occurred while executing " + getActionName() + " service."
-							 + "\nThe root cause of the error is: " + str;
 			
-			throw new DrawMapServiceException(getActionName(), message, t);
+			
+			wrappedException.setDescription(wrappedException.getRootCause());
+			Throwable rootException = wrappedException.getRootException();
+			if(rootException instanceof SpagoBIEngineRuntimeException) {
+				wrappedException.setHints( ((SpagoBIEngineRuntimeException)rootException).getHints() );
+			}
+			
+			throw wrappedException;
 		} finally {
 			if(flushingResponseTotalTimeMonitor != null) flushingResponseTotalTimeMonitor.stop();
 			if(totalTimePerFormatMonitor != null) totalTimePerFormatMonitor.stop();

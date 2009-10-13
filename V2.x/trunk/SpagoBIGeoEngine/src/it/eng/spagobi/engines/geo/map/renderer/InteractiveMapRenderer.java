@@ -1177,15 +1177,15 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 				viewBox = targetMap.getRootElement().getAttribute("viewBox");
 			} catch(Throwable t) {
 				MapRenderingException e = new MapRenderingException("Impossible to read attribute [viewBox] from target map's root node");
-				e.addHint("add to the map svg main tag an the attribute viewbox with the following value: " +
-						"0 0 W D (where W and H are respectively your map width and height)");
-				throw new MapRenderingException("Impossible to read attribute [viewBox] from target map's root node");
+				e.addHint("add to the svg map root tag the attribute [viewbox] with the following value: ]" +
+						"0 0 W D] (where W and H are respectively your map width and height)");
+				throw e;
 			}
 			if(StringUtilities.isEmpty(viewBox)) {
 				MapRenderingException e = new MapRenderingException("Impossible to read attribute [viewBox] from target map's root node");
-				e.addHint("add to the map svg main tag an the attribute viewbox with the following value: " +
-						"0 0 W D (where W and H are respectively your map width and height)");
-				throw new MapRenderingException("Impossible to read attribute [viewBox] from target map's root node");
+				e.addHint("add to the svg map root tag the attribute [viewbox] with the following value: [" +
+						"0 0 W D] (where W and H are respectively your map width and height)");
+				throw e;
 			}
 			logger.debug("Target map vieBox is equal to [" + viewBox + "]");
 			chunks = viewBox.trim().split(" ");

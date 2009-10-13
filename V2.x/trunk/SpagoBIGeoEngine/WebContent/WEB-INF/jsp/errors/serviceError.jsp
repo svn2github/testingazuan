@@ -13,6 +13,9 @@
 <%@page import="it.eng.spagobi.engines.geo.*"%>
 <%@page import="it.eng.spago.error.*"%>
 <%@page import="java.util.*"%>
+<%@page import="it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException"%>
+
+
 
 
 
@@ -20,26 +23,36 @@
 <%-- ---------------------------------------------------------------------- --%>
 <%-- JAVA CODE 																--%>
 <%-- ---------------------------------------------------------------------- --%>
-<% // lucky for us no code yet %>
+<%
+	Exception exception = null;
+
+	String message = "No message";
+	List hints = new ArrayList();
+	String description = "no description available";
+
+	try {
+		EMFErrorHandler errorHandler = getErrorHandler(request);
+		Iterator it = errorHandler.getErrors().iterator();
+		EMFInternalError error = (EMFInternalError)it.next();	
+		exception = error.getNativeException();
+				
+		if(exception instanceof SpagoBIEngineRuntimeException) {
+			SpagoBIEngineRuntimeException engineException = (SpagoBIEngineRuntimeException)exception;
+			description = engineException.getDescription();
+			hints = engineException.getHints();
+		}
+	} catch(Throwable t) {
+		t.printStackTrace();
+		message = t.getClass().getName() + " : " +  t.getMessage();
+	}
+%>
 
 <%-- ---------------------------------------------------------------------- --%>
 <%-- HTML	 																--%>
 <%-- ---------------------------------------------------------------------- --%>
 
 
-<%
-	EMFErrorHandler errorHandler = getErrorHandler(request);
-	Iterator it = errorHandler.getErrors().iterator();
-	EMFInternalError error = (EMFInternalError)it.next();	
-	Exception exception = error.getNativeException();
-	String description = "no description available";
-	List hints = null;
-	if(exception instanceof GeoEngineException) {
-		GeoEngineException geoException = (GeoEngineException)exception;
-		description = geoException.getDescription();
-		hints = geoException.getHints();
-	}
-%>
+
 
 <HTML>
 	<HEAD>
@@ -66,7 +79,7 @@
 		    <br/><br/>
 		    <b>How to fix it:</b> <br>
 		    <ul>
-		    <% if (hints == null) {%>
+		    <% if (hints == null || hints.size() == 0) {%>
 		    
 		    <%} else { 
 		    	for(int i = 0; i < hints.size(); i++) {

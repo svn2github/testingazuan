@@ -3,7 +3,7 @@
 }
 
 .icon-back {
-	background-image: url('../../../img/back16.png') !important;
+	background-image: url('../../../img/analiticalmodel/execution/ico_back.png') !important;
 }
 
 .icon-save {
@@ -40,7 +40,7 @@
 }
 
 .icon-refresh {
-	background-image: url('../../../img/refresh16.png') !important;
+	background-image: url('../../../img/analiticalmodel/execution/ico_refresh.png') !important;
 }
 
 .icon-sendMail {
@@ -56,7 +56,7 @@
 }
 
 .icon-notes {
-	background-image: url('../../../img/notes16.png') !important;
+	background-image: url('../../../img/analiticalmodel/execution/ico_note.png') !important;
 }
 
 .icon-metadata {
@@ -72,7 +72,7 @@
 }
 
 .icon-print {
-	background-image: url('../../../img/printer16.png') !important;
+	background-image: url('../../../img/analiticalmodel/execution/ico_print.png') !important;
 }
 
 .icon-pdf {
@@ -113,7 +113,7 @@
 
 
 .icon-export {
-	background-image: url('../../../img/Export.gif') !important;
+	background-image: url('../../../img/analiticalmodel/execution/ico_exporter.png') !important;
 }
 
 .x-form-dependent-field {

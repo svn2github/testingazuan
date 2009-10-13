@@ -98,7 +98,7 @@ author: Andrea Gioia (andrea.gioia@eng.it)
 		<script type="text/javascript">
 		document.domain='<%= EnginConf.getInstance().getSpagoBiDomain() %>';
 		</script>
-		<%-- END SCRIPT FOR DOMAIN DEFINITION --%>
+		<-- END SCRIPT FOR DOMAIN DEFINITION --%>
 	
 	</head>
 	

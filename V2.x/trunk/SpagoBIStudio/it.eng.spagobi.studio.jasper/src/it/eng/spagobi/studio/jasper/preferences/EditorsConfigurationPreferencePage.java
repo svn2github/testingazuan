@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.jasper.preferences;
 
+import it.eng.spagobi.studio.core.preferences.PreferenceConstants;
 import it.eng.spagobi.studio.jasper.Activator;
 
 import org.eclipse.jface.preference.DirectoryFieldEditor;

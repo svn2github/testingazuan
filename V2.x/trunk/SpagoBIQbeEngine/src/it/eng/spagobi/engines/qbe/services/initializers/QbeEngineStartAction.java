@@ -68,6 +68,9 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
     		setEngineName(ENGINE_NAME);
 			super.service(serviceRequest, serviceResponse);
 			
+			
+			//if(true) throw new SpagoBIEngineStartupException(getEngineName(), "Test exception");
+			
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
@@ -140,7 +143,6 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			
 		} catch (Throwable e) {
 			SpagoBIEngineStartupException serviceException = null;
-			String engineName = "SpagoBIQbeEngine";
 			
 			if(e instanceof SpagoBIEngineStartupException) {
 				serviceException = (SpagoBIEngineStartupException)e;
@@ -150,10 +152,10 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 					rootException = rootException.getCause();
 				}
 				String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
-				String message = "An unpredicted error occurred while executing " + engineName + " service."
+				String message = "An unpredicted error occurred while executing " + getEngineName() + " service."
 								 + "\nThe root cause of the error is: " + str;
 				
-				serviceException = new SpagoBIEngineStartupException(engineName, message, e);
+				serviceException = new SpagoBIEngineStartupException(getEngineName(), message, e);
 			}
 			
 			throw serviceException;

@@ -220,6 +220,7 @@ Ext.extend(Sbi.qbe.FilterGridPanel, Ext.Panel, {
 
 	, deleteFilters : function() {
 		this.grid.store.removeAll();
+		this.setWizardExpression(false);
 	}
 	
 	, getFilters : function() {

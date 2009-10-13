@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<ACTIONS>			
-	<ACTION name="PUBLISH_ACTION" class="it.eng.spago.dispatching.action.util.PublishAction" scope="REQUEST">
+<!-- ================================================================================= -->
+<!-- QBE BASE ACTIONS 																   -->
+<!-- ================================================================================= -->
+
+<ACTIONS>		
+
+	<!-- ================================================================================= -->
+	<!-- DISPATCHER																			   -->
+	<!-- ================================================================================= -->	
+	<ACTION name="PUBLISH_ACTION" 
+	 		class="it.eng.spago.dispatching.action.util.PublishAction" 	
+	 		scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>	
 	
-	<ACTION name="SERVICE_EXCEPTION_ACTION" class="it.eng.spagobi.engines.qbe.services.ServiceExceptionAction" scope="REQUEST">
+	<!-- ================================================================================= -->
+	<!-- TRAPS																			   -->
+	<!-- ================================================================================= -->
+	
+	<ACTION name="SERVICE_EXCEPTION_TRAP_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.ServiceExceptionAction" 
+			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
 	
-	<ACTION name="ENGINE_STARTUP_EXCEPTION_ACTION" class="it.eng.spagobi.engines.qbe.services.EngineStartupExceptionAction" scope="REQUEST">
+	<ACTION name="ENGINE_STARTUP_EXCEPTION_TRAP_ACTION" 
+			class="it.eng.spagobi.utilities.engines.EngineStartupExceptionTrapAction" 
+			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>
 	

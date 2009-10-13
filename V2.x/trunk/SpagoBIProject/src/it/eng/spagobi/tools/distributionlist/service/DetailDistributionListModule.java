@@ -73,6 +73,7 @@ public class DetailDistributionListModule extends AbstractModule {
 	 * @throws Exception the exception
 	 */
 	public void service(SourceBean request, SourceBean response) throws Exception {
+		logger.debug("IN");
 		String message = (String) request.getAttribute("MESSAGEDET");
 		logger.debug("begin of detail Distribution List service with message =" +message);
 		EMFErrorHandler errorHandler = getErrorHandler();
@@ -104,6 +105,7 @@ public class DetailDistributionListModule extends AbstractModule {
 			errorHandler.addError(internalError);
 			return;
 		}
+		logger.debug("OUT");
 	}
 	
 	 
@@ -117,7 +119,8 @@ public class DetailDistributionListModule extends AbstractModule {
 	 * @param response The response Source Bean
 	 * @throws EMFUserError If an exception occurs
 	 */   
-	private void getDistributionList(SourceBean request, SourceBean response) throws EMFUserError {		
+	private void getDistributionList(SourceBean request, SourceBean response) throws EMFUserError {	
+		logger.debug("IN");
 		try {		 									
 			DistributionList dl = DAOFactory.getDistributionListDAO().loadDistributionListById(new Integer((String)request.getAttribute("DL_ID")));		
 			this.modalita = SpagoBIConstants.DETAIL_MOD;
@@ -138,6 +141,7 @@ public class DetailDistributionListModule extends AbstractModule {
 			params.put(AdmintoolsConstants.PAGE, ListDistributionListModule.MODULE_PAGE);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 9107, new Vector(), params);
 		}
+		logger.debug("OUT");
 		
 	}
 	 /**
@@ -155,7 +159,7 @@ public class DetailDistributionListModule extends AbstractModule {
 	
 	private void modifyDistributionList(SourceBean serviceRequest, String mod, SourceBean serviceResponse)
 		throws EMFUserError, SourceBeanException {
-		
+		logger.debug("IN");
 		try {
 			
 			DistributionList dlNew = recoverDistributionListDetails(serviceRequest);
@@ -222,7 +226,8 @@ public class DetailDistributionListModule extends AbstractModule {
 		catch (Exception ex) {		
 			logger.error("Cannot fill response container" , ex);		
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
-		}			
+		}	
+		logger.debug("OUT");
 	}
 
 	/**
@@ -236,7 +241,7 @@ public class DetailDistributionListModule extends AbstractModule {
 	 */
 	private void deleteDistributionList(SourceBean request, String mod, SourceBean response)
 		throws EMFUserError, SourceBeanException {
-		
+		logger.debug("IN");
 		try {
 			String id = (String) request.getAttribute("DL_ID");
 			
@@ -256,7 +261,8 @@ public class DetailDistributionListModule extends AbstractModule {
 			logger.error("Cannot fill response container" ,ex);
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 	    }
-	    response.setAttribute("loopback", "true");			
+	    response.setAttribute("loopback", "true");		
+	    logger.debug("OUT");
 	}
 
 
@@ -270,7 +276,7 @@ public class DetailDistributionListModule extends AbstractModule {
 	 */
 
 	private void newDistributionList(SourceBean response) throws EMFUserError {
-		
+		logger.debug("IN");
 		try {
 			
 			DistributionList dl = null;
@@ -288,11 +294,13 @@ public class DetailDistributionListModule extends AbstractModule {
 			logger.error("Cannot prepare page for the insertion" , ex);		
 			throw new EMFUserError(EMFErrorSeverity.ERROR, 100);
 		}
+		logger.debug("OUT");
 		
 	}
 
 
 	private DistributionList recoverDistributionListDetails (SourceBean serviceRequest) throws EMFUserError, SourceBeanException, IOException  {
+		logger.debug("IN");
 		DistributionList dl  = new DistributionList();
 		
 		String id = (String)serviceRequest.getAttribute("id");
@@ -302,7 +310,7 @@ public class DetailDistributionListModule extends AbstractModule {
 		dl.setId((new Integer(id)).intValue());
 		dl.setName(name);
 		dl.setDescr(description);
-				
+		logger.debug("OUT");		
 		return dl;
 	}
 

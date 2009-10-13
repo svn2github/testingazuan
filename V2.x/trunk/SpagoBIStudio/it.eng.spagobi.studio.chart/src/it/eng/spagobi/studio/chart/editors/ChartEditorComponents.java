@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
@@ -75,7 +76,7 @@ public class ChartEditorComponents {
 	public void createStyleParametersForm(final ChartModel model, final ChartEditor editor, final Composite section, FormToolkit toolkit){
 		SpagoBILogger.infoLog("Start Style parameters form creation");
 		GridLayout gl = new GridLayout();
-		gl.numColumns = 4;
+		gl.numColumns = 1;
 		section.setLayout(gl);
 
 		Set<String> stylesTrattati=model.getStyleParametersEditors().keySet();
@@ -84,26 +85,33 @@ public class ChartEditorComponents {
 			String styleName = (String) iterator.next();
 			SpagoBILogger.infoLog("Style parameter "+styleName);			
 			final Style style=model.getStyleParametersEditors().get(styleName);
-			Label styleLabel = new Label(section, SWT.BORDER_DOT);
-			styleLabel.setText(style.getDescription());
-			styleLabel.setForeground(new Color(section.getDisplay(),0,0,255));
+			Group group=new Group(section,SWT.NULL);
+			group.setText(style.getDescription());
+			group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			group.setToolTipText(style.getTooltip());
+			GridLayout gl1 = new GridLayout();
+			gl1.numColumns = 4;
+			group.setLayout(gl1);			
+//			Label styleLabel = new Label(group, SWT.BORDER_DOT);
+//			styleLabel.setText(style.getDescription());
+//			styleLabel.setForeground(new Color(group.getDisplay(),0,0,255));
 			if(style.getTooltip()!=null){
-				styleLabel.setToolTipText(style.getTooltip());
+//				styleLabel.setToolTipText(style.getTooltip());
 			}
-			Label spaceLabel1 = new Label(section, SWT.BORDER_DOT);
-			spaceLabel1.setText("");
-			spaceLabel1 = new Label(section, SWT.BORDER_DOT);
-			spaceLabel1.setText("");
-			spaceLabel1 = new Label(section, SWT.BORDER_DOT);
-			spaceLabel1.setText("");
+			//			Label spaceLabel1 = new Label(section, SWT.BORDER_DOT);
+			//			spaceLabel1.setText("");
+			//			spaceLabel1 = new Label(section, SWT.BORDER_DOT);
+			//			spaceLabel1.setText("");
+			//			spaceLabel1 = new Label(section, SWT.BORDER_DOT);
+			//			spaceLabel1.setText("");
 
 			// Draw Parameters form
 			if(style.isHasSize()){
-				Label sizeLabel = new Label(section, SWT.NULL);
+				Label sizeLabel = new Label(group, SWT.NULL);
 				sizeLabel.setText("		Size:");
 				sizeLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 
-				final Spinner styleSizeText = new Spinner (section, SWT.BORDER);
+				final Spinner styleSizeText = new Spinner (group, SWT.BORDER);
 				styleSizeText.setMaximum(100000);
 				styleSizeText.setMinimum(0);
 				styleSizeText.setSelection(style.getSize()!=null?style.getSize() : 10);
@@ -127,21 +135,21 @@ public class ChartEditorComponents {
 				});
 			}
 			else{
-				Label sl=new Label(section,SWT.NULL);
+				Label sl=new Label(group,SWT.NULL);
 				sl.setText("");
-				sl=new Label(section,SWT.NULL);
+				sl=new Label(group,SWT.NULL);
 				sl.setText("");
 			}
 
 
 
 			if(style.isHasFont()){
-				Label fontLabel = new Label(section, SWT.NULL);
+				Label fontLabel = new Label(group, SWT.NULL);
 				fontLabel.setText("			Font:");
 				fontLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 				//fontLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-				final Combo styleFontCombo = new Combo(section,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
+				final Combo styleFontCombo = new Combo(group,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
 				styleFontCombo.add("Helvetica");
 				styleFontCombo.add("Times_New_Roman");
 				styleFontCombo.add("Arial");
@@ -158,23 +166,23 @@ public class ChartEditorComponents {
 				});
 			}
 			else{
-				Label sl=new Label(section,SWT.NULL);
+				Label sl=new Label(group,SWT.NULL);
 				sl.setText("");
-				sl=new Label(section,SWT.NULL);
+				sl=new Label(group,SWT.NULL);
 				sl.setText("");
 			}
 
 			if(style.isHasColor()){
-				Label colorLabel1 = new Label(section, SWT.NULL);
+				Label colorLabel1 = new Label(group, SWT.NULL);
 				colorLabel1.setText("		Color:");
 				colorLabel1.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-				Composite innerSection = toolkit.createComposite(section);
+				Composite innergroup = toolkit.createComposite(group);
 				GridLayout colorGd = new GridLayout();
 				colorGd.numColumns = 2;
 				colorGd.marginHeight = 0;
 				colorGd.marginBottom = 0;
-				innerSection.setLayout(colorGd);
-				final Label colorLabel = new Label(innerSection, SWT.BORDER);
+				innergroup.setLayout(colorGd);
+				final Label colorLabel = new Label(innergroup, SWT.BORDER);
 				colorLabel.setText("          ");
 				String hexadecimal = style.getColor()!=null ? ChartEditor.convertRGBToHexadecimal(style.getColor()) : "#FFFFFF";
 				RGB rgb =null;
@@ -184,11 +192,11 @@ public class ChartEditorComponents {
 				catch (Exception e) {
 					rgb=new RGB(255,0,0);
 				}
-				final Color color = new org.eclipse.swt.graphics.Color(section.getDisplay(), rgb);
+				final Color color = new org.eclipse.swt.graphics.Color(group.getDisplay(), rgb);
 				colorLabel.setBackground(color);
-				Button button = new Button(innerSection, SWT.PUSH);
+				Button button = new Button(innergroup, SWT.PUSH);
 				button.setText("Color...");
-				final Shell parentShell = section.getShell();
+				final Shell parentShell = group.getShell();
 				button.addSelectionListener(new SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
 						final Shell centerShell = new Shell(parentShell, SWT.NO_TRIM);
@@ -216,20 +224,20 @@ public class ChartEditorComponents {
 				});
 			}
 			else{
-				Label sl=new Label(section,SWT.NULL);
+				Label sl=new Label(group,SWT.NULL);
 				sl.setText("");
-				sl=new Label(section,SWT.NULL);
+				sl=new Label(group,SWT.NULL);
 				sl.setText("");
 			}
-			
-			
+
+
 
 			if(style.isHasOrientation()){
-				Label orientationLabel = new Label(section, SWT.NULL);
+				Label orientationLabel = new Label(group, SWT.NULL);
 				orientationLabel.setText("			Orientation:");
 				orientationLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 
-				final Combo combo = new Combo(section,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
+				final Combo combo = new Combo(group,  SWT.SIMPLE | SWT.DROP_DOWN | SWT.READ_ONLY);
 				boolean selected=false;
 				combo.add(Style.HORIZONTAL);
 				combo.add(Style.VERTICAL);
@@ -247,9 +255,9 @@ public class ChartEditorComponents {
 				});
 			}
 			else{
-				Label sl=new Label(section,SWT.NULL);
+				Label sl=new Label(group,SWT.NULL);
 				sl.setText("");
-				sl=new Label(section,SWT.NULL);
+				sl=new Label(group,SWT.NULL);
 				sl.setText("");
 			}
 

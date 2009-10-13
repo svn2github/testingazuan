@@ -82,7 +82,6 @@ public class TestConnectionAction extends AbstractHttpAction {
 		
 		String schema=(String)profile.getUserAttribute(schemaattr);
 		logger.debug("schema:"+ schema);
-		
 		Connection connection = null;
 		Context ctx;
 		try {
@@ -112,7 +111,7 @@ public class TestConnectionAction extends AbstractHttpAction {
 			httResponse.getOutputStream().write(message.getBytes());
 			httResponse.getOutputStream().flush();
 			if ((connection != null) && (!connection.isClosed())) connection.close();
-			logger.debug("OUT");
+			logger.debug("OUT "+message);
 		}
 	}	
 }

@@ -94,7 +94,7 @@ public class DrillConfigurationEditor {
 
 		// URL PAR
 		Label urlLabel = new Label(sectionClientDrill, SWT.NULL);
-		urlLabel.setText("			Document Label:");
+		urlLabel.setText("Document Label:");
 		urlLabel.pack();
 		urlValueText = new Text(sectionClientDrill, SWT.BORDER);
 		urlValueText.setToolTipText("The label of the document to drill in");
@@ -116,7 +116,7 @@ public class DrillConfigurationEditor {
 
 		// CAT PAR
 		Label catLabel = new Label(sectionClientDrill, SWT.NULL);
-		catLabel.setText("			Category Url Name:");
+		catLabel.setText("Category Url Name:");
 		catLabel.pack();
 		catValueText = new Text(sectionClientDrill, SWT.BORDER);
 		catValueText.setToolTipText("the name with wich the category you choose will be passed to the drill document");
@@ -139,7 +139,7 @@ public class DrillConfigurationEditor {
 
 		// SER PAR
 		Label serLabel = new Label(sectionClientDrill, SWT.NULL);
-		serLabel.setText("			Serie Url Name:");
+		serLabel.setText("Serie Url Name:");
 		serLabel.pack();
 		serValueText = new Text(sectionClientDrill, SWT.BORDER);
 		serValueText.setToolTipText("the name with wich the serie you choose will be passed to the drill document");
@@ -164,11 +164,12 @@ public class DrillConfigurationEditor {
 		group = new Group(sectionClientDrill, SWT.NULL);
 
 
-		group.setText("---------- ADD PARAMETER ----------");
+		group.setText("ADD PARAMETER");
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
 		group.setLayout(gridLayout);		
-		GridData gridDataView = new GridData(GridData.FILL_BOTH);
+		GridData gridDataView = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		gridDataView.horizontalSpan=2;
 		group.setLayoutData(gridDataView);
 
 		final Button buttonAdd = new Button(group, SWT.PUSH);

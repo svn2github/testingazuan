@@ -101,7 +101,7 @@ public class ScatterRangeMarkerEditor {
 		ChartEditorUtils.addBlanckSpace(sectionClientScatter);
 
 		xRangeValueLowLabel = new Label(sectionClientScatter, SWT.NULL); 
-		xRangeValueLowLabel.setText("Low Value: ");
+		xRangeValueLowLabel.setText("     Low Value: ");
 		xRangeValueLowSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		xRangeValueLowSpinner.setToolTipText("Minimum value of the interval");
 		xRangeValueLowSpinner.setMaximum(1000000);
@@ -129,7 +129,7 @@ public class ScatterRangeMarkerEditor {
 		});
 
 		xRangeValueHighLabel = new Label(sectionClientScatter, SWT.NULL); 
-		xRangeValueHighLabel.setText("High Value: ");
+		xRangeValueHighLabel.setText("     High Value: ");
 		xRangeValueHighSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		xRangeValueHighSpinner.setToolTipText("Minimum value of the interval");
 		xRangeValueHighSpinner.setMaximum(1000000);
@@ -166,7 +166,7 @@ public class ScatterRangeMarkerEditor {
 		ChartEditorUtils.addBlanckSpace(sectionClientScatter);
 
 		yRangeValueLowLabel = new Label(sectionClientScatter, SWT.NULL); 
-		yRangeValueLowLabel.setText("Low Value: ");
+		yRangeValueLowLabel.setText("     Low Value: ");
 		yRangeValueLowSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		yRangeValueLowSpinner.setToolTipText("Minimum value of the interval");
 		yRangeValueLowSpinner.setMaximum(1000000);
@@ -194,7 +194,7 @@ public class ScatterRangeMarkerEditor {
 		});
 
 		yRangeValueHighLabel = new Label(sectionClientScatter, SWT.NULL); 
-		yRangeValueHighLabel.setText("High Value: ");
+		yRangeValueHighLabel.setText("     High Value: ");
 		yRangeValueHighSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		yRangeValueHighSpinner.setToolTipText("Minimum value of the interval");
 		yRangeValueHighSpinner.setMaximum(1000000);
@@ -231,7 +231,7 @@ public class ScatterRangeMarkerEditor {
 
 
 		xMarkerValueMarkerLabel = new Label(sectionClientScatter, SWT.NULL); 
-		xMarkerValueMarkerLabel.setText("Marker Value: ");
+		xMarkerValueMarkerLabel.setText("     Marker Value: ");
 		xMarkerValueMarkerSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		xMarkerValueMarkerSpinner.setToolTipText("Marker Value for the x Marker");
 		xMarkerValueMarkerSpinner.setMaximum(1000000);
@@ -260,7 +260,7 @@ public class ScatterRangeMarkerEditor {
 
 
 		xMarkerLabelLabel=new Label(sectionClientScatter, SWT.NULL);
-		xMarkerLabelLabel.setText("Label: ");
+		xMarkerLabelLabel.setText("     Label: ");
 
 		xMarkerLabelText=new Text(sectionClientScatter, SWT.BORDER);;
 		xMarkerLabelText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -281,7 +281,7 @@ public class ScatterRangeMarkerEditor {
 
 
 		xMarkerValueStartIntLabel = new Label(sectionClientScatter, SWT.NULL); 
-		xMarkerValueStartIntLabel.setText("Start Value: ");
+		xMarkerValueStartIntLabel.setText("     Start Value: ");
 		xMarkerValueStartIntSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		xMarkerValueStartIntSpinner.setToolTipText("Start Value for the x Marker");
 		xMarkerValueStartIntSpinner.setMaximum(1000000);
@@ -308,7 +308,7 @@ public class ScatterRangeMarkerEditor {
 
 
 		xMarkerValueEndIntLabel = new Label(sectionClientScatter, SWT.NULL); 
-		xMarkerValueEndIntLabel.setText("End Value: ");
+		xMarkerValueEndIntLabel.setText("     End Value: ");
 		xMarkerValueEndIntSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		xMarkerValueEndIntSpinner.setToolTipText("End Value for the x Marker");
 		xMarkerValueEndIntSpinner.setMaximum(1000000);
@@ -339,7 +339,7 @@ public class ScatterRangeMarkerEditor {
 
 
 		xMarkerColorIntLabel = new Label(sectionClientScatter, SWT.NULL); 
-		xMarkerColorIntLabel.setText("Color Int: ");
+		xMarkerColorIntLabel.setText("     Color Int: ");
 		xMarkerColorIntSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		xMarkerColorIntSpinner.setToolTipText("Color int");
 		xMarkerColorIntSpinner.setMaximum(1000000);
@@ -419,7 +419,7 @@ public class ScatterRangeMarkerEditor {
 
 
 		yMarkerValueMarkerLabel = new Label(sectionClientScatter, SWT.NULL); 
-		yMarkerValueMarkerLabel.setText("Marker Value: ");
+		yMarkerValueMarkerLabel.setText("     Marker Value: ");
 		yMarkerValueMarkerSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		yMarkerValueMarkerSpinner.setToolTipText("Marker Value for the y Marker");
 		yMarkerValueMarkerSpinner.setMaximum(1000000);
@@ -447,7 +447,7 @@ public class ScatterRangeMarkerEditor {
 		});
 
 		yMarkerLabelLabel=new Label(sectionClientScatter, SWT.NULL);
-		yMarkerLabelLabel.setText("Label: ");
+		yMarkerLabelLabel.setText("     Label: ");
 		yMarkerLabelText=new Text(sectionClientScatter, SWT.BORDER);;
 		yMarkerLabelText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		yMarkerLabelText.setToolTipText("Label for y Marker");
@@ -466,7 +466,7 @@ public class ScatterRangeMarkerEditor {
 
 
 		yMarkerValueStartIntLabel = new Label(sectionClientScatter, SWT.NULL); 
-		yMarkerValueStartIntLabel.setText("Start Value: ");
+		yMarkerValueStartIntLabel.setText("     Start Value: ");
 		yMarkerValueStartIntSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		yMarkerValueStartIntSpinner.setToolTipText("Start Value for the y Marker");
 		yMarkerValueStartIntSpinner.setMaximum(1000000);
@@ -492,7 +492,7 @@ public class ScatterRangeMarkerEditor {
 
 
 		yMarkerValueEndIntLabel = new Label(sectionClientScatter, SWT.NULL); 
-		yMarkerValueEndIntLabel.setText("End Value: ");
+		yMarkerValueEndIntLabel.setText("     End Value: ");
 		yMarkerValueEndIntSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		yMarkerValueEndIntSpinner.setToolTipText("End Value for the y Marker");
 		yMarkerValueEndIntSpinner.setMaximum(1000000);
@@ -518,7 +518,7 @@ public class ScatterRangeMarkerEditor {
 
 
 		yMarkerColorIntLabel = new Label(sectionClientScatter, SWT.NULL); 
-		yMarkerColorIntLabel.setText("Color Int: ");
+		yMarkerColorIntLabel.setText("     Color Int: ");
 		yMarkerColorIntSpinner = new Spinner(sectionClientScatter, SWT.BORDER);
 		yMarkerColorIntSpinner.setToolTipText("Color int");
 		yMarkerColorIntSpinner.setMaximum(1000000);

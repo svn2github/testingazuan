@@ -2,22 +2,16 @@ package it.eng.spagobi.studio.chart.editors;
 
 import it.eng.spagobi.studio.chart.editors.model.chart.ChartModel;
 import it.eng.spagobi.studio.chart.editors.model.chart.ChartModelFactory;
-import it.eng.spagobi.studio.chart.editors.model.chart.Parameter;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 
-import java.awt.CompositeContext;
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.PreparedStatement;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -36,12 +30,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
@@ -54,6 +45,15 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
+/**
+ * 
+ * @author gavardi
+ *
+ * The chart document editor
+ *
+ */
+
+
 public final class ChartEditor extends EditorPart {
 
 	protected boolean isDirty = false;
@@ -63,17 +63,8 @@ public final class ChartEditor extends EditorPart {
 
 	protected ChartEditorComponents components = null;
 
-
-
-
-
-
-
 	public ChartEditor() {
 		super();
-
-
-
 	}
 
 	public void doSave(IProgressMonitor monitor) {
@@ -93,7 +84,7 @@ public final class ChartEditor extends EditorPart {
 			SAXReader reader = new SAXReader();
 			Document thisDocument = reader.read(thisIs);
 			model.setThisDocument(thisDocument);
-		
+
 		} catch (CoreException e) {
 			SpagoBILogger.errorLog("Error while Saving Chart Template File",e);
 			e.printStackTrace();
@@ -111,9 +102,9 @@ public final class ChartEditor extends EditorPart {
 				}
 		}
 		setIsDirty(false);
-		
 
-		
+
+
 	}
 
 	public void doSaveAs() {
@@ -365,7 +356,7 @@ public final class ChartEditor extends EditorPart {
 			}
 		});
 
-		setIsDirty(true);
+		//setIsDirty(true);
 		try{
 			model.initializeEditor(this,components,toolkit,form);
 		}

@@ -50,7 +50,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <script type="text/javascript" src="<%=linkProtoEff%>"></script>
 <link href="<%=linkProtoDefThem%>" rel="stylesheet" type="text/css" />
 <link href="<%=linkProtoAlphaThem%>" rel="stylesheet" type="text/css" />
-	
+
+<%-- END CHECK USER PROFILE EXISTENCE 	
 <script type="text/javascript">
 	Ext.onReady(function(){
 		Ext.Ajax.request({
@@ -70,7 +71,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	
 	function somethingWentWrongWhileCheckingUserProfileExistence() {}
 	</script>
-<%-- END CHECK USER PROFILE EXISTENCE --%>
+ END CHECK USER PROFILE EXISTENCE --%>
 
 
 <%  

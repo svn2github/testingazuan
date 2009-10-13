@@ -181,9 +181,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			while(it.hasNext()){
 				
 				Email user=(Email)it.next();
-				String userName = user.getUserId();
-				if((userName==null) || (userName.equalsIgnoreCase("null"))  ) {
-					   userName = "";
+				String userNameDL = user.getUserId();
+				if((userNameDL==null) || (userNameDL.equalsIgnoreCase("null"))  ) {
+					userNameDL = "";
 				   }
 				String userEmail = user.getEmail();
 				if((userEmail==null) || (userEmail.equalsIgnoreCase("null"))  ) {
@@ -192,7 +192,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		 %>
 				
 		<tr class='portlet-font'>
-		 	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=StringEscapeUtils.escapeHtml(userName) %>	 			
+		 	<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=StringEscapeUtils.escapeHtml(userNameDL) %>	 			
 			</td>	
 			<td class='portlet-section-body' style='vertical-align:left;text-align:left;'><%=StringEscapeUtils.escapeHtml(userEmail) %>
 			</td>

@@ -87,8 +87,10 @@ public class TestConnectionAction extends AbstractHttpAction {
 		Context ctx;
 		try {
 			if (isjndi.equals("true")){
+					String jndiName = schema == null ? jndi : jndi + schema;
+					logger.debug("Lookup JNDI name:"+ jndiName);
 				    ctx = new InitialContext();
-				    DataSource ds = (DataSource) ctx.lookup(jndi+schema);
+				    DataSource ds = (DataSource) ctx.lookup(jndiName);
 				    connection = ds.getConnection();
 			}else if (isjndi.equals("false")){			
 				    Class.forName(driver);

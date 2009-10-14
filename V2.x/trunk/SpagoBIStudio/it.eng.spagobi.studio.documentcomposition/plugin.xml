@@ -41,6 +41,18 @@
                 name="Word View"
                 icon="icons\view.gif"
                 class="it.eng.spagobi.studio.documentcomposition.views.WordView"/>
+	</extension>
+	
+	<!-- tabs di navigazione -->
+	<extension point="org.eclipse.ui.views">
+    	 <category 
+           id="org.eclipse.ui.article"
+           name="Navigazione">
+        </category>
+        <view id="it.eng.spagobi.studio.documentcomposition.views"
+                name="Navigazione"
+                icon="icons\view.gif"
+                class="it.eng.spagobi.studio.documentcomposition.views.NavigationView"/>
 	</extension>	
 	
  </plugin>

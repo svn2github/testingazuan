@@ -520,17 +520,18 @@ public class BirtReportServlet extends HttpServlet {
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.HTML_RENDER_FORMAT)) {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat(IBirtConstants.HTML_RENDER_FORMAT);
+			response.setContentType("text/html");
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.DOC_RENDER_FORMAT)) {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat(IBirtConstants.DOC_RENDER_FORMAT);
 			// renderOption.setOutputFileName(templateFileName + ".doc");
 			response.setContentType("application/msword");
 			response.setHeader("Content-disposition", "inline; filename=" + templateFileName + ".doc");
-		}else if (outputFormat != null && outputFormat.equalsIgnoreCase(RTF_FORMAT)) {
-				renderOption = prepareHtmlRenderOption(servletContext, request);
-				renderOption.setOutputFormat(RTF_FORMAT);
-				response.setContentType("application/rtf");
-				response.setHeader("Content-disposition", "inline; filename=" + templateFileName + ".rtf");
+		} else if (outputFormat != null && outputFormat.equalsIgnoreCase(RTF_FORMAT)) {
+			renderOption = prepareHtmlRenderOption(servletContext, request);
+			renderOption.setOutputFormat(RTF_FORMAT);
+			response.setContentType("application/rtf");
+			response.setHeader("Content-disposition", "inline; filename=" + templateFileName + ".rtf");
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase("xls")) {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat("xls");
@@ -553,6 +554,7 @@ public class BirtReportServlet extends HttpServlet {
 			outputFormat = IBirtConstants.HTML_RENDER_FORMAT;
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat(IBirtConstants.HTML_RENDER_FORMAT);
+			response.setContentType("text/html");
 		}
 
 		Map context = BirtUtility.getAppContext(request);

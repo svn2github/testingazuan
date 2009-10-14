@@ -1,1 +1,0 @@
-{type:"class",attributes:{"hasError":"true","name":"Button","hasWarning":"true","packageName":"qx.legacy.ui.menubar","superClass":"qx.legacy.ui.toolbar.MenuButton","fullName":"qx.legacy.ui.menubar.Button","type":"class"},children:[{type:"errors",children:[{type:"error",attributes:{"msg":"Class documentation is missing.","column":"16","line":"21"}}]}]}

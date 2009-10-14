@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<ACTIONS>
-    <ACTION name="LOGIN_ACTION_KPI_CONFIGURATION" class="it.eng.spagobi.commons.services.PortletLoginAction"
-    scope="REQUEST">
-    
-    <CONFIG></CONFIG>
-  </ACTION>
-</ACTIONS>

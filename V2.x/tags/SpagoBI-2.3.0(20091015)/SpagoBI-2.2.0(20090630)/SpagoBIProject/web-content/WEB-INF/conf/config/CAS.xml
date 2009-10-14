@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<CAS_SSO>
-	 <VALIDATE-USER>
-	 	<URL>https://localhost:8443/exo-cas-2/proxyValidate</URL>
-	 	<SERVICE>https://localhost:8443/SpagoBI/proxyReceptor</SERVICE>
-	 </VALIDATE-USER>	 
-</CAS_SSO>

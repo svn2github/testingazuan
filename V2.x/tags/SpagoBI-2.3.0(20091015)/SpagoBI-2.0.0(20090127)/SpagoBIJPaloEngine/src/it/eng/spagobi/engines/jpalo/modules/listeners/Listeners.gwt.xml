@@ -1,6 +1,0 @@
-<module>
-	<inherits name='com.google.gwt.user.User'/>
-
- 	<entry-point class='it.eng.spagobi.engines.jpalo.modules.listeners.client.ListenersEntryPoint'/>
- 	
-</module>

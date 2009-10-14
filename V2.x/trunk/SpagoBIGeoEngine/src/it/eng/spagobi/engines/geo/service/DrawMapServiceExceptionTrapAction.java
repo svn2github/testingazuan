@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.error.EMFErrorHandler;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceException;
 
@@ -48,7 +49,6 @@ public class DrawMapServiceExceptionTrapAction  extends AbstractGeoEngineAction 
 		Iterator it;
 		
 		logger.debug("IN");
-		
 		try {
 		
 			errorHandler = getErrorHandler();
@@ -57,6 +57,23 @@ public class DrawMapServiceExceptionTrapAction  extends AbstractGeoEngineAction 
 			errors = errorHandler.getErrors();
 			logger.debug("error handler contains [" + errors.size() + "] error/s");
 			
+			it = errors.iterator();
+			while(it.hasNext()) {
+				Object o = it.next();
+				logger.debug("Error type [" + o.getClass().getName()+ "]");
+				if(o instanceof EMFInternalError) {
+					EMFInternalError error = (EMFInternalError)o;
+					Exception e = error.getNativeException();
+					if(e instanceof SpagoBIEngineServiceException) {
+						SpagoBIEngineServiceException serviceError = (SpagoBIEngineServiceException)e;
+						logError(serviceError);
+					} else {
+						logger.error("Unespected exception",e);		
+					}
+				} else {
+					logger.error(o.toString());
+				}
+			} 
 		} catch(Throwable t) {
 			logger.error("An error occurred while handling a previously thrown Exception");
 		} finally {

@@ -965,10 +965,23 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	
 	private void addLink(SVGDocument map, DataMart datamart) {	
 		
-		IDataStore dataStore = datamart.getDataStore();
-		IDataStoreMetaData dataStoreMeta = dataStore.getMetaData();
-		List list = dataStoreMeta.findFieldMeta("ROLE", "CROSSNAVLINK");
-		IFieldMetaData filedMeta = (IFieldMetaData)list.get(0);
+		IDataStore dataStore;
+		IDataStoreMetaData dataStoreMeta;
+		List list;
+		IFieldMetaData filedMeta;
+		
+		dataStore = datamart.getDataStore();
+		Assert.assertNotNull(dataStore, "DataStore cannot be null");
+		
+		dataStoreMeta = dataStore.getMetaData();
+		Assert.assertNotNull(dataStore, "DataStoreMeta cannot be null");
+		
+		list = dataStoreMeta.findFieldMeta("ROLE", "CROSSNAVLINK");
+		logger.debug("Number of links per feature is equals to [" + list.size() +"]");
+		if(list.size() == 0) {
+			return;
+		} 
+		filedMeta = (IFieldMetaData)list.get(0);
 		
 		Element targetLayer = map.getElementById(datamart.getTargetFeatureName());		
 		NodeList nodeList = targetLayer.getChildNodes();
@@ -1052,6 +1065,9 @@ public class InteractiveMapRenderer extends AbstractMapRenderer {
 	    }
 	    
 	}
+	
+	
+	
 	
 	/**
 	 * Include scripts.

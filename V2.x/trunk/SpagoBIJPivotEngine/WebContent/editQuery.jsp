@@ -113,7 +113,9 @@ if (schemas == null) {
 			Document document = reader.read(is);
 			
 		    // Read data access information and put it in session...
-		    String filters= document.selectSingleNode("//olap/DATA-ACCESS").getStringValue();
+		    Node dataAccessNode = document.selectSingleNode("//olap/DATA-ACCESS");
+		    String filters = null;
+		    if (dataAccessNode != null) filters = dataAccessNode.getStringValue();
 		    session.setAttribute("filters",filters);
 		    
 		    

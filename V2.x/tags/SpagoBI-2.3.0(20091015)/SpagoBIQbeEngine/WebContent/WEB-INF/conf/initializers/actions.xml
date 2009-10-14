@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ACTIONS>
+	
+	<!-- QBE_ENGINE Initializations -->
+	<ACTION name="SPAGO_BI_START_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.initializers.QbeEngineStartAction" 
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+</ACTIONS>
+

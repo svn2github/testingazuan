@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+                        
+<taglib xmlns="http://java.sun.com/JSP/TagLibraryDescriptor">
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>spagobiwa_tags</short-name>
+  <uri></uri>
+  <description>Spago BI Web Application Tags</description>
+
+  <!-- START LIST TAGS  
+  <tag>
+  	<name>FisheyeMenu</name>
+    <tag-class>it.eng.spagobi.commons.presentation.tags.FisheyeMenuTag</tag-class>
+    <body-content>EMPTY</body-content>
+    <description>Rendering of the fisheye menu associated to the user</description>
+  </tag>
+  -->
+  
+  <!-- START LIST TAGS  -->
+  <tag>
+  	<name>userMenu</name>
+    <tag-class>it.eng.spagobi.commons.presentation.tags.UserMenuTag</tag-class>
+    <body-content>EMPTY</body-content>
+    <description>Rendering of the menu associated to the user</description>
+  	<attribute>
+			<name>viewTrackPath</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>optional boolean, if to track path</description>
+		</attribute>
+  </tag>
+ 
+</taglib>

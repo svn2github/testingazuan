@@ -1,0 +1,14 @@
+<div style='width:650px;font-size:10px;font-family:verdana;' >
+<br/>
+To insert a single value profile attribute into a dataset query use <b>${name_profile_attribute}</b>. 
+<br/>
+<br/>
+To insert a multi value profile attribute into a dataset query use 
+<b>${name_profile_attribute(prefix;splitter;suffix)}</b>. 
+<br/>
+The profile attribute will be replaced by prefix+(list of values separated by the splitter)+suffix 
+<br/>
+<b>Example:</b> ${name_profile_attribute( in (';',';') )}
+<br/>
+To insert a parameter use use $P{name_parameter}, add a parameter in the detail form by choosing name_parameter as name and a type 
+</div>

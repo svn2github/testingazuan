@@ -1,0 +1,111 @@
+{
+  "name"    : "qooxdoo",
+
+  "include" :
+  [
+    {
+      "path" : "../../lib/qooxdoo-0.8/tool/data/config/application.json",
+      "as"   : "appconf"
+    }
+  ],
+
+  "let" :
+  {
+    "APPLICATION"  : "qooxdoo",
+    "QOOXDOO_PATH" : "../../lib/qooxdoo-0.8/framework",
+    "QOOXDOO_URI"  : "../${QOOXDOO_PATH}",
+    "QXTHEME"      : "qx.theme.Modern",
+    "LOCALES"      : [ "en", "de", "fr", "it" ],
+    "ROOT"         : "."
+  },
+
+  "jobs" :
+  {
+  	"common" :
+	{
+	  "include" : 
+	  [
+	    "qooxdoo.app.Chiron",
+	    "${QXTHEME}"
+	  ],
+	  "settings" :
+	  {
+	    
+	    "qx.application"  : "qooxdoo.app.Chiron"
+	  }
+	},
+    "api" :
+    {
+      "extend" : ["appconf::api"]
+    },
+
+    "build" :
+    {
+      "extend" : ["common", "appconf::build"]
+
+      
+    },
+
+    "clean" :
+    {
+      "extend" : ["appconf::clean"]
+    },
+
+    "distclean" :
+    {
+      "extend" : ["appconf::distclean"]
+    },
+
+    "fix" :
+    {
+      "extend" : ["appconf::fix"]
+    },
+
+    "lint" :
+    {
+      "extend" : ["appconf::lint"]
+    },
+
+    "migration" :
+    {
+      "extend" : ["appconf::migration"]
+    },
+
+    "pretty" :
+    {
+      "extend" : ["appconf::pretty"]
+    },
+
+    "publish" :
+    {
+      "extend" : ["appconf::publish"]
+    },
+
+    "source" :
+    {
+      "extend" : ["common", "appconf::source"]
+
+      
+    },
+
+    "test" :
+    {
+      "extend" : ["appconf::test"]
+    },
+
+    "test-source" :
+    {
+      "extend" : ["appconf::test-source"]
+    },
+
+    "translate" :
+    {
+      "extend" : ["appconf::translate"]
+    },
+    
+    "translation" :
+    {
+      "extend" : ["common", "appconf::translation"]
+	}
+  }
+}

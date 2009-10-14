@@ -1,0 +1,129 @@
+<project name="palo-web" default="dist" basedir=".">
+
+	<property file="private.project.properties"/>
+	<property file="project.properties"/>
+	<property name="lib.dir" value="${shared.dir}/lib" />
+
+    <path id="cp">
+        <fileset dir="${lib.dir}" includes="*.jar"/>
+        <pathelement path="${src.dir}"/>
+        <pathelement path="."/>
+        <pathelement path="${classes.dir}"/>
+    </path>
+	
+	<target name="prepare">
+		<mkdir dir="${build.dir}"/>
+	</target>
+
+    <target name="compile.java" description="compile the source">
+       
+    </target>
+
+    <target name="compile.gwt" description="compile the source">
+        <property name="gwt.complier" value="com.google.gwt.dev.GWTCompiler"/>
+        <property name="gwt.arg" value="-out ${build.dir}/${war.file} -style ${gwt.js.style}"/>
+		<echo>${gwt.arg}</echo>
+        <java classname="${gwt.complier}" classpathref="cp" dir="${build.dir}" fork="true">
+			<jvmarg value="-Xmx512m"/>
+            <arg line="${gwt.arg} ${module.application}"/>
+        </java>
+    </target>
+
+    <target name="compile" depends="prepare">
+    	<parallel>
+	    	<ant target="compile.gwt" />
+	    	<ant target="compile.java" />
+   		</parallel>
+    </target>
+
+    <target name="javadoc"  description="generate javadoc" >
+        <mkdir dir="${api.dir}"/>
+        <javadoc packagenames="com.tensegrity.palowebviewer.*"
+            sourcepath="${src.dir}"
+            defaultexcludes="yes"
+            destdir="${api.dir}"
+            author="true"
+            version="true"
+            use="true"
+            windowtitle="Plao Web Browser API">
+        </javadoc>
+    </target>
+
+    <target name="build" depends="compile" description="building project" >
+        <copy todir="${build.dir}/${war.file}/">
+            <fileset dir="web" includes="**/*"/>
+        </copy>
+        <copy todir="${build.dir}/${war.file}/WEB-INF/classes">
+            <fileset dir="${classes.dir}" includes="**/*"/>
+            <fileset dir="${src.dir}" includes="**/*.properties"/>
+        </copy>
+        <mkdir dir="${build.dir}/${war.file}/WEB-INF/lib" />
+        <copy todir="${build.dir}/${war.file}/WEB-INF/lib">
+            <fileset dir="${lib.dir}/gwt" includes="gwt-servlet.jar"/>
+            <fileset dir="${lib.dir}/palo" includes="jpalo.jar"/>
+            <fileset dir="${lib.dir}/misc" includes="log4j-1.2.13.jar"/>
+        </copy>
+		<mkdir dir="${build.dir}/${war.file}/META-INF" />
+		<loadfile property="build.number" srcFile="${build-number.file}"/>
+		<manifest file="${build.dir}/${war.file}/META-INF/MANIFEST.MF">
+			<attribute name="Implementation-Title" value="WPalo"/>
+			<attribute name="Implementation-Version" value="${build.number}"/> 
+		</manifest>
+    </target>
+
+    <target name="run" depends="compile.java">
+        <java classname="com.google.gwt.dev.GWTShell" classpathref="cp"  dir="${build.dir}" fork="true">
+            <arg line="-out ${build.dir}/${module.application} ${module.application}/Application.html"/>
+            <sysproperty key="java.library.path" value="${basedir}/lib"/>
+        </java>
+    </target>
+    
+    <target name="release-config" depends="compile.java">
+    	<copy overwrite="true" todir="${build.dir}/${war.file}/WEB-INF/classes" file="etc/palo.properties"/>
+    </target>
+
+    
+    <target name="dist" depends="build" description="create the distribution" >
+        <mkdir dir="${dist.dir}"/>
+        <jar jarfile="${dist.dir}/${war.file}" basedir="${build.dir}/${war.file}"/>
+    </target>
+    
+    <target name="build.version" depends="dist">
+		<!-- versioning -->
+		<taskdef resource="smasi.tasks" classpath="${lib.dir}/misc/smasi-ant-tasks.jar"/> 
+		<!--exec executable="svn" failonerror="true" ><arg line="update ${build-number.file}" /></exec-->
+		<buildversion file="${build-number.file}" property="build.number"/>
+		<!--exec executable="svn" failonerror="true" ><arg line="commit ${build-number.file} -m 'ant-commit(build: ${build.number})'" /></exec-->
+    </target>
+	
+	<target name="release" depends="release-config,dist,build.version">
+		<tstamp><format property="build.time" pattern="yyyy-MM-dd_hh.mm.ss" locale="en"/></tstamp>
+		<property name="foldername" value="build_${build.number}_date_${build.time}" />
+		<mkdir dir="${dist.dir}/${foldername}" />
+		<copy file="${dist.dir}/${war.file}" tofile="${dist.dir}/${foldername}/${war.file}"/>
+		<echo>creating dir: Tensegrity/${foldername}</echo>
+		<ftp action="mkdir"
+			remotedir="Tensegrity/${foldername}"
+			server="${ftp.host}"
+			userid="${ftp.login}"
+			password="${ftp.password}" />
+		<ftp remotedir="Tensegrity/${foldername}"
+			server="${ftp.host}"
+			userid="${ftp.login}"
+			password="${ftp.password}">
+			<fileset dir="${dist.dir}" includes="*.war"/>
+		</ftp>
+	</target>
+	
+    <target name="deploy" depends="dist" description="deploys generated war to the ${catalina.home}" >
+        <copy file="${dist.dir}/${war.file}" overwrite="true" todir="${catalina.home}/webapps/"/>
+    </target>
+    
+    
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+</project>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<DOMAINS>
+<DOMAIN valueCd="QUERY" valueNm="Query statement" domainCd="INPUT_TYPE" domainNm="Input mode and values" valueDs="Query statement to load list of values to choose in"/>
+<DOMAIN valueCd="SCRIPT" valueNm="Script to load values" domainCd="INPUT_TYPE" domainNm="Input mode and values" valueDs="Script to load values"/>
+<DOMAIN valueCd="FIX_LOV" valueNm="Fixed list of values" domainCd="INPUT_TYPE" domainNm="Input mode and values" valueDs="Predefined and hard coded list of values to choose in"/>
+<DOMAIN valueCd="JAVA_CLASS" valueNm="Java class" domainCd="INPUT_TYPE" domainNm="Input mode and values" valueDs="Java class to load list of values to choose in"/>
+<DOMAIN valueCd="REPORT" valueNm="Report" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Basic business intelligence objects type"/>
+<DOMAIN valueCd="OLAP" valueNm="On-line analytical processing" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Dimensional analysis of significant facts"/>
+<DOMAIN valueCd="DATA_MINING" valueNm="Data mining model" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Model to find out hidden information in data"/>
+<DOMAIN valueCd="DASH" valueNm="Dashboard" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Dashboard to monitor perfomance indicators"/>
+<DOMAIN valueCd="DATAMART" valueNm="Datamart Model" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Logical definition of a datamart to inquiry"/>
+<DOMAIN valueCd="MAP" valueNm="Map" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Basic business intelligence objects type"/>
+<DOMAIN valueCd="DOSSIER" valueNm="Dossier" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Dossier"/>
+<DOMAIN valueCd="OFFICE_DOC" valueNm="Office document" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Office document"/>
+<DOMAIN valueCd="ETL" valueNm="ETL process" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="ETL process"/>
+<DOMAIN valueCd="DOCUMENT_COMPOSITE" valueNm="Document Composite" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Document Composite objects type"/>
+<DOMAIN valueCd="KPI" valueNm="Kpi" domainCd="BIOBJ_TYPE" domainNm="BI Object types" valueDs="Kpi business indicator"/>
+<DOMAIN valueCd="BOOL" valueNm="Boolean" domainCd="VALUE_TYPE" domainNm="Input value types to check" valueDs="Boolean input value type"/>
+<DOMAIN valueCd="SINGLE" valueNm="Single value" domainCd="VALUE_TYPE" domainNm="Input value types to check" valueDs="Only single value allowed"/>
+<DOMAIN valueCd="MULTI" valueNm="Multivalue" domainCd="VALUE_TYPE" domainNm="Input value types to check" valueDs="Many values are allowed"/>
+<DOMAIN valueCd="DATE" valueNm="Date" domainCd="PAR_TYPE" domainNm="Parameter type" valueDs="Parameter expects date values"/>
+<DOMAIN valueCd="NUM" valueNm="Number" domainCd="PAR_TYPE" domainNm="Parameter type" valueDs="Parameter expects numerical values"/>
+<DOMAIN valueCd="STRING" valueNm="String" domainCd="PAR_TYPE" domainNm="Parameter type" valueDs="Parameter expects textual values"/>
+<DOMAIN valueCd="USER" valueNm="Functional role" domainCd="ROLE_TYPE" domainNm="Role type" valueDs="Functional role for end users"/>
+<DOMAIN valueCd="ADMIN" valueNm="Administrative role" domainCd="ROLE_TYPE" domainNm="Role type" valueDs="Administrative role for developer users"/>
+<DOMAIN valueCd="DEV_ROLE" valueNm="Developer role" domainCd="ROLE_TYPE" domainNm="Role type" valueDs="Developer role for developer users"/>
+<DOMAIN valueCd="TEST_ROLE" valueNm="Tester role" domainCd="ROLE_TYPE" domainNm="Role type" valueDs="Tester role for tester users"/>
+<DOMAIN valueCd="MODEL_ADMIN" valueNm="Behavioural Model Admin" domainCd="ROLE_TYPE" domainNm="Role type" valueDs="Administrative role for the behavioural model"/>
+<DOMAIN valueCd="SUSP" valueNm="Suspended" domainCd="STATE" domainNm="Object state" valueDs="Document temporanlly not in use"/>
+<DOMAIN valueCd="LOW_FUNCT" valueNm="Low level functionality" domainCd="FUNCT_TYPE" domainNm="Functionality" valueDs="BI Functionality joined to categories tree"/>
+<DOMAIN valueCd="USER_FUNCT" valueNm="User functionality" domainCd="FUNCT_TYPE" domainNm="Functionality" valueDs="BI Functionality joined to categories tree"/>
+<DOMAIN valueCd="DEV" valueNm="Development" domainCd="STATE" domainNm="Object state" valueDs="Document in development phase"/>
+<DOMAIN valueCd="TEST" valueNm="Test" domainCd="STATE" domainNm="Object state" valueDs="Document in testing phase"/>
+<DOMAIN valueCd="REL" valueNm="Released" domainCd="STATE" domainNm="Object state" valueDs="Document released for end users use"/>
+<DOMAIN valueCd="DATE" valueNm="Date" domainCd="CHECK" domainNm="Check" valueDs="Date"/>
+<DOMAIN valueCd="REGEXP" valueNm="Regexp" domainCd="CHECK" domainNm="Check" valueDs="Regular Expression "/>
+<DOMAIN valueCd="MAXLENGTH" valueNm="Max Length" domainCd="CHECK" domainNm="Check" valueDs="Max Length"/>
+<DOMAIN valueCd="RANGE" valueNm="Range" domainCd="CHECK" domainNm="Check" valueDs="Range"/>
+<DOMAIN valueCd="DECIMALS" valueNm="Decimal" domainCd="CHECK" domainNm="Check" valueDs="Decimal"/>
+<DOMAIN valueCd="MINLENGTH" valueNm="Min Length" domainCd="CHECK" domainNm="Check" valueDs="Min Length"/>
+<DOMAIN valueCd="INTERNET ADDRESS" valueNm="Internet Address" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="Internet Address"/>
+<DOMAIN valueCd="NUMERIC" valueNm="Numeric" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="Numeric"/>
+<DOMAIN valueCd="ALFANUMERIC" valueNm="Alfanumeric" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="Alfanumeric"/>
+<DOMAIN valueCd="LETTERSTRING" valueNm="Letter String" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="Letter"/>
+<DOMAIN valueCd="MANDATORY" valueNm="Mandatory" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="Mandatory"/>
+<DOMAIN valueCd="FISCALCODE" valueNm="Fiscal Code" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="Fiscal Code"/>
+<DOMAIN valueCd="EMAIL" valueNm="E-Mail" domainCd="PRED_CHECK" domainNm="Pred Check" valueDs="E-Mail"/>
+<DOMAIN valueCd="EXT" valueNm="External Engine" domainCd="ENGINE_TYPE" domainNm="Engine types" valueDs="Business intelligence external engine of SpagoBI platform"/>
+<DOMAIN valueCd="INT" valueNm="Internal Engine" domainCd="ENGINE_TYPE" domainNm="Engine types" valueDs="Business intelligence internal engine of SpagoBI platform"/>
+<DOMAIN valueCd="LIST" valueNm="List values selection" domainCd="SELECTION_TYPE" domainNm="Selection modality of parameter values" valueDs="Single-value selection from a list"/>
+<DOMAIN valueCd="CHECK_LIST" valueNm="CheckList values selection" domainCd="SELECTION_TYPE" domainNm="Selection modality of parameter values" valueDs="Multi-value selection from a checklist"/>
+<DOMAIN valueCd="COMBOBOX" valueNm="ComboBox values selection" domainCd="SELECTION_TYPE" domainNm="Selection modality of parameter values" valueDs="Single value selection from a combobox"/>
+<DOMAIN valueCd="DEFAULT" valueNm="" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="-1"/>
+<DOMAIN valueCd="ORACLE" valueNm="Oracle (any version)" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="org.hibernate.dialect.OracleDialect"/>
+<DOMAIN valueCd="ORACLE 9i/10g" valueNm="Oracle (Oracle 9i/10g)" domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="org.hibernate.dialect.Oracle9Dialect"/>
+<DOMAIN valueCd="SQLSERVER" valueNm="SQL Server " domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="org.hibernate.dialect.SQLServerDialect"/>
+<DOMAIN valueCd="HQL" valueNm="HQL " domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="org.hibernate.dialect.HSQLDialect"/>
+<DOMAIN valueCd="MYSQL" valueNm="MySql " domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="org.hibernate.dialect.MySQLInnoDBDialect"/>
+<DOMAIN valueCd="POSTGRESQL" valueNm="PostgreSQL " domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="org.hibernate.dialect.PostgreSQLDialect"/>
+<DOMAIN valueCd="INGRES" valueNm="Ingres " domainCd="DIALECT_HIB" domainNm="Predefined hibernate dialect" valueDs="org.hibernate.dialect.IngresDialect"/>
+<DOMAIN valueCd="RANGE" valueNm="Range Values" domainCd="THRESHOLD_TYPE" domainNm="Threshold Type" valueDs=""/>
+<DOMAIN valueCd="MINIMUM" valueNm="Minimum Value" domainCd="THRESHOLD_TYPE" domainNm="Threshold Type" valueDs=""/>
+<DOMAIN valueCd="MAXIMUM" valueNm="Maximum Value" domainCd="THRESHOLD_TYPE" domainNm="Threshold Type" valueDs=""/>
+<DOMAIN valueCd="URGENT" valueNm="Urgent" domainCd="SEVERITY" domainNm="Severity Level" valueDs=""/>
+<DOMAIN valueCd="HIGH" valueNm="High" domainCd="SEVERITY" domainNm="Severity Level" valueDs=""/>
+<DOMAIN valueCd="MEDIUM" valueNm="Medium" domainCd="SEVERITY" domainNm="Severity Level" valueDs=""/>
+<DOMAIN valueCd="LOW" valueNm="Low" domainCd="SEVERITY" domainNm="Severity Level" valueDs=""/>
+<DOMAIN valueCd="CSP" valueNm="CSP" domainCd="RESOURCE" domainNm="Resource type" valueDs=""/>
+<DOMAIN valueCd="PROCESS" valueNm="Process" domainCd="RESOURCE" domainNm="Resource type" valueDs=""/>
+<DOMAIN valueCd="PROJECT" valueNm="Project" domainCd="RESOURCE" domainNm="Resource type" valueDs=""/>
+<DOMAIN valueCd="Meter" valueNm="Meter" domainCd="KPI_CHART" domainNm="Kpi Chart type" valueDs=""/>
+<DOMAIN valueCd="SimpleDial" valueNm="SimpleDial" domainCd="KPI_CHART" domainNm="Kpi Chart type" valueDs=""/>
+<DOMAIN valueCd="Speedometer" valueNm="Speedometer" domainCd="KPI_CHART" domainNm="Kpi Chart type" valueDs=""/>
+<DOMAIN valueCd="Thermometer" valueNm="Thermometer" domainCd="KPI_CHART" domainNm="Kpi Chart type" valueDs=""/>
+<DOMAIN valueCd="BulletGraph" valueNm="BulletGraph" domainCd="KPI_CHART" domainNm="Kpi Chart type" valueDs=""/>
+<DOMAIN valueCd="MAIL" valueNm="Mail" domainCd="ALARM_MODALITY" domainNm="Alarm Modality" valueDs=""/>
+<DOMAIN valueCd="SMS" valueNm="SMS" domainCd="ALARM_MODALITY" domainNm="Alarm Modality" valueDs=""/>
+<DOMAIN valueCd="GENERIC_ROOT" valueNm="Generic root" domainCd="MODEL_ROOT" domainNm="Model root type" valueDs=""/>
+<DOMAIN valueCd="GENERIC_NODE" valueNm="Generic Node" domainCd="MODEL_NODE" domainNm="Model node type" valueDs=""/>
+<DOMAIN valueCd="PIVOT_TRANSFOMER" valueNm="Pivot Transformer" domainCd="TRANSFORMER_TYPE" domainNm="Transformer types" valueDs="Pivot Transformer Type"/>
+</DOMAINS>

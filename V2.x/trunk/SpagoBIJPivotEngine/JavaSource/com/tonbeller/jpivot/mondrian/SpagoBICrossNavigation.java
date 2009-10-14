@@ -1,14 +1,7 @@
-/*
- * ====================================================================
- * This software is subject to the terms of the Common Public License
- * Agreement, available at the following URL:
- *   http://www.opensource.org/licenses/cpl.html .
- * Copyright (C) 2003-2004 TONBELLER AG.
- * All Rights Reserved.
- * You must accept the terms of that agreement to use this software.
- * ====================================================================
- *
- *
+/**
+ * 
+ * LICENSE: see LICENSE.txt file
+ * 
  */
 package com.tonbeller.jpivot.mondrian;
 
@@ -35,22 +28,5 @@ public class SpagoBICrossNavigation extends ExtensionSupport {
   public SpagoBICrossNavigation() {
 	  super.setId(ID);
   }
-
-  /*
-  public TableModel crossNavigation(Cell cell,
-		SpagoBICrossNavigationConfig config) {
-	  logger.debug("IN");
-	  Model model = getModel();
-	  if (!(cell instanceof MondrianCell) || !(model instanceof MondrianModel)) {
-		  logger.error("Cross navigation functionality is available only for MondrianModel, while current model is " + model.getClass().getName());
-		  throw new RuntimeException("Cross navigation functionality is available only for MondrianModel, while current model is " + model.getClass().getName());
-	  }
-	  mondrian.olap.Cell mondrianCell = ((MondrianCell) cell).getMonCell();
-	  MondrianModel mondrianModel = (MondrianModel) model;
-	  SpagoBICrossNavigationTableModel dtm = new SpagoBICrossNavigationTableModel(config, mondrianCell, mondrianModel);
-	  logger.debug("OUT");
-	  return dtm;
-  }
-  */
   
 }

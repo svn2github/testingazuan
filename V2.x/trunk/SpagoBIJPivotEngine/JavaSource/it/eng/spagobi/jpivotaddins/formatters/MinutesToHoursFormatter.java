@@ -1,3 +1,8 @@
+/**
+ * 
+ * LICENSE: see LICENSE.txt file
+ * 
+ */
 package it.eng.spagobi.jpivotaddins.formatters;
 
 import org.apache.log4j.Logger;

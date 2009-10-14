@@ -1,3 +1,8 @@
+/**
+ * 
+ * LICENSE: see LICENSE.txt file
+ * 
+ */
 package it.eng.spagobi.jpivotaddins.bean;
 
 import org.dom4j.Document;

@@ -123,34 +123,30 @@ Ext.extend(Sbi.execution.ExecutionPanel, Ext.Panel, {
 		Ext.Ajax.request({
 	        url: this.services['getDocumentInfoService'],
 	        params: {'OBJECT_LABEL' : config.document.label, 'SUBOBJECT_NAME' : config.preferences.subobject.name},
-	        callback : function(options , success, response){
-	  	  		if (success) {
-		      		if(response !== undefined && response.responseText !== undefined) {
-		      			var content = Ext.util.JSON.decode( response.responseText );
-		      			if (content !== undefined) {
-		      				if (content.documentNotFound == false) {
-		      					Sbi.exception.ExceptionHandler.showWarningMessage('Required document not found', 'Configuration Error');
-		      				} else {
-		      					if (content.canSeeDocument == false) {
-		      						Sbi.exception.ExceptionHandler.showWarningMessage('User cannot see required document', 'Configuration Error');
-		      					} else {
-		      						config.document = content.document;
-		      						config.preferences.shortcutsHidden = true;
-		      						if (content.subobject !== undefined && content.subobject != null) {
-		      							config.preferences.subobject = content.subobject;
-		      						}
-		      						this.executeCrossNavigation(config);
-		      					}
-		      				}
-		      			} else {
-		      				Sbi.exception.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
-		      			}
-		      		} else {
-		      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
-		      		}
-	  	  		} else {
-	  	  			Sbi.exception.ExceptionHandler.showErrorMessage('Error while loading document', 'Service Error');
-	  	  		}
+	        success : function(response, options) {
+	      		if(response !== undefined && response.responseText !== undefined) {
+	      			var content = Ext.util.JSON.decode( response.responseText );
+	      			if (content !== undefined) {
+	      				if (content.documentFound == false) {
+	      					Sbi.exception.ExceptionHandler.showWarningMessage('Required document not found', 'Configuration Error');
+	      				} else {
+	      					if (content.canSeeDocument == false) {
+	      						Sbi.exception.ExceptionHandler.showWarningMessage('User cannot see required document', 'Configuration Error');
+	      					} else {
+	      						config.document = content.document;
+	      						config.preferences.shortcutsHidden = true;
+	      						if (content.subobject !== undefined && content.subobject != null) {
+	      							config.preferences.subobject = content.subobject;
+	      						}
+	      						this.executeCrossNavigation(config);
+	      					}
+	      				}
+	      			} else {
+	      				Sbi.exception.ExceptionHandler.showErrorMessage('Server response cannot be decoded', 'Service Error');
+	      			}
+	      		} else {
+	      			Sbi.exception.ExceptionHandler.showErrorMessage('Server response is empty', 'Service Error');
+	      		}
 	        },
 	        scope: this,
 			failure: Sbi.exception.ExceptionHandler.handleFailure      

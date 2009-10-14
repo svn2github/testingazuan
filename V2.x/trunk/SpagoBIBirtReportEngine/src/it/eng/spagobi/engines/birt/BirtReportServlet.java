@@ -5,6 +5,27 @@
  */
 package it.eng.spagobi.engines.birt;
 
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFInternalError;
+import it.eng.spago.security.IEngUserProfile;
+import it.eng.spagobi.commons.constants.SpagoBIConstants;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
+import it.eng.spagobi.engines.birt.exceptions.ConnectionDefinitionException;
+import it.eng.spagobi.engines.birt.exceptions.ConnectionParameterNotValidException;
+import it.eng.spagobi.engines.birt.utilities.ParameterConverter;
+import it.eng.spagobi.services.common.EnginConf;
+import it.eng.spagobi.services.common.SsoServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
+import it.eng.spagobi.services.content.bo.Content;
+import it.eng.spagobi.services.proxy.ContentServiceProxy;
+import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
+import it.eng.spagobi.tools.datasource.bo.IDataSource;
+import it.eng.spagobi.utilities.DynamicClassLoader;
+import it.eng.spagobi.utilities.ParametersDecoder;
+import it.eng.spagobi.utilities.SpagoBIAccessUtils;
+import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -48,27 +69,6 @@ import org.safehaus.uuid.UUIDGenerator;
 import org.xml.sax.InputSource;
 
 import sun.misc.BASE64Decoder;
-
-import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
-import it.eng.spago.error.EMFInternalError;
-import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
-import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
-import it.eng.spagobi.engines.birt.exceptions.ConnectionDefinitionException;
-import it.eng.spagobi.engines.birt.exceptions.ConnectionParameterNotValidException;
-import it.eng.spagobi.engines.birt.utilities.ParameterConverter;
-import it.eng.spagobi.services.common.EnginConf;
-import it.eng.spagobi.services.common.SsoServiceFactory;
-import it.eng.spagobi.services.common.SsoServiceInterface;
-import it.eng.spagobi.services.content.bo.Content;
-import it.eng.spagobi.services.proxy.ContentServiceProxy;
-import it.eng.spagobi.services.proxy.DataSourceServiceProxy;
-import it.eng.spagobi.tools.datasource.bo.IDataSource;
-import it.eng.spagobi.utilities.DynamicClassLoader;
-import it.eng.spagobi.utilities.ParametersDecoder;
-import it.eng.spagobi.utilities.SpagoBIAccessUtils;
-import it.eng.spagobi.utilities.callbacks.audit.AuditAccessUtils;
 
 /**
  * @author Zerbetto (davide.zerbetto@eng.it)
@@ -520,6 +520,7 @@ public class BirtReportServlet extends HttpServlet {
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.HTML_RENDER_FORMAT)) {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat(IBirtConstants.HTML_RENDER_FORMAT);
+			response.setHeader("Content-Type", "text/html");
 			response.setContentType("text/html");
 		} else if (outputFormat != null && outputFormat.equalsIgnoreCase(IBirtConstants.DOC_RENDER_FORMAT)) {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
@@ -555,55 +556,13 @@ public class BirtReportServlet extends HttpServlet {
 			renderOption = prepareHtmlRenderOption(servletContext, request);
 			renderOption.setOutputFormat(IBirtConstants.HTML_RENDER_FORMAT);
 			response.setContentType("text/html");
+			response.setHeader("Content-Type", "text/html");
 		}
 
-		
-		
-		File tmpFile =  File.createTempFile("xxx", null);
-		OutputStream outputStream = null;
-		try {
-			outputStream = new FileOutputStream(tmpFile);
-			Map context = BirtUtility.getAppContext(request);
-			task.setAppContext(context);
-			//renderOption.setOutputStream((OutputStream) response.getOutputStream());
-			renderOption.setOutputStream(outputStream);
-			task.setRenderOption(renderOption);
-		} catch(Throwable t) {
-			logger.error("An error occurred while saving report to file [" + tmpFile + "]", t);
-		} finally {
-			/*
-			if(outputStream != null) {
-				outputStream.flush();
-				outputStream.close();
-			}
-			*/
-		}
-		
-		try {
-			task.run();
-		} catch(Exception e) {
-			logger.error("Error while running the report: " + e);
-		}
-		task.close();
-		
-		InputStream inputStream = null;
-		int contentLength = 0;
-		int b = -1;
-		byte[] buf = new byte[1024];
-		
-		
-		response.setHeader("Content-Disposition", "inline;filename=\"" + "test.html" + "\";");
-		response.setHeader("Content-Type", "text/html");
-		response.setContentType("text/html");
-		
-		inputStream = new FileInputStream(tmpFile);
-		while((b = inputStream.read(buf)) != -1) {
-			response.getOutputStream().write(buf, 0, b);
-			contentLength+=b;
-		}	
-		response.setContentLength( contentLength );
-		
-		
+		Map context = BirtUtility.getAppContext(request);
+		task.setAppContext(context);
+		renderOption.setOutputStream((OutputStream) response.getOutputStream());
+		task.setRenderOption(renderOption);
 		
 		// setting HTML header if output format is HTML: this is necessary in order to inject the document.domain directive
 		// commented by Davide Zerbetto on 12/10/2009: there are problems with MIF (Ext ManagedIFrame library) library

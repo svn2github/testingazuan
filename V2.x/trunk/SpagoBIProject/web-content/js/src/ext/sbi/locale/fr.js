@@ -179,6 +179,7 @@ Sbi.locale.ln['sbi.execution.XmlExport'] = 'XML';
 Sbi.locale.ln['sbi.execution.pptExport'] = 'PPT';
 Sbi.locale.ln['sbi.execution.txtExport'] = 'TXT';
 Sbi.locale.ln['sbi.execution.rtfExport'] = 'RTF';
+Sbi.locale.ln['sbi.execution.docExport'] = 'DOC';
 Sbi.locale.ln['sbi.execution.jrxmlExport'] = 'JRXML';
 
 Sbi.locale.ln['sbi.execution.executionpage.toolbar.expand'] = 'Expandre/Reduire';

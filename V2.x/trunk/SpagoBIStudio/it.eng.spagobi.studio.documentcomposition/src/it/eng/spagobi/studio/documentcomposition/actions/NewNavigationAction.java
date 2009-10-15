@@ -2,13 +2,15 @@ package it.eng.spagobi.studio.documentcomposition.actions;
 
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
-import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
@@ -29,17 +31,35 @@ public class NewNavigationAction implements IViewActionDelegate{
 		CommonViewer commViewer=((CommonNavigator) view).getCommonViewer();
 		IStructuredSelection sel=(IStructuredSelection)commViewer.getSelection();
 
-		//Object objSel = sel.toList().get(0);
-		//Table tableSel = null;		
+		Object objSel = sel.toList().get(0);
+		Button newButtonSel = null;	
 		try{
-			// table in wich to insert the new navigation
-			//tableSel=(Table)objSel;
 
-			sbindw.init(PlatformUI.getWorkbench(), sel);
-			// Create the wizard dialog
-			WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),sbindw);
-			// Open the wizard dialog
-			dialog.open();
+			newButtonSel=(Button)objSel;
+			final boolean[] result = new boolean[1];
+			// Add Button Listener
+			Listener addListener = new Listener() {
+				public void handleEvent(Event event) {
+			        switch (event.type) {
+			        case SWT.Selection:
+					//parte wizard
+			        	result[0] = true;
+			        	System.out.println("cliccato pulsante new");
+			        }
+
+				}
+			};
+			newButtonSel.addListener(SWT.Selection, addListener);
+			Listener[] listeners = newButtonSel.getListeners(SWT.Selection);
+			
+			if(result[0]){
+			
+				sbindw.init(PlatformUI.getWorkbench(), sel);
+				// Create the wizard dialog
+				WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),sbindw);
+				// Open the wizard dialog
+				dialog.open();
+			}
 
 		}
 		catch (Exception e) {

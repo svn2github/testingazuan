@@ -80,12 +80,10 @@ public class BirtReportServlet extends HttpServlet {
 
 	private IReportEngine birtReportEngine = null;
 	protected static Logger logger = Logger.getLogger(BirtReportServlet.class);
-	private static String CONNECTION_NAME = "connectionName";
+	private static final String CONNECTION_NAME = "connectionName";
 	public static final String JS_EXT_ZIP = ".zip";
 	public static final String JS_FILE_ZIP = "JS_File";
 	public static final String RTF_FORMAT = "RTF";
-	private String flgTemplateStandard = "true";
-	Map reportParams = null;
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
@@ -111,7 +109,7 @@ public class BirtReportServlet extends HttpServlet {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
 		logger.debug("Start processing a new request...");
-
+		
 		// USER PROFILE
 		HttpSession session = request.getSession();
 		IEngUserProfile profile = (IEngUserProfile) session.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
@@ -236,7 +234,7 @@ public class BirtReportServlet extends HttpServlet {
 			logger.warn("Error on decompile",t); 
 		}
 		
-
+		String flgTemplateStandard = "true";
 		if (template.getFileName().indexOf(".zip") > -1) {
 			flgTemplateStandard = "false";
 		}else{
@@ -452,7 +450,7 @@ public class BirtReportServlet extends HttpServlet {
 		task.setLocale(locale);
 		logger.debug( "runReport(): RunAndRenderTask created successfully.");
 		// Set parameters for the report
-		reportParams = findReportParams(request, design);
+		Map reportParams = findReportParams(request, design);
 
 		String requestConnectionName = (String) request.getParameter(CONNECTION_NAME);
 		logger.debug("requestConnectionName:" + requestConnectionName);

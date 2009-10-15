@@ -600,6 +600,12 @@ IModelInstanceDAO {
 		if (sbiKpiInstance == null){
 			sbiKpiInstance = new SbiKpiInstance();
 		}
+		if(value.getKpiInstance().getD() != null){
+			sbiKpiInstance.setBeginDt(value.getKpiInstance().getD());
+		} else {
+			sbiKpiInstance.setBeginDt(new Date());
+		}
+		
 		if (value.getKpiInstance().getKpi() != null) {
 			sbiKpiInstance.setSbiKpi((SbiKpi) aSession.load(SbiKpi.class, value
 					.getKpiInstance().getKpi()));

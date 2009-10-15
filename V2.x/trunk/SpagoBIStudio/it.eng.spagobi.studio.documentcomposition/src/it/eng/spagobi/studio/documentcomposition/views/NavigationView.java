@@ -58,9 +58,7 @@ public class NavigationView extends ViewPart {
 		
 		final boolean[] result = new boolean[1];
 		/**crea dialog x conferma**/
-		//final Shell confirm = createConfirmDialog(client, result);
-		
-		
+	
 		Button newButton = toolkit.createButton(client, "New", SWT.PUSH); 
 		Button deleteButton = createDeleteButton(parent, toolkit, client);
 		Button updateButton = toolkit.createButton(client, "Modify", SWT.PUSH);
@@ -73,6 +71,7 @@ public class NavigationView extends ViewPart {
 		gd.widthHint = 50;
 		gd.horizontalSpan =1;
 		gd.horizontalAlignment= SWT.LEFT;
+		
 
 		newButton.setLayoutData(gd);
 		deleteButton.setLayoutData(gd);
@@ -91,14 +90,12 @@ public class NavigationView extends ViewPart {
 
 			}
 		};
+
 		Listener addListener = new Listener() {
 			public void handleEvent(Event event) {
 		        switch (event.type) {
 		        case SWT.Selection:
-		        	//parte wizard
-
-		        	System.out.println("cliccato pulsante new");
-		    		///button to start the wizard
+			    		///button to start the wizard
 		    	    // Instantiates and initializes the wizard
 		        	SpagoBINavigationWizard wizard = new SpagoBINavigationWizard();
 		    	    wizard.init(PlatformUI.getWorkbench(),  null);
@@ -111,10 +108,7 @@ public class NavigationView extends ViewPart {
 			}
 		};
 		newButton.addListener(SWT.Selection, addListener);
-
-
-		
-		
+	
 		deleteButton.addListener(SWT.Selection, deleteListener);
 				
 		/**tabella navigazioni**/
@@ -170,6 +164,7 @@ public class NavigationView extends ViewPart {
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 20;
 		gd.widthHint = 200;
+		gd.horizontalSpan =3;
 		table.setLayoutData(gd);
 		table.setLinesVisible (true);
 		table.setHeaderVisible (true);

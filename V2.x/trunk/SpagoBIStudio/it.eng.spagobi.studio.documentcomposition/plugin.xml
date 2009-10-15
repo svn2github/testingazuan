@@ -17,7 +17,7 @@
       <viewerContribution
             id="it.eng.spagobi.studio.documentcomposition.popupmenus.ResourceNavigatorContribution"
             targetID="it.eng.spagobi.studio.core.views.ResourceNavigator">
-            <!--
+
          <action
                class="it.eng.spagobi.studio.documentcomposition.actions.NewDocumentCompositionAction"
                icon="icons/objecticon_DOCCOMP.png"
@@ -25,7 +25,7 @@
                label="Document Composition"
                menubarPath="group.new"
                style="push" />
-               -->
+
       </viewerContribution>
    </extension>
    <extension point="org.eclipse.ui.views">
@@ -55,13 +55,7 @@
                 name="Navigazione"
                 icon="icons\view.gif"
                 class="it.eng.spagobi.studio.documentcomposition.views.NavigationView"/>
-        <action
-               class="it.eng.spagobi.studio.documentcomposition.actions.NewNavigationAction"
-               icon="icons/objecticon_DOCCOMP.png"
-               id="it.eng.spagobi.studio.documentcomposition.actions.NewNavigationAction"
-               label="New Navigation"
-               menubarPath="group.new"
-               style="push" />
+
 	</extension>	
 	
  </plugin>

@@ -1,6 +1,9 @@
 package it.eng.spagobi.studio.documentcomposition.views;
 
-import org.eclipse.jface.viewers.ListViewer;
+import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
+
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -8,16 +11,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.ViewPart;
@@ -89,21 +91,32 @@ public class NavigationView extends ViewPart {
 
 			}
 		};
-		
-		// Add Button Listener
 		Listener addListener = new Listener() {
 			public void handleEvent(Event event) {
 		        switch (event.type) {
 		        case SWT.Selection:
-				//parte wizard
+		        	//parte wizard
+
+		        	System.out.println("cliccato pulsante new");
+		    		///button to start the wizard
+		    	    // Instantiates and initializes the wizard
+		        	SpagoBINavigationWizard wizard = new SpagoBINavigationWizard();
+		    	    wizard.init(PlatformUI.getWorkbench(),  null);
+		    	    // Instantiates the wizard container with the wizard and opens it
+		    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+		    	    dialog.create();
+		    	    dialog.open();
 		        }
 
 			}
 		};
-	    
-		deleteButton.addListener(SWT.Selection, deleteListener);
 		newButton.addListener(SWT.Selection, addListener);
+
+
 		
+		
+		deleteButton.addListener(SWT.Selection, deleteListener);
+				
 		/**tabella navigazioni**/
 		createTable(parent, toolkit, client);
 

@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.wizards;
 
 import it.eng.spagobi.studio.documentcomposition.editors.model.navigation.Navigation;
+import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardMasterDocPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardPage;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -13,6 +14,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 
 	// dashboard creation page
 	private NewNavigationWizardPage newNavigationWizardPage;
+	private NewNavigationWizardMasterDocPage newNavigationWizardMasterDocPage;
 	// workbench selection when the wizard was started
 	protected IStructuredSelection selection;
 	// the workbench instance
@@ -21,7 +23,10 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	
 	public SpagoBINavigationWizard() {
 		super();
+		/*
 		addPage(newNavigationWizardPage);
+		addPage(newNavigationWizardMasterDocPage);
+		*/
 		// TODO Auto-generated constructor stub
 	}
 	@Override
@@ -30,8 +35,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	    // Create the entry based on the inputs
 	    Navigation navigation = new Navigation();
 	    navigation.setNavigationNameText(newNavigationWizardPage.getNavigationNameText().getText());
-/*	    entry.setLastName(namePage.getLastName());
-	    entry.setEmail(emailPage.getEmail());*/
+	    navigation.setMasterDocNameText(newNavigationWizardMasterDocPage.getMasterDocNameText().getText());
 
 	    // Return true to exit wizard
 	    return true;
@@ -39,10 +43,11 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		setWindowTitle("New Jasper template creation");
-		this.workbench = workbench;
-		this.selection = selection;
+/*		this.workbench = workbench;
+		this.selection = selection;*/
 		
 		newNavigationWizardPage = new NewNavigationWizardPage();
+		newNavigationWizardMasterDocPage = new NewNavigationWizardMasterDocPage();
 		
 	}
 	
@@ -50,6 +55,8 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		super.addPages();
 		newNavigationWizardPage = new NewNavigationWizardPage("New Navigation");
 		addPage(newNavigationWizardPage);
+		newNavigationWizardMasterDocPage = new NewNavigationWizardMasterDocPage("New Navigation");
+		addPage(newNavigationWizardMasterDocPage);
 	}
 
 

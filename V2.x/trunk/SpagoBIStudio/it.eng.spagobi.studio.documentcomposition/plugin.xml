@@ -17,6 +17,7 @@
       <viewerContribution
             id="it.eng.spagobi.studio.documentcomposition.popupmenus.ResourceNavigatorContribution"
             targetID="it.eng.spagobi.studio.core.views.ResourceNavigator">
+            <!--
          <action
                class="it.eng.spagobi.studio.documentcomposition.actions.NewDocumentCompositionAction"
                icon="icons/objecticon_DOCCOMP.png"
@@ -24,6 +25,7 @@
                label="Document Composition"
                menubarPath="group.new"
                style="push" />
+               -->
       </viewerContribution>
    </extension>
    <extension point="org.eclipse.ui.views">

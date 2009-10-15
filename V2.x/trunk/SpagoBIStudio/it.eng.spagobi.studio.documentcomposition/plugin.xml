@@ -46,13 +46,20 @@
 	<!-- tabs di navigazione -->
 	<extension point="org.eclipse.ui.views">
     	 <category 
-           id="org.eclipse.ui.article"
+           id="org.eclipse.ui.navigation"
            name="Navigazione">
         </category>
         <view id="it.eng.spagobi.studio.documentcomposition.views"
                 name="Navigazione"
                 icon="icons\view.gif"
                 class="it.eng.spagobi.studio.documentcomposition.views.NavigationView"/>
+        <action
+               class="it.eng.spagobi.studio.documentcomposition.actions.NewNavigationAction"
+               icon="icons/objecticon_DOCCOMP.png"
+               id="it.eng.spagobi.studio.documentcomposition.actions.NewNavigationAction"
+               label="New Navigation"
+               menubarPath="group.new"
+               style="push" />
 	</extension>	
 	
  </plugin>

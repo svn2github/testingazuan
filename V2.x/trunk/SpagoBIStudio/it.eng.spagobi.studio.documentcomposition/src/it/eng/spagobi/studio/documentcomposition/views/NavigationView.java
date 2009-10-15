@@ -23,22 +23,18 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.ViewPart;
 
 public class NavigationView extends ViewPart {
-	ListViewer viewer;
-	IMemento memento;
+
 	Table table;
 	
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
 	}
-	public void init(IViewSite site,IMemento memento) throws PartInitException {
-		init(site);
-		this.memento = memento;	
-	}	
 	/**
 	 * This is a callback that will allow us to create the viewer and initialize
 	 * it.
 	 */
 	public void createPartControl(Composite parent) {
+		
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		// Lets make a layout for the first section of the screen
 		GridLayout layout = new GridLayout();
@@ -51,7 +47,7 @@ public class NavigationView extends ViewPart {
 		section.setText("Lista navigazione documento composto"); //$NON-NLS-1$
 		section.setDescription("Lista navigazioni");
 		// Composite for storing the data
-		Composite client = toolkit.createComposite(section, SWT.WRAP);
+		final Composite client = toolkit.createComposite(section, SWT.WRAP);
 		layout = new GridLayout();
 		layout.numColumns = 3;
 		layout.marginWidth = 2;
@@ -60,39 +56,53 @@ public class NavigationView extends ViewPart {
 		
 		final boolean[] result = new boolean[1];
 		/**crea dialog x conferma**/
-		final Shell confirm = createConfirmDialog(parent, toolkit, client, result);
+		//final Shell confirm = createConfirmDialog(client, result);
 		
 		
 		Button newButton = toolkit.createButton(client, "New", SWT.PUSH); 
 		Button deleteButton = createDeleteButton(parent, toolkit, client);
 		Button updateButton = toolkit.createButton(client, "Modify", SWT.PUSH);
 		
-		GridData gd = new GridData(GridData.CENTER);
+		
+		newButton.pack();
+		updateButton.pack();
+		
+		GridData gd = new GridData(SWT.LEFT);
 		gd.widthHint = 50;
+		gd.horizontalSpan =1;
+		gd.horizontalAlignment= SWT.LEFT;
 
 		newButton.setLayoutData(gd);
 		deleteButton.setLayoutData(gd);
 		updateButton.setLayoutData(gd);
 		
 		
-		// Add Button Listener
+		// Add Delete Button Listener
 		Listener deleteListener = new Listener() {
 			public void handleEvent(Event event) {
 		        switch (event.type) {
 		        case SWT.Selection:
-		          System.out.println("Delete button pressed");
-
-				  System.out.println("sto x aprire dialog");
+		          Shell confirm = createConfirmDialog(client, result);
 				  confirm.open();
-				  System.out.println("aperto dialog");
-
 		          break;
+		        }
+
+			}
+		};
+		
+		// Add Button Listener
+		Listener addListener = new Listener() {
+			public void handleEvent(Event event) {
+		        switch (event.type) {
+		        case SWT.Selection:
+				//parte wizard
 		        }
 
 			}
 		};
 	    
 		deleteButton.addListener(SWT.Selection, deleteListener);
+		newButton.addListener(SWT.Selection, addListener);
 		
 		/**tabella navigazioni**/
 		createTable(parent, toolkit, client);
@@ -105,15 +115,17 @@ public class NavigationView extends ViewPart {
 	protected Button createDeleteButton(Composite parent, FormToolkit toolkit, Composite client){
 		
 		Button deleteButton = toolkit.createButton(client, "Delete", SWT.PUSH | SWT.BORDER_DOT);
-
 		deleteButton.pack();
 		return deleteButton;
 	}
-	protected Shell createConfirmDialog(Composite parent, FormToolkit toolkit, Composite client, final boolean[] result){
-		final Shell confirm = new Shell(parent.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+	protected Shell createConfirmDialog(Composite client, final boolean[] result){
+		final Shell confirm = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		confirm.setLayout(new RowLayout());
-/*		Point pt = client.getDisplay().getCursorLocation();
-	    confirm.setLocation(pt.x, pt.y);*/
+
+		confirm.setSize(200, 80);
+		Point pt = client.getDisplay().getCursorLocation ();
+		confirm.setLocation (pt.x-250, pt.y);
+
 	    final Button ok = new Button(confirm, SWT.PUSH);
 	    ok.setText("Confirm");
 	    Button cancel = new Button(confirm, SWT.PUSH);
@@ -122,17 +134,15 @@ public class NavigationView extends ViewPart {
 
 	    Listener dialogListener = new Listener() {
 	        public void handleEvent(Event event) {
-	          System.out.println("confirm pressed");
 	          result[0] = event.widget == ok;
 	          confirm.notifyListeners(event.type, event);
 	          confirm.close();
-	          System.out.println("risultato::"+result[0]);
 			  int selection = table.getSelectionIndex();
 			  TableItem tableItem=table.getItem(selection);
 
 			  if(result[0]){
 				  tableItem.dispose();
-				  System.out.println("Eliminata voce di lista");
+				  System.out.println("Eliminata voce di lista "+selection);
 			  }
 	        }
 	      };
@@ -159,23 +169,21 @@ public class NavigationView extends ViewPart {
 
 	    for (int i = 0; i < 5; i++) {
 	      TableItem item = new TableItem(table, SWT.NONE);
-	      //item.setText(0, "");
 	      item.setText(0, "navigation "+i);
 	    }
 
 	    for (int i=0; i<titles.length; i++) {
 	      table.getColumn (i).pack ();
 	    }  
+	    
 	    return table;
 	}
-	
-	/**
-	 * Passing the focus request to the viewer's control.
-	 */
-
+	@Override
 	public void setFocus() {
-		viewer.getControl().setFocus();
+		
+		
 	}
+
 
 
 }

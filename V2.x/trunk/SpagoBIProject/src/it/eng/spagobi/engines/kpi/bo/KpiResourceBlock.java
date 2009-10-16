@@ -2,6 +2,7 @@ package it.eng.spagobi.engines.kpi.bo;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
+import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
@@ -10,6 +11,7 @@ import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
+import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
@@ -17,9 +19,11 @@ import it.eng.spagobi.commons.utilities.urls.UrlBuilderFactory;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
 import it.eng.spagobi.kpi.model.bo.Resource;
+import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.awt.Color;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -41,6 +45,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
+import org.xml.sax.InputSource;
 
 public class KpiResourceBlock implements Serializable{
 	
@@ -137,9 +142,9 @@ public class KpiResourceBlock implements Serializable{
 	}
 	
 	private StringBuffer addItemForTree(String id,ExecutionInstance instanceO,String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight, Boolean show_axis,Boolean weighted_values) {
-		
 		logger.debug("IN");
 		logger.debug("*********************");
+		
 		logger.debug("Recursion Level:"+recursionLev);
 		IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 		String execMod = instanceO.getExecutionModality();
@@ -194,12 +199,7 @@ public class KpiResourceBlock implements Serializable{
 				}
 			}	
 		}
-		Color semaphorColor = line.getSemaphorColor();
-		if (semaphorColor!= null){
-			String semaphorHex = "rgb("+semaphorColor.getRed()+", "+semaphorColor.getGreen()+", "+semaphorColor.getBlue()+")" ;
-			logger.debug("Kpi semaphore color:"+semaphorHex);
-		}
-		
+		Color semaphorColor = line.getSemaphorColor();		
 		BulletGraph sbi = (BulletGraph)line.getChartBullet();		
 		List children = line.getChildren();
 		String tab_name = "KPI_TABLE";
@@ -320,24 +320,33 @@ public class KpiResourceBlock implements Serializable{
 		
 		if (display_bullet_chart && kpiVal!=null && kpiVal.getThresholdValues()!=null && !kpiVal.getThresholdValues().isEmpty() && sbi!=null){
 			
-			JFreeChart chart = sbi.createChart();
-			ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-			String path_param = requestIdentity;
-			String dir=System.getProperty("java.io.tmpdir");
-			String path=dir+"/"+requestIdentity+".png";
-			java.io.File file1 = new java.io.File(path);
-			try {
-				if(!show_axis){
-					ChartUtilities.saveChartAsPNG(file1, chart, 250, 16, info);
-				}else{
-					ChartUtilities.saveChartAsPNG(file1, chart, 250, 30, info);
+			ThresholdValue tOfVal = line.getThresholdOfValue();
+			if (tOfVal.getPosition()!=null){
+				String fileName ="position_"+tOfVal.getPosition().intValue();
+				String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+				"?ACTION_NAME=GET_THR_IMAGE&NEW_SESSION=TRUE&fileName="+fileName+"&LIGHT_NAVIGATOR_DISABLED=TRUE";	
+				_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div style='margin-top:4px;'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\" BORDER=\"1\" /></div></td>\n");
+				
+			}else{		
+				JFreeChart chart = sbi.createChart();
+				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+				String path_param = requestIdentity;
+				String dir=System.getProperty("java.io.tmpdir");
+				String path=dir+"/"+requestIdentity+".png";
+				java.io.File file1 = new java.io.File(path);
+				try {
+					if(!show_axis){
+						ChartUtilities.saveChartAsPNG(file1, chart, 250, 16, info);
+					}else{
+						ChartUtilities.saveChartAsPNG(file1, chart, 250, 30, info);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
+				String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+				"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&path="+path_param+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
+				_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div style='margin-top:4px;'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
 			}
-			String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
-			"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&path="+path_param+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
-			_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div style='margin-top:4px;'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
 			
 		}else{
 			_htmlStream.append("		<td width='22%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");

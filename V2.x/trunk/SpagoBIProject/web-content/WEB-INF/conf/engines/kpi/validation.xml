@@ -16,5 +16,19 @@
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>
+	
+	<SERVICE name="GET_THR_IMAGE" type="ACTION">
+		<VALIDATION blocking="false" validators="">
+			<CONDITIONS>
+			</CONDITIONS>
+			<FIELDS>
+				<FIELD name="fileName">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\_\-])*$"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="60"/>
+				</FIELD>
+			</FIELDS>
+		</VALIDATION>
+	</SERVICE>
 
 </VALIDATIONS>

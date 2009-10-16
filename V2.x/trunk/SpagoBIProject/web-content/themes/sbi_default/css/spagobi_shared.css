@@ -550,9 +550,8 @@ IMG {
 	color: black;
 	background-color: #FFFFFF;
 	vertical-align: top;
-	height: 22px;
 	border-color:#660000;
-	border-bottom: 1px solid #660000;
+	border-bottom: 1px solid #660000 !important;
 }
 
 .kpi_line_section_odd    {
@@ -562,9 +561,8 @@ IMG {
 	color: black;
 	background-color: #FFFFFF;
 	vertical-align: top;	
-	height: 22px;
 	border-color:#DDDDDD;
-	border-bottom: 1px solid #DDDDDD;
+	border-bottom: 1px solid #DDDDDD !important;
 }
 
 .kpi_title_section    {

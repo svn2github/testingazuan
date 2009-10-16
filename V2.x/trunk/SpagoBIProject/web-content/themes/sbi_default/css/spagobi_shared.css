@@ -531,6 +531,10 @@ IMG {
 }
 
 /* KPI STYLES*/
+.kpi_table  {
+	clear: left;  
+	width: 100%;
+}
 
 .kpi_resource_section    {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
@@ -560,6 +564,17 @@ IMG {
 	font-weight: normal;
 	color: black;
 	background-color: #FFFFFF;
+	vertical-align: top;	
+	border-color:#DDDDDD;
+	border-bottom: 1px solid #DDDDDD !important;
+}
+
+.kpi_first_line_section_odd  {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 10pt;
+	font-weight: normal;
+	color: black;
+	background-color:#DDDDDD;
 	vertical-align: top;	
 	border-color:#DDDDDD;
 	border-bottom: 1px solid #DDDDDD !important;

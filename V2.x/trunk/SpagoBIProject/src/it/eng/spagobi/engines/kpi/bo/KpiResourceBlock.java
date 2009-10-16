@@ -115,13 +115,13 @@ public class KpiResourceBlock implements Serializable{
 			IMessageBuilder msgBuilder = MessageBuilderFactory.getMessageBuilder();
 			logger.debug("Start Kpi tree for Resource "+r.getName());
 			_htmlStream.append("<div id ='"+r.getName()+"' >\n");				
-			_htmlStream.append("<table class='kpi_table' style='CLEAR: left; WIDTH: 100%' id='KPI_TABLE"+r.getId()+"' >\n");
+			_htmlStream.append("<table class='kpi_table' id='KPI_TABLE"+r.getId()+"' >\n");
 			_htmlStream.append("<TBODY>\n");
 			String res = msgBuilder.getMessage("sbi.kpi.RESOURCE", httpReq);
 			_htmlStream.append(" <tr class='kpi_resource_section' ><td colspan=\"9\" id=\"ext-gen58\" >"+res+r.getName()+"</td></tr>\n");
 			id = "node"+r.getId();
 		}else{
-			_htmlStream.append("<table class='kpi_table' style='CLEAR: left;  WIDTH: 100%' id='KPI_TABLE' >\n");
+			_htmlStream.append("<table class='kpi_table' id='KPI_TABLE' >\n");
 			_htmlStream.append("<TBODY>\n");
 			id = "node1";
 		}
@@ -208,7 +208,7 @@ public class KpiResourceBlock implements Serializable{
 		}
 		
 		if(recursionLev==0){
-			_htmlStream.append("	<tr style='background-color:#DDDDDD;' class='kpi_line_section_odd' id='"+id+"'>\n");
+			_htmlStream.append("	<tr class='kpi_first_line_section_odd' id='"+id+"'>\n");
 			
 				
 		}else if(evenLine){
@@ -323,7 +323,7 @@ public class KpiResourceBlock implements Serializable{
 			ThresholdValue tOfVal = line.getThresholdOfValue();
 			if (tOfVal.getPosition()!=null){
 				String fileName ="position_"+tOfVal.getPosition().intValue();
-				String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+				String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 				"?ACTION_NAME=GET_THR_IMAGE&NEW_SESSION=TRUE&fileName="+fileName+"&LIGHT_NAVIGATOR_DISABLED=TRUE";	
 				_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div style='margin-top:4px;'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\" BORDER=\"1\" /></div></td>\n");
 				

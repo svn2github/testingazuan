@@ -1074,6 +1074,19 @@ public class BasicTemplateBuilder  {
 			}
 			//Sets the bullet chart
 			if(line.getChartBullet()!=null){
+				
+				ThresholdValue tOfVal = line.getThresholdOfValue();
+				if (tOfVal.getPosition()!=null){
+					String fileName ="position_"+tOfVal.getPosition().intValue();
+					String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+					"?ACTION_NAME=GET_THR_IMAGE&NEW_SESSION=TRUE&fileName="+fileName+"&LIGHT_NAVIGATOR_DISABLED=TRUE";	
+					urlPng = "new java.net.URL(\""+urlPng+"\")";
+					logger.debug("url: "+urlPng);
+					image1.setAttribute("reportElement.y", yValue.toString());
+					SourceBean imageValue=(SourceBean)image1.getAttribute("imageExpression");
+					imageValue.setCharacters(urlPng);
+					
+				}else{
 				BulletGraph sbi = (BulletGraph)line.getChartBullet();	
 				JFreeChart chart = sbi.createChart();
 				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
@@ -1101,6 +1114,7 @@ public class BasicTemplateBuilder  {
 				image1.setAttribute("reportElement.y", yValue.toString());
 				SourceBean imageValue=(SourceBean)image1.getAttribute("imageExpression");
 				imageValue.setCharacters(urlPng);
+				}
 				
 			}
 			

@@ -212,9 +212,9 @@ public class KpiResourceBlock implements Serializable{
 			
 				
 		}else if(evenLine){
-			 _htmlStream.append("	<tr class='kpi_line_section_even' style='border-bottom: 1px solid #660000 !important;' id='"+id+"' >\n");
+			 _htmlStream.append("	<tr class='kpi_line_section_even' id='"+id+"' >\n");
 		}else{
-			_htmlStream.append("	<tr class='kpi_line_section_odd' style='border-bottom: 1px solid #DDDDDD !important;' id='"+id+"' >\n");
+			_htmlStream.append("	<tr class='kpi_line_section_odd' id='"+id+"' >\n");
 		}
 		if (display_semaphore && semaphorColor!= null){
 			String semaphorHex ="rgb("+semaphorColor.getRed()+", "+semaphorColor.getGreen()+", "+semaphorColor.getBlue()+")" ;	

@@ -37,27 +37,17 @@ package it.eng.spagobi.engines.talend.exception;
  */
 public class JobExecutionException extends TalendEngineException {
 	
-	/**
-	 * Instantiates a new job execution exception.
-	 */
-	public JobExecutionException() {}
+	public JobExecutionException(String message) {
+    	super(message);
+    }
 	
-	/**
-	 * Instantiates a new job execution exception.
-	 * 
-	 * @param msg the msg
-	 */
-	public JobExecutionException(String msg) {
-		super(msg);
-	}
-	
-	/**
-	 * Instantiates a new job execution exception.
-	 * 
-	 * @param msg the msg
-	 * @param e the e
-	 */
-	public JobExecutionException(String msg, Throwable e) {
-		super(msg, e);
-	}
+   
+    public JobExecutionException(String message, Throwable ex) {
+    	super(message, ex);
+    }
+    
+  
+    public JobExecutionException(Throwable ex) {
+    	super(ex);
+    }
 }

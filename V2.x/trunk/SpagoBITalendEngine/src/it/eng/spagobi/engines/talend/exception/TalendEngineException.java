@@ -31,33 +31,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend.exception;
 
+import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
+
 /**
  * @author Andrea Gioia
  *
  */
-public class TalendEngineException extends Exception {
+public class TalendEngineException extends SpagoBIEngineRuntimeException {
 	
-	/**
-	 * Instantiates a new talend engine exception.
-	 */
-	public TalendEngineException() {}
 	
-	/**
-	 * Instantiates a new talend engine exception.
-	 * 
-	 * @param msg the msg
-	 */
-	public TalendEngineException(String msg) {
-		super(msg);
-	}
+    public TalendEngineException(String message) {
+    	super(message);
+    }
 	
-	/**
-	 * Instantiates a new talend engine exception.
-	 * 
-	 * @param msg the msg
-	 * @param e the e
-	 */
-	public TalendEngineException(String msg, Throwable e) {
-		super(msg, e);
-	}
+   
+    public TalendEngineException(String message, Throwable ex) {
+    	super(message, ex);
+    }
+    
+  
+    public TalendEngineException(Throwable ex) {
+    	super(ex);
+    }
 }

@@ -37,17 +37,17 @@ package it.eng.spagobi.engines.talend.exception;
  */
 public class ContextNotFoundException extends TalendEngineException {
 	
-	/**
-	 * Instantiates a new context not found exception.
-	 */
-	public ContextNotFoundException() {}
+	public ContextNotFoundException(String message) {
+    	super(message);
+    }
 	
-	/**
-	 * Instantiates a new context not found exception.
-	 * 
-	 * @param msg the msg
-	 */
-	public ContextNotFoundException(String msg) {
-		super(msg);
-	}
+   
+    public ContextNotFoundException(String message, Throwable ex) {
+    	super(message, ex);
+    }
+    
+  
+    public ContextNotFoundException(Throwable ex) {
+    	super(ex);
+    }
 }

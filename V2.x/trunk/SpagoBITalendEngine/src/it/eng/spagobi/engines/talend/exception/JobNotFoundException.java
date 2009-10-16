@@ -37,17 +37,17 @@ package it.eng.spagobi.engines.talend.exception;
  */
 public class JobNotFoundException extends TalendEngineException {
 	
-	/**
-	 * Instantiates a new job not found exception.
-	 */
-	public JobNotFoundException() {}
+	public JobNotFoundException(String message) {
+    	super(message);
+    }
 	
-	/**
-	 * Instantiates a new job not found exception.
-	 * 
-	 * @param msg the msg
-	 */
-	public JobNotFoundException(String msg) {
-		super(msg);
-	}
+   
+    public JobNotFoundException(String message, Throwable ex) {
+    	super(message, ex);
+    }
+    
+  
+    public JobNotFoundException(Throwable ex) {
+    	super(ex);
+    }
 }

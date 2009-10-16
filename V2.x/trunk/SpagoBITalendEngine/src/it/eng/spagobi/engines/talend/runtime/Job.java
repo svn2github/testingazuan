@@ -33,19 +33,10 @@ package it.eng.spagobi.engines.talend.runtime;
 
 
 import it.eng.spago.base.SourceBean;
+import it.eng.spagobi.engines.talend.exception.TalendEngineException;
+import it.eng.spagobi.engines.talend.exception.TemplateParseException;
 import it.eng.spagobi.utilities.assertion.Assert;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
 
 /**
  * @author Andrea Gioia
@@ -89,28 +80,27 @@ public class Job {
 		this.context = context;
 	}		
 	
-	public void load(SourceBean template) throws SpagoBIEngineException {
+	public void load(SourceBean template) throws TemplateParseException {
 		SourceBean jobSB;
+		
+		Assert.assertNotNull(template, "Input parameter [template] cannot be null");
 		
 		jobSB = (SourceBean)template.getAttribute("JOB");
 		Assert.assertNotNull(jobSB, "template cannot be null");
 		
 		name = (String)jobSB.getAttribute("jobName");
 		if(name == null) {
-			throw new SpagoBIEngineException("Missing Talend project name in document template",
-					"missing.talend.job");
+			throw new TemplateParseException(template, "Missing Talend project name in document template");
 		}
 	 
 		project = (String)jobSB.getAttribute("project");
 		if(project == null) {
-			throw new SpagoBIEngineException("Missing Talend project name in document template",
-					"missing.talend.project");
+			throw new TemplateParseException(template, "Missing Talend project name in document template");
 		}
 		
 		language = (String)jobSB.getAttribute("language");
 		if(language == null) {
-			throw new SpagoBIEngineException("Missing Talend job language in document template",
-					"missing.talend.lang");
+			throw new TalendEngineException("Missing Talend job language in document template");
 		}
 		
 		context = (String)jobSB.getAttribute("context");

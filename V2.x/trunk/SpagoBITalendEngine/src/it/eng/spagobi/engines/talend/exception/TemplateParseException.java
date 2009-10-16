@@ -31,23 +31,39 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 **/
 package it.eng.spagobi.engines.talend.exception;
 
+import it.eng.spago.base.SourceBean;
+
 /**
  * @author Andrea Gioia
  *
  */
-public class AuthenticationFailedException extends TalendEngineException {
+public class TemplateParseException extends TalendEngineException {
 	
-	public AuthenticationFailedException(String message) {
+	private SourceBean template;
+	
+	public TemplateParseException(SourceBean template, String message) {
     	super(message);
+    	setTemplate(template);
     }
 	
    
-    public AuthenticationFailedException(String message, Throwable ex) {
+    public TemplateParseException(SourceBean template, String message, Throwable ex) {
     	super(message, ex);
+    	setTemplate(template);
     }
     
   
-    public AuthenticationFailedException(Throwable ex) {
+    public TemplateParseException(SourceBean template, Throwable ex) {
     	super(ex);
+    	setTemplate(template);
     }
+    
+    public SourceBean getTemplate() {
+		return template;
+	}
+
+
+	public void setTemplate(SourceBean template) {
+		this.template = template;
+	}
 }

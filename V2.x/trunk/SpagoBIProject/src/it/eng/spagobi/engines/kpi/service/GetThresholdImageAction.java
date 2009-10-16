@@ -9,6 +9,8 @@ import it.eng.spagobi.engines.chart.service.GetPngAction;
 import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,11 +29,11 @@ public class GetThresholdImageAction extends AbstractHttpAction {
 	/* (non-Javadoc)
 	 * @see it.eng.spago.dispatching.service.ServiceIFace#service(it.eng.spago.base.SourceBean, it.eng.spago.base.SourceBean)
 	 */
-	public void service(SourceBean serviceRequest, SourceBean serviceResponse)
-	throws Exception {
+	public void service(SourceBean serviceRequest, SourceBean serviceResponse) throws Exception
+	 {
 		logger.debug("IN");
 		freezeHttpResponse();
-
+		try {
 		HttpServletResponse res = getHttpResponse();
 		HttpServletRequest req = getHttpRequest();
 		
@@ -65,18 +67,28 @@ public class GetThresholdImageAction extends AbstractHttpAction {
 		logger.debug("filePath="+filePath);
 		String fileName = (String)serviceRequest.getAttribute("fileName");
 		String path=filePath+fileName+".gif";
+		logger.debug("path:"+path);
 
-		FileInputStream fis=new FileInputStream(path);
+		FileInputStream fis;
+		
+			fis = new FileInputStream(path);
+		    int avalaible = fis.available();   // Mi informo sul num. bytes.
 
-		int avalaible = fis.available();   // Mi informo sul num. bytes.
+			for(int i=0; i<avalaible; i++) {
+				out.write(fis.read()); 
+			}
 
-		for(int i=0; i<avalaible; i++) {
-			out.write(fis.read()); 
+			fis.close();
+			out.flush();	
+			out.close();
+			
+		} catch (FileNotFoundException e) {
+			logger.error(e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			logger.error(e);
+			e.printStackTrace();
 		}
-
-		fis.close();
-		out.flush();	
-		out.close();
 		
 		logger.debug("OUT");
 

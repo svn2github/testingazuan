@@ -39,6 +39,7 @@ import sun.misc.BASE64Decoder;
 
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.base.SourceBeanException;
+import it.eng.spago.error.EMFInternalError;
 import it.eng.spago.security.IEngUserProfile;
 import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.services.content.bo.Content;
@@ -216,10 +217,41 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 			
 		return templateSB;
 	}
-	 
-	    public IDataSource getDataSource() {
+	
+	
+	
+	public IDataSource getDataSource() {
 	    	if(dataSource == null) {
-	    		dataSource = getDataSourceServiceProxy().getDataSource( getDocumentId() );
+	    		String connectionName = getParameterAsString("connectionName");
+	    		if(connectionName != null) {
+	    			logger.debug("Using dataSource passed in as parameter [" + connectionName + "]");	
+	    			dataSource = getDataSourceServiceProxy().getDataSourceByLabel( connectionName );
+	    		} else {
+	    			logger.debug("Using default dataSource");	
+	    			dataSource = getDataSourceServiceProxy().getDataSource( getDocumentId() );
+	    		}
+	    		
+	    		// handle multischema
+	    		if (dataSource != null && dataSource.checkIsJndi() && dataSource.checkIsMultiSchema()) {
+	    			logger.debug("Multi schema enabled [TRUE]");
+	    			logger.debug("Schema profile atribute name is equals to [" + dataSource.getSchemaAttribute() + "]");
+	    			
+	    			if (dataSource.getSchemaAttribute() != null) {
+	    				
+	    				String schema;
+						try {
+							schema = (String)getUserProfile().getUserAttribute( dataSource.getSchemaAttribute() );
+							logger.debug("Schema profile atribute value is equals to [" + schema + "]");
+		    				if(schema != null) {
+		    					dataSource.setJndi( dataSource.getJndi()+ schema);
+		    				}
+						} catch (EMFInternalError e) {
+							logger.warn("Impossible to read attribute [" + dataSource.getSchemaAttribute() + "] from profile of user [" + getUserId()+ "]", e);
+						}
+	    					    				
+	    			}
+	    		}
+	    		
 	    	}
 			
 			return dataSource;

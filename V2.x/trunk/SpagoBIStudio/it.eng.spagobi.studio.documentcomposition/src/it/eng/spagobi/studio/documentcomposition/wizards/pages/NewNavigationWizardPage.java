@@ -14,12 +14,12 @@ public class NewNavigationWizardPage extends WizardPage {
 	Text navigationNameText;
 	
 	public NewNavigationWizardPage() {
-		super("New Navigation");
-		setTitle("New Navigation");
+		super("New Document");
+		setTitle("New Document");
 	}
 	public NewNavigationWizardPage(String pageName) {
 		super(pageName);
-		setTitle("New Navigation");
+		setTitle("New Document");
 	}
 
 	public void createControl(Composite parent) {

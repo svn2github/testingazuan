@@ -21,7 +21,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	
 
 	public NewNavigationWizardMasterDocPage() {
-		super("New Navigation - Master document");
+		super("New Document - Master document");
 		setTitle("Insert Master document");
 	}
 	public NewNavigationWizardMasterDocPage(String pageName) {
@@ -35,10 +35,11 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 		
 		final Composite composite =  new Composite(parent, SWT.BORDER | SWT.NO_REDRAW_RESIZE);
 		composite.setSize(600, 400);
-		GridLayout gl = new GridLayout();
-		
+		final GridLayout gl = new GridLayout();
+
 		int ncol = 3;
 		gl.numColumns = ncol;
+		
 		composite.setLayout(gl);
 		new Label(composite, SWT.NONE).setText("Master document:");				
 		masterDocNameText = new Text(composite, SWT.BORDER);
@@ -49,7 +50,8 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 		
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
-		
+		gd.grabExcessHorizontalSpace = true;
+		gd.widthHint = 200;
 
 		//fielset per parametri output
 		new Label(composite, SWT.NONE).setText("Ouput parameter:");	
@@ -64,7 +66,16 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 		
 		masterDocOutputParams.elementAt(0).addListener( SWT.FocusIn, new Listener() {
 			public void handleEvent(Event event) {
+				GridData gridData = new GridData();
+				gridData.minimumWidth=60;
+				//gridData.widthHint = 200;
+				gridData.horizontalAlignment = GridData.FILL_HORIZONTAL;
+				gridData.horizontalSpan = 1;
+				gridData.grabExcessHorizontalSpace = true;
+				
 				addButton.setVisible(true);
+				addButton.setLayoutData(gridData);
+				composite.layout(false);
 				composite.pack(false);
 				composite.redraw();
 			
@@ -75,16 +86,21 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		gd.horizontalSpan =2;
 
-		final int currentElement = masterDocOutputParams.size()-1;
 		addButton.addListener( SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
-				GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-				gd.horizontalSpan = 2;
+
+				GridData gridData = new GridData();
+				gridData.horizontalAlignment = GridData.FILL_HORIZONTAL;
+				gridData.horizontalSpan = 2;
+				//gridData.grabExcessHorizontalSpace = true;
+				gridData.widthHint = 200;
+				//gridData.minimumWidth=160;
+
 				//crea una nuovo output text
 				new Label(composite, SWT.NONE).setText("Ouput parameter:");
 				Text newText =new Text(composite, SWT.BORDER );
 				masterDocOutputParams.addElement(newText);
-				newText.setLayoutData(gd);
+				newText.setLayoutData(gridData);
 				composite.pack(false);
 				composite.redraw();
 				

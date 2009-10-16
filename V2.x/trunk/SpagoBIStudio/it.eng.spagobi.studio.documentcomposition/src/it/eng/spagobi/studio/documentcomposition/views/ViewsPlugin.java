@@ -1,4 +1,4 @@
-package org.eclipse.ui.articles.views;
+package it.eng.spagobi.studio.documentcomposition.views;
 
 import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.*;

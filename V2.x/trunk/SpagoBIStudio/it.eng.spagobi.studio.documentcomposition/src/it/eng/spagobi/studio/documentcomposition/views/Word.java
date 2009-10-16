@@ -1,4 +1,4 @@
-package org.eclipse.ui.articles.views;
+package it.eng.spagobi.studio.documentcomposition.views;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IActionFilter;
@@ -18,7 +18,8 @@ public class Word implements IAdaptable {
 
 	public Object getAdapter(Class adapter) {
 		if (adapter == IActionFilter.class) {
-			return WordActionFilter.getSingleton();
+			//return WordActionFilter.getSingleton();
+			return null;
 		}
 		return null;
 	}

@@ -169,7 +169,7 @@ public class NavigationView extends ViewPart {
 		table.setLinesVisible (true);
 		table.setHeaderVisible (true);
 		
-	    String[] titles = { " Document name" };
+	    String[] titles = { " Navigation name" };
 	    for (int i = 0; i < titles.length; i++) {
 	      TableColumn column = new TableColumn(table, SWT.NONE);
 	      column.setText(titles[i]);

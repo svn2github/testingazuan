@@ -57,6 +57,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 	String kpiInterpretation = (String)aServiceResponse.getAttribute("KPI_INTERPRETATION");
 	String kpiValue = (String)aServiceResponse.getAttribute("KPI_VALUE");
 	String kpiWeight = (String)aServiceResponse.getAttribute("KPI_WEIGHT");
+	String threshName = (String)aServiceResponse.getAttribute("THRESHOLD_NAME");
 	String kpiWeightedValue = "";
 	if (kpiValue!=null && !kpiValue.equals("") && kpiWeight!=null && !kpiWeight.equals("")){
 			Double val = new Double(kpiValue);
@@ -238,6 +239,13 @@ Ext.onReady(function(){
 		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiValueTarget" />		
 			</td>				
 			<td colspan="2" class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=kpiTarget%>
+			</td>
+		</tr>	
+		
+		<tr>
+		    <td class="portlet-section-header" width="170" style="text-align:left;color:black;background-color:#DCDCDC;"><spagobi:message key = "sbi.kpi.kpiThresholdName" />		
+			</td>				
+			<td colspan="2" class="portlet-section-body" style="vertical-align:left;text-align:left;">&nbsp;<%=threshName%>
 			</td>
 		</tr>	
 		

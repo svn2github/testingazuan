@@ -46,6 +46,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.engines.kpi.bo.ChartImpl"%>
 <%@page import="it.eng.spagobi.engines.kpi.bo.KpiResourceBlock"%>
 <%@page import="it.eng.spagobi.engines.kpi.bo.KpiLine"%>
+<%@page import="it.eng.spagobi.engines.kpi.bo.KpiLineVisibilityOptions"%>
 <%@page import="java.util.ArrayList"%> 
 
 <%
@@ -173,13 +174,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		<div class="kpi_subtitle_section"><%=subTitle%></div>
 		
 		<%}
-		Boolean closed_tree = (Boolean)sbModuleResponse.getAttribute("closed_tree");	
-		Boolean display_bullet_chart = (Boolean)sbModuleResponse.getAttribute("display_bullet_chart");	
-		Boolean display_alarm = (Boolean)sbModuleResponse.getAttribute("display_alarm");
-		Boolean display_semaphore = (Boolean)sbModuleResponse.getAttribute("display_semaphore");
-		Boolean display_weight = (Boolean)sbModuleResponse.getAttribute("display_weight");
-		Boolean show_axis = (Boolean)sbModuleResponse.getAttribute("show_axis");
-		Boolean weighted_values = (Boolean)sbModuleResponse.getAttribute("weighted_values");
+
+		KpiLineVisibilityOptions options = (KpiLineVisibilityOptions)sbModuleResponse.getAttribute("options");
+
 		
 		List kpiRBlocks =(List)sbModuleResponse.getAttribute("kpiRBlocks");
 		StringBuffer _htmlStream = new StringBuffer();
@@ -191,7 +188,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 				if(block.getR()!=null){
 					resources.add( block.getR());
 				}
-				_htmlStream.append(block.makeTree(instanceO, userId,request,display_bullet_chart, display_alarm, display_semaphore,display_weight,show_axis,weighted_values ));
+				_htmlStream.append(block.makeTree(instanceO, userId,request,options));
 				
 			}
 			
@@ -279,7 +276,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			
 			<p>
 			 
-			<% if(weighted_values){%>
+			<% if(options.getWeighted_values()){%>
 				<div class="kpi_note_section">Valori Pesati</div>
 		    <% } %>
 			<br>
@@ -289,7 +286,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 			 <%=scriptViewAll%>
 			 <%=scriptHideAll%>
 			
-			<%  if (closed_tree){ %>
+			<%  if (options.getClosed_tree()){ %>
 				 <%=scriptHideOnLoad%>
 			<%  } %>
 			  

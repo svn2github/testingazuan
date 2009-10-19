@@ -27,6 +27,11 @@
 					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\_\-])*$"/>
 					<VALIDATOR validatorName="MAXLENGTH" arg0="60"/>
 				</FIELD>
+				<FIELD name="dirName">
+					<VALIDATOR validatorName="MANDATORY"/>
+					<VALIDATOR validatorName="REGEXP" arg0="^([a-zA-Z0-9\_\-])*$"/>
+					<VALIDATOR validatorName="MAXLENGTH" arg0="60"/>
+				</FIELD>
 			</FIELDS>
 		</VALIDATION>
 	</SERVICE>

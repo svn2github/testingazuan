@@ -2,23 +2,28 @@ package it.eng.spagobi.studio.documentcomposition.wizards;
 
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Refresh;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
 import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardDestinDocPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardMasterDocPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardPage;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 public class SpagoBINavigationWizard extends Wizard implements INewWizard{
-
 
 	// dashboard creation page
 	private NewNavigationWizardPage newNavigationWizardPage;
@@ -30,64 +35,71 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		super();
 
 	}
+
+	@Override
+	public void addPage(IWizardPage page) {
+		// TODO Auto-generated method stub
+		super.addPage(page);
+	}
 	@Override
 	public boolean performFinish() {
-	    // Create the entry based on the inputs
-	    Document docMaster = new Document();
-	    
-	    
-	    //in realtà va a prendere il doc master corrispondente a quello selezionato dall'utente
-	    //all'interno del doc master costrisce Parametro con Refresh (navigazione)
-	    
-	    String masterName= newNavigationWizardMasterDocPage.getMasterDocNameText().getText();
-	    docMaster.setLabel(masterName);
-	    docMaster.setSbiObjLabel(masterName);
-	    
-	    Vector<Text> out = newNavigationWizardMasterDocPage.getMasterDocOutputParams();
-	    Parameters params = new Parameters();
-	    
-	    Vector parametersVector = new Vector();
-	    
-	    for(int i=0; i<out.size(); i++){
-	    	Parameter p = new Parameter();
-	    	p.setLabel(((Text)out.get(i)).getText());
-	    	parametersVector.add(p);
-	    }
-	    params.setParameter(parametersVector);
-	    docMaster.setParameters(params);
-	    
-	    //destinazione
-	    Document docDest = new Document();
-	    Parameters paramsDest = new Parameters();
-	    
-	    int selectedDest = newNavigationWizardDestinDocPage.getDestinationDocNameCombo().getSelectionIndex();
-	    String sel = newNavigationWizardDestinDocPage.getDestinationDocNameCombo().getItem(selectedDest);
+		
+		System.out.println("finish::1");
+		///////////solo x test//////////////
+		
+		HashMap<String, Text> destInfos = newNavigationWizardDestinDocPage.getDestinationInfo();
+		Iterator it = destInfos.keySet().iterator();
+		while(it.hasNext()){
+			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
+			String toRefresh = (String)it.next();
+			String paramIn = ((Text)destInfos.get(toRefresh)).getText();
 
-	    docDest.setLabel(sel);
-	    docDest.setSbiObjLabel(sel);
+			System.out.println("name::"+toRefresh);
+			System.out.println("param in::"+paramIn);
+	
+		}
+		System.out.println("finish::2");
+		////////////////////////////////////
+		String masterName= newNavigationWizardMasterDocPage.getName();
+	    //in realtà prende il doc master corrispondente a quello selezionato dall'utente
+	    //all'interno del doc master costrisce Parametro con Refresh (navigazione)	
+		DocumentComposition docComp = new DocumentComposition ();
 
-	    Vector<Text> in = newNavigationWizardDestinDocPage.getDestinationOutputParams();
-	    Vector<String> inParams = new Vector<String>();
+		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
+	    Vector documents = docConf.getDocuments();
 	    
-	    Vector parametersVectorDest = new Vector();
-	    for(int i=0; i<in.size(); i++){
-	    	Parameter p = new Parameter();
-	    	p.setLabel(((Text)in.get(i)).getText());
-	    	parametersVectorDest.add(p);
+	    //elabora documento master
+	    for (int i = 0; i< documents.size(); i++){
+	    	Document doc = (Document)documents.get(i);
+	    	String docLabel = doc.getLabel();
+	    	if(docLabel.equalsIgnoreCase(masterName)){
+	    		doc.setLabel(masterName);
+	    		doc.setSbiObjLabel(masterName);
+	    		Text out = newNavigationWizardMasterDocPage.getMasterDocOutputParam();	    		
+	    		//campo out a cui vengono assegnati
+	    		//ciclo sui parameters del doc master 
+	    		
+	    		//se presente gli aggiunge il type e i rafresh
+	    		Parameters params = doc.getParameters();
+	    		boolean found = false;
+	    		/*probabilmente nn serve........................*/
+	    		for (int j = 0; j<params.getParameter().size(); j++){
+	    			Parameter param = params.getParameter().elementAt(j);
+	    			if(param.getLabel().equalsIgnoreCase(out.getText())){
+	    				fillNavigationParam(param, out);
+	    				found = true;
+	    			}
+	    		}
+	    		/*probabilm sarà solo questo................*/
+	    		if(!found){
+	    			//altrimenti lo aggiunge
+	    			Parameter newParam = new Parameter();
+	    			fillNavigationParam(newParam, out);
+    				
+	    		}
+	    	}
 	    }
-	    
-	    paramsDest.setParameter(parametersVectorDest);
-	    docDest.setParameters(paramsDest);
-	    // Return true to exit wizard
-	    
-	    DocumentComposition docComp = new DocumentComposition();
-	    Vector<Document> docs = new Vector<Document>();
-	    
-	    docs.add(docMaster);
-	    docs.add(docDest);
-	    
-    
-	    //docComp.setNavigationName(newNavigationWizardPage.getNavigationNameText().getText());
+
 	    XmlTemplateGenerator generator = new XmlTemplateGenerator();
 	    generator.transformToXml(docComp);
 	    return true;
@@ -110,7 +122,32 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		
 		newNavigationWizardDestinDocPage = new NewNavigationWizardDestinDocPage("Destination document");
 		addPage(newNavigationWizardDestinDocPage);
+		
 	}
 
+	private void fillNavigationParam(Parameter param, Text out){
+		param.setLabel(out.getText());
+		param.setSbiParLabel(out.getText());
+		
+		Refresh refresh = new Refresh();
+		Vector <RefreshDocLinked> refreshes = new Vector<RefreshDocLinked>();
+		
+		
+		HashMap<String, Text> destInfos = newNavigationWizardDestinDocPage.getDestinationInfo();
+		Iterator it = destInfos.keySet().iterator();
+		while(it.hasNext()){
+			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
+			String toRefresh = (String)it.next();
+			String paramIn = ((Text)destInfos.get(toRefresh)).toString();
 
+			refreshDocLinked.setLabelDoc(toRefresh);
+			refreshDocLinked.setLabelParam(paramIn);
+			refreshes.add(refreshDocLinked);
+		}
+		
+		refresh.setRefreshDocLinked(refreshes);
+		param.setRefresh(refresh);
+		
+		param.setType("OUT");
+	}
 }

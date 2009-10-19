@@ -14,12 +14,12 @@ public class NewNavigationWizardPage extends WizardPage {
 	Text navigationNameText;
 	
 	public NewNavigationWizardPage() {
-		super("New Document");
-		setTitle("New Document");
+		super("New Navigation");
+		setTitle("New Navigation");
 	}
 	public NewNavigationWizardPage(String pageName) {
 		super(pageName);
-		setTitle("New Document");
+		setTitle("New Navigation");
 	}
 
 	public void createControl(Composite parent) {
@@ -31,7 +31,7 @@ public class NewNavigationWizardPage extends WizardPage {
 		int ncol = 2;
 		gl.numColumns = ncol;
 		composite.setLayout(gl);
-		new Label(composite, SWT.NONE).setText("Name:");				
+		new Label(composite, SWT.NONE).setText("Navigation name:");				
 		navigationNameText = new Text(composite, SWT.BORDER);
 		
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);

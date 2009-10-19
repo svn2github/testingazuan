@@ -5,8 +5,6 @@ import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
 import it.eng.spago.error.EMFErrorSeverity;
 import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
-import it.eng.spagobi.engines.chart.service.GetPngAction;
-import it.eng.spagobi.monitoring.dao.AuditManager;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -63,10 +61,12 @@ public class GetThresholdImageAction extends AbstractHttpAction {
 		SourceBean sb = (SourceBean)configSingleton.getAttribute("SPAGOBI.RESOURCE_PATH_JNDI_NAME");
 		String pathh = (String) sb.getCharacters();
 		String filePath= SpagoBIUtilities.readJndiResource(pathh);
-		filePath+="/kpi_images/";
+		filePath += "/kpi_images/";
+		String dirName = (String)serviceRequest.getAttribute("dirName");
+		filePath += dirName+"/";
 		logger.debug("filePath="+filePath);
 		String fileName = (String)serviceRequest.getAttribute("fileName");
-		String path=filePath+fileName+".gif";
+		String path=filePath+fileName+".png";
 		logger.debug("path:"+path);
 
 		FileInputStream fis;

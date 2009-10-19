@@ -2,16 +2,12 @@ package it.eng.spagobi.engines.kpi.bo;
 
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spago.navigation.LightNavigationManager;
 import it.eng.spagobi.analiticalmodel.document.handlers.ExecutionInstance;
-import it.eng.spagobi.analiticalmodel.document.service.ExecuteBIObjectModule;
 import it.eng.spagobi.commons.constants.ObjectsTreeConstants;
-import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.ChannelUtilities;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
-import it.eng.spagobi.commons.utilities.SpagoBIUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.commons.utilities.urls.IUrlBuilder;
@@ -23,18 +19,15 @@ import it.eng.spagobi.kpi.threshold.bo.ThresholdValue;
 import it.eng.spagobi.utilities.themes.ThemesManager;
 
 import java.awt.Color;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SortedSet;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,7 +38,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.safehaus.uuid.UUID;
 import org.safehaus.uuid.UUIDGenerator;
-import org.xml.sax.InputSource;
 
 public class KpiResourceBlock implements Serializable{
 	
@@ -103,7 +95,7 @@ public class KpiResourceBlock implements Serializable{
 	}	
 	
 	
-	public StringBuffer makeTree(ExecutionInstance instanceO,String userId,HttpServletRequest httpReq, Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight,Boolean show_axis, Boolean weighted_values ){
+	public StringBuffer makeTree(ExecutionInstance instanceO,String userId,HttpServletRequest httpReq, KpiLineVisibilityOptions options ){
 		logger.debug("IN");
 		StringBuffer _htmlStream = new StringBuffer();	
 		String id = "";
@@ -118,7 +110,11 @@ public class KpiResourceBlock implements Serializable{
 			_htmlStream.append("<table class='kpi_table' id='KPI_TABLE"+r.getId()+"' >\n");
 			_htmlStream.append("<TBODY>\n");
 			String res = msgBuilder.getMessage("sbi.kpi.RESOURCE", httpReq);
-			_htmlStream.append(" <tr class='kpi_resource_section' ><td colspan=\"9\" id=\"ext-gen58\" >"+res+r.getName()+"</td></tr>\n");
+			if (options.getDisplay_bullet_chart() && options.getDisplay_threshold_image() ){
+				_htmlStream.append(" <tr class='kpi_resource_section' ><td colspan=\"10\" id=\"ext-gen58\" >"+res+r.getName()+"</td></tr>\n");
+			}else{
+				_htmlStream.append(" <tr class='kpi_resource_section' ><td colspan=\"9\" id=\"ext-gen58\" >"+res+r.getName()+"</td></tr>\n");
+			}
 			id = "node"+r.getId();
 		}else{
 			_htmlStream.append("<table class='kpi_table' id='KPI_TABLE' >\n");
@@ -126,7 +122,7 @@ public class KpiResourceBlock implements Serializable{
 			id = "node1";
 		}
 		
-		addItemForTree(id,instanceO,userId,0,false,httpReq, root,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis,weighted_values);
+		addItemForTree(id,instanceO,userId,0,false,httpReq, root,_htmlStream,options);
 		logger.debug("Started Kpi tree with the root");
 
 			_htmlStream.append("</TBODY>\n");
@@ -141,7 +137,7 @@ public class KpiResourceBlock implements Serializable{
 		return _htmlStream;
 	}
 	
-	private StringBuffer addItemForTree(String id,ExecutionInstance instanceO,String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,Boolean display_bullet_chart, Boolean display_alarm, Boolean display_semaphore, Boolean display_weight, Boolean show_axis,Boolean weighted_values) {
+	private StringBuffer addItemForTree(String id,ExecutionInstance instanceO,String userId,int recursionLev, Boolean evenLine,HttpServletRequest httpReq,KpiLine line, StringBuffer _htmlStream,KpiLineVisibilityOptions options) {
 		logger.debug("IN");
 		logger.debug("*********************");
 		
@@ -194,7 +190,7 @@ public class KpiResourceBlock implements Serializable{
 				logger.debug("Kpi value :"+lo);
 				weight = kpiVal.getWeight();
 				logger.debug("Kpi weight :"+weight);
-				if(weighted_values){
+				if(options.getWeighted_values()){
 					lo =new Float(val*weight);
 				}
 			}	
@@ -216,12 +212,12 @@ public class KpiResourceBlock implements Serializable{
 		}else{
 			_htmlStream.append("	<tr class='kpi_line_section_odd' id='"+id+"' >\n");
 		}
-		if (display_semaphore && semaphorColor!= null){
+		if (options.getDisplay_semaphore() && semaphorColor!= null){
 			String semaphorHex ="rgb("+semaphorColor.getRed()+", "+semaphorColor.getGreen()+", "+semaphorColor.getBlue()+")" ;	
 			if (children!=null && !children.isEmpty()){
-				_htmlStream.append("		<td width='53%' class='kpi_td' ><div style=\"margin-left: "+20*recursionLev+"px;margin-top:5px;margin-right:5px;float:left;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:"+semaphorHex+"\"></div><div  class='kpi_div'><span class='toggleKPI' onclick=\"toggleHideChild('"+id+"','"+tab_name+"');\">&nbsp;</span>"+modelName+"</div></td>\n");
+				_htmlStream.append("		<td width='53%' class='kpi_td' ><div class='kpi_semaphore' style=\"margin-left: "+20*recursionLev+"px;background-color:"+semaphorHex+"\"></div><div  class='kpi_div'><span class='toggleKPI' onclick=\"toggleHideChild('"+id+"','"+tab_name+"');\">&nbsp;</span>"+modelName+"</div></td>\n");
 			}else{
-				_htmlStream.append("		<td width='53%' class='kpi_td' ><div style=\"margin-left: "+20*recursionLev+"px;margin-top:5px;margin-right:5px;float:left;width:9px;height:9px;border: 1px solid #5B6B7C;background-color:"+semaphorHex+"\"></div><div  class='kpi_div'>"+modelName+"</div></td>\n");
+				_htmlStream.append("		<td width='53%' class='kpi_td' ><div class='kpi_semaphore' style=\"margin-left: "+20*recursionLev+"px;background-color:"+semaphorHex+"\"></div><div  class='kpi_div'>"+modelName+"</div></td>\n");
 			}
 		}else{
 			if (children!=null && !children.isEmpty()){
@@ -233,7 +229,7 @@ public class KpiResourceBlock implements Serializable{
 		logger.debug("Written HTML for Semaphore");
 		logger.debug("Written HTML for ModelName:"+modelName);
 		
-		_htmlStream.append("		<td  width='0%' class='kpi_td' ><div id=\""+requestIdentity+"\" style='display:none;float:right;'></div></td>\n");
+		//_htmlStream.append("		<td  width='0%' class='kpi_td' ><div id=\""+requestIdentity+"\" style='display:none;float:right;'></div></td>\n");
 		
 		String valueDescr = "";
 		if(kpiVal !=null && kpiVal.getKpiInstanceId()!=null){
@@ -311,23 +307,16 @@ public class KpiResourceBlock implements Serializable{
 		logger.debug("Written HTML for value");
 		
 		String weight2 = msgBuilder.getMessage("sbi.kpi.weight", httpReq);
-		if (display_weight && weight!=null){
+		if (options.getDisplay_weight() && weight!=null){
 			_htmlStream.append("		<td width='5%' title='"+weight2+"' class='kpi_td_left'  ><div  class='kpi_div'>["+weight.toString()+"]</div></td>\n");
 		}else{
 			_htmlStream.append("		<td width='5%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
 		}
 		logger.debug("Written HTML for weight");
 		
-		if (display_bullet_chart && kpiVal!=null && kpiVal.getThresholdValues()!=null && !kpiVal.getThresholdValues().isEmpty() && sbi!=null){
-			
-			ThresholdValue tOfVal = line.getThresholdOfValue();
-			if (tOfVal.getPosition()!=null){
-				String fileName ="position_"+tOfVal.getPosition().intValue();
-				String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
-				"?ACTION_NAME=GET_THR_IMAGE&NEW_SESSION=TRUE&fileName="+fileName+"&LIGHT_NAVIGATOR_DISABLED=TRUE";	
-				_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div style='margin-top:4px;'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\" BORDER=\"1\" /></div></td>\n");
+		if (kpiVal!=null && kpiVal.getThresholdValues()!=null && !kpiVal.getThresholdValues().isEmpty() && sbi!=null){
+			if (options.getDisplay_bullet_chart() && options.getDisplay_threshold_image() ){	
 				
-			}else{		
 				JFreeChart chart = sbi.createChart();
 				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
 				String path_param = requestIdentity;
@@ -335,7 +324,38 @@ public class KpiResourceBlock implements Serializable{
 				String path=dir+"/"+requestIdentity+".png";
 				java.io.File file1 = new java.io.File(path);
 				try {
-					if(!show_axis){
+					if(!options.getShow_axis()){
+						ChartUtilities.saveChartAsPNG(file1, chart, 200, 16, info);
+					}else{
+						ChartUtilities.saveChartAsPNG(file1, chart, 200, 30, info);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				String urlPng1=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+				"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&path="+path_param+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
+				_htmlStream.append("		<td width='15%' class='kpi_td_left'  ><div class='kpi_bulletchart'><img style=\"align:left;\" id=\"image\" src=\""+urlPng1+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
+			
+				ThresholdValue tOfVal = line.getThresholdOfValue();
+				if (tOfVal!=null && tOfVal.getPosition()!=null && tOfVal.getThresholdCode()!=null){
+					String fileName ="position_"+tOfVal.getPosition().intValue();
+					String dirName = tOfVal.getThresholdCode();
+					String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+					"?ACTION_NAME=GET_THR_IMAGE&NEW_SESSION=TRUE&fileName="+fileName+"&dirName="+dirName+"&LIGHT_NAVIGATOR_DISABLED=TRUE";	
+					_htmlStream.append("		<td width='7%' class='kpi_td_left'  ><div class='kpi_image'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\" BORDER=\"1\" /></div></td>\n");
+					
+				}
+				
+			}else if(options.getDisplay_bullet_chart() && !options.getDisplay_threshold_image()){
+				
+				JFreeChart chart = sbi.createChart();
+				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+				String path_param = requestIdentity;
+				String dir=System.getProperty("java.io.tmpdir");
+				String path=dir+"/"+requestIdentity+".png";
+				java.io.File file1 = new java.io.File(path);
+				try {
+					if(!options.getShow_axis()){
 						ChartUtilities.saveChartAsPNG(file1, chart, 250, 16, info);
 					}else{
 						ChartUtilities.saveChartAsPNG(file1, chart, 250, 30, info);
@@ -345,11 +365,26 @@ public class KpiResourceBlock implements Serializable{
 				}
 				String urlPng=GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
 				"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&path="+path_param+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
-				_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div style='margin-top:4px;'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
+				_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div class='kpi_bulletchart'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" BORDER=\"1\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\"/></div></td>\n");
+				
+			}else if(!options.getDisplay_bullet_chart() && options.getDisplay_threshold_image()){
+				ThresholdValue tOfVal = line.getThresholdOfValue();
+				if (tOfVal!=null && tOfVal.getPosition()!=null && tOfVal.getThresholdCode()!=null){
+					String fileName ="position_"+tOfVal.getPosition().intValue();
+					String dirName = tOfVal.getThresholdCode();
+					String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+					"?ACTION_NAME=GET_THR_IMAGE&NEW_SESSION=TRUE&fileName="+fileName+"&dirName="+dirName+"&LIGHT_NAVIGATOR_DISABLED=TRUE";	
+					_htmlStream.append("		<td width='22%' class='kpi_td_left'  ><div class='kpi_image'><img style=\"align:left;\" id=\"image\" src=\""+urlPng+"\" alt=\"Error in displaying the chart\" USEMAP=\"#chart\" BORDER=\"1\" /></div></td>\n");
+					
+				}
 			}
-			
 		}else{
-			_htmlStream.append("		<td width='22%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
+			if (options.getDisplay_bullet_chart() && options.getDisplay_threshold_image() ){
+				_htmlStream.append("		<td width='15%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
+				_htmlStream.append("		<td width='7%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
+			}else{
+				_htmlStream.append("		<td width='22%' class='kpi_td_left' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
+			}
 		}
 		logger.debug("Written HTML for Bullet Chart.");
 				
@@ -436,22 +471,11 @@ public class KpiResourceBlock implements Serializable{
 			while(it.hasNext()){
 				String docLabel =(String)it.next();
 				String parameters = "";
-				//HashMap execUrlParMap = new HashMap();
-				//execUrlParMap.put(ObjectsTreeConstants.PAGE, ExecuteBIObjectModule.MODULE_PAGE);
-				
-				//execUrlParMap.put(ObjectsTreeConstants.OBJECT_LABEL, docLabel);
-				//execUrlParMap.put(SpagoBIConstants.MESSAGEDET, SpagoBIConstants.EXEC_CROSS_NAVIGATION);
-				//execUrlParMap.put("EXECUTION_FLOW_ID", executionFlowId);
 				parameters +="EXECUTION_FLOW_ID="+executionFlowId;
-				//execUrlParMap.put("SOURCE_EXECUTION_ID", uuidPrincip);
 				parameters +="&SOURCE_EXECUTION_ID="+uuidPrincip;
-				parameters +="&KPI_VALUE_ID="+(kpiVal.getKpiValueId()!=null? kpiVal.getKpiValueId().toString():"-1");
-				//execUrlParMap.put(LightNavigationManager.LIGHT_NAVIGATOR_DISABLED, "true");
-				//execUrlParMap.put(ObjectsTreeConstants.MODALITY,execMod );
-				
+				parameters +="&KPI_VALUE_ID="+(kpiVal.getKpiValueId()!=null? kpiVal.getKpiValueId().toString():"-1");				
 				
 				if (r!=null){
-					//execUrlParMap.put(r.getColumn_name(), r.getName());
 					parameters +="&ParKpiResource="+r.getName();
 				}
 				SourceBean formatSB = ((SourceBean) ConfigSingleton.getInstance().getAttribute("SPAGOBI.DATE-FORMAT-SERVER"));
@@ -461,7 +485,6 @@ public class KpiResourceBlock implements Serializable{
 				
 				if (d!=null){						
 				    String dat = f.format(d);
-				   // execUrlParMap.put("ParKpiDate", dat);	
 				    parameters +="&ParKpiDate="+dat;
 				}
 				if (timeRangeFrom!=null && timeRangeTo!=null){
@@ -469,9 +492,7 @@ public class KpiResourceBlock implements Serializable{
 						Date timeR_From = f.parse(timeRangeFrom);
 						Date timeR_To = f.parse(timeRangeTo);
 						if (timeR_From.before(timeR_To)){
-							//execUrlParMap.put("TimeRangeFrom", timeRangeFrom);	
 							 parameters +="&TimeRangeFrom="+timeRangeFrom;
-							//execUrlParMap.put("TimeRangeTo", timeRangeTo);	
 							 parameters +="&TimeRangeTo="+timeRangeTo;
 						}
 					} catch (ParseException e) {
@@ -479,7 +500,6 @@ public class KpiResourceBlock implements Serializable{
 					}
 				}
 				String docLinked = msgBuilder.getMessage("sbi.kpi.docLinked", httpReq);
-				//String docHref = urlBuilder.getUrl(httpRequest, execUrlParMap);
 				String docHref="javascript:parent.execCrossNavigation(this.name,'"+docLabel+"','"+parameters+"');";
 				_htmlStream.append("<a  title='"+docLinked+"' href=\""+docHref+"\"> <img  src=\""+docImgSrc+"\" alt=\"Attached Document\" /></a>\n");				
 			}
@@ -489,7 +509,7 @@ public class KpiResourceBlock implements Serializable{
 		}
 		logger.debug("Written HTML for Documents linked to the kpi");
 		
-		if (display_alarm){
+		if (options.getDisplay_alarm()){
 			String alarmControl = msgBuilder.getMessage("sbi.kpi.alarmControl", httpReq);
 			if(alarm) _htmlStream.append("		<td width='2%' title='"+alarmControl+"' style='text-align:center;' class='kpi_td_right' ><div class='kpi_div'  ><img  src=\""+alarmImgSrc+"\" alt=\"Kpi under Alarm Control\" /></div></td>\n");
 			else _htmlStream.append("		<td width='2%' class='kpi_td_right' ><div class='kpi_div'>&nbsp; &nbsp;</div></td>\n");
@@ -510,9 +530,9 @@ public class KpiResourceBlock implements Serializable{
 			   KpiLine l = (KpiLine)childIt.next();
 			   String idTemp = id+"_child"+children.indexOf(l);
 			   if (evenLine){			   
-				   addItemForTree(idTemp,instanceO,userId,recursionLev,false,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis,weighted_values);
+				   addItemForTree(idTemp,instanceO,userId,recursionLev,false,httpReq, l,_htmlStream,options);
 			   }else{
-				   addItemForTree(idTemp,instanceO,userId,recursionLev,true,httpReq, l,_htmlStream,display_bullet_chart,display_alarm,display_semaphore,display_weight,show_axis,weighted_values);
+				   addItemForTree(idTemp,instanceO,userId,recursionLev,true,httpReq, l,_htmlStream,options);
 			   }  
 		   }
 	   } 

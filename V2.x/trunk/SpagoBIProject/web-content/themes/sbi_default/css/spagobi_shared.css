@@ -536,6 +536,23 @@ IMG {
 	width: 100%;
 }
 
+.kpi_semaphore    {
+	margin-top:5px;
+	margin-right:5px;
+	float:left;
+	width:9px;
+	height:9px;
+	border: 1px solid #5B6B7C;
+}
+
+.kpi_bulletchart    {
+	margin-top: 4px;
+}
+
+.kpi_image{
+	margin-top: 2px;
+}
+
 .kpi_resource_section    {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
 	font-size: 10pt;
@@ -544,7 +561,7 @@ IMG {
 	font-weight: bold;
 	vertical-align: middle;
 	text-align: left;
-	height: 20px;
+	min-height: 20px;
 }
 
 .kpi_line_section_even    {
@@ -594,7 +611,7 @@ IMG {
 	font-size: 10pt;
 	text-align: left;
 	vertical-align: top;
-	height: 22px;
+	min-height: 22px;
 }
 
 .kpi_td_right    {
@@ -602,14 +619,14 @@ IMG {
 	font-size: 10pt;
 	text-align: right;
 	vertical-align: top;
-	height: 22px;
+	min-height: 22px;
 }
 
 .kpi_td    {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
 	font-size: 10pt;
 	vertical-align: top;
-	height: 22px;
+	min-height: 22px;
 	text-align:left;
 }
 
@@ -617,7 +634,7 @@ IMG {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
 	font-size: 10pt;
 	vertical-align: top;
-	height: 22px;
+	min-height: 22px;
 	margin-top:3px;
 }
 

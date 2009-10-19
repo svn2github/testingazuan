@@ -1076,10 +1076,12 @@ public class BasicTemplateBuilder  {
 			if(line.getChartBullet()!=null){
 				
 				ThresholdValue tOfVal = line.getThresholdOfValue();
-				if (tOfVal.getPosition()!=null){
+				if (tOfVal!=null && tOfVal.getPosition()!=null && tOfVal.getThresholdCode()!=null){
 					String fileName ="position_"+tOfVal.getPosition().intValue();
+					String dirName = tOfVal.getThresholdCode();
 					String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
-					"?ACTION_NAME=GET_THR_IMAGE&NEW_SESSION=TRUE&fileName="+fileName+"&LIGHT_NAVIGATOR_DISABLED=TRUE";	
+					"?ACTION_NAME=GET_THR_IMAGE&NEW_SESSION=TRUE&fileName="+fileName+"&dirName="+dirName+"&LIGHT_NAVIGATOR_DISABLED=TRUE";	
+					
 					urlPng = "new java.net.URL(\""+urlPng+"\")";
 					logger.debug("url: "+urlPng);
 					image1.setAttribute("reportElement.y", yValue.toString());

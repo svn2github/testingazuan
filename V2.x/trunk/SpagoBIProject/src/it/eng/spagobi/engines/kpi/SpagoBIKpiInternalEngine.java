@@ -46,6 +46,7 @@ import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
 import it.eng.spagobi.engines.kpi.bo.ChartImpl;
 import it.eng.spagobi.engines.kpi.bo.KpiLine;
+import it.eng.spagobi.engines.kpi.bo.KpiLineVisibilityOptions;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.engines.kpi.utils.StyleLabel;
 import it.eng.spagobi.kpi.config.bo.Kpi;
@@ -106,6 +107,8 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected boolean display_semaphore = true;// true if the semaphore will be
 	// displayed
 	protected boolean display_bullet_chart = false;// true if the bullet chart
+	// displayed
+	protected boolean display_threshold_image = false;// true if the bullet chart
 	// will be displayed
 	protected boolean display_weight = false;// true if the weight will be
 	// displayed
@@ -460,13 +463,19 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "KPI");
-				response.setAttribute("display_bullet_chart", display_bullet_chart);
-				response.setAttribute("display_alarm", display_alarm);
-				response.setAttribute("display_semaphore", display_semaphore);
-				response.setAttribute("display_weight", display_weight);
-				response.setAttribute("closed_tree", closed_tree);
-				response.setAttribute("show_axis", show_axis);
-				response.setAttribute("weighted_values", weighted_values);
+				
+				KpiLineVisibilityOptions options = new KpiLineVisibilityOptions();
+				options.setClosed_tree(closed_tree);
+				options.setDisplay_alarm(display_alarm);
+				options.setDisplay_bullet_chart(display_bullet_chart);
+				options.setDisplay_semaphore(display_semaphore);
+				options.setDisplay_threshold_image(display_threshold_image);
+				options.setDisplay_weight(display_weight);
+				options.setShow_axis(show_axis);
+				options.setWeighted_values(weighted_values);
+				
+				response.setAttribute("options", options);
+				
 				if (name != null) {
 					response.setAttribute("title", name);
 					response.setAttribute("styleTitle", styleTitle);
@@ -822,7 +831,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				line.setAlarm(alarm);
 			}
 
-			if (display_bullet_chart &&  value!=null &&  value.getValue()!= null && value.getThresholdValues()!=null && !value.getThresholdValues().isEmpty()) {
+			if ( value!=null &&  value.getValue()!= null && value.getThresholdValues()!=null && !value.getThresholdValues().isEmpty()) {
 
 				List thresholdValues = value.getThresholdValues();
 				/*
@@ -855,7 +864,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				line.setChartBullet(sbi);
 
 			}
-			if (display_semaphore &&  value!=null && value.getValue() != null) {
+			if ( value!=null && value.getValue() != null) {
 				Color semaphorColor = null;
 				List thresholdValues = value.getThresholdValues();
 				Double val = new Double(value.getValue());
@@ -1573,6 +1582,15 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					display_bullet_chart = false;
 			}
 			this.confMap.put("display_bullet_chart", display_bullet_chart);
+			
+			display_threshold_image = true;
+			if (dataParameters.get("display_threshold_image") != null
+					&& !(((String) dataParameters.get("display_threshold_image")).equalsIgnoreCase(""))) {
+				String fil = (String) dataParameters.get("display_threshold_image");
+				if (fil.equalsIgnoreCase("false"))
+					display_threshold_image = false;
+			}
+			this.confMap.put("display_threshold_image", display_threshold_image);
 
 			display_weight = true;
 			if (dataParameters.get("display_weight") != null

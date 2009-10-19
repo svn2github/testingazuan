@@ -27,6 +27,29 @@
   <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="catalina.ant.classpath" />    
   <taskdef name="remove"    classname="org.apache.catalina.ant.RemoveTask" classpathref="catalina.ant.classpath" />	
   
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+  <!--   SDK Management					                                                      -->
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+  <target name="checkout.sdk" >
+    <ant dir="../SpagoBISDK/ant" target="svn.checkout"/>
+  </target>
+  <target name="clean.sdk">
+    <ant dir="../SpagoBISDK/ant" target="clean"/>
+  </target>
+  <target name="create.SpagoBISDK.war" depends="create.sbi.utils.jar">
+    <ant dir="../SpagoBISDK/ant" />
+  </target>
+  <target name="deploy.SpagoBISDK.war" depends="create.sbi.utils.jar,create.SpagoBISDK.war">
+    <delete dir="${tomcat.home}/webapps/SpagoBISDK" />
+    <mkdir dir="${tomcat.home}/webapps/SpagoBISDK" />
+    <unzip src="../../../SpagoBISDK/dist/SpagoBISDK.war" dest="${tomcat.home}/webapps/SpagoBISDK" />
+  </target>
+  <target name="create.sdk.src">
+    <ant dir="../SpagoBISDK/ant" target="create.sdk.src"/>
+  </target>
+  <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ --> 
+
+  
   <target name="create.SpagoBI.war" depends="create.sbi.utils.jar">
     <ant dir="../SpagoBIProject/ant" />
   </target>

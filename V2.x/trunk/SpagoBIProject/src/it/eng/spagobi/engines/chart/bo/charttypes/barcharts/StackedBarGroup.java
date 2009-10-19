@@ -154,7 +154,7 @@ public class StackedBarGroup extends BarCharts {//implements ILinkableChart {
 				if (name.indexOf("$F{") >= 0){
 					setTitleParameter(atts);
 				}
-				if (getSubName().indexOf("$F") >= 0){
+				if (getSubName()!= null && getSubName().indexOf("$F") >= 0){
 					setSubTitleParameter(atts);
 				}
 				first=false;

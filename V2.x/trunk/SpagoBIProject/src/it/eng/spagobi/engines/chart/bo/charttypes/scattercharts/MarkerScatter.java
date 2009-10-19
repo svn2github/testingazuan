@@ -138,10 +138,10 @@ public class MarkerScatter extends ScatterCharts {
 				if (name.indexOf("$F{") >= 0){
 					setTitleParameter(atts);
 				}
-				if (getSubName().indexOf("$F") >= 0){
+				if (getSubName()!= null && getSubName().indexOf("$F") >= 0){
 					setSubTitleParameter(atts);
 				}
-				if (yMarkerLabel.indexOf("$F{") >= 0){
+				if (yMarkerLabel != null && yMarkerLabel.indexOf("$F{") >= 0){
 					setYMarkerLabel(atts);
 				}
 				first=false;

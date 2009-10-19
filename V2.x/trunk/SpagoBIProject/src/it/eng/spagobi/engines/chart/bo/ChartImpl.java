@@ -939,7 +939,7 @@ public class ChartImpl implements IChart {
 	public void setSubTitleParameter(List atts) {
 		try{
 			String tmpTitle=new String(getSubName());
-			if (tmpTitle.indexOf("$F{") >= 0){
+			if (tmpTitle != null && tmpTitle.indexOf("$F{") >= 0){
 				String parName = tmpTitle.substring(tmpTitle.indexOf("$F{")+3, tmpTitle.indexOf("}"));
 
 				for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
@@ -958,14 +958,14 @@ public class ChartImpl implements IChart {
 			}
 		}
 		catch (Exception e) {
-			logger.error("Error in parameters Title");
+			logger.error("Error in parameters SubTitle");
 		}
 	}
 	
 	public void setSubTitleParameter(String attValue) {
 		try{
 			String tmpTitle=new String(getSubName());
-			if (tmpTitle.indexOf("$F{") >= 0){
+			if (tmpTitle != null && tmpTitle.indexOf("$F{") >= 0){
 				String parName = tmpTitle.substring(tmpTitle.indexOf("$F{")+3, tmpTitle.indexOf("}"));
 				int pos = tmpTitle.indexOf("$F{"+parName+"}") + (parName.length()+4);
 				setSubName(getSubName().replace("$F{" + parName + "}", attValue));
@@ -973,14 +973,14 @@ public class ChartImpl implements IChart {
 			}
 		}
 		catch (Exception e) {
-			logger.error("Error in parameters Title");
+			logger.error("Error in parameters SubTitle");
 		}
 	}
 	
 	public void setTitleParameter(String attValue) {
 		try{
 			String tmpTitle=new String(getName());
-			if (tmpTitle.indexOf("$F{") >= 0){
+			if (tmpTitle != null && tmpTitle.indexOf("$F{") >= 0){
 				String parName = tmpTitle.substring(tmpTitle.indexOf("$F{")+3, tmpTitle.indexOf("}"));
 				int pos = tmpTitle.indexOf("$F{"+parName+"}") + (parName.length()+4);
 				setSubName(getName().replace("$F{" + parName + "}", attValue));

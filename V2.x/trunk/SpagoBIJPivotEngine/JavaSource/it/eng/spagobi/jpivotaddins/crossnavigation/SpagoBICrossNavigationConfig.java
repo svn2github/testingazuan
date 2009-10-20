@@ -16,6 +16,8 @@ import mondrian.olap.Hierarchy;
 import mondrian.olap.Level;
 import mondrian.olap.Member;
 import mondrian.olap.Query;
+import mondrian.rolap.RolapCubeMember;
+import mondrian.rolap.RolapMember;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Node;
@@ -167,6 +169,11 @@ public class SpagoBICrossNavigationConfig {
 		Level level = member.getLevel();
 		if (level.getUniqueName().equals(levelName)) {
 			String uniqueName = member.getUniqueName();
+			// The uniqueName is the name of the member retrieved by the column defined in "nameColumn" property of the level in the xml schema.
+			// If the key value is required (retrieved by the column defined in "column" property), use the following code
+			// TODO: test it!!!
+			//RolapCubeMember rcm = (RolapCubeMember) member;
+			//System.out.println(rcm.getKey());
 			toReturn = uniqueName.substring(uniqueName.lastIndexOf("].[") + 3, uniqueName.lastIndexOf("]"));
 		} else {
 			// look for parent member at parent level

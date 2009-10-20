@@ -25,6 +25,8 @@ import org.eclipse.ui.IWorkbench;
 
 public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 
+
+
 	// dashboard creation page
 	private NewNavigationWizardPage newNavigationWizardPage;
 	private NewNavigationWizardMasterDocPage newNavigationWizardMasterDocPage;
@@ -36,6 +38,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 
 	}
 
+	
 	@Override
 	public void addPage(IWizardPage page) {
 		// TODO Auto-generated method stub
@@ -117,8 +120,11 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		super.addPages();
 		newNavigationWizardPage = new NewNavigationWizardPage("New Document");
 		addPage(newNavigationWizardPage);
+		newNavigationWizardPage.setPageComplete(false);
+		
 		newNavigationWizardMasterDocPage = new NewNavigationWizardMasterDocPage("Master document");
 		addPage(newNavigationWizardMasterDocPage);
+		newNavigationWizardMasterDocPage.setPageComplete(false);
 		
 		newNavigationWizardDestinDocPage = new NewNavigationWizardDestinDocPage("Destination document");
 		addPage(newNavigationWizardDestinDocPage);

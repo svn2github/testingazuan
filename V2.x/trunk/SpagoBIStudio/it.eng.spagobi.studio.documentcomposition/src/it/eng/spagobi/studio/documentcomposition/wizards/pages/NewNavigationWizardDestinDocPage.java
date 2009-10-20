@@ -3,11 +3,14 @@ package it.eng.spagobi.studio.documentcomposition.wizards.pages;
 import java.util.HashMap;
 import java.util.Vector;
 
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -17,6 +20,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.Section;
 
 public class NewNavigationWizardDestinDocPage extends WizardPage {
 
@@ -63,13 +67,16 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		destinationDocNameCombo = new Vector<Combo>();
 		destinationInputParam = new Vector<Text>();
 
-		final Composite composite =  new Composite(parent, SWT.BORDER | SWT.SCROLL_PAGE);
+		final ScrolledComposite sc =  new ScrolledComposite(parent, SWT.V_SCROLL );
+		final Composite composite = new Composite(sc, SWT.BORDER);
+		sc.setContent(composite);
 
-		//composite.setSize(600, 400);
 		final GridLayout gl = new GridLayout();
 		int ncol = 2;
 		gl.numColumns = ncol;
 		composite.setLayout(gl);
+	
+		
 		new Label(composite, SWT.NONE).setText("Destination document:");				
 		destinationDocNameCombo.addElement(new Combo(composite, SWT.BORDER |SWT.READ_ONLY ));
 
@@ -111,7 +118,8 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		
 		addButton.addListener( SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
-				destinCounter++;
+				destinCounter++;			
+				
 				
 				GridData gridData = new GridData();
 				gridData.horizontalAlignment = GridData.FILL_HORIZONTAL;
@@ -130,10 +138,12 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 					public void modifyText(ModifyEvent event) {
 						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
 						name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
-						setPageComplete(name.length() > 0	&& paramIn.length() > 0);
-						
+						if(name != null && name.length()!= 0){
+							setPageComplete(true);
+						}
 					}
 				});
+				destinationDocNameCombo.elementAt(destinCounter).setVisible(true);
 
 				//crea una nuovo output text
 				new Label(composite, SWT.NONE).setText("Input parameter:");
@@ -150,15 +160,17 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 						setPageComplete(name.length() > 0	&& paramIn.length() > 0);
 						
 						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-						destinationInfo.put(destinationDocNameCombo.elementAt(destinCounter).getItem(sel), destinationInputParam.elementAt(destinCounter));
-						
-						composite.redraw();
+						if(sel != -1){
+							setPageComplete(true);
+							destinationInfo.put(destinationDocNameCombo.elementAt(destinCounter).getItem(sel), destinationInputParam.elementAt(destinCounter));
+						}
 					}
 				});
-				setPageComplete(true);
+
 				
 				composite.pack(false);
-				composite.redraw();
+				//composite.redraw();
+				composite.getParent().redraw();
 
 			}
 		});
@@ -186,7 +198,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				composite.redraw();
 			}
 		});		
-
+		
 
 		composite.pack(false);
 		composite.redraw();

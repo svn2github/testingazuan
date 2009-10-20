@@ -36,10 +36,16 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 		super(pageName);
 		setTitle("Insert Master document");
 	}
-
+	@Override
+	public boolean canFlipToNextPage() {
+		if ((masterDocNameText.getText() == null || masterDocNameText.getText().length() == 0)
+				&&(masterDocOutputParam.getText() == null || masterDocOutputParam.getText().length() == 0)) {
+			return false;
+		}else
+			return super.canFlipToNextPage();
+	}
+	
 	public void createControl(Composite parent) {
-
-		Shell shell = parent.getShell();
 
 		final Composite composite = new Composite(parent, SWT.BORDER
 				| SWT.NO_REDRAW_RESIZE);

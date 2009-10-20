@@ -60,6 +60,21 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 
 	}
+	@Override
+	public boolean isPageComplete() {
+		boolean ret= super.isPageComplete();
+		for(int i = 0; i<destinCounter; i++){
+			int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
+			String destin = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
+			
+			if ((destinationInputParam.elementAt(destinCounter).getText() == null || destinationInputParam.elementAt(destinCounter).getText().length() == 0)
+					&&(sel ==-1 || destin == null )) {
+				return false;
+			}
+		}	
+
+		return ret;
+	}
 
 	public void createControl(Composite parent) {
 
@@ -134,15 +149,16 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 					destinationDocNameCombo.elementAt(destinCounter).add("destination "+i);
 				}
 				destinationDocNameCombo.elementAt(destinCounter).setLayoutData(gridData);
-				destinationDocNameCombo.elementAt(destinCounter).addModifyListener(new ModifyListener() {
-					public void modifyText(ModifyEvent event) {
-						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-						name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
-						if(name != null && name.length()!= 0){
-							setPageComplete(true);
-						}
-					}
-				});
+//				destinationDocNameCombo.elementAt(destinCounter).addModifyListener(new ModifyListener() {
+//					public void modifyText(ModifyEvent event) {
+//						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
+//						name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
+//						if(name != null && name.length()!= 0){
+//							System.out.println("11111111111");
+//							//setPageComplete(true);
+//						}
+//					}
+//				});
 				destinationDocNameCombo.elementAt(destinCounter).setVisible(true);
 
 				//crea una nuovo output text
@@ -156,14 +172,14 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 					public void modifyText(ModifyEvent event) {
 						//aggiunge pulsante x add delle pagine
 						addButton.setVisible(true);
-						paramIn = destinationInputParam.elementAt(destinCounter).getText();
-						setPageComplete(name.length() > 0	&& paramIn.length() > 0);
+						//paramIn = destinationInputParam.elementAt(destinCounter).getText();
+						//setPageComplete(name.length() > 0	&& paramIn.length() > 0);
 						
-						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-						if(sel != -1){
-							setPageComplete(true);
-							destinationInfo.put(destinationDocNameCombo.elementAt(destinCounter).getItem(sel), destinationInputParam.elementAt(destinCounter));
-						}
+						//int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
+						//if(sel != -1){
+							//setPageComplete(true);
+							//destinationInfo.put(destinationDocNameCombo.elementAt(destinCounter).getItem(sel), destinationInputParam.elementAt(destinCounter));
+						//}
 					}
 				});
 
@@ -179,7 +195,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
 				name = destinationDocNameCombo.elementAt(0).getItem(sel);
-				setPageComplete(name.length() > 0	&& paramIn.length() > 0);
+				//setPageComplete(name.length() > 0	&& paramIn.length() > 0);
 				
 			}
 		});	
@@ -190,7 +206,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				//aggiunge pulsante x add delle pagine
 				addButton.setVisible(true);
 				paramIn = destinationInputParam.elementAt(0).getText();
-				setPageComplete(name.length() > 0	&& paramIn.length() > 0);
+				//setPageComplete(name.length() > 0	&& paramIn.length() > 0);
 				
 				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
 				destinationInfo.put(destinationDocNameCombo.elementAt(0).getItem(sel), destinationInputParam.elementAt(0));
@@ -203,7 +219,6 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		composite.pack(false);
 		composite.redraw();
 		
-		setPageComplete(true);
 		setControl(composite);
 	}
 

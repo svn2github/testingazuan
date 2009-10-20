@@ -5,7 +5,7 @@
 
 <!--
      This is the XML model for XMLA DataSources Configuration.
-     Revision is $Id: //open/mondrian-release/3.0/src/main/mondrian/xmla/DataSourcesConfig.xml#2 $
+     Revision is $Id: //open/mondrian-release/3.1/src/main/mondrian/xmla/DataSourcesConfig.xml#2 $
   -->
 <!--
      The list of data sources supported by XMLA service.

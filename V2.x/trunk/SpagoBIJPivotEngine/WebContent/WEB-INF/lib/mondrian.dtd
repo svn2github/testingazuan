@@ -5,7 +5,7 @@
 
 <!--
      This is the XML model for Mondrian schemas.
-     Revision is $Id: //open/mondrian/src/main/mondrian/olap/Mondrian.xml#71 $
+     Revision is $Id: //open/mondrian-release/3.1/src/main/mondrian/olap/Mondrian.xml#2 $
   -->
 <!--
      A CubeDimension is either a usage of a Dimension ('shared
@@ -97,6 +97,7 @@ ignoreUnrelatedDimensions (true|false) "false"
 cubeName CDATA #IMPLIED
 caption CDATA #IMPLIED
 foreignKey CDATA #IMPLIED
+highCardinality (true|false) "false"
 name CDATA #IMPLIED
 >
 
@@ -122,6 +123,7 @@ usagePrefix CDATA #IMPLIED
 name CDATA #REQUIRED
 caption CDATA #IMPLIED
 foreignKey CDATA #IMPLIED
+highCardinality (true|false) "false"
 >
 
 <!--
@@ -137,6 +139,7 @@ foreignKey CDATA #IMPLIED
 type (StandardDimension|TimeDimension) #IMPLIED
 usagePrefix CDATA #IMPLIED
 foreignKey CDATA #IMPLIED
+highCardinality (true|false) "false"
 name CDATA #REQUIRED
 caption CDATA #IMPLIED
 >
@@ -160,6 +163,7 @@ primaryKeyTable CDATA #IMPLIED
 defaultMember CDATA #IMPLIED
 memberReaderClass CDATA #IMPLIED
 caption CDATA #IMPLIED
+uniqueKeyLevelName CDATA #IMPLIED
 >
 
 <!ELEMENT Level (KeyExpression?,NameExpression?,OrdinalExpression?,ParentExpression?,Closure?,(Property)*)>
@@ -174,7 +178,7 @@ parentColumn CDATA #IMPLIED
 nullParentValue CDATA #IMPLIED
 type (String|Numeric|Integer|Boolean|Date|Time|Timestamp) "String"
 uniqueMembers (true|false) "false"
-levelType (Regular|TimeYears|TimeQuarters|TimeMonths|TimeWeeks|TimeDays) "Regular"
+levelType (Regular|TimeYears|TimeHalfYear|TimeQuarters|TimeMonths|TimeWeeks|TimeDays|TimeHours|TimeMinutes|TimeSeconds|TimeUndefined) "Regular"
 hideMemberIf (Never|IfBlankName|IfParentsName) "Never"
 formatter CDATA #IMPLIED
 caption CDATA #IMPLIED
@@ -203,6 +207,7 @@ column CDATA #IMPLIED
 type (String|Numeric|Integer|Boolean|Date|Time|Timestamp) "String"
 formatter CDATA #IMPLIED
 caption CDATA #IMPLIED
+dependsOnLevelValue (true|false) #IMPLIED
 >
 
 <!ELEMENT Measure (MeasureExpression?,(CalculatedMemberProperty)*)>
@@ -280,7 +285,7 @@ alias CDATA #REQUIRED
 
 <!ELEMENT SQL (#PCDATA)>
 <!ATTLIST SQL
-dialect (generic|access|db2|derby|firebird|hsqldb|mssql|mysql|oracle|postgres|sybase|teradata|ingres|luciddb) "generic"
+dialect CDATA "generic"
 >
 
 <!ELEMENT Join ((%RelationOrJoin;),(%RelationOrJoin;))>
@@ -291,11 +296,19 @@ rightAlias CDATA #IMPLIED
 rightKey CDATA #REQUIRED
 >
 
-<!ELEMENT Table (SQL?,(AggExclude)*,((%AggTable;))*)>
+<!ELEMENT Table (SQL?,(AggExclude)*,((%AggTable;))*,(Hint)*)>
 <!ATTLIST Table
 name CDATA #REQUIRED
 schema CDATA #IMPLIED
 alias CDATA #IMPLIED
+>
+
+<!--
+     Dialect-specific table optimization hints
+  -->
+<!ELEMENT Hint (#PCDATA)>
+<!ATTLIST Hint
+type CDATA #REQUIRED
 >
 
 <!ELEMENT InlineTable (ColumnDefs,Rows)>

@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.documentcomposition.wizards;
 
+import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
@@ -35,7 +36,6 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 
 	public SpagoBINavigationWizard() {
 		super();
-
 	}
 
 	
@@ -63,10 +63,16 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		}
 		System.out.println("finish::2");
 		////////////////////////////////////
+		
+		//recupera da plugin oggetto DocumentComposition
+		
+		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
+		System.out.println("docum comp::::"+docComp);
+		
 		String masterName= newNavigationWizardMasterDocPage.getName();
 	    //in realtà prende il doc master corrispondente a quello selezionato dall'utente
 	    //all'interno del doc master costrisce Parametro con Refresh (navigazione)	
-		DocumentComposition docComp = new DocumentComposition ();
+		//DocumentComposition docComp = new DocumentComposition ();
 
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
 	    Vector documents = docConf.getDocuments();

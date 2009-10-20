@@ -72,7 +72,6 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		//recupera da plugin oggetto DocumentComposition
 		
 		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
-		System.out.println("docum comp::::"+docComp);
 		
 		String masterName= newNavigationWizardMasterDocPage.getName();
 	    //in realtà prende il doc master corrispondente a quello selezionato dall'utente
@@ -96,24 +95,35 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	    		//se presente gli aggiunge il type e i rafresh
 	    		Parameters params = doc.getParameters();
 	    		boolean found = false;
-	    		/*probabilmente nn serve........................*/
-	    		for (int j = 0; j<params.getParameter().size(); j++){
-	    			Parameter param = params.getParameter().elementAt(j);
-	    			if(param.getLabel().equalsIgnoreCase(out.getText())){
-	    				fillNavigationParam(param, out);
-	    				found = true;
-	    			}
+	    		if(params != null){
+		    		/*probabilmente nn serve........................*/
+		    		for (int j = 0; j<params.getParameter().size(); j++){
+		    			Parameter param = params.getParameter().elementAt(j);
+		    			if(param.getLabel().equalsIgnoreCase(out.getText())){
+		    				fillNavigationParam(param, out);
+		    				found = true;
+		    			}
+		    		}
 	    		}
 	    		/*probabilm sarà solo questo................*/
 	    		if(!found){
 	    			//altrimenti lo aggiunge
 	    			Parameter newParam = new Parameter();
 	    			fillNavigationParam(newParam, out);
-    				
+	    			if(params == null){
+	    				params = new Parameters();
+	    			}
+	    			Vector parameter =params.getParameter();
+	    			if(parameter == null){
+	    				parameter = new Vector<Parameter>();
+	    			}
+	    			parameter.add(newParam);
+    				params.setParameter(parameter);
+    				doc.setParameters(params);
 	    		}
 	    	}
 	    }
-
+	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
 	    XmlTemplateGenerator generator = new XmlTemplateGenerator();
 	    generator.transformToXml(docComp);
 	    return true;
@@ -148,6 +158,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	private void fillNavigationParam(Parameter param, Text out){
 		param.setLabel(out.getText());
 		param.setSbiParLabel(out.getText());
+		param.setNavigationName(newNavigationWizardPage.getNavigationNameText().getText());
 		
 		Refresh refresh = new Refresh();
 		Vector <RefreshDocLinked> refreshes = new Vector<RefreshDocLinked>();
@@ -158,7 +169,8 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		while(it.hasNext()){
 			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
 			String toRefresh = (String)it.next();
-			String paramIn = ((Text)destInfos.get(toRefresh)).toString();
+			System.out.println("to refresh::");
+			String paramIn = ((Text)destInfos.get(toRefresh)).getText();
 
 			refreshDocLinked.setLabelDoc(toRefresh);
 			refreshDocLinked.setLabelParam(paramIn);

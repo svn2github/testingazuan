@@ -1,14 +1,20 @@
 package it.eng.spagobi.studio.documentcomposition.wizards.pages;
 
+import it.eng.spagobi.studio.documentcomposition.Activator;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+
+import java.util.Vector;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class NewNavigationWizardMasterDocPage extends WizardPage {
@@ -17,7 +23,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	String name = "";
 	String paramOut ="";
 	
-	Text masterDocNameText;
+	Combo masterDocName;
 	Text masterDocOutputParam;
 
 	public String getName() {
@@ -38,11 +44,14 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	}
 	@Override
 	public boolean canFlipToNextPage() {
-		if ((masterDocNameText.getText() == null || masterDocNameText.getText().length() == 0)
-				&&(masterDocOutputParam.getText() == null || masterDocOutputParam.getText().length() == 0)) {
+		int sel = masterDocName.getSelectionIndex();
+		String master = masterDocName.getItem(sel);
+		
+		if ((masterDocOutputParam.getText() == null || masterDocOutputParam.getText().length() == 0)
+				&&(sel ==-1 || master == null )) {
 			return false;
-		}else
-			return super.canFlipToNextPage();
+		}
+		return true;
 	}
 	
 	public void createControl(Composite parent) {
@@ -57,11 +66,12 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 
 		composite.setLayout(gl);
 		new Label(composite, SWT.NONE).setText("Master document:");
-		masterDocNameText = new Text(composite, SWT.BORDER);
+		masterDocName = new Combo(composite, SWT.BORDER |SWT.READ_ONLY );
+		fillMasterCombo();
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 2;
-		masterDocNameText.setLayoutData(gd);
+		masterDocName.setLayoutData(gd);
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
@@ -73,9 +83,9 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 		masterDocOutputParam = new Text(composite, SWT.BORDER);
 		masterDocOutputParam.setLayoutData(gd);
 
-		masterDocNameText.addModifyListener(new ModifyListener() {
+		masterDocName.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
-				name = masterDocNameText.getText();
+				name = masterDocName.getText();
 				setPageComplete(name.length() > 0	&& paramOut.length() > 0);
 			}
 		});
@@ -91,12 +101,22 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 		setControl(composite);
 	}
 
-	public Text getMasterDocNameText() {
-		return masterDocNameText;
-	}
 
 	public Text getMasterDocOutputParam() {
 		return masterDocOutputParam;
 	}
-
+	private void fillMasterCombo(){
+		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
+		if(docComp != null){
+			Vector docs = docComp.getDocumentsConfiguration().getDocuments();
+			if(docs != null){
+				for(int i=0; i<docs.size(); i++){
+					String destinationName = ((Document)docs.elementAt(i)).getLabel();
+					if(destinationName != null && !destinationName.equals("")){
+						masterDocName.add(destinationName);
+					}
+				}
+			}
+		}
+	}
 }

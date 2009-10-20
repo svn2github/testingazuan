@@ -4,6 +4,8 @@ import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
 import java.util.Vector;
@@ -33,6 +35,7 @@ import org.eclipse.ui.part.ViewPart;
 public class NavigationView extends ViewPart {
 
 	Table table;
+	private DocumentComposition documentComp = Activator.getDefault().getDocumentComposition();
 	
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
@@ -95,6 +98,8 @@ public class NavigationView extends ViewPart {
 		          confirm.setText("Confirm delete?");
 		          confirm.setSize(250,100);
 				  confirm.open();
+				  
+				  
 		          break;
 		        }
 
@@ -154,6 +159,7 @@ public class NavigationView extends ViewPart {
 		deleteButton.pack();
 		return deleteButton;
 	}
+	
 	protected Shell createConfirmDialog(Composite client, final boolean[] result){
 		final Shell confirm = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		confirm.setLayout(new RowLayout());
@@ -177,8 +183,9 @@ public class NavigationView extends ViewPart {
 			  TableItem tableItem=table.getItem(selection);
 
 			  if(result[0]){
+				  deleteNavigationFromModel();
 				  tableItem.dispose();
-				  System.out.println("Eliminata voce di lista "+selection);
+				  table.redraw();
 			  }
 	        }
 	      };
@@ -197,17 +204,39 @@ public class NavigationView extends ViewPart {
 		table.setLayoutData(gd);
 		table.setLinesVisible (true);
 		table.setHeaderVisible (true);
+		table.setSize(300, 300);
 		
-	    String[] titles = { " Navigation name" };
+	    String[] titles = { "Navigation name" };
 	    for (int i = 0; i < titles.length; i++) {
-	      TableColumn column = new TableColumn(table, SWT.NONE);
-	      column.setText(titles[i]);
+		      TableColumn column = new TableColumn(table, SWT.NONE);
+		      column.setText(titles[i]);
+		}   
+	    
+	    if(documentComp != null){
+			Vector docs = documentComp.getDocumentsConfiguration().getDocuments();
+			if(docs != null){
+				for(int i=0; i<docs.size(); i++){
+					//recupera ogni documento
+					Document doc = (Document)docs.elementAt(i);
+					Parameters params = doc.getParameters();
+					if(params != null){
+						Vector par = params.getParameter();
+						for(int j =0; j<par.size(); j++){
+							Parameter param = (Parameter)par.elementAt(j);
+							String navName = param.getNavigationName();
+							String type = param.getType();
+							if(navName != null && type != null && type.equalsIgnoreCase("OUT")){
+							      TableItem item = new TableItem(table, SWT.NONE);
+							      item.setText(0, navName);
+							}
+						}
+					}
+				}
+			}
+	    	
+	    	
 	    }
 
-	    for (int i = 0; i < 5; i++) {
-	      TableItem item = new TableItem(table, SWT.NONE);
-	      item.setText(0, "navigation "+i);
-	    }
 
 	    for (int i=0; i<titles.length; i++) {
 	      table.getColumn (i).pack ();
@@ -215,23 +244,57 @@ public class NavigationView extends ViewPart {
 	    
 	    return table;
 	}
+	
+	private void deleteNavigationFromModel(){
+		System.out.println("deleteNavigationFromModel");
+		int selectedToDelete = table.getSelectionIndex();
+		TableItem item = table.getItem(selectedToDelete);
+		if(documentComp != null){
+			System.out.println("deleteNavigationFromModel 1");
+			Vector docs = documentComp.getDocumentsConfiguration().getDocuments();
+			if(docs != null){
+				System.out.println("deleteNavigationFromModel 2");
+				for(int i=0; i<docs.size(); i++){
+					System.out.println("deleteNavigationFromModel 3");
+					//recupera ogni documento
+					Document doc = (Document)docs.elementAt(i);
+					Parameters params = doc.getParameters();
+					Vector par = params.getParameter();
+					for(int j =0; j<par.size(); j++){
+						System.out.println("deleteNavigationFromModel 4");
+						Parameter param = (Parameter)par.elementAt(j);
+						String navName = param.getNavigationName();
+						System.out.println("deleteNavigationFromModel 5 navName::"+navName);
+						if(navName != null && navName.equalsIgnoreCase(item.getText())){
+							//elimina la classe java del modello
+							par.remove(j);
+							Activator.getDefault().setDocumentComposition(documentComp);
+							System.out.println("rimosso da modello");
+						}
+					}
+
+				}
+			}
+		}
+	}
+	
 	private void test(){
-		DocumentComposition documentComp = Activator.getDefault().getDocumentComposition();
+		
 		if(documentComp == null){
 			documentComp = new DocumentComposition();
 			DocumentsConfiguration documentsConfiguration = new DocumentsConfiguration();
 			
 			Document doc1 = new Document();
-			doc1.setLabel("label doc 1");
-			doc1.setSbiObjLabel("sbi doc1 label");
+			doc1.setLabel("mapUsa");
+			doc1.setSbiObjLabel("mapUsa");
 			
 			Document doc2 = new Document();
-			doc2.setLabel("label doc 2");
-			doc2.setSbiObjLabel("sbi doc2 label");
+			doc2.setLabel("rptBestSales");
+			doc2.setSbiObjLabel("rptBestSales");
 			
 			Document doc3 = new Document();
-			doc3.setLabel("label doc 3");
-			doc3.setSbiObjLabel("sbi doc3 label");
+			doc3.setLabel("chartSales");
+			doc3.setSbiObjLabel("Chart-linkable-USA_2");
 			
 			Vector docsVector = new Vector();
 			docsVector.add(doc1);

@@ -8,7 +8,16 @@ public class Parameter {
 	private String defaultVal;
 	private Refresh refresh;
 	
+	//attributo che non verrà salvato nell'xml del template ma individua la navigazione
+	private String navigationName;
+	
 
+	public String getNavigationName() {
+		return navigationName;
+	}
+	public void setNavigationName(String navigationName) {
+		this.navigationName = navigationName;
+	}
 	public Refresh getRefresh() {
 		return refresh;
 	}

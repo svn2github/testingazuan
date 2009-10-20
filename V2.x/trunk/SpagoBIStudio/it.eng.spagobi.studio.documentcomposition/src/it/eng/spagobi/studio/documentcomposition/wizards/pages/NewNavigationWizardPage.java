@@ -50,7 +50,7 @@ public class NewNavigationWizardPage extends WizardPage {
 		navigationNameText.addListener(SWT.Modify, new Listener() {
 	        public void handleEvent(Event event) {
 	          String text = navigationNameText.getText();
-	          System.out.println("text::"+text);
+
 	          if(text != null && text.length()!=0)
 	            setPageComplete(true);
 	          else
@@ -58,8 +58,6 @@ public class NewNavigationWizardPage extends WizardPage {
 	        }
 	      });
 		navigationNameText.setFocus();
-		
-
 		
 		setControl(composite);
 	}

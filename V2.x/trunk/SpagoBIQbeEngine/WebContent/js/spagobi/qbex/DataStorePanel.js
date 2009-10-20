@@ -120,9 +120,30 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	// ---------------------------------------------------------------------------------------------------
 	
 	, renderHtml: function(value, meta, record, row, col, store){
-		//alert(value);
-		return Ext.util.Format.htmlDecode(value);
+		
 	}
+	
+	/*
+	, renderers: {
+		'NUMBER': function(value, meta, record, row, col, store){
+			return value + '(' + (typeof value)+ ')';
+		},
+		
+		'DATE': Ext.util.Format.dateRenderer('Y/m/d'),
+		
+		'BOOLEAN': function(value, meta, record, row, col, store){
+			return value + '(' + (typeof value)+ ')';
+		},
+		
+		'STRING': function(value, meta, record, row, col, store){
+			return value + '(' + (typeof value)+ ')';
+		},
+		
+		'HTML': function(value, meta, record, row, col, store){
+			return Ext.util.Format.htmlDecode(value);
+		}		
+	}
+	*/
 	
 	, initStore: function() {
 		
@@ -139,11 +160,19 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 	    });
 		
 		this.store.on('metachange', function( store, meta ) {
-		   
+			
+		  
 		   for(var i = 0; i < meta.fields.length; i++) {
-			   if(meta.fields[i].renderer && meta.fields[i].renderer === 'html') {
-				   meta.fields[i].renderer = this.renderHtml;
-			   }			   
+			   if(meta.fields[i].type) {
+				   var t = meta.fields[i].type;
+				   if(t === 'float' || t ==='int') t = 'number';
+				   meta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
+			   }
+			   
+			   if(meta.fields[i].subtype && meta.fields[i].subtype === 'html') {
+				   meta.fields[i].renderer  =  Sbi.locale.formatters['html'];
+			   }
+			   
 		   }
 		   meta.fields[0] = new Ext.grid.RowNumberer();
 		   this.grid.getColumnModel().setConfig(meta.fields);

@@ -39,15 +39,15 @@ Ext.ns("Sbi.qbe.commons");
 
 Sbi.qbe.commons.Format = function(){
  
-	alert('Sbi.qbe.commons.Format');
-	
 	return {
 		/**
          * Cut and paste from Ext.util.Format
          */
         date : function(v, format){
-			alert(v + ' : ' + format.toSource());
 			
+		
+		
+		
 			format = format || "m/d/Y";
 			
 			if(typeof format === 'string') {
@@ -56,16 +56,20 @@ Sbi.qbe.commons.Format = function(){
 			    	nullValue: ''
 				};
 			}
-	
-			alert(v + ' : ' + format.toSource());
+			
 			
             if(!v){
                 return format.nullValue;
             }
+            
             if(!(v instanceof Date)){
                 v = new Date(Date.parse(v));
             }
-            return v.dateFormat(format.dateFormat);
+          
+            
+            v = v.dateFormat(format.dateFormat);
+         
+            return v;
         }
 
         /**
@@ -73,7 +77,7 @@ Sbi.qbe.commons.Format = function(){
          */
         , dateRenderer : function(format){
             return function(v){
-                return Ext.util.Format.date(v, format);
+                return Sbi.qbe.commons.Format.date(v, format);
             };
         }
         
@@ -88,7 +92,7 @@ Sbi.qbe.commons.Format = function(){
 	    		decimalPrecision: 2,
 	    		groupingSeparator: ',',
 	    		groupingSize: 3,
-	    		currencySymbol: '$',
+	    		currencySymbol: '',
 	    		nullValue: ''
 	    		
     		});
@@ -97,42 +101,42 @@ Sbi.qbe.commons.Format = function(){
         		 return format.nullValue;
         	}
         	
-        	if (typeof value !== 'number') {
-    			value = String(value);
+        	if (typeof v !== 'number') {
+    			v = String(v);
     			if (format.currencySymbol) {
-    				value = value.replace(format.currencySymbol, '');
+    				v = v.replace(format.currencySymbol, '');
     			}
     			if (format.groupingSeparator) {
-    				value = value.replace(new RegExp(format.groupingSeparator, 'g'), '');
+    				v = v.replace(new RegExp(format.groupingSeparator, 'g'), '');
     			}
     			if (format.decimalSeparator !== '.') {
-    				value = value.replace(format.decimalSeparator, '.');
+    				v = v.replace(format.decimalSeparator, '.');
     			}
-    			value = parseFloat(value);
+    			v = parseFloat(v);
     		}
-    		var neg = value < 0;
-    		value = Math.abs(value).toFixed(format.decimalPrecision);
-    		var i = value.indexOf('.');
+    		var neg = v < 0;
+    		v = Math.abs(v).toFixed(format.decimalPrecision);
+    		var i = v.indexOf('.');
     		if (i >= 0) {
     			if (format.decimalSeparator !== '.') {
-    				value = value.slice(0, i) + format.decimalSeparator + value.slice(i + 1);
+    				v = v.slice(0, i) + format.decimalSeparator + v.slice(i + 1);
     			}
     		} else {
-    			i = value.length;
+    			i = v.length;
     		}
     		if (format.groupingSeparator) {
     			while (i > format.groupingSize) {
     				i -= format.groupingSize;
-    				value = value.slice(0, i) + format.groupingSeparator + value.slice(i);
+    				v = v.slice(0, i) + format.groupingSeparator + v.slice(i);
     			}
     		}
     		if (format.currencySymbol) {
-    			value = format.currencySymbol + value;
+    			v = format.currencySymbol + v;
     		}
     		if (neg) {
-    			value = '-' + value;
+    			v = '-' + v;
     		}
-    		return value;
+    		return v;
         }   
         
         , numberRenderer : function(format){
@@ -185,7 +189,7 @@ Sbi.qbe.commons.Format = function(){
             };
         }
         
-        , boolean : function(v, boolean) {
+        , boolean : function(v, format) {
         	format = Ext.apply({}, format || {}, {
 	    		trueSymbol: 'true',
 	    		falseSymbol: 'false',
@@ -209,11 +213,23 @@ Sbi.qbe.commons.Format = function(){
             };
         }
         
+        , html : function(v, format) {
+        	// format is not used yet but it is reserve for future use
+        	// ex. format.cls, format.style
+        	v = Ext.util.Format.htmlDecode(v);
+        	return v;
+        }
+        
+        , htmlRenderer : function(format){
+            return function(v){
+                return Sbi.qbe.commons.Format.html(v, format);
+            };
+        }
+        
 	};
 	
 }();
 
-alert('>' + Sbi.qbe.commons.Format);
 
 
 

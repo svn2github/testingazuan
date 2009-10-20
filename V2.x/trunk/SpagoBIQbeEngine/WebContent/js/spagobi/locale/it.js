@@ -22,7 +22,7 @@ Sbi.locale.formats = {
 		},
 		
 		date: {
-			dateFormat: 'Y/m/d',
+			dateFormat: 'd/m/Y',
     		nullValue: ''
 		},
 		
@@ -31,7 +31,7 @@ Sbi.locale.formats = {
     		falseSymbol: 'false',
     		nullValue: ''
 		}
-}
+};
 
 //===================================================================
 // MESSAGE WINDOW

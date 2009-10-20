@@ -37,7 +37,7 @@
 
 Ext.ns("Sbi.qbe.commons");
 
-Sbi.qbe.commons = function(){
+Sbi.qbe.commons.Utils = function(){
  
     // private variables
 	

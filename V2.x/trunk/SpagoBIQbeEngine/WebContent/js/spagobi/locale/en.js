@@ -31,7 +31,7 @@ Sbi.locale.formats = {
     		falseSymbol: 'false',
     		nullValue: ''
 		}
-}
+};
 
 //===================================================================
 // MESSAGE WINDOW

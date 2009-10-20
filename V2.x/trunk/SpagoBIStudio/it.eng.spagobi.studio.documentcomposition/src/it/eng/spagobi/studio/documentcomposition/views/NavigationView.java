@@ -1,8 +1,13 @@
 package it.eng.spagobi.studio.documentcomposition.views;
 
+import java.util.Vector;
+
+import it.eng.spagobi.studio.documentcomposition.Activator;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -37,7 +42,9 @@ public class NavigationView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		
+		test();
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
+
 		// Lets make a layout for the first section of the screen
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
@@ -186,9 +193,41 @@ public class NavigationView extends ViewPart {
 	    
 	    return table;
 	}
+	private void test(){
+		DocumentComposition documentComp = Activator.getDefault().getDocumentComposition();
+		if(documentComp == null){
+			documentComp = new DocumentComposition();
+			DocumentsConfiguration documentsConfiguration = new DocumentsConfiguration();
+			
+			Document doc1 = new Document();
+			doc1.setLabel("label doc 1");
+			doc1.setSbiObjLabel("sbi doc1 label");
+			
+			Document doc2 = new Document();
+			doc2.setLabel("label doc 2");
+			doc2.setSbiObjLabel("sbi doc2 label");
+			
+			Document doc3 = new Document();
+			doc3.setLabel("label doc 3");
+			doc3.setSbiObjLabel("sbi doc3 label");
+			
+			Vector docsVector = new Vector();
+			docsVector.add(doc1);
+			docsVector.add(doc2);
+			docsVector.add(doc3);
+			
+			documentsConfiguration.setVideoWidth("1400");
+			documentsConfiguration.setVideoHeight("1050");
+			documentsConfiguration.setDocuments(docsVector);
+			
+			documentComp.setDocumentsConfiguration(documentsConfiguration);
+			
+			Activator.getDefault().setDocumentComposition(documentComp);
+		}
+	}
 	@Override
 	public void setFocus() {
-		
+		// TODO Auto-generated method stub
 		
 	}
 

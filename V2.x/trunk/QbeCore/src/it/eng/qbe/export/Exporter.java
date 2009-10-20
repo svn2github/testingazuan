@@ -1,0 +1,132 @@
+package it.eng.qbe.export;
+
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import it.eng.qbe.model.QbeDataSet;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
+import it.eng.spagobi.tools.dataset.common.datastore.IField;
+import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
+
+import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+public class Exporter {
+	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(Exporter.class);
+	IDataStore dataStore = null;
+
+	public Exporter(IDataStore dataStore) {
+		super();
+		this.dataStore = dataStore;
+	}
+
+	public IDataStore getDataStore() {
+		return dataStore;
+	}
+
+	public void setDataStore(IDataStore dataStore) {
+		this.dataStore = dataStore;
+	}
+
+	public Exporter() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+	public Workbook exportInExcel(){
+		Workbook wb = new HSSFWorkbook();
+	    CreationHelper createHelper = wb.getCreationHelper();
+	    Sheet sheet = wb.createSheet("new sheet");
+	    
+	    if(dataStore!=null  && !dataStore.isEmpty()){
+	    	IDataStoreMetaData d = dataStore.getMetaData();	
+	    	int colnum = d.getFieldCount();
+	    	Row row = sheet.createRow((short)0);
+	    	for(int j =0;j<colnum;j++){
+	    		Cell cell = row.createCell(j);
+	    	    cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	    	    String fieldName = d.getFieldName(j);	
+	    	    cell.setCellValue(createHelper.createRichTextString(fieldName));
+	    	}
+	    	
+	    	Iterator it = dataStore.iterator();
+	    	int rownum = 1;
+			while(it.hasNext()){
+				Row rowVal = sheet.createRow(rownum);
+				IRecord record =(IRecord)it.next();
+				List fields = record.getFields();
+				int length = fields.size();
+				for(int fieldIndex =0; fieldIndex<length; fieldIndex++){
+					IField f = (IField)fields.get(fieldIndex);
+					if (f != null && f.getValue()!= null) {
+						
+						Class c = d.getFieldType(fieldIndex);
+						logger.debug("Column [" + (fieldIndex+1) + "] class is equal to [" + c.getName() + "]");
+						if( Number.class.isAssignableFrom(c) ) {
+							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "NUMBER" + "]");
+							Cell cell = rowVal.createCell(fieldIndex);
+						    Number val = (Number)f.getValue();
+						    cell.setCellValue(val.doubleValue());
+						    cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+						}else if( String.class.isAssignableFrom(c)){
+							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "STRING" + "]");
+							Cell cell = rowVal.createCell(fieldIndex);		    
+						    String val = (String)f.getValue();
+						    cell.setCellValue(createHelper.createRichTextString(val));
+						    cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+						}else if( Boolean.class.isAssignableFrom(c) ) {
+							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "BOOLEAN" + "]");
+							Cell cell = rowVal.createCell(fieldIndex);
+						    Boolean val = (Boolean)f.getValue();
+						    cell.setCellValue(val.booleanValue());
+						    cell.setCellType(HSSFCell.CELL_TYPE_BOOLEAN);
+						}else if(Date.class.isAssignableFrom(c)){
+							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "DATE" + "]");
+							CellStyle cellStyle = wb.createCellStyle();
+						    cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("m/d/yy h:mm"));
+						    Cell cell = rowVal.createCell(fieldIndex);		    
+						    Date val = (Date)f.getValue();
+						    cell.setCellValue(val);	
+						    cell.setCellStyle(cellStyle);
+						}else{
+							logger.warn("Column [" + (fieldIndex+1) + "] type is equal to [" + "???" + "]");
+							Cell cell = rowVal.createCell(fieldIndex);
+						    String val = f.getValue().toString();
+						    cell.setCellValue(createHelper.createRichTextString(val));
+						    cell.setCellType(HSSFCell.CELL_TYPE_STRING);
+						}
+						
+					}
+				}
+				rownum ++;
+			}
+	    }
+	    /*Row row = sheet.createRow((short)0);
+
+	    Cell cell0 = row.createCell(0);
+	    cell0.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+	    cell0.setCellValue(1);
+	    
+	    Cell cell1 = row.createCell(1);
+	    cell1.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+	    cell1.setCellValue(1.2);
+	    
+	    Cell cell2 = row.createCell(2);
+	    cell2.setCellType(HSSFCell.CELL_TYPE_STRING);
+	    cell2.setCellValue(createHelper.createRichTextString("This is a string"));*/
+
+	    return wb;
+	}
+
+}

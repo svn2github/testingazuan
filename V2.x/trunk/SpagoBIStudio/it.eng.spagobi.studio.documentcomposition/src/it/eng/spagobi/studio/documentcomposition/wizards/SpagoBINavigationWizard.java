@@ -20,13 +20,21 @@ import java.util.Vector;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 
-
+	// workbench selection when the wizard was started
+	protected IStructuredSelection selection;
+	// the workbench instance
+	protected IWorkbench workbench;
 
 	// dashboard creation page
 	private NewNavigationWizardPage newNavigationWizardPage;
@@ -47,21 +55,18 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	@Override
 	public boolean performFinish() {
 		
-		System.out.println("finish::1");
-		///////////solo x test//////////////
-		
-		HashMap<String, Text> destInfos = newNavigationWizardDestinDocPage.getDestinationInfo();
-		Iterator it = destInfos.keySet().iterator();
-		while(it.hasNext()){
-			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
-			String toRefresh = (String)it.next();
-			String paramIn = ((Text)destInfos.get(toRefresh)).getText();
-
-			System.out.println("name::"+toRefresh);
-			System.out.println("param in::"+paramIn);
-	
-		}
-		System.out.println("finish::2");
+		//////////////CODICE DEFINITIVO//////////////////////
+		//*INSERISCE NELLA LISTA DELLE NAVIGATION LA NUOVA NAVIGAZIONE*/
+		// get the folder selected:  
+		Object objSel = selection.toList().get(0);
+		// FolderSel is the folder in wich to insert the new template
+		Table listOfNavigations = (Table)objSel;
+	    TableItem item = new TableItem(listOfNavigations, SWT.NONE);
+		RGB rgb=new RGB(192,0,0);
+		final Color color = new Color(listOfNavigations.getShell().getDisplay(), rgb);
+	    item.setForeground(color);
+	    item.setText(0, newNavigationWizardPage.getNavigationNameText().getText());
+	    listOfNavigations.getShell().redraw();
 		////////////////////////////////////
 		
 		//recupera da plugin oggetto DocumentComposition
@@ -116,6 +121,9 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		setWindowTitle("New navigation creation");
+		
+		this.workbench = workbench;
+		this.selection = selection;
 		
 		newNavigationWizardPage = new NewNavigationWizardPage();
 		newNavigationWizardMasterDocPage = new NewNavigationWizardMasterDocPage();

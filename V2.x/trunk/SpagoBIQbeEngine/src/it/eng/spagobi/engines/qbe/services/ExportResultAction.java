@@ -21,6 +21,7 @@
 package it.eng.spagobi.engines.qbe.services;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.HashMap;
@@ -30,18 +31,25 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Session;
 
+import it.eng.qbe.export.Exporter;
 import it.eng.qbe.export.Field;
 import it.eng.qbe.export.HqlToSqlQueryRewriter;
 import it.eng.qbe.export.ReportRunner;
 import it.eng.qbe.export.SQLFieldsReader;
 import it.eng.qbe.export.TemplateBuilder;
 import it.eng.qbe.model.IStatement;
+import it.eng.qbe.model.QbeDataSet;
 import it.eng.qbe.query.DataMartSelectField;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
+import it.eng.spagobi.commons.bo.UserProfile;
+import it.eng.spagobi.engines.qbe.QbeEngineConfig;
+import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.utilities.assertion.Assert;
+import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineException;
 import it.eng.spagobi.utilities.engines.SpagoBIEngineServiceExceptionHandler;
 import it.eng.spagobi.utilities.mime.MimeUtils;
@@ -145,27 +153,79 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			templateBuilder = new TemplateBuilder(sqlQuery, extractedFields, params);
 			templateContent = templateBuilder.buildTemplate();
 			if( !"text/jrxml".equalsIgnoreCase( mimeType ) ) {
-				try {
-					reportFile = File.createTempFile("report", ".rpt");
-				} catch (IOException ioe) {
-					throw new SpagoBIEngineException("Impossible to create a temporary file to store the template generated on the fly", ioe);
+				if( "application/vnd.ms-excel".equalsIgnoreCase( mimeType ) ) {
+					//START PART from EXECUTEQUERYACTION
+					UserProfile userProfile = (UserProfile)getEnv().get(EngineConstants.ENV_USER_PROFILE);
+					QbeDataSet dataSet = null;
+					IDataStore dataStore = null;
+					Integer limit = 0;
+					Integer start = 0;
+					Integer maxSize = QbeEngineConfig.getInstance().getResultLimit();	
+					boolean isMaxResultsLimitBlocking = QbeEngineConfig.getInstance().isMaxResultLimitBlocking();
+					logger.debug("Executing query ...");
+					dataSet = new QbeDataSet(statement);
+					dataSet.setAbortOnOverflow(isMaxResultsLimitBlocking);
+					
+					Map userAttributes = new HashMap();
+					UserProfile profile = (UserProfile)this.getEnv().get(EngineConstants.ENV_USER_PROFILE);
+					Iterator it = profile.getUserAttributeNames().iterator();
+					while(it.hasNext()) {
+						String attributeName = (String)it.next();
+						Object attributeValue = profile.getUserAttribute(attributeName);
+						userAttributes.put(attributeName, attributeValue);
+					}
+					dataSet.addBinding("attributes", userAttributes);
+					dataSet.addBinding("parameters", this.getEnv());
+					dataSet.loadData(start, limit, (maxSize == null? -1: maxSize.intValue()));
+					
+					dataStore = dataSet.getDataStore();
+					//END PART from EXECUTEQUERYACTION
+					
+					Exporter exp = new Exporter(dataStore);
+					Workbook wb = exp.exportInExcel();
+					
+					File file = new File("workbook.xls");
+					FileOutputStream stream = new FileOutputStream(file);
+					wb.write(stream);
+					stream.flush();
+					stream.close();
+					try {				
+						writeBackToClient(file, null, writeBackResponseInline, "workbook.xls", mimeType);
+					} catch (IOException ioe) {
+						throw new SpagoBIEngineException("Impossible to write back the responce to the client", ioe);
+					}	finally{
+						if(file != null && file.exists()) {
+							try {
+								file.delete();
+							} catch (Exception e) {
+								logger.warn("Impossible to delete temporary file " + file, e);
+							}
+						}
+					}
+			
+				}else{
+					try {
+						reportFile = File.createTempFile("report", ".rpt");
+					} catch (IOException ioe) {
+						throw new SpagoBIEngineException("Impossible to create a temporary file to store the template generated on the fly", ioe);
+					}
+					
+					setJasperClasspath();
+					connection = session.connection();
+					
+					runner = new ReportRunner( );
+					try {
+						runner.run( templateContent, reportFile, mimeType, connection);
+					}  catch (Exception e) {
+						throw new SpagoBIEngineException("Impossible compile or to export the report", e);
+					}
+					
+					try {				
+						writeBackToClient(reportFile, null, writeBackResponseInline, "report." + fileExtension, mimeType);
+					} catch (IOException ioe) {
+						throw new SpagoBIEngineException("Impossible to write back the responce to the client", ioe);
+					}	
 				}
-				
-				setJasperClasspath();
-				connection = session.connection();
-				
-				runner = new ReportRunner( );
-				try {
-					runner.run( templateContent, reportFile, mimeType, connection);
-				}  catch (Exception e) {
-					throw new SpagoBIEngineException("Impossible compile or to export the report", e);
-				}
-				
-				try {				
-					writeBackToClient(reportFile, null, writeBackResponseInline, "report." + fileExtension, mimeType);
-				} catch (IOException ioe) {
-					throw new SpagoBIEngineException("Impossible to write back the responce to the client", ioe);
-				}			
 			} else {
 				try {				
 					writeBackToClient(200, templateContent, writeBackResponseInline, "report." + fileExtension, mimeType);

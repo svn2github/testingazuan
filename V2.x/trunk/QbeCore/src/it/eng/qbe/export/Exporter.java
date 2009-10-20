@@ -112,19 +112,6 @@ public class Exporter {
 				rownum ++;
 			}
 	    }
-	    /*Row row = sheet.createRow((short)0);
-
-	    Cell cell0 = row.createCell(0);
-	    cell0.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-	    cell0.setCellValue(1);
-	    
-	    Cell cell1 = row.createCell(1);
-	    cell1.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
-	    cell1.setCellValue(1.2);
-	    
-	    Cell cell2 = row.createCell(2);
-	    cell2.setCellType(HSSFCell.CELL_TYPE_STRING);
-	    cell2.setCellValue(createHelper.createRichTextString("This is a string"));*/
 
 	    return wb;
 	}

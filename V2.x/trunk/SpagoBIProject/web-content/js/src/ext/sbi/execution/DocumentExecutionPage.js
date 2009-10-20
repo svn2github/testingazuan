@@ -844,7 +844,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    var baseUrl = docurl.substring(0,docurl.indexOf('?')+1);   
 	    if (baseUrl=="") baseUrl = docurl;
 	 
-	    var docurlPar = "ACTION_NAME=EXPORT_RESULT_ACTION&SBI_EXECUTION_ID="+this.executionInstance.SBI_EXECUTION_ID+"&user_id=-1&MIME_TYPE="+exportType+"&RESPONSE_TYPE=RESPONSE_TYPE_ATTACHMENT";
+	    var docurlPar = "ACTION_NAME=EXPORT_RESULT_ACTION&SBI_EXECUTION_ID="+this.executionInstance.SBI_EXECUTION_ID+"&MIME_TYPE="+exportType+"&RESPONSE_TYPE=RESPONSE_TYPE_ATTACHMENT";
 	   
 	    var endUrl = baseUrl + docurlPar;
 	   // alert ("endUrl: " + endUrl);
@@ -860,7 +860,7 @@ Ext.extend(Sbi.execution.DocumentExecutionPage, Ext.Panel, {
 	    if (baseUrl=="") baseUrl = docurl;
 	 
 	    //var docurlPar = "ACTION_NAME=DRAW_MAP_ACTION&SBI_EXECUTION_ID="+this.executionInstance.SBI_EXECUTION_ID+"&user_id=-1&outputFormat=jpeg&inline=false";
-	    var docurlPar = "ACTION_NAME=DRAW_MAP_ACTION&SBI_EXECUTION_ID="+this.executionInstance.SBI_EXECUTION_ID+"&user_id=-1&outputFormat="+exportType+"&inline=false";
+	    var docurlPar = "ACTION_NAME=DRAW_MAP_ACTION&SBI_EXECUTION_ID="+this.executionInstance.SBI_EXECUTION_ID+"&outputFormat="+exportType+"&inline=false";
 	    var endUrl = baseUrl + docurlPar;
 	   // alert ("endUrl: " + endUrl);
 	    

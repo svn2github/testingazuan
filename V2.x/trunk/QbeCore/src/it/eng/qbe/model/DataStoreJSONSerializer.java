@@ -21,8 +21,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -41,6 +44,11 @@ public class DataStoreJSONSerializer {
 	public static final String TOTAL_PROPERTY = "results";
 	public static final String ROOT = "rows";
 	
+	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( "dd/MM/yyyy hh:mm:ss" );
+
+	
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(DataStoreJSONSerializer.class);
 	
 	public Object serialize(IDataStore dataStore) throws SerializationException {
 		JSONObject  result = null;
@@ -96,14 +104,39 @@ public class DataStoreJSONSerializer {
 				fieldMetaDataJSON.put("header", fieldMetaData.getName());
 				fieldMetaDataJSON.put("name", "column-" + (i+1));						
 				fieldMetaDataJSON.put("dataIndex", "column-" + (i+1));
+											
+							
+				Class clazz = fieldMetaData.getType();
+				logger.debug("Column [" + (i+1) + "] class is equal to [" + clazz.getName() + "]");
+				if( Number.class.isAssignableFrom(clazz) ) {
+					logger.debug("Column [" + (i+1) + "] type is equal to [" + "NUMBER" + "]");
+					fieldMetaDataJSON.put("type", "float");
+				} else if( String.class.isAssignableFrom(clazz) ) {
+					logger.debug("Column [" + (i+1) + "] type is equal to [" + "STRING" + "]");
+					fieldMetaDataJSON.put("type", "string");
+				} else if( Date.class.isAssignableFrom(clazz) ) {
+					logger.debug("Column [" + (i+1) + "] type is equal to [" + "DATE" + "]");
+					fieldMetaDataJSON.put("type", "date");
+					fieldMetaDataJSON.put("dateFormat", "d/m/Y H:i:s");
+				} else if( Boolean.class.isAssignableFrom(clazz) ) {
+					logger.debug("Column [" + (i+1) + "] type is equal to [" + "BOOLEAN" + "]");
+					fieldMetaDataJSON.put("type", "boolean");
+				} else {
+					logger.warn("Column [" + (i+1) + "] type is equal to [" + "???" + "]");
+					fieldMetaDataJSON.put("type", "string");
+				}
+				
 				Boolean calculated = (Boolean)fieldMetaData.getProperty("calculated");
 				if(calculated.booleanValue() == true) {
 					DataSetVariable variable =  (DataSetVariable)fieldMetaData.getProperty("variable");
 					if(variable.getType().equalsIgnoreCase(DataSetVariable.HTML)) {
-						fieldMetaDataJSON.put("renderer", "html");
+						fieldMetaDataJSON.put("type", "auto");
+						fieldMetaDataJSON.remove("type");
+						fieldMetaDataJSON.put("subtype", "html");
 					}
 					
 				}
+
 				fieldsMetaDataJSON.put(fieldMetaDataJSON);
 			}
 			metadata.put("fields", fieldsMetaDataJSON);
@@ -127,7 +160,20 @@ public class DataStoreJSONSerializer {
 					}
 										
 					field = record.getFieldAt( dataStore.getMetaData().getFieldIndex( fieldMetaData.getName() ) );
-					recordJSON.put("column-" + (i+1), field.getValue()==null? "": field.getValue().toString());
+					
+					
+					
+					String fieldValue = "";
+					if(field.getValue() != null) {
+						if(Date.class.isAssignableFrom(fieldMetaData.getType())) {
+							fieldValue =  DATE_FORMATTER.format(  field.getValue() );
+						} else {
+							fieldValue =  field.getValue().toString();
+						}
+					}
+					
+					
+					recordJSON.put("column-" + (i+1), fieldValue);
 				}
 				
 				recordsJSON.put(recordJSON);

@@ -20,9 +20,6 @@
  **/
 package it.eng.qbe.model.io;
 
-import it.eng.qbe.datasource.AbstractHibernateDataSource;
-import it.eng.qbe.utility.FileUtils;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -30,82 +27,81 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import it.eng.qbe.utility.FileUtils;
+import it.eng.spagobi.commons.utilities.StringUtilities;
+import it.eng.spagobi.utilities.assertion.Assert;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class LocalFileSystemDataMartModelRetriever.
- */
+
 public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetriever {
 
+	private File datamartsDir;
+	
+	private static final String DATAMART_JAR_FILE_NAME = "datamart.jar";
+	
 	/** Logger component. */
     private static transient Logger logger = Logger.getLogger(LocalFileSystemDataMartModelRetriever.class);
 	
-    
-	/** The datamarts dir. */
-	private File datamartsDir = null;
 	
-	/**
-	 * Instantiates a new local file system data mart model retriever.
-	 */
+	
+	
 	public LocalFileSystemDataMartModelRetriever() {
-
+		setContextDir(null);
 	}
 	
-	/**
-	 * Instantiates a new local file system data mart model retriever.
-	 * 
-	 * @param contextDir the context dir
-	 */
 	public LocalFileSystemDataMartModelRetriever(File contextDir) {
 		setContextDir(contextDir);
 	}
 	
-	/**
-	 * Gets the context dir.
-	 * 
-	 * @return the context dir
-	 */
 	public File getContextDir() {
 		return datamartsDir;
 	}
 
-	/**
-	 * Sets the context dir.
-	 * 
-	 * @param contextDir the new context dir
-	 */
 	public void setContextDir(File contextDir) {
 		this.datamartsDir = contextDir;
 	}
 	
 	
-	
-		
-	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.io.IDataMartModelRetriever#getDatamartJarFile(java.lang.String)
-	 */
 	public File getDatamartJarFile(String datamartName) {
 		
-		File targetDatamartDir = null;
-		File datamartJarFile = null;
+		File targetDatamartDir;
+		File datamartJarFile;
 		
-		targetDatamartDir = new File(datamartsDir, datamartName);
-		datamartJarFile = new File(targetDatamartDir, "datamart.jar");
+		logger.debug("IN");
 		
-		if (!datamartJarFile.exists()) {
-			logger.warn("[" + datamartName + "] datamart jar file [" + datamartJarFile + "] does not exist");
-			datamartJarFile = null;
+		datamartJarFile = null;
+		
+		try {
+			logger.debug("searching for datamart [" + datamartName + "] jar file ...");
+			Assert.assertTrue(!StringUtilities.isEmpty(datamartName), "Input parameter [datamartName] cannot be null or empty");
 			
+			logger.debug("Resources directory is [" + getContextDir() + "]");
+			
+			targetDatamartDir = new File( getContextDir() , datamartName );
+			logger.debug("Target datamart dir is equals to [" + targetDatamartDir.getAbsoluteFile()+ "]");
+			//Assert.assertTrue(targetDatamartDir.exists(), "Target datamart dir [" + targetDatamartDir.getAbsoluteFile()+ "] does not exist");
+			
+			datamartJarFile = new File( targetDatamartDir, DATAMART_JAR_FILE_NAME );
+			logger.debug("target datamart file is equals to [" + datamartJarFile.getCanonicalFile()+ "]");
+			//Assert.assertTrue(datamartJarFile.exists(), "Target datamart file [" + datamartJarFile.getAbsoluteFile()+ "] does not exist");
+						
+			if (!datamartJarFile.exists()) {
+				logger.warn("[" + datamartName + "] datamart jar file [" + datamartJarFile + "] does not exist");
+				datamartJarFile = null;				
+			}
+			
+			logger.debug("Datamart [" + datamartName + "] jar file succesfully found in [" + datamartJarFile.getAbsolutePath() + "]");
+		} catch (Throwable t) {
+			logger.error("Ok, we are in truble", t);
+		} finally {
+			logger.debug("OUT");
 		}
-
 		return datamartJarFile;
 	}
 		
-
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.io.IDataMartModelRetriever#getViewJarFiles(java.lang.String)
-	 */
+	
+	
+	
+	
 	public List getViewJarFiles(String datamartName) {
 		List viewJarFiles = new ArrayList();
 		List viewNames = getViewNames(datamartName);
@@ -125,10 +121,6 @@ public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetr
 		return viewJarFiles;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.io.IDataMartModelRetriever#getViewJarFile(java.lang.String, java.lang.String)
-	 */
 	public File getViewJarFile(String datamartName, String viewName) {
 
 		File targetDatamartDir = null;
@@ -143,11 +135,6 @@ public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetr
 		return viewJarFile;
 	}
 
-	
-	
-	/* (non-Javadoc)
-	 * @see it.eng.qbe.model.io.IDataMartModelRetriever#getViewNames(java.lang.String)
-	 */
 	public List getViewNames(String datamartName) {
 		List viewNames = new ArrayList();
 
@@ -175,15 +162,6 @@ public class LocalFileSystemDataMartModelRetriever implements IDataMartModelRetr
         return viewNames;
 	}
 	
-	
-	
-	/**
-	 * Gets the all data mart path.
-	 * 
-	 * @param contextDir the context dir
-	 * 
-	 * @return the all data mart path
-	 */
 	public static List getAllDataMartPath(File contextDir) {
 		String qbeDataMartDir = FileUtils.getQbeDataMartDir(contextDir);
 		

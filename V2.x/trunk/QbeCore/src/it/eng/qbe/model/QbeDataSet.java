@@ -145,7 +145,6 @@ public class QbeDataSet extends AbstractDataSet {
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(false));
 				dataStoreFieldMeta.setProperty("uniqueName", ((DataMartSelectField)queryFiled).getUniqueName());
 				dataStoreFieldMeta.setType(Object.class);
-				
 			} else {
 				CalculatedSelectField claculatedQueryField = (CalculatedSelectField)queryFiled;
 				dataStoreFieldMeta.setProperty("calculated", new Boolean(true));	
@@ -174,7 +173,7 @@ public class QbeDataSet extends AbstractDataSet {
 		dataStore = new DataStore();
 		dataStoreMeta = getDataStoreMeta( statement.getQuery() );
 		dataStore.setMetaData(dataStoreMeta);
-			
+		
 		Iterator it = result.iterator();
 		while(it.hasNext()) {
 			Object o = it.next();
@@ -194,6 +193,7 @@ public class QbeDataSet extends AbstractDataSet {
 				if(calculated.booleanValue() == false) {
 					Assert.assertTrue(j < row.length, "Impossible to read field [" + fieldMeta.getName() + "] from resultset");
 					record.appendField( new Field( row[j] ) );
+					if(row[j] != null) fieldMeta.setType(row[j].getClass());
 					j++;					
 				} else {
 					DataSetVariable variable = (DataSetVariable)fieldMeta.getProperty("variable");
@@ -202,6 +202,7 @@ public class QbeDataSet extends AbstractDataSet {
 					}
 					
 					record.appendField( new Field( variable.getValue()) );
+					if(variable.getValue() != null)  fieldMeta.setType(variable.getValue().getClass());
 				}
 			}
 		    

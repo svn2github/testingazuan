@@ -2,7 +2,6 @@ package it.eng.spagobi.studio.documentcomposition.util;
 
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Documents;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
@@ -13,13 +12,17 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import java.util.Vector;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 
 public class XmlTemplateGenerator {
 	
 	
 	public static String transformToXml(Object bean) {
 		
-		XStream xstream = new XStream();
+
+		XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("_", "_");
+		XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
 		
 		xstream.alias("DOCUMENTS_COMPOSITION", DocumentComposition.class);
 		xstream.useAttributeFor(DocumentComposition.class, "templateValue");

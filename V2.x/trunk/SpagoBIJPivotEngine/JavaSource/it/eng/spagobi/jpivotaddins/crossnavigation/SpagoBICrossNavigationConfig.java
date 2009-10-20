@@ -19,6 +19,7 @@ import mondrian.olap.Query;
 import mondrian.rolap.RolapCubeMember;
 import mondrian.rolap.RolapMember;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Node;
 
@@ -99,7 +100,8 @@ public class SpagoBICrossNavigationConfig {
 	
 	private String getCrossNavigationUrl(Target target, Cell cell, MondrianModel model) {
 		logger.debug("IN");
-		StringBuffer buffer = new StringBuffer("parent.execCrossNavigation(this.name, '" + target.documentLabel + "', '");
+		StringBuffer buffer = new StringBuffer("parent.execCrossNavigation(this.name, '" 
+				+ StringEscapeUtils.escapeJavaScript(target.documentLabel) + "', '");
 		String query = model.getCurrentMdx();
 		Connection monConnection = model.getConnection();
 	    Query monQuery = monConnection.parseQuery(query);
@@ -112,7 +114,7 @@ public class SpagoBICrossNavigationConfig {
 		    	String parameterName = aParameter.name;
 		    	String parameterValue = getParameterValue(aParameter, cube, cell);
 		    	if (parameterValue != null) {
-		    		buffer.append(parameterName + "=" + parameterValue + "&");
+		    		buffer.append(StringEscapeUtils.escapeJavaScript(parameterName + "=" + parameterValue + "&"));
 		    	}
 	    	}
 	    }
@@ -121,7 +123,7 @@ public class SpagoBICrossNavigationConfig {
     		buffer.deleteCharAt(buffer.length() - 1);
     	}
     	if (target.customizedView != null) {
-    		buffer.append("', '" + target.customizedView + "');");
+    		buffer.append("', '" + StringEscapeUtils.escapeJavaScript(target.customizedView) + "');");
     	} else {
     		buffer.append("');");
     	}

@@ -1,8 +1,5 @@
 package it.eng.spagobi.studio.documentcomposition.wizards.pages;
 
-import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
-
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

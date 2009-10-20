@@ -1,13 +1,14 @@
 package it.eng.spagobi.studio.documentcomposition.views;
 
-import java.util.Vector;
-
 import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
+import java.util.Vector;
+
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -91,6 +92,8 @@ public class NavigationView extends ViewPart {
 		        switch (event.type) {
 		        case SWT.Selection:
 		          Shell confirm = createConfirmDialog(client, result);
+		          confirm.setText("Confirm delete?");
+		          confirm.setSize(250,100);
 				  confirm.open();
 		          break;
 		        }
@@ -105,7 +108,26 @@ public class NavigationView extends ViewPart {
 			    		///button to start the wizard
 		    	    // Instantiates and initializes the wizard
 		        	SpagoBINavigationWizard wizard = new SpagoBINavigationWizard();
-		    	    wizard.init(PlatformUI.getWorkbench(),  null);
+
+		    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
+		    	    // Instantiates the wizard container with the wizard and opens it
+		    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+		    	    dialog.create();
+		    	    dialog.open();
+		        }
+
+			}
+		};
+		
+		Listener modifyListener = new Listener() {
+			public void handleEvent(Event event) {
+		        switch (event.type) {
+		        case SWT.Selection:
+			    		///button to start the wizard
+		    	    // Instantiates and initializes the wizard
+		        	SpagoBINavigationWizard wizard = new SpagoBINavigationWizard();
+
+		    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
 		    	    // Instantiates the wizard container with the wizard and opens it
 		    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
 		    	    dialog.create();
@@ -115,7 +137,7 @@ public class NavigationView extends ViewPart {
 			}
 		};
 		newButton.addListener(SWT.Selection, addListener);
-	
+		updateButton.addListener(SWT.Selection, modifyListener);
 		deleteButton.addListener(SWT.Selection, deleteListener);
 				
 		/**tabella navigazioni**/

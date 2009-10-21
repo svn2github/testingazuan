@@ -175,16 +175,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 		
 		<%}
 
-		KpiLineVisibilityOptions options = (KpiLineVisibilityOptions)sbModuleResponse.getAttribute("options");
-
-		
 		List kpiRBlocks =(List)sbModuleResponse.getAttribute("kpiRBlocks");
+		KpiLineVisibilityOptions options = new KpiLineVisibilityOptions();
 		StringBuffer _htmlStream = new StringBuffer();
 		if(!kpiRBlocks.isEmpty()){
 			Iterator blocksIt = kpiRBlocks.iterator();
 			while(blocksIt.hasNext()){
 				
 				KpiResourceBlock block = (KpiResourceBlock) blocksIt.next();
+				options = block.getOptions();
 				if(block.getR()!=null){
 					resources.add( block.getR());
 				}

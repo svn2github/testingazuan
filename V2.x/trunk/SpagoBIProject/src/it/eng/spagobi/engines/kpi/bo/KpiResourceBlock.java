@@ -50,13 +50,15 @@ public class KpiResourceBlock implements Serializable{
 	protected HashMap parMap;
 	protected String currTheme="";
 	protected RequestContainer requestContainer = null;
+	KpiLineVisibilityOptions options = new KpiLineVisibilityOptions();
 	
-	public KpiResourceBlock(Resource r, KpiLine root, Date d, HashMap parMap) {
+	public KpiResourceBlock(Resource r, KpiLine root, Date d, HashMap parMap,KpiLineVisibilityOptions options ) {
 		super();
 		this.r = r;
 		this.root = root;
 		this.d = d;
 		this.parMap = parMap;
+		this.options = options;
 	}
 	
 	public KpiResourceBlock() {
@@ -68,12 +70,23 @@ public class KpiResourceBlock implements Serializable{
 	public Resource getR() {
 		return r;
 	}
+	
 	public void setR(Resource r) {
 		this.r = r;
 	}
+	
 	public KpiLine getRoot() {
 		return root;
 	}
+	
+	public KpiLineVisibilityOptions getOptions() {
+		return options;
+	}
+
+	public void setOptions(KpiLineVisibilityOptions options) {
+		this.options = options;
+	}
+
 	public void setRoot(KpiLine root) {
 		this.root = root;
 	}

@@ -31,6 +31,7 @@ import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.engines.kpi.bo.KpiLine;
+import it.eng.spagobi.engines.kpi.bo.KpiLineVisibilityOptions;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 import it.eng.spagobi.engines.kpi.bo.charttypes.dialcharts.BulletGraph;
 import it.eng.spagobi.kpi.config.bo.KpiValue;
@@ -45,11 +46,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
 
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartRenderingInfo;
@@ -72,6 +70,7 @@ public class BasicTemplateBuilder  {
 
 	private static transient org.apache.log4j.Logger logger=Logger.getLogger(BasicTemplateBuilder.class);
 
+	private KpiLineVisibilityOptions options = new KpiLineVisibilityOptions(); 
 
 	static String staticTextNameS="<staticText>" +
 	"	<reportElement x=\"0\"" +
@@ -568,7 +567,7 @@ public class BasicTemplateBuilder  {
 				}
 				toReturn.add(subTemplate);
 				logger.debug("Built subtemplate: "+subTemplate);
-				//System.out.println(subTemplate);
+				System.out.println(subTemplate);
 			}
 		}
 	
@@ -596,7 +595,7 @@ public class BasicTemplateBuilder  {
 		// cycle on resources
 		for (Iterator iterator = resources.iterator(); iterator.hasNext();) {
 			KpiResourceBlock thisBlock = (KpiResourceBlock) iterator.next();
-			
+			options = thisBlock.getOptions();	
 				
 				if(actualHeight+separatorModelsHeight+resourceBandHeight+10<maxFirstSubTemplateHeight){
 					List sourceBeansToAdd = newResource(thisBlock,bandDetailReport);	
@@ -877,10 +876,11 @@ public class BasicTemplateBuilder  {
 			SourceBean threshValue=new SourceBean(thresholdValue);// Threshold Value
 			SourceBean evenLine=new SourceBean(evenLineS);// Separator for even lines
 			SourceBean oddLine=new SourceBean(oddLineS);// Separator for odd lines
+			SourceBean extraimageToAdd = null;//in case 2 images are required
 			if(evenLevel){
-				setLineAttributes(kpiLine,semaphor1,textCodeName,textValue,textWeight,image1,level,evenLine,threshCode,threshValue);
+				extraimageToAdd =setLineAttributes(kpiLine,semaphor1,textCodeName,textValue,textWeight,image1,level,evenLine,threshCode,threshValue,extraimageToAdd);
 			}else{
-				setLineAttributes(kpiLine,semaphor1,textCodeName,textValue,textWeight,image1,level,oddLine,threshCode,threshValue);
+				extraimageToAdd = setLineAttributes(kpiLine,semaphor1,textCodeName,textValue,textWeight,image1,level,oddLine,threshCode,threshValue,extraimageToAdd);
 			}
 			actualHeight+=valueHeight;
 
@@ -889,6 +889,9 @@ public class BasicTemplateBuilder  {
 			sourceBeansToAdd.add(textValue);
 			sourceBeansToAdd.add(textWeight);
 			sourceBeansToAdd.add(image1);
+			if(extraimageToAdd!=null){
+				sourceBeansToAdd.add(extraimageToAdd);
+			}
 			sourceBeansToAdd.add(threshCode);
 			sourceBeansToAdd.add(threshValue);
 			if(evenLevel){
@@ -988,9 +991,10 @@ public class BasicTemplateBuilder  {
 		return toReturn;
 	}
 
-	private void setLineAttributes(KpiLine line,SourceBean semaphor, SourceBean textCodeName, SourceBean textValue, 
-			SourceBean textWeight, SourceBean image1, int level, SourceBean separatorline,SourceBean threshCode,SourceBean threshValue){
+	private SourceBean setLineAttributes(KpiLine line,SourceBean semaphor, SourceBean textCodeName, SourceBean textValue, 
+			SourceBean textWeight, SourceBean image1, int level, SourceBean separatorline,SourceBean threshCode,SourceBean threshValue, SourceBean extraimageToAdd){
 		logger.debug("IN");
+		
 		Color colorSemaphor=line.getSemaphorColor();
 		KpiValue kpiValue=line.getValue();
 
@@ -1072,9 +1076,90 @@ public class BasicTemplateBuilder  {
 				}
 
 			}
-			//Sets the bullet chart
-			if(line.getChartBullet()!=null){
-				
+			//Sets the bullet chart and or the threshold image
+			if(options.getDisplay_bullet_chart() && options.getDisplay_threshold_image()){
+				//both threshold image and bullet chart have to be seen
+				if(line.getChartBullet()!=null){
+					BulletGraph sbi = (BulletGraph)line.getChartBullet();	
+					JFreeChart chart = sbi.createChart();
+					ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+					String requestIdentity = null;
+					UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+					UUID uuid = uuidGen.generateTimeBasedUUID();
+					requestIdentity = uuid.toString();
+					requestIdentity = requestIdentity.replaceAll("-", "");
+					String path_param = requestIdentity;
+					String dir=System.getProperty("java.io.tmpdir");
+					String path=dir+"/"+requestIdentity+".png";
+					java.io.File file1 = new java.io.File(path);
+					logger.debug("Where is the image: "+path);
+					try {
+						ChartUtilities.saveChartAsPNG(file1, chart, 89, 11, info);
+					} catch (IOException e) {
+						e.printStackTrace();
+						logger.error("Error in saving chart",e);
+					}
+					String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+					"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&path="+path_param+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
+					urlPng = "new java.net.URL(\""+urlPng+"\")";
+					logger.debug("Image url: "+urlPng);
+					
+					image1.setAttribute("reportElement.y", yValue.toString());
+					image1.setAttribute("reportElement.x", new Integer(310).toString());
+					image1.setAttribute("reportElement.width", 90);
+					SourceBean imageValue=(SourceBean)image1.getAttribute("imageExpression");
+					imageValue.setCharacters(urlPng);
+				}
+				ThresholdValue tOfVal = line.getThresholdOfValue();
+				if (tOfVal!=null && tOfVal.getPosition()!=null && tOfVal.getThresholdCode()!=null){
+					String fileName ="position_"+tOfVal.getPosition().intValue();
+					String dirName = tOfVal.getThresholdCode();
+					String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+					"?ACTION_NAME=GET_THR_IMAGE&NEW_SESSION=TRUE&fileName="+fileName+"&dirName="+dirName+"&LIGHT_NAVIGATOR_DISABLED=TRUE";	
+					
+					urlPng = "new java.net.URL(\""+urlPng+"\")";
+					logger.debug("url: "+urlPng);
+					
+					extraimageToAdd=new SourceBean(image);
+					extraimageToAdd.setAttribute("reportElement.y", yValue.toString());
+					extraimageToAdd.setAttribute("reportElement.width",35);
+					extraimageToAdd.setAttribute("reportElement.x", new Integer(408).toString());
+					SourceBean imageValue=(SourceBean)extraimageToAdd.getAttribute("imageExpression");
+					imageValue.setCharacters(urlPng);			
+				}
+			}else if(options.getDisplay_bullet_chart() && !options.getDisplay_threshold_image()){
+				//only bullet chart has to be seen
+				if(line.getChartBullet()!=null){
+					BulletGraph sbi = (BulletGraph)line.getChartBullet();	
+					JFreeChart chart = sbi.createChart();
+					ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
+					String requestIdentity = null;
+					UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
+					UUID uuid = uuidGen.generateTimeBasedUUID();
+					requestIdentity = uuid.toString();
+					requestIdentity = requestIdentity.replaceAll("-", "");
+					String path_param = requestIdentity;
+					String dir=System.getProperty("java.io.tmpdir");
+					String path=dir+"/"+requestIdentity+".png";
+					java.io.File file1 = new java.io.File(path);
+					logger.debug("Where is the image: "+path);
+					try {
+						ChartUtilities.saveChartAsPNG(file1, chart, 130, 11, info);
+					} catch (IOException e) {
+						e.printStackTrace();
+						logger.error("Error in saving chart",e);
+					}
+					String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
+					"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&path="+path_param+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
+					urlPng = "new java.net.URL(\""+urlPng+"\")";
+					logger.debug("Image url: "+urlPng);
+					
+					image1.setAttribute("reportElement.y", yValue.toString());
+					SourceBean imageValue=(SourceBean)image1.getAttribute("imageExpression");
+					imageValue.setCharacters(urlPng);
+				}
+			}else if(!options.getDisplay_bullet_chart() && options.getDisplay_threshold_image()){
+				//only threshold image has to be seen
 				ThresholdValue tOfVal = line.getThresholdOfValue();
 				if (tOfVal!=null && tOfVal.getPosition()!=null && tOfVal.getThresholdCode()!=null){
 					String fileName ="position_"+tOfVal.getPosition().intValue();
@@ -1088,38 +1173,9 @@ public class BasicTemplateBuilder  {
 					SourceBean imageValue=(SourceBean)image1.getAttribute("imageExpression");
 					imageValue.setCharacters(urlPng);
 					
-				}else{
-				BulletGraph sbi = (BulletGraph)line.getChartBullet();	
-				JFreeChart chart = sbi.createChart();
-				ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
-				String requestIdentity = null;
-				UUIDGenerator uuidGen  = UUIDGenerator.getInstance();
-				UUID uuid = uuidGen.generateTimeBasedUUID();
-				requestIdentity = uuid.toString();
-				requestIdentity = requestIdentity.replaceAll("-", "");
-				String path_param = requestIdentity;
-				String dir=System.getProperty("java.io.tmpdir");
-				String path=dir+"/"+requestIdentity+".png";
-				java.io.File file1 = new java.io.File(path);
-				logger.debug("Where is the image: "+path);
-				try {
-					ChartUtilities.saveChartAsPNG(file1, chart, 130, 11, info);
-				} catch (IOException e) {
-					e.printStackTrace();
-					logger.error("Error in saving chart",e);
 				}
-				String urlPng=GeneralUtilities.getSpagoBiHost()+GeneralUtilities.getSpagoBiContext() + GeneralUtilities.getSpagoAdapterHttpUrl() + 
-				"?ACTION_NAME=GET_PNG2&NEW_SESSION=TRUE&path="+path_param+"&LIGHT_NAVIGATOR_DISABLED=TRUE";
-				urlPng = "new java.net.URL(\""+urlPng+"\")";
-				logger.debug("Image url: "+urlPng);
-				
-				image1.setAttribute("reportElement.y", yValue.toString());
-				SourceBean imageValue=(SourceBean)image1.getAttribute("imageExpression");
-				imageValue.setCharacters(urlPng);
-				}
-				
 			}
-			
+
 			separatorline.setAttribute("reportElement.y", new Integer(yValue.intValue()+16).toString());
 
 
@@ -1128,6 +1184,7 @@ public class BasicTemplateBuilder  {
 			e.printStackTrace();
 		}
 		logger.debug("OUT");
+		return extraimageToAdd;
 	}
 
 	public List newThresholdBlock( SourceBean bandDetailReport){

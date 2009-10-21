@@ -226,6 +226,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		}
 		logger.debug("Setted the List of Resources related to the specified Model Instance");
 
+		KpiLineVisibilityOptions options = new KpiLineVisibilityOptions();
+		options.setClosed_tree(closed_tree);
+		options.setDisplay_alarm(display_alarm);
+		options.setDisplay_bullet_chart(display_bullet_chart);
+		options.setDisplay_semaphore(display_semaphore);
+		options.setDisplay_threshold_image(display_threshold_image);
+		options.setDisplay_weight(display_weight);
+		options.setShow_axis(show_axis);
+		options.setWeighted_values(weighted_values);
+		
 		if (cascade!=null && cascade.equals("true")){//in case all the kpi children have to be calculated too
 
 			try {
@@ -236,6 +246,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					block.setD(this.dateOfKPI);
 					KpiLine line = getBlock(mI.getModelInstanceNodeId(), null);				
 					block.setRoot(line);
+					block.setOptions(options);
 					logger.debug("Setted the tree Root.");
 					kpiRBlocks.add(block);
 
@@ -247,6 +258,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 						KpiResourceBlock block = new KpiResourceBlock();
 						block.setR(r);
 						block.setD(dateOfKPI);
+						block.setOptions(options);
 						KpiLine line = getBlock(mI.getModelInstanceNodeId(), r);
 						block.setRoot(line);
 						logger.debug("Setted the tree Root.");
@@ -430,6 +442,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 			logger.debug("Setted the List of Resources related to the specified Model Instance");
 
+			KpiLineVisibilityOptions options = new KpiLineVisibilityOptions();
+			options.setClosed_tree(closed_tree);
+			options.setDisplay_alarm(display_alarm);
+			options.setDisplay_bullet_chart(display_bullet_chart);
+			options.setDisplay_semaphore(display_semaphore);
+			options.setDisplay_threshold_image(display_threshold_image);
+			options.setDisplay_weight(display_weight);
+			options.setShow_axis(show_axis);
+			options.setWeighted_values(weighted_values);
+			
 			if (this.resources == null || this.resources.isEmpty()) {
 				logger.debug("There are no resources assigned to the Model Instance");
 				KpiResourceBlock block = new KpiResourceBlock();
@@ -439,6 +461,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 				block.setRoot(line);
 				block.setTitle(name);
 				block.setSubtitle(subName);
+				block.setOptions(options);
 				logger.debug("Setted the tree Root.");
 				kpiRBlocks.add(block);
 
@@ -453,6 +476,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					block.setParMap(this.parametersObject);
 					KpiLine line = getBlock(mI.getModelInstanceNodeId(), r);
 					block.setRoot(line);
+					block.setOptions(options);
 					logger.debug("Setted the tree Root.");
 					kpiRBlocks.add(block);
 				}
@@ -463,19 +487,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 				response.setAttribute(ObjectsTreeConstants.SESSION_OBJ_ATTR, obj);
 				response.setAttribute(SpagoBIConstants.PUBLISHER_NAME, "KPI");
-				
-				KpiLineVisibilityOptions options = new KpiLineVisibilityOptions();
-				options.setClosed_tree(closed_tree);
-				options.setDisplay_alarm(display_alarm);
-				options.setDisplay_bullet_chart(display_bullet_chart);
-				options.setDisplay_semaphore(display_semaphore);
-				options.setDisplay_threshold_image(display_threshold_image);
-				options.setDisplay_weight(display_weight);
-				options.setShow_axis(show_axis);
-				options.setWeighted_values(weighted_values);
-				
-				response.setAttribute("options", options);
-				
+	
 				if (name != null) {
 					response.setAttribute("title", name);
 					response.setAttribute("styleTitle", styleTitle);

@@ -4,6 +4,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 
 import java.util.HashMap;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -43,7 +44,31 @@ public class Designer {
 
 	public void addGroup(Composite mainComposite, int x, int y){
 		//System.out.println("La x: "+Integer.valueOf(x).toString()+" la y: "+Integer.valueOf(y).toString());
-		DocContainer group=new DocContainer(this,mainComposite,x,y);
+
+		// shell check if overlaids or exceeds
+		int tempWidth=DocContainer.DEFAULT_WIDTH;
+		tempWidth=tempWidth/DocContainer.ALIGNMENT_MARGIN;
+		tempWidth=tempWidth*DocContainer.ALIGNMENT_MARGIN;
+		int tempHeight=DocContainer.DEFAULT_HEIGHT;
+		tempHeight=tempHeight/DocContainer.ALIGNMENT_MARGIN;
+		tempHeight=tempHeight*DocContainer.ALIGNMENT_MARGIN;
+
+		Rectangle rectangle=new Rectangle(x,y, tempWidth, tempHeight);
+		boolean doesExceed=DocContainer.doesExceed(Integer.valueOf(-1), this, x, y, tempWidth, tempHeight, false);
+		boolean doesIntersect=DocContainer.doesIntersect(Integer.valueOf(-1), this, x, y, tempWidth, tempHeight, false);
+
+		if(doesExceed==true){
+			MessageDialog.openWarning(mainComposite.getShell(), 
+					"Warning", "COntainer you want to insert exceeds shell!");
+			return;
+		}
+		if(doesIntersect==true){
+			MessageDialog.openWarning(mainComposite.getShell(), 
+					"Warning", "COntainer you want to insert intersects other composites!");
+			return;
+		}
+
+		DocContainer group=new DocContainer(this, mainComposite, x, y, tempWidth, tempHeight);
 		containers.put(group.getId(), group);
 		Composite g=group.getContainer();
 		mainComposite.layout();

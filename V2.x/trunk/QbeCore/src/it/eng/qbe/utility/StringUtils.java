@@ -85,6 +85,7 @@ public class StringUtils {
 				throw new IOException("No value for the parameter: " + parameterName);
 			}
 			String parameterValue = parameters.get(parameterName)== null?null:parameters.get(parameterName).toString();
+			parameterValue = escapeHQL(parameterValue);
 			result = result.replaceAll(parameterTypeIdentifier + "\\{" + parameterName + "\\}", parameterValue);
 		}		
 		
@@ -115,6 +116,20 @@ public class StringUtils {
 		}
 		
 		return parameters;
+	}
+	
+	/**
+	 * Escapes the input string as a HQL static operand.
+	 * At the time being, it replaces "'" with "''"
+	 * @param parameter the parameter to be escaped
+	 * @return the escaped String
+	 */
+	public static String escapeHQL(String parameter) {
+		String toReturn = null;
+		if (parameter != null) {
+			toReturn = parameter.replaceAll("'", "''");
+		}
+		return toReturn;
 	}
 	
 	/**
@@ -155,5 +170,6 @@ public class StringUtils {
 			}
 			
 		}
+		
 	}
 }

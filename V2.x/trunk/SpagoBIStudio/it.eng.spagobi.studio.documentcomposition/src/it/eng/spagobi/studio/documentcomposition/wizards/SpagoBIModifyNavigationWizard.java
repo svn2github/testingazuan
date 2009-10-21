@@ -13,6 +13,7 @@ import it.eng.spagobi.studio.documentcomposition.wizards.pages.ModifyNavigationW
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardDestinDocPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardMasterDocPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardPage;
+import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -71,9 +72,21 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		// TODO Auto-generated method stub
 		super.addPage(page);
 	}
+	
+	private void completePageDataCollection(){
+		if(modifyNavigationWizardPage.isPageComplete()){
+			DestinationInfo destinationInfo = new DestinationInfo();
+			int destinCounter= modifyNavigationWizardPage.getDestinCounter();
+			int sel = modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getSelectionIndex();
+			destinationInfo.setDocDestName(modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getItem(sel));
+			destinationInfo.setParamDestName(modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter));
+			modifyNavigationWizardPage.getDestinationInfos().add(destinationInfo);	
+		}
+	}
+	
 	@Override
 	public boolean performFinish() {
-	
+		completePageDataCollection();
 		//recupera da plugin oggetto DocumentComposition
 		
 		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
@@ -158,20 +171,17 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		Vector <RefreshDocLinked> refreshes = new Vector<RefreshDocLinked>();
 		
 		
-		Vector<HashMap> destInfos = modifyNavigationWizardPage.getDestinationInfos();
+		Vector<DestinationInfo> destInfos = modifyNavigationWizardPage.getDestinationInfos();
 		for(int k =0; k<destInfos.size(); k++){
-			HashMap<String, Text> destInfo = destInfos.elementAt(k);
-			Iterator it = destInfo.keySet().iterator();
-			while(it.hasNext()){
-				RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
-				String toRefresh = (String)it.next();
-	
-				String paramIn = ((Text)destInfo.get(toRefresh)).getText();
-	
-				refreshDocLinked.setLabelDoc(toRefresh);
-				refreshDocLinked.setLabelParam(paramIn);
-				refreshes.add(refreshDocLinked);
-			}
+			DestinationInfo destInfo = destInfos.elementAt(k);
+			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
+			String toRefresh = destInfo.getDocDestName();
+
+			String paramIn = ((Text)destInfo.getParamDestName()).getText();
+
+			refreshDocLinked.setLabelDoc(toRefresh);
+			refreshDocLinked.setLabelParam(paramIn);
+			refreshes.add(refreshDocLinked);
 		
 			refresh.setRefreshDocLinked(refreshes);
 		}

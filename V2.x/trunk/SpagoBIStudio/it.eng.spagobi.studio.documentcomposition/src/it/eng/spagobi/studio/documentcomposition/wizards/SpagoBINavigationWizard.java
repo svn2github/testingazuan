@@ -73,10 +73,9 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		// TODO Auto-generated method stub
 		super.addPage(page);
 	}
-	@Override
-	public boolean performFinish() {
+	
+	private void completePageDataCollection(){
 		if(newNavigationWizardDestinDocPage.isPageComplete()){
-			System.out.println("completato...!");
 			DestinationInfo destinationInfo = new DestinationInfo();
 			int destinCounter= newNavigationWizardDestinDocPage.getDestinCounter();
 			int sel = newNavigationWizardDestinDocPage.getDestinationDocNameCombo().elementAt(destinCounter).getSelectionIndex();
@@ -84,7 +83,11 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			destinationInfo.setParamDestName(newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter));
 			newNavigationWizardDestinDocPage.getDestinationInfos().add(destinationInfo);	
 		}
-		
+	}
+	@Override
+	public boolean performFinish() {
+
+		completePageDataCollection();
 		//////////////CODICE DEFINITIVO//////////////////////
 		//*INSERISCE NELLA LISTA DELLE NAVIGATION LA NUOVA NAVIGAZIONE*/
  

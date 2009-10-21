@@ -39,14 +39,14 @@ public class NavigationView extends ViewPart {
 	
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
+		test();
 	}
 	/**
 	 * This is a callback that will allow us to create the viewer and initialize
 	 * it.
 	 */
-	public void createPartControl(Composite parent) {
+	public void createPartControl(Composite parent) {		
 		
-		test();
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 
 		// Lets make a layout for the first section of the screen
@@ -232,11 +232,8 @@ public class NavigationView extends ViewPart {
 						}
 					}
 				}
-			}
-	    	
-	    	
+			} 
 	    }
-
 
 	    for (int i=0; i<titles.length; i++) {
 	      table.getColumn (i).pack ();

@@ -134,6 +134,25 @@ public class KpiResourceBlock implements Serializable{
 			_htmlStream.append("<TBODY>\n");
 			id = "node1";
 		}
+		_htmlStream.append(" <tr class='kpi_first_line_section_odd' >");
+		_htmlStream.append("		<td width='53%'  class='kpi_first_line_td' style='text-align:left;' >MODEL</td>\n");
+		_htmlStream.append("		<td width='4%' ><div></div></td>\n");		
+		_htmlStream.append("		<td  width='9%' class='kpi_first_line_td' >KPI VALUE</td>\n");
+		if (options.getDisplay_weight()){ 
+			_htmlStream.append("		<td width='5%' class='kpi_first_line_td' >WEIGHT</td>\n");
+		}else{
+			_htmlStream.append("		<td width='5%' class='kpi_first_line_td' ><div></div></td>\n");
+		}
+		if (options.getDisplay_bullet_chart() && options.getDisplay_threshold_image() ){
+			_htmlStream.append("		<td width='15%' class='kpi_first_line_td' style='text-align:center;' >CHART</td>\n");
+			_htmlStream.append("		<td width='7%' class='kpi_first_line_td' >IMAGE</td>\n");
+		}else{
+			_htmlStream.append("		<td width='22%' class='kpi_first_line_td' style='text-align:center;' >CHART</td>\n");
+		}
+		_htmlStream.append("		<td width='3%' ><div></div></td>\n");
+		_htmlStream.append("		<td width='2%' ><div></div></td>\n");
+		_htmlStream.append("		<td width='2%' ><div></div></td>\n");
+		_htmlStream.append(" </tr>");
 		
 		addItemForTree(id,instanceO,userId,0,false,httpReq, root,_htmlStream,options);
 		logger.debug("Started Kpi tree with the root");
@@ -217,7 +236,7 @@ public class KpiResourceBlock implements Serializable{
 		}
 		
 		if(recursionLev==0){
-			_htmlStream.append("	<tr class='kpi_first_line_section_odd' id='"+id+"'>\n");
+			_htmlStream.append("	<tr class='kpi_line_section_odd' id='"+id+"'>\n");
 			
 				
 		}else if(evenLine){
@@ -228,13 +247,13 @@ public class KpiResourceBlock implements Serializable{
 		if (options.getDisplay_semaphore() && semaphorColor!= null){
 			String semaphorHex ="rgb("+semaphorColor.getRed()+", "+semaphorColor.getGreen()+", "+semaphorColor.getBlue()+")" ;	
 			if (children!=null && !children.isEmpty()){
-				_htmlStream.append("		<td width='53%' class='kpi_td' ><div class='kpi_semaphore' style=\"margin-left: "+20*recursionLev+"px;background-color:"+semaphorHex+"\"></div><div  class='kpi_div'><span class='toggleKPI' onclick=\"toggleHideChild('"+id+"','"+tab_name+"');\">&nbsp;</span>"+modelName+"</div></td>\n");
+					_htmlStream.append("		<td width='53%' class='kpi_td' ><div class='kpi_semaphore' style=\"margin-left: "+20*recursionLev+"px;background-color:"+semaphorHex+"\"></div><div  class='kpi_div'><span class='toggleKPI' onclick=\"toggleHideChild('"+id+"','"+tab_name+"');\">&nbsp;</span>"+modelName+"</div></td>\n");
 			}else{
 				_htmlStream.append("		<td width='53%' class='kpi_td' ><div class='kpi_semaphore' style=\"margin-left: "+20*recursionLev+"px;background-color:"+semaphorHex+"\"></div><div  class='kpi_div'>"+modelName+"</div></td>\n");
 			}
 		}else{
 			if (children!=null && !children.isEmpty()){
-				_htmlStream.append("		<td width='53%'  class='kpi_td' ><div class='kpi_div'><div style='MARGIN-LEFT: "+20*recursionLev+"px;text-align:left;' class='kpi_div'><span class='toggleKPI' onclick=\"toggleHideChild('"+id+"','"+tab_name+"');\">&nbsp;</span>"+modelName+"</div></div></td>\n");
+					_htmlStream.append("		<td width='53%'  class='kpi_td' ><div class='kpi_div'><div style='MARGIN-LEFT: "+20*recursionLev+"px;text-align:left;' class='kpi_div'><span class='toggleKPI' onclick=\"toggleHideChild('"+id+"','"+tab_name+"');\">&nbsp;</span>"+modelName+"</div></div></td>\n");
 			}else{
 				_htmlStream.append("		<td width='53%'  class='kpi_td' ><div class='kpi_div'><div style='MARGIN-LEFT: "+20*recursionLev+"px;text-align:left;' class='kpi_div'>"+modelName+"</div></div></td>\n");
 			}

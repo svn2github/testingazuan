@@ -1595,12 +1595,12 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 			this.confMap.put("display_bullet_chart", display_bullet_chart);
 			
-			display_threshold_image = true;
+			display_threshold_image = false;
 			if (dataParameters.get("display_threshold_image") != null
 					&& !(((String) dataParameters.get("display_threshold_image")).equalsIgnoreCase(""))) {
 				String fil = (String) dataParameters.get("display_threshold_image");
-				if (fil.equalsIgnoreCase("false"))
-					display_threshold_image = false;
+				if (fil.equalsIgnoreCase("true"))
+					display_threshold_image = true;
 			}
 			this.confMap.put("display_threshold_image", display_threshold_image);
 

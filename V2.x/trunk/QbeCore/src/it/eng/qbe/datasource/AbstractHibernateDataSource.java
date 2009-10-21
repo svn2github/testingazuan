@@ -338,8 +338,8 @@ public abstract class AbstractHibernateDataSource extends AbstractDataSource imp
 		String targetEntityName = null;
 		Table targetTable = null;
 		
-		if(dbLink != null) {
-			dbLink = (String)dblinkMap.get(dmName);
+		dbLink = (String) dblinkMap.get(dmName);
+		if (dbLink != null) {
 			Iterator it = srcCfg.getClassMappings();
 			while(it.hasNext()) {
 				srcPersistentClass = (PersistentClass)it.next();

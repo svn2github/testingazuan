@@ -3,6 +3,7 @@ package it.eng.spagobi.studio.documentcomposition.wizards.pages;
 import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
 import java.util.Vector;
 
@@ -24,6 +25,13 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	String paramOut ="";
 	
 	Combo masterDocName;
+	public Combo getMasterDocName() {
+		return masterDocName;
+	}
+
+	public void setMasterDocName(Combo masterDocName) {
+		this.masterDocName = masterDocName;
+	}
 	Text masterDocOutputParam;
 
 	public String getName() {
@@ -86,6 +94,8 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 		masterDocName.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
 				name = masterDocName.getText();
+				SpagoBINavigationWizard wizard = (SpagoBINavigationWizard)getWizard();
+				wizard.setSelectedMaster(masterDocName.getText());
 				setPageComplete(name.length() > 0	&& paramOut.length() > 0);
 			}
 		});
@@ -111,9 +121,9 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 			Vector docs = docComp.getDocumentsConfiguration().getDocuments();
 			if(docs != null){
 				for(int i=0; i<docs.size(); i++){
-					String destinationName = ((Document)docs.elementAt(i)).getLabel();
-					if(destinationName != null && !destinationName.equals("")){
-						masterDocName.add(destinationName);
+					String masterName = ((Document)docs.elementAt(i)).getLabel();
+					if(masterName != null && !masterName.equals("")){
+						masterDocName.add(masterName);
 					}
 				}
 			}

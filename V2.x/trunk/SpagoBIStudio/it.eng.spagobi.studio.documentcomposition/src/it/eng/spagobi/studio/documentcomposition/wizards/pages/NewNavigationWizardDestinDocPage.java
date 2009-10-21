@@ -3,6 +3,7 @@ package it.eng.spagobi.studio.documentcomposition.wizards.pages;
 import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -100,6 +101,12 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
 		destinationDocNameCombo.elementAt(destinCounter).setLayoutData(gd);
+
+		destinationDocNameCombo.elementAt(0).addListener(SWT.FocusIn, new Listener() {
+			public void handleEvent(Event event) {
+				fillDestinationCombo();
+			}
+		});	
 		
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
@@ -144,16 +151,6 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				fillDestinationCombo();
 				
 				destinationDocNameCombo.elementAt(destinCounter).setLayoutData(gridData);
-//				destinationDocNameCombo.elementAt(destinCounter).addModifyListener(new ModifyListener() {
-//					public void modifyText(ModifyEvent event) {
-//						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-//						name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
-//						if(name != null && name.length()!= 0){
-//							System.out.println("11111111111");
-//							//setPageComplete(true);
-//						}
-//					}
-//				});
 				destinationDocNameCombo.elementAt(destinCounter).setVisible(true);
 
 				//crea una nuovo output text
@@ -167,14 +164,6 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 					public void modifyText(ModifyEvent event) {
 						//aggiunge pulsante x add delle pagine
 						addButton.setVisible(true);
-						//paramIn = destinationInputParam.elementAt(destinCounter).getText();
-						//setPageComplete(name.length() > 0	&& paramIn.length() > 0);
-						
-						//int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-						//if(sel != -1){
-							//setPageComplete(true);
-							//destinationInfo.put(destinationDocNameCombo.elementAt(destinCounter).getItem(sel), destinationInputParam.elementAt(destinCounter));
-						//}
 					}
 				});
 
@@ -219,17 +208,32 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 	private void fillDestinationCombo(){
 		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
-		if(docComp != null){
-			Vector docs = docComp.getDocumentsConfiguration().getDocuments();
-			if(docs != null){
-				for(int i=0; i<docs.size(); i++){
-					String destinationName = ((Document)docs.elementAt(i)).getLabel();
-					if(destinationName != null && !destinationName.equals("")){
-						destinationDocNameCombo.elementAt(destinCounter).add(destinationName);
+		SpagoBINavigationWizard wizard = (SpagoBINavigationWizard)getWizard();
+		System.out.println(destinationDocNameCombo.elementAt(destinCounter).getItemCount());
+		if(destinationDocNameCombo.elementAt(destinCounter).getItemCount() == 0){
+			if(docComp != null){
+				Vector docs = docComp.getDocumentsConfiguration().getDocuments();
+				if(docs != null){
+					for(int i=0; i<docs.size(); i++){
+						String destinationName = ((Document)docs.elementAt(i)).getLabel();
+						
+							if(destinationName != null && !destinationName.equals("")){
+								destinationDocNameCombo.elementAt(destinCounter).add(destinationName);
+							}
+						
 					}
 				}
 			}
 		}
+		String master = wizard.getSelectedMaster();
+		//per ridisegnare combo
+		
+		if(master != null && !master.equals("")){
+			int posMaster =destinationDocNameCombo.elementAt(destinCounter).indexOf(master);
+			destinationDocNameCombo.elementAt(destinCounter).remove(posMaster);
+			destinationDocNameCombo.elementAt(destinCounter).redraw();
+		}
+		
 	}
 	
 }

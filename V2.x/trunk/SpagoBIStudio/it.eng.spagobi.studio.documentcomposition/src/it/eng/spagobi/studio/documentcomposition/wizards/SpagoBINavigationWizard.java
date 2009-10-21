@@ -41,6 +41,17 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	private NewNavigationWizardMasterDocPage newNavigationWizardMasterDocPage;
 	private NewNavigationWizardDestinDocPage newNavigationWizardDestinDocPage;
 	
+	private String selectedMaster;
+
+	public String getSelectedMaster() {
+		return selectedMaster;
+	}
+
+
+	public void setSelectedMaster(String selectedMaster) {
+		this.selectedMaster = selectedMaster;
+	}
+
 
 	public SpagoBINavigationWizard() {
 		super();

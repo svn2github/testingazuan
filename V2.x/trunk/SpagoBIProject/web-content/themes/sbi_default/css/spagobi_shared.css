@@ -546,11 +546,12 @@ IMG {
 }
 
 .kpi_bulletchart    {
-	margin-top: 4px;
+	margin-top: 0px;
 }
 
 .kpi_image{
-	margin-top: 2px;
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 
 .kpi_resource_section    {
@@ -610,7 +611,7 @@ IMG {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
 	font-size: 10pt;
 	text-align: left;
-	vertical-align: top;
+	vertical-align: middle;
 	min-height: 22px;
 }
 
@@ -618,14 +619,28 @@ IMG {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
 	font-size: 10pt;
 	text-align: right;
-	vertical-align: top;
+	vertical-align: middle;
 	min-height: 22px;
 }
 
+.kpi_first_line_td {
+	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
+	font-size: 10pt;
+	font-weight: normal;
+	color: black;
+	background-color:#DDDDDD;
+	vertical-align: top;	
+	border-color:#DDDDDD;
+	border-bottom: 1px solid #DDDDDD !important;
+	min-height: 20px;
+	font-weight: bold;
+	vertical-align: middle;	
+}
+	
 .kpi_td    {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
 	font-size: 10pt;
-	vertical-align: top;
+	vertical-align: middle;
 	min-height: 22px;
 	text-align:left;
 }
@@ -633,7 +648,7 @@ IMG {
 .kpi_div    {
 	font-family: Verdana,Geneva,Arial,Helvetica,sans-serif;
 	font-size: 10pt;
-	vertical-align: top;
+	vertical-align: middle;
 	min-height: 22px;
 	margin-top:3px;
 }

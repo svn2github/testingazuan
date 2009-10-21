@@ -9,10 +9,10 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Refresh;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
 import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
+import it.eng.spagobi.studio.documentcomposition.wizards.pages.ModifyNavigationWizardPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardDestinDocPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardMasterDocPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardPage;
-import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
-public class SpagoBINavigationWizard extends Wizard implements INewWizard{
+public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
 	// workbench selection when the wizard was started
 	protected IStructuredSelection selection;
@@ -40,9 +40,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	protected IWorkbench workbench;
 
 	// dashboard creation page
-	private NewNavigationWizardPage newNavigationWizardPage;
-	private NewNavigationWizardMasterDocPage newNavigationWizardMasterDocPage;
-	private NewNavigationWizardDestinDocPage newNavigationWizardDestinDocPage;
+	private ModifyNavigationWizardPage modifyNavigationWizardPage;
 	
 	private String selectedMaster;
 
@@ -63,7 +61,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	public void setSelection(IStructuredSelection selection) {
 		this.selection = selection;
 	}
-	public SpagoBINavigationWizard() {
+	public SpagoBIModifyNavigationWizard() {
 		super();
 	}
 
@@ -75,34 +73,12 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	}
 	@Override
 	public boolean performFinish() {
-		if(newNavigationWizardDestinDocPage.isPageComplete()){
-			System.out.println("completato...!");
-			DestinationInfo destinationInfo = new DestinationInfo();
-			int destinCounter= newNavigationWizardDestinDocPage.getDestinCounter();
-			int sel = newNavigationWizardDestinDocPage.getDestinationDocNameCombo().elementAt(destinCounter).getSelectionIndex();
-			destinationInfo.setDocDestName(newNavigationWizardDestinDocPage.getDestinationDocNameCombo().elementAt(destinCounter).getItem(sel));
-			destinationInfo.setParamDestName(newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter));
-			newNavigationWizardDestinDocPage.getDestinationInfos().add(destinationInfo);	
-		}
-		
-		//////////////CODICE DEFINITIVO//////////////////////
-		//*INSERISCE NELLA LISTA DELLE NAVIGATION LA NUOVA NAVIGAZIONE*/
- 
-		Object objSel = selection.toList().get(0);
-		Table listOfNavigations = (Table)objSel;
-	    TableItem item = new TableItem(listOfNavigations, SWT.NONE);
-		RGB rgb=new RGB(192,0,0);
-		final Color color = new Color(listOfNavigations.getShell().getDisplay(), rgb);
-	    item.setForeground(color);
-	    item.setText(0, newNavigationWizardPage.getNavigationNameText().getText());
-	    listOfNavigations.getShell().redraw();
-		////////////////////////////////////
-		
+	
 		//recupera da plugin oggetto DocumentComposition
 		
 		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
 		
-		String masterName= newNavigationWizardMasterDocPage.getName();
+		String masterName= modifyNavigationWizardPage.getMasterDocName().getText();
 	    //in realtà prende il doc master corrispondente a quello selezionato dall'utente
 	    //all'interno del doc master costrisce Parametro con Refresh (navigazione)	
 		//DocumentComposition docComp = new DocumentComposition ();
@@ -117,7 +93,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	    	if(docLabel.equalsIgnoreCase(masterName)){
 	    		doc.setLabel(masterName);
 	    		doc.setSbiObjLabel(masterName);
-	    		Text out = newNavigationWizardMasterDocPage.getMasterDocOutputParam();	    		
+	    		Text out = modifyNavigationWizardPage.getMasterParamName();	    		
 	    		//campo out a cui vengono assegnati
 	    		//ciclo sui parameters del doc master 
 	    		
@@ -159,57 +135,47 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	}
 
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		setWindowTitle("New navigation creation");
+		setWindowTitle("Modify navigation");
 		
 		this.workbench = workbench;
 		this.selection = selection;
 		
 		
-		newNavigationWizardPage = new NewNavigationWizardPage();
-		newNavigationWizardMasterDocPage = new NewNavigationWizardMasterDocPage();
-		newNavigationWizardDestinDocPage = new NewNavigationWizardDestinDocPage();
+		modifyNavigationWizardPage = new ModifyNavigationWizardPage();
 	}
 	
 	public void addPages() {
 		super.addPages();
-		newNavigationWizardPage = new NewNavigationWizardPage("New Navigation");
-		addPage(newNavigationWizardPage);
-		newNavigationWizardPage.setPageComplete(false);
-		
-		newNavigationWizardMasterDocPage = new NewNavigationWizardMasterDocPage("Master document");
-		addPage(newNavigationWizardMasterDocPage);
-		newNavigationWizardMasterDocPage.setPageComplete(false);
-		
-		newNavigationWizardDestinDocPage = new NewNavigationWizardDestinDocPage("Destination document");
-
-		addPage(newNavigationWizardDestinDocPage);
+		modifyNavigationWizardPage = new ModifyNavigationWizardPage("Modify navigation");
+		addPage(modifyNavigationWizardPage);
+		modifyNavigationWizardPage.setPageComplete(true);
 		
 	}
 
 	private void fillNavigationParam(Parameter param, Text out){
-		param.setLabel(out.getText());
-		param.setSbiParLabel(out.getText());
-		param.setNavigationName(newNavigationWizardPage.getNavigationNameText().getText());
 		
 		Refresh refresh = new Refresh();
 		Vector <RefreshDocLinked> refreshes = new Vector<RefreshDocLinked>();
 		
-		Vector<DestinationInfo> destInfos = newNavigationWizardDestinDocPage.getDestinationInfos();
+		
+		Vector<HashMap> destInfos = modifyNavigationWizardPage.getDestinationInfos();
 		for(int k =0; k<destInfos.size(); k++){
-			DestinationInfo destInfo = destInfos.elementAt(k);
-			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
-			String toRefresh = destInfo.getDocDestName();
-
-			String paramIn = ((Text)destInfo.getParamDestName()).getText();
-
-			refreshDocLinked.setLabelDoc(toRefresh);
-			refreshDocLinked.setLabelParam(paramIn);
-			refreshes.add(refreshDocLinked);
-			
+			HashMap<String, Text> destInfo = destInfos.elementAt(k);
+			Iterator it = destInfo.keySet().iterator();
+			while(it.hasNext()){
+				RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
+				String toRefresh = (String)it.next();
+	
+				String paramIn = ((Text)destInfo.get(toRefresh)).getText();
+	
+				refreshDocLinked.setLabelDoc(toRefresh);
+				refreshDocLinked.setLabelParam(paramIn);
+				refreshes.add(refreshDocLinked);
+			}
+		
 			refresh.setRefreshDocLinked(refreshes);
 		}
 		param.setRefresh(refresh);
-		
-		param.setType("OUT");
+
 	}
 }

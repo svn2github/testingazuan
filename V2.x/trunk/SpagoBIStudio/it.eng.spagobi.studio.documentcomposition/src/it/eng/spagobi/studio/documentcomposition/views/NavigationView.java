@@ -6,6 +6,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
+import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBIModifyNavigationWizard;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
 import java.util.Vector;
@@ -57,8 +58,8 @@ public class NavigationView extends ViewPart {
 		// Creating the Screen
 		Section section = toolkit.createSection(parent, Section.DESCRIPTION
 				| Section.TITLE_BAR);
-		section.setText("Lista navigazione documento composto"); //$NON-NLS-1$
-		section.setDescription("Lista navigazioni");
+		section.setText("Document composition navigations"); //$NON-NLS-1$
+		section.setDescription("Navigations");
 		// Composite for storing the data
 		final Composite client = toolkit.createComposite(section, SWT.WRAP);
 		layout = new GridLayout();
@@ -130,7 +131,7 @@ public class NavigationView extends ViewPart {
 		        case SWT.Selection:
 			    		///button to start the wizard
 		    	    // Instantiates and initializes the wizard
-		        	SpagoBINavigationWizard wizard = new SpagoBINavigationWizard();
+		        	SpagoBIModifyNavigationWizard wizard = new SpagoBIModifyNavigationWizard();
 
 		    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
 		    	    // Instantiates the wizard container with the wizard and opens it

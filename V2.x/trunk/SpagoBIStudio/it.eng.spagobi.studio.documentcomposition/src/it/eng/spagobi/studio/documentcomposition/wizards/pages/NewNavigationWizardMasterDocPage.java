@@ -25,6 +25,8 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	String paramOut ="";
 	
 	Combo masterDocName;
+	Text masterDocOutputParam;
+	
 	public Combo getMasterDocName() {
 		return masterDocName;
 	}
@@ -32,7 +34,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	public void setMasterDocName(Combo masterDocName) {
 		this.masterDocName = masterDocName;
 	}
-	Text masterDocOutputParam;
+	
 
 	public String getName() {
 		return name;

@@ -33,7 +33,7 @@ public class NewNavigationWizardPage extends WizardPage {
 	}
 
 	public void createControl(Composite parent) {
-		
+
 		Composite composite =  new Composite(parent, SWT.BORDER);
 		GridLayout gl = new GridLayout();
 		int ncol = 2;

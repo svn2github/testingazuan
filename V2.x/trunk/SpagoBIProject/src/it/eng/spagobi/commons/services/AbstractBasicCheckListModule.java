@@ -36,6 +36,7 @@ import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.SpagoBITracer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -324,8 +325,7 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		String tmpElements = (request.getAttribute("checkedElements")==null)?"":(String)request.getAttribute("checkedElements");
 		if (!tmpElements.equals("")){
 		    String[] arrElements = tmpElements.split(",");
-		    
-			 for (int i = 0; i< arrElements.length; i++)
+			for (int i = 0; i< arrElements.length; i++)
 				 allElements.add(arrElements[i]);
 			 
 			 checkedObjectsMap = copyLstObjects(allElements);
@@ -341,7 +341,7 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 	 */
 	public void preprocess(SourceBean request) throws Exception {		
 		
-		if(getRequestContainer().getSessionContainer().getAttribute(CHECKED_OBJECTS) != null) {
+		if(getRequestContainer().getSessionContainer().getAttribute(CHECKED_OBJECTS) != null ) {
 			updateCheckedObjectMap(request);
 			
 			getRequestContainer().getSessionContainer().delAttribute(CHECKED_OBJECTS);
@@ -351,6 +351,13 @@ public class AbstractBasicCheckListModule extends AbstractListLookupModule {
 		}
 		else {
 			createCheckedObjectMap(request);
+			if (checkedObjectsMap != null){
+				String tmpAllElements = "";
+				Collection colAllElements = checkedObjectsMap.values();	
+				Object[] arrElements =(Object[])colAllElements.toArray();
+				for (int i = 0; i< arrElements.length; i++)
+					 allElements.add(arrElements[i]);
+			}
 			pageNumber = 1;
 		}		
 		

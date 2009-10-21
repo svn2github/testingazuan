@@ -7,6 +7,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBIModifyNavigationWizard;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
+import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -41,8 +42,9 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	String paramIn = "";
 	
 	int destinCounter = 0;
-	private HashMap<String, Text> destinationInfo;
-	private Vector<HashMap> destinationInfos;
+
+	private DestinationInfo destinationInfo;
+	private Vector<DestinationInfo> destinationInfos;
 	
 
 	Text navigationNameText;
@@ -55,12 +57,12 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	public ModifyNavigationWizardPage() {		
 		super("Modify navigation");
 		setTitle("Modify Destination Document");		
-		destinationInfos = new Vector<HashMap>();
+		destinationInfos = new Vector<DestinationInfo>();
 	}
 	public ModifyNavigationWizardPage(String pageName) {		
 		super(pageName);
 		setTitle("Modify Destination document");
-		destinationInfos = new Vector<HashMap>();
+		destinationInfos = new Vector<DestinationInfo>();
 
 
 	}
@@ -82,7 +84,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 
 	public void createControl(Composite parent) {
 
-		destinationInfo = new HashMap<String, Text>();
+		destinationInfo = new DestinationInfo();
 		destinationDocNameCombo = new Vector<Combo>();
 		destinationInputParam = new Vector<Text>();
 
@@ -160,6 +162,13 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		
 		addButton.addListener( SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
+				
+				destinationInfo = new DestinationInfo();
+				int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
+				destinationInfo.setDocDestName(destinationDocNameCombo.elementAt(destinCounter).getItem(sel));
+				destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter));
+				destinationInfos.add(destinationInfo);	
+				
 				destinCounter++;			
 				
 				
@@ -187,10 +196,6 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 					public void modifyText(ModifyEvent event) {
 						//aggiunge pulsante x add delle pagine
 						addButton.setVisible(true);
-						destinationInfo = new HashMap<String, Text>();
-						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-						destinationInfo.put(destinationDocNameCombo.elementAt(destinCounter).getItem(sel), destinationInputParam.elementAt(destinCounter));
-						destinationInfos.add(destinationInfo);
 					}
 				});
 
@@ -216,12 +221,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 
 				//aggiunge pulsante x add delle pagine
 				addButton.setVisible(true);
-				paramIn = destinationInputParam.elementAt(0).getText();
-
-				destinationInfo = new HashMap<String, Text>();
-				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
-				destinationInfo.put(destinationDocNameCombo.elementAt(0).getItem(sel), destinationInputParam.elementAt(0));
-				destinationInfos.add(destinationInfo);
+				paramIn = destinationInputParam.elementAt(0).getText();	
 				
 				composite.redraw();
 			}
@@ -316,10 +316,10 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	public void setNavigationNameText(Text navigationNameText) {
 		this.navigationNameText = navigationNameText;
 	}
-	public HashMap<String, Text> getDestinationInfo() {
+	public DestinationInfo getDestinationInfo() {
 		return destinationInfo;
 	}
-	public void setDestinationInfo(HashMap<String, Text> destinationInfo) {
+	public void setDestinationInfo(DestinationInfo destinationInfo) {
 		this.destinationInfo = destinationInfo;
 	}
 
@@ -341,10 +341,16 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	public void setMasterParamName(Text masterParamName) {
 		this.masterParamName = masterParamName;
 	}
-	public Vector<HashMap> getDestinationInfos() {
+	public Vector<DestinationInfo> getDestinationInfos() {
 		return destinationInfos;
 	}
-	public void setDestinationInfos(Vector<HashMap> destinationInfos) {
+	public void setDestinationInfos(Vector<DestinationInfo> destinationInfos) {
 		this.destinationInfos = destinationInfos;
+	}
+	public int getDestinCounter() {
+		return destinCounter;
+	}
+	public void setDestinCounter(int destinCounter) {
+		this.destinCounter = destinCounter;
 	}
 }

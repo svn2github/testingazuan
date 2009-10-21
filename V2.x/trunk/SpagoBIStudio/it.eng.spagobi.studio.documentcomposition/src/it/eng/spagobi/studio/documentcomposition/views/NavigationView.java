@@ -183,8 +183,8 @@ public class NavigationView extends ViewPart {
 			  TableItem tableItem=table.getItem(selection);
 
 			  if(result[0]){
-				  deleteNavigationFromModel();
-				  tableItem.dispose();
+				  
+				  deleteNavigationFromModel();				  
 				  table.redraw();
 			  }
 	        }
@@ -246,30 +246,31 @@ public class NavigationView extends ViewPart {
 	}
 	
 	private void deleteNavigationFromModel(){
-		System.out.println("deleteNavigationFromModel");
+
 		int selectedToDelete = table.getSelectionIndex();
 		TableItem item = table.getItem(selectedToDelete);
 		if(documentComp != null){
-			System.out.println("deleteNavigationFromModel 1");
+
 			Vector docs = documentComp.getDocumentsConfiguration().getDocuments();
 			if(docs != null){
-				System.out.println("deleteNavigationFromModel 2");
+
 				for(int i=0; i<docs.size(); i++){
-					System.out.println("deleteNavigationFromModel 3");
+
 					//recupera ogni documento
 					Document doc = (Document)docs.elementAt(i);
 					Parameters params = doc.getParameters();
 					Vector par = params.getParameter();
 					for(int j =0; j<par.size(); j++){
-						System.out.println("deleteNavigationFromModel 4");
+
 						Parameter param = (Parameter)par.elementAt(j);
 						String navName = param.getNavigationName();
-						System.out.println("deleteNavigationFromModel 5 navName::"+navName);
+
 						if(navName != null && navName.equalsIgnoreCase(item.getText())){
 							//elimina la classe java del modello
 							par.remove(j);
+							params.setParameter(par);
 							Activator.getDefault().setDocumentComposition(documentComp);
-							System.out.println("rimosso da modello");
+							item.dispose();
 						}
 					}
 

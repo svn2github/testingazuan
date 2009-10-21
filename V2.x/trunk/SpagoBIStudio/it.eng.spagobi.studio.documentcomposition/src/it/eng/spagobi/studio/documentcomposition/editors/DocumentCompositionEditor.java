@@ -1,5 +1,10 @@
 package it.eng.spagobi.studio.documentcomposition.editors;
 
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -38,6 +43,16 @@ public class DocumentCompositionEditor extends EditorPart {
 		FileEditorInput fei = (FileEditorInput) input;
 		setInput(input);
 		setSite(site);
+		IFile file = fei.getFile();
+		ModelBO bo=new ModelBO();
+		DocumentComposition documentComposition;
+		try {
+			documentComposition = bo.createModel(file);
+			bo.saveModel(documentComposition);
+		} catch (CoreException e) {
+			e.printStackTrace();
+			throw(new PartInitException("Error in reading template"));
+		}
 
 	}
 
@@ -70,8 +85,8 @@ public class DocumentCompositionEditor extends EditorPart {
 		// Dashboard general information section
 		Section section = toolkit.createSection(form.getBody(), 
 				Section.TITLE_BAR);
-//		TableWrapData td = new TableWrapData(TableWrapData.FILL);
-//		section.setLayoutData(td);
+		//		TableWrapData td = new TableWrapData(TableWrapData.FILL);
+		//		section.setLayoutData(td);
 
 		//section.setLayoutData()
 		section.setSize(1000, 1000);

@@ -1,6 +1,8 @@
 package test;
 
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 
 import java.util.HashMap;
 
@@ -88,6 +90,7 @@ public class Designer {
 		addContextMenu(composite);
 		containers=new HashMap<Integer, DocContainer>();
 		addShellMouseControls(composite);
+	
 	}
 
 

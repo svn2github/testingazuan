@@ -6,6 +6,7 @@ import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.proxy.DocumentsServiceProxy;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
+import it.eng.spagobi.studio.core.util.BiObjectUtilities;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -112,8 +113,8 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			doFinish(); 
 
 		}
-	
-		
+
+
 		return true;
 	}
 
@@ -195,6 +196,31 @@ public class SpagoBIDeployWizard extends Wizard implements INewWizard {
 			return;
 
 		}
+
+
+		// Set the metadata in file
+		SDKDocument document=new SDKDocument(
+				null,
+				null,
+				description,
+				null,
+				null,
+				label,
+				name,
+				null,
+				type
+		);		
+
+		try{
+			fileSel=(org.eclipse.core.internal.resources.File)BiObjectUtilities.setFileMetaData(fileSel,document);
+		}
+		catch (CoreException e) {
+			SpagoBILogger.errorLog("Error while setting meta data", e);	
+			return;
+		}
+
+
+
 		SpagoBILogger.infoLog("Document "+label+" has been deployed");		
 		MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),"Deploy succesfull", "Document has been deployed");		
 

@@ -1,6 +1,7 @@
 package it.eng.spagobi.studio.core.wizards.downloadWizard;
 
 import it.eng.spagobi.sdk.documents.bo.SDKDocument;
+import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.sdk.documents.bo.SDKTemplate;
 import it.eng.spagobi.sdk.engines.bo.SDKEngine;
 import it.eng.spagobi.sdk.exceptions.NotAllowedOperationException;
@@ -9,6 +10,7 @@ import it.eng.spagobi.sdk.proxy.EnginesServiceProxy;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.sdk.SDKProxyFactory;
+import it.eng.spagobi.studio.core.util.BiObjectUtilities;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
@@ -19,6 +21,7 @@ import java.rmi.RemoteException;
 
 import javax.activation.DataHandler;
 
+import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Folder;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -84,7 +87,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		}
 		else{	
 			TreeItem selectedItem=selectedItems[0];
-			Object docObject=selectedItem.getData();
+			Object docObject=selectedItem.getData();	
 			SDKDocument document=(SDKDocument)docObject;
 			doFinish(document);
 		}
@@ -103,11 +106,14 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		InputStream is=null;
 		//try{
 		Integer id=document.getId();
-		SDKProxyFactory proxyFactory=new SDKProxyFactory();
 		SDKTemplate template=null;
+		//		SDKProxyFactory proxyFactory=new SDKProxyFactory();
+		//		DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 		
 
+		// Get the template
 		try{
-			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 		
 			template=docServiceProxy.downloadTemplate(id);
 		}
 		catch (Exception e) {
@@ -116,9 +122,43 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 			return;
 		}			
 
-		// get the extension
+		//Get the parameters
+		String[] roles;
+		try{
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 		
+			roles=docServiceProxy.getCorrectRolesForExecution(id);
+		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve roles for execution", e);
+			MessageDialog.openError(getShell(), "Could not retrieve roles for execution", "Could not retrieve roles for execution");	
+			return;
+		}			
+		if(roles==null || roles.length==0){
+			SpagoBILogger.errorLog("No roles for execution found",null);
+			MessageDialog.openError(getShell(), "No roles for execution found", "No roles for execution found");	
+			return;			
+		}
 
+		//SDKDocumentParameter[] parameters=null;
+
+		SDKDocumentParameter[] parameters=null;
+		try{
+			SDKProxyFactory proxyFactory=new SDKProxyFactory();
+			DocumentsServiceProxy docServiceProxy=proxyFactory.getDocumentsServiceProxy(); 		
+			parameters=docServiceProxy.getDocumentParameters(id, roles[0]);
+		}
+		catch (Exception e) {
+			SpagoBILogger.errorLog("No comunication with SpagoBI server, could not retrieve document parameters", e);
+			e.printStackTrace();
+			MessageDialog.openError(getShell(), "Could not retrieve document parameters for execution", "Could not retrieve roles for execution");	
+			return;
+		}			
+
+
+		// get the extension
 		Integer engineId=document.getEngineId();
+		SDKProxyFactory proxyFactory=new SDKProxyFactory();
 		EnginesServiceProxy engineProxy=proxyFactory.getEnginesServiceProxy();
 
 		SDKEngine sdkEngine=null;
@@ -174,7 +214,7 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 		boolean write=true;
 		if(newFile.exists()==true){
 			MessageDialog.openInformation(workbench.getActiveWorkbenchWindow().getShell(), 
-					"Error", "Dashboard type not set");
+					"Error", "File already exists");
 			write=MessageDialog.openQuestion(workbench.getActiveWorkbenchWindow().getShell(), "Overwrite?", "File "+newFile.getName()+" already exists, overwrite?"); 
 		}
 
@@ -188,17 +228,29 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 				return;
 			}
 
-			
+
 			//Set File Metadata	
 			try{
-				newFile=setFileMetaData(newFile,document);
+				newFile=BiObjectUtilities.setFileMetaData(newFile,document);
+				//newFile=BiObjectUtilities.setFileMetaData(newFile,document);
 			}
 			catch (CoreException e) {
 				SpagoBILogger.errorLog("Error while setting meta data", e);	
 				return;
 			}
-			
-			
+			//Set ParametersFile Metadata	
+			if(parameters.length>0){
+				try{
+					newFile=BiObjectUtilities.setFileParametersMetaData(newFile,parameters);
+
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					SpagoBILogger.errorLog("Error while setting meta data", e);	
+					return;
+				}			
+			}
+
 
 			IWorkbench wb = PlatformUI.getWorkbench();
 			IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
@@ -282,18 +334,18 @@ public class SpagoBIDownloadWizard extends Wizard implements INewWizard {
 	}
 
 
-	private IFile setFileMetaData(IFile newFile, SDKDocument document) throws CoreException{
-		newFile.setPersistentProperty(PropertyPage.DOCUMENT_ID, document.getId().toString());
-		newFile.setPersistentProperty(PropertyPage.DOCUMENT_LABEL, document.getLabel());
-		newFile.setPersistentProperty(PropertyPage.DOCUMENT_NAME, document.getName());
-		newFile.setPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION, document.getDescription());
-		newFile.setPersistentProperty(PropertyPage.DOCUMENT_STATE, document.getState());
-		newFile.setPersistentProperty(PropertyPage.DOCUMENT_TYPE, document.getType());
-		newFile.setPersistentProperty(PropertyPage.DATA_SOURCE_ID, (document.getDataSourceId()!=null?document.getDataSourceId().toString(): ""));
-		newFile.setPersistentProperty(PropertyPage.DATASET_ID, (document.getDataSetId()!=null?document.getDataSetId().toString(): ""));
-		newFile.setPersistentProperty(PropertyPage.ENGINE_ID, (document.getEngineId()!=null?document.getEngineId().toString(): ""));
-		return newFile;
-	}
+	//	private IFile setFileMetaData(IFile newFile, SDKDocument document) throws CoreException{
+	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_ID, document.getId().toString());
+	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_LABEL, document.getLabel());
+	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_NAME, document.getName());
+	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION, document.getDescription());
+	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_STATE, document.getState());
+	//		newFile.setPersistentProperty(PropertyPage.DOCUMENT_TYPE, document.getType());
+	//		newFile.setPersistentProperty(PropertyPage.DATA_SOURCE_ID, (document.getDataSourceId()!=null?document.getDataSourceId().toString(): ""));
+	//		newFile.setPersistentProperty(PropertyPage.DATASET_ID, (document.getDataSetId()!=null?document.getDataSetId().toString(): ""));
+	//		newFile.setPersistentProperty(PropertyPage.ENGINE_ID, (document.getEngineId()!=null?document.getEngineId().toString(): ""));
+	//		return newFile;
+	//	}
 
 }
 

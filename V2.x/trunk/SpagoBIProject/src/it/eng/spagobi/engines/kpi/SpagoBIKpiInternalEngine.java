@@ -103,6 +103,16 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	protected HashMap parametersObject;
 
 	protected boolean closed_tree  = false;// true if the kpi tree has to start closed
+	
+	protected String model_title = "<spagobi:message key='sbi.kpi.modelLineTitle'/>	";// 
+	// displayed
+	protected String threshold_image_title = "";// 
+	// displayed
+	protected String bullet_chart_title = "";//
+	// will be displayed
+	protected String kpi_title = "";// 
+	// will be displayed
+	protected String weight_title = "";// 
 
 	protected boolean display_semaphore = true;// true if the semaphore will be
 	// displayed
@@ -235,6 +245,12 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		options.setDisplay_weight(display_weight);
 		options.setShow_axis(show_axis);
 		options.setWeighted_values(weighted_values);
+		
+		options.setBullet_chart_title(bullet_chart_title);
+		options.setKpi_title(kpi_title);
+		options.setModel_title(model_title);
+		options.setThreshold_image_title(threshold_image_title);
+		options.setWeight_title(weight_title);
 		
 		if (cascade!=null && cascade.equals("true")){//in case all the kpi children have to be calculated too
 
@@ -451,6 +467,12 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			options.setDisplay_weight(display_weight);
 			options.setShow_axis(show_axis);
 			options.setWeighted_values(weighted_values);
+			
+			options.setBullet_chart_title(bullet_chart_title);
+			options.setKpi_title(kpi_title);
+			options.setModel_title(model_title);
+			options.setThreshold_image_title(threshold_image_title);
+			options.setWeight_title(weight_title);
 			
 			if (this.resources == null || this.resources.isEmpty()) {
 				logger.debug("There are no resources assigned to the Model Instance");
@@ -1650,6 +1672,41 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					weighted_values = true;
 			}
 			this.confMap.put("weighted_values", weighted_values);
+			
+			if (dataParameters.get("model_title") != null
+					&& !(((String) dataParameters.get("model_title")).equalsIgnoreCase(""))) {
+				String fil = (String) dataParameters.get("model_title");
+				if (fil!=null) model_title = fil;
+			}
+			this.confMap.put("model_title", model_title);
+			
+			if (dataParameters.get("kpi_title") != null
+					&& !(((String) dataParameters.get("kpi_title")).equalsIgnoreCase(""))) {
+				String fil = (String) dataParameters.get("kpi_title");
+				if (fil!=null) kpi_title = fil;
+			}
+			this.confMap.put("kpi_title", kpi_title);
+			
+			if (dataParameters.get("weight_title") != null
+					&& !(((String) dataParameters.get("weight_title")).equalsIgnoreCase(""))) {
+				String fil = (String) dataParameters.get("weight_title");
+				if (fil!=null) weight_title = fil;
+			}
+			this.confMap.put("weight_title", weight_title);
+			
+			if (dataParameters.get("bullet_chart_title") != null
+					&& !(((String) dataParameters.get("bullet_chart_title")).equalsIgnoreCase(""))) {
+				String fil = (String) dataParameters.get("bullet_chart_title");
+				if (fil!=null) bullet_chart_title = fil;
+			}
+			this.confMap.put("bullet_chart_title", bullet_chart_title);
+			
+			if (dataParameters.get("threshold_image_title") != null
+					&& !(((String) dataParameters.get("threshold_image_title")).equalsIgnoreCase(""))) {
+				String fil = (String) dataParameters.get("threshold_image_title");
+				if (fil!=null) threshold_image_title = fil;
+			}
+			this.confMap.put("threshold_image_title", threshold_image_title);
 
 		} catch (Exception e) {
 			logger.error("error in reading template parameters");

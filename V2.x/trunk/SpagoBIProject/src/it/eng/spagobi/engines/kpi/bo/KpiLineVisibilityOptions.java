@@ -10,6 +10,11 @@ public class KpiLineVisibilityOptions {
 	private Boolean display_weight = true;
 	private Boolean show_axis = true;
 	private Boolean weighted_values = true;
+	private String model_title = "<spagobi:message key='sbi.kpi.modelLineTitle'/>	";
+	private String threshold_image_title = "";
+	private String bullet_chart_title = "";
+	private String kpi_title = "";
+	private String weight_title = "";
 	
 	
 	public KpiLineVisibilityOptions(Boolean closed_tree,
@@ -79,6 +84,46 @@ public class KpiLineVisibilityOptions {
 	}
 	public void setWeighted_values(Boolean weighted_values) {
 		this.weighted_values = weighted_values;
+	}
+
+	public String getModel_title() {
+		return model_title;
+	}
+
+	public void setModel_title(String model_title) {
+		this.model_title = model_title;
+	}
+
+	public String getThreshold_image_title() {
+		return threshold_image_title;
+	}
+
+	public void setThreshold_image_title(String threshold_image_title) {
+		this.threshold_image_title = threshold_image_title;
+	}
+
+	public String getBullet_chart_title() {
+		return bullet_chart_title;
+	}
+
+	public void setBullet_chart_title(String bullet_chart_title) {
+		this.bullet_chart_title = bullet_chart_title;
+	}
+
+	public String getKpi_title() {
+		return kpi_title;
+	}
+
+	public void setKpi_title(String kpi_title) {
+		this.kpi_title = kpi_title;
+	}
+
+	public String getWeight_title() {
+		return weight_title;
+	}
+
+	public void setWeight_title(String weight_title) {
+		this.weight_title = weight_title;
 	}
 
 }

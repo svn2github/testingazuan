@@ -1,5 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata;
 
+import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
+
 public class MetadataParameter {
 
     private java.lang.Integer id;
@@ -40,6 +42,14 @@ public class MetadataParameter {
 
 	public void setUrlName(java.lang.String urlName) {
 		this.urlName = urlName;
+	}
+
+	public MetadataParameter(SDKDocumentParameter docPar) {
+		super();
+		this.id = docPar.getId();
+		this.label = docPar.getLabel();
+		this.type = docPar.getType();
+		this.urlName = docPar.getUrlName();
 	}
 
     

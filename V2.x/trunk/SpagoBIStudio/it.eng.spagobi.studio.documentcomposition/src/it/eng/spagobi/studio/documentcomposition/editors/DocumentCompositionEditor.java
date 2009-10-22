@@ -1,5 +1,6 @@
 package it.eng.spagobi.studio.documentcomposition.editors;
 
+
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
 
@@ -24,6 +25,8 @@ import test.Designer;
 
 public class DocumentCompositionEditor extends EditorPart {
 
+	String templateName="";
+
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
@@ -44,6 +47,7 @@ public class DocumentCompositionEditor extends EditorPart {
 		setInput(input);
 		setSite(site);
 		IFile file = fei.getFile();
+		templateName=file.getName();
 		ModelBO bo=new ModelBO();
 		DocumentComposition documentComposition;
 		try {
@@ -100,9 +104,8 @@ public class DocumentCompositionEditor extends EditorPart {
 		sectionClient.setSize(1000, 1000);
 
 		Designer de=new Designer(sectionClient);
-
+		de.setEditor(this);
 		section.setClient(sectionClient);
-
 
 
 	}

@@ -8,6 +8,7 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Refresh;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.model.Model;
 
 import java.util.Vector;
 
@@ -91,11 +92,11 @@ public class XmlTemplateGenerator {
 	}
 
 
-	public static DocumentComposition readXml(IFile file) throws CoreException{
+	public static Model readXml(IFile file) throws CoreException{
 		XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("grfthscv", "_");
 		XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
 		setAlias(xstream);	
-		DocumentComposition objFromXml = (DocumentComposition)xstream.fromXML(file.getContents());
+		Model objFromXml = (Model)xstream.fromXML(file.getContents());
 		return objFromXml;
 	}
 

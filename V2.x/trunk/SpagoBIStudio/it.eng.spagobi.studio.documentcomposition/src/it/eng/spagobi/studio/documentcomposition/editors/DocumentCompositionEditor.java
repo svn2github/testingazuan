@@ -1,7 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition.editors;
 
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.model.Model;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -45,10 +45,10 @@ public class DocumentCompositionEditor extends EditorPart {
 		setSite(site);
 		IFile file = fei.getFile();
 		ModelBO bo=new ModelBO();
-		DocumentComposition documentComposition;
+		Model model;
 		try {
-			documentComposition = bo.createModel(file);
-			bo.saveModel(documentComposition);
+			model = bo.createModel(file);
+			bo.saveModel(model);
 		} catch (CoreException e) {
 			e.printStackTrace();
 			throw(new PartInitException("Error in reading template"));

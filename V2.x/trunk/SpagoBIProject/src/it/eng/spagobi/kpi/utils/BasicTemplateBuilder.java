@@ -184,26 +184,28 @@ public class BasicTemplateBuilder  {
 	  
 	static String columnKPIHeaderS="<staticText>"+
 	"	<reportElement"+
-	"	x=\"253\""+
+	"	x=\"158\""+
 	"	y=\"15\""+
-	"	width=\"20\""+
+	"	width=\"120\""+
 	"	height=\"12\""+
 	"	forecolor=\"#000000\""+
+	"	isPrintWhenDetailOverflows=\"true\""+
 	"	key=\"staticText-5\"/>"+
 	"	<box></box>"+
-	"	<textElement verticalAlignment=\"Middle\">"+
+	"	<textElement textAlignment=\"Right\" verticalAlignment=\"Middle\">"+
 	"	<font pdfFontName=\"Helvetica-Bold\" size=\"8\" isBold=\"true\"/>"+
 	"	</textElement>"+
-	"	<text><![CDATA[KPI]]></text>"+
+	"	<text><![CDATA[KPI VALUE]]></text>"+
 	"	</staticText>";	
 		
 	static String columnWeightHeaderS="<staticText>"+
 	"	<reportElement"+
-	"	x=\"278\""+
+	"	x=\"285\""+
 	"	y=\"15\""+
 	"	width=\"53\""+
 	"	height=\"12\""+
 	"	forecolor=\"#000000\""+
+	"	isPrintWhenDetailOverflows=\"true\""+
 	"	key=\"staticText-6\"/>"+
 	"	<box></box>"+
 	"	<textElement verticalAlignment=\"Middle\">"+

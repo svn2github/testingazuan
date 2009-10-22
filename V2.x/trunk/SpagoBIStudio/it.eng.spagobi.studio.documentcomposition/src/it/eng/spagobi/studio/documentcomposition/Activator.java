@@ -1,7 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition;
 
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.model.Model;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -18,7 +18,10 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	/*Modello del template del documento composto*/
 	private DocumentComposition documentComposition;
+	private Model model;
 	
+
+
 	public DocumentComposition getDocumentComposition() {
 		return documentComposition;
 	}
@@ -26,7 +29,13 @@ public class Activator extends AbstractUIPlugin {
 	public void setDocumentComposition(DocumentComposition documentComposition) {
 		this.documentComposition = documentComposition;
 	}
+	public Model getModel() {
+		return model;
+	}
 
+	public void setModel(Model model) {
+		this.model = model;
+	}
 	/**
 	 * The constructor
 	 */

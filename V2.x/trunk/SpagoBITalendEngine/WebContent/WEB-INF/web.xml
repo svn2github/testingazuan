@@ -68,18 +68,54 @@ END-CAS -->
 <!-- START-CAS 	
    <filter-mapping>
     <filter-name>CAS Authentication Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/JobRunService</url-pattern>
   </filter-mapping> 
-    	
+   <filter-mapping>
+    <filter-name>CAS Authentication Filter</filter-name>
+    <url-pattern>/EngineInfoService</url-pattern>
+  </filter-mapping> 
+   <filter-mapping>
+    <filter-name>CAS Authentication Filter</filter-name>
+    <url-pattern>/JobUploadService</url-pattern>
+  </filter-mapping> 
+   <filter-mapping>
+    <filter-name>CAS Authentication Filter</filter-name>
+    <url-pattern>/JobRunServiceTest</url-pattern>
+  </filter-mapping>
+
    <filter-mapping>
     <filter-name>CAS Validation Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/JobRunService</url-pattern>
   </filter-mapping> 
-  
-  <filter-mapping>
+   <filter-mapping>
+    <filter-name>CAS Validation Filter</filter-name>
+    <url-pattern>/EngineInfoService</url-pattern>
+  </filter-mapping> 
+   <filter-mapping>
+    <filter-name>CAS Validation Filter</filter-name>
+    <url-pattern>/JobUploadService</url-pattern>
+  </filter-mapping> 
+   <filter-mapping>
+    <filter-name>CAS Validation Filter</filter-name>
+    <url-pattern>/JobRunServiceTest</url-pattern>
+  </filter-mapping>
+
+   <filter-mapping>
     <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/JobRunService</url-pattern>
   </filter-mapping> 
+   <filter-mapping>
+    <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+    <url-pattern>/EngineInfoService</url-pattern>
+  </filter-mapping> 
+   <filter-mapping>
+    <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+    <url-pattern>/JobUploadService</url-pattern>
+  </filter-mapping> 
+   <filter-mapping>
+    <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+    <url-pattern>/JobRunServiceTest</url-pattern>
+  </filter-mapping>
   
   <filter-mapping>
 		<filter-name>CAS Validation Filter</filter-name>

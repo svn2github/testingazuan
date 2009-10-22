@@ -567,7 +567,7 @@ public class BasicTemplateBuilder  {
 				}
 				toReturn.add(subTemplate);
 				logger.debug("Built subtemplate: "+subTemplate);
-				System.out.println(subTemplate);
+				//System.out.println(subTemplate);
 			}
 		}
 	
@@ -842,6 +842,21 @@ public class BasicTemplateBuilder  {
 				kpiColHeader.setAttribute("reportElement.y",actualHeight.toString());
 				weightColHeader.setAttribute("reportElement.y",actualHeight.toString());
 				kthreshColHeader.setAttribute("reportElement.y",actualHeight.toString());
+				
+				if(options.getModel_title()!=null && !options.getModel_title().equals("")){
+					SourceBean textValue=(SourceBean)modelColHeader.getAttribute("text");
+					textValue.setCharacters(options.getModel_title());
+				}
+				if(options.getKpi_title()!=null && !options.getKpi_title().equals("")){
+				SourceBean textValue1=(SourceBean)kpiColHeader.getAttribute("text");
+				textValue1.setCharacters(options.getKpi_title());
+				}
+				if(options.getWeight_title()!=null && !options.getWeight_title().equals("")){
+				SourceBean textValue2=(SourceBean)weightColHeader.getAttribute("text");
+				textValue2.setCharacters(options.getWeight_title());
+				}
+				/*SourceBean textValue3=(SourceBean)kthreshColHeader.getAttribute("text");
+				textValue3.setCharacters(options.getBullet_chart_title());*/
 				
 				sourceBeansToAdd.add(columnHeadBand);
 				sourceBeansToAdd.add(modelColHeader);

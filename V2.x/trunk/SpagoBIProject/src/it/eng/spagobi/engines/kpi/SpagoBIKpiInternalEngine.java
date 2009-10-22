@@ -41,6 +41,7 @@ import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.commons.utilities.messages.IMessageBuilder;
+import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilderFactory;
 import it.eng.spagobi.engines.InternalEngineIFace;
 import it.eng.spagobi.engines.drivers.exceptions.InvalidOperationRequest;
@@ -104,7 +105,7 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 
 	protected boolean closed_tree  = false;// true if the kpi tree has to start closed
 	
-	protected String model_title = "<spagobi:message key='sbi.kpi.modelLineTitle'/>	";// 
+	protected String model_title = "MODEL";// 
 	// displayed
 	protected String threshold_image_title = "";// 
 	// displayed
@@ -364,6 +365,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 		SessionContainer session = requestContainer.getSessionContainer();
 		profile = (IEngUserProfile) session.getPermanentContainer().getAttribute(
 				IEngUserProfile.ENG_USER_PROFILE);
+		locale=GeneralUtilities.getDefaultLocale();
+		String lang=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_LANGUAGE);
+		String country=(String)session.getPermanentContainer().getAttribute(SpagoBIConstants.AF_COUNTRY);
+		if(lang!=null && country!=null){
+			locale=new Locale(lang,country,"");
+		}
+		
 		String userId = null;
 
 		if(profile!=null){
@@ -1677,6 +1685,10 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 					&& !(((String) dataParameters.get("model_title")).equalsIgnoreCase(""))) {
 				String fil = (String) dataParameters.get("model_title");
 				if (fil!=null) model_title = fil;
+			}else{
+				MessageBuilder msgBuild=new MessageBuilder();
+				model_title = msgBuild.getMessage("sbi.kpi.modelLineTitle", locale);	
+				
 			}
 			this.confMap.put("model_title", model_title);
 			

@@ -10,7 +10,7 @@ public class KpiLineVisibilityOptions {
 	private Boolean display_weight = true;
 	private Boolean show_axis = true;
 	private Boolean weighted_values = true;
-	private String model_title = "<spagobi:message key='sbi.kpi.modelLineTitle'/>	";
+	private String model_title = "MODEL";
 	private String threshold_image_title = "";
 	private String bullet_chart_title = "";
 	private String kpi_title = "";

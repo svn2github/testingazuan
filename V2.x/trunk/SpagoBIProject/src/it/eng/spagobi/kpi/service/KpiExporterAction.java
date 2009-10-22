@@ -1,26 +1,17 @@
 package it.eng.spagobi.kpi.service;
 
-import it.eng.spago.base.RequestContainer;
-import it.eng.spago.base.ResponseContainer;
-import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
-import it.eng.spago.base.SourceBeanException;
 import it.eng.spago.dispatching.action.AbstractHttpAction;
-import it.eng.spago.dispatching.service.DefaultRequestContext;
-import it.eng.spago.error.EMFErrorHandler;
-import it.eng.spago.error.EMFUserError;
 import it.eng.spagobi.analiticalmodel.document.bo.BIObject;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.dao.DAOFactory;
 import it.eng.spagobi.engines.exporters.KpiExporter;
-import it.eng.spagobi.engines.kpi.SpagoBIKpiInternalEngine;
 import it.eng.spagobi.engines.kpi.bo.KpiResourceBlock;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -105,66 +96,5 @@ public class KpiExporterAction extends AbstractHttpAction {
 
 		}
 	}
-
-
-
-
-
-
-/*
-
-	public List<KpiResourceBlock> executeKpi(Integer objectId) throws EMFUserError{
-		SourceBean request = null;
-		SourceBean resp = null;
-		List<KpiResourceBlock> toReturn=null;
-
-		BIObject biObj=DAOFactory.getBIObjectDAO().loadBIObjectById(objectId);
-
-
-		try {
-			request = new SourceBean("");
-			resp = new SourceBean("");
-		} catch (SourceBeanException e1) {
-			e1.printStackTrace();
-		}
-		RequestContainer reqContainer = new RequestContainer();
-		ResponseContainer resContainer = new ResponseContainer();
-		reqContainer.setServiceRequest(request);
-		resContainer.setServiceResponse(resp);
-		DefaultRequestContext defaultRequestContext = new DefaultRequestContext(
-				reqContainer, resContainer);
-		resContainer.setErrorHandler(new EMFErrorHandler());
-		RequestContainer.setRequestContainer(reqContainer);
-		ResponseContainer.setResponseContainer(resContainer);
-		Locale locale = new Locale("it","IT","");
-		SessionContainer session = new SessionContainer(true);
-		reqContainer.setSessionContainer(session);
-		SessionContainer permSession = session.getPermanentContainer();
-		//IEngUserProfile profile = new AnonymousCMSUserProfile();
-		//permSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-
-//		InternalEngineIFace internalEngine = null;
-		// tries to instantiate the class for the internal engine
-		//internalEngine = (InternalEngineIFace) Class.forName(className).newInstance();
-		SpagoBIKpiInternalEngine kpiEngine=new SpagoBIKpiInternalEngine();
-
-		toReturn=kpiEngine.executeCode(reqContainer, biObj , resp);
-		return toReturn;
-
-	}
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
 
 }

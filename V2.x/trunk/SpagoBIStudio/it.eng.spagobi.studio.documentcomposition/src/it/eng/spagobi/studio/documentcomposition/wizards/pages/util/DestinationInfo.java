@@ -4,7 +4,7 @@ import org.eclipse.swt.widgets.Text;
 
 public class DestinationInfo{
 	private String docDestName;
-	private Text paramDestName;
+	private String paramDestName;
 	private Text paramDefaultValue;
 	
 	public Text getParamDefaultValue() {
@@ -19,10 +19,10 @@ public class DestinationInfo{
 	public void setDocDestName(String docDestName) {
 		this.docDestName = docDestName;
 	}
-	public Text getParamDestName() {
+	public String getParamDestName() {
 		return paramDestName;
 	}
-	public void setParamDestName(Text paramDestName) {
+	public void setParamDestName(String paramDestName) {
 	
 		this.paramDestName = paramDestName;
 	}

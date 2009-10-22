@@ -5,6 +5,9 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBIModifyNavigationWizard;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
@@ -36,7 +39,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 
 
 	Vector<Combo> destinationDocNameCombo;
-	Vector<Text> destinationInputParam ;
+	Vector<Combo> destinationInputParam ;
 	
 	String name = "";
 	String paramIn = "";
@@ -51,9 +54,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 
 	Text masterDocName;
 	Text masterParamName;
-	
-	private DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
-	
+
+	private MetadataDocumentComposition metaDoc = Activator.getDefault().getMetadataDocumentComposition();
 
 	public ModifyNavigationWizardPage() {		
 		super("Modify navigation");
@@ -89,7 +91,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 
 		destinationInfo = new DestinationInfo();
 		destinationDocNameCombo = new Vector<Combo>();
-		destinationInputParam = new Vector<Text>();
+		destinationInputParam = new Vector<Combo>();
 
 		final ScrolledComposite sc =  new ScrolledComposite(parent, SWT.V_SCROLL );
 		final Composite composite = new Composite(sc, SWT.BORDER);
@@ -143,7 +145,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		gd.widthHint = 260;
 		
 		new Label(composite, SWT.NONE).setText("Input parameter:");
-		destinationInputParam.addElement(new Text(composite, SWT.BORDER));
+		destinationInputParam.addElement(new Combo(composite, SWT.BORDER | SWT.READ_ONLY));
 		destinationInputParam.elementAt(destinCounter).setLayoutData(gd);
 		
 		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
@@ -169,7 +171,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				destinationInfo = new DestinationInfo();
 				int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
 				destinationInfo.setDocDestName(destinationDocNameCombo.elementAt(destinCounter).getItem(sel));
-				destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter));
+				int selIn = destinationInputParam.elementAt(destinCounter).getSelectionIndex();		
+				destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getItem(selIn));
 				destinationInfos.add(destinationInfo);	
 				
 				destinCounter++;			
@@ -190,7 +193,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 
 				//crea una nuovo output text
 				new Label(composite, SWT.NONE).setText("Input parameter:");
-				Text newText =new Text(composite, SWT.BORDER );
+				Combo newText =new Combo(composite, SWT.BORDER |SWT.READ_ONLY);
 
 				destinationInputParam.addElement(newText);
 				newText.setLayoutData(gridData);
@@ -238,13 +241,15 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	}
 
 	private void fillDestinationCombo(){
-		
+
+		SpagoBINavigationWizard wizard = (SpagoBINavigationWizard)getWizard();
+
 		if(destinationDocNameCombo.elementAt(destinCounter).getItemCount() == 0){
-			if(docComp != null){
-				Vector docs = docComp.getDocumentsConfiguration().getDocuments();
+			if(metaDoc != null){
+				Vector docs = metaDoc.getMetadataDocuments();
 				if(docs != null){
 					for(int i=0; i<docs.size(); i++){
-						String destinationName = ((Document)docs.elementAt(i)).getLabel();
+						String destinationName = ((MetadataDocument)docs.elementAt(i)).getName();
 						
 							if(destinationName != null && !destinationName.equals("")){
 								destinationDocNameCombo.elementAt(destinCounter).add(destinationName);
@@ -254,7 +259,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				}
 			}
 		}
-		String master = masterDocName.getText();
+		String master = wizard.getSelectedMaster();
 		//per ridisegnare combo
 		
 		if(master != null && !master.equals("")){
@@ -263,6 +268,28 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 			destinationDocNameCombo.elementAt(destinCounter).redraw();
 		}
 		
+	}
+	private void fillDestinationParamCombo(String destDoc){
+		destinationInputParam.elementAt(destinCounter).removeAll();
+		if(metaDoc != null){
+			Vector docs = metaDoc.getMetadataDocuments();
+			if(docs != null){
+				for(int i=0; i<docs.size(); i++){
+					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+					String docName = doc.getName();
+					if(docName != null && !docName.equals("") &&(docName.equals(destDoc))){
+						Vector params = doc.getParameters();
+						for (int j =0; j<params.size(); j++){
+							MetadataParameter param = (MetadataParameter)params.elementAt(j);
+							String label = param.getLabel();
+							destinationInputParam.elementAt(destinCounter).add(label);
+						}
+						
+					}
+				}
+			}
+		}
+		destinationInputParam.elementAt(destinCounter).redraw();
 	}
 	
 	private Parameter getNavigationItem(){
@@ -326,7 +353,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		this.destinationInfo = destinationInfo;
 	}
 
-	public Vector<Text> getDestinationInputParam() {
+	public Vector<Combo> getDestinationInputParam() {
 		return destinationInputParam;
 	}
 	public Vector<Combo> getDestinationDocNameCombo() {

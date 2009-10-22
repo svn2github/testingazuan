@@ -79,7 +79,8 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			int destinCounter= newNavigationWizardDestinDocPage.getDestinCounter();
 			int sel = newNavigationWizardDestinDocPage.getDestinationDocNameCombo().elementAt(destinCounter).getSelectionIndex();
 			destinationInfo.setDocDestName(newNavigationWizardDestinDocPage.getDestinationDocNameCombo().elementAt(destinCounter).getItem(sel));
-			destinationInfo.setParamDestName(newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter));
+			int selIn = newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter).getSelectionIndex();		
+			destinationInfo.setParamDestName(newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter).getItem(selIn));
 			destinationInfo.setParamDefaultValue(newNavigationWizardDestinDocPage.getDestinationInputParamDefaultValue().elementAt(destinCounter));
 			newNavigationWizardDestinDocPage.getDestinationInfos().add(destinationInfo);	
 		}
@@ -205,7 +206,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
 			String toRefresh = destInfo.getDocDestName();
 
-			String paramIn = ((Text)destInfo.getParamDestName()).getText();
+			String paramIn =destInfo.getParamDestName();
 
 			refreshDocLinked.setLabelDoc(toRefresh);
 			refreshDocLinked.setLabelParam(paramIn);
@@ -223,7 +224,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			DestinationInfo destInfo = destInfos.elementAt(k);
 			String destinationDoc = destInfo.getDocDestName();
 			if(destinationDoc != null && destinationDoc.equals(doc.getLabel())){
-				String paramName = destInfo.getParamDestName().getText();
+				String paramName = destInfo.getParamDestName();
 				Parameter param = new Parameter();
 				param.setType("IN");
 				param.setLabel(paramName);

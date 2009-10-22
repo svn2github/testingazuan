@@ -10,23 +10,14 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
 import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.ModifyNavigationWizardPage;
-import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardDestinDocPage;
-import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardMasterDocPage;
-import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -79,7 +70,8 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			int destinCounter= modifyNavigationWizardPage.getDestinCounter();
 			int sel = modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getSelectionIndex();
 			destinationInfo.setDocDestName(modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getItem(sel));
-			destinationInfo.setParamDestName(modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter));
+			int selIn = modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getSelectionIndex();		
+			destinationInfo.setParamDestName(modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getItem(selIn));
 			modifyNavigationWizardPage.getDestinationInfos().add(destinationInfo);	
 		}
 	}
@@ -177,7 +169,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
 			String toRefresh = destInfo.getDocDestName();
 
-			String paramIn = ((Text)destInfo.getParamDestName()).getText();
+			String paramIn = (String)destInfo.getParamDestName();
 
 			refreshDocLinked.setLabelDoc(toRefresh);
 			refreshDocLinked.setLabelParam(paramIn);

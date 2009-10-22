@@ -3,13 +3,11 @@ Ext.ns("Sbi.settings");
 Sbi.settings.qbe = {
 		queryBuilderPanel: {
 			enableTreeToolbar: true,
-			enableTreeTbSaveBtn: false,
 			enableTreeTbPinBtn: true,
 			enableTreeTbUnpinBtn: true,
 			
 			enableQueryTbExecuteBtn: true,
 			enableQueryTbSaveBtn: true,
-			enableQueryTbSaveViewBtn: false,
 			enableQueryTbValidateBtn: false,
 			
 			enableCatalogueTbDeleteBtn: true,
@@ -17,13 +15,8 @@ Sbi.settings.qbe = {
 			enableCatalogueTbInsertBtn: true
 		}
 
-		, dataMartStructurePanel: {
-			enableTreeContextMenu: false
-		}
-		
 		, selectGridPanel: {
-			enableTbAddCalculatedBtn: false
-			, enableTbHideNonvisibleBtn: true
+			enableTbHideNonvisibleBtn: true
 			, enableTbDeleteAllBtn: true
 			, columns : {
 				'entity': {hideable: true, hidden: false, sortable: false}

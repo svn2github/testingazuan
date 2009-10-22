@@ -6,6 +6,9 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentsConfiguration;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBIModifyNavigationWizard;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
@@ -37,6 +40,7 @@ public class NavigationView extends ViewPart {
 
 	Table table;
 	private DocumentComposition documentComp = Activator.getDefault().getDocumentComposition();
+	private MetadataDocumentComposition metadataDoc = Activator.getDefault().getMetadataDocumentComposition();
 	
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
@@ -111,7 +115,7 @@ public class NavigationView extends ViewPart {
 			public void handleEvent(Event event) {
 		        switch (event.type) {
 		        case SWT.Selection:
-			    		///button to start the wizard
+			    	///button to start the wizard
 		    	    // Instantiates and initializes the wizard
 		        	SpagoBINavigationWizard wizard = new SpagoBINavigationWizard();
 
@@ -278,6 +282,67 @@ public class NavigationView extends ViewPart {
 	}
 	
 	private void test(){
+		if(metadataDoc == null){
+			metadataDoc = new MetadataDocumentComposition();
+			Vector<MetadataDocument> docs = new Vector<MetadataDocument>();
+			
+			MetadataDocument m = new MetadataDocument();
+			m.setName("mapUsa");
+			
+			MetadataParameter p = new MetadataParameter();
+			p.setLabel("year");
+			MetadataParameter p1 = new MetadataParameter();
+			p1.setLabel("state");
+			MetadataParameter p2 = new MetadataParameter();
+			p2.setLabel("month");
+			
+			Vector v = new Vector();
+			v.add(p);
+			v.add(p1);
+			v.add(p2);
+			
+			m.setParameters(v);
+			docs.add(m);
+			
+			MetadataDocument m2 = new MetadataDocument();
+			m2.setName("chartSales");
+			
+			MetadataParameter pp = new MetadataParameter();
+			pp.setLabel("year1");
+			MetadataParameter pp1 = new MetadataParameter();
+			pp1.setLabel("state1");
+			MetadataParameter pp2 = new MetadataParameter();
+			pp2.setLabel("month1");
+			
+			Vector vv = new Vector();
+			vv.add(pp);
+			vv.add(pp1);
+			vv.add(pp2);
+			
+			m2.setParameters(vv);
+			docs.add(m2);
+			
+			MetadataDocument m3 = new MetadataDocument();
+			m3.setName("rptBestSales");
+			
+			MetadataParameter ppp = new MetadataParameter();
+			ppp.setLabel("year2");
+			MetadataParameter ppp1 = new MetadataParameter();
+			ppp1.setLabel("state2");
+			MetadataParameter ppp2 = new MetadataParameter();
+			ppp2.setLabel("month2");
+			
+			Vector vvv = new Vector();
+			vvv.add(ppp);
+			vvv.add(ppp1);
+			vvv.add(ppp2);
+			
+			m3.setParameters(vvv);
+			docs.add(m3);
+			
+			metadataDoc.setMetadataDocuments(docs);
+			Activator.getDefault().setMetadataDocumentComposition(metadataDoc);
+		}
 		
 		if(documentComp == null){
 			documentComp = new DocumentComposition();

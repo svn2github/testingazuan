@@ -5,7 +5,14 @@ import org.eclipse.swt.widgets.Text;
 public class DestinationInfo{
 	private String docDestName;
 	private Text paramDestName;
+	private Text paramDefaultValue;
 	
+	public Text getParamDefaultValue() {
+		return paramDefaultValue;
+	}
+	public void setParamDefaultValue(Text paramDefaultValue) {
+		this.paramDefaultValue = paramDefaultValue;
+	}
 	public String getDocDestName() {
 		return docDestName;
 	}

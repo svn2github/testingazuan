@@ -2,7 +2,9 @@ package it.eng.spagobi.studio.documentcomposition.wizards.pages;
 
 import it.eng.spagobi.studio.documentcomposition.Activator;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 
 import java.util.Vector;
@@ -25,24 +27,10 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	String paramOut ="";
 	
 	Combo masterDocName;
-	Text masterDocOutputParam;
-	
-	public Combo getMasterDocName() {
-		return masterDocName;
-	}
+	Combo masterDocOutputParam;
+	Text masterDefaultValueOutputParam;
+	private MetadataDocumentComposition metaDoc = Activator.getDefault().getMetadataDocumentComposition();
 
-	public void setMasterDocName(Combo masterDocName) {
-		this.masterDocName = masterDocName;
-	}
-	
-
-	public String getName() {
-		return name;
-	}
-
-	public String getParamOut() {
-		return paramOut;
-	}
 	public NewNavigationWizardMasterDocPage() {
 		super("New Document - Master document");
 		setTitle("Insert Master document");
@@ -55,12 +43,15 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 	@Override
 	public boolean canFlipToNextPage() {
 		int sel = masterDocName.getSelectionIndex();
-		String master = masterDocName.getItem(sel);
-		
+		String master =null;
+		if(sel != -1){
+			 master = masterDocName.getItem(sel);
+		}
 		if ((masterDocOutputParam.getText() == null || masterDocOutputParam.getText().length() == 0)
-				&&(sel ==-1 || master == null )) {
+				&&(sel == -1 || master == null )) {
 			return false;
 		}
+
 		return true;
 	}
 	
@@ -75,60 +66,123 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 		gl.numColumns = ncol;
 
 		composite.setLayout(gl);
+		
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		
 		new Label(composite, SWT.NONE).setText("Master document:");
 		masterDocName = new Combo(composite, SWT.BORDER |SWT.READ_ONLY );
 		fillMasterCombo();
-
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 2;
 		masterDocName.setLayoutData(gd);
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 1;
+		gd.horizontalSpan = 2;
 		gd.grabExcessHorizontalSpace = true;
 		gd.widthHint = 200;
 
 		// fielset per parametri output
 		new Label(composite, SWT.NONE).setText("Ouput parameter:");
-		masterDocOutputParam = new Text(composite, SWT.BORDER);
+		masterDocOutputParam = new Combo(composite, SWT.BORDER | SWT.READ_ONLY);
 		masterDocOutputParam.setLayoutData(gd);
+		
+		
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		masterDocName.setLayoutData(gd);
+		
+		new Label(composite, SWT.NONE).setText("Default value:");
+		masterDefaultValueOutputParam = new Text(composite, SWT.BORDER);
+		masterDefaultValueOutputParam.setLayoutData(gd);
 
 		masterDocName.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
 				name = masterDocName.getText();
 				SpagoBINavigationWizard wizard = (SpagoBINavigationWizard)getWizard();
 				wizard.setSelectedMaster(masterDocName.getText());
+				fillMasterParamCombo(name);
+				
 				setPageComplete(name.length() > 0	&& paramOut.length() > 0);
 			}
 		});
 		
 		masterDocOutputParam.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
+				
 				paramOut = masterDocOutputParam.getText();
 				setPageComplete(name.length() > 0	&& paramOut.length() > 0);
 			}
 		});
+		
+
+		
 		composite.pack();
 		composite.redraw();
 		setControl(composite);
 	}
 
 
-	public Text getMasterDocOutputParam() {
-		return masterDocOutputParam;
-	}
+
 	private void fillMasterCombo(){
-		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
-		if(docComp != null){
-			Vector docs = docComp.getDocumentsConfiguration().getDocuments();
+		
+		if(metaDoc != null){
+			Vector docs = metaDoc.getMetadataDocuments();
 			if(docs != null){
 				for(int i=0; i<docs.size(); i++){
-					String masterName = ((Document)docs.elementAt(i)).getLabel();
+					String masterName = ((MetadataDocument)docs.elementAt(i)).getName();
 					if(masterName != null && !masterName.equals("")){
 						masterDocName.add(masterName);
 					}
 				}
 			}
 		}
+	}
+	
+	private void fillMasterParamCombo(String masterDoc){
+		masterDocOutputParam.removeAll();
+		if(metaDoc != null){
+			Vector docs = metaDoc.getMetadataDocuments();
+			if(docs != null){
+				for(int i=0; i<docs.size(); i++){
+					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
+					String masterName = doc.getName();
+					if(masterName != null && !masterName.equals("") &&(masterName.equals(masterDoc))){
+						Vector params = doc.getParameters();
+						for (int j =0; j<params.size(); j++){
+							MetadataParameter param = (MetadataParameter)params.elementAt(j);
+							String label = param.getLabel();
+							masterDocOutputParam.add(label);
+						}
+						
+					}
+				}
+			}
+		}
+		masterDocOutputParam.redraw();
+	}
+	public Text getMasterDefaultValueOutputParam() {
+		return masterDefaultValueOutputParam;
+	}
+
+	public void setMasterDefaultValueOutputParam(Text masterDefaultValueOutputParam) {
+		this.masterDefaultValueOutputParam = masterDefaultValueOutputParam;
+	}
+
+	public Combo getMasterDocName() {
+		return masterDocName;
+	}
+
+	public void setMasterDocName(Combo masterDocName) {
+		this.masterDocName = masterDocName;
+	}
+	public Combo getMasterDocOutputParam() {
+		return masterDocOutputParam;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getParamOut() {
+		return paramOut;
 	}
 }

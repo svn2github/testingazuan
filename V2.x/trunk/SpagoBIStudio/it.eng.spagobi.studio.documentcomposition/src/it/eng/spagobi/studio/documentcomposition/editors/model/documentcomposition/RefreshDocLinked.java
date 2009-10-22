@@ -1,6 +1,10 @@
 package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition;
 
 public class RefreshDocLinked {
+	private String labelDoc;
+	private String labelParam;
+
+	
 	public String getLabelDoc() {
 		return labelDoc;
 	}
@@ -13,7 +17,7 @@ public class RefreshDocLinked {
 	public void setLabelParam(String labelParam) {
 		this.labelParam = labelParam;
 	}
-	private String labelDoc;
-	private String labelParam;
+
+
 
 }

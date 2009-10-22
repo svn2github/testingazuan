@@ -52,6 +52,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	Text masterDocName;
 	Text masterParamName;
 	
+	private DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
 	
 
 	public ModifyNavigationWizardPage() {		
@@ -82,6 +83,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		return ret;
 	}
 
+	
+	
 	public void createControl(Composite parent) {
 
 		destinationInfo = new DestinationInfo();
@@ -137,7 +140,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		gd.horizontalSpan = 1;
 		gd.grabExcessHorizontalSpace = true;
 		gd.minimumWidth =200;
-		gd.widthHint = 250;
+		gd.widthHint = 260;
 		
 		new Label(composite, SWT.NONE).setText("Input parameter:");
 		destinationInputParam.addElement(new Text(composite, SWT.BORDER));
@@ -175,7 +178,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				GridData gridData = new GridData();
 				gridData.horizontalAlignment = GridData.FILL_HORIZONTAL;
 				gridData.horizontalSpan = 1;
-				gridData.widthHint = 250;
+				gridData.widthHint = 260;
 				
 				new Label(composite, SWT.NONE).setText("Destination document:");	
 				destinationDocNameCombo.addElement(new Combo(composite, SWT.BORDER |SWT.READ_ONLY ));
@@ -235,7 +238,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	}
 
 	private void fillDestinationCombo(){
-		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
+		
 		if(destinationDocNameCombo.elementAt(destinCounter).getItemCount() == 0){
 			if(docComp != null){
 				Vector docs = docComp.getDocumentsConfiguration().getDocuments();

@@ -14,8 +14,6 @@ import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWiza
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.NewNavigationWizardPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -24,6 +22,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
@@ -81,6 +80,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			int sel = newNavigationWizardDestinDocPage.getDestinationDocNameCombo().elementAt(destinCounter).getSelectionIndex();
 			destinationInfo.setDocDestName(newNavigationWizardDestinDocPage.getDestinationDocNameCombo().elementAt(destinCounter).getItem(sel));
 			destinationInfo.setParamDestName(newNavigationWizardDestinDocPage.getDestinationInputParam().elementAt(destinCounter));
+			destinationInfo.setParamDefaultValue(newNavigationWizardDestinDocPage.getDestinationInputParamDefaultValue().elementAt(destinCounter));
 			newNavigationWizardDestinDocPage.getDestinationInfos().add(destinationInfo);	
 		}
 	}
@@ -120,39 +120,40 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	    	if(docLabel.equalsIgnoreCase(masterName)){
 	    		doc.setLabel(masterName);
 	    		doc.setSbiObjLabel(masterName);
-	    		Text out = newNavigationWizardMasterDocPage.getMasterDocOutputParam();	    		
+	    		Combo out = newNavigationWizardMasterDocPage.getMasterDocOutputParam();	 
+				int sel = out.getSelectionIndex();
+				String masterPar = out.getItem(sel);
 	    		//campo out a cui vengono assegnati
-	    		//ciclo sui parameters del doc master 
 	    		
-	    		//se presente gli aggiunge il type e i rafresh
-	    		Parameters params = doc.getParameters();
-	    		boolean found = false;
-	    		if(params != null){
-		    		/*probabilmente nn serve........................*/
-		    		for (int j = 0; j<params.getParameter().size(); j++){
-		    			Parameter param = params.getParameter().elementAt(j);
-		    			if(param.getLabel().equalsIgnoreCase(out.getText())){
-		    				fillNavigationParam(param, out);
-		    				found = true;
-		    			}
-		    		}
-	    		}
-	    		/*probabilm sarà solo questo................*/
-	    		if(!found){
-	    			//altrimenti lo aggiunge
-	    			Parameter newParam = new Parameter();
-	    			fillNavigationParam(newParam, out);
-	    			if(params == null){
-	    				params = new Parameters();
-	    			}
-	    			Vector parameter =params.getParameter();
-	    			if(parameter == null){
-	    				parameter = new Vector<Parameter>();
-	    			}
-	    			parameter.add(newParam);
-    				params.setParameter(parameter);
-    				doc.setParameters(params);
-	    		}
+	    		
+	    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
+    			if(params == null){
+    				params = new Parameters();//altrimenti lo crea
+    			}
+    			
+	    		Vector<Parameter> parameters = new Vector<Parameter>();
+	    		//aggiunge il parameter IN per la dstinazione
+	    		fillInNavigationParams(parameters, doc);
+	    		
+	    		//aggiunge parametro OUT per doc master
+    			Parameter newParam = new Parameter();
+    			fillNavigationOutParam(newParam, masterPar);
+
+
+    			parameters.add(newParam);
+				params.setParameter(parameters);
+				doc.setParameters(params);
+	    	}else{
+	    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
+    			if(params == null){
+    				params = new Parameters();//altrimenti lo crea
+    			}
+    			
+	    		Vector<Parameter> parameters = new Vector<Parameter>();
+	    		//aggiunge il parameter IN per la dstinazione
+	    		fillInNavigationParams(parameters, doc);
+				params.setParameter(parameters);
+				doc.setParameters(params);
 	    	}
 	    }
 	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
@@ -189,10 +190,11 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		
 	}
 
-	private void fillNavigationParam(Parameter param, Text out){
-		param.setLabel(out.getText());
-		param.setSbiParLabel(out.getText());
+	private void fillNavigationOutParam(Parameter param, String out){
+		param.setLabel(out);
+		param.setSbiParLabel(out);
 		param.setNavigationName(newNavigationWizardPage.getNavigationNameText().getText());
+		param.setDefaultVal(newNavigationWizardMasterDocPage.getMasterDefaultValueOutputParam().getText());
 		
 		Refresh refresh = new Refresh();
 		Vector <RefreshDocLinked> refreshes = new Vector<RefreshDocLinked>();
@@ -211,8 +213,27 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 			
 			refresh.setRefreshDocLinked(refreshes);
 		}
-		param.setRefresh(refresh);
-		
+		param.setRefresh(refresh);		
 		param.setType("OUT");
+	}
+	private void fillInNavigationParams(Vector<Parameter> parameters, Document doc){
+		//cicla su destinazioni
+		Vector<DestinationInfo> destInfos = newNavigationWizardDestinDocPage.getDestinationInfos();
+		for(int k =0; k<destInfos.size(); k++){
+			DestinationInfo destInfo = destInfos.elementAt(k);
+			String destinationDoc = destInfo.getDocDestName();
+			if(destinationDoc != null && destinationDoc.equals(doc.getLabel())){
+				String paramName = destInfo.getParamDestName().getText();
+				Parameter param = new Parameter();
+				param.setType("IN");
+				param.setLabel(paramName);
+				param.setSbiParLabel(paramName);
+				param.setDefaultVal(destInfo.getParamDefaultValue().getText());
+				
+				parameters.add(param);
+			}
+			
+		}
+
 	}
 }

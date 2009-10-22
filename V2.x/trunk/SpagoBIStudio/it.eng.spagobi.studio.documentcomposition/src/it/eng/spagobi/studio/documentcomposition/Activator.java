@@ -1,7 +1,7 @@
 package it.eng.spagobi.studio.documentcomposition;
 
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -18,16 +18,16 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	/*Modello del template del documento composto*/
 	private DocumentComposition documentComposition;
-	private MetadataDocument metadataDocument;
+	private MetadataDocumentComposition metadataDocumentComposition;
 	
 
 
-	public MetadataDocument getMetadataDocument() {
-		return metadataDocument;
+	public MetadataDocumentComposition getMetadataDocumentComposition() {
+		return metadataDocumentComposition;
 	}
 
-	public void setMetadataDocument(MetadataDocument metadataDocument) {
-		this.metadataDocument = metadataDocument;
+	public void setMetadataDocumentComposition(MetadataDocumentComposition metadataDocumentComposition) {
+		this.metadataDocumentComposition = metadataDocumentComposition;
 	}
 
 	public DocumentComposition getDocumentComposition() {

@@ -28,7 +28,9 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 	Vector<Combo> destinationDocNameCombo;
 	Vector<Text> destinationInputParam ;
+	Vector<Text> destinationInputParamDefaultValue ;
 	
+
 	String name = "";
 	String paramIn = "";
 	
@@ -74,6 +76,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		
 		destinationDocNameCombo = new Vector<Combo>();
 		destinationInputParam = new Vector<Text>();
+		destinationInputParamDefaultValue = new Vector<Text>();
 
 		final ScrolledComposite sc =  new ScrolledComposite(parent, SWT.V_SCROLL );
 		final Composite composite = new Composite(sc, SWT.BORDER);
@@ -110,6 +113,10 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		destinationInputParam.addElement(new Text(composite, SWT.BORDER));
 		destinationInputParam.elementAt(destinCounter).setLayoutData(gd);
 		
+		new Label(composite, SWT.NONE).setText("Default value:");
+		destinationInputParamDefaultValue.addElement(new Text(composite, SWT.BORDER));
+		destinationInputParamDefaultValue.elementAt(destinCounter).setLayoutData(gd);
+		
 		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
 		gd.horizontalSpan =2;
 
@@ -134,6 +141,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
 				destinationInfo.setDocDestName(destinationDocNameCombo.elementAt(destinCounter).getItem(sel));
 				destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter));
+				destinationInfo.setParamDefaultValue(destinationInputParamDefaultValue.elementAt(destinCounter));
 				destinationInfos.add(destinationInfo);	
 
 				
@@ -167,6 +175,9 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 					}
 				});
 				
+				new Label(composite, SWT.NONE).setText("Default value:");
+				destinationInputParamDefaultValue.addElement(new Text(composite, SWT.BORDER));
+				destinationInputParamDefaultValue.elementAt(destinCounter).setLayoutData(gridData);
 				
 				composite.pack(false);
 				composite.getParent().redraw();
@@ -255,6 +266,13 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 	}
 	public void setDestinCounter(int destinCounter) {
 		this.destinCounter = destinCounter;
+	}
+	public Vector<Text> getDestinationInputParamDefaultValue() {
+		return destinationInputParamDefaultValue;
+	}
+	public void setDestinationInputParamDefaultValue(
+			Vector<Text> destinationInputParamDefaultValue) {
+		this.destinationInputParamDefaultValue = destinationInputParamDefaultValue;
 	}
 }
 

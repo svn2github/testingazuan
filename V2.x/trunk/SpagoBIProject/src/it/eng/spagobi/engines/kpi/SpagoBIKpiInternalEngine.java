@@ -107,13 +107,13 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 	
 	protected String model_title = "MODEL";// 
 	// displayed
-	protected String threshold_image_title = "";// 
+	protected String threshold_image_title = null;// 
 	// displayed
-	protected String bullet_chart_title = "";//
+	protected String bullet_chart_title = null;//
 	// will be displayed
-	protected String kpi_title = "";// 
+	protected String kpi_title = null;// 
 	// will be displayed
-	protected String weight_title = "";// 
+	protected String weight_title = null;// 
 
 	protected boolean display_semaphore = true;// true if the semaphore will be
 	// displayed
@@ -1692,29 +1692,25 @@ public class SpagoBIKpiInternalEngine implements InternalEngineIFace {
 			}
 			this.confMap.put("model_title", model_title);
 			
-			if (dataParameters.get("kpi_title") != null
-					&& !(((String) dataParameters.get("kpi_title")).equalsIgnoreCase(""))) {
+			if (dataParameters.get("kpi_title") != null) {
 				String fil = (String) dataParameters.get("kpi_title");
 				if (fil!=null) kpi_title = fil;
 			}
 			this.confMap.put("kpi_title", kpi_title);
 			
-			if (dataParameters.get("weight_title") != null
-					&& !(((String) dataParameters.get("weight_title")).equalsIgnoreCase(""))) {
+			if (dataParameters.get("weight_title") != null) {
 				String fil = (String) dataParameters.get("weight_title");
 				if (fil!=null) weight_title = fil;
 			}
 			this.confMap.put("weight_title", weight_title);
 			
-			if (dataParameters.get("bullet_chart_title") != null
-					&& !(((String) dataParameters.get("bullet_chart_title")).equalsIgnoreCase(""))) {
+			if (dataParameters.get("bullet_chart_title") != null) {
 				String fil = (String) dataParameters.get("bullet_chart_title");
 				if (fil!=null) bullet_chart_title = fil;
 			}
 			this.confMap.put("bullet_chart_title", bullet_chart_title);
 			
-			if (dataParameters.get("threshold_image_title") != null
-					&& !(((String) dataParameters.get("threshold_image_title")).equalsIgnoreCase(""))) {
+			if (dataParameters.get("threshold_image_title") != null) {
 				String fil = (String) dataParameters.get("threshold_image_title");
 				if (fil!=null) threshold_image_title = fil;
 			}

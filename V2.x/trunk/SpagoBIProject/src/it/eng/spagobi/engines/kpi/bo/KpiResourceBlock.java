@@ -137,17 +137,25 @@ public class KpiResourceBlock implements Serializable{
 		_htmlStream.append(" <tr class='kpi_first_line_section_odd' >");
 		_htmlStream.append("		<td width='53%'  class='kpi_first_line_td' style='text-align:left;' >"+options.getModel_title()+"</td>\n");
 		_htmlStream.append("		<td width='4%' ><div></div></td>\n");		
-		_htmlStream.append("		<td  width='9%' class='kpi_first_line_td' >"+options.getKpi_title()+"</td>\n");
-		if (options.getDisplay_weight()){ 
+		if(options.getKpi_title()!=null){
+			_htmlStream.append("		<td  width='9%' class='kpi_first_line_td' >"+options.getKpi_title()+"</td>\n");
+		}else{
+			_htmlStream.append("		<td  width='9%' class='kpi_first_line_td' ><div></div></td>\n");
+		}
+		if (options.getDisplay_weight() && options.getWeight_title()!=null){ 
 			_htmlStream.append("		<td width='5%' class='kpi_first_line_td' >"+options.getWeight_title()+"</td>\n");
 		}else{
 			_htmlStream.append("		<td width='5%' class='kpi_first_line_td' ><div></div></td>\n");
 		}
-		if (options.getDisplay_bullet_chart() && options.getDisplay_threshold_image() ){
+		if (options.getDisplay_bullet_chart() && options.getDisplay_threshold_image() && options.getBullet_chart_title()!=null && options.getBullet_chart_title()!=null){
 			_htmlStream.append("		<td width='15%' class='kpi_first_line_td' style='text-align:center;' >"+options.getBullet_chart_title()+"</td>\n");
-			_htmlStream.append("		<td width='7%' class='kpi_first_line_td' >"+options.getThreshold_image_title()+"</td>\n");
-		}else{
+			_htmlStream.append("		<td width='7%' class='kpi_first_line_td' >"+(options.getThreshold_image_title()!=null?options.getThreshold_image_title():"")+"</td>\n");
+		}else if(options.getDisplay_bullet_chart()  && options.getBullet_chart_title()!=null){
 			_htmlStream.append("		<td width='22%' class='kpi_first_line_td' style='text-align:center;' >"+options.getBullet_chart_title()+"</td>\n");
+		}else if(options.getDisplay_threshold_image()  && options.getThreshold_image_title()!=null){
+			_htmlStream.append("		<td width='22%' class='kpi_first_line_td' style='text-align:center;' >"+options.getThreshold_image_title()+"</td>\n");
+		}else{
+			_htmlStream.append("		<td width='22%' class='kpi_first_line_td' style='text-align:center;' ><div></div></td>\n");
 		}
 		_htmlStream.append("		<td width='3%' ><div></div></td>\n");
 		_htmlStream.append("		<td width='2%' ><div></div></td>\n");

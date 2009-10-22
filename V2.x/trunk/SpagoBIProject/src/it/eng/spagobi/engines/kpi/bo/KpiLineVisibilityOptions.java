@@ -11,10 +11,10 @@ public class KpiLineVisibilityOptions {
 	private Boolean show_axis = true;
 	private Boolean weighted_values = true;
 	private String model_title = "MODEL";
-	private String threshold_image_title = "";
-	private String bullet_chart_title = "";
-	private String kpi_title = "";
-	private String weight_title = "";
+	private String threshold_image_title = null;
+	private String bullet_chart_title = null;
+	private String kpi_title = null;
+	private String weight_title = null;
 	
 	
 	public KpiLineVisibilityOptions(Boolean closed_tree,

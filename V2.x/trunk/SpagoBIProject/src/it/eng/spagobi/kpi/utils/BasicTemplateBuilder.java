@@ -845,15 +845,15 @@ public class BasicTemplateBuilder  {
 				weightColHeader.setAttribute("reportElement.y",actualHeight.toString());
 				kthreshColHeader.setAttribute("reportElement.y",actualHeight.toString());
 				
-				if(options.getModel_title()!=null && !options.getModel_title().equals("")){
+				if(options.getModel_title()!=null ){
 					SourceBean textValue=(SourceBean)modelColHeader.getAttribute("text");
 					textValue.setCharacters(options.getModel_title());
 				}
-				if(options.getKpi_title()!=null && !options.getKpi_title().equals("")){
+				if(options.getKpi_title()!=null ){
 				SourceBean textValue1=(SourceBean)kpiColHeader.getAttribute("text");
 				textValue1.setCharacters(options.getKpi_title());
 				}
-				if(options.getWeight_title()!=null && !options.getWeight_title().equals("")){
+				if(options.getWeight_title()!=null ){
 				SourceBean textValue2=(SourceBean)weightColHeader.getAttribute("text");
 				textValue2.setCharacters(options.getWeight_title());
 				}

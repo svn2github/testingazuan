@@ -18,11 +18,11 @@ Sbi.settings.qbe = {
 		}
 
 		, dataMartStructurePanel: {
-			enableTreeContextMenu: false
+		
 		}
 		
 		, selectGridPanel: {
-			enableTbHideNonvisibleBtn: true
+			 enableTbHideNonvisibleBtn: true
 			, enableTbDeleteAllBtn: true
 			, columns : {
 				'entity': {hideable: true, hidden: false, sortable: false}

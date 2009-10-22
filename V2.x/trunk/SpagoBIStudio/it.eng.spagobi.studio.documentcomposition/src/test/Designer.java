@@ -1,16 +1,13 @@
 package test;
 
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.bo.ModelBO;
-
 import java.util.HashMap;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
@@ -23,8 +20,9 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.part.PluginTransfer;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.eclipse.ui.part.EditorPart;
 
 public class Designer {
 
@@ -36,13 +34,15 @@ public class Designer {
 	Composite mainComposite;
 	HashMap<Integer, DocContainer> containers;
 
+	EditorPart editor;
+	
 	public static final String NORMAL="normal";
 	public static final String SELECTION="selection";
 	public static final String RESIZE="resize";
 	public static final String DRAG="drag";
 	public static final int MOUSE_LEFT_KEY=1;
 	public static final int MOUSE_RIGHT_KEY=3;
-
+	
 
 	public void addGroup(Composite mainComposite, int x, int y){
 		//System.out.println("La x: "+Integer.valueOf(x).toString()+" la y: "+Integer.valueOf(y).toString());
@@ -363,6 +363,20 @@ public class Designer {
 	public void setMainComposite(Composite mainComposite) {
 		this.mainComposite = mainComposite;
 	}
+
+
+
+	public EditorPart getEditor() {
+		return editor;
+	}
+
+
+
+	public void setEditor(EditorPart editor) {
+		this.editor = editor;
+	}
+
+
 
 
 

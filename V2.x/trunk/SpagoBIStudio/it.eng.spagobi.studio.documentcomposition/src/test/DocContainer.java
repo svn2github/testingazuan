@@ -1,20 +1,22 @@
 package test;
 
 
+import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
+import it.eng.spagobi.studio.core.log.SpagoBILogger;
+import it.eng.spagobi.studio.core.properties.PropertyPage;
+import it.eng.spagobi.studio.core.util.ParametersMetadata;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
+import it.eng.spagobi.studio.documentcomposition.views.DocumentParameters;
+import it.eng.spagobi.studio.documentcomposition.views.DocumentProperties;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
-import java.util.Vector;
-
-import it.eng.spagobi.studio.core.log.SpagoBILogger;
-import it.eng.spagobi.studio.core.properties.PropertyPage;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.TreeSelection;
@@ -25,8 +27,6 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.DragDetectEvent;
-import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -34,8 +34,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.graphics.Region;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -44,41 +42,47 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 
 
 public class DocContainer {
 
 
-	public static QualifiedName DOCUMENT_ID = new QualifiedName("it.eng.spagobi.sdk.document.id", "Identifier");
-	public static QualifiedName DOCUMENT_LABEL = new QualifiedName("it.eng.spagobi.sdk.document.label", "Label");
-	public static QualifiedName DOCUMENT_NAME = new QualifiedName("it.eng.spagobi.sdk.document.name", "Name");
-	public static QualifiedName DOCUMENT_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.document.description", "Description");
-	public static QualifiedName DOCUMENT_TYPE = new QualifiedName("it.eng.spagobi.sdk.document.type", "Type");
-	public static QualifiedName DOCUMENT_STATE = new QualifiedName("it.eng.spagobi.sdk.document.description", "State");
-
-	public static QualifiedName DATASET_ID = new QualifiedName("it.eng.spagobi.sdk.dataset.id", "Identifier");
-	public static QualifiedName DATASET_LABEL = new QualifiedName("it.eng.spagobi.sdk.dataset.label", "Label");
-	public static QualifiedName DATASET_NAME = new QualifiedName("it.eng.spagobi.sdk.dataset.name", "Name");
-	public static QualifiedName DATASET_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.dataset.description", "Description");
-
-	public static QualifiedName DATA_SOURCE_ID = new QualifiedName("it.eng.spagobi.sdk.datasource.id", "Identifier");
-
-	public static QualifiedName ENGINE_ID = new QualifiedName("it.eng.spagobi.sdk.engine.id", "Identifier");
-	public static QualifiedName ENGINE_LABEL = new QualifiedName("it.eng.spagobi.sdk.engine.label", "Label");
-	public static QualifiedName ENGINE_NAME = new QualifiedName("it.eng.spagobi.sdk.engine.name", "Name");
-	public static QualifiedName ENGINE_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.engine.description", "Description");
+	//	public static QualifiedName DOCUMENT_ID = new QualifiedName("it.eng.spagobi.sdk.document.id", "Identifier");
+	//	public static QualifiedName DOCUMENT_LABEL = new QualifiedName("it.eng.spagobi.sdk.document.label", "Label");
+	//	public static QualifiedName DOCUMENT_NAME = new QualifiedName("it.eng.spagobi.sdk.document.name", "Name");
+	//	public static QualifiedName DOCUMENT_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.document.description", "Description");
+	//	public static QualifiedName DOCUMENT_TYPE = new QualifiedName("it.eng.spagobi.sdk.document.type", "Type");
+	//	public static QualifiedName DOCUMENT_STATE = new QualifiedName("it.eng.spagobi.sdk.document.description", "State");
+	//
+	//	public static QualifiedName DATASET_ID = new QualifiedName("it.eng.spagobi.sdk.dataset.id", "Identifier");
+	//	public static QualifiedName DATASET_LABEL = new QualifiedName("it.eng.spagobi.sdk.dataset.label", "Label");
+	//	public static QualifiedName DATASET_NAME = new QualifiedName("it.eng.spagobi.sdk.dataset.name", "Name");
+	//	public static QualifiedName DATASET_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.dataset.description", "Description");
+	//
+	//	public static QualifiedName DATA_SOURCE_ID = new QualifiedName("it.eng.spagobi.sdk.datasource.id", "Identifier");
+	//
+	//	public static QualifiedName ENGINE_ID = new QualifiedName("it.eng.spagobi.sdk.engine.id", "Identifier");
+	//	public static QualifiedName ENGINE_LABEL = new QualifiedName("it.eng.spagobi.sdk.engine.label", "Label");
+	//	public static QualifiedName ENGINE_NAME = new QualifiedName("it.eng.spagobi.sdk.engine.name", "Name");
+	//	public static QualifiedName ENGINE_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.engine.description", "Description");
+	//	public static QualifiedName DOCUMENT_PARAMETERS_XML = new QualifiedName("it.eng.spagobi.sdk.document.parametersxml", "Parameters");
 
 
 
 	final Integer id;
 	Designer designer;
 	Group container;
-	boolean filled=false;
-	//	int xPos;
-	//	int yPos;
-	//	int height;
-	//	int width;
+	MetadataDocument metadataDocument;	
+
 	String title="";
 
 	public static final String TYPE_REPORT="REPORT";
@@ -118,6 +122,7 @@ public class DocContainer {
 		id=Integer.valueOf(designer.getCounter());
 
 		container=new Group(mainComposite, SWT.NULL);
+
 		title="NUMERO "+(new Integer(designer.getCounter()).toString());
 		container.setText(title);
 		GridLayout layout=new GridLayout();
@@ -160,6 +165,10 @@ public class DocContainer {
 			public void handleEvent(Event event) {
 				;				switch (event.type) {
 				case SWT.MouseDown:
+					// Reload the DocumentPropertiesView
+					if(metadataDocument!=null)
+						reloadDocumentPropertiesView(id.toString());
+
 					/**  IF in resizing state mouse button on Container causes end resizing**/	
 					calculateTemplateStyle();
 					if(designer.getState().equals(Designer.RESIZE)){
@@ -188,6 +197,8 @@ public class DocContainer {
 						designer.setState(Designer.DRAG);
 						composite.setBackground(new Color(composite.getDisplay(),new RGB(0,255,0)));
 						designer.setCurrentSelection(id);
+						// ---- modify selection view---
+
 					}
 					/**  IF in selection state mouse button on Container causes restart DRAG or another selection!**/					
 					else if(designer.getState().equals(Designer.SELECTION)){
@@ -497,8 +508,8 @@ public class DocContainer {
 
 		try{
 			int i=0;
-			String id=file.getPersistentProperty(DOCUMENT_ID);
-			if(filled==true){
+			String id=file.getPersistentProperty(PropertyPage.DOCUMENT_ID);
+			if(metadataDocument!=null){
 				MessageDialog.openWarning(container.getShell(), 
 						"Warning", "Container has already Document in!");
 				return false;
@@ -511,9 +522,15 @@ public class DocContainer {
 			else{			
 				i++;
 
-				String documentName=file.getPersistentProperty(DOCUMENT_NAME);
-				String documentType=file.getPersistentProperty(DOCUMENT_TYPE);
-				String documentEngineId=file.getPersistentProperty(ENGINE_ID);
+				String documentName=file.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
+				String documentType=file.getPersistentProperty(PropertyPage.DOCUMENT_TYPE);
+				String documentEngineId=file.getPersistentProperty(PropertyPage.ENGINE_ID);
+				String documentLabel=file.getPersistentProperty(PropertyPage.DOCUMENT_LABEL);
+				String documentState=file.getPersistentProperty(PropertyPage.DOCUMENT_STATE);
+				String documentDescription=file.getPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION);
+				String documentDatasetId=file.getPersistentProperty(PropertyPage.DATASET_ID);
+				String documentDatasourceId=file.getPersistentProperty(PropertyPage.DATA_SOURCE_ID);
+				String xmlParameters=file.getPersistentProperty(PropertyPage.DOCUMENT_PARAMETERS_XML);
 
 				//			Label idLabelName=new Label(container,SWT.NULL);
 				//			idLabelName.setText("id: ");
@@ -575,11 +592,40 @@ public class DocContainer {
 					}
 				}
 
+				container.setText(file.getName());
 				Label nameLabelName=new Label(container,SWT.NULL);
 				nameLabelName.setText("Name: ");			
 				Label nameLabelValue=new Label(container,SWT.NULL);
 				nameLabelValue.setText(documentName != null ? documentName : "" );
 
+				metadataDocument=new MetadataDocument();
+				metadataDocument.setId(Integer.valueOf(id));
+				metadataDocument.setLabel(documentLabel);
+				metadataDocument.setDescription(documentDescription);
+				metadataDocument.setType(documentType);
+				metadataDocument.setName(documentName);
+				metadataDocument.setEngine(documentEngineId);
+				metadataDocument.setDataSet(documentDatasetId);
+				metadataDocument.setDataSource(documentDatasourceId);
+				metadataDocument.setState(documentState);
+
+
+				if(xmlParameters!=null && !xmlParameters.equalsIgnoreCase(""))
+				{
+					XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("_", "_");
+					XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
+					xstream.alias("PARAMETERSMETADATA", ParametersMetadata.class);
+					xstream.alias("PARAMETER", SDKDocumentParameter.class);
+					xstream.useAttributeFor(SDKDocumentParameter.class, "id");
+					xstream.useAttributeFor(SDKDocumentParameter.class, "label");
+					xstream.useAttributeFor(SDKDocumentParameter.class, "type");
+					xstream.useAttributeFor(SDKDocumentParameter.class, "urlName");
+					xstream.omitField(SDKDocumentParameter.class, "values");		
+					xstream.omitField(SDKDocumentParameter.class, "constraints");
+					xstream.omitField(SDKDocumentParameter.class, "__hashCodeCalc");
+					ParametersMetadata  parametersMetaDataObject= (ParametersMetadata)xstream.fromXML(xmlParameters);
+					metadataDocument.buildMetadataParameters(parametersMetaDataObject);
+				}
 			}
 		}
 		catch (Exception e) {	
@@ -592,7 +638,7 @@ public class DocContainer {
 			SpagoBILogger.errorLog("Exception while retrieving metadata",e);
 			return false;
 		}
-		filled=true;
+
 		return true;
 	}
 
@@ -604,7 +650,7 @@ public class DocContainer {
 	 */
 
 	public static InputStream getInputStreamFromResource(String resourcePath) throws IOException {
-		Bundle b = Platform.getBundle(it.eng.spagobi.studio.documentcomposition.Activator.PLUGIN_ID);
+		Bundle b = org.eclipse.core.runtime.Platform.getBundle(it.eng.spagobi.studio.documentcomposition.Activator.PLUGIN_ID);
 		URL res = b.getResource(resourcePath);
 		InputStream is = res.openStream();
 		return is;
@@ -696,6 +742,37 @@ public class DocContainer {
 		else return false;
 	}
 
+
+	/** Reload the view with document property and with document parameters
+	 * 
+	 * @param id
+	 */
+
+	public void reloadDocumentPropertiesView(String id){
+		IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
+		try{
+			// Document properties
+			IWorkbenchPage aa=a.getActivePage();
+			IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentProperties");
+			Object p=w.getPart(false);
+			DocumentProperties view=(DocumentProperties)p;
+			view.reloadProperties(metadataDocument);
+
+			// Document parameters
+			IViewReference wPars=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentParameters");
+			Object p2=wPars.getPart(false);
+			DocumentParameters docParameters=(DocumentParameters)p2;
+			docParameters.reloadProperties(metadataDocument.getMetadataParameters());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		int i=0;
+
+	}
+
+
 	//	protected boolean doesIntersect (int newX, int newY, int newWidth, int newHeight){
 	//		boolean doesIntersect=false;
 	//		Vector<Point> points=new Vector<Point>();
@@ -747,14 +824,6 @@ public class DocContainer {
 	}
 
 
-	public boolean isFilled() {
-		return filled;
-	}
-
-
-	public void setFilled(boolean filled) {
-		this.filled = filled;
-	}
 
 
 

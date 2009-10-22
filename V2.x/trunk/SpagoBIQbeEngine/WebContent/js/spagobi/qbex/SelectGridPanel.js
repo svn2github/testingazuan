@@ -54,7 +54,6 @@ Sbi.qbe.SelectGridPanel = function(config) {
 		, enableTbAddCalculatedBtn: false
 		, enableTbHideNonvisibleBtn: true
 		, enableTbDeleteAllBtn: true
-		, enableTbAddCalculatedBtn: true
 	};
 	
 	if (Sbi.settings && Sbi.settings.qbe && Sbi.settings.qbe.selectGridPanel) {

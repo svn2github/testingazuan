@@ -17,7 +17,6 @@
       <viewerContribution
             id="it.eng.spagobi.studio.documentcomposition.popupmenus.ResourceNavigatorContribution"
             targetID="it.eng.spagobi.studio.core.views.ResourceNavigator">
-
          <action
                class="it.eng.spagobi.studio.documentcomposition.actions.NewDocumentCompositionAction"
                icon="icons/objecticon_DOCCOMP.png"
@@ -29,20 +28,20 @@
       </viewerContribution>
    </extension>
    <extension point="org.eclipse.ui.views">
-        <view id="it.eng.spagobi.studio.documentcomposition.views.properties"
-             name="Properties"
-          class="it.eng.spagobi.studio.documentcomposition.views.PropertiesView"
-          icon="icons/objecticon_DOCCOMP.png"/>
+		<view
+	            class="it.eng.spagobi.studio.documentcomposition.views.DocumentProperties"
+	            icon="icons/sample.gif"
+	            id="it.eng.spagobi.studio.documentcomposition.views.DocumentProperties"
+	            name="Document Properties">
+	</view>
 	</extension>
-	<extension point="org.eclipse.ui.views">
-    	 <category 
-           id="org.eclipse.ui.article"
-           name="Article">
-        </category>
-        <view id="org.eclipse.ui.articles.views.wordview"
-                name="Word View"
-                icon="icons\view.gif"
-                class="it.eng.spagobi.studio.documentcomposition.views.WordView"/>
+   <extension point="org.eclipse.ui.views">
+		<view
+	            class="it.eng.spagobi.studio.documentcomposition.views.DocumentParameters"
+	            icon="icons/sample.gif"
+	            id="it.eng.spagobi.studio.documentcomposition.views.DocumentParameters"
+	            name="DocumentParameters">
+	</view>
 	</extension>
 	
 	<!-- tabs di navigazione -->

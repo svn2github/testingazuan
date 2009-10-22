@@ -74,13 +74,9 @@ Sbi.execution.ExecutionPanel = function(config, doc) {
 	this.activeDocument.documentExecutionPage.on('crossnavigation', this.loadCrossNavigationTargetDocument , this);
 	this.activeDocument.documentExecutionPage.on('collapse3', function() {
 		sendMessage({}, 'collapse2'); 
-		/*
-		try{
-			sendMessage({}, 'collapse2'); 
-		} catch(e){
-			alert(e+e.description);
-		}
-		*/	
+	}, this);
+	this.activeDocument.parametersSelectionPage.on('collapse3', function() {
+		sendMessage({}, 'collapse2'); 
 	}, this);
 	
 	/*

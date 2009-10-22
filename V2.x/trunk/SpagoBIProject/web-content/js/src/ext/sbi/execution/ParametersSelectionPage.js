@@ -75,7 +75,7 @@ Sbi.execution.ParametersSelectionPage = function(config, doc) {
 		, baseParams: params
 	});
 	 
-    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'synchronize', 'synchronizeexception', 'movenextrequest', 'moveprevrequest');	
+    this.addEvents('beforetoolbarinit', 'beforesynchronize', 'synchronize', 'synchronizeexception', 'movenextrequest', 'moveprevrequest', 'collapse3');	
 	
     this.shortcutsHiddenPreference = config.shortcutsHidden !== undefined ? config.shortcutsHidden : false;
     
@@ -231,9 +231,22 @@ Ext.extend(Sbi.execution.ParametersSelectionPage, Ext.Panel, {
 			    , scope: this
 			    , handler : function() {this.fireEvent('moveprevrequest');}
 			}));
+			
+			this.toolbar.addSeparator();
 		}
 		
-		this.toolbar.addSeparator();
+		if(Sbi.user.ismodeweb){
+			this.toolbar.addButton(new Ext.Toolbar.Button({
+				iconCls: 'icon-expand' 
+				, tooltip: LN('sbi.execution.executionpage.toolbar.expand')
+			    , scope: this
+			    , handler : function() {
+					this.fireEvent('collapse3');
+				}			
+			}));
+			
+			this.toolbar.addSeparator();
+		}
 		
 		this.toolbar.addButton(new Ext.Toolbar.Button({
 			iconCls: 'icon-clear'

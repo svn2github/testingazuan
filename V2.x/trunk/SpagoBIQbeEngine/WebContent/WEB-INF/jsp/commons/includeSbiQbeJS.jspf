@@ -10,9 +10,9 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/locale/<%=locale.getLanguage()%>.js'/></script>
 
 <!-- START-DEBUG -->
-<script type="text/javascript" src='../js/spagobi/qbe/parser.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbe/filterWizard.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbe/buttonColumn.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/filterwizard/parser.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/filterwizard/filterWizard.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/filterwizard/buttonColumn.js'/></script>
 		
 <script type="text/javascript" src='../js/spagobi/commons/Settings.js'/></script>	
 <script type="text/javascript" src='../js/spagobi/overrides/overrides.js'/></script>
@@ -23,26 +23,26 @@ create-debug in ant-files/SpagoBI-2.x-source/SpagoBIProject/ant/build.xml must b
 <script type="text/javascript" src='../js/spagobi/locale/LocaleUtils.js'/></script>
 
 		
-<script type="text/javascript" src='../js/spagobi/qbex/DataStorePanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/DataMartStructurePanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/QueryCataloguePanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/SelectGridDropTarget.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/SelectGridPanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/OperandChooserWindow.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/FilterGridDropTarget.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/FilterGridPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/DataStorePanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/DataMartStructurePanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/QueryCataloguePanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/SelectGridDropTarget.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/SelectGridPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/OperandChooserWindow.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/FilterGridDropTarget.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/FilterGridPanel.js'/></script>
 		
-<script type="text/javascript" src='../js/spagobi/qbex/HavingGridPanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/HavingGridDropTarget.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/SaveWindow.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/QueryBuilderPanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/QbePanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/FreeConditionsWindow.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/CalculatedFieldWizard.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/HavingGridPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/HavingGridDropTarget.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/SaveWindow.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/QueryBuilderPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/QbePanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/FreeConditionsWindow.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/CalculatedFieldWizard.js'/></script>
 		
-<script type="text/javascript" src='../js/spagobi/qbex/DocumentParametersGridPanel.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/DocumentParametersStore.js'/></script>
-<script type="text/javascript" src='../js/spagobi/qbex/HavingGridPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/DocumentParametersGridPanel.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/DocumentParametersStore.js'/></script>
+<script type="text/javascript" src='../js/spagobi/qbe/HavingGridPanel.js'/></script>
 <!-- END-DEBUG -->
 
 <!-- START-PRODUCTION

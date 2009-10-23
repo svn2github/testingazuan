@@ -200,14 +200,18 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				
 				destinationDocNameCombo.elementAt(destinCounter).addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent event) {
+						Combo selectedCombo = (Combo) event.widget;
+						//ricavo dal vettore di combo la sua posizione
+						int destinComboToRedraw = destinationDocNameCombo.indexOf(selectedCombo);
+						System.out.println("position of the combo!!!"+destinComboToRedraw);
 
 						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
 						name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
 						
-						destinationInputParam.elementAt(destinCounter).removeAll();
+						destinationInputParam.elementAt(destinComboToRedraw).removeAll();
 						
-						fillDestinationParamCombo(name);
-						destinationInputParam.elementAt(destinCounter).redraw();
+						fillDestinationParamCombo(name, destinComboToRedraw);
+						destinationInputParam.elementAt(destinComboToRedraw).redraw();
 						
 					}
 				});	
@@ -216,17 +220,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 			}
 		});
-		/*
-		destinationDocNameCombo.elementAt(0).addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent event) {
 
-				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
-				name = destinationDocNameCombo.elementAt(0).getItem(sel);
-				
-				//removeMasterDestinationCombo();
-				
-			}
-		});	*/
 		destinationDocNameCombo.elementAt(0).addSelectionListener(new SelectionListener() {
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -235,7 +229,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				name = destinationDocNameCombo.elementAt(0).getItem(sel);
 				System.out.println("widgetDefaultSelected");
 				destinationInputParam.elementAt(0).removeAll();
-				fillDestinationParamCombo(name);
+				fillDestinationParamCombo(name, 0);
 				destinationInputParam.elementAt(0).redraw();
 				
 			}
@@ -246,7 +240,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				System.out.println("widgetSelected && name ::"+name);
 				
 				
-				fillDestinationParamCombo(name);
+				fillDestinationParamCombo(name, 0);
 				destinationInputParam.elementAt(0).redraw();
 				
 			}
@@ -318,10 +312,10 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		}
 		destinationDocNameCombo.elementAt(destinCounter).redraw();
 	}
-	private void fillDestinationParamCombo(String destDoc){
+	private void fillDestinationParamCombo(String destDoc, int destinComboToRedraw){
 
-		if(destinCounter == 0){
-			destinationInputParam.elementAt(destinCounter).removeAll();
+		if(destinComboToRedraw == 0){
+			destinationInputParam.elementAt(destinComboToRedraw).removeAll();
 		}
 		if(metaDoc != null){
 			Vector docs = metaDoc.getMetadataDocuments();
@@ -334,8 +328,8 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 						for (int j =0; j<params.size(); j++){
 							MetadataParameter param = (MetadataParameter)params.elementAt(j);
 							String label = param.getLabel();
-							System.out.println("*******"+destinCounter);
-							destinationInputParam.elementAt(destinCounter).add(label);
+							System.out.println("*******"+destinComboToRedraw);
+							destinationInputParam.elementAt(destinComboToRedraw).add(label);
 						}
 						
 					}

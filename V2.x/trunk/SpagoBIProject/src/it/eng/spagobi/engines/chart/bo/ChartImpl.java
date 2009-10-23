@@ -914,12 +914,13 @@ public class ChartImpl implements IChart {
 			String tmpTitle=new String(name);
 			if (tmpTitle.indexOf("$F{") >= 0){
 				String parName = tmpTitle.substring(tmpTitle.indexOf("$F{")+3, tmpTitle.indexOf("}"));
-
+				logger.debug("parName: " + parName);
 				for (Iterator iterator2 = atts.iterator(); iterator2.hasNext();) {
 					SourceBeanAttribute object = (SourceBeanAttribute) iterator2.next();
 
 					String nameP=new String(object.getKey());
 					String value=new String((String)object.getValue());
+					logger.debug("nameP: " + nameP + " - value: "+ value);
 					if(nameP.equalsIgnoreCase(parName))
 					{
 						int pos = tmpTitle.indexOf("$F{"+parName+"}") + (parName.length()+4);
@@ -931,7 +932,7 @@ public class ChartImpl implements IChart {
 			}
 		}
 		catch (Exception e) {
-			logger.error("Error in parameters Title");
+			logger.error("Error in parameters Title:", e);
 		}
 
 	}

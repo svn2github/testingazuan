@@ -162,21 +162,11 @@ var themesViewName;
 		}
 	}
 	
-	ConfigSingleton serverConfig = ConfigSingleton.getInstance();
-	SourceBean validateSB = (SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.ACTIVE");
-	String active = (String) validateSB.getCharacters();
-	if (active == null || active.equalsIgnoreCase("false")) { %>
+ %>
 	<script type="text/javascript">
 	activesso = false;
 	logoutUrl =  Sbi.config.contextName+"/servlet/AdapterHTTP?ACTION_NAME=LOGOUT_ACTION&LIGHT_NAVIGATOR_DISABLED=TRUE";
 	</script>
-
-<% } else { %>
-	<script type="text/javascript">
-	activesso = true;
-	logoutUrl = "<%= ((SourceBean) serverConfig.getAttribute("SPAGOBI_SSO.SECURITY_LOGOUT_URL")).getCharacters() %>";
-	</script>
-<% }%>
 
 <%
 // BANNER AND FOOTER CONFIGURATION

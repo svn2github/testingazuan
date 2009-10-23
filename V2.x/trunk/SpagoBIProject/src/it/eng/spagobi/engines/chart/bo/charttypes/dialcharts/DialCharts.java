@@ -271,13 +271,6 @@ public class DialCharts extends ChartImpl {
 		logger.debug("IN");
 		String res=DataSetAccessFunctions.getDataSetResultFromId(profile, getData(),parametersObject);
 		if (res!=null){
-			
-			if (name.indexOf("$F{") >= 0){
-				List atts=new Vector();
-				atts.add(res);
-				setTitleParameter(atts);
-			}
-			
 			logger.debug("Dataset result:"+res);
 			SourceBean sbRows=SourceBean.fromXMLString(res);
 			SourceBean sbRow=(SourceBean)sbRows.getAttribute("ROW");
@@ -286,6 +279,14 @@ public class DialCharts extends ChartImpl {
 				result=(new Double(lower)).toString();
 			}
 			else{
+				List atts=sbRow.getContainedAttributes();
+				if (name.indexOf("$F{") >= 0){
+					logger.debug("name: " + name);
+					setTitleParameter(atts);
+				}
+				if (getSubName()!= null && getSubName().indexOf("$F") >= 0){
+					setSubTitleParameter(atts);
+				}
 				result=(String)sbRow.getAttribute("value");
 			}
 			DefaultValueDataset dataset = new DefaultValueDataset(Double.valueOf(result));
@@ -293,7 +294,8 @@ public class DialCharts extends ChartImpl {
 
 			DatasetMap datasets=new DatasetMap();
 			datasets.addDataset("1",dataset);
-			return datasets;		}
+			return datasets;		
+		}
 		logger.error("dataset is null!!!!!!!!!");
 		return null;
 	}

@@ -87,8 +87,11 @@ public class ProfileFilter implements Filter {
 						logger.debug("User identifier not found.");
 					}
 					logger.debug("User id = " + userId);
-					profile = GeneralUtilities.createNewUserProfile(userId);
-					permanentSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+					if (userId!=null) {
+						profile = GeneralUtilities.createNewUserProfile(userId);
+						permanentSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+					}
+					
 				} else {
 					// in case the profile is different, creates a new one
 					// and overwrites the existing

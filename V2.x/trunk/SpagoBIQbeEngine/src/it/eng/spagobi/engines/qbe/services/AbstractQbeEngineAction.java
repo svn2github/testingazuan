@@ -70,27 +70,5 @@ public abstract class AbstractQbeEngineAction extends AbstractEngineAction {
     		return null;
     	}
     	return qbeEngineInstance.getActiveQuery();
-	}
-	
-	
-	
-	public void setStandaloneModeActive(boolean standaloneMode) {
-		QbeEngineInstance qbeEngineInstance  = null;
-    	qbeEngineInstance = getEngineInstance();
-    	if(qbeEngineInstance == null) {
-    		return;
-    	}
-    	qbeEngineInstance.setStandaloneMode(standaloneMode);
-	}
-	
-	public boolean isStandaloneModality() {
-		QbeEngineInstance qbeEngineInstance  = null;
-    	qbeEngineInstance = getEngineInstance();
-    	if(qbeEngineInstance == null) {
-    		return false;
-    	}
-    	return qbeEngineInstance.isStandaloneMode();
-	}
-	
-	
+	}	
 }

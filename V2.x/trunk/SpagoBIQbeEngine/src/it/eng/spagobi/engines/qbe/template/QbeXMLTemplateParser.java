@@ -18,13 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  **/
-package it.eng.spagobi.engines.qbe;
+package it.eng.spagobi.engines.qbe.template;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -33,33 +30,13 @@ import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.commons.utilities.StringUtilities;
 import it.eng.spagobi.utilities.assertion.Assert;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class QbeTemplate.
  * 
  * @author Andrea Gioia
  */
-public class QbeTemplate {
-	
-	
-	private SourceBean template;	
-	private boolean composite;	
-	private Map dblinkMap;	
-	private List datamartNames;
-	private Map functionalities;		
-	private DataMartModelAccessModality datamartModelAccessModality;
-	private String dialect;
-
-	/** Logger component. */
-    public static transient Logger logger = Logger.getLogger(QbeTemplate.class);
-	
-	
-	public QbeTemplate(SourceBean template) {
-		Assert.assertNotNull(template, "Template parameter cannot be null");
-		setTemplate(template);
-		parse();
-	}
-	
+public class QbeXMLTemplateParser implements IQbeTemplateParser{
 	
 	public static String TAG_ROOT_COMPOSITE = "COMPOSITE-QBE";
 	public static String TAG_ROOT_NORMAL = "QBE";
@@ -70,7 +47,20 @@ public class QbeTemplate {
 	public static String TAG_MODALITY_TABLE = "TABLE";
 	public static String TAG_FUNCTIONALITIES = "FUNCTIONALITIES";
 	
-	public void parse() {
+
+	/** Logger component. */
+    public static transient Logger logger = Logger.getLogger(QbeXMLTemplateParser.class);
+	
+    public QbeTemplate parse(Object template) {
+    	Assert.assertNotNull(template, "Input parameter [template] cannot be null");
+    	Assert.assertTrue(template instanceof SourceBean, "Input parameter [template] cannot be of type [" + template.getClass().getName() + "]");
+    	return parse((SourceBean)template);
+    }
+    
+	private QbeTemplate parse(SourceBean template) {
+		
+		QbeTemplate qbeTemplate = null;
+		
 		String templateName;
 		SourceBean datamartSB;
 		String dmName;
@@ -80,6 +70,9 @@ public class QbeTemplate {
 		SourceBean functionalitiesSB;
 		
 		try {
+			
+			qbeTemplate = new QbeTemplate();
+			
 			templateName = template.getName();
 			logger.debug("Parsing template [" + templateName + "] ...");
 			Assert.assertNotNull(templateName, "Root tag cannot be not be null");
@@ -87,10 +80,7 @@ public class QbeTemplate {
 			
 			if(!TAG_ROOT_COMPOSITE.equalsIgnoreCase(templateName)
 					&& !TAG_ROOT_NORMAL.equalsIgnoreCase(templateName)){
-				/*
-				throw new QbeTemplateParseException("Malformed template structure: template root tag cannot be equals to [" + templateName +"]. " +
-						"It must be equal to [" + TAG_ROOT_NORMAL + "] or [" + TAG_ROOT_COMPOSITE + "]");
-				*/
+				
 				QbeTemplateParseException e = new QbeTemplateParseException("Malformed template structure");
 				e.setDescription("template root tag cannot be equals to [" + templateName +"]. " +
 						"It must be equal to [" + TAG_ROOT_NORMAL + "] or [" + TAG_ROOT_COMPOSITE + "]");
@@ -98,14 +88,14 @@ public class QbeTemplate {
 				throw e;
 			}
 			
-			setComposite( TAG_ROOT_COMPOSITE.equalsIgnoreCase(templateName) );
+			boolean isComposite;
+			isComposite = TAG_ROOT_COMPOSITE.equalsIgnoreCase(templateName);
+			qbeTemplate.setComposite( isComposite );
 			
-			datamartNames = new ArrayList();
-			dblinkMap = new HashMap();
 			modalities  = new ArrayList();
 			dmName = null;
 			
-			if(isComposite()) {
+			if(qbeTemplate.isComposite()) {
 				List qbeList;
 				SourceBean qbeSB;
 				String dblink;
@@ -122,10 +112,11 @@ public class QbeTemplate {
 						dmName = (String)datamartSB.getAttribute(PROP_DATAMART_NAME);
 						Assert.assertTrue(!StringUtilities.isEmpty(dmName), "Attribute [" + PROP_DATAMART_NAME +"] in tag [" + TAG_DATAMART + "] must be properly defined");
 						
-						datamartNames.add(dmName);					
+						qbeTemplate.addDatamartName( dmName );
+										
 						dblink = (String)datamartSB.getAttribute(PROP_DATAMART_DBLINK);
 						if(dblink != null) {
-							dblinkMap.put(dmName, dblink);
+							qbeTemplate.setDbLink( dmName, dblink );
 						}
 					} else {
 						Assert.assertUnreachable("Missing compolsury tag [" + TAG_DATAMART + "]");
@@ -148,7 +139,7 @@ public class QbeTemplate {
 					dmName = (String)datamartSB.getAttribute(PROP_DATAMART_NAME);
 					Assert.assertTrue(!StringUtilities.isEmpty(dmName), "Attribute [" + PROP_DATAMART_NAME +"] in tag [" + TAG_DATAMART + "] must be properly defined");
 					
-					datamartNames.add(dmName);
+					qbeTemplate.addDatamartName( dmName );
 				} else {
 					Assert.assertUnreachable("Missing compolsury tag [" + TAG_DATAMART + "]");
 				}
@@ -175,189 +166,18 @@ public class QbeTemplate {
 			}
 					
 			if(compositeModalitySB != null && compositeModalitySB.getAttribute(TAG_MODALITY_TABLE) != null) { 
-				datamartModelAccessModality = new DataMartModelAccessModality(compositeModalitySB);
+				DataMartModelAccessModality datamartModelAccessModality = new DataMartModelAccessModality(compositeModalitySB);
+				qbeTemplate.setDatamartModelAccessModality(datamartModelAccessModality);
 			}
 		
-			functionalitiesSB = (SourceBean)template.getAttribute(TAG_FUNCTIONALITIES);
-			parseFunctionalities(functionalitiesSB);
 			
 			logger.debug("Templete parsed succesfully");
 		} catch(Throwable t) {
 			throw new QbeTemplateParseException("Impossible to parse tempate [" + template.toString()+ "]", t);
 		} finally {
 			logger.debug("OUT");
-		}		
-	}
-	
-	/**
-	 * Parses the functionalities.
-	 * 
-	 * @param functionalitiesSB the functionalities sb
-	 */
-	private void parseFunctionalities(SourceBean functionalitiesSB) {
-		functionalities = new HashMap();
-		if(functionalitiesSB == null) {
-			return;
-		}
+		}	
 		
-		List list = functionalitiesSB.getAttributeAsList("FUNCTIONALITY");
-		if(list == null) {
-			return;
-		}
-		for(int i = 0; i < list.size(); i++) {
-			SourceBean functionalitySB = (SourceBean)list.get(i);
-			String functionalityName = (String)functionalitySB.getAttribute("name");
-			Properties props = new Properties();
-			List parameters = functionalitySB.getAttributeAsList("PARAMETER");
-			for(int j = 0; j < parameters.size(); j++) {
-				SourceBean parameterSB = (SourceBean)parameters.get(j);
-				String parameterName = (String)parameterSB.getAttribute("name");
-				String parameterValue = (String)parameterSB.getAttribute("value");
-				props.put(parameterName, parameterValue);
-			}
-			addFunctianalityProperties(functionalityName, props);
-		}
-	}
-	
-	/**
-	 * Adds the functianality properties.
-	 * 
-	 * @param functionalityName the functionality name
-	 * @param props the props
-	 */
-	private void addFunctianalityProperties(String functionalityName, Properties props) {
-		Properties p = (Properties)functionalities.get(functionalityName);
-		if(p == null) {
-			p = new Properties();
-		}
-		p.putAll(props);
-		functionalities.put(functionalityName, p);
-	}
-
-	/**
-	 * Gets the template.
-	 * 
-	 * @return the template
-	 */
-	private SourceBean getTemplate() {
-		return template;
-	}
-
-	/**
-	 * Sets the template.
-	 * 
-	 * @param template the new template
-	 */
-	private void setTemplate(SourceBean template) {
-		this.template = template;
-	}
-
-	/**
-	 * Checks if is composite.
-	 * 
-	 * @return true, if is composite
-	 */
-	private boolean isComposite() {
-		return composite;
-	}
-
-	/**
-	 * Sets the composite.
-	 * 
-	 * @param composite the new composite
-	 */
-	private void setComposite(boolean composite) {
-		this.composite = composite;
-	}
-
-	/**
-	 * Gets the functionalities.
-	 * 
-	 * @return the functionalities
-	 */
-	public Map getFunctionalities() {
-		return functionalities;
-	}
-
-	/**
-	 * Gets the dblink map.
-	 * 
-	 * @return the dblink map
-	 */
-	public Map getDblinkMap() {
-		return dblinkMap;
-	}
-
-	/**
-	 * Sets the dblink map.
-	 * 
-	 * @param dblinkMap the new dblink map
-	 */
-	public void setDblinkMap(Map dblinkMap) {
-		this.dblinkMap = dblinkMap;
-	}
-
-	/**
-	 * Sets the functionalities.
-	 * 
-	 * @param functionalities the new functionalities
-	 */
-	public void setFunctionalities(Map functionalities) {
-		this.functionalities = functionalities;
-	}
-
-	/**
-	 * Gets the datamart model access modality.
-	 * 
-	 * @return the datamart model access modality
-	 */
-	public DataMartModelAccessModality getDatamartModelAccessModality() {
-		return datamartModelAccessModality;
-	}
-
-	/**
-	 * Sets the datamart model access modality.
-	 * 
-	 * @param datamartModelAccessModality the new datamart model access modality
-	 */
-	public void setDatamartModelAccessModality(
-			DataMartModelAccessModality datamartModelAccessModality) {
-		this.datamartModelAccessModality = datamartModelAccessModality;
-	}
-
-	/**
-	 * Gets the dialect.
-	 * 
-	 * @return the dialect
-	 */
-	public String getDialect() {
-		return dialect;
-	}
-
-	/**
-	 * Sets the dialect.
-	 * 
-	 * @param dialect the new dialect
-	 */
-	public void setDialect(String dialect) {
-		this.dialect = dialect;
-	}
-
-	/**
-	 * Gets the datamart names.
-	 * 
-	 * @return the datamart names
-	 */
-	public List getDatamartNames() {
-		return datamartNames;
-	}
-
-	/**
-	 * Sets the datamart names.
-	 * 
-	 * @param datamartNames the new datamart names
-	 */
-	public void setDatamartNames(List datamartNames) {
-		this.datamartNames = datamartNames;
+		return qbeTemplate;
 	}
 }

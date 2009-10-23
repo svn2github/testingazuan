@@ -3,8 +3,15 @@
 <ACTIONS>
 	
 	<!-- QBE_ENGINE Initializations -->
-	<ACTION name="SPAGO_BI_START_ACTION" 
+	<ACTION name="QBE_ENGINE_START_ACTION" 
 			class="it.eng.spagobi.engines.qbe.services.initializers.QbeEngineStartAction" 
+			scope="REQUEST">
+		<CONFIG></CONFIG>
+	</ACTION>
+	
+	<!-- FORM_ENGINE Initializations -->
+	<ACTION name="FORM_ENGINE_START_ACTION" 
+			class="it.eng.spagobi.engines.qbe.services.initializers.FormEngineStartAction" 
 			scope="REQUEST">
 		<CONFIG></CONFIG>
 	</ACTION>

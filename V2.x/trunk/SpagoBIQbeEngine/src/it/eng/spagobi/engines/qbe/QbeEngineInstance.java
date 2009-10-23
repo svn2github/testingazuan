@@ -31,12 +31,14 @@ import it.eng.qbe.datasource.IDataSource;
 import it.eng.qbe.model.DataMartModel;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.query.Query;
-import it.eng.spago.base.SourceBean;
 import it.eng.spagobi.engines.qbe.datasource.QbeDataSourceManager;
+import it.eng.spagobi.engines.qbe.template.QbeTemplate;
+import it.eng.spagobi.engines.qbe.template.QbeTemplateParser;
 import it.eng.spagobi.services.datasource.bo.SpagoBiDataSource;
 import it.eng.spagobi.utilities.engines.AbstractEngineInstance;
 import it.eng.spagobi.utilities.engines.EngineConstants;
 import it.eng.spagobi.utilities.engines.IEngineAnalysisState;
+import it.eng.spagobi.utilities.exceptions.SpagoBIRuntimeException;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -44,30 +46,20 @@ import it.eng.spagobi.utilities.engines.IEngineAnalysisState;
  */
 public class QbeEngineInstance extends AbstractEngineInstance {
 	
-	Map functionalities;	
-	boolean standaloneMode;	
-	DataMartModel datamartModel;	
-	
-	
+	DataMartModel datamartModel;		
 	QueryCatalogue queryCatalogue;
-	
-
 	String activeQueryId;
-	
-	//Query query;	
-	
-	
-	
 
-	// executable version of the query. cached here for performance reasons (i.e. avoid query recompilation over resultset paging)
+	// executable version of the query. cached here for performance reasons (i.e. avoid query re-compilation 
+	// over result-set paging)
 	IStatement statment;
 
 	/** Logger component. */
     public static transient Logger logger = Logger.getLogger(QbeEngineInstance.class);
 	
 
-	protected QbeEngineInstance(SourceBean template, Map env) throws QbeEngineException {
-		this( new QbeTemplate(template), env );
+	protected QbeEngineInstance(Object template, Map env) throws QbeEngineException {
+		this( QbeTemplateParser.getInstance().parse(template), env );
 	}
 	
 	protected QbeEngineInstance(QbeTemplate template, Map env) throws QbeEngineException {
@@ -75,8 +67,6 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		
 		logger.debug("IN");
 		
-		functionalities = template.getFunctionalities();
-		standaloneMode = false;		
 		queryCatalogue = new QueryCatalogue();
 		queryCatalogue.addQuery(new Query());
 		
@@ -93,7 +83,7 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		connection.setUrl( ds.getUrl() );
 		connection.setUsername( ds.getUser() );			
 		
-		IDataSource dataSource = QbeDataSourceManager.getInstance().getDataSource(template.getDatamartNames(), template.getDblinkMap(),  connection);
+		IDataSource dataSource = QbeDataSourceManager.getInstance().getDataSource(template.getDatamartNames(), template.getDbLinkMap(),  connection);
 				
 		datamartModel = new DataMartModel(dataSource);
 		datamartModel.setDataMartProperties( env ); 
@@ -105,6 +95,26 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		datamartModel.setDescription(datamartModel.getDataSource().getDatamartName());
 	
 		
+		if( template.getProperty("query") != null ) {
+			try {
+				QbeEngineAnalysisState analysisState = new QbeEngineAnalysisState( datamartModel );
+				// TODO set the encoding
+				analysisState.load( template.getProperty("query").toString().getBytes() );
+				setAnalysisState( analysisState );
+			} catch(Throwable t) {
+				SpagoBIRuntimeException serviceException;
+				String msg = "Impossible load query [" + template.getProperty("query") + "].";
+				Throwable rootException = t;
+				while(rootException.getCause() != null) {
+					rootException = rootException.getCause();
+				}
+				String str = rootException.getMessage()!=null? rootException.getMessage(): rootException.getClass().getName();
+				msg += "\nThe root cause of the error is: " + str;
+				serviceException = new SpagoBIRuntimeException(msg, t);
+				
+				throw serviceException;
+			}
+		}
 		
 		validate();
 		
@@ -129,22 +139,6 @@ public class QbeEngineInstance extends AbstractEngineInstance {
 		setQueryCatalogue( qbeEngineAnalysisState.getCatalogue(  ) );
 	}
 	
-
-	public Map getFunctionalities() {
-		return functionalities;
-	}
-
-	public void setFunctionalities(Map functionalities) {
-		this.functionalities = functionalities;
-	}
-
-	public boolean isStandaloneMode() {
-		return standaloneMode;
-	}
-
-	public void setStandaloneMode(boolean standaloneMode) {
-		this.standaloneMode = standaloneMode;
-	}
 
 	public void setAnalysisState(String analysisState) {
 		Query query = datamartModel.getQuery(analysisState);	

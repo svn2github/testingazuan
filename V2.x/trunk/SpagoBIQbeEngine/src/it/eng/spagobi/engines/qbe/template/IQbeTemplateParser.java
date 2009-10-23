@@ -19,41 +19,11 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 **/
-package it.eng.spagobi.engines.qbe;
-
-import it.eng.spagobi.utilities.engines.SpagoBIEngineRuntimeException;
+package it.eng.spagobi.engines.qbe.template;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
  */
-public class QbeTemplateParseException extends SpagoBIEngineRuntimeException {
-
-	/**
-	 * Builds a <code>SpagoBIRuntimeException</code>.
-	 * 
-	 * @param message Text of the exception
-	 */
-    public QbeTemplateParseException(String message) {
-    	super(message);
-    }
-	
-    /**
-     * Builds a <code>SpagoBIRuntimeException</code>.
-     * 
-     * @param message Text of the exception
-     * @param ex previous Throwable object
-     */
-    public QbeTemplateParseException(String message, Throwable ex) {
-    	super(message, ex);
-    }
-    
-    /**
-     * Builds a <code>SpagoBIRuntimeException</code>.
-     * 
-     * @param ex previous Throwable object
-     */
-    public QbeTemplateParseException(Throwable ex) {
-    	super(ex);
-    }
-
+public interface IQbeTemplateParser {
+	QbeTemplate parse(Object template);
 }

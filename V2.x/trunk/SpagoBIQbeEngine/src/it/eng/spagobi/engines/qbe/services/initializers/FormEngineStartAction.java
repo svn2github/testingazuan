@@ -39,7 +39,7 @@ import it.eng.spagobi.utilities.engines.SpagoBIEngineStartupException;
  * 
  * @author Andrea Gioia
  */
-public class QbeEngineStartAction extends AbstractEngineStartAction {	
+public class FormEngineStartAction extends AbstractEngineStartAction {	
 	
 	// INPUT PARAMETERS
 	
@@ -52,7 +52,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 	
 	
 	/** Logger component. */
-    private static transient Logger logger = Logger.getLogger(QbeEngineStartAction.class);
+    private static transient Logger logger = Logger.getLogger(FormEngineStartAction.class);
     
     public static final String ENGINE_NAME = "SpagoBIQbeEngine";
 		
@@ -74,7 +74,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			logger.debug("User Id: " + getUserId());
 			logger.debug("Audit Id: " + getAuditId());
 			logger.debug("Document Id: " + getDocumentId());
-			logger.debug("Template: " + getTemplateAsSourceBean());
+			logger.debug("Template: " + getTemplateAsJSONObject().toString(3));
 						
 			if(getAuditServiceProxy() != null) {
 				logger.debug("Audit enabled: [TRUE]");
@@ -85,7 +85,7 @@ public class QbeEngineStartAction extends AbstractEngineStartAction {
 			
 			logger.debug("Creating engine instance ...");
 			try {
-				qbeEngineInstance = QbeEngine.createInstance( getTemplateAsSourceBean(), getEnv() );
+				qbeEngineInstance = QbeEngine.createInstance( getTemplateAsJSONObject(), getEnv() );
 			} catch(Throwable t) {
 				SpagoBIEngineStartupException serviceException;
 				String msg = "Impossible to create engine instance for document [" + getDocumentId() + "].";

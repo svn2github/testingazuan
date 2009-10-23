@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 
 import it.eng.qbe.conf.QbeCoreSettings;
 import it.eng.qbe.model.io.IDataMartModelRetriever;
-import it.eng.spago.base.SourceBean;
 
 /**
  * @author Andrea Gioia (andrea.gioia@eng.it)
@@ -60,17 +59,8 @@ public class QbeEngine {
     	}
 	}
     
-	/**
-	 * Creates the instance.
-	 * 
-	 * @param template the template
-	 * @param env the env
-	 * 
-	 * @return the geo engine instance
-	 * 
-	 * @throws GeoEngineException the geo engine exception
-	 */
-	public static QbeEngineInstance createInstance(SourceBean template, Map env) throws QbeEngineException {
+	
+	public static QbeEngineInstance createInstance(Object template, Map env) throws QbeEngineException {
 		QbeEngineInstance qbeEngineInstance = null;
 		logger.debug("IN");
 		initEngine();

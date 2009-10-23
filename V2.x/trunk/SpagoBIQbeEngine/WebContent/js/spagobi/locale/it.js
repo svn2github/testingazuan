@@ -2,6 +2,7 @@ Ext.ns("Sbi.locale");
 Sbi.locale.ln = Sbi.locale.ln || new Array();
 
 Sbi.locale.formats = {
+		/*
 		number: {
 			decimalSeparator: ',',
 			decimalPrecision: 2,
@@ -10,7 +11,23 @@ Sbi.locale.formats = {
 			//currencySymbol: '€',
 			nullValue: ''
 		},
-		
+		*/
+		float: {
+			decimalSeparator: ',',
+			decimalPrecision: 2,
+			groupingSeparator: '.',
+			groupingSize: 3,
+			//currencySymbol: '€',
+			nullValue: ''
+		},
+		int: {
+			decimalSeparator: ',',
+			decimalPrecision: 0,
+			groupingSeparator: '.',
+			groupingSize: 3,
+			//currencySymbol: '€',
+			nullValue: ''
+		},
 		string: {
 			trim: true,
     		maxLength: null,

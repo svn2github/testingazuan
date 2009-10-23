@@ -123,27 +123,6 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		
 	}
 	
-	/*
-	, renderers: {
-		'NUMBER': function(value, meta, record, row, col, store){
-			return value + '(' + (typeof value)+ ')';
-		},
-		
-		'DATE': Ext.util.Format.dateRenderer('Y/m/d'),
-		
-		'BOOLEAN': function(value, meta, record, row, col, store){
-			return value + '(' + (typeof value)+ ')';
-		},
-		
-		'STRING': function(value, meta, record, row, col, store){
-			return value + '(' + (typeof value)+ ')';
-		},
-		
-		'HTML': function(value, meta, record, row, col, store){
-			return Ext.util.Format.htmlDecode(value);
-		}		
-	}
-	*/
 	
 	, initStore: function() {
 		
@@ -165,7 +144,7 @@ Ext.extend(Sbi.widgets.DataStorePanel, Ext.Panel, {
 		   for(var i = 0; i < meta.fields.length; i++) {
 			   if(meta.fields[i].type) {
 				   var t = meta.fields[i].type;
-				   if(t === 'float' || t ==='int') t = 'number';
+				   //if(t === 'float' || t ==='int') t = 'number';
 				   meta.fields[i].renderer  =  Sbi.locale.formatters[t];			   
 			   }
 			   

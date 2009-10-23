@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 **/
 package it.eng.qbe.model;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -109,8 +110,19 @@ public class DataStoreJSONSerializer {
 				Class clazz = fieldMetaData.getType();
 				logger.debug("Column [" + (i+1) + "] class is equal to [" + clazz.getName() + "]");
 				if( Number.class.isAssignableFrom(clazz) ) {
-					logger.debug("Column [" + (i+1) + "] type is equal to [" + "NUMBER" + "]");
-					fieldMetaDataJSON.put("type", "float");
+					//BigInteger, Integer, Long, Short, Byte
+					if(Integer.class.isAssignableFrom(clazz) 
+				       || BigInteger.class.isAssignableFrom(clazz) 
+					   || Long.class.isAssignableFrom(clazz) 
+					   || Short.class.isAssignableFrom(clazz)
+					   || Byte.class.isAssignableFrom(clazz)) {
+						logger.debug("Column [" + (i+1) + "] type is equal to [" + "INTEGER" + "]");
+						fieldMetaDataJSON.put("type", "int");
+					} else {
+						logger.debug("Column [" + (i+1) + "] type is equal to [" + "FLOAT" + "]");
+						fieldMetaDataJSON.put("type", "float");
+					}
+					
 				} else if( String.class.isAssignableFrom(clazz) ) {
 					logger.debug("Column [" + (i+1) + "] type is equal to [" + "STRING" + "]");
 					fieldMetaDataJSON.put("type", "string");

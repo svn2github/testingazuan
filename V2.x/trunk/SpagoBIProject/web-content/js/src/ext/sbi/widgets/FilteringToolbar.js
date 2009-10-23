@@ -80,7 +80,7 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 	    
 		Sbi.widgets.FilteringToolbar.superclass.onRender.call(this, ct, position);
 	    
-		this.addText('Il valore della colonna');	
+		this.addText(LN('sbi.lookup.ValueOfColumn'));	
 		this.addSpacer();
 		
 		
@@ -102,7 +102,7 @@ Ext.extend(Sbi.widgets.FilteringToolbar, Ext.Toolbar, {
 	    this.addField( this.columnNameCombo );	    
 	    this.addSpacer();
 	    	    
-	    this.addText('inteso come');
+	    this.addText(LN('sbi.lookup.asA'));
 	    this.addSpacer();
 	    
 	    this.typeStore = new Ext.data.SimpleStore({

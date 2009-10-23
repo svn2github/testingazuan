@@ -105,10 +105,10 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
     				params = new Parameters();//altrimenti lo crea
     			}
     			
-    			Vector<Parameter> parameters =params.getParameter();
-    			if(parameters == null){
+    			Vector<Parameter> parameters =params.getParameter();//attualmente sovrascrive
+    			//if(parameters == null){
     				parameters = new Vector<Parameter>();
-    			}
+    			//}
 	    		//aggiunge il parameter IN per la dstinazione
 	    		fillInNavigationParams(parameters, doc);
 	    		

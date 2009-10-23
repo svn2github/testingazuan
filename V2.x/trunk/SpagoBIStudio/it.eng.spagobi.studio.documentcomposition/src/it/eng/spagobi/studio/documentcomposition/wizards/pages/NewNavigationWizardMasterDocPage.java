@@ -82,7 +82,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 
 		// fielset per parametri output
 		new Label(composite, SWT.NONE).setText("Ouput parameter:");
-		masterDocOutputParam = new Combo(composite, SWT.BORDER | SWT.READ_ONLY);
+		masterDocOutputParam = new Combo(composite, SWT.BORDER );
 		masterDocOutputParam.setLayoutData(gd);
 		
 		

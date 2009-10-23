@@ -5,17 +5,18 @@ import it.eng.spagobi.studio.documentcomposition.editors.model.documentcompositi
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameter;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Parameters;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Refresh;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.RefreshDocLinked;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
 import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBIModifyNavigationWizard;
-import it.eng.spagobi.studio.documentcomposition.wizards.SpagoBINavigationWizard;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
-import java.util.HashMap;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.CellEditor.LayoutData;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -23,8 +24,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -48,7 +48,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	String name = "";
 	String paramIn = "";
 	
-	int destinCounter = 0;
+	int destinCounter = -1;
 
 	private DestinationInfo destinationInfo;
 	private Vector<DestinationInfo> destinationInfos;
@@ -78,16 +78,19 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	@Override
 	public boolean isPageComplete() {
 		boolean ret= super.isPageComplete();
-		for(int i = 0; i<destinCounter; i++){
-			int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-			String destin = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
-			
-			if ((destinationInputParam.elementAt(destinCounter).getText() == null || destinationInputParam.elementAt(destinCounter).getText().length() == 0)
-					&&(sel ==-1 || destin == null )) {
-				return false;
-			}
-		}	
-
+		if(destinCounter != -1){
+			for(int i = 0; i<destinCounter; i++){
+				int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
+				if(sel != -1){
+					String destin = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
+					
+					if ((destinationInputParam.elementAt(destinCounter).getText() == null || destinationInputParam.elementAt(destinCounter).getText().length() == 0)
+							&&(sel ==-1 || destin == null )) {
+						return false;
+					}
+				}
+			}	
+		}
 		return ret;
 	}
 
@@ -101,124 +104,89 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		destinationInputParamDefaultValue = new Vector<Text>();
 
 		final ScrolledComposite sc =  new ScrolledComposite(parent, SWT.V_SCROLL );
-		final Composite composite = new Composite(sc, SWT.BORDER);
+		final Composite composite = new Composite(sc, SWT.NONE);
 		sc.setContent(composite);
-
-		composite.addListener(SWT.Show, new Listener() {
-			public void handleEvent(Event event) {
-				fillDestinationCombo();
-			}
-		});	
 		
 		final GridLayout gl = new GridLayout();
-		int ncol = 2;
+		int ncol = 1;
 		gl.numColumns = ncol;
 		composite.setLayout(gl);
 		
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 1;
-		gd.grabExcessHorizontalSpace = true;
-		gd.minimumWidth =200;
-		gd.widthHint = 250;
-		
-		new Label(composite, SWT.NONE).setText("Navigation name:");				
-		navigationNameText = new Text(composite, SWT.BORDER);
-		navigationNameText.setLayoutData(gd);
-		
-		new Label(composite, SWT.NONE).setText("Master document:");				
-		masterDocName = new Text(composite, SWT.BORDER);		
-		masterDocName.setLayoutData(gd);
-		
-		new Label(composite, SWT.NONE).setText("Output parameter:");				
-		masterParamName = new Text(composite, SWT.BORDER);
-		masterParamName.setLayoutData(gd);
-		
-		new Label(composite, SWT.NONE).setText("Default value:");
-		masterDefaultValueOutputParam = new Text(composite, SWT.BORDER);
-		masterDefaultValueOutputParam.setLayoutData(gd);
-
-		getNavigationItem();
-		
-		new Label(composite, SWT.NONE).setText("Destination document:");				
-		destinationDocNameCombo.addElement(new Combo(composite, SWT.BORDER |SWT.READ_ONLY ));
-
-		fillDestinationCombo();
-		
-		
-		gd.horizontalSpan = 1;
-		destinationDocNameCombo.elementAt(destinCounter).setLayoutData(gd);
-
-		destinationDocNameCombo.elementAt(0).addListener(SWT.FocusIn, new Listener() {
-			public void handleEvent(Event event) {
-				fillDestinationCombo();
-			}
-		});	
-		
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 1;
+		gd.horizontalSpan = 2;
 		gd.grabExcessHorizontalSpace = true;
 		gd.minimumWidth =200;
 		gd.widthHint = 260;
 		
-		new Label(composite, SWT.NONE).setText("Input parameter:");
-		destinationInputParam.addElement(new Combo(composite, SWT.BORDER | SWT.READ_ONLY));
-		destinationInputParam.elementAt(destinCounter).setLayoutData(gd);
+		final GridLayout glBlock = new GridLayout();
+		glBlock.numColumns = 3;
 		
-		new Label(composite, SWT.NONE).setText("Default value:");
-		destinationInputParamDefaultValue.addElement(new Text(composite, SWT.BORDER));
-		destinationInputParamDefaultValue.elementAt(destinCounter).setLayoutData(gd);
 		
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-		gd.horizontalSpan =2;
+		Composite singleBlock = new Composite(composite, SWT.BORDER | SWT.FILL);
+		singleBlock.setLayout(glBlock);
+		
+		new Label(singleBlock, SWT.NONE).setText("Navigation name:");				
+		navigationNameText = new Text(singleBlock, SWT.BORDER);
+		navigationNameText.setLayoutData(gd);
+		
+		
+		Composite singleBlockMaster = new Composite(composite, SWT.BORDER | SWT.FILL);
+		singleBlockMaster.setLayout(glBlock);
+		
+		new Label(singleBlockMaster, SWT.NONE).setText("Master document:");				
+		masterDocName = new Text(singleBlockMaster, SWT.BORDER);		
+		masterDocName.setLayoutData(gd);
+		
+		new Label(singleBlockMaster, SWT.NONE).setText("Output parameter:");				
+		masterParamName = new Text(singleBlockMaster, SWT.BORDER);
+		masterParamName.setLayoutData(gd);	
+		
+		new Label(singleBlockMaster, SWT.NONE).setText("Default value:");
+		masterDefaultValueOutputParam = new Text(singleBlockMaster, SWT.BORDER);
+		masterDefaultValueOutputParam.setLayoutData(gd);
 
+
+		getNavigationItem();//riempie campi precedentemente inseriti
+
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 2;
+		
 		final Button addButton = new Button(composite, SWT.PUSH) ;
 		addButton.setText("Add destination");
-		addButton.setVisible(false);
+		addButton.setVisible(true);
 		addButton.setLayoutData(gd);
 
-		
-		destinationInputParam.elementAt(destinCounter).addListener( SWT.FocusIn, new Listener() {
-			public void handleEvent(Event event) {
-				addButton.setVisible(true);				
-				composite.redraw();
-			
-			}
-		});	
 		
 		addButton.addListener( SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				
-				destinationInfo = new DestinationInfo();
-				int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-				destinationInfo.setDocDestName(destinationDocNameCombo.elementAt(destinCounter).getItem(sel));				
+				destinCounter++;
 				
-				int selIn = destinationInputParam.elementAt(destinCounter).getSelectionIndex();		
-				destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getItem(selIn));
+				Composite composite = navigationNameText.getParent().getParent();
 				
-				destinationInfo.setParamDefaultValue(destinationInputParamDefaultValue.elementAt(destinCounter));
-
-				destinationInfos.add(destinationInfo);	
-				
-				destinCounter++;			
-				
-				
-				GridData gridData = new GridData();
-				gridData.horizontalAlignment = GridData.FILL_HORIZONTAL;
-				gridData.horizontalSpan = 1;
+				GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 				gridData.widthHint = 260;
+				gridData.minimumWidth =200;
+				gridData.grabExcessHorizontalSpace = true;
+				gridData.horizontalSpan = 2;
 				
-				new Label(composite, SWT.NONE).setText("Destination document:");	
-				destinationDocNameCombo.addElement(new Combo(composite, SWT.BORDER |SWT.READ_ONLY ));
+				//inserisce blocco x destinazione
+				Composite destBlock = new Composite(composite, SWT.BORDER | SWT.FILL);
+				GridLayout glBlock = new GridLayout();
+				glBlock.numColumns = 3;
+				destBlock.setLayout(glBlock);
+				
+				new Label(destBlock, SWT.NONE).setText("Destination document:");	
+				destinationDocNameCombo.addElement(new Combo(destBlock, SWT.BORDER |SWT.READ_ONLY ));
 
-				fillDestinationCombo();
+				fillDestinationCombo(null, destinCounter);
 				
 				destinationDocNameCombo.elementAt(destinCounter).setLayoutData(gridData);
 				destinationDocNameCombo.elementAt(destinCounter).setVisible(true);
 
 				//crea una nuovo output text
-				new Label(composite, SWT.NONE).setText("Input parameter:");
-				Combo newText =new Combo(composite, SWT.BORDER |SWT.READ_ONLY);
+				new Label(destBlock, SWT.NONE).setText("Input parameter:");
+				Combo newText =new Combo(destBlock, SWT.BORDER |SWT.READ_ONLY);
 
 				destinationInputParam.addElement(newText);
 				newText.setLayoutData(gridData);
@@ -230,11 +198,11 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 					}
 				});
 
-				new Label(composite, SWT.NONE).setText("Default value:");
-				destinationInputParamDefaultValue.addElement(new Text(composite, SWT.BORDER));
+				new Label(destBlock, SWT.NONE).setText("Default value:");
+				destinationInputParamDefaultValue.addElement(new Text(destBlock, SWT.BORDER));
 				destinationInputParamDefaultValue.elementAt(destinCounter).setLayoutData(gridData);
 				
-				
+				final int element = destinCounter;
 				destinationDocNameCombo.elementAt(destinCounter).addModifyListener(new ModifyListener() {
 					public void modifyText(ModifyEvent event) {
 						Combo selectedCombo = (Combo) event.widget;
@@ -242,57 +210,36 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 						int destinComboToRedraw = destinationDocNameCombo.indexOf(selectedCombo);
 						//System.out.println("position of the combo!!!"+destinComboToRedraw);
 
-						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
-						name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
+						int sel = destinationDocNameCombo.elementAt(element).getSelectionIndex();
+						name = destinationDocNameCombo.elementAt(element).getItem(sel);
 						
 						destinationInputParam.elementAt(destinComboToRedraw).removeAll();
 						
-						fillDestinationParamCombo(name, destinComboToRedraw);
+						fillDestinationParamCombo(name, destinComboToRedraw, null);
 						destinationInputParam.elementAt(destinComboToRedraw).redraw();
 						
 					}
 				});	
-				
+				int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
+				if(sel != -1){
+					destinationInfo = new DestinationInfo();
+					
+					destinationInfo.setDocDestName(destinationDocNameCombo.elementAt(destinCounter).getItem(sel));				
+					
+					int selIn = destinationInputParam.elementAt(destinCounter).getSelectionIndex();		
+					destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getItem(selIn));
+					
+					destinationInfo.setParamDefaultValue(destinationInputParamDefaultValue.elementAt(destinCounter));
+	
+					destinationInfos.add(destinationInfo);	
+				}
 				composite.pack(false);
 				//composite.redraw();
 				composite.getParent().redraw();
 
 			}
 		});
-		destinationDocNameCombo.elementAt(0).addSelectionListener(new SelectionListener() {
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
-				name = destinationDocNameCombo.elementAt(0).getItem(sel);
-				System.out.println("widgetDefaultSelected");
-				destinationInputParam.elementAt(0).removeAll();
-				fillDestinationParamCombo(name, 0);
-				destinationInputParam.elementAt(0).redraw();
-				
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
-				name = destinationDocNameCombo.elementAt(0).getItem(sel);
-				System.out.println("widgetSelected && name ::"+name);
-				
-				
-				fillDestinationParamCombo(name, 0);
-				destinationInputParam.elementAt(0).redraw();
-				
-			}
-		});
-
-		destinationInputParam.elementAt(0).addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent event) {
-
-				//aggiunge pulsante x add delle pagine
-				addButton.setVisible(true);
-				paramIn = destinationInputParam.elementAt(0).getText();				
-				composite.redraw();
-			}
-		});		
+	
 		
 
 		composite.pack(false);
@@ -301,8 +248,9 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		setControl(composite);
 	}
 
-	private void fillDestinationCombo(){
-		if(destinationDocNameCombo.elementAt(destinCounter).getItemCount() == 0){
+	private void fillDestinationCombo(String docDest, int comboToRedraw){
+		
+		if(destinationDocNameCombo.elementAt(comboToRedraw).getItemCount() == 0){
 			if(metaDoc != null){
 				Vector docs = metaDoc.getMetadataDocuments();
 				if(docs != null){
@@ -310,7 +258,11 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 						String destinationName = ((MetadataDocument)docs.elementAt(i)).getName();
 						
 							if(destinationName != null && !destinationName.equals("")){
-								destinationDocNameCombo.elementAt(destinCounter).add(destinationName);
+								destinationDocNameCombo.elementAt(comboToRedraw).add(destinationName);
+								if(docDest != null && docDest.equals(destinationName)){
+									int pos = destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
+									destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
+								}
 							}
 						
 					}
@@ -322,16 +274,16 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		
 		if(master != null && !master.equals("")){
 
-			int posMaster =destinationDocNameCombo.elementAt(destinCounter).indexOf(master);
+			int posMaster =destinationDocNameCombo.elementAt(comboToRedraw).indexOf(master);
 			if(posMaster != -1){
-				destinationDocNameCombo.elementAt(destinCounter).remove(posMaster);
+				destinationDocNameCombo.elementAt(comboToRedraw).remove(posMaster);
 				
 			}
 		}
-		destinationDocNameCombo.elementAt(destinCounter).redraw();
+		destinationDocNameCombo.elementAt(comboToRedraw).redraw();
 		
 	}
-	private void fillDestinationParamCombo(String destDoc, int destinComboToRedraw){
+	private void fillDestinationParamCombo(String destDoc, int destinComboToRedraw, String paramInSel){
 
 		if(destinComboToRedraw == 0){
 			destinationInputParam.elementAt(destinComboToRedraw).removeAll();
@@ -347,8 +299,11 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 						for (int j =0; j<params.size(); j++){
 							MetadataParameter param = (MetadataParameter)params.elementAt(j);
 							String label = param.getLabel();
-							
 							destinationInputParam.elementAt(destinComboToRedraw).add(label);
+							if(paramInSel != null && paramInSel.equals(label)){
+								int pos = destinationInputParam.elementAt(destinComboToRedraw).getItemCount();
+								destinationInputParam.elementAt(destinComboToRedraw).select(pos-1);
+							}
 						}
 						
 					}
@@ -365,6 +320,15 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		Object objSel = selection.toList().get(0);
 		Table listOfNavigations = (Table)objSel;
 		TableItem[] itemsSel = listOfNavigations.getSelection();
+		Composite composite = navigationNameText.getParent().getParent();
+		
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.widthHint = 260;
+		gridData.minimumWidth =200;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.horizontalSpan = 2;
+	
+		//gridData.horizontalSpan = 2;
 		if(itemsSel != null && itemsSel.length != 0){
 
 			DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
@@ -396,20 +360,109 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    				masterDefaultValueOutputParam.setText(masterParamDefault);
 				    				masterDefaultValueOutputParam.setEditable(false);
 				    				
-				    				
-				    				setPageComplete(true);
-				    				navigationNameText.redraw();
-				    			}
+				    				//cicla su destinazioni
+				    				Refresh refresh = param.getRefresh();
+				    				Vector<RefreshDocLinked> destinations = refresh.getRefreshDocLinked();
+				    				for(int k =0; k<destinations.size(); k++){
+				    					
+				    					destinCounter++;
+				    					
+				    					RefreshDocLinked destin = destinations.get(k);
+				    					String docDest = destin.getLabelDoc();
+				    					final String docDestParam = destin.getLabelParam();
+				    					//inserisce blocco x destinazione
+				    					Composite destBlock = new Composite(composite, SWT.BORDER | SWT.FILL);
+				    					GridLayout glBlock = new GridLayout();
+				    					glBlock.numColumns = 3;
+				    					destBlock.setLayout(glBlock);
+				    					
+				    					new Label(destBlock, SWT.NONE).setText("Destination document:");	
+				    					destinationDocNameCombo.addElement(new Combo(destBlock, SWT.BORDER |SWT.READ_ONLY ));
+
+				    					destinationDocNameCombo.elementAt(k).setLayoutData(gridData);
+				    					destinationDocNameCombo.elementAt(k).setVisible(true);
+				    					
+				    					fillDestinationCombo(docDest, k);
+
+				    					//crea una nuovo output text
+				    					new Label(destBlock, SWT.NONE).setText("Input parameter:");
+				    					Combo newText =new Combo(destBlock, SWT.BORDER |SWT.READ_ONLY);
+
+				    					
+				    					destinationInputParam.addElement(newText);
+				    					newText.setLayoutData(gridData);
+				    					fillDestinationParamCombo(docDest, k, docDestParam);
+
+				    					new Label(destBlock, SWT.NONE).setText("Default value:");
+				    					destinationInputParamDefaultValue.addElement(new Text(destBlock, SWT.BORDER));
+				    					destinationInputParamDefaultValue.elementAt(k).setLayoutData(gridData);
+				    					setDefaultValue(docs,k,docDest,docDestParam);
+				    					
+				    					final int element = k;
+				    					
+				    					destinationDocNameCombo.elementAt(k).addModifyListener(new ModifyListener() {
+				    						public void modifyText(ModifyEvent event) {
+				    							Combo selectedCombo = (Combo) event.widget;
+				    							//ricavo dal vettore di combo la sua posizione
+				    							int destinComboToRedraw = destinationDocNameCombo.indexOf(selectedCombo);
+				    							//System.out.println("position of the combo!!!"+destinComboToRedraw);
+
+				    							int sel = destinationDocNameCombo.elementAt(element).getSelectionIndex();
+				    							name = destinationDocNameCombo.elementAt(element).getItem(sel);
+				    							
+				    							destinationInputParam.elementAt(destinComboToRedraw).removeAll();
+				    							
+				    							fillDestinationParamCombo(name, destinComboToRedraw, docDestParam);
+				    							destinationInputParam.elementAt(destinComboToRedraw).redraw();
+				    							
+				    						}
+				    					});					    					
+				    					destinationInfo = new DestinationInfo();
+				    					int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
+				    					destinationInfo.setDocDestName(destinationDocNameCombo.elementAt(destinCounter).getItem(sel));				
+				    					
+				    					int selIn = destinationInputParam.elementAt(destinCounter).getSelectionIndex();		
+				    					destinationInfo.setParamDestName(destinationInputParam.elementAt(destinCounter).getItem(selIn));
+				    					
+				    					destinationInfo.setParamDefaultValue(destinationInputParamDefaultValue.elementAt(destinCounter));
+
+				    					destinationInfos.add(destinationInfo);
+				    				}				    				
+				    				//fine
+
+				    			}	
+
 				    		}
-						}
-						
+			    			
+		    				setPageComplete(true);
+		    				composite.redraw();
+						}	
 					}
 				}
 			}
 		}
+		
 		return param;
 	}
-
+	private void setDefaultValue(Vector<Document> docs, int destinPos, String destDoc, String parLabel){
+		if(docs != null){
+			for(int i=0; i<docs.size(); i++){
+				Document doc = (Document)docs.elementAt(i);
+				if(doc.getLabel().equals(destDoc)){
+					Parameters params = (doc).getParameters();
+					if(params != null){
+			    		for (int j = 0; j<params.getParameter().size(); j++){
+			    			Parameter param = params.getParameter().elementAt(j);
+			    			if(param.getLabel().equals(parLabel )&& param.getType().equals("IN")){
+			    				destinationInputParamDefaultValue.elementAt(destinPos).setText(param.getDefaultVal());
+			    			}
+			    		}
+					}
+				}
+			}
+		}	
+		
+	}
 	
 	public Text getNavigationNameText() {
 		return navigationNameText;

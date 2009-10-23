@@ -16,14 +16,19 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 public class NewNavigationWizardDestinDocPage extends WizardPage {
@@ -144,6 +149,17 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 		addButton.addListener( SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
+				
+				if(destinationDocNameCombo.elementAt(destinCounter).getItemCount() ==1){
+					//messaggio di errore in dialog
+					addButton.setVisible(false);
+					final boolean[] result = new boolean[1];
+			        Shell confirm = createErrorDialog(composite, result);
+			        confirm.setText("Error");
+			        confirm.setSize(300,100);
+					confirm.open();
+					return;
+				}
 
 				destinationInfo = new DestinationInfo();
 				int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
@@ -293,6 +309,17 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				
 			}
 		}
+		//rimuove anche destination precedentemente selezionata
+		if(destinCounter != 0){
+			for(int i=1; i<=destinCounter; i++){
+				String destPrec = destinationDocNameCombo.elementAt(i-1).getText();
+				int posDestPrec =destinationDocNameCombo.elementAt(destinCounter).indexOf(destPrec);
+				if(posDestPrec != -1){
+					destinationDocNameCombo.elementAt(destinCounter).remove(posDestPrec);
+				}
+			}
+		}
+		
 		destinationDocNameCombo.elementAt(destinCounter).redraw();
 	}
 	private void fillDestinationParamCombo(String destDoc, int destinComboToRedraw){
@@ -319,6 +346,32 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				}
 			}
 		}
+		
+	}
+	protected Shell createErrorDialog(Composite client, final boolean[] result){
+		final Shell error = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		error.setLayout(new RowLayout());
+
+		error.setSize(300, 100);
+		Point pt = client.getDisplay().getCursorLocation ();
+		error.setLocation (pt.x, pt.y);
+
+		String message = "No more destination documents available.";
+		new Label(error, SWT.NONE).setText(message);
+		
+	    final Button cancel = new Button(error, SWT.PUSH);
+	    cancel.setText("Cancel");
+	    error.isReparentable();
+
+	    Listener dialogListener = new Listener() {
+	        public void handleEvent(Event event) {
+	          result[0] = event.widget == cancel;
+	          error.notifyListeners(event.type, event);
+	          error.close();
+	        }
+	      };
+	    cancel.addListener(SWT.Selection, dialogListener);
+	    return error;
 		
 	}
 	public Vector<DestinationInfo> getDestinationInfos() {

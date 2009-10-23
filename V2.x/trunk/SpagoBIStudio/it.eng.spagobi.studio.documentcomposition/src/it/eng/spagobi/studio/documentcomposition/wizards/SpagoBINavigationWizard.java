@@ -122,8 +122,7 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 	    		doc.setLabel(masterName);
 	    		doc.setSbiObjLabel(masterName);
 	    		Combo out = newNavigationWizardMasterDocPage.getMasterDocOutputParam();	 
-				int sel = out.getSelectionIndex();
-				String masterPar = out.getItem(sel);
+				String masterPar = out.getText();
 	    		//campo out a cui vengono assegnati
 	    		
 	    		

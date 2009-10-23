@@ -2,7 +2,6 @@ package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposit
 
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.studio.core.util.SDKDocumentParameters;
-import it.eng.spagobi.studio.core.util.SDKDocumentParameters;
 
 import java.util.Iterator;
 import java.util.List;

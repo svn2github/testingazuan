@@ -52,5 +52,7 @@ public class MetadataParameter {
 		this.urlName = docPar.getUrlName();
 	}
 
-    
+    public MetadataParameter(){
+    	super();
+    }
 }

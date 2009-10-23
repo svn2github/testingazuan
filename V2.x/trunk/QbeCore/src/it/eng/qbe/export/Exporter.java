@@ -5,6 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import it.eng.qbe.model.QbeDataSet;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
+import it.eng.spago.base.SourceBean;
+import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStore;
 import it.eng.spagobi.tools.dataset.common.datastore.IDataStoreMetaData;
 import it.eng.spagobi.tools.dataset.common.datastore.IField;
@@ -12,10 +16,13 @@ import it.eng.spagobi.tools.dataset.common.datastore.IRecord;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -44,10 +51,26 @@ public class Exporter {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Workbook exportInExcel(){
+	public Workbook exportInExcel(String language, String country){
 		Workbook wb = new HSSFWorkbook();
 	    CreationHelper createHelper = wb.getCreationHelper();
 	    Sheet sheet = wb.createSheet("new sheet");
+
+		SourceBean formatSB=null; 
+		// if a particular language is specified take the corresponding number-format
+		if(language!=null ){
+			if(country==null){
+				formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("QBE.QBE-EXCEL-EXPORT-"+language.toUpperCase()));
+			}
+			else{
+				formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("QBE.QBE-EXCEL-EXPORT-"+language.toUpperCase()+"_"+country.toUpperCase()));				
+			}		
+		}
+		if(formatSB==null){
+			formatSB = ((SourceBean)ConfigSingleton.getInstance().getAttribute("QBE.QBE-EXCEL-EXPORT-DEFAULT"));
+		}
+		String format = (String) formatSB.getAttribute("numberFormat");
+		logger.debug("Number Format: "+format);		
 	    
 	    if(dataStore!=null  && !dataStore.isEmpty()){
 	    	IDataStoreMetaData d = dataStore.getMetaData();	
@@ -73,12 +96,27 @@ public class Exporter {
 						
 						Class c = d.getFieldType(fieldIndex);
 						logger.debug("Column [" + (fieldIndex+1) + "] class is equal to [" + c.getName() + "]");
-						if( Number.class.isAssignableFrom(c) ) {
+						if( Integer.class.isAssignableFrom(c) || Short.class.isAssignableFrom(c)) {
+							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "INTEGER" + "]");
+							Cell cell = rowVal.createCell(fieldIndex);
+						    Number val = (Number)f.getValue();
+						    cell.setCellValue(val.intValue());
+						    cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+						    short formatIndex = HSSFDataFormat.getBuiltinFormat("#,##0");
+						    CellStyle cellStyle = wb.createCellStyle();   
+						    cellStyle.setDataFormat(formatIndex);
+						    cell.setCellStyle(cellStyle);
+						}else if( Number.class.isAssignableFrom(c) ) {
 							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "NUMBER" + "]");
 							Cell cell = rowVal.createCell(fieldIndex);
 						    Number val = (Number)f.getValue();
 						    cell.setCellValue(val.doubleValue());
 						    cell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+						    List formats = HSSFDataFormat.getBuiltinFormats();
+						    short formatIndex = HSSFDataFormat.getBuiltinFormat("#,##0.00");
+						    CellStyle cellStyle = wb.createCellStyle();   
+						    cellStyle.setDataFormat(formatIndex);
+						    cell.setCellStyle(cellStyle);
 						}else if( String.class.isAssignableFrom(c)){
 							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "STRING" + "]");
 							Cell cell = rowVal.createCell(fieldIndex);		    
@@ -94,7 +132,7 @@ public class Exporter {
 						}else if(Date.class.isAssignableFrom(c)){
 							logger.debug("Column [" + (fieldIndex+1) + "] type is equal to [" + "DATE" + "]");
 							CellStyle cellStyle = wb.createCellStyle();
-						    cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("m/d/yy h:mm"));
+						    cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("m/d/yy"));
 						    Cell cell = rowVal.createCell(fieldIndex);		    
 						    Date val = (Date)f.getValue();
 						    cell.setCellValue(val);	

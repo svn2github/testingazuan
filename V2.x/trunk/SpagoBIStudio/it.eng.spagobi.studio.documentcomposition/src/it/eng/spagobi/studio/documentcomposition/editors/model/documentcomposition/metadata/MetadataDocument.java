@@ -1,7 +1,8 @@
 package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata;
 
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
-import it.eng.spagobi.studio.core.util.ParametersMetadata;
+import it.eng.spagobi.studio.core.util.SDKDocumentParameters;
+import it.eng.spagobi.studio.core.util.SDKDocumentParameters;
 
 import java.util.Iterator;
 import java.util.List;
@@ -89,7 +90,7 @@ public class MetadataDocument {
 		this.metadataParameters = metadataParameters;
 	}
 
-	public void buildMetadataParameters(ParametersMetadata parametersMetadata) {
+	public void buildMetadataParameters(SDKDocumentParameters parametersMetadata) {
 		List<SDKDocumentParameter> list=parametersMetadata.getContent();
 		Vector<MetadataParameter> vector=new Vector<MetadataParameter>();
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {

@@ -40,8 +40,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 	String paramIn = "";
 	
 	int destinCounter = 0;
-	int countMod = 0;
-	
+
 	
 
 	private DestinationInfo destinationInfo;
@@ -93,8 +92,6 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				fillDestinationCombo();
 			}
 		});	
-
-
 
 		
 		final GridLayout gl = new GridLayout();
@@ -203,7 +200,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 						Combo selectedCombo = (Combo) event.widget;
 						//ricavo dal vettore di combo la sua posizione
 						int destinComboToRedraw = destinationDocNameCombo.indexOf(selectedCombo);
-						System.out.println("position of the combo!!!"+destinComboToRedraw);
+						//System.out.println("position of the combo!!!"+destinComboToRedraw);
 
 						int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
 						name = destinationDocNameCombo.elementAt(destinCounter).getItem(sel);
@@ -264,21 +261,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		
 		setControl(composite);
 	}
-	private void removeMasterDestinationCombo(){
 
-		SpagoBINavigationWizard wizard = (SpagoBINavigationWizard)getWizard();
-		String master = wizard.getSelectedMaster();
-		//per ridisegnare combo
-		
-		if(master != null && !master.equals("")){
-
-			int posMaster =destinationDocNameCombo.elementAt(0).indexOf(master);
-			if(posMaster != -1){
-				destinationDocNameCombo.elementAt(0).remove(posMaster);				
-			}
-		}
-		destinationDocNameCombo.elementAt(0).redraw();
-	}
 	
 	private void fillDestinationCombo(){
 
@@ -328,7 +311,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 						for (int j =0; j<params.size(); j++){
 							MetadataParameter param = (MetadataParameter)params.elementAt(j);
 							String label = param.getLabel();
-							System.out.println("*******"+destinComboToRedraw);
+							//System.out.println("*******"+destinComboToRedraw);
 							destinationInputParam.elementAt(destinComboToRedraw).add(label);
 						}
 						

@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Session;
@@ -43,6 +45,8 @@ import it.eng.qbe.export.TemplateBuilder;
 import it.eng.qbe.model.IStatement;
 import it.eng.qbe.model.QbeDataSet;
 import it.eng.qbe.query.DataMartSelectField;
+import it.eng.spago.base.RequestContainer;
+import it.eng.spago.base.SessionContainer;
 import it.eng.spago.base.SourceBean;
 import it.eng.spago.configuration.ConfigSingleton;
 import it.eng.spagobi.commons.bo.UserProfile;
@@ -154,6 +158,10 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 			templateContent = templateBuilder.buildTemplate();
 			if( !"text/jrxml".equalsIgnoreCase( mimeType ) ) {
 				if( "application/vnd.ms-excel".equalsIgnoreCase( mimeType ) ) {
+					RequestContainer requestContainer = RequestContainer.getRequestContainer();
+					SessionContainer permSess = requestContainer.getSessionContainer();
+					String language=(String)permSess.getAttribute("AF_LANGUAGE");
+					String country=(String)permSess.getAttribute("AF_COUNTRY");
 					//START PART from EXECUTEQUERYACTION
 					UserProfile userProfile = (UserProfile)getEnv().get(EngineConstants.ENV_USER_PROFILE);
 					QbeDataSet dataSet = null;
@@ -182,7 +190,7 @@ public class ExportResultAction extends AbstractQbeEngineAction {
 					//END PART from EXECUTEQUERYACTION
 					
 					Exporter exp = new Exporter(dataStore);
-					Workbook wb = exp.exportInExcel();
+					Workbook wb = exp.exportInExcel(language,country);
 					
 					File file = new File("workbook.xls");
 					FileOutputStream stream = new FileOutputStream(file);

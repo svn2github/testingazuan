@@ -1,8 +1,6 @@
 package it.eng.spagobi.studio.documentcomposition.wizards.pages;
 
 import it.eng.spagobi.studio.documentcomposition.Activator;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Document;
-import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
@@ -16,6 +14,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -61,7 +61,6 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 	}
 	@Override
 	public boolean isPageComplete() {
-
 				
 		boolean ret= super.isPageComplete();
 		for(int i = 0; i<destinCounter; i++){
@@ -88,6 +87,16 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		final Composite composite = new Composite(sc, SWT.BORDER);
 		sc.setContent(composite);
 
+		
+		composite.addListener(SWT.Show, new Listener() {
+			public void handleEvent(Event event) {
+				fillDestinationCombo();
+			}
+		});	
+
+
+
+		
 		final GridLayout gl = new GridLayout();
 		int ncol = 2;
 		gl.numColumns = ncol;
@@ -96,23 +105,14 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		
 		new Label(composite, SWT.NONE).setText("Destination document:");				
 		destinationDocNameCombo.addElement(new Combo(composite, SWT.BORDER |SWT.READ_ONLY ));
-
+		
+		/////////////riempie documenti dest
 		fillDestinationCombo();
 		
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
 		destinationDocNameCombo.elementAt(destinCounter).setLayoutData(gd);
 
-
-		destinationDocNameCombo.elementAt(0).addListener(SWT.FocusIn, new Listener() {
-			public void handleEvent(Event event) {
-				if(countMod == 0){
-					fillDestinationCombo();
-					countMod++;
-				}
-			}
-		});	
-		
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 1;
 		gd.grabExcessHorizontalSpace = true;
@@ -121,7 +121,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		
 		new Label(composite, SWT.NONE).setText("Input parameter:");
 		destinationInputParam.addElement(new Combo(composite, SWT.BORDER | SWT.READ_ONLY));
-		fillDestinationParamCombo("");////////////////////////////////fare!!!!!!!!!!!!
+		
 		destinationInputParam.elementAt(destinCounter).setLayoutData(gd);
 		
 		new Label(composite, SWT.NONE).setText("Default value:");
@@ -169,7 +169,8 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				
 				new Label(composite, SWT.NONE).setText("Destination document:");	
 				destinationDocNameCombo.addElement(new Combo(composite, SWT.BORDER |SWT.READ_ONLY ));
-
+				
+				/////////////riempie documenti dest
 				fillDestinationCombo();
 				//destinationInputParam.elementAt(destinCounter).removeAll();
 				
@@ -206,7 +207,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 						destinationInputParam.elementAt(destinCounter).removeAll();
 						
 						fillDestinationParamCombo(name);
-						
+						destinationInputParam.elementAt(destinCounter).redraw();
 						
 					}
 				});	
@@ -215,14 +216,38 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 			}
 		});
+		/*
 		destinationDocNameCombo.elementAt(0).addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
 
 				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
 				name = destinationDocNameCombo.elementAt(0).getItem(sel);
 				
+				//removeMasterDestinationCombo();
+				
+			}
+		});	*/
+		destinationDocNameCombo.elementAt(0).addSelectionListener(new SelectionListener() {
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
+				name = destinationDocNameCombo.elementAt(0).getItem(sel);
+				System.out.println("widgetDefaultSelected");
 				destinationInputParam.elementAt(0).removeAll();
 				fillDestinationParamCombo(name);
+				destinationInputParam.elementAt(0).redraw();
+				
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				int sel = destinationDocNameCombo.elementAt(0).getSelectionIndex();
+				name = destinationDocNameCombo.elementAt(0).getItem(sel);
+				System.out.println("widgetSelected && name ::"+name);
+				
+				
+				fillDestinationParamCombo(name);
+				destinationInputParam.elementAt(0).redraw();
 				
 			}
 		});	
@@ -232,8 +257,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 
 				//aggiunge pulsante x add delle pagine
 				addButton.setVisible(true);
-				paramIn = destinationInputParam.elementAt(0).getText();	
-				
+				paramIn = destinationInputParam.elementAt(0).getText();				
 				composite.redraw();
 			}
 		});		
@@ -246,7 +270,22 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 		
 		setControl(composite);
 	}
+	private void removeMasterDestinationCombo(){
 
+		SpagoBINavigationWizard wizard = (SpagoBINavigationWizard)getWizard();
+		String master = wizard.getSelectedMaster();
+		//per ridisegnare combo
+		
+		if(master != null && !master.equals("")){
+
+			int posMaster =destinationDocNameCombo.elementAt(0).indexOf(master);
+			if(posMaster != -1){
+				destinationDocNameCombo.elementAt(0).remove(posMaster);				
+			}
+		}
+		destinationDocNameCombo.elementAt(0).redraw();
+	}
+	
 	private void fillDestinationCombo(){
 
 		SpagoBINavigationWizard wizard = (SpagoBINavigationWizard)getWizard();
@@ -274,13 +313,16 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 			int posMaster =destinationDocNameCombo.elementAt(destinCounter).indexOf(master);
 			if(posMaster != -1){
 				destinationDocNameCombo.elementAt(destinCounter).remove(posMaster);
-				destinationDocNameCombo.elementAt(destinCounter).redraw();
+				
 			}
 		}
-		
+		destinationDocNameCombo.elementAt(destinCounter).redraw();
 	}
 	private void fillDestinationParamCombo(String destDoc){
 
+		if(destinCounter == 0){
+			destinationInputParam.elementAt(destinCounter).removeAll();
+		}
 		if(metaDoc != null){
 			Vector docs = metaDoc.getMetadataDocuments();
 			if(docs != null){
@@ -288,10 +330,11 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
 					String docName = doc.getName();
 					if(docName != null && !docName.equals("") &&(docName.equals(destDoc))){
-						Vector params = doc.getParameters();
+						Vector params = doc.getMetadataParameters();
 						for (int j =0; j<params.size(); j++){
 							MetadataParameter param = (MetadataParameter)params.elementAt(j);
 							String label = param.getLabel();
+							System.out.println("*******"+destinCounter);
 							destinationInputParam.elementAt(destinCounter).add(label);
 						}
 						
@@ -299,7 +342,7 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 				}
 			}
 		}
-		destinationInputParam.elementAt(destinCounter).redraw();
+		
 	}
 	public Vector<DestinationInfo> getDestinationInfos() {
 		return destinationInfos;

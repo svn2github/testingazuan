@@ -278,7 +278,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
 					String docName = doc.getName();
 					if(docName != null && !docName.equals("") &&(docName.equals(destDoc))){
-						Vector params = doc.getParameters();
+						Vector params = doc.getMetadataParameters();
 						for (int j =0; j<params.size(); j++){
 							MetadataParameter param = (MetadataParameter)params.elementAt(j);
 							String label = param.getLabel();

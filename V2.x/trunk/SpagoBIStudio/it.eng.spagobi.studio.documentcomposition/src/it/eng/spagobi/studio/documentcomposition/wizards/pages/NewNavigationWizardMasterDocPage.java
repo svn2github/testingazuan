@@ -146,7 +146,7 @@ public class NewNavigationWizardMasterDocPage extends WizardPage {
 					MetadataDocument doc = (MetadataDocument)docs.elementAt(i);
 					String masterName = doc.getName();
 					if(masterName != null && !masterName.equals("") &&(masterName.equals(masterDoc))){
-						Vector params = doc.getParameters();
+						Vector params = doc.getMetadataParameters();
 						for (int j =0; j<params.size(); j++){
 							MetadataParameter param = (MetadataParameter)params.elementAt(j);
 							String label = param.getLabel();

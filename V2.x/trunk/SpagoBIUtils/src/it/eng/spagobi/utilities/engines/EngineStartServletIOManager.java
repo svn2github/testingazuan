@@ -190,34 +190,6 @@ public class EngineStartServletIOManager extends BaseServletIOManager {
 		
 		  return templateContent;
 	}
-	  
-	private SourceBean getTemplateX(String userId, String documentId) {
-	   	SourceBean templateSB = null;
-		Content template = null;
-		String templateContent = null;
-			
-		contentProxy = getContentServiceProxy();
-		HashMap requestParameters = ParametersDecoder.getDecodedRequestParameters( getRequestContainer() );
-		template = contentProxy.readTemplate(documentId, requestParameters);
-		logger.debug("Read the template."+ template.getFileName());	
-			
-			
-		try {
-			templateContent = new String( DECODER.decodeBuffer(template.getContent()) );
-			templateSB = SourceBean.fromXMLString(templateContent);
-			logger.debug("Read the template."+ template.getFileName());	
-		} catch (IOException e) {
-			logger.error("Impossible to get content from template\n" + e);
-			e.printStackTrace();
-		} catch (SourceBeanException e) {
-			logger.error("Impossible to decode template's content\n" + e);
-			e.printStackTrace();
-		}		
-			
-			
-		return templateSB;
-	}
-	
 	
 	
 	public IDataSource getDataSource() {

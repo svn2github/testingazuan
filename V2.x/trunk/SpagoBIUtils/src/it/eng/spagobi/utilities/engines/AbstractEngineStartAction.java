@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import sun.misc.BASE64Decoder;
 
@@ -85,7 +87,7 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 	private EngineAnalysisMetadata analysisMetadata;
 	private byte[] analysisStateRowData;
 	
-	private SourceBean template;
+	private Content template;
 	
 	private ContentServiceProxy contentProxy;
 	private AuditServiceProxy auditProxy;
@@ -241,56 +243,44 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
     	return documentId;   	
     }
     
-    /**
-     * Gets the template.
-     * 
-     * @return the template
-     */
-    public SourceBean getTemplate() {
-    	String userId;
-    	String documentId;
-    	
-    	logger.debug("IN");	
-    	
-    	try {	    	
-    		
-    		if(template == null) {
-    			
-	    		// get document id
-	    		documentId = null;
-	    		try {
-	    			documentId = getDocumentId();
-	    		} catch (Throwable t) {
-	    			throw new SpagoBIEngineStartupException(getEngineName(), "Impossible to retrive document template because an exception occured while retriving the user id. Please check neasted exception for more details", t);
-	    		}
-	    		Assert.assertNotNull(documentId, "[documentId] cannot be null in order to retrive document template");
-	    		
-	    		// get user id
-	    		userId = null;
-	    		try {
-	    			userId = getUserId();
-	    		} catch (Throwable t) {
-	    			throw new SpagoBIEngineStartupException(getEngineName(), "Impossible to retrive template for document [" + documentId + "] because an exception occured while retriving the user id. Please check neasted exception for more details", t);
-	    		}
-	    		Assert.assertNotNull(userId, "[userId] cannot be null in order to retrive the template of document [" + documentId + "]");
-	    			
-    		
-	    		template = getTemplate( userId, documentId );
-	    	}
-    	} finally {
-			logger.debug("OUT");	
-		}
-    	return template;
-    }
     
-    private SourceBean getTemplate(String userId, String documentId) {
-		SourceBean templateSB = null;
-		Content template = null;
-		String templateContent = null;
-		HashMap requestParameters;
+    
+   
+    public JSONObject getTemplateAsJSONObject() {
+    	JSONObject templateSB = null;
+		try {
+		  templateSB = new JSONObject(getTemplateAsString());
+		} catch (JSONException e) {
+			SpagoBIEngineStartupException engineException = new SpagoBIEngineStartupException(getEngineName(), "Impossible to parse template's content", e);
+			engineException.setDescription("Impossible to parse template's content:  " + e.getMessage());
+			engineException.addHint("Check if the document's template is a well formed json file");
+			throw engineException;
+		}		
 		
-		Assert.assertNotNull(userId, "Input parameter [userId] of method [getTemplate] cannot be null");
-		Assert.assertNotNull(documentId, "Input parameter [documentId] of method [getTemplate] cannot be null");
+		return templateSB;
+	}
+  
+    public SourceBean getTemplateAsSourceBean() {
+    	SourceBean templateSB = null;
+		try {
+		  templateSB = SourceBean.fromXMLString(getTemplateAsString());
+		} catch (SourceBeanException e) {
+			SpagoBIEngineStartupException engineException = new SpagoBIEngineStartupException(getEngineName(), "Impossible to parse template's content", e);
+			engineException.setDescription("Impossible to parse template's content:  " + e.getMessage());
+			engineException.addHint("Check if the document's template is a well formed xml file");
+			throw engineException;
+		}		
+		
+		return templateSB;
+	}
+    
+    public String getTemplateAsString() {
+	  return new String(getTemplate());
+	}
+    
+    private byte[] getTemplate() {
+		byte[] templateContent = null;
+		HashMap requestParameters;
 			
 		contentProxy = getContentServiceProxy();
 		if(contentProxy == null) {
@@ -299,27 +289,18 @@ public class AbstractEngineStartAction extends AbstractBaseHttpAction {
 					"in order to retrive the template of document [" + documentId + "]");
 		}
 			
-			
 		requestParameters = ParametersDecoder.getDecodedRequestParameters(this.getHttpRequest());
-		template = contentProxy.readTemplate(documentId, requestParameters);
-				
+		template = contentProxy.readTemplate(getDocumentId(), requestParameters);
+			
 		try {
-			templateContent = new String( DECODER.decodeBuffer(template.getContent()) );
-			templateSB = SourceBean.fromXMLString(templateContent);
-			logger.debug("Read the template."+ template.getFileName());	
+		  templateContent = DECODER.decodeBuffer(template.getContent());
 		} catch (IOException e) {
 			SpagoBIEngineStartupException engineException = new SpagoBIEngineStartupException(getEngineName(), "Impossible to get template's content", e);
 			engineException.setDescription("Impossible to get template's content:  " + e.getMessage());
 			engineException.addHint("Check the document's template");
-		} catch (SourceBeanException e) {
-			SpagoBIEngineStartupException engineException = new SpagoBIEngineStartupException(getEngineName(), "Impossible to parse template's content", e);
-			engineException.setDescription("Impossible to parse template's content:  " + e.getMessage());
-			engineException.addHint("Check if the document's template is a well formed xml file");
-			throw engineException;
-	    	
-		}		
-				
-		return templateSB;
+		}
+		
+		return templateContent;
 	}
     
     

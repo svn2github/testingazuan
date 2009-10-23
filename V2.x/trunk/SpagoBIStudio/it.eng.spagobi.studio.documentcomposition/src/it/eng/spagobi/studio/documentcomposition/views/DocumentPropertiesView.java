@@ -19,7 +19,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.ViewPart;
 
-public class DocumentProperties extends ViewPart {
+public class DocumentPropertiesView extends ViewPart {
 
 	private Label label;
 	private DocumentComposition documentComp;

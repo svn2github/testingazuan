@@ -22,7 +22,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.ViewPart;
 
-public class DocumentParameters extends ViewPart {
+public class DocumentParametersView extends ViewPart {
 
 	private DocumentComposition documentComp;
 	Composite client;
@@ -78,7 +78,9 @@ public class DocumentParameters extends ViewPart {
 			TableColumn column = new TableColumn (table, SWT.NONE);
 			column.setText (titles [i]);
 		}	
-
+		for (int i=0; i<titles.length; i++) {
+			table.getColumn (i).pack ();
+		}	
 		client.pack();
 		
 

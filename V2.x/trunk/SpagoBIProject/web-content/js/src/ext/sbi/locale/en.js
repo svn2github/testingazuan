@@ -187,3 +187,6 @@ Sbi.locale.ln['sbi.execution.executionpage.toolbar.expand'] = 'Expand/Reduce';
 Sbi.locale.ln['sbi.home.Welcome'] = 'Welcome: ';
 Sbi.locale.ln['sbi.home.Exit'] = 'Exit';
 Sbi.locale.ln['sbi.home.Info'] = 'Informations on SpagoBI';
+
+Sbi.locale.ln['sbi.lookup.ValueOfColumn'] ='The value of the column';
+Sbi.locale.ln['sbi.lookup.asA'] = 'as a';

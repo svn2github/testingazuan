@@ -41,6 +41,8 @@ import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.constants.SpagoBIConstants;
 import it.eng.spagobi.commons.utilities.UserUtilities;
 import it.eng.spagobi.commons.utilities.messages.MessageBuilder;
+import it.eng.spagobi.services.common.SsoServiceFactory;
+import it.eng.spagobi.services.common.SsoServiceInterface;
 import it.eng.spagobi.services.security.exceptions.SecurityException;
 import it.eng.spagobi.services.security.service.ISecurityServiceSupplier;
 import it.eng.spagobi.services.security.service.SecurityServiceSupplierFactory;
@@ -125,7 +127,10 @@ public class LoginModule extends AbstractHttpModule {
 				throw new SecurityException("User identifier not found.");
 			}			
 		}else{
-			userId=UserUtilities.getUserId(this.getHttpRequest());
+			
+	    	SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
+			userId = userProxy.readUserIdentifier(servletRequest);
+		    logger.debug("OUT,userId:"+userId);
 		}
 
 			ISecurityServiceSupplier supplier=SecurityServiceSupplierFactory.createISecurityServiceSupplier();

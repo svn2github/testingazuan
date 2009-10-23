@@ -72,6 +72,7 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			destinationInfo.setDocDestName(modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getItem(sel));
 			int selIn = modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getSelectionIndex();		
 			destinationInfo.setParamDestName(modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getItem(selIn));
+			destinationInfo.setParamDefaultValue(modifyNavigationWizardPage.getDestinationInputParamDefaultValue().elementAt(destinCounter));
 			modifyNavigationWizardPage.getDestinationInfos().add(destinationInfo);	
 		}
 	}
@@ -96,41 +97,29 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 	    	Document doc = (Document)documents.get(i);
 	    	String docLabel = doc.getLabel();
 	    	if(docLabel.equalsIgnoreCase(masterName)){
-	    		doc.setLabel(masterName);
-	    		doc.setSbiObjLabel(masterName);
-	    		Text out = modifyNavigationWizardPage.getMasterParamName();	    		
-	    		//campo out a cui vengono assegnati
-	    		//ciclo sui parameters del doc master 
+
+				String masterPar = modifyNavigationWizardPage.getMasterParamName().getText();
+	    		//modifica le destinazioni
+	    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
+    			if(params == null){
+    				params = new Parameters();//altrimenti lo crea
+    			}
+    			
+    			Vector<Parameter> parameters =params.getParameter();
+    			if(parameters == null){
+    				parameters = new Vector<Parameter>();
+    			}
+	    		//aggiunge il parameter IN per la dstinazione
+	    		fillInNavigationParams(parameters, doc);
 	    		
-	    		//se presente gli aggiunge il type e i rafresh
-	    		Parameters params = doc.getParameters();
-	    		boolean found = false;
-	    		if(params != null){
-		    		/*probabilmente nn serve........................*/
-		    		for (int j = 0; j<params.getParameter().size(); j++){
-		    			Parameter param = params.getParameter().elementAt(j);
-		    			if(param.getLabel().equalsIgnoreCase(out.getText())){
-		    				fillNavigationParam(param, out);
-		    				found = true;
-		    			}
-		    		}
-	    		}
-	    		/*probabilm sarà solo questo................*/
-	    		if(!found){
-	    			//altrimenti lo aggiunge
-	    			Parameter newParam = new Parameter();
-	    			fillNavigationParam(newParam, out);
-	    			if(params == null){
-	    				params = new Parameters();
-	    			}
-	    			Vector parameter =params.getParameter();
-	    			if(parameter == null){
-	    				parameter = new Vector<Parameter>();
-	    			}
-	    			parameter.add(newParam);
-    				params.setParameter(parameter);
-    				doc.setParameters(params);
-	    		}
+	    		//aggiunge parametro OUT per doc master
+    			Parameter newParam = new Parameter();
+    			fillNavigationOutParam(newParam, masterPar);
+
+
+    			parameters.add(newParam);
+				params.setParameter(parameters);
+				doc.setParameters(params);
 	    	}
 	    }
 	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
@@ -157,11 +146,14 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		
 	}
 
-	private void fillNavigationParam(Parameter param, Text out){
+	private void fillNavigationOutParam(Parameter param, String out){
+		param.setLabel(out);
+		param.setSbiParLabel(out);
+		param.setNavigationName(modifyNavigationWizardPage.getNavigationNameText().getText());
+		param.setDefaultVal(modifyNavigationWizardPage.getMasterDefaultValueOutputParam().getText());
 		
 		Refresh refresh = new Refresh();
 		Vector <RefreshDocLinked> refreshes = new Vector<RefreshDocLinked>();
-		
 		
 		Vector<DestinationInfo> destInfos = modifyNavigationWizardPage.getDestinationInfos();
 		for(int k =0; k<destInfos.size(); k++){
@@ -169,15 +161,35 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 			RefreshDocLinked refreshDocLinked = new RefreshDocLinked();
 			String toRefresh = destInfo.getDocDestName();
 
-			String paramIn = (String)destInfo.getParamDestName();
+			String paramIn =destInfo.getParamDestName();
 
 			refreshDocLinked.setLabelDoc(toRefresh);
 			refreshDocLinked.setLabelParam(paramIn);
 			refreshes.add(refreshDocLinked);
-		
+			
 			refresh.setRefreshDocLinked(refreshes);
 		}
-		param.setRefresh(refresh);
+		param.setRefresh(refresh);		
+		param.setType("OUT");
+	}
+	private void fillInNavigationParams(Vector<Parameter> parameters, Document doc){
+		//cicla su destinazioni
+		Vector<DestinationInfo> destInfos = modifyNavigationWizardPage.getDestinationInfos();
+		for(int k =0; k<destInfos.size(); k++){
+			DestinationInfo destInfo = destInfos.elementAt(k);
+			String destinationDoc = destInfo.getDocDestName();
+			if(destinationDoc != null && destinationDoc.equals(doc.getLabel())){
+				String paramName = destInfo.getParamDestName();
+				Parameter param = new Parameter();
+				param.setType("IN");
+				param.setLabel(paramName);
+				param.setSbiParLabel(paramName);
+				param.setDefaultVal(destInfo.getParamDefaultValue().getText());
+				
+				parameters.add(param);
+			}
+			
+		}
 
 	}
 }

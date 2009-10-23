@@ -29,17 +29,17 @@
    </extension>
    <extension point="org.eclipse.ui.views">
 		<view
-	            class="it.eng.spagobi.studio.documentcomposition.views.DocumentProperties"
+	            class="it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView"
 	            icon="icons/sample.gif"
-	            id="it.eng.spagobi.studio.documentcomposition.views.DocumentProperties"
+	            id="it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView"
 	            name="Document Properties">
 	</view>
 	</extension>
    <extension point="org.eclipse.ui.views">
 		<view
-	            class="it.eng.spagobi.studio.documentcomposition.views.DocumentParameters"
+	            class="it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView"
 	            icon="icons/sample.gif"
-	            id="it.eng.spagobi.studio.documentcomposition.views.DocumentParameters"
+	            id="it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView"
 	            name="DocumentParameters">
 	</view>
 	</extension>

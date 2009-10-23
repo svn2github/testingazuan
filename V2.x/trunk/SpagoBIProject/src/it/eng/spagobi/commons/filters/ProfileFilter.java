@@ -25,7 +25,6 @@ import it.eng.spago.base.Constants;
 import it.eng.spago.base.RequestContainer;
 import it.eng.spago.base.SessionContainer;
 import it.eng.spago.security.IEngUserProfile;
-import it.eng.spagobi.commons.bo.UserProfile;
 import it.eng.spagobi.commons.utilities.GeneralUtilities;
 import it.eng.spagobi.services.common.SsoServiceFactory;
 import it.eng.spagobi.services.common.SsoServiceInterface;
@@ -46,102 +45,106 @@ import org.apache.log4j.Logger;
 /**
  * @author Zerbetto (davide.zerbetto@eng.it)
  * 
- * This filter tries to build the user profile object, using the user identifier
+ *         This filter tries to build the user profile object, using the user
+ *         identifier
  */
 
 public class ProfileFilter implements Filter {
 
-    private static transient Logger logger = Logger.getLogger(ProfileFilter.class);
+	private static transient Logger logger = Logger.getLogger(ProfileFilter.class);
 
-    public void destroy() {
-	// do nothing
-    }
-
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-	    ServletException {
-	logger.debug("IN");
-	try {
-	    if (request instanceof HttpServletRequest) {
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		HttpSession session = httpRequest.getSession();
-		String userId = findUserId(httpRequest);
-		logger.debug("User id = " + userId);
-		// in case the user is not specified, does nothing
-		if (userId == null || userId.trim().equals("")) {
-		    logger.debug("User identifier not found.");
-		} else {
-		    // looking if a RequestContainer already exists in session
-		    RequestContainer requestContainer = (RequestContainer) session
-			    .getAttribute(Constants.REQUEST_CONTAINER);
-		    if (requestContainer == null) {
-			// RequestContainer does not exists yet (maybe it is the
-			// first call to Spago)
-			// initializing Spago objects (user profile object must
-			// be put into PermanentContainer)
-			requestContainer = new RequestContainer();
-			SessionContainer sessionContainer = new SessionContainer(true);
-			requestContainer.setSessionContainer(sessionContainer);
-			session.setAttribute(Constants.REQUEST_CONTAINER, requestContainer);
-		    }
-		    SessionContainer sessionContainer = requestContainer.getSessionContainer();
-		    SessionContainer permanentSession = sessionContainer.getPermanentContainer();
-		    IEngUserProfile profile = (IEngUserProfile) permanentSession
-			    .getAttribute(IEngUserProfile.ENG_USER_PROFILE);
-		    if (profile == null) {
-			logger.debug("User profile not found in session, creating a new one and putting in session....");
-			// in case the profile does not exist, creates a new one
-			profile = GeneralUtilities.createNewUserProfile(userId);
-			permanentSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-		    } else {
-			// in case the profile is different, creates a new one
-			// and overwrites the existing
-		    	/*
-			if (!((UserProfile) profile).getUserUniqueIdentifier().toString().equals(userId)) {
-			    logger.debug("Different user profile found in session, creating a new one and replacing in session....");
-			    profile = GeneralUtilities.createNewUserProfile(userId);
-			    permanentSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
-			} else {
-			    logger.debug("User profile object for user [" + userId
-				    + "] already existing in session, ok");
-			}
-			
-			*/
-		    }
-		}
-	    }
-	} catch (Exception e) {
-	    logger.error(e);
-	} finally {
-	    logger.debug("OUT");
-	    chain.doFilter(request, response);
+	public void destroy() {
+		// do nothing
 	}
-    }
 
-    public void init(FilterConfig config) throws ServletException {
-	// do nothing
-    }
-    /**
-     * Finds the user identifier from http request or from SSO system (by the http request in input).
-     * Use the SsoServiceInterface for read the userId in all cases, if SSO is disabled use FakeSsoService.
-     * Check spagobi_sso.xml
-     * 
-     * @param httpRequest The http request
-     * 
-     * @return the current user unique identified
-     * 
-     * @throws Exception in case the SSO is enabled and the user identifier specified on http request is different from the SSO detected one.
-     */
-    
-    private static String findUserId(HttpServletRequest request) throws Exception {
-    	logger.debug("IN");
-    	String userId = null;
-    	try {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		logger.debug("IN");
+		try {
+			if (request instanceof HttpServletRequest) {
+				HttpServletRequest httpRequest = (HttpServletRequest) request;
+				HttpSession session = httpRequest.getSession();
+
+				RequestContainer requestContainer = (RequestContainer) session.getAttribute(Constants.REQUEST_CONTAINER);
+				if (requestContainer == null) {
+					// RequestContainer does not exists yet (maybe it is the
+					// first call to Spago)
+					// initializing Spago objects (user profile object must
+					// be put into PermanentContainer)
+					requestContainer = new RequestContainer();
+					SessionContainer sessionContainer = new SessionContainer(true);
+					requestContainer.setSessionContainer(sessionContainer);
+					session.setAttribute(Constants.REQUEST_CONTAINER, requestContainer);
+				}
+				SessionContainer sessionContainer = requestContainer.getSessionContainer();
+				SessionContainer permanentSession = sessionContainer.getPermanentContainer();
+				IEngUserProfile profile = (IEngUserProfile) permanentSession.getAttribute(IEngUserProfile.ENG_USER_PROFILE);
+				if (profile == null) {
+					logger.debug("User profile not found in session, creating a new one and putting in session....");
+					// in case the profile does not exist, creates a new one
+					String userId = findUserId(httpRequest);
+					// in case the user is not specified, does nothing
+					if (userId == null || userId.trim().equals("")) {
+						logger.debug("User identifier not found.");
+					}
+					logger.debug("User id = " + userId);
+					profile = GeneralUtilities.createNewUserProfile(userId);
+					permanentSession.setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+				} else {
+					// in case the profile is different, creates a new one
+					// and overwrites the existing
+					/*
+					 * if (!((UserProfile)
+					 * profile).getUserUniqueIdentifier().toString
+					 * ().equals(userId)) {logger.debug(
+					 * "Different user profile found in session, creating a new one and replacing in session...."
+					 * ); profile =
+					 * GeneralUtilities.createNewUserProfile(userId);
+					 * permanentSession
+					 * .setAttribute(IEngUserProfile.ENG_USER_PROFILE, profile);
+					 * } else { logger.debug("User profile object for user [" +
+					 * userId + "] already existing in session, ok"); }
+					 */
+				}
+
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			logger.debug("OUT");
+			chain.doFilter(request, response);
+		}
+	}
+
+	public void init(FilterConfig config) throws ServletException {
+		// do nothing
+	}
+
+	/**
+	 * Finds the user identifier from http request or from SSO system (by the
+	 * http request in input). Use the SsoServiceInterface for read the userId
+	 * in all cases, if SSO is disabled use FakeSsoService. Check
+	 * spagobi_sso.xml
+	 * 
+	 * @param httpRequest
+	 *            The http request
+	 * 
+	 * @return the current user unique identified
+	 * 
+	 * @throws Exception
+	 *             in case the SSO is enabled and the user identifier specified
+	 *             on http request is different from the SSO detected one.
+	 */
+
+	private static String findUserId(HttpServletRequest request) throws Exception {
+		logger.debug("IN");
+		String userId = null;
+		try {
 			SsoServiceInterface userProxy = SsoServiceFactory.createProxyService();
-			userId = userProxy.readUserIdentifier(request);	
-    	} finally {
-    		logger.debug("OUT");
-    	}
-    	return userId;
-    }
+			userId = userProxy.readUserIdentifier(request);
+		} finally {
+			logger.debug("OUT");
+		}
+		return userId;
+	}
 
 }

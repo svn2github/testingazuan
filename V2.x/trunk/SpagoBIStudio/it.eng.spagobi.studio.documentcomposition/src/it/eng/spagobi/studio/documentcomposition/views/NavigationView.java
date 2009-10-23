@@ -301,7 +301,7 @@ public class NavigationView extends ViewPart {
 			v.add(p1);
 			v.add(p2);
 			
-			m.setParameters(v);
+			m.setMetadataParameters(v);
 			docs.add(m);
 			
 			MetadataDocument m2 = new MetadataDocument();
@@ -319,7 +319,7 @@ public class NavigationView extends ViewPart {
 			vv.add(pp1);
 			vv.add(pp2);
 			
-			m2.setParameters(vv);
+			m2.setMetadataParameters(vv);
 			docs.add(m2);
 			
 			MetadataDocument m3 = new MetadataDocument();
@@ -337,7 +337,7 @@ public class NavigationView extends ViewPart {
 			vvv.add(ppp1);
 			vvv.add(ppp2);
 			
-			m3.setParameters(vvv);
+			m3.setMetadataParameters(vvv);
 			docs.add(m3);
 			
 			metadataDoc.setMetadataDocuments(docs);

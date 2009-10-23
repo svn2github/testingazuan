@@ -132,7 +132,10 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
     				params = new Parameters();//altrimenti lo crea
     			}
     			
-	    		Vector<Parameter> parameters = new Vector<Parameter>();
+    			Vector<Parameter> parameters =params.getParameter();
+    			if(parameters == null){
+    				parameters = new Vector<Parameter>();
+    			}
 	    		//aggiunge il parameter IN per la dstinazione
 	    		fillInNavigationParams(parameters, doc);
 	    		
@@ -149,8 +152,10 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
     			if(params == null){
     				params = new Parameters();//altrimenti lo crea
     			}
-    			
-	    		Vector<Parameter> parameters = new Vector<Parameter>();
+    			Vector<Parameter> parameters =params.getParameter();
+    			if(parameters == null){
+    				parameters = new Vector<Parameter>();
+    			}
 	    		//aggiunge il parameter IN per la dstinazione
 	    		fillInNavigationParams(parameters, doc);
 				params.setParameter(parameters);

@@ -4,11 +4,11 @@ package test;
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
-import it.eng.spagobi.studio.core.util.ParametersMetadata;
+import it.eng.spagobi.studio.core.util.SDKDocumentParameters;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
-import it.eng.spagobi.studio.documentcomposition.views.DocumentParameters;
-import it.eng.spagobi.studio.documentcomposition.views.DocumentProperties;
+import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
+import it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -612,9 +612,9 @@ public class DocContainer {
 
 				if(xmlParameters!=null && !xmlParameters.equalsIgnoreCase(""))
 				{
-					XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("_", "_");
+					XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("grfthscv", "_");
 					XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
-					xstream.alias("PARAMETERSMETADATA", ParametersMetadata.class);
+					xstream.alias("SDK_DOCUMENT_PARAMETERS", SDKDocumentParameters.class);
 					xstream.alias("PARAMETER", SDKDocumentParameter.class);
 					xstream.useAttributeFor(SDKDocumentParameter.class, "id");
 					xstream.useAttributeFor(SDKDocumentParameter.class, "label");
@@ -623,7 +623,7 @@ public class DocContainer {
 					xstream.omitField(SDKDocumentParameter.class, "values");		
 					xstream.omitField(SDKDocumentParameter.class, "constraints");
 					xstream.omitField(SDKDocumentParameter.class, "__hashCodeCalc");
-					ParametersMetadata  parametersMetaDataObject= (ParametersMetadata)xstream.fromXML(xmlParameters);
+					SDKDocumentParameters parametersMetaDataObject= (SDKDocumentParameters)xstream.fromXML(xmlParameters);
 					metadataDocument.buildMetadataParameters(parametersMetaDataObject);
 				}
 			}
@@ -755,13 +755,13 @@ public class DocContainer {
 			IWorkbenchPage aa=a.getActivePage();
 			IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentProperties");
 			Object p=w.getPart(false);
-			DocumentProperties view=(DocumentProperties)p;
+			DocumentPropertiesView view=(DocumentPropertiesView)p;
 			view.reloadProperties(metadataDocument);
 
 			// Document parameters
 			IViewReference wPars=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentParameters");
 			Object p2=wPars.getPart(false);
-			DocumentParameters docParameters=(DocumentParameters)p2;
+			DocumentParametersView docParameters=(DocumentParametersView)p2;
 			docParameters.reloadProperties(metadataDocument.getMetadataParameters());
 		}
 		catch (Exception e) {

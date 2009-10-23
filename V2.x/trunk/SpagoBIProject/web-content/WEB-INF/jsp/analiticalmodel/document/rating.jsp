@@ -35,7 +35,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 <%@page import="it.eng.spagobi.tools.datasource.bo.DataSource"%>
 <%@page import="it.eng.spagobi.monitoring.dao.AuditManager"%>
 <%@page import="it.eng.spagobi.commons.utilities.GeneralUtilities"%>
-<%@page import="it.eng.spagobi.services.common.SsoServiceInterface"%>
 
  <%
 	    String objid = (String)aServiceResponse.getAttribute("OBJECT_ID");

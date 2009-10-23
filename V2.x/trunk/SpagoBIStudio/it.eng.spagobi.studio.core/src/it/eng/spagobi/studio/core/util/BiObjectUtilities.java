@@ -97,8 +97,8 @@ public class BiObjectUtilities {
 
 		XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("_", "_");
 		XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
-		ParametersMetadata pars=new ParametersMetadata(list);
-		xstream.alias("PARAMETERSMETADATA", ParametersMetadata.class);
+		SDKDocumentParameters pars=new SDKDocumentParameters(list);
+		xstream.alias("SDK_DOCUMENT_PARAMETERS", SDKDocumentParameters.class);
 		xstream.alias("PARAMETER", SDKDocumentParameter.class);
 		xstream.useAttributeFor(SDKDocumentParameter.class, "id");
 		xstream.useAttributeFor(SDKDocumentParameter.class, "label");
@@ -106,6 +106,7 @@ public class BiObjectUtilities {
 		xstream.useAttributeFor(SDKDocumentParameter.class, "urlName");
 		xstream.omitField(SDKDocumentParameter.class, "values");		
 		xstream.omitField(SDKDocumentParameter.class, "constraints");
+		xstream.omitField(SDKDocumentParameter.class, "__hashCodeCalc");
 
 		//        xstream.addImplicitCollection(SDKDocumentParameter[].class, "PARAMETERS", "PARAMETER", SDKDocument.class);
 		//		for (int i = 0; i < parameters.length; i++) {

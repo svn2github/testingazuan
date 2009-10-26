@@ -1,11 +1,19 @@
 package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata;
 
 import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
+import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.util.SDKDocumentParameters;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 
 public class MetadataDocument {
 
@@ -22,6 +30,8 @@ public class MetadataDocument {
 	private String state;
 	private Vector<MetadataParameter> metadataParameters;
 
+	private String localFileName;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -99,6 +109,62 @@ public class MetadataDocument {
 		}
 		metadataParameters=vector;		
 	}
+	public String getLocalFileName() {
+		return localFileName;
+	}
+	public void setLocalFileName(String localFileName) {
+		this.localFileName = localFileName;
+	}
+	public MetadataDocument() {
+	}
 
+	
+	public MetadataDocument(IFile file) throws CoreException {
+		String documentId=file.getPersistentProperty(PropertyPage.DOCUMENT_ID);
+		String documentName=file.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
+		String documentType=file.getPersistentProperty(PropertyPage.DOCUMENT_TYPE);
+		String documentEngineId=file.getPersistentProperty(PropertyPage.ENGINE_ID);
+		String documentLabel=file.getPersistentProperty(PropertyPage.DOCUMENT_LABEL);
+		String documentState=file.getPersistentProperty(PropertyPage.DOCUMENT_STATE);
+		String documentDescription=file.getPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION);
+		String documentDatasetId=file.getPersistentProperty(PropertyPage.DATASET_ID);
+		String documentDatasourceId=file.getPersistentProperty(PropertyPage.DATA_SOURCE_ID);
+		String xmlParameters=file.getPersistentProperty(PropertyPage.DOCUMENT_PARAMETERS_XML);
+		
+		setId(id!=null ? Integer.valueOf(id) : -1);
+		setLabel(documentLabel);
+		setDescription(documentDescription);
+		setType(documentType);
+		setName(documentName);
+		setEngine(documentEngineId);
+		setDataSet(documentDatasetId);
+		setDataSource(documentDatasourceId);
+		setState(documentState);
+		setLocalFileName(file.getName());
 
+		if(xmlParameters!=null && !xmlParameters.equalsIgnoreCase(""))
+		{
+			XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("grfthscv", "_");
+			XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
+			xstream.alias("SDK_DOCUMENT_PARAMETERS", SDKDocumentParameters.class);
+			xstream.alias("PARAMETER", SDKDocumentParameter.class);
+			xstream.useAttributeFor(SDKDocumentParameter.class, "id");
+			xstream.useAttributeFor(SDKDocumentParameter.class, "label");
+			xstream.useAttributeFor(SDKDocumentParameter.class, "type");
+			xstream.useAttributeFor(SDKDocumentParameter.class, "urlName");
+			xstream.omitField(SDKDocumentParameter.class, "values");		
+			xstream.omitField(SDKDocumentParameter.class, "constraints");
+			xstream.omitField(SDKDocumentParameter.class, "__hashCodeCalc");
+			SDKDocumentParameters parametersMetaDataObject= (SDKDocumentParameters)xstream.fromXML(xmlParameters);
+			buildMetadataParameters(parametersMetaDataObject);
+		}
+
+	
+	}
+
+	
+	
+	
+	
+	
 }

@@ -1,0 +1,94 @@
+package it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata;
+
+
+import org.eclipse.swt.widgets.Composite;
+
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
+
+public class MetadataStyle {
+
+	private int x;
+	private int y;
+	private int widthPercentage;
+	private int heightPercentage;
+
+
+
+
+	public MetadataStyle(Style styleS) {
+		String style=styleS.getStyle();
+		int indexTop=style.indexOf("top:");
+
+		int indexOfPXAfterTop=style.indexOf("px;", indexTop);
+		String topValue=style.substring(indexTop+4, indexOfPXAfterTop);
+
+		String leftValue="";
+		int indexLeft=style.indexOf("left:");
+		if(indexLeft==-1){
+			indexLeft=style.indexOf("margin:");
+			int indexOfPXAfterLeft=style.indexOf("px;", indexLeft);
+			leftValue=style.substring(indexLeft+7, indexOfPXAfterLeft);
+
+		}
+		else{
+			int indexOfPXAfterLeft=style.indexOf("px;", indexLeft);
+			leftValue=style.substring(indexLeft+5, indexOfPXAfterLeft);
+		}
+
+		int indexWidth=style.indexOf("width:");
+		int indexOfPXAfterWidth=style.indexOf("%;", indexWidth);
+		String widthValue=style.substring(indexWidth+6, indexOfPXAfterWidth);
+
+
+		int indexHeight=style.indexOf("height:");
+		int indexOfPXAfterHeight=style.indexOf("%;", indexHeight);
+		String heightValue=style.substring(indexHeight+7, indexOfPXAfterHeight);
+
+		x=Integer.valueOf(leftValue).intValue();
+		y=Integer.valueOf(topValue).intValue();
+		widthPercentage=Integer.valueOf(widthValue).intValue();
+		heightPercentage=Integer.valueOf(heightValue).intValue();
+		
+
+	}
+	
+	public int getWidthFromPerc(Composite mainComposite){
+		// calculate the percentage of the whole composite
+		int toReturn=(mainComposite.getBounds().width/100)*widthPercentage;
+		return toReturn;
+	}
+	public int getHeightFromPerc(Composite mainComposite){
+		// calculate the percentage of the whole composite
+		int toReturn=(mainComposite.getBounds().height/100)*heightPercentage;
+		return toReturn;
+	}
+
+
+	public int getX() {
+		return x;
+	}
+	public void setX(int x) {
+		this.x = x;
+	}
+	public int getY() {
+		return y;
+	}
+	public void setY(int y) {
+		this.y = y;
+	}
+	public int getWidthPercentage() {
+		return widthPercentage;
+	}
+	public void setWidthPercentage(int widthPercentage) {
+		this.widthPercentage = widthPercentage;
+	}
+	public int getHeightPercentage() {
+		return heightPercentage;
+	}
+	public void setHeightPercentage(int heightPercentage) {
+		this.heightPercentage = heightPercentage;
+	}
+
+
+
+}

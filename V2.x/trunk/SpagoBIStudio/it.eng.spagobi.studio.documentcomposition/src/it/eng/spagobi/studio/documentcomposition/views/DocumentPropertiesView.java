@@ -1,17 +1,26 @@
 package it.eng.spagobi.studio.documentcomposition.views;
 
+import java.util.HashMap;
+
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
@@ -21,7 +30,6 @@ import org.eclipse.ui.part.ViewPart;
 
 public class DocumentPropertiesView extends ViewPart {
 
-	private Label label;
 	private DocumentComposition documentComp;
 	Label idLabelName;
 	Label idLabelValue;
@@ -39,6 +47,14 @@ public class DocumentPropertiesView extends ViewPart {
 	Label dataSetLabelValue;
 	Label dataSourceLabelName;
 	Label dataSourceLabelValue;
+	Text textStyle;
+	Button automaticButton;
+	Button manualButton;
+	// Style parameters, if present means we are in manual mode
+	HashMap<Integer, String> styleParameters=new HashMap<Integer, String>();
+	Integer id;
+	String styleCurrent;
+	boolean manualMode=false;
 
 	Composite client;
 	Table table;
@@ -53,7 +69,6 @@ public class DocumentPropertiesView extends ViewPart {
 	public static final int STATE=8;
 
 	public void setFocus() {
-		label.setFocus();
 	}
 
 	public void init(IViewSite site) throws PartInitException {
@@ -70,7 +85,6 @@ public class DocumentPropertiesView extends ViewPart {
 
 
 	public void createPartControl(Composite parent) {
-
 
 
 
@@ -91,6 +105,41 @@ public class DocumentPropertiesView extends ViewPart {
 		layout.marginHeight = 2;
 		client.setLayout(layout);
 
+		Composite comp=new Composite(client, SWT.NULL);			
+		GridLayout gl=new GridLayout();
+		gl.numColumns=4;
+		comp.setLayout(gl);
+		Label label=new Label(comp, SWT.NULL);
+		label.setText("Style info: ");
+		textStyle=new Text(comp, SWT.BORDER);
+		textStyle.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		textStyle.setBounds(new Rectangle(10,10,500,10));
+		textStyle.setEditable(false);
+		// put in map the style
+		textStyle.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				String t = textStyle.getText();
+				if(t!=null && !t.equalsIgnoreCase("") && manualMode==true){
+					styleParameters.put(id, t);
+				}
+			}
+		});
+		automaticButton = new Button(comp, SWT.RADIO);
+		automaticButton.setText("Auto");
+		automaticButton.setSelection(true);
+		manualButton = new Button(comp, SWT.RADIO);
+		manualButton.setText("Manual");
+
+		automaticButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				enableManualMode(false);
+			}
+		});
+		manualButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				enableManualMode(true);
+			}
+		});
 
 		table = new Table (client, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLinesVisible (true);
@@ -98,7 +147,7 @@ public class DocumentPropertiesView extends ViewPart {
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.heightHint = 200;
 		table.setLayoutData(data);
-		String[] titles = {"Property", "Value"};
+		String[] titles = {"        Property        ", "              Value              "};
 		for (int i=0; i<titles.length; i++) {
 			TableColumn column = new TableColumn (table, SWT.NONE);
 			column.setText (titles [i]);
@@ -135,93 +184,85 @@ public class DocumentPropertiesView extends ViewPart {
 			table.getColumn (i).pack ();
 		}	
 		client.pack();
-		
-		//		
-		//		
-		//		idLabelName=new Label(client,SWT.NULL);
-		//		idLabelName.setText("Id: ");
-		//		//idLabelName.setVisible(false);
-		//		idLabelValue=new Label(client,SWT.NULL);
-		//		idLabelValue.setText("");
-		//		idLabelValue.setForeground(new Color(client.getDisplay(), new RGB(0,0,255)));
-		//		//idLabelName.setVisible(false);
-		//		
-		//		labelLabelName=new Label(client,SWT.NULL);
-		//		labelLabelName.setText("Label: ");
-		//		labelLabelName.setVisible(false);
-		//		labelLabelValue=new Label(client,SWT.NULL);
-		//		labelLabelValue.setText("");
-		//		labelLabelValue.setForeground(new Color(client.getDisplay(), new RGB(0,0,255)));
-		//		labelLabelName.setVisible(false);
-		//		
-		//		nameLabelName=new Label(client,SWT.NULL);
-		//		nameLabelName.setText("Name: ");
-		//		nameLabelName.setVisible(false);
-		//		nameLabelValue=new Label(client,SWT.NULL);
-		//		nameLabelValue.setText("");
-		//		nameLabelValue.setForeground(new Color(client.getDisplay(), new RGB(0,0,255)));
-		//		nameLabelName.setVisible(false);
-		//		
-		//		descriptionLabelName=new Label(client,SWT.NULL);
-		//		descriptionLabelName.setText("Description: ");
-		//		descriptionLabelName.setVisible(false);
-		//		descriptionLabelValue=new Label(client,SWT.NULL);
-		//		descriptionLabelValue.setText("");
-		//		descriptionLabelValue.setForeground(new Color(client.getDisplay(), new RGB(0,0,255)));
-		//		descriptionLabelName.setVisible(false);
-		//
-		//		typeLabelName=new Label(client,SWT.NULL);
-		//		typeLabelName.setText("Type: ");
-		//		typeLabelName.setVisible(false);
-		//		typeLabelValue=new Label(client,SWT.NULL);
-		//		typeLabelValue.setText("");
-		//		typeLabelValue.setForeground(new Color(client.getDisplay(), new RGB(0,0,255)));
-		//		typeLabelName.setVisible(false);
-		//		
-		//		engineLabelName=new Label(client,SWT.NULL);
-		//		engineLabelName.setText("Engine: ");
-		//		engineLabelName.setVisible(false);
-		//		engineLabelValue=new Label(client,SWT.NULL);
-		//		engineLabelValue.setText("");
-		//		engineLabelValue.setForeground(new Color(client.getDisplay(), new RGB(0,0,255)));
-		//		engineLabelName.setVisible(false);
-		//
-		//		dataSetLabelName=new Label(client,SWT.NULL);
-		//		dataSetLabelName.setText("Data Set: ");
-		//		dataSetLabelName.setVisible(false);
-		//		dataSetLabelValue=new Label(client,SWT.NULL);
-		//		dataSetLabelValue.setText("");
-		//		dataSetLabelValue.setForeground(new Color(client.getDisplay(), new RGB(0,0,255)));
-		//		dataSetLabelName.setVisible(false);
-		//
-		//		dataSourceLabelName=new Label(client,SWT.NULL);
-		//		dataSourceLabelName.setText("Data Source: ");
-		//		dataSourceLabelName.setVisible(false);
-		//		dataSourceLabelValue=new Label(client,SWT.NULL);
-		//		dataSourceLabelValue.setText("");
-		//		dataSourceLabelValue.setForeground(new Color(client.getDisplay(), new RGB(0,0,255)));
-		//		dataSourceLabelName.setVisible(false);
+
 
 		toolkit.paintBordersFor(client);
 		section.setClient(client);
 		viewSelectedProperties();
-
 	}
 
 	public void reloadProperties(MetadataDocument document){
-			table.getItem(ID).setText(1, document.getId()!=null ? document.getId().toString() : "");
-			table.getItem(LABEL).setText(1, document.getLabel()!=null ? document.getLabel() : "");
-			table.getItem(NAME).setText(1, document.getName()!=null ? document.getName() : "");
-			table.getItem(DESCRIPTION).setText(1, document.getDescription()!=null ? document.getDescription() : "");
-			table.getItem(TYPE).setText(1, document.getType()!=null ? document.getType() : "");
-			table.getItem(ENGINE).setText(1, document.getEngine()!=null ? document.getEngine() : "");
-			table.getItem(DATA_SET).setText(1, document.getDataSet()!=null ? document.getDataSet() : "");
-			table.getItem(DATA_SOURCE).setText(1, document.getDataSource()!=null ? document.getDataSource() : "");
-			table.getItem(STATE).setText(1, document.getState()!=null ? document.getState() : "");
+		table.getItem(ID).setText(1, document.getId()!=null ? document.getId().toString() : "");
+		table.getItem(LABEL).setText(1, document.getLabel()!=null ? document.getLabel() : "");
+		table.getItem(NAME).setText(1, document.getName()!=null ? document.getName() : "");
+		table.getItem(DESCRIPTION).setText(1, document.getDescription()!=null ? document.getDescription() : "");
+		table.getItem(TYPE).setText(1, document.getType()!=null ? document.getType() : "");
+		table.getItem(ENGINE).setText(1, document.getEngine()!=null ? document.getEngine() : "");
+		table.getItem(DATA_SET).setText(1, document.getDataSet()!=null ? document.getDataSet() : "");
+		table.getItem(DATA_SOURCE).setText(1, document.getDataSource()!=null ? document.getDataSource() : "");
+		table.getItem(STATE).setText(1, document.getState()!=null ? document.getState() : "");
 
 		client.layout();
 		client.redraw();
 	}
+
+	public void reloadStyle(Integer docContainerId, String style){
+		// check if present document is in manual mode
+		String stylePrec=styleParameters.get(docContainerId);
+		id=docContainerId;
+		styleCurrent=style;
+		if(stylePrec==null){ // set  automatic mode
+			enableManualMode(false);
+			textStyle.setText(style);
+			textStyle.redraw();
+		}
+		else{ 				// set manual model
+			enableManualMode(true);
+			textStyle.setText(stylePrec);
+			textStyle.redraw();			
+		}
+
+		client.layout();
+		client.redraw();
+
+
+	}
+
+
+	public void enableManualMode(boolean manual){
+		if(manual==false){
+			manualMode=false;
+			automaticButton.setSelection(true);
+			manualButton.setSelection(false);
+			textStyle.setEditable(false);
+			textStyle.setText(styleCurrent!=null ? styleCurrent : "");
+			//textStyle.pack();
+		}
+		else{
+			manualMode=true;
+			automaticButton.setSelection(false);
+			manualButton.setSelection(true);
+			textStyle.setEditable(true);
+			if(styleParameters.get(id)!=null){
+				styleParameters.remove(id);
+			}
+		}
+
+	}
+
+	public void cleanSizeAndProperties(){
+		automaticButton.setEnabled(true);
+		textStyle.setText("");
+		id=null;
+		styleCurrent=null;
+		TableItem[] tableItems=table.getItems();
+		for (int i = 0; i < tableItems.length; i++) {
+			tableItems[i].setText(1,"");
+		}
+		enableManualMode(false);
+		styleParameters=new HashMap<Integer, String>();
+	}
+
 
 
 	@Override
@@ -261,13 +302,7 @@ public class DocumentPropertiesView extends ViewPart {
 		super.setPartName(partName);
 	}
 
-	public Label getLabel() {
-		return label;
-	}
 
-	public void setLabel(Label label) {
-		this.label = label;
-	}
 
 	public DocumentComposition getDocumentComp() {
 		return documentComp;
@@ -412,6 +447,16 @@ public class DocumentPropertiesView extends ViewPart {
 	public void setClient(Composite client) {
 		this.client = client;
 	}
+
+	public boolean isManualMode() {
+		return manualMode;
+	}
+
+	public void setManualMode(boolean manualMode) {
+		this.manualMode = manualMode;
+	}
+
+
 
 
 

@@ -3,6 +3,7 @@ package it.eng.spagobi.studio.documentcomposition.views;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataParameter;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -28,10 +29,10 @@ public class DocumentParametersView extends ViewPart {
 	Composite client;
 	Table table;
 
-	public static final int ID=1;
-	public static final int LABEL=2;
-	public static final int TYPE=3;
-	public static final int URLNAME=4;
+	public static final int ID=0;
+	public static final int LABEL=1;
+	public static final int TYPE=2;
+	public static final int URLNAME=3;
 
 
 	public void init(IViewSite site) throws PartInitException {
@@ -73,7 +74,7 @@ public class DocumentParametersView extends ViewPart {
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		data.heightHint = 200;
 		table.setLayoutData(data);
-		String[] titles = {"Property", "Value"};
+		String[] titles = {"    Id    ","          Label          ", "          Type          ","          UrlName          "};
 		for (int i=0; i<titles.length; i++) {
 			TableColumn column = new TableColumn (table, SWT.NONE);
 			column.setText (titles [i]);
@@ -82,7 +83,7 @@ public class DocumentParametersView extends ViewPart {
 			table.getColumn (i).pack ();
 		}	
 		client.pack();
-		
+
 
 		toolkit.paintBordersFor(client);
 		section.setClient(client);
@@ -100,7 +101,7 @@ public class DocumentParametersView extends ViewPart {
 			item.setText (TYPE, metadataParameter.getType()!=null ? metadataParameter.getType() : "");
 			item.setText (URLNAME, metadataParameter.getUrlName()!=null ? metadataParameter.getUrlName() : "");
 		}
-		
+
 		client.layout();
 		client.redraw();
 	}
@@ -143,9 +144,9 @@ public class DocumentParametersView extends ViewPart {
 		super.setPartName(partName);
 	}
 
-	
-	
-	
+
+
+
 	public DocumentComposition getDocumentComp() {
 		return documentComp;
 	}
@@ -173,10 +174,12 @@ public class DocumentParametersView extends ViewPart {
 	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-
+	public void cleanParameters(){
+		table.removeAll();
+	}
 
 
 

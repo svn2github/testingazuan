@@ -12,12 +12,18 @@ import it.eng.spagobi.studio.documentcomposition.util.XmlTemplateGenerator;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.ModifyNavigationWizardPage;
 import it.eng.spagobi.studio.documentcomposition.wizards.pages.util.DestinationInfo;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -68,22 +74,59 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 		if(modifyNavigationWizardPage.isPageComplete()){
 			DestinationInfo destinationInfo = new DestinationInfo();
 			int destinCounter= modifyNavigationWizardPage.getDestinCounter();
-			int sel = modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getSelectionIndex();
-			destinationInfo.setDocDestName(modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getItem(sel));
-			int selIn = modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getSelectionIndex();		
-			destinationInfo.setParamDestName(modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getItem(selIn));
-			destinationInfo.setParamDefaultValue(modifyNavigationWizardPage.getDestinationInputParamDefaultValue().elementAt(destinCounter));
-			modifyNavigationWizardPage.getDestinationInfos().add(destinationInfo);	
+			if(destinCounter!= -1){
+				if(!modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).isDisposed()){
+					int sel = modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getSelectionIndex();
+					destinationInfo.setDocDestName(modifyNavigationWizardPage.getDestinationDocNameCombo().elementAt(destinCounter).getItem(sel));
+					int selIn = modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getSelectionIndex();		
+					destinationInfo.setParamDestName(modifyNavigationWizardPage.getDestinationInputParam().elementAt(destinCounter).getItem(selIn));
+					destinationInfo.setParamDefaultValue(modifyNavigationWizardPage.getDestinationInputParamDefaultValue().elementAt(destinCounter));
+					modifyNavigationWizardPage.getDestinationInfos().add(destinationInfo);	
+				}
+			}
 		}
 	}
-	
+	private void redrawTable(){
+		//*INSERISCE NELLA LISTA DELLE NAVIGATION LA NUOVA NAVIGAZIONE*/
+		 
+		Object objSel = selection.toList().get(0);
+		Table listOfNavigations = (Table)objSel;
+		
+		TableItem[] items = listOfNavigations.getSelection();
+      
+	    StringBuffer dest = new StringBuffer();
+	    
+		Vector<DestinationInfo> destInfos = modifyNavigationWizardPage.getDestinationInfos();
+		for(int k =0; k<destInfos.size(); k++){
+			DestinationInfo destInfo = destInfos.elementAt(k);
+			String destinationDoc = destInfo.getDocDestName();
+			if(destinationDoc != null){
+	    		dest.append((destInfos.elementAt(k)).getDocDestName());
+	    		if(k != destInfos.size()-1){
+	    			dest.append(" - ");
+	    		}
+			}
+			
+		}
+
+		items[0].setText(2, dest.toString());
+    
+	    listOfNavigations.getShell().redraw();
+		////////////////////////////////////
+		
+	}
 	@Override
 	public boolean performFinish() {
-		completePageDataCollection();
+		XmlTemplateGenerator generator = new XmlTemplateGenerator();
+		
+		
+		//completePageDataCollection();
+		
+		redrawTable();
 		//recupera da plugin oggetto DocumentComposition
 		
 		DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
-		
+
 		String masterName= modifyNavigationWizardPage.getMasterDocName().getText();
 	    //in realtà prende il doc master corrispondente a quello selezionato dall'utente
 	    //all'interno del doc master costrisce Parametro con Refresh (navigazione)	
@@ -100,17 +143,15 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
 				String masterPar = modifyNavigationWizardPage.getMasterParamName().getText();
 	    		//modifica le destinazioni
-	    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
+	    		//Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
+				Parameters params = new Parameters();
     			if(params == null){
     				params = new Parameters();//altrimenti lo crea
     			}
     			
-    			Vector<Parameter> parameters =params.getParameter();//attualmente sovrascrive
-    			//if(parameters == null){
-    				parameters = new Vector<Parameter>();
-    			//}
-	    		//aggiunge il parameter IN per la dstinazione
-	    		fillInNavigationParams(parameters, doc);
+    			Vector<Parameter> parameters = new Vector<Parameter>();
+
+
 	    		
 	    		//aggiunge parametro OUT per doc master
     			Parameter newParam = new Parameter();
@@ -120,10 +161,21 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
     			parameters.add(newParam);
 				params.setParameter(parameters);
 				doc.setParameters(params);
+	    	}else{
+	    		Parameters params = new Parameters();
+
+    			Vector<Parameter> parameters =  new Vector<Parameter>();
+
+	    		//aggiunge il parameter IN per la dstinazione
+	    		fillInNavigationParams(parameters, doc);
+		
+	    		
+	    		params.setParameter(parameters);
+				doc.setParameters(params);
 	    	}
 	    }
 	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
-	    XmlTemplateGenerator generator = new XmlTemplateGenerator();
+	    
 	    generator.transformToXml(docComp);
 	    return true;
 	}
@@ -186,9 +238,29 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 				param.setDefaultVal(destInfo.getParamDefaultValue().getText());
 				
 				parameters.add(param);
-			}
-			
+			}			
 		}
-
 	}
+/*	private void clearInNavigationParameters(Vector<Parameter> parameters, Document doc){
+		Vector<DestinationInfo> destInfos = modifyNavigationWizardPage.getDestinationInfos();
+		ArrayList destinations = new ArrayList<String>();
+		for(int i=0; i<destInfos.size(); i++){
+			DestinationInfo info = destInfos.elementAt(i);
+			String docDest = info.getDocDestName();
+			destinations.add(docDest);
+		}
+		for(int k =0; k<parameters.size(); k++){
+			Parameter param = parameters.elementAt(k);
+			String label = param.getSbiParLabel();
+			for(int i=0; i<destInfos.size(); i++){
+				DestinationInfo info = destInfos.elementAt(i);
+				String docDest = info.getDocDestName();
+				if(!destinations.contains(docDest)){
+					//remove parameter
+					parameters.remove(k);
+				}
+			}
+		
+		}
+	}*/
 }

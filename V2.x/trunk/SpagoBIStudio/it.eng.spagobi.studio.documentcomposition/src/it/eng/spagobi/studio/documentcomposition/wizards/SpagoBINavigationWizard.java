@@ -137,54 +137,57 @@ public class SpagoBINavigationWizard extends Wizard implements INewWizard{
 		//DocumentComposition docComp = new DocumentComposition ();
 
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
-	    Vector documents = docConf.getDocuments();
-	    
-	    //elabora documento master
-	    for (int i = 0; i< documents.size(); i++){
-	    	Document doc = (Document)documents.get(i);
-	    	String docLabel = doc.getSbiObjLabel();
-	    	if(docLabel.equalsIgnoreCase(masterName)){
-	    		doc.setSbiObjLabel(masterName);
-	    		Combo out = newNavigationWizardMasterDocPage.getMasterDocOutputParam();	 
-				String masterPar = out.getText();
-	    		//campo out a cui vengono assegnati
-	    		
-	    		
-	    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
-    			if(params == null){
-    				params = new Parameters();//altrimenti lo crea
-    			}
-    			
-    			Vector<Parameter> parameters =params.getParameter();
-    			if(parameters == null){
-    				parameters = new Vector<Parameter>();
-    			}
-	    		//aggiunge il parameter IN per la dstinazione
-	    		fillInNavigationParams(parameters, doc);
-	    		
-	    		//aggiunge parametro OUT per doc master
-    			Parameter newParam = new Parameter();
-    			fillNavigationOutParam(newParam, masterPar);
-
-
-    			parameters.add(newParam);
-				params.setParameter(parameters);
-				doc.setParameters(params);
-	    	}else{
-	    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
-    			if(params == null){
-    				params = new Parameters();//altrimenti lo crea
-    			}
-    			Vector<Parameter> parameters =params.getParameter();
-    			if(parameters == null){
-    				parameters = new Vector<Parameter>();
-    			}
-	    		//aggiunge il parameter IN per la dstinazione
-	    		fillInNavigationParams(parameters, doc);
-				params.setParameter(parameters);
-				doc.setParameters(params);
-	    	}
-	    }
+		if(docConf != null){
+		    Vector documents = docConf.getDocuments();
+		    if(documents != null){
+			    //elabora documento master
+			    for (int i = 0; i< documents.size(); i++){
+			    	Document doc = (Document)documents.get(i);
+			    	String docLabel = doc.getSbiObjLabel();
+			    	if(docLabel.equalsIgnoreCase(masterName)){
+			    		doc.setSbiObjLabel(masterName);
+			    		Combo out = newNavigationWizardMasterDocPage.getMasterDocOutputParam();	 
+						String masterPar = out.getText();
+			    		//campo out a cui vengono assegnati
+			    		
+			    		
+			    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
+		    			if(params == null){
+		    				params = new Parameters();//altrimenti lo crea
+		    			}
+		    			
+		    			Vector<Parameter> parameters =params.getParameter();
+		    			if(parameters == null){
+		    				parameters = new Vector<Parameter>();
+		    			}
+			    		//aggiunge il parameter IN per la dstinazione
+			    		fillInNavigationParams(parameters, doc);
+			    		
+			    		//aggiunge parametro OUT per doc master
+		    			Parameter newParam = new Parameter();
+		    			fillNavigationOutParam(newParam, masterPar);
+		
+		
+		    			parameters.add(newParam);
+						params.setParameter(parameters);
+						doc.setParameters(params);
+			    	}else{
+			    		Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
+		    			if(params == null){
+		    				params = new Parameters();//altrimenti lo crea
+		    			}
+		    			Vector<Parameter> parameters =params.getParameter();
+		    			if(parameters == null){
+		    				parameters = new Vector<Parameter>();
+		    			}
+			    		//aggiunge il parameter IN per la dstinazione
+			    		fillInNavigationParams(parameters, doc);
+						params.setParameter(parameters);
+						doc.setParameters(params);
+			    	}
+			    }
+		    }
+		}
 	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
 	    XmlTemplateGenerator generator = new XmlTemplateGenerator();
 	    generator.transformToXml(docComp);

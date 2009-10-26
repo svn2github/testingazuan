@@ -25,6 +25,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -53,6 +54,8 @@ public class NavigationView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {		
 		test();
+		
+		
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 
 		// Lets make a layout for the first section of the screen
@@ -73,92 +76,98 @@ public class NavigationView extends ViewPart {
 		layout.marginHeight = 2;
 		client.setLayout(layout);
 		
-		final boolean[] result = new boolean[1];
-		/**crea dialog x conferma**/
-	
-		Button newButton = toolkit.createButton(client, "New", SWT.PUSH); 
-		Button deleteButton = createDeleteButton(parent, toolkit, client);
-		Button updateButton = toolkit.createButton(client, "Modify", SWT.PUSH);
-		
-		
-		newButton.pack();
-		updateButton.pack();
-		
 		GridData gd = new GridData(SWT.LEFT);
 		gd.widthHint = 50;
 		gd.horizontalSpan =1;
 		gd.horizontalAlignment= SWT.LEFT;
 		
-
-		newButton.setLayoutData(gd);
-		deleteButton.setLayoutData(gd);
-		updateButton.setLayoutData(gd);
+		if(documentComp != null && documentComp.getDocumentsConfiguration()!= null && documentComp.getDocumentsConfiguration().getDocuments()!= null){
+			final boolean[] result = new boolean[1];
+			/**crea dialog x conferma**/
 		
-		
-		// Add Delete Button Listener
-		Listener deleteListener = new Listener() {
-			public void handleEvent(Event event) {
-		        switch (event.type) {
-		        case SWT.Selection:
-		          Shell confirm = createConfirmDialog(client, result);
-		          confirm.setText("Confirm delete?");
-		          confirm.setSize(250,100);
-				  confirm.open();
-				  
-				  
-		          break;
-		        }
+			Button newButton = toolkit.createButton(client, "New", SWT.PUSH); 
+			Button deleteButton = createDeleteButton(parent, toolkit, client);
+			Button updateButton = toolkit.createButton(client, "Modify", SWT.PUSH);
+			
+			
+			newButton.pack();
+			updateButton.pack();
+			
+	
+			newButton.setLayoutData(gd);
+			deleteButton.setLayoutData(gd);
+			updateButton.setLayoutData(gd);
+			
+			
+			// Add Delete Button Listener
+			Listener deleteListener = new Listener() {
+				public void handleEvent(Event event) {
+			        switch (event.type) {
+			        case SWT.Selection:
+			          Shell confirm = createConfirmDialog(client, result);
+			          confirm.setText("Confirm delete?");
+			          confirm.setSize(250,100);
+					  confirm.open();
+					  
+					  
+			          break;
+			        }
+	
+				}
+			};
+	
+			Listener addListener = new Listener() {
+				public void handleEvent(Event event) {
+			        switch (event.type) {
+			        case SWT.Selection:
+				    	///button to start the wizard
+			    	    // Instantiates and initializes the wizard
+			        	SpagoBINavigationWizard wizard = new SpagoBINavigationWizard();
+	
+			    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
+			    	    // Instantiates the wizard container with the wizard and opens it
+			    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+			    	    dialog.create();
+			    	    dialog.open();
+			        }
+	
+				}
+			};
+			
+			Listener modifyListener = new Listener() {
+				public void handleEvent(Event event) {
+			        switch (event.type) {
+			        case SWT.Selection:
+				    		///button to start the wizard
+			    	    // Instantiates and initializes the wizard
+			        	SpagoBIModifyNavigationWizard wizard = new SpagoBIModifyNavigationWizard();
+	
+			    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
+			    	    // Instantiates the wizard container with the wizard and opens it
+			    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+			    	    dialog.create();
+			    	    dialog.open();
+			        }
+	
+				}
+			};
+			newButton.addListener(SWT.Selection, addListener);
+			updateButton.addListener(SWT.Selection, modifyListener);
+			deleteButton.addListener(SWT.Selection, deleteListener);
+					
+			/**tabella navigazioni**/
+			createTable(parent, toolkit, client);
+	
+		}else{
+			
+			new Label(client, SWT.NONE).setText("No documents configured.");
 
-			}
-		};
-
-		Listener addListener = new Listener() {
-			public void handleEvent(Event event) {
-		        switch (event.type) {
-		        case SWT.Selection:
-			    	///button to start the wizard
-		    	    // Instantiates and initializes the wizard
-		        	SpagoBINavigationWizard wizard = new SpagoBINavigationWizard();
-
-		    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
-		    	    // Instantiates the wizard container with the wizard and opens it
-		    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
-		    	    dialog.create();
-		    	    dialog.open();
-		        }
-
-			}
-		};
-		
-		Listener modifyListener = new Listener() {
-			public void handleEvent(Event event) {
-		        switch (event.type) {
-		        case SWT.Selection:
-			    		///button to start the wizard
-		    	    // Instantiates and initializes the wizard
-		        	SpagoBIModifyNavigationWizard wizard = new SpagoBIModifyNavigationWizard();
-
-		    	    wizard.init(PlatformUI.getWorkbench(),  new StructuredSelection(table));
-		    	    // Instantiates the wizard container with the wizard and opens it
-		    	    WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
-		    	    dialog.create();
-		    	    dialog.open();
-		        }
-
-			}
-		};
-		newButton.addListener(SWT.Selection, addListener);
-		updateButton.addListener(SWT.Selection, modifyListener);
-		deleteButton.addListener(SWT.Selection, deleteListener);
-				
-		/**tabella navigazioni**/
-		createTable(parent, toolkit, client);
-
-		
+		}
 		toolkit.paintBordersFor(client);
 		section.setClient(client);
-	}
 
+	}
+	
 	protected Button createDeleteButton(Composite parent, FormToolkit toolkit, Composite client){
 		
 		Button deleteButton = toolkit.createButton(client, "Delete", SWT.PUSH | SWT.BORDER_DOT);
@@ -361,7 +370,7 @@ public class NavigationView extends ViewPart {
 			Activator.getDefault().setMetadataDocumentComposition(metadataDoc);
 		}
 		
-		if(documentComp == null){
+		if(documentComp == null || documentComp.getDocumentsConfiguration() == null){
 			documentComp = new DocumentComposition();
 			DocumentsConfiguration documentsConfiguration = new DocumentsConfiguration();
 			

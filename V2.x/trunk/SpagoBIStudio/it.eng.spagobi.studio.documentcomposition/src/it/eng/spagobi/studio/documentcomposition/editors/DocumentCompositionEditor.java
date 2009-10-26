@@ -100,14 +100,16 @@ public class DocumentCompositionEditor extends EditorPart {
         try {
             IWorkbenchPage iworkbenchpage = PlatformUI.getWorkbench()
                             .getActiveWorkbenchWindow().getActivePage();
-            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView") == null ){
-                        iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
-            }
-            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView") == null ){
-                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
-            }
-            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.NavigationView") == null ){
-                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
+            if(iworkbenchpage != null){
+	            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView") == null ){
+	                        iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
+	            }
+	            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView") == null ){
+	                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
+	            }
+	            if (iworkbenchpage.findView("it.eng.spagobi.studio.documentcomposition.views.NavigationView") == null ){
+	                iworkbenchpage.showView("it.eng.spagobi.studio.documentcomposition.views.NavigationView");
+	            }
             }
         } catch (PartInitException partinitexception) {
                 partinitexception.printStackTrace();

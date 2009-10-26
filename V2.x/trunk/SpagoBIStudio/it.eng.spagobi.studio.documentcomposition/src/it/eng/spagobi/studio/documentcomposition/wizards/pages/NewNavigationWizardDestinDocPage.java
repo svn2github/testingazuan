@@ -375,7 +375,6 @@ public class NewNavigationWizardDestinDocPage extends WizardPage {
 						for (int j =0; j<params.size(); j++){
 							MetadataParameter param = (MetadataParameter)params.elementAt(j);
 							String label = param.getLabel();
-							//System.out.println("*******"+destinComboToRedraw);
 							destinationInputParam.elementAt(destinComboToRedraw).add(label);
 						}
 						

@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,6 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
@@ -75,6 +77,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	@Override
 	public boolean isPageComplete() {
 		boolean ret= super.isPageComplete();
+
 		if(destinCounter != -1){
 			for(int i = 0; i<destinCounter; i++){
 				int sel = destinationDocNameCombo.elementAt(destinCounter).getSelectionIndex();
@@ -87,6 +90,8 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 					}
 				}
 			}	
+		}else{
+			ret = false;
 		}
 		return ret;
 	}
@@ -162,41 +167,101 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		
 		setControl(composite);
 	}
-
+	
 	private void fillDestinationCombo(String docDest, int comboToRedraw){
-		
-		if(destinationDocNameCombo.elementAt(comboToRedraw).getItemCount() == 0){
-			if(metaDoc != null){
-				Vector docs = metaDoc.getMetadataDocuments();
-				if(docs != null){
-					for(int i=0; i<docs.size(); i++){
-						String destinationName = ((MetadataDocument)docs.elementAt(i)).getName();
-						
-							if(destinationName != null && !destinationName.equals("")){
-								destinationDocNameCombo.elementAt(comboToRedraw).add(destinationName);
-								if(docDest != null && docDest.equals(destinationName)){
-									int pos = destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
-									destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
+		if(destinationDocNameCombo.elementAt(comboToRedraw) != null){
+			if(destinationDocNameCombo.elementAt(comboToRedraw).getItemCount() == 0){
+				if(metaDoc != null){
+					Vector docs = metaDoc.getMetadataDocuments();
+					if(docs != null){
+						for(int i=0; i<docs.size(); i++){
+							String destinationName = ((MetadataDocument)docs.elementAt(i)).getName();
+							
+								if(destinationName != null && !destinationName.equals("")){
+									destinationDocNameCombo.elementAt(comboToRedraw).add(destinationName);
+									if(docDest != null && docDest.equals(destinationName)){
+										int pos = destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
+										destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
+									}
 								}
-							}
-						
+							
+						}
 					}
 				}
 			}
-		}
-		String master = masterDocName.getText();
-		//per ridisegnare combo
-		
-		if(master != null && !master.equals("")){
-
-			int posMaster =destinationDocNameCombo.elementAt(comboToRedraw).indexOf(master);
-			if(posMaster != -1){
-				destinationDocNameCombo.elementAt(comboToRedraw).remove(posMaster);
-				
+			String master = masterDocName.getText();
+			//per ridisegnare combo
+			
+			if(master != null && !master.equals("")){
+	
+				int posMaster =destinationDocNameCombo.elementAt(comboToRedraw).indexOf(master);
+				if(posMaster != -1){
+					destinationDocNameCombo.elementAt(comboToRedraw).remove(posMaster);
+					
+				}
 			}
+			//rimuove anche destination precedentemente selezionata
+			if(destinCounter != 0){
+				for(int i=1; i<=destinCounter; i++){
+					String destPrec = destinationDocNameCombo.elementAt(i-1).getText();
+					int posDestPrec =destinationDocNameCombo.elementAt(destinCounter).indexOf(destPrec);
+					if(posDestPrec != -1){
+						destinationDocNameCombo.elementAt(destinCounter).remove(posDestPrec);
+					}
+				}
+			}
+			destinationDocNameCombo.elementAt(comboToRedraw).redraw();
 		}
-		destinationDocNameCombo.elementAt(comboToRedraw).redraw();
+	}
+	private void refillDestinationCombo(String docDest, int comboToRedraw){
+		try{
+			destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
+
+			if(destinationDocNameCombo.elementAt(comboToRedraw) != null && destinationDocNameCombo.elementAt(comboToRedraw).getItemCount() != -1){
+				destinationDocNameCombo.elementAt(comboToRedraw).removeAll();
+				if(metaDoc != null){
+					Vector docs = metaDoc.getMetadataDocuments();
+					if(docs != null){
+						for(int i=0; i<docs.size(); i++){
+							String destinationName = ((MetadataDocument)docs.elementAt(i)).getName();
+							
+								if(destinationName != null && !destinationName.equals("")){
+									destinationDocNameCombo.elementAt(comboToRedraw).add(destinationName);
+									if(docDest != null && docDest.equals(destinationName)){
+										int pos = destinationDocNameCombo.elementAt(comboToRedraw).getItemCount();
+										destinationDocNameCombo.elementAt(comboToRedraw).select(pos-1);
+									}
+								}
+							
+						}
+					}
+				}
+				String master = masterDocName.getText();
+				//per ridisegnare combo
+				
+				if(master != null && !master.equals("")){
 		
+					int posMaster =destinationDocNameCombo.elementAt(comboToRedraw).indexOf(master);
+					if(posMaster != -1){
+						destinationDocNameCombo.elementAt(comboToRedraw).remove(posMaster);
+						
+					}
+				}
+				//rimuove anche destination precedentemente selezionata
+				if(destinCounter != 0){
+					for(int i=1; i<=destinCounter; i++){
+						String destPrec = destinationDocNameCombo.elementAt(i-1).getText();
+						int posDestPrec =destinationDocNameCombo.elementAt(destinCounter).indexOf(destPrec);
+						if(posDestPrec != -1){
+							destinationDocNameCombo.elementAt(destinCounter).remove(posDestPrec);
+						}
+					}
+				}
+				destinationDocNameCombo.elementAt(comboToRedraw).redraw();
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 	private void fillDestinationParamCombo(String destDoc, int destinComboToRedraw, String paramInSel){
 
@@ -228,7 +293,7 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		
 	}
 	
-	private Parameter getNavigationItem(Composite composite){
+	private Parameter getNavigationItem(final Composite composite){
 		Parameter param = null;
 		
 		IStructuredSelection selection =((SpagoBIModifyNavigationWizard)getWizard()).getSelection();
@@ -244,12 +309,11 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		gridData.minimumWidth =200;
 		gridData.grabExcessHorizontalSpace = true;
 		gridData.horizontalSpan = 2;
-	
-		//gridData.horizontalSpan = 2;
+
 		if(itemsSel != null && itemsSel.length != 0){
 
 			DocumentComposition docComp = Activator.getDefault().getDocumentComposition();
-			if(docComp != null){
+			if(docComp != null && docComp.getDocumentsConfiguration() != null){
 				Vector docs = docComp.getDocumentsConfiguration().getDocuments();
 				if(docs != null){
 					for(int i=0; i<docs.size(); i++){
@@ -326,16 +390,28 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 				    							Combo selectedCombo = (Combo) event.widget;
 				    							//ricavo dal vettore di combo la sua posizione
 				    							int destinComboToRedraw = destinationDocNameCombo.indexOf(selectedCombo);
-				    							//System.out.println("position of the combo!!!"+destinComboToRedraw);
+				    							//controlla se destinazione precedentem selezionata
+				    							boolean canSelect = canSelectDestination(selectedCombo.getText(), destinComboToRedraw);
+				    							if(!canSelect){
+				    								//messaggio di errore in dialog
+				    								
+				    								selectedCombo.deselect((selectedCombo).getSelectionIndex());
+				    								final boolean[] result = new boolean[1];
+				    						        Shell confirm = createErrorDialog(composite2.getParent(), result, 1);
+				    						        confirm.setText("Error");
+				    						        confirm.setSize(300,100);
+				    								confirm.open();
+				    							}
 
 				    							int sel = destinationDocNameCombo.elementAt(element).getSelectionIndex();
-				    							name = destinationDocNameCombo.elementAt(element).getItem(sel);
-				    							
-				    							destinationInputParam.elementAt(destinComboToRedraw).removeAll();
-				    							
-				    							fillDestinationParamCombo(name, destinComboToRedraw, docDestParam);
-				    							destinationInputParam.elementAt(destinComboToRedraw).redraw();
-				    							
+				    							if(sel != -1){
+					    							name = destinationDocNameCombo.elementAt(element).getItem(sel);
+					    							
+					    							destinationInputParam.elementAt(destinComboToRedraw).removeAll();
+					    							
+					    							fillDestinationParamCombo(name, destinComboToRedraw, docDestParam);
+					    							destinationInputParam.elementAt(destinComboToRedraw).redraw();
+				    							}
 				    						}
 				    					});		
 				    					
@@ -353,8 +429,16 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 					    							int selectionIndex = destinationDocNameCombo.elementAt(element).getSelectionIndex();
 					    							name = destinationDocNameCombo.elementAt(element).getItem(selectionIndex);
 					    							System.out.println("deletion "+name);
+
 					    							deleteDestination(element, composite2);
-				    					        }
+					    							
+					    							for(int i=0; i<=destinCounter;i++){
+					    								refillDestinationCombo(null, i);
+					    							}
+					    							
+					    							composite.pack();
+					    							composite.redraw();
+					    						}
 
 				    						}
 				    					};
@@ -392,10 +476,12 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 	private void deleteDestination(int selectionIndex, Composite toDispose){
 		destinCounter--;
 		destinationInfos.remove(selectionIndex);
+		destinationDocNameCombo.remove(selectionIndex);
+		destinationInputParam.remove(selectionIndex);
+		destinationInputParamDefaultValue.remove(selectionIndex);
 		Composite parent =toDispose.getParent();
 		toDispose.dispose();
-		parent.pack();
-		parent.redraw();
+
 		
 	}
 	
@@ -418,7 +504,56 @@ public class ModifyNavigationWizardPage  extends WizardPage{
 		}	
 		
 	}
-	
+	protected Shell createErrorDialog(Composite client, final boolean[] result, int messageType){
+		final Shell error = new Shell(client.getDisplay(), SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+		error.setLayout(new GridLayout(3, false));
+
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 3;
+
+		error.setSize(300, 100);
+		Point pt = client.getDisplay().getCursorLocation ();
+		error.setLocation (pt.x, pt.y);
+
+		String message = "No more destination documents available.";
+		if(messageType == 1){
+			 message = "Destination already selected.";
+		}else if(messageType == 2){
+			message = "Select a destination.";
+		}
+		new Label(error, SWT.NONE).setText(message);
+		
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+		gd.horizontalSpan = 3;
+	    final Button cancel = new Button(error, SWT.PUSH);
+	    cancel.setLayoutData(gd);
+	    cancel.setText("Cancel");
+
+	    error.isReparentable();
+
+	    Listener dialogListener = new Listener() {
+	        public void handleEvent(Event event) {
+	          result[0] = event.widget == cancel;
+	          error.notifyListeners(event.type, event);
+	          error.close();
+	        }
+	      };
+	    cancel.addListener(SWT.Selection, dialogListener);
+	    return error;
+		
+	}
+	private boolean canSelectDestination(String currentDest, int currentCombo){
+		boolean canSel = true;
+		for(int i =0; i<destinationDocNameCombo.size(); i++){
+			if(i != currentCombo){
+				String prevDest = destinationDocNameCombo.elementAt(i).getText();
+				if(currentDest.equals(prevDest)){
+					canSel = false;
+				}
+			}
+		}
+		return canSel;
+	}
 	public Text getNavigationNameText() {
 		return navigationNameText;
 	}

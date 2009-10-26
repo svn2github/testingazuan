@@ -134,45 +134,46 @@ public class SpagoBIModifyNavigationWizard extends Wizard implements INewWizard{
 
 		DocumentsConfiguration docConf = docComp.getDocumentsConfiguration();
 	    Vector documents = docConf.getDocuments();
-	    
-	    //elabora documento master
-	    for (int i = 0; i< documents.size(); i++){
-	    	Document doc = (Document)documents.get(i);
-	    	String docLabel = doc.getSbiObjLabel();
-	    	if(docLabel.equalsIgnoreCase(masterName)){
-
-				String masterPar = modifyNavigationWizardPage.getMasterParamName().getText();
-	    		//modifica le destinazioni
-	    		//Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
-				Parameters params = new Parameters();
-    			if(params == null){
-    				params = new Parameters();//altrimenti lo crea
-    			}
-    			
-    			Vector<Parameter> parameters = new Vector<Parameter>();
-
-
-	    		
-	    		//aggiunge parametro OUT per doc master
-    			Parameter newParam = new Parameter();
-    			fillNavigationOutParam(newParam, masterPar);
-
-
-    			parameters.add(newParam);
-				params.setParameter(parameters);
-				doc.setParameters(params);
-	    	}else{
-	    		Parameters params = new Parameters();
-
-    			Vector<Parameter> parameters =  new Vector<Parameter>();
-
-	    		//aggiunge il parameter IN per la dstinazione
-	    		fillInNavigationParams(parameters, doc);
-		
-	    		
-	    		params.setParameter(parameters);
-				doc.setParameters(params);
-	    	}
+	    if(documents != null){
+		    //elabora documento master
+		    for (int i = 0; i< documents.size(); i++){
+		    	Document doc = (Document)documents.get(i);
+		    	String docLabel = doc.getSbiObjLabel();
+		    	if(docLabel.equalsIgnoreCase(masterName)){
+	
+					String masterPar = modifyNavigationWizardPage.getMasterParamName().getText();
+		    		//modifica le destinazioni
+		    		//Parameters params = doc.getParameters();//tag già presente nel modello riempito precedentemente
+					Parameters params = new Parameters();
+	    			if(params == null){
+	    				params = new Parameters();//altrimenti lo crea
+	    			}
+	    			
+	    			Vector<Parameter> parameters = new Vector<Parameter>();
+	
+	
+		    		
+		    		//aggiunge parametro OUT per doc master
+	    			Parameter newParam = new Parameter();
+	    			fillNavigationOutParam(newParam, masterPar);
+	
+	
+	    			parameters.add(newParam);
+					params.setParameter(parameters);
+					doc.setParameters(params);
+		    	}else{
+		    		Parameters params = new Parameters();
+	
+	    			Vector<Parameter> parameters =  new Vector<Parameter>();
+	
+		    		//aggiunge il parameter IN per la dstinazione
+		    		fillInNavigationParams(parameters, doc);
+			
+		    		
+		    		params.setParameter(parameters);
+					doc.setParameters(params);
+		    	}
+		    }
 	    }
 	    Activator.getDefault().setDocumentComposition(docComp);///////////////NB risetta!!!
 	    

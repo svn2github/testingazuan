@@ -5,19 +5,24 @@ import java.util.Vector;
 
 
 public class Document {
-	
+
 	private String sbiObjLabel;
+	private String localFileName;	
 	private Parameters parameters;//parameters
 	private Style style; 
-	
+
 	public Style getStyle() {
 		return style;
 	}
 	public void setStyle(Style style) {
 		this.style = style;
 	}
-	
-
+	public String getLocalFileName() {
+		return localFileName;
+	}
+	public void setLocalFileName(String localFileName) {
+		this.localFileName = localFileName;
+	}
 	public Parameters getParameters() {
 		return parameters;
 	}

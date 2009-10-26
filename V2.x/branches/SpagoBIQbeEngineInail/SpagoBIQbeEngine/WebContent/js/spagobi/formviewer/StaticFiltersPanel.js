@@ -44,9 +44,9 @@
   * - Davide Zerbetto (davide.zerbetto@eng.it)
   */
 
-Ext.ns("Sbi.viewer");
+Ext.ns("Sbi.formviewer");
 
-Sbi.viewer.StaticFiltersPanel = function(staticFilters) {
+Sbi.formviewer.StaticFiltersPanel = function(staticFilters) {
 	
 	this.init(staticFilters);
 	
@@ -63,11 +63,11 @@ Sbi.viewer.StaticFiltersPanel = function(staticFilters) {
 	};
 	
 	// constructor
-    Sbi.viewer.StaticFiltersPanel.superclass.constructor.call(this, c);
+    Sbi.formviewer.StaticFiltersPanel.superclass.constructor.call(this, c);
 
 };
 
-Ext.extend(Sbi.viewer.StaticFiltersPanel, Ext.Panel, {
+Ext.extend(Sbi.formviewer.StaticFiltersPanel, Ext.Panel, {
     
 	services: null
 	, forms: null
@@ -80,9 +80,9 @@ Ext.extend(Sbi.viewer.StaticFiltersPanel, Ext.Panel, {
 			var aStaticFiltersGroup = staticFilters[i];
 			var aStaticFiltersForm = null;
 			if (aStaticFiltersGroup.singleSelection) {
-				aStaticFiltersForm = new Sbi.viewer.StaticFiltersORPanel(aStaticFiltersGroup);
+				aStaticFiltersForm = new Sbi.formviewer.StaticFiltersORPanel(aStaticFiltersGroup);
 			} else {
-				aStaticFiltersForm = new Sbi.viewer.StaticFiltersANDPanel(aStaticFiltersGroup);
+				aStaticFiltersForm = new Sbi.formviewer.StaticFiltersANDPanel(aStaticFiltersGroup);
 			}
 			this.forms.push(aStaticFiltersForm);
 		}

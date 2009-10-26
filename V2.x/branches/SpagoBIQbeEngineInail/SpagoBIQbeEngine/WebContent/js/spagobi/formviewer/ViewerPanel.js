@@ -44,9 +44,9 @@
   * - Davide Zerbetto (davide.zerbetto@eng.it)
   */
 
-Ext.ns("Sbi.viewer");
+Ext.ns("Sbi.formviewer");
 
-Sbi.viewer.ViewerPanel = function(config) {
+Sbi.formviewer.ViewerPanel = function(config) {
 	
 	var c = Ext.apply({
 		// set default values here
@@ -62,11 +62,11 @@ Sbi.viewer.ViewerPanel = function(config) {
 	});
 	
 	// constructor
-    Sbi.viewer.ViewerPanel.superclass.constructor.call(this, c);
+    Sbi.formviewer.ViewerPanel.superclass.constructor.call(this, c);
 
 };
 
-Ext.extend(Sbi.viewer.ViewerPanel, Ext.Panel, {
+Ext.extend(Sbi.formviewer.ViewerPanel, Ext.Panel, {
     
     services: null
     , staticFiltersPanel: null
@@ -74,7 +74,7 @@ Ext.extend(Sbi.viewer.ViewerPanel, Ext.Panel, {
     // private methods
     , init: function(config) {
 		this.items =  [];
-		this.staticFiltersPanel = new Sbi.viewer.StaticFiltersPanel(config.staticFilters); 
+		this.staticFiltersPanel = new Sbi.formviewer.StaticFiltersPanel(config.staticFilters); 
 		this.items.push(this.staticFiltersPanel);
 	}
     

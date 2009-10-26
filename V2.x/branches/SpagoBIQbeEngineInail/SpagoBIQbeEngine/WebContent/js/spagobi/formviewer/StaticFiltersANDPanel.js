@@ -44,9 +44,9 @@
   * - Davide Zerbetto (davide.zerbetto@eng.it)
   */
 
-Ext.ns("Sbi.viewer");
+Ext.ns("Sbi.formviewer");
 
-Sbi.viewer.StaticFiltersANDPanel = function(aStaticFiltersORGroup) {
+Sbi.formviewer.StaticFiltersANDPanel = function(aStaticFiltersORGroup) {
 	
 	this.init(aStaticFiltersORGroup);
 	
@@ -58,11 +58,11 @@ Sbi.viewer.StaticFiltersANDPanel = function(aStaticFiltersORGroup) {
 	};
 	
 	// constructor
-    Sbi.viewer.StaticFiltersANDPanel.superclass.constructor.call(this, c);
+    Sbi.formviewer.StaticFiltersANDPanel.superclass.constructor.call(this, c);
 
 };
 
-Ext.extend(Sbi.viewer.StaticFiltersANDPanel, Ext.form.FormPanel, {
+Ext.extend(Sbi.formviewer.StaticFiltersANDPanel, Ext.form.FormPanel, {
     
 	items: null
 	

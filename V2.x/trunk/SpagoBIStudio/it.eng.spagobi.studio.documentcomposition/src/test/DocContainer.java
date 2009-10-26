@@ -5,6 +5,7 @@ import it.eng.spagobi.sdk.documents.bo.SDKDocumentParameter;
 import it.eng.spagobi.studio.core.log.SpagoBILogger;
 import it.eng.spagobi.studio.core.properties.PropertyPage;
 import it.eng.spagobi.studio.core.util.SDKDocumentParameters;
+import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.DocumentComposition;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.Style;
 import it.eng.spagobi.studio.documentcomposition.editors.model.documentcomposition.metadata.MetadataDocument;
 import it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView;
@@ -17,6 +18,7 @@ import java.net.URL;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.TreeSelection;
@@ -30,6 +32,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -46,6 +49,7 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.registry.ViewDescriptor;
 import org.osgi.framework.Bundle;
 
 import com.thoughtworks.xstream.XStream;
@@ -55,26 +59,6 @@ import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 
 public class DocContainer {
 
-
-	//	public static QualifiedName DOCUMENT_ID = new QualifiedName("it.eng.spagobi.sdk.document.id", "Identifier");
-	//	public static QualifiedName DOCUMENT_LABEL = new QualifiedName("it.eng.spagobi.sdk.document.label", "Label");
-	//	public static QualifiedName DOCUMENT_NAME = new QualifiedName("it.eng.spagobi.sdk.document.name", "Name");
-	//	public static QualifiedName DOCUMENT_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.document.description", "Description");
-	//	public static QualifiedName DOCUMENT_TYPE = new QualifiedName("it.eng.spagobi.sdk.document.type", "Type");
-	//	public static QualifiedName DOCUMENT_STATE = new QualifiedName("it.eng.spagobi.sdk.document.description", "State");
-	//
-	//	public static QualifiedName DATASET_ID = new QualifiedName("it.eng.spagobi.sdk.dataset.id", "Identifier");
-	//	public static QualifiedName DATASET_LABEL = new QualifiedName("it.eng.spagobi.sdk.dataset.label", "Label");
-	//	public static QualifiedName DATASET_NAME = new QualifiedName("it.eng.spagobi.sdk.dataset.name", "Name");
-	//	public static QualifiedName DATASET_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.dataset.description", "Description");
-	//
-	//	public static QualifiedName DATA_SOURCE_ID = new QualifiedName("it.eng.spagobi.sdk.datasource.id", "Identifier");
-	//
-	//	public static QualifiedName ENGINE_ID = new QualifiedName("it.eng.spagobi.sdk.engine.id", "Identifier");
-	//	public static QualifiedName ENGINE_LABEL = new QualifiedName("it.eng.spagobi.sdk.engine.label", "Label");
-	//	public static QualifiedName ENGINE_NAME = new QualifiedName("it.eng.spagobi.sdk.engine.name", "Name");
-	//	public static QualifiedName ENGINE_DESCRIPTION = new QualifiedName("it.eng.spagobi.sdk.engine.description", "Description");
-	//	public static QualifiedName DOCUMENT_PARAMETERS_XML = new QualifiedName("it.eng.spagobi.sdk.document.parametersxml", "Parameters");
 
 
 
@@ -116,6 +100,18 @@ public class DocContainer {
 	public static final int MIN_MARGIN_BOUNDS=0;
 	public static final int ALIGNMENT_MARGIN=30;
 
+	Cursor cursor=null;
+
+	/** Document Container Contrusctor
+	 * 
+	 * @param _designer
+	 * @param mainComposite
+	 * @param x
+	 * @param y
+	 * @param tempWidth
+	 * @param tempHeight
+	 */
+	
 	public DocContainer(Designer _designer,Composite mainComposite, int x, int y, int tempWidth, int tempHeight) {
 		super();
 		designer=_designer;
@@ -129,22 +125,8 @@ public class DocContainer {
 		layout.numColumns=2;
 		container.setLayout(layout);
 		designer.incrementCounter();
-
-		//		FormData formData = new FormData();
-		//		formData.top = new FormAttachment(1,y);
-		//		formData.left = new FormAttachment(1,x);
-		//		formData.width=200;
-		//		formData.height=200;
-		//		container.setLayoutData(formData);
-
-
 		container.setSize(tempWidth, tempHeight);
 		container.setLocation(x, y);
-
-		//		this.xPos = x;
-		//		this.yPos= y;
-		//		this.height = DEFAULT_HEIGHT;
-		//		this.width = DEFAULT_WIDTH;	
 		designer.setState(Designer.NORMAL);
 
 		addContainerMouseControls(mainComposite, container);
@@ -159,6 +141,12 @@ public class DocContainer {
 	}
 
 
+	/**
+	 *  Add Mouse controls on document container
+	 * @param mainComposite
+	 * @param composite
+	 */
+	
 	public void addContainerMouseControls(final Composite mainComposite, final Composite composite){
 		final Point[] offset = new Point[1];
 		Listener listener = new Listener() {
@@ -168,6 +156,7 @@ public class DocContainer {
 					// Reload the DocumentPropertiesView
 					if(metadataDocument!=null)
 						reloadDocumentPropertiesView(id.toString());
+					reloadStyleDocumentProperties();
 
 					/**  IF in resizing state mouse button on Container causes end resizing**/	
 					calculateTemplateStyle();
@@ -175,8 +164,9 @@ public class DocContainer {
 						// only if click on the current selected!
 						if(id.equals(designer.getCurrentSelection())){
 							designer.setState(Designer.NORMAL);
+							cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_ARROW);						
+							designer.getMainComposite().setCursor(cursor);							
 							offset[0] = null;							
-							designer.setCurrentSelection(Integer.valueOf(-1));
 							int tempWidth=container.getBounds().width;
 							tempWidth=tempWidth/ALIGNMENT_MARGIN;
 							tempWidth=tempWidth*ALIGNMENT_MARGIN;
@@ -184,6 +174,9 @@ public class DocContainer {
 							tempHeight=tempHeight/ALIGNMENT_MARGIN;
 							tempHeight=tempHeight*ALIGNMENT_MARGIN;
 							container.setSize(tempWidth, tempHeight);
+							reloadStyleDocumentProperties();
+							designer.setCurrentSelection(Integer.valueOf(-1));
+							// Reload style text in view (only if in mode automatic
 						}
 					}
 					/**  IF in normal state mouse button on Container causes selection**/					
@@ -195,7 +188,10 @@ public class DocContainer {
 						offset[0] = new Point(pt2.x - pt1.x, pt2.y - pt1.y);
 						// while up put on DRAG situation
 						designer.setState(Designer.DRAG);
+						cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_HAND);						
+						designer.getMainComposite().setCursor(cursor);
 						composite.setBackground(new Color(composite.getDisplay(),new RGB(0,255,0)));
+						System.out.println(id);
 						designer.setCurrentSelection(id);
 						// ---- modify selection view---
 
@@ -215,7 +211,9 @@ public class DocContainer {
 						}
 
 						composite.setBackground(new Color(composite.getDisplay(),new RGB(0,255,0)));							
-						designer.setState(Designer.DRAG);							
+						designer.setState(Designer.DRAG);
+						cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_HAND);						
+						designer.getMainComposite().setCursor(cursor);						
 						designer.setCurrentSelection(id);
 						Rectangle rect = composite.getBounds();
 						Point pt1 = composite.toDisplay(0, 0);
@@ -264,12 +262,6 @@ public class DocContainer {
 								Point pt = offset[0];							
 								int newX=event.x - pt.x;
 								int newY=event.y - pt.y;
-								//------------- Try Alignment Margin ------------
-								//								int temp=newX/ALIGNMENT_MARGIN;
-								//								newX=temp*ALIGNMENT_MARGIN;
-								//								temp=newY/ALIGNMENT_MARGIN;
-								//								newY=temp*ALIGNMENT_MARGIN;								
-								//-------------								
 								boolean doesIntersect=doesIntersect(id, designer,newX, newY, container.getBounds().width,container.getBounds().height,false);
 								boolean doesExceed=doesExceed(id, designer,newX, newY, container.getBounds().width,container.getBounds().height,false);
 
@@ -307,6 +299,8 @@ public class DocContainer {
 							designer.setCurrentSelection(id);
 							designer.setState(Designer.SELECTION);
 							designer.setCurrentSelection(id);
+							cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_ARROW);						
+							designer.getMainComposite().setCursor(cursor);
 						}
 					}		
 					else if(designer.getState().equals(Designer.SELECTION)){
@@ -329,9 +323,11 @@ public class DocContainer {
 
 
 
-
-
-
+/**
+ *  Add the context menu on document containers
+ * @param mainComposite
+ * @param composite
+ */
 
 	public void addContextMenu(final Composite mainComposite, final Composite composite){
 		composite.addListener(SWT.MenuDetect, new Listener() {
@@ -342,6 +338,9 @@ public class DocContainer {
 				item.addListener(SWT.Selection, new Listener() {
 					public void handleEvent(Event e) {
 						composite.setBackground(new Color(composite.getDisplay(),new RGB(255,0,0)));
+						//cursor = new Cursor(container.getDisplay(), new Image(container.getDisplay(),"D:\\progetti\\spagobi\\workspaceSpagobiStudio\\it.eng.spagobi.studio.documentcomposition\\icons\\cursorResize.PNG").getImageData(), 0, 0);
+						cursor=new Cursor(designer.getMainComposite().getDisplay(), SWT.CURSOR_CROSS);						
+						designer.getMainComposite().setCursor(cursor);
 						designer.setState(Designer.RESIZE);
 					}
 				});
@@ -477,7 +476,7 @@ public class DocContainer {
 					{
 						TreeSelection selectedTreeSelection=(TreeSelection)selectedObject;
 						IFile file=(IFile)selectedTreeSelection.getFirstElement();
-						doTransfer=viewDocumentMetadata(file);
+						doTransfer=recoverDocumentMetadata(file);
 
 						//						IElementComparer el=selectedTreeSelection.getElementComparer();
 						//						org.eclipse.jface.viewers.TreePath[] selectedTreePathes=selectedTreeSelection.getPaths();
@@ -504,8 +503,8 @@ public class DocContainer {
 	}
 
 
-	public boolean viewDocumentMetadata(IFile file){
 
+	public boolean recoverDocumentMetadata(IFile file){
 		try{
 			int i=0;
 			String id=file.getPersistentProperty(PropertyPage.DOCUMENT_ID);
@@ -522,110 +521,12 @@ public class DocContainer {
 			else{			
 				i++;
 
-				String documentName=file.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
-				String documentType=file.getPersistentProperty(PropertyPage.DOCUMENT_TYPE);
-				String documentEngineId=file.getPersistentProperty(PropertyPage.ENGINE_ID);
-				String documentLabel=file.getPersistentProperty(PropertyPage.DOCUMENT_LABEL);
-				String documentState=file.getPersistentProperty(PropertyPage.DOCUMENT_STATE);
-				String documentDescription=file.getPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION);
-				String documentDatasetId=file.getPersistentProperty(PropertyPage.DATASET_ID);
-				String documentDatasourceId=file.getPersistentProperty(PropertyPage.DATA_SOURCE_ID);
-				String xmlParameters=file.getPersistentProperty(PropertyPage.DOCUMENT_PARAMETERS_XML);
+				IPath ia=file.getFullPath();
+				String localFileName=ia.toString();
 
-				//			Label idLabelName=new Label(container,SWT.NULL);
-				//			idLabelName.setText("id: ");
-				//			Label idLabelValue=new Label(container,SWT.NULL);
-				//			idLabelValue.setText(id != null ? id : "" );
-
-				// get the image Path
-				if(documentType!=null){
-					String imagePath=null;
-					if(documentType.equalsIgnoreCase(TYPE_REPORT)){
-						imagePath=IMG_JASPER_REPORT;
-					}
-					else if(documentType.equalsIgnoreCase(TYPE_DASH)){
-						imagePath=IMG_DASHBOARD;
-					}
-					else if(documentType.equalsIgnoreCase(TYPE_DATA_MINING)){
-						imagePath=IMG_DATA_MINING;
-					}
-					else if(documentType.equalsIgnoreCase(TYPE_DATAMART)){
-						imagePath=IMG_DATAMART;
-					}
-					else if(documentType.equalsIgnoreCase(TYPE_DOSSIER)){
-						imagePath=IMG_DOSSIER;
-					}
-					else if(documentType.equalsIgnoreCase(TYPE_DOCUMENT_COMPOSITIOn)){
-						imagePath=IMG_DOCUMENT_COMPOSITION;
-					}
-					else if(documentType.equalsIgnoreCase(TYPE_MAP)){
-						imagePath=IMG_MAP;
-					}
-					else if(documentType.equalsIgnoreCase(TYPE_ETL)){
-						imagePath=IMG_ETL;
-					}
-					else if(documentType.equalsIgnoreCase(TYPE_OFFICE_DOC)){
-						imagePath=IMG_OFFICE_DOC;
-					}
-
-
-					if(imagePath!=null){
-						final String imagePathFinal=imagePath;
-						container.addPaintListener(new PaintListener() {
-							public void paintControl(PaintEvent e) {
-								Image image = null;
-								try {
-									InputStream is=getInputStreamFromResource(imagePathFinal);
-									image = new Image(container.getDisplay(), is);
-								} catch (FileNotFoundException e1) {
-									e1.printStackTrace();
-								}
-								catch (Exception e2) {
-
-									e2.printStackTrace();
-								}
-								e.gc.drawImage(image, 20, 30);
-								image.dispose();
-							}
-						});
-						container.redraw();
-					}
-				}
-
-				container.setText(file.getName());
-				Label nameLabelName=new Label(container,SWT.NULL);
-				nameLabelName.setText("Name: ");			
-				Label nameLabelValue=new Label(container,SWT.NULL);
-				nameLabelValue.setText(documentName != null ? documentName : "" );
-
-				metadataDocument=new MetadataDocument();
-				metadataDocument.setId(Integer.valueOf(id));
-				metadataDocument.setLabel(documentLabel);
-				metadataDocument.setDescription(documentDescription);
-				metadataDocument.setType(documentType);
-				metadataDocument.setName(documentName);
-				metadataDocument.setEngine(documentEngineId);
-				metadataDocument.setDataSet(documentDatasetId);
-				metadataDocument.setDataSource(documentDatasourceId);
-				metadataDocument.setState(documentState);
-
-
-				if(xmlParameters!=null && !xmlParameters.equalsIgnoreCase(""))
-				{
-					XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("grfthscv", "_");
-					XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
-					xstream.alias("SDK_DOCUMENT_PARAMETERS", SDKDocumentParameters.class);
-					xstream.alias("PARAMETER", SDKDocumentParameter.class);
-					xstream.useAttributeFor(SDKDocumentParameter.class, "id");
-					xstream.useAttributeFor(SDKDocumentParameter.class, "label");
-					xstream.useAttributeFor(SDKDocumentParameter.class, "type");
-					xstream.useAttributeFor(SDKDocumentParameter.class, "urlName");
-					xstream.omitField(SDKDocumentParameter.class, "values");		
-					xstream.omitField(SDKDocumentParameter.class, "constraints");
-					xstream.omitField(SDKDocumentParameter.class, "__hashCodeCalc");
-					SDKDocumentParameters parametersMetaDataObject= (SDKDocumentParameters)xstream.fromXML(xmlParameters);
-					metadataDocument.buildMetadataParameters(parametersMetaDataObject);
-				}
+				metadataDocument=new MetadataDocument(file);
+				metadataDocument.setLocalFileName(localFileName);
+				return viewDocumentMetadata(metadataDocument);
 			}
 		}
 		catch (Exception e) {	
@@ -633,14 +534,220 @@ public class DocContainer {
 			SpagoBILogger.errorLog("Exception while retrieving metadata",e);
 			return false;
 		}
-		catch (Throwable e) {
-			e.printStackTrace();
-			SpagoBILogger.errorLog("Exception while retrieving metadata",e);
-			return false;
+
+	}
+
+	public boolean viewDocumentMetadata(MetadataDocument metadataDocument){
+
+		// get the image Path
+
+		if(metadataDocument.getType()!=null){
+			String imagePath=null;
+			if(metadataDocument.getType().equalsIgnoreCase(TYPE_REPORT)){
+				imagePath=IMG_JASPER_REPORT;
+			}
+			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DASH)){
+				imagePath=IMG_DASHBOARD;
+			}
+			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DATA_MINING)){
+				imagePath=IMG_DATA_MINING;
+			}
+			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DATAMART)){
+				imagePath=IMG_DATAMART;
+			}
+			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DOSSIER)){
+				imagePath=IMG_DOSSIER;
+			}
+			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_DOCUMENT_COMPOSITIOn)){
+				imagePath=IMG_DOCUMENT_COMPOSITION;
+			}
+			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_MAP)){
+				imagePath=IMG_MAP;
+			}
+			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_ETL)){
+				imagePath=IMG_ETL;
+			}
+			else if(metadataDocument.getType().equalsIgnoreCase(TYPE_OFFICE_DOC)){
+				imagePath=IMG_OFFICE_DOC;
+			}
+
+
+			if(imagePath!=null){
+				final String imagePathFinal=imagePath;
+				container.addPaintListener(new PaintListener() {
+					public void paintControl(PaintEvent e) {
+						Image image = null;
+						try {
+							InputStream is=getInputStreamFromResource(imagePathFinal);
+							image = new Image(container.getDisplay(), is);
+						} catch (FileNotFoundException e1) {
+							e1.printStackTrace();
+						}
+						catch (Exception e2) {
+
+							e2.printStackTrace();
+						}
+						e.gc.drawImage(image, 20, 30);
+						image.dispose();
+					}
+				});
+				container.redraw();
+			}
 		}
+
+		container.setText(metadataDocument.getLocalFileName());
+		Label nameLabelName=new Label(container,SWT.NULL);
+		nameLabelName.setText("Name: ");			
+		Label nameLabelValue=new Label(container,SWT.NULL);
+		nameLabelValue.setText(metadataDocument.getName() != null ? metadataDocument.getName() : "" );
+		Label localFileNameLabel=new Label(container,SWT.NULL);
+		localFileNameLabel.setText(metadataDocument.getLocalFileName());				
 
 		return true;
 	}
+
+
+
+	//	public boolean viewDocumentMetadata(IFile file){
+	//
+	//		try{
+	//			int i=0;
+	//			String id=file.getPersistentProperty(PropertyPage.DOCUMENT_ID);
+	//			if(metadataDocument!=null){
+	//				MessageDialog.openWarning(container.getShell(), 
+	//						"Warning", "Container has already Document in!");
+	//				return false;
+	//			}
+	//			else if(id==null){
+	//				MessageDialog.openWarning(container.getShell(), 
+	//						"Warning", "Chosen file has no SpagoBI document metadata");
+	//				return false;
+	//			}
+	//			else{			
+	//				i++;
+	//
+	//				String documentName=file.getPersistentProperty(PropertyPage.DOCUMENT_NAME);
+	//				String documentType=file.getPersistentProperty(PropertyPage.DOCUMENT_TYPE);
+	//				String documentEngineId=file.getPersistentProperty(PropertyPage.ENGINE_ID);
+	//				String documentLabel=file.getPersistentProperty(PropertyPage.DOCUMENT_LABEL);
+	//				String documentState=file.getPersistentProperty(PropertyPage.DOCUMENT_STATE);
+	//				String documentDescription=file.getPersistentProperty(PropertyPage.DOCUMENT_DESCRIPTION);
+	//				String documentDatasetId=file.getPersistentProperty(PropertyPage.DATASET_ID);
+	//				String documentDatasourceId=file.getPersistentProperty(PropertyPage.DATA_SOURCE_ID);
+	//				String xmlParameters=file.getPersistentProperty(PropertyPage.DOCUMENT_PARAMETERS_XML);
+	//
+	//				//			Label idLabelName=new Label(container,SWT.NULL);
+	//				//			idLabelName.setText("id: ");
+	//				//			Label idLabelValue=new Label(container,SWT.NULL);
+	//				//			idLabelValue.setText(id != null ? id : "" );
+	//
+	//				// get the image Path
+	//				if(documentType!=null){
+	//					String imagePath=null;
+	//					if(documentType.equalsIgnoreCase(TYPE_REPORT)){
+	//						imagePath=IMG_JASPER_REPORT;
+	//					}
+	//					else if(documentType.equalsIgnoreCase(TYPE_DASH)){
+	//						imagePath=IMG_DASHBOARD;
+	//					}
+	//					else if(documentType.equalsIgnoreCase(TYPE_DATA_MINING)){
+	//						imagePath=IMG_DATA_MINING;
+	//					}
+	//					else if(documentType.equalsIgnoreCase(TYPE_DATAMART)){
+	//						imagePath=IMG_DATAMART;
+	//					}
+	//					else if(documentType.equalsIgnoreCase(TYPE_DOSSIER)){
+	//						imagePath=IMG_DOSSIER;
+	//					}
+	//					else if(documentType.equalsIgnoreCase(TYPE_DOCUMENT_COMPOSITIOn)){
+	//						imagePath=IMG_DOCUMENT_COMPOSITION;
+	//					}
+	//					else if(documentType.equalsIgnoreCase(TYPE_MAP)){
+	//						imagePath=IMG_MAP;
+	//					}
+	//					else if(documentType.equalsIgnoreCase(TYPE_ETL)){
+	//						imagePath=IMG_ETL;
+	//					}
+	//					else if(documentType.equalsIgnoreCase(TYPE_OFFICE_DOC)){
+	//						imagePath=IMG_OFFICE_DOC;
+	//					}
+	//
+	//
+	//					if(imagePath!=null){
+	//						final String imagePathFinal=imagePath;
+	//						container.addPaintListener(new PaintListener() {
+	//							public void paintControl(PaintEvent e) {
+	//								Image image = null;
+	//								try {
+	//									InputStream is=getInputStreamFromResource(imagePathFinal);
+	//									image = new Image(container.getDisplay(), is);
+	//								} catch (FileNotFoundException e1) {
+	//									e1.printStackTrace();
+	//								}
+	//								catch (Exception e2) {
+	//
+	//									e2.printStackTrace();
+	//								}
+	//								e.gc.drawImage(image, 20, 30);
+	//								image.dispose();
+	//							}
+	//						});
+	//						container.redraw();
+	//					}
+	//				}
+	//
+	//				container.setText(file.getName());
+	//				Label nameLabelName=new Label(container,SWT.NULL);
+	//				nameLabelName.setText("Name: ");			
+	//				Label nameLabelValue=new Label(container,SWT.NULL);
+	//				nameLabelValue.setText(documentName != null ? documentName : "" );
+	//				Label localFileName=new Label(container,SWT.NULL);
+	//				localFileName.setText(file.getName());
+	//
+	//
+	//				metadataDocument=new MetadataDocument();
+	//				metadataDocument.setId(Integer.valueOf(id));
+	//				metadataDocument.setLabel(documentLabel);
+	//				metadataDocument.setDescription(documentDescription);
+	//				metadataDocument.setType(documentType);
+	//				metadataDocument.setName(documentName);
+	//				metadataDocument.setEngine(documentEngineId);
+	//				metadataDocument.setDataSet(documentDatasetId);
+	//				metadataDocument.setDataSource(documentDatasourceId);
+	//				metadataDocument.setState(documentState);
+	//				metadataDocument.setLocalFileName(file.getName());
+	//
+	//				if(xmlParameters!=null && !xmlParameters.equalsIgnoreCase(""))
+	//				{
+	//					XmlFriendlyReplacer replacer = new XmlFriendlyReplacer("grfthscv", "_");
+	//					XStream xstream = new XStream(new DomDriver("UTF-8", replacer)); 
+	//					xstream.alias("SDK_DOCUMENT_PARAMETERS", SDKDocumentParameters.class);
+	//					xstream.alias("PARAMETER", SDKDocumentParameter.class);
+	//					xstream.useAttributeFor(SDKDocumentParameter.class, "id");
+	//					xstream.useAttributeFor(SDKDocumentParameter.class, "label");
+	//					xstream.useAttributeFor(SDKDocumentParameter.class, "type");
+	//					xstream.useAttributeFor(SDKDocumentParameter.class, "urlName");
+	//					xstream.omitField(SDKDocumentParameter.class, "values");		
+	//					xstream.omitField(SDKDocumentParameter.class, "constraints");
+	//					xstream.omitField(SDKDocumentParameter.class, "__hashCodeCalc");
+	//					SDKDocumentParameters parametersMetaDataObject= (SDKDocumentParameters)xstream.fromXML(xmlParameters);
+	//					metadataDocument.buildMetadataParameters(parametersMetaDataObject);
+	//				}
+	//			}
+	//		}
+	//		catch (Exception e) {	
+	//			e.printStackTrace();
+	//			SpagoBILogger.errorLog("Exception while retrieving metadata",e);
+	//			return false;
+	//		}
+	//		catch (Throwable e) {
+	//			e.printStackTrace();
+	//			SpagoBILogger.errorLog("Exception while retrieving metadata",e);
+	//			return false;
+	//		}
+	//
+	//		return true;
+	//	}
 
 	/** Get input stream from a resource
 	 * 
@@ -743,6 +850,26 @@ public class DocContainer {
 	}
 
 
+
+
+
+	public void reloadStyleDocumentProperties(){
+		Style style=calculateTemplateStyle();
+		IWorkbenchWindow a=PlatformUI.getWorkbench().getWorkbenchWindows()[0];
+		// Document properties
+		IWorkbenchPage aa=a.getActivePage();
+		IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
+		Object p=w.getPart(false);
+		if(p!=null){
+			DocumentPropertiesView view=(DocumentPropertiesView)p;
+				view.reloadStyle(id, style.getStyle());
+		}
+		else{
+			// View not present
+
+		}
+	}
+
 	/** Reload the view with document property and with document parameters
 	 * 
 	 * @param id
@@ -753,16 +880,26 @@ public class DocContainer {
 		try{
 			// Document properties
 			IWorkbenchPage aa=a.getActivePage();
-			IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentProperties");
+			IViewReference w=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentPropertiesView");
 			Object p=w.getPart(false);
-			DocumentPropertiesView view=(DocumentPropertiesView)p;
-			view.reloadProperties(metadataDocument);
+			if(p!=null){
+				DocumentPropertiesView view=(DocumentPropertiesView)p;
+				view.reloadProperties(metadataDocument);
+			}
+			else{
+				// View not present
 
+			}
 			// Document parameters
-			IViewReference wPars=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentParameters");
+			IViewReference wPars=aa.findViewReference("it.eng.spagobi.studio.documentcomposition.views.DocumentParametersView");
 			Object p2=wPars.getPart(false);
-			DocumentParametersView docParameters=(DocumentParametersView)p2;
-			docParameters.reloadProperties(metadataDocument.getMetadataParameters());
+			if(p2!=null){
+				DocumentParametersView docParameters=(DocumentParametersView)p2;
+				docParameters.reloadProperties(metadataDocument.getMetadataParameters());
+			}
+			else{
+				// View Not present
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -822,6 +959,18 @@ public class DocContainer {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+
+	public MetadataDocument getMetadataDocument() {
+		return metadataDocument;
+	}
+
+
+	public void setMetadataDocument(MetadataDocument metadataDocument) {
+		this.metadataDocument = metadataDocument;
+	}
+
+
 
 
 
